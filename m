@@ -2,293 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3413ED04C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 10:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5EF3ED04E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 10:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234962AbhHPIa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 04:30:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234929AbhHPIar (ORCPT
+        id S234729AbhHPIcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 04:32:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22039 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234550AbhHPIcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 04:30:47 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9DEAC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 01:30:15 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id qk33so30206798ejc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 01:30:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Zwk2b+4K3DnEu81t0h2sa/3UYWtNHb7/ckQIg7vKAGA=;
-        b=K40V9hr+K9eMVbkPbvFfQtdd0lUV2Uqv/V+UXACphJBLjO3L57l5C0LIqGkQRHmdf9
-         +zIXVN0RvA5JjPGR1qbNIbjN9o4wUJP1mbj/G2eddJliWP69vPTe0J82AMKpxTi6kzoE
-         tnfLeqXagNPJpzJW2/YRwmU7ck0lxZkKbpPfkj+L7kmcdY1xAvPo0hMo2YdvrHurC5cy
-         6vBal1T6qfWFW+N8SH37dhk+LH0ecn7AdaRMn7Cd2z6RCbBwTlo1WcMCz0bNGDOQsW6O
-         Q+KsZNBdxu0P7QvCrSXsA6Af7DVgSvYCdVO+tekL47CtAO30V/0mderljCxaGp4GlpQS
-         gY8w==
+        Mon, 16 Aug 2021 04:32:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629102724;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bx1TcCFFLxqAZketNCVhx6k5xMXaylEpGz+3Cg9SPZk=;
+        b=dDrOrpqEnCtVPM/9Q7NLFZbZVi3qKJ9U0HH8dTfj/r3DSwSnjFygHKSsPtkkSAl9vvTUGL
+        p6336D4nPHPepAt2yNRDouJzuUMX1DGt127Ht1BV3tbM7XtTrI3w0VkJjKDjWwRpKsYpHW
+        uBDruTFaCnW5GuIJBXDkVyaedKJbXoQ=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-317-zwti-E64O-qm-7rZfXANTg-1; Mon, 16 Aug 2021 04:32:02 -0400
+X-MC-Unique: zwti-E64O-qm-7rZfXANTg-1
+Received: by mail-ed1-f71.google.com with SMTP id eg56-20020a05640228b8b02903be79801f9aso8419277edb.21
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 01:32:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Zwk2b+4K3DnEu81t0h2sa/3UYWtNHb7/ckQIg7vKAGA=;
-        b=szoABXJNws9Lj2gB4PyiDVt0CwKvPEjLYJ4Y28rpbOFjDWYTQWaDqvmfzS/C28MZRG
-         TWTzB/pEN06H6q5jj8KBFbzCRQM55TTWprfX/9a80XpDiaadkVdop0V/570woYoFqi0x
-         MvZ3ACtfQ7/wG5rocN4NZWzJegQOnl07V5/0qKZqBgLuVBEnjmhbctdGBdlC3lWoZ6tY
-         CEm7Knm3imc6ZpNI+9kUt6RH4lGTL3QodWmUQNYdFOvbzmnio4f/vDigakSrtXxBMFoy
-         aLSJHLNG3Gr5Ip2GJnFQHPQxYSa8sq5edN56w0pp9srotsILDhiAxbFzYKqgci4VsvdI
-         o4hg==
-X-Gm-Message-State: AOAM5330ar/Sj7yGiuGhQaIpUs11vVDLTftHjuKe0b7+/sxZvvPaCKlg
-        X8btQr1/3Ywo9DPTi1xpV70Y3A==
-X-Google-Smtp-Source: ABdhPJzmj0l6865+1gSSFwIkz/EN9H7OPkNF6RdFPqDF9/QWv6QfGtg1Dghs5TprsbrpyKLCXf2VcA==
-X-Received: by 2002:a17:907:35d0:: with SMTP id ap16mr14880423ejc.456.1629102614332;
-        Mon, 16 Aug 2021 01:30:14 -0700 (PDT)
-Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id q30sm4516878edi.84.2021.08.16.01.30.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 01:30:14 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     denis.ciocca@st.com, jic23@kernel.org,
-        Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH v2 5/5] iio: st_sensors: remove reference to parent device object on st_sensor_data
-Date:   Mon, 16 Aug 2021 11:28:36 +0300
-Message-Id: <20210816082836.67511-6-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210816082836.67511-1-aardelean@deviqon.com>
-References: <20210816082836.67511-1-aardelean@deviqon.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bx1TcCFFLxqAZketNCVhx6k5xMXaylEpGz+3Cg9SPZk=;
+        b=dXUeXH72cjQJAqsJMvw8CTx1GRsByCh6A6TqbkJR22myeUkuIQd12cgw3ceUgB98Sp
+         0ADvCV9+Y0IkqvF2Cuu+HOTgsZjd+0qElhZeMv5Krjaygdpcug1y781ZK//zENFBoAXP
+         xbEVX1kK/1o61HXf/n2YUkbtnuhUg3KFdEKVaxtK5W99xAOoPjkQZX5JMAW9gHOTGmUc
+         h5K8m8/MkI+SGcqg4seovxNJuImTBNvbqwLMOZExfg9iYlEf2f/l5PKUMNIuHjwa7Aqs
+         +VZ8iFxrrxFItNo3wpZM9+hwOCih5tI6seT9F9cz6NkxLa2rbioisrMT6MLoGcdVUA5C
+         p0/g==
+X-Gm-Message-State: AOAM532jKYyq1blr7Q4yGf5Ogkhau03Kj9mF3UK7W/BIcrUzxAvpU0bn
+        /W0t6XKKdfkT9RM8C97D+aHxXbpJln+9rchqm49apvt8YmCdcU0LmmA60b1JfxzsCFyfO57GXzB
+        0390eNr0eoApu1VPXHrvtawPx
+X-Received: by 2002:a05:6402:2749:: with SMTP id z9mr18367164edd.58.1629102721600;
+        Mon, 16 Aug 2021 01:32:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJycwgxgGV6AkDNg8gfPHVsMs+e7fC4MJ6GpMdVxyFq1hAOmDz4IxrRmkOer7CNX5ns4TxIL/g==
+X-Received: by 2002:a05:6402:2749:: with SMTP id z9mr18367141edd.58.1629102721417;
+        Mon, 16 Aug 2021 01:32:01 -0700 (PDT)
+Received: from x1.localdomain ([81.30.35.201])
+        by smtp.gmail.com with ESMTPSA id d3sm4499456edv.48.2021.08.16.01.32.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 01:32:01 -0700 (PDT)
+Subject: Re: [PATCH v4 1/1] asus-wmi: Add support for platform_profile
+To:     "Luke D. Jones" <luke@ljones.dev>, linux-kernel@vger.kernel.org
+Cc:     hadess@hadess.net, platform-driver-x86@vger.kernel.org
+References: <20210815230558.5860-1-luke@ljones.dev>
+ <20210815230558.5860-2-luke@ljones.dev>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <01f2f52e-e41f-4fce-480e-ab5fcd6c7b40@redhat.com>
+Date:   Mon, 16 Aug 2021 10:32:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210815230558.5860-2-luke@ljones.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm not completely sure whether this change makes much sense.
-The idea behind it, is that all devm_ calls in ST sensors are bound to the
-parent device object.
+Hi Luke,
 
-However, the reference to that object is kept on both the st_sensor_data
-struct and the IIO object parent (indio_dev->dev.parent).
+I have a couple of small remarks once those are resolved in v5
+then this should be ready for merging.
 
-This change only adds a bit consistency and uses the reference stored on
-indio_dev->dev.parent, to enforce the assumption that all ST sensors' devm_
-calls are bound to the same reference as the one store on st_sensor_data.
+On 8/16/21 1:05 AM, Luke D. Jones wrote:
+> Add initial support for platform_profile where the support is
+> based on availability of ASUS_THROTTLE_THERMAL_POLICY.
+> 
+> Because throttle_thermal_policy is used by platform_profile and is
+> writeable separately to platform_profile any userspace changes to
+> throttle_thermal_policy need to notify platform_profile.
+> 
+> In future throttle_thermal_policy sysfs should be removed so that
+> only one method controls the laptop power profile.
+> 
+> Signed-off-by: Luke D. Jones <luke@ljones.dev>
+> ---
+>  drivers/platform/x86/Kconfig    |   1 +
+>  drivers/platform/x86/asus-wmi.c | 138 +++++++++++++++++++++++++++++++-
+>  2 files changed, 135 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+> index d12db6c316ea..46dec48a36c1 100644
+> --- a/drivers/platform/x86/Kconfig
+> +++ b/drivers/platform/x86/Kconfig
+> @@ -281,6 +281,7 @@ config ASUS_WMI
+>  	select INPUT_SPARSEKMAP
+>  	select LEDS_CLASS
+>  	select NEW_LEDS
+> +	select ACPI_PLATFORM_PROFILE
+>  	help
+>  	  Say Y here if you have a WMI aware Asus laptop (like Eee PCs or new
+>  	  Asus Notebooks).
+> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+> index 90a6a0d00deb..c11ce06073d1 100644
+> --- a/drivers/platform/x86/asus-wmi.c
+> +++ b/drivers/platform/x86/asus-wmi.c
+> @@ -11,6 +11,7 @@
+>   * Copyright (C) 2005 Dmitry Torokhov <dtor@mail.ru>
+>   */
+>  
+> +#include <asm-generic/errno.h>
 
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
----
- drivers/iio/accel/st_accel_core.c                  | 7 ++++---
- drivers/iio/common/st_sensors/st_sensors_i2c.c     | 1 -
- drivers/iio/common/st_sensors/st_sensors_spi.c     | 1 -
- drivers/iio/common/st_sensors/st_sensors_trigger.c | 8 +++++---
- drivers/iio/gyro/st_gyro_core.c                    | 2 +-
- drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c       | 2 --
- drivers/iio/magnetometer/st_magn_core.c            | 4 ++--
- drivers/iio/pressure/st_pressure_core.c            | 2 +-
- include/linux/iio/common/st_sensors.h              | 2 --
- 9 files changed, 13 insertions(+), 16 deletions(-)
+This is a weird place to add an include, also please use
+linux/errno.h. But this is not necessary at all, because the
+2 if-s using -ENODATA which need this can be dropped
+(see below) so please just drop this all together.
 
-diff --git a/drivers/iio/accel/st_accel_core.c b/drivers/iio/accel/st_accel_core.c
-index 01695abd9d2f..c2d2cbe0fa3b 100644
---- a/drivers/iio/accel/st_accel_core.c
-+++ b/drivers/iio/accel/st_accel_core.c
-@@ -1186,6 +1186,7 @@ static const struct iio_trigger_ops st_accel_trigger_ops = {
-  */
- static int apply_acpi_orientation(struct iio_dev *indio_dev)
- {
-+	struct device *parent = indio_dev->dev.parent;
- 	struct st_sensor_data *adata = iio_priv(indio_dev);
- 	struct acpi_buffer buffer = {ACPI_ALLOCATE_BUFFER, NULL};
- 	struct acpi_device *adev;
-@@ -1210,7 +1211,7 @@ static int apply_acpi_orientation(struct iio_dev *indio_dev)
- 	};
- 
- 
--	adev = ACPI_COMPANION(adata->dev);
-+	adev = ACPI_COMPANION(parent);
- 	if (!adev)
- 		return 0;
- 
-@@ -1334,8 +1335,8 @@ EXPORT_SYMBOL(st_accel_get_settings);
- int st_accel_common_probe(struct iio_dev *indio_dev)
- {
- 	struct st_sensor_data *adata = iio_priv(indio_dev);
--	struct st_sensors_platform_data *pdata = dev_get_platdata(adata->dev);
- 	struct device *parent = indio_dev->dev.parent;
-+	struct st_sensors_platform_data *pdata = dev_get_platdata(parent);
- 	int err;
- 
- 	indio_dev->modes = INDIO_DIRECT_MODE;
-@@ -1355,7 +1356,7 @@ int st_accel_common_probe(struct iio_dev *indio_dev)
- 	 */
- 	err = apply_acpi_orientation(indio_dev);
- 	if (err) {
--		err = iio_read_mount_matrix(adata->dev, &adata->mount_matrix);
-+		err = iio_read_mount_matrix(parent, &adata->mount_matrix);
- 		if (err)
- 			return err;
- 	}
-diff --git a/drivers/iio/common/st_sensors/st_sensors_i2c.c b/drivers/iio/common/st_sensors/st_sensors_i2c.c
-index b3ff88700866..18bd3c3d99bc 100644
---- a/drivers/iio/common/st_sensors/st_sensors_i2c.c
-+++ b/drivers/iio/common/st_sensors/st_sensors_i2c.c
-@@ -57,7 +57,6 @@ int st_sensors_i2c_configure(struct iio_dev *indio_dev,
- 
- 	indio_dev->name = client->name;
- 
--	sdata->dev = &client->dev;
- 	sdata->irq = client->irq;
- 
- 	return 0;
-diff --git a/drivers/iio/common/st_sensors/st_sensors_spi.c b/drivers/iio/common/st_sensors/st_sensors_spi.c
-index 0d1d66c77cd8..7c60050e90dc 100644
---- a/drivers/iio/common/st_sensors/st_sensors_spi.c
-+++ b/drivers/iio/common/st_sensors/st_sensors_spi.c
-@@ -109,7 +109,6 @@ int st_sensors_spi_configure(struct iio_dev *indio_dev,
- 
- 	indio_dev->name = spi->modalias;
- 
--	sdata->dev = &spi->dev;
- 	sdata->irq = spi->irq;
- 
- 	return 0;
-diff --git a/drivers/iio/common/st_sensors/st_sensors_trigger.c b/drivers/iio/common/st_sensors/st_sensors_trigger.c
-index d022157b66a2..bb687d1bcbef 100644
---- a/drivers/iio/common/st_sensors/st_sensors_trigger.c
-+++ b/drivers/iio/common/st_sensors/st_sensors_trigger.c
-@@ -28,6 +28,7 @@
- static bool st_sensors_new_samples_available(struct iio_dev *indio_dev,
- 					     struct st_sensor_data *sdata)
- {
-+	struct device *parent = indio_dev->dev.parent;
- 	int ret, status;
- 
- 	/* How would I know if I can't check it? */
-@@ -42,7 +43,7 @@ static bool st_sensors_new_samples_available(struct iio_dev *indio_dev,
- 			  sdata->sensor_settings->drdy_irq.stat_drdy.addr,
- 			  &status);
- 	if (ret < 0) {
--		dev_err(sdata->dev, "error checking samples available\n");
-+		dev_err(parent, "error checking samples available\n");
- 		return false;
- 	}
- 
-@@ -75,6 +76,7 @@ static irqreturn_t st_sensors_irq_thread(int irq, void *p)
- 	struct iio_trigger *trig = p;
- 	struct iio_dev *indio_dev = iio_trigger_get_drvdata(trig);
- 	struct st_sensor_data *sdata = iio_priv(indio_dev);
-+	struct device *parent = indio_dev->dev.parent;
- 
- 	/*
- 	 * If this trigger is backed by a hardware interrupt and we have a
-@@ -87,7 +89,7 @@ static irqreturn_t st_sensors_irq_thread(int irq, void *p)
- 	    st_sensors_new_samples_available(indio_dev, sdata)) {
- 		iio_trigger_poll_chained(p);
- 	} else {
--		dev_dbg(sdata->dev, "spurious IRQ\n");
-+		dev_dbg(parent, "spurious IRQ\n");
- 		return IRQ_NONE;
- 	}
- 
-@@ -107,7 +109,7 @@ static irqreturn_t st_sensors_irq_thread(int irq, void *p)
- 	 */
- 	while (sdata->hw_irq_trigger &&
- 	       st_sensors_new_samples_available(indio_dev, sdata)) {
--		dev_dbg(sdata->dev, "more samples came in during polling\n");
-+		dev_dbg(parent, "more samples came in during polling\n");
- 		sdata->hw_timestamp = iio_get_time_ns(indio_dev);
- 		iio_trigger_poll_chained(p);
- 	}
-diff --git a/drivers/iio/gyro/st_gyro_core.c b/drivers/iio/gyro/st_gyro_core.c
-index 3609082a6778..201050b76fe5 100644
---- a/drivers/iio/gyro/st_gyro_core.c
-+++ b/drivers/iio/gyro/st_gyro_core.c
-@@ -492,7 +492,7 @@ int st_gyro_common_probe(struct iio_dev *indio_dev)
- 	indio_dev->channels = gdata->sensor_settings->ch;
- 	indio_dev->num_channels = ST_SENSORS_NUMBER_ALL_CHANNELS;
- 
--	err = iio_read_mount_matrix(gdata->dev, &gdata->mount_matrix);
-+	err = iio_read_mount_matrix(parent, &gdata->mount_matrix);
- 	if (err)
- 		return err;
- 
-diff --git a/drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c b/drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c
-index d276f663fe57..b3a43a3b04ff 100644
---- a/drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c
-+++ b/drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c
-@@ -90,7 +90,6 @@ static int st_lsm9ds0_probe_accel(struct st_lsm9ds0 *lsm9ds0, struct regmap *reg
- 
- 	data = iio_priv(lsm9ds0->accel);
- 	data->sensor_settings = (struct st_sensor_settings *)settings;
--	data->dev = dev;
- 	data->irq = lsm9ds0->irq;
- 	data->regmap = regmap;
- 	data->vdd = lsm9ds0->vdd;
-@@ -119,7 +118,6 @@ static int st_lsm9ds0_probe_magn(struct st_lsm9ds0 *lsm9ds0, struct regmap *regm
- 
- 	data = iio_priv(lsm9ds0->magn);
- 	data->sensor_settings = (struct st_sensor_settings *)settings;
--	data->dev = dev;
- 	data->irq = lsm9ds0->irq;
- 	data->regmap = regmap;
- 	data->vdd = lsm9ds0->vdd;
-diff --git a/drivers/iio/magnetometer/st_magn_core.c b/drivers/iio/magnetometer/st_magn_core.c
-index 1458906a3765..0806a1e65ce4 100644
---- a/drivers/iio/magnetometer/st_magn_core.c
-+++ b/drivers/iio/magnetometer/st_magn_core.c
-@@ -611,8 +611,8 @@ EXPORT_SYMBOL(st_magn_get_settings);
- int st_magn_common_probe(struct iio_dev *indio_dev)
- {
- 	struct st_sensor_data *mdata = iio_priv(indio_dev);
--	struct st_sensors_platform_data *pdata = dev_get_platdata(mdata->dev);
- 	struct device *parent = indio_dev->dev.parent;
-+	struct st_sensors_platform_data *pdata = dev_get_platdata(parent);
- 	int err;
- 
- 	indio_dev->modes = INDIO_DIRECT_MODE;
-@@ -626,7 +626,7 @@ int st_magn_common_probe(struct iio_dev *indio_dev)
- 	indio_dev->channels = mdata->sensor_settings->ch;
- 	indio_dev->num_channels = ST_SENSORS_NUMBER_ALL_CHANNELS;
- 
--	err = iio_read_mount_matrix(mdata->dev, &mdata->mount_matrix);
-+	err = iio_read_mount_matrix(parent, &mdata->mount_matrix);
- 	if (err)
- 		return err;
- 
-diff --git a/drivers/iio/pressure/st_pressure_core.c b/drivers/iio/pressure/st_pressure_core.c
-index cebcc1d93d0b..26a1ee43d56e 100644
---- a/drivers/iio/pressure/st_pressure_core.c
-+++ b/drivers/iio/pressure/st_pressure_core.c
-@@ -677,8 +677,8 @@ EXPORT_SYMBOL(st_press_get_settings);
- int st_press_common_probe(struct iio_dev *indio_dev)
- {
- 	struct st_sensor_data *press_data = iio_priv(indio_dev);
--	struct st_sensors_platform_data *pdata = dev_get_platdata(press_data->dev);
- 	struct device *parent = indio_dev->dev.parent;
-+	struct st_sensors_platform_data *pdata = dev_get_platdata(parent);
- 	int err;
- 
- 	indio_dev->modes = INDIO_DIRECT_MODE;
-diff --git a/include/linux/iio/common/st_sensors.h b/include/linux/iio/common/st_sensors.h
-index d17ae1e5ca19..22f67845cdd3 100644
---- a/include/linux/iio/common/st_sensors.h
-+++ b/include/linux/iio/common/st_sensors.h
-@@ -220,7 +220,6 @@ struct st_sensor_settings {
- 
- /**
-  * struct st_sensor_data - ST sensor device status
-- * @dev: Pointer to instance of struct device (I2C or SPI).
-  * @trig: The trigger in use by the core driver.
-  * @mount_matrix: The mounting matrix of the sensor.
-  * @sensor_settings: Pointer to the specific sensor settings in use.
-@@ -240,7 +239,6 @@ struct st_sensor_settings {
-  * @buffer_data: Data used by buffer part.
-  */
- struct st_sensor_data {
--	struct device *dev;
- 	struct iio_trigger *trig;
- 	struct iio_mount_matrix mount_matrix;
- 	struct st_sensor_settings *sensor_settings;
--- 
-2.31.1
+>  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>  
+>  #include <linux/kernel.h>
+> @@ -26,6 +27,7 @@
+>  #include <linux/rfkill.h>
+>  #include <linux/pci.h>
+>  #include <linux/pci_hotplug.h>
+> +#include <linux/platform_profile.h>
+>  #include <linux/power_supply.h>
+>  #include <linux/hwmon.h>
+>  #include <linux/hwmon-sysfs.h>
+> @@ -219,6 +221,9 @@ struct asus_wmi {
+>  	bool throttle_thermal_policy_available;
+>  	u8 throttle_thermal_policy_mode;
+>  
+> +	struct platform_profile_handler platform_profile_handler;
+> +	bool platform_profile_support;
+> +
+>  	// The RSOC controls the maximum charging percentage.
+>  	bool battery_rsoc_available;
+>  
+> @@ -2103,12 +2108,23 @@ static int throttle_thermal_policy_set_default(struct asus_wmi *asus)
+>  static int throttle_thermal_policy_switch_next(struct asus_wmi *asus)
+>  {
+>  	u8 new_mode = asus->throttle_thermal_policy_mode + 1;
+> +	int err;
+>  
+>  	if (new_mode > ASUS_THROTTLE_THERMAL_POLICY_SILENT)
+>  		new_mode = ASUS_THROTTLE_THERMAL_POLICY_DEFAULT;
+>  
+>  	asus->throttle_thermal_policy_mode = new_mode;
+> -	return throttle_thermal_policy_write(asus);
+> +	err = throttle_thermal_policy_write(asus);
+> +	if (err)
+> +		return err;
+> +
+> +	/*
+> +	 * Ensure that platform_profile updates userspace with the change to ensure
+> +	 * that platform_profile and throttle_thermal_policy_mode are in sync.
+> +	 */
+> +	platform_profile_notify();
+> +
+> +	return 0;
+>  }
+>  
+>  static ssize_t throttle_thermal_policy_show(struct device *dev,
+> @@ -2124,9 +2140,10 @@ static ssize_t throttle_thermal_policy_store(struct device *dev,
+>  				    struct device_attribute *attr,
+>  				    const char *buf, size_t count)
+>  {
+> -	int result;
+> -	u8 new_mode;
+>  	struct asus_wmi *asus = dev_get_drvdata(dev);
+> +	u8 new_mode;
+> +	int result;
+> +	int err;
+>  
+>  	result = kstrtou8(buf, 10, &new_mode);
+>  	if (result < 0)
+> @@ -2136,7 +2153,15 @@ static ssize_t throttle_thermal_policy_store(struct device *dev,
+>  		return -EINVAL;
+>  
+>  	asus->throttle_thermal_policy_mode = new_mode;
+> -	throttle_thermal_policy_write(asus);
+> +	err = throttle_thermal_policy_write(asus);
+> +	if (err)
+> +		return err;
+> +
+> +	/*
+> +	 * Ensure that platform_profile updates userspace with the change to ensure
+> +	 * that platform_profile and throttle_thermal_policy_mode are in sync.
+> +	 */
+> +	platform_profile_notify();
+>  
+>  	return count;
+>  }
+> @@ -2144,6 +2169,101 @@ static ssize_t throttle_thermal_policy_store(struct device *dev,
+>  // Throttle thermal policy: 0 - default, 1 - overboost, 2 - silent
+>  static DEVICE_ATTR_RW(throttle_thermal_policy);
+>  
+> +/* Platform profile ***********************************************************/
+> +static int platform_profile_get(struct platform_profile_handler *pprof,
+> +				enum platform_profile_option *profile)
+> +{
+> +	struct asus_wmi *asus;
+> +	int tp;
+> +
+> +	asus = container_of(pprof, struct asus_wmi, platform_profile_handler);
+> +
+> +	if (!asus->throttle_thermal_policy_available) {
+> +		return -ENODATA;
+> +	}
+
+Please don't use {} for an if before a single statement.
+
+Also platform_profile_get() only gets used if platform_profile_setup()
+proceeds beyond the same check which never happens, so this entire check is
+not necessary, please just drop the entire check.
+
+> +	tp = asus->throttle_thermal_policy_mode;
+> +
+> +	if (tp < 0)
+> +		return tp;
+> +
+> +	switch (tp) {
+> +	case ASUS_THROTTLE_THERMAL_POLICY_DEFAULT:
+> +		*profile = PLATFORM_PROFILE_BALANCED;
+> +		break;
+> +	case ASUS_THROTTLE_THERMAL_POLICY_OVERBOOST:
+> +		*profile = PLATFORM_PROFILE_PERFORMANCE;
+> +		break;
+> +	case ASUS_THROTTLE_THERMAL_POLICY_SILENT:
+> +		*profile = PLATFORM_PROFILE_QUIET;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int platform_profile_set(struct platform_profile_handler *pprof,
+> +				enum platform_profile_option profile)
+> +{
+> +	struct asus_wmi *asus;
+> +	int tp;
+> +
+> +	asus = container_of(pprof, struct asus_wmi, platform_profile_handler);
+> +
+> +	/* All possible toggles like throttle_thermal_policy here */
+
+This comment seems to be a left-over from when you considered also adding
+fan-boost-mode, please drop.
+
+> +	if (!asus->throttle_thermal_policy_available) {
+> +		return -ENODATA;
+> +	}
+
+As above, please drop.
+
+> +
+> +	switch (profile) {
+> +	case PLATFORM_PROFILE_PERFORMANCE:
+> +		tp = ASUS_THROTTLE_THERMAL_POLICY_OVERBOOST;
+> +		break;
+> +	case PLATFORM_PROFILE_BALANCED:
+> +		tp = ASUS_THROTTLE_THERMAL_POLICY_DEFAULT;
+> +		break;
+> +	case PLATFORM_PROFILE_QUIET:
+> +		tp = ASUS_THROTTLE_THERMAL_POLICY_SILENT;
+> +		break;
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	asus->throttle_thermal_policy_mode = tp;
+> +	return throttle_thermal_policy_write(asus);
+> +}
+> +
+> +static int platform_profile_setup(struct asus_wmi *asus)
+> +{
+> +	int err;
+> +
+> +	if (!asus->throttle_thermal_policy_available) {
+> +		/*
+> +		 * Not an error if a component platform_profile relies on is unavailable
+> +		 * so early return, skipping the setup of platform_profile.
+> +		*/
+> +		return 0;
+> +	}
+> +	dev_info("Using throttle_thermal_policy for platform_profile support\n");
+> +
+> +	asus->platform_profile_handler.profile_get = platform_profile_get;
+> +	asus->platform_profile_handler.profile_set = platform_profile_set;
+> +
+> +	set_bit(PLATFORM_PROFILE_QUIET, asus->platform_profile_handler.choices);
+> +	set_bit(PLATFORM_PROFILE_BALANCED,
+> +		asus->platform_profile_handler.choices);
+> +	set_bit(PLATFORM_PROFILE_PERFORMANCE,
+> +		asus->platform_profile_handler.choices);
+> +
+> +	err = platform_profile_register(&asus->platform_profile_handler);
+> +	if (err)
+> +		return err;
+> +
+> +	asus->platform_profile_support = true;
+> +	return 0;
+> +}
+> +
+>  /* Backlight ******************************************************************/
+>  
+>  static int read_backlight_power(struct asus_wmi *asus)
+> @@ -2904,6 +3024,10 @@ static int asus_wmi_add(struct platform_device *pdev)
+>  	else
+>  		throttle_thermal_policy_set_default(asus);
+>  
+> +	err = platform_profile_setup(asus);
+> +	if (err)
+> +		goto fail_platform_profile_setup;
+> +
+>  	err = panel_od_check_present(asus);
+>  	if (err)
+>  		goto fail_panel_od;
+
+
+
+> @@ -2993,6 +3117,9 @@ static int asus_wmi_add(struct platform_device *pdev)
+>  	asus_wmi_sysfs_exit(asus->platform_device);
+>  fail_sysfs:
+>  fail_throttle_thermal_policy:
+> +fail_platform_profile_setup:
+> +	if (asus->platform_profile_support)
+> +		platform_profile_remove();
+>  fail_fan_boost_mode:
+>  fail_egpu_enable:
+>  fail_dgpu_disable:
+> @@ -3017,6 +3144,9 @@ static int asus_wmi_remove(struct platform_device *device)
+>  	asus_fan_set_auto(asus);
+>  	asus_wmi_battery_exit(asus);
+>  
+> +	if (asus->platform_profile_support)
+> +		platform_profile_remove();
+> +
+>  	kfree(asus);
+>  	return 0;
+>  }
+> 
+
+
+Regards,
+
+Hans
 
