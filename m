@@ -2,71 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515483ECC21
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 02:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95AB33ECC25
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 02:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231977AbhHPAoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 20:44:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231379AbhHPAoT (ORCPT
+        id S232180AbhHPArj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 20:47:39 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:50787 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230124AbhHPAri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 20:44:19 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C98C061764;
-        Sun, 15 Aug 2021 17:43:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7y4QptOz1V4ztlsofAPbksKAkQftUXrC/D8qql+onCY=; b=fteGMPsu8vTa5KcQw4azbU4JYA
-        Faq4mtIy1sEdSqUaCmmRT3v62FIODMivNsEsaCK+HhuHFGM3myJ0uK6BcdGx+T+nexEVEjeilpNyp
-        7IRgXtCGXPXrSWlL9Xm0AuFRqnX216adxVHoIdngDS2tec0YVKndK2UYzhOMaBTuc5pGrhFtdS6Nm
-        +WXdWOn5T1Z04U+3nUtgM5sRBkI6SMyuqhXRcyvxYopwtoAVOpOZh0dZ1PxHo9TL0lLJGTfIHWMxp
-        w22SNja7mMrWsFxNVoj0bn+pAxn28NuWfVk4Vsk21DlGWY+UXFl8KZQlhdNEyUSPV+LgxGcdOqT6a
-        aoAsHslw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mFQiq-000nYp-Ny; Mon, 16 Aug 2021 00:43:32 +0000
-Date:   Mon, 16 Aug 2021 01:43:24 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v14 081/138] mm: Add folio_evictable()
-Message-ID: <YRm0rCTY7G1xVbFl@casper.infradead.org>
-References: <20210715033704.692967-82-willy@infradead.org>
- <20210715033704.692967-1-willy@infradead.org>
- <1814102.1628631690@warthog.procyon.org.uk>
+        Sun, 15 Aug 2021 20:47:38 -0400
+X-UUID: b2cb48f51b024fc0b2a7cf67518566ef-20210816
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=sAaOLYBjvsYR1Acs6Grr3F+AAV0ocb/raZ96GUdQ1qo=;
+        b=g6yAQxcxAt6eC1KytujmwOeqKEKazfwVP/3eU/sJbGnQoh1mo9550PEthzWT1uzEcUFLfG1Tj4kMXctbW7l1zudTgI5F0iv2qfx5SzlLxP0gcgZKQvxnYInZNFZe1hoXUl0V3z1elMEMSHSwpCrTjuYpOjH6YGb1VglYgWm68LY=;
+X-UUID: b2cb48f51b024fc0b2a7cf67518566ef-20210816
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <houlong.wei@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2002767682; Mon, 16 Aug 2021 08:47:03 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS32N1.mediatek.inc
+ (172.27.4.71) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 16 Aug
+ 2021 08:46:56 +0800
+Received: from mhfsdcap04 (10.17.3.154) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 16 Aug 2021 08:46:56 +0800
+Message-ID: <8324f3197f20dfec3e0d7ea8f32bac75b739eea5.camel@mediatek.com>
+Subject: Re: [PATCH v6 1/9] mtk-mdp: propagate errors from clock_on
+From:   houlong wei <houlong.wei@mediatek.com>
+To:     Eizan Miyamoto <eizan@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "wenst@chromium.org" <wenst@chromium.org>,
+        "Yong Wu =?UTF-8?Q?=28=E5=90=B4=E5=8B=87=29?=" <Yong.Wu@mediatek.com>,
+        "enric.balletbo@collabora.com" <enric.balletbo@collabora.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
+        "Andrew-CT Chen =?UTF-8?Q?=28=E9=99=B3=E6=99=BA=E8=BF=AA=29?=" 
+        <Andrew-CT.Chen@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "Minghsiu Tsai =?UTF-8?Q?=28=E8=94=A1=E6=98=8E=E4=BF=AE=29?=" 
+        <Minghsiu.Tsai@mediatek.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>, <houlong.wei@mediatek.com>
+Date:   Mon, 16 Aug 2021 08:46:57 +0800
+In-Reply-To: <20210802220943.v6.1.I9db0d408ef79d300672ec0311a6bee9556801631@changeid>
+References: <20210802121215.703023-1-eizan@chromium.org>
+         <20210802220943.v6.1.I9db0d408ef79d300672ec0311a6bee9556801631@changeid>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1814102.1628631690@warthog.procyon.org.uk>
+X-TM-SNTS-SMTP: CE6BE3BDA54DFB4013AD420CB44134AF67E90702D765D0A01BFC378D53FE42952000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 10:41:30PM +0100, David Howells wrote:
-> Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
-> 
-> > This is the folio equivalent of page_evictable().  Unfortunately, it's
-> > different from !folio_test_unevictable(), but I think it's used in places
-> > where you have to be a VM expert and can reasonably be expected to know
-> > the difference.
-> 
-> It would be useful to say how it is different.  I'm guessing it's because a
-> page is always entirely mlocked or not, but a folio might be partially
-> mlocked?
+T24gTW9uLCAyMDIxLTA4LTAyIGF0IDIwOjEyICswODAwLCBFaXphbiBNaXlhbW90byB3cm90ZToN
+Cj4gVXAgdW50aWwgdGhpcyBjaGFuZ2UsIG1hbnkgZXJyb3JzIHdlcmUgbG9nZ2VkIGJ1dCBpZ25v
+cmVkIHdoZW4NCj4gcG93ZXJpbmcNCj4gb24gY2xvY2tzIGluc2lkZSBtdGtfbWRwX2NvcmUuIFRo
+aXMgY2hhbmdlIHRyaWVzIHRvIGRvIGEgYmV0dGVyIGpvYg0KPiBhdA0KPiBwcm9wYWdhdGluZyBl
+cnJvcnMgYmFjayB0byB0aGUgcG93ZXIgbWFuYWdlbWVudCBmcmFtZXdvcmsuDQo+IA0KPiBTaWdu
+ZWQtb2ZmLWJ5OiBFaXphbiBNaXlhbW90byA8ZWl6YW5AY2hyb21pdW0ub3JnPg0KPiAtLS0NCg0K
+UmV2aWV3ZWQtYnk6IEhvdWxvbmcgV2VpIDxob3Vsb25nLndlaUBtZWRpYXRlay5jb20+DQoNCj4g
+KG5vIGNoYW5nZXMgc2luY2UgdjEpDQpbLi4uXQ0K
 
-folio_test_unevictable() checks the unevictable page flag.
-folio_evictable() tests whether the folio is evictable (is any page
-in the folio part of an mlocked VMA, or has the filesystem marked
-the inode as being unevictable (eg is it ramfs).
-
-It does end up looking a bit weird though.
-
-                if (page_evictable(page) && PageUnevictable(page)) {
-                        del_page_from_lru_list(page, lruvec);
-                        ClearPageUnevictable(page);
-                        add_page_to_lru_list(page, lruvec);
-
-but it's all mm-internal, not exposed to filesystems.
