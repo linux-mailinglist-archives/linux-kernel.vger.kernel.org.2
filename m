@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E02F3ED4FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9384A3ED703
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236676AbhHPNHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:07:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56462 "EHLO mail.kernel.org"
+        id S239273AbhHPN0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:26:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237012AbhHPNFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:05:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11E1263290;
-        Mon, 16 Aug 2021 13:05:06 +0000 (UTC)
+        id S239084AbhHPNPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:15:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B15A6329B;
+        Mon, 16 Aug 2021 13:12:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119107;
-        bh=b4geYltxWGY/PJ0BsEKqfz62uhw0LBHjKqpHoviU7go=;
+        s=korg; t=1629119562;
+        bh=kSGablp0Ki+RwPm51yskvvIVI9cBpKaFPZZIfDmnovQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ny2loTuF0AJrdMrbxERxrKMixY32PLsAJxH3LmaXq2fnu8QQsCeDvT+gtCcqXtJtQ
-         ju8xmVON8QrTqg1syJInKer0yZXrRKZBzMoG9jMP+RUPtWgL0apGG7Je5BfubmUi7d
-         82xxRpZcMuG+Y3SneBP0GggK/kSMz3jxtEknyK10=
+        b=d1LYvwM2EIFOcC1RRmQHA7Q/Qhdy4lVQloXdnhQLLKmzvPMBZ4Xis8lC7Lju5HRHg
+         Qw4cF/2PIWp/973vVeMgt5RyLLRhRLciMlv24cZ3h8SO+vtf8JMMcVmcrZFo5yq+5x
+         RII+HCPXV+n+vAxL5WuszxTQ97XxpWdjCY09yb0g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
+        Md Fahad Iqbal Polash <md.fahad.iqbal.polash@intel.com>,
+        Konrad Jankowski <konrad0.jankowski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 12/62] ASoC: cs42l42: Correct definition of ADC Volume control
-Date:   Mon, 16 Aug 2021 15:01:44 +0200
-Message-Id: <20210816125428.608146277@linuxfoundation.org>
+Subject: [PATCH 5.13 075/151] iavf: Set RSS LUT and key in reset handle path
+Date:   Mon, 16 Aug 2021 15:01:45 +0200
+Message-Id: <20210816125446.544481126@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
-References: <20210816125428.198692661@linuxfoundation.org>
+In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
+References: <20210816125444.082226187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+From: Md Fahad Iqbal Polash <md.fahad.iqbal.polash@intel.com>
 
-[ Upstream commit ee86f680ff4c9b406d49d4e22ddf10805b8a2137 ]
+[ Upstream commit a7550f8b1c9712894f9e98d6caf5f49451ebd058 ]
 
-The ADC volume is a signed 8-bit number with range -97 to +12,
-with -97 being mute. Use a SOC_SINGLE_S8_TLV() to define this
-and fix the DECLARE_TLV_DB_SCALE() to have the correct start and
-mute flag.
+iavf driver should set RSS LUT and key unconditionally in reset
+path. Currently, the driver does not do that. This patch fixes
+this issue.
 
-Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20210729170929.6589-1-rf@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 2c86ac3c7079 ("i40evf: create a generic config RSS function")
+Signed-off-by: Md Fahad Iqbal Polash <md.fahad.iqbal.polash@intel.com>
+Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs42l42.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/intel/iavf/iavf_main.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 5faf8877137a..5c6d288a92ab 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -403,7 +403,7 @@ static const struct regmap_config cs42l42_regmap = {
- 	.use_single_write = true,
- };
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
+index 44bafedd09f2..244ec74ceca7 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_main.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
+@@ -1506,11 +1506,6 @@ static int iavf_reinit_interrupt_scheme(struct iavf_adapter *adapter)
+ 	set_bit(__IAVF_VSI_DOWN, adapter->vsi.state);
  
--static DECLARE_TLV_DB_SCALE(adc_tlv, -9600, 100, false);
-+static DECLARE_TLV_DB_SCALE(adc_tlv, -9700, 100, true);
- static DECLARE_TLV_DB_SCALE(mixer_tlv, -6300, 100, true);
+ 	iavf_map_rings_to_vectors(adapter);
+-
+-	if (RSS_AQ(adapter))
+-		adapter->aq_required |= IAVF_FLAG_AQ_CONFIGURE_RSS;
+-	else
+-		err = iavf_init_rss(adapter);
+ err:
+ 	return err;
+ }
+@@ -2200,6 +2195,14 @@ continue_reset:
+ 			goto reset_err;
+ 	}
  
- static const char * const cs42l42_hpf_freq_text[] = {
-@@ -442,8 +442,7 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
- 				CS42L42_ADC_INV_SHIFT, true, false),
- 	SOC_SINGLE("ADC Boost Switch", CS42L42_ADC_CTL,
- 				CS42L42_ADC_DIG_BOOST_SHIFT, true, false),
--	SOC_SINGLE_SX_TLV("ADC Volume", CS42L42_ADC_VOLUME,
--				CS42L42_ADC_VOL_SHIFT, 0xA0, 0x6C, adc_tlv),
-+	SOC_SINGLE_S8_TLV("ADC Volume", CS42L42_ADC_VOLUME, -97, 12, adc_tlv),
- 	SOC_SINGLE("ADC WNF Switch", CS42L42_ADC_WNF_HPF_CTL,
- 				CS42L42_ADC_WNF_EN_SHIFT, true, false),
- 	SOC_SINGLE("ADC HPF Switch", CS42L42_ADC_WNF_HPF_CTL,
++	if (RSS_AQ(adapter)) {
++		adapter->aq_required |= IAVF_FLAG_AQ_CONFIGURE_RSS;
++	} else {
++		err = iavf_init_rss(adapter);
++		if (err)
++			goto reset_err;
++	}
++
+ 	adapter->aq_required |= IAVF_FLAG_AQ_GET_CONFIG;
+ 	adapter->aq_required |= IAVF_FLAG_AQ_MAP_VECTORS;
+ 
 -- 
 2.30.2
 
