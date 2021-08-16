@@ -2,43 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABFA13ED3EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5732D3ED3EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232743AbhHPM17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 08:27:59 -0400
-Received: from verein.lst.de ([213.95.11.211]:54220 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229600AbhHPM1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 08:27:55 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id C3DE96736F; Mon, 16 Aug 2021 14:27:21 +0200 (CEST)
-Date:   Mon, 16 Aug 2021 14:27:21 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Kari Argillander <kari.argillander@gmail.com>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Christoph Hellwig <hch@lst.de>, ntfs3@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: your mail
-Message-ID: <20210816122721.GA17355@lst.de>
-References: <20210816024703.107251-1-kari.argillander@gmail.com>
+        id S234159AbhHPM2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 08:28:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43529 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229879AbhHPM2Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 08:28:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629116864;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9b7uoYiuEs1qzXCovxq5e29PNVBebamU9MVAclDrPkI=;
+        b=eKABnEwxds/mUmSlkJ70ZMeMWOe7v6bXk+fLXw0BpVAa75fS1cr/LJw92cemgXNgWl5rBZ
+        OygYPLxSecc5c/aZYxtIHf2thwYwJAVGMqolzVUtWoF1k02zUUlDrrbSRZV3mth6ScUBbs
+        e0aCjSZHYKHqkjDlyPsXIRnsjv1JrJ8=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-272-mc1cReT0Ny2JX3oIj1h5fQ-1; Mon, 16 Aug 2021 08:27:43 -0400
+X-MC-Unique: mc1cReT0Ny2JX3oIj1h5fQ-1
+Received: by mail-wm1-f69.google.com with SMTP id c2-20020a7bc8420000b0290238db573ab7so7759969wml.5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 05:27:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=9b7uoYiuEs1qzXCovxq5e29PNVBebamU9MVAclDrPkI=;
+        b=IPkQO7s2to11EFl2ZvipIIiKINvdGNoKDm7/s27pogULSkM8Owv5YiW0kUjuo69wql
+         iLgPZG82LkW81cBa1kDWcQRIgJcYRv5p5K9lrCred4FTSZDsdf3nylSAWSqBUxYZ8BJN
+         Rd4B2IUF6axWpIPlaCUNSiEYwMoxf6q3g/twsk3JFr5YaVFC/WhcUF9FXjMG3B+IqTuV
+         CMDncR7U+7hoSSzlxN4AmS4Iw8Z26Z/GtOs9Hz1KmjMflR68xxVlhVD60cz/ZFj1zddc
+         sy2/sNCe8On2ZXIZv7h7xW27XHYXGUEDOJh0niook0i6wzaYdj5nTxhjimBoeFqLNzsG
+         //nA==
+X-Gm-Message-State: AOAM532K1bGrc3lIcg7iqT/Yzo1n9PH4L+Iu/rTKorsL7j//Wf3KaPpm
+        FH0iLVXdZYRiT7WjfySGJ/x64PJSJCA+KuNNQQXIkx6/YKa4Q+2u/jemdKYM0XlsvMgBUSQu4Vi
+        2EpqFcriCGSlJbLV08VgXKTq/
+X-Received: by 2002:a05:600c:414f:: with SMTP id h15mr8386884wmm.66.1629116862457;
+        Mon, 16 Aug 2021 05:27:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxEyrhXose6dDXwciuAwsFQKnwAOY30N7d0eihe8mA22c6bXK9Bf+kwMzU+XQu5mEJ8kEgoVg==
+X-Received: by 2002:a05:600c:414f:: with SMTP id h15mr8386866wmm.66.1629116862267;
+        Mon, 16 Aug 2021 05:27:42 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c67f1.dip0.t-ipconnect.de. [91.12.103.241])
+        by smtp.gmail.com with ESMTPSA id n3sm2187531wms.2.2021.08.16.05.27.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 05:27:41 -0700 (PDT)
+Subject: [private] Re: [RFC PATCH 0/5] madvise MADV_DOEXEC
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Khalid Aziz <khalid.aziz@oracle.com>,
+        "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
+        <longpeng2@huawei.com>, Steven Sistare <steven.sistare@oracle.com>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "Gonglei (Arei)" <arei.gonglei@huawei.com>
+References: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
+ <cc714571-4461-c9e0-7b24-e213664caa54@huawei.com>
+ <43471cbb-67c6-f189-ef12-0f8302e81b06@oracle.com>
+ <a1dbf12e-9949-109e-122c-ba7ba609801b@huawei.com>
+ <YOubKmDwxMIvdAed@casper.infradead.org>
+ <a94973ab83ce48bd85c91397f82d7915@huawei.com>
+ <55720e1b39cff0a0f882d8610e7906dc80ea0a01.camel@oracle.com>
+ <db2b7337-4c6b-4e4b-71d3-dc4940353498@redhat.com>
+ <YRpVHnr55LpQQvTb@casper.infradead.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <86ebdfe4-22ee-9a9a-9d06-8305290d9bc9@redhat.com>
+Date:   Mon, 16 Aug 2021 14:27:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210816024703.107251-1-kari.argillander@gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <YRpVHnr55LpQQvTb@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 05:46:59AM +0300, Kari Argillander wrote:
-> I would like really like to get fsparam_flag_no also for no_acs_rules
-> but then we have to make new name for it. Other possibility is to
-> modify mount api so it mount option can be no/no_. I think that would
-> maybe be good change. 
+On 16.08.21 14:07, Matthew Wilcox wrote:
+> On Mon, Aug 16, 2021 at 10:02:22AM +0200, David Hildenbrand wrote:
+>>> Mappings within this address range behave as if they were shared
+>>> between threads, so a write to a MAP_PRIVATE mapping will create a
+>>> page which is shared between all the sharers. The first process that
+>>> declares an address range mshare'd can continue to map objects in the
+>>> shared area. All other processes that want mshare'd access to this
+>>> memory area can do so by calling mshare(). After this call, the
+>>> address range given by mshare becomes a shared range in its address
+>>> space. Anonymous mappings will be shared and not COWed.
+>>
+>> Did I understand correctly that you want to share actual page tables between
+>> processes and consequently different MMs? That sounds like a very bad idea.
+> 
+> That is the entire point.  Consider a machine with 10,000 instances
+> of an application running (process model, not thread model).  If each
+> application wants to map 1TB of RAM using 2MB pages, that's 4MB of page
+> tables per process or 40GB of RAM for the whole machine.
 
-I don't think adding another no_ alias is a good idea.  I'd suggest
-to just rename the existing flag before the ntfs3 driver ever hits
-mainline.
+Note that I am working on asynchronous reclaim of page tables, whereby I 
+would even reclaim !anonymous page tables under memory pressure.
+
+Assuming your processes don't touch all memory all the time of course 
+... of course, it's a research project and will still require quite some 
+work because devil is in the detail (locking).
+
+-- 
+Thanks,
+
+David / dhildenb
+
