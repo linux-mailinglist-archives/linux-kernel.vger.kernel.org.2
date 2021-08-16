@@ -2,112 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D75A3ED0DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 11:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9BC3ED0E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 11:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235080AbhHPJKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 05:10:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46926 "EHLO
+        id S235271AbhHPJRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 05:17:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233053AbhHPJKP (ORCPT
+        with ESMTP id S235163AbhHPJR3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 05:10:15 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B706C061764;
-        Mon, 16 Aug 2021 02:09:44 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id hv22-20020a17090ae416b0290178c579e424so26405826pjb.3;
-        Mon, 16 Aug 2021 02:09:44 -0700 (PDT)
+        Mon, 16 Aug 2021 05:17:29 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEDD3C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 02:16:57 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id b10so21984928eju.9
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 02:16:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=broadcom.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=VPGedwvnCei+6xmV2jyY7egHgphSukXbhhMKxVkL/KM=;
-        b=sYF9vOyRt5AZCqqykOv3ZbYGe/cETGsqJ2Sc82f8ExNAXrlyyYtQsHLDbC0SlVJw+O
-         XpERn2Dy7GsYa1BrUsnF29TV47vchrb+jRMKSEcQf+b/ZdbXtOIAV90K8/VnTYPMscMB
-         a9IAapXx7+R05LYHTbi4DXmf3iDNkBFd8Brhqu7II6NiRfWeUb6kGoMGzCa97VoM4rKr
-         JYCtiyBVfJzEF4AIOzAVxEpKfG6YaEJUneCjvswA/U/HNJRgfsjD6Ih5f+fOLAoi5T4a
-         DCVOK5WbIY7cotZKMnNDjoT26AazmMjX0YSgRINaJ2RneLVYDd8KIYwYMQw0Nq2OjkAI
-         9ZOw==
+        bh=+Cq8XhC/Hs5rWd5cGFsYgTVgUJ8lBvrSmNry25OJTIA=;
+        b=dDsx9TJiocBa/R/cEkeQ8uaVbyiNfSsAAjbgHywE+iZH8fG6pf3M2NW/jsZRhJhNHw
+         PyvBu9rLiim6NTYFHlk3odsCp+IJUbwOHMPUUhlbIXe51w4z5tB96e88I4fKio0omV4d
+         0fOfE2mqw8Z2G0ceqLU7RJPROqrET5idQqNFA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=VPGedwvnCei+6xmV2jyY7egHgphSukXbhhMKxVkL/KM=;
-        b=S/0Zi2ufaXlTfzRBeXoESug1+VzonXkJ8WtVtERWsESH3I/x/u3RLsq3KSsB0Umq7T
-         8awH1c+LKoiJymowS691G5YfE4P3ArnASAWCB/8t3SMAcqrdEkh7mlPw9IcA9oBQe7Cg
-         W2trTZaXZWYBHz5esjkAljiaDVSEASeyOeuPb2It1GESIMhMbU2tCiKeiF9a4s89Lxf6
-         g88xFM6OkvCvA2m3hUiV0HJjjuESEjAE2aJcadj2KzgZJ0kPMAVJac+9vh/nrij/MBTw
-         15jVktwY2QzER7F+eUn7EUCSR5We7B3SrVHi0GsXcZw+Expb4a5jVQnx2gf4ehY62hUI
-         3suQ==
-X-Gm-Message-State: AOAM530Iah5SM7grPWS3M3eV1DUKzppKK3bDw0XdeFckpxzfU+IXMRnq
-        yET0YuVUF7jliPXThVf7eaB/ofboFweB99mfMFo=
-X-Google-Smtp-Source: ABdhPJw+wb22Sx2hYIVb5pjxjPajLnJeqs42mh+QxbOEDRjTujJScmbcVUOHpinYq7T463VfkskGvMQDKHt3rYWXDvw=
-X-Received: by 2002:a63:cf0a:: with SMTP id j10mr15211364pgg.4.1629104983812;
- Mon, 16 Aug 2021 02:09:43 -0700 (PDT)
+        bh=+Cq8XhC/Hs5rWd5cGFsYgTVgUJ8lBvrSmNry25OJTIA=;
+        b=lCZCtOcIsRjH0dz+G6EanAA4RQoue0bsMl5Z5eYGt1trMsXT9euuQA+6N5t9m8JaFz
+         Q7eFfNl/40VvpZgb7dUpIYAeNhz65t4WPJVbF+uT5nuHeUO4QwPjQxgtMvleG+GH4XZu
+         wGldTPLPJy2hRfn67SEvipn1EgHsbhXkqjeyI3rmTgAcjzi9PmYhlXv3f20dVavjgHJl
+         fmcpXkM+E1tswHYKwrSDuSf5wAWn/b0SoJDMritx3pnsr/glSthMlax0MGwnyf30PZJi
+         Ix/4w0ayjz3RxPFxHATjZLrfTAMuj3icTIxFjxRgLod0f0qk3jZDmgQXQIayxjLkGyH0
+         +gPw==
+X-Gm-Message-State: AOAM530MPGNZ+q3DI6ENI3qt2fpNuLzUmaLUdfCKEIpL/YW7NpVLQsE5
+        Wl0LDHEMMFSu0AfTG4I5gPGMJfHkg1YdqoOxVCNrjQ==
+X-Google-Smtp-Source: ABdhPJy9UMMwmA1oURpxxXRijIV8oOHrigPvj4CIpM7Y1+JHbWH7XGEsLwGxTrBYxZy4UGQXimb4JTlMQRBWX0cAkdM=
+X-Received: by 2002:a17:906:a08a:: with SMTP id q10mr14893306ejy.100.1629105415853;
+ Mon, 16 Aug 2021 02:16:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210816082836.67511-1-aardelean@deviqon.com>
-In-Reply-To: <20210816082836.67511-1-aardelean@deviqon.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 16 Aug 2021 12:09:04 +0300
-Message-ID: <CAHp75VecnBiMLie2ki7--c9YgiZrknhLb-TSOjSAVKXy+ZpxYQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/5] iio: st_sensors: convert probe functions to full devm
-To:     Alexandru Ardelean <aardelean@deviqon.com>
-Cc:     linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Denis Ciocca <denis.ciocca@st.com>,
-        Jonathan Cameron <jic23@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <20210816085531.12167-1-dinghao.liu@zju.edu.cn>
+In-Reply-To: <20210816085531.12167-1-dinghao.liu@zju.edu.cn>
+From:   Selvin Xavier <selvin.xavier@broadcom.com>
+Date:   Mon, 16 Aug 2021 14:46:44 +0530
+Message-ID: <CA+sbYW15pcKBW32kYAj7gGkBt4RsG__XD+TVj8W7ovEF3HT8GA@mail.gmail.com>
+Subject: Re: [PATCH] RDMA/bnxt_re: Remove redundant unlock in bnxt_re_dev_init
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     kjlu@umn.edu, Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000a27da105c9a9a9b3"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 11:30 AM Alexandru Ardelean
-<aardelean@deviqon.com> wrote:
->
-> Changelog v1 - v2:
-> * https://lore.kernel.org/linux-iio/20210726071404.14529-1-aardelean@deviqon.com/
-> * added patch 'iio: st_sensors: disable regulators after device unregistration'
->   - splits the regulator disable fix in a separate patch
+--000000000000a27da105c9a9a9b3
+Content-Type: text/plain; charset="UTF-8"
 
-Entire series makes sense to me, thanks!
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-
-> Alexandru Ardelean (5):
->   iio: st_sensors: disable regulators after device unregistration
->   iio: st_sensors: remove st_sensors_deallocate_trigger() function
->   iio: st_sensors: remove st_sensors_power_disable() function
->   iio: st_sensors: remove all driver remove functions
->   iio: st_sensors: remove reference to parent device object on
->     st_sensor_data
+On Mon, Aug 16, 2021 at 2:26 PM Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
 >
->  drivers/iio/accel/st_accel_core.c             | 32 +++--------
->  drivers/iio/accel/st_accel_i2c.c              | 23 +-------
->  drivers/iio/accel/st_accel_spi.c              | 23 +-------
->  .../iio/common/st_sensors/st_sensors_core.c   | 34 ++++++------
->  .../iio/common/st_sensors/st_sensors_i2c.c    |  1 -
->  .../iio/common/st_sensors/st_sensors_spi.c    |  1 -
->  .../common/st_sensors/st_sensors_trigger.c    | 53 +++++++------------
->  drivers/iio/gyro/st_gyro_core.c               | 27 ++--------
->  drivers/iio/gyro/st_gyro_i2c.c                | 23 +-------
->  drivers/iio/gyro/st_gyro_spi.c                | 23 +-------
->  drivers/iio/imu/st_lsm9ds0/st_lsm9ds0.h       |  1 -
->  drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c  | 17 +-----
->  drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_i2c.c   |  6 ---
->  drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_spi.c   |  6 ---
->  drivers/iio/magnetometer/st_magn_core.c       | 29 ++--------
->  drivers/iio/magnetometer/st_magn_i2c.c        | 23 +-------
->  drivers/iio/magnetometer/st_magn_spi.c        | 23 +-------
->  drivers/iio/pressure/st_pressure_core.c       | 27 ++--------
->  drivers/iio/pressure/st_pressure_i2c.c        | 23 +-------
->  drivers/iio/pressure/st_pressure_spi.c        | 23 +-------
->  include/linux/iio/common/st_sensors.h         | 13 -----
->  21 files changed, 60 insertions(+), 371 deletions(-)
+> Commit c2b777a95923 removes all rtnl_lock() and rtnl_unlock()
+> in function bnxt_re_dev_init(), but forgets to remove a rtnl_unlock()
+> in the error handling path of bnxt_re_register_netdev(), which may
+> cause a deadlock. This bug is suggested by a static analysis tool,
+> please advise.
 >
-> --
-> 2.31.1
->
+> Fixes: c2b777a95923 ("RDMA/bnxt_re: Refactor device add/remove functionalities")
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
+Acked-by: Selvin Xavier <selvin.xavier@broadcom.com>
 
--- 
-With Best Regards,
-Andy Shevchenko
+--000000000000a27da105c9a9a9b3
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+od7PzGNQ3SgTYKl5XslMq+gpy+K8+egxMxo3D07c8snwyfU7Y7NQ8I1M986gsj9RUcp3oo0N+T1W
+rwVchQXTGD/Hwqc11XBU1H3JKSRkn7cTa9bMFnp0Asr3Y4/kB+4t6PhYi50ORwIDAQABo4IB2zCC
+AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
+L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
+Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
+YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
+cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
+MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
+MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
+BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU6uPX
+5eOTTGwUwIAAoXKF4qVZLfgwDQYJKoZIhvcNAQELBQADggEBAKAn7gHcWCrqvZPX7lw4FJEOMJ2s
+cPoLqoiJLhVttehI3r8nFmNe5WanBDnClSbn1WMa5fHtttEjxZkHOFZqWLHYRI/hnXtVBjF9YV/1
+Hs3HTO02pYpYyHue4CSXgBtj45ZVZ0FjQNxgoLFvJOq3iSsy/tS2uVH5Pe1AW495cxp8+p5b3VGe
+HRzGet524jE0vZx0A/6qrYo6C7z4Djrt/QU2MZDbPb+kwkkomwcn0Nvr91KWSrbhhHtZ/EfXi08L
+x3R3oHtWjbmIW1nYkwVk4pQZoaLkRWkfTSGpwDwilhrd2F+d5rhCbAbfACk4Oly51GV4SI7jUm0D
+VbZWyuIx85gxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
+IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
+Agxea+GNYSvtMZZyJzwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGNx/vvNVZx2
+guxnOWpTT0JatobUOW5jgXYeSyIu4zHtMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIxMDgxNjA5MTY1NlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAKHPCYaMbD9/cyntz9JlmW57MaZD+S
+N/GNiYNLiEILJzuCcDOFv9+Oo/ccUnF1HAzXzXRXkmQa4aoHfQv3za+wDmUI9kgTcSFtC+L+p9Yb
+agGpm+kj1Pn96mAEYmbbzCYwTL6hJXhLxx79zcoObbcSFDfmiCeY8vYgnNVxaX9jU4OqVqBcaacG
+fsb7HuQiNAgZKUgh3yg0mzbQTLm4rN8BbrLYaZBN45APEHs1uZ/0aL/tv0jnAWBbGdf6JAKaDYt7
+gfLXx9g5ctnvShan8SbBA+K8wo4qQrVJw726OUX3LoBJsHoSar5aRoiH8wkmgtz7hByzMaowzWwg
+fFf5408O
+--000000000000a27da105c9a9a9b3--
