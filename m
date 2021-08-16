@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A74D13ECBD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 02:05:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EBCF3ECBD9
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 02:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231926AbhHPAGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 20:06:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37608 "EHLO
+        id S232123AbhHPAGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 20:06:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231861AbhHPAGE (ORCPT
+        with ESMTP id S231861AbhHPAGQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 20:06:04 -0400
+        Sun, 15 Aug 2021 20:06:16 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20021C061764
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 17:05:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A43A0C061764;
+        Sun, 15 Aug 2021 17:05:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
         Content-ID:Content-Description:In-Reply-To:References;
-        bh=a8K5CgAJ2LfbgMYLfjwU503fankQk3XILQ3kz7Kelbk=; b=l0kmqwJAyqs0ysAKTFt+K5+zOG
-        0EvwENiddnauSYMaswxyeqbvkB7Mx/SeupbO6ZEx7le0W01ZVT5ecqzwPQWNoD7h6LvrqtLf7Gksm
-        CVaCvwMOGFozbIPkeCDVl35sByf7jKCEJW/0lXR4O1xLRcw9GyOAfKo2I2zb+DhpuA4njJx4kONwG
-        eLTFkFpA863JWIIOziJ3e5TXDD2bz4VWX21BFVpIDANCO0NLH08niyP6BMU/2XLKAOUFE5jRkgWRp
-        lmpLu+lvglLY12D7WzixyybcXwAIdZqn+3m7rEKbPB9LVuIzX696lAURxyetKJeQ2Kna/0XIqracy
-        9UK+LaGQ==;
+        bh=f2ZIVAVeoY8nho9NzjTCoBlb9ewzNUoIx59sjqw0Jyc=; b=Xa6Kr5aC888Zl6VKH/79Jw5PLu
+        UcqjL5rjGSlBWgJeuaQX5SE3kod4ZuWcmHgc1O9uWJFjsufNDjsygMAI29HJthDWDGkyhFfzw3toA
+        ZJ7KeZtUZoVhtGWPoY+fzgo0x++NyM69nZ8y5M3mEbLrcP5AIqZC6RQ955vmO6XQxrerhPGMGs+Ze
+        N1nX9ybS6TWq7LmLfrZZsLAGboC54CMjOHvUKI5s+ZyzbDNoxPaJkVVYoSt+kLPTLwIRqrjWiAJA1
+        cZOAfKiwLiPMzNmDUocYcf9MaTrCbGgMrhoqKX4PbGP3emE68Y4cgOznYvPUE18pa4oAtEEjkg9pr
+        MAmnsTFA==;
 Received: from [2601:1c0:6280:3f0:e65e:37ff:febd:ee53] (helo=bombadil.infradead.org)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mFQ8C-00Fkz1-Gw; Mon, 16 Aug 2021 00:05:32 +0000
+        id 1mFQ8N-00Fkzd-I6; Mon, 16 Aug 2021 00:05:43 +0000
 From:   Randy Dunlap <rdunlap@infradead.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Theodore Ts'o <tytso@mit.edu>
-Subject: [PATCH] char: move RANDOM_TRUST_CPU & RANDOM_TRUST_BOOTLOADER into the Character devices menu
-Date:   Sun, 15 Aug 2021 17:05:31 -0700
-Message-Id: <20210816000531.17934-1-rdunlap@infradead.org>
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        linux-afs@lists.infradead.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH] net: RxRPC: make dependent Kconfig symbols be shown indented
+Date:   Sun, 15 Aug 2021 17:05:42 -0700
+Message-Id: <20210816000542.18711-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -45,33 +46,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include RANDOM_TRUST_CPU and RANDOM_TRUST_BOOTLOADER inside the
-"Character devices" menu so that they are listed (presented)
-with other Character devices.
+Make all dependent RxRPC kconfig entries be dependent on AF_RXRPC
+so that they are presented (indented) after AF_RXRPC instead
+of being presented at the same level on indentation.
 
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Hsin-Yi Wang <hsinyi@chromium.org>
-Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Marc Dionne <marc.dionne@auristor.com>
+Cc: linux-afs@lists.infradead.org
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org
 ---
- drivers/char/Kconfig |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/rxrpc/Kconfig |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- linux-next-20210813.orig/drivers/char/Kconfig
-+++ linux-next-20210813/drivers/char/Kconfig
-@@ -427,8 +427,6 @@ config ADI
- 	  and SSM (Silicon Secured Memory).  Intended consumers of this
- 	  driver include crash and makedumpfile.
+--- linux-next-20210813.orig/net/rxrpc/Kconfig
++++ linux-next-20210813/net/rxrpc/Kconfig
+@@ -21,6 +21,8 @@ config AF_RXRPC
  
--endmenu
--
- config RANDOM_TRUST_CPU
- 	bool "Trust the CPU manufacturer to initialize Linux's CRNG"
- 	depends on ARCH_RANDOM
-@@ -452,3 +450,5 @@ config RANDOM_TRUST_BOOTLOADER
- 	booloader is trustworthy so it will be added to the kernel's entropy
- 	pool. Otherwise, say N here so it will be regarded as device input that
- 	only mixes the entropy pool.
+ 	  See Documentation/networking/rxrpc.rst.
+ 
++if AF_RXRPC
 +
-+endmenu
+ config AF_RXRPC_IPV6
+ 	bool "IPv6 support for RxRPC"
+ 	depends on (IPV6 = m && AF_RXRPC = m) || (IPV6 = y && AF_RXRPC)
+@@ -30,7 +32,6 @@ config AF_RXRPC_IPV6
+ 
+ config AF_RXRPC_INJECT_LOSS
+ 	bool "Inject packet loss into RxRPC packet stream"
+-	depends on AF_RXRPC
+ 	help
+ 	  Say Y here to inject packet loss by discarding some received and some
+ 	  transmitted packets.
+@@ -38,7 +39,6 @@ config AF_RXRPC_INJECT_LOSS
+ 
+ config AF_RXRPC_DEBUG
+ 	bool "RxRPC dynamic debugging"
+-	depends on AF_RXRPC
+ 	help
+ 	  Say Y here to make runtime controllable debugging messages appear.
+ 
+@@ -47,7 +47,6 @@ config AF_RXRPC_DEBUG
+ 
+ config RXKAD
+ 	bool "RxRPC Kerberos security"
+-	depends on AF_RXRPC
+ 	select CRYPTO
+ 	select CRYPTO_MANAGER
+ 	select CRYPTO_SKCIPHER
+@@ -58,3 +57,5 @@ config RXKAD
+ 	  through the use of the key retention service.
+ 
+ 	  See Documentation/networking/rxrpc.rst.
++
++endif
