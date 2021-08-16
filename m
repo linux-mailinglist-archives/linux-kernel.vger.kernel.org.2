@@ -2,180 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2AB3EDDA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D18C3EDDAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbhHPTMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 15:12:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37016 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229723AbhHPTMP (ORCPT
+        id S230009AbhHPTNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 15:13:24 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:60996 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229556AbhHPTNX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 15:12:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629141102;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Mon, 16 Aug 2021 15:13:23 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 2036B1FFCD;
+        Mon, 16 Aug 2021 19:12:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1629141170; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=7YlXwlqIMFjxEcCuzBk05B0XnLJDSfPdEFh85EFRYA8=;
-        b=NrB0uo94iNt5NuZl/q7a/UN1geWd5dAYNsUlUEn3hUmy5N1YidVsyTgXdO3lSSCfBi0JBv
-        nnk5g4p7l7/xbC6XpLpV7h00vMJ8OgImTbbNj6ECHL2sIn+LqquhAQL+rLs3BMMxr3SOOL
-        +ongq7Qa1OGw6vFdI6VZ0zaaM6mKMxo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-229-Wu5iE0PxP5KQNZf89IvS5w-1; Mon, 16 Aug 2021 15:11:41 -0400
-X-MC-Unique: Wu5iE0PxP5KQNZf89IvS5w-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        bh=bLS7JbPsgoJbranNPm2czgSZVcMxJZOHABRNcu46Ask=;
+        b=iiIk1yfTICvxIUWMfkLRDkxANadOaEzCF1k3U5AH2DFOxWS3+RyjEeXmSTv4YSYs/3Ru30
+        OnA5s8gEmj3COvGl/SukJ7/uSX6dt+7Pn9fO3XXt3hakIxA8xfKIWN75aM5bu46oWtgTlz
+        RG0rUYdFKopPTtHeEfJauWBmZGhH05Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1629141170;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bLS7JbPsgoJbranNPm2czgSZVcMxJZOHABRNcu46Ask=;
+        b=E6mboCSuqLSTpqnqzQfD2rw0/viszt8gLpcJKzxPBzsNW2hFu8O6poGJO8nHpU+U7lh+Rs
+        ZPiQ8iK4uLFgcoCw==
+Received: from lion.mk-sys.cz (unknown [10.100.200.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B841394EE1;
-        Mon, 16 Aug 2021 19:11:39 +0000 (UTC)
-Received: from horse.redhat.com (unknown [10.22.17.133])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E48BD5D9DD;
-        Mon, 16 Aug 2021 19:11:23 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 6A0EA2237F5; Mon, 16 Aug 2021 15:11:23 -0400 (EDT)
-Date:   Mon, 16 Aug 2021 15:11:23 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Greg Kurz <groug@kaod.org>, Miklos Szeredi <miklos@szeredi.hu>,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Max Reitz <mreitz@redhat.com>, Robert Krawitz <rlk@redhat.com>
-Subject: Re: [PATCH v4 5/5] virtiofs: propagate sync() to file server
-Message-ID: <YRq4W1zcsAZh3FLX@redhat.com>
-References: <20210520154654.1791183-1-groug@kaod.org>
- <20210520154654.1791183-6-groug@kaod.org>
- <CAOQ4uxh69ii5Yk-DgFAq+TrrvJ6xCv9s8sKLfo3aBCSWjJvp9Q@mail.gmail.com>
- <YRqEPjzHg9IlifBo@redhat.com>
- <CAOQ4uxg+UX6MWRv9JTQDmf6Yf_NyD+pJ438Ds270vGr9YSSPZw@mail.gmail.com>
+        by relay2.suse.de (Postfix) with ESMTPS id D39EBA3B88;
+        Mon, 16 Aug 2021 19:12:49 +0000 (UTC)
+Received: by lion.mk-sys.cz (Postfix, from userid 1000)
+        id B9ED36082B; Mon, 16 Aug 2021 21:12:49 +0200 (CEST)
+Date:   Mon, 16 Aug 2021 21:12:49 +0200
+From:   Michal Kubecek <mkubecek@suse.cz>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: Re: [REGRESSION][BISECTED] flood of "hid-generic ... control queue
+ full" since v5.14-rc1
+Message-ID: <20210816191249.7g2mk5thwpio7cfc@lion.mk-sys.cz>
+References: <20210816130059.3yxtdvu2r7wo4uu3@lion.mk-sys.cz>
+ <YRpnfJ719DwPu2B0@kroah.com>
+ <20210816141347.zougsudwe5tqgkpt@lion.mk-sys.cz>
+ <20210816143856.GA121345@rowland.harvard.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="3ww3jcnbtghg6slm"
 Content-Disposition: inline
-In-Reply-To: <CAOQ4uxg+UX6MWRv9JTQDmf6Yf_NyD+pJ438Ds270vGr9YSSPZw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20210816143856.GA121345@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 09:57:08PM +0300, Amir Goldstein wrote:
-> On Mon, Aug 16, 2021 at 6:29 PM Vivek Goyal <vgoyal@redhat.com> wrote:
-> >
-> > On Sun, Aug 15, 2021 at 05:14:06PM +0300, Amir Goldstein wrote:
-> > > Hi Greg,
-> > >
-> > > Sorry for the late reply, I have some questions about this change...
-> > >
-> > > On Fri, May 21, 2021 at 9:12 AM Greg Kurz <groug@kaod.org> wrote:
-> > > >
-> > > > Even if POSIX doesn't mandate it, linux users legitimately expect
-> > > > sync() to flush all data and metadata to physical storage when it
-> > > > is located on the same system. This isn't happening with virtiofs
-> > > > though : sync() inside the guest returns right away even though
-> > > > data still needs to be flushed from the host page cache.
-> > > >
-> > > > This is easily demonstrated by doing the following in the guest:
-> > > >
-> > > > $ dd if=/dev/zero of=/mnt/foo bs=1M count=5K ; strace -T -e sync sync
-> > > > 5120+0 records in
-> > > > 5120+0 records out
-> > > > 5368709120 bytes (5.4 GB, 5.0 GiB) copied, 5.22224 s, 1.0 GB/s
-> > > > sync()                                  = 0 <0.024068>
-> > > > +++ exited with 0 +++
-> > > >
-> > > > and start the following in the host when the 'dd' command completes
-> > > > in the guest:
-> > > >
-> > > > $ strace -T -e fsync /usr/bin/sync virtiofs/foo
-> > > > fsync(3)                                = 0 <10.371640>
-> > > > +++ exited with 0 +++
-> > > >
-> > > > There are no good reasons not to honor the expected behavior of
-> > > > sync() actually : it gives an unrealistic impression that virtiofs
-> > > > is super fast and that data has safely landed on HW, which isn't
-> > > > the case obviously.
-> > > >
-> > > > Implement a ->sync_fs() superblock operation that sends a new
-> > > > FUSE_SYNCFS request type for this purpose. Provision a 64-bit
-> > > > placeholder for possible future extensions. Since the file
-> > > > server cannot handle the wait == 0 case, we skip it to avoid a
-> > > > gratuitous roundtrip. Note that this is per-superblock : a
-> > > > FUSE_SYNCFS is send for the root mount and for each submount.
-> > > >
-> > > > Like with FUSE_FSYNC and FUSE_FSYNCDIR, lack of support for
-> > > > FUSE_SYNCFS in the file server is treated as permanent success.
-> > > > This ensures compatibility with older file servers : the client
-> > > > will get the current behavior of sync() not being propagated to
-> > > > the file server.
-> > >
-> > > I wonder - even if the server does not support SYNCFS or if the kernel
-> > > does not trust the server with SYNCFS, fuse_sync_fs() can wait
-> > > until all pending requests up to this call have been completed, either
-> > > before or after submitting the SYNCFS request. No?
-> >
-> > >
-> > > Does virtiofsd track all requests prior to SYNCFS request to make
-> > > sure that they were executed on the host filesystem before calling
-> > > syncfs() on the host filesystem?
-> >
-> > Hi Amir,
-> >
-> > I don't think virtiofsd has any such notion. I would think, that
-> > client should make sure all pending writes have completed and
-> > then send SYNCFS request.
-> >
-> > Looking at the sync_filesystem(), I am assuming vfs will take care
-> > of flushing out all dirty pages and then call ->sync_fs.
-> >
-> > Having said that, I think fuse queues the writeback request internally
-> > and signals completion of writeback to mm(end_page_writeback()). And
-> > that's why fuse_fsync() has notion of waiting for all pending
-> > writes to finish on an inode (fuse_sync_writes()).
-> >
-> > So I think you have raised a good point. That is if there are pending
-> > writes at the time of syncfs(), we don't seem to have a notion of
-> > first waiting for all these writes to finish before we send
-> > FUSE_SYNCFS request to server.
-> 
-> Maybe, but I was not referring to inode writeback requests.
-> I had assumed that those were handled correctly.
-> I was referring to pending metadata requests.
-> 
-> ->sync_fs() in local fs also takes care of flushing metadata
-> (e.g. journal). I assumed that virtiofsd implements FUSE_SYNCFS
-> request by calling syncfs() on host fs,
 
-Yes virtiofsd calls syncfs() on host fs.
+--3ww3jcnbtghg6slm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> but it is does that than
-> there is no guarantee that all metadata requests have reached the
-> host fs from virtiofs unless client or server take care of waiting
-> for all pending metadata requests before issuing FUSE_SYNCFS.
+On Mon, Aug 16, 2021 at 10:38:56AM -0400, Alan Stern wrote:
+> On Mon, Aug 16, 2021 at 04:13:47PM +0200, Michal Kubecek wrote:
+> > Looking at the code, the primary problem seems to be that the "else"
+> > branch in hid_submit_ctrl() recalculates transfer_buffer_length to
+> > a rounded up value but assigns the original length to wLength.
+>=20
+> Looks like you found the bug.  Fixing it might be as simple as setting=20
+> len =3D padlen in that "else" branch.  You could then combine the=20
+> transfer_buffer_length assignment with the one in the "if" branch and=20
+> hoist them out after the entire "if" statement.
 
-We don't have any journal in virtiofs. In fact we don't seem to
-cache any metadta. Except probably the case when "-o writeback" 
-where we can trust local time stamps.
+With the patch below, there are no errors and the UPS communication
+works correctly and so do other HID devices. But I would prefere someone
+familiar with HID code to confirm that this is what we want and what
+would be the right way to handle usb_submit_urb() errors.
 
-If "-o writeback" is not enabled, i am not sure what metadata
-we will be caching that we will need to worry about. Do you have
-something specific in mind. (Atleast from virtiofs point of view,
-I can't seem to think what metadata we are caching which we need
-to worry about).
+Michal
 
-Thanks
-Vivek
+diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
+index 06130dc431a0..ef240ef63a66 100644
+--- a/drivers/hid/usbhid/hid-core.c
++++ b/drivers/hid/usbhid/hid-core.c
+@@ -377,27 +377,26 @@ static int hid_submit_ctrl(struct hid_device *hid)
+ 	len =3D hid_report_len(report);
+ 	if (dir =3D=3D USB_DIR_OUT) {
+ 		usbhid->urbctrl->pipe =3D usb_sndctrlpipe(hid_to_usb_dev(hid), 0);
+-		usbhid->urbctrl->transfer_buffer_length =3D len;
+ 		if (raw_report) {
+ 			memcpy(usbhid->ctrlbuf, raw_report, len);
+ 			kfree(raw_report);
+ 			usbhid->ctrl[usbhid->ctrltail].raw_report =3D NULL;
+ 		}
+ 	} else {
+-		int maxpacket, padlen;
++		int maxpacket;
+=20
+ 		usbhid->urbctrl->pipe =3D usb_rcvctrlpipe(hid_to_usb_dev(hid), 0);
+ 		maxpacket =3D usb_maxpacket(hid_to_usb_dev(hid),
+ 					  usbhid->urbctrl->pipe, 0);
+ 		if (maxpacket > 0) {
+-			padlen =3D DIV_ROUND_UP(len, maxpacket);
+-			padlen *=3D maxpacket;
+-			if (padlen > usbhid->bufsize)
+-				padlen =3D usbhid->bufsize;
++			len =3D DIV_ROUND_UP(len, maxpacket);
++			len *=3D maxpacket;
++			if (len > usbhid->bufsize)
++				len =3D usbhid->bufsize;
+ 		} else
+-			padlen =3D 0;
+-		usbhid->urbctrl->transfer_buffer_length =3D padlen;
++			len =3D 0;
+ 	}
++	usbhid->urbctrl->transfer_buffer_length =3D len;
+ 	usbhid->urbctrl->dev =3D hid_to_usb_dev(hid);
+=20
+ 	usbhid->cr->bRequestType =3D USB_TYPE_CLASS | USB_RECIP_INTERFACE | dir;
 
-> 
-> But maybe I am missing something.
-> 
-> It might be worth mentioning that I did not find any sync_fs()
-> commands that request to flush metadata caches on the server in
-> NFS or SMB protocols either.
-> 
-> Thanks,
-> Amir.
-> 
+--3ww3jcnbtghg6slm
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEWN3j3bieVmp26mKO538sG/LRdpUFAmEauKkACgkQ538sG/LR
+dpU94AgAvbyi6DxI+0UkhSO6Ln39x8aE67gCKdMLjoAuiA0mWfVQCfFnLA/M22rd
++MnTe/1jHEUphGXHTQOSiGJk/rPx6zYZTP3IRpXf2j2NBTBWtAXt2EJVJdWNUirO
+6knH8tZSnxXvMsKWBlGGMRptV4FD0XiNhSYmfzV1+QXWjZ312Y+V9icKW8ITVIUR
+U3WJ1xU+TN60Y6FduWK+gZOC6HpggSNkJQb+gh5okLl4Lp6bRUO1fDT2zAqvaA6f
+x2BtYVqWyE3DWr7rkE68aYYO2l9Ytc+5DMOCTeV35Uo+6q3VHC1z5uepDwVqV8ST
+g84Aa8aWYYBDV9pBZo1PcrxtZQA8rQ==
+=UjF7
+-----END PGP SIGNATURE-----
+
+--3ww3jcnbtghg6slm--
