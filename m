@@ -2,96 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFBC3EE022
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 00:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 950833EE028
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 01:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234456AbhHPWv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 18:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40290 "EHLO
+        id S232633AbhHPXBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 19:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234314AbhHPWvr (ORCPT
+        with ESMTP id S232562AbhHPXBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 18:51:47 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F62C0613CF;
-        Mon, 16 Aug 2021 15:51:15 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id x12so25740899wrr.11;
-        Mon, 16 Aug 2021 15:51:15 -0700 (PDT)
+        Mon, 16 Aug 2021 19:01:10 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CBBFC0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 16:00:38 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id h9so29768244ljq.8
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 16:00:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=ofQY1mQBvnfrDRq8IwE+M9gjT2BSYoc2hzlBRViABDo=;
-        b=Veqp45NSRcVHNb65GcV2PYdNMQZiR8Ar7QMmsVHJv9+u8KiVVKpCaYMv+iQUa2cUPG
-         oIiwL12wBMdy6NVXwCjV2GmPdv6FqN+yaOYjqtgC7031a4EQ2Kw0ilsKghz9UfZJV0We
-         v15fWl5RUL4FV+7BM+OL9SIMg+aP5Jj+ouK2e4sLB6y0QWpqBnmAqxj2+K2+Xm90qXhg
-         bBimHWPixPJ7c6xhAtJ3v5s6Y+p3Dg6SsF/LlRjKDm6dNxH8mtYRxBJYQgx3EZ6nDA0W
-         9cIqrYZ2z9301dXXzlrhvq6A1ALPQL+kbGCw4Lw5CX7pZIh1T1ZlaYS4O9+b5w4Slrxn
-         Gycw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qCWu86tois4HzDjhxB5sPemRVqiKsSoDbxypDi9Z5+0=;
+        b=z1v7oH+A7DDJ+ZpK2dUBsqz+f3S5ioTGJlgemaOwMO/L1AfOi49FHv8vz2Gyw2Iib1
+         cOikpkgggD63UmFz1/ychby9CDBTIMxUrHzJcpJr90wnfh64TPArcOReOXV6qvNB/W3j
+         iX2vHy8T/MHeKjU1mY5t6zsezU78E7DcyjiUoJ4bC2dI8EiV0EH6h0LwCQM3Kp1cL+wI
+         cgdJpqHJiHNMSx8jUT0YcbhCDOGCJ18DbQjQC0pTRuHO4Yx3p4k1MTUgVWeIWbGmsTZ3
+         86XeyMe22JZhDxgOpJeLpCINFeRPUIDOiYjfXU/sKuhlT+/TrYCjtXzL5V7X14ElwzLS
+         k2mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ofQY1mQBvnfrDRq8IwE+M9gjT2BSYoc2hzlBRViABDo=;
-        b=rhtnNE5K7cvJjl56OZgrkxOpsfLVdxzlu2O9WP23oyZl1ZDy+jcpNDvpc0aoV795oJ
-         c34IbgpduET7rLolRrpQA7WxlAeIvoljpC42WlvxWooc728hvejMPXc2xx1u91OCo5hw
-         xJo/H+MhqLdR4xdvRPpU0HLuGu4XJiVpw+qU1i8656KzVodY+mzz5lVZ0i+ALwL0mHK6
-         aAsv1eYO9sUztnvpWHa38Rq8yoBwBxaKHtwqD9f4Fd+WuF5xQJU9AtC4OZ9tWMzI0OXq
-         BjcaCh5Rb7bfTellh40JtnoDsRPlcxcYU/hkYhFwh9m1BhF/x5orqh2MRVIz1Sxi9wYU
-         DA6A==
-X-Gm-Message-State: AOAM532uB0BUsZx8mzqJt0NrmxqIo8R4ySmmbJJEq3Y1Ofb6GZUrCDO5
-        FLycKjFrK+ewve0Cz0ZLGDo=
-X-Google-Smtp-Source: ABdhPJwwG3OlL7pFAxzo5XfgoGWXmTE32jwfJbyXDo3beODWdQCSbOSQwCcaAC+6Cn/CmPJQxJ/d0g==
-X-Received: by 2002:a05:6000:1b8e:: with SMTP id r14mr373440wru.251.1629154273878;
-        Mon, 16 Aug 2021 15:51:13 -0700 (PDT)
-Received: from [192.168.8.197] ([85.255.233.12])
-        by smtp.gmail.com with ESMTPSA id h2sm150174wmm.33.2021.08.16.15.51.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 15:51:13 -0700 (PDT)
-Subject: Re: [syzbot] general protection fault in __io_queue_sqe
-To:     Jens Axboe <axboe@kernel.dk>,
-        syzbot <syzbot+2b85e9379c34945fe38f@syzkaller.appspotmail.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-References: <00000000000011fc2505c9b41023@google.com>
- <8236fd18-bf97-b7c6-b2c7-84df0a9bd8e5@kernel.dk>
- <d13c4e6b-b935-c517-f90d-d8201861800f@kernel.dk>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <ec15a6e6-4bd6-25a5-3b91-c60715d51a0c@gmail.com>
-Date:   Mon, 16 Aug 2021 23:50:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qCWu86tois4HzDjhxB5sPemRVqiKsSoDbxypDi9Z5+0=;
+        b=kOIyN5CL4VPEMrN5NNQc1dTnWnnbh3GnXoRK0g/23zQtdnymMeTsMZZf2m5M3XG2at
+         cyF+0KkaIbfmQ5nqE1tsUsHI7cieZvEphPtpkG4O1g7hN5PgGqxOCb9fQ2IVEOwq/bBO
+         7wcMGZhjAZERKXD1+ukqpDDKk92/oGVAdaqL9/WHeKS8b0J3DHKtZXim/aqC2M5QWD5I
+         5rSp0SgndLOTHqNokt7+NaTE1ZlufwZQaj3r7vL3i6D3b+NCjURHy5a6W5+BNhcT5sTM
+         F9ODMQlpnCMU5Trvk4Wr5aASWuqaO8NUsgrnW+m49aEki/W+l7f+WXvpC88Z/xmoiXy2
+         Ey8Q==
+X-Gm-Message-State: AOAM530vas9AYactgt5/2SJ6tdc2FQg3UIWUjJXBUuGvzAgaXU8nEg5z
+        fBuEVdkL8Cv1mtyL0k6PW6+jXjOJirsKisstc3kJDg==
+X-Google-Smtp-Source: ABdhPJxKcr3tDBh889ZdkpDoJwN0ES9RscVrpyGEFVwDUZlW9BP1duIsjDpHOms2QM93AclfvKwqHgphf+CtZyBXZVA=
+X-Received: by 2002:a05:651c:1507:: with SMTP id e7mr491801ljf.368.1629154836469;
+ Mon, 16 Aug 2021 16:00:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <d13c4e6b-b935-c517-f90d-d8201861800f@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210710081722.1828-1-zhiyong.tao@mediatek.com>
+ <20210710081722.1828-2-zhiyong.tao@mediatek.com> <CAGXv+5GXg0RuOQkh4vaRmcLpehZiXnEUXBvEaObiatAa1sXvaA@mail.gmail.com>
+ <1626940470.29611.9.camel@mhfsdcap03> <CAGXv+5F_-W4aNt0WVSDBGLo_t8orNUq59GMKk_4xVr+hMb9Ctg@mail.gmail.com>
+ <07388dac4e25e0f260725e8f80ba099d5aa80949.camel@mediatek.com>
+ <CAGXv+5EagmhYYpri+nzo6WgGz8A=oiU3Vy+2AVjho=eo6Z+DLw@mail.gmail.com>
+ <CACRpkdZ4k9Km3vBtdN6AnBM89c4355GtPMzCQ0_YHaTb4V5cKA@mail.gmail.com>
+ <CAGXv+5HohMwU8jow5QXO5MK1tO+u=5YsfhArBWCP4Dgm1Q8igg@mail.gmail.com>
+ <4fd12d5c53f6492e5fa3ba94a78b9a149f5b6ed9.camel@mediatek.com> <CAGXv+5GCuNK=-z9VAOjkpJdZLUSZFPfUsQ09m1FhfTsbCYLLRw@mail.gmail.com>
+In-Reply-To: <CAGXv+5GCuNK=-z9VAOjkpJdZLUSZFPfUsQ09m1FhfTsbCYLLRw@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 17 Aug 2021 01:00:25 +0200
+Message-ID: <CACRpkdbZKh8cqqiDRUik6Ooo33e+feGwYsLjcLRvBQnT3x5M3A@mail.gmail.com>
+Subject: Re: [PATCH v10 1/2] dt-bindings: pinctrl: mt8195: add rsel define
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     "zhiyong.tao" <zhiyong.tao@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        hui.liu@mediatek.com, Eddie Huang <eddie.huang@mediatek.com>,
+        Light Hsieh <light.hsieh@mediatek.com>,
+        Biao Huang <biao.huang@mediatek.com>,
+        Hongzhou Yang <hongzhou.yang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/16/21 10:57 PM, Jens Axboe wrote:
-> On 8/16/21 3:49 PM, Jens Axboe wrote:
->> On 8/16/21 3:41 PM, syzbot wrote:
->>> syzbot has found a reproducer for the following issue on:
->>>
->>> HEAD commit:    b9011c7e671d Add linux-next specific files for 20210816
->>> git tree:       linux-next
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=1784d5e9300000
->>> kernel config:  https://syzkaller.appspot.com/x/.config?x=a245d1aa4f055cc1
->>> dashboard link: https://syzkaller.appspot.com/bug?extid=2b85e9379c34945fe38f
->>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
->>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17479216300000
->>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=147f0111300000
->>
->> #syz test: git://git.kernel.dk/linux-block for-next
-> 
-> Forgot to push out the update...
-> 
-> #syz test: git://git.kernel.dk/linux-block 16a390b4109c6eaa65f84e31c2c1d19bcbeb666f
+On Mon, Aug 16, 2021 at 5:38 PM Chen-Yu Tsai <wenst@chromium.org> wrote:
+> On Mon, Aug 16, 2021 at 6:48 PM zhiyong.tao <zhiyong.tao@mediatek.com> wrote:
 
-fwiw, tested locally, solves the problem
+> > > I'll take that as "use SI units whenever possible and reasonable".
+> >
+> > ==> so It doesn't need to change the define, is it right?
+> > we will keep the common define.
+>
+> Actually I think it would be possible and reasonable to use SI units
+> in this case, since you are the vendor and have the resistor values
+> to implement the support. Having different sets of values for different
+> chips is nothing out of the ordinary. We already have to account for
+> different number of pins and different pin functions. That is what
+> compatible strings are for.
 
--- 
-Pavel Begunkov
+I fully agree with Chen-Yu's analysis here.
+
+Zhiyong can you make an attempt to use SI units (Ohms) and see
+what it will look like? I think it will look better for users and it will
+be less risk to make mistakes.
+
+Yours,
+Linus Walleij
