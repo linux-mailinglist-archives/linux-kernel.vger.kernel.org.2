@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6295E3ED5F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9963ED755
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238761AbhHPNP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:15:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35328 "EHLO mail.kernel.org"
+        id S240484AbhHPNbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:31:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239813AbhHPNKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:10:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B7C960E78;
-        Mon, 16 Aug 2021 13:09:41 +0000 (UTC)
+        id S239145AbhHPNSq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:18:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A73226323B;
+        Mon, 16 Aug 2021 13:14:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119382;
-        bh=lVK89EfKS4FBTCltGJeWadPZq0O2pYztR1zPh5y2oWw=;
+        s=korg; t=1629119668;
+        bh=91cMfIzDPzFLBPH9m4BAoqY/R69kSyAYdxpOmr0aVr4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O3IgG3OvRTldEc6ai321iLzF53cN/Lxz5Hs+gb9xJCojKs6J1AGbq3EH2Clbmi17S
-         sLktnhI+oZfX0GZBA0c2rXIkLy0z2b9IG0HTSMq9rxwz5yx9Cy39VC5p6tEnfXiPeM
-         CgEGbJcvLV9LWF89+tMPt9eLL7TWhGz0AJbpQ/vQ=
+        b=Wf58Mwn6j+cG6p0KS42clVIwhxeknJ85ZHBg/SqA5FIoDvStI3pZoUA0S8QVjoJM8
+         KM7Lm3AiwpmFmEOdrEddBclLBrae6UyRz8skdkizBkR8UGhiVaYcoJSJg7evgIipfp
+         c5YXj7Nl1OL41udbjz5seBU9f2K5dZEN2qlctDvQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 5.10 74/96] x86/msi: Force affinity setup before startup
-Date:   Mon, 16 Aug 2021 15:02:24 +0200
-Message-Id: <20210816125437.434503534@linuxfoundation.org>
+        stable@vger.kernel.org, Quentin Perret <qperret@google.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 115/151] KVM: arm64: Fix off-by-one in range_is_memory
+Date:   Mon, 16 Aug 2021 15:02:25 +0200
+Message-Id: <20210816125447.850735164@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
-References: <20210816125434.948010115@linuxfoundation.org>
+In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
+References: <20210816125444.082226187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,91 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: David Brazdil <dbrazdil@google.com>
 
-commit ff363f480e5997051dd1de949121ffda3b753741 upstream.
+[ Upstream commit facee1be7689f8cf573b9ffee6a5c28ee193615e ]
 
-The X86 MSI mechanism cannot handle interrupt affinity changes safely after
-startup other than from an interrupt handler, unless interrupt remapping is
-enabled. The startup sequence in the generic interrupt code violates that
-assumption.
+Hyp checks whether an address range only covers RAM by checking the
+start/endpoints against a list of memblock_region structs. However,
+the endpoint here is exclusive but internally is treated as inclusive.
+Fix the off-by-one error that caused valid address ranges to be
+rejected.
 
-Mark the irq chips with the new IRQCHIP_AFFINITY_PRE_STARTUP flag so that
-the default interrupt setting happens before the interrupt is started up
-for the first time.
-
-While the interrupt remapping MSI chip does not require this, there is no
-point in treating it differently as this might spare an interrupt to a CPU
-which is not in the default affinity mask.
-
-For the non-remapping case go to the direct write path when the interrupt
-is not yet started similar to the not yet activated case.
-
-Fixes: 18404756765c ("genirq: Expose default irq affinity mask (take 3)")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Marc Zyngier <maz@kernel.org>
-Reviewed-by: Marc Zyngier <maz@kernel.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210729222542.886722080@linutronix.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Quentin Perret <qperret@google.com>
+Fixes: 90134ac9cabb6 ("KVM: arm64: Protect the .hyp sections from the host")
+Signed-off-by: David Brazdil <dbrazdil@google.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210728153232.1018911-2-dbrazdil@google.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/apic/msi.c |   13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ arch/arm64/kvm/hyp/nvhe/mem_protect.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/kernel/apic/msi.c
-+++ b/arch/x86/kernel/apic/msi.c
-@@ -86,11 +86,13 @@ msi_set_affinity(struct irq_data *irqd,
- 	 *   The quirk bit is not set in this case.
- 	 * - The new vector is the same as the old vector
- 	 * - The old vector is MANAGED_IRQ_SHUTDOWN_VECTOR (interrupt starts up)
-+	 * - The interrupt is not yet started up
- 	 * - The new destination CPU is the same as the old destination CPU
- 	 */
- 	if (!irqd_msi_nomask_quirk(irqd) ||
- 	    cfg->vector == old_cfg.vector ||
- 	    old_cfg.vector == MANAGED_IRQ_SHUTDOWN_VECTOR ||
-+	    !irqd_is_started(irqd) ||
- 	    cfg->dest_apicid == old_cfg.dest_apicid) {
- 		irq_msi_update_msg(irqd, cfg);
- 		return ret;
-@@ -178,7 +180,8 @@ static struct irq_chip pci_msi_controlle
- 	.irq_ack		= irq_chip_ack_parent,
- 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
- 	.irq_set_affinity	= msi_set_affinity,
--	.flags			= IRQCHIP_SKIP_SET_WAKE,
-+	.flags			= IRQCHIP_SKIP_SET_WAKE |
-+				  IRQCHIP_AFFINITY_PRE_STARTUP,
- };
+diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+index 4b60c0056c04..fa1b77fe629d 100644
+--- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
++++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+@@ -190,7 +190,7 @@ static bool range_is_memory(u64 start, u64 end)
+ {
+ 	struct kvm_mem_range r1, r2;
  
- int pci_msi_prepare(struct irq_domain *domain, struct device *dev, int nvec,
-@@ -247,7 +250,8 @@ static struct irq_chip pci_msi_ir_contro
- 	.irq_mask		= pci_msi_mask_irq,
- 	.irq_ack		= irq_chip_ack_parent,
- 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
--	.flags			= IRQCHIP_SKIP_SET_WAKE,
-+	.flags			= IRQCHIP_SKIP_SET_WAKE |
-+				  IRQCHIP_AFFINITY_PRE_STARTUP,
- };
- 
- static struct msi_domain_info pci_msi_ir_domain_info = {
-@@ -289,7 +293,8 @@ static struct irq_chip dmar_msi_controll
- 	.irq_set_affinity	= msi_domain_set_affinity,
- 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
- 	.irq_write_msi_msg	= dmar_msi_write_msg,
--	.flags			= IRQCHIP_SKIP_SET_WAKE,
-+	.flags			= IRQCHIP_SKIP_SET_WAKE |
-+				  IRQCHIP_AFFINITY_PRE_STARTUP,
- };
- 
- static int dmar_msi_init(struct irq_domain *domain,
-@@ -381,7 +386,7 @@ static struct irq_chip hpet_msi_controll
- 	.irq_set_affinity = msi_domain_set_affinity,
- 	.irq_retrigger = irq_chip_retrigger_hierarchy,
- 	.irq_write_msi_msg = hpet_msi_write_msg,
--	.flags = IRQCHIP_SKIP_SET_WAKE,
-+	.flags = IRQCHIP_SKIP_SET_WAKE | IRQCHIP_AFFINITY_PRE_STARTUP,
- };
- 
- static int hpet_msi_init(struct irq_domain *domain,
+-	if (!find_mem_range(start, &r1) || !find_mem_range(end, &r2))
++	if (!find_mem_range(start, &r1) || !find_mem_range(end - 1, &r2))
+ 		return false;
+ 	if (r1.start != r2.start)
+ 		return false;
+-- 
+2.30.2
+
 
 
