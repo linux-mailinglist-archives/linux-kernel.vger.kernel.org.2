@@ -2,144 +2,603 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE9513EDC00
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 19:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5293EDC02
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 19:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbhHPRFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 13:05:52 -0400
-Received: from mail-eopbgr1410127.outbound.protection.outlook.com ([40.107.141.127]:62176
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230420AbhHPRFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 13:05:51 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DumwnzrK3i12Un/8uWOTKLMNLUBs5ZX8RpiJRZHtH9hGjH3H2Ii0lTCbxXG0CdJBEOZN2Twyfie97yDz3DqgktGuR1HaxCES8Gy5/HDlqaZcxXVyYAJXhe+KfISot2dshXQystGgkBuNdcSt5n5FZ/1YLqIHuqh38VyRtredlSF7PQRCo09ibmrU/mZP8MQgJLEHA1VtvHIL6cp8ntc7ZJed9rt4IHDkK5t4eosbGmJYa6eh477N4cu/hMezubNVmev1Yac5NS05w2ao0/W7Z907G71EL1Q1bYHoYQjtsQG7iuYN0s1xg8R6kPR4TkKi4HVmTk9Y9C+yLpz3/vRn6w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RqtLLxjhArx5SjpA3TPXxx9wDrXchUk1IyEKImrVjaA=;
- b=QYFtkgFFl2M9hRqu+dX/1hN+aXh/wMM9yepy2mnpbhW9Xegk0K7VdhH4Tx6jCS3OilKvS+89yo2Fb5O4/Eb21BtdGHhEXQPPw0cpcwqip2PtPO6MOK830wv6nucmk02VRTh4yBHAT5HyxAaw3AlWdKYbS7Zrp6IC5IqM9XjRWfSocgOI3+Hz8XQLSLtoidLENd6Wr77aVFqcEbWhKOowoQ2nxfT60Q4p65bDRyiHaVbaBlyMLmNszo/i3X47TlTp9XPKX/+EPbcu6Z3GAhHJ7qAhd8oTG2tCIhopN6tXbvEnNGtBVO7oGwArE+SWmdPgdQWYenvwu9vyZ5atBmeQkQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RqtLLxjhArx5SjpA3TPXxx9wDrXchUk1IyEKImrVjaA=;
- b=KzxeVqNZD3uD6SPjmj48/6f2VfBA5E6iZP1WNmg7xIGsOPRLnZhSTrmew0A3JTQaY/YUXbn1ZeyYLws+2kxRwLD5FEJAut7gPyrD18kCMEo3IFzHXbq3XRPvaSiCFL6AyQ7lYNS4vlqwEYMMFAoEIr0J2jQUUvLca3Z6hXFEEio=
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
- by OSBPR01MB3861.jpnprd01.prod.outlook.com (2603:1096:604:44::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.20; Mon, 16 Aug
- 2021 17:05:16 +0000
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::c6f:e31f:eaa9:60fe]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::c6f:e31f:eaa9:60fe%9]) with mapi id 15.20.4415.023; Mon, 16 Aug 2021
- 17:05:16 +0000
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Colin Ian King <colin.king@canonical.com>
-CC:     Liam Girdwood <lgirdwood@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Subject: RE: ASoC: sh: Add RZ/G2L SSIF-2 driver
-Thread-Topic: ASoC: sh: Add RZ/G2L SSIF-2 driver
-Thread-Index: AQHXkr3MqeFqMJPSFUuuuVFkPSKspqt2W1hQ
-Date:   Mon, 16 Aug 2021 17:05:16 +0000
-Message-ID: <OS0PR01MB59221D8DA43C12E5838EBC7386FD9@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-References: <962029d0-d001-f85c-1676-262372faeb34@canonical.com>
-In-Reply-To: <962029d0-d001-f85c-1676-262372faeb34@canonical.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none
- header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d7e85e08-1995-4be3-68b4-08d960d80547
-x-ms-traffictypediagnostic: OSBPR01MB3861:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <OSBPR01MB38610F7BBA1C8DFE31EBCFB586FD9@OSBPR01MB3861.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2887;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jrCQW6bK4gTAGTUEE6eze83QwrUVg5bwJUDwT2Kty+WIrq7boA6yabWWWTHKK6QQ8UaqSrGgTQ2HSAG0DrZOWWg1GwuZYmCdE2abtdFQbC8ae71UAurk4MqK4Z/rCyJFY/50yR8VDSGAgzeFHdGtAt3ugoWTvatLH6Awd7Jv13gjUxaf4IpBC50HAWWn430OsfcKdwaMmfBDRixtuAwE+uU9e0yfb/xiYWivY9snwBTsTHs/lkGMb5wb0iRBJ4S/cDDhScjR9ceXRSSgoyTLesYtiEB7Kf99VAJpziRNutkgiQ81H+EuPCRSfP5W8G8yEyZ0fmMYofzenYgcaQ87LZIygqXXqdsdtgjFd5zd0HDen/qsQFFSrBxcJ+11BLRXzQhJg6CmG5ynO7V3ad8Yxv0kPJKRZnU+RV+teWNIzBx7oGQofcOSOzaJaYA8moTEXxwmSXZzSRQn0hpz/uSIT0XDDq87wEf2FkVksbTHoGAGTgm8sWadQ/uf7mbt2Voum1XzaYzLtRMwdIceHyhEAhRk26IGKBwoTnEQrsWKFGVP8LRCZLc2otaf+BH+egdDt+y5Lgw6pM34EzODW4Y0dzQMft3lOXriYxiMKb8pkniZySs0wOzqj9eQvNT9ExOIpfoDluSQBz+wmn/XZlRrshn6BmenNWRYmdZTzoFWBLBkeR5GKBPa7TXf6ernvYBRhZ2GWsYfsRhH6BuvHO+TYg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39850400004)(366004)(136003)(396003)(376002)(76116006)(38100700002)(66946007)(55016002)(64756008)(66556008)(66446008)(2906002)(66476007)(33656002)(52536014)(71200400001)(316002)(8676002)(6916009)(478600001)(8936002)(4326008)(7696005)(5660300002)(6506007)(122000001)(9686003)(54906003)(83380400001)(186003)(38070700005)(86362001)(26005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YU13N1dnUG9qeDhyS2JiUzU4RUxLeGhycXY5VDB2Ui9VYzczZWNhMlByRmRQ?=
- =?utf-8?B?SVBmaVlrd2pHcGJEZXk5Z1hMTHpYVWhMY2lMdGU1MmJjV0ZDTVZCd0JZa0JB?=
- =?utf-8?B?RVo5VFlyMHdNVUpncGp5T0o5YTNyMUdUcHVuTWp5WDJYV2JpV0trN1RqNGk3?=
- =?utf-8?B?bndRMS9NSG02UTl5cGpPcVhiZHJlRUFWb1JHRkpJbkxaaGNGdFFoY0xTSUw5?=
- =?utf-8?B?Q1ZlQ0JzVjVDMzNHL1hHdHUwV04zZWRNMGdRVlB2MzNTcmpOcVcvVzBUYjNB?=
- =?utf-8?B?REM2NVNoQVdLY2h5UFp1ZDVTWnMvK0JkMlVEZU1wMmhJZ21Bb3BvOFV0NEpM?=
- =?utf-8?B?VU9ld0lVeXNwY0JrcSt3WkRXQlVyRk05dVdnZTRMajRSZWlUS3hDU2MvbWNI?=
- =?utf-8?B?endVUFQ2T2c3Y2I3V2srOFV3bkFXZDQ0a1p3RUpob3lJSmFLOEZMZWRIWVJq?=
- =?utf-8?B?VzJVSDBDR0Foc1F1eHZldUsrVFE1WUk5bVFJRDFlbW1nWlE4TkR1T1FFR1RK?=
- =?utf-8?B?cDdSS0tiWktIelJUSTFoUzRRWTFLaGVKNllkNG9kbGtjajVCMTJSVzQrOHgy?=
- =?utf-8?B?K1pxcjNPMGNCTlp6Nkd6cWZUUW5kd3I2dkFjQ1lweklNTU5neWh3MFNVZ3Jl?=
- =?utf-8?B?NGpmTjlzZjNrQVJSUWZ6Q08wT2p3LzFDNURpTEowbWQ5L3I4ZitqRVpuVUpY?=
- =?utf-8?B?bFFZSERYKzdRUzhIZzhsSkhXbi9OWXNZdlAzOUFyUG5OVWgzWFBqODNmSVVG?=
- =?utf-8?B?dGJvSXhScTRxZ1lKa1RnZ3VhSkhoOHV3MWxncFY0WHdrL0FFTHBsMDVubUN1?=
- =?utf-8?B?UFZibXJuZnFaYjJWb2tsaVJIUXI5S0VvZGVnZnlyZHYyN2I4aEV5dHBYbzF3?=
- =?utf-8?B?R0cyYXBqZk8xeEJKazd6c0QxZnZsNWNUWEFmZWZqQ1YvRlE3WVF4ZGFCRE9E?=
- =?utf-8?B?QlAzbXZYdkNmQ3lMQlcvRnlwaEU1MzZna3lUOXlpNWxsUXA3ZkYrQUwzelhX?=
- =?utf-8?B?MzZpOG1sY1JURENlUDFZRU1oY2ZlNTlPa0hVMHZOYkhIWWkxM1BpdFA4Ukdx?=
- =?utf-8?B?ME9Sc1MwK2JNblNsZmRvZVhSWDNzQWtxN1U5eGMyV01KRTJPV29kVkdQUUx5?=
- =?utf-8?B?Qmg5S25wQlVvRTlIQTUvbzF0M3I4YXBxRVhyR2IrTVdSSDdjZUo3a3FmSmND?=
- =?utf-8?B?VEQxU0dZdVMwajlxYXlXMjlpQ3Q3VFdiYWF5TitMOWplVnJxb1d4ajMyVU1G?=
- =?utf-8?B?ZmtDRzR4cDhqVWQ3c1JlckFsTFMvYjh5S292cFdIU1IyZEZqN2d0U3F1MWQx?=
- =?utf-8?B?QmhLQWJNK25iMWtmUUttQzNqSFJJQ0o2aHBSenppSDVzRllKWmRZelM4Ylpo?=
- =?utf-8?B?c2ZrNUU5VTdpZG1kUGpldTlnODNhOTVWM1JqWUFPTVo0c1ZRM2J6eGhidzdr?=
- =?utf-8?B?ZnlsNW1ma25LYlZRY3IrVVF1OFR4MUNPMUw5dEYzY3oxanRtcHByVE5XOW4v?=
- =?utf-8?B?dFZ0Z1F1NEF3dzNROGtDdHJEQmFJN2lGclNHWFVUbWF3ZEhPTEZmU1RXdDVF?=
- =?utf-8?B?Zlp3QWpwUENPRWVHcjJpMm5WZ2dBaVE1WUxFRjFYV2JaNWhJN1RoNGR5REtE?=
- =?utf-8?B?NzFNZzFhZmQycTBCZVBxdWFlYkJMcE9pNlI3MUpEbHIzTW9mYUQyd3p2dUlO?=
- =?utf-8?B?eVZFWDQwUUFZL3dhZDhCNjRwNVIwKzhrNUk5VGZVSTRFbkdjV2VpeUJYMXZG?=
- =?utf-8?Q?35QS0TmXBC9IV85sHpd0owCjZsFuzvjsZNCVF80?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S231880AbhHPRGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 13:06:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41064 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232210AbhHPRGE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 13:06:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629133532;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HQ8qwEo7/BHEwLXydRRYV4MKMc9Jy/YbNuBdHYVdLgs=;
+        b=OaRT5G+nBnjNIhrxDDaT7a25xGzrsVH+8FHUMu9G2CIC9vVMfBY8/IhosSEsqLGThyLfkz
+        ffGjRFqSGGss7yjh9M4qmrFiLp4K4vezIaNtyoeF1G2mHTaJ42dtUCktdS+19YO9nZgfTs
+        rdKKIw0PuCRKahpwKR3q3FXqYdcNoao=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-215-cguLKtCwO9GtioePD4v3IA-1; Mon, 16 Aug 2021 13:05:30 -0400
+X-MC-Unique: cguLKtCwO9GtioePD4v3IA-1
+Received: by mail-wr1-f69.google.com with SMTP id k15-20020a5d628f0000b029015501bab520so5708786wru.16
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 10:05:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=HQ8qwEo7/BHEwLXydRRYV4MKMc9Jy/YbNuBdHYVdLgs=;
+        b=b3610R/oB/ozkj6occrtoOogIshEwQzu7TKJ4ySEx0sHpISDwwFRxmVtZwL+P+QhAi
+         GHzAhRwtIod0f7wfVXwp1Tx+kCwSxGbHbMPl1WuSlh1Aw91hWDUr6+4sU5LbD3R65QcS
+         UW0ONXlEez67fbn6x3bkd61ZH85SQYN7jfRC5BX0JiByjn8bD1FL+Y1JQPlhHKtP1U0f
+         Au3BI1aL+NEs36NzbTq4M1SCX8HDu8iZysmSxhsaM7P040p+69dlTI5cZEhc/4HwmeEr
+         M9IusRRMhv7r6faLqyjH1R7uXf92NETdfHw7Tu6QIS6cTmOf5pXoIB7g19xMXkuCULEI
+         FDdw==
+X-Gm-Message-State: AOAM5336q7YuIHw53YPC0VSS13mTuV1d3rMieAnPaMxKMpx1G31yNFmu
+        KID8c+i+6ULv89917xiPZpBF62z2z330F7Uv+x2ahqsSfCPZJ2CRpFv96dreCeu8/eULhGJVEPE
+        I80dpnXOeDKQGbSEbH85YOKOY
+X-Received: by 2002:a05:600c:225a:: with SMTP id a26mr78226wmm.189.1629133529511;
+        Mon, 16 Aug 2021 10:05:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw34GAALgBxekvDOnFTY7wx4WMOSCEVhPYBNFGVb9uHsEl01xXrlJ4AzpWnlJlIEHYJx2wLGg==
+X-Received: by 2002:a05:600c:225a:: with SMTP id a26mr78190wmm.189.1629133529189;
+        Mon, 16 Aug 2021 10:05:29 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id f17sm88645wmq.17.2021.08.16.10.05.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 10:05:28 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Gavin Shan <gshan@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        james.morse@arm.com, mark.rutland@arm.com,
+        Jonathan.Cameron@huawei.com, will@kernel.org, maz@kernel.org,
+        pbonzini@redhat.com, shan.gavin@gmail.com,
+        kvmarm@lists.cs.columbia.edu
+Subject: Re: [PATCH v4 14/15] arm64: Enable async PF
+In-Reply-To: <20210815005947.83699-15-gshan@redhat.com>
+References: <20210815005947.83699-1-gshan@redhat.com>
+ <20210815005947.83699-15-gshan@redhat.com>
+Date:   Mon, 16 Aug 2021 19:05:27 +0200
+Message-ID: <878s11miaw.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d7e85e08-1995-4be3-68b4-08d960d80547
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Aug 2021 17:05:16.5900
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DGaoEy1h9XZg73xmGwmNh6nRwM9JeFT/q0wPpAj0S6VEDqUyGmn0yp0ma6oHbbVb8XyyRgGAAm+dPAkvU3kP2Sckek7mbme14hdh1KU3cAs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSBPR01MB3861
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQ29saW4sDQoNClRoYW5rcyBmb3IgdGhlIHJlcG9ydC4NCg0KPiBTdWJqZWN0OiByZTogQVNv
-Qzogc2g6IEFkZCBSWi9HMkwgU1NJRi0yIGRyaXZlcg0KPiANCj4gSGksDQo+IA0KPiBTdGF0aWMg
-YW5hbHlzaXMgb24gbGludXgtbmV4dCB3aXRoIENvdmVyaXR5IGhhcyBkZXRlY3RlZCBhbiBpc3N1
-ZSBpbg0KPiByel9zc2lfc3RvcCwgc291bmQvc29jL3NoL3J6LXNzaS5jIHdpdGggdGhlIGZvbGxv
-d2luZyBjb21taXQ6DQo+IA0KPiBjb21taXQgMDNlNzg2YmQ0MzQxMGZhOTNlNWQyNDU5ZjdhNDNl
-OTBmZjBhZTgwMQ0KPiBBdXRob3I6IEJpanUgRGFzIDxiaWp1LmRhcy5qekBicC5yZW5lc2FzLmNv
-bT4NCj4gRGF0ZTogICBGcmkgQXVnIDEzIDEwOjExOjU0IDIwMjEgKzAxMDANCj4gDQo+ICAgICBB
-U29DOiBzaDogQWRkIFJaL0cyTCBTU0lGLTIgZHJpdmVyDQo+IA0KPiANCj4gVGhlIGFuYWx5c2lz
-IGlzIGFzIGZvbGxvd3M6DQo+IA0KPiAzNjcNCj4gMzY4ICAgICAgICAvKiBXYWl0IGZvciBpZGxl
-ICovDQo+IDM2OSAgICAgICAgdGltZW91dCA9IDEwMDsNCj4gMzcwICAgICAgICB3aGlsZSAoLS10
-aW1lb3V0KSB7DQo+IA0KPiBXcm9uZyBvcGVyYXRvciB1c2VkIChDT05TVEFOVF9FWFBSRVNTSU9O
-X1JFU1VMVCkNCj4gDQo+IG9wZXJhdG9yX2NvbmZ1c2lvbjogcnpfc3NpX3JlZ19yZWFkbChzc2ks
-IDQpIHwgKDMzNTU0NDMyVUwgLyogMVVMIDw8IDI1DQo+ICovKSBpcyBhbHdheXMgMS90cnVlIHJl
-Z2FyZGxlc3Mgb2YgdGhlIHZhbHVlcyBvZiBpdHMgb3BlcmFuZC4gVGhpcyBvY2N1cnMNCj4gYXMg
-dGhlIGxvZ2ljYWwgb3BlcmFuZCBvZiBpZi4NCg0KPiANCj4gMzcxICAgICAgICAgICAgICAgIGlm
-IChyel9zc2lfcmVnX3JlYWRsKHNzaSwgU1NJU1IpIHwgU1NJU1JfSUlSUSkNCj4gMzcyICAgICAg
-ICAgICAgICAgICAgICAgICAgYnJlYWs7DQo+IDM3MyAgICAgICAgICAgICAgICB1ZGVsYXkoMSk7
-DQo+IDM3NCAgICAgICAgfQ0KPiANCj4gSSBzdXNwZWN0IHRoZSAmIG9wZXJhdG9yIHdhcyBpbnRl
-bmRlZCB0byBtYXNrIHRoZSBzcGVjaWZpYyBiaXQuIA0KSG93ZXZlcg0KPiBJJ20gbm90IHN1cmUg
-aWYgdGhlIGludGVudCBpcyB0byBkZXRlY3QgaWYgdGhlIFNTSVNSX0lJUlEgYml0IHNob3VsZCBi
-ZQ0KPiB6ZXJvIG9yIG9uZSBhdCB0aGUgcG9pbnQgd2hlcmUgdGhlIGJyZWFrIHNob3VsZCBvY2N1
-ciwgaGVuY2UgSSdtIHJlcG9ydGluZw0KPiB0aGlzIGlzc3VlLg0KDQpZb3UgYXJlIGNvcnJlY3Qs
-IGl0IGlzIHN1cHBvc2VkIHRvIGJlICYuIA0KVGhlIGlkbGUgY29uZGl0aW9uIGlzIHNldCBieSBo
-dyBvbiB0aGUgQklUKDI1KSBvZiB0aGlzIHJlZ2lzdGVyLg0KU28gaXQgc2hvdWxkIGJlICYuDQoN
-Ckkgd2lsbCBhZGQgeW91ciBSZXBvcnRlZC1ieSB0YWcsIHdoZW4gSSBzZW5kIHRoZSBwYXRjaC4N
-Cg0KVGhhbmtzLA0KQmlqdQ0K
+Gavin Shan <gshan@redhat.com> writes:
+
+> This enables asynchronous page fault from guest side. The design
+> is highlighted as below:
+>
+>    * The per-vCPU shared memory region, which is represented by
+>      "struct kvm_vcpu_pv_apf_data", is allocated. The reason and
+>      token associated with the received notifications of asynchronous
+>      page fault are delivered through it.
+>
+>    * A per-vCPU table, which is represented by "struct kvm_apf_table",
+>      is allocated. The process, on which the page-not-present notification
+>      is received, is added into the table so that it can reschedule
+>      itself on switching from kernel to user mode. Afterwards, the
+>      process, identified by token, is removed from the table and put
+>      into runnable state when page-ready notification is received.
+>
+>    * During CPU hotplug, the (private) SDEI event is expected to be
+>      enabled or disabled on the affected CPU by SDEI client driver.
+>      The (PPI) interrupt is enabled or disabled on the affected CPU
+>      by ourself. When the system is going to reboot, the SDEI event
+>      is disabled and unregistered and the (PPI) interrupt is disabled.
+>
+>    * The SDEI event and (PPI) interrupt number are retrieved from host
+>      through SMCCC interface. Besides, the version of the asynchronous
+>      page fault is validated when the feature is enabled on the guest.
+>
+>    * The feature is disabled on guest when boot parameter "no-kvmapf"
+>      is specified.
+
+Documentation/admin-guide/kernel-parameters.txt states this one is
+x86-only:
+
+        no-kvmapf       [X86,KVM] Disable paravirtualized asynchronous page
+                        fault handling.
+
+makes sense to update in this patch I believe.
+
+>
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> ---
+>  arch/arm64/kernel/Makefile |   1 +
+>  arch/arm64/kernel/kvm.c    | 452 +++++++++++++++++++++++++++++++++++++
+>  2 files changed, 453 insertions(+)
+>  create mode 100644 arch/arm64/kernel/kvm.c
+>
+> diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
+> index 3f1490bfb938..f0c1a6a7eaa7 100644
+> --- a/arch/arm64/kernel/Makefile
+> +++ b/arch/arm64/kernel/Makefile
+> @@ -59,6 +59,7 @@ obj-$(CONFIG_ACPI)			+= acpi.o
+>  obj-$(CONFIG_ACPI_NUMA)			+= acpi_numa.o
+>  obj-$(CONFIG_ARM64_ACPI_PARKING_PROTOCOL)	+= acpi_parking_protocol.o
+>  obj-$(CONFIG_PARAVIRT)			+= paravirt.o
+> +obj-$(CONFIG_KVM_GUEST)			+= kvm.o
+>  obj-$(CONFIG_RANDOMIZE_BASE)		+= kaslr.o
+>  obj-$(CONFIG_HIBERNATION)		+= hibernate.o hibernate-asm.o
+>  obj-$(CONFIG_KEXEC_CORE)		+= machine_kexec.o relocate_kernel.o	\
+> diff --git a/arch/arm64/kernel/kvm.c b/arch/arm64/kernel/kvm.c
+> new file mode 100644
+> index 000000000000..effe8dc7e921
+> --- /dev/null
+> +++ b/arch/arm64/kernel/kvm.c
+> @@ -0,0 +1,452 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Asynchronous page fault support.
+> + *
+> + * Copyright (C) 2021 Red Hat, Inc.
+> + *
+> + * Author(s): Gavin Shan <gshan@redhat.com>
+> + */
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/spinlock.h>
+> +#include <linux/slab.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/irq.h>
+> +#include <linux/of.h>
+> +#include <linux/of_fdt.h>
+> +#include <linux/arm-smccc.h>
+> +#include <linux/kvm_para.h>
+> +#include <linux/arm_sdei.h>
+> +#include <linux/acpi.h>
+> +#include <linux/cpuhotplug.h>
+> +#include <linux/reboot.h>
+> +
+> +struct kvm_apf_task {
+> +	unsigned int		token;
+> +	struct task_struct	*task;
+> +	struct swait_queue_head	wq;
+> +};
+> +
+> +struct kvm_apf_table {
+> +	raw_spinlock_t		lock;
+> +	unsigned int		count;
+> +	struct kvm_apf_task	tasks[0];
+> +};
+> +
+> +static bool async_pf_available = true;
+> +static DEFINE_PER_CPU_DECRYPTED(struct kvm_vcpu_pv_apf_data, apf_data) __aligned(64);
+> +static struct kvm_apf_table __percpu *apf_tables;
+> +static unsigned int apf_tasks;
+> +static unsigned int apf_sdei_num;
+> +static unsigned int apf_ppi_num;
+> +static int apf_irq;
+> +
+> +static bool kvm_async_pf_add_task(struct task_struct *task,
+> +				  unsigned int token)
+> +{
+> +	struct kvm_apf_table *table = this_cpu_ptr(apf_tables);
+> +	unsigned int i, index = apf_tasks;
+> +	bool ret = false;
+> +
+> +	raw_spin_lock(&table->lock);
+> +
+> +	if (WARN_ON(table->count >= apf_tasks))
+> +		goto unlock;
+> +
+> +	for (i = 0; i < apf_tasks; i++) {
+> +		if (!table->tasks[i].task) {
+> +			if (index == apf_tasks) {
+> +				ret = true;
+> +				index = i;
+> +			}
+> +		} else if (table->tasks[i].task == task) {
+> +			WARN_ON(table->tasks[i].token != token);
+> +			ret = false;
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (!ret)
+> +		goto unlock;
+> +
+> +	task->thread.data = &table->tasks[index].wq;
+> +	set_tsk_thread_flag(task, TIF_ASYNC_PF);
+> +
+> +	table->count++;
+> +	table->tasks[index].task = task;
+> +	table->tasks[index].token = token;
+> +
+> +unlock:
+> +	raw_spin_unlock(&table->lock);
+> +	return ret;
+> +}
+> +
+> +static inline void kvm_async_pf_remove_one_task(struct kvm_apf_table *table,
+> +						unsigned int index)
+> +{
+> +	clear_tsk_thread_flag(table->tasks[index].task, TIF_ASYNC_PF);
+> +	WRITE_ONCE(table->tasks[index].task->thread.data, NULL);
+> +
+> +	table->count--;
+> +	table->tasks[index].task = NULL;
+> +	table->tasks[index].token = 0;
+> +
+> +	swake_up_one(&table->tasks[index].wq);
+> +}
+> +
+> +static bool kvm_async_pf_remove_task(unsigned int token)
+> +{
+> +	struct kvm_apf_table *table = this_cpu_ptr(apf_tables);
+> +	unsigned int i;
+> +	bool ret = (token == UINT_MAX);
+> +
+> +	raw_spin_lock(&table->lock);
+> +
+> +	for (i = 0; i < apf_tasks; i++) {
+> +		if (!table->tasks[i].task)
+> +			continue;
+> +
+> +		/* Wakeup all */
+> +		if (token == UINT_MAX) {
+> +			kvm_async_pf_remove_one_task(table, i);
+> +			continue;
+> +		}
+> +
+> +		if (table->tasks[i].token == token) {
+> +			kvm_async_pf_remove_one_task(table, i);
+> +			ret = true;
+> +			break;
+> +		}
+> +	}
+> +
+> +	raw_spin_unlock(&table->lock);
+> +
+> +	return ret;
+> +}
+> +
+> +static int kvm_async_pf_sdei_handler(unsigned int event,
+> +				     struct pt_regs *regs,
+> +				     void *arg)
+> +{
+> +	unsigned int reason = __this_cpu_read(apf_data.reason);
+> +	unsigned int token = __this_cpu_read(apf_data.token);
+> +	bool ret;
+> +
+> +	if (reason != KVM_PV_REASON_PAGE_NOT_PRESENT) {
+> +		pr_warn("%s: Bogus notification (%d, 0x%08x)\n",
+> +			__func__, reason, token);
+> +		return -EINVAL;
+> +	}
+> +
+> +	ret = kvm_async_pf_add_task(current, token);
+> +	__this_cpu_write(apf_data.token, 0);
+> +	__this_cpu_write(apf_data.reason, 0);
+> +
+> +	if (!ret)
+> +		return -ENOSPC;
+> +
+> +	smp_send_reschedule(smp_processor_id());
+> +
+> +	return 0;
+> +}
+> +
+> +static irqreturn_t kvm_async_pf_irq_handler(int irq, void *dev_id)
+> +{
+> +	unsigned int reason = __this_cpu_read(apf_data.reason);
+> +	unsigned int token = __this_cpu_read(apf_data.token);
+> +	struct arm_smccc_res res;
+> +
+> +	if (reason != KVM_PV_REASON_PAGE_READY) {
+> +		pr_warn("%s: Bogus interrupt %d (%d, 0x%08x)\n",
+> +			__func__, irq, reason, token);
+
+Spurrious interrupt or bogus APF reason set? Could be both I belive.
+
+> +		return IRQ_HANDLED;
+> +	}
+> +
+> +	kvm_async_pf_remove_task(token);
+> +
+> +	__this_cpu_write(apf_data.token, 0);
+> +	__this_cpu_write(apf_data.reason, 0);
+> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_ASYNC_PF_FUNC_ID,
+> +			     ARM_SMCCC_KVM_FUNC_ASYNC_PF_IRQ_ACK, &res);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static int __init kvm_async_pf_available(char *arg)
+> +{
+> +	async_pf_available = false;
+> +
+> +	return 0;
+> +}
+> +early_param("no-kvmapf", kvm_async_pf_available);
+> +
+> +static void kvm_async_pf_disable(void)
+> +{
+> +	struct arm_smccc_res res;
+> +	u32 enabled = __this_cpu_read(apf_data.enabled);
+> +
+> +	if (!enabled)
+> +		return;
+> +
+> +	/* Disable the functionality */
+> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_ASYNC_PF_FUNC_ID,
+> +			     ARM_SMCCC_KVM_FUNC_ASYNC_PF_ENABLE,
+> +			     0, 0, &res);
+> +	if (res.a0 != SMCCC_RET_SUCCESS) {
+> +		pr_warn("%s: Error %ld to disable on CPU%d\n",
+> +			__func__, res.a0, smp_processor_id());
+> +		return;
+> +	}
+> +
+> +	__this_cpu_write(apf_data.enabled, 0);
+> +
+> +	pr_info("Async PF disabled on CPU%d\n", smp_processor_id());
+
+Nitpicking: x86 uses 
+
+"setup async PF for cpu %d\n" and
+"disable async PF for cpu %d\n"
+
+which are not ideal maybe but in any case it would probably make sense
+to be consistent across arches.
+
+
+> +}
+> +
+> +static void kvm_async_pf_enable(void)
+> +{
+> +	struct arm_smccc_res res;
+> +	u32 enabled = __this_cpu_read(apf_data.enabled);
+> +	u64 val = virt_to_phys(this_cpu_ptr(&apf_data));
+> +
+> +	if (enabled)
+> +		return;
+> +
+> +	val |= KVM_ASYNC_PF_ENABLED;
+> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_ASYNC_PF_FUNC_ID,
+> +			     ARM_SMCCC_KVM_FUNC_ASYNC_PF_ENABLE,
+> +			     (u32)val, (u32)(val >> 32), &res);
+> +	if (res.a0 != SMCCC_RET_SUCCESS) {
+> +		pr_warn("%s: Error %ld to enable CPU%d\n",
+> +			__func__, res.a0, smp_processor_id());
+> +		return;
+> +	}
+> +
+> +	__this_cpu_write(apf_data.enabled, 1);
+> +
+> +	pr_info("Async PF enabled on CPU%d\n", smp_processor_id());
+> +}
+> +
+> +static void kvm_async_pf_cpu_disable(void *info)
+> +{
+> +	disable_percpu_irq(apf_irq);
+> +	kvm_async_pf_disable();
+> +}
+> +
+> +static void kvm_async_pf_cpu_enable(void *info)
+> +{
+> +	enable_percpu_irq(apf_irq, IRQ_TYPE_LEVEL_HIGH);
+> +	kvm_async_pf_enable();
+> +}
+> +
+> +static int kvm_async_pf_cpu_reboot_notify(struct notifier_block *nb,
+> +					  unsigned long code,
+> +					  void *unused)
+> +{
+> +	if (code == SYS_RESTART) {
+> +		sdei_event_disable(apf_sdei_num);
+> +		sdei_event_unregister(apf_sdei_num);
+> +
+> +		on_each_cpu(kvm_async_pf_cpu_disable, NULL, 1);
+> +	}
+> +
+> +	return NOTIFY_DONE;
+> +}
+> +
+> +static struct notifier_block kvm_async_pf_cpu_reboot_nb = {
+> +	.notifier_call = kvm_async_pf_cpu_reboot_notify,
+> +};
+> +
+> +static int kvm_async_pf_cpu_online(unsigned int cpu)
+> +{
+> +	kvm_async_pf_cpu_enable(NULL);
+> +
+> +	return 0;
+> +}
+> +
+> +static int kvm_async_pf_cpu_offline(unsigned int cpu)
+> +{
+> +	kvm_async_pf_cpu_disable(NULL);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __init kvm_async_pf_check_version(void)
+> +{
+> +	struct arm_smccc_res res;
+> +
+> +	/*
+> +	 * Check the version and v1.0.0 or higher version is required
+> +	 * to support the functionality.
+> +	 */
+> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_ASYNC_PF_FUNC_ID,
+> +			     ARM_SMCCC_KVM_FUNC_ASYNC_PF_VERSION, &res);
+> +	if (res.a0 != SMCCC_RET_SUCCESS) {
+> +		pr_warn("%s: Error %ld to get version\n",
+> +			__func__, res.a0);
+> +		return -EPERM;
+> +	}
+> +
+> +	if ((res.a1 & 0xFFFFFFFFFF000000) ||
+> +	    ((res.a1 & 0xFF0000) >> 16) < 0x1) {
+> +		pr_warn("%s: Invalid version (0x%016lx)\n",
+> +			__func__, res.a1);
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int __init kvm_async_pf_info(void)
+> +{
+> +	struct arm_smccc_res res;
+> +
+> +	/* Retrieve number of tokens */
+> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_ASYNC_PF_FUNC_ID,
+> +			     ARM_SMCCC_KVM_FUNC_ASYNC_PF_SLOTS, &res);
+> +	if (res.a0 != SMCCC_RET_SUCCESS) {
+> +		pr_warn("%s: Error %ld to get token number\n",
+> +			__func__, res.a0);
+> +		return -EPERM;
+> +	}
+> +
+> +	apf_tasks = res.a1 * 2;
+> +
+> +	/* Retrieve SDEI event number */
+> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_ASYNC_PF_FUNC_ID,
+> +			     ARM_SMCCC_KVM_FUNC_ASYNC_PF_SDEI, &res);
+> +	if (res.a0 != SMCCC_RET_SUCCESS) {
+> +		pr_warn("%s: Error %ld to get SDEI event number\n",
+> +			__func__, res.a0);
+> +		return -EPERM;
+> +	}
+> +
+> +	apf_sdei_num = res.a1;
+> +
+> +	/* Retrieve (PPI) interrupt number */
+> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_ASYNC_PF_FUNC_ID,
+> +			     ARM_SMCCC_KVM_FUNC_ASYNC_PF_IRQ, &res);
+> +	if (res.a0 != SMCCC_RET_SUCCESS) {
+> +		pr_warn("%s: Error %ld to get IRQ\n",
+> +			__func__, res.a0);
+> +		return -EPERM;
+> +	}
+> +
+> +	apf_ppi_num = res.a1;
+> +
+> +	return 0;
+> +}
+> +
+> +static int __init kvm_async_pf_init(void)
+> +{
+> +	struct kvm_apf_table *table;
+> +	size_t size;
+> +	int cpu, i, ret;
+> +
+> +	if (!kvm_para_has_feature(KVM_FEATURE_ASYNC_PF) ||
+> +	    !async_pf_available)
+> +		return -EPERM;
+> +
+> +	ret = kvm_async_pf_check_version();
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = kvm_async_pf_info();
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Allocate and initialize the sleeper table */
+> +	size = sizeof(struct kvm_apf_table) +
+> +	       apf_tasks * sizeof(struct kvm_apf_task);
+> +	apf_tables = __alloc_percpu(size, 0);
+> +	if (!apf_tables) {
+> +		pr_warn("%s: Unable to alloc async PF table\n",
+> +			__func__);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	for_each_possible_cpu(cpu) {
+> +		table = per_cpu_ptr(apf_tables, cpu);
+> +		raw_spin_lock_init(&table->lock);
+> +		for (i = 0; i < apf_tasks; i++)
+> +			init_swait_queue_head(&table->tasks[i].wq);
+> +	}
+> +
+> +	/*
+> +	 * Initialize SDEI event for page-not-present notification.
+> +	 * The SDEI event number should have been retrieved from
+> +	 * the host.
+> +	 */
+> +	ret = sdei_event_register(apf_sdei_num,
+> +				  kvm_async_pf_sdei_handler, NULL);
+> +	if (ret) {
+> +		pr_warn("%s: Error %d to register SDEI event\n",
+> +			__func__, ret);
+> +		ret = -EIO;
+> +		goto release_tables;
+> +	}
+> +
+> +	ret = sdei_event_enable(apf_sdei_num);
+> +	if (ret) {
+> +		pr_warn("%s: Error %d to enable SDEI event\n",
+> +			__func__, ret);
+> +		goto unregister_event;
+> +	}
+> +
+> +	/*
+> +	 * Initialize interrupt for page-ready notification. The
+> +	 * interrupt number and its properties should have been
+> +	 * retrieved from the ACPI:APFT table.
+> +	 */
+> +	apf_irq = acpi_register_gsi(NULL, apf_ppi_num,
+> +				    ACPI_LEVEL_SENSITIVE, ACPI_ACTIVE_HIGH);
+> +	if (apf_irq <= 0) {
+> +		ret = -EIO;
+> +		pr_warn("%s: Error %d to register IRQ\n",
+> +			__func__, apf_irq);
+> +		goto disable_event;
+> +	}
+> +
+> +	ret = request_percpu_irq(apf_irq, kvm_async_pf_irq_handler,
+> +				 "Asynchronous Page Fault", &apf_data);
+> +	if (ret) {
+> +		pr_warn("%s: Error %d to request IRQ\n",
+> +			__func__, ret);
+> +		goto unregister_irq;
+> +	}
+> +
+> +	register_reboot_notifier(&kvm_async_pf_cpu_reboot_nb);
+> +	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
+> +			"arm/kvm:online", kvm_async_pf_cpu_online,
+> +			kvm_async_pf_cpu_offline);
+> +	if (ret < 0) {
+> +		pr_warn("%s: Error %d to install cpu hotplug callbacks\n",
+> +			__func__, ret);
+> +		goto release_irq;
+> +	}
+> +
+> +	/* Enable async PF on the online CPUs */
+> +	on_each_cpu(kvm_async_pf_cpu_enable, NULL, 1);
+> +
+> +	return 0;
+> +
+> +release_irq:
+> +	free_percpu_irq(apf_irq, &apf_data);
+> +unregister_irq:
+> +	acpi_unregister_gsi(apf_ppi_num);
+> +disable_event:
+> +	sdei_event_disable(apf_sdei_num);
+> +unregister_event:
+> +	sdei_event_unregister(apf_sdei_num);
+> +release_tables:
+> +	free_percpu(apf_tables);
+> +
+> +	return ret;
+> +}
+> +
+> +static int __init kvm_guest_init(void)
+> +{
+> +	return kvm_async_pf_init();
+> +}
+> +
+> +fs_initcall(kvm_guest_init);
+
+-- 
+Vitaly
+
