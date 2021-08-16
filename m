@@ -2,234 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96D53EDE04
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5782A3EDE07
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbhHPTqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 15:46:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53868 "EHLO
+        id S231203AbhHPTq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 15:46:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhHPTqq (ORCPT
+        with ESMTP id S229587AbhHPTqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 15:46:46 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9603C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:46:14 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id u1so4762165plr.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:46:14 -0700 (PDT)
+        Mon, 16 Aug 2021 15:46:55 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D137C061764;
+        Mon, 16 Aug 2021 12:46:23 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id b200so4111967iof.13;
+        Mon, 16 Aug 2021 12:46:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=pas4X2WVDOsiV9fhTjYpmCxyme9t8OW4i6YbwNjwjUI=;
-        b=aqFwDTmk7VWodxEGEYyaav4U6cqFhZlDM7KUR+KZEaRBhBSL3vLdn5J4e9i2uaeiql
-         21cEWi37z4fh4vVE+r8gcA3r1X/CDqe8GU3u0xIVSj7Jn+p/VB3eg52lF5+3ghSpiNm1
-         b50fBKBQql+VPK65M7IDzezmhNNSW4HA2dId8DB3v4HEYlFLSqFRqvz/k1k1Jb9GdHa6
-         UvetrpCy1JpobQ0x7MUajgj9UkaEg8RwRSZvubrZiwGf5UYUlStnQGrXnSuV0E7b6dpH
-         VntTWOI/T/2Pm4pd++Rz6wq9/KDwZp997ntekPMt87lGYqsYc+baMyApQIR+H3rYEmbj
-         e5BQ==
+         :cc;
+        bh=jMgE24VfD9cKFTXWDSvOslcHjMiN2+6gaRxcaSd4AcY=;
+        b=BQOwjOp0YUFU4qmCqhl/8uiu7gdPCDYWwtStWJJqqFrkKAuujQl79BwOvz1C7U5WMO
+         mMB50crR2WL0+xogA7CN8PIr+QD2/JIcYazMdeXrRWUrk4uu+dz8aq2PXlYhCtpxNgDu
+         poy+CqQKLI+doFQtFiUNm84Q8+Cn/FoSNKax0HnRcjZXMvUsC7/vHmHfEtUJ0oXqWj4u
+         rP6DbGj2gMU+nD6W+1bOmGiTF4Kze8GWXAN42msKz59wiQGo8rvb9dhAw4klnam3Nl6o
+         qn3UH5IrSNlyu6wEcGbV4dQzxIBWO6EuvV6sWarM/PHp8qgxBbBti7h5K5emE/J2Uu4w
+         KfBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pas4X2WVDOsiV9fhTjYpmCxyme9t8OW4i6YbwNjwjUI=;
-        b=JE1rDUICYVh8RfuIi0oTdiVjORXu2PhJYCGwEvR1Ij4JyCvmuzCnhwFrtEqQljFRrm
-         yfkAoFEBvUWTyrT2Y8AO2szenGVSvOzUk5SAgInEt4iB530rfSv8oC6yPdTcfdiM2/dZ
-         JCq8uW9JSop4Ry6v7oZdSfHhSHtA76KwjASMNhID0jzLZ0Md6tkAWEBmiykciraqabBq
-         4WBMFx3BiUJmMAMGxPRgSB1djZaP5NVfOVnYsxhLC8RygbFbPmZAItZCovD30rR1h5Q8
-         ewNGOLxV1uG2rFSo9Qoe9HQHMOHgrQK86SLCV2cNhi7gsuJPiSvMVlvn6vrhWhaIXtCQ
-         c62g==
-X-Gm-Message-State: AOAM530FITHCLfonYOmPV2j1p0NnK47Dr7EYnB+h7q46RjCE0aYRMTbb
-        1Sd+6hrPQ2SKTl6y6vmjDXHmLEojCmQV1fHJLZd0Nw==
-X-Google-Smtp-Source: ABdhPJzAEoWSga20Oj9NdFatouGMBDmVSAVnb7MxxPdgrJOQ+kB3igXxZ/z/Q4iJcLnLRhWfEHyzioMRf16U0NVlksE=
-X-Received: by 2002:a17:902:9a8e:b0:12d:cb3c:c4d7 with SMTP id
- w14-20020a1709029a8e00b0012dcb3cc4d7mr452742plp.18.1629143174086; Mon, 16 Aug
- 2021 12:46:14 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=jMgE24VfD9cKFTXWDSvOslcHjMiN2+6gaRxcaSd4AcY=;
+        b=dcE5timHCBhCs0iQL0yRksOpxFtKyI8psSdyL3V+I7+I+eCnxpk36UE4TEfLZQAU/v
+         vBhIKzKvgzP1km9dVr60Ecg4+2Azo8jb8NrUbb6+MMcSq7nnmWfPcpbfwY+TVNKj3pL3
+         TSmgbIczPUC7mOiMjjWJ5AQmL4+OcRtECPIeO6sjVB69h5Qk1VhV0I3vH4LT4Te9etlf
+         9Z5JH9KaQcwiHQVDN9IMGEMPi56wINTAAa0MYuykc152hZ0SIGsLasHbWvopbjRcYx5F
+         g2u68VfrX6yPkC5oKLQt/TVLLOMwQjZSjTw7Pih0GJ1eY3PShh+knWNrSj40hCDy85FC
+         y4dA==
+X-Gm-Message-State: AOAM532DfmK9pziN5Dl+H5KaZj3cAvUaGSLT2JpHORLGWihR+EAPd/AK
+        9RZ/VBeLSAe15Xfgo9RY0U/lGr7RHeb3nlAMUs4=
+X-Google-Smtp-Source: ABdhPJzwdVZFYrd1Xmfcp5sfTEpkgjlzBKzTLvtuSUpltTHJtJH+gBldvhuSiHxJwVIn9x7t5TxmLuXKrriBLffHLaE=
+X-Received: by 2002:a6b:e712:: with SMTP id b18mr433761ioh.186.1629143182752;
+ Mon, 16 Aug 2021 12:46:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210726164135.1745059-1-kaleshsingh@google.com> <20210816172228.GA9015@e123356-lin.trondheim.arm.com>
-In-Reply-To: <20210816172228.GA9015@e123356-lin.trondheim.arm.com>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Mon, 16 Aug 2021 12:46:03 -0700
-Message-ID: <CAC_TJvffc6Sbnu3KO-7NMVNZHMc2zkOpEpdxnV+u5F7Edwthhw@mail.gmail.com>
-Subject: Re: [PATCH] tracing/gpu: Add gpu_mem_imported tracepoint
-To:     =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        John Reitan <john.reitan@arm.com>,
-        Mark Underwood <mark.underwood@arm.com>,
-        Gary Sweet <gary.sweet@broadcom.com>,
-        Stephen Mansfield <stephen.mansfield@imgtec.com>,
-        mbalci@quicinc.com, mkrom@qti.qualcomm.com,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, nd@arm.com
+References: <20210520154654.1791183-1-groug@kaod.org> <20210520154654.1791183-6-groug@kaod.org>
+ <CAOQ4uxh69ii5Yk-DgFAq+TrrvJ6xCv9s8sKLfo3aBCSWjJvp9Q@mail.gmail.com>
+ <YRqEPjzHg9IlifBo@redhat.com> <CAOQ4uxg+UX6MWRv9JTQDmf6Yf_NyD+pJ438Ds270vGr9YSSPZw@mail.gmail.com>
+ <YRq4W1zcsAZh3FLX@redhat.com>
+In-Reply-To: <YRq4W1zcsAZh3FLX@redhat.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Mon, 16 Aug 2021 22:46:10 +0300
+Message-ID: <CAOQ4uxiezabg0U3tGmpH8J4u7OUbB2KMXexZ7yQzujj0vAWirw@mail.gmail.com>
+Subject: Re: [PATCH v4 5/5] virtiofs: propagate sync() to file server
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Greg Kurz <groug@kaod.org>, Miklos Szeredi <miklos@szeredi.hu>,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Max Reitz <mreitz@redhat.com>, Robert Krawitz <rlk@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 10:22 AM =C3=98rjan Eide <orjan.eide@arm.com> wrote=
-:
+On Mon, Aug 16, 2021 at 10:11 PM Vivek Goyal <vgoyal@redhat.com> wrote:
 >
-> On Mon, Jul 26, 2021 at 04:41:31PM +0000, Kalesh Singh wrote:
-> > The existing gpu_mem_total tracepoint allows GPU drivers a unifrom way
-> > to report the per-process and system-wide GPU memory usage. This
-> > tracepoint reports a single total of the GPU private allocations and th=
-e
-> > imported memory. [1]
+> On Mon, Aug 16, 2021 at 09:57:08PM +0300, Amir Goldstein wrote:
+> > On Mon, Aug 16, 2021 at 6:29 PM Vivek Goyal <vgoyal@redhat.com> wrote:
+> > >
+> > > On Sun, Aug 15, 2021 at 05:14:06PM +0300, Amir Goldstein wrote:
+> > > > Hi Greg,
+> > > >
+> > > > Sorry for the late reply, I have some questions about this change...
+> > > >
+> > > > On Fri, May 21, 2021 at 9:12 AM Greg Kurz <groug@kaod.org> wrote:
+> > > > >
+> > > > > Even if POSIX doesn't mandate it, linux users legitimately expect
+> > > > > sync() to flush all data and metadata to physical storage when it
+> > > > > is located on the same system. This isn't happening with virtiofs
+> > > > > though : sync() inside the guest returns right away even though
+> > > > > data still needs to be flushed from the host page cache.
+> > > > >
+> > > > > This is easily demonstrated by doing the following in the guest:
+> > > > >
+> > > > > $ dd if=/dev/zero of=/mnt/foo bs=1M count=5K ; strace -T -e sync sync
+> > > > > 5120+0 records in
+> > > > > 5120+0 records out
+> > > > > 5368709120 bytes (5.4 GB, 5.0 GiB) copied, 5.22224 s, 1.0 GB/s
+> > > > > sync()                                  = 0 <0.024068>
+> > > > > +++ exited with 0 +++
+> > > > >
+> > > > > and start the following in the host when the 'dd' command completes
+> > > > > in the guest:
+> > > > >
+> > > > > $ strace -T -e fsync /usr/bin/sync virtiofs/foo
+> > > > > fsync(3)                                = 0 <10.371640>
+> > > > > +++ exited with 0 +++
+> > > > >
+> > > > > There are no good reasons not to honor the expected behavior of
+> > > > > sync() actually : it gives an unrealistic impression that virtiofs
+> > > > > is super fast and that data has safely landed on HW, which isn't
+> > > > > the case obviously.
+> > > > >
+> > > > > Implement a ->sync_fs() superblock operation that sends a new
+> > > > > FUSE_SYNCFS request type for this purpose. Provision a 64-bit
+> > > > > placeholder for possible future extensions. Since the file
+> > > > > server cannot handle the wait == 0 case, we skip it to avoid a
+> > > > > gratuitous roundtrip. Note that this is per-superblock : a
+> > > > > FUSE_SYNCFS is send for the root mount and for each submount.
+> > > > >
+> > > > > Like with FUSE_FSYNC and FUSE_FSYNCDIR, lack of support for
+> > > > > FUSE_SYNCFS in the file server is treated as permanent success.
+> > > > > This ensures compatibility with older file servers : the client
+> > > > > will get the current behavior of sync() not being propagated to
+> > > > > the file server.
+> > > >
+> > > > I wonder - even if the server does not support SYNCFS or if the kernel
+> > > > does not trust the server with SYNCFS, fuse_sync_fs() can wait
+> > > > until all pending requests up to this call have been completed, either
+> > > > before or after submitting the SYNCFS request. No?
+> > >
+> > > >
+> > > > Does virtiofsd track all requests prior to SYNCFS request to make
+> > > > sure that they were executed on the host filesystem before calling
+> > > > syncfs() on the host filesystem?
+> > >
+> > > Hi Amir,
+> > >
+> > > I don't think virtiofsd has any such notion. I would think, that
+> > > client should make sure all pending writes have completed and
+> > > then send SYNCFS request.
+> > >
+> > > Looking at the sync_filesystem(), I am assuming vfs will take care
+> > > of flushing out all dirty pages and then call ->sync_fs.
+> > >
+> > > Having said that, I think fuse queues the writeback request internally
+> > > and signals completion of writeback to mm(end_page_writeback()). And
+> > > that's why fuse_fsync() has notion of waiting for all pending
+> > > writes to finish on an inode (fuse_sync_writes()).
+> > >
+> > > So I think you have raised a good point. That is if there are pending
+> > > writes at the time of syncfs(), we don't seem to have a notion of
+> > > first waiting for all these writes to finish before we send
+> > > FUSE_SYNCFS request to server.
 > >
-> > To allow distinguishing GPU private vs imported memory, add
-> > gpu_mem_imported tracepoint.
+> > Maybe, but I was not referring to inode writeback requests.
+> > I had assumed that those were handled correctly.
+> > I was referring to pending metadata requests.
 > >
-> > GPU drivers can use this tracepoint to report the per-process and globa=
-l
-> > GPU-imported memory in a uniform way.
+> > ->sync_fs() in local fs also takes care of flushing metadata
+> > (e.g. journal). I assumed that virtiofsd implements FUSE_SYNCFS
+> > request by calling syncfs() on host fs,
 >
-> Right, as imported dma-buf memory is usually shared between two or more
-> processes it will be hard to reconcile system memory usage with process
-> private GPU memory and imported dma-buf memory in a single total sum. It
-> will be good to improve this and having a separate imported GPU memory
-> size is good.
+> Yes virtiofsd calls syncfs() on host fs.
 >
-> > For backward compatility with already existing implementations of
-> > gpu_mem_total by various Android GPU drivers, this is proposed as a new
-> > tracepoint rather than additional args to gpu_mem_total.
+> > but it is does that than
+> > there is no guarantee that all metadata requests have reached the
+> > host fs from virtiofs unless client or server take care of waiting
+> > for all pending metadata requests before issuing FUSE_SYNCFS.
 >
-> Is this for compatibility with kernel GPU drivers only, or are there
-> user space users of the existing tracepoint that can't cope with it
-> being extended?
+> We don't have any journal in virtiofs. In fact we don't seem to
+> cache any metadta. Except probably the case when "-o writeback"
+> where we can trust local time stamps.
 >
-> The eBPF used by Android to track the GPU memory is the only established
-> user of the tracepoint that I know about. Can existing versions of the
-> eBPF can handle this OK?
->
-> If the only worry is GPU kernel drivers then I think that extending the
-> existing tracepoint, to add a new field with the imported memory sum,
-> will be better. There doesn't appear to be any in-kernel GPU drivers
-> implementing this yet, and other GPU kernel drivers can just be extended
-> to use the new extended tracepoint. As long as there's some mechanism to
-> detect the extended variant of the tracepoint for backports, if the new
-> tracepoint is ever backported to older kernels, that shouldn't be a
-> problem.
+> If "-o writeback" is not enabled, i am not sure what metadata
+> we will be caching that we will need to worry about. Do you have
+> something specific in mind. (Atleast from virtiofs point of view,
+> I can't seem to think what metadata we are caching which we need
+> to worry about).
 
-Hi =C3=98rjan. Thank you for your comments.
+No, I don't see a problem.
+I guess I was confused by the semantics.
+Thanks for clarifying.
 
-The compatibility concern was regarding existing user space tools when
-devices with older kernels (having the older  gpu_mem_total format)
-upgrade to newer android releases.
-
-In android, there are 2 user space tools that depend on this
-tracepoint: the bpf program to capture the tracepoint data [1] and the
-Perfetto profiling tool [2]. I=E2=80=99ve confirmed that Perfetto can handl=
-e
-both the old and new formats if only a new field is added and the
-types of existing fields remain unchanged. For the bpf program, it
-turns out we can detect the format from gpu_mem_total/format and load
-different versions of the bpf program accordingly.
-
-I'll repost a new version adding only the new imported_mem field.
-
-Thanks,
-Kalesh
-
-[1] https://cs.android.com/android/platform/superproject/+/92e677d80bc48772=
-a36ef0d2d9db3195b2dfcf65:frameworks/native/services/gpuservice/bpfprogs/gpu=
-_mem.c;l=3D51
-[2] https://perfetto.dev
-
->
-> --
-> =C3=98rjan
->
-> > [1] https://lore.kernel.org/r/20200302234840.57188-1-zzyiwei@google.com=
-/
-> >
-> > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-> > ---
-> >  include/trace/events/gpu_mem.h | 51 ++++++++++++++++++++++++----------
-> >  1 file changed, 36 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/include/trace/events/gpu_mem.h b/include/trace/events/gpu_=
-mem.h
-> > index 26d871f96e94..b9543abf1461 100644
-> > --- a/include/trace/events/gpu_mem.h
-> > +++ b/include/trace/events/gpu_mem.h
-> > @@ -13,21 +13,7 @@
-> >
-> >  #include <linux/tracepoint.h>
-> >
-> > -/*
-> > - * The gpu_memory_total event indicates that there's an update to eith=
-er the
-> > - * global or process total gpu memory counters.
-> > - *
-> > - * This event should be emitted whenever the kernel device driver allo=
-cates,
-> > - * frees, imports, unimports memory in the GPU addressable space.
-> > - *
-> > - * @gpu_id: This is the gpu id.
-> > - *
-> > - * @pid: Put 0 for global total, while positive pid for process total.
-> > - *
-> > - * @size: Size of the allocation in bytes.
-> > - *
-> > - */
-> > -TRACE_EVENT(gpu_mem_total,
-> > +DECLARE_EVENT_CLASS(gpu_mem_template,
-> >
-> >       TP_PROTO(uint32_t gpu_id, uint32_t pid, uint64_t size),
-> >
-> > @@ -51,6 +37,41 @@ TRACE_EVENT(gpu_mem_total,
-> >               __entry->size)
-> >  );
-> >
-> > +/*
-> > + * The gpu_memory_total event indicates that there's an update to eith=
-er the
-> > + * global or process total gpu memory counters.
-> > + *
-> > + * This event should be emitted whenever the kernel device driver allo=
-cates,
-> > + * frees, imports, unimports memory in the GPU addressable space.
-> > + *
-> > + * @gpu_id: This is the gpu id.
-> > + *
-> > + * @pid: Put 0 for global total, while positive pid for process total.
-> > + *
-> > + * @size: Size of the allocation in bytes.
-> > + *
-> > + */
-> > +DEFINE_EVENT(gpu_mem_template, gpu_mem_total,
-> > +     TP_PROTO(uint32_t gpu_id, uint32_t pid, uint64_t size),
-> > +     TP_ARGS(gpu_id, pid, size));
-> > +
-> > +/*
-> > + * The gpu_mem_imported event indicates that there's an update to the
-> > + * global or process imported gpu memory counters.
-> > + *
-> > + * This event should be emitted whenever the kernel device driver impo=
-rts
-> > + * or unimports memory (allocated externally) in the GPU addressable s=
-pace.
-> > + *
-> > + * @gpu_id: This is the gpu id.
-> > + *
-> > + * @pid: Put 0 for global total, while positive pid for process total.
-> > + *
-> > + * @size: Size of the imported memory in bytes.
-> > + */
-> > +DEFINE_EVENT(gpu_mem_template, gpu_mem_imported,
-> > +     TP_PROTO(uint32_t gpu_id, uint32_t pid, uint64_t size),
-> > +     TP_ARGS(gpu_id, pid, size));
-> > +
-> >  #endif /* _TRACE_GPU_MEM_H */
-> >
-> >  /* This part must be outside protection */
-> >
-> > base-commit: ff1176468d368232b684f75e82563369208bc371
-> > --
-> > 2.32.0.432.gabb21c7263-goog
-> >
+Amir.
