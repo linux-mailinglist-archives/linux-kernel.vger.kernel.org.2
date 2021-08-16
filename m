@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8514B3EDA68
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF313EDA6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238049AbhHPQAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 12:00:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57674 "EHLO
+        id S238425AbhHPQAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 12:00:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237456AbhHPQAM (ORCPT
+        with ESMTP id S237344AbhHPQAO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 12:00:12 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DEE2C061796
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:59:40 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id k8so5394191wrn.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:59:40 -0700 (PDT)
+        Mon, 16 Aug 2021 12:00:14 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4759AC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:59:41 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id f5so24292941wrm.13
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:59:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=uvEpwavelEH+0X7GJw8peYMbMbTp7IBX8yIlQYeJywk=;
-        b=MPQIDB+Bac+Z2TUubQp2UsUILFe2ElVCPOnaf5KYyHJOWXjb+X4snwyyBPNL50rf2r
-         ce3JRNgZOk/M5QKQDU1jZ0LKsVyANgubDPDv2HTtj41uRYfdMW8oKMEF/9aLRRZG8uZF
-         d4lRqrvIdtJ7zRIJtGNErAimNMSrRr5pdxtQYJE0JHjtS9fYWk+5XskVuRw2pcqt9hlQ
-         oLWilX3QGetcGhBfZWlCWCY858g3GM3MFLx9jTVOdb4VNr/EBquVznv+h4lZedGUTOWv
-         TCsPDuJbLwfp0F1SISYWglckt7G/XPFyH5EHlaQzhR8OuN1zewtltr1mTU+JUG4IKso3
-         1xcA==
+        bh=1s8dLgoviy6QmkI3DKlYyNVShitZYgEcDxDTH96VU8I=;
+        b=kl7o/FMYhH4E3YmlrzWK3F+lOUFDZ5mo8/3/a5UxfdJQZKx7JHzxruzbTI+3wqKS77
+         dU6qndOCSlxBn+4ajRF261nlpopcgJoYeiAaRGZ7Eo8wr07LKZi/2jauK5LFxuy9pm2h
+         e9q7XDbTVbK8zAM1use4Wp60Eql/3AoxXpKFlzws3Jln67MUwIgIA5/O5B6g+E5p4BGz
+         Y2yi0nz4cSCWbHyLPuGThU9OG314ZnWkty55Tjbr1mosPxjEPtm4N76fe4RSOp6mJblz
+         7J5Q6QNgRS7tnv/WsI4SgesIW1RPhQzGUPv5AhV5teQ/icvQ9qNTLbWoAi8m6IxSyKp0
+         vduQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uvEpwavelEH+0X7GJw8peYMbMbTp7IBX8yIlQYeJywk=;
-        b=DnI2WgFOgaM4hcMdcZUGvKOmRTwRU8obtHxPM9tTRFwfwqbRfyXs88pTxGfA27tVI2
-         4sThoRgc3PTWIuubQ+FNniGqngpagh+LSplLKBg/bKd872ThFe158wMCo8WC59g80jLz
-         wvNbO6NSD7mwm0mad5eKkYUGkuYOted8p0KAKBWDqueuDeQV3ZyaxwQ6Po6loaHOo3Ph
-         jXbIGIuivgnEaQ66KcRSB45udAbwTG2Ob56RNsBdELjaacv5BQLU/mBfHTas4I8t/a90
-         LEvlzz2u+Voan9Akz+g43qR/0MqoLZW5Tl21nY1ILSoooHgeiy8UAAElyghMAnR+wiUK
-         +pHg==
-X-Gm-Message-State: AOAM531CzLdD3d7pCMR0UG5DrsE4H2oWlw21rtEJM4VGyjfF2xPEVjsW
-        5mEtfg1vsO6wAxbop6t+7gU=
-X-Google-Smtp-Source: ABdhPJzxDOtnKtiW6fs+ASmBjyyd3tc6BFvMdSerP1nkX0NlioeHMbFPtTKs9AM3GcEXQKU2csrHJA==
-X-Received: by 2002:adf:ec81:: with SMTP id z1mr19292438wrn.181.1629129578875;
-        Mon, 16 Aug 2021 08:59:38 -0700 (PDT)
+        bh=1s8dLgoviy6QmkI3DKlYyNVShitZYgEcDxDTH96VU8I=;
+        b=SABVrkCHVXpr5e3RqWpV47tLJiAI29c/ZBzjZUIIcX2DZE9MhHnYl+IBo4l3BKTg1o
+         aiXLVD36zFb7PcaK72Ae7gK1s9BOVznBrsHtAq75r9fiXjTd+tlcnItOfzZoxOliAuTG
+         /KudRyFcmNbviy3z6hCqFGWcRXRbjAYfMgrOuWSC6KiQwQ3lfz6+50N2DY7hq1poHOgd
+         TtvOn63m3b+v2Hc9yYJ5lu9j2j1gbKN1ISpmuHbMRzUEJI5WdRltwyAHsdsUHlXApm8o
+         bYZ0NKyxdio/2+9JmGe14XjvCD0oLwtFl/5qivXQVOnGJdvrSFdOznC7TdBvcR2lHPs8
+         FPWQ==
+X-Gm-Message-State: AOAM531C1etwIlLGoV0wEfe4gMBhpd9fqI1J9+hfute0AvGm10Lnjiuo
+        0kUnKIgQKGWNiYDrZZnrS+o=
+X-Google-Smtp-Source: ABdhPJxkUiY00K7hkiMtrAhd+ufVYd89m2oM6nxhqAYgYD3cNxtDw0/2kjhf0ce9vdBnuWw109W+Vg==
+X-Received: by 2002:a5d:6108:: with SMTP id v8mr7742003wrt.96.1629129579843;
+        Mon, 16 Aug 2021 08:59:39 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::4058])
-        by smtp.gmail.com with ESMTPSA id a77sm11589597wmd.31.2021.08.16.08.59.38
+        by smtp.gmail.com with ESMTPSA id a77sm11589597wmd.31.2021.08.16.08.59.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 08:59:38 -0700 (PDT)
+        Mon, 16 Aug 2021 08:59:39 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
         fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 16/23] staging: r8188eu: clean up spacing style issues in core/rtw_recv.c
-Date:   Mon, 16 Aug 2021 17:58:11 +0200
-Message-Id: <20210816155818.24005-17-straube.linux@gmail.com>
+Subject: [PATCH 17/23] staging: r8188eu: clean up spacing style issues in core/rtw_security.c
+Date:   Mon, 16 Aug 2021 17:58:12 +0200
+Message-Id: <20210816155818.24005-18-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210816155818.24005-1-straube.linux@gmail.com>
 References: <20210816155818.24005-1-straube.linux@gmail.com>
@@ -66,382 +66,522 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up spacing style issues in core/rtw_recv.c reported by checkpatch.
+Clean up spacing style issues in core/rtw_security.c reported by
+checkpatch.
 
 CHECK: spaces preferred around that ...
 CHECK: No space is necessary after a cast
-WARNING: space prohibited between function name and open parenthesis '('
+WARNING: space prohibited before semicolon
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/core/rtw_recv.c | 112 ++++++++++++------------
- 1 file changed, 56 insertions(+), 56 deletions(-)
+ drivers/staging/r8188eu/core/rtw_security.c | 188 ++++++++++----------
+ 1 file changed, 94 insertions(+), 94 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/core/rtw_recv.c b/drivers/staging/r8188eu/core/rtw_recv.c
-index 8df38db9572c..c28e0204d18b 100644
---- a/drivers/staging/r8188eu/core/rtw_recv.c
-+++ b/drivers/staging/r8188eu/core/rtw_recv.c
-@@ -30,7 +30,7 @@ void rtw_signal_stat_timer_hdl(struct timer_list *);
- void _rtw_init_sta_recv_priv(struct sta_recv_priv *psta_recvpriv)
- {
+diff --git a/drivers/staging/r8188eu/core/rtw_security.c b/drivers/staging/r8188eu/core/rtw_security.c
+index 845301476e8b..b9ab4b20ed8e 100644
+--- a/drivers/staging/r8188eu/core/rtw_security.c
++++ b/drivers/staging/r8188eu/core/rtw_security.c
+@@ -108,25 +108,25 @@ void rtw_wep_encrypt(struct adapter *padapter, u8 *pxmitframe)
+ 		keylength = psecuritypriv->dot11DefKeylen[psecuritypriv->dot11PrivacyKeyIndex];
  
--	memset((u8 *)psta_recvpriv, 0, sizeof (struct sta_recv_priv));
-+	memset((u8 *)psta_recvpriv, 0, sizeof(struct sta_recv_priv));
+ 		for (curfragnum = 0; curfragnum < pattrib->nr_frags; curfragnum++) {
+-			iv = pframe+pattrib->hdrlen;
++			iv = pframe + pattrib->hdrlen;
+ 			memcpy(&wepkey[0], iv, 3);
+ 			memcpy(&wepkey[3], &psecuritypriv->dot11DefKey[psecuritypriv->dot11PrivacyKeyIndex].skey[0], keylength);
+-			payload = pframe+pattrib->iv_len+pattrib->hdrlen;
++			payload = pframe + pattrib->iv_len + pattrib->hdrlen;
  
- 	spin_lock_init(&psta_recvpriv->lock);
+-			if ((curfragnum+1) == pattrib->nr_frags) {	/* the last fragment */
+-				length = pattrib->last_txcmdsz-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
++			if ((curfragnum + 1) == pattrib->nr_frags) {	/* the last fragment */
++				length = pattrib->last_txcmdsz - pattrib->hdrlen - pattrib->iv_len - pattrib->icv_len;
  
-@@ -96,7 +96,7 @@ int _rtw_init_recv_priv(struct recv_priv *precvpriv, struct adapter *padapter)
+ 				crc.f0 = cpu_to_le32(~crc32_le(~0, payload, length));
+ 
+-				arcfour_init(&mycontext, wepkey, 3+keylength);
++				arcfour_init(&mycontext, wepkey, 3 + keylength);
+ 				arcfour_encrypt(&mycontext, payload, payload, length);
+-				arcfour_encrypt(&mycontext, payload+length, crc.f1, 4);
++				arcfour_encrypt(&mycontext, payload + length, crc.f1, 4);
+ 			} else {
+-				length = pxmitpriv->frag_len-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
++				length = pxmitpriv->frag_len - pattrib->hdrlen - pattrib->iv_len - pattrib->icv_len;
+ 				crc.f0 = cpu_to_le32(~crc32_le(~0, payload, length));
+-				arcfour_init(&mycontext, wepkey, 3+keylength);
++				arcfour_init(&mycontext, wepkey, 3 + keylength);
+ 				arcfour_encrypt(&mycontext, payload, payload, length);
+-				arcfour_encrypt(&mycontext, payload+length, crc.f1, 4);
++				arcfour_encrypt(&mycontext, payload + length, crc.f1, 4);
+ 
+ 				pframe += pxmitpriv->frag_len;
+ 				pframe = (u8 *)RND4((size_t)(pframe));
+@@ -151,17 +151,17 @@ void rtw_wep_decrypt(struct adapter  *padapter, u8 *precvframe)
+ 
+ 	/* start to decrypt recvframe */
+ 	if ((prxattrib->encrypt == _WEP40_) || (prxattrib->encrypt == _WEP104_)) {
+-		iv = pframe+prxattrib->hdrlen;
++		iv = pframe + prxattrib->hdrlen;
+ 		keyindex = prxattrib->key_index;
+ 		keylength = psecuritypriv->dot11DefKeylen[keyindex];
+ 		memcpy(&wepkey[0], iv, 3);
+ 		memcpy(&wepkey[3], &psecuritypriv->dot11DefKey[keyindex].skey[0], keylength);
+-		length = ((struct recv_frame *)precvframe)->len-prxattrib->hdrlen-prxattrib->iv_len;
++		length = ((struct recv_frame *)precvframe)->len - prxattrib->hdrlen - prxattrib->iv_len;
+ 
+-		payload = pframe+prxattrib->iv_len+prxattrib->hdrlen;
++		payload = pframe + prxattrib->iv_len + prxattrib->hdrlen;
+ 
+ 		/* decrypt payload include icv */
+-		arcfour_init(&mycontext, wepkey, 3+keylength);
++		arcfour_init(&mycontext, wepkey, 3 + keylength);
+ 		arcfour_encrypt(&mycontext, payload, payload,  length);
+ 	}
+ }
+@@ -175,7 +175,7 @@ static u32 secmicgetuint32(u8 *p)
+ 	u32 res = 0;
+ 
+ 	for (i = 0; i < 4; i++)
+-		res |= ((u32)(*p++)) << (8*i);
++		res |= ((u32)(*p++)) << (8 * i);
+ 
  	return res;
  }
+@@ -186,7 +186,7 @@ static void secmicputuint32(u8 *p, u32 val)
+ 	long i;
  
--void _rtw_free_recv_priv (struct recv_priv *precvpriv)
-+void _rtw_free_recv_priv(struct recv_priv *precvpriv)
+ 	for (i = 0; i < 4; i++) {
+-		*p++ = (u8) (val & 0xff);
++		*p++ = (u8)(val & 0xff);
+ 		val >>= 8;
+ 	}
+ 
+@@ -218,7 +218,7 @@ void rtw_secmicappendbyte(struct mic_data *pmicdata, u8 b)
  {
- 	struct adapter	*padapter = precvpriv->adapter;
  
-@@ -109,7 +109,7 @@ void _rtw_free_recv_priv (struct recv_priv *precvpriv)
- 	rtw_hal_free_recv_priv(padapter);
+ 	/*  Append the byte to our word-sized buffer */
+-	pmicdata->M |= ((unsigned long)b) << (8*pmicdata->nBytesInM);
++	pmicdata->M |= ((unsigned long)b) << (8 * pmicdata->nBytesInM);
+ 	pmicdata->nBytesInM++;
+ 	/*  Process the word if it is full. */
+ 	if (pmicdata->nBytesInM >= 4) {
+@@ -263,7 +263,7 @@ void rtw_secgetmic(struct mic_data *pmicdata, u8 *dst)
+ 		rtw_secmicappendbyte(pmicdata, 0);
+ 	/*  The appendByte function has already computed the result. */
+ 	secmicputuint32(dst, pmicdata->L);
+-	secmicputuint32(dst+4, pmicdata->R);
++	secmicputuint32(dst + 4, pmicdata->R);
+ 	/*  Reset to the empty message. */
+ 	secmicclear(pmicdata);
+ 
+@@ -278,15 +278,15 @@ void rtw_seccalctkipmic(u8 *key, u8 *header, u8 *data, u32 data_len, u8 *mic_cod
+ 	priority[0] = pri;
+ 
+ 	/* Michael MIC pseudo header: DA, SA, 3 x 0, Priority */
+-	if (header[1]&1) {   /* ToDS == 1 */
++	if (header[1] & 1) {   /* ToDS == 1 */
+ 		rtw_secmicappend(&micdata, &header[16], 6);  /* DA */
+-		if (header[1]&2)  /* From Ds == 1 */
++		if (header[1] & 2)  /* From Ds == 1 */
+ 			rtw_secmicappend(&micdata, &header[24], 6);
+ 		else
+ 			rtw_secmicappend(&micdata, &header[10], 6);
+ 	} else {	/* ToDS == 0 */
+ 		rtw_secmicappend(&micdata, &header[4], 6);   /* DA */
+-		if (header[1]&2)  /* From Ds == 1 */
++		if (header[1] & 2)  /* From Ds == 1 */
+ 			rtw_secmicappend(&micdata, &header[16], 6);
+ 		else
+ 			rtw_secmicappend(&micdata, &header[10], 6);
+@@ -308,7 +308,7 @@ void rtw_seccalctkipmic(u8 *key, u8 *header, u8 *data, u32 data_len, u8 *mic_cod
+ #define  Mk16(hi, lo) ((lo) ^ (((u16)(hi)) << 8))
+ 
+ /* select the Nth 16-bit word of the temporal key unsigned char array TK[]   */
+-#define  TK16(N)     Mk16(tk[2*(N)+1], tk[2*(N)])
++#define  TK16(N)     Mk16(tk[2 * (N) + 1], tk[2 * (N)])
+ 
+ /* S-box lookup: 16 bits --> 16 bits */
+ #define _S_(v16)     (Sbox1[0][Lo8(v16)] ^ Sbox1[1][Hi8(v16)])
+@@ -424,11 +424,11 @@ static void phase1(u16 *p1k, const u8 *tk, const u8 *ta, u32 iv32)
+ 	/* Now compute an unbalanced Feistel cipher with 80-bit block */
+ 	/* size on the 80-bit block P1K[], using the 128-bit key TK[] */
+ 	for (i = 0; i < PHASE1_LOOP_CNT; i++) { /* Each add operation here is mod 2**16 */
+-		p1k[0] += _S_(p1k[4] ^ TK16((i&1)+0));
+-		p1k[1] += _S_(p1k[0] ^ TK16((i&1)+2));
+-		p1k[2] += _S_(p1k[1] ^ TK16((i&1)+4));
+-		p1k[3] += _S_(p1k[2] ^ TK16((i&1)+6));
+-		p1k[4] += _S_(p1k[3] ^ TK16((i&1)+0));
++		p1k[0] += _S_(p1k[4] ^ TK16((i & 1) + 0));
++		p1k[1] += _S_(p1k[0] ^ TK16((i & 1) + 2));
++		p1k[2] += _S_(p1k[1] ^ TK16((i & 1) + 4));
++		p1k[3] += _S_(p1k[2] ^ TK16((i & 1) + 6));
++		p1k[4] += _S_(p1k[3] ^ TK16((i & 1) + 0));
+ 		p1k[4] +=  (unsigned short)i;   /* avoid "slide attacks" */
+ 	}
+ 
+@@ -495,8 +495,8 @@ static void phase2(u8 *rc4key, const u8 *tk, const u16 *p1k, u16 iv16)
+ 
+ 	/* Copy 96 bits of PPK[0..5] to RC4KEY[4..15]  (little-endian)       */
+ 	for (i = 0; i < 6; i++) {
+-		rc4key[4+2*i] = Lo8(PPK[i]);
+-		rc4key[5+2*i] = Hi8(PPK[i]);
++		rc4key[4 + 2 * i] = Lo8(PPK[i]);
++		rc4key[5 + 2 * i] = Hi8(PPK[i]);
+ 	}
+ 
  }
+@@ -544,30 +544,30 @@ u32	rtw_tkip_encrypt(struct adapter *padapter, u8 *pxmitframe)
+ 				prwskey = &stainfo->dot118021x_UncstKey.skey[0];
  
--struct recv_frame *_rtw_alloc_recvframe (struct __queue *pfree_recv_queue)
-+struct recv_frame *_rtw_alloc_recvframe(struct __queue *pfree_recv_queue)
- {
- 	struct recv_frame *hdr;
- 	struct list_head *plist, *phead;
-@@ -137,7 +137,7 @@ struct recv_frame *_rtw_alloc_recvframe (struct __queue *pfree_recv_queue)
- 	return (struct recv_frame *)hdr;
- }
+ 			for (curfragnum = 0; curfragnum < pattrib->nr_frags; curfragnum++) {
+-				iv = pframe+pattrib->hdrlen;
+-				payload = pframe+pattrib->iv_len+pattrib->hdrlen;
++				iv = pframe + pattrib->hdrlen;
++				payload = pframe + pattrib->iv_len + pattrib->hdrlen;
  
--struct recv_frame *rtw_alloc_recvframe (struct __queue *pfree_recv_queue)
-+struct recv_frame *rtw_alloc_recvframe(struct __queue *pfree_recv_queue)
- {
- 	struct recv_frame  *precvframe;
+ 				GET_TKIP_PN(iv, dot11txpn);
  
-@@ -285,7 +285,7 @@ int rtw_enqueue_recvbuf(struct recv_buf *precvbuf, struct __queue *queue)
- 	return _SUCCESS;
- }
+ 				pnl = (u16)(dot11txpn.val);
+-				pnh = (u32)(dot11txpn.val>>16);
++				pnh = (u32)(dot11txpn.val >> 16);
+ 				phase1((u16 *)&ttkey[0], prwskey, &pattrib->ta[0], pnh);
+ 				phase2(&rc4key[0], prwskey, (u16 *)&ttkey[0], pnl);
  
--struct recv_buf *rtw_dequeue_recvbuf (struct __queue *queue)
-+struct recv_buf *rtw_dequeue_recvbuf(struct __queue *queue)
- {
- 	struct recv_buf *precvbuf;
- 	struct list_head *plist, *phead;
-@@ -342,19 +342,19 @@ static int recvframe_chkmic(struct adapter *adapter,  struct recv_frame *precvfr
- 				mickey = &stainfo->dot11tkiprxmickey.skey[0];
+-				if ((curfragnum+1) == pattrib->nr_frags) {	/* 4 the last fragment */
+-					length = pattrib->last_txcmdsz-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
++				if ((curfragnum + 1) == pattrib->nr_frags) {	/* 4 the last fragment */
++					length = pattrib->last_txcmdsz - pattrib->hdrlen - pattrib->iv_len - pattrib->icv_len;
+ 					crc.f0 = cpu_to_le32(~crc32_le(~0, payload, length));
+ 
+ 					arcfour_init(&mycontext, rc4key, 16);
+ 					arcfour_encrypt(&mycontext, payload, payload, length);
+-					arcfour_encrypt(&mycontext, payload+length, crc.f1, 4);
++					arcfour_encrypt(&mycontext, payload + length, crc.f1, 4);
+ 				} else {
+-					length = pxmitpriv->frag_len-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len ;
++					length = pxmitpriv->frag_len - pattrib->hdrlen - pattrib->iv_len - pattrib->icv_len;
+ 					crc.f0 = cpu_to_le32(~crc32_le(~0, payload, length));
+ 
+ 					arcfour_init(&mycontext, rc4key, 16);
+ 					arcfour_encrypt(&mycontext, payload, payload, length);
+-					arcfour_encrypt(&mycontext, payload+length, crc.f1, 4);
++					arcfour_encrypt(&mycontext, payload + length, crc.f1, 4);
+ 
+ 					pframe += pxmitpriv->frag_len;
+ 					pframe = (u8 *)RND4((size_t)(pframe));
+@@ -619,14 +619,14 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
+ 				prwskey = &stainfo->dot118021x_UncstKey.skey[0];
  			}
  
--			datalen = precvframe->len-prxattrib->hdrlen-prxattrib->iv_len-prxattrib->icv_len-8;/* icv_len included the mic code */
-+			datalen = precvframe->len - prxattrib->hdrlen - prxattrib->iv_len - prxattrib->icv_len - 8;/* icv_len included the mic code */
- 			pframe = precvframe->rx_data;
--			payload = pframe+prxattrib->hdrlen+prxattrib->iv_len;
-+			payload = pframe + prxattrib->hdrlen + prxattrib->iv_len;
+-			iv = pframe+prxattrib->hdrlen;
+-			payload = pframe+prxattrib->iv_len+prxattrib->hdrlen;
+-			length = ((struct recv_frame *)precvframe)->len-prxattrib->hdrlen-prxattrib->iv_len;
++			iv = pframe + prxattrib->hdrlen;
++			payload = pframe + prxattrib->iv_len + prxattrib->hdrlen;
++			length = ((struct recv_frame *)precvframe)->len - prxattrib->hdrlen - prxattrib->iv_len;
  
- 			rtw_seccalctkipmic(mickey, pframe, payload, datalen, &miccode[0],
- 					   (unsigned char)prxattrib->priority); /* care the length of the data */
+ 			GET_TKIP_PN(iv, dot11txpn);
  
--			pframemic = payload+datalen;
-+			pframemic = payload + datalen;
+ 			pnl = (u16)(dot11txpn.val);
+-			pnh = (u32)(dot11txpn.val>>16);
++			pnh = (u32)(dot11txpn.val >> 16);
  
- 			bmic_err = false;
+ 			phase1((u16 *)&ttkey[0], prwskey, &prxattrib->ta[0], pnh);
+ 			phase2(&rc4key[0], prwskey, (unsigned short *)&ttkey[0], pnl);
+@@ -638,10 +638,10 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
  
- 			for (i = 0; i < 8; i++) {
--				if (miccode[i] != *(pframemic+i))
-+				if (miccode[i] != *(pframemic + i))
- 					bmic_err = true;
- 			}
+ 			crc.f0 = cpu_to_le32(~crc32_le(~0, payload, length));
  
-@@ -395,8 +395,8 @@ static struct recv_frame *decryptor(struct adapter *padapter, struct recv_frame
- 	u32	 res = _SUCCESS;
+-			if (crc.f1[3] != payload[length-1] ||
+-			    crc.f1[2] != payload[length-2] ||
+-			    crc.f1[1] != payload[length-3] ||
+-			    crc.f1[0] != payload[length-4])
++			if (crc.f1[3] != payload[length - 1] ||
++			    crc.f1[2] != payload[length - 2] ||
++			    crc.f1[1] != payload[length - 3] ||
++			    crc.f1[0] != payload[length - 4])
+ 				res = _FAIL;
+ 		} else {
+ 			res = _FAIL;
+@@ -832,7 +832,7 @@ static void mix_column(u8 *in, u8 *out)
  
- 	if (prxattrib->encrypt > 0) {
--		u8 *iv = precv_frame->rx_data+prxattrib->hdrlen;
--		prxattrib->key_index = (((iv[3])>>6)&0x3);
-+		u8 *iv = precv_frame->rx_data + prxattrib->hdrlen;
-+		prxattrib->key_index = (((iv[3]) >> 6) & 0x3);
+ 	for (i = 3; i > 0; i--) {    /* logical shift left 1 bit */
+ 		andf7[i] = andf7[i] << 1;
+-		if ((andf7[i-1] & 0x80) == 0x80)
++		if ((andf7[i - 1] & 0x80) == 0x80)
+ 			andf7[i] = (andf7[i] | 0x01);
+ 	}
+ 	andf7[0] = andf7[0] << 1;
+@@ -906,8 +906,8 @@ static void construct_mic_iv(u8 *mic_iv, int qc_exists, int a4_exists, u8 *mpdu,
+ 		mic_iv[i] = mpdu[i + 8];	/* mic_iv[2:7] = A2[0:5] = mpdu[10:15] */
+ 	for (i = 8; i < 14; i++)
+ 		mic_iv[i] = pn_vector[13 - i];	/* mic_iv[8:13] = PN[5:0] */
+-	mic_iv[14] = (unsigned char) (payload_length / 256);
+-	mic_iv[15] = (unsigned char) (payload_length % 256);
++	mic_iv[14] = (unsigned char)(payload_length / 256);
++	mic_iv[15] = (unsigned char)(payload_length % 256);
  
- 		if (prxattrib->key_index > WEP_KEYS) {
- 			DBG_88E("prxattrib->key_index(%d)>WEP_KEYS\n", prxattrib->key_index);
-@@ -480,7 +480,7 @@ static struct recv_frame *portctrl(struct adapter *adapter, struct recv_frame *p
- 			prtnframe = precv_frame;
- 
- 			/* get ether_type */
--			ptr = ptr+pfhdr->attrib.hdrlen+pfhdr->attrib.iv_len+LLC_HEADER_SIZE;
-+			ptr = ptr + pfhdr->attrib.hdrlen + pfhdr->attrib.iv_len + LLC_HEADER_SIZE;
- 			memcpy(&be_tmp, ptr, 2);
- 			ether_type = ntohs(be_tmp);
- 
-@@ -507,7 +507,7 @@ static int recv_decache(struct recv_frame *precv_frame, u8 bretry, struct stainf
- {
- 	int tid = precv_frame->attrib.priority;
- 
--	u16 seq_ctrl = ((precv_frame->attrib.seq_num&0xffff) << 4) |
-+	u16 seq_ctrl = ((precv_frame->attrib.seq_num & 0xffff) << 4) |
- 		(precv_frame->attrib.frag_num & 0xf);
- 
- 	if (tid > 15)
-@@ -565,29 +565,29 @@ static void process_wmmps_data(struct adapter *padapter, struct recv_frame *prec
- 	if (!psta->qos_option)
- 		return;
- 
--	if (!(psta->qos_info&0xf))
-+	if (!(psta->qos_info & 0xf))
- 		return;
- 
--	if (psta->state&WIFI_SLEEP_STATE) {
-+	if (psta->state & WIFI_SLEEP_STATE) {
- 		u8 wmmps_ac = 0;
- 
- 		switch (pattrib->priority) {
- 		case 1:
- 		case 2:
--			wmmps_ac = psta->uapsd_bk&BIT(1);
-+			wmmps_ac = psta->uapsd_bk & BIT(1);
- 			break;
- 		case 4:
- 		case 5:
--			wmmps_ac = psta->uapsd_vi&BIT(1);
-+			wmmps_ac = psta->uapsd_vi & BIT(1);
- 			break;
- 		case 6:
- 		case 7:
--			wmmps_ac = psta->uapsd_vo&BIT(1);
-+			wmmps_ac = psta->uapsd_vo & BIT(1);
- 			break;
- 		case 0:
- 		case 3:
- 		default:
--			wmmps_ac = psta->uapsd_be&BIT(1);
-+			wmmps_ac = psta->uapsd_be & BIT(1);
- 			break;
- 		}
- 
-@@ -727,7 +727,7 @@ int sta2sta_data_frame(struct adapter *adapter, struct recv_frame *precv_frame,
- 	return ret;
  }
  
--static int ap2sta_data_frame (
-+static int ap2sta_data_frame(
- 	struct adapter *adapter,
- 	struct recv_frame *precv_frame,
- 	struct sta_info **psta)
-@@ -917,20 +917,20 @@ static int validate_recv_ctrl_frame(struct adapter *padapter,
- 		switch (pattrib->priority) {
- 		case 1:
- 		case 2:
--			wmmps_ac = psta->uapsd_bk&BIT(0);
-+			wmmps_ac = psta->uapsd_bk & BIT(0);
- 			break;
- 		case 4:
- 		case 5:
--			wmmps_ac = psta->uapsd_vi&BIT(0);
-+			wmmps_ac = psta->uapsd_vi & BIT(0);
- 			break;
- 		case 6:
- 		case 7:
--			wmmps_ac = psta->uapsd_vo&BIT(0);
-+			wmmps_ac = psta->uapsd_vo & BIT(0);
- 			break;
- 		case 0:
- 		case 3:
- 		default:
--			wmmps_ac = psta->uapsd_be&BIT(0);
-+			wmmps_ac = psta->uapsd_be & BIT(0);
- 			break;
- 		}
+@@ -962,7 +962,7 @@ static void construct_mic_header2(u8 *mic_header2, u8 *mpdu, int a4_exists, int
  
-@@ -943,7 +943,7 @@ static int validate_recv_ctrl_frame(struct adapter *padapter,
- 			psta->state ^= WIFI_STA_ALIVE_CHK_STATE;
- 		}
+ 	if (!qc_exists && a4_exists) {
+ 		for (i = 0; i < 6; i++)
+-			mic_header2[8+i] = mpdu[24+i];   /* A4 */
++			mic_header2[8 + i] = mpdu[24 + i];   /* A4 */
+ 	}
  
--		if ((psta->state&WIFI_SLEEP_STATE) && (pstapriv->sta_dz_bitmap&BIT(psta->aid))) {
-+		if ((psta->state & WIFI_SLEEP_STATE) && (pstapriv->sta_dz_bitmap & BIT(psta->aid))) {
- 			struct list_head *xmitframe_plist, *xmitframe_phead;
- 			struct xmit_frame *pxmitframe = NULL;
- 			struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
-@@ -979,7 +979,7 @@ static int validate_recv_ctrl_frame(struct adapter *padapter,
- 					update_beacon(padapter, _TIM_IE_, NULL, false);
- 				}
+ 	if (qc_exists && !a4_exists) {
+@@ -972,7 +972,7 @@ static void construct_mic_header2(u8 *mic_header2, u8 *mpdu, int a4_exists, int
+ 
+ 	if (qc_exists && a4_exists) {
+ 		for (i = 0; i < 6; i++)
+-			mic_header2[8+i] = mpdu[24+i];   /* A4 */
++			mic_header2[8 + i] = mpdu[24 + i];   /* A4 */
+ 
+ 		mic_header2[14] = mpdu[30] & 0x0f;
+ 		mic_header2[15] = mpdu[31] & 0x00;
+@@ -1003,8 +1003,8 @@ static void construct_ctr_preload(u8 *ctr_preload, int a4_exists, int qc_exists,
+ 		ctr_preload[i] = mpdu[i + 8];		       /* ctr_preload[2:7] = A2[0:5] = mpdu[10:15] */
+ 	for (i = 8; i < 14; i++)
+ 		ctr_preload[i] =    pn_vector[13 - i];	  /* ctr_preload[8:13] = PN[5:0] */
+-	ctr_preload[14] =  (unsigned char) (c / 256); /* Ctr */
+-	ctr_preload[15] =  (unsigned char) (c % 256);
++	ctr_preload[14] =  (unsigned char)(c / 256); /* Ctr */
++	ctr_preload[15] =  (unsigned char)(c % 256);
+ 
+ }
+ 
+@@ -1040,7 +1040,7 @@ static int aes_cipher(u8 *key, uint hdrlen, u8 *pframe, uint plen)
+ 	uint	frtype  = GetFrameType(pframe);
+ 	uint	frsubtype  = GetFrameSubType(pframe);
+ 
+-	frsubtype = frsubtype>>4;
++	frsubtype = frsubtype >> 4;
+ 
+ 	memset((void *)mic_iv, 0, 16);
+ 	memset((void *)mic_header1, 0, 16);
+@@ -1068,11 +1068,11 @@ static int aes_cipher(u8 *key, uint hdrlen, u8 *pframe, uint plen)
+ 	}
+ 
+ 	pn_vector[0] = pframe[hdrlen];
+-	pn_vector[1] = pframe[hdrlen+1];
+-	pn_vector[2] = pframe[hdrlen+4];
+-	pn_vector[3] = pframe[hdrlen+5];
+-	pn_vector[4] = pframe[hdrlen+6];
+-	pn_vector[5] = pframe[hdrlen+7];
++	pn_vector[1] = pframe[hdrlen + 1];
++	pn_vector[2] = pframe[hdrlen + 4];
++	pn_vector[3] = pframe[hdrlen + 5];
++	pn_vector[4] = pframe[hdrlen + 6];
++	pn_vector[5] = pframe[hdrlen + 7];
+ 
+ 	construct_mic_iv(mic_iv, qc_exists, a4_exists, pframe, plen, pn_vector);
+ 
+@@ -1114,11 +1114,11 @@ static int aes_cipher(u8 *key, uint hdrlen, u8 *pframe, uint plen)
+ 
+ 	/* Insert MIC into payload */
+ 	for (j = 0; j < 8; j++)
+-		pframe[payload_index+j] = mic[j]; /* message[payload_index+j] = mic[j]; */
++		pframe[payload_index + j] = mic[j]; /* message[payload_index+j] = mic[j]; */
+ 
+ 	payload_index = hdrlen + 8;
+ 	for (i = 0; i < num_blocks; i++) {
+-		construct_ctr_preload(ctr_preload, a4_exists, qc_exists, pframe, pn_vector, i+1);
++		construct_ctr_preload(ctr_preload, a4_exists, qc_exists, pframe, pn_vector, i + 1);
+ 		aes128k128d(key, ctr_preload, aes_out);
+ 		bitwise_xor(aes_out, &pframe[payload_index], chain_buffer);
+ 		for (j = 0; j < 16; j++)
+@@ -1127,12 +1127,12 @@ static int aes_cipher(u8 *key, uint hdrlen, u8 *pframe, uint plen)
+ 
+ 	if (payload_remainder > 0) {    /* If there is a short final block, then pad it,*/
+ 					/* encrypt it and copy the unpadded part back   */
+-		construct_ctr_preload(ctr_preload, a4_exists, qc_exists, pframe, pn_vector, num_blocks+1);
++		construct_ctr_preload(ctr_preload, a4_exists, qc_exists, pframe, pn_vector, num_blocks + 1);
+ 
+ 		for (j = 0; j < 16; j++)
+ 			padded_buffer[j] = 0x00;
+ 		for (j = 0; j < payload_remainder; j++)
+-			padded_buffer[j] = pframe[payload_index+j];
++			padded_buffer[j] = pframe[payload_index + j];
+ 		aes128k128d(key, ctr_preload, aes_out);
+ 		bitwise_xor(aes_out, padded_buffer, chain_buffer);
+ 		for (j = 0; j < payload_remainder; j++)
+@@ -1144,7 +1144,7 @@ static int aes_cipher(u8 *key, uint hdrlen, u8 *pframe, uint plen)
+ 	for (j = 0; j < 16; j++)
+ 		padded_buffer[j] = 0x00;
+ 	for (j = 0; j < 8; j++)
+-		padded_buffer[j] = pframe[j+hdrlen+8+plen];
++		padded_buffer[j] = pframe[j + hdrlen + 8 + plen];
+ 
+ 	aes128k128d(key, ctr_preload, aes_out);
+ 	bitwise_xor(aes_out, padded_buffer, chain_buffer);
+@@ -1193,12 +1193,12 @@ u32	rtw_aes_encrypt(struct adapter *padapter, u8 *pxmitframe)
+ 			else
+ 				prwskey = &stainfo->dot118021x_UncstKey.skey[0];
+ 			for (curfragnum = 0; curfragnum < pattrib->nr_frags; curfragnum++) {
+-				if ((curfragnum+1) == pattrib->nr_frags) {	/* 4 the last fragment */
+-					length = pattrib->last_txcmdsz-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
++				if ((curfragnum + 1) == pattrib->nr_frags) {	/* 4 the last fragment */
++					length = pattrib->last_txcmdsz - pattrib->hdrlen - pattrib->iv_len - pattrib->icv_len;
+ 
+ 					aes_cipher(prwskey, pattrib->hdrlen, pframe, length);
+ 				} else {
+-					length = pxmitpriv->frag_len-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len ;
++					length = pxmitpriv->frag_len - pattrib->hdrlen - pattrib->iv_len - pattrib->icv_len;
+ 
+ 					aes_cipher(prwskey, pattrib->hdrlen, pframe, length);
+ 					pframe += pxmitpriv->frag_len;
+@@ -1236,7 +1236,7 @@ static int aes_decipher(u8 *key, uint	hdrlen,
+ 	uint	frtype  = GetFrameType(pframe);
+ 	uint	frsubtype  = GetFrameSubType(pframe);
+ 
+-	frsubtype = frsubtype>>4;
++	frsubtype = frsubtype >> 4;
+ 
+ 	memset((void *)mic_iv, 0, 16);
+ 	memset((void *)mic_header1, 0, 16);
+@@ -1248,16 +1248,16 @@ static int aes_decipher(u8 *key, uint	hdrlen,
+ 
+ 	/* start to decrypt the payload */
+ 
+-	num_blocks = (plen-8) / 16; /* plen including llc, payload_length and mic) */
++	num_blocks = (plen - 8) / 16; /* plen including llc, payload_length and mic) */
+ 
+-	payload_remainder = (plen-8) % 16;
++	payload_remainder = (plen - 8) % 16;
+ 
+ 	pn_vector[0]  = pframe[hdrlen];
+-	pn_vector[1]  = pframe[hdrlen+1];
+-	pn_vector[2]  = pframe[hdrlen+4];
+-	pn_vector[3]  = pframe[hdrlen+5];
+-	pn_vector[4]  = pframe[hdrlen+6];
+-	pn_vector[5]  = pframe[hdrlen+7];
++	pn_vector[1]  = pframe[hdrlen + 1];
++	pn_vector[2]  = pframe[hdrlen + 4];
++	pn_vector[3]  = pframe[hdrlen + 5];
++	pn_vector[4]  = pframe[hdrlen + 6];
++	pn_vector[5]  = pframe[hdrlen + 7];
+ 
+ 	if ((hdrlen == WLAN_HDR_A3_LEN) || (hdrlen ==  WLAN_HDR_A3_QOS_LEN))
+ 		a4_exists = 0;
+@@ -1283,7 +1283,7 @@ static int aes_decipher(u8 *key, uint	hdrlen,
+ 	payload_index = hdrlen + 8; /*  8 is for extiv */
+ 
+ 	for (i = 0; i < num_blocks; i++) {
+-		construct_ctr_preload(ctr_preload, a4_exists, qc_exists, pframe, pn_vector, i+1);
++		construct_ctr_preload(ctr_preload, a4_exists, qc_exists, pframe, pn_vector, i + 1);
+ 
+ 		aes128k128d(key, ctr_preload, aes_out);
+ 		bitwise_xor(aes_out, &pframe[payload_index], chain_buffer);
+@@ -1294,12 +1294,12 @@ static int aes_decipher(u8 *key, uint	hdrlen,
+ 
+ 	if (payload_remainder > 0) {    /* If there is a short final block, then pad it,*/
+ 					/* encrypt it and copy the unpadded part back   */
+-		construct_ctr_preload(ctr_preload, a4_exists, qc_exists, pframe, pn_vector, num_blocks+1);
++		construct_ctr_preload(ctr_preload, a4_exists, qc_exists, pframe, pn_vector, num_blocks + 1);
+ 
+ 		for (j = 0; j < 16; j++)
+ 			padded_buffer[j] = 0x00;
+ 		for (j = 0; j < payload_remainder; j++)
+-			padded_buffer[j] = pframe[payload_index+j];
++			padded_buffer[j] = pframe[payload_index + j];
+ 		aes128k128d(key, ctr_preload, aes_out);
+ 		bitwise_xor(aes_out, padded_buffer, chain_buffer);
+ 		for (j = 0; j < payload_remainder; j++)
+@@ -1307,22 +1307,22 @@ static int aes_decipher(u8 *key, uint	hdrlen,
+ 	}
+ 
+ 	/* start to calculate the mic */
+-	if ((hdrlen+plen+8) <= MAX_MSG_SIZE)
+-		memcpy(message, pframe, (hdrlen + plen+8)); /* 8 is for ext iv len */
++	if ((hdrlen + plen + 8) <= MAX_MSG_SIZE)
++		memcpy(message, pframe, (hdrlen + plen + 8)); /* 8 is for ext iv len */
+ 
+ 	pn_vector[0] = pframe[hdrlen];
+-	pn_vector[1] = pframe[hdrlen+1];
+-	pn_vector[2] = pframe[hdrlen+4];
+-	pn_vector[3] = pframe[hdrlen+5];
+-	pn_vector[4] = pframe[hdrlen+6];
+-	pn_vector[5] = pframe[hdrlen+7];
+-	construct_mic_iv(mic_iv, qc_exists, a4_exists, message, plen-8, pn_vector);
++	pn_vector[1] = pframe[hdrlen + 1];
++	pn_vector[2] = pframe[hdrlen + 4];
++	pn_vector[3] = pframe[hdrlen + 5];
++	pn_vector[4] = pframe[hdrlen + 6];
++	pn_vector[5] = pframe[hdrlen + 7];
++	construct_mic_iv(mic_iv, qc_exists, a4_exists, message, plen - 8, pn_vector);
+ 
+ 	construct_mic_header1(mic_header1, hdrlen, message);
+ 	construct_mic_header2(mic_header2, message, a4_exists, qc_exists);
+ 
+-	payload_remainder = (plen-8) % 16;
+-	num_blocks = (plen-8) / 16;
++	payload_remainder = (plen - 8) % 16;
++	num_blocks = (plen - 8) / 16;
+ 
+ 	/* Find start of payload */
+ 	payload_index = (hdrlen + 8);
+@@ -1356,11 +1356,11 @@ static int aes_decipher(u8 *key, uint	hdrlen,
+ 
+ 	/* Insert MIC into payload */
+ 	for (j = 0; j < 8; j++)
+-		message[payload_index+j] = mic[j];
++		message[payload_index + j] = mic[j];
+ 
+ 	payload_index = hdrlen + 8;
+ 	for (i = 0; i < num_blocks; i++) {
+-		construct_ctr_preload(ctr_preload, a4_exists, qc_exists, message, pn_vector, i+1);
++		construct_ctr_preload(ctr_preload, a4_exists, qc_exists, message, pn_vector, i + 1);
+ 		aes128k128d(key, ctr_preload, aes_out);
+ 		bitwise_xor(aes_out, &message[payload_index], chain_buffer);
+ 		for (j = 0; j < 16; j++)
+@@ -1369,12 +1369,12 @@ static int aes_decipher(u8 *key, uint	hdrlen,
+ 
+ 	if (payload_remainder > 0) { /* If there is a short final block, then pad it,*/
+ 		/* encrypt it and copy the unpadded part back   */
+-		construct_ctr_preload(ctr_preload, a4_exists, qc_exists, message, pn_vector, num_blocks+1);
++		construct_ctr_preload(ctr_preload, a4_exists, qc_exists, message, pn_vector, num_blocks + 1);
+ 
+ 		for (j = 0; j < 16; j++)
+ 			padded_buffer[j] = 0x00;
+ 		for (j = 0; j < payload_remainder; j++)
+-			padded_buffer[j] = message[payload_index+j];
++			padded_buffer[j] = message[payload_index + j];
+ 		aes128k128d(key, ctr_preload, aes_out);
+ 		bitwise_xor(aes_out, padded_buffer, chain_buffer);
+ 		for (j = 0; j < payload_remainder; j++)
+@@ -1387,7 +1387,7 @@ static int aes_decipher(u8 *key, uint	hdrlen,
+ 	for (j = 0; j < 16; j++)
+ 		padded_buffer[j] = 0x00;
+ 	for (j = 0; j < 8; j++)
+-		padded_buffer[j] = message[j+hdrlen+8+plen-8];
++		padded_buffer[j] = message[j + hdrlen + 8 + plen - 8];
+ 
+ 	aes128k128d(key, ctr_preload, aes_out);
+ 	bitwise_xor(aes_out, padded_buffer, chain_buffer);
+@@ -1396,9 +1396,9 @@ static int aes_decipher(u8 *key, uint	hdrlen,
+ 
+ 	/* compare the mic */
+ 	for (i = 0; i < 8; i++) {
+-		if (pframe[hdrlen+8+plen-8+i] != message[hdrlen+8+plen-8+i]) {
++		if (pframe[hdrlen + 8 + plen - 8 + i] != message[hdrlen + 8 + plen - 8 + i]) {
+ 			DBG_88E("aes_decipher:mic check error mic[%d]: pframe(%x)!=message(%x)\n",
+-				i, pframe[hdrlen+8+plen-8+i], message[hdrlen+8+plen-8+i]);
++				i, pframe[hdrlen + 8 + plen - 8 + i], message[hdrlen + 8 + plen - 8 + i]);
+ 			res = _FAIL;
+ 		}
+ 	}
+@@ -1438,7 +1438,7 @@ u32	rtw_aes_decrypt(struct adapter *padapter, u8 *precvframe)
  			} else {
--				if (pstapriv->tim_bitmap&BIT(psta->aid)) {
-+				if (pstapriv->tim_bitmap & BIT(psta->aid)) {
- 					if (psta->sleepq_len == 0) {
- 						DBG_88E("no buffered packets to xmit\n");
- 
-@@ -1162,7 +1162,7 @@ static int validate_recv_frame(struct adapter *adapter, struct recv_frame *precv
- 	u8 bDumpRxPkt;
- 	struct rx_pkt_attrib *pattrib = &precv_frame->attrib;
- 	u8 *ptr = precv_frame->rx_data;
--	u8  ver = (unsigned char) (*ptr)&0x3;
-+	u8  ver = (unsigned char)(*ptr) & 0x3;
- 	struct mlme_ext_priv *pmlmeext = &adapter->mlmeextpriv;
- 
- 	if (pmlmeext->sitesurvey_res.state == SCAN_PROCESS) {
-@@ -1197,18 +1197,18 @@ static int validate_recv_frame(struct adapter *adapter, struct recv_frame *precv
- 		int i;
- 		DBG_88E("#############################\n");
- 
--		for (i = 0; i < 64; i = i+8)
--			DBG_88E("%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:\n", *(ptr+i),
--				*(ptr+i+1), *(ptr+i+2), *(ptr+i+3), *(ptr+i+4), *(ptr+i+5), *(ptr+i+6), *(ptr+i+7));
-+		for (i = 0; i < 64; i = i + 8)
-+			DBG_88E("%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:\n", *(ptr + i),
-+				*(ptr + i + 1), *(ptr + i + 2), *(ptr + i + 3), *(ptr + i + 4), *(ptr + i + 5), *(ptr + i + 6), *(ptr + i + 7));
- 		DBG_88E("#############################\n");
- 	} else if (bDumpRxPkt == 2) {
- 		if (type == WIFI_MGT_TYPE) {
- 			int i;
- 			DBG_88E("#############################\n");
- 
--			for (i = 0; i < 64; i = i+8)
--				DBG_88E("%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:\n", *(ptr+i),
--					*(ptr+i+1), *(ptr+i+2), *(ptr+i+3), *(ptr+i+4), *(ptr+i+5), *(ptr+i+6), *(ptr+i+7));
-+			for (i = 0; i < 64; i = i + 8)
-+				DBG_88E("%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:\n", *(ptr + i),
-+					*(ptr + i + 1), *(ptr + i + 2), *(ptr + i + 3), *(ptr + i + 4), *(ptr + i + 5), *(ptr + i + 6), *(ptr + i + 7));
- 			DBG_88E("#############################\n");
- 		}
- 	} else if (bDumpRxPkt == 3) {
-@@ -1216,9 +1216,9 @@ static int validate_recv_frame(struct adapter *adapter, struct recv_frame *precv
- 			int i;
- 			DBG_88E("#############################\n");
- 
--			for (i = 0; i < 64; i = i+8)
--				DBG_88E("%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:\n", *(ptr+i),
--					*(ptr+i+1), *(ptr+i+2), *(ptr+i+3), *(ptr+i+4), *(ptr+i+5), *(ptr+i+6), *(ptr+i+7));
-+			for (i = 0; i < 64; i = i + 8)
-+				DBG_88E("%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:\n", *(ptr + i),
-+					*(ptr + i + 1), *(ptr + i + 2), *(ptr + i + 3), *(ptr + i + 4), *(ptr + i + 5), *(ptr + i + 6), *(ptr + i + 7));
- 			DBG_88E("#############################\n");
- 		}
- 	}
-@@ -1252,7 +1252,7 @@ static int validate_recv_frame(struct adapter *adapter, struct recv_frame *precv
- 
- /* remove the wlanhdr and add the eth_hdr */
- 
--static int wlanhdr_to_ethhdr (struct recv_frame *precvframe)
-+static int wlanhdr_to_ethhdr(struct recv_frame *precvframe)
- {
- 	int	rmv_len;
- 	u16	eth_type, len;
-@@ -1271,8 +1271,8 @@ static int wlanhdr_to_ethhdr (struct recv_frame *precvframe)
- 	if (pattrib->encrypt)
- 		recvframe_pull_tail(precvframe, pattrib->icv_len);
- 
--	psnap = (struct ieee80211_snap_hdr *)(ptr+pattrib->hdrlen + pattrib->iv_len);
--	psnap_type = ptr+pattrib->hdrlen + pattrib->iv_len+SNAP_SIZE;
-+	psnap = (struct ieee80211_snap_hdr *)(ptr + pattrib->hdrlen + pattrib->iv_len);
-+	psnap_type = ptr + pattrib->hdrlen + pattrib->iv_len + SNAP_SIZE;
- 	/* convert hdr + possible LLC headers into Ethernet header */
- 	if ((!memcmp(psnap, rtw_rfc1042_header, SNAP_SIZE) &&
- 	     memcmp(psnap_type, SNAP_ETH_TYPE_IPX, 2) &&
-@@ -1288,30 +1288,30 @@ static int wlanhdr_to_ethhdr (struct recv_frame *precvframe)
- 	rmv_len = pattrib->hdrlen + pattrib->iv_len + (bsnaphdr ? SNAP_SIZE : 0);
- 	len = precvframe->len - rmv_len;
- 
--	memcpy(&be_tmp, ptr+rmv_len, 2);
-+	memcpy(&be_tmp, ptr + rmv_len, 2);
- 	eth_type = ntohs(be_tmp); /* pattrib->ether_type */
- 	pattrib->eth_type = eth_type;
- 
- 	if ((check_fwstate(pmlmepriv, WIFI_MP_STATE))) {
- 		ptr += rmv_len;
- 		*ptr = 0x87;
--		*(ptr+1) = 0x12;
-+		*(ptr + 1) = 0x12;
- 
- 		eth_type = 0x8712;
- 		/*  append rx status for mp test packets */
--		ptr = recvframe_pull(precvframe, (rmv_len-sizeof(struct ethhdr)+2)-24);
-+		ptr = recvframe_pull(precvframe, (rmv_len - sizeof(struct ethhdr) + 2) - 24);
- 		memcpy(ptr, get_rxmem(precvframe), 24);
- 		ptr += 24;
- 	} else {
--		ptr = recvframe_pull(precvframe, (rmv_len-sizeof(struct ethhdr) + (bsnaphdr ? 2 : 0)));
-+		ptr = recvframe_pull(precvframe, (rmv_len - sizeof(struct ethhdr) + (bsnaphdr ? 2 : 0)));
- 	}
- 
- 	memcpy(ptr, pattrib->dst, ETH_ALEN);
--	memcpy(ptr+ETH_ALEN, pattrib->src, ETH_ALEN);
-+	memcpy(ptr + ETH_ALEN, pattrib->src, ETH_ALEN);
- 
- 	if (!bsnaphdr) {
- 		be_tmp = htons(len);
--		memcpy(ptr+12, &be_tmp, 2);
-+		memcpy(ptr + 12, &be_tmp, 2);
- 	}
- 
- 	return ret;
-@@ -1558,7 +1558,7 @@ static int amsdu_to_msdu(struct adapter *padapter, struct recv_frame *prframe)
- 		pdata += nSubframe_Length;
- 		a_len -= nSubframe_Length;
- 		if (a_len != 0) {
--			padding_len = 4 - ((nSubframe_Length + ETH_HLEN) & (4-1));
-+			padding_len = 4 - ((nSubframe_Length + ETH_HLEN) & (4 - 1));
- 			if (padding_len == 4) {
- 				padding_len = 0;
+ 				prwskey = &stainfo->dot118021x_UncstKey.skey[0];
  			}
-@@ -1755,7 +1755,7 @@ static int recv_indicatepkt_reorder(struct adapter *padapter, struct recv_frame
- 			preorder_ctrl->indicate_seq = pattrib->seq_num;
- 			rtw_recv_indicatepkt(padapter, prframe);
- 
--			preorder_ctrl->indicate_seq = (preorder_ctrl->indicate_seq + 1)%4096;
-+			preorder_ctrl->indicate_seq = (preorder_ctrl->indicate_seq + 1) % 4096;
- 			return _SUCCESS;
- 		}
- 	} else if (pattrib->amsdu == 1) { /* temp filter -> means didn't support A-MSDUs in a A-MPDU */
-@@ -1763,7 +1763,7 @@ static int recv_indicatepkt_reorder(struct adapter *padapter, struct recv_frame
- 			preorder_ctrl->indicate_seq = pattrib->seq_num;
- 			retval = amsdu_to_msdu(padapter, prframe);
- 
--			preorder_ctrl->indicate_seq = (preorder_ctrl->indicate_seq + 1)%4096;
-+			preorder_ctrl->indicate_seq = (preorder_ctrl->indicate_seq + 1) % 4096;
- 			return retval;
- 		}
- 	}
-@@ -1843,7 +1843,7 @@ static int process_recv_indicatepkts(struct adapter *padapter, struct recv_frame
- 			}
- 		}
- 	} else { /* B/G mode */
--		retval = wlanhdr_to_ethhdr (prframe);
-+		retval = wlanhdr_to_ethhdr(prframe);
- 		if (retval != _SUCCESS)
- 			return retval;
- 
-@@ -1963,7 +1963,7 @@ static int recv_func(struct adapter *padapter, struct recv_frame *rframe)
- 		     !psecuritypriv->busetkipkey) {
- 			rtw_enqueue_recvframe(rframe, &padapter->recvpriv.uc_swdec_pending_queue);
- 			DBG_88E("%s: no key, enqueue uc_swdec_pending_queue\n", __func__);
--			if (recvpriv->free_recvframe_cnt < NR_RECVFRAME/4) {
-+			if (recvpriv->free_recvframe_cnt < NR_RECVFRAME / 4) {
- 				/* to prevent from recvframe starvation,
- 				 * get recvframe from uc_swdec_pending_queue to
- 				 * free_recvframe_cnt  */
-@@ -2036,19 +2036,19 @@ void rtw_signal_stat_timer_hdl(struct timer_list *t)
- 
- 		/* update value of signal_strength, rssi, signal_qual */
- 		if (check_fwstate(&adapter->mlmepriv, _FW_UNDER_SURVEY) == false) {
--			tmp_s = (avg_signal_strength+(_alpha-1)*recvpriv->signal_strength);
-+			tmp_s = (avg_signal_strength + (_alpha - 1) * recvpriv->signal_strength);
- 			if (tmp_s % _alpha)
--				tmp_s = tmp_s/_alpha + 1;
-+				tmp_s = tmp_s / _alpha + 1;
- 			else
--				tmp_s = tmp_s/_alpha;
-+				tmp_s = tmp_s / _alpha;
- 			if (tmp_s > 100)
- 				tmp_s = 100;
- 
--			tmp_q = (avg_signal_qual+(_alpha-1)*recvpriv->signal_qual);
-+			tmp_q = (avg_signal_qual + (_alpha - 1) * recvpriv->signal_qual);
- 			if (tmp_q % _alpha)
--				tmp_q = tmp_q/_alpha + 1;
-+				tmp_q = tmp_q / _alpha + 1;
- 			else
--				tmp_q = tmp_q/_alpha;
-+				tmp_q = tmp_q / _alpha;
- 			if (tmp_q > 100)
- 				tmp_q = 100;
- 
+-			length = ((struct recv_frame *)precvframe)->len-prxattrib->hdrlen-prxattrib->iv_len;
++			length = ((struct recv_frame *)precvframe)->len - prxattrib->hdrlen - prxattrib->iv_len;
+ 			res = aes_decipher(prwskey, prxattrib->hdrlen, pframe, length);
+ 		} else {
+ 			res = _FAIL;
 -- 
 2.32.0
 
