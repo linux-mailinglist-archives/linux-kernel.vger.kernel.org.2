@@ -2,143 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA483EDA95
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 554783EDA9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbhHPQL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 12:11:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35852 "EHLO
+        id S229679AbhHPQN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 12:13:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34773 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229517AbhHPQLz (ORCPT
+        by vger.kernel.org with ESMTP id S229517AbhHPQN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 12:11:55 -0400
+        Mon, 16 Aug 2021 12:13:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629130280;
+        s=mimecast20190719; t=1629130404;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iyO2WLAP+aQnJ1jyGofk+6UZ5GOhdTgCKqORoFevXSg=;
-        b=HkwlXCVAs/+d26E9HohhiYxcyrfj4mysosjKJ5gbe8clAo9AxghYipFuit8hR+670n/qxj
-        pG+9k2fKQBlf5Cd707uMJXetYBipeJnKXVm9letfh5YERZMRFM55pOnpaxQwNE4dRvB26D
-        +B/17oGPjBllWRhnvvp9zsyEsrhX7zw=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-315-einRYvzlNIanswlXTFoUPQ-1; Mon, 16 Aug 2021 12:11:18 -0400
-X-MC-Unique: einRYvzlNIanswlXTFoUPQ-1
-Received: by mail-ej1-f69.google.com with SMTP id gg1-20020a170906e281b029053d0856c4cdso4865276ejb.15
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 09:11:18 -0700 (PDT)
+        bh=omSfE1i2O/mSMW260UhgiDj/AWHS5s3qHE5PmalCULs=;
+        b=Isb3WUPr7euLKooJCyrMjkComkNyFNT9Jw3fniIXw2LJcOyZPVhnyv7ugh2sl0Wrp8Cwuk
+        W4antT8l7xXWpC9oiHkubelSXq4fSimULzH73j2R82Verw8PpCy6WeSoMZR40uzvPaLNjA
+        F0LScVM+x54VWYMbzKSzkRdDMnvI1UA=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-153-9HrOTVMpN9KIeiMcnhblfA-1; Mon, 16 Aug 2021 12:13:23 -0400
+X-MC-Unique: 9HrOTVMpN9KIeiMcnhblfA-1
+Received: by mail-wm1-f72.google.com with SMTP id r125-20020a1c2b830000b0290197a4be97b7so127414wmr.9
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 09:13:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=iyO2WLAP+aQnJ1jyGofk+6UZ5GOhdTgCKqORoFevXSg=;
-        b=FlAbZ9Tqa0LsnXunrMVmhdGI9H734Ao+pAHKCaFyzpQWdlMX2lSEffW24d14odLsxy
-         LgEvyT/AshWxH9RkhIKHfkDRQNSKbvjzNCJ/JVS9CxGsvDLrgGtXNmTSK6DNQCzE/5u1
-         Y6Zl5XXddWS95WhFS/X1/wiI+RaByr6hJUd94XOM/MH2eHJqRg3V1cbsqQt5yAarVckZ
-         WN7bqMmn4SkLBvDHzsdgIJpyngweIMQ584yhHZUy+DGXeYd/geb7veMxXPSV5gAiIZRS
-         vMgEf9KCjRo4dyXmT39iV0OjtGz/JleX+tQM4/9ysX+paGRFrybTYIEryxkEVs1vHgvg
-         ShNw==
-X-Gm-Message-State: AOAM530lMUN2l8t6xUVFyRV9rGuJ+elk/1yrNedVURWt82WeLlCrjtFU
-        VTk2k79B7M4/vZX6XxmwsGX14Eo8V2M1Y2TnFtyNjtfqIT5SDVx3DD02yHIQAJOypE6/RFQF6YE
-        uLmGd2QafWNwSDuXgI10jlTiw
-X-Received: by 2002:a17:906:c342:: with SMTP id ci2mr17153542ejb.122.1629130277864;
-        Mon, 16 Aug 2021 09:11:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyxqpo77xg0kISTsqOyk/DTvpZ/I0UWK3WDlWTtA6AhJMw6abCgkq43hhVCX1d3SvC1mibOTg==
-X-Received: by 2002:a17:906:c342:: with SMTP id ci2mr17153520ejb.122.1629130277663;
-        Mon, 16 Aug 2021 09:11:17 -0700 (PDT)
-Received: from pc-32.home (2a01cb058918ce00dd1a5a4f9908f2d5.ipv6.abo.wanadoo.fr. [2a01:cb05:8918:ce00:dd1a:5a4f:9908:f2d5])
-        by smtp.gmail.com with ESMTPSA id r7sm5144990edi.43.2021.08.16.09.11.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 09:11:16 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 18:11:14 +0200
-From:   Guillaume Nault <gnault@redhat.com>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     James Carlson <carlsonj@workingcode.com>,
-        Chris Fowler <cfowler@outpostsentinel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-ppp@vger.kernel.org" <linux-ppp@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ppp: Add rtnl attribute IFLA_PPP_UNIT_ID for specifying
- ppp unit id
-Message-ID: <20210816161114.GA3611@pc-32.home>
-References: <20210810153941.GB14279@pc-32.home>
- <BN0P223MB0327A247724B7AE211D2E84EA7F79@BN0P223MB0327.NAMP223.PROD.OUTLOOK.COM>
- <20210810171626.z6bgvizx4eaafrbb@pali>
- <2f10b64e-ba50-d8a5-c40a-9b9bd4264155@workingcode.com>
- <20210811173811.GE15488@pc-32.home>
- <20210811180401.owgmie36ydx62iep@pali>
- <20210812092847.GB3525@pc-23.home>
- <20210812134845.npj3m3vzkrmhx6uy@pali>
- <20210812182645.GA10725@pc-23.home>
- <20210812190440.fknfthdk3mazm6px@pali>
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=omSfE1i2O/mSMW260UhgiDj/AWHS5s3qHE5PmalCULs=;
+        b=qA+5zM1K2tBorzorSkZC0i4nsGs9n007We8+U3GonwPGKcz1ZKkevMBc+cLdp5q56r
+         nxxNTJFytqeb8jpET2meDCGaMUMTx8AV6a7WiFoGnkfO0BXE557AFNM20Fy9zVHEIgri
+         7bHHSM2C8ZQA27WabJTmU9YU7wZQvTMpCZDwXNzdnWkHZhh19OyBZVxaUAM96lmRL4yy
+         zT6hDBlPh7wMt8XpRU0AtxosWHWVCULDByywWSbALb2RZTi0t7F9LskD11NfZBULSt7X
+         QwenilkGSW1jI8feEpPUX9RK2Lvi24zrTT+jyt8kSuUxLzL7rU7odJiA0c2uj9JqUgXg
+         bpTw==
+X-Gm-Message-State: AOAM533YDmgT3RKWs/FkQS21umr5R58Jp2TsIJQverYws4y0Nrcb7vWt
+        Dm7zpCX635qyuIiwb0nkmAhs89oDSPARfNki5MxheiOLXmydyI+8hl5NKxXFv5SB7oaMFpmzN2l
+        opmBRUjyMCiJY8wKIop62CWQI
+X-Received: by 2002:a7b:c2f0:: with SMTP id e16mr16018851wmk.144.1629130402169;
+        Mon, 16 Aug 2021 09:13:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwX5+2pq1udnYpXDWSnKOhLd1QNqtk4jCRZuoif26U3VsJumuh0AbpdtyZUzhe9vTG+rdBF0w==
+X-Received: by 2002:a7b:c2f0:: with SMTP id e16mr16018840wmk.144.1629130401978;
+        Mon, 16 Aug 2021 09:13:21 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c67f1.dip0.t-ipconnect.de. [91.12.103.241])
+        by smtp.gmail.com with ESMTPSA id k14sm11425807wri.46.2021.08.16.09.13.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 09:13:21 -0700 (PDT)
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Khalid Aziz <khalid.aziz@oracle.com>,
+        "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
+        <longpeng2@huawei.com>, Steven Sistare <steven.sistare@oracle.com>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "Gonglei (Arei)" <arei.gonglei@huawei.com>
+References: <YRpVHnr55LpQQvTb@casper.infradead.org>
+ <ca2d4ea4-e875-475a-6094-1ac58bc0b544@redhat.com>
+ <YRpeHnP7QDNJRA8Y@casper.infradead.org>
+ <88884f55-4991-11a9-d330-5d1ed9d5e688@redhat.com>
+ <YRpo4EAJSkY7hI7Q@casper.infradead.org>
+ <40bad572-501d-e4cf-80e3-9a8daa98dc7e@redhat.com>
+ <YRp169xvwB3j0rpD@casper.infradead.org>
+ <3ce1f52f-d84d-49ba-c027-058266e16d81@redhat.com>
+ <YRp4+EmohNoxzv2x@casper.infradead.org>
+ <e6a31927-8f93-22af-2d5a-9d80578e9317@redhat.com>
+ <YRqLc2W1P77tiSqj@casper.infradead.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [RFC PATCH 0/5] madvise MADV_DOEXEC
+Message-ID: <97ed86a0-9fac-3dbc-0f9e-d669484c9485@redhat.com>
+Date:   Mon, 16 Aug 2021 18:13:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <YRqLc2W1P77tiSqj@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210812190440.fknfthdk3mazm6px@pali>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 09:04:40PM +0200, Pali Rohár wrote:
-> The point here is that there is application (pppd) which allows
-> specifying custom unit id as an option argument. Also it allows to call
-> external applications (at some events) with sharing file descriptors.
-> And it is one of the options how to touch part of ppp connection via
-> external scripts / applications. You start pppd for /dev/ttyUSB<N> with
-> unit id <N> and then in external script you use <N> for ioctls. And I do
-> not know if there is a way how to retrieve unit id in those external
-> scripts. There was already discussion about marking all file descriptors
-> in pppd as close-on-exec and it was somehow rejected as it will broke
-> custom scripts / applications which pppd invokes on events. So looks
-> like that people are using these "features" of pppd.
-
-Potential external pppd scripts, that depend on the unit id, may be a
-valid use case for letting the netlink api define this identifier (if
-pppd ever gets netlink support).
-
-> Option "unit" in pppd specifies ppp unit id. And if new API (rtnl) would
-> not provide equivalent for allowing to specify it then migrating pppd
-> from ioctl to rtnl is not possible without breaking compatibility.
+On 16.08.21 17:59, Matthew Wilcox wrote:
+> On Mon, Aug 16, 2021 at 05:01:44PM +0200, David Hildenbrand wrote:
+>> On 16.08.21 16:40, Matthew Wilcox wrote:
+>>> On Mon, Aug 16, 2021 at 04:33:09PM +0200, David Hildenbrand wrote:
+>>>>>> I did not follow why we have to play games with MAP_PRIVATE, and having
+>>>>>> private anonymous pages shared between processes that don't COW, introducing
+>>>>>> new syscalls etc.
+>>>>>
+>>>>> It's not about SHMEM, it's about file-backed pages on regular
+>>>>> filesystems.  I don't want to have XFS, ext4 and btrfs all with their
+>>>>> own implementations of ARCH_WANT_HUGE_PMD_SHARE.
+>>>>
+>>>> Let me ask this way: why do we have to play such games with MAP_PRIVATE?
+>>>
+>>> : Mappings within this address range behave as if they were shared
+>>> : between threads, so a write to a MAP_PRIVATE mapping will create a
+>>> : page which is shared between all the sharers.
+>>>
+>>> If so, that's a misunderstanding, because there are no games being played.
+>>> What Khalid's saying there is that because the page tables are already
+>>> shared for that range of address space, the COW of a MAP_PRIVATE will
+>>> create a new page, but that page will be shared between all the sharers.
+>>> The second write to a MAP_PRIVATE page (by any of the sharers) will not
+>>> create a COW situation.  Just like if all the sharers were threads of
+>>> the same process.
+>>>
+>>
+>> It actually seems to be just like I understood it. We'll have multiple
+>> processes share anonymous pages writable, even though they are not using
+>> shared memory.
+>>
+>> IMHO, sharing page tables to optimize for something kernel-internal (page
+>> table consumption) should be completely transparent to user space. Just like
+>> ARCH_WANT_HUGE_PMD_SHARE currently is unless I am missing something
+>> important.
+>>
+>> The VM_MAYSHARE check in want_pmd_share()->vma_shareable() makes me assume
+>> that we really only optimize for MAP_SHARED right now, never for
+>> MAP_PRIVATE.
 > 
-> As you already described, we can simulate setting default interface name
-> in pppd application. But above usage or any other which expose pppd API
-> to other application is not possible to simulate.
+> It's definitely *not* about being transparent to userspace.  It's about
+> giving userspace new functionality where multiple processes can choose
+> to share a portion of their address space with each other.  What any
+> process changes in that range changes, every sharing process sees.
+> mmap(), munmap(), mprotect(), mremap(), everything.
 
-If the pppd project is interested in adding support for the netlink
-api, then I'm fine with adding this feature. I just want to make sure
-that it'll have a real world use case.
+Oh okay, so it's actually much more complicated and complex than I 
+thought. Thanks for clarifying that! I recall virtiofsd had similar 
+requirements for sharing memory with the QEMU main process, I might be 
+wrong.
 
-> So I think we need to first decide or solve issue if rtnl ppp API should
-> provide same functionality as ioctl ppp API. If answer is yes, then some
-> kind of specifying custom ppp unit id is required. If answer is no (e.g.
-> because we do not want ppp unit id in rtnl API as it looks legacy and
-> has issues) then rtnl ppp API cannot be used by ppp as it cannot provide
-> all existing / supported features without breaking legacy compatibility.
-> 
-> I see pros & cons for both answers. Not supporting legacy code paths in
-> new code/API is the way how to clean up code and prevent repeating old
-> historic issues. But if new code/API is not fully suitable for pppd --
-> which is de-facto standard Linux userspace implementation -- does it
-> make sense to have it? Or does it mean to also implement new userspace
-> part of implementation (e.g. pppd2) to avoid these legacy / historic
-> issues? Or... is not whole ppp protocol just legacy part of our history
-> which should not be used in new modern setups? And for "legacy usage" is
-> current implementation enough and it does not make sense to invest time
-> into this area? I cannot answer to these questions, but I think it is
-> something quite important as it can show what should be direction and
-> future of ppp subsystem.
+"existing shared memory area" and your initial page table example made 
+me assume that we are simply dealing with sharing page tables of MAP_SHARED.
 
-PPP isn't legacy, but very few people are interested in working on and
-maintaining the code.
+It's actually something like a VMA container that you share between 
+processes. And whatever VMAs are currently inside that VMA container is 
+mirrored to other processes. I assume sharing page tables could actually 
+be an implementation detail, especially when keeping MAP_PRIVATE 
+(confusing in that context!) and other features that will give you 
+surprises (uffd) out of the picture.
 
-Do you have plans for adding netlink support to pppd? If so, is the
-project ready to accept such code?
+-- 
+Thanks,
 
-BTW, sorry for the delay.
+David / dhildenb
 
