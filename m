@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94CC53ED4CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E37233ED753
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236836AbhHPNFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:05:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55964 "EHLO mail.kernel.org"
+        id S240042AbhHPNbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:31:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236797AbhHPNFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:05:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E35663295;
-        Mon, 16 Aug 2021 13:04:28 +0000 (UTC)
+        id S240650AbhHPNT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:19:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AEDE632CA;
+        Mon, 16 Aug 2021 13:15:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119069;
-        bh=Ylhu4rnYGeqvoXyN8ECgDL4cvu8egDPnWzaiBBFNVm4=;
+        s=korg; t=1629119714;
+        bh=YCZHwI0/diN40H/AxPUf6DZzVWXvXZ8q8WGueXWd+qg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BVGtrmw9deznPhHvydTzW9cZg/6e+UFarx9Xj7bbWvq/cJbHUpBbYanX1rl8fBAqD
-         CW0Xfuq5zO05Mv4tI4haVPrVZ6ireL5T+taEIrDGMlv0Z+w7fQjYCVwPadAuDRcmxT
-         diT6PmfyZ0cYUkCW4t6FQzGPcBeSqbW4V8J0rr9E=
+        b=k7WaNV7LGlO/2LmMssOFMzRxYbs6KCVpIN6nl22BlgjQ0p/vazu702geFBwDPGRtW
+         E1o/GDHu23/W0vNjxFCvXGzYCFD0z99sRowFqAmOJ5Bqy9lvxmfuRBr0y3Iry7SIHU
+         V0KgmZAM1e9DSpnSAleJcuwjMcbdtYxsTo1he0B8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Hajnoczi <stefanha@redhat.com>,
-        "Longpeng(Mike)" <longpeng2@huawei.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 39/62] vsock/virtio: avoid potential deadlock when vsock device remove
+Subject: [PATCH 5.13 101/151] net: dsa: lan9303: fix broken backpressure in .port_fdb_dump
 Date:   Mon, 16 Aug 2021 15:02:11 +0200
-Message-Id: <20210816125429.533832643@linuxfoundation.org>
+Message-Id: <20210816125447.403845072@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
-References: <20210816125428.198692661@linuxfoundation.org>
+In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
+References: <20210816125444.082226187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,75 +40,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Longpeng(Mike) <longpeng2@huawei.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit 49b0b6ffe20c5344f4173f3436298782a08da4f2 ]
+[ Upstream commit ada2fee185d8145afb89056558bb59545b9dbdd0 ]
 
-There's a potential deadlock case when remove the vsock device or
-process the RESET event:
+rtnl_fdb_dump() has logic to split a dump of PF_BRIDGE neighbors into
+multiple netlink skbs if the buffer provided by user space is too small
+(one buffer will typically handle a few hundred FDB entries).
 
-  vsock_for_each_connected_socket:
-      spin_lock_bh(&vsock_table_lock) ----------- (1)
-      ...
-          virtio_vsock_reset_sock:
-              lock_sock(sk) --------------------- (2)
-      ...
-      spin_unlock_bh(&vsock_table_lock)
+When the current buffer becomes full, nlmsg_put() in
+dsa_slave_port_fdb_do_dump() returns -EMSGSIZE and DSA saves the index
+of the last dumped FDB entry, returns to rtnl_fdb_dump() up to that
+point, and then the dump resumes on the same port with a new skb, and
+FDB entries up to the saved index are simply skipped.
 
-lock_sock() may do initiative schedule when the 'sk' is owned by
-other thread at the same time, we would receivce a warning message
-that "scheduling while atomic".
+Since dsa_slave_port_fdb_do_dump() is pointed to by the "cb" passed to
+drivers, then drivers must check for the -EMSGSIZE error code returned
+by it. Otherwise, when a netlink skb becomes full, DSA will no longer
+save newly dumped FDB entries to it, but the driver will continue
+dumping. So FDB entries will be missing from the dump.
 
-Even worse, if the next task (selected by the scheduler) try to
-release a 'sk', it need to request vsock_table_lock and the deadlock
-occur, cause the system into softlockup state.
-  Call trace:
-   queued_spin_lock_slowpath
-   vsock_remove_bound
-   vsock_remove_sock
-   virtio_transport_release
-   __vsock_release
-   vsock_release
-   __sock_release
-   sock_close
-   __fput
-   ____fput
+Fix the broken backpressure by propagating the "cb" return code and
+allow rtnl_fdb_dump() to restart the FDB dump with a new skb.
 
-So we should not require sk_lock in this case, just like the behavior
-in vhost_vsock or vmci.
-
-Fixes: 0ea9e1d3a9e3 ("VSOCK: Introduce virtio_transport.ko")
-Cc: Stefan Hajnoczi <stefanha@redhat.com>
-Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
-Link: https://lore.kernel.org/r/20210812053056.1699-1-longpeng2@huawei.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: ab335349b852 ("net: dsa: lan9303: Add port_fast_age and port_fdb_dump methods")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/vmw_vsock/virtio_transport.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/net/dsa/lan9303-core.c | 34 +++++++++++++++++++---------------
+ 1 file changed, 19 insertions(+), 15 deletions(-)
 
-diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
-index 5905f0cddc89..7973f98ebd91 100644
---- a/net/vmw_vsock/virtio_transport.c
-+++ b/net/vmw_vsock/virtio_transport.c
-@@ -373,11 +373,14 @@ static void virtio_vsock_event_fill(struct virtio_vsock *vsock)
- 
- static void virtio_vsock_reset_sock(struct sock *sk)
- {
--	lock_sock(sk);
-+	/* vmci_transport.c doesn't take sk_lock here either.  At least we're
-+	 * under vsock_table_lock so the sock cannot disappear while we're
-+	 * executing.
-+	 */
-+
- 	sk->sk_state = TCP_CLOSE;
- 	sk->sk_err = ECONNRESET;
- 	sk->sk_error_report(sk);
--	release_sock(sk);
+diff --git a/drivers/net/dsa/lan9303-core.c b/drivers/net/dsa/lan9303-core.c
+index 344374025426..d7ce281570b5 100644
+--- a/drivers/net/dsa/lan9303-core.c
++++ b/drivers/net/dsa/lan9303-core.c
+@@ -557,12 +557,12 @@ static int lan9303_alr_make_entry_raw(struct lan9303 *chip, u32 dat0, u32 dat1)
+ 	return 0;
  }
  
- static void virtio_vsock_update_guest_cid(struct virtio_vsock *vsock)
+-typedef void alr_loop_cb_t(struct lan9303 *chip, u32 dat0, u32 dat1,
+-			   int portmap, void *ctx);
++typedef int alr_loop_cb_t(struct lan9303 *chip, u32 dat0, u32 dat1,
++			  int portmap, void *ctx);
+ 
+-static void lan9303_alr_loop(struct lan9303 *chip, alr_loop_cb_t *cb, void *ctx)
++static int lan9303_alr_loop(struct lan9303 *chip, alr_loop_cb_t *cb, void *ctx)
+ {
+-	int i;
++	int ret = 0, i;
+ 
+ 	mutex_lock(&chip->alr_mutex);
+ 	lan9303_write_switch_reg(chip, LAN9303_SWE_ALR_CMD,
+@@ -582,13 +582,17 @@ static void lan9303_alr_loop(struct lan9303 *chip, alr_loop_cb_t *cb, void *ctx)
+ 						LAN9303_ALR_DAT1_PORT_BITOFFS;
+ 		portmap = alrport_2_portmap[alrport];
+ 
+-		cb(chip, dat0, dat1, portmap, ctx);
++		ret = cb(chip, dat0, dat1, portmap, ctx);
++		if (ret)
++			break;
+ 
+ 		lan9303_write_switch_reg(chip, LAN9303_SWE_ALR_CMD,
+ 					 LAN9303_ALR_CMD_GET_NEXT);
+ 		lan9303_write_switch_reg(chip, LAN9303_SWE_ALR_CMD, 0);
+ 	}
+ 	mutex_unlock(&chip->alr_mutex);
++
++	return ret;
+ }
+ 
+ static void alr_reg_to_mac(u32 dat0, u32 dat1, u8 mac[6])
+@@ -606,18 +610,20 @@ struct del_port_learned_ctx {
+ };
+ 
+ /* Clear learned (non-static) entry on given port */
+-static void alr_loop_cb_del_port_learned(struct lan9303 *chip, u32 dat0,
+-					 u32 dat1, int portmap, void *ctx)
++static int alr_loop_cb_del_port_learned(struct lan9303 *chip, u32 dat0,
++					u32 dat1, int portmap, void *ctx)
+ {
+ 	struct del_port_learned_ctx *del_ctx = ctx;
+ 	int port = del_ctx->port;
+ 
+ 	if (((BIT(port) & portmap) == 0) || (dat1 & LAN9303_ALR_DAT1_STATIC))
+-		return;
++		return 0;
+ 
+ 	/* learned entries has only one port, we can just delete */
+ 	dat1 &= ~LAN9303_ALR_DAT1_VALID; /* delete entry */
+ 	lan9303_alr_make_entry_raw(chip, dat0, dat1);
++
++	return 0;
+ }
+ 
+ struct port_fdb_dump_ctx {
+@@ -626,19 +632,19 @@ struct port_fdb_dump_ctx {
+ 	dsa_fdb_dump_cb_t *cb;
+ };
+ 
+-static void alr_loop_cb_fdb_port_dump(struct lan9303 *chip, u32 dat0,
+-				      u32 dat1, int portmap, void *ctx)
++static int alr_loop_cb_fdb_port_dump(struct lan9303 *chip, u32 dat0,
++				     u32 dat1, int portmap, void *ctx)
+ {
+ 	struct port_fdb_dump_ctx *dump_ctx = ctx;
+ 	u8 mac[ETH_ALEN];
+ 	bool is_static;
+ 
+ 	if ((BIT(dump_ctx->port) & portmap) == 0)
+-		return;
++		return 0;
+ 
+ 	alr_reg_to_mac(dat0, dat1, mac);
+ 	is_static = !!(dat1 & LAN9303_ALR_DAT1_STATIC);
+-	dump_ctx->cb(mac, 0, is_static, dump_ctx->data);
++	return dump_ctx->cb(mac, 0, is_static, dump_ctx->data);
+ }
+ 
+ /* Set a static ALR entry. Delete entry if port_map is zero */
+@@ -1210,9 +1216,7 @@ static int lan9303_port_fdb_dump(struct dsa_switch *ds, int port,
+ 	};
+ 
+ 	dev_dbg(chip->dev, "%s(%d)\n", __func__, port);
+-	lan9303_alr_loop(chip, alr_loop_cb_fdb_port_dump, &dump_ctx);
+-
+-	return 0;
++	return lan9303_alr_loop(chip, alr_loop_cb_fdb_port_dump, &dump_ctx);
+ }
+ 
+ static int lan9303_port_mdb_prepare(struct dsa_switch *ds, int port,
 -- 
 2.30.2
 
