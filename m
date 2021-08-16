@@ -2,71 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B79043ED78B
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550183ED78D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230344AbhHPNgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:36:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56656 "EHLO mail.kernel.org"
+        id S238792AbhHPNgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:36:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239510AbhHPNfk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:35:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 458A26054F;
-        Mon, 16 Aug 2021 13:35:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629120908;
-        bh=WUjMNw3qQEQzUL6zMadYc3si628avB9ntZHJcU/VT/E=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bQmMZmyhySiPGAk/DuWTWM7P68G7jXNMGbfSWuFWHL/BjXff7RvIykTJZfU/pi3SX
-         44Wn9Mn03Nv5fainZmbtOZGIWM4bi9m+bwxZIX+aOIA3hJLdD3y6XPm7WSDiWapvtI
-         g7BZSVmiCQqBxDyLhCQZ8Qx87bmg9WpFbL602Xy8Zl/RxgIDYYyrjTSQBpRKTqM/nZ
-         hes1y/90c+KA5ZszHXYoYMIUrx/H3y9tWbJ0HdD7UbvQF4U7eZylNowOv973PrDLsN
-         rWbHvxqITuKH7SVy1D+wH00ILecoNv5rOJ+jWDQ+HhW4gcSAK4rtTo4JHm+ZJ9etyo
-         LC5d3AaLBwiFg==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mmflags.h: add missing __GFP_ZEROTAGS and __GFP_SKIP_KASAN_POISON names
-Date:   Mon, 16 Aug 2021 16:35:02 +0300
-Message-Id: <20210816133502.590-1-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        id S239681AbhHPNf4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:35:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F70D60E90;
+        Mon, 16 Aug 2021 13:35:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629120925;
+        bh=V2djZ0s5eeYtPknbm6mCjf0Kvlgls1rw9uu907bgUCs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fGJUSESwqddkOhbxJBKFSBoQkKCT63dyH7dKHeiKg2jInhttWHaz787y2iKM/ZITx
+         eyfEHk59i49OYPoU5+TuSPZlQBYcZXK/HlzRjhQuWECbXIOHEhqZ/DGtVpdSU75GQy
+         PrfpV+r9wqXD1kG6v0Dz90X4heFDYvKfjrM6JVnQ=
+Date:   Mon, 16 Aug 2021 15:35:22 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Chen Huang <chenhuang5@huawei.com>
+Cc:     Roman Gushchin <guro@fb.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Wang Hai <wanghai38@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH 5.10.y 01/11] mm: memcontrol: Use helpers to read page's
+ memcg data
+Message-ID: <YRppmvYOftjAAl/R@kroah.com>
+References: <20210816072147.3481782-1-chenhuang5@huawei.com>
+ <20210816072147.3481782-2-chenhuang5@huawei.com>
+ <YRojDsTAjSnw0jIh@kroah.com>
+ <a4c545a8-fff0-38bb-4749-3483c9334daa@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <a4c545a8-fff0-38bb-4749-3483c9334daa@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+On Mon, Aug 16, 2021 at 09:21:11PM +0800, Chen Huang wrote:
+> 
+> 
+> 在 2021/8/16 16:34, Greg Kroah-Hartman 写道:
+> > On Mon, Aug 16, 2021 at 07:21:37AM +0000, Chen Huang wrote:
+> >> From: Roman Gushchin <guro@fb.com>
+> > 
+> > What is the git commit id of this patch in Linus's tree?
+> > 
+> >>
+> >> Patch series "mm: allow mapping accounted kernel pages to userspace", v6.
+> >>
+> >> Currently a non-slab kernel page which has been charged to a memory cgroup
+> >> can't be mapped to userspace.  The underlying reason is simple: PageKmemcg
+> >> flag is defined as a page type (like buddy, offline, etc), so it takes a
+> >> bit from a page->mapped counter.  Pages with a type set can't be mapped to
+> >> userspace.
+> >>
+> >> But in general the kmemcg flag has nothing to do with mapping to
+> >> userspace.  It only means that the page has been accounted by the page
+> >> allocator, so it has to be properly uncharged on release.
+> >>
+> >> Some bpf maps are mapping the vmalloc-based memory to userspace, and their
+> >> memory can't be accounted because of this implementation detail.
+> >>
+> >> This patchset removes this limitation by moving the PageKmemcg flag into
+> >> one of the free bits of the page->mem_cgroup pointer.  Also it formalizes
+> >> accesses to the page->mem_cgroup and page->obj_cgroups using new helpers,
+> >> adds several checks and removes a couple of obsolete functions.  As the
+> >> result the code became more robust with fewer open-coded bit tricks.
+> >>
+> >> This patch (of 4):
+> >>
+> >> Currently there are many open-coded reads of the page->mem_cgroup pointer,
+> >> as well as a couple of read helpers, which are barely used.
+> >>
+> >> It creates an obstacle on a way to reuse some bits of the pointer for
+> >> storing additional bits of information.  In fact, we already do this for
+> >> slab pages, where the last bit indicates that a pointer has an attached
+> >> vector of objcg pointers instead of a regular memcg pointer.
+> >>
+> >> This commits uses 2 existing helpers and introduces a new helper to
+> >> converts all read sides to calls of these helpers:
+> >>   struct mem_cgroup *page_memcg(struct page *page);
+> >>   struct mem_cgroup *page_memcg_rcu(struct page *page);
+> >>   struct mem_cgroup *page_memcg_check(struct page *page);
+> >>
+> >> page_memcg_check() is intended to be used in cases when the page can be a
+> >> slab page and have a memcg pointer pointing at objcg vector.  It does
+> >> check the lowest bit, and if set, returns NULL.  page_memcg() contains a
+> >> VM_BUG_ON_PAGE() check for the page not being a slab page.
+> >>
+> >> To make sure nobody uses a direct access, struct page's
+> >> mem_cgroup/obj_cgroups is converted to unsigned long memcg_data.
+> >>
+> >> Signed-off-by: Roman Gushchin <guro@fb.com>
+> >> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> >> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> >> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> >> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> >> Acked-by: Michal Hocko <mhocko@suse.com>
+> >> Link: https://lkml.kernel.org/r/20201027001657.3398190-1-guro@fb.com
+> >> Link: https://lkml.kernel.org/r/20201027001657.3398190-2-guro@fb.com
+> >> Link: https://lore.kernel.org/bpf/20201201215900.3569844-2-guro@fb.com
+> >>
+> >> Conflicts:
+> >> 	mm/memcontrol.c
+> > 
+> > The "Conflicts:" lines should be removed.
+> > 
+> > Please fix up the patch series and resubmit.  But note, this seems
+> > really intrusive, are you sure these are all needed?
+> > 
+> 
+> OK，I will resend the patchset.
+> Roman Gushchin's patchset formalize accesses to the page->mem_cgroup and
+> page->obj_cgroups. But for LRU pages and most other raw memcg, they may
+> pin to a memcg cgroup pointer, which should always point to an object cgroup
+> pointer. That's the problem I met. And Muchun Song's patchset fix this.
+> So I think these are all needed.
 
-Add missing names of __GFP_ZEROTAGS and __GFP_SKIP_KASAN_POISON flags to
-__def_gfpflag_names.
+What in-tree driver causes this to happen and under what workload?
 
-Fixes: 013bb59dbb7c ("arm64: mte: handle tags zeroing at page allocation time")
-Fixes: c275c5c6d50a ("kasan: disable freed user page poisoning with HW tags")
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- include/trace/events/mmflags.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> > What UIO driver are you using that is showing problems like this?
+> > 
+> 
+> The UIO driver is my own driver, and it's creation likes this:
+> First, we register a device
+> 	pdev = platform_device_register_simple("uio_driver,0, NULL, 0);
+> and use uio_info to describe the UIO driver, the page is alloced and used
+> for uio_vma_fault
+> 	info->mem[0].addr = (phys_addr_t) kzalloc(PAGE_SIZE, GFP_ATOMIC);
 
-diff --git a/include/trace/events/mmflags.h b/include/trace/events/mmflags.h
-index 390270e00a1d..f160484afc5c 100644
---- a/include/trace/events/mmflags.h
-+++ b/include/trace/events/mmflags.h
-@@ -48,7 +48,9 @@
- 	{(unsigned long)__GFP_WRITE,		"__GFP_WRITE"},		\
- 	{(unsigned long)__GFP_RECLAIM,		"__GFP_RECLAIM"},	\
- 	{(unsigned long)__GFP_DIRECT_RECLAIM,	"__GFP_DIRECT_RECLAIM"},\
--	{(unsigned long)__GFP_KSWAPD_RECLAIM,	"__GFP_KSWAPD_RECLAIM"}\
-+	{(unsigned long)__GFP_KSWAPD_RECLAIM,	"__GFP_KSWAPD_RECLAIM"},\
-+	{(unsigned long)__GFP_ZEROTAGS,		"__GFP_ZEROTAGS"},	\
-+	{(unsigned long)__GFP_SKIP_KASAN_POISON,"__GFP_SKIP_KASAN_POISON"}\
- 
- #define show_gfp_flags(flags)						\
- 	(flags) ? __print_flags(flags, "|",				\
--- 
-2.28.0
+That is not a physical address, and is not what the uio api is for at
+all.  Please do not abuse it that way.
 
+> then we register the UIO driver.
+> 	uio_register_device(&pdev->dev, info)
+
+So no in-tree drivers are having problems with the existing code, only
+fake ones?
+
+thanks,
+
+greg k-h
