@@ -2,82 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162A33EDD35
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 337B13EDD46
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232308AbhHPSkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 14:40:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50574 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230137AbhHPSkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 14:40:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6F0760F22;
-        Mon, 16 Aug 2021 18:39:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629139169;
-        bh=zxs7PfDCzOg5/JKaFuj1ZRG3AUP94enAwR2htcd+f3M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J/m4g2KcCGRuaPCzT4cJm8n8B2i7bDPFRLkN5v14dCq8JZs8fMZRV4ZgCvaeD4QUH
-         ItI0vGPuAeIrPEI1PWlF4YY3+4BQUufG9Hry9UbIi9zLW0Gx8KMhGi9YiZrtg1JyHW
-         BIymJ6PvjRJgX14Ye868QzaV3b0jGet8tYHCqCL7sObzEbeXalELIS0VuV9ckIpGoH
-         FBS0/8VufzaZHf7wF8pHKGKiQQWIgOzy5jvySlJIe72+gsMSJ8bOd7HbAKTe4Agq98
-         9s8MyH6K13kgNJfPuQgYuWnA3ka4x6KFRJ+0875qxcItLnm+1UwQrWIUJySQfaqFg2
-         88PMFB6s2qIFw==
-Date:   Mon, 16 Aug 2021 19:39:06 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Aakash Hemadri <aakashhemadri123@gmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
-        Jawoslav Kysela <perex@perex.cz>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Bjorn Helgaas <bjorn@helgaas.com>
-Subject: Re: [PATCH 1/2] ASoC: tegra30: ahub: Use of_device_get_match_data
-Message-ID: <20210816183906.GC4253@sirena.org.uk>
-References: <cover.1628971397.git.aakashhemadri123@gmail.com>
- <e568d621c9c05ee23732a6a6f9e3606a780b1707.1628971397.git.aakashhemadri123@gmail.com>
+        id S230283AbhHPSnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 14:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229722AbhHPSnu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 14:43:50 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB887C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:43:18 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id c12so15661360ljr.5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:43:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tc8LvEjKB125fMvaYu4lvIYEHsbzSNtJpdQim2oDD+w=;
+        b=iQi8JqbQuE1XAZgXMTPQ/bq2ZSyLNYvZn4GHu6SXRYH7hMe75T+H4yVrj5+bLj0y/P
+         1bhzwOTyC9cDAoezDQaNh9rW9ZhUHP2n58JQVG9peGjJCfxR0s/1MMbESF4B2IuA5tCg
+         QIfSTfcM9U6Y427NAhhUvuUz28zeCQFYRwTzY74OTrkzJV/1UcRlKtqLqVETjaQwcNl0
+         stpD1FIzlKpjpcpKNX/UVklYyyxWey440cqHOs0/sgY6Vmod/D50ivwlBpj5Y6e2+Q/y
+         TXSFOAAAI6xpWc5F6Ui3Kam+3RtI9sSp1Z0eKsnls9Et9XhKnnK3XKaAiyL8HxUNr1o+
+         gcNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tc8LvEjKB125fMvaYu4lvIYEHsbzSNtJpdQim2oDD+w=;
+        b=fnyG9FwTE85FflffNbSPIvwZ5p6tLmRc/xPCZbq9S+G0OGRkuGBEW4Ei3upNXcjBze
+         YUfC+RUtCdm9B5kVNsZ++OQoY32TOtVtqPxZUr5PrbOcMCs/FBwrykD5cFHIohxxkU+a
+         kQB0jXuwuvgI2KUQkKVWcW9saqF8IQOwbtxHR94uSAnRSYN8UrVQfE82lGMGBT4juI7i
+         ss38Dd1Udg6svOmHNIQtwaQc08gcTrymBwsm06eFJmZ/83iBuZ3ZxNLKDD6UThttiqYL
+         +SiQf5FsSDheZ/WDdVamzGZIRWIJjTFDSJC3pFbjqvXh9goD6aVqU2i9GNFCC7L5NRwb
+         1l+Q==
+X-Gm-Message-State: AOAM533tAUMVi0D0AHTi9mV4Ok77tWxNIj6vw5D7JfFZPNRGZxj+s2oH
+        CNEqA8toXedaY7sWyPVea3EMNtm/Uyiuh6LIqPZhbg==
+X-Google-Smtp-Source: ABdhPJxh2J/gfj4uaNJSi+hQ4c8sGsIdVmOD7cbnGyOdIh3lGXQ2f0SdgCyg3NVunsSvPOSfgxwlymzCJCztsFWubLY=
+X-Received: by 2002:a2e:94cb:: with SMTP id r11mr61720ljh.116.1629139396718;
+ Mon, 16 Aug 2021 11:43:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hHWLQfXTYDoKhP50"
-Content-Disposition: inline
-In-Reply-To: <e568d621c9c05ee23732a6a6f9e3606a780b1707.1628971397.git.aakashhemadri123@gmail.com>
-X-Cookie: Allow 6 to 8 weeks for delivery.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210815191852.52271-1-nathan@kernel.org>
+In-Reply-To: <20210815191852.52271-1-nathan@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 16 Aug 2021 11:43:05 -0700
+Message-ID: <CAKwvOdknYUxe1dHW-muGr=ZJc=hCKBrfhZCNQR9tEJTwr0fK=Q@mail.gmail.com>
+Subject: Re: [PATCH] bus: ti-sysc: Add break in switch statement in sysc_init_soc()
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Tony Lindgren <tony@atomide.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Aug 15, 2021 at 12:19 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> After commit a6d90e9f2232 ("bus: ti-sysc: AM3: RNG is GP only"), clang
+> with -Wimplicit-fallthrough enabled warns:
+>
+> drivers/bus/ti-sysc.c:2958:3: warning: unannotated fall-through between
+> switch labels [-Wimplicit-fallthrough]
+>                 default:
+>                 ^
+> drivers/bus/ti-sysc.c:2958:3: note: insert 'break;' to avoid
+> fall-through
+>                 default:
+>                 ^
+>                 break;
+> 1 warning generated.
+>
+> Clang's version of this warning is a little bit more pedantic than
+> GCC's. Add the missing break to satisfy it to match what has been done
+> all over the kernel tree.
+>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
---hHWLQfXTYDoKhP50
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks for the patch!
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-On Sun, Aug 15, 2021 at 01:42:18AM +0530, Aakash Hemadri wrote:
+> ---
+>  drivers/bus/ti-sysc.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+> index 0ef98e3ba341..afe8222db7cd 100644
+> --- a/drivers/bus/ti-sysc.c
+> +++ b/drivers/bus/ti-sysc.c
+> @@ -2955,6 +2955,7 @@ static int sysc_init_soc(struct sysc *ddata)
+>                         break;
+>                 case SOC_AM3:
+>                         sysc_add_disabled(0x48310000);  /* rng */
+> +                       break;
+>                 default:
+>                         break;
+>                 }
+>
+> base-commit: ba31f97d43be41ca99ab72a6131d7c226306865f
+> --
+> 2.33.0.rc2
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210815191852.52271-1-nathan%40kernel.org.
 
-> -	match = of_match_device(tegra30_ahub_of_match, &pdev->dev);
-> +	match = of_device_get_match_data(&pdev->dev);
->  	if (!match)
 
-Thierry, are you sure about your review here?  As others have been
-pointing out of_device_get_match_data() returns match->data while
-of_match_device() returns the device.
 
---hHWLQfXTYDoKhP50
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEasMoACgkQJNaLcl1U
-h9C+Iwf+J9Ygbk55AEmLiBKbA3H+0cbaMUPZPYozas8BV793kLwX6y7eYrFg+CVj
-6vDpzijY3mrdK6fVhJMjwsu/MzEel6qoLiB0EZF21JSUgMdrkCJ/lImAXyD8rh66
-IC9pQo2mnorWs8lEG3QJmnFOY7dH6YGBRwLk/kyffQHkHGzz0D/+kFLBi3Fuy7kP
-d3kBV91h3c11wiRzBe2dPC5/xyO+Gp9nFtLu6OoLCO32YssTPu32x9YUxRXWWsmf
-vEB1G8GNRt66HYr9D0V9LPOjlPGIJLs6Q+F2MRyBPbyzesDGKOzG81mGjPPGfnvU
-pUEDPwZlEw+VtfUzcVZIMhAmrKU29A==
-=//If
------END PGP SIGNATURE-----
-
---hHWLQfXTYDoKhP50--
+-- 
+Thanks,
+~Nick Desaulniers
