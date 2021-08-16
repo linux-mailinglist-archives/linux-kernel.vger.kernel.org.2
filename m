@@ -2,90 +2,677 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9D63ED312
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824C03ED31E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236140AbhHPLa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 07:30:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231758AbhHPLa1 (ORCPT
+        id S236079AbhHPLfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 07:35:37 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:19939 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235874AbhHPLfg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 07:30:27 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F756C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 04:29:56 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id qe12-20020a17090b4f8c00b00179321cbae7so16445859pjb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 04:29:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=o8IhNnYi0xnyfOJVE77VjkAVRbghDFzOqFFDQLqlryo=;
-        b=RXx5iRib2uJajCWxLuyyU34YzY1rRxYep4O3W9B5ev1H2dw4s74g/a/qNFE5bjtChw
-         0Wt3CFzPq3uXNzkihb0xl4P8sJn2EQY84igKb6Wg1aTvNcUIA0tbQOSpmTM8kJE4kjI0
-         7sBIzOQkiSX9Vxt/8a4DcSZTMN3ASiKC+/o143Q9fDUYb1PL7K8zi94f7LuKGpAP9StO
-         j1AeXFkY0q3MU9N4KmgiLI5Foyi7vDAa7Xk+zSwd1jSulaCXu+9T74zyn6O3RTt7h6M4
-         tA+Y/DfrN7nagBOljZubpMD6RwH0IO/RFzvbG/FYf81042/xeE3yLTB/FS53NRTVpywd
-         39IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=o8IhNnYi0xnyfOJVE77VjkAVRbghDFzOqFFDQLqlryo=;
-        b=umH+WfU58owAfVb8Xsm61q9NWWtUmzssNgXUkwLyz2ETi2WCVJufQ486Fhy/VIHrn3
-         s5NqqrebvAqRCL0ayRWzdDtKxnARF18WLQj1DhnF0GHCaUiqJ4I5ZDCuYVwJth++o1QJ
-         cZzYj0tzNr6pWYsAm72k3zAu2cG8Tk692M3J+tdg1FrH0wsuRsdX+mUzFZ2Li1rfy+Tc
-         FcTL/R9fa7lLMIAo44rNNqsxb3Zy+IyNnOWRHb92SuaDzbic82tJ6nPyzqqMjkDxDYA4
-         xoGH7k8bIk5FKImbii+Z40oLRh2VXVKszzKmxWY8Wq/Vl3EXAGB+k9JI1nAExWFDb4YZ
-         kyKw==
-X-Gm-Message-State: AOAM530E9Aia7k8TQ2lOFU7cuQdLHFjBFe+S5sAcS1bSL6s0cGw7k1bt
-        tJZ57KCCCMPJG0wDIJ87i8s=
-X-Google-Smtp-Source: ABdhPJybhm5nK0tss6jj88+sOp7rUsaMCKNszs2d0b5cUBxe6cy1nSZf6Y0jYmGXhUSpQCG0pJwmJw==
-X-Received: by 2002:a17:903:49:b0:12d:9c6c:a1df with SMTP id l9-20020a170903004900b0012d9c6ca1dfmr11560981pla.81.1629113396005;
-        Mon, 16 Aug 2021 04:29:56 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id k9sm3682424pfu.109.2021.08.16.04.29.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 04:29:55 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: lv.ruyi@zte.com.cn
-To:     linux@armlinux.org.uk
-Cc:     yang.guang5@zte.com.cn, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Lv Ruyi <lv.ruyi@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] module: remove duplicate include in interrupt.c
-Date:   Mon, 16 Aug 2021 04:29:16 -0700
-Message-Id: <20210816112917.126675-1-lv.ruyi@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Mon, 16 Aug 2021 07:35:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629113704; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=uFc83R4ewp02YRcBa2R/LBDM4OEtmzyThdp93SAgk3s=; b=BiRBkKc3w5bYIUdLckVDTzy2YL7jcRM2ehvHhgnOSw5Fba49nK6fH+pNU4F+tJjxiJBLkwdA
+ 4LnLTxu9hxWL39C9BheESneBWxjvnOAjUp0HfL5GmSvVufQcVQYEdfM+4WyrcQdz4FYgSs0s
+ PPAqdpY/vNrt5GOYZwZ5Oiqt/ho=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 611a4d5e454b7a558fea2aef (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Aug 2021 11:34:54
+ GMT
+Sender: luoj=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3388CC43617; Mon, 16 Aug 2021 11:34:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from akronite-sh-dev02.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: luoj)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D47BCC4338F;
+        Mon, 16 Aug 2021 11:34:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org D47BCC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Luo Jie <luoj@codeaurora.org>
+To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        sricharan@codeaurora.org, Luo Jie <luoj@codeaurora.org>
+Subject: [PATCH] net: phy: add qca8081 ethernet phy driver
+Date:   Mon, 16 Aug 2021 19:34:40 +0800
+Message-Id: <20210816113440.22290-1-luoj@codeaurora.org>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Ruyi <lv.ruyi@zte.com.cn>
+qca8081 is industry’s lowest cost and power 1-port 2.5G/1G Ethernet PHY
+chip, which implements SGMII/SGMII+ for interface to SoC.
 
-'asm/interrupt.h' included in 'interrupt.c' is duplicated.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
+Signed-off-by: Luo Jie <luoj@codeaurora.org>
 ---
- arch/arm/mach-sa1100/hackkit.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/net/phy/Kconfig   |   6 +
+ drivers/net/phy/Makefile  |   1 +
+ drivers/net/phy/qca808x.c | 573 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 580 insertions(+)
+ create mode 100644 drivers/net/phy/qca808x.c
 
-diff --git a/arch/arm/mach-sa1100/hackkit.c b/arch/arm/mach-sa1100/hackkit.c
-index 3085f1c2e586..3fe34ee7c0ab 100644
---- a/arch/arm/mach-sa1100/hackkit.c
-+++ b/arch/arm/mach-sa1100/hackkit.c
-@@ -18,7 +18,6 @@
- #include <linux/serial_core.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
--#include <linux/tty.h>
- #include <linux/gpio.h>
- #include <linux/leds.h>
- #include <linux/platform_device.h>
+diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
+index c56f703ae998..26cb1c2ffd17 100644
+--- a/drivers/net/phy/Kconfig
++++ b/drivers/net/phy/Kconfig
+@@ -343,3 +343,9 @@ endif # PHYLIB
+ config MICREL_KS8995MA
+ 	tristate "Micrel KS8995MA 5-ports 10/100 managed Ethernet switch"
+ 	depends on SPI
++
++config QCA808X_PHY
++	tristate "Qualcomm Atheros QCA808X PHYs"
++	depends on REGULATOR
++	help
++	  Currently supports the QCA8081 model
+diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
+index 172bb193ae6a..9ef477d79588 100644
+--- a/drivers/net/phy/Makefile
++++ b/drivers/net/phy/Makefile
+@@ -84,3 +84,4 @@ obj-$(CONFIG_STE10XP)		+= ste10Xp.o
+ obj-$(CONFIG_TERANETICS_PHY)	+= teranetics.o
+ obj-$(CONFIG_VITESSE_PHY)	+= vitesse.o
+ obj-$(CONFIG_XILINX_GMII2RGMII) += xilinx_gmii2rgmii.o
++obj-$(CONFIG_QCA808X_PHY)	+= qca808x.o
+diff --git a/drivers/net/phy/qca808x.c b/drivers/net/phy/qca808x.c
+new file mode 100644
+index 000000000000..6cb8abae8c8f
+--- /dev/null
++++ b/drivers/net/phy/qca808x.c
+@@ -0,0 +1,573 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Driver for Qualcomm QCA808x PHY
++ * Author: Luo Jie <luoj@codeaurora.org>
++ */
++
++#include <linux/module.h>
++#include <linux/etherdevice.h>
++#include <linux/phy.h>
++#include <linux/bitfield.h>
++
++#define QCA8081_PHY_ID					0x004DD101
++
++/* MII special status */
++#define QCA808X_PHY_SPEC_STATUS				0x11
++#define QCA808X_STATUS_FULL_DUPLEX			BIT(13)
++#define QCA808X_STATUS_LINK_PASS			BIT(10)
++#define QCA808X_STATUS_SPEED_MASK			GENMASK(9, 7)
++#define QCA808X_STATUS_SPEED_100MBS			1
++#define QCA808X_STATUS_SPEED_1000MBS			2
++#define QCA808X_STATUS_SPEED_2500MBS			4
++
++/* MII interrupt enable & status */
++#define QCA808X_PHY_INTR_MASK				0x12
++#define QCA808X_PHY_INTR_STATUS				0x13
++#define QCA808X_INTR_ENABLE_FAST_RETRAIN_FAIL		BIT(15)
++#define QCA808X_INTR_ENABLE_SPEED_CHANGED		BIT(14)
++#define QCA808X_INTR_ENABLE_DUPLEX_CHANGED		BIT(13)
++#define QCA808X_INTR_ENABLE_PAGE_RECEIVED		BIT(12)
++#define QCA808X_INTR_ENABLE_LINK_FAIL			BIT(11)
++#define QCA808X_INTR_ENABLE_LINK_SUCCESS		BIT(10)
++#define QCA808X_INTR_ENABLE_POE				BIT(1)
++#define QCA808X_INTR_ENABLE_WOL				BIT(0)
++
++/* MII DBG address & data */
++#define QCA808X_PHY_DEBUG_ADDR				0x1d
++#define QCA808X_PHY_DEBUG_DATA				0x1e
++
++/* Conifg seed */
++#define QCA808X_PHY_DEBUG_LOCAL_SEED			9
++#define QCA808X_MASTER_SLAVE_SEED_ENABLE		BIT(1)
++#define QCA808X_MASTER_SLAVE_SEED_CFG			GENMASK(12, 2)
++#define QCA808X_MASTER_SLAVE_SEED_RANGE			0x32
++
++/* ADC threshold */
++#define QCA808X_PHY_DEBUG_ADC_THRESHOLD			0x2c80
++#define QCA808X_ADC_THRESHOLD_MASK			GENMASK(7, 0)
++#define QCA808X_ADC_THRESHOLD_80MV			0
++#define QCA808X_ADC_THRESHOLD_100MV			0xf0
++#define QCA808X_ADC_THRESHOLD_200MV			0x0f
++#define QCA808X_ADC_THRESHOLD_300MV			0xff
++
++/* PMA control */
++#define QCA808X_PHY_MMD1_PMA_CONTROL			0x0
++#define QCA808X_PMA_CONTROL_SPEED_MASK			(BIT(13) | BIT(6))
++#define QCA808X_PMA_CONTROL_2500M			(BIT(13) | BIT(6))
++#define QCA808X_PMA_CONTROL_1000M			BIT(6)
++#define QCA808X_PMA_CONTROL_100M			BIT(13)
++#define QCA808X_PMA_CONTROL_10M				0x0
++
++/* PMA capable */
++#define QCA808X_PHY_MMD1_PMA_CAP_REG			0x4
++#define QCA808X_STATUS_2500T_FD_CAPS			BIT(13)
++
++/* PMA type */
++#define QCA808X_PHY_MMD1_PMA_TYPE			0x7
++#define QCA808X_PMA_TYPE_MASK				GENMASK(5, 0)
++#define QCA808X_PMA_TYPE_2500M				0x30
++#define QCA808X_PMA_TYPE_1000M				0xc
++#define QCA808X_PMA_TYPE_100M				0xe
++#define QCA808X_PMA_TYPE_10M				0xf
++
++/* CLD control */
++#define QCA808X_PHY_MMD3_ADDR_CLD_CTRL7			0x8007
++#define QCA808X_8023AZ_AFE_CTRL_MASK			GENMASK(8, 4)
++#define QCA808X_8023AZ_AFE_EN				0x90
++
++/* AZ control */
++#define QCA808X_PHY_MMD3_AZ_TRAINING_CTRL		0x8008
++#define QCA808X_MMD3_AZ_TRAINING_VAL			0x1c32
++
++/* WOL control */
++#define QCA808X_PHY_MMD3_WOL_CTRL			0x8012
++#define QCA808X_WOL_EN					BIT(5)
++
++#define QCA808X_PHY_MMD3_LOCAL_MAC_ADDR_0_15_OFFSET	0x804c
++#define QCA808X_PHY_MMD3_LOCAL_MAC_ADDR_16_31_OFFSET	0x804b
++#define QCA808X_PHY_MMD3_LOCAL_MAC_ADDR_32_47_OFFSET	0x804a
++
++/* AN 2.5G */
++#define QCA808X_PHY_MMD7_AUTONEGOTIATION_CONTROL	0x20
++#define QCA808X_ADVERTISE_2500FULL			BIT(7)
++#define QCA808X_FAST_RETRAIN_2500BT			BIT(5)
++#define QCA808X_ADV_LOOP_TIMING				BIT(0)
++
++/* Fast retrain related registers */
++#define QCA808X_PHY_MMD1_FAST_RETRAIN_STATUS_CTL	0x93
++#define QCA808X_FAST_RETRAIN_CTRL			0x1
++
++#define QCA808X_PHY_MMD1_MSE_THRESHOLD_20DB		0x8014
++#define QCA808X_MSE_THRESHOLD_20DB_VALUE		0x529
++
++#define QCA808X_PHY_MMD1_MSE_THRESHOLD_17DB		0x800E
++#define QCA808X_MSE_THRESHOLD_17DB_VALUE		0x341
++
++#define QCA808X_PHY_MMD1_MSE_THRESHOLD_27DB		0x801E
++#define QCA808X_MSE_THRESHOLD_27DB_VALUE		0x419
++
++#define QCA808X_PHY_MMD1_MSE_THRESHOLD_28DB		0x8020
++#define QCA808X_MSE_THRESHOLD_28DB_VALUE		0x341
++
++#define QCA808X_PHY_MMD7_TOP_OPTION1			0x901c
++#define QCA808X_TOP_OPTION1_DATA			0x0
++
++#define QCA808X_PHY_MMD7_ADDR_EEE_LP_ADVERTISEMENT	0x40
++#define QCA808X_EEE_ADV_THP				0x8
++
++#define QCA808X_PHY_MMD3_DEBUG_1			0xa100
++#define QCA808X_MMD3_DEBUG_1_VALUE			0x9203
++#define QCA808X_PHY_MMD3_DEBUG_2			0xa101
++#define QCA808X_MMD3_DEBUG_2_VALUE			0x48ad
++#define QCA808X_PHY_MMD3_DEBUG_3			0xa103
++#define QCA808X_MMD3_DEBUG_3_VALUE			0x1698
++#define QCA808X_PHY_MMD3_DEBUG_4			0xa105
++#define QCA808X_MMD3_DEBUG_4_VALUE			0x8001
++#define QCA808X_PHY_MMD3_DEBUG_5			0xa106
++#define QCA808X_MMD3_DEBUG_5_VALUE			0x1111
++#define QCA808X_PHY_MMD3_DEBUG_6			0xa011
++#define QCA808X_MMD3_DEBUG_6_VALUE			0x5f85
++
++static int qca808x_debug_reg_read(struct phy_device *phydev, u16 reg)
++{
++	int ret;
++
++	ret = phy_write(phydev, QCA808X_PHY_DEBUG_ADDR, reg);
++	if (ret)
++		return ret;
++
++	return phy_read(phydev, QCA808X_PHY_DEBUG_DATA);
++}
++
++static int qca808x_debug_reg_modify(struct phy_device *phydev, u16 reg,
++				 u16 mask, u16 val)
++{
++	u16 phy_data;
++	int ret;
++
++	ret = qca808x_debug_reg_read(phydev, reg);
++	if (ret < 0)
++		return ret;
++
++	phy_data = ret & 0xffff;
++	phy_data &= ~mask;
++	phy_data |= val;
++
++	return phy_write(phydev, QCA808X_PHY_DEBUG_DATA, phy_data);
++}
++
++static int qca808x_get_2500caps(struct phy_device *phydev)
++{
++	int phy_data;
++
++	phy_data = phy_read_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_PMA_CAP_REG);
++
++	return (phy_data & QCA808X_STATUS_2500T_FD_CAPS) ? 1 : 0;
++}
++
++static int qca808x_get_features(struct phy_device *phydev)
++{
++	linkmode_mod_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->supported,
++			qca808x_get_2500caps(phydev));
++
++	return genphy_read_abilities(phydev);
++}
++
++static int qca808x_phy_fast_retrain_cfg(struct phy_device *phydev)
++{
++	int ret;
++
++	ret = phy_write_mmd(phydev, MDIO_MMD_AN, QCA808X_PHY_MMD7_AUTONEGOTIATION_CONTROL,
++			QCA808X_ADVERTISE_2500FULL |
++			QCA808X_FAST_RETRAIN_2500BT |
++			QCA808X_ADV_LOOP_TIMING);
++	if (ret)
++		return ret;
++
++	phy_write_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_FAST_RETRAIN_STATUS_CTL,
++			QCA808X_FAST_RETRAIN_CTRL);
++	phy_write_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_MSE_THRESHOLD_20DB,
++			QCA808X_MSE_THRESHOLD_20DB_VALUE);
++	phy_write_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_MSE_THRESHOLD_17DB,
++			QCA808X_MSE_THRESHOLD_17DB_VALUE);
++	phy_write_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_MSE_THRESHOLD_27DB,
++			QCA808X_MSE_THRESHOLD_27DB_VALUE);
++	phy_write_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_MSE_THRESHOLD_28DB,
++			QCA808X_MSE_THRESHOLD_28DB_VALUE);
++	phy_write_mmd(phydev, MDIO_MMD_AN, QCA808X_PHY_MMD7_ADDR_EEE_LP_ADVERTISEMENT,
++			QCA808X_EEE_ADV_THP);
++	phy_write_mmd(phydev, MDIO_MMD_AN, QCA808X_PHY_MMD7_TOP_OPTION1,
++			QCA808X_TOP_OPTION1_DATA);
++	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_1,
++			QCA808X_MMD3_DEBUG_1_VALUE);
++	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_4,
++			QCA808X_MMD3_DEBUG_4_VALUE);
++	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_5,
++			QCA808X_MMD3_DEBUG_5_VALUE);
++	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_3,
++			QCA808X_MMD3_DEBUG_3_VALUE);
++	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_6,
++			QCA808X_MMD3_DEBUG_6_VALUE);
++	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_2,
++			QCA808X_MMD3_DEBUG_2_VALUE);
++
++	return 0;
++}
++
++static int qca808x_phy_ms_random_seed_set(struct phy_device *phydev)
++{
++	u16 seed_value = (prandom_u32() % QCA808X_MASTER_SLAVE_SEED_RANGE) << 2;
++
++	return qca808x_debug_reg_modify(phydev, QCA808X_PHY_DEBUG_LOCAL_SEED,
++			QCA808X_MASTER_SLAVE_SEED_CFG, seed_value);
++}
++
++static int qca808x_phy_ms_seed_enable(struct phy_device *phydev, bool enable)
++{
++	u16 seed_enable = 0;
++
++	if (enable)
++		seed_enable = QCA808X_MASTER_SLAVE_SEED_ENABLE;
++
++	return qca808x_debug_reg_modify(phydev, QCA808X_PHY_DEBUG_LOCAL_SEED,
++			QCA808X_MASTER_SLAVE_SEED_ENABLE, seed_enable);
++}
++
++static int qca808x_config_init(struct phy_device *phydev)
++{
++	int ret;
++
++	/* Active adc&vga on 802.3az for the link 1000M and 100M */
++	ret = phy_modify_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_ADDR_CLD_CTRL7,
++			QCA808X_8023AZ_AFE_CTRL_MASK, QCA808X_8023AZ_AFE_EN);
++	if (ret)
++		return ret;
++
++	/* Adjust the threshold on 802.3az for the link 1000M */
++	ret = phy_write_mmd(phydev, MDIO_MMD_PCS,
++			QCA808X_PHY_MMD3_AZ_TRAINING_CTRL, QCA808X_MMD3_AZ_TRAINING_VAL);
++	if (ret)
++		return ret;
++
++	/* Config the fast retrain for the link 2500M */
++	ret = qca808x_phy_fast_retrain_cfg(phydev);
++	if (ret)
++		return ret;
++
++	/* Configure ramdom seed to make phy linked as slave mode for link 2500M */
++	ret = qca808x_phy_ms_random_seed_set(phydev);
++	if (ret)
++		return ret;
++
++	/* Enable seed */
++	ret = qca808x_phy_ms_seed_enable(phydev, true);
++	if (ret)
++		return ret;
++
++	/* Configure adc threshold as 100mv for the link 10M */
++	return qca808x_debug_reg_modify(phydev, QCA808X_PHY_DEBUG_ADC_THRESHOLD,
++			QCA808X_ADC_THRESHOLD_MASK, QCA808X_ADC_THRESHOLD_100MV);
++}
++
++static int qca808x_ack_interrupt(struct phy_device *phydev)
++{
++	int ret;
++
++	ret = phy_read(phydev, QCA808X_PHY_INTR_STATUS);
++
++	return (ret < 0) ? ret : 0;
++}
++
++static int qca808x_config_intr(struct phy_device *phydev)
++{
++	int ret;
++	int intr_ctl = 0;
++
++	if (phydev->interrupts == PHY_INTERRUPT_ENABLED) {
++		ret = qca808x_ack_interrupt(phydev);
++		if (ret)
++			return ret;
++
++		intr_ctl = phy_read(phydev, QCA808X_PHY_INTR_MASK);
++		if (intr_ctl < 0)
++			return intr_ctl;
++
++		intr_ctl |= QCA808X_INTR_ENABLE_FAST_RETRAIN_FAIL |
++			QCA808X_INTR_ENABLE_SPEED_CHANGED |
++			QCA808X_INTR_ENABLE_DUPLEX_CHANGED |
++			QCA808X_INTR_ENABLE_LINK_FAIL |
++			QCA808X_INTR_ENABLE_LINK_SUCCESS;
++		ret = phy_write(phydev, QCA808X_PHY_INTR_MASK, intr_ctl);
++	} else {
++		ret = phy_write(phydev, QCA808X_PHY_INTR_MASK, intr_ctl);
++		if (ret)
++			return ret;
++
++		ret = qca808x_ack_interrupt(phydev);
++	}
++
++	return ret;
++}
++
++static irqreturn_t qca808x_handle_interrupt(struct phy_device *phydev)
++{
++	int intr_status, intr_mask;
++
++	intr_status = phy_read(phydev, QCA808X_PHY_INTR_STATUS);
++	if (intr_status < 0) {
++		phy_error(phydev);
++		return IRQ_NONE;
++	}
++
++	intr_mask = phy_read(phydev, QCA808X_PHY_INTR_MASK);
++	if (intr_mask < 0) {
++		phy_error(phydev);
++		return IRQ_NONE;
++	}
++
++	if (!(intr_status & intr_mask))
++		return IRQ_NONE;
++
++	phy_start_machine(phydev);
++
++	return IRQ_HANDLED;
++}
++
++static int qca808x_set_wol(struct phy_device *phydev, struct ethtool_wolinfo *wol)
++{
++	struct net_device *ndev = phydev->attached_dev;
++	const u8 *mac;
++	int ret;
++	unsigned int i, offsets[] = {
++		QCA808X_PHY_MMD3_LOCAL_MAC_ADDR_32_47_OFFSET,
++		QCA808X_PHY_MMD3_LOCAL_MAC_ADDR_16_31_OFFSET,
++		QCA808X_PHY_MMD3_LOCAL_MAC_ADDR_0_15_OFFSET,
++	};
++
++	if (!ndev)
++		return -ENODEV;
++
++	if (wol->wolopts & WAKE_MAGIC) {
++		mac = (const u8 *) ndev->dev_addr;
++		if (!is_valid_ether_addr(mac))
++			return -EINVAL;
++
++		for (i = 0; i < 3; i++)
++			phy_write_mmd(phydev, MDIO_MMD_PCS, offsets[i],
++				      mac[(i * 2) + 1] | (mac[(i * 2)] << 8));
++
++		/* clear the pending wol interrupt */
++		phy_read(phydev, QCA808X_PHY_INTR_STATUS);
++
++		ret = phy_modify(phydev, QCA808X_PHY_INTR_MASK, 0, QCA808X_INTR_ENABLE_WOL);
++		if (ret)
++			return ret;
++
++		ret = phy_modify_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_WOL_CTRL,
++				0, QCA808X_WOL_EN);
++	} else {
++		ret = phy_modify(phydev, QCA808X_PHY_INTR_MASK, QCA808X_INTR_ENABLE_WOL, 0);
++		if (ret)
++			return ret;
++
++		ret = phy_modify_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_WOL_CTRL,
++				QCA808X_WOL_EN, 0);
++	}
++
++	return ret;
++}
++
++static void qca808x_get_wol(struct phy_device *phydev, struct ethtool_wolinfo *wol)
++{
++	int ret;
++
++	wol->supported = WAKE_MAGIC;
++	wol->wolopts = 0;
++
++	ret = phy_read_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_WOL_CTRL);
++	if (ret < 0)
++		return;
++
++	if (ret & QCA808X_WOL_EN)
++		wol->wolopts |= WAKE_MAGIC;
++}
++
++static int qca808x_suspend(struct phy_device *phydev)
++{
++	int ret;
++
++	ret = phy_read_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_WOL_CTRL);
++	if (ret < 0)
++		return ret;
++
++	if (ret & QCA808X_WOL_EN)
++		return 0;
++
++	return genphy_suspend(phydev);
++}
++
++static int qca808x_speed_forced(struct phy_device *phydev)
++{
++	u16 speed_ctrl, type_ctrl;
++	int ret;
++
++	switch (phydev->speed) {
++	case SPEED_2500:
++		speed_ctrl = QCA808X_PMA_CONTROL_2500M;
++		type_ctrl = QCA808X_PMA_TYPE_2500M;
++		break;
++	case SPEED_1000:
++		speed_ctrl = QCA808X_PMA_CONTROL_1000M;
++		type_ctrl = QCA808X_PMA_TYPE_1000M;
++		break;
++	case SPEED_100:
++		speed_ctrl = QCA808X_PMA_CONTROL_100M;
++		type_ctrl = QCA808X_PMA_TYPE_100M;
++		break;
++	default:
++		speed_ctrl = QCA808X_PMA_CONTROL_10M;
++		type_ctrl = QCA808X_PMA_TYPE_10M;
++		break;
++	}
++
++	ret = phy_modify_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_PMA_CONTROL,
++			QCA808X_PMA_CONTROL_SPEED_MASK, speed_ctrl);
++	if (ret)
++		return ret;
++
++	return phy_modify_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_PMA_TYPE,
++			QCA808X_PMA_TYPE_MASK, type_ctrl);
++}
++
++static int qca808x_config_aneg(struct phy_device *phydev)
++{
++	int phy_ctrl = 0;
++	int ret = 0;
++
++	if (phydev->autoneg != AUTONEG_ENABLE) {
++		ret = genphy_setup_forced(phydev);
++		if (ret)
++			return ret;
++
++		ret = qca808x_speed_forced(phydev);
++	} else {
++		ret = __genphy_config_aneg(phydev, ret);
++		if (ret)
++			return ret;
++
++		if (linkmode_test_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->advertising))
++			phy_ctrl = QCA808X_ADVERTISE_2500FULL;
++
++		ret = phy_modify_mmd(phydev, MDIO_MMD_AN, QCA808X_PHY_MMD7_AUTONEGOTIATION_CONTROL,
++				QCA808X_ADVERTISE_2500FULL, phy_ctrl);
++	}
++
++	return ret;
++}
++
++static int qca808x_get_speed(struct phy_device *phydev)
++{
++	int ret = phy_read(phydev, QCA808X_PHY_SPEC_STATUS);
++
++	if (ret < 0)
++		return ret;
++
++	switch (FIELD_GET(QCA808X_STATUS_SPEED_MASK, ret)) {
++	case QCA808X_STATUS_SPEED_2500MBS:
++		phydev->speed = SPEED_2500;
++		break;
++	case QCA808X_STATUS_SPEED_1000MBS:
++		phydev->speed = SPEED_1000;
++		break;
++	case QCA808X_STATUS_SPEED_100MBS:
++		phydev->speed = SPEED_100;
++		break;
++	default:
++		phydev->speed = SPEED_10;
++		break;
++	}
++
++	return 0;
++}
++
++static int qca808x_read_status(struct phy_device *phydev)
++{
++	int ret;
++
++	ret = genphy_read_status(phydev);
++	if (ret)
++		return ret;
++
++	if (!phydev->link) {
++		ret = phy_read_mmd(phydev, MDIO_MMD_AN, MDIO_AN_10GBT_STAT);
++		if (ret < 0)
++			return ret;
++
++		linkmode_mod_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->lp_advertising,
++				ret & MDIO_AN_10GBT_STAT_LP2_5G);
++
++		/* generate random seed as a lower value to make PHY linked as SLAVE easily,
++		 * excpet for master/slave configuration fault detected.
++		 */
++		if (qca808x_get_2500caps(phydev) == 1) {
++			ret = phy_read(phydev, MII_STAT1000);
++			if (ret < 0)
++				return ret;
++
++			if (ret & LPA_1000MSFAIL) {
++				qca808x_phy_ms_seed_enable(phydev, false);
++			} else {
++				qca808x_phy_ms_random_seed_set(phydev);
++				qca808x_phy_ms_seed_enable(phydev, true);
++			}
++		}
++	}
++
++	return qca808x_get_speed(phydev);
++}
++
++static int qca808x_soft_reset(struct phy_device *phydev)
++{
++	int ret;
++
++	ret = genphy_soft_reset(phydev);
++	if (ret < 0)
++		return ret;
++
++	if (phydev->autoneg == AUTONEG_DISABLE) {
++		ret = qca808x_speed_forced(phydev);
++		if (ret)
++			return ret;
++	}
++
++	return qca808x_phy_ms_seed_enable(phydev, true);
++}
++
++static struct phy_driver qca808x_phy_driver[] = {
++	{
++		PHY_ID_MATCH_EXACT(QCA8081_PHY_ID),
++		.name			= "QCA8081 PHY",
++		.get_features		= qca808x_get_features,
++		.config_init		= qca808x_config_init,
++		.read_status		= qca808x_read_status,
++		.soft_reset		= qca808x_soft_reset,
++		.config_intr		= qca808x_config_intr,
++		.handle_interrupt	= qca808x_handle_interrupt,
++		.config_aneg		= qca808x_config_aneg,
++		.set_wol		= qca808x_set_wol,
++		.get_wol		= qca808x_get_wol,
++		.suspend		= qca808x_suspend,
++		.resume			= genphy_resume,
++	},
++};
++module_phy_driver(qca808x_phy_driver);
++
++static struct mdio_device_id __maybe_unused qca808x_phy_tbl[] = {
++	{ PHY_ID_MATCH_EXACT(QCA8081_PHY_ID) },
++	{ },
++};
++MODULE_DEVICE_TABLE(mdio, qca808x_phy_tbl);
++
++MODULE_DESCRIPTION("Qualcomm Technologies, Inc. QCA8081 PHY driver");
++MODULE_AUTHOR("Luo Jie");
++MODULE_LICENSE("GPL");
 -- 
-2.25.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
