@@ -2,90 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2C23EDAD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59DA83EDAD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbhHPQXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 12:23:03 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:14360 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbhHPQWy (ORCPT
+        id S229904AbhHPQWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 12:22:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229542AbhHPQWm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 12:22:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1629130933;
-    s=strato-dkim-0002; d=fpond.eu;
-    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=C/0nH6ifDkBh3BoEywEeuFHDG3Pap+r2x1iLKRjufJY=;
-    b=WBHN1wfnxzhSul4MSrFgFpTK6ZD20uOL8Fwepb6IsX+WpTP7SqlfEfcSZBdrVKs20e
-    bHtiipPQw+NH5XOG759rOCR/xO/Au3oLSCEPQptB62JCYJzn5r/sDpdH/qWXHiC+KhAe
-    LRadz4ElN3PbzZtz14K1xKEKMpeES+EX+mCZTfjoehHDQUA82vEKCAWaKtkRoJoOG1rN
-    g1v/6RUQsL73xdiCfoKSteFjq8KkOCSlAdcByk9vuYcdbr4TkjiCXGtwJ1neO+NTQLjy
-    GQRQUse9WKoQuZkBUWVSsLLHrDU0C37BNnmw0BPjne0O+cMBBOb1sM1VLHVBJX00BqzP
-    4bBA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":OWANVUa4dPFUgKR/3dpvnYP0Np73dmm4I5W0/AvA67Ot4fvR92tEa+WwYg=="
-X-RZG-CLASS-ID: mo00
-Received: from gummo.local
-    by smtp.strato.de (RZmta 47.31.0 DYNA|AUTH)
-    with ESMTPSA id v006c2x7GGMCmQO
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Mon, 16 Aug 2021 18:22:12 +0200 (CEST)
-From:   Ulrich Hecht <uli+renesas@fpond.eu>
-To:     linux-renesas-soc@vger.kernel.org, linux-serial@vger.kernel.org
-Cc:     wsa@kernel.org, geert@linux-m68k.org,
-        yoshihiro.shimoda.uh@renesas.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, linux-kernel@vger.kernel.org,
-        Ulrich Hecht <uli+renesas@fpond.eu>
-Subject: [PATCH] serial: sh-sci: fix break handling for sysrq
-Date:   Mon, 16 Aug 2021 18:22:01 +0200
-Message-Id: <20210816162201.28801-1-uli+renesas@fpond.eu>
-X-Mailer: git-send-email 2.20.1
+        Mon, 16 Aug 2021 12:22:42 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 364A9C061764;
+        Mon, 16 Aug 2021 09:22:11 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 86B9B1F412B4
+Received: by earth.universe (Postfix, from userid 1000)
+        id B35603C0C9B; Mon, 16 Aug 2021 18:22:07 +0200 (CEST)
+Date:   Mon, 16 Aug 2021 18:22:07 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Peter Chen <peter.chen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v6 05/12] dt-bindings: power: supply: smb347-charger:
+ Document USB VBUS regulator
+Message-ID: <20210816162207.v4ka4vtuajf5jpb6@earth.universe>
+References: <20210731173842.19643-1-digetx@gmail.com>
+ <20210731173842.19643-6-digetx@gmail.com>
+ <20210806211314.sfjl5jke27hz3jj7@earth.universe>
+ <dce19bb0-216e-bcd7-3db5-b2c074b4ca47@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="erjfwqt7yl2kd7cr"
+Content-Disposition: inline
+In-Reply-To: <dce19bb0-216e-bcd7-3db5-b2c074b4ca47@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes two issues that cause the sysrq sequence to be inadvertently
-aborted on SCIF serial consoles:
 
-- a NUL character remains in the RX queue after a break has been detected,
-  which is then passed on to uart_handle_sysrq_char()
-- the break interrupt is handled twice on controllers with multiplexed ERI
-  and BRI interrupts
+--erjfwqt7yl2kd7cr
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Ulrich Hecht <uli+renesas@fpond.eu>
----
- drivers/tty/serial/sh-sci.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+Hi,
 
-diff --git a/drivers/tty/serial/sh-sci.c b/drivers/tty/serial/sh-sci.c
-index 07eb56294371..89ee43061d3a 100644
---- a/drivers/tty/serial/sh-sci.c
-+++ b/drivers/tty/serial/sh-sci.c
-@@ -1758,6 +1758,10 @@ static irqreturn_t sci_br_interrupt(int irq, void *ptr)
- 
- 	/* Handle BREAKs */
- 	sci_handle_breaks(port);
-+
-+	/* drop invalid character received before break was detected */
-+	serial_port_in(port, SCxRDR);
-+
- 	sci_clear_SCxSR(port, SCxSR_BREAK_CLEAR(port));
- 
- 	return IRQ_HANDLED;
-@@ -1837,7 +1841,8 @@ static irqreturn_t sci_mpxed_interrupt(int irq, void *ptr)
- 		ret = sci_er_interrupt(irq, ptr);
- 
- 	/* Break Interrupt */
--	if ((ssr_status & SCxSR_BRK(port)) && err_enabled)
-+	if (s->irqs[SCIx_ERI_IRQ] != s->irqs[SCIx_BRI_IRQ] &&
-+	    (ssr_status & SCxSR_BRK(port)) && err_enabled)
- 		ret = sci_br_interrupt(irq, ptr);
- 
- 	/* Overrun Interrupt */
--- 
-2.20.1
+On Mon, Aug 16, 2021 at 06:39:09PM +0300, Dmitry Osipenko wrote:
+> 07.08.2021 00:13, Sebastian Reichel =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > Hi,
+> >=20
+> > On Sat, Jul 31, 2021 at 08:38:35PM +0300, Dmitry Osipenko wrote:
+> >> SMB347 can supply power to USB VBUS, which is required by OTG-cable
+> >> devices that want to switch USB port into the host mode. Add USB VBUS
+> >> regulator properties.
+> >>
+> >> Reviewed-by: Rob Herring <robh@kernel.org>
+> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >> ---
+> >=20
+> > Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+>=20
+> Sebastian, you can pick up these patches into the power tree:
+>=20
+> dt-bindings: power: supply: smb347-charger: Document USB VBUS
+> regulator
+> power: supply: smb347-charger: Make smb347_set_writable() IRQ-safe
+> power: supply: smb347-charger: Utilize generic regmap caching
+> power: supply: smb347-charger: Add missing pin control activation
+> power: supply: smb347-charger: Implement USB VBUS regulator
+>=20
+> The reset of the patches could go via the Tegra tree. It's probably a
+> bit too late for the Tegra patches since Thierry already made 5.15 PR,
+> but should be fine for the power. Thanks in advance!
 
+Queued now.
+
+-- Sebastian
+
+--erjfwqt7yl2kd7cr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmEakJ8ACgkQ2O7X88g7
++ppCOA//Uim7ycc5jXS9N7YcXL7DOj+86gG/dde8tv/tLAtvEWcyZvRNsJqO/P4q
+jF8rSsiOytZ6PZi7swIU+/lBUIs2sVAY55+GGFAxMAf8ZVWu4b0hUHiMdrCAL3BZ
+CCRP5NNT8HNQOetJ5Xt8zjpiBCZFy5OXim+F+JQF8w9H23co7DS1Fx2IjWJwulAF
+5uwxEB5Hy9FxosI97g7LFKR37Qe2NwNNSxW3q9wDRqNri5HP64frhOut/tT6Wnmn
+t1S1WD9m/JsP1QA9cofXKKF9enhXCdzLnDEWUqcZZol3cDm+LGsMdAnHCPmcsfJ+
+iQpIXtJec6je5pPQpd9nbS/UlriErZSfoGEKrnIVTYLV+qOI+gY1Y0bt33HgChBy
+LOnmVUTuBxGD2Za1pPray1bEeAV5hQI+H5BtWqar5Dk/xFsBMFMnxWymQn/bkD7j
+GzI0daxC2IAaSIexsfoPnv1gM6DMrlV1Zuv1rpmaT3r/XV3Pk+FgnGifwW9R3CEW
+KrDTTTKe48TxtNv92B+8WynRN1y2YBhAjuPtyvBOgVe7ohbphWAqjdYX+dBBi2mC
+kjWfXAMTunUjnIkO3ik06UsC+h8+WMKwIwNb3zLbsp0COv91+bZi/O/gaQokvqmU
+OTEYff6rwW/cuLzKptXhEwT61Q52jdbS44NSBcFv/kpLC9vgVwQ=
+=AMiA
+-----END PGP SIGNATURE-----
+
+--erjfwqt7yl2kd7cr--
