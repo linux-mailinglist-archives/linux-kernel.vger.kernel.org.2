@@ -2,66 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62BA53ED9C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 307E13ED9C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232841AbhHPPUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 11:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232574AbhHPPT4 (ORCPT
+        id S235214AbhHPPVk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Aug 2021 11:21:40 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:43769 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236568AbhHPPVV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 11:19:56 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4806EC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:19:14 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id gr13so3338853ejb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:19:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Il6GSbEyGK25oYyRI6KAGsrU8XClCFAIoYWDM98MYNk=;
-        b=PSO+q5YB/h0YnYbUn266vHazteN+9Spu+HXSUl6bM6kH8OGZxzhOmvof4KpjUoe7x6
-         zeRhRmGaTevNf73xudaCZy6UEs3aptYugnDOp3IoOp6jVVPc9ujISWFUgx/O/C6g4/Zf
-         NVSGs47wKi11bZmHvCHijYg6bzoN+Vg+rnRvFZ0+39XA5XK9cvao94nntRiX7n7aroA+
-         LokMrJXPfQwt8i40jo+cI59+NVLll5p8q5rfGEtAbLF9x4SlsbPYaBiR8wI4wab+m8/z
-         pm1H6YoA53gmvgZa5d0zOv4kA+RGKE+cpizzMXW83cMAs2g1LTAMn+maQCYaxe+Udxgh
-         p1sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Il6GSbEyGK25oYyRI6KAGsrU8XClCFAIoYWDM98MYNk=;
-        b=JA/y5nxnDMiuqPfA2VNDu+oaG+nPwS61G0VQ+Csuj4meY/iuHCHoklZJfGpqt0jl/l
-         la+RwqyuDSTwTei/oMwQwZkQkGXVl5ewk2vKPbn8L6Ne9tlDuEsH8ZN5To+KRc3055VR
-         JOkELVodB/rLXre5ciEKbhZr/g5UIvO8H2XcViOHSJ81fLWOnS4Dj+nIZuHwufYtbMdN
-         9y764GHR0hYzoYnFqlbpvqWlZa2jtKaC7ov91yUI6thytIDqFSenuXSmLUgk/DuUC/S4
-         6ysmT5Go+903snk75oUnGWlEU0DRtPT+f0/3QQU0cnP4BI03xUoEMKLumuBeow+esCoU
-         h7rg==
-X-Gm-Message-State: AOAM530Nnhq1beikULit+4CEGCAez7wwwbA38u5OPIsCWX76PMzF7+Mb
-        9KirVlQexIp34x4d+keNtsV7RVXAUD6SMx8m+is=
-X-Google-Smtp-Source: ABdhPJwkF8UXIHE3/E1Q/LlLGv0NLG2oBMfmzAfwexAbQzjwgEkO9ognV04inOCv2Fwve5iihKF9WrULkuxvz3Ff7os=
-X-Received: by 2002:a17:907:b09:: with SMTP id h9mr16692054ejl.278.1629127152882;
- Mon, 16 Aug 2021 08:19:12 -0700 (PDT)
+        Mon, 16 Aug 2021 11:21:21 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id D804D4000A;
+        Mon, 16 Aug 2021 15:20:41 +0000 (UTC)
+Date:   Mon, 16 Aug 2021 17:20:40 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] mtd: Changes for 5.14-rc7
+Message-ID: <20210816172040.7a67f8da@xps13>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Received: by 2002:a05:6400:4207:0:0:0:0 with HTTP; Mon, 16 Aug 2021 08:19:12
- -0700 (PDT)
-Reply-To: mrbarraksalah1970@gmail.com
-From:   "Mr.Barrak Salah," <mrcaraluda@gmail.com>
-Date:   Mon, 16 Aug 2021 08:19:12 -0700
-Message-ID: <CABg+cK1WAWii+mhYw9Y+aSjocQBHf6rdosHCbMje0NxyngU4Og@mail.gmail.com>
-Subject: READ AND REPLY
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
-My Name is Mr.Barrak Salah; I am a banker by profession. My reason for
-contacting you is to transfer abandoned $15.5 Million United States
-Dollars to your account.
-Further details of the transaction shall be forwarded to you as soon
-as I receive your return mail indicating your interest.
-Thanks and hope to hear from you soon.
-Mr.Barrak Salah
+Hello Linus,
+
+This is the MTD fixes PR for the next -rc. Again, sorry for the delay.
+
+Thanks,
+Miquèl
+
+
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
+
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/fixes-for-5.14-rc7
+
+for you to fetch changes up to b48027083a78b13356695555a05b0e085e378687:
+
+  mtd: rawnand: Fix probe failure due to of_get_nand_secure_regions() (2021-08-06 21:44:16 +0200)
+
+----------------------------------------------------------------
+MTD core fixes:
+* Fix lock hierarchy in deregister_mtd_blktrans
+* Handle flashes without OTP gracefully
+* Break circular locks in register_mtd_blktrans
+
+MTD device fixes:
+* mchp48l640:
+  - Fix memory leak on cmd
+  - Silence some uninitialized variable warnings
+* blkdevs:
+  - Initialize rq.limits.discard_granularity
+
+CFI fixes:
+* Fix crash when erasing/writing AMD cards
+
+Raw NAND fixes:
+* Fix of_get_nand_secure_regions():
+  - Add a missing check
+  - Avoid an unwanted probe failure when a DT property is missing
+
+----------------------------------------------------------------
+Andreas Persson (1):
+      mtd: cfi_cmdset_0002: fix crash when erasing/writing AMD cards
+
+Colin Ian King (1):
+      mtd: devices: mchp48l640: Fix memory leak on cmd
+
+Dan Carpenter (2):
+      mtd: rawnand: Add a check in of_get_nand_secure_regions()
+      mtd: mchp48l640: silence some uninitialized variable warnings
+
+Desmond Cheong Zhi Xi (2):
+      mtd: break circular locks in register_mtd_blktrans
+      mtd: fix lock hierarchy in deregister_mtd_blktrans
+
+Manivannan Sadhasivam (1):
+      mtd: rawnand: Fix probe failure due to of_get_nand_secure_regions()
+
+Michael Walle (1):
+      mtd: core: handle flashes without OTP gracefully
+
+Zhihao Cheng (1):
+      mtd: mtd_blkdevs: Initialize rq.limits.discard_granularity
+
+ drivers/mtd/chips/cfi_cmdset_0002.c |  2 +-
+ drivers/mtd/devices/mchp48l640.c    |  5 +++--
+ drivers/mtd/mtd_blkdevs.c           | 11 ++++-------
+ drivers/mtd/mtdcore.c               |  4 +++-
+ drivers/mtd/nand/raw/nand_base.c    | 10 ++++++++--
+ 5 files changed, 19 insertions(+), 13 deletions(-)
