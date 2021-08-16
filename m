@@ -2,72 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E72273EDE8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE703EDE92
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232198AbhHPUWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 16:22:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53926 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232127AbhHPUV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 16:21:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C33A60F35;
-        Mon, 16 Aug 2021 20:21:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629145287;
-        bh=DZeJgaBVOuro+yCALFSGg+G7kUBtualFHpqyFlfXJlE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oNpRW+iMog1tMCCH//whIBeMwOu/Iqw0xTxSH0sK2cO0OEgEHaFwN/PpX8zo1PLvU
-         RSVn+m+lUanW4g7B25rxiHtWT40GNc2DJay6+UOvR/h+Wtvp7fvEaPhlBbMsV1rrMn
-         hB26Xt7S1CSayjlK51WJUHsjOO3sT/A+Lswwn4NBcKZGf7qOR4eVLj8mZOlsGbwU/J
-         kynDYbKI1eJyyNxNx57wqp3vqb3L1QrYcbIOFWYCcWApsh1H/meKhQ7ZSB4d2mWEkE
-         KxDkiXKRg8cyBFS6auM+nHYOffHpH+3ZbTkrRJx7qj/v0SUI06yKy5YTzyqTojQwYI
-         9juZoAMIUvxnQ==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH 3/3] kbuild: Shuffle blank line to improve comment meaning
-Date:   Mon, 16 Aug 2021 13:20:56 -0700
-Message-Id: <20210816202056.4586-3-nathan@kernel.org>
-X-Mailer: git-send-email 2.33.0.rc2
-In-Reply-To: <20210816202056.4586-1-nathan@kernel.org>
-References: <20210816202056.4586-1-nathan@kernel.org>
+        id S232089AbhHPUXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 16:23:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231723AbhHPUXv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 16:23:51 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD190C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 13:23:19 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id o185so28429862oih.13
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 13:23:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=xtLKLxOTgP0hZbfnKrxJuZxeJBYBtihgXnXMIaAKNcM=;
+        b=NS9zm4DWA8M5f8Pu+yOte7iHeGwmI955VvFCfdvRX0FM6D81n9hvnWPwxpJ+nsKxOm
+         Kbr9ARehMrAnrwxvRIiKJlz1Va/LH4O0nkzqq5dAQLYL3ByG7MfP4XovhzjWCWgVYGGQ
+         kwOC15KXnGlVs9aab3Rl/6EMapzkpCn04Cwpw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=xtLKLxOTgP0hZbfnKrxJuZxeJBYBtihgXnXMIaAKNcM=;
+        b=O2dBuVpIwOWeJihS5FeRTQnQlv9iBfRd8nxBDxpd5Z/7KcWL776dnEyifh2831uVJm
+         rmlk2nyCZhoC278kTAz0GDrBOnytrJYwcPcM6O1fJFHSVhlmTsgcaygZgvIdl6jxK01T
+         UVV7OsT///dYU5wvirdHYa9w3hj2hQVpxuHm2aX0FO2dEurfZoktmvJ+DlYECOVYFIHd
+         iqpl0Zxpp6ZmNzroH4Z2YDfUH3c4yQ3BYXlITiDWLzQFx8FDBsSnk8lGVOYH/OaPmYVv
+         QQVR8G49A2BvHvw2k+FWouEtV+VJLg4itNLWJv5G6bezfMtrtUnnMQR50wk1DoaEPGJu
+         glVA==
+X-Gm-Message-State: AOAM53070AV+IONf0HxdkmutHZPxN2FZLyjBEauE/P/k7W1O6FNsz0Qq
+        6Yrz5pI9yX7+OAxKvMpsOwB7wmN6vFe0qasPH6Si8Q==
+X-Google-Smtp-Source: ABdhPJyxxQVYP/BT04vEnLZi2+QGv58mJ8ZBNUuFmt5uMAbp70Fb0Ffzakyq3aesYr3ao9tRB/7vOl+eVQqngOkhvis=
+X-Received: by 2002:a05:6808:114a:: with SMTP id u10mr433479oiu.19.1629145399251;
+ Mon, 16 Aug 2021 13:23:19 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 16 Aug 2021 13:23:18 -0700
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1629108335-23463-1-git-send-email-deesin@codeaurora.org>
+References: <1629108335-23463-1-git-send-email-deesin@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 16 Aug 2021 13:23:18 -0700
+Message-ID: <CAE-0n528DuP4MiAOhYY+Du+L=OZaGM5YJm=NwWia3JF7hp7sAA@mail.gmail.com>
+Subject: Re: [PATCH V2 1/1] soc: qcom: smp2p: Add wakeup capability to SMP2P IRQ
+To:     Deepak Kumar Singh <deesin@codeaurora.org>,
+        bjorn.andersson@linaro.org, clew@codeaurora.org,
+        sibis@codeaurora.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--Wunused-but-set-variable and -Wunused-const-variable are both disabled
-for the same reason but there is a blank line between them and no blank
-line between -Wno-unused-const-variable and the block.
+Quoting Deepak Kumar Singh (2021-08-16 03:05:35)
+> Remote susbsystems notify fatal crash throught smp2p interrupt.
+> When modem/wifi crashes it can cause soc to come out of low power state
+> and may not allow again to enter in low power state until crash is handled.
+>
+> Mark smp2p interrupt wakeup capable so that interrupt handler is executed
+> and remote susbsystem crash can be handled in system  resume path.
+>
+> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
+> ---
+>  drivers/soc/qcom/smp2p.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+>
+> diff --git a/drivers/soc/qcom/smp2p.c b/drivers/soc/qcom/smp2p.c
+> index 2df4883..646848b 100644
+> --- a/drivers/soc/qcom/smp2p.c
+> +++ b/drivers/soc/qcom/smp2p.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/soc/qcom/smem.h>
+>  #include <linux/soc/qcom/smem_state.h>
+>  #include <linux/spinlock.h>
+> +#include <linux/pm_wakeirq.h>
 
-Shuffle the new line so that it is clear that the comment applied to
-both flags and the next block is separate from them.
+Please sort alphabetically by include name, 'p' before 's'.
 
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>  /*
+>   * The Shared Memory Point to Point (SMP2P) protocol facilitates communication
+> @@ -538,9 +539,20 @@ static int qcom_smp2p_probe(struct platform_device *pdev)
+>                 goto unwind_interfaces;
+>         }
+>
+> +       /* Setup smp2p interrupt as wakeup source */
 
-diff --git a/Makefile b/Makefile
-index 07b76274396e..7d5007cdfa5c 100644
---- a/Makefile
-+++ b/Makefile
-@@ -794,8 +794,8 @@ endif
- # These warnings generated too much noise in a regular build.
- # Use make W=1 to enable them (see scripts/Makefile.extrawarn)
- KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
--
- KBUILD_CFLAGS += $(call cc-disable-warning, unused-const-variable)
-+
- ifdef CONFIG_FRAME_POINTER
- KBUILD_CFLAGS	+= -fno-omit-frame-pointer -fno-optimize-sibling-calls
- else
--- 
-2.33.0.rc2
+This comment is bad. Please don't reiterate what the code is doing.
+Instead, write something like
 
+	/*
+	 * Treat remoteproc crashes as wakeups by default so we handle
+	 * them sooner rather than along with the next wakeup (e.g.
+	 * power button). This avoids leaving the system in a shallower
+	 * suspend power state if a remoteproc crashes during suspend,
+	 * but requires userspace to actively suspend the device after
+	 * handling the crash, or CONFIG_PM_AUTOSLEEP to be true.
+	 */
+
+> +       ret = device_init_wakeup(&pdev->dev, true);
+
+I still wonder if it's better to leave this off by default and only
+enable it if the kernel is using autosuspend (PM_AUTOSLEEP). Then
+userspace is responsible to decide if it can handle the wakeup with the
+screen off, reload the remoteproc, and go back to suspend if it isn't
+using autosuspend.
+
+> +       if (ret)
+> +               goto unwind_interfaces;
+> +
