@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB253ED6AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2BB3ED644
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239986AbhHPNXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:23:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39178 "EHLO mail.kernel.org"
+        id S240300AbhHPNTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:19:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239763AbhHPNOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:14:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00AFD632A6;
-        Mon, 16 Aug 2021 13:11:24 +0000 (UTC)
+        id S236779AbhHPNHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:07:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F89061A7A;
+        Mon, 16 Aug 2021 13:06:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119485;
-        bh=tJxGGleBcbwFGf5JhTliPn7y6Vgz9a2kMMcdLXH8eAM=;
+        s=korg; t=1629119206;
+        bh=9VUpGO8W0eQ0dfgI6fS3/W6Fm/+KQEy2QQQ2/rPZngU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2MVmpgxobH6af0i0rClrpU7zbTN73TgrCO9kSWnoZ/+xuEYNbLXG/MBfu10GUjOAZ
-         Hoj2IVcc8CkoTeIRz6eEO/0BOY+sUuegx3AnulZjMDSbVSztKG9+N1EFveOWhRi6Rn
-         7FpHxo6tWzDP34TFkNCgcB+6aGS1llmteeClTudI=
+        b=wrvuPdTjwKEb9v4N7sBBWD35gyfclpTO4SRxUOebSiiTa/pbxVwCqGxpsYbKE0ZpE
+         fZawfclLYN6rbaKGsBmy/Od+kj1/yox2uhOkJguOnvs0eD4gKpDsO5mDL/hu124MJ6
+         /4rSv7nA/yCb5cFkWYc0izL3+f4Wjhq4GkoSj9zo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 044/151] ASoC: cs42l42: Dont allow SND_SOC_DAIFMT_LEFT_J
-Date:   Mon, 16 Aug 2021 15:01:14 +0200
-Message-Id: <20210816125445.521455939@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.10 05/96] ASoC: amd: Fix reference to PCM buffer address
+Date:   Mon, 16 Aug 2021 15:01:15 +0200
+Message-Id: <20210816125435.117026645@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
-References: <20210816125444.082226187@linuxfoundation.org>
+In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
+References: <20210816125434.948010115@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +39,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 64324bac750b84ca54711fb7d332132fcdb87293 ]
+commit 8b5d95313b6d30f642e4ed0125891984c446604e upstream.
 
-The driver has no support for left-justified protocol so it should
-not have been allowing this to be passed to cs42l42_set_dai_fmt().
+PCM buffers might be allocated dynamically when the buffer
+preallocation failed or a larger buffer is requested, and it's not
+guaranteed that substream->dma_buffer points to the actually used
+buffer.  The driver needs to refer to substream->runtime->dma_addr
+instead for the buffer address.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
-Link: https://lore.kernel.org/r/20210729170929.6589-2-rf@opensource.cirrus.com
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20210731084331.32225-1-tiwai@suse.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/codecs/cs42l42.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/amd/acp-pcm-dma.c          |    2 +-
+ sound/soc/amd/raven/acp3x-pcm-dma.c  |    2 +-
+ sound/soc/amd/renoir/acp3x-pdm-dma.c |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 3956912e23ac..0d31c84b0445 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -778,7 +778,6 @@ static int cs42l42_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	/* interface format */
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
--	case SND_SOC_DAIFMT_LEFT_J:
- 		break;
- 	default:
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -969,7 +969,7 @@ static int acp_dma_hw_params(struct snd_
+ 
+ 	acp_set_sram_bank_state(rtd->acp_mmio, 0, true);
+ 	/* Save for runtime private data */
+-	rtd->dma_addr = substream->dma_buffer.addr;
++	rtd->dma_addr = runtime->dma_addr;
+ 	rtd->order = get_order(size);
+ 
+ 	/* Fill the page table entries in ACP SRAM */
+--- a/sound/soc/amd/raven/acp3x-pcm-dma.c
++++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
+@@ -288,7 +288,7 @@ static int acp3x_dma_hw_params(struct sn
+ 		pr_err("pinfo failed\n");
+ 	}
+ 	size = params_buffer_bytes(params);
+-	rtd->dma_addr = substream->dma_buffer.addr;
++	rtd->dma_addr = substream->runtime->dma_addr;
+ 	rtd->num_pages = (PAGE_ALIGN(size) >> PAGE_SHIFT);
+ 	config_acp3x_dma(rtd, substream->stream);
+ 	return 0;
+--- a/sound/soc/amd/renoir/acp3x-pdm-dma.c
++++ b/sound/soc/amd/renoir/acp3x-pdm-dma.c
+@@ -248,7 +248,7 @@ static int acp_pdm_dma_hw_params(struct
  		return -EINVAL;
--- 
-2.30.2
-
+ 	size = params_buffer_bytes(params);
+ 	period_bytes = params_period_bytes(params);
+-	rtd->dma_addr = substream->dma_buffer.addr;
++	rtd->dma_addr = substream->runtime->dma_addr;
+ 	rtd->num_pages = (PAGE_ALIGN(size) >> PAGE_SHIFT);
+ 	config_acp_dma(rtd, substream->stream);
+ 	init_pdm_ring_buffer(MEM_WINDOW_START, size, period_bytes,
 
 
