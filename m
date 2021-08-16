@@ -2,254 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A763EDC82
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 19:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 057783EDC84
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 19:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbhHPRiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 13:38:14 -0400
-Received: from mga17.intel.com ([192.55.52.151]:48212 "EHLO mga17.intel.com"
+        id S229835AbhHPRnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 13:43:40 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:60116 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229590AbhHPRiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 13:38:11 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="196170656"
-X-IronPort-AV: E=Sophos;i="5.84,326,1620716400"; 
-   d="scan'208";a="196170656"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 10:37:39 -0700
-X-IronPort-AV: E=Sophos;i="5.84,326,1620716400"; 
-   d="scan'208";a="462119781"
-Received: from xzhu13-mobl.amr.corp.intel.com (HELO ldmartin-desk2) ([10.209.7.115])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 10:37:38 -0700
-Date:   Mon, 16 Aug 2021 10:37:38 -0700
-From:   Lucas De Marchi <lucas.demarchi@intel.com>
-To:     Gayatri Kammela <gayatri.kammela@intel.com>
-Cc:     platform-driver-x86@vger.kernel.org, mgross@linux.intel.com,
-        hdegoede@redhat.com, irenic.rajneesh@gmail.com,
-        andriy.shevchenko@linux.intel.com, vicamo.yang@canonical.com,
-        srinivas.pandruvada@intel.com, david.e.box@intel.com,
-        linux-kernel@vger.kernel.org, tamar.mashiah@intel.com,
-        gregkh@linuxfoundation.org, rajatja@google.com,
-        Shyam-sundar.S-k@amd.com, Alexander.Deucher@amd.com,
-        mlimonci@amd.com, Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v5 1/5] platform/x86/intel: intel_pmc_core: Move
- intel_pmc_core* files to pmc subfolder
-Message-ID: <20210816173738.oxndqtq6uaql7sz7@ldmartin-desk2>
-X-Patchwork-Hint: comment
-References: <cover.1626459866.git.gayatri.kammela@intel.com>
- <b2cb6b10b75445acceab3030c3a9aa585e7c7b65.1626459866.git.gayatri.kammela@intel.com>
+        id S229590AbhHPRnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 13:43:39 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629135788; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=INjVMyWHHGhC425iiHp5zLCGy+F03/1Rk5zPlKmyR6A=;
+ b=GVMXGzbUrhmzp7kLhlOfEA0850cGO2U+ypRGAlCI0JBXIEzR6Xx5f5s5gQlKqsu+2+WUVbm1
+ 6f4rKUMArp2+Q0HkrOVAgEwy94gQBnNBt/BEb7AG2uKyOwElHp3eeAn8k2nASTFAV8jboMN2
+ 1bkRMuOKnH0qEjGoFVwu0+xU53A=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 611aa3ab9507ca1a342e8596 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Aug 2021 17:43:07
+ GMT
+Sender: okukatla=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C3B4FC43617; Mon, 16 Aug 2021 17:43:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: okukatla)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9860FC4338F;
+        Mon, 16 Aug 2021 17:43:05 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <b2cb6b10b75445acceab3030c3a9aa585e7c7b65.1626459866.git.gayatri.kammela@intel.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 16 Aug 2021 23:13:05 +0530
+From:   okukatla@codeaurora.org
+To:     Alex Elder <elder@linaro.org>
+Cc:     georgi.djakov@linaro.org, bjorn.andersson@linaro.org,
+        evgreen@google.com, Andy Gross <agross@kernel.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sboyd@kernel.org,
+        mdtipton@codeaurora.org, sibis@codeaurora.org,
+        saravanak@google.com, seansw@qti.qualcomm.com,
+        linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [v6 2/3] interconnect: qcom: Add EPSS L3 support on SC7280
+In-Reply-To: <8c046ac4-27c8-d858-941b-80f1509dbb61@linaro.org>
+References: <1628577962-3995-1-git-send-email-okukatla@codeaurora.org>
+ <1628577962-3995-3-git-send-email-okukatla@codeaurora.org>
+ <8c046ac4-27c8-d858-941b-80f1509dbb61@linaro.org>
+Message-ID: <8f67306fe163b93b1c5076d0d2b725a5@codeaurora.org>
+X-Sender: okukatla@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 11:38:33AM -0700, Gayatri Kammela wrote:
->As part of collecting Intel x86 specific drivers in their own
->folder, move intel_pmc_core* files to its own subfolder there.
->
->Cc: Srinivas Pandruvada <srinivas.pandruvada@intel.com>
->Cc: David Box <david.e.box@intel.com>
->Cc: You-Sheng Yang <vicamo.yang@canonical.com>
->Cc: Hans de Goede <hdegoede@redhat.com>
->Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->Acked-by: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
->Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
->Signed-off-by: Gayatri Kammela <gayatri.kammela@intel.com>
->---
-> MAINTAINERS                                   |  2 +-
-> drivers/platform/x86/Kconfig                  | 21 ------------------
-> drivers/platform/x86/Makefile                 |  1 -
-> drivers/platform/x86/intel/Kconfig            |  1 +
-> drivers/platform/x86/intel/Makefile           |  1 +
-> drivers/platform/x86/intel/pmc/Kconfig        | 22 +++++++++++++++++++
-> drivers/platform/x86/intel/pmc/Makefile       |  5 +++++
-> .../{intel_pmc_core.c => intel/pmc/core.c}    |  2 +-
-> .../{intel_pmc_core.h => intel/pmc/core.h}    |  0
-> .../pmc/pltdrv.c}                             |  0
-> 10 files changed, 31 insertions(+), 24 deletions(-)
-> create mode 100644 drivers/platform/x86/intel/pmc/Kconfig
-> create mode 100644 drivers/platform/x86/intel/pmc/Makefile
-> rename drivers/platform/x86/{intel_pmc_core.c => intel/pmc/core.c} (99%)
-> rename drivers/platform/x86/{intel_pmc_core.h => intel/pmc/core.h} (100%)
-> rename drivers/platform/x86/{intel_pmc_core_pltdrv.c => intel/pmc/pltdrv.c} (100%)
->
->diff --git a/MAINTAINERS b/MAINTAINERS
->index 6c8be735cc91..c5d610885bf2 100644
->--- a/MAINTAINERS
->+++ b/MAINTAINERS
->@@ -9477,7 +9477,7 @@ M:	David E Box <david.e.box@intel.com>
-> L:	platform-driver-x86@vger.kernel.org
-> S:	Maintained
-> F:	Documentation/ABI/testing/sysfs-platform-intel-pmc
->-F:	drivers/platform/x86/intel_pmc_core*
->+F:	drivers/platform/x86/intel/pmc/core*
->
-> INTEL PMIC GPIO DRIVERS
-> M:	Andy Shevchenko <andy@kernel.org>
->diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
->index 7d385c3b2239..cae72922f448 100644
->--- a/drivers/platform/x86/Kconfig
->+++ b/drivers/platform/x86/Kconfig
->@@ -1184,27 +1184,6 @@ config INTEL_MRFLD_PWRBTN
-> 	  To compile this driver as a module, choose M here: the module
-> 	  will be called intel_mrfld_pwrbtn.
->
->-config INTEL_PMC_CORE
->-	tristate "Intel PMC Core driver"
->-	depends on PCI
->-	depends on ACPI
->-	help
->-	  The Intel Platform Controller Hub for Intel Core SoCs provides access
->-	  to Power Management Controller registers via various interfaces. This
->-	  driver can utilize debugging capabilities and supported features as
->-	  exposed by the Power Management Controller. It also may perform some
->-	  tasks in the PMC in order to enable transition into the SLPS0 state.
->-	  It should be selected on all Intel platforms supported by the driver.
->-
->-	  Supported features:
->-		- SLP_S0_RESIDENCY counter
->-		- PCH IP Power Gating status
->-		- LTR Ignore / LTR Show
->-		- MPHY/PLL gating status (Sunrisepoint PCH only)
->-		- SLPS0 Debug registers (Cannonlake/Icelake PCH)
->-		- Low Power Mode registers (Tigerlake and beyond)
->-		- PMC quirks as needed to enable SLPS0/S0ix
->-
-> config INTEL_PMT_CLASS
-> 	tristate
-> 	help
->diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
->index 7ee369aab10d..43d36f8c36f1 100644
->--- a/drivers/platform/x86/Makefile
->+++ b/drivers/platform/x86/Makefile
->@@ -128,7 +128,6 @@ obj-$(CONFIG_INTEL_UNCORE_FREQ_CONTROL)		+= intel-uncore-frequency.o
-> obj-$(CONFIG_INTEL_BXTWC_PMIC_TMU)	+= intel_bxtwc_tmu.o
-> obj-$(CONFIG_INTEL_CHTDC_TI_PWRBTN)	+= intel_chtdc_ti_pwrbtn.o
-> obj-$(CONFIG_INTEL_MRFLD_PWRBTN)	+= intel_mrfld_pwrbtn.o
->-obj-$(CONFIG_INTEL_PMC_CORE)		+= intel_pmc_core.o intel_pmc_core_pltdrv.o
-> obj-$(CONFIG_INTEL_PMT_CLASS)		+= intel_pmt_class.o
-> obj-$(CONFIG_INTEL_PMT_TELEMETRY)	+= intel_pmt_telemetry.o
-> obj-$(CONFIG_INTEL_PMT_CRASHLOG)	+= intel_pmt_crashlog.o
->diff --git a/drivers/platform/x86/intel/Kconfig b/drivers/platform/x86/intel/Kconfig
->index f2eef337eb98..8ca021785f67 100644
->--- a/drivers/platform/x86/intel/Kconfig
->+++ b/drivers/platform/x86/intel/Kconfig
->@@ -18,5 +18,6 @@ if X86_PLATFORM_DRIVERS_INTEL
->
-> source "drivers/platform/x86/intel/int33fe/Kconfig"
-> source "drivers/platform/x86/intel/int3472/Kconfig"
->+source "drivers/platform/x86/intel/pmc/Kconfig"
->
-> endif # X86_PLATFORM_DRIVERS_INTEL
->diff --git a/drivers/platform/x86/intel/Makefile b/drivers/platform/x86/intel/Makefile
->index 0653055942d5..49962f4dfdec 100644
->--- a/drivers/platform/x86/intel/Makefile
->+++ b/drivers/platform/x86/intel/Makefile
->@@ -6,3 +6,4 @@
->
-> obj-$(CONFIG_INTEL_CHT_INT33FE)		+= int33fe/
-> obj-$(CONFIG_INTEL_SKL_INT3472)		+= int3472/
->+obj-$(CONFIG_INTEL_PMC_CORE)		+= pmc/
->diff --git a/drivers/platform/x86/intel/pmc/Kconfig b/drivers/platform/x86/intel/pmc/Kconfig
->new file mode 100644
->index 000000000000..b4c955a35674
->--- /dev/null
->+++ b/drivers/platform/x86/intel/pmc/Kconfig
->@@ -0,0 +1,22 @@
->+# SPDX-License-Identifier: GPL-2.0-only
->+
->+config INTEL_PMC_CORE
->+	tristate "Intel PMC Core driver"
->+	depends on PCI
->+	depends on ACPI
->+	help
->+	  The Intel Platform Controller Hub for Intel Core SoCs provides access
->+	  to Power Management Controller registers via various interfaces. This
->+	  driver can utilize debugging capabilities and supported features as
->+	  exposed by the Power Management Controller. It also may perform some
->+	  tasks in the PMC in order to enable transition into the SLPS0 state.
->+	  It should be selected on all Intel platforms supported by the driver.
->+
->+	  Supported features:
->+		- SLP_S0_RESIDENCY counter
->+		- PCH IP Power Gating status
->+		- LTR Ignore / LTR Show
->+		- MPHY/PLL gating status (Sunrisepoint PCH only)
->+		- SLPS0 Debug registers (Cannonlake/Icelake PCH)
->+		- Low Power Mode registers (Tigerlake and beyond)
->+		- PMC quirks as needed to enable SLPS0/S0ix
->diff --git a/drivers/platform/x86/intel/pmc/Makefile b/drivers/platform/x86/intel/pmc/Makefile
->new file mode 100644
->index 000000000000..e0182e10a035
->--- /dev/null
->+++ b/drivers/platform/x86/intel/pmc/Makefile
->@@ -0,0 +1,5 @@
->+# SPDX-License-Identifier: GPL-2.0
->+#
->+
->+obj-$(CONFIG_INTEL_PMC_CORE)	+= core.o
->+obj-$(CONFIG_INTEL_PMC_CORE)	+= pltdrv.o
-
-is the module rename really intentional? If so, it needs to be renamed
-to something else as just calling it core may conflict with other
-equally badly named modules.
-
-	error: the following would cause module name conflict:
-	  GEN     .version
-	  drivers/misc/c2port/core.ko
-	  drivers/platform/x86/intel/pmc/core.ko
-	make[2]: *** [Makefile:1417: modules_check] Error 1
-	make[2]: *** Waiting for unfinished jobs....
-
-This builds for me by restoring the previous module names
-
------8<------
-diff --git a/drivers/platform/x86/intel/pmc/Makefile b/drivers/platform/x86/intel/pmc/Makefile
-index e0182e10a035..9bfe8ab8fd64 100644
---- a/drivers/platform/x86/intel/pmc/Makefile
-+++ b/drivers/platform/x86/intel/pmc/Makefile
-@@ -1,5 +1,8 @@
-  # SPDX-License-Identifier: GPL-2.0
-  #
-  
--obj-$(CONFIG_INTEL_PMC_CORE)	+= core.o
--obj-$(CONFIG_INTEL_PMC_CORE)	+= pltdrv.o
-+obj-$(CONFIG_INTEL_PMC_CORE)	+= intel_pmc_core.o
-+obj-$(CONFIG_INTEL_PMC_CORE)	+= intel_pmc_core_pltdrv.o
-+
-+intel_pmc_core-y		+= core.o
-+intel_pmc_core_pltdrv-y		+= pltdrv.o
------8<------
-
-
-Lucas De Marchi
-
->diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel/pmc/core.c
->similarity index 99%
->rename from drivers/platform/x86/intel_pmc_core.c
->rename to drivers/platform/x86/intel/pmc/core.c
->index b0e486a6bdfb..f9de78b08e5d 100644
->--- a/drivers/platform/x86/intel_pmc_core.c
->+++ b/drivers/platform/x86/intel/pmc/core.c
->@@ -31,7 +31,7 @@
-> #include <asm/msr.h>
-> #include <asm/tsc.h>
->
->-#include "intel_pmc_core.h"
->+#include "core.h"
->
-> #define ACPI_S0IX_DSM_UUID		"57a6512e-3979-4e9d-9708-ff13b2508972"
-> #define ACPI_GET_LOW_MODE_REGISTERS	1
->diff --git a/drivers/platform/x86/intel_pmc_core.h b/drivers/platform/x86/intel/pmc/core.h
->similarity index 100%
->rename from drivers/platform/x86/intel_pmc_core.h
->rename to drivers/platform/x86/intel/pmc/core.h
->diff --git a/drivers/platform/x86/intel_pmc_core_pltdrv.c b/drivers/platform/x86/intel/pmc/pltdrv.c
->similarity index 100%
->rename from drivers/platform/x86/intel_pmc_core_pltdrv.c
->rename to drivers/platform/x86/intel/pmc/pltdrv.c
->-- 
->2.25.1
->
+On 2021-08-10 18:16, Alex Elder wrote:
+> On 8/10/21 1:46 AM, Odelu Kukatla wrote:
+>> Add Epoch Subsystem (EPSS) L3 interconnect provider support on
+>> SC7280 SoCs.
+>> 
+>> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
+> 
+> I don't have much to say about what this is doing but I
+> have a few suggestions.
+> 
+> 					-Alex
+> 
+Thanks for review Alex!
+>> ---
+>>   drivers/interconnect/qcom/osm-l3.c | 136 
+>> +++++++++++++++++++++++++++++++------
+>>   drivers/interconnect/qcom/sc7280.h |  10 +++
+>>   2 files changed, 125 insertions(+), 21 deletions(-)
+>> 
+>> diff --git a/drivers/interconnect/qcom/osm-l3.c 
+>> b/drivers/interconnect/qcom/osm-l3.c
+>> index c7af143..3b16e73 100644
+>> --- a/drivers/interconnect/qcom/osm-l3.c
+>> +++ b/drivers/interconnect/qcom/osm-l3.c
+>> @@ -9,12 +9,14 @@
+>>   #include <linux/io.h>
+>>   #include <linux/kernel.h>
+>>   #include <linux/module.h>
+>> +#include <linux/of_address.h>
+>>   #include <linux/of_device.h>
+>>   #include <linux/platform_device.h>
+>>     #include <dt-bindings/interconnect/qcom,osm-l3.h>
+>>     #include "sc7180.h"
+>> +#include "sc7280.h"
+>>   #include "sc8180x.h"
+>>   #include "sdm845.h"
+>>   #include "sm8150.h"
+>> @@ -33,17 +35,33 @@
+>>     /* EPSS Register offsets */
+>>   #define EPSS_LUT_ROW_SIZE		4
+>> +#define EPSS_REG_L3_VOTE		0x90
+>>   #define EPSS_REG_FREQ_LUT		0x100
+>>   #define EPSS_REG_PERF_STATE		0x320
+>> +#define EPSS_CORE_OFFSET		0x4
+>> +#define EPSS_L3_VOTE_REG(base, cpu)\
+>> +			(((base) + EPSS_REG_L3_VOTE) +\
+>> +			((cpu) * EPSS_CORE_OFFSET))
+>>   -#define OSM_L3_MAX_LINKS		1
+>> +#define L3_DOMAIN_CNT		4
+>> +#define L3_MAX_LINKS		9
+> 
+> It may not matter much, but if you specified the
+> qcom_osm_l3_node->links[] field as the last field
+> in the structure, I think it could be a flexible
+> array and you wouldn't have to specify the maximum
+> number of links.  (You are already using the actual
+> array size to set ->num_links in __DEFINE_QNODE().)
+> 
+I will address this in next revision, will see if we can move it to 
+flexible array.
+>>   #define to_osm_l3_provider(_provider) \
+>>   	container_of(_provider, struct qcom_osm_l3_icc_provider, provider)
+>>   +/**
+>> + * @domain_base: an array of base address for each clock domain
+>> + * @max_state: max supported frequency level
+>> + * @per_core_dcvs: flag used to indicate whether the frequency 
+>> scaling
+>> + * for each core is enabled
+>> + * @reg_perf_state: requested frequency level
+>> + * @lut_tables: an array of supported frequency levels
+>> + * @provider: interconnect provider of this node
+>> + */
+> 
+> Run this to check your kernel doc validity:
+>     scripts/kernel-doc -none <file> [<file>...]
+> 
+Done!
+>>   struct qcom_osm_l3_icc_provider {
+>> -	void __iomem *base;
+>> +	void __iomem *domain_base[L3_DOMAIN_CNT];
+>>   	unsigned int max_state;
+>> +	bool per_core_dcvs;
+>>   	unsigned int reg_perf_state;
+>>   	unsigned long lut_tables[LUT_MAX_ENTRIES];
+>>   	struct icc_provider provider;
+> 
+> . . .
+> 
+>> @@ -235,12 +322,17 @@ static int qcom_osm_l3_probe(struct 
+>> platform_device *pdev)
+>>   	if (!qp)
+>>   		return -ENOMEM;
+>>   -	qp->base = devm_platform_ioremap_resource(pdev, 0);
+>> -	if (IS_ERR(qp->base))
+>> -		return PTR_ERR(qp->base);
+>> +	while (of_get_address(pdev->dev.of_node, i++, NULL, NULL))
+>> +		nr_domain_bases++;
+> 
+> Maybe you could combine these two loops by counting as you go.
+> I.e.:
+> 
+>     i = 0;
+>     while (true) {
+> 	void __iomem *base;
+> 
+> 	if (of_get_address(pdev->dev.of_node, i, NULL, NULL))
+> 		break;
+> 	base = devm_platform_ioremap_resource(pdev, i);
+> 	if (IS_ERR(base))
+> 	    return PTR_ERR(base);
+> 	qp->domain_base[i++] = base
+>     }
+>     nr_domain_bases = i;
+> 
+Not exactly as above, but will merge these two loops.
+>> +
+>> +	for (i = 0; i < nr_domain_bases ; i++) {
+>> +		qp->domain_base[i] = devm_platform_ioremap_resource(pdev, i);
+>> +		if (IS_ERR(qp->domain_base[i]))
+>> +			return PTR_ERR(qp->domain_base[i]);
+>> +	}
+>>     	/* HW should be in enabled state to proceed */
+>> -	if (!(readl_relaxed(qp->base + REG_ENABLE) & 0x1)) {
+>> +	if (!(readl_relaxed(qp->domain_base[0] + REG_ENABLE) & 0x1)) {
+>>   		dev_err(&pdev->dev, "error hardware not enabled\n");
+>>   		return -ENODEV;
+>>   	}
+>> @@ -252,7 +344,7 @@ static int qcom_osm_l3_probe(struct 
+>> platform_device *pdev)
+>>   	qp->reg_perf_state = desc->reg_perf_state;
+>>     	for (i = 0; i < LUT_MAX_ENTRIES; i++) {
+>> -		info = readl_relaxed(qp->base + desc->reg_freq_lut +
+>> +		info = readl_relaxed(qp->domain_base[0] + desc->reg_freq_lut +
+>>   				     i * desc->lut_row_size);
+> 
+> Maybe you could define a macro to encapsulate computing this
+> register offset, along the lines of EPSS_L3_VOTE_REG().  (Here
+> and elsewhere.)
+> 
+This register OFFSET calculation is here only, will keep this code as 
+is.
+>>   		src = FIELD_GET(LUT_SRC, info);
+>>   		lval = FIELD_GET(LUT_L_VAL, info);
+>> @@ -271,6 +363,7 @@ static int qcom_osm_l3_probe(struct 
+>> platform_device *pdev)
+>>   		prev_freq = freq;
+>>   	}
+>>   	qp->max_state = i;
+>> +	qp->per_core_dcvs = desc->per_core_dcvs;
+>>     	qnodes = desc->nodes;
+>>   	num_nodes = desc->num_nodes;
+>> @@ -326,6 +419,7 @@ static int qcom_osm_l3_probe(struct 
+>> platform_device *pdev)
+>>     static const struct of_device_id osm_l3_of_match[] = {
+>>   	{ .compatible = "qcom,sc7180-osm-l3", .data = &sc7180_icc_osm_l3 },
+>> +	{ .compatible = "qcom,sc7280-epss-l3", .data = &sc7280_icc_epss_l3 
+>> },
+>>   	{ .compatible = "qcom,sdm845-osm-l3", .data = &sdm845_icc_osm_l3 },
+>>   	{ .compatible = "qcom,sm8150-osm-l3", .data = &sm8150_icc_osm_l3 },
+>>   	{ .compatible = "qcom,sc8180x-osm-l3", .data = &sc8180x_icc_osm_l3 
+>> },
+>> diff --git a/drivers/interconnect/qcom/sc7280.h 
+>> b/drivers/interconnect/qcom/sc7280.h
+>> index 175e400..5df7600 100644
+>> --- a/drivers/interconnect/qcom/sc7280.h
+>> +++ b/drivers/interconnect/qcom/sc7280.h
+>> @@ -150,5 +150,15 @@
+>>   #define SC7280_SLAVE_PCIE_1			139
+>>   #define SC7280_SLAVE_QDSS_STM			140
+>>   #define SC7280_SLAVE_TCU			141
+>> +#define SC7280_MASTER_EPSS_L3_APPS			142
+>> +#define SC7280_SLAVE_EPSS_L3_SHARED			143
+>> +#define SC7280_SLAVE_EPSS_L3_CPU0			144
+>> +#define SC7280_SLAVE_EPSS_L3_CPU1			145
+>> +#define SC7280_SLAVE_EPSS_L3_CPU2			146
+>> +#define SC7280_SLAVE_EPSS_L3_CPU3			147
+>> +#define SC7280_SLAVE_EPSS_L3_CPU4			148
+>> +#define SC7280_SLAVE_EPSS_L3_CPU5			149
+>> +#define SC7280_SLAVE_EPSS_L3_CPU6			150
+>> +#define SC7280_SLAVE_EPSS_L3_CPU7			151
+>>     #endif
+>> 
