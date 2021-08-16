@@ -2,80 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F9FA3ED6D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 782CB3ED798
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239419AbhHPNYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:24:06 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:27544 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240099AbhHPNOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:14:55 -0400
-Received: from localhost.localdomain (unknown [10.214.16.253])
-        by mail-app3 (Coremail) with SMTP id cC_KCgDnmDydZBphqP8vAw--.34297S4;
-        Mon, 16 Aug 2021 21:14:09 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Shahed Shaikh <shshaikh@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
-        GR-Linux-NIC-Dev@marvell.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sony Chacko <sony.chacko@qlogic.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net: qlcnic: add missed unlock in qlcnic_83xx_flash_read32
-Date:   Mon, 16 Aug 2021 21:14:04 +0800
-Message-Id: <20210816131405.24024-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgDnmDydZBphqP8vAw--.34297S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFyfKF1DCFy7WryxJFWkJFb_yoWkZwb_KF
-        48Zw18Xwn8GrZFgw43Kr43Jr129a98ZF1fAw1Sgay3A34DJFWrWFyvqFyrArW7W34j9ryD
-        G3WxA3y3Aw1IkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbskFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
-        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
-        0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
-        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
-        IFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAggOBlZdtVU9CwASsN
+        id S239520AbhHPNiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:38:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236446AbhHPNh3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:37:29 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D277CC0612A7;
+        Mon, 16 Aug 2021 06:14:21 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id x27so34343104lfu.5;
+        Mon, 16 Aug 2021 06:14:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=v+/TSYpQmBgEhEstfES6J/h5GgRRcYAB0YCuOv/QsxA=;
+        b=JZjUH4qBCLZ0YOQHOvvdL5vqYKxzCRnYRD3YKuSVQrrE4bK3WBJp30ljOMfaz0qgFo
+         ak314QTJetdnwoN6A9/u/hkROJOtpkThQpsqGU31FykHu5/PlrvPFju0e9BFnDlbDzgy
+         szNgCy57oavn/DtoXzXksW8efm9RewhFgB42WaHWshjk2Pl2Mh5jEGfHqe29aaxliD2k
+         J+IyEbvHQjdLfIPpVuq2XP7eovQ+C5L452GMVHDT3M9byr+dZTY8gVKz0jIAvLF/t/p8
+         hgV+JWyKYx/uZgDgOB86+zcfXdPyPotDAuC0KnJN/xOvu9dEj07ya2qJwu/HvDQnnLr6
+         sIUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=v+/TSYpQmBgEhEstfES6J/h5GgRRcYAB0YCuOv/QsxA=;
+        b=ivNNHqqhTCHVSTaYu9Qd1m28Hq7nCvaOfew04jzf9NkR0ExCwwkAz9aVaA+7v7b4iX
+         xsP34tvNaNHN009i3pqeIE8mmpyR2l7rgrrfDG890aMRrhgFxlzRWItJcQacc84pT7Lw
+         678YGhTwVDc/24UbVlhGo/0HubZU7lQjNiP7dJwJWuiPJtRwMwzYJOOM4MJzCOfqqO/Q
+         gO/hufFrvS963yqd78hHethqqiAq7EAA2Cm/MgOM9hJhXkQvJpMjnIzKCSf8C//xAp9g
+         AwYMIP3LALTxmf/Z8rWaxBmO7gl1SzV62RZYF4/RcSJA1GAgNCRZD3xXQrRiXpneiWyo
+         Fv2g==
+X-Gm-Message-State: AOAM530T9dqArQoYWjqtydrMqpmJyDDYJPjL+RHfr2imr1uVp+Tfz1PE
+        AlC1Xl3J2QNuUeL66hS06Ug=
+X-Google-Smtp-Source: ABdhPJzY2NCOWAd21DmP22EXneTgAJ5tNa6htKpMSXf3WBvG0Wo1YFCTBcvoYQSSLol/8hPaOhrqqw==
+X-Received: by 2002:a05:6512:1689:: with SMTP id bu9mr11893633lfb.147.1629119660263;
+        Mon, 16 Aug 2021 06:14:20 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id g19sm802728lfr.255.2021.08.16.06.14.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 06:14:19 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 16:14:17 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [RFC PATCH 1/4] fs/ntfs3: Use new api for mounting
+Message-ID: <20210816131417.4mix6s2nzuxhkh53@kari-VirtualBox>
+References: <20210816024703.107251-1-kari.argillander@gmail.com>
+ <20210816024703.107251-2-kari.argillander@gmail.com>
+ <20210816123619.GB17355@lst.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210816123619.GB17355@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-qlcnic_83xx_unlock_flash() is called on all paths after we call
-qlcnic_83xx_lock_flash(), except for one error path on failure
-of QLCRD32(), which may cause a deadlock. This bug is suggested
-by a static analysis tool, please advise.
+Thank you for taking time to review. I really appreciated it.
 
-Fixes: 81d0aeb0a4fff ("qlcnic: flash template based firmware reset recovery")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+On Mon, Aug 16, 2021 at 02:36:19PM +0200, Christoph Hellwig wrote:
+> > +/*
+> > + * ntfs_load_nls
+> > + *
+> 
+> No need to state the function name here.
 
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c
-index d8882d0b6b49..d51bac7ba5af 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c
-@@ -3156,8 +3156,10 @@ int qlcnic_83xx_flash_read32(struct qlcnic_adapter *adapter, u32 flash_addr,
- 
- 		indirect_addr = QLC_83XX_FLASH_DIRECT_DATA(addr);
- 		ret = QLCRD32(adapter, indirect_addr, &err);
--		if (err == -EIO)
-+		if (err == -EIO) {
-+			qlcnic_83xx_unlock_flash(adapter);
- 			return err;
-+		}
- 
- 		word = ret;
- 		*(u32 *)p_data  = word;
--- 
-2.17.1
+This is current way of doing this in fs/ntfs3. I just like that things
+are same kind in one driver. I agree that this may not be good way.
+
+> > + * Load nls table or if @nls is utf8 then return NULL because
+> > + * nls=utf8 is totally broken.
+> > + */
+> > +static struct nls_table *ntfs_load_nls(char *nls)
+> > +{
+> > +	struct nls_table *ret;
+> > +
+> > +	if (!nls)
+> > +		return ERR_PTR(-EINVAL);
+> > +	if (strcmp(nls, "utf8"))
+> > +		return NULL;
+> > +	if (strcmp(nls, CONFIG_NLS_DEFAULT))
+> > +		return load_nls_default();
+> > +
+> > +	ret = load_nls(nls);
+> > +	if (!ret)
+> > +		return ERR_PTR(-EINVAL);
+> > +
+> > +	return ret;
+> > +}
+> 
+> This looks like something quite generic and not file system specific.
+> But I haven't found time to look at the series from Pali how this all
+> fits together.
+
+It is quite generic I agree. Pali's series not implemeted any new way
+doing this thing. In many cases Pali uses just load_nls and not
+load_nls_default. This function basically use that if possible. It seems
+that load_nls_default does not need error path so that's why it is nicer
+to use.
+
+One though is to implement api function load_nls_or_utf8(). Then we do not
+need to test this utf8 stuff in all places.
+
+> > +// clang-format off
+> 
+> Please don't use C++ comments.  And we also should not put weird
+> formatter annotations into the kernel source anyway.
+
+This is just a way ntfs3 do this but I agree totally and will take this
+off. I did not even like it myself.
+
+> > +static void ntfs_default_options(struct ntfs_mount_options *opts)
+> >  {
+> >  	opts->fs_uid = current_uid();
+> >  	opts->fs_gid = current_gid();
+> > +	opts->fs_fmask_inv = ~current_umask();
+> > +	opts->fs_dmask_inv = ~current_umask();
+> > +	opts->nls = ntfs_load_nls(CONFIG_NLS_DEFAULT);
+> > +}
+> 
+> This function seems pretty pointless with a single trivial caller.
+
+Yeah it is just because then no comment needed and other reason was that
+I can but this closer to ntfs_fs_parse_param() so that when reading code
+all parameter code is one place.
+
+> > +static int ntfs_fs_parse_param(struct fs_context *fc, struct fs_parameter *param)
+> 
+> Please avoid the overly long line.
+
+Thanks will fix.
+
+> 
+> > +		break;
+> > +	case Opt_showmeta:
+> > +		opts->showmeta = result.negated ? 0 : 1;
+> > +		break;
+> > +	case Opt_nls:
+> > +		unload_nls(opts->nls);
+> > +
+> > +		opts->nls = ntfs_load_nls(param->string);
+> > +		if (IS_ERR(opts->nls)) {
+> > +			return invalf(fc, "ntfs3: Cannot load nls %s",
+> > +				      param->string);
+> >  		}
+> 
+> So instead of unloading here, why not set keep a copy of the string
+> in the mount options structure and only load the actual table after
+> option parsing has finished?
+
+I did actually do this first but then I test this way and code get lot
+cleaner. But I can totally change it back to "string loading".
+
+> 
+> > +     struct ntfs_mount_options *new_opts = fc->s_fs_info;
+> 
+> Does this rely on the mount_options being the first member in struct
+> ntfs_sb_info?  If so that is a landmine for future changes.
+> 
+> > +/*
+> > + * Set up the filesystem mount context.
+> > + */
+> > +static int ntfs_init_fs_context(struct fs_context *fc)
+> > +{
+> > +	struct ntfs_sb_info *sbi;
+> > +
+> > +	sbi = ntfs_zalloc(sizeof(struct ntfs_sb_info));
+> 
+> Not related to your patch, but why does ntfs3 have kmalloc wrappers
+> like this?
+
+I do not know. I actually also suggested changing this (link). This might
+even confuse some static analyzer tools.
+https://lore.kernel.org/linux-fsdevel/20210103231755.bcmyalz3maq4ama2@kari-VirtualBox/
 
