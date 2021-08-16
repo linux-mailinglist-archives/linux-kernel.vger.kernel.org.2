@@ -2,137 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 188453EDD08
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2623EDD10
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230054AbhHPSYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 14:24:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbhHPSYJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 14:24:09 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46696C0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:23:37 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id u22so5123725lfq.13
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:23:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iXNEBxrdRbaW0Zvj9MoErhLjqBG//qAZColhvKB/ENU=;
-        b=jWiF3VDph9SCQ7Z9TWhCBKY7M4MxDINi1f9q51QNR6NlxmXmrVgobbVvJDEQDOBFFw
-         vrQCBsjpqSjyDNrB9Oe6GBTwnTuE7I2TY0V11+O/YpkP/M+0mdK8zXTUa3D7wGe3iQEl
-         yRKnC0DrJ56G3HYURyQ61EIG7nMHK02ISMY90WJ63a7Alx4qg82rRlXBpLnahl/Sn8YF
-         TZnF+44omfJnCvWDZk0+aXT91MC3A8uVkEaVW0ZrDTeOrLe0ZzSMfE4XxEP16hZhD+2q
-         c0lupGivadoXOvmBa5dhmPiZF02iQsgYQRUm4Rh/50ZvFZxOkO8fofYrf6OPbA4MoIeC
-         BYQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iXNEBxrdRbaW0Zvj9MoErhLjqBG//qAZColhvKB/ENU=;
-        b=tPkkdL5zniP+Yg8QhYw6f3buQe89UISvPXK8IpeSyDiEA5inqsvQlS4pz0Dpeu08j9
-         cq+A7Nmqt+kNiaAlGY2ECaVLEIM/fSySE3Dg+S9lqKdwVm1ds553s4FKOE44llhFiZw2
-         CRvO8L3zFQDcMIyoMDy+bbZNTMXDBa3duInqnW1zD27A7TtbuGYO8PAoWOhC0v5ViLqQ
-         KVC7kfydN35xhSoWEucBDaMvmxX7Il15CHdB50bIfCR8t6UoBr83z5OjvqXezpOYh7CG
-         QudQN1vgpO0G7shrzi7iEym7RUJJa/6Z/4H5EoAp9RRgerk9spM7l9yBrjueGUXv0oyA
-         serg==
-X-Gm-Message-State: AOAM5300NmJh+nJeRPGeGQzMBQAQHzRSKq6Tg9LOFWQGVSNsuHuj4uq8
-        sizZJYdY1tS2m1RiKsSIZg51J3pKDd243iqV6Ac0ww==
-X-Google-Smtp-Source: ABdhPJx29dpsm62whVHg2TLbCN1NCHzvOehsnCbFttsXFejNnRpyUhhYa6o1V3PMI4Vghz8JxPO81Zer/jhXfmHTLb8=
-X-Received: by 2002:a05:6512:39ca:: with SMTP id k10mr12931757lfu.547.1629138215110;
- Mon, 16 Aug 2021 11:23:35 -0700 (PDT)
+        id S230137AbhHPS1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 14:27:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47478 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229966AbhHPS1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 14:27:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5279560F41;
+        Mon, 16 Aug 2021 18:27:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629138422;
+        bh=J5kTQ9jNl7GtseCHsR5QNLO97/SZNfu88It1yT0aXgE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=soBU96Am8xpoYrCIDFq34hMvCNLtkV/saokQsws6vR5idXFHlIkTzhfhaFJUeaZTN
+         7/rz7MbYA+vUxC39AAP//LRFFD+cx58LpziOIaR77NAittHTWUhLl6fGmgP0OsZYPm
+         HNFZMz4UV5GyUK0NwhioXsRLNmZ3v4f1YM35kE9dkgpsohCI97iDQEvZRGpGVHlpem
+         9ifcfx8E0t4/nXt4+GkWlFQWouvn0jiyEXs0UHSQoCVcquNZrZIww7I97AOZJRXqUX
+         UEEBCsVs5tM172pAD+iUTyUDY1M0txYO0txd6Vlx8aqJSjkPu+sWCPTeRis8SipiK0
+         EQnA0KFtephVw==
+Received: by mail-ed1-f45.google.com with SMTP id cq23so10511771edb.12;
+        Mon, 16 Aug 2021 11:27:02 -0700 (PDT)
+X-Gm-Message-State: AOAM532GfXz/E7QYLNICPFEJnKPMAas4YX86IuUPLBojl73tDlpX2xeH
+        rHU/D+dKNi7i8jui8dvcwl3djBaAAR4Vy6xEQQ==
+X-Google-Smtp-Source: ABdhPJz6YhgNYjBk8iIsDDdHBbb7lpGhLb6RzR0UMxHzXXHppoWWDik/vzQWomeYCgfQTi6gAbFbYjX0iK/BvYvkAKc=
+X-Received: by 2002:a05:6402:557:: with SMTP id i23mr21699802edx.373.1629138420901;
+ Mon, 16 Aug 2021 11:27:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210810205611.4013424-1-ndesaulniers@google.com> <CAK7LNAT0KR_xjPNzdB1aJ9nj3=A-ktU-aoP0CWvAnMJ91djfyA@mail.gmail.com>
-In-Reply-To: <CAK7LNAT0KR_xjPNzdB1aJ9nj3=A-ktU-aoP0CWvAnMJ91djfyA@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 16 Aug 2021 11:23:23 -0700
-Message-ID: <CAKwvOdn4DvH_S3wgk49E=mCgwKhErhf8BDVzPXLTmB74GDQBKw@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: add Nick to Kbuild reviewers
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+References: <cover.1626855713.git.mchehab+huawei@kernel.org> <e483ba44ed3d70e1f4ca899bb287fa38ee8a2876.1626855713.git.mchehab+huawei@kernel.org>
+In-Reply-To: <e483ba44ed3d70e1f4ca899bb287fa38ee8a2876.1626855713.git.mchehab+huawei@kernel.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 16 Aug 2021 13:26:49 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLJkqr_UhDGa9duPxx5mXxcp2Ju4Xv2gH6vdru6zQY9OQ@mail.gmail.com>
+Message-ID: <CAL_JsqLJkqr_UhDGa9duPxx5mXxcp2Ju4Xv2gH6vdru6zQY9OQ@mail.gmail.com>
+Subject: Re: [PATCH v7 08/10] arm64: dts: HiSilicon: Add support for HiKey 970
+ PCIe controller hardware
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Linux kbuild, Michal
+On Wed, Jul 21, 2021 at 3:39 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>
+> Add DTS bindings for the HiKey 970 board's PCIe hardware.
+>
+> Co-developed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  arch/arm64/boot/dts/hisilicon/hi3670.dtsi     | 71 +++++++++++++++++++
+>  .../boot/dts/hisilicon/hikey970-pmic.dtsi     |  1 -
+>  drivers/pci/controller/dwc/pcie-kirin.c       | 12 ----
+>  3 files changed, 71 insertions(+), 13 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+> index 1f228612192c..6dfcfcfeedae 100644
+> --- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+> +++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+> @@ -177,6 +177,12 @@ sctrl: sctrl@fff0a000 {
+>                         #clock-cells = <1>;
+>                 };
+>
+> +               pmctrl: pmctrl@fff31000 {
+> +                       compatible = "hisilicon,hi3670-pmctrl", "syscon";
+> +                       reg = <0x0 0xfff31000 0x0 0x1000>;
+> +                       #clock-cells = <1>;
+> +               };
+> +
+>                 iomcu: iomcu@ffd7e000 {
+>                         compatible = "hisilicon,hi3670-iomcu", "syscon";
+>                         reg = <0x0 0xffd7e000 0x0 0x1000>;
+> @@ -660,6 +666,71 @@ gpio28: gpio@fff1d000 {
+>                         clock-names = "apb_pclk";
+>                 };
+>
+> +               its_pcie: interrupt-controller@f4000000 {
+> +                       compatible = "arm,gic-v3-its";
+> +                       msi-controller;
+> +                       reg = <0x0 0xf5100000 0x0 0x100000>;
 
-On Fri, Aug 13, 2021 at 6:08 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Wed, Aug 11, 2021 at 5:56 AM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > Kees' post inspired me to get more involved. I still have a long way to
-> > go in terms of mastery of GNU make, but at the least I can help with
-> > more code review. It's also helpful for me to pick up on what's missing
-> > from the LLVM ecosystem.
->
->
-> Reviews and tests are always appreciated.
-> Of course, not only from those who are listed in
-> the MAINTAINERS file, but everybody can provide
-> reviews to any patches in their interests.
->
-> Applied to linux-kbuild. Thanks.
->
->
-> BTW, one struggle about being a maintainter
-> of this entry is I need to take a look
-> into random stuff.
->
-> KERNEL BUILD + files below scripts/ (unless maintained elsewhere)
->                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->
->
-> Another BTW, this patch reminds me of Michal.
-> He is inactive for a long time.
-> I should ask him if he wants to continue
-> to be a kbuild maintainer.
+How does this h/w have a GIC-400 (which is GICv2) and then a GIC v3 ITS?
 
-I was going to ask if there was handling for "emeritus status?"  The
-last meaningful commit seems to be from Nov 2016, though it seems they
-were the maintainer since 2009 (5ce45962b26a)!
+> +               };
+> +
+> +               pcie_phy: pcie-phy@fc000000 {
+> +                       compatible = "hisilicon,hi970-pcie-phy";
+> +                       reg = <0x0 0xfc000000 0x0 0x80000>;
+> +
+> +                       phy-supply = <&ldo33>;
+> +
+> +                       clocks = <&crg_ctrl HI3670_CLK_GATE_PCIEPHY_REF>,
+> +                                <&crg_ctrl HI3670_CLK_GATE_PCIEAUX>,
+> +                                <&crg_ctrl HI3670_PCLK_GATE_PCIE_PHY>,
+> +                                <&crg_ctrl HI3670_PCLK_GATE_PCIE_SYS>,
+> +                                <&crg_ctrl HI3670_ACLK_GATE_PCIE>;
+> +                       clock-names = "phy_ref", "aux",
+> +                                     "apb_phy", "apb_sys",
+> +                                     "aclk";
+> +
+> +                       reset-gpios = <&gpio7 0 0 >, <&gpio25 2 0 >,
+> +                                     <&gpio3 1 0 >, <&gpio27 4 0 >;
+> +
+> +                       clkreq-gpios = <&gpio20 6 0 >, <&gpio27 3 0 >,
+> +                                      <&gpio17 0 0 >;
+> +
+> +                       /* vboost iboost pre post main */
+> +                       hisilicon,eye-diagram-param = <0xFFFFFFFF 0xFFFFFFFF
+> +                                                      0xFFFFFFFF 0xFFFFFFFF
+> +                                                      0xFFFFFFFF>;
+> +
+> +                       #phy-cells = <0>;
+> +               };
+> +
+> +               pcie@f4000000 {
+> +                       compatible = "hisilicon,kirin970-pcie";
+> +                       reg = <0x0 0xf4000000 0x0 0x1000000>,
+> +                             <0x0 0xfc180000 0x0 0x1000>,
+> +                             <0x0 0xf5000000 0x0 0x2000>;
+> +                       reg-names = "dbi", "apb", "config";
+> +                       bus-range = <0x0  0x1>;
+> +                       msi-parent = <&its_pcie>;
 
->
->
->
->
->
-> > Link: https://security.googleblog.com/2021/08/linux-kernel-security-done-right.html
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > ---
-> >  MAINTAINERS | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index efac6221afe1..9768e4a19662 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -10091,6 +10091,7 @@ F:      fs/autofs/
-> >  KERNEL BUILD + files below scripts/ (unless maintained elsewhere)
-> >  M:     Masahiro Yamada <masahiroy@kernel.org>
-> >  M:     Michal Marek <michal.lkml@markovi.net>
-> > +R:     Nick Desaulniers <ndesaulniers@google.com>
-> >  L:     linux-kbuild@vger.kernel.org
-> >  S:     Maintained
-> >  T:     git git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
-> > --
-> > 2.32.0.605.g8dce9f2422-goog
-> >
->
->
-> --
-> Best Regards
-> Masahiro Yamada
+This means the PCI host doesn't have a MSI controller...
 
--- 
-Thanks,
-~Nick Desaulniers
+> +                       #address-cells = <3>;
+> +                       #size-cells = <2>;
+> +                       device_type = "pci";
+> +                       phys = <&pcie_phy>;
+> +                       ranges = <0x02000000 0x0 0x00000000
+> +                                 0x0 0xf6000000
+> +                                 0x0 0x02000000>;
+> +                       num-lanes = <1>;
+> +                       #interrupt-cells = <1>;
+> +                       interrupts = <0 283 4>;
+> +                       interrupt-names = "msi";
+
+But then this says it does...
