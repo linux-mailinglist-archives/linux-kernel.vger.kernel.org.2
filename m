@@ -2,67 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D563EDA0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 132993EDA10
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236237AbhHPPke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 11:40:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236778AbhHPPkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 11:40:11 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB97C61038;
-        Mon, 16 Aug 2021 15:39:39 +0000 (UTC)
-Date:   Mon, 16 Aug 2021 11:39:38 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>
-Subject: Re: [PATCH v4 07/10] tools/bootconfig: Support per-group/all event
- enabling option
-Message-ID: <20210816113938.10822bb2@oasis.local.home>
-In-Reply-To: <20210814123132.29181525b4debbf3bc5447bb@kernel.org>
-References: <162856122550.203126.17607127017097781682.stgit@devnote2>
-        <162856127850.203126.16694505101982548237.stgit@devnote2>
-        <20210814123132.29181525b4debbf3bc5447bb@kernel.org>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233439AbhHPPlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 11:41:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236797AbhHPPkk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 11:40:40 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C62C06179A
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:40:08 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso14101452pjh.5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:40:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gateworks-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3AyfMcp2yhnMT8b6WgE0Tq0TI+fTS/T3AjxmgLG4RFY=;
+        b=XY+nexCppv0jvgdLyAS8tfu9dWl7F48uM5zLpUFgPuJr5TASNvWiJSsMRb58l1Mdpk
+         ajCsvVhN0kTxNb6wPhp2qKWAIvpEDkmvx/RIKkJG5OUoQFnQIiDBBiuRrYTDfdl0FGbZ
+         O3Blyo5uA7inwySQo0MalCg5X/1J+YC3/KdaETe6dm3vRX6zGZ2pjy9EqQM9ZkyNvXIh
+         RUT3EScLPM+3VVFYU7qOFir/od/db/Rrpk+QNDuvKz1FtK44wpByriIGmNQx+aEgEQkK
+         Jtx69NH6tNW55mQr1lROPIx7/Ldx3iIa4NfMpDphzVU5Cy5+FI08eXlm9qmLmhrNvCOO
+         zwYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3AyfMcp2yhnMT8b6WgE0Tq0TI+fTS/T3AjxmgLG4RFY=;
+        b=dlVAfGbXriWfpd66Dw5OecWva49zZJUaobjvL3VFG55HFfMJHaShT2FpWpI+LCR4Rr
+         TSByVqgkpGWLGbTeuB7AOZTDipYEYXPUj2W3/Vi/epi6K4HfNpjqvkyNhtKQ77D6uaEz
+         CRj55fh/Xe6ATZT0K1lfmaN+HJHPwZhO/dT5dlvTB9Eb62QrlZzpAbxb8Xz/fReb2PRL
+         3PvUKG93z5RzjL7IDidwH7Pwy+t5+9G/Zvxtpq/WjmbAD7lzOxcZ9NgEXn/995RKDhVZ
+         gFLRz59gPbAQJeFLpGOrMl2Qn+/AgCIJHrGlBABM6QylYyM6uEElkHEh+NNsWXpvSxI8
+         cDRg==
+X-Gm-Message-State: AOAM530StSF5E+Al/xqt6KljardL8GOzldoXZVig2BZEogl9jn4nKQp7
+        8cgEGWCXsLfF9BCsAYDe135DjlOJgCzlrm94Xs0siQ==
+X-Google-Smtp-Source: ABdhPJzhnxfzdvPDrfj5hvBd4graOCrPdcFqBHhlQyegW5ZMcqxUq9IwdQQp8Ee69yX+lK+Y0hqPjSkdKOdo0sNmhRk=
+X-Received: by 2002:a63:150e:: with SMTP id v14mr14590874pgl.126.1629128408340;
+ Mon, 16 Aug 2021 08:40:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210723204958.7186-1-tharvey@gateworks.com> <36070609-9f1f-00c8-ccf5-8ed7877b29da@pengutronix.de>
+ <VI1PR04MB58533AF76EA4DFD8AD6CDA158CEC9@VI1PR04MB5853.eurprd04.prod.outlook.com>
+In-Reply-To: <VI1PR04MB58533AF76EA4DFD8AD6CDA158CEC9@VI1PR04MB5853.eurprd04.prod.outlook.com>
+From:   Tim Harvey <tharvey@gateworks.com>
+Date:   Mon, 16 Aug 2021 08:39:57 -0700
+Message-ID: <CAJ+vNU1tgVsQWtxa0E8SArO=hA2K8OkqiSPrRSpx0Q5XS4gUWA@mail.gmail.com>
+Subject: Re: [PATCH 0/6] Add IMX8M Mini PCI support
+To:     Richard Zhu <hongxing.zhu@nxp.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Lucas Stach <l.stach@pengutronix.de>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 14 Aug 2021 12:31:32 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On Thu, Jul 29, 2021 at 6:28 PM Richard Zhu <hongxing.zhu@nxp.com> wrote:
+>
+> Hi Tim:
+> Just as Ahmad mentioned, Lucas had issue one patch-set to support i.MX8MM PCIe.
+> Some comments in the review cycle.
+> - One separate PHY driver should be used for i.MX8MM PCIe driver.
+> - Schema file should be used I think, otherwise the .txt file in the dt-binding.
+>
+> I'm preparing one patch-set, but it's relied on the yaml file exchanges and power-domain changes(block control and so on).
+> Up to now, I only walking on the first step, trying to exchange the dt-binding files to schema yaml file.
+>
+> Best Regards
+> Richard Zhu
 
-> On Tue, 10 Aug 2021 11:07:58 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>  
-> 
-> Oops, I missed the changelog for this patch.
-> 
-> -----
-> Add group or all event enabling syntax support to bconf2ftrace.sh.
-> User can pass a bootconfig file which includes
-> 
-> ftrace[.instance.INSTANCE].event.enable
-> 
->     and
-> 
-> ftrace[.instance.INSTANCE].event.GROUP.enable
-> 
-> correctly.
-> -----
-> 
-> Steve, should I update the patch and resend the series?
-> 
+Richard / Ahmad,
 
-No need. I updated it.
+Thanks for your response - I did not see the series from Lucas. I will
+drop this and wait for him to complete his work.
 
-Thanks!
+Thanks,
 
--- Steve
+Tim
