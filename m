@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 288343ED75B
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B01F93ED4E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241012AbhHPNbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:31:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43048 "EHLO mail.kernel.org"
+        id S235747AbhHPNGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:06:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238512AbhHPNSb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:18:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E05F610A0;
-        Mon, 16 Aug 2021 13:14:01 +0000 (UTC)
+        id S236843AbhHPNFP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:05:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DD0363299;
+        Mon, 16 Aug 2021 13:04:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119642;
-        bh=KcrremzPIrsNU5zPT84/VRCv7okUhMQ+Ngy0faL42/8=;
+        s=korg; t=1629119083;
+        bh=vLrWyTijUo8AlG6GAbEj/ams+44/0e2i7MmYFuuTmn8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y/iCDGbfKqRRAQiPHoheb1S8kNIZJJ2iZJYjM48gl+H67rbhosncSYNzbEymyXHOT
-         pRq7oni/ork90j9ft8Gg0gTk95PCs1/ilde++r4Tv4FaLH2bB2elk8ez+fAr4bIXkO
-         7rZxPsEfPmbn8kIhQtnAkAIbDp27z8uZv2Uife3U=
+        b=EDc+8iwPWFHH1zpETBfyzdhqpcW4xI7na2+ZSZMXKaNKJXlRa2gYXAf5BKTn+EDQK
+         NpGCKWyqNjcGC7rPJT6iN11U6jgFpUfS3a9DwJdyCDXmNs2Eam4MlRl6o1V0mgKnlU
+         6gAxtEV1bg46QlH4SPHhlnR/p4DVv24Vt0Vq8PhI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 106/151] net: bridge: fix memleak in br_add_if()
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 5.4 44/62] x86/msi: Force affinity setup before startup
 Date:   Mon, 16 Aug 2021 15:02:16 +0200
-Message-Id: <20210816125447.563229776@linuxfoundation.org>
+Message-Id: <20210816125429.712397581@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
-References: <20210816125444.082226187@linuxfoundation.org>
+In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
+References: <20210816125428.198692661@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,75 +39,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit 519133debcc19f5c834e7e28480b60bdc234fe02 ]
+commit ff363f480e5997051dd1de949121ffda3b753741 upstream.
 
-I got a memleak report:
+The X86 MSI mechanism cannot handle interrupt affinity changes safely after
+startup other than from an interrupt handler, unless interrupt remapping is
+enabled. The startup sequence in the generic interrupt code violates that
+assumption.
 
-BUG: memory leak
-unreferenced object 0x607ee521a658 (size 240):
-comm "syz-executor.0", pid 955, jiffies 4294780569 (age 16.449s)
-hex dump (first 32 bytes, cpu 1):
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
-backtrace:
-[<00000000d830ea5a>] br_multicast_add_port+0x1c2/0x300 net/bridge/br_multicast.c:1693
-[<00000000274d9a71>] new_nbp net/bridge/br_if.c:435 [inline]
-[<00000000274d9a71>] br_add_if+0x670/0x1740 net/bridge/br_if.c:611
-[<0000000012ce888e>] do_set_master net/core/rtnetlink.c:2513 [inline]
-[<0000000012ce888e>] do_set_master+0x1aa/0x210 net/core/rtnetlink.c:2487
-[<0000000099d1cafc>] __rtnl_newlink+0x1095/0x13e0 net/core/rtnetlink.c:3457
-[<00000000a01facc0>] rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3488
-[<00000000acc9186c>] rtnetlink_rcv_msg+0x369/0xa10 net/core/rtnetlink.c:5550
-[<00000000d4aabb9c>] netlink_rcv_skb+0x134/0x3d0 net/netlink/af_netlink.c:2504
-[<00000000bc2e12a3>] netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
-[<00000000bc2e12a3>] netlink_unicast+0x4a0/0x6a0 net/netlink/af_netlink.c:1340
-[<00000000e4dc2d0e>] netlink_sendmsg+0x789/0xc70 net/netlink/af_netlink.c:1929
-[<000000000d22c8b3>] sock_sendmsg_nosec net/socket.c:654 [inline]
-[<000000000d22c8b3>] sock_sendmsg+0x139/0x170 net/socket.c:674
-[<00000000e281417a>] ____sys_sendmsg+0x658/0x7d0 net/socket.c:2350
-[<00000000237aa2ab>] ___sys_sendmsg+0xf8/0x170 net/socket.c:2404
-[<000000004f2dc381>] __sys_sendmsg+0xd3/0x190 net/socket.c:2433
-[<0000000005feca6c>] do_syscall_64+0x37/0x90 arch/x86/entry/common.c:47
-[<000000007304477d>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+Mark the irq chips with the new IRQCHIP_AFFINITY_PRE_STARTUP flag so that
+the default interrupt setting happens before the interrupt is started up
+for the first time.
 
-On error path of br_add_if(), p->mcast_stats allocated in
-new_nbp() need be freed, or it will be leaked.
+While the interrupt remapping MSI chip does not require this, there is no
+point in treating it differently as this might spare an interrupt to a CPU
+which is not in the default affinity mask.
 
-Fixes: 1080ab95e3c7 ("net: bridge: add support for IGMP/MLD stats and export them via netlink")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
-Link: https://lore.kernel.org/r/20210809132023.978546-1-yangyingliang@huawei.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+For the non-remapping case go to the direct write path when the interrupt
+is not yet started similar to the not yet activated case.
+
+Fixes: 18404756765c ("genirq: Expose default irq affinity mask (take 3)")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Marc Zyngier <maz@kernel.org>
+Reviewed-by: Marc Zyngier <maz@kernel.org>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210729222542.886722080@linutronix.de
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/bridge/br_if.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kernel/apic/msi.c |   13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/net/bridge/br_if.c b/net/bridge/br_if.c
-index 6e4a32354a13..14cd6ef96111 100644
---- a/net/bridge/br_if.c
-+++ b/net/bridge/br_if.c
-@@ -616,6 +616,7 @@ int br_add_if(struct net_bridge *br, struct net_device *dev,
+--- a/arch/x86/kernel/apic/msi.c
++++ b/arch/x86/kernel/apic/msi.c
+@@ -86,11 +86,13 @@ msi_set_affinity(struct irq_data *irqd,
+ 	 *   The quirk bit is not set in this case.
+ 	 * - The new vector is the same as the old vector
+ 	 * - The old vector is MANAGED_IRQ_SHUTDOWN_VECTOR (interrupt starts up)
++	 * - The interrupt is not yet started up
+ 	 * - The new destination CPU is the same as the old destination CPU
+ 	 */
+ 	if (!irqd_msi_nomask_quirk(irqd) ||
+ 	    cfg->vector == old_cfg.vector ||
+ 	    old_cfg.vector == MANAGED_IRQ_SHUTDOWN_VECTOR ||
++	    !irqd_is_started(irqd) ||
+ 	    cfg->dest_apicid == old_cfg.dest_apicid) {
+ 		irq_msi_update_msg(irqd, cfg);
+ 		return ret;
+@@ -178,7 +180,8 @@ static struct irq_chip pci_msi_controlle
+ 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
+ 	.irq_compose_msi_msg	= irq_msi_compose_msg,
+ 	.irq_set_affinity	= msi_set_affinity,
+-	.flags			= IRQCHIP_SKIP_SET_WAKE,
++	.flags			= IRQCHIP_SKIP_SET_WAKE |
++				  IRQCHIP_AFFINITY_PRE_STARTUP,
+ };
  
- 	err = dev_set_allmulti(dev, 1);
- 	if (err) {
-+		br_multicast_del_port(p);
- 		kfree(p);	/* kobject not yet init'd, manually free */
- 		goto err1;
- 	}
-@@ -729,6 +730,7 @@ err4:
- err3:
- 	sysfs_remove_link(br->ifobj, p->dev->name);
- err2:
-+	br_multicast_del_port(p);
- 	kobject_put(&p->kobj);
- 	dev_set_allmulti(dev, -1);
- err1:
--- 
-2.30.2
-
+ int native_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
+@@ -279,7 +282,8 @@ static struct irq_chip pci_msi_ir_contro
+ 	.irq_ack		= irq_chip_ack_parent,
+ 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
+ 	.irq_set_vcpu_affinity	= irq_chip_set_vcpu_affinity_parent,
+-	.flags			= IRQCHIP_SKIP_SET_WAKE,
++	.flags			= IRQCHIP_SKIP_SET_WAKE |
++				  IRQCHIP_AFFINITY_PRE_STARTUP,
+ };
+ 
+ static struct msi_domain_info pci_msi_ir_domain_info = {
+@@ -322,7 +326,8 @@ static struct irq_chip dmar_msi_controll
+ 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
+ 	.irq_compose_msi_msg	= irq_msi_compose_msg,
+ 	.irq_write_msi_msg	= dmar_msi_write_msg,
+-	.flags			= IRQCHIP_SKIP_SET_WAKE,
++	.flags			= IRQCHIP_SKIP_SET_WAKE |
++				  IRQCHIP_AFFINITY_PRE_STARTUP,
+ };
+ 
+ static irq_hw_number_t dmar_msi_get_hwirq(struct msi_domain_info *info,
+@@ -420,7 +425,7 @@ static struct irq_chip hpet_msi_controll
+ 	.irq_retrigger = irq_chip_retrigger_hierarchy,
+ 	.irq_compose_msi_msg = irq_msi_compose_msg,
+ 	.irq_write_msi_msg = hpet_msi_write_msg,
+-	.flags = IRQCHIP_SKIP_SET_WAKE,
++	.flags = IRQCHIP_SKIP_SET_WAKE | IRQCHIP_AFFINITY_PRE_STARTUP,
+ };
+ 
+ static irq_hw_number_t hpet_msi_get_hwirq(struct msi_domain_info *info,
 
 
