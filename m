@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB7B3ED6A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 358BE3ED69A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240262AbhHPNWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:22:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39084 "EHLO mail.kernel.org"
+        id S240081AbhHPNW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:22:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239751AbhHPNOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239752AbhHPNOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 16 Aug 2021 09:14:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C483632A4;
-        Mon, 16 Aug 2021 13:11:17 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1F74632C4;
+        Mon, 16 Aug 2021 13:11:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119477;
-        bh=rmNWyLLtszdwkcJs8/9MbZkMo4bPvmMeaFZUfCOLKxM=;
+        s=korg; t=1629119480;
+        bh=+An17eZC7HB4ODDigOwAiZdzVDfcJnT+cbLc9gxFu0M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QHi84POyy1Y8mE02F0/ARD8YvNSuhHmD+X0Jd+TSCeRhktuTsZMg2CKM3eLmal+FI
-         1qDiOi09knSEFD/+co8+THpAxwVOehf4rV2I/H9HYKmT+BI+Q+MdyZamn7Lgwhsz4A
-         2ozCJJuylHyJDHdDyd1KJrR7bpzbXrjO/yHSlr28=
+        b=fcWhCKcirMaOx2Xs4YPqDK6rBclbEE377ioccopCAbIBWTQm1hJUsbKzhPdZY1sda
+         LuDz5YjHirY8cCLYOqIAZGlpOxdEKx2XsCGfT6m2h5k1rsfP9ljW15emYSaHdLRqiO
+         NyB+y8BwCZWmjcf7H1z5hd8L3cPJCrJS/WeUm94Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "jason-jh.lin" <jason-jh.lin@mediatek.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        stable@vger.kernel.org, Hsin-Yi Wang <hsinyi@chromium.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Zhiyong Tao <zhiyong.tao@mediatek.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 041/151] drm/mediatek: Fix cursor plane no update
-Date:   Mon, 16 Aug 2021 15:01:11 +0200
-Message-Id: <20210816125445.430473827@linuxfoundation.org>
+Subject: [PATCH 5.13 042/151] pinctrl: mediatek: Fix fallback behavior for bias_set_combo
+Date:   Mon, 16 Aug 2021 15:01:12 +0200
+Message-Id: <20210816125445.461081862@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
 References: <20210816125444.082226187@linuxfoundation.org>
@@ -41,143 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: jason-jh.lin <jason-jh.lin@mediatek.com>
+From: Hsin-Yi Wang <hsinyi@chromium.org>
 
-[ Upstream commit 1a64a7aff8da352c9419de3d5c34343682916411 ]
+[ Upstream commit 798a315fc359aa6dbe48e09d802aa59b7e158ffc ]
 
-The cursor plane should use the current plane state in atomic_async_update
-because it would not be the new plane state in the global atomic state
-since _swap_state happened when those hook are run.
+Some pin doesn't support PUPD register, if it fails and fallbacks with
+bias_set_combo case, it will call mtk_pinconf_bias_set_pupd_r1_r0() to
+modify the PUPD pin again.
 
-Fix cursor plane issue by below modification:
-1. Remove plane_helper_funcs->atomic_update(plane, state) in
-   mtk_drm_crtc_async_update.
-2. Add mtk_drm_update_new_state in to mtk_plane_atomic_async_update to
-   update the cursor plane by current plane state hook and update
-   others plane by the new_state.
+Since the general bias set are either PU/PD or PULLSEL/PULLEN, try
+bias_set or bias_set_rev1 for the other fallback case. If the pin
+doesn't support neither PU/PD nor PULLSEL/PULLEN, it will return
+-ENOTSUPP.
 
-Fixes: 37418bf14c13 ("drm: Use state helper instead of the plane state pointer")
-Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
-Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Fixes: 81bd1579b43e ("pinctrl: mediatek: Fix fallback call path")
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+Reviewed-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
+Link: https://lore.kernel.org/r/20210701080955.2660294-1-hsinyi@chromium.org
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/mediatek/mtk_drm_crtc.c  |  3 --
- drivers/gpu/drm/mediatek/mtk_drm_plane.c | 60 ++++++++++++++----------
- 2 files changed, 34 insertions(+), 29 deletions(-)
+ drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-index 474efb844249..735efe79f075 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-@@ -532,13 +532,10 @@ void mtk_drm_crtc_async_update(struct drm_crtc *crtc, struct drm_plane *plane,
- 			       struct drm_atomic_state *state)
- {
- 	struct mtk_drm_crtc *mtk_crtc = to_mtk_crtc(crtc);
--	const struct drm_plane_helper_funcs *plane_helper_funcs =
--			plane->helper_private;
- 
- 	if (!mtk_crtc->enabled)
- 		return;
- 
--	plane_helper_funcs->atomic_update(plane, state);
- 	mtk_drm_crtc_update_config(mtk_crtc, false);
- }
- 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-index b5582dcf564c..e6dcb34d3052 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-@@ -110,6 +110,35 @@ static int mtk_plane_atomic_async_check(struct drm_plane *plane,
- 						   true, true);
- }
- 
-+static void mtk_plane_update_new_state(struct drm_plane_state *new_state,
-+				       struct mtk_plane_state *mtk_plane_state)
-+{
-+	struct drm_framebuffer *fb = new_state->fb;
-+	struct drm_gem_object *gem;
-+	struct mtk_drm_gem_obj *mtk_gem;
-+	unsigned int pitch, format;
-+	dma_addr_t addr;
-+
-+	gem = fb->obj[0];
-+	mtk_gem = to_mtk_gem_obj(gem);
-+	addr = mtk_gem->dma_addr;
-+	pitch = fb->pitches[0];
-+	format = fb->format->format;
-+
-+	addr += (new_state->src.x1 >> 16) * fb->format->cpp[0];
-+	addr += (new_state->src.y1 >> 16) * pitch;
-+
-+	mtk_plane_state->pending.enable = true;
-+	mtk_plane_state->pending.pitch = pitch;
-+	mtk_plane_state->pending.format = format;
-+	mtk_plane_state->pending.addr = addr;
-+	mtk_plane_state->pending.x = new_state->dst.x1;
-+	mtk_plane_state->pending.y = new_state->dst.y1;
-+	mtk_plane_state->pending.width = drm_rect_width(&new_state->dst);
-+	mtk_plane_state->pending.height = drm_rect_height(&new_state->dst);
-+	mtk_plane_state->pending.rotation = new_state->rotation;
-+}
-+
- static void mtk_plane_atomic_async_update(struct drm_plane *plane,
- 					  struct drm_atomic_state *state)
- {
-@@ -126,8 +155,10 @@ static void mtk_plane_atomic_async_update(struct drm_plane *plane,
- 	plane->state->src_h = new_state->src_h;
- 	plane->state->src_w = new_state->src_w;
- 	swap(plane->state->fb, new_state->fb);
--	new_plane_state->pending.async_dirty = true;
- 
-+	mtk_plane_update_new_state(new_state, new_plane_state);
-+	wmb(); /* Make sure the above parameters are set before update */
-+	new_plane_state->pending.async_dirty = true;
- 	mtk_drm_crtc_async_update(new_state->crtc, plane, state);
- }
- 
-@@ -189,14 +220,8 @@ static void mtk_plane_atomic_update(struct drm_plane *plane,
- 	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state,
- 									   plane);
- 	struct mtk_plane_state *mtk_plane_state = to_mtk_plane_state(new_state);
--	struct drm_crtc *crtc = new_state->crtc;
--	struct drm_framebuffer *fb = new_state->fb;
--	struct drm_gem_object *gem;
--	struct mtk_drm_gem_obj *mtk_gem;
--	unsigned int pitch, format;
--	dma_addr_t addr;
- 
--	if (!crtc || WARN_ON(!fb))
-+	if (!new_state->crtc || WARN_ON(!new_state->fb))
- 		return;
- 
- 	if (!new_state->visible) {
-@@ -204,24 +229,7 @@ static void mtk_plane_atomic_update(struct drm_plane *plane,
- 		return;
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+index 5b3b048725cc..45ebdeba985a 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+@@ -925,12 +925,10 @@ int mtk_pinconf_adv_pull_set(struct mtk_pinctrl *hw,
+ 			err = hw->soc->bias_set(hw, desc, pullup);
+ 			if (err)
+ 				return err;
+-		} else if (hw->soc->bias_set_combo) {
+-			err = hw->soc->bias_set_combo(hw, desc, pullup, arg);
+-			if (err)
+-				return err;
+ 		} else {
+-			return -ENOTSUPP;
++			err = mtk_pinconf_bias_set_rev1(hw, desc, pullup);
++			if (err)
++				err = mtk_pinconf_bias_set(hw, desc, pullup);
+ 		}
  	}
  
--	gem = fb->obj[0];
--	mtk_gem = to_mtk_gem_obj(gem);
--	addr = mtk_gem->dma_addr;
--	pitch = fb->pitches[0];
--	format = fb->format->format;
--
--	addr += (new_state->src.x1 >> 16) * fb->format->cpp[0];
--	addr += (new_state->src.y1 >> 16) * pitch;
--
--	mtk_plane_state->pending.enable = true;
--	mtk_plane_state->pending.pitch = pitch;
--	mtk_plane_state->pending.format = format;
--	mtk_plane_state->pending.addr = addr;
--	mtk_plane_state->pending.x = new_state->dst.x1;
--	mtk_plane_state->pending.y = new_state->dst.y1;
--	mtk_plane_state->pending.width = drm_rect_width(&new_state->dst);
--	mtk_plane_state->pending.height = drm_rect_height(&new_state->dst);
--	mtk_plane_state->pending.rotation = new_state->rotation;
-+	mtk_plane_update_new_state(new_state, mtk_plane_state);
- 	wmb(); /* Make sure the above parameters are set before update */
- 	mtk_plane_state->pending.dirty = true;
- }
 -- 
 2.30.2
 
