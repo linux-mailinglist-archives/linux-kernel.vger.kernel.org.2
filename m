@@ -2,108 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB4D3EDD22
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8DFC3EDD25
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbhHPSfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 14:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37406 "EHLO
+        id S230182AbhHPSgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 14:36:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbhHPSfa (ORCPT
+        with ESMTP id S229764AbhHPSge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 14:35:30 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C3BC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:34:58 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id g13so36270944lfj.12
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:34:58 -0700 (PDT)
+        Mon, 16 Aug 2021 14:36:34 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7655C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:36:02 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id k5so8511536lfu.4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:36:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uFoizD91rABkFIcWHSzEWuX3hfrFZBSWrwl/QtKpAiU=;
-        b=oFNy3cH0ASHTjVBWzJXJtojGzpn3ptld69kfnNagomXNGKcQaRdAxvH6yh51NmocmG
-         MBXis16EBBwqcs+XiKcAzL5rwoH/OT/gMIGkGPj1yI2h4nOSsUl/ZhNLcdYRPIkQJZib
-         aNIvVnVncu5G4g2ZNovJ3n4yvSGUgyE7NZl7Uq3a4JzZPmLg/cSPGtYqdNHtfV1SOeiH
-         nJ8J55kXehL9kDQOFiCmn8PWMKSqjEfGM/5Q2g6Bl1TWAhTaRakqLdGntxed5gWXQqSg
-         aaHwYXzldWnJ4NrIOIh9w38zlNdEWxLjD44TmfCopZQS5pRcsj+jD0tQoiY71SBao2sD
-         /iWQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hB23ERGkCrJ9OQnaruluv7ZnEnGMku+yMsIge6kF67c=;
+        b=oSXlDIiAeBYFw4h4ctdo4rtYxhpEhLQFl6HTT92igAaqs8WD7gIv3/24NIFsNdTPmQ
+         JhfzuXUfm7ZFqhJJp6QsF0IYwzgwCu1L+H/rdeGvzwpMh7oMLlHm9OiX/pKi+lmtqUK/
+         SJ+5RADKDVyrvVVsB4sz6ZoUNiiOKEJVRahIp/G9lMcbV2rrgp0PrDXqCfexTHnjQslm
+         4MBfaFEF8lEJ8LSA3ZCSoxKOB0+4Jq2AHiCXFQHgOf5lt2XCsqG2yhU787Wjy1+IKSs9
+         vUSsIdJMUSOOw/8tvyTju0XSjZJM+2uedI482JknT3/tD6nA6yqZmB3yr+iU5eYbcxL4
+         /uHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uFoizD91rABkFIcWHSzEWuX3hfrFZBSWrwl/QtKpAiU=;
-        b=qkqG1dpjLfSUZTCPS2T8RQB6mXBklVCYrVSz5RgIywf/G+eOdxXYUVoGPXcDG+fWFR
-         KALezPW5Q8j2S1eZv6ylxN/Yfqq2kULSkjAWWbaws+zf3nOjVigtiuH7NVZi+FJrDj/Q
-         AUHf22A7gNnU/9Vwj/GV4NRoT17aS4yIgbbbFZR3QQUmie2H/kqPsGm6P9/AzD01E5r0
-         cYGChd5daI2DIjJ5479Li/HWIzYutfY00jE882x4VmcPoN5X2O7hSzgUZkm/Oj/naNAY
-         MymXAimiatH7KfHaFACc2Z7HRHM9IeriYk0dnvF9BHXfe/AtkM2uWZXeGIM76I/YCfIi
-         HzZA==
-X-Gm-Message-State: AOAM532fHZNvrOoEXOJdJ1unzQUWxv8Ii4T0puHOidck/U36/FmJOnGv
-        XaWVhaei0ZI9FD0TmqKhdQU=
-X-Google-Smtp-Source: ABdhPJziOViJn7QDLtX6gHrzZuO48V6h3j0n8idKXpMfINxC1WqPkQblzeiYIpUM7DO/U3MN0SQiPw==
-X-Received: by 2002:a05:6512:3231:: with SMTP id f17mr12041211lfe.364.1629138896736;
-        Mon, 16 Aug 2021 11:34:56 -0700 (PDT)
-Received: from [10.0.0.40] (91-155-111-71.elisa-laajakaista.fi. [91.155.111.71])
-        by smtp.gmail.com with ESMTPSA id r3sm2379lfc.114.2021.08.16.11.34.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 11:34:56 -0700 (PDT)
-Subject: Re: [PATCH 2/3] ASoC: ti: omap-mcbsp: Use of_device_get_match_data
-To:     Aakash Hemadri <aakashhemadri123@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Takashi Iwai <tiwai@suse.com>, Jawoslav Kysela <perex@perex.cz>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Bjorn Helgaas <bjorn@helgaas.com>
-References: <cover.1628972198.git.aakashhemadri123@gmail.com>
- <44f3b21198dd1e40e1e5e783db2b3dd76505b562.1628972198.git.aakashhemadri123@gmail.com>
-From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-Message-ID: <ed02b26b-d1cc-dfc2-ef35-1430677fb1df@gmail.com>
-Date:   Mon, 16 Aug 2021 21:35:15 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hB23ERGkCrJ9OQnaruluv7ZnEnGMku+yMsIge6kF67c=;
+        b=SZZOSvPBKaOn3/pAGJNT7iD9DuXDmpHhHrl0BRbqatr+5dk/GCXojCvTaArDq5Uisw
+         17jTdabguGVkCNW/lb+KrrfR972UWhh8fNOfden0B3hBXnbePHoU6ZQTSab/V3m/BIwM
+         CgPuuU+juoNHvoqVUr1CulU3U4fRB5OXLsXGtOzWWhGxnr7P/r+0PaApLmYxzcgJtgHA
+         zqxepTfyHSRJD8I6c3fYUAsEMrd2kG6xUk2/MubTTuIyX87XEAzP2wzESe9tMw8QDU5o
+         Ku0iL5ciQR4NTuOXYMjrLFGBF+pYgUEDG44JieHaRR6bDUjdR6f+CYyHzufSGRQxouLk
+         aL3Q==
+X-Gm-Message-State: AOAM530+u+otYDEKRnbtR3JUDJgBjZM8a88eVgKmRGzo8f0ss8mMb5/a
+        VstxI6gtb+xFHsI02Dj7WLpkAFjbwXm3XRBLVs9I+g==
+X-Google-Smtp-Source: ABdhPJztzB1EGU5OZD5t9d/8D3eADqHltC95iT7kjGY+zwcaI7n3DFhOCAYwbWhHJX0wJMypPpQJwnPvDKX4bXgx8lY=
+X-Received: by 2002:ac2:4e8c:: with SMTP id o12mr13094092lfr.374.1629138960831;
+ Mon, 16 Aug 2021 11:36:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <44f3b21198dd1e40e1e5e783db2b3dd76505b562.1628972198.git.aakashhemadri123@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210810204240.4008685-1-ndesaulniers@google.com> <CAK7LNASotywVkNjaBC7wYke70QL+a0tMJEVEvRTPpt8dDgHE9Q@mail.gmail.com>
+In-Reply-To: <CAK7LNASotywVkNjaBC7wYke70QL+a0tMJEVEvRTPpt8dDgHE9Q@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 16 Aug 2021 11:35:49 -0700
+Message-ID: <CAKwvOdmpTt1PBnvo3RFkYnd5O2JTW7DTA9sGQJgvsDOFkVt8Ag@mail.gmail.com>
+Subject: Re: [PATCH] Makefile: remove stale cc-option checks
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Vitor Massaru Iha <vitor@massaru.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 13, 2021 at 6:43 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Wed, Aug 11, 2021 at 5:42 AM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > --param=allow-store-data-races=0 was renamed to --allow-store-data-races
+> > in the GCC 10 release.
+> >
+> > diff --git a/Makefile b/Makefile
+> > index 027fdf2a14fe..3e3fb4affba1 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -844,17 +847,17 @@ KBUILD_RUSTFLAGS += -Copt-level=z
+> >  endif
+> >
+> >  # Tell gcc to never replace conditional load with a non-conditional one
+> > -KBUILD_CFLAGS  += $(call cc-option,--param=allow-store-data-races=0)
+> > +ifdef CONFIG_CC_IS_GCC
+>
+>
+> Can you insert a comment here?
+>
+> # GCC 10 renamed --param=allow-store-data-races=0 to --allow-store-data-races
+>
+>
+> It will remind us of dropping this conditional
+> in the (long long distant) future.
+>
+>
+>
+>
+> > +KBUILD_CFLAGS  += $(call cc-option,--allow-store-data-races,--param=allow-store-data-races=0)
+> >  KBUILD_CFLAGS  += $(call cc-option,-fno-allow-store-data-races)
+> > +endif
 
+This report is confusing:
+https://lore.kernel.org/linux-mm/202108160729.Lx0IJzq3-lkp@intel.com/
+(csky gcc-11)
 
-On 14/08/2021 23:19, Aakash Hemadri wrote:
-> Prefer `of_device_get_match_data` over `of_match_device`
-> 
-> Retrieve OF match data using `of_device_get_match_data`, this is cleaner
-> and better expresses intent.
-> 
-> Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
-> ---
->  sound/soc/ti/omap-mcbsp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
-> index 4479d74f0a45..fcb651487854 100644
-> --- a/sound/soc/ti/omap-mcbsp.c
-> +++ b/sound/soc/ti/omap-mcbsp.c
-> @@ -1373,7 +1373,7 @@ static int asoc_mcbsp_probe(struct platform_device *pdev)
->  	const struct of_device_id *match;
->  	int ret;
->  
-> -	match = of_match_device(omap_mcbsp_of_match, &pdev->dev);
-> +	match = of_device_get_match_data(&pdev->dev);
+>> csky-linux-gcc: error: unrecognized command-line option '--param=allow-store-data-races=0'; did you mean '--allow-store-data-races'?
 
-Similarly incorrect,
-of_device_get_match_data() is retrieving the match->data
+I wonder if cc-option detection for these is broken?  Perhaps I should
+not touch these other than to wrap them in the CONFIG_CC_IS_GCC guard?
 
->  	if (match) {
->  		struct device_node *node = pdev->dev.of_node;
->  		struct omap_mcbsp_platform_data *pdata_quirk = pdata;
-> 
-
+(Either way, I need to send a v2 in response to Naresh's report as
+well. https://lore.kernel.org/lkml/CA+G9fYtPBp_-Ko_P7NuOX6vN9-66rjJuBt21h3arrLqEaQQn6w@mail.gmail.com/
+It seems that -mfentry wasn't implemented for s390-linux-gnu-gcc until
+gcc-9; so rather than remove top level support, perhaps a comment
+about gcc-9+ s390 having support will make grepping for it easier in
+the future).
 -- 
-Péter
+Thanks,
+~Nick Desaulniers
