@@ -2,147 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD263EDA37
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:55:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B38E3EDA39
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237022AbhHPPxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 11:53:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55387 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237021AbhHPPux (ORCPT
+        id S233379AbhHPP4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 11:56:15 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:44018
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237099AbhHPPxV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 11:50:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629129021;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e9V47nu1tdB3HihFEHa605ngQMwEj5TNSAxNMSmRQs8=;
-        b=YMhwCDMNNsCMc4wPLeW2KCj2rNQUa9hS5ABC/V8xZe4A6y9+Ng0Qx48lSdsfUYRqNCkg3n
-        83BcRK3SHZJzm/gqgq6CaulvqEnilaE0QSBJHP8UVJXayfwY3JKduJGAI5LkuAxMPOP/dR
-        BjzgHLIex+RdV+L6BjBlbTwUbaxUe5E=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-142-02rO9YbaMbixuMVC0GfWRw-1; Mon, 16 Aug 2021 11:50:19 -0400
-X-MC-Unique: 02rO9YbaMbixuMVC0GfWRw-1
-Received: by mail-lf1-f70.google.com with SMTP id d16-20020ac25ed00000b02903c66605a591so4460204lfq.15
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:50:19 -0700 (PDT)
+        Mon, 16 Aug 2021 11:53:21 -0400
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com [209.85.128.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 0BA60412AF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 15:52:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629129133;
+        bh=4MVdP8jXnYTCG+53VuCVyBAjVTVm4TY2psh1h+dsRxs=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=MVsQUmeNgcYdEJ2e9Htscj54kUvnUQHMJo8vsviHbfbag5fFsg8Xhv2LBsaLnkLYN
+         f96klDWJAz3bZ+N5F6cYikLYQLh6qJ13jkFfvS6BilS6R87RiXZ9Q3zSRKF6XyQazl
+         eDxmhcRE/H9hrMhLBouTXczVNWUUFrun4cbMJ2zZISP1XcQai++CmrpR7ZAXErPNaQ
+         JOw9E60fupYzCj3oGL0w4lvNy282bgwCnl2FU4VZesZsZFFErHmZRsuxWkXU8/4XZZ
+         MluV7j7gj9TwKWfC9A47gKme+8sOfPfWK/vAL0pOVRtoaS1ptVrcec89HqexjRkQWL
+         CdtorVzFzlhxw==
+Received: by mail-wm1-f69.google.com with SMTP id n20-20020a05600c4f9400b002e6dc6a99b9so113887wmq.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:52:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e9V47nu1tdB3HihFEHa605ngQMwEj5TNSAxNMSmRQs8=;
-        b=HR4qRDcNoWvYRhN6+93CapdXgIh76Sa1Ev1wCMn99h6X5PndObQdeW7R1jRRxasjt+
-         3+51f4wdI/nvmdK20U1LtisRF7XI2cEfDRPv7M7maJcgJ3+F2JmatVQZkrCyJLMu6R+q
-         aESwUfGJXN2XMkT003u4dlvijWE0sr0HViTTpszL0wHAeFh/W5tCS9QV7jf7xKWdQIb8
-         zIWxNsq26m8cJEjMsIymkbISDHxrp+foAWRPNEjAX4nRqcD1P8H6YVswNP3r/0pEM4Fq
-         O/JQcKUeGglajHSzmWOrJXD8Y4AlwOfZxYSw6dEOylzwdDg6pOhgTNRFPSvsEvEMnqV/
-         ogmw==
-X-Gm-Message-State: AOAM532vszeUEpYRJsoZptLtRhEyW3anTu3fprZV17JPWW9jd181bkb8
-        M0IWdi2GoNuatGGJIng/HrXyu0p1KXGMCRvXEj0wMcZdSJMrJaXpAQE89SUHRVe79QfFduaXsx2
-        WQ34KZgoeYNW2WYMWKCZIKtB1RleRFtG9NVI7lvrp
-X-Received: by 2002:a05:6512:456:: with SMTP id y22mr5533257lfk.647.1629129018299;
-        Mon, 16 Aug 2021 08:50:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwYKp8N35ngSFV1JQgPEtrP2LghXpp0ovI3XuTPw6uhwPl2Oh6I/VaDu17nmxri46bGsTbAB55Bxd3XRif017c=
-X-Received: by 2002:a05:6512:456:: with SMTP id y22mr5533214lfk.647.1629129018115;
- Mon, 16 Aug 2021 08:50:18 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4MVdP8jXnYTCG+53VuCVyBAjVTVm4TY2psh1h+dsRxs=;
+        b=RNLSghdAguYjihBXTmf7+MGJTVMb6CfX4052RpjTEiquxItORrobB12yMN/wVZvd9U
+         2pz/xCIa32wmEIf52rrtylPwNdyAASPMdIyo4p9yG72A35ZbKmccEisAT9UVQJhehz36
+         VyOXQlzGhRexRH+i7pjLjJPpFaFCi26GYDErOHzgi2RNly1wq2DZ9v6ecj2M28uoug8b
+         O9J7mm3GYceFpYPsZCdvXy0bIwiN2stsTaLfkKq5c66IA+2FRa78zKoUYVBbqhGupSW1
+         MSkXX9+PMwxXvYw+Ov5AggaDm0v4/Q0BsV6HsqaqDVxWDMbzqc3Ebvt5uSgL8W7KOzR4
+         pcyA==
+X-Gm-Message-State: AOAM530jSggOooXLUlvo9RGyOHG5VYbsFBhdaY6NOuI9dP+/325GRU6D
+        zqB1pqOVn5IsA8DsebRjiGOhspBlfWciFClJqg/OpAlXlRZsRPM2YhUJQauMdScouYj19YQANV4
+        Lsf1qc8ATNJig19mp/V9AZa0lIpLGN77aJfmJtuhxgA==
+X-Received: by 2002:a1c:3c8b:: with SMTP id j133mr16026916wma.9.1629129132303;
+        Mon, 16 Aug 2021 08:52:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxqlBRnNFswf1ZrCbVN5bSe3Ayurc7d02vrCkm5wcHz2tQmOyPQNShzeTasmBIfgXuhemOH6Q==
+X-Received: by 2002:a1c:3c8b:: with SMTP id j133mr16026904wma.9.1629129132112;
+        Mon, 16 Aug 2021 08:52:12 -0700 (PDT)
+Received: from [192.168.123.55] (ip-88-152-144-157.hsi03.unitymediagroup.de. [88.152.144.157])
+        by smtp.gmail.com with ESMTPSA id h16sm12180359wre.52.2021.08.16.08.52.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 08:52:11 -0700 (PDT)
+Subject: Re: [PATCH 1/1] riscv: select CONFIG_ARCH_KEEP_MEMBLOCK
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Palmer Dabbelt <palmer@dabbelt.com>
+References: <20210816144728.1425121-1-heinrich.schuchardt@canonical.com>
+ <bef20bf2-538d-1319-ba22-6774efa10ebc@huawei.com>
+From:   Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Message-ID: <d9d9f764-2bc7-ddf4-2353-dac323e4416d@canonical.com>
+Date:   Mon, 16 Aug 2021 17:52:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210720232624.1493424-1-nitesh@redhat.com> <CAFki+LkNzk0ajUeuBnJZ6mp1kxB0+zZf60tw1Vfq+nPy-bvftQ@mail.gmail.com>
-In-Reply-To: <CAFki+LkNzk0ajUeuBnJZ6mp1kxB0+zZf60tw1Vfq+nPy-bvftQ@mail.gmail.com>
-From:   Nitesh Lal <nilal@redhat.com>
-Date:   Mon, 16 Aug 2021 11:50:06 -0400
-Message-ID: <CAFki+LkyTNeorQ5e_6_Ud==X7dt27G38ZjhEewuhqGLfanjw_A@mail.gmail.com>
-Subject: Re: [PATCH v5 00/14] genirq: Cleanup the abuse of irq_set_affinity_hint()
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        davem@davemloft.net, benve@cisco.com, _govind@gmx.com,
-        jassisinghbrar@gmail.com, Viresh Kumar <viresh.kumar@linaro.org>,
-        ajit.khaparde@broadcom.com, sriharsha.basavapatna@broadcom.com,
-        somnath.kotur@broadcom.com
-Cc:     linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, jbrandeb@kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Alex Belits <abelits@marvell.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, rostedt@goodmis.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        akpm@linuxfoundation.org, sfr@canb.auug.org.au,
-        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
-        chris.friesen@windriver.com, Marc Zyngier <maz@kernel.org>,
-        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com,
-        Stefan Assmann <sassmann@redhat.com>,
-        Tomas Henzl <thenzl@redhat.com>, james.smart@broadcom.com,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Ken Cox <jkc@redhat.com>, faisal.latif@intel.com,
-        shiraz.saleem@intel.com, tariqt@nvidia.com,
-        Alaa Hleihel <ahleihel@redhat.com>,
-        Kamal Heib <kheib@redhat.com>, borisp@nvidia.com,
-        saeedm@nvidia.com, Nitesh Lal <nilal@redhat.com>,
-        "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        Al Stone <ahs3@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
-        bjorn.andersson@linaro.org, chunkuang.hu@kernel.org,
-        yongqiang.niu@mediatek.com, baolin.wang7@gmail.com,
-        Petr Oros <poros@redhat.com>, Ming Lei <minlei@redhat.com>,
-        Ewan Milne <emilne@redhat.com>, jejb@linux.ibm.com,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        kabel@kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        kashyap.desai@broadcom.com,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        shivasharan.srikanteshwara@broadcom.com,
-        sathya.prakash@broadcom.com,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        suganath-prabu.subramani@broadcom.com,
-        Thomas Gleixner <tglx@linutronix.de>, ley.foon.tan@intel.com,
-        huangguangbin2@huawei.com, jbrunet@baylibre.com,
-        johannes@sipsolutions.net, snelson@pensando.io,
-        lewis.hanly@microchip.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <bef20bf2-538d-1319-ba22-6774efa10ebc@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 11:26 AM Nitesh Lal <nilal@redhat.com> wrote:
->
-> On Tue, Jul 20, 2021 at 7:26 PM Nitesh Narayan Lal <nitesh@redhat.com> wrote:
-> >
-> > The drivers currently rely on irq_set_affinity_hint() to either set the
-> > affinity_hint that is consumed by the userspace and/or to enforce a custom
-> > affinity.
-> >
+On 8/16/21 5:30 PM, Kefeng Wang wrote:
+> 
+> On 2021/8/16 22:47, Heinrich Schuchardt wrote:
+>> For analyzing memory blocks we can either use the memblock=debug command
+>> line argument which creates massive output or a debug file system.
+>>
+>> Select CONFIG_ARCH_KEEP_MEMBLOCK to provide a debugfs at
+>> /sys/kernel/debug/memblock to analyze memory blocks. The
+>> same is already done for arm, arm64, mips, powerpc.
+>>
+>> The actual provisioning of the file system depends on CONFIG_DEBUG_FS.
+> 
+> Hi，for riscv, it don't use memblock(eg, no provide pfn_valid to use 
+> memblock),
+> 
+> we could call memblock_discard() to discard memblock private memory to save
+> 
+> some memory, right?  So I think we don't need this config for now.
 
-[...]
+What do you mean by "it don't use memblock?
 
->
-> Gentle ping.
-> Any comments on the following patches:
->
->   genirq: Provide new interfaces for affinity hints
->   scsi: megaraid_sas: Use irq_set_affinity_and_hint
->   scsi: mpt3sas: Use irq_set_affinity_and_hint
->   enic: Use irq_update_affinity_hint
->   be2net: Use irq_update_affinity_hint
->   mailbox: Use irq_update_affinity_hint
->   hinic: Use irq_set_affinity_and_hint
->
-> or any other patches?
->
+If you boot the HiFive Unmatched with memblock=debug you will see output 
+like the one below. This is the information that you can see in the 
+debug file system if CONFIG_DEBUG_FS and CONFIG_ARCH_KEEP_MEMBLOCK will 
+be enabled.
 
-Any comments on the following patches:
+[    0.000000] MEMBLOCK configuration:
+[    0.000000]  memory size = 0x00000003ffe00000 reserved size = 
+0x000000001290fb70
+[    0.000000]  memory.cnt  = 0x25
+[    0.000000]  memory[0x0]     [0x0000000080200000-0x00000000fe6e2fff], 
+0x000000007e4e3000 bytes flags: 0x0
+[    0.000000]  memory[0x1]     [0x00000000fe6e3000-0x00000000fe6e5fff], 
+0x0000000000003000 bytes flags: 0x4
+[    0.000000]  memory[0x2]     [0x00000000fe6e6000-0x00000000fe709fff], 
+0x0000000000024000 bytes flags: 0x0
+[    0.000000]  memory[0x3]     [0x00000000fe70a000-0x00000000fe70bfff], 
+0x0000000000002000 bytes flags: 0x4
+[    0.000000]  memory[0x4]     [0x00000000fe70c000-0x00000000fe70ffff], 
+0x0000000000004000 bytes flags: 0x0
+[    0.000000]  memory[0x5]     [0x00000000fe710000-0x00000000fe710fff], 
+0x0000000000001000 bytes flags: 0x4
+[    0.000000]  memory[0x6]     [0x00000000fe711000-0x00000000fe712fff], 
+0x0000000000002000 bytes flags: 0x0
+[    0.000000]  memory[0x7]     [0x00000000fe713000-0x00000000fe716fff], 
+0x0000000000004000 bytes flags: 0x4
+[    0.000000]  memory[0x8]     [0x00000000fe717000-0x00000000fe717fff], 
+0x0000000000001000 bytes flags: 0x0
+[    0.000000]  memory[0x9]     [0x00000000fe718000-0x00000000fe71cfff], 
+0x0000000000005000 bytes flags: 0x4
+[    0.000000]  memory[0xa]     [0x00000000fe71d000-0x00000000fe71dfff], 
+0x0000000000001000 bytes flags: 0x0
+[    0.000000]  memory[0xb]     [0x00000000fe71e000-0x00000000fe71efff], 
+0x0000000000001000 bytes flags: 0x4
+[    0.000000]  memory[0xc]     [0x00000000fe71f000-0x00000000fe71ffff], 
+0x0000000000001000 bytes flags: 0x0
+[    0.000000]  memory[0xd]     [0x00000000fe720000-0x00000000fe720fff], 
+0x0000000000001000 bytes flags: 0x4
+[    0.000000]  memory[0xe]     [0x00000000fe721000-0x00000000fe721fff], 
+0x0000000000001000 bytes flags: 0x0
+[    0.000000]  memory[0xf]     [0x00000000fe722000-0x00000000fe722fff], 
+0x0000000000001000 bytes flags: 0x4
+[    0.000000]  memory[0x10]    [0x00000000fe723000-0x00000000fe723fff], 
+0x0000000000001000 bytes flags: 0x0
+[    0.000000]  memory[0x11]    [0x00000000fe724000-0x00000000fe724fff], 
+0x0000000000001000 bytes flags: 0x4
+[    0.000000]  memory[0x12]    [0x00000000fe725000-0x00000000fe725fff], 
+0x0000000000001000 bytes flags: 0x0
+[    0.000000]  memory[0x13]    [0x00000000fe726000-0x00000000fe726fff], 
+0x0000000000001000 bytes flags: 0x4
+[    0.000000]  memory[0x14]    [0x00000000fe727000-0x00000000fe728fff], 
+0x0000000000002000 bytes flags: 0x0
+[    0.000000]  memory[0x15]    [0x00000000fe729000-0x00000000fe729fff], 
+0x0000000000001000 bytes flags: 0x4
+[    0.000000]  memory[0x16]    [0x00000000fe72a000-0x00000000fe72afff], 
+0x0000000000001000 bytes flags: 0x0
+[    0.000000]  memory[0x17]    [0x00000000fe72b000-0x00000000fe72cfff], 
+0x0000000000002000 bytes flags: 0x4
+[    0.000000]  memory[0x18]    [0x00000000fe72d000-0x00000000fe72dfff], 
+0x0000000000001000 bytes flags: 0x0
+[    0.000000]  memory[0x19]    [0x00000000fe72e000-0x00000000fe72efff], 
+0x0000000000001000 bytes flags: 0x4
+[    0.000000]  memory[0x1a]    [0x00000000fe72f000-0x00000000fe72ffff], 
+0x0000000000001000 bytes flags: 0x0
+[    0.000000]  memory[0x1b]    [0x00000000fe730000-0x00000000fe730fff], 
+0x0000000000001000 bytes flags: 0x4
+[    0.000000]  memory[0x1c]    [0x00000000fe731000-0x00000000fe731fff], 
+0x0000000000001000 bytes flags: 0x0
+[    0.000000]  memory[0x1d]    [0x00000000fe732000-0x00000000fe732fff], 
+0x0000000000001000 bytes flags: 0x4
+[    0.000000]  memory[0x1e]    [0x00000000fe733000-0x00000000fe733fff], 
+0x0000000000001000 bytes flags: 0x0
+[    0.000000]  memory[0x1f]    [0x00000000fe734000-0x00000000fe734fff], 
+0x0000000000001000 bytes flags: 0x4
+[    0.000000]  memory[0x20]    [0x00000000fe735000-0x00000000fe736fff], 
+0x0000000000002000 bytes flags: 0x0
+[    0.000000]  memory[0x21]    [0x00000000fe737000-0x00000000fe737fff], 
+0x0000000000001000 bytes flags: 0x4
+[    0.000000]  memory[0x22]    [0x00000000fe738000-0x00000000fff60fff], 
+0x0000000001829000 bytes flags: 0x0
+[    0.000000]  memory[0x23]    [0x00000000fff61000-0x00000000fff61fff], 
+0x0000000000001000 bytes flags: 0x4
+[    0.000000]  memory[0x24]    [0x00000000fff62000-0x000000047fffffff], 
+0x000000038009e000 bytes flags: 0x0
+[    0.000000]  reserved.cnt  = 0xd
+[    0.000000]  reserved[0x0]   [0x0000000080000000-0x000000008007ffff], 
+0x0000000000080000 bytes flags: 0x0
+[    0.000000]  reserved[0x1]   [0x0000000080200000-0x00000000815fffff], 
+0x0000000001400000 bytes flags: 0x0
+[    0.000000]  reserved[0x2]   [0x0000000087f00000-0x0000000087f05fff], 
+0x0000000000006000 bytes flags: 0x0
+[    0.000000]  reserved[0x3]   [0x00000000db0a2000-0x00000000db0a48b4], 
+0x00000000000028b5 bytes flags: 0x0
+[    0.000000]  reserved[0x4]   [0x00000000db2a2000-0x00000000dc709fff], 
+0x0000000001468000 bytes flags: 0x0
+[    0.000000]  reserved[0x5]   [0x00000000fe701000-0x00000000fe701fff], 
+0x0000000000001000 bytes flags: 0x0
+[    0.000000]  reserved[0x6]   [0x00000000fe704040-0x00000000fe70404f], 
+0x0000000000000010 bytes flags: 0x0
+[    0.000000]  reserved[0x7]   [0x000000046ffe1d40-0x000000047dfe253f], 
+0x000000000e000800 bytes flags: 0x0
+[    0.000000]  reserved[0x8]   [0x000000047dfe2548-0x000000047dfe2578], 
+0x0000000000000031 bytes flags: 0x0
+[    0.000000]  reserved[0x9]   [0x000000047dfe2580-0x000000047dfe25ae], 
+0x000000000000002f bytes flags: 0x0
+[    0.000000]  reserved[0xa]   [0x000000047dfe25b0-0x000000047dfe25de], 
+0x000000000000002f bytes flags: 0x0
+[    0.000000]  reserved[0xb]   [0x000000047dfe25e0-0x000000047dfefffb], 
+0x000000000000da1c bytes flags: 0x0
+[    0.000000]  reserved[0xc]   [0x000000047dff0000-0x000000047fffffff], 
+0x0000000002010000 bytes flags: 0x0
 
-  enic: Use irq_update_affinity_hint
-  be2net: Use irq_update_affinity_hint
-  mailbox: Use irq_update_affinity_hint
-  hinic: Use irq_set_affinity_and_hint
+Best regards
 
-or any other patches?
-Any help in testing will also be very useful.
+Heinrich
 
--- 
-Thanks
-Nitesh
+> 
+>>
+>> Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+>> ---
+>>   arch/riscv/Kconfig | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+>> index 4f7b70ae7c31..a6e57614c3fd 100644
+>> --- a/arch/riscv/Kconfig
+>> +++ b/arch/riscv/Kconfig
+>> @@ -31,6 +31,7 @@ config RISCV
+>>       select ARCH_HAS_STRICT_KERNEL_RWX if MMU && !XIP_KERNEL
+>>       select ARCH_HAS_STRICT_MODULE_RWX if MMU && !XIP_KERNEL
+>>       select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+>> +    select ARCH_KEEP_MEMBLOCK
+>>       select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
+>>       select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
+>>       select ARCH_SUPPORTS_HUGETLBFS if MMU
 
