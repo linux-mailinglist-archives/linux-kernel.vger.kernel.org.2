@@ -2,91 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A543ED31F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFC053ED327
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236267AbhHPLfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 07:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52200 "EHLO
+        id S236315AbhHPLhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 07:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235874AbhHPLfi (ORCPT
+        with ESMTP id S236131AbhHPLhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 07:35:38 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBFCC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 04:35:06 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id mq2-20020a17090b3802b0290178911d298bso27084089pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 04:35:06 -0700 (PDT)
+        Mon, 16 Aug 2021 07:37:06 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E243C061764;
+        Mon, 16 Aug 2021 04:36:34 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id d11so31160330eja.8;
+        Mon, 16 Aug 2021 04:36:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uTWDBNi6gTv/e5E0tvAcisNF+AyHlVmsBNOwg6nhosY=;
-        b=uiJ+O46LF9jTBxwtfXWMff33cOA8Ou1xpCH0ZVK+7dXjEgjcJgHspSjXykP/2bYEk3
-         8CvEI7yJK7uJQt1d0xW4Lv/CgqsT4Uh6VVjwSLV9Ux/liECea6NzQYGNLIurqx0rYv0H
-         LtW5z41qVvSPG/gq5p2LQklYCM84sHmjWQuAWXCSQzZIPJ2XBmWsqftnIS7Sd5rSNrzH
-         1PrR8dXoEn6XY4trxBdPXl/1DjWe5XIDEY98vJnsO/l65arpeTRoaBWdU1J0IVs9kjQU
-         stqU0hpBDbBhvDBy2WhsulDGbw5x7zke3HfjUSoYuwvm7njhzdJrlUMDIFVGeKGaexxk
-         1l+A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VzNlum+DSRQasFc6iJsqTAHfGRqIbtECs/5GE9/2M24=;
+        b=D9FZU7bCfxstwmg1IwQvB+ltXSZM37ASypF9qRxJd5tPLZ0TXCHD0LPEdbQAnxNYiP
+         6LxBXw+oTeAfMCSdBsBRsk59ZjuxCYONNDnLGFynbBwxB7nHzHqQzS70pck0osw6Capu
+         V0op9grEOW3v4dVdEjUunlgmUguhkRVOgHh18a5kHLSt0/4o4zWbX7AkZnUzeB/JP4F1
+         cpSZUukjN/BLQTjEDwEgP4Ayx8G4dRHVx3oTaR8gKCRhCuq2ILPLuGGwxgpL5sfjVIkk
+         +2mO60nTluhIuUbh3/w/7K6QyWwnJKQ1j/5YGUKfdkZwXkf4uBiIbunZKOhZsg8+DWM0
+         rVyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uTWDBNi6gTv/e5E0tvAcisNF+AyHlVmsBNOwg6nhosY=;
-        b=seIthzx8v5dEAHmAXJwrsZ9Z7ZG4Oj/ui1Xjz7hnv3LpkvMFKuXX/R3KHvh/8DW9sw
-         /HJ9sVzRPdtCorNxhoUJAxPdS9tw2lEO98BT94YcDjoYuJJyBnkY5oghK7eXdMI0XNUP
-         Hd6DWgZGNvN2PrhNcI4eOX545nAYy9OmHstV/XivpwIglm1y7kNJ1hiDWnpshTGiWptS
-         sdm9CTBk0QhSH/7m7DwzN7GeYrneIYOiO7h/nGOLyDNArhAXu/t1Axd5tQSJbeEKBZON
-         hCqzSWVDuSxDiENXfw/8m+oeRn2CZ65zIgn+xvh12xBwqQzQ1xBwlqoOeg43Nn+COJLM
-         XasQ==
-X-Gm-Message-State: AOAM532KNKFN1P0s4kqd864BZ7jQ+eXOW/9IUbGHMBd6a3ss3p9w8qpP
-        FV2czIfVYu70ZNl0W+6cruI=
-X-Google-Smtp-Source: ABdhPJzwO6blgdz0F18gt6MsWwZVdFCucyeH3BBL9qX8uGuPL/I7OdXuyzBIis+56p29NRMkXFFIQA==
-X-Received: by 2002:a17:90a:8909:: with SMTP id u9mr16901957pjn.9.1629113705802;
-        Mon, 16 Aug 2021 04:35:05 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id l126sm13677088pgl.14.2021.08.16.04.35.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 04:35:05 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: lv.ruyi@zte.com.cn
-To:     mpe@ellerman.id.au
-Cc:     benh@kernel.crashing.org, paulus@samba.org, npiggin@gmail.com,
-        christophe.leroy@csgroup.eu, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, Lv Ruyi <lv.ruyi@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] module: remove duplicate include in interrupt.c
-Date:   Mon, 16 Aug 2021 04:34:53 -0700
-Message-Id: <20210816113453.126939-1-lv.ruyi@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VzNlum+DSRQasFc6iJsqTAHfGRqIbtECs/5GE9/2M24=;
+        b=gjEeBUK4jmHmjuW+ecQqtaEDEs+2gNNVD8hdC5UYYlfba/2/m4BJEmcnOZDe2sxwdT
+         73MytLh9cX/Ko4uk+lXnOPGYdNZrEB/g6a+0K7up58jA8XHqKor8gpcpNqzJ127eIoHh
+         uaxvF10r0u/OF5Cr1auDJJ0MB6GPrLRCSqZIVh1ziukWR92hoZHfQMuhkyAh/B8YREvs
+         y5OnqKlyLcQnRGmZzGKy3CoADlLTDkKysl6jza/4tg+HZVediaYahwuSPL9Hi8uU4lC+
+         FtM9wDd4E6WlFsEAVcXELIG9eiyvLxvIdTV2Xy/OyQoCQHNFp6FCsmqDQxg08gxQnn6R
+         Y72A==
+X-Gm-Message-State: AOAM530ch19K0Typ0fmnfqmd8G7nTxqLvxd1m+5DCbGcAgCPcMpylBct
+        x+a0BEg/2hZPpNsXhKukR6hbmfkrlsyOLrUe6Qzv6oQ0+2tG4rS3
+X-Google-Smtp-Source: ABdhPJycUVUTWsimWAN1jnk4SNTHhC0Ilmg56FLbekv1lC0i8ZX/z7lqzStoBV7RLX1VYjqF33milOiInanqSKNa+xo=
+X-Received: by 2002:a17:906:8310:: with SMTP id j16mr14322832ejx.135.1629113793086;
+ Mon, 16 Aug 2021 04:36:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210816073832.199701-1-mudongliangabcd@gmail.com> <20210816075346.GA10906@gondor.apana.org.au>
+In-Reply-To: <20210816075346.GA10906@gondor.apana.org.au>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Mon, 16 Aug 2021 19:36:07 +0800
+Message-ID: <CAD-N9QWwmRuPOKZ2BX8ACde4K2GNFUsAWzcciKVG9BwLPcM2-A@mail.gmail.com>
+Subject: Re: [PATCH] net: xfrm: fix bug in ipcomp_free_scratches
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        syzbot+b9cfd1cc5d57ee0a09ab@syzkaller.appspotmail.com,
+        stable@vger.kernel.org,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Ruyi <lv.ruyi@zte.com.cn>
+On Mon, Aug 16, 2021 at 3:53 PM Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> On Mon, Aug 16, 2021 at 03:38:29PM +0800, Dongliang Mu wrote:
+> >
+> > -     for_each_possible_cpu(i)
+> > -             vfree(*per_cpu_ptr(scratches, i));
+> > +     for_each_possible_cpu(i) {
+> > +             void *scratch = *per_cpu_ptr(scratches, i);
+> > +             if (!scratch)
+> > +                     vfree(scratch);
+> > +     }
+>
+> This patch is unnecessary.  Please check the implementation of
+> vfree, it already checks for NULL pointers just like most of our
+> free primitives.
 
-'asm/interrupt.h' included in 'interrupt.c' is duplicated.
+Hi Herbert,
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
----
- arch/powerpc/kernel/interrupt.c | 1 -
- 1 file changed, 1 deletion(-)
+since there is no reproducer in the syzbot, I guess the problem might be:
 
-diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
-index 21bbd615ca41..8a936515e4e4 100644
---- a/arch/powerpc/kernel/interrupt.c
-+++ b/arch/powerpc/kernel/interrupt.c
-@@ -10,7 +10,6 @@
- #include <asm/cputime.h>
- #include <asm/interrupt.h>
- #include <asm/hw_irq.h>
--#include <asm/interrupt.h>
- #include <asm/kprobes.h>
- #include <asm/paca.h>
- #include <asm/ptrace.h>
--- 
-2.25.1
+if vmalloc_node in the ipcomp_alloc_scratches returns a NULL pointer,
+it directly returns NULL without updating the per_cpu_ptr(scratches,
+i).
 
+Therefore, in the ipcomp_free_scratches, vfree will take an invalid
+and outdated per_cpu_ptr as its argument, leading to the bug - BUG:
+unable to handle kernel paging request in ipcomp_free_scratches.
+
+Any idea?
+
+>
+> Cheers,
+> --
+> Email: Herbert Xu <herbert@gondor.apana.org.au>
+> Home Page: http://gondor.apana.org.au/~herbert/
+> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
