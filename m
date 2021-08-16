@@ -2,121 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF253EDDCC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2EF3EDDD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhHPTVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 15:21:42 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:43469 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S229748AbhHPTVm (ORCPT
+        id S230491AbhHPTW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 15:22:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229587AbhHPTWz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 15:21:42 -0400
-Received: (qmail 131180 invoked by uid 1000); 16 Aug 2021 15:21:09 -0400
-Date:   Mon, 16 Aug 2021 15:21:09 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Marco Elver <elver@google.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: LKMM: Read dependencies of writes ordered by dma_wmb()?
-Message-ID: <20210816192109.GC121345@rowland.harvard.edu>
-References: <YRo58c+JGOvec7tc@elver.google.com>
- <20210816145945.GB121345@rowland.harvard.edu>
- <YRqfJz/lpUaZpxq7@elver.google.com>
+        Mon, 16 Aug 2021 15:22:55 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28199C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:22:21 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id e15so15169754qtx.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:22:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=metztli-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=AQDl3/h6ZmlJMTNQ0/Ak5TGO+G6HIuh2vcGomLmr81I=;
+        b=bbgelVpbhdXzWfJZobqv1dAbjsjTDqet0r3c3kAzn7X3Lij5To+GkCJ3Sa9iWfQWBt
+         PpNbUCfxNX63ygcJGzMSujz438Ou1Jyv2JwaBQ0wfQ6adfVXgd7EyXmOKHZ1ColvO25u
+         6RbHywaRZJweDLUwyiZLe0/HIezaPJOHJwEbhJiXV8b9RSz+YDrXc1QxREZSuLmuhYPu
+         rykPZN7egCjZZW/Kj44Emo51mrMQoSG51HQE1+1/Je8Qp8DsnvAjOLFjJXt6+hYp2wEi
+         IZJw2kcn7d/K/DBjHGVN6KX/cvAdq8tYhEz+bjmK74x2W9Bf9ngW0Eyfn5dxIUXj7RJe
+         kS4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=AQDl3/h6ZmlJMTNQ0/Ak5TGO+G6HIuh2vcGomLmr81I=;
+        b=E5qZ4H2owTOgFjzd6CS3FcFK/woJKTnHYlLqyZUVg2tdrE0IdPwjbiNYoFiomlRp4k
+         +yitgrHpWTsevRBiMH0S2QNe6I3SgSgP45L3WIS7DMzIbhne07xeDMGpyJY/Awzcto8o
+         yWdAzHh+ZkLnro2ehuUSPXA7/S2YQElRMbSLxuh6ZGruX545l3zfORnXWXJ6AglFG5qe
+         2emOCS8rSTGASCA1EEdoTXlwJrI0B0Wp+5DZnlYmhAwMa+PfN9NwZ1d5ly2Im86IaGkD
+         WjP04064RxdcYwk6IE4ITCIsQ9s82rHT3XhLRke334S1fU70JuW0a3q2Ze2/aCguMMKj
+         uGpQ==
+X-Gm-Message-State: AOAM532GWMAFELMUlAsX01tXgLvcIpYzM8tHS6GAzkirsuSlS4k0K+aL
+        DOgocCdT4nRspTaM0q4oy2hyZQ==
+X-Google-Smtp-Source: ABdhPJwPCmRpw8q2JPIriaZMiffa1Ozk3nvSBF0zI2czkYYmIeNBfL1Q4yJkRCyIfdesndMtGc8P2w==
+X-Received: by 2002:ac8:1106:: with SMTP id c6mr490578qtj.20.1629141740254;
+        Mon, 16 Aug 2021 12:22:20 -0700 (PDT)
+Received: from ?IPv6:2600:1700:6470:27a0:4e80:93ff:fe00:3ff7? ([2600:1700:6470:27a0:4e80:93ff:fe00:3ff7])
+        by smtp.gmail.com with ESMTPSA id d26sm89340qto.75.2021.08.16.12.22.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 12:22:19 -0700 (PDT)
+Subject: Re: [reiser4 SFRN 5.1.3] kernel [5.10.x] read not supported for file
+ /test-exec \(pid: 10094 comm: debootstrap\)
+To:     Edward Shishkin <edward.shishkin@gmail.com>
+Cc:     reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210208125427.CFC7C75EED90@huitzilopochtli.metztli-it.com>
+ <e37d5585-318e-3130-82c9-7a740b9af8af@gmail.com>
+ <d85555853f76b7f46ce3b7514d2890091b304c12.camel@metztli.com>
+ <12924b25-baa4-2965-65de-bc64ed43069f@gmail.com>
+From:   Metztli Information Technology <jose.r.r@metztli.com>
+Message-ID: <1fb139b8-7c96-54c6-5bb7-2ee88399395c@metztli.com>
+Date:   Mon, 16 Aug 2021 12:22:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRqfJz/lpUaZpxq7@elver.google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <12924b25-baa4-2965-65de-bc64ed43069f@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 07:23:51PM +0200, Marco Elver wrote:
-> On Mon, Aug 16, 2021 at 10:59AM -0400, Alan Stern wrote:
+
+On 8/14/21 4:00 AM, Edward Shishkin wrote:
+> On 08/13/2021 05:20 PM, Metztli Information Technology wrote:
+>
 > [...]
-> > > One caveat is the case I'm trying to understand doesn't involve just 2
-> > > CPUs but also a device. And for now, I'm assuming that dma_wmb() is as
-> > > strong as smp_wmb() also wrt other CPUs (but my guess is this
-> > > assumption is already too strong).
-> > 
-> > I'm not sure that is right.  dma_wmb affects the visibility of writes to 
-> > a DMA buffer from the point of view of the device, not necessarily from 
-> > the point of view of other CPUs.  At least, there doesn't seem to be any 
-> > claim in memory-barriers.txt that it does so.
-> 
-> Thanks, I thought so.
-> 
-> While I could just not instrument dma_*mb() at all, because KCSAN
-> obviously can't instrument what devices do, I wonder if the resulting
-> reports are at all interesting.
-> 
-> For example, if I do not make the assumption that dma_wmb==smp_smb, and
-> don't instrument dma_*mb() at all, I also get racy UAF reordered writes:
-> I could imagine some architecture where dma_wmb() propagates the write
-> to devices from CPU 0; but CPU 1 then does the kfree(), reallocates,
-> reuses the data, but then gets its data overwritten by CPU 0.
+>
+>>>>
+>>>> Notwithstanding, I would appreciate if you can take a look at the
+>>>> attached patch. Probably it can be streamlined and/or improved
+>>>>    further to minimize pain on subsequent Linux kernel upgrades.
+>>>
+>>>
+>>> That patch is an attempt to swim against the current ;)
+>>>
+>>> I no longer remember, why they want to get rid of set_fs for already
+>>> 15
+>>> years, but ->read() and ->write() methods seem to be deprecated, and
+>>> the
+>>> correct way would be to implement the new ->read_iter() and
+>>> write_iter()
+>>> methods, where reiser4 works with "chunked" streams, represented by
+>>> iov_iter structure, rather than with "continuous" streams,
+>>> represented
+>>> by char __user *buf. The task is not that difficult, but rather time
+>>> consuming - I don't have a time for this right now..
+>>
+>> On Sun, Jun 20, 2021 at 10:45 AM Edward Shishkin
+>> <edward.shishkin@gmail.com> wrote:
+>>        So, I have implemented ->read_iter() for all plugins (*). It is
+>>        included
+>>        to reiser4-for-5.12 stuff. Not sure if it is enough to make 
+>> distro with
+>>        root over reiser4 though: ->write_iter() is not yet 
+>> implemented (not so
+>>        trivial because of transactions).
+>>               (*)
+>> https://github.com/edward6/reiser4/commit/ac72aba7e8bb16a28755c1b2b762971927d17c3c
+>> https://github.com/edward6/reiser4/commit/4d3200fbcb2003c680cdb822e3f616d3fa83c391
+>>               Edward.
+>
+> Hello,
+>
+> Now the new striped file plugin implements ->write_iter():
+> https://github.com/edward6/reiser4/commit/a3795ffffbb841bfaa66bfb18c12fb317533d1ff 
+>
 
-Access ordering of devices is difficult to describe.  How do you tell a 
-memory model (either a theoretical one or one embedded in code like 
-KCSAN) that a particular interrupt handler routine can't be called until 
-after a particular write has enabled the device to generate an IRQ?
+Wow! That must have been a lot of extra work on your part, Sir, Спасибо!
 
-In the case you mention, how do you tell the memory model that the code 
-on CPU 1 can't run until after CPU 0 has executed a particular write, one 
-which is forced by some memory barrier to occur _after_ all the potential 
-overwrites its worried about?
+Debian Installer (d-i) makes use of BusyBox. Notwithstanding, for 
+whatever reason, BusyBox barebones (link) mount utility failed with 
+similar message -- even though I took care to build the latest from source:
 
-> What would be more useful?
-> 
-> 1. Let the architecture decide how they want KCSAN to instrument non-smp
->    barriers, given it's underspecified. This means KCSAN would report
->    different races on different architectures, but keep the noise down.
-> 
-> 2. Assume the weakest possible model, where non-smp barriers just do
->    nothing wrt other CPUs.
+< https://www.busybox.net/ >
 
-I don't think either of those would work out very well.  The problem 
-isn't how you handle the non-smp barriers; the problem is how you 
-describe to the memory model the way devices behave.
+I had to hack a mount-udeb small package, wrapping mount and umount within:
 
-...
+< https://metztli.it/readOnlyEphemeral/mount-udeb_2.37.1-1_amd64.udeb >
 
-> > > In practice, my guess is no compiler and architecture combination would
-> > > allow this today; or is there an arch where it could?
-> > 
-> > Probably not; reordering of reads tends to take place over time 
-> > scales a lot shorter than lengthy I/O operations.
-> 
-> Which might be an argument to make KCSAN's non-smp barrier
-> instrumentation arch-dependent, because some drivers might in fact be
-> written with some target architectures and their properties in mind. At
-> least it would help keep the noise down, and those architecture that
-> want to see such races certainly still could.
-> 
-> Any preferences?
+by utilizing debian packaging for previous version of util-linux
+< https://packages.debian.org/sid/util-linux >
 
-I'm not a good person to ask; I have never used KCSAN.  However...
+and a more recent util linux source
+< https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v2.37/ >
 
-While some drivers are indeed written for particular architectures or 
-systems, I doubt that they rely very heavily on the special properties of 
-their target architectures/systems to avoid races.  Rather, they rely on 
-the hardware to behave correctly, just as non-arch-specific drivers do.
+That solved the d-i 'mount -o bind' and/or 'mount --bind' issue on /dev 
+resources (i.e., red underlined)
 
-Furthermore, the kernel tries pretty hard to factor out arch-specific 
-synchronization mechanisms and related concepts into general-purpose 
-abstractions (in the way that smp_mb() is generally available but is 
-defined differently for different architectures, for example).  Drivers 
-tend to rely on these abstractions rather than on the arch-specific 
-properties directly.
+< https://metztli.it/bullseye-reiser5/non-busybox-mount-d-i.png >
 
-In short, trying to make KCSAN's handling of device I/O into something 
-arch-specific doesn't seem (to me) like a particular advantageous 
-approach.  Other people are likely to have different opinions.
+> [...]
+>
+>> I finally got around to creating an SFRN 5.1.3 -enabled Debian
+>> Installer (d-i) for upcoming Debian 11 (codenamed Bullseye). Applied
+>> your unstable reiser4 for 5.12 patch onto my debianized hack packaging
+>> for Linux kernel 5.12.19 EOL.
+>>
+>> I gave the d-i a spin in VirtualBox 6.1.26 and it choked on the
+>> following code fragment:
+>> ---------------------------------------------------------------------
+>> setup_dev_linux () {
+>>          # Ensure static device nodes created during install are
+>> preserved
+>>          # Tests in MAKEDEV require this is done in the D-I environment
+>>          mkdir -p /dev/.static/dev
+>>          chmod 700 /dev/.static/
+>>          mount --bind /target/dev /dev/.static/dev
+>>          # Mirror device nodes in D-I environment to target
+>>          mount --bind /dev /target/dev/
+>> }
+>> -----------------------------------------------------------------------
+>>
+>> specifically:
+>> mount --bind /target/dev /dev/.static/dev
+>>
+>> See relevant code fragment next to VirtualBox VM, where I manually
+>> entered the above directive:
+>> < https://metztli.it/bullseye-reiser5/d-i-sfrn5-fail.jpg >
+>>
+>> i.e., '--bind' is causing the SFRN5 -enabled installer to bail out
+>> *only* for this reiser4 unstable SFRN 5.1.3 -patched kernel. On the
+>> other hand, as reported previously, no such issue occurs with your
+>> reiser4 stable SFRN 4.0.2 patch applied to the *same* debianized kernel
+>> source tree, Ed.
+>
+> I have checked - everything works for me (Linux-5.12).
+>
+> # mount /dev/vdd1 /mnt/test
+> # volume.reiser4 /mnt/test
+>
+> Logical Volume Info:
+> ID:             03ac5995-bf77-4851-a302-e875a6fd752f
+> volume:         0x1 (asym)
+> distribution:   0x1 (fsx32m)
+> stripe:         262144
+> segments:       1024
+> bricks total:   3
+> bricks in DSA:  3
+> slots:          3
+> map blocks:     2
+> balanced:       Yes
+> health:         OK
+>
+> # mkdir bindmnt
+> # mount --bind /mnt/test bindmnt
+> # mount
+> [...]
+> /dev/vdd1 on /mnt/test type reiser4 
+> (rw,relatime,atom_max_size=0x3d88e,atom_max_age=0x927c0,atom_min_size=0x100,atom_max_flushers=0x1,cbk_cache_slots=0x10)
+> /dev/vdd1 on /root/bindmnt type reiser4 
+> (rw,relatime,atom_max_size=0x3d88e,atom_max_age=0x927c0,atom_min_size=0x100,atom_max_flushers=0x1,cbk_cache_slots=0x10)
 
-Alan
+Summarizing...
+
+Your modified reiser4 SFRN 4.0.2 patch implementing '->read_iter() for 
+all plugins (*)' successfully enabled Debian Installer netboot for 
+bullseye to install upcoming Debian 11 Bullseye for AMD64 with hacked 
+Linux kernel 5.12.19-2 EOL
+
+< https://metztli.it/bullseye-reiser5/guided-install-sfrn4.jpg >
+
+
+Analogously, your modified reiser4 SFRN 5.1.3 patch implementing 
+'->read_iter() for all plugins (*)' and ' ->write_iter()' successfully 
+enabled Debian Installer netboot for bullseye to install upcoming Debian 
+11 Bullseye for AMD64 with hacked Linux kernel 5.12.19-2 EOL
+
+guided installation (which defaults to MSDOS partitioning) with sample 
+from one of three options: /home and / root reiser4 but /boot JFS
+
+< https://metztli.it/bullseye-reiser5/guided-install-sfrn5.jpg >
+
+
+Or expert, which enables GPT partitioning; here is a / reiser4 and /boot 
+JFS VirtualBox 6.1.26 VM JPG snapshot:
+
+< https://metztli.it/bullseye-reiser5/expert-install-sfrn5.jpg >
+
+and the PoC reiser4 SFRN 5.1.3 -enabled Debian Installer (d-i):
+
+< https://metztli.it/bullseye-reiser5/netboot-ng/metztli-reiser4-sfrn5.iso >
+
+< 
+https://metztli.it/bullseye-reiser5/netboot-ng/metztli-reiser4-sfrn5.iso.SHA256SUM 
+ >
+
+I have not tested the bricks feature for which you specifically created 
+the SFRN 5.1.3 enhancement. Other Linux users are welcomed to test that 
+feature and provide feedback to you, Sir. The entry into reiser4 is 
+substantially lowered with a native reiser4 installer, which is what I 
+have done with the above ISO images freely made available but with *NO 
+IMPLICIT NOR EXPLICIT WARRANTIES*
+
+
+Best Professional Regards.
+
+
+P.S. Reiser4 quirk: If during expert installation of reiser4 -enhanced 
+Debian /tmp is formatted in other than reiser4, after a reboot 
+attempting a MySQL/MariaDB installation will fail. I experienced that in 
+a remote bare metal server.
+
+
+
