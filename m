@@ -2,128 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0A0C3ED989
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75DE3ED98D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232608AbhHPPKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 11:10:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbhHPPKh (ORCPT
+        id S236254AbhHPPK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 11:10:56 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:48975 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229550AbhHPPK4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 11:10:37 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10CA2C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:10:06 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id i7so23449477iow.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:10:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ApokTc8mxObi8oLsmYtRa9frQO6t6d0mzitkU5awMsA=;
-        b=Ktq396n8+YfDiWEgaDGrc2kjUj/FbqM187aiv6pP6u0LMj3/QFpzl/GCX8JmtA78jY
-         yBDs/I6ZiBu2UH7uoTcze9yCn7oF0JmgH6GSGMtMkvghXspXiIAgu+DIUqXPzA9nxlj4
-         wUQC2zigW6KRNF7d3zu+lzRo8g8k/o6ybatkPaKFGzYXWpbX5yez8Qx/PvzKGzlGcREU
-         AssuQ9yIsg1jOgYvYeBQp/S6j7z0Dx5XRad1af35c8fy0m+kinIguuxrhb0lGx4GVWrc
-         wUyPmrhPTicTNIw6oWM/gK0bvsT5INnjm7r5z6idw7bkGR+VeJVa7bOYGb974rHE+jv1
-         5ZVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ApokTc8mxObi8oLsmYtRa9frQO6t6d0mzitkU5awMsA=;
-        b=cOw4XaGOqNnTlLBnV9IBfBIr8Lj5jMTP8YQNqH0UmcG8Gk98QG9bi2784xGr+ALXUA
-         7S+Pa+TpSrqJ++5IWP+96XOC+ku72grS7O1C2M8QcJ4ZLu3X7Yiifh+5GNQcej4/4b0i
-         JQUcSUPc+AefxoL0HDLQEp95m/2UsQYVhb94h2urQZN8y+TQecpHmpWSe9DO7hVYtbaT
-         Tm65zeIausEGrwHB1R+MUyIRHu1WpllqX14K2iL8FRQhtI+EhZtbN3HMa5CMd99jxi4Z
-         Ne670LFq70PqJSG+pldEFUa5cjhAj8LtTCs4yrCxe5hpNUKeq55mWFMwcNjcKc87P18F
-         VXFw==
-X-Gm-Message-State: AOAM532md8WZPKWFQypvvy/H/aRxECRGNdyhfYSWOnw0Lh28UJZwP1DA
-        ycHvphL/kYwkNXo5/faWXFpkRQ==
-X-Google-Smtp-Source: ABdhPJzyIkOm/xZ02NFnTH6W4iDNwHM/gJaa4hr0GPRjC4doNqTHl9+QaDOnw/R0q7UZnod0GL2mSw==
-X-Received: by 2002:a05:6638:329d:: with SMTP id f29mr15989957jav.140.1629126605321;
-        Mon, 16 Aug 2021 08:10:05 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id w10sm5725935ioc.55.2021.08.16.08.10.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 08:10:04 -0700 (PDT)
-Subject: Re: [greybus-dev] [PATCH v2] staging: greybus: Convert uart.c from
- IDR to XArray
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alex Elder <elder@kernel.org>, kernel test robot <lkp@intel.com>,
-        linux-staging@lists.linux.dev, Johan Hovold <johan@kernel.org>,
-        linux-kernel@vger.kernel.org, greybus-dev@lists.linaro.org,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-References: <20210814181130.21383-1-fmdefrancesco@gmail.com>
- <5541b638-db1e-26f2-2682-81f35504c9a3@ieee.org> <YRp9rnCardsCukju@kroah.com>
- <20210816150653.GH1931@kadam>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <687f29ce-6245-e549-9b7b-7cc2befba962@linaro.org>
-Date:   Mon, 16 Aug 2021 10:10:04 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 16 Aug 2021 11:10:56 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.west.internal (Postfix) with ESMTP id 6D5442B01288;
+        Mon, 16 Aug 2021 11:10:23 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Mon, 16 Aug 2021 11:10:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=QH2i+g2wWgrw++ix3rV29qp4xkP
+        WlAQZm+p6piVCMLw=; b=aZggHCp1Ba1yTlAbk2MLyQt2LOVHDW/W762RUAm1Z91
+        XNZYfy5gIGd7y4/h05aPeYWDtxodJweZZ36F7+XhUnz6gUX53xJHwCnWnsAvVXrl
+        ZTtFIg/M6ytXweTpVKYifpFZeZX7A4704NwmqzykAfMde4444963Ln7qd8/YdmNc
+        QeOmgYv4fD3BtDZJyU6g00T/5LknXQTomwWQBbrHJdr2hHLEIEgofnQxi0erlZ2C
+        g/tvoMKe0yyTIFUqti/UUgv5/EpDuLWFfsFUnEMtvA/8BZ4iASVDTHyBllWm+sCl
+        Ybk6vG9poLXcyTN+J2fbks+OJhn3FVUsA7GgTochuOg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=QH2i+g
+        2wWgrw++ix3rV29qp4xkPWlAQZm+p6piVCMLw=; b=mMjw/li99GEDCJn70/rZTS
+        MlFQonrrEJhVDbYSsQdfVxQtAybMDof/LL16u7NqwhEooGk2J/9UWO8ZpFXAwmKc
+        39xscZ34g2xlTIQDiaFp32iDrPl7jmb1Disf71uyxcoGBmTi2i6S92lmilW2DLzj
+        aNUN61ZO0HNVydbtnBcaLTYLV9aWK3Wec9qwGmbp9V+pU6TBoqK28Kl65gFFzkAh
+        VWHyid7norHBXUHmecvqG40VoqTYfv7uMwBaNkHqKzcglXwOz04GzuhcRoaURGw3
+        /HorNw5NKMuocRvCVzUfJ+Omu7KGHJgXMty45Zrr7dJe746Mc27kPY6+1SpnN53A
+        ==
+X-ME-Sender: <xms:3X8aYfZqeYGAdTfgBZASi_CeVDHwvhGsJfDFiOXUMQhvLt-QWaph0g>
+    <xme:3X8aYeaqiW20J_uRghfFhCqxyJ8k3BVhxaYILGMYJYiE2wnN7ENvovotZJGCGIS6-
+    xdxghHUUzsRuQ>
+X-ME-Received: <xmr:3X8aYR_AkEoRzg2DdlNd7R_4fVRPLhO8NL9565M7o_-BmPx_ktuvj5PiEh3zXLiWydhbqxnHi1Mv8zL3n3hKgVnbPoNnXimX>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrledugdekhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
+    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
+    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
+    gtohhm
+X-ME-Proxy: <xmx:3X8aYVoTtQ-N4karYvkwnh90C37BKjyoxo5F_Q0DgBlwJyPAz41rQQ>
+    <xmx:3X8aYardt367KHXLDLhd3JwlMK2123GN8ElI9sYevmw4W6F7YSjRdA>
+    <xmx:3X8aYbS5DmsZlluMn9CdXS8mfmY5vPR4DFxE4UHdcjaq5Mhd2FXDzw>
+    <xmx:338aYXgu2V2mAass_oG3wgHQUi1ZEQBZx7q4ToVGHS1BEj1di8KmLZeN84U>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 16 Aug 2021 11:10:20 -0400 (EDT)
+Date:   Mon, 16 Aug 2021 17:10:18 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Cai Huoqing <caihuoqing@baidu.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the staging tree
+Message-ID: <YRp/2kRzujLsV8sm@kroah.com>
+References: <20210816135216.46e50364@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210816150653.GH1931@kadam>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210816135216.46e50364@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/16/21 10:06 AM, Dan Carpenter wrote:
-> On Mon, Aug 16, 2021 at 05:01:02PM +0200, Greg Kroah-Hartman wrote:
->> On Mon, Aug 16, 2021 at 09:46:08AM -0500, Alex Elder wrote:
->>> On 8/14/21 1:11 PM, Fabio M. De Francesco wrote:
->>>> Convert greybus/uart.c from IDR to XArray. The abstract data type XArray
->>>> is more memory-efficient, parallelisable, and cache friendly. It takes
->>>> advantage of RCU to perform lookups without locking. Furthermore, IDR is
->>>> deprecated because XArray has a better (cleaner and more consistent) API.
->>>
->>> I haven't verified the use of the new API (yet) but I have a few
->>> comments on your patch, below.
->>>
->>> 					-Alex
->>>
->>>> Reported-by: kernel test robot <lkp@intel.com>
->>>> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
->>>
->>> I'm not sure I'm right about this...  But the actual change you're
->>> making has nothing to do with what the Intel test robot reported.
->>> I personally find the "Reported-by" here a little misleading, but
->>> maybe the "Link" line that gets added will provide explanation.
->>>
->>> Anyway, unless someone else contradicts/corrects me, I'd rather
->>> not have the "Reported-by" here (despite wanting to provide much
->>> credit to <lkp@intel.com>...).
->>
->> You are correct, "Reported-by:" does not make sense here.
+On Mon, Aug 16, 2021 at 01:52:16PM +1000, Stephen Rothwell wrote:
+> Hi all,
 > 
-> There should be a Fixes-from: tag for bugs found in review (not style
-> issues) but when I suggest it then people just say to use the
-> Reported-by tag.
-
-I think things caught during review aren't normally worthy
-of specific mention in the commit message (though maybe in
-the non-committed part under "---").  I mean, that's what
-review is for.  And in the case of what <lkp@intel.com>
-does, that's effectively a technical aspect of "review."
-
-So I don't think "Fixes-from" (whatever that means) or
-"Reported-by" make sense for this type of update.
-
-					-Alex
-
+> After merging the staging tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
 > 
-> regards,
-> dan carpenter
+> drivers/staging/r8188eu/core/rtw_br_ext.c:8:10: fatal error: ../include/net/ipx.h: No such file or directory
+>     8 | #include "../include/net/ipx.h"
+>       |          ^~~~~~~~~~~~~~~~~~~~~~
 > 
-> _______________________________________________
-> greybus-dev mailing list
-> greybus-dev@lists.linaro.org
-> https://lists.linaro.org/mailman/listinfo/greybus-dev
+> Caused by commit
 > 
+>   6c9b40844751 ("net: Remove net/ipx.h and uapi/linux/ipx.h header files")
+> 
+> from the net-next tree.
+> 
+> I have reverted that commit for today.
 
+Should now be fixed up in my tree so that you do not need to drop that
+networking patch anymore.
+
+thanks,
+
+greg k-h
