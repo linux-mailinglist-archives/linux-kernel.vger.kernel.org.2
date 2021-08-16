@@ -2,82 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA7D3ECC96
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 04:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4318A3ECCA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 04:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbhHPCQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 22:16:12 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:13318 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbhHPCQL (ORCPT
+        id S231401AbhHPCWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 22:22:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229816AbhHPCWI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 22:16:11 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GnyS54R7Pz85jp;
-        Mon, 16 Aug 2021 10:15:33 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 16 Aug 2021 10:15:38 +0800
-Received: from [10.174.178.242] (10.174.178.242) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 16 Aug 2021 10:15:38 +0800
-Subject: Re: [PATCH 1/4] iommu/arm-smmu-v3: Use command queue batching helpers
- to improve performance
-To:     John Garry <john.garry@huawei.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210811114852.2429-1-thunder.leizhen@huawei.com>
- <20210811114852.2429-2-thunder.leizhen@huawei.com>
- <81258eb7-eb73-8a32-0983-3487daba1167@arm.com>
- <4e741216-d6e7-c40c-f257-242cd2fea302@huawei.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <5482d2e5-24db-6139-a8a8-74be1282e2ec@huawei.com>
-Date:   Mon, 16 Aug 2021 10:15:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Sun, 15 Aug 2021 22:22:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A542FC061764;
+        Sun, 15 Aug 2021 19:21:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8wNz7LcT9xNxK0y/fhLt58PK8+R22+7lIZQyn3Pih+A=; b=fGbOje6iv2gBRt1NHwxNDaxkq6
+        bR34Tb/IF3vQKwky/8bwQdw/c9IBHmo8ElPm1+vBgVs3W5rWFsasstgDzSNrCoOol3FrzRyaKr/g3
+        ECms22cwdWo7taquCtWt7b6ORbhWnZaQ/vJSz7euXjILEYqO2gl4a/KRJIyrBliJCXHJleF1jZkg3
+        n49k3sOoFT9dSNmrNSr8o6YdKKejvpJukuU4tVUKMiWTRFJ91WsxGf/7v/l699aT9Pow5fRYuSUwe
+        2O1I+8O5xQvvEJFph0AXtsftkt0TdlxN773hB/taWKibG28guGZmTSxBcNWwCyOmWidgggVcKl/iy
+        DZml9eJA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mFSFd-000rxS-77; Mon, 16 Aug 2021 02:21:27 +0000
+Date:   Mon, 16 Aug 2021 03:21:21 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v14 082/138] mm/lru: Convert __pagevec_lru_add_fn to take
+ a folio
+Message-ID: <YRnLoYRps6HXdTyD@casper.infradead.org>
+References: <20210715033704.692967-83-willy@infradead.org>
+ <20210715033704.692967-1-willy@infradead.org>
+ <1814231.1628631867@warthog.procyon.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <4e741216-d6e7-c40c-f257-242cd2fea302@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.242]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1814231.1628631867@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/8/14 0:45, John Garry wrote:
-> On 13/08/2021 17:01, Robin Murphy wrote:
->>>
->>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>> index 235f9bdaeaf223b..c81cd929047f573 100644
->>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>> @@ -1747,15 +1747,16 @@ static int arm_smmu_atc_inv_master(struct arm_smmu_master *master)
->>>   {
->>>       int i;
->>>       struct arm_smmu_cmdq_ent cmd;
->>> +    struct arm_smmu_cmdq_batch cmds = {};
->>
->> BTW, it looks like this has crossed over with John's patch removing these.
+On Tue, Aug 10, 2021 at 10:44:27PM +0100, David Howells wrote:
+> Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
 > 
-> It is only called from arm_smmu_disable_ats(), so not hot-path by the look for it. Or who even has ats HW ...?
+> >  	 * looking at the same page) and the evictable page will be stranded
+> >  	 * in an unevictable LRU.
 > 
-> But it should be at least cleaned-up for consistency. Leizhen?
+> Does that need converting to say 'folio'?
 
-Okay, I'll revise it. But Will already took it. So I'm not sure whether to send v2 or a separate patch.
+Changed the parapgraph (passed it through fmt too)
 
+         * if '#1' does not observe setting of PG_lru by '#0' and
+         * fails isolation, the explicit barrier will make sure that
+         * folio_evictable check will put the folio on the correct
+         * LRU. Without smp_mb(), folio_set_lru() can be reordered
+         * after folio_test_mlocked() check and can make '#1' fail the
+         * isolation of the folio whose mlocked bit is cleared (#0 is
+         * also looking at the same folio) and the evictable folio will
+         * be stranded on an unevictable LRU.
+
+> Other than that:
 > 
-> Thanks,
-> John
-> .
+> Reviewed-by: David Howells <dhowells@redhat.com>
 > 
