@@ -2,84 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A84FA3EDE57
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 365863EDE5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231544AbhHPT7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 15:59:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56894 "EHLO
+        id S231571AbhHPUBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 16:01:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhHPT7A (ORCPT
+        with ESMTP id S230026AbhHPUB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 15:59:00 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A9BC061764;
-        Mon, 16 Aug 2021 12:58:29 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id c17so16615218plz.2;
-        Mon, 16 Aug 2021 12:58:29 -0700 (PDT)
+        Mon, 16 Aug 2021 16:01:28 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2AAEC061764;
+        Mon, 16 Aug 2021 13:00:55 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id z2so36843435lft.1;
+        Mon, 16 Aug 2021 13:00:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=s9l5IsedF/5S4SnJF4fAydWyt7KoVJCD7oSIXdqwVD0=;
-        b=Ue/nsPauk7U6/n3kytH2QA63vMZ7hMlJ6o+jRyIO+TXAAn5Cfyd6nWdtYBbtA3J3Pt
-         gGMXmjbTyBKeY9AzbTy4YzVaR9PQETDQGPWorPB6gHG3IG9zujI1tzKVBlFZwGelsnav
-         of61ongXjhXr7f7H1Qk+p/jqWXgGnwRs59kpdQ1gV4Lix0lkWdjtCJF3URLF/Dr/Ps6G
-         p7OJhTRksVzsrtxSpnUwzBOukJnVsGWpiPYN5iUBKKQ4ybPZDYEgoadJ1wEGvaxoTxti
-         o++Om859MCxZz4jSnVxGTcYmItEURXy2BxxQxigQyKeVOVeSVOwfIbKMLVHssa/9d6wu
-         4UyA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language;
+        bh=jn+MCTO2XYnz+C1uUpqojL4zLVrIjta44UP412OIer4=;
+        b=Xt9HmHYTLeyIXCim60eBJQW5NEjrtHU7AGIjyBEHuGn65SAb1YaSPTWO5kc+yqxloF
+         e4XA06A2949/ONTPWfHJrIk8LalmRyfQuNXpv7fWzOHBnLzH63D7aDXBsNafKO/Tl2OK
+         RKG2Xu8ws50t9RKrfpKlZWKCcNxs7snreU+6nbX45q5RoYFHFcrCTLW3mnM9nYKZu+cD
+         6elPJRDN7/ozAioY+XqWAT+lgLN8tN9G6FGMogPWn8t9YcjLfOJongAr0sl6vOhTPuXL
+         1B9TLyqGKUt7y6DBtnEK6S+qW3VkR9r7iL6GNgc9kPEb4Va2juM4Ew5NEdgrjdhmtcLD
+         D2vQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=s9l5IsedF/5S4SnJF4fAydWyt7KoVJCD7oSIXdqwVD0=;
-        b=r8K2yrGbba9jWqlJVXJKVI2KOtFRYUeAVb4ShzwK6tUDSOPmfss1h8BqjMCseyVFbo
-         enr/sNUcfZ8EGx4qNy80H2eFEBSqC3uG8NT3u8EbOPVFC4N7x0nYPlsRoeadewi0gcrM
-         MMrmZoWJsyJK+f7lR+cxSeCE9yPyUGDEMoRgSxOg13dk9ruX8gJ1YOH76zRboJKYXOMm
-         X+OnInqMdhgYccT3DcvQNVh9CrAIGtakvfw8WqPRJ1DzHZ0UnP15tOg3EpoXq0ndB7SR
-         AXaQ9jiA3dHEzsXh+D8GD8jCVpf7RUCKcRbFnXU1e0Cr/7o/SqkOR9INfcj1kXahlSer
-         KliA==
-X-Gm-Message-State: AOAM533v82dOgXn0NMT/UifnnHRMVxRA5gwboJkupuiHn3Xl8wg9qlb6
-        1cEoXtldH5O2swxS0cLQoLc=
-X-Google-Smtp-Source: ABdhPJy5BO8UPitxBJFGj9SnL787Ml47xibIqz1zp+gWTNa1A1DD/jzJ8/nvqsnSQnuQlY7WyZGZxQ==
-X-Received: by 2002:a17:90a:116:: with SMTP id b22mr239613pjb.97.1629143908577;
-        Mon, 16 Aug 2021 12:58:28 -0700 (PDT)
-Received: from localhost ([49.207.137.16])
-        by smtp.gmail.com with ESMTPSA id l11sm119501pjg.22.2021.08.16.12.58.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 12:58:28 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 01:28:24 +0530
-From:   Aakash Hemadri <aakashhemadri123@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
-        Jawoslav Kysela <perex@perex.cz>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Bjorn Helgaas <bjorn@helgaas.com>
-Subject: Re: [PATCH 1/2] ASoC: tegra30: ahub: Use of_device_get_match_data
-Message-ID: <20210816195824.ulvnb2kfas4rtpjt@xps.yggdrasil>
-References: <cover.1628971397.git.aakashhemadri123@gmail.com>
- <e568d621c9c05ee23732a6a6f9e3606a780b1707.1628971397.git.aakashhemadri123@gmail.com>
- <20210816183906.GC4253@sirena.org.uk>
- <20210816194621.mrudqykxvkbt3a2w@xps.yggdrasil>
- <20210816194934.GD4253@sirena.org.uk>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language;
+        bh=jn+MCTO2XYnz+C1uUpqojL4zLVrIjta44UP412OIer4=;
+        b=bBbKKZV2bbi+adwjb9KjXUIBkQFeT53tXaBIcMNBWBMCTB5vqszQ/Yp/QffIbQbIis
+         8uGUOmD1K6c2MDcgx3wjIn41l9lnayZSLeBB2PTiE5G6wCT1TElI9oDsYSgMVvj65BAd
+         qc2rgtpNUdfhELzgdwfiey+BTGyH5X9mSOPOpa3iAQwIufXBoeRtvpWHA2LG04yAjOqr
+         EB2S2l5WVgRVUmMo0f3Z7s5q/RWhlva2OuoF97Jn0B8Xszvzvq6jjAUQ7N3jv2o+OA6Y
+         ouBEFddE+kX87gxAfUNYO4KkkWlQIvRxSg/SNi+om6hpMfjYhgMdwmV3HecHoAJBn6Cq
+         1AVw==
+X-Gm-Message-State: AOAM532N+hE7q5E2Ixp+Ggict2VcRWViVJ9eWQsWHhDjA7JB4TRFqeq4
+        BDAz3yPP9/4tOwxKm7cxab4=
+X-Google-Smtp-Source: ABdhPJw8n+sXoiijbBBS57ncU1c4jJjF9sNXQWuW0YYgHxiEiFLxnsPwwVBUL25sKgcUVqxtREtWUw==
+X-Received: by 2002:a19:ca4e:: with SMTP id h14mr69913lfj.146.1629144052653;
+        Mon, 16 Aug 2021 13:00:52 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.67.232])
+        by smtp.gmail.com with ESMTPSA id m28sm33270ljc.46.2021.08.16.13.00.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 13:00:52 -0700 (PDT)
+Subject: Re: [syzbot] INFO: task hung in hci_req_sync
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     syzbot <syzbot+be2baed593ea56c6a84c@syzkaller.appspotmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hedberg <johan.hedberg@gmail.com>, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000c5482805c956a118@google.com>
+ <9365fdfa-3cee-f22e-c53d-6536a96d27ae@gmail.com>
+ <57BAFAA4-3C3D-40C8-9121-44EEF44509B8@holtmann.org>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+Message-ID: <568c354b-6e4b-d15a-613e-3389c99a93a1@gmail.com>
+Date:   Mon, 16 Aug 2021 23:00:50 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210816194934.GD4253@sirena.org.uk>
+In-Reply-To: <57BAFAA4-3C3D-40C8-9121-44EEF44509B8@holtmann.org>
+Content-Type: multipart/mixed;
+ boundary="------------A192B244700466BCDC3D5042"
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/08/16 08:49PM, Mark Brown wrote:
-> Since I applied the patches please send an incremental fix on top of
-> what's been applied rather than a v2.
+This is a multi-part message in MIME format.
+--------------A192B244700466BCDC3D5042
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Will do Mark!
+On 8/16/21 6:56 PM, Marcel Holtmann wrote:
+> Hi Pavel,
+> 
 
-Thank,
-Aakash Hemadri
+[snip]
+
+> I agree. Feel free to send a patch.
+> 
+
+Thank you, Marcel! I will send a patch if it will pass syzbot testing.
+
+I believe, 60 seconds will be more than enough for inquiry request. I've 
+searched for examples on the internet and maximum ir.length I found was 
+8. Maybe, we have users, which need more than 60 seconds, idk...
+
+
+
+#syz test
+git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+
+
+
+
+With regards,
+Pavel Skripkin
+
+--------------A192B244700466BCDC3D5042
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-Bluetooth-add-timeout-sanity-check-to-hci_inquiry.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-Bluetooth-add-timeout-sanity-check-to-hci_inquiry.patch"
+
+From c868a2f2533bb05873fedcde6bc4ca174f8908ea Mon Sep 17 00:00:00 2001
+From: Pavel Skripkin <paskripkin@gmail.com>
+Date: Mon, 16 Aug 2021 22:52:29 +0300
+Subject: [PATCH] Bluetooth: add timeout sanity check to hci_inquiry
+
+/* ... */
+
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ include/net/bluetooth/hci_sock.h | 1 +
+ net/bluetooth/hci_core.c         | 5 +++++
+ 2 files changed, 6 insertions(+)
+
+diff --git a/include/net/bluetooth/hci_sock.h b/include/net/bluetooth/hci_sock.h
+index 9949870f7d78..1cd63d4da00b 100644
+--- a/include/net/bluetooth/hci_sock.h
++++ b/include/net/bluetooth/hci_sock.h
+@@ -168,6 +168,7 @@ struct hci_inquiry_req {
+ 	__u16 dev_id;
+ 	__u16 flags;
+ 	__u8  lap[3];
++#define HCI_INQUIRY_MAX_TIMEOUT		30
+ 	__u8  length;
+ 	__u8  num_rsp;
+ };
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index e1a545c8a69f..cd00bcd2faef 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -1343,6 +1343,11 @@ int hci_inquiry(void __user *arg)
+ 		goto done;
+ 	}
+ 
++	if (ir.length > HCI_MAX_TIMEOUT) {
++		err = -EINVAL;
++		goto done;
++	}
++
+ 	hci_dev_lock(hdev);
+ 	if (inquiry_cache_age(hdev) > INQUIRY_CACHE_AGE_MAX ||
+ 	    inquiry_cache_empty(hdev) || ir.flags & IREQ_CACHE_FLUSH) {
+-- 
+2.32.0
+
+
+--------------A192B244700466BCDC3D5042--
