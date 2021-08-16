@@ -2,97 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AFC13EDB1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:42:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EAC33EDB28
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbhHPQmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 12:42:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231163AbhHPQmV (ORCPT
+        id S230118AbhHPQnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 12:43:40 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:42014
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229761AbhHPQni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 12:42:21 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C7FC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 09:41:49 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id q10so24575343wro.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 09:41:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jxcnjHPA5B0j7qX5chL1ZJXQsXksmgMefqmaOOvck6g=;
-        b=gh2l0B5f6EJ7VXrb+GYCYmriYpOHMNPGU+nz2lisk3yiUpFuUBbr7Tmf1rybpLntdb
-         hdpRJ/659TUr0FD1rANpNv/MxCvfr/etPOeFIrH5iuFKbzHh3Wg5gPMP0FxtJYdyG/Sn
-         +rvl+qFCJhXyjJeAPjdCxc0/HEbb1U+6mAgWQD/4EedobPEVDBIK4V6Cru7Cu1b+pkOx
-         hjEAfM3awnc2wpXxrBZXNT7nNy/xb+LBP1kv/HQJmSZDm8E8B8s3TyfMoEdUlGX95Ar3
-         hQbuKj9KYNazwHZdUkPr1axAssNcx9D5NC9LBJ7PhLJg9ACo/PgzOY/Ay61t0PcRmaIe
-         imDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jxcnjHPA5B0j7qX5chL1ZJXQsXksmgMefqmaOOvck6g=;
-        b=EcTKHDFszom+3Rev3lWo9gkyTVkDnafUeKteLRVdRwpHXuIKISONQKAC65agl3bSOn
-         DFlNczKLJbEU+rkL6/JQtY1U+8GYljiWQPWymu8YXJ7PwzvolJJQJgFEbWm+eRSHjUnc
-         h/BPPcWb8QZyohElhxrVnucwk1iCVyv0VRx7ZPy5g1399/ewcYw6gUhdk+JytPtOsU6T
-         W95OBG/gxIpVjo/LdeAeg1R69u16pb+5QN5vcSwpVa3UBo4JsNRy7gYMDIUqIIxtX3C/
-         4mQPHDLQdf3bd03x2k9DwErtBFnVJJdVCI+TB2y49UbzT5Nu11Dp6W/brHVnI/nuVaK8
-         qfaw==
-X-Gm-Message-State: AOAM532QTgE4cH0rV0FFBpP0IxaKqSwvzXQYm0oCxVXytXzfBu/Qv5JW
-        5YX8IN80q6dVqGJTczLX+bNaJQ==
-X-Google-Smtp-Source: ABdhPJz88fBErB0TXJjcCkHN84Q0xoZWg8NEBr1BSB0Iw+EaQ1/y6x2qK2vtpblHlClHO8Q5N0gAHQ==
-X-Received: by 2002:adf:f292:: with SMTP id k18mr19621618wro.249.1629132107978;
-        Mon, 16 Aug 2021 09:41:47 -0700 (PDT)
-Received: from localhost.localdomain ([2001:861:3a81:3690:b885:8dcf:f8c6:7841])
-        by smtp.gmail.com with ESMTPSA id m10sm15211730wro.63.2021.08.16.09.41.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 09:41:47 -0700 (PDT)
-From:   Alexandre Bailon <abailon@baylibre.com>
-To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, robh+dt@kernel.org,
-        matthias.bgg@gmail.com
-Cc:     ben.tseng@mediatek.com, michael.kao@mediatek.com,
-        ethan.chang@mediatek.com, fparent@baylibre.com,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Alexandre Bailon <abailon@baylibre.com>
-Subject: [PATCH 1/3] dt-bindings: thermal: Add binding document for mt8195 thermal controller
-Date:   Mon, 16 Aug 2021 18:43:05 +0200
-Message-Id: <20210816164307.557315-2-abailon@baylibre.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210816164307.557315-1-abailon@baylibre.com>
-References: <20210816164307.557315-1-abailon@baylibre.com>
+        Mon, 16 Aug 2021 12:43:38 -0400
+Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id F07123F04D;
+        Mon, 16 Aug 2021 16:43:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629132186;
+        bh=0Aci3PtlGfoMUvbObF/5DAnE61QA6srUCQf5qmnkZSs=;
+        h=From:To:Cc:Subject:Message-ID:Date:MIME-Version:Content-Type;
+        b=s7Q8jp6iDjOscuUyTOeoDhes/D3AdsCB/AsTwmX+AiT+Am3c7PgzvmRtKDZQHJ0mD
+         iwO7JU1lmV92Nxg56z1VRrYR2GnNOiQG8YTIHWiDdf2QRaUlbdeU+Gqq7VKMDV9x/+
+         ZnV0Ur40kAJoVRdepgSAUhPUVDpK/SLjo+1Q+hZIaysFVRLsY1uW0chwbcxb7CbFqo
+         GIUO8OAgJQmHyT7WPB8esfy/+O1e17gToO83xUO1AS0yUMlmqQkV5J5nfussflOOST
+         0jQaM+weVM1dFtM6pzAnbSQ9uOjZ9T2LADtzHKVXqCjLThDknxGWXtL8D2M0RKgBDZ
+         pSh4JxbV4kX4Q==
+From:   Colin Ian King <colin.king@canonical.com>
+To:     Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        alsa-devel@alsa-project.org
+Subject: re: ASoC: sh: Add RZ/G2L SSIF-2 driver
+Message-ID: <962029d0-d001-f85c-1676-262372faeb34@canonical.com>
+Date:   Mon, 16 Aug 2021 17:43:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds binding document for mt8195 thermal controller.
+Hi,
 
-Signed-off-by: Alexandre Bailon <abailon@baylibre.com>
----
- .../devicetree/bindings/thermal/mediatek-thermal-lvts.yaml  | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Static analysis on linux-next with Coverity has detected an issue in
+rz_ssi_stop, sound/soc/sh/rz-ssi.c with the following commit:
 
-diff --git a/Documentation/devicetree/bindings/thermal/mediatek-thermal-lvts.yaml b/Documentation/devicetree/bindings/thermal/mediatek-thermal-lvts.yaml
-index 69ffe7b14c212..2e1ae00d4fd18 100644
---- a/Documentation/devicetree/bindings/thermal/mediatek-thermal-lvts.yaml
-+++ b/Documentation/devicetree/bindings/thermal/mediatek-thermal-lvts.yaml
-@@ -12,7 +12,11 @@ maintainers:
- 
- properties:
-   compatible:
--    const: mediatek,mt6873-lvts
-+    oneOf:
-+      - items:
-+          - enum:
-+              - mediatek,mt6873-lvts
-+              - mediatek,mt8195-lvts
- 
-   reg:
-     maxItems: 1
--- 
-2.31.1
+commit 03e786bd43410fa93e5d2459f7a43e90ff0ae801
+Author: Biju Das <biju.das.jz@bp.renesas.com>
+Date:   Fri Aug 13 10:11:54 2021 +0100
 
+    ASoC: sh: Add RZ/G2L SSIF-2 driver
+
+
+The analysis is as follows:
+
+367
+368        /* Wait for idle */
+369        timeout = 100;
+370        while (--timeout) {
+
+Wrong operator used (CONSTANT_EXPRESSION_RESULT)
+
+operator_confusion: rz_ssi_reg_readl(ssi, 4) | (33554432UL /* 1UL << 25
+*/) is always 1/true regardless of the values of its operand. This
+occurs as the logical operand of if.
+
+371                if (rz_ssi_reg_readl(ssi, SSISR) | SSISR_IIRQ)
+372                        break;
+373                udelay(1);
+374        }
+
+I suspect the & operator was intended to mask the specific bit. However
+I'm not sure if the intent is to detect if the SSISR_IIRQ bit should be
+zero or one at the point where the break should occur, hence I'm
+reporting this issue.
+
+Colin
