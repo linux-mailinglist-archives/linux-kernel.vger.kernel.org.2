@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D11993ED701
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2980F3ED590
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239902AbhHPN0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:26:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39372 "EHLO mail.kernel.org"
+        id S239553AbhHPNMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:12:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240342AbhHPNPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:15:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A83DE6112D;
-        Mon, 16 Aug 2021 13:12:36 +0000 (UTC)
+        id S238852AbhHPNIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:08:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11703632BD;
+        Mon, 16 Aug 2021 13:07:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119557;
-        bh=rx4pw91cp/z+GwPLnPfwVP9fP09/FNWaRcikO0NpLMg=;
+        s=korg; t=1629119250;
+        bh=zWNH5pGT/pIHJCmvZRaSOkLXBiB8DCvb5EGjWZU9ZF0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OkiBAi3yQIUtNXy0cVQwNXH2p7HYhIr5icqPIinmkg/stavHA7Cir5B2WnERm0fZJ
-         V9Ki+PeJdNn341iIAlFY95ctfB18Vy9ncvsQwCvyjTotgyh2NAE2Xtxa8WVT6KM0p0
-         RHyTrFa5znXUDhCbSTzZAYRI1FFVDpTKzO3tUBnk=
+        b=pYAPXTCO6Agr+1T1xqHpAbA8cADWhehWUGu9UcJAnkljHCtMDtf+M5tv9LnUL0ROz
+         Uq6I/KoqK2VgvS3YTKPCkHI0YFiJzkhVirAPo6FE5w2nSFXIg02G04VAyEQNjDPDoQ
+         ao/yWTRRhxAl+OxtQ8HBXxVNZA7UbHbSGzOWjO7I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>,
-        Konrad Jankowski <konrad0.jankowski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 073/151] ice: Stop processing VF messages during teardown
+Subject: [PATCH 5.10 33/96] ASoC: cs42l42: Fix LRCLK frame start edge
 Date:   Mon, 16 Aug 2021 15:01:43 +0200
-Message-Id: <20210816125446.483461915@linuxfoundation.org>
+Message-Id: <20210816125436.056638081@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
-References: <20210816125444.082226187@linuxfoundation.org>
+In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
+References: <20210816125434.948010115@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,71 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-[ Upstream commit c503e63200c679e362afca7aca9d3dc63a0f45ed ]
+[ Upstream commit 0c2f2ad4f16a58879463d0979a54293f8f296d6f ]
 
-When VFs are setup and torn down in quick succession, it is possible
-that a VF is torn down by the PF while the VF's virtchnl requests are
-still in the PF's mailbox ring. Processing the VF's virtchnl request
-when the VF itself doesn't exist results in undefined behavior. Fix
-this by adding a check to stop processing virtchnl requests when VF
-teardown is in progress.
+An I2S frame starts on the falling edge of LRCLK so ASP_STP must
+be 0.
 
-Fixes: ddf30f7ff840 ("ice: Add handler to configure SR-IOV")
-Signed-off-by: Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>
-Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+At the same time, move other format settings in the same register
+from cs42l42_pll_config() to cs42l42_set_dai_fmt() where you'd
+expect to find them, and merge into a single write.
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
+Link: https://lore.kernel.org/r/20210805161111.10410-2-rf@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ice/ice.h             | 1 +
- drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c | 7 +++++++
- 2 files changed, 8 insertions(+)
+ sound/soc/codecs/cs42l42.c | 21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
-index 2924c67567b8..13ffa3f6a521 100644
---- a/drivers/net/ethernet/intel/ice/ice.h
-+++ b/drivers/net/ethernet/intel/ice/ice.h
-@@ -226,6 +226,7 @@ enum ice_pf_state {
- 	ICE_VFLR_EVENT_PENDING,
- 	ICE_FLTR_OVERFLOW_PROMISC,
- 	ICE_VF_DIS,
-+	ICE_VF_DEINIT_IN_PROGRESS,
- 	ICE_CFG_BUSY,
- 	ICE_SERVICE_SCHED,
- 	ICE_SERVICE_DIS,
-diff --git a/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c b/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
-index 97a46c616aca..671902d9fc35 100644
---- a/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
-+++ b/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
-@@ -615,6 +615,8 @@ void ice_free_vfs(struct ice_pf *pf)
- 	struct ice_hw *hw = &pf->hw;
- 	unsigned int tmp, i;
- 
-+	set_bit(ICE_VF_DEINIT_IN_PROGRESS, pf->state);
-+
- 	if (!pf->vf)
- 		return;
- 
-@@ -680,6 +682,7 @@ void ice_free_vfs(struct ice_pf *pf)
- 				i);
- 
- 	clear_bit(ICE_VF_DIS, pf->state);
-+	clear_bit(ICE_VF_DEINIT_IN_PROGRESS, pf->state);
- 	clear_bit(ICE_FLAG_SRIOV_ENA, pf->flags);
- }
- 
-@@ -4292,6 +4295,10 @@ void ice_vc_process_vf_msg(struct ice_pf *pf, struct ice_rq_event_info *event)
- 	struct device *dev;
- 	int err = 0;
- 
-+	/* if de-init is underway, don't process messages from VF */
-+	if (test_bit(ICE_VF_DEINIT_IN_PROGRESS, pf->state))
-+		return;
-+
- 	dev = ice_pf_to_dev(pf);
- 	if (ice_validate_vf_id(pf, vf_id)) {
- 		err = -EINVAL;
+diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
+index ab6f89032ea0..828dc78202e8 100644
+--- a/sound/soc/codecs/cs42l42.c
++++ b/sound/soc/codecs/cs42l42.c
+@@ -658,15 +658,6 @@ static int cs42l42_pll_config(struct snd_soc_component *component)
+ 					CS42L42_FSYNC_PULSE_WIDTH_MASK,
+ 					CS42L42_FRAC1_VAL(fsync - 1) <<
+ 					CS42L42_FSYNC_PULSE_WIDTH_SHIFT);
+-			snd_soc_component_update_bits(component,
+-					CS42L42_ASP_FRM_CFG,
+-					CS42L42_ASP_5050_MASK,
+-					CS42L42_ASP_5050_MASK);
+-			/* Set the frame delay to 1.0 SCLK clocks */
+-			snd_soc_component_update_bits(component, CS42L42_ASP_FRM_CFG,
+-					CS42L42_ASP_FSD_MASK,
+-					CS42L42_ASP_FSD_1_0 <<
+-					CS42L42_ASP_FSD_SHIFT);
+ 			/* Set the sample rates (96k or lower) */
+ 			snd_soc_component_update_bits(component, CS42L42_FS_RATE_EN,
+ 					CS42L42_FS_EN_MASK,
+@@ -762,6 +753,18 @@ static int cs42l42_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	/* interface format */
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
++		/*
++		 * 5050 mode, frame starts on falling edge of LRCLK,
++		 * frame delayed by 1.0 SCLKs
++		 */
++		snd_soc_component_update_bits(component,
++					      CS42L42_ASP_FRM_CFG,
++					      CS42L42_ASP_STP_MASK |
++					      CS42L42_ASP_5050_MASK |
++					      CS42L42_ASP_FSD_MASK,
++					      CS42L42_ASP_5050_MASK |
++					      (CS42L42_ASP_FSD_1_0 <<
++						CS42L42_ASP_FSD_SHIFT));
+ 		break;
+ 	default:
+ 		return -EINVAL;
 -- 
 2.30.2
 
