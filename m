@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E46A3EE020
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 00:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4830B3EE01D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 00:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234599AbhHPWvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 18:51:43 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:48524 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234310AbhHPWvO (ORCPT
+        id S234439AbhHPWvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 18:51:20 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:26096 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234080AbhHPWvH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 18:51:14 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17GMlZKG030789;
+        Mon, 16 Aug 2021 18:51:07 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17GMmKIa029214;
         Mon, 16 Aug 2021 22:50:23 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references :
  content-transfer-encoding : content-type : mime-version;
- s=corp-2021-07-09; bh=OXjOjDBb4PYJyOxgsU6x+jt+sMCOoNtKWtWK4nozLmU=;
- b=rNKOhnjNDlDBrwLQXJ468eWZIX2RRQDicrZsU6lQt9vizYAGTNT9p7bqXEH/bEIySUru
- 0G5xg9S+tgYJhfuBlyBwK75o9ZFrdNLPofXdVLKJLj/HNB/GBIdCrLhU6ktjH/OOdLII
- e+v+3EhCUVwmOYF8I0WRg2jws1O5Z7b+W1txh8kPMFebMPw/7jDcI2nZEC35nPsSTio6
- cK/GDJOZiabCW50q58B5/M7Q9hoOZ8PVpHl11jDm5D3vtBR002+xG6opBzgfDRYN1dbs
- fdfqU1Ajzk1EfbajvvgJvFX+gdgCKjuTW+rZBe12irIK3CtGZwGmK2dKANHdPcHefwj0 tA== 
+ s=corp-2021-07-09; bh=Zw5ULP+Lfflz7uyYnSO4JR8S10OYQiow+gaHUf8TpWo=;
+ b=jfPdtbnttw2JRlDgkvCtNRCwBbEL9FzmDYW/d16k/rJz8EqHtcSVEm4pc1iBShneX8Do
+ e9YRVlAwDks+rwNDO98vU+OuKX0lJLmZl7RPWrBt/KHAY5xwYExw9VBwmLAWcjfwwW2G
+ MvJQcc+zvCkGhoq8bEaFawX2cNkn7tiVu9VgGHb76AMF8O3edNkIMzmN+l7yM2/7xVs+
+ kN4hh73ufkpDJj9xwOczzAv5MHN3cRoO5BEgF97j2VPIHeD0GIjtBnMnzGWsPiYV7uw1
+ dDJ7fBMQHt7MYz3ikKf4d2AfRCD70Q7pOi03dSwoledsC+gdoDGCrFSRFs4FI06ouBfo hw== 
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references :
  content-transfer-encoding : content-type : mime-version;
- s=corp-2020-01-29; bh=OXjOjDBb4PYJyOxgsU6x+jt+sMCOoNtKWtWK4nozLmU=;
- b=WTtAyH9iwkgTp7jNpQ4jYL01ySM2trr6T72fkTYjbE7NM8VaToLdu6iIlMcxsQFpv7Z4
- ffjHJ/EZHbMzcMczHHoyrmeje34NYbt5mnJgBjGITTatlhEXTI3vFBkZQpSx+evzBL1S
- 2lRAT07zagIDQ5cLA4zMRSzESYhx5B2XIuaUxbMbpyiWbSuNZoqEarRvOSQaEudbzm3x
- uTmORAx8elgkQMDn/ugY0xew2aVbvswFuLl3E0u2ijDer36b4ZSWteNPnBYzr8WUG2+b
- DrB3pVoGb4v5Q1e7Xj4lB6O/Tph5rBNi/ChTLozP+0T6W9cDygXu5X0ehIGLYZmNTfF1 Rg== 
+ s=corp-2020-01-29; bh=Zw5ULP+Lfflz7uyYnSO4JR8S10OYQiow+gaHUf8TpWo=;
+ b=pYRof05wu6XTDPCsJ74jfze1JE9sPSh+maqThC/+TvAtHwK4hFMOhpWL4sdtEWNxYowG
+ RWATKtSZYaWPCRVH82tAV/f3Dyt58yocArLo0Q7y7sjleIiX09GgHAe9/KlTlyMaY0GP
+ cAmCkUuVgWW0AmlMLb5A+eDIs12kkL0tSWiU17P9kdoSYUzurXCOziZ792G9kNAnfqfC
+ OJtgEVGaTJe4bFKio5L9mZbMPAAS4MfOvfCWYkSpb1BQcbCG3e/G7gljAZ0p2qydEEdt
+ PDGnszygehBPqgYivGns+2zeSQTdFV5Nyg4rLHI4T6NCqWwLNQTYuhuaDgZwxVwI1qZg 6w== 
 Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3af3kxu6vk-1
+        by mx0b-00069f02.pphosted.com with ESMTP id 3afgmbabbd-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Mon, 16 Aug 2021 22:50:23 +0000
 Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17GMiu5w040103;
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17GMiu5x040103;
         Mon, 16 Aug 2021 22:50:22 GMT
 Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2168.outbound.protection.outlook.com [104.47.59.168])
-        by userp3030.oracle.com with ESMTP id 3ae2xy1427-1
+        by userp3030.oracle.com with ESMTP id 3ae2xy1427-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 16 Aug 2021 22:50:21 +0000
+        Mon, 16 Aug 2021 22:50:22 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Pz048eLHeMhQgUdiIEf5G2TzGa8TOU5elFeiIIQwTjWAOFd9KfpNRxfYzvRtMTmohjrXxCI+UZhscdnPWNu6XvPdmQkQEqCwHE6UUdvg2ylOCaWa5z3MOk2+0yJsXCITyhsq9CtV8sQ4ZsNjUGgwjNbIg+zADu0WGMn9+9cSfGFDKEwlGBGFa8gPgpIN1GDgKgW03gk0EH5fsFO7L4HO0fI5IKXe/Kc86vePLEgpiGCNTwuwGRQxMMyTKWbB6LyGdnlMcjzGvdXHujKp6CI5tUrF/92YFxXqDqOaqEhGSEU9jpMLDtppOSWLTOFTM7DUrcH4ejHlY/P3b0B11+4Exg==
+ b=OHTRMVw0oltdYQfl7PrrAUECYM38lT96ScvCuwb3rR1NlZw27emjruxLUYKBgf1HQUPrnZLoUBlgDDkzE+JLLLZWI+ViiI5LUVVt9pT3cgeNiv+6iWGdkQsRASmCOWfGwxFgY1yGYHLQ3xUOCErcJojvBow3uKtp6fNw2cmzCdRvBYd8xyROCqdD4tjggqBakSMEH526hGBIkLXtEZpogdzldRSxCYXrywbU/h8FO9pCNr81BO09wGl+dJvyNVg7j3xeh99ZGPzeuDoLv3dJz6Y+1a80tCBCHiZypDCzz5q4tQvqGUNXusSQOvMQf7WeIeeF825gAQinNktuaio+MQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OXjOjDBb4PYJyOxgsU6x+jt+sMCOoNtKWtWK4nozLmU=;
- b=hu8JMwbv0/JKYUCITQChNNjF0bpa841QKJythCijGiXaFQT0x1UhG6F5GNkp7miiLRCRzdqrGkhOyW4bqsa65NikDy7uS1Klzz1dOdwF9tWPBPoJycRIMoDoJKtPv4eBecHcVVVFJl2eiF9G+5sFkQdM6wcYrBPJWz8RdfmgJ4+/zRmW9GjjY2TIq9lbfFYvjKOcW1EdzWtmgIpJyHVw2/ofQi+tUJmFc4IPeAjZheFBtfK3uURdixXlJ0pXcoxlZx9/9vxJEZp/WbZ0o3/Wag+kEsq01RhsFEdVf/VbGHGmC19wQZoorR5Gx3dNM2Mnx+omVWDExO1OWzzJunkEDw==
+ bh=Zw5ULP+Lfflz7uyYnSO4JR8S10OYQiow+gaHUf8TpWo=;
+ b=cVhKQYaX0yW+gP4NzPViUM1Bwypzl9AY7aSWlNeo1AcKQMIV50KG3gFIHmC3PRKPv8RdWDelx44XqOehH3DGjYakVRIMsZ+ESb/1/bpnD5wDj/UfsfajNYUecLy1mDEO4sxzfbD06zQ5Sm6SL/NCwwNj2IbiNIkiyMpyqEOAG4wAjcFK89kxmZWB9DqvGkLLxvHo0x9hBas1r3cNlcas7hS0AFqLTfweIhw9Yv1xa00Bj9zMMWgq63D4BAp7TaAJKicaPa6HrRDpqIsI9+GMJnxDDFyS9JmvppdBuAQN+++FT2kvFsSC7f5xRbELH48xTHWG3NfRVkpXd+HayK4/2w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OXjOjDBb4PYJyOxgsU6x+jt+sMCOoNtKWtWK4nozLmU=;
- b=bBJSKgBm0Gf0pBwaSaPhFxsfXm18LqJkzlsq7DBujeK6TQDbw6rsLzMwbHju/Z2s/M84FaMwwmxr8fobhOar8Babo79DWFhiuK+z0fW7WdfVllN+nCwf6xcJ4jU48O292WCKsAearEw/yUGJdnhp6YLg0EARcickwjPIuh9hI5s=
+ bh=Zw5ULP+Lfflz7uyYnSO4JR8S10OYQiow+gaHUf8TpWo=;
+ b=SRwhje2Iwv+Yd/wELhY9XMrvT8hcpqQet8f666pcn3ad9FGLcDNPAE1FgghyIYUFLIvUePExwMDWdrymgMPIRFWBVpcyGT2F5CMK4AMeGoosL+kxT78Ffy6er3tuWbo0MRL4+Jl7mjRa7KfJPyiJt8E//OodpqRNxHNwUZ1847I=
 Authentication-Results: kvack.org; dkim=none (message not signed)
  header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
 Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
  by BYAPR10MB3397.namprd10.prod.outlook.com (2603:10b6:a03:154::16) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14; Mon, 16 Aug
- 2021 22:50:19 +0000
+ 2021 22:50:21 +0000
 Received: from BY5PR10MB4196.namprd10.prod.outlook.com
  ([fe80::8d2a:558d:ab4a:9c2a]) by BY5PR10MB4196.namprd10.prod.outlook.com
  ([fe80::8d2a:558d:ab4a:9c2a%7]) with mapi id 15.20.4415.023; Mon, 16 Aug 2021
- 22:50:19 +0000
+ 22:50:21 +0000
 From:   Mike Kravetz <mike.kravetz@oracle.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     David Hildenbrand <david@redhat.com>,
@@ -80,9 +80,9 @@ Cc:     David Hildenbrand <david@redhat.com>,
         David Rientjes <rientjes@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Mike Kravetz <mike.kravetz@oracle.com>
-Subject: [PATCH 7/8] hugetlb: prepare destroy and prep routines for vmemmap optimized pages
-Date:   Mon, 16 Aug 2021 15:49:52 -0700
-Message-Id: <20210816224953.157796-8-mike.kravetz@oracle.com>
+Subject: [PATCH 8/8] hugetlb: Optimized demote vmemmap optimizatized pages
+Date:   Mon, 16 Aug 2021 15:49:53 -0700
+Message-Id: <20210816224953.157796-9-mike.kravetz@oracle.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210816224953.157796-1-mike.kravetz@oracle.com>
 References: <20210816224953.157796-1-mike.kravetz@oracle.com>
@@ -93,199 +93,140 @@ X-ClientProxiedBy: MW3PR06CA0030.namprd06.prod.outlook.com
  (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from monkey.oracle.com (50.38.35.18) by MW3PR06CA0030.namprd06.prod.outlook.com (2603:10b6:303:2a::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14 via Frontend Transport; Mon, 16 Aug 2021 22:50:18 +0000
+Received: from monkey.oracle.com (50.38.35.18) by MW3PR06CA0030.namprd06.prod.outlook.com (2603:10b6:303:2a::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14 via Frontend Transport; Mon, 16 Aug 2021 22:50:20 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5bc5d216-7c56-402e-4f19-08d9610838d8
+X-MS-Office365-Filtering-Correlation-Id: 4dd8e10f-70be-482a-e7c6-08d9610839e4
 X-MS-TrafficTypeDiagnostic: BYAPR10MB3397:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR10MB3397F19190FB5B08BBA1C0F6E2FD9@BYAPR10MB3397.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1091;
+X-Microsoft-Antispam-PRVS: <BYAPR10MB3397ABAC6A6DEC0D23D0C138E2FD9@BYAPR10MB3397.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4fGfopAN/0KUaFb+JL7A7mx2TkJ5eyvVq0iaU4mf5QwKmYwVBhvq17QyqjFF/yoZLbXP4mH6+5IeljVj9j1y+g4fP4xqjxo2rlV8Czp7yRWmQ0Y3Kk0LfSdznCPobLI1WBK+gi3LVzsHT3GnuAsaLRSE1uTmu1adyWwEjaTv1P9Clh08ivSHUNbQfjmVaqJDv3tfRfjLivd5e4Bo0l52Ph4+xAM5ZX0/tOhSgz+NXSBZgtf0u44plinMPFG7XKV4+wZdH6UpISFo4w8cNhMRB+BCepQr+MjgH+xC1/TYKneIRf6V3bIsSUcnySFDl3Hc67vJfydfW5T1BQX1s1/+7lTISgTBKOEiGaLLWBs38LEko75376zz6Pp+WCJU/HM22v/juSM2FxzvJHcgB8RpW3SXBiPaOFiWnfYqYybSjbhL7RSKLMZU6MTM7F3Sb7kkiXLtEb+6o1szP0DMTRT/VaOhxJEEbt1l+Y2XxD1EtYzebK1JR6cmupPrX+1wkltmISrrWrLgPJPmXpaGggA9jjAf9kJ3cRFRoCTdTXv5b0HxI6HBnrq11AujZTXzqIYT3PP/w1TLZyJAFqZoPriV8aEazz324aFAILXpSshBNXWB7YGte8/+r4DuTGXfjGKDwNz2YusaKRJH3Y5pPlXwnQNLB8jiVI/50hDRqlC8cXzenCqO3GhbPRWfqMaMhYVJxywV1B49AIiP5fP2bSgcHQ==
+X-Microsoft-Antispam-Message-Info: 4eGgo0DEXmJ/T2rD7uymOcSDMEKS18xpED/LIDPwy6NozDelWr7O6n9bLpOr/YB74mEpi0LoBWZZ4RZz7tuScsc/+lvNeeamH69314LQXpumQpRnU9zkZZlsDVDJ9zvsESULvHcY9ccZT509l0Wg2hvSHs9cDEoxPEtL8P2ywo633F8KnDqd+kATgyA6UAVSPIa4HbccD/s3osi+kbQN4JNnLO+e6u3HfBSPj31Bdddynen8OIDEqDAIl0W0Q6FUsD6fi9p+t4T4a4ba8UoT8K+pEDu+kM87VxzFdDaxWXqXFjC9TPV15j3CYLoz3F8HGb2/MekYhjJM2QatdtkCsVoaLqAR9RBt5yL9pry5AGajm7nB80f6d1w5zdGJgk1O8Dm7x4kiPh/y6/gr5Dvrs1Gu8bX8NARFocuNBUXRcu+pYljHpQ9Xv6Vptb5fTmBHZZ4ctKdoX7TXL9MZhtqgSJqikf5vOibzOdQorUHbINir7SefaNJsu6SN8pfpbCqHmQToW0xrXjO6HGKzUV7YWvEFJTPwxXDQQPbMusynoiFYKERmZOil7VcJ18Sg+NaRmZoKx09kVV5868M4cK1MnpKUs3a+FF0WqA2benCfeoqztkJ5xslXnE8fIeVEjGIAEBa5NTCc6e9ij64yW/hc8UhmgW4m4JSUmPQu+/jQzgwXsVvvkqUX/cuOkDqgpeBywnjpDoB+NiHe9dfXpSuaRQ==
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(346002)(396003)(376002)(39860400002)(4326008)(54906003)(6486002)(956004)(2616005)(107886003)(44832011)(316002)(7696005)(8936002)(8676002)(52116002)(1076003)(83380400001)(38350700002)(38100700002)(2906002)(6666004)(86362001)(26005)(66556008)(66476007)(478600001)(186003)(36756003)(5660300002)(7416002)(66946007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cATY3WoJU8cmkh1Urghq0u46z0ORuaomntxo/+/fL8faEWchM1gTHVIqRUrf?=
- =?us-ascii?Q?/86U9uP7IxQ41Op4OavNTqvM/ZdxaIt22SDu+KuuIdwohVBxDWP0pu2RxiQv?=
- =?us-ascii?Q?OBh1LGbghtDinXxUn7G7yxtcCmw/iFNH5zQM+blW5q6eQr7OknUG8i4zfF0R?=
- =?us-ascii?Q?3yfsk1l1CoXeFpD5WeL3SAIccqSOJo34698NsilZzgiPjsKNY3Z7C2sCukji?=
- =?us-ascii?Q?S4QZ879X3r19+8iHwdWv2DW58ZDrtcVeFqBrjo3O+7eCL1k6PJjd6wQUt6g4?=
- =?us-ascii?Q?hVQkz2rr5MSXYwli/TgSAWmiDd9r3ogOgAycU1f7+dknZzxxgqggndERiIE2?=
- =?us-ascii?Q?TjkgBD5sYzXLpNYWgGcea/LY2w6s3YrUbzNCwG0Jox9qjxHGpJqq7jT0hRBW?=
- =?us-ascii?Q?L81TEKKqk/ErNeqWGV/9G9w6WabexuZx3/q1PJBB3v5WQYRz23Ye9ANN+Ghz?=
- =?us-ascii?Q?pH1S7l+k9d3lRAdhKm7Q0+R151ob/WVD4AFv7pk7T1FiGpAOMScktvKWoXuw?=
- =?us-ascii?Q?KMQZ/M7lp1vPykTTH1+tslkpmheJvWHDD77XhyZMKq7TRxfN6bFp6jEW0lAJ?=
- =?us-ascii?Q?ZyZR9foEzPo44OiFcCI1iVdSNeD93xxtH7Syc0krFpiEScte07t+rgk45SwJ?=
- =?us-ascii?Q?3XHQODjuPMsCQGQ+6y27A3BVaMKbxxhAprnWKI7JlwKWVulNzyDST+QiuZOu?=
- =?us-ascii?Q?QPzBUBeVGX2g/ZJcdhgccTWgOOx4jTtOt/FfRUDEvDxTaIHYn57B5gjLh+0f?=
- =?us-ascii?Q?zRctDzceCrTqnGJSuWKxeiME8wLV9VJe62xm78Smh9Kwl4ja/bOb55SZ3VIs?=
- =?us-ascii?Q?wQcYqUOOX3e+L4FLXwjprsFk6B6T1il5RWtejTSUrBrEsyY9ypQwNPzRf9AY?=
- =?us-ascii?Q?XqCxHAhXMhidURQJ+O2eUb8S9RmHX2WyQOuwOOhBGy7Hu60c688D6zMjW0dq?=
- =?us-ascii?Q?SPpjLi9vQdSkuFzorecj8E0yVWipbL4K/gvmTgCJ5fSHYpNZWRy+Aj+Rnvsv?=
- =?us-ascii?Q?HrdbCBmPnbWU/qW/cJUaDCf2iMY/N5vOPn5eS7XOeWTgWm5bKY667q9Wh4I8?=
- =?us-ascii?Q?Aw3IILv1ebjNtzfuNvJg8eXQBMiiIA5eSpZ1sSiRh384A8cwtXiVXIBbfKOM?=
- =?us-ascii?Q?uOXDzIOo7NxDt9G5pv6AGASD+owEccjnLe6xZHV/xLclKlrCdrhvulWZBt2N?=
- =?us-ascii?Q?cmUmC0Id0c3VdvuF7nyW+FtEluO1eKoWNy8Xq0mpyFD1icqzZvlLU7caqn0N?=
- =?us-ascii?Q?/JzKhGb0Pt3cgxvHD9Sfko0TjynLKMb38CZWMG2RBr/FzHaYUI99S6csYtMl?=
- =?us-ascii?Q?9AgP7Dr5Sj7CLiJUilpmqByR?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?AUzY9/XDSB804j84EDZJ3VVT4eSG06eKyFBAsIYOA9B9NXrdzcSb3OQllAXG?=
+ =?us-ascii?Q?LtNGiKjNLE8qR1E6d468rHYTlTP59I/wcEZhtOmdMEh7i+T7VZ/itq2rfr96?=
+ =?us-ascii?Q?RFtoCja1F5T7UIhMBFY0V0h+zML6c7L259HudPV552ChPANDV/W3E3AQHPBv?=
+ =?us-ascii?Q?ZbITBQGIExBqQf0U/JozpLPF8uU5yYvMaR/toasvA0gR2g5vFgGWOKfY9QKl?=
+ =?us-ascii?Q?x/CNkCVGa7OJvbsv5O7fu4tZ/MjaLqkTS/LQ27v4XySfdlnTLG5gKooHizry?=
+ =?us-ascii?Q?N3Y0NEqVJXE3H89OksbltdfwEq2/Kj5B9H24RwIuaRIW+QFRsBEDB25JWM5C?=
+ =?us-ascii?Q?ZLllPYjOTo1Ed6tBFhM2JAEFd1IU4ASwnLJ5EpIi6BHft0eB83CCiDsVqgjY?=
+ =?us-ascii?Q?0hjEMXN85NxUvnf+/otF5A7NqMTfp3vPR7zJsd4PdNCuOZiDNR3PMthG6fGv?=
+ =?us-ascii?Q?IalmdNYVQ0tyEkdb3EKKGfjT9XeR9TmOzW0Sdjp9fGMm8s5B7fLg8S+KQsQL?=
+ =?us-ascii?Q?PO6rGX3H7wSZmShaFdHe68sI0+5f3Slbd54Im1VaYzlPt9JzswkXtmAipgdx?=
+ =?us-ascii?Q?hawmpZ8iOdomeFjc+E5A9OjzNdOrGvLV9/3ZlHUKoEUWrYUkTm+q5tmfyhXe?=
+ =?us-ascii?Q?w3e5c59ewvrTnIXPva0Ag4mNyGwVhdVaSuMTYWAUiMZVNgfRxPNwnM518S5r?=
+ =?us-ascii?Q?bN1zJrlAd0ykL9qV19v4DbnO8kA0opD8mXLkIbO37P0fHnL5E86mB7Wu12Qy?=
+ =?us-ascii?Q?UNECbqf/qkblKRGTQpt6Q0Z70yvhWfAnbwJjkUfY7M1vtxs4HN0CA3f5kfrs?=
+ =?us-ascii?Q?yrSjGEfUWbiHTgAC93LcGHLC9A21neVQ8IBIEAKsYXxxlfNbfJVtwa9nAxBK?=
+ =?us-ascii?Q?nxNpgwYGWEVv9NFMrx0laqssVxpbIJ9CfWkIGN5tmNDcVWN8WkZDchblzC2Q?=
+ =?us-ascii?Q?Einxgrc8dfYysP0YTrHPZOQ/A+V0ZulU6UbRl5aWOBN1gnDoARi2qE8ytyJG?=
+ =?us-ascii?Q?3vJB9bbTPAwTtovvPZtTTiEn9A3IYdE91IBYn/DMadRR2bW0cUIFMX8IQIKu?=
+ =?us-ascii?Q?veV1Be74ZL7zaYGKgBi4YFvJz3+zqw9+CBgLPizoy4fR5okUN/e418xsEflK?=
+ =?us-ascii?Q?+b+M+dD5wckhqoHoh0PQKm8iyDuMPJSu1DsNdeogX7JQmXq4K1XP0Sdg3D3L?=
+ =?us-ascii?Q?JMICMwgdfedn7Gcw2tl4aABM9EnBfUD2xM9hTl+yFt+E5xcVPLTtPLFNDIty?=
+ =?us-ascii?Q?DwMgimYv7CYujJUi7QWuYVAMkoUf6KOAYmCUiBjeL8lLYayQbjbYPjfas2Qx?=
+ =?us-ascii?Q?oIkIDrwz+07VtLCpDxJdF7YF?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5bc5d216-7c56-402e-4f19-08d9610838d8
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4dd8e10f-70be-482a-e7c6-08d9610839e4
 X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2021 22:50:19.3348
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2021 22:50:21.1229
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: q2n8cIDgU7S6dpjMtaG8QR7Dx2x991oFBe54qeWvim1847zWOfmV3yoHE3kz1cvMSjOkaUZQ2Snq4RAjIbr4nw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: +wlji959zyBnJC2S8Ds0TDwKk5iyHM/xZonHskNGKTckPNvFMbl4uWWjR0lCjNbFQ1cyPijJ2MFz7My09USUvQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3397
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10078 signatures=668682
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 adultscore=0
  suspectscore=0 phishscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
  definitions=main-2108160142
-X-Proofpoint-GUID: 19BOXqtOCKFp4HB3XFBG71uDl4-g7Mw_
-X-Proofpoint-ORIG-GUID: 19BOXqtOCKFp4HB3XFBG71uDl4-g7Mw_
+X-Proofpoint-ORIG-GUID: lJQNXD2hfqatuX9hzDjJb_zPMwVy9Br9
+X-Proofpoint-GUID: lJQNXD2hfqatuX9hzDjJb_zPMwVy9Br9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When optimally demoting huge pages with vmemmap optimizations, the
-routines which destroy and prep hugetlb pages need to be modified.
-Currently, these routines expect all vmemmap pages to be present as
-they will write to all page structs for tail pages.  To optimallly
-handle demotion of huge pages not all vmemmap pages will be present.
-Only those pages required for the demoted pages will be present.
-Therefore, the destroy and prep routines must only write to struct pages
-for which vmammap pages are present.
+Put all the pieces together to optimize the process of demoting vmemmap
+optimized pages.
 
-Modify destroy_compound_gigantic_page_for_demote and
-prep_compound_gigantic_page_for_demote to take vmemmap optimized pages
-into account.  Use the hugetlb specific flag HPageVmemmapOptimized to
-determine if this special processing is needed.
+Instead of allocating all vmemmap pages for a page to be demoted, use
+the demote_huge_page_vmemmap routine which will only allocate/map
+pages needed for the demoted pages.
 
-These modifications will be used in subsequent patches where vmemmap
-optimizations for demote are fully enabled.
-
-Also modify the routine free_huge_page_vmemmap to immediately return if
-the passed page is already optimized.  With demotion, prep_new_huge_page
-can be called for vmemmap optimized pages.
+For vmemmap optimized pages, use the destroy_compound_gigantic_page and
+prep_compound_gigantic_page routines during demote.  These routines can
+deal with vmemmap optimized pages, and know which page structs are
+writable.
 
 Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 ---
- mm/hugetlb.c         | 17 +++++++++++++++--
- mm/hugetlb_vmemmap.c | 12 ++----------
- mm/hugetlb_vmemmap.h | 10 ++++++++++
- 3 files changed, 27 insertions(+), 12 deletions(-)
+ mm/hugetlb.c | 27 ++++++++++++++++++++++++---
+ 1 file changed, 24 insertions(+), 3 deletions(-)
 
 diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 6d43523a1a4d..259b840718f1 100644
+index 259b840718f1..77052ab464b1 100644
 --- a/mm/hugetlb.c
 +++ b/mm/hugetlb.c
-@@ -1265,12 +1265,18 @@ static void __destroy_compound_gigantic_page(struct page *page,
- 					unsigned int order, bool demote)
- {
- 	int i;
--	int nr_pages = 1 << order;
-+	int nr_pages;
- 	struct page *p = page + 1;
+@@ -3330,13 +3330,14 @@ static int demote_free_huge_page(struct hstate *h, struct page *page)
+ 	int i, nid = page_to_nid(page);
+ 	struct hstate *target_hstate;
+ 	bool cma_page = HPageCma(page);
++	bool vmemmap_optimized = HPageVmemmapOptimized(page);
  
- 	atomic_set(compound_mapcount_ptr(page), 0);
- 	atomic_set(compound_pincount_ptr(page), 0);
+ 	target_hstate = size_to_hstate(PAGE_SIZE << h->demote_order);
  
-+	if (demote && HPageVmemmapOptimized(page)) {
-+		clear_compound_head(page);
-+		nr_pages = RESERVE_VMEMMAP_SIZE / sizeof(struct page);
-+	} else
-+		nr_pages = 1 << order;
-+
- 	for (i = 1; i < nr_pages; i++, p = mem_map_next(p, page, i)) {
- 		p->mapping = NULL;
- 		clear_compound_head(p);
-@@ -1527,6 +1533,7 @@ static void __update_and_free_page(struct hstate *h, struct page *page)
- 			return;
- 		}
- #endif
-+		prep_compound_page(page, huge_page_order(h));
- 		__free_pages(page, huge_page_order(h));
- 	}
- }
-@@ -1715,9 +1722,14 @@ static bool __prep_compound_gigantic_page(struct page *page, unsigned int order,
- 								bool demote)
- {
- 	int i, j;
--	int nr_pages = 1 << order;
-+	int nr_pages;
- 	struct page *p = page + 1;
+ 	remove_hugetlb_page_for_demote(h, page, false);
+ 	spin_unlock_irq(&hugetlb_lock);
  
-+	if (demote && HPageVmemmapOptimized(page))
-+		nr_pages = RESERVE_VMEMMAP_SIZE / sizeof(struct page);
+-	if (alloc_huge_page_vmemmap(h, page)) {
++	if (demote_huge_page_vmemmap(h, page)) {
+ 		/* Allocation of vmemmmap failed, we can not demote page */
+ 		spin_lock_irq(&hugetlb_lock);
+ 		set_page_refcounted(page);
+@@ -3348,16 +3349,36 @@ static int demote_free_huge_page(struct hstate *h, struct page *page)
+ 	 * Use destroy_compound_gigantic_page_for_demote for all huge page
+ 	 * sizes as it will not ref count pages.
+ 	 */
+-	destroy_compound_gigantic_page_for_demote(page, huge_page_order(h));
++	if (vmemmap_optimized)
++		/*
++		 * If page is vmemmmap optimized, then demote_huge_page_vmemmap
++		 * added vmammap for each smaller page of target order size.
++		 * We must update/destroy all each of these smaller pages.
++		 */
++		for (i = 0; i < pages_per_huge_page(h);
++					i += pages_per_huge_page(target_hstate))
++			destroy_compound_gigantic_page_for_demote(page + i,
++					huge_page_order(target_hstate));
 +	else
-+		nr_pages = 1 << order;
-+
- 	/* we rely on prep_new_huge_page to set the destructor */
- 	set_compound_order(page, order);
- 	__ClearPageReserved(page);
-@@ -1761,6 +1773,7 @@ static bool __prep_compound_gigantic_page(struct page *page, unsigned int order,
- 		} else {
- 			VM_BUG_ON_PAGE(page_count(p), p);
- 		}
-+		p->mapping = TAIL_MAPPING;
- 		set_page_count(p, 0);
- 		set_compound_head(p, page);
- 	}
-diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-index c82d60398c16..01c2cc959824 100644
---- a/mm/hugetlb_vmemmap.c
-+++ b/mm/hugetlb_vmemmap.c
-@@ -172,16 +172,6 @@
++		destroy_compound_gigantic_page_for_demote(page,
++							huge_page_order(h));
  
- #include "hugetlb_vmemmap.h"
- 
--/*
-- * There are a lot of struct page structures associated with each HugeTLB page.
-- * For tail pages, the value of compound_head is the same. So we can reuse first
-- * page of tail page structures. We map the virtual addresses of the remaining
-- * pages of tail page structures to the first tail page struct, and then free
-- * these page frames. Therefore, we need to reserve two pages as vmemmap areas.
-- */
--#define RESERVE_VMEMMAP_NR		2U
--#define RESERVE_VMEMMAP_SIZE		(RESERVE_VMEMMAP_NR << PAGE_SHIFT)
--
- bool hugetlb_free_vmemmap_enabled = IS_ENABLED(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON);
- 
- static int __init early_hugetlb_free_vmemmap_param(char *buf)
-@@ -250,6 +240,8 @@ void free_huge_page_vmemmap(struct hstate *h, struct page *head)
- 
- 	if (!free_vmemmap_pages_per_hpage(h))
- 		return;
-+	if (HPageVmemmapOptimized(head))	/* possible for demote */
-+		return;
- 
- 	vmemmap_addr += RESERVE_VMEMMAP_SIZE;
- 	vmemmap_end = vmemmap_addr + free_vmemmap_pages_size_per_hpage(h);
-diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
-index 44382504efc3..36274bf0256c 100644
---- a/mm/hugetlb_vmemmap.h
-+++ b/mm/hugetlb_vmemmap.h
-@@ -10,6 +10,16 @@
- #define _LINUX_HUGETLB_VMEMMAP_H
- #include <linux/hugetlb.h>
- 
-+/*
-+ * There are a lot of struct page structures associated with each HugeTLB page.
-+ * For tail pages, the value of compound_head is the same. So we can reuse first
-+ * page of tail page structures. We map the virtual addresses of the remaining
-+ * pages of tail page structures to the first tail page struct, and then free
-+ * these page frames. Therefore, we need to reserve two pages as vmemmap areas.
-+ */
-+#define RESERVE_VMEMMAP_NR		2U
-+#define RESERVE_VMEMMAP_SIZE		(RESERVE_VMEMMAP_NR << PAGE_SHIFT)
-+
- #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
- int alloc_huge_page_vmemmap(struct hstate *h, struct page *head);
- void free_huge_page_vmemmap(struct hstate *h, struct page *head);
+ 	for (i = 0; i < pages_per_huge_page(h);
+ 				i += pages_per_huge_page(target_hstate)) {
+-		if (hstate_is_gigantic(target_hstate))
++		/*
++		 * Use gigantic page prep for vmemmap_optimized pages of
++		 * all sizes as it has special vmemmap logic.  The generic
++		 * prep routine does not and should not know about hugetlb
++		 * vmemmap optimizations.
++		 */
++		if (hstate_is_gigantic(target_hstate) || vmemmap_optimized)
+ 			prep_compound_gigantic_page_for_demote(page + i,
+ 							target_hstate->order);
+ 		else
+ 			prep_compound_page(page + i, target_hstate->order);
+ 		set_page_private(page + i, 0);
++		if (vmemmap_optimized)
++			SetHPageVmemmapOptimized(page + i);
+ 		set_page_refcounted(page + i);
+ 		prep_new_huge_page(target_hstate, page + i, nid);
+ 		if (cma_page)
 -- 
 2.31.1
 
