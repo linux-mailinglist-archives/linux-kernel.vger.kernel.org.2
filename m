@@ -2,146 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E1393EDDED
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 811593EDDE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbhHPTdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 15:33:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhHPTdH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 15:33:07 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B0DC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:32:35 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id z20so33799696ejf.5
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:32:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RUip0byKTWINqq7HUHlw/1zObxHE53/yOMwnFMivC7s=;
-        b=UfqMlnexxkVYO39i4ailUlIrA+3b73CHy5jrbvXm0N0Y0eWPMM5j6vX8krUFa1s2rm
-         KZzaILUIzBGPu2rNY6m8AUn/m5TSlBJe2ErbDPC0mLzPhXddjzjPkVNWv/FUlId3QMim
-         p5ShUKRyFnHJ3n8GBT+W9NnxqI17i0fAF1kP5fL4bCbCUT2VNPUtu9em3O3gqfK4tD+M
-         YX0ppdOfb/GMVDLW6sIozFpqJh6E2RsUl0l68t2myDLMByIOMnG/FZ1vKTQ9y0PyBtwM
-         HX8+xhuqEVQg4YPYbTB8ufPDarIruesP7z/mhJPlgIe31YSmA0ZghFPi8EIQi4TqCLdH
-         VakA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RUip0byKTWINqq7HUHlw/1zObxHE53/yOMwnFMivC7s=;
-        b=ReOhYhjl/Qh6Y7C9/KiYvTBMgq1wjLB5S6Ru6PDnQ109jDmP6c9F6SS1YpdT4fkiSV
-         vbHTmCa6pPUfAMcGh8gGidvy7BDSjBI02II0Hv+jkHMzAumFEL9bdLMKvKQU5nmNlE3l
-         lKXKEsjIN4q4jFYzcKbWQS9XnaSVGo0B+Z0JIlSFyXJvkn9vHu9ECD1/muBfCsujWius
-         Zr2BPbXbT9zcR6rpB2b/2VF2olT46Ntz/1yj+qFiKqIvsN3iRIiR8u7F51PSJblsntLs
-         IHnudEUHwJgXeiVO3F85wn6fkkQuVagAtDzC+rGl/ybxhfQTPHmP18+UcPisNPuc7lyn
-         D29A==
-X-Gm-Message-State: AOAM530vd5mfVffJOFtrx5as5so2CkP241c/FgQURoeTs9xrgOZRtLYG
-        tEiHxwSbyrQeC7rFcTwcKrV08luvqoY=
-X-Google-Smtp-Source: ABdhPJxLbMMG2L56yXomJKvOR5YgUNZy6nNlvIQR/5rehXPGscXqjdRz9m0WKHvFelKas6eSvm4okA==
-X-Received: by 2002:a17:907:785a:: with SMTP id lb26mr71436ejc.77.1629142353756;
-        Mon, 16 Aug 2021 12:32:33 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::4058])
-        by smtp.gmail.com with ESMTPSA id v13sm59312ejh.62.2021.08.16.12.32.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 12:32:33 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>,
-        Joe Perches <joe@perches.com>
-Subject: [PATCH] staging: r8188eu: refactor rtw_is_cckrates{only}_included()
-Date:   Mon, 16 Aug 2021 21:31:25 +0200
-Message-Id: <20210816193125.15700-1-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S230271AbhHPTcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 15:32:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38566 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229587AbhHPTcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 15:32:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2C6060F41;
+        Mon, 16 Aug 2021 19:31:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629142291;
+        bh=9VaxF6jVusxISKrl+DoxFH9PV6Q/wbOarU5+TUjcbCg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UxyWzKJuCStklyEI4oOGdmfYjlFW7VqOInRhPrY9SZv+PRNewhH8mhVZDA02SWUUo
+         ygXcrXlQ/cCuPkaIhDDi6C9SUca6omB2spOHJB9NkVeGFBKSuU/WzpITTJT2Z3lrr7
+         ebmwo5WdyPVtHBIck3fMcV3RA7vD3wxyEC488fIU=
+Date:   Mon, 16 Aug 2021 21:31:28 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Georgi Djakov <djakov@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Mike Tipton <mdtipton@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.13 046/151] interconnect: qcom: icc-rpmh: Add BCMs to
+ commit list in pre_aggregate
+Message-ID: <YRq9EHuOsgqAUFdo@kroah.com>
+References: <20210816125444.082226187@linuxfoundation.org>
+ <20210816125445.588155407@linuxfoundation.org>
+ <56b19dc0-b5b0-accb-956d-1a817444ca04@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56b19dc0-b5b0-accb-956d-1a817444ca04@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refactor functions rtw_is_cckrates_included() and
-rtw_is_cckratesonly_included(). Add new helper function rtw_is_cckrate()
-that allows to make the code more compact. Improves readability and
-slightly reduces object file size. Change the return type to bool to
-reflect that the functions return boolean values.
+On Mon, Aug 16, 2021 at 08:17:52PM +0300, Georgi Djakov wrote:
+> On 16.08.21 16:01, Greg Kroah-Hartman wrote:
+> > From: Mike Tipton <mdtipton@codeaurora.org>
+> > 
+> > [ Upstream commit f84f5b6f72e68bbaeb850b58ac167e4a3a47532a ]
+> > 
+> > We're only adding BCMs to the commit list in aggregate(), but there are
+> > cases where pre_aggregate() is called without subsequently calling
+> > aggregate(). In particular, in icc_sync_state() when a node with initial
+> > BW has zero requests. Since BCMs aren't added to the commit list in
+> > these cases, we don't actually send the zero BW request to HW. So the
+> > resources remain on unnecessarily.
+> > 
+> > Add BCMs to the commit list in pre_aggregate() instead, which is always
+> > called even when there are no requests.
+> > 
+> > Fixes: 976daac4a1c5 ("interconnect: qcom: Consolidate interconnect RPMh support")
+> > Signed-off-by: Mike Tipton <mdtipton@codeaurora.org>
+> > Link: https://lore.kernel.org/r/20210721175432.2119-5-mdtipton@codeaurora.org
+> > Signed-off-by: Georgi Djakov <djakov@kernel.org>
+> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> 
+> Hello Greg and Sasha,
+> 
+> Please drop this patch from both 5.10 and 5.13 stable queues. It's
+> causing issues on some platforms and we are reverting in. Revert is
+> in linux-next already.
 
-Suggested-by: Joe Perches <joe@perches.com>
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/r8188eu/core/rtw_ieee80211.c | 27 +++++++++++---------
- drivers/staging/r8188eu/include/ieee80211.h  |  5 ++--
- 2 files changed, 17 insertions(+), 15 deletions(-)
+Now dropped, thanks.
 
-diff --git a/drivers/staging/r8188eu/core/rtw_ieee80211.c b/drivers/staging/r8188eu/core/rtw_ieee80211.c
-index 0c7231cefdda..892ffcd92cc7 100644
---- a/drivers/staging/r8188eu/core/rtw_ieee80211.c
-+++ b/drivers/staging/r8188eu/core/rtw_ieee80211.c
-@@ -68,28 +68,31 @@ int rtw_get_bit_value_from_ieee_value(u8 val)
- 	return 0;
- }
- 
--uint	rtw_is_cckrates_included(u8 *rate)
-+static bool rtw_is_cckrate(u8 rate)
- {
--	u32	i = 0;
-+	rate &= 0x7f;
-+	return rate == 2 || rate == 4 || rate == 11 || rate == 22;
-+}
-+
-+bool rtw_is_cckrates_included(u8 *rate)
-+{
-+	u8 r;
- 
--	while (rate[i] != 0) {
--		if  ((((rate[i]) & 0x7f) == 2) || (((rate[i]) & 0x7f) == 4) ||
--		     (((rate[i]) & 0x7f) == 11)  || (((rate[i]) & 0x7f) == 22))
-+	while ((r = *rate++)) {
-+		if (rtw_is_cckrate(r))
- 			return true;
--		i++;
- 	}
-+
- 	return false;
- }
- 
--uint	rtw_is_cckratesonly_included(u8 *rate)
-+bool rtw_is_cckratesonly_included(u8 *rate)
- {
--	u32 i = 0;
-+	u8 r;
- 
--	while (rate[i] != 0) {
--		if  ((((rate[i]) & 0x7f) != 2) && (((rate[i]) & 0x7f) != 4) &&
--		     (((rate[i]) & 0x7f) != 11)  && (((rate[i]) & 0x7f) != 22))
-+	while ((r = *rate++)) {
-+		if (!rtw_is_cckrate(r))
- 			return false;
--		i++;
- 	}
- 
- 	return true;
-diff --git a/drivers/staging/r8188eu/include/ieee80211.h b/drivers/staging/r8188eu/include/ieee80211.h
-index bc5b030e9c40..1205d13171b2 100644
---- a/drivers/staging/r8188eu/include/ieee80211.h
-+++ b/drivers/staging/r8188eu/include/ieee80211.h
-@@ -1206,9 +1206,8 @@ int rtw_generate_ie(struct registry_priv *pregistrypriv);
- 
- int rtw_get_bit_value_from_ieee_value(u8 val);
- 
--uint	rtw_is_cckrates_included(u8 *rate);
--
--uint	rtw_is_cckratesonly_included(u8 *rate);
-+bool rtw_is_cckrates_included(u8 *rate);
-+bool rtw_is_cckratesonly_included(u8 *rate);
- 
- int rtw_check_network_type(unsigned char *rate, int ratelen, int channel);
- 
--- 
-2.32.0
-
+greg k-h
