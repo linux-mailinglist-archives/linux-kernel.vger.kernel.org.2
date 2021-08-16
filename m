@@ -2,163 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7553EDD6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C48CD3EDD73
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229758AbhHPS5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 14:57:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42470 "EHLO
+        id S230095AbhHPS6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 14:58:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbhHPS5a (ORCPT
+        with ESMTP id S229889AbhHPS5w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 14:57:30 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC67C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:56:58 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id c129-20020a1c35870000b02902e6b6135279so620351wma.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:56:58 -0700 (PDT)
+        Mon, 16 Aug 2021 14:57:52 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71254C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:57:20 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id i22so9204849edq.11
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:57:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=m7ZOM7cdRkICqtiyacBDNsj4qURRxO1sWw5i5EgJhx0=;
-        b=HzJ75RUvClIBbqraulv6LCtCEKRyhF9l86bNICahsL0BMDn+tr2MAGedaCoiS/M7HI
-         3Ttln2ZDTzMQV/73OAgb5gWdhqVTcAfaMui/jwC/yGkqKyrWPECIE5BGB9wuRotTtJZR
-         n8glPdDvrAkL6NsfQuijpU7NTf+EitF7KrlYHBWiagTBD87z3EiqPC6ePhyVfex4LW1R
-         bzJOqbK5rRd2/pUmjgicupfKYa5CF6ZgyjklG6WR05kEG1tJglD4u63hsIct80uAMX0l
-         mufsLlgPEG0x9jXY+YS8QfK1nmsTKOsGjQu5tgwNUmQkNLRKK/BFJRlM20iaJgIeqnG2
-         Ks6Q==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a7ECraBkwCFiPkr0hFOEUiDEhGRF1HGg2NynZZR26r0=;
+        b=1cH3PF0bgyOapqIzhkQDy/yuYUghkYFp3Xv0bsFz/p5R3Jg49CELDbyhGif+6iZ5vR
+         +VMb6GcR/ew8us1qjScyKpF5AF11wv6VPMldyYQFGLcEnMF62Z4x5p9xxuKaYmmBTKVP
+         MBh+VSVh0VJMcuzuOhg635MJrfA9icPiD1sIgNJ1b13X84u7muDyt7zpKe3VzRFHwCHz
+         6/+2hzmSOkLk4GD/aooecAc0FuzjGu3+I1qki4z6xvBpMgReVzbAS3KAnVWIpU1m9ley
+         rs4oebep32bB31B0ViUvECiz8UK2Cs+cIDfxLsD8M/BIcLJw87dFnmIaFHfuzmSgt1Jn
+         BoEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=m7ZOM7cdRkICqtiyacBDNsj4qURRxO1sWw5i5EgJhx0=;
-        b=pQbj6itOMaKos8i59Rmm0reVDu21krjlnAeCBhrnmQyKGRSg91s03yJVTDP9p1B2nO
-         VNRvE4gr76/dvZLB7dXXZc5+6ZbraFtTj3CWemEkeB2i5OXNLLt8h5EfVDUNtOL2PKzN
-         nATyIAWyOfvLV29/g0BXWfdOfs6LptPM6EVIRm9jCD3nj+ZzszqeT+E1wnxBbxP3m8RA
-         rCPjhwROUv9uwEnUFIidyMkdALNvfK0VRXO0HvmRQW8qFc0klVeoR0vi/LlCgKKI3bva
-         AmsOjyUSlek7W5UA3GMyEIdQZNJOvkbAa9obzknQmYyv42zbF4MkRp4utpwaJZWDNu36
-         OCJw==
-X-Gm-Message-State: AOAM531t1yEtRVyxcikVVcqYsii7dD7HxUYRHCxBqXmsZCwiXDyi49bq
-        L9q1Yrj8OJLenKXTIiA/mJG4tg==
-X-Google-Smtp-Source: ABdhPJzoBGbVSUBBJBd79CzIiBUvM5rY3Ebc57V8YSLGDbhAuaNana1b9dAMLW1tLEGIgbbn9dJJ0g==
-X-Received: by 2002:a1c:f414:: with SMTP id z20mr524519wma.94.1629140216638;
-        Mon, 16 Aug 2021 11:56:56 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:e1b0:48c1:6199:9cb4? ([2a01:e34:ed2f:f020:e1b0:48c1:6199:9cb4])
-        by smtp.googlemail.com with ESMTPSA id g9sm386690wmk.34.2021.08.16.11.56.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 11:56:56 -0700 (PDT)
-Subject: Re: [PATCH v5 2/3] thermal: mediatek: Add LVTS drivers for SoC
- theraml zones
-To:     Ben Tseng <ben.tseng@mediatek.com>,
-        Fan Chen <fan.chen@mediatek.com>,
-        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
-        srv_heupstream@mediatek.com
-Cc:     Eduardo Valentin <edubezval@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>, hsinyi@chromium.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Michael Kao <michael.kao@mediatek.com>,
-        Yu-Chia Chang <ethan.chang@mediatek.com>
-References: <20210617114707.10618-1-ben.tseng@mediatek.com>
- <20210617114707.10618-3-ben.tseng@mediatek.com>
- <06b1804c-4675-2997-8c5c-bcdffbcfc4a1@linaro.org>
- <1f92b245537d6390b7b2bde62ce8b99a3df9d445.camel@mediatek.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <8a38b9fe-0448-3ddc-9ffc-c43137b5ecaa@linaro.org>
-Date:   Mon, 16 Aug 2021 20:56:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a7ECraBkwCFiPkr0hFOEUiDEhGRF1HGg2NynZZR26r0=;
+        b=csELUl1AnPsxHo5pOqXk8SfSNm60+rzK0ogcLukKlvNfP1PPHZf2fN4Dmq5LY33CY7
+         VzwaOQZgISekxdBqKkI7ORbydsKlwHDBTxyzzTLsr5N2UYMbvCwut+Q1Ve4is5GBrQ46
+         XUi+xSHiCQjsALBsVxJ4w1NnHYz0yKp6Oobph2qvTNd3VMxmb2kMRMkFBoJolMr7+V+U
+         kW7FEIl51rTUF07cEwC2+ZvcfKW9/nw7n+MlMsDkiz1sF18+SoddTYpmfbHNTWGuOeAg
+         n4JskqNgC8u2c5aV6WkkyHountKkYw3iKnLpJFYE9B8lMJD8kK5f7De+L32D9d4WFD57
+         GOYg==
+X-Gm-Message-State: AOAM532jryh6fOxB8WIZbY2irm+yCAH/SNYXgg70X6sc2rDTLcYbvELq
+        yvi3jKpn0kPDDUEtZLqzbRx6nS+jWcEUqkp12i5A
+X-Google-Smtp-Source: ABdhPJx0SdTFntxZUuZ5r581q1m85teCQ0nHihV/k5Y2aQb4XAbtmt48WwzHzqw0igGV4mQuMPOfSLw7zqEZzOAoJfc=
+X-Received: by 2002:a05:6402:384:: with SMTP id o4mr57602edv.128.1629140238869;
+ Mon, 16 Aug 2021 11:57:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1f92b245537d6390b7b2bde62ce8b99a3df9d445.camel@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210722004758.12371-1-casey@schaufler-ca.com>
+ <20210722004758.12371-23-casey@schaufler-ca.com> <CAHC9VhTj2OJ7E6+iSBLNZaiPK-16UY0zSFJikpz+teef3JOosg@mail.gmail.com>
+ <ace9d273-3560-3631-33fa-7421a165b038@schaufler-ca.com> <CAHC9VhSSASAL1mVwDo1VS3HcEF7Yb3LTTaoajEtq1HsA-8R+xQ@mail.gmail.com>
+ <fba1a123-d6e5-dcb0-3d49-f60b26f65b29@schaufler-ca.com> <CAHC9VhQxG+LXxgtczhH=yVdeh9mTO+Xhe=TeQ4eihjtkQ2=3Fw@mail.gmail.com>
+ <3ebad75f-1887-bb31-db23-353bfc9c0b4a@schaufler-ca.com>
+In-Reply-To: <3ebad75f-1887-bb31-db23-353bfc9c0b4a@schaufler-ca.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 16 Aug 2021 14:57:07 -0400
+Message-ID: <CAHC9VhQCN2_MsCoXfU7Z-syYHj2o8HaSECf5E62ZFcNZd9_4QA@mail.gmail.com>
+Subject: Re: [PATCH v28 22/25] Audit: Add record for multiple process LSM attributes
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     casey.schaufler@intel.com, James Morris <jmorris@namei.org>,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        linux-audit@redhat.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 13, 2021 at 5:47 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> On 8/13/2021 1:43 PM, Paul Moore wrote:
+> > On Fri, Aug 13, 2021 at 2:48 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> >> On 8/13/2021 8:31 AM, Paul Moore wrote:
+> >>> On Thu, Aug 12, 2021 at 6:38 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> >>>> On 8/12/2021 1:59 PM, Paul Moore wrote:
+> >>>>> On Wed, Jul 21, 2021 at 9:12 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> >>>>>> Create a new audit record type to contain the subject information
+> >>>>>> when there are multiple security modules that require such data.
+> >>> ...
+> >>>
+> >>>>> The local
+> >>>>> audit context is a hack that is made necessary by the fact that we
+> >>>>> have to audit things which happen outside the scope of an executing
+> >>>>> task, e.g. the netfilter audit hooks, it should *never* be used when
+> >>>>> there is a valid task_struct.
+> >>>> In the existing audit code a "current context" is only needed for
+> >>>> syscall events, so that's the only case where it's allocated. Would
+> >>>> you suggest that I track down the non-syscall events that include
+> >>>> subj= fields and add allocate a "current context" for them? I looked
+> >>>> into doing that, and it wouldn't be simple.
+> >>> This is why the "local context" was created.  Prior to these stacking
+> >>> additions, and the audit container ID work, we never needed to group
+> >>> multiple audit records outside of a syscall context into a single
+> >>> audit event so passing a NULL context into audit_log_start() was
+> >>> reasonable.  The local context was designed as a way to generate a
+> >>> context for use in a local function scope to group multiple records,
+> >>> however, for reasons I'll get to below I'm now wondering if the local
+> >>> context approach is really workable ...
+> >> I haven't found a place where it didn't work. What is the concern?
+> > The concern is that use of a local context can destroy any hopes of
+> > linking with other related records, e.g. SYSCALL and PATH records, to
+> > form a single cohesive event.  If the current task_struct is valid for
+> > a given function invocation then we *really* should be using current's
+> > audit_context.
+> >
+> > However, based on our discussion here it would seem that we may have
+> > some issues where current->audit_context is not being managed
+> > correctly.  I'm not surprised, but I will admit to being disappointed.
+>
+> I'd believe that with syscall audit being a special case for other reasons
+> the multiple record situation got taken care of on a case-by-case basis
+> and no one really paid much attention to generality. It's understandable.
+>
+> >>> What does your audit config look like?  Both the kernel command line
+> >>> and the output of 'auditctl -l' would be helpful.
+> >> On the fedora system:
+> >>
+> >> BOOT_IMAGE=(hd0,gpt2)/vmlinuz-5.14.0-rc5stack+
+> >> root=/dev/mapper/fedora-root ro resume=/dev/mapper/fedora-swap
+> >> rd.lvm.lv=fedora/root rd.lvm.lv=fedora/swap lsm.debug
+> >>
+> >> -a always,exit -F arch=b64 -S bpf -F key=testsuite-1628714321-EtlWIphW
+> >>
+> >> On the Ubuntu system:
+> >>
+> >> BOOT_IMAGE=/boot/vmlinuz-5.14.0-rc1stack+
+> >> root=UUID=39c25777-d413-4c2e-948c-dfa2bf259049 ro lsm.debug
+> >>
+> >> No rules
+> > The Fedora system looks to have some audit-testsuite leftovers, but
+> > that shouldn't have an impact on what we are discussing; in both cases
+> > I would expect current->audit_context to be allocated and non-NULL.
+>
+> As would I.
+>
+>
+> >>> I'm beginning to suspect that you have the default
+> >>> we-build-audit-into-the-kernel-because-product-management-said-we-have-to-but-we-don't-actually-enable-it-at-runtime
+> >>> audit configuration that is de rigueur for many distros these days.
+> >> Yes, but I've also fiddled about with it so as to get better event coverage.
+> >> I've run the audit-testsuite, which has got to fiddle about with the audit
+> >> configuration.
+> > Yes, it looks like my hunch was wrong.
+> >
+> >>> If that is the case, there are many cases where you would not see a
+> >>> NULL current->audit_context simply because the config never allocated
+> >>> one, see kernel/auditsc.c:audit_alloc().
+> >> I assume you mean that I *would* see a NULL current->audit_context
+> >> in the "event not enabled" case.
+> > Yep, typo.
+> >
+> >>> Regardless, assuming that is the case we probably need to find an
+> >>> alternative to the local context approach as it currently works.  For
+> >>> reasons we already talked about, we don't want to use a local
+> >>> audit_context if there is the possibility for a proper
+> >>> current->audit_context, but we need to do *something* so that we can
+> >>> group these multiple events into a single record.
+> >> I tried a couple things, but neither was satisfactory.
+> >>
+> >>> Since this is just occurring to me now I need a bit more time to think
+> >>> on possible solutions - all good ideas are welcome - but the first
+> >>> thing that pops into my head is that we need to augment
+> >>> audit_log_end() to potentially generated additional, associated
+> >>> records similar to what we do on syscall exit in audit_log_exit().
+> >> I looked into that. You need a place to save the timestamp
+> >> that doesn't disappear. That's the role the audit_context plays
+> >> now.
+> > Yes, I've spent a few hours staring at the poorly planned struct that
+> > is audit_context ;)
+> >
+> > Regardless, the obvious place for such a thing is audit_buffer; we can
+> > stash whatever we need in there.
+>
+> I had considered doing that, but was afraid that moving the timestamp
+> out of the audit_context might have dire consequences.
 
-Hi Ben,
+Don't move, copy.  If there is a valid context one would stash the
+timestamp there, if not, we stash it in the audit_buffer.  However,
+before we start messing with that too much I would like to better
+understand why we aren't seeing a valid audit_context in the netlink
+case at the very least.
 
-On 23/07/2021 08:17, Ben Tseng wrote:
-> On Mon, 2021-06-21 at 13:26 +0200, Daniel Lezcano wrote:
->> On 17/06/2021 13:47, Ben Tseng wrote:
->>> From: Michael Kao <michael.kao@mediatek.com>
->>>
->>> Add a LVTS (Low voltage thermal sensor) driver to report junction
->>> temperatures in Mediatek SoC and register the maximum temperature
->>> of sensors and each sensor as a thermal zone.
->>
->> I think we already talked about that. We don't want a thermal sensor
->> driver to aggregate the temperatures but create some kindof virtual
->> sensor with a property (min, max, avg, ...) which is usable by
->> anyone.
->>
->> [ ... ]
->>
->>
->>
-> 
-> Dear Daniel,
-> 
-> Sorry for the late reply.
+> >>>  Of
+> >>> course the audit_log_end() changes would be much more limited than
+> >>> audit_log_exit(), just the LSM subject and audit container ID info,
+> >>> and even then we might want to limit that to cases where the ab->ctx
+> >>> value is NULL and let audit_log_exit() handle it otherwise.  We may
+> >>> need to store the event type in the audit_buffer during
+> >>> audit_log_start() so that we can later use that in audit_log_end() to
+> >>> determine what additional records are needed.
+> >>>
+> >>> Regardless, let's figure out why all your current->audit_context
+> >>> values are NULL
+> >> That's what's maddening, and why I implemented audit_alloc_for_lsm().
+> >> They aren't all NULL. Sometimes current->audit_context is NULL,
+> >> sometimes it isn't, for the same event. I thought it might be a
+> >> question of the netlink interface being treated specially, but
+> >> that doesn't explain all the cases.
+> >
+> > Your netlink changes are exactly what made me think, "this is
+> > obviously wrong", but now I'm wondering if a previously held
+> > assumption of "current is valid and points to the calling process" in
+> > the case of the kernel servicing netlink messages sent from userspace.
+>
+> If that's the case the subject data in the audit record is going
+> to be bogus. From what I've seen that data appears to be correct.
 
-sorry too, missed to answer. Another thread pointed to this one and I
-figured out I forgot to answer.
+Yeah, the thought occurred to me, but we are clearly already in the
+maybe-the-assumptions-are-wrong stage so I'm not going to rely on that
+being 100%.  We definitely need to track this down before we start
+making to many more guesses about what is working and what is not.
 
-> After survey ,I'm not sure whether the patch[1] is the architecture of
-> virtual thermal sensor which you commented.
+> > Or rather, perhaps that assumption is still true but something is
+> > causing current->audit_context to be NULL in that case.
+>
+> I can imagine someone deciding not to set up audit_context in
+> situations like netlink because they knew that nothing following
+> that would be a syscall event.
 
-Ah, yes that is kind of what it would be requested but really generic so
-anyone can use it.
+*If* the user/kernel transition happens as part of the netlink socket
+send/write/etc. syscall then it *should* have all of the audit syscall
+setup already done ... however, see my earlier comments about
+assumptions :/
 
-> Or, is there any existing framework on mainline already support virtual
-> sensor?
+> I've been looking into the audit
+> userspace and there are assumptions like that all over the place.
 
-No unfortunately, it is not done [yet].
+I've made my feelings about audit's design known quite a bit already
+so I'm not going to drag all of that back up, all I'll say is that I
+believe the audit design was tragically and inherently flawed in many
+ways.  We've been working to resolve some of those issues in the
+kernel for a little while now, but the audit userspace remains rooted
+in some of those original design decisions.  Of course, these are just
+my opinions, others clearly feel differently.
 
-> Could you help to provide reference to us?
+Regardless, and somewhat independent of our discussion here, now that
+I am back to being able to dedicate a good chunk of my time to
+upstream efforts, one of my priorities is to start repairing audit ...
+however, I need to get past the io_uring mess first.
 
-Ok, we had this discussion several times on the mailing list and at the
-different events like the Linux Plumbers conference. But I was not able
-to find out a pointer.
+> > Friday the 13th indeed.
+>
+> I've been banging my head against this for a couple months.
+> My biggest fear is that I may have learned enough about the
+> audit system to make useful contributions.
 
-Basically the idea is simple, we don't want drivers doing weird things
-in their get_temp callback. This callback must return the temperature
-associated to a physical sensor in a 1:1 manner.
+As the usual refrain goes, "patches are always welcome" ... and I say
+that with equal parts honesty and warning :)
 
-However, some people want to define a thermal zone but with an
-aggregation of different sensors.
-
-At this point, we are unsure how to do that.
-
-Having a virtual sensor would be more adequate as it won't impact
-anything except the DT for a configuration. And we can make it to evolve
-without having to change all the thermal framework internals.
-
-From a DT point of view, a virtual sensor device cuold have phandles to
-the different sensors and let's say a property telling what do to (avg,
-min, max, ...). The thermal zone will point to the virtual device.
-
-In the driver itself, the get_temp will just call get_temp of all the
-sensors and do the operation specified in the property.
-
-With that, the drivers stay consistent and we have the flexibility to do
-whatever we want.
-
-Does it make sense ?
-
-
+Even if you aren't comfortable putting together a patch, simply
+root-causing the missing audit_context setup in the netlink case would
+be helpful.
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+paul moore
+www.paul-moore.com
