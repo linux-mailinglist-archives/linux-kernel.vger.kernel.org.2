@@ -2,151 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550183ED78D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFCA53ED795
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238792AbhHPNgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:36:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56754 "EHLO mail.kernel.org"
+        id S238843AbhHPNhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:37:53 -0400
+Received: from mga01.intel.com ([192.55.52.88]:60290 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239681AbhHPNf4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:35:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F70D60E90;
-        Mon, 16 Aug 2021 13:35:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629120925;
-        bh=V2djZ0s5eeYtPknbm6mCjf0Kvlgls1rw9uu907bgUCs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fGJUSESwqddkOhbxJBKFSBoQkKCT63dyH7dKHeiKg2jInhttWHaz787y2iKM/ZITx
-         eyfEHk59i49OYPoU5+TuSPZlQBYcZXK/HlzRjhQuWECbXIOHEhqZ/DGtVpdSU75GQy
-         PrfpV+r9wqXD1kG6v0Dz90X4heFDYvKfjrM6JVnQ=
-Date:   Mon, 16 Aug 2021 15:35:22 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Chen Huang <chenhuang5@huawei.com>
-Cc:     Roman Gushchin <guro@fb.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Wang Hai <wanghai38@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH 5.10.y 01/11] mm: memcontrol: Use helpers to read page's
- memcg data
-Message-ID: <YRppmvYOftjAAl/R@kroah.com>
-References: <20210816072147.3481782-1-chenhuang5@huawei.com>
- <20210816072147.3481782-2-chenhuang5@huawei.com>
- <YRojDsTAjSnw0jIh@kroah.com>
- <a4c545a8-fff0-38bb-4749-3483c9334daa@huawei.com>
+        id S237230AbhHPNhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:37:17 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10077"; a="237925164"
+X-IronPort-AV: E=Sophos;i="5.84,326,1620716400"; 
+   d="scan'208";a="237925164"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 06:35:48 -0700
+X-IronPort-AV: E=Sophos;i="5.84,326,1620716400"; 
+   d="scan'208";a="509701852"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 06:35:45 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mFcmA-00APGI-NO; Mon, 16 Aug 2021 16:35:38 +0300
+Date:   Mon, 16 Aug 2021 16:35:38 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v1 1/1] x86/platform: Increase maximum GPIO number for
+ X86_64
+Message-ID: <YRppqnAqJ1G+4mva@smile.fi.intel.com>
+References: <20210806143711.37553-1-andriy.shevchenko@linux.intel.com>
+ <CAJZ5v0iTNwQfh6ZZxry16hOjokGOOSZthq6C_yed07a2HQ7h2Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a4c545a8-fff0-38bb-4749-3483c9334daa@huawei.com>
+In-Reply-To: <CAJZ5v0iTNwQfh6ZZxry16hOjokGOOSZthq6C_yed07a2HQ7h2Q@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 09:21:11PM +0800, Chen Huang wrote:
+On Mon, Aug 16, 2021 at 03:25:13PM +0200, Rafael J. Wysocki wrote:
+> On Fri, Aug 6, 2021 at 4:44 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > By default the 512 GPIOs is a maximum on any x86 platform.
+> > With, for example, Intel Tiger Lake-H the SoC based controller
+> > occupies up to 480 pins. This leaves only 32 available for
+> > GPIO expanders or other drivers, like PMIC. Hence, bump the
+> > maximum GPIO number to 1024 for X86_64 and leave 512 for X86_32.
+
+Thanks for review, my answers below.
+
+> > +# The GPIO number here must be sorted by descending number. In case of
+> > +# a multiplatform kernel, we just want the highest value required by the
+> > +# selected platforms.
+> > +config ARCH_NR_GPIO
+> > +       int
+> > +       default 1024 if X86_64
+> > +       default 512 if X86_32
+> > +       default 0
 > 
+> Wouldn't
 > 
-> 在 2021/8/16 16:34, Greg Kroah-Hartman 写道:
-> > On Mon, Aug 16, 2021 at 07:21:37AM +0000, Chen Huang wrote:
-> >> From: Roman Gushchin <guro@fb.com>
-> > 
-> > What is the git commit id of this patch in Linus's tree?
-> > 
-> >>
-> >> Patch series "mm: allow mapping accounted kernel pages to userspace", v6.
-> >>
-> >> Currently a non-slab kernel page which has been charged to a memory cgroup
-> >> can't be mapped to userspace.  The underlying reason is simple: PageKmemcg
-> >> flag is defined as a page type (like buddy, offline, etc), so it takes a
-> >> bit from a page->mapped counter.  Pages with a type set can't be mapped to
-> >> userspace.
-> >>
-> >> But in general the kmemcg flag has nothing to do with mapping to
-> >> userspace.  It only means that the page has been accounted by the page
-> >> allocator, so it has to be properly uncharged on release.
-> >>
-> >> Some bpf maps are mapping the vmalloc-based memory to userspace, and their
-> >> memory can't be accounted because of this implementation detail.
-> >>
-> >> This patchset removes this limitation by moving the PageKmemcg flag into
-> >> one of the free bits of the page->mem_cgroup pointer.  Also it formalizes
-> >> accesses to the page->mem_cgroup and page->obj_cgroups using new helpers,
-> >> adds several checks and removes a couple of obsolete functions.  As the
-> >> result the code became more robust with fewer open-coded bit tricks.
-> >>
-> >> This patch (of 4):
-> >>
-> >> Currently there are many open-coded reads of the page->mem_cgroup pointer,
-> >> as well as a couple of read helpers, which are barely used.
-> >>
-> >> It creates an obstacle on a way to reuse some bits of the pointer for
-> >> storing additional bits of information.  In fact, we already do this for
-> >> slab pages, where the last bit indicates that a pointer has an attached
-> >> vector of objcg pointers instead of a regular memcg pointer.
-> >>
-> >> This commits uses 2 existing helpers and introduces a new helper to
-> >> converts all read sides to calls of these helpers:
-> >>   struct mem_cgroup *page_memcg(struct page *page);
-> >>   struct mem_cgroup *page_memcg_rcu(struct page *page);
-> >>   struct mem_cgroup *page_memcg_check(struct page *page);
-> >>
-> >> page_memcg_check() is intended to be used in cases when the page can be a
-> >> slab page and have a memcg pointer pointing at objcg vector.  It does
-> >> check the lowest bit, and if set, returns NULL.  page_memcg() contains a
-> >> VM_BUG_ON_PAGE() check for the page not being a slab page.
-> >>
-> >> To make sure nobody uses a direct access, struct page's
-> >> mem_cgroup/obj_cgroups is converted to unsigned long memcg_data.
-> >>
-> >> Signed-off-by: Roman Gushchin <guro@fb.com>
-> >> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> >> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> >> Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> >> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> >> Acked-by: Michal Hocko <mhocko@suse.com>
-> >> Link: https://lkml.kernel.org/r/20201027001657.3398190-1-guro@fb.com
-> >> Link: https://lkml.kernel.org/r/20201027001657.3398190-2-guro@fb.com
-> >> Link: https://lore.kernel.org/bpf/20201201215900.3569844-2-guro@fb.com
-> >>
-> >> Conflicts:
-> >> 	mm/memcontrol.c
-> > 
-> > The "Conflicts:" lines should be removed.
-> > 
-> > Please fix up the patch series and resubmit.  But note, this seems
-> > really intrusive, are you sure these are all needed?
-> > 
+> default 1024 if X86_64
+> default 512
 > 
-> OK，I will resend the patchset.
-> Roman Gushchin's patchset formalize accesses to the page->mem_cgroup and
-> page->obj_cgroups. But for LRU pages and most other raw memcg, they may
-> pin to a memcg cgroup pointer, which should always point to an object cgroup
-> pointer. That's the problem I met. And Muchun Song's patchset fix this.
-> So I think these are all needed.
-
-What in-tree driver causes this to happen and under what workload?
-
-> > What UIO driver are you using that is showing problems like this?
-> > 
+> be sufficient?
 > 
-> The UIO driver is my own driver, and it's creation likes this:
-> First, we register a device
-> 	pdev = platform_device_register_simple("uio_driver,0, NULL, 0);
-> and use uio_info to describe the UIO driver, the page is alloced and used
-> for uio_vma_fault
-> 	info->mem[0].addr = (phys_addr_t) kzalloc(PAGE_SIZE, GFP_ATOMIC);
+> It's either X86_64 or X86_32 anyway AFAICS.
 
-That is not a physical address, and is not what the uio api is for at
-all.  Please do not abuse it that way.
+I guess so.
 
-> then we register the UIO driver.
-> 	uio_register_device(&pdev->dev, info)
+> > +       help
+> > +         Maximum number of GPIOs in the system.
+> > +
+> > +         If unsure, leave the default value.
 
-So no in-tree drivers are having problems with the existing code, only
-fake ones?
+Btw, what do you think. do we need comment above and help text here? I copied
+these from ARM, but I'm not sure it would be useful on x86 as much.
 
-thanks,
 
-greg k-h
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
