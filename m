@@ -2,115 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0F63ED029
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 10:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6223ED02B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 10:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234594AbhHPIYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 04:24:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20129 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231716AbhHPIYY (ORCPT
+        id S234621AbhHPIYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 04:24:35 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:55833 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231716AbhHPIYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 04:24:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629102233;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XePXIUWQuyu3Re8GYDCaNWiGT+mm8bsw0DIVjtODpjc=;
-        b=Q+SVHoGsW0HMDaavcBFk/400MVCCPmv0/n+CFE9AWrOled5qe6fKIA8km7MHP0b2yc8FpB
-        uNCbIfgiJ1yb3ODJGtpszCTpSgWZa6ab08hDwm6YwS8OpNj7ukJikCdkFtILiAAJTLCmLb
-        36FjpPxLumOQOTdcqLmWDdzqnliINbU=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-511-6Z4RMIzQNMqAzTZrDrQ3uw-1; Mon, 16 Aug 2021 04:23:52 -0400
-X-MC-Unique: 6Z4RMIzQNMqAzTZrDrQ3uw-1
-Received: by mail-wm1-f72.google.com with SMTP id v2-20020a7bcb420000b02902e6b108fcf1so5933726wmj.8
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 01:23:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=XePXIUWQuyu3Re8GYDCaNWiGT+mm8bsw0DIVjtODpjc=;
-        b=uoBRu5Tcg6prDQBeU/vaRGeTfIhnAZORtSLL1dbtylnMiBquGGtx+iR0LlJUJj18TT
-         qNdwEN92DDzzji3FpD3YUC6H9T7vPGdPEHFbRJwH7a2oyT8doYC0V46OLTmRHKJUC/nO
-         ao6NCshTd4ZZRlisrcoo0s8MqaoqgObYazH73uIrSroinrG7fy2MnSM34d73/VMujxqI
-         Yt9AzNlzkoZ5Tx61PH3cNhkxLMpYo51QmkRvk6pJhmcLaKgzXq6/0wD8f91yBEB2JqUe
-         9YZqtzHbdqNTNsYhSzMM08WdBTeCZo29kf1FBUYoI0+TX63wF679GbJzTHurWYzyV0lL
-         qi+Q==
-X-Gm-Message-State: AOAM530BGP3oCODlOFxJEwwF6vw9jeQV1kiPEcOGRppn9ukEEYN9v2mf
-        Qu1KoWReqIznzXl7bjqhw12uNd8lG97J6ae0fVIlEd8b57x7iVLpHpesPfkodXVmueq3oV1YlKP
-        x30eS/73PLlgcmLA3TJWyS5vTP5qwiV6IaLWjRdgBAa/Dbseun6koI5oUrFRH9H5p6f8I8bsy
-X-Received: by 2002:a05:600c:3793:: with SMTP id o19mr9444754wmr.53.1629102231142;
-        Mon, 16 Aug 2021 01:23:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy9uZFJbVvynlFhQEDIq3zra3/5Kbt66ggKycJUWqI8INp/MnDFkNfFDWBzlOsQRtE/e01TPQ==
-X-Received: by 2002:a05:600c:3793:: with SMTP id o19mr9444730wmr.53.1629102230872;
-        Mon, 16 Aug 2021 01:23:50 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c67f1.dip0.t-ipconnect.de. [91.12.103.241])
-        by smtp.gmail.com with ESMTPSA id k17sm10494178wmj.0.2021.08.16.01.23.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 01:23:50 -0700 (PDT)
-Subject: Re: [PATCH] mm, slub: add cpus_read_lock/unlock() for
- slab_mem_going_offline_callback()
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     qiang.zhang@windriver.com, vbabka@suse.cz,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210816074605.30336-1-qiang.zhang@windriver.com>
- <ef944ea5-c3cb-24e5-1ff8-b8e1008fa6ed@redhat.com>
- <20210816181751.17f98cc2@canb.auug.org.au>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <e9b22a8a-e5d2-955f-65b9-1e30efe24f81@redhat.com>
-Date:   Mon, 16 Aug 2021 10:23:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 16 Aug 2021 04:24:34 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 2ABE7E0007;
+        Mon, 16 Aug 2021 08:24:01 +0000 (UTC)
+Date:   Mon, 16 Aug 2021 10:24:01 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+Cc:     a.zummo@towertech.it, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, TimGuo-oc@zhaoxin.com,
+        CooperYan@zhaoxin.com, QiyuanWang@zhaoxin.com,
+        HerryYang@zhaoxin.com, CobeChen@zhaoxin.com, YanchenSun@zhaoxin.com
+Subject: Re: [PATCH] rtc: Fix set RTC time delay 500ms on some Zhaoxin SOCs
+Message-ID: <YRogod0HB4d7Og4E@piout.net>
+References: <1629121638-3246-1-git-send-email-TonyWWang-oc@zhaoxin.com>
 MIME-Version: 1.0
-In-Reply-To: <20210816181751.17f98cc2@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1629121638-3246-1-git-send-email-TonyWWang-oc@zhaoxin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.08.21 10:17, Stephen Rothwell wrote:
-> Hi David,
+Hello,
+
+On 16/08/2021 21:47:18+0800, Tony W Wang-oc wrote:
+> When the RTC divider is changed from reset to an operating time base,
+> the first update cycle should be 500ms later. But on some Zhaoxin SOCs,
+> this first update cycle is one second later.
 > 
-> On Mon, 16 Aug 2021 10:04:13 +0200 David Hildenbrand <david@redhat.com> wrote:
->>
->> On 16.08.21 09:46, qiang.zhang@windriver.com wrote:
->>> From: "Qiang.Zhang" <qiang.zhang@windriver.com>
->>>
->>> The flush_all_cpus_locked() should be called with cpus_read_lock/unlock(),
->>> ensure flush_cpu_slab() can be executed on schedule_on CPU.
->>>
->>> Fixes: 1c84f3c91640 ("mm, slub: fix memory and cpu hotplug related lock ordering issues")
->>
->> Which branch contains this commit? At least not linux.git or linux-next
+> So set RTC time on these Zhaoxin SOCs will causing 500ms delay.
 > 
-> It is Andrew's mmotm which is included in linux-next but gets rebased
 
-Maybe I am blind or need more coffee:
+Can you explain what is the relationship between writing the divider and
+the 500ms delay?
 
-https://www.ozlabs.org/~akpm/mmotm/series
+Isn't the issue that you are using systohc and set_offset_nsec is set to
+NSEC_PER_SEC / 2 ?
 
-> often, so, for example, that SHA1 is no longer valid in linux-next
-> today (is is now fd917c6407fb).
+> Skip setup RTC divider on these SOCs in mc146818_set_time to fix it.
 > 
-> This (unfortunately) make Fixes tags less useful for mmotm :-(
-
-Right, and it somewhat makes sense, because Andrew will actually squash 
-patches before sending them further upstream.
-
-Ideally, such fixes should be discussed in the respective patch series, 
-because before they go upstream, they are still under development.
-
+> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+> ---
+>  drivers/rtc/rtc-mc146818-lib.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/drivers/rtc/rtc-mc146818-lib.c b/drivers/rtc/rtc-mc146818-lib.c
+> index dcfaf09..322f94b 100644
+> --- a/drivers/rtc/rtc-mc146818-lib.c
+> +++ b/drivers/rtc/rtc-mc146818-lib.c
+> @@ -190,8 +190,18 @@ int mc146818_set_time(struct rtc_time *time)
+>  	spin_lock_irqsave(&rtc_lock, flags);
+>  	save_control = CMOS_READ(RTC_CONTROL);
+>  	CMOS_WRITE((save_control|RTC_SET), RTC_CONTROL);
+> +
+> +#ifdef CONFIG_X86
+> +	if (!((boot_cpu_data.x86_vendor == X86_VENDOR_CENTAUR ||
+> +		boot_cpu_data.x86_vendor == X86_VENDOR_ZHAOXIN) &&
+> +		(boot_cpu_data.x86 <= 7 && boot_cpu_data.x86_model <= 59))) {
+> +		save_freq_select = CMOS_READ(RTC_FREQ_SELECT);
+> +		CMOS_WRITE((save_freq_select|RTC_DIV_RESET2), RTC_FREQ_SELECT);
+> +	}
+> +#else
+>  	save_freq_select = CMOS_READ(RTC_FREQ_SELECT);
+>  	CMOS_WRITE((save_freq_select|RTC_DIV_RESET2), RTC_FREQ_SELECT);
+> +#endif
+>  
+>  #ifdef CONFIG_MACH_DECSTATION
+>  	CMOS_WRITE(real_yrs, RTC_DEC_YEAR);
+> @@ -209,7 +219,15 @@ int mc146818_set_time(struct rtc_time *time)
+>  #endif
+>  
+>  	CMOS_WRITE(save_control, RTC_CONTROL);
+> +
+> +#ifdef CONFIG_X86
+> +	if (!((boot_cpu_data.x86_vendor == X86_VENDOR_CENTAUR ||
+> +		boot_cpu_data.x86_vendor == X86_VENDOR_ZHAOXIN) &&
+> +		(boot_cpu_data.x86 <= 7 && boot_cpu_data.x86_model <= 59)))
+> +		CMOS_WRITE(save_freq_select, RTC_FREQ_SELECT);
+> +#else
+>  	CMOS_WRITE(save_freq_select, RTC_FREQ_SELECT);
+> +#endif
+>  
+>  	spin_unlock_irqrestore(&rtc_lock, flags);
+>  
+> -- 
+> 2.7.4
+> 
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
