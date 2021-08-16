@@ -2,177 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9D03ED7F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1143ED801
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbhHPNvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:51:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230340AbhHPNvu (ORCPT
+        id S230233AbhHPN47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:56:59 -0400
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:38628 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbhHPN45 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:51:50 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 310E4C0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 06:51:19 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mFd1I-0003Ma-Pm; Mon, 16 Aug 2021 15:51:16 +0200
-Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:3272:cc96:80a9:1a01])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 07E3F6683A0;
-        Mon, 16 Aug 2021 13:51:14 +0000 (UTC)
-Date:   Mon, 16 Aug 2021 15:51:13 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        linux-can@vger.kernel.org,
-        Stefan =?utf-8?B?TcOkdGpl?= <stefan.maetje@esd.eu>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 4/4] iplink_can: add new CAN FD bittiming parameters:
- Transmitter Delay Compensation (TDC)
-Message-ID: <20210816135113.gpk3fpafiqnhjbw4@pengutronix.de>
-References: <20210814101728.75334-1-mailhol.vincent@wanadoo.fr>
- <20210814101728.75334-5-mailhol.vincent@wanadoo.fr>
+        Mon, 16 Aug 2021 09:56:57 -0400
+Received: by mail-oi1-f181.google.com with SMTP id u25so26782416oiv.5;
+        Mon, 16 Aug 2021 06:56:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0uKKAqouMrQ5RgAbl37XN2HPKshvq14pMZ68Q1KvZR4=;
+        b=GoE6oa48lNfNl1J4y5toavcHOWmP+I7MQpWI+llmbsBWT/bsFQw+3xWrh669vhyagO
+         DkY/KJNHivFeg3qXwnex4KVyhQruDt31sPOpPAoQ6vb0wRondhnzQaVpR4mm7XoeR3O/
+         1RLXISFU5urDA8eGKOIVicFacEGmh0kwuD3v3t8fwc4ow+cduQ+Brfnui2j0tB2YyG2R
+         C7Kuvo1y1obDz4IYSD5PIonRANsIyKuXF4PQW0TTULv+E7qnQiGMTosO3csvYpHe3T49
+         2njrR2N5ziOT6jF6wuEX7gZlHLwrTmU874nX0i4GSKRDngMNs5opLlh4KtI9XESm0hV9
+         di3g==
+X-Gm-Message-State: AOAM530sx8cho9lAiOcPWTJbeVfJ1cex5TbluSKaRh7RF7HFFdAVlIFJ
+        zen15Yif3xHxSE9ZH3bSV0XKRoHl9OXKxc/bE1c=
+X-Google-Smtp-Source: ABdhPJzr4FSgkxW5uRL0cvQgUoHQ2a9lqILSFnzzFljV07kigV/zFHRKEVbH4KzCPm8eekeCuQ0eIA+Kxb0DZTa0IdE=
+X-Received: by 2002:a05:6808:220c:: with SMTP id bd12mr12147522oib.157.1629122185765;
+ Mon, 16 Aug 2021 06:56:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uw3za2cin73atu2y"
-Content-Disposition: inline
-In-Reply-To: <20210814101728.75334-5-mailhol.vincent@wanadoo.fr>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210806143711.37553-1-andriy.shevchenko@linux.intel.com>
+ <CAJZ5v0iTNwQfh6ZZxry16hOjokGOOSZthq6C_yed07a2HQ7h2Q@mail.gmail.com> <YRppqnAqJ1G+4mva@smile.fi.intel.com>
+In-Reply-To: <YRppqnAqJ1G+4mva@smile.fi.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 16 Aug 2021 15:55:59 +0200
+Message-ID: <CAJZ5v0ib7oP5EG2k6_Q0Yiq=_WGu01iGVDmV+QoVRLaxTXZHDw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] x86/platform: Increase maximum GPIO number for X86_64
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 16, 2021 at 3:35 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Mon, Aug 16, 2021 at 03:25:13PM +0200, Rafael J. Wysocki wrote:
+> > On Fri, Aug 6, 2021 at 4:44 PM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > >
+> > > By default the 512 GPIOs is a maximum on any x86 platform.
+> > > With, for example, Intel Tiger Lake-H the SoC based controller
+> > > occupies up to 480 pins. This leaves only 32 available for
+> > > GPIO expanders or other drivers, like PMIC. Hence, bump the
+> > > maximum GPIO number to 1024 for X86_64 and leave 512 for X86_32.
+>
+> Thanks for review, my answers below.
+>
+> > > +# The GPIO number here must be sorted by descending number. In case of
+> > > +# a multiplatform kernel, we just want the highest value required by the
+> > > +# selected platforms.
+> > > +config ARCH_NR_GPIO
+> > > +       int
+> > > +       default 1024 if X86_64
+> > > +       default 512 if X86_32
+> > > +       default 0
+> >
+> > Wouldn't
+> >
+> > default 1024 if X86_64
+> > default 512
+> >
+> > be sufficient?
+> >
+> > It's either X86_64 or X86_32 anyway AFAICS.
+>
+> I guess so.
+>
+> > > +       help
+> > > +         Maximum number of GPIOs in the system.
+> > > +
+> > > +         If unsure, leave the default value.
+>
+> Btw, what do you think. do we need comment above and help text here? I copied
+> these from ARM, but I'm not sure it would be useful on x86 as much.
 
---uw3za2cin73atu2y
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Both the comment and the help text aren't particularly useful IMO.
 
-On 14.08.2021 19:17:28, Vincent Mailhol wrote:
-> At high bit rates, the propagation delay from the TX pin to the RX pin
-> of the transceiver causes measurement errors: the sample point on the
-> RX pin might occur on the previous bit.
->=20
-> This issue is addressed in ISO 11898-1 section 11.3.3 "Transmitter
-> delay compensation" (TDC).
->=20
-> This patch brings command line support to nine TDC parameters which
-> were recently added to the kernel's CAN netlink interface in order to
-> implement TDC:
->   - IFLA_CAN_TDC_TDCV_MIN: Transmitter Delay Compensation Value
->     minimum value
->   - IFLA_CAN_TDC_TDCV_MAX: Transmitter Delay Compensation Value
->     maximum value
->   - IFLA_CAN_TDC_TDCO_MIN: Transmitter Delay Compensation Offset
->     minimum value
->   - IFLA_CAN_TDC_TDCO_MAX: Transmitter Delay Compensation Offset
->     maximum value
->   - IFLA_CAN_TDC_TDCF_MIN: Transmitter Delay Compensation Filter
->     window minimum value
->   - IFLA_CAN_TDC_TDCF_MAX: Transmitter Delay Compensation Filter
->     window maximum value
->   - IFLA_CAN_TDC_TDCV: Transmitter Delay Compensation Value
->   - IFLA_CAN_TDC_TDCO: Transmitter Delay Compensation Offset
->   - IFLA_CAN_TDC_TDCF: Transmitter Delay Compensation Filter window
->=20
-> All those new parameters are nested together into the attribute
-> IFLA_CAN_TDC.
->=20
-> A tdc-mode parameter allow to specify how to operate. Valid options
-> are:
->=20
->   * auto: the transmitter automatically measures TDCV. As such, TDCV
->     values can not be manually provided. In this mode, the user must
->     specify TDCO and may also specify TDCF if supported.
->=20
->   * manual: Use the TDCV value provided by the user are used. In this
->     mode, the user must specify both TDCV and TDCO and may also
->     specify TDCF if supported.
->=20
->   * off: TDC is explicitly disabled.
->=20
->   * tdc-mode parameter omitted (default mode): the kernel decides
->     whether TDC should be enabled or not and if so, it calculates the
->     TDC values. TDC parameters are an expert option and the average
->     user is not expected to provide those, thus the presence of this
->     "default mode".
->=20
-> TDCV is always reported in manual mode. In auto mode, TDCV is reported
-> only if the value is available. Especially, the TDCV might not be
-> available if the controller has no feature to report it or if the
-> value in not yet available (i.e. no data sent yet and measurement did
-> not occur).
->=20
-> TDCF is reported only if tdcf_max is not zero (i.e. if supported by the c=
-ontroller).
->=20
-> For reference, here are a few samples of how the output looks like:
->=20
-> $ ip link set can0 type can bitrate 1000000 dbitrate 8000000 fd on tdco 7=
- tdcf 8 tdc-mode auto
->=20
-> $ ip --details link show can0
-> 1:  can0: <NOARP,ECHO> mtu 72 qdisc noop state DOWN mode DEFAULT group de=
-fault qlen 10
->     link/can  promiscuity 0 minmtu 0 maxmtu 0
->     can <FD,TDC_AUTO> state STOPPED (berr-counter tx 0 rx 0) restart-ms 0
-              ^^^^^^^^
-This is just the supported mode(s), right?
-
-> 	  bitrate 1000000 sample-point 0.750
-> 	  tq 12 prop-seg 29 phase-seg1 30 phase-seg2 20 sjw 1 brp 1
-> 	  ES582.1/ES584.1: tseg1 2..256 tseg2 2..128 sjw 1..128 brp 1..512 brp_i=
-nc 1
-> 	  dbitrate 8000000 dsample-point 0.700
-> 	  dtq 12 dprop-seg 3 dphase-seg1 3 dphase-seg2 3 dsjw 1 dbrp 1
-> 	  tdco 7 tdcf 8
-> 	  ES582.1/ES584.1: dtseg1 2..32 dtseg2 1..16 dsjw 1..8 dbrp 1..32 dbrp_i=
-nc 1
-> 	  tdco 0..127 tdcf 0..127
-> 	  clock 80000000 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_=
-segs 65535
-
-Is there a way to figure out, which tdc mode is currently active?
-
-AFAICS just implicitly:
-- tdco + tdcv   -> manual
-- tdco          -> automatic
-- neither       -> off
-
-correct?
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---uw3za2cin73atu2y
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEabU8ACgkQqclaivrt
-76nQ9wf8DSYrFmAPlYxWQHsv0ovgFow7hrqpCljYwTYqsn4Ft7+s6L/1gcZtX5Uh
-z9L3W4nGFtfC380xQYR9pSLSK0G300ceeN7rdbEa4cYEWPQK6OZNEszqUr+rh5ur
-kbZGuc+pGVrU8ZZ3ru42ntu2Bo/ob7/s5TIdpr/Ujuish1zNLwQmWymnsGw9KQEU
-g0BeZMU/FnjsTsAdr/a9DnczunuuX9AomlwrYIR4R2EdPYm3VxZnZ7ttuecTF2Ri
-9Qq5y8mNaR7jrvWTOHMZc7wAeZJMugtorLUc90kmGwD3TAbjTC2TtARSKSKOLvey
-Qfa0IiiGx0hgEil37JPbfVwWQ4TIHQ==
-=H91n
------END PGP SIGNATURE-----
-
---uw3za2cin73atu2y--
+The comment is a bit confusing even, because x86 kernels are
+multiplatform as a rule.
