@@ -2,90 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAFC83EDE09
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C460D3EDE0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231264AbhHPTrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 15:47:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231236AbhHPTq5 (ORCPT
+        id S231390AbhHPTrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 15:47:32 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:47833 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230420AbhHPTrb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 15:46:57 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B9FC061764;
-        Mon, 16 Aug 2021 12:46:25 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id nt11so28251794pjb.2;
-        Mon, 16 Aug 2021 12:46:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Q5y3Diy0bSS1qtfw8LXMZxlhAkCPsRISdhkpjPubqdw=;
-        b=Qzl2TNvGY4kPSuJe2Kx778muWJ3IC/XdfyAQtvUDaGu+uehK9xfVadHtHQwRyJtum2
-         zlnbEFbnVJ8q6LMdFTxLh3gIzLDITPoWRgb6SqwNj0hsbDZCFoWt62ZPJKqneIwDEiaZ
-         hhevSHMteX+wgEtoQTK9c42dknM/uL5zAnKwaRIb3yBnMNe69xVft3mEQSnKS/sThekB
-         OPQPh2RYkZFuHir4l8kps2QOdTc3oq6cn8Yk+L/nDQr3cjdpzLjk+GoUPBThnoRXfEE1
-         n8kVdkhcAuF/0ikoseAmEPpE8iOn0X6SwuvblE7WT2uYAQAzJ8R9X/M0kBfNph385y02
-         EmEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Q5y3Diy0bSS1qtfw8LXMZxlhAkCPsRISdhkpjPubqdw=;
-        b=FTdb+ni3UOj1RGI+NMMnSbhfafTgEBCqH09XpCz6rkTctGBIpWW5oEDE40NKGxHC48
-         mQUs1WeRu6YCa2xrfQv9r66YAMd1Ppz5Ag96nbXI/KmSQ91+mudAzt5EEtHXjlBA5WTZ
-         o+S/uyvyNE9f50gptB1+YJguBemrgUD7L5uQpVE3/6BR7q33MzZgNNl2uDtuZrft1Hxu
-         nL7bdgKQ0fqri36X/uOqk+9bpbPAjv47QlogBFNWF0xZMo81Aw5wrnYuqjJ6cqmyvlJl
-         3OjsFVx5cfVtgl1HqeacXUOwItTVPGljQmrxorz0yb03upq3jOjg3YiUtwCeTKRmY2u8
-         Scew==
-X-Gm-Message-State: AOAM532TW2noc+tcesuBZ0xWey9J1W35kwzW79zAak66Rzf0+XgR9GnR
-        3vSXoqjYtfLtsPvh1HXTcdk=
-X-Google-Smtp-Source: ABdhPJzTDgwZNRMVildoG+vBvtMZqvHi8155Vl8sXOW5IrmWcqyis3Cwo0UUNdbMARZrZ+bp/394pQ==
-X-Received: by 2002:a63:d14c:: with SMTP id c12mr435187pgj.412.1629143185449;
-        Mon, 16 Aug 2021 12:46:25 -0700 (PDT)
-Received: from localhost ([49.207.137.16])
-        by smtp.gmail.com with ESMTPSA id r9sm181910pfh.135.2021.08.16.12.46.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 12:46:24 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 01:16:21 +0530
-From:   Aakash Hemadri <aakashhemadri123@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
-        Jawoslav Kysela <perex@perex.cz>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Bjorn Helgaas <bjorn@helgaas.com>
-Subject: Re: [PATCH 1/2] ASoC: tegra30: ahub: Use of_device_get_match_data
-Message-ID: <20210816194621.mrudqykxvkbt3a2w@xps.yggdrasil>
-References: <cover.1628971397.git.aakashhemadri123@gmail.com>
- <e568d621c9c05ee23732a6a6f9e3606a780b1707.1628971397.git.aakashhemadri123@gmail.com>
- <20210816183906.GC4253@sirena.org.uk>
+        Mon, 16 Aug 2021 15:47:31 -0400
+Received: from mail-wr1-f53.google.com ([209.85.221.53]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1Mgebs-1mjJ9y0GM8-00h7Dj; Mon, 16 Aug 2021 21:46:58 +0200
+Received: by mail-wr1-f53.google.com with SMTP id f5so25113196wrm.13;
+        Mon, 16 Aug 2021 12:46:57 -0700 (PDT)
+X-Gm-Message-State: AOAM532zMQY95Ol20MAk/aEKEfAF3jtd6XQqtpewy1CUlWcDs5VI0q+K
+        d5+R2ieIQwwptxh9ywgPlJJjUx5jaGR3wPpzQpI=
+X-Google-Smtp-Source: ABdhPJz5KjKHIA5/4EOwJb7Ma2A00qBnJujFrxAsE6LdiU6qcLYPR0auEFNX3ZzUUJs3kVABWL/CCX9eg5zq7HVAbSw=
+X-Received: by 2002:adf:f202:: with SMTP id p2mr103174wro.361.1629143217650;
+ Mon, 16 Aug 2021 12:46:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210816183906.GC4253@sirena.org.uk>
+References: <20210816160717.31285-1-arkadiusz.kubalewski@intel.com> <20210816160717.31285-5-arkadiusz.kubalewski@intel.com>
+In-Reply-To: <20210816160717.31285-5-arkadiusz.kubalewski@intel.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 16 Aug 2021 21:46:41 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0N3N3mFvoPj_fkqOY30uudJceox=uwSW+nd0B0kf8-ng@mail.gmail.com>
+Message-ID: <CAK8P3a0N3N3mFvoPj_fkqOY30uudJceox=uwSW+nd0B0kf8-ng@mail.gmail.com>
+Subject: Re: [RFC net-next 4/7] net: add ioctl interface for recover reference
+ clock on netdev
+To:     Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Intel Wired LAN <intel-wired-lan@lists.osuosl.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        cong.wang@bytedance.com, Colin Ian King <colin.king@canonical.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:yNnIHyXVxaeyxuMJCEkJe9nl/mAlWh6pT6ME1VnoRxlYf2Vy5qv
+ UIsW+97Lwg92jh5cdntwIGmC+4+u+Ok/dZp5PIKekDmJThG9xi5pyrgkzbtj+Rq+pJscjTF
+ ZfTkZFR5ks8OehgiMvfGKvJclDpIf+AT0jP40YdflB6y/8WYbwYhdlr+s8e4uY3KqPeiB8Y
+ BiG7rnkx6n5GLH8ZyiASg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:h12WhL+ACR8=:HprYk9onqHj4BGSFYamkSv
+ XZm/1agnx2KVx9NVkBzlTxklhug+eNdwqLizoJmSWM6RxsUrueqluEuTsvyB3PlYGzj3B2IMu
+ QipVQjQewAuYr3vf9O3oEumeA/HzNiepDAAyMRoEMzgZGDPkDHE4nwamHoDt8UdDyiNiUjjHU
+ dNGj4WOkLCcWoz3XP2geO1J+cF3l4aa/WqX8J7h3yi0HFCW81e6Lpk8wWPn5G/jj1s8snCZXw
+ eC+8jSbaXX5y/KhyJXnKnrgNEEc5bS2dUHgy1AiLF2C3AWcyMpjfwV2RPsEfHQZIx9rWxbkVe
+ 6CeNN7/D1Vtlg385m5hCofhCIT4LAH0keVX0YyI/1J1oHKtLl6SqI/i9igLP5whirznl+tSNb
+ B4ik9NJzIBObN1Z/H9eCJsKKAIqkehuO8t6psRtwnV1b462f7FD9OIP06lJ0uSoA/RwjxikW2
+ DNfho9IAawRKD8qBHv4Il1Mj4XVe6QETvvmmLswFHSM/rqT6XiUVdrWWcSisgwdVVEtb+Lsjk
+ n/1TP2LIZuz7+nbaY05WUUVKL6R0FT9GhECOA2LKWumv+v0tu7LvJYTnWEutd9S94EwCHpV7c
+ 1E61UYHVTdFuaKWzgEV5+yFIMoU5GjyqNtIedb171ycAOdSiCdeNhT6SOlFyRGoWiRgYPWIpO
+ eK6of1WFSOGp+M12KqweNFx+O6nOlsIX5XA6p44hK1aMNhc9bfrzviiCo6uJJm7Lrb4xS1V5U
+ MYdy/s9+uDwInJ2jEkmnwEb0otqRbSQWB11Qdy0nfGR9vO68quqEJ13ETZBHIiPCtIBS0rScn
+ BXeSqKjIsGwrIEsiOKcaZvNNECuPjFhM8RRtHe1v9u0gKC8bh4pn043WnQk4V30azTjK2ec
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/08/16 07:39PM, Mark Brown wrote:
-> On Sun, Aug 15, 2021 at 01:42:18AM +0530, Aakash Hemadri wrote:
-> 
-> > -	match = of_match_device(tegra30_ahub_of_match, &pdev->dev);
-> > +	match = of_device_get_match_data(&pdev->dev);
-> >  	if (!match)
-> 
-> Thierry, are you sure about your review here?  As others have been
-> pointing out of_device_get_match_data() returns match->data while
-> of_match_device() returns the device.
+On Mon, Aug 16, 2021 at 6:18 PM Arkadiusz Kubalewski
+<arkadiusz.kubalewski@intel.com> wrote:
 
-Sorry for the confusion, and the glaring mistake.
-Will fix and send v2.
+> +/*
+> + * Structure used for passing data with SIOCSSYNCE and SIOCGSYNCE ioctls
+> + */
+> +struct synce_ref_clk_cfg {
+> +       __u8 pin_id;
+> +       _Bool enable;
+> +};
 
-Thanks,
-Aakash Hemadri.
+I'm not sure if there are any guarantees about the size and alignment of _Bool,
+maybe better use __u8 here as well, if only for clarity.
+
+> +#endif /* _NET_SYNCE_H */
+> diff --git a/include/uapi/linux/sockios.h b/include/uapi/linux/sockios.h
+> index 7d1bccbbef78..32c7d4909c31 100644
+> --- a/include/uapi/linux/sockios.h
+> +++ b/include/uapi/linux/sockios.h
+> @@ -153,6 +153,10 @@
+>  #define SIOCSHWTSTAMP  0x89b0          /* set and get config           */
+>  #define SIOCGHWTSTAMP  0x89b1          /* get config                   */
+>
+> +/* synchronous ethernet config per physical function */
+> +#define SIOCSSYNCE     0x89c0          /* set and get config           */
+> +#define SIOCGSYNCE     0x89c1          /* get config                   */
+
+I understand that these are traditionally using the old-style 16-bit
+numbers, but is there any reason to keep doing that rather than
+making them modern like this?
+
+#define SIOCSSYNCE     _IOWR(0x89, 0xc0, struct  synce_ref_clk_cfg)
+/* set and get config   */
+#define SIOCGSYNCE     _IOR(0x89, 0xc1, struct  synce_ref_clk_cfg)
+/* get config   */
+
+        Arnd
