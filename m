@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5083ED613
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED00E3ED751
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237226AbhHPNQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:16:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58216 "EHLO mail.kernel.org"
+        id S236137AbhHPNbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:31:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237150AbhHPNJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:09:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5047D6113D;
-        Mon, 16 Aug 2021 13:08:01 +0000 (UTC)
+        id S240656AbhHPNT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:19:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77941632CD;
+        Mon, 16 Aug 2021 13:15:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119281;
-        bh=4YvZByB9nPGrmEp4OvMsfBVOnrJYSppjoNbvz70+u/Y=;
+        s=korg; t=1629119717;
+        bh=u3aC0WlkHwHUxv5QOQjX/DflPSIcjW/7B8GDa3abAqQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dOvnPqZ9gIWy90m9B3WrRbv06iAnqxD9LMirrTOsrAd82tOXzbPdfq6I8iz6wfXnM
-         uZ+LTv3K2Vwf2B3SHDiAlQPEDpYm8bSVASI6IsFLqO0Gx1TrNMrZVHAMSCZpokViIs
-         GzzDw6tu2gSFby7okuzK2ZMPTPwHaLgHdTfcwKkk=
+        b=y61BdJKfPQ1S5RlvTZ61CXiA6LblxUxSn5YcO2DrnesJk3Iq4Evyfis6JzHTx8hN1
+         KHhdbdjnIm5OvwkApyw1mGkaGU9Egbbj0AtMp6YtXUpm5RE5fbfREM2bDq+KfcArNw
+         4EBFTLAph8NfHoeuB79YyaQzCWuIfU4hjyzCGY7I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Willy Tarreau <w@1wt.eu>, Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 61/96] net: linkwatch: fix failure to restore device state across suspend/resume
-Date:   Mon, 16 Aug 2021 15:02:11 +0200
-Message-Id: <20210816125436.982294079@linuxfoundation.org>
+Subject: [PATCH 5.13 102/151] net: dsa: lantiq: fix broken backpressure in .port_fdb_dump
+Date:   Mon, 16 Aug 2021 15:02:12 +0200
+Message-Id: <20210816125447.442562570@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
-References: <20210816125434.948010115@linuxfoundation.org>
+In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
+References: <20210816125444.082226187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,90 +40,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Willy Tarreau <w@1wt.eu>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit 6922110d152e56d7569616b45a1f02876cf3eb9f ]
+[ Upstream commit 871a73a1c8f55da0a3db234e9dd816ea4fd546f2 ]
 
-After migrating my laptop from 4.19-LTS to 5.4-LTS a while ago I noticed
-that my Ethernet port to which a bond and a VLAN interface are attached
-appeared to remain up after resuming from suspend with the cable unplugged
-(and that problem still persists with 5.10-LTS).
+rtnl_fdb_dump() has logic to split a dump of PF_BRIDGE neighbors into
+multiple netlink skbs if the buffer provided by user space is too small
+(one buffer will typically handle a few hundred FDB entries).
 
-It happens that the following happens:
+When the current buffer becomes full, nlmsg_put() in
+dsa_slave_port_fdb_do_dump() returns -EMSGSIZE and DSA saves the index
+of the last dumped FDB entry, returns to rtnl_fdb_dump() up to that
+point, and then the dump resumes on the same port with a new skb, and
+FDB entries up to the saved index are simply skipped.
 
-  - the network driver (e1000e here) prepares to suspend, calls e1000e_down()
-    which calls netif_carrier_off() to signal that the link is going down.
-  - netif_carrier_off() adds a link_watch event to the list of events for
-    this device
-  - the device is completely stopped.
-  - the machine suspends
-  - the cable is unplugged and the machine brought to another location
-  - the machine is resumed
-  - the queued linkwatch events are processed for the device
-  - the device doesn't yet have the __LINK_STATE_PRESENT bit and its events
-    are silently dropped
-  - the device is resumed with its link down
-  - the upper VLAN and bond interfaces are never notified that the link had
-    been turned down and remain up
-  - the only way to provoke a change is to physically connect the machine
-    to a port and possibly unplug it.
+Since dsa_slave_port_fdb_do_dump() is pointed to by the "cb" passed to
+drivers, then drivers must check for the -EMSGSIZE error code returned
+by it. Otherwise, when a netlink skb becomes full, DSA will no longer
+save newly dumped FDB entries to it, but the driver will continue
+dumping. So FDB entries will be missing from the dump.
 
-The state after resume looks like this:
-  $ ip -br li | egrep 'bond|eth'
-  bond0            UP             e8:6a:64:64:64:64 <BROADCAST,MULTICAST,MASTER,UP,LOWER_UP>
-  eth0             DOWN           e8:6a:64:64:64:64 <NO-CARRIER,BROADCAST,MULTICAST,SLAVE,UP>
-  eth0.2@eth0      UP             e8:6a:64:64:64:64 <BROADCAST,MULTICAST,SLAVE,UP,LOWER_UP>
+Fix the broken backpressure by propagating the "cb" return code and
+allow rtnl_fdb_dump() to restart the FDB dump with a new skb.
 
-Placing an explicit call to netdev_state_change() either in the suspend
-or the resume code in the NIC driver worked around this but the solution
-is not satisfying.
-
-The issue in fact really is in link_watch that loses events while it
-ought not to. It happens that the test for the device being present was
-added by commit 124eee3f6955 ("net: linkwatch: add check for netdevice
-being present to linkwatch_do_dev") in 4.20 to avoid an access to
-devices that are not present.
-
-Instead of dropping events, this patch proceeds slightly differently by
-postponing their handling so that they happen after the device is fully
-resumed.
-
-Fixes: 124eee3f6955 ("net: linkwatch: add check for netdevice being present to linkwatch_do_dev")
-Link: https://lists.openwall.net/netdev/2018/03/15/62
-Cc: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Willy Tarreau <w@1wt.eu>
-Link: https://lore.kernel.org/r/20210809160628.22623-1-w@1wt.eu
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 58c59ef9e930 ("net: dsa: lantiq: Add Forwarding Database access")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/link_watch.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/dsa/lantiq_gswip.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/net/core/link_watch.c b/net/core/link_watch.c
-index 75431ca9300f..1a455847da54 100644
---- a/net/core/link_watch.c
-+++ b/net/core/link_watch.c
-@@ -158,7 +158,7 @@ static void linkwatch_do_dev(struct net_device *dev)
- 	clear_bit(__LINK_STATE_LINKWATCH_PENDING, &dev->state);
- 
- 	rfc2863_policy(dev);
--	if (dev->flags & IFF_UP && netif_device_present(dev)) {
-+	if (dev->flags & IFF_UP) {
- 		if (netif_carrier_ok(dev))
- 			dev_activate(dev);
- 		else
-@@ -204,7 +204,8 @@ static void __linkwatch_run_queue(int urgent_only)
- 		dev = list_first_entry(&wrk, struct net_device, link_watch_list);
- 		list_del_init(&dev->link_watch_list);
- 
--		if (urgent_only && !linkwatch_urgent_event(dev)) {
-+		if (!netif_device_present(dev) ||
-+		    (urgent_only && !linkwatch_urgent_event(dev))) {
- 			list_add_tail(&dev->link_watch_list, &lweventlist);
- 			continue;
+diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswip.c
+index 314ae78bbdd6..e78026ef6d8c 100644
+--- a/drivers/net/dsa/lantiq_gswip.c
++++ b/drivers/net/dsa/lantiq_gswip.c
+@@ -1404,11 +1404,17 @@ static int gswip_port_fdb_dump(struct dsa_switch *ds, int port,
+ 		addr[1] = mac_bridge.key[2] & 0xff;
+ 		addr[0] = (mac_bridge.key[2] >> 8) & 0xff;
+ 		if (mac_bridge.val[1] & GSWIP_TABLE_MAC_BRIDGE_STATIC) {
+-			if (mac_bridge.val[0] & BIT(port))
+-				cb(addr, 0, true, data);
++			if (mac_bridge.val[0] & BIT(port)) {
++				err = cb(addr, 0, true, data);
++				if (err)
++					return err;
++			}
+ 		} else {
+-			if (((mac_bridge.val[0] & GENMASK(7, 4)) >> 4) == port)
+-				cb(addr, 0, false, data);
++			if (((mac_bridge.val[0] & GENMASK(7, 4)) >> 4) == port) {
++				err = cb(addr, 0, false, data);
++				if (err)
++					return err;
++			}
  		}
+ 	}
+ 	return 0;
 -- 
 2.30.2
 
