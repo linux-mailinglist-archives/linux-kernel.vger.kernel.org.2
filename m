@@ -2,115 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27DEB3EDCE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD3C3EDCEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233017AbhHPSKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 14:10:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59982 "EHLO
+        id S231439AbhHPSMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 14:12:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233104AbhHPSKZ (ORCPT
+        with ESMTP id S229481AbhHPSMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 14:10:25 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E975EC0612A5
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:09:48 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id r19so24454077eds.13
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:09:48 -0700 (PDT)
+        Mon, 16 Aug 2021 14:12:30 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50899C061764;
+        Mon, 16 Aug 2021 11:11:58 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id a15so5587798iot.2;
+        Mon, 16 Aug 2021 11:11:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mind.be; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Zj9DtZNu3Q5lzcO5ya/7HcU4ots3BHO7m+UZEwEjOK0=;
-        b=P3od03FJR7TCIir+ZWZ9KFRvdy627Sj59JznVxQNEjZa6DAEwzLat+vf7fsL9PQ1VN
-         g82QHQo0uSEd2nbyoaIaxq8SAMKn8nJp/9mDdE23HWEkokYeLfS1EAFeC4XsI+YBsGQm
-         bdz+8X1RiY5vA2SuWJO820nQ6wVY+quykzw4wbtATB2lFSv3wOaYmCB64y32DnVxYTyj
-         +Yw7iIY9HT7ib4OE0zs6dZuDKpzCK1WvFDB97AvvzSLKCvm3M3aT9+Y3NNGYx1GymQ6O
-         KqW6EJkyU0eHqPSNpEQ9PpRj159vYQ9NzfqoszO0ccVvSD+3V6Dz5I3Z78tqRA7vfOsy
-         yRlA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OgXtNKQVWNS/t9DnTxT4k+sKuavXVHdSyozmTrDmIzs=;
+        b=VQMcJfqDIF28JPMngb0oQ/7fJS4RV/h/jGqHDfDcji1nnRVIW5va2razqqgzHvBHOS
+         TGfaCQjdn1vsY7Aam4D1pRST+6Ff/b4jXbQdLkSUS/jeJp2FMDX4bx1t2rZgASQVXNPn
+         WOJw/pN70skdHEW9+0y1qly5biPDnQ+jn9qcKqMzwA6DZEksN2oYTuSgCkTJlXiMqKBz
+         Et09bRVTahG0zDEiaW3HwGOd6dqWseR7SEYxBZQ4cNJ2DaOZuDpgFczJoNGB3XsmyVO1
+         YQZzJ7c0yfYdDp8kx9lkckpUCjm21/JIkZG4vjROEk/KkAooM4GdibKsTu5Il6ecpfmq
+         277w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Zj9DtZNu3Q5lzcO5ya/7HcU4ots3BHO7m+UZEwEjOK0=;
-        b=G1LLVUklsZxSgPBC6qwyS2ATv60zdNEdbt4JAcDs9uqd9MgFrB5NzkgOJGphUVDa0X
-         +/eI0Ac64LpIn/1k6OzZBZnxMoGcPAtiJXP/dhunRjN1Fd85emw+rBps+3vqYfG5qlLm
-         G0YImWaGDUuJ3W8ZHQsKDEkgVpFa+E8GI6kKIsy3mJuYje/8WoNK1/UvaCD5nvqHnxK6
-         WSyhC11MBzMNK777d+a/Hrm39f9RU53tWDVRvdGQ50mqoGhOI7ofqw4gET4tZaYSPBtq
-         +YBflK8PXR6plPyi34KE4VbaL/MgS3NcqPFIrGx0cnGyWwKhAk4oI3TXgn3PdBVa3f4M
-         U44g==
-X-Gm-Message-State: AOAM530PCGRAzTneb6G9y9D8fihGJKeNiRrqPwk8C7Mm4SmpC/b4aET/
-        EfggcTEoVy484dm/9vIe9/YGpQ==
-X-Google-Smtp-Source: ABdhPJyu91YcIG5W9sZ9ALo4QBALyweoiLRGGYmbZVc/12XWHfdEMc8XMzaOyCZdbTrBKUIiFGiDqw==
-X-Received: by 2002:aa7:d681:: with SMTP id d1mr22359818edr.186.1629137387595;
-        Mon, 16 Aug 2021 11:09:47 -0700 (PDT)
-Received: from cephalopod (168.7-181-91.adsl-dyn.isp.belgacom.be. [91.181.7.168])
-        by smtp.gmail.com with ESMTPSA id bm1sm3989649ejb.38.2021.08.16.11.09.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 11:09:47 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 20:09:45 +0200
-From:   Ben Hutchings <ben.hutchings@mind.be>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 5/5] net: dsa: microchip: ksz8795: Use software
- untagging on CPU port
-Message-ID: <20210816180945.GI18930@cephalopod>
-References: <20210816174905.GD18930@cephalopod>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OgXtNKQVWNS/t9DnTxT4k+sKuavXVHdSyozmTrDmIzs=;
+        b=dBmopis+IxKL3SfqvUk3TepQgG2G+tsn/g5hw4Y2elP/wPmhe2iWLMNXAGYtv+qCA3
+         n8LuFk6wTwCNFIlNQhpU4DEsblNDre1awaeeKwoz0d7peXIYZi4AGeDBmW8nkG+lXMjm
+         q8my3wGuUSG90o1p44hFPPKXecHZfP8a3M2mVDrwoXVR8ADPEEfQ5O/IPYSiONRiHFUK
+         Qzi3hZuisZjb8lw2cCSdnsGPobJpoT2sKzk7JDC7MOyh0uYs5pmXF1raY/jq4uGVx1R7
+         HQ3JDPbeF+ZIGwex5HIKNtOndK/ivmqqPtD7AXSpTESzSWex/b5MRJGipVLUPXF7qeBL
+         nMQA==
+X-Gm-Message-State: AOAM530KUO7xM7Nf3dy+6ibNmmvJjJc3fyUkW+mJAexzGku/k7VJhjFC
+        /adnouicA0Uqtv95R2mrBVw5PdgCg2yPBnDQk3Y=
+X-Google-Smtp-Source: ABdhPJxe4xcrw0U4Dd1whvty55tfoYVW3p2Pw16+UKKJO6nXVsQXetYWVAQeXSpRs8A+FqzmkFphq0Q/eIfOk9SMXqI=
+X-Received: by 2002:a5d:9eda:: with SMTP id a26mr150414ioe.166.1629137517690;
+ Mon, 16 Aug 2021 11:11:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210816174905.GD18930@cephalopod>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210720232624.1493424-1-nitesh@redhat.com> <20210720232624.1493424-11-nitesh@redhat.com>
+In-Reply-To: <20210720232624.1493424-11-nitesh@redhat.com>
+From:   Jassi Brar <jassisinghbrar@gmail.com>
+Date:   Mon, 16 Aug 2021 13:11:47 -0500
+Message-ID: <CABb+yY3Wz57dYZ8pa5zHatGRu1RFmyRK+UvN+B8txCcOUTPQzw@mail.gmail.com>
+Subject: Re: [PATCH v5 10/14] mailbox: Use irq_update_affinity_hint
+To:     Nitesh Narayan Lal <nitesh@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-scsi@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
+        linux-api@vger.kernel.org, linux-pci@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        jesse.brandeburg@intel.com, Robin Murphy <robin.murphy@arm.com>,
+        mtosatti@redhat.com, mingo@kernel.org, jbrandeb@kernel.org,
+        frederic@kernel.org, juri.lelli@redhat.com, abelits@marvell.com,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>, peterz@infradead.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
+        chris.friesen@windriver.com, Marc Zyngier <maz@kernel.org>,
+        nhorman@tuxdriver.com, pjwaskiewicz@gmail.com, sassmann@redhat.com,
+        thenzl@redhat.com, kashyap.desai@broadcom.com,
+        sumit.saxena@broadcom.com, shivasharan.srikanteshwara@broadcom.com,
+        sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
+        suganath-prabu.subramani@broadcom.com, james.smart@broadcom.com,
+        dick.kennedy@broadcom.com, jkc@redhat.com, faisal.latif@intel.com,
+        shiraz.saleem@intel.com, tariqt@nvidia.com, ahleihel@redhat.com,
+        kheib@redhat.com, borisp@nvidia.com, saeedm@nvidia.com,
+        benve@cisco.com, govind@gmx.com, ajit.khaparde@broadcom.com,
+        sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
+        nilal@redhat.com, tatyana.e.nikolova@intel.com,
+        mustafa.ismail@intel.com, ahs3@redhat.com, leonro@nvidia.com,
+        chandrakanth.patil@broadcom.com,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Baolin Wang <baolin.wang7@gmail.com>, poros@redhat.com,
+        minlei@redhat.com, emilne@redhat.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, _govind@gmx.com, kabel@kernel.org,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Tushar Khandelwal <Tushar.Khandelwal@arm.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 9130c2d30c17846287b803a9803106318cbe5266 upstream.
+On Tue, Jul 20, 2021 at 6:27 PM Nitesh Narayan Lal <nitesh@redhat.com> wrote:
+>
+> The driver uses irq_set_affinity_hint() to:
+>
+> - Set the affinity_hint which is consumed by the userspace for
+>   distributing the interrupts
+>
+> - Enforce affinity
+>
+> As per commit 6ac17fe8c14a ("mailbox: bcm-flexrm-mailbox: Set IRQ affinity
+> hint for FlexRM ring IRQs") the latter is done to ensure that the FlexRM
+> ring interrupts are evenly spread across all available CPUs. However, since
+> commit a0c9259dc4e1 ("irq/matrix: Spread interrupts on allocation") the
+> spreading of interrupts is dynamically performed at the time of allocation.
+> Hence, there is no need for the drivers to enforce their own affinity for
+> the spreading of interrupts.
+>
+> Also, irq_set_affinity_hint() applying the provided cpumask as an affinity
+> for the interrupt is an undocumented side effect. To remove this side
+> effect irq_set_affinity_hint() has been marked as deprecated and new
+> interfaces have been introduced. Hence, replace the irq_set_affinity_hint()
+> with the new interface irq_update_affinity_hint() that only sets the
+> affinity_hint pointer.
+>
+> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+> ---
+>  drivers/mailbox/bcm-flexrm-mailbox.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/mailbox/bcm-flexrm-mailbox.c b/drivers/mailbox/bcm-flexrm-mailbox.c
+> index 78073ad1f2f1..16982c13d323 100644
+> --- a/drivers/mailbox/bcm-flexrm-mailbox.c
+> +++ b/drivers/mailbox/bcm-flexrm-mailbox.c
+> @@ -1298,7 +1298,7 @@ static int flexrm_startup(struct mbox_chan *chan)
+>         val = (num_online_cpus() < val) ? val / num_online_cpus() : 1;
+>         cpumask_set_cpu((ring->num / val) % num_online_cpus(),
+>                         &ring->irq_aff_hint);
+> -       ret = irq_set_affinity_hint(ring->irq, &ring->irq_aff_hint);
+> +       ret = irq_update_affinity_hint(ring->irq, &ring->irq_aff_hint);
+>         if (ret) {
+>                 dev_err(ring->mbox->dev,
+>                         "failed to set IRQ affinity hint for ring%d\n",
+> @@ -1425,7 +1425,7 @@ static void flexrm_shutdown(struct mbox_chan *chan)
+>
+>         /* Release IRQ */
+>         if (ring->irq_requested) {
+> -               irq_set_affinity_hint(ring->irq, NULL);
+> +               irq_update_affinity_hint(ring->irq, NULL);
+>                 free_irq(ring->irq, ring);
+>                 ring->irq_requested = false;
+>         }
+>
+Seems ok to me. But I don't have the h/w to test.
 
-On the CPU port, we can support both tagged and untagged VLANs at the
-same time by doing any necessary untagging in software rather than
-hardware.  To enable that, keep the CPU port's Remove Tag flag cleared
-and set the dsa_switch::untag_bridge_pvid flag.
+Acked-by: Jassi Brar <jaswinder.singh@linaro.org>
 
-Fixes: e66f840c08a2 ("net: dsa: ksz: Add Microchip KSZ8795 DSA driver")
-Signed-off-by: Ben Hutchings <ben.hutchings@mind.be>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-[bwh: Backport to 5.10: adjust context]
-Signed-off-by: Ben Hutchings <ben.hutchings@mind.be>
----
- drivers/net/dsa/microchip/ksz8795.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
-index 8f2b54ae57f2..ada0533b81fa 100644
---- a/drivers/net/dsa/microchip/ksz8795.c
-+++ b/drivers/net/dsa/microchip/ksz8795.c
-@@ -812,9 +812,11 @@ static bool ksz8795_port_vlan_changes_remove_tag(
- 	/* If a VLAN is added with untagged flag different from the
- 	 * port's Remove Tag flag, we need to change the latter.
- 	 * Ignore VID 0, which is always untagged.
-+	 * Ignore CPU port, which will always be tagged.
- 	 */
- 	return untagged != p->remove_tag &&
--		!(vlan->vid_begin == 0 && vlan->vid_end == 0);
-+		!(vlan->vid_begin == 0 && vlan->vid_end == 0) &&
-+		port != dev->cpu_port;
- }
- 
- int ksz8795_port_vlan_prepare(struct dsa_switch *ds, int port,
-@@ -1325,6 +1327,11 @@ static int ksz8795_switch_init(struct ksz_device *dev)
- 	/* set the real number of ports */
- 	dev->ds->num_ports = dev->port_cnt + 1;
- 
-+	/* We rely on software untagging on the CPU port, so that we
-+	 * can support both tagged and untagged VLANs
-+	 */
-+	dev->ds->untag_bridge_pvid = true;
-+
- 	/* VLAN filtering is partly controlled by the global VLAN
- 	 * Enable flag
- 	 */
--- 
-2.20.1
+cheers.
