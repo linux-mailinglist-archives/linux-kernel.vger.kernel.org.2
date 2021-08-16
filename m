@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A7A3ED756
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 906C03ED5CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240527AbhHPNbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:31:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43166 "EHLO mail.kernel.org"
+        id S240236AbhHPNPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:15:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236907AbhHPNSh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:18:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32C086329F;
-        Mon, 16 Aug 2021 13:14:06 +0000 (UTC)
+        id S239127AbhHPNJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:09:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD4866328D;
+        Mon, 16 Aug 2021 13:08:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119647;
-        bh=Rxqm1YAwNPqM3lUQa+7ZC894ANw1ofrWEJYCyh8AmFo=;
+        s=korg; t=1629119315;
+        bh=9I19CVjzRFMAqjf5ap1zDjUFU8VQHXVP1hc56kXyw5A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PxDKpUFtw2u6dU8/A/16Vpw7wSawcnOZw1W9Bcj9gRTHFkqWajwaF+cc4Y/UY3UMw
-         ShSa3lnshBIYIQ9xmlq+6sZB9fpTlGLW1TLn0mxOanG3whEzTGdhtKpaGiVS3KyI5e
-         7fPSovLKAES26W7OQMnv3IR6rVUnQ8Dgh+zlTjtg=
+        b=DLehzD4fAixXDK0MCTnJYpZ+w8oczhKtWlUaj1igBy5ODWTNoBI0Nf4Gr34sTeHhP
+         0Qm4wABaQdEFxKYXFhJpqJTEJqNSH7/jmlih8xQYRSSAT/Y7rxNnnfg+UdcWn2hPfB
+         3syYEvfaWsFQUI9xKZIopLUlbQeaBmAPilNEGZAw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Neal Cardwell <ncardwell@google.com>,
-        Yuchung Cheng <ycheng@google.com>, Kevin Yang <yyd@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 108/151] tcp_bbr: fix u32 wrap bug in round logic if bbr_init() called after 2B packets
+Subject: [PATCH 5.10 68/96] arm64: efi: kaslr: Fix occasional random alloc (and boot) failure
 Date:   Mon, 16 Aug 2021 15:02:18 +0200
-Message-Id: <20210816125447.626180849@linuxfoundation.org>
+Message-Id: <20210816125437.231180723@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
-References: <20210816125444.082226187@linuxfoundation.org>
+In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
+References: <20210816125434.948010115@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,64 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Neal Cardwell <ncardwell@google.com>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 
-[ Upstream commit 6de035fec045f8ae5ee5f3a02373a18b939e91fb ]
+[ Upstream commit 4152433c397697acc4b02c4a10d17d5859c2730d ]
 
-Currently if BBR congestion control is initialized after more than 2B
-packets have been delivered, depending on the phase of the
-tp->delivered counter the tracking of BBR round trips can get stuck.
+The EFI stub random allocator used for kaslr on arm64 has a subtle
+bug. In function get_entry_num_slots() which counts the number of
+possible allocation "slots" for the image in a given chunk of free
+EFI memory, "last_slot" can become negative if the chunk is smaller
+than the requested allocation size.
 
-The bug arises because if tp->delivered is between 2^31 and 2^32 at
-the time the BBR congestion control module is initialized, then the
-initialization of bbr->next_rtt_delivered to 0 will cause the logic to
-believe that the end of the round trip is still billions of packets in
-the future. More specifically, the following check will fail
-repeatedly:
+The test "if (first_slot > last_slot)" doesn't catch it because
+both first_slot and last_slot are unsigned.
 
-  !before(rs->prior_delivered, bbr->next_rtt_delivered)
+I chose not to make them signed to avoid problems if this is ever
+used on architectures where there are meaningful addresses with the
+top bit set. Instead, fix it with an additional test against the
+allocation size.
 
-and thus the connection will take up to 2B packets delivered before
-that check will pass and the connection will set:
+This can cause a boot failure in addition to a loss of randomisation
+due to another bug in the arm64 stub fixed separately.
 
-  bbr->round_start = 1;
-
-This could cause many mechanisms in BBR to fail to trigger, for
-example bbr_check_full_bw_reached() would likely never exit STARTUP.
-
-This bug is 5 years old and has not been observed, and as a practical
-matter this would likely rarely trigger, since it would require
-transferring at least 2B packets, or likely more than 3 terabytes of
-data, before switching congestion control algorithms to BBR.
-
-This patch is a stable candidate for kernels as far back as v4.9,
-when tcp_bbr.c was added.
-
-Fixes: 0f8782ea1497 ("tcp_bbr: add BBR congestion control")
-Signed-off-by: Neal Cardwell <ncardwell@google.com>
-Reviewed-by: Yuchung Cheng <ycheng@google.com>
-Reviewed-by: Kevin Yang <yyd@google.com>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Link: https://lore.kernel.org/r/20210811024056.235161-1-ncardwell@google.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Fixes: 2ddbfc81eac8 ("efi: stub: add implementation of efi_random_alloc()")
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/tcp_bbr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/firmware/efi/libstub/randomalloc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/ipv4/tcp_bbr.c b/net/ipv4/tcp_bbr.c
-index 6ea3dc2e4219..6274462b86b4 100644
---- a/net/ipv4/tcp_bbr.c
-+++ b/net/ipv4/tcp_bbr.c
-@@ -1041,7 +1041,7 @@ static void bbr_init(struct sock *sk)
- 	bbr->prior_cwnd = 0;
- 	tp->snd_ssthresh = TCP_INFINITE_SSTHRESH;
- 	bbr->rtt_cnt = 0;
--	bbr->next_rtt_delivered = 0;
-+	bbr->next_rtt_delivered = tp->delivered;
- 	bbr->prev_ca_state = TCP_CA_Open;
- 	bbr->packet_conservation = 0;
+diff --git a/drivers/firmware/efi/libstub/randomalloc.c b/drivers/firmware/efi/libstub/randomalloc.c
+index a408df474d83..724155b9e10d 100644
+--- a/drivers/firmware/efi/libstub/randomalloc.c
++++ b/drivers/firmware/efi/libstub/randomalloc.c
+@@ -30,6 +30,8 @@ static unsigned long get_entry_num_slots(efi_memory_desc_t *md,
  
+ 	region_end = min(md->phys_addr + md->num_pages * EFI_PAGE_SIZE - 1,
+ 			 (u64)ULONG_MAX);
++	if (region_end < size)
++		return 0;
+ 
+ 	first_slot = round_up(md->phys_addr, align);
+ 	last_slot = round_down(region_end - size + 1, align);
 -- 
 2.30.2
 
