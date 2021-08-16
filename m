@@ -2,82 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87BFF3EDFB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 00:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 142623EDFC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 00:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233562AbhHPWJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 18:09:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231707AbhHPWJB (ORCPT
+        id S232444AbhHPWUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 18:20:32 -0400
+Received: from mail-0201.mail-europe.com ([51.77.79.158]:47283 "EHLO
+        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232335AbhHPWUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 18:09:01 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58AA7C061764;
-        Mon, 16 Aug 2021 15:08:29 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GpSwT2QCfz9sRf;
-        Tue, 17 Aug 2021 08:08:25 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629151707;
-        bh=8q8aIwaUFH6ZOWfn7eInIolS8NOorpSDnLwylTkBT1Y=;
-        h=Date:From:To:Cc:Subject:From;
-        b=isSiPnR9q9IEFCAu+LSGBm62u9fx4lm3HTA6w7tHmKLMwqkw6E2AWWU1s+xChfTIB
-         MfpSA7hRpzbQowif5lQBQCtsbGDyDQPATg9H7qWpneYR6e+HGd9+XHXqh8lXDjNDkX
-         g1p+navToKSAA/sRFZiAwKe4FChJN5VkCxk/6S6iCYUvxPoVMsxOVUGpUwBmEf8ONL
-         kP/xyT6SA1iKZ/A4m95iQF5wfiRxicJ6kMQQ/1nBRwdpaAxhGWdCC3CsTJsKj4ZqBI
-         4vgvxP9ExpkWVsa6jBL+s6PHW4DOCMHgH4mZ6fSEPcjPdTY0SvY0HA0Z6c4EZhJIZs
-         hbGICcG4b/+hQ==
-Date:   Tue, 17 Aug 2021 08:08:24 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Jaime Liao <jaimeliao@mxic.com.tw>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the nand tree
-Message-ID: <20210817080824.7fa1ee3b@canb.auug.org.au>
+        Mon, 16 Aug 2021 18:20:30 -0400
+Date:   Mon, 16 Aug 2021 22:19:44 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
+        s=protonmail; t=1629152395;
+        bh=GUs2dLWJZvDaFr7ZFKo9GzUxOMHWb9uOrrX/8DITKhk=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=m8Mn9Xi0/or4wC0OINTjI58LAaQnXv0qyvGo2Ostyy0pK1QkcOga3HTgw3Xbrya7X
+         Zm5MV8/2VmcQRJ04LBCcUnqcCM9cBmxsVXmxsEduY//Fjdm0JmMG+rc4/Tm0uxqo5I
+         gU+oNlsFgSlLHZmNJSQ0AA6wnQQcvmbmfB3WUo38=
+To:     Caleb Connolly <caleb@connolly.tech>
+From:   Caleb Connolly <caleb@connolly.tech>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Joel Selvaraj <jo@jsfamily.in>
+Reply-To: Caleb Connolly <caleb@connolly.tech>
+Subject: [PATCH v3 0/6] input: Introduce support for SPMI haptics found on Qcom PMICs
+Message-ID: <20210816221931.1998187-1-caleb@connolly.tech>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/FmjS8eLZ5U_dSYeHMN9/3Fq";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/FmjS8eLZ5U_dSYeHMN9/3Fq
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This series introduces a driver for the SPMI haptics hardware block
+found in Qualcomm PMICs. SPMI haptics support LRA (Linear Resonant
+Actuator) style haptics, as well as ERM (Eccentric Rotating Mass).
+It also supports several modes of driving the haptics, e.g. by loading
+the pattern to play into an internal buffer, or using PWM.
 
-Hi all,
+More information about the hardware can be found here:
+        https://gitlab.com/sdm845-mainline/linux/-/wikis/PMI8998-QPNP-Hapti=
+cs
 
-Commit
+This driver has been written based on downstream sources as no public
+documentation is available. It includes initial support for LRA haptics
+in buffer mode, this combination seems to be the most common and will
+enable haptics on the OnePlus 6 and 6T, PocoPhone F1, OnePlus 5 and
+several other Qualcomm devices with mainline kernel support.
 
-  c26b316307ff ("mtd: spinand: macronix: Add Quad support for serial NAND f=
-lash")
+The driver is implemented using the ff-memless (forcefeedback) input
+framework and makes an attempt to control the strength of vibration relativ=
+e
+to the magnitude set from userspace.
 
-is missing a Signed-off-by from its author.
+ ~ Caleb
 
---=20
-Cheers,
-Stephen Rothwell
+Changes since v2:
+ - Addressed Rob's comments on dt-bindings (I'm not sure what to do
+   about the pmic compatible?)
+ - Fixed some typos
 
---Sig_/FmjS8eLZ5U_dSYeHMN9/3Fq
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Changes since v1:
+ - Replace old QPNP naming with SPMI
+ - Address Bjorn's comments on the driver, various style and code cleanups
+ - Address Bjorn's comments on the DT bindings and DTS
+ - Pickup patches from Joel and Jami to enable haptics on the OnePlus 5
+   and Poco F1.
 
------BEGIN PGP SIGNATURE-----
+---
+Caleb Connolly (4):
+  dt-bindings: input: add Qualcomm SPMI haptics driver
+  input: add Qualcomm SPMI haptics driver
+  arm64: dts: qcom: pmi8998: introduce spmi haptics
+  arm64: dts: qcom: sdm845-oneplus-common: add haptics
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEa4dgACgkQAVBC80lX
-0Gy0GQf9G9xGYzVh/7zOd7pspeZvjwihIl4asCbj1imW0HwWhMXBxR42TF27cj9d
-O/lOG5MZVn0U2dINXn6gQ6M5meMzIb4QC9/bJ6uYjzdFumiMrzodoh51LhQC0VdR
-xRXtgXFcQMEWvf5OULISXq6TEv9Zi8agjGxWPnRRjP1+3u5sJ/Vk+7jFra1cyQrD
-TWzccT30c6GREYQ9zbNdRjnceeZReTAha3QJf4o7NluUea2Fd6uAS6VcZWT4p8Tf
-sP+8wVwdXFJ0J31CkZsTx1N9kWfoC+mHu+QDtXwwjfr8LLSsWMzVVTVNIB9emrt1
-Qvrec05GBxXe214V4GmwP5DrGok4kg==
-=l/ZP
------END PGP SIGNATURE-----
+Jami Kettunen (1):
+  arm64: dts: qcom: msm8998-oneplus-common: Enable PMI8998 haptics
 
---Sig_/FmjS8eLZ5U_dSYeHMN9/3Fq--
+Joel Selvaraj (1):
+  arm64: dts: qcom: sdm845-xiaomi-beryllium: add haptics
+
+ .../bindings/input/qcom,spmi-haptics.yaml     | 128 +++
+ .../boot/dts/qcom/msm8998-oneplus-common.dtsi |   6 +
+ arch/arm64/boot/dts/qcom/pmi8998.dtsi         |  16 +
+ .../boot/dts/qcom/sdm845-oneplus-common.dtsi  |   6 +
+ .../boot/dts/qcom/sdm845-xiaomi-beryllium.dts |   5 +
+ drivers/input/misc/Kconfig                    |  12 +
+ drivers/input/misc/Makefile                   |   1 +
+ drivers/input/misc/qcom-spmi-haptics.c        | 981 ++++++++++++++++++
+ include/dt-bindings/input/qcom,spmi-haptics.h |  32 +
+ 9 files changed, 1187 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/qcom,spmi-hapti=
+cs.yaml
+ create mode 100644 drivers/input/misc/qcom-spmi-haptics.c
+ create mode 100644 include/dt-bindings/input/qcom,spmi-haptics.h
+
+--
+2.32.0
+
+
