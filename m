@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF46F3ED5C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 355CF3ED77C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239904AbhHPNOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:14:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35328 "EHLO mail.kernel.org"
+        id S238579AbhHPNdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:33:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239690AbhHPNKB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:10:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9216D60F46;
-        Mon, 16 Aug 2021 13:09:29 +0000 (UTC)
+        id S238898AbhHPNWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:22:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC28060F46;
+        Mon, 16 Aug 2021 13:16:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119370;
-        bh=BgpVBwlYA6SCKEr4slCLQiaSC7guV0FD4HrxxzLkECM=;
+        s=korg; t=1629119778;
+        bh=6aBv2pSrJkl6CLCBzOkYwujCMC9Z6nZZvN454N3ncE8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HPtNLqGWJgSI5yqvkyghj3sVaWEklqymtknSBQ7nHH3HYLEj+DOsOszUbVwzuhlwq
-         i/kVsAYZqLwNKpr4UazMEcY7EbrF+sntG9Y1ATvcQ37jF+L6ZGn61gg2xX2W1TGx/K
-         MKLSRcix5R6HlehJJhuJnWeyFcKp5mhIuUWkvj20=
+        b=hsFHL0xazThlSWM91/YtEK/9vo8zg0jMvmPXWTpH8msPoWmdwyaCIXBxy8dG+7PwV
+         JKoukra+f516f0eIAAek+B7VgILwhynEedDTSvSvkj2KSWdT1kR4UVnclh8eM0rk+3
+         7NTrAHvJ+WH20EX+VWtYVe8XXQa07PariQx8sucg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Marco Elver <elver@google.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH 5.10 96/96] vmlinux.lds.h: Handle clangs module.{c,d}tor sections
-Date:   Mon, 16 Aug 2021 15:02:46 +0200
-Message-Id: <20210816125438.177346123@linuxfoundation.org>
+        stable@vger.kernel.org, Laurent Dufour <ldufour@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.13 137/151] powerpc/pseries: Fix update of LPAR security flavor after LPM
+Date:   Mon, 16 Aug 2021 15:02:47 +0200
+Message-Id: <20210816125448.570107497@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
-References: <20210816125434.948010115@linuxfoundation.org>
+In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
+References: <20210816125444.082226187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Laurent Dufour <ldufour@linux.ibm.com>
 
-commit 848378812e40152abe9b9baf58ce2004f76fb988 upstream.
+commit c18956e6e0b95f78dad2773ecc8c61a9e41f6405 upstream.
 
-A recent change in LLVM causes module_{c,d}tor sections to appear when
-CONFIG_K{A,C}SAN are enabled, which results in orphan section warnings
-because these are not handled anywhere:
+After LPM, when migrating from a system with security mitigation enabled
+to a system with mitigation disabled, the security flavor exposed in
+/proc is not correctly set back to 0.
 
-ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.asan.module_ctor) is being placed in '.text.asan.module_ctor'
-ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.asan.module_dtor) is being placed in '.text.asan.module_dtor'
-ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.tsan.module_ctor) is being placed in '.text.tsan.module_ctor'
+Do not assume the value of the security flavor is set to 0 when entering
+init_cpu_char_feature_flags(), so when called after a LPM, the value is
+set correctly even if the mitigation are not turned off.
 
-Fangrui explains: "the function asan.module_ctor has the SHF_GNU_RETAIN
-flag, so it is in a separate section even with -fno-function-sections
-(default)".
-
-Place them in the TEXT_TEXT section so that these technologies continue
-to work with the newer compiler versions. All of the KASAN and KCSAN
-KUnit tests continue to pass after this change.
-
-Cc: stable@vger.kernel.org
-Link: https://github.com/ClangBuiltLinux/linux/issues/1432
-Link: https://github.com/llvm/llvm-project/commit/7b789562244ee941b7bf2cefeb3fc08a59a01865
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Fangrui Song <maskray@google.com>
-Acked-by: Marco Elver <elver@google.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20210731023107.1932981-1-nathan@kernel.org
-[nc: Resolve conflict due to lack of cf68fffb66d60]
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Fixes: 6ce56e1ac380 ("powerpc/pseries: export LPAR security flavor in lparcfg")
+Cc: stable@vger.kernel.org # v5.13+
+Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210805152308.33988-1-ldufour@linux.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/asm-generic/vmlinux.lds.h |    1 +
- 1 file changed, 1 insertion(+)
+ arch/powerpc/platforms/pseries/setup.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -599,6 +599,7 @@
- 		NOINSTR_TEXT						\
- 		*(.text..refcount)					\
- 		*(.ref.text)						\
-+		*(.text.asan.* .text.tsan.*)				\
- 	MEM_KEEP(init.text*)						\
- 	MEM_KEEP(exit.text*)						\
- 
+--- a/arch/powerpc/platforms/pseries/setup.c
++++ b/arch/powerpc/platforms/pseries/setup.c
+@@ -539,9 +539,10 @@ static void init_cpu_char_feature_flags(
+ 	 * H_CPU_BEHAV_FAVOUR_SECURITY_H could be set only if
+ 	 * H_CPU_BEHAV_FAVOUR_SECURITY is.
+ 	 */
+-	if (!(result->behaviour & H_CPU_BEHAV_FAVOUR_SECURITY))
++	if (!(result->behaviour & H_CPU_BEHAV_FAVOUR_SECURITY)) {
+ 		security_ftr_clear(SEC_FTR_FAVOUR_SECURITY);
+-	else if (result->behaviour & H_CPU_BEHAV_FAVOUR_SECURITY_H)
++		pseries_security_flavor = 0;
++	} else if (result->behaviour & H_CPU_BEHAV_FAVOUR_SECURITY_H)
+ 		pseries_security_flavor = 1;
+ 	else
+ 		pseries_security_flavor = 2;
 
 
