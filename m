@@ -2,106 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB59B3EDF79
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 23:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4CA3EDF7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 23:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233562AbhHPVrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 17:47:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53768 "EHLO
+        id S232252AbhHPVu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 17:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229987AbhHPVrJ (ORCPT
+        with ESMTP id S232192AbhHPVu0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 17:47:09 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA3BC061764;
-        Mon, 16 Aug 2021 14:46:32 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GpSR836n5z9sSn;
-        Tue, 17 Aug 2021 07:46:28 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629150389;
-        bh=GxpXS88kee0Bjl7oexujGeBRvw49mQS6pJyQtpRKOWo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TEzlL37j7WtbICcA/OrDmrF4LrGuhnZMv8NZ8AP/SFR+P7HYbz2a60lLkZ01IAf/K
-         +9CvnSmXmntupWN84yoCJ9iK/QK39WjdQoeCWZS6HL3/XkK++W0UMHpeB869c2vlcr
-         EU/4FrwjRdJrcwNvu1lZgkTUgNFKVcFUXw6CMF/RocGyebUaVYyNjB6yezzMUq6tuN
-         2d0XYDbGHBWTT5Ui+40WJNe+7Kca6CFQE64OdVbypGSBn+kj1uHuUNGC316b55+Zos
-         GxpFtTpRlzfzCA6Pznaxs2Bt2rDKsyZ8M0SQwKtW4I/LFw4k9+gXGMUlL5fqScqtFc
-         AVQfhDqx+ZgRA==
-Date:   Tue, 17 Aug 2021 07:46:27 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Cai Huoqing <caihuoqing@baidu.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the staging tree
-Message-ID: <20210817074627.2a1ef298@canb.auug.org.au>
-In-Reply-To: <YRp/2kRzujLsV8sm@kroah.com>
-References: <20210816135216.46e50364@canb.auug.org.au>
-        <YRp/2kRzujLsV8sm@kroah.com>
+        Mon, 16 Aug 2021 17:50:26 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F7EC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 14:49:54 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id u1so5103286plr.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 14:49:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=fPCjWgqX+3/mEIfqbp98iVRrYqeF+Ke0tX99HW2DLOE=;
+        b=HqGhGXenLqa31YLQmzWywUKVR3MSaGYsx84QL+SGvf6q2e9ul5NVRG0IkOJ1ef3UKJ
+         FT5xYWIxUX3p5gDEVoF4NeaRCFHRkVeXVWSXYFILcI/83Fogfg5OLC1rQCbjfVco1wSF
+         5aNdZ0t2nhmchiUBdTMHpcSeRukMirVtpn4xljbUzZ8o1OlwcnnUu62z4EppDB7lYD4z
+         aDfIf4UtaW5GiutXH2UEm339oKldAZ6DORjgzemb/0Huod+QBq8fKhL4bWEPVs77eCdV
+         QRGQoUXWoFAe9mvY056nCX/ndVf9vht1Nl5UCcUnVyou6UFnnRWzg2qat16a+VgwHxrW
+         McIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fPCjWgqX+3/mEIfqbp98iVRrYqeF+Ke0tX99HW2DLOE=;
+        b=rl7S+1aEvKmTIAxlEH5UT1yqQE3B2Q6h9juWeDOqIX3oRI1FiJjDFtSx2oLQZ7HrUn
+         CuCLDdifdoqHdIYuh8n2nWrxHiJE5lshUNmpgJe42/oP59oqJlnmoJ0qMskTMRrSb1so
+         otdzUIkkYHuSOeezddaiGaj+tApeDYUbH/SW3kK8ndDzLgyweTwONjH74bztfLro9kdM
+         xmcFUBUqluHDV2ZPwJyURNuua8o/z8F4cfQvkLbhHTLpilJLbTLzoIB+5jbTV7LftocG
+         6EGyObdaP06rcmRnBgr031OWZsKOF14MOrTRo4Ce20IexTjjI3CFQpvRUCORT8x59+YJ
+         dsqQ==
+X-Gm-Message-State: AOAM532FFhgsj/4Gq0nnnB5D0iuybgJO10RjM2eXwDREjkLpLnkjrqxI
+        WOYapCiZmigym76Cy007BZ2MaA==
+X-Google-Smtp-Source: ABdhPJwElnQo3mvh8vErvFS5KTctdbkZs49cCpCdIXRupV4fwTZ/oQnioQo294P4UStdwg44I5wWaw==
+X-Received: by 2002:a65:6393:: with SMTP id h19mr194321pgv.64.1629150594025;
+        Mon, 16 Aug 2021 14:49:54 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id gz17sm109945pjb.8.2021.08.16.14.49.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 14:49:53 -0700 (PDT)
+Subject: Re: [syzbot] general protection fault in __io_queue_sqe
+To:     syzbot <syzbot+2b85e9379c34945fe38f@syzkaller.appspotmail.com>,
+        asml.silence@gmail.com, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <00000000000011fc2505c9b41023@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <8236fd18-bf97-b7c6-b2c7-84df0a9bd8e5@kernel.dk>
+Date:   Mon, 16 Aug 2021 15:49:52 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/GfpmKEhu/CQD3=ZU=yqVb.P";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <00000000000011fc2505c9b41023@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/GfpmKEhu/CQD3=ZU=yqVb.P
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 8/16/21 3:41 PM, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
+> 
+> HEAD commit:    b9011c7e671d Add linux-next specific files for 20210816
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1784d5e9300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=a245d1aa4f055cc1
+> dashboard link: https://syzkaller.appspot.com/bug?extid=2b85e9379c34945fe38f
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17479216300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=147f0111300000
 
-Hi Greg,
+#syz test: git://git.kernel.dk/linux-block for-next
 
-On Mon, 16 Aug 2021 17:10:18 +0200 Greg KH <greg@kroah.com> wrote:
->
-> On Mon, Aug 16, 2021 at 01:52:16PM +1000, Stephen Rothwell wrote:
-> > Hi all,
-> >=20
-> > After merging the staging tree, today's linux-next build (x86_64
-> > allmodconfig) failed like this:
-> >=20
-> > drivers/staging/r8188eu/core/rtw_br_ext.c:8:10: fatal error: ../include=
-/net/ipx.h: No such file or directory
-> >     8 | #include "../include/net/ipx.h"
-> >       |          ^~~~~~~~~~~~~~~~~~~~~~
-> >=20
-> > Caused by commit
-> >=20
-> >   6c9b40844751 ("net: Remove net/ipx.h and uapi/linux/ipx.h header file=
-s")
-> >=20
-> > from the net-next tree.
-> >=20
-> > I have reverted that commit for today. =20
->=20
-> Should now be fixed up in my tree so that you do not need to drop that
-> networking patch anymore.
+-- 
+Jens Axboe
 
-Excellent, thanks.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/GfpmKEhu/CQD3=ZU=yqVb.P
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEa3LMACgkQAVBC80lX
-0GyczAgAkbxGMmJu1J33dlvwwsKriGporDtMrdu2379pYDx0xy9xEpTTRQ9o/Xla
-zXfC8zBn0BJ0pOEuZHKSlCDWYykEy86Lo8Wh1fkgsRN2zn5YnKhdstIKHF30gESO
-FHIWlHy3HeiqMiiM5UIWujuWfG8AN4/YOmsQzCkJDWyiQE6Mos6r77FvAYc9l8/i
-7NXwjFK5RxVB0Ebh4u2XWlpEl7qoETXXNpSYrIfZQRsY48sWLVNO/nV1BwNir7rL
-AV3kqZJH+jOM0RS6dqxumudrLUHaeNy0OXOfMws/CZPSS+3ez8g/126pBMR3coyd
-K/MhsSmeIXPpQ8+rj9xr2LnvvpPzVg==
-=hAGH
------END PGP SIGNATURE-----
-
---Sig_/GfpmKEhu/CQD3=ZU=yqVb.P--
