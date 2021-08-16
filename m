@@ -2,115 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3BC3ED2EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D98A83ED2EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235858AbhHPLMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 07:12:46 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:29121 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235881AbhHPLMo (ORCPT
+        id S236044AbhHPLNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 07:13:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235881AbhHPLNm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 07:12:44 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629112333; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=u5sPAV/lkbkRUwSXinAbzwupjK8Yencd4Nn83gWmewY=; b=uSreDpPx9xwzt/Lr+JvBeBoD98lIo0hK05CSIwmxWxj2f9p+sDL34Jq/jw+EwaYyUsQyejmB
- qA37VIfLP/AZ1vyov2VqgZsJh8r7z4e6Hkltck4iEbPEXZLLTB/GInThLPSc2h6BrGB0O2hP
- FFETwhljSqk3nUgqCvE3VTVjMLk=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 611a47f97ee604097778ed14 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Aug 2021 11:11:53
- GMT
-Sender: deesin=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 86B72C4360D; Mon, 16 Aug 2021 11:11:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.6 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.1.3] (unknown [122.163.152.128])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: deesin)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 481CFC4360C;
-        Mon, 16 Aug 2021 11:11:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 481CFC4360C
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH V1 1/1] soc: qcom: smp2p: Add wakeup capability to SMP2P
- IRQ
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Sibi Sankar <sibis@codeaurora.org>, clew@codeaurora.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
-References: <1628180254-758-1-git-send-email-deesin@codeaurora.org>
- <CAE-0n5203g4CkF5WP1fQYU57fntXbdyVBsMsTKU_xPkgvbt+7Q@mail.gmail.com>
- <bf2b00c5-0826-00d2-ca95-b4ae6a030211@codeaurora.org>
- <CAE-0n53ojhs+RMpsYtVjsrYbb_PRdkJOvxFhiTtJPMUDuoP_eA@mail.gmail.com>
- <8009f5a1458468dbf0b7b20dd166911c@codeaurora.org>
- <CAE-0n53TCo1UTVi3e18N5hF3+Y_bLiqgH1o5PEua7F9-bog_gQ@mail.gmail.com>
- <YRMHjmEG3l4SolTi@builder.lan>
- <CAE-0n51+t6ATCcDgfKeMyh0f0p0=otnUmBjChViX-r3qJYfhZg@mail.gmail.com>
-From:   Deepak Kumar Singh <deesin@codeaurora.org>
-Message-ID: <bcbd4fc6-9646-a526-16f9-cefd912d1de0@codeaurora.org>
-Date:   Mon, 16 Aug 2021 16:41:46 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Mon, 16 Aug 2021 07:13:42 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF242C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 04:13:10 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mFaYH-00016o-94; Mon, 16 Aug 2021 13:13:09 +0200
+Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:3272:cc96:80a9:1a01])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 106E3668211;
+        Mon, 16 Aug 2021 11:13:07 +0000 (UTC)
+Date:   Mon, 16 Aug 2021 13:13:06 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: add Vincent MAILHOL as maintainer for the
+ ETAS ES58X CAN/USB driver
+Message-ID: <20210816111306.xdyfb7shpwij4z27@pengutronix.de>
+References: <20210814093353.74391-1-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
-In-Reply-To: <CAE-0n51+t6ATCcDgfKeMyh0f0p0=otnUmBjChViX-r3qJYfhZg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dc5q36jk3j4vbglt"
+Content-Disposition: inline
+In-Reply-To: <20210814093353.74391-1-mailhol.vincent@wanadoo.fr>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 8/11/2021 9:55 AM, Stephen Boyd wrote:
-> Quoting Bjorn Andersson (2021-08-10 16:11:10)
->> On Tue 10 Aug 14:18 CDT 2021, Stephen Boyd wrote:
->>
->>> Quoting Sibi Sankar (2021-08-10 10:24:32)
->>>> On 2021-08-09 23:28, Stephen Boyd wrote:
->>>>> Quoting Deepak Kumar Singh (2021-08-09 04:05:08)
->>>>>> On 8/6/2021 1:10 AM, Stephen Boyd wrote:
->>>>>>> Quoting Deepak Kumar Singh (2021-08-05 09:17:33)
->>>>>>>> Some use cases require SMP2P interrupts to wake up the host
->>>>>>>> from suspend.
->>>>>>> Please elaborate on this point so we understand what sort of scenarios
->>>>>>> want to wakeup from suspend.
->>>>>> Once such scenario is where WiFi/modem crashes and notifies crash to
->>>>>> local host through smp2p
->>>>>>
->>>>>> if local host is in suspend it should wake up to handle the crash and
->>>>>> reboot the WiFi/modem.
->>>>> Does anything go wrong if the firmware crashes during suspend and the
->>>>> local host doesn't handle it until it wakes for some other reason? I'd
->>>>> like to understand if the crash handling can be delayed/combined with
->>>>> another wakeup.
->>>> If the modem firmware crashes
->>>> during suspend, the system comes
->>>> out of xo-shutdown and AFAIK stays
->>>> there until we handle the interrupt.
->>>>
->>> So you're saying we waste power if we don't wakeup the AP and leave the
->>> SoC in a shallow low power state? That would be good to have indicated
->>> in the code via a comment and in the commit text so we know that we want
->>> to handle the wakeup by default.
->> Sounds like in a system without autosleep (or userspace equivalent) it
->> would be desirable to leave the SoC in this lower state than to wake up
->> the system handle the crash and then just idle?
->>
->> But leaving the system in this state will result in you missing your
->> important phone calls...
->>
-> Yes I think we should just add a comment to the code and commit text and
-> move on.
-Thanks, updated in patch set V2
+--dc5q36jk3j4vbglt
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On 14.08.2021 18:33:53, Vincent Mailhol wrote:
+> Adding myself (Vincent Mailhol) as a maintainer for the ETAS ES58X
+> CAN/USB driver.
+>=20
+> Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+> ---
+> When sending the patches for the ETAS ES58X driver, I looked at what
+> other drivers were doing and realized that most of these did not
+> update the MAINTAINERS file. At that time, I candidly thought that the
+> MODULE_AUTHOR macro was sufficient for that. Following this e-mail:
+> https://lore.kernel.org/linux-can/20210809175158.5xdkqeemjo3hqwcw@pengutr=
+onix.de/
+> it appeared that I should have done so.
+>=20
+> This patch fixes it. :)
+> ---
+> MAINTAINERS | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>=20
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 41fcfdb24a81..9a164f4eeee6 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -11347,6 +11347,12 @@ L:	netdev@vger.kernel.org
+>  S:	Supported
+>  F:	drivers/net/phy/mxl-gpy.c
+> =20
+> +ETAS ES58X CAN/USB DRIVER
+> +M:	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+> +L:	linux-can@vger.kernel.org
+> +S:	Maintained
+> +F:	drivers/net/can/usb/etas_es58x/
+> +
+
+The file should be sorted alphabetically, fixed while applying.
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--dc5q36jk3j4vbglt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEaSD4ACgkQqclaivrt
+76mPxgf/U/pNltqTiXwccENNXOBZW5oG8WHAIRlpSPrXvzBBb8NzOBPpj9BNKGM3
+wk5XSPxQSnSriwQo97xOCkDiNnfeewCJ7FHj6LLKrWfUdDawQTum1hTjb+ZMLOO9
+mSQhbBYPOM3qXK8AhgweEWikppsrOjPxEPUpa8LWwgaKOiya5cRmBhOMmj487wfF
+A/i5OCkfOiyJypmz5VfEeiNfY0m0GTujBV1C5iOBND6ti0ESnwM9XgMy/7nxePPR
+17YTzIYOKtBkv8SrwnBP2WxqHLEAtGRuH7HkqSd+fjBy9tNil4YWsoekmMTFVowO
+mBdjdFtPswmMwoGiN/ftp26GalJEFg==
+=9DQ6
+-----END PGP SIGNATURE-----
+
+--dc5q36jk3j4vbglt--
