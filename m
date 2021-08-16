@@ -2,88 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DCDD3EDF18
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 23:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8493B3EDF21
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 23:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233446AbhHPVLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 17:11:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57350 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231726AbhHPVLv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 17:11:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3FE960F46;
-        Mon, 16 Aug 2021 21:11:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629148279;
-        bh=uU49V8oNTxUuUKJfCOPtOFSrBQEluIMcgIiHXrPZIC4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=u5L3iMHW1ePBo+HV4RwoBM38N1kPUPjOqvAEmoqel0uYhbR0myrufWe9z2LAyHJY4
-         lb/5QJA3ijpQTAsr1t2m6LhkoZNuc+ZkoavBTrz/CmNJbMg1AVly/DMPSjQHWCc0zZ
-         U9rzNLoLTxywz6+1ZHBL3tonDNccbofhtH7D6P9RqgLGFAY+IiufYAPhyv2HT5D9Lq
-         kwrYsoEkfuYUg+9A1mZDIBWnmOyuapJ2s+7C2mwXYsQQDPiVQfgLkdbc1dq+rPxrhr
-         XG1V9ZAKifG+au9CpMngXrILvNHiyLkoQFIkOEl6MJC0yYIZKGR1u+o5y3DlpQb56r
-         pf4XJSHGgzOCg==
-Received: by mail-ed1-f51.google.com with SMTP id dj8so20595677edb.2;
-        Mon, 16 Aug 2021 14:11:18 -0700 (PDT)
-X-Gm-Message-State: AOAM532j0uRL9fpWpy62X8IR+5Jx9FIDN2vsnLl18SHmsxDt6H3IibK5
-        nvY3QCGk0Rj3JPvku//ADpV87qMZkvw+8YMWVA==
-X-Google-Smtp-Source: ABdhPJzlYlKHsA2uwLLLmX6jSZmmgRu2N+aTYNGrBYIwqItA4EmqMVYZzbf2UyIiwA3stCGIrMCWEp7JGf1l82Z9PkA=
-X-Received: by 2002:aa7:cb19:: with SMTP id s25mr161324edt.194.1629148277582;
- Mon, 16 Aug 2021 14:11:17 -0700 (PDT)
+        id S233308AbhHPVPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 17:15:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231750AbhHPVPd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 17:15:33 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87428C061764;
+        Mon, 16 Aug 2021 14:15:01 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id u15so6691811plg.13;
+        Mon, 16 Aug 2021 14:15:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kTIbeouKJPHdAuznrwq0D4i093w3WXn0nhVYGisrNLM=;
+        b=SXugE0cX6LQ2/w8x+cnMmQnCLRTZsKsqsydVR6i6J5pyFaG4u+ne6litBLPEqgjZZ9
+         iQ3sGMWPAy8SJApSFdzxLiXGaU4LpmRkIrUlTU7RWGdD01d2TTevS9OIfefGoVgewALS
+         4O/TrCM/BX8cXW5dJjB7yVWtZ1BUeggPK5R6dUcWTS8LkZfW1VUy4VrQp+W/UMleOmr1
+         H/q+2a9av2u0qWtc33F5e8pLNsKW0UucGWuNr/z4SBOp5/HICi+DJxGMaLJJi6J0rL0/
+         2aFwPenfPYYGCdy9ghNI80meLa60jIxfnUf0jh6GjfvYs/+zVJUjNw6xrwSWxAgTkq9P
+         pdDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kTIbeouKJPHdAuznrwq0D4i093w3WXn0nhVYGisrNLM=;
+        b=IAmWygv68iW3ytd3TN4b90O1wu2IQEURl78a6YI2OIe+pjxv7JQnfpE+pqIS4y+XbM
+         9HBc1yXG0y2ZrQG94ukazV96gjVKrYBqSQeBXuD2JjWW9z7rdogkwb2n0mINdSPW897O
+         vYseUTmRY0OM9eK3l+vP8azcX/Nhvzoksk7ZMWCO8R9jN2HZkmaF9DN7O50Y85lB0da7
+         yYkLf5/Re3ZsRvb+0KvYme3CM/Lh8kag4JI4A+vV1W8rMyNN1QjKh9mKELc+i7lvB9gD
+         ZX4v0zfLQqFVyH60Ak/+jfSENQiBYsJuu+rpQj2Mkg8ixXcGCZ3SaI4H7DXtkfQDofIf
+         xKAA==
+X-Gm-Message-State: AOAM5313dMP+X8dZxcPOSKgR6YHFNpC8DwU3yVmesxqOAx6TOYw5RyvY
+        Vy6w9482q4IeGmIV7a/cw4cA+50qAYJ7zw==
+X-Google-Smtp-Source: ABdhPJwpdHWa60/DF1dYUxouwyIYCy6OM024ogmA763ik20oAiLDxJ1zWG72rU85swQyEzlq9WxbEA==
+X-Received: by 2002:a65:6883:: with SMTP id e3mr76637pgt.90.1629148501070;
+        Mon, 16 Aug 2021 14:15:01 -0700 (PDT)
+Received: from xps.yggdrasil ([49.207.137.16])
+        by smtp.gmail.com with ESMTPSA id b12sm103154pff.63.2021.08.16.14.14.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 14:15:00 -0700 (PDT)
+From:   Aakash Hemadri <aakashhemadri123@gmail.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Bjorn Helgaas <bjorn@helgaas.com>
+Subject: [PATCH 0/2] ASoC: tegra30: Fix use of of_device_get_match_data
+Date:   Tue, 17 Aug 2021 02:44:50 +0530
+Message-Id: <cover.1629148177.git.aakashhemadri123@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210814023132.2729731-1-saravanak@google.com>
- <20210814023132.2729731-3-saravanak@google.com> <YRffzVgP2eBw7HRz@lunn.ch> <CAGETcx-ETuH_axMF41PzfmKmT-M7URiua332WvzzzXQHg=Hj0w@mail.gmail.com>
-In-Reply-To: <CAGETcx-ETuH_axMF41PzfmKmT-M7URiua332WvzzzXQHg=Hj0w@mail.gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 16 Aug 2021 16:11:05 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJa_8sxdKit_UKHwkuOhK9L=SDYuRAD0vsY7pRE6sM3Qg@mail.gmail.com>
-Message-ID: <CAL_JsqJa_8sxdKit_UKHwkuOhK9L=SDYuRAD0vsY7pRE6sM3Qg@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] of: property: fw_devlink: Add support for
- "phy-handle" property
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 3:43 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> On Sat, Aug 14, 2021 at 8:22 AM Andrew Lunn <andrew@lunn.ch> wrote:
-> >
-> > Hi Saravana
-> >
-> > > Hi Andrew,
-> > >
-> >
-> > > Also there
-> > > are so many phy related properties that my head is spinning. Is there a
-> > > "phy" property (which is different from "phys") that treated exactly as
-> > > "phy-handle"?
-> >
-> > Sorry, i don't understand your question.
->
-> Sorry. I was just saying I understand the "phy-handle" DT property
-> (seems specific to ethernet PHY) and "phys" DT property (seems to be
-> for generic PHYs -- used mostly by display and USB?). But I noticed
-> there's yet another "phy" DT property which I'm not sure I understand.
-> It seems to be used by display and ethernet and seems to be a
-> deprecated property. If you can explain that DT property in the
-> context of networking and how to interpret it as a human, that'd be
-> nice.
+Hi,
+This patchset fixes my previous incorrect patches.
 
-For net devices, you can have 2 PHYs. 'phys' is the serdes phy and
-'phy-handle' is the ethernet (typically) phy. On some chips, a serdes
-phy can do PCS (ethernet), SATA, PCIe.
+356b94a32a75 ("ASoC: tegra30: i2s: Use of_device_get_match_data")
+80165bb80433 ("ASoC: tegra30: ahub: Use of_device_get_match_data")
 
-'phy' is deprecated, so ignore it. The one case for displays I see in
-display/exynos/exynos_hdmi.txt should be deprecated as well.
+Aakash Hemadri (2):
+  ASoC: tegra30: ahub: Fix incorrect usage of of_device_get_match_data
+  ASoC: tegra30: i2s: Fix incorrect usage of of_device_get_match_data
 
-There's also 'usb-phy' which should be deprecated.
+ sound/soc/tegra/tegra30_ahub.c | 6 ++----
+ sound/soc/tegra/tegra30_i2s.c  | 8 ++++----
+ 2 files changed, 6 insertions(+), 8 deletions(-)
 
-Rob
+-- 
+2.32.0
+
