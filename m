@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D173ED76D
+	by mail.lfdr.de (Postfix) with ESMTP id 862CE3ED76C
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238918AbhHPNdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:33:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44620 "EHLO mail.kernel.org"
+        id S237062AbhHPNcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:32:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239143AbhHPNUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:20:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7976632D7;
-        Mon, 16 Aug 2021 13:16:12 +0000 (UTC)
+        id S239174AbhHPNUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:20:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 313CD610E8;
+        Mon, 16 Aug 2021 13:16:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119773;
-        bh=CQPa6/KH6PbEg7Z197VJoGm5du56w/Mr37A6Ie7iXgo=;
+        s=korg; t=1629119775;
+        bh=lxOA3aSuWyHKSpNa7tRacuT9qo1x35lqn6tdw+aPyC4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UaFE2HSBj8bxaEOx76orybdHBMNgzqQSzhtWPC8GxoCvQu4S0ZlwSzVKzjZPGw1IL
-         B8z9RLA+yVddEwJp9umyvACzOCWHekYqICHg/tR5QQyJtJvZO4js9yxE6wB2S+zdPc
-         U/M6UnwQMNPpBGYNxU4sdY3JqqyxE7WupCf77P5Y=
+        b=FVStAgEBeNsRfub8rGSwFA7oupE+U4P+uALcq3Kn3zNlSAHiWPTRIaTxZsxiMcHLK
+         RI098OzvupSjyeuEzyjCfN+W3Zpht9NCv7tQNiI1qYbNpmTCs55UeIcGhEpDrgGzrV
+         669hyGxz6x/P8eIYo7qlGQXioXGDqqfgkSs+DmhQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 5.13 135/151] PCI/MSI: Protect msi_desc::masked for multi-MSI
-Date:   Mon, 16 Aug 2021 15:02:45 +0200
-Message-Id: <20210816125448.502424429@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.13 136/151] powerpc/interrupt: Do not call single_step_exception() from other exceptions
+Date:   Mon, 16 Aug 2021 15:02:46 +0200
+Message-Id: <20210816125448.532135780@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
 References: <20210816125444.082226187@linuxfoundation.org>
@@ -39,114 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-commit 77e89afc25f30abd56e76a809ee2884d7c1b63ce upstream.
+commit 01fcac8e4dfc112f420dcaeb70056a74e326cacf upstream.
 
-Multi-MSI uses a single MSI descriptor and there is a single mask register
-when the device supports per vector masking. To avoid reading back the mask
-register the value is cached in the MSI descriptor and updates are done by
-clearing and setting bits in the cache and writing it to the device.
+single_step_exception() is called by emulate_single_step() which
+is called from (at least) alignment exception() handler and
+program_check_exception() handler.
 
-But nothing protects msi_desc::masked and the mask register from being
-modified concurrently on two different CPUs for two different Linux
-interrupts which belong to the same multi-MSI descriptor.
+Redefine it as a regular __single_step_exception() which is called
+by both single_step_exception() handler and emulate_single_step()
+function.
 
-Add a lock to struct device and protect any operation on the mask and the
-mask register with it.
-
-This makes the update of msi_desc::masked unconditional, but there is no
-place which requires a modification of the hardware register without
-updating the masked cache.
-
-msi_mask_irq() is now an empty wrapper which will be cleaned up in follow
-up changes.
-
-The problem goes way back to the initial support of multi-MSI, but picking
-the commit which introduced the mask cache is a valid cut off point
-(2.6.30).
-
-Fixes: f2440d9acbe8 ("PCI MSI: Refactor interrupt masking code")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Marc Zyngier <maz@kernel.org>
-Reviewed-by: Marc Zyngier <maz@kernel.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210729222542.726833414@linutronix.de
+Fixes: 3a96570ffceb ("powerpc: convert interrupt handlers to use wrappers")
+Cc: stable@vger.kernel.org # v5.12+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/aed174f5cbc06f2cf95233c071d8aac948e46043.1628611921.git.christophe.leroy@csgroup.eu
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/base/core.c    |    1 +
- drivers/pci/msi.c      |   19 ++++++++++---------
- include/linux/device.h |    1 +
- include/linux/msi.h    |    2 +-
- 4 files changed, 13 insertions(+), 10 deletions(-)
+ arch/powerpc/kernel/traps.c |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -2809,6 +2809,7 @@ void device_initialize(struct device *de
- 	device_pm_init(dev);
- 	set_dev_node(dev, -1);
- #ifdef CONFIG_GENERIC_MSI_IRQ
-+	raw_spin_lock_init(&dev->msi_lock);
- 	INIT_LIST_HEAD(&dev->msi_list);
- #endif
- 	INIT_LIST_HEAD(&dev->links.consumers);
---- a/drivers/pci/msi.c
-+++ b/drivers/pci/msi.c
-@@ -143,24 +143,25 @@ static inline __attribute_const__ u32 ms
-  * reliably as devices without an INTx disable bit will then generate a
-  * level IRQ which will never be cleared.
-  */
--u32 __pci_msi_desc_mask_irq(struct msi_desc *desc, u32 mask, u32 flag)
-+void __pci_msi_desc_mask_irq(struct msi_desc *desc, u32 mask, u32 flag)
- {
--	u32 mask_bits = desc->masked;
-+	raw_spinlock_t *lock = &desc->dev->msi_lock;
-+	unsigned long flags;
- 
- 	if (pci_msi_ignore_mask || !desc->msi_attrib.maskbit)
--		return 0;
-+		return;
- 
--	mask_bits &= ~mask;
--	mask_bits |= flag;
-+	raw_spin_lock_irqsave(lock, flags);
-+	desc->masked &= ~mask;
-+	desc->masked |= flag;
- 	pci_write_config_dword(msi_desc_to_pci_dev(desc), desc->mask_pos,
--			       mask_bits);
--
--	return mask_bits;
-+			       desc->masked);
-+	raw_spin_unlock_irqrestore(lock, flags);
+--- a/arch/powerpc/kernel/traps.c
++++ b/arch/powerpc/kernel/traps.c
+@@ -1103,7 +1103,7 @@ DEFINE_INTERRUPT_HANDLER(RunModeExceptio
+ 	_exception(SIGTRAP, regs, TRAP_UNK, 0);
  }
  
- static void msi_mask_irq(struct msi_desc *desc, u32 mask, u32 flag)
+-DEFINE_INTERRUPT_HANDLER(single_step_exception)
++static void __single_step_exception(struct pt_regs *regs)
  {
--	desc->masked = __pci_msi_desc_mask_irq(desc, mask, flag);
-+	__pci_msi_desc_mask_irq(desc, mask, flag);
+ 	clear_single_step(regs);
+ 	clear_br_trace(regs);
+@@ -1120,6 +1120,11 @@ DEFINE_INTERRUPT_HANDLER(single_step_exc
+ 	_exception(SIGTRAP, regs, TRAP_TRACE, regs->nip);
  }
  
- static void __iomem *pci_msix_desc_addr(struct msi_desc *desc)
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -496,6 +496,7 @@ struct device {
- 	struct dev_pin_info	*pins;
- #endif
- #ifdef CONFIG_GENERIC_MSI_IRQ
-+	raw_spinlock_t		msi_lock;
- 	struct list_head	msi_list;
- #endif
- #ifdef CONFIG_DMA_OPS
---- a/include/linux/msi.h
-+++ b/include/linux/msi.h
-@@ -233,7 +233,7 @@ void __pci_read_msi_msg(struct msi_desc
- void __pci_write_msi_msg(struct msi_desc *entry, struct msi_msg *msg);
++DEFINE_INTERRUPT_HANDLER(single_step_exception)
++{
++	__single_step_exception(regs);
++}
++
+ /*
+  * After we have successfully emulated an instruction, we have to
+  * check if the instruction was being single-stepped, and if so,
+@@ -1129,7 +1134,7 @@ DEFINE_INTERRUPT_HANDLER(single_step_exc
+ static void emulate_single_step(struct pt_regs *regs)
+ {
+ 	if (single_stepping(regs))
+-		single_step_exception(regs);
++		__single_step_exception(regs);
+ }
  
- u32 __pci_msix_desc_mask_irq(struct msi_desc *desc, u32 flag);
--u32 __pci_msi_desc_mask_irq(struct msi_desc *desc, u32 mask, u32 flag);
-+void __pci_msi_desc_mask_irq(struct msi_desc *desc, u32 mask, u32 flag);
- void pci_msi_mask_irq(struct irq_data *data);
- void pci_msi_unmask_irq(struct irq_data *data);
- 
+ static inline int __parse_fpscr(unsigned long fpscr)
 
 
