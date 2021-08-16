@@ -2,167 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 881C73ED7D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91AE73ED7E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237361AbhHPNoh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Aug 2021 09:44:37 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:34077 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239572AbhHPNo1 (ORCPT
+        id S231354AbhHPNrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:47:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47177 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230490AbhHPNrG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:44:27 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id D145B240004;
-        Mon, 16 Aug 2021 13:43:53 +0000 (UTC)
-Date:   Mon, 16 Aug 2021 15:43:52 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Zhihao Cheng <chengzhihao1@huawei.com>
-Cc:     <richard@nod.at>, <vigneshr@ti.com>, <bbrezillon@kernel.org>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <yukuai3@huawei.com>
-Subject: Re: [PATCH 1/2] mtd: mtdconcat: Judge callback function existence
- getting from master for each partition
-Message-ID: <20210816154352.54237a67@xps13>
-In-Reply-To: <9955e32c-615a-f02c-abc3-a7b613bf34ee@huawei.com>
-References: <20210731023243.3977104-1-chengzhihao1@huawei.com>
-        <20210731023243.3977104-2-chengzhihao1@huawei.com>
-        <20210806212857.240e0c1f@xps13>
-        <27c67e42-f275-fc50-64e5-d80233130f7e@huawei.com>
-        <20210807123243.7661e4e3@xps13>
-        <9955e32c-615a-f02c-abc3-a7b613bf34ee@huawei.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 16 Aug 2021 09:47:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629121593;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3+2CPPVNiLbbkvD0700s3MjZBti+X1rB8bf9dsclTrk=;
+        b=e8MCvMUoVg3vPej3kLe/Cq/h/PzzDHMJ+P/+IBLmVvdoi/ZLoSrUlLcLSOwS7//Z/5fAuf
+        ADMhxNfsBpUaX7q6nNIM5fgViT2mLbpsONI/GNHsNe2eVh6F+M1lv81CnW0kT7GqrnvuCF
+        /uc5d9lQjwhjVHMH6jxgdgikLT4bCbs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-497-IY96OcNMMLK2okNQrI881w-1; Mon, 16 Aug 2021 09:46:32 -0400
+X-MC-Unique: IY96OcNMMLK2okNQrI881w-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 11CB51009607;
+        Mon, 16 Aug 2021 13:46:31 +0000 (UTC)
+Received: from ws.net.home (ovpn-112-16.ams2.redhat.com [10.36.112.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 435A02C00F;
+        Mon, 16 Aug 2021 13:46:30 +0000 (UTC)
+Date:   Mon, 16 Aug 2021 15:46:27 +0200
+From:   Karel Zak <kzak@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        util-linux@vger.kernel.org
+Subject: [ANNOUNCE] util-linux v2.37.2
+Message-ID: <20210816134627.kzuyn4yewvhxjd75@ws.net.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhihao,
 
-Zhihao Cheng <chengzhihao1@huawei.com> wrote on Tue, 10 Aug 2021
-19:35:02 +0800:
+The util-linux stable release v2.37.2 is available at
+      
+  http://www.kernel.org/pub/linux/utils/util-linux/v2.37
+      
+Feedback and bug reports, as always, are welcomed.
+ 
+  Karel
 
-> 在 2021/8/7 18:32, Miquel Raynal 写道:
-> Hi Miquel,
-> > Hi Zhihao,
-> >
-> > Zhihao Cheng <chengzhihao1@huawei.com> wrote on Sat, 7 Aug 2021
-> > 10:15:46 +0800:
-> >  
-> >> 在 2021/8/7 3:28, Miquel Raynal 写道:
-> >> Hi Miquel,  
-> >>> Hi Zhihao,
-> >>>
-> >>> Zhihao Cheng <chengzhihao1@huawei.com> wrote on Sat, 31 Jul 2021
-> >>> 10:32:42 +0800:
-> >>> @@ -721,14 +724,15 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
-> >>>    				    subdev[i]->flags & MTD_WRITEABLE;
-> >>>    		}  
-> >>>    > +		subdev_master = mtd_get_master(subdev[i]);  
-> >>>    		concat->mtd.size += subdev[i]->size;
-> >>>    		concat->mtd.ecc_stats.badblocks +=
-> >>>    			subdev[i]->ecc_stats.badblocks;
-> >>>    		if (concat->mtd.writesize   !=  subdev[i]->writesize ||
-> >>>    		    concat->mtd.subpage_sft != subdev[i]->subpage_sft ||
-> >>>    		    concat->mtd.oobsize    !=  subdev[i]->oobsize ||
-> >>> -		    !concat->mtd._read_oob  != !subdev[i]->_read_oob ||
-> >>> -		    !concat->mtd._write_oob != !subdev[i]->_write_oob) {
-> >>> +		    !concat->mtd._read_oob  != !subdev_master->_read_oob ||
-> >>> +		    !concat->mtd._write_oob != !subdev_master->_write_oob) {
-> >>> Do you really need this change?  
-> >> I think both "!concat->mtd._read_oob != !subdev[i]->_read_oob" and "!concat->mtd._write_oob != !subdev[i]->_write_oob" need to be modified otherwise concatenating goes failure.
-> >>
-> >> I thought there exists two problems:
-> >>
-> >>     1. Wrong callback fetching in mtd partition device
-> >>
-> >>     2. Warning for existence of _read and _read_oob at the same time
-> >>
-> >> so I solved them in two steps to make history commit logs a bit clear.
-> >>
-> >> Though these two patches can be combined to one.  
-> > No please keep the split.
-> >
-> > What I mean here is that I don't think your fix is valid. Maybe we
-> > should propagate these callbacks as well instead of trying to hack into
-> > this condition. I don't see why you should check against subdev[i] for
-> > half of the callbacks and check for subdev_master for the last two.  
-> 
-> I have the following understanding of mtd:
-> 
-> 1. The existence of mtd partition device's callbacks(what can mtd do, _read, _write, _read_oob, etc.) is decided by mtd master device. All mtd common functions (mtd_read, mtd_read_oob) pass master mtd device rather than partition mtd device as parameter, because nand_chip(initialized as master mtd device) process requests.  So there are two steps in mtd common function: fetch master mtd device; invoke master mtd devices's callback and pass in master mtd device.
-> 
->    Propogating callbacks to partition mtd device may bring some imperfections:
-> 
->    A. No adaptions to mtd common functions: partition mtd device's callbacks will never be invoked, they are only used to judge whether assigin concatenated device's callback while concatenating. Looks weird.
-> 
->    @@ -86,6 +86,61 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
->          child->part.offset = part->offset;
->          INIT_LIST_HEAD(&child->partitions);
-> 
-> +       if (parent->_read)
-> +               child->_read = parent->_read;
-> +       if (parent->_write)
-> +               child->_write = parent->_write;
-> [...]
-> +       if (parent->_read_oob)
-> +               child->_read_oob = parent->_read_oob;
-> +       if (parent->_write_oob)
-> 
-> 
->    B. Re-import removed partition mtd device's callbacks and adapt mtd common functions: Current implemention is simplier than the version before 46b5889cc2c54("mtd: implement proper partition handling"). Adapting mtd common functions is a risky thing, which could effect other modules, should we do that?
-> 
-> +static int part_read(struct mtd_info *mtd, loff_t from, size_t len,
-> +               size_t *retlen, u_char *buf)
-> +{
-> +       struct mtd_part *part = mtd_to_part(mtd);
-> +       struct mtd_ecc_stats stats;
-> +       int res;
-> +
-> +      stats = part->parent->ecc_stats;
-> +       res = part->parent->_read(part->parent, from + part->offset, len,
-> +                                 retlen, buf);
-> +       if (unlikely(mtd_is_eccerr(res)))
-> +               mtd->ecc_stats.failed +=
-> +                       part->parent->ecc_stats.failed - stats.failed;
-> +       else
-> +               mtd->ecc_stats.corrected +=
-> +                       part->parent->ecc_stats.corrected - stats.corrected;
-> +       return res;
-> +}
-> 
->   static int mtd_read_oob_std(struct mtd_info *mtd, loff_t from,
->                              struct mtd_oob_ops *ops)
->   {
-> -       struct mtd_info *master = mtd_get_master(mtd);
->          int ret;
-> 
-> -       from = mtd_get_master_ofs(mtd, from);
-> -       if (master->_read_oob)
-> -               ret = master->_read_oob(master, from, ops);
-> +       if (mtd->_read_oob)
-> +               ret = mtd->_read_oob(mtd, from, ops);
->          else
-> -               ret = master->_read(master, from, ops->len, &ops->retlen,
-> +               ret = mtd->_read(mtd, from, ops->len, &ops->retlen,
->                                      ops->datbuf);
-> 
-> 
-> 2. Checking against subdev[i] for data members and check against subdev_master for the callbacks looks weird. I modified it based on the assumption that partition mtd device' callbacks inherit from master mtd device but data members(name, size) may not. Maybe I should add some comment to explain why checking against subdev[i] for data members and checking against subdev_master for the callbacks.
-> 
-> 
-> So, which method is better? Any other method?
-> 
 
-I see your point, actually my concern was about checking half of the
-*callbacks* from a particular device, and the other half from another
-device (eg. the master) but as you stated it here, we check the
-callbacks of the master but the "data members" as you call them from
-the subdevice, which I think is fine. So I guess I'll take these
-changes as they currently are.
 
-Thanks,
-Miquèl
+util-linux 2.37.2 Release Notes
+===============================
+
+blockdev:
+   - allow for larger values for start sector  [Thomas Abraham]
+   - use snprintf() rather than sprintf()  [Karel Zak]
+docs:
+   - fix info about LIBSMARTCOLS_DEBUG_PADDING  [Karel Zak]
+   - update AUTHORS file  [Karel Zak]
+lib/pwdutils:
+   - don't use getlogin(3).  [�rico Nogueira]
+   - use assert to check correct usage.  [�rico Nogueira]
+libfdisk:
+   - (dos) don't ignore MBR+FAT use-case  [Karel Zak]
+   - (dos) support partition and MBR overlap  [Karel Zak]
+libmount:
+   - don't use setgroups at all()  [Karel Zak]
+   - fix setgroups() use  [Karel Zak]
+logger:
+   - use xgetlogin from pwdutils.  [�rico Nogueira]
+losetup:
+   - use LOOP_CONFIGURE in a more robust way  [Karel Zak]
+lscpu:
+   - Add Phytium FT-2000+ & S2500 support  [panchenbo]
+   - Add Phytium aarch64 cpupart  [panchenbo]
+   - fix NULL dereference  [Karel Zak]
+   - fix compilation against librtas  [Karel Zak]
+mount:
+   - mount.8 don't consider additional mounts as experimental  [Karel Zak]
+po:
+   - add sk.po (from translationproject.org)  [Jose Riha]
+   - merge changes  [Karel Zak]
+   - update pl.po (from translationproject.org)  [Jakub Bogusz]
+prlimit:
+   - fix compiler warning [-Wmaybe-uninitialized]  [Karel Zak]
+sulogin:
+   - fix getpasswd()  [Karel Zak]
+sys-utils/ipcutils:
+   - be careful when call calloc() for uint64 nmembs  [Karel Zak]
+wall:
+   - use xgetlogin.  [�rico Nogueira]
+
+-- 
+ Karel Zak  <kzak@redhat.com>
+ http://karelzak.blogspot.com
+
