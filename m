@@ -2,65 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E82723ECC8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 04:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB36D3ECC90
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 04:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbhHPCId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 22:08:33 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:53052 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229816AbhHPCIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 22:08:32 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1mFS2Q-0002cg-A7; Mon, 16 Aug 2021 10:07:42 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1mFS2J-0002cw-Pr; Mon, 16 Aug 2021 10:07:35 +0800
-Date:   Mon, 16 Aug 2021 10:07:35 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Stephan Mueller <smueller@chronox.de>, sachinp@linux.vnet.ibm.com,
-        linux-crypto@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] crypto: DRBG - select SHA512
-Message-ID: <20210816020735.GA10021@gondor.apana.org.au>
-References: <304ee0376383d9ceecddbfd216c035215bbff861.camel@chronox.de>
- <20210716081411.GA2062@gondor.apana.org.au>
- <YRft/tuKE6MjHhY7@zn.tnic>
+        id S231564AbhHPCMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 22:12:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229663AbhHPCMW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 22:12:22 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81297C061764;
+        Sun, 15 Aug 2021 19:11:51 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id db14so8543415qvb.10;
+        Sun, 15 Aug 2021 19:11:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RCriSD8EWtXhtQKktiE7TncAOMeRWKmTNW5hb/Sa0/g=;
+        b=J6xikWU8wKm7Z9E0G7SsPulofLjO9FwDDKk21zs2cS4nuZgEE55Z4YadanEpsD2pRz
+         o7ld0W5h6zoOP1Jok3c3wPlHF55eyD2TThWk1jEQRblyp3T56n4LUQ1B/qy3nRYv14g2
+         pi6Ng+x6TPfgywj+NB2fiJAZVH1J84ALBpjN4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RCriSD8EWtXhtQKktiE7TncAOMeRWKmTNW5hb/Sa0/g=;
+        b=RWMb7ltCXdySfdS0RookTlYax55/aP7+Hhv8lteWBh088RpCn75aYd5wYgYS9l7JGX
+         sgoqclj8+7haFkl7g/5zypUlY3jz5ml9bkHAWHJj0Qg3DAju2p+ISzHA9RC4DiIykL2/
+         sD90m9hZPNyeaxP2CBT+PLtfJA3W0j3x9A/id6XvyKukLOJku2Mk4kxVOmWSt3h2pyMN
+         0eHFCxXRitlHbRB5Hjp6sfPUAUEsEP1HR7W4Ssw/bj94mATRN4qFbqE4mlHIZ7DBg5NS
+         yhibzUztdGyWveQv7rgrkG1BEy5YHvoNC1z5yeIMDKKCEdbWWAcOPfv7ZovOXIGtGxXt
+         pGMQ==
+X-Gm-Message-State: AOAM5332dLbAlio+sbhAmb/7nBFBr25MpKTV8q1NxFnhlv6bJ4pkYa6T
+        n7YkGIMQ46koiA/ZocPo0INH0dLNfYDxKNjdrYs=
+X-Google-Smtp-Source: ABdhPJwhXnrmqh156PtVzL9hcyEAfhvLDsdhzqB6+2cdZvwR1531PgQsyNtKhyvPLIGl5qxjxGsdHQDU14nxJs1lA8E=
+X-Received: by 2002:a05:6214:8c2:: with SMTP id da2mr10826803qvb.10.1629079909644;
+ Sun, 15 Aug 2021 19:11:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRft/tuKE6MjHhY7@zn.tnic>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210720002704.7390-1-rentao.bupt@gmail.com> <20210813062435.GA24497@taoren-ubuntu-R90MNF91>
+In-Reply-To: <20210813062435.GA24497@taoren-ubuntu-R90MNF91>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Mon, 16 Aug 2021 02:11:40 +0000
+Message-ID: <CACPK8XcAqU3KASespqS3dPterpzyqD4wYH=qOS8Ok2yUrB_F+Q@mail.gmail.com>
+Subject: Re: [PATCH] ARM: dts: aspeed: minipack: Update flash partition table
+To:     Tao Ren <rentao.bupt@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Tao Ren <taoren@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 14, 2021 at 06:23:26PM +0200, Borislav Petkov wrote:
-> On Fri, Jul 16, 2021 at 04:14:12PM +0800, Herbert Xu wrote:
-> > Stephan Mueller <smueller@chronox.de> wrote:
-> > > With the swtich to use HMAC(SHA-512) as the default DRBG type, the
-> > > configuration must now also select SHA-512.
-> > > 
-> > > Fixes: 9b7b94683a9b "crypto: DRBG - switch to HMAC SHA512 DRBG as default
-> > > DRBG"
-> > > Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
-> > > Signed-off-by: Stephan Mueller <smueller@chronox.com>
-> > > ---
-> > > crypto/Kconfig | 2 +-
-> > > 1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > Patch applied.  Thanks.
-> 
-> Is that patch going to Linus anytime soon?
-> 
-> I still see it on latest rc5+:
+On Fri, 13 Aug 2021 at 06:24, Tao Ren <rentao.bupt@gmail.com> wrote:
+>
+> Hi Joel,
+>
+> Looks like the patch is not included in "dt-for-v5.15". Any comments? Or
+> should I send v2 if the email was not delivered?
 
-I'll push it up this week.
+I had missed it. It's now applied for 5.15.
 
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Cheers,
+
+Joel
