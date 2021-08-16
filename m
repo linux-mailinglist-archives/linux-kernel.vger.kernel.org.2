@@ -2,109 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BBA33ED854
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 223453ED7C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbhHPOBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 10:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57480 "EHLO
+        id S237649AbhHPNnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:43:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231672AbhHPOAT (ORCPT
+        with ESMTP id S237600AbhHPNni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 10:00:19 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 930DFC0617AD
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 06:58:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6q1+UdtYiO8s6rj0/c/nQ3ECy5RSEzhQllvM+6vQdJ8=; b=cQ2mlhP60SgjrOH7VyYtCbZ6xq
-        BElSBir7HnhCbahWGm9ukBCQ1FrwUhWmD3PhURPAtDmJZYoNuANE+GX3rfZQoZ2sNi6yBjV2gBwIH
-        86aCmG4mhqhk9y/NXlAf9QjNMYjhzUrBWu5dnINkMZUkRlQ+EwbfMRsBvviiZAAiBXY4R3GGqmX1q
-        BVhZs0/rkDTmxDgn34gPwIs7NG5YAxxN/CZ4v5yNcRpYMEPDIuM5KDgQxrkIKav0+K1H/DCSoEcU8
-        1skTS2TpbEuLWokUS0rWhiM/SAixCyjNIhe31z/Lm2o4HRrN/vR7Ha4uFeEapzRwt0198hV7Ka/Nk
-        +f1oEBYw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mFciu-001PhE-KG; Mon, 16 Aug 2021 13:32:41 +0000
-Date:   Mon, 16 Aug 2021 14:32:16 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Khalid Aziz <khalid.aziz@oracle.com>,
-        "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>, Steven Sistare <steven.sistare@oracle.com>,
-        Anthony Yznaga <anthony.yznaga@oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>
-Subject: Re: [RFC PATCH 0/5] madvise MADV_DOEXEC
-Message-ID: <YRpo4EAJSkY7hI7Q@casper.infradead.org>
-References: <43471cbb-67c6-f189-ef12-0f8302e81b06@oracle.com>
- <a1dbf12e-9949-109e-122c-ba7ba609801b@huawei.com>
- <YOubKmDwxMIvdAed@casper.infradead.org>
- <a94973ab83ce48bd85c91397f82d7915@huawei.com>
- <55720e1b39cff0a0f882d8610e7906dc80ea0a01.camel@oracle.com>
- <db2b7337-4c6b-4e4b-71d3-dc4940353498@redhat.com>
- <YRpVHnr55LpQQvTb@casper.infradead.org>
- <ca2d4ea4-e875-475a-6094-1ac58bc0b544@redhat.com>
- <YRpeHnP7QDNJRA8Y@casper.infradead.org>
- <88884f55-4991-11a9-d330-5d1ed9d5e688@redhat.com>
+        Mon, 16 Aug 2021 09:43:38 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F02C077B54
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 06:33:32 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id h13so23726916wrp.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 06:33:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=mZFg4xEN3Bxhc0hUWQKABU041LJFnqWbJu4YrSNKR7w=;
+        b=AnmI6+P/ZIIlH7o0KaSk/b+Dpr/NS2SOnfJ9FiwQ1nJFwJbm/bA4LOlsFoy6sSv8pG
+         Pt5+zAAQPVFAEl/ZR8NvhFinTcoRgkM5H1NhA7eETZKjQqeNTo839BJQWuNrAAToM/mD
+         vxEvJiIvrLtfE+O6/5Ului1L1KjUhMyRVZQVx28M+nS3bkHhb8/jyAzbUpVDT+SUq50r
+         3g8ihz3T+VCOQ/+O/GDLTIbrVklwV178Kj6+bS+cilDyUsQF6BLeoOhs+Z9gvhGxsRyj
+         ufqAl3nNbXIQiq8o3r9MdfOYbB2ybBiemd4dX487bOA2QyGCShkGANVgI/PHE+jnarJM
+         NJBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=mZFg4xEN3Bxhc0hUWQKABU041LJFnqWbJu4YrSNKR7w=;
+        b=H4ai9Vy/nIhgUBafAo9euaoE2IOkK6AUckfI2sbPHuHE01ecH0RdkoQP1QEDSpctbz
+         5BC49otT4pfX7nnSkEo8QYPz1HQKVSigBWZUnuGgIy+Qle55am/7QcxmL/d7VZQtuPZZ
+         Rmb+PrjV6GGiVpiXp3peE46LrryVeCygAc+b1VhracYYBJSYvoer6DnbDHKUpUsXaM0i
+         o4ajfb80dIdz6mHYPRlsMPnzQiJhtiN90bqbVJFjuBFqOojL5BdHXGG12+VOqWF4O4JU
+         b5EBlRcwNiNw+bbkRNgit38Wnq8NU5zCqEt3xc2CH35XjjMSW9KiWxtYhXc2IGsIxC0z
+         fsrw==
+X-Gm-Message-State: AOAM5336U/EUxHluWsJGIWdsXpZtPq4X2f2V6UppL99Q8pv3CLCni3qx
+        lwgGwxFK4yNisfCP33ZiEXXyBA==
+X-Google-Smtp-Source: ABdhPJxhP6si53hvzcde8UfcYZRShfYYtrA+OlcdUQoeifyfNzAtOHpkX5O+H/nXCggbhWeaTlka0w==
+X-Received: by 2002:adf:a3cc:: with SMTP id m12mr9987121wrb.97.1629120810815;
+        Mon, 16 Aug 2021 06:33:30 -0700 (PDT)
+Received: from google.com ([2.31.167.59])
+        by smtp.gmail.com with ESMTPSA id y4sm10280669wmi.22.2021.08.16.06.33.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 06:33:30 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 14:33:28 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v1 3/4] mfd: intel_quark_i2c_gpio: Convert GPIO to use
+ software nodes
+Message-ID: <YRppKOxp4Jya5iEI@google.com>
+References: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com>
+ <20210726125436.58685-3-andriy.shevchenko@linux.intel.com>
+ <YRpihHP3kDz5nYV9@google.com>
+ <CAHp75VdcWsNFervoU7e4_m7qVKAnWXzF2z2mUgKg06-qmwn-2A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <88884f55-4991-11a9-d330-5d1ed9d5e688@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75VdcWsNFervoU7e4_m7qVKAnWXzF2z2mUgKg06-qmwn-2A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 03:24:38PM +0200, David Hildenbrand wrote:
-> On 16.08.21 14:46, Matthew Wilcox wrote:
-> > On Mon, Aug 16, 2021 at 02:20:43PM +0200, David Hildenbrand wrote:
-> > > On 16.08.21 14:07, Matthew Wilcox wrote:
-> > > > On Mon, Aug 16, 2021 at 10:02:22AM +0200, David Hildenbrand wrote:
-> > > > > > Mappings within this address range behave as if they were shared
-> > > > > > between threads, so a write to a MAP_PRIVATE mapping will create a
-> > > > > > page which is shared between all the sharers. The first process that
-> > > > > > declares an address range mshare'd can continue to map objects in the
-> > > > > > shared area. All other processes that want mshare'd access to this
-> > > > > > memory area can do so by calling mshare(). After this call, the
-> > > > > > address range given by mshare becomes a shared range in its address
-> > > > > > space. Anonymous mappings will be shared and not COWed.
-> > > > > 
-> > > > > Did I understand correctly that you want to share actual page tables between
-> > > > > processes and consequently different MMs? That sounds like a very bad idea.
-> > > > 
-> > > > That is the entire point.  Consider a machine with 10,000 instances
-> > > > of an application running (process model, not thread model).  If each
-> > > > application wants to map 1TB of RAM using 2MB pages, that's 4MB of page
-> > > > tables per process or 40GB of RAM for the whole machine.
-> > > 
-> > > What speaks against 1 GB pages then?
-> > 
-> > Until recently, the CPUs only having 4 1GB TLB entries.  I'm sure we
-> > still have customers using that generation of CPUs.  2MB pages perform
-> > better than 1GB pages on the previous generation of hardware, and I
-> > haven't seen numbers for the next generation yet.
+On Mon, 16 Aug 2021, Andy Shevchenko wrote:
+
+> On Mon, Aug 16, 2021 at 4:11 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > On Mon, 26 Jul 2021, Andy Shevchenko wrote:
+> >
+> > > The driver can provide a software node group instead of
+> > > passing legacy platform data. This will allow to drop
+> > > the legacy platform data structures along with unifying
+> > > a child device driver to use same interface for all
+> > > property providers, i.e. Device Tree, ACPI, and board files.
+> > >
+> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > ---
+> > >  drivers/mfd/intel_quark_i2c_gpio.c | 70 ++++++++++++++++--------------
+> > >  1 file changed, 37 insertions(+), 33 deletions(-)
+> >
+> > Doesn't seem to want to apply.
 > 
-> I read that somewhere else before, yet we have heavy 1 GiB page users,
-> especially in the context of VMs and DPDK.
+> Would it be okay for you to pull the immutable tag?
 
-I wonder if those users actually benchmarked.  Or whether the memory
-savings worked out so well for them that the loss of TLB performance
-didn't matter.
+What immutable tag?
 
-> So, it only works for hugetlbfs in case uffd is not in place (-> no
-> per-process data in the page table) and we have an actual shared mappings.
-> When unsharing, we zap the PUD entry, which will result in allocating a
-> per-process page table on next fault.
-
-I think uffd was a huge mistake.  It should have been a filesystem
-instead of a hack on the side of anonymous memory.
-
-> I will rephrase my previous statement "hugetlbfs just doesn't raise these
-> problems because we are special casing it all over the place already". For
-> example, not allowing to swap such pages. Disallowing MADV_DONTNEED. Special
-> hugetlbfs locking.
-
-Sure, that's why I want to drag this feature out of "oh this is a
-hugetlb special case" and into "this is something Linux supports".
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
