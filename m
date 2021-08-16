@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789C63ED770
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CBAF3ED5C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240860AbhHPNdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:33:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44616 "EHLO mail.kernel.org"
+        id S239467AbhHPNOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:14:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239061AbhHPNUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:20:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 816EC632D1;
-        Mon, 16 Aug 2021 13:16:07 +0000 (UTC)
+        id S239562AbhHPNJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:09:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A461F604DC;
+        Mon, 16 Aug 2021 13:09:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119768;
-        bh=oZL/OB8o8ThoISHrg94bl0H5lOke1fPd/b2loZdPR30=;
+        s=korg; t=1629119365;
+        bh=SiPgRGHbGQySDNfy3OJn4o1z2BoGp7oudsaI9vqwVuA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J+fjVTKQqLD2d5QaRC/SHpPhe1ulA4sl6WG15gCPs2PWFEA38/OeHle0uMJNX73WK
-         PVjpIFUpoTmshz20YOn4PlLBrnxhU1H/dOs1TnaL1w5Huvb9qRF0TPGyvtOA+IqwEb
-         0No0xShZ5QfCfjJlOJ/wS7uSBk3QTLWbjDrsfGYU=
+        b=k0GCCW9t1JW81lWUB8//bRldhQw/hLp/idfLkacYhEU0sryQHtwiG+J6K4Gd8Pod2
+         FeGxZf4qv3lYp5MuzVOvPKHRF2BD2JukqNwqsi+5NqBM5zwqMVt64bWf6daV9NcMAs
+         EdasAU4eju0/5JxDmHCPR4gQ+cXvlart4tgKTH4U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 5.13 133/151] PCI/MSI: Correct misleading comments
-Date:   Mon, 16 Aug 2021 15:02:43 +0200
-Message-Id: <20210816125448.434490211@linuxfoundation.org>
+        stable@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>
+Subject: [PATCH 5.10 94/96] ceph: clean up locking annotation for ceph_get_snap_realm and __lookup_snap_realm
+Date:   Mon, 16 Aug 2021 15:02:44 +0200
+Message-Id: <20210816125438.114351211@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
-References: <20210816125444.082226187@linuxfoundation.org>
+In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
+References: <20210816125434.948010115@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +39,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Jeff Layton <jlayton@kernel.org>
 
-commit 689e6b5351573c38ccf92a0dd8b3e2c2241e4aff upstream.
+commit df2c0cb7f8e8c83e495260ad86df8c5da947f2a7 upstream.
 
-The comments about preserving the cached state in pci_msi[x]_shutdown() are
-misleading as the MSI descriptors are freed right after those functions
-return. So there is nothing to restore. Preparatory change.
+They both say that the snap_rwsem must be held for write, but I don't
+see any real reason for it, and it's not currently always called that
+way.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Marc Zyngier <maz@kernel.org>
-Reviewed-by: Marc Zyngier <maz@kernel.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210729222542.621609423@linutronix.de
+The lookup is just walking the rbtree, so holding it for read should be
+fine there. The "get" is bumping the refcount and (possibly) removing
+it from the empty list. I see no need to hold the snap_rwsem for write
+for that.
+
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+Reviewed-by: Ilya Dryomov <idryomov@gmail.com>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/msi.c |    5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ fs/ceph/snap.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/pci/msi.c
-+++ b/drivers/pci/msi.c
-@@ -961,7 +961,6 @@ static void pci_msi_shutdown(struct pci_
+--- a/fs/ceph/snap.c
++++ b/fs/ceph/snap.c
+@@ -60,12 +60,12 @@
+ /*
+  * increase ref count for the realm
+  *
+- * caller must hold snap_rwsem for write.
++ * caller must hold snap_rwsem.
+  */
+ void ceph_get_snap_realm(struct ceph_mds_client *mdsc,
+ 			 struct ceph_snap_realm *realm)
+ {
+-	lockdep_assert_held_write(&mdsc->snap_rwsem);
++	lockdep_assert_held(&mdsc->snap_rwsem);
  
- 	/* Return the device with MSI unmasked as initial states */
- 	mask = msi_mask(desc->msi_attrib.multi_cap);
--	/* Keep cached state to be restored */
- 	__pci_msi_desc_mask_irq(desc, mask, 0);
+ 	dout("get_realm %p %d -> %d\n", realm,
+ 	     atomic_read(&realm->nref), atomic_read(&realm->nref)+1);
+@@ -139,7 +139,7 @@ static struct ceph_snap_realm *ceph_crea
+ /*
+  * lookup the realm rooted at @ino.
+  *
+- * caller must hold snap_rwsem for write.
++ * caller must hold snap_rwsem.
+  */
+ static struct ceph_snap_realm *__lookup_snap_realm(struct ceph_mds_client *mdsc,
+ 						   u64 ino)
+@@ -147,7 +147,7 @@ static struct ceph_snap_realm *__lookup_
+ 	struct rb_node *n = mdsc->snap_realms.rb_node;
+ 	struct ceph_snap_realm *r;
  
- 	/* Restore dev->irq to its default pin-assertion IRQ */
-@@ -1047,10 +1046,8 @@ static void pci_msix_shutdown(struct pci
- 	}
+-	lockdep_assert_held_write(&mdsc->snap_rwsem);
++	lockdep_assert_held(&mdsc->snap_rwsem);
  
- 	/* Return the device with MSI-X masked as initial states */
--	for_each_pci_msi_entry(entry, dev) {
--		/* Keep cached states to be restored */
-+	for_each_pci_msi_entry(entry, dev)
- 		__pci_msix_desc_mask_irq(entry, 1);
--	}
- 
- 	pci_msix_clear_and_set_ctrl(dev, PCI_MSIX_FLAGS_ENABLE, 0);
- 	pci_intx_for_msi(dev, 1);
+ 	while (n) {
+ 		r = rb_entry(n, struct ceph_snap_realm, node);
 
 
