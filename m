@@ -2,174 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B4C3ED1C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E233ED1C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235638AbhHPKQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 06:16:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33936 "EHLO
+        id S235657AbhHPKQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:16:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232148AbhHPKQL (ORCPT
+        with ESMTP id S231355AbhHPKQb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:16:11 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C8CC061764;
-        Mon, 16 Aug 2021 03:15:39 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id q10so22817443wro.2;
-        Mon, 16 Aug 2021 03:15:39 -0700 (PDT)
+        Mon, 16 Aug 2021 06:16:31 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22169C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 03:16:00 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id cq23so8237209edb.12
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 03:16:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=nDZLANJ3zjlg8qcpDpXtNW0+CSx2CqBvgsXtfDv7fxs=;
-        b=a/F/Vq9X+EDkGfRQYvnolgy0ATVt0DQj+nTWLadLpXs9i9dRONlzYsbyUR3LE4RUne
-         0XjJgfQxs6WiHfEe00FVZv5ejpNnrx8Fq9DltiIcn/3eTZSzMQt9PKOUFroGjXpdpCI9
-         yHs4QgFtS1hlhcRaW2k1L5QJLI2LIzm2zP6b4s/4lRytVjdr6J3VXtraDSxE2l8VYFWP
-         pcS6L4s7k7yf2HB2wnvsn4J3k/FyQHkSDPubs8HZpDP9ez9fS2k6YEER52bK9+YKKFiI
-         LhPQTj82/BAjxQ/7nwMX2ns0GSYvEJT5HOmPyRFpZmi0o8YZ+0U94FqhxHh37fvklflL
-         n19g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=UVW6kIMO+vANMX1HgjohnPiDWRD88704SfiqfsvGvrY=;
+        b=DKz7kaaWh76EEz1NKm98fpj3E8kOJxDG5IeUBcDQLsm2STIJvj735JLGQS2y3G/e0V
+         rEAcZt9v/mcJJi0DVLXvYQmpWrSBl/OqG6/nj1yG66Wfjtz1yjMa5iPlfFH1zRfdZYFm
+         p7PekcV43teXYUHSNw+mp2j1bMbSV2ppHYzycFloWd145F95/J8ic3mDq0Ct3J9E9/vE
+         CB914QCPyZYZG5JKPxcYvUTAcpCQHNjWIGZtbbRJASUlmX8ULCvy/Y6RwCroAPTbFAd2
+         3rEpc8f7gIg1i5i77RSWR3L/OcvZc9XM1NV75/mIyc+T0jUeIix5AfmGqduMFD7Hjgiw
+         VVjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=nDZLANJ3zjlg8qcpDpXtNW0+CSx2CqBvgsXtfDv7fxs=;
-        b=F1v3oQZILQ19m5QCnP3okU4cs2ILPRQti9s/fRJfnhrz5NNjXThYsAhgmK8ELikAjp
-         D1htNFYpXNMInu90p4PMm5jNUFmBZjEinbGGTlYI1sMBMSZxaXApXgBEcPdvGoezTgYa
-         dVLOa8GaBeEeYXIEHoKF3Zl28WdmNklI3fU2+IJ0zAONZvylNrrbJFdLeObtwynZ/bwz
-         qdMO+g7Te2QtrSqDoAOIjnBRnB2FD6PrF2z3Fo0NFd6TkFQuYCdSQECHKDcSp0uZS8bv
-         TEtxVzuqFG/oi5c68kdx7DXD/7Zapy75creu+ir7GqOxBBl6Yhegjd2B3IvG+x39Vl69
-         6aXQ==
-X-Gm-Message-State: AOAM530KgITip3Fz+hP5sQ/FVH3+KqpWpuUrloA/ebSb3Z8owwv6FG5s
-        7AzixI1EYlzP7MLEVR4jRVIKtPN05FA=
-X-Google-Smtp-Source: ABdhPJwqpYeHZyOoy+wLcE4jxrRof3XjuC8nnDGcK+VlCLMybiY6T7Z/PRxoS5A46oIm810V65WsCg==
-X-Received: by 2002:adf:fb44:: with SMTP id c4mr17047849wrs.179.1629108938443;
-        Mon, 16 Aug 2021 03:15:38 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:7d83:fd8:eb16:8605? ([2a02:908:1252:fb60:7d83:fd8:eb16:8605])
-        by smtp.gmail.com with ESMTPSA id a18sm9498664wmg.43.2021.08.16.03.15.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 03:15:38 -0700 (PDT)
-Subject: Re: [PATCH v2 1/5] dma-fence: Add deadline awareness
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
-Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210807183804.459850-1-robdclark@gmail.com>
- <20210807183804.459850-2-robdclark@gmail.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <354a3118-c7ce-c1ff-60eb-788f3fa4b48d@gmail.com>
-Date:   Mon, 16 Aug 2021 12:15:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=UVW6kIMO+vANMX1HgjohnPiDWRD88704SfiqfsvGvrY=;
+        b=aH8i0/fAzPhO1p+pFTfBALrUSf2mVNuNruNI9yOkR3LqS/I5Y/JxRKE3kLWSWKQGpT
+         Hit4E/QCWvFQ69ZoenmAgc4SW655TR3FBnlejPJtih9ixTaucZg73qGd5IlKdYXJPpbc
+         gBON5JDZacW+iJxdXl7M9vb4BiipVU/FiKTde3S/zYzd0XMS/OSyyUGRpj4tZ8hBLApZ
+         NxMiHhpbSV+PfmmcKhuQdqquPQ7RuJ4NKv3QKcjshA9jI2l+JUFf1D7N/U9/eke0MCrl
+         uEXriueeJ4kdR+tgvkz8P/wBQh8PXR2jAZTfFkrptzI8G4Z8zloXC+b/WiAP4KnCkhGZ
+         oxfQ==
+X-Gm-Message-State: AOAM532oceIkSh824DiNc2icJm1gZdOi4dHakPb/sai2uYIsBi+Ljq5q
+        wK4zTSrGiDiDwVhjDD607Bk=
+X-Google-Smtp-Source: ABdhPJwfnPxjfAlAZQiaFxupJ1zR+gDxTOptzvKSjgISupqccAu/LHyFh0HidZe5RxxVkcfKu3CCGA==
+X-Received: by 2002:a05:6402:3485:: with SMTP id v5mr2683605edc.205.1629108958744;
+        Mon, 16 Aug 2021 03:15:58 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
+        by smtp.gmail.com with ESMTPSA id be23sm4602202edb.68.2021.08.16.03.15.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 03:15:58 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: r8188eu: Remove unnecessary ret variable in rtw_drv_init()
+Date:   Mon, 16 Aug 2021 12:15:56 +0200
+Message-ID: <2121129.EM0CHCvl88@localhost.localdomain>
+In-Reply-To: <20210816090500.GG1931@kadam>
+References: <20210813201418.4018631-1-nathan@kernel.org> <20210816090500.GG1931@kadam>
 MIME-Version: 1.0
-In-Reply-To: <20210807183804.459850-2-robdclark@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 07.08.21 um 20:37 schrieb Rob Clark:
-> From: Rob Clark <robdclark@chromium.org>
->
-> Add a way to hint to the fence signaler of an upcoming deadline, such as
-> vblank, which the fence waiter would prefer not to miss.  This is to aid
-> the fence signaler in making power management decisions, like boosting
-> frequency as the deadline approaches and awareness of missing deadlines
-> so that can be factored in to the frequency scaling.
->
-> v2: Drop dma_fence::deadline and related logic to filter duplicate
->      deadlines, to avoid increasing dma_fence size.  The fence-context
->      implementation will need similar logic to track deadlines of all
->      the fences on the same timeline.  [ckoenig]
->
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+On Monday, August 16, 2021 11:05:00 AM CEST Dan Carpenter wrote:
+> To be honest, I prefered the original.
+> 
+> 	foo = alloc();
+> 	if (!foo) {
+> 		ret = -EWHATEVER;
+> 		goto free_last_thing;
+> 	}
+> 
+> I like this style of error handling because all the information is
+> there.  You don't need to scroll down.
+> 
+Thinking deeper about this style of error handling, I find that Dan is quite 
+right in preferring readability over removal of (technically unnecessary) 
+temporary variables. Perhaps the trade-off between brevity and readability 
+should (in general) favor the latter. 
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
+Furthermore, those temporary variables make the code easily adaptable/
+extensible in cases where, in future revisions of the code, there will be more 
+different errors to handle.
 
-> ---
->   drivers/dma-buf/dma-fence.c | 20 ++++++++++++++++++++
->   include/linux/dma-fence.h   | 16 ++++++++++++++++
->   2 files changed, 36 insertions(+)
+However, it's mainly a matter of style, so...
 >
-> diff --git a/drivers/dma-buf/dma-fence.c b/drivers/dma-buf/dma-fence.c
-> index ce0f5eff575d..1f444863b94d 100644
-> --- a/drivers/dma-buf/dma-fence.c
-> +++ b/drivers/dma-buf/dma-fence.c
-> @@ -910,6 +910,26 @@ dma_fence_wait_any_timeout(struct dma_fence **fences, uint32_t count,
->   }
->   EXPORT_SYMBOL(dma_fence_wait_any_timeout);
->   
-> +
-> +/**
-> + * dma_fence_set_deadline - set desired fence-wait deadline
-> + * @fence:    the fence that is to be waited on
-> + * @deadline: the time by which the waiter hopes for the fence to be
-> + *            signaled
-> + *
-> + * Inform the fence signaler of an upcoming deadline, such as vblank, by
-> + * which point the waiter would prefer the fence to be signaled by.  This
-> + * is intended to give feedback to the fence signaler to aid in power
-> + * management decisions, such as boosting GPU frequency if a periodic
-> + * vblank deadline is approaching.
-> + */
-> +void dma_fence_set_deadline(struct dma_fence *fence, ktime_t deadline)
-> +{
-> +	if (fence->ops->set_deadline && !dma_fence_is_signaled(fence))
-> +		fence->ops->set_deadline(fence, deadline);
-> +}
-> +EXPORT_SYMBOL(dma_fence_set_deadline);
-> +
->   /**
->    * dma_fence_init - Initialize a custom fence.
->    * @fence: the fence to initialize
-> diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
-> index 6ffb4b2c6371..9c809f0d5d0a 100644
-> --- a/include/linux/dma-fence.h
-> +++ b/include/linux/dma-fence.h
-> @@ -99,6 +99,7 @@ enum dma_fence_flag_bits {
->   	DMA_FENCE_FLAG_SIGNALED_BIT,
->   	DMA_FENCE_FLAG_TIMESTAMP_BIT,
->   	DMA_FENCE_FLAG_ENABLE_SIGNAL_BIT,
-> +	DMA_FENCE_FLAG_HAS_DEADLINE_BIT,
->   	DMA_FENCE_FLAG_USER_BITS, /* must always be last member */
->   };
->   
-> @@ -261,6 +262,19 @@ struct dma_fence_ops {
->   	 */
->   	void (*timeline_value_str)(struct dma_fence *fence,
->   				   char *str, int size);
-> +
-> +	/**
-> +	 * @set_deadline:
-> +	 *
-> +	 * Callback to allow a fence waiter to inform the fence signaler of an
-> +	 * upcoming deadline, such as vblank, by which point the waiter would
-> +	 * prefer the fence to be signaled by.  This is intended to give feedback
-> +	 * to the fence signaler to aid in power management decisions, such as
-> +	 * boosting GPU frequency.
-> +	 *
-> +	 * This callback is optional.
-> +	 */
-> +	void (*set_deadline)(struct dma_fence *fence, ktime_t deadline);
->   };
->   
->   void dma_fence_init(struct dma_fence *fence, const struct dma_fence_ops *ops,
-> @@ -586,6 +600,8 @@ static inline signed long dma_fence_wait(struct dma_fence *fence, bool intr)
->   	return ret < 0 ? ret : 0;
->   }
->   
-> +void dma_fence_set_deadline(struct dma_fence *fence, ktime_t deadline);
-> +
->   struct dma_fence *dma_fence_get_stub(void);
->   struct dma_fence *dma_fence_allocate_private_stub(void);
->   u64 dma_fence_context_alloc(unsigned num);
+> I don't really care about this specific patch at all.  It's a small
+> thing.  But we had someone come through who was sort of obsessed with
+> removing these sorts of variables.  Just because you can remove a
+> variable doesn't necessarily make the code more readable.
+> 
+> If you're doing the work and maintaining the driver you get to choose
+> your own style to some extent.
+>
+I agree: choose your own style (to some extent).
+
+Thanks,
+
+Fabio
+>
+> But I don't want to encourage people to
+> start sending these sort of patches more generally.
+> 
+> regards,
+> dan carpenter
+
+
+
 
