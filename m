@@ -2,83 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3050A3EDE94
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7478A3EDE97
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232102AbhHPUZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 16:25:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34764 "EHLO
+        id S232308AbhHPUZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 16:25:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231565AbhHPUZL (ORCPT
+        with ESMTP id S231565AbhHPUZX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 16:25:11 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 768B8C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 13:24:39 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id bq25so24004979ejb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 13:24:39 -0700 (PDT)
+        Mon, 16 Aug 2021 16:25:23 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C90D2C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 13:24:51 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id l16-20020a0cc2100000b029035a3d6757b3so12651394qvh.14
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 13:24:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sXYkpEIBbTRqbu2ccbqpOzzUrzgOM/KwayJpCu9iw+g=;
-        b=u6tt21vd6EagJz//PQCD+JbTYKIj7NXVCZZBbObmv2vKKL2DShAV/l4PfBDA93tYcW
-         MD4eWUBKGzxXgFu1eyOlI0phqRckANQiXkkATyAdwoDDH4FY66Exjd9JFbW0v0Jpsnqq
-         3B1pLf28Tf6qEZtTPMW6IEYwY3AufFSZB5bOrbnDTOp9rXKohthGMYyuDnwQ+GOqmWaH
-         LaqxFbXui4ulJeSWKUAY2dVBQcW4cP7Qmy2jJf4NsQmt/t8kt59nXjCr86d/7L1mqwTQ
-         XsQYSFl2t9cxqnGfdIgCoAkryLV8e/SQw3pvz3/KbIf24lfsjA0pkX4SXyoycrcIDRDr
-         TXlw==
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=g9/o/9z4zsHt0A4xliRLw6qm1WgAQq/NIv8diVlT8V8=;
+        b=Na3X8WB7HU4+Q6rnHbcbEUye2yyaMseyJnz+LAjXQqSHQ88sIut7dcBkUtIvj5yhwc
+         Qh9OamjchJgGSoPW1u+0tow9mQJgUyZa+mm9ZTwwnTkOCfgvVpqx/U0Nchu8VA+SpdBq
+         nH1pUu/wDwfzNKECulGVxKPyIpva3VxJ97CmiP7zHpT0fsO6DeRWlR1BPb9LusFYUGKF
+         zemhX6whtx4nl7UcGBgmYqbxxfadoJFdSBrHA3Hn+PjKHP3Vw4zPyURNaT5XDwpIZl1K
+         fWJZtzTAb3p/oAriDfOGX8Qv7HEV0vRtryfhpjq7LEVn0iDeCXMebHWwDq1D2ozwKtwc
+         I7ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sXYkpEIBbTRqbu2ccbqpOzzUrzgOM/KwayJpCu9iw+g=;
-        b=L4r024guIoOhZbkVYxA2+V9WVnsYsXaAHp/zlz1cliAp83Pv1CGkOx8/uJyHDdZSwz
-         JVUqEkZNklAPiU0ofpHWTbbBfI8EaEDaD0RP4Hf9iza6e1iH1UKjmZBFJhcOYqrqYNJA
-         z4vlRzsiV/HBm4earfnTzmp0GnupA7jxNIoSUHtpvcgsyPtL/YVcek9T60CNHojQoUWi
-         kOqmNLlj1teQE0Y5uQ0vvKWOXlq3RvVi8oeIhvfGdDpreZNG9E8PHA+/oJJZraO6OzQg
-         eI0Xo/N/7H8xyc8uzk6RqPTuDUv7O9TdLKSGpb28VZ0ziojMFmcpc8muNqTnBlkNPRIi
-         Ku7A==
-X-Gm-Message-State: AOAM530kTLTVD3Z719MrWUP00ZNKQNpY3/SDEP+pCvjMeW1usIR4AM9+
-        fyeU006R6df7lQTwKSVEHY0YTzLaQMFMM1CKJ+ABNcI5vt7i6Q==
-X-Google-Smtp-Source: ABdhPJwL4La/Jm+xPr1GT3nSytXa50mjZQ4RhVC7yFc/HZ4dpvqezib3/5Cxzoc2qewwsk/sbs4LQ1+4eSv89GuBV40=
-X-Received: by 2002:a17:906:ae51:: with SMTP id lf17mr245428ejb.161.1629145478108;
- Mon, 16 Aug 2021 13:24:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210816180909.3603-1-shy828301@gmail.com> <YRq+kCOW4zb4vfxA@casper.infradead.org>
-In-Reply-To: <YRq+kCOW4zb4vfxA@casper.infradead.org>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 16 Aug 2021 13:24:25 -0700
-Message-ID: <CAHbLzkoE6h9dmRp6zfaKdLjq2y24+PV-yBUv6RMXtzKvPFdBkw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm: hwpoison: don't drop slab caches for offlining
- non-LRU page
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
-        tdmackey@twitter.com, Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=g9/o/9z4zsHt0A4xliRLw6qm1WgAQq/NIv8diVlT8V8=;
+        b=i3fRPxtQoNNruAZlQObdFdG1/xF/3oOYEuIC7gBRBZv0zVi8HRHu1fk5T18j3hVTKz
+         dQHaAa+po3MzDNeEX7O2qThMBM7EedUG/4uoF6XLN8DLF1l9YUGaf5LeQfoRLcqXt3wH
+         XWpBmCYpLk9rwxQfG8bibQJqCMDWXoeNB5uAaJsTovEyOjd0ZD+YdTXjkWhbOIAfYb0c
+         8FXu9VxnyMvrJRQCIC++9oNs7XNjBub7rmPfSqGMQJX/IaMUwrqn+ohRAEsB7L0mRLjk
+         9YZifV7SpWm4ygixed/KL6GPsbiXxcaRRNPx1NSe8rY2wwZYJx2fk7CQXr6JDz++Y5cl
+         yt8A==
+X-Gm-Message-State: AOAM531V7R3m73Lkd5lKPQT6ZAT6REfyve0lfubRBocSnO+crnV3LjxL
+        Lj3XMNz7Gur3WCS0F/jEQCHUN/BJPKo4
+X-Google-Smtp-Source: ABdhPJwyQSwjPkR0qaUuTjnATtBd/G0GgK4bzkRXvZ/+QgTGS2i6L2iov1MK4VgKXMwVdCMhqbzs5CiyzQUN
+X-Received: from mizhang-super.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1071])
+ (user=mizhang job=sendgmr) by 2002:ad4:5dcf:: with SMTP id
+ m15mr560462qvh.35.1629145490981; Mon, 16 Aug 2021 13:24:50 -0700 (PDT)
+Reply-To: Mingwei Zhang <mizhang@google.com>
+Date:   Mon, 16 Aug 2021 20:24:38 +0000
+Message-Id: <20210816202441.4098523-1-mizhang@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
+Subject: [PATCH 0/3] clean up interface between KVM and psp
+From:   Mingwei Zhang <mizhang@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        John Allen <john.allen@amd.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alper Gun <alpergun@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        David Rienjes <rientjes@google.com>,
+        Marc Orr <marcorr@google.com>, Peter Gonda <pgonda@google.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        Mingwei Zhang <mizhang@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 12:38 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Mon, Aug 16, 2021 at 11:09:08AM -0700, Yang Shi wrote:
-> > But the most disappointing thing is all the effort doesn't make the page
-> > offline, it just returns:
-> >
-> > soft_offline: 0x1469f2: unknown non LRU page type 5ffff0000000000 ()
->
-> It's a shame it doesn't call dump_page().  There might be more
-> interesting information somewhere in struct page that would help us
-> figure out what kind of page it was in your environment.  For example,
-> it might be a page table page or a page allocated for vmalloc(), and
-> in both those cases, there are things we might be able to do (we'd
-> certainly be able to figure out that it isn't worth shrinking slab!)
+This patch set is trying to help make the interface between KVM and psp
+cleaner and simpler. In particular, the patches do the following
+improvements:
+ - avoid the requirement of psp data structures for some psp APIs.
+ - hide error handling within psp API, eg., using sev_decommission.
+ - hide the serialization requirement between DF_FLUSH and DEACTIVATE.
 
-Yes,  dump_page() could provide more information to us. I could add a
-new patch or just update this patch to call dump_page() if offline is
-failed if the hwpoison maintainer agrees to this as well.
+Mingwei Zhang (3):
+  KVM: SVM: move sev_decommission to psp driver
+  KVM: SVM: move sev_bind_asid to psp
+  KVM: SVM: move sev_unbind_asid and DF_FLUSH logic into psp
+
+ arch/x86/kvm/svm/sev.c       | 69 ++++--------------------------------
+ drivers/crypto/ccp/sev-dev.c | 57 +++++++++++++++++++++++++++--
+ include/linux/psp-sev.h      | 44 ++++++++++++++++++++---
+ 3 files changed, 102 insertions(+), 68 deletions(-)
+
+--
+2.33.0.rc1.237.g0d66db33f3-goog
+
