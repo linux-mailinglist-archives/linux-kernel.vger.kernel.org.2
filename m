@@ -2,81 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2DBE3EDAFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B87A03EDB05
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbhHPQdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 12:33:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbhHPQdg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 12:33:36 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 328F1C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 09:33:04 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id h9so28131513ljq.8
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 09:33:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j3P3jVOaCpqFg1Xx3rmbNYwlQro+UtAoix0AbNROZzE=;
-        b=VrwfctE9SK7UdztlvKYpCHaU+2HBHmZeOXjt0BfsgRNEvBenAL20b0JWVI8L0O5Y9L
-         XInPR09gdeDLBV4uuswLFlLn2dbVQ3/vPIifoKOYI28/x88Hnniq1cM01qWNWpsgKJB8
-         NLkcpLiijia7xjFPVikqte0w7ZrubpjJFEGlk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j3P3jVOaCpqFg1Xx3rmbNYwlQro+UtAoix0AbNROZzE=;
-        b=sH90XGbD4a/z2haSIiWpY/DLOjwJ2kUC1sSTwVLjXQWNlq7yayr4EY3tBFBBtAbU9e
-         DHp/1GcD0dIgKDPO6PvQjwb3ImHQuHWdEqsFfgnrto7JFIxnfM6mbXboqHpos6bPgMt0
-         F73VHWFHB4+4gQACUILviWehlAc9Zchyn5Jc354bfP/v0582kLBKWBcujs2+B/9IZ+BJ
-         eL1oIHqNPkWq8FX4k3qpEuogFqsdRGE/E81RsHa4smFuB0G92ZUYk1MGcARI7W1Ab0qE
-         KSI6I0YSlvVRWgguLh+KKnogfOzWbbbrPBtaHnCmUAmWSkQA1Xx9tAhclvlZVipGzxsm
-         X5NQ==
-X-Gm-Message-State: AOAM533wtxclgScRKOTjs8RrGhlfzmDOnwkjL53FjS6Y+4IGwIY/LBzY
-        ci9WMCuGzLkwVGeGOdqJgWYjnW148A+jHbtR
-X-Google-Smtp-Source: ABdhPJxfLcGvaN6P9Tc4Pks7T+c8oWg0FehCm3DizK978Q6iNr6mg/DkgMiulodFmoiKxVDrN+Ft4Q==
-X-Received: by 2002:a05:651c:883:: with SMTP id d3mr12917733ljq.17.1629131581885;
-        Mon, 16 Aug 2021 09:33:01 -0700 (PDT)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id z3sm862494lfh.18.2021.08.16.09.33.01
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 09:33:01 -0700 (PDT)
-Received: by mail-lj1-f178.google.com with SMTP id x7so28120057ljn.10
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 09:33:01 -0700 (PDT)
-X-Received: by 2002:a2e:84c7:: with SMTP id q7mr12902872ljh.61.1629131581056;
- Mon, 16 Aug 2021 09:33:01 -0700 (PDT)
+        id S229817AbhHPQfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 12:35:50 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:53494 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229481AbhHPQft (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 12:35:49 -0400
+Received: from zn.tnic (p200300ec2f08b500a9c2327ac48af0d7.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:b500:a9c2:327a:c48a:f0d7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 074D81EC01B7;
+        Mon, 16 Aug 2021 18:35:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1629131712;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=6Fl5YWTL0C8PiwMTzshA9ckbCB+YmFNF66gMHeCJyyE=;
+        b=VnK6ZyGjzS0hqOjB9/RYnWtKKbiGNk2vrjbauFy3rCMkklgRjSXSjv+U9pf/yGeOZ/DdUI
+        +BE9dZnDzIAUiqRR00IUYG8UHu6rfrgIM9OezD4H86J56M3Z85cZtUTMolU+5LcBNjSY2w
+        nz/m6R5h9wUf0wEsN7ke7wBNyouBG24=
+Date:   Mon, 16 Aug 2021 18:35:51 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        Rick P Edgecombe <rick.p.edgecombe@intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH v28 14/32] mm: Introduce VM_SHADOW_STACK for shadow stack
+ memory
+Message-ID: <YRqT5+ggVQ1zW9PK@zn.tnic>
+References: <20210722205219.7934-1-yu-cheng.yu@intel.com>
+ <20210722205219.7934-15-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-References: <20210812141636.35e41575@oasis.local.home> <20210816110416.6fb6d54d@oasis.local.home>
-In-Reply-To: <20210816110416.6fb6d54d@oasis.local.home>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 16 Aug 2021 06:32:45 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wjjVEPbObAoqmkrLSU4BgtrLNZYs4BrmvKcgOJQ2=EwEg@mail.gmail.com>
-Message-ID: <CAHk-=wjjVEPbObAoqmkrLSU4BgtrLNZYs4BrmvKcgOJQ2=EwEg@mail.gmail.com>
-Subject: Re: [GIT PULL v2] tracing: Fixes and clean ups for v5.14
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210722205219.7934-15-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 5:04 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> Did this one fall though the cracks?
+On Thu, Jul 22, 2021 at 01:52:01PM -0700, Yu-cheng Yu wrote:
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index eb97468dfe4c..02c70198b989 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -662,6 +662,9 @@ static void show_smap_vma_flags(struct seq_file *m, struct vm_area_struct *vma)
+>  #ifdef CONFIG_HAVE_ARCH_USERFAULTFD_MINOR
+>  		[ilog2(VM_UFFD_MINOR)]	= "ui",
+>  #endif /* CONFIG_HAVE_ARCH_USERFAULTFD_MINOR */
+> +#ifdef CONFIG_ARCH_HAS_SHADOW_STACK
+> +		[ilog2(VM_SHADOW_STACK)]= "ss",
+> +#endif
 
-Yes. It ended up being hidden in the thread about the previous one,
-and not standing out in my "git pull" search queue.
 
-Pulled now, thanks for pinging..
+ERROR: spaces required around that '=' (ctx:VxW)
+#109: FILE: fs/proc/task_mmu.c:666:
++		[ilog2(VM_SHADOW_STACK)]= "ss",
+ 		                        ^
 
-                Linus
+total: 1 errors, 0 warnings, 49 lines checked
+
+Please integrate scripts/checkpatch.pl into your patch creation
+workflow. Some of the warnings/errors *actually* make sense.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
