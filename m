@@ -2,100 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 846F63ED1F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C01663ED1F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235719AbhHPK2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 06:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36664 "EHLO
+        id S235784AbhHPKaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233954AbhHPK2M (ORCPT
+        with ESMTP id S231355AbhHPKaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:28:12 -0400
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75BBCC0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 03:27:41 -0700 (PDT)
-Received: by mail-ua1-x92a.google.com with SMTP id a4so7333864uae.6
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 03:27:41 -0700 (PDT)
+        Mon, 16 Aug 2021 06:30:20 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9DAC061764;
+        Mon, 16 Aug 2021 03:29:48 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id g138so11231713wmg.4;
+        Mon, 16 Aug 2021 03:29:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pRH4TVFPj1g2bLXry7U6Q5PGawo78fbiYn7oa4P7TUE=;
-        b=wUONjgu57oYf3OfxDDScC3ZokM5dNXLU+0GsEWRZ3QVzsyATXYqT58BpdtitRkQkIH
-         9j4dHB+IpVqScnNr9gIh/8BBpPPN1oyuqGiBT28prUs0TV2sjtlrXSEKM44kpi29mtgm
-         hsFDminvf3C0rKryy/W0IFmoq+mJr3YJ2W9yriAbTRxX9XMEUC0KHf/vO6t4PmpcBVwV
-         eHlohxqA6fWnbXgZMYVKahwwM+7oOdp60WFDNSxi1+1S4L3v05kNYa3zKRhdV51s5eyf
-         6A1sXyDRMjedq0EvnMhnzh20FFACX3TsDX7epWJFWhh3U9Q8UvF+J3vSXdfACqnJmYBH
-         0W0w==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zC6T7bwIy4U4vQbxXdGtxZMXQsi3PtjnTtfgcrsYRhE=;
+        b=FPOqA7xi7oANwZC58CFFSVRXHbzeGBVYfw1vS8K9e5GA/5tjXBZiCMTP96f+Z0+7Nu
+         MFIVrTtQEnh411BFcqJYmumAHifswyjhxeIv1D5Lmmd2mfIeZ6v1c9WBQ7g/gnRcq8Fx
+         spHvJ9NdNpSAmxKMgTUswYW/6m9LjknaNWh1mnMcGzc0uyKdMMxima0Lnlyzk3TJ0s/d
+         zwtGzAJ1rBcnhsJKRtqHkSJE9gK5STDWJUaUV3dfV4vczF5fJIXEnOIiyHNjjwjAI3kE
+         nNBN8kd/EXbtiO3Mbvc8UvOEchgf3DuOBnNG0f+8+G8L92RUt+KNJAA9jL2IKEztSmE3
+         0RDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pRH4TVFPj1g2bLXry7U6Q5PGawo78fbiYn7oa4P7TUE=;
-        b=fhyhfXEbPx9/XjWJbuLeqIu/7EXUWkXgGwxoWKWKPA/CL7Q3HFiYd3Dy2tEZ0i+uF/
-         OlPMrRvN4D5oZkUxlok3KefNVeyTzTlL3EmMQ4e6zJy/ff11+T2wY7qdug1bUHOIMhnr
-         /O914dsK8P643Xcx3LfJQz+40HobfwLJMJZ2trNHhbgbciSLrs/nFC8hUS+eEIENMG/G
-         +PXXM8cl3e8fM8nzOe7pGMMo9EVk8dEUiQaKk6qDctK7Qv/Z3nV2aT0Rz++YoTiV+C1B
-         P9CyF0iB7h9uC3cdll07Ttj+MvRorNAqs5aDZHypoXalpg40I/jWnv0D7zzVM6J566qG
-         yKjg==
-X-Gm-Message-State: AOAM5329j1NMQcj3Rc730o30GKdA4US9Xv173P4a6I08vpdFIq6Bsw4u
-        WNs4GzqyQ9tTZDpGt5sN5kUadLDBlO6/Qe8nMKg/qQ==
-X-Google-Smtp-Source: ABdhPJx12b+Bqmk2bxuZlUu8XnA8FFpwLQVJjtElcHZQSIpFTlWvmHagxQPgWDu9OhRbbdZgmffyA5kUa3yLHHrPYLQ=
-X-Received: by 2002:a9f:25a7:: with SMTP id 36mr8092627uaf.129.1629109660385;
- Mon, 16 Aug 2021 03:27:40 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zC6T7bwIy4U4vQbxXdGtxZMXQsi3PtjnTtfgcrsYRhE=;
+        b=WvRmPN51iiem2y9DAmuNrz2jtqda+bYP4RIYa9rMJkDBwxRccUGx7pJkTwoRKluQsf
+         XmyZg2kB+1dERc5V17i7qIVfXk+h6guUhVLofupZtrb5UbxaX+AWzFVQin80aDpXc+Y0
+         8GHo6FI0OfBc7ZKWszJbcdJhT+Th7fWaPOjoHIFvdFHYhXLdZx2DmIyB0PnoiPNgh2CC
+         MIiAq0fVwIw14T0fZykjsbQ6NUO1iBMfu5ghEmRHastIcJP1V9CjnzaLkHYnuBoBenAl
+         DnnIZYLcgXuFozX2oFgPr9H2ADQQK8C6FZ25c3nPqbLuRuofRq3AOvYPTgEhRxXuxgvl
+         BFbA==
+X-Gm-Message-State: AOAM530O+e+okCwtWqHrppYo96Vxq7KCIbBSot6zr2pNFq0ui+B7US1E
+        uopy7EerjbSL8UsEj5h26Ik=
+X-Google-Smtp-Source: ABdhPJxj9jwaASRpwTTbZVwcKbG924+JuU0ncGwiIXxe1ss32NyyWPXMUmc+Nec+9/r0sbHas2oXGw==
+X-Received: by 2002:a05:600c:1d01:: with SMTP id l1mr13472797wms.178.1629109787293;
+        Mon, 16 Aug 2021 03:29:47 -0700 (PDT)
+Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
+        by smtp.gmail.com with ESMTPSA id e3sm11767136wrv.65.2021.08.16.03.29.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 03:29:46 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James Hartley <james.hartley@sondrel.com>,
+        linux-mips@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: adjust PISTACHIO SOC SUPPORT after its retirement
+Date:   Mon, 16 Aug 2021 12:29:42 +0200
+Message-Id: <20210816102942.6976-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210809072315.1127-1-derong.liu@mediatek.com>
-In-Reply-To: <20210809072315.1127-1-derong.liu@mediatek.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 16 Aug 2021 12:27:04 +0200
-Message-ID: <CAPDyKFq3_eia7cvo-1Ajj5wcrfEHtp_EsMp27uL4dC_n+vPWZQ@mail.gmail.com>
-Subject: Re: [PATCH v2] mmc: mediatek: add wait dma stop done flow
-To:     Derong Liu <derong.liu@mediatek.com>
-Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        wsp_upstream@mediatek.com, Peng Zhou <peng.zhou@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Aug 2021 at 09:25, Derong Liu <derong.liu@mediatek.com> wrote:
->
-> We found this issue on a 5G platform, during CMDQ error handling, if DMA status is active when it call msdc_reset_hw, it means mmc host hw reset and DMA transfer will be parallel, mmc host may access sram region unexpectedly.
->
-> According to the programming guide of mtk mmc host,it needs to wait for dma stop done after set dma stop.
-> This change should be applied to all SoCs.
->
-> Signed-off-by: Derong Liu <derong.liu@mediatek.com>
-> ---
->  drivers/mmc/host/mtk-sd.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-> index 4dfc246c5f95..1dfd2842471b 100644
-> --- a/drivers/mmc/host/mtk-sd.c
-> +++ b/drivers/mmc/host/mtk-sd.c
-> @@ -2339,6 +2339,8 @@ static void msdc_cqe_disable(struct mmc_host *mmc, bool recovery)
->         if (recovery) {
->                 sdr_set_field(host->base + MSDC_DMA_CTRL,
->                               MSDC_DMA_CTRL_STOP, 1);
-> +               while (readl(host->base + MSDC_DMA_CFG) & MSDC_DMA_CFG_STS)
-> +                       cpu_relax();
+Commit 104f942b2832 ("MIPS: Retire MACH_PISTACHIO") removes
+./arch/mips/pistachio/ and ./arch/mips/configs/pistachio_defconfig, but
+misses to adjust the corresponding section PISTACHIO SOC SUPPORT
+in MAINTAINERS.
 
-I suggest you look into using readl_poll_timeout() - as we don't want
-to hang indefinitely, no matter what.
+Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
 
->                 msdc_reset_hw(host);
->         }
->  }
-> --
-> 2.18.0
+  warning: no file matches    F:    arch/mips/configs/pistachio*_defconfig
+  warning: no file matches    F:    arch/mips/pistachio/
 
-Kind regards
-Uffe
+Adjust the PISTACHIO SOC SUPPORT after its retirement.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on next-20210816
+
+Jiaxun, James, please ack. 
+Thomas, please pick this minor non-urgent clean-up patch on mips-next.
+
+ MAINTAINERS | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 1a2d3ee2711e..8276e59406e4 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -14802,8 +14802,6 @@ M:	James Hartley <james.hartley@sondrel.com>
+ L:	linux-mips@vger.kernel.org
+ S:	Odd Fixes
+ F:	arch/mips/boot/dts/img/pistachio*
+-F:	arch/mips/configs/pistachio*_defconfig
+-F:	arch/mips/pistachio/
+ 
+ PKTCDVD DRIVER
+ M:	linux-block@vger.kernel.org
+-- 
+2.26.2
+
