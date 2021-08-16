@@ -2,152 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD3C3EDCEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 578D13EDCEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbhHPSMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 14:12:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbhHPSMa (ORCPT
+        id S231390AbhHPSNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 14:13:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20897 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229481AbhHPSNg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 14:12:30 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50899C061764;
-        Mon, 16 Aug 2021 11:11:58 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id a15so5587798iot.2;
-        Mon, 16 Aug 2021 11:11:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OgXtNKQVWNS/t9DnTxT4k+sKuavXVHdSyozmTrDmIzs=;
-        b=VQMcJfqDIF28JPMngb0oQ/7fJS4RV/h/jGqHDfDcji1nnRVIW5va2razqqgzHvBHOS
-         TGfaCQjdn1vsY7Aam4D1pRST+6Ff/b4jXbQdLkSUS/jeJp2FMDX4bx1t2rZgASQVXNPn
-         WOJw/pN70skdHEW9+0y1qly5biPDnQ+jn9qcKqMzwA6DZEksN2oYTuSgCkTJlXiMqKBz
-         Et09bRVTahG0zDEiaW3HwGOd6dqWseR7SEYxBZQ4cNJ2DaOZuDpgFczJoNGB3XsmyVO1
-         YQZzJ7c0yfYdDp8kx9lkckpUCjm21/JIkZG4vjROEk/KkAooM4GdibKsTu5Il6ecpfmq
-         277w==
+        Mon, 16 Aug 2021 14:13:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629137583;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ObwAiK1SanC6EIqEOVjwPOQt8lDrmZK5pIQ+0d+6crA=;
+        b=ZRCsMd11GJy5nSKOd5jGFMPLKAWR7lnREhW8rxxJc1Z43axPu3a2GkwDsV1rQIVAe6giAN
+        5vUfa0utXNgcX7JJN39lxCb3Tuqt3Lb9m37hNnyX798CE4cI51leOMCJq3qLQENa61WtjU
+        g87BSoPpkroyetosdZiFwXFBJei6db0=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-18-RPL-AnGXOtST2hleI73Gow-1; Mon, 16 Aug 2021 14:13:01 -0400
+X-MC-Unique: RPL-AnGXOtST2hleI73Gow-1
+Received: by mail-wr1-f69.google.com with SMTP id h24-20020adfa4d8000000b00156d9931072so63910wrb.15
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:13:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OgXtNKQVWNS/t9DnTxT4k+sKuavXVHdSyozmTrDmIzs=;
-        b=dBmopis+IxKL3SfqvUk3TepQgG2G+tsn/g5hw4Y2elP/wPmhe2iWLMNXAGYtv+qCA3
-         n8LuFk6wTwCNFIlNQhpU4DEsblNDre1awaeeKwoz0d7peXIYZi4AGeDBmW8nkG+lXMjm
-         q8my3wGuUSG90o1p44hFPPKXecHZfP8a3M2mVDrwoXVR8ADPEEfQ5O/IPYSiONRiHFUK
-         Qzi3hZuisZjb8lw2cCSdnsGPobJpoT2sKzk7JDC7MOyh0uYs5pmXF1raY/jq4uGVx1R7
-         HQ3JDPbeF+ZIGwex5HIKNtOndK/ivmqqPtD7AXSpTESzSWex/b5MRJGipVLUPXF7qeBL
-         nMQA==
-X-Gm-Message-State: AOAM530KUO7xM7Nf3dy+6ibNmmvJjJc3fyUkW+mJAexzGku/k7VJhjFC
-        /adnouicA0Uqtv95R2mrBVw5PdgCg2yPBnDQk3Y=
-X-Google-Smtp-Source: ABdhPJxe4xcrw0U4Dd1whvty55tfoYVW3p2Pw16+UKKJO6nXVsQXetYWVAQeXSpRs8A+FqzmkFphq0Q/eIfOk9SMXqI=
-X-Received: by 2002:a5d:9eda:: with SMTP id a26mr150414ioe.166.1629137517690;
- Mon, 16 Aug 2021 11:11:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210720232624.1493424-1-nitesh@redhat.com> <20210720232624.1493424-11-nitesh@redhat.com>
-In-Reply-To: <20210720232624.1493424-11-nitesh@redhat.com>
-From:   Jassi Brar <jassisinghbrar@gmail.com>
-Date:   Mon, 16 Aug 2021 13:11:47 -0500
-Message-ID: <CABb+yY3Wz57dYZ8pa5zHatGRu1RFmyRK+UvN+B8txCcOUTPQzw@mail.gmail.com>
-Subject: Re: [PATCH v5 10/14] mailbox: Use irq_update_affinity_hint
-To:     Nitesh Narayan Lal <nitesh@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-scsi@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
-        linux-api@vger.kernel.org, linux-pci@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        jesse.brandeburg@intel.com, Robin Murphy <robin.murphy@arm.com>,
-        mtosatti@redhat.com, mingo@kernel.org, jbrandeb@kernel.org,
-        frederic@kernel.org, juri.lelli@redhat.com, abelits@marvell.com,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>, peterz@infradead.org,
-        "David S . Miller" <davem@davemloft.net>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ObwAiK1SanC6EIqEOVjwPOQt8lDrmZK5pIQ+0d+6crA=;
+        b=BZJqC7uLjIa+8UPC25LBB+ieXVilnyDSyQwa9Hk/1qG099ZeZsnxsnuksfRKDtF0k9
+         LoutjyMFZ1hV/1SvTVwMYXxlQWCQHbyaoorCIE36e9Y1tssFSnCLZDfkqRo5Mcxs1Qqp
+         XSnilgUQ6k9TZVxT3zuXw4qc2zNMqht+dS3JY6ZSkDV1Y/MRMu9uE8fxSZjgeEIR/ww5
+         3qnQEri5jV3/2cHIGVxqe56oMHmXT1ECFVapCSXxNgcLVbAm9XA1U6x37cMJ4YOUABFI
+         DnsvmoDTvXmxvUOmTW0sJttPyPGadPr31RhHkIsvcywBkqT7aYa3rDNemt0lylH5pqQL
+         +8wg==
+X-Gm-Message-State: AOAM530IT98GPhhXp87TsFYGSLhlWe8+f7UaaXBROOcl+asOeG6nnrXZ
+        CSuic4grkABMMOIg6oBXp5sfiX5Tx0/5w/yuKHS5LA9Ps8ei+sjAgarjq5FjtDIw1qe5iw+t5mA
+        V6L4aDGo3/+gt+oNJNNu2C4kV
+X-Received: by 2002:adf:f403:: with SMTP id g3mr20183228wro.222.1629137580064;
+        Mon, 16 Aug 2021 11:13:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxSkkSVax500dJoptbIZkzkC8VGwiA1i59fRi1lf7+73SVVl22U3bvekg7+YoUHgubxd2vmww==
+X-Received: by 2002:adf:f403:: with SMTP id g3mr20183201wro.222.1629137579804;
+        Mon, 16 Aug 2021 11:12:59 -0700 (PDT)
+Received: from krava ([83.240.61.5])
+        by smtp.gmail.com with ESMTPSA id n16sm12471749wru.79.2021.08.16.11.12.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 11:12:59 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 20:12:58 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
-        chris.friesen@windriver.com, Marc Zyngier <maz@kernel.org>,
-        nhorman@tuxdriver.com, pjwaskiewicz@gmail.com, sassmann@redhat.com,
-        thenzl@redhat.com, kashyap.desai@broadcom.com,
-        sumit.saxena@broadcom.com, shivasharan.srikanteshwara@broadcom.com,
-        sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
-        suganath-prabu.subramani@broadcom.com, james.smart@broadcom.com,
-        dick.kennedy@broadcom.com, jkc@redhat.com, faisal.latif@intel.com,
-        shiraz.saleem@intel.com, tariqt@nvidia.com, ahleihel@redhat.com,
-        kheib@redhat.com, borisp@nvidia.com, saeedm@nvidia.com,
-        benve@cisco.com, govind@gmx.com, ajit.khaparde@broadcom.com,
-        sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
-        nilal@redhat.com, tatyana.e.nikolova@intel.com,
-        mustafa.ismail@intel.com, ahs3@redhat.com, leonro@nvidia.com,
-        chandrakanth.patil@broadcom.com,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Baolin Wang <baolin.wang7@gmail.com>, poros@redhat.com,
-        minlei@redhat.com, emilne@redhat.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, _govind@gmx.com, kabel@kernel.org,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Tushar Khandelwal <Tushar.Khandelwal@arm.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Oscar Salvador <osalvador@suse.de>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [BUG] general protection fault when reading /proc/kcore
+Message-ID: <YRqqqvaZHDu1IKrD@krava>
+References: <YRqhqz35tm3hA9CG@krava>
+ <1a05d147-e249-7682-2c86-bbd157bc9c7d@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1a05d147-e249-7682-2c86-bbd157bc9c7d@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 6:27 PM Nitesh Narayan Lal <nitesh@redhat.com> wrote:
->
-> The driver uses irq_set_affinity_hint() to:
->
-> - Set the affinity_hint which is consumed by the userspace for
->   distributing the interrupts
->
-> - Enforce affinity
->
-> As per commit 6ac17fe8c14a ("mailbox: bcm-flexrm-mailbox: Set IRQ affinity
-> hint for FlexRM ring IRQs") the latter is done to ensure that the FlexRM
-> ring interrupts are evenly spread across all available CPUs. However, since
-> commit a0c9259dc4e1 ("irq/matrix: Spread interrupts on allocation") the
-> spreading of interrupts is dynamically performed at the time of allocation.
-> Hence, there is no need for the drivers to enforce their own affinity for
-> the spreading of interrupts.
->
-> Also, irq_set_affinity_hint() applying the provided cpumask as an affinity
-> for the interrupt is an undocumented side effect. To remove this side
-> effect irq_set_affinity_hint() has been marked as deprecated and new
-> interfaces have been introduced. Hence, replace the irq_set_affinity_hint()
-> with the new interface irq_update_affinity_hint() that only sets the
-> affinity_hint pointer.
->
-> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
-> ---
->  drivers/mailbox/bcm-flexrm-mailbox.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mailbox/bcm-flexrm-mailbox.c b/drivers/mailbox/bcm-flexrm-mailbox.c
-> index 78073ad1f2f1..16982c13d323 100644
-> --- a/drivers/mailbox/bcm-flexrm-mailbox.c
-> +++ b/drivers/mailbox/bcm-flexrm-mailbox.c
-> @@ -1298,7 +1298,7 @@ static int flexrm_startup(struct mbox_chan *chan)
->         val = (num_online_cpus() < val) ? val / num_online_cpus() : 1;
->         cpumask_set_cpu((ring->num / val) % num_online_cpus(),
->                         &ring->irq_aff_hint);
-> -       ret = irq_set_affinity_hint(ring->irq, &ring->irq_aff_hint);
-> +       ret = irq_update_affinity_hint(ring->irq, &ring->irq_aff_hint);
->         if (ret) {
->                 dev_err(ring->mbox->dev,
->                         "failed to set IRQ affinity hint for ring%d\n",
-> @@ -1425,7 +1425,7 @@ static void flexrm_shutdown(struct mbox_chan *chan)
->
->         /* Release IRQ */
->         if (ring->irq_requested) {
-> -               irq_set_affinity_hint(ring->irq, NULL);
-> +               irq_update_affinity_hint(ring->irq, NULL);
->                 free_irq(ring->irq, ring);
->                 ring->irq_requested = false;
->         }
->
-Seems ok to me. But I don't have the h/w to test.
+On Mon, Aug 16, 2021 at 07:49:15PM +0200, David Hildenbrand wrote:
+> On 16.08.21 19:34, Jiri Olsa wrote:
+> > hi,
+> > I'm getting fault below when running:
+> >=20
+> > 	# cat /proc/kallsyms | grep ksys_read
+> > 	ffffffff8136d580 T ksys_read
+> > 	# objdump -d --start-address=3D0xffffffff8136d580 --stop-address=3D0xf=
+fffffff8136d590 /proc/kcore
+> >=20
+> > 	/proc/kcore:     file format elf64-x86-64
+> >=20
+> > 	Segmentation fault
+> >=20
+> > any idea? config is attached
+>=20
+> Just tried with a different config on 5.14.0-rc6+
+>=20
+> [root@localhost ~]# cat /proc/kallsyms | grep ksys_read
+> ffffffff8927a800 T ksys_readahead
+> ffffffff89333660 T ksys_read
+>=20
+> [root@localhost ~]# objdump -d --start-address=3D0xffffffff89333660
+> --stop-address=3D0xffffffff89333670
+>=20
+> a.out:     file format elf64-x86-64
+>=20
+>=20
+>=20
+> The kern_addr_valid(start) seems to fault in your case, which is weird,
+> because it merely walks the page tables. But it seems to complain about a
+> non-canonical address 0xf887ffcbff000
+>=20
+> Can you post your QEMU cmdline? Did you test this on other kernel version=
+s?
 
-Acked-by: Jassi Brar <jaswinder.singh@linaro.org>
+I'm using virt-manager so:
 
-cheers.
+/usr/bin/qemu-system-x86_64 -name guest=3Dfedora33,debug-threads=3Don -S -o=
+bject secret,id=3DmasterKey0,format=3Draw,file=3D/var/lib/libvirt/qemu/doma=
+in-13-fedora33/master-key.aes -machine pc-q35-5.1,accel=3Dkvm,usb=3Doff,vmp=
+ort=3Doff,dump-guest-core=3Doff,memory-backend=3Dpc.ram -cpu Skylake-Server=
+-IBRS,ss=3Don,vmx=3Don,pdcm=3Don,hypervisor=3Don,tsc-adjust=3Don,clflushopt=
+=3Don,umip=3Don,pku=3Don,stibp=3Don,arch-capabilities=3Don,ssbd=3Don,xsaves=
+=3Don,ibpb=3Don,amd-stibp=3Don,amd-ssbd=3Don,skip-l1dfl-vmentry=3Don,pschan=
+ge-mc-no=3Don -m 8192 -object memory-backend-ram,id=3Dpc.ram,size=3D8589934=
+592 -overcommit mem-lock=3Doff -smp 20,sockets=3D20,cores=3D1,threads=3D1 -=
+uuid 2185d5a9-dbad-4d61-aa4e-97af9fd7ebca -no-user-config -nodefaults -char=
+dev socket,id=3Dcharmonitor,fd=3D36,server,nowait -mon chardev=3Dcharmonito=
+r,id=3Dmonitor,mode=3Dcontrol -rtc base=3Dutc,driftfix=3Dslew -global kvm-p=
+it.lost_tick_policy=3Ddelay -no-hpet -no-shutdown -global ICH9-LPC.disable_=
+s3=3D1 -global ICH9-LPC.disable_s4=3D1 -boot strict=3Don -kernel /home/jols=
+a/qemu/run/vmlinux -initrd /home/jolsa/qemu/run/initrd -append root=3D/dev/=
+mapper/fedora_fedora-root ro rd.lvm.lv=3Dfedora_fedora/root console=3Dtty0 =
+console=3DttyS0,115200 -device pcie-root-port,port=3D0x10,chassis=3D1,id=3D=
+pci.1,bus=3Dpcie.0,multifunction=3Don,addr=3D0x2 -device pcie-root-port,por=
+t=3D0x11,chassis=3D2,id=3Dpci.2,bus=3Dpcie.0,addr=3D0x2.0x1 -device pcie-ro=
+ot-port,port=3D0x12,chassis=3D3,id=3Dpci.3,bus=3Dpcie.0,addr=3D0x2.0x2 -dev=
+ice pcie-root-port,port=3D0x13,chassis=3D4,id=3Dpci.4,bus=3Dpcie.0,addr=3D0=
+x2.0x3 -device pcie-root-port,port=3D0x14,chassis=3D5,id=3Dpci.5,bus=3Dpcie=
+=2E0,addr=3D0x2.0x4 -device pcie-root-port,port=3D0x15,chassis=3D6,id=3Dpci=
+=2E6,bus=3Dpcie.0,addr=3D0x2.0x5 -device pcie-root-port,port=3D0x16,chassis=
+=3D7,id=3Dpci.7,bus=3Dpcie.0,addr=3D0x2.0x6 -device qemu-xhci,p2=3D15,p3=3D=
+15,id=3Dusb,bus=3Dpci.2,addr=3D0x0 -device virtio-serial-pci,id=3Dvirtio-se=
+rial0,bus=3Dpci.3,addr=3D0x0 -blockdev {"driver":"file","filename":"/var/li=
+b/libvirt/images/fedora33.qcow2","node-name":"libvirt-2-storage","auto-read=
+-only":true,"discard":"unmap"} -blockdev {"node-name":"libvirt-2-format","r=
+ead-only":false,"driver":"qcow2","file":"libvirt-2-storage","backing":null}=
+ -device virtio-blk-pci,bus=3Dpci.4,addr=3D0x0,drive=3Dlibvirt-2-format,id=
+=3Dvirtio-disk0,bootindex=3D1 -device ide-cd,bus=3Dide.0,id=3Dsata0-0-0 -ne=
+tdev tap,fd=3D38,id=3Dhostnet0,vhost=3Don,vhostfd=3D39 -device virtio-net-p=
+ci,netdev=3Dhostnet0,id=3Dnet0,mac=3D52:54:00:f3:c6:e7,bus=3Dpci.1,addr=3D0=
+x0 -chardev pty,id=3Dcharserial0 -device isa-serial,chardev=3Dcharserial0,i=
+d=3Dserial0 -chardev socket,id=3Dcharchannel0,fd=3D40,server,nowait -device=
+ virtserialport,bus=3Dvirtio-serial0.0,nr=3D1,chardev=3Dcharchannel0,id=3Dc=
+hannel0,name=3Dorg.qemu.guest_agent.0 -chardev spicevmc,id=3Dcharchannel1,n=
+ame=3Dvdagent -device virtserialport,bus=3Dvirtio-serial0.0,nr=3D2,chardev=
+=3Dcharchannel1,id=3Dchannel1,name=3Dcom.redhat.spice.0 -device usb-tablet,=
+id=3Dinput0,bus=3Dusb.0,port=3D1 -spice port=3D5900,addr=3D127.0.0.1,disabl=
+e-ticketing,image-compression=3Doff,seamless-migration=3Don -device qxl-vga=
+,id=3Dvideo0,ram_size=3D67108864,vram_size=3D67108864,vram64_size_mb=3D0,vg=
+amem_mb=3D16,max_outputs=3D1,bus=3Dpcie.0,addr=3D0x1 -device ich9-intel-hda=
+,id=3Dsound0,bus=3Dpcie.0,addr=3D0x1b -device hda-duplex,id=3Dsound0-codec0=
+,bus=3Dsound0.0,cad=3D0 -chardev spicevmc,id=3Dcharredir0,name=3Dusbredir -=
+device usb-redir,chardev=3Dcharredir0,id=3Dredir0,bus=3Dusb.0,port=3D2 -cha=
+rdev spicevmc,id=3Dcharredir1,name=3Dusbredir -device usb-redir,chardev=3Dc=
+harredir1,id=3Dredir1,bus=3Dusb.0,port=3D3 -device virtio-balloon-pci,id=3D=
+balloon0,bus=3Dpci.5,addr=3D0x0 -object rng-random,id=3Dobjrng0,filename=3D=
+/dev/urandom -device virtio-rng-pci,rng=3Dobjrng0,id=3Drng0,bus=3Dpci.6,add=
+r=3D0x0 -sandbox on,obsolete=3Ddeny,elevateprivileges=3Ddeny,spawn=3Ddeny,r=
+esourcecontrol=3Ddeny -msg timestamp=3Don
+
+so far I tested just bpf-next/master:
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+and jsut removed my changes to make sure it wasn't me ;-)
+
+I'll try to find a version that worked for me before
+
+
+thanks,
+jirka
+
