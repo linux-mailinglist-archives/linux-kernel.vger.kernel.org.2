@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F239D3ED773
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE9A3ED5F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240358AbhHPNdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:33:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44614 "EHLO mail.kernel.org"
+        id S239258AbhHPNQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:16:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239073AbhHPNUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:20:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FD0763274;
-        Mon, 16 Aug 2021 13:16:09 +0000 (UTC)
+        id S239653AbhHPNJ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:09:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 137E960E78;
+        Mon, 16 Aug 2021 13:09:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119770;
-        bh=eunlG11KxHgVjrAj/cRgOPvltDaU9STbSoCRUEWx4V8=;
+        s=korg; t=1629119367;
+        bh=EEr00xQjhRt4abvlxPqMIxXmKFUHYRW4cSkD8hI5gok=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JZIAB9ZuihnRG1/XrRmMh7ElU0W+iHOho5nHHusyneKJX39++x3ZgMlrJTXkriDwp
-         Zcwvr0dmXj4ZDlCWYEK+AyBCF2oLxkfS20wR5lk1VxLK3KYBwQ+6emfH3gXQiKO789
-         ei2dl0+lvkPuF/X8h1/3iyqt/DcsUfV3iW6AeC94=
+        b=gKBLe5SjHwd7Dfh7Ld54/6zrshA7RrjFymwQp7yzR8dOYRM0TNmTGj7aS76ojbEsv
+         eOzQH7yNbZoI26Ykf8BFL0W0vyWqOl8fPSaD6IAGwSKNr/5Ix8QT6V1AGLU6w9STfY
+         bK4fVzZ5JtoVPvcYmsx1ewNSuenqv5YwkoYnDIbo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 5.13 134/151] PCI/MSI: Use msi_mask_irq() in pci_msi_shutdown()
-Date:   Mon, 16 Aug 2021 15:02:44 +0200
-Message-Id: <20210816125448.471036661@linuxfoundation.org>
+        stable@vger.kernel.org, Mark Nelson <mnelson@redhat.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Luis Henriques <lhenriques@suse.de>,
+        Ilya Dryomov <idryomov@gmail.com>
+Subject: [PATCH 5.10 95/96] ceph: take snap_empty_lock atomically with snaprealm refcount change
+Date:   Mon, 16 Aug 2021 15:02:45 +0200
+Message-Id: <20210816125438.144877986@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
-References: <20210816125444.082226187@linuxfoundation.org>
+In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
+References: <20210816125434.948010115@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +41,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Jeff Layton <jlayton@kernel.org>
 
-commit d28d4ad2a1aef27458b3383725bb179beb8d015c upstream.
+commit 8434ffe71c874b9c4e184b88d25de98c2bf5fe3f upstream.
 
-No point in using the raw write function from shutdown. Preparatory change
-to introduce proper serialization for the msi_desc::masked cache.
+There is a race in ceph_put_snap_realm. The change to the nref and the
+spinlock acquisition are not done atomically, so you could decrement
+nref, and before you take the spinlock, the nref is incremented again.
+At that point, you end up putting it on the empty list when it
+shouldn't be there. Eventually __cleanup_empty_realms runs and frees
+it when it's still in-use.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Marc Zyngier <maz@kernel.org>
-Reviewed-by: Marc Zyngier <maz@kernel.org>
+Fix this by protecting the 1->0 transition with atomic_dec_and_lock,
+and just drop the spinlock if we can get the rwsem.
+
+Because these objects can also undergo a 0->1 refcount transition, we
+must protect that change as well with the spinlock. Increment locklessly
+unless the value is at 0, in which case we take the spinlock, increment
+and then take it off the empty list if it did the 0->1 transition.
+
+With these changes, I'm removing the dout() messages from these
+functions, as well as in __put_snap_realm. They've always been racy, and
+it's better to not print values that may be misleading.
+
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210729222542.674391354@linutronix.de
+URL: https://tracker.ceph.com/issues/46419
+Reported-by: Mark Nelson <mnelson@redhat.com>
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+Reviewed-by: Luis Henriques <lhenriques@suse.de>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/msi.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ceph/snap.c |   34 +++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
---- a/drivers/pci/msi.c
-+++ b/drivers/pci/msi.c
-@@ -961,7 +961,7 @@ static void pci_msi_shutdown(struct pci_
+--- a/fs/ceph/snap.c
++++ b/fs/ceph/snap.c
+@@ -67,19 +67,19 @@ void ceph_get_snap_realm(struct ceph_mds
+ {
+ 	lockdep_assert_held(&mdsc->snap_rwsem);
  
- 	/* Return the device with MSI unmasked as initial states */
- 	mask = msi_mask(desc->msi_attrib.multi_cap);
--	__pci_msi_desc_mask_irq(desc, mask, 0);
-+	msi_mask_irq(desc, mask, 0);
+-	dout("get_realm %p %d -> %d\n", realm,
+-	     atomic_read(&realm->nref), atomic_read(&realm->nref)+1);
+ 	/*
+-	 * since we _only_ increment realm refs or empty the empty
+-	 * list with snap_rwsem held, adjusting the empty list here is
+-	 * safe.  we do need to protect against concurrent empty list
+-	 * additions, however.
++	 * The 0->1 and 1->0 transitions must take the snap_empty_lock
++	 * atomically with the refcount change. Go ahead and bump the
++	 * nref here, unless it's 0, in which case we take the spinlock
++	 * and then do the increment and remove it from the list.
+ 	 */
+-	if (atomic_inc_return(&realm->nref) == 1) {
+-		spin_lock(&mdsc->snap_empty_lock);
++	if (atomic_inc_not_zero(&realm->nref))
++		return;
++
++	spin_lock(&mdsc->snap_empty_lock);
++	if (atomic_inc_return(&realm->nref) == 1)
+ 		list_del_init(&realm->empty_item);
+-		spin_unlock(&mdsc->snap_empty_lock);
+-	}
++	spin_unlock(&mdsc->snap_empty_lock);
+ }
  
- 	/* Restore dev->irq to its default pin-assertion IRQ */
- 	dev->irq = desc->msi_attrib.default_irq;
+ static void __insert_snap_realm(struct rb_root *root,
+@@ -208,28 +208,28 @@ static void __put_snap_realm(struct ceph
+ {
+ 	lockdep_assert_held_write(&mdsc->snap_rwsem);
+ 
+-	dout("__put_snap_realm %llx %p %d -> %d\n", realm->ino, realm,
+-	     atomic_read(&realm->nref), atomic_read(&realm->nref)-1);
++	/*
++	 * We do not require the snap_empty_lock here, as any caller that
++	 * increments the value must hold the snap_rwsem.
++	 */
+ 	if (atomic_dec_and_test(&realm->nref))
+ 		__destroy_snap_realm(mdsc, realm);
+ }
+ 
+ /*
+- * caller needn't hold any locks
++ * See comments in ceph_get_snap_realm. Caller needn't hold any locks.
+  */
+ void ceph_put_snap_realm(struct ceph_mds_client *mdsc,
+ 			 struct ceph_snap_realm *realm)
+ {
+-	dout("put_snap_realm %llx %p %d -> %d\n", realm->ino, realm,
+-	     atomic_read(&realm->nref), atomic_read(&realm->nref)-1);
+-	if (!atomic_dec_and_test(&realm->nref))
++	if (!atomic_dec_and_lock(&realm->nref, &mdsc->snap_empty_lock))
+ 		return;
+ 
+ 	if (down_write_trylock(&mdsc->snap_rwsem)) {
++		spin_unlock(&mdsc->snap_empty_lock);
+ 		__destroy_snap_realm(mdsc, realm);
+ 		up_write(&mdsc->snap_rwsem);
+ 	} else {
+-		spin_lock(&mdsc->snap_empty_lock);
+ 		list_add(&realm->empty_item, &mdsc->snap_empty);
+ 		spin_unlock(&mdsc->snap_empty_lock);
+ 	}
 
 
