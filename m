@@ -2,118 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2116E3ED20C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8512F3ED214
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235719AbhHPKfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 06:35:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38326 "EHLO
+        id S233725AbhHPKin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:38:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234197AbhHPKfX (ORCPT
+        with ESMTP id S230124AbhHPKim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:35:23 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 821A8C061764;
-        Mon, 16 Aug 2021 03:34:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=3kYyKZb56SV+F30VdAft4doK9G52E8e9jKzbYuBrKtc=; b=yKIHSAMzSDKH3qF6LtZ5eht1P
-        Q+57joyNGoob9U3u1OjI0sKzh9DlRwSXs6UWzhSCFlTJWbAIlTfKsgdScG0nk72WR12y1mSpBHGyp
-        fIpa5CA35N6FNJ0wHUi0NjLbL9vLnKqeBfth3kT62z0nftHoKRAAOvdPbY4ocXv9bduwY/jQkYPrm
-        etHbBBu2C7M73R+7rJzuJgzns5LgY86O0C5IboMEG2KBAObRRh8u9FMdWgulpqnsDZdqe8qCNgx8n
-        B05EG9XvP19SItZL29dl99IYv/Sspfr+CcQ1TtEeW8KCGmj8KWDiBKhFibc/57b9gfE2WMfoedpFB
-        lS8SCLArA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47370)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mFZxB-0007h7-2S; Mon, 16 Aug 2021 11:34:49 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mFZxA-0007uQ-3m; Mon, 16 Aug 2021 11:34:48 +0100
-Date:   Mon, 16 Aug 2021 11:34:48 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Bing Fan <hptsfb@gmail.com>, gregkh@linuxfoundation.org,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6] arm pl011 serial: support multi-irq request
-Message-ID: <20210816103447.GJ22278@shell.armlinux.org.uk>
-References: <1628825490-18937-1-git-send-email-hptsfb@gmail.com>
- <1d691b6b-dbc4-36b0-2e2a-beb95c4c9cb6@arm.com>
+        Mon, 16 Aug 2021 06:38:42 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1920C061764;
+        Mon, 16 Aug 2021 03:38:10 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id r9so23997888lfn.3;
+        Mon, 16 Aug 2021 03:38:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NfJatabbDRuLjub7mFadaE4bzboEivABMiAWlTI3GXI=;
+        b=FRcS1yQ12WU7K0ZrS2Mhi1L27mX8U82kp/YGBiFsbIYoKjAefR8yXpjynkLeKOfHYb
+         U0FrZU0SQuNc0RxvrQ1up2dlos0z2hheRmKN2oWXX0r5zmlrIC3Fvvo1qSvEm2eM1IjR
+         tAFI+qqwks7gCwE0pOb6EvnmY7D0A1MWSazaarkx1NPPhdX3dZ7AMdznWSiHHTnqB57S
+         2eWJDIIe/5hrQbpmLGVxU7O8cYSKi7GXwq2jevYN1eaoHBVwC7lrcXIGFWa36l4cn/cf
+         3/fFmlE69w09gXSJ/6xTtjGbH13yE5833d1l3vrCGzNhownB42FmTIfNtBKjnoPep9iY
+         ILHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NfJatabbDRuLjub7mFadaE4bzboEivABMiAWlTI3GXI=;
+        b=rSEw+W6BbfYmDuXAf4CQTjioo/909kewQicxHScGkaJQncettL8bVHPOaxI5KJBDeH
+         f6hp88tGlpaXoZ+JZoBFUcoyUksA6ufrjxlqwQnJ/ZmSwwtsi7TdFDUqrsqZfiGn2LDg
+         Z7/bPQzCSnhRud7/J75ihuszxD2rAgJUbhzIYfkF3vpUPco+Im0rxNZ6FT/UwZdcjxYP
+         hRlSA9KmUZqp3OA8eT2oI1gfKwYKHErhIv2buusAYoUh28SFy5JH/N75oFXtFEsS+HT1
+         iyvdoQGiMpILHylikio/BXDhZT07LZC9y2rMri34oX7ip0jBisOXB0efNQPLP3OpVzmP
+         EvlA==
+X-Gm-Message-State: AOAM530BQi/6Hz2MR323UX5kz2SeqJ/u2ZWEgSlEbPNVAJrWbCUs8m3W
+        PzhtEGk4jVLU56vUHtBHxKr/NSI6zkx6M13J
+X-Google-Smtp-Source: ABdhPJzs6220+8j1LIoVUYyvXJU+Edf3AwZGR/I89cb68hlCM2Bx8p3TwSGwCvE0yxT4Bgq0Mf12BA==
+X-Received: by 2002:a05:6512:3f16:: with SMTP id y22mr10805648lfa.356.1629110288803;
+        Mon, 16 Aug 2021 03:38:08 -0700 (PDT)
+Received: from kari-VirtualBox.telewell.oy (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id l6sm1136044ljj.40.2021.08.16.03.38.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 03:38:08 -0700 (PDT)
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev
+Cc:     Kari Argillander <kari.argillander@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH] fs/ntfs3: Use linux/log2 is_power_of_2 function
+Date:   Mon, 16 Aug 2021 13:37:32 +0300
+Message-Id: <20210816103732.177207-1-kari.argillander@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1d691b6b-dbc4-36b0-2e2a-beb95c4c9cb6@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 03:37:16PM +0100, Robin Murphy wrote:
-> > +static int pl011_allocate_multi_irqs(struct uart_amba_port *uap)
-> > +{
-> > +	int ret = 0;
-> > +	int i;
-> > +	unsigned int virq;
-> > +	struct amba_device *amba_dev = container_of(uap->port.dev, struct amba_device, dev);
-> > +
-> > +	pl011_write(uap->im, uap, REG_IMSC);
-> > +
-> > +	for (i = 0; i < AMBA_NR_IRQS; i++) {
-> 
-> It's not clear where these extra IRQs are expected to come from given that
-> the DT binding explicitly defines only one :/
+We do not need our own implementation for this function in this
+driver. It is much better to use generic one.
 
-The DT binding (and driver) was written assuming that people wouldn't
-use the individual interrupts - but I guess someone decided it was a
-good idea to have a bazillion interrupt signals going to your interrupt
-controller from something as simple as a UART (which is permitted by
-the PL011 TRM.) It's only taken about 20 years for this to happen, so
-I think we should think we're lucky this hasn't come up before! :D
+Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
+---
+ fs/ntfs3/ntfs_fs.h | 5 -----
+ fs/ntfs3/run.c     | 3 ++-
+ fs/ntfs3/super.c   | 9 +++++----
+ 3 files changed, 7 insertions(+), 10 deletions(-)
 
-> > +		virq = amba_dev->irq[i];
-> > +		if (virq == 0)
-> > +			break;
-> > +
-> > +		ret = request_irq(virq, pl011_int, IRQF_SHARED, dev_name(&amba_dev->dev), uap);
-> 
-> Note that using dev_name() here technically breaks user ABI - scripts
-> looking in /proc for an irq named "uart-pl011" will no longer find it.
-> 
-> Furthermore, the "dev" cookie passed to request_irq is supposed to be
-> globally unique, which "uap" isn't once you start registering it multiple
-> times.
-
-There's no difference there.
-
-First, the "private" used with request_irq() only has to be globally
-unique for the interrupt number being requested. Secondly, there is
-no way for two UARTs to share the same "uap" structure, and finally
-there is a 1:1 model between "uap" and "dev". So, I don't see a problem
-as far as whether we use "uap" or "dev" here.
-
-> If firmware did describe all the individual PL011 IRQ outputs on a
-> system where they are muxed to the same physical IRQ anyway, you'd end up
-> registering ambiguous IRQ actions here. Of course in practice you might
-> still get away with that, but it is technically wrong.
-
-Yes. This would also make a total nonsense of using multiple interrupt
-lines.
-
-The whole point of using multiple interrupt lines from the UART is so
-the interrupt demultiplexing can be handled at the interrupt controller
-and their priorities can be decided there. If we adopt a software
-structure where we effectively register our "merged" interrupt handler
-for all these signals, then there is absolutely no benefit to using
-multiple interrupt signals, since that will override any priority, and
-we will still have the extra overhead of decoding which interrupt fired
-at the UART level.
-
+diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
+index 0c3ac89c3115..c8ea6dd38c21 100644
+--- a/fs/ntfs3/ntfs_fs.h
++++ b/fs/ntfs3/ntfs_fs.h
+@@ -972,11 +972,6 @@ static inline struct buffer_head *ntfs_bread(struct super_block *sb,
+ 	return NULL;
+ }
+ 
+-static inline bool is_power_of2(size_t v)
+-{
+-	return v && !(v & (v - 1));
+-}
+-
+ static inline struct ntfs_inode *ntfs_i(struct inode *inode)
+ {
+ 	return container_of(inode, struct ntfs_inode, vfs_inode);
+diff --git a/fs/ntfs3/run.c b/fs/ntfs3/run.c
+index 5cdf6efe67e0..ce6bff3568df 100644
+--- a/fs/ntfs3/run.c
++++ b/fs/ntfs3/run.c
+@@ -9,6 +9,7 @@
+ #include <linux/blkdev.h>
+ #include <linux/buffer_head.h>
+ #include <linux/fs.h>
++#include <linux/log2.h>
+ #include <linux/nls.h>
+ 
+ #include "debug.h"
+@@ -376,7 +377,7 @@ bool run_add_entry(struct runs_tree *run, CLST vcn, CLST lcn, CLST len,
+ 			if (!used) {
+ 				bytes = 64;
+ 			} else if (used <= 16 * PAGE_SIZE) {
+-				if (is_power_of2(run->allocated))
++				if (is_power_of_2(run->allocated))
+ 					bytes = run->allocated << 1;
+ 				else
+ 					bytes = (size_t)1
+diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+index 6be13e256c1a..c1b7127f5e61 100644
+--- a/fs/ntfs3/super.c
++++ b/fs/ntfs3/super.c
+@@ -29,6 +29,7 @@
+ #include <linux/exportfs.h>
+ #include <linux/fs.h>
+ #include <linux/iversion.h>
++#include <linux/log2.h>
+ #include <linux/module.h>
+ #include <linux/nls.h>
+ #include <linux/parser.h>
+@@ -735,13 +736,13 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
+ 
+ 	boot_sector_size = (u32)boot->bytes_per_sector[1] << 8;
+ 	if (boot->bytes_per_sector[0] || boot_sector_size < SECTOR_SIZE ||
+-	    !is_power_of2(boot_sector_size)) {
++	    !is_power_of_2(boot_sector_size)) {
+ 		goto out;
+ 	}
+ 
+ 	/* cluster size: 512, 1K, 2K, 4K, ... 2M */
+ 	sct_per_clst = true_sectors_per_clst(boot);
+-	if (!is_power_of2(sct_per_clst))
++	if (!is_power_of_2(sct_per_clst))
+ 		goto out;
+ 
+ 	mlcn = le64_to_cpu(boot->mft_clst);
+@@ -757,14 +758,14 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
+ 	/* Check MFT record size */
+ 	if ((boot->record_size < 0 &&
+ 	     SECTOR_SIZE > (2U << (-boot->record_size))) ||
+-	    (boot->record_size >= 0 && !is_power_of2(boot->record_size))) {
++	    (boot->record_size >= 0 && !is_power_of_2(boot->record_size))) {
+ 		goto out;
+ 	}
+ 
+ 	/* Check index record size */
+ 	if ((boot->index_size < 0 &&
+ 	     SECTOR_SIZE > (2U << (-boot->index_size))) ||
+-	    (boot->index_size >= 0 && !is_power_of2(boot->index_size))) {
++	    (boot->index_size >= 0 && !is_power_of_2(boot->index_size))) {
+ 		goto out;
+ 	}
+ 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.30.2
+
