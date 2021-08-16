@@ -2,110 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6773ED9E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E908A3ED9E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235963AbhHPPcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 11:32:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37000 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229550AbhHPPb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 11:31:57 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F0E560EFF;
-        Mon, 16 Aug 2021 15:31:25 +0000 (UTC)
-Date:   Mon, 16 Aug 2021 11:31:23 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <wagi@monom.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Subject: [ANNOUNCE] 5.10.56-rt49
-Message-ID: <20210816113123.36817ecd@oasis.local.home>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S232849AbhHPPdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 11:33:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229550AbhHPPdP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 11:33:15 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26230C061764;
+        Mon, 16 Aug 2021 08:32:44 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id k5so7425483lfu.4;
+        Mon, 16 Aug 2021 08:32:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Jji36Y1LnDODoev0Avwliy2xCTIsB97zZRauZf075VA=;
+        b=mq21gBQ8hLGp/4Yem98VGS4lu+97ERbV+BdyANot4LQDqDEn6yV6pZEgs57D3sBn8i
+         AKhumVMRQWlu3qOa+7tpEimZck8FBr/kBmcU+2n48Q8uoIrV+MMFS123XL05FkUXFxf+
+         /0JYZrlk0tn7e/TMCqzihJV02rInAjFKP9Y6RuET+6LdEogLckQHhRmxR5S4u3ZdBcjs
+         4hC7LfjWHb16c0dtkPcxHJuPtTRthmlm5m5uVc9kaK/Wek6OZfECLD26a2zzVDOJ649r
+         QSb8DuWk2bejZTMCyF6y1QvH2ianxDE/uJHV7XTkHUPWUE6PX4U3XNbtFUvOKAj+sD1f
+         HZ1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Jji36Y1LnDODoev0Avwliy2xCTIsB97zZRauZf075VA=;
+        b=PFhrLkjU5y7rd3SXMBQ5I85n4FYR0TdMmgGLOwpkTKhQmxZFz8VA21uuxnAj4SN+Sw
+         JLFDOYwlGUiCjWClFTgzewLN9yYeoS6nPh9GN7eQO3MeL46OJKIVZID9jBsb4ApjJs9v
+         fYl9s2BGTrYV7qXsxtao0bW/COdJCB+052XV5di8Lt1YO9B07GgB3Qnec5ToOaI1lFXR
+         wmylTZlhnk/Wq27uJEIfev/tRRoJsl5UVCLF/3qZjdZ1HUbFTcpLnDiRdlEy1VRMCH8i
+         u0+IADuXSrGugsNs8p0zaPc7Sxi4pC/z1P1ASXEeBFk7cNWJweWtyyltMukPG6wXsu+R
+         Ejxw==
+X-Gm-Message-State: AOAM533e990pD+gZjcoEjkyDXRfIGHIZs8nst06KNP2MpGHQSm34kn/b
+        /J9eNgArlM/xZXMlpuCTJUJPJng0kYQ=
+X-Google-Smtp-Source: ABdhPJwrfG+4glx/MIR0iQjCsOWrCk7lJWJpozxMy17cyAj+4ybUrvU9zFV8aaBEA/EiyPngthUS/w==
+X-Received: by 2002:a05:6512:3e06:: with SMTP id i6mr11877182lfv.81.1629127962417;
+        Mon, 16 Aug 2021 08:32:42 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-85-91.dynamic.spd-mgts.ru. [46.138.85.91])
+        by smtp.googlemail.com with ESMTPSA id l26sm974295lfh.247.2021.08.16.08.32.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 08:32:41 -0700 (PDT)
+Subject: Re: [PATCH v1 2/2] cpuidle: tegra: Check whether PMC is ready
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210718212706.21659-1-digetx@gmail.com>
+ <20210718212706.21659-3-digetx@gmail.com> <YROdQXO4aVLQ8DkP@orome.fritz.box>
+ <8d61d4d5-8e4b-5c18-923c-eceb954e8d5d@linaro.org>
+ <8f22c97d-63f7-6d2a-7b1e-92b0b80a5275@gmail.com>
+ <YRo1hK/KnS0oA1vj@orome.fritz.box>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <1fb32fd0-97c0-9215-6e38-c53c5155f27a@gmail.com>
+Date:   Mon, 16 Aug 2021 18:32:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YRo1hK/KnS0oA1vj@orome.fritz.box>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+16.08.2021 12:53, Thierry Reding пишет:
+> On Sat, Aug 14, 2021 at 04:45:42PM +0300, Dmitry Osipenko wrote:
+>> 14.08.2021 13:37, Daniel Lezcano пишет:
+>>> On 11/08/2021 11:49, Thierry Reding wrote:
+>>>> On Mon, Jul 19, 2021 at 12:27:06AM +0300, Dmitry Osipenko wrote:
+>>>>> Check whether PMC is ready before proceeding with the cpuidle registration.
+>>>>> This fixes racing with the PMC driver probe order, which results in a
+>>>>> disabled deepest CC6 idling state if cpuidle driver is probed before the
+>>>>> PMC.
+>>>>>
+>>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>>>> ---
+>>>>>  drivers/cpuidle/cpuidle-tegra.c | 3 +++
+>>>>>  1 file changed, 3 insertions(+)
+>>>>
+>>>> Rafael, Daniel,
+>>>>
+>>>> would you mind if I took this into the Tegra tree? It's got a dependency
+>>>> on the PMC driver, which usually goes via the Tegra tree already, and
+>>>> there's nothing cpuidle-specific in here, it's all Tegra-specific
+>>>> integration quirks.
+>>>
+>>> Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+>>
+>> I got another thought about how it could be solved. We could move the
+>> creation of the cpuidle platform device into the PMC driver. Thierry,
+>> what do you think?
+> 
+> Looking around a bit, it looks like we've got two "virtual" platform
+> devices related to CPU on Tegra20 and some of the later SoCs. A little
+> while ago when we introduced the CPU frequency driver for Tegra194 we
+> had a similar discussion. The problem at the time was that there was no
+> way to create a virtual platform device from platform code, and adding a
+> device tree node for this wasn't really an option either, since it does
+> not actually describe the hardware accurately.
+> 
+> What we ended up doing for Tegra194 was to add a compatible string to
+> the /cpus node ("nvidia,tegra194-ccplex") which was then used for
+> matching a CPU frequency driver against.
+> 
+> I imagine we could do something similar for these older chips and
+> perhaps even have a single driver for the CCPLEX that either registers
+> CPU idle and CPU frequency scaling functionality, or have that driver
+> register virtual devices. I slightly prefer the first variant because
+> then we associate the driver with the hardware that it's actually
+> driving. It's slightly unconventional because now CPU idle and CPU
+> frequency drivers would be implemented in the same driver, but it isn't
+> all that exotic these days anymore, either.
+> 
+> If the maintainers prefer we could always keep the code split into two
+> source files, one per subsystem, and call into that code from the CCPLEX
+> driver. I think even then it'd still be the cleanest solution because we
+> don't have to "invent" a new device just for the sake of fitting the
+> driver model that we happen to have.
 
-Dear RT Folks,
-
-I'm pleased to announce the 5.10.56-rt49 stable release.
-
-
-You can get this release via the git tree at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v5.10-rt
-  Head SHA1: f01b4758ad61a01d23ccaa96a65ce774cdcc09ae
-
-
-Or to build 5.10.56-rt49 directly, the following patches should be applied:
-
-  http://www.kernel.org/pub/linux/kernel/v5.x/linux-5.10.tar.xz
-
-  http://www.kernel.org/pub/linux/kernel/v5.x/patch-5.10.56.xz
-
-  http://www.kernel.org/pub/linux/kernel/projects/rt/5.10/patch-5.10.56-rt49.patch.xz
-
-
-
-You can also build from 5.10.56-rt48 by applying the incremental patch:
-
-  http://www.kernel.org/pub/linux/kernel/projects/rt/5.10/incr/patch-5.10.56-rt48-rt49.patch.xz
-
-
-
-Enjoy,
-
--- Steve
-
-
-Changes from v5.10.56-rt48:
-
----
-
-Chao Qin (1):
-      printk: Enhance the condition check of msleep in pr_flush()
-
-Steven Rostedt (VMware) (1):
-      Linux 5.10.56-rt49
-
-----
- kernel/printk/printk.c | 4 +++-
- localversion-rt        | 2 +-
- 2 files changed, 4 insertions(+), 2 deletions(-)
----------------------------
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index f56fd2e34cc7..53d90278494b 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -3545,7 +3545,9 @@ bool pr_flush(int timeout_ms, bool reset_on_progress)
- 	u64 diff;
- 	u64 seq;
- 
--	may_sleep = (preemptible() && !in_softirq());
-+	may_sleep = (preemptible() &&
-+		     !in_softirq() &&
-+		     system_state >= SYSTEM_RUNNING);
- 
- 	seq = prb_next_seq(prb);
- 
-diff --git a/localversion-rt b/localversion-rt
-index 24707986c321..4b7dca68a5b4 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt48
-+-rt49
+It's doable, but it's a bit too much effort for a little problem we have
+here. It also doesn't solve the root of the problem since PMC isn't a
+part of CCPLEX. Should be better to stick with this patch for now then.
