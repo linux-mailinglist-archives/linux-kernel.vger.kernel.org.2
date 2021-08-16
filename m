@@ -2,100 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A54013EDEB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A37763EDEBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231785AbhHPUiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 16:38:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231594AbhHPUiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 16:38:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15DB860EFE;
-        Mon, 16 Aug 2021 20:37:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629146249;
-        bh=eJDYTNLTGsOY4pPaf8+T4clZF+4FHQUqr5tqYZY3ues=;
-        h=From:To:Cc:Subject:Date:From;
-        b=sUwYxK9iuOiZagkuS80kK83ka0oWitmalodLodP8uYM4PB6JCLNH8bLBFLs+tjo8L
-         H9Q7i2SRamBn/7XnsXRD8g8aq1fAbsIwN44uZQOlP5RxeZ5hzidc695F3QMmf23ByN
-         bXYjYLjDJqMIL0hu/eRIbZrr1r7Nr7oAegNgNDtMtg2glQMTURFgOJDnpKZejpRwQ2
-         7cdjKEDKZGXWLQaKQsEw3gOrggt2r2IyeOwbYZJiyt+hGcwa1M1YCjzzhodgWHn4zf
-         zAWIHJTE135lY9RBcpKp0pB4Fj/n0zMhoCWey9wpdkIEBEQaYKes9m8llRa4GYFNb5
-         w/6la7tw4n0Kw==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH] kbuild: Switch to 'f' variants of integrated assembler flag
-Date:   Mon, 16 Aug 2021 13:36:35 -0700
-Message-Id: <20210816203635.53864-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.33.0.rc2
+        id S232946AbhHPUo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 16:44:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231618AbhHPUo2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 16:44:28 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95089C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 13:43:56 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id g26so7809019ybe.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 13:43:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aveHwdz8XOLg5uedKS0PiRzGHECFylhR68z7BfBqvPc=;
+        b=Yz3Debl4URh7iBQaqrwvr789CHA3V1EyHDhxu2XXGYZJIW1xuqiOmqsa8Byx45dLlf
+         CXOKnz5LtK6XekO3z8y1bvSyeBrgFe6/qIEQbKAGcPL955y2fPFKjj2Z4hrfViOcdcwp
+         CavbCcXhnlVyIW3Ap26I6sWBeZXc5SsKn477q0/+xOjBJBRMMjpuduZRoFHWMeGZp4Q7
+         VXBn3wwENsqpLEBZER6LsgzlbIlc+a/+9xTiOFhh+I9+7q1N97QxBXsgsqpFGqLw3dUW
+         Ep2lVPmlXZLhmK2l+nDcaOIKDLRJwAuUUylR80lmcDprUrQpumdWVRHbuQaDFM0i4OZI
+         NtTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aveHwdz8XOLg5uedKS0PiRzGHECFylhR68z7BfBqvPc=;
+        b=UJD+i2EqOOjom8GnyF3kDdkebN7zRRU+T3bGZe1FflZQBijDMiIc4QauIl1mNcwSdA
+         TTtomUKsvrNc36arGYZMhhDSefVJRFf4n8EuuUyJNNibuLOCvyHPIbUEgZtznONaBAo/
+         P5eqZ5ZYYBagamcCwWADjZSQN8BgI6Dr/ECmnoYxbb9uSp3kFYQa/vlaz7MH9RvcQva8
+         FvWDSyMfv5CX7gQAPg2xIhh9OYAsiiuu2gJwsDSdeTRKlV/31orfsPiooVVXFcIrizS3
+         TQQkGuJ0woeYqz2wxPABMOFLR0ceGzPOTtvkVozJXeAb1OQDnxLGrWokvQPuz0scDnFd
+         k66Q==
+X-Gm-Message-State: AOAM530uX/jEy4SH3OhXV4nYq6jGTpIOx7nGrx+6Bsoh+MA6pkfRy6Ft
+        imuNOZYfkSdQwXhfX81fiZXDVjnZZJpb0eX0qv7qwA==
+X-Google-Smtp-Source: ABdhPJz+VPG5W1rq2jkWrRbzKurE6hWPrUc3BPA8am3QAN0qi5OaU9Uf/Rt7REcHo//E3hTfHV4SPbOQ8ILeRS2XNoE=
+X-Received: by 2002:a25:8445:: with SMTP id r5mr437513ybm.20.1629146635725;
+ Mon, 16 Aug 2021 13:43:55 -0700 (PDT)
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+References: <20210814023132.2729731-1-saravanak@google.com>
+ <20210814023132.2729731-3-saravanak@google.com> <YRffzVgP2eBw7HRz@lunn.ch>
+In-Reply-To: <YRffzVgP2eBw7HRz@lunn.ch>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 16 Aug 2021 13:43:19 -0700
+Message-ID: <CAGETcx-ETuH_axMF41PzfmKmT-M7URiua332WvzzzXQHg=Hj0w@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] of: property: fw_devlink: Add support for
+ "phy-handle" property
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>, kernel-team@android.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It has been brought up a few times in various code reviews that clang
-3.5 introduced -f{,no-}integrated-as as the preferred way to enable and
-disable the integrated assembler, mentioning that -{no-,}integrated-as
-are now considered legacy flags.
+On Sat, Aug 14, 2021 at 8:22 AM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> Hi Saravana
+>
+> > Hi Andrew,
+> >
+>
+> > Also there
+> > are so many phy related properties that my head is spinning. Is there a
+> > "phy" property (which is different from "phys") that treated exactly as
+> > "phy-handle"?
+>
+> Sorry, i don't understand your question.
 
-Switch the kernel over to using those variants in case there is ever a
-time where clang decides to remove the non-'f' variants of the flag.
+Sorry. I was just saying I understand the "phy-handle" DT property
+(seems specific to ethernet PHY) and "phys" DT property (seems to be
+for generic PHYs -- used mostly by display and USB?). But I noticed
+there's yet another "phy" DT property which I'm not sure I understand.
+It seems to be used by display and ethernet and seems to be a
+deprecated property. If you can explain that DT property in the
+context of networking and how to interpret it as a human, that'd be
+nice.
 
-Link: https://releases.llvm.org/3.5.0/tools/clang/docs/ReleaseNotes.html#new-compiler-flags
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- scripts/Makefile.clang | 4 ++--
- scripts/as-version.sh  | 6 +++---
- 2 files changed, 5 insertions(+), 5 deletions(-)
+>
+> > +     /*
+> > +      * Device tree nodes pointed to by phy-handle never have struct devices
+> > +      * created for them even if they have a "compatible" property. So
+> > +      * return the parent node pointer.
+> > +      */
+>
+> We have a classic bus with devices on it. The bus master is registers
+> with linux using one of the mdiobus_register() calls. That then
+> enumerates the bus, looking at the 32 possible address on the bus,
+> using mdiobus_scan. It then gets a little complex, due to
+> history.
+>
+> Originally, the only thing you could have on an MDIO bus was a
+> PHY. But devices on MDIO busses are more generic, and Linux gained
+> support for Ethernet switches on an MDIO bus, and there are a few
+> other sort device. So to keep the PHY API untouched, but to add these
+> extra devices, we added the generic struct mdio_device which
+> represents any sort of device on an MDIO bus. This has a struct device
+> embedded in it.
+>
+> When we scan the bus and find a PHY, a struct phy_device is created,
+> which has an embedded struct mdio_device. The struct device in that is
+> then registered with the driver core.
+>
+> So a phy-handle does point to a device, but you need to do an object
+> orientated style look at the base class to find it.
 
-diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
-index 3ae63bd35582..4cce8fd0779c 100644
---- a/scripts/Makefile.clang
-+++ b/scripts/Makefile.clang
-@@ -23,11 +23,11 @@ CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
- endif # CROSS_COMPILE
- 
- ifeq ($(LLVM_IAS),0)
--CLANG_FLAGS	+= -no-integrated-as
-+CLANG_FLAGS	+= -fno-integrated-as
- GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
- CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
- else
--CLANG_FLAGS	+= -integrated-as
-+CLANG_FLAGS	+= -fintegrated-as
- endif
- CLANG_FLAGS	+= -Werror=unknown-warning-option
- KBUILD_CFLAGS	+= $(CLANG_FLAGS)
-diff --git a/scripts/as-version.sh b/scripts/as-version.sh
-index 8b9410e329df..a0fc366728f1 100755
---- a/scripts/as-version.sh
-+++ b/scripts/as-version.sh
-@@ -21,13 +21,13 @@ get_canonical_version()
- 	echo $((10000 * $1 + 100 * ${2:-0} + ${3:-0}))
- }
- 
--# Clang fails to handle -Wa,--version unless -no-integrated-as is given.
--# We check -(f)integrated-as, expecting it is explicitly passed in for the
-+# Clang fails to handle -Wa,--version unless -fno-integrated-as is given.
-+# We check -fintegrated-as, expecting it is explicitly passed in for the
- # integrated assembler case.
- check_integrated_as()
- {
- 	while [ $# -gt 0 ]; do
--		if [ "$1" = -integrated-as -o "$1" = -fintegrated-as ]; then
-+		if [ "$1" = -fintegrated-as ]; then
- 			# For the intergrated assembler, we do not check the
- 			# version here. It is the same as the clang version, and
- 			# it has been already checked by scripts/cc-version.sh.
+Thanks for the detailed explanation. I didn't notice a phy_device had
+an mdio_device inside it. Makes sense. I think my comment is not
+worded accurately and it really should be:
 
-base-commit: f12b034afeb3a977bbb1c6584dedc0f3dc666f14
--- 
-2.33.0.rc2
+Device tree nodes pointed to by phy-handle (even if they have a
+"compatible" property) will never have struct devices probed and bound
+to a driver through the driver framework. It's the parent node/device
+that gets bound to a driver and initializes the PHY. So return the
+parent node pointer instead.
 
+Does this sound right? As opposed to PHYs the other generic mdio
+devices seem to actually have drivers that'll bind to them through the
+driver framework.
+
+-Saravana
