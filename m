@@ -2,95 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC7C3ECFF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 10:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 913B13ECFF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 10:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234525AbhHPIIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 04:08:21 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:46565 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234527AbhHPIIU (ORCPT
+        id S234594AbhHPIJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 04:09:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231716AbhHPIJ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 04:08:20 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-144-JmIe111pPXKgQwB05GAvjg-1; Mon, 16 Aug 2021 09:07:43 +0100
-X-MC-Unique: JmIe111pPXKgQwB05GAvjg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Mon, 16 Aug 2021 09:07:42 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Mon, 16 Aug 2021 09:07:42 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'Longpeng (Mike, Cloud Infrastructure Service Product Dept.)'" 
-        <longpeng2@huawei.com>, 'Khalid Aziz' <khalid.aziz@oracle.com>,
-        "Matthew Wilcox" <willy@infradead.org>
-CC:     Steven Sistare <steven.sistare@oracle.com>,
-        Anthony Yznaga <anthony.yznaga@oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>
-Subject: RE: [RFC PATCH 0/5] madvise MADV_DOEXEC
-Thread-Topic: [RFC PATCH 0/5] madvise MADV_DOEXEC
-Thread-Index: AQHXkHxypLAjl++vx02znmkvS7SQp6tzbmwwgAHKcgCAAJBXgA==
-Date:   Mon, 16 Aug 2021 08:07:42 +0000
-Message-ID: <5f898e84d66a46b891e75e7c861e03a1@AcuMS.aculab.com>
-References: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
- <cc714571-4461-c9e0-7b24-e213664caa54@huawei.com>
- <43471cbb-67c6-f189-ef12-0f8302e81b06@oracle.com>
- <a1dbf12e-9949-109e-122c-ba7ba609801b@huawei.com>
- <YOubKmDwxMIvdAed@casper.infradead.org>
- <a94973ab83ce48bd85c91397f82d7915@huawei.com>
- <55720e1b39cff0a0f882d8610e7906dc80ea0a01.camel@oracle.com>
- <6775a78fa70b4868bfd24c750ec24bdd@AcuMS.aculab.com>
- <0591d6d4-5844-13ac-9e22-722e22c911f4@huawei.com>
-In-Reply-To: <0591d6d4-5844-13ac-9e22-722e22c911f4@huawei.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 16 Aug 2021 04:09:29 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB165C061764;
+        Mon, 16 Aug 2021 01:08:58 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id j12-20020a17090aeb0c00b00179530520b3so10633749pjz.0;
+        Mon, 16 Aug 2021 01:08:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mSmEDOlHPkeWDBRZsKIEYIy20P5Bumb1XzBEX9ztmHM=;
+        b=p8k4w4hLeDEvIU4qu3SRcoToR2AJ/DRkNtydZvZVj+Jb9xt2ALCyvCxULROJQVseyn
+         kibQS5SlQxlxEWYF+xrhh5eHTQrPLx28513UCtNO/eXrvFoTtiMtYDreHCcPcpNMCZSp
+         oObch4R9F0zWKM6bbiZYJtFCbSlFQsh1b4YjtnsPDEMjG6OgbF7JfoPvJ6Xkmhi+X/Be
+         VTP3S4uKajFIEoyVevbB24z6FJ1OP14vo3AI2GPmNMll4g1NQ+GnvR5Z2x7uoZtuSIOk
+         DSwJOYGXRsnFV/p49La4w2oDfPMjVluYo7buRiUOadYarfve8+TuKi87240czfCCpG8T
+         lqJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mSmEDOlHPkeWDBRZsKIEYIy20P5Bumb1XzBEX9ztmHM=;
+        b=gQ8mvXUAkof/e0AlCYQM/XUP3NMgKdieKoZaBhzGuNiVccSihdg898OU/qUrjXNf+K
+         4iTM2SHbZqKy5ZBFQLBYxhC1MAWEJBvTB5z4vel9078zgBnJN5VkmUX+Innlt+TaYClK
+         C77EhEKpXPx812hHxVdhInPdnV06z7OA5iujwnpzfQKO0AZl8tT2uSxz+0NOGSxtTGEu
+         auasER4hr1CA8jmdQE5XHaAGfy7CrHIN0XSzI9aykNDqt69F8HCAYpFehgjZbsK14zQ+
+         NP5s/RNST5xO4B1DnreTH32C6eYyRoXBaKDD6NBG1R2P/WCtppmkRLgdxGj74h4nobe3
+         oWJg==
+X-Gm-Message-State: AOAM530I7tcBt7HITkqaGK06Ctq5O1tf12cIsLVJNel4HGBeXrlPTvM/
+        G9vgHULWFasX5eZXNtWEVrrrIPjw13hxB4Yx6oQ=
+X-Google-Smtp-Source: ABdhPJzPJoAW8ux5vVdeosHcEhbKSTLb5KV4/nIzzVNNZJKuYrNAt3MWbHSvmV6d/0FVtqJoNPl9EHmOF24jqxftOjQ=
+X-Received: by 2002:aa7:9618:0:b0:3e2:1bc3:aa93 with SMTP id
+ q24-20020aa79618000000b003e21bc3aa93mr1279192pfg.73.1629101338516; Mon, 16
+ Aug 2021 01:08:58 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+References: <20210815213309.2847711-1-liambeguin@gmail.com>
+In-Reply-To: <20210815213309.2847711-1-liambeguin@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 16 Aug 2021 11:08:19 +0300
+Message-ID: <CAHp75VdOMg-7xX+KbdaDt5tduPhorujFwvpMPmdHKMVg=vj2Ew@mail.gmail.com>
+Subject: Re: [PATCH v6 0/5] AD7949 Fixes
+To:     Liam Beguin <liambeguin@gmail.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Charles-Antoine Couret <charles-antoine.couret@essensium.com>,
+        =?UTF-8?B?TnVubyBTw6E=?= <Nuno.Sa@analog.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTG9uZ3BlbmcNCj4gU2VudDogMTYgQXVndXN0IDIwMjEgMDE6MjYNCj4gSGkgRGF2aWQs
-DQo+IA0KPiDlnKggMjAyMS84LzE1IDQ6MDcsIERhdmlkIExhaWdodCDlhpnpgZM6DQo+ID4gLi4u
-DQo+ID4+Pj4+IExldCBtZSBkZXNjcmliZSBteSB1c2UgY2FzZSBtb3JlIGNsZWFybHkgKGp1c3Qg
-aWdub3JlIGlmIHlvdSdyZSBub3QNCj4gPj4+Pj4gaW50ZXJlc3RlZCBpbiBpdCk6DQo+ID4+Pj4+
-DQo+ID4+Pj4+IDEuIFByb2cgQSBtbWFwKCkgNEdCIG1lbW9yeSAoYW5vbiBvciBmaWxlLW1hcHBp
-bmcpLCBzdXBwb3NlIHRoZQ0KPiA+Pj4+PiBhbGxvY2F0ZWQgVkEgcmFuZ2UgaXMgWzB4NDAwMDAw
-MDAsMHgxNDAwMDAwMDApDQo+ID4+Pj4+DQo+ID4+Pj4+IDIuIFByb2cgQSBzcGVjaWZpZXMgWzB4
-NDgwMDAwMDAsMHg1MDAwMDAwMCkgYW5kDQo+ID4+Pj4+IFsweDgwMDAwMDAwLDB4MTAwMDAwMDAw
-KSB3aWxsIGJlIHNoYXJlZCBieSBpdHMgY2hpbGQuDQo+ID4+Pj4+DQo+ID4+Pj4+IDMuIFByb2cg
-QSBmb3JrKCkgUHJvZyBCIGFuZCB0aGVuIFByb2cgQiBleGVjKCkgYSBuZXcgRUxGIGJpbmFyeS4N
-Cj4gPj4+Pj4NCj4gPj4+Pj4gNC4gUHJvZyBCIG5vdGljZSB0aGUgc2hhcmVkIHJhbmdlcyAoZS5n
-LiBieSBpbnB1dCBwYXJhbWV0ZXJzIG9yDQo+ID4+Pj4+IC4uLikNCj4gPj4+Pj4gYW5kIHJlbWFw
-IHRoZW0gdG8gYSBjb250aW51b3VzIFZBIHJhbmdlLg0KPiA+DQo+ID4gUmVtYXBwaW5nIHRvIGNv
-bnRpZ3VvdXMgVkEgaXMgZ29pbmcgdG8gYmUgZGlmZmljdWx0IGluIHRoZQ0KPiA+IGdlbmVyYWwg
-Y2FzZSBmb3IgKElJUkMpIFZJVlQgY2FjaGVzLg0KPiA+IFRoZSByZXF1aXJlZCBjYWNoZSBjb2hl
-cmVuY2UgbWF5IG9ubHkgYmUgYXR0YWluYWJsZSBieQ0KPiA+IHVzaW5nIHVuY2FjaGVkIG1hcHBp
-bmdzLg0KPiA+DQo+IA0KPiBUaGUgUHJvZyBCIHVzZXMgbXJlbWFwKCkgc3lzY2FsbCB0byByZW1h
-cHBpbmcgdGhlIHNoYXJlZCByYW5nZXMgdG8gb3RoZXIgcGxhY2VzLA0KPiB0aGlzIGlzIGEgY29t
-bW9uIGNhc2UgZm9yIG1yZW1hcCBpbiB1c2Vyc3BhY2UuDQo+IFRoZSBjYWNoZSBjb2hlcmVuY2Ug
-c2hvdWxkIGFscmVhZHkgYmUgcHJvY2Vzc2VkIGluIG1yZW1hcCBjb3JlIGxvZ2ljLCBvdGhlcndp
-c2UNCj4gdGhlcmUncyBtYXliZSBzb21ldGhpbmcgd3JvbmcgaW4gbXJlbWFwKCkuDQoNCk1heWJl
-IGl0IGRvZXMsIGFuZCBwcm9iYWJseSBtcmVtYXAoKSBtYWtlcyBpdCB3b3JrLg0KQnV0IHdpdGgg
-VklWVCBjYWNoZXMgaWYgYSBwYWdlcyBnZXRzIG1hcHBlZCBpbiB0d28gcHJvY2Vzc2VzDQphdCB0
-aGUgc2FtZSB0aW1lIGF0IGRpZmZlcmVudCBvZmZzZXRzIGludG8gdGhlIGNhY2hlIHRoZW4NCnRo
-ZW4gYm90aCBtYXBwaW5ncyBlbmQgdXAgYmVpbmcgdW5jYWNoZWQuDQpUaGlzIHdhcyBhbHdheXMg
-YSBwcm9ibGVtIHdpdGggbm9ybWFsIGZpbGUgbW1hcC4NCkkgZG9uJ3Qga25vdyBpZiBMaW51eCBt
-YW5hZ2VzIHRvIHBpY2sgdGhlIFZBIGFmdGVyIGZpbmRpbmcgdGhlDQpwYWdlIGhhcyBhbm90aGVy
-IG1hcHBpbmcgLSBTVlI0IGRpZG4ndC4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVz
-cyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEg
-MVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On Mon, Aug 16, 2021 at 12:35 AM Liam Beguin <liambeguin@gmail.com> wrote:
+>
+> While working on another series[1] I ran into issues where my SPI
+> controller would fail to handle 14-bit and 16-bit SPI messages. This
+> addresses that issue and adds support for selecting a different voltage
+> reference source from the devicetree.
+>
+> v1 was base on a series[2] that seems to not have made it all the way,
+> and was tested on an ad7689.
+>
+> v6 drops support for per channel vref selection.
+> After switching the voltage reference, readings take a little while to
+> stabilize, invalidating consecutive readings.
+>
+> This could've been addressed by adding more dummy cycles at the expense
+> of speed, but discussing the issue with colleagues more involved in
+> hardware design, it turns out these circuits are usually designed with a
+> single vref in mind.
+>
+> [1] https://patchwork.kernel.org/project/linux-iio/list/?series=511545
+> [2] https://patchwork.kernel.org/project/linux-iio/list/?series=116971&state=%2A&archive=both
+>
+> Changes since v5:
+> - rename defines: s/AD7949_CFG_BIT_/AD7949_CFG_MASK_/g
+> - rename AD7949_MASK_TOTAL to match other defines
 
+> - make vref selection global instead of per channel, and update
+>   dt-bindings
+
+Same as per v5: is it a hardware limitation?
+It's unclear to me what happened here.
+
+> - reword commits 2/5, 3/5, and 4/5
+> - move bits_per_word configuration to struct spi_device, and switch to
+>   spi_{read,write}.
+
+-- 
+With Best Regards,
+Andy Shevchenko
