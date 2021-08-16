@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837B63ED731
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A66BC3ED4DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241658AbhHPNaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:30:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43052 "EHLO mail.kernel.org"
+        id S237555AbhHPNFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:05:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238299AbhHPNSb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:18:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29962632FC;
-        Mon, 16 Aug 2021 13:13:56 +0000 (UTC)
+        id S237070AbhHPNFL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:05:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C507A6328D;
+        Mon, 16 Aug 2021 13:04:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119637;
-        bh=IMh7Dmq8MIpX0F+ZNZlos+dTf2PKE1HJ2IDJikYHEbc=;
+        s=korg; t=1629119079;
+        bh=a01H8wLm6Zu59H6wvkNY1oCYyOmh6w5yAlyUoKjNJkg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sr7EVZPTCOkTFdS78MVKGYy+jERtcWH6323Ju2c0hfOSOoavXgYIFZrMvnXP175/B
-         Rb5iOf44V965RuUP2MZafYgMy6Xr+rAjFOx8Zg1B5r6tdJhLw24Ii2CAF0k3+F8M5o
-         YN4F9UhMLBBJwC2V61XhPuyUMg/pnXmsOBamC4v0=
+        b=OFzfDV5fu9mU6Hqlq8FGJ9b8+iNpzPMyTTnDLP7srIlum+zVYeLVtp2W8oVxz8n28
+         Sk73kYOrFVAsTAk0YkT9f422Y19JXSwIRV+1wHe0IhPXZXY1LF+fA3VCraGGroqLIB
+         aTfNo245U53Qyu/04+5GFAe1oMbcDUP/cGNcylmE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andre Przywara <andre.przywara@arm.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 104/151] pinctrl: sunxi: Dont underestimate number of functions
+Subject: [PATCH 5.4 42/62] x86/tools: Fix objdump version check again
 Date:   Mon, 16 Aug 2021 15:02:14 +0200
-Message-Id: <20210816125447.502952777@linuxfoundation.org>
+Message-Id: <20210816125429.637274234@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
-References: <20210816125444.082226187@linuxfoundation.org>
+In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
+References: <20210816125428.198692661@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,68 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andre Przywara <andre.przywara@arm.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit d1dee814168538eba166ae4150b37f0d88257884 ]
+[ Upstream commit 839ad22f755132838f406751439363c07272ad87 ]
 
-When we are building all the various pinctrl structures for the
-Allwinner pinctrl devices, we do some estimation about the maximum
-number of distinct function (names) that we will need.
+Skip (omit) any version string info that is parenthesized.
 
-So far we take the number of pins as an upper bound, even though we
-can actually have up to four special functions per pin. This wasn't a
-problem until now, since we indeed have typically far more pins than
-functions, and most pins share common functions.
+Warning: objdump version 15) is older than 2.19
+Warning: Skipping posttest.
 
-However the H616 "-r" pin controller has only two pins, but four
-functions, so we run over the end of the array when we are looking for
-a matching function name in sunxi_pinctrl_add_function - there is no
-NULL sentinel left that would terminate the loop:
+where 'objdump -v' says:
+GNU objdump (GNU Binutils; SUSE Linux Enterprise 15) 2.35.1.20201123-7.18
 
-[    8.200648] Unable to handle kernel paging request at virtual address fffdff7efbefaff5
-[    8.209179] Mem abort info:
-....
-[    8.368456] Call trace:
-[    8.370925]  __pi_strcmp+0x90/0xf0
-[    8.374559]  sun50i_h616_r_pinctrl_probe+0x1c/0x28
-[    8.379557]  platform_probe+0x68/0xd8
-
-Do an actual worst case allocation (4 functions per pin, three common
-functions and the sentinel) for the initial array allocation. This is
-now heavily overestimating the number of functions in the common case,
-but we will reallocate this array later with the actual number of
-functions, so it's only temporarily.
-
-Fixes: 561c1cf17c46 ("pinctrl: sunxi: Add support for the Allwinner H616-R pin controller")
-Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-Acked-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://lore.kernel.org/r/20210722132548.22121-1-andre.przywara@arm.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Fixes: 8bee738bb1979 ("x86: Fix objdump version check in chkobjdump.awk for different formats.")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+Link: https://lore.kernel.org/r/20210731000146.2720-1-rdunlap@infradead.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/sunxi/pinctrl-sunxi.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ arch/x86/tools/chkobjdump.awk | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pinctrl/sunxi/pinctrl-sunxi.c b/drivers/pinctrl/sunxi/pinctrl-sunxi.c
-index dc8d39ae045b..9c7679c06dca 100644
---- a/drivers/pinctrl/sunxi/pinctrl-sunxi.c
-+++ b/drivers/pinctrl/sunxi/pinctrl-sunxi.c
-@@ -1219,10 +1219,12 @@ static int sunxi_pinctrl_build_state(struct platform_device *pdev)
- 	}
+diff --git a/arch/x86/tools/chkobjdump.awk b/arch/x86/tools/chkobjdump.awk
+index fd1ab80be0de..a4cf678cf5c8 100644
+--- a/arch/x86/tools/chkobjdump.awk
++++ b/arch/x86/tools/chkobjdump.awk
+@@ -10,6 +10,7 @@ BEGIN {
  
- 	/*
--	 * We suppose that we won't have any more functions than pins,
--	 * we'll reallocate that later anyway
-+	 * Find an upper bound for the maximum number of functions: in
-+	 * the worst case we have gpio_in, gpio_out, irq and up to four
-+	 * special functions per pin, plus one entry for the sentinel.
-+	 * We'll reallocate that later anyway.
- 	 */
--	pctl->functions = kcalloc(pctl->ngroups,
-+	pctl->functions = kcalloc(4 * pctl->ngroups + 4,
- 				  sizeof(*pctl->functions),
- 				  GFP_KERNEL);
- 	if (!pctl->functions)
+ /^GNU objdump/ {
+ 	verstr = ""
++	gsub(/\(.*\)/, "");
+ 	for (i = 3; i <= NF; i++)
+ 		if (match($(i), "^[0-9]")) {
+ 			verstr = $(i);
 -- 
 2.30.2
 
