@@ -2,148 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D393EDE36
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB273EDE1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbhHPTwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 15:52:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53197 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230367AbhHPTwU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 15:52:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629143508;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HXTa/VyECSSTBgPq2TU+rmvN898vFz2Xyhub0w4Arrg=;
-        b=TLdn1ubOR90fCWlq7e1ufGFlNDTDlw9McZHAx5j8Q/tXIriMXbRiSkMZyz0TZzLL6gnnvm
-        71554zyeuIm3x+qJ3s8UsywAza7i538HwR2JuKvPNgKIGoF0ssOQlmEizSUHsfz4IzSyWd
-        EgOzOfqLjYEUPlmtVerJ38g2YU2e/jE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-409-PwTvF9prMuyqvP7LVfHsqw-1; Mon, 16 Aug 2021 15:51:47 -0400
-X-MC-Unique: PwTvF9prMuyqvP7LVfHsqw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 178EB107ACF5;
-        Mon, 16 Aug 2021 19:51:46 +0000 (UTC)
-Received: from t480s.redhat.com (unknown [10.39.192.85])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6FFAE5C1D5;
-        Mon, 16 Aug 2021 19:51:26 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     David Hildenbrand <david@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        linux-unionfs@vger.kernel.org, linux-api@vger.kernel.org,
-        x86@kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH v2 7/7] fs: update documentation of get_write_access() and friends
-Date:   Mon, 16 Aug 2021 21:48:40 +0200
-Message-Id: <20210816194840.42769-8-david@redhat.com>
-In-Reply-To: <20210816194840.42769-1-david@redhat.com>
-References: <20210816194840.42769-1-david@redhat.com>
+        id S231452AbhHPTud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 15:50:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43970 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231328AbhHPTu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 15:50:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AF9260F4B;
+        Mon, 16 Aug 2021 19:49:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629143396;
+        bh=CXis/bLdJRagXths2UirWKpEOJvLoH555N5N/vRF1Lc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=obB85TFbyXkO09lmk8jBjXqGvOX4FMtvwUbKgPOSdWCyok9wNXm6TbPU4D7f+wVUn
+         RkcKY7s6dNR4oYJteih7wKu9lwQuCn3TOJ5i5lvSw+jJWBBvRoWTwWh1PXwh0SZG9Z
+         stuLfA3oL52++Urj0xi4NRcoq4A3Rg4OgLIzND4NaTfIdycSBVGlccuRBPKdg8U8k4
+         9k517Y5UaV5Xnp7kt4zPvXpDut42GaRomTfeDgMj+ReLeekAPK6je2ZLyGCgEyoU10
+         tK7KYj+wixt4JteSl7UygrhN3gdY5ug2ZQ+pCArPPpa1Z/lprgq1qw19lLW3NyT2rV
+         AsUZKqGd7E7WA==
+Date:   Mon, 16 Aug 2021 20:49:34 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Aakash Hemadri <aakashhemadri123@gmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+        Jawoslav Kysela <perex@perex.cz>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Bjorn Helgaas <bjorn@helgaas.com>
+Subject: Re: [PATCH 1/2] ASoC: tegra30: ahub: Use of_device_get_match_data
+Message-ID: <20210816194934.GD4253@sirena.org.uk>
+References: <cover.1628971397.git.aakashhemadri123@gmail.com>
+ <e568d621c9c05ee23732a6a6f9e3606a780b1707.1628971397.git.aakashhemadri123@gmail.com>
+ <20210816183906.GC4253@sirena.org.uk>
+ <20210816194621.mrudqykxvkbt3a2w@xps.yggdrasil>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ZmUaFz6apKcXQszQ"
+Content-Disposition: inline
+In-Reply-To: <20210816194621.mrudqykxvkbt3a2w@xps.yggdrasil>
+X-Cookie: Allow 6 to 8 weeks for delivery.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As VM_DENYWRITE does no longer exists, let's spring-clean the
-documentation of get_write_access() and friends.
 
-Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- include/linux/fs.h | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+--ZmUaFz6apKcXQszQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 640574294216..e0dc3e96ed72 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3055,15 +3055,20 @@ static inline void file_end_write(struct file *file)
- }
- 
- /*
-+ * This is used for regular files where some users -- especially the
-+ * currently executed binary in a process, previously handled via
-+ * VM_DENYWRITE -- cannot handle concurrent write (and maybe mmap
-+ * read-write shared) accesses.
-+ *
-  * get_write_access() gets write permission for a file.
-  * put_write_access() releases this write permission.
-- * This is used for regular files.
-- * We cannot support write (and maybe mmap read-write shared) accesses and
-- * MAP_DENYWRITE mmappings simultaneously. The i_writecount field of an inode
-- * can have the following values:
-- * 0: no writers, no VM_DENYWRITE mappings
-- * < 0: (-i_writecount) vm_area_structs with VM_DENYWRITE set exist
-- * > 0: (i_writecount) users are writing to the file.
-+ * deny_write_access() denies write access to a file.
-+ * allow_write_access() re-enables write access to a file.
-+ *
-+ * The i_writecount field of an inode can have the following values:
-+ * 0: no write access, no denied write access
-+ * < 0: (-i_writecount) users that denied write access to the file.
-+ * > 0: (i_writecount) users that have write access to the file.
-  *
-  * Normally we operate on that counter with atomic_{inc,dec} and it's safe
-  * except for the cases where we don't hold i_writecount yet. Then we need to
--- 
-2.31.1
+On Tue, Aug 17, 2021 at 01:16:21AM +0530, Aakash Hemadri wrote:
+> On 21/08/16 07:39PM, Mark Brown wrote:
 
+> > Thierry, are you sure about your review here?  As others have been
+> > pointing out of_device_get_match_data() returns match->data while
+> > of_match_device() returns the device.
+
+> Sorry for the confusion, and the glaring mistake.
+> Will fix and send v2.
+
+Since I applied the patches please send an incremental fix on top of
+what's been applied rather than a v2.
+
+--ZmUaFz6apKcXQszQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEawU4ACgkQJNaLcl1U
+h9CXuwf+OBGMX8GLE249lvMUXgZkRMEjs9nIi42wzOcnwaLRMAMaBkIvAUHulfYL
+TM277DlFjKtwdAh/oGeC9OMPPsq3dwxeGCe1CvJxwOxt2CtEVs3XHuljeylxR+0A
+OxSnMqseEhvXbQI08QAqn9nQvzYOwaMgCxJEKSVl8Euy61Mzv0l4mi27Ynk4Xld4
+4rhZ0E+MWcQG/6oAUcmNiEJ9SDcQloVHD6VbmBZ3zsMfavSsnv8QO1I6TY5HZq56
+HOoJDODMhYiArCzj3Szpv+8XQUh7OrfcZjNds6SO9B9EEcxNtTllCpgpHXRs3GbU
+WezDQX8TTXAPo6/Lg7dkRmHYLNlhHQ==
+=BD+A
+-----END PGP SIGNATURE-----
+
+--ZmUaFz6apKcXQszQ--
