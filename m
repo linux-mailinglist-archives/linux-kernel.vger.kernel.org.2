@@ -2,114 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0813ED217
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3063ED21E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235793AbhHPKiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 06:38:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234197AbhHPKin (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:38:43 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D0E1C061764;
-        Mon, 16 Aug 2021 03:38:12 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id z5so31891683ybj.2;
-        Mon, 16 Aug 2021 03:38:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1KbK256o4936T0+iP2lqkRf5oNWJgGjRNrOhWBLpkFU=;
-        b=TQkfpC5oJKlGAa+jxY3mSiulJOhq65y2Sps6CSTQXaflomdvC1kFnANDQKiduq7Bmz
-         enbULUi/RJVy4yWJpZB/pmiMB8caSuGkMWuSl54KnqVK4T+sjD4VgHFW8eeBycOnmCBb
-         qM6d3hIMC3uWMbWVMZRmdYUJdRwBBW305BOmmaHm9gu0tbydoU+vbkCXg+HXoIRPbOUB
-         26LTyQUX1QZTfX4RcNSao7e+1+MSj0lyzGreBZDSiSef0faZibik9qyQszzylc3EJgZH
-         ScW5O8Gu9E7WWp5aj6pgIuyGyuMNKRKJ+Xe0Hql+ZGQzsP8jx3VSFA4G2QF5udX94aXg
-         Il8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1KbK256o4936T0+iP2lqkRf5oNWJgGjRNrOhWBLpkFU=;
-        b=AVH5ppDmH0JpykY+OgTVM9SSUrvD9Fphnc2lX9yp6c+3hV3N92MDRvc3SKMMfa145t
-         /td6z8Qyx3eiSYtXzo2++Kl1cPeJaDHZ0K0cJMyEjqlLR4+K4PXUcSAkhVnx8lOZWuNh
-         739BO0hCpWiJsysm+TM6iaZGP+sgW+Vo4O1GJSBqrte3SKfe86rRGckk9CrilBSlOuRM
-         b3xim3CYiuQ4OjvPdeU8IvNFcX9ah1Of1SQNn5QpUR4ZIH4LDdgmvjrdzWj5VLDrjz0y
-         KvUI2M/KKp2P+2dXxlccO/5/SG+fbX63LwqROu/pV74kuT0+y9cpW2G2VoYXREv48nhl
-         EGRg==
-X-Gm-Message-State: AOAM532amxu+6rdmANXTRZ6qkGv2l6JvYxA7NGiOO3PQQiRY8T4L8mqM
-        RyPdLuFtxJqWhNt0Hf/YyUajtX1UFcJ7x+QjlFRe4OkbIKM=
-X-Google-Smtp-Source: ABdhPJzdNKt6ySIqdGSttap8fl/rHvJ5JnDQaPdZVrNcewto9i/n12WsgWCb25hD0adKhs5xUvLP3TBI4hUlXSLflYY=
-X-Received: by 2002:a25:505:: with SMTP id 5mr20105139ybf.157.1629110291142;
- Mon, 16 Aug 2021 03:38:11 -0700 (PDT)
+        id S235812AbhHPKkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:40:06 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:60587 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233320AbhHPKkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 06:40:05 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629110373; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=7FQMN00bWUtkew/aYXgY67FhLuXjMYkzri60rq8/V1I=;
+ b=ivqIeJHMtvbH1kAevmFVT8qcRjK5UzPMJwHUzxMdeqN1Mx583aJ9jtQBL6wNeUGIfTAxODtH
+ ErY7dSuCJNJhUst6W1hnjxmvFbbZKYcm6wWtXYdlujuUGEuxQTo980tjFSqtihWlZx7cgh6Q
+ dM0tSkUSwNIy8daST1iGqtwfJBc=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 611a403e454b7a558fc1c90d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Aug 2021 10:38:54
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8B089C4360C; Mon, 16 Aug 2021 10:38:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C8AF0C4338F;
+        Mon, 16 Aug 2021 10:38:52 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210816102942.6976-1-lukas.bulwahn@gmail.com>
-In-Reply-To: <20210816102942.6976-1-lukas.bulwahn@gmail.com>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Mon, 16 Aug 2021 12:38:03 +0200
-Message-ID: <CAKXUXMx8o-s=TY9A7DNLdif90PrTYc_bd_aaMRtOmyQAOFXgUw@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: adjust PISTACHIO SOC SUPPORT after its retirement
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James Hartley <james.hartley@sondrel.com>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>
-Cc:     kernel-janitors <kernel-janitors@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 16 Aug 2021 16:08:52 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>,
+        Trilok Soni <quic_tsoni@quicinc.com>, quic_eberman@quicinc.com
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>
+Subject: Re: [PATCH 0/3] soc: qcom: Add download mode support for QTI
+ platforms
+In-Reply-To: <CAE-0n52PzadMxB_4h2DGJGLO++Bu_PCSsxS8NHe+cuhv=Mw0sA@mail.gmail.com>
+References: <cover.1628757036.git.saiprakash.ranjan@codeaurora.org>
+ <CAE-0n52PzadMxB_4h2DGJGLO++Bu_PCSsxS8NHe+cuhv=Mw0sA@mail.gmail.com>
+Message-ID: <30aba45d0e657fd77adba119e5fad345@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 12:29 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> Commit 104f942b2832 ("MIPS: Retire MACH_PISTACHIO") removes
-> ./arch/mips/pistachio/ and ./arch/mips/configs/pistachio_defconfig, but
-> misses to adjust the corresponding section PISTACHIO SOC SUPPORT
-> in MAINTAINERS.
->
-> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
->
->   warning: no file matches    F:    arch/mips/configs/pistachio*_defconfig
->   warning: no file matches    F:    arch/mips/pistachio/
->
-> Adjust the PISTACHIO SOC SUPPORT after its retirement.
->
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> applies cleanly on next-20210816
->
-> Jiaxun, James, please ack.
-> Thomas, please pick this minor non-urgent clean-up patch on mips-next.
->
+On 2021-08-13 05:46, Stephen Boyd wrote:
+> Quoting Sai Prakash Ranjan (2021-08-12 02:17:39)
+>> Collecting ramdumps on QTI platforms mainly require two things,
+>> SDI (System Debug Image) enabled firmware and kernel support to
+>> configure download mode cookies and SDI settings. Ramdumps can
+>> be collected once the system enters the download mode. To enter
+>> download mode, magic values or cookies need to be set in IMEM
+>> which is used by firmware to decide to enter download mode or not.
+>> Download mode cookies remain the same across targets and SDI disable
+>> register needs to be set or SDI needs to be disabled in case of normal
+>> reboot since ramdumps are supposed to be for crash debugging and
+>> not for every reboot. This series adds the kernel support required
+>> to enter download mode.
+> 
+> I don't recall if we discussed this on the list, but I'd really prefer
+> that we don't make kernel changes to support this beyond implementing
+> PSCI SYSTEM_RESET2 support and then some sort of vendor specific (or if
+> ARM is willing to update the spec then ARM specific) reset command on
+> panic reboot paths. The idea is to set the cookie in the bootloader
+> before the kernel is booted, then any insta-reboots/watchdogs would go
+> into download mode, no special init code required to lay down the 
+> cookie
+> or clear it on normal reboot. The normal reboot PSCI call would clear
+> the cookie in the firmware, in case something goes wrong after the
+> kernel hands off control to PSCI, and then panics that want to go into
+> download mode would make the SYSTEM_RESET2 reboot call into PSCI that
+> sets the cookie.
+> 
+> Maybe it could be a linux specific psci number or maybe we could
+> configure the reboot call in the psci node to be this specific number 
+> so
+> that it can be different based on the firmware implementation if
+> consolidating around a single number doesn't work. Either way, that all
+> seems manageable and we can keep these cookie details out of the kernel
+> and the reboot/panic paths.
+> 
 
-I just received the response that the email james.hartley@sondrel.com
-is unreachable. So, we will probably be better to delete the section
-PISTACHIO SOC SUPPORT completely and extend MARDUK (CREATOR CI40)
-DEVICE TREE SUPPORT to include arch/mips/boot/dts/img/pistachio* (so
-to include the dtsi, the current dts depends on).
+Alright, I think we can probably make it work without much/any changes
+in kernel. So following what you said, we can just implement
+PSCI_SYSTEM_RESET2 in firmware to enter the download mode having cookies
+already set by default and the cookie is cleared when we have a normal
+reboot via PSCI_SYSTEM_RESET. For panic reboot, we already have a 
+cmdline
+*reboot=panic_warm* to identify panic reboots and can call into
+PSCI_SYSTEM_RESET2. I have just tested and it works fine if we have
+psci_system_reset2_supported as true.
 
-If there are no objections, I will send a patch V2.
+@Trilok/@Elliot, you can check if above works for your usecases in 
+android
+as well and it doesn't need any of your additional changes to kernel.
 
-Lukas
+Thanks,
+Sai
 
->  MAINTAINERS | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 1a2d3ee2711e..8276e59406e4 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14802,8 +14802,6 @@ M:      James Hartley <james.hartley@sondrel.com>
->  L:     linux-mips@vger.kernel.org
->  S:     Odd Fixes
->  F:     arch/mips/boot/dts/img/pistachio*
-> -F:     arch/mips/configs/pistachio*_defconfig
-> -F:     arch/mips/pistachio/
->
->  PKTCDVD DRIVER
->  M:     linux-block@vger.kernel.org
-> --
-> 2.26.2
->
+>> 
+>> Currently this series doesn't add support for android targets where
+>> a couple of SCM calls are required to set/unset the download mode
+>> cookies and SDI configuration but can be easily added gradually to
+>> the same driver, so as of now only chrome platforms are supported
+>> and tested.
+>> 
+>> Sai Prakash Ranjan (3):
+>>   soc: qcom: Add download mode support
+>>   dt-bindings: msm: Add QTI download mode support binding
+>>   arm64: dts: qcom: sc7180: Add IMEM, pil info and download mode 
+>> region
+>> 
+>>  .../bindings/arm/msm/qcom,dload-mode.yaml     |  53 ++++++
+>>  MAINTAINERS                                   |   7 +
+>>  arch/arm64/boot/dts/qcom/sc7180.dtsi          |  21 +++
+>>  drivers/soc/qcom/Kconfig                      |  10 ++
+>>  drivers/soc/qcom/Makefile                     |   1 +
+>>  drivers/soc/qcom/download_mode.c              | 152 
+>> ++++++++++++++++++
+>>  6 files changed, 244 insertions(+)
+>>  create mode 100644 
+>> Documentation/devicetree/bindings/arm/msm/qcom,dload-mode.yaml
+>>  create mode 100644 drivers/soc/qcom/download_mode.c
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
