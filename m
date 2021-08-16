@@ -2,62 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A49E43ED044
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 10:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917583ED047
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 10:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234861AbhHPIap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 04:30:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37678 "EHLO
+        id S234935AbhHPIar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 04:30:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234707AbhHPIan (ORCPT
+        with ESMTP id S231716AbhHPIao (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 04:30:43 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488B2C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 01:30:12 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id q3so21051999edt.5
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 01:30:12 -0700 (PDT)
+        Mon, 16 Aug 2021 04:30:44 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27912C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 01:30:13 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id bo19so25113344edb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 01:30:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=deviqon.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5WMr44yPAMXR7U++aypQuBSuQpWu0zm/8yXjvAvdLxE=;
-        b=H71IE2ezU7i4vmqOy956D6R5WpAa8yBdvbDU8iAIfAXbyEnWkCMEhWsUvjhbZ804YA
-         XXS6ArFuaByhPuiNDhOYCYLkLmKkTbNm52h8CkLDrH0YuOPtAB5hzbCGCj96YKXdkF1m
-         nHYsIaoaEP2jzary0gTK3YVSkVAtF9c9+zFx9CRfDtOz242ix3lBfcXtWdBUG2bXZqMZ
-         SvHkWWW0JyUjiPXcccExKr5gT7xBgwH9cCSN/juFUTKn4JtjwIbBjH2yw32VpdWmpCta
-         5uWN/fLc440JEsT5KwvQdrMHf23zwmY8oqQVLiMyhcOoWpH5J3GMA24mA6qpd3g1l2gR
-         JTvQ==
+        bh=XxCBnIZ5dXssQzzN6VCgXFv518uWR4Tb6f83q4mewwQ=;
+        b=WoErGq4ga63J08ObXGiPAf2u+RAOrP3QVMwIeQs4+guK+CEZQ5OyBEKudJGo4KOw+u
+         3HVkZr63lCFXnK32WrLOoKXPghO4WiVQ5v5BdMGnqjnQqiviRwONAj73Z3zC4JQ2t1i1
+         ScSinjeWMcggwqG4moRj+LLopp/LZyJmC6L3mvQJlFi2i59psIExvzidLaEzNhWrfgab
+         NlRFNdnQ3ob3Ygd+B0iMlN3+476DjDiVFd1QTeUbXZ5/3ssJ2xXDid9IhYZvb8VunKY2
+         ZQiZspeqqfs2zLjULEZ1y9zoT9TaaRSCqPvhhEes8AeaaPF401nHI1/RxNDvVnf1LTxy
+         6lcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5WMr44yPAMXR7U++aypQuBSuQpWu0zm/8yXjvAvdLxE=;
-        b=m7mO70cPfFCZcVUbi8Nxm6FGxhb5pTCgH0HgmvdbiB7PRocCWi5QDkePPftRpb0AgP
-         qGgia+UKiGHu++fNRsbdgq3kErtHYB3fzyS9agfGRLZiw0T30G2Kx/RlcLarfK9gfoYO
-         POdzRAqky9bOTUoRW4OMRc5UVwj4LqWijPgqcJQLcnmu+rpKjgqK0s/yftFozikjemlC
-         eoPtuqlSUERl7Tp0DhKmQB2MsjmwsoaUSlwWtdUKw3WyLbTYdlGUIOwdSNSiJYNfWzgR
-         52YqPusUoZoh39fP/H+UeNsELJb5k9xGdq8cWIuEoQ/s52Zsq6QNdLY8l+PkMNtFgF2N
-         icsA==
-X-Gm-Message-State: AOAM5324xtcG8okTXNUoncG3w9MpZ+5LlnYyW61oDKTijjb6kzpwIjD9
-        jaftbiAPsIKn8SAX9H04Edrxzw==
-X-Google-Smtp-Source: ABdhPJyWyjPeTJdTKsS1OTdHPZdN4O/7Wop/1dFFIYAkwQ4SPfhgo59urigk5bhM8QOrb0+3tU6stA==
-X-Received: by 2002:a05:6402:17d7:: with SMTP id s23mr18483271edy.344.1629102610960;
-        Mon, 16 Aug 2021 01:30:10 -0700 (PDT)
+        bh=XxCBnIZ5dXssQzzN6VCgXFv518uWR4Tb6f83q4mewwQ=;
+        b=L9JXSYXSjkssvyRO4amV813qZI/QV0bvo4gozPGbNTb0C0neqRWGHtg9L0LwHfy4Es
+         p0gVf4q1Ma7HpuiIhmr5aXNAQNERK2Nlci8UmZf78h0o0cN8QLl017gXxJdKISCIhEOs
+         NRPBfoT0Hqqa61VJmqlV8/50IbwcfPUBcdasH8iAxXcqqujauyjLYJODZkl1bPwNPYBH
+         OAb0k4hl2N0eBVPT2iVQCnqUYVjKvNQRrhYwPv8quxjJgW7nDQnsw0gzCsf4XJ9MHBEa
+         kKY4YkVtUNysnAkOhztNsasnltFIcbBSgJUDhZLIIpmkepT36WDJF/Zdy0rHabbDexg4
+         Wo+w==
+X-Gm-Message-State: AOAM532cd9pmTdXFeNIOk4LTseovIVdHET+W2ZYkGzHBx91vZQfamaO3
+        1naYoL7SKTTinQPbeeXJWrkKGw==
+X-Google-Smtp-Source: ABdhPJyBHwWJlt6hQrDX7UKsacE7tlB5sHPe5ddMRCX7mBGnPPqCEKJtqgAB3Cl/n+/fb8cgtXFXxg==
+X-Received: by 2002:a50:9fa3:: with SMTP id c32mr19117491edf.354.1629102611735;
+        Mon, 16 Aug 2021 01:30:11 -0700 (PDT)
 Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id q30sm4516878edi.84.2021.08.16.01.30.10
+        by smtp.gmail.com with ESMTPSA id q30sm4516878edi.84.2021.08.16.01.30.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 01:30:10 -0700 (PDT)
+        Mon, 16 Aug 2021 01:30:11 -0700 (PDT)
 From:   Alexandru Ardelean <aardelean@deviqon.com>
 To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     denis.ciocca@st.com, jic23@kernel.org,
-        Alexandru Ardelean <aardelean@deviqon.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 1/5] iio: st_sensors: disable regulators after device unregistration
-Date:   Mon, 16 Aug 2021 11:28:32 +0300
-Message-Id: <20210816082836.67511-2-aardelean@deviqon.com>
+        Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH v2 2/5] iio: st_sensors: remove st_sensors_deallocate_trigger() function
+Date:   Mon, 16 Aug 2021 11:28:33 +0300
+Message-Id: <20210816082836.67511-3-aardelean@deviqon.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210816082836.67511-1-aardelean@deviqon.com>
 References: <20210816082836.67511-1-aardelean@deviqon.com>
@@ -67,173 +64,280 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Up until commit ea7e586bdd331 ("iio: st_sensors: move regulator retrieveal
-to core") only the ST pressure driver seems to have had any regulator
-disable. After that commit, the regulator handling was moved into the
-common st_sensors logic.
+This change converts the st_sensors_allocate_trigger() to use
+device-managed functions.
 
-In all instances of this regulator handling, the regulators were disabled
-before unregistering the IIO device.
-This can cause issues where the device would be powered down and still be
-available to userspace, allowing it to send invalid/garbage data.
+The parent device of the IIO device object is used. This is based on the
+assumption that all other devm_ calls in the ST sensors use this reference.
 
-This change moves the st_sensors_power_disable() after the common probe
-functions. These common probe functions also handle unregistering the IIO
-device.
+That makes the st_sensors_deallocate_trigger() function un-needed, so it
+can be removed.
 
-Fixes: 774487611c949 ("iio: pressure-core: st: Provide support for the Vdd power supply")
-Fixes: ea7e586bdd331 ("iio: st_sensors: move regulator retrieveal to core")
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: Denis CIOCCA <denis.ciocca@st.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 ---
- drivers/iio/accel/st_accel_i2c.c       | 4 ++--
- drivers/iio/accel/st_accel_spi.c       | 4 ++--
- drivers/iio/gyro/st_gyro_i2c.c         | 4 ++--
- drivers/iio/gyro/st_gyro_spi.c         | 4 ++--
- drivers/iio/magnetometer/st_magn_i2c.c | 4 ++--
- drivers/iio/magnetometer/st_magn_spi.c | 4 ++--
- drivers/iio/pressure/st_pressure_i2c.c | 4 ++--
- drivers/iio/pressure/st_pressure_spi.c | 4 ++--
- 8 files changed, 16 insertions(+), 16 deletions(-)
+ drivers/iio/accel/st_accel_core.c             | 18 +-------
+ .../common/st_sensors/st_sensors_trigger.c    | 45 +++++++------------
+ drivers/iio/gyro/st_gyro_core.c               | 18 +-------
+ drivers/iio/magnetometer/st_magn_core.c       | 18 +-------
+ drivers/iio/pressure/st_pressure_core.c       | 18 +-------
+ include/linux/iio/common/st_sensors.h         |  5 ---
+ 6 files changed, 19 insertions(+), 103 deletions(-)
 
-diff --git a/drivers/iio/accel/st_accel_i2c.c b/drivers/iio/accel/st_accel_i2c.c
-index f711756e41e3..cba57459e90a 100644
---- a/drivers/iio/accel/st_accel_i2c.c
-+++ b/drivers/iio/accel/st_accel_i2c.c
-@@ -193,10 +193,10 @@ static int st_accel_i2c_remove(struct i2c_client *client)
- {
- 	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+diff --git a/drivers/iio/accel/st_accel_core.c b/drivers/iio/accel/st_accel_core.c
+index f1e6ec380667..a7be1633bff1 100644
+--- a/drivers/iio/accel/st_accel_core.c
++++ b/drivers/iio/accel/st_accel_core.c
+@@ -1380,29 +1380,13 @@ int st_accel_common_probe(struct iio_dev *indio_dev)
+ 			return err;
+ 	}
  
--	st_sensors_power_disable(indio_dev);
+-	err = iio_device_register(indio_dev);
+-	if (err)
+-		goto st_accel_device_register_error;
 -
- 	st_accel_common_remove(indio_dev);
+-	dev_info(&indio_dev->dev, "registered accelerometer %s\n",
+-		 indio_dev->name);
+-
+-	return 0;
+-
+-st_accel_device_register_error:
+-	if (adata->irq > 0)
+-		st_sensors_deallocate_trigger(indio_dev);
+-	return err;
++	return iio_device_register(indio_dev);
+ }
+ EXPORT_SYMBOL(st_accel_common_probe);
  
-+	st_sensors_power_disable(indio_dev);
-+
+ void st_accel_common_remove(struct iio_dev *indio_dev)
+ {
+-	struct st_sensor_data *adata = iio_priv(indio_dev);
+-
+ 	iio_device_unregister(indio_dev);
+-	if (adata->irq > 0)
+-		st_sensors_deallocate_trigger(indio_dev);
+ }
+ EXPORT_SYMBOL(st_accel_common_remove);
+ 
+diff --git a/drivers/iio/common/st_sensors/st_sensors_trigger.c b/drivers/iio/common/st_sensors/st_sensors_trigger.c
+index 64e0a748a855..d022157b66a2 100644
+--- a/drivers/iio/common/st_sensors/st_sensors_trigger.c
++++ b/drivers/iio/common/st_sensors/st_sensors_trigger.c
+@@ -119,11 +119,12 @@ int st_sensors_allocate_trigger(struct iio_dev *indio_dev,
+ 				const struct iio_trigger_ops *trigger_ops)
+ {
+ 	struct st_sensor_data *sdata = iio_priv(indio_dev);
++	struct device *parent = indio_dev->dev.parent;
+ 	unsigned long irq_trig;
+ 	int err;
+ 
+-	sdata->trig = iio_trigger_alloc(sdata->dev, "%s-trigger",
+-					indio_dev->name);
++	sdata->trig = devm_iio_trigger_alloc(parent, "%s-trigger",
++					     indio_dev->name);
+ 	if (sdata->trig == NULL) {
+ 		dev_err(&indio_dev->dev, "failed to allocate iio trigger.\n");
+ 		return -ENOMEM;
+@@ -153,7 +154,7 @@ int st_sensors_allocate_trigger(struct iio_dev *indio_dev,
+ 				sdata->sensor_settings->drdy_irq.addr_ihl,
+ 				sdata->sensor_settings->drdy_irq.mask_ihl, 1);
+ 			if (err < 0)
+-				goto iio_trigger_free;
++				return err;
+ 			dev_info(&indio_dev->dev,
+ 				 "interrupts on the falling edge or active low level\n");
+ 		}
+@@ -179,8 +180,7 @@ int st_sensors_allocate_trigger(struct iio_dev *indio_dev,
+ 		if (!sdata->sensor_settings->drdy_irq.stat_drdy.addr) {
+ 			dev_err(&indio_dev->dev,
+ 				"edge IRQ not supported w/o stat register.\n");
+-			err = -EOPNOTSUPP;
+-			goto iio_trigger_free;
++			return -EOPNOTSUPP;
+ 		}
+ 		sdata->edge_irq = true;
+ 	} else {
+@@ -205,44 +205,29 @@ int st_sensors_allocate_trigger(struct iio_dev *indio_dev,
+ 	    sdata->sensor_settings->drdy_irq.stat_drdy.addr)
+ 		irq_trig |= IRQF_SHARED;
+ 
+-	err = request_threaded_irq(sdata->irq,
+-				   st_sensors_irq_handler,
+-				   st_sensors_irq_thread,
+-				   irq_trig,
+-				   sdata->trig->name,
+-				   sdata->trig);
++	err = devm_request_threaded_irq(parent,
++					sdata->irq,
++					st_sensors_irq_handler,
++					st_sensors_irq_thread,
++					irq_trig,
++					sdata->trig->name,
++					sdata->trig);
+ 	if (err) {
+ 		dev_err(&indio_dev->dev, "failed to request trigger IRQ.\n");
+-		goto iio_trigger_free;
++		return err;
+ 	}
+ 
+-	err = iio_trigger_register(sdata->trig);
++	err = devm_iio_trigger_register(parent, sdata->trig);
+ 	if (err < 0) {
+ 		dev_err(&indio_dev->dev, "failed to register iio trigger.\n");
+-		goto iio_trigger_register_error;
++		return err;
+ 	}
+ 	indio_dev->trig = iio_trigger_get(sdata->trig);
+ 
+ 	return 0;
+-
+-iio_trigger_register_error:
+-	free_irq(sdata->irq, sdata->trig);
+-iio_trigger_free:
+-	iio_trigger_free(sdata->trig);
+-	return err;
+ }
+ EXPORT_SYMBOL(st_sensors_allocate_trigger);
+ 
+-void st_sensors_deallocate_trigger(struct iio_dev *indio_dev)
+-{
+-	struct st_sensor_data *sdata = iio_priv(indio_dev);
+-
+-	iio_trigger_unregister(sdata->trig);
+-	free_irq(sdata->irq, sdata->trig);
+-	iio_trigger_free(sdata->trig);
+-}
+-EXPORT_SYMBOL(st_sensors_deallocate_trigger);
+-
+ int st_sensors_validate_device(struct iio_trigger *trig,
+ 			       struct iio_dev *indio_dev)
+ {
+diff --git a/drivers/iio/gyro/st_gyro_core.c b/drivers/iio/gyro/st_gyro_core.c
+index e8fc8af65143..cb539b47cdf4 100644
+--- a/drivers/iio/gyro/st_gyro_core.c
++++ b/drivers/iio/gyro/st_gyro_core.c
+@@ -515,29 +515,13 @@ int st_gyro_common_probe(struct iio_dev *indio_dev)
+ 			return err;
+ 	}
+ 
+-	err = iio_device_register(indio_dev);
+-	if (err)
+-		goto st_gyro_device_register_error;
+-
+-	dev_info(&indio_dev->dev, "registered gyroscope %s\n",
+-		 indio_dev->name);
+-
+-	return 0;
+-
+-st_gyro_device_register_error:
+-	if (gdata->irq > 0)
+-		st_sensors_deallocate_trigger(indio_dev);
+-	return err;
++	return iio_device_register(indio_dev);
+ }
+ EXPORT_SYMBOL(st_gyro_common_probe);
+ 
+ void st_gyro_common_remove(struct iio_dev *indio_dev)
+ {
+-	struct st_sensor_data *gdata = iio_priv(indio_dev);
+-
+ 	iio_device_unregister(indio_dev);
+-	if (gdata->irq > 0)
+-		st_sensors_deallocate_trigger(indio_dev);
+ }
+ EXPORT_SYMBOL(st_gyro_common_remove);
+ 
+diff --git a/drivers/iio/magnetometer/st_magn_core.c b/drivers/iio/magnetometer/st_magn_core.c
+index 9ffd50d796bf..5be85e2405a5 100644
+--- a/drivers/iio/magnetometer/st_magn_core.c
++++ b/drivers/iio/magnetometer/st_magn_core.c
+@@ -650,29 +650,13 @@ int st_magn_common_probe(struct iio_dev *indio_dev)
+ 			return err;
+ 	}
+ 
+-	err = iio_device_register(indio_dev);
+-	if (err)
+-		goto st_magn_device_register_error;
+-
+-	dev_info(&indio_dev->dev, "registered magnetometer %s\n",
+-		 indio_dev->name);
+-
+-	return 0;
+-
+-st_magn_device_register_error:
+-	if (mdata->irq > 0)
+-		st_sensors_deallocate_trigger(indio_dev);
+-	return err;
++	return iio_device_register(indio_dev);
+ }
+ EXPORT_SYMBOL(st_magn_common_probe);
+ 
+ void st_magn_common_remove(struct iio_dev *indio_dev)
+ {
+-	struct st_sensor_data *mdata = iio_priv(indio_dev);
+-
+ 	iio_device_unregister(indio_dev);
+-	if (mdata->irq > 0)
+-		st_sensors_deallocate_trigger(indio_dev);
+ }
+ EXPORT_SYMBOL(st_magn_common_remove);
+ 
+diff --git a/drivers/iio/pressure/st_pressure_core.c b/drivers/iio/pressure/st_pressure_core.c
+index ab1c17fac807..17ebb5171d4c 100644
+--- a/drivers/iio/pressure/st_pressure_core.c
++++ b/drivers/iio/pressure/st_pressure_core.c
+@@ -721,29 +721,13 @@ int st_press_common_probe(struct iio_dev *indio_dev)
+ 			return err;
+ 	}
+ 
+-	err = iio_device_register(indio_dev);
+-	if (err)
+-		goto st_press_device_register_error;
+-
+-	dev_info(&indio_dev->dev, "registered pressure sensor %s\n",
+-		 indio_dev->name);
+-
+-	return err;
+-
+-st_press_device_register_error:
+-	if (press_data->irq > 0)
+-		st_sensors_deallocate_trigger(indio_dev);
+-	return err;
++	return iio_device_register(indio_dev);
+ }
+ EXPORT_SYMBOL(st_press_common_probe);
+ 
+ void st_press_common_remove(struct iio_dev *indio_dev)
+ {
+-	struct st_sensor_data *press_data = iio_priv(indio_dev);
+-
+ 	iio_device_unregister(indio_dev);
+-	if (press_data->irq > 0)
+-		st_sensors_deallocate_trigger(indio_dev);
+ }
+ EXPORT_SYMBOL(st_press_common_remove);
+ 
+diff --git a/include/linux/iio/common/st_sensors.h b/include/linux/iio/common/st_sensors.h
+index 8bdbaf3f3796..e74b55244f35 100644
+--- a/include/linux/iio/common/st_sensors.h
++++ b/include/linux/iio/common/st_sensors.h
+@@ -273,7 +273,6 @@ irqreturn_t st_sensors_trigger_handler(int irq, void *p);
+ int st_sensors_allocate_trigger(struct iio_dev *indio_dev,
+ 				const struct iio_trigger_ops *trigger_ops);
+ 
+-void st_sensors_deallocate_trigger(struct iio_dev *indio_dev);
+ int st_sensors_validate_device(struct iio_trigger *trig,
+ 			       struct iio_dev *indio_dev);
+ #else
+@@ -282,10 +281,6 @@ static inline int st_sensors_allocate_trigger(struct iio_dev *indio_dev,
+ {
  	return 0;
  }
- 
-diff --git a/drivers/iio/accel/st_accel_spi.c b/drivers/iio/accel/st_accel_spi.c
-index bb45d9ff95b8..5167fae1ee8e 100644
---- a/drivers/iio/accel/st_accel_spi.c
-+++ b/drivers/iio/accel/st_accel_spi.c
-@@ -143,10 +143,10 @@ static int st_accel_spi_remove(struct spi_device *spi)
- {
- 	struct iio_dev *indio_dev = spi_get_drvdata(spi);
- 
--	st_sensors_power_disable(indio_dev);
--
- 	st_accel_common_remove(indio_dev);
- 
-+	st_sensors_power_disable(indio_dev);
-+
- 	return 0;
- }
- 
-diff --git a/drivers/iio/gyro/st_gyro_i2c.c b/drivers/iio/gyro/st_gyro_i2c.c
-index 3ef86e16ee65..a8164fe48b85 100644
---- a/drivers/iio/gyro/st_gyro_i2c.c
-+++ b/drivers/iio/gyro/st_gyro_i2c.c
-@@ -106,10 +106,10 @@ static int st_gyro_i2c_remove(struct i2c_client *client)
- {
- 	struct iio_dev *indio_dev = i2c_get_clientdata(client);
- 
--	st_sensors_power_disable(indio_dev);
--
- 	st_gyro_common_remove(indio_dev);
- 
-+	st_sensors_power_disable(indio_dev);
-+
- 	return 0;
- }
- 
-diff --git a/drivers/iio/gyro/st_gyro_spi.c b/drivers/iio/gyro/st_gyro_spi.c
-index 41d835493347..9d8916871b4b 100644
---- a/drivers/iio/gyro/st_gyro_spi.c
-+++ b/drivers/iio/gyro/st_gyro_spi.c
-@@ -110,10 +110,10 @@ static int st_gyro_spi_remove(struct spi_device *spi)
- {
- 	struct iio_dev *indio_dev = spi_get_drvdata(spi);
- 
--	st_sensors_power_disable(indio_dev);
--
- 	st_gyro_common_remove(indio_dev);
- 
-+	st_sensors_power_disable(indio_dev);
-+
- 	return 0;
- }
- 
-diff --git a/drivers/iio/magnetometer/st_magn_i2c.c b/drivers/iio/magnetometer/st_magn_i2c.c
-index 2dfe4ee99591..fa78f0a3b53e 100644
---- a/drivers/iio/magnetometer/st_magn_i2c.c
-+++ b/drivers/iio/magnetometer/st_magn_i2c.c
-@@ -102,10 +102,10 @@ static int st_magn_i2c_remove(struct i2c_client *client)
- {
- 	struct iio_dev *indio_dev = i2c_get_clientdata(client);
- 
--	st_sensors_power_disable(indio_dev);
--
- 	st_magn_common_remove(indio_dev);
- 
-+	st_sensors_power_disable(indio_dev);
-+
- 	return 0;
- }
- 
-diff --git a/drivers/iio/magnetometer/st_magn_spi.c b/drivers/iio/magnetometer/st_magn_spi.c
-index fba978796395..ff43cbf61b05 100644
---- a/drivers/iio/magnetometer/st_magn_spi.c
-+++ b/drivers/iio/magnetometer/st_magn_spi.c
-@@ -96,10 +96,10 @@ static int st_magn_spi_remove(struct spi_device *spi)
- {
- 	struct iio_dev *indio_dev = spi_get_drvdata(spi);
- 
--	st_sensors_power_disable(indio_dev);
--
- 	st_magn_common_remove(indio_dev);
- 
-+	st_sensors_power_disable(indio_dev);
-+
- 	return 0;
- }
- 
-diff --git a/drivers/iio/pressure/st_pressure_i2c.c b/drivers/iio/pressure/st_pressure_i2c.c
-index 52fa98f24478..6215de677017 100644
---- a/drivers/iio/pressure/st_pressure_i2c.c
-+++ b/drivers/iio/pressure/st_pressure_i2c.c
-@@ -119,10 +119,10 @@ static int st_press_i2c_remove(struct i2c_client *client)
- {
- 	struct iio_dev *indio_dev = i2c_get_clientdata(client);
- 
--	st_sensors_power_disable(indio_dev);
--
- 	st_press_common_remove(indio_dev);
- 
-+	st_sensors_power_disable(indio_dev);
-+
- 	return 0;
- }
- 
-diff --git a/drivers/iio/pressure/st_pressure_spi.c b/drivers/iio/pressure/st_pressure_spi.c
-index ee393df54cee..5001aae8f00b 100644
---- a/drivers/iio/pressure/st_pressure_spi.c
-+++ b/drivers/iio/pressure/st_pressure_spi.c
-@@ -102,10 +102,10 @@ static int st_press_spi_remove(struct spi_device *spi)
- {
- 	struct iio_dev *indio_dev = spi_get_drvdata(spi);
- 
--	st_sensors_power_disable(indio_dev);
--
- 	st_press_common_remove(indio_dev);
- 
-+	st_sensors_power_disable(indio_dev);
-+
- 	return 0;
- }
+-static inline void st_sensors_deallocate_trigger(struct iio_dev *indio_dev)
+-{
+-	return;
+-}
+ #define st_sensors_validate_device NULL
+ #endif
  
 -- 
 2.31.1
