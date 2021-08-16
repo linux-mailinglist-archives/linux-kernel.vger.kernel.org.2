@@ -2,121 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3603EDD5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E7553EDD6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230496AbhHPSyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 14:54:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41814 "EHLO
+        id S229758AbhHPS5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 14:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230143AbhHPSyh (ORCPT
+        with ESMTP id S229481AbhHPS5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 14:54:37 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F593C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:54:05 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id t128so28161653oig.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:54:05 -0700 (PDT)
+        Mon, 16 Aug 2021 14:57:30 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC67C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:56:58 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id c129-20020a1c35870000b02902e6b6135279so620351wma.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:56:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YoY9bHgtBFBdh+LL5q9r5ScpCfKdiLG+MRqaif3YEI8=;
-        b=naoSBJkgtcuj5qgJOEZkSZimaplLVdgNyuZkSUQOT4oTguOAkX6UV9uhieY+czuvyC
-         yKl+WA0CV9mqasUFr9PIYgiR087D0pB2DSlo7BJlIJOIeH8jZe90iieO/YLidSIvyGcF
-         y120bsGWC2BVTQ4HihQP1T9IDivfmdAump1sI1BksIJxwB5U864hAmI+CYPqoUxVmf9b
-         rtYUU/gjJHllsB4yhuL/fsFmr4fSG2UYhzvG3SxadqL7yAr1+lzHaT65vfY+b4nAv6pE
-         riWxWjM/lMBOuoaoLzdmW2IFQuhDZ6aS10JodX0K8HOixim9MKDvwfe3gqNhyZrNomrY
-         F2nw==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=m7ZOM7cdRkICqtiyacBDNsj4qURRxO1sWw5i5EgJhx0=;
+        b=HzJ75RUvClIBbqraulv6LCtCEKRyhF9l86bNICahsL0BMDn+tr2MAGedaCoiS/M7HI
+         3Ttln2ZDTzMQV/73OAgb5gWdhqVTcAfaMui/jwC/yGkqKyrWPECIE5BGB9wuRotTtJZR
+         n8glPdDvrAkL6NsfQuijpU7NTf+EitF7KrlYHBWiagTBD87z3EiqPC6ePhyVfex4LW1R
+         bzJOqbK5rRd2/pUmjgicupfKYa5CF6ZgyjklG6WR05kEG1tJglD4u63hsIct80uAMX0l
+         mufsLlgPEG0x9jXY+YS8QfK1nmsTKOsGjQu5tgwNUmQkNLRKK/BFJRlM20iaJgIeqnG2
+         Ks6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YoY9bHgtBFBdh+LL5q9r5ScpCfKdiLG+MRqaif3YEI8=;
-        b=OieHEt56K0g1me98t7TZ9wi9oWpUfWouU4f17O1IiCfjjP39X8Kw6N4kOWws1kls/K
-         +3pdiulJiQslOuNQnWIQxVCLZi5zESRA3+2SCsdIdn67Z71mUrF73v//js2LAQ0HpGs3
-         UOHlOq80O/1j+2WJq1iLNik29xwWWTflNgSB5FaTLihItD6B24VkcYvCVoGEERdiBN40
-         gaz93ODKLwJgOOMtnoIG1KHhU91HyK+RiAJs00lnqIebWrzY/i3ma9kDvvfF4Qdh9phN
-         CzKXE0UH0TfEBFUOQXBgBDytoL5q5/EouN/qDbr91tqhsLeLuPW+RnwAkFqeWf0ItpSP
-         MihA==
-X-Gm-Message-State: AOAM5310UYFOWSCB0VMF0Hukb6bvO+qbFUwho/3piZc3xw6x96c591mo
-        M3BKAP0HrcOJjSgD9OW9RGwFGV1+vWgaePT20ho=
-X-Google-Smtp-Source: ABdhPJyjsT23z+JKUtzE0jLgdLWJv7SfrxzzaZKXzkFJJLzPFGv15wqNC71FHrLBwBKGtq3duPeYyc8o86vTH0Psaxc=
-X-Received: by 2002:a05:6808:1390:: with SMTP id c16mr128831oiw.123.1629140045025;
- Mon, 16 Aug 2021 11:54:05 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=m7ZOM7cdRkICqtiyacBDNsj4qURRxO1sWw5i5EgJhx0=;
+        b=pQbj6itOMaKos8i59Rmm0reVDu21krjlnAeCBhrnmQyKGRSg91s03yJVTDP9p1B2nO
+         VNRvE4gr76/dvZLB7dXXZc5+6ZbraFtTj3CWemEkeB2i5OXNLLt8h5EfVDUNtOL2PKzN
+         nATyIAWyOfvLV29/g0BXWfdOfs6LptPM6EVIRm9jCD3nj+ZzszqeT+E1wnxBbxP3m8RA
+         rCPjhwROUv9uwEnUFIidyMkdALNvfK0VRXO0HvmRQW8qFc0klVeoR0vi/LlCgKKI3bva
+         AmsOjyUSlek7W5UA3GMyEIdQZNJOvkbAa9obzknQmYyv42zbF4MkRp4utpwaJZWDNu36
+         OCJw==
+X-Gm-Message-State: AOAM531t1yEtRVyxcikVVcqYsii7dD7HxUYRHCxBqXmsZCwiXDyi49bq
+        L9q1Yrj8OJLenKXTIiA/mJG4tg==
+X-Google-Smtp-Source: ABdhPJzoBGbVSUBBJBd79CzIiBUvM5rY3Ebc57V8YSLGDbhAuaNana1b9dAMLW1tLEGIgbbn9dJJ0g==
+X-Received: by 2002:a1c:f414:: with SMTP id z20mr524519wma.94.1629140216638;
+        Mon, 16 Aug 2021 11:56:56 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:e1b0:48c1:6199:9cb4? ([2a01:e34:ed2f:f020:e1b0:48c1:6199:9cb4])
+        by smtp.googlemail.com with ESMTPSA id g9sm386690wmk.34.2021.08.16.11.56.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 11:56:56 -0700 (PDT)
+Subject: Re: [PATCH v5 2/3] thermal: mediatek: Add LVTS drivers for SoC
+ theraml zones
+To:     Ben Tseng <ben.tseng@mediatek.com>,
+        Fan Chen <fan.chen@mediatek.com>,
+        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
+        srv_heupstream@mediatek.com
+Cc:     Eduardo Valentin <edubezval@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>, hsinyi@chromium.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Michael Kao <michael.kao@mediatek.com>,
+        Yu-Chia Chang <ethan.chang@mediatek.com>
+References: <20210617114707.10618-1-ben.tseng@mediatek.com>
+ <20210617114707.10618-3-ben.tseng@mediatek.com>
+ <06b1804c-4675-2997-8c5c-bcdffbcfc4a1@linaro.org>
+ <1f92b245537d6390b7b2bde62ce8b99a3df9d445.camel@mediatek.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <8a38b9fe-0448-3ddc-9ffc-c43137b5ecaa@linaro.org>
+Date:   Mon, 16 Aug 2021 20:56:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210815192959.90142-1-nathan@kernel.org> <d2e9b2a0-49b9-42fe-47fc-66a44bef3b01@amd.com>
-In-Reply-To: <d2e9b2a0-49b9-42fe-47fc-66a44bef3b01@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 16 Aug 2021 14:53:53 -0400
-Message-ID: <CADnq5_N0o_6vCqE0tYq=yqtPWvOzZikLoVF1f4U9DJcb2bCgCA@mail.gmail.com>
-Subject: Re: [PATCH] drm/radeon: Add break to switch statement in radeonfb_create_pinned_object()
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1f92b245537d6390b7b2bde62ce8b99a3df9d445.camel@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
 
-Alex
+Hi Ben,
 
-On Mon, Aug 16, 2021 at 3:23 AM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
->
-> Am 15.08.21 um 21:29 schrieb Nathan Chancellor:
-> > Clang + -Wimplicit-fallthrough warns:
-> >
-> > drivers/gpu/drm/radeon/radeon_fb.c:170:2: warning: unannotated
-> > fall-through between switch labels [-Wimplicit-fallthrough]
-> >          default:
-> >          ^
-> > drivers/gpu/drm/radeon/radeon_fb.c:170:2: note: insert 'break;' to avoi=
-d
-> > fall-through
-> >          default:
-> >          ^
-> >          break;
-> > 1 warning generated.
-> >
-> > Clang's version of this warning is a little bit more pedantic than
-> > GCC's. Add the missing break to satisfy it to match what has been done
-> > all over the kernel tree.
-> >
-> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
->
-> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
->
-> > ---
-> >   drivers/gpu/drm/radeon/radeon_fb.c | 1 +
-> >   1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/gpu/drm/radeon/radeon_fb.c b/drivers/gpu/drm/radeo=
-n/radeon_fb.c
-> > index 0b206b052972..c8b545181497 100644
-> > --- a/drivers/gpu/drm/radeon/radeon_fb.c
-> > +++ b/drivers/gpu/drm/radeon/radeon_fb.c
-> > @@ -167,6 +167,7 @@ static int radeonfb_create_pinned_object(struct rad=
-eon_fbdev *rfbdev,
-> >               break;
-> >       case 2:
-> >               tiling_flags |=3D RADEON_TILING_SWAP_16BIT;
-> > +             break;
-> >       default:
-> >               break;
-> >       }
-> >
-> > base-commit: ba31f97d43be41ca99ab72a6131d7c226306865f
->
+On 23/07/2021 08:17, Ben Tseng wrote:
+> On Mon, 2021-06-21 at 13:26 +0200, Daniel Lezcano wrote:
+>> On 17/06/2021 13:47, Ben Tseng wrote:
+>>> From: Michael Kao <michael.kao@mediatek.com>
+>>>
+>>> Add a LVTS (Low voltage thermal sensor) driver to report junction
+>>> temperatures in Mediatek SoC and register the maximum temperature
+>>> of sensors and each sensor as a thermal zone.
+>>
+>> I think we already talked about that. We don't want a thermal sensor
+>> driver to aggregate the temperatures but create some kindof virtual
+>> sensor with a property (min, max, avg, ...) which is usable by
+>> anyone.
+>>
+>> [ ... ]
+>>
+>>
+>>
+> 
+> Dear Daniel,
+> 
+> Sorry for the late reply.
+
+sorry too, missed to answer. Another thread pointed to this one and I
+figured out I forgot to answer.
+
+> After survey ,I'm not sure whether the patch[1] is the architecture of
+> virtual thermal sensor which you commented.
+
+Ah, yes that is kind of what it would be requested but really generic so
+anyone can use it.
+
+> Or, is there any existing framework on mainline already support virtual
+> sensor?
+
+No unfortunately, it is not done [yet].
+
+> Could you help to provide reference to us?
+
+Ok, we had this discussion several times on the mailing list and at the
+different events like the Linux Plumbers conference. But I was not able
+to find out a pointer.
+
+Basically the idea is simple, we don't want drivers doing weird things
+in their get_temp callback. This callback must return the temperature
+associated to a physical sensor in a 1:1 manner.
+
+However, some people want to define a thermal zone but with an
+aggregation of different sensors.
+
+At this point, we are unsure how to do that.
+
+Having a virtual sensor would be more adequate as it won't impact
+anything except the DT for a configuration. And we can make it to evolve
+without having to change all the thermal framework internals.
+
+From a DT point of view, a virtual sensor device cuold have phandles to
+the different sensors and let's say a property telling what do to (avg,
+min, max, ...). The thermal zone will point to the virtual device.
+
+In the driver itself, the get_temp will just call get_temp of all the
+sensors and do the operation specified in the property.
+
+With that, the drivers stay consistent and we have the flexibility to do
+whatever we want.
+
+Does it make sense ?
+
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
