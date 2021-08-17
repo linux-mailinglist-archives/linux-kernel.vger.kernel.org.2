@@ -2,108 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E5E3EF455
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 23:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DBF53EF4A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 23:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234120AbhHQVBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 17:01:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33970 "EHLO
+        id S235263AbhHQVIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 17:08:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhHQVBT (ORCPT
+        with ESMTP id S235252AbhHQVIe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 17:01:19 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F79C061764;
-        Tue, 17 Aug 2021 14:00:45 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f1175002d6ed1db7aad8219.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:7500:2d6e:d1db:7aad:8219])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id ECBC61EC054F;
-        Tue, 17 Aug 2021 23:00:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629234040;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=mXsfggRjwQDlm0H7Ke4Yg4s+PjvD0gM8YpelP0TsXHU=;
-        b=h50TDWS4H9GdDodATzIk47AkyXvA4xxH+tNY8zodUJbiv66vz2uFecq8W13pkePmohzcG+
-        9bTxxFbcNJNR6KjEBv4mabKrZU3gRqlEIj14TxD1Hrp0arnMYTBjLNHIqwAoViz5K4MhkU
-        9jeBsoXMtMB5jcgWi4P1gXtqA77We3I=
-Date:   Tue, 17 Aug 2021 23:01:18 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     "luto@amacapital.net" <luto@amacapital.net>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Rick P Edgecombe <rick.p.edgecombe@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v28 09/32] x86/mm: Introduce _PAGE_COW
-Message-ID: <YRwjnmT9O8jYmL/9@zn.tnic>
-References: <YRwT7XX36fQ2GWXn@zn.tnic>
- <1A27F5DF-477B-45B7-AD33-CC68D9B7CB89@amacapital.net>
- <YRwbD1hCYFXlYysI@zn.tnic>
- <490345b6-3e3d-4692-8162-85dcb71434c9@www.fastmail.com>
+        Tue, 17 Aug 2021 17:08:34 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C412AC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 14:08:00 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id bt14so349664ejb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 14:08:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=rLigFagjeUGKziuLB95zXllH4r38C6TpidImsw5SpIU=;
+        b=ps0ZvGJPm5VxlfwLyBrYGnXx+WuQC3KtkZl8w193NmDbUfppn2LHzaTldPI3Hq63De
+         SFhX67zzjM0ZwfuP8SuC0bkAiPth927I8puR9P6mmK76RPn6bHWoH1rgSTZOlEpM5I5b
+         pu6W08azJJZN9fW8rbLdRY288fA3Los6Wn7i4ja0ckVxDoOkvbU+XBOyivDUbKZ5ghUR
+         vIfACm96gwY9nQ4CRG7h2s4jlO7MQ/touy+qAl1yTwa4RjFnMMTaHiDV8jWIp+MKDGWo
+         8fomNKxgD/J/4usgBtXBk+k7L6/SGRRr8qxsbOiiTzO5GAmNO5GBGyXKBLg1hVuKUhxs
+         38oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=rLigFagjeUGKziuLB95zXllH4r38C6TpidImsw5SpIU=;
+        b=F3BDwZDB8QVrqmaArSZagWVudOD4uiVHH0GNt2bsTBjOqr5u6zrKhfhD7694mtDtrk
+         c4vpMbtEAtx5FpPGKGVPRE8lAHeYuPMqK69zvdaWoZzKAVLANTviHYr0rligDaqd8zZm
+         SiKzPoNSwPU35KC0vtQZNghJI7lBi7L4TZRi5W0qASwWuLSFaCRe9QGGRbmRfzoCJDO5
+         YkSz7WeDAgBSyY4n8JYxK4aVEbDHWLlA1snuYW6wkdo44/bbN7Ba5mqvBQNDiAEpxAem
+         HGRR3iqCc8xYXPVffaOwXSq6hUQQ4LXqE3kxOI3GNntbmeWjov8ozi3+VBpPFtHEZKQS
+         hDtg==
+X-Gm-Message-State: AOAM532eyunf2bzl8xQ6Zt1Rujc++lraBSVCLi2OHDznf2Em5K9QNOZr
+        eTYCjrgr64NxMQgqCPD/1GPI8ddmyhhsfBpdybk=
+X-Google-Smtp-Source: ABdhPJxuEwHmc9T32xVxeG7XtJ1kdTGZ4WEsLldtpuusNaVvcpGAIxhYawAMGGc7n/CjrK0d+okT78Asu8f7U25AcG8=
+X-Received: by 2002:a17:906:2441:: with SMTP id a1mr5983058ejb.550.1629234479408;
+ Tue, 17 Aug 2021 14:07:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <490345b6-3e3d-4692-8162-85dcb71434c9@www.fastmail.com>
+Received: by 2002:a54:34c4:0:0:0:0:0 with HTTP; Tue, 17 Aug 2021 14:07:58
+ -0700 (PDT)
+Reply-To: 719900ms@gmail.com
+From:   Barrister Michael <jamesfentwistle4@gmail.com>
+Date:   Tue, 17 Aug 2021 17:07:58 -0400
+Message-ID: <CAFW00nUCFq66c2ytk36S3KfOd3aJMprEPiBMne5jsyQvJ7P9VA@mail.gmail.com>
+Subject: Re: PLEASE GET BACK TO ME NOW
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 01:51:52PM -0700, Andy Lutomirski wrote:
-> WRSS can be used from user mode depending on the configuration.
+Dear Friend,
 
-My point being, if you're going to do shadow stack management
-operations, you should check whether the target you're writing to is a
-shadow stack page. Clearly userspace can't do that but userspace will
-get notified of that pretty timely.
+How have you been i have been trying to email you for a very long
+time, but you haven't been responding, Please as soon as you get this
+message reply me now i have a good news for you thanks.
 
-> Double-you shmouble-you. You can't write it with MOV, but you can
-> write it from user code and from kernel code. As far as the mm is
-> concerned, I think it should be considered writable.
-
-Because?
-
-> Although... anyone who tries to copy_to_user() it is going to be a bit
-> surprised. Hmm.
-
-Ok, so you see the confusion.
-
-In any case, I don't think you can simply look at a shadow stack page as
-simple writable page. There are cases where it is going to be fun.
-
-So why are we even saying that a shadow stack page is writable? Why
-can't we simply say that a shadow stack page is, well, something
-special?
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Michael
