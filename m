@@ -2,20 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587EF3EF3D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63E6E3EF3BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237482AbhHQUSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 16:18:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236197AbhHQUPy (ORCPT
+        id S234304AbhHQURx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 16:17:53 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:34948 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235074AbhHQUPJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 16:15:54 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 814A2C061140;
-        Tue, 17 Aug 2021 13:14:35 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 20:14:33 -0000
+        Tue, 17 Aug 2021 16:15:09 -0400
+Date:   Tue, 17 Aug 2021 20:14:34 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1629231274;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=MSin4TQhjJRpT5ySI1MsfAhOhbYKOQo6LjNuPorAZOA=;
-        b=cqmq1zPyYpbPt5LGBMc2MS4BN7LWDsXEOLyj+gDqdVHYiWgm+xLZuXdz3tCjjRrM/HskbU
-        rI4Yo0bHB82mxL5yMebeQv+/YEtIHQg+Q3LTDJY/uspC4Q5+okrEDPCfY0kotgnXdQje8X
-        wIn3cUW3vh+kqKShxbx5XVH8cmtykrH6eBvOF6PmrWiYB9Q06BFfBfLMudL1rugf24QCl1
-        Xb9DIfjjeHUHKzSja6ys24KMkJh+AEsLI/WWO7jqN4fKfNvHuky5zqjafe65c2M75AFeJ7
-        ta666T+sDvbM8WVjjM/uusOemW3hYnZ6NxfN40Wyl/gfFrMBZfday8mrVfehBw==
+        bh=85jCURS+uUIpDeyi2xBgDFqpqVeNqobXzUvp0z9xz28=;
+        b=lsE6TAqAp3dSNLOr1lBq/PmuBrSYkuRRl9ppa3MjkuniWUWrho/sIk0hbdb/nmYMZaKgme
+        PUaYEkGtct7rPBiA1WHWkJzJQ8lPGtlP1JAbjhzf0N865dQCxmX9VkATgM8rcylaz4V7bX
+        AP5HyGYv/iI6K/0KA8sUU/Eun3HZHJnNOQxJSRvRS8PRpwju8KQtZWerxEdVvZyhteTsML
+        Db27LbRjY1nBAP4kkj4qmrp0J4J5Y/UVJ+7ucUmQbh3C4HkpMKduOj3LH9g2JACwmPRkNs
+        LByXovsx7cJN4/Ry7fInkXk7tpq6HhZMQ3IM7ID1cXsfTvfGCOVVJqaSPvt1eg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1629231274;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,22 +33,22 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=MSin4TQhjJRpT5ySI1MsfAhOhbYKOQo6LjNuPorAZOA=;
-        b=uEMpGHo1u0WVrEljh5AcHtyjv92aORWFl8Gg1Qut07EYntRFrkaQWp9c2WLrukgq/nDN+z
-        PgMxcfjmMZE50FAw==
+        bh=85jCURS+uUIpDeyi2xBgDFqpqVeNqobXzUvp0z9xz28=;
+        b=MxHYUOfA9F7KBvllDwyV6NwJb5mzqa6BJi5UFt8r5Wm2QK8GIJtTbv9aWzFoEdPpw9qYpz
+        H1XSUinSClXUscAw==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] sched/wake_q: Provide WAKE_Q_HEAD_INITIALIZER()
+Subject: [tip: locking/core] sched/core: Provide a scheduling point for RT locks
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210815211302.429918071@linutronix.de>
-References: <20210815211302.429918071@linutronix.de>
+In-Reply-To: <20210815211302.372319055@linutronix.de>
+References: <20210815211302.372319055@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <162923127341.25758.11465218501365954785.tip-bot2@tip-bot2>
+Message-ID: <162923127400.25758.17723198410739193727.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,42 +59,88 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     2c8bb85151d4bad825f8962792e9f53d22db81db
-Gitweb:        https://git.kernel.org/tip/2c8bb85151d4bad825f8962792e9f53d22db81db
+Commit-ID:     6991436c2b5d91d5358d9914ae2df22b9a1d1dc9
+Gitweb:        https://git.kernel.org/tip/6991436c2b5d91d5358d9914ae2df22b9a1d1dc9
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sun, 15 Aug 2021 23:27:49 +02:00
+AuthorDate:    Sun, 15 Aug 2021 23:27:48 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 17 Aug 2021 16:57:55 +02:00
+CommitterDate: Tue, 17 Aug 2021 16:57:17 +02:00
 
-sched/wake_q: Provide WAKE_Q_HEAD_INITIALIZER()
+sched/core: Provide a scheduling point for RT locks
 
-The RT specific spin/rwlock implementation requires special handling of the
-to be woken waiters. Provide a WAKE_Q_HEAD_INITIALIZER(), which can be used by
-the rtmutex code to implement an RT aware wake_q derivative.
+RT enabled kernels substitute spin/rwlocks with 'sleeping' variants based
+on rtmutexes. Blocking on such a lock is similar to preemption versus:
+
+ - I/O scheduling and worker handling, because these functions might block
+   on another substituted lock, or come from a lock contention within these
+   functions.
+
+ - RCU considers this like a preemption, because the task might be in a read
+   side critical section.
+
+Add a separate scheduling point for this, and hand a new scheduling mode
+argument to __schedule() which allows, along with separate mode masks, to
+handle this gracefully from within the scheduler, without proliferating that
+to other subsystems like RCU.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210815211302.429918071@linutronix.de
+Link: https://lore.kernel.org/r/20210815211302.372319055@linutronix.de
 ---
- include/linux/sched/wake_q.h | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ include/linux/sched.h |  3 +++
+ kernel/sched/core.c   | 20 +++++++++++++++++++-
+ 2 files changed, 22 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/sched/wake_q.h b/include/linux/sched/wake_q.h
-index 26a2013..06cd8fb 100644
---- a/include/linux/sched/wake_q.h
-+++ b/include/linux/sched/wake_q.h
-@@ -42,8 +42,11 @@ struct wake_q_head {
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 02714b9..746dfc0 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -288,6 +288,9 @@ extern long schedule_timeout_idle(long timeout);
+ asmlinkage void schedule(void);
+ extern void schedule_preempt_disabled(void);
+ asmlinkage void preempt_schedule_irq(void);
++#ifdef CONFIG_PREEMPT_RT
++ extern void schedule_rtlock(void);
++#endif
  
- #define WAKE_Q_TAIL ((struct wake_q_node *) 0x01)
- 
--#define DEFINE_WAKE_Q(name)				\
--	struct wake_q_head name = { WAKE_Q_TAIL, &name.first }
-+#define WAKE_Q_HEAD_INITIALIZER(name)				\
-+	{ WAKE_Q_TAIL, &name.first }
+ extern int __must_check io_schedule_prepare(void);
+ extern void io_schedule_finish(int token);
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index ebc24e1..c89c1d4 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5829,7 +5829,13 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+  */
+ #define SM_NONE			0x0
+ #define SM_PREEMPT		0x1
+-#define SM_MASK_PREEMPT		(~0U)
++#define SM_RTLOCK_WAIT		0x2
 +
-+#define DEFINE_WAKE_Q(name)					\
-+	struct wake_q_head name = WAKE_Q_HEAD_INITIALIZER(name)
++#ifndef CONFIG_PREEMPT_RT
++# define SM_MASK_PREEMPT	(~0U)
++#else
++# define SM_MASK_PREEMPT	SM_PREEMPT
++#endif
  
- static inline void wake_q_init(struct wake_q_head *head)
+ /*
+  * __schedule() is the main scheduler function.
+@@ -6134,6 +6140,18 @@ void __sched schedule_preempt_disabled(void)
+ 	preempt_disable();
+ }
+ 
++#ifdef CONFIG_PREEMPT_RT
++void __sched notrace schedule_rtlock(void)
++{
++	do {
++		preempt_disable();
++		__schedule(SM_RTLOCK_WAIT);
++		sched_preempt_enable_no_resched();
++	} while (need_resched());
++}
++NOKPROBE_SYMBOL(schedule_rtlock);
++#endif
++
+ static void __sched notrace preempt_schedule_common(void)
  {
+ 	do {
