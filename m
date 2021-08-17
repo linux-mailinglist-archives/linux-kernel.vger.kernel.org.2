@@ -2,137 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCDA3EF043
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 18:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB32E3EF046
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 18:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230325AbhHQQhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 12:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57062 "EHLO
+        id S230433AbhHQQiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 12:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbhHQQhA (ORCPT
+        with ESMTP id S229477AbhHQQiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 12:37:00 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52EE5C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 09:36:27 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id b10so31334185eju.9
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 09:36:27 -0700 (PDT)
+        Tue, 17 Aug 2021 12:38:02 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F47AC061764;
+        Tue, 17 Aug 2021 09:37:29 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id t9so42540325lfc.6;
+        Tue, 17 Aug 2021 09:37:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lUvwlKWhGLRCmR/vgTBa/y/Y0LZjj+6hoHG51z0UIpA=;
-        b=ItwJNR6dZAWtE5x5L9P9DwShoDVmdWsgbe889cJQMar4e577WNkGJTLeHstF+UZp4B
-         V6MHN60I03tqUGVlwFIF31Qn+gzfrWRtC2zwT2YJgZmortO9kI4aUt1gw2PMPC9L8362
-         StM1AdvyuQbbL7kJ6StSoXAp6yXw0bf1ivkviKZ+/XAhru2ZhK39whKdC5Bxez5PMMld
-         dV7QcIuscG3exs8DGYRXKlE7l2GlYrdaW3QUYFS5I4fiGQSiFT3EfzGjiSb9sQzB/5/o
-         /C9jBPfPr5iPsbMhttnmcnSIIxHcQQ7Px8EZhtTGFbcgyuKjJeoM80Cex3+EjtYLSQun
-         ILeA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=YXS2wDrNmRySEhsIbVUMKvb+Ici86y1kGrWc6irGTdI=;
+        b=Y5hr7uJGS6odntPRfVaTWLcpzoeH263nrltEvmqFinf6ceo9aZlDCiHDsAr9GmrupU
+         IRNg6FoDEviyUm7NpnYSEV25dvz4apQiNUL7cwUeGZypnGtOAmo4cCb9OTV2d8dISB9B
+         KoDLzDWnsTuygAvGuViTxIx+gaP0sxUY8WBU2GJzb83RLT0jNdEwmZ6Sc074HPfdh3Qa
+         P5FLMkj130JSNqgYvgAMB1sJxe5c42BzcDLNCAztau3LgUblSgqPBTx7Tfpzyccg+n+8
+         lgevVSZ0ixMIVmeiLQ8Q1Pne1j8WM2LmBkbfx9QprZmHXptXfg737vYNKQHSkzE0B4Ex
+         BVqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lUvwlKWhGLRCmR/vgTBa/y/Y0LZjj+6hoHG51z0UIpA=;
-        b=fem2eF145qZ8Gaie5k4kmB0mZiUPfpxttfZZiXxxTAG1+RO/GkPeHm/owclMoi+blK
-         VNMsvzU8h+n4hIC1UIeN1N8AX662DFuNrFsEYOv5gDG5eBLl1M8W2a/zQugAgnpRFDX2
-         Icor1StqZSWUmdJz4L6ka65fRTZnFFExbweUHCARYtxHIn9sR0GxFV+EFbV/34sMEwrj
-         N1D5o+arlrvQL2Gstw4cq5nP5fznc0VRfzIDoQVqMcyvJKt+0Vmi880cjB6Kx2S8OMgs
-         fUj+9I4o7XG0m/xDrqgVBWMeexoI23FvEMllptuy0nEOmv+uUE1T/lLEVnpqfRPaHbet
-         dgnA==
-X-Gm-Message-State: AOAM533FZ2l28xxqgN2Lq/V2NBbGZrEBFtok3ZGqSctXjRNpbvTOb/PW
-        J4FM9+1Q1/9nw/ddVsvxnl8=
-X-Google-Smtp-Source: ABdhPJzlvdE3sEZ6wE4mp1nxuzzLEnBAbGmHvdl/VEt9bm4Ec7nGWqd9jyXG4yFjbClRdrDPxTVCbg==
-X-Received: by 2002:a17:906:b18e:: with SMTP id w14mr4954643ejy.63.1629218185929;
-        Tue, 17 Aug 2021 09:36:25 -0700 (PDT)
-Received: from localhost.localdomain ([213.91.86.150])
-        by smtp.googlemail.com with ESMTPSA id r2sm1313795edv.78.2021.08.17.09.36.24
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=YXS2wDrNmRySEhsIbVUMKvb+Ici86y1kGrWc6irGTdI=;
+        b=arCKEKrjwmAmWMoyiu8y/nej5sQBI+dYZHK29hwu8kH/pm4qt2wa/cJIecMKC46FM0
+         +BRgt4REncLZrIo1GAHtcjC6m9vzhTtfn/WQxAirKeeYPUTEwf+Qsw9PvSD9A2WHmtnm
+         Mu6K7svpr8cpa9QIeNg2GpmuVNnlKARM1/gAVWZg6GBS0hlw+2GlKJ50ycTwgD0gfjqK
+         jxIWVY4aJYOI4AC0QFbT1Tm3z6Ogx/iTX2EdC+M/GzPGb+3qzld0Ov3qZ/SMtONBE7Gu
+         C2n6yIRjT/TsEYVaMd0JjI4cH+NcIvSOffvJhbIIY3pkIMNVwh/bHjwqY/g41SgQyVh+
+         4plw==
+X-Gm-Message-State: AOAM532tsBJY1Ia9atkrcCQbetp7tHGpkDCiU9fHqtGuReV2qc3bS6BX
+        tQAyJoXh7NlJy4nwXnbpw6k=
+X-Google-Smtp-Source: ABdhPJzpbGmHrwh8UAjjsCRvYXj+APQyDZxQPQSAbma10H9Mf3UHV2kID3HT1nzwpSYt9itchv3pjw==
+X-Received: by 2002:a05:6512:3f16:: with SMTP id y22mr2966368lfa.356.1629218247319;
+        Tue, 17 Aug 2021 09:37:27 -0700 (PDT)
+Received: from localhost.localdomain ([46.235.67.232])
+        by smtp.gmail.com with ESMTPSA id u22sm255382lff.270.2021.08.17.09.37.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 09:36:25 -0700 (PDT)
-From:   Nikola Pavlica <pavlica.nikola@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@googlegroups.com, linux-sunxi@lists.linux.dev,
+        Tue, 17 Aug 2021 09:37:26 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, linux@rempel-privat.de,
+        andrew@lunn.ch, himadrispandya@gmail.com
+Cc:     robert.foss@collabora.com, freddy@asix.com.tw,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Nikola Pavlica <pavlica.nikola@gmail.com>
-Subject: [PATCH] drm/panel-simple: Add Vivax TPC-9150 panel v3
-Date:   Tue, 17 Aug 2021 18:36:05 +0200
-Message-Id: <20210817163605.1077257-1-pavlica.nikola@gmail.com>
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+a631ec9e717fb0423053@syzkaller.appspotmail.com
+Subject: [PATCH v4] net: asix: fix uninit value bugs
+Date:   Tue, 17 Aug 2021 19:37:23 +0300
+Message-Id: <20210817163723.19040-1-paskripkin@gmail.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <YRfjFr9GbcoJrycc@lunn.ch>
+References: <YRfjFr9GbcoJrycc@lunn.ch>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The model and make of the LCD panel of the Vivax TPC-9150 is unknown,
-hence the panel settings that were retrieved with a FEX dump are named
-after the device NOT the actual panel.
+Syzbot reported uninit-value in asix_mdio_read(). The problem was in
+missing error handling. asix_read_cmd() should initialize passed stack
+variable smsr, but it can fail in some cases. Then while condidition
+checks possibly uninit smsr variable.
 
-The LCD in question is a 50 pin MISO TFT LCD panel of the resolution
-1024x600 used by the aforementioned device.
+Since smsr is uninitialized stack variable, driver can misbehave,
+because smsr will be random in case of asix_read_cmd() failure.
+Fix it by adding error handling and just continue the loop instead of
+checking uninit value.
 
-Version 2, as Thierry kindly suggested that I fix the order in which the
-panel was ordered compared to others.
+Added helper function for checking Host_En bit, since wrong loop was used
+in 4 functions and there is no need in copy-pasting code parts.
 
-Version 3, filling in the required info suggested by Sam. Plus some
-factual issues that I've corrected myself (tested working)
-
-Thanks,
-Nikola
-
-Signed-off-by: Nikola Pavlica <pavlica.nikola@gmail.com>
+Cc: Robert Foss <robert.foss@collabora.com>
+Fixes: d9fe64e51114 ("net: asix: Add in_pm parameter")
+Reported-by: syzbot+a631ec9e717fb0423053@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 ---
- drivers/gpu/drm/panel/panel-simple.c | 29 ++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 4e2dad314c79..f6b3e58c162b 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -3989,6 +3989,32 @@ static const struct panel_desc urt_umsh_8596md_parallel = {
- 	.bus_format = MEDIA_BUS_FMT_RGB666_1X18,
- };
+Changes in v2:
+	1. Fixed previous wrong approach and changed while loop to for loop
+	2. Reported-and-tested-by: tag removed, since KMSAN tests can be
+	   false positive. Used Reported-by instead.
+
+Changes in v3:
+	1. Addressed uninit value bugs in asix_mdio_write(), asix_mdio_read_nopm()
+	and asix_mdio_write_nopm()
+	2. Moved i after ret to reverse xmas tree style
+	3. Fixed Fixes: tag
+
+Changes in v4:
+	1. Added helper for checking Host_En bit, since wrong loop was
+	   used in 4 functions. (Suggested by Andrew Lunn)
+
+---
+ drivers/net/usb/asix_common.c | 70 +++++++++++++++--------------------
+ 1 file changed, 30 insertions(+), 40 deletions(-)
+
+diff --git a/drivers/net/usb/asix_common.c b/drivers/net/usb/asix_common.c
+index ac92bc52a85e..38cda590895c 100644
+--- a/drivers/net/usb/asix_common.c
++++ b/drivers/net/usb/asix_common.c
+@@ -63,6 +63,29 @@ void asix_write_cmd_async(struct usbnet *dev, u8 cmd, u16 value, u16 index,
+ 			       value, index, data, size);
+ }
  
-+static const struct drm_display_mode vivax_tpc9150_panel_mode = {
-+	.clock = 60000,
-+	.hdisplay = 1024,
-+	.hsync_start = 1024 + 160,
-+	.hsync_end = 1024 + 160 + 100,
-+	.htotal = 1024 + 160 + 100 + 60,
-+	.vdisplay = 600,
-+	.vsync_start = 600 + 12,
-+	.vsync_end = 600 + 12 + 10,
-+	.vtotal = 600 + 12 + 10 + 13,
-+};
++static int asix_check_host_enable(struct usbnet *dev, int in_pm)
++{
++	int i, ret;
++	u8 smsr;
 +
-+static const struct panel_desc vivax_tpc9150_panel = {
-+	.modes = &vivax_tpc9150_panel_mode,
-+	.num_modes = 1,
-+	.size = {
-+		.width = 200,
-+		.height = 115,
-+	},
-+	.bpc = 6,
-+	.bus_format = MEDIA_BUS_FMT_RGB666_1X24,
-+	.bus_flags = DRM_BUS_FLAG_DE_HIGH,
-+	.connector_type = DRM_MODE_CONNECTOR_LVDS,
-+};
++	for (i = 0; i < 30; ++i) {
++		ret = asix_set_sw_mii(dev, in_pm);
++		if (ret == -ENODEV || ret == -ETIMEDOUT)
++			break;
++		usleep_range(1000, 1100);
++		ret = asix_read_cmd(dev, AX_CMD_STATMNGSTS_REG,
++				    0, 0, 1, &smsr, in_pm);
++		if (ret == -ENODEV)
++			break;
++		else if (ret < 0)
++			continue;
++		else if (smsr & AX_HOST_EN)
++			break;
++	}
 +
++	return ret;
++}
 +
- static const struct drm_display_mode vl050_8048nt_c01_mode = {
- 	.clock = 33333,
- 	.hdisplay = 800,
-@@ -4490,6 +4516,9 @@ static const struct of_device_id platform_of_match[] = {
- 	}, {
- 		.compatible = "urt,umsh-8596md-20t",
- 		.data = &urt_umsh_8596md_parallel,
-+	}, {
-+		.compatible = "vivax,tpc9150-panel",
-+		.data = &vivax_tpc9150_panel,
- 	}, {
- 		.compatible = "vxt,vl050-8048nt-c01",
- 		.data = &vl050_8048nt_c01,
+ static void reset_asix_rx_fixup_info(struct asix_rx_fixup_info *rx)
+ {
+ 	/* Reset the variables that have a lifetime outside of
+@@ -467,19 +490,11 @@ int asix_mdio_read(struct net_device *netdev, int phy_id, int loc)
+ {
+ 	struct usbnet *dev = netdev_priv(netdev);
+ 	__le16 res;
+-	u8 smsr;
+-	int i = 0;
+ 	int ret;
+ 
+ 	mutex_lock(&dev->phy_mutex);
+-	do {
+-		ret = asix_set_sw_mii(dev, 0);
+-		if (ret == -ENODEV || ret == -ETIMEDOUT)
+-			break;
+-		usleep_range(1000, 1100);
+-		ret = asix_read_cmd(dev, AX_CMD_STATMNGSTS_REG,
+-				    0, 0, 1, &smsr, 0);
+-	} while (!(smsr & AX_HOST_EN) && (i++ < 30) && (ret != -ENODEV));
++
++	ret = asix_check_host_enable(dev, 0);
+ 	if (ret == -ENODEV || ret == -ETIMEDOUT) {
+ 		mutex_unlock(&dev->phy_mutex);
+ 		return ret;
+@@ -505,23 +520,14 @@ static int __asix_mdio_write(struct net_device *netdev, int phy_id, int loc,
+ {
+ 	struct usbnet *dev = netdev_priv(netdev);
+ 	__le16 res = cpu_to_le16(val);
+-	u8 smsr;
+-	int i = 0;
+ 	int ret;
+ 
+ 	netdev_dbg(dev->net, "asix_mdio_write() phy_id=0x%02x, loc=0x%02x, val=0x%04x\n",
+ 			phy_id, loc, val);
+ 
+ 	mutex_lock(&dev->phy_mutex);
+-	do {
+-		ret = asix_set_sw_mii(dev, 0);
+-		if (ret == -ENODEV)
+-			break;
+-		usleep_range(1000, 1100);
+-		ret = asix_read_cmd(dev, AX_CMD_STATMNGSTS_REG,
+-				    0, 0, 1, &smsr, 0);
+-	} while (!(smsr & AX_HOST_EN) && (i++ < 30) && (ret != -ENODEV));
+ 
++	ret = asix_check_host_enable(dev, 0);
+ 	if (ret == -ENODEV)
+ 		goto out;
+ 
+@@ -561,19 +567,11 @@ int asix_mdio_read_nopm(struct net_device *netdev, int phy_id, int loc)
+ {
+ 	struct usbnet *dev = netdev_priv(netdev);
+ 	__le16 res;
+-	u8 smsr;
+-	int i = 0;
+ 	int ret;
+ 
+ 	mutex_lock(&dev->phy_mutex);
+-	do {
+-		ret = asix_set_sw_mii(dev, 1);
+-		if (ret == -ENODEV || ret == -ETIMEDOUT)
+-			break;
+-		usleep_range(1000, 1100);
+-		ret = asix_read_cmd(dev, AX_CMD_STATMNGSTS_REG,
+-				    0, 0, 1, &smsr, 1);
+-	} while (!(smsr & AX_HOST_EN) && (i++ < 30) && (ret != -ENODEV));
++
++	ret = asix_check_host_enable(dev, 1);
+ 	if (ret == -ENODEV || ret == -ETIMEDOUT) {
+ 		mutex_unlock(&dev->phy_mutex);
+ 		return ret;
+@@ -595,22 +593,14 @@ asix_mdio_write_nopm(struct net_device *netdev, int phy_id, int loc, int val)
+ {
+ 	struct usbnet *dev = netdev_priv(netdev);
+ 	__le16 res = cpu_to_le16(val);
+-	u8 smsr;
+-	int i = 0;
+ 	int ret;
+ 
+ 	netdev_dbg(dev->net, "asix_mdio_write() phy_id=0x%02x, loc=0x%02x, val=0x%04x\n",
+ 			phy_id, loc, val);
+ 
+ 	mutex_lock(&dev->phy_mutex);
+-	do {
+-		ret = asix_set_sw_mii(dev, 1);
+-		if (ret == -ENODEV)
+-			break;
+-		usleep_range(1000, 1100);
+-		ret = asix_read_cmd(dev, AX_CMD_STATMNGSTS_REG,
+-				    0, 0, 1, &smsr, 1);
+-	} while (!(smsr & AX_HOST_EN) && (i++ < 30) && (ret != -ENODEV));
++
++	ret = asix_check_host_enable(dev, 1);
+ 	if (ret == -ENODEV) {
+ 		mutex_unlock(&dev->phy_mutex);
+ 		return;
 -- 
 2.32.0
 
