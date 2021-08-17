@@ -2,93 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4B13EF23C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 20:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 455123EF23F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 20:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233279AbhHQSse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 14:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230373AbhHQSsa (ORCPT
+        id S233585AbhHQSst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 14:48:49 -0400
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:44785 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230373AbhHQSsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 14:48:30 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBCEC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 11:47:56 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id r9so33786630lfn.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 11:47:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=alY8uh/6wUCPRdZH1MAlluu7K/itfkn6Amur4AolX1Q=;
-        b=NQibOidO2dEdyro6KFMCZxGMZBmzLSvNapwwlVJiPrJGKg0DcYgG+45B4U6OGrxX19
-         fem8v8KZbLWeY4YPDdW7+PpvnHJiN8SMKtvukFTKgxT6K0/xyp8HJ2IIE4VyHfML8NjS
-         9Jk162y78pcCU/wynJAsOwJN//0EeKzPFplU6TvkURRw0TOUJ1rbv5fpFrSIZL2Qe+AG
-         vz2/nSuxk6xYn8vXCEmv174KhC91b13nCiYZKiaZbViZSGxhkiLvf0t4DcO5AN+KvX0f
-         zQk7sapjz9bAH5QyulU7qwX2QiJEtrz+/+/wRc64Apy5mXzl8k8qkKOkgycEYqUKCduV
-         y1NA==
+        Tue, 17 Aug 2021 14:48:45 -0400
+Received: by mail-oi1-f181.google.com with SMTP id w6so496934oiv.11;
+        Tue, 17 Aug 2021 11:48:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=alY8uh/6wUCPRdZH1MAlluu7K/itfkn6Amur4AolX1Q=;
-        b=BzGouO/Gdhi+nNN7MNoUJTIzR1fALH1dUIaXGv7sBksjhF11GEBM/+qpDpp70l1v6D
-         hqzTYGEX9YR+/p+QVIe4LgDWuDYVXSAPUlCVH34335EDcZVGSwMKlnD3kxtigbdLgSBo
-         TDv8e3kQav3SbWNyPL1aEcH5XIPJgbGcCh81vwzstJmugwpSOal+wf/hz2FfyczuUcMf
-         jhomja8i3p/umDP2J1bRtoD/iafpKbR/zaq9ouDR+rYMy7NKfhBVL8+eN5LVFUXknYb8
-         1EwwJqepvbQAzfzox0Lif1MXibgSukTWsCvC2UF3+hL5IGUEY36nYMIx+Wm2j7ovXl95
-         F9uw==
-X-Gm-Message-State: AOAM532QoPdt1HpBXuqq5hpfgh7x0X5x/k0EtU8WiKB5DrHEmc5YAvL8
-        u57QAu1RKMy/lFuBIsbmewNb5jwJglKlJw8t6vGXpQ==
-X-Google-Smtp-Source: ABdhPJyzkpMY5YJFMc5oh+gGqliuDzjpgK5AvaINE4OlrENoR8Tb3y4Zy9IByOXcvHoSMi82OYaX50RN1uYy/ZDFVX4=
-X-Received: by 2002:a19:7117:: with SMTP id m23mr3587131lfc.73.1629226074949;
- Tue, 17 Aug 2021 11:47:54 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nzIgJMa9X2S8j+5qu6QKB3OfU1LS75XPiAFcEXr7Uv4=;
+        b=tXcZr2FcpGIEQAeUcgFP9nxsCMi79b5mg9wjFcGx21KV7intnrhJLQVQev4rNCk5AP
+         PdUgFOj/SOdlqhjQoxtRD91y/1dX0fTCtqPXVc9/8L93zbGUaXgVVIjInB72MgMz8gex
+         aqBxAopZjPRkJwEgvGK0F3Vib9mLkq3QujYCPzFEq9/+4RKuN+saCoRAtP2hc9KfJ5z/
+         3iqr9yWvWonama2eQmajUUrXrL9l6D0NLg3e22fIkgIeRdPtjLZDvHqVG+FE8e6Nmz/P
+         6XqUj65skFQUc+Z8GD4VVWWoc4sAFq03hrzV6ZhEaYhHVABMx+02FAI2rIvjpixAKKt4
+         dU6Q==
+X-Gm-Message-State: AOAM533KL3d8ScLWrvSStJF6+z0I/hcsQI/KlCrxv4PmVGAuf6QLXfhq
+        P7chOXGqb2/IOJlUgmnbMA==
+X-Google-Smtp-Source: ABdhPJwImY4DZXklw6KIc/1fnibzeDWipJdCH7U+fkrAF8vgvcXjIuK+N7h1N3Uq0nTasi65mtFgAw==
+X-Received: by 2002:a05:6808:81:: with SMTP id s1mr3670441oic.130.1629226091436;
+        Tue, 17 Aug 2021 11:48:11 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id q20sm638233oiw.58.2021.08.17.11.48.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 11:48:10 -0700 (PDT)
+Received: (nullmailer pid 643472 invoked by uid 1000);
+        Tue, 17 Aug 2021 18:48:09 -0000
+Date:   Tue, 17 Aug 2021 13:48:09 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     chaochao2021666@163.com
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chao Zeng <chao.zeng@siemens.com>
+Subject: Re: [PATCH 1/2] dt-bindings:dp83867:Add binding for the status led
+Message-ID: <YRwEacEuiAuPzA0E@robh.at.kernel.org>
+References: <20210809085213.324129-1-chaochao2021666@163.com>
 MIME-Version: 1.0
-References: <269701460.117528.1629210189833@office.mailbox.org>
- <796036867.117557.1629210288168@office.mailbox.org> <CAKwvOdkYgC4pU0Ta+vS-UkyAYFTkg8MaLuR+OAsSX63_BY+1vA@mail.gmail.com>
- <CAKwvOdk+fwHQDe23Ttva46tyB9yGGxB73zXzNPkcMCggSRWUdQ@mail.gmail.com> <ec0f00b1-04c7-9972-d28b-122964a127dd@mailbox.org>
-In-Reply-To: <ec0f00b1-04c7-9972-d28b-122964a127dd@mailbox.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 17 Aug 2021 11:47:43 -0700
-Message-ID: <CAKwvOdnUFuvmoywKvGyrnDMHgkVrq3vSenLSy048U=amWs2QTQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] x86, Makefile: Add new generic x86-64 settings v2/v3/v4
-To:     Tor Vic <torvic9@mailbox.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "graysky@archlinux.us" <graysky@archlinux.us>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210809085213.324129-1-chaochao2021666@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 11:31 AM Tor Vic <torvic9@mailbox.org> wrote:
->
-> On 17.08.21 18:22, Nick Desaulniers wrote:
-> >
-> > Ah, cc-option can be used from Kconfig. Perhaps a cc-option call to
-> > -march=x86-64-vX with a comment about which compiler versions first
-> > supported these (so that we can remove the feature test when the
-> > minimum supported toolchains are advanced) would be better?
-> >
->
-> That makes sense. Will do a v2.
-> Which of these possibilities is more "expensive"?
-> I remember a recent patch where some of these calls were removed.
+On Mon, Aug 09, 2021 at 04:52:13PM +0800, chaochao2021666@163.com wrote:
+> From: Chao Zeng <chao.zeng@siemens.com>
+> 
+> The phy status led of each of board maybe different.
+> Provide a method to custom phy status led behavior.
+> 
+> Datasheet:
+> http://www.ti.com/product/DP83867IR/datasheet
+> 
+> Signed-off-by: Chao Zeng <chao.zeng@siemens.com>
+> ---
+>  .../devicetree/bindings/net/ti,dp83867.yaml    |  6 ++++++
+>  include/dt-bindings/net/ti-dp83867.h           | 18 ++++++++++++++++++
+>  2 files changed, 24 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/ti,dp83867.yaml b/Documentation/devicetree/bindings/net/ti,dp83867.yaml
+> index 047d757e8d82..a46a437818f2 100644
+> --- a/Documentation/devicetree/bindings/net/ti,dp83867.yaml
+> +++ b/Documentation/devicetree/bindings/net/ti,dp83867.yaml
+> @@ -106,6 +106,12 @@ properties:
+>        Transmitt FIFO depth- see dt-bindings/net/ti-dp83867.h for applicable
+>        values.
+>  
+> +  ti,led-sel:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: |
+> +      This configure the status led. See dt-bindings/net/ti-dp83867.h
+> +      for different status led settings,select different configures
 
-cc-option does "cost" more than these version checks, but it is more
-concise about what we care about and they can be removed over time.
-They also work better for different compilers, since it's easy to
-forget to check one particular compiler, or get the compiler version
-wrong, or break a pre-released compiler.  We generally want to prefer
-feature detection to version detection.  I sent a series recently
-removing stale checks.
--- 
-Thanks,
-~Nick Desaulniers
+There's ongoing discussions about using the LED bindings/subsystem for 
+this type of LED.
+
+Rob
