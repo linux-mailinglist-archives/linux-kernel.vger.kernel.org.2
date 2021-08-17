@@ -2,67 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6601C3EE7C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 09:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326DB3EE7CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 09:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238885AbhHQHsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 03:48:31 -0400
-Received: from out2.migadu.com ([188.165.223.204]:28593 "EHLO out2.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239326AbhHQHr6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 03:47:58 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1629186444;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3bkUQwsvWkb9wD53bg43GRj4wh4isgcHFsEI7ZMI6KY=;
-        b=g8OjWctrm9NdV+vlPNqCtqzdSOhADEGWnOqXlM5gdbFn8yzUsyp+M4YghOnjNarhWMNdNn
-        nzpSgPVO/e8NMI5gtKprpkHa2mVFVBXxXw4DRMVc/AKOD8OOAkNdgve+/apRHEafKlAwwj
-        4ms5QLhU2NpiltRdoKxuPVn9VNIcIRU=
-From:   Guoqing Jiang <guoqing.jiang@linux.dev>
-Subject: Re: [PATCH] drivers:md:fix a potential use-after-free bug
-To:     Song Liu <song@kernel.org>, lwt105 <3061522931@qq.com>
-Cc:     linux-raid <linux-raid@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <tencent_888910D6F881B3D8BD9C3DFED667A5009806@qq.com>
- <CAPhsuW7cC+d5mhNjJb0AiHDKCUb5WzYPNzZ5UPOSScdtFuNzww@mail.gmail.com>
-Message-ID: <6b4c8938-a8a9-1a14-87bd-f30e4eda2b3d@linux.dev>
-Date:   Tue, 17 Aug 2021 15:47:16 +0800
+        id S234779AbhHQHuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 03:50:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234492AbhHQHue (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 03:50:34 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145E5C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 00:50:02 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id fa24-20020a17090af0d8b0290178bfa69d97so5113354pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 00:50:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ypyY+Uqc+Z2ZZW93qVfCBhIjoZdHXKViPbFJWksLXyw=;
+        b=y0aUVuz/yeYt7BmPU+7xx60nVGBhKtDUZ9a11XD6NZkbjOQtHktgAm3ilJKzATVNSh
+         kp7TselkFN1llxjWnNzBVylouNVkXFmW2nuLMu4DQ6SFi0HCZkLy5S/rMFHYeBn/tkkL
+         /7A9nep/b/LYXd0C2LiEgCEB+jU0Dq/eR9BK4L9TPW8FI9R0Sj+yQEvHJXEaC5wLELjC
+         iQDlPctshevT/yVtmyyuC2++bSRpt++r7vmP8W+eqHNmVOl7+nLNm0zYlau4hKatmtQS
+         jP9lbL/SzDyNIbOYu40zQfXca5hY8EiLhZwUteFE3/Z5wSR8Z3FtdTbpG8Axb7oJPUgS
+         RdzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ypyY+Uqc+Z2ZZW93qVfCBhIjoZdHXKViPbFJWksLXyw=;
+        b=eVsCx6kfo0zz7oQtkP5b6obbtl3RBnfUMX5G83KPdwFQiey0JecwOZpqA8uX0P6fTZ
+         k+2HMPBUHcFKExRi3NtjIJ1k/j7Y20Q5LRRR+wSzgOhhfiZb7zzQcM4VnkNAUUR0uY3Y
+         WdSZTzSdKt9EFHKznQEulUETw0O9RO+CRmtpfLYFHi6EBB1FGw/TNgvwWhhupiQCiwsH
+         dfE/WLCA/9mT1UZ2G44T6fd3V+RLgh27DC7dTMga7q9m0ksVYGtThC1Y+A2jxVdowGf8
+         V4/9YKRY6G67KAt5QUzerWVwOjWOErb8KyivYnnkpiN31mIZzPfI6vhzQXtpnLgdgERA
+         rOhA==
+X-Gm-Message-State: AOAM533ljkLxTI2M7esgXlwHunaOQyDHQcHpv9xwc4Hcl4Siif52Gl0v
+        HDzyZ9XxY6wY11m+y14gOwnhjA==
+X-Google-Smtp-Source: ABdhPJxohB+V28AAX2LBG8ktGbGUI5R9Gw48T01lK5QkYJp9yAH00JBLz/Nio11m9qnfjmBzemzB0g==
+X-Received: by 2002:a62:dd83:0:b029:30f:d69:895f with SMTP id w125-20020a62dd830000b029030f0d69895fmr2400138pff.17.1629186601603;
+        Tue, 17 Aug 2021 00:50:01 -0700 (PDT)
+Received: from FVFX41FWHV2J.bytedance.net ([139.177.225.231])
+        by smtp.gmail.com with ESMTPSA id w3sm1626031pfn.96.2021.08.17.00.49.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 17 Aug 2021 00:50:01 -0700 (PDT)
+From:   Feng zhou <zhoufeng.zf@bytedance.com>
+To:     jesse.brandeburg@intel.co, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        jeffrey.t.kirsher@intel.com, magnus.karlsson@intel.com
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        duanxiongchun@bytedance.com, songmuchun@bytedance.com,
+        zhouchengming@bytedance.com, chenying.kernel@bytedance.com,
+        zhengqi.arch@bytedance.com, zhoufeng.zf@bytedance.com
+Subject: [PATCH] ixgbe: Fix NULL pointer dereference in ixgbe_xdp_setup
+Date:   Tue, 17 Aug 2021 15:49:47 +0800
+Message-Id: <20210817074947.11555-1-zhoufeng.zf@bytedance.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <CAPhsuW7cC+d5mhNjJb0AiHDKCUb5WzYPNzZ5UPOSScdtFuNzww@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: guoqing.jiang@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Feng Zhou <zhoufeng.zf@bytedance.com>
 
+The ixgbe driver currently generates a NULL pointer dereference with
+some machine (online cpus < 63). This is due to the fact that the
+maximum value of num_xdp_queues is nr_cpu_ids. Code is in
+"ixgbe_set_rss_queues"".
 
-On 8/14/21 12:16 AM, Song Liu wrote:
-> On Thu, Aug 12, 2021 at 8:46 PM lwt105<3061522931@qq.com>  wrote:
->> In line 2867, "raid5_release_stripe(sh);" drops the reference to sh and
->> may cause sh to be released. However, sh is subsequently used in lines
->> 2869 "if (sh->batch_head && sh != sh->batch_head)". This may result in an
->> use-after-free bug.
->>
->> It can be fixed by moving "raid5_release_stripe(sh);" to the bottom of
->> the function.
->>
->> Signed-off-by: lwt105<3061522931@qq.com>
-> The fix looks reasonable.
+Here's how the problem repeats itself:
+Some machine (online cpus < 63), And user set num_queues to 63 through
+ethtool. Code is in the "ixgbe_set_channels",
+adapter->ring_feature[RING_F_FDIR].limit = count;
+It becames 63.
+When user use xdp, "ixgbe_set_rss_queues" will set queues num.
+adapter->num_rx_queues = rss_i;
+adapter->num_tx_queues = rss_i;
+adapter->num_xdp_queues = ixgbe_xdp_queues(adapter);
+And rss_i's value is from
+f = &adapter->ring_feature[RING_F_FDIR];
+rss_i = f->indices = f->limit;
+So "num_rx_queues" > "num_xdp_queues", when run to "ixgbe_xdp_setup",
+for (i = 0; i < adapter->num_rx_queues; i++)
+	if (adapter->xdp_ring[i]->xsk_umem)
+lead to panic.
+Call trace:
+[exception RIP: ixgbe_xdp+368]
+RIP: ffffffffc02a76a0  RSP: ffff9fe16202f8d0  RFLAGS: 00010297
+RAX: 0000000000000000  RBX: 0000000000000020  RCX: 0000000000000000
+RDX: 0000000000000000  RSI: 000000000000001c  RDI: ffffffffa94ead90
+RBP: ffff92f8f24c0c18   R8: 0000000000000000   R9: 0000000000000000
+R10: ffff9fe16202f830  R11: 0000000000000000  R12: ffff92f8f24c0000
+R13: ffff9fe16202fc01  R14: 000000000000000a  R15: ffffffffc02a7530
+ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+ 7 [ffff9fe16202f8f0] dev_xdp_install at ffffffffa89fbbcc
+ 8 [ffff9fe16202f920] dev_change_xdp_fd at ffffffffa8a08808
+ 9 [ffff9fe16202f960] do_setlink at ffffffffa8a20235
+10 [ffff9fe16202fa88] rtnl_setlink at ffffffffa8a20384
+11 [ffff9fe16202fc78] rtnetlink_rcv_msg at ffffffffa8a1a8dd
+12 [ffff9fe16202fcf0] netlink_rcv_skb at ffffffffa8a717eb
+13 [ffff9fe16202fd40] netlink_unicast at ffffffffa8a70f88
+14 [ffff9fe16202fd80] netlink_sendmsg at ffffffffa8a71319
+15 [ffff9fe16202fdf0] sock_sendmsg at ffffffffa89df290
+16 [ffff9fe16202fe08] __sys_sendto at ffffffffa89e19c8
+17 [ffff9fe16202ff30] __x64_sys_sendto at ffffffffa89e1a64
+18 [ffff9fe16202ff38] do_syscall_64 at ffffffffa84042b9
+19 [ffff9fe16202ff50] entry_SYSCALL_64_after_hwframe at ffffffffa8c0008c
 
-I am not sure this is needed unless there is real calltrace to prove it. 
-Because raid5_release_stripe
-doesn't mean it will release the sh's memory,  pls see the comment 
-before clear_batch_ready in
-handle_stripe, and the path handle_stripe -> handle_stripe_clean_event 
--> break_stripe_batch_list.
+Fixes: 4a9b32f30f80 ("ixgbe: fix potential RX buffer starvation for
+AF_XDP")
+Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
+---
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Thanks,
-Guoqing
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index 14aea40da50f..5db496cc5070 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -10112,6 +10112,7 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
+ 	struct ixgbe_adapter *adapter = netdev_priv(dev);
+ 	struct bpf_prog *old_prog;
+ 	bool need_reset;
++	int num_queues;
+ 
+ 	if (adapter->flags & IXGBE_FLAG_SRIOV_ENABLED)
+ 		return -EINVAL;
+@@ -10161,11 +10162,14 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
+ 	/* Kick start the NAPI context if there is an AF_XDP socket open
+ 	 * on that queue id. This so that receiving will start.
+ 	 */
+-	if (need_reset && prog)
+-		for (i = 0; i < adapter->num_rx_queues; i++)
++	if (need_reset && prog) {
++		num_queues = min_t(int, adapter->num_rx_queues,
++			adapter->num_xdp_queues);
++		for (i = 0; i < num_queues; i++)
+ 			if (adapter->xdp_ring[i]->xsk_pool)
+ 				(void)ixgbe_xsk_wakeup(adapter->netdev, i,
+ 						       XDP_WAKEUP_RX);
++	}
+ 
+ 	return 0;
+ }
+-- 
+2.11.0
+
