@@ -2,107 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD19F3EE6D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2306A3EE6CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238274AbhHQGpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 02:45:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
+        id S238163AbhHQGou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 02:44:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238230AbhHQGpa (ORCPT
+        with ESMTP id S230094AbhHQGot (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 02:45:30 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C50C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:44:58 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id bo18so30672103pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:44:58 -0700 (PDT)
+        Tue, 17 Aug 2021 02:44:49 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06AC9C061764;
+        Mon, 16 Aug 2021 23:44:17 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id m24-20020a17090a7f98b0290178b1a81700so4732782pjl.4;
+        Mon, 16 Aug 2021 23:44:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rtst-co-kr.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=rh78CCde9OfVGRpH7hH2HpmGlVIlBmH6EVTWdupki5c=;
-        b=e6p9RpI6VmQyi4oFKGYGWa7qxP1kCOsCl2egCzzl9+sp3WWNjOVvTOS1BotE5XqLlh
-         SJ1mjuxVi3++OOAAMUMYyZC52ydysfc7QK9ruXC3pBCotc8wtZSIQsaI1kI1UV9YdD3O
-         iATj3EyKOsdCSyjSJDf23JDx6G08aM4G6ruOYZpyvNqt1Jqvb/nErrOIcIhgalnWDq5V
-         91Or6kqKWeAI8bnRXMwb55diIzqW3HnZkeXWEf2GUhBzGKRhHfdhCYdVM2zmZYkjrlXU
-         3WuvV6Fz5TmdX2DlEOlUHn3Mjb8HR90JAon3p8bWWMeMaLT5TLlAteZtk3ECSlQsp7V3
-         aYWQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qGW+/u32RfeHULBSPZGyDEkWYbTkSdQ+pj8g3ZZmAtc=;
+        b=mqctxBRs74ZzJjSEeMaWsZHYwP3Sl5ea4IY+Up3swBYWGUCjaNlFTWFWG7ngKe3ZeD
+         dZF3f7KVWbgbItP2LiZHwQIQhTv5eE1MCHNozDIct0ma/qF1j0jYuV6Pzac60PnUOdQh
+         Yc6K4mo15ceBG2vriCuA2q53cCf385HJcZ3gmgFXpDnzqfA6GpO/p5C1OBucHpcDQI/E
+         M6wHd0lueb8i28kR4eYaS9hFT6DVFV20kWeBgRnOhgvqdF7krJ8Ke+Zh0mQYTBb5E4+d
+         XHJpGCbFgGVFwFcJzHKbV6dOcgYvISlFWXumEmXYF4APsSKT88Y6LzIFrZYahjxEYqJw
+         OZAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=rh78CCde9OfVGRpH7hH2HpmGlVIlBmH6EVTWdupki5c=;
-        b=FmAmsvvhUjB5vIjcYASLo9gQAbY6hgm0LKzTKxExVnGfabfMXuDaX2KP6bKx2cyzez
-         O/PrcmQVQnbJfSw4J6a15QG6/gurjU4C+Cd4Qm5CFUnNApwm/U0bw4rIPJMzwzVkbX83
-         WNOEXIdW1kPoz2goQD80iqsb4e+VOwRnRjW9IY7HLdNWAeTWhMJd53ffzQovwHnd7aSA
-         ZQqYX7WIUeGyfTkJ34IoO2Q20j1IvnuGj0SLTksVoX5YYXKiuEuC2UoVkDOoIo5UOaPW
-         1ku+OLywKTXX1iBwGxdUTfVM6S0dXFFXJnCpKyc4vndqy/tPscKoYv1h/COy5wcOlYBe
-         cJWQ==
-X-Gm-Message-State: AOAM533A0QswUXGKEf9T8iwfbnWu0xmt2rA0mXkT/ZmLnHUEE6OPSX7e
-        +kW0gNSXbFqGI7PtSNf9LU5PFg==
-X-Google-Smtp-Source: ABdhPJw6ubxHbWrC0nsiaRj+XZYqTkR1c1fqchC2dyK5OJJJk50DvxwLDKEa/v2UUtjIxizD06wyEQ==
-X-Received: by 2002:a05:6a00:2142:b029:3b9:e5df:77ab with SMTP id o2-20020a056a002142b02903b9e5df77abmr2170557pfk.52.1629182697872;
-        Mon, 16 Aug 2021 23:44:57 -0700 (PDT)
-Received: from ubuntu ([106.245.77.4])
-        by smtp.gmail.com with ESMTPSA id z2sm1758614pgz.43.2021.08.16.23.44.55
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qGW+/u32RfeHULBSPZGyDEkWYbTkSdQ+pj8g3ZZmAtc=;
+        b=H7u7+10AItE+C7iZ6gZZL4VmQGQcyU7DZf1bTt4nJvr6N/vz/u4xSmzdZVL8BrExny
+         ds0ZiaRp1eW2NXTipt5nrnrUgxlGy4deHdGBIV+aFjSjJzrNiLGQuZ2qhqZlriPnd0OT
+         cIvG3DBtUhn8wkKBoEgkPxJUVy47SyZZthoiuqhaXO6LhmFvX0OLtJh0WJCnUFoooehn
+         nQA8jvPQ/q5uVI9cqNCWJ/GZtHW2mmrL+lukTS8a59RLruKqcajdhEsA3mgiWdRGF5Bf
+         BmUa+v0JtkPRf7GG9Ev/EHvMG7jZdZe9s1Ip4ipPKJ/nJOuWeMFxI8y8Yc0uQ57jm/8/
+         O8cQ==
+X-Gm-Message-State: AOAM532YIqz8myIT0r9Ld65h9H+QoS9Fzm2HSVlL90LvvGoCDBmW6evf
+        4BS4QUvcTpkTPUYk+UqROsGAUvWboW70c5IvsuI=
+X-Google-Smtp-Source: ABdhPJxYbpn9kCLT1fi4MGjMSaFXdc5Za03AsrYBuk1cjQTNcYjUZigKFjQenBx/bqdN8VorIN51bg==
+X-Received: by 2002:a63:5509:: with SMTP id j9mr2064571pgb.329.1629182656474;
+        Mon, 16 Aug 2021 23:44:16 -0700 (PDT)
+Received: from localhost.localdomain ([1.240.193.107])
+        by smtp.googlemail.com with ESMTPSA id z11sm1301192pfn.69.2021.08.16.23.44.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 23:44:57 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 15:43:53 +0900
-From:   Jeaho Hwang <jhhwang@rtst.co.kr>
-To:     Peter Chen <peter.chen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     team-linux@rtst.co.kr, mkbyeon@lselectric.co.kr,
-        khchoib@lselectric.co.kr
-Subject: [PATCH v2] usb: chipidea: add loop timeout for hw_ep_set_halt()
-Message-ID: <20210817064353.GA669425@ubuntu>
+        Mon, 16 Aug 2021 23:44:15 -0700 (PDT)
+From:   Kangmin Park <l4stpr0gr4m@gmail.com>
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tedd Ho-Jeong An <tedd.an@intel.com>,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] Bluetooth: Fix return value in hci_dev_do_close()
+Date:   Tue, 17 Aug 2021 15:44:11 +0900
+Message-Id: <20210817064411.2378-1-l4stpr0gr4m@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If ctrl EP priming is failed (very rare case in standard linux),
-hw_ep_set_halt goes infinite loop. waiting 100 times was enough
-for zynq7000.
+hci_error_reset() return without calling hci_dev_do_open() when
+hci_dev_do_close() return error value which is not 0.
 
-Signed-off-by: Jeaho Hwang <jhhwang@rtst.co.kr>
+Also, hci_dev_close() return hci_dev_do_close() function's return
+value.
 
-diff --git a/drivers/usb/chipidea/udc.c b/drivers/usb/chipidea/udc.c
-index 8834ca613721..d73fadb18f32 100644
---- a/drivers/usb/chipidea/udc.c
-+++ b/drivers/usb/chipidea/udc.c
-@@ -209,6 +209,9 @@ static int hw_ep_prime(struct ci_hdrc *ci, int num, int dir, int is_ctrl)
- 	return 0;
- }
- 
-+/* enough for zynq7000 evaluation board */
-+#define HW_EP_SET_HALT_COUNT_MAX 100
-+
- /**
-  * hw_ep_set_halt: configures ep halt & resets data toggle after clear (execute
-  *                 without interruption)
-@@ -221,6 +224,7 @@ static int hw_ep_prime(struct ci_hdrc *ci, int num, int dir, int is_ctrl)
-  */
- static int hw_ep_set_halt(struct ci_hdrc *ci, int num, int dir, int value)
+But, hci_dev_do_close() return always 0 even if hdev->shutdown
+return error value. So, fix hci_dev_do_close() to save and return
+the return value of the hdev->shutdown when it is called.
+
+Signed-off-by: Kangmin Park <l4stpr0gr4m@gmail.com>
+---
+ net/bluetooth/hci_core.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index 8622da2d9395..84afc0d693a8 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -1718,6 +1718,7 @@ static void hci_pend_le_actions_clear(struct hci_dev *hdev)
+ int hci_dev_do_close(struct hci_dev *hdev)
  {
-+	int count = HW_EP_SET_HALT_COUNT_MAX;
- 	if (value != 0 && value != 1)
- 		return -EINVAL;
+ 	bool auto_off;
++	int ret = 0;
  
-@@ -232,9 +236,9 @@ static int hw_ep_set_halt(struct ci_hdrc *ci, int num, int dir, int value)
- 		/* data toggle - reserved for EP0 but it's in ESS */
- 		hw_write(ci, reg, mask_xs|mask_xr,
- 			  value ? mask_xs : mask_xr);
--	} while (value != hw_ep_get_halt(ci, num, dir));
-+	} while (value != hw_ep_get_halt(ci, num, dir) && --count > 0);
+ 	BT_DBG("%s %p", hdev->name, hdev);
  
+@@ -1732,13 +1733,13 @@ int hci_dev_do_close(struct hci_dev *hdev)
+ 	    test_bit(HCI_UP, &hdev->flags)) {
+ 		/* Execute vendor specific shutdown routine */
+ 		if (hdev->shutdown)
+-			hdev->shutdown(hdev);
++			ret = hdev->shutdown(hdev);
+ 	}
+ 
+ 	if (!test_and_clear_bit(HCI_UP, &hdev->flags)) {
+ 		cancel_delayed_work_sync(&hdev->cmd_timer);
+ 		hci_req_sync_unlock(hdev);
+-		return 0;
++		return ret;
+ 	}
+ 
+ 	hci_leds_update_powered(hdev, false);
+@@ -1845,7 +1846,7 @@ int hci_dev_do_close(struct hci_dev *hdev)
+ 	hci_req_sync_unlock(hdev);
+ 
+ 	hci_dev_put(hdev);
 -	return 0;
-+	return count ? 0 : -EAGAIN;
++	return ret;
  }
  
- /**
+ int hci_dev_close(__u16 dev)
 -- 
-2.25.1
+2.26.2
 
