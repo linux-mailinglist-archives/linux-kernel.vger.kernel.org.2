@@ -2,97 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9376E3EE580
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 06:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7BCD3EE5AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 06:26:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231616AbhHQEXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 00:23:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbhHQEXD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 00:23:03 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2D8C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 21:22:31 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id f3so23336104plg.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 21:22:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bzoVjzOawBk1F/zYmCYxdvVOuCjAhiYRvp0jl0y4Tgo=;
-        b=fIHeA+rRJ5SSvxd3g8oZwgxkZQZdVOd03C+D2S2uKOx54FsPEkyhQzqNXpM9tTR8Ni
-         QI1Bla1Wb1TS8rkK9Fb5uCIZNXR1KtgqB5OsJMf8WvjumIBux2yHzExwpXfCJFquhBKw
-         rIBuoH6h/jInuko+SXY8lRsGVpw8CutrGj82zcnXEbX1kYsnR9l8u7micqIyo2e3Qzhg
-         ToAfrkLPPD46oKXjXMA3EUgXE4VFYcgJarRNcAoCiNISGrHm334NscFAQDntr/3zvX2i
-         AuucSSLyiGYAA/bIoTaLJRAUDh58x/cOvXMFpMHbG4d0p+6K1AnLHYwKW7x8LVVEjD81
-         c2PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bzoVjzOawBk1F/zYmCYxdvVOuCjAhiYRvp0jl0y4Tgo=;
-        b=YrW1TnnBX6QuGNOZNoZaWWzSjx46W3MhDkFo37qHaAWfy61MFrIHRC9ra7u/nF4CmN
-         bdrm2fUwH0iW2cV/4E7LdiuN5x+vUF9b7pkO3EBR1NKn1oDjQMQddgC8NOXEn2alDuzm
-         W4MgpSLnvkCNvEfpT8b7qQrQPjI7gxCi8+xSmD7eryyZZf7dldOu04cjEXu0p87MMJJj
-         2wc74BWxhWyXTDj6e8YphDKqmuN0VMiqHILCoTLnR05bVqvFHfSno61MBgVlcTpSRfrg
-         p4Xyxm2n1eNRJsFHNW6In6KHZvd9WHI9ijUyQln+CsQ+X+ELI41ef2clrmndTMegw5Tt
-         FqFA==
-X-Gm-Message-State: AOAM530NtmNwEpFAmzgiQZG0xEi3osBcNp3FghZc8G++i/H7a3haZgGC
-        AK0qseZQiWEmRpoBlTNVIemdbBDHCNqCjw==
-X-Google-Smtp-Source: ABdhPJwlNoPNNBpmfplYC+rsV3fV9s6i9DjK5tCgRoy4qlAGsj31yRDXWcuFTUGj898lGj/YqTIpjg==
-X-Received: by 2002:a17:90a:c20d:: with SMTP id e13mr1558322pjt.200.1629174150788;
-        Mon, 16 Aug 2021 21:22:30 -0700 (PDT)
-Received: from Smcdef-MBP.lan.org ([139.177.225.253])
-        by smtp.gmail.com with ESMTPSA id z13sm600097pjd.44.2021.08.16.21.22.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 16 Aug 2021 21:22:30 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     akpm@linux-foundation.org, osalvador@suse.de, david@redhat.com,
-        mhocko@suse.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] mm: bootmem_info: mark __init on register_page_bootmem_info_section
-Date:   Tue, 17 Aug 2021 12:22:21 +0800
-Message-Id: <20210817042221.77172-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        id S233399AbhHQE0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 00:26:41 -0400
+Received: from verein.lst.de ([213.95.11.211]:56977 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230073AbhHQE0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 00:26:40 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 23CB46736F; Tue, 17 Aug 2021 06:26:05 +0200 (CEST)
+Date:   Tue, 17 Aug 2021 06:26:04 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Kevin Mitchell <kevmitch@arista.com>
+Cc:     linux-scsi@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Kees Cook <keescook@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hannes Reinecke <hare@suse.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] lkdtm: move SCSI_DISPATCH_CMD to scsi_queue_rq
+Message-ID: <20210817042604.GA3579@lst.de>
+References: <20210817015719.518648-1-kevmitch@arista.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210817015719.518648-1-kevmitch@arista.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The register_page_bootmem_info_section() is only called from __init
-functions, so mark __init on it as well.
+On Mon, Aug 16, 2021 at 06:57:18PM -0700, Kevin Mitchell wrote:
+> When scsi_dispatch_cmd was moved to scsi_lib.c and made static, some
+> compilers (i.e., at least gcc 8.4.0) decided to compile this
+> inline. This is a problem for lkdtm.ko, which needs to insert a kprobe
+> on this function for the SCSI_DISPATCH_CMD crashpoint.
+> 
+> Move this crashpoint one function up the call chain to
+> scsi_queue_rq. Though this is also a static function, it should never be
+> inlined because it is assigned as a structure entry. Therefore,
+> kprobe_register should always be able to find it. Since there is already
+> precedent for crashpoint names not exactly matching their probed
+> functions, keep the name of the crashpoint the same for backwards
+> compatibility.
+> 
+> Fixes: 82042a2cdb55 ("scsi: move scsi_dispatch_cmd to scsi_lib.c")
+> Signed-off-by: Kevin Mitchell <kevmitch@arista.com>
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/bootmem_info.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This looks ok.  Does any userspace hardcode these names or can we
+use a saner name?
 
-diff --git a/mm/bootmem_info.c b/mm/bootmem_info.c
-index 5b152dba7344..f03f42f426f6 100644
---- a/mm/bootmem_info.c
-+++ b/mm/bootmem_info.c
-@@ -39,7 +39,7 @@ void put_page_bootmem(struct page *page)
- }
- 
- #ifndef CONFIG_SPARSEMEM_VMEMMAP
--static void register_page_bootmem_info_section(unsigned long start_pfn)
-+static void __init register_page_bootmem_info_section(unsigned long start_pfn)
- {
- 	unsigned long mapsize, section_nr, i;
- 	struct mem_section *ms;
-@@ -74,7 +74,7 @@ static void register_page_bootmem_info_section(unsigned long start_pfn)
- 
- }
- #else /* CONFIG_SPARSEMEM_VMEMMAP */
--static void register_page_bootmem_info_section(unsigned long start_pfn)
-+static void __init register_page_bootmem_info_section(unsigned long start_pfn)
- {
- 	unsigned long mapsize, section_nr, i;
- 	struct mem_section *ms;
--- 
-2.11.0
-
+Btw, generic_ide_ioctl is gone as well, together with the whole legacy ide
+subsystem.
