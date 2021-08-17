@@ -2,124 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9FC83EEBCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 13:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8423EEBDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 13:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239743AbhHQLfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 07:35:43 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:14269 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231515AbhHQLfh (ORCPT
+        id S239692AbhHQLm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 07:42:27 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:37494 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236716AbhHQLm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 07:35:37 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Gppq51S8Sz871y;
-        Tue, 17 Aug 2021 19:34:57 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 17 Aug 2021 19:35:03 +0800
-Received: from thunder-town.china.huawei.com (10.174.178.242) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 17 Aug 2021 19:35:03 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        "Joerg Roedel" <joro@8bytes.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH] iommu/arm-smmu-v3: Simplify useless instructions in arm_smmu_cmdq_build_cmd()
-Date:   Tue, 17 Aug 2021 19:34:50 +0800
-Message-ID: <20210817113450.2026-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        Tue, 17 Aug 2021 07:42:26 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 4487E1C0B7A; Tue, 17 Aug 2021 13:41:52 +0200 (CEST)
+Date:   Tue, 17 Aug 2021 13:41:51 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 00/98] 5.10.60-rc2 review
+Message-ID: <20210817114151.GA23593@amd>
+References: <20210816171400.936235973@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.178.242]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="x+6KMIRAuhnl3hBn"
+Content-Disposition: inline
+In-Reply-To: <20210816171400.936235973@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Although the parameter 'cmd' is always passed by a local array variable,
-and only this function modifies it, the compiler does not know this. The
-compiler almost always reads the value of cmd[i] from memory rather than
-directly using the value cached in the register. This generates many
-useless instruction operations and affects the performance to some extent.
 
-To guide the compiler for proper optimization, 'cmd' is defined as a local
-array variable, marked as register, and copied to the output parameter at
-a time when the function is returned.
+--x+6KMIRAuhnl3hBn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The optimization effect can be viewed by running the "size arm-smmu-v3.o"
-command.
+Hi!
 
-Before:
-   text    data     bss     dec     hex
-  27602    1348      56   29006    714e
+> This is the start of the stable review cycle for the 5.10.60 release.
+> There are 98 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-After:
-   text    data     bss     dec     hex
-  27402    1348      56   28806    7086
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+CIP testing did not find any problems here:
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index d76bbbde558b776..50a9db5bac466c7 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -233,11 +233,19 @@ static int queue_remove_raw(struct arm_smmu_queue *q, u64 *ent)
- 	return 0;
- }
- 
-+#define arm_smmu_cmdq_copy_cmd(dst, src)	\
-+	do {					\
-+		dst[0] = src[0];		\
-+		dst[1] = src[1];		\
-+	} while (0)
-+
- /* High-level queue accessors */
--static int arm_smmu_cmdq_build_cmd(u64 *cmd, struct arm_smmu_cmdq_ent *ent)
-+static int arm_smmu_cmdq_build_cmd(u64 *out_cmd, struct arm_smmu_cmdq_ent *ent)
- {
--	memset(cmd, 0, 1 << CMDQ_ENT_SZ_SHIFT);
--	cmd[0] |= FIELD_PREP(CMDQ_0_OP, ent->opcode);
-+	register u64 cmd[CMDQ_ENT_DWORDS];
-+
-+	cmd[0] = FIELD_PREP(CMDQ_0_OP, ent->opcode);
-+	cmd[1] = 0;
- 
- 	switch (ent->opcode) {
- 	case CMDQ_OP_TLBI_EL2_ALL:
-@@ -309,6 +317,7 @@ static int arm_smmu_cmdq_build_cmd(u64 *cmd, struct arm_smmu_cmdq_ent *ent)
- 		case PRI_RESP_SUCC:
- 			break;
- 		default:
-+			arm_smmu_cmdq_copy_cmd(out_cmd, cmd);
- 			return -EINVAL;
- 		}
- 		cmd[1] |= FIELD_PREP(CMDQ_PRI_1_RESP, ent->pri.resp);
-@@ -329,9 +338,12 @@ static int arm_smmu_cmdq_build_cmd(u64 *cmd, struct arm_smmu_cmdq_ent *ent)
- 		cmd[0] |= FIELD_PREP(CMDQ_SYNC_0_MSIATTR, ARM_SMMU_MEMATTR_OIWB);
- 		break;
- 	default:
-+		arm_smmu_cmdq_copy_cmd(out_cmd, cmd);
- 		return -ENOENT;
- 	}
- 
-+	arm_smmu_cmdq_copy_cmd(out_cmd, cmd);
-+
- 	return 0;
- }
- 
--- 
-2.26.0.106.g9fadedd
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+5.10.y
 
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--x+6KMIRAuhnl3hBn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmEboH8ACgkQMOfwapXb+vK1EgCeNjkHH4IqIibUsqJE+6N07O7B
+HZcAoIJK0ojizJfI9z6hSTwqVsKHG5bd
+=N3ae
+-----END PGP SIGNATURE-----
+
+--x+6KMIRAuhnl3hBn--
