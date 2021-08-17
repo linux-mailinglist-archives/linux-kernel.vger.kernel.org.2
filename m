@@ -2,268 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56EF03EE671
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AFBA3EE676
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234429AbhHQGBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 02:01:21 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:49729 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237833AbhHQGBT (ORCPT
+        id S234471AbhHQGCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 02:02:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234163AbhHQGCD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 02:01:19 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629180047; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=vRYtrSW1d7U81RwjmnXHHamVLQ7Afy0NIyXh+9as/Ms=;
- b=l96quKmme8NpZAumkH/7NsnY4mavrYucFsPTguxALG60gyjIQHGs4zdBsI3aQIOAzMwd7e4H
- s+NUDzhvUBpzJhmrv2H/ouJMRcT/TMT8e1VPtt2ic8yZYRCApoLsrsRsj8Qn7UetZrAMrXh+
- KnvzgSyfSv+2DA30c4mAWhxhMs4=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 611b5075f746c298d96269c2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 17 Aug 2021 06:00:21
- GMT
-Sender: pmaliset=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B26B2C4360C; Tue, 17 Aug 2021 06:00:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmaliset)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4CD27C4338F;
-        Tue, 17 Aug 2021 06:00:20 +0000 (UTC)
+        Tue, 17 Aug 2021 02:02:03 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B52EFC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:01:30 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id d11so36376308eja.8
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:01:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=y7AJNStwqm0bYtfSsEg/nqONSaGNaLZ8T/knTPhYbgQ=;
+        b=OIv7gBDXfLdMpKuUg+z3lY8v7a8PibndPyAl+nQu+4QW05TxoW4y9p1tKur4Sm4GR2
+         o3zzkclQrU2NUDSC6hTtc0IMlWGgWgUWtBnNgN9Wsyu6yTWpvWTkuhoYxF9MJC/t+ybL
+         YDlKtX0OgWE7iorShxM7Qu2mAJxM/DjOjfmygbOWmR4wvwsE8jAzSxppI/O2Tw6ZJ35q
+         lBi1iKc7v9GkvluzHSbhiD9H0IebrLUudjdzgGK+JuYOOddM3wUgosPfBycIiNtSMbhC
+         MzOpsuyPNaysHQMMBg+6VixuHek5FaGK0g8eiT4gwUv5MIioRotz5bCpCedDdjgtxfg8
+         Lp7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=y7AJNStwqm0bYtfSsEg/nqONSaGNaLZ8T/knTPhYbgQ=;
+        b=ayer1OvPR//6NcjkDU8S+L/hn7wXSHrhI/DXyHqj5h57ML2WwliLltf1cy2D7esYUp
+         4XOeFDJwU/OuClT0P8J/O4nhZIturZpF90uHCNsfy94gizqchOUTFDATfK0+wdpJ6OaD
+         0ClwtaZc2+5Rgmd3aUGhYZeKaSWDLO/xYQpGlWigOznAt9cJQb/M4ldknmd2fXNlYwzW
+         WMkOLYYo0WKePqafw53pKHIBN5d0FMVj2uyb/5VYmZENfBQd0J4uij1T5ibv5v5KvTHJ
+         s7EbXXrKGoBEB8EnodzketpfghXmtE2kJO1bluQIArmVj8iKPsobkN4nLjLt3bjhPjYI
+         D6XA==
+X-Gm-Message-State: AOAM5300+imfTui6NS0ZieMnaVd2mOM5k2d/uZ8UgGJySa9eJ7/c/A7K
+        R2XXflbcuF+UNcszSjQ5tAmQWxGNxfs7696rlwFveg==
+X-Google-Smtp-Source: ABdhPJxMg1O0uY5JDM1GgZZh+TrjVD5Xs7GElYi0KXDJWqdpC20Hb0bKk0hY3Z7spPJUZcvjEI2h9bNeZBdls8oWPDw=
+X-Received: by 2002:a17:906:40d1:: with SMTP id a17mr2023925ejk.503.1629180089177;
+ Mon, 16 Aug 2021 23:01:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 17 Aug 2021 11:30:20 +0530
-From:   Prasad Malisetty <pmaliset@codeaurora.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
-        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
-        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dianders@chromium.org,
-        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org
-Subject: Re: [PATCH v5 2/4] arm64: dts: qcom: sc7280: Add PCIe and PHY related
- nodes
-In-Reply-To: <20210812060715.GA72145@thinkpad>
-References: <1628568516-24155-1-git-send-email-pmaliset@codeaurora.org>
- <1628568516-24155-3-git-send-email-pmaliset@codeaurora.org>
- <20210812060715.GA72145@thinkpad>
-Message-ID: <8b0f007bf26fd3d875718bb3e0cbd4bf@codeaurora.org>
-X-Sender: pmaliset@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210816171414.653076979@linuxfoundation.org>
+In-Reply-To: <20210816171414.653076979@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 17 Aug 2021 11:31:17 +0530
+Message-ID: <CA+G9fYsCvz4g5N7wb0rqAJEAXU9dqnkR7zjiY4ugsrfNGv42SQ@mail.gmail.com>
+Subject: Re: [PATCH 5.13 000/153] 5.13.12-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-12 11:37, Manivannan Sadhasivam wrote:
-> On Tue, Aug 10, 2021 at 09:38:34AM +0530, Prasad Malisetty wrote:
->> Add PCIe controller and PHY nodes for sc7280 SOC.
->> 
->> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
->> ---
->>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 126 
->> +++++++++++++++++++++++++++++++++++
->>  1 file changed, 126 insertions(+)
->> 
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
->> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> index 53a21d0..4500d88 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> @@ -16,6 +16,7 @@
->>  #include <dt-bindings/reset/qcom,sdm845-pdc.h>
->>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
->>  #include <dt-bindings/thermal/thermal.h>
->> +#include <dt-bindings/gpio/gpio.h>
->> 
->>  / {
->>  	interrupt-parent = <&intc>;
->> @@ -586,6 +587,119 @@
->>  			qcom,bcm-voters = <&apps_bcm_voter>;
->>  		};
->> 
->> +		pcie1: pci@1c08000 {
->> +			compatible = "qcom,pcie-sc7280", "qcom,pcie-sm8250", 
->> "snps,dw-pcie";
-> 
-> Why 2 fallbacks? Fallbacks are meant to be used when the "fallback" 
-> compatible
-> driver can fully support the hw. In this case, neither
-> "qcom,pcie-sm8250" nor "snps,dw-pcie"
-> can work properly, right?
-> 
-> I did the same mistake for SM8250 though... But please get rid of them.
-> 
-Hi Mani,
+On Mon, 16 Aug 2021 at 22:45, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.13.12 release.
+> There are 153 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 18 Aug 2021 17:13:42 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.13.12-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.13.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Thanks for your review and comments.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Sure I agree, will remove one of the fallbacks and update the changes in 
-next version.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Thanks
--Prasad
+## Build
+* kernel: 5.13.12-rc2
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.13.y
+* git commit: 13f08821433012f3a60bc8c70bdfa8fb007d3108
+* git describe: v5.13.11-154-g13f088214330
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.13.y/build/v5.13=
+.11-154-g13f088214330
 
->> +			reg = <0 0x01c08000 0 0x3000>,
->> +			      <0 0x40000000 0 0xf1d>,
->> +			      <0 0x40000f20 0 0xa8>,
->> +			      <0 0x40001000 0 0x1000>,
->> +			      <0 0x40100000 0 0x100000>;
->> +
->> +			reg-names = "parf", "dbi", "elbi", "atu", "config";
->> +			device_type = "pci";
->> +			linux,pci-domain = <1>;
->> +			bus-range = <0x00 0xff>;
->> +			num-lanes = <2>;
->> +			pipe-clk-source-switch;
-> 
-> Did you document this property in binding? You need to add "qcom" 
-> prefix since
-> this is a qcom specific one and not a generic PCI property.
-> 
-> Thanks,
-> Mani
-> 
+## No regressions (compared to v5.13.11-152-g8f08f2c2c72b)
 
-I haven't document this property, missed it in v5. once this change is 
-finalized
-I will update it next version.
+## No fixes (compared to v5.13.11-152-g8f08f2c2c72b)
 
->> +
->> +			#address-cells = <3>;
->> +			#size-cells = <2>;
->> +
->> +			ranges = <0x01000000 0x0 0x40200000 0x0 0x40200000 0x0 0x100000>,
->> +				 <0x02000000 0x0 0x40300000 0x0 0x40300000 0x0 0x1fd00000>;
->> +
->> +			interrupts = <GIC_SPI 307 IRQ_TYPE_LEVEL_HIGH>;
->> +			interrupt-names = "msi";
->> +			#interrupt-cells = <1>;
->> +			interrupt-map-mask = <0 0 0 0x7>;
->> +			interrupt-map = <0 0 0 1 &intc 0 434 IRQ_TYPE_LEVEL_HIGH>,
->> +					<0 0 0 2 &intc 0 435 IRQ_TYPE_LEVEL_HIGH>,
->> +					<0 0 0 3 &intc 0 438 IRQ_TYPE_LEVEL_HIGH>,
->> +					<0 0 0 4 &intc 0 439 IRQ_TYPE_LEVEL_HIGH>;
->> +
->> +			clocks = <&gcc GCC_PCIE_1_PIPE_CLK>,
->> +				 <&gcc GCC_PCIE_1_PIPE_CLK_SRC>,
->> +				 <&pcie1_lane 0>,
->> +				 <&rpmhcc RPMH_CXO_CLK>,
->> +				 <&gcc GCC_PCIE_1_AUX_CLK>,
->> +				 <&gcc GCC_PCIE_1_CFG_AHB_CLK>,
->> +				 <&gcc GCC_PCIE_1_MSTR_AXI_CLK>,
->> +				 <&gcc GCC_PCIE_1_SLV_AXI_CLK>,
->> +				 <&gcc GCC_PCIE_1_SLV_Q2A_AXI_CLK>,
->> +				 <&gcc GCC_AGGRE_NOC_PCIE_TBU_CLK>,
->> +				 <&gcc GCC_DDRSS_PCIE_SF_CLK>;
->> +
->> +			clock-names = "pipe",
->> +				      "pipe_mux",
->> +				      "phy_pipe",
->> +				      "ref",
->> +				      "aux",
->> +				      "cfg",
->> +				      "bus_master",
->> +				      "bus_slave",
->> +				      "slave_q2a",
->> +				      "tbu",
->> +				      "ddrss_sf_tbu";
->> +
->> +			assigned-clocks = <&gcc GCC_PCIE_1_AUX_CLK>;
->> +			assigned-clock-rates = <19200000>;
->> +
->> +			resets = <&gcc GCC_PCIE_1_BCR>;
->> +			reset-names = "pci";
->> +
->> +			power-domains = <&gcc GCC_PCIE_1_GDSC>;
->> +
->> +			phys = <&pcie1_lane>;
->> +			phy-names = "pciephy";
->> +
->> +			perst-gpio = <&tlmm 2 GPIO_ACTIVE_LOW>;
->> +			pinctrl-names = "default";
->> +			pinctrl-0 = <&pcie1_default_state>;
->> +
->> +			iommus = <&apps_smmu 0x1c80 0x1>;
->> +
->> +			iommu-map = <0x0 &apps_smmu 0x1c80 0x1>,
->> +				    <0x100 &apps_smmu 0x1c81 0x1>;
->> +
->> +			status = "disabled";
->> +		};
->> +
->> +		pcie1_phy: phy@1c0e000 {
->> +			compatible = "qcom,sm8250-qmp-gen3x2-pcie-phy";
->> +			reg = <0 0x01c0e000 0 0x1c0>;
->> +			#address-cells = <2>;
->> +			#size-cells = <2>;
->> +			ranges;
->> +			clocks = <&gcc GCC_PCIE_1_AUX_CLK>,
->> +				 <&gcc GCC_PCIE_1_CFG_AHB_CLK>,
->> +				 <&gcc GCC_PCIE_CLKREF_EN>,
->> +				 <&gcc GCC_PCIE1_PHY_RCHNG_CLK>;
->> +			clock-names = "aux", "cfg_ahb", "ref", "refgen";
->> +
->> +			resets = <&gcc GCC_PCIE_1_PHY_BCR>;
->> +			reset-names = "phy";
->> +
->> +			assigned-clocks = <&gcc GCC_PCIE1_PHY_RCHNG_CLK>;
->> +			assigned-clock-rates = <100000000>;
->> +
->> +			status = "disabled";
->> +
->> +			pcie1_lane: lanes@1c0e200 {
->> +				reg = <0 0x01c0e200 0 0x170>,
->> +				      <0 0x01c0e400 0 0x200>,
->> +				      <0 0x01c0ea00 0 0x1f0>,
->> +				      <0 0x01c0e600 0 0x170>,
->> +				      <0 0x01c0e800 0 0x200>,
->> +				      <0 0x01c0ee00 0 0xf4>;
->> +				clocks = <&rpmhcc RPMH_CXO_CLK>;
->> +				clock-names = "pipe0";
->> +
->> +				#phy-cells = <0>;
->> +				#clock-cells = <1>;
->> +				clock-output-names = "pcie_1_pipe_clk";
->> +			};
->> +		};
->> +
->>  		ipa: ipa@1e40000 {
->>  			compatible = "qcom,sc7280-ipa";
->> 
->> @@ -1598,6 +1712,18 @@
->>  					bias-bus-hold;
->>  				};
->>  			};
->> +
->> +			pcie1_default_state: pcie1-default-state {
->> +				clkreq {
->> +					pins = "gpio79";
->> +					function = "pcie1_clkreqn";
->> +				};
->> +
->> +				wake-n {
->> +					pins = "gpio3";
->> +					function = "gpio";
->> +				};
->> +			};
->>  		};
->> 
->>  		apps_smmu: iommu@15000000 {
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
->> 
+## Test result summary
+total: 88294, pass: 73881, fail: 953, skip: 12470, xfail: 990
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 194 total, 194 passed, 0 failed
+* arm64: 28 total, 28 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 27 total, 27 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 0 passed, 1 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 28 total, 28 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-arm64
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
