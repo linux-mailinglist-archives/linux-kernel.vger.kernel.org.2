@@ -2,96 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C09A3EF08A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 19:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 161DD3EF08D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 19:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230459AbhHQRCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 13:02:21 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:10035 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229700AbhHQRCT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 13:02:19 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629219706; h=Content-Type: MIME-Version: Message-ID: Date:
- References: In-Reply-To: Subject: Cc: To: From: Sender;
- bh=LYwT4eDRj2JiICfdihGDs8jIqG9wwZd/0YayCwFiVtU=; b=fiYGOlQ4juRjIJyFd2dMSZn+8Oa5JKZhUluvtgwNCkRRT38h4Lp3Gf58d2Hxcxp9ESgWkI06
- rjefYuwgBTvjC9EkLGebxqusd2T0IkMOpk5QFbJr+I1yUQuecGLLNx/51CmHq5LNn6uVzSRl
- 6eHsrB2DSLshtEydT2DFGv+ZhEc=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 611beb65f746c298d9b1f584 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 17 Aug 2021 17:01:25
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C28C9C43617; Tue, 17 Aug 2021 17:01:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CA75AC4338F;
-        Tue, 17 Aug 2021 17:01:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org CA75AC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Wireless <linux-wireless@vger.kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Chris Down <chris@chrisdown.name>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: Re: linux-next: manual merge of the wireless-drivers-next tree with the printk tree
-In-Reply-To: <20210809131813.3989f9e8@canb.auug.org.au> (Stephen Rothwell's
-        message of "Mon, 9 Aug 2021 13:18:13 +1000")
-References: <20210809131813.3989f9e8@canb.auug.org.au>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-Date:   Tue, 17 Aug 2021 20:01:16 +0300
-Message-ID: <87bl5wf1k3.fsf@codeaurora.org>
+        id S231319AbhHQRDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 13:03:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55614 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230204AbhHQRC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 13:02:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51C8460EB5;
+        Tue, 17 Aug 2021 17:02:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629219744;
+        bh=iMXJ2ZuXkc0VvET6phdIHtfJVRrX7KNyRwOMYfQWSjY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pG90qLWM0y3+P/nvw2oTT/2jkCLE14uE0ZVtMs9HeEI1ZUEZNOQIOaz9BP75jxaWe
+         LbgBsEL7G5CnNSPwbXVI/aDgU6mTgGQwv5Vxx67JwvD2fHNBxL4rpgMqPykqC1mxjm
+         GWTKZJ1nalVWGu94xKYBxzy8Wg16evZbx4Mk40DfAFQdRfNyMDOXw30zChhtC84F6p
+         krDZeXE5xGXVWIT0fQmeRwa+m0NMWl9qDWrz6Biz+PPZ0j3Tpsq0x4nhwwHE6X5121
+         VC60XyBeDWbyh4DaPd7Gc1TjOti1vnol0V+EiIUi4JA0y9w4wHEVtZ3km+yu6QSbHC
+         hk7mggZAtsVmA==
+Date:   Tue, 17 Aug 2021 10:02:22 -0700
+From:   Keith Busch <kbusch@kernel.org>
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>, Dell.Client.Kernel@dell.com
+Subject: Re: SK hynix BC511: warning: nvme nvme0: missing or invalid SUBNQN
+ field.
+Message-ID: <20210817170222.GA224912@dhcp-10-100-145-180.wdc.com>
+References: <67f74c8e-9d5e-22a1-f1c2-a4284b07ba56@molgen.mpg.de>
+ <20210817161638.GC223727@dhcp-10-100-145-180.wdc.com>
+ <f3f78d3c-d3f7-67f5-4263-f306b4f623d1@molgen.mpg.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f3f78d3c-d3f7-67f5-4263-f306b4f623d1@molgen.mpg.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
+On Tue, Aug 17, 2021 at 06:53:15PM +0200, Paul Menzel wrote:
+> [cc: +Dell.Client.Kernel@dell.com as it’s a Dell device]
+> Am 17.08.21 um 18:16 schrieb Keith Busch:
+> > On Tue, Aug 17, 2021 at 05:10:40PM +0200, Paul Menzel wrote:
+> > > On a Dell OptiPlex 7780 AIO/04G47W (BIOS 1.6.3 03/08/2021) Linux 5.10.47
+> > > shows the warning below:
+> > > 
+> > >      $ dmesg | grep nvme
+> > >      [    3.015392] nvme 0000:02:00.0: platform quirk: setting simple suspend
+> > >      [    3.021861] nvme nvme0: pci function 0000:02:00.0
+> > >      [    3.026593] ahci 0000:00:17.0: version 3.0
+> > >      [    3.026922] ahci 0000:00:17.0: AHCI 0001.0301 32 slots 1 ports 6 Gbps 0x1 impl SATA mode
+> > >      [    3.035020] ahci 0000:00:17.0: flags: 64bit ncq sntf pm clo only pio slum part ems deso sadm sds apst
+> > >      [    3.035219] nvme nvme0: missing or invalid SUBNQN field.
+> > >      [    3.044518] scsi host0: ahci
+> > >      [    3.051632] nvme nvme0: 12/0/0 default/read/poll queues
+> > >      [    3.052590] ata1: SATA max UDMA/133 abar m2048@0xd1339000 port 0xd1339100 irq 125
+> > >      [    3.058538]  nvme0n1: p1 p2 p3
+> > > 
+> > > Should it be added to the quirk list in `drivers/nvme/host/pci.c` or is it a
+> > > real issues, the manufacturer should fix? If so, do you have SK Hynix
+> > > contacts?
+> > 
+> > It would be great if device makers would be spec compliant, but the
+> > driver will continue to work with the device the same whether you add
+> > the quirk or not.
+> 
+> Could you please point me to the NVMe specification section, so I can refer
+> to it, when contacting the manufacturer?
 
-> Today's linux-next merge of the wireless-drivers-next tree got a
-> conflict in:
->
->   MAINTAINERS
->
-> between commit:
->
->   337015573718 ("printk: Userspace format indexing support")
->
-> from the printk tree and commit:
->
->   d249ff28b1d8 ("intersil: remove obsolete prism54 wireless driver")
->
-> from the wireless-drivers-next tree.
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+In the section for "Identify Controller Data Structure" (section
+5.17.2.1, figure 257 in spec version 2.0), the NQN definition says:
 
-Thanks, the conflict is trivial enough so Linus should handle it without
-problems.
+  "Support for this field is mandatory if the controller supports revision
+  1.2.1 or later"
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+The driver does confirm the controller's reported revision meets this
+requirement before emitting the warning.
