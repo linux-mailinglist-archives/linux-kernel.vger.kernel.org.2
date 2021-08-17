@@ -2,157 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD743EEA25
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 106863EEA29
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235560AbhHQJn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 05:43:28 -0400
-Received: from relay5.mymailcheap.com ([159.100.248.207]:39173 "EHLO
-        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234593AbhHQJn0 (ORCPT
+        id S239298AbhHQJns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 05:43:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235403AbhHQJnq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 05:43:26 -0400
-Received: from relay3.mymailcheap.com (relay3.mymailcheap.com [217.182.119.157])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id 7AD0D260EB;
-        Tue, 17 Aug 2021 09:42:52 +0000 (UTC)
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay3.mymailcheap.com (Postfix) with ESMTPS id DD9D53F1CC;
-        Tue, 17 Aug 2021 11:42:49 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id BA31C2A915;
-        Tue, 17 Aug 2021 11:42:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1629193369;
-        bh=FkrJaXbezoWlUIzlLXe6PbAJUPxZx/ZrdnrQAm77CcY=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=fYalB656gDqDvxzShA8MbsCYDorxNkzWFTuunu5/dTIzs3DFYgH2G01ZB2fZw5n7J
-         kzTVBSQ0UWb8JJhVlnDwO15/TLUylCEUlGidyu+s2b1tT9T7A5u8SmziOLOf1pMFK/
-         D62pimbqOyvEcL2s8DacxUuBQPvlpUCA7Qtgi+Vk=
-X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
-Received: from filter2.mymailcheap.com ([127.0.0.1])
-        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id EAh1KGjLN-C1; Tue, 17 Aug 2021 11:42:45 +0200 (CEST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Tue, 17 Aug 2021 11:42:45 +0200 (CEST)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 7166041737;
-        Tue, 17 Aug 2021 09:42:44 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="jEImuBS/";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [127.0.0.1] (unknown [59.41.161.211])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id DA0F240CCF;
-        Tue, 17 Aug 2021 09:42:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1629193348; bh=FkrJaXbezoWlUIzlLXe6PbAJUPxZx/ZrdnrQAm77CcY=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=jEImuBS/pbTiB0xTTqHAm22XRPP309CyeMEpkBfGDdYmK7b3MY//C2Up5gVDbcU3T
-         BxrfxQy5DJ3wlDwSk4gcKX44N2gb+FuaajjyJKAo0rJUGVeQlWPEnP9ffuyr2y0VUY
-         VfMeVA96KISIIFEGUa8W1FvLEhPKbC+dCNec+pYc=
-Date:   Tue, 17 Aug 2021 17:41:58 +0800
-From:   Icenowy Zheng <icenowy@aosc.io>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-CC:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: tcpm: always rediscover when swapping DR
-User-Agent: K-9 Mail for Android
-In-Reply-To: <YRuDG78N2mB5w37p@kuha.fi.intel.com>
-References: <20210813043131.833006-1-icenowy@aosc.io> <YRuDG78N2mB5w37p@kuha.fi.intel.com>
-Message-ID: <E91C97D0-7DB9-4455-AED2-4C25B7D2D22D@aosc.io>
+        Tue, 17 Aug 2021 05:43:46 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06373C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 02:43:14 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mFvcj-0006iv-Rp; Tue, 17 Aug 2021 11:43:09 +0200
+Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:dc61:eeed:d4a6:acca])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id C046B668D72;
+        Tue, 17 Aug 2021 09:43:07 +0000 (UTC)
+Date:   Tue, 17 Aug 2021 11:43:06 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Cc:     linux-can <linux-can@vger.kernel.org>,
+        Stefan =?utf-8?B?TcOkdGpl?= <Stefan.Maetje@esd.eu>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Thomas Kopp <thomas.kopp@microchip.com>
+Subject: Re: [PATCH v5 2/7] can: bittiming: allow TDC{V,O} to be zero and add
+ can_tdc_const::tdc{v,o,f}_min
+Message-ID: <20210817094306.iyezzml6m7nlznri@pengutronix.de>
+References: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
+ <20210815033248.98111-3-mailhol.vincent@wanadoo.fr>
+ <20210816084235.fr7fzau2ce7zl4d4@pengutronix.de>
+ <CAMZ6RqK5t62UppiMe9k5jG8EYvnSbFW3doydhCvp72W_X2rXAw@mail.gmail.com>
+ <20210816122519.mme272z6tqrkyc6x@pengutronix.de>
+ <20210816123309.pfa57tke5hrycqae@pengutronix.de>
+ <CAMZ6RqK0vTtCkSM7Lim2TQCZyYTYvKYsFVwWDnyNaFghwqToXg@mail.gmail.com>
+ <20210816143052.3brm6ny26jy3nbkq@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spamd-Result: default: False [-0.10 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.161.211:received];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[aosc.io];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         RCPT_COUNT_FIVE(0.00)[5];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
-X-Rspamd-Queue-Id: 7166041737
-X-Rspamd-Server: mail20.mymailcheap.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cq7vy33mil2ht6ci"
+Content-Disposition: inline
+In-Reply-To: <20210816143052.3brm6ny26jy3nbkq@pengutronix.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--cq7vy33mil2ht6ci
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-=E4=BA=8E 2021=E5=B9=B48=E6=9C=8817=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=885=
-:36:27, Heikki Krogerus <heikki=2Ekrogerus@linux=2Eintel=2Ecom> =E5=86=99=
-=E5=88=B0:
->On Fri, Aug 13, 2021 at 12:31:31PM +0800, Icenowy Zheng wrote:
->> Currently, TCPM code omits discover when swapping to gadget, and assume
->> that no altmodes are available when swapping from gadget=2E However, we=
- do
->> send discover when we get attached as gadget -- this leads to modes to =
-be
->> discovered twice when attached as gadget and then swap to host=2E
->>=20
->> Always re-send discover when swapping DR, regardless of what change is
->> being made; and because of this, the assumption that no altmodes are
->> registered with gadget role is broken, and altmodes de-registeration is
->> always needed now=2E
->>=20
->> Signed-off-by: Icenowy Zheng <icenowy@aosc=2Eio>
->> ---
->>  drivers/usb/typec/tcpm/tcpm=2Ec | 9 ++++-----
->>  1 file changed, 4 insertions(+), 5 deletions(-)
->>=20
->> diff --git a/drivers/usb/typec/tcpm/tcpm=2Ec b/drivers/usb/typec/tcpm/t=
-cpm=2Ec
->> index b9bb63d749ec=2E=2Eab6d0d51ee1c 100644
->> --- a/drivers/usb/typec/tcpm/tcpm=2Ec
->> +++ b/drivers/usb/typec/tcpm/tcpm=2Ec
->> @@ -4495,15 +4495,14 @@ static void run_state_machine(struct tcpm_port =
-*port)
->>  		tcpm_set_state(port, ready_state(port), 0);
->>  		break;
->>  	case DR_SWAP_CHANGE_DR:
->> -		if (port->data_role =3D=3D TYPEC_HOST) {
->> -			tcpm_unregister_altmodes(port);
->> +		tcpm_unregister_altmodes(port);
->> +		if (port->data_role =3D=3D TYPEC_HOST)
->>  			tcpm_set_roles(port, true, port->pwr_role,
->>  				       TYPEC_DEVICE);
->> -		} else {
->> +		else
->>  			tcpm_set_roles(port, true, port->pwr_role,
->>  				       TYPEC_HOST);
->> -			port->send_discover =3D true;
->> -		}
->> +		port->send_discover =3D true;
->>  		tcpm_ams_finish(port);
->>  		tcpm_set_state(port, ready_state(port), 0);
->>  		break;
->
->Why is it necessary to do discovery with data role swap in general?
+On 16.08.2021 16:30:52, Marc Kleine-Budde wrote:
+> > Finally, I did a bit of research and found that:
+> > http://ww1.microchip.com/downloads/en/DeviceDoc/Section_56_Controller_A=
+rea_Network_with_Flexible_Data_rate_DS60001549A.pdf
 
-I think it could be possible for devices to expose different altmode
-with different role=2E
+> > This is *not* the mcp25xxfd datasheet but it is still from
+> > Microship and as you will see, it is mostly similar to the
+> > mcp25xxfd except for, you guessed it, the TDCO.
+> >=20
+> > It reads:
+> > | TDCMOD<1:0>: Transmitter Delay Compensation Mode bits
+> > | Secondary Sample Point (SSP).
+> > | 10 =3D Auto; measure delay and add CFDxDBTCFG.TSEG1; add TDCO
+> > | 11 =3D Auto; measure delay and add CFDxDBTCFG.TSEG1; add TDCO
+> > | 01 =3D Manual; Do not measure, use TDCV plus TDCO from the register
+> > | 00 =3D Disable
+> >=20
+> > | TDCO<6:0>: Transmitter Delay Compensation Offset bits
+> > | Secondary Sample Point (SSP). Two's complement; offset can be
+> > positive, zero, or negative.
+> > | 1111111 =3D -64 x SYSCLK
+> > | .
+> > | .
+> > | .
+> > | 0111111 =3D 63 x SYSCLK
+> > | .
+> > | .
+> > | .
+> > | 0000000 =3D 0 x SYSCLK
+> >=20
+> > Here, you can clearly see that the TDCO has the exact same range
+> > as the one of the mcp25xxfd but the description of TDCMOD
+> > changes, telling us that:
+> >=20
+> > | SSP =3D TDCV (measured delay) + CFDxDBTCFG.TSEG1 (sample point) + TDCO
+> >=20
+> > Which means this is a relative TDCO.
 
->
->thanks,
->
+Good catch! Microchip is investigating this.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--cq7vy33mil2ht6ci
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEbhKcACgkQqclaivrt
+76mRUwf/WqgGXJS5FJYsgXeQ9DB2ao8JrxXEawnFdtnwp+LzoU6Xa8+NOrcwaDE/
+74ZFUhUVOoA/gl06bwixPLrBuFt9XVCa7uJEU7fnUdKAFl99LN4F1l6dGIT1gQ3l
+Iqtl/bOhwYGVRqyOH5sXTzF/kWrBny14xoGFUk+QtNwgaGGQ2vmvZ/Cx518xJnSd
+sQNdxGK9z71oYf8lqUndIJO/zdQGRgJtABVCCanRRTtoeYf52U+pdMUmo/I/2CX9
+AHP+hCR2yCDU+R93/SMwQH0RDFQvSUZ3YsP7ANO7ROzGLaeXhdM79gA1DiOClXK6
+bLLjwDxvRhoJwmHMDc6DGrOWCfL+3g==
+=DOw1
+-----END PGP SIGNATURE-----
+
+--cq7vy33mil2ht6ci--
