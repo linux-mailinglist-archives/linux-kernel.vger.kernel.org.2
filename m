@@ -2,328 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 614FD3EE739
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 09:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA52D3EE73C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 09:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238667AbhHQH3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 03:29:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238619AbhHQH3V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 03:29:21 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F768C061796;
-        Tue, 17 Aug 2021 00:28:48 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id x12so27108837wrr.11;
-        Tue, 17 Aug 2021 00:28:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7j8rw4Ujz5x983gg53sxPnn1dxlWsFVFzGa4/yW9Tik=;
-        b=CSdlKeGJARJ0qiBtgTglHjTG9kwi9s3KxhYFZtXyfN6xyGs1x3IrTkDrhAKhuSE8KW
-         JKHhi0PHMbtSiHakmEuxtwv78dfmukEWX8ibj7DEkQhbYztyxqAp152tBSG0zD2kTX61
-         uO2zjc430kURV5KZky2VCeuNOPCeyJY/f/GVNY+jZVqTgSGTK38B6s7hpUzw2fQKUjbv
-         rcdW8wM2hSGABUvXRjfSBS/r24Ev07DKSDQzCJTwVdZpQGAvvKYOrOTIBPKxFsTeJPlG
-         buI6BO++8SRohvy6iMR36FSqacv86RDa97syWD/IZ+ioN1wpQAXbtg8vHRheJB/IORoF
-         /S4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7j8rw4Ujz5x983gg53sxPnn1dxlWsFVFzGa4/yW9Tik=;
-        b=j9Hl/dFbxGzGHHzFoRovXxdfasO5mJ2ATWhwn79KoMsmnx7Xb10HebuHlaZPKDRvZ2
-         v4m3ay0hTGvdEWIgZtwG0ugW/4TpZy/VmQMwinDWjBJ6RfMuHtedamNi9oUZvxVRgefJ
-         VyHn/F3UdQFt0tluoe+9g9S2sJS8vFLmoPa/iN1Lg/uejAyyhHKxyPvKdwTsr89NZXBn
-         FgSSbxK4rQbQUGDrq5YlC6Cw6e+uAi1vFcKl9Fa25v2rnvK+b5kRypvolSjvP+q/H9gc
-         uZRS9ZuEH6Ysyw2tI4UhNe80ssC3wdpoytpzNP589+32Gh2kni5tCwy832MyMHIVknsb
-         5PpQ==
-X-Gm-Message-State: AOAM5305OHWClejXrGDF/XL3d1tCZFJj5vczrarQn4kScsmj+laHVGOs
-        4lGvWtUoJ4oryAr48h9KtZfYPgwTfhg=
-X-Google-Smtp-Source: ABdhPJwLhN7zuVO8nILdK/mXM7xXpdii13sReyRkHuFWrY5iA8AesN/joQtjmMiqIW4DOj13DJPiMw==
-X-Received: by 2002:a5d:54ca:: with SMTP id x10mr2239553wrv.101.1629185326889;
-        Tue, 17 Aug 2021 00:28:46 -0700 (PDT)
-Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
-        by smtp.gmail.com with ESMTPSA id i8sm1175056wma.7.2021.08.17.00.28.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 00:28:46 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] input: remove dead CSR Prima2 PWRC driver
-Date:   Tue, 17 Aug 2021 09:28:42 +0200
-Message-Id: <20210817072842.8640-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S238697AbhHQH3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 03:29:44 -0400
+Received: from mail-eopbgr1410084.outbound.protection.outlook.com ([40.107.141.84]:54480
+        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238684AbhHQH3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 03:29:35 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kbIuD70j1jG8Dqds13ERaWjM1zxMiHFTAcRpbOEuzMhc9LP45RabubLe7irS29IIQkx352dBhKJhoPTDyX/2Q+N0ngG98Ixp4/bLSGTqPMVnTckpncSKg+KDgcroE3J+TxlR8q9inGf7raRbMUmTDtsBosD1e7elqsWfnVObOkKXPikjvGs0TfIt0KaaJM3FW7760cWA05pPfMFbv8sjlh+D2rRy86R2hcC+bkEfU3MhEwKe0C3eUoJcn27ZYp5Ql9oWQi80vOSu451ZZUWBjfGztLa5jaYQmabXUtaIp6+kkJT4ZUep5AEI6SFT1CZ9bes89QnYPjhu5oAjJ036kA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9/rM6hvNoXFMj4y93fei9mk3phpJ+yUyiEdg7acVNek=;
+ b=kO5t7Y8C0mxjbSSfuP97XnLJ4S8nhGzQrwrcQR3eJHPkUbzcc8fClt3/RSd+5u9vyulRf9QMGJ9NokK2EuxHHSy48qEhq6sVSpWz7Of0h4gOOl949nrrYhAHX4oDbmcOpo6r51N5fSpqahEAY9B2WqKVW1f1sriwdGCKes/YcJvTe2TuqiLKfiBDIrr7a43ZPr1uK5P5awkwN1CMjswNUscS/A4ZCsQ6wH2IC/zk2UIIiiGQ7pbtf0Tc3F5hRkqXXi9/57Q6uIR07JPgXtW3vVB/SXO/dQwtMKvLWnCeAT9+Wfst9NKfGr+Ub4Vooan/MZBMAFzQfAsbo9UEI6/7Xg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
+ header.d=nec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nec.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9/rM6hvNoXFMj4y93fei9mk3phpJ+yUyiEdg7acVNek=;
+ b=N8b5FFn+QhunMDUwEInuyTYKjJeFB/QkYXiTbFsFI5Rg6QTTQ0ZRYyie6pH0cggC6gZtrSO0oi15AJ836nJDLQH43YL9/tx5tF45KQERt1zyAH5zVd6dNsdUb7bBpMT9DgKnk+9JI5vMbcJRJTE9v+akvRpW/fuGmrwhniChYhs=
+Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com (2603:1096:403:8::12)
+ by TYAPR01MB3965.jpnprd01.prod.outlook.com (2603:1096:404:c6::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14; Tue, 17 Aug
+ 2021 07:29:01 +0000
+Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com
+ ([fe80::4401:f9e:2afb:ebc0]) by TY1PR01MB1852.jpnprd01.prod.outlook.com
+ ([fe80::4401:f9e:2afb:ebc0%7]) with mapi id 15.20.4415.023; Tue, 17 Aug 2021
+ 07:29:01 +0000
+From:   =?utf-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPo+OAgOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/4] mm/hwpoison: fix potential pte_unmap_unlock pte error
+Thread-Topic: [PATCH 2/4] mm/hwpoison: fix potential pte_unmap_unlock pte
+ error
+Thread-Index: AQHXkPpfFGXqAXhUhE+s+6RCLjYWAqt3USMA
+Date:   Tue, 17 Aug 2021 07:29:00 +0000
+Message-ID: <20210817072900.GA452155@hori.linux.bs1.fc.nec.co.jp>
+References: <20210814105131.48814-1-linmiaohe@huawei.com>
+ <20210814105131.48814-3-linmiaohe@huawei.com>
+In-Reply-To: <20210814105131.48814-3-linmiaohe@huawei.com>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=nec.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2d823601-830d-4190-1b97-08d96150aef8
+x-ms-traffictypediagnostic: TYAPR01MB3965:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <TYAPR01MB3965CAF65AFE567C31425E50E7FE9@TYAPR01MB3965.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 22jfCUqcSKKRkfLC0m11WNbxDd/1d7iBFZs1nNk0o4YmdbcQT0ydDv8+ZemqBJjPYOl22OzjIRrrA4V8jy8a/4bdDW9QjGVs+gOnJL4jLeKVcMZ6ml4MnhOaxoCzIZJTD51hBM/YErdb49YhnI27sJL+zbmq+Uh3CJrhIKEFvsoQiznGG70f/JF9SdhHwapkoa37U5XFI9Ofss1Sal+78zsbW8ABKSR60WZsLFLyUSKeeI+7H1Pj1Kphxs5zC8xocjZaqZPjsYhj+H+hfgT/Oy4bJtw/XyiHoWLbIu0+ukK+DU2+Td+LUzL1SonlDoo14pEP9shkW4g3DmCkz556c8pe/niaxIdpRMf+87fsJjc2izIabkW7eZRp2x8DVQAMkW9GCqTet/4TvF3w+b3Ccwc6I/BBDSht65W2jRnj6UYYi3TOdq6nenPM+9VVi+t6SHfuKMYib+Dbnma18w89uoK1X7BXlgNSpuGG5QPVHCYw4JFO8C41FceodcK/uRvgNRzUVCjO/zpW9/JfN9AjjcK+xP5HZO4yMq8TWsJCo/ht7K1SQt4aQOydToz+GfPKnx0bdEFaukYU9li8zHeqVgLE/rSLMW4MzlU1KmWqvMofqBdIiZHjY0/sKViWQBS3ulGrCA5TfRfA8OvUPHjmgQDueQjJpyJHNnenIaPaI4IqY8DyEnJdiU+LAZ8f17GtNv51zaqQwqIHeS2IGCZ5Qg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1852.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(346002)(376002)(396003)(8936002)(5660300002)(85182001)(1076003)(122000001)(38100700002)(478600001)(33656002)(4744005)(316002)(54906003)(6916009)(2906002)(66946007)(55236004)(86362001)(83380400001)(8676002)(66476007)(64756008)(26005)(66556008)(66446008)(6512007)(9686003)(6506007)(4326008)(186003)(76116006)(71200400001)(6486002)(38070700005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Y0RiMEFyRytZZFZ3bEQwclZlNXRxS05NUVVvME9tdTBrbUl0Q0JhUGg3YnBT?=
+ =?utf-8?B?clVJTjRiYUtocWlSRU5pYmRZRFdSSUhoc1lyVkNubVJDb3BYQnpIL2V1NFpm?=
+ =?utf-8?B?OFVwTURwZlUrb0NDVUk4cjQvbmZlZW1reGxuZHcvZEFJZnNoNllJVzdZRmlL?=
+ =?utf-8?B?QzdZZUg3V1YwWGVLZnNpMmVoMzVWVFA2SzF4NldwanpWa0YwKzJaRnlDbTBv?=
+ =?utf-8?B?UVJuN29TY1ZPREEyYjlWU3lTUlpYNjZQSUQyTk15Z1V2dmg3VHdtcmtHRERz?=
+ =?utf-8?B?ckFWVFU0czZqWVpkMEltWFJkMmYra2lrQzQrQy9aQ3VWL2pmYTB3aDVSYjNZ?=
+ =?utf-8?B?dDlCSHdyK0NWbGdkeFBpUkZNZjBnUlRkOUxVdmEzcjBJTnRWNkhQMlBzZUI0?=
+ =?utf-8?B?RDBvK005Q1ora2xLQUtHblB6TmFLOGkwRTZSdXowdjlIY280VGRXVWFnU3BH?=
+ =?utf-8?B?bXV0R255VnpSbHdacTNPM0NTbE1ETytSYjBRYkQ0SmE0T3V0N3ZEMzQweldO?=
+ =?utf-8?B?dG8xaEZ0MmpuLzQ5OWJGOHdxQWl1dWtTQzJJV0NRZnplTlJJZ0ppYzl4RUJW?=
+ =?utf-8?B?WUh5WkppdkdjaFdRQ2U2Zm1odlJQSWRJVmwvVXk0Q1BQUHR0WVJwMjJEem81?=
+ =?utf-8?B?WmFwaDJJclJNcTUwV20yc3hsQ2dJakJXcVAwUnFsWEZDU3JlTXZYbUlhdnR1?=
+ =?utf-8?B?ZnNjcC90S0ptS0tTT3F4WEN3STNTbW5ueWVUeGRiZnpDZ3RXenE0RVM3Rjhy?=
+ =?utf-8?B?OXY4TSsza0tZVjdEQUhSZkY2ZDNoT2phNlh1cUVyUERsNk1lUHB1MjBOU2ti?=
+ =?utf-8?B?cmJCSEdjRG9qWFNwOGQ3RzRjSTdkZEFiLzVRMVpLMWRGenBSS1p1empwMTRj?=
+ =?utf-8?B?U0pQbzRuQXhKc0phRlVUOEtSRU0vSVZnak84ZXplNExySXNyMW1TWmFhRFNx?=
+ =?utf-8?B?TDhLZzBxUXZQWEZXVFlVZU9SWk9aQ1B2RVhXRHZYYlFUYnh3NUh2KytOS3Zm?=
+ =?utf-8?B?VFZtK24rK3JWTHhsalJzUE5yTHFZNHRtQ3E2blpvQW85MTA5S1ZCUldrVlQr?=
+ =?utf-8?B?Ui9UMEo5djNqU2dZb0E3N3ZxTEJocE1vcU5EbHpld1h0NVNuaDdvajIzb29K?=
+ =?utf-8?B?Z2tReXpKTjVGSXBUdkxicDh5RUdZdE1STEVPK2hNMXFtMVpqU2djbTFTWG1v?=
+ =?utf-8?B?ZzczNVJKMElYd1JxOVZiYUFmTmVrbE5GKzZQQzk0Rk5wRVk5cW5udldIWUlw?=
+ =?utf-8?B?aTZaNWttM1l1Yk1PQVgxdFgvQ0RDbElCOGFtMlVreWdsS3hhb2N2NVdkKzhi?=
+ =?utf-8?B?anNJeTNMQWxBd0c2UnFYcnhOM1VJNHQzQmVOMk90NXQvOCt5SmRqeUhwTVRn?=
+ =?utf-8?B?MFFMbWNDcnlKLzFGQm9CaUFDVnpzRFFvWmpIcFArVEhBaGt4NnhtcldIb01N?=
+ =?utf-8?B?TTlCdmNZbk9HY3JSSHlTZXFBY3dVQ21iUGdyWFR2YkhvT29mWGo5MFlnajVG?=
+ =?utf-8?B?bEtLenVsMGxXQlpDKzRQZTFrS0h3VTZ4bzdmYXdUWSswMVZLSStoUEU1amFv?=
+ =?utf-8?B?WUkwVWR5MzhRRkJRRzc0K0ZWSE1FcDRIYllqZ21KSXBDOVJWQUQzV0xoV04w?=
+ =?utf-8?B?RUNSVWp0SEQ5TzFnaGJpOXlDczhPZVRPOFlnL25ZMGZCK09OZzhxOUgzVTlH?=
+ =?utf-8?B?d28yd2x1Q0pVSXRIeWtiRmpJeUE2VXFHeCtzWGlCUFNoTENLRmZXbDYxcHRZ?=
+ =?utf-8?Q?xVVFzkk3liGwmj2GKD0tzHrflHN1BfqaVsJ/kT9?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2C7637CF7DF4664EA31CE4FF61A88687@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nec.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY1PR01MB1852.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d823601-830d-4190-1b97-08d96150aef8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Aug 2021 07:29:00.9699
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gGxXuHVsvSOwMSF2NfXBI5aVEj4nkkdgna7yb24ZnRD3fNw4BVJhASwxFWUnfDTOoZM0uXANo2GjI/zMg5O5gA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB3965
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit f3a732843acc ("ARM: remove sirf prima2/atlas platforms") removes
-the config ARCH_SIRF in ./arch/arm/mach-prima2/Kconfig.
-
-Hence, since then, the corresponding CSR Prima2 PWRC Driver is dead code.
-Remove this dead driver.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- drivers/input/misc/Kconfig         |  10 --
- drivers/input/misc/Makefile        |   1 -
- drivers/input/misc/sirfsoc-onkey.c | 207 -----------------------------
- 3 files changed, 218 deletions(-)
- delete mode 100644 drivers/input/misc/sirfsoc-onkey.c
-
-diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
-index ae01507b7afd..dd5227cf8696 100644
---- a/drivers/input/misc/Kconfig
-+++ b/drivers/input/misc/Kconfig
-@@ -799,16 +799,6 @@ config INPUT_XEN_KBDDEV_FRONTEND
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called xen-kbdfront.
- 
--config INPUT_SIRFSOC_ONKEY
--	tristate "CSR SiRFSoC power on/off/suspend key support"
--	depends on ARCH_SIRF && OF
--	default y
--	help
--	  Say Y here if you want to support for the SiRFSoC power on/off/suspend key
--	  in Linux, after you press the onkey, system will suspend.
--
--	  If unsure, say N.
--
- config INPUT_IDEAPAD_SLIDEBAR
- 	tristate "IdeaPad Laptop Slidebar"
- 	depends on INPUT
-diff --git a/drivers/input/misc/Makefile b/drivers/input/misc/Makefile
-index 2a0943507467..b92c53a6b5ae 100644
---- a/drivers/input/misc/Makefile
-+++ b/drivers/input/misc/Makefile
-@@ -73,7 +73,6 @@ obj-$(CONFIG_INPUT_GPIO_ROTARY_ENCODER)	+= rotary_encoder.o
- obj-$(CONFIG_INPUT_RK805_PWRKEY)	+= rk805-pwrkey.o
- obj-$(CONFIG_INPUT_SC27XX_VIBRA)	+= sc27xx-vibra.o
- obj-$(CONFIG_INPUT_SGI_BTNS)		+= sgi_btns.o
--obj-$(CONFIG_INPUT_SIRFSOC_ONKEY)	+= sirfsoc-onkey.o
- obj-$(CONFIG_INPUT_SOC_BUTTON_ARRAY)	+= soc_button_array.o
- obj-$(CONFIG_INPUT_SPARCSPKR)		+= sparcspkr.o
- obj-$(CONFIG_INPUT_STPMIC1_ONKEY)  	+= stpmic1_onkey.o
-diff --git a/drivers/input/misc/sirfsoc-onkey.c b/drivers/input/misc/sirfsoc-onkey.c
-deleted file mode 100644
-index 7982bf8fb839..000000000000
---- a/drivers/input/misc/sirfsoc-onkey.c
-+++ /dev/null
-@@ -1,207 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * Power key driver for SiRF PrimaII
-- *
-- * Copyright (c) 2013 - 2014 Cambridge Silicon Radio Limited, a CSR plc group
-- * company.
-- */
--
--#include <linux/module.h>
--#include <linux/interrupt.h>
--#include <linux/delay.h>
--#include <linux/platform_device.h>
--#include <linux/input.h>
--#include <linux/rtc/sirfsoc_rtciobrg.h>
--#include <linux/of.h>
--#include <linux/workqueue.h>
--
--struct sirfsoc_pwrc_drvdata {
--	u32			pwrc_base;
--	struct input_dev	*input;
--	struct delayed_work	work;
--};
--
--#define PWRC_ON_KEY_BIT			(1 << 0)
--
--#define PWRC_INT_STATUS			0xc
--#define PWRC_INT_MASK			0x10
--#define PWRC_PIN_STATUS			0x14
--#define PWRC_KEY_DETECT_UP_TIME		20	/* ms*/
--
--static int sirfsoc_pwrc_is_on_key_down(struct sirfsoc_pwrc_drvdata *pwrcdrv)
--{
--	u32 state = sirfsoc_rtc_iobrg_readl(pwrcdrv->pwrc_base +
--							PWRC_PIN_STATUS);
--	return !(state & PWRC_ON_KEY_BIT); /* ON_KEY is active low */
--}
--
--static void sirfsoc_pwrc_report_event(struct work_struct *work)
--{
--	struct sirfsoc_pwrc_drvdata *pwrcdrv =
--		container_of(work, struct sirfsoc_pwrc_drvdata, work.work);
--
--	if (sirfsoc_pwrc_is_on_key_down(pwrcdrv)) {
--		schedule_delayed_work(&pwrcdrv->work,
--			msecs_to_jiffies(PWRC_KEY_DETECT_UP_TIME));
--	} else {
--		input_event(pwrcdrv->input, EV_KEY, KEY_POWER, 0);
--		input_sync(pwrcdrv->input);
--	}
--}
--
--static irqreturn_t sirfsoc_pwrc_isr(int irq, void *dev_id)
--{
--	struct sirfsoc_pwrc_drvdata *pwrcdrv = dev_id;
--	u32 int_status;
--
--	int_status = sirfsoc_rtc_iobrg_readl(pwrcdrv->pwrc_base +
--							PWRC_INT_STATUS);
--	sirfsoc_rtc_iobrg_writel(int_status & ~PWRC_ON_KEY_BIT,
--				 pwrcdrv->pwrc_base + PWRC_INT_STATUS);
--
--	input_event(pwrcdrv->input, EV_KEY, KEY_POWER, 1);
--	input_sync(pwrcdrv->input);
--	schedule_delayed_work(&pwrcdrv->work,
--			      msecs_to_jiffies(PWRC_KEY_DETECT_UP_TIME));
--
--	return IRQ_HANDLED;
--}
--
--static void sirfsoc_pwrc_toggle_interrupts(struct sirfsoc_pwrc_drvdata *pwrcdrv,
--					   bool enable)
--{
--	u32 int_mask;
--
--	int_mask = sirfsoc_rtc_iobrg_readl(pwrcdrv->pwrc_base + PWRC_INT_MASK);
--	if (enable)
--		int_mask |= PWRC_ON_KEY_BIT;
--	else
--		int_mask &= ~PWRC_ON_KEY_BIT;
--	sirfsoc_rtc_iobrg_writel(int_mask, pwrcdrv->pwrc_base + PWRC_INT_MASK);
--}
--
--static int sirfsoc_pwrc_open(struct input_dev *input)
--{
--	struct sirfsoc_pwrc_drvdata *pwrcdrv = input_get_drvdata(input);
--
--	sirfsoc_pwrc_toggle_interrupts(pwrcdrv, true);
--
--	return 0;
--}
--
--static void sirfsoc_pwrc_close(struct input_dev *input)
--{
--	struct sirfsoc_pwrc_drvdata *pwrcdrv = input_get_drvdata(input);
--
--	sirfsoc_pwrc_toggle_interrupts(pwrcdrv, false);
--	cancel_delayed_work_sync(&pwrcdrv->work);
--}
--
--static const struct of_device_id sirfsoc_pwrc_of_match[] = {
--	{ .compatible = "sirf,prima2-pwrc" },
--	{},
--};
--MODULE_DEVICE_TABLE(of, sirfsoc_pwrc_of_match);
--
--static int sirfsoc_pwrc_probe(struct platform_device *pdev)
--{
--	struct device_node *np = pdev->dev.of_node;
--	struct sirfsoc_pwrc_drvdata *pwrcdrv;
--	int irq;
--	int error;
--
--	pwrcdrv = devm_kzalloc(&pdev->dev, sizeof(struct sirfsoc_pwrc_drvdata),
--			       GFP_KERNEL);
--	if (!pwrcdrv) {
--		dev_info(&pdev->dev, "Not enough memory for the device data\n");
--		return -ENOMEM;
--	}
--
--	/*
--	 * We can't use of_iomap because pwrc is not mapped in memory,
--	 * the so-called base address is only offset in rtciobrg
--	 */
--	error = of_property_read_u32(np, "reg", &pwrcdrv->pwrc_base);
--	if (error) {
--		dev_err(&pdev->dev,
--			"unable to find base address of pwrc node in dtb\n");
--		return error;
--	}
--
--	pwrcdrv->input = devm_input_allocate_device(&pdev->dev);
--	if (!pwrcdrv->input)
--		return -ENOMEM;
--
--	pwrcdrv->input->name = "sirfsoc pwrckey";
--	pwrcdrv->input->phys = "pwrc/input0";
--	pwrcdrv->input->evbit[0] = BIT_MASK(EV_KEY);
--	input_set_capability(pwrcdrv->input, EV_KEY, KEY_POWER);
--
--	INIT_DELAYED_WORK(&pwrcdrv->work, sirfsoc_pwrc_report_event);
--
--	pwrcdrv->input->open = sirfsoc_pwrc_open;
--	pwrcdrv->input->close = sirfsoc_pwrc_close;
--
--	input_set_drvdata(pwrcdrv->input, pwrcdrv);
--
--	/* Make sure the device is quiesced */
--	sirfsoc_pwrc_toggle_interrupts(pwrcdrv, false);
--
--	irq = platform_get_irq(pdev, 0);
--	error = devm_request_irq(&pdev->dev, irq,
--				 sirfsoc_pwrc_isr, 0,
--				 "sirfsoc_pwrc_int", pwrcdrv);
--	if (error) {
--		dev_err(&pdev->dev, "unable to claim irq %d, error: %d\n",
--			irq, error);
--		return error;
--	}
--
--	error = input_register_device(pwrcdrv->input);
--	if (error) {
--		dev_err(&pdev->dev,
--			"unable to register input device, error: %d\n",
--			error);
--		return error;
--	}
--
--	dev_set_drvdata(&pdev->dev, pwrcdrv);
--	device_init_wakeup(&pdev->dev, 1);
--
--	return 0;
--}
--
--static int __maybe_unused sirfsoc_pwrc_resume(struct device *dev)
--{
--	struct sirfsoc_pwrc_drvdata *pwrcdrv = dev_get_drvdata(dev);
--	struct input_dev *input = pwrcdrv->input;
--
--	/*
--	 * Do not mask pwrc interrupt as we want pwrc work as a wakeup source
--	 * if users touch X_ONKEY_B, see arch/arm/mach-prima2/pm.c
--	 */
--	mutex_lock(&input->mutex);
--	if (input_device_enabled(input))
--		sirfsoc_pwrc_toggle_interrupts(pwrcdrv, true);
--	mutex_unlock(&input->mutex);
--
--	return 0;
--}
--
--static SIMPLE_DEV_PM_OPS(sirfsoc_pwrc_pm_ops, NULL, sirfsoc_pwrc_resume);
--
--static struct platform_driver sirfsoc_pwrc_driver = {
--	.probe		= sirfsoc_pwrc_probe,
--	.driver		= {
--		.name	= "sirfsoc-pwrc",
--		.pm	= &sirfsoc_pwrc_pm_ops,
--		.of_match_table = sirfsoc_pwrc_of_match,
--	}
--};
--
--module_platform_driver(sirfsoc_pwrc_driver);
--
--MODULE_LICENSE("GPL v2");
--MODULE_AUTHOR("Binghua Duan <Binghua.Duan@csr.com>, Xianglong Du <Xianglong.Du@csr.com>");
--MODULE_DESCRIPTION("CSR Prima2 PWRC Driver");
--MODULE_ALIAS("platform:sirfsoc-pwrc");
--- 
-2.26.2
-
+T24gU2F0LCBBdWcgMTQsIDIwMjEgYXQgMDY6NTE6MjlQTSArMDgwMCwgTWlhb2hlIExpbiB3cm90
+ZToNCj4gSWYgdGhlIGZpcnN0IHB0ZSBpcyBlcXVhbCB0byBwb2lzb25lZF9wZm4sIGkuZS4gY2hl
+Y2tfaHdwb2lzb25lZF9lbnRyeSgpDQo+IHJldHVybiAxLCB0aGUgd3JvbmcgcHRlcCAtIDEgd291
+bGQgYmUgcGFzc2VkIHRvIHB0ZV91bm1hcF91bmxvY2soKS4NCj4gDQo+IEZpeGVzOiBhZDljNTlj
+MjQwOTUgKCJtbSxod3BvaXNvbjogc2VuZCBTSUdCVVMgd2l0aCBlcnJvciB2aXJ1dGFsIGFkZHJl
+c3MiKQ0KPiBTaWduZWQtb2ZmLWJ5OiBNaWFvaGUgTGluIDxsaW5taWFvaGVAaHVhd2VpLmNvbT4N
+Cg0KSSBhZ3JlZSB3aXRoIHRoZSBjaGFuZ2UgaXRzZWxmLCBzbw0KDQpBY2tlZC1ieTogTmFveWEg
+SG9yaWd1Y2hpIDxuYW95YS5ob3JpZ3VjaGlAbmVjLmNvbT4NCg0KT25lIHF1ZXN0aW9uIGlzIHRo
+YXQgYWNjb3JkaW5nIHRvICJncmVwIC1yIHB0ZV91bm1hcF91bmxvY2sgLiIgY29tbWFuZCBvdmVy
+DQp3aG9sZSBrZXJuZWwgc291cmNlIGNvZGUsIHB0ZV91bm1hcF91bmxvY2soKSBpcyBjYWxsZWQg
+d2l0aCAicHRlcCAtIDEiIGluIHNvbWUgcGxhY2VzLg0KSSB0aGluayB0aGF0IG5vbmUgb2YgdGhl
+bSBzZWVtcyB0byBoYXZlICJicmVhayBpbiBmb3IgbG9vcCIgaW4gbG9ja2VkIHBlcmlvZCwNCnNv
+IHRoZSBzYW1lIHByb2JsZW0gZG9lcyBub3Qgb2NjdXIgdGhlcmUuICBCdXQgSSdtIHN0aWxsIG5v
+dCBzdXJlIHdoeSBzb21lIHBsYWNlDQpjYWxsIHdpdGggInB0ZXAgLSAxIiBhbmQgdGhlIG90aGVy
+cyBjYWxsIHdpdGggcHRlIHJldHVybmVkIGJ5IHB0ZV9vZmZzZXRfbWFwX2xvY2soKS4=
