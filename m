@@ -2,733 +2,387 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23CFC3EEE7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 16:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC9E3EEE84
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 16:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237944AbhHQO2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 10:28:14 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:46279 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235263AbhHQO2K (ORCPT
+        id S237840AbhHQOaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 10:30:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239844AbhHQO3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 10:28:10 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629210457; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=4FQReIhbp+bOxzpweHofdKWlDW4mfy0YzZBAlUKDs/U=; b=PWCW9p034pdo1Tt2lotqFtoMZmNFmZu3NcVIlHKGcedCb2vuLai98ZrOv9ubx5pnrD1GLhcX
- G3+GeK8um/IulnwvQc1wT/P9lmy91Nn6vVjD/ZWzFMsCs1RnbIeFX5O3a1osHkkbhR0tuafd
- CzMDvs+Bssqoh+7WvKCNO4L3aLU=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 611bc74466ff10790447e5e2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 17 Aug 2021 14:27:16
- GMT
-Sender: luoj=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 18A01C4360C; Tue, 17 Aug 2021 14:27:16 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.3] (unknown [183.192.232.153])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: luoj)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7504DC4338F;
-        Tue, 17 Aug 2021 14:27:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 7504DC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH] net: phy: add qca8081 ethernet phy driver
-To:     Heiner Kallweit <hkallweit1@gmail.com>, andrew@lunn.ch,
-        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        sricharan@codeaurora.org
-References: <20210816113440.22290-1-luoj@codeaurora.org>
- <7cc7beda-553e-04d0-6158-d1ed9f6b71bd@gmail.com>
-From:   Jie Luo <luoj@codeaurora.org>
-Message-ID: <ce8954e1-3ee4-62f8-ed68-07772c0eaa91@codeaurora.org>
-Date:   Tue, 17 Aug 2021 22:27:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 17 Aug 2021 10:29:43 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59963C0613C1;
+        Tue, 17 Aug 2021 07:29:06 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id be20so32134693oib.8;
+        Tue, 17 Aug 2021 07:29:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ndrJpz0Hl8KtUy1gsyzdUrQjEaLMnHBV4TdvfVbpfQc=;
+        b=Xao4XokWGO6fa2+V6AySWzt2xprivqlOJULbnf6UPFdb76E4GhQ4ePzfI77bCZsjh5
+         rN6cvBpEYwr2Y2Le4Du0UKhojYDp51NzIbtpghxXEs9WJDsHrScGYW+aySeIQ1ALaPQD
+         cojA2FoHUFjR+ko0UWXYdk2Gz9kCQA34n3cWLIID5H9JWhnfBdzIvb7sY46QSEK+CC/o
+         3ztG+6/dkOMGtpX/9WXe6IkSjWrZ91km44lCYgq8n1w5qf2jhnaVDWvrgje2ZGj24QzU
+         chVQG+IdIe6Be0zp9TyLVqb1yjW0I/JFjrg5NlJ0tib6aX8qwJ0HYxZLVESdpehXOkkJ
+         z5uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ndrJpz0Hl8KtUy1gsyzdUrQjEaLMnHBV4TdvfVbpfQc=;
+        b=pd6jII1hZy1p/BPG0PdlGd5upocqYqR00DAPk69Yxf0GwhShVX4tG8IPbe9qFQob6k
+         Bl5YUo15ny8L9WTr93SiTWcsc9fd0997GoHglUfT0e27yLoBL82P1sUdRaXXN5BUj0xa
+         kG8ZStAp/e1hXwulUi5WNEXvOSPnYa2OM7R6m+aKGPKtr3fOH5fSM85KN7iul5u6TH7l
+         urSxHQZVRFXwVJt/Nue79NFWPAgvqLvPK5ZONlJ6gHkj9cUnuKI7Qxn2BhxmZF3G9mBp
+         1qFoEJckufeJwjoLQo9zCtQnhHesi6IXVcAmPaw6cIuvISH3gL/nc3btEx40NMEsU8bg
+         cviQ==
+X-Gm-Message-State: AOAM530AlrMv4DjicWdASqNTOodH+LQahyGo1BklWlnrmEeNes8OQXTb
+        OSYiC5WHUKBKHZN5DU3UBUPsLam1/N8=
+X-Google-Smtp-Source: ABdhPJyK+oMZ/CeAEW+BKoD1u0Z6RCXu7gVz0Ve7xPOHylso8Mtjo2PMcz5Jtdvtmz4PDg2vxBJKww==
+X-Received: by 2002:a05:6808:114c:: with SMTP id u12mr2692649oiu.72.1629210545360;
+        Tue, 17 Aug 2021 07:29:05 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id bg9sm499958oib.26.2021.08.17.07.29.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Aug 2021 07:29:04 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] watchdog: remove dead iop watchdog timer driver
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210817100845.11626-1-lukas.bulwahn@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <bfce87b6-72c8-7121-ae53-2894e7e6d349@roeck-us.net>
+Date:   Tue, 17 Aug 2021 07:29:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <7cc7beda-553e-04d0-6158-d1ed9f6b71bd@gmail.com>
+In-Reply-To: <20210817100845.11626-1-lukas.bulwahn@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/17/21 3:08 AM, Lukas Bulwahn wrote:
+> Commit 59d3ae9a5bf6 ("ARM: remove Intel iop33x and iop13xx support")
+> removes the config ARCH_IOP13XX in ./arch/arm/Kconfig.
+> 
+> Hence, since then, the corresponding iop watchdog timer driver is dead
+> code. Remove this dead driver.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-On 8/16/2021 11:27 PM, Heiner Kallweit wrote:
-> On 16.08.2021 13:34, Luo Jie wrote:
->> qca8081 is industry’s lowest cost and power 1-port 2.5G/1G Ethernet PHY
->> chip, which implements SGMII/SGMII+ for interface to SoC.
->>
->> Signed-off-by: Luo Jie <luoj@codeaurora.org>
->> ---
->>   drivers/net/phy/Kconfig   |   6 +
->>   drivers/net/phy/Makefile  |   1 +
->>   drivers/net/phy/qca808x.c | 573 ++++++++++++++++++++++++++++++++++++++
->>   3 files changed, 580 insertions(+)
->>   create mode 100644 drivers/net/phy/qca808x.c
->>
->> diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
->> index c56f703ae998..26cb1c2ffd17 100644
->> --- a/drivers/net/phy/Kconfig
->> +++ b/drivers/net/phy/Kconfig
->> @@ -343,3 +343,9 @@ endif # PHYLIB
->>   config MICREL_KS8995MA
->>   	tristate "Micrel KS8995MA 5-ports 10/100 managed Ethernet switch"
->>   	depends on SPI
->> +
->> +config QCA808X_PHY
->> +	tristate "Qualcomm Atheros QCA808X PHYs"
->> +	depends on REGULATOR
->> +	help
->> +	  Currently supports the QCA8081 model
->> diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
->> index 172bb193ae6a..9ef477d79588 100644
->> --- a/drivers/net/phy/Makefile
->> +++ b/drivers/net/phy/Makefile
->> @@ -84,3 +84,4 @@ obj-$(CONFIG_STE10XP)		+= ste10Xp.o
->>   obj-$(CONFIG_TERANETICS_PHY)	+= teranetics.o
->>   obj-$(CONFIG_VITESSE_PHY)	+= vitesse.o
->>   obj-$(CONFIG_XILINX_GMII2RGMII) += xilinx_gmii2rgmii.o
->> +obj-$(CONFIG_QCA808X_PHY)	+= qca808x.o
->> diff --git a/drivers/net/phy/qca808x.c b/drivers/net/phy/qca808x.c
->> new file mode 100644
->> index 000000000000..6cb8abae8c8f
->> --- /dev/null
->> +++ b/drivers/net/phy/qca808x.c
->> @@ -0,0 +1,573 @@
->> +// SPDX-License-Identifier: GPL-2.0+
->> +/*
->> + * Driver for Qualcomm QCA808x PHY
->> + * Author: Luo Jie <luoj@codeaurora.org>
->> + */
->> +
->> +#include <linux/module.h>
->> +#include <linux/etherdevice.h>
->> +#include <linux/phy.h>
->> +#include <linux/bitfield.h>
->> +
->> +#define QCA8081_PHY_ID					0x004DD101
->> +
->> +/* MII special status */
->> +#define QCA808X_PHY_SPEC_STATUS				0x11
->> +#define QCA808X_STATUS_FULL_DUPLEX			BIT(13)
->> +#define QCA808X_STATUS_LINK_PASS			BIT(10)
->> +#define QCA808X_STATUS_SPEED_MASK			GENMASK(9, 7)
->> +#define QCA808X_STATUS_SPEED_100MBS			1
->> +#define QCA808X_STATUS_SPEED_1000MBS			2
->> +#define QCA808X_STATUS_SPEED_2500MBS			4
->> +
->> +/* MII interrupt enable & status */
->> +#define QCA808X_PHY_INTR_MASK				0x12
->> +#define QCA808X_PHY_INTR_STATUS				0x13
->> +#define QCA808X_INTR_ENABLE_FAST_RETRAIN_FAIL		BIT(15)
->> +#define QCA808X_INTR_ENABLE_SPEED_CHANGED		BIT(14)
->> +#define QCA808X_INTR_ENABLE_DUPLEX_CHANGED		BIT(13)
->> +#define QCA808X_INTR_ENABLE_PAGE_RECEIVED		BIT(12)
->> +#define QCA808X_INTR_ENABLE_LINK_FAIL			BIT(11)
->> +#define QCA808X_INTR_ENABLE_LINK_SUCCESS		BIT(10)
->> +#define QCA808X_INTR_ENABLE_POE				BIT(1)
->> +#define QCA808X_INTR_ENABLE_WOL				BIT(0)
->> +
->> +/* MII DBG address & data */
->> +#define QCA808X_PHY_DEBUG_ADDR				0x1d
->> +#define QCA808X_PHY_DEBUG_DATA				0x1e
->> +
->> +/* Conifg seed */
->> +#define QCA808X_PHY_DEBUG_LOCAL_SEED			9
->> +#define QCA808X_MASTER_SLAVE_SEED_ENABLE		BIT(1)
->> +#define QCA808X_MASTER_SLAVE_SEED_CFG			GENMASK(12, 2)
->> +#define QCA808X_MASTER_SLAVE_SEED_RANGE			0x32
->> +
->> +/* ADC threshold */
->> +#define QCA808X_PHY_DEBUG_ADC_THRESHOLD			0x2c80
->> +#define QCA808X_ADC_THRESHOLD_MASK			GENMASK(7, 0)
->> +#define QCA808X_ADC_THRESHOLD_80MV			0
->> +#define QCA808X_ADC_THRESHOLD_100MV			0xf0
->> +#define QCA808X_ADC_THRESHOLD_200MV			0x0f
->> +#define QCA808X_ADC_THRESHOLD_300MV			0xff
->> +
->> +/* PMA control */
->> +#define QCA808X_PHY_MMD1_PMA_CONTROL			0x0
->> +#define QCA808X_PMA_CONTROL_SPEED_MASK			(BIT(13) | BIT(6))
->> +#define QCA808X_PMA_CONTROL_2500M			(BIT(13) | BIT(6))
->> +#define QCA808X_PMA_CONTROL_1000M			BIT(6)
->> +#define QCA808X_PMA_CONTROL_100M			BIT(13)
->> +#define QCA808X_PMA_CONTROL_10M				0x0
->> +
->> +/* PMA capable */
->> +#define QCA808X_PHY_MMD1_PMA_CAP_REG			0x4
->> +#define QCA808X_STATUS_2500T_FD_CAPS			BIT(13)
->> +
->> +/* PMA type */
->> +#define QCA808X_PHY_MMD1_PMA_TYPE			0x7
->> +#define QCA808X_PMA_TYPE_MASK				GENMASK(5, 0)
->> +#define QCA808X_PMA_TYPE_2500M				0x30
->> +#define QCA808X_PMA_TYPE_1000M				0xc
->> +#define QCA808X_PMA_TYPE_100M				0xe
->> +#define QCA808X_PMA_TYPE_10M				0xf
->> +
->> +/* CLD control */
->> +#define QCA808X_PHY_MMD3_ADDR_CLD_CTRL7			0x8007
->> +#define QCA808X_8023AZ_AFE_CTRL_MASK			GENMASK(8, 4)
->> +#define QCA808X_8023AZ_AFE_EN				0x90
->> +
->> +/* AZ control */
->> +#define QCA808X_PHY_MMD3_AZ_TRAINING_CTRL		0x8008
->> +#define QCA808X_MMD3_AZ_TRAINING_VAL			0x1c32
->> +
->> +/* WOL control */
->> +#define QCA808X_PHY_MMD3_WOL_CTRL			0x8012
->> +#define QCA808X_WOL_EN					BIT(5)
->> +
->> +#define QCA808X_PHY_MMD3_LOCAL_MAC_ADDR_0_15_OFFSET	0x804c
->> +#define QCA808X_PHY_MMD3_LOCAL_MAC_ADDR_16_31_OFFSET	0x804b
->> +#define QCA808X_PHY_MMD3_LOCAL_MAC_ADDR_32_47_OFFSET	0x804a
->> +
->> +/* AN 2.5G */
->> +#define QCA808X_PHY_MMD7_AUTONEGOTIATION_CONTROL	0x20
->> +#define QCA808X_ADVERTISE_2500FULL			BIT(7)
->> +#define QCA808X_FAST_RETRAIN_2500BT			BIT(5)
->> +#define QCA808X_ADV_LOOP_TIMING				BIT(0)
->> +
->> +/* Fast retrain related registers */
->> +#define QCA808X_PHY_MMD1_FAST_RETRAIN_STATUS_CTL	0x93
->> +#define QCA808X_FAST_RETRAIN_CTRL			0x1
->> +
->> +#define QCA808X_PHY_MMD1_MSE_THRESHOLD_20DB		0x8014
->> +#define QCA808X_MSE_THRESHOLD_20DB_VALUE		0x529
->> +
->> +#define QCA808X_PHY_MMD1_MSE_THRESHOLD_17DB		0x800E
->> +#define QCA808X_MSE_THRESHOLD_17DB_VALUE		0x341
->> +
->> +#define QCA808X_PHY_MMD1_MSE_THRESHOLD_27DB		0x801E
->> +#define QCA808X_MSE_THRESHOLD_27DB_VALUE		0x419
->> +
->> +#define QCA808X_PHY_MMD1_MSE_THRESHOLD_28DB		0x8020
->> +#define QCA808X_MSE_THRESHOLD_28DB_VALUE		0x341
->> +
->> +#define QCA808X_PHY_MMD7_TOP_OPTION1			0x901c
->> +#define QCA808X_TOP_OPTION1_DATA			0x0
->> +
->> +#define QCA808X_PHY_MMD7_ADDR_EEE_LP_ADVERTISEMENT	0x40
->> +#define QCA808X_EEE_ADV_THP				0x8
->> +
->> +#define QCA808X_PHY_MMD3_DEBUG_1			0xa100
->> +#define QCA808X_MMD3_DEBUG_1_VALUE			0x9203
->> +#define QCA808X_PHY_MMD3_DEBUG_2			0xa101
->> +#define QCA808X_MMD3_DEBUG_2_VALUE			0x48ad
->> +#define QCA808X_PHY_MMD3_DEBUG_3			0xa103
->> +#define QCA808X_MMD3_DEBUG_3_VALUE			0x1698
->> +#define QCA808X_PHY_MMD3_DEBUG_4			0xa105
->> +#define QCA808X_MMD3_DEBUG_4_VALUE			0x8001
->> +#define QCA808X_PHY_MMD3_DEBUG_5			0xa106
->> +#define QCA808X_MMD3_DEBUG_5_VALUE			0x1111
->> +#define QCA808X_PHY_MMD3_DEBUG_6			0xa011
->> +#define QCA808X_MMD3_DEBUG_6_VALUE			0x5f85
->> +
->> +static int qca808x_debug_reg_read(struct phy_device *phydev, u16 reg)
->> +{
->> +	int ret;
->> +
->> +	ret = phy_write(phydev, QCA808X_PHY_DEBUG_ADDR, reg);
->> +	if (ret)
->> +		return ret;
->> +
->> +	return phy_read(phydev, QCA808X_PHY_DEBUG_DATA);
->> +}
->> +
->> +static int qca808x_debug_reg_modify(struct phy_device *phydev, u16 reg,
->> +				 u16 mask, u16 val)
->> +{
->> +	u16 phy_data;
->> +	int ret;
->> +
->> +	ret = qca808x_debug_reg_read(phydev, reg);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	phy_data = ret & 0xffff;
->> +	phy_data &= ~mask;
->> +	phy_data |= val;
->> +
->> +	return phy_write(phydev, QCA808X_PHY_DEBUG_DATA, phy_data);
->> +}
->> +
->> +static int qca808x_get_2500caps(struct phy_device *phydev)
->> +{
->> +	int phy_data;
->> +
->> +	phy_data = phy_read_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_PMA_CAP_REG);
->> +
->> +	return (phy_data & QCA808X_STATUS_2500T_FD_CAPS) ? 1 : 0;
->> +}
->> +
->> +static int qca808x_get_features(struct phy_device *phydev)
->> +{
->> +	linkmode_mod_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->supported,
->> +			qca808x_get_2500caps(phydev));
->> +
->> +	return genphy_read_abilities(phydev);
->> +}
->> +
->> +static int qca808x_phy_fast_retrain_cfg(struct phy_device *phydev)
->> +{
->> +	int ret;
->> +
->> +	ret = phy_write_mmd(phydev, MDIO_MMD_AN, QCA808X_PHY_MMD7_AUTONEGOTIATION_CONTROL,
->> +			QCA808X_ADVERTISE_2500FULL |
->> +			QCA808X_FAST_RETRAIN_2500BT |
->> +			QCA808X_ADV_LOOP_TIMING);
->> +	if (ret)
->> +		return ret;
->> +
->> +	phy_write_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_FAST_RETRAIN_STATUS_CTL,
->> +			QCA808X_FAST_RETRAIN_CTRL);
->> +	phy_write_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_MSE_THRESHOLD_20DB,
->> +			QCA808X_MSE_THRESHOLD_20DB_VALUE);
->> +	phy_write_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_MSE_THRESHOLD_17DB,
->> +			QCA808X_MSE_THRESHOLD_17DB_VALUE);
->> +	phy_write_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_MSE_THRESHOLD_27DB,
->> +			QCA808X_MSE_THRESHOLD_27DB_VALUE);
->> +	phy_write_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_MSE_THRESHOLD_28DB,
->> +			QCA808X_MSE_THRESHOLD_28DB_VALUE);
->> +	phy_write_mmd(phydev, MDIO_MMD_AN, QCA808X_PHY_MMD7_ADDR_EEE_LP_ADVERTISEMENT,
->> +			QCA808X_EEE_ADV_THP);
->> +	phy_write_mmd(phydev, MDIO_MMD_AN, QCA808X_PHY_MMD7_TOP_OPTION1,
->> +			QCA808X_TOP_OPTION1_DATA);
->> +	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_1,
->> +			QCA808X_MMD3_DEBUG_1_VALUE);
->> +	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_4,
->> +			QCA808X_MMD3_DEBUG_4_VALUE);
->> +	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_5,
->> +			QCA808X_MMD3_DEBUG_5_VALUE);
->> +	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_3,
->> +			QCA808X_MMD3_DEBUG_3_VALUE);
->> +	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_6,
->> +			QCA808X_MMD3_DEBUG_6_VALUE);
->> +	phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_DEBUG_2,
->> +			QCA808X_MMD3_DEBUG_2_VALUE);
->> +
->> +	return 0;
->> +}
->> +
->> +static int qca808x_phy_ms_random_seed_set(struct phy_device *phydev)
->> +{
->> +	u16 seed_value = (prandom_u32() % QCA808X_MASTER_SLAVE_SEED_RANGE) << 2;
->> +
->> +	return qca808x_debug_reg_modify(phydev, QCA808X_PHY_DEBUG_LOCAL_SEED,
->> +			QCA808X_MASTER_SLAVE_SEED_CFG, seed_value);
->> +}
->> +
->> +static int qca808x_phy_ms_seed_enable(struct phy_device *phydev, bool enable)
->> +{
->> +	u16 seed_enable = 0;
->> +
->> +	if (enable)
->> +		seed_enable = QCA808X_MASTER_SLAVE_SEED_ENABLE;
->> +
->> +	return qca808x_debug_reg_modify(phydev, QCA808X_PHY_DEBUG_LOCAL_SEED,
->> +			QCA808X_MASTER_SLAVE_SEED_ENABLE, seed_enable);
->> +}
->> +
->> +static int qca808x_config_init(struct phy_device *phydev)
->> +{
->> +	int ret;
->> +
->> +	/* Active adc&vga on 802.3az for the link 1000M and 100M */
->> +	ret = phy_modify_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_ADDR_CLD_CTRL7,
->> +			QCA808X_8023AZ_AFE_CTRL_MASK, QCA808X_8023AZ_AFE_EN);
->> +	if (ret)
->> +		return ret;
->> +
->> +	/* Adjust the threshold on 802.3az for the link 1000M */
->> +	ret = phy_write_mmd(phydev, MDIO_MMD_PCS,
->> +			QCA808X_PHY_MMD3_AZ_TRAINING_CTRL, QCA808X_MMD3_AZ_TRAINING_VAL);
->> +	if (ret)
->> +		return ret;
->> +
->> +	/* Config the fast retrain for the link 2500M */
->> +	ret = qca808x_phy_fast_retrain_cfg(phydev);
->> +	if (ret)
->> +		return ret;
->> +
->> +	/* Configure ramdom seed to make phy linked as slave mode for link 2500M */
->> +	ret = qca808x_phy_ms_random_seed_set(phydev);
->> +	if (ret)
->> +		return ret;
->> +
->> +	/* Enable seed */
->> +	ret = qca808x_phy_ms_seed_enable(phydev, true);
->> +	if (ret)
->> +		return ret;
->> +
->> +	/* Configure adc threshold as 100mv for the link 10M */
->> +	return qca808x_debug_reg_modify(phydev, QCA808X_PHY_DEBUG_ADC_THRESHOLD,
->> +			QCA808X_ADC_THRESHOLD_MASK, QCA808X_ADC_THRESHOLD_100MV);
->> +}
->> +
->> +static int qca808x_ack_interrupt(struct phy_device *phydev)
->> +{
->> +	int ret;
->> +
->> +	ret = phy_read(phydev, QCA808X_PHY_INTR_STATUS);
->> +
->> +	return (ret < 0) ? ret : 0;
->> +}
->> +
->> +static int qca808x_config_intr(struct phy_device *phydev)
->> +{
->> +	int ret;
->> +	int intr_ctl = 0;
->> +
->> +	if (phydev->interrupts == PHY_INTERRUPT_ENABLED) {
->> +		ret = qca808x_ack_interrupt(phydev);
->> +		if (ret)
->> +			return ret;
->> +
->> +		intr_ctl = phy_read(phydev, QCA808X_PHY_INTR_MASK);
->> +		if (intr_ctl < 0)
->> +			return intr_ctl;
->> +
->> +		intr_ctl |= QCA808X_INTR_ENABLE_FAST_RETRAIN_FAIL |
->> +			QCA808X_INTR_ENABLE_SPEED_CHANGED |
->> +			QCA808X_INTR_ENABLE_DUPLEX_CHANGED |
->> +			QCA808X_INTR_ENABLE_LINK_FAIL |
->> +			QCA808X_INTR_ENABLE_LINK_SUCCESS;
-> Do you actually need all these interrupt sources? Your interrupt handler
-> does standard link change handling only.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-Hi Heiner,
+> ---
+>   drivers/watchdog/Kconfig   |  16 ---
+>   drivers/watchdog/Makefile  |   1 -
+>   drivers/watchdog/iop_wdt.c | 250 -------------------------------------
+>   3 files changed, 267 deletions(-)
+>   delete mode 100644 drivers/watchdog/iop_wdt.c
+> 
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index 0bc7046ab942..bcfb94064c7d 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -573,22 +573,6 @@ config PNX4008_WATCHDOG
+>   
+>   	  Say N if you are unsure.
+>   
+> -config IOP_WATCHDOG
+> -	tristate "IOP Watchdog"
+> -	depends on ARCH_IOP13XX
+> -	select WATCHDOG_NOWAYOUT if (ARCH_IOP32X || ARCH_IOP33X)
+> -	help
+> -	  Say Y here if to include support for the watchdog timer
+> -	  in the Intel IOP3XX & IOP13XX I/O Processors.  This driver can
+> -	  be built as a module by choosing M. The module will
+> -	  be called iop_wdt.
+> -
+> -	  Note: The IOP13XX watchdog does an Internal Bus Reset which will
+> -	  affect both cores and the peripherals of the IOP.  The ATU-X
+> -	  and/or ATUe configuration registers will remain intact, but if
+> -	  operating as an Root Complex and/or Central Resource, the PCI-X
+> -	  and/or PCIe busses will also be reset.  THIS IS A VERY BIG HAMMER.
+> -
+>   config DAVINCI_WATCHDOG
+>   	tristate "DaVinci watchdog"
+>   	depends on ARCH_DAVINCI || ARCH_KEYSTONE || COMPILE_TEST
+> diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
+> index abaf2ebd814e..a5ecf2287685 100644
+> --- a/drivers/watchdog/Makefile
+> +++ b/drivers/watchdog/Makefile
+> @@ -56,7 +56,6 @@ obj-$(CONFIG_SAMA5D4_WATCHDOG) += sama5d4_wdt.o
+>   obj-$(CONFIG_DW_WATCHDOG) += dw_wdt.o
+>   obj-$(CONFIG_EP93XX_WATCHDOG) += ep93xx_wdt.o
+>   obj-$(CONFIG_PNX4008_WATCHDOG) += pnx4008_wdt.o
+> -obj-$(CONFIG_IOP_WATCHDOG) += iop_wdt.o
+>   obj-$(CONFIG_DAVINCI_WATCHDOG) += davinci_wdt.o
+>   obj-$(CONFIG_K3_RTI_WATCHDOG) += rti_wdt.o
+>   obj-$(CONFIG_ORION_WATCHDOG) += orion_wdt.o
+> diff --git a/drivers/watchdog/iop_wdt.c b/drivers/watchdog/iop_wdt.c
+> deleted file mode 100644
+> index 6bf68d4750de..000000000000
+> --- a/drivers/watchdog/iop_wdt.c
+> +++ /dev/null
+> @@ -1,250 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0-only
+> -/*
+> - * drivers/char/watchdog/iop_wdt.c
+> - *
+> - * WDT driver for Intel I/O Processors
+> - * Copyright (C) 2005, Intel Corporation.
+> - *
+> - * Based on ixp4xx driver, Copyright 2004 (c) MontaVista, Software, Inc.
+> - *
+> - *	Curt E Bruns <curt.e.bruns@intel.com>
+> - *	Peter Milne <peter.milne@d-tacq.com>
+> - *	Dan Williams <dan.j.williams@intel.com>
+> - */
+> -
+> -#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> -
+> -#include <linux/module.h>
+> -#include <linux/kernel.h>
+> -#include <linux/fs.h>
+> -#include <linux/init.h>
+> -#include <linux/device.h>
+> -#include <linux/miscdevice.h>
+> -#include <linux/watchdog.h>
+> -#include <linux/uaccess.h>
+> -#include <mach/hardware.h>
+> -
+> -static bool nowayout = WATCHDOG_NOWAYOUT;
+> -static unsigned long wdt_status;
+> -static unsigned long boot_status;
+> -static DEFINE_SPINLOCK(wdt_lock);
+> -
+> -#define WDT_IN_USE		0
+> -#define WDT_OK_TO_CLOSE		1
+> -#define WDT_ENABLED		2
+> -
+> -static unsigned long iop_watchdog_timeout(void)
+> -{
+> -	return (0xffffffffUL / get_iop_tick_rate());
+> -}
+> -
+> -/**
+> - * wdt_supports_disable - determine if we are accessing a iop13xx watchdog
+> - * or iop3xx by whether it has a disable command
+> - */
+> -static int wdt_supports_disable(void)
+> -{
+> -	int can_disable;
+> -
+> -	if (IOP_WDTCR_EN_ARM != IOP_WDTCR_DIS_ARM)
+> -		can_disable = 1;
+> -	else
+> -		can_disable = 0;
+> -
+> -	return can_disable;
+> -}
+> -
+> -static void wdt_enable(void)
+> -{
+> -	/* Arm and enable the Timer to starting counting down from 0xFFFF.FFFF
+> -	 * Takes approx. 10.7s to timeout
+> -	 */
+> -	spin_lock(&wdt_lock);
+> -	write_wdtcr(IOP_WDTCR_EN_ARM);
+> -	write_wdtcr(IOP_WDTCR_EN);
+> -	spin_unlock(&wdt_lock);
+> -}
+> -
+> -/* returns 0 if the timer was successfully disabled */
+> -static int wdt_disable(void)
+> -{
+> -	/* Stop Counting */
+> -	if (wdt_supports_disable()) {
+> -		spin_lock(&wdt_lock);
+> -		write_wdtcr(IOP_WDTCR_DIS_ARM);
+> -		write_wdtcr(IOP_WDTCR_DIS);
+> -		clear_bit(WDT_ENABLED, &wdt_status);
+> -		spin_unlock(&wdt_lock);
+> -		pr_info("Disabled\n");
+> -		return 0;
+> -	} else
+> -		return 1;
+> -}
+> -
+> -static int iop_wdt_open(struct inode *inode, struct file *file)
+> -{
+> -	if (test_and_set_bit(WDT_IN_USE, &wdt_status))
+> -		return -EBUSY;
+> -
+> -	clear_bit(WDT_OK_TO_CLOSE, &wdt_status);
+> -	wdt_enable();
+> -	set_bit(WDT_ENABLED, &wdt_status);
+> -	return stream_open(inode, file);
+> -}
+> -
+> -static ssize_t iop_wdt_write(struct file *file, const char *data, size_t len,
+> -		  loff_t *ppos)
+> -{
+> -	if (len) {
+> -		if (!nowayout) {
+> -			size_t i;
+> -
+> -			clear_bit(WDT_OK_TO_CLOSE, &wdt_status);
+> -
+> -			for (i = 0; i != len; i++) {
+> -				char c;
+> -
+> -				if (get_user(c, data + i))
+> -					return -EFAULT;
+> -				if (c == 'V')
+> -					set_bit(WDT_OK_TO_CLOSE, &wdt_status);
+> -			}
+> -		}
+> -		wdt_enable();
+> -	}
+> -	return len;
+> -}
+> -
+> -static const struct watchdog_info ident = {
+> -	.options = WDIOF_CARDRESET | WDIOF_MAGICCLOSE | WDIOF_KEEPALIVEPING,
+> -	.identity = "iop watchdog",
+> -};
+> -
+> -static long iop_wdt_ioctl(struct file *file,
+> -				unsigned int cmd, unsigned long arg)
+> -{
+> -	int options;
+> -	int ret = -ENOTTY;
+> -	int __user *argp = (int __user *)arg;
+> -
+> -	switch (cmd) {
+> -	case WDIOC_GETSUPPORT:
+> -		if (copy_to_user(argp, &ident, sizeof(ident)))
+> -			ret = -EFAULT;
+> -		else
+> -			ret = 0;
+> -		break;
+> -
+> -	case WDIOC_GETSTATUS:
+> -		ret = put_user(0, argp);
+> -		break;
+> -
+> -	case WDIOC_GETBOOTSTATUS:
+> -		ret = put_user(boot_status, argp);
+> -		break;
+> -
+> -	case WDIOC_SETOPTIONS:
+> -		if (get_user(options, (int *)arg))
+> -			return -EFAULT;
+> -
+> -		if (options & WDIOS_DISABLECARD) {
+> -			if (!nowayout) {
+> -				if (wdt_disable() == 0) {
+> -					set_bit(WDT_OK_TO_CLOSE, &wdt_status);
+> -					ret = 0;
+> -				} else
+> -					ret = -ENXIO;
+> -			} else
+> -				ret = 0;
+> -		}
+> -		if (options & WDIOS_ENABLECARD) {
+> -			wdt_enable();
+> -			ret = 0;
+> -		}
+> -		break;
+> -
+> -	case WDIOC_KEEPALIVE:
+> -		wdt_enable();
+> -		ret = 0;
+> -		break;
+> -
+> -	case WDIOC_GETTIMEOUT:
+> -		ret = put_user(iop_watchdog_timeout(), argp);
+> -		break;
+> -	}
+> -	return ret;
+> -}
+> -
+> -static int iop_wdt_release(struct inode *inode, struct file *file)
+> -{
+> -	int state = 1;
+> -	if (test_bit(WDT_OK_TO_CLOSE, &wdt_status))
+> -		if (test_bit(WDT_ENABLED, &wdt_status))
+> -			state = wdt_disable();
+> -
+> -	/* if the timer is not disabled reload and notify that we are still
+> -	 * going down
+> -	 */
+> -	if (state != 0) {
+> -		wdt_enable();
+> -		pr_crit("Device closed unexpectedly - reset in %lu seconds\n",
+> -			iop_watchdog_timeout());
+> -	}
+> -
+> -	clear_bit(WDT_IN_USE, &wdt_status);
+> -	clear_bit(WDT_OK_TO_CLOSE, &wdt_status);
+> -
+> -	return 0;
+> -}
+> -
+> -static const struct file_operations iop_wdt_fops = {
+> -	.owner = THIS_MODULE,
+> -	.llseek = no_llseek,
+> -	.write = iop_wdt_write,
+> -	.unlocked_ioctl = iop_wdt_ioctl,
+> -	.compat_ioctl = compat_ptr_ioctl,
+> -	.open = iop_wdt_open,
+> -	.release = iop_wdt_release,
+> -};
+> -
+> -static struct miscdevice iop_wdt_miscdev = {
+> -	.minor = WATCHDOG_MINOR,
+> -	.name = "watchdog",
+> -	.fops = &iop_wdt_fops,
+> -};
+> -
+> -static int __init iop_wdt_init(void)
+> -{
+> -	int ret;
+> -
+> -	/* check if the reset was caused by the watchdog timer */
+> -	boot_status = (read_rcsr() & IOP_RCSR_WDT) ? WDIOF_CARDRESET : 0;
+> -
+> -	/* Configure Watchdog Timeout to cause an Internal Bus (IB) Reset
+> -	 * NOTE: An IB Reset will Reset both cores in the IOP342
+> -	 */
+> -	write_wdtsr(IOP13XX_WDTCR_IB_RESET);
+> -
+> -	/* Register after we have the device set up so we cannot race
+> -	   with an open */
+> -	ret = misc_register(&iop_wdt_miscdev);
+> -	if (ret == 0)
+> -		pr_info("timeout %lu sec\n", iop_watchdog_timeout());
+> -
+> -	return ret;
+> -}
+> -
+> -static void __exit iop_wdt_exit(void)
+> -{
+> -	misc_deregister(&iop_wdt_miscdev);
+> -}
+> -
+> -module_init(iop_wdt_init);
+> -module_exit(iop_wdt_exit);
+> -
+> -module_param(nowayout, bool, 0);
+> -MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started");
+> -
+> -MODULE_AUTHOR("Curt E Bruns <curt.e.bruns@intel.com>");
+> -MODULE_DESCRIPTION("iop watchdog timer driver");
+> -MODULE_LICENSE("GPL");
+> 
 
-Thanks for the comments, will check and update it in the next patch.
-
->
->> +		ret = phy_write(phydev, QCA808X_PHY_INTR_MASK, intr_ctl);
->> +	} else {
->> +		ret = phy_write(phydev, QCA808X_PHY_INTR_MASK, intr_ctl);
->> +		if (ret)
->> +			return ret;
->> +
->> +		ret = qca808x_ack_interrupt(phydev);
->> +	}
->> +
->> +	return ret;
->> +}
->> +
->> +static irqreturn_t qca808x_handle_interrupt(struct phy_device *phydev)
->> +{
->> +	int intr_status, intr_mask;
->> +
->> +	intr_status = phy_read(phydev, QCA808X_PHY_INTR_STATUS);
->> +	if (intr_status < 0) {
->> +		phy_error(phydev);
->> +		return IRQ_NONE;
->> +	}
->> +
->> +	intr_mask = phy_read(phydev, QCA808X_PHY_INTR_MASK);
->> +	if (intr_mask < 0) {
->> +		phy_error(phydev);
->> +		return IRQ_NONE;
->> +	}
->> +
->> +	if (!(intr_status & intr_mask))
->> +		return IRQ_NONE;
->> +
->> +	phy_start_machine(phydev);
->> +
-> phy_mac_interrupt() is the correct call here, even though it does the
-> same as phy_start_machine().
-Thanks for the comments, will update to use phy_mac_interrupt() in next 
-patch.
->
->> +	return IRQ_HANDLED;
->> +}
->> +
->> +static int qca808x_set_wol(struct phy_device *phydev, struct ethtool_wolinfo *wol)
->> +{
->> +	struct net_device *ndev = phydev->attached_dev;
->> +	const u8 *mac;
->> +	int ret;
->> +	unsigned int i, offsets[] = {
-> offsets[] should be static const.
->
->> +		QCA808X_PHY_MMD3_LOCAL_MAC_ADDR_32_47_OFFSET,
->> +		QCA808X_PHY_MMD3_LOCAL_MAC_ADDR_16_31_OFFSET,
->> +		QCA808X_PHY_MMD3_LOCAL_MAC_ADDR_0_15_OFFSET,
->> +	};
->> +
->> +	if (!ndev)
->> +		return -ENODEV;
->> +
->> +	if (wol->wolopts & WAKE_MAGIC) {
->> +		mac = (const u8 *) ndev->dev_addr;
->> +		if (!is_valid_ether_addr(mac))
->> +			return -EINVAL;
->> +
->> +		for (i = 0; i < 3; i++)
-> ARRAY_SIZE(offsets) would be better than a magic number. And in general:
-> Instead of the loop, wouldn't it be simpler and better readable to write:
->
-> phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_LOCAL_MAC_ADDR_32_47_OFFSET, mac[1] | (mac[0] < 8));
-> phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_LOCAL_MAC_ADDR_16_31_OFFSET, mac[3] | (mac[2] < 8));
-> phy_write_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_LOCAL_MAC_ADDR_0_15_OFFSET, mac[5] | (mac[4] < 8));
-thanks for the suggestion, will update to take this in the next patch.
->
->> +			phy_write_mmd(phydev, MDIO_MMD_PCS, offsets[i],
->> +				      mac[(i * 2) + 1] | (mac[(i * 2)] << 8));
->> +
->> +		/* clear the pending wol interrupt */
->> +		phy_read(phydev, QCA808X_PHY_INTR_STATUS);
->> +
->> +		ret = phy_modify(phydev, QCA808X_PHY_INTR_MASK, 0, QCA808X_INTR_ENABLE_WOL);
->> +		if (ret)
->> +			return ret;
->> +
->> +		ret = phy_modify_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_WOL_CTRL,
->> +				0, QCA808X_WOL_EN);
->> +	} else {
->> +		ret = phy_modify(phydev, QCA808X_PHY_INTR_MASK, QCA808X_INTR_ENABLE_WOL, 0);
->> +		if (ret)
->> +			return ret;
->> +
->> +		ret = phy_modify_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_WOL_CTRL,
->> +				QCA808X_WOL_EN, 0);
->> +	}
->> +
->> +	return ret;
->> +}
->> +
->> +static void qca808x_get_wol(struct phy_device *phydev, struct ethtool_wolinfo *wol)
->> +{
->> +	int ret;
->> +
->> +	wol->supported = WAKE_MAGIC;
->> +	wol->wolopts = 0;
->> +
->> +	ret = phy_read_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_WOL_CTRL);
->> +	if (ret < 0)
->> +		return;
->> +
->> +	if (ret & QCA808X_WOL_EN)
->> +		wol->wolopts |= WAKE_MAGIC;
->> +}
->> +
->> +static int qca808x_suspend(struct phy_device *phydev)
->> +{
->> +	int ret;
->> +
->> +	ret = phy_read_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_WOL_CTRL);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	if (ret & QCA808X_WOL_EN)
->> +		return 0;
-> This isn't needed, phy_suspend() checks for WoL being enabled.
-will update to use phy_suspend() in next patch, thanks for this comment.
->
->> +
->> +	return genphy_suspend(phydev);
->> +}
->> +
->> +static int qca808x_speed_forced(struct phy_device *phydev)
->> +{
->> +	u16 speed_ctrl, type_ctrl;
->> +	int ret;
->> +
->> +	switch (phydev->speed) {
->> +	case SPEED_2500:
->> +		speed_ctrl = QCA808X_PMA_CONTROL_2500M;
->> +		type_ctrl = QCA808X_PMA_TYPE_2500M;
->> +		break;
->> +	case SPEED_1000:
->> +		speed_ctrl = QCA808X_PMA_CONTROL_1000M;
->> +		type_ctrl = QCA808X_PMA_TYPE_1000M;
->> +		break;
->> +	case SPEED_100:
->> +		speed_ctrl = QCA808X_PMA_CONTROL_100M;
->> +		type_ctrl = QCA808X_PMA_TYPE_100M;
->> +		break;
->> +	default:
->> +		speed_ctrl = QCA808X_PMA_CONTROL_10M;
->> +		type_ctrl = QCA808X_PMA_TYPE_10M;
->> +		break;
->> +	}
->> +
->> +	ret = phy_modify_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_PMA_CONTROL,
->> +			QCA808X_PMA_CONTROL_SPEED_MASK, speed_ctrl);
->> +	if (ret)
->> +		return ret;
->> +
->> +	return phy_modify_mmd(phydev, MDIO_MMD_PMAPMD, QCA808X_PHY_MMD1_PMA_TYPE,
->> +			QCA808X_PMA_TYPE_MASK, type_ctrl);
->> +}
->> +
->> +static int qca808x_config_aneg(struct phy_device *phydev)
->> +{
->> +	int phy_ctrl = 0;
->> +	int ret = 0;
->> +
->> +	if (phydev->autoneg != AUTONEG_ENABLE) {
->> +		ret = genphy_setup_forced(phydev);
->> +		if (ret)
->> +			return ret;
->> +
->> +		ret = qca808x_speed_forced(phydev);
->> +	} else {
->> +		ret = __genphy_config_aneg(phydev, ret);
->> +		if (ret)
->> +			return ret;
->> +
->> +		if (linkmode_test_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->advertising))
->> +			phy_ctrl = QCA808X_ADVERTISE_2500FULL;
->> +
->> +		ret = phy_modify_mmd(phydev, MDIO_MMD_AN, QCA808X_PHY_MMD7_AUTONEGOTIATION_CONTROL,
->> +				QCA808X_ADVERTISE_2500FULL, phy_ctrl);
->> +	}
->> +
->> +	return ret;
->> +}
->> +
->> +static int qca808x_get_speed(struct phy_device *phydev)
->> +{
->> +	int ret = phy_read(phydev, QCA808X_PHY_SPEC_STATUS);
->> +
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	switch (FIELD_GET(QCA808X_STATUS_SPEED_MASK, ret)) {
->> +	case QCA808X_STATUS_SPEED_2500MBS:
->> +		phydev->speed = SPEED_2500;
->> +		break;
->> +	case QCA808X_STATUS_SPEED_1000MBS:
->> +		phydev->speed = SPEED_1000;
->> +		break;
->> +	case QCA808X_STATUS_SPEED_100MBS:
->> +		phydev->speed = SPEED_100;
->> +		break;
->> +	default:
->> +		phydev->speed = SPEED_10;
->> +		break;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static int qca808x_read_status(struct phy_device *phydev)
->> +{
->> +	int ret;
->> +
->> +	ret = genphy_read_status(phydev);
->> +	if (ret)
->> +		return ret;
->> +
->> +	if (!phydev->link) {
-> Why is all the following needed in read_status() if link is down?
-> When using polling mode then this would be executed with each poll
-> if link is down.
-
-Hi Heiner,
-
-thanks for the review comments, will move the 
-ETHTOOL_LINK_MODE_2500baseT_Full_BIT out of
-
-the condition if link is down.
-
-About the master/slave configuration, the PHY need to configure a 
-different lower SEED value to
-
-make PHY linked as the SLAVE mode to fix some IOT issue that leads to 
-the link down.
-
-if there is a master/slave configuration fault detected, then disable 
-the SEED config.
-
->> +		ret = phy_read_mmd(phydev, MDIO_MMD_AN, MDIO_AN_10GBT_STAT);
->> +		if (ret < 0)
->> +			return ret;
->> +
->> +		linkmode_mod_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->lp_advertising,
->> +				ret & MDIO_AN_10GBT_STAT_LP2_5G);
->> +
->> +		/* generate random seed as a lower value to make PHY linked as SLAVE easily,
->> +		 * excpet for master/slave configuration fault detected.
->> +		 */
->> +		if (qca808x_get_2500caps(phydev) == 1) {
->> +			ret = phy_read(phydev, MII_STAT1000);
->> +			if (ret < 0)
->> +				return ret;
->> +
->> +			if (ret & LPA_1000MSFAIL) {
->> +				qca808x_phy_ms_seed_enable(phydev, false);
->> +			} else {
->> +				qca808x_phy_ms_random_seed_set(phydev);
->> +				qca808x_phy_ms_seed_enable(phydev, true);
->> +			}
->> +		}
->> +	}
->> +
->> +	return qca808x_get_speed(phydev);
->> +}
->> +
->> +static int qca808x_soft_reset(struct phy_device *phydev)
->> +{
->> +	int ret;
->> +
->> +	ret = genphy_soft_reset(phydev);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	if (phydev->autoneg == AUTONEG_DISABLE) {
-> Isn't this what genphy_soft_reset() does anyway?
-Thanks Heiner for the comments, genphy_soft_reset does not support 2.5G, 
-the qca8081 may need to force 2.5G here.
->
->> +		ret = qca808x_speed_forced(phydev);
->> +		if (ret)
->> +			return ret;
->> +	}
->> +
->> +	return qca808x_phy_ms_seed_enable(phydev, true);
->> +}
->> +
->> +static struct phy_driver qca808x_phy_driver[] = {
->> +	{
->> +		PHY_ID_MATCH_EXACT(QCA8081_PHY_ID),
->> +		.name			= "QCA8081 PHY",
->> +		.get_features		= qca808x_get_features,
->> +		.config_init		= qca808x_config_init,
->> +		.read_status		= qca808x_read_status,
->> +		.soft_reset		= qca808x_soft_reset,
->> +		.config_intr		= qca808x_config_intr,
->> +		.handle_interrupt	= qca808x_handle_interrupt,
->> +		.config_aneg		= qca808x_config_aneg,
->> +		.set_wol		= qca808x_set_wol,
->> +		.get_wol		= qca808x_get_wol,
->> +		.suspend		= qca808x_suspend,
->> +		.resume			= genphy_resume,
->> +	},
->> +};
->> +module_phy_driver(qca808x_phy_driver);
->> +
->> +static struct mdio_device_id __maybe_unused qca808x_phy_tbl[] = {
->> +	{ PHY_ID_MATCH_EXACT(QCA8081_PHY_ID) },
->> +	{ },
->> +};
->> +MODULE_DEVICE_TABLE(mdio, qca808x_phy_tbl);
->> +
->> +MODULE_DESCRIPTION("Qualcomm Technologies, Inc. QCA8081 PHY driver");
->> +MODULE_AUTHOR("Luo Jie");
->> +MODULE_LICENSE("GPL");
->>
