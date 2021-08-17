@@ -2,238 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB32E3EF046
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 18:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2742A3EF049
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 18:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbhHQQiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 12:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbhHQQiC (ORCPT
+        id S230204AbhHQQk1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Aug 2021 12:40:27 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:42109 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229477AbhHQQk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 12:38:02 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F47AC061764;
-        Tue, 17 Aug 2021 09:37:29 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id t9so42540325lfc.6;
-        Tue, 17 Aug 2021 09:37:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YXS2wDrNmRySEhsIbVUMKvb+Ici86y1kGrWc6irGTdI=;
-        b=Y5hr7uJGS6odntPRfVaTWLcpzoeH263nrltEvmqFinf6ceo9aZlDCiHDsAr9GmrupU
-         IRNg6FoDEviyUm7NpnYSEV25dvz4apQiNUL7cwUeGZypnGtOAmo4cCb9OTV2d8dISB9B
-         KoDLzDWnsTuygAvGuViTxIx+gaP0sxUY8WBU2GJzb83RLT0jNdEwmZ6Sc074HPfdh3Qa
-         P5FLMkj130JSNqgYvgAMB1sJxe5c42BzcDLNCAztau3LgUblSgqPBTx7Tfpzyccg+n+8
-         lgevVSZ0ixMIVmeiLQ8Q1Pne1j8WM2LmBkbfx9QprZmHXptXfg737vYNKQHSkzE0B4Ex
-         BVqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YXS2wDrNmRySEhsIbVUMKvb+Ici86y1kGrWc6irGTdI=;
-        b=arCKEKrjwmAmWMoyiu8y/nej5sQBI+dYZHK29hwu8kH/pm4qt2wa/cJIecMKC46FM0
-         +BRgt4REncLZrIo1GAHtcjC6m9vzhTtfn/WQxAirKeeYPUTEwf+Qsw9PvSD9A2WHmtnm
-         Mu6K7svpr8cpa9QIeNg2GpmuVNnlKARM1/gAVWZg6GBS0hlw+2GlKJ50ycTwgD0gfjqK
-         jxIWVY4aJYOI4AC0QFbT1Tm3z6Ogx/iTX2EdC+M/GzPGb+3qzld0Ov3qZ/SMtONBE7Gu
-         C2n6yIRjT/TsEYVaMd0JjI4cH+NcIvSOffvJhbIIY3pkIMNVwh/bHjwqY/g41SgQyVh+
-         4plw==
-X-Gm-Message-State: AOAM532tsBJY1Ia9atkrcCQbetp7tHGpkDCiU9fHqtGuReV2qc3bS6BX
-        tQAyJoXh7NlJy4nwXnbpw6k=
-X-Google-Smtp-Source: ABdhPJzpbGmHrwh8UAjjsCRvYXj+APQyDZxQPQSAbma10H9Mf3UHV2kID3HT1nzwpSYt9itchv3pjw==
-X-Received: by 2002:a05:6512:3f16:: with SMTP id y22mr2966368lfa.356.1629218247319;
-        Tue, 17 Aug 2021 09:37:27 -0700 (PDT)
-Received: from localhost.localdomain ([46.235.67.232])
-        by smtp.gmail.com with ESMTPSA id u22sm255382lff.270.2021.08.17.09.37.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 09:37:26 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, linux@rempel-privat.de,
-        andrew@lunn.ch, himadrispandya@gmail.com
-Cc:     robert.foss@collabora.com, freddy@asix.com.tw,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+a631ec9e717fb0423053@syzkaller.appspotmail.com
-Subject: [PATCH v4] net: asix: fix uninit value bugs
-Date:   Tue, 17 Aug 2021 19:37:23 +0300
-Message-Id: <20210817163723.19040-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <YRfjFr9GbcoJrycc@lunn.ch>
-References: <YRfjFr9GbcoJrycc@lunn.ch>
+        Tue, 17 Aug 2021 12:40:27 -0400
+Received: (Authenticated sender: gregory.clement@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 70C36FF802;
+        Tue, 17 Aug 2021 16:39:51 +0000 (UTC)
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     Marek =?utf-8?Q?Beh=C3=BAn?= <kabel@kernel.org>,
+        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/2] arm64: dts: marvell: armada-37xx: Extend PCIe MEM
+ space
+In-Reply-To: <20210624215546.4015-3-pali@kernel.org>
+References: <20210624215546.4015-1-pali@kernel.org>
+ <20210624215546.4015-3-pali@kernel.org>
+Date:   Tue, 17 Aug 2021 18:39:50 +0200
+Message-ID: <87bl5wyqi1.fsf@BL-laptop>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reported uninit-value in asix_mdio_read(). The problem was in
-missing error handling. asix_read_cmd() should initialize passed stack
-variable smsr, but it can fail in some cases. Then while condidition
-checks possibly uninit smsr variable.
+Pali Rohár <pali@kernel.org> writes:
 
-Since smsr is uninitialized stack variable, driver can misbehave,
-because smsr will be random in case of asix_read_cmd() failure.
-Fix it by adding error handling and just continue the loop instead of
-checking uninit value.
+> Current PCIe MEM space of size 16 MB is not enough for some combination
+> of PCIe cards (e.g. NVMe disk together with ath11k wifi card). ARM Trusted
+> Firmware for Armada 3700 platform already assigns 128 MB for PCIe window,
+> so extend PCIe MEM space to the end of 128 MB PCIe window which allows to
+> allocate more PCIe BARs for more PCIe cards.
+>
+> Without this change some combination of PCIe cards cannot be used and
+> kernel show error messages in dmesg during initialization:
+>
+>     pci 0000:00:00.0: BAR 8: no space for [mem size 0x01800000]
+>     pci 0000:00:00.0: BAR 8: failed to assign [mem size 0x01800000]
+>     pci 0000:00:00.0: BAR 6: assigned [mem 0xe8000000-0xe80007ff pref]
+>     pci 0000:01:00.0: BAR 8: no space for [mem size 0x01800000]
+>     pci 0000:01:00.0: BAR 8: failed to assign [mem size 0x01800000]
+>     pci 0000:02:03.0: BAR 8: no space for [mem size 0x01000000]
+>     pci 0000:02:03.0: BAR 8: failed to assign [mem size 0x01000000]
+>     pci 0000:02:07.0: BAR 8: no space for [mem size 0x00100000]
+>     pci 0000:02:07.0: BAR 8: failed to assign [mem size 0x00100000]
+>     pci 0000:03:00.0: BAR 0: no space for [mem size 0x01000000 64bit]
+>     pci 0000:03:00.0: BAR 0: failed to assign [mem size 0x01000000 64bit]
+>
+> Due to bugs in U-Boot port for Turris Mox, the second range in Turris Mox
+> kernel DTS file for PCIe must start at 16 MB offset. Otherwise U-Boot
+> crashes during loading of kernel DTB file. This bug is present only in
+> U-Boot code for Turris Mox and therefore other Armada 3700 devices are not
+> affected by this bug. Bug is fixed in U-Boot version 2021.07.
+>
+> To not break booting new kernels on existing versions of U-Boot on Turris
+> Mox, use first 16 MB range for IO and second range with rest of PCIe window
+> for MEM.
+>
+> Signed-off-by: Pali Rohár <pali@kernel.org>
 
-Added helper function for checking Host_En bit, since wrong loop was used
-in 4 functions and there is no need in copy-pasting code parts.
+Applied on mvebu/dt64
 
-Cc: Robert Foss <robert.foss@collabora.com>
-Fixes: d9fe64e51114 ("net: asix: Add in_pm parameter")
-Reported-by: syzbot+a631ec9e717fb0423053@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
+Thanks,
 
-Changes in v2:
-	1. Fixed previous wrong approach and changed while loop to for loop
-	2. Reported-and-tested-by: tag removed, since KMSAN tests can be
-	   false positive. Used Reported-by instead.
+Gregory
 
-Changes in v3:
-	1. Addressed uninit value bugs in asix_mdio_write(), asix_mdio_read_nopm()
-	and asix_mdio_write_nopm()
-	2. Moved i after ret to reverse xmas tree style
-	3. Fixed Fixes: tag
+> Fixes: 76f6386b25cc ("arm64: dts: marvell: Add Aardvark PCIe support for Armada 3700")
+> ---
+>  .../boot/dts/marvell/armada-3720-turris-mox.dts | 17 +++++++++++++++++
+>  arch/arm64/boot/dts/marvell/armada-37xx.dtsi    | 11 +++++++++--
+>  2 files changed, 26 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
+> index 53e817c5f6f3..86b3025f174b 100644
+> --- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
+> +++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
+> @@ -134,6 +134,23 @@
+>  	pinctrl-0 = <&pcie_reset_pins &pcie_clkreq_pins>;
+>  	status = "okay";
+>  	reset-gpios = <&gpiosb 3 GPIO_ACTIVE_LOW>;
+> +	/*
+> +	 * U-Boot port for Turris Mox has a bug which always expects that "ranges" DT property
+> +	 * contains exactly 2 ranges with 3 (child) address cells, 2 (parent) address cells and
+> +	 * 2 size cells and also expects that the second range starts at 16 MB offset. If these
+> +	 * conditions are not met then U-Boot crashes during loading kernel DTB file. PCIe address
+> +	 * space is 128 MB long, so the best split between MEM and IO is to use fixed 16 MB window
+> +	 * for IO and the rest 112 MB (64+32+16) for MEM, despite that maximal IO size is just 64 kB.
+> +	 * This bug is not present in U-Boot ports for other Armada 3700 devices and is fixed in
+> +	 * U-Boot version 2021.07. See relevant U-Boot commits (the last one contains fix):
+> +	 * https://source.denx.de/u-boot/u-boot/-/commit/cb2ddb291ee6fcbddd6d8f4ff49089dfe580f5d7
+> +	 * https://source.denx.de/u-boot/u-boot/-/commit/c64ac3b3185aeb3846297ad7391fc6df8ecd73bf
+> +	 * https://source.denx.de/u-boot/u-boot/-/commit/4a82fca8e330157081fc132a591ebd99ba02ee33
+> +	 */
+> +	#address-cells = <3>;
+> +	#size-cells = <2>;
+> +	ranges = <0x81000000 0 0xe8000000   0 0xe8000000   0 0x01000000   /* Port 0 IO */
+> +		  0x82000000 0 0xe9000000   0 0xe9000000   0 0x07000000>; /* Port 0 MEM */
+>  
+>  	/* enabled by U-Boot if PCIe module is present */
+>  	status = "disabled";
+> diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+> index 7a2df148c6a3..dac3007f2ac1 100644
+> --- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+> +++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+> @@ -488,8 +488,15 @@
+>  			#interrupt-cells = <1>;
+>  			msi-parent = <&pcie0>;
+>  			msi-controller;
+> -			ranges = <0x82000000 0 0xe8000000   0 0xe8000000 0 0x1000000 /* Port 0 MEM */
+> -				  0x81000000 0 0xe9000000   0 0xe9000000 0 0x10000>; /* Port 0 IO*/
+> +			/*
+> +			 * The 128 MiB address range [0xe8000000-0xf0000000] is
+> +			 * dedicated for PCIe and can be assigned to 8 windows
+> +			 * with size a power of two. Use one 64 KiB window for
+> +			 * IO at the end and the remaining seven windows
+> +			 * (totaling 127 MiB) for MEM.
+> +			 */
+> +			ranges = <0x82000000 0 0xe8000000   0 0xe8000000   0 0x07f00000   /* Port 0 MEM */
+> +				  0x81000000 0 0xefff0000   0 0xefff0000   0 0x00010000>; /* Port 0 IO */
+>  			interrupt-map-mask = <0 0 0 7>;
+>  			interrupt-map = <0 0 0 1 &pcie_intc 0>,
+>  					<0 0 0 2 &pcie_intc 1>,
+> -- 
+> 2.20.1
+>
 
-Changes in v4:
-	1. Added helper for checking Host_En bit, since wrong loop was
-	   used in 4 functions. (Suggested by Andrew Lunn)
-
----
- drivers/net/usb/asix_common.c | 70 +++++++++++++++--------------------
- 1 file changed, 30 insertions(+), 40 deletions(-)
-
-diff --git a/drivers/net/usb/asix_common.c b/drivers/net/usb/asix_common.c
-index ac92bc52a85e..38cda590895c 100644
---- a/drivers/net/usb/asix_common.c
-+++ b/drivers/net/usb/asix_common.c
-@@ -63,6 +63,29 @@ void asix_write_cmd_async(struct usbnet *dev, u8 cmd, u16 value, u16 index,
- 			       value, index, data, size);
- }
- 
-+static int asix_check_host_enable(struct usbnet *dev, int in_pm)
-+{
-+	int i, ret;
-+	u8 smsr;
-+
-+	for (i = 0; i < 30; ++i) {
-+		ret = asix_set_sw_mii(dev, in_pm);
-+		if (ret == -ENODEV || ret == -ETIMEDOUT)
-+			break;
-+		usleep_range(1000, 1100);
-+		ret = asix_read_cmd(dev, AX_CMD_STATMNGSTS_REG,
-+				    0, 0, 1, &smsr, in_pm);
-+		if (ret == -ENODEV)
-+			break;
-+		else if (ret < 0)
-+			continue;
-+		else if (smsr & AX_HOST_EN)
-+			break;
-+	}
-+
-+	return ret;
-+}
-+
- static void reset_asix_rx_fixup_info(struct asix_rx_fixup_info *rx)
- {
- 	/* Reset the variables that have a lifetime outside of
-@@ -467,19 +490,11 @@ int asix_mdio_read(struct net_device *netdev, int phy_id, int loc)
- {
- 	struct usbnet *dev = netdev_priv(netdev);
- 	__le16 res;
--	u8 smsr;
--	int i = 0;
- 	int ret;
- 
- 	mutex_lock(&dev->phy_mutex);
--	do {
--		ret = asix_set_sw_mii(dev, 0);
--		if (ret == -ENODEV || ret == -ETIMEDOUT)
--			break;
--		usleep_range(1000, 1100);
--		ret = asix_read_cmd(dev, AX_CMD_STATMNGSTS_REG,
--				    0, 0, 1, &smsr, 0);
--	} while (!(smsr & AX_HOST_EN) && (i++ < 30) && (ret != -ENODEV));
-+
-+	ret = asix_check_host_enable(dev, 0);
- 	if (ret == -ENODEV || ret == -ETIMEDOUT) {
- 		mutex_unlock(&dev->phy_mutex);
- 		return ret;
-@@ -505,23 +520,14 @@ static int __asix_mdio_write(struct net_device *netdev, int phy_id, int loc,
- {
- 	struct usbnet *dev = netdev_priv(netdev);
- 	__le16 res = cpu_to_le16(val);
--	u8 smsr;
--	int i = 0;
- 	int ret;
- 
- 	netdev_dbg(dev->net, "asix_mdio_write() phy_id=0x%02x, loc=0x%02x, val=0x%04x\n",
- 			phy_id, loc, val);
- 
- 	mutex_lock(&dev->phy_mutex);
--	do {
--		ret = asix_set_sw_mii(dev, 0);
--		if (ret == -ENODEV)
--			break;
--		usleep_range(1000, 1100);
--		ret = asix_read_cmd(dev, AX_CMD_STATMNGSTS_REG,
--				    0, 0, 1, &smsr, 0);
--	} while (!(smsr & AX_HOST_EN) && (i++ < 30) && (ret != -ENODEV));
- 
-+	ret = asix_check_host_enable(dev, 0);
- 	if (ret == -ENODEV)
- 		goto out;
- 
-@@ -561,19 +567,11 @@ int asix_mdio_read_nopm(struct net_device *netdev, int phy_id, int loc)
- {
- 	struct usbnet *dev = netdev_priv(netdev);
- 	__le16 res;
--	u8 smsr;
--	int i = 0;
- 	int ret;
- 
- 	mutex_lock(&dev->phy_mutex);
--	do {
--		ret = asix_set_sw_mii(dev, 1);
--		if (ret == -ENODEV || ret == -ETIMEDOUT)
--			break;
--		usleep_range(1000, 1100);
--		ret = asix_read_cmd(dev, AX_CMD_STATMNGSTS_REG,
--				    0, 0, 1, &smsr, 1);
--	} while (!(smsr & AX_HOST_EN) && (i++ < 30) && (ret != -ENODEV));
-+
-+	ret = asix_check_host_enable(dev, 1);
- 	if (ret == -ENODEV || ret == -ETIMEDOUT) {
- 		mutex_unlock(&dev->phy_mutex);
- 		return ret;
-@@ -595,22 +593,14 @@ asix_mdio_write_nopm(struct net_device *netdev, int phy_id, int loc, int val)
- {
- 	struct usbnet *dev = netdev_priv(netdev);
- 	__le16 res = cpu_to_le16(val);
--	u8 smsr;
--	int i = 0;
- 	int ret;
- 
- 	netdev_dbg(dev->net, "asix_mdio_write() phy_id=0x%02x, loc=0x%02x, val=0x%04x\n",
- 			phy_id, loc, val);
- 
- 	mutex_lock(&dev->phy_mutex);
--	do {
--		ret = asix_set_sw_mii(dev, 1);
--		if (ret == -ENODEV)
--			break;
--		usleep_range(1000, 1100);
--		ret = asix_read_cmd(dev, AX_CMD_STATMNGSTS_REG,
--				    0, 0, 1, &smsr, 1);
--	} while (!(smsr & AX_HOST_EN) && (i++ < 30) && (ret != -ENODEV));
-+
-+	ret = asix_check_host_enable(dev, 1);
- 	if (ret == -ENODEV) {
- 		mutex_unlock(&dev->phy_mutex);
- 		return;
 -- 
-2.32.0
-
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
