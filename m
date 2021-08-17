@@ -2,194 +2,350 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 342AF3EF2F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 21:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4949D3EF2FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233810AbhHQT7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 15:59:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47782 "EHLO
+        id S233741AbhHQUAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 16:00:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229466AbhHQT72 (ORCPT
+        with ESMTP id S229466AbhHQUAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 15:59:28 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B32BC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 12:58:55 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id b25-20020a4ac2990000b0290263aab95660so6231819ooq.13
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 12:58:55 -0700 (PDT)
+        Tue, 17 Aug 2021 16:00:30 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD678C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 12:59:56 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id oa17so939781pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 12:59:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=79bivVt5C0iretm2RQAebwVshGza8l6WOkdkf2Tm6mk=;
-        b=lPok6EhnosdIo1UrT0ck8CSjE0cGZvczyyWe/VT8d9qyyCiDSlpELBtSI9tXeNHlRy
-         6883bonW9Jgs+OlxPI8JwC6Gh6YR8OHQOrecbAcNYEJ2ZI1sgGysSaKGkyIZ2vWsDD0t
-         wwU0NYvrsvkx45/9BYSeqndn6tbuz4fjy6lCc=
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YCnH7wri8A6gFqECGkimfx1ed8a4h8yMk5Vm8xazQvs=;
+        b=nI4PvMPvMnvKjr2nAJKkODyq6WiYPG2iE7OWohesnqxngEtPAsvmKfIpMYPX9fe1OA
+         eAjeEGnx6kSp6nWBcfSeJqAfAhKcDqWoE6V5LSDLI2TIkY/ZTcE08w35DSsluZNGZEDg
+         tiUvXy/084wz+7hFBNkOFKu2ouTVMF2qy8hLXbqooM+kAbSNStURYVOVFBu+Lu215ONH
+         tdvNSg/TD0U3hTHdOhgfw9NHjfWHjRePthCGAU6VvcK51D0Ezo5npQo1kLYiHRaa6r9W
+         mZU+YJD4hN2BGg7gK1YI/SMlpJkJ6STFRFNAyBHD/YWbXB6OaXFp/DAkaB1fowv8H8/U
+         M1gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=79bivVt5C0iretm2RQAebwVshGza8l6WOkdkf2Tm6mk=;
-        b=sZu4ePPdIUJNj2jZGGl5ZJtEjkvXzR7iAlb2+/OVvd/YZdMEL933W7pMRmFJe8Xrgq
-         lc1KPz5NMfbSczWqb3v1bFyBDN2u8YvE40NIsh3cto6/Fi0xNY0Rd7JZCJbUdwOvqLJz
-         k8XNBIZtb9becNSDQYZVyR9kjFYoNjiTL51FSbPxtBb7HbCLbgbaVc5rT9Z7dbqJClOu
-         qReJr1g7OrZXxKMrYyF4tRyzG6ntOj+ZZ7rD6jMT4xw2QEaax3IYJEjPyTEpzj3SHnFJ
-         /r/O9hGH0ddwkouVN/1h6cxUfyTl5+g5iZsy88kxnUJ7rylQBF1JvlO4HI3UYqY/Oznz
-         jdvQ==
-X-Gm-Message-State: AOAM530E/gU64W9GGEgiDudmI1I+peAqyNvbvfdV0XM5I60yBDE1/r/J
-        VZGwsMavWuwzKyh418fdO+gItFchGwvXZbHv+XNWgg==
-X-Google-Smtp-Source: ABdhPJwt0EHKR2+b1AuRlsdVymYYGJh3wAbYghf4FpRsgsDEpEnaY/lC83xDjKek1m8USwAknSR098PzcIloPu3fBZ0=
-X-Received: by 2002:a4a:c60e:: with SMTP id l14mr3855016ooq.80.1629230334756;
- Tue, 17 Aug 2021 12:58:54 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 17 Aug 2021 15:58:54 -0400
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YCnH7wri8A6gFqECGkimfx1ed8a4h8yMk5Vm8xazQvs=;
+        b=fw/FbIHcmnSatvPzaZJFtru6on6EBGGlCsC7xf1NHeu5NvRnIOA/W/xhdazRB7LMjL
+         XIQf3MaenZTUpAEkGwADUITI7pfrLcndOs1djmX+jV1YXGBt03z70auHgZqu4q9tlG3d
+         Z7+FW/ywwHbdvtdBuzurzG5aitcCzYSvc1soEtITgaus7r1MuER9NtLTmN4VyfFXRD9z
+         mxx9TmC+YwBm+596W08JytcfsGt38mar1eksw3J9oxXDMu7oglEhVlSYVwQz6PHCwVWF
+         3zG7foJlWu9op3qV2TMZURPn6Kx66K1hIoVD6ULKKnT+vZLUEow8H+jlrxCxtHAk4ENr
+         G3Tw==
+X-Gm-Message-State: AOAM530a1/2fM1WVZJgra5zdDJDos17+5nCeCBqSAmZblaxS2gISonDb
+        1JfPry5yjpSX8MVdfcq68q9yWw==
+X-Google-Smtp-Source: ABdhPJzSp0orehkN5BzAPPfc1O23yXzXGOwbwnrGmYKz1PmxIelrFdA1gda52sdVbhgC569/T0gVQg==
+X-Received: by 2002:a17:902:7681:b0:12d:8f52:3d55 with SMTP id m1-20020a170902768100b0012d8f523d55mr4040763pll.70.1629230396092;
+        Tue, 17 Aug 2021 12:59:56 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id y12sm4398483pgl.65.2021.08.17.12.59.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Aug 2021 12:59:55 -0700 (PDT)
+Subject: Re: [PATCH] coredump: Limit what can interrupt coredumps
+To:     Tony Battersby <tonyb@cybernetics.com>,
+        Olivier Langlois <olivier@trillion01.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Pavel Begunkov>" <asml.silence@gmail.com>
+References: <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
+ <198e912402486f66214146d4eabad8cb3f010a8e.camel@trillion01.com>
+ <87eeda7nqe.fsf@disp2133>
+ <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
+ <87pmwt6biw.fsf@disp2133> <87czst5yxh.fsf_-_@disp2133>
+ <CAHk-=wiax83WoS0p5nWvPhU_O+hcjXwv6q3DXV8Ejb62BfynhQ@mail.gmail.com>
+ <87y2bh4jg5.fsf@disp2133>
+ <CAHk-=wjPiEaXjUp6PTcLZFjT8RrYX+ExtD-RY3NjFWDN7mKLbw@mail.gmail.com>
+ <87sg1p4h0g.fsf_-_@disp2133> <20210614141032.GA13677@redhat.com>
+ <87pmwmn5m0.fsf@disp2133>
+ <4d93d0600e4a9590a48d320c5a7dd4c54d66f095.camel@trillion01.com>
+ <8af373ec-9609-35a4-f185-f9bdc63d39b7@cybernetics.com>
+ <9d194813-ecb1-2fe4-70aa-75faf4e144ad@kernel.dk>
+ <b36eb4a26b6aff564c6ef850a3508c5b40141d46.camel@trillion01.com>
+ <0bc38b13-5a7e-8620-6dce-18731f15467e@kernel.dk>
+ <24c795c6-4ec4-518e-bf9b-860207eee8c7@kernel.dk>
+ <05c0cadc-029e-78af-795d-e09cf3e80087@cybernetics.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <b5ab8ca0-cef5-c9b7-e47f-21c0d395f82e@kernel.dk>
+Date:   Tue, 17 Aug 2021 13:59:54 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1625576413-12324-3-git-send-email-sanm@codeaurora.org>
-References: <1625576413-12324-1-git-send-email-sanm@codeaurora.org> <1625576413-12324-3-git-send-email-sanm@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 17 Aug 2021 15:58:54 -0400
-Message-ID: <CAE-0n52d7UOWQ+hohoyV81+aB1RnNPUEnjPCtr5=nH+a=WK35Q@mail.gmail.com>
-Subject: Re: [PATCH v5 2/3] arm64: dts: qcom: sc7280: Add USB related nodes
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pratham Pratap <prathampratap@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <05c0cadc-029e-78af-795d-e09cf3e80087@cybernetics.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sandeep Maheswaram (2021-07-06 06:00:12)
-> Add nodes for DWC3 USB controller, QMP and HS USB PHYs in sc7280 SOC.
->
-> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
-> Changed qmp usb phy to usb dp phy combo node as per Stephen's comments.
-> Changed dwc to usb and added SC7280 compatible as per Bjorn's comments.
->
->  arch/arm64/boot/dts/qcom/sc7280.dtsi | 164 +++++++++++++++++++++++++++++++++++
->  1 file changed, 164 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index a8c274a..cd6908f 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -1035,6 +1035,125 @@
->                         };
->                 };
->
-[...]
-> +
-> +               usb_2: usb@8cf8800 {
-> +                       compatible = "qcom,sc7280-dwc3", "qcom,dwc3";
-> +                       reg = <0 0x08cf8800 0 0x400>;
-> +                       status = "disabled";
-> +                       #address-cells = <2>;
-> +                       #size-cells = <2>;
-> +                       ranges;
-> +                       dma-ranges;
-> +
-> +                       clocks = <&gcc GCC_CFG_NOC_USB3_SEC_AXI_CLK>,
-> +                                <&gcc GCC_USB30_SEC_MASTER_CLK>,
-> +                                <&gcc GCC_AGGRE_USB3_SEC_AXI_CLK>,
-> +                                <&gcc GCC_USB30_SEC_MOCK_UTMI_CLK>,
-> +                                <&gcc GCC_USB30_SEC_SLEEP_CLK>;
-> +                       clock-names = "cfg_noc", "core", "iface","mock_utmi",
-> +                                     "sleep";
-> +
-> +                       assigned-clocks = <&gcc GCC_USB30_SEC_MOCK_UTMI_CLK>,
-> +                                         <&gcc GCC_USB30_SEC_MASTER_CLK>;
-> +                       assigned-clock-rates = <19200000>, <200000000>;
-> +
-> +                       interrupts-extended = <&intc GIC_SPI 240 IRQ_TYPE_LEVEL_HIGH>,
-> +                                    <&pdc 13 IRQ_TYPE_EDGE_RISING>,
-> +                                    <&pdc 12 IRQ_TYPE_EDGE_RISING>;
+On 8/17/21 1:29 PM, Tony Battersby wrote:
+> On 8/17/21 2:24 PM, Jens Axboe wrote:
+>> On 8/17/21 12:15 PM, Jens Axboe wrote:
+>>> On 8/15/21 2:42 PM, Olivier Langlois wrote:
+>>>> On Wed, 2021-08-11 at 19:55 -0600, Jens Axboe wrote:
+>>>>> On 8/10/21 3:48 PM, Tony Battersby wrote:
+>>>>>> On 8/5/21 9:06 AM, Olivier Langlois wrote:
+>>>>>>> Hi all,
+>>>>>>>
+>>>>>>> I didn't forgot about this remaining issue and I have kept thinking
+>>>>>>> about it on and off.
+>>>>>>>
+>>>>>>> I did try the following on 5.12.19:
+>>>>>>>
+>>>>>>> diff --git a/fs/coredump.c b/fs/coredump.c
+>>>>>>> index 07afb5ddb1c4..614fe7a54c1a 100644
+>>>>>>> --- a/fs/coredump.c
+>>>>>>> +++ b/fs/coredump.c
+>>>>>>> @@ -41,6 +41,7 @@
+>>>>>>>  #include <linux/fs.h>
+>>>>>>>  #include <linux/path.h>
+>>>>>>>  #include <linux/timekeeping.h>
+>>>>>>> +#include <linux/io_uring.h>
+>>>>>>>  
+>>>>>>>  #include <linux/uaccess.h>
+>>>>>>>  #include <asm/mmu_context.h>
+>>>>>>> @@ -625,6 +626,8 @@ void do_coredump(const kernel_siginfo_t
+>>>>>>> *siginfo)
+>>>>>>>                 need_suid_safe = true;
+>>>>>>>         }
+>>>>>>>  
+>>>>>>> +       io_uring_files_cancel(current->files);
+>>>>>>> +
+>>>>>>>         retval = coredump_wait(siginfo->si_signo, &core_state);
+>>>>>>>         if (retval < 0)
+>>>>>>>                 goto fail_creds;
+>>>>>>> --
+>>>>>>> 2.32.0
+>>>>>>>
+>>>>>>> with my current understanding, io_uring_files_cancel is supposed to
+>>>>>>> cancel everything that might set the TIF_NOTIFY_SIGNAL.
+>>>>>>>
+>>>>>>> I must report that in my testing with generating a core dump
+>>>>>>> through a
+>>>>>>> pipe with the modif above, I still get truncated core dumps.
+>>>>>>>
+>>>>>>> systemd is having a weird error:
+>>>>>>> [ 2577.870742] systemd-coredump[4056]: Failed to get COMM: No such
+>>>>>>> process
+>>>>>>>
+>>>>>>> and nothing is captured
+>>>>>>>
+>>>>>>> so I have replaced it with a very simple shell:
+>>>>>>> $ cat /proc/sys/kernel/core_pattern 
+>>>>>>>> /home/lano1106/bin/pipe_core.sh %e %p
+>>>>>>> ~/bin $ cat pipe_core.sh 
+>>>>>>> #!/bin/sh
+>>>>>>>
+>>>>>>> cat > /home/lano1106/core/core.$1.$2
+>>>>>>>
+>>>>>>> BFD: warning: /home/lano1106/core/core.test.10886 is truncated:
+>>>>>>> expected core file size >= 24129536, found: 61440
+>>>>>>>
+>>>>>>> I conclude from my attempt that maybe io_uring_files_cancel is not
+>>>>>>> 100%
+>>>>>>> cleaning everything that it should clean.
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>> I just ran into this problem also - coredumps from an io_uring
+>>>>>> program
+>>>>>> to a pipe are truncated.  But I am using kernel 5.10.57, which does
+>>>>>> NOT
+>>>>>> have commit 12db8b690010 ("entry: Add support for TIF_NOTIFY_SIGNAL")
+>>>>>> or
+>>>>>> commit 06af8679449d ("coredump: Limit what can interrupt coredumps").
+>>>>>> Kernel 5.4 works though, so I bisected the problem to commit
+>>>>>> f38c7e3abfba ("io_uring: ensure async buffered read-retry is setup
+>>>>>> properly") in kernel 5.9.  Note that my io_uring program uses only
+>>>>>> async
+>>>>>> buffered reads, which may be why this particular commit makes a
+>>>>>> difference to my program.
+>>>>>>
+>>>>>> My io_uring program is a multi-purpose long-running program with many
+>>>>>> threads.  Most threads don't use io_uring but a few of them do. 
+>>>>>> Normally, my core dumps are piped to a program so that they can be
+>>>>>> compressed before being written to disk, but I can also test writing
+>>>>>> the
+>>>>>> core dumps directly to disk.  This is what I have found:
+>>>>>>
+>>>>>> *) Unpatched 5.10.57: if a thread that doesn't use io_uring triggers
+>>>>>> a
+>>>>>> coredump, the core file is written correctly, whether it is written
+>>>>>> to
+>>>>>> disk or piped to a program, even if another thread is using io_uring
+>>>>>> at
+>>>>>> the same time.
+>>>>>>
+>>>>>> *) Unpatched 5.10.57: if a thread that uses io_uring triggers a
+>>>>>> coredump, the core file is truncated, whether written directly to
+>>>>>> disk
+>>>>>> or piped to a program.
+>>>>>>
+>>>>>> *) 5.10.57+backport 06af8679449d: if a thread that uses io_uring
+>>>>>> triggers a coredump, and the core is written directly to disk, then
+>>>>>> it
+>>>>>> is written correctly.
+>>>>>>
+>>>>>> *) 5.10.57+backport 06af8679449d: if a thread that uses io_uring
+>>>>>> triggers a coredump, and the core is piped to a program, then it is
+>>>>>> truncated.
+>>>>>>
+>>>>>> *) 5.10.57+revert f38c7e3abfba: core dumps are written correctly,
+>>>>>> whether written directly to disk or piped to a program.
+>>>>> That is very interesting. Like Olivier mentioned, it's not that actual
+>>>>> commit, but rather the change of behavior implemented by it. Before
+>>>>> that
+>>>>> commit, we'd hit the async workers more often, whereas after we do the
+>>>>> correct retry method where it's driven by the wakeup when the page is
+>>>>> unlocked. This is purely speculation, but perhaps the fact that the
+>>>>> process changes state potentially mid dump is why the dump ends up
+>>>>> being
+>>>>> truncated?
+>>>>>
+>>>>> I'd love to dive into this and try and figure it out. Absent a test
+>>>>> case, at least the above gives me an idea of what to try out. I'll see
+>>>>> if it makes it easier for me to create a case that does result in a
+>>>>> truncated core dump.
+>>>>>
+>>>> Jens,
+>>>>
+>>>> When I have first encountered the issue, the very first thing that I
+>>>> did try was to create a simple test program that would synthetize the
+>>>> problem.
+>>>>
+>>>> After few time consumming failed attempts, I just gave up the idea and
+>>>> simply settle to my prod program that showcase systematically the
+>>>> problem every time that I kill the process with a SEGV signal.
+>>>>
+>>>> In a nutshell, all the program does is to issue read operations with
+>>>> io_uring on a TCP socket on which there is a constant data stream.
+>>>>
+>>>> Now that I have a better understanding of what is going on, I think
+>>>> that one way that could reproduce the problem consistently could be
+>>>> along those lines:
+>>>>
+>>>> 1. Create a pipe
+>>>> 2. fork a child
+>>>> 3. Initiate a read operation on the pipe with io_uring from the child
+>>>> 4. Let the parent kill its child with a core dump generating signal.
+>>>> 5. Write something in the pipe from the parent so that the io_uring
+>>>> read operation completes while the core dump is generated.
+>>>>
+>>>> I guess that I'll end up doing that if I cannot fix the issue with my
+>>>> current setup but here is what I have attempted so far:
+>>>>
+>>>> 1. Call io_uring_files_cancel from do_coredump
+>>>> 2. Same as #1 but also make sure that TIF_NOTIFY_SIGNAL is cleared on
+>>>> returning from io_uring_files_cancel
+>>>>
+>>>> Those attempts didn't work but lurking in the io_uring dev mailing list
+>>>> is starting to pay off. I thought that I did reach the bottom of the
+>>>> rabbit hole in my journey of understanding io_uring but the recent
+>>>> patch set sent by Hao Xu
+>>>>
+>>>> https://lore.kernel.org/io-uring/90fce498-968e-6812-7b6a-fdf8520ea8d9@kernel.dk/T/#t
+>>>>
+>>>> made me realize that I still haven't assimilated all the small io_uring
+>>>> nuances...
+>>>>
+>>>> Here is my feedback. From my casual io_uring code reader point of view,
+>>>> it is not 100% obvious what the difference is between
+>>>> io_uring_files_cancel and io_uring_task_cancel
+>>>>
+>>>> It seems like io_uring_files_cancel is cancelling polls only if they
+>>>> have the REQ_F_INFLIGHT flag set.
+>>>>
+>>>> I have no idea what an inflight request means and why someone would
+>>>> want to call io_uring_files_cancel over io_uring_task_cancel.
+>>>>
+>>>> I guess that if I was to meditate on the question for few hours, I
+>>>> would at some point get some illumination strike me but I believe that
+>>>> it could be a good idea to document in the code those concepts for
+>>>> helping casual readers...
+>>>>
+>>>> Bottomline, I now understand that io_uring_files_cancel does not cancel
+>>>> all the requests. Therefore, without fully understanding what I am
+>>>> doing, I am going to replace my call to io_uring_files_cancel from
+>>>> do_coredump with io_uring_task_cancel and see if this finally fix the
+>>>> issue for good.
+>>>>
+>>>> What I am trying to do is to cancel pending io_uring requests to make
+>>>> sure that TIF_NOTIFY_SIGNAL isn't set while core dump is generated.
+>>>>
+>>>> Maybe another solution would simply be to modify __dump_emit to make it
+>>>> resilient to TIF_NOTIFY_SIGNAL as Eric W. Biederman originally
+>>>> suggested.
+>>>>
+>>>> or maybe do both...
+>>>>
+>>>> Not sure which approach is best. If someone has an opinion, I would be
+>>>> curious to hear it.
+>>> It does indeed sound like it's TIF_NOTIFY_SIGNAL that will trigger some
+>>> signal_pending() and cause an interruption of the core dump. Just out of
+>>> curiosity, what is your /proc/sys/kernel/core_pattern set to? If it's
+>>> set to some piped process, can you try and set it to 'core' and see if
+>>> that eliminates the truncation of the core dumps for your case?
+>> And assuming that works, then I suspect this one would fix your issue
+>> even with a piped core dump:
+>>
+>> diff --git a/fs/coredump.c b/fs/coredump.c
+>> index 07afb5ddb1c4..852737a9ccbf 100644
+>> --- a/fs/coredump.c
+>> +++ b/fs/coredump.c
+>> @@ -41,6 +41,7 @@
+>>  #include <linux/fs.h>
+>>  #include <linux/path.h>
+>>  #include <linux/timekeeping.h>
+>> +#include <linux/io_uring.h>
+>>  
+>>  #include <linux/uaccess.h>
+>>  #include <asm/mmu_context.h>
+>> @@ -603,6 +604,7 @@ void do_coredump(const kernel_siginfo_t *siginfo)
+>>  	};
+>>  
+>>  	audit_core_dumps(siginfo->si_signo);
+>> +	io_uring_task_cancel();
+>>  
+>>  	binfmt = mm->binfmt;
+>>  	if (!binfmt || !binfmt->core_dump)
+>>
+> FYI, I tested kernel 5.10.59 + backport 06af8679449d + the patch above
+> with my io_uring program.  The coredump locked up even when writing the
+> core file directly to disk; the zombie process could not be killed with
+> "kill -9".  Unfortunately I can't test with newer kernels without
+> spending some time on it, and I am too busy with other stuff right now.
 
-I'm seeing this cause a warning at boot
+That sounds like 5.10-stable is missing some of the cancelation
+backports, and your setup makes the cancelation stall because of that.
+Need to go over the 11/12/13 fixes and ensure that we've got everything
+we need for those stable versions, particularly 5.10.
 
-[    4.724756] irq: type mismatch, failed to map hwirq-12 for
-interrupt-controller@b220000!
-[    4.733401] irq: type mismatch, failed to map hwirq-13 for
-interrupt-controller@b220000!
+> My io_uring program does async buffered reads
+> (io_uring_prep_read()/io_uring_prep_readv()) from a raw disk partition
+> (no filesystem).  One thread submits I/Os while another thread calls
+> io_uring_wait_cqe() and processes the completions.  To trigger the
+> coredump, I added an intentional abort() in the thread that submits I/Os
+> after running for a second.
 
-> +                       interrupt-names = "hs_phy_irq",
-> +                                         "dm_hs_phy_irq", "dp_hs_phy_irq";
-> +
-> +                       power-domains = <&gcc GCC_USB30_SEC_GDSC>;
-> +
-> +                       resets = <&gcc GCC_USB30_SEC_BCR>;
-> +
-> +                       usb_2_dwc3: usb@8c00000 {
-> +                               compatible = "snps,dwc3";
-> +                               reg = <0 0x08c00000 0 0xe000>;
-> +                               interrupts = <GIC_SPI 242 IRQ_TYPE_LEVEL_HIGH>;
-> +                               iommus = <&apps_smmu 0xa0 0x0>;
-> +                               snps,dis_u2_susphy_quirk;
-> +                               snps,dis_enblslpm_quirk;
-> +                               phys = <&usb_2_hsphy>;
-> +                               phy-names = "usb2-phy";
-> +                               maximum-speed = "high-speed";
-> +                       };
-> +               };
-> +
->                 dc_noc: interconnect@90e0000 {
->                         reg = <0 0x090e0000 0 0x5080>;
->                         compatible = "qcom,sc7280-dc-noc";
-> @@ -1063,6 +1182,51 @@
->                         qcom,bcm-voters = <&apps_bcm_voter>;
->                 };
->
-> +               usb_1: usb@a6f8800 {
-> +                       compatible = "qcom,sc7280-dwc3", "qcom,dwc3";
-> +                       reg = <0 0x0a6f8800 0 0x400>;
-> +                       status = "disabled";
-> +                       #address-cells = <2>;
-> +                       #size-cells = <2>;
-> +                       ranges;
-> +                       dma-ranges;
-> +
-> +                       clocks = <&gcc GCC_CFG_NOC_USB3_PRIM_AXI_CLK>,
-> +                                <&gcc GCC_USB30_PRIM_MASTER_CLK>,
-> +                                <&gcc GCC_AGGRE_USB3_PRIM_AXI_CLK>,
-> +                                <&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>,
-> +                                <&gcc GCC_USB30_PRIM_SLEEP_CLK>;
-> +                       clock-names = "cfg_noc", "core", "iface", "mock_utmi",
-> +                                     "sleep";
-> +
-> +                       assigned-clocks = <&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>,
-> +                                         <&gcc GCC_USB30_PRIM_MASTER_CLK>;
-> +                       assigned-clock-rates = <19200000>, <200000000>;
-> +
-> +                       interrupts-extended = <&intc GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
-> +                                             <&pdc 14 IRQ_TYPE_EDGE_BOTH>,
-> +                                             <&pdc 15 IRQ_TYPE_EDGE_BOTH>,
+OK, so that one is also using task_work for the retry based async
+buffered reads, so it makes sense.
 
-And this one too.
+Maybe a temporary work-around is to use 06af8679449d and eliminate the
+pipe based coredump?
 
-[    4.898667] irq: type mismatch, failed to map hwirq-14 for
-interrupt-controller@b220000!
-[    4.907241] irq: type mismatch, failed to map hwirq-15 for
-interrupt-controller@b220000!
+-- 
+Jens Axboe
 
-which looks like genirq code is complaining that the type is different
-than what it is configured for. Are these trigger flags correct? If so,
-then there' some sort of bug in the pdc driver.
-
-> +                                             <&pdc 17 IRQ_TYPE_LEVEL_HIGH>;
-> +                       interrupt-names = "hs_phy_irq", "dp_hs_phy_irq",
-> +                                         "dm_hs_phy_irq", "ss_phy_irq";
-> +
-> +                       power-domains = <&gcc GCC_USB30_PRIM_GDSC>;
-> +
-> +                       resets = <&gcc GCC_USB30_PRIM_BCR>;
-> +
-> +                       usb_1_dwc3: usb@a600000 {
