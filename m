@@ -2,191 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79E8B3EF3EC
+	by mail.lfdr.de (Postfix) with ESMTP id C25623EF3ED
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236705AbhHQUWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 16:22:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52664 "EHLO
+        id S236498AbhHQUW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 16:22:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235754AbhHQUWo (ORCPT
+        with ESMTP id S236461AbhHQUWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 17 Aug 2021 16:22:44 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF36C0617AF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 13:21:49 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id nt11so1029775pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 13:21:49 -0700 (PDT)
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 922A0C0612E7
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 13:21:50 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id n12so33239060edx.8
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 13:21:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HQ7ZSuuD6tb1hBMUbxFFC7kpnSgGHoGR91mEf8GYgTE=;
-        b=avIpKrF9Nji9lsUE6QWvB406A6ea/v4R7yDfqBWiRe2V1XDllMt0tqpxaP28hfYpKx
-         ax4Q2ayK1rV36ElRsDUAW6Wp/CE0jRi9XTVRFOau+Gl71r4vim0akJ/WBI+g3jaX7bio
-         jGnenDtm1DYm3mV1CBJlWx5FoWYfNaYMQEcyF42nY5UcWNP8h17EIAg2S4xPqE7cHO/j
-         rQMK9gk+GDZOQjkXL/Sy3tIOFwXhqml8CR0f489yMrnmxVMvzpfJ2HPJCDLXmA5jYJPG
-         BZyygOJfVJECHAF10agd7b3zcvllQATfOJ03MbVmrw0cIxOfJIWW8GqPaDxhXW8p6HUl
-         Gx2g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=aElaQY59KXNPtiLMXlPfttrGWOlXzIX0OonVI0K93CQ=;
+        b=Vat3cvxN0e9+MaFZvF7B+FaV2NKJFQuMbMXn8KQ8MPAjcakztpp5gb9rEJoA4hZIRF
+         TfxDNA3kE5Vd1hFPKYG+JFR9scuQxfeymknlhKo89/SziVd7cnovFAPzR4t8n1u3CVN0
+         VEYjHbhqBBzPgJJK1ExSyHC8s5Ijl5N3e11BDgZlL/8GsHsbj6tXmPc5eMyvLroQuUZw
+         LQmJwpltP3glVvoMIkvwV48skmc+AuC2zxYTbz9nA+a5AZheRhLPoyfSJO5uha2e+La5
+         1AuzrqTNv+Pdzoz5kOi5HjMaq2Ha3bYqt3jJebrbn2kAtqJ3EvtJDnoFOYJWcjLGgza0
+         lYlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HQ7ZSuuD6tb1hBMUbxFFC7kpnSgGHoGR91mEf8GYgTE=;
-        b=M6feMVJEVWRs4dKNycFdJezJ2WGubzCKZ2+AR3nv4I0Xx2h9DtIo8LiSTawKHaE7we
-         6WbtfZPiD+WzgL5E1uhhlgoHQgWgKetvL4yWfDHcKxsLfbbvbebcG4n6s6oHc+4nDvHw
-         Kh1WRbj5PM0sJpsaovPUVyEcyP1kJS/9MW2aN5kaefZqHSRfIZaOTj5kFIvS6tLIrAxB
-         Gqtyvihx56CJG0XzqCMvHSIYl8ju3KKqoa5vg2u08CBE4Y6gmNZ6X0MMDUQ2fcVPgn+S
-         lqr/B0xn1hLGD2gSKAIaqTkSpNNoNTM9qhcNs9a8njF+2DQ8y885zpB6bv3HkNzSD3rb
-         4hQA==
-X-Gm-Message-State: AOAM531Rr/Ri1OJbdebx4sKRADko0n4wLEFQDJM0wK02MsTp00Sj3kmU
-        FXjJ/ST/ELNDv4ntbfodaFQ=
-X-Google-Smtp-Source: ABdhPJzOg0igKRSLy6X8qGilBeVhIpoGqG9rd18JlmvUZCFxi8VBAmS7X0jXGmMXDOdNrW4nbhtLlA==
-X-Received: by 2002:a05:6a00:1ad3:b029:3e0:c106:2dea with SMTP id f19-20020a056a001ad3b02903e0c1062deamr5285921pfv.8.1629231708767;
-        Tue, 17 Aug 2021 13:21:48 -0700 (PDT)
-Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
-        by smtp.gmail.com with ESMTPSA id o22sm3408642pfu.87.2021.08.17.13.21.47
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=aElaQY59KXNPtiLMXlPfttrGWOlXzIX0OonVI0K93CQ=;
+        b=tRJzNFsdV/EMXV9tIgQKqCs7e7bVOiXnyCWRsD/w8zUuhpbiTxE5q/nJ/Vcb6CeQAN
+         5M7DKNYL34O1anyNaUp/a2l8I8i73P2E8hADiuKF/OPFckNQc8SZBCowmFdqxKPNOoz6
+         u2uwLhKddVqwczfQPbjptrNIifGlvHwW1J/rvXmLeFET5FvtvwCMTazMozhjZ/7RG+qZ
+         a09ccVgVJDM6Z+EHFD/7httf18teHt8ilq5pywOj4QgMX58iFOqsf4iFm+aTiJp0ali1
+         1B3+kVTK2jV+8RIx9ioFmQEUTT42qsRZ0HYEIzh3g3q3XJkvsMIGDlhHTOO6oL13QSYI
+         Fs5w==
+X-Gm-Message-State: AOAM533JRxnnYbkPqAb0nNNv6GJbm2TqvF1YuA/ZQVW2v9Jlr4BBXYkG
+        jS7oSvEQ62d1ewBQVVwz93w=
+X-Google-Smtp-Source: ABdhPJzwjn9F8+5ManWa8VXN7eBp5yaOnUO8gvrfNaPb1wO23hszNQBUUXG/V0aZAYIajfvkj52e+Q==
+X-Received: by 2002:aa7:dcd1:: with SMTP id w17mr5827652edu.322.1629231709244;
+        Tue, 17 Aug 2021 13:21:49 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
+        by smtp.gmail.com with ESMTPSA id z6sm1434472edc.52.2021.08.17.13.21.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 13:21:47 -0700 (PDT)
-From:   Yang Shi <shy828301@gmail.com>
-To:     hughd@google.com, kirill.shutemov@linux.intel.com,
-        akpm@linux-foundation.org
-Cc:     shy828301@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] mm: khugepaged: don't carry huge page to the next loop for !CONFIG_NUMA
-Date:   Tue, 17 Aug 2021 13:21:46 -0700
-Message-Id: <20210817202146.3218-1-shy828301@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Tue, 17 Aug 2021 13:21:48 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] staging: r8188eu: Remove code depending on NAT25_LOOKUP
+Date:   Tue, 17 Aug 2021 22:21:47 +0200
+Message-ID: <1873149.OoslLVuAm5@localhost.localdomain>
+In-Reply-To: <YRv4GLL0BsMm/lf3@kroah.com>
+References: <20210816175138.21633-1-fmdefrancesco@gmail.com> <YRv4GLL0BsMm/lf3@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The khugepaged has optimization to reduce huge page allocation calls for
-!CONFIG_NUMA by carrying the allocated but failed to collapse huge page to
-the next loop.  CONFIG_NUMA doesn't do so since the next loop may try to
-collapse huge page from a different node, so it doesn't make too much sense
-to carry it.
+On Tuesday, August 17, 2021 7:55:36 PM CEST Greg Kroah-Hartman wrote:
+> On Mon, Aug 16, 2021 at 07:51:38PM +0200, Fabio M. De Francesco wrote:
+> > Remove all the code related to the management of the NAT25_LOOKUP
+> > method in nat25_db_handle(). The only function that used that method was
+> > the now deleted nat25_handle_frame(). Remove the NAT25_LOOKUP entry from
+> > the NAT25_METHOD enum because it is not anymore used everywhere else in
+> > the code of the driver.
+> > 
+> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > ---
+> > 
+> > v2: Patch rebased against the latest Greg K-H's tree.
+> > 
+> >  drivers/staging/r8188eu/core/rtw_br_ext.c    | 112 -------------------
+> >  drivers/staging/r8188eu/include/rtw_br_ext.h |   1 -
+> >  2 files changed, 113 deletions(-)
+> 
+> This change adds a build warning, which is not allowed.
+> 
+> Please merge this, and the 3/3 patch into a single change, so that it
+> all is removed together, causing no build warnings at any point in time.
 
-But when NUMA=n, the huge page is allocated by khugepaged_prealloc_page()
-before scanning the address space, so it means huge page may be allocated
-even though there is no suitable range for collapsing.  Then the page would
-be just freed if khugepaged already made enough progress.  This could make
-NUMA=n run have 5 times as much thp_collapse_alloc as NUMA=y run.  This
-problem actually makes things worse due to the way more pointless THP
-allocations and makes the optimization pointless.
+Sorry, I didn't know that, within a series, no patch is allowed to add build warning
+that are then fixed by the following ones. I did it for the purpose of splitting
+different logical changes into different patches and the removal of code
+related to NAT25_LOOKUP (2/3) introduced some warnings about a function
+and a variable that were not anymore used. Patch 3/3 had the changes that
+removed the above-mentioned no more used objects. 
 
-This could be fixed by carrying the huge page across scans, but it will
-complicate the code further and the huge page may be carried
-indefinitely.  But if we take one step back,  the optimization itself seems
-not worth keeping nowadays since:
-  * Not too many users build NUMA=n kernel nowadays even though the kernel is
-    actually running on a non-NUMA machine. Some small devices may run NUMA=n
-    kernel, but I don't think they actually use THP.
-  * Since commit 44042b449872 ("mm/page_alloc: allow high-order pages to be
-    stored on the per-cpu lists"), THP could be cached by pcp.  This actually
-    somehow does the job done by the optimization.
+According to your request, now I've merged 2/3 and 3/3 into a single v3 patch. 
+I had to drop the numbering of the patch because neither 2/3 or 2/2 seemed 
+appropriate to me after the merge. I hope it was the right thing to do. If not,
+let me know, please.
 
-Cc: Hugh Dickins <hughd@google.com>
-Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Signed-off-by: Yang Shi <shy828301@gmail.com>
----
- mm/khugepaged.c | 74 ++++---------------------------------------------
- 1 file changed, 6 insertions(+), 68 deletions(-)
+Please see:
+https://lore.kernel.org/lkml/20210817185723.15192-1-fmdefrancesco@gmail.com
 
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 6b9c98ddcd09..d6beb10e29e2 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -855,6 +855,12 @@ static int khugepaged_find_target_node(void)
- 	last_khugepaged_target_node = target_node;
- 	return target_node;
- }
-+#else
-+static inline int khugepaged_find_target_node(void)
-+{
-+	return 0;
-+}
-+#endif
- 
- static bool khugepaged_prealloc_page(struct page **hpage, bool *wait)
- {
-@@ -889,74 +895,6 @@ khugepaged_alloc_page(struct page **hpage, gfp_t gfp, int node)
- 	count_vm_event(THP_COLLAPSE_ALLOC);
- 	return *hpage;
- }
--#else
--static int khugepaged_find_target_node(void)
--{
--	return 0;
--}
--
--static inline struct page *alloc_khugepaged_hugepage(void)
--{
--	struct page *page;
--
--	page = alloc_pages(alloc_hugepage_khugepaged_gfpmask(),
--			   HPAGE_PMD_ORDER);
--	if (page)
--		prep_transhuge_page(page);
--	return page;
--}
--
--static struct page *khugepaged_alloc_hugepage(bool *wait)
--{
--	struct page *hpage;
--
--	do {
--		hpage = alloc_khugepaged_hugepage();
--		if (!hpage) {
--			count_vm_event(THP_COLLAPSE_ALLOC_FAILED);
--			if (!*wait)
--				return NULL;
--
--			*wait = false;
--			khugepaged_alloc_sleep();
--		} else
--			count_vm_event(THP_COLLAPSE_ALLOC);
--	} while (unlikely(!hpage) && likely(khugepaged_enabled()));
--
--	return hpage;
--}
--
--static bool khugepaged_prealloc_page(struct page **hpage, bool *wait)
--{
--	/*
--	 * If the hpage allocated earlier was briefly exposed in page cache
--	 * before collapse_file() failed, it is possible that racing lookups
--	 * have not yet completed, and would then be unpleasantly surprised by
--	 * finding the hpage reused for the same mapping at a different offset.
--	 * Just release the previous allocation if there is any danger of that.
--	 */
--	if (*hpage && page_count(*hpage) > 1) {
--		put_page(*hpage);
--		*hpage = NULL;
--	}
--
--	if (!*hpage)
--		*hpage = khugepaged_alloc_hugepage(wait);
--
--	if (unlikely(!*hpage))
--		return false;
--
--	return true;
--}
--
--static struct page *
--khugepaged_alloc_page(struct page **hpage, gfp_t gfp, int node)
--{
--	VM_BUG_ON(!*hpage);
--
--	return  *hpage;
--}
--#endif
- 
- /*
-  * If mmap_lock temporarily dropped, revalidate vma
--- 
-2.26.2
+Thanks,
+
+Fabio
+
+> thanks,
+> 
+> greg k-h
+> 
+
+
+
 
