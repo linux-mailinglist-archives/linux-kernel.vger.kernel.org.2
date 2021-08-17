@@ -2,77 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7DD93EEEA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 16:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1BAC3EEEA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 16:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240102AbhHQOhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 10:37:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237768AbhHQOhI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 10:37:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB1F960EFE;
-        Tue, 17 Aug 2021 14:36:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629210995;
-        bh=mPCzu0e9q4q9qvg75V/xfVFPNu0IiOfphiyVwG9+mHc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JbO+KE7v6Hhr1hO0l2XB1e5iGxLOkk2/xGarlZl+PlVsP9232QlYAYjp/Vl2zjzM/
-         ABMv55Ry6Hi0+oGKb/v0uXyhyN8/S/lzvQV5AdNzstoIxoDPCMNWy9rXq/LyAuhFhR
-         H2A6NfJc8aRLgDwMZ0QcNLmNFN1UGR27nXC/LOoaKssdyv0ksZ2+1eEUJloB6jw9ZM
-         wqF1RQvPdbaMZfjV7AFk+r8gRaYBgmp1nW9qPPzN7jPDIUhDX/3HviK7j27Z5iXvOF
-         36iVGvITbz2QOmaw57Sa1t9cDKrUBzS5Bb61xX/AAVfcZTSArPkORdPq9A2lqvPjxG
-         4RCORITGsM+ag==
-Date:   Tue, 17 Aug 2021 15:36:12 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jianqun Xu <jay.xu@rock-chips.com>
-Cc:     lgirdwood@gmail.com, ulf.hansson@linaro.org, lee.jones@linaro.org,
-        zhangchangzhong@huawei.com, heiko@sntech.de,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] soc: rockchip: io-domain: do more thing about
- regulator notify
-Message-ID: <20210817143612.GB4290@sirena.org.uk>
-References: <20210817033848.1396749-1-jay.xu@rock-chips.com>
- <20210817033848.1396749-4-jay.xu@rock-chips.com>
+        id S237975AbhHQOjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 10:39:20 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:54895 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237475AbhHQOjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 10:39:19 -0400
+Received: from localhost.localdomain (ip5f5aeb65.dynamic.kabel-deutschland.de [95.90.235.101])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 5268B61E5FE00;
+        Tue, 17 Aug 2021 16:38:44 +0200 (CEST)
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] x86: intel_epb: Mention firmware in ENERGY_PERF_BIAS warning
+Date:   Tue, 17 Aug 2021 16:38:29 +0200
+Message-Id: <20210817143830.34552-1-pmenzel@molgen.mpg.de>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cvVnyQ+4j833TQvp"
-Content-Disposition: inline
-In-Reply-To: <20210817033848.1396749-4-jay.xu@rock-chips.com>
-X-Cookie: Custer committed Siouxicide.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The warning
 
---cvVnyQ+4j833TQvp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+    ENERGY_PERF_BIAS: Set to 'normal', was 'performance'
 
-On Tue, Aug 17, 2021 at 11:38:48AM +0800, Jianqun Xu wrote:
+is shown on all my Intel systems, and for a normal user it’s unclear
+what to do about it. Change it to
 
-> +	} else if (event & REGULATOR_EVENT_ENABLE) {
-> +		uV = regulator_get_voltage(supply->reg);
->  	} else {
+    ENERGY_PERF_BIAS: Set to 'normal', was 'performance' (unchanged by firmware)
 
-I am very surprised this doesn't cause locking issues given that we
-might call notifiers with the regulator API's locks held.  Have you
-tested this with lockdep on?
+so it’s clear, that it might be possible to change the setting in the
+system firmware.
 
---cvVnyQ+4j833TQvp
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+---
+ arch/x86/kernel/cpu/intel_epb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/arch/x86/kernel/cpu/intel_epb.c b/arch/x86/kernel/cpu/intel_epb.c
+index f4dd73396f28..3f8c0b59d08a 100644
+--- a/arch/x86/kernel/cpu/intel_epb.c
++++ b/arch/x86/kernel/cpu/intel_epb.c
+@@ -91,7 +91,7 @@ static void intel_epb_restore(void)
+ 		val = epb & EPB_MASK;
+ 		if (val == ENERGY_PERF_BIAS_PERFORMANCE) {
+ 			val = ENERGY_PERF_BIAS_NORMAL;
+-			pr_warn_once("ENERGY_PERF_BIAS: Set to 'normal', was 'performance'\n");
++			pr_warn_once("ENERGY_PERF_BIAS: Set to 'normal', was 'performance' (unchanged by firmware)\n");
+ 		}
+ 	}
+ 	wrmsrl(MSR_IA32_ENERGY_PERF_BIAS, (epb & ~EPB_MASK) | val);
+-- 
+2.33.0
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEbyVsACgkQJNaLcl1U
-h9C7kQf/WvUxRsG7vyHPDAemRhQZrWNrsF6EfO3vzSfm14zPt8akTymLyEqjX0V2
-qFvaGqTQRB9yM4M2akgoYNipieBTfBlqYaDsvFupJ5XmQ61T733R+LI34DytIsp1
-RKkT6ZDZNG8FZkgbMZGhWUwFhjnVrvjAt7Q5eUkj9/BtoQLek4w7CUVOc03dFCmf
-qUzxxrFz0OZGOweq5KjkCNBuQMcSXMAHKQGK3BKTzHv8KCNFFXO4dssFUM0CEAw1
-hSekoRR6HnIyP9mMAGRtu3tp7VWQng4NWjrFOUJj2fy3b733uzsdmsNiCgC1ekKB
-sMTfNZFkUWCFaW4+Bh6QPZ2CFApTdA==
-=PMmT
------END PGP SIGNATURE-----
-
---cvVnyQ+4j833TQvp--
