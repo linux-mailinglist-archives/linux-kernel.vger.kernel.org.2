@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 228503EEF76
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 17:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D353EEF72
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 17:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238321AbhHQPxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 11:53:01 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:38588 "EHLO
+        id S240433AbhHQPuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 11:50:51 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:22804 "EHLO
         mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240240AbhHQPsa (ORCPT
+        by vger.kernel.org with ESMTP id S240204AbhHQPsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 17 Aug 2021 11:48:30 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17HFkEMF023526;
-        Tue, 17 Aug 2021 15:47:10 GMT
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17HFjffU011253;
+        Tue, 17 Aug 2021 15:47:11 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=corp-2021-07-09;
- bh=bt4QwNF/e8i5OAvoNdQpSi/xTkz4zPE0i22Zd2ovDMA=;
- b=OYHSeQl+qbZEn9kuqs5iyByXNcnJXlAgjxeBIWD27JkZ7ZewSys2TcDXqZDIN6iCdFzh
- xXC8/2oxbBWt0pjHKeNVVXOHnXJ5CCQPL+HVZ3P6XFOpu6lcA2QzPmWI/Q4AteSdytOi
- HTt9sADdYeXRCJet/rUkRSFt5B5UEIwVHSbjyFg8yQKJT+AcQ6iRLrzwujl1M2htoYKY
- OjfOzGqerQ2Hw+1sN0tse7/+tcz7Q4wQo8zIQm5eEPCxgsCXSEDbSXkV5mX9+L/q8Tx9
- +n030Z5Bl0OZwO8qrSA3Sz4DR/3bSDd3hsKPTv9QWcgUvlqsyFTO0yjbpY8NIZ5Ymcv/ Rg== 
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=3j+08lREa0r9A1JB7kdnPvbg5F8d9idklNPEBbu30uQ=;
+ b=G/4fefs/XPizzfiGUv+nVeNTAc90qhpFGflmsdVkETW5m7MTnBQduw84BENdvGB9maEo
+ X+eoCqznlRr0RZl2Y4qYJ6qsDU1301VMfS5jxANR8chjMVGFajeiT3tdjM+UZyfXDG2S
+ fnasJtqz0UFgeqpNMhdCW3qqgYCjA36uz8Wl0tCX4/4iM9JShc/mLFJvfiZoiBNa+QyI
+ UQbLuxxWfkHuFJLJKnlqrRO6Q0hwxZxvZCiZdknL3vYIZWVtiyTMoKtiWEjwEfqfibu0
+ jtDMLR6ONyNh1yQ31UpnQtBr54p4uqOy8W5/yuUQEE153zU9zsmPmboxuD61vcMWHzd9 Hw== 
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=corp-2020-01-29;
- bh=bt4QwNF/e8i5OAvoNdQpSi/xTkz4zPE0i22Zd2ovDMA=;
- b=lhgX9CAps7PmZlXxNB8Le9UMhP1ZPu0w9JddmQOpI8+zEzoU94FPxf/8+OxqENQgqHr/
- jJu6bG6VNsYiuSNW50WeofORZ/fshkm9dhR7dH1Pm1DLkaRFnwqkUZVL6v7ZKW+PO6XR
- Ed2xedDdk7+EdB6fJzb9tnePNlhWA1tVKM2FYgNB6WZpPN7L1xEF6Y74/abz+nt/ra/y
- Opm1EHkQDKeMG9DonWv/gptR2+wcAlfBGWR1MrfjLycqf91fZ/p8xEZ0SUty5XdDMxXx
- +0FqJHmWY7jVIhWaUL3lCtnArZpQpwaddxQxGkJHoEjqO2qWAqK0pGCIWfiwS8oxwot0 3g== 
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=3j+08lREa0r9A1JB7kdnPvbg5F8d9idklNPEBbu30uQ=;
+ b=cz6itQgL7A2xFsAiiFSGaXRKnbCv924pTEXaLlWnYXQl+J/aAWenUvmTvKPAmGDbl68t
+ /zRxl005OzXZTPrIb+MYrMJXyy66OOP3sRUjr6+xIfb0wzlB7GOun64Kt5cznI/fhZan
+ GQZ61I29w9oxCZtukeYIp1Iiv2M6wMVONqrHzPTX1odPG4vvkJLjYk60Tx/SdFB6MrnB
+ iGigkti0/gGR8dFYBVFPu7lOkNlf5k5G4kuSzB7AeD1mZrzCvCiAkjzUU0yfM6v4KqMo
+ LokS19XUmwvq4QbWjj01enBdKMzYuJRuSSlYeW7cztGL+7o4WBIOoxMrPVEVhvphE53A fA== 
 Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3afdbd4kbr-1
+        by mx0b-00069f02.pphosted.com with ESMTP id 3age7d8bt2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 17 Aug 2021 15:47:10 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17HFkt3Y094574;
+        Tue, 17 Aug 2021 15:47:09 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2173.outbound.protection.outlook.com [104.47.58.173])
+        by aserp3030.oracle.com with ESMTP id 3ae3vftd2y-4
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Tue, 17 Aug 2021 15:47:09 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17HFkt3W094574;
-        Tue, 17 Aug 2021 15:47:08 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2173.outbound.protection.outlook.com [104.47.58.173])
-        by aserp3030.oracle.com with ESMTP id 3ae3vftd2y-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Aug 2021 15:47:07 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eJ+TymDg8eYj4DJxEjgxH86CWumbZwT/b9PouVaeXbFLTLnnnwERXpT8M3HM59iLppaBwzorhjfQfmu1QfVM3w4SlhqCP/RASIC8cCEmcYbalrSHB+nVtGO73ah4JH0KXHLwt1usUqYO0p0T7VKHqUjAkw4nV4+xHk7F1Pkmd3wppXCdKoqDRxxGLg+ZMSoCY1Gj86C1wrer7IyNjNgkX1XY7KNVvW59laj9qneTfJLB9OKr+9xm0WPZn6zA4dY9YE8tweKs1FYq9EucmV5bcx1dbtSkfNULZnhgp13zVfc3cTKb6khFZih1aFzcHZaCUZlh2yi0zxGe526xK3Pb6Q==
+ b=oAcDvbCFDdBQPgIocFKupt64D/h/6hHo0sxutDiaoK8g6l8YnrXn9ipp0b1wOor2pFUu/c4WIr8pYURsGjOMkiNm6hfuiMoBtNXCzrWvo1D0W6BFcY7yO6NGzrjPAduxOSZYAfoMJ0PizZtneF2FWoZgQvjoecQBd2t3SJo5Hlh+uA4W3XnJqs0mV/cXiIQFx990Oc6XavQ4nqkvebZkQKYzP0b/caqccGUor1X2HxNnRnykdp6UqwgQEObep+fy9jcHAlIO56ynDgnZeE3trjgmPfJBboKz8trELswW9e7JlXrhU95QnC8heSno80M2QTwf7nI3jNvPT27WhQuV+A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bt4QwNF/e8i5OAvoNdQpSi/xTkz4zPE0i22Zd2ovDMA=;
- b=R4aY/1tJ8Inos9r/ENzu2zAd+0vsgtVgg6SLfz6slM9hYGSuQUlfYuqqBuyucxGZrp1Vqljuu13InFeehJpoKo2BrU8+UchHeMWJDWb1KLcHEFdCK70VklGniGme4BcdxmEgxUeAZlIGUaZvdO9yjXiYLVlVp65/131rqW10VJ+tEVqn3teILlP0UUqUUPlkcEYmVoHmh42rn6VkO99E5Uui6EtPUtfCtaf/T3MruEKLCZFGPXEyA5DwISJ4f028G6IX2/dfD/CrHJeGdc1zZuu9fivPJb6U9woWgRqhj/HVU9hWzToFH3vXpFhYwZYMNOSfaJQF6Xoz6JlU1MJydw==
+ bh=3j+08lREa0r9A1JB7kdnPvbg5F8d9idklNPEBbu30uQ=;
+ b=BeVKalSQo/HDtZpTWn1/mbSRULrftLH4Zb41CKM5t2Ys++CknDwrHp+FIDnM4qbYDHvaIN74RvzqPDKmQzkOTvWI8uH0qC5DwmJfxRYPyeoNLojz+tJNR5JejMQ0RqXYq66YT4uJJigb7w+TQRjTmE/WesMl0UWvVuTQ/IkTULjbD5RLEMz2RamWA4RLDUpR3zsmUx3Iv/rlBAH95sNEcuXzT7DEIuQCJY9QFvv6c6M/zL0i0eesf9HYjXXiZOqTK/6ovGUUvl0nZMOorjd2cO/FCFeCGY+5N+h7IMXoanY+a0G6L0Z/16bRZh+wQUgzfZ5voLRNjiKE+nr+EmulWA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bt4QwNF/e8i5OAvoNdQpSi/xTkz4zPE0i22Zd2ovDMA=;
- b=p1Mjs8ieUdWh9vMgjDe59wP6jtw6S5TSH3nPY8qYTGUFAFm+8ffM0+fFIPpSC02TNpkYJ8nbKiz6b3aFobsToq94ANKOukUWZ4jKSImkv33CtqCEYhVdLkuIGgSQrKiUyLqgrU2w3rmUco6BZUxHTq/qzI8q8qIwu2cGxjTTkR8=
+ bh=3j+08lREa0r9A1JB7kdnPvbg5F8d9idklNPEBbu30uQ=;
+ b=ObXaZ3wl506hC0AwU3ixrxul6O0t838HF0m1uW2+QIurCcaFxqgAs9Qrn9XahJFWzmjlGYAlNIpQbU49LkcSQx68Lc27JLVIONWn7vEoR4M2UH6V9w9Bi/2fgIz6yZNwb0M83ckmZH7OeWN0/h3M+RzDEItSMz5j3lgMwGwEiD0=
 Received: from DM6PR10MB4380.namprd10.prod.outlook.com (2603:10b6:5:223::19)
  by DM6PR10MB3097.namprd10.prod.outlook.com (2603:10b6:5:1a9::26) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16; Tue, 17 Aug
- 2021 15:47:03 +0000
+ 2021 15:47:05 +0000
 Received: from DM6PR10MB4380.namprd10.prod.outlook.com
  ([fe80::585:1aa0:6582:92f3]) by DM6PR10MB4380.namprd10.prod.outlook.com
  ([fe80::585:1aa0:6582:92f3%6]) with mapi id 15.20.4415.024; Tue, 17 Aug 2021
- 15:47:03 +0000
+ 15:47:05 +0000
 From:   Liam Howlett <liam.howlett@oracle.com>
 To:     "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
         "linux-mm@kvack.org" <linux-mm@kvack.org>,
@@ -86,11 +86,15 @@ CC:     Song Liu <songliubraving@fb.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Michel Lespinasse <walken.cr@gmail.com>,
         Liam Howlett <liam.howlett@oracle.com>
-Subject: [PATCH v2 00/61] Introducing the Maple Tree
-Thread-Topic: [PATCH v2 00/61] Introducing the Maple Tree
-Thread-Index: AQHXk38fVEgoccVSbUqcYbGnQ4RL/Q==
-Date:   Tue, 17 Aug 2021 15:47:03 +0000
-Message-ID: <20210817154651.1570984-1-Liam.Howlett@oracle.com>
+Subject: [PATCH v2 03/61] radix tree test suite: Add allocation counts and
+ size to kmem_cache
+Thread-Topic: [PATCH v2 03/61] radix tree test suite: Add allocation counts
+ and size to kmem_cache
+Thread-Index: AQHXk38gS29shnsm60m0L52s3L7k1w==
+Date:   Tue, 17 Aug 2021 15:47:04 +0000
+Message-ID: <20210817154651.1570984-4-Liam.Howlett@oracle.com>
+References: <20210817154651.1570984-1-Liam.Howlett@oracle.com>
+In-Reply-To: <20210817154651.1570984-1-Liam.Howlett@oracle.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -100,347 +104,149 @@ authentication-results: lists.infradead.org; dkim=none (message not signed)
  header.d=none;lists.infradead.org; dmarc=none action=none
  header.from=oracle.com;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c739fbec-2a40-4a93-5100-08d96196424d
+x-ms-office365-filtering-correlation-id: c6bc6dbb-1c72-4f6c-1c64-08d961964381
 x-ms-traffictypediagnostic: DM6PR10MB3097:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR10MB3097F0E9F7C98575EA7F724CFDFE9@DM6PR10MB3097.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-microsoft-antispam-prvs: <DM6PR10MB30975C9CB2F37D3430BB265BFDFE9@DM6PR10MB3097.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2449;
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: EHeylXLA8IpunX6/0bRARrGHHT2cpoE0vJ2z7F0L/T69W2G2ZSIRuIye16cMyhAIt5Xc7uR2r3NNVpHJPXgkRsgQ/niz7IIXYD/MtUTEOS+HadNqD891GxLge6vK/LjMr0AMfMkkKDFxSvWX4vyQSe7oUuCpOh+6UWvORS5YkyLOxOTMUsvOyQFyFyPE8YQROfSN1OdmVYaHlaIGx+IRXQWtSpRwnqhGPmVVWsgVH1JaUNxtbulJIPhGCt5mLTSdxtfbAhtDfy8oBkbIJOThiQE6QPHG49RTJGpp/rZAAkcQOKlBTfHsihutlhjguhbwF5tvxluyMNrEXY74wh0Fp2FR3qbiM2i1T/X1vbuD8doNg9VFL9TCDPt5C7cyCm7OApYw/BxD0v3ZQPiBzRIIC50i+qWjKcnjt0qvNRyG2/+3jI4AgOe74tEfiaWmHyAK+h4AHeQCNpsS8Nsv/V5gHDx43TFcC91eQ36hvy9shfEPlqCyoKW24LGvYVGuv/s42aOPW0cOIwNYR+clA4VsyBx2/hvpuEXLydAsb9Oh74V1sW3LiHj7B2ToWURuCGkY205jxZVBHSjR1UXQ5EJ/UWPzs1xtMz3QzM8mwrnzMF6rPfXAJDe8DQsOU/KrZPzX91GpqndESswngzBQYy4hhAMoDtb0UJo+A3D680ZoGmI4CT61Opx2DZfMVz8C1wRof7hlXBPgI54MdLGBD1XE2x5xq+DLa/QpnjC/IB2HVw6rsZO5hOczd/yce/Xz61cVg8g39FiUHdKhlWiqmg32qYbusyi98iZ6lVWvcjWthMQ=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4380.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(39860400002)(396003)(346002)(136003)(8676002)(6506007)(2616005)(54906003)(8936002)(478600001)(26005)(966005)(1076003)(38070700005)(110136005)(316002)(5660300002)(36756003)(30864003)(6486002)(71200400001)(91956017)(66446008)(122000001)(6512007)(38100700002)(83380400001)(7416002)(44832011)(2906002)(186003)(4326008)(107886003)(86362001)(66946007)(64756008)(66556008)(66476007)(76116006);DIR:OUT;SFP:1101;
+x-microsoft-antispam-message-info: GD06udPNaTRzNMmVFsu/joDV3um76OMUeDiZcEyF85AAMD8fsTcoyLUyHh1f/xZTkWUaB3B5+Gu8m6eBDFVyrya5KoxFdm5HiU3LqPgbtvRXLjd5dWiqJkK9HddVqis78bhGfR/E4KyeCzH32DBpoiVb9L2pVsDmrEUeQMUh4WCflYWDH8dvGUWBBBxPl5MzTPHUQlN2om+Gbat6n+bRhImmsZrABQNJj8K/tC5NNx8GGSKRJ6dZAPkCmbsG4+dFrhzEAJXC6swBzWtZT4Y9bxagzpdD79G++f9TVIyX2bVtqareY1LwyHcA0btlkl/k0BRCDtrEMun3zaALJoR96L4cVrIBR/OkU1sr1vOtfnZ+0f9aEBOGetqkSH0d/R3Wm8bxxLqhyo2R6ULIdoybGV6xQOW5LDhDpKufI1cP96sf62tX5wc4croaYlUQSCycJklyu6DUjQ/MG9VrEZh8S92SIEpV8TBPyN0qRWeQZ939+k/gjm+5eCUP+zgQ61AAjIcBLXk3yCAsMYUucGI16ezAgZgqZSYmdzaXCNMt8ZBOLmY14lx0FpYuqV0NG/TI+AJUbUv20BcKZeDgGjpd1boEUSrZRn7Mrr4y3Eindyzp9RvvwH9g+zGN9Ldzn/K25lN93136Y1yy0oEuX9qtjfBxj4y+kxcjsNKOq7JT4Sn4KMr9CXeTUST9lXHnaawwE6f/ihgwjPhz6yy0SQeWIg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4380.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(39860400002)(396003)(346002)(136003)(8676002)(6506007)(2616005)(54906003)(8936002)(478600001)(26005)(1076003)(38070700005)(110136005)(316002)(5660300002)(36756003)(6486002)(71200400001)(91956017)(66446008)(122000001)(6512007)(38100700002)(83380400001)(7416002)(44832011)(2906002)(186003)(4326008)(107886003)(86362001)(66946007)(64756008)(66556008)(66476007)(76116006);DIR:OUT;SFP:1101;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?DUMZdS4MNHQS3VRpqVqkaG4nuw0Jz+kwFW2aDQBRTXwA7dZJgw4jp5Mz0R?=
- =?iso-8859-1?Q?BwLERhsAxegsxEutHCz20W5h9XUvFZEce7NRn3XnPxTM7hv7jLm7kt/+Si?=
- =?iso-8859-1?Q?yqE/B7tED7CQFv6TC7sjJi61MRFm/ZBQJN5KaLVTp+tuDTucapCmGlguDY?=
- =?iso-8859-1?Q?M10p66DdxTY5OufXwsUFT7JkkVgt77ob7h3YVDI1ADIGrvhnm0BwTiTdf1?=
- =?iso-8859-1?Q?3ZT6r9mzqznmQIQhNbdCXZlMJ/an3cWI/RqDmrW9rpp+uLLmAP4tN+SqlB?=
- =?iso-8859-1?Q?cUWPoy6JtuXOUUV8IMYuImRfsUJYoargiUBJ+kdhIJpGEsrkw9lZWKAu8e?=
- =?iso-8859-1?Q?RtkK6Zpolx17QITYX734vXk3t05o8mBqd71Yyqxe/Wz/hu+545A4eHleWL?=
- =?iso-8859-1?Q?kExmBUNXv2GVWXDqfz7XezddHM05P/OgbsIVvBpyy7Toch9EZGarjkiCnh?=
- =?iso-8859-1?Q?FHtadrgFdIk5WyP/+kbF4Cesze1R5u3DJuBjMzBJWh062Pkv6Rghk5Imez?=
- =?iso-8859-1?Q?NpDbj5C/Lt/5ZgGd4mk1PC0i24o1Bwc1oZhOdbWiIY1c+eH2LTdoxxcT3h?=
- =?iso-8859-1?Q?VJ6X/KBBJPLNh/aqQdYU0NiuJJOPxw80YkaMATvBuiQJUIydGeV652ni2f?=
- =?iso-8859-1?Q?IJ1dkDpxvluADT6aVw4tlBQ0VM+ivAkhXoN+BhjzISum83miELOq/oArtI?=
- =?iso-8859-1?Q?SFMb+vKXqkTui/F1JXzeERM8/4Wi2iBAhR2mPaTLNeDMT4dLAc2IkDfiU/?=
- =?iso-8859-1?Q?q+6CAN16z+dixX/Bkuzg0JUXn0CoABGwer6JurpVcPjLUpWNWRYcRCibVE?=
- =?iso-8859-1?Q?mSSywLiOwKxehDIpAWVCcPgYwGXX/x05K8qpL848hiSPVSVPJP9brybm/z?=
- =?iso-8859-1?Q?Z1k4c0eYidHcvFcPIhDIDgYb0Di47abUitG7rpXgn4wNmEiAxb/DQ1BGy7?=
- =?iso-8859-1?Q?i311vdPkkuaY9kMqbXHZ73DKZbXwElZfK5C7Ax6iaO+6t/kIPKSvofvr2+?=
- =?iso-8859-1?Q?DmkLpjKx6dzU5NdUXiWKIvhk6rLSsJr3B3C5nX9lxvU+4HdrmYOPPQ2K/s?=
- =?iso-8859-1?Q?wcO71yj28LZtefHweIMXMu/++SEc0eOvRnpKPsJrZK5+3EHP5JVDMH19cj?=
- =?iso-8859-1?Q?JKMPlXV1CUchzDsyedu/7VnPrDI/LS7P8wJHq9/w+Nb31brHKWQl1X8kTw?=
- =?iso-8859-1?Q?skD0VVHlfxvD2t4/18m8x2e64w9jFM/+zgSmVvEDHYIcoGAYho+tXf3m7U?=
- =?iso-8859-1?Q?VkiU6xv28voEy9RBL3d+1P7OhDT2NHy12Vb/aubZ+a5IcCz5AISw1HsN/o?=
- =?iso-8859-1?Q?rbr3QeMqoCZxCzxTA/71HG/elQI+BB6w1sfPCEKzzeG/SuwSPIfLbDql0+?=
- =?iso-8859-1?Q?7R5sWfXSam?=
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?Gkf/8KrqPIbSEF1gCkFUoE1PG92Odp6xggwmngs06GCfcwLRwvAN/5UeGT?=
+ =?iso-8859-1?Q?WBdv1EwxeONv1pGef1Xnb+Tnp9/FP+GnDEVp4jm/Lx6gJ6xcVUHelxUGsg?=
+ =?iso-8859-1?Q?4ToZ07yYLe5NNU7d7hNEa1g67rBMDK275UuJNAv3sOH8OgTJJgb/tBenD4?=
+ =?iso-8859-1?Q?otGpKnal4B/X7pBtUjiCG+CXzurLppwyIP7+mCpBQzZpw6HiL9WRHbn2Pu?=
+ =?iso-8859-1?Q?Ka1OU0UqY9dYgMdJfylfcQ1iUMYH50uaRwbBOD/FIo8ZylnJe96Tj1XyBf?=
+ =?iso-8859-1?Q?HJUkPP+w5zeSY4GCUc7hSTJt7DCM8j91Nw57cfhIZdDGE6+IgM/mUlNvg5?=
+ =?iso-8859-1?Q?0jB8itseaNh1ExZ40ZdMIKTFasprnmwDtCjaBGbvDRDbnftU1G2Ua7JRGf?=
+ =?iso-8859-1?Q?fYaxWLSSRCPeO0bZkpGB74SvRtvrqqDwTwNmVC0hVKJaHoy2W5nrMbf5iQ?=
+ =?iso-8859-1?Q?aabylGfyKNQgLzJlnfTLxURMjW9rLJNhc+kFu32oCtajiGEjdKxM9dsf4b?=
+ =?iso-8859-1?Q?ye215pXFCfBC6SeABh/E3Ag9hH36LEkY8S/zhZTH0A9kBY+uAEf6Jupjft?=
+ =?iso-8859-1?Q?cQ7vq5ympcxelmgTYLiDyjxUTOWVWBwYmf98+eOLjhSZ8vawUypoED8SB1?=
+ =?iso-8859-1?Q?hq2JMZ31nkrVWg+0sx/OHgWHXLw68ugn6sIkoRWrxZeixQqIEuELInLFf+?=
+ =?iso-8859-1?Q?11JaIaD7x5F5DjQqAmstSZ8TyEPpzMiWi3ADhmpO3zinEOotL/segRbPIe?=
+ =?iso-8859-1?Q?XuFsig0yqcCAXR98aDtm9KszPqo6Aj3H+jYZS+AOmzGSp6iYzfIn8wCE8X?=
+ =?iso-8859-1?Q?xgWI/0Hb8a93bOL05qLgiDZeJbycwJsyNt/PHqixO/H1df1dq3NPBG/2kq?=
+ =?iso-8859-1?Q?FTPyZNBifWFOu4EL6if1lHZByliJHNdSJe9rDAZox6LAacpnsKrldCqFc0?=
+ =?iso-8859-1?Q?FAthwgzHpg7zcc8c1wu4XeKyA/Kq8fpMbeRfJa2ZnxBmTy+SVxUfQ/maOX?=
+ =?iso-8859-1?Q?PoGWIlMWhAIP/5AMAj2cPLh0a2Lnee+3EF2fwMXLxaEzbRxnJLt4FDeMJX?=
+ =?iso-8859-1?Q?eesGq+llDjBxg8WFpzp4gIr51eLb0cfa9UK5926kBxGSmbYJYxJK36f4Wh?=
+ =?iso-8859-1?Q?U0tCvddkYah3EebNFFxsDcOvi/pkZ1pnxU/X31gcDfUVOsG1AfNimWjbug?=
+ =?iso-8859-1?Q?WtG/FTqVmhL5p8FLr74e649I9zz79wKziBK7EjVI4v+3W5lICPdv+Z1rMa?=
+ =?iso-8859-1?Q?utAS/RWtmyHxQjApVqosw4tgKO+9q1tMnK6QKz3D3N7Ak95ieVMSKVonr5?=
+ =?iso-8859-1?Q?nlwmExyD7fn5kF9YPMq3oWotZpYgFsePAexGKONB7qRXhSDAVG44CwxSvv?=
+ =?iso-8859-1?Q?MPqGMiNBsa?=
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: oracle.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4380.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c739fbec-2a40-4a93-5100-08d96196424d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Aug 2021 15:47:03.3802
+X-MS-Exchange-CrossTenant-Network-Message-Id: c6bc6dbb-1c72-4f6c-1c64-08d961964381
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Aug 2021 15:47:04.4217
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BTfGxCxei49hCJoI4sMzE1BaKCoLF+hA+e/LjfreBkz5zTYwgfYQNl9Te2l+AMRHvXKZ6rdRc4RjXN+1c3QiuQ==
+X-MS-Exchange-CrossTenant-userprincipalname: JuvvtTElIGQJUIP9Z5A3VO943G0L5JplB+48rKMMpA3DidGzOLq1+naeUJWO6O811152MBu9+hgRtTagKAEi+g==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB3097
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10079 signatures=668682
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 mlxscore=0
  malwarescore=0 mlxlogscore=999 spamscore=0 bulkscore=0 phishscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
  definitions=main-2108170097
-X-Proofpoint-ORIG-GUID: FvTrQCpfX4JL5iWUYZtJxpVdDswuH7VD
-X-Proofpoint-GUID: FvTrQCpfX4JL5iWUYZtJxpVdDswuH7VD
+X-Proofpoint-GUID: kGO6AZ5l9TsL8h0f_2OwfZ8NjrTH0v83
+X-Proofpoint-ORIG-GUID: kGO6AZ5l9TsL8h0f_2OwfZ8NjrTH0v83
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The maple tree is an RCU-safe range based B-tree designed to use modern
-processor cache efficiently.  There are a number of places in the kernel
-that a non-overlapping range-based tree would be beneficial, especially
-one with a simple interface.  The first user that is covered in this
-patch set is the vm_area_struct, where three data structures are
-replaced by the maple tree: the augmented rbtree, the vma cache, and the
-linked list of VMAs in the mm_struct.  The long term goal is to reduce
-or remove the mmap_sem contention.
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
 
-The tree has a branching factor of 10 for non-leaf nodes and 16 for leaf
-nodes.  With the increased branching factor, it is significantly shorter th=
-an
-the rbtree so it has fewer cache misses.  The removal of the linked list
-between subsequent entries also reduces the cache misses and the need to pu=
-ll
-in the previous and next VMA during many tree alterations.
+Add functions to get the number of allocations, and total allocations
+from a kmem_cache.  Also add a function to get the allocated size and a
+way to zero the total allocations.
 
-This patch series is based on next-20210811 with "remap_file_pages: Use
-vma_lookup() instead of find_vma()"
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+---
+ tools/testing/radix-tree/linux.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-Link:
-https://github.com/oracle/linux-uek/releases/tag/howlett%2Fmaple%2F20210816
-
-Performance on a 144 core x86:
-
-While still using the mmap_sem, the performance seems fairly similar on
-real-world workloads, while there are variations in micro-benchmarks.
-
-Increase in performance in the following micro-benchmarks in Hmean:
-- wis malloc1-threads: Increase of 13% to 840%
-- wis page_fault1-threads: Increase of 1% to 14%
-- wis brk1-threads: Disregard, this test is invalid.
-
-
-Decrease in performance in the following micro-benchmarks in Hmean:
-- wis brk1-processes: Decrease of 45% due to RCU required
-
-Mixed:
-- wis pthread_mutex1-threads: +11% to -3%
-- wis signal1-threads: +6% to -12%
-- wis malloc1-processes: +9% to -18% (-18 at 2 processes, increases after)
-- wis page_fault3-threads: +8% to -22%
-
-kernbench:
-Amean     user-2        884.88 (   0.00%)      882.61 *   0.26%*
-Amean     syst-2        157.38 (   0.00%)      161.23 *  -2.45%*
-Amean     elsp-2        526.17 (   0.00%)      527.53 *  -0.26%*=20
-Amean     user-4        919.90 (   0.00%)      910.87 *   0.98%*
-Amean     syst-4        166.21 (   0.00%)      170.06 *  -2.32%*
-Amean     elsp-4        278.01 (   0.00%)      276.83 *   0.42%*
-Amean     user-8        973.23 (   0.00%)      970.73 *   0.26%*
-Amean     syst-8        176.70 (   0.00%)      181.00 *  -2.44%*
-Amean     elsp-8        152.24 (   0.00%)      153.33 *  -0.72%*
-Amean     user-16      1040.15 (   0.00%)     1045.90 *  -0.55%*
-Amean     syst-16       185.13 (   0.00%)      191.08 *  -3.21%*
-Amean     elsp-16        85.47 (   0.00%)       86.70 *  -1.44%*
-Amean     user-32      1189.60 (   0.00%)     1187.91 *   0.14%*
-Amean     syst-32       210.02 (   0.00%)      219.46 *  -4.49%*
-Amean     elsp-32        53.86 (   0.00%)       53.91 *  -0.08%*
-Amean     user-64      1222.05 (   0.00%)     1230.00 *  -0.65%*
-Amean     syst-64       213.37 (   0.00%)      223.57 *  -4.78%*
-Amean     elsp-64        32.87 (   0.00%)       33.42 *  -1.68%*
-Amean     user-128     1618.73 (   0.00%)     1614.52 *   0.26%*
-Amean     syst-128      259.72 (   0.00%)      272.95 *  -5.09%*
-Amean     elsp-128       25.91 (   0.00%)       25.93 *  -0.08%*
-
-
-gitcheckout:
-Amean     User           0.00 (   0.00%)        0.00 *   0.00%*
-Amean     System         8.09 (   0.00%)        7.90 *   2.25%*
-Amean     Elapsed       22.89 (   0.00%)       22.50 *   1.74%*
-Amean     CPU           93.53 (   0.00%)       93.67 *  -0.14%*
-
-
-v2 changes:
-- Split out unlock_range() into its own cleanup patch, already upstream
-- Split off vma_lookup() into its own 22 patches, already upstream
-- Fixed locking issue when brk does not change but succeeds. Thanks Suren
-  Baghdasar
-- Move locking in brk much earler to match mmap_sem
-- Fixed RCU locking issue in mm/khugepaged.  Thanks Hillf Danton
-- RCU fixes in userfaultfd_release, mlock, munmap, task_mmu, and nommu
-- Removed mm_populate_vma() and related patches from this set
-- Removed inline of remove_vma_list() from this set as the function is remo=
-ved
-- Fixed comments to all C-based comments as suggested by Peter Zijlstra
-- Fixed comments to all C-based comments in test_maple_tree.c as well
-- Changed #defines to hex as requested by Peter Zijlstra
-- Fixed whitespace error in mas_set_range().  Thanks Peter Zijlstra
-- Add Asserts to mas->depth and mte_pivot() range check.  Thanks Peter Zijl=
-stra
-- Updated comments for mas_alloc_req() and friends.  Thanks Peter Zijlstra
-- Added back the parent pointer decoding support and added explanations on =
-how
-  the encoding/decoding works.  Thanks Peter Zijlstra
-- Expanded maple tree height to 31 and added a BUG_ON when exceeding that
-  value.  There should be no way to reach 31 high.  Thanks Peter Zijlstra
-- Added comment on harmless race in mmget_not_zero() - Thanks Suren Baghdas=
-aryan
-- Removed debug statement left in during testing - Thanks Suren Baghdasarya=
-n
-- Fixed locking in dup_mmap() - Thanks Suren Baghdasaryan
-- Changes in the RCU locking in areas that may sleep.
-- Added rcu stress testing and fixed maple tree specific issues exposed
-  - Thanks Paul McKenney for helping with this.
-- Large Documentation update.
-
-
-Patch organization:
-Patches 1 to 4 are radix tree test suite additions for maple tree
-support.
-
-Patch 5 adds the maple tree.  Test code is 37000 lines.
-
-Patches 6-11 are the removal of the rbtree from the mm_struct.
-
-Patches 12-18 are the removal of the vmacache from the kernel.
-
-Patches 19-60 are the removal of the vma linked list from the mm_struct.
-
-Patch 61 is a small cleanup from the removal of the vma linked list.
-
-Liam R. Howlett (61):
-  radix tree test suite: Add pr_err define
-  radix tree test suite: Add kmem_cache_set_non_kernel()
-  radix tree test suite: Add allocation counts and size to kmem_cache
-  radix tree test suite: Add support for slab bulk APIs
-  Maple Tree: Add new data structure
-  mm: Start tracking VMAs with maple tree
-  mm/mmap: Use the maple tree in find_vma() instead of the rbtree.
-  mm/mmap: Use the maple tree for find_vma_prev() instead of the rbtree
-  mm/mmap: Use maple tree for unmapped_area{_topdown}
-  kernel/fork: Use maple tree for dup_mmap() during forking
-  mm: Remove rb tree.
-  xen/privcmd: Optimized privcmd_ioctl_mmap() by using vma_lookup()
-  mm: Optimize find_exact_vma() to use vma_lookup()
-  mm/khugepaged: Optimize collapse_pte_mapped_thp() by using
-    vma_lookup()
-  mm/mmap: Change do_brk_flags() to expand existing VMA and add
-    do_brk_munmap()
-  mm: Use maple tree operations for find_vma_intersection() and
-    find_vma()
-  mm/mmap: Use advanced maple tree API for mmap_region()
-  mm: Remove vmacache
-  mm/mmap: Move mmap_region() below do_munmap()
-  mm/mmap: Convert count_vma_pages_range() to use ma_state
-  mm/mmap: Reorganize munmap to use maple states
-  mm/mmap: Change do_brk_munmap() to use do_mas_align_munmap()
-  mm: Introduce vma_next() and vma_prev()
-  arch/arm64: Remove mmap linked list from vdso.
-  arch/parisc: Remove mmap linked list from kernel/cache
-  arch/powerpc: Remove mmap linked list from mm/book3s32/tlb
-  arch/powerpc: Remove mmap linked list from mm/book3s64/subpage_prot
-  arch/s390: Use maple tree iterators instead of linked list.
-  arch/x86: Use maple tree iterators for vdso/vma
-  arch/xtensa: Use maple tree iterators for unmapped area
-  drivers/misc/cxl: Use maple tree iterators for cxl_prefault_vma()
-  drivers/tee/optee: Use maple tree iterators for __check_mem_type()
-  fs/binfmt_elf: Use maple tree iterators for fill_files_note()
-  fs/coredump: Use maple tree iterators in place of linked list
-  fs/exec: Use vma_next() instead of linked list
-  fs/proc/base: Use maple tree iterators in place of linked list
-  fs/proc/task_mmu: Stop using linked list and highest_vm_end
-  fs/userfaultfd: Stop using vma linked list.
-  ipc/shm: Stop using the vma linked list
-  kernel/acct: Use maple tree iterators instead of linked list
-  kernel/events/core: Use maple tree iterators instead of linked list
-  kernel/events/uprobes: Use maple tree iterators instead of linked list
-  kernel/sched/fair: Use maple tree iterators instead of linked list
-  kernel/sys: Use maple tree iterators instead of linked list
-  arch/um/kernel/tlb: Stop using linked list
-  bpf: Remove VMA linked list
-  mm/gup: Use maple tree navigation instead of linked list
-  mm/khugepaged: Use maple tree iterators instead of vma linked list
-  mm/ksm: Use maple tree iterators instead of vma linked list
-  mm/madvise: Use vma_next instead of vma linked list
-  mm/memcontrol: Stop using mm->highest_vm_end
-  mm/mempolicy: Use maple tree iterators instead of vma linked list
-  mm/mlock: Use maple tree iterators instead of vma linked list
-  mm/mprotect: Use maple tree navigation instead of vma linked list
-  mm/mremap: Use vma_next() instead of vma linked list
-  mm/msync: Use vma_next() instead of vma linked list
-  mm/oom_kill: Use maple tree iterators instead of vma linked list
-  mm/pagewalk: Use vma_next() instead of vma linked list
-  mm/swapfile: Use maple tree iterator instead of vma linked list
-  mm: Remove the vma linked list
-  mm/mmap: Drop range_has_overlap() function
-
- Documentation/core-api/index.rst              |     1 +
- Documentation/core-api/maple-tree.rst         |   508 +
- MAINTAINERS                                   |    12 +
- arch/arm64/kernel/vdso.c                      |     5 +-
- arch/parisc/kernel/cache.c                    |    15 +-
- arch/powerpc/mm/book3s32/tlb.c                |     5 +-
- arch/powerpc/mm/book3s64/subpage_prot.c       |    15 +-
- arch/s390/configs/debug_defconfig             |     1 -
- arch/s390/mm/gmap.c                           |     8 +-
- arch/um/kernel/tlb.c                          |    16 +-
- arch/x86/entry/vdso/vma.c                     |    12 +-
- arch/x86/kernel/tboot.c                       |     2 +-
- arch/xtensa/kernel/syscall.c                  |     4 +-
- drivers/firmware/efi/efi.c                    |     2 +-
- drivers/misc/cxl/fault.c                      |     6 +-
- drivers/tee/optee/call.c                      |    15 +-
- drivers/xen/privcmd.c                         |     2 +-
- fs/binfmt_elf.c                               |     5 +-
- fs/coredump.c                                 |    13 +-
- fs/exec.c                                     |     9 +-
- fs/proc/base.c                                |     7 +-
- fs/proc/task_mmu.c                            |    48 +-
- fs/proc/task_nommu.c                          |    55 +-
- fs/userfaultfd.c                              |    34 +-
- include/linux/maple_tree.h                    |   474 +
- include/linux/mm.h                            |    54 +-
- include/linux/mm_types.h                      |    31 +-
- include/linux/mm_types_task.h                 |     5 -
- include/linux/sched.h                         |     1 -
- include/linux/sched/mm.h                      |     9 +
- include/linux/vm_event_item.h                 |     4 -
- include/linux/vmacache.h                      |    28 -
- include/linux/vmstat.h                        |     6 -
- include/trace/events/maple_tree.h             |   227 +
- include/trace/events/mmap.h                   |    71 +
- init/main.c                                   |     2 +
- ipc/shm.c                                     |    13 +-
- kernel/acct.c                                 |     8 +-
- kernel/bpf/task_iter.c                        |     6 +-
- kernel/debug/debug_core.c                     |    12 -
- kernel/events/core.c                          |     7 +-
- kernel/events/uprobes.c                       |    25 +-
- kernel/fork.c                                 |    61 +-
- kernel/sched/fair.c                           |    14 +-
- kernel/sys.c                                  |     6 +-
- lib/Kconfig.debug                             |    15 +-
- lib/Makefile                                  |     3 +-
- lib/maple_tree.c                              |  6779 +++
- lib/test_maple_tree.c                         | 37000 ++++++++++++++++
- mm/Makefile                                   |     2 +-
- mm/debug.c                                    |    14 +-
- mm/gup.c                                      |     7 +-
- mm/huge_memory.c                              |     4 +-
- mm/init-mm.c                                  |     4 +-
- mm/internal.h                                 |    81 +-
- mm/khugepaged.c                               |    11 +-
- mm/ksm.c                                      |    26 +-
- mm/madvise.c                                  |     2 +-
- mm/memcontrol.c                               |     6 +-
- mm/memory.c                                   |    33 +-
- mm/mempolicy.c                                |    41 +-
- mm/mlock.c                                    |    21 +-
- mm/mmap.c                                     |  2129 +-
- mm/mprotect.c                                 |    13 +-
- mm/mremap.c                                   |    13 +-
- mm/msync.c                                    |     2 +-
- mm/nommu.c                                    |   120 +-
- mm/oom_kill.c                                 |     5 +-
- mm/pagewalk.c                                 |     2 +-
- mm/swapfile.c                                 |     9 +-
- mm/util.c                                     |    32 -
- mm/vmacache.c                                 |   117 -
- mm/vmstat.c                                   |     4 -
- tools/testing/radix-tree/.gitignore           |     2 +
- tools/testing/radix-tree/Makefile             |    13 +-
- tools/testing/radix-tree/generated/autoconf.h |     1 +
- tools/testing/radix-tree/linux.c              |   160 +-
- tools/testing/radix-tree/linux/kernel.h       |     1 +
- tools/testing/radix-tree/linux/maple_tree.h   |     7 +
- tools/testing/radix-tree/linux/slab.h         |     4 +
- tools/testing/radix-tree/maple.c              |    59 +
- .../radix-tree/trace/events/maple_tree.h      |     8 +
- 82 files changed, 46975 insertions(+), 1639 deletions(-)
- create mode 100644 Documentation/core-api/maple-tree.rst
- create mode 100644 include/linux/maple_tree.h
- delete mode 100644 include/linux/vmacache.h
- create mode 100644 include/trace/events/maple_tree.h
- create mode 100644 lib/maple_tree.c
- create mode 100644 lib/test_maple_tree.c
- delete mode 100644 mm/vmacache.c
- create mode 100644 tools/testing/radix-tree/linux/maple_tree.h
- create mode 100644 tools/testing/radix-tree/maple.c
- create mode 100644 tools/testing/radix-tree/trace/events/maple_tree.h
-
+diff --git a/tools/testing/radix-tree/linux.c b/tools/testing/radix-tree/li=
+nux.c
+index 00ee01a14652..f95e71d65f00 100644
+--- a/tools/testing/radix-tree/linux.c
++++ b/tools/testing/radix-tree/linux.c
+@@ -25,6 +25,8 @@ struct kmem_cache {
+ 	void *objs;
+ 	void (*ctor)(void *);
+ 	unsigned int non_kernel;
++	unsigned long nr_allocated;
++	unsigned long nr_tallocated;
+ };
+=20
+ void kmem_cache_set_non_kernel(struct kmem_cache *cachep, unsigned int val=
+)
+@@ -32,6 +34,26 @@ void kmem_cache_set_non_kernel(struct kmem_cache *cachep=
+, unsigned int val)
+ 	cachep->non_kernel =3D val;
+ }
+=20
++unsigned long kmem_cache_get_alloc(struct kmem_cache *cachep)
++{
++	return cachep->size * cachep->nr_allocated;
++}
++
++unsigned long kmem_cache_nr_allocated(struct kmem_cache *cachep)
++{
++	return cachep->nr_allocated;
++}
++
++unsigned long kmem_cache_nr_tallocated(struct kmem_cache *cachep)
++{
++	return cachep->nr_tallocated;
++}
++
++void kmem_cache_zero_nr_tallocated(struct kmem_cache *cachep)
++{
++	cachep->nr_tallocated =3D 0;
++}
++
+ void *kmem_cache_alloc(struct kmem_cache *cachep, int gfp)
+ {
+ 	void *p;
+@@ -63,7 +85,9 @@ void *kmem_cache_alloc(struct kmem_cache *cachep, int gfp=
+)
+ 			memset(p, 0, cachep->size);
+ 	}
+=20
++	uatomic_inc(&cachep->nr_allocated);
+ 	uatomic_inc(&nr_allocated);
++	uatomic_inc(&cachep->nr_tallocated);
+ 	if (kmalloc_verbose)
+ 		printf("Allocating %p from slab\n", p);
+ 	return p;
+@@ -73,6 +97,7 @@ void kmem_cache_free(struct kmem_cache *cachep, void *obj=
+p)
+ {
+ 	assert(objp);
+ 	uatomic_dec(&nr_allocated);
++	uatomic_dec(&cachep->nr_allocated);
+ 	if (kmalloc_verbose)
+ 		printf("Freeing %p to slab\n", objp);
+ 	pthread_mutex_lock(&cachep->lock);
+@@ -124,6 +149,8 @@ kmem_cache_create(const char *name, unsigned int size, =
+unsigned int align,
+ 	ret->size =3D size;
+ 	ret->align =3D align;
+ 	ret->nr_objs =3D 0;
++	ret->nr_allocated =3D 0;
++	ret->nr_tallocated =3D 0;
+ 	ret->objs =3D NULL;
+ 	ret->ctor =3D ctor;
+ 	ret->non_kernel =3D 0;
 --=20
 2.30.2
