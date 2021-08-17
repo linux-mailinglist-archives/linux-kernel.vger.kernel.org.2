@@ -2,299 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B693EEDE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:57:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A4B3EEDE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236040AbhHQN5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 09:57:46 -0400
-Received: from mail-bn7nam10on2075.outbound.protection.outlook.com ([40.107.92.75]:8929
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239975AbhHQN5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 09:57:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O2uqXhijuDwg8TLher9UtRwFd5DHPOFfoKEKWv+yWnjfXwlQ3c5gBGEI1ZGjymBvTi4CaXwNu1Whde+rMHhhPaaAFvdQf+N0j+TE6F4CqdO7SEcy7jTgfvg651SK8y/XQOonrhalROWMIlWKTJBnGZ+DkF+WqfH574LhV1M0OfV1pNFHx1ewB92t3nhf6N377LNOTTceniV9BD6jj96d6bbg3tB97n+UJ8j+ghcUNLNTViHfWa0KyFYEqZr+ffxEVal/HnMlcfR1ZgdrYEmTZZztHJBM40ZeSSqlx+auhCoFg5uzyJTeVdVGdeXbYCQp98E0n15++qbktPtXQenStQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XfWfyBSSJ5YiBDEe6oOAOLnXqv4iF55VV8K97wx40Os=;
- b=Kr0fNyzE+ANSSU6mPRkRJw/Pd/9HOKl8MQYuJAsw28tFGCfznMOdjbIOxQJEOdmhLALd9TjkyT8sCWjSBNs3dFOXXejjy2nNtpcMQ0u9MCHRpANy2WlOlAmlh2g1V9h6RpbT+07Xx0tBP0EpL0L/JCtPeyoDvZmzxvbIWC8UBiRZPoMgiOJU3cKxE2ddea6NVMnF8QDoyemnCocPNulLvx5EbUSS4OS2MH1LoLu5SfvJ8TrHUIlc2e7/9B6aRqJM5YPVmjmjzgj9s2hc1TlgftQK8rjwHuhAKKzJdxlAxtdDwA15lQLONM8/uvV9Z00cTCrUwZOuDotpRwHOGniVJQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XfWfyBSSJ5YiBDEe6oOAOLnXqv4iF55VV8K97wx40Os=;
- b=4Bs6c3uJKs9JKCHE3UwBe4Y/cTubYJz3AZhhrkbsrJgMEvXbze9AJqZ0oH9AkXmyzAbaZoSj27EJ2lykmNx/aWPeA5wYJDsGad7Gg4a/OJWwJWBOCTZzAEV8DgxA2tIGzaHXG6EFchaTiDEiPReP2j3UCtlosuWUR7wG3iGw1qQ=
-Received: from MW4PR04CA0125.namprd04.prod.outlook.com (2603:10b6:303:84::10)
- by DM6PR12MB4548.namprd12.prod.outlook.com (2603:10b6:5:2a1::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14; Tue, 17 Aug
- 2021 13:57:07 +0000
-Received: from CO1NAM11FT013.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:84:cafe::46) by MW4PR04CA0125.outlook.office365.com
- (2603:10b6:303:84::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend
- Transport; Tue, 17 Aug 2021 13:57:07 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT013.mail.protection.outlook.com (10.13.174.227) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4415.14 via Frontend Transport; Tue, 17 Aug 2021 13:57:07 +0000
-Received: from sanjuamdntb2.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Tue, 17 Aug
- 2021 08:57:03 -0500
-From:   Sanjay R Mehta <Sanju.Mehta@amd.com>
-To:     <vkoul@kernel.org>
-CC:     <gregkh@linuxfoundation.org>, <dan.j.williams@intel.com>,
-        <Thomas.Lendacky@amd.com>, <robh@kernel.org>,
-        <mchehab+samsung@kernel.org>, <davem@davemloft.net>,
-        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        Sanjay R Mehta <sanju.mehta@amd.com>
-Subject: [PATCH v12 3/3] dmaengine: ptdma: Add debugfs entries for PTDMA
-Date:   Tue, 17 Aug 2021 08:55:59 -0500
-Message-ID: <1629208559-51964-4-git-send-email-Sanju.Mehta@amd.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1629208559-51964-1-git-send-email-Sanju.Mehta@amd.com>
-References: <1629208559-51964-1-git-send-email-Sanju.Mehta@amd.com>
+        id S240048AbhHQN5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 09:57:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239985AbhHQN5m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 09:57:42 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F99C0613CF;
+        Tue, 17 Aug 2021 06:57:09 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id r7so28875811wrs.0;
+        Tue, 17 Aug 2021 06:57:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6xL8KKAgtKVXqiY10rauZL3Pjki57neMrGXDUAD5maQ=;
+        b=HtrhppfPKGETXKQk7ZaqMpU8WnD19jumtezcpkJu7F1PYATEznnv9VzV2vkGJpKarF
+         TovRf0L0/i0XMHMAjP6MENt8v/I0dDM6zCn0VAh+mgT70o2GH9bmNrL+9xZ46UmTD+CN
+         RZYlldEZyfaknBqYg6MGwkW+WYeplMANsHFDiEvnpO35Uw/7jf8/L+xPFmDoTZZDEcf9
+         UFz1j+4UZAOygrkLGgYDbe046/6VZFMZb2c16C0mBa3gTPI2KxGq7KO7eawuSgqy2q+Y
+         +dGgh6gb13YVdhg6dxUGhyer+u8aPHYL3M7oNjgVQWCl95BJ9vHk0ozWHRStypUW3+2m
+         6tBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6xL8KKAgtKVXqiY10rauZL3Pjki57neMrGXDUAD5maQ=;
+        b=tzOUjiSEohxXI7i6OnC9+g8WELDF7Re2odmUi+15w1NkdWcvt5sGXtVnvpvvd+QOFI
+         6Y4wZ2X+R3CMGadtJfIDqCJbedoBGIOIzp25cDNPo2GPNvKbeuzkwgTAHMrZeLQ/R4Xf
+         Nsbv2jh9gLrKrFwfguNh3BhafQRzlRmnn98yl9aZajkAInMxhIXoVIuJeRT43oTAh8Sa
+         9PhGRbqJnwvBWgNywnT8rl2Ajwa135FnwU2CPUzyX5jhEDZE8aQm7qeH635gPkTtuH2O
+         0WmY0U81jSN8+oe8S/ovFGO3yvxaI/X7+IVhvcvEXILd+BOdidCVjBz0W2eMvFhofJHK
+         MFPw==
+X-Gm-Message-State: AOAM532etbCe8cjRUU2WdfHrP6zxYS45WwTCGhMbq6WOiCst7iVcaR4D
+        RzWQZAbAELt8/anTTDhNHCs=
+X-Google-Smtp-Source: ABdhPJxXGwy71h9iKKqpMv+kIW8otw6YW0vCZWUHj/3tGNCg758nPBEl8P96su7hyxMb2m+h1ab0Tw==
+X-Received: by 2002:a5d:6090:: with SMTP id w16mr4403007wrt.38.1629208627684;
+        Tue, 17 Aug 2021 06:57:07 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id z15sm2525314wrp.30.2021.08.17.06.57.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 06:57:06 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 15:57:05 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Aakash Hemadri <aakashhemadri123@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Bjorn Helgaas <bjorn@helgaas.com>
+Subject: Re: [PATCH 2/2] ASoC: tegra30: i2s: Fix incorrect usage of
+ of_device_get_match_data
+Message-ID: <YRvAMfwh9GnaNV7U@orome.fritz.box>
+References: <cover.1629148177.git.aakashhemadri123@gmail.com>
+ <4805c7fcd35c8deada63d41cb34d40de80f85a13.1629148177.git.aakashhemadri123@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9969562a-3c88-446e-8de1-08d96186e6a6
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4548:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4548F8A9F2D78AA3FFB8B59EE5FE9@DM6PR12MB4548.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:22;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 60iB6UFo1m+HzestkYeubzFU42zYcUFpSdSYtrxie0RZRPPmJA0Haukr9VQPWDUqbCGoT8QOZu077r26JWZ9EUsaD9av1CtEw31QKi3vSRQT+5kzddC+LSaAnuO2Oh8nrAGQvVj1u7sDurHJIpOeD1MaP6a3welwhfWL5C5YLoDwFaKFBRJSKvr4Hbocj7ZAZIPybWc5l0k7RvK0t354+S5PpZDgpRFW9QmwxP1yxJQSD814Gmo8Qcmx0L9vP818DZ/u354NKfXWsZxKiXmLuQH63DJA6Rxpo1uiUhgxH3xddFXFrg+CcKRO2dEr+jVvm6Tt6D0uhdo9iSj0BiSGK4gfZ64S931YN0Dg/1cRPto2GiNvare++gJ0uH+7ub7bKlmsnfHXyl5Yir1FANqK/mNQqML0ROg5IEtXcYNFVBku3JajPGxxOTBgFHyUU++huA+NtkCta8Ja1joYvrtnotdVxofo2P76c4MHMj97iky8AozZBg66MWT0T5akZlA5Aeb3U7AxDTEVLIvgST+Mp+tLfXWPYIppTW1ICVZYRLBeJGmRdOWF/EOS95WV8XE+rcQp5wNrghlt5WJwYdJihN5dWWhKYoi1l0oqFmM9niCgcrq/oV4Tgv41K1qMCKIbvqNfMJvUAqfE7kCmv/tJoUKPmR7QqyQCezGGJGjilTYLc5RuOpBmmfpf9e37WNzeuGYV/P2xRglinpHXh0dPJccGqe27g+NsZ/xRlA0C5CRiqWAWflTQYiiKQ8c6YtywKnmlbryZQPtioRAzWsDyxA==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(39860400002)(376002)(396003)(346002)(136003)(46966006)(36840700001)(8676002)(34020700004)(82740400003)(54906003)(47076005)(8936002)(82310400003)(356005)(81166007)(478600001)(26005)(86362001)(83380400001)(6666004)(316002)(70206006)(70586007)(2616005)(36860700001)(5660300002)(426003)(4326008)(7696005)(6916009)(186003)(2906002)(336012)(36756003)(16526019)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2021 13:57:07.1303
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9969562a-3c88-446e-8de1-08d96186e6a6
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT013.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4548
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="WXB9ClFJ/LNHhScs"
+Content-Disposition: inline
+In-Reply-To: <4805c7fcd35c8deada63d41cb34d40de80f85a13.1629148177.git.aakashhemadri123@gmail.com>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sanjay R Mehta <sanju.mehta@amd.com>
 
-Expose data about the configuration and operation of the
-PTDMA through debugfs entries: device name, capabilities,
-configuration, statistics.
+--WXB9ClFJ/LNHhScs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Sanjay R Mehta <sanju.mehta@amd.com>
----
- drivers/dma/ptdma/Makefile        |   2 +-
- drivers/dma/ptdma/ptdma-debugfs.c | 106 ++++++++++++++++++++++++++++++++++++++
- drivers/dma/ptdma/ptdma-dev.c     |   5 ++
- drivers/dma/ptdma/ptdma.h         |   6 +++
- 4 files changed, 118 insertions(+), 1 deletion(-)
- create mode 100644 drivers/dma/ptdma/ptdma-debugfs.c
+On Tue, Aug 17, 2021 at 02:44:52AM +0530, Aakash Hemadri wrote:
+> const struct of_device_id incorrectly assigned "match->data" using
+>     of_device_get_match_data()
+>=20
+> Instead assign `const struct tegra30_i2s_soc_data *soc_data` with
+> const void *of_device_get_match_data(...)
+>=20
+> Fixes: 356b94a32a75 ("ASoC: tegra30: i2s: Use of_device_get_match_data")
+>=20
+> Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
+> ---
+>  sound/soc/tegra/tegra30_i2s.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
+> index d4c5594efaf1..084a533bf4f2 100644
+> --- a/sound/soc/tegra/tegra30_i2s.c
+> +++ b/sound/soc/tegra/tegra30_i2s.c
+> @@ -406,7 +406,7 @@ static const struct of_device_id tegra30_i2s_of_match=
+[] =3D {
+>  static int tegra30_i2s_platform_probe(struct platform_device *pdev)
+>  {
+>  	struct tegra30_i2s *i2s;
+> -	const struct of_device_id *match;
+> +	const struct tegra30_i2s_soc_data *soc_data;
+>  	u32 cif_ids[2];
+>  	void __iomem *regs;
+>  	int ret;
+> @@ -418,13 +418,13 @@ static int tegra30_i2s_platform_probe(struct platfo=
+rm_device *pdev)
+>  	}
+>  	dev_set_drvdata(&pdev->dev, i2s);
+> =20
+> -	match =3D of_device_get_match_data(&pdev->dev);
+> -	if (!match) {
+> +	soc_data =3D of_device_get_match_data(&pdev->dev);
+> +	if (!soc_data) {
+>  		dev_err(&pdev->dev, "Error: No device match found\n");
+>  		ret =3D -ENODEV;
+>  		goto err;
+>  	}
+> -	i2s->soc_data =3D (struct tegra30_i2s_soc_data *)match->data;
+> +	i2s->soc_data =3D soc_data;
 
-diff --git a/drivers/dma/ptdma/Makefile b/drivers/dma/ptdma/Makefile
-index a528cb0..ce54102 100644
---- a/drivers/dma/ptdma/Makefile
-+++ b/drivers/dma/ptdma/Makefile
-@@ -5,6 +5,6 @@
- 
- obj-$(CONFIG_AMD_PTDMA) += ptdma.o
- 
--ptdma-objs := ptdma-dev.o ptdma-dmaengine.o
-+ptdma-objs := ptdma-dev.o ptdma-dmaengine.o ptdma-debugfs.o
- 
- ptdma-$(CONFIG_PCI) += ptdma-pci.o
-diff --git a/drivers/dma/ptdma/ptdma-debugfs.c b/drivers/dma/ptdma/ptdma-debugfs.c
-new file mode 100644
-index 0000000..c8307d3
---- /dev/null
-+++ b/drivers/dma/ptdma/ptdma-debugfs.c
-@@ -0,0 +1,106 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * AMD Passthrough DMA device driver
-+ * -- Based on the CCP driver
-+ *
-+ * Copyright (C) 2016,2021 Advanced Micro Devices, Inc.
-+ *
-+ * Author: Sanjay R Mehta <sanju.mehta@amd.com>
-+ * Author: Gary R Hook <gary.hook@amd.com>
-+ */
-+
-+#include <linux/debugfs.h>
-+#include <linux/seq_file.h>
-+
-+#include "ptdma.h"
-+
-+/* DebugFS helpers */
-+#define	RI_VERSION_NUM	0x0000003F
-+
-+#define	RI_NUM_VQM	0x00078000
-+#define	RI_NVQM_SHIFT	15
-+
-+static int pt_debugfs_info_show(struct seq_file *s, void *p)
-+{
-+	struct pt_device *pt = s->private;
-+	unsigned int regval;
-+
-+	seq_printf(s, "Device name: %s\n", dev_name(pt->dev));
-+	seq_printf(s, "   # Queues: %d\n", 1);
-+	seq_printf(s, "     # Cmds: %d\n", pt->cmd_count);
-+
-+	regval = ioread32(pt->io_regs + CMD_PT_VERSION);
-+
-+	seq_printf(s, "    Version: %d\n", regval & RI_VERSION_NUM);
-+	seq_puts(s, "    Engines:");
-+	seq_puts(s, "\n");
-+	seq_printf(s, "     Queues: %d\n", (regval & RI_NUM_VQM) >> RI_NVQM_SHIFT);
-+
-+	return 0;
-+}
-+
-+/*
-+ * Return a formatted buffer containing the current
-+ * statistics of queue for PTDMA
-+ */
-+static int pt_debugfs_stats_show(struct seq_file *s, void *p)
-+{
-+	struct pt_device *pt = s->private;
-+
-+	seq_printf(s, "Total Interrupts Handled: %ld\n", pt->total_interrupts);
-+
-+	return 0;
-+}
-+
-+static int pt_debugfs_queue_show(struct seq_file *s, void *p)
-+{
-+	struct pt_cmd_queue *cmd_q = s->private;
-+	unsigned int regval;
-+
-+	if (!cmd_q)
-+		return 0;
-+
-+	seq_printf(s, "               Pass-Thru: %ld\n", cmd_q->total_pt_ops);
-+
-+	regval = ioread32(cmd_q->reg_control + 0x000C);
-+
-+	seq_puts(s, "      Enabled Interrupts:");
-+	if (regval & INT_EMPTY_QUEUE)
-+		seq_puts(s, " EMPTY");
-+	if (regval & INT_QUEUE_STOPPED)
-+		seq_puts(s, " STOPPED");
-+	if (regval & INT_ERROR)
-+		seq_puts(s, " ERROR");
-+	if (regval & INT_COMPLETION)
-+		seq_puts(s, " COMPLETION");
-+	seq_puts(s, "\n");
-+
-+	return 0;
-+}
-+
-+DEFINE_SHOW_ATTRIBUTE(pt_debugfs_info);
-+DEFINE_SHOW_ATTRIBUTE(pt_debugfs_queue);
-+DEFINE_SHOW_ATTRIBUTE(pt_debugfs_stats);
-+
-+void ptdma_debugfs_setup(struct pt_device *pt)
-+{
-+	struct pt_cmd_queue *cmd_q;
-+	struct dentry *debugfs_q_instance;
-+
-+	if (!debugfs_initialized())
-+		return;
-+
-+	debugfs_create_file("info", 0400, pt->dma_dev.dbg_dev_root, pt,
-+			    &pt_debugfs_info_fops);
-+
-+	debugfs_create_file("stats", 0400, pt->dma_dev.dbg_dev_root, pt,
-+			    &pt_debugfs_stats_fops);
-+
-+	cmd_q = &pt->cmd_q;
-+
-+	debugfs_q_instance =
-+		debugfs_create_dir("q", pt->dma_dev.dbg_dev_root);
-+
-+	debugfs_create_file("stats", 0400, debugfs_q_instance, cmd_q,
-+			    &pt_debugfs_queue_fops);
-+}
-diff --git a/drivers/dma/ptdma/ptdma-dev.c b/drivers/dma/ptdma/ptdma-dev.c
-index 46e7eff..8a6bf29 100644
---- a/drivers/dma/ptdma/ptdma-dev.c
-+++ b/drivers/dma/ptdma/ptdma-dev.c
-@@ -102,6 +102,7 @@ int pt_core_perform_passthru(struct pt_cmd_queue *cmd_q,
- 	struct ptdma_desc desc;
- 
- 	cmd_q->cmd_error = 0;
-+	cmd_q->total_pt_ops++;
- 	memset(&desc, 0, sizeof(desc));
- 	desc.dw0 = CMD_DESC_DW0_VAL;
- 	desc.length = pt_engine->src_len;
-@@ -150,6 +151,7 @@ static irqreturn_t pt_core_irq_handler(int irq, void *data)
- 	u32 status;
- 
- 	pt_core_disable_queue_interrupts(pt);
-+	pt->total_interrupts++;
- 	status = ioread32(cmd_q->reg_control + 0x0010);
- 	if (status) {
- 		cmd_q->int_status = status;
-@@ -250,6 +252,9 @@ int pt_core_init(struct pt_device *pt)
- 	if (ret)
- 		goto e_dmaengine;
- 
-+	/* Set up debugfs entries */
-+	ptdma_debugfs_setup(pt);
-+
- 	return 0;
- 
- e_dmaengine:
-diff --git a/drivers/dma/ptdma/ptdma.h b/drivers/dma/ptdma/ptdma.h
-index 1329c55..860e302 100644
---- a/drivers/dma/ptdma/ptdma.h
-+++ b/drivers/dma/ptdma/ptdma.h
-@@ -216,6 +216,8 @@ struct pt_cmd_queue {
- 	u32 q_status;
- 	u32 q_int_status;
- 	u32 cmd_error;
-+	/* Queue Statistics */
-+	unsigned long total_pt_ops;
- } ____cacheline_aligned;
- 
- struct pt_device {
-@@ -254,6 +256,9 @@ struct pt_device {
- 
- 	wait_queue_head_t lsb_queue;
- 
-+	/* Device Statistics */
-+	unsigned long total_interrupts;
-+
- 	struct pt_tasklet_data tdata;
- };
- 
-@@ -307,6 +312,7 @@ struct pt_dev_vdata {
- int pt_dmaengine_register(struct pt_device *pt);
- void pt_dmaengine_unregister(struct pt_device *pt);
- 
-+void ptdma_debugfs_setup(struct pt_device *pt);
- int pt_core_init(struct pt_device *pt);
- void pt_core_destroy(struct pt_device *pt);
- 
--- 
-2.7.4
+Same comment as for the AHUB patch, although there's a bit more
+potential to save boilerplate here. For instance, there's really no need
+for the local "soc_data" variable here, so you can assign to
+i2s->soc_data directly and then leave out the unnecessary check as well.
 
+Thierry
+
+--WXB9ClFJ/LNHhScs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEbwDEACgkQ3SOs138+
+s6EYFg/7BlPu/5ug2oVMVdV/HsR+3h9uwCICjMgt8/psvUDjw1SU6x2Y/Ka2dHhZ
+7pLHXfsX5XZ18zrgADT0dDNwJiTBTdDwGRIwdG0hibghfJUnqIsHrI+/6EDOjm0w
+3HwhNpy4vwLxcV9IVR7p/w5TRvV/rAXFnrYjo9awsvcp+9OPvZXdWtfiXiiMlpa9
+PQbkq/YN6WnQO4R223jvsoHKWmG2g2+Uk8ZZ0kCmsCnip4ZAJ+IDnNGxoqACSIYu
+VxKUNr6a1K9ul0YKpKjm9hZu+B8q5d1n8498VdAVIrqeM6zj31dmArDXX6klPVMY
+X0aZ7I7YutW3k2YLLWwviyTM+j9RX2pGTVJQf8EvmUMrb5YmrOy3R961c4Zl6YCU
+l+byT2Fto23pJvbZp9Ao/y/YpAQFjZze0zSrg/cJGCcPql3O13CA3qgEiEEsLfss
+g35mfxJlcKTn+uxZDl/psbV2/ATnHtKc9Iwfve4XpNd7qsBAlfyRHbURQj/wp2O9
+YU/Zk44m29ytiWDNXJr8ShWmrF7IhghQvQ4bzpsDbPwaZ5x3rQR8caKeBX7gAgKA
+/NaV3BGzyhRYPXEVZFn1s+XFXVgm9BHZNLUJ54McTAaBPiMYMRzD1O6I7mWeErwf
+id6v4FxkCJxR8N8Y05b89bwndyaDxLWSp+8rkTRoOx/CGqEb1+g=
+=f3kI
+-----END PGP SIGNATURE-----
+
+--WXB9ClFJ/LNHhScs--
