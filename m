@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0EE63EF344
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE643EF354
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234568AbhHQUOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 16:14:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51386 "EHLO
+        id S234924AbhHQUO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 16:14:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234233AbhHQUOf (ORCPT
+        with ESMTP id S234252AbhHQUOg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 16:14:35 -0400
+        Tue, 17 Aug 2021 16:14:36 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB04C061764;
-        Tue, 17 Aug 2021 13:14:01 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 20:13:59 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C00C06179A;
+        Tue, 17 Aug 2021 13:14:02 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 20:14:00 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629231240;
+        s=2020; t=1629231241;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=AURNQ+yiagu9X2hXcAFpZEaShxSNZxa0lW5mHAwBfMA=;
-        b=ZlkMLRahd5IYEncIMcmuQLpDgcnJYxkQtXjRAF2/se2lTM59NTvxY869cVIl6v6LgSXu7D
-        eSheQlUtGxSgyv/Yo9B56t6+5Xg+b9keQlMmhW3IM2Oq7n8Q4r0/d49U6Vhfb/FvOLrOoN
-        t1KoV/288H4TRtUIiScDXmRKSJbluy77fdEYEqONGy/zE9pqzaMZyH+QdYdGw19hzle5d9
-        Ho9Qz6wTN5qGPCAgWjCYodddQuFm6kJ8PJJTXQUhaQu2DSrLiizdNI7UT7x72xRfWLncdW
-        LxZVqxyGiL5Zk9MolI9sldvVWdIgRdYdj+965g8Zu2ModC01tExox5Fko4aiXw==
+        bh=hagTnhJ7LtkuSI4ry32/Uu0nhg6d1jQvOPfr+Cm+4fo=;
+        b=JYqnS6jtzIZYXlQQaHDMXefoV9ImCn+3N3DTABgO4fFugFjQevGJbU+bJ7wIELnteI2a6I
+        u9kk4c34H+j+7tjmRttZeMNcebk1e+ex9ggYuWHApaLthu8eCgKoGneCRRNAj+x+gtX5o9
+        UrQm3T6kZjcHSzMSG6GxXfhxovWMvA0qC7edLWVbqZBIGWBWTm2WGxQCtNWOPdF4kM9xlQ
+        XimSZlS0iFvIZSbJn8NyxTGG8A/lXJVfOlGzpwU+ccDcTkEy3aDNpUuY2nolp4d/fyc9Dm
+        s55sNEBY16OqCIlbplS5kWVZhTCJE6oa6C/ozGxCz0JLGqgpsCRlwQRMLQQ39w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629231240;
+        s=2020e; t=1629231241;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=AURNQ+yiagu9X2hXcAFpZEaShxSNZxa0lW5mHAwBfMA=;
-        b=dq85VKXHgUSv46E9aI5FMgnp8h/hNyzjF10fGEny6313uy+GFJQpDBBosWLvv7WvdV/IgJ
-        ZO+B3LsLq2kawIBw==
+        bh=hagTnhJ7LtkuSI4ry32/Uu0nhg6d1jQvOPfr+Cm+4fo=;
+        b=VvRhOjbJjh75/JGL1nmHpq8tWjQ2kMRk0ojT61IhxRRv8INbbLcoIzJumE9mauK2exYGBz
+        l1676UEnMRMId/CA==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/rtmutex: Prevent lockdep false positive
- with PI futexes
+Subject: [tip: locking/core] futex: Simplify handle_early_requeue_pi_wakeup()
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210815211305.750701219@linutronix.de>
-References: <20210815211305.750701219@linutronix.de>
+In-Reply-To: <20210815211305.638938670@linutronix.de>
+References: <20210815211305.638938670@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <162923123934.25758.12789675236369119207.tip-bot2@tip-bot2>
+Message-ID: <162923124056.25758.2868990913914434391.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -63,53 +62,109 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     51711e825a6d1b2fe7ca46bb06d08c25d97656ee
-Gitweb:        https://git.kernel.org/tip/51711e825a6d1b2fe7ca46bb06d08c25d97656ee
+Commit-ID:     6231acbd0802e76580c71ceb52c09646d42170fb
+Gitweb:        https://git.kernel.org/tip/6231acbd0802e76580c71ceb52c09646d42170fb
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sun, 15 Aug 2021 23:29:20 +02:00
+AuthorDate:    Sun, 15 Aug 2021 23:29:17 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 17 Aug 2021 19:06:02 +02:00
+CommitterDate: Tue, 17 Aug 2021 19:05:57 +02:00
 
-locking/rtmutex: Prevent lockdep false positive with PI futexes
+futex: Simplify handle_early_requeue_pi_wakeup()
 
-On PREEMPT_RT the futex hashbucket spinlock becomes 'sleeping' and rtmutex
-based. That causes a lockdep false positive because some of the futex
-functions invoke spin_unlock(&hb->lock) with the wait_lock of the rtmutex
-associated to the pi_futex held.  spin_unlock() in turn takes wait_lock of
-the rtmutex on which the spinlock is based which makes lockdep notice a
-lock recursion.
-
-Give the futex/rtmutex wait_lock a separate key.
+Move the futex key match out of handle_early_requeue_pi_wakeup() which
+allows to simplify that function. The upcoming state machine for
+requeue_pi() will make that go away.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210815211305.750701219@linutronix.de
+Link: https://lore.kernel.org/r/20210815211305.638938670@linutronix.de
 ---
- kernel/locking/rtmutex_api.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ kernel/futex.c | 48 ++++++++++++++++++++++--------------------------
+ 1 file changed, 22 insertions(+), 26 deletions(-)
 
-diff --git a/kernel/locking/rtmutex_api.c b/kernel/locking/rtmutex_api.c
-index 92b7d28..5c9299a 100644
---- a/kernel/locking/rtmutex_api.c
-+++ b/kernel/locking/rtmutex_api.c
-@@ -214,7 +214,19 @@ EXPORT_SYMBOL_GPL(__rt_mutex_init);
- void __sched rt_mutex_init_proxy_locked(struct rt_mutex_base *lock,
- 					struct task_struct *proxy_owner)
- {
-+	static struct lock_class_key pi_futex_key;
-+
- 	__rt_mutex_base_init(lock);
-+	/*
-+	 * On PREEMPT_RT the futex hashbucket spinlock becomes 'sleeping'
-+	 * and rtmutex based. That causes a lockdep false positive, because
-+	 * some of the futex functions invoke spin_unlock(&hb->lock) with
-+	 * the wait_lock of the rtmutex associated to the pi_futex held.
-+	 * spin_unlock() in turn takes wait_lock of the rtmutex on which
-+	 * the spinlock is based, which makes lockdep notice a lock
-+	 * recursion. Give the futex/rtmutex wait_lock a separate key.
-+	 */
-+	lockdep_set_class(&lock->wait_lock, &pi_futex_key);
- 	rt_mutex_set_owner(lock, proxy_owner);
+diff --git a/kernel/futex.c b/kernel/futex.c
+index a5232f6..82660b9 100644
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -3070,27 +3070,22 @@ pi_faulted:
  }
  
+ /**
+- * handle_early_requeue_pi_wakeup() - Detect early wakeup on the initial futex
++ * handle_early_requeue_pi_wakeup() - Handle early wakeup on the initial futex
+  * @hb:		the hash_bucket futex_q was original enqueued on
+  * @q:		the futex_q woken while waiting to be requeued
+- * @key2:	the futex_key of the requeue target futex
+  * @timeout:	the timeout associated with the wait (NULL if none)
+  *
+- * Detect if the task was woken on the initial futex as opposed to the requeue
+- * target futex.  If so, determine if it was a timeout or a signal that caused
+- * the wakeup and return the appropriate error code to the caller.  Must be
+- * called with the hb lock held.
++ * Determine the cause for the early wakeup.
+  *
+  * Return:
+- *  -  0 = no early wakeup detected;
+- *  - <0 = -ETIMEDOUT or -ERESTARTNOINTR
++ *  -EWOULDBLOCK or -ETIMEDOUT or -ERESTARTNOINTR
+  */
+ static inline
+ int handle_early_requeue_pi_wakeup(struct futex_hash_bucket *hb,
+-				   struct futex_q *q, union futex_key *key2,
++				   struct futex_q *q,
+ 				   struct hrtimer_sleeper *timeout)
+ {
+-	int ret = 0;
++	int ret;
+ 
+ 	/*
+ 	 * With the hb lock held, we avoid races while we process the wakeup.
+@@ -3099,22 +3094,21 @@ int handle_early_requeue_pi_wakeup(struct futex_hash_bucket *hb,
+ 	 * It can't be requeued from uaddr2 to something else since we don't
+ 	 * support a PI aware source futex for requeue.
+ 	 */
+-	if (!match_futex(&q->key, key2)) {
+-		WARN_ON(q->lock_ptr && (&hb->lock != q->lock_ptr));
+-		/*
+-		 * We were woken prior to requeue by a timeout or a signal.
+-		 * Unqueue the futex_q and determine which it was.
+-		 */
+-		plist_del(&q->list, &hb->chain);
+-		hb_waiters_dec(hb);
++	WARN_ON_ONCE(&hb->lock != q->lock_ptr);
+ 
+-		/* Handle spurious wakeups gracefully */
+-		ret = -EWOULDBLOCK;
+-		if (timeout && !timeout->task)
+-			ret = -ETIMEDOUT;
+-		else if (signal_pending(current))
+-			ret = -ERESTARTNOINTR;
+-	}
++	/*
++	 * We were woken prior to requeue by a timeout or a signal.
++	 * Unqueue the futex_q and determine which it was.
++	 */
++	plist_del(&q->list, &hb->chain);
++	hb_waiters_dec(hb);
++
++	/* Handle spurious wakeups gracefully */
++	ret = -EWOULDBLOCK;
++	if (timeout && !timeout->task)
++		ret = -ETIMEDOUT;
++	else if (signal_pending(current))
++		ret = -ERESTARTNOINTR;
+ 	return ret;
+ }
+ 
+@@ -3217,7 +3211,9 @@ static int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
+ 	futex_wait_queue_me(hb, &q, to);
+ 
+ 	spin_lock(&hb->lock);
+-	ret = handle_early_requeue_pi_wakeup(hb, &q, &key2, to);
++	/* Is @q still queued on uaddr1? */
++	if (!match_futex(&q->key, key2))
++		ret = handle_early_requeue_pi_wakeup(hb, &q, to);
+ 	spin_unlock(&hb->lock);
+ 	if (ret)
+ 		goto out;
