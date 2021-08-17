@@ -2,79 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4633EF065
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 18:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11CAC3EF067
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 18:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231328AbhHQQt5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Aug 2021 12:49:57 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:10093 "EHLO
+        id S231440AbhHQQt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 12:49:58 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:34685 "EHLO
         relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230325AbhHQQtw (ORCPT
+        with ESMTP id S231186AbhHQQty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 12:49:52 -0400
+        Tue, 17 Aug 2021 12:49:54 -0400
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 5921B240008;
-        Tue, 17 Aug 2021 16:49:14 +0000 (UTC)
-Date:   Tue, 17 Aug 2021 18:49:13 +0200
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 9E9B824000B;
+        Tue, 17 Aug 2021 16:49:19 +0000 (UTC)
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH 3/3] mtdblock: Warn if the added for a NAND device
-Message-ID: <20210817184913.5162b242@xps13>
-In-Reply-To: <CAAEAJfDqEu0XtZ_FvVUM31p5PumPmK0x-r8sFWXzENDqf5zj_g@mail.gmail.com>
-References: <20210801234509.18774-8-ezequiel@collabora.com>
-        <20210806200537.394260-1-miquel.raynal@bootlin.com>
-        <CAAEAJfDqEu0XtZ_FvVUM31p5PumPmK0x-r8sFWXzENDqf5zj_g@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+To:     Zhihao Cheng <chengzhihao1@huawei.com>, miquel.raynal@bootlin.com,
+        richard@nod.at, vigneshr@ti.com, bbrezillon@kernel.org
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com
+Subject: Re: [PATCH v2 1/2] mtd: mtdconcat: Judge callback existence based on the master
+Date:   Tue, 17 Aug 2021 18:49:18 +0200
+Message-Id: <20210817164918.108904-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210817114857.2784825-2-chengzhihao1@huawei.com>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'f9e109a209a8e01e16f37e1252304f1eb3908be4'
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ezequiel,
-
-Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote on Tue, 17 Aug
-2021 13:27:54 -0300:
-
-> Bonjour Miquel,
+On Tue, 2021-08-17 at 11:48:56 UTC, Zhihao Cheng wrote:
+> Since commit 46b5889cc2c5("mtd: implement proper partition handling")
+> applied, mtd partition device won't hold some callback functions, such
+> as _block_isbad, _block_markbad, etc. Besides, function mtd_block_isbad()
+> will get mtd device's master mtd device, then invokes master mtd device's
+> callback function. So, following process may result mtd_block_isbad()
+> always return 0, even though mtd device has bad blocks:
 > 
-> On Fri, 6 Aug 2021 at 17:05, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> >
-> > On Sun, 2021-08-01 at 23:45:09 UTC, Ezequiel Garcia wrote:
-> > > There is a surprisingly large number of tutorials
-> > > that suggest using mtdblock to mount SquashFS filesystems
-> > > on flash devices, including NAND devices.
-> > >
-> > > This approach is suboptimal than using UBI. If the flash device
-> > > is NAND, this is specially true, due to wear leveling, bit-flips and
-> > > badblocks. In this case UBI is strongly preferred, so be nice to users
-> > > and print a warning suggesting to consider UBI block, if mtdblock
-> > > is added for a NAND device.
-> > >
-> > > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> >
-> > Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
-> >
+> 1. Split a mtd device into 3 partitions: PA, PB, PC
+> [ Each mtd partition device won't has callback function _block_isbad(). ]
+> 2. Concatenate PA and PB as a new mtd device PN
+> [ mtd_concat_create() finds out each subdev has no callback function
+> _block_isbad(), so PN won't be assigned callback function
+> concat_block_isbad(). ]
+> Then, mtd_block_isbad() checks "!master->_block_isbad" is true, will
+> always return 0.
 > 
-> Any chance you respin this one?
+> Reproducer:
+> // reproduce.c
+> static int __init init_diy_module(void)
+> {
+> 	struct mtd_info *mtd[2];
+> 	struct mtd_info *mtd_combine = NULL;
 > 
-> It appears somehow this made its way to the patch:
-> "Untracked files not listed" sorry about that -- could you remove it?
+> 	mtd[0] = get_mtd_device_nm("NAND simulator partition 0");
+> 	if (!mtd[0]) {
+> 		pr_err("cannot find mtd1\n");
+> 		return -EINVAL;
+> 	}
+> 	mtd[1] = get_mtd_device_nm("NAND simulator partition 1");
+> 	if (!mtd[1]) {
+> 		pr_err("cannot find mtd2\n");
+> 		return -EINVAL;
+> 	}
+> 
+> 	put_mtd_device(mtd[0]);
+> 	put_mtd_device(mtd[1]);
+> 
+> 	mtd_combine = mtd_concat_create(mtd, 2, "Combine mtd");
+> 	if (mtd_combine == NULL) {
+> 		pr_err("combine failed\n");
+> 		return -EINVAL;
+> 	}
+> 
+> 	mtd_device_register(mtd_combine, NULL, 0);
+> 	pr_info("Combine success\n");
+> 
+> 	return 0;
+> }
+> 
+> 1. ID="0x20,0xac,0x00,0x15"
+> 2. modprobe nandsim id_bytes=$ID parts=50,100 badblocks=100
+> 3. insmod reproduce.ko
+> 4. flash_erase /dev/mtd3 0 0
+>   libmtd: error!: MEMERASE64 ioctl failed for eraseblock 100 (mtd3)
+>   error 5 (Input/output error)
+>   // Should be "flash_erase: Skipping bad block at 00c80000"
+> 
+> Fixes: 46b5889cc2c54bac ("mtd: implement proper partition handling")
+> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 
-Yeah no problem about that, it happens ;)
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
-> While there, you can fix the typo in the commit title:
-> "mtdblock: Warn if the added for a NAND device" -> "mtdblock: Warn if
-> added for a NAND device"
-
-Done as well.
-
-Cheers!
-Miquèl
+Miquel
