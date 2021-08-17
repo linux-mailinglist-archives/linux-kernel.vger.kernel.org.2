@@ -2,196 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCEF3EE604
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 07:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E93873EE607
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 07:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237701AbhHQFGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 01:06:25 -0400
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:41346 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230272AbhHQFGV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 01:06:21 -0400
-Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17GKhwpU029012;
-        Mon, 16 Aug 2021 22:05:28 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=proofpoint;
- bh=MtFeXoHPRVo3zIHQIa/jFoPHlqpLvvowa2mwvL+fHU4=;
- b=Y25OOy/vtQKZhjehEWYoXKiEWNHBtpMB/YgvWJgyzIgOJ0+NtQrqYMPxrn8qrm7BeZO/
- 7jwcwNeoetaRxQEI9Weuzznr+3lyKMGOKMqPaTOaBYW9haauTnD0DsnKfFRqDHnRlkHq
- AmJcchDLs5LRg/e0sltEFKKdlLyH3jliGi5Fff+RUFNn+3tFRIrNyZT18OjmLx/a+bD5
- vURh//oJT4JfS18cqVnJ5xaBPi+sIF94nSf97kLdZfbdnXMXC6j5gPVeB50i9JTyIvbO
- 9Yc0sIc+7wEEfyU3lC2UuwXucE4h2RBoSTJoQf/1OPCqB/hURIwtbBsBl+xstgWF4QBu 2Q== 
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2174.outbound.protection.outlook.com [104.47.56.174])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 3afyahs26v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Aug 2021 22:05:28 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NxgK5hbyRvElSPNy8ffnMVAN68jX6W1a99C9aoFPx9FyoD+jz/wiJfQCaQUtPld0vpA0NLlAR8kSGgrdh8Tc+K2XS5BDXkpN6JG5gQ4IVWcHGHquUBZ9rlz4roipW/cRzp3819GrgvZN1WsAMODoh6OMNTaJbnWX7K08RxLE1WDDuYI+4e+rZUOOcojt18KnOo3voxcaaTpRRcm8inF3qF3dO4A7BQR+ow+9D6ktngyQlIA5E6G7GENGHNuwVAwjAakxvX7D0UQWjF3YE+cw2fWY8v8XVo+OBZrcWp3TpGNZP5Nc751jDhmnz3k8Cn2M+SiOGw5jHSgUokWxGdrwAA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MtFeXoHPRVo3zIHQIa/jFoPHlqpLvvowa2mwvL+fHU4=;
- b=k8xfVVynycrD4xsnlh8HlQvwebezUfMEHeotxtIcaWnSwv1OphqyCxDho2d0E8gz5dwGsnt7I06rP6b9cKXgEJaQaAtcJSFTeGNm9wEBNpnwMZ/tNztwTpBtlA955hljYnS6fw2W09wkNesTeDsWRXeLI73WVE3aTkS7boSAmhCbk/GYzi0U+RxnxH+Ixnf6kIQgTDfFtbId0s6bfFsR3V1SxDB88019JugjB7Lwf84lzh8Ct08OGuDw0UDn2qowC525AKp2xK4W9ldM4f+VHg1/G3MFscJb46oyTPTsJmv1DrFYSIoJIGRpryZ9AgTbQGupgMMDkpEY0PcK1ip54A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
- dkim=pass header.d=cadence.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MtFeXoHPRVo3zIHQIa/jFoPHlqpLvvowa2mwvL+fHU4=;
- b=m5cDEmIK3Ni2/YgMJ8usAF4bnUn74MK3FJJbvA5Clil71q3HmXFKvk2IKJeO3XsaIWEUdE9slHIHpBow9H0+kWJfwu5pM2ns3hr85gfmjxpvJUw1rMVvIpN3OLLMlGcw5kKKueVKxOgsqF+/qSB4smehrnQYAKWJYNW/Ig2WhVQ=
-Received: from BYAPR07MB5381.namprd07.prod.outlook.com (2603:10b6:a03:6d::24)
- by BYAPR07MB4662.namprd07.prod.outlook.com (2603:10b6:a02:f1::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16; Tue, 17 Aug
- 2021 05:05:26 +0000
-Received: from BYAPR07MB5381.namprd07.prod.outlook.com
- ([fe80::9c3b:e79f:87da:34ee]) by BYAPR07MB5381.namprd07.prod.outlook.com
- ([fe80::9c3b:e79f:87da:34ee%7]) with mapi id 15.20.4415.024; Tue, 17 Aug 2021
- 05:05:26 +0000
-From:   Pawel Laszczak <pawell@cadence.com>
-To:     Felipe Balbi <balbi@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Al Cooper <alcooperx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bcm-kernel-feedback-list@broadcom.com" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        Eddie Hung <eddie.hung@mediatek.com>
-Subject: RE: [PATCH 3/6] usb: cdnsp: fix the wrong mult value for HS isoc or
- intr
-Thread-Topic: [PATCH 3/6] usb: cdnsp: fix the wrong mult value for HS isoc or
- intr
-Thread-Index: AQHXjyrfpZtBA2WHu0CYToBU7vJUratvbn+AgAe9KXA=
-Date:   Tue, 17 Aug 2021 05:05:26 +0000
-Message-ID: <BYAPR07MB53815317736C694887D51BE8DDFE9@BYAPR07MB5381.namprd07.prod.outlook.com>
-References: <1628739182-30089-1-git-send-email-chunfeng.yun@mediatek.com>
- <1628739182-30089-3-git-send-email-chunfeng.yun@mediatek.com>
- <87mtpnyx3g.fsf@kernel.org>
-In-Reply-To: <87mtpnyx3g.fsf@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNccGF3ZWxsXGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUzNWJcbXNnc1xtc2ctYjk1NjQzNTUtZmYxOC0xMWViLTg3OTYtYTQ0Y2M4MWIwYzU1XGFtZS10ZXN0XGI5NTY0MzU3LWZmMTgtMTFlYi04Nzk2LWE0NGNjODFiMGM1NWJvZHkudHh0IiBzej0iMTMzMiIgdD0iMTMyNzM2NTAzMjI4ODI0OTEwIiBoPSJuSFk2UmhwdGhoTjZpTG8vemFqNlo5Q0tMaVk9IiBpZD0iIiBibD0iMCIgYm89IjEiLz48L21ldGE+
-x-dg-rorf: true
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=cadence.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 611e0ef9-b99c-4988-5459-08d9613ca028
-x-ms-traffictypediagnostic: BYAPR07MB4662:
-x-microsoft-antispam-prvs: <BYAPR07MB46622B02E5289956C05488BDDDFE9@BYAPR07MB4662.namprd07.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4714;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: iXXrKdUcIZDDN+Z58ygogWqH481SueCbqgtpgiJ1Cx8xyMht9FVF3XbxdiQaoZkO40L/xJcy/ewKJz2Byup62jM0pgNttv7RLrCDF53KVsHGs6k8D4lKV0W1QAAlTl3WRcUMTZYvripW0gvqy7RHWdVzaR5S6HBzJuNaqEma+li3v4QPPYYeEB0z+L6WoS4v1LuyE4PdDMACF44AIeocAxku/fCcPjQhWwVgtp5B5/5gq5tTE55SiU4jJKfuRbcDxVO8ymq4VF0Y+LRECeWxLK2wlelKTQnh1NgZf5qRNmg5zX+EAl0zAhqKKifCO0sblRXXEM7a0sj1AgMOl6jFZYMl6wDfODNJgjO8o60YykLq7JwvcUycT/iSB/SlG7/hGww9ZP7EBRdkhEp3939s9y0ZKCskcC4Wl9l9fexKg3FaFe7M2YQnZX9CbJBOU3v1FHJXhC4xZq7q/FTqSBJK78AAHgXpBm0aE098iUN8PFimwytQu6WvPge56qd03YYI/TBLr8Q0DAJ+qmKvD0/NzvZCF/78/O38G3y4nSMs9VBFYJI7khUkLxUOI7AAbFi1bZqRNK5yq7S/DgJGlk1clVFsunCUu79540dLhobtPUq8dumT7Gi50r/D4jrc4dRh5Y5Rd+fGWjRplAjr48BCBspWg/2gbfFgAas95KjLIRW75gZ6npdx19/eykJcPR+w9oxssTTEJeiyJ/8mtgV6grS3vp3Y7HSQISFszb64Hkk=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR07MB5381.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(39860400002)(366004)(376002)(346002)(36092001)(478600001)(8936002)(7696005)(7416002)(33656002)(8676002)(122000001)(4326008)(38070700005)(71200400001)(38100700002)(83380400001)(26005)(5660300002)(110136005)(52536014)(54906003)(316002)(55016002)(6506007)(186003)(66446008)(2906002)(76116006)(9686003)(66476007)(66946007)(86362001)(64756008)(66556008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?R2oxc52uZghqRo8ltVqCIHqBjmO1fkBXI/M76SgWUBImqB+4eAsgR1w+zQK9?=
- =?us-ascii?Q?6BMQzEbakIJgGNyeOwmn/GotLIGQQBA4dJMg7R0SF9/dIBSPhbiy75y2CNry?=
- =?us-ascii?Q?VfH9CO9jWXCOWZlgAWA+XO9/BvMT5715sgq9rl0rjAjVQl44qDygM0uqjZLW?=
- =?us-ascii?Q?Bk7pAzZumSenHm8/jFtibA7u32SK5Z4QK76wulFoGa5OpdhKd47kEdN8Kf0+?=
- =?us-ascii?Q?U/ILi2N6PrCNH5PZYZSN0QNhD5+Kj6Cx6nkndGOlIm0kb0The/7/UjRlVPte?=
- =?us-ascii?Q?tHRDHo7J2in9I+R5yc5LRiScQSDf0KRjclY4YNrQ5PPOQQHFA+DDuY+TvTGN?=
- =?us-ascii?Q?uk3aln7uZUCGNeI2OcUga1Qj1BxqNMNrjSNgx+0i4PJB6xXu3WSKzbDcrvBI?=
- =?us-ascii?Q?PcGRw9IUCY4IgWFdSsGSo7NeAlyMZCQF3WkomI4W2oJkYAY/te7/VknZYnUG?=
- =?us-ascii?Q?DMjpb44X2iT+wCRNU/emnyBTbOHkISUAW864+XuoBzPfIaSpibCOQlng49/7?=
- =?us-ascii?Q?I+4toIF93kg/T5HsfjAO+Qq3Oq8VoY5cmoWETSB9b1JmQ5N3TbOfrtideoP9?=
- =?us-ascii?Q?sLbryEi7XUlrZqfdWyP3tZ4mx6Zcjo5EyPM7X3nWHOjqgpuqcXXN5P6N4e05?=
- =?us-ascii?Q?mTa9dma0x6gGxzyHzLKXUNfElYZq2h7K/iIYDK2wmA4lgBnVbyiAv6Eqbb9b?=
- =?us-ascii?Q?ntzUlhYfaZrPQX9rb6YHi1YbHHZE/GX5zOFPsxdTSufBPTctCXseXKuZZoDb?=
- =?us-ascii?Q?QlUYZwZ1FZQ2d2vVmeoWgNozpjlrtelhGdIbXFzdeQ4/HsLOzTDRzzfdi1lN?=
- =?us-ascii?Q?47nUjMqKRf08bb8ByGDgaBOi5qciafJn3FAAb+h+e61XuCLVvngc+Goq8HWk?=
- =?us-ascii?Q?xVFwC4s2f33Ux/HsTetkpFxeknYSU+uVE8/Xfxe0opPnwtxG4ee4sPNiaUsi?=
- =?us-ascii?Q?tY1Tu8imjJ/bdaSD6vp9d57bu21F3u8PpNPsAYLJIdDuICo0Sob9k9PpwkC1?=
- =?us-ascii?Q?s5ehM3fRmGGBOEYlQxByGsYoGt8nD9LJWLGpmqfYWWPbAQUuqH3PKKPC3Pvq?=
- =?us-ascii?Q?7O/34t24LrSY3vAEnhE5zjk16/XWElLLu4ElPXOc14cxi2/3oFoVKd2k4VXZ?=
- =?us-ascii?Q?4Wo5kCjbkNByYRvtG6HcOH7QayVg74Vibi8eMoXCzpGrdMFyMsP9GWCf8YN/?=
- =?us-ascii?Q?G2wvKHy8vGu6b7PNnx8Mt1D6ol4/zvy9LIfql1AOqN+/VpN0hVeuwM8B2+0W?=
- =?us-ascii?Q?YbICdaHXXGVdiHMUwLkwb/WWRgePkR+D2F6qGo4pO2K963sCA1b8GQwc9YWJ?=
- =?us-ascii?Q?kKXE+DZfru83Lu97bifZgB5a?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S237769AbhHQFHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 01:07:17 -0400
+Received: from ni.piap.pl ([195.187.100.5]:58032 "EHLO ni.piap.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230272AbhHQFHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 01:07:16 -0400
+Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
+        by ni.piap.pl (Postfix) with ESMTPSA id E7513C3F3EDA;
+        Tue, 17 Aug 2021 07:06:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl E7513C3F3EDA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
+        t=1629176802; bh=BncA8TWUZxHXaDjf1pRp2qEcIPewHUnFiNIakbpEBjI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KoaGh/d/HYCFAn2OGQST+S1bTFmvu1Ue0EoCOiQQ8T6zkQLJyTrcG6XTp6W5K9iDM
+         iE6M4HbKhLoIyPO5elp3ngxzQ1CYayMBVJuJkmVnsPFxaaiyCh2ydpqcBn/wGvKm1M
+         g5Il0XwQ53ioPjv8BPBa1a4kDDaV2KhD7C1s5GBI=
+From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci@vger.kernel.org, Artem Lapkin <email2tema@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Richard Zhu <hongxing.zhu@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] PCIe: limit Max Read Request Size on i.MX to 512 bytes
+Sender: khalasa@piap.pl
+Date:   Tue, 17 Aug 2021 07:06:41 +0200
+Message-ID: <m3bl5wzmla.fsf@t19.piap.pl>
 MIME-Version: 1.0
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR07MB5381.namprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 611e0ef9-b99c-4988-5459-08d9613ca028
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Aug 2021 05:05:26.1586
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: s0ewYtzLpin7p+DxO4F+yv4BDVorPnsHXZzC1+88UdCRzDKQXaLbuxZhYkDBWKLwem3th44t/obuxIFVWf3wqOIkuR/wlWDaeMzVrlELmts=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR07MB4662
-X-Proofpoint-ORIG-GUID: VBkvKkaK0pwR11ItLl7f9K5hQCmugEcl
-X-Proofpoint-GUID: VBkvKkaK0pwR11ItLl7f9K5hQCmugEcl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-08-17_01,2021-08-16_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 clxscore=1011
- mlxscore=0 impostorscore=0 spamscore=0 mlxlogscore=999 priorityscore=1501
- bulkscore=0 lowpriorityscore=0 suspectscore=0 malwarescore=0 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108170031
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-KLMS-Rule-ID: 1
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Lua-Profiles: 165596 [Aug 17 2021]
+X-KLMS-AntiSpam-Version: 5.9.20.0
+X-KLMS-AntiSpam-Envelope-From: khalasa@piap.pl
+X-KLMS-AntiSpam-Rate: 0
+X-KLMS-AntiSpam-Status: not_detected
+X-KLMS-AntiSpam-Method: none
+X-KLMS-AntiSpam-Auth: dkim=pass header.d=piap.pl
+X-KLMS-AntiSpam-Info: LuaCore: 454 454 39c6e442fd417993330528e7f9d13ac1bf7fdf8c, {Tracking_marketers, three}, {Tracking_from_domain_doesnt_match_to}, piap.pl:7.1.1;t19.piap.pl:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-MS-Exchange-Organization-SCL: -1
+X-KLMS-AntiSpam-Interceptor-Info: scan successful
+X-KLMS-AntiPhishing: Clean, bases: 2021/08/17 03:39:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/08/17 02:51:00 #17049510
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
->Chunfeng Yun <chunfeng.yun@mediatek.com> writes:
->
->> usb_endpoint_maxp() only returns the bit[10:0] of wMaxPacketSize
->> of endpoint descriptor, not include bit[12:11] anymore, so use
->> usb_endpoint_maxp_mult() instead.
->>
->> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
->> ---
->>  drivers/usb/cdns3/cdnsp-mem.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/usb/cdns3/cdnsp-mem.c b/drivers/usb/cdns3/cdnsp-mem=
-.c
->> index a47948a1623f..ad9aee3f1e39 100644
->> --- a/drivers/usb/cdns3/cdnsp-mem.c
->> +++ b/drivers/usb/cdns3/cdnsp-mem.c
->> @@ -882,7 +882,7 @@ static u32 cdnsp_get_endpoint_max_burst(struct usb_g=
-adget *g,
->>  	if (g->speed =3D=3D USB_SPEED_HIGH &&
->>  	    (usb_endpoint_xfer_isoc(pep->endpoint.desc) ||
->>  	     usb_endpoint_xfer_int(pep->endpoint.desc)))
->> -		return (usb_endpoint_maxp(pep->endpoint.desc) & 0x1800) >> 11;
->> +		return usb_endpoint_maxp_mult(pep->endpoint.desc) - 1;
->
->this looks like a bugfix. Do we need to Cc stable here?
->
->In any case:
->
->Acked-by: Felipe Balbi <balbi@kernel.org>
->
+DWC PCIe controller imposes limits on the Read Request Size that it can
+handle. For i.MX6 family it's fixed at 512 bytes by default.
 
-It's not a bugfix. The result is the same.
+If a memory read larger than the limit is requested, the CPU responds
+with Completer Abort (CA) (on i.MX6 Unsupported Request (UR) is returned
+instead due to a design error).
 
-Acked-by: Pawel Laszczak <pawell@cadence.com>
+The i.MX6 documentation states that the limit can be changed by writing
+to the PCIE_PL_MRCCR0 register, however there is a fixed (and
+undocumented) maximum (CX_REMOTE_RD_REQ_SIZE constant). Tests indicate
+that values larger than 512 bytes don't work, though.
 
---
+This patch makes the RTL8111 work on i.MX6.
 
-Thanks=20
-Pawel Laszczak
+Signed-off-by: Krzysztof Ha=C5=82asa <khalasa@piap.pl>
+---
+While ATM needed only on ARM, this version is compiled in on all
+archs.
+
+diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller=
+/dwc/pci-imx6.c
+index 80fc98acf097..225380e75fff 100644
+--- a/drivers/pci/controller/dwc/pci-imx6.c
++++ b/drivers/pci/controller/dwc/pci-imx6.c
+@@ -1148,6 +1148,7 @@ static int imx6_pcie_probe(struct platform_device *pd=
+ev)
+ 		imx6_pcie->vph =3D NULL;
+ 	}
+=20
++	max_pcie_mrrs =3D 512;
+ 	platform_set_drvdata(pdev, imx6_pcie);
+=20
+ 	ret =3D imx6_pcie_attach_pd(dev);
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index aacf575c15cf..abeb48a64ee3 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -112,6 +112,8 @@ enum pcie_bus_config_types pcie_bus_config =3D PCIE_BUS=
+_PEER2PEER;
+ enum pcie_bus_config_types pcie_bus_config =3D PCIE_BUS_DEFAULT;
+ #endif
+=20
++u16 max_pcie_mrrs =3D 4096; // no limit
++
+ /*
+  * The default CLS is used if arch didn't set CLS explicitly and not
+  * all pci devices agree on the same value.  Arch can override either
+@@ -5816,6 +5818,9 @@ int pcie_set_readrq(struct pci_dev *dev, int rq)
+ 			rq =3D mps;
+ 	}
+=20
++	if (rq > max_pcie_mrrs)
++		rq =3D max_pcie_mrrs;
++
+ 	v =3D (ffs(rq) - 8) << 12;
+=20
+ 	ret =3D pcie_capability_clear_and_set_word(dev, PCI_EXP_DEVCTL,
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index 06ff1186c1ef..2b95a8204819 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -996,6 +996,7 @@ enum pcie_bus_config_types {
+ };
+=20
+ extern enum pcie_bus_config_types pcie_bus_config;
++extern u16 max_pcie_mrrs;
+=20
+ extern struct bus_type pci_bus_type;
+=20
+
+--=20
+Krzysztof "Chris" Ha=C5=82asa
+
+Sie=C4=87 Badawcza =C5=81ukasiewicz
+Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
