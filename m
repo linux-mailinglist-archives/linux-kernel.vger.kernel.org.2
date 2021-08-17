@@ -2,142 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 321AF3EE600
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 07:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 740493EE601
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 07:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234164AbhHQFDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 01:03:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42136 "EHLO mail.kernel.org"
+        id S234214AbhHQFF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 01:05:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230272AbhHQFDs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 01:03:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E43660EB5;
-        Tue, 17 Aug 2021 05:03:13 +0000 (UTC)
+        id S230272AbhHQFFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 01:05:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 136EA60EB5;
+        Tue, 17 Aug 2021 05:04:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629176596;
-        bh=ZdHbkqKhc0WJo6VRir9iZIXmJbNq2k/EpQBReeUoodw=;
+        s=k20201202; t=1629176693;
+        bh=HGnOeo4oEo1UGFoCN3RyUNNDoCr3GU8htCTpo6xSDTo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D6p+2NrezK1PZFineProSDhHK2Mp8ojsGnV0RpW7OwpP1VV7PHtJfIQF3gaoppabR
-         ktFjkmB11N4WnFi+fj74pzkJWZEui4Xly9RmFR+FKiLYU6ebRJUBF+jCCZfM5lXiQk
-         kw9sCRG2/90ec+SfZnl1yJybh6ytvalkEyOEt4x8CklNPdasimB9fPNuyP19clL9iU
-         dT/IakRGF0eeUaA2r0XPt8J+Idz5wus79s5OFC9rZWP0/oHMaf8DRJzbAd4U7bR3Dc
-         OxMuWJQhToHTEpf1euqLN+kH7/sY8NlrTW+fkJLGRarg1cJ+TA0qEK++WnnOH9V0xt
-         j7pXHGFBHUHBA==
-Date:   Tue, 17 Aug 2021 08:03:09 +0300
+        b=d3x8UGVXHHRMBkIRHCn1rk8ocvswnVLbZ3Pc4jlVxOFuBancWFChH1vFZVXmhDMwU
+         681ipYRO6BQ8Kb8X/eTHQpX2srZBmOeCqxh3GTawi5r0C+FelAkTSQ0WHSYHIugh8A
+         TGgQ8YucKas08d+r4tuyZU+dpGfCgdbFBIj4G/7CrFtypNNsWhjsPqjMTTQXdnvXOD
+         xCtuxopynHnljt4J9Md4cYJbp1qOuDFFpYRU4tXz7G046CjEU1Y2y0MiR5RTAhBXaP
+         L+UFZCNvnVSq47TZhif7ZOVNLFX5oA+Tsf4Jgj6B6deE45SS2lDli4mCZQOZx0fmQq
+         rvs10Jfxu+QBw==
+Date:   Tue, 17 Aug 2021 08:04:46 +0300
 From:   Mike Rapoport <rppt@kernel.org>
 To:     Vineet Gupta <vgupta@kernel.org>
 Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [PATCH v2 16/19] ARC: mm: support 3 levels of page tables
-Message-ID: <YRtDDZ2PgfGo/eCT@kernel.org>
+Subject: Re: [PATCH v2 00/19] ARC mm updates: support 3/4 levels and
+ asm-generic/pgalloc
+Message-ID: <YRtDbnNRgc3TkHyE@kernel.org>
 References: <20210812233753.104217-1-vgupta@kernel.org>
- <20210812233753.104217-17-vgupta@kernel.org>
- <YRjeHE19KXqYWgRp@kernel.org>
- <3878c8da-cba0-d4f5-90a7-f4024054872d@kernel.org>
+ <YRjd01Tr3IuEE7wj@kernel.org>
+ <e5b331ac-af88-b5b6-37d8-337ab8d75a8e@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3878c8da-cba0-d4f5-90a7-f4024054872d@kernel.org>
+In-Reply-To: <e5b331ac-af88-b5b6-37d8-337ab8d75a8e@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 12:53:46PM -0700, Vineet Gupta wrote:
-> On 8/15/21 2:27 AM, Mike Rapoport wrote:
-> > On Thu, Aug 12, 2021 at 04:37:50PM -0700, Vineet Gupta wrote:
-> > > ARCv2 MMU is software walked and Linux implements 2 levels of paging: pgd/pte.
-> > > Forthcoming hw will have multiple levels, so this change preps mm code
-> > > for same. It is also fun to try multi levels even on soft-walked code to
-> > > ensure generic mm code is robust to handle.
+On Mon, Aug 16, 2021 at 12:58:18PM -0700, Vineet Gupta wrote:
+> On 8/15/21 2:26 AM, Mike Rapoport wrote:
+> > On Thu, Aug 12, 2021 at 04:37:34PM -0700, Vineet Gupta wrote:
+> > > Hi,
 > > > 
-> > > overview
-> > > ________
+> > > Big pile of ARC mm changes to prepare for 3 or 4 levels of paging (from
+> > > current 2) needed for new hardware page walked MMUv6 (in aRCv3 ISA based
+> > > cores).
 > > > 
-> > > 2 levels {pgd, pte} : pmd is folded but pmd_* macros are valid and operate on pgd
-> > > 3 levels {pgd, pmd, pte}:
-> > >    - pud is folded and pud_* macros point to pgd
-> > >    - pmd_* macros operate on actual pmd
+> > > Most of these changes are incremental cleanups to make way for 14/18 and
+> > > 15/18 which actually imeplement the new levels (in existing ARCv2 port)
+> > > and worth a critical eye.
 > > > 
-> > > code changes
-> > > ____________
-> > > 
-> > > 1. #include <asm-generic/pgtable-nopud.h>
-> > > 
-> > > 2. Define CONFIG_PGTABLE_LEVELS 3
-> > > 
-> > > 3a. Define PMD_SHIFT, PMD_SIZE, PMD_MASK, pmd_t
-> > > 3b. Define pmd_val() which actually deals with pmd
-> > >      (pmd_offset(), pmd_index() are provided by generic code)
-> > > 3c. pmd_alloc_one()/pmd_free() also provided by generic code
-> > >      (pmd_populate/pmd_free already exist)
-> > > 
-> > > 4. Define pud_none(), pud_bad() macros based on generic pud_val() which
-> > >     internally pertains to pgd now.
-> > > 4b. define pud_populate() to just setup pgd
-> > > 
-> > > Signed-off-by: Vineet Gupta <vgupta@kernel.org>
-> > > ---
-> > ...
-> > 
-> > > diff --git a/arch/arc/include/asm/pgtable-levels.h b/arch/arc/include/asm/pgtable-levels.h
-> > > index 8ece75335bb5..1c2f022d4ad0 100644
-> > > --- a/arch/arc/include/asm/pgtable-levels.h
-> > > +++ b/arch/arc/include/asm/pgtable-levels.h
-> > > @@ -10,6 +10,8 @@
-> > >   #ifndef _ASM_ARC_PGTABLE_LEVELS_H
-> > >   #define _ASM_ARC_PGTABLE_LEVELS_H
-> > > +#if CONFIG_PGTABLE_LEVELS == 2
-> > > +
-> > >   /*
-> > >    * 2 level paging setup for software walked MMUv3 (ARC700) and MMUv4 (HS)
-> > >    *
-> > > @@ -37,16 +39,38 @@
-> > >   #define PGDIR_SHIFT		21
-> > >   #endif
-> > > -#define PGDIR_SIZE		BIT(PGDIR_SHIFT)	/* vaddr span, not PDG sz */
-> > > -#define PGDIR_MASK		(~(PGDIR_SIZE - 1))
-> > > +#else
-> > Adding /* CONFIG_PGTABLE_LEVELS == 2 */ would make the whole thing a bit
-> > more readable, I think.
+> > > CC'ing some of you guys dealing with page tables for a while :-)
+> > > to spot any obvious gotchas.
+> > There are a couple of small nits here and there, but overall
 > 
-> You meant
-> 
-> +#else /* CONFIG_PGTABLE_LEVELS != 2
+> I've fixed the last remaining things locally and won't repost, unless you
+> want me to.
 
-I don't think we are consistent about it in the kernel, there are places
-that just copy the condition in #if and some change it to match the #else.
-I don't have a preference, up to you.
+No need.
  
 > > 
-> > > +
-> > > +/*
-> > > + * A default 3 level paging testing setup in software walked MMU
-> > > + *   MMUv4 (8K page): <4> : <7> : <8> : <13>
-> > > + */
-> > > +#define PGDIR_SHIFT		28
-> > > +#if CONFIG_PGTABLE_LEVELS > 2
-> > > +#define PMD_SHIFT		21
-> > > +#endif
-> > > +
-> > > +#endif
-> > and here as well.
+> > Acked-by: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> I added following to indicate conditional coding for levels related code
+> Thx for spending time to review this Mike. Much appreciated.
+
+You are welcome :)
+
 > 
-> +#endif /* CONFIG_PGTABLE_LEVELS */
+> -Vineet
 > 
-> 
-> > > +#define PGDIR_SIZE		BIT(PGDIR_SHIFT)
-> > > +#define PGDIR_MASK		(~(PGDIR_SIZE - 1))
-> > >   #define PTRS_PER_PGD		BIT(32 - PGDIR_SHIFT)
-> > > -#define PTRS_PER_PTE		BIT(PGDIR_SHIFT - PAGE_SHIFT)
-> > > +#if CONFIG_PGTABLE_LEVELS > 2
-> > > +#define PMD_SIZE		BIT(PMD_SHIFT)
-> > > +#define PMD_MASK		(~(PMD_SIZE - 1))
-> > > +#define PTRS_PER_PMD		BIT(PGDIR_SHIFT - PMD_SHIFT)
-> > > +#endif
-> > > +
-> > > +#define PTRS_PER_PTE		BIT(PMD_SHIFT - PAGE_SHIFT)
+> > 
+> > > Thx,
+> > > -Vineet
+> > > 
+> > > Changes since v1 [1]
+> > >   - Switched ARC to asm-generic/pgalloc.h  (so struct page based pgtable_t)      [Mike Rapoport]
+> > >   - Dropped {pud,pmd}_alloc_one/{pud,pmd}_free provided by asm-generic/pgalloc.h [Mike Rapoport]
+> > >   - Negative diffstat now due to above
+> > >   - Added BUILD_BUG_ON() to arch/arc/mm/init.c for sanity of table sizes
+> > >   - Consolidated 2 patches related to ARC_USE_SCRATCH_REG			   [Mike Rapoport]
+> > >   - Reworked how mmu is re-enabled in entry code                                 [Jose Abreu]
+> > > 
+> > > [1] http://lists.infradead.org/pipermail/linux-snps-arc/2021-August/005326.html
+> > > 
+> > > Vineet Gupta (19):
+> > >    ARC: mm: use SCRATCH_DATA0 register for caching pgdir in ARCv2 only
+> > >    ARC: mm: remove tlb paranoid code
+> > >    ARC: mm: move mmu/cache externs out to setup.h
+> > >    ARC: mm: Fixes to allow STRICT_MM_TYPECHECKS
+> > >    ARC: mm: Enable STRICT_MM_TYPECHECKS
+> > >    ARC: ioremap: use more commonly used PAGE_KERNEL based uncached flag
+> > >    ARC: mm: pmd_populate* to use the canonical set_pmd (and drop pmd_set)
+> > >    ARC: mm: switch pgtable_t back to struct page *
+> > >    ARC: mm: switch to asm-generic/pgalloc.h
+> > >    ARC: mm: non-functional code cleanup ahead of 3 levels
+> > >    ARC: mm: move MMU specific bits out of ASID allocator
+> > >    ARC: mm: move MMU specific bits out of entry code ...
+> > >    ARC: mm: disintegrate mmu.h (arcv2 bits out)
+> > >    ARC: mm: disintegrate pgtable.h into levels and flags
+> > >    ARC: mm: hack to allow 2 level build with 4 level code
+> > >    ARC: mm: support 3 levels of page tables
+> > >    ARC: mm: support 4 levels of page tables
+> > >    ARC: mm: vmalloc sync from kernel to user table to update PMD ...
+> > >    ARC: mm: introduce _PAGE_TABLE to explicitly link pgd,pud,pmd entries
+> > > 
+> > >   arch/arc/Kconfig                          |   7 +-
+> > >   arch/arc/include/asm/cache.h              |   4 -
+> > >   arch/arc/include/asm/entry-compact.h      |   8 -
+> > >   arch/arc/include/asm/mmu-arcv2.h          | 103 +++++++
+> > >   arch/arc/include/asm/mmu.h                |  73 +----
+> > >   arch/arc/include/asm/mmu_context.h        |  28 +-
+> > >   arch/arc/include/asm/page.h               |  74 +++--
+> > >   arch/arc/include/asm/pgalloc.h            |  81 ++----
+> > >   arch/arc/include/asm/pgtable-bits-arcv2.h | 151 +++++++++++
+> > >   arch/arc/include/asm/pgtable-levels.h     | 179 ++++++++++++
+> > >   arch/arc/include/asm/pgtable.h            | 315 +---------------------
+> > >   arch/arc/include/asm/processor.h          |   2 +-
+> > >   arch/arc/include/asm/setup.h              |  12 +-
+> > >   arch/arc/kernel/entry-arcv2.S             |   1 +
+> > >   arch/arc/kernel/entry.S                   |   7 +-
+> > >   arch/arc/mm/fault.c                       |  20 +-
+> > >   arch/arc/mm/init.c                        |   5 +
+> > >   arch/arc/mm/ioremap.c                     |   3 +-
+> > >   arch/arc/mm/tlb.c                         |  68 +----
+> > >   arch/arc/mm/tlbex.S                       |  78 ++----
+> > >   20 files changed, 591 insertions(+), 628 deletions(-)
+> > >   create mode 100644 arch/arc/include/asm/mmu-arcv2.h
+> > >   create mode 100644 arch/arc/include/asm/pgtable-bits-arcv2.h
+> > >   create mode 100644 arch/arc/include/asm/pgtable-levels.h
+> > > 
+> > > -- 
+> > > 2.25.1
+> > > 
 > 
 
 -- 
