@@ -2,122 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98AC3EEDF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 16:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 755803EEDF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 16:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237690AbhHQOBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 10:01:46 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:53788 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbhHQOBp (ORCPT
+        id S239919AbhHQOBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 10:01:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34648 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230208AbhHQOBw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 10:01:45 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 6364F1F4320F
-Received: by earth.universe (Postfix, from userid 1000)
-        id 1A2403C08DB; Tue, 17 Aug 2021 16:01:09 +0200 (CEST)
-Date:   Tue, 17 Aug 2021 16:01:09 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@puri.sm
-Subject: Re: [PATCH 1/4] power: supply: max17042_battery: clean up
- MAX17055_V_empty
-Message-ID: <20210817140109.sp4sk7cqkxjrcmyf@earth.universe>
-References: <20210816165016.3153776-1-sebastian.krzyszkowiak@puri.sm>
+        Tue, 17 Aug 2021 10:01:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629208878;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XW2J+WhsE/RWO3VMM16KxZB1cM6gwtgUZB4eygVIBxU=;
+        b=RumBSNuX+kqLpsoZkNaJO0tUzPnwCBagY99EBwARggejrsFie7fKrbyP1F4xZajHX1NVIz
+        yLHMaMoGYJkEedXGDZINRfvcBhp6Dh2Mm9emLDNz0CxpQWzp2dQVr9hhzw3N+Z05lmFAFE
+        zcL7EF9moc6/1PJMwel5YDtIMe/x5NA=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-586-YOJVzb1ONruH80bVpe9AfQ-1; Tue, 17 Aug 2021 10:01:17 -0400
+X-MC-Unique: YOJVzb1ONruH80bVpe9AfQ-1
+Received: by mail-wr1-f69.google.com with SMTP id d10-20020a056000114ab02901537f048363so6630023wrx.8
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 07:01:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=XW2J+WhsE/RWO3VMM16KxZB1cM6gwtgUZB4eygVIBxU=;
+        b=eRe+em21ypcs+H8r8XoaJk5kjhJPh4zanhPn+3mia1cYAYGds7OJMTk4ZCpVFdcdM6
+         YEEk3Yg48lKKiIG4YCOZTLJhEms8B9OHUW9zZy/5V7yuQ+YUi0c4ZW/YkrbDNc+NUl8f
+         8QL5Prf5Zuase/0LHR6MnlpD3JlJWtcM+AJnpNmrg9N2tpvLS2ePvgx13ZXuDS+IZNhp
+         nqvpBMYlayNTeWFRxiRXQaw2TyJzBK/XGE/bFvXj4rT7Z+CO9htg9Qy+4GBEWVQuEuPi
+         xKVxHptsE8n42eK59psOUXOrnhxPWi5YYKxGZj+QFwFBHT8WiyqrhyQt8saeSjeLjrGL
+         SbyA==
+X-Gm-Message-State: AOAM531ydoTlMJzNpJLwIFMFTpntK0GSuazqTYXphFT5lGsnlsIZZJIo
+        t4AERQfyj8GtlffR6ntWFagXjBqS8hF9e082xOKJZBn99TYM6Q0hRdEOWIB8XqbYJve4s7F7+V9
+        gJLVWVswEpMllGA2RddxJO6d2
+X-Received: by 2002:adf:e107:: with SMTP id t7mr4344058wrz.165.1629208875697;
+        Tue, 17 Aug 2021 07:01:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyLn+pRXM6CtdmVeBmAfrCZUKJikxsvi9asAOyB8MInr3ryWkVl7bKMPS+b1ahm+dZxBYyg+Q==
+X-Received: by 2002:adf:e107:: with SMTP id t7mr4344020wrz.165.1629208875462;
+        Tue, 17 Aug 2021 07:01:15 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c65c6.dip0.t-ipconnect.de. [91.12.101.198])
+        by smtp.gmail.com with ESMTPSA id h9sm2545176wrv.84.2021.08.17.07.01.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Aug 2021 07:01:14 -0700 (PDT)
+Subject: Re: [PATCH] x86/mm: fix kern_addr_valid to cope with existing but not
+ present entries
+To:     Mike Rapoport <rppt@kernel.org>, x86@kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20210817135854.25407-1-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <d35b3132-9a90-84b9-7907-ad321171b422@redhat.com>
+Date:   Tue, 17 Aug 2021 16:01:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="z6mpwaxoo7zhi7lb"
-Content-Disposition: inline
-In-Reply-To: <20210816165016.3153776-1-sebastian.krzyszkowiak@puri.sm>
+In-Reply-To: <20210817135854.25407-1-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 17.08.21 15:58, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> Jiri Olsa reported a fault when running:
+> 
+> 	# cat /proc/kallsyms | grep ksys_read
+> 	ffffffff8136d580 T ksys_read
+> 	# objdump -d --start-address=0xffffffff8136d580 --stop-address=0xffffffff8136d590 /proc/kcore
+> 
+> 	/proc/kcore:     file format elf64-x86-64
+> 
+> 	Segmentation fault
+> 
+> krava33 login: [   68.330612] general protection fault, probably for non-canonical address 0xf887ffcbff000: 0000 [#1] SMP PTI
+> [   68.333118] CPU: 12 PID: 1079 Comm: objdump Not tainted 5.14.0-rc5qemu+ #508
+> [   68.334922] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-4.fc34 04/01/2014
+> [   68.336945] RIP: 0010:kern_addr_valid+0x150/0x300
+> [   68.338082] Code: 1f 40 00 48 8b 0d e8 12 61 01 48 85 f6 0f 85 ca 00 00 00 48 81 e1 00 f0 ff ff 48 21 c1 48 b8 00 00 00 00 80 88 ff ff 48 01 ca <48> 8b 3c 02 48 f7 c7 9f ff ff ff 0f 84 d8 fe ff ff 48 89 f8 0f 1f
+> [   68.342220] RSP: 0018:ffffc90000bcbc38 EFLAGS: 00010206
+> [   68.343428] RAX: ffff888000000000 RBX: 0000000000001000 RCX: 000ffffffcbff000
+> [   68.345029] RDX: 000ffffffcbff000 RSI: 0000000000000000 RDI: 800ffffffcbff062
+> [   68.346599] RBP: ffffc90000bcbea8 R08: 0000000000001000 R09: 0000000000000000
+> [   68.349000] R10: 0000000000000000 R11: 0000000000001000 R12: 00007fcc0fd80010
+> [   68.350804] R13: ffffffff83400000 R14: 0000000000400000 R15: ffffffff843d23e0
+> [   68.352609] FS:  00007fcc111fcc80(0000) GS:ffff888275e00000(0000) knlGS:0000000000000000
+> [   68.354638] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   68.356104] CR2: 00007fcc0fd80000 CR3: 000000011226e004 CR4: 0000000000770ee0
+> [   68.357896] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [   68.359694] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [   68.361597] PKRU: 55555554
+> [   68.362460] Call Trace:
+> [   68.363252]  read_kcore+0x57f/0x920
+> [   68.364289]  ? rcu_read_lock_sched_held+0x12/0x80
+> [   68.365630]  ? rcu_read_lock_sched_held+0x12/0x80
+> [   68.366955]  ? rcu_read_lock_sched_held+0x12/0x80
+> [   68.368277]  ? trace_hardirqs_on+0x1b/0xd0
+> [   68.369462]  ? rcu_read_lock_sched_held+0x12/0x80
+> [   68.370793]  ? lock_acquire+0x195/0x2f0
+> [   68.371920]  ? lock_acquire+0x195/0x2f0
+> [   68.373035]  ? rcu_read_lock_sched_held+0x12/0x80
+> [   68.374364]  ? lock_acquire+0x195/0x2f0
+> [   68.375498]  ? rcu_read_lock_sched_held+0x12/0x80
+> [   68.376831]  ? rcu_read_lock_sched_held+0x12/0x80
+> [   68.379883]  ? rcu_read_lock_sched_held+0x12/0x80
+> [   68.381268]  ? lock_release+0x22b/0x3e0
+> [   68.382458]  ? _raw_spin_unlock+0x1f/0x30
+> [   68.383685]  ? __handle_mm_fault+0xcfc/0x15f0
+> [   68.384994]  ? rcu_read_lock_sched_held+0x12/0x80
+> [   68.386389]  ? lock_acquire+0x195/0x2f0
+> [   68.387573]  ? rcu_read_lock_sched_held+0x12/0x80
+> [   68.388969]  ? lock_release+0x22b/0x3e0
+> [   68.390145]  proc_reg_read+0x55/0xa0
+> [   68.391257]  ? vfs_read+0x78/0x1b0
+> [   68.392336]  vfs_read+0xa7/0x1b0
+> [   68.393328]  ksys_read+0x68/0xe0
+> [   68.394308]  do_syscall_64+0x3b/0x90
+> [   68.395391]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [   68.396804] RIP: 0033:0x7fcc11cf92e2
+> [   68.397824] Code: c0 e9 b2 fe ff ff 50 48 8d 3d ea 2e 0a 00 e8 95 e9 01 00 0f 1f 44 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 0f 05 <48> 3d 00 f0 ff ff 77 56 c3 0f 1f 44 00 00 48 83 ec 28 48 89 54 24
+> [   68.402420] RSP: 002b:00007ffd6e0f8da8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [   68.404357] RAX: ffffffffffffffda RBX: 0000565439305b20 RCX: 00007fcc11cf92e2
+> [   68.406061] RDX: 0000000000800000 RSI: 00007fcc0f980010 RDI: 0000000000000003
+> [   68.407747] RBP: 00007fcc11dcd300 R08: 0000000000000003 R09: 00007fcc0d980010
+> [   68.410937] R10: 0000000003826000 R11: 0000000000000246 R12: 00007fcc0f980010
+> [   68.412624] R13: 0000000000000d68 R14: 00007fcc11dcc700 R15: 0000000000800000
+> [   68.414322] Modules linked in: intel_rapl_msr intel_rapl_common nfit kvm_intel kvm irqbypass rapl iTCO_wdt iTCO_vendor_support i2c_i801 i2c_smbus lpc_ich drm drm_panel_orientation_quirks zram xfs crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel
+> [   68.419591] ---[ end trace e2c30f827226966b ]---
+> [   68.420969] RIP: 0010:kern_addr_valid+0x150/0x300
+> [   68.422308] Code: 1f 40 00 48 8b 0d e8 12 61 01 48 85 f6 0f 85 ca 00 00 00 48 81 e1 00 f0 ff ff 48 21 c1 48 b8 00 00 00 00 80 88 ff ff 48 01 ca <48> 8b 3c 02 48 f7 c7 9f ff ff ff 0f 84 d8 fe ff ff 48 89 f8 0f 1f
+> [   68.426826] RSP: 0018:ffffc90000bcbc38 EFLAGS: 00010206
+> [   68.428150] RAX: ffff888000000000 RBX: 0000000000001000 RCX: 000ffffffcbff000
+> [   68.429813] RDX: 000ffffffcbff000 RSI: 0000000000000000 RDI: 800ffffffcbff062
+> [   68.431465] RBP: ffffc90000bcbea8 R08: 0000000000001000 R09: 0000000000000000
+> [   68.433115] R10: 0000000000000000 R11: 0000000000001000 R12: 00007fcc0fd80010
+> [   68.434768] R13: ffffffff83400000 R14: 0000000000400000 R15: ffffffff843d23e0
+> [   68.436423] FS:  00007fcc111fcc80(0000) GS:ffff888275e00000(0000) knlGS:0000000000000000
+> [   68.438354] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   68.442077] CR2: 00007fcc0fd80000 CR3: 000000011226e004 CR4: 0000000000770ee0
+> [   68.443727] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [   68.445370] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [   68.447010] PKRU: 55555554
+> 
+> The fault happens because kern_addr_valid() dereferences existent but not
+> present PMD in the high kernel mappings.
+> 
+> Such PMDs are created when free_kernel_image_pages() frees regions larger
+> than 2Mb. In this case a part of the freed memory is mapped with PMDs and
+> the set_memory_np_noalias() -> ... -> __change_page_attr() sequence will
+> mark the PMD as not present rather than wipe it completely.
+> 
+> Make kern_addr_valid() to check whether higher level page table entries are
+> present before trying to dereference them to fix this issue and to avoid
+> similar issues in the future.
 
---z6mpwaxoo7zhi7lb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Why not fix the setting code?
 
-Hi,
-
-On Mon, Aug 16, 2021 at 06:50:13PM +0200, Sebastian Krzyszkowiak wrote:
-> This register is same as in MAX17047 and MAX17050, so there's no need
-> for custom casing it.
->=20
-> Signed-off-by: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+> 
+> Reported-by: Jiri Olsa <jolsa@redhat.com>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 > ---
+>   arch/x86/mm/init_64.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+> index ddeaba947eb3..07b56e90db5d 100644
+> --- a/arch/x86/mm/init_64.c
+> +++ b/arch/x86/mm/init_64.c
+> @@ -1433,18 +1433,18 @@ int kern_addr_valid(unsigned long addr)
+>   		return 0;
+>   
+>   	p4d = p4d_offset(pgd, addr);
+> -	if (p4d_none(*p4d))
+> +	if (p4d_none(*p4d) || !p4d_present(*p4d))
+>   		return 0;
 
-Thanks, series queued.
+if (!p4d_present(*p4d))
+	return 0;
 
--- Sebastian
+should be sufficient I think.
 
->  drivers/power/supply/max17042_battery.c | 4 ----
->  include/linux/power/max17042_battery.h  | 1 -
->  2 files changed, 5 deletions(-)
->=20
-> diff --git a/drivers/power/supply/max17042_battery.c b/drivers/power/supp=
-ly/max17042_battery.c
-> index c6078f179fb3..01e6728a9e2b 100644
-> --- a/drivers/power/supply/max17042_battery.c
-> +++ b/drivers/power/supply/max17042_battery.c
-> @@ -283,8 +283,6 @@ static int max17042_get_property(struct power_supply =
-*psy,
->  	case POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN:
->  		if (chip->chip_type =3D=3D MAXIM_DEVICE_TYPE_MAX17042)
->  			ret =3D regmap_read(map, MAX17042_V_empty, &data);
-> -		else if (chip->chip_type =3D=3D MAXIM_DEVICE_TYPE_MAX17055)
-> -			ret =3D regmap_read(map, MAX17055_V_empty, &data);
->  		else
->  			ret =3D regmap_read(map, MAX17047_V_empty, &data);
->  		if (ret < 0)
-> @@ -778,8 +776,6 @@ static inline void max17042_override_por_values(struc=
-t max17042_chip *chip)
-> =20
->  	if (chip->chip_type =3D=3D MAXIM_DEVICE_TYPE_MAX17042)
->  		max17042_override_por(map, MAX17042_V_empty, config->vempty);
-> -	if (chip->chip_type =3D=3D MAXIM_DEVICE_TYPE_MAX17055)
-> -		max17042_override_por(map, MAX17055_V_empty, config->vempty);
->  	else
->  		max17042_override_por(map, MAX17047_V_empty, config->vempty);
->  	max17042_override_por(map, MAX17042_TempNom, config->temp_nom);
-> diff --git a/include/linux/power/max17042_battery.h b/include/linux/power=
-/max17042_battery.h
-> index d55c746ac56e..7e5da60cbea3 100644
-> --- a/include/linux/power/max17042_battery.h
-> +++ b/include/linux/power/max17042_battery.h
-> @@ -113,7 +113,6 @@ enum max17042_register {
->  enum max17055_register {
->  	MAX17055_QRes		=3D 0x0C,
->  	MAX17055_TTF		=3D 0x20,
-> -	MAX17055_V_empty	=3D 0x3A,
->  	MAX17055_TIMER		=3D 0x3E,
->  	MAX17055_USER_MEM	=3D 0x40,
->  	MAX17055_RGAIN		=3D 0x42,
-> --=20
-> 2.32.0
->=20
+Same applies to the others.
 
---z6mpwaxoo7zhi7lb
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+-- 
+Thanks,
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmEbwR4ACgkQ2O7X88g7
-+ppD0g/+N5t8Og3doAgkCzV4Y+a6PfrLQCISpaT6ONuEUEaX/ugB6m6EhIlZfPYw
-+3rqKhc1Krl8YY5kE5KvQdsQusZ/CT07WwweJYVtdV7xd8iLX0DufNoVPI1E+2Cd
-fbkavXryxKLVsFXx8yDFaj5nkdU5E/zCfyTqHRlJT25H0WNWFWbfd6v7ppunpzRC
-kOQ3VBqz467M499lFcpyJIDPSaWhSEICJAuMgcRkK97Pey6DA1AjiconiLpWQxkR
-NujXXgiBpSBDSgXF87OmVBlS/qA3hMXB91kcdYd2yMaKSccBa84pbwOdt24oDhE4
-ekSYPBOshRxIsH+VK4sJBkxRgburVUlYPjnK3vCNq6ZBQtX3BZT1vINP2MdkuMXz
-G2DWioREPp6W0IolC8Bk9zUQSJ8VFk9qd+7mzii2AShsFg9LL2T5rX9xgMLidkZB
-gJO35edtvxOTihaiSy/1X6yj/0gWBrNUpxkBaZ8lki92aRcTbLw5H7VqcxcZ5JJM
-Mhl3mx7IZ3Q+7CiXKNkN/DbAthUoxV7aGVZnBR+ptt7DS8/VunGhGbtLJ6ucGSoq
-jhevOMsDqr8PBz/9B7/gRWpEuhUnQjlvw1AAIFW+UWk8yUNpU2Dzcc5mP97Fsqpl
-ToT/OGJn+jEQhD5QmH+zV194cO4471P0XVNwCuBbtyoZU1hmAo4=
-=gfuG
------END PGP SIGNATURE-----
+David / dhildenb
 
---z6mpwaxoo7zhi7lb--
