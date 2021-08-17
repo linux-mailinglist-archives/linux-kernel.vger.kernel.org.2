@@ -2,166 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7802B3EE66E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56EF03EE671
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238074AbhHQGA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 02:00:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238049AbhHQGA1 (ORCPT
+        id S234429AbhHQGBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 02:01:21 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:49729 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237833AbhHQGBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 02:00:27 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92026C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 22:59:54 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id j1so30380587pjv.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 22:59:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=GJ9GWlYCg4+zVJoMtI5zY2C8xGVLbc9EYOIpcL2yt3Y=;
-        b=UQlE8xgdpvA4wdKffS3YBXWJ8ocFkMACZe4tOyzgzln8OS8FQBZlh4g430d8UyULhd
-         ojYsujBq4d/9DevFVrqXeUyBuarYvGEMLD0g/ZQ9TdaDiMnY9zkG/vvAH0X9ZT1fxi8G
-         It+8sQg6DLektNkUOsKr4qcAI6yh9qaVKUbhjKFU+OPrQcn/z0LWL5NJeSp2Axmeuq7w
-         CecG7Iro6Yu6YvyIu/r3hfZ+IFBez5nbEGtsdjyFC6UZ1hE2N4tkdjTiFLStvC7uDeY/
-         VxabWm3X1hrQqDf1WtKRu5xRRS169nfmRns76PmSOwJI55HAXjjupy3brLTqF9nlW4NZ
-         Jz5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=GJ9GWlYCg4+zVJoMtI5zY2C8xGVLbc9EYOIpcL2yt3Y=;
-        b=Cn55af0E5NomJD5DmQ7Yg2ArJLohSMsTxoJKvcl/eHzEejT32Rqy1UfExJbURfPnwD
-         nv+TDMBYZ10ln/WM+10gjlE9oOWb1NBH1FInXk/qQrlf+tTsjdkac2cU17gH4BSFkuyz
-         rXCekMmbFmyPNlJ4csEH1fgNepcg7npyd4sx5uB4P4gZyUSSZ/lj4vcD5Wi3fLvfmfhB
-         bcd/CX/E1fs6mVafbMMu1Mt2gB3hL1bTbSpFZxvuRCuW40QI6AMDgwRtC/r91keabsC8
-         rwSo+3UANAAZxQB3y2LiGUisyyhEEo+Bzyv8n2Hq4ymPamK+7SG/0SNYygTVfT3w2Q4q
-         Ddcg==
-X-Gm-Message-State: AOAM531t9ExdIed+7YKXxy4WZ8uXHIOobv/dt4WkzHW0Oocirh4bdQ1j
-        6ySknwXoiD7S6raJkuoijGc=
-X-Google-Smtp-Source: ABdhPJypZ0emOG909fZ+yC9uG8mlssu39sEfIPJw28MDurTAagsbzlP0+ZhR3OmyJWM1hBvPVaGcBA==
-X-Received: by 2002:a17:90a:d784:: with SMTP id z4mr221009pju.73.1629179994153;
-        Mon, 16 Aug 2021 22:59:54 -0700 (PDT)
-Received: from ?IPv6:2804:431:c7f0:30b2:5c9e:50:88f3:269a? ([2804:431:c7f0:30b2:5c9e:50:88f3:269a])
-        by smtp.gmail.com with ESMTPSA id m194sm1093489pfd.58.2021.08.16.22.59.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 22:59:53 -0700 (PDT)
-Message-ID: <25299f8dc62953996a43c3d654937d51ea8b1d9c.camel@gmail.com>
-Subject: Re: [PATCH v5 10/11] powerpc/pseries/iommu: Make use of DDW for
- indirect mapping
-From:   Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras.c@gmail.com>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        kernel test robot <lkp@intel.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date:   Tue, 17 Aug 2021 02:59:55 -0300
-In-Reply-To: <75c84c0b-46b3-2600-c186-257aec05c645@ozlabs.ru>
-References: <20210716082755.428187-1-leobras.c@gmail.com>
-         <20210716082755.428187-11-leobras.c@gmail.com>
-         <b98f696a-ed64-4c9e-ccb6-549ae8bc7fd6@linux.ibm.com>
-         <8dfb28d5-b654-746c-03d8-aeee3d438240@ozlabs.ru>
-         <994051df-73b3-4dad-76aa-1a03d9afaf6d@linux.ibm.com>
-         <75c84c0b-46b3-2600-c186-257aec05c645@ozlabs.ru>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 
+        Tue, 17 Aug 2021 02:01:19 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629180047; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=vRYtrSW1d7U81RwjmnXHHamVLQ7Afy0NIyXh+9as/Ms=;
+ b=l96quKmme8NpZAumkH/7NsnY4mavrYucFsPTguxALG60gyjIQHGs4zdBsI3aQIOAzMwd7e4H
+ s+NUDzhvUBpzJhmrv2H/ouJMRcT/TMT8e1VPtt2ic8yZYRCApoLsrsRsj8Qn7UetZrAMrXh+
+ KnvzgSyfSv+2DA30c4mAWhxhMs4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 611b5075f746c298d96269c2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 17 Aug 2021 06:00:21
+ GMT
+Sender: pmaliset=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B26B2C4360C; Tue, 17 Aug 2021 06:00:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmaliset)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4CD27C4338F;
+        Tue, 17 Aug 2021 06:00:20 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 17 Aug 2021 11:30:20 +0530
+From:   Prasad Malisetty <pmaliset@codeaurora.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
+        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
+        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@chromium.org,
+        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org
+Subject: Re: [PATCH v5 2/4] arm64: dts: qcom: sc7280: Add PCIe and PHY related
+ nodes
+In-Reply-To: <20210812060715.GA72145@thinkpad>
+References: <1628568516-24155-1-git-send-email-pmaliset@codeaurora.org>
+ <1628568516-24155-3-git-send-email-pmaliset@codeaurora.org>
+ <20210812060715.GA72145@thinkpad>
+Message-ID: <8b0f007bf26fd3d875718bb3e0cbd4bf@codeaurora.org>
+X-Sender: pmaliset@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexey, Fred:
+On 2021-08-12 11:37, Manivannan Sadhasivam wrote:
+> On Tue, Aug 10, 2021 at 09:38:34AM +0530, Prasad Malisetty wrote:
+>> Add PCIe controller and PHY nodes for sc7280 SOC.
+>> 
+>> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+>> ---
+>>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 126 
+>> +++++++++++++++++++++++++++++++++++
+>>  1 file changed, 126 insertions(+)
+>> 
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> index 53a21d0..4500d88 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> @@ -16,6 +16,7 @@
+>>  #include <dt-bindings/reset/qcom,sdm845-pdc.h>
+>>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+>>  #include <dt-bindings/thermal/thermal.h>
+>> +#include <dt-bindings/gpio/gpio.h>
+>> 
+>>  / {
+>>  	interrupt-parent = <&intc>;
+>> @@ -586,6 +587,119 @@
+>>  			qcom,bcm-voters = <&apps_bcm_voter>;
+>>  		};
+>> 
+>> +		pcie1: pci@1c08000 {
+>> +			compatible = "qcom,pcie-sc7280", "qcom,pcie-sm8250", 
+>> "snps,dw-pcie";
+> 
+> Why 2 fallbacks? Fallbacks are meant to be used when the "fallback" 
+> compatible
+> driver can fully support the hw. In this case, neither
+> "qcom,pcie-sm8250" nor "snps,dw-pcie"
+> can work properly, right?
+> 
+> I did the same mistake for SM8250 though... But please get rid of them.
+> 
+Hi Mani,
 
-On Fri, 2021-07-23 at 15:34 +1000, Alexey Kardashevskiy wrote:
+Thanks for your review and comments.
+
+Sure I agree, will remove one of the fallbacks and update the changes in 
+next version.
+
+Thanks
+-Prasad
+
+>> +			reg = <0 0x01c08000 0 0x3000>,
+>> +			      <0 0x40000000 0 0xf1d>,
+>> +			      <0 0x40000f20 0 0xa8>,
+>> +			      <0 0x40001000 0 0x1000>,
+>> +			      <0 0x40100000 0 0x100000>;
+>> +
+>> +			reg-names = "parf", "dbi", "elbi", "atu", "config";
+>> +			device_type = "pci";
+>> +			linux,pci-domain = <1>;
+>> +			bus-range = <0x00 0xff>;
+>> +			num-lanes = <2>;
+>> +			pipe-clk-source-switch;
 > 
+> Did you document this property in binding? You need to add "qcom" 
+> prefix since
+> this is a qcom specific one and not a generic PCI property.
 > 
-> On 22/07/2021 01:04, Frederic Barrat wrote:
-> > 
-> > 
-> > On 21/07/2021 05:32, Alexey Kardashevskiy wrote:
-> > > > > +        struct iommu_table *newtbl;
-> > > > > +        int i;
-> > > > > +
-> > > > > +        for (i = 0; i < ARRAY_SIZE(pci->phb->mem_resources);
-> > > > > i++) {
-> > > > > +            const unsigned long mask = IORESOURCE_MEM_64 | 
-> > > > > IORESOURCE_MEM;
-> > > > > +
-> > > > > +            /* Look for MMIO32 */
-> > > > > +            if ((pci->phb->mem_resources[i].flags & mask) ==
-> > > > > IORESOURCE_MEM)
-> > > > > +                break;
-> > > > > +        }
-> > > > > +
-> > > > > +        if (i == ARRAY_SIZE(pci->phb->mem_resources))
-> > > > > +            goto out_del_list;
-> > > > 
-> > > > 
-> > > > So we exit and do nothing if there's no MMIO32 bar?
-> > > > Isn't the intent just to figure out the MMIO32 area to reserve
-> > > > it 
-> > > > when init'ing the table? In which case we could default to 0,0
-> > > > 
-> > > > I'm actually not clear why we are reserving this area on
-> > > > pseries.
-> > > 
-> > > 
-> > > 
-> > > If we do not reserve it, then the iommu code will allocate DMA
-> > > pages 
-> > > from there and these addresses are MMIO32 from the kernel pov at 
-> > > least. I saw crashes when (I think) a device tried DMAing to the
-> > > top 
-> > > 2GB of the bus space which happened to be a some other device's
-> > > BAR.
-> > 
-> > 
-> > hmmm... then figuring out the correct range needs more work. We
-> > could 
-> > have more than one MMIO32 bar. And they don't have to be adjacent. 
-> 
-> They all have to be within the MMIO32 window of a PHB and we reserve
-> the 
-> entire window here.
-> 
-> > I 
-> > don't see that we are reserving any range on the initial table
-> > though 
-> > (on pseries).
-> True, we did not need to, as the hypervisor always took care of DMA
-> and 
-> MMIO32 regions to not overlap.
-> 
-> And in this series we do not (strictly speaking) need this either as 
-> phyp never allocates more than one window dynamically and that only 
-> window is always the second one starting from 0x800.0000.0000.0000.
-> It 
-> is probably my mistake that KVM allows a new window to start from 0 -
-> PAPR did not prohibit this explicitly.
-> 
-> And for the KVM case, we do not need to remove the default window as
-> KVM 
-> can pretty much always allocate as many TCE as the VM wants. But we 
-> still allow removing the default window and creating a huge one
-> instead 
-> at 0x0 as this way we can allow 1:1 for every single PCI device even
-> if 
-> it only allows 48 (or similar but less than 64bit) DMA. Hope this
-> makes 
-> sense. Thanks,
-> 
+> Thanks,
+> Mani
 > 
 
-Thank you for this discussion, I got to learn a lot!
+I haven't document this property, missed it in v5. once this change is 
+finalized
+I will update it next version.
 
-If I got this, no further change will be necessary, is that correct?
-
-I am testing a v6, and I intend to send it soon.
-
+>> +
+>> +			#address-cells = <3>;
+>> +			#size-cells = <2>;
+>> +
+>> +			ranges = <0x01000000 0x0 0x40200000 0x0 0x40200000 0x0 0x100000>,
+>> +				 <0x02000000 0x0 0x40300000 0x0 0x40300000 0x0 0x1fd00000>;
+>> +
+>> +			interrupts = <GIC_SPI 307 IRQ_TYPE_LEVEL_HIGH>;
+>> +			interrupt-names = "msi";
+>> +			#interrupt-cells = <1>;
+>> +			interrupt-map-mask = <0 0 0 0x7>;
+>> +			interrupt-map = <0 0 0 1 &intc 0 434 IRQ_TYPE_LEVEL_HIGH>,
+>> +					<0 0 0 2 &intc 0 435 IRQ_TYPE_LEVEL_HIGH>,
+>> +					<0 0 0 3 &intc 0 438 IRQ_TYPE_LEVEL_HIGH>,
+>> +					<0 0 0 4 &intc 0 439 IRQ_TYPE_LEVEL_HIGH>;
+>> +
+>> +			clocks = <&gcc GCC_PCIE_1_PIPE_CLK>,
+>> +				 <&gcc GCC_PCIE_1_PIPE_CLK_SRC>,
+>> +				 <&pcie1_lane 0>,
+>> +				 <&rpmhcc RPMH_CXO_CLK>,
+>> +				 <&gcc GCC_PCIE_1_AUX_CLK>,
+>> +				 <&gcc GCC_PCIE_1_CFG_AHB_CLK>,
+>> +				 <&gcc GCC_PCIE_1_MSTR_AXI_CLK>,
+>> +				 <&gcc GCC_PCIE_1_SLV_AXI_CLK>,
+>> +				 <&gcc GCC_PCIE_1_SLV_Q2A_AXI_CLK>,
+>> +				 <&gcc GCC_AGGRE_NOC_PCIE_TBU_CLK>,
+>> +				 <&gcc GCC_DDRSS_PCIE_SF_CLK>;
+>> +
+>> +			clock-names = "pipe",
+>> +				      "pipe_mux",
+>> +				      "phy_pipe",
+>> +				      "ref",
+>> +				      "aux",
+>> +				      "cfg",
+>> +				      "bus_master",
+>> +				      "bus_slave",
+>> +				      "slave_q2a",
+>> +				      "tbu",
+>> +				      "ddrss_sf_tbu";
+>> +
+>> +			assigned-clocks = <&gcc GCC_PCIE_1_AUX_CLK>;
+>> +			assigned-clock-rates = <19200000>;
+>> +
+>> +			resets = <&gcc GCC_PCIE_1_BCR>;
+>> +			reset-names = "pci";
+>> +
+>> +			power-domains = <&gcc GCC_PCIE_1_GDSC>;
+>> +
+>> +			phys = <&pcie1_lane>;
+>> +			phy-names = "pciephy";
+>> +
+>> +			perst-gpio = <&tlmm 2 GPIO_ACTIVE_LOW>;
+>> +			pinctrl-names = "default";
+>> +			pinctrl-0 = <&pcie1_default_state>;
+>> +
+>> +			iommus = <&apps_smmu 0x1c80 0x1>;
+>> +
+>> +			iommu-map = <0x0 &apps_smmu 0x1c80 0x1>,
+>> +				    <0x100 &apps_smmu 0x1c81 0x1>;
+>> +
+>> +			status = "disabled";
+>> +		};
+>> +
+>> +		pcie1_phy: phy@1c0e000 {
+>> +			compatible = "qcom,sm8250-qmp-gen3x2-pcie-phy";
+>> +			reg = <0 0x01c0e000 0 0x1c0>;
+>> +			#address-cells = <2>;
+>> +			#size-cells = <2>;
+>> +			ranges;
+>> +			clocks = <&gcc GCC_PCIE_1_AUX_CLK>,
+>> +				 <&gcc GCC_PCIE_1_CFG_AHB_CLK>,
+>> +				 <&gcc GCC_PCIE_CLKREF_EN>,
+>> +				 <&gcc GCC_PCIE1_PHY_RCHNG_CLK>;
+>> +			clock-names = "aux", "cfg_ahb", "ref", "refgen";
+>> +
+>> +			resets = <&gcc GCC_PCIE_1_PHY_BCR>;
+>> +			reset-names = "phy";
+>> +
+>> +			assigned-clocks = <&gcc GCC_PCIE1_PHY_RCHNG_CLK>;
+>> +			assigned-clock-rates = <100000000>;
+>> +
+>> +			status = "disabled";
+>> +
+>> +			pcie1_lane: lanes@1c0e200 {
+>> +				reg = <0 0x01c0e200 0 0x170>,
+>> +				      <0 0x01c0e400 0 0x200>,
+>> +				      <0 0x01c0ea00 0 0x1f0>,
+>> +				      <0 0x01c0e600 0 0x170>,
+>> +				      <0 0x01c0e800 0 0x200>,
+>> +				      <0 0x01c0ee00 0 0xf4>;
+>> +				clocks = <&rpmhcc RPMH_CXO_CLK>;
+>> +				clock-names = "pipe0";
+>> +
+>> +				#phy-cells = <0>;
+>> +				#clock-cells = <1>;
+>> +				clock-output-names = "pcie_1_pipe_clk";
+>> +			};
+>> +		};
+>> +
+>>  		ipa: ipa@1e40000 {
+>>  			compatible = "qcom,sc7280-ipa";
+>> 
+>> @@ -1598,6 +1712,18 @@
+>>  					bias-bus-hold;
+>>  				};
+>>  			};
+>> +
+>> +			pcie1_default_state: pcie1-default-state {
+>> +				clkreq {
+>> +					pins = "gpio79";
+>> +					function = "pcie1_clkreqn";
+>> +				};
+>> +
+>> +				wake-n {
+>> +					pins = "gpio3";
+>> +					function = "gpio";
+>> +				};
+>> +			};
+>>  		};
+>> 
+>>  		apps_smmu: iommu@15000000 {
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
+>> 
