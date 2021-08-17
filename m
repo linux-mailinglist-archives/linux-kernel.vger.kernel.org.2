@@ -2,99 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D45793EF2F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 21:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 342AF3EF2F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 21:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233714AbhHQT6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 15:58:37 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:36467 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229466AbhHQT6g (ORCPT
+        id S233810AbhHQT7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 15:59:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229466AbhHQT72 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 15:58:36 -0400
-Received: by mail-oi1-f182.google.com with SMTP id bd1so869216oib.3;
-        Tue, 17 Aug 2021 12:58:02 -0700 (PDT)
+        Tue, 17 Aug 2021 15:59:28 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B32BC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 12:58:55 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id b25-20020a4ac2990000b0290263aab95660so6231819ooq.13
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 12:58:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=79bivVt5C0iretm2RQAebwVshGza8l6WOkdkf2Tm6mk=;
+        b=lPok6EhnosdIo1UrT0ck8CSjE0cGZvczyyWe/VT8d9qyyCiDSlpELBtSI9tXeNHlRy
+         6883bonW9Jgs+OlxPI8JwC6Gh6YR8OHQOrecbAcNYEJ2ZI1sgGysSaKGkyIZ2vWsDD0t
+         wwU0NYvrsvkx45/9BYSeqndn6tbuz4fjy6lCc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XswSKX2YNfn4fxq6lztzp7gFskvRH1mEGY9i4/UDIcE=;
-        b=XLud5UxglgSHWYr9oUt+DbGEL8WshlkWsmhBot8Ier2yXoJwe2z8cZB+0B9W5zgzDY
-         RZJS4GVMM76fNJnVYcdKf2C/E9gdsBCwLFjmyoMIciqXdOuKWZDCX+z3sDuzhioRnno0
-         7I9bUFOmbyD4/rxQf+1uNnP/XLbNaNSfspgeMGbX5YfmAriWSt+l+RIwHBOh+09LW9ix
-         sk5Q0aQn3e6RoMnQC314ameJSiZNXkGF98b1C/FeY1elxO1iyu8gVfuRdCbBGhl3yLiX
-         hEqdja8875t5KlfHf/Z2IoRY5aXqr2pI/JETLOYhhLTOWvdN+CAK5XPFxuBospV+8NRN
-         691g==
-X-Gm-Message-State: AOAM532wrXxSTDx/eYgEzUnPpfJq70BMLtWq24jjdXH6TrtZsVFPZEtt
-        wpSoCOc0VioQEtgJM9v/lQ==
-X-Google-Smtp-Source: ABdhPJw2YJdPmm6vI/tJq6qFR0OSaSyTEaX+Og+DxLv0oF+LjxctmQIYipB7L03BC/A+QDfMHjuSJg==
-X-Received: by 2002:a05:6808:56:: with SMTP id v22mr3997896oic.49.1629230282576;
-        Tue, 17 Aug 2021 12:58:02 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s63sm697959oia.52.2021.08.17.12.58.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 12:58:01 -0700 (PDT)
-Received: (nullmailer pid 744134 invoked by uid 1000);
-        Tue, 17 Aug 2021 19:58:00 -0000
-Date:   Tue, 17 Aug 2021 14:58:00 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>, shawnguo@kernel.org,
-        kernel@pengutronix.de, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V1 1/4] bindings: nvmem: introduce "reverse-data" property
-Message-ID: <YRwUyLsvoSpFI9X8@robh.at.kernel.org>
-References: <20210810073510.18218-1-qiangqing.zhang@nxp.com>
- <20210810073510.18218-2-qiangqing.zhang@nxp.com>
- <6e3f6881-929d-1663-58f1-39bf35069175@linaro.org>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=79bivVt5C0iretm2RQAebwVshGza8l6WOkdkf2Tm6mk=;
+        b=sZu4ePPdIUJNj2jZGGl5ZJtEjkvXzR7iAlb2+/OVvd/YZdMEL933W7pMRmFJe8Xrgq
+         lc1KPz5NMfbSczWqb3v1bFyBDN2u8YvE40NIsh3cto6/Fi0xNY0Rd7JZCJbUdwOvqLJz
+         k8XNBIZtb9becNSDQYZVyR9kjFYoNjiTL51FSbPxtBb7HbCLbgbaVc5rT9Z7dbqJClOu
+         qReJr1g7OrZXxKMrYyF4tRyzG6ntOj+ZZ7rD6jMT4xw2QEaax3IYJEjPyTEpzj3SHnFJ
+         /r/O9hGH0ddwkouVN/1h6cxUfyTl5+g5iZsy88kxnUJ7rylQBF1JvlO4HI3UYqY/Oznz
+         jdvQ==
+X-Gm-Message-State: AOAM530E/gU64W9GGEgiDudmI1I+peAqyNvbvfdV0XM5I60yBDE1/r/J
+        VZGwsMavWuwzKyh418fdO+gItFchGwvXZbHv+XNWgg==
+X-Google-Smtp-Source: ABdhPJwt0EHKR2+b1AuRlsdVymYYGJh3wAbYghf4FpRsgsDEpEnaY/lC83xDjKek1m8USwAknSR098PzcIloPu3fBZ0=
+X-Received: by 2002:a4a:c60e:: with SMTP id l14mr3855016ooq.80.1629230334756;
+ Tue, 17 Aug 2021 12:58:54 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 17 Aug 2021 15:58:54 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6e3f6881-929d-1663-58f1-39bf35069175@linaro.org>
+In-Reply-To: <1625576413-12324-3-git-send-email-sanm@codeaurora.org>
+References: <1625576413-12324-1-git-send-email-sanm@codeaurora.org> <1625576413-12324-3-git-send-email-sanm@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 17 Aug 2021 15:58:54 -0400
+Message-ID: <CAE-0n52d7UOWQ+hohoyV81+aB1RnNPUEnjPCtr5=nH+a=WK35Q@mail.gmail.com>
+Subject: Re: [PATCH v5 2/3] arm64: dts: qcom: sc7280: Add USB related nodes
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pratham Pratap <prathampratap@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 11:16:49AM +0100, Srinivas Kandagatla wrote:
-> 
-> 
-> On 10/08/2021 08:35, Joakim Zhang wrote:
-> > Introduce "reverse-data" property for nvmem provider to reverse buffer.
-> > 
-> > Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-> > ---
-> >   Documentation/devicetree/bindings/nvmem/nvmem.yaml | 5 +++++
-> >   1 file changed, 5 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/nvmem/nvmem.yaml b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
-> > index b8dc3d2b6e92..bc745083fc64 100644
-> > --- a/Documentation/devicetree/bindings/nvmem/nvmem.yaml
-> > +++ b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
-> > @@ -61,6 +61,11 @@ patternProperties:
-> >                 description:
-> >                   Size in bit within the address range specified by reg.
-> > +      reverse-data:
-> > +        $ref: /schemas/types.yaml#/definitions/flag
-> > +        description:
-> > +          Reverse the data that read from the storage device.
-> > +
-> 
-> This new property is only going to solve one of the reverse order issue
-> here.
-> If I remember correctly we have mac-address stored in various formats ex:
-> from old thread I can see
-> 
-> Type 1: Octets in ASCII without delimiters. (Swapped/non-Swapped)
-> Type 2: Octets in ASCII with delimiters like (":", ",", ".", "-"... so on)
-> (Swapped/non-Swapped)
-> Type 3: Is the one which stores mac address in Type1/2 but this has to be
-> incremented to be used on other instances of eth.
-> Type 4: Octets as bytes/u8, swapped/non-swapped
-> 
-> I think its right time to consider adding compatibles to nvmem-cells to be
-> able to specify encoding information and handle post processing.
+Quoting Sandeep Maheswaram (2021-07-06 06:00:12)
+> Add nodes for DWC3 USB controller, QMP and HS USB PHYs in sc7280 SOC.
+>
+> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+> ---
+> Changed qmp usb phy to usb dp phy combo node as per Stephen's comments.
+> Changed dwc to usb and added SC7280 compatible as per Bjorn's comments.
+>
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 164 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 164 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index a8c274a..cd6908f 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -1035,6 +1035,125 @@
+>                         };
+>                 };
+>
+[...]
+> +
+> +               usb_2: usb@8cf8800 {
+> +                       compatible = "qcom,sc7280-dwc3", "qcom,dwc3";
+> +                       reg = <0 0x08cf8800 0 0x400>;
+> +                       status = "disabled";
+> +                       #address-cells = <2>;
+> +                       #size-cells = <2>;
+> +                       ranges;
+> +                       dma-ranges;
+> +
+> +                       clocks = <&gcc GCC_CFG_NOC_USB3_SEC_AXI_CLK>,
+> +                                <&gcc GCC_USB30_SEC_MASTER_CLK>,
+> +                                <&gcc GCC_AGGRE_USB3_SEC_AXI_CLK>,
+> +                                <&gcc GCC_USB30_SEC_MOCK_UTMI_CLK>,
+> +                                <&gcc GCC_USB30_SEC_SLEEP_CLK>;
+> +                       clock-names = "cfg_noc", "core", "iface","mock_utmi",
+> +                                     "sleep";
+> +
+> +                       assigned-clocks = <&gcc GCC_USB30_SEC_MOCK_UTMI_CLK>,
+> +                                         <&gcc GCC_USB30_SEC_MASTER_CLK>;
+> +                       assigned-clock-rates = <19200000>, <200000000>;
+> +
+> +                       interrupts-extended = <&intc GIC_SPI 240 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <&pdc 13 IRQ_TYPE_EDGE_RISING>,
+> +                                    <&pdc 12 IRQ_TYPE_EDGE_RISING>;
 
-Yes. Trying to handle this with never ending new properties will end up 
-with a mess. At some point, you just need code to parse the data.
+I'm seeing this cause a warning at boot
 
-Rob
+[    4.724756] irq: type mismatch, failed to map hwirq-12 for
+interrupt-controller@b220000!
+[    4.733401] irq: type mismatch, failed to map hwirq-13 for
+interrupt-controller@b220000!
+
+> +                       interrupt-names = "hs_phy_irq",
+> +                                         "dm_hs_phy_irq", "dp_hs_phy_irq";
+> +
+> +                       power-domains = <&gcc GCC_USB30_SEC_GDSC>;
+> +
+> +                       resets = <&gcc GCC_USB30_SEC_BCR>;
+> +
+> +                       usb_2_dwc3: usb@8c00000 {
+> +                               compatible = "snps,dwc3";
+> +                               reg = <0 0x08c00000 0 0xe000>;
+> +                               interrupts = <GIC_SPI 242 IRQ_TYPE_LEVEL_HIGH>;
+> +                               iommus = <&apps_smmu 0xa0 0x0>;
+> +                               snps,dis_u2_susphy_quirk;
+> +                               snps,dis_enblslpm_quirk;
+> +                               phys = <&usb_2_hsphy>;
+> +                               phy-names = "usb2-phy";
+> +                               maximum-speed = "high-speed";
+> +                       };
+> +               };
+> +
+>                 dc_noc: interconnect@90e0000 {
+>                         reg = <0 0x090e0000 0 0x5080>;
+>                         compatible = "qcom,sc7280-dc-noc";
+> @@ -1063,6 +1182,51 @@
+>                         qcom,bcm-voters = <&apps_bcm_voter>;
+>                 };
+>
+> +               usb_1: usb@a6f8800 {
+> +                       compatible = "qcom,sc7280-dwc3", "qcom,dwc3";
+> +                       reg = <0 0x0a6f8800 0 0x400>;
+> +                       status = "disabled";
+> +                       #address-cells = <2>;
+> +                       #size-cells = <2>;
+> +                       ranges;
+> +                       dma-ranges;
+> +
+> +                       clocks = <&gcc GCC_CFG_NOC_USB3_PRIM_AXI_CLK>,
+> +                                <&gcc GCC_USB30_PRIM_MASTER_CLK>,
+> +                                <&gcc GCC_AGGRE_USB3_PRIM_AXI_CLK>,
+> +                                <&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>,
+> +                                <&gcc GCC_USB30_PRIM_SLEEP_CLK>;
+> +                       clock-names = "cfg_noc", "core", "iface", "mock_utmi",
+> +                                     "sleep";
+> +
+> +                       assigned-clocks = <&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>,
+> +                                         <&gcc GCC_USB30_PRIM_MASTER_CLK>;
+> +                       assigned-clock-rates = <19200000>, <200000000>;
+> +
+> +                       interrupts-extended = <&intc GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
+> +                                             <&pdc 14 IRQ_TYPE_EDGE_BOTH>,
+> +                                             <&pdc 15 IRQ_TYPE_EDGE_BOTH>,
+
+And this one too.
+
+[    4.898667] irq: type mismatch, failed to map hwirq-14 for
+interrupt-controller@b220000!
+[    4.907241] irq: type mismatch, failed to map hwirq-15 for
+interrupt-controller@b220000!
+
+which looks like genirq code is complaining that the type is different
+than what it is configured for. Are these trigger flags correct? If so,
+then there' some sort of bug in the pdc driver.
+
+> +                                             <&pdc 17 IRQ_TYPE_LEVEL_HIGH>;
+> +                       interrupt-names = "hs_phy_irq", "dp_hs_phy_irq",
+> +                                         "dm_hs_phy_irq", "ss_phy_irq";
+> +
+> +                       power-domains = <&gcc GCC_USB30_PRIM_GDSC>;
+> +
+> +                       resets = <&gcc GCC_USB30_PRIM_BCR>;
+> +
+> +                       usb_1_dwc3: usb@a600000 {
