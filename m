@@ -2,93 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66EA13EED57
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C84FE3EED62
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237642AbhHQN2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 09:28:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41962 "EHLO
+        id S239928AbhHQN3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 09:29:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236398AbhHQN2J (ORCPT
+        with ESMTP id S236398AbhHQN3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 09:28:09 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4439BC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 06:27:36 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id h63-20020a9d14450000b02904ce97efee36so24911726oth.7
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 06:27:36 -0700 (PDT)
+        Tue, 17 Aug 2021 09:29:07 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC17C061764;
+        Tue, 17 Aug 2021 06:28:34 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so5212327pjr.1;
+        Tue, 17 Aug 2021 06:28:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zWHDjIJawTHtbmwaJcKwdk8W++TJIaWlzkrKoGu1IaU=;
-        b=dg9OG94AdzJ4ptbnkm6zajAKdgcwQc2B/9ce5oIk4e+K8FFePWxsBRUsqCRBg9ObwY
-         8eEBGk31gtAelYKTmqn7zwdMLiPyFJlTIEWhicjSVfQPCJ1vujuAckMuR9ySstax8RmT
-         29499/yQ/kxDGEsOii0jh5PqYOf2tuA6HMva16Uc1LMweHD1+zN4U5sZo/6ftqFpx4Mf
-         64HpgzLfqpZQtKnwLUJ5BfPSF+jDLsiXO9iB2gr0FVUMk/PqYKcc8c6manWMdq+7mTap
-         LAVNHWRoKN55cZ5ZZM4qUfh/h5Y6SM/QbYPnOf26JQJwxYOmYQ+3LN5k2d4ljEKVjTOu
-         fVCg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OzNUm8hN1AEsHQGtDta7OSeQVgR7GVTLDRlUoY7wuUY=;
+        b=nz1+0HpqWM7CXmGnMuDOtCz/0d9QhZJdet+zPgDQsTWVAYZQmRB1bdJW+L8Km8dgbX
+         M4jSA0ura8Gg6qK8XmNVt0bKOeH5cWWz/eU3lZy92okhsOUH5HnsvJUgj+vEDB7sgold
+         aplY+rmi00PBCVcdo2qClNXDIAB/yy6n4xzxgmlkeYASNiT8g2RkqtY4thbEGz1KYo18
+         4ZqbxAWB0z+/ydZgzB640i4d6R+RCP2lzod6KxZm14/38wdR1qrNtHBTe3Jnspkt721Y
+         PUlifTcJ2BGJI+mhw3Vn+Xu4C79GcujCgan57vqiExOxVrPa2w3kUs/XBG4r8KZ9rpM7
+         3GKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zWHDjIJawTHtbmwaJcKwdk8W++TJIaWlzkrKoGu1IaU=;
-        b=jIIEIwvskjE/0k+wIXq/lwSQ17IPmi7xeDpCD2Ay+n7bsRhox2qnvt8BOoUFcnkH9N
-         wT6tn14wyXAh0KZ4tGCiGGEmk36kPObQKygwaNTc+9Xzu9Sfgx/cwZvaO2jmBIp4SPD+
-         1fR45U4I4dqjCc61U548LMDTn1fdhbeg/940z8Tgl32F0k1+duaTRL2rC7C74N80OAhb
-         2ZSCNni0SGmXJz2J3XSonm1C8OmDDG+bxSqHJC+lh0IdRaM9xSLmh6dkNq4GaCNNHR2E
-         dyg3gEmG30mymKzMSenB+DOc1WLLAqU3OV4agrM3XRmnj/ewwjf5eLkjC1KqJ1hRUWJP
-         v5pA==
-X-Gm-Message-State: AOAM530RmERgaMeyHmWr3LJTQnfIw4E7gHuazOzs/WRMdVu64eDGhIuD
-        rW/ACfaaXQ5pHFfdt5zJUHiv7iJMnuCBT8uHJPQFNA==
-X-Google-Smtp-Source: ABdhPJzz5g18ioI6eWHzPZd89cVcbC2pdeXSEWQCiJC21pT2iy9zZifvMdhmcEKvVH0zmPV5E982UyIcLPqeIs00+Ag=
-X-Received: by 2002:a9d:d04:: with SMTP id 4mr2775588oti.251.1629206855297;
- Tue, 17 Aug 2021 06:27:35 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OzNUm8hN1AEsHQGtDta7OSeQVgR7GVTLDRlUoY7wuUY=;
+        b=kyDE/ZxjvOHcnH8mAkaOVVRCFTYiMgjuclUjS5PalbJTRjbamwkEg/8rqr3U38RXOW
+         vm/kCWgt5Jts5BDFiCjmpB7UJAV/ddfCV640dp9Og92YLx2fbxtvhCJ4+gIp2YUq1F1v
+         4N6edYaqKzrf3bGTRWTHql7BnmFbQeTZ2bKJYKQ9IVuNHmbOKEePspFpvhTIRhVlqCXN
+         ltfCgN2OTBrVkN1nA58RDAjnQIy0Lu2bDjeq/Z1FT6dhukt9QZkqVzuUfd43Gz9HLmn+
+         9L9t/lxxuWQF1qF+4Uh47EZn5GhW8Zh3TA7YrxWWKz+VboqwKp2YTUn3dz3zNGU1Hp0R
+         Fu0Q==
+X-Gm-Message-State: AOAM531F/GfuNUMsQyHxz1pURJ88Q9gweGGxUuqGEjRrZ/wX8UJ1FM8c
+        cNyvQhO3j8PZyk0DYDF0j5Q=
+X-Google-Smtp-Source: ABdhPJyI8pt16zmUi71MCy0jpKoWpUkAdRvoLlsd+zvpPOCIQJK4+08tlGKUoAxiMpMSeBl/XEQHBg==
+X-Received: by 2002:a17:902:da8a:b029:12c:6f0:fe3c with SMTP id j10-20020a170902da8ab029012c06f0fe3cmr2819657plx.41.1629206913694;
+        Tue, 17 Aug 2021 06:28:33 -0700 (PDT)
+Received: from ubuntu.localdomain ([182.226.226.37])
+        by smtp.gmail.com with ESMTPSA id j6sm2791577pfi.220.2021.08.17.06.28.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 06:28:32 -0700 (PDT)
+From:   bongsu.jeon2@gmail.com
+To:     shuah@kernel.org, krzysztof.kozlowski@canonical.com
+Cc:     netdev@vger.kernel.org, linux-nfc@lists.01.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Bongsu Jeon <bongsu.jeon@samsung.com>
+Subject: [PATCH v2 net-next 0/8] Update the virtual NCI device driver and add the NCI testcase
+Date:   Tue, 17 Aug 2021 06:28:10 -0700
+Message-Id: <20210817132818.8275-1-bongsu.jeon2@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <YRo58c+JGOvec7tc@elver.google.com> <20210816145945.GB121345@rowland.harvard.edu>
- <YRqfJz/lpUaZpxq7@elver.google.com> <20210816192109.GC121345@rowland.harvard.edu>
- <20210816205057.GN4126399@paulmck-ThinkPad-P17-Gen-1> <20210817122816.GA12746@willie-the-truck>
-In-Reply-To: <20210817122816.GA12746@willie-the-truck>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 17 Aug 2021 15:27:23 +0200
-Message-ID: <CANpmjNMZxiyFbua2ck=0u7cJnHhtG4RY=Db=ry3COEED_sm7Xw@mail.gmail.com>
-Subject: Re: LKMM: Read dependencies of writes ordered by dma_wmb()?
-To:     Will Deacon <will@kernel.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Aug 2021 at 14:28, Will Deacon <will@kernel.org> wrote:
-> Just on this bit...
->
-> On Mon, Aug 16, 2021 at 01:50:57PM -0700, Paul E. McKenney wrote:
-> > 5.    The dma_mb(), dma_rmb(), and dma_wmb() appear to be specific
-> >       to ARMv8.
->
-> These are useful on other architectures too! IIRC, they were added by x86 in
-> the first place. They're designed to be used with dma_alloc_coherent()
-> allocations where you're sharing something like a ring buffer with a device
-> and they guarantee accesses won't be reordered before they become visible
-> to the device. They _also_ provide the same ordering to other CPUs.
+From: Bongsu Jeon <bongsu.jeon@samsung.com>
 
-Ah, good you pointed it out again. Re-reading memory-barriers.txt and
-it does also say these provide order for other CPUs...
+This series updates the virtual NCI device driver and NCI selftest code
+and add the NCI test case in selftests.
 
-> I gave a talk at LPC about some of this, which might help (or might make
-> things worse...):
->
-> https://www.youtube.com/watch?v=i6DayghhA8Q
+1/8 to use wait queue in virtual device driver.
+2/8 to remove the polling code in selftests.
+3/8 to fix a typo.
+4/8 to fix the next nlattr offset calculation.
+5/8 to fix the wrong condition in if statement.
+6/8 to add a flag parameter to the Netlink send function.
+7/8 to extract the start/stop discovery function.
+8/8 to add the NCI testcase in selftests.
 
-Nice, thank you!
+v2:
+ 1/8
+ - change the commit message.
+ - add the dfense code while reading a frame.
+ 3/8
+ - change the commit message.
+ - separate the commit into 3/8~8/8.
 
-> Ignore the bits about mmiowb() as we got rid of that.
->
-> Will
+Bongsu Jeon (8):
+  nfc: virtual_ncidev: Use wait queue instead of polling
+  selftests: nci: Remove the polling code to read a NCI frame
+  selftests: nci: Fix the typo
+  selftests: nci: Fix the code for next nlattr offset
+  selftests: nci: Fix the wrong condition
+  selftests: nci: Add the flags parameter for the send_cmd_mt_nla
+  selftests: nci: Extract the start/stop discovery function
+  selftests: nci: Add the NCI testcase reading T4T Tag
+
+ drivers/nfc/virtual_ncidev.c          |   9 +-
+ tools/testing/selftests/nci/nci_dev.c | 416 ++++++++++++++++++++++----
+ 2 files changed, 362 insertions(+), 63 deletions(-)
+
+-- 
+2.32.0
+
