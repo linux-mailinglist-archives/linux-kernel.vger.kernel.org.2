@@ -2,103 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C3E53EE0E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 02:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6543EE0E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 02:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233227AbhHQAbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 20:31:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60156 "EHLO mail.kernel.org"
+        id S234985AbhHQAbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 20:31:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:49266 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232929AbhHQAbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 20:31:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58C5E60F55;
-        Tue, 17 Aug 2021 00:30:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629160235;
-        bh=EdCrxzsMmkwYwBRpv9mB8ATfiVlhXsxkIRGxlrChfes=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z/OxiQOpk/MWnSzb7t+AfFk4DY6FTSC86PcX4E1IpF6EPejYKZGilb1Oc5Ps47w0+
-         k0MxtsE0IMhDy+yXcdlPk8m5eIKDvFYQRdK7ugBmZvUB47HnWNoqx3Xw7KLNSKzRWd
-         S2wnX2hYQEH54X3y/J7tZD0XJGq6SEmod1F5EmFbZtb9M/kEm6XNfQlSaH+riw10ah
-         7aq7u7Uwywk838nIPspwgOwx4sah0Su+by2w7kBqnY2UWx+FnNCroH1X/042ubLLy5
-         9xBYNN53s6Vx494pOZiOrYXtiw+a6uMzvSti1Hh06XYG7ZoNPNJ3W2rxHw2osh3OIZ
-         Df+/idgGiHQYw==
-Date:   Mon, 16 Aug 2021 17:30:33 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Yangtao Li <frank.li@vivo.com>
-Cc:     chao@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] f2fs: change value of recovery to bool
-Message-ID: <YRsDKWcghjEXr1Ro@google.com>
-References: <20210816122807.71400-1-frank.li@vivo.com>
+        id S233009AbhHQAbT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 20:31:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A4BF91FB;
+        Mon, 16 Aug 2021 17:30:46 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F21EC3F66F;
+        Mon, 16 Aug 2021 17:30:45 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] irqchip/gic: Convert to handle_strict_flow_irq()
+In-Reply-To: <87eeav19mc.wl-maz@kernel.org>
+References: <20210814194737.GA3951530@roeck-us.net> <87sfzb7jeo.mognet@arm.com> <87eeav19mc.wl-maz@kernel.org>
+Date:   Tue, 17 Aug 2021 01:30:43 +0100
+Message-ID: <87k0kk7w0c.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210816122807.71400-1-frank.li@vivo.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hmm, I don't see a great benefit of this patch. Do we have a chance to use
-integer to get more specifics of the recovery reason in future?
-
-On 08/16, Yangtao Li wrote:
-> Recovery has only two values, 0 and 1, let's change it to bool type.
-> 
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
-> ---
->  fs/f2fs/super.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index 8fecd3050ccd..98727e04d271 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -3541,7 +3541,7 @@ static int init_blkz_info(struct f2fs_sb_info *sbi, int devi)
->   */
->  static int read_raw_super_block(struct f2fs_sb_info *sbi,
->  			struct f2fs_super_block **raw_super,
-> -			int *valid_super_block, int *recovery)
-> +			int *valid_super_block, bool *recovery)
+On 15/08/21 07:54, Marc Zyngier wrote:
+> This is going and-up in a wack-a-mole game. There is probably a bunch
+> of these all over the place. I'd rather squash it at the root,
+> i.e. with something like this (untested):
+>
+> diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
+> index 099bc7e13d1b..601ad3fc47cd 100644
+> --- a/kernel/irq/chip.c
+> +++ b/kernel/irq/chip.c
+> @@ -410,7 +410,12 @@ void irq_percpu_disable(struct irq_desc *desc, unsigned int cpu)
+>
+>  void ack_irq(struct irq_desc *desc)
 >  {
->  	struct super_block *sb = sbi->sb;
->  	int block;
-> @@ -3559,7 +3559,7 @@ static int read_raw_super_block(struct f2fs_sb_info *sbi,
->  			f2fs_err(sbi, "Unable to read %dth superblock",
->  				 block + 1);
->  			err = -EIO;
-> -			*recovery = 1;
-> +			*recovery = true;
->  			continue;
->  		}
->  
-> @@ -3569,7 +3569,7 @@ static int read_raw_super_block(struct f2fs_sb_info *sbi,
->  			f2fs_err(sbi, "Can't find valid F2FS filesystem in %dth superblock",
->  				 block + 1);
->  			brelse(bh);
-> -			*recovery = 1;
-> +			*recovery = true;
->  			continue;
->  		}
->  
-> @@ -3784,15 +3784,16 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
->  	int err;
->  	bool skip_recovery = false, need_fsck = false;
->  	char *options = NULL;
-> -	int recovery, i, valid_super_block;
-> +	int i, valid_super_block;
->  	struct curseg_info *seg_i;
->  	int retry_cnt = 1;
-> +	bool recovery;
->  
->  try_onemore:
->  	err = -EINVAL;
->  	raw_super = NULL;
->  	valid_super_block = -1;
-> -	recovery = 0;
-> +	recovery = false;
->  
->  	/* allocate memory for f2fs-specific super block info */
->  	sbi = kzalloc(sizeof(struct f2fs_sb_info), GFP_KERNEL);
-> -- 
-> 2.32.0
+> -	desc->irq_data.chip->irq_ack(&desc->irq_data);
+> +	struct irq_data *data = &desc->irq_data;
+> +
+> +	while (!data->chip->irq_ack)
+> +		data = data->parent_data;
+> +
+> +	data->chip->irq_ack(&desc->irq_data);
+>
+>       if (desc->irq_data.chip->flags & IRQCHIP_AUTOMASKS_FLOW)
+>               irq_state_set_flow_masked(desc);
+>
+> We probably need something similar for irq_eoi().
+>
+> This however shows a more fundamental problem, I'm afraid. We set
+> IRQCHIP_AUTOMASKS_FLOW in the GIC drivers (i.e. at the root), but test
+> for it at the top of the hierarchy. As soon as we have more than a
+> single layer of irqchip, this will do the wrong thing (or at least
+> miss the masking optimisation).
+>
+
+Yup.
+
+> This probably advocates for moving the flag into the descriptor. This
+> really makes sense, as the flow is global to the whole stack, not just
+> to the localised irqchip.
+>
+
+Are we guaranteed to have
+
+  .irq_ack \in {NULL, irq_chip_ack_parent}
+
+for all intermediate (!root) irqchips? I don't see why that wouldn't be the
+case, and with that in mind what you described makes sense to me.
+
+> In order to restore -next into a working state, I'm temporarily
+> dropping this series. Hopefully, we can sort this out before the merge
+> window and reinstate it.
+>
+
+I'm away from any keyboard for most of this week, but I'll get to it by the
+weekend.
+
+> Thanks,
+>
+>       M.
+>
+> --
+> Without deviation from the norm, progress is not possible.
