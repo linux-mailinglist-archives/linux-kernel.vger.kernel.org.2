@@ -2,165 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FEB33EE8AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B58253EE8AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239350AbhHQIhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 04:37:55 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:53354 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S239121AbhHQIhb (ORCPT
+        id S238885AbhHQIjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 04:39:03 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:56346 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234834AbhHQIjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 04:37:31 -0400
-X-UUID: 4eb339bec2f64170aa73568d9d403155-20210817
-X-UUID: 4eb339bec2f64170aa73568d9d403155-20210817
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 677208711; Tue, 17 Aug 2021 16:36:53 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 17 Aug 2021 16:36:52 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Tue, 17 Aug 2021 16:36:51 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 17 Aug 2021 16:36:50 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>
-CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Eddie Hung <eddie.hung@mediatek.com>
-Subject: [PATCH RESEND 9/9] usb: xhci-mtk: modify the SOF/ITP interval for mt8195
-Date:   Tue, 17 Aug 2021 16:36:29 +0800
-Message-ID: <1629189389-18779-9-git-send-email-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1629189389-18779-1-git-send-email-chunfeng.yun@mediatek.com>
-References: <1629189389-18779-1-git-send-email-chunfeng.yun@mediatek.com>
+        Tue, 17 Aug 2021 04:39:01 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0221021EE5;
+        Tue, 17 Aug 2021 08:38:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1629189508; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Os62KQw0b7pgF7UtQxWeCQD8qkag+tuLJGn+/wMRqAE=;
+        b=XIRlTLqrlQ6JL+f1FhawV28esjCMP6ho4Xd0BgU5i+GkOl5yPD2VxUCpRTZ1dR+qelnJHW
+        YtZt7Cfn7LZpd5gREcUtv8CkW7A+vv6x5Sb2IuDOpZPrikkIbCA6aVTFzUdcwIuLWQ6XdV
+        w15xDXsnbY4SqBDznjOGPWtWY9zWePs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1629189508;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Os62KQw0b7pgF7UtQxWeCQD8qkag+tuLJGn+/wMRqAE=;
+        b=E2RS9oo5Le/SBBicd9aJjf4A5gpF0FksIwr9F7Nx2SCmm3cSIIuUHdcG4XQZgqZClQHRNR
+        Cp7sFZ/HE2ERWTCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3105413B77;
+        Tue, 17 Aug 2021 08:38:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id cbaPCYN1G2GvQQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 17 Aug 2021 08:38:27 +0000
+Subject: Re: [PATCH v4 35/35] mm, slub: convert kmem_cpu_slab protection to
+ local_lock
+To:     Sven Eckelmann <sven@narfation.org>
+Cc:     akpm@linux-foundation.org, bigeasy@linutronix.de,
+        brouer@redhat.com, cl@linux.com, efault@gmx.de,
+        iamjoonsoo.kim@lge.com, jannh@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        mgorman@techsingularity.net, penberg@kernel.org,
+        rientjes@google.com, tglx@linutronix.de,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <2666777.vCjUEy5FO1@sven-desktop>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <7329198a-2a4e-ebc2-abf8-f7f38f00d5e1@suse.cz>
+Date:   Tue, 17 Aug 2021 10:37:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <2666777.vCjUEy5FO1@sven-desktop>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are 4 USB controllers on MT8195, the controllers (IP1~IP3,
-exclude IP0) have a wrong default SOF/ITP interval which is
-calculated from the frame counter clock 24Mhz by default, but
-in fact, the frame counter clock is 48Mhz, so we should set
-the accurate interval according to 48Mhz for those controllers.
-Note: the first controller no need set it.
+On 8/15/21 2:27 PM, Sven Eckelmann wrote:
+>> mm, slub: convert kmem_cpu_slab protection to local_lock
+>>
+>> Embed local_lock into struct kmem_cpu_slab and use the irq-safe versions
+>> of local_lock instead of plain local_irq_save/restore.  On !PREEMPT_RT
+>> that's equivalent, with better lockdep visibility.  On PREEMPT_RT that
+>> means better preemption.
+> [...]
+> 
+> Looks like this change breaks booting when 64BIT+LOCK_STAT is enabled on 
+> x86_64:
 
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
----
- drivers/usb/host/xhci-mtk.c | 65 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 65 insertions(+)
+OK reproduced. Thanks, will investigate.
 
-diff --git a/drivers/usb/host/xhci-mtk.c b/drivers/usb/host/xhci-mtk.c
-index 12b691547438..7ff0cd707ba1 100644
---- a/drivers/usb/host/xhci-mtk.c
-+++ b/drivers/usb/host/xhci-mtk.c
-@@ -57,6 +57,27 @@
- /* u2_phy_pll register */
- #define CTRL_U2_FORCE_PLL_STB	BIT(28)
- 
-+/* xHCI CSR */
-+#define LS_EOF_CFG		0x930
-+#define LSEOF_OFFSET		0x89
-+
-+#define FS_EOF_CFG		0x934
-+#define FSEOF_OFFSET		0x2e
-+
-+#define SS_GEN1_EOF_CFG		0x93c
-+#define SSG1EOF_OFFSET		0x78
-+
-+#define HFCNTR_CFG		0x944
-+#define ITP_DELTA_CLK		(0xa << 1)
-+#define ITP_DELTA_CLK_MASK	GENMASK(5, 1)
-+#define FRMCNT_LEV1_RANG	(0x12b << 8)
-+#define FRMCNT_LEV1_RANG_MASK	GENMASK(19, 8)
-+
-+#define SS_GEN2_EOF_CFG		0x990
-+#define SSG2EOF_OFFSET		0x3c
-+
-+#define XSEOF_OFFSET_MASK	GENMASK(11, 0)
-+
- /* usb remote wakeup registers in syscon */
- 
- /* mt8173 etc */
-@@ -87,6 +108,46 @@ enum ssusb_uwk_vers {
- 	SSUSB_UWK_V1_2,		/* specific revision 1.2 */
- };
- 
-+/*
-+ * MT8195 has 4 controllers, the controller1~3's default SOF/ITP interval
-+ * is calculated from the frame counter clock 24M, but in fact, the clock
-+ * is 48M, add workaround for it.
-+ */
-+static void xhci_mtk_set_frame_interval(struct xhci_hcd_mtk *mtk)
-+{
-+	struct device *dev = mtk->dev;
-+	struct usb_hcd *hcd = mtk->hcd;
-+	u32 value;
-+
-+	if (!of_device_is_compatible(dev->of_node, "mediatek,mt8195-xhci"))
-+		return;
-+
-+	value = readl(hcd->regs + HFCNTR_CFG);
-+	value &= ~(ITP_DELTA_CLK_MASK | FRMCNT_LEV1_RANG_MASK);
-+	value |= (ITP_DELTA_CLK | FRMCNT_LEV1_RANG);
-+	writel(value, hcd->regs + HFCNTR_CFG);
-+
-+	value = readl(hcd->regs + LS_EOF_CFG);
-+	value &= ~XSEOF_OFFSET_MASK;
-+	value |= LSEOF_OFFSET;
-+	writel(value, hcd->regs + LS_EOF_CFG);
-+
-+	value = readl(hcd->regs + FS_EOF_CFG);
-+	value &= ~XSEOF_OFFSET_MASK;
-+	value |= FSEOF_OFFSET;
-+	writel(value, hcd->regs + FS_EOF_CFG);
-+
-+	value = readl(hcd->regs + SS_GEN1_EOF_CFG);
-+	value &= ~XSEOF_OFFSET_MASK;
-+	value |= SSG1EOF_OFFSET;
-+	writel(value, hcd->regs + SS_GEN1_EOF_CFG);
-+
-+	value = readl(hcd->regs + SS_GEN2_EOF_CFG);
-+	value &= ~XSEOF_OFFSET_MASK;
-+	value |= SSG2EOF_OFFSET;
-+	writel(value, hcd->regs + SS_GEN2_EOF_CFG);
-+}
-+
- static int xhci_mtk_host_enable(struct xhci_hcd_mtk *mtk)
- {
- 	struct mu3c_ippc_regs __iomem *ippc = mtk->ippc_regs;
-@@ -368,6 +429,9 @@ static int xhci_mtk_setup(struct usb_hcd *hcd)
- 		ret = xhci_mtk_ssusb_config(mtk);
- 		if (ret)
- 			return ret;
-+
-+		/* workaround only for mt8195 */
-+		xhci_mtk_set_frame_interval(mtk);
- 	}
- 
- 	ret = xhci_gen_setup(hcd, xhci_mtk_quirks);
-@@ -716,6 +780,7 @@ static const struct dev_pm_ops xhci_mtk_pm_ops = {
- 
- static const struct of_device_id mtk_xhci_of_match[] = {
- 	{ .compatible = "mediatek,mt8173-xhci"},
-+	{ .compatible = "mediatek,mt8195-xhci"},
- 	{ .compatible = "mediatek,mtk-xhci"},
- 	{ },
- };
--- 
-2.18.0
+>     general protection fault, maybe for address 0xffff888007fcf1c8: 0000 [#1] NOPTI
+>     CPU: 0 PID: 0 Comm: swapper Not tainted 5.14.0-rc5+ #7
+>     Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+>     RIP: 0010:kmem_cache_alloc+0x81/0x180
+>     Code: 79 48 00 4c 8b 41 38 0f 84 89 00 00 00 4d 85 c0 0f 84 80 00 00 00 41 8b 44 24 28 49 8b 3c 24 48 8d 4a 01 49 8b 1c 00 4c 89 c0 <48> 0f c7 4f 38 0f 943
+>     RSP: 0000:ffffffff81803c10 EFLAGS: 00000286
+>     RAX: ffff88800244e7c0 RBX: ffff88800244e800 RCX: 0000000000000024
+>     RDX: 0000000000000023 RSI: 0000000000000100 RDI: ffff888007fcf190
+>     RBP: ffffffff81803c38 R08: ffff88800244e7c0 R09: 0000000000000dc0
+>     R10: 0000000000004000 R11: 0000000000000000 R12: ffff8880024413c0
+>     R13: ffffffff810d18f4 R14: 0000000000000dc0 R15: 0000000000000100
+>     FS:  0000000000000000(0000) GS:ffffffff81840000(0000) knlGS:0000000000000000
+>     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>     CR2: ffff888002001000 CR3: 0000000001824000 CR4: 00000000000006b0
+>     Call Trace:
+>      __get_vm_area_node.constprop.0.isra.0+0x74/0x150
+>      __vmalloc_node_range+0x5a/0x2b0
+>      ? kernel_clone+0x88/0x390
+>      ? copy_process+0x1ac/0x17e0
+>      copy_process+0x768/0x17e0
+>      ? kernel_clone+0x88/0x390
+>      kernel_clone+0x88/0x390
+>      ? _vm_unmap_aliases.part.0+0xe9/0x110
+>      ? change_page_attr_set_clr+0x10d/0x180
+>      kernel_thread+0x43/0x50
+>      ? rest_init+0x100/0x100
+>      rest_init+0x1e/0x100
+>      arch_call_rest_init+0x9/0xc
+>      start_kernel+0x481/0x493
+>      x86_64_start_reservations+0x24/0x26
+>      x86_64_start_kernel+0x80/0x84
+>      secondary_startup_64_no_verify+0xc2/0xcb
+>     random: get_random_bytes called from oops_exit+0x34/0x60 with crng_init=0
+>     ---[ end trace 2cac18ac38f640c1 ]---
+>     RIP: 0010:kmem_cache_alloc+0x81/0x180
+>     Code: 79 48 00 4c 8b 41 38 0f 84 89 00 00 00 4d 85 c0 0f 84 80 00 00 00 41 8b 44 24 28 49 8b 3c 24 48 8d 4a 01 49 8b 1c 00 4c 89 c0 <48> 0f c7 4f 38 0f 943
+>     RSP: 0000:ffffffff81803c10 EFLAGS: 00000286
+>     RAX: ffff88800244e7c0 RBX: ffff88800244e800 RCX: 0000000000000024
+>     RDX: 0000000000000023 RSI: 0000000000000100 RDI: ffff888007fcf190
+>     RBP: ffffffff81803c38 R08: ffff88800244e7c0 R09: 0000000000000dc0
+>     R10: 0000000000004000 R11: 0000000000000000 R12: ffff8880024413c0
+>     R13: ffffffff810d18f4 R14: 0000000000000dc0 R15: 0000000000000100
+>     FS:  0000000000000000(0000) GS:ffffffff81840000(0000) knlGS:0000000000000000
+>     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>     CR2: ffff888002001000 CR3: 0000000001824000 CR4: 00000000000006b0
+>     Kernel panic - not syncing: Attempted to kill the idle task!
+>     ---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
+> 
+> 
+> This was tested in qemu-system-x86_64 (from Debian Bullseye) with
+>     
+>     cat > .config << "EOF"
+>     # CONFIG_LOCALVERSION_AUTO is not set
+>     # CONFIG_SWAP is not set
+>     # CONFIG_CROSS_MEMORY_ATTACH is not set
+>     # CONFIG_UTS_NS is not set
+>     # CONFIG_TIME_NS is not set
+>     # CONFIG_PID_NS is not set
+>     # CONFIG_COMPAT_BRK is not set
+>     # CONFIG_SLAB_MERGE_DEFAULT is not set
+>     # CONFIG_RETPOLINE is not set
+>     # CONFIG_X86_EXTENDED_PLATFORM is not set
+>     # CONFIG_SCHED_OMIT_FRAME_POINTER is not set
+>     # CONFIG_X86_MCE is not set
+>     # CONFIG_X86_IOPL_IOPERM is not set
+>     # CONFIG_MICROCODE is not set
+>     # CONFIG_MTRR_SANITIZER is not set
+>     # CONFIG_RELOCATABLE is not set
+>     # CONFIG_SUSPEND is not set
+>     # CONFIG_ACPI is not set
+>     # CONFIG_DMIID is not set
+>     # CONFIG_VIRTUALIZATION is not set
+>     # CONFIG_SECCOMP is not set
+>     # CONFIG_STACKPROTECTOR is not set
+>     # CONFIG_BLK_DEV_BSG is not set
+>     # CONFIG_MQ_IOSCHED_DEADLINE is not set
+>     # CONFIG_MQ_IOSCHED_KYBER is not set
+>     # CONFIG_BINFMT_ELF is not set
+>     # CONFIG_BINFMT_SCRIPT is not set
+>     # CONFIG_COMPACTION is not set
+>     # CONFIG_STANDALONE is not set
+>     # CONFIG_PREVENT_FIRMWARE_BUILD is not set
+>     # CONFIG_BLK_DEV is not set
+>     # CONFIG_INPUT_KEYBOARD is not set
+>     # CONFIG_INPUT_MOUSE is not set
+>     # CONFIG_SERIO is not set
+>     # CONFIG_LEGACY_PTYS is not set
+>     # CONFIG_LDISC_AUTOLOAD is not set
+>     CONFIG_SERIAL_8250=y
+>     CONFIG_SERIAL_8250_CONSOLE=y
+>     # CONFIG_HW_RANDOM is not set
+>     # CONFIG_DEVMEM is not set
+>     # CONFIG_HWMON is not set
+>     # CONFIG_HID is not set
+>     # CONFIG_USB_SUPPORT is not set
+>     # CONFIG_VIRTIO_MENU is not set
+>     # CONFIG_VHOST_MENU is not set
+>     # CONFIG_X86_PLATFORM_DEVICES is not set
+>     # CONFIG_IOMMU_SUPPORT is not set
+>     # CONFIG_MANDATORY_FILE_LOCKING is not set
+>     # CONFIG_DNOTIFY is not set
+>     # CONFIG_INOTIFY_USER is not set
+>     # CONFIG_MISC_FILESYSTEMS is not set
+>     # CONFIG_SYMBOLIC_ERRNAME is not set
+>     CONFIG_FRAME_WARN=1024
+>     # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+>     CONFIG_DEBUG_KERNEL=y
+>     CONFIG_LOCK_STAT=y
+>     # CONFIG_FTRACE is not set
+>     # CONFIG_X86_VERBOSE_BOOTUP is not set
+>     CONFIG_UNWINDER_FRAME_POINTER=y
+>     # CONFIG_RUNTIME_TESTING_MENU is not set
+>     CONFIG_64BIT=y
+>     EOF
+>     
+>     make ARCH=x86_64 olddefconfig
+>     make ARCH=x86_64 all
+>     
+>     qemu-system-x86_64 -nographic -kernel arch/x86/boot/bzImage -append console=ttyS0
+> 
+> Here is the bisect log:
+> 
+>     # bad: [4b358aabb93a2c654cd1dcab1a25a589f6e2b153] Add linux-next specific files for 20210813
+>     # good: [36a21d51725af2ce0700c6ebcb6b9594aac658a6] Linux 5.14-rc5
+>     git bisect start 'HEAD' 'v5.14-rc5'
+>     # good: [204808b2ca750e27cbad3455f7cb4368c4f5b260] Merge remote-tracking branch 'crypto/master'
+>     git bisect good 204808b2ca750e27cbad3455f7cb4368c4f5b260
+>     # good: [2201162fca73b487152bcff2ebb0f85c1dde8479] Merge remote-tracking branch 'tip/auto-latest'
+>     git bisect good 2201162fca73b487152bcff2ebb0f85c1dde8479
+>     # good: [41f97b6df1c8fd9fa828967a687693454c4ce888] Merge remote-tracking branch 'staging/staging-next'
+>     git bisect good 41f97b6df1c8fd9fa828967a687693454c4ce888
+>     # good: [797896d32d52af43fc9b0099a198ef29c2ca0138] Merge remote-tracking branch 'userns/for-next'
+>     git bisect good 797896d32d52af43fc9b0099a198ef29c2ca0138
+>     # bad: [5c7e12cc3d39b5cfc0d1a470139e4e89f3b147ed] arch: Kconfig: fix spelling mistake "seperate" -> "separate"
+>     git bisect bad 5c7e12cc3d39b5cfc0d1a470139e4e89f3b147ed
+>     # bad: [3535cf93a31ecd8595744881dbbda666cf61be48] add-mmap_assert_locked-annotations-to-find_vma-fix
+>     git bisect bad 3535cf93a31ecd8595744881dbbda666cf61be48
+>     # bad: [ac90b3dacf327cecda9f3dabc0051c7332770224] mm/debug_vm_pgtable: use struct pgtable_debug_args in PGD and P4D modifying tests
+>     git bisect bad ac90b3dacf327cecda9f3dabc0051c7332770224
+>     # good: [3a7ac8f97abde2d6ec973a00a449c45b9642a15a] mm, slub: do initial checks in ___slab_alloc() with irqs enabled
+>     git bisect good 3a7ac8f97abde2d6ec973a00a449c45b9642a15a
+>     # good: [1c84f3c916405dc3d62cfca55fb2a84de9d7f31e] mm, slub: fix memory and cpu hotplug related lock ordering issues
+>     git bisect good 1c84f3c916405dc3d62cfca55fb2a84de9d7f31e
+>     # bad: [6ac9c394652dbba1181268cb09513edbd733685c] mm/debug_vm_pgtable: introduce struct pgtable_debug_args
+>     git bisect bad 6ac9c394652dbba1181268cb09513edbd733685c
+>     # good: [35a6f4bcf4ad9c8c0208ea48044539a952859b3a] mm, slub: make slab_lock() disable irqs with PREEMPT_RT
+>     git bisect good 35a6f4bcf4ad9c8c0208ea48044539a952859b3a
+>     # good: [03e736e3ca2c0a48822609a89ffa0329f4eb5aae] mm, slub: use migrate_disable() on PREEMPT_RT
+>     git bisect good 03e736e3ca2c0a48822609a89ffa0329f4eb5aae
+>     # bad: [3f57fd12e8b7eb77412623c347566fb83ec5e764] mm, slub: convert kmem_cpu_slab protection to local_lock
+>     git bisect bad 3f57fd12e8b7eb77412623c347566fb83ec5e764
+>     # first bad commit: [3f57fd12e8b7eb77412623c347566fb83ec5e764] mm, slub: convert kmem_cpu_slab protection to local_lock
+> 
+> I haven't checked what part of the change is actually causing the problem
+> 
+> Kind regards,
+> 	Sven
+> 
 
