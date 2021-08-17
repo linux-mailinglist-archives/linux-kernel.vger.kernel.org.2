@@ -2,70 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C53573EE1E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 02:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5777A3EE1B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 02:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235487AbhHQA5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 20:57:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40432 "EHLO
+        id S237279AbhHQA4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 20:56:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236236AbhHQA5M (ORCPT
+        with ESMTP id S235855AbhHQA4J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 20:57:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175CEC0612A8
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 17:56:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/os8BYCxcZjK7RsY8spTxNjEEn6tv7DFP2h8onEl7uo=; b=bOC/SoWz6/tdlOnV4/vUhVc5ss
-        xNP/QQZyxbUWtNhj6aDaDiLVklj/o/4tH7MUMIMRrxX+R2FfB3IqA4GzDPIAC4iFIRXYQ97Jp9XTX
-        hzslpysWO9j8E+SjdOpjNcjrx2z3abR9XHmT11PgWhr0n7ILUpPetBOcdN1EFTMY/6UvRCcFEKvPI
-        GxnJ4B8uM8xLZxeBv5yhalK7ntBj/C2pjsdLEmAcrVDtWjzzy/RxfgRRnsNvZA2DhLaeVCgmChEIi
-        DXRNVpVWHX5a9Y6H/2e80tveJbFvyzSS8e7dMCwiMsxVRkzRsD1sTKlcdMvkTb8i9Gg6ovtIe/Skn
-        SkNhV+Bg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mFnNg-001yBT-Ji; Tue, 17 Aug 2021 00:55:15 +0000
-Date:   Tue, 17 Aug 2021 01:55:04 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        Steven Sistare <steven.sistare@oracle.com>,
-        Anthony Yznaga <anthony.yznaga@oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>
-Subject: Re: [RFC PATCH 0/5] madvise MADV_DOEXEC
-Message-ID: <YRsI6CXcRPTHFV0J@casper.infradead.org>
-References: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
- <cc714571-4461-c9e0-7b24-e213664caa54@huawei.com>
- <43471cbb-67c6-f189-ef12-0f8302e81b06@oracle.com>
- <a1dbf12e-9949-109e-122c-ba7ba609801b@huawei.com>
- <YOubKmDwxMIvdAed@casper.infradead.org>
- <a94973ab83ce48bd85c91397f82d7915@huawei.com>
- <55720e1b39cff0a0f882d8610e7906dc80ea0a01.camel@oracle.com>
- <db2b7337-4c6b-4e4b-71d3-dc4940353498@redhat.com>
- <YRpVHnr55LpQQvTb@casper.infradead.org>
- <3cdccacab6244dd3ac9d491ac7233b43@huawei.com>
+        Mon, 16 Aug 2021 20:56:09 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30CC7C0611C6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 17:55:25 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id x7so30110117ljn.10
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 17:55:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=u12rwXg8g4PJq/ZBmPuac8Qj8YYRwwb7Uj5T/LSY2zo=;
+        b=EAAYpRI2iVZDTfCZlb3Xqro7/P2wtZ+jkRMZf1Bmh7AZuZINyv+zBfw/ockT4XoYLT
+         QB/cN8F4orqXktrhSOfkliEEResJ0b5pqmxQ62pjSZViPa/GvUh+J3F3jdLlzCMrQQIM
+         xHQTiw2dvd3RmKMMmpg1bP25EHiY+NSdxghJmhccESTLR3y+C9/fwa4EXqi7iu9nI/FP
+         OCrg6JQtgfr5ilE4Qypv60EKDcw8RS1WESxnJs9KflYa6JFtcIzkXeVXPxktb31oRcch
+         UteYQcWAA0Gb2cpQn7rQLebStwfVY9moW4BolAL9a3QqdepGzKAdBMrNAF0UC3z45+BR
+         7PXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=u12rwXg8g4PJq/ZBmPuac8Qj8YYRwwb7Uj5T/LSY2zo=;
+        b=pCV2bVnUu2CkW0kNsA5zNwQZW/kmXwe4VSKMu2wLptgoxAwoDhqRwXLX+wt7YGUshT
+         7zFDUiGABk7iLsLpO2/5thPY3us8OetMHcF1pELen7WM3GERSnDAhGZweNohgm0L3QlH
+         fvmTeqJuIp7kqJ/1GbLPXwBlwl2AU08SeRQPfPGrWQA2EdLIvCg74axXg60bt1LQBe6l
+         h3m/Vt9LyWn933ffi2yEcLhGo8XYcTQEBAfUW2pCA7O49BYuk+h6OBkIA0lYijUwUwBn
+         UJpHAdm/oBG94BenprYLLgj0PkeYAI+L6tsF7ZTPZQact4qBovokBCwsLx43gxoykbDB
+         78Vg==
+X-Gm-Message-State: AOAM531wTkrog9ssSoylElCnF9M3lwlWMY/PjvgBZl7E8I0tmHhmhHyz
+        WeBXwCAbdIotRnS/f+/wNRBnDA==
+X-Google-Smtp-Source: ABdhPJykxVR6EeoPt1Rvlafv3t+KywFGvitTYNxwTI9ilss5IuaqKndgqB3OhVtT7EruboGWfnj6lQ==
+X-Received: by 2002:a05:651c:1057:: with SMTP id x23mr757286ljm.377.1629161723606;
+        Mon, 16 Aug 2021 17:55:23 -0700 (PDT)
+Received: from eriador.lan ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id z6sm40719lfb.251.2021.08.16.17.55.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 17:55:23 -0700 (PDT)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [RFC PATCH 13/15] arm64: dts: qcom: sdm845-db845c: add second channel support to qca power sequencer
+Date:   Tue, 17 Aug 2021 03:55:05 +0300
+Message-Id: <20210817005507.1507580-14-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
+References: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3cdccacab6244dd3ac9d491ac7233b43@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 12:47:19AM +0000, Longpeng (Mike, Cloud Infrastructure Service Product Dept.) wrote:
-> I understand your intent now, you want to share memory ranges by sharing the relevant
-> pgtable pages. 
-> 
-> I had implemented a similar idea to support QEMU live upgrade about four years ago
-> ( in late 2017),
-> 
-> https://patents.google.com/patent/US20210089345A1
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-I am not going to read a patent.  This conversation is now over until
-I have had a conversation with my patent attorney.
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+index c9b694e934d4..3025e5efd556 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
++++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+@@ -342,6 +342,12 @@ vreg_l21a_2p95: ldo21 {
+ 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+ 		};
+ 
++		vreg_l23a_3p3: ldo23 {
++			regulator-min-microvolt = <3300000>;
++			regulator-max-microvolt = <3312000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
+ 		vreg_l24a_3p075: ldo24 {
+ 			regulator-min-microvolt = <3088000>;
+ 			regulator-max-microvolt = <3088000>;
+@@ -637,6 +643,7 @@ &qca_pwrseq {
+ 	vddxo-supply = <&vreg_l7a_1p8>;
+ 	vddrfa-supply = <&vreg_l17a_1p3>;
+ 	vddch0-supply = <&vreg_l25a_3p3>;
++	vddch1-supply = <&vreg_l23a_3p3>;
+ };
+ 
+ &sdhc_2 {
+-- 
+2.30.2
+
