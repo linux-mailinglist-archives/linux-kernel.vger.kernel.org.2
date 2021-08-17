@@ -2,164 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A823EF428
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5FB3EF42E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234866AbhHQUfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 16:35:32 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:35308
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234248AbhHQUfb (ORCPT
+        id S234027AbhHQUja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 16:39:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229847AbhHQUj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 16:35:31 -0400
-Received: from [192.168.0.209] (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net [80.193.200.194])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id EEB013F09C;
-        Tue, 17 Aug 2021 20:34:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629232497;
-        bh=aH1+suqq1Y7Z2H6cY/RzQZFaxHT3pbfG5PuomAgbVV4=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=FRsYyfbzQZ5aditKm7PPjnQvcbU1Cv60zjE1MiSf99L0Hcse9MW6cJ2HbYBwuAsWc
-         ON+nsDipyRwgdMlqVYK1lN3dvSexPWCWdGu/2SDLZl4ebQzDdTA56rOTRdDQv4aoPV
-         eEpzncXktcQtsNHSVhQilN9qHzQdFAAO8UJsqiGScXLFGGhkQ2+2NNXcLSVXzvLndf
-         Sa43ZCoSH1YEHO+f1XzLT4nenT8mQm3lpbLV8BLnfQRmOcNGdlJZJQZQfgC4NgatxZ
-         JBf+rkjM/TIRVMMx/78Ss3T4FxnFo787A8/O43QcAJn0HvgAmrXslS9HctZsJlgeFS
-         abeFH8AbFhDHw==
-Subject: Re: bpf: Implement minimal BPF perf link
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <342670fc-948a-a76e-5a47-b3d44e3e3926@canonical.com>
- <CAEf4BzYP6OU23D33d6dzgpYyXqSGrQUpenrJStyYFB3L7S93ew@mail.gmail.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <6609e46f-96f2-8a9d-4422-b9af3e64c024@canonical.com>
-Date:   Tue, 17 Aug 2021 21:34:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 17 Aug 2021 16:39:29 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E12BC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 13:38:55 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id bd1so1055003oib.3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 13:38:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qst5Lct6ju3ZiqLPEwiEwZCexgwlBiGnZjd8VzBBJAU=;
+        b=awQiy6mW2gRQnPCe2fzj1nM0naHRZ0XG7PtwKsN+oeM+V1LTqxkC4tbTfyZvL1lAZt
+         OR78CydauxbVPha8JB4aJdd21BS5qPmddFNVV8yHzEd+58Kq/9Dm+8zcSw9PkKmZrH+f
+         ooWZZzfZKnshQ0MrQ8SPqjrKBGnG1nbJinc73YlJ8nnH4F3ayI4snwnoduNEV59bNKWd
+         zokeFoBW9vV35/mBznhRtf7+13DqR3NGbkdJKfObe8qOzxRHvmsFjdDxq8L7bshz6HXW
+         yJb8azF3Zx0pnZE1/NxjDhWTO4HEFGPwpDUTqKGH/rxkV4gbQoFl2OZ0dizxZueg5uJK
+         nLLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qst5Lct6ju3ZiqLPEwiEwZCexgwlBiGnZjd8VzBBJAU=;
+        b=FMU3RIZKUiCHQZncs2jB3Pc1t/pef/yVGVu3KIhth+8tMDfiN5oQMBVAYzZd0Qtyer
+         esbX2ScYeU6Cv1VsWhlirIQVeVFwjmYfD5GP1dqbxHZGyrn8tZzRKTLyNwLMIJUK0X6J
+         /LMJkjDOWl6mF8VZIO73Y/vCndeDZUepdQx42uCnE0A3hOiXoUfMv/bno0EedlLxCRql
+         7HBwf32RBI/1BWAK6yphlN/PjaiOW/WPWzbKpXLp89CgxyV0DV2n+6LnXHXbJFAdclL2
+         JdpokpBaiooPg5Sc9cdOsk1W5TuC5R80iMWBUrxJMPW/AdBK+v++msq6fBNp6GLSWspI
+         Kpfg==
+X-Gm-Message-State: AOAM533COk5DcY6RxvDFxs7a51S8CGQ123lX1+cnOv8xRMoUrJ1eLatU
+        xdQserPx7t1Zwv1irT+DHD4=
+X-Google-Smtp-Source: ABdhPJwEz7DnFMOfwvP1SQynjScCfEKl40/eHeQR+3rbX+xGM3tfkwDMrJwtk6DzD4MapWrozxezgg==
+X-Received: by 2002:aca:5316:: with SMTP id h22mr4096473oib.13.1629232734996;
+        Tue, 17 Aug 2021 13:38:54 -0700 (PDT)
+Received: from vaslot-XPS-8930 (2603-8081-2340-02f5-2f69-e1eb-f257-277e.res6.spectrum.com. [2603:8081:2340:2f5:2f69:e1eb:f257:277e])
+        by smtp.gmail.com with ESMTPSA id t13sm633599oor.37.2021.08.17.13.38.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 13:38:54 -0700 (PDT)
+From:   Vishal Aslot <os.vaslot@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        os.vaslot@gmail.com
+Subject: [PATCH] mm: Changed leading spaces to tabs
+Date:   Tue, 17 Aug 2021 15:38:27 -0500
+Message-Id: <20210817203827.54586-1-os.vaslot@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzYP6OU23D33d6dzgpYyXqSGrQUpenrJStyYFB3L7S93ew@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/08/2021 19:57, Andrii Nakryiko wrote:
-> On Tue, Aug 17, 2021 at 10:36 AM Colin Ian King
-> <colin.king@canonical.com> wrote:
->>
->> Hi,
->>
->> Static analysis with Coverity on linux-next has detected a potential
->> issue with the following commit:
->>
->> commit b89fbfbb854c9afc3047e8273cc3a694650b802e
->> Author: Andrii Nakryiko <andrii@kernel.org>
->> Date:   Sun Aug 15 00:05:57 2021 -0700
->>
->>     bpf: Implement minimal BPF perf link
->>
->> The analysis is as follows:
->>
->> 2936 static int bpf_perf_link_attach(const union bpf_attr *attr, struct
->> bpf_prog *prog)
->> 2937 {
->>
->>     1. var_decl: Declaring variable link_primer without initializer.
->>
->> 2938        struct bpf_link_primer link_primer;
->> 2939        struct bpf_perf_link *link;
->> 2940        struct perf_event *event;
->> 2941        struct file *perf_file;
->> 2942        int err;
->> 2943
->>
->>     2. Condition attr->link_create.flags, taking false branch.
->>
->> 2944        if (attr->link_create.flags)
->> 2945                return -EINVAL;
->> 2946
->> 2947        perf_file = perf_event_get(attr->link_create.target_fd);
->>
->>     3. Condition IS_ERR(perf_file), taking false branch.
->>
->> 2948        if (IS_ERR(perf_file))
->> 2949                return PTR_ERR(perf_file);
->> 2950
->> 2951        link = kzalloc(sizeof(*link), GFP_USER);
->>
->>     4. Condition !link, taking false branch.
->>
->> 2952        if (!link) {
->> 2953                err = -ENOMEM;
->> 2954                goto out_put_file;
->> 2955        }
->> 2956        bpf_link_init(&link->link, BPF_LINK_TYPE_PERF_EVENT,
->> &bpf_perf_link_lops, prog);
->> 2957        link->perf_file = perf_file;
->> 2958
->> 2959        err = bpf_link_prime(&link->link, &link_primer);
->>
->>     5. Condition err, taking false branch.
->>
->> 2960        if (err) {
->> 2961                kfree(link);
->> 2962                goto out_put_file;
->> 2963        }
->> 2964
->> 2965        event = perf_file->private_data;
->> 2966        err = perf_event_set_bpf_prog(event, prog,
->> attr->link_create.perf_event.bpf_cookie);
->>
->>     6. Condition err, taking true branch.
->> 2967        if (err) {
->>     7. uninit_use_in_call: Using uninitialized value link_primer.fd when
->> calling bpf_link_cleanup.
->>     8. uninit_use_in_call: Using uninitialized value link_primer.file
->> when calling bpf_link_cleanup.
->>     9. uninit_use_in_call: Using uninitialized value link_primer.id when
->> calling bpf_link_cleanup.
->>
->>    Uninitialized pointer read (UNINIT)
->>    10. uninit_use_in_call: Using uninitialized value link_primer.link
->> when calling bpf_link_cleanup.
->>
->> 2968                bpf_link_cleanup(&link_primer);
->> 2969                goto out_put_file;
->> 2970        }
->> 2971        /* perf_event_set_bpf_prog() doesn't take its own refcnt on
->> prog */
->> 2972        bpf_prog_inc(prog);
->>
->> I'm not 100% sure if these are false-positives, but I thought I should
->> report the issues as potentially there is a pointer access on an
->> uninitialized pointer on line 2968.
-> 
-> Look at bpf_link_prime() implementation. If it succeeds, link_primer
-> is fully initialized. We use this pattern in many places, this is the
-> first time someone reports any potential issues with it. It's a bit
-> strange that Coverity doesn't recognize such a typical output
-> parameter initialization pattern, tbh. Maybe the global nature of
-> bpf_link_prime() throws it off (it assumes it can be "overridden"
-> during linking?) But I double-checked everything twice, all seems to
-> be good. Zero-initializing link_primer would be a total waste.
+This patch cleans up two ERRORs produced by checkpatch.pl in internal.h.
 
-Yes, in pedantic mode it can throw false positives, it's not perfect.
-Thanks for double checking, and apologies for wasting your valuable time.
+Signed-off-by: Vishal Aslot <os.vaslot@gmail.com>
+---
+ mm/internal.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Colin
-
-> 
->>
->> Colin
+diff --git a/mm/internal.h b/mm/internal.h
+index 31ff935b2547..c97fe964ab15 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -557,8 +557,8 @@ extern u64 hwpoison_filter_memcg;
+ extern u32 hwpoison_filter_enable;
+ 
+ extern unsigned long  __must_check vm_mmap_pgoff(struct file *, unsigned long,
+-        unsigned long, unsigned long,
+-        unsigned long, unsigned long);
++	unsigned long, unsigned long,
++	unsigned long, unsigned long);
+ 
+ extern void set_pageblock_order(void);
+ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
+@@ -647,11 +647,11 @@ struct migration_target_control {
+  */
+ #ifdef CONFIG_MMU
+ int vmap_pages_range_noflush(unsigned long addr, unsigned long end,
+-                pgprot_t prot, struct page **pages, unsigned int page_shift);
++		pgprot_t prot, struct page **pages, unsigned int page_shift);
+ #else
+ static inline
+ int vmap_pages_range_noflush(unsigned long addr, unsigned long end,
+-                pgprot_t prot, struct page **pages, unsigned int page_shift)
++		pgprot_t prot, struct page **pages, unsigned int page_shift)
+ {
+ 	return -EINVAL;
+ }
+-- 
+2.27.0
 
