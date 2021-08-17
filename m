@@ -2,99 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7FE03EF04C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 18:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E45D03EF04E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 18:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbhHQQko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 12:40:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230354AbhHQQkm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 12:40:42 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A99C061764;
-        Tue, 17 Aug 2021 09:40:09 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso6149258pjh.5;
-        Tue, 17 Aug 2021 09:40:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qh+tD9yIz5GvazBkAIDWQmgUmN8+zaWmGrylZFw0zi8=;
-        b=FV6OLVHJzMYvbEyb0EwlZ1XgyC6sd4vIvt1Ef1M9/dUQng6+gt/d7LoWMjdS6eRPlu
-         jLh2t9zZAKbc614YkyxTFRvt3CyVeqSPy1cqOgvTGjMPdhwVDcfRatwVNVdh+Zhkq6pu
-         BUv7OeQo11AZ3sKxdWROHDkSCPNamNhLgNuubuuTrw71C0U2a+TZat8qVvgYJOQgI/HS
-         5lGVjXVUWCeLxRBdKlgaM2UL4ZEs12481ROKpUlEurMD6z6GdNHXyXda0TRZ18TUJzAu
-         Fz+6Ej3Kbfft4sZ6ImPqXbxDOnSE6twjr8c8C72MK/wRtgyh1R4knKaasHestWqAoRyw
-         TpzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=qh+tD9yIz5GvazBkAIDWQmgUmN8+zaWmGrylZFw0zi8=;
-        b=HtnRSHhRAjVvgHVcg1e1P5pV6+IlmR+0zhfK9mQHc9R8J1X5eL9I6arXCgmOqkyalG
-         2/pYNVyI88PzfyuE8AZcVEZJDbQyl5WMbSY+5w1yptbIGhMKzNibL6MIquvOMB/n/fjW
-         +lQlbHZLIxLP/9CJfNY1n3n4WhQ20WfNgW7gfCZny7kSsm7R/O+es/ZtA4h0s6GCv343
-         nM1D9C+nGozYU2m9nFx3X5ubznPxarkB2zulEdgLcsXnntxQxxecf3fosUmx0KU2ZmYT
-         bkwuSn9cjGPxb/7xYTw6rxfk+SHSAtrNZ78nlOtukivbNLqj1k/FNRIdG3iJeSxxhYjm
-         kSAA==
-X-Gm-Message-State: AOAM533/XQL7lVBlvq6Gi3sg9CXIL8F2dnBNR7K/ifW+7N27IFZMjxa6
-        vpxFAV+k5btQ9MdapEP8tsyVOrg+taotpw==
-X-Google-Smtp-Source: ABdhPJyUhC1kQ2hDjV71PYbkuFAMuqLbwnb6GEmlGnMrrSpWZ0/TZl4gs4Ox+QetT8cG4kkW0KdeQg==
-X-Received: by 2002:a05:6a00:1904:b029:3b9:e4ea:1f22 with SMTP id y4-20020a056a001904b02903b9e4ea1f22mr4577424pfi.79.1629218409214;
-        Tue, 17 Aug 2021 09:40:09 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id q5sm2596611pjo.7.2021.08.17.09.40.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 09:40:08 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 17 Aug 2021 06:40:07 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the block tree with Linus' tree
-Message-ID: <YRvmZ77w6zeG4BrU@slm.duckdns.org>
-References: <20210817152547.70af4cfe@canb.auug.org.au>
+        id S231151AbhHQQlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 12:41:50 -0400
+Received: from mga06.intel.com ([134.134.136.31]:38258 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230354AbhHQQlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 12:41:49 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10079"; a="277170637"
+X-IronPort-AV: E=Sophos;i="5.84,329,1620716400"; 
+   d="scan'208";a="277170637"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 09:41:16 -0700
+X-IronPort-AV: E=Sophos;i="5.84,329,1620716400"; 
+   d="scan'208";a="449342716"
+Received: from aaadelek-mobl3.amr.corp.intel.com (HELO pbossart-mobl3.intel.com) ([10.212.12.89])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 09:41:14 -0700
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org,
+        liam.r.girdwood@linux.intel.com,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [RFC PATCH 1/2] ASoC: soc-pcm: protect BE dailink state changes in trigger
+Date:   Tue, 17 Aug 2021 11:40:53 -0500
+Message-Id: <20210817164054.250028-2-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210817164054.250028-1-pierre-louis.bossart@linux.intel.com>
+References: <20210817164054.250028-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210817152547.70af4cfe@canb.auug.org.au>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 03:25:47PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the block tree got a conflict in:
-> 
->   block/mq-deadline-cgroup.c
-> 
-> between commit:
-> 
->   0f7839955114 ("Revert "block/mq-deadline: Add cgroup support"")
-> 
-> from Linus' tree and commit:
-> 
->   252c651a4c85 ("blk-cgroup: stop using seq_get_buf")
-> 
-> from the block tree.
-> 
-> I fixed it up (I just removed the file) and can carry the fix as
-> necessary. This is now fixed as far as linux-next is concerned, but any
-> non trivial conflicts should be mentioned to your upstream maintainer
-> when your tree is submitted for merging.  You may also want to consider
-> cooperating with the maintainer of the conflicting tree to minimise any
-> particularly complex conflicts.
+When more than one FE is connected to a BE, e.g. in a mixing use case,
+the BE can be triggered multiple times when the FE are opened/started
+concurrently. This race condition is problematic in the case of
+SoundWire BE dailinks, and this is not desirable in a general
+case. The code carefully checks when the BE can be stopped or
+hw_free'ed, but the trigger code does not use any mutual exclusion.
 
-Ah, that probably isn't the right resolution. The seq_get_buf change needs
-to be applied to the original mq-deadline.c file. Jens, how do you wanna
-proceed?
+Fix by using the same spinlock already used to check FE states, and
+set the state before the trigger. In case of errors,  the initial
+state will be restored.
 
-Thanks.
+This patch does not change how the triggers are handled, it only makes
+sure the states are handled in critical sections.
 
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/soc-pcm.c | 103 ++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 85 insertions(+), 18 deletions(-)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 48f71bb81a2f..0717f39d2eec 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1999,6 +1999,8 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 	struct snd_soc_pcm_runtime *be;
+ 	struct snd_soc_dpcm *dpcm;
+ 	int ret = 0;
++	unsigned long flags;
++	enum snd_soc_dpcm_state state;
+ 
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 		struct snd_pcm_substream *be_substream;
+@@ -2015,76 +2017,141 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 
+ 		switch (cmd) {
+ 		case SNDRV_PCM_TRIGGER_START:
++			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+ 			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
+ 			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
+-			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
++			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED)) {
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				continue;
++			}
++			state = be->dpcm[stream].state;
++			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
++			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+-			if (ret)
++			if (ret) {
++				spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++				be->dpcm[stream].state = state;
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				goto end;
++			}
+ 
+-			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_RESUME:
+-			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_SUSPEND))
++			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_SUSPEND) {
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				continue;
++			}
++
++			state = be->dpcm[stream].state;
++			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
++			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+-			if (ret)
++			if (ret) {
++				spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++				be->dpcm[stream].state = state;
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				goto end;
++			}
+ 
+-			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
++			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED) {
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				continue;
++			}
++
++			state = be->dpcm[stream].state;
++			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
++			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+-			if (ret)
++			if (ret) {
++				spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++				be->dpcm[stream].state = state;
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				goto end;
++			}
+ 
+-			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_STOP:
++			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+ 			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_START) &&
+-			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
++			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED)) {
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				continue;
++			}
++			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+ 			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
+ 				continue;
+ 
++			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++			state = be->dpcm[stream].state;
++			be->dpcm[stream].state = SND_SOC_DPCM_STATE_STOP;
++			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
++
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+-			if (ret)
++			if (ret) {
++				spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++				be->dpcm[stream].state = state;
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				goto end;
++			}
+ 
+-			be->dpcm[stream].state = SND_SOC_DPCM_STATE_STOP;
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_SUSPEND:
+-			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
++			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START) {
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				continue;
++			}
++			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+ 			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
+ 				continue;
+ 
++			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++			state = be->dpcm[stream].state;
++			be->dpcm[stream].state = SND_SOC_DPCM_STATE_STOP;
++			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
++
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+-			if (ret)
++			if (ret) {
++				spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++				be->dpcm[stream].state = state;
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				goto end;
++			}
+ 
+-			be->dpcm[stream].state = SND_SOC_DPCM_STATE_SUSPEND;
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
++			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START) {
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				continue;
++			}
++			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+ 			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
+ 				continue;
+ 
++			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++			state = be->dpcm[stream].state;
++			be->dpcm[stream].state = SND_SOC_DPCM_STATE_PAUSED;
++			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
++
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+-			if (ret)
++			if (ret) {
++				spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++				be->dpcm[stream].state = state;
++				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 				goto end;
++			}
+ 
+-			be->dpcm[stream].state = SND_SOC_DPCM_STATE_PAUSED;
+ 			break;
+ 		}
+ 	}
 -- 
-tejun
+2.25.1
+
