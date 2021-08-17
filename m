@@ -2,75 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1A33EF300
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA1A43EF302
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233866AbhHQUAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 16:00:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48130 "EHLO
+        id S233807AbhHQUCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 16:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233831AbhHQUAu (ORCPT
+        with ESMTP id S229466AbhHQUCC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 16:00:50 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31EE5C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 13:00:17 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id h11so657808ljo.12
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 13:00:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/H0r8Sg8GIHL7ae/SnzMGBl2ub4pG3MMj9Emunm8ABU=;
-        b=vbCQI770K13kKYd7TMIMun0s/mtTr+0zoRSb7zwX1BlAtuS74KdBeq5jaYInfx+tl1
-         z4irD5FEBUsv1wg2xDereDjPSHTyxDEtxPQ1rX17sw/BUL/uXscQO6hJB86dpoUlrLqD
-         fcJF30s3b7TNR7fn7pD7WDHk7/t5CCktNQj6wEwbmg9VeRg2+My5RlETQhQJSC5K3bFL
-         y7Qb8orpm4yp7IwbjrGki1N/wrRxyMsULWIUdWsZxmoEong0JgOqy/S3k1Tc61jaT5Pr
-         nQtqlRp+W6njDPWodszJFhyLxSR8+fZT3lDLj62l5+J8CfK3HXt0i6qWapDzorjw9u99
-         WpvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/H0r8Sg8GIHL7ae/SnzMGBl2ub4pG3MMj9Emunm8ABU=;
-        b=EKWaaqIWW6BNaZIeOLo+OE6C3A5+E3QDATVyP4e0zKkYt++cH2spyJjQusgaUUou5S
-         PlE9n1eJnB1+nxSLL4pDkMitvEqlDFz9QpBRPkz5NXv3nRY+hfAg/Fq5ZZJSr/D2a8fj
-         K+N1yRSQAsNcew/PJhHZYcQ9JenMfpUooFLFm7HVc0oJ3dH5sg0JGBg4Rs7k8KdLJp1k
-         WezpTobPTVPLXAemeZpnYGBmjgkc+FYrONJLP3NtIZreZATTvP7VzH69NfpLyK7CbpXo
-         QwgK5iQ+Bf6nlLjfmjbN6+2RhGlYJljRZERO2+azPBsEoSBxmDLu/uPcj2JueTLgBKJ8
-         4kYw==
-X-Gm-Message-State: AOAM5301t+O6/gs20v8XSyQCreR/LjZn2um8iQoXG5XTV7PGAPwNEUsm
-        lDpGiNdMMTMsHklidTliPjOqg8257hcJu8yTwO+zFA==
-X-Google-Smtp-Source: ABdhPJyf45kXVSLPwK4e20x5z+7OCgIw3RpQIuTIpIw/pWkkjNeCmLonRAsHf8AS/PwbKdQ6GAGyJr6sk5HTVUW/Cik=
-X-Received: by 2002:a2e:b819:: with SMTP id u25mr4630513ljo.438.1629230415507;
- Tue, 17 Aug 2021 13:00:15 -0700 (PDT)
+        Tue, 17 Aug 2021 16:02:02 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05BBCC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 13:01:29 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mG5H4-0008Vq-GQ; Tue, 17 Aug 2021 22:01:26 +0200
+Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:4c82:b09e:fec8:3248])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id E577966923E;
+        Tue, 17 Aug 2021 20:01:24 +0000 (UTC)
+Date:   Tue, 17 Aug 2021 22:01:23 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Cc:     linux-can <linux-can@vger.kernel.org>,
+        Stefan =?utf-8?B?TcOkdGpl?= <Stefan.Maetje@esd.eu>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 2/7] can: bittiming: allow TDC{V,O} to be zero and add
+ can_tdc_const::tdc{v,o,f}_min
+Message-ID: <20210817200123.4wcdwsdfsdjr3ovk@pengutronix.de>
+References: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
+ <20210815033248.98111-3-mailhol.vincent@wanadoo.fr>
+ <20210816084235.fr7fzau2ce7zl4d4@pengutronix.de>
+ <CAMZ6RqK5t62UppiMe9k5jG8EYvnSbFW3doydhCvp72W_X2rXAw@mail.gmail.com>
+ <20210816122519.mme272z6tqrkyc6x@pengutronix.de>
+ <20210816123309.pfa57tke5hrycqae@pengutronix.de>
+ <20210816134342.w3bc5zjczwowcjr4@pengutronix.de>
+ <CAMZ6RqJFxKSZahAMz9Y8hpPJPh858jxDEXsRm1YkTwf4NFAFwg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210817070913.6387-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210817070913.6387-1-krzysztof.kozlowski@canonical.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 17 Aug 2021 22:00:03 +0200
-Message-ID: <CACRpkdYpFYZsJ_WZ9UMBfZ83=5uFG8CGv38PBX+xg01UntdSNQ@mail.gmail.com>
-Subject: Re: [GIT PULL] pinctrl: samsung: pull for v5.15
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Tomasz Figa <tomasz.figa@gmail.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Sam Protsenko <semen.protsenko@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fgszt33qh4cysmqa"
+Content-Disposition: inline
+In-Reply-To: <CAMZ6RqJFxKSZahAMz9Y8hpPJPh858jxDEXsRm1YkTwf4NFAFwg@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 9:11 AM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
 
-> Just few commits for v5.15.
+--fgszt33qh4cysmqa
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ah Sam's 850 support, nice! Pulled in for v5.15.
+On 17.08.2021 00:49:35, Vincent MAILHOL wrote:
+> > We have 4 operations:
+> > - tdc-mode off                  switch off tdc altogether
+> > - tdc-mode manual tdco X tdcv Y configure X and Y for tdco and tdcv
+> > - tdc-mode auto tdco X          configure X tdco and
+> >                                 controller measures tdcv automatically
+> > - /* nothing */                 configure default value for tdco
+> >                                 controller measures tdcv automatically
+>=20
+> The "nothing" does one more thing: it decides whether TDC should
+> be activated or not.
+>=20
+> > The /* nothing */ operation is what the old "ip" tool does, so we're
+> > backwards compatible here (using the old "ip" tool on an updated
+> > kernel/driver).
+>=20
+> That's true but this isn't the real intent. By doing this design,
+> I wanted the user to be able to transparently use TDC while
+> continuing to use the exact same ip commands she or he is used
+> to using.
 
-Yours,
-Linus Walleij
+Backwards compatibility using an old ip tool on a new kernel/driver must
+work. In case of the mcp251xfd the tdc mode must be activated and tdcv
+set to the automatic calculated value and tdco automatically measured.
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--fgszt33qh4cysmqa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEcFZAACgkQqclaivrt
+76kISAgArgGcU281RHaeyZUy9SjeALqqLzwDzBizUD8/TDKXcOCcPAALwCUcvm9x
+bl9gCKZ1o74Fpgy5zWW7j5i45oMSqjZjsc28uCm6jilOufzgFlYF1BZRCBe3RU4h
+kXfhw2QOVFbC4Oj8ms6Ef9rhBy4yZWG6yHXP+kha/DtK2aQYRHJaAUcaZsO0svBI
+24ZUrdpfE/JVzKYSEeyJ+kqPQ1dasfA8YTS+3fUAnrGCNqRSwy+l5airszziNzqn
+IPBK5faP6XsyeHlVDXSGImq51A75TCpYweaNJwuiJTJg9AByOed2G/v2XVOju0UO
+0tedqIa4SpxwS0LtH3xsJmKV6O0l5A==
+=cADg
+-----END PGP SIGNATURE-----
+
+--fgszt33qh4cysmqa--
