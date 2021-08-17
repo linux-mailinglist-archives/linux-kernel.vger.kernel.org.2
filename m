@@ -2,185 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4409F3EE0C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 02:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7F83EE0BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 02:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234904AbhHQAR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 20:17:58 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:36933 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232924AbhHQAR6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 20:17:58 -0400
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 17H0Gwmh028866;
-        Tue, 17 Aug 2021 09:16:58 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 17H0Gwmh028866
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1629159419;
-        bh=XbVBncXQBymx/ieyPJ6HdMsSmxJ3fpUPvSQvKQ5bVDo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SR5bX611BWYbnFYeXtj/HbHiNhDrWtr2M96SyaS3aqdtaah7rB//1C28fqTs276VT
-         BVSj6Zi3DWgvB5HBMEy+rT6PJBPx2rGqHgY/gvXyf1oKLmBjEUZJSSXhG9E3P7fACR
-         uOJsTT2ldN/kKT717R4yLUDIpBkkiQJjPWamkr4jIspNLOcb5yGFK0EeTIamuJxY7J
-         KYFxzIsygLSWOOCXtLGFxVC16r97VUIcQmX7BCiWfXGtDtawaSoqmQcSSuXzaRStyn
-         e+L4wXzpGOmIi3V+J0YNegA1xpBLaQxUQXfqmjzbFIDmMmMG4kg9AcAApCBaqvGz3e
-         6MajQLiqghLew==
-X-Nifty-SrcIP: [209.85.214.172]
-Received: by mail-pl1-f172.google.com with SMTP id a20so22717082plm.0;
-        Mon, 16 Aug 2021 17:16:58 -0700 (PDT)
-X-Gm-Message-State: AOAM531i0s613dsd/qcYXYXaCI2L8TR0pFnoex4tpKxlUtn2lLp/Y/sM
-        h/WgL2yYANwaVDDOr9DYMtbBD7OL1NdHOcaXBQ4=
-X-Google-Smtp-Source: ABdhPJwh8T5kk8Fx0mW7+dY9QdqC7lL9mpf28QTuVLb7DJKs79tNh+ARFne0A9HP1tTn9g6V2/qKKslwPwznwKJ+yH0=
-X-Received: by 2002:a65:6459:: with SMTP id s25mr673098pgv.7.1629159418096;
- Mon, 16 Aug 2021 17:16:58 -0700 (PDT)
+        id S233040AbhHQARA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 20:17:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232903AbhHQAQ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 20:16:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A97B60F39;
+        Tue, 17 Aug 2021 00:16:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629159385;
+        bh=KG4aBz3LsYlQoj4ZmeJ8bEqC+SJgiUisze7eXuaacNw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FH21FE+LDI3lyirYFQijw7ZRz0nDvutSJqqu4l7oDJW0uI5WqA0yzgFjJMbKUGf/R
+         l2FmB9sYbVeuC8J0cBjwDOjmK3haT9rq+8hUDnNdKUizhmoMNufsWg3rkoTVwRIzk3
+         3AnVZVR4inSti0ydlAddPzmoE/2tBuKWCC1+8HyMHjZP26suketwsTBdXJ87PhEDZY
+         WaoWbGtUBUDcckPN+zD1qzg1zqoBeEAjSxAcKoGYx6f0WXDKclYTyZOyXShsah2d9g
+         Zx/TjFr5FBhNsXHq2jOA4/9oIig53WsOYpd81YFqSL7j7hNpXhKf8hTEBY1Hzvd9WC
+         MbBqKVIQs5SJQ==
+Date:   Mon, 16 Aug 2021 17:16:24 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     =?utf-8?B?5p2O5oms6Z+s?= <frank.li@vivo.com>
+Cc:     Chao Yu <chao@kernel.org>, linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] f2fs: add sysfs nodes to get discard information
+Message-ID: <YRr/2DM84TishToA@google.com>
+References: <af34f9cd-8972-583b-bae2-f11fe9058e63@kernel.org>
+ <AGwAWQBVD3NfsYDCdBIWb4qP.3.1629094420548.Hmail.frank.li@vivo.com>
 MIME-Version: 1.0
-References: <20210810204240.4008685-1-ndesaulniers@google.com>
- <CAK7LNASotywVkNjaBC7wYke70QL+a0tMJEVEvRTPpt8dDgHE9Q@mail.gmail.com> <CAKwvOdmpTt1PBnvo3RFkYnd5O2JTW7DTA9sGQJgvsDOFkVt8Ag@mail.gmail.com>
-In-Reply-To: <CAKwvOdmpTt1PBnvo3RFkYnd5O2JTW7DTA9sGQJgvsDOFkVt8Ag@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 17 Aug 2021 09:16:20 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQP93qMRP8uSZKzLR0G7tM9-vNyzAEsUceRtj2nA0kd7A@mail.gmail.com>
-Message-ID: <CAK7LNAQP93qMRP8uSZKzLR0G7tM9-vNyzAEsUceRtj2nA0kd7A@mail.gmail.com>
-Subject: Re: [PATCH] Makefile: remove stale cc-option checks
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Vitor Massaru Iha <vitor@massaru.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <AGwAWQBVD3NfsYDCdBIWb4qP.3.1629094420548.Hmail.frank.li@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 3:36 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Fri, Aug 13, 2021 at 6:43 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+On 08/16, 李扬韬 wrote:
+> >>>> I've added new sysfs nodes to show discard stat since mount, which
+> >>>> will help us analyze whether the performance problem is related to
+> >>>> discard.
+> >>>>
+> >>>> issued_discard  - Shows the number of issued discard
+> >>>> queued_discard  - Shows the number of cached discard cmd count
+> >>>> discard_cmd_cnt - Shows the number of cached discard cmd count
+> >>>> undiscard_blks  - Shows the number of undiscard blocks
+> >>>
+> >>> We have exported them in debugfs, can you use that?
+> >>>
+> >>> Thanks,
+> >> 
+> >> But now Android is forbidden to open debugfs, and in fact we have not
+> >> opened this configuration for a long time.
 > >
-> > On Wed, Aug 11, 2021 at 5:42 AM Nick Desaulniers
-> > <ndesaulniers@google.com> wrote:
-> > >
-> > > --param=allow-store-data-races=0 was renamed to --allow-store-data-races
-> > > in the GCC 10 release.
-> > >
-> > > diff --git a/Makefile b/Makefile
-> > > index 027fdf2a14fe..3e3fb4affba1 100644
-> > > --- a/Makefile
-> > > +++ b/Makefile
-> > > @@ -844,17 +847,17 @@ KBUILD_RUSTFLAGS += -Copt-level=z
-> > >  endif
-> > >
-> > >  # Tell gcc to never replace conditional load with a non-conditional one
-> > > -KBUILD_CFLAGS  += $(call cc-option,--param=allow-store-data-races=0)
-> > > +ifdef CONFIG_CC_IS_GCC
-> >
-> >
-> > Can you insert a comment here?
-> >
-> > # GCC 10 renamed --param=allow-store-data-races=0 to --allow-store-data-races
-> >
-> >
-> > It will remind us of dropping this conditional
-> > in the (long long distant) future.
-> >
-> >
-> >
-> >
-> > > +KBUILD_CFLAGS  += $(call cc-option,--allow-store-data-races,--param=allow-store-data-races=0)
-> > >  KBUILD_CFLAGS  += $(call cc-option,-fno-allow-store-data-races)
-> > > +endif
->
-> This report is confusing:
-> https://lore.kernel.org/linux-mm/202108160729.Lx0IJzq3-lkp@intel.com/
-> (csky gcc-11)
->
-> >> csky-linux-gcc: error: unrecognized command-line option '--param=allow-store-data-races=0'; did you mean '--allow-store-data-races'?
->
-> I wonder if cc-option detection for these is broken?
+> >Weren't them be used for debug purpose? can you please explain more about
+> >your use case?
+> 
+> During long-term aging test or normal use, sometimes there will be performance
+> degradation problems. It may be caused by storage, or it may be caused by the
+> filesystem. For example, the filesystem accumulates a large number of undiscard
+>  blocks. Although there is some remaining space, the androidbench test will
+> show performance degradation. Therefore, it is necessary to export information
+> related to discard so that we can confirm this situation.
 
-I do not say it is broken...
+I think you can mount debugfs for that case?
 
-
-cc-option is defined like this:
-
-cc-option = $(call __cc-option, $(CC),\
-        $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS),$(1),$(2))
-
-
-It is checking
-$(KBUILD_CPPFLAGS) + $(KBUILD_CFLAGS)
-+ --allow-store-data-races
-
-
-A few lines above, I see
-
-csky-linux-gcc: error: unrecognized argument in option '-mcpu=ck860'
-
-
-It makes all the cc-option tests fail after this line:
-KBUILD_CFLAGS += -mcpu=$(CPUTYPE) -Wa,-mcpu=$(MCPU_STR)
-
-
-Then,
-
-$(call cc-option,--allow-store-data-races,--param=allow-store-data-races=0)
-
-falls back to --param=allow-store-data-races=0
-
-
-
-
->  Perhaps I should
-> not touch these other than to wrap them in the CONFIG_CC_IS_GCC guard?
-
-I do not think so.
-
-If an unrecognized argument appears,
-all the cc-option tests that follow are unreliable.
-
-
-
-If you are not comfortable with  it,
-you can split it.
-
-KBUILD_CFLAGS  += $(call cc-option,--allow-store-data-races)
-KBUILD_CFLAGS  += $(call cc-option,--param=allow-store-data-races=0)
-
-
-
-Or, another way of implementation is
-
-KBUILD_CFLAGS += $(call cc-ifversion, -lt, 1000,
---allow-store-data-races, --param=allow-store-data-races=0)
-
-
-
-
-
->
-> (Either way, I need to send a v2 in response to Naresh's report as
-> well. https://lore.kernel.org/lkml/CA+G9fYtPBp_-Ko_P7NuOX6vN9-66rjJuBt21h3arrLqEaQQn6w@mail.gmail.com/
-> It seems that -mfentry wasn't implemented for s390-linux-gnu-gcc until
-> gcc-9; so rather than remove top level support, perhaps a comment
-> about gcc-9+ s390 having support will make grepping for it easier in
-> the future).
-> --
-> Thanks,
-> ~Nick Desaulniers
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+> 
+> Thx,
+> 
+> 
