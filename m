@@ -2,150 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8423EEEA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 16:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 601733EEEAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 16:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240146AbhHQOmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 10:42:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233426AbhHQOl7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 10:41:59 -0400
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E38C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 07:41:26 -0700 (PDT)
-Received: by mail-ua1-x92c.google.com with SMTP id 67so9081533uaq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 07:41:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oQwGdMgVEaQNJoD4ayZe6Ia9R4DXPOPGO8jj9i6jzG8=;
-        b=JfkCT5LcQwymPexJ3rri9V1b7/8W7+6cZ2TPDP3G56sIndIly+cv1ITWv06B+29dWp
-         nxGKkMsD/54xtZuzkEMxkwZ4Tn8Qf+tYIx8nlB/K1L8r8vjUw0JZymYNwMT+0kKghSr2
-         xo5BATHLWEsOgi0mMXsZ0GLawKjfQ0Mx+v4jM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oQwGdMgVEaQNJoD4ayZe6Ia9R4DXPOPGO8jj9i6jzG8=;
-        b=Guhw2KP8tWqt5mXe2SErIjw6HJt3kqbsmYD3FKaVfizj4UckBt3HoVGJmHixsPbILl
-         5t0dU9VIbVqcoHsopHZgQAeV+iY1k/5k+yXET9BfctLPIUAqf+9ZceqyPyOGJZjS3o+l
-         j4BiLdoFVUEQYusGNi1AVFzoXPokVRRrhCWft7m7b6p+2ScUQKKKl2AmcPJtSUxScmOK
-         egemzjp49xgtqS1bhbUXL4AMRfzDrvsBByqlUQXJoV8SrVW//Z52KsXNjWOz+JsUr6kl
-         366bkpPxPyBvp8fVNEwL4dO1luy3rMwbtPpj2o1DQ7b5V3/NlzN/kFYYPGKD5fzfjbfb
-         P4oA==
-X-Gm-Message-State: AOAM532w3G35Mdry/x2REuxSQOZpo3uc8gdB++FfCoQ/QUiGkcIimNWU
-        kNcT+6qXBeIq9c7zWRjyNK2E63MMG1XLKm20ig6ieQ==
-X-Google-Smtp-Source: ABdhPJysBWxtPlX5YvPZA91uytNRqo+W86z7uuA4hyfdvyyDciZUbpmwA+HL/8yFzbIW4yxM7a7EfAROBM/g8i8ZZ7U=
-X-Received: by 2002:ab0:36ae:: with SMTP id v14mr2593917uat.8.1629211285895;
- Tue, 17 Aug 2021 07:41:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <0000000000007fcee205c970a843@google.com>
-In-Reply-To: <0000000000007fcee205c970a843@google.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Tue, 17 Aug 2021 16:41:14 +0200
-Message-ID: <CAJfpegv1ztaEvrSX622ru-FRX1VJYZDbRWq6_4HhF0tCY+0uHQ@mail.gmail.com>
-Subject: Re: [syzbot] INFO: task hung in fuse_launder_page
-To:     syzbot <syzbot+bea44a5189836d956894@syzkaller.appspotmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: multipart/mixed; boundary="000000000000f5eae105c9c24f80"
+        id S240156AbhHQOn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 10:43:57 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:40483 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240123AbhHQOn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 10:43:56 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Gpv0N6XTrz9sV8;
+        Tue, 17 Aug 2021 16:43:16 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id MLT5rGdc23Vl; Tue, 17 Aug 2021 16:43:16 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Gpv0N5ST0z9sTs;
+        Tue, 17 Aug 2021 16:43:16 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A0D568B7C3;
+        Tue, 17 Aug 2021 16:43:16 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id FB6XH30JvjtI; Tue, 17 Aug 2021 16:43:16 +0200 (CEST)
+Received: from po9473vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 41E398B7A9;
+        Tue, 17 Aug 2021 16:43:16 +0200 (CEST)
+Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id C54A1668F5; Tue, 17 Aug 2021 14:43:15 +0000 (UTC)
+Message-Id: <1d28441dd80845e6428d693c0724cb6457247466.1629211378.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/32s: Fix random crashes by adding isync() after
+ locking/unlocking KUEP
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, userm57@yahoo.com,
+        fthain@linux-m68k.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Tue, 17 Aug 2021 14:43:15 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000f5eae105c9c24f80
-Content-Type: text/plain; charset="UTF-8"
+Commit b5efec00b671 ("powerpc/32s: Move KUEP locking/unlocking in C")
+removed the 'isync' instruction after adding/removing NX bit in user
+segments. The reasoning behind this change was that when setting the
+NX bit we don't mind it taking effect with delay as the kernel never
+executes text from userspace, and when clearing the NX bit this is
+to return to userspace and then the 'rfi' should synchronise the
+context.
 
-On Fri, 13 Aug 2021 at 15:16, syzbot
-<syzbot+bea44a5189836d956894@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    36a21d51725a Linux 5.14-rc5
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=104b8eaa300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=e3a20bae04b96ccd
-> dashboard link: https://syzkaller.appspot.com/bug?extid=bea44a5189836d956894
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=143c0ee9300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=158fc9aa300000
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+bea44a5189836d956894@syzkaller.appspotmail.com
->
-> INFO: task syz-executor276:8433 blocked for more than 143 seconds.
->       Not tainted 5.14.0-rc5-syzkaller #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:syz-executor276 state:D stack:27736 pid: 8433 ppid:  8430 flags:0x00004004
-> Call Trace:
->  context_switch kernel/sched/core.c:4681 [inline]
->  __schedule+0x93a/0x26f0 kernel/sched/core.c:5938
->  schedule+0xd3/0x270 kernel/sched/core.c:6017
->  fuse_wait_on_page_writeback fs/fuse/file.c:452 [inline]
->  fuse_wait_on_page_writeback+0x120/0x170 fs/fuse/file.c:448
->  fuse_launder_page fs/fuse/file.c:2316 [inline]
->  fuse_launder_page+0xe9/0x130 fs/fuse/file.c:2306
->  do_launder_page mm/truncate.c:595 [inline]
->  invalidate_inode_pages2_range+0x994/0xf80 mm/truncate.c:661
->  fuse_finish_open+0x2d9/0x560 fs/fuse/file.c:202
->  fuse_open_common+0x2f9/0x4c0 fs/fuse/file.c:254
->  do_dentry_open+0x4c8/0x11d0 fs/open.c:826
->  do_open fs/namei.c:3374 [inline]
->  path_openat+0x1c23/0x27f0 fs/namei.c:3507
->  do_filp_open+0x1aa/0x400 fs/namei.c:3534
->  do_sys_openat2+0x16d/0x420 fs/open.c:1204
->  do_sys_open fs/open.c:1220 [inline]
->  __do_sys_creat fs/open.c:1294 [inline]
->  __se_sys_creat fs/open.c:1288 [inline]
->  __x64_sys_creat+0xc9/0x120 fs/open.c:1288
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x446409
-> RSP: 002b:00007f0e6a9f92f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000055
-> RAX: ffffffffffffffda RBX: 00000000004d34f0 RCX: 0000000000446409
-> RDX: 0000000000446409 RSI: 0000000000000000 RDI: 0000000020000280
-> RBP: 00000000004a3164 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0030656c69662f2e
-> R13: 000000000049f158 R14: 00000000004a1160 R15: 00000000004d34f8
+However, it looks like on book3s/32 having a hash page table, at least
+on the G3 processor, we get an unexpected fault from userspace, then
+this is followed by something wrong in the verification of MSR_PR
+at end of another interrupt.
 
-Attached patch should fix this.
+This is fixed by adding back the removed isync() following update
+of NX bit in user segment registers. Only do it for cores with an
+hash table, as 603 cores don't exhibit that problem and the two isync
+increase ./null_syscall selftest by 6 cycles on an MPC 832x.
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-master
+First problem: unexpected PROTFAULT
 
---000000000000f5eae105c9c24f80
-Content-Type: text/x-patch; charset="US-ASCII"; 
-	name="fuse-truncate-pagecache-on-atomic_o_trunc.patch"
-Content-Disposition: attachment; 
-	filename="fuse-truncate-pagecache-on-atomic_o_trunc.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_ksg69glp0>
-X-Attachment-Id: f_ksg69glp0
+	[   62.896426] WARNING: CPU: 0 PID: 1660 at arch/powerpc/mm/fault.c:354 do_page_fault+0x6c/0x5b0
+	[   62.918111] Modules linked in:
+	[   62.923350] CPU: 0 PID: 1660 Comm: Xorg Not tainted 5.13.0-pmac-00028-gb3c15b60339a #40
+	[   62.943476] NIP:  c001b5c8 LR: c001b6f8 CTR: 00000000
+	[   62.954714] REGS: e2d09e40 TRAP: 0700   Not tainted  (5.13.0-pmac-00028-gb3c15b60339a)
+	[   62.974581] MSR:  00021032 <ME,IR,DR,RI>  CR: 42d04f30  XER: 20000000
+	[   62.990009]
+        	       GPR00: c000424c e2d09f00 c301b680 e2d09f40 0000001e 42000000 00cba028 00000000
+        	       GPR08: 08000000 48000010 c301b680 e2d09f30 22d09f30 00c1fff0 00cba000 a7b7ba4c
+        	       GPR16: 00000031 00000000 00000000 00000000 00000000 00000000 a7b7b0d0 00c5c010
+        	       GPR24: a7b7b64c a7b7d2f0 00000004 00000000 c1efa6c0 00cba02c 00000300 e2d09f40
+	[   63.075238] NIP [c001b5c8] do_page_fault+0x6c/0x5b0
+	[   63.085952] LR [c001b6f8] do_page_fault+0x19c/0x5b0
+	[   63.096678] Call Trace:
+	[   63.100075] [e2d09f00] [e2d09f04] 0xe2d09f04 (unreliable)
+	[   63.112359] [e2d09f30] [c000424c] DataAccess_virt+0xd4/0xe4
+	[   63.125168] --- interrupt: 300 at 0xa7a261dc
+	[   63.134060] NIP:  a7a261dc LR: a7a253bc CTR: 00000000
+	[   63.145302] REGS: e2d09f40 TRAP: 0300   Not tainted  (5.13.0-pmac-00028-gb3c15b60339a)
+	[   63.165167] MSR:  0000d032 <EE,PR,ME,IR,DR,RI>  CR: 228428e2  XER: 20000000
+	[   63.182162] DAR: 00cba02c DSISR: 42000000
+        	       GPR00: a7a27448 afa6b0e0 a74c35c0 a7b7b614 0000001e a7b7b614 00cba028 00000000
+        	       GPR08: 00020fd9 00000031 00cb9ff8 a7a273b0 220028e2 00c1fff0 00cba000 a7b7ba4c
+        	       GPR16: 00000031 00000000 00000000 00000000 00000000 00000000 a7b7b0d0 00c5c010
+        	       GPR24: a7b7b64c a7b7d2f0 00000004 00000002 0000001e a7b7b614 a7b7aff4 00000030
+	[   63.275233] NIP [a7a261dc] 0xa7a261dc
+	[   63.282291] LR [a7a253bc] 0xa7a253bc
+	[   63.289087] --- interrupt: 300
+	[   63.294322] Instruction dump:
+	[   63.299291] 7c4a1378 810300a0 75278410 83820298 83a300a4 553b018c 551e0036 4082038c
+	[   63.318630] 2e1b0000 40920228 75280800 41820220 <0fe00000> 3b600000 41920214 81420594
+	[   63.338503] ---[ end trace f642a84639cba377 ]---
 
-LS0tCiBmcy9mdXNlL2ZpbGUuYyB8ICAgIDcgKysrKystLQogMSBmaWxlIGNoYW5nZWQsIDUgaW5z
-ZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCi0tLSBhL2ZzL2Z1c2UvZmlsZS5jCisrKyBiL2Zz
-L2Z1c2UvZmlsZS5jCkBAIC0xOTgsMTIgKzE5OCwxMSBAQCB2b2lkIGZ1c2VfZmluaXNoX29wZW4o
-c3RydWN0IGlub2RlICppbm9kCiAJc3RydWN0IGZ1c2VfZmlsZSAqZmYgPSBmaWxlLT5wcml2YXRl
-X2RhdGE7CiAJc3RydWN0IGZ1c2VfY29ubiAqZmMgPSBnZXRfZnVzZV9jb25uKGlub2RlKTsKIAot
-CWlmICghKGZmLT5vcGVuX2ZsYWdzICYgRk9QRU5fS0VFUF9DQUNIRSkpCi0JCWludmFsaWRhdGVf
-aW5vZGVfcGFnZXMyKGlub2RlLT5pX21hcHBpbmcpOwogCWlmIChmZi0+b3Blbl9mbGFncyAmIEZP
-UEVOX1NUUkVBTSkKIAkJc3RyZWFtX29wZW4oaW5vZGUsIGZpbGUpOwogCWVsc2UgaWYgKGZmLT5v
-cGVuX2ZsYWdzICYgRk9QRU5fTk9OU0VFS0FCTEUpCiAJCW5vbnNlZWthYmxlX29wZW4oaW5vZGUs
-IGZpbGUpOworCiAJaWYgKGZjLT5hdG9taWNfb190cnVuYyAmJiAoZmlsZS0+Zl9mbGFncyAmIE9f
-VFJVTkMpKSB7CiAJCXN0cnVjdCBmdXNlX2lub2RlICpmaSA9IGdldF9mdXNlX2lub2RlKGlub2Rl
-KTsKIApAQCAtMjExLDEwICsyMTAsMTQgQEAgdm9pZCBmdXNlX2ZpbmlzaF9vcGVuKHN0cnVjdCBp
-bm9kZSAqaW5vZAogCQlmaS0+YXR0cl92ZXJzaW9uID0gYXRvbWljNjRfaW5jX3JldHVybigmZmMt
-PmF0dHJfdmVyc2lvbik7CiAJCWlfc2l6ZV93cml0ZShpbm9kZSwgMCk7CiAJCXNwaW5fdW5sb2Nr
-KCZmaS0+bG9jayk7CisJCXRydW5jYXRlX3BhZ2VjYWNoZShpbm9kZSwgMCk7CiAJCWZ1c2VfaW52
-YWxpZGF0ZV9hdHRyKGlub2RlKTsKIAkJaWYgKGZjLT53cml0ZWJhY2tfY2FjaGUpCiAJCQlmaWxl
-X3VwZGF0ZV90aW1lKGZpbGUpOworCX0gZWxzZSBpZiAoIShmZi0+b3Blbl9mbGFncyAmIEZPUEVO
-X0tFRVBfQ0FDSEUpKSB7CisJCWludmFsaWRhdGVfaW5vZGVfcGFnZXMyKGlub2RlLT5pX21hcHBp
-bmcpOwogCX0KKwogCWlmICgoZmlsZS0+Zl9tb2RlICYgRk1PREVfV1JJVEUpICYmIGZjLT53cml0
-ZWJhY2tfY2FjaGUpCiAJCWZ1c2VfbGlua193cml0ZV9maWxlKGZpbGUpOwogfQo=
---000000000000f5eae105c9c24f80--
+Second problem: MSR PR is seen unset allthough the interrupt frame shows it set
+
+	[   63.666846] kernel BUG at arch/powerpc/kernel/interrupt.c:458!
+	[   63.680633] Oops: Exception in kernel mode, sig: 5 [#1]
+	[   63.692201] BE PAGE_SIZE=4K MMU=Hash SMP NR_CPUS=2 PowerMac
+	[   63.705011] Modules linked in:
+	[   63.710247] CPU: 0 PID: 1660 Comm: Xorg Tainted: G        W         5.13.0-pmac-00028-gb3c15b60339a #40
+	[   63.734553] NIP:  c0011434 LR: c001629c CTR: 00000000
+	[   63.745796] REGS: e2d09e70 TRAP: 0700   Tainted: G        W          (5.13.0-pmac-00028-gb3c15b60339a)
+	[   63.769844] MSR:  00029032 <EE,ME,IR,DR,RI>  CR: 42d09f30  XER: 00000000
+	[   63.786052]
+        	       GPR00: 00000000 e2d09f30 c301b680 e2d09f40 83440000 c44d0e68 e2d09e8c 00000000
+        	       GPR08: 00000002 00dc228a 00004000 e2d09f30 22d09f30 00c1fff0 afa6ceb4 00c26144
+        	       GPR16: 00c25fb8 00c26140 afa6ceb8 90000000 00c944d8 0000001c 00000000 00200000
+        	       GPR24: 00000000 000001fb afa6d1b4 00000001 00000000 a539a2a0 a530fd80 00000089
+	[   63.871284] NIP [c0011434] interrupt_exit_kernel_prepare+0x10/0x70
+	[   63.885922] LR [c001629c] interrupt_return+0x9c/0x144
+	[   63.897168] Call Trace:
+	[   63.900562] [e2d09f30] [c000424c] DataAccess_virt+0xd4/0xe4 (unreliable)
+	[   63.916773] --- interrupt: 300 at 0xa09be008
+	[   63.925659] NIP:  a09be008 LR: a09bdfe8 CTR: a09bdfc0
+	[   63.936903] REGS: e2d09f40 TRAP: 0300   Tainted: G        W          (5.13.0-pmac-00028-gb3c15b60339a)
+	[   63.960953] MSR:  0000d032 <EE,PR,ME,IR,DR,RI>  CR: 420028e2  XER: 20000000
+	[   63.977948] DAR: a539a308 DSISR: 0a000000
+        	       GPR00: a7b90d50 afa6b2d0 a74c35c0 a0a8b690 a0a8b698 a5365d70 a4fa82a8 00000004
+        	       GPR08: 00000000 a09bdfc0 00000000 a5360000 a09bde7c 00c1fff0 afa6ceb4 00c26144
+        	       GPR16: 00c25fb8 00c26140 afa6ceb8 90000000 00c944d8 0000001c 00000000 00200000
+        	       GPR24: 00000000 000001fb afa6d1b4 00000001 00000000 a539a2a0 a530fd80 00000089
+	[   64.071020] NIP [a09be008] 0xa09be008
+	[   64.078079] LR [a09bdfe8] 0xa09bdfe8
+	[   64.084874] --- interrupt: 300
+	[   64.090108] Instruction dump:
+	[   64.095074] 80010024 83e1001c 7c0803a6 4bffff80 3bc00800 4bffffd0 486b42fd 4bffffcc
+	[   64.114419] 81430084 71480002 41820038 554a0462 <0f0a0000> 80620060 74630001 40820034
+	[   64.134298] ---[ end trace f642a84639cba378 ]---
+
+Reported-by: Stan Johnson <userm57@yahoo.com>
+Fixes: b5efec00b671 ("powerpc/32s: Move KUEP locking/unlocking in C")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/book3s/32/kup.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/powerpc/include/asm/book3s/32/kup.h b/arch/powerpc/include/asm/book3s/32/kup.h
+index 64201125a287..2658d30b223c 100644
+--- a/arch/powerpc/include/asm/book3s/32/kup.h
++++ b/arch/powerpc/include/asm/book3s/32/kup.h
+@@ -4,6 +4,8 @@
+ 
+ #include <asm/bug.h>
+ #include <asm/book3s/32/mmu-hash.h>
++#include <asm/mmu.h>
++#include <asm/synch.h>
+ 
+ #ifndef __ASSEMBLY__
+ 
+@@ -28,6 +30,8 @@ static inline void kuep_lock(void)
+ 		return;
+ 
+ 	update_user_segments(mfsr(0) | SR_NX);
++	if (mmu_has_feature(MMU_FTR_HPTE_TABLE))
++		isync();	/* Context sync required after mtsr() */
+ }
+ 
+ static inline void kuep_unlock(void)
+@@ -36,6 +40,8 @@ static inline void kuep_unlock(void)
+ 		return;
+ 
+ 	update_user_segments(mfsr(0) & ~SR_NX);
++	if (mmu_has_feature(MMU_FTR_HPTE_TABLE))
++		isync();	/* Context sync required after mtsr() */
+ }
+ 
+ #ifdef CONFIG_PPC_KUAP
+-- 
+2.25.0
+
