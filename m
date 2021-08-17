@@ -2,145 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D3F13EEF44
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 17:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 174223EEF46
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 17:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237974AbhHQPja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 11:39:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44294 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230369AbhHQPj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 11:39:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B27D060EE4;
-        Tue, 17 Aug 2021 15:38:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629214734;
-        bh=8Dn8xwRrAwdeTSpGsm45Gr/0PhlYpnmOGmb5P59Ujc0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=lTx8o0We4f58KEp0jwZ20xH892smeI6EYqQ0JCAe47jsJc+77ZMSWhHVaDgcnS1FI
-         e6RSb5qChsTyNXEU581LeNR1y8yFqYPBnIhpwuFbjhghHMP8MV+7vWXPAcFxIeLLu0
-         JIu1yjFm2Ry/fgPsV8feHKX+cjHurBsJjxdPONGDamDxMKUJ38alVKbTMzSFWFoTdo
-         nV8EoTBLt44kDCWy+MVrF6p64uCsPSq5MEHO8Fk9KQNe+EEgiGN3NraHXnARaLp6B6
-         zkqg9KvU9Lm6x//sl9Qm7iC72pfFxKcUSFgo0D+9OJpLsKbTMXkRqjE4UvogrJl61F
-         NHNFS25VACPhg==
-Date:   Tue, 17 Aug 2021 10:38:52 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pci@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Lokesh Vutla <lokeshvutla@ti.com>
-Subject: Re: [PATCH v8 6/8] PCI: cadence: Add support to configure virtual
- functions
-Message-ID: <20210817153852.GA3016660@bjorn-Precision-5520>
+        id S237653AbhHQPkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 11:40:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231893AbhHQPj6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 11:39:58 -0400
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B35C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 08:39:25 -0700 (PDT)
+Received: by mail-vs1-xe29.google.com with SMTP id d16so11503612vsf.12
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 08:39:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JBTfnUrOXPoVHjOY7K2K3BUVZcH0TAcexI/mEMvT9EQ=;
+        b=Gs41cMZr3xIq2z+aDA3/oQODbeG3A321dsDNymRD1Zj+9i2Xzrx1wYwlmyTxQ7qYTW
+         hhKBHB00QiJ9kGsY4n5MMOo/Ai01QcBs7rfCY6xIhQbjyWXqeFBibKJL+P/N/cDTbHIk
+         8zBeOOn/gzk1u4PqTWzJ4i/YJ79mvhVOqJuNM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JBTfnUrOXPoVHjOY7K2K3BUVZcH0TAcexI/mEMvT9EQ=;
+        b=gCYgNH/KFCBP7BhooI/w/yMNbOYMeYCo78cbsMXsJxAaONuc5p2nesD3ruGvIH2yJn
+         kd2tygFzf2yKrEOhCWpTr7BvtNner0Y3JJi7Oob0Fi71b+e6PT86A1EcBhMpcw4xQKcr
+         RwRB7wVI0DwldCaWNO15Y6Pasd9bs7RyTS5rHF90OZXuIWVG3rGeezRJafRdR02qAQkV
+         S5BxaVhkoe7vZJaEMB6paw5LpjQfcJsdLMdbD6By8aE/RMISi5vNyNqy6XjY8TnXQynL
+         8/7bTCD5wNsUB6P/9T+O/ewcVz2RjyH+uZHjo0tPphRyZqqlP5iPqKh8A3VDPX2drt3o
+         goqw==
+X-Gm-Message-State: AOAM533qvkMstz+xheE0NsMzYjN/sOLKF8oXFepsPIdlxV/F4NA+ymfk
+        Ie/h4a3LQuhC5+Tom3Vrn53W/GgLL4TGb2B4oWFerg==
+X-Google-Smtp-Source: ABdhPJxA1UnCU/eplyw2lV0XlTEHG3pJV4+LYleZ3aBEUv+CaugCkMlKR5JnbeKOniFQd59mVYS9xtkgQGrSQNUbVAM=
+X-Received: by 2002:a67:5c41:: with SMTP id q62mr3576658vsb.7.1629214764160;
+ Tue, 17 Aug 2021 08:39:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811064656.15399-7-kishon@ti.com>
+References: <e6496a94-a161-dc04-c38a-d2544633acb4@bytedance.com>
+In-Reply-To: <e6496a94-a161-dc04-c38a-d2544633acb4@bytedance.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Tue, 17 Aug 2021 17:39:13 +0200
+Message-ID: <CAJfpegt_EZRPbQLbcHRXD9Yx9zvcKmgos=u79k=kgKwd0LWzaA@mail.gmail.com>
+Subject: Re: ovl: fix BUG_ON() in may_delete() when called from ovl_cleanup
+To:     chenying <chenying.kernel@bytedance.com>
+Cc:     overlayfs <linux-unionfs@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, zhoufeng.zf@bytedance.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 12:16:54PM +0530, Kishon Vijay Abraham I wrote:
-> Now that support for SR-IOV is added in PCIe endpoint core, add support
-> to configure virtual functions in the Cadence PCIe EP driver.
-> 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  .../pci/controller/cadence/pcie-cadence-ep.c  | 136 +++++++++++++++---
->  drivers/pci/controller/cadence/pcie-cadence.h |   9 ++
->  2 files changed, 125 insertions(+), 20 deletions(-)
+On Tue, 17 Aug 2021 at 07:41, chenying <chenying.kernel@bytedance.com> wrote:
+>
+>  From ee4466d66af5d214edb306dbf7f456e21cbb73ac Mon Sep 17 00:00:00 2001
+> From: chenying <chenying.kernel@bytedance.com>
+> Date: Mon, 16 Aug 2021 18:02:56 +0800
+> Subject: [PATCH] ovl: fix BUG_ON() in may_delete() when called from
+> ovl_cleanup
+>
+> If function ovl_instantiate returns an error, ovl_cleanup will be called
+> and try to remove newdentry from wdir, but the newdentry has been moved to
+> udir at this time. This will causes BUG_ON(victim->d_parent->d_inode !=
+> dir) in fs/namei.c:may_delete.
+>
+> [25355953.608321] overlayfs: failed to get inode (-116)
+> [25355953.608337] ------------[ cut here ]------------
+> [25355953.608338] kernel BUG at fs/namei.c:2800!
+> [25355953.610787] invalid opcode: 0000 [#1] SMP NOPTI
+> [25355953.612694] CPU: 75 PID: 3739998 Comm: dockerd Kdump: loaded
+> Tainted: G        W  OE     4.19.117.bsk.4-amd64 #4.19.117.bsk.4
+> [25355953.617046] Hardware name: Inspur NF5266M5/YZMB-01229-103, BIOS
+> 3.1.3 06/24/2020
+> [25355953.618920] RIP: 0010:may_delete+0x16f/0x190
+> [25355953.621120] Code: 00 3d 00 00 20 00 74 12 41 bd ec ff ff ff 5b 44
+> 89 e8 5d 41 5c 41 5d 41 5e c3 48 3b 5b 18 75 94 41 bd f0 ff ff ff eb a2
+> 0f 0b <0f> 0b 41 bd fe ff ff ff eb 96 41 bd eb ff ff ff eb 8e 41 bd b5 ff
+> [25355953.625147] RSP: 0018:ffff9aad5c09bb30 EFLAGS: 00010206
+> [25355953.627562] RAX: ffff8ebceb709b00 RBX: ffff8e73262c3800 RCX:
+> 0000000200000000
+> [25355953.629381] RDX: 0000000000000000 RSI: ffff8e73262c3800 RDI:
+> ffff8e71e22b1ee0
+> [25355953.631562] RBP: ffff8e71e22b3000 R08: 0000000000000038 R09:
+> ffff8e73262c2300
+> [25355953.633571] R10: ffff9aad5c09bae0 R11: 0000000000000000 R12:
+> ffff8e71e22b4568
+> [25355953.635193] R13: ffff8e71e22b3000 R14: ffff8ebceb709080 R15:
+> 0000000000000000
+> [25355953.637280] FS:  00007f3e77fff700(0000) GS:ffff8eceff6c0000(0000)
+> knlGS:0000000000000000
+> [25355953.639360] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [25355953.640935] CR2: 0000000017fe3000 CR3: 0000000161380004 CR4:
+> 00000000007606e0
+> [25355953.642878] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+> 0000000000000000
+> [25355953.644835] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+> 0000000000000400
+> [25355953.646305] PKRU: 55555554
+> [25355953.647995] Call Trace:
+> [25355953.649891]  vfs_unlink+0x23/0x180
+> [25355953.651891]  ovl_cleanup+0x36/0xb0 [overlay]
+> [25355953.653682]  ovl_create_or_link+0x47a/0x600 [overlay]
+> [25355953.655569]  ? inode_init_always+0x13e/0x1f0
+> [25355953.657377]  ? inode_sb_list_add+0x47/0x80
+> [25355953.659083]  ? ovl_fill_inode+0x34/0x130 [overlay]
+> [25355953.660730]  ovl_create_object+0xd9/0x110 [overlay]
+> [25355953.662392]  path_openat+0x1351/0x1430
+> [25355953.663961]  ? terminate_walk+0xdd/0x100
+> [25355953.665605]  ? ext4_getattr+0x7f/0x90 [ext4]
+> [25355953.667019]  ? ovl_getattr+0x138/0x3c0 [overlay]
+> [25355953.668075]  do_filp_open+0x99/0x110
+> [25355953.669180]  ? __check_object_size+0x166/0x1b0
+> [25355953.670485]  ? do_sys_open+0x12e/0x210
+> [25355953.671811]  do_sys_open+0x12e/0x210
+> [25355953.672966]  do_syscall_64+0x5d/0x110
+> [25355953.673880]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> Signed-off-by: chenying <chenying.kernel@bytedance.com>
 
-> @@ -92,21 +118,29 @@ static int cdns_pcie_ep_set_bar(struct pci_epc *epc, u8 fn, u8 vfn,
->  
->  	addr0 = lower_32_bits(bar_phys);
->  	addr1 = upper_32_bits(bar_phys);
-> -	cdns_pcie_writel(pcie, CDNS_PCIE_AT_IB_EP_FUNC_BAR_ADDR0(fn, bar),
-> -			 addr0);
-> -	cdns_pcie_writel(pcie, CDNS_PCIE_AT_IB_EP_FUNC_BAR_ADDR1(fn, bar),
-> -			 addr1);
->  
->  	reg = CDNS_PCIE_LM_EP_FUNC_BAR_CFG(bar, fn);
-> +	if (vfn == 1)
-> +		reg = CDNS_PCIE_LM_EP_VFUNC_BAR_CFG(bar, fn);
+Thanks, applied.
 
-Seems sort of weird to compute "reg", then sometimes overwrite it, as
-opposed to:
-
-  if (vfn == 1)
-    reg = CDNS_PCIE_LM_EP_VFUNC_BAR_CFG(bar, fn);
-  else
-    reg = CDNS_PCIE_LM_EP_FUNC_BAR_CFG(bar, fn);
-
-Also slightly weird that "vfn" is basically used as a boolean, but
-it's actually a u8 virtual function number.  I guess VF 1 is special
-and not like the other VFs?
-
->  	b = (bar < BAR_4) ? bar : bar - BAR_4;
->  
-> -	cfg = cdns_pcie_readl(pcie, reg);
-> -	cfg &= ~(CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_APERTURE_MASK(b) |
-> -		 CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_CTRL_MASK(b));
-> -	cfg |= (CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_APERTURE(b, aperture) |
-> -		CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_CTRL(b, ctrl));
-> -	cdns_pcie_writel(pcie, reg, cfg);
-> +	if (vfn == 0 || vfn == 1) {
-> +		cfg = cdns_pcie_readl(pcie, reg);
-> +		cfg &= ~(CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_APERTURE_MASK(b) |
-> +			 CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_CTRL_MASK(b));
-> +		cfg |= (CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_APERTURE(b, aperture) |
-> +			CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_CTRL(b, ctrl));
-> +		cdns_pcie_writel(pcie, reg, cfg);
-> +	}
->  
-> +	fn = cdns_pcie_get_fn_from_vfn(pcie, fn, vfn);
-> +	cdns_pcie_writel(pcie, CDNS_PCIE_AT_IB_EP_FUNC_BAR_ADDR0(fn, bar),
-> +			 addr0);
-> +	cdns_pcie_writel(pcie, CDNS_PCIE_AT_IB_EP_FUNC_BAR_ADDR1(fn, bar),
-> +			 addr1);
-> +
-> +	if (vfn > 0)
-> +		epf = &epf->epf[vfn - 1];
->  	epf->epf_bar[bar] = epf_bar;
->  
->  	return 0;
-> @@ -122,18 +156,25 @@ static void cdns_pcie_ep_clear_bar(struct pci_epc *epc, u8 fn, u8 vfn,
->  	u32 reg, cfg, b, ctrl;
->  
->  	reg = CDNS_PCIE_LM_EP_FUNC_BAR_CFG(bar, fn);
-> +	if (vfn == 1)
-> +		reg = CDNS_PCIE_LM_EP_VFUNC_BAR_CFG(bar, fn);
-
-Similar recomputation of "reg".
-
->  	b = (bar < BAR_4) ? bar : bar - BAR_4;
->  
-> -	ctrl = CDNS_PCIE_LM_BAR_CFG_CTRL_DISABLED;
-> -	cfg = cdns_pcie_readl(pcie, reg);
-> -	cfg &= ~(CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_APERTURE_MASK(b) |
-> -		 CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_CTRL_MASK(b));
-> -	cfg |= CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_CTRL(b, ctrl);
-> -	cdns_pcie_writel(pcie, reg, cfg);
-> +	if (vfn == 0 || vfn == 1) {
-> +		ctrl = CDNS_PCIE_LM_BAR_CFG_CTRL_DISABLED;
-> +		cfg = cdns_pcie_readl(pcie, reg);
-> +		cfg &= ~(CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_APERTURE_MASK(b) |
-> +			 CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_CTRL_MASK(b));
-> +		cfg |= CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_CTRL(b, ctrl);
-> +		cdns_pcie_writel(pcie, reg, cfg);
-> +	}
+Miklos
