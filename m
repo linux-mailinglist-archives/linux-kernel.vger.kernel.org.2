@@ -2,96 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDFD63EE837
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D683EE83C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238843AbhHQIOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 04:14:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54116 "EHLO
+        id S238918AbhHQIPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 04:15:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234907AbhHQIOJ (ORCPT
+        with ESMTP id S238401AbhHQIPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 04:14:09 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B38B4C061764;
-        Tue, 17 Aug 2021 01:13:36 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id r7so27387021wrs.0;
-        Tue, 17 Aug 2021 01:13:36 -0700 (PDT)
+        Tue, 17 Aug 2021 04:15:31 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80FDCC061764;
+        Tue, 17 Aug 2021 01:14:58 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id w13-20020a17090aea0db029017897a5f7bcso5102564pjy.5;
+        Tue, 17 Aug 2021 01:14:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iNpthpH15DTu8RBKV54iW5xxSqBJuNP9jmT6bY/RyzI=;
-        b=SYuRfmkAQID5TSGEej3B7UcoooTqvAkRvJBZtd0w8B59UoFCHCLor1rAj2H9z9rz02
-         XfOpgkIqLAx6Tt5MmEkouYU4MDeaOdESwbM58EzsJhu5tDk8J3kBcZQRR4KUIeQRTfvL
-         /dIJuoDpCTxZg18Yawlctau9mcWOWscSWhz3OAwnLQ8xsfpapUpu519rZoB4ugcNAhVe
-         laYrbTo8LVKT+iRmuK36JCr4iNtzaQI4MhYuyAffI1N61O82Buxuo1jXRNiNh3cBqLXr
-         OZ1f2qosqJIJKtYABn/KqgFHrH3yrZZQ3GcPiYflSBkt0bwMsk0Hw0bSge4SLMYJYWAk
-         KGLQ==
+        h=from:to:cc:subject:date:message-id;
+        bh=WCp8noSccte2B57AIkhkKtX0SS0VncdQyviMk909mfM=;
+        b=VFHPjEaMVaSuu/WtG+/pu5/GTX7hnLMHr0QpzkV7whvPns3ADAaZBe8HDqpjOdFXQx
+         qqdf7Ih1PpIgs9oO+1JVwH19Xt+YM6y4yXzI+VHtqX2vmQMyPdJ6OdQHnPJMzA2Pm7tx
+         I2UYbySGeg+lWShsUE+O5vRrR9I4dYNohzxzlOasCUg2DdF7nscnz57oDJcAgebB7bLz
+         ryZWCuMhixUDt17AZMiM/hUBdFRDZnPZP4IiWfIcsIpTH9K4FUeorNgmgVk6tGjsxySh
+         Je7DTLP7zcAvlpqnJWskJ/2ROn73rEvaWXP0bwHemrCl0OllUi2PKUxpa0Hj4d7uU/g/
+         y6SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iNpthpH15DTu8RBKV54iW5xxSqBJuNP9jmT6bY/RyzI=;
-        b=BBGMqEC2WxQ/M5krDxbu++bYWrKB8wBT1dOlHkrQWSgCq21niaHaaGfbLwrFv9N/yk
-         TmZSJEdN1rb8huySsxj4UBebd/WvN5GVRFYOd0NUFiR1ssDG671mPRQflh9CoSznwa1n
-         PNouqhjmulov9Oy7mugZ+dVBszaxKptnK8uvzQOBFtd4719ENWtZl4ziYiESH6ng+9cz
-         l7ZE3JXhheEw36KCuAGTkIsfX0ePV4kQ1gUSNBL6Me3JFejISIRmFn9/VIOIOJ7+YKkP
-         1bZXlYXPmwC7G2LefFb+zJ6Xf4f6PghZudHoqAjPM1fWuMD+TEMFN+wwVunuL3RV8yFw
-         NhGA==
-X-Gm-Message-State: AOAM530tblGZkrZNk3I6Lc5jMYt6P+q/pOgMyy1CllWlrBFVWc0k9qoM
-        4Rrxifi6fwW7LeWLhnwnyNU=
-X-Google-Smtp-Source: ABdhPJznDK9eFcziNqrHnwEoQ1pvWyUZdNXCVFVd7bPm4KmDsli2JR1yB6astmQBNaCefQmEHUqfdw==
-X-Received: by 2002:a5d:6948:: with SMTP id r8mr2365968wrw.136.1629188015292;
-        Tue, 17 Aug 2021 01:13:35 -0700 (PDT)
-Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
-        by smtp.gmail.com with ESMTPSA id b12sm1316604wmd.42.2021.08.17.01.13.34
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=WCp8noSccte2B57AIkhkKtX0SS0VncdQyviMk909mfM=;
+        b=ay21+ZDURs0MkFxXYPjFdWZPuxQE65TVshb/6tz0wljqUzRgvV5ZJLapuojivWWdXH
+         cdgY4exAJthCayjaKQdlsQa9Qtx+JEJozig645gIq00HaS0mIgFHuhEQ6h0VdMNJx+Cl
+         A7nBoFr3CkyUYzTRKXoS4NHMGMiJF4pORc0HXe635M7sY6N+af+0NKytRJGJ3FySZA1J
+         M8V97U7cNL8p6kK4MRaTBOdJSn45C3H3gcNzoxQx1LJgfxmjIW9dwU4h1JCfGohORSQ0
+         /VtU67hY2+Hpvttf8SanLWMQj3PC3p5wbb3gN/n7Onb5gnQ2wsng8oZLtcG4qw5pnePU
+         h6sA==
+X-Gm-Message-State: AOAM530tQPWmd1gPtyshLQ4M7yLjC6UXhkJ5gx3Y9KIympyuOO+wcFsO
+        /MNs1pF4uo+f++bKW+QccYs=
+X-Google-Smtp-Source: ABdhPJweRksqNTFuRv+jSndFB0RZaTfEwZZsX+QUaVfXporkhL5jdLJ3olG7lSAgdNGypubz1jHEyw==
+X-Received: by 2002:a17:90b:1c8e:: with SMTP id oo14mr2489762pjb.108.1629188097947;
+        Tue, 17 Aug 2021 01:14:57 -0700 (PDT)
+Received: from localhost.localdomain ([49.36.209.103])
+        by smtp.googlemail.com with ESMTPSA id b190sm2079847pgc.91.2021.08.17.01.14.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 01:13:34 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] iio: gyro: remove dead config dependencies on INPUT_MPU3050
-Date:   Tue, 17 Aug 2021 10:13:30 +0200
-Message-Id: <20210817081330.9645-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 17 Aug 2021 01:14:57 -0700 (PDT)
+From:   Utkarsh Verma <utkarshverma294@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Utkarsh Verma <utkarshverma294@gmail.com>
+Subject: [PATCH] serial: 8250_mid: Use pci_irq_vector() to get IRQ
+Date:   Tue, 17 Aug 2021 13:44:01 +0530
+Message-Id: <20210817081401.3440-1-utkarshverma294@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit b1fe0cf06f92 ("Input: delete MPU3050 driver") deletes the superseded
-MPU3050 driver and its corresponding config INPUT_MPU3050.
+Instead of a direct assignment, use pci_irq_vector() to get the
+Linux IRQ number.
 
-The dependencies on the superseding driver in ./drivers/iio/gyro/Kconfig
-to ensure that the two drivers are not built into the same kernel is a dead
-dependency and not required anymore.
-
-So, remove those config dependencies on INPUT_MPU3050 for MPU3050_I2C.
-
-This issue was detected with ./scripts/checkkconfigsymbols.py.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
 ---
- drivers/iio/gyro/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/tty/serial/8250/8250_mid.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iio/gyro/Kconfig b/drivers/iio/gyro/Kconfig
-index 20b5ac7ab66a..a672f7d12bbb 100644
---- a/drivers/iio/gyro/Kconfig
-+++ b/drivers/iio/gyro/Kconfig
-@@ -126,7 +126,6 @@ config MPU3050
+diff --git a/drivers/tty/serial/8250/8250_mid.c b/drivers/tty/serial/8250/8250_mid.c
+index efa0515139f8..3a279ce0e904 100644
+--- a/drivers/tty/serial/8250/8250_mid.c
++++ b/drivers/tty/serial/8250/8250_mid.c
+@@ -299,7 +299,7 @@ static int mid8250_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	memset(&uart, 0, sizeof(struct uart_8250_port));
  
- config MPU3050_I2C
- 	tristate "Invensense MPU3050 devices on I2C"
--	depends on !(INPUT_MPU3050=y || INPUT_MPU3050=m)
- 	depends on I2C
- 	select MPU3050
- 	select REGMAP_I2C
+ 	uart.port.dev = &pdev->dev;
+-	uart.port.irq = pdev->irq;
++	uart.port.irq = pci_irq_vector(pdev, 0);
+ 	uart.port.private_data = mid;
+ 	uart.port.type = PORT_16750;
+ 	uart.port.iotype = UPIO_MEM;
 -- 
-2.26.2
+2.17.1
 
