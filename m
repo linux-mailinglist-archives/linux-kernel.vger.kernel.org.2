@@ -2,85 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D683EE83C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA923EE83A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238918AbhHQIPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 04:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54442 "EHLO
+        id S235124AbhHQIPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 04:15:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238401AbhHQIPb (ORCPT
+        with ESMTP id S234461AbhHQIPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 04:15:31 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80FDCC061764;
-        Tue, 17 Aug 2021 01:14:58 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id w13-20020a17090aea0db029017897a5f7bcso5102564pjy.5;
-        Tue, 17 Aug 2021 01:14:58 -0700 (PDT)
+        Tue, 17 Aug 2021 04:15:06 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84C2DC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 01:14:33 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id l24so16465199qtj.4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 01:14:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=WCp8noSccte2B57AIkhkKtX0SS0VncdQyviMk909mfM=;
-        b=VFHPjEaMVaSuu/WtG+/pu5/GTX7hnLMHr0QpzkV7whvPns3ADAaZBe8HDqpjOdFXQx
-         qqdf7Ih1PpIgs9oO+1JVwH19Xt+YM6y4yXzI+VHtqX2vmQMyPdJ6OdQHnPJMzA2Pm7tx
-         I2UYbySGeg+lWShsUE+O5vRrR9I4dYNohzxzlOasCUg2DdF7nscnz57oDJcAgebB7bLz
-         ryZWCuMhixUDt17AZMiM/hUBdFRDZnPZP4IiWfIcsIpTH9K4FUeorNgmgVk6tGjsxySh
-         Je7DTLP7zcAvlpqnJWskJ/2ROn73rEvaWXP0bwHemrCl0OllUi2PKUxpa0Hj4d7uU/g/
-         y6SQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=DbxPYfIkUPggZAsAtUCUkg6hl6OjGtFlTtB9svwXDrQ=;
+        b=MDYcRkXC9AzT6oic9Y7EK7P1oSIPrdRZWVwOjHsGLa0HsxCTUKzB+DS0sGLQjGY/9S
+         e8e61iUUn8EsNT83aYltwJUcWEOHDUw/LXFBiZ453w5uthUmSUmdnFQbljDGEUQ9IbUt
+         i2Ga/mi050hZMvUnlMdgWb4cjPD2weaNZUWBLmfKuUQ0JbseitjMlkdmG0Ecuq3Q7G9c
+         TtWRWYq0W1t9gmpAABN+fQEqNoBoBZ/A1ozRzCbtl6t09dVevv0k1Uyt5gqORKWINAcn
+         0WsBBncQjV0O+CFNnf3eEuLfDDwXo15Bno8lhGwndXWjNXHHbLiIhoCmij6Et44IbzLx
+         CbfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=WCp8noSccte2B57AIkhkKtX0SS0VncdQyviMk909mfM=;
-        b=ay21+ZDURs0MkFxXYPjFdWZPuxQE65TVshb/6tz0wljqUzRgvV5ZJLapuojivWWdXH
-         cdgY4exAJthCayjaKQdlsQa9Qtx+JEJozig645gIq00HaS0mIgFHuhEQ6h0VdMNJx+Cl
-         A7nBoFr3CkyUYzTRKXoS4NHMGMiJF4pORc0HXe635M7sY6N+af+0NKytRJGJ3FySZA1J
-         M8V97U7cNL8p6kK4MRaTBOdJSn45C3H3gcNzoxQx1LJgfxmjIW9dwU4h1JCfGohORSQ0
-         /VtU67hY2+Hpvttf8SanLWMQj3PC3p5wbb3gN/n7Onb5gnQ2wsng8oZLtcG4qw5pnePU
-         h6sA==
-X-Gm-Message-State: AOAM530tQPWmd1gPtyshLQ4M7yLjC6UXhkJ5gx3Y9KIympyuOO+wcFsO
-        /MNs1pF4uo+f++bKW+QccYs=
-X-Google-Smtp-Source: ABdhPJweRksqNTFuRv+jSndFB0RZaTfEwZZsX+QUaVfXporkhL5jdLJ3olG7lSAgdNGypubz1jHEyw==
-X-Received: by 2002:a17:90b:1c8e:: with SMTP id oo14mr2489762pjb.108.1629188097947;
-        Tue, 17 Aug 2021 01:14:57 -0700 (PDT)
-Received: from localhost.localdomain ([49.36.209.103])
-        by smtp.googlemail.com with ESMTPSA id b190sm2079847pgc.91.2021.08.17.01.14.55
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=DbxPYfIkUPggZAsAtUCUkg6hl6OjGtFlTtB9svwXDrQ=;
+        b=DyKV+oGLSoadFu8E4Pmha5unpw8nfuSMX3THV/IjStCLWMojcarZcFgARciq1wv1N1
+         Ysy2zXa3ZFYG3SGdUxHQ/55p7zqW4I+XXpAk0uNeREDT0T/JdM8js8gSPRT312RXLgwD
+         MGplQvAqQFQ1nOavAAEZl0PejpfwD0YEC2ksh6JI3ObvK14vKwbsBPQQ71aqNs9bLBPm
+         U7jDJlJ3QWPfvisF5huU+7Gga5YCgmg/sjH/+vPIE6cbKz4sJPNNz9ANYbCwzSaNlN0k
+         3317VztjxSbzlyeKhs2LueZ+WOcej241mH0XXEhnNyxYpnxu3W1q3JZhMpiCJEWfRWpy
+         v5Lg==
+X-Gm-Message-State: AOAM5327iNzMGPR/EQXtxrzIQ8QZQip3o/kx7ZgrZSBHWTZJiVtMvtrL
+        84ze4AK3SHYvphLiXIdtfYzZ7w==
+X-Google-Smtp-Source: ABdhPJzvjRKbcrqPoj6rWq+pXSIKfeRz0vrhFSmbk/werhszUnq0bvTCdRv0bGfj0WZ24e/T5B6N3Q==
+X-Received: by 2002:a05:622a:255:: with SMTP id c21mr1947762qtx.128.1629188072480;
+        Tue, 17 Aug 2021 01:14:32 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id x21sm891928qkf.76.2021.08.17.01.14.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 01:14:57 -0700 (PDT)
-From:   Utkarsh Verma <utkarshverma294@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Utkarsh Verma <utkarshverma294@gmail.com>
-Subject: [PATCH] serial: 8250_mid: Use pci_irq_vector() to get IRQ
-Date:   Tue, 17 Aug 2021 13:44:01 +0530
-Message-Id: <20210817081401.3440-1-utkarshverma294@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 17 Aug 2021 01:14:31 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 01:14:29 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH 5/9] huge tmpfs: move shmem_huge_enabled() upwards
+In-Reply-To: <da632211-8e3e-6b1-aee-ab24734429a0@google.com>
+Message-ID: <16fec7b7-5c84-415a-8586-69d8bf6a6685@google.com>
+References: <da632211-8e3e-6b1-aee-ab24734429a0@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of a direct assignment, use pci_irq_vector() to get the
-Linux IRQ number.
+shmem_huge_enabled() is about to be enhanced into shmem_is_huge(),
+so that it can be used more widely throughout: before making functional
+changes, shift it to its final position (to avoid forward declaration).
 
-Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Reviewed-by: Yang Shi <shy828301@gmail.com>
 ---
- drivers/tty/serial/8250/8250_mid.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/shmem.c | 72 ++++++++++++++++++++++++++----------------------------
+ 1 file changed, 35 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_mid.c b/drivers/tty/serial/8250/8250_mid.c
-index efa0515139f8..3a279ce0e904 100644
---- a/drivers/tty/serial/8250/8250_mid.c
-+++ b/drivers/tty/serial/8250/8250_mid.c
-@@ -299,7 +299,7 @@ static int mid8250_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	memset(&uart, 0, sizeof(struct uart_8250_port));
+diff --git a/mm/shmem.c b/mm/shmem.c
+index c6fa6f4f2db8..740d48ef1eb5 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -476,6 +476,41 @@ static bool shmem_confirm_swap(struct address_space *mapping,
  
- 	uart.port.dev = &pdev->dev;
--	uart.port.irq = pdev->irq;
-+	uart.port.irq = pci_irq_vector(pdev, 0);
- 	uart.port.private_data = mid;
- 	uart.port.type = PORT_16750;
- 	uart.port.iotype = UPIO_MEM;
+ static int shmem_huge __read_mostly;
+ 
++bool shmem_huge_enabled(struct vm_area_struct *vma)
++{
++	struct inode *inode = file_inode(vma->vm_file);
++	struct shmem_sb_info *sbinfo = SHMEM_SB(inode->i_sb);
++	loff_t i_size;
++	pgoff_t off;
++
++	if ((vma->vm_flags & VM_NOHUGEPAGE) ||
++	    test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags))
++		return false;
++	if (shmem_huge == SHMEM_HUGE_FORCE)
++		return true;
++	if (shmem_huge == SHMEM_HUGE_DENY)
++		return false;
++	switch (sbinfo->huge) {
++	case SHMEM_HUGE_NEVER:
++		return false;
++	case SHMEM_HUGE_ALWAYS:
++		return true;
++	case SHMEM_HUGE_WITHIN_SIZE:
++		off = round_up(vma->vm_pgoff, HPAGE_PMD_NR);
++		i_size = round_up(i_size_read(inode), PAGE_SIZE);
++		if (i_size >= HPAGE_PMD_SIZE &&
++				i_size >> PAGE_SHIFT >= off)
++			return true;
++		fallthrough;
++	case SHMEM_HUGE_ADVISE:
++		/* TODO: implement fadvise() hints */
++		return (vma->vm_flags & VM_HUGEPAGE);
++	default:
++		VM_BUG_ON(1);
++		return false;
++	}
++}
++
+ #if defined(CONFIG_SYSFS)
+ static int shmem_parse_huge(const char *str)
+ {
+@@ -3995,43 +4030,6 @@ struct kobj_attribute shmem_enabled_attr =
+ 	__ATTR(shmem_enabled, 0644, shmem_enabled_show, shmem_enabled_store);
+ #endif /* CONFIG_TRANSPARENT_HUGEPAGE && CONFIG_SYSFS */
+ 
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-bool shmem_huge_enabled(struct vm_area_struct *vma)
+-{
+-	struct inode *inode = file_inode(vma->vm_file);
+-	struct shmem_sb_info *sbinfo = SHMEM_SB(inode->i_sb);
+-	loff_t i_size;
+-	pgoff_t off;
+-
+-	if ((vma->vm_flags & VM_NOHUGEPAGE) ||
+-	    test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags))
+-		return false;
+-	if (shmem_huge == SHMEM_HUGE_FORCE)
+-		return true;
+-	if (shmem_huge == SHMEM_HUGE_DENY)
+-		return false;
+-	switch (sbinfo->huge) {
+-		case SHMEM_HUGE_NEVER:
+-			return false;
+-		case SHMEM_HUGE_ALWAYS:
+-			return true;
+-		case SHMEM_HUGE_WITHIN_SIZE:
+-			off = round_up(vma->vm_pgoff, HPAGE_PMD_NR);
+-			i_size = round_up(i_size_read(inode), PAGE_SIZE);
+-			if (i_size >= HPAGE_PMD_SIZE &&
+-					i_size >> PAGE_SHIFT >= off)
+-				return true;
+-			fallthrough;
+-		case SHMEM_HUGE_ADVISE:
+-			/* TODO: implement fadvise() hints */
+-			return (vma->vm_flags & VM_HUGEPAGE);
+-		default:
+-			VM_BUG_ON(1);
+-			return false;
+-	}
+-}
+-#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+-
+ #else /* !CONFIG_SHMEM */
+ 
+ /*
 -- 
-2.17.1
+2.26.2
 
