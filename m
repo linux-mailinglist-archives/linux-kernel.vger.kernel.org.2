@@ -2,130 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCCE3EE882
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE983EE885
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235100AbhHQI3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 04:29:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57882 "EHLO
+        id S235140AbhHQIcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 04:32:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234676AbhHQI3d (ORCPT
+        with ESMTP id S235017AbhHQIcy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 04:29:33 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90EADC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 01:29:00 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id e15so16503998qtx.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 01:29:00 -0700 (PDT)
+        Tue, 17 Aug 2021 04:32:54 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC578C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 01:32:21 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id b10so28534240eju.9
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 01:32:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=4uvnY/LMX/fosu9BxO1MG6ugTMEZPtMwQldGntwsVH4=;
-        b=NjCpK1NRhKmstHnpGiLXqM2SKOhBWtRSCCvP/5Amp0gqEwqp6QT1o+8ceJjU6jfYcL
-         rDI6S2AFNamPsB4rByVDzyJlXKw4KZXU6D0rbktDv/9QfD0J2t8oUAaB2sOJGLBryTbW
-         Eg9ME3auwtSoigl65liufDjtNbWJvOmgaeLq0eHHCyxJsULVCFf7GfGUgrPKsbxSwVQA
-         cmdDUSbsnv+SoYjurKcsqszQmy4FQpbClnq9Zw42AWXe3ivRgU+PvAoZN1q5lME2rVm4
-         TE3/faPz6Y+vVIFyvh3bn7WAE5/J5u/v0idpkWltxqrs69YoF8K/Vp1jMsvycr72ZwZl
-         rKrg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=McC8S/bFHuSwRDT9VMEJP32+dSnc9rWytA/mVOlvx/s=;
+        b=AIA3jon3fcIEdq7TSD0sgFmfbyrXMgjw5dWIMmxO8hDjibdmLplXn3aTJuYjYcGkg9
+         Lx29sA2LQM4NKRhLaBlBZpyCycxDyg2ZoIjZdVvBWjYEQkH+bYa8ZtnKv1TvJWgE1nFA
+         rJf0qohjLDPp3pUkTZn84rzH+filXNXRAPz8RCdTKmiMaDaY4/N3q+xVXsm0t1sf7t5b
+         RSkC/zcxzrV5yOoh4D+c9+2K+1dSLRVj4E4ICtYFohxsjiDYcpTZGd/j40ClKqB+AtHo
+         n5hbOwAf0Y/OXLFQ6LBKukW0DWrmrOBYqG7J9eZ5+mpN4lr3fvdZIluAYafW+hwUypOf
+         UnUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=4uvnY/LMX/fosu9BxO1MG6ugTMEZPtMwQldGntwsVH4=;
-        b=G8kGjULSYeS/UX5CG5Q5DII9tltulBxA9fpLBMLnsbLCdpo2enOfYZCG2hElnoQAq5
-         PtbCXUglw8eCZ7xNDqvpZWEhUnYkC3+NobW5Q+zLwSTBkDNdo8AlKK8dQkLavhkgU4PB
-         n4fGslz0or7bYL3hvAv8PPtM5C+pVQ4lcgOvvLDcPmg/8jyGdAprEER+lkp0cKD2PA0a
-         cuW1lCekokz9d65gT7ELSf0JB3lW7FkQLHzymUHLo2HwwyRICTNKHTbSH1M0GptAGLCg
-         6BlFfVL31xKQhm0sJmVNDCw+5xddHk/ng7+eyoJ44OkBICDcHJL+WqlPYKrvGXhoz97+
-         DBzw==
-X-Gm-Message-State: AOAM532Kv+QNH07W1zV229wiD0p0yjldc3UEjacxxg7Kc8/IYwgYSdC3
-        QnhffHfgtJJJblmcapFBvDO/5Q==
-X-Google-Smtp-Source: ABdhPJztKNjW9cvImVzVkZCglVqcSZySr11aNl7DJSxBXfIwHrFeR9hnzWG21G8vh8C8WBnA9lcvAg==
-X-Received: by 2002:a05:622a:13d4:: with SMTP id p20mr2056913qtk.380.1629188939512;
-        Tue, 17 Aug 2021 01:28:59 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id y26sm884220qkm.65.2021.08.17.01.28.57
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=McC8S/bFHuSwRDT9VMEJP32+dSnc9rWytA/mVOlvx/s=;
+        b=FPK8DIiTFaZqjd7h+2esTVPB4sFPmkduZAJItZVXg7XGwoNVdxNBZI4kIZPKwgao6a
+         iYetU+SA/jnrSuS7f33dxtyomP/A0wZhWk3T1gBntiKsJ3t4xMHbRB29rjQqVtZCsUOI
+         lRf8SNswlCCbaW8B/LDdP3DS5GEtdltnxR7fMNT4VIl+pU0SU6eUVYsPe8TDSgMfo2Dk
+         stWwwxLqQFuSxeV1BpBrW5KSretY6he3N4FL6Gnx6CutFagMdL/077/Um5WSx/ckgLKw
+         5B9mSn6yKxtjRpMILis2tGak4UMddaODvaLs77xrZItrhdaZ1SZhse/vGKqyoKbwYlUL
+         Sg0g==
+X-Gm-Message-State: AOAM5331RbOPeko59TKxwmNWCTvliX77YCWaBY4lazWnw07lMkCC6SVh
+        GT8Qga3ahK2cPQAs/o4LhK8=
+X-Google-Smtp-Source: ABdhPJx9ULim+GbyMepEG7BJqpc7mloIkbJBf2opDUr1KyybekscBrNW+WTqvS4do7tk1DbPcyO0oA==
+X-Received: by 2002:a17:906:dc4:: with SMTP id p4mr171310eji.66.1629189140375;
+        Tue, 17 Aug 2021 01:32:20 -0700 (PDT)
+Received: from localhost.localdomain (neth7.eastcode.net. [79.143.160.90])
+        by smtp.googlemail.com with ESMTPSA id e22sm675850eds.45.2021.08.17.01.32.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 01:28:58 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 01:28:56 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH 9/9] shmem: shmem_writepage() split unlikely i915 THP
-In-Reply-To: <da632211-8e3e-6b1-aee-ab24734429a0@google.com>
-Message-ID: <bac6158c-8b3d-4dca-cffc-4982f58d9794@google.com>
-References: <da632211-8e3e-6b1-aee-ab24734429a0@google.com>
+        Tue, 17 Aug 2021 01:32:19 -0700 (PDT)
+From:   Nikola Pavlica <pavlica.nikola@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@googlegroups.com, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Nikola Pavlica <pavlica.nikola@gmail.com>
+Subject: [PATCH] drm/panel-simple: Add Vivax TPC-9150 panel
+Date:   Tue, 17 Aug 2021 10:32:01 +0200
+Message-Id: <20210817083201.675133-1-pavlica.nikola@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drivers/gpu/drm/i915/gem/i915_gem_shmem.c contains a shmem_writeback()
-which calls shmem_writepage() from a shrinker: that usually works well
-enough; but if /sys/kernel/mm/transparent_hugepage/shmem_enabled has been
-set to "always" (intended to be usable) or "force" (forces huge everywhere
-for easy testing), shmem_writepage() is surprised to be called with a huge
-page, and crashes on the VM_BUG_ON_PAGE(PageCompound) (I did not find out
-where the crash happens when CONFIG_DEBUG_VM is off).
+The model and make of the LCD panel of the Vivax TPC-9150 is unknown,
+hence the panel settings that were retrieved with a FEX dump are named
+after the device NOT the actual panel.
 
-LRU page reclaim always splits the shmem huge page first: I'd prefer not
-to demand that of i915, so check and split compound in shmem_writepage().
+The LCD in question is a 50 pin MISO TFT LCD panel of the resolution
+1024x600 used by the aforementioned device.
 
-Patch history: when first sent last year
-http://lkml.kernel.org/r/alpine.LSU.2.11.2008301401390.5954@eggly.anvils
-https://lore.kernel.org/linux-mm/20200919042009.bomzxmrg7%25akpm@linux-foundation.org/
-Matthew Wilcox noticed that tail pages were wrongly left clean.  This
-version brackets the split with Set and Clear PageDirty as he suggested:
-which works very well, even if it falls short of our aspirations.  And
-recently I realized that the crash is not limited to the testing option
-"force", but affects "always" too: which is more important to fix.
-
-Fixes: 2d6692e642e7 ("drm/i915: Start writeback from the shrinker")
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Acked-by: Yang Shi <shy828301@gmail.com>
+Signed-off-by: Nikola Pavlica <pavlica.nikola@gmail.com>
 ---
- mm/shmem.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/panel/panel-simple.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index b60a7abff27d..a1ba03f39eaa 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1349,7 +1349,19 @@ static int shmem_writepage(struct page *page, struct writeback_control *wbc)
- 	swp_entry_t swap;
- 	pgoff_t index;
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 4e2dad314c79..97fc3c5740bb 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -4090,6 +4090,29 @@ static const struct panel_desc arm_rtsm = {
+ 	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
+ };
  
--	VM_BUG_ON_PAGE(PageCompound(page), page);
-+	/*
-+	 * If /sys/kernel/mm/transparent_hugepage/shmem_enabled is "always" or
-+	 * "force", drivers/gpu/drm/i915/gem/i915_gem_shmem.c gets huge pages,
-+	 * and its shmem_writeback() needs them to be split when swapping.
-+	 */
-+	if (PageTransCompound(page)) {
-+		/* Ensure the subpages are still dirty */
-+		SetPageDirty(page);
-+		if (split_huge_page(page) < 0)
-+			goto redirty;
-+		ClearPageDirty(page);
-+	}
++static const struct drm_display_mode vivax_tpc9150_panel_mode = {
++	.clock = 60000,
++	.hdisplay = 1024,
++	.hsync_start = 1024 + 160,
++	.hsync_end = 1024 + 160 + 100,
++	.htotal = 1024 + 160 + 100 + 60,
++	.vdisplay = 600,
++	.vsync_start = 600 + 12,
++	.vsync_end = 600 + 12 + 10,
++	.vtotal = 600 + 12 + 10 + 13,
++};
 +
- 	BUG_ON(!PageLocked(page));
- 	mapping = page->mapping;
- 	index = page->index;
++static const struct panel_desc vivax_tpc9150_panel = {
++	.modes = &vivax_tpc9150_panel_mode,
++	.num_modes = 1,
++	.size = {
++		.width = 223,
++		.height = 125,
++	},
++	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
++	.bus_flags = DRM_BUS_FLAG_DE_HIGH,
++};
++
+ static const struct of_device_id platform_of_match[] = {
+ 	{
+ 		.compatible = "ampire,am-1280800n3tzqw-t00h",
+@@ -4103,6 +4126,9 @@ static const struct of_device_id platform_of_match[] = {
+ 	}, {
+ 		.compatible = "arm,rtsm-display",
+ 		.data = &arm_rtsm,
++	}, {
++		.compatible = "vivax,tpc9150-panel",
++		.data = &vivax_tpc9150_panel,
+ 	}, {
+ 		.compatible = "armadeus,st0700-adapt",
+ 		.data = &armadeus_st0700_adapt,
 -- 
-2.26.2
+2.32.0
 
