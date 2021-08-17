@@ -2,168 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560153EE765
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 09:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5055C3EE76D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 09:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234612AbhHQHot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 03:44:49 -0400
-Received: from mga01.intel.com ([192.55.52.88]:42192 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231500AbhHQHos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 03:44:48 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="238094111"
-X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="scan'208";a="238094111"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 00:44:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="scan'208";a="510363928"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 17 Aug 2021 00:44:13 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mFtld-000RWb-8m; Tue, 17 Aug 2021 07:44:13 +0000
-Date:   Tue, 17 Aug 2021 15:44:07 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:clocksource] BUILD SUCCESS
- a5e8561a2bdf276fdd2a7f63a8154930863fcbda
-Message-ID: <611b68c7.0bTk0DfFF5U7H0Y+%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S238193AbhHQHqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 03:46:40 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:48458 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231500AbhHQHqj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 03:46:39 -0400
+X-UUID: 6cc2d3ce89ac4336b8ee718cb5ae1705-20210817
+X-UUID: 6cc2d3ce89ac4336b8ee718cb5ae1705-20210817
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <sam.shih@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 13340958; Tue, 17 Aug 2021 15:46:03 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 17 Aug 2021 15:46:02 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Tue, 17 Aug 2021 15:46:01 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 17 Aug 2021 15:46:01 +0800
+From:   Sam Shih <sam.shih@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>, Sean Wang <sean.wang@kernel.org>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-crypto@vger.kernel.org>, <linux-serial@vger.kernel.org>,
+        <linux-watchdog@vger.kernel.org>, <linux-clk@vger.kernel.org>
+CC:     John Crispin <john@phrozen.org>,
+        Ryder Lee <Ryder.Lee@mediatek.com>,
+        "Sam Shih" <sam.shih@mediatek.com>
+Subject: [v2,00/12] Add basic SoC support for mediatek mt7986
+Date:   Tue, 17 Aug 2021 15:45:45 +0800
+Message-ID: <20210817074557.30953-1-sam.shih@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git clocksource
-branch HEAD: a5e8561a2bdf276fdd2a7f63a8154930863fcbda  clocksource: Make clocksource-wdtest.c safe for slow-HZ systems
-
-elapsed time: 725m
-
-configs tested: 109
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210816
-powerpc                         ps3_defconfig
-powerpc                  mpc866_ads_defconfig
-arm                         lpc18xx_defconfig
-arm                         lubbock_defconfig
-mips                        workpad_defconfig
-powerpc                    mvme5100_defconfig
-powerpc                     rainier_defconfig
-mips                        nlm_xlr_defconfig
-sh                             shx3_defconfig
-arm                         cm_x300_defconfig
-arm                             pxa_defconfig
-arm                       omap2plus_defconfig
-arm                        spear6xx_defconfig
-powerpc                       maple_defconfig
-arm                       imx_v4_v5_defconfig
-arm                         axm55xx_defconfig
-powerpc                   lite5200b_defconfig
-arm                        mvebu_v7_defconfig
-arm                         mv78xx0_defconfig
-powerpc                  mpc885_ads_defconfig
-arm                          gemini_defconfig
-arm                            hisi_defconfig
-mips                  decstation_64_defconfig
-mips                        vocore2_defconfig
-powerpc                  iss476-smp_defconfig
-sh                           se7750_defconfig
-powerpc                   bluestone_defconfig
-m68k                       m5208evb_defconfig
-arm                         s5pv210_defconfig
-powerpc                 xes_mpc85xx_defconfig
-mips                     decstation_defconfig
-arm                      jornada720_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20210816
-x86_64               randconfig-a004-20210816
-x86_64               randconfig-a003-20210816
-x86_64               randconfig-a001-20210816
-x86_64               randconfig-a005-20210816
-x86_64               randconfig-a002-20210816
-i386                 randconfig-a004-20210816
-i386                 randconfig-a003-20210816
-i386                 randconfig-a002-20210816
-i386                 randconfig-a001-20210816
-i386                 randconfig-a006-20210816
-i386                 randconfig-a005-20210816
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-i386                 randconfig-c001-20210816
-x86_64               randconfig-a011-20210816
-x86_64               randconfig-a013-20210816
-x86_64               randconfig-a016-20210816
-x86_64               randconfig-a012-20210816
-x86_64               randconfig-a015-20210816
-x86_64               randconfig-a014-20210816
-i386                 randconfig-a011-20210816
-i386                 randconfig-a015-20210816
-i386                 randconfig-a013-20210816
-i386                 randconfig-a014-20210816
-i386                 randconfig-a016-20210816
-i386                 randconfig-a012-20210816
+This patch adds basic SoC support for Mediatek's new 4-core SoC,
+MT7986, which is mainly for wifi-router application.
 
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+v2: updated mt7986 clock releated IDs, dt-binding, and driver
+    updated mt7986 clock releated dt-binding and driver
+    updated device tree of mt7986a and mt7986b
+
+Sam Shih (12):
+  dt-bindings: clock: mediatek: document clk bindings for mediatek
+    mt7986 SoC
+  clk: mediatek: add mt7986 clock IDs
+  clk: mediatek: add mt7986 clock support
+  pinctrl: mediatek: moore: check if pin_desc is valid before use
+  dt-bindings: pinctrl: update bindings for MT7986 SoC
+  pinctrl: mediatek: add support for MT7986 SoC
+  dt-bindings: arm64: dts: mediatek: Add mt7986 series
+  dt-bindings: rng: mediatek: add mt7986 to mtk rng binding
+  dt-bindings: serial: Add compatible for Mediatek MT7986
+  dt-bindings: watchdog: Add compatible for Mediatek MT7986
+  arm64: dts: mediatek: add mt7986a support
+  arm64: dts: mediatek: add mt7986b support
+
+ .../devicetree/bindings/arm/mediatek.yaml     |    8 +
+ .../arm/mediatek/mediatek,apmixedsys.txt      |    1 +
+ .../bindings/arm/mediatek/mediatek,ethsys.txt |    1 +
+ .../arm/mediatek/mediatek,infracfg.txt        |    1 +
+ .../arm/mediatek/mediatek,sgmiisys.txt        |    2 +
+ .../arm/mediatek/mediatek,topckgen.txt        |    1 +
+ .../bindings/pinctrl/pinctrl-mt7622.txt       |  170 +++
+ .../devicetree/bindings/rng/mtk-rng.yaml      |    1 +
+ .../devicetree/bindings/serial/mtk-uart.txt   |    1 +
+ .../devicetree/bindings/watchdog/mtk-wdt.txt  |    1 +
+ arch/arm64/boot/dts/mediatek/Makefile         |    2 +
+ arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts  |   49 +
+ arch/arm64/boot/dts/mediatek/mt7986a.dtsi     |  227 +++
+ arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts  |   21 +
+ arch/arm64/boot/dts/mediatek/mt7986b.dtsi     |  236 ++++
+ drivers/clk/mediatek/Kconfig                  |   17 +
+ drivers/clk/mediatek/Makefile                 |    4 +
+ drivers/clk/mediatek/clk-mt7986-apmixed.c     |   78 ++
+ drivers/clk/mediatek/clk-mt7986-eth.c         |  132 ++
+ drivers/clk/mediatek/clk-mt7986-infracfg.c    |  198 +++
+ drivers/clk/mediatek/clk-mt7986-topckgen.c    |  319 +++++
+ drivers/pinctrl/mediatek/Kconfig              |    7 +
+ drivers/pinctrl/mediatek/Makefile             |    1 +
+ drivers/pinctrl/mediatek/pinctrl-moore.c      |   18 +
+ drivers/pinctrl/mediatek/pinctrl-mt7986.c     | 1217 +++++++++++++++++
+ include/dt-bindings/clock/mt7986-clk.h        |  169 +++
+ 26 files changed, 2882 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt7986a.dtsi
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt7986b.dtsi
+ create mode 100644 drivers/clk/mediatek/clk-mt7986-apmixed.c
+ create mode 100644 drivers/clk/mediatek/clk-mt7986-eth.c
+ create mode 100644 drivers/clk/mediatek/clk-mt7986-infracfg.c
+ create mode 100644 drivers/clk/mediatek/clk-mt7986-topckgen.c
+ create mode 100644 drivers/pinctrl/mediatek/pinctrl-mt7986.c
+ create mode 100644 include/dt-bindings/clock/mt7986-clk.h
+
+-- 
+2.29.2
+
