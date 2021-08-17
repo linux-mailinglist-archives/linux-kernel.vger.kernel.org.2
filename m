@@ -2,543 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D183EF187
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 20:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4737A3EF18D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 20:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233642AbhHQSLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 14:11:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233731AbhHQSKz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 14:10:55 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E28BBC061764;
-        Tue, 17 Aug 2021 11:10:21 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so6684873pjr.1;
-        Tue, 17 Aug 2021 11:10:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tg+nccmDwgPF2IKCFlYMZsInIPJO/fP9NA5mVKeUkCQ=;
-        b=NBR2EPKoiiE2NsEi4VgWe6NF0CTV7xLWBXgrhHCRvWc+sFr5rJ1Gv3rMWN8Jbp3wfR
-         KR7HbDCXN3qArRcZvkLpRTVfko4dZit8a5pJNzBFgW1kEeM1vcus6gmVj32YYXAzI0Lc
-         OhNSPWSmQLhrw979pNSzp/XqD+cp2yL+fzR3yqhyXzo5yOnGJgG9UHi77sNDtMwwZQK3
-         Z081Kzn2fPK1QKsjOEtQSuvJ6PhqFpBLHZ2rSg9Qurzgfn/daaHgdIoO2TOgl1Mvu3BH
-         5wUf24NGOs9bfGl+ReOaA9WZmO58HAaSx5AZsvuEQlp3JBg0KpxysiJhXRm+dvfv6IVi
-         sJCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tg+nccmDwgPF2IKCFlYMZsInIPJO/fP9NA5mVKeUkCQ=;
-        b=cyDOARVd58XuJwB17SiHHrr/OzfSPw8/za7VTGzG+qcmL4nZduMfSarNG2hsIRrrp6
-         B8/nPIFL48KjycFzQBOx2IphpEgak2lDWQNiRK3Qqx+WKMeCqqoZ0H+1tTbLvFAdbX+p
-         k9thrGK54GmY7KqwqvR3Q7Pq+q5xn14oVpys17GWuBBqvNSJyU7iQVIPKN9LcDtOtASg
-         4fgWkGznXq2yWjQlEk+lfhaN32AmYJgukny5bNRnKWFksKnQBB/aLgMvpAJi4YPCKEN+
-         +J6zaFL+CFK35OzQVFkVSRwApL3SMW3q1YP1FWXQd1WvdEbEFXxk07uroS6ZY3M+syoh
-         jZAg==
-X-Gm-Message-State: AOAM5324VoTUH/rtE2rSh6B3A6W+FWBSablsVM/xR7iJ6QwZ+vnvCQdf
-        xOUyoeJ3m75GO6CkMgWdJ5o=
-X-Google-Smtp-Source: ABdhPJwQGxFmZy4f4M29RH9Bt0JedwwGfMLRqkyl8+naTk2qW1QJtpjlwD/Mq8DH4fKIc4oO8tn6Vg==
-X-Received: by 2002:a62:dd57:0:b029:3cd:c96e:625e with SMTP id w84-20020a62dd570000b02903cdc96e625emr4685391pff.45.1629223821393;
-        Tue, 17 Aug 2021 11:10:21 -0700 (PDT)
-Received: from localhost.localdomain ([103.248.31.158])
-        by smtp.googlemail.com with ESMTPSA id d18sm4011306pgk.24.2021.08.17.11.10.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 11:10:21 -0700 (PDT)
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Amey Narkhede <ameynarkhede03@gmail.com>
-Subject: [PATCH v16 9/9] PCI: Change the type of probe argument in reset functions
-Date:   Tue, 17 Aug 2021 23:39:37 +0530
-Message-Id: <20210817180937.3123-10-ameynarkhede03@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210817180937.3123-1-ameynarkhede03@gmail.com>
-References: <20210817180937.3123-1-ameynarkhede03@gmail.com>
+        id S233072AbhHQSMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 14:12:21 -0400
+Received: from mail-bn8nam12on2059.outbound.protection.outlook.com ([40.107.237.59]:23264
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233084AbhHQSMN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 14:12:13 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=koIdjRLIQI5W0y4LsBXedMqQiL0gWDny8kbXlaHBcds6qSv2P7uSwhylMG60nrPM8vhDGiSihDkwJdle2mZBN18FJsOhihkldp4JBGZ2/5o8pHuFVd9kQX5EFoyuHQPDsbVlDB5ZB+ZVYM2m69a1HYRiAyPh3c9j8angmarVO7KSBFiJbjLHfVYHJ5E1obnSZ9x8mYlKs9TqUKRn7u5/MuzVKts0eyo8iKMG7GbVcZJw/PuDjZZlpB6lCxrWlA3rSUjy8EZJ9TbglKyeihdP4cCEMoSEKhR8j1DDrAfObESzDOaIxXEaX5xISo/kg5A9TyA/pdPJFWTHyncdo6oWLw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4pJspvcBeIATx3Kl/6MmCUp3yHCHVixx8d5wkNMoEyo=;
+ b=a+Mm19ew2Rtxrjd53yVgntL+G2eN7utmPnTW7RH8JD/gvTC8MR+UiCWipuIippgkADpfU8gwG9M29pThWgEkHUi0mjLfbNdh/Zhb8MQ+yeFAWOGYoghmOpbh1tuczE2uMY0TTsotTMOQ+Wq92e+b49Vq+tMlrp1WzfIiEcsl/SfUxFaw7Ig9hCSfQRNrutgT6vSyyhgHAKmdmC6uCKw1OntnK5r3DCHMAws8XZB4xXwFyNoU9TO/CjV2DvRCjoKdeeRDSLlzyx+v9NVvmWUvUMnbulQgSKUWPMC18sctKuXOCchN0KnR1lN4geEFoDtkoMuBd/PhGOqY+ghMnjSjNQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4pJspvcBeIATx3Kl/6MmCUp3yHCHVixx8d5wkNMoEyo=;
+ b=mOOHlx8gX9ocYG5ZXGe3ZhbOyzE/yoIk8WRKt3KNVXi0buzWNe/iN1lqmBFsru9bOmfiahlXu2VpRSyB7eDDIgvPB7wKnTDoFGiXYY7hLgNuECQFZn3ACVgmDzjEw657rhqzf73n67sGwKQYnkBPxsAp4cdCu4cRvMoxJsmIcQY=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SA0PR12MB4511.namprd12.prod.outlook.com (2603:10b6:806:95::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14; Tue, 17 Aug
+ 2021 18:11:38 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::78b7:7336:d363:9be3]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::78b7:7336:d363:9be3%6]) with mapi id 15.20.4415.024; Tue, 17 Aug 2021
+ 18:11:38 +0000
+Cc:     brijesh.singh@amd.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part1 RFC v4 16/36] KVM: SVM: define new SEV_FEATURES
+ field in the VMCB Save State Area
+To:     Borislav Petkov <bp@alien8.de>
+References: <20210707181506.30489-1-brijesh.singh@amd.com>
+ <20210707181506.30489-17-brijesh.singh@amd.com> <YRv3x/JeNjcJ4E8a@zn.tnic>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <9ffbdf3d-05c8-38a8-96f0-ae782280ca94@amd.com>
+Date:   Tue, 17 Aug 2021 13:11:35 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <YRv3x/JeNjcJ4E8a@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN6PR2101CA0030.namprd21.prod.outlook.com
+ (2603:10b6:805:106::40) To SN6PR12MB2718.namprd12.prod.outlook.com
+ (2603:10b6:805:6f::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.31.95] (165.204.77.1) by SN6PR2101CA0030.namprd21.prod.outlook.com (2603:10b6:805:106::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.3 via Frontend Transport; Tue, 17 Aug 2021 18:11:36 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 54644afe-9218-47ca-4b94-08d961aa74a9
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4511:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB45112882171752610600FBAFE5FE9@SA0PR12MB4511.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GuRR4XPfMrYhY+AL8jbhrCcCNWJmeWj/4FnaPhSxdB884EYU0to/OYK0sXWhvDMzMuciGcaojJhJUnPsBIBZzfs+3JZIXuG0ZLoMv8DZekYw1LUZhn3hmAe5GmzyCC9rwaqEPh9GCEWVnlvs8WR16GdurdPUHhnuwsifBu+ZIAtoQz9nTIMKXjyCyRMc2MiyqvzjvdFWTOdU3xt4bclFSw0s8zU+DSG7AhtrOz7KHCAiWoej4fmFYvUrVHIjCiAdxyG0BKm/33UVR+w58WfrIA8cGJTMUxwbi9K0prN12qKeRjyIxyI/Yr1SkY7E+POwGNEFnVKBRiplmmuO/28vp0ebHunctcSlOm+m7XTCkmZ50V7yb+MpfGYP9THpdsfokJGsjpPLTVOcLDoBGVsHhMWHgBOY7URz3K84HES+uwzyoOyoWp68TSjDxoMjQKZQlZnAjN574FRtFxxIz2D2ASpJVZI4XT0ufGQZ9WNRdQ7kSQ8OSaOA4ZpUoJMw8Sdd6TvUEMM6PElxIHXWpbuMNq4O4tUQLkqAXQYyt9i08WaMEp0G/ansBWRfbdQ7FUyoOCmeyj6naja94UiKLAnzeNGDB5DMaLaRDxLdPJhpXVT3TafaLTjNEyS94N/G+whlaRIQhKffFBVIUDk/jHvbYQYJNmMMsh8RNLvroDtyXS1PQ4q1Cjfj2ATlnmWJV4V0qnvWNbl2ygtQOvuenl4cGCim8jofLEL3VAWn3Bpc7C0dB+AI/1GXXR+tlOTLHMXeiAo91CrljZBSBhk/FnWsZQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(396003)(346002)(39860400002)(83380400001)(4326008)(6916009)(53546011)(316002)(186003)(956004)(38100700002)(38350700002)(5660300002)(6486002)(8676002)(52116002)(16576012)(31686004)(66946007)(31696002)(36756003)(8936002)(54906003)(44832011)(26005)(66476007)(66556008)(2616005)(86362001)(7406005)(7416002)(2906002)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OWtiMHpWRTk4NDRIbFB0dEpXYVRtd0U5ZTdPZTVSb1pHbUxuVkhtNThTWXdi?=
+ =?utf-8?B?QUVpTDJKdFN3RDhHd1MxVXlIVVZabEpDOWJ2bER2ZEZ5R25yWU11OVozL2lX?=
+ =?utf-8?B?REdJTkY0ekpvTGNnRTZrSkNkZVZSak16dFQwbHlXbVhhbkd0OTdSL2k0ZUtW?=
+ =?utf-8?B?K0JlTEhRRFdCLy9wTkZFMmxRMGpZeVhIRFpqMitBaXBsa3NWMGlrdDl2bHps?=
+ =?utf-8?B?QkhmSGdWa1h5R0lNN1hEdUcyQkQ3eFJqU2JVdVhmSVdKc2pRdFlMWEJxMGsw?=
+ =?utf-8?B?bU1QT1lmdVpwNHl2cUYzcTYvNFdjSktsNlBlMTJlMGxsTS9qa2xiNUFIRXd5?=
+ =?utf-8?B?OHdURDNXYmEwMkxrQ0c4MjhvMUV0SnVhKzltbW5DR3NhS0RrWDVVNjBoUHNT?=
+ =?utf-8?B?Z0Z1ZzIyN3dPeURITWRPdzB3Y0ZlcmdKNXV6VXRWZTVWYnJ3M0JQZ0g1OFBU?=
+ =?utf-8?B?UmxRSjQyZnN5OUV5b1lFaDdwQU5YV01QbzZHN2NpUlJxM3JVS1Z4Q2ZlREVi?=
+ =?utf-8?B?eit0Y2h1OS9hWjJaUFVOTmpmdWU0ZkFEOUJUUDJjbVVLaHMxdEtWZTNZUUcx?=
+ =?utf-8?B?dGpUSUVURnNoUGc0Slc2YWk2NlhnenpYWGovdzN4TEw1cmVyZDIvYVJFRUtI?=
+ =?utf-8?B?QWZuZVhFRDBwV2M1c2tydVFONENiTEIvRExRdlJwVWNhVXhlcm1DNk13WTV3?=
+ =?utf-8?B?VjdlV1FqZ3NXaW5KdE1wNTRrUXhkYWNMVnkxanRiS0ZlSHIrNXZOQ1QycnZw?=
+ =?utf-8?B?Q2crSXpTbnNjVTFaR0VKSElzdElZeE1kZEw2QnVud2ptTHp0VytRbWJ6SDdz?=
+ =?utf-8?B?VldJR1BEWklqQythc3pnOVFhejEzZjJBaGE0TVBpeDVWM0FyTzFaajc0VFkr?=
+ =?utf-8?B?SkxmRFh5RE16OWVtMklBQVZCUmNXU0VnWmdkd3E0alJPN2JtdTJwZ0w4WU1l?=
+ =?utf-8?B?MW1uVUkrZkRCd1ViVzllWUMzMXoxVTJyNUhOa3huWVNqV25NUFJ2RzRwQk1Q?=
+ =?utf-8?B?cmdQMGpvaDdzS2p6Um1OZVh1SmxFeVp4S25NLzAweTIrQU9tN05PWFRTMmd5?=
+ =?utf-8?B?YnRRa00vZ3pjc0tBVXBtc2g5ZlNDOVV4SlNoVm5qT3IrY1N0ZTZJMzVNWjJk?=
+ =?utf-8?B?eTNCT005NGViY0VrNkpUSGUycDV1a3cxanROTFkzQjNOSEtOOG1qR213S2RC?=
+ =?utf-8?B?V2ptRFlESkJnN2tSM1JjalRodnJHUTBRK3draDNUWFE5Q0dwMkpPYzV6aitE?=
+ =?utf-8?B?NWpBV2UxblZwS3lROWowS1RJVlFuTXNMREdOdkdBQ2ZBNWRlZE40Yno1d2ds?=
+ =?utf-8?B?Q0JEdVppVXlBL05wMlBmWDg0Z3hsZlhSeHFwNFlWWDdaMUxDc1E2QlIyRzdH?=
+ =?utf-8?B?aDMrRWJZRkxuYWlBVFd3V0hBbG9FN2xrSTArT09sM043dkIyY2U0STVQSEZR?=
+ =?utf-8?B?SzNzbjRtMEJTamZxU2QwMURVNU94WTc3czJxaTBheGdzcDFnZEMyNlFxWFJJ?=
+ =?utf-8?B?L3I3eENnNlIrekYzdXRmek5xOC94TUsxNXpOWWY5WjU0THVJY091NWY1Q1Jm?=
+ =?utf-8?B?VTRnMEY0WXpjVHBweXhtSnZRMUxhVDJ4SXE2ajgwSUlHakVSdzdTY3Q0VlQz?=
+ =?utf-8?B?aVZPREY3RFBmYjFsWWlrY2oycEl5RDRyV21lTlExQ1RkUHdPUlR5eEtwa0hq?=
+ =?utf-8?B?aVo3aE9GeS9xdXRIc2V2UzVQc2JYTkhkanVLTVc0NEQwOXJaSTNCOFpCaERh?=
+ =?utf-8?Q?srGAYz97ona1VmOgMCafqYbL1EUT1ZfoWBERxyY?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54644afe-9218-47ca-4b94-08d961aa74a9
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2021 18:11:38.1850
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AUQTdeRPqAddbKbh+IChdYjxhEhNHhKF3ShRo8QWf2l0pSz/UOK0SKPBUJL8qTD6PiNDP2ZO9avWSw+wXUqdNg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4511
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the type of probe argument in functions which implement reset
-methods from int to bool to make the context and intent clear.
 
-Suggested-by: Alex Williamson <alex.williamson@redhat.com>
-Suggested-by: Krzysztof Wilczyński <kw@linux.com>
-Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
----
- drivers/crypto/cavium/nitrox/nitrox_main.c    |  2 +-
- .../ethernet/cavium/liquidio/lio_vf_main.c    |  2 +-
- drivers/pci/hotplug/pciehp.h                  |  2 +-
- drivers/pci/hotplug/pciehp_hpc.c              |  2 +-
- drivers/pci/hotplug/pnv_php.c                 |  2 +-
- drivers/pci/pci-acpi.c                        |  5 ++-
- drivers/pci/pci.c                             | 44 +++++++++----------
- drivers/pci/pci.h                             | 12 ++---
- drivers/pci/pcie/aer.c                        |  2 +-
- drivers/pci/quirks.c                          | 20 ++++-----
- include/linux/pci.h                           |  5 ++-
- include/linux/pci_hotplug.h                   |  2 +-
- 12 files changed, 52 insertions(+), 48 deletions(-)
 
-diff --git a/drivers/crypto/cavium/nitrox/nitrox_main.c b/drivers/crypto/cavium/nitrox/nitrox_main.c
-index 15d6c8452..f97fa8e99 100644
---- a/drivers/crypto/cavium/nitrox/nitrox_main.c
-+++ b/drivers/crypto/cavium/nitrox/nitrox_main.c
-@@ -306,7 +306,7 @@ static int nitrox_device_flr(struct pci_dev *pdev)
- 		return -ENOMEM;
- 	}
- 
--	pcie_reset_flr(pdev, 0);
-+	pcie_reset_flr(pdev, PCI_RESET_DO_RESET);
- 
- 	pci_restore_state(pdev);
- 
-diff --git a/drivers/net/ethernet/cavium/liquidio/lio_vf_main.c b/drivers/net/ethernet/cavium/liquidio/lio_vf_main.c
-index 336d149ee..6e666be69 100644
---- a/drivers/net/ethernet/cavium/liquidio/lio_vf_main.c
-+++ b/drivers/net/ethernet/cavium/liquidio/lio_vf_main.c
-@@ -526,7 +526,7 @@ static void octeon_destroy_resources(struct octeon_device *oct)
- 			oct->irq_name_storage = NULL;
- 		}
- 		/* Soft reset the octeon device before exiting */
--		if (!pcie_reset_flr(oct->pci_dev, 1))
-+		if (!pcie_reset_flr(oct->pci_dev, PCI_RESET_PROBE))
- 			octeon_pci_flr(oct);
- 		else
- 			cn23xx_vf_ask_pf_to_do_flr(oct);
-diff --git a/drivers/pci/hotplug/pciehp.h b/drivers/pci/hotplug/pciehp.h
-index 4fd200d8b..23d6d6813 100644
---- a/drivers/pci/hotplug/pciehp.h
-+++ b/drivers/pci/hotplug/pciehp.h
-@@ -181,7 +181,7 @@ void pciehp_release_ctrl(struct controller *ctrl);
- 
- int pciehp_sysfs_enable_slot(struct hotplug_slot *hotplug_slot);
- int pciehp_sysfs_disable_slot(struct hotplug_slot *hotplug_slot);
--int pciehp_reset_slot(struct hotplug_slot *hotplug_slot, int probe);
-+int pciehp_reset_slot(struct hotplug_slot *hotplug_slot, bool probe);
- int pciehp_get_attention_status(struct hotplug_slot *hotplug_slot, u8 *status);
- int pciehp_set_raw_indicator_status(struct hotplug_slot *h_slot, u8 status);
- int pciehp_get_raw_indicator_status(struct hotplug_slot *h_slot, u8 *status);
-diff --git a/drivers/pci/hotplug/pciehp_hpc.c b/drivers/pci/hotplug/pciehp_hpc.c
-index fb3840e22..d9f782b2e 100644
---- a/drivers/pci/hotplug/pciehp_hpc.c
-+++ b/drivers/pci/hotplug/pciehp_hpc.c
-@@ -834,7 +834,7 @@ void pcie_disable_interrupt(struct controller *ctrl)
-  * momentarily, if we see that they could interfere. Also, clear any spurious
-  * events after.
-  */
--int pciehp_reset_slot(struct hotplug_slot *hotplug_slot, int probe)
-+int pciehp_reset_slot(struct hotplug_slot *hotplug_slot, bool probe)
- {
- 	struct controller *ctrl = to_ctrl(hotplug_slot);
- 	struct pci_dev *pdev = ctrl_dev(ctrl);
-diff --git a/drivers/pci/hotplug/pnv_php.c b/drivers/pci/hotplug/pnv_php.c
-index 04565162a..f4c2e6e01 100644
---- a/drivers/pci/hotplug/pnv_php.c
-+++ b/drivers/pci/hotplug/pnv_php.c
-@@ -526,7 +526,7 @@ static int pnv_php_enable(struct pnv_php_slot *php_slot, bool rescan)
- 	return 0;
- }
- 
--static int pnv_php_reset_slot(struct hotplug_slot *slot, int probe)
-+static int pnv_php_reset_slot(struct hotplug_slot *slot, bool probe)
- {
- 	struct pnv_php_slot *php_slot = to_pnv_php_slot(slot);
- 	struct pci_dev *bridge = php_slot->pdev;
-diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
-index e7b2f7d5c..968bf8aa5 100644
---- a/drivers/pci/pci-acpi.c
-+++ b/drivers/pci/pci-acpi.c
-@@ -944,9 +944,10 @@ void pci_set_acpi_fwnode(struct pci_dev *dev)
- /**
-  * pci_dev_acpi_reset - do a function level reset using _RST method
-  * @dev: device to reset
-- * @probe: check if _RST method is included in the acpi_device context.
-+ * @probe: If PCI_RESET_PROBE, check whether _RST method is included
-+ *         in the acpi_device context.
-  */
--int pci_dev_acpi_reset(struct pci_dev *dev, int probe)
-+int pci_dev_acpi_reset(struct pci_dev *dev, bool probe)
- {
- 	acpi_handle handle = ACPI_HANDLE(&dev->dev);
- 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 5f76d04fa..58d61c739 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -4663,11 +4663,11 @@ EXPORT_SYMBOL_GPL(pcie_flr);
- /**
-  * pcie_reset_flr - initiate a PCIe function level reset
-  * @dev: device to reset
-- * @probe: If set, only check if the device can be reset this way.
-+ * @probe: If PCI_RESET_PROBE, only check if the device can be reset this way.
-  *
-  * Initiate a function level reset on @dev.
-  */
--int pcie_reset_flr(struct pci_dev *dev, int probe)
-+int pcie_reset_flr(struct pci_dev *dev, bool probe)
- {
- 	if (!pcie_has_flr(dev))
- 		return -ENOTTY;
-@@ -4679,7 +4679,7 @@ int pcie_reset_flr(struct pci_dev *dev, int probe)
- }
- EXPORT_SYMBOL_GPL(pcie_reset_flr);
- 
--static int pci_af_flr(struct pci_dev *dev, int probe)
-+static int pci_af_flr(struct pci_dev *dev, bool probe)
- {
- 	int pos;
- 	u8 cap;
-@@ -4726,7 +4726,7 @@ static int pci_af_flr(struct pci_dev *dev, int probe)
- /**
-  * pci_pm_reset - Put device into PCI_D3 and back into PCI_D0.
-  * @dev: Device to reset.
-- * @probe: If set, only check if the device can be reset this way.
-+ * @probe: If PCI_RESET_PROBE, only check if the device can be reset this way.
-  *
-  * If @dev supports native PCI PM and its PCI_PM_CTRL_NO_SOFT_RESET flag is
-  * unset, it will be reinitialized internally when going from PCI_D3hot to
-@@ -4738,7 +4738,7 @@ static int pci_af_flr(struct pci_dev *dev, int probe)
-  * by default (i.e. unless the @dev's d3hot_delay field has a different value).
-  * Moreover, only devices in D0 can be reset by this function.
-  */
--static int pci_pm_reset(struct pci_dev *dev, int probe)
-+static int pci_pm_reset(struct pci_dev *dev, bool probe)
- {
- 	u16 csr;
- 
-@@ -4998,7 +4998,7 @@ int pci_bridge_secondary_bus_reset(struct pci_dev *dev)
- }
- EXPORT_SYMBOL_GPL(pci_bridge_secondary_bus_reset);
- 
--static int pci_parent_bus_reset(struct pci_dev *dev, int probe)
-+static int pci_parent_bus_reset(struct pci_dev *dev, bool probe)
- {
- 	struct pci_dev *pdev;
- 
-@@ -5016,7 +5016,7 @@ static int pci_parent_bus_reset(struct pci_dev *dev, int probe)
- 	return pci_bridge_secondary_bus_reset(dev->bus->self);
- }
- 
--static int pci_reset_hotplug_slot(struct hotplug_slot *hotplug, int probe)
-+static int pci_reset_hotplug_slot(struct hotplug_slot *hotplug, bool probe)
- {
- 	int rc = -ENOTTY;
- 
-@@ -5031,7 +5031,7 @@ static int pci_reset_hotplug_slot(struct hotplug_slot *hotplug, int probe)
- 	return rc;
- }
- 
--static int pci_dev_reset_slot_function(struct pci_dev *dev, int probe)
-+static int pci_dev_reset_slot_function(struct pci_dev *dev, bool probe)
- {
- 	if (dev->multifunction || dev->subordinate || !dev->slot ||
- 	    dev->dev_flags & PCI_DEV_FLAGS_NO_BUS_RESET)
-@@ -5040,7 +5040,7 @@ static int pci_dev_reset_slot_function(struct pci_dev *dev, int probe)
- 	return pci_reset_hotplug_slot(dev->slot->hotplug, probe);
- }
- 
--static int pci_reset_bus_function(struct pci_dev *dev, int probe)
-+static int pci_reset_bus_function(struct pci_dev *dev, bool probe)
- {
- 	int rc;
- 
-@@ -5203,7 +5203,7 @@ static ssize_t reset_method_store(struct device *dev,
- 		if (i < n)
- 			continue;
- 
--		if (pci_reset_fn_methods[m].reset_fn(pdev, 1)) {
-+		if (pci_reset_fn_methods[m].reset_fn(pdev, PCI_RESET_PROBE)) {
- 			pci_warn(pdev, "Unsupported reset method '%s'", name);
- 			continue;
- 		}
-@@ -5222,7 +5222,7 @@ static ssize_t reset_method_store(struct device *dev,
- 	if (pdev->reset_methods[0] == 0) {
- 		pci_warn(pdev, "All device reset methods disabled by user");
- 	} else if ((pdev->reset_methods[0] != 1) &&
--		   !pci_reset_fn_methods[1].reset_fn(pdev, 1)) {
-+		   !pci_reset_fn_methods[1].reset_fn(pdev, PCI_RESET_PROBE)) {
- 		pci_warn(pdev, "Device specific reset disabled/de-prioritized by user");
- 	}
- 	return count;
-@@ -5289,7 +5289,7 @@ int __pci_reset_function_locked(struct pci_dev *dev)
- 		if (!m)
- 			return -ENOTTY;
- 
--		rc = pci_reset_fn_methods[m].reset_fn(dev, 0);
-+		rc = pci_reset_fn_methods[m].reset_fn(dev, PCI_RESET_DO_RESET);
- 		if (!rc)
- 			return 0;
- 		if (rc != -ENOTTY)
-@@ -5323,7 +5323,7 @@ void pci_init_reset_methods(struct pci_dev *dev)
- 	i = 0;
- 
- 	for (m = 1; m < PCI_NUM_RESET_METHODS; m++) {
--		rc = pci_reset_fn_methods[m].reset_fn(dev, 1);
-+		rc = pci_reset_fn_methods[m].reset_fn(dev, PCI_RESET_PROBE);
- 		if (!rc)
- 			dev->reset_methods[i++] = m;
- 		else if (rc != -ENOTTY)
-@@ -5640,7 +5640,7 @@ static void pci_slot_restore_locked(struct pci_slot *slot)
- 	}
- }
- 
--static int pci_slot_reset(struct pci_slot *slot, int probe)
-+static int pci_slot_reset(struct pci_slot *slot, bool probe)
- {
- 	int rc;
- 
-@@ -5668,7 +5668,7 @@ static int pci_slot_reset(struct pci_slot *slot, int probe)
-  */
- int pci_probe_reset_slot(struct pci_slot *slot)
- {
--	return pci_slot_reset(slot, 1);
-+	return pci_slot_reset(slot, PCI_RESET_PROBE);
- }
- EXPORT_SYMBOL_GPL(pci_probe_reset_slot);
- 
-@@ -5691,14 +5691,14 @@ static int __pci_reset_slot(struct pci_slot *slot)
- {
- 	int rc;
- 
--	rc = pci_slot_reset(slot, 1);
-+	rc = pci_slot_reset(slot, PCI_RESET_PROBE);
- 	if (rc)
- 		return rc;
- 
- 	if (pci_slot_trylock(slot)) {
- 		pci_slot_save_and_disable_locked(slot);
- 		might_sleep();
--		rc = pci_reset_hotplug_slot(slot->hotplug, 0);
-+		rc = pci_reset_hotplug_slot(slot->hotplug, PCI_RESET_DO_RESET);
- 		pci_slot_restore_locked(slot);
- 		pci_slot_unlock(slot);
- 	} else
-@@ -5707,7 +5707,7 @@ static int __pci_reset_slot(struct pci_slot *slot)
- 	return rc;
- }
- 
--static int pci_bus_reset(struct pci_bus *bus, int probe)
-+static int pci_bus_reset(struct pci_bus *bus, bool probe)
- {
- 	int ret;
- 
-@@ -5753,14 +5753,14 @@ int pci_bus_error_reset(struct pci_dev *bridge)
- 			goto bus_reset;
- 
- 	list_for_each_entry(slot, &bus->slots, list)
--		if (pci_slot_reset(slot, 0))
-+		if (pci_slot_reset(slot, PCI_RESET_DO_RESET))
- 			goto bus_reset;
- 
- 	mutex_unlock(&pci_slot_mutex);
- 	return 0;
- bus_reset:
- 	mutex_unlock(&pci_slot_mutex);
--	return pci_bus_reset(bridge->subordinate, 0);
-+	return pci_bus_reset(bridge->subordinate, PCI_RESET_DO_RESET);
- }
- 
- /**
-@@ -5771,7 +5771,7 @@ int pci_bus_error_reset(struct pci_dev *bridge)
-  */
- int pci_probe_reset_bus(struct pci_bus *bus)
- {
--	return pci_bus_reset(bus, 1);
-+	return pci_bus_reset(bus, PCI_RESET_PROBE);
- }
- EXPORT_SYMBOL_GPL(pci_probe_reset_bus);
- 
-@@ -5785,7 +5785,7 @@ static int __pci_reset_bus(struct pci_bus *bus)
- {
- 	int rc;
- 
--	rc = pci_bus_reset(bus, 1);
-+	rc = pci_bus_reset(bus, PCI_RESET_PROBE);
- 	if (rc)
- 		return rc;
- 
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index b13dae332..45c93d78f 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -604,18 +604,18 @@ static inline int pci_enable_ptm(struct pci_dev *dev, u8 *granularity)
- struct pci_dev_reset_methods {
- 	u16 vendor;
- 	u16 device;
--	int (*reset)(struct pci_dev *dev, int probe);
-+	int (*reset)(struct pci_dev *dev, bool probe);
- };
- 
- struct pci_reset_fn_method {
--	int (*reset_fn)(struct pci_dev *pdev, int probe);
-+	int (*reset_fn)(struct pci_dev *pdev, bool probe);
- 	char *name;
- };
- 
- #ifdef CONFIG_PCI_QUIRKS
--int pci_dev_specific_reset(struct pci_dev *dev, int probe);
-+int pci_dev_specific_reset(struct pci_dev *dev, bool probe);
- #else
--static inline int pci_dev_specific_reset(struct pci_dev *dev, int probe)
-+static inline int pci_dev_specific_reset(struct pci_dev *dev, bool probe)
- {
- 	return -ENOTTY;
- }
-@@ -704,9 +704,9 @@ static inline int pci_aer_raw_clear_status(struct pci_dev *dev) { return -EINVAL
- int pci_acpi_program_hp_params(struct pci_dev *dev);
- extern const struct attribute_group pci_dev_acpi_attr_group;
- void pci_set_acpi_fwnode(struct pci_dev *dev);
--int pci_dev_acpi_reset(struct pci_dev *dev, int probe);
-+int pci_dev_acpi_reset(struct pci_dev *dev, bool probe);
- #else
--static inline int pci_dev_acpi_reset(struct pci_dev *dev, int probe)
-+static inline int pci_dev_acpi_reset(struct pci_dev *dev, bool probe)
- {
- 	return -ENOTTY;
- }
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index 98077595a..cfa7a1775 100644
---- a/drivers/pci/pcie/aer.c
-+++ b/drivers/pci/pcie/aer.c
-@@ -1405,7 +1405,7 @@ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
- 	}
- 
- 	if (type == PCI_EXP_TYPE_RC_EC || type == PCI_EXP_TYPE_RC_END) {
--		rc = pcie_reset_flr(dev, 0);
-+		rc = pcie_reset_flr(dev, PCI_RESET_DO_RESET);
- 		if (!rc)
- 			pci_info(dev, "has been reset\n");
- 		else
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 0db5dac3d..50c3078bf 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -3669,7 +3669,7 @@ DECLARE_PCI_FIXUP_SUSPEND_LATE(PCI_VENDOR_ID_INTEL,
-  * reset a single function if other methods (e.g. FLR, PM D0->D3) are
-  * not available.
-  */
--static int reset_intel_82599_sfp_virtfn(struct pci_dev *dev, int probe)
-+static int reset_intel_82599_sfp_virtfn(struct pci_dev *dev, bool probe)
- {
- 	/*
- 	 * http://www.intel.com/content/dam/doc/datasheet/82599-10-gbe-controller-datasheet.pdf
-@@ -3691,7 +3691,7 @@ static int reset_intel_82599_sfp_virtfn(struct pci_dev *dev, int probe)
- #define NSDE_PWR_STATE		0xd0100
- #define IGD_OPERATION_TIMEOUT	10000     /* set timeout 10 seconds */
- 
--static int reset_ivb_igd(struct pci_dev *dev, int probe)
-+static int reset_ivb_igd(struct pci_dev *dev, bool probe)
- {
- 	void __iomem *mmio_base;
- 	unsigned long timeout;
-@@ -3734,7 +3734,7 @@ static int reset_ivb_igd(struct pci_dev *dev, int probe)
- }
- 
- /* Device-specific reset method for Chelsio T4-based adapters */
--static int reset_chelsio_generic_dev(struct pci_dev *dev, int probe)
-+static int reset_chelsio_generic_dev(struct pci_dev *dev, bool probe)
- {
- 	u16 old_command;
- 	u16 msix_flags;
-@@ -3812,14 +3812,14 @@ static int reset_chelsio_generic_dev(struct pci_dev *dev, int probe)
-  *    Chapter 3: NVMe control registers
-  *    Chapter 7.3: Reset behavior
-  */
--static int nvme_disable_and_flr(struct pci_dev *dev, int probe)
-+static int nvme_disable_and_flr(struct pci_dev *dev, bool probe)
- {
- 	void __iomem *bar;
- 	u16 cmd;
- 	u32 cfg;
- 
- 	if (dev->class != PCI_CLASS_STORAGE_EXPRESS ||
--	    pcie_reset_flr(dev, 1) || !pci_resource_start(dev, 0))
-+	    pcie_reset_flr(dev, PCI_RESET_PROBE) || !pci_resource_start(dev, 0))
- 		return -ENOTTY;
- 
- 	if (probe)
-@@ -3886,12 +3886,12 @@ static int nvme_disable_and_flr(struct pci_dev *dev, int probe)
-  * device too soon after FLR.  A 250ms delay after FLR has heuristically
-  * proven to produce reliably working results for device assignment cases.
-  */
--static int delay_250ms_after_flr(struct pci_dev *dev, int probe)
-+static int delay_250ms_after_flr(struct pci_dev *dev, bool probe)
- {
- 	if (probe)
--		return pcie_reset_flr(dev, 1);
-+		return pcie_reset_flr(dev, PCI_RESET_PROBE);
- 
--	pcie_reset_flr(dev, 0);
-+	pcie_reset_flr(dev, PCI_RESET_DO_RESET);
- 
- 	msleep(250);
- 
-@@ -3906,7 +3906,7 @@ static int delay_250ms_after_flr(struct pci_dev *dev, int probe)
- #define HINIC_OPERATION_TIMEOUT     15000	/* 15 seconds */
- 
- /* Device-specific reset method for Huawei Intelligent NIC virtual functions */
--static int reset_hinic_vf_dev(struct pci_dev *pdev, int probe)
-+static int reset_hinic_vf_dev(struct pci_dev *pdev, bool probe)
- {
- 	unsigned long timeout;
- 	void __iomem *bar;
-@@ -3983,7 +3983,7 @@ static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
-  * because when a host assigns a device to a guest VM, the host may need
-  * to reset the device but probably doesn't have a driver for it.
-  */
--int pci_dev_specific_reset(struct pci_dev *dev, int probe)
-+int pci_dev_specific_reset(struct pci_dev *dev, bool probe)
- {
- 	const struct pci_dev_reset_methods *i;
- 
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index d3b06bfd8..5a9e906b0 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -52,6 +52,9 @@
- /* Number of reset methods used in pci_reset_fn_methods array in pci.c */
- #define PCI_NUM_RESET_METHODS 7
- 
-+#define	PCI_RESET_PROBE		true
-+#define PCI_RESET_DO_RESET	false
-+
- /*
-  * The PCI interface treats multi-function devices as independent
-  * devices.  The slot/function address of each device is encoded
-@@ -1232,7 +1235,7 @@ u32 pcie_bandwidth_available(struct pci_dev *dev, struct pci_dev **limiting_dev,
- 			     enum pci_bus_speed *speed,
- 			     enum pcie_link_width *width);
- void pcie_print_link_status(struct pci_dev *dev);
--int pcie_reset_flr(struct pci_dev *dev, int probe);
-+int pcie_reset_flr(struct pci_dev *dev, bool probe);
- int pcie_flr(struct pci_dev *dev);
- int __pci_reset_function_locked(struct pci_dev *dev);
- int pci_reset_function(struct pci_dev *dev);
-diff --git a/include/linux/pci_hotplug.h b/include/linux/pci_hotplug.h
-index b482e42d7..608c012eb 100644
---- a/include/linux/pci_hotplug.h
-+++ b/include/linux/pci_hotplug.h
-@@ -44,7 +44,7 @@ struct hotplug_slot_ops {
- 	int (*get_attention_status)	(struct hotplug_slot *slot, u8 *value);
- 	int (*get_latch_status)		(struct hotplug_slot *slot, u8 *value);
- 	int (*get_adapter_status)	(struct hotplug_slot *slot, u8 *value);
--	int (*reset_slot)		(struct hotplug_slot *slot, int probe);
-+	int (*reset_slot)		(struct hotplug_slot *slot, bool probe);
- };
- 
- /**
--- 
-2.32.0
+On 8/17/21 12:54 PM, Borislav Petkov wrote:
+> On Wed, Jul 07, 2021 at 01:14:46PM -0500, Brijesh Singh wrote:
+>> The hypervisor uses the SEV_FEATURES field (offset 3B0h) in the Save State
+>> Area to control the SEV-SNP guest features such as SNPActive, vTOM,
+>> ReflectVC etc. An SEV-SNP guest can read the SEV_FEATURES fields through
+>> the SEV_STATUS MSR.
+>>
+>> While at it, update the dump_vmcb() to log the VMPL level.
+>>
+>> See APM2 Table 15-34 and B-4 for more details.
+>>
+>> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+>> ---
+>>   arch/x86/include/asm/svm.h | 15 +++++++++++++--
+>>   arch/x86/kvm/svm/svm.c     |  4 ++--
+>>   2 files changed, 15 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
+>> index 772e60efe243..ff614cdcf628 100644
+>> --- a/arch/x86/include/asm/svm.h
+>> +++ b/arch/x86/include/asm/svm.h
+>> @@ -212,6 +212,15 @@ struct __attribute__ ((__packed__)) vmcb_control_area {
+>>   #define SVM_NESTED_CTL_SEV_ENABLE	BIT(1)
+>>   #define SVM_NESTED_CTL_SEV_ES_ENABLE	BIT(2)
+>>   
+>> +#define SVM_SEV_FEATURES_SNP_ACTIVE		BIT(0)
+>> +#define SVM_SEV_FEATURES_VTOM			BIT(1)
+>> +#define SVM_SEV_FEATURES_REFLECT_VC		BIT(2)
+>> +#define SVM_SEV_FEATURES_RESTRICTED_INJECTION	BIT(3)
+>> +#define SVM_SEV_FEATURES_ALTERNATE_INJECTION	BIT(4)
+>> +#define SVM_SEV_FEATURES_DEBUG_SWAP		BIT(5)
+>> +#define SVM_SEV_FEATURES_PREVENT_HOST_IBS	BIT(6)
+>> +#define SVM_SEV_FEATURES_BTB_ISOLATION		BIT(7)
+> 
+> Only some of those get used and only later. Please introduce only those
+> with the patch that adds usage.
+> 
 
+Okay.
+
+> Also,
+> 
+> s/SVM_SEV_FEATURES_/SVM_SEV_FEAT_/g
+> 
+
+I can do that.
+
+> at least.
+> 
+> And by the way, why is this patch and the next 3 part of the guest set?
+> They look like they belong into the hypervisor set.
+> 
+
+This is needed by the AP creation, in SNP the AP creation need to 
+populate the VMSA page and thus need to use some of macros and fields  etc.
