@@ -2,63 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF413EF4AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 23:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6A2F3EF4B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 23:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232862AbhHQVL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 17:11:26 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:54816 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229531AbhHQVLW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 17:11:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=8qoTyawVXKotmiDHx+N4CisOVDlQx6rCGZSPJMmaLy8=; b=gYnEeHPuo2g3ld0B0VjGpaynZN
-        hTvfbmNkq1MLBQf+O9bQaI1Go5NdDWQt0hWVPnGk14dJQXbj8GHB5mUXxigPoFoMD7qPasxz2QAIW
-        mHhQpVHe6UBRovBGk7IcUyoXWKFDqTvktWCdSnGcP56DXQp2Qd2iOup5m7OxAxXOGguo=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mG6Lw-000eQd-6R; Tue, 17 Aug 2021 23:10:32 +0200
-Date:   Tue, 17 Aug 2021 23:10:32 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>, kernel-team@android.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v2 1/3] net: mdio-mux: Delete unnecessary devm_kfree
-Message-ID: <YRwlyH0cjazjsSwe@lunn.ch>
-References: <20210817180841.3210484-1-saravanak@google.com>
- <20210817180841.3210484-2-saravanak@google.com>
+        id S234753AbhHQVMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 17:12:16 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:41601 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhHQVMP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 17:12:15 -0400
+Received: by mail-oi1-f173.google.com with SMTP id be20so1156247oib.8;
+        Tue, 17 Aug 2021 14:11:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Uo8/GQr5kF4Tc+UFhmx+P7qRykZn/k4P2BgnvucjonA=;
+        b=UIaLvCl71RE78ZGcAcI1kgCqvJtN05udl6FWNi/8SDZ43vs2jnk9JV6PXvf40jqocB
+         ejHend73Y26wYUANtbABrqqtrMNPo0U3mVzlNEOsULv7hQEvBFVPPG9T4SwggsNGIg/m
+         csAZKR5NLjLw4u8Itt591mVlD5KbQW4TkbMjri/iJuHREaWXjKoYcEnB1zpOE8rzzT06
+         nc4DOboblr/xuWiEN7t4JdSyA6XS5zoAphXHEFPf91GhQjsfJ1dB4VNrNQMJ9Z4GEWOS
+         kHzLJTAzzQ6OuLydDleEcIWKpqUEqWCGdSlAw8vWtNcq7boiVRN0pv9rN1CfFhFalGaT
+         4evQ==
+X-Gm-Message-State: AOAM532/7uRrZQrqjs7j25MpQz47u3WJ4JcbetAtKyrU6G6X0AmzcVID
+        AlWsk9IihOM0ziDJUk6wHg==
+X-Google-Smtp-Source: ABdhPJwMweLbkDH+VHkWi4RAQV2VO7NAiXJZDF79sqEPRr2nu0XSHfTshWKYq2c3rrFalToqkdFdwA==
+X-Received: by 2002:aca:afc3:: with SMTP id y186mr3967353oie.65.1629234701205;
+        Tue, 17 Aug 2021 14:11:41 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id k8sm653339oom.20.2021.08.17.14.11.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 14:11:40 -0700 (PDT)
+Received: (nullmailer pid 846984 invoked by uid 1000);
+        Tue, 17 Aug 2021 21:11:39 -0000
+Date:   Tue, 17 Aug 2021 16:11:39 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, linux-ide@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: ata: drop unused Exynos SATA bindings
+Message-ID: <YRwmCyppx3InBR+1@robh.at.kernel.org>
+References: <20210811083859.28234-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210817180841.3210484-2-saravanak@google.com>
+In-Reply-To: <20210811083859.28234-1-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 11:08:39AM -0700, Saravana Kannan wrote:
-> The whole point of devm_* APIs is that you don't have to undo them if you
-> are returning an error that's going to get propagated out of a probe()
-> function. So delete unnecessary devm_kfree() call in the error return path.
+On Wed, 11 Aug 2021 10:38:58 +0200, Krzysztof Kozlowski wrote:
+> The Samsung Exynos SoC SATA bindings are not implemented in the kernel,
+> not used and superseded by generic
+> Documentation/devicetree/bindings/ata/ahci-platform.txt bindings.
 > 
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> Acked-by: Marc Zyngier <maz@kernel.org>
-> Tested-by: Marc Zyngier <maz@kernel.org>
-> Acked-by: Kevin Hilman <khilman@baylibre.com>
-> Tested-by: Kevin Hilman <khilman@baylibre.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>  .../devicetree/bindings/ata/exynos-sata.txt   | 30 -------------------
+>  1 file changed, 30 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/ata/exynos-sata.txt
+> 
 
-Please add a Fixes: tag, since you want this in stable.
-
-All three patches need fixes tags, possibly different for each patch?
-
-       Andrew
+Applied, thanks!
