@@ -2,301 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9455B3EF197
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 20:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B30E3EF1A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 20:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232880AbhHQSPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 14:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51872 "EHLO
+        id S232355AbhHQSSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 14:18:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231438AbhHQSPj (ORCPT
+        with ESMTP id S229850AbhHQSSI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 14:15:39 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24779C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 11:15:06 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id l36-20020a0568302b24b0290517526ce5e3so18502029otv.11
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 11:15:06 -0700 (PDT)
+        Tue, 17 Aug 2021 14:18:08 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 485ECC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 11:17:35 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id k5so15215840lfu.4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 11:17:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=AVdaqCFH+UALpuVfO+b7JgwQXf9nnVhWLkRBb8EvjqA=;
-        b=i8zMLfL/Uz1yWRkKL8ebwiwa3gjf6qYyQ9gAtF9wsEzN9SgsFUlTEiNFR/RO8Fdt+W
-         TuvGICtLyE81yElj20y0Wy+bc4rRSa/dKhBvzW5v12t8eGB+MUANgCNa0zYJEZjqSpV9
-         QjI3k5qC2icq6i+DqMO08AJftIQivb2apI1sMytjWXAh5EK03jX19MWVTG3tTXuONItR
-         KQjRS3EQy9oOoFU+HzRBdgNBetmmWRcLAqY/f8kKDoHC1KmaN0qxC1om4ENQB1bi9Ulg
-         QAVJWYINPYu6WfjXO6a4zCL+l4QOunD4+w9Ufd2Y0srGRwBqWLUJ/Ku1GSm4yBpevvEV
-         g+oA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eDdv2rzwUMD4SObVyB6gkvhjez+GHyH9zfR8+Ve+7sM=;
+        b=h0gfcuKUZFJy/L3rm/JRdVw4fII5RbW6t/pPv+iGWr1OvJZV0bUBeEgyGeAuI+oeeY
+         6ijS1h459OkiMhxigAhtRwEXafFri4e7eu5aSHPSL/L1eSUT/I2VNLUT4J0pcsM5KjXK
+         zqghdhL4PnjoHlVns9RDc0S1k0AY/3h5dPrSv508/Z8HDWRzVylizKwyve7kxB+bHOfc
+         c/4mYHaf34GZO+7akOXjOjnGrxve+6yeu3kyPwVyI9lMgqzHsXzB3rXAnFWnD+OUYgdz
+         SvmNNT5CDMEPNpZvSPDlQZSIHou68vJNqHOK75PyZfQten1qpPFrP6gfNpC9nrA14IAy
+         VwfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AVdaqCFH+UALpuVfO+b7JgwQXf9nnVhWLkRBb8EvjqA=;
-        b=GTQQNc58N8OeThzVTIvLw3cUZkkRDEjdTdT4UU6kJ4rp9mbPaP51wxMQ4i861P6GWp
-         JpG+3saZKju7RXGTfcj7/G43jOzfFdgQXNbcaF99iqwzZkM7fPF2Nn28VHXQ7F9fe6Xu
-         4Vczq3FkK/dPWh7RM8Le1KH3gGOKage2gPsWG5+A7GdBuiUmu4HtIsrGoJxWXXYpZpNV
-         dffpxOX/jMdwOFRrZ8v5PPOhcti01M4Wk3dXlNLXVnAmg21JL57I+0/RNj2rC5tKuSR3
-         KwKXcyXZsFjCwr8PQPKcta+3FjbvPAmIrq7XYzTVeD6AeXuCoEFp+wJPeCNDnubVY9pP
-         ML1g==
-X-Gm-Message-State: AOAM532GPyQHtqpGEnwycrRY/jKHVMHnPK9pPq3/iH2rTfP27ZcmpMXm
-        6DttZYW5ruzXTPWT/2j1ocgpJA==
-X-Google-Smtp-Source: ABdhPJwCNka9f7F+JOOl3DJYEZSFnaJX33sUdGts2IRPhP/mJBgEsGoNl6iNRaf3cj60zaBx+KXFFA==
-X-Received: by 2002:a9d:70cc:: with SMTP id w12mr1630001otj.306.1629224105422;
-        Tue, 17 Aug 2021 11:15:05 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id x198sm570603ooa.43.2021.08.17.11.15.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Aug 2021 11:15:05 -0700 (PDT)
-Subject: Re: [PATCH] coredump: Limit what can interrupt coredumps
-To:     Olivier Langlois <olivier@trillion01.com>,
-        Tony Battersby <tonyb@cybernetics.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Pavel Begunkov>" <asml.silence@gmail.com>
-References: <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
- <198e912402486f66214146d4eabad8cb3f010a8e.camel@trillion01.com>
- <87eeda7nqe.fsf@disp2133>
- <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
- <87pmwt6biw.fsf@disp2133> <87czst5yxh.fsf_-_@disp2133>
- <CAHk-=wiax83WoS0p5nWvPhU_O+hcjXwv6q3DXV8Ejb62BfynhQ@mail.gmail.com>
- <87y2bh4jg5.fsf@disp2133>
- <CAHk-=wjPiEaXjUp6PTcLZFjT8RrYX+ExtD-RY3NjFWDN7mKLbw@mail.gmail.com>
- <87sg1p4h0g.fsf_-_@disp2133> <20210614141032.GA13677@redhat.com>
- <87pmwmn5m0.fsf@disp2133>
- <4d93d0600e4a9590a48d320c5a7dd4c54d66f095.camel@trillion01.com>
- <8af373ec-9609-35a4-f185-f9bdc63d39b7@cybernetics.com>
- <9d194813-ecb1-2fe4-70aa-75faf4e144ad@kernel.dk>
- <b36eb4a26b6aff564c6ef850a3508c5b40141d46.camel@trillion01.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <0bc38b13-5a7e-8620-6dce-18731f15467e@kernel.dk>
-Date:   Tue, 17 Aug 2021 12:15:04 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eDdv2rzwUMD4SObVyB6gkvhjez+GHyH9zfR8+Ve+7sM=;
+        b=CJOruteMr370WOOtEf+wYFQ9MC9IX7QqhJu/hKbLSZeoZ3CGkj6IWM8CYD4ZTXHWHC
+         NkU9hKrhvQbHYyGdLJM2bfWMrx1H0voFKG6VuQsY57GHr8a/peK2e5bDV9Pm1IOR7je+
+         mOPsnp6nlOPKPochWHPN0Ej/TWf2+j3wmKZ+bC7NU5t2uOPAbIikCHsgsx8zhUx+mCFN
+         HVunzqQl7kJ5U0/+d/+xSABTc9E2Dbi+lKreV1Ydc61wSTA2ffsjp0Cd2E+QXuOQnvKt
+         VJIfGqntsShRUHRvKlvcoZ4pCM4r3OwM7xnZu3i3SbXqHvqeeY9mCDoizimkDgBBrNoT
+         UAdA==
+X-Gm-Message-State: AOAM530fJgLr4PqX3f4MiCZbSEW4czZlNEIX5lSILwd9arvMMk63/Juf
+        skjDuxGFlT8ZU5jUZv6HJ7FmAy69cgErybJiWVgBBW0M9imkOA==
+X-Google-Smtp-Source: ABdhPJy8lHGHx0AqTwGSS2oLj2pWbnBFsdGk5RXnwUvOEEmg9PDuBSckubnBjrrTN8JdO3h9nP36CvU2zdiMyH2lg4I=
+X-Received: by 2002:a19:7117:: with SMTP id m23mr3507570lfc.73.1629224253295;
+ Tue, 17 Aug 2021 11:17:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <b36eb4a26b6aff564c6ef850a3508c5b40141d46.camel@trillion01.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <269701460.117528.1629210189833@office.mailbox.org> <796036867.117557.1629210288168@office.mailbox.org>
+In-Reply-To: <796036867.117557.1629210288168@office.mailbox.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 17 Aug 2021 11:17:21 -0700
+Message-ID: <CAKwvOdkYgC4pU0Ta+vS-UkyAYFTkg8MaLuR+OAsSX63_BY+1vA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] x86, Makefile: Add new generic x86-64 settings v2/v3/v4
+To:     torvic9@mailbox.org
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        "graysky@archlinux.us" <graysky@archlinux.us>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/15/21 2:42 PM, Olivier Langlois wrote:
-> On Wed, 2021-08-11 at 19:55 -0600, Jens Axboe wrote:
->> On 8/10/21 3:48 PM, Tony Battersby wrote:
->>> On 8/5/21 9:06 AM, Olivier Langlois wrote:
->>>>
->>>> Hi all,
->>>>
->>>> I didn't forgot about this remaining issue and I have kept thinking
->>>> about it on and off.
->>>>
->>>> I did try the following on 5.12.19:
->>>>
->>>> diff --git a/fs/coredump.c b/fs/coredump.c
->>>> index 07afb5ddb1c4..614fe7a54c1a 100644
->>>> --- a/fs/coredump.c
->>>> +++ b/fs/coredump.c
->>>> @@ -41,6 +41,7 @@
->>>>  #include <linux/fs.h>
->>>>  #include <linux/path.h>
->>>>  #include <linux/timekeeping.h>
->>>> +#include <linux/io_uring.h>
->>>>  
->>>>  #include <linux/uaccess.h>
->>>>  #include <asm/mmu_context.h>
->>>> @@ -625,6 +626,8 @@ void do_coredump(const kernel_siginfo_t
->>>> *siginfo)
->>>>                 need_suid_safe = true;
->>>>         }
->>>>  
->>>> +       io_uring_files_cancel(current->files);
->>>> +
->>>>         retval = coredump_wait(siginfo->si_signo, &core_state);
->>>>         if (retval < 0)
->>>>                 goto fail_creds;
->>>> --
->>>> 2.32.0
->>>>
->>>> with my current understanding, io_uring_files_cancel is supposed to
->>>> cancel everything that might set the TIF_NOTIFY_SIGNAL.
->>>>
->>>> I must report that in my testing with generating a core dump
->>>> through a
->>>> pipe with the modif above, I still get truncated core dumps.
->>>>
->>>> systemd is having a weird error:
->>>> [ 2577.870742] systemd-coredump[4056]: Failed to get COMM: No such
->>>> process
->>>>
->>>> and nothing is captured
->>>>
->>>> so I have replaced it with a very simple shell:
->>>> $ cat /proc/sys/kernel/core_pattern 
->>>>> /home/lano1106/bin/pipe_core.sh %e %p
->>>>
->>>> ~/bin $ cat pipe_core.sh 
->>>> #!/bin/sh
->>>>
->>>> cat > /home/lano1106/core/core.$1.$2
->>>>
->>>> BFD: warning: /home/lano1106/core/core.test.10886 is truncated:
->>>> expected core file size >= 24129536, found: 61440
->>>>
->>>> I conclude from my attempt that maybe io_uring_files_cancel is not
->>>> 100%
->>>> cleaning everything that it should clean.
->>>>
->>>>
->>>>
->>> I just ran into this problem also - coredumps from an io_uring
->>> program
->>> to a pipe are truncated.  But I am using kernel 5.10.57, which does
->>> NOT
->>> have commit 12db8b690010 ("entry: Add support for TIF_NOTIFY_SIGNAL")
->>> or
->>> commit 06af8679449d ("coredump: Limit what can interrupt coredumps").
->>> Kernel 5.4 works though, so I bisected the problem to commit
->>> f38c7e3abfba ("io_uring: ensure async buffered read-retry is setup
->>> properly") in kernel 5.9.  Note that my io_uring program uses only
->>> async
->>> buffered reads, which may be why this particular commit makes a
->>> difference to my program.
->>>
->>> My io_uring program is a multi-purpose long-running program with many
->>> threads.  Most threads don't use io_uring but a few of them do. 
->>> Normally, my core dumps are piped to a program so that they can be
->>> compressed before being written to disk, but I can also test writing
->>> the
->>> core dumps directly to disk.  This is what I have found:
->>>
->>> *) Unpatched 5.10.57: if a thread that doesn't use io_uring triggers
->>> a
->>> coredump, the core file is written correctly, whether it is written
->>> to
->>> disk or piped to a program, even if another thread is using io_uring
->>> at
->>> the same time.
->>>
->>> *) Unpatched 5.10.57: if a thread that uses io_uring triggers a
->>> coredump, the core file is truncated, whether written directly to
->>> disk
->>> or piped to a program.
->>>
->>> *) 5.10.57+backport 06af8679449d: if a thread that uses io_uring
->>> triggers a coredump, and the core is written directly to disk, then
->>> it
->>> is written correctly.
->>>
->>> *) 5.10.57+backport 06af8679449d: if a thread that uses io_uring
->>> triggers a coredump, and the core is piped to a program, then it is
->>> truncated.
->>>
->>> *) 5.10.57+revert f38c7e3abfba: core dumps are written correctly,
->>> whether written directly to disk or piped to a program.
->>
->> That is very interesting. Like Olivier mentioned, it's not that actual
->> commit, but rather the change of behavior implemented by it. Before
->> that
->> commit, we'd hit the async workers more often, whereas after we do the
->> correct retry method where it's driven by the wakeup when the page is
->> unlocked. This is purely speculation, but perhaps the fact that the
->> process changes state potentially mid dump is why the dump ends up
->> being
->> truncated?
->>
->> I'd love to dive into this and try and figure it out. Absent a test
->> case, at least the above gives me an idea of what to try out. I'll see
->> if it makes it easier for me to create a case that does result in a
->> truncated core dump.
->>
-> Jens,
-> 
-> When I have first encountered the issue, the very first thing that I
-> did try was to create a simple test program that would synthetize the
-> problem.
-> 
-> After few time consumming failed attempts, I just gave up the idea and
-> simply settle to my prod program that showcase systematically the
-> problem every time that I kill the process with a SEGV signal.
-> 
-> In a nutshell, all the program does is to issue read operations with
-> io_uring on a TCP socket on which there is a constant data stream.
-> 
-> Now that I have a better understanding of what is going on, I think
-> that one way that could reproduce the problem consistently could be
-> along those lines:
-> 
-> 1. Create a pipe
-> 2. fork a child
-> 3. Initiate a read operation on the pipe with io_uring from the child
-> 4. Let the parent kill its child with a core dump generating signal.
-> 5. Write something in the pipe from the parent so that the io_uring
-> read operation completes while the core dump is generated.
-> 
-> I guess that I'll end up doing that if I cannot fix the issue with my
-> current setup but here is what I have attempted so far:
-> 
-> 1. Call io_uring_files_cancel from do_coredump
-> 2. Same as #1 but also make sure that TIF_NOTIFY_SIGNAL is cleared on
-> returning from io_uring_files_cancel
-> 
-> Those attempts didn't work but lurking in the io_uring dev mailing list
-> is starting to pay off. I thought that I did reach the bottom of the
-> rabbit hole in my journey of understanding io_uring but the recent
-> patch set sent by Hao Xu
-> 
-> https://lore.kernel.org/io-uring/90fce498-968e-6812-7b6a-fdf8520ea8d9@kernel.dk/T/#t
-> 
-> made me realize that I still haven't assimilated all the small io_uring
-> nuances...
-> 
-> Here is my feedback. From my casual io_uring code reader point of view,
-> it is not 100% obvious what the difference is between
-> io_uring_files_cancel and io_uring_task_cancel
-> 
-> It seems like io_uring_files_cancel is cancelling polls only if they
-> have the REQ_F_INFLIGHT flag set.
-> 
-> I have no idea what an inflight request means and why someone would
-> want to call io_uring_files_cancel over io_uring_task_cancel.
-> 
-> I guess that if I was to meditate on the question for few hours, I
-> would at some point get some illumination strike me but I believe that
-> it could be a good idea to document in the code those concepts for
-> helping casual readers...
-> 
-> Bottomline, I now understand that io_uring_files_cancel does not cancel
-> all the requests. Therefore, without fully understanding what I am
-> doing, I am going to replace my call to io_uring_files_cancel from
-> do_coredump with io_uring_task_cancel and see if this finally fix the
-> issue for good.
-> 
-> What I am trying to do is to cancel pending io_uring requests to make
-> sure that TIF_NOTIFY_SIGNAL isn't set while core dump is generated.
-> 
-> Maybe another solution would simply be to modify __dump_emit to make it
-> resilient to TIF_NOTIFY_SIGNAL as Eric W. Biederman originally
-> suggested.
-> 
-> or maybe do both...
-> 
-> Not sure which approach is best. If someone has an opinion, I would be
-> curious to hear it.
+On Tue, Aug 17, 2021 at 7:24 AM torvic9 via Clang Built Linux
+<clang-built-linux@googlegroups.com> wrote:
+>
+> Add new generic x86-64 CPU tunings introduced with recent versions of
+> gcc and clang, as documented in x86-64-psABI [1].
+>
+> This is taken straight from graysky's CPU optimization patch with minor
+> modifications [2].
+>
+> [1] https://gitlab.com/x86-psABIs/x86-64-ABI/-/commit/77566eb03bc6a326811cb7e9a6b9396884b67c7c
+> [2] https://github.com/graysky2/kernel_compiler_patch
+>
+> Signed-off-by: Tor Vic <torvic9@mailbox.org>
+> ---
+>  arch/x86/Kconfig.cpu  | 26 +++++++++++++++++++++++++-
+>  arch/x86/Makefile.cpu |  6 ++++++
+>  2 files changed, 31 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/Kconfig.cpu b/arch/x86/Kconfig.cpu
+> index 814fe0d349b0..a2c872aa5a0b 100644
+> --- a/arch/x86/Kconfig.cpu
+> +++ b/arch/x86/Kconfig.cpu
+> @@ -294,6 +294,30 @@ config GENERIC_CPU
+>           Generic x86-64 CPU.
+>           Run equally well on all x86-64 CPUs.
+>
+> +config GENERIC_CPU_V2
+> +       bool "Generic-x86-64-v2"
+> +       depends on ( CC_IS_GCC && GCC_VERSION > 110000 ) || ( CC_IS_CLANG && CLANG_VERSION >= 120000 )
 
-It does indeed sound like it's TIF_NOTIFY_SIGNAL that will trigger some
-signal_pending() and cause an interruption of the core dump. Just out of
-curiosity, what is your /proc/sys/kernel/core_pattern set to? If it's
-set to some piped process, can you try and set it to 'core' and see if
-that eliminates the truncation of the core dumps for your case?
+Can we stick with either > or >=, but at least be consistent? Also,
+there's unnecessary whitespace inside the parens that could be
+removed.
 
+> +       depends on X86_64
+> +       help
+> +         Generic x86-64 CPU.
+> +         Run equally well on all x86-64 CPUs with min support of x86-64-v2.
+> +
+> +config GENERIC_CPU_V3
+> +       bool "Generic-x86-64-v3"
+> +       depends on ( CC_IS_GCC && GCC_VERSION > 110000 ) || ( CC_IS_CLANG && CLANG_VERSION >= 120000 )
+> +       depends on X86_64
+> +       help
+> +         Generic x86-64-v3 CPU with v3 instructions.
+> +         Run equally well on all x86-64 CPUs with min support of x86-64-v3.
+> +
+> +config GENERIC_CPU_V4
+> +       bool "Generic-x86-64-v4"
+> +       depends on ( CC_IS_GCC && GCC_VERSION > 110000 ) || ( CC_IS_CLANG && CLANG_VERSION >= 120000 )
+> +       depends on X86_64
+> +       help
+> +         Generic x86-64 CPU with v4 instructions.
+> +         Run equally well on all x86-64 CPUs with min support of x86-64-v4.
+> +
+>  endchoice
+>
+>  config X86_GENERIC
+> @@ -318,7 +342,7 @@ config X86_INTERNODE_CACHE_SHIFT
+>  config X86_L1_CACHE_SHIFT
+>         int
+>         default "7" if MPENTIUM4 || MPSC
+> -       default "6" if MK7 || MK8 || MPENTIUMM || MCORE2 || MATOM || MVIAC7 || X86_GENERIC || GENERIC_CPU
+> +       default "6" if MK7 || MK8 || MPENTIUMM || MCORE2 || MATOM || MVIAC7 || X86_GENERIC || GENERIC_CPU || GENERIC_CPU_V2 || GENERIC_CPU_V3 || GENERIC_CPU_V4
+>         default "4" if MELAN || M486SX || M486 || MGEODEGX1
+>         default "5" if MWINCHIP3D || MWINCHIPC6 || MCRUSOE || MEFFICEON || MCYRIXIII || MK6 || MPENTIUMIII || MPENTIUMII || M686 || M586MMX || M586TSC || M586 || MVIAC3_2 || MGEODE_LX
+>
+> diff --git a/arch/x86/Makefile.cpu b/arch/x86/Makefile.cpu
+> index fb407ae94d90..f190feefe964 100644
+> --- a/arch/x86/Makefile.cpu
+> +++ b/arch/x86/Makefile.cpu
+> @@ -10,3 +10,9 @@ cflags-$(CONFIG_MCORE2) += \
+>  cflags-$(CONFIG_MATOM) += $(call cc-option,-march=atom) \
+>         $(call cc-option,-mtune=atom,$(call cc-option,-mtune=generic))
+>  cflags-$(CONFIG_GENERIC_CPU) += $(call cc-option,-mtune=generic)
+> +
+> +# New generic x86-64 CPU options.
+> +# Don't call the compiler, we have Kconfig compiler checks for these.
+
+You'd be surprised how quickly using time-relative words like "New"
+bitrot. My copy of "Modern C++" already doesn't feel very "modern" for
+example.  I'd just drop the comment block here; we don't need a
+comment every time we skip cc-option checks.  Thanks for the patches!
+
+> +cflags-$(CONFIG_GENERIC_CPU_V2) += -march=x86-64-v2
+> +cflags-$(CONFIG_GENERIC_CPU_V3) += -march=x86-64-v3
+> +cflags-$(CONFIG_GENERIC_CPU_V4) += -march=x86-64-v4
+> --
 -- 
-Jens Axboe
-
+Thanks,
+~Nick Desaulniers
