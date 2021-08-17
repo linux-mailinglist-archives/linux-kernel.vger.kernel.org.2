@@ -2,207 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1D93EE7F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 982EB3EE7F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238436AbhHQIDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 04:03:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47969 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238841AbhHQIDG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 04:03:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629187334;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hvpGoUHQ8t3bt45zEieMo9unwP1e1e/GqqcZaOJAzRI=;
-        b=eEhhbLAdyxUlujyGApsMnxFI7tBOUsWLIsQbtnFyZXTDsd7O6tw5hPEGga3sJOgiQDrblH
-        LfI3z/lGbyYaGySSXPWHGRokHaGHB2OAdApP+CoGHgKL3NhHmxTcl+5eCT1ZGHgjE1mpha
-        EoN/AaGcMipZ5KAzOyA5yVpLTM1FdgA=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-313-0YkG0YmeOZ-HaLhU3ZixEg-1; Tue, 17 Aug 2021 04:02:13 -0400
-X-MC-Unique: 0YkG0YmeOZ-HaLhU3ZixEg-1
-Received: by mail-wr1-f70.google.com with SMTP id n10-20020a5d660a0000b02901551ef5616eso5793813wru.20
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 01:02:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=hvpGoUHQ8t3bt45zEieMo9unwP1e1e/GqqcZaOJAzRI=;
-        b=t1l/a/WDi6/bPcxmd8Id72Lg6xSh2z063u6HZqrYCNq9T+SUGFVsfumswE4u+n49cz
-         44dfRYY702h/NXUzvKo4esnQK5w+xB+TEZvoYbKs+hYHzPphG9f49ikWTdOni6mzMCpV
-         tzE9a8EFoIqiRPSBaX+6EWri36ryYIUDrhnsHC1Oc+P5OkmsWm4bFbWgKK0VcOPyoBF1
-         ZYZDwZO5xIyli3LNPLtF7DWs8FIlYPO35IoJd8cuy5w5sZ8JQqQSIu25fW/bGgOVL9sM
-         52DgRoedqTomLLnP0UsLM7hj6oWp1QmD34MhXTR3VPZUBen/9runCA9IbuaXb7Be6iBr
-         VJlQ==
-X-Gm-Message-State: AOAM533oj/v6iHZ5bkXl0/Sxlsvj2ODpaBAkwZScT1Y335j6pXt1fcD2
-        TAzaERlpbK/1lOlzbrdpfaLT9Nscny07o7EEdHB0rhirLD3i+eMVd8geiqGcn/3a4NWTSFjuo2r
-        K/t2HBsn7Lrm1IXlR0lT81VWu
-X-Received: by 2002:a1c:4d13:: with SMTP id o19mr1982188wmh.183.1629187331949;
-        Tue, 17 Aug 2021 01:02:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyXvXjJTy8/uUTjsyD3/ogzVaBZQBuhGAyJBHk9eFsdPiSWUYm0duHiKeA/6Ll+EdPvn5yYLQ==
-X-Received: by 2002:a1c:4d13:: with SMTP id o19mr1982173wmh.183.1629187331733;
-        Tue, 17 Aug 2021 01:02:11 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c65c6.dip0.t-ipconnect.de. [91.12.101.198])
-        by smtp.gmail.com with ESMTPSA id o14sm1182219wms.2.2021.08.17.01.02.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Aug 2021 01:02:11 -0700 (PDT)
-Subject: Re: [BUG] general protection fault when reading /proc/kcore
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <YRqhqz35tm3hA9CG@krava>
- <1a05d147-e249-7682-2c86-bbd157bc9c7d@redhat.com> <YRqqqvaZHDu1IKrD@krava>
- <2b83f03c-e782-138d-6010-1e4da5829b9a@redhat.com>
- <YRq4typgRn342B4i@kernel.org> <YRtrktVtNlWMLVZR@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <0aa3aaca-4ac4-0f34-0012-78c5252b5650@redhat.com>
-Date:   Tue, 17 Aug 2021 10:02:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234581AbhHQIEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 04:04:22 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:28082 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234693AbhHQIEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 04:04:20 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629187427; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=F80pIu2I+RXwy7ZJxBH4JbgLg7qSwor4Bd6AsHLTWNw=;
+ b=CCOeah8EBC9m3cKZ82oTUhnE7aYPCEAGSw3BYPO3k1ZDOIym7WkneyH6/yeigfS6ne9JMG8d
+ 57bFZXfapRCqp7XX6ckRen2qRkPSPQSf+dFd8FPGQnTEE2cpZbHfGOMBLYhBF5fw1ePmSl6f
+ UeK6XuJ8n7a2rSDtH+7VD5kdL08=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 611b6d51454b7a558fa5e69e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 17 Aug 2021 08:03:29
+ GMT
+Sender: pmaliset=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8EDA2C4361B; Tue, 17 Aug 2021 08:03:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmaliset)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D76A7C4338F;
+        Tue, 17 Aug 2021 08:03:28 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <YRtrktVtNlWMLVZR@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 17 Aug 2021 13:33:28 +0530
+From:   Prasad Malisetty <pmaliset@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     agross@kernel.org, bhelgaas@google.com, bjorn.andersson@linaro.org,
+        lorenzo.pieralisi@arm.com, robh+dt@kernel.org,
+        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@chromium.org,
+        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org,
+        manivannan.sadhasivam@linaro.org
+Subject: Re: [PATCH v5 2/4] arm64: dts: qcom: sc7280: Add PCIe and PHY related
+ nodes
+In-Reply-To: <CAE-0n51uQJ4VDDbmpu18mJw4zcDhD-tvUDgi0LQ4-zAgBUKJ6A@mail.gmail.com>
+References: <1628568516-24155-1-git-send-email-pmaliset@codeaurora.org>
+ <1628568516-24155-3-git-send-email-pmaliset@codeaurora.org>
+ <CAE-0n51uQJ4VDDbmpu18mJw4zcDhD-tvUDgi0LQ4-zAgBUKJ6A@mail.gmail.com>
+Message-ID: <c13f2cad016c3ed5b7d70abdc9c7f812@codeaurora.org>
+X-Sender: pmaliset@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTcuMDguMjEgMDk6NTYsIE1pa2UgUmFwb3BvcnQgd3JvdGU6DQo+IE9uIE1vbiwgQXVn
-IDE2LCAyMDIxIGF0IDEwOjEzOjE4UE0gKzAzMDAsIE1pa2UgUmFwb3BvcnQgd3JvdGU6DQo+
-PiBPbiBNb24sIEF1ZyAxNiwgMjAyMSBhdCAwODozODo0M1BNICswMjAwLCBEYXZpZCBIaWxk
-ZW5icmFuZCB3cm90ZToNCj4+PiBPbiAxNi4wOC4yMSAyMDoxMiwgSmlyaSBPbHNhIHdyb3Rl
-Og0KPj4+PiBPbiBNb24sIEF1ZyAxNiwgMjAyMSBhdCAwNzo0OToxNVBNICswMjAwLCBEYXZp
-ZCBIaWxkZW5icmFuZCB3cm90ZToNCj4+Pj4+IE9uIDE2LjA4LjIxIDE5OjM0LCBKaXJpIE9s
-c2Egd3JvdGU6DQo+Pj4+Pj4gaGksDQo+Pj4+Pj4gSSdtIGdldHRpbmcgZmF1bHQgYmVsb3cg
-d2hlbiBydW5uaW5nOg0KPj4+Pj4+DQo+Pj4+Pj4gCSMgY2F0IC9wcm9jL2thbGxzeW1zIHwg
-Z3JlcCBrc3lzX3JlYWQNCj4+Pj4+PiAJZmZmZmZmZmY4MTM2ZDU4MCBUIGtzeXNfcmVhZA0K
-Pj4+Pj4+IAkjIG9iamR1bXAgLWQgLS1zdGFydC1hZGRyZXNzPTB4ZmZmZmZmZmY4MTM2ZDU4
-MCAtLXN0b3AtYWRkcmVzcz0weGZmZmZmZmZmODEzNmQ1OTAgL3Byb2Mva2NvcmUNCj4+Pj4+
-Pg0KPj4+Pj4+IAkvcHJvYy9rY29yZTogICAgIGZpbGUgZm9ybWF0IGVsZjY0LXg4Ni02NA0K
-Pj4+Pj4+DQo+Pj4+Pj4gCVNlZ21lbnRhdGlvbiBmYXVsdA0KPj4+Pj4+DQo+Pj4+Pj4gYW55
-IGlkZWE/IGNvbmZpZyBpcyBhdHRhY2hlZA0KPj4+Pj4NCj4+Pj4+IEp1c3QgdHJpZWQgd2l0
-aCBhIGRpZmZlcmVudCBjb25maWcgb24gNS4xNC4wLXJjNisNCj4+Pj4+DQo+Pj4+PiBbcm9v
-dEBsb2NhbGhvc3Qgfl0jIGNhdCAvcHJvYy9rYWxsc3ltcyB8IGdyZXAga3N5c19yZWFkDQo+
-Pj4+PiBmZmZmZmZmZjg5MjdhODAwIFQga3N5c19yZWFkYWhlYWQNCj4+Pj4+IGZmZmZmZmZm
-ODkzMzM2NjAgVCBrc3lzX3JlYWQNCj4+Pj4+DQo+Pj4+PiBbcm9vdEBsb2NhbGhvc3Qgfl0j
-IG9iamR1bXAgLWQgLS1zdGFydC1hZGRyZXNzPTB4ZmZmZmZmZmY4OTMzMzY2MA0KPj4+Pj4g
-LS1zdG9wLWFkZHJlc3M9MHhmZmZmZmZmZjg5MzMzNjcwDQo+Pj4+Pg0KPj4+Pj4gYS5vdXQ6
-ICAgICBmaWxlIGZvcm1hdCBlbGY2NC14ODYtNjQNCj4+Pj4+DQo+Pj4+Pg0KPj4+Pj4NCj4+
-Pj4+IFRoZSBrZXJuX2FkZHJfdmFsaWQoc3RhcnQpIHNlZW1zIHRvIGZhdWx0IGluIHlvdXIg
-Y2FzZSwgd2hpY2ggaXMgd2VpcmQsDQo+Pj4+PiBiZWNhdXNlIGl0IG1lcmVseSB3YWxrcyB0
-aGUgcGFnZSB0YWJsZXMuIEJ1dCBpdCBzZWVtcyB0byBjb21wbGFpbiBhYm91dCBhDQo+Pj4+
-PiBub24tY2Fub25pY2FsIGFkZHJlc3MgMHhmODg3ZmZjYmZmMDAwDQo+Pj4+Pg0KPj4+Pj4g
-Q2FuIHlvdSBwb3N0IHlvdXIgUUVNVSBjbWRsaW5lPyBEaWQgeW91IHRlc3QgdGhpcyBvbiBv
-dGhlciBrZXJuZWwgdmVyc2lvbnM/DQo+Pj4+DQo+Pj4+IEknbSB1c2luZyB2aXJ0LW1hbmFn
-ZXIgc286DQo+Pj4+DQo+Pj4+IC91c3IvYmluL3FlbXUtc3lzdGVtLXg4Nl82NCAtbmFtZSBn
-dWVzdD1mZWRvcmEzMyxkZWJ1Zy10aHJlYWRzPW9uIC1TIC1vYmplY3Qgc2VjcmV0LGlkPW1h
-c3RlcktleTAsZm9ybWF0PXJhdyxmaWxlPS92YXIvbGliL2xpYnZpcnQvcWVtdS9kb21haW4t
-MTMtZmVkb3JhMzMvbWFzdGVyLWtleS5hZXMgLW1hY2hpbmUgcGMtcTM1LTUuMSxhY2NlbD1r
-dm0sdXNiPW9mZix2bXBvcnQ9b2ZmLGR1bXAtZ3Vlc3QtY29yZT1vZmYsbWVtb3J5LWJhY2tl
-bmQ9cGMucmFtIC1jcHUgU2t5bGFrZS1TZXJ2ZXItSUJSUyxzcz1vbix2bXg9b24scGRjbT1v
-bixoeXBlcnZpc29yPW9uLHRzYy1hZGp1c3Q9b24sY2xmbHVzaG9wdD1vbix1bWlwPW9uLHBr
-dT1vbixzdGlicD1vbixhcmNoLWNhcGFiaWxpdGllcz1vbixzc2JkPW9uLHhzYXZlcz1vbixp
-YnBiPW9uLGFtZC1zdGlicD1vbixhbWQtc3NiZD1vbixza2lwLWwxZGZsLXZtZW50cnk9b24s
-cHNjaGFuZ2UtbWMtbm89b24gLW0gODE5MiAtb2JqZWN0IG1lbW9yeS1iYWNrZW5kLXJhbSxp
-ZD1wYy5yYW0sc2l6ZT04NTg5OTM0NTkyIC1vdmVyY29tbWl0IG1lbS1sb2NrPW9mZiAtc21w
-IDIwLHNvY2tldHM9MjAsY29yZXM9MSx0aHJlYWRzPTEgLXV1aWQgMjE4NWQ1YTktZGJhZC00
-ZDYxLWFhNGUtOTdhZjlmZDdlYmNhIC1uby11c2VyLWNvbmZpZyAtbm9kZWZhdWx0cyAtY2hh
-cmRldiBzb2NrZXQsaWQ9Y2hhcm1vbml0b3IsZmQ9MzYsc2VydmVyLG5vd2FpdCAtbW9uIGNo
-YXJkZXY9Y2hhcm1vbml0b3IsaWQ9bW9uaXRvcixtb2RlPWNvbnRyb2wgLXJ0YyBiYXNlPXV0
-YyxkcmlmdGZpeD1zbGV3IC1nbG9iYWwga3ZtLXBpdC5sb3N0X3RpY2tfcG9saWN5PWRlbGF5
-IC1uby1ocGV0IC1uby1zaHV0ZG93biAtZ2xvYmFsIElDSDktTFBDLmRpc2FibGVfczM9MSAt
-Z2xvYmFsIElDSDktTFBDLmRpc2FibGVfczQ9MSAtYm9vdCBzdHJpY3Q9b24gLWtlcm5lbCAv
-aG9tZS9qb2xzYS9xZW11L3J1bi92bWxpbnV4IC1pbml0cmQgL2hvbWUvam9sc2EvcWVtdS9y
-dW4vaW5pdHJkIC1hcHBlbmQgcm9vdD0vZGV2L21hcHBlci9mZWRvcmFfZmVkb3JhLXJvb3Qg
-cm8gcmQubHZtLmx2PWZlZG9yYV9mZWRvcmEvcm9vdCBjb25zb2xlPXR0eTAgY29uc29sZT10
-dHlTMCwxMTUyMDAgLWRldmljZSBwY2llLXJvb3QtcG9ydCxwb3J0PTB4MTAsY2hhc3Npcz0x
-LGlkPXBjaS4xLGJ1cz1wY2llLjAsbXVsdGlmdW5jdGlvbj1vbixhZGRyPTB4MiAtZGV2aWNl
-IHBjaWUtcm9vdC1wb3J0LHBvcnQ9MHgxMSxjaGFzc2lzPTIsaWQ9cGNpLjIsYnVzPXBjaWUu
-MCxhZGRyPTB4Mi4weDEgLWRldmljZSBwY2llLXJvb3QtcG9ydCxwb3J0PTB4MTIsY2hhc3Np
-cz0zLGlkPXBjaS4zLGJ1cz1wY2llLjAsYWRkcj0weDIuMHgyIC1kZXZpY2UgcGNpZS1yb290
-LXBvcnQscG9ydD0weDEzLGNoYXNzaXM9NCxpZD1wY2kuNCxidXM9cGNpZS4wLGFkZHI9MHgy
-LjB4MyAtZGV2aWNlIHBjaWUtcm9vdC1wb3J0LHBvcnQ9MHgxNCxjaGFzc2lzPTUsaWQ9cGNp
-LjUsYnVzPXBjaWUuMCxhZGRyPTB4Mi4weDQgLWRldmljZSBwY2llLXJvb3QtcG9ydCxwb3J0
-PTB4MTUsY2hhc3Npcz02LGlkPXBjaS42LGJ1cz1wY2llLjAsYWRkcj0weDIuMHg1IC1kZXZp
-Y2UgcGNpZS1yb290LXBvcnQscG9ydD0weDE2LGNoYXNzaXM9NyxpZD1wY2kuNyxidXM9cGNp
-ZS4wLGFkZHI9MHgyLjB4NiAtZGV2aWNlIHFlbXUteGhjaSxwMj0xNSxwMz0xNSxpZD11c2Is
-YnVzPXBjaS4yLGFkZHI9MHgwIC1kZXZpY2UgdmlydGlvLXNlcmlhbC1wY2ksaWQ9dmlydGlv
-LXNlcmlhbDAsYnVzPXBjaS4zLGFkZHI9MHgwIC1ibG9ja2RldiB7ImRyaXZlciI6ImZpbGUi
-LCJmaWxlbmFtZSI6Ii92YXIvbGliL2xpYnZpcnQvaW1hZ2VzL2ZlZG9yYTMzLnFjb3cyIiwi
-bm9kZS1uYW1lIjoibGlidmlydC0yLXN0b3JhZ2UiLCJhdXRvLXJlYWQtb25seSI6dHJ1ZSwi
-ZGlzY2FyZCI6InVubWFwIn0gLWJsb2NrZGV2IHsibm9kZS1uYW1lIjoibGlidmlydC0yLWZv
-cm1hdCIsInJlYWQtb25seSI6ZmFsc2UsImRyaXZlciI6InFjb3cyIiwiZmlsZSI6ImxpYnZp
-cnQtMi1zdG9yYWdlIiwiYmFja2luZyI6bnVsbH0gLWRldmljZSB2aXJ0aW8tYmxrLXBjaSxi
-dXM9cGNpLjQsYWRkcj0weDAsZHJpdmU9bGlidmlydC0yLWZvcm1hdCxpZD12aXJ0aW8tZGlz
-azAsYm9vdGluZGV4PTEgLWRldmljZSBpZGUtY2QsYnVzPWlkZS4wLGlkPXNhdGEwLTAtMCAt
-bmV0ZGV2IHRhcCxmZD0zOCxpZD1ob3N0bmV0MCx2aG9zdD1vbix2aG9zdGZkPTM5IC1kZXZp
-Y2UgdmlydGlvLW5ldC1wY2ksbmV0ZGV2PWhvc3RuZXQwLGlkPW5ldDAsbWFjPTUyOjU0OjAw
-OmYzOmM2OmU3LGJ1cz1wY2kuMSxhZGRyPTB4MCAtY2hhcmRldiBwdHksaWQ9Y2hhcnNlcmlh
-bDAgLWRldmljZSBpc2Etc2VyaWFsLGNoYXJkZXY9Y2hhcnNlcmlhbDAsaWQ9c2VyaWFsMCAt
-Y2hhcmRldiBzb2NrZXQsaWQ9Y2hhcmNoYW5uZWwwLGZkPTQwLHNlcnZlcixub3dhaXQgLWRl
-dmljZSB2aXJ0c2VyaWFscG9ydCxidXM9dmlydGlvLXNlcmlhbDAuMCxucj0xLGNoYXJkZXY9
-Y2hhcmNoYW5uZWwwLGlkPWNoYW5uZWwwLG5hbWU9b3JnLnFlbXUuZ3Vlc3RfYWdlbnQuMCAt
-Y2hhcmRldiBzcGljZXZtYyxpZD1jaGFyY2hhbm5lbDEsbmFtZT12ZGFnZW50IC1kZXZpY2Ug
-dmlydHNlcmlhbHBvcnQsYnVzPXZpcnRpby1zZXJpYWwwLjAsbnI9MixjaGFyZGV2PWNoYXJj
-aGFubmVsMSxpZD1jaGFubmVsMSxuYW1lPWNvbS5yZWRoYXQuc3BpY2UuMCAtZGV2aWNlIHVz
-Yi10YWJsZXQsaWQ9aW5wdXQwLGJ1cz11c2IuMCxwb3J0PTEgLXNwaWNlIHBvcnQ9NTkwMCxh
-ZGRyPTEyNy4wLjAuMSxkaXNhYmxlLXRpY2tldGluZyxpbWFnZS1jb21wcmVzc2lvbj1vZmYs
-c2VhbWxlc3MtbWlncmF0aW9uPW9uIC1kZXZpY2UgcXhsLXZnYSxpZD12aWRlbzAscmFtX3Np
-emU9NjcxMDg4NjQsdnJhbV9zaXplPTY3MTA4ODY0LHZyYW02NF9zaXplX21iPTAsdmdhbWVt
-X21iPTE2LG1heF9vdXRwdXRzPTEsYnVzPXBjaWUuMCxhZGRyPTB4MSAtZGV2aWNlIGljaDkt
-aW50ZWwtaGRhLGlkPXNvdW5kMCxidXM9cGNpZS4wLGFkZHI9MHgxYiAtZGV2aWNlIGhkYS1k
-dXBsZXgsaWQ9c291bmQwLWNvZGVjMCxidXM9c291bmQwLjAsY2FkPTAgLWNoYXJkZXYgc3Bp
-Y2V2bWMsaWQ9Y2hhcnJlZGlyMCxuYW1lPXVzYnJlZGlyIC1kZXZpY2UgdXNiLXJlZGlyLGNo
-YXJkZXY9Y2hhcnJlZGlyMCxpZD1yZWRpcjAsYnVzPXVzYi4wLHBvcnQ9MiAtY2hhcmRldiBz
-cGljZXZtYyxpZD1jaGFycmVkaXIxLG5hbWU9dXNicmVkaXIgLWRldmljZSB1c2ItcmVkaXIs
-Y2hhcmRldj1jaGFycmVkaXIxLGlkPXJlZGlyMSxidXM9dXNiLjAscG9ydD0zIC1kZXZpY2Ug
-dmlydGlvLWJhbGxvb24tcGNpLGlkPWJhbGxvb24wLGJ1cz1wY2kuNSxhZGRyPTB4MCAtb2Jq
-ZWN0IHJuZy1yYW5kb20saWQ9b2Jqcm5nMCxmaWxlbmFtZT0vZGV2L3VyYW5kb20gLWRldmlj
-ZSB2aXJ0aW8tcm5nLXBjaSxybmc9b2Jqcm5nMCxpZD1ybmcwLGJ1cz1wY2kuNixhZGRyPTB4
-MCAtc2FuZGJveCBvbixvYnNvbGV0ZT1kZW55LGVsZXZhdGVwcml2aWxlZ2VzPWRlbnksc3Bh
-d249ZGVueSxyZXNvdXJjZWNvbnRyb2w9ZGVueSAtbXNnIHRpbWVzdGFtcD1vbg0KPj4gICAN
-Cj4+Pj4gc28gZmFyIEkgdGVzdGVkIGp1c3QgYnBmLW5leHQvbWFzdGVyOg0KPj4+PiAgICAg
-Z2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L2JwZi9icGYt
-bmV4dC5naXQNCj4+Pj4NCj4+Pg0KPj4+IEp1c3QgdHJpZWQgd2l0aCB1cHN0cmVhbSBMaW51
-eCAoNS4xNC4wLXJjNikgYW5kIHlvdXIgY29uZmlnIHdpdGhvdXQNCj4+PiB0cmlnZ2VyaW5n
-IGl0LiBJJ20gdXNpbmcgIi1jcHUgaG9zdCIsIHRob3VnaCwgb24gYW4gQU1EIFJ5emVuIDkg
-MzkwMFgNCj4+DQo+PiBXaXRoIEppcmkncyBjb25maWcgYW5kICctY3B1IDx2ZXJ5IGxvbmcg
-c3RyaW5nPicgaXQgdHJpZ2dlcnMgZm9yIG1lIG9uDQo+PiB2NS4xNC1yYzYuDQo+Pg0KPj4g
-SSdsbCBhbHNvIHRyeSB0byB0YWtlIGEgbG9vayB0b21vcnJvdy4NCj4gDQo+IFRoZXJlIGFy
-ZSBzb21lIG5vbi16ZXJvIFBNRHMgdGhhdCBhcmUgbm90IHByZXNlbnQgaW4gdGhlIGhpZ2gg
-a2VybmVsDQo+IG1hcHBpbmdzLiBUaGUgcGF0Y2ggYmVsb3cgZml4ZXMgZm9yIG1lIHRoZSBp
-c3N1ZSBpbiBrZXJuX2FkZHJfdmFsaWQoKQ0KPiB0cnlpbmcgdG8gYWNjZXNzIGEgbm90LXBy
-ZXNlbnQgUE1ELiBKaXJpLCBjYW4geW91IGNoZWNrIGlmIGl0IHdvcmtzIGZvcg0KPiB5b3U/
-DQo+IA0KPiBkaWZmIC0tZ2l0IGEvYXJjaC94ODYvbW0vaW5pdF82NC5jIGIvYXJjaC94ODYv
-bW0vaW5pdF82NC5jDQo+IGluZGV4IGRkZWFiYTk0N2ViMy4uMDdiNTZlOTBkYjVkIDEwMDY0
-NA0KPiAtLS0gYS9hcmNoL3g4Ni9tbS9pbml0XzY0LmMNCj4gKysrIGIvYXJjaC94ODYvbW0v
-aW5pdF82NC5jDQo+IEBAIC0xNDMzLDE4ICsxNDMzLDE4IEBAIGludCBrZXJuX2FkZHJfdmFs
-aWQodW5zaWduZWQgbG9uZyBhZGRyKQ0KPiAgIAkJcmV0dXJuIDA7DQo+ICAgDQo+ICAgCXA0
-ZCA9IHA0ZF9vZmZzZXQocGdkLCBhZGRyKTsNCj4gLQlpZiAocDRkX25vbmUoKnA0ZCkpDQo+
-ICsJaWYgKHA0ZF9ub25lKCpwNGQpIHx8ICFwNGRfcHJlc2VudCgqcDRkKSkNCj4gICAJCXJl
-dHVybiAwOw0KPiAgIA0KPiAgIAlwdWQgPSBwdWRfb2Zmc2V0KHA0ZCwgYWRkcik7DQo+IC0J
-aWYgKHB1ZF9ub25lKCpwdWQpKQ0KPiArCWlmIChwdWRfbm9uZSgqcHVkKSB8fCAhcHVkX3By
-ZXNlbnQoKnB1ZCkpDQo+ICAgCQlyZXR1cm4gMDsNCj4gICANCj4gICAJaWYgKHB1ZF9sYXJn
-ZSgqcHVkKSkNCj4gICAJCXJldHVybiBwZm5fdmFsaWQocHVkX3BmbigqcHVkKSk7DQo+ICAg
-DQo+ICAgCXBtZCA9IHBtZF9vZmZzZXQocHVkLCBhZGRyKTsNCj4gLQlpZiAocG1kX25vbmUo
-KnBtZCkpDQo+ICsJaWYgKHBtZF9ub25lKCpwbWQpIHx8ICFwbWRfcHJlc2VudCgqcG1kKSkN
-Cj4gICAJCXJldHVybiAwOw0KPiAgIA0KPiAgIAlpZiAocG1kX2xhcmdlKCpwbWQpKQ0KPiAN
-Cg0KSG93ZXZlciwgd291bGRuJ3QgdGhhdCBtZWFuIHRoYXQgdGhhdCBURVhUIHNlZ21lbnQg
-aXNuJ3QgYWN0dWFsbHkgDQphY2Nlc3NpYmxlIGF0IGFsbD8gT3IgaXMgdGhpcyBzb21lIHdl
-aXJkIGtpbmQgb2YgVEVYVCBwcm90ZWN0aW9uIChub3QgDQpldmVuIGJlaW5nIGFibGUgdG8g
-cmVhZCBpdCwgd2VpcmQsIG5vPykNCg0KV2UgZG9uJ3Qgc3VwcG9ydCBzd2FwcGluZyBhbmQg
-YWxsIHRoYXQgc3R1ZmYgZm9yIGtlcm5lbCBtZW1vcnkuIFNvIHdoYXQgDQpkb2VzICFwcmVz
-ZW50IGV2ZW4gaW5kaWNhdGUgaGVyZT8gKHNtZWxscyBsaWtlIGEgZGlmZmVyZW50IEJVRywg
-YnV0IEkgDQptaWdodCBiZSB3cm9uZywgb2YgY291cnNlKQ0KDQotLSANClRoYW5rcywNCg0K
-RGF2aWQgLyBkaGlsZGVuYg0K
+On 2021-08-11 01:01, Stephen Boyd wrote:
+> Quoting Prasad Malisetty (2021-08-09 21:08:34)
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> index 53a21d0..4500d88 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> @@ -1598,6 +1712,18 @@
+>>                                         bias-bus-hold;
+>>                                 };
+>>                         };
+>> +
+>> +                       pcie1_default_state: pcie1-default-state {
+>> +                               clkreq {
+>> +                                       pins = "gpio79";
+>> +                                       function = "pcie1_clkreqn";
+>> +                               };
+>> +
+>> +                               wake-n {
+>> +                                       pins = "gpio3";
+>> +                                       function = "gpio";
+> 
+> This is function gpio, so presumably board designers could decide to
+> change the wake gpio to something else, right? I'd prefer we move 
+> wake-n
+> to the board level (idp) as well. gpio79 looks fine as it is muxed to 
+> be
+> the pcie1_clkreqn function, not gpio, so it seems to be a dedicated pin
+> for this purpose.
 
+Sure, I will move it  IDP file in next version.
