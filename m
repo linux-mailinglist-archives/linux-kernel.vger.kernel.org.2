@@ -2,186 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D743EEB0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 12:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6EB3EEB0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 12:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239567AbhHQKgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 06:36:06 -0400
-Received: from mga14.intel.com ([192.55.52.115]:19823 "EHLO mga14.intel.com"
+        id S239505AbhHQKgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 06:36:49 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:32874 "EHLO mail.ispras.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235939AbhHQKgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 06:36:05 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="215764237"
-X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="scan'208";a="215764237"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 03:35:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="scan'208";a="471116758"
-Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
-  by orsmga008.jf.intel.com with ESMTP; 17 Aug 2021 03:35:31 -0700
-Received: from orsmsx609.amr.corp.intel.com (10.22.229.22) by
- ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Tue, 17 Aug 2021 03:35:31 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx609.amr.corp.intel.com (10.22.229.22) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10 via Frontend Transport; Tue, 17 Aug 2021 03:35:31 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.108)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.10; Tue, 17 Aug 2021 03:35:30 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b4XYZKKE9VJXRtxldCDQ4Dvo1HCeBToXh3bFCukB1KloShbS8I2eSKwAiJhnns9oDGt/2tdThQVW60epIBJN1WmmOLo7gFRbhg9ZBPH1aZZtAtiNM2INrmd6UFIJBXtzqJhUPexT4D1LslZvEQW4sRyQ49NXOvZahWaZGkw4zt6/hfOAiAxwg+I09L1oRqoiqs/IFq9lahWNqzrFZqCyz+KAR2LmiQMn4SbJYqLjhdB6E+OUu6x3z195fHj9uR9az1Gxj0dLuMEiJ/MEFDomnyHDLiDUXvsb8AAscRXa9uYeVwoy25fm9pQNYBFg7+IAdE1SUll4BOjhL+JQGWsHEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PTp/pZZIPNptuVBq057+2MdDNdR3s+IpCh3FQdrJwrQ=;
- b=HpR9uTlyumQjHWn6Ky5AlInXXeCR5GXGpo7VU6rcgzZJsOHvxiznGmeiDyBSto5LQfF8YzrI9R4/ZCWaTh7TboBQf66gWqdCbgXsvVYSIw5zz99qSeCd1pmPiDqtVxDu+yrzWuMgYQOIGLbsb+z1z/yu/IlxAmAXS4oZV5fQlUNk7oqtaNcoBPa282s5y7YlBGGxakYAeK3hcJQhCjtMdN/sItB6p16tmPAesvWcpOx5iSnzfiscSQeSz0ottOQy72OdjVMxeOxVE7thwPqLj1Xv+g+wKvMu3kRvg4p4c9N+6+O81sZgA7hFRRHEPxYqDTKQiLFFIvh5AfZ6e0rdag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PTp/pZZIPNptuVBq057+2MdDNdR3s+IpCh3FQdrJwrQ=;
- b=WTM/QE1/9O/Zyun7mYnCODFcNp4tkUkAv6UBelXEQ5dmIzx+SApQ3l7OODBGoTao65O3tY1kg6xeZypj76nyp7ZFg2QPX2XEvxoGwtXC8PnF9jxjchYLzMou3PVI5gU0gGBB8eTssNgRL5kLMrj90JTRNVYbwNSWj7wIFeEN7Uw=
-Received: from DM6PR11MB4657.namprd11.prod.outlook.com (2603:10b6:5:2a6::7) by
- DM6PR11MB3963.namprd11.prod.outlook.com (2603:10b6:5:19b::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4415.19; Tue, 17 Aug 2021 10:35:29 +0000
-Received: from DM6PR11MB4657.namprd11.prod.outlook.com
- ([fe80::100:e37b:35bb:c213]) by DM6PR11MB4657.namprd11.prod.outlook.com
- ([fe80::100:e37b:35bb:c213%7]) with mapi id 15.20.4415.024; Tue, 17 Aug 2021
- 10:35:29 +0000
-From:   "Kubalewski, Arkadiusz" <arkadiusz.kubalewski@intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Intel Wired LAN <intel-wired-lan@lists.osuosl.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        David Miller <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        "cong.wang@bytedance.com" <cong.wang@bytedance.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: RE: [RFC net-next 4/7] net: add ioctl interface for recover reference
- clock on netdev
-Thread-Topic: [RFC net-next 4/7] net: add ioctl interface for recover
- reference clock on netdev
-Thread-Index: AQHXkrpDd8KR4sZrE0SVSHvcdxLd7at2iWmAgAD2LnA=
-Date:   Tue, 17 Aug 2021 10:35:29 +0000
-Message-ID: <DM6PR11MB4657C563333B755676B3069F9BFE9@DM6PR11MB4657.namprd11.prod.outlook.com>
-References: <20210816160717.31285-1-arkadiusz.kubalewski@intel.com>
- <20210816160717.31285-5-arkadiusz.kubalewski@intel.com>
- <CAK8P3a0N3N3mFvoPj_fkqOY30uudJceox=uwSW+nd0B0kf8-ng@mail.gmail.com>
-In-Reply-To: <CAK8P3a0N3N3mFvoPj_fkqOY30uudJceox=uwSW+nd0B0kf8-ng@mail.gmail.com>
-Accept-Language: pl-PL, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.6.0.76
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: arndb.de; dkim=none (message not signed)
- header.d=none;arndb.de; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6d6c9109-d981-4dcb-2ecd-08d9616abbd9
-x-ms-traffictypediagnostic: DM6PR11MB3963:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB3963065F95528E49C5F9A2059BFE9@DM6PR11MB3963.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: DscbYtHjkDLFqM5pklHkz4KiBTuDmet4ZUW63dQi5in/9nn57SlXGaLgC4Y8U6oj6c5SeU3J/7bjo55zcJwcFZTbT0v03Jm05RSOHsZ+DUlrVgW0Jo3npV+m5asnplFMI/9Nh9R7l6p346Db6IKfDK+s+Ush2F6YOPI8nuZ2M8XDwcrWf2fjDPyLSRLrV7MfpqNDj5XvohchcvuNf17H5EzkJWPI1dl+fwrdl9NukFLVQjDE5yVQTemRiX5YzC3akv4z5p5rzG0tnI/Enq7a072D/w5bc8SD3BAsBcgwmUJB6vn+bTfKZj4yCL+IfuUKwfdbv8syhrQ4gKxnic0X5W9ZZRfnOSGo7rYdOniVtqipFUPENZXdh3gNwDL3oPIKVh3rTU39f0La5gvEyBI05426LzBOM0HEaku4pwC/Ji9wPQAsDXgQpMxk6qT1jZyY9DTrJIFWwx8C5kJZGKcdq+n2b9yamFc0UNv9P0/IcuqViMAbFjtUI9KvAK1tlg5K4N2SgGZQGGt0k/dUJ5aDYpOCpnQrmWMHBoWjt3RRIFAMcGnMVBEtJOSNchk4NW09pafYSIui/7kVe0GVliBbY+i7hzEa+Vu/cXbGhv7A18lcIFgK14FmPdpcQnKJph/yi5xNVb+MXkf0qIEArAJ+dTZ1q5LC3joyFXtG5XVOmgXD3j7fnrcaUJbGS5PyHPnW63dwBh9AD5e1UG77FjE8eA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4657.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(39860400002)(376002)(396003)(366004)(76116006)(5660300002)(7416002)(6506007)(6916009)(186003)(38100700002)(122000001)(4326008)(26005)(66946007)(7696005)(64756008)(66446008)(66476007)(66556008)(478600001)(38070700005)(33656002)(316002)(8936002)(52536014)(86362001)(9686003)(71200400001)(2906002)(54906003)(8676002)(55016002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?aVRUWk9ZQjFWU21uZFNvUTZvejVJNVpBQldNN2ZJN0FJTUl2T3VWL2JmWnBm?=
- =?utf-8?B?UmNVbmVJbzJJNUprYm1lNDc4QmYzTDhKL20vdDZlR2c4QWlxbytMemxZNWFQ?=
- =?utf-8?B?dHEzeEVCMU9JOTlxV2hETDIwYklWVzlsQkxDN1dqb3ZZVjVKeEsySzdFaUda?=
- =?utf-8?B?clFiV1NwQ1lYTXFzWjAvTThEL0txKzZTYmNFcGQzU1RlbDg0eG1qODdHVGo5?=
- =?utf-8?B?bE1ZcXZPV1piUHRoY3FmZ0lob2dtSWVwVzNvSk5KYzZ6cGQ4Z2RUNnFxU1BX?=
- =?utf-8?B?RFpBVlNkcjI3a1NiWkNRK0xsQ3Voa0w5R0VNcnRqN2xjdll3VEN3THdGN1NQ?=
- =?utf-8?B?VGVUSmFXd1plUWpERWR0Yms0V1gvNEIrYVIxMG9GLzRuazNLWnhoaFBTc1NQ?=
- =?utf-8?B?OTlIeWpUcWt6STNjNk9Ickw2a2xQVHNJaFBUNGwyM1ArQWpjd1JVbW5SQ0JC?=
- =?utf-8?B?VVpwRWs4bE12NlZWWVJ3VEpZcDM1c3NPWTV1SXhZZWpmaWhNVGI3Y05LMGZl?=
- =?utf-8?B?SWFKZVNBbkdBNkl2SXE2QkUyZXNRcWFyMnFkRnV5ejkvc0hFZzdEUUhwTEVF?=
- =?utf-8?B?bjVwZisxem9KWk1PNURzVFhRbW5QaE02c3RkUUpvaVluQm1jKzNOK2w4b0ll?=
- =?utf-8?B?T1hSUXQvQmpmVE9MQzJEZHh0ck9WU2dkQkppcjQwc0pEN3cvdW9UdjhncGFC?=
- =?utf-8?B?Q0FkTVdISXFhQ05YRldLVlF2OG8vL3NIdnlXbmNiV2g0M1NkWGNjb29UaWI3?=
- =?utf-8?B?QmUvMjA5dVBzSkdaQ2c4VFFWY0ZSUnp5U2pQTHJuMUpiZWlPY1VYRTlPZ1V3?=
- =?utf-8?B?N0VHeHpscGZrN3Bjd1FEeW9LTElDWnJmS1JjdW5wWVdsOUJGVUhZbTFhMTRr?=
- =?utf-8?B?N3JiOGYyRUtmNUxOZXg1Sm5aU3E5Rkg0SmFjM0kyRTZDcTFOWGdPMzNEbjJW?=
- =?utf-8?B?NGxvZmZpYy9FQzk2dmxRZGZySkJEQk9KRGpuRlcrSG9wZ2tVQnVzYjBRcVFE?=
- =?utf-8?B?UzdTUGVUWFRoemR2WW5zZVF0VFkrbFEreGphRUZlRWgxQjU3UU1acU4zczhu?=
- =?utf-8?B?MFg2T0ZKaHNGQW5KZ0RRbzJ2Sm1DSVh4dXp4K1pLeFlPZTdra3ZyUnhZRVJ0?=
- =?utf-8?B?eVk2TlBFUHVCN2p1SjlsT3U4NVBUSzBNRW8xOXhzREUwZFNEVWQ4d21mUUtz?=
- =?utf-8?B?Ry9iK3pmcVBaTUZWT0ovc0tyUktNeDkrdzJtY0hieTB2WXFGd3ovVUFNT3Az?=
- =?utf-8?B?L3U5VmI0MjJiRDhCOXBXT3hoR0x5QXAvMUw4VVRCZi9vcGtBRVgvTVNpRm9I?=
- =?utf-8?B?bFY2YWJndlQxZVBhYWYrbXNZeVQvQzFRdGFhdGF4bVlkdW9qTUV0Z3lVN3hn?=
- =?utf-8?B?Q2dtRHVGejBaMDUyODJDSFNwSmVqZmwzRmR0Ny9iaVhNZlBjdjk0Nks4SHBP?=
- =?utf-8?B?U3MrQ0VSK0NNMjFld0ErbGFWc3JpMzl5RTd5YzhpNDEzM2ZpblBSUkR6YjQ0?=
- =?utf-8?B?Z0dGa3FwODJYb1ZPbUNYdHZhdXFNREFPeGhZN3pMZDRLSGNnY2M1cm0zUlV6?=
- =?utf-8?B?ZHFBTEZDUzd1SWRuMFdaS2pkMDZOVzJ0dGw0eTZ6R0FsZzJJWVMzVjE2RElZ?=
- =?utf-8?B?QytRTTFNWjd0dEtBalJRbGNMSkN3V04xMDlRVWNhbm1Ka05DVUozS1FWMEsv?=
- =?utf-8?B?MGNWQVBTVGpzYzhUdGlBa0RFUFpOUEVTYW80Q0d4dkdyc1hsMVpGN1NkWTZo?=
- =?utf-8?Q?Q1U40OhMS0HXBxcpOmTt/rmnLZBbECarugdZjdN?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S235845AbhHQKgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 06:36:41 -0400
+Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
+        by mail.ispras.ru (Postfix) with ESMTPSA id 7AB0E40A2BD5;
+        Tue, 17 Aug 2021 10:36:03 +0000 (UTC)
+Subject: Re: [PATCH] mtd: rawnand: mxic: Enable and prepare clocks in probe
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ldv-project@linuxtesting.org" <ldv-project@linuxtesting.org>
+References: <20210812113800.12466-1-novikov@ispras.ru>
+ <CAHp75VcgqZEHBTXpNApGfRkhgjpCvbgj+yxUZbbO+=0DOvZLQg@mail.gmail.com>
+ <20210816100114.384f01b9@xps13>
+From:   Evgeny Novikov <novikov@ispras.ru>
+Message-ID: <246f2094-e294-73f8-8a5f-3467e987f788@ispras.ru>
+Date:   Tue, 17 Aug 2021 13:36:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4657.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6d6c9109-d981-4dcb-2ecd-08d9616abbd9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Aug 2021 10:35:29.4431
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RnqNbYFkRcKnh+b0qtN/e/HZ+ZCoCaMXYVxjwPXPrYTD1q/7i9/fq0V1rSsJWvJNVWoiCCA0Iavz2rPfUQdAJwYMaS9f/QDDgyoR6zNaQkc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3963
-X-OriginatorOrg: intel.com
+In-Reply-To: <20210816100114.384f01b9@xps13>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pk9uIE1vbiwgQXVnIDE2LCAyMDIxIGF0IDY6MTggUE0gQXJrYWRpdXN6IEt1YmFsZXdza2kNCj48
-YXJrYWRpdXN6Lmt1YmFsZXdza2lAaW50ZWwuY29tPiB3cm90ZToNCj4NCj4+ICsvKg0KPj4gKyAq
-IFN0cnVjdHVyZSB1c2VkIGZvciBwYXNzaW5nIGRhdGEgd2l0aCBTSU9DU1NZTkNFIGFuZCBTSU9D
-R1NZTkNFIGlvY3Rscw0KPj4gKyAqLw0KPj4gK3N0cnVjdCBzeW5jZV9yZWZfY2xrX2NmZyB7DQo+
-PiArICAgICAgIF9fdTggcGluX2lkOw0KPj4gKyAgICAgICBfQm9vbCBlbmFibGU7DQo+PiArfTsN
-Cj4NCj5JJ20gbm90IHN1cmUgaWYgdGhlcmUgYXJlIGFueSBndWFyYW50ZWVzIGFib3V0IHRoZSBz
-aXplIGFuZCBhbGlnbm1lbnQgb2YgX0Jvb2wsDQo+bWF5YmUgYmV0dGVyIHVzZSBfX3U4IGhlcmUg
-YXMgd2VsbCwgaWYgb25seSBmb3IgY2xhcml0eS4NCj4NCg0KU3VyZSwgd2lsbCBmaXggdGhhdCBp
-biBuZXh0IHBhdGNoLCBzZWVtcyByZWFzb25hYmxlDQoNCj4+ICsjZW5kaWYgLyogX05FVF9TWU5D
-RV9IICovDQo+PiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS91YXBpL2xpbnV4L3NvY2tpb3MuaCBiL2lu
-Y2x1ZGUvdWFwaS9saW51eC9zb2NraW9zLmgNCj4+IGluZGV4IDdkMWJjY2JiZWY3OC4uMzJjN2Q0
-OTA5YzMxIDEwMDY0NA0KPj4gLS0tIGEvaW5jbHVkZS91YXBpL2xpbnV4L3NvY2tpb3MuaA0KPj4g
-KysrIGIvaW5jbHVkZS91YXBpL2xpbnV4L3NvY2tpb3MuaA0KPj4gQEAgLTE1Myw2ICsxNTMsMTAg
-QEANCj4+ICAjZGVmaW5lIFNJT0NTSFdUU1RBTVAgIDB4ODliMCAgICAgICAgICAvKiBzZXQgYW5k
-IGdldCBjb25maWcgICAgICAgICAgICovDQo+PiAgI2RlZmluZSBTSU9DR0hXVFNUQU1QICAweDg5
-YjEgICAgICAgICAgLyogZ2V0IGNvbmZpZyAgICAgICAgICAgICAgICAgICAqLw0KPj4NCj4+ICsv
-KiBzeW5jaHJvbm91cyBldGhlcm5ldCBjb25maWcgcGVyIHBoeXNpY2FsIGZ1bmN0aW9uICovDQo+
-PiArI2RlZmluZSBTSU9DU1NZTkNFICAgICAweDg5YzAgICAgICAgICAgLyogc2V0IGFuZCBnZXQg
-Y29uZmlnICAgICAgICAgICAqLw0KPj4gKyNkZWZpbmUgU0lPQ0dTWU5DRSAgICAgMHg4OWMxICAg
-ICAgICAgIC8qIGdldCBjb25maWcgICAgICAgICAgICAgICAgICAgKi8NCj4NCj5JIHVuZGVyc3Rh
-bmQgdGhhdCB0aGVzZSBhcmUgdHJhZGl0aW9uYWxseSB1c2luZyB0aGUgb2xkLXN0eWxlIDE2LWJp
-dA0KPm51bWJlcnMsIGJ1dCBpcyB0aGVyZSBhbnkgcmVhc29uIHRvIGtlZXAgZG9pbmcgdGhhdCBy
-YXRoZXIgdGhhbg0KPm1ha2luZyB0aGVtIG1vZGVybiBsaWtlIHRoaXM/DQoNClBlcnNvbmFsbHkg
-SSB3b3VsZCB0cnkgdG8ga2VlcCBpdCBvbmUgd2F5LCBqdXN0IGZvciBjb25zaXN0ZW5jeSwgDQpi
-dXQgeW91IG1pZ2h0IGJlIHJpZ2h0IC0gbWFraW5nIGl0IG1vZGVybiB3YXkgaXMgYmV0dGVyIG9w
-dGlvbi4NCklmIG5vIG90aGVyIG9iamVjdGlvbnMgdG8gdGhpcyBjb21tZW50IEkgYW0gZ29pbmcg
-dG8gY2hhbmdlIGl0IGFjY29yZGluZyB0bw0KQXJuZCdzIHN1Z2dlc3Rpb24gaW4gbmV4dCBwYXRj
-aC4NCg0KPg0KPiNkZWZpbmUgU0lPQ1NTWU5DRSAgICAgX0lPV1IoMHg4OSwgMHhjMCwgc3RydWN0
-ICBzeW5jZV9yZWZfY2xrX2NmZykNCj4vKiBzZXQgYW5kIGdldCBjb25maWcgICAqLw0KPiNkZWZp
-bmUgU0lPQ0dTWU5DRSAgICAgX0lPUigweDg5LCAweGMxLCBzdHJ1Y3QgIHN5bmNlX3JlZl9jbGtf
-Y2ZnKQ0KPi8qIGdldCBjb25maWcgICAqLw0KPg0KPiAgICAgICAgQXJuZA0KPg0KDQpUaGFuayB5
-b3UsDQpBcmthZGl1c3oNCg==
+Hi Miquel,
+
+On 16.08.2021 11:01, Miquel Raynal wrote:
+> Hi Andy,
+>
+> Andy Shevchenko <andy.shevchenko@gmail.com> wrote on Thu, 12 Aug 2021
+> 15:13:10 +0300:
+>
+>> On Thursday, August 12, 2021, Evgeny Novikov <novikov@ispras.ru> wrote:
+>>
+>>> It seems that mxic_nfc_probe() missed invocation of
+>>> mxic_nfc_clk_enable(). The patch fixed that. In addition, error handling
+>>> was refined appropriately.
+>>
+>> NAK. Until you provide a deeper analysis, like how this works before your
+>> change.
+>>
+>>
+>> Please, don’t blindly generate patches, this can even your bot do, just
+>> think about each change and preferable test on the real hardware.
+>>
+>> The above is to all your lovely contributions.
+>>
+>>
+>>> Found by Linux Driver Verification project (linuxtesting.org).
+>>>
+>>> Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+>>> Co-developed-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
+>>> Signed-off-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
+>>> ---
+>>>   drivers/mtd/nand/raw/mxic_nand.c | 16 ++++++++++++----
+>>>   1 file changed, 12 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/mtd/nand/raw/mxic_nand.c b/drivers/mtd/nand/raw/mxic_
+>>> nand.c
+>>> index da1070993994..37e75bf60ee5 100644
+>>> --- a/drivers/mtd/nand/raw/mxic_nand.c
+>>> +++ b/drivers/mtd/nand/raw/mxic_nand.c
+>>> @@ -509,9 +509,15 @@ static int mxic_nfc_probe(struct platform_device
+>>> *pdev)
+>>>          if (IS_ERR(nfc->send_dly_clk))
+>>>                  return PTR_ERR(nfc->send_dly_clk);
+>>>
+>>> +       err = mxic_nfc_clk_enable(nfc);
+>>> +       if (err)
+>>> +               return err;
+> As Andy said, this is not needed.
+>
+>>> +
+>>>          nfc->regs = devm_platform_ioremap_resource(pdev, 0);
+>>> -       if (IS_ERR(nfc->regs))
+>>> -               return PTR_ERR(nfc->regs);
+>>> +       if (IS_ERR(nfc->regs)) {
+>>> +               err = PTR_ERR(nfc->regs);
+>>> +               goto fail;
+>>> +       }
+>>>
+>>>          nand_chip = &nfc->chip;
+>>>          mtd = nand_to_mtd(nand_chip);
+>>> @@ -527,8 +533,10 @@ static int mxic_nfc_probe(struct platform_device
+>>> *pdev)
+>>>          nand_chip->controller = &nfc->controller;
+>>>
+>>>          irq = platform_get_irq(pdev, 0);
+>>> -       if (irq < 0)
+>>> -               return irq;
+>>> +       if (irq < 0) {
+>>> +               err = irq;
+>>> +               goto fail;
+> However some reworking is needed in the error path.
+>
+> That goto statement should be renamed and devm_request_irq() should not
+> jump to it.
+>
+
+We still need some help and clarification from those who are very 
+familiar with this sort of drivers or/and can test this particular 
+driver. mxic_nfc_clk_enable() is the complementary function for 
+mxic_nfc_clk_disable(). No other functions invoke 
+clk_prepare_enable()/clk_disable_unprepare() in the driver. Unlikely 
+somebody in its environment does that since driver specific clocks are 
+dealt with. At the moment the driver invokes mxic_nfc_clk_disable() on 
+error handling paths in probe, in remove and in mxic_nfc_set_freq(). 
+mxic_nfc_clk_enable() is called just by mxic_nfc_set_freq() that 
+moreover does this after calling mxic_nfc_clk_disable() first. So, we 
+did not find any place in the driver that invokes mxic_nfc_clk_enable() 
+prior to mxic_nfc_clk_disable(). Basing on this we added 
+mxic_nfc_clk_enable() just after getting clocks. As I explained in the 
+previous large e-mail, we may be wrong in our understanding of the 
+driver environment or/and at specification of requirements being 
+checked. It would be great if you will point out on our mistakes.
+
+Best regards,
+Evgeny Novikov
+>>> +       }
+>>>
+>>>          mxic_nfc_hw_init(nfc);
+>>>
+>>> --
+>>> 2.26.2
+>>>
+>>>   
+> Thanks,
+> Miquèl
