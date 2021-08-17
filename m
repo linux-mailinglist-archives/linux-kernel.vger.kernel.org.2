@@ -2,212 +2,382 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BCE53EF014
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 18:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69F833EF013
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 18:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhHQQTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 12:19:09 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:60256 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230162AbhHQQTD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 12:19:03 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17HGFRee000684;
-        Tue, 17 Aug 2021 09:18:14 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=at2TS/GRw6y2ggc6UbmL9amlQmodVAi3y58GjBD2v38=;
- b=MAZMc70np4xJ1niLvM9+1Vjmb1Zcj2iJtJbD9UoXMhtFvu49XbBFLrV+6n1bVno5hJMS
- PshIup2XS5gb6lME9URCuNvo5FNyVmrN7k+73cgcb+Bu91W6QkMqnVuhrATK03I6vHGm
- y1JSA2v8YN1tFVz7H57TE6eqMzWAAV7XhoM= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3aftmjqg16-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 17 Aug 2021 09:18:14 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 17 Aug 2021 09:18:12 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mE0mnTDGm7HFZYSqmYw1fODYKeTp2/Zk+JR16AT66tP9DVeidHbK4PShpt8srHOxydOZllk6jTP4PpDxqUN1ZTnq4bhAOP8rkGhrIloUmGIKKqLH45KOX+QueLhyYoMFFdgTq/ouX+am5P/8eXk3q1IV+OkApRi1TPHE6nMfzU1orgTa6/ckmh1IBAQav5c5YTFdAgnm3wB2dkGjNBcs3e5YyihAqHskicWRpCCJVaMd/m98baivJ3ilR9/9eqRbqKp2SPZs+hXFGNjB0DBTU88aVmLDcMQp0+/H6n1ScvNHw9EKZHcq2a+RDkE8yjr5aR4WsqlovTkgA0hzh2L3fA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=at2TS/GRw6y2ggc6UbmL9amlQmodVAi3y58GjBD2v38=;
- b=l7hf92YCk6PFFRuUqz6uvp9wf8BW4qHZcza4L7TEgXI5K5h4ST3fIjxQq/Te166pRImU6DWLJTKgbrSopR3bTMHOsUIglh5grmYBWOMddrjDZVWMf1dDRMyalpOwlZ3xCoStnd+GMqiNTQl8UdNw1YY48/ZV/q3nbzI2oyi5EKFjTiUVimY8RjV8u9ZgS/4lMynjBjrgtM0EyKrCwZTrWU70pPDLu37fF04V/LE2hvEnE0yMmc6IzOG+nosjFIlf7E2AruZ4HkoficMGr0URtP1xaELuh+J3towyiQmMe4vetFk40dA6W9Vb9/kVGbEgjgxO8b6QZlpiUk7CprtlQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14; Tue, 17 Aug
- 2021 16:18:11 +0000
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::1959:3036:1185:a610]) by SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::1959:3036:1185:a610%4]) with mapi id 15.20.4415.024; Tue, 17 Aug 2021
- 16:18:11 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Xu Liu <liuxu623@gmail.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] bpf: Allow bpf_get_netns_cookie in BPF_PROG_TYPE_SOCK_OPS
-Thread-Topic: [PATCH] bpf: Allow bpf_get_netns_cookie in
- BPF_PROG_TYPE_SOCK_OPS
-Thread-Index: AQHXkoypynyJL9aEeUureyT0dFGeO6t2tYQA
-Date:   Tue, 17 Aug 2021 16:18:11 +0000
-Message-ID: <16DA85DF-84F7-40EB-B674-CDB07DEB4133@fb.com>
-References: <20210816105114.34781-1-liuxu623@gmail.com>
-In-Reply-To: <20210816105114.34781-1-liuxu623@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.120.0.1.13)
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0ca20c93-cd29-4901-7e11-08d9619a9bf0
-x-ms-traffictypediagnostic: SA1PR15MB5109:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA1PR15MB5109512301A0AB2BFCF6DCC6B3FE9@SA1PR15MB5109.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:2512;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: yOmrv4lFMPYXuJNUyoctXOykrWia6cvhOx8qOem9UrOv4Zgfi2nIP7O/tdLQjxSf+G5l5aNswTGUf9czTnG7xH1NEP18w8pKz3UezwORChjC4WTgXf6+xf7AeADevBcXMXw4DgAEUHMTlTJmSkyEYCsMgjTrz+rofBe77E7LXtJXcl9IQrzYSEgvBonM8IcX+3HQ/N1o03fBe+Pe6bq49ztrQdsRdEcB0pME2avv3I1pvDky/+MdOS5JH31cwDQkDNEW3UyUy8Au+9Zj4mr+msenIMWjAYLvFxLeLjzeySY6s9UQq18wlyA+vj3TrMrefErTTAfGSaa0htTsDjEnsHcbIFf7DvCkhGcIUXO0Tt94PdUbuEx1xLpGCLPbxFv2zDJFsnkCnOebmQfTjyuqOiqnCa5vRAamzdjoJgIr34jmnEGKdwkqQtjgLkOWQBWf/7VbozvXXcsq7R11N1PLKlcTKT2YRFajzy1SIFgoJEE2+/uKHNIYvHXl3f6XdnDgnF87DPvYk5yIPj6QMtPXOKbpemoLTUktF8sa+fsgD1DEcJY50U4ZovHaQsg0XVL9hi2gzd/IsjeSnCfAQk/KF5dQLhEmJFNaaB1cg6LIoinmhSW2fgHiOP9Jn+jBgpD3bTn9WppxrErn7mzoyBI3+3WMYSEF4BbIqbdXRLwttnJhGBjyXTaxm/HroZrgsoW6a9/5O01MZbTB7odOCChjpnqIFTHkj7BnSwaxX6HrKYs=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(366004)(39860400002)(396003)(4326008)(2616005)(71200400001)(66556008)(66476007)(76116006)(91956017)(66946007)(186003)(66446008)(64756008)(316002)(36756003)(8936002)(6486002)(6506007)(53546011)(478600001)(8676002)(2906002)(83380400001)(7416002)(6916009)(6512007)(86362001)(38070700005)(33656002)(54906003)(38100700002)(122000001)(5660300002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?kD1UghN+RBJUZwaJsDyo1hk0Qx6nl0ZVZXWYcAxShU441x3UBkhLy4Prrnfc?=
- =?us-ascii?Q?tMPyqUh2BFOivxJLP8oEdRpHnQX45tN4i1cDvD3Mq0RUP7h0h1G4ge3U93OK?=
- =?us-ascii?Q?xnEyjog0N9LDqiH1IVCZHl5c4pGZ+cxp+TEvul6PRRdcqWWxh/94FVD9YUam?=
- =?us-ascii?Q?x7C8YMPuEMVx8qHapXywuGIPCDWm6sc8D8DZaFo3D2p03YrgzDImVh14eypl?=
- =?us-ascii?Q?u/tW1VoDLtLEfcDJTA6MYuEXhX/LOPZXdX8vXMieFUjx+8h74gOxSU0EWiIA?=
- =?us-ascii?Q?ZBKOlWMSUg+HQU/NybK5lsTrznZkTYEuPW+yjT+8DJWw+uX8xkZC1D/RcZ+8?=
- =?us-ascii?Q?gRIfK0Whwb/800Fqaky5MXeR8gOUxQ9pZyu5e4HWba4corshnKoohj8+NRQZ?=
- =?us-ascii?Q?G0tF7lwRWoHnrdaPz6orbsaTM96zkj+PFjeeEhFs+0d98GV65sSKTtD/ZiqV?=
- =?us-ascii?Q?/TZesY7c1J89Mnmd/T1if/FI9UTy7nNodIuzC7fPcIgQ5L76JlF41dAqAimg?=
- =?us-ascii?Q?sajlCN7pe/JBcq7xofxvKIGMqZmfYI/2TqjERci3SvOFKDxLpfuFUyT6Uor8?=
- =?us-ascii?Q?jJHTXgmNlUETtymwcCMa7Uv+GOGPbK4xzwDRZKx5WB6F+iiKh1Zw8843EScN?=
- =?us-ascii?Q?ktAVO1+oYFHXvwY2EYWhWXn3K5+P+Ye+nKkmbf5DxXifrtxnU5+tGfUUl587?=
- =?us-ascii?Q?YCHIzwvkf7vwdfWlj8aGpPHJ0HNgDHSGaoYWZcVGC7bymM0N66d1Q5tvqjNx?=
- =?us-ascii?Q?HDpe1gbHPLB4xwy09ZpbLZIInnc7hKJci5ShGYxRSaMkeN5uZGVdHAZS4wDp?=
- =?us-ascii?Q?ls/k6aZeO5RMCLaldF9gjAzMgrWRRlgp1W8jDgIxkcp1BdeyyoN/VW0T9o4y?=
- =?us-ascii?Q?6HNZe/VYaB+mX2+2DfdYageZffjBVfEmn9rcdUbl+xp2/Tbu7rRd4gEEG39S?=
- =?us-ascii?Q?Sz7H+eopKq9nPrtcUBe3iFsxVPWVkTL/UmmoieJTqw3lf5fxCbTVBKKwQpj8?=
- =?us-ascii?Q?hCTXJo7J2RcG+whxRuDuH4KmMKHVRB9hJa6bbtsefdVbRGkRrL6aH7KZwton?=
- =?us-ascii?Q?d9N8RSHYFa0y45K7YpjxgkaDGtIuRKL3wyNGR9jDZ8BrtYL9YU61McrLKDrO?=
- =?us-ascii?Q?X3i9H/LCzFoOVyyOXt6q5hbpn1fZcJCQBLP90y0SK9wSVo0nC8wg5WZGRAf+?=
- =?us-ascii?Q?JdA5cyesXMNoo5KA7hiHBQ20gZMFoTjTyJLmKdLL8nbilOTISMP3Bg4J+Q+a?=
- =?us-ascii?Q?NNLb6nVNpVVys371PV2yuEfASUKrU8HMJJPTU76uOkdvJfZayw1d1iZe7jMI?=
- =?us-ascii?Q?PbH1khDbU6XBXjrV79nn4L1l+jmz5AEsYEPx0oX6I2cxNNKBUczEHYNB3wht?=
- =?us-ascii?Q?zH3pFEM=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <9AADF234DB1FEE4E84C6722165322ADD@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S230438AbhHQQTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 12:19:54 -0400
+Received: from mout.gmx.net ([212.227.17.21]:43191 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230311AbhHQQTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 12:19:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1629217129;
+        bh=6d62GHaR16j889xQu227SMuKqAaGWdZSEM07ry1VbGY=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=BE5Mg8MYOWJnslF41MFqHYWLuls9PRd2LVRL+VI7/j98Pzf9e15gfV/hVJJqUZKUL
+         /IW2vsl32W/EhbkYL7wB30h4YMDItQoGQXASJnQyUrqWFwwW2yfdW5Y03ciiBV963Q
+         BLNFtHfqREX412l4xNpks3z7qbOVUs+gyqBXocWY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1M5fIQ-1m8uGJ00Co-007GnP; Tue, 17 Aug 2021 18:18:49 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc:     Len Baker <len.baker@gmx.com>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev
+Subject: [PATCH] input/serio: Prefer strscpy over strlcpy
+Date:   Tue, 17 Aug 2021 18:18:21 +0200
+Message-Id: <20210817161821.4601-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0ca20c93-cd29-4901-7e11-08d9619a9bf0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Aug 2021 16:18:11.7568
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: I5pM6O8xLPGjTXlA+PtopGaNIAtXBzdzxhi2dqq3H0ZbrL63lEQCxq0Bu+ERPoPEtkPzCvaeKCYxLxP3MPuYUg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB5109
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: vlRJ_WgsA4RhztDcT-HAVTc6tvGmS3Wo
-X-Proofpoint-GUID: vlRJ_WgsA4RhztDcT-HAVTc6tvGmS3Wo
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-17_05:2021-08-17,2021-08-17 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 clxscore=1011 bulkscore=0 lowpriorityscore=0
- mlxlogscore=999 mlxscore=0 impostorscore=0 phishscore=0 spamscore=0
- suspectscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2107140000 definitions=main-2108170101
-X-FB-Internal: deliver
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:cVjM42hyj7Yg2sdAFf92EXksKh4PjN9k4DJzqoGjImNXO1g2UpW
+ mQCukzo8TYFLhmldeE5stsb1/XVg2WXEamu78uUt5YLtkbfluHJzVvA5EAnorW2XMqbwdTV
+ M2xrfTCuMeKxruAO5hFZkuqVxxV77iB91E3lpHqldS5rxZv1I5PDe359pBT0pJVRopYVKP7
+ 6JIKaZFfzqRZs7oAN2jOA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:iFSbFdrOfrc=:pXQUYiMFc47qV9zXttLrRn
+ cfg26AjMCv1TkVP9SPYTS3rOYMwFKHUlrH9Ammcq5z4aYmn1+4opIBs5EX3osd6zcKRphG48X
+ VfICfk/wdiJKQ/+FK0cbgDF6qpI6YnD2GBPkf8cm+NhQYKo/KVGcAAIHzbM0ZZ9bJq9I4cFSu
+ gV7xTvTG4sF/nLpAb2c1Dz5zBdeVSKRqFkwb0mkxf8P+zpJIgwnHUfDQEVeZDUlfr/xYDBkbG
+ g8FE7nhrtqNI0wNV4xXfRH7pXS3RRQNRAVxD0RT0tIw9QqI3E5apvWRUcWdgH9JVUjVgAM6z2
+ 8BuKUwr6sl5CsXno8vnsIHEV8eYUy6v0UzGf2J1PHaNlyEX7xgG4klo5HJrVsHuld1vhGm7rS
+ 9MWfn4WWpCG8bQXE7U3jn4tAj3UC8G31lnA/kTus3REyhSw05r7scjXo/B8X3rTvLC9H+Gz9b
+ Vnho40uzPc/ucWDRzVMF0UazSnwMcYL4QYNy0MrwJX7/sNLNrLMU4eazkK9Ep4CnH5W/T/aGi
+ d4Ewf5zAjKgjBG3acKdXfMaax497rhaUN4XDi3CQSLXWRiS9Bux74HcgCy3XpI47eXu3UtleB
+ AVfrLkAs7uNt4J05X9jVKOkJy6uhFup7kfJgQu75IE5THwn65gWFhmgkvPJSwt0idFA7AUdi0
+ C0/hvhiMy+enDms4Y8HQzRn5TPL03d2X8l5wy23TCasaVxkUL+9xM6Z2+MMJvetnM2YYwSaRn
+ KVeNV0Fl8K+xeI8zY7IgsCwqTz5/q39MMyrdksvwi9sA/Pc97DW1Bg1JBt8r55Z+gegJNA3GX
+ XmG83j9Mz+j2YT/oBBA/6gtM72HOH0neW8naD83Eq1kdpmryqfvFT4TfXugWtM9w0glfKEVsk
+ 1NBDtG18OuCSypgoZq+DgjaHOpA1QkUFlCcQJa0r8LNxymxDa4ow0wUeShOtkCwqxxUul9GWN
+ vYTgC/InS1kDPZWISASm7yCErB0jXRPO/KOW8flZUpZ3YsEo6Zpg7qzzKSpk7WvuHOVPLFoTc
+ 412Lr9HtiXKdHtWbejBEMt8rHIHksdmDTQPrUidvLeLpFDcaGNseAOuHIorBERxAT0EkA8UPw
+ AxY6nKIhC2elNFHAEFa6AStYzvwEtipIONjVs9yAJHi8ayk0ibyKl5DdA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xu,=20
+strlcpy() reads the entire source buffer first. This read may exceed the
+destination size limit. This is both inefficient and can lead to linear
+read overflows if a source string is not NUL-terminated. The safe
+replacement is strscpy().
 
-> On Aug 16, 2021, at 3:51 AM, Xu Liu <liuxu623@gmail.com> wrote:
->=20
-> We'd like to be able to identify netns from sockops hooks
-> to accelerate local process communication form different netns.
->=20
-> Signed-off-by: Xu Liu <liuxu623@gmail.com>
+This is a previous step in the path to remove the strlcpy() function
+entirely from the kernel [1].
 
-The change looks good to me. Some logistics issue:
+In the case where a constant string is copied, the strscpy() is not
+very useful (we know that a read overflow can not happen, and if the
+dst is big enough that the string will not be truncated). However,
+the change is made to avoid the use of strlcpy().
 
-1. Please prefix the subject based on target tree, like [PATCH bpf] or
-   [PATCH bpf-next]. This change should target bpf-next. Also, please=20
-   include v2 (or v3, v4...) when sending the revisions of the patch.=20
-   So the next version of this change should be [PATCH bpf-next v2] or=20
-   similar.=20
+[1] https://github.com/KSPP/linux/issues/89
 
-2. Please add a selftest (see tools/testing/selftests/bpf/) to exercise=20
-   this function from sock_ops
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+Hi Dmitry,
 
-Thanks,
-Song
+If you disagree with the constant string copy changes I can use
+strcpy or memcpy instead. In this discussion [2] the patch was
+rejected since it not fixed any real issue. However, if we want
+to cleanup the proliferation of str*cpy() functions in the kernel
+this can be a good start point.
 
+[2] https://lore.kernel.org/linux-hardening/YQbXiwie4YPzPWKK@google.com/
 
-> ---
-> net/core/filter.c | 14 ++++++++++++++
-> 1 file changed, 14 insertions(+)
->=20
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index d70187ce851b..34938a537931 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -4664,6 +4664,18 @@ static const struct bpf_func_proto bpf_get_netns_c=
-ookie_sock_addr_proto =3D {
-> 	.arg1_type	=3D ARG_PTR_TO_CTX_OR_NULL,
-> };
->=20
-> +BPF_CALL_1(bpf_get_netns_cookie_sock_ops, struct bpf_sock_ops_kern *, ct=
-x)
-> +{
-> +	return __bpf_get_netns_cookie(ctx ? ctx->sk : NULL);
-> +}
-> +
-> +static const struct bpf_func_proto bpf_get_netns_cookie_sock_ops_proto =
-=3D {
-> +	.func		=3D bpf_get_netns_cookie_sock_ops,
-> +	.gpl_only	=3D false,
-> +	.ret_type	=3D RET_INTEGER,
-> +	.arg1_type	=3D ARG_PTR_TO_CTX_OR_NULL,
-> +};
-> +
-> BPF_CALL_1(bpf_get_socket_uid, struct sk_buff *, skb)
-> {
-> 	struct sock *sk =3D sk_to_full_sk(skb->sk);
-> @@ -7445,6 +7457,8 @@ sock_ops_func_proto(enum bpf_func_id func_id, const=
- struct bpf_prog *prog)
-> 		return &bpf_sk_storage_get_proto;
-> 	case BPF_FUNC_sk_storage_delete:
-> 		return &bpf_sk_storage_delete_proto;
-> +	case BPF_FUNC_get_netns_cookie:
-> +		return &bpf_get_netns_cookie_sock_ops_proto;
-> #ifdef CONFIG_INET
-> 	case BPF_FUNC_load_hdr_opt:
-> 		return &bpf_sock_ops_load_hdr_opt_proto;
-> --=20
-> 2.28.0
->=20
+Regards,
+Len
+
+ drivers/input/serio/altera_ps2.c      |  4 ++--
+ drivers/input/serio/ams_delta_serio.c |  4 ++--
+ drivers/input/serio/apbps2.c          |  2 +-
+ drivers/input/serio/ct82c710.c        |  2 +-
+ drivers/input/serio/i8042.c           | 14 +++++++-------
+ drivers/input/serio/olpc_apsp.c       |  8 ++++----
+ drivers/input/serio/parkbd.c          |  2 +-
+ drivers/input/serio/pcips2.c          |  4 ++--
+ drivers/input/serio/ps2-gpio.c        |  4 ++--
+ drivers/input/serio/ps2mult.c         |  2 +-
+ drivers/input/serio/q40kbd.c          |  4 ++--
+ drivers/input/serio/rpckbd.c          |  4 ++--
+ drivers/input/serio/sa1111ps2.c       |  4 ++--
+ drivers/input/serio/serport.c         |  2 +-
+ drivers/input/serio/sun4i-ps2.c       |  4 ++--
+ 15 files changed, 32 insertions(+), 32 deletions(-)
+
+diff --git a/drivers/input/serio/altera_ps2.c b/drivers/input/serio/altera=
+_ps2.c
+index 379e9240c2b3..3a92304f64fb 100644
+=2D-- a/drivers/input/serio/altera_ps2.c
++++ b/drivers/input/serio/altera_ps2.c
+@@ -110,8 +110,8 @@ static int altera_ps2_probe(struct platform_device *pd=
+ev)
+ 	serio->write		=3D altera_ps2_write;
+ 	serio->open		=3D altera_ps2_open;
+ 	serio->close		=3D altera_ps2_close;
+-	strlcpy(serio->name, dev_name(&pdev->dev), sizeof(serio->name));
+-	strlcpy(serio->phys, dev_name(&pdev->dev), sizeof(serio->phys));
++	strscpy(serio->name, dev_name(&pdev->dev), sizeof(serio->name));
++	strscpy(serio->phys, dev_name(&pdev->dev), sizeof(serio->phys));
+ 	serio->port_data	=3D ps2if;
+ 	serio->dev.parent	=3D &pdev->dev;
+ 	ps2if->io		=3D serio;
+diff --git a/drivers/input/serio/ams_delta_serio.c b/drivers/input/serio/a=
+ms_delta_serio.c
+index 1c0be299f179..ec93cb4573c3 100644
+=2D-- a/drivers/input/serio/ams_delta_serio.c
++++ b/drivers/input/serio/ams_delta_serio.c
+@@ -159,8 +159,8 @@ static int ams_delta_serio_init(struct platform_device=
+ *pdev)
+ 	serio->id.type =3D SERIO_8042;
+ 	serio->open =3D ams_delta_serio_open;
+ 	serio->close =3D ams_delta_serio_close;
+-	strlcpy(serio->name, "AMS DELTA keyboard adapter", sizeof(serio->name));
+-	strlcpy(serio->phys, dev_name(&pdev->dev), sizeof(serio->phys));
++	strscpy(serio->name, "AMS DELTA keyboard adapter", sizeof(serio->name));
++	strscpy(serio->phys, dev_name(&pdev->dev), sizeof(serio->phys));
+ 	serio->dev.parent =3D &pdev->dev;
+ 	serio->port_data =3D priv;
+
+diff --git a/drivers/input/serio/apbps2.c b/drivers/input/serio/apbps2.c
+index 974d7bfae0a0..9c9ce097f8bf 100644
+=2D-- a/drivers/input/serio/apbps2.c
++++ b/drivers/input/serio/apbps2.c
+@@ -176,7 +176,7 @@ static int apbps2_of_probe(struct platform_device *ofd=
+ev)
+ 	priv->io->close =3D apbps2_close;
+ 	priv->io->write =3D apbps2_write;
+ 	priv->io->port_data =3D priv;
+-	strlcpy(priv->io->name, "APBPS2 PS/2", sizeof(priv->io->name));
++	strscpy(priv->io->name, "APBPS2 PS/2", sizeof(priv->io->name));
+ 	snprintf(priv->io->phys, sizeof(priv->io->phys),
+ 		 "apbps2_%d", apbps2_idx++);
+
+diff --git a/drivers/input/serio/ct82c710.c b/drivers/input/serio/ct82c710=
+.c
+index d45009d654bf..752ce60e2211 100644
+=2D-- a/drivers/input/serio/ct82c710.c
++++ b/drivers/input/serio/ct82c710.c
+@@ -170,7 +170,7 @@ static int ct82c710_probe(struct platform_device *dev)
+ 	ct82c710_port->open =3D ct82c710_open;
+ 	ct82c710_port->close =3D ct82c710_close;
+ 	ct82c710_port->write =3D ct82c710_write;
+-	strlcpy(ct82c710_port->name, "C&T 82c710 mouse port",
++	strscpy(ct82c710_port->name, "C&T 82c710 mouse port",
+ 		sizeof(ct82c710_port->name));
+ 	snprintf(ct82c710_port->phys, sizeof(ct82c710_port->phys),
+ 		 "isa%16llx/serio0", (unsigned long long)CT82C710_DATA);
+diff --git a/drivers/input/serio/i8042.c b/drivers/input/serio/i8042.c
+index 0b9f1d0a8f8b..681b1f9678a7 100644
+=2D-- a/drivers/input/serio/i8042.c
++++ b/drivers/input/serio/i8042.c
+@@ -1337,9 +1337,9 @@ static int __init i8042_create_kbd_port(void)
+ 	serio->ps2_cmd_mutex	=3D &i8042_mutex;
+ 	serio->port_data	=3D port;
+ 	serio->dev.parent	=3D &i8042_platform_device->dev;
+-	strlcpy(serio->name, "i8042 KBD port", sizeof(serio->name));
+-	strlcpy(serio->phys, I8042_KBD_PHYS_DESC, sizeof(serio->phys));
+-	strlcpy(serio->firmware_id, i8042_kbd_firmware_id,
++	strscpy(serio->name, "i8042 KBD port", sizeof(serio->name));
++	strscpy(serio->phys, I8042_KBD_PHYS_DESC, sizeof(serio->phys));
++	strscpy(serio->firmware_id, i8042_kbd_firmware_id,
+ 		sizeof(serio->firmware_id));
+ 	set_primary_fwnode(&serio->dev, i8042_kbd_fwnode);
+
+@@ -1367,15 +1367,15 @@ static int __init i8042_create_aux_port(int idx)
+ 	serio->port_data	=3D port;
+ 	serio->dev.parent	=3D &i8042_platform_device->dev;
+ 	if (idx < 0) {
+-		strlcpy(serio->name, "i8042 AUX port", sizeof(serio->name));
+-		strlcpy(serio->phys, I8042_AUX_PHYS_DESC, sizeof(serio->phys));
+-		strlcpy(serio->firmware_id, i8042_aux_firmware_id,
++		strscpy(serio->name, "i8042 AUX port", sizeof(serio->name));
++		strscpy(serio->phys, I8042_AUX_PHYS_DESC, sizeof(serio->phys));
++		strscpy(serio->firmware_id, i8042_aux_firmware_id,
+ 			sizeof(serio->firmware_id));
+ 		serio->close =3D i8042_port_close;
+ 	} else {
+ 		snprintf(serio->name, sizeof(serio->name), "i8042 AUX%d port", idx);
+ 		snprintf(serio->phys, sizeof(serio->phys), I8042_MUX_PHYS_DESC, idx + 1=
+);
+-		strlcpy(serio->firmware_id, i8042_aux_firmware_id,
++		strscpy(serio->firmware_id, i8042_aux_firmware_id,
+ 			sizeof(serio->firmware_id));
+ 	}
+
+diff --git a/drivers/input/serio/olpc_apsp.c b/drivers/input/serio/olpc_ap=
+sp.c
+index 59de8d9b6710..04d2db982fb8 100644
+=2D-- a/drivers/input/serio/olpc_apsp.c
++++ b/drivers/input/serio/olpc_apsp.c
+@@ -199,8 +199,8 @@ static int olpc_apsp_probe(struct platform_device *pde=
+v)
+ 	kb_serio->close		=3D olpc_apsp_close;
+ 	kb_serio->port_data	=3D priv;
+ 	kb_serio->dev.parent	=3D &pdev->dev;
+-	strlcpy(kb_serio->name, "sp keyboard", sizeof(kb_serio->name));
+-	strlcpy(kb_serio->phys, "sp/serio0", sizeof(kb_serio->phys));
++	strscpy(kb_serio->name, "sp keyboard", sizeof(kb_serio->name));
++	strscpy(kb_serio->phys, "sp/serio0", sizeof(kb_serio->phys));
+ 	priv->kbio		=3D kb_serio;
+ 	serio_register_port(kb_serio);
+
+@@ -216,8 +216,8 @@ static int olpc_apsp_probe(struct platform_device *pde=
+v)
+ 	pad_serio->close	=3D olpc_apsp_close;
+ 	pad_serio->port_data	=3D priv;
+ 	pad_serio->dev.parent	=3D &pdev->dev;
+-	strlcpy(pad_serio->name, "sp touchpad", sizeof(pad_serio->name));
+-	strlcpy(pad_serio->phys, "sp/serio1", sizeof(pad_serio->phys));
++	strscpy(pad_serio->name, "sp touchpad", sizeof(pad_serio->name));
++	strscpy(pad_serio->phys, "sp/serio1", sizeof(pad_serio->phys));
+ 	priv->padio		=3D pad_serio;
+ 	serio_register_port(pad_serio);
+
+diff --git a/drivers/input/serio/parkbd.c b/drivers/input/serio/parkbd.c
+index 3ac57a91ede4..6bee653d1965 100644
+=2D-- a/drivers/input/serio/parkbd.c
++++ b/drivers/input/serio/parkbd.c
+@@ -169,7 +169,7 @@ static struct serio *parkbd_allocate_serio(void)
+ 	if (serio) {
+ 		serio->id.type =3D parkbd_mode;
+ 		serio->write =3D parkbd_write;
+-		strlcpy(serio->name, "PARKBD AT/XT keyboard adapter", sizeof(serio->nam=
+e));
++		strscpy(serio->name, "PARKBD AT/XT keyboard adapter", sizeof(serio->nam=
+e));
+ 		snprintf(serio->phys, sizeof(serio->phys), "%s/serio0", parkbd_dev->por=
+t->name);
+ 	}
+
+diff --git a/drivers/input/serio/pcips2.c b/drivers/input/serio/pcips2.c
+index bedf75de0a2c..05878750f2c2 100644
+=2D-- a/drivers/input/serio/pcips2.c
++++ b/drivers/input/serio/pcips2.c
+@@ -149,8 +149,8 @@ static int pcips2_probe(struct pci_dev *dev, const str=
+uct pci_device_id *id)
+ 	serio->write		=3D pcips2_write;
+ 	serio->open		=3D pcips2_open;
+ 	serio->close		=3D pcips2_close;
+-	strlcpy(serio->name, pci_name(dev), sizeof(serio->name));
+-	strlcpy(serio->phys, dev_name(&dev->dev), sizeof(serio->phys));
++	strscpy(serio->name, pci_name(dev), sizeof(serio->name));
++	strscpy(serio->phys, dev_name(&dev->dev), sizeof(serio->phys));
+ 	serio->port_data	=3D ps2if;
+ 	serio->dev.parent	=3D &dev->dev;
+ 	ps2if->io		=3D serio;
+diff --git a/drivers/input/serio/ps2-gpio.c b/drivers/input/serio/ps2-gpio=
+.c
+index 8970b49ea09a..1e5e8d94220a 100644
+=2D-- a/drivers/input/serio/ps2-gpio.c
++++ b/drivers/input/serio/ps2-gpio.c
+@@ -393,8 +393,8 @@ static int ps2_gpio_probe(struct platform_device *pdev=
+)
+ 	serio->write =3D drvdata->write_enable ? ps2_gpio_write : NULL;
+ 	serio->port_data =3D drvdata;
+ 	serio->dev.parent =3D dev;
+-	strlcpy(serio->name, dev_name(dev), sizeof(serio->name));
+-	strlcpy(serio->phys, dev_name(dev), sizeof(serio->phys));
++	strscpy(serio->name, dev_name(dev), sizeof(serio->name));
++	strscpy(serio->phys, dev_name(dev), sizeof(serio->phys));
+
+ 	drvdata->serio =3D serio;
+ 	drvdata->dev =3D dev;
+diff --git a/drivers/input/serio/ps2mult.c b/drivers/input/serio/ps2mult.c
+index 0071dd5ebcc2..902e81826fbf 100644
+=2D-- a/drivers/input/serio/ps2mult.c
++++ b/drivers/input/serio/ps2mult.c
+@@ -131,7 +131,7 @@ static int ps2mult_create_port(struct ps2mult *psm, in=
+t i)
+ 	if (!serio)
+ 		return -ENOMEM;
+
+-	strlcpy(serio->name, "TQC PS/2 Multiplexer", sizeof(serio->name));
++	strscpy(serio->name, "TQC PS/2 Multiplexer", sizeof(serio->name));
+ 	snprintf(serio->phys, sizeof(serio->phys),
+ 		 "%s/port%d", mx_serio->phys, i);
+ 	serio->id.type =3D SERIO_8042;
+diff --git a/drivers/input/serio/q40kbd.c b/drivers/input/serio/q40kbd.c
+index bd248398556a..a1c61f5de047 100644
+=2D-- a/drivers/input/serio/q40kbd.c
++++ b/drivers/input/serio/q40kbd.c
+@@ -126,8 +126,8 @@ static int q40kbd_probe(struct platform_device *pdev)
+ 	port->close =3D q40kbd_close;
+ 	port->port_data =3D q40kbd;
+ 	port->dev.parent =3D &pdev->dev;
+-	strlcpy(port->name, "Q40 Kbd Port", sizeof(port->name));
+-	strlcpy(port->phys, "Q40", sizeof(port->phys));
++	strscpy(port->name, "Q40 Kbd Port", sizeof(port->name));
++	strscpy(port->phys, "Q40", sizeof(port->phys));
+
+ 	q40kbd_stop();
+
+diff --git a/drivers/input/serio/rpckbd.c b/drivers/input/serio/rpckbd.c
+index 37fe6a5711ea..7008bc101415 100644
+=2D-- a/drivers/input/serio/rpckbd.c
++++ b/drivers/input/serio/rpckbd.c
+@@ -128,8 +128,8 @@ static int rpckbd_probe(struct platform_device *dev)
+ 	serio->close		=3D rpckbd_close;
+ 	serio->dev.parent	=3D &dev->dev;
+ 	serio->port_data	=3D rpckbd;
+-	strlcpy(serio->name, "RiscPC PS/2 kbd port", sizeof(serio->name));
+-	strlcpy(serio->phys, "rpckbd/serio0", sizeof(serio->phys));
++	strscpy(serio->name, "RiscPC PS/2 kbd port", sizeof(serio->name));
++	strscpy(serio->phys, "rpckbd/serio0", sizeof(serio->phys));
+
+ 	platform_set_drvdata(dev, serio);
+ 	serio_register_port(serio);
+diff --git a/drivers/input/serio/sa1111ps2.c b/drivers/input/serio/sa1111p=
+s2.c
+index 68fac4801e2e..2724c3aa512c 100644
+=2D-- a/drivers/input/serio/sa1111ps2.c
++++ b/drivers/input/serio/sa1111ps2.c
+@@ -267,8 +267,8 @@ static int ps2_probe(struct sa1111_dev *dev)
+ 	serio->write		=3D ps2_write;
+ 	serio->open		=3D ps2_open;
+ 	serio->close		=3D ps2_close;
+-	strlcpy(serio->name, dev_name(&dev->dev), sizeof(serio->name));
+-	strlcpy(serio->phys, dev_name(&dev->dev), sizeof(serio->phys));
++	strscpy(serio->name, dev_name(&dev->dev), sizeof(serio->name));
++	strscpy(serio->phys, dev_name(&dev->dev), sizeof(serio->phys));
+ 	serio->port_data	=3D ps2if;
+ 	serio->dev.parent	=3D &dev->dev;
+ 	ps2if->io		=3D serio;
+diff --git a/drivers/input/serio/serport.c b/drivers/input/serio/serport.c
+index 7fbbe00e3553..50295b17cca4 100644
+=2D-- a/drivers/input/serio/serport.c
++++ b/drivers/input/serio/serport.c
+@@ -171,7 +171,7 @@ static ssize_t serport_ldisc_read(struct tty_struct * =
+tty, struct file * file,
+ 	if (!serio)
+ 		return -ENOMEM;
+
+-	strlcpy(serio->name, "Serial port", sizeof(serio->name));
++	strscpy(serio->name, "Serial port", sizeof(serio->name));
+ 	snprintf(serio->phys, sizeof(serio->phys), "%s/serio0", tty_name(tty));
+ 	serio->id =3D serport->id;
+ 	serio->id.type =3D SERIO_RS232;
+diff --git a/drivers/input/serio/sun4i-ps2.c b/drivers/input/serio/sun4i-p=
+s2.c
+index f15ed3dcdb9b..eb262640192e 100644
+=2D-- a/drivers/input/serio/sun4i-ps2.c
++++ b/drivers/input/serio/sun4i-ps2.c
+@@ -256,8 +256,8 @@ static int sun4i_ps2_probe(struct platform_device *pde=
+v)
+ 	serio->close =3D sun4i_ps2_close;
+ 	serio->port_data =3D drvdata;
+ 	serio->dev.parent =3D dev;
+-	strlcpy(serio->name, dev_name(dev), sizeof(serio->name));
+-	strlcpy(serio->phys, dev_name(dev), sizeof(serio->phys));
++	strscpy(serio->name, dev_name(dev), sizeof(serio->name));
++	strscpy(serio->phys, dev_name(dev), sizeof(serio->phys));
+
+ 	/* shutoff interrupt */
+ 	writel(0, drvdata->reg_base + PS2_REG_GCTL);
+=2D-
+2.25.1
 
