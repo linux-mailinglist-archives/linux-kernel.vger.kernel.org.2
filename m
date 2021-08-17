@@ -2,92 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2C03EEC34
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 14:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E2F3EEC38
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 14:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239790AbhHQML1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 08:11:27 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:41556 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236113AbhHQMLX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 08:11:23 -0400
-Received: by mail-ot1-f45.google.com with SMTP id w22-20020a056830411600b0048bcf4c6bd9so2005910ott.8;
-        Tue, 17 Aug 2021 05:10:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=jQ2l3WXqoH22mFDQEW/1VSsXU0XAw7Dnr3dv/FtM+pE=;
-        b=T6xdRfeT2AbrU9CtB8MAGkBykyhAv5vDgrkQ76UcLWQD+7L0cKNq973+UPOrG+5+MY
-         1I7K31qrtzcE5i7g7Bp0pQ4xSSbGP1PI4MgWoXksNiLlJLEfmTidhx3gdhMqZGmxTWi/
-         Sk91wN0Pd2ESjM6izMsRzM42GQFdxUbkXYMKlrgxJKEvRbo0tDcT46JGvHzjAHPEleWj
-         zkgl95by/8U4GoXAVxeb0rlVW+kztTBeHfUGPTOVW8zXULhwu20IiyENxS+0Vrxf1+Xe
-         Q6grshsUrHsabqE3qlCdEA7x49jh0/O2bp0fHFqbJKRxFid6AzxdElGYCMq69QRpi6Mm
-         PgOw==
-X-Gm-Message-State: AOAM533NJcxWcaF6ESRNad7Z49vwM+E27P/QyE/TCzcDpByyiGCuHBeV
-        zH10oByjNPgAIO53UVw1Ng==
-X-Google-Smtp-Source: ABdhPJyx5bUXH5T9Qhnhqxeq+w14eA1RIP7smOUbOTFqJYFnmnDAEPgvnRUQRvyS1m1hxMFMT6e+Pg==
-X-Received: by 2002:a05:6830:1105:: with SMTP id w5mr2354720otq.85.1629202250091;
-        Tue, 17 Aug 2021 05:10:50 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u15sm424438oiu.43.2021.08.17.05.10.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 05:10:49 -0700 (PDT)
-Received: (nullmailer pid 4133263 invoked by uid 1000);
-        Tue, 17 Aug 2021 12:10:48 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Caleb Connolly <caleb@connolly.tech>
-Cc:     linux-input@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Joel Selvaraj <jo@jsfamily.in>, linux-kernel@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jami Kettunen <jami.kettunen@somainline.org>
-In-Reply-To: <20210816221931.1998187-2-caleb@connolly.tech>
-References: <20210816221931.1998187-1-caleb@connolly.tech> <20210816221931.1998187-2-caleb@connolly.tech>
-Subject: Re: [PATCH v3 1/6] dt-bindings: input: add Qualcomm SPMI haptics driver
-Date:   Tue, 17 Aug 2021 07:10:48 -0500
-Message-Id: <1629202248.430426.4133262.nullmailer@robh.at.kernel.org>
+        id S239844AbhHQMMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 08:12:33 -0400
+Received: from smtpbg604.qq.com ([59.36.128.82]:59974 "EHLO smtpbg604.qq.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236113AbhHQMMb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 08:12:31 -0400
+X-QQ-mid: bizesmtp38t1629202296t33kylxn
+Received: from localhost.localdomain (unknown [125.69.42.50])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Tue, 17 Aug 2021 20:11:35 +0800 (CST)
+X-QQ-SSF: 01000000004000B0C000B00A0000000
+X-QQ-FEAT: OE6UcXCtsg2bsgZj0W0I+9riVp875uiNWEuV337EZEK3Xw6RepVlVn0F8+Wdi
+        apwT6OtZlsFDGiBbGiFZcOxMuyl41G66klyqcrJxUV8qvuUCxVnOvr5h59aYUE8XNTv+ZvL
+        Iun9dS+YT6hSTRdsYaEG6/bS19Da5pO5vBce+YgDsx+H5+fC/2JPHKWVkZMU2EfKeV0Vpnq
+        Yp4LKHmDic7e/chLEVHERGIx9mtruNn0wy/WuXfRWQl4Dk8248m5F0cw0Tf0U3k1VM3JJIh
+        VM6FUn+boif0wq4e+cCZ7uQJDMpysaXEAIEl5LoFfSZVG8XbvR2I69TJ5XS7Dbv6pFB4z6+
+        Nyoz3hwFIwTmQ5wgK8ROmMdU60yDQ==
+X-QQ-GoodBg: 0
+From:   Jason Wang <wangborong@cdjrlc.com>
+To:     kuba@kernel.org
+Cc:     davem@davemloft.net, tariqt@nvidia.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jason Wang <wangborong@cdjrlc.com>
+Subject: [PATCH] net/mlx4: Use ARRAY_SIZE to get an array's size
+Date:   Tue, 17 Aug 2021 20:11:06 +0800
+Message-Id: <20210817121106.44189-1-wangborong@cdjrlc.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Aug 2021 22:19:55 +0000, Caleb Connolly wrote:
-> Add bindings for qcom PMIC SPMI haptics driver.
-> 
-> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
-> ---
->  .../bindings/input/qcom,spmi-haptics.yaml     | 128 ++++++++++++++++++
->  include/dt-bindings/input/qcom,spmi-haptics.h |  32 +++++
->  2 files changed, 160 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/input/qcom,spmi-haptics.yaml
->  create mode 100644 include/dt-bindings/input/qcom,spmi-haptics.h
-> 
+The ARRAY_SIZE macro is defined to get an array's size which is
+more compact and more formal in linux source. Thus, we can replace
+the long sizeof(arr)/sizeof(arr[0]) with the compact ARRAY_SIZE.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+---
+ drivers/net/ethernet/mellanox/mlx4/qp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/input/qcom,spmi-haptics.example.dt.yaml:0:0: /example-0/pmic@3: failed to match any schema with compatible: ['qcom,pmi8998', 'qcom,spmi-pmic']
-Documentation/devicetree/bindings/input/qcom,spmi-haptics.example.dt.yaml:0:0: /example-0/pmic@3: failed to match any schema with compatible: ['qcom,pmi8998', 'qcom,spmi-pmic']
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1517351
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+diff --git a/drivers/net/ethernet/mellanox/mlx4/qp.c b/drivers/net/ethernet/mellanox/mlx4/qp.c
+index 2584bc038f94..b149e601f673 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/qp.c
++++ b/drivers/net/ethernet/mellanox/mlx4/qp.c
+@@ -739,7 +739,7 @@ static void mlx4_cleanup_qp_zones(struct mlx4_dev *dev)
+ 		int i;
+ 
+ 		for (i = 0;
+-		     i < sizeof(qp_table->zones_uids)/sizeof(qp_table->zones_uids[0]);
++		     i < ARRAY_SIZE(qp_table->zones_uids);
+ 		     i++) {
+ 			struct mlx4_bitmap *bitmap =
+ 				mlx4_zone_get_bitmap(qp_table->zones,
+-- 
+2.32.0
 
