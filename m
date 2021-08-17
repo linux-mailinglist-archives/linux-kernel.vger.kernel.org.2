@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D861D3EEFA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 17:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A563EEFD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 17:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240568AbhHQPya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 11:54:30 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:3864 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240406AbhHQPtf (ORCPT
+        id S240377AbhHQP5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 11:57:02 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:44188 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240142AbhHQPtL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 11:49:35 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17HFkEMa023526;
-        Tue, 17 Aug 2021 15:48:05 GMT
+        Tue, 17 Aug 2021 11:49:11 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17HFkHM2018102;
+        Tue, 17 Aug 2021 15:48:07 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : references : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=s08kbkB9kHRbJzhQZ4uwiACXSwxCUbOEWA+z7QCJvT8=;
- b=CxDkeBqY9e8w7NVJFuuEknzCQz08wNWAla/JP3d0ajKZZZFukqmts0khde4GaG+bUSdV
- 0o31J7yVmdN3pgI9/wiKno2iMkv+5u3AIfHgJgH+JOeMNu73ZvUWvpyMP0aJyvG56h+D
- abOfOcFZkT6rOqls/xsNkTPbNJ2iMa8G1Zoi1hH0zqKHoGFuM4KlL0xtVzBdwa9pptfo
- Mts4X9ILPKiNmVlzbbheDWJGTPniITjS610eyu9GZxHz3db1ncCfG/AAJ43DTiYaN7Oh
- 7NV+M7f1xKWpusSTXzYQFWtsFAyiD6pxFdzZJ15yjgqkf5W2PCkP/UFLMPuh+RjVdmec UQ== 
+ bh=V5qpaCz/mr8CT4B2S43tOfxGzkL2jGk0OwfTrdxVPZ8=;
+ b=EUJ1Do5acVbb5VZ/K4TtX7tSihA8y8kfYVFaTmp0p1o+uvyYsbMUUTBDn89rvVPEcf2b
+ C1NH66fYWdQO6YP9gBD51o+JImU4J8eneOc5/OozwPs02tm0P82ZLGcbj6nrt+xwh9wS
+ SaSOZT3ZeCc9fLF905kHWit2kh65/QpMbf/wJ+vCluBgRoO5fwCnfPtUE3F0rqWJtnHE
+ 2kqO0QHFj4I7QyaPNBloxvLvmvbNVEzvvENcDe7DWF4fbxPRGxwcJPY1FqIjxsqUXhfo
+ fT+xJFULxnvvKj91+OjTRP7cbdfTmivjlO/1cMfrX2dsFODUMt2rMJSutMRr/i3msWWP ow== 
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : references : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=s08kbkB9kHRbJzhQZ4uwiACXSwxCUbOEWA+z7QCJvT8=;
- b=go3gN9JEoEOJp+rEOQ8/fjcNo23K3OiOCaUfV93LLzU2RhPDnWB7Gkxyrp6zZ3T6tufU
- fes9uuNUjooDODpnCVPMNP+K8QdT4sHxBgA2j+awEinuu9eLY9dHNZBX/ENzgRqx3B6G
- 5TCZppVomhbddJWZ/J0Mg9mcjbeEuCHGe+HFyhZn4VxZtK7y4PxwJHhYv9h8u+cU/Zij
- /VZ82oglVROP+njnL4GKUzrYM3Y2mknOEgn2tJU7ca2YUjxbVW3+3gN9whawoUcuEDqF
- uvLhyGmNztbrzXgA8nEfEru1SZsMX8J+ZL+a6aSh+FUjHqDliiyiAybGzzoQ5/reI/rc Cg== 
+ bh=V5qpaCz/mr8CT4B2S43tOfxGzkL2jGk0OwfTrdxVPZ8=;
+ b=OvNKyVl70e1YHKULbd+LlS9sVHKCqamwMm6Alzl2uhNrJL2ANleN8iqzLCgiMjKP9FGA
+ yZiddr2EYKNPKZUXQwMc+WScL8XRStjfhJkZ3NTZAsBMNXsLUdo2fU5gcfg/3rjzsbxc
+ 3wxWr4k2fjdCPHNBx4IOtRm/VykQ82JQLlbCj2n4lOYXIFz1J5a3qheCrfVLEE1mj4ti
+ 7TvskZbtyeRs6cfALVxa4YnnS+vrQqOq4JgG5FCawzKOIXZKKhrOFBS1qVpbStWULs6A
+ fezNCfyB4i7VWQlrKawTTyb3rFavavwqqYorP/9BB+XmsnluPvsu/9jYGowlXlMHF3V9 LA== 
 Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3afdbd4keg-1
+        by mx0b-00069f02.pphosted.com with ESMTP id 3age7mrc5g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 17 Aug 2021 15:48:07 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17HFj3Od174039;
+        Tue, 17 Aug 2021 15:48:04 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2049.outbound.protection.outlook.com [104.47.66.49])
+        by userp3030.oracle.com with ESMTP id 3ae2y0d2r9-8
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Tue, 17 Aug 2021 15:48:04 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17HFj3Ob174039;
-        Tue, 17 Aug 2021 15:48:03 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2049.outbound.protection.outlook.com [104.47.66.49])
-        by userp3030.oracle.com with ESMTP id 3ae2y0d2r9-7
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Aug 2021 15:48:03 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NKLomIFLE5DjmjQr/yGsfmZFRDc8Nqj5++MpGxba2Z3ts7CcU8S8QnxCigy6YcrZj+CwAjdJb3l5ufhJXe/F2AATD77UxRc/zbqlWhfosNH1GfgCzumD78vObXTrCXRa4neWoth5rKsu/pTsAxQtkYOYB/1U6l3fS/fcVtLH/dGOgK1uzKHQk9Xq7TibeU/0l0Ctcrto8gXrfHdRZvvF/2bAOBLe5OiNDz4fL1sduYdFYYUTmuxJP/HEBjGfZg/0hsjbdgp2ses4jpL+TmZ9h7OMe5bU7TCKjQb59xIcRQG1G/9K7dZ9BqZfvu1nAi/bkzZ3iE3mRU7vicEJVGL3Tg==
+ b=YyxjI4sh6kcJYC+Lp9068HTRjE8J4+5U8aycBngza9+9xVdKqjE0Lf+QAqyZ2I69shKZY8pAKGVf027O3AnPpfTg9HlHCXFMf/1z4GY79bcyUNCa7CJRDYRbsDTOlKSu8Fn0Q4psSWQqQHvWwvCfzH2nASLAlPD1UPXGGJHrW3Nx7G+KpyayTz6/nzzhCE/K3VURyyj8naIIO4c8mt5HDoR1UDOY2RjophbLBYuabWxnnbWjbN9G2kB8/auM7edgTnR6eo9Rc53MNO2XtboilAyR2JsqGwv4YwrGK+40e6hbBSLRwi2HqPC76QFMKSXPwT7DEs4lXO9/25Ou+p2knw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s08kbkB9kHRbJzhQZ4uwiACXSwxCUbOEWA+z7QCJvT8=;
- b=QfgLahl0tb2+Y+IBMfrUnpjMq7AnJXLLb2EbVw1G+Pwx4ly1yPNX0Bp7KO0CLe7x6JS6PuJyPMll6ehOhDR8oQlWV0sMNAALp97Mh+KMfwMB8JRXfMrjIBuPhvCcaspUj3kXOePFJTNHB3ruXbQFyCLxhjhvb5Mj2CdZpk/ml5ajgvDa/RXhy4ARNA4x1mv1oVbJL/nonB9/FlWChZgj1lCs+qCIB3xPRH7e05oUs9kMbnuarYrsM3Ad+Cue2/sIPUHbiEaOvnHebZT3dox1fYTbndCYUvVpiQvAXSFd8rJSnC1e+5elQPUbrmLEU0Rde95RoE8eBimh4XGbWuibaw==
+ bh=V5qpaCz/mr8CT4B2S43tOfxGzkL2jGk0OwfTrdxVPZ8=;
+ b=Ld8KoXX2rjAzG+oZlUpSXI+FAzdaLKUyd/bp595AgOI5DeV1rVRniT65Q9WkxOKRWqD6r+LDyE+KtEGxlD+HJLEm5Bo78x5KpsQIQe7t46SXxqZU4pg5BwikbHzqI2vclkHn+pu1ocwCxk12nZONpdO7qxbLjOz6E7ggluXw8nheICZSkjn+CXUPDvwq7+FKHD5Q0r/AaSnoYxEeHvYSc3UCA9iz6AtxIPRW/arQZpmskJna/c6LkfpgPjliQpXE9I4myUUL1RfDceGL5PTBNVtalLil/+6zlHAoeC5zH7gceK8Me4ag9RbB8bGEQtqEvMiPimz1u+lK1HfzrtaxgA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s08kbkB9kHRbJzhQZ4uwiACXSwxCUbOEWA+z7QCJvT8=;
- b=Br9G2VBeMBz7G2j7Id9Ow2Ze5bzyH9zirWTL142w+0Trnr66WSh+l0d+0pXBjI8OhQilWv5JIyqoOMywpcJz0faXc1WsDDmz4ayiOj1QoVMa867M+4XZIrbdLeEBuQjVkQ5TvtVVOkrffdImEWb3eofD3I8Vyc90RVjnmqDzZpk=
+ bh=V5qpaCz/mr8CT4B2S43tOfxGzkL2jGk0OwfTrdxVPZ8=;
+ b=JnBFcWGSD0BHxcXF4NlijK/bOU/Cw4H04Vs0Dh7f+TfEE4rJb/Jg7udevIlcl6/LmphwDVf5QPuf9daxUZys0pb1T4XdkIrPcGuttA1iU1ajJQ+lgeJl2wNqZ/Og+v1GK4/0J++diGTNx7ZwWw8wb7voZ0E51zXRw1B0VYcCeFw=
 Received: from DM6PR10MB4380.namprd10.prod.outlook.com (2603:10b6:5:223::19)
  by DM6PR10MB4236.namprd10.prod.outlook.com (2603:10b6:5:212::10) with
  Microsoft SMTP Server (version=TLS1_2,
@@ -86,13 +86,11 @@ CC:     Song Liu <songliubraving@fb.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Michel Lespinasse <walken.cr@gmail.com>,
         Liam Howlett <liam.howlett@oracle.com>
-Subject: [PATCH v2 37/61] fs/proc/task_mmu: Stop using linked list and
- highest_vm_end
-Thread-Topic: [PATCH v2 37/61] fs/proc/task_mmu: Stop using linked list and
- highest_vm_end
-Thread-Index: AQHXk38rkuZnJubpMUWXFEUFvFxaTA==
+Subject: [PATCH v2 38/61] fs/userfaultfd: Stop using vma linked list.
+Thread-Topic: [PATCH v2 38/61] fs/userfaultfd: Stop using vma linked list.
+Thread-Index: AQHXk38sHAtle9Ui+06idLwpkbxIwQ==
 Date:   Tue, 17 Aug 2021 15:47:23 +0000
-Message-ID: <20210817154651.1570984-38-Liam.Howlett@oracle.com>
+Message-ID: <20210817154651.1570984-39-Liam.Howlett@oracle.com>
 References: <20210817154651.1570984-1-Liam.Howlett@oracle.com>
 In-Reply-To: <20210817154651.1570984-1-Liam.Howlett@oracle.com>
 Accept-Language: en-US
@@ -104,222 +102,235 @@ authentication-results: lists.infradead.org; dkim=none (message not signed)
  header.d=none;lists.infradead.org; dmarc=none action=none
  header.from=oracle.com;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b10154ce-3194-46f5-c166-08d961966046
+x-ms-office365-filtering-correlation-id: 1306f7fe-8d73-4739-5782-08d961966061
 x-ms-traffictypediagnostic: DM6PR10MB4236:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR10MB42364E99A99309C2EB166AA4FDFE9@DM6PR10MB4236.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1002;
+x-microsoft-antispam-prvs: <DM6PR10MB42364976C36E31A6DA7596B6FDFE9@DM6PR10MB4236.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2887;
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oB8DGvqXL7JCuRwsWTnoBvXN+UCx+Uqs3xSxeL7x1lGSAwv1YZAY0zgkfSvziW0XixE/OtuMhRXZ4t9fn5C2yHOmgyLUT8I+fl58TM+kS9q3GpEAxp8ZiNGX6rrxGyGwC35/2dH731JINMInITOx6IKByl30F6Onu4wL0pz2wjeW4aXFTliFbaVGYtPeeeeKHKXZiP3fb9VhI5TqOvUvsEBTx4bibc+utsXjes7uHwuZ2rd8/qQqcvKPSqkFr7f2Ss2GZupUaj2Gmv5aqMbjamWuLFlJPUKPEqpeKdsOw860F072gp1fitg2VcAdk+i0MLBj1Udzginbw4gnGoSiMULkgzwifkoQIpnHpYtm5fE8Cm+PSTBXd0xdz4RTncHkoujlNk710Q2W/wwVX4/8Ra9OFcdc+GoTwdGCNxpIPAH/SRuSynwYpNL+8iorPlCb+ubeXG6DGFrLvtRy5NhkPzF5yWWxL2HlEMFrdu9pzHIG3EOlpK7aMsSna3uw2F/1TZevjWGZ9Rnhv/aL0MrckI/+FGqN/rBr9f28kAzdFxhoXcxxyKsIocB4Ems5Sts/YsGDPrhUNmBreYJNDPGB0q03kn9Pvl/PhkMe+ncAHT5ZjkpsIRIjxZJf5q4pasmDTWE3uDPzleXmyIQHb8gvf0P+g22x0DcPGob1U12gJmmxJAmAGqYaaRJ3SrhIltUwlCp+xB1QqKUTUfSba8SrcQ==
+x-microsoft-antispam-message-info: Lw0+WFyeDi4wDQreYZVV1Q7Ei43trAuy0hM5BDjuWHPjQGJjFaUmSybkoUhyTtd5QRTFK+CPdaVsOu80CD2GVGtCNmI4VCrOkcMQgErNYD5nEVkWoOr0g8L/tBnXDMmAu4NClDD+4FZnw6N42KwzfHeqD70V0QxQigR0zGiL1jdcvK5LPGFdjrX0TRDsx2bLGYlbYUXlnR92L3RbJxUoGE+EiSNH4WvEbp4yLL1S5vK+NI4hxbav3OR6MPRvgn8NBe6g9pe76t8J1hwc677eojO1om00n39bzxaZYpZsBljdJ19FR5UiXWWN3JvQx30eU6VKiXcxqecIdTLds2/FsuVofq3aAg99XSLktyYqLUXau3SjL+QybL1VXneMitCESA7spsugUNqP7+gEhxkEPIRUYhLMc/Rue5y0+rKz2YbaL0H3SNBRqLWdWT9TdYaUz+JRwRcboIQqaR8JRqrXPtnXkoIJ/Wj1RLAkDN1jiSYH1GzSFAuSZ6pz8/oydQtDf5qlSmYPwuuIYnR4Cs7HMeB2GwsTzxjKjra9FyUzs9qafgL+L1Nu5meD86eudDYilWQDIAFcASHOZUPBmXzmFiGsQSu1Ci+HGUAjT5KZN9ur48fgSVbj/ktqwPlcwjgT0+WfigZDKG4SMvRWfAtEIKuf/h+VlyVt9ET5movvh9WsR8uZNBAOOSobyOSAXPLix7reYg7eog+DFrZ7Rb/Tig==
 x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4380.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(366004)(376002)(346002)(39860400002)(54906003)(110136005)(1076003)(5660300002)(38070700005)(6486002)(36756003)(38100700002)(478600001)(83380400001)(2616005)(4326008)(91956017)(76116006)(6512007)(122000001)(316002)(44832011)(6666004)(6506007)(66946007)(2906002)(7416002)(107886003)(66446008)(66556008)(86362001)(64756008)(66476007)(8676002)(26005)(71200400001)(8936002)(186003);DIR:OUT;SFP:1101;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?+wPFyh9IdbL3488stnLIoWv1IcwTzMBrIlRmxTg6dZZON4AjEhgO7Lg4c6?=
- =?iso-8859-1?Q?rs/nPBXoIqay6HjX5c3xBf8aucLH7bZETIDlMBv2RRfGHBXQEkBFUtl2EH?=
- =?iso-8859-1?Q?BeNFT67a516HIPWnE7QvEj4Yrykz5u80Rx6Nn4CXd5xd4n3VzWaHqJ9XRL?=
- =?iso-8859-1?Q?u8HU/6YGxzikMRUE1x20/Z/h2yjCvpwLbO9EW1EyR1Oc8Ibu4LnWg0COOU?=
- =?iso-8859-1?Q?iX1JperMhvxYdlW2eDDEwEnxvYAk+To1SS2VLKb6S4stk8LRTdb1yr5Tns?=
- =?iso-8859-1?Q?aYhpUA+g1r4H/MkC0bAwX8M49WPpbvErWyNcTMlm7aQnsJHH8ybVx66BW+?=
- =?iso-8859-1?Q?72ZefLqB1G+88wqyG9CZZO/Ku/WDH8z81CVL1knhjZrW5sb0cUXM0FSWE4?=
- =?iso-8859-1?Q?wl/HLbRW3Z5uTO8c6XpF0IZBNQGHIm7ghaeNYc39MkAk3ShfQJ4cj8sxNw?=
- =?iso-8859-1?Q?WGfpZqNvydNEAyJxlA0DLp1FZy9+sccKHePf3g1f/IvPMPpA/kIj/JQaQf?=
- =?iso-8859-1?Q?wTkktEtVy+l66KM2vafy/mXPP1YvFlKXdvuB3UY8L+HWDyoWaeltCZwZBp?=
- =?iso-8859-1?Q?ufqBgbiYRiM5xDV8f2JmeB1Rb1VObvbWI+vaDTrXv9Lpub0XOX6a2fUtch?=
- =?iso-8859-1?Q?ZwMN1wTFEY6yo8Zv9odhNS9TAxgIUHyRIUibZmxEFQ+FlKvokjzxdjixaz?=
- =?iso-8859-1?Q?/swBkaDomXEtfl8uxh2nwgkborzYRxZv7auqpFbHO7VcH+ufABhUPdxRpA?=
- =?iso-8859-1?Q?Als/JwTBsdI7U+PKiz1ivkxSsvSMYnY701jPBHnRWbtYs7vG9ke0myakrU?=
- =?iso-8859-1?Q?ej4rWydpF4j1ag8vXK3LX09A6upmhW8QKp28KCzBZ8oRNiNJSaRkoziBf9?=
- =?iso-8859-1?Q?kA7aXU+jVg1HmXqxNUIkOhHjo7VTzRpANUCF+kwaJvNKBjCG/ZUzJVXySI?=
- =?iso-8859-1?Q?qaXn9nl1wGQZbr7654TaovyiuXhbEiMNIOxKe2HRlYIIVU8gkSOXDIsxLd?=
- =?iso-8859-1?Q?hLBokiMt1PERMpscMSJGtbVv9R+a61mjIS6keHOTbfNpeXykNAtv6pWRH2?=
- =?iso-8859-1?Q?pWOb1j7ozKE9lm2rRrzUj3hciZC3r8v8bqb5oJ3mLRZaNtONEKUQR7SdSu?=
- =?iso-8859-1?Q?3gZtuoEnpxEJuX6Z4pMmqMAwaQyPkaBupSxHY/BEwVnoBFLa7Eb0Sg41ej?=
- =?iso-8859-1?Q?LhTRWQ4EDCDffc3f7Y6EJyv5V0KrJOhpEvQz/fZRyfdRL84hLHIPybVkYS?=
- =?iso-8859-1?Q?pJDaDB0ZUcZK0glYV8gkF2zHbeTdDDQMavLDKOVszrt5/1d4/+T75D54nk?=
- =?iso-8859-1?Q?8+64bozr8Hl/c5d8yHOSb6MTQy3Z9kbdYJM14eSKPWIRYTNJYt4FaZRVPY?=
- =?iso-8859-1?Q?sSZ74PqNmD?=
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?g+za/e2q5VJfDiG+5DI8gi3lnUWVFjujNg2KqsH3V3f3Sgd408L7tGY78D?=
+ =?iso-8859-1?Q?Y1Pk5lRcmQK/TWac9oNpzNC7RIys+yD0Kw8mcMXcQrb/hYhhcqTOHgNWyB?=
+ =?iso-8859-1?Q?LEjtt2VdK1moN9fE96UUSyCMD2w65h2A4IMWiIIjfQKGVAROE4ld3eo1vo?=
+ =?iso-8859-1?Q?WjJXwS8lUsuXEokxloK9z7RQzV9H1ZxFukb8nu3Np99fm8ZxodqcqrX0/z?=
+ =?iso-8859-1?Q?PUYWGbncEuIBvb79o4XyX11PMDbUc1zsUiy4kB6SYw7IZQjqby53cs3yvz?=
+ =?iso-8859-1?Q?nrIZLvTORbCneTMg9me+8Uzi+K5X2GAeu/Iv106Whr56S30IdftaiNz9PI?=
+ =?iso-8859-1?Q?Ed+2npUZuuj1kHBFK8mWb+qjNr9hT1BUTuQgNlcYcr13S5PoAjPWyjzF28?=
+ =?iso-8859-1?Q?/13VxbL7Zwrd2ULzscgAs82j9Jzv4buX9YO9YkoSErxr/ULmhh0GEI3EBG?=
+ =?iso-8859-1?Q?25KhQPo0dcQBOdE4EBVsicpjx7xMMQfLcmg77nudcNw2hLX1dxb0U9fyL3?=
+ =?iso-8859-1?Q?Y9OpMjk+t8h1xeFVbsrnjTAmFOEBlM7/cvQHf7PQBChIamJEEwVd1gbKWh?=
+ =?iso-8859-1?Q?vzOAYxW6QAQj8rcLwY/qpwNCOTkQL6hhnngBwdpVQfnYbAVVdT5xXydNq7?=
+ =?iso-8859-1?Q?LSgDWQS7PAtGb6sNRdj6aCq6pc0bNcLqFQCuo/XWtKyf/EGTb1yga3w0bL?=
+ =?iso-8859-1?Q?hb2x4F5UrxIrVPqUpAlhWjPT+/yNrgkK+h6rIvSTJzGYfeFml0uJ7WzM/D?=
+ =?iso-8859-1?Q?htppIpYZ63aSTVYLK5ctE9TW4Ds5h22AWELFgoyvdSDtsuQG5xUOUSpjaZ?=
+ =?iso-8859-1?Q?CLkg05X7xg56R7LY31ExHo01mOcGSI+u/t6gA8Z5wYaSyfSrqrn6Mwcup1?=
+ =?iso-8859-1?Q?9xz6akl8E53CTnDE500MDqXn1kXjiRADSo1o8AkWXLbITNjox61xy2UCQ/?=
+ =?iso-8859-1?Q?NB1y23xUsjn8Zj8s1ouSfvpgVyx0ExPYiT0I7ohcqzwWfP7YCVA2YkTZ4N?=
+ =?iso-8859-1?Q?mK4uyUKqb52G0vx66+2GHb6NZQWf8FfSUpdJ7rg/qcMcL3PrjWaIUMyOwo?=
+ =?iso-8859-1?Q?UMrYTyZODLeU2YXX2rdGwnek0sF06dVEefq+B0CL8HHWyp3WieBpwk8Lyo?=
+ =?iso-8859-1?Q?Vr987wb0J5g5jL4v2Co/Ca7g27F4Cs4qy240riIRmEMSl3J4DPbINuLwuk?=
+ =?iso-8859-1?Q?3arhmfvF6hoEkOWAj0cSOZzcZDTpOdHaIQKk9Y2Ppa/dLwYyB/D8du21HO?=
+ =?iso-8859-1?Q?7O26jF8OtC0nKHKq+XExKXFUpTdNyfqeJtAv+DlL12HRKidef8Gb4D2Wx6?=
+ =?iso-8859-1?Q?dY0z/VGJYsYZ5UxkN+cjFaXBFJqGJLtMNDv2RuJKGvRSuXsjxkdksL36y5?=
+ =?iso-8859-1?Q?t+NENF/g0o?=
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: oracle.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4380.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b10154ce-3194-46f5-c166-08d961966046
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Aug 2021 15:47:23.6076
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1306f7fe-8d73-4739-5782-08d961966061
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Aug 2021 15:47:23.9202
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Vup7ZywyrfHJIXhKLwhzC2m+JIQhtjAvotuc+ISnKxbIn8TQeu34zzvsdbBYGtASMi9Y9WL9KXMm4/gp+w7IXw==
+X-MS-Exchange-CrossTenant-userprincipalname: V0MUivmrOVSQBNIdxx4S2S57tKr/cBmCP9e/20gz9kQ1Sn7lw7Gncm5ac0H+H5AX1y3ybJzWmgK+4LAblu4DmA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB4236
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10079 signatures=668682
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 adultscore=0
  suspectscore=0 phishscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
  definitions=main-2108170097
-X-Proofpoint-ORIG-GUID: 6wLUSumkP1E4IqUzaoBopsjRat0mhLAs
-X-Proofpoint-GUID: 6wLUSumkP1E4IqUzaoBopsjRat0mhLAs
+X-Proofpoint-ORIG-GUID: 9YNoeBvOTHUVUrfVaq8W1UPvUa1OhWvR
+X-Proofpoint-GUID: 9YNoeBvOTHUVUrfVaq8W1UPvUa1OhWvR
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
 
-Remove references to mm_struct linked list and highest_vm_end for when they=
- are removed
+Don't use the mm_struct linked list or the vma->vm_next in prep for removal
 
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 ---
- fs/proc/task_mmu.c | 47 ++++++++++++++++++++++++++++------------------
- 1 file changed, 29 insertions(+), 18 deletions(-)
+ fs/userfaultfd.c | 34 +++++++++++++++++++++++++++-------
+ 1 file changed, 27 insertions(+), 7 deletions(-)
 
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index ab9b4ff44b54..bea4d54ae90a 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -164,14 +164,13 @@ static void *m_start(struct seq_file *m, loff_t *ppos=
-)
- static void *m_next(struct seq_file *m, void *v, loff_t *ppos)
+diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+index 003f0d31743e..bd181f922999 100644
+--- a/fs/userfaultfd.c
++++ b/fs/userfaultfd.c
+@@ -606,14 +606,18 @@ static void userfaultfd_event_wait_completion(struct =
+userfaultfd_ctx *ctx,
+ 	if (release_new_ctx) {
+ 		struct vm_area_struct *vma;
+ 		struct mm_struct *mm =3D release_new_ctx->mm;
++		MA_STATE(mas, &mm->mm_mt, 0, 0);
+=20
+ 		/* the various vma->vm_userfaultfd_ctx still points to it */
+ 		mmap_write_lock(mm);
+-		for (vma =3D mm->mmap; vma; vma =3D vma->vm_next)
++		mas_lock(&mas);
++		mas_for_each(&mas, vma, ULONG_MAX) {
+ 			if (vma->vm_userfaultfd_ctx.ctx =3D=3D release_new_ctx) {
+ 				vma->vm_userfaultfd_ctx =3D NULL_VM_UFFD_CTX;
+ 				vma->vm_flags &=3D ~__VM_UFFD_FLAGS;
+ 			}
++		}
++		mas_unlock(&mas);
+ 		mmap_write_unlock(mm);
+=20
+ 		userfaultfd_ctx_put(release_new_ctx);
+@@ -798,7 +802,10 @@ int userfaultfd_unmap_prep(struct vm_area_struct *vma,
+ 			   unsigned long start, unsigned long end,
+ 			   struct list_head *unmaps)
  {
- 	struct proc_maps_private *priv =3D m->private;
--	struct vm_area_struct *next, *vma =3D v;
-+	struct vm_area_struct *next =3D NULL, *vma =3D v;
+-	for ( ; vma && vma->vm_start < end; vma =3D vma->vm_next) {
++	MA_STATE(mas, &vma->vm_mm->mm_mt, vma->vm_start, vma->vm_start);
++
++	rcu_read_lock();
++	mas_for_each(&mas, vma, end) {
+ 		struct userfaultfd_unmap_ctx *unmap_ctx;
+ 		struct userfaultfd_ctx *ctx =3D vma->vm_userfaultfd_ctx.ctx;
 =20
--	if (vma =3D=3D priv->tail_vma)
--		next =3D NULL;
--	else if (vma->vm_next)
--		next =3D vma->vm_next;
--	else
--		next =3D priv->tail_vma;
-+	if (vma !=3D priv->tail_vma) {
-+		next =3D vma_next(vma->vm_mm, vma);
-+		if (!next)
-+			next =3D priv->tail_vma;
-+	}
+@@ -817,6 +824,7 @@ int userfaultfd_unmap_prep(struct vm_area_struct *vma,
+ 		unmap_ctx->end =3D end;
+ 		list_add_tail(&unmap_ctx->list, unmaps);
+ 	}
++	rcu_read_unlock();
 =20
- 	*ppos =3D next ? next->vm_start : -1UL;
-=20
-@@ -840,16 +839,16 @@ static int show_smaps_rollup(struct seq_file *m, void=
- *v)
- {
- 	struct proc_maps_private *priv =3D m->private;
- 	struct mem_size_stats mss;
--	struct mm_struct *mm;
-+	struct mm_struct *mm =3D priv->mm;
- 	struct vm_area_struct *vma;
--	unsigned long last_vma_end =3D 0;
-+	unsigned long vma_start =3D 0, last_vma_end =3D 0;
- 	int ret =3D 0;
+ 	return 0;
+ }
+@@ -848,6 +856,7 @@ static int userfaultfd_release(struct inode *inode, str=
+uct file *file)
+ 	/* len =3D=3D 0 means wake all */
+ 	struct userfaultfd_wake_range range =3D { .len =3D 0, };
+ 	unsigned long new_flags;
 +	MA_STATE(mas, &mm->mm_mt, 0, 0);
 =20
- 	priv->task =3D get_proc_task(priv->inode);
- 	if (!priv->task)
- 		return -ESRCH;
+ 	WRITE_ONCE(ctx->released, true);
 =20
--	mm =3D priv->mm;
- 	if (!mm || !mmget_not_zero(mm)) {
- 		ret =3D -ESRCH;
- 		goto out_put_task;
-@@ -862,8 +861,14 @@ static int show_smaps_rollup(struct seq_file *m, void =
-*v)
- 		goto out_put_mm;
-=20
- 	hold_task_mempolicy(priv);
-+	rcu_read_lock();
-+	vma =3D mas_find(&mas, 0);
+@@ -863,9 +872,11 @@ static int userfaultfd_release(struct inode *inode, st=
+ruct file *file)
+ 	 * taking the mmap_lock for writing.
+ 	 */
+ 	mmap_write_lock(mm);
++	mas_lock(&mas);
+ 	prev =3D NULL;
+-	for (vma =3D mm->mmap; vma; vma =3D vma->vm_next) {
++	mas_for_each(&mas, vma, ULONG_MAX) {
+ 		cond_resched();
 +
-+	if (unlikely(!vma))
-+		goto empty_set;
+ 		BUG_ON(!!vma->vm_userfaultfd_ctx.ctx ^
+ 		       !!(vma->vm_flags & __VM_UFFD_FLAGS));
+ 		if (vma->vm_userfaultfd_ctx.ctx !=3D ctx) {
+@@ -885,6 +896,7 @@ static int userfaultfd_release(struct inode *inode, str=
+uct file *file)
+ 		vma->vm_flags =3D new_flags;
+ 		vma->vm_userfaultfd_ctx =3D NULL_VM_UFFD_CTX;
+ 	}
++	mas_unlock(&mas);
+ 	mmap_write_unlock(mm);
+ 	mmput(mm);
+ wakeup:
+@@ -1281,6 +1293,7 @@ static int userfaultfd_register(struct userfaultfd_ct=
+x *ctx,
+ 	bool found;
+ 	bool basic_ioctls;
+ 	unsigned long start, end, vma_end;
++	MA_STATE(mas, &mm->mm_mt, 0, 0);
 =20
--	for (vma =3D priv->mm->mmap; vma;) {
-+	vma_start =3D vma->vm_start;
-+	do {
- 		smap_gather_stats(vma, &mss, 0);
- 		last_vma_end =3D vma->vm_end;
+ 	user_uffdio_register =3D (struct uffdio_register __user *) arg;
 =20
-@@ -872,12 +877,15 @@ static int show_smaps_rollup(struct seq_file *m, void=
- *v)
- 		 * access it for write request.
- 		 */
- 		if (mmap_lock_is_contended(mm)) {
-+			rcu_read_unlock();
-+			mas_pause(&mas);
- 			mmap_read_unlock(mm);
- 			ret =3D mmap_read_lock_killable(mm);
- 			if (ret) {
- 				release_task_mempolicy(priv);
- 				goto out_put_mm;
- 			}
-+			rcu_read_lock();
+@@ -1323,6 +1336,7 @@ static int userfaultfd_register(struct userfaultfd_ct=
+x *ctx,
+ 		goto out;
 =20
- 			/*
- 			 * After dropping the lock, there are four cases to
-@@ -915,7 +923,7 @@ static int show_smaps_rollup(struct seq_file *m, void *=
-v)
- 			 *    contains last_vma_end.
- 			 *    Iterate VMA' from last_vma_end.
- 			 */
--			vma =3D find_vma(mm, last_vma_end - 1);
-+			vma =3D mas_find(&mas, ULONG_MAX);
- 			/* Case 3 above */
- 			if (!vma)
- 				break;
-@@ -929,16 +937,16 @@ static int show_smaps_rollup(struct seq_file *m, void=
- *v)
- 				smap_gather_stats(vma, &mss, last_vma_end);
- 		}
- 		/* Case 2 above */
+ 	mmap_write_lock(mm);
++	mas_lock(&mas);
+ 	vma =3D find_vma_prev(mm, start, &prev);
+ 	if (!vma)
+ 		goto out_unlock;
+@@ -1348,7 +1362,8 @@ static int userfaultfd_register(struct userfaultfd_ct=
+x *ctx,
+ 	 */
+ 	found =3D false;
+ 	basic_ioctls =3D false;
+-	for (cur =3D vma; cur && cur->vm_start < end; cur =3D cur->vm_next) {
++	mas_set(&mas, vma->vm_start);
++	mas_for_each(&mas, cur, end) {
+ 		cond_resched();
+=20
+ 		BUG_ON(!!cur->vm_userfaultfd_ctx.ctx ^
+@@ -1466,9 +1481,10 @@ static int userfaultfd_register(struct userfaultfd_c=
+tx *ctx,
+ 	skip:
+ 		prev =3D vma;
+ 		start =3D vma->vm_end;
 -		vma =3D vma->vm_next;
--	}
-+	} while ((vma =3D mas_find(&mas, ULONG_MAX)) !=3D NULL);
++		vma =3D vma_next(mm, vma);
+ 	} while (vma && vma->vm_start < end);
+ out_unlock:
++	mas_unlock(&mas);
+ 	mmap_write_unlock(mm);
+ 	mmput(mm);
+ 	if (!ret) {
+@@ -1511,6 +1527,7 @@ static int userfaultfd_unregister(struct userfaultfd_=
+ctx *ctx,
+ 	bool found;
+ 	unsigned long start, end, vma_end;
+ 	const void __user *buf =3D (void __user *)arg;
++	MA_STATE(mas, &mm->mm_mt, 0, 0);
 =20
--	show_vma_header_prefix(m, priv->mm->mmap->vm_start,
--			       last_vma_end, 0, 0, 0, 0);
-+empty_set:
-+	show_vma_header_prefix(m, vma_start, last_vma_end, 0, 0, 0, 0);
- 	seq_pad(m, ' ');
- 	seq_puts(m, "[rollup]\n");
+ 	ret =3D -EFAULT;
+ 	if (copy_from_user(&uffdio_unregister, buf, sizeof(uffdio_unregister)))
+@@ -1529,6 +1546,7 @@ static int userfaultfd_unregister(struct userfaultfd_=
+ctx *ctx,
+ 		goto out;
 =20
- 	__show_smap(m, &mss, true);
+ 	mmap_write_lock(mm);
++	mas_lock(&mas);
+ 	vma =3D find_vma_prev(mm, start, &prev);
+ 	if (!vma)
+ 		goto out_unlock;
+@@ -1554,7 +1572,8 @@ static int userfaultfd_unregister(struct userfaultfd_=
+ctx *ctx,
+ 	 */
+ 	found =3D false;
+ 	ret =3D -EINVAL;
+-	for (cur =3D vma; cur && cur->vm_start < end; cur =3D cur->vm_next) {
++	mas_set(&mas, vma->vm_start);
++	mas_for_each(&mas, cur, end) {
+ 		cond_resched();
 =20
-+	rcu_read_unlock();
- 	release_task_mempolicy(priv);
- 	mmap_read_unlock(mm);
-=20
-@@ -1226,6 +1234,7 @@ static ssize_t clear_refs_write(struct file *file, co=
-nst char __user *buf,
- 		return -ESRCH;
- 	mm =3D get_task_mm(task);
- 	if (mm) {
-+		MA_STATE(mas, &mm->mm_mt, 0, 0);
- 		struct mmu_notifier_range range;
- 		struct clear_refs_private cp =3D {
- 			.type =3D type,
-@@ -1245,19 +1254,21 @@ static ssize_t clear_refs_write(struct file *file, =
-const char __user *buf,
- 		}
-=20
- 		if (type =3D=3D CLEAR_REFS_SOFT_DIRTY) {
--			for (vma =3D mm->mmap; vma; vma =3D vma->vm_next) {
-+			mas_lock(&mas);
-+			mas_for_each(&mas, vma, ULONG_MAX) {
- 				if (!(vma->vm_flags & VM_SOFTDIRTY))
- 					continue;
- 				vma->vm_flags &=3D ~VM_SOFTDIRTY;
- 				vma_set_page_prot(vma);
- 			}
-+			mas_unlock(&mas);
-=20
- 			inc_tlb_flush_pending(mm);
- 			mmu_notifier_range_init(&range, MMU_NOTIFY_SOFT_DIRTY,
- 						0, NULL, mm, 0, -1UL);
- 			mmu_notifier_invalidate_range_start(&range);
- 		}
--		walk_page_range(mm, 0, mm->highest_vm_end, &clear_refs_walk_ops,
-+		walk_page_range(mm, 0, -1, &clear_refs_walk_ops,
- 				&cp);
- 		if (type =3D=3D CLEAR_REFS_SOFT_DIRTY) {
- 			mmu_notifier_invalidate_range_end(&range);
+ 		BUG_ON(!!cur->vm_userfaultfd_ctx.ctx ^
+@@ -1640,9 +1659,10 @@ static int userfaultfd_unregister(struct userfaultfd=
+_ctx *ctx,
+ 	skip:
+ 		prev =3D vma;
+ 		start =3D vma->vm_end;
+-		vma =3D vma->vm_next;
++		vma =3D vma_next(mm, vma);
+ 	} while (vma && vma->vm_start < end);
+ out_unlock:
++	mas_unlock(&mas);
+ 	mmap_write_unlock(mm);
+ 	mmput(mm);
+ out:
 --=20
 2.30.2
