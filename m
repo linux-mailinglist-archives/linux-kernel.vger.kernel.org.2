@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D7C3EED06
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA3A3EED0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237563AbhHQNHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 09:07:09 -0400
-Received: from mail-mw2nam08on2087.outbound.protection.outlook.com ([40.107.101.87]:58955
-        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
+        id S239844AbhHQNHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 09:07:54 -0400
+Received: from mail-dm6nam12on2053.outbound.protection.outlook.com ([40.107.243.53]:61792
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235463AbhHQNHE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 09:07:04 -0400
+        id S237231AbhHQNHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 09:07:53 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PWwOTOdpYWCBg9w9ao3TgLNQJgrKEi2Ounzox3AKnVUY1bJtL3MN6o0rC9/Ok5dU/TCM4OOokoqGQcNDUGRCFI613Ow6BHapbXVuQj/U7uZFEhdGOdGDzvp25URxS0u+4mJLoHi8tYqoouIDkMaWwMgnBnhLSSzcuVDZPoZSFU5jtXD+TdvlSW7jbZEcWG8vJLVt5fNLxOkenbkSlAA46Ug2cAhcLkzpBRlYlVHrd6CcdqPS9C7GXrQH6xAp8UNM/6n/GbYKYkvZEdHeaWWstF4IYYaegCRNk5DQecG0Nw24ayuEA+EF5Z8EMcqzHQGbusgFh1VtyZutnsSpjXu0iw==
+ b=XpJVj84OSYxpILZgnNYmBj0BaxCOgS/AwE/jzc2s059/1l+Z6ohiKgAPDVicZb/mPjzxhab7jJuQ4df+EHFO414nqJohqPPDHB5HJCL6z+26unkzb8eIh4Ymg6Sfa+yq8oOH/tg7Zd12piDb7Esg1kU6N0Its5YdevVJpJ4LX0kF1wVvT0lyPyZ+QprT/vVaJNVx1zaKpIJt8q2QTAtJHgCr/u93RYdccbPM5F2cLQ984dmiax81huP9Sn3pgrKwElpf8GPuZmwB2Rh7uWCPn3tUrtMvxEhqEEPeng3DrgEKKCnq6VpFpX3mQxFfUati6UD5RHGchAlOB49pTbBcuw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BH7RRuqb8OM/74/FfL063BIok+oR5nr90Ex0VAVvnpk=;
- b=IJXns3HbT1jqvL0itoc6VsSo+ba6Wcn8pWbtiViCjNzPHVBlwlBgPNYeKC2+wZKDwzIsz7FEqHXPqxb+3C5JrWiMGni/nO27UGfZS0Nm0b6KRuTyPtnTVxi7PNlVZ/aavhtzlPyqRiO8SMN+21sm/moxTUV+X2vEVSklvzNFpyHPDg7/1q9QQnq3d5Bmj2mHf+TBT8Q+mP6btOXrKCfjc/Y4k157OSQYOxYuoQw/OBou4LUiqQAoRuzk1vMK8h6PjjSChYAsH+siBj+xNNK8pu438n1FykHhZLWLxn9JkEH7MzABcrKI90xoxjYo94VZTYKyx4b9tb8vRqfa0B5UlQ==
+ bh=hmt77Apw8zUr9Ux6jYtpEUzzF15/ZPF1GjmuqrH/5W8=;
+ b=nDprRvMp1JtdEdg0ChLtL0vdhDX+A5CM9GMZBskDkbJuLNxh3AsjgnKmh5IxQN8rT5ZaSWgUIXtp3yoGUsTSpD8aIdGHgnhAkPlMfiWExGgiCP6iOkOhkfploXqJAvEDdAMCKVYCcbkkG9AXQuAjQtBNDSD2DzgVTj7zOjqdk6Nc2EkORgLLr4ePWGjQWKd07wh4/0pPnkLCfAxn6hbyxPSd3wE4FnCtygF+YIZ8OCymxzn79+FxveZNXIVjUTPdxeDywzPQi70AcpzxBhI/mzDAHf1WUA68Cx9FmZ4r3tJ82321SUhrrLJWqGCKncMaCu2CJLjjGlNCWKrTL8p1Qg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
@@ -26,30 +26,29 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BH7RRuqb8OM/74/FfL063BIok+oR5nr90Ex0VAVvnpk=;
- b=CCtiz0y9N+awWqrd2p6sOrwTUCvHRuQJGlC5gDkyUucbd0mPS/Xke/RrgX+Cwhk4MgQamdmqvILfdxiuazO1lEcRxwRAv4JnX8HF10mFKWjzQdGky+94KpYwPxIk0w8ChcQbtsEi/UJDBM3+Baby8y3aEKZA/pPoLk8n66CkiO8=
-Received: from BN6PR12CA0025.namprd12.prod.outlook.com (2603:10b6:405:70::11)
- by BYAPR02MB4423.namprd02.prod.outlook.com (2603:10b6:a03:5f::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17; Tue, 17 Aug
- 2021 13:06:28 +0000
-Received: from BN1NAM02FT050.eop-nam02.prod.protection.outlook.com
- (2603:10b6:405:70:cafe::91) by BN6PR12CA0025.outlook.office365.com
- (2603:10b6:405:70::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.15 via Frontend
- Transport; Tue, 17 Aug 2021 13:06:28 +0000
+ bh=hmt77Apw8zUr9Ux6jYtpEUzzF15/ZPF1GjmuqrH/5W8=;
+ b=szUNcFYyKDJP+gxVvwvZXOPBh/V0Ly4WbG+KPemPMeRZGPNSldwUsgl+Nx5+BrMyGCdaddfhtplBHbEQ6X+zH4GOVRxU3YcKfeJ+U+ZI4Fy1qMqoRsF+Z+W0VY6kqJrWosj90GSXV3RmREC8jody0uf/PI6ocSI+plRkaP0YZ1Q=
+Received: from SA9P221CA0003.NAMP221.PROD.OUTLOOK.COM (2603:10b6:806:25::8) by
+ BYAPR02MB4229.namprd02.prod.outlook.com (2603:10b6:a02:fd::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4415.14; Tue, 17 Aug 2021 13:07:18 +0000
+Received: from SN1NAM02FT0017.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:806:25:cafe::cd) by SA9P221CA0003.outlook.office365.com
+ (2603:10b6:806:25::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16 via Frontend
+ Transport; Tue, 17 Aug 2021 13:07:18 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
  smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=pass action=none header.from=xilinx.com;
 Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
  149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- BN1NAM02FT050.mail.protection.outlook.com (10.13.2.158) with Microsoft SMTP
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT0017.mail.protection.outlook.com (10.97.4.104) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4415.16 via Frontend Transport; Tue, 17 Aug 2021 13:06:27 +0000
+ 15.20.4415.16 via Frontend Transport; Tue, 17 Aug 2021 13:07:18 +0000
 Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2176.2; Tue, 17 Aug 2021 06:06:27 -0700
 Received: from smtp.xilinx.com (172.19.127.95) by
@@ -63,16 +62,16 @@ Envelope-to: linux-kernel@vger.kernel.org,
 Received: from [172.19.2.91] (port=34742 helo=xsjjollys50.xilinx.com)
         by smtp.xilinx.com with esmtp (Exim 4.90)
         (envelope-from <ronak.jain@xilinx.com>)
-        id 1mFynT-0002Yt-5i; Tue, 17 Aug 2021 06:06:27 -0700
+        id 1mFynT-0002Yt-6W; Tue, 17 Aug 2021 06:06:27 -0700
 From:   Ronak Jain <ronak.jain@xilinx.com>
 To:     <michal.simek@xilinx.com>, <linux-kernel@vger.kernel.org>
 CC:     <gregkh@linuxfoundation.org>, <rajan.vaja@xilinx.com>,
         <corbet@lwn.net>, <linux-arm-kernel@lists.infradead.org>,
         <arnd@arndb.de>, <lakshmi.sai.krishna.potthuri@xilinx.com>,
         Ronak Jain <ronak.jain@xilinx.com>
-Subject: [PATCH 1/3] firmware: xilinx: Add support for runtime features
-Date:   Tue, 17 Aug 2021 06:05:51 -0700
-Message-ID: <20210817130553.20219-2-ronak.jain@xilinx.com>
+Subject: [PATCH 2/3] firmware: zynqmp: Add sysfs entry for runtime features
+Date:   Tue, 17 Aug 2021 06:05:52 -0700
+Message-ID: <20210817130553.20219-3-ronak.jain@xilinx.com>
 X-Mailer: git-send-email 2.32.0.93.g670b81a
 In-Reply-To: <20210817130553.20219-1-ronak.jain@xilinx.com>
 References: <20210817130553.20219-1-ronak.jain@xilinx.com>
@@ -81,148 +80,181 @@ Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b1619f04-206f-4970-7e92-08d9617fd322
-X-MS-TrafficTypeDiagnostic: BYAPR02MB4423:
-X-Microsoft-Antispam-PRVS: <BYAPR02MB4423B2EFDB57D2959570FBF1A4FE9@BYAPR02MB4423.namprd02.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: d2bfea1f-aad5-45d6-9f00-08d9617ff0fb
+X-MS-TrafficTypeDiagnostic: BYAPR02MB4229:
+X-Microsoft-Antispam-PRVS: <BYAPR02MB422929A255F5D398E7B216B2A4FE9@BYAPR02MB4229.namprd02.prod.outlook.com>
 X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bKgde51Lrlh3EzH3TCNx3RFbXMAtxWp8ZiRO+7xbW9Xle0ymCcCmQXJ9RqZkH5Cdic2n9Zd1Z2EJXE2iQ9cg9m+6ylHyFlrVUo8NfwTEW9zJOqq/iNwxJk2KLbu75SDDnggroLIW+2UwNmyI/Ul090HUNRgtaz7V4NXuMzrYKRd10fI78Ehfj6KPEhixb6No/2bpLWAXJe/Bel1mLuJhZNzVnA/Cf9uxUequcueSKS+JZa91T17MeDMaM6lENAUDOj17ek74nRn5qQl4qvPrxHIEog8MnmPJIDfxJaLKYuI4z2COKpilo0qW3AtSCZfnex4RBcqEqVfqTpvub/mVXI0X2xQPM6dwyzDWT+IoUUbuUR/W0qwTVwroJsX1c8baCPnMA7T+55YFwhTC609DlgnfDuRg0QgBxrYnqEyC8nIruFgR6fFJ2Wd/ccA5AXLucs6RaP9jYFENP3OMt+mlAO5avlQW29lzLCpe9e6h1yoyhCBOT7PBiK2njRHQYFv7l4ZrXkFsaWEFsO4efxVJjIXYOjrSyRQ/W30AWy2jJyM429DUaMVGKOPB77MOHWo6tMHFI+8deoFJZG2KdsfoiIx/DucTR+xPUp2oYiO+axU3g1N09EqoLrYQ5Pxe1U+oUOx+yXpW3UlSY6WD7TZa8i+FxaThwEwx6sCrsbOfjMeDxmE2U/UrcyMs3J+bS9D4TP3elQr+hx52bpWSbFwMZbQ96Pu+XgzvxCagYq5FTh8=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(396003)(39860400002)(46966006)(36840700001)(70206006)(26005)(5660300002)(107886003)(186003)(44832011)(426003)(356005)(9786002)(36860700001)(6666004)(2616005)(70586007)(8936002)(336012)(2906002)(7636003)(8676002)(82740400003)(83380400001)(54906003)(1076003)(82310400003)(36756003)(7696005)(47076005)(4326008)(478600001)(110136005)(36906005)(316002)(102446001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: RX5pt8cJSkcfV1MVE68xI78qaoOOqk82ubve6ILsJC1RVEMtbVm3KL4Y0NQFHVrxcqzWuHzdVe5quinuj/xKyfunSn8zcHRTvk0EqDlxL8ChXNLF8uYPurOvSvw9K4NLpzCDzp7y6+L4WFtqtOqSF32mejRyOPjH8SknRCRe7KU9x1JPduR2+hZQ/6zgUD4TPgCh4nIesv6URfmhQk8zRZQJ3OW10meXYan43F7CvQU5YF30w3Tt7Dg8G9hVSfgAVsTPR+HLgsKPKrWKDOaPNWv++zR+4lyVyyYsFvcNiiCM73iKNy11cNXe/CuE6uYNVQYBQFrapEQ5Qn+dqrofYSzJqjNWGrr9O77nVg1WwFrWp4uKmhLrOYXba4QYNesMW+alxJ1t+zBaa0hpullZxYWtmxEmIqx7+x9I55hz8x3qgzP2DPxdft1ks80UGzrzdX/itABehV2NblJ2SjUQTbf9nDlzz9S8EHbRhzqjmdqKrw7g36IpAUJvSgXzj/46+XoJ6kA1vgvzoxz8g9TqaOlL+MhqdTeSBG30Gqhfx4zt2TeHFiL5J0Np0gFari3DajSkhrIrtyGHtNuqvxLT523A2lk+xA2lDMyFEWgWRzSRD7T2X6skYS7wK0c+BH9UAIfRJpZKLTvBIMhO4RZ7iy97edtExkk/RP2TnDMbnbEg5id612xEv7CEgtX5FdsRrwBWlKQ/wEPOYw0w5cf1uTUKB+yQFhVtTfJGH9/+jUw=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(2616005)(54906003)(36756003)(426003)(44832011)(4326008)(8936002)(110136005)(356005)(7696005)(70586007)(36860700001)(70206006)(336012)(107886003)(47076005)(36906005)(82310400003)(316002)(9786002)(7636003)(186003)(2906002)(1076003)(5660300002)(508600001)(26005)(6666004)(83380400001)(8676002)(102446001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2021 13:06:27.9300
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2021 13:07:18.0589
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b1619f04-206f-4970-7e92-08d9617fd322
+X-MS-Exchange-CrossTenant-Network-Message-Id: d2bfea1f-aad5-45d6-9f00-08d9617ff0fb
 X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN1NAM02FT050.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0017.eop-nam02.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB4423
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB4229
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for runtime features by using an IOCTL call. The features
- can be enabled or disabled on the firmware as well as the features
- can configure at runtime by querying IOCTL_SET_FEATURE_CONFIG id.
- Similarly, the user can get the configured values of features by
- querying IOCTL_GET_FEATURE_CONFIG id. Here, we have added support for
- the over temperature and external watchdog features only.
+Create sysfs entry for runtime feature configuration. Here the support
+ is added for an over temperature and external watchdog feature.
+
+The below listed path is used for runtime features configuration:
+/sys/devices/platform/firmware\:zynqmp-firmware/*
+
+Here there are two files to configure features at runtime.
+1. feature_config_id
+2. feature_config_value
+
+In order to configure an over temperature or external watchdog
+ features, first the user need to select the valid config id and then
+ the user can configure the value for selected feature config id.
 
 Signed-off-by: Ronak Jain <ronak.jain@xilinx.com>
 ---
- drivers/firmware/xilinx/zynqmp.c     | 27 +++++++++++++++++++++++++++
- include/linux/firmware/xlnx-zynqmp.h | 25 +++++++++++++++++++++++++
- 2 files changed, 52 insertions(+)
+ .../ABI/stable/sysfs-driver-firmware-zynqmp   | 84 +++++++++++++++++++
+ 1 file changed, 84 insertions(+)
 
-diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zyn=
-qmp.c
-index 15b138326ecc..e2b0a8fb6f44 100644
---- a/drivers/firmware/xilinx/zynqmp.c
-+++ b/drivers/firmware/xilinx/zynqmp.c
-@@ -1049,6 +1049,33 @@ int zynqmp_pm_system_shutdown(const u32 type, const =
-u32 subtype)
-                                   0, 0, NULL);
- }
+diff --git a/Documentation/ABI/stable/sysfs-driver-firmware-zynqmp b/Docume=
+ntation/ABI/stable/sysfs-driver-firmware-zynqmp
+index f5724bb5b462..2fde354715a5 100644
+--- a/Documentation/ABI/stable/sysfs-driver-firmware-zynqmp
++++ b/Documentation/ABI/stable/sysfs-driver-firmware-zynqmp
+@@ -113,3 +113,87 @@ Description:
+                    # echo 0 > /sys/devices/platform/firmware\:zynqmp-firmw=
+are/health_status
 
-+/**
-+ * zynqmp_pm_set_feature_config - PM call to request IOCTL for feature con=
-fig
-+ * @id:         The config ID of the feature to be configured
-+ * @value:      The config value of the feature to be configured
-+ *
-+ * Return:      Returns 0 on success or error value on failure.
-+ */
-+int zynqmp_pm_set_feature_config(enum pm_feature_config_id id, u32 value)
-+{
-+       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_SET_FEATURE_CONFIG,
-+                                  id, value, NULL);
-+}
+ Users:         Xilinx
 +
-+/**
-+ * zynqmp_pm_get_feature_config - PM call to get value of configured featu=
-re
-+ * @id:         The config id of the feature to be queried
-+ * @payload:    Returned value array
-+ *
-+ * Return:      Returns 0 on success or error value on failure.
-+ */
-+int zynqmp_pm_get_feature_config(enum pm_feature_config_id id,
-+                                u32 *payload)
-+{
-+       return zynqmp_pm_invoke_fn(PM_IOCTL, 0, IOCTL_GET_FEATURE_CONFIG,
-+                                  id, 0, payload);
-+}
++What:          /sys/devices/platform/firmware\:zynqmp-firmware/feature_con=
+fig_*
++Date:          Aug 2021
++KernelVersion: 5.14
++Contact:       "Ronak Jain" <ronak.jain@xilinx.com>
++Description:
++               This sysfs interface allows to configure features at runtim=
+e.
++               The user can enable or disable features running at firmware=
+.
++               Also, the user can configure the parameters of the features
++               at runtime. The supported features are over temperature and
++               external watchdog. Here, the external watchdog is completel=
+y
++               different than the /dev/watchdog as the external watchdog i=
+s
++               running on the firmware and it is used to monitor the healt=
+h
++               of firmware not APU(Linux). Also, the external watchdog is
++               interfaced outside of the zynqmp soc.
 +
- /**
-  * struct zynqmp_pm_shutdown_scope - Struct for shutdown scope
-  * @subtype:   Shutdown subtype
-diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/=
-xlnx-zynqmp.h
-index 9d1a5c175065..06d82e334d2b 100644
---- a/include/linux/firmware/xlnx-zynqmp.h
-+++ b/include/linux/firmware/xlnx-zynqmp.h
-@@ -119,6 +119,9 @@ enum pm_ioctl_id {
-        IOCTL_READ_PGGS =3D 15,
-        /* Set healthy bit value */
-        IOCTL_SET_BOOT_HEALTH_STATUS =3D 17,
-+       /* Runtime feature configuration */
-+       IOCTL_SET_FEATURE_CONFIG =3D 26,
-+       IOCTL_GET_FEATURE_CONFIG =3D 27,
- };
-
- enum pm_query_id {
-@@ -347,6 +350,14 @@ enum zynqmp_pm_shutdown_subtype {
-        ZYNQMP_PM_SHUTDOWN_SUBTYPE_SYSTEM =3D 2,
- };
-
-+enum pm_feature_config_id {
-+       PM_FEATURE_INVALID =3D 0,
-+       PM_FEATURE_OVERTEMP_STATUS =3D 1,
-+       PM_FEATURE_OVERTEMP_VALUE =3D 2,
-+       PM_FEATURE_EXTWDT_STATUS =3D 3,
-+       PM_FEATURE_EXTWDT_VALUE =3D 4,
-+};
++               By default the features are disabled in the firmware. The u=
+ser
++               can enable features by querying appropriate config id of th=
+e
++               features.
 +
- /**
-  * struct zynqmp_pm_query_data - PM query data
-  * @qid:       query ID
-@@ -411,6 +422,8 @@ int zynqmp_pm_pinctrl_get_config(const u32 pin, const u=
-32 param,
-                                 u32 *value);
- int zynqmp_pm_pinctrl_set_config(const u32 pin, const u32 param,
-                                 u32 value);
-+int zynqmp_pm_set_feature_config(enum pm_feature_config_id id, u32 value);
-+int zynqmp_pm_get_feature_config(enum pm_feature_config_id id, u32 *payloa=
-d);
- #else
- static inline int zynqmp_pm_get_api_version(u32 *version)
- {
-@@ -622,6 +635,18 @@ static inline int zynqmp_pm_pinctrl_set_config(const u=
-32 pin, const u32 param,
- {
-        return -ENODEV;
- }
++               The default limit for the over temperature is 90 Degree Cel=
+sius.
++               The default timer interval for the external watchdog is 570=
+ms.
 +
-+static inline int zynqmp_pm_set_feature_config(enum pm_feature_config_id i=
-d,
-+                                              u32 value)
-+{
-+       return -ENODEV;
-+}
++               The supported config ids are for the feature configuration =
+is,
++               1. PM_FEATURE_OVERTEMP_STATUS =3D 1, the user can enable or
++               disable the over temperature feature.
++               2. PM_FEATURE_OVERTEMP_VALUE =3D 2, the user can configure =
+the
++               over temperature limit in Degree Celsius.
++               3. PM_FEATURE_EXTWDT_STATUS =3D 3, the user can enable or d=
+isable
++               the external watchdog feature.
++               4. PM_FEATURE_EXTWDT_VALUE =3D 4, the user can configure th=
+e
++               external watchdog feature.
 +
-+static inline int zynqmp_pm_get_feature_config(enum pm_feature_config_id i=
-d,
-+                                              u32 *payload)
-+{
-+       return -ENODEV;
-+}
- #endif
-
- #endif /* __FIRMWARE_ZYNQMP_H__ */
++               Usage:
++
++               Enable over temperature feature
++               # echo 1 > /sys/devices/platform/firmware\:zynqmp-firmware/=
+feature_config_id
++               # echo 1 > /sys/devices/platform/firmware\:zynqmp-firmware/=
+feature_config_value
++
++               Check whether the over temperature feature is enabled or no=
+t
++               # cat /sys/devices/platform/firmware\:zynqmp-firmware/featu=
+re_config_value
++               The expected result is 1.
++
++               Disable over temperature feature
++               # echo 1 > /sys/devices/platform/firmware\:zynqmp-firmware/=
+feature_config_id
++               # echo 0 > /sys/devices/platform/firmware\:zynqmp-firmware/=
+feature_config_value
++
++               Check whether the over temperature feature is disabled or n=
+ot
++               # cat /sys/devices/platform/firmware\:zynqmp-firmware/featu=
+re_config_value
++               The expected result is 0.
++
++               Configure over temperature limit to 50 Degree Celsius
++               # echo 2 > /sys/devices/platform/firmware\:zynqmp-firmware/=
+feature_config_id
++               # echo 50 > /sys/devices/platform/firmware\:zynqmp-firmware=
+/feature_config_value
++
++               Check whether the over temperature limit is configured or n=
+ot
++               # cat /sys/devices/platform/firmware\:zynqmp-firmware/featu=
+re_config_value
++               The expected result is 50.
++
++               Enable external watchdog feature
++               # echo 3 > /sys/devices/platform/firmware\:zynqmp-firmware/=
+feature_config_id
++               # echo 1 > /sys/devices/platform/firmware\:zynqmp-firmware/=
+feature_config_value
++
++               Check whether the external watchdog feature is enabled or n=
+ot
++               # cat /sys/devices/platform/firmware\:zynqmp-firmware/featu=
+re_config_value
++               The expected result is 1.
++
++               Disable external watchdog feature
++               # echo 3 > /sys/devices/platform/firmware\:zynqmp-firmware/=
+feature_config_id
++               # echo 0 > /sys/devices/platform/firmware\:zynqmp-firmware/=
+feature_config_value
++
++               Check whether the external watchdog feature is disabled or =
+not
++               # cat /sys/devices/platform/firmware\:zynqmp-firmware/featu=
+re_config_value
++               The expected result is 0.
++
++               Configure external watchdog timer interval to 500ms
++               # echo 4 > /sys/devices/platform/firmware\:zynqmp-firmware/=
+feature_config_id
++               # echo 500 > /sys/devices/platform/firmware\:zynqmp-firmwar=
+e/feature_config_value
++
++               Check whether the external watchdog timer interval is confi=
+gured or not
++               # cat /sys/devices/platform/firmware\:zynqmp-firmware/featu=
+re_config_value
++               The expected result is 500.
++
++Users:         Xilinx
 --
 2.32.0.93.g670b81a
 
