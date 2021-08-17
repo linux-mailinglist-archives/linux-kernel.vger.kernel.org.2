@@ -2,152 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9B43EEEF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 17:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54EAF3EEEFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 17:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238264AbhHQPLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 11:11:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37736 "EHLO
+        id S238237AbhHQPOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 11:14:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238258AbhHQPLr (ORCPT
+        with ESMTP id S237052AbhHQPOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 11:11:47 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECF59C061764;
-        Tue, 17 Aug 2021 08:11:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EuJByfvQk0EBkTrYkEfND0mLwG08uWKKtyupgcpfEi8=; b=NVftCgQ+xjBGnrwNBx5ruvegqJ
-        FAVc3sV285AjsRH0KssPlRljyVsgHrS49ryXkCZfdr2OrWxuEXOVQ7eL00e+dHX/2qH91U01wLlyA
-        pnH1Nf0cLhUZxT/b4LoclXcLvQlyTJJTe/YQhn53JkCaw00IVv1UVwoGZ+Ts2e9o1gGyhYGh3y/Eq
-        cfHUYVRU06fBib/zrz7QgfqcJsvcRyeKVH74Km2N9LyD2uLj491uQfgaUR4mOCYoYM2DfoDHFRlvn
-        zQ4yEGGHd06hD13wDz0jQCtRPh3ug8n3kHhU2yMX40H6No2wzmRzBrnpTe6WJNZwv/GFjWHzaSKLC
-        9t53/qBA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mG0jv-00AUjl-Vy; Tue, 17 Aug 2021 15:10:57 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 006F530009A;
-        Tue, 17 Aug 2021 17:10:53 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id ADFC42C8F5E0B; Tue, 17 Aug 2021 17:10:53 +0200 (CEST)
-Date:   Tue, 17 Aug 2021 17:10:53 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>, kernel-team@android.com
-Subject: Re: [PATCH v11 08/16] sched: Allow task CPU affinity to be
- restricted on asymmetric systems
-Message-ID: <YRvRfZ/NnuNyIu3s@hirez.programming.kicks-ass.net>
-References: <20210730112443.23245-1-will@kernel.org>
- <20210730112443.23245-9-will@kernel.org>
+        Tue, 17 Aug 2021 11:14:05 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 686C6C061764;
+        Tue, 17 Aug 2021 08:13:32 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id s21-20020a4ae5550000b02902667598672bso5989644oot.12;
+        Tue, 17 Aug 2021 08:13:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jPbqByzTm8MXGyaQ1QC2qzWAEW9nZn7Ccx15UsL0t/A=;
+        b=ISa12CYRPeVW2UgDuHHF4aifAy3qP6wGWcw9iPYZTdAOQABarK6a3u4p2dsVxUQSb/
+         u6rPribtafsqULWLT2Hb8dwqMrQnuflU/uItdu4d8iLme4/ilwY+s2L5hxudXbJKWAHq
+         L1WxqVkU0+pfGxmffpHuCdT59zL48O2VkgJrYiaF5RONnz4/CndIrSzZG1eBNuT8IolS
+         xtARGtCTM7E/YM0QD4k4Gmt3uJh7OKr3lGxND3kQniwrHjnW3AI0m5uhnZd0v4cnvuoZ
+         aGInx0i1bw3askxl+XscNoqDhUSQvfhd+Gks9K56bZGUU6y5KKHJLBUfptOpViuucRUm
+         HFiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jPbqByzTm8MXGyaQ1QC2qzWAEW9nZn7Ccx15UsL0t/A=;
+        b=LDyMFiNWdWLgdD8GDm47TbFP4LKq+dYG+lNh4HBK+Cc84cGHP9DMtP3K75RyaDxPZp
+         D/aHe/q7ZoUmrik46VgQqZCM8OaitXuiItJQiJCdlheuNYn3hCj+SmrvoZIapEgxbs2j
+         oCn4YDl0ZXrKru31jsy2J+rFc/UGONOtwD473g84KCqXLp1RxuoAwxpX111oAkdo65Gr
+         bFGuQJcQ1+gOqU43NW93FVcilpLEnwvj5WMZ92M5kAZPpnlff4jD5DbV2LzfImqHjfTP
+         ZR1f4kpk8vM6jjRpaT+ru3AvF3Wkz1EJJwSvj20ZXFR4/MNfBsybq81kMAwIv9SzHiKB
+         KYCQ==
+X-Gm-Message-State: AOAM532ORiKe5BPhglYN07vheWjZZl3++b73mO4pTPGgz/K/xy4Vzj49
+        lMSgzViL9gygzYQ0k5ECFA77ivYBgPo=
+X-Google-Smtp-Source: ABdhPJzGDdwLP/l5iYVLft878ghWnuq/Xl8SyNd/vNJxmUzbJ6UYXEXPJ8dmL+HkeMWEqMJFhQMkWg==
+X-Received: by 2002:a4a:9bc1:: with SMTP id b1mr2971340ook.69.1629213211443;
+        Tue, 17 Aug 2021 08:13:31 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id q7sm429669otl.45.2021.08.17.08.13.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Aug 2021 08:13:30 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] usb: typec: tcpm: always rediscover when swapping DR
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Icenowy Zheng <icenowy@aosc.io>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210813043131.833006-1-icenowy@aosc.io>
+ <YRuDG78N2mB5w37p@kuha.fi.intel.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <58034df4-f18c-ab3e-1fcc-dc85fc35320f@roeck-us.net>
+Date:   Tue, 17 Aug 2021 08:13:28 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210730112443.23245-9-will@kernel.org>
+In-Reply-To: <YRuDG78N2mB5w37p@kuha.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 12:24:35PM +0100, Will Deacon wrote:
-> @@ -2783,20 +2778,173 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
->  
->  	__do_set_cpus_allowed(p, new_mask, flags);
->  
-> -	return affine_move_task(rq, p, &rf, dest_cpu, flags);
-> +	if (flags & SCA_USER)
-> +		release_user_cpus_ptr(p);
-> +
-> +	return affine_move_task(rq, p, rf, dest_cpu, flags);
->  
->  out:
-> -	task_rq_unlock(rq, p, &rf);
-> +	task_rq_unlock(rq, p, rf);
->  
->  	return ret;
->  }
+On 8/17/21 2:36 AM, Heikki Krogerus wrote:
+> On Fri, Aug 13, 2021 at 12:31:31PM +0800, Icenowy Zheng wrote:
+>> Currently, TCPM code omits discover when swapping to gadget, and assume
+>> that no altmodes are available when swapping from gadget. However, we do
+>> send discover when we get attached as gadget -- this leads to modes to be
+>> discovered twice when attached as gadget and then swap to host.
+>>
+>> Always re-send discover when swapping DR, regardless of what change is
+>> being made; and because of this, the assumption that no altmodes are
+>> registered with gadget role is broken, and altmodes de-registeration is
+>> always needed now.
+>>
+>> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+>> ---
+>>   drivers/usb/typec/tcpm/tcpm.c | 9 ++++-----
+>>   1 file changed, 4 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+>> index b9bb63d749ec..ab6d0d51ee1c 100644
+>> --- a/drivers/usb/typec/tcpm/tcpm.c
+>> +++ b/drivers/usb/typec/tcpm/tcpm.c
+>> @@ -4495,15 +4495,14 @@ static void run_state_machine(struct tcpm_port *port)
+>>   		tcpm_set_state(port, ready_state(port), 0);
+>>   		break;
+>>   	case DR_SWAP_CHANGE_DR:
+>> -		if (port->data_role == TYPEC_HOST) {
+>> -			tcpm_unregister_altmodes(port);
+>> +		tcpm_unregister_altmodes(port);
+>> +		if (port->data_role == TYPEC_HOST)
+>>   			tcpm_set_roles(port, true, port->pwr_role,
+>>   				       TYPEC_DEVICE);
+>> -		} else {
+>> +		else
+>>   			tcpm_set_roles(port, true, port->pwr_role,
+>>   				       TYPEC_HOST);
+>> -			port->send_discover = true;
+>> -		}
+>> +		port->send_discover = true;
+>>   		tcpm_ams_finish(port);
+>>   		tcpm_set_state(port, ready_state(port), 0);
+>>   		break;
+> 
+> Why is it necessary to do discovery with data role swap in general?
+> 
+> thanks,
+> 
 
-> +void relax_compatible_cpus_allowed_ptr(struct task_struct *p)
-> +{
-> +	unsigned long flags;
-> +	struct cpumask *mask = p->user_cpus_ptr;
-> +
-> +	/*
-> +	 * Try to restore the old affinity mask. If this fails, then
-> +	 * we free the mask explicitly to avoid it being inherited across
-> +	 * a subsequent fork().
-> +	 */
-> +	if (!mask || !__sched_setaffinity(p, mask))
-> +		return;
-> +
-> +	raw_spin_lock_irqsave(&p->pi_lock, flags);
-> +	release_user_cpus_ptr(p);
-> +	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
-> +}
+Additional question: There are two patches pending related to DR_SWAP
+and discovery. Are they both needed, or do they both solve the same
+problem ?
 
-Both these are a problem on RT.
-
-The easiest recourse is simply never freeing the CPU mask (except on
-exit). The alternative is something like the below I suppose..
-
-I'm leaning towards the former option, wdyt?
-
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2733,6 +2733,7 @@ static int __set_cpus_allowed_ptr_locked
- 	const struct cpumask *cpu_allowed_mask = task_cpu_possible_mask(p);
- 	const struct cpumask *cpu_valid_mask = cpu_active_mask;
- 	bool kthread = p->flags & PF_KTHREAD;
-+	struct cpumask *user_mask = NULL;
- 	unsigned int dest_cpu;
- 	int ret = 0;
- 
-@@ -2792,9 +2793,13 @@ static int __set_cpus_allowed_ptr_locked
- 	__do_set_cpus_allowed(p, new_mask, flags);
- 
- 	if (flags & SCA_USER)
--		release_user_cpus_ptr(p);
-+		swap(user_mask, p->user_cpus_ptr);
-+
-+	ret = affine_move_task(rq, p, rf, dest_cpu, flags);
-+
-+	kfree(user_mask);
- 
--	return affine_move_task(rq, p, rf, dest_cpu, flags);
-+	return ret;
- 
- out:
- 	task_rq_unlock(rq, p, rf);
-@@ -2954,8 +2959,10 @@ void relax_compatible_cpus_allowed_ptr(s
- 		return;
- 
- 	raw_spin_lock_irqsave(&p->pi_lock, flags);
--	release_user_cpus_ptr(p);
-+	p->user_cpus_ptr = NULL;
- 	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
-+
-+	kfree(mask);
- }
- 
- void set_task_cpu(struct task_struct *p, unsigned int new_cpu)
+Thanks,
+Guenter
