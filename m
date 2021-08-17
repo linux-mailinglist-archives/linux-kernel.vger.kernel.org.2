@@ -2,116 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A66993EF2AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 21:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A683EF2BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 21:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233475AbhHQTbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 15:31:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47821 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229640AbhHQTbA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 15:31:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629228626;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d9FE22rxp6AYKElT4XtdoX7zLTcx3lonKYmaIy1Dz4c=;
-        b=G37IKFDCscNp6Y05fllAdtQYuKNqcDbuBmSBrbXP0xql5swk0Lr4jpgFJR5QLwo0W+fs4a
-        v7kIs5UwIalXNNN8Azs3LLbtRzuw/m985eikTROPHxsopkix90OnjY6nMXyMK4FvPML6aB
-        WeEdkTQ/WaS7rGmF2+wHjH0EJ8BKT38=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-600-4vvYO79JPfeSXV7wb0FHTg-1; Tue, 17 Aug 2021 15:30:23 -0400
-X-MC-Unique: 4vvYO79JPfeSXV7wb0FHTg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C148F1008060;
-        Tue, 17 Aug 2021 19:30:19 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.22.10.126])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4CC301036D28;
-        Tue, 17 Aug 2021 19:30:12 +0000 (UTC)
-Date:   Tue, 17 Aug 2021 15:30:10 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: [PATCH v3 2/4] sched: Introduce migratable()
-Message-ID: <YRwOQtvOW02QFVow@lorien.usersys.redhat.com>
-References: <20210811201354.1976839-1-valentin.schneider@arm.com>
- <20210811201354.1976839-3-valentin.schneider@arm.com>
- <20210817170925.2jwqvgvmqab2glwu@linutronix.de>
+        id S233700AbhHQTkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 15:40:31 -0400
+Received: from mx3.wp.pl ([212.77.101.9]:20373 "EHLO mx3.wp.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229640AbhHQTka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 15:40:30 -0400
+X-Greylist: delayed 399 seconds by postgrey-1.27 at vger.kernel.org; Tue, 17 Aug 2021 15:40:30 EDT
+Received: (wp-smtpd smtp.wp.pl 5063 invoked from network); 17 Aug 2021 21:33:14 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1629228794; bh=99YXkVPU4cave1Ach6qPRuVfMrqj6edfILB3QOdCh6I=;
+          h=From:To:Cc:Subject;
+          b=mZKgSkhYx4wjBI3BV/yImHPtiSM2sWjFkhvuZm7L4uNvqiuDCyFKNNnQ4ba/W0Bfk
+           K/gmSMrk+CGlpMJukgdNU/mqcNs1EhHcobXiIcgIpGMPq0R9NTYHHIg8HYzGkH/nGB
+           vxrGNtti3mdkqOMo7p+fG4WeMf3ikOs2qIqH5PkM=
+Received: from ip-5-172-255-149.free.aero2.net.pl (HELO LAPTOP-OLEK.Free) (olek2@wp.pl@[5.172.255.149])
+          (envelope-sender <olek2@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <hauke@hauke-m.de>; 17 Aug 2021 21:33:14 +0200
+From:   Aleksander Jan Bajkowski <olek2@wp.pl>
+To:     hauke@hauke-m.de, andrew@lunn.ch, vivien.didelot@gmail.com,
+        f.fainelli@gmail.com, olteanv@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, olek2@wp.pl, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH] net: dsa: lantiq_gswip: Add 200ms assert delay
+Date:   Tue, 17 Aug 2021 21:32:07 +0200
+Message-Id: <20210817193207.1038598-1-olek2@wp.pl>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210817170925.2jwqvgvmqab2glwu@linutronix.de>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-WP-MailID: 1588ed9fddcbfbe21994916a11f143bc
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000000 [AfMU]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 07:09:25PM +0200 Sebastian Andrzej Siewior wrote:
-> On 2021-08-11 21:13:52 [+0100], Valentin Schneider wrote:
-> > diff --git a/include/linux/sched.h b/include/linux/sched.h
-> > index debc960f41e3..8ba7b4a7ee69 100644
-> > --- a/include/linux/sched.h
-> > +++ b/include/linux/sched.h
-> > @@ -1715,6 +1715,16 @@ static inline bool is_percpu_thread(void)
-> >  #endif
-> >  }
-> >  
-> > +/* Is the current task guaranteed to stay on its current CPU? */
-> > +static inline bool migratable(void)
-> 
-> I'm going to rename this in my tree to `is_migratable' because of
+The delay is especially needed by the xRX300 and xRX330 SoCs. Without
+this patch, some phys are sometimes not properly detected.
 
-It's better anyway. See is_percpu_thread() 5 lines above :)
+Fixes: a09d042b086202735c4ed64 ("net: dsa: lantiq: allow to use all GPHYs on xRX300 and xRX330")
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Tested-by: Aleksander Jan Bajkowski <olek2@wp.pl> # tested on DWR966, HH5A
+---
+ drivers/net/dsa/lantiq_gswip.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-
-> |security/keys/trusted-keys/trusted_core.c:45:22: error: ‘migratable’ redeclared as different kind of symbol
-> |   45 | static unsigned char migratable;
-> |      |                      ^~~~~~~~~~
-> |In file included from arch/arm64/include/asm/compat.h:16,
-> |                 from arch/arm64/include/asm/stat.h:13,
-> |                 from include/linux/stat.h:6,
-> |                 from include/linux/sysfs.h:22,
-> |                 from include/linux/kobject.h:20,
-> |                 from include/linux/of.h:17,
-> |                 from include/linux/irqdomain.h:35,
-> |                 from include/linux/acpi.h:13,
-> |                 from include/linux/tpm.h:21,
-> |                 from include/keys/trusted-type.h:12,
-> |                 from security/keys/trusted-keys/trusted_core.c:10:
-> |include/linux/sched.h:1719:20: note: previous definition of ‘migratable’ was here
-> | 1719 | static inline bool migratable(void)
-> |      |                    ^~~~~~~~~~
-> 
-> Sebastian
-> 
-
+diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswip.c
+index e78026ef6d8c..9eaf013b82a3 100644
+--- a/drivers/net/dsa/lantiq_gswip.c
++++ b/drivers/net/dsa/lantiq_gswip.c
+@@ -1884,6 +1884,12 @@ static int gswip_gphy_fw_load(struct gswip_priv *priv, struct gswip_gphy_fw *gph
+ 
+ 	reset_control_assert(gphy_fw->reset);
+ 
++	/* The vendor BSP uses a 200ms delay after asserting the reset line.
++	 * Without this some users are observing that the PHY is not coming up
++	 * on the MDIO bus.
++	 */
++	msleep(200);
++
+ 	ret = request_firmware(&fw, gphy_fw->fw_name, dev);
+ 	if (ret) {
+ 		dev_err(dev, "failed to load firmware: %s, error: %i\n",
 -- 
+2.30.2
 
