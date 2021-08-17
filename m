@@ -2,71 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92B03EF55B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 00:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6743EF561
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 00:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235410AbhHQWCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 18:02:32 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:36721 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230381AbhHQWCb (ORCPT
+        id S235533AbhHQWDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 18:03:21 -0400
+Received: from mail-oo1-f48.google.com ([209.85.161.48]:37763 "EHLO
+        mail-oo1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230381AbhHQWDU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 18:02:31 -0400
-Received: by mail-ot1-f53.google.com with SMTP id r38-20020a05683044a600b0051a2c6dd421so276460otv.3;
-        Tue, 17 Aug 2021 15:01:58 -0700 (PDT)
+        Tue, 17 Aug 2021 18:03:20 -0400
+Received: by mail-oo1-f48.google.com with SMTP id l12-20020a4a94cc0000b02902618ad2ea55so96482ooi.4;
+        Tue, 17 Aug 2021 15:02:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=6QPS7TkykReNzd5f1zYvT2KM5V+uXTZ813Lm5/LaSnM=;
-        b=T0tLMFYCG0RP9mBuxq9IR2BJW2ZVhsv+wX5Qi6gu2uXIT+yttT1nIOwgO+6F/GXeYS
-         908KPEkmkrvomAofPEkDgdUjGCunJUV/mxjRQm+xxCAO0FC2fywI4/SSu4WZqAO43ccG
-         +ehxyi8pEHtKm3+/en8ly9meO6gU/caTBOMZdx+THgZT0gC+R3pRMghtIGGrHe4ZaAKC
-         z3KBf8LLXQVmAeEy73Vvt7HZbupL+d+O7twKOtcS4fG2TNKwE3diedUP61rEYGVGF3Ft
-         PkXbsZX7CPemj34QGHkqJo/VBu0LeDjyzjrkorspFq1Xy2WuZAtEpgbHdu6bBfzlxnyR
-         IQZg==
-X-Gm-Message-State: AOAM530kjxWaU87WopNstnCu6CkRL3GeeujuPCv10z8uixJYo0Y6GWBI
-        CexF+4mV79kneCeAV9DV0w==
-X-Google-Smtp-Source: ABdhPJwTGUl+yWVYMuiNS7FHMGT7FB+7sOsuccIKV1ubM3ZmJFr7xHnLBWobOqF2Wcl3NJRa5velng==
-X-Received: by 2002:a05:6830:3115:: with SMTP id b21mr4471121ots.240.1629237717842;
-        Tue, 17 Aug 2021 15:01:57 -0700 (PDT)
+        bh=ScTdPLrwQtDi3cZmXhC5N6qRhBgFnKWXKKXDfAopA1E=;
+        b=rU52YXTfz35kJB1wvnJvFjInGIX75figKq2vqXbbcN43YT/JvwLGTaSbDbmM7xFbbP
+         3GdYtu/UCrDVsk9H6IGc10bEZCmuZxmUYz5/X5sBPWAVIKfeTqQt2DOihKxbqXrcGZbK
+         KlQtN2DkfTpF353UaDxhSZdfnFn7o2SXB8DKqK8bbJiFqBeFAC54SIWHJ7HGP9Ux4Dru
+         a+zhrkqoHW50nmVKlERV6BNxrq/4T3l1obmGNbx7yus7CDfnA9oRWKINMJMKD5KSIfeW
+         S10cEGmWn4sO0QnZqFh4ykN4g1JmDD2X71+OQKkMw7kywftMQN1XXPNJ2/T+TfEIJE1n
+         W+iA==
+X-Gm-Message-State: AOAM531Aes/eNP0LpVkw/yvQUUvFdnfe1fAiiJQ3B39iIahv8fZmgf+B
+        YDIWWuMDqDDyzDun+fcm/Q==
+X-Google-Smtp-Source: ABdhPJyERq+7XZqG4HqZb1SJiiUtZw8LOQg4skKX78fNFKeMnu1izNvJAEFmOHLlZJ/0MRh5bIsMMw==
+X-Received: by 2002:a4a:b601:: with SMTP id z1mr4094467oon.7.1629237766211;
+        Tue, 17 Aug 2021 15:02:46 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id o26sm657437otk.77.2021.08.17.15.01.56
+        by smtp.gmail.com with ESMTPSA id p4sm687381ooa.35.2021.08.17.15.02.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 15:01:56 -0700 (PDT)
-Received: (nullmailer pid 916705 invoked by uid 1000);
-        Tue, 17 Aug 2021 22:01:56 -0000
-Date:   Tue, 17 Aug 2021 17:01:56 -0500
+        Tue, 17 Aug 2021 15:02:45 -0700 (PDT)
+Received: (nullmailer pid 917896 invoked by uid 1000);
+        Tue, 17 Aug 2021 22:02:44 -0000
+Date:   Tue, 17 Aug 2021 17:02:44 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Alban Bedel <albeu@free.fr>, Paul Burton <paul.burton@mips.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: memory: convert Qualcomm Atheros DDR to
- dtschema
-Message-ID: <YRwx1Blpqq0+JK3m@robh.at.kernel.org>
-References: <20210813143537.130310-1-krzysztof.kozlowski@canonical.com>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Frank Rowand <frowand.list@gmail.com>
+Subject: Re: [PATCH v1 1/2] of: property: fw_devlink: Add support for "leds"
+ and "backlight"
+Message-ID: <YRwyBMjtKhdXlLJU@robh.at.kernel.org>
+References: <20210814023132.2729731-1-saravanak@google.com>
+ <20210814023132.2729731-2-saravanak@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210813143537.130310-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210814023132.2729731-2-saravanak@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Aug 2021 16:35:37 +0200, Krzysztof Kozlowski wrote:
-> Convert Qualcomm Atheros AR7xxx/AR9xxx DDR controller to DT schema
-> format using json-schema.
+On Fri, 13 Aug 2021 19:31:30 -0700, Saravana Kannan wrote:
+> Allows tracking dependencies between leds/backlights devices and their
+> consumers.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
 > ---
->  .../ath79-ddr-controller.txt                  | 35 -----------
->  .../qca,ath79-ddr-controller.yaml             | 61 +++++++++++++++++++
->  2 files changed, 61 insertions(+), 35 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/ath79-ddr-controller.txt
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/qca,ath79-ddr-controller.yaml
+>  drivers/of/property.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
 
 Applied, thanks!
