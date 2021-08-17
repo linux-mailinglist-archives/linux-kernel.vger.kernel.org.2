@@ -2,74 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1806A3EEBC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 13:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE953EEBC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 13:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239706AbhHQLbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 07:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236713AbhHQLbH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 07:31:07 -0400
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E94C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 04:30:34 -0700 (PDT)
-Received: by mail-ua1-x931.google.com with SMTP id 75so8854800uav.8
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 04:30:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=cGBkweF6I6r596UYFORVq7x1VsWUv5ebyZSFl6kuZ+A=;
-        b=Omhh8dIMSsoD9hWlBPZWj7nogvBfQ5ZTfnKhKaYR9u3A3+Uf5siWVU7e9eYtYGRGX4
-         4rcqG6ItbPRVh3pZusZI5WdAFhJOnXU/a5+WNlJh4pPrd+bULpmGcVTnuuBFp9ey5qPI
-         yjJZWxq9sVrkGP5AIXgKNQIR3RcnOjkCMK3wjMObBvJpMcXn7wBgoKYSsBlYuj3nCqYK
-         5D7tiWApPSZyrtsiLhR2IOI4EWr3PFZzkyjPcD7DScB01rSg5t3ivcLd38NjBjCESZ0S
-         eIVXd3mndc/DWLlj4NttlDhxVw1icNqUCuP98se8ct+9tUd313l83YCV1Ap4qesUGtuU
-         H/Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=cGBkweF6I6r596UYFORVq7x1VsWUv5ebyZSFl6kuZ+A=;
-        b=WYqi4zirg6NFl2KURYTtP0zotS94PveTmBmUObj0T7N4+cisiczg6qqZG1gIP90Ce/
-         HTJJj/QBsvgY9WHIdztjsLc8slyRmUZD6tJkTdau5b+4bQ0WMJYcVPgXZXcq3N5g1yJC
-         lPfQzKs6zrJ2obtD+kgwBLeee6jp5qgsLtHDqNXcdV6jvzvFsgP7cxfAd97G9vvBEibG
-         ouypsyk74iu9YhIA5IQIt1vWdNgT4gbR1z7A82KZwpR7uxZ5j5YEFIQRdrutTn0RtGyh
-         tJnjV2vu1RjJliW1gqXgUImxmrIFQuT2N7dkO+8pj2GGq8/hNxX/VsJfLFnTXqZkoYZ5
-         hOZQ==
-X-Gm-Message-State: AOAM531p+U3+HnpdTquVGXYIWEWQ5kGjqM3kEoyUqaWcAw/ghuJRI1yu
-        Favk8KaU/O9CLVGaUlNYJzJoaek42p9YdG2OOKk=
-X-Google-Smtp-Source: ABdhPJwTeYFZRjx6yL4DTSfY/XVZtKQlcuvjuS3dDfzwoZQFo621PX7iv3WNXua9HmPIDmSPNOKZbQ5EJA6QpwriPuY=
-X-Received: by 2002:ab0:60a9:: with SMTP id f9mr1675722uam.19.1629199833494;
- Tue, 17 Aug 2021 04:30:33 -0700 (PDT)
+        id S236792AbhHQLdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 07:33:54 -0400
+Received: from smtpbg128.qq.com ([106.55.201.39]:41494 "EHLO smtpbg587.qq.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231515AbhHQLdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 07:33:53 -0400
+X-QQ-mid: bizesmtp37t1629199896tohp35h0
+Received: from localhost.localdomain (unknown [125.69.42.50])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Tue, 17 Aug 2021 19:31:35 +0800 (CST)
+X-QQ-SSF: 01000000004000B0C000B00A0000000
+X-QQ-FEAT: VM477jCxEMjpxWcg2ZXubi3ZjfaeY+wqXWbCqmU0fFD9YsyNh+Fn+61qUcUih
+        rDjcZBwRNFXAWu/kZOb2kpIlILsTUPWJwK9PJ/94s0aq3RbLrLE3aWG578pcm30Jchp2ngj
+        sR0e9Yz720wDi7WW8YF4vjf/uAflh/1LoQyMW1SJQggMiawcOh5AkR/hVcdvI5xLfLEEY3M
+        ECScfFImrYEYrU1LN5+stUZRrFogdDWNeb0iY2026CezFc6zPKuP21Ps/WuR8GoIFIFSkS+
+        jPCjytUyrMpxMUn/QWObeABBxI7kIr64EpM0+OS+oNPmU/tGbkC3c1uNeRSkrxQo5CioXU2
+        FpbRF8vpeMSxFaPTZA=
+X-QQ-GoodBg: 0
+From:   Jason Wang <wangborong@cdjrlc.com>
+To:     nsekhar@ti.com
+Cc:     bgolaszewski@baylibre.com, linux@armlinux.org.uk,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jason Wang <wangborong@cdjrlc.com>
+Subject: [PATCH] ARM: davinci: dm355-evm: Fix typo in a comment
+Date:   Tue, 17 Aug 2021 19:31:12 +0800
+Message-Id: <20210817113112.17936-1-wangborong@cdjrlc.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Received: by 2002:ab0:48e3:0:0:0:0:0 with HTTP; Tue, 17 Aug 2021 04:30:33
- -0700 (PDT)
-Reply-To: mrmichelduku@outlook.com
-From:   Michel <micheldduku@gmail.com>
-Date:   Tue, 17 Aug 2021 11:30:33 +0000
-Message-ID: <CAFdbbZiptAaL0ODgwPqpYS63PQhbbqpKfdHCFG2PO-1yXLgj7w@mail.gmail.com>
-Subject: HELLO
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
+The double `the' in the comment `Keep the the order same as that of
+encoders.' is repeated. Consequently, one 'the' should be removed
+from the comment.
 
-With due respect to your person, I seek your urgent assistance in
-transferring the sum of $11.3million to your private account Where
-this money can be shared between us.
+Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+---
+ arch/arm/mach-davinci/board-dm355-evm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The money has been here in our Bank lying dormant for years without
-anybody coming for the claim. I want to release the money to you as
-the relative to our deceased customer (the account owner) who died in
-a plane crash with his family since October 2005.
+diff --git a/arch/arm/mach-davinci/board-dm355-evm.c b/arch/arm/mach-davinci/board-dm355-evm.c
+index 3c5a9e3c128a..4aeda9bd8029 100644
+--- a/arch/arm/mach-davinci/board-dm355-evm.c
++++ b/arch/arm/mach-davinci/board-dm355-evm.c
+@@ -296,7 +296,7 @@ static struct vpbe_enc_mode_info dm355evm_enc_preset_timing[] = {
+ 
+ /*
+  * The outputs available from VPBE + ecnoders. Keep the
+- * the order same as that of encoders. First those from venc followed by that
++ * order same as that of encoders. First those from venc followed by that
+  * from encoders. Index in the output refers to index on a particular encoder.
+  * Driver uses this index to pass it to encoder when it supports more than
+  * one output. Application uses index of the array to set an output.
+-- 
+2.32.0
 
-By indicating your interest I will send you the full details on how
-the business will be executed.
-
-Best Regards,
-Mr. Michel Duku.
