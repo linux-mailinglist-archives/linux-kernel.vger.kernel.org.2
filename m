@@ -2,130 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 766913EE6F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 09:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3A13EE6FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 09:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234625AbhHQHHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 03:07:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38622 "EHLO
+        id S234714AbhHQHH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 03:07:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233688AbhHQHHB (ORCPT
+        with ESMTP id S234625AbhHQHH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 03:07:01 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3693FC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 00:06:28 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id i6so30191272edu.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 00:06:28 -0700 (PDT)
+        Tue, 17 Aug 2021 03:07:58 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0725C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 00:07:25 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id i22so11410650edq.11
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 00:07:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fdL9A5Bks/5vn8JW+16em0duE4n+ssWkWG29OSq8opQ=;
-        b=hWvl9c8Rgr8vY8JdclfWv1qbJY2E4lZuTXn26Se5+G+3LnfMgZK4uefrOizvC+zUiS
-         5+esBDdQSFgJv5Eb4zpF0Ju3h5/TtH3BexC/gjmjrNZjX3W99Q6ji7h+CC2JjAjpZhOg
-         Xd4zVICAEh9KOdPq/rmRo73HoqXXq81bXdFNKggciv37NJB86OBbfEvKl2EdIPI92tGE
-         bJ6d1AmqfHGUWtGbKVUgNneRKCF4sTunBjJa7gs8LqxyVzvL8QTGnMl78rLA3DjmJeuF
-         7sL8GqZiKRZWl9eERdNAOQUo/nmCBDcXM+CpK/FccRVEjsQ5HzIf8hnTVtOT4Epu0yjS
-         dG8g==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=LGrI4o5T8p4fA5XRctVZXXIyOOKFj0F7BQaVyKHpqrk=;
+        b=Gpj04ryhuS797+wbRKe0PTo8SRp6EzRRbaJ1mPIvBHDieedeCABwunE2OGldOxINfo
+         bdDwuoEHR06FL8W8dSTN2ilMDZX/3hojyyiSTEn/ov8Dlh9ZoXDuF2HH8rXs/cAxATpM
+         64L7IvubBLncXXe2ltBmjrJl8Bh2/PH4nWVT+GFhpbl9LnpPcVZ7+buo3P4l9/wfJg5+
+         1kx8FEl1GXPtf6Nq3t4vcw846TEKlj6rD4WrjK8qwAKxEL9Bv8bFwuER0dO2Geyz2XLI
+         uA84CfrG0obIHUx6zr3Vgqc3ycOUPXXTixyQZmknZCmzzAM56/+Sz+vL133BHUNK/VOd
+         6zyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fdL9A5Bks/5vn8JW+16em0duE4n+ssWkWG29OSq8opQ=;
-        b=ji82gb8h+jvTrBhSh6QV/tFhJpZ5PbqiCXRhdHe+CzA1pKHcd0oa3mgUVxJj4lwUr9
-         x13dUHLqOWe8DuxarCYWeHNoWBiyVu4ZtPUoqualnRkpqv0/HZuSZvkYqTKiYnHXC5Dm
-         cS0k6BHWPN4S8cWoHPQotkKbEukNEiRyIx9G9tc7fC+FrkyIZKwCfeu+m+kL93G7ehat
-         gPKEqJxDYD+eVaPj7luJ+rdbNVFZvuZPLjkupwocRnNeQAGDqQ9bqkIeNKvYaBQDDmvu
-         5sKa/L7i1heyFoJhPRugKSeiyzFnQhcR0O5SKCP19cd8ADpbqP75bpDN3Q6ANFW2c8ij
-         WP5Q==
-X-Gm-Message-State: AOAM533RDYpKUsgP8eSJQVTJX/E65lfopvtNJ6WR8lsd5NvCpe+C9+zE
-        N290kzSgXjZN08WgVrwUCZWmiTtVQL8=
-X-Google-Smtp-Source: ABdhPJwnQ9Dh7+zxTZOrs8Q9WHObL4l1Kc5BlXa87CNnS0HDxNe7IwBWRRWYOGF+jMkIPaAIwCWAaw==
-X-Received: by 2002:a05:6402:1850:: with SMTP id v16mr2565716edy.308.1629183986886;
-        Tue, 17 Aug 2021 00:06:26 -0700 (PDT)
-Received: from ?IPv6:2a02:8108:96c0:3b88::4058? ([2a02:8108:96c0:3b88::4058])
-        by smtp.gmail.com with ESMTPSA id l16sm354923eje.67.2021.08.17.00.06.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Aug 2021 00:06:26 -0700 (PDT)
-Subject: Re: [PATCH v2 3/3] staging: r8188eu: perform cleanup in
- rtl8188e_Add_RateATid
-To:     Phillip Potter <phil@philpotter.co.uk>, gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20210816234459.132239-1-phil@philpotter.co.uk>
- <20210816234459.132239-4-phil@philpotter.co.uk>
-From:   Michael Straube <straube.linux@gmail.com>
-Message-ID: <d9a12b30-07bf-0c73-4a32-b2f4703998f3@gmail.com>
-Date:   Tue, 17 Aug 2021 09:05:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LGrI4o5T8p4fA5XRctVZXXIyOOKFj0F7BQaVyKHpqrk=;
+        b=fUhBgpMBFP/iWQe947wrIV7Fh2D/v96GgziobbJzeqsVUKsWj/t6RQxGUiFsyXYwQR
+         RjdIipBThC0o5WB/8qWoTT+1MbS+nEM0d2IqNJT76OGMYX5VI/Ikot9EmGRQLERe6pIV
+         4U1Nrh7MQoRjadB3zT9tCsj7ts47He2rt/gR7xSNmdznqxl7kIlFkSPTNbxHf0GmHvm0
+         lgefby7Z5uACKnH3Dr+kn2xCb3oX3wqXbMUpQhcOo+zVtUqV/XEXdOZlHPeA6pqwhqFp
+         fWhxRs4KT4CWbVo5Fy87FzTb03/U3Cu0eOL0Gz68rxCPPIW1YAQ1kXVZQyL41EeVHDgq
+         aWpA==
+X-Gm-Message-State: AOAM530G+KajiaTPJ2PneOiJ0/0JA/NMW3Coru331qiH4ux1JGlcFovQ
+        SawdYsNuymWVpCW6GHUJPrP0q02zF6MRUhDaizWcOg==
+X-Google-Smtp-Source: ABdhPJz5uUI6/y1ZMHbls5YZkCv9cpxYzByvXwFdTDksRpqcFG53qb3D9T6KH4xtuvWjPw3lZFpZOcyRGKVGkibZLOI=
+X-Received: by 2002:a05:6402:148c:: with SMTP id e12mr2107554edv.239.1629184044339;
+ Tue, 17 Aug 2021 00:07:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210816234459.132239-4-phil@philpotter.co.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210816171405.410986560@linuxfoundation.org>
+In-Reply-To: <20210816171405.410986560@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 17 Aug 2021 12:37:13 +0530
+Message-ID: <CA+G9fYsLGTFG5Dzgn7b5n9EatcGJBb8Q5AoXN6W+dKqrMN5vRQ@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/64] 5.4.142-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/17/21 1:44 AM, Phillip Potter wrote:
-> Perform some cleanup items in the rtl8188e_Add_RateATid function:
-> (1) Rename variable shortGIrate to short_gi_rate to comply with kernel
->      camel case rules.
-> (2) Introduce additional whitespace around certain operators in the
->      function, to make it clearer what is happening.
-> 
-> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-> ---
->   drivers/staging/r8188eu/hal/rtl8188e_cmd.c | 14 +++++++-------
->   1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/hal/rtl8188e_cmd.c b/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
-> index 77c057e276a5..8d03b24dc5af 100644
-> --- a/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
-> +++ b/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
-> @@ -155,25 +155,25 @@ void rtl8188e_Add_RateATid(struct adapter *pAdapter, u32 bitmap, u8 arg, u8 rssi
->   {
->   	struct hal_data_8188e *haldata = GET_HAL_DATA(pAdapter);
->   
-> -	u8 macid, raid, shortGIrate = false;
-> +	u8 macid, raid, short_gi_rate = false;
->   
-> -	macid = arg&0x1f;
-> +	macid = arg & 0x1f;
->   
-> -	raid = (bitmap>>28) & 0x0f;
-> +	raid = (bitmap >> 28) & 0x0f;
->   	bitmap &= 0x0fffffff;
->   
->   	if (rssi_level != DM_RATR_STA_INIT)
->   		bitmap = ODM_Get_Rate_Bitmap(&haldata->odmpriv, macid, bitmap, rssi_level);
->   
-> -	bitmap |= ((raid<<28)&0xf0000000);
-> +	bitmap |= ((raid << 28) & 0xf0000000);
->   
-> -	shortGIrate = (arg&BIT(5)) ? true : false;
-> +	short_gi_rate = (arg & BIT(5)) ? true : false;
->   
-> -	raid = (bitmap>>28) & 0x0f;
-> +	raid = (bitmap >> 28) & 0x0f;
->   
->   	bitmap &= 0x0fffffff;
->   
-> -	ODM_RA_UpdateRateInfo_8188E(&haldata->odmpriv, macid, raid, bitmap, shortGIrate);
-> +	ODM_RA_UpdateRateInfo_8188E(&haldata->odmpriv, macid, raid, bitmap, short_gi_rate);
->   }
->   
->   void rtl8188e_set_FwPwrMode_cmd(struct adapter *adapt, u8 Mode)
-> 
+On Mon, 16 Aug 2021 at 22:44, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.142 release.
+> There are 64 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 18 Aug 2021 17:13:49 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.142-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Perhaps the added spaces around operators could conflict with
-pending patch sets that address spacing style issues, otherwise...
 
-Acked-by: Michael Straube <straube.linux@gmail.com>
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Thanks,
-Michael
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 5.4.142-rc2
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.4.y
+* git commit: 24a339d553e6ee1ba2c6216df053c7cce1e3db4c
+* git describe: v5.4.141-65-g24a339d553e6
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
+41-65-g24a339d553e6
+
+## No regressions (compared to v5.4.141-63-g13046907c978)
+
+## No fixes (compared to v5.4.141-63-g13046907c978)
+
+## Test result summary
+total: 84832, pass: 69927, fail: 655, skip: 12851, xfail: 1399
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 16 total, 16 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 9 total, 9 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-arm64
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
