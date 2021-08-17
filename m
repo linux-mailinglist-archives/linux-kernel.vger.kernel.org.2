@@ -2,76 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C7E3EF4C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 23:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5DB3EF4C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 23:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234794AbhHQVPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 17:15:49 -0400
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:44595 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233802AbhHQVPm (ORCPT
+        id S234835AbhHQVQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 17:16:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233802AbhHQVQa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 17:15:42 -0400
-Received: by mail-oi1-f180.google.com with SMTP id w6so1144917oiv.11;
-        Tue, 17 Aug 2021 14:15:08 -0700 (PDT)
+        Tue, 17 Aug 2021 17:16:30 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4399DC0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 14:15:56 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id g13so43967655lfj.12
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 14:15:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=ATCLIjFqGGObCAiQgVaXtBBFI9QIF1mOiCwgN84NEFY=;
+        b=T7/blMxy5X53rJzMiw1NkzQkj7UZLHWgjVLFHASX3nGHmEDeOzWIupsq/pwqzS/j+L
+         lNWFwL34oOiu94Lq+Ok24yc+QBo4q99CKmqX0sjgz8S7uVuYtzhPaZNOsVJQusdFk6Ga
+         JtTS+b+bN5wRVZe0BSxnj4/wGctuid3c9X49hALmQtH2eH775SZJg7l8Enmm0fc8nleG
+         xhqnAygVp1jkA+pvKdCcHXL4F0h5ZXs/91ym2GJ1jsoMBhMPmjzS4lgtIjtjW0wXAnRI
+         +jsfa9xNDBHORU/V4ym5C2FGFyoovzs4S4zO/C4sR5554VQ1b+Hq6nTNI+uR1TRq13Mz
+         983w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PM2enoDBVpEuZpWbvRhxMVpJH3XAHQlsUlPw3171kZA=;
-        b=HEEout4/Efp6X1vj9qiCLD7Mb9/WeObrPr08l4ZOp8krLytVn1O8+r1JoRCtqQjSPy
-         i3XNVski804Uv4gDpeKUfpCGYYl38IICjBnH9Vivq3NfvmgMRGWFFQ2aH9YWKbnWsEb3
-         9iOct/zQFQ/8dhVEXfZijkQDkh06k0yG3YouV0vms1VXB6WLcuKE+FrF3526fkZnf9FG
-         k5Vcw6Ar24TCqKkP+Gjy1Pc6ID88bL4AfJ5ydaeF7HghzPzrFBsLvRLh6SO8xGDHAO87
-         AJfhDY/WyOYcgv10sTF1+KDY4KGHhj5qEbMfouPV6QegUYiEnAJEgBaFh0t2zHBx/Hj7
-         4Mjg==
-X-Gm-Message-State: AOAM5338b4JZcie/NhN9FQbgAcUJIqKbfW2iFDU+lTEffQBskGTL+Tuo
-        Q7IuRyz4GfI8dQ8vNmlLIw==
-X-Google-Smtp-Source: ABdhPJxeKQH2Qe+oyN/Eb6NLA66EQFyOE9Rd/a//VVTyHHLmmtmQGWiK/UY92yF/ki7QTfEYTxWrEw==
-X-Received: by 2002:a05:6808:f13:: with SMTP id m19mr4147887oiw.127.1629234908413;
-        Tue, 17 Aug 2021 14:15:08 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id n9sm613545otn.54.2021.08.17.14.15.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 14:15:07 -0700 (PDT)
-Received: (nullmailer pid 852498 invoked by uid 1000);
-        Tue, 17 Aug 2021 21:15:07 -0000
-Date:   Tue, 17 Aug 2021 16:15:07 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-crypto@vger.kernel.org,
-        Matt Mackall <mpm@selenic.com>,
-        =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>,
-        devicetree@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 2/2] dt-bindings: rng: convert Samsung Exynos TRNG to
- dtschema
-Message-ID: <YRwm27L+PQx0TydS@robh.at.kernel.org>
-References: <20210811084306.28740-1-krzysztof.kozlowski@canonical.com>
- <20210811084306.28740-2-krzysztof.kozlowski@canonical.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=ATCLIjFqGGObCAiQgVaXtBBFI9QIF1mOiCwgN84NEFY=;
+        b=plxelzgbNSVwi1H2/kJg/OwlcHGbU8zJOM2VupopcKEa+lgs3g3j9EyRXN0521ZML0
+         /wdjRIUJay6fasxs23dMvzrQ3JjVHXd8R8wRq4gT7XIHL76HAEVYdfuefWoaEcuiS38o
+         G5MJmrfINpW7y0LgsT4GpXoJQncfanPc45kMHNhWEYVvIh0ndCoX8RUVUeUh3dQowTap
+         0qYWw/vP+LFjoUkUpffsYuy22f9ax1jg+hhW9yLKsCc/etr4boSWWTVGHBh7yInvQhCE
+         Bx/EwxbUMKE4fX0as4ZZ/Oj6L0jio3Co6mpNonjHLt7Pv2A19rsKvR5PnnsH2ZhrDQFO
+         tmZg==
+X-Gm-Message-State: AOAM533Oxcp1+gFqMtgZJ36s7NR6LJTBScQdYJ1cPX63tZxai/lEZQV7
+        rRl6ZXwukdTNngo/9dEXHDNdFhL+SnjZLQkqD0U=
+X-Google-Smtp-Source: ABdhPJxjxnCRpG46UN8gWaCBE/lxuRsk/0D0f7Q4rpjpWIe17Skgr5HQ17WS9WM194TjScAKWspUNoqWrP/oKZr7qpM=
+X-Received: by 2002:ac2:47e8:: with SMTP id b8mr3881220lfp.555.1629234954461;
+ Tue, 17 Aug 2021 14:15:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811084306.28740-2-krzysztof.kozlowski@canonical.com>
+Received: by 2002:a05:6520:58e:b029:11f:45d7:c3e6 with HTTP; Tue, 17 Aug 2021
+ 14:15:53 -0700 (PDT)
+Reply-To: barristerbengazzarak@gmail.com
+From:   Barrister Ben Gazzara Kekel <barristerbenkekeli7@gmail.com>
+Date:   Tue, 17 Aug 2021 14:15:53 -0700
+Message-ID: <CAFSkZWNoYDD2XpVzgSRrXH=4VR2b9tsh+ymr=+L+wdJz4JBsSw@mail.gmail.com>
+Subject: Hi,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Aug 2021 10:43:06 +0200, Krzysztof Kozlowski wrote:
-> Convert Samsung Exynos SoC True Random Number Generator bindings to DT
-> schema format using json-schema.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  .../bindings/rng/samsung,exynos5250-trng.txt  | 17 -------
->  .../bindings/rng/samsung,exynos5250-trng.yaml | 44 +++++++++++++++++++
->  MAINTAINERS                                   |  2 +-
->  3 files changed, 45 insertions(+), 18 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/rng/samsung,exynos5250-trng.txt
->  create mode 100644 Documentation/devicetree/bindings/rng/samsung,exynos5250-trng.yaml
-> 
-
-Applied, thanks!
+I hope this mail meets you in good health? I sent you an email a
+couple of days ago to help me receive sum of $3.2million
+dollars(Money) Please get back to me because it is urgent and of
+mutual benefits and 100% legitimate.
