@@ -2,102 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 032943EF54F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 23:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B42F3EF552
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 23:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235474AbhHQV4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 17:56:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46386 "EHLO
+        id S234860AbhHQV7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 17:59:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233928AbhHQV4I (ORCPT
+        with ESMTP id S230381AbhHQV66 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 17:56:08 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B08C061764;
-        Tue, 17 Aug 2021 14:55:35 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so219555otk.9;
-        Tue, 17 Aug 2021 14:55:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rAW4lU/RJvKOFz0SR+OmypjLALjP6fD0yLpDz8M0/vE=;
-        b=rLfwX9mAQGzSs2M5Vri3NNozYyJTwOYNfC+vfvhgAw+36QDDelZNtABBDv6RZEpvbI
-         6WW0rCEDemJ2bT1tQFG45JUTqIBG8TfEv5SHWvacACOIkces337g4zkUGrz5jX1AtB/F
-         vqjRP7L9ciJts/cxIKWDj3NyRO4vJFUakzpDRMhLlctEQ6rBjNxenhglBwwy7zeh7M+2
-         gacNfgP7wahNgMYBPuMGzsJbhcVv0yj7yjf3fXDhVsNs+rLyHQ3CaOEbNpkJpVTmEejS
-         ynvOLGl1SiZuwcQ8hP/hdiMFqXhLwKV0C/0Sf6b57RBoQAFhfkv0iaeaa4gmp4+hO3nT
-         MAMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=rAW4lU/RJvKOFz0SR+OmypjLALjP6fD0yLpDz8M0/vE=;
-        b=DTZ6RffUC2MaqTq9ip6H/okciqT4EuFMJr2Gk4UjhprjdmzVR5HuVvRhcdxpbrmXmb
-         mqDVjj+KEeFNMPWz/EG+7cSq2SKqlrT+GQusuJ4wHlRS6kGOfnaDueUCqYLjlQ0SDLSC
-         B8++TT7BKyrqJC9kSq8paxBy35+6xt+s43CWlUJTbm/QfM2zbM7nYMVeT9sLMASfZ3Jw
-         EtfdcEZGevM9hPtDbVM4pLoWPhqFZzfD6ob2GSNiRXibY+19iQBA0cAvHA2XBKC00gl6
-         mNE5Xy04UqY5A6rmxm6/0XtIwLd/qHT+bzxk7q1ecD1xD3R+uHlaLsDAKhTCMKSpHBir
-         erRA==
-X-Gm-Message-State: AOAM531PRdpjtCz2aEV7PY0vgr6PCAyF4IFEAGetVi30xSZtaQoD3nEe
-        5DIPdS3LriiOnTXTAHRxjsU=
-X-Google-Smtp-Source: ABdhPJyXlMiFqSZFkfwoB7TTrvIk/perMWhdiWzRtwiL0zCZgay8BQOmbKt+t6CyHvvYIRYGEdD3Iw==
-X-Received: by 2002:a05:6830:2a06:: with SMTP id y6mr4088503otu.134.1629237334432;
-        Tue, 17 Aug 2021 14:55:34 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z25sm771568oic.24.2021.08.17.14.55.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 14:55:33 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 17 Aug 2021 14:55:32 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwmon: remove amd_energy driver in Makefile
-Message-ID: <20210817215532.GA471009@roeck-us.net>
-References: <20210817084811.10673-1-lukas.bulwahn@gmail.com>
+        Tue, 17 Aug 2021 17:58:58 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454A9C061764;
+        Tue, 17 Aug 2021 14:58:25 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gq4fP1vf8z9sWd;
+        Wed, 18 Aug 2021 07:58:21 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629237501;
+        bh=XIFY2/pnbFMynEgdVDaDlRg7mIPeme4ip3ceBUCsuVo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ae4bhMiU6WKqn4nD41H6YooaFZVRy5qIJPCSrQF8lz4cYUlpmXa7ACUKUPyjW6wHv
+         k5xUtBjBzOuaydNKebHiQvRq4FxLQBu1bL549jNABStXLwqT0bK98hNkdtX9E3IEEb
+         WYsvQ9GcO6JW21Btz02vMJ/SwBHHfFdnLOSV0ztuynZZYPN3lyZPUhZ7ovLbwcEJa6
+         gxtnHcmboZQlita/pkhHZnbw91fVSu4uk5pAxUVvLNA5ZPRaTAtFPLDHVLuvbr6A01
+         0rCGHrogxHu2HVHrIIqC3s4jx7tUAOFNAZSZT5rs5ygjQZlYmjjs1s/t6uXYjK4/nV
+         R4Z+BgOzubRaA==
+Date:   Wed, 18 Aug 2021 07:58:20 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Richard Weinberger <richard.weinberger@gmail.com>
+Cc:     Zhihao Cheng <chengzhihao1@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the mtd tree
+Message-ID: <20210818075820.702c0230@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210817084811.10673-1-lukas.bulwahn@gmail.com>
+Content-Type: multipart/signed; boundary="Sig_/DcfiD+SSadF9cjPzubCI50s";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 10:48:11AM +0200, Lukas Bulwahn wrote:
-> Commit 9049572fb145 ("hwmon: Remove amd_energy driver") removes the driver,
-> but misses to adjust the Makefile.
-> 
-> Hence, ./scripts/checkkconfigsymbols.py warns:
-> 
-> SENSORS_AMD_ENERGY
-> Referencing files: drivers/hwmon/Makefile
-> 
-> Remove the missing piece of this driver removal.
-> 
-> Fixes: 9049572fb145 ("hwmon: Remove amd_energy driver")
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+--Sig_/DcfiD+SSadF9cjPzubCI50s
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Applied.
+Hi all,
 
-Thanks,
-Guenter
+In commit
 
-> ---
->  drivers/hwmon/Makefile | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-> index 53a8f4b500b8..4b33421746c0 100644
-> --- a/drivers/hwmon/Makefile
-> +++ b/drivers/hwmon/Makefile
-> @@ -45,7 +45,6 @@ obj-$(CONFIG_SENSORS_ADT7462)	+= adt7462.o
->  obj-$(CONFIG_SENSORS_ADT7470)	+= adt7470.o
->  obj-$(CONFIG_SENSORS_ADT7475)	+= adt7475.o
->  obj-$(CONFIG_SENSORS_AHT10)	+= aht10.o
-> -obj-$(CONFIG_SENSORS_AMD_ENERGY) += amd_energy.o
->  obj-$(CONFIG_SENSORS_APPLESMC)	+= applesmc.o
->  obj-$(CONFIG_SENSORS_ARM_SCMI)	+= scmi-hwmon.o
->  obj-$(CONFIG_SENSORS_ARM_SCPI)	+= scpi-hwmon.o
+  a89d69a44e28 ("mtd: mtdconcat: Check _read, _write callbacks existence be=
+fore assignment")
+
+Fixes tag
+
+  Fixes: 2431c4f5b46c3 ("mtd: Implement mtd_{read,write}() around ...")
+
+has these problem(s):
+
+  - Subject does not match target commit subject
+    Just use
+	git log -1 --format=3D'Fixes: %h ("%s")'
+
+So:
+
+Fixes: 2431c4f5b46c ("mtd: Implement mtd_{read,write}() as wrappers around =
+mtd_{read,write}_oob()")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/DcfiD+SSadF9cjPzubCI50s
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEcMPwACgkQAVBC80lX
+0GwwGAf/d0E+EmQXR2/1WpmHAMmcQMPGMGAhnfGDskNfjWZAuvKC674Z5DYz5h1r
+ctF8n3KNAYBB6VzYLFlt5RZEhbpi6hQhym8x2Blp3Yq6jwc3GkbxexApnL8kt3SY
+1uoNGuqQKy+hkZVzrm51yC3E24GMLFd5qpjR/kR/nFrO3l529gKzPLkTASqfOjLn
+f1hmY/a47HVCzCfdjVlLQqIy593mkOBnHsFvueej2LLcAOUW1zVNIOydLWQJaWc+
+EraApst4KvsXohvuW/jWrRY711uq3lXUPMMdIHNqD9sEdfkiljBAoIIIF69sAPga
+H/yPIdFQCHtfI7UdbmHahAMkhqu0Dw==
+=lDZN
+-----END PGP SIGNATURE-----
+
+--Sig_/DcfiD+SSadF9cjPzubCI50s--
