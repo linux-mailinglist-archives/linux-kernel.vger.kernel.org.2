@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231683EF19E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 20:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A91953EF1A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 20:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232807AbhHQSRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 14:17:41 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:46944 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229850AbhHQSRk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 14:17:40 -0400
-Received: from zn.tnic (p200300ec2f1175006a73053df3c19379.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:7500:6a73:53d:f3c1:9379])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5AA421EC0556;
-        Tue, 17 Aug 2021 20:17:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629224221;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=XxZOJFQ4/UtYMMPE2hte00+BJM98D2VDLNtyNZE78CM=;
-        b=BsBVJFBSgu8Iv+F/GHrHfxj/N39ok4iLAd9NnK//E2y4h0hIzNsuRbvYJV5enGEYZ+ladi
-        EEOmWDLqlrqST8OrYcF6YjXH7HODiN1sGhL6u9ylqdwKxjmjnHWbnQyWax69Htj3T+/Osz
-        CFyip7AO9eYqt6jCKmskrU3WvMimYlk=
-Date:   Tue, 17 Aug 2021 20:17:40 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part1 RFC v4 15/36] x86/mm: Add support to validate
- memory when changing C-bit
-Message-ID: <YRv9RNfvB+4ikmkw@zn.tnic>
-References: <20210707181506.30489-1-brijesh.singh@amd.com>
- <20210707181506.30489-16-brijesh.singh@amd.com>
- <YRvxZtLkVNda9xwX@zn.tnic>
- <162d75ca-f0ec-bb7e-bb47-70060772a52c@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <162d75ca-f0ec-bb7e-bb47-70060772a52c@amd.com>
+        id S232870AbhHQSS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 14:18:28 -0400
+Received: from mail-oo1-f50.google.com ([209.85.161.50]:38691 "EHLO
+        mail-oo1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229850AbhHQSSZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 14:18:25 -0400
+Received: by mail-oo1-f50.google.com with SMTP id m11-20020a056820034b00b0028bb60b551fso2012091ooe.5;
+        Tue, 17 Aug 2021 11:17:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=DLWFI+GPG5JMvw8QB510k7IFEr+jZGWWgLmkQQbrRKo=;
+        b=IiELC0NUrVbZ1yR7x8rchS6WGn82lWLNHWPpOm6V3gdlSB/zPHQZY8Ey/blCZ8u6fe
+         sCrPUP1Uyb9fTps4AFjd1oq57806VE3iy3ueQnm2i9akd4boCb2lkbf8GjoKtyV2UUHW
+         bRBu1xzjMf9+rEf/gOzIeO4FjL6MWwpUvGOx27fOIqea94ehoTOICjg8oYVVmO5u+9jf
+         s+HnTcbqgYG2C4c3eP2of8okM410Kf48LWNMNf4IZkKwTlVDl2ZQTLC0Pq79xedcytQw
+         3rfRXYcEF4mLOhe68r6ITuOayZmYML1S4pSwLCR0i8Zv7/owEWo/mF62WrniGU4HOYWf
+         F4WQ==
+X-Gm-Message-State: AOAM532WNNdNX0lEpXo6h5MVRGaraOXyS/yn9xq9Zs6axyn8C9VkgIq1
+        7ME4FuCQQtX7QOVEWJrDYg==
+X-Google-Smtp-Source: ABdhPJxKzWPRH2R4lMGCh2vpZEkEho1oQHFMv1Kw1X5iQCV+eQQriQ5tWlVqpdSC0eCYWsRUHu3sEw==
+X-Received: by 2002:a4a:e874:: with SMTP id m20mr3537958oom.29.1629224272205;
+        Tue, 17 Aug 2021 11:17:52 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id e2sm526769otk.14.2021.08.17.11.17.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 11:17:51 -0700 (PDT)
+Received: (nullmailer pid 589512 invoked by uid 1000);
+        Tue, 17 Aug 2021 18:17:50 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Cc:     linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, james.lo@mediatek.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>
+In-Reply-To: <1629193630-19994-3-git-send-email-hsin-hsiung.wang@mediatek.com>
+References: <1629193630-19994-1-git-send-email-hsin-hsiung.wang@mediatek.com> <1629193630-19994-3-git-send-email-hsin-hsiung.wang@mediatek.com>
+Subject: Re: [PATCH v11 2/5] dt-bindings: spmi: document binding for the Mediatek SPMI controller
+Date:   Tue, 17 Aug 2021 13:17:50 -0500
+Message-Id: <1629224270.762546.589511.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 01:07:40PM -0500, Brijesh Singh wrote:
-> > > +	if (!desc)
-> > > +		panic("failed to allocate memory");
-> > 
-> > Make that error message more distinctive so that *if* it happens, one
-> > can pinpoint the place in the code where the panic comes from.
-> > 
+On Tue, 17 Aug 2021 17:47:07 +0800, Hsin-Hsiung Wang wrote:
+> This adds documentation for the SPMI controller found on Mediatek SoCs.
 > 
-> Now I am running checkpatch and notice that it complain about the message
-> too. I can add a BUG() or WARN() to get the stack trace before the crashing.
+> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> ---
+> changes since v10:
+> - No change.
+> ---
+>  .../bindings/spmi/mtk,spmi-mtk-pmif.yaml      | 76 +++++++++++++++++++
+>  1 file changed, 76 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml
+> 
 
-checkpatch complains because there's a kmalloc before it and if it
-fails, the mm core will issue a warning so there's no need for a warning
-here.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-But in this case, you want to panic and checkpatch doesn't see that so
-you can ignore it here and leave the panic message but make it more
-distinctive so one can find it by grepping. IOW, something like
+yamllint warnings/errors:
 
-	if (!desc)
-		panic("SEV-SNP: Failed to allocame memory for PSC descriptor");
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.example.dts:19:18: fatal error: dt-bindings/clock/mt8192-clk.h: No such file or directory
+   19 |         #include <dt-bindings/clock/mt8192-clk.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1419: dt_binding_check] Error 2
 
-Thx.
+doc reference errors (make refcheckdocs):
 
--- 
-Regards/Gruss,
-    Boris.
+See https://patchwork.ozlabs.org/patch/1517677
 
-https://people.kernel.org/tglx/notes-about-netiquette
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
