@@ -2,155 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A4B3EEDE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2D93EEDE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240048AbhHQN5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 09:57:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48916 "EHLO
+        id S239976AbhHQN57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 09:57:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239985AbhHQN5m (ORCPT
+        with ESMTP id S239926AbhHQN5x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 09:57:42 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F99C0613CF;
-        Tue, 17 Aug 2021 06:57:09 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id r7so28875811wrs.0;
-        Tue, 17 Aug 2021 06:57:08 -0700 (PDT)
+        Tue, 17 Aug 2021 09:57:53 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692C1C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 06:57:20 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id a21so12852072ioq.6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 06:57:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=6xL8KKAgtKVXqiY10rauZL3Pjki57neMrGXDUAD5maQ=;
-        b=HtrhppfPKGETXKQk7ZaqMpU8WnD19jumtezcpkJu7F1PYATEznnv9VzV2vkGJpKarF
-         TovRf0L0/i0XMHMAjP6MENt8v/I0dDM6zCn0VAh+mgT70o2GH9bmNrL+9xZ46UmTD+CN
-         RZYlldEZyfaknBqYg6MGwkW+WYeplMANsHFDiEvnpO35Uw/7jf8/L+xPFmDoTZZDEcf9
-         UFz1j+4UZAOygrkLGgYDbe046/6VZFMZb2c16C0mBa3gTPI2KxGq7KO7eawuSgqy2q+Y
-         +dGgh6gb13YVdhg6dxUGhyer+u8aPHYL3M7oNjgVQWCl95BJ9vHk0ozWHRStypUW3+2m
-         6tBQ==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=s8D7gGg9S/pJ8oDNOjp//qcsaR6xJRAtBuYGCYePxV8=;
+        b=GV1935s84r9sTK2s8ausEimzVf8W2/oXiwlibBgGBBZgiLYn0MHx8rm2d/1bkS18ta
+         woui9gpMyyjKRsDGjpJq4NLLkLypa9EjwmCATnyH5bocSmvuI5+tWrU+u8hYxaDFoA8T
+         bwCVbQ2pE94EhRhl7RTnSvo5wmJHU8w0X7hIuNx175vZqEWEaeG0KdgQRjTj0PkGo3mZ
+         C0oZvesw4+6aQhE9LOuHxwHeoMxDD4cbjyVNREEQd18AVo1HSyhsSMaHsgxFXh1y8v51
+         jVaDpAguk5q8RZg49Abl4RJq7lMGs8m+w27TGU/naKI015nwCCr3/8LKL7dY9f3dpTIx
+         cpKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6xL8KKAgtKVXqiY10rauZL3Pjki57neMrGXDUAD5maQ=;
-        b=tzOUjiSEohxXI7i6OnC9+g8WELDF7Re2odmUi+15w1NkdWcvt5sGXtVnvpvvd+QOFI
-         6Y4wZ2X+R3CMGadtJfIDqCJbedoBGIOIzp25cDNPo2GPNvKbeuzkwgTAHMrZeLQ/R4Xf
-         Nsbv2jh9gLrKrFwfguNh3BhafQRzlRmnn98yl9aZajkAInMxhIXoVIuJeRT43oTAh8Sa
-         9PhGRbqJnwvBWgNywnT8rl2Ajwa135FnwU2CPUzyX5jhEDZE8aQm7qeH635gPkTtuH2O
-         0WmY0U81jSN8+oe8S/ovFGO3yvxaI/X7+IVhvcvEXILd+BOdidCVjBz0W2eMvFhofJHK
-         MFPw==
-X-Gm-Message-State: AOAM532etbCe8cjRUU2WdfHrP6zxYS45WwTCGhMbq6WOiCst7iVcaR4D
-        RzWQZAbAELt8/anTTDhNHCs=
-X-Google-Smtp-Source: ABdhPJxXGwy71h9iKKqpMv+kIW8otw6YW0vCZWUHj/3tGNCg758nPBEl8P96su7hyxMb2m+h1ab0Tw==
-X-Received: by 2002:a5d:6090:: with SMTP id w16mr4403007wrt.38.1629208627684;
-        Tue, 17 Aug 2021 06:57:07 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id z15sm2525314wrp.30.2021.08.17.06.57.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 06:57:06 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 15:57:05 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Aakash Hemadri <aakashhemadri123@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Bjorn Helgaas <bjorn@helgaas.com>
-Subject: Re: [PATCH 2/2] ASoC: tegra30: i2s: Fix incorrect usage of
- of_device_get_match_data
-Message-ID: <YRvAMfwh9GnaNV7U@orome.fritz.box>
-References: <cover.1629148177.git.aakashhemadri123@gmail.com>
- <4805c7fcd35c8deada63d41cb34d40de80f85a13.1629148177.git.aakashhemadri123@gmail.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=s8D7gGg9S/pJ8oDNOjp//qcsaR6xJRAtBuYGCYePxV8=;
+        b=hRZETHks+OQm0nUBdyHax/c2QvE2C2FMP7fq7sj6jipq6WavhlvbXMoWrq1YsRryzr
+         z1ZPWqh19wUiw1ml+rMvklc5gFF/7ILZZ5xetLWmkJtjGg1YhtS3NHR3Vs1KYjPQMzfM
+         xhY8vo4vZ6LLBOjA7aCaRGe+IIW2XXJnVEznBsSFjBCOKz5oE2SZoDOJqNs55V2MqnT8
+         s06q+vbvdvlkXUVLmfLCQNUQaU3hhwlXsoApuq3oQD3Kn0vcFZHUln89sPN1rpcEcYbK
+         Jp7PpV15auZjxCk40+rqwEAX8pesLykC8vaNu20kzkxO7AYpPmrdkcM/ZgKEX0Nk6yKs
+         u3sg==
+X-Gm-Message-State: AOAM533jzXtYi415Lr8El3O/v7DmOhrbqxdoZ3bOYmqFPIyX4QnBqcDg
+        AVSGhCS0FvwtQ9cSMWks56AwAOfk8l/ai0aLtMk=
+X-Google-Smtp-Source: ABdhPJyKqJvAILTBCiGEFUpfcM6O607Kk4tNJkmk77/Zg0VDYDB71XzVvEOAopcNJnityCFRhaAEBcpXTE/LHODcn4I=
+X-Received: by 2002:a5e:a81a:: with SMTP id c26mr2992573ioa.15.1629208639891;
+ Tue, 17 Aug 2021 06:57:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="WXB9ClFJ/LNHhScs"
-Content-Disposition: inline
-In-Reply-To: <4805c7fcd35c8deada63d41cb34d40de80f85a13.1629148177.git.aakashhemadri123@gmail.com>
-User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
+Received: by 2002:a05:6e02:1a0b:0:0:0:0 with HTTP; Tue, 17 Aug 2021 06:57:19
+ -0700 (PDT)
+Reply-To: gabrieledgal76@gmail.com
+From:   Gabriel Edgal <zealandn762@gmail.com>
+Date:   Tue, 17 Aug 2021 06:57:19 -0700
+Message-ID: <CACLd0ohPG5g541N6FfbEuqHMva41tg3bqj3hd3CnbQovN=43UA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--=20
+K=C3=A6re ven.
 
---WXB9ClFJ/LNHhScs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Jeg er hr. Gabriel Edgal, jeg er chefens interne revisor i Btci bank,
+jeg vil have dig til at blive l=C3=A6st for at modtage overf=C3=B8rslen p=
+=C3=A5 $ 9,5
+millioner dollars, som vil blive delt mellem to af 50:50. Fonden blev
+deponeret i vores bank af en af min afd=C3=B8de klient, der b=C3=A6rer det =
+samme
+efternavn med dig, og han d=C3=B8de med hele sin familie i bilulykke.
+Grunden til, at jeg har kontaktet dig, er, at du b=C3=A6rer samme navn med
+den afd=C3=B8de klient, og jeg vil invitere dig som udenlandsk partner til
+at st=C3=A5 som de n=C3=A6rmeste p=C3=A5r=C3=B8rende til den afd=C3=B8de ku=
+nde, s=C3=A5 vi vil g=C3=B8re
+krav p=C3=A5 den deponerede fond og del det mellem to af os 50: 50 hver.
+Jeg vil gerne have, at du svarer mig med det samme for flere detaljer.
 
-On Tue, Aug 17, 2021 at 02:44:52AM +0530, Aakash Hemadri wrote:
-> const struct of_device_id incorrectly assigned "match->data" using
->     of_device_get_match_data()
->=20
-> Instead assign `const struct tegra30_i2s_soc_data *soc_data` with
-> const void *of_device_get_match_data(...)
->=20
-> Fixes: 356b94a32a75 ("ASoC: tegra30: i2s: Use of_device_get_match_data")
->=20
-> Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
-> ---
->  sound/soc/tegra/tegra30_i2s.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->=20
-> diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-> index d4c5594efaf1..084a533bf4f2 100644
-> --- a/sound/soc/tegra/tegra30_i2s.c
-> +++ b/sound/soc/tegra/tegra30_i2s.c
-> @@ -406,7 +406,7 @@ static const struct of_device_id tegra30_i2s_of_match=
-[] =3D {
->  static int tegra30_i2s_platform_probe(struct platform_device *pdev)
->  {
->  	struct tegra30_i2s *i2s;
-> -	const struct of_device_id *match;
-> +	const struct tegra30_i2s_soc_data *soc_data;
->  	u32 cif_ids[2];
->  	void __iomem *regs;
->  	int ret;
-> @@ -418,13 +418,13 @@ static int tegra30_i2s_platform_probe(struct platfo=
-rm_device *pdev)
->  	}
->  	dev_set_drvdata(&pdev->dev, i2s);
-> =20
-> -	match =3D of_device_get_match_data(&pdev->dev);
-> -	if (!match) {
-> +	soc_data =3D of_device_get_match_data(&pdev->dev);
-> +	if (!soc_data) {
->  		dev_err(&pdev->dev, "Error: No device match found\n");
->  		ret =3D -ENODEV;
->  		goto err;
->  	}
-> -	i2s->soc_data =3D (struct tegra30_i2s_soc_data *)match->data;
-> +	i2s->soc_data =3D soc_data;
+Med venlig hilsen,
 
-Same comment as for the AHUB patch, although there's a bit more
-potential to save boilerplate here. For instance, there's really no need
-for the local "soc_data" variable here, so you can assign to
-i2s->soc_data directly and then leave out the unnecessary check as well.
-
-Thierry
-
---WXB9ClFJ/LNHhScs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEbwDEACgkQ3SOs138+
-s6EYFg/7BlPu/5ug2oVMVdV/HsR+3h9uwCICjMgt8/psvUDjw1SU6x2Y/Ka2dHhZ
-7pLHXfsX5XZ18zrgADT0dDNwJiTBTdDwGRIwdG0hibghfJUnqIsHrI+/6EDOjm0w
-3HwhNpy4vwLxcV9IVR7p/w5TRvV/rAXFnrYjo9awsvcp+9OPvZXdWtfiXiiMlpa9
-PQbkq/YN6WnQO4R223jvsoHKWmG2g2+Uk8ZZ0kCmsCnip4ZAJ+IDnNGxoqACSIYu
-VxKUNr6a1K9ul0YKpKjm9hZu+B8q5d1n8498VdAVIrqeM6zj31dmArDXX6klPVMY
-X0aZ7I7YutW3k2YLLWwviyTM+j9RX2pGTVJQf8EvmUMrb5YmrOy3R961c4Zl6YCU
-l+byT2Fto23pJvbZp9Ao/y/YpAQFjZze0zSrg/cJGCcPql3O13CA3qgEiEEsLfss
-g35mfxJlcKTn+uxZDl/psbV2/ATnHtKc9Iwfve4XpNd7qsBAlfyRHbURQj/wp2O9
-YU/Zk44m29ytiWDNXJr8ShWmrF7IhghQvQ4bzpsDbPwaZ5x3rQR8caKeBX7gAgKA
-/NaV3BGzyhRYPXEVZFn1s+XFXVgm9BHZNLUJ54McTAaBPiMYMRzD1O6I7mWeErwf
-id6v4FxkCJxR8N8Y05b89bwndyaDxLWSp+8rkTRoOx/CGqEb1+g=
-=f3kI
------END PGP SIGNATURE-----
-
---WXB9ClFJ/LNHhScs--
+Hr. Gabriel Edgal
