@@ -2,113 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE483EF11C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 19:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3EF3EF11E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 19:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232394AbhHQRwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 13:52:15 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:40438 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232194AbhHQRwM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 13:52:12 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 077B31C0B77; Tue, 17 Aug 2021 19:51:38 +0200 (CEST)
-Date:   Tue, 17 Aug 2021 19:51:37 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Aya Levin <ayal@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 49/96] net/mlx5: Fix return value from tracer
- initialization
-Message-ID: <20210817175137.GA30136@amd>
-References: <20210816125434.948010115@linuxfoundation.org>
- <20210816125436.588162993@linuxfoundation.org>
+        id S232633AbhHQRwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 13:52:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34842 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232269AbhHQRwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 13:52:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF8A660FE6;
+        Tue, 17 Aug 2021 17:52:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629222733;
+        bh=/dyoKG0guNp8ZGznN909rqgVncnMmv0kevcZcyZqpnw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FybZAKKSNXJrUo2qyv/k4c36voo0LPcIPlx4QExh10xbxRvtMuTrSIfG6wYty6365
+         rUj6kgUcA2KxCPWWHDAR+3c26SFaMf29Cjzl5XB28KDvP4EH/6lhSoXhcrg73zMtz0
+         y17ny5XONe1d/Lx/2hPyXZM+UBz+Vl2NfX2Rti5Q=
+Date:   Tue, 17 Aug 2021 19:52:10 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        insafonov@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: r8188eu: Remove LINUX_VERSION_CODE check
+Message-ID: <YRv3Stj8q7wf+B8D@kroah.com>
+References: <20210817081204.2232-1-caihuoqing@baidu.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="EVF5PPMfhYS0aIcm"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210816125436.588162993@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20210817081204.2232-1-caihuoqing@baidu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 17, 2021 at 04:12:04PM +0800, Cai Huoqing wrote:
+> no need to check linux version, depending on the latest version
+> 
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+>  drivers/staging/r8188eu/core/rtw_mlme.c      |  5 ----
+>  drivers/staging/r8188eu/os_dep/os_intfs.c    | 26 ++------------------
+>  drivers/staging/r8188eu/os_dep/rtw_android.c |  6 -----
+>  drivers/staging/r8188eu/os_dep/xmit_linux.c  |  6 -----
+>  4 files changed, 2 insertions(+), 41 deletions(-)
+> 
 
---EVF5PPMfhYS0aIcm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-> [ Upstream commit bd37c2888ccaa5ceb9895718f6909b247cc372e0 ]
->=20
-> Check return value of mlx5_fw_tracer_start(), set error path and fix
-> return value of mlx5_fw_tracer_init() accordingly.
-
-This is actually two fixes in one: There's cancel_work_sync() added to
-the error path, but there's additional error that needs fixing.
-
-Could someone familiar with the code verify it after me?
-
-Best regards,
-								Pavel
-
-Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c b/dri=
-vers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
-index 3dfcb20e97c6..857be86b4a11 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
-@@ -1007,7 +1007,7 @@ int mlx5_fw_tracer_init(struct mlx5_fw_tracer *tracer)
- 	err =3D mlx5_core_alloc_pd(dev, &tracer->buff.pdn);
- 	if (err) {
- 		mlx5_core_warn(dev, "FWTracer: Failed to allocate PD %d\n", err);
--		return err;
-+		goto err_cancel_work;
- 	}
-=20
- 	err =3D mlx5_fw_tracer_create_mkey(tracer);
-@@ -1031,6 +1031,7 @@ int mlx5_fw_tracer_init(struct mlx5_fw_tracer *tracer)
- 	mlx5_core_destroy_mkey(dev, &tracer->buff.mkey);
- err_dealloc_pd:
- 	mlx5_core_dealloc_pd(dev, tracer->buff.pdn);
-+err_cancel_work:
- 	cancel_work_sync(&tracer->read_fw_strings_work);
- 	return err;
- }
-
-
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
-> @@ -1019,12 +1019,19 @@ int mlx5_fw_tracer_init(struct mlx5_fw_tracer *tr=
-acer)
-=2E..
->  err_dealloc_pd:
->  	mlx5_core_dealloc_pd(dev, tracer->buff.pdn);
-> +	cancel_work_sync(&tracer->read_fw_strings_work);
->  	return err;
->  }
-> =20
-
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---EVF5PPMfhYS0aIcm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmEb9ykACgkQMOfwapXb+vJktgCgvG+gFh7KblyrgFLpsbOPslOQ
-MjUAn0RUmjV0gRzjuh5jyVACMv1eDr1t
-=SwLs
------END PGP SIGNATURE-----
-
---EVF5PPMfhYS0aIcm--
+Does not apply to my tree :(
