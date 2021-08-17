@@ -2,73 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FBD73EEC61
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 14:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A47FE3EEC63
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 14:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239857AbhHQMZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 08:25:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236683AbhHQMZJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 08:25:09 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20DE8C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 05:24:36 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id g26so11545348ybe.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 05:24:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=Bgbzg68ItNKqgE+D4s054W5bp5jbhjO1CWjzF1+y4+c=;
-        b=FfnXYxAySG5jUx7V/TSz5sZxCXmLtTpHURxYt6Ifor769uygyNQP9H8/06MwCQ1tkj
-         mqdusrf8mEkb9+wxIdE19/Ll3H8ceAvF67co21OJRhlBYk9PGHBdpGHHWAUHcaPjBraT
-         NkxD1d0zg2jxT8Lz2hshIQh3dmN9+76JkqmsYHkZnz/pZWMWn9abtegYN5st79j4DjXv
-         6bZ6a/tc/FNw0D9lvNpztK6hqLfi+ixAJZqCz8CCD58zG9wiNnkRTKlG4bBN9LbDJSLh
-         YBJj5LLyYBGr6BkmNB7LEbBQrt3gwSGuuvl6avH/jKdv56+eyF90hiWPqYZ5WGAjYF8H
-         AnoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=Bgbzg68ItNKqgE+D4s054W5bp5jbhjO1CWjzF1+y4+c=;
-        b=ef2iJih5Q7XRouh0Z6jpMOhMleG+GeapBhxT+T5h3kmIOtoSBpWq+da8jKgN0W+htK
-         4HezyWYFTNzBqfHKuF4qJsQIybGRe9GsHrhZV/qv0biznuwnJkW7OMMTaXKYl+8VeL5G
-         jovMf3jskrPbYphN2XZ0/TTDsPTbWOU/RfX2duYjUUerF3MB+skVWBT9XsYq/j/O0YhX
-         65/aL/r89F0hhTj/iKa897rD9MVuUFJxfonU2lV5r1UseFt/ob0ynnhIsgodALOVGbcr
-         CqJq+tTQTucaRV2i0UV+WV5nuJ+F/b5euWQPw3sjouRBSZ1T+TESBJ8pmpEC6hGMPPLS
-         ekHQ==
-X-Gm-Message-State: AOAM530FBbxeH20GqnUMgy+zwJWsVsBCAO1BG3iiWtOiKvg0nf6t5SMu
-        7L6yEF4PNsyCuAqJQF/+znqawOGwMemAy1PAb68=
-X-Google-Smtp-Source: ABdhPJzj50TFwWZ35L7cN/mdMAu2g+FisjDbUWEqgk+X5KPbmwdV78qnKSHhNKQLbbKu/+1tg3B01hlN3ae92F01Zz0=
-X-Received: by 2002:a25:d945:: with SMTP id q66mr4262994ybg.411.1629203075497;
- Tue, 17 Aug 2021 05:24:35 -0700 (PDT)
+        id S239888AbhHQMZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 08:25:37 -0400
+Received: from mga18.intel.com ([134.134.136.126]:45836 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237197AbhHQMZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 08:25:35 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="203218621"
+X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
+   d="scan'208";a="203218621"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 05:25:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
+   d="scan'208";a="510446479"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga004.fm.intel.com with ESMTP; 17 Aug 2021 05:24:58 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id CDDF9FE; Tue, 17 Aug 2021 15:24:58 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Richard Cochran <richardcochran@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 net-next 1/1] ptp_ocp: use bits.h macros for all masks
+Date:   Tue, 17 Aug 2021 15:24:54 +0300
+Message-Id: <20210817122454.50616-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Received: by 2002:a25:7d46:0:0:0:0:0 with HTTP; Tue, 17 Aug 2021 05:24:35
- -0700 (PDT)
-Reply-To: donaldcurtis3000@gmail.com
-From:   Donald Curtis <91474711amele@gmail.com>
-Date:   Tue, 17 Aug 2021 13:24:35 +0100
-Message-ID: <CAC=gNW0Pfv5u26UvSEZD9zjoybWhz2H7xhMPFe1PNbXWJt8YwQ@mail.gmail.com>
-Subject: Re
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HALLO,
-Sch=C3=B6nen Tag.
-Bitte best=C3=A4tigen Sie mir, ob dies Ihre richtige E-Mail-Adresse ist und
-kontaktieren Sie mich f=C3=BCr unser Interesse.
-Aufrichtig,
-Donald
+Currently we are using BIT(), but GENMASK(). Make use of the latter one
+as well (far less error-prone, far more concise).
 
-HALLO,
-Sch=C3=B6nen Tag.
-Bitte best=C3=A4tigen Sie mir, ob dies Ihre richtige E-Mail-Adresse ist und
-kontaktieren Sie mich f=C3=BCr unser Interesse.
-Aufrichtig,
-Donald
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/ptp/ptp_ocp.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/ptp/ptp_ocp.c b/drivers/ptp/ptp_ocp.c
+index caf9b37c5eb1..922f92637db8 100644
+--- a/drivers/ptp/ptp_ocp.c
++++ b/drivers/ptp/ptp_ocp.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /* Copyright (c) 2020 Facebook */
+ 
++#include <linux/bits.h>
+ #include <linux/err.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+@@ -84,10 +85,10 @@ struct tod_reg {
+ #define TOD_CTRL_DISABLE_FMT_A	BIT(17)
+ #define TOD_CTRL_DISABLE_FMT_B	BIT(16)
+ #define TOD_CTRL_ENABLE		BIT(0)
+-#define TOD_CTRL_GNSS_MASK	((1U << 4) - 1)
++#define TOD_CTRL_GNSS_MASK	GENMASK(3, 0)
+ #define TOD_CTRL_GNSS_SHIFT	24
+ 
+-#define TOD_STATUS_UTC_MASK	0xff
++#define TOD_STATUS_UTC_MASK	GENMASK(7, 0)
+ #define TOD_STATUS_UTC_VALID	BIT(8)
+ #define TOD_STATUS_LEAP_VALID	BIT(16)
+ 
+-- 
+2.32.0
+
