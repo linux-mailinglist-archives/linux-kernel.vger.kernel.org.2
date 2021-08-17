@@ -2,96 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3E83EEB43
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 12:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D663EEB46
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 12:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236704AbhHQKyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 06:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231515AbhHQKyl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 06:54:41 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C28C061764;
-        Tue, 17 Aug 2021 03:54:08 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id q11so27916442wrr.9;
-        Tue, 17 Aug 2021 03:54:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=r6aKZ3mStglJ8KXopXqTnAueM8I8iIX9uDZNRcE4ZkQ=;
-        b=XvkhlW57JehYDlkQR+aFLFe55cOvPWo7ekebsd6AoR54n43kZXdV104IKDDsNzEAlX
-         FGJwTHbKr6v4BiFe0TGkhf/AMlY5bnRCO62vCb5kyIVy6f5qbJxnDvH5H1YnZfvw26xc
-         TWBAwlyuNtuEqJb5WvaV5zb7SXpiqjGQq2yhU8HFQpNLwXNE8KB+Yskjl+G0fH2ZJr4Q
-         nGQYlAYZmqS1axjGpUAMvab6XF5DXHB5aavBsmsyuyA0dJVldGOYVeDdxZ2AGgWJqpHd
-         N93nOi9YM569vvIRirqN+xZczOk2S65eGO8oc9++07+389++n31xWtE7bQdpaXFFLIig
-         5y+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=r6aKZ3mStglJ8KXopXqTnAueM8I8iIX9uDZNRcE4ZkQ=;
-        b=I7l9yP8gwI5yvIitcJ207VnwkEqonXij26DDHZJT8KN5pcIRwHbPrXv4say6rziC0q
-         dwXykj0Kv58jXsvIjihOU0UlFWDddYPywuYxiHNxK7WbGQLdL47AMlsXAqjfwmxKac6D
-         pNV9IQi9K2rn/lNk9AfqwjIoyDhzKcv0+zdI7duTR2ysNwfxGf660Tz8vfkbY1mWWGSc
-         hIKWu8omBBx6RjMTdAj4IzylcjYcMHlhdmO/R0m56QGMDWBgGABpXykUE5sbKVBtThZa
-         sJ7Gb2eonUP7vxFvJ3Nu4byLZ5eUZ6FiIoBab4d07MLpknwREofY3BOgGP+HFsClYEB7
-         6v7Q==
-X-Gm-Message-State: AOAM5330VwEUeUkgSinOX03Y1eZr2cNHKwvxkUrZEhJTsrE9MgUCYZOi
-        uZu0OpjFXOp+525M3dNR3MY=
-X-Google-Smtp-Source: ABdhPJxt71/S0VMg7VpAnRd1AlHxkO+lFHesTMJDu0H/ALoSAr0RfvRLaVxRttmPZ6sz0oDM4aZMJw==
-X-Received: by 2002:adf:ab0e:: with SMTP id q14mr3270642wrc.171.1629197646878;
-        Tue, 17 Aug 2021 03:54:06 -0700 (PDT)
-Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
-        by smtp.gmail.com with ESMTPSA id i21sm2029840wrb.62.2021.08.17.03.54.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 03:54:06 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Gow <davidgow@google.com>, linux-staging@lists.linux.dev
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] clk: staging: correct reference to config IOMEM to config HAS_IOMEM
-Date:   Tue, 17 Aug 2021 12:54:04 +0200
-Message-Id: <20210817105404.13146-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S239580AbhHQKzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 06:55:48 -0400
+Received: from mga03.intel.com ([134.134.136.65]:56076 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231515AbhHQKzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 06:55:47 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="216073268"
+X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
+   d="scan'208";a="216073268"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 03:55:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
+   d="scan'208";a="593311540"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 17 Aug 2021 03:55:11 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 17 Aug 2021 13:55:10 +0300
+Date:   Tue, 17 Aug 2021 13:55:10 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Kyle Tso <kyletso@google.com>
+Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org, badhri@google.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: typec: tcpm: Raise vdm_sm_running flag only when
+ VDM SM is running
+Message-ID: <YRuVjkcbT5058ulV@kuha.fi.intel.com>
+References: <20210816075449.2236547-1-kyletso@google.com>
+ <YRuD4HDNuWOx3Xrv@kuha.fi.intel.com>
+ <CAGZ6i=0=shyW-Y7G+SrySi7Sum8qnjhpOwp=vC+SUmwHkbQMrw@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGZ6i=0=shyW-Y7G+SrySi7Sum8qnjhpOwp=vC+SUmwHkbQMrw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 0a0a66c984b3 ("clk: staging: Specify IOMEM dependency for Xilinx
-Clocking Wizard driver") introduces a dependency on the non-existing config
-IOMEM, which basically makes it impossible to include this driver into any
-build. Fortunately, ./scripts/checkkconfigsymbols.py warns:
+On Tue, Aug 17, 2021 at 06:32:55PM +0800, Kyle Tso wrote:
+> On Tue, Aug 17, 2021 at 5:39 PM Heikki Krogerus
+> <heikki.krogerus@linux.intel.com> wrote:
+> >
+> > On Mon, Aug 16, 2021 at 03:54:49PM +0800, Kyle Tso wrote:
+> > > If the port is going to send Discover_Identity Message, vdm_sm_running
+> > > flag was intentionally set before entering Ready States in order to
+> > > avoid the conflict because the port and the port partner might start
+> > > AMS at almost the same time after entering Ready States.
+> > >
+> > > However, the original design has a problem. When the port is doing
+> > > DR_SWAP from Device to Host, it raises the flag. Later in the
+> > > tcpm_send_discover_work, the flag blocks the procedure of sending the
+> > > Discover_Identity and it might never be cleared until disconnection.
+> >
+> > This is a bit off-topic, but I just asked this in another thread: Why
+> > do we have to do discovery with data role swap?
+> >
+> > thanks,
+> >
+> 
+> This can be separated into two cases:
+> 
+> 1. in PD2: If the port is originally UFP, it cannot send
+> Discover_Identity Message according to the Spec. And then DR_SWAP
+> happens. The port becomes DFP, and now it can do that.
+> 
+> 2. in PD3: DFP and UFP are allowed to send Discover_Identity Message
+> and the responses may differ based on which roles they are active on.
+> 
+> Quote from the PD3 Spec:
+> ```
+> The Discover Identity Command Shall be used to determine the identity
+> and/or capabilities of the Port Partner. The following products Shall
+> return a Discover Identity Command ACK in response to a Discover
+> Identity Command request sent to SOP:
+> 
+> • A PD-Capable UFP that supports Modal Operation.
+> • A PD-Capable product that has multiple DFPs.
+> • A PD-Capable [USB4] product.
+> ```
 
-IOMEM
-Referencing files: drivers/staging/clocking-wizard/Kconfig
+Got it. Thanks for the explanation.
 
-The config for IOMEM support is called HAS_IOMEM. Correct this reference to
-the intended config.
+> > > Since there exists another flag send_discover representing that the port
+> > > is going to send Discover_Identity or not, it is enough to use that flag
+> > > to prevent the conflict. Also change the timing of the set/clear of
+> > > vdm_sm_running to indicate whether the VDM SM is actually running or
+> > > not.
+> > >
+> > > Fixes: c34e85fa69b9 ("usb: typec: tcpm: Send DISCOVER_IDENTITY from dedicated work")
+> > > Cc: Badhri Jagan Sridharan <badhri@google.com>
+> > > Signed-off-by: Kyle Tso <kyletso@google.com>
 
-Fixes: 0a0a66c984b3 ("clk: staging: Specify IOMEM dependency for Xilinx Clocking Wizard driver")
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- drivers/staging/clocking-wizard/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+FWIW:
 
-diff --git a/drivers/staging/clocking-wizard/Kconfig b/drivers/staging/clocking-wizard/Kconfig
-index 69cf51445f08..2324b5d73788 100644
---- a/drivers/staging/clocking-wizard/Kconfig
-+++ b/drivers/staging/clocking-wizard/Kconfig
-@@ -5,6 +5,6 @@
- 
- config COMMON_CLK_XLNX_CLKWZRD
- 	tristate "Xilinx Clocking Wizard"
--	depends on COMMON_CLK && OF && IOMEM
-+	depends on COMMON_CLK && OF && HAS_IOMEM
- 	help
- 	  Support for the Xilinx Clocking Wizard IP core clock generator.
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+
+thanks,
+
 -- 
-2.26.2
-
+heikki
