@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 506973EF35D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 728923EF360
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234881AbhHQUPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 16:15:22 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34586 "EHLO
+        id S235399AbhHQUPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 16:15:24 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:34620 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234120AbhHQUOj (ORCPT
+        with ESMTP id S234388AbhHQUOk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 16:14:39 -0400
-Date:   Tue, 17 Aug 2021 20:14:04 -0000
+        Tue, 17 Aug 2021 16:14:40 -0400
+Date:   Tue, 17 Aug 2021 20:14:05 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1629231245;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -20,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4cZCfZDm8Is9Jhpii4ExmW0FU+lto7zpDaa15B2/CPk=;
-        b=mcx20yOs0+A1Pcu2gdFxnZmrNFI5vDtypVINbfLfk25R4foFJZxugO+fjDW33ZQOheZtLh
-        0mmya+M+/j1cN5ieOvaLksP7KbMn5JGRWlDc99F5QJErFxIF53JQnj+++wbBKtHdRcN2uY
-        F2cY26yFI5KPouz2lI5clLAJ86f2IUyj3sZQsXg1XIx00IJsZf88dL4N7yBy+1ih693gDm
-        ZKEXlCq5V61l6o9UG3xaINQIsCyGCpIZA4Dfu8T1Qbh3ifA3hK+8oT/G0qzLuffrOUwO8w
-        1/CceaU+W0Um9aNwVLAvWI1wFuhfEgP/XQE2Qzul1ETWvN9aTj1gdNHYv2A7aw==
+        bh=1+lVScTnnrXB2GG7EkiFy4P4iSsPPjFilSJNzGMdySQ=;
+        b=0BVTTEvOfVZFl35hfWA5242b9g8Jlg0plTsb4n01CTWiWFxLn8bGSc7YtZs3LHQcUnmiWx
+        OFVy1M5TpKSRXUfEe7M/JhaebxUiaUtbgCyM2dU39l60YcCemS2IxUM3xWsU98AqmeSWtF
+        D5ZECH8kjG3orKxfB+iiEsc07/m7KHEwMJg/PkEoDlsXW61nKcj0XVXV11FPOnt/lzHzDS
+        tE57+5Ts4UoAPYmRUmpyuV4MhP9fAf9Ep5VNKc6++LUz1SX4XoSsFt73Gi8Y/kay95sP2I
+        IPruv0V2zgACzeb8zmp4oVBPqsNUFzfFbx3QjtpMUVbRJyLlZtx5BmzNCIYjQg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1629231245;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,22 +33,23 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4cZCfZDm8Is9Jhpii4ExmW0FU+lto7zpDaa15B2/CPk=;
-        b=2LP1xZCTBxBRykKoFOvdReUsCb/4k5XoBB+jtzwL9qx0RCRvWLWWXuJ8ZkHTa+EDcERP5v
-        SBxz8rwVYTIZ/fBg==
+        bh=1+lVScTnnrXB2GG7EkiFy4P4iSsPPjFilSJNzGMdySQ=;
+        b=GMCF5Apdmnnubauv80JELmMNfT9x9WlZ95Q5HCOSiGVIyXhs0CSNlDun2aUfrirOnWIRDh
+        T7SmJv37Cg3Vd9Bw==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] futex: Clean up stale comments
+Subject: [tip: locking/core] futex: Validate waiter correctly in
+ futex_proxy_trylock_atomic()
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210815211305.249178312@linutronix.de>
-References: <20210815211305.249178312@linutronix.de>
+In-Reply-To: <20210815211305.193767519@linutronix.de>
+References: <20210815211305.193767519@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <162923124464.25758.10857186183431942989.tip-bot2@tip-bot2>
+Message-ID: <162923124518.25758.2240606742123516844.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,87 +60,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     c363b7ed79253d5b53494197f6ae625cff64694f
-Gitweb:        https://git.kernel.org/tip/c363b7ed79253d5b53494197f6ae625cff64694f
+Commit-ID:     dc7109aaa233d83b573f75763a9f1ae207042a53
+Gitweb:        https://git.kernel.org/tip/dc7109aaa233d83b573f75763a9f1ae207042a53
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sun, 15 Aug 2021 23:29:06 +02:00
+AuthorDate:    Sun, 15 Aug 2021 23:29:04 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 17 Aug 2021 19:05:39 +02:00
+CommitterDate: Tue, 17 Aug 2021 19:05:36 +02:00
 
-futex: Clean up stale comments
+futex: Validate waiter correctly in futex_proxy_trylock_atomic()
 
-The futex key reference mechanism is long gone. Clean up the stale comments
-which still mention it.
+The loop in futex_requeue() has a sanity check for the waiter, which is
+missing in futex_proxy_trylock_atomic(). In theory the key2 check is
+sufficient, but futexes are cursed so add it for completeness and paranoia
+sake.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210815211305.249178312@linutronix.de
+Link: https://lore.kernel.org/r/20210815211305.193767519@linutronix.de
 ---
- kernel/futex.c | 18 +++++++-----------
- 1 file changed, 7 insertions(+), 11 deletions(-)
+ kernel/futex.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/kernel/futex.c b/kernel/futex.c
-index a1f27fd..bc5395e 100644
+index 21625cb..a1f27fd 100644
 --- a/kernel/futex.c
 +++ b/kernel/futex.c
-@@ -1354,7 +1354,7 @@ static int lock_pi_update_atomic(u32 __user *uaddr, u32 uval, u32 newval)
-  *  -  1 - acquired the lock;
-  *  - <0 - error
-  *
-- * The hb->lock and futex_key refs shall be held by the caller.
-+ * The hb->lock must be held by the caller.
-  *
-  * @exiting is only set when the return value is -EBUSY. If so, this holds
-  * a refcount on the exiting task on return and the caller needs to drop it
-@@ -2621,8 +2621,7 @@ static void futex_wait_queue_me(struct futex_hash_bucket *hb, struct futex_q *q,
-  *
-  * Setup the futex_q and locate the hash_bucket.  Get the futex value and
-  * compare it with the expected value.  Handle atomic faults internally.
-- * Return with the hb lock held and a q.key reference on success, and unlocked
-- * with no q.key reference on failure.
-+ * Return with the hb lock held on success, and unlocked on failure.
-  *
-  * Return:
-  *  -  0 - uaddr contains val and hb has been locked;
-@@ -2700,8 +2699,8 @@ static int futex_wait(u32 __user *uaddr, unsigned int flags, u32 val,
- 			       current->timer_slack_ns);
- retry:
- 	/*
--	 * Prepare to wait on uaddr. On success, holds hb lock and increments
--	 * q.key refs.
-+	 * Prepare to wait on uaddr. On success, it holds hb->lock and q
-+	 * is initialized.
- 	 */
- 	ret = futex_wait_setup(uaddr, val, flags, &q, &hb);
- 	if (ret)
-@@ -2712,7 +2711,6 @@ retry:
+@@ -1879,6 +1879,13 @@ futex_proxy_trylock_atomic(u32 __user *pifutex, struct futex_hash_bucket *hb1,
+ 	if (!top_waiter)
+ 		return 0;
  
- 	/* If we were woken (and unqueued), we succeeded, whatever. */
- 	ret = 0;
--	/* unqueue_me() drops q.key ref */
- 	if (!unqueue_me(&q))
- 		goto out;
- 	ret = -ETIMEDOUT;
-@@ -3205,8 +3203,8 @@ static int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
- 	q.requeue_pi_key = &key2;
- 
- 	/*
--	 * Prepare to wait on uaddr. On success, increments q.key (key1) ref
--	 * count.
-+	 * Prepare to wait on uaddr. On success, it holds hb->lock and q
-+	 * is initialized.
- 	 */
- 	ret = futex_wait_setup(uaddr, val, flags, &q, &hb);
- 	if (ret)
-@@ -3235,9 +3233,7 @@ static int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
- 	 * In order for us to be here, we know our q.key == key2, and since
- 	 * we took the hb->lock above, we also know that futex_requeue() has
- 	 * completed and we no longer have to concern ourselves with a wakeup
--	 * race with the atomic proxy lock acquisition by the requeue code. The
--	 * futex_requeue dropped our key1 reference and incremented our key2
--	 * reference count.
-+	 * race with the atomic proxy lock acquisition by the requeue code.
- 	 */
- 
- 	/*
++	/*
++	 * Ensure that this is a waiter sitting in futex_wait_requeue_pi()
++	 * and waiting on the 'waitqueue' futex which is always !PI.
++	 */
++	if (!top_waiter->rt_waiter || top_waiter->pi_state)
++		ret = -EINVAL;
++
+ 	/* Ensure we requeue to the expected futex. */
+ 	if (!match_futex(top_waiter->requeue_pi_key, key2))
+ 		return -EINVAL;
