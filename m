@@ -2,86 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 457793EE699
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7843EE6A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234491AbhHQGeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 02:34:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229460AbhHQGeX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 02:34:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6771160F5C;
-        Tue, 17 Aug 2021 06:33:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629182030;
-        bh=cLn5wfADaYN3DJlvTSDXWYB/LgMsvZa6P022ePtr49o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xq4IwRnuMlj5J8CXh5nlRhjtTCqhuZAWguilrsdPw8w1WvF/wDHIeZYWe5Zl3IM/H
-         b/b989OYLCm4vYN01OOEvD7Z6vQvhr9/KfT7+FjgB1hp7d9+k6kHdJpI9IYMLv5ZRx
-         ZCHXJPZleFnKAC7/FYB5SYcRsCee0FDQJZj0/ARM=
-Date:   Tue, 17 Aug 2021 08:33:48 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Slark Xiao <slark_xiao@163.com>
-Cc:     Reinhard Speyerer <rspmn@arcor.de>, johan@kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Re: Re: Re: [PATCH] [V2,1/1]USB: serial: option: add Foxconn
- T77W175 composition 0x901d
-Message-ID: <YRtYTFFCNn/xp2Hr@kroah.com>
-References: <20210816035404.4210-1-slark_xiao@163.com>
- <YRoqAJmGBpV/OuZL@arcor.de>
- <d1d16fd.6f62.17b4e3ffa26.Coremail.slark_xiao@163.com>
- <YRot+wBa6v529Z7q@kroah.com>
- <278bcd0d.7189.17b4e479a3a.Coremail.slark_xiao@163.com>
- <YRpJN414JQyfyEGo@kroah.com>
- <ba9a424.f5f.17b51ef0b9d.Coremail.slark_xiao@163.com>
+        id S238005AbhHQGhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 02:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234539AbhHQGhA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 02:37:00 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C3A3C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:36:27 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1mFsht-0007o2-2g; Tue, 17 Aug 2021 08:36:17 +0200
+Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1mFshq-0006vl-De; Tue, 17 Aug 2021 08:36:14 +0200
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+To:     Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>
+Cc:     kernel@pengutronix.de, Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        SHA-cyfmac-dev-list@infineon.com,
+        brcm80211-dev-list.pdl@broadcom.com, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] brcmfmac: pcie: fix oops on failure to resume and reprobe
+Date:   Tue, 17 Aug 2021 08:35:22 +0200
+Message-Id: <20210817063521.22450-1-a.fatoum@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ba9a424.f5f.17b51ef0b9d.Coremail.slark_xiao@163.com>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: afa@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 10:27:05AM +0800, Slark Xiao wrote:
-> 
-> 
+When resuming from suspend, brcmf_pcie_pm_leave_D3 will first attempt a
+hot resume and then fall back to removing the PCI device and then
+reprobing. If this probe fails, the kernel will oops, because brcmf_err,
+which is called to report the failure will dereference the stale bus
+pointer. Open code and use the default bus-less brcmf_err to avoid this.
 
-<blank lines snipped, please fix your email client...>
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+---
+To: Arend van Spriel <aspriel@gmail.com>
+To: Franky Lin <franky.lin@broadcom.com>
+To: Hante Meuleman <hante.meuleman@broadcom.com>
+To: Chi-hsien Lin <chi-hsien.lin@infineon.com>
+To: Wright Feng <wright.feng@infineon.com>
+To: Chung-hsien Hsu <chung-hsien.hsu@infineon.com>
+Cc: SHA-cyfmac-dev-list@infineon.com
+Cc: brcm80211-dev-list.pdl@broadcom.com
+Cc: netdev@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: linux-kernel@vger.kernel.org
+---
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->> At 2021-08-16 19:17:11, "Greg KH" <gregkh@linuxfoundation.org> wrote:
-> >On Mon, Aug 16, 2021 at 05:25:20PM +0800, Slark Xiao wrote:
-> >> At 2021-08-16 17:20:59, "Greg KH" <gregkh@linuxfoundation.org> wrote:
-> >> >On Mon, Aug 16, 2021 at 05:17:00PM +0800, Slark Xiao wrote:
-> >> >>   So should I use USB_DEVICE_INTERFACE_NUMBER(QUALCOMM_VENDOR_ID, 0x901d, 0x00) to bind Diag port only?
-> >> >
-> >> >Why is this device using the QUALCOMM vendor id anyway?  Is this allowed
-> >> >by Qualcomm?
-> >> >
-> >> >thanks,
-> >> >
-> >> >greg k-h
-> >> 
-> >> Hi Greg,
-> >>   Our product are designed based on Qualcomm SDX55 platform. So it still support Qualcomm vendor ID.
-> >>   I think there is no infringement about this ID combo.
-> >
-> >Do you have permission from Qualcomm to use their vendor id?  I know
-> >some vendors get very upset about this...
-> >
-> >Why not use your own vendor id?
-> >
-> >thanks,
-> >
-> >greg k-h
-> 
-> Hi Greg,
->    As Qualcomm mainly provide service to their customer, like Samsung, Apple, Huawei, Quectel, Foxconn, Sierra and so on, so I believe all available VID/PIDs are allowed to use. 
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+index 9ef94d7a7ca7..d824bea4b79d 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+@@ -2209,7 +2209,7 @@ static int brcmf_pcie_pm_leave_D3(struct device *dev)
+ 
+ 	err = brcmf_pcie_probe(pdev, NULL);
+ 	if (err)
+-		brcmf_err(bus, "probe after resume failed, err=%d\n", err);
++		__brcmf_err(NULL, __func__, "probe after resume failed, err=%d\n", err);
+ 
+ 	return err;
+ }
+-- 
+2.30.2
 
-That is not how USB VIDs work, sorry.  Please get approval from the
-company whose VID you wish to use, otherwise they will be using it
-themselves for their own devices, and you will have a collision.
-
-thanks,
-
-greg k-h
