@@ -2,110 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED33B3EEC64
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 14:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C91F33EEC69
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 14:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239895AbhHQMZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 08:25:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55994 "EHLO
+        id S239844AbhHQM1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 08:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237197AbhHQMZj (ORCPT
+        with ESMTP id S236683AbhHQM1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 08:25:39 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1FBC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 05:25:05 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mFy9N-00028R-S4; Tue, 17 Aug 2021 14:25:01 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mFy9N-0008TF-F9; Tue, 17 Aug 2021 14:25:01 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Fabio Estevam <festevam@gmail.com>, linux-imx@nxp.com
-Subject: [PATCH v2] ARM: imx6: mask all interrupts before calling stby-poweroff sequence
-Date:   Tue, 17 Aug 2021 14:25:00 +0200
-Message-Id: <20210817122500.31953-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
+        Tue, 17 Aug 2021 08:27:47 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67035C061764;
+        Tue, 17 Aug 2021 05:27:14 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id z1so3252085ioh.7;
+        Tue, 17 Aug 2021 05:27:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i5GEOxhJC+X6hk3uJOQSth+y052VdXubyLMOywle/R4=;
+        b=BMtr3fTuMzn8aLeOLWhz49DE/VSAu8ytkw8qR4lp3JTE7VnxSL5X/LNrmZGcOX5IHl
+         CPS+/VRUhJIoFSPMEmL1c5JZB+xn7oaEFIqbYqy5811SXYSCQggqhTahO4LuB5Sf86um
+         rmXIWB1Q2F++tkBsNHEoYTnCR/3AE81rXwBGFFCw9uyr3a3wwGPxvRT4lMCcRa0HwIcl
+         7DFoLo7siaF9rV34bLfM+IJqv4sC+jmcIOmP1YESnxtbxxTZ3/7azdYCfhtvPEdkFFHO
+         +kuz28zTb95oQKZL7DVx60Wsqt5ht8dQyr0sneXVw1tz3tEuj6HqI5dTYL3Zn5oFd0cu
+         PDTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i5GEOxhJC+X6hk3uJOQSth+y052VdXubyLMOywle/R4=;
+        b=SmUXbSApqLFw/T3ebKpd91z0he+0nzdBop2w+NZUU2XznA/0FEVcHeA/mQxHKIlE6E
+         61evZkMllz6cwOZaTLU4FP9FEv40hHQ4uVGauIwI+aReWuSw5iuEipmHkUGCg6Xa73td
+         SAaTUyRWboean/FEvAG8O8I/RD/sTaDZPwFOzM6pYW3r5/1L5a9QIAwgsvgOyI8ufKfC
+         54Wxjbomy16XDN1vx5vS1oUpQwPtXVjChWQbaM7bw/ZLeS6iGEqkMSncBsqxa6CjOypa
+         Iy4SBn6d6T9HdXenvLKtMzrBRUJPA/w6sBLYNQ8WWhA9ST6KFh74HAoqI93UN5KJglgF
+         CeRw==
+X-Gm-Message-State: AOAM53006+GDl30KnahEqlQk0T81a7JdoNUbSOMyVbDLQBlBBg9eBnWY
+        FM9hPpCYnoOXHlAOfCzICy8QdFbteK408gOxon14Bl3129Uk2A==
+X-Google-Smtp-Source: ABdhPJw52mErSSl8TCt+pFsR8tz7Fd74wx0m939I8a2YkDqPMvQJxAAGpnD2aRRcI25P11fwbtaAuiWdrdmveHm/Pxs=
+X-Received: by 2002:a05:6602:48c:: with SMTP id y12mr2723179iov.14.1629203233860;
+ Tue, 17 Aug 2021 05:27:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210816065417.3987596-1-chenhuacai@loongson.cn>
+ <20210816182750.26i535ilc6nef5k6@offworld> <874kbpp5zd.ffs@tglx>
+ <CAAhV-H5TKLMi0GSQmh9RFK_k5eNRwx8AE8MjMKjJfbnyVYP-+w@mail.gmail.com>
+ <871r6spn0r.ffs@tglx> <CAAhV-H6=MbBFwgxT75Bqr5SY0e5E6gtpCUCZhrVgFE_h1A0q2A@mail.gmail.com>
+ <87y290o304.ffs@tglx> <YRuFMbUi7ZN315dY@hirez.programming.kicks-ass.net>
+In-Reply-To: <YRuFMbUi7ZN315dY@hirez.programming.kicks-ass.net>
+From:   Huacai Chen <chenhuacai@gmail.com>
+Date:   Tue, 17 Aug 2021 20:27:03 +0800
+Message-ID: <CAAhV-H4GVWw0eNYRWmGY66A6FVKcexAGr-Wh_=9VgxxEkpiKJA@mail.gmail.com>
+Subject: Re: [PATCH] futex: Fix fault_in_user_writeable()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Ingo Molnar <mingo@redhat.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Hongchen Zhang <zhanghongchen@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Any pending interrupt can prevent entering standby based power off state.
-To avoid it, mask all interrupts.
+Hi, all,
 
-Fixes: 8148d2136002 ("ARM: imx6: register pm_power_off handler if "fsl,pmic-stby-poweroff" is set")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- arch/arm/mach-imx/pm-imx6.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+On Tue, Aug 17, 2021 at 5:45 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Aug 17, 2021 at 11:05:15AM +0200, Thomas Gleixner wrote:
+> > Huacai,
+> >
+> > On Tue, Aug 17 2021 at 15:38, Huacai Chen wrote:
+> > > On Tue, Aug 17, 2021 at 3:07 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+> > > On X86, it returns 0; on MIPS64 without patch, it hangs in kernel; on
+> > > MIPS64 with this patch, it returns -1.
+> >
+> > As expected.
+> >
+> > > Then, I want to know, on "W implies R" archs (such as X86), should it
+> > > return 0? Maybe return -1 is more reasonable? (because the VMA is
+> > > marked as write-only). If this program should return -1, then I don't
+> > > think this is a MIPS-specific problem.
+> >
+> > No. mmap(.., PROT_WRITE...) is simply impossible on x86 and implies
+> > PROT_READ as documented in mmap(2).
+> >
+> > So why should this fail and only fail in the fault case, but succeed
+> > when the PTE is already established?
+>
+> I wouldn't actually mind if it failed on fault -- it's the 'best' we can
+> do on x86. Doing a RmW op on PROT_WRITE is silly and deserves all the
+> wreckage it can get.
+If we must fix it in arch code, there are two methods: 1, don't use
+write-only map (modify protection_map as Liu Lichao did); 2, override
+arch_vma_access_permitted() to do extra checks. Thomas, which is
+better?
 
-diff --git a/arch/arm/mach-imx/pm-imx6.c b/arch/arm/mach-imx/pm-imx6.c
-index 9244437cb1b9..63887ade411a 100644
---- a/arch/arm/mach-imx/pm-imx6.c
-+++ b/arch/arm/mach-imx/pm-imx6.c
-@@ -59,8 +59,11 @@
- #define MX6Q_SUSPEND_OCRAM_SIZE		0x1000
- #define MX6_MAX_MMDC_IO_NUM		33
- 
-+#define GIC_DIST_ENABLE_CLEAR		0x180
-+
- static void __iomem *ccm_base;
- static void __iomem *suspend_ocram_base;
-+static void __iomem *gic_raw_dist_base;
- static void (*imx6_suspend_in_ocram_fn)(void __iomem *ocram_vbase);
- 
- /*
-@@ -592,6 +595,7 @@ static int __init imx6q_suspend_init(const struct imx6_pm_socdata *socdata)
- static void __init imx6_pm_common_init(const struct imx6_pm_socdata
- 					*socdata)
- {
-+	struct device_node *np;
- 	struct regmap *gpr;
- 	int ret;
- 
-@@ -615,10 +619,29 @@ static void __init imx6_pm_common_init(const struct imx6_pm_socdata
- 	if (!IS_ERR(gpr))
- 		regmap_update_bits(gpr, IOMUXC_GPR1, IMX6Q_GPR1_GINT,
- 				   IMX6Q_GPR1_GINT);
-+
-+	np = of_find_compatible_node(NULL, NULL, "arm,cortex-a9-gic");
-+	gic_raw_dist_base = of_iomap(np, 0);
-+}
-+
-+static void imx_gic_mask_all(void)
-+{
-+	int i;
-+
-+	if (WARN_ON(!gic_raw_dist_base))
-+		return;
-+
-+	for (i = 0; i < 4; i++)
-+		writel_relaxed(~0, gic_raw_dist_base + GIC_DIST_ENABLE_CLEAR + 4 * i);
- }
- 
- static void imx6_pm_stby_poweroff(void)
- {
-+	/*
-+	 * A pending interrupt can prevent power off signal to be activated.
-+	 * So, mask all interrupts to avoid it.
-+	 */
-+	imx_gic_mask_all();
- 	imx6_set_lpm(STOP_POWER_OFF);
- 	imx6q_suspend_finish(0);
- 
--- 
-2.30.2
-
+Huacai
