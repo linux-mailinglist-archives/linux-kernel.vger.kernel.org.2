@@ -2,94 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93C533EED3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D49E13EED3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237517AbhHQNVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 09:21:41 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:51071 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235267AbhHQNVj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 09:21:39 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 53CB8200004;
-        Tue, 17 Aug 2021 13:21:03 +0000 (UTC)
-Date:   Tue, 17 Aug 2021 15:21:03 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     tonywwang-oc@zhaoxin.com
-Cc:     a.zummo@towertech.it, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, TimGuo-oc@zhaoxin.com,
-        CooperYan@zhaoxin.com, QiyuanWang@zhaoxin.com,
-        HerryYang@zhaoxin.com, CobeChen@zhaoxin.com, YanchenSun@zhaoxin.com
-Subject: Re: [PATCH] rtc: Fix set RTC time delay 500ms on some Zhaoxin SOCs
-Message-ID: <YRu3v0pb/Z54XxWJ@piout.net>
-References: <1629121638-3246-1-git-send-email-TonyWWang-oc@zhaoxin.com>
- <YRogod0HB4d7Og4E@piout.net>
- <a4b6b0b4-9aa5-9a75-e523-0fd7656b82cf@zhaoxin.com>
- <YRpb4Fey2lM3aOAw@piout.net>
- <7EA395FF-EB66-4274-9EDE-EC28450A0259@zhaoxin.com>
+        id S237407AbhHQNXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 09:23:15 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:51239 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236040AbhHQNXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 09:23:14 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4GpsCM6FLvz9sTg;
+        Tue, 17 Aug 2021 15:22:39 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 98tisP6h3gsf; Tue, 17 Aug 2021 15:22:39 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4GpsCM5FSnz9sTf;
+        Tue, 17 Aug 2021 15:22:39 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 886B28B7C8;
+        Tue, 17 Aug 2021 15:22:39 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id z9ArqeFHdXUY; Tue, 17 Aug 2021 15:22:39 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1BB008B7A9;
+        Tue, 17 Aug 2021 15:22:39 +0200 (CEST)
+Subject: Re: [PATCH/RFC] powerpc/module_64: allow .init_array constructors to
+ run
+To:     Jan Stancek <jstancek@redhat.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org
+References: <920acea9aa18e4f2956581a8e158bdaa376fdf63.1629203945.git.jstancek@redhat.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <0bef6f5d-5c2a-efd4-6281-1e66b1709479@csgroup.eu>
+Date:   Tue, 17 Aug 2021 15:22:38 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7EA395FF-EB66-4274-9EDE-EC28450A0259@zhaoxin.com>
+In-Reply-To: <920acea9aa18e4f2956581a8e158bdaa376fdf63.1629203945.git.jstancek@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/08/2021 19:09:28+0800, tonywwang-oc@zhaoxin.com wrote:
-> 
-> 
-> On August 16, 2021 8:36:48 PM GMT+08:00, Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
-> >On 16/08/2021 18:03:13+0800, Tony W Wang-oc wrote:
-> >> 
-> >> On 16/08/2021 16:24, Alexandre Belloni wrote:
-> >> > Hello,
-> >> > 
-> >> > On 16/08/2021 21:47:18+0800, Tony W Wang-oc wrote:
-> >> >> When the RTC divider is changed from reset to an operating time
-> >base,
-> >> >> the first update cycle should be 500ms later. But on some Zhaoxin
-> >SOCs,
-> >> >> this first update cycle is one second later.
-> >> >>
-> >> >> So set RTC time on these Zhaoxin SOCs will causing 500ms delay.
-> >> >>
-> >> > 
-> >> > Can you explain what is the relationship between writing the
-> >divider and
-> >> > the 500ms delay?
-> >> >> Isn't the issue that you are using systohc and set_offset_nsec is
-> >set to
-> >> > NSEC_PER_SEC / 2 ?
-> >> > 
-> >> No.
-> >> When using #hwclock -s to set RTC time and set_offset_nsec is
-> >> NSEC_PER_SEC / 2, the function mc146818_set_time() requires the first
-> >> update cycle after RTC divider be changed from reset to an operating
-> >> mode is 500ms as the MC146818A spec specified. But on some Zhaoxin
-> >SOCs,
-> >> the first update cycle of RTC is one second later after RTC divider
-> >be
-> >> changed from reset to an operating mode. So the first update cycle
-> >after
-> >> RTC divider be changed from reset to an operation mode on These SOCs
-> >> will causing 500ms delay with current mc146818_set_time()
-> >implementation.
-> >> 
-> >
-> >What happens with hwclock --delay=0 -s ?
-> 
-> With "hwclock --delay=0 -s" still have this problem. Actually, this 500ms delay caused by writing the RTC time on these Zhaoxin SOCs.
-> As I've tested, with hwclock --delay=0 -w can fix it too. 
-> 
-
-Both -s and -w end up calling set_hardware_clock_exact() so both should
-end up with the correct time. If this is not the case, then hwclock
-needs to be fixed.
 
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Le 17/08/2021 à 15:02, Jan Stancek a écrit :
+> gcov and kasan rely on compiler generated constructor code.
+> For modules, gcc-8 with gcov enabled generates .init_array section,
+> but on ppc64le it doesn't get executed. find_module_sections() never
+> finds .init_array section, because module_frob_arch_sections() renames
+> it to _init_array.
+> 
+> Avoid renaming .init_array section, so do_mod_ctors() can use it.
+> 
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+> I wasn't able to trace the comment:
+>    "We don't handle .init for the moment: rename to _init"
+
+Original patch there: https://github.com/mpe/linux-fullhistory/commit/d6ad6690aa72
+
+> to original patch (it pre-dates .git). I'm not sure if it
+> still applies today, so I limited patch to .init_array. This
+> fixes gcov for modules for me on ppc64le 5.14.0-rc6.
+> 
+> Renaming issue is also mentioned in kasan patches here:
+>    https://patchwork.ozlabs.org/project/linuxppc-dev/cover/20210319144058.772525-1-dja@axtens
+> 
+>   arch/powerpc/kernel/module_64.c | 10 +++++++++-
+>   1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/powerpc/kernel/module_64.c b/arch/powerpc/kernel/module_64.c
+> index 6baa676e7cb6..c604b13ea6bf 100644
+> --- a/arch/powerpc/kernel/module_64.c
+> +++ b/arch/powerpc/kernel/module_64.c
+> @@ -299,8 +299,16 @@ int module_frob_arch_sections(Elf64_Ehdr *hdr,
+>   					  sechdrs[i].sh_size);
+>   
+>   		/* We don't handle .init for the moment: rename to _init */
+> -		while ((p = strstr(secstrings + sechdrs[i].sh_name, ".init")))
+> +		while ((p = strstr(secstrings + sechdrs[i].sh_name, ".init"))) {
+> +#ifdef CONFIG_CONSTRUCTORS
+
+Please avoid #ifdefery as much as possible.
+
+I think here you can do:
+
+			if (IS_ENABLED(CONFIG_CONSTRUCTORS) &&
+			    strstr(secstrings + sechdrs[i].sh_name, ".init_array"))
+
+> +			/* find_module_sections() needs .init_array intact */
+> +			if (strstr(secstrings + sechdrs[i].sh_name,
+> +				".init_array")) {
+
+No { } for single statements (See 
+https://www.kernel.org/doc/html/latest/process/coding-style.html#placing-braces-and-spaces)
+
+> +				break;
+> +			}
+> +#endif
+>   			p[0] = '_';
+> +		}
+>   
+>   		if (sechdrs[i].sh_type == SHT_SYMTAB)
+>   			dedotify((void *)hdr + sechdrs[i].sh_offset,
+> 
