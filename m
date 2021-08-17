@@ -2,210 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42F43EE4FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 05:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 801273EE511
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 05:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236746AbhHQDZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 23:25:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45434 "EHLO
+        id S237005AbhHQD33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 23:29:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233637AbhHQDZK (ORCPT
+        with ESMTP id S236662AbhHQD31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 23:25:10 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7AB3C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 20:24:37 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id i8so14108440ybt.7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 20:24:37 -0700 (PDT)
+        Mon, 16 Aug 2021 23:29:27 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 231E5C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 20:28:55 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id m193so36867192ybf.9
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 20:28:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=atishpatra.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=R7t78EbJ4SBQR4PW9PP+EHALfMTimXWJ4a8o/k9vg3E=;
-        b=TvFFwtmlL3L2+ir/JLvkG9HSbp6wG0WN7eoWHjuvbqXI/776osypQlgOrDrJUXLFjL
-         94vLmlXhpIhhPlKhhiwszEk5kK6XzKmgsMfM/A3jvpMEuqbVyeX3vxyGQeKdQZFR3yr3
-         Ioj8WJTKLQsxO2rclDVfBKJYXSWlDN3Tu90wM=
+        bh=Tzdzktn6eJFw4s49wHe5WL1ljzPbWd0BSnO2ChJenyg=;
+        b=iRigEkOU/lq2H7+3rXhuYnpJrvUTCZEtP+sT9oh7jzX60yWEA71GljsuFR2qdsTxk4
+         1D4Xgi/8lzLK3hT/eODEXv/fg27FhlfLLMBQv4c+Le/u+cRKoE+XNCuUFzAPVOZ3Cu5A
+         5mALnvxWLki1/8rU9dGV2+5xRSfzrb20HkgH4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=R7t78EbJ4SBQR4PW9PP+EHALfMTimXWJ4a8o/k9vg3E=;
-        b=o26IQGxrHh2v9VpjYBQ/FguqQndJwQZ0C0sy5J7I/xvkd0ne6GmbMhyZ5W57avIAfs
-         /KvnIreBqGAgZFqwTVPh/FutV2JL1WZ1ZwYfTXdqt1ZyRcTJ8lZcBry5uQjEukX3iO2W
-         /n2hJDRp/Z8qWP2R+D2LBkFk6qBrrpCjB2FQ/gtiYQ0mVnNQqwx+kG3wM6Z/lBWjLizH
-         4d2FWhnvqsguEdGfSrmJWl3BOsdt7yD2KBo93AH2GzQPaxL7p09B7Ct/X8e8ZUhpEPXM
-         5iDzXlRU8Oznct5oXbSeaLLjFjxF4cfDjXDvndDEIXn37c8j4+qJUpybo/P6dfcARVHB
-         y7VA==
-X-Gm-Message-State: AOAM531U/BP14q08GE7C8U2FmqNOCNfGU6kAORjxNWxjSJBRQKE5QJNl
-        kc/cFNpAwbH3LtmbLxm/AHf34WdvQiUPoGpR0s7h
-X-Google-Smtp-Source: ABdhPJzKYOIuc7NAVJ7T2p4GvCqFkDmXaCHT1oHt/jMQX6BHv/wp7fy0gQ89E1PH6Sc5hPjbcFazBGEGNlpJr4nUvig=
-X-Received: by 2002:a25:3f85:: with SMTP id m127mr1773427yba.21.1629170676840;
- Mon, 16 Aug 2021 20:24:36 -0700 (PDT)
+        bh=Tzdzktn6eJFw4s49wHe5WL1ljzPbWd0BSnO2ChJenyg=;
+        b=RvSEauHHul+rh8+9OuJHE4XuTjlJslAx1E1nMrBamaZ2bnCOylN/WDdWHVsTd/dHod
+         vpGbc1sXuoOifRrzoty4ra/s0m855AnmuTQdWm0jgXYxVW0VwoOy75pFg8ua8iLbptyW
+         YRdCWzbwAp/cAVcLfbVf9qf6CIlj5NmzJeoc9f9aADThXBWFWEBAAZo0hvIua6WSJxIU
+         A+jEkero6tHx93bugjIKFWeSSPwA6/HqrQd1clgqBxZpEjtX0R3CoZK9XLLxBjek9gTY
+         raXJikHPeNZbh/Y+DLFVUl+k9Rg+WN4SFpx9ynFbP+U2JViFo5xZWCFC6fFAyH7pOM+i
+         CfsA==
+X-Gm-Message-State: AOAM532lYfLOhoKux/aeWoU/RbCzyfFfsdq6KKXqv3Aq3b/XFry2enfB
+        10DD1GaprGikY4/qRxQSJTd5n353LJlmHJhE6xfH
+X-Google-Smtp-Source: ABdhPJxY/kyjIoitYQP7LbNOYUmWUtLe5137taPE2EVRs8WcUZFYmzjCLuRjV3W07whRbk3VUEXR56mjqhO8zaWABGs=
+X-Received: by 2002:a25:3bcb:: with SMTP id i194mr1729383yba.442.1629170934402;
+ Mon, 16 Aug 2021 20:28:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210723214031.3251801-1-atish.patra@wdc.com> <20210723214031.3251801-2-atish.patra@wdc.com>
- <CAJF2gTT+zS=ySrmQUzVe7hf56E2K7XoGjzMyeaH5oFPUNwFqZA@mail.gmail.com>
-In-Reply-To: <CAJF2gTT+zS=ySrmQUzVe7hf56E2K7XoGjzMyeaH5oFPUNwFqZA@mail.gmail.com>
+References: <20210723214031.3251801-1-atish.patra@wdc.com> <mhng-11e1ab27-21eb-4b20-9185-c256fcaaab99@palmerdabbelt-glaptop>
+ <CAOnJCU+ip1ccc9CrREi3c+15ue4Grcq+ENbQ+z_gh3CH249aAg@mail.gmail.com> <CAJF2gTSMtj05cduTZ6jEqDXtaG0QTY743MRQrv08B4cocZbXJQ@mail.gmail.com>
+In-Reply-To: <CAJF2gTSMtj05cduTZ6jEqDXtaG0QTY743MRQrv08B4cocZbXJQ@mail.gmail.com>
 From:   Atish Patra <atishp@atishpatra.org>
-Date:   Mon, 16 Aug 2021 20:24:26 -0700
-Message-ID: <CAOnJCU+Sebr-3zt-xy9F6hGb8qj30QsH_SQvEkrvWhw6sVmbcw@mail.gmail.com>
-Subject: Re: [RFC 1/5] RISC-V: Implement arch_sync_dma* functions
+Date:   Mon, 16 Aug 2021 20:28:43 -0700
+Message-ID: <CAOnJCUKPitLD1g1LocTw8H+G7hg04-=Dd3biHGgDPMwer2cFpw@mail.gmail.com>
+Subject: Re: [RFC 0/5] Support non-coherent DMA on RISC-V using a global pool
 To:     Guo Ren <guoren@kernel.org>
-Cc:     Atish Patra <atish.patra@wdc.com>,
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
         devicetree <devicetree@vger.kernel.org>,
         Albert Ou <aou@eecs.berkeley.edu>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        iommu@lists.linux-foundation.org, Rob Herring <robh+dt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
         Tobias Klauser <tklauser@distanz.ch>,
         Robin Murphy <robin.murphy@arm.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        iommu@lists.linux-foundation.org,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
         linux-riscv <linux-riscv@lists.infradead.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
         Dmitry Vyukov <dvyukov@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 6:48 PM Guo Ren <guoren@kernel.org> wrote:
+On Mon, Aug 16, 2021 at 6:37 PM Guo Ren <guoren@kernel.org> wrote:
 >
-> On Sat, Jul 24, 2021 at 5:40 AM Atish Patra <atish.patra@wdc.com> wrote:
+> 1
+>
+> On Thu, Jul 29, 2021 at 2:19 PM Atish Patra <atishp@atishpatra.org> wrote:
 > >
-> > To facilitate streaming DMA APIs, this patch introduces a set of generic
-> > cache operations related dma sync. Any platform can use the generic ops
-> > to provide platform specific cache management operations. Once the
-> > standard RISC-V CMO extension is available, it can be built on top of it.
+> > On Wed, Jul 28, 2021 at 9:30 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+> > >
+> > > On Fri, 23 Jul 2021 14:40:26 PDT (-0700), Atish Patra wrote:
+> > > > RISC-V privilege specification doesn't define an IOMMU or any method modify
+> > > > PMA attributes or PTE entries to allow non-coherent mappings yet. In
+> > > > the beginning, this approach was adopted assuming that most of the RISC-V
+> > > > platforms would support full cache-coherent IO. Here is excerpt from the
+> > > > priv spec section 3.6.5
+> > > >
+> > > > "In RISC-V platforms, the use of hardware-incoherent regions is discouraged
+> > > > due to software complexity, performance, and energy impacts."
+> > > >
+> > > > While some of the RISC-V platforms adhere to the above suggestion, not all
+> > > > platforms can afford to build to fully cache-coherent I/O devices. To
+> > > > address DMA for non-coherent I/O devices, we need to mark a region of memory
+> > > > as non-cacheable. Some of the platforms rely on a fixed region of uncached
+> > > > memory that is remapped to the system memory while some other modify
+> > > > the PTE entries to achieve that.
+> > > >
+> > > > The patch3 solves the issue for the fist use case by using a global
+> > > > pool of memory that is reserved for DMA. The device access the reserved area
+> > > > of the region while corresponding CPU address will be from uncached region
+> > > > As the uncached region is remapped to the beginning of the system ram, both
+> > > > CPU and device get the same view.
+> > > >
+> > > > To facilitate streaming DMA APIs, patch 1 introduces a set of generic
+> > > > cache operations. Any platform can use the generic ops to provide platform
+> > > > specific cache management operations. Once the standard RISC-V CMO extension
+> > > > is available, it will also use these generic ops.
+> > > >
+> > > > To address the second use case, Page Based Memory Attribute (PBMT) extension
+> > > > is proposed. Once the extension is in good shape, we can leverage that
+> > > > using CONFIG_DIRECT_REMAP. Currently, it is selected via a compile time config
+> > > > option. We will probably need another arch specific hooks to know if the
+> > > > platform supports direct remap at runtime. For RISC-V, it will check the
+> > > > presence of PBMT extension while other arch function will simply return true
+> > >
+> > > IIUC this is another extension that's not yet frozen or implemented in
+> > > hardware?  Is this one compatible with what's in the c906, or is it
+> > > doing things its own way?
 > >
-> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> > ---
-> >  arch/riscv/include/asm/dma-noncoherent.h | 19 +++++++
-> >  arch/riscv/mm/Makefile                   |  1 +
-> >  arch/riscv/mm/dma-noncoherent.c          | 66 ++++++++++++++++++++++++
-> >  3 files changed, 86 insertions(+)
-> >  create mode 100644 arch/riscv/include/asm/dma-noncoherent.h
-> >  create mode 100644 arch/riscv/mm/dma-noncoherent.c
+> > Hi Palmer,
+> > This series doesn't implement the PBMT extension which is still in discussion.
+> > It simply reuse the existing non-coherent dma mapping support in
+> > upstream kernel and enable
+> > it for RISC-V. The current version uses a non-coherent global pool. I
+> > will update it to use arch_set_uncached
+> > as per Christoph's suggestion. It solves the non-coherent DMA problem
+> > for beagleV and not c906.
 > >
-> > diff --git a/arch/riscv/include/asm/dma-noncoherent.h b/arch/riscv/include/asm/dma-noncoherent.h
-> > new file mode 100644
-> > index 000000000000..5bdb03c9c427
-> > --- /dev/null
-> > +++ b/arch/riscv/include/asm/dma-noncoherent.h
-> > @@ -0,0 +1,19 @@
-> > +/* SPDX-License-Identifier: GPL-2.0-only */
-> > +/*
-> > + * Copyright (c) 2021 Western Digital Corporation or its affiliates.
-> > + */
-> > +
-> > +#ifndef __ASM_RISCV_DMA_NON_COHERENT_H
-> > +#define __ASM_RISCV_DMA_NON_COHERENT_H
-> > +
-> > +#ifdef CONFIG_RISCV_DMA_NONCOHERENT
-> > +struct riscv_dma_cache_sync {
-> > +       void (*cache_invalidate)(phys_addr_t paddr, size_t size);
-> > +       void (*cache_clean)(phys_addr_t paddr, size_t size);
-> > +       void (*cache_flush)(phys_addr_t paddr, size_t size);
-> > +};
-> I like the style like this than my previous patch which using
-> sbi_call. The c906 has custom instructions that could be called in
-> S-mode directly.
+> > I briefly mentioned the PBMT extension just to provide an idea how the
+> > RISC-V Linux kernel
+> > can support both unached window and PBMT extension. PBMT extension is
+> > planned to be frozen
+> > by the end of this year and none of the hardware has implemented it.
+> >
+> > The implementation in c906 is a non-standard one and will not be
+> > supported by the default PBMT
+> > extension implementation.
+> The default PBMT & c908 PBMT are similar, only BIT definitions are
+> different. I propose to support default PBMT first and give the back
+> door to modify the PBMT definition during boot.
+> The "protection_map[] = (__P000, __P001 ..__S000, __S001)" in
+> mm/mmap.c has been modified by arch/mips, arm, sparc, x86, so I think
+> it's proper solution direction.
+>
+> The reset problem is how to passing custom PBMT at the very early boot
+> stage. Now I'm trying to use the DTS parsing instead of boot param hdr
+> which Anup objected to.
 >
 
-How are you going to include the custom instructions in the upstream kernel ?
+IIRC, c906 has a compatible mode that has the compliant PTE bit modifications.
+Can you use that mode in the Allwinner D1 board to boot Linux ? I am
+not sure if you have any fallback method for non-coherent DMA
+if custom DMA_COHERENT bits are not enabled through enhanced mode ?
 
-> Hope the patch could be soon merged, after correct the
-> DMA_FROM/TO_DEVICE/BIDIRECTIONAL and alternatives ops_set.
+> ref: https://lore.kernel.org/linux-riscv/1623693067-53886-1-git-send-email-guoren@kernel.org/
 >
-> > +
-> > +void riscv_dma_cache_sync_set(struct riscv_dma_cache_sync *ops);
-> > +#endif
-> > +
-> > +#endif
-> > diff --git a/arch/riscv/mm/Makefile b/arch/riscv/mm/Makefile
-> > index 7ebaef10ea1b..959bef49098b 100644
-> > --- a/arch/riscv/mm/Makefile
-> > +++ b/arch/riscv/mm/Makefile
-> > @@ -27,3 +27,4 @@ KASAN_SANITIZE_init.o := n
-> >  endif
+> Any comments are welcome.
+>
 > >
-> >  obj-$(CONFIG_DEBUG_VIRTUAL) += physaddr.o
-> > +obj-$(CONFIG_RISCV_DMA_NONCOHERENT) += dma-noncoherent.o
-> > diff --git a/arch/riscv/mm/dma-noncoherent.c b/arch/riscv/mm/dma-noncoherent.c
-> > new file mode 100644
-> > index 000000000000..2f6e9627c4aa
-> > --- /dev/null
-> > +++ b/arch/riscv/mm/dma-noncoherent.c
-> > @@ -0,0 +1,66 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * RISC-V specific functions to support DMA for non-coherent devices
-> > + *
-> > + * Copyright (c) 2021 Western Digital Corporation or its affiliates.
-> > + */
-> > +
-> > +#include <linux/dma-direct.h>
-> > +#include <linux/dma-map-ops.h>
-> > +#include <linux/init.h>
-> > +#include <linux/io.h>
-> > +#include <linux/libfdt.h>
-> > +#include <linux/mm.h>
-> > +#include <linux/of.h>
-> > +#include <linux/of_fdt.h>
-> > +#include <asm/dma-noncoherent.h>
-> > +
-> > +static struct riscv_dma_cache_sync *dma_cache_sync;
-> > +unsigned long riscv_dma_uc_offset;
-> > +
-> > +static void __dma_sync(phys_addr_t paddr, size_t size, enum dma_data_direction dir)
-> > +{
-> > +       if ((dir == DMA_FROM_DEVICE) && (dma_cache_sync->cache_invalidate))
-> > +               dma_cache_sync->cache_invalidate(paddr, size);
-> > +       else if ((dir == DMA_TO_DEVICE) && (dma_cache_sync->cache_clean))
-> > +               dma_cache_sync->cache_clean(paddr, size);
-> > +       else if ((dir == DMA_BIDIRECTIONAL) && dma_cache_sync->cache_flush)
-> > +               dma_cache_sync->cache_flush(paddr, size);
-> > +}
-> > +
-> > +void arch_sync_dma_for_device(phys_addr_t paddr, size_t size, enum dma_data_direction dir)
-> > +{
-> > +       if (!dma_cache_sync)
-> > +               return;
-> > +
-> > +       __dma_sync(paddr, size, dir);
-> > +}
-> > +
-> > +void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size, enum dma_data_direction dir)
-> > +{
-> > +       if (!dma_cache_sync)
-> > +               return;
-> > +
-> > +       __dma_sync(paddr, size, dir);
-> > +}
-> > +
-> > +void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
-> > +               const struct iommu_ops *iommu, bool coherent)
-> > +{
-> > +       /* If a specific device is dma-coherent, set it here */
-> > +       dev->dma_coherent = coherent;
-> > +}
-> > +
-> > +void arch_dma_prep_coherent(struct page *page, size_t size)
-> > +{
-> > +       void *flush_addr = page_address(page);
-> > +
-> > +       memset(flush_addr, 0, size);
-> > +       if (dma_cache_sync && dma_cache_sync->cache_flush)
-> > +               dma_cache_sync->cache_flush(__pa(flush_addr), size);
-> > +}
-> > +
-> > +void riscv_dma_cache_sync_set(struct riscv_dma_cache_sync *ops)
-> > +{
-> > +       dma_cache_sync = ops;
-> > +}
+> >
+> > >
+> > > > if DIRECT_REMAP is enabled. This is required as arious different config
+> > > > (DIRECT_REMAP, GLOBAL_POOL) will be enabled in the defconfig so that a
+> > > > unified kernel image can boot on all RISC-V platforms.
+> > > >
+> > > > This patch series depends on Christoph's global pool support series[1].
+> > > > Tested on Qemu, HiFive unleashed and beagleV. This series is also available
+> > > > at [2].
+> > > > This series also solves the non-coherent DMA support on beagleV but requires
+> > > > additional beagleV specific patches[3] which will be upstreamed soon.
+> > > >
+> > > >
+> > > > [1] https://lists.linuxfoundation.org/pipermail/iommu/2021-July/057266.html
+> > > > [2] https://github.com/atishp04/linux/tree/riscv_nc_global_pool
+> > > > [3] https://github.com/atishp04/linux/tree/wip_beaglev_dma_nc_global
+> > > >
+> > > > Atish Patra (5):
+> > > > RISC-V: Implement arch_sync_dma* functions
+> > > > of: Move of_dma_get_range to of_address.h
+> > > > dma-mapping: Enable global non-coherent pool support for RISC-V
+> > > > dma-direct: Allocate dma pages directly if global pool allocation
+> > > > fails
+> > > > RISC-V: Support a new config option for non-coherent DMA
+> > > >
+> > > > arch/riscv/Kconfig                       |  8 +++
+> > > > arch/riscv/include/asm/dma-noncoherent.h | 19 +++++++
+> > > > arch/riscv/mm/Makefile                   |  1 +
+> > > > arch/riscv/mm/dma-noncoherent.c          | 66 ++++++++++++++++++++++++
+> > > > drivers/of/of_private.h                  | 10 ----
+> > > > include/linux/of_address.h               | 12 +++++
+> > > > kernel/dma/coherent.c                    | 49 +++++++++++++++---
+> > > > kernel/dma/direct.c                      |  7 ++-
+> > > > 8 files changed, 152 insertions(+), 20 deletions(-)
+> > > > create mode 100644 arch/riscv/include/asm/dma-noncoherent.h
+> > > > create mode 100644 arch/riscv/mm/dma-noncoherent.c
+> > >
+> > > Can you guys please make up your minds about how this is going to be
+> > > supported at the ISA level?  I get a different answer every day here:
+> > > sometimes it's that these systems are not compliant, sometimes that
+> > > Linux is the compliance suite, sometimes that we're doing an ISA
+> > > extension, and sometimes that we're doing the SBI stuff.
+> > >
+> >
+> > I am not sure whom you have talked to. I would be happy to set up a
+> > meeting so that everybody is on
+> > the same page if you are getting different answers every time.
+> >
+> > > I don't really care all that much about what the decision is, but it's
+> > > impossible to move forward without some semblance of a plan.
+> > >
+> > > _______________________________________________
+> > > linux-riscv mailing list
+> > > linux-riscv@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> >
+> >
+> >
 > > --
-> > 2.31.1
-> >
+> > Regards,
+> > Atish
 > > _______________________________________________
 > > iommu mailing list
 > > iommu@lists.linux-foundation.org
@@ -218,10 +230,6 @@ How are you going to include the custom instructions in the upstream kernel ?
 >  Guo Ren
 >
 > ML: https://lore.kernel.org/linux-csky/
-> _______________________________________________
-> iommu mailing list
-> iommu@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/iommu
 
 
 
