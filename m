@@ -2,113 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F3E3EF05E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 18:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E71E3EF062
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 18:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230459AbhHQQsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 12:48:14 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:40572 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbhHQQsN (ORCPT
+        id S231172AbhHQQtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 12:49:09 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:57478 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229716AbhHQQtH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 12:48:13 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2715021FD2;
-        Tue, 17 Aug 2021 16:47:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629218859; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XjbM6q0B49u7CEY1Vk/k4nOtwMrfJRYnAZ4Evl+0w4I=;
-        b=Yp4LKhWSOBGgiytwqqrr02EmmQ0NQGSjgC7tFFYlnB2phnoyS29L8k5l1L06lOf+fEMsKr
-        keWNoNMH3IDUx3xAp/bL4PdDcfiBvFVMlfSdYcmtKQdcGdwjFuSsXy6WMxCk83y5veG7AY
-        NaCj+B9S1jRZpeHQxfjFocxdb8dgSgw=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id E796412FF9;
-        Tue, 17 Aug 2021 16:47:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id EpvdNyroG2E0bgAAGKfGzw
-        (envelope-from <mkoutny@suse.com>); Tue, 17 Aug 2021 16:47:38 +0000
-Date:   Tue, 17 Aug 2021 18:47:37 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Tue, 17 Aug 2021 12:49:07 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52]:36550)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mG2GG-00B1AV-9W; Tue, 17 Aug 2021 10:48:24 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:53352 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mG2GE-004s3F-8f; Tue, 17 Aug 2021 10:48:23 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andy Lutomirski <luto@kernel.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Tejun Heo <tj@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        David Hildenbrand <david@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Zhengjun Xing <zhengjun.xing@linux.intel.com>,
-        andi.kleen@intel.com
-Subject: Re: [mm] 2d146aa3aa: vm-scalability.throughput -36.4% regression
-Message-ID: <20210817164737.GA23342@blackbody.suse.cz>
-References: <20210811031734.GA5193@xsang-OptiPlex-9020>
- <CAHk-=wiSHHSuSQsCCLOxQA+cbcvjmEeMsTCMWPT1sFVngd9-ig@mail.gmail.com>
- <20210812031910.GA63920@shbuild999.sh.intel.com>
- <20210816032855.GB72770@shbuild999.sh.intel.com>
- <YRrbpRsvdDoom9iG@cmpxchg.org>
- <20210817024500.GC72770@shbuild999.sh.intel.com>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marco Elver <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        Christian =?utf-8?Q?K=C3=B6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        "linux-unionfs\@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "\<linux-fsdevel\@vger.kernel.org\>" <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+References: <20210812084348.6521-1-david@redhat.com> <87o8a2d0wf.fsf@disp2133>
+        <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com>
+        <87lf56bllc.fsf@disp2133>
+        <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
+        <87eeay8pqx.fsf@disp2133>
+        <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
+        <87h7ft2j68.fsf@disp2133>
+        <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
+        <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
+        <YRcyqbpVqwwq3P6n@casper.infradead.org>
+Date:   Tue, 17 Aug 2021 11:48:12 -0500
+In-Reply-To: <YRcyqbpVqwwq3P6n@casper.infradead.org> (Matthew Wilcox's message
+        of "Sat, 14 Aug 2021 04:04:09 +0100")
+Message-ID: <87k0kkxbjn.fsf_-_@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210817024500.GC72770@shbuild999.sh.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-XM-SPF: eid=1mG2GE-004s3F-8f;;;mid=<87k0kkxbjn.fsf_-_@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/RgSCC94xL9aHXm5fqRL3zu5kuwNAWKt8=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4998]
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Matthew Wilcox <willy@infradead.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1373 ms - load_scoreonly_sql: 0.02 (0.0%),
+        signal_user_changed: 4.3 (0.3%), b_tie_ro: 3.0 (0.2%), parse: 1.40
+        (0.1%), extract_message_metadata: 10 (0.7%), get_uri_detail_list: 0.95
+        (0.1%), tests_pri_-1000: 17 (1.3%), tests_pri_-950: 1.03 (0.1%),
+        tests_pri_-900: 0.94 (0.1%), tests_pri_-90: 1014 (73.9%), check_bayes:
+        1009 (73.5%), b_tokenize: 15 (1.1%), b_tok_get_all: 9 (0.7%),
+        b_comp_prob: 1.85 (0.1%), b_tok_touch_all: 980 (71.4%), b_finish: 0.75
+        (0.1%), tests_pri_0: 312 (22.7%), check_dkim_signature: 0.39 (0.0%),
+        check_dkim_adsp: 2.1 (0.1%), poll_dns_idle: 0.42 (0.0%), tests_pri_10:
+        2.3 (0.2%), tests_pri_500: 7 (0.5%), rewrite_mail: 0.00 (0.0%)
+Subject: Removing Mandatory Locks
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 10:45:00AM +0800, Feng Tang <feng.tang@intel.com> wrote:
-> Initially from the perf-c2c data, the in-cacheline hotspots are only
-> 0x0, and 0x10, and if we extends to 2 cachelines, there is one more
-> offset 0x54 (css.flags), but still I can't figure out which member
-> inside the 128 bytes range is written frequenty.
+Matthew Wilcox <willy@infradead.org> writes:
 
-Is it certain that perf-c2c reported offsets are the cacheline of the
-first bytes of struct cgroup_subsys_state? (Yeah, it looks to me so,
-given what code accesses those and your padding fixing it. I'm just
-raising it in case there was anything non-obvious.)
+> On Fri, Aug 13, 2021 at 05:49:19PM -0700, Andy Lutomirski wrote:
+>> [0] we have mandatory locks, too. Sigh.
+>
+> I'd love to remove that.  Perhaps we could try persuading more of the
+> distros to disable the CONFIG option first.
 
-> 
-> /* pah info for cgroup_subsys_state */
-> struct cgroup_subsys_state {
-> 	struct cgroup *            cgroup;               /*     0     8 */
-> 	struct cgroup_subsys *     ss;                   /*     8     8 */
-> 	struct percpu_ref          refcnt;               /*    16    16 */
-> 	struct list_head           sibling;              /*    32    16 */
-> 	struct list_head           children;             /*    48    16 */
-> 	/* --- cacheline 1 boundary (64 bytes) --- */
-> 	struct list_head           rstat_css_node;       /*    64    16 */
-> 	int                        id;                   /*    80     4 */
-> 	unsigned int               flags;                /*    84     4 */
-> 	u64                        serial_nr;            /*    88     8 */
-> 	atomic_t                   online_cnt;           /*    96     4 */
-> 
-> 	/* XXX 4 bytes hole, try to pack */
-> 
-> 	struct work_struct         destroy_work;         /*   104    32 */
-> 	/* --- cacheline 2 boundary (128 bytes) was 8 bytes ago --- */
-> 
-> Since the test run implies this is cacheline related, and I'm not very
-> familiar with the mem_cgroup code, the original perf-c2c log is attached
-> which may give more hints.
+Yes.  The support is disabled in RHEL8.
 
-As noted by Johannes, even in atomic mode, the refcnt would have the
-atomic part elsewhere. The other members shouldn't be written frequently
-unless there are some intense modifications of the cgroup tree in
-parallel.
-Does the benchmark create lots of memory cgroups in such a fashion?
+Does anyone know the appropriate people to talk to encourage other
+distro's to encourage them to disable the CONFIG_MANDATORY_FILE_LOCKING?
 
-Regards,
-Michal
+Either that or we can wait until the code bit-rots, but distro's
+disabling and removing a feature on their own is the more responsible
+path.
+
+Given how many hoops need to be jumped through to use mandatory file
+locking once it is enabled, and the fact it has never worked in
+containers makes me suspect there are no more users.
+
+Eric
+
+
