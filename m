@@ -2,74 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE0B03EE87D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 323523EE880
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239646AbhHQI0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 04:26:01 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:14267 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239329AbhHQIZT (ORCPT
+        id S239654AbhHQI0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 04:26:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239681AbhHQI0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 04:25:19 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GpkbT5FY4z876x;
-        Tue, 17 Aug 2021 16:24:37 +0800 (CST)
-Received: from [10.174.179.72] (10.174.179.72) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 17 Aug 2021 16:24:43 +0800
-Subject: Re: [PATCH 2/4] mm/hwpoison: fix potential pte_unmap_unlock pte error
-To:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210814105131.48814-1-linmiaohe@huawei.com>
- <20210814105131.48814-3-linmiaohe@huawei.com>
- <20210817072900.GA452155@hori.linux.bs1.fc.nec.co.jp>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <4b0a5fcd-0b1b-6198-b6a7-d9cab5b9fae2@huawei.com>
-Date:   Tue, 17 Aug 2021 16:24:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 17 Aug 2021 04:26:33 -0400
+Received: from mail.avm.de (mail.avm.de [IPv6:2001:bf0:244:244::120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27CBDC0617AD;
+        Tue, 17 Aug 2021 01:25:27 -0700 (PDT)
+Received: from mail-auth.avm.de (unknown [IPv6:2001:bf0:244:244::71])
+        by mail.avm.de (Postfix) with ESMTPS;
+        Tue, 17 Aug 2021 10:25:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
+        t=1629188724; bh=/FiAYbZ5V/xP9nJYeHj1jmYfb+z10OR2R3XTSk6DKBQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BVFlgYBIqieofosLZaZyU6EzzYAEcoLUBmO12mygv003F2hb9PaVxeOlK/cTGNFAm
+         6p137R/n0KwaVLgoTgVSKZlm1gtIrIKrqZxvNnxvrzxnk2XOnin+r71GiqVRS9OHke
+         sbAJqkg3JtJvtlC3KToXpEfDQ4m63CWamgmR69Fw=
+Received: from deb-nschier.ads.avm.de (unknown [172.17.24.144])
+        by mail-auth.avm.de (Postfix) with ESMTPSA id 2481080369;
+        Tue, 17 Aug 2021 10:25:24 +0200 (CEST)
+Date:   Tue, 17 Aug 2021 10:25:23 +0200
+From:   Nicolas Schier <n.schier@avm.de>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michal Marek <michal.lkml@markovi.net>
+Subject: Re: [PATCH 2/2] kbuild: warn if FORCE is missing for
+ if_changed(_dep,_rule) and filechk
+Message-ID: <YRtyc1poEhr8YHYp@deb-nschier.ads.avm.de>
+References: <20210813063005.1739278-1-masahiroy@kernel.org>
+ <20210813063005.1739278-2-masahiroy@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210817072900.GA452155@hori.linux.bs1.fc.nec.co.jp>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.72]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210813063005.1739278-2-masahiroy@kernel.org>
+X-Operating-System: Debian GNU/Linux 11.0
+X-purgate-ID: 149429::1629188724-00002E98-0D9EE8EE/0/0
+X-purgate-type: clean
+X-purgate-size: 2113
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
+X-purgate: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/17 15:29, HORIGUCHI NAOYA(堀口 直也) wrote:
-> On Sat, Aug 14, 2021 at 06:51:29PM +0800, Miaohe Lin wrote:
->> If the first pte is equal to poisoned_pfn, i.e. check_hwpoisoned_entry()
->> return 1, the wrong ptep - 1 would be passed to pte_unmap_unlock().
->>
->> Fixes: ad9c59c24095 ("mm,hwpoison: send SIGBUS with error virutal address")
->> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+On Friday, 2021-08-13 Masahiro Yamada wrote:
+> if_changed, if_changed_dep, and if_changed_rule must have FORCE as a
+> prerequisite so the command line change is detected.
 > 
-> I agree with the change itself, so
+> Documentation/kbuild/makefiles.rst clearly explains it:
 > 
-> Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+>   Note: It is a typical mistake to forget the FORCE prerequisite.
+> 
+> However, not all people read the document, or understand what is written
+> in it.
+> 
+> People repeated this mistake over again, and I determined a compelling
+> force is needed.
+> 
+> Show a warning if FORCE is missing in the prerequisite of if_changed
+> and friends. Same for filechk.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>  scripts/Kbuild.include | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
+> index c3c975a92318..dd48e68965f8 100644
+> --- a/scripts/Kbuild.include
+> +++ b/scripts/Kbuild.include
+> @@ -57,6 +57,7 @@ kecho := $($(quiet)kecho)
+>  # - If the content differ the new file is used
+>  # - If they are equal no change, and no timestamp update
+>  define filechk
+> +	$(check-FORCE)
+>  	$(Q)set -e;						\
+>  	mkdir -p $(dir $@);					\
+>  	trap "rm -f $(dot-target).tmp" EXIT;			\
+> @@ -130,7 +131,11 @@ make-cmd = $(call escsq,$(subst $(pound),$$(pound),$(subst $$,$$$$,$(cmd_$(1))))
+>  # PHONY targets skipped in both cases.
+>  newer-prereqs = $(filter-out $(PHONY),$?)
+>  
+> -if-changed-cond = $(newer-prereqs)$(cmd-check)
+> +# It is a typical mistake to forget the FORCE prerequisite. Check it here so
+
+prerequsite -> prerequisite?
+
+Successfully found the missing FORCE in arch/x86/entry/vdso/Makefile:135.
+
+Tested-by: Nicolas Schier <n.schier@avm.de>
+
+> +# no more breakage will slip in.
+> +check-FORCE = $(if $(filter FORCE, $^),,$(warning FORCE prerequsite is missing))
+> +
+> +if-changed-cond = $(newer-prereqs)$(cmd-check)$(check-FORCE)
+>  
+>  # Execute command if command has changed or prerequisite(s) are updated.
+>  if_changed = $(if $(if-changed-cond),                                        \
+> -- 
+> 2.30.2
 > 
 
-Many thanks for your review and Acked-by tag!
-
-> One question is that according to "grep -r pte_unmap_unlock ." command over
-> whole kernel source code, pte_unmap_unlock() is called with "ptep - 1" in some places.
-> I think that none of them seems to have "break in for loop" in locked period,
-> so the same problem does not occur there.  But I'm still not sure why some place
-> call with "ptep - 1" and the others call with pte returned by pte_offset_map_lock().
-
-IMO pte_unmap_unlock() works as long as the passed in pte belongs to the same page returned
-from pte_offset_map_lock(). I have fixed some similar place where pte_unmap_unlock() is called
-with wrong "ptep - 1" when I was learning the related mm code.
-
->
