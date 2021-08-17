@@ -2,322 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C25313EEA1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 553273EEA1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236108AbhHQJlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 05:41:32 -0400
-Received: from mga06.intel.com ([134.134.136.31]:54776 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231520AbhHQJlb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 05:41:31 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="277058941"
-X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="gz'50?scan'50,208,50";a="277058941"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 02:40:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="gz'50?scan'50,208,50";a="520374755"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 17 Aug 2021 02:40:56 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mFvaZ-000Rdp-MI; Tue, 17 Aug 2021 09:40:55 +0000
-Date:   Tue, 17 Aug 2021 17:40:01 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: [mcgrof:20210816-add-disk-error-handling 13/64]
- arch/um/drivers/ubd_kern.c:930:24: error: expected ';' before
- 'out_cleanup_tags'
-Message-ID: <202108171756.rIqKsuXN-lkp@intel.com>
+        id S239272AbhHQJls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 05:41:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239087AbhHQJlr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 05:41:47 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307C2C061764;
+        Tue, 17 Aug 2021 02:41:14 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id h9so37419025ejs.4;
+        Tue, 17 Aug 2021 02:41:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xfs/l8KNPldYvYSfsE5tioy382KDShw/nZNTXXTrdnc=;
+        b=RVACI4CdE27rO43ekpdJkhagh1GNeqQuDCt+kYuwwLoJjnvR7h5gszWPYgUuOq6i98
+         CMjoNiwwN1M9Y7jFNVeKQUw1zhHSOnJ2cxztNCo3GSF0gjErJ93c9O5L/wbj6n8C/8Eg
+         OUzdTJ++cUmemxAN4zwCQmkeMVloypqy1sVnAybNwvQddcJY1bbztvh/w/DZPycDvjoz
+         SxY1oXidrd9lHXzRl43HO8DoIcvUan8vIY0KzeYvmVMLIRKab0Uka7pYD2C119SdkATF
+         RaMMLlXB9NWlYyLj5QKTbGVfanwFybqryoR+Nc43BK5CXx3si6/HWbaThR45YVNpUbZt
+         ofug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xfs/l8KNPldYvYSfsE5tioy382KDShw/nZNTXXTrdnc=;
+        b=PfDzkv3TJSTv7E+H2HfHL1Z9wwt3HxkG2STspm3wxR3vUhARHjdYsnvNW+6v2JvutB
+         CtkuulxpUq74C1cuwV/oXtQ/pRMyHcydxuzvT4zn6Obj34Uiok+FyBUndErMJpAx1Fda
+         jWyh+xX0/qvJOmSK7cVa+ZhSiN/I9UlfAQFKwTg6WFnT0UJPH+p6/8V+UZ/ywHhQw79W
+         eLQ21mh9ZDGTa9Sh7stXRmUEO7nH3R8/6ii6VQZCnuGeWmFSTlsUlxng9QSRpBuDVzrY
+         reslyyLyi8cQZsqZLsBnxphbqpErPpb3pKUde0GfLjthTabuCLq4ggbR8LOLNpFCdijc
+         etRQ==
+X-Gm-Message-State: AOAM530QWfx8o1RolXaHNcACZ12T5gL4ohF+cqEzCkP/n+MbELayAbqF
+        TFdznWpue7qzZtaCwXyujDw=
+X-Google-Smtp-Source: ABdhPJwd8chO9kxq2L9cysozEO//ABcYOVkuf3f/I/bF8amsiBAxRgt4lVD/+Y9McWwLImO/qLBf+Q==
+X-Received: by 2002:a17:907:2cf0:: with SMTP id hz16mr2991670ejc.466.1629193272716;
+        Tue, 17 Aug 2021 02:41:12 -0700 (PDT)
+Received: from skbuf ([188.25.144.60])
+        by smtp.gmail.com with ESMTPSA id g10sm517357ejj.44.2021.08.17.02.41.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 02:41:12 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 12:41:10 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Colin Foster <colin.foster@in-advantage.com>
+Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com,
+        UNGLinuxDriver@microchip.com, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>
+Subject: Re: [RFC PATCH v3 net-next 09/10] net: dsa: ocelot: felix: add
+ support for VSC75XX control over SPI
+Message-ID: <20210817094110.vfrrbt264trmn7ri@skbuf>
+References: <20210814025003.2449143-1-colin.foster@in-advantage.com>
+ <20210814025003.2449143-10-colin.foster@in-advantage.com>
+ <20210814114329.mycpcfwoqpqxzsyl@skbuf>
+ <20210814120211.v2qjqgi6l3slnkq2@skbuf>
+ <20210815204149.GB3328995@euler>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8t9RHnE3ZwKMSgU+"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210815204149.GB3328995@euler>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Aug 15, 2021 at 01:41:49PM -0700, Colin Foster wrote:
+> I also came across some curious code in Seville where it is callocing a
+> struct phy_device * array instead of struct lynx_pcs *. I'm not sure if
+> that's technically a bug or if the thought is "a pointer array is a
+> pointer array."
 
---8t9RHnE3ZwKMSgU+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+git blame will show you that it is a harmless leftover of commit
+588d05504d2d ("net: dsa: ocelot: use the Lynx PCS helpers in Felix and
+Seville"). Before that patch, the pcs was a struct phy_device.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git 20210816-add-disk-error-handling
-head:   e1e79332ea1bba0e751529b114ef9d301bf962a5
-commit: 0e82333640575c9c194e39c521cb6ddb1467890f [13/64] um/drivers/ubd_kern: add error handling support for add_disk()
-config: um-x86_64_defconfig (attached as .config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build):
-        # https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/commit/?id=0e82333640575c9c194e39c521cb6ddb1467890f
-        git remote add mcgrof https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git
-        git fetch --no-tags mcgrof 20210816-add-disk-error-handling
-        git checkout 0e82333640575c9c194e39c521cb6ddb1467890f
-        # save the attached .config to linux build tree
-        mkdir build_dir
-        make W=1 O=build_dir ARCH=um SUBARCH=x86_64 SHELL=/bin/bash
+> @@ -1062,12 +1062,12 @@ static void vsc9953_mdio_bus_free(struct ocelot *ocelot)
+>  	int port;
+>
+>  	for (port = 0; port < ocelot->num_phys_ports; port++) {
+> -		struct lynx_pcs *pcs = felix->pcs[port];
+> +		struct phylink_pcs *pcs = felix->pcs[port];
+>
+>  		if (!pcs)
+>  			continue;
+>
+> -		mdio_device_free(pcs->mdio);
+> +		mdio_device_free(lynx_pcs_get_mdio(pcs));
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Don't really have a better suggestion than lynx_pcs_get_mdio.
 
-All errors (new ones prefixed by >>):
+>  		lynx_pcs_destroy(pcs);
+>  	}
+>  	felix_mdio_bus_free(ocelot);
+> diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-mac.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-mac.c
+> index ccaf7e35abeb..484f0d4efefe 100644
+> --- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-mac.c
+> +++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-mac.c
+> @@ -270,10 +270,11 @@ static int dpaa2_pcs_create(struct dpaa2_mac *mac,
+>
+>  static void dpaa2_pcs_destroy(struct dpaa2_mac *mac)
+>  {
+> -	struct lynx_pcs *pcs = mac->pcs;
+> +	struct phylink_pcs *pcs = mac->pcs;
+>
+>  	if (pcs) {
+> -		struct device *dev = &pcs->mdio->dev;
+> +		struct mdio_device *mdio = lynx_get_mdio_device(pcs);
+> +		struct device *dev = &mdio->dev;
+>  		lynx_pcs_destroy(pcs);
+>  		put_device(dev);
 
-   arch/um/drivers/ubd_kern.c: In function 'ubd_add':
->> arch/um/drivers/ubd_kern.c:930:24: error: expected ';' before 'out_cleanup_tags'
-     930 |  blk_cleanup_disk(disk)
-         |                        ^
-         |                        ;
-     931 | out_cleanup_tags:
-         | ~~~~~~~~~~~~~~~~        
->> arch/um/drivers/ubd_kern.c:915:3: error: label 'out_cleanup_tags' used but not defined
-     915 |   goto out_cleanup_tags;
-         |   ^~~~
+Ideally dpaa2 would call mdio_device_free too, just like the others.
 
+>  		mac->pcs = NULL;
+> @@ -336,7 +337,7 @@ int dpaa2_mac_connect(struct dpaa2_mac *mac)
+>  	mac->phylink = phylink;
+>
+>  	if (mac->pcs)
+> -		phylink_set_pcs(mac->phylink, &mac->pcs->pcs);
+> +		phylink_set_pcs(mac->phylink, mac->pcs);
+>
+>  	err = phylink_of_phy_connect(mac->phylink, dpmac_node, 0);
+>  	if (err) {
+> diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+> index 31274325159a..cc2ca51ac984 100644
+> --- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+> +++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+> @@ -823,7 +823,7 @@ static int enetc_imdio_create(struct enetc_pf *pf)
+>  {
+>  	struct device *dev = &pf->si->pdev->dev;
+>  	struct enetc_mdio_priv *mdio_priv;
+> -	struct lynx_pcs *pcs_lynx;
+> +	struct phylink_pcs *pcs_phylink;
+>  	struct mdio_device *pcs;
 
-vim +930 arch/um/drivers/ubd_kern.c
+Agree with Russell's suggestion to replace "pcs" with "mdiodev" wherever
+it refers to a struct mdio_device. Likely as a separate patch.
 
-   883	
-   884	static int ubd_add(int n, char **error_out)
-   885	{
-   886		struct ubd *ubd_dev = &ubd_devs[n];
-   887		struct gendisk *disk;
-   888		int err = 0;
-   889	
-   890		if(ubd_dev->file == NULL)
-   891			goto out;
-   892	
-   893		err = ubd_file_size(ubd_dev, &ubd_dev->size);
-   894		if(err < 0){
-   895			*error_out = "Couldn't determine size of device's file";
-   896			goto out;
-   897		}
-   898	
-   899		ubd_dev->size = ROUND_BLOCK(ubd_dev->size);
-   900	
-   901		ubd_dev->tag_set.ops = &ubd_mq_ops;
-   902		ubd_dev->tag_set.queue_depth = 64;
-   903		ubd_dev->tag_set.numa_node = NUMA_NO_NODE;
-   904		ubd_dev->tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
-   905		ubd_dev->tag_set.driver_data = ubd_dev;
-   906		ubd_dev->tag_set.nr_hw_queues = 1;
-   907	
-   908		err = blk_mq_alloc_tag_set(&ubd_dev->tag_set);
-   909		if (err)
-   910			goto out;
-   911	
-   912		disk = blk_mq_alloc_disk(&ubd_dev->tag_set, ubd_dev);
-   913		if (IS_ERR(disk)) {
-   914			err = PTR_ERR(disk);
- > 915			goto out_cleanup_tags;
-   916		}
-   917		ubd_dev->queue = disk->queue;
-   918	
-   919		blk_queue_write_cache(ubd_dev->queue, true, false);
-   920		blk_queue_max_segments(ubd_dev->queue, MAX_SG);
-   921		blk_queue_segment_boundary(ubd_dev->queue, PAGE_SIZE - 1);
-   922		err = ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, disk);
-   923		if (err)
-   924			goto out_cleanup_disk;
-   925	
-   926		ubd_gendisk[n] = disk;
-   927		return 0;
-   928	
-   929	out_cleanup_disk:
- > 930		blk_cleanup_disk(disk)
-   931	out_cleanup_tags:
-   932		blk_mq_free_tag_set(&ubd_dev->tag_set);
-   933	out:
-   934		return err;
-   935	}
-   936	
+>  	struct mii_bus *bus;
+>  	int err;
+> @@ -341,13 +355,13 @@ struct lynx_pcs *lynx_pcs_create(struct mdio_device *mdio)
+>  	lynx_pcs->pcs.ops = &lynx_pcs_phylink_ops;
+>  	lynx_pcs->pcs.poll = true;
+>
+> -	return lynx_pcs;
+> +	return lynx_to_phylink_pcs(lynx_pcs);
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+I would probably write another patch to convert all occurrences of
+"struct lynx_pcs" variables to the same naming scheme. Currently we have
+"lynx", "pcs", "lynx_pcs" only within the pcs-lynx.c file itself. "lynx"
+seems to be the predominant name so all others could be replaced with
+that too.
 
---8t9RHnE3ZwKMSgU+
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+>  }
+>  EXPORT_SYMBOL(lynx_pcs_create);
+>
+> -void lynx_pcs_destroy(struct lynx_pcs *pcs)
+> +void lynx_pcs_destroy(struct phylink_pcs *pcs)
+>  {
+> -	kfree(pcs);
+> +	kfree(phylink_pcs_to_lynx(pcs));
 
-H4sICBeBG2EAAy5jb25maWcAnFxZc9u4k3+fT8HKvMxUbWYSO0klu+UHCARF/MUrAKjDLyzF
-ZiaqcWyvJM/x7bcbvECyoZnaF1tCN+5G968bDf34w48Bezk/fd+fD3f7h4e/g9/qx/q4P9f3
-wdfDQ/0/QZgHWW4CEUrzCzAnh8eXv359+R68/+Xtu1/evD7evQtW9fGxfgj40+PXw28vUPnw
-9PjDjz/wPIvksuK8WgulZZ5VRmzNzavf7u5efwp+Cusvh/1j8OmXa2jm6urn5tMrp5rU1ZLz
-m7+7ouXQ1M2nN9dv3vS8CcuWPakvZto2kZVDE1DUsV1dv39z1ZUnIbIuonBghSKa1SG8cUbL
-WVYlMlsNLTiFlTbMSD6ixTAYptNqmZucJMgMqooZKcurQuWRTEQVZRUzRg0sUn2uNrnCQcAO
-/Bgs7W4+BKf6/PI87MlC5SuRVbAlOi2c2pk0lcjWFVMwT5lKc/P26mM/8ZyzpJv5q1dUccVK
-dy6LUsJiaZYYhz8UESsTYzsjiuNcm4yl4ubVT49Pj/XPPYPeMGeoeqfXsuCzAvzPTTKUF7mW
-2yr9XIpS0KVDlR+DlrxhhseVpQaHU/D4dMYV7PdB5VpXqUhztcP1Zzx2K5daJHLh1utJrIRj
-RLQYs7WARYc+LQcOiCVJt4mwqcHp5cvp79O5/j5s4lJkQklu91zH+caOoX68D56+TqpMa3DY
-s5VYi8zorg9z+F4fT1Q3ILYrkBQBXZhhAUEI49uK52kKwuBMHgoL6CMPJSfm2dSSYSImLQ1f
-Y7mMKyU09JuCULmTmo2xl7Mi6uYBH0eT6AcGhKpd1/HWtI2PK/ZyooRICwODtAexabAofzX7
-0+/BGcYT7KH66bw/n4L93d3Ty+P58PjbZPGgQsU4z8vMyGzpHA8d4knmAqQJ6MZdxymtWl+T
-EmWYXqFu0SS10JKc7L+Ygp2q4mWgKZHIdhXQ3AHD10psYe8p+dYNs1tdd/XbIY276jXSqvng
-6KhVvzU5dwcgV7FgIYgM0X+SozICAYhlBDrt3bC9MjOgnFkkpjzXzQrou2/1/ctDfQy+1vvz
-y7E+2eJ20AR1oqyhfVChjg5fqrwstDtwUCR8SQx6kaxa9mn1SvNYOKYqYlJVY0rfOo/ArrEs
-3MjQxKSQKOPWJVnabgsZ0nLW0lWYMkpfNtQIztKtULPJhGItuZgVg4xOD0VLSaXml4YRikVJ
-LSiaFV0wOFNDZ6UBg+p8RxOS6Yk6V1BEny8ZTkhdV8JMmoG15asiB3lA7WZyJcgW7R5YM2rn
-Qp2lnYYtDQWoJs7MeLOntGp9RW+5SNiOpKDQwYZY66xoYVjkuamaz9Rm8yovQHfLW4AnuUJr
-AP9SltktHpZjwqbhAz3ZkTW3hrKU4dsPbmNevdNxdicNAIbE/RzBBlixweB2JyqGI5PMAENv
-k0b6wwU8jqYSSQTLpJxGFkzDbMtRRyWA4slXEKvJjJtinhZbHrs9FLnblpbLjCUuhrXjdQus
-0XcLdAzqx8HH0oFvMq9KNbJYLFxLLbrlchYCGlkwpaS7tCtk2aWjU9CVVRMzPCXblUIpNXIt
-pqfRAsWIFk4YhwjDsRqzGrt1Uor6+PXp+H3/eFcH4o/6EYweA13O0ewBuHCV+7+s0Y19nTar
-W1lDPxITgEkFM4C6HVHRCVuMjm5SLqgDAGywumopOoQ8rgRU1KuJ1KBXQGbzlFYrI8aYqRCg
-IL2COi6jCHyLgkGfsB8A70Fb0erPuiEgISTIGPsedmXLNHl9eq7vDl8Pd8HTMzqKpwFWANWR
-qNRBDIARZT4SVFtS5GC7UtctMArUOyLiKGFLONdlgTyOUwfAF9TjnAAYiq+a2jNaD5sZ4HoF
-ehW2AvSnc0Zvb94O3mim0Hbpm7f9qUFgj2CAg6cg0B8UVt91gDJ+Op2D5+PTXX06PR2D89/P
-DSYbIY5uWVYfya1IC49NTFEF0VYghY1NCZnr51s4W7D9+AHBjFBZHop2Jg1U+uCyJG/9NKP5
-uL1WoX14Ny3O1+OSFMxRWqYWSUcslcnu5kMP4iS7vqoiAQdsZCqQF7bSDpooZmk4L4x3S+vO
-TIo5HGtWqjnhNmb5VmYujv3HzXSkHec2NPrh3UKa8bzdlbmuEtAvSVUsDVskLobp9iveCHCe
-xgrChh1sCIKCxeCccyXBvwl3zrRHxZUC1RU7sg7+eeRqfvivc9dUpmwprR+uPjvGAAQHBm+P
-WZWD+lE3V44kwiEGE04MsZ1tM3d9c+1YAlg/tG945nFd2mNLqiJS73QaKeDf9sf9HSjzIKz/
-ONzVjkrSBkaqqtkctXZEKgOLDviOOUtoNdOkyOwmJWZWsoXzlU7K4F8FsDlvil99vf/vN/8F
-f96+chka2vP59MoZIVGKi6bBPoU333tG4muFAY4xdsF9x+BEDqzuuhKr1y9sVp//fDr+Pl9W
-HAZAZAeGNwWVMDEgOVejdxQDRpUq14kkSkMmJoGJjrIW3GfOepaQgqIdNeVMG6rlgjMKrzsD
-VYWrKagVGlpdS2UQgKUUTrIWRZe6ELBXAE21XIyks6HMCuYuWJHCuIQo3PlAGfoftpw2+2m1
-YSuBtpTyfYp00trMHxvibJ9h9Bvwr0QUSS4RPbUoZ4bfOjSxP959O5zrO1Smr+/rZ1hMwGRz
-MMEV0/FEhjVsg6u7LLa2aheADoBn9Lw4hlwmLBiMTfOwDXLOqHYzBEeUd4FUAVQyI9djWmXG
-OKjxltKYVp9/m5i8C1S5g0BJmsSg0GQ4CjsPSzAoiK2t04K4e+SrNfD1+goXClWuTyJtZNoG
-zByXAQmiiAWAWJaANQb40Ecdlzxfv/6yP9X3we8N2gbL+fXw0MTQBiR5gW00VbwhKJJyKbNR
-4PBfyk7XFIJKdLhcG2sdEp2ik/hmsm6jWI4tQo+WY0SJhcRStTxlhnRv5YZM47ZBFH10bEcr
-3oflp0HPCSfpybdE3H2FYchWtKaVe/ryVtL6Ysq4vf1XbLdgfC8xom+ywWCQRonugzuVTNH6
-UpoJKoLLskDfBiDNq19PXw6Pv35/ugdp+lL3NnKBim0Ui21jIgtNazGH7gv8D2EVI5ZKmsvB
-l9vc55x1HCZWuTFz18th2yyMl9YGymQODrbIuH80PSMH8//PXIWSuZdLg3rNC0ZLIjI0910V
-DEjtCjB+2cwIFPvj+YCHNTCAq0eOUcHAXhor7OEao03k0dNhrgdWJy4SyVFxrzqmPbrBWWvo
-mhuafAgFOzYo/Qxr0kT0QsHC8W0eQZyFex2e1W7hGo+ueBF9toCsG1b0ueo2gwjndrdDo+H2
-TTbLrwuZWe0DQF26EL6lKxhsS79EI+tuQPSFr7JLHNceYItdbfFXffdy3n95qO0ddWDDM2dn
-3Rcyi1KDtmwUjRuDAfxWhWVa9FePaPvaOwRH8TdtNQ7RrBhD0QN2xiaxRVeAfIO1M0nr70/H
-v4N0/7j/rf5O4pgIjugo8qGLBMxwYewy2UDDu4mp5tOz4xySJW4S6seJ6ugY4p2GAxSqyvT+
-6BC801S0oFs99OHQUbfVb969+dT7/pkAQQX3zoKQ1Qgd8kTAWUVUQ443Unlm8OKXDvePbxv6
-8tsiz2ktc2steE5HSvBaslkhjAOtfLoVJmLd/+mlWwNo4OQZAarysa7vT8H5Kfi2/6MOLGID
-6AlCgZJw74IbvwwM62c60W/9BQA+c0mBjV+J0YY1JVUoGbXXZSadyDN+Aykf7Y4tm9Yerh4T
-Gn5sI/BhMU5LUtEVWokdMR6ZjUcviyZgj/4WvWFFr+sr0HnG0yOwFRktQTgYWXhgS0NcopYQ
-abmlg6U78L3zfCUFvRZNG2sjvdQoL+lRI5HRN3aWBmjHT5QFagLPItstddUvute86IrHLZVh
-4RcBy6HY5h84kAqLqI3KaaiBvcPH5SXb3fPwcuFm0nT6p6PfvLp7+XK4ezVuPQ3fT1CuIx/r
-D56YKtT0bRxm2aBfljK1usgDKtU6TaAw0sKnVIC58fpocFRcIIJ4h9wzTomXuoamKc9drgHZ
-oZNXDH23kFx5elgoGS5pxW6lQtPqe52wrPr45urtZ5IcCg616ZEknI50M8MSepe2V+/pplhB
-I/kizn3dSyEEjvv9O++c/VfsIfd4DrDszIJakpwXIlvrjTScVhVrjak+nvQQGJFNTvOe3rTw
-6PjmfpvuMtZ+zd+MFDwYL0dyXaWg8AEt+Lg+K+PvIOPTlJcOLDSw2AbqfF6Kw8MTBn4lpYes
-yttWi1LvqvH96+JzMrHTwbk+nbtghlO/WJmlmEC0Fg7Mak4Irul31pylioW+aTEaDXocRBbB
-/JRPCUTVilMwcCOVSJrQ2dBxtMTz8HYGk3pCD5O+1B02QoQcpIxbBseXaksQeOFlWgwl2+Ya
-7Y2j1KKV9MQ6cN0/eYAkkxFNEEVc+Xz6LKKXqNCg6BO/3pMRTUs2pswyQY8+YjLJ1+QViTCx
-AcDbneZOBJuQchAeD380TukQRj3ctcVB3oPIAfQ1t9ixSOgbGTiWJi3cMGpXUqUYXhzdqWYh
-S0YRyUI1zUdSpRsG2MrmiHZjjg7H73/uj3Xw8LS/r4+OF7Sx0TTXAxZbgOl9O5hJOixWx90k
-78ynQnB2YSdixsBkXRTXrZuOtA932qAUhmhGzmC/UugHhEquPeNpGcRaeQBlw4AuRtsMuHMp
-CAZtypGNAUblHbMNf12+8m3zseYB1LnUNBmXL6fgvr/gGUxHLFFHkjrOreL6riD93suZZaY9
-0U5PlDCPiHm28TMqumdv8RYJdU/asZSLkKoJxegIUAmvHQsHoeiTZSe0JM+LIYbgllp32sbs
-bz7Ou7VRshz5LoYKQ7WgzFg/7UU4CiC1xYrRYA+QVIV6CLXOxW4nvTZWcZ2KQL88Pz8dzyOT
-uMZr3CmG7eyeW6mJmhxOd5TIwWlLdxg5IgcmMp7kugSVAzrBSjit8q+mt8hNzEnA0UmD03zw
-DaX6dM23H8gJTKo26db1X/tTIB9P5+PLd5tTdPoG2uQ+OB/3jyfkCx4Oj3VwD1M9PONHN2Tw
-/6htq7OHc33cB1GxZMHXToHdP/35iEos+P6EAcHgp2P9vy+HYw0dXPGfRzPlMQ0winXBMsnJ
-2Y82q0mpRYjWlDjr2dkMIGKc3j1nisnQvnOgd0zPIF+XnUt05OgNWm0YppaI/yYJmoP9HtSj
-Y9Pb0OJwCvIspCNsVkjdE4fAaVkyT7Kl+FyyBECOH/Ea4TmqgJjQlfL5vD7SeuujoJHwWJoF
-mOAypBXR0uMewvjAf/bNizcpF1QgoMzc9YOv1drugX2W4QFea5++ypJ0HCwdUBWmrJjxPgN2
-CXMFVp5xjFbzmCan7NbV9C4J9jMzktFExclyztayTGmSDeXSzYlbHrvJEQ5pmefL0SOMgRSX
-bCMkSZIfr95vtzRpnGXlUFKJG5NH9EqmTK1FcqGmdwpNuyKlh5ox46cJo/IsT+n5Z3Slj9ef
-3pAEcMA1Jl6SRDy9aPdH6iydBBDm1RScNM002aRCh16RJHA8dOnm67q0PGEqSpiiZ61zLgGo
-b+ldAnSTF3pHD2jtkeYtpoZuR/HoeOdzplJwXlvkObO9BdedGr/vvZnhhm5O7Z2NonA1BXzF
-dzXTyOiIHgq8cKF1CNIvBOKQnBaFv66NZk9T8VyO3F+XTQHmiGohvjFUVN3mRw3ZXUnM3SVB
-au/6+BKCkUfDQaXDBZacYlIofvow2z1MiHx9OtzXQakXnR22XOD7t+4+UrrAB7vfP2M22Qwa
-bBI3LQ6/9XozTI1YeWhm9DgPvnrzZ8bVUlefuaSFAo8R1oymcql5TpMmOnJKUlqOHiHajDsq
-hu9WnOnPEVGEknlXhlCvLlmx8WvWEU2wxNsuzIMmaEOXGw//7S50daBLslZUZNkoT2nD5hkD
-G0CyD/XpFADRxbKbzRTktOpkVGGMtKgYjOvDzDqXj88vZy/UlVlROitiv1ZRhG8ppoG0hqYL
-prRYpZ7r0IYpZUbJ7ZSpSck81ccHzEU+4MuFr/uJ+9TWz0tQBJ7Qa8Pyn3x3mUGs/4k+OYDO
-as3CVqOaK7Fb5ICVh2XrSuDErsbueU9JVqsFrdp6lkxsjOfOvOfRJt+wjefd1MBVZv/Y29as
-SJ/c2QE3Ow/z8gp9RRQBEC00Vb7YhVRxki8l/C8KighGhBVGcrJBvrMmgiLZ23L7sm2cHdbR
-RYJn1XM/4XQvUD1Ovch5b3nJ4xX5inpgivBNegvPJ22A8y89OUgNw1pvt1tGX001G2Qz0j1X
-QA0DjlFzJaYx/vE++54xqlS+mzmgjS3dH++t0y5/zQPUJm6qOj67dpNJ4Sv+nbxzscWAwhqB
-Gqy4LVdsQ9t4S4Uq6SQ1d4gaWxZSo1KD7jORKA3ZKKU+rfx+mj0OQGect/DpI2bXO8KZiCXj
-O29hG1O7dn7+AfbCZj1PczKzaqlp99rGC40nk6+RsiYrcBoE7TzSJsHb7+fGm/ZFlzPZNJmV
-QR9NftDwunu2dG4sBWvDmS21sS85m/D3XBlfcSrYhcXUHrvsDvc1LeC6SOlLuthzeVcU81Sb
-whTB3cPT3e/UOIFYvX3/8WPzUwfzaJ69agpafwRNove2/vwE1erg/K0O9vf3NhVw/9B0fPpl
-5IfMxuMMR2bcKFrrLAuZ+7yiJjkeFK9H3TR0fPmSeBIrYqFSj7qzP3IR5vTNL8akEu/DP8Vn
-+mnQogg6Ky449SKnuYM67p+/He5Oo43rbhqmtF5xjd6l4D0ST5jsMzBjGc4RFhSOALUM8Tod
-kPYOjDn42EtPTAgYfZqwjMlLYWy6vUPpRqTxvRGICla4n6IZ5GfvphbKlnI1zjVyabDPYlah
-RDTuqbEQyUo6XhOWcZAJtZuWSfi2m7YNenLJaBFAcsrwGTAteba6lQXP0AZEMaoDK7/MMyU1
-LV3IIlINONlPTgQn3zVa4i2gsGmfS5EupCcAa+mRom2AJSY5WD6PkkeGtVwzMDBeOgzIAgY/
-w86/FhvAOZ4LoKZvsdH5LDbvDn+nmDdfFBkkZ+R7KEszM3H8D1soGjwh1WxkFjMq3tqsRIa5
-/GbykzJASbhVdd52E5Hla/pyohHUpeQW3l1gSTAqeIG+ixI2TnlxyEo0gjs+VkTs0xbn6O7P
-5dAGiC7LQuZJJUQa6FpBx5aQWgAKh5MP0uoX9EIYluwyOtfRMoCaSPiFBhDrKxQ4/3kAnp19
-l3phtQslU+Yfhmby0lTbOKifLtLL9QshQm+gznJ4b11aqkgQAnruGC1PmRXJBa2hfBAJzyx6
-FkxL/zmz4Trw0y92YeSFIwNaRQtPRBDpJZpIcAnonyVCjq3MUn/7+KT14ugw+sMvnUj0fUkw
-Slre3htxgEIPq/WiymMuwS8yJsEXKGC2RjoIELbG33Ly3FZtQAF50imbB4VyIRPfqx9leJNu
-NgNKYcoWZeRkeg8IGgO++BNwZItNvQrzQqosNzKiO27Z/M8zW4ZYMM9KTwbozLrcgktV+H5l
-pvRkqq0jHwHfMDY5LFSGTutLpSIb/SbVOiwo9LHGyOqc2Zb6cjsbanPF2IhH60/ONi093B2f
-Tk9fz0H89/P/VXZtzW3rOPh9f4WnT+fMpG1uTZOHPsiSHKuxJVuX2OmLx3V0Ek+TOOPLbru/
-fgmQlEgJoLwzbdMIEMUrCILAh3L78b73dCh3e0rZ7WI1Dglit+AOkkLZCRn1QojZW87lWLqj
-iJnHSLkZBAKRpycfTznZ5rClb2RIurGWvGjUTygdNxJVKgz8DctjDYm9yfKplNE0GXF46GCV
-mGbl62ZfAkIDVXeCKt96f909kS9YBKn5J37vrwyBzHrJmziOr9//7lXwAw2HPO/1ZfMkHmcb
-nyqeIku3q+1m+bjavHIvknTphTOffB5sy3K3Woq+mW620ZQrpIsVedefxnOugBbNPH6P1vtS
-UvuH9csj3PnoTiKKOv4lfGt6WL6I5rP9Q9KNlZP4C1vVwpfnEHT8myuTolab0lGTwjjaQ9z8
-/SANGW+mOXhIMAdwAKakDY+MeJ3MiMuLdNpbiVpSgqtFMw0HGfrDgBo4GhGWpcnwwcIUrGWc
-8kEEBrKSwwfEU81TL878sO1DqQ0x1geM9+EE4TOXJ6nX3n69t8ftZv1o1tGLgzSJ6KhKzW7s
-n4wKCy5t7Q4fzsB/awUO3oRFK2tGX2h9pv1W/RJ6epF2oZCBn4sSJtBpFI25DQgvL33pvcls
-NYiIRasQ9n2PcgMWC12On6X1iHN0FAD+0gCDeDPSP1nQhPz3LL9bsVrOIfyOWUkXDVpNubTw
-IvAB3BEAYh2U2fjGJVYMkeI8nza6aa4s9As2DhyZuFvq7/3A+i78zjKDU3ZfOy9XKzQCELVM
-Ns1YuOoxIhUyRkHFAtibYtgHtDQxPrCYg98eyfUdGUjSnCfdDjJ2JPt5yr8YRyPHq4Nz/k1A
-VPQodSWcg55i96J+JlEEFsmEdCgH7GagW+B6Y/CWzwFTuEE3a0IHx5scQixGpCfIIJNnAePq
-oPkgkg8WCiOxLtZrHyMUaVokuXULjw+q0CKUDQPPpyxIiJ6o+GdeGjdaKwn86WQKAdj3Zw7a
-OVdfCygMrn0GGa70V/uZfFT3Ai59epKAX4A47TTIUngtV8/2TfsgI0KetfIsuSV78DFNxp+D
-+wBFYi0R9XBlyc3V1alV8+/JKLLjaH8INqbWRTBoNUjXg/62PJcm2eeBl38O5/BvnDdqV2si
-CLfAfPtevMvLZAcxzom1qncTV82k+rErD48bjMVv9SeKtYGF7yke3Nm4AfishTIODzF2XJyp
-IrGILbc3IPrDaBSkIWX6BGw086uISVr/qqNt6s0bg23c+4zk4aWvpCMaz9UlUSehoAwCcd4N
-PdvEK3/wA0B0b1Uk3LGCaBPty0MbFzQROt1tyMtgL3DQBjxt6CSB/YndTBy16fMkx1t+6o0Z
-UjYtvGzILRTHdgjAiHNWJo0drZ/wtGk8v3RSr3hq6vroxIF7/JDdc68Vju5OkxZRiwl1o8vM
-uNihKgwyBgYbwgG50Y04QhJ4/NTlKm+C64pfKvDXD+vd5vr6y83HMyPeDRjEZ0IUQJcXX+lW
-mUxfj2L6SsdGW0zXX06PYaLjshtMR33uiIpfXx1TpytadWgwHVPxK9oI3mBiosJtpmO64IqG
-K2gw3XQz3VwcUdLNMQN8c3FEP91cHlGn6698PwlFBub+gobAtYo5Oz+m2oKLnwRe5kcMbodR
-F/59zcH3jObgp4/m6O4TfuJoDn6sNQe/tDQHP4BVf3Q35qy7NWd8c+6S6HrB+OBqMg2pAuSx
-58MexUQ4aQ4/BNyZDhZxsilS+gRcMaWJl0ddH3tIoxHn+KiZbj3WN7JiSUPmTlNzRD74YtJ7
-W8UTFxFtxbG6r6tReZHeRQxABPAU+YBexUUcwfIk9sQoWcymdgy2YSaSlvdyddiu93+oK7O7
-8IFRvpQpZhGMwwwNmHkaMZYsp9lGE8kdHfEpNfA6HrD9ZPJQA6xbvgBNNvpzEtsZeCD8whGw
-LwFy6nZ6RpjZKBt/+wBe4XBpcwL/QEDoyZ/l6/IEwkLf128nu+U/pShw/XgCnuNP0MMnP9//
-+WAh6z8vt4/lm41MZYKcrd/W+/XyZf3fRn4wTDolcaGbCJNIkvCV4gSl28GYPjQzgMWxvDbm
-VrNKDeR/okWVNb850XRrZFC2vrvyt3/e95vearMte5tt77l8eTdRDSSzaN6tZ6Z8sB6ft54D
-+AX50DILqudiqYqNjhaXiqUJ1UUWsAiiDIG4AVMgIz4E7rCur+APRq1W7S3yYcgEOSkWhFZr
-2lcmh58v69XHX+Wf3gr7+wl8CP+Ya1+9njKIQ4oc0OJKUUO/k+4uPvTTDo5sTOsKuguL9D48
-//Ll7KbVB95h/1y+QQ4/yNwXvmFHAGrlf9b75563221WayQFy/2S6Bnfp71ZFPnWTfaHnvhz
-fjpJRg9nF6f03q1HObyNsrNzWvjrfginER0/UnXl0BPr/b7VD328en7dPNoGN13PvnN2+QPa
-C1eTGVNKReaO/arKzsJHKe1vqsiJu2qTjpbN3XUTW+Ms5UAW1bCBy0NeOKcB+Lm0h2S43D3z
-IyJ0BVeRww76vKPh9433pfly/VTu9i0x7Kf+xblPiDYkOGsxH3qMrqM4+iPvLjx3jqFkcY6T
-qEh+dhpwYEVqrXbV5ZhVOg5oHb0iu9+OxPoMR/DTxZaOgzPmpK4FwdCjz1c1/fwLfa6pOb6c
-OQdPcNBHlkoou8m50Df6jBe94plNGnWQK2H9/qwdCJoy0jkNPMyO6J5LyWzAqd96MnnjUBw7
-nBsSQG86RxoYnP0fuJsywJ/H7C3u/SKdiOOYexSdEzqfJV39pVhUXpb2aG5e37flbid123Y3
-8GHlegf4waC3SfL1pXMWj3442yfIQ+dabIKtS6cncSzYvPbiw+vPcqtQ9Pd0A704ixb+JOWc
-zVQ3pP1bdLxzMX2PIEQjBAcS5uRjKK4LoSIvuiRexZjd+dFk2K0OI3NHWyo+L/TaXac0/5f1
-z+1SnDS2m8N+/UZugaOof4zsBza5Fjq5SDWxzaf3AQjY/hF+A7A9orRjdou6brQO2NjTZ9Xx
-qNzuwf1JaKY7xAHYrZ/eME1Sb/Vcrn410kAcw478I0evT9rQzorSj3IAp0vN4Fvtk4RIuHlk
-WuU1aRBBYpUohXg6Gy/bT9JGGty6FilkLoqLcT9kUI18iLHyxVIgO9K3EyACs1Mz8BdRXiyY
-si4aB0fxQIjU0aB52rIZRpEf9h+uiVclhZNHyOKlM14cAkefMUIJKmNIFxSWQBs2xbSVOh/3
-Gn1IkSGUTB9VXPMfgFRLdF+cgF+14X4ACVLEExZ2HWlCznA+PsHUhM8ZqYTgtV0knSJOKfFm
-Jr6kPaXUGmstHdvEo9ckPn3frt/2vzB88vG13D1RVjeVYbeZNaZJhzgyRiwbmflkPnEyAM+X
-YbQQ4S7TpOkLs68sx7QAR4nL+sY7y+BOoFXCZV0XTH2qqhywOVSDh9gTqq/Lsd7k4LDGsodx
-PxFraRGmKWZEN0J+4TXxV0irfpJZwJTsoFRayvql/Ih5n1Fo7pB1JZ9vqSGUX2t6eyniIBU1
-Q++db2en55fmsKWAz56NoR3MXbHYONGm5DGJBeC7WYjpDMB7YAwBq2You03BWiySeGQ4NMnq
-ITiB7dGkEPkx1c4s9O50fgLSXHh0r1kO62rRBOXPw9MTWBENwL5/Gbi2Vba8OhFFDN3y7fT3
-GcUlY8tNv7EmDQwoRQgZd01U1CoJAWl272cMIMpRzbHHTCb7a85XzJXxx7IJV4XZO7RYheE8
-h2BAxtYrCwRGPp0DFpPMYg6tCchiYkB0JKPoya8k/e8hZ9tRU3TkUalb0eKvOgQxXby79gzU
-FFfxaBsvQDjRAhITwUguSPLG+2/K8u75xSZdx9GUbliYZSbzO0/MECPI2aaCqwWmYUoEV5RD
-WmfYz3SAr213r4e91dZhA75TGmyAv5ds3ncnvdFm9evwLtffcPn21FDuYrEUhExIaMdLiw7u
-xEVYp/OSRNipkiI3QaUhgBO8MTG1eM5D1EriYljEACOZ0WMwm7oD7xGzV36NXI7uvpC3YFVW
-enN9WbMFe9vC/4DHrZwmRKJ7fuyg5+7CsJnjQGrkYJatRcdfu/f1G0IonPReD/vydyn+U+5X
-nz59+ruuKnrQYtkQxGTEBRnaA4S4KU9ZWseDMqBdjgVR53tzrUIiGqrB0l3IbCaZhMhIZpCE
-zFWrWRYyG6dkwKbx8q9mgs7D06/SV+lCsTgxtXOAyGXV2roFLuU38wfdRflZID8686KcUpa0
-Svp/zJ2W1qIyQVPqVaVX2hhiKd43LooYwl8hswyfVVuJcLlDuHcAS1kzhJrKZ/i43C97sJ2u
-Whmf1ThGTC+qrbCDzmSuk0T07Y64gyjugfEiAORnoammBeF9bskmpknNr/qp6F6AQrVTTEjD
-k1/QuoEgLCD3vGNaAUvn3AOmNBwcVVba8F63qOE0c0xdux0taTBVCmhKqJ62qo/rROhEiLVP
-L1+Zya8BBqE3FdEGW4Rq/bi1AMSKEfvdQDabOZHhFuJgGM5EbVwMSRYLzSt0scBuknYUI/Xk
-OgMQcjJZbZC2yGJvkg0TarH2xUIXhwiZ0z5s+SLo514slovo60C9wMj7ih1A5V2MVWbIxDHT
-soc4Hy4wc4KjeXjMWfTFNBiyWYlUftYITxsQsMDLcMxi0V6bh1dKrQi9dPSgjsamxmdxm7aE
-XOY3Qd3F3/y73C6fSstdp4g5PyQlruBcjNCZ30M+452cGSSPaX9BBdc3084rvVZos+Kx7N/F
-xLodBH6ivBRS7I6lUIE114wzRwUPgP0hrJ5XAbNWLnOTGkT3jBmsX1lLYId2iLY+XFw56JC0
-L0tGCQSJs1x4rhZ69MJdmMqZx9K9PBlH/tWlW6vAlg/DOWTVYExFKUq5zkIUo3SZYlaU4st8
-5hICGe4ER86ETCIDrgjaKiu/4HuxgywNdDy9KJrBqCZ17qUpY6NCOgQtDYQmynOkcLWCeIeO
-EeFuX5AaBVwEKpxz7mjFSrc9aeJOmPR7Ry5H2TkZ5nVxjV9/4ur8kVhLwwR3GNodBW3/kBXb
-LXSxNJ2pxjEXMKjI0R7e5KhmKzoEso6OcsaOE8eMGYdjX+y5LrmU4wUKI5t1IW4GdNEDAwx9
-2HTuEC0fPWmS/h9B5xsWyZQAAA==
+I would perhaps do this in two stages
 
---8t9RHnE3ZwKMSgU+--
+	struct lynx_pcs *lynx = phylink_pcs_to_lynx(pcs);
+
+	kfree(lynx);
+
+>  }
+>  EXPORT_SYMBOL(lynx_pcs_destroy);
+>
+> diff --git a/include/linux/pcs-lynx.h b/include/linux/pcs-lynx.h
+> index a6440d6ebe95..5712cc2ce775 100644
+> --- a/include/linux/pcs-lynx.h
+> +++ b/include/linux/pcs-lynx.h
+> @@ -9,13 +9,10 @@
+>  #include <linux/mdio.h>
+>  #include <linux/phylink.h>
+>
+> -struct lynx_pcs {
+> -	struct phylink_pcs pcs;
+> -	struct mdio_device *mdio;
+> -};
+
+Good that this structure is no longer exposed.
+
+> +struct mdio_device *lynx_get_mdio_device(struct phylink_pcs *pcs);
+>
+> -struct lynx_pcs *lynx_pcs_create(struct mdio_device *mdio);
+> +struct phylink_pcs *lynx_pcs_create(struct mdio_device *mdio);
+>
+> -void lynx_pcs_destroy(struct lynx_pcs *pcs);
+> +void lynx_pcs_destroy(struct phylink_pcs *pcs);
+
+We don't want the few phylink_pcs drivers going in different directions,
+so we should modify pcs-xpcs.c too such that it no longer exposes struct
+dw_xpcs to the outside world. I think I hid most of that away already,
+and grepping for "xpcs->" in drivers/net/dsa and drivers/net/ethernet,
+I only see xpcs->mdiodev and xpcs->pcs being accessed, so converting
+khat should be a walk in the park.
+
+Anyway, I would focus for now on getting the ocelot hardware to work and
+writing the phylink_pcs driver for that. That is one part where I can't
+help a lot with.
