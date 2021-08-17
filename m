@@ -2,74 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE783EEDB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBBA83EEDA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240102AbhHQNtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 09:49:03 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3656 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235092AbhHQNtC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 09:49:02 -0400
-Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gpsm96vDYz6BGWC;
-        Tue, 17 Aug 2021 21:47:37 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 17 Aug 2021 15:48:27 +0200
-Received: from localhost.localdomain (10.69.192.58) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 17 Aug 2021 14:48:23 +0100
-From:   John Garry <john.garry@huawei.com>
-To:     <tyreld@linux.ibm.com>, <mpe@ellerman.id.au>,
-        <benh@kernel.crashing.org>, <paulus@samba.org>,
-        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-kernel@vger.kernel.org>, <hare@suse.de>,
-        <bvanassche@acm.org>, <hch@lst.de>, <linux-next@vger.kernel.org>,
-        <sfr@canb.auug.org.au>, "John Garry" <john.garry@huawei.com>
-Subject: [PATCH] scsi: ibmvfc: Stop using scsi_cmnd.tag
-Date:   Tue, 17 Aug 2021 21:43:37 +0800
-Message-ID: <1629207817-211936-1-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S240027AbhHQNpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 09:45:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59796 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237090AbhHQNpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 09:45:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 248F760EE0;
+        Tue, 17 Aug 2021 13:44:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629207882;
+        bh=Zg5d4qyDM5hnQQs3cqRGKAQdN63bOdqnEl33KOcoO18=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=heM0AeTnqC3y1Zn43MFukVCEDZwhWvMXAHSmRSGF7PqFS+OZctARMG8Bp1DlpWUiI
+         sfa8UqDuZns0Pb1uoFD4qvdmH58xAnAHKLuAgTb5GwkbpYtd37tKXu8uWnlyLP2sob
+         4870uF1ypYyvG5W9bpPJt1FN3vaeQj2M07Ck9rF/bCOLHC/LmnnW6+c9fROt2kWyof
+         20EPf5+0MBj6zTuhygzVscc8rDgc71hIcpDEYHL4635cuE9qPm0zuUi11otMsRfAyp
+         12bT+Ano4QKeb6Q0IpawG3jErzy6U6O/83NcaAltr8rPbAzUHus9KQ2z86CwJowN4v
+         vCRvEPkYPkKcg==
+Date:   Tue, 17 Aug 2021 06:44:41 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: net_namespace: Optimize the code
+Message-ID: <20210817064441.61133532@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210817102001.1125-1-yajun.deng@linux.dev>
+References: <20210817102001.1125-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use scsi_cmd_to_rq(scsi_cmnd)->tag in preference to scsi_cmnd.tag.
+On Tue, 17 Aug 2021 18:20:01 +0800 Yajun Deng wrote:
+> Inline ops_free(), becase there is only one caller.
+> Separate net_drop_ns() and net_free(), so the net_free() can be
+> called directly.
+> Add free_exit_list() helper function for free net_exit_list.
+> 
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 
-Signed-off-by: John Garry <john.garry@huawei.com>
----
-This patch was missed in a series to remove scsi_cmnd.tag, which caused
-a build error on Martin's SCSI staging tree:
-https://lore.kernel.org/linux-scsi/yq14kbppa42.fsf@ca-mkp.ca.oracle.com/T/#mb47909f38f35837686734369600051b278d124af
-
-I note that scsi_cmnd.tag is/was an unsigned char, and I could not find
-anywhere in the driver which limits scsi_host.can_queue to 255, so using
-scsi_cmnd.tag looks odd to me.
-
-diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-index 7fa5e64e38c3..ba7150cb226a 100644
---- a/drivers/scsi/ibmvscsi/ibmvfc.c
-+++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-@@ -1956,7 +1956,7 @@ static int ibmvfc_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *cmnd)
- 	memcpy(iu->cdb, cmnd->cmnd, cmnd->cmd_len);
- 
- 	if (cmnd->flags & SCMD_TAGGED) {
--		vfc_cmd->task_tag = cpu_to_be64(cmnd->tag);
-+		vfc_cmd->task_tag = cpu_to_be64(scsi_cmd_to_rq(cmnd)->tag);
- 		iu->pri_task_attr = IBMVFC_SIMPLE_TASK;
- 	}
- 
--- 
-2.17.1
-
+This patch does not apply, please rebase.
