@@ -2,126 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AABBB3EE5F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 06:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3513EE5F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 06:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237548AbhHQEzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 00:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhHQEzu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 00:55:50 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C522C061764;
-        Mon, 16 Aug 2021 21:55:17 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id j1so30097903pjv.3;
-        Mon, 16 Aug 2021 21:55:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hAXABoom5XY+ws1/jiIFHmNJnWtweNFayiGnrPzUhKo=;
-        b=ewl9OoE2pnxQkOSLm43GnYt9fFJEhFLOIu9grvLJPILw3j5E4dnW+TOZAhmE/Apjxl
-         5x4TGw+X4B63h4YW4rmdCNkAHLi/K/OQdBPhM3czyyqDQOsDBvkISIWyEW0F89azcIvh
-         is5rfYxu6D/cNOpIskVZLvE1i1jfayvBLqf89Rhyf3uChgdMWHiR3j5GxhAxwRD6N3ok
-         Itgf2Mtpzx9yJW2mLZYxyizR9wKa2D7ska7MziSU0Q40+Bwy0k3qgk4ayZ+1UBn5aYNU
-         /qFXjNqV1+ZfB5WVduvwdpUZfAhZToy6gPn4MpWB7d74vvYjKyQO/AX0Avr37ZFT9Uc1
-         KEiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hAXABoom5XY+ws1/jiIFHmNJnWtweNFayiGnrPzUhKo=;
-        b=s3HsaSOqYyyFscYXB6FZYJN+ELCjZbodPdUg95+0JK9f4Bb1b6MfMrPQ39EaUs5kTk
-         0Tjbph6D/BXE5CY0/7DOGlgfjxNyaQ8+F0SDIP8BVoZC2TzrDASyuLR4CJI8nzx4KZiQ
-         MJHqQTjmADGf10Z01iXQjIv1OxUXxoAFue6APYawfCZuuire69K9z5sLp4mN4ZDnpeHH
-         BWh806e0Y9Ce/1Z09C6ED3SwNWj6ajGMA0X1n3+1eQHxGBRPKwjQ0056nvlOldimOLOR
-         AN7zluonsVSqVgw6WfeUrHrcXf32o4PjlxI6t4dIZvIqUwvVoDWofvOp7jzXYMBHskVa
-         Rqlg==
-X-Gm-Message-State: AOAM533HvmLtIMVfGul/L0/zFP8p6BS2tSgYsVhxhvXp1ivixumF0TSx
-        3i96nYQ/xL3lYHPHTddB/EU=
-X-Google-Smtp-Source: ABdhPJxhyhrtsbV/IkVXpjBzLeMLDOgoo0HmIE/UWAfWd+zR3AmkLu53p/slOhIqP2X4sg9Ehnu4fA==
-X-Received: by 2002:a63:7cb:: with SMTP id 194mr1724744pgh.308.1629176115852;
-        Mon, 16 Aug 2021 21:55:15 -0700 (PDT)
-Received: from localhost.localdomain ([1.240.193.107])
-        by smtp.googlemail.com with ESMTPSA id r9sm863091pfh.135.2021.08.16.21.55.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 21:55:15 -0700 (PDT)
-From:   Kangmin Park <l4stpr0gr4m@gmail.com>
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tedd Ho-Jeong An <tedd.an@intel.com>,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net] Bluetooth: Fix return value in hci_dev_do_close()
-Date:   Tue, 17 Aug 2021 13:55:10 +0900
-Message-Id: <20210817045510.4479-1-l4stpr0gr4m@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S237818AbhHQE4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 00:56:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41118 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230272AbhHQE4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 00:56:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AD7D60F5C;
+        Tue, 17 Aug 2021 04:55:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629176130;
+        bh=zlCG6TyqdnDAfWusRcSyF23uFUU7SsCl5cvLhJSJpKc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=KcIO1Mdm6d59M7z/WSPAI7ewM15r5aeGwejgZggC7qIMDQAy9J9H4napExPxX0hiI
+         MExJijv0G35sMLI59JiMSLlVIc58x3+RT8mSAWM06kXjtdbH7LxktdLxz3YtEOe/as
+         l9ShwyMFc6qIBK1y/AtnX9zgNG6EosXk8YJeHZP5DG0K92/eSYpqO/dy5EG+GMDnI5
+         tcvqL25yu535vVWGenjtDSGoPLpqb6AlNTHHtbDyqJ7t0jVWgnmWA228xMBBuV9So2
+         HycG7kbdWapNKuF2KSrxLJK/LCq6LUMYOL8SjBujK/HcXYsmiNLrRS9PXrIqj3tSVs
+         QIH8U7FCF1fbw==
+Subject: Re: [PATCH] kbuild: Enable -Wimplicit-fallthrough for clang 14.0.0+
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <20210817005624.1455428-1-nathan@kernel.org>
+ <80fa539a-b767-76ed-dafa-4d8d1a6b063e@kernel.org>
+ <CAHk-=wgFXOf9OUh3+vmWjhp1PC47RVsUkL0NszBxSWhbGzx4tw@mail.gmail.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <5c856f36-69a7-e274-f72a-c3aef195adeb@kernel.org>
+Date:   Mon, 16 Aug 2021 21:55:28 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHk-=wgFXOf9OUh3+vmWjhp1PC47RVsUkL0NszBxSWhbGzx4tw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hci_error_reset() return without calling hci_dev_do_open() when
-hci_dev_do_close() return error value which is not 0.
+On 8/16/2021 9:37 PM, Linus Torvalds wrote:
+> On Mon, Aug 16, 2021 at 6:20 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>>
+>> Additionally, there should be some time for the CI systems to update
+>> their clang-14 builds, as the recent 0day report shows.
+> 
+> What?
+> 
+> No, the 0day report shows that the patch is buggy, and that the
+> 
+>    ifeq ($(shell test $(CONFIG_CLANG_VERSION) -ge 140000; echo $$?),0)
+> 
+> clearly doesn't work at all, since the flag is enabled on those
+> systems with old clang versions.
+> 
+> Alternatively, the test works, but the 140000 version is not enough.
 
-Also, hci_dev_close() return hci_dev_do_close() function's return
-value.
+So technically speaking, the 140000 is not enough at this very moment 
+for the fact that there are certain systems that test with clang-14 
+builds that do not have my clang patch in it yet; however, those systems 
+do update clang regularly (the 0day version is just seven hours old at 
+the time of writing this) so they will have a version that contains my 
+patch shortly, making the check work just fine. We have done this in the 
+past with checks that are gated on clang versions that are in 
+development, with the expectation that if someone is using a development 
+release of clang, they are keeping it up to date so that they get fixes 
+that we push there; otherwise, it is just better to stick with the 
+release branches.
 
-But, hci_dev_do_close() return always 0 even if hdev->shutdown
-return error value. So, fix hci_dev_do_close() to save and return
-the return value of the hdev->shutdown when it is called.
+> So no. This patch is simply completely wrong, and doesn't fix the
+> problem with Clang's buggy -Wimplicit-fallthrough flag.
 
-Fixes: a44fecbd52a4d ("Bluetooth: Add shutdown callback before closing the device")
-Signed-off-by: Kangmin Park <l4stpr0gr4m@gmail.com>
----
- net/bluetooth/hci_core.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+If you/Gustavo would prefer, I can upgrade that check to
 
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index e1a545c8a69f..5f3c7515a8f0 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -1718,6 +1718,7 @@ static void hci_pend_le_actions_clear(struct hci_dev *hdev)
- int hci_dev_do_close(struct hci_dev *hdev)
- {
- 	bool auto_off;
-+	int ret = 0;
- 
- 	BT_DBG("%s %p", hdev->name, hdev);
- 
-@@ -1730,7 +1731,7 @@ int hci_dev_do_close(struct hci_dev *hdev)
- 	if (!test_and_clear_bit(HCI_UP, &hdev->flags)) {
- 		cancel_delayed_work_sync(&hdev->cmd_timer);
- 		hci_req_sync_unlock(hdev);
--		return 0;
-+		return ret;
- 	}
- 
- 	hci_leds_update_powered(hdev, false);
-@@ -1803,7 +1804,7 @@ int hci_dev_do_close(struct hci_dev *hdev)
- 	    test_bit(HCI_UP, &hdev->flags)) {
- 		/* Execute vendor specific shutdown routine */
- 		if (hdev->shutdown)
--			hdev->shutdown(hdev);
-+			ret = hdev->shutdown(hdev);
- 	}
- 
- 	/* flush cmd  work */
-@@ -1845,7 +1846,7 @@ int hci_dev_do_close(struct hci_dev *hdev)
- 	hci_req_sync_unlock(hdev);
- 
- 	hci_dev_put(hdev);
--	return 0;
-+	return ret;
- }
- 
- int hci_dev_close(__u16 dev)
--- 
-2.26.2
+ifneq ($(call cc-option, -Wunreachable-code-fallthrough),)
 
+I was just trying to save a call to the compiler, as that is more 
+expensive than a shell test call.
+
+Cheers,
+Nathan
