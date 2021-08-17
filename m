@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8496D3EE87C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C913EE87E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239577AbhHQI0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 04:26:00 -0400
+        id S239580AbhHQI0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 04:26:16 -0400
 Received: from mga04.intel.com ([192.55.52.120]:18151 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239407AbhHQIZR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 04:25:17 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="214171976"
+        id S239409AbhHQIZV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 04:25:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="214171984"
 X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="scan'208";a="214171976"
+   d="scan'208";a="214171984"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 01:24:44 -0700
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 01:24:48 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="scan'208";a="471080453"
+   d="scan'208";a="471080460"
 Received: from nntpat99-84.inn.intel.com ([10.125.99.84])
-  by orsmga008.jf.intel.com with ESMTP; 17 Aug 2021 01:24:41 -0700
+  by orsmga008.jf.intel.com with ESMTP; 17 Aug 2021 01:24:44 -0700
 From:   Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
@@ -33,9 +33,9 @@ Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
         Alexander Antonov <alexander.antonov@linux.intel.com>,
         Alexei Budankov <abudankov@huawei.com>,
         Riccardo Mancini <rickyman7@gmail.com>
-Subject: [PATCH v11 23/24] perf session: Load single file for analysis
-Date:   Tue, 17 Aug 2021 11:23:26 +0300
-Message-Id: <90484cdd55c4b995def42e01e35c5c2fef1f673d.1629186429.git.alexey.v.bayduraev@linux.intel.com>
+Subject: [PATCH v11 24/24] perf session: Load data directory files for analysis
+Date:   Tue, 17 Aug 2021 11:23:27 +0300
+Message-Id: <03e17b23b46647db7a71b9255ed2e3cd0cfd76e2.1629186429.git.alexey.v.bayduraev@linux.intel.com>
 X-Mailer: git-send-email 2.19.0
 In-Reply-To: <cover.1629186429.git.alexey.v.bayduraev@linux.intel.com>
 References: <cover.1629186429.git.alexey.v.bayduraev@linux.intel.com>
@@ -45,10 +45,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding eof flag to reader state and moving the check to reader__mmap.
-Separating reading code of single event into reader__read_event function.
-Adding basic reader return codes to simplify the code and introducing
-reader remmap/read_event loop based on them.
+Load data directory files and provide basic raw dump and aggregated
+analysis support of data directories in report mode, still with no
+memory consumption optimizations.
 
 Design and implementation are based on the prototype [1], [2].
 
@@ -61,138 +60,179 @@ Reviewed-by: Riccardo Mancini <rickyman7@gmail.com>
 Tested-by: Riccardo Mancini <rickyman7@gmail.com>
 Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 ---
- tools/perf/util/session.c | 72 ++++++++++++++++++++++++---------------
- 1 file changed, 45 insertions(+), 27 deletions(-)
+ tools/perf/util/session.c | 131 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 131 insertions(+)
 
 diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index e9a7cba31194..b49b52768681 100644
+index b49b52768681..f5a82f66e36b 100644
 --- a/tools/perf/util/session.c
 +++ b/tools/perf/util/session.c
-@@ -64,6 +64,13 @@ struct reader_state {
- 	u64	 file_offset;
+@@ -48,6 +48,13 @@
+ #define NUM_MMAPS 128
+ #endif
+ 
++/*
++ * Processing 10MBs of data from each reader in sequence,
++ * because that's the way the ordered events sorting works
++ * most efficiently.
++ */
++#define READER_MAX_SIZE (10 * 1024 * 1024)
++
+ struct reader;
+ 
+ typedef s64 (*reader_cb_t)(struct perf_session *session,
+@@ -65,6 +72,7 @@ struct reader_state {
  	u64	 data_size;
  	u64	 head;
-+	bool	 eof;
-+};
-+
-+enum {
-+	READER_EOF,
-+	READER_NODATA,
-+	READER_OK,
+ 	bool	 eof;
++	u64	 size;
  };
  
- struct reader {
-@@ -2250,6 +2257,11 @@ reader__mmap(struct reader *rd, struct perf_session *session)
- 	char *buf, **mmaps = st->mmaps;
- 	u64 page_offset;
+ enum {
+@@ -2328,6 +2336,7 @@ reader__read_event(struct reader *rd, struct perf_session *session,
+ 	if (skip)
+ 		size += skip;
  
-+	if (st->file_pos >= st->data_size) {
-+		st->eof = true;
-+		return READER_EOF;
-+	}
-+
- 	mmap_prot  = PROT_READ;
- 	mmap_flags = MAP_SHARED;
- 
-@@ -2278,36 +2290,26 @@ reader__mmap(struct reader *rd, struct perf_session *session)
- 	mmaps[st->mmap_idx] = st->mmap_cur = buf;
- 	st->mmap_idx = (st->mmap_idx + 1) & (ARRAY_SIZE(st->mmaps) - 1);
- 	st->file_pos = st->file_offset + st->head;
--	return 0;
-+	return READER_OK;
- }
- 
- static int
--reader__process_events(struct reader *rd, struct perf_session *session,
--		       struct ui_progress *prog)
-+reader__read_event(struct reader *rd, struct perf_session *session,
-+		   struct ui_progress *prog)
- {
- 	struct reader_state *st = &rd->state;
--	u64 size;
--	int err = 0;
-+	int err = READER_OK;
- 	union perf_event *event;
-+	u64 size;
- 	s64 skip;
- 
--remap:
--	err = reader__mmap(rd, session);
--	if (err)
--		goto out;
--	if (session->one_mmap) {
--		session->one_mmap_addr   = rd->state.mmap_cur;
--		session->one_mmap_offset = rd->state.file_offset;
--	}
--
--more:
- 	event = fetch_mmaped_event(st->head, st->mmap_size, st->mmap_cur,
- 				   session->header.needs_swap);
- 	if (IS_ERR(event))
- 		return PTR_ERR(event);
- 
- 	if (!event)
--		goto remap;
-+		return READER_NODATA;
- 
- 	session->active_reader = rd;
- 	size = event->header.size;
-@@ -2329,18 +2331,12 @@ reader__process_events(struct reader *rd, struct perf_session *session,
++	st->size += size;
  	st->head += size;
  	st->file_pos += size;
  
--	err = __perf_session__process_decomp_events(session);
--	if (err)
--		goto out;
-+	skip = __perf_session__process_decomp_events(session);
-+	if (skip)
-+		err = skip;
- 
- 	ui_progress__update(prog, size);
- 
--	if (session_done())
--		goto out;
--
--	if (st->file_pos < st->data_size)
--		goto more;
--
- out:
- 	session->active_reader = NULL;
+@@ -2427,6 +2436,125 @@ static int __perf_session__process_events(struct perf_session *session)
  	return err;
-@@ -2384,9 +2380,31 @@ static int __perf_session__process_events(struct perf_session *session)
- 	err = reader__init(rd, &session->one_mmap);
- 	if (err)
- 		goto out_err;
--	err = reader__process_events(rd, session, &prog);
--	if (err)
-+	err = reader__mmap(rd, session);
-+	if (err != READER_OK) {
-+		if (err == READER_EOF)
-+			err = -EINVAL;
- 		goto out_err;
-+	}
-+	if (session->one_mmap) {
-+		session->one_mmap_addr   = rd->state.mmap_cur;
-+		session->one_mmap_offset = rd->state.file_offset;
+ }
+ 
++/*
++ * This function reads, merge and process directory data.
++ * It assumens the version 1 of directory data, where each
++ * data file holds per-cpu data, already sorted by kernel.
++ */
++static int __perf_session__process_dir_events(struct perf_session *session)
++{
++	struct perf_data *data = session->data;
++	struct perf_tool *tool = session->tool;
++	int i, ret = 0, readers = 1;
++	struct ui_progress prog;
++	u64 total_size = perf_data__size(session->data);
++	struct reader *rd;
++
++	perf_tool__fill_defaults(tool);
++
++	ui_progress__init_size(&prog, total_size, "Sorting events...");
++
++	for (i = 0; i < data->dir.nr; i++) {
++		if (data->dir.files[i].size)
++			readers++;
 +	}
 +
-+	while (true) {
++	rd = session->readers = zalloc(readers * sizeof(struct reader));
++	if (!rd)
++		return -ENOMEM;
++	session->nr_readers = readers;
++	readers = 0;
++
++	rd[readers] = (struct reader) {
++		.fd		 = perf_data__fd(session->data),
++		.path		 = session->data->file.path,
++		.data_size	 = session->header.data_size,
++		.data_offset	 = session->header.data_offset,
++		.in_place_update = session->data->in_place_update,
++	};
++	ret = reader__init(&rd[readers], NULL);
++	if (ret)
++		goto out_err;
++	ret = reader__mmap(&rd[readers], session);
++	if (ret != READER_OK) {
++		if (ret == READER_EOF)
++			ret = -EINVAL;
++		goto out_err;
++	}
++	readers++;
++
++	for (i = 0; i < data->dir.nr; i++) {
++		if (!data->dir.files[i].size)
++			continue;
++		rd[readers] = (struct reader) {
++			.fd		 = data->dir.files[i].fd,
++			.path		 = data->dir.files[i].path,
++			.data_size	 = data->dir.files[i].size,
++			.data_offset	 = 0,
++			.in_place_update = session->data->in_place_update,
++		};
++		ret = reader__init(&rd[readers], NULL);
++		if (ret)
++			goto out_err;
++		ret = reader__mmap(&rd[readers], session);
++		if (ret != READER_OK) {
++			if (ret == READER_EOF)
++				ret = -EINVAL;
++			goto out_err;
++		}
++		readers++;
++	}
++
++	i = 0;
++
++	while ((ret >= 0) && readers) {
 +		if (session_done())
-+			break;
++			return 0;
 +
-+		err = reader__read_event(rd, session, &prog);
-+		if (err < 0)
++		if (rd[i].state.eof) {
++			i = (i + 1) % session->nr_readers;
++			continue;
++		}
++
++		ret = reader__read_event(&rd[i], session, &prog);
++		if (ret < 0)
 +			break;
-+		if (err == READER_NODATA) {
-+			err = reader__mmap(rd, session);
-+			if (err <= 0)
-+				break;
++		if (ret == READER_NODATA) {
++			ret = reader__mmap(&rd[i], session);
++			if (ret < 0)
++				goto out_err;
++			if (ret == READER_EOF)
++				readers--;
++		}
++
++		if (rd[i].state.size >= READER_MAX_SIZE) {
++			rd[i].state.size = 0;
++			i = (i + 1) % session->nr_readers;
 +		}
 +	}
 +
- 	/* do the final flush for ordered samples */
- 	err = ordered_events__flush(oe, OE_FLUSH__FINAL);
- 	if (err)
++	ret = ordered_events__flush(&session->ordered_events, OE_FLUSH__FINAL);
++	if (ret)
++		goto out_err;
++
++	ret = perf_session__flush_thread_stacks(session);
++out_err:
++	ui_progress__finish();
++
++	if (!tool->no_warn)
++		perf_session__warn_about_errors(session);
++
++	/*
++	 * We may switching perf.data output, make ordered_events
++	 * reusable.
++	 */
++	ordered_events__reinit(&session->ordered_events);
++
++	session->one_mmap = false;
++
++	return ret;
++}
++
+ int perf_session__process_events(struct perf_session *session)
+ {
+ 	if (perf_session__register_idle_thread(session) < 0)
+@@ -2435,6 +2563,9 @@ int perf_session__process_events(struct perf_session *session)
+ 	if (perf_data__is_pipe(session->data))
+ 		return __perf_session__process_pipe_events(session);
+ 
++	if (perf_data__is_dir(session->data))
++		return __perf_session__process_dir_events(session);
++
+ 	return __perf_session__process_events(session);
+ }
+ 
 -- 
 2.19.0
 
