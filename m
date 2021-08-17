@@ -2,723 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05FD13EE70A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 09:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52EB03EE70B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 09:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238455AbhHQHMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 03:12:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233688AbhHQHMG (ORCPT
+        id S238291AbhHQHNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 03:13:06 -0400
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:56939 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233688AbhHQHNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 03:12:06 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D332C061764;
-        Tue, 17 Aug 2021 00:11:33 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id j12-20020a05600c1c0c00b002e6d80c902dso1454532wms.4;
-        Tue, 17 Aug 2021 00:11:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JpAYEtBYP24QK9Fy/Ow+uf4hp5yoI/DRZsKp8Rcdp7Y=;
-        b=mYSjMg2PU4AvB0yGdJt1/zwJXCptrWHqMCtb89bPHvtkljWiR7m82jnJ19r1vAOb/R
-         QlBL6o8pjuihTM6Lk9h6mZ60u6Z29PEp+aiee9TiaPm+p+5LEf9CmtqtoDWu2NkVYMlr
-         qgYtDpKenXWij2IjdZutd89B4JoAemx4AvvN/rmRVkSrVqHxGyAeTd8iEVtVUg8a/nw2
-         2xDxto/x6d9G1DrZSDwlYccST3u1ZoVjXmeCTpNw9P4O/a8mzOn5uoHL5mB9feeNXjTe
-         RQeOZ9F9H1GA5p5m9jdXbnrsaSAM/H8oKqkyfL0PNGB8TAlC/4VgQocICdriDFdJHURf
-         2TLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JpAYEtBYP24QK9Fy/Ow+uf4hp5yoI/DRZsKp8Rcdp7Y=;
-        b=hlU/VPZXdLY53/7AH5vrVc8oUam/uV7O4yT/rZCP4w9LnApJ6Yrt2zrot3YiI3kX7/
-         Wpob+VM/oqaIkZH0N5+5gLQ1xoFrut/dQ1nGC66YyBJW7UXcli0COuL6aIGvkknosruz
-         tBdHqQPRFxlNJJGeUGssb5jgKzHVsDBU5Lg+Gt1WJghXl0yPNkW+cHnfO6XIZh0m76g6
-         t/Nd98SWcje7ntXkxHHKXx1eZWvRzTdTvuUGGJSGwSmUEtsat8Ka9/dNStl5ApbHztlE
-         +iLQmpuKEd/wBzt09Vq4BJij9tvc7yy1wjJuUBK4gqQEmmF1S6dkof4DcWAYh1Hx0Qwt
-         Tjng==
-X-Gm-Message-State: AOAM531bZfcn1Gm4/c253jcrWvnfzoxAOR74Fkrx432RL6d4+1Q04LS7
-        5G01Uqbkn3eVlF0Ao5FcIR3syTeQdls=
-X-Google-Smtp-Source: ABdhPJw7VX8B1g7kdMNTWBwWSnupImXzrVt49lJGyX5rRQCP3jJLJ7eKh/FhLAI1ILnQ0VZAyMHfig==
-X-Received: by 2002:a05:600c:4fd3:: with SMTP id o19mr1829157wmq.34.1629184291406;
-        Tue, 17 Aug 2021 00:11:31 -0700 (PDT)
-Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
-        by smtp.gmail.com with ESMTPSA id d4sm1340458wrc.34.2021.08.17.00.11.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 00:11:30 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-i2c@vger.kernel.org
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] i2c: remove dead PMC MSP TWI/SMBus/I2C driver
-Date:   Tue, 17 Aug 2021 09:11:26 +0200
-Message-Id: <20210817071126.8096-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Tue, 17 Aug 2021 03:13:00 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.west.internal (Postfix) with ESMTP id 1EB592B008FF;
+        Tue, 17 Aug 2021 03:12:26 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Tue, 17 Aug 2021 03:12:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=4/94n/KGPF1vmUxfP+ZmhtXHWFk
+        9voOY4f3v9/jT4is=; b=uh/WT0klq5f6AqZrCKiOYaWIVTyNbpINzrtrQWQrLOy
+        zn9iPa50CPXgWfj9REM4+u/o6KZ05onXMh9T3ya3y2vnVLlx4S+4OhWCD1SN+2r6
+        5Y08YS8DbneXf1/LymasxgzXw9aaACgiTIGVMVaye5OBs2WMxK8vgiEY7b6Js9X2
+        rhc38CJMkhgIZruXfdMuLxyh8pJrpAjceQxgFFsEYAxXuZilQmOrcfX+9BVEhSrq
+        aqQFGR6tzEQ58PX7Oim1BhRppUIrzGEMO5VRenPl6lPj2LSqIlmJ64xvH2gULD5t
+        GYnrq6VN+RSIzJ1X5hedDfkwHoHrRnJoGqs3/LBWobg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=4/94n/
+        KGPF1vmUxfP+ZmhtXHWFk9voOY4f3v9/jT4is=; b=FW/xpWtMyCM+KWUn6W7Fxp
+        uT9cvwaaAGJOdTyVTLjJRwrc78g6+U9CEIqmqh0pznc/DvKBTFROwK9Bf9AH05cw
+        g/lM9H4gglFclCvsAMMWUB4HDsEqSCGaOX87fMpX/Fh4LWhlH/PVHACcM621Ox/L
+        NgnTdO5E/nV1vWVGmg3sSg1VtePekVqxfLJiEGw1nhh5RBQhsocW1ax61Y1YjIf3
+        lN8vOJf56+xoKNIA59JNtyphd/B7eLavR+SNDkuogrN8nBnjpDb9FEVZVAjdq52u
+        8Jl2yk07dDQ6HEdhb7fjhKDMYwTayR7Jakw4eHaF+hrb9tEkvN5s7fqduPMD67ag
+        ==
+X-ME-Sender: <xms:VmEbYUvCTXFq6hn7W8WkhggELcU8eFgT5P9HKdmoNRf6qN3siC9VSQ>
+    <xme:VmEbYRc4xYkIJJFhDH_5DuuyPH3b6jx5A5D8cEw7RNf-WH9oZ1SO9atGvaiwWef7T
+    zGvcXXLmN0MT4tlJeo>
+X-ME-Received: <xmr:VmEbYfzj8XencrovpqpdEYBbZtLYqxQMa2ujcSj3aM_CHhF9cWLfQnidDbbtgb9MU1jx5RLt0VL5C9mnFlf-12kD0mL-AKQu11TH>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrledvgdduudehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepuedtgfejueduheevgfevvdettdduleffgfffkeeltdffkeegudekjeeuveei
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:VmEbYXPmBV6mWP5-J85esk3XJ36M6-cKhgydQ0iqbB1dHgQNC2WxcA>
+    <xmx:VmEbYU811r2EH0Kl6q2VHresMHbqqEpk5G77hx_s2xo-ExytQAVHVA>
+    <xmx:VmEbYfVI1G-jftzkSLa3CVOKhyhoNnRgAMDS3YpqMXa1FWlvd01NpQ>
+    <xmx:WWEbYfVjMOHmKFS77OFi7iU4PjnXMVJbJTw0ZijdYNEuVfLvf20FV6RJy2U>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 17 Aug 2021 03:12:22 -0400 (EDT)
+Date:   Tue, 17 Aug 2021 09:12:20 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     =?utf-8?B?54+t5rab?= <fengzheng923@gmail.com>
+Cc:     lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
+        perex@perex.cz, tiwai@suse.com, wens@csie.org,
+        jernej.skrabec@gmail.com, p.zabel@pengutronix.de,
+        Samuel Holland <samuel@sholland.org>, krzk@kernel.org,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH v6 1/2] ASoC: sunxi: Add Allwinner H6 Digital MIC driver
+Message-ID: <20210817071220.idoxpwzbpemdjqdz@gilmour>
+References: <20210711122055.4529-1-fengzheng923@gmail.com>
+ <20210715074750.ewbggulc5kast6ez@gilmour>
+ <CAE=m61_=XfhtG9Q1r34McWWCUXt1KP67cjZ0ER62+YaGrG+b4w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="yncixzh4whlvhxud"
+Content-Disposition: inline
+In-Reply-To: <CAE=m61_=XfhtG9Q1r34McWWCUXt1KP67cjZ0ER62+YaGrG+b4w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 1b00767fd8e1 ("MIPS: Remove PMC MSP71xx platform") removes the
-config PMC_MSP in ./arch/mips/Kconfig.
 
-Hence, since then, the corresponding PMC MSP TWI/SMBus/I2C driver is
-dead code. Remove this dead driver.
+--yncixzh4whlvhxud
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-Wolfram, please pick this minor non-urgent clean-up patch.
+Hi,
 
- drivers/i2c/busses/Kconfig      |   9 -
- drivers/i2c/busses/Makefile     |   1 -
- drivers/i2c/busses/i2c-pmcmsp.c | 600 --------------------------------
- 3 files changed, 610 deletions(-)
- delete mode 100644 drivers/i2c/busses/i2c-pmcmsp.c
+On Sun, Aug 01, 2021 at 05:47:46PM +0800, =E7=8F=AD=E6=B6=9B wrote:
+> > > +     /* DMIC num is N+1 */
+> > > +     regmap_update_bits(host->regmap, SUN50I_DMIC_CH_NUM,
+> > > +                        SUN50I_DMIC_CH_NUM_N_MASK,
+> > > +                        SUN50I_DMIC_CH_NUM_N(channels - 1));
+> > > +     host->chan_en =3D (1 << channels) - 1;
+> > > +     regmap_write(host->regmap, SUN50I_DMIC_HPF_CTRL, host->chan_en);
+> >
+> > Do we need to store the channels bitmask in the main structure? It looks
+> > fairly easy to generate, so I guess we could just use a macro
+>=20
+> I need to store channels bitmask and use it in sun50i_dmic_trigger functi=
+on.
 
-diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-index 10acece9d7b9..23b2eca45bce 100644
---- a/drivers/i2c/busses/Kconfig
-+++ b/drivers/i2c/busses/Kconfig
-@@ -866,15 +866,6 @@ config I2C_PCA_PLATFORM
- 	  This driver can also be built as a module.  If so, the module
- 	  will be called i2c-pca-platform.
- 
--config I2C_PMCMSP
--	tristate "PMC MSP I2C TWI Controller"
--	depends on PMC_MSP || COMPILE_TEST
--	help
--	  This driver supports the PMC TWI controller on MSP devices.
--
--	  This driver can also be built as module. If so, the module
--	  will be called i2c-pmcmsp.
--
- config I2C_PNX
- 	tristate "I2C bus support for Philips PNX and NXP LPC targets"
- 	depends on ARCH_LPC32XX || COMPILE_TEST
-diff --git a/drivers/i2c/busses/Makefile b/drivers/i2c/busses/Makefile
-index 69e9963615f6..afdb84902dd2 100644
---- a/drivers/i2c/busses/Makefile
-+++ b/drivers/i2c/busses/Makefile
-@@ -86,7 +86,6 @@ obj-$(CONFIG_I2C_OMAP)		+= i2c-omap.o
- obj-$(CONFIG_I2C_OWL)		+= i2c-owl.o
- obj-$(CONFIG_I2C_PASEMI)	+= i2c-pasemi.o
- obj-$(CONFIG_I2C_PCA_PLATFORM)	+= i2c-pca-platform.o
--obj-$(CONFIG_I2C_PMCMSP)	+= i2c-pmcmsp.o
- obj-$(CONFIG_I2C_PNX)		+= i2c-pnx.o
- obj-$(CONFIG_I2C_PXA)		+= i2c-pxa.o
- obj-$(CONFIG_I2C_PXA_PCI)	+= i2c-pxa-pci.o
-diff --git a/drivers/i2c/busses/i2c-pmcmsp.c b/drivers/i2c/busses/i2c-pmcmsp.c
-deleted file mode 100644
-index 5d89c7c1b3a8..000000000000
---- a/drivers/i2c/busses/i2c-pmcmsp.c
-+++ /dev/null
-@@ -1,600 +0,0 @@
--/*
-- * Specific bus support for PMC-TWI compliant implementation on MSP71xx.
-- *
-- * Copyright 2005-2007 PMC-Sierra, Inc.
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- *
-- *  THIS  SOFTWARE  IS PROVIDED   ``AS  IS'' AND   ANY  EXPRESS OR IMPLIED
-- *  WARRANTIES,   INCLUDING, BUT NOT  LIMITED  TO, THE IMPLIED WARRANTIES OF
-- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN
-- *  NO  EVENT  SHALL   THE AUTHOR  BE    LIABLE FOR ANY   DIRECT, INDIRECT,
-- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-- *  NOT LIMITED   TO, PROCUREMENT OF  SUBSTITUTE GOODS  OR SERVICES; LOSS OF
-- *  USE, DATA,  OR PROFITS; OR  BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-- *  ANY THEORY OF LIABILITY, WHETHER IN  CONTRACT, STRICT LIABILITY, OR TORT
-- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- */
--
--#include <linux/kernel.h>
--#include <linux/module.h>
--#include <linux/platform_device.h>
--#include <linux/i2c.h>
--#include <linux/interrupt.h>
--#include <linux/completion.h>
--#include <linux/mutex.h>
--#include <linux/delay.h>
--#include <linux/io.h>
--
--#define DRV_NAME	"pmcmsptwi"
--
--#define MSP_TWI_SF_CLK_REG_OFFSET	0x00
--#define MSP_TWI_HS_CLK_REG_OFFSET	0x04
--#define MSP_TWI_CFG_REG_OFFSET		0x08
--#define MSP_TWI_CMD_REG_OFFSET		0x0c
--#define MSP_TWI_ADD_REG_OFFSET		0x10
--#define MSP_TWI_DAT_0_REG_OFFSET	0x14
--#define MSP_TWI_DAT_1_REG_OFFSET	0x18
--#define MSP_TWI_INT_STS_REG_OFFSET	0x1c
--#define MSP_TWI_INT_MSK_REG_OFFSET	0x20
--#define MSP_TWI_BUSY_REG_OFFSET		0x24
--
--#define MSP_TWI_INT_STS_DONE			(1 << 0)
--#define MSP_TWI_INT_STS_LOST_ARBITRATION	(1 << 1)
--#define MSP_TWI_INT_STS_NO_RESPONSE		(1 << 2)
--#define MSP_TWI_INT_STS_DATA_COLLISION		(1 << 3)
--#define MSP_TWI_INT_STS_BUSY			(1 << 4)
--#define MSP_TWI_INT_STS_ALL			0x1f
--
--#define MSP_MAX_BYTES_PER_RW		8
--#define MSP_MAX_POLL			5
--#define MSP_POLL_DELAY			10
--#define MSP_IRQ_TIMEOUT			(MSP_MAX_POLL * MSP_POLL_DELAY)
--
--/* IO Operation macros */
--#define pmcmsptwi_readl		__raw_readl
--#define pmcmsptwi_writel	__raw_writel
--
--/* TWI command type */
--enum pmcmsptwi_cmd_type {
--	MSP_TWI_CMD_WRITE	= 0,	/* Write only */
--	MSP_TWI_CMD_READ	= 1,	/* Read only */
--	MSP_TWI_CMD_WRITE_READ	= 2,	/* Write then Read */
--};
--
--/* The possible results of the xferCmd */
--enum pmcmsptwi_xfer_result {
--	MSP_TWI_XFER_OK	= 0,
--	MSP_TWI_XFER_TIMEOUT,
--	MSP_TWI_XFER_BUSY,
--	MSP_TWI_XFER_DATA_COLLISION,
--	MSP_TWI_XFER_NO_RESPONSE,
--	MSP_TWI_XFER_LOST_ARBITRATION,
--};
--
--/* Corresponds to a PMCTWI clock configuration register */
--struct pmcmsptwi_clock {
--	u8 filter;	/* Bits 15:12,	default = 0x03 */
--	u16 clock;	/* Bits 9:0,	default = 0x001f */
--};
--
--struct pmcmsptwi_clockcfg {
--	struct pmcmsptwi_clock standard;  /* The standard/fast clock config */
--	struct pmcmsptwi_clock highspeed; /* The highspeed clock config */
--};
--
--/* Corresponds to the main TWI configuration register */
--struct pmcmsptwi_cfg {
--	u8 arbf;	/* Bits 15:12,	default=0x03 */
--	u8 nak;		/* Bits 11:8,	default=0x03 */
--	u8 add10;	/* Bit 7,	default=0x00 */
--	u8 mst_code;	/* Bits 6:4,	default=0x00 */
--	u8 arb;		/* Bit 1,	default=0x01 */
--	u8 highspeed;	/* Bit 0,	default=0x00 */
--};
--
--/* A single pmctwi command to issue */
--struct pmcmsptwi_cmd {
--	u16 addr;	/* The slave address (7 or 10 bits) */
--	enum pmcmsptwi_cmd_type type;	/* The command type */
--	u8 write_len;	/* Number of bytes in the write buffer */
--	u8 read_len;	/* Number of bytes in the read buffer */
--	u8 *write_data;	/* Buffer of characters to send */
--	u8 *read_data;	/* Buffer to fill with incoming data */
--};
--
--/* The private data */
--struct pmcmsptwi_data {
--	void __iomem *iobase;			/* iomapped base for IO */
--	int irq;				/* IRQ to use (0 disables) */
--	struct completion wait;			/* Completion for xfer */
--	struct mutex lock;			/* Used for threadsafeness */
--	enum pmcmsptwi_xfer_result last_result;	/* result of last xfer */
--};
--
--/* The default settings */
--static const struct pmcmsptwi_clockcfg pmcmsptwi_defclockcfg = {
--	.standard = {
--		.filter	= 0x3,
--		.clock	= 0x1f,
--	},
--	.highspeed = {
--		.filter	= 0x3,
--		.clock	= 0x1f,
--	},
--};
--
--static const struct pmcmsptwi_cfg pmcmsptwi_defcfg = {
--	.arbf		= 0x03,
--	.nak		= 0x03,
--	.add10		= 0x00,
--	.mst_code	= 0x00,
--	.arb		= 0x01,
--	.highspeed	= 0x00,
--};
--
--static struct pmcmsptwi_data pmcmsptwi_data;
--
--static struct i2c_adapter pmcmsptwi_adapter;
--
--/* inline helper functions */
--static inline u32 pmcmsptwi_clock_to_reg(
--			const struct pmcmsptwi_clock *clock)
--{
--	return ((clock->filter & 0xf) << 12) | (clock->clock & 0x03ff);
--}
--
--static inline u32 pmcmsptwi_cfg_to_reg(const struct pmcmsptwi_cfg *cfg)
--{
--	return ((cfg->arbf & 0xf) << 12) |
--		((cfg->nak & 0xf) << 8) |
--		((cfg->add10 & 0x1) << 7) |
--		((cfg->mst_code & 0x7) << 4) |
--		((cfg->arb & 0x1) << 1) |
--		(cfg->highspeed & 0x1);
--}
--
--static inline void pmcmsptwi_reg_to_cfg(u32 reg, struct pmcmsptwi_cfg *cfg)
--{
--	cfg->arbf = (reg >> 12) & 0xf;
--	cfg->nak = (reg >> 8) & 0xf;
--	cfg->add10 = (reg >> 7) & 0x1;
--	cfg->mst_code = (reg >> 4) & 0x7;
--	cfg->arb = (reg >> 1) & 0x1;
--	cfg->highspeed = reg & 0x1;
--}
--
--/*
-- * Sets the current clock configuration
-- */
--static void pmcmsptwi_set_clock_config(const struct pmcmsptwi_clockcfg *cfg,
--					struct pmcmsptwi_data *data)
--{
--	mutex_lock(&data->lock);
--	pmcmsptwi_writel(pmcmsptwi_clock_to_reg(&cfg->standard),
--				data->iobase + MSP_TWI_SF_CLK_REG_OFFSET);
--	pmcmsptwi_writel(pmcmsptwi_clock_to_reg(&cfg->highspeed),
--				data->iobase + MSP_TWI_HS_CLK_REG_OFFSET);
--	mutex_unlock(&data->lock);
--}
--
--/*
-- * Gets the current TWI bus configuration
-- */
--static void pmcmsptwi_get_twi_config(struct pmcmsptwi_cfg *cfg,
--					struct pmcmsptwi_data *data)
--{
--	mutex_lock(&data->lock);
--	pmcmsptwi_reg_to_cfg(pmcmsptwi_readl(
--				data->iobase + MSP_TWI_CFG_REG_OFFSET), cfg);
--	mutex_unlock(&data->lock);
--}
--
--/*
-- * Sets the current TWI bus configuration
-- */
--static void pmcmsptwi_set_twi_config(const struct pmcmsptwi_cfg *cfg,
--					struct pmcmsptwi_data *data)
--{
--	mutex_lock(&data->lock);
--	pmcmsptwi_writel(pmcmsptwi_cfg_to_reg(cfg),
--				data->iobase + MSP_TWI_CFG_REG_OFFSET);
--	mutex_unlock(&data->lock);
--}
--
--/*
-- * Parses the 'int_sts' register and returns a well-defined error code
-- */
--static enum pmcmsptwi_xfer_result pmcmsptwi_get_result(u32 reg)
--{
--	if (reg & MSP_TWI_INT_STS_LOST_ARBITRATION) {
--		dev_dbg(&pmcmsptwi_adapter.dev,
--			"Result: Lost arbitration\n");
--		return MSP_TWI_XFER_LOST_ARBITRATION;
--	} else if (reg & MSP_TWI_INT_STS_NO_RESPONSE) {
--		dev_dbg(&pmcmsptwi_adapter.dev,
--			"Result: No response\n");
--		return MSP_TWI_XFER_NO_RESPONSE;
--	} else if (reg & MSP_TWI_INT_STS_DATA_COLLISION) {
--		dev_dbg(&pmcmsptwi_adapter.dev,
--			"Result: Data collision\n");
--		return MSP_TWI_XFER_DATA_COLLISION;
--	} else if (reg & MSP_TWI_INT_STS_BUSY) {
--		dev_dbg(&pmcmsptwi_adapter.dev,
--			"Result: Bus busy\n");
--		return MSP_TWI_XFER_BUSY;
--	}
--
--	dev_dbg(&pmcmsptwi_adapter.dev, "Result: Operation succeeded\n");
--	return MSP_TWI_XFER_OK;
--}
--
--/*
-- * In interrupt mode, handle the interrupt.
-- * NOTE: Assumes data->lock is held.
-- */
--static irqreturn_t pmcmsptwi_interrupt(int irq, void *ptr)
--{
--	struct pmcmsptwi_data *data = ptr;
--
--	u32 reason = pmcmsptwi_readl(data->iobase +
--					MSP_TWI_INT_STS_REG_OFFSET);
--	pmcmsptwi_writel(reason, data->iobase + MSP_TWI_INT_STS_REG_OFFSET);
--
--	dev_dbg(&pmcmsptwi_adapter.dev, "Got interrupt 0x%08x\n", reason);
--	if (!(reason & MSP_TWI_INT_STS_DONE))
--		return IRQ_NONE;
--
--	data->last_result = pmcmsptwi_get_result(reason);
--	complete(&data->wait);
--
--	return IRQ_HANDLED;
--}
--
--/*
-- * Probe for and register the device and return 0 if there is one.
-- */
--static int pmcmsptwi_probe(struct platform_device *pldev)
--{
--	struct resource *res;
--	int rc = -ENODEV;
--
--	/* get the static platform resources */
--	res = platform_get_resource(pldev, IORESOURCE_MEM, 0);
--	if (!res) {
--		dev_err(&pldev->dev, "IOMEM resource not found\n");
--		goto ret_err;
--	}
--
--	/* reserve the memory region */
--	if (!request_mem_region(res->start, resource_size(res),
--				pldev->name)) {
--		dev_err(&pldev->dev,
--			"Unable to get memory/io address region %pap\n",
--			&res->start);
--		rc = -EBUSY;
--		goto ret_err;
--	}
--
--	/* remap the memory */
--	pmcmsptwi_data.iobase = ioremap(res->start,
--						resource_size(res));
--	if (!pmcmsptwi_data.iobase) {
--		dev_err(&pldev->dev,
--			"Unable to ioremap address %pap\n", &res->start);
--		rc = -EIO;
--		goto ret_unreserve;
--	}
--
--	/* request the irq */
--	pmcmsptwi_data.irq = platform_get_irq(pldev, 0);
--	if (pmcmsptwi_data.irq) {
--		rc = request_irq(pmcmsptwi_data.irq, &pmcmsptwi_interrupt,
--				 IRQF_SHARED, pldev->name, &pmcmsptwi_data);
--		if (rc == 0) {
--			/*
--			 * Enable 'DONE' interrupt only.
--			 *
--			 * If you enable all interrupts, you will get one on
--			 * error and another when the operation completes.
--			 * This way you only have to handle one interrupt,
--			 * but you can still check all result flags.
--			 */
--			pmcmsptwi_writel(MSP_TWI_INT_STS_DONE,
--					pmcmsptwi_data.iobase +
--					MSP_TWI_INT_MSK_REG_OFFSET);
--		} else {
--			dev_warn(&pldev->dev,
--				"Could not assign TWI IRQ handler "
--				"to irq %d (continuing with poll)\n",
--				pmcmsptwi_data.irq);
--			pmcmsptwi_data.irq = 0;
--		}
--	}
--
--	init_completion(&pmcmsptwi_data.wait);
--	mutex_init(&pmcmsptwi_data.lock);
--
--	pmcmsptwi_set_clock_config(&pmcmsptwi_defclockcfg, &pmcmsptwi_data);
--	pmcmsptwi_set_twi_config(&pmcmsptwi_defcfg, &pmcmsptwi_data);
--
--	printk(KERN_INFO DRV_NAME ": Registering MSP71xx I2C adapter\n");
--
--	pmcmsptwi_adapter.dev.parent = &pldev->dev;
--	platform_set_drvdata(pldev, &pmcmsptwi_adapter);
--	i2c_set_adapdata(&pmcmsptwi_adapter, &pmcmsptwi_data);
--
--	rc = i2c_add_adapter(&pmcmsptwi_adapter);
--	if (rc)
--		goto ret_unmap;
--
--	return 0;
--
--ret_unmap:
--	if (pmcmsptwi_data.irq) {
--		pmcmsptwi_writel(0,
--			pmcmsptwi_data.iobase + MSP_TWI_INT_MSK_REG_OFFSET);
--		free_irq(pmcmsptwi_data.irq, &pmcmsptwi_data);
--	}
--
--	iounmap(pmcmsptwi_data.iobase);
--
--ret_unreserve:
--	release_mem_region(res->start, resource_size(res));
--
--ret_err:
--	return rc;
--}
--
--/*
-- * Release the device and return 0 if there is one.
-- */
--static int pmcmsptwi_remove(struct platform_device *pldev)
--{
--	struct resource *res;
--
--	i2c_del_adapter(&pmcmsptwi_adapter);
--
--	if (pmcmsptwi_data.irq) {
--		pmcmsptwi_writel(0,
--			pmcmsptwi_data.iobase + MSP_TWI_INT_MSK_REG_OFFSET);
--		free_irq(pmcmsptwi_data.irq, &pmcmsptwi_data);
--	}
--
--	iounmap(pmcmsptwi_data.iobase);
--
--	res = platform_get_resource(pldev, IORESOURCE_MEM, 0);
--	release_mem_region(res->start, resource_size(res));
--
--	return 0;
--}
--
--/*
-- * Polls the 'busy' register until the command is complete.
-- * NOTE: Assumes data->lock is held.
-- */
--static void pmcmsptwi_poll_complete(struct pmcmsptwi_data *data)
--{
--	int i;
--
--	for (i = 0; i < MSP_MAX_POLL; i++) {
--		u32 val = pmcmsptwi_readl(data->iobase +
--						MSP_TWI_BUSY_REG_OFFSET);
--		if (val == 0) {
--			u32 reason = pmcmsptwi_readl(data->iobase +
--						MSP_TWI_INT_STS_REG_OFFSET);
--			pmcmsptwi_writel(reason, data->iobase +
--						MSP_TWI_INT_STS_REG_OFFSET);
--			data->last_result = pmcmsptwi_get_result(reason);
--			return;
--		}
--		udelay(MSP_POLL_DELAY);
--	}
--
--	dev_dbg(&pmcmsptwi_adapter.dev, "Result: Poll timeout\n");
--	data->last_result = MSP_TWI_XFER_TIMEOUT;
--}
--
--/*
-- * Do the transfer (low level):
-- *   May use interrupt-driven or polling, depending on if an IRQ is
-- *   presently registered.
-- * NOTE: Assumes data->lock is held.
-- */
--static enum pmcmsptwi_xfer_result pmcmsptwi_do_xfer(
--			u32 reg, struct pmcmsptwi_data *data)
--{
--	dev_dbg(&pmcmsptwi_adapter.dev, "Writing cmd reg 0x%08x\n", reg);
--	pmcmsptwi_writel(reg, data->iobase + MSP_TWI_CMD_REG_OFFSET);
--	if (data->irq) {
--		unsigned long timeleft = wait_for_completion_timeout(
--						&data->wait, MSP_IRQ_TIMEOUT);
--		if (timeleft == 0) {
--			dev_dbg(&pmcmsptwi_adapter.dev,
--				"Result: IRQ timeout\n");
--			complete(&data->wait);
--			data->last_result = MSP_TWI_XFER_TIMEOUT;
--		}
--	} else
--		pmcmsptwi_poll_complete(data);
--
--	return data->last_result;
--}
--
--/*
-- * Helper routine, converts 'pmctwi_cmd' struct to register format
-- */
--static inline u32 pmcmsptwi_cmd_to_reg(const struct pmcmsptwi_cmd *cmd)
--{
--	return ((cmd->type & 0x3) << 8) |
--		(((cmd->write_len - 1) & 0x7) << 4) |
--		((cmd->read_len - 1) & 0x7);
--}
--
--/*
-- * Do the transfer (high level)
-- */
--static enum pmcmsptwi_xfer_result pmcmsptwi_xfer_cmd(
--			struct pmcmsptwi_cmd *cmd,
--			struct pmcmsptwi_data *data)
--{
--	enum pmcmsptwi_xfer_result retval;
--
--	mutex_lock(&data->lock);
--	dev_dbg(&pmcmsptwi_adapter.dev,
--		"Setting address to 0x%04x\n", cmd->addr);
--	pmcmsptwi_writel(cmd->addr, data->iobase + MSP_TWI_ADD_REG_OFFSET);
--
--	if (cmd->type == MSP_TWI_CMD_WRITE ||
--	    cmd->type == MSP_TWI_CMD_WRITE_READ) {
--		u64 tmp = be64_to_cpup((__be64 *)cmd->write_data);
--		tmp >>= (MSP_MAX_BYTES_PER_RW - cmd->write_len) * 8;
--		dev_dbg(&pmcmsptwi_adapter.dev, "Writing 0x%016llx\n", tmp);
--		pmcmsptwi_writel(tmp & 0x00000000ffffffffLL,
--				data->iobase + MSP_TWI_DAT_0_REG_OFFSET);
--		if (cmd->write_len > 4)
--			pmcmsptwi_writel(tmp >> 32,
--				data->iobase + MSP_TWI_DAT_1_REG_OFFSET);
--	}
--
--	retval = pmcmsptwi_do_xfer(pmcmsptwi_cmd_to_reg(cmd), data);
--	if (retval != MSP_TWI_XFER_OK)
--		goto xfer_err;
--
--	if (cmd->type == MSP_TWI_CMD_READ ||
--	    cmd->type == MSP_TWI_CMD_WRITE_READ) {
--		int i;
--		u64 rmsk = ~(0xffffffffffffffffLL << (cmd->read_len * 8));
--		u64 tmp = (u64)pmcmsptwi_readl(data->iobase +
--					MSP_TWI_DAT_0_REG_OFFSET);
--		if (cmd->read_len > 4)
--			tmp |= (u64)pmcmsptwi_readl(data->iobase +
--					MSP_TWI_DAT_1_REG_OFFSET) << 32;
--		tmp &= rmsk;
--		dev_dbg(&pmcmsptwi_adapter.dev, "Read 0x%016llx\n", tmp);
--
--		for (i = 0; i < cmd->read_len; i++)
--			cmd->read_data[i] = tmp >> i;
--	}
--
--xfer_err:
--	mutex_unlock(&data->lock);
--
--	return retval;
--}
--
--/* -- Algorithm functions -- */
--
--/*
-- * Sends an i2c command out on the adapter
-- */
--static int pmcmsptwi_master_xfer(struct i2c_adapter *adap,
--				struct i2c_msg *msg, int num)
--{
--	struct pmcmsptwi_data *data = i2c_get_adapdata(adap);
--	struct pmcmsptwi_cmd cmd;
--	struct pmcmsptwi_cfg oldcfg, newcfg;
--	int ret;
--
--	if (num == 2) {
--		struct i2c_msg *nextmsg = msg + 1;
--
--		cmd.type = MSP_TWI_CMD_WRITE_READ;
--		cmd.write_len = msg->len;
--		cmd.write_data = msg->buf;
--		cmd.read_len = nextmsg->len;
--		cmd.read_data = nextmsg->buf;
--	} else if (msg->flags & I2C_M_RD) {
--		cmd.type = MSP_TWI_CMD_READ;
--		cmd.read_len = msg->len;
--		cmd.read_data = msg->buf;
--		cmd.write_len = 0;
--		cmd.write_data = NULL;
--	} else {
--		cmd.type = MSP_TWI_CMD_WRITE;
--		cmd.read_len = 0;
--		cmd.read_data = NULL;
--		cmd.write_len = msg->len;
--		cmd.write_data = msg->buf;
--	}
--
--	cmd.addr = msg->addr;
--
--	if (msg->flags & I2C_M_TEN) {
--		pmcmsptwi_get_twi_config(&newcfg, data);
--		memcpy(&oldcfg, &newcfg, sizeof(oldcfg));
--
--		/* Set the special 10-bit address flag */
--		newcfg.add10 = 1;
--
--		pmcmsptwi_set_twi_config(&newcfg, data);
--	}
--
--	/* Execute the command */
--	ret = pmcmsptwi_xfer_cmd(&cmd, data);
--
--	if (msg->flags & I2C_M_TEN)
--		pmcmsptwi_set_twi_config(&oldcfg, data);
--
--	dev_dbg(&adap->dev, "I2C %s of %d bytes %s\n",
--		(msg->flags & I2C_M_RD) ? "read" : "write", msg->len,
--		(ret == MSP_TWI_XFER_OK) ? "succeeded" : "failed");
--
--	if (ret != MSP_TWI_XFER_OK) {
--		/*
--		 * TODO: We could potentially loop and retry in the case
--		 * of MSP_TWI_XFER_TIMEOUT.
--		 */
--		return -EIO;
--	}
--
--	return num;
--}
--
--static u32 pmcmsptwi_i2c_func(struct i2c_adapter *adapter)
--{
--	return I2C_FUNC_I2C | I2C_FUNC_10BIT_ADDR |
--		I2C_FUNC_SMBUS_BYTE | I2C_FUNC_SMBUS_BYTE_DATA |
--		I2C_FUNC_SMBUS_WORD_DATA | I2C_FUNC_SMBUS_PROC_CALL;
--}
--
--static const struct i2c_adapter_quirks pmcmsptwi_i2c_quirks = {
--	.flags = I2C_AQ_COMB_WRITE_THEN_READ | I2C_AQ_NO_ZERO_LEN,
--	.max_write_len = MSP_MAX_BYTES_PER_RW,
--	.max_read_len = MSP_MAX_BYTES_PER_RW,
--	.max_comb_1st_msg_len = MSP_MAX_BYTES_PER_RW,
--	.max_comb_2nd_msg_len = MSP_MAX_BYTES_PER_RW,
--};
--
--/* -- Initialization -- */
--
--static const struct i2c_algorithm pmcmsptwi_algo = {
--	.master_xfer	= pmcmsptwi_master_xfer,
--	.functionality	= pmcmsptwi_i2c_func,
--};
--
--static struct i2c_adapter pmcmsptwi_adapter = {
--	.owner		= THIS_MODULE,
--	.class		= I2C_CLASS_HWMON | I2C_CLASS_SPD,
--	.algo		= &pmcmsptwi_algo,
--	.quirks		= &pmcmsptwi_i2c_quirks,
--	.name		= DRV_NAME,
--};
--
--static struct platform_driver pmcmsptwi_driver = {
--	.probe  = pmcmsptwi_probe,
--	.remove	= pmcmsptwi_remove,
--	.driver = {
--		.name	= DRV_NAME,
--	},
--};
--
--module_platform_driver(pmcmsptwi_driver);
--
--MODULE_DESCRIPTION("PMC MSP TWI/SMBus/I2C driver");
--MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:" DRV_NAME);
--- 
-2.26.2
+But you don't need it outside of hw_params. The channel setup is
+typically done in hw_params, not in the trigger hook.
 
+[...]
+
+> > > +     /* Clocks */
+> > > +     host->bus_clk =3D devm_clk_get(&pdev->dev, "bus");
+> > > +     if (IS_ERR(host->bus_clk))
+> > > +             return dev_err_probe(&pdev->dev, PTR_ERR(host->bus_clk),
+> > > +                                  "failed to get bus clock.\n");
+> > > +
+> > > +     host->dmic_clk =3D devm_clk_get(&pdev->dev, "mod");
+> > > +     if (IS_ERR(host->dmic_clk))
+> > > +             return dev_err_probe(&pdev->dev, PTR_ERR(host->dmic_clk=
+),
+> > > +                                  "failed to get dmic clock.\n");
+> > > +
+> > > +     host->dma_params_rx.addr =3D res->start + SUN50I_DMIC_DATA;
+> > > +     host->dma_params_rx.maxburst =3D 8;
+> > > +
+> > > +     platform_set_drvdata(pdev, host);
+> > > +
+> > > +     host->rst =3D devm_reset_control_get_optional_exclusive(&pdev->=
+dev, NULL);
+> > > +     if (IS_ERR(host->rst))
+> > > +             return dev_err_probe(&pdev->dev, PTR_ERR(host->rst),
+> > > +                                  "Failed to get reset.\n");
+> >
+> > Your binding states that the reset is mandatory so you don't need the
+> > optional variant.
+> >
+> > > +     reset_control_deassert(host->rst);
+> >
+> > Can't this be moved to the runtime_pm hooks?
+>=20
+> Is this necessary? I see that most of the driver files execute
+> reset_control_deassert in the probe function, and reset_control_assert
+> in the remove function.
+
+Your driver seems to not rely on the fact that the device remains
+powered between each run anyway, so yeah, that way you will completely
+power it down.
+
+> >
+> > > +     ret =3D devm_snd_soc_register_component(&pdev->dev,
+> > > +                             &sun50i_dmic_component, &sun50i_dmic_da=
+i, 1);
+> >
+> > Your second line should be aligned on the opening parenthesis
+> >
+> > > +     if (ret)
+> > > +             return dev_err_probe(&pdev->dev, ret,
+> > > +                                  "failed to register component.\n");
+> > > +
+> > > +     pm_runtime_enable(&pdev->dev);
+> > > +     if (!pm_runtime_enabled(&pdev->dev)) {
+> > > +             ret =3D sun50i_dmic_runtime_resume(&pdev->dev);
+> > > +             if (ret)
+> > > +                     goto err_unregister;
+> > > +     }
+> >
+> > We have a depends on PM on some drivers already, so I guess it would
+> > just make sense to add one more here instead of dealing with whether
+> > runtime_pm is compiled in or not.
+>=20
+> I don't understand. I am referring to the sun4i-spdif.c file. Which
+> driver files should I refer to?
+
+That whole logic is there to enable the device is CONFIG_PM is not
+enabled (and thus the calls to pm_runtime_* won't do anything).
+
+Just add a depends on PM to your Kconfig entry, and call
+pm_runtime_enable there.
+
+Maxime
+
+--yncixzh4whlvhxud
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYRthVAAKCRDj7w1vZxhR
+xV5tAQDgo2PFfMG3oI+WJpwKhRvxyNOZwsTG3w/3ZeravzZx4AEA8cAL7Kk9k3li
+rT0wIeYDdfx6CDXMjnnGlqzr/0YvlAs=
+=VTo/
+-----END PGP SIGNATURE-----
+
+--yncixzh4whlvhxud--
