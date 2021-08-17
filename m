@@ -2,163 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F283EEC0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 14:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1183EEC15
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 14:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239813AbhHQMEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 08:04:02 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:44782 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239784AbhHQMEA (ORCPT
+        id S237125AbhHQMFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 08:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237004AbhHQMFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 08:04:00 -0400
-Received: by mail-il1-f198.google.com with SMTP id y20-20020a056e020f5400b00224400d1c21so9706502ilj.11
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 05:03:26 -0700 (PDT)
+        Tue, 17 Aug 2021 08:05:49 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88204C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 05:05:16 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id f13so4585096vsl.13
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 05:05:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zp99VySxCP/C+XoDYPyxq/KzXedadDuj5suqohF5Fvg=;
+        b=nFsjYjBXuhreAiAOicko40FJ2Ek7yGZ95EL78+psS1PBgU/zV/hVvGucyeNGB/VHuA
+         CZvLcibDFKv0his4Xlc/kKpRR4KmuVlfNPdCOjLa9yqFMDSVDsx+N86gbova/TWvfOvh
+         UN5fcZIAF+gxZrptxSzZ1Ic8Wvj0+yF7hFtRm/gqHM41KJ03TLeAZhinYWrAoSrnataU
+         dyVF+WhuUoCZmS68K3nFSjCbBWA101ONrhbvx8clVKf/1q6HwW6DBCFaGKFGnYrUqvgr
+         aL45tUdh4eNundsr+ZCDy2CWtZ6BTR2SQU6gRUHinuEuOmjdznvPCL+5j+0D/G8oV6sT
+         gR9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=wTF2xTI7fvG7lsoldA2r9rUQ0Wgqa9ZZw5QPGbNw+cY=;
-        b=LJAvK5sILhQA1kB5J7EkW92vUQPM7AYwhKtuhdi/oIa6MP7hxfb5iILAttI/p29psy
-         C3BNJDzz2gYOscXvcaXSCvsxKZug2WXxEsxTWYTsIrAZquwycjsvfXNV/AMiYJr8QPWV
-         /oktywGjMfcbOx7ogSr33Fp+Z+IxCes76kc6P0gFdwWjeUXTSfsV8hQAwu0Rm9MIj9HY
-         HXhOEreCeL6fNVYLnsSdl9cjH/3eBHCe7jVQdG86vZdsFHUp487rbZdGbZ6qY+ulvksK
-         0KH90HC+OX/HKPWHmyGEGmbpnPvxyFfNEVnO7myHdGdgoOo3r9PXrYoIiw0TLXFir3aB
-         RUTQ==
-X-Gm-Message-State: AOAM532qoIiMRd8OPWoDZKL3twT6YPY/oMAtu7R5IgOYoZPJa7OdSKga
-        OJotMKrzSE7+sRe2q8ZYjGK2bYNo83OotA4L7pmms8rhMpmR
-X-Google-Smtp-Source: ABdhPJw+aEEQchlMQ1rz+6/yFeqAWlm2069r7R3XD7+am+eXUMyZxHD/pxuYcxmHs5+UK/Wo7/n+AI/5KBug+iC+2kYjzjTDMmd/
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zp99VySxCP/C+XoDYPyxq/KzXedadDuj5suqohF5Fvg=;
+        b=RGYyyrkaVobr/KTDk+Ozc8IZxhowNwi5ZDN0Xu7PaDkki3iY+x2l0xBSJflp4cLFYg
+         MCU5Y/CWq3vUSV/sLYv2k/7fjsRk1KYcse97G358uVXq4LND4F6I8yAx9BwSZyMfhM2R
+         sl6OD7Tbsalr27/ZU6ht8OZUGCRbfL9BxZvRLHZcOx0MkJVbxaSUDgArVWzvFEnrCxo+
+         oDE+HiO5WF4r29rl4JgK7xuvOhkXrluzSjoBu0NXxLNPh5c7bOxFSrCWJCAmDiq4Xs2E
+         2LRed3aY4DdaXb6/mqk9xmvCqa6ZKjB2SdM3MFJ2h/PyMG4Wp+pix+6dUGnPEyz5NXaf
+         jJQw==
+X-Gm-Message-State: AOAM5334Z7jx6X4WuwWKi3HRNs1e2OrW4k6e93XV2mINGNx32+RrwDmO
+        uD8qjHHJsKUAWsKfT1cVGAVxE9jiQCbfD1YGB2WkxA==
+X-Google-Smtp-Source: ABdhPJyAoDZB8D567sM7+DgXNNDfJZjhAOy3SVS/bltXL11iGgVxqJXFnX1rcCitBmOIa8V8M0KZWwa23CQNDRPlT28=
+X-Received: by 2002:a67:f6d8:: with SMTP id v24mr2357440vso.48.1629201915619;
+ Tue, 17 Aug 2021 05:05:15 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:cc3:: with SMTP id c3mr2204223ilj.207.1629201806520;
- Tue, 17 Aug 2021 05:03:26 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 05:03:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f1f68705c9c01ab7@google.com>
-Subject: [syzbot] INFO: task hung in rfcomm_run
-From:   syzbot <syzbot+bd221c9eb2a95e43c20f@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, desmondcheongzx@gmail.com,
-        johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luiz.dentz@gmail.com, luiz.von.dentz@intel.com,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <20210817012754.8710-1-digetx@gmail.com> <20210817012754.8710-12-digetx@gmail.com>
+In-Reply-To: <20210817012754.8710-12-digetx@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 17 Aug 2021 14:04:38 +0200
+Message-ID: <CAPDyKFrax-EYtO03W5QWM2tcWLWeMM8hHZCRYFcsenuiP2zObQ@mail.gmail.com>
+Subject: Re: [PATCH v8 11/34] gpu: host1x: Add runtime PM and OPP support
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, 17 Aug 2021 at 03:30, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> Add runtime PM and OPP support to the Host1x driver. It's required for
+> enabling system-wide DVFS and supporting dynamic power management using
+> a generic power domain. For the starter we will keep host1x always-on
+> because dynamic power management require a major refactoring of the driver
+> code since lot's of code paths will need the RPM handling and we're going
+> to remove some of these paths in the future. Host1x doesn't consume much
+> power so it is good enough, we at least need to resume Host1x in order
+> to initialize the power state.
+>
+> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+> Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
+> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
 
-syzbot found the following issue on:
+[...]
 
-HEAD commit:    8ca403f3e7a2 Add linux-next specific files for 20210811
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=12b0745e300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d1151ef35b04cc3a
-dashboard link: https://syzkaller.appspot.com/bug?extid=bd221c9eb2a95e43c20f
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119f42a1300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1707e231300000
+> +
+>  static int host1x_probe(struct platform_device *pdev)
+>  {
+>         struct host1x *host;
+> @@ -394,6 +423,10 @@ static int host1x_probe(struct platform_device *pdev)
+>         /* set common host1x device data */
+>         platform_set_drvdata(pdev, host);
+>
+> +       err = devm_tegra_core_dev_init_opp_table_simple(&pdev->dev);
+> +       if (err)
+> +               return err;
+> +
+>         host->regs = devm_ioremap_resource(&pdev->dev, regs);
+>         if (IS_ERR(host->regs))
+>                 return PTR_ERR(host->regs);
+> @@ -423,12 +456,9 @@ static int host1x_probe(struct platform_device *pdev)
+>                 return err;
+>         }
+>
+> -       host->rst = devm_reset_control_get(&pdev->dev, "host1x");
+> -       if (IS_ERR(host->rst)) {
+> -               err = PTR_ERR(host->rst);
+> -               dev_err(&pdev->dev, "failed to get reset: %d\n", err);
+> +       err = host1x_get_resets(host);
+> +       if (err)
+>                 return err;
+> -       }
+>
+>         err = host1x_iommu_init(host);
+>         if (err < 0) {
+> @@ -443,22 +473,10 @@ static int host1x_probe(struct platform_device *pdev)
+>                 goto iommu_exit;
+>         }
+>
+> -       err = clk_prepare_enable(host->clk);
+> -       if (err < 0) {
+> -               dev_err(&pdev->dev, "failed to enable clock\n");
+> -               goto free_channels;
+> -       }
+> -
+> -       err = reset_control_deassert(host->rst);
+> -       if (err < 0) {
+> -               dev_err(&pdev->dev, "failed to deassert reset: %d\n", err);
+> -               goto unprepare_disable;
+> -       }
+> -
 
-The issue was bisected to:
+Removing the clk_prepare_enable() and reset_control_deassert() from
+host1x_probe(), might not be a good idea. See more about why, below.
 
-commit b7ce436a5d798bc59e71797952566608a4b4626b
-Author: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Date:   Tue Aug 10 04:14:09 2021 +0000
+>         err = host1x_syncpt_init(host);
+>         if (err) {
+>                 dev_err(&pdev->dev, "failed to initialize syncpts\n");
+> -               goto reset_assert;
+> +               goto free_channels;
+>         }
+>
+>         err = host1x_intr_init(host, syncpt_irq);
+> @@ -467,10 +485,14 @@ static int host1x_probe(struct platform_device *pdev)
+>                 goto deinit_syncpt;
+>         }
+>
+> -       host1x_debug_init(host);
+> +       pm_runtime_enable(&pdev->dev);
+>
+> -       if (host->info->has_hypervisor)
+> -               host1x_setup_sid_table(host);
+> +       /* the driver's code isn't ready yet for the dynamic RPM */
+> +       err = pm_runtime_resume_and_get(&pdev->dev);
 
-    Bluetooth: switch to lock_sock in RFCOMM
+If the driver is being built with the CONFIG_PM Kconfig option being
+unset, pm_runtime_resume_and_get() will return 0 to indicate success -
+and without calling the ->runtime_resume() callback.
+In other words, the clock will remain gated and the reset will not be
+deasserted, likely causing the driver to be malfunctioning.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12e68b26300000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11e68b26300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16e68b26300000
+If the driver isn't ever being built with CONFIG_PM unset, feel free
+to ignore my above comments.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+bd221c9eb2a95e43c20f@syzkaller.appspotmail.com
-Fixes: b7ce436a5d79 ("Bluetooth: switch to lock_sock in RFCOMM")
+Otherwise, if it needs to work both with and without CONFIG_PM being
+set, you may use the following pattern in host1x_probe() to deploy
+runtime PM support:
 
-INFO: task krfcommd:2895 blocked for more than 143 seconds.
-      Not tainted 5.14.0-rc5-next-20210811-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:krfcommd        state:D stack:29640 pid: 2895 ppid:     2 flags:0x00004000
-Call Trace:
- context_switch kernel/sched/core.c:4698 [inline]
- __schedule+0x93a/0x26f0 kernel/sched/core.c:5955
- schedule+0xd3/0x270 kernel/sched/core.c:6034
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6093
- __mutex_lock_common kernel/locking/mutex.c:1036 [inline]
- __mutex_lock+0xa46/0x1300 kernel/locking/mutex.c:1096
- rfcomm_process_sessions net/bluetooth/rfcomm/core.c:1979 [inline]
- rfcomm_run+0x2ed/0x4a20 net/bluetooth/rfcomm/core.c:2086
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-INFO: task syz-executor247:6597 blocked for more than 143 seconds.
-      Not tainted 5.14.0-rc5-next-20210811-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor247 state:D stack:27600 pid: 6597 ppid:  6565 flags:0x00004006
-Call Trace:
- context_switch kernel/sched/core.c:4698 [inline]
- __schedule+0x93a/0x26f0 kernel/sched/core.c:5955
- schedule+0xd3/0x270 kernel/sched/core.c:6034
- __lock_sock+0x13d/0x260 net/core/sock.c:2645
- lock_sock_nested+0xf6/0x120 net/core/sock.c:3178
- lock_sock include/net/sock.h:1612 [inline]
- rfcomm_sk_state_change+0xb4/0x390 net/bluetooth/rfcomm/sock.c:73
- __rfcomm_dlc_close+0x1b6/0x8a0 net/bluetooth/rfcomm/core.c:489
- rfcomm_dlc_close+0x1ea/0x240 net/bluetooth/rfcomm/core.c:520
- __rfcomm_sock_close+0xac/0x260 net/bluetooth/rfcomm/sock.c:220
- rfcomm_sock_shutdown+0xe9/0x210 net/bluetooth/rfcomm/sock.c:931
- rfcomm_sock_release+0x5f/0x140 net/bluetooth/rfcomm/sock.c:951
- __sock_release+0xcd/0x280 net/socket.c:649
- sock_close+0x18/0x20 net/socket.c:1311
- __fput+0x288/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x1a0 kernel/task_work.c:164
- exit_task_work include/linux/task_work.h:32 [inline]
- do_exit+0xbd4/0x2a60 kernel/exit.c:825
- do_group_exit+0x125/0x310 kernel/exit.c:922
- get_signal+0x47f/0x2160 kernel/signal.c:2831
- arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:865
- handle_signal_work kernel/entry/common.c:148 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x446009
-RSP: 002b:00007ffda734ed78 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
-RAX: fffffffffffffffc RBX: 0000000000000003 RCX: 0000000000446009
-RDX: 0000000000000080 RSI: 0000000020000000 RDI: 0000000000000004
-RBP: 0000000000000003 R08: 000000ff00000001 R09: 000000ff00000001
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000001dee2b8
-R13: 0000000000000072 R14: 00007ffda734edd0 R15: 0000000000000003
-INFO: lockdep is turned off.
-NMI backtrace for cpu 0
-CPU: 0 PID: 27 Comm: khungtaskd Not tainted 5.14.0-rc5-next-20210811-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- nmi_cpu_backtrace.cold+0x47/0x144 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1ae/0x220 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:254 [inline]
- watchdog+0xcb7/0xed0 kernel/hung_task.c:339
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:51 [inline]
-NMI backtrace for cpu 1 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:89 [inline]
-NMI backtrace for cpu 1 skipped: idling at acpi_safe_halt drivers/acpi/processor_idle.c:109 [inline]
-NMI backtrace for cpu 1 skipped: idling at acpi_idle_do_entry+0x1c6/0x250 drivers/acpi/processor_idle.c:553
+"Enable the needed resources to probe the device"
+pm_runtime_get_noresume()
+pm_runtime_set_active()
+pm_runtime_enable()
 
+"Before successfully completing probe"
+pm_runtime_put()
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> +       if (err)
+> +               goto deinit_intr;
+> +
+> +       host1x_debug_init(host);
+>
+>         err = host1x_register(host);
+>         if (err < 0)
+> @@ -486,13 +508,13 @@ static int host1x_probe(struct platform_device *pdev)
+>         host1x_unregister(host);
+>  deinit_debugfs:
+>         host1x_debug_deinit(host);
+> +
+> +       pm_runtime_put(&pdev->dev);
+> +       pm_runtime_disable(&pdev->dev);
+> +deinit_intr:
+>         host1x_intr_deinit(host);
+>  deinit_syncpt:
+>         host1x_syncpt_deinit(host);
+> -reset_assert:
+> -       reset_control_assert(host->rst);
+> -unprepare_disable:
+> -       clk_disable_unprepare(host->clk);
+>  free_channels:
+>         host1x_channel_list_free(&host->channel_list);
+>  iommu_exit:
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+[...]
+
+Kind regards
+Uffe
