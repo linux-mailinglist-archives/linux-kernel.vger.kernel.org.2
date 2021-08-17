@@ -2,52 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4C33EF527
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 23:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 673AD3EF529
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 23:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235363AbhHQVqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 17:46:16 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:40089 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229883AbhHQVqP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 17:46:15 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 4C31E20003;
-        Tue, 17 Aug 2021 21:45:40 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Anton Bambura <jenneron@protonmail.com>,
-        Alessandro Zummo <a.zummo@towertech.it>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rtc@vger.kernel.org
-Subject: Re: [PATCH v1] rtc: tps65910: Correct driver module alias
-Date:   Tue, 17 Aug 2021 23:45:38 +0200
-Message-Id: <162923673249.529201.12931299534359850420.b4-ty@bootlin.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210808160030.8556-1-digetx@gmail.com>
-References: <20210808160030.8556-1-digetx@gmail.com>
+        id S235263AbhHQVtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 17:49:50 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:47573 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234261AbhHQVtn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 17:49:43 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gq4Rj0tGsz9sWl;
+        Wed, 18 Aug 2021 07:49:03 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629236946;
+        bh=db2UfRo+fKW/AMF7JDZcE9P1JfPzoM60rtgFK9oK6QA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=DHObwQAudZJDvnjIzIMHITm880++C5t+nIWhdS1CREi6Kq8cqLz5cRyeKu98UzS3f
+         HeBPV/Tfxi1M6s0p7kHamRR19mZAgCLptuLwx5fQuwUNclYiasSAoHj2ERxM4HqM26
+         7FnWuuaOd5VsM03jMMNjd4inYeyQ6+8ux+24k9KE/vEg7t9Ety3uE8sdSU2mHaiyR0
+         sSSMpcKua4VO9tgokg48jxZYsowQO4YN2DQw+Qern2yByDjjNCIIjrUMhsx3sn/Jy+
+         jWGcjmV3S2A3xRD4rZ3uSws5iJf/2g9CVE6J7nxo6N1WJ2eoKW6ogsLHd8Nj+WbdDo
+         RSndri7cM+IOw==
+Date:   Wed, 18 Aug 2021 07:49:03 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Wolfram Sang <wsa@the-dreams.de>
+Cc:     Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the i2c tree
+Message-ID: <20210818074903.2da12b1f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/0BOt+Ld.jaAm/odgH1pMKz2";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 8 Aug 2021 19:00:30 +0300, Dmitry Osipenko wrote:
-> The TPS65910 RTC driver module doesn't auto-load because of the wrong
-> module alias that doesn't match the device name, fix it.
-> 
-> 
-> 
-> 
+--Sig_/0BOt+Ld.jaAm/odgH1pMKz2
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Applied, thanks!
+Hi all,
 
-[1/1] rtc: tps65910: Correct driver module alias
-      commit: 8d448fa0a8bb1c8d94eef7647edffe9ac81a281e
+In commit
 
-Best regards,
--- 
-Alexandre Belloni <alexandre.belloni@bootlin.com>
+  fcc750e0f4d8 ("i2c: s3c2410: fix IRQ check")
+
+Fixes tag
+
+  Fixes: 2bbd681ba2b ("i2c-s3c2410: Change IRQ to be plain integer.")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+    or later) just making sure it is not set (or set to "auto").
+  - Subject does not match target commit subject
+    Just use
+	git log -1 --format=3D'Fixes: %h ("%s")'
+
+So:
+
+Fixes: 2bbd681ba2bf ("i2c: xlp9xx: Driver for Netlogic XLP9XX/5XX I2C contr=
+oller")
+
+Or maybe you meant:
+
+Fixes: e0d1ec97853f ("i2c-s3c2410: Change IRQ to be plain integer.")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/0BOt+Ld.jaAm/odgH1pMKz2
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEcLs8ACgkQAVBC80lX
+0GxgGAgAo+PXQBjiamzZyLDHb1O6CwkH6xkuJJ6QV6ljIj7FZO5kfPhSF5k+pqJ3
+MZJLMn6kPzlPi6hPvsItUgCWuv0RmESGbRfsP9GPe6yB9paXpSm/omqLZp+6Ialo
+RY7JbHG6bwRS0QR+eYHjbHvEcz8zIhvT3gy6XVC1OKhCmYhUdZUBqhJxUZ3BpL05
+JAqjiRv0Q4XPnu/a9clorpZA41XDkZZdA0Z19p35IBuPBFhN1j1fKCsXfDjpSQFX
+O1ve59EkPv+lGcgIPgWIid36gnLhcUaZP/FoUwfel5SOBSGS1Bzi2cJjB/vIA3nB
+UzcYK1l7gBaR8ZzmYrjEUrYp3TvIhA==
+=8TYm
+-----END PGP SIGNATURE-----
+
+--Sig_/0BOt+Ld.jaAm/odgH1pMKz2--
