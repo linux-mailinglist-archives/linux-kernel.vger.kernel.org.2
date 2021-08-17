@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0F93EF34B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC973EF356
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234809AbhHQUOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 16:14:53 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34614 "EHLO
+        id S235151AbhHQUPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 16:15:14 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:34620 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234248AbhHQUOg (ORCPT
+        with ESMTP id S234244AbhHQUOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 16:14:36 -0400
-Date:   Tue, 17 Aug 2021 20:14:01 -0000
+        Tue, 17 Aug 2021 16:14:38 -0400
+Date:   Tue, 17 Aug 2021 20:14:02 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629231242;
+        s=2020; t=1629231243;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XA43O9toVvYtitZu3LqWeulK8MV18aT4ASHogFvYRzs=;
-        b=m94iBgUiScbEvq1wZKBC1nuEkgM+oK/jEtEcuga1CHyeCv0odoYN0REm/7s42lkocHeeOV
-        AzVW/CZgvaPffrV5iDdMa9TCTghadNa6MsLYGp9z7VHroHXxewxepxprq/4gfnEqC3RbSp
-        rS2AFOiZbKqCDhEwyThgH9nNiVCd2m6ZBNAiPQaGxateSWmJ3J8SovX7BLlc7dVBpeuz2h
-        XCEa3JsHKt78tKHkGRUlSqgkS3ethM5mWVb+BCsiw7H8EoITlGrqIIOprZvGgydG6HIM9I
-        jxf4RF9CxunGMbY8NaOy3QyDriIhnV252NOHprBjpb2KnBaPbxeybeKDR+oXgQ==
+        bh=lwvmQBYbxXL0i3yQwky+gRpqRuU3fjcDVAR8vmH1qag=;
+        b=vk+0/qyX9jQ4CkdxZwtCiuMHxEQY9l2JnUgMJAFcEABmKBKNzwM24lyZvMclysO3pivWIv
+        JGaduz4wNQh0+p90oYFflN3emGrle463XOK78iQytY3LmWvkclyvREKmb/1aLyODrVqeig
+        wklkBAJo2uooIfiAhzbynXL2w/32qKQZS/H2eA/I223JAcc1tcXL0+/fN0rZaOwse99dC8
+        Piru23/6D+6jWvs7jbXoKtQ2S+T6V4NZbkBBA5ggkSLuQJPa6zP1W7wfr9Ps2Y3ugKP9/F
+        kkMRHonyA2awgV4CtyqGaWw3mxUAfWt+doV88bVkViqDSt0MUWVZ/a1fsI9cAg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629231242;
+        s=2020e; t=1629231243;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XA43O9toVvYtitZu3LqWeulK8MV18aT4ASHogFvYRzs=;
-        b=z8VjUgtb9u+N++HbgQNOXeCgNDavHYtfLWBJZj4Y2xT/EMISFNGaR7bvZPDCV4+N4Ojq9J
-        c+M7+TqqZBRLQ/BQ==
+        bh=lwvmQBYbxXL0i3yQwky+gRpqRuU3fjcDVAR8vmH1qag=;
+        b=RWhrDoMNwYIvv5Yq7Vn1mo5/TDYP6XeBD1a4QkrmwZyaPP6rD40lBZFC7LKaUYyDvIUHnF
+        m/IW2hx19fcsDVAg==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] futex: Clarify comment in futex_requeue()
+Subject: [tip: locking/core] futex: Correct the number of requeued waiters for PI
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210815211305.524990421@linutronix.de>
-References: <20210815211305.524990421@linutronix.de>
+In-Reply-To: <20210815211305.416427548@linutronix.de>
+References: <20210815211305.416427548@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <162923124169.25758.1969214332883331976.tip-bot2@tip-bot2>
+Message-ID: <162923124287.25758.5175526164956598130.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,63 +59,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     c18eaa3aca43688a3aee199d85ce4227686a29b6
-Gitweb:        https://git.kernel.org/tip/c18eaa3aca43688a3aee199d85ce4227686a29b6
+Commit-ID:     59c7ecf1544e1841b5be8847e81bc9842f838e7e
+Gitweb:        https://git.kernel.org/tip/59c7ecf1544e1841b5be8847e81bc9842f838e7e
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sun, 15 Aug 2021 23:29:14 +02:00
+AuthorDate:    Sun, 15 Aug 2021 23:29:10 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 17 Aug 2021 19:05:51 +02:00
+CommitterDate: Tue, 17 Aug 2021 19:05:46 +02:00
 
-futex: Clarify comment in futex_requeue()
+futex: Correct the number of requeued waiters for PI
 
-The comment about the restriction of the number of waiters to wake for the
-REQUEUE_PI case is confusing at best. Rewrite it.
+The accounting is wrong when either the PI sanity check or the
+requeue PI operation fails. Adjust it in the failure path.
+
+Will be simplified in the next step.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210815211305.524990421@linutronix.de
+Link: https://lore.kernel.org/r/20210815211305.416427548@linutronix.de
 ---
- kernel/futex.c | 28 ++++++++++++++++++++--------
- 1 file changed, 20 insertions(+), 8 deletions(-)
+ kernel/futex.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/kernel/futex.c b/kernel/futex.c
-index 6cb6b5d..8d8bad5 100644
+index 8ddc87c..5439742 100644
 --- a/kernel/futex.c
 +++ b/kernel/futex.c
-@@ -1939,15 +1939,27 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
- 		 */
- 		if (refill_pi_state_cache())
- 			return -ENOMEM;
-+
- 		/*
--		 * requeue_pi must wake as many tasks as it can, up to nr_wake
--		 * + nr_requeue, since it acquires the rt_mutex prior to
--		 * returning to userspace, so as to not leave the rt_mutex with
--		 * waiters and no owner.  However, second and third wake-ups
--		 * cannot be predicted as they involve race conditions with the
--		 * first wake and a fault while looking up the pi_state.  Both
--		 * pthread_cond_signal() and pthread_cond_broadcast() should
--		 * use nr_wake=1.
-+		 * futex_requeue() allows the caller to define the number
-+		 * of waiters to wake up via the @nr_wake argument. With
-+		 * REQUEUE_PI, waking up more than one waiter is creating
-+		 * more problems than it solves. Waking up a waiter makes
-+		 * only sense if the PI futex @uaddr2 is uncontended as
-+		 * this allows the requeue code to acquire the futex
-+		 * @uaddr2 before waking the waiter. The waiter can then
-+		 * return to user space without further action. A secondary
-+		 * wakeup would just make the futex_wait_requeue_pi()
-+		 * handling more complex, because that code would have to
-+		 * look up pi_state and do more or less all the handling
-+		 * which the requeue code has to do for the to be requeued
-+		 * waiters. So restrict the number of waiters to wake to
-+		 * one, and only wake it up when the PI futex is
-+		 * uncontended. Otherwise requeue it and let the unlock of
-+		 * the PI futex handle the wakeup.
-+		 *
-+		 * All REQUEUE_PI users, e.g. pthread_cond_signal() and
-+		 * pthread_cond_broadcast() must use nr_wake=1.
- 		 */
- 		if (nr_wake != 1)
- 			return -EINVAL;
+@@ -2116,6 +2116,8 @@ retry_private:
+ 
+ 		/* Ensure we requeue to the expected futex for requeue_pi. */
+ 		if (requeue_pi && !match_futex(this->requeue_pi_key, &key2)) {
++			/* Don't account for it */
++			task_count--;
+ 			ret = -EINVAL;
+ 			break;
+ 		}
+@@ -2157,6 +2159,8 @@ retry_private:
+ 				 */
+ 				this->pi_state = NULL;
+ 				put_pi_state(pi_state);
++				/* Don't account for it */
++				task_count--;
+ 				/*
+ 				 * We stop queueing more waiters and let user
+ 				 * space deal with the mess.
