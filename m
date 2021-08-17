@@ -2,182 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E30C3EEB5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 13:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55DAA3EEB5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 13:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236541AbhHQLHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 07:07:20 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:41554
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236296AbhHQLHT (ORCPT
+        id S236594AbhHQLKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 07:10:12 -0400
+Received: from ZXSHCAS2.zhaoxin.com ([203.148.12.82]:10243 "EHLO
+        ZXSHCAS2.zhaoxin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231515AbhHQLKL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 07:07:19 -0400
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id B456640CCA
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 11:06:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629198405;
-        bh=c4ywsmDTEvlxUcF8dP/+dEAsBM2GBk3icpnawYYHap4=;
-        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=aASZRYVmSFkVccjtHdAy0OMWOuD9zlMR28QBW8m18XAbYprniWka543AfaP03GurE
-         ogelD0lKeOi6Skq/ucOLT1u+taoOV/Rt9SEtFpUzsnUh/m5gLOKCzm/Y8o0qaHsIBH
-         5i5n4UZN+hr8P87Bm9MER2Arl8ajOC+cWwJZbPQWnTpm7LWLWGBkGChL7e+HN8OVas
-         /W6rwjb6iQ6PJLJ0TOCnCHGpQYYYhtTBEXEixcs3kVniU5E5dJYUPx+FyOSroj+Q8w
-         1s4zCvytnou4UdWS87rxPnYu4fdOTI0FYDozZuEoWdWU03WBJzTdh3iP+f3Hz+yX8p
-         Qfm3eovuRdPCw==
-Received: by mail-ej1-f71.google.com with SMTP id h17-20020a1709070b11b02905b5ced62193so5867022ejl.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 04:06:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=c4ywsmDTEvlxUcF8dP/+dEAsBM2GBk3icpnawYYHap4=;
-        b=umCaShLVNURBQERkBJyDwfMXWXiOCHs3rR2wC6ZBG8jRypFqsMNXFWN7qSYnlnCzXu
-         7oMBLRMO8vHN8kGTz2H17a8QCQWLNl2sZPbEhQtUsTVM9MzOZfSuFliLHnTsKqeh6XS6
-         uhVyDpYYzXqLyuLc4aJY4m34iJa9FdTw2iXa0mDhWF7gtRbZXYcbdhtnV1npXr37vZpm
-         DWBdazlmk0On2Si+aQU9wfRFc4Nh/eFZ23gLYy2vOCccKaVRUbsCTl3NCx5z3ctz3Zup
-         m1MqCQox6ktO3LchnAVNR5U4ZnHmDxLCpV+ULrbif/W5MSODkR6OV9EzO0MelU0NwR7P
-         LHSA==
-X-Gm-Message-State: AOAM532jmbTmQsugJfeNTobg0CHDjhVkTPFGutT7r5soRaFeqGunG5o3
-        VtNiEk80lFeFM7CPopUlI/W2VAreu1ViWEmfOVkyrDf5cfpifb9byZJa4s42yJa8UECl84TGY0r
-        vYXtbpkEprJM8WMf1/nsSXCPLnCmME3ApL+u3tPxg7Q==
-X-Received: by 2002:a05:6402:254b:: with SMTP id l11mr3557755edb.268.1629198405450;
-        Tue, 17 Aug 2021 04:06:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx19QKJabwM2gOaQdXajDaLyPfd/5Hi89/A0fIkwewCVXd43P5TMarmId4/Bv96wEZFpkOVaw==
-X-Received: by 2002:a05:6402:254b:: with SMTP id l11mr3557732edb.268.1629198405313;
-        Tue, 17 Aug 2021 04:06:45 -0700 (PDT)
-Received: from [192.168.8.102] ([86.32.42.198])
-        by smtp.gmail.com with ESMTPSA id n13sm608663ejk.97.2021.08.17.04.06.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Aug 2021 04:06:44 -0700 (PDT)
-To:     =?UTF-8?Q?Jan_L=c3=bcbbe?= <jlu@pengutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-References: <20210817093807.59531-1-krzysztof.kozlowski@canonical.com>
- <17798cb01c5d699738f57118d4deb53504759818.camel@pengutronix.de>
- <9872ed05-28d6-15aa-dc61-228776d20819@canonical.com>
- <294664184613324453f34ee581d9c5e97bab4f31.camel@pengutronix.de>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH 1/2] dt-bindings: memory: convert Marvell MVEBU SDRAM
- controller to dtschema
-Message-ID: <75d49c7d-764d-4416-1899-a7d5d7c955e6@canonical.com>
-Date:   Tue, 17 Aug 2021 13:06:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 17 Aug 2021 07:10:11 -0400
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS2.zhaoxin.com
+ (10.28.252.162) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Tue, 17 Aug
+ 2021 19:09:35 +0800
+Received: from [10.122.79.217] (221.11.61.182) by zxbjmbx1.zhaoxin.com
+ (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Tue, 17 Aug
+ 2021 19:09:33 +0800
+Date:   Tue, 17 Aug 2021 19:09:28 +0800
+From:   <tonywwang-oc@zhaoxin.com>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+CC:     <a.zummo@towertech.it>, <linux-rtc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <TimGuo-oc@zhaoxin.com>,
+        <CooperYan@zhaoxin.com>, <QiyuanWang@zhaoxin.com>,
+        <HerryYang@zhaoxin.com>, <CobeChen@zhaoxin.com>,
+        <YanchenSun@zhaoxin.com>
+Subject: Re: [PATCH] rtc: Fix set RTC time delay 500ms on some Zhaoxin SOCs
+User-Agent: K-9 Mail for Android
+In-Reply-To: <YRpb4Fey2lM3aOAw@piout.net>
+References: <1629121638-3246-1-git-send-email-TonyWWang-oc@zhaoxin.com> <YRogod0HB4d7Og4E@piout.net> <a4b6b0b4-9aa5-9a75-e523-0fd7656b82cf@zhaoxin.com> <YRpb4Fey2lM3aOAw@piout.net>
+Message-ID: <7EA395FF-EB66-4274-9EDE-EC28450A0259@zhaoxin.com>
 MIME-Version: 1.0
-In-Reply-To: <294664184613324453f34ee581d9c5e97bab4f31.camel@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [221.11.61.182]
+X-ClientProxiedBy: ZXSHCAS2.zhaoxin.com (10.28.252.162) To
+ zxbjmbx1.zhaoxin.com (10.29.252.163)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/08/2021 12:58, Jan Lübbe wrote:
-> On Tue, 2021-08-17 at 12:52 +0200, Krzysztof Kozlowski wrote:
->> On 17/08/2021 12:46, Jan Lübbe wrote:
->>> On Tue, 2021-08-17 at 11:38 +0200, Krzysztof Kozlowski wrote:
->>>> Convert Marvell MVEBU SDRAM controller bindings to DT schema format
->>>> using json-schema.
->>>>
->>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->>>> ---
->>>>  .../marvell,mvebu-sdram-controller.yaml       | 31 +++++++++++++++++++
->>>>  .../mvebu-sdram-controller.txt                | 21 -------------
->>>>  2 files changed, 31 insertions(+), 21 deletions(-)
->>>>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/marvell,mvebu-sdram-controller.yaml
->>>>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/mvebu-sdram-controller.txt
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/memory-controllers/marvell,mvebu-sdram-controller.yaml b/Documentation/devicetree/bindings/memory-controllers/marvell,mvebu-sdram-controller.yaml
->>>> new file mode 100644
->>>> index 000000000000..14a6bc8f421f
->>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/memory-controllers/marvell,mvebu-sdram-controller.yaml
->>>> @@ -0,0 +1,31 @@
->>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>>> +%YAML 1.2
->>>> +---
->>>> +$id: http://devicetree.org/schemas/memory-controllers/marvell,mvebu-sdram-controller.yaml#
->>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>> +
->>>> +title: Marvell MVEBU SDRAM controller
->>>> +
->>>> +maintainers:
->>>> +  - Jan Luebbe <jlu@pengutronix.de>
->>>> +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->>>> +
->>>> +properties:
->>>> +  compatible:
->>>> +    const: marvell,armada-xp-sdram-controller
->>>> +
->>>> +  reg:
->>>> +    maxItems: 1
->>>> +
->>>> +required:
->>>> +  - compatible
->>>> +  - reg
->>>> +
->>>> +additionalProperties: false
->>>> +
->>>> +examples:
->>>> +  - |
->>>> +    memory-controller@1400 {
->>>> +        compatible = "marvell,armada-xp-sdram-controller";
->>>> +        reg = <0x1400 0x500>;
->>>> +    };
->>>> diff --git a/Documentation/devicetree/bindings/memory-controllers/mvebu-sdram-controller.txt b/Documentation/devicetree/bindings/memory-controllers/mvebu-sdram-controller.txt
->>>> deleted file mode 100644
->>>> index 89657d1d4cd4..000000000000
->>>> --- a/Documentation/devicetree/bindings/memory-controllers/mvebu-sdram-controller.txt
->>>> +++ /dev/null
->>>> @@ -1,21 +0,0 @@
->>>> -Device Tree bindings for MVEBU SDRAM controllers
->>>> -
->>>> -The Marvell EBU SoCs all have a SDRAM controller. The SDRAM controller
->>>> -differs from one SoC variant to another, but they also share a number
->>>> -of commonalities.
->>>> -
->>>> -For now, this Device Tree binding documentation only documents the
->>>> -Armada XP SDRAM controller.
->>>
->>> Please keep the description, otherwise it would be confusing why the binding is
->>> named marvell,mvebu-sdram-controller.yaml although it (currenly) only applies to
->>> the Armada XP.
->>>
->>
->> The description does not explain why it only documents Armada XP, so it
->> just duplicates what is in "compatible" part of bindings. How is the
->> confusion removed by saying "we document currently only Armada XP"? What
->> changes?
-> 
-> Then perhaps the binding should be named marvell,armada-xp-sdram-
-> controller.yaml? It find it unlikely that support for the other SoC's
-> controllers will be added, given their age.
-
-Sure, could be like this but there is no confusion here and no need to
-fix anything. It is understandable and common to name bindings file as
-general (e.g. for group of devices) even though only limited amount of
-devices are currently documented/described. It's almost everywhere like
-this, when the bindings are not complete. I don't see where is the
-confusion.
-
-Look at: arm/marvell/armada-cpu-reset.txt which mentions several SoCs
-while only three compatibles are documented.
-arm/marvell/armada-cpu-reset.txt has generic name and describes only one
-reset controller (370) while being used on multiple SoC (370, 375, 38x,
-39x). I could go like this all over the bindings...
 
 
-Best regards,
-Krzysztof
+On August 16, 2021 8:36:48 PM GMT+08:00, Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
+>On 16/08/2021 18:03:13+0800, Tony W Wang-oc wrote:
+>> 
+>> On 16/08/2021 16:24, Alexandre Belloni wrote:
+>> > Hello,
+>> > 
+>> > On 16/08/2021 21:47:18+0800, Tony W Wang-oc wrote:
+>> >> When the RTC divider is changed from reset to an operating time
+>base,
+>> >> the first update cycle should be 500ms later. But on some Zhaoxin
+>SOCs,
+>> >> this first update cycle is one second later.
+>> >>
+>> >> So set RTC time on these Zhaoxin SOCs will causing 500ms delay.
+>> >>
+>> > 
+>> > Can you explain what is the relationship between writing the
+>divider and
+>> > the 500ms delay?
+>> >> Isn't the issue that you are using systohc and set_offset_nsec is
+>set to
+>> > NSEC_PER_SEC / 2 ?
+>> > 
+>> No.
+>> When using #hwclock -s to set RTC time and set_offset_nsec is
+>> NSEC_PER_SEC / 2, the function mc146818_set_time() requires the first
+>> update cycle after RTC divider be changed from reset to an operating
+>> mode is 500ms as the MC146818A spec specified. But on some Zhaoxin
+>SOCs,
+>> the first update cycle of RTC is one second later after RTC divider
+>be
+>> changed from reset to an operating mode. So the first update cycle
+>after
+>> RTC divider be changed from reset to an operation mode on These SOCs
+>> will causing 500ms delay with current mc146818_set_time()
+>implementation.
+>> 
+>
+>What happens with hwclock --delay=0 -s ?
+
+With "hwclock --delay=0 -s" still have this problem. Actually, this 500ms delay caused by writing the RTC time on these Zhaoxin SOCs.
+As I've tested, with hwclock --delay=0 -w can fix it too. 
+
+Sincerely
+TonyWWang-oc
+
