@@ -2,77 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6153EEBFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 13:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F613EEC01
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 13:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236951AbhHQL5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 07:57:12 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:8433 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235554AbhHQL5K (ORCPT
+        id S239767AbhHQL5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 07:57:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237001AbhHQL5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 07:57:10 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GpqCP13p1z86qZ;
-        Tue, 17 Aug 2021 19:52:33 +0800 (CST)
-Received: from dggema764-chm.china.huawei.com (10.1.198.206) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 17 Aug 2021 19:56:35 +0800
-Received: from [10.174.185.179] (10.174.185.179) by
- dggema764-chm.china.huawei.com (10.1.198.206) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 17 Aug 2021 19:56:34 +0800
-Subject: Re: [PATCH linux-next] module: remove duplicate include in
- interrupt.c
-To:     <cgel.zte@gmail.com>
-CC:     <linux@armlinux.org.uk>, <yang.guang5@zte.com.cn>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, "Lv Ruyi" <lv.ruyi@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-References: <20210816112917.126675-1-lv.ruyi@zte.com.cn>
-From:   Zenghui Yu <yuzenghui@huawei.com>
-Message-ID: <c01bbfdc-c586-93b7-a282-b859f2ebdb89@huawei.com>
-Date:   Tue, 17 Aug 2021 19:56:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Tue, 17 Aug 2021 07:57:39 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 456E9C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 04:57:06 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id oa17so31648315pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 04:57:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5eVWcqoojYYHru/CT40TixXoXoJZblc78933GWI+qc4=;
+        b=Z+URnrGA0iYXyqx0+EwysvNVtOVd/Qg1weNCKom9Cykq/vKnuc/3Ozg0SuDdh8H9Jl
+         INx88aBuUSjXb+wrOFcWiXYtydeSGYZgbe7lq/4+OzyaYskq1ZNsFNjU63ZBOSFtNX2q
+         sva2h9Tucj6yOM3qYeQPRZlfOV0RjZlGok/fc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5eVWcqoojYYHru/CT40TixXoXoJZblc78933GWI+qc4=;
+        b=eCBnm5XfWsapemA1E0/02fXfcOR8UupYSN1OXhBqw5Cvjo0UP5IivYeyIqOj7k3Hpr
+         7w0lC3PFlGkubKjK9COg9aox5ZtVjO8eY2PMum7t6z+/D0c9m/h2nXN2j+b7IsoPArZQ
+         UnICA2NdO7gdMhuqY9c26+fLXiY80FQTzb3KU4EFCucw5w8KwdFrJIKJqlQtnTOQJYUB
+         yku1bzZhocfNcG/SCSDS3/2K9IwcLpPRFsgoiImBWq+n5w564yCHAYfdPLHG4NCWdMOf
+         2eLYrehmyHDwz1xqFAzeaxWNneWlUT7hAKFYmcURujlMEIXlYqCiJy9Ad/6F4GNJDqRH
+         x/uw==
+X-Gm-Message-State: AOAM531YmCLwlb1j416msy1KcvUmzx2PaNQxsaBTiPEEBBrdM8gDK9rm
+        3N857gUN2L0q5yqYQdP4in8k/g==
+X-Google-Smtp-Source: ABdhPJyELtpHZ2cwJXA+46vVbt40ueVOgtpSjStycCk1fXsL7JKuECiBqUZZ+dxXVh6iLCDlkTKYGw==
+X-Received: by 2002:a17:902:f688:b0:12d:7aa6:1e44 with SMTP id l8-20020a170902f68800b0012d7aa61e44mr2773102plg.8.1629201425796;
+        Tue, 17 Aug 2021 04:57:05 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:8aab:cb84:5fe8:99dd])
+        by smtp.gmail.com with ESMTPSA id y5sm2200275pjy.37.2021.08.17.04.57.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 04:57:05 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 20:56:59 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv4 8/8] videobuf2: handle non-contiguous DMA allocations
+Message-ID: <YRukCziknzz/3/sV@google.com>
+References: <20210727070517.443167-1-senozhatsky@chromium.org>
+ <20210727070517.443167-9-senozhatsky@chromium.org>
+ <fd1e8bbe-4cbe-9586-7c8f-0896af043d4a@xs4all.nl>
 MIME-Version: 1.0
-In-Reply-To: <20210816112917.126675-1-lv.ruyi@zte.com.cn>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.185.179]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggema764-chm.china.huawei.com (10.1.198.206)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fd1e8bbe-4cbe-9586-7c8f-0896af043d4a@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/16 19:29, cgel.zte@gmail.com wrote:
-> From: Lv Ruyi <lv.ruyi@zte.com.cn>
-> 
-> 'asm/interrupt.h' included in 'interrupt.c' is duplicated.
+Hi,
 
-Sorry but this obviously doesn't match with the change you've made.
+On (21/08/03 12:15), Hans Verkuil wrote:
+> >  static void *vb2_dc_vaddr(struct vb2_buffer *vb, void *buf_priv)
+> >  {
+> >  	struct vb2_dc_buf *buf = buf_priv;
+> > -	struct dma_buf_map map;
+> > -	int ret;
+> >  
+> > -	if (!buf->vaddr && buf->db_attach) {
+> > -		ret = dma_buf_vmap(buf->db_attach->dmabuf, &map);
+> > -		buf->vaddr = ret ? NULL : map.vaddr;
+> > +	if (buf->vaddr)
+> > +		return buf->vaddr;
+> > +
+> > +	if (buf->db_attach) {
+> > +		struct dma_buf_map map;
+> > +
+> > +		if (!dma_buf_vmap(buf->db_attach->dmabuf, &map))
+> > +			buf->vaddr = map.vaddr;
+> > +
+> > +		return buf->vaddr;
+> >  	}
+> >  
+> > +	if (!buf->coherent_mem)
+> > +		buf->vaddr = dma_vmap_noncontiguous(buf->dev, buf->size,
+> > +						    buf->dma_sgt);
+> >  	return buf->vaddr;
+> >  }
+> 
+> This function really needs a bunch of comments.
+> 
+> What I want to see here specifically is under which circumstances this function
+> can return NULL.
+> 
+> - dma_buf_vmap returns an error
+> - for non-coherent memory dma_vmap_noncontiguous returns an error
+> - coherent memory with DMA_ATTR_NO_KERNEL_MAPPING set.
 
+OK, I added some comments.
+
+> In the latter case, if a buffer with coherent memory and DMA_ATTR_NO_KERNEL_MAPPING
+> is exported as a dma_buf, and dma_buf_vmap is called by the importer of this dma-buf,
+> what happens then? I think that in that case dma_buf_vmap should return an error?
+
+Should we error out in vb2_dc_vaddr() in this case?
+
+---
+
+diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+index d4089d0b5ec5..e1d8ae1548fa 100644
+--- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
++++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+@@ -102,6 +102,9 @@ static void *vb2_dc_vaddr(struct vb2_buffer *vb, void *buf_priv)
+        if (buf->db_attach) {
+                struct dma_buf_map map;
+ 
++               if (WARN_ON(buf->attrs & DMA_ATTR_NO_KERNEL_MAPPING))
++                       return NULL;
++
+                if (!dma_buf_vmap(buf->db_attach->dmabuf, &map))
+                        buf->vaddr = map.vaddr;
+ 
+
+---
+
+
+[..]
+> > @@ -362,7 +451,7 @@ static int vb2_dc_dmabuf_ops_vmap(struct dma_buf *dbuf, struct dma_buf_map *map)
+> >  {
+> >  	struct vb2_dc_buf *buf = dbuf->priv;
+> >  
+> > -	dma_buf_map_set_vaddr(map, buf->vaddr);
+> > +	dma_buf_map_set_vaddr(map, vb2_dc_vaddr(buf->vb, buf));
 > 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
-> ---
->  arch/arm/mach-sa1100/hackkit.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/arm/mach-sa1100/hackkit.c b/arch/arm/mach-sa1100/hackkit.c
-> index 3085f1c2e586..3fe34ee7c0ab 100644
-> --- a/arch/arm/mach-sa1100/hackkit.c
-> +++ b/arch/arm/mach-sa1100/hackkit.c
-> @@ -18,7 +18,6 @@
->  #include <linux/serial_core.h>
->  #include <linux/mtd/mtd.h>
->  #include <linux/mtd/partitions.h>
-> -#include <linux/tty.h>
->  #include <linux/gpio.h>
->  #include <linux/leds.h>
->  #include <linux/platform_device.h>
-> 
+> vb2_dc_vaddr() can return NULL, shouldn't this function return an error in that case?
+
+Done, thanks.
+
+> BTW, looking at where vb2_plane_vaddr() is called in drivers I notice that most (all?)
+> drivers do not check for NULL. Somewhat scary, to be honest. That's a separate issue, though.
+
+I may have some time in the future and can add missing if-s to the
+drivers.
