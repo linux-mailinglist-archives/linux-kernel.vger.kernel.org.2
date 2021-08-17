@@ -2,223 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 310783EE178
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 02:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 759CE3EE17B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 02:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233193AbhHQAwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 20:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232974AbhHQAww (ORCPT
+        id S234958AbhHQAyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 20:54:52 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:35133 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232974AbhHQAyv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 20:52:52 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA347C061764;
-        Mon, 16 Aug 2021 17:52:19 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id c5so23226781ybn.5;
-        Mon, 16 Aug 2021 17:52:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HinwW8PEQ5TbL83px5ZX1LnwF3iy1N97HumVOQEeuS0=;
-        b=Qv7l1OnPPmEjqSE03PxZdhP+8SGNkjQKJQdjg0iHsO/stBYHgcAtVCjxeNcJndtCIa
-         4O/Qrm9MusETqQznj/842Y5fi+yJR94JfvJE4Om2M7TCiewcPXg+8VbqYSFAgLp5pXh7
-         j3JcyUvpdvuR+NgJ5XcRUfE0UE6aDWHRd003YcVCI5jaFI17gEKoHN0OCyQSiNO1fNz2
-         6Ijh9U/Kjeb/gkoCs2lyZA6wy6S+OqJJUUx/4OledGbI2q8oxnMFIw78qwTWbjbDqQ6B
-         EFVYapxQkAGzPKhlCH/kTKf4pMTOS4PYTsbdpkSTsFwx6BV53IDcZ5qmsakSeF1pBSJN
-         OnzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HinwW8PEQ5TbL83px5ZX1LnwF3iy1N97HumVOQEeuS0=;
-        b=FEtEGWltmTVyciPPM1YL9T8VVZrsFrSjrignHCww2e5Noqy2iIfDrHvWF4+tbX/ME2
-         SC321eoSgv/xUoTMGEDVcYssfC9pZ+DsEd6HvL7bQFr5ZsyycFGXYXPOHtAuigOxJ/Zc
-         WEzV0LSY2jGIeE4eaSBB/NsOPKd9n0jjY2/gIG9qxSGZeH9E3iW2qp3FkxMeWLETY6zh
-         yU4eb6R+t12sFcEQasNIb9vuOfU51uZzkDGoG2axrckUCFdCTInLFejsS0gWXhv/UFPk
-         G1MTVyyr6AxsOmBH0jc19/TIND4i3iJXMTwNu0oC1cFa/sA0HnlbfeXqbMZMGRMPXo+c
-         en8Q==
-X-Gm-Message-State: AOAM533az0bvhNq0S4lvIcEg5qKGjLEDm3yrHfWWuMl/OBGR6qFRQ8gy
-        AexqfcnCSjRqbINRUcc5sTUXIIDGq1WeXg/4+vA=
-X-Google-Smtp-Source: ABdhPJyvd+RlYj7zSTrYmgpFZ+h0LzvbUGhnoGD4IXYxW7eMQY/mIwx4HSolYlYkfx4EfX94jdzZBwmZLYdlWLjwYCg=
-X-Received: by 2002:a25:3c5:: with SMTP id 188mr954399ybd.437.1629161538607;
- Mon, 16 Aug 2021 17:52:18 -0700 (PDT)
+        Mon, 16 Aug 2021 20:54:51 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UjGrjA7_1629161655;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UjGrjA7_1629161655)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 17 Aug 2021 08:54:17 +0800
+Date:   Tue, 17 Aug 2021 08:54:14 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Chao Yu <chao@kernel.org>
+Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
+        Huang Jianan <huangjianan@oppo.com>,
+        Lasse Collin <lasse.collin@tukaani.org>,
+        nl6720 <nl6720@gmail.com>
+Subject: Re: [PATCH 1/2] erofs: add support for the full decompressed lengthy
+Message-ID: <YRsItrKiD0Wa3oTr@B-P7TQMD6M-0146.local>
+References: <20210813052931.203280-1-hsiangkao@linux.alibaba.com>
+ <20210813052931.203280-2-hsiangkao@linux.alibaba.com>
+ <f3437906-f983-65f9-8471-35f94b57d889@kernel.org>
 MIME-Version: 1.0
-References: <20210812134546.31340-1-jon.lin@rock-chips.com>
-In-Reply-To: <20210812134546.31340-1-jon.lin@rock-chips.com>
-From:   Peter Geis <pgwipeout@gmail.com>
-Date:   Mon, 16 Aug 2021 20:52:07 -0400
-Message-ID: <CAMdYzYobqhLAHhDU9E-iu-HMKSaGCDBMU-2OacGEZOQnF2ZyMw@mail.gmail.com>
-Subject: Re: [PATCH v13 0/6] Add Rockchip SFC(serial flash controller) support
-To:     Jon Lin <jon.lin@rock-chips.com>
-Cc:     linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Johan Jonker <jbx6244@gmail.com>,
-        Sandy Huang <hjc@rock-chips.com>, yifeng.zhao@rock-chips.com,
-        Sugar Zhang <sugar.zhang@rock-chips.com>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-mtd@lists.infradead.org, p.yadav@ti.com,
-        Chris Morgan <macroalpha82@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f3437906-f983-65f9-8471-35f94b57d889@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 9:49 AM Jon Lin <jon.lin@rock-chips.com> wrote:
->
+On Mon, Aug 16, 2021 at 11:38:03PM +0800, Chao Yu wrote:
+> On 2021/8/13 13:29, Gao Xiang wrote:
+> > Previously, there is no need to get the full decompressed length since
+> > EROFS supports partial decompression. However for some other cases
+> > such as fiemap, the full decompressed length is necessary for iomap to
+> > make it work properly.
+> > 
+> > This patch adds a way to get the full decompressed length. Note that
+> > it takes more metadata overhead and it'd be avoided if possible in the
+> > performance sensitive scenario.
+> > 
+> > Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> > ---
+> >   fs/erofs/internal.h |  5 +++
+> >   fs/erofs/zmap.c     | 93 +++++++++++++++++++++++++++++++++++++++++----
+> >   2 files changed, 90 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+> > index 25b094085ca6..2a05b09e1c06 100644
+> > --- a/fs/erofs/internal.h
+> > +++ b/fs/erofs/internal.h
+> > @@ -356,6 +356,11 @@ struct erofs_map_blocks {
+> >   /* Flags used by erofs_map_blocks_flatmode() */
+> >   #define EROFS_GET_BLOCKS_RAW    0x0001
+> > +/*
+> > + * Used to get the exact decompressed length, e.g. fiemap (consider lookback
+> > + * approach instead if possible since it's quite metadata expensive.)
+> > + */
+> > +#define EROFS_GET_BLOCKS_FIEMAP	0x0002
+> >   /* zmap.c */
+> >   #ifdef CONFIG_EROFS_FS_ZIP
+> > diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
+> > index f68aea4baed7..12256ef12819 100644
+> > --- a/fs/erofs/zmap.c
+> > +++ b/fs/erofs/zmap.c
+> > @@ -212,9 +212,32 @@ static unsigned int decode_compactedbits(unsigned int lobits,
+> >   	return lo;
+> >   }
+> > +static int get_compacted_la_distance(unsigned int lclusterbits,
+> > +				     unsigned int encodebits,
+> > +				     unsigned int vcnt, u8 *in, int i)
+> > +{
+> > +	const unsigned int lomask = (1 << lclusterbits) - 1;
+> > +	unsigned int lo, d1 = 0;
+> > +	u8 type;
+> > +
+> > +	for (; i < vcnt; ++i) {
+> 
+> for (di = 0; i < vcnt; ++i, ++d1)
 
-Good Evening,
+Hi Chao,
 
-Tested successfully on the rk3566 based Quartz64 Model A.
-Tested-by: Peter Geis <pgwipeout@gmail.com>
+Thanks for the review
 
-Very Respectfully,
-Peter Geis
+this could cause lo potential uninitialized warning (actually it's
+unpossible). So I resent [PATCH v1.1] as
 
->
->
-> Changes in v13:
-> - Provide independent interfaces to obtain RX TX FIFO status respectively
-> - Add more debug information
-> - Depress DMA limitation
->
-> Changes in v12:
-> - Remove useless oneOf lable
-> - Add sfc controller discription
-> - Remove the limitation of SFC_MIN_SPEED_HZ
-> - Add IRQ_NONE method for irq handler
-> - Add SPI_MASTER_HALF_DUPLEX flags
-> - Add sfc interrupt mask bits and status register initial progress
->
-> Changes in v11:
-> - The tx is set to 1 for Odroid Go Advance device
->
-> Changes in v10:
-> - Fix dma transfer logic
->
-> Changes in v9:
-> - Separate DMA IRQ setting and wait_completion from DMA fifo transfer
->   function to make dma_status_poll be possible(Which I will implement
->   in u-boot)
-> - Add SFC Kconfig detail comment
->
-> Changes in v8:
-> - Fix indent 4 to 2 in yaml
->
-> Changes in v7:
-> - Fix up the sclk_sfc parent error in rk3036
-> - Unify to "rockchip,sfc" compatible id because all the feature update
->   will have a new IP version, so the driver is used for the SFC IP in
->   all SoCs
-> - Change to use node "sfc" to name the SFC pinctrl group
-> - Add subnode reg property check
-> - Add rockchip_sfc_adjust_op_size to workaround in CMD + DUMMY case
-> - Limit max_iosize to 32KB
->
-> Changes in v6:
-> - Add support in device trees for rv1126(Declared in series 5 but not
->   submitted)
-> - Change to use "clk_sfc" "hclk_sfc" as clock lable, since it does not
->   affect interpretation and has been widely used
-> - Support sfc tx_dual, tx_quad(Declared in series 5 but not submitted)
-> - Simplify the code, such as remove "rockchip_sfc_register_all"(Declared
->   in series 5 but not submitted)
-> - Support SFC ver4 ver5(Declared in series 5 but not submitted)
-> - Add author Chris Morgan and Jon Lin to spi-rockchip-sfc.c
-> - Change to use devm_spi_alloc_master and spi_unregister_master
->
-> Changes in v5:
-> - Add support in device trees for rv1126
-> - Support sfc tx_dual, tx_quad
-> - Simplify the code, such as remove "rockchip_sfc_register_all"
-> - Support SFC ver4 ver5
->
-> Changes in v4:
-> - Changing patch back to an "RFC". An engineer from Rockchip
->   reached out to me to let me know they are working on this patch for
->   upstream, I am submitting this v4 for the community to see however
->   I expect Jon Lin (jon.lin@rock-chips.com) will submit new patches
->   soon and these are the ones we should pursue for mainlining. Jon's
->   patch series should include support for more hardware than this
->   series.
-> - Clean up documentation more and ensure it is correct per
->   make dt_binding_check.
-> - Add support in device trees for rk3036, rk3308, and rv1108.
-> - Add ahb clock (hclk_sfc) support for rk3036.
-> - Change rockchip_sfc_wait_fifo_ready() to use a switch statement.
-> - Change IRQ code to only mark IRQ as handled if it handles the
->   specific IRQ (DMA transfer finish) it is supposed to handle.
->
-> Changes in v3:
-> - Changed the name of the clocks to sfc/ahb (from clk-sfc/clk-hsfc).
-> - Changed the compatible string from rockchip,sfc to
->   rockchip,rk3036-sfc. A quick glance at the datasheets suggests this
->   driver should work for the PX30, RK180x, RK3036, RK312x, RK3308 and
->   RV1108 SoCs, and possibly more. However, I am currently only able
->   to test this on a PX30 (an RK3326). The technical reference manuals
->   appear to list the same registers for each device.
-> - Corrected devicetree documentation for formatting and to note these
->   changes.
-> - Replaced the maintainer with Heiko Stuebner and myself, as we will
->   take ownership of this going forward.
-> - Noted that the device (per the reference manual) supports 4 CS, but
->   I am only able to test a single CS (CS 0).
-> - Reordered patches to comply with upstream rules.
->
-> Changes in v2:
-> - Reimplemented driver using spi-mem subsystem.
-> - Removed power management code as I couldn't get it working properly.
-> - Added device tree bindings for Odroid Go Advance.
->
-> Changes in v1:
-> hanges made in this new series versus the v8 of the old series:
-> - Added function to read spi-rx-bus-width from device tree, in the
->   event that the SPI chip supports 4x mode but only has 2 pins
->   wired (such as the Odroid Go Advance).
-> - Changed device tree documentation from txt to yaml format.
-> - Made "reset" message a dev_dbg from a dev_info.
-> - Changed read and write fifo functions to remove redundant checks.
-> - Changed the write and read from relaxed to non-relaxed when
->   starting the DMA transfer or reading the DMA IRQ.
-> - Changed from dma_coerce_mask_and_coherent to just
->   dma_set_mask_and_coherent.
-> - Changed name of get_if_type to rockchip_sfc_get_if_type.
->
-> Chris Morgan (6):
->   dt-bindings: rockchip-sfc: Bindings for Rockchip serial flash
->     controller
->   spi: rockchip-sfc: add rockchip serial flash controller
->   arm64: dts: rockchip: Add SFC to PX30
->   arm: dts: rockchip: Add SFC to RV1108
->   arm64: dts: rockchip: Add SFC to RK3308
->   arm64: dts: rockchip: Enable SFC for Odroid Go Advance
->
->  .../devicetree/bindings/spi/rockchip-sfc.yaml |  91 +++
->  arch/arm/boot/dts/rv1108.dtsi                 |  37 +
->  arch/arm64/boot/dts/rockchip/px30.dtsi        |  38 +
->  arch/arm64/boot/dts/rockchip/rk3308.dtsi      |  37 +
->  .../boot/dts/rockchip/rk3326-odroid-go2.dts   |  16 +
->  drivers/spi/Kconfig                           |  12 +
->  drivers/spi/Makefile                          |   1 +
->  drivers/spi/spi-rockchip-sfc.c                | 694 ++++++++++++++++++
->  8 files changed, 926 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
->  create mode 100644 drivers/spi/spi-rockchip-sfc.c
->
-> --
-> 2.17.1
->
->
->
->
-> _______________________________________________
-> Linux-rockchip mailing list
-> Linux-rockchip@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-rockchip
+https://lore.kernel.org/linux-erofs/20210814152727.78451-1-hsiangkao@linux.alibaba.com/
+
+Please kindly help check out...
+
+> 
+> > +		lo = decode_compactedbits(lclusterbits, lomask,
+> > +					  in, encodebits * i, &type);
+> > +
+> > +		if (type != Z_EROFS_VLE_CLUSTER_TYPE_NONHEAD)
+> > +			return d1;
+> 
+> [1]
+> 
+> > +		++d1;
+> > +	}
+> > +
+> > +	/* vcnt - 1 (Z_EROFS_VLE_CLUSTER_TYPE_NONHEAD) item */
+> > +	if (!(lo & Z_EROFS_VLE_DI_D0_CBLKCNT))
+> > +		d1 += lo - 1;
+> > +	return d1;
+> > +}
+> > +
+> >   static int unpack_compacted_index(struct z_erofs_maprecorder *m,
+> >   				  unsigned int amortizedshift,
+> > -				  unsigned int eofs)
+> > +				  unsigned int eofs, bool lookahead)
+> >   {
+> >   	struct erofs_inode *const vi = EROFS_I(m->inode);
+> >   	const unsigned int lclusterbits = vi->z_logical_clusterbits;
+> > @@ -243,6 +266,11 @@ static int unpack_compacted_index(struct z_erofs_maprecorder *m,
+> >   	m->type = type;
+> >   	if (type == Z_EROFS_VLE_CLUSTER_TYPE_NONHEAD) {
+> >   		m->clusterofs = 1 << lclusterbits;
+> > +
+> > +		/* figure out lookahead_distance: delta[1] if needed */
+> > +		if (lookahead)
+> > +			m->delta[1] = get_compacted_la_distance(lclusterbits,
+> > +						encodebits, vcnt, in, i);
+> >   		if (lo & Z_EROFS_VLE_DI_D0_CBLKCNT) {
+> >   			if (!big_pcluster) {
+> >   				DBG_BUGON(1);
+> > @@ -313,7 +341,7 @@ static int unpack_compacted_index(struct z_erofs_maprecorder *m,
+> >   }
+> >   static int compacted_load_cluster_from_disk(struct z_erofs_maprecorder *m,
+> > -					    unsigned long lcn)
+> > +					    unsigned long lcn, bool lookahead)
+> >   {
+> >   	struct inode *const inode = m->inode;
+> >   	struct erofs_inode *const vi = EROFS_I(inode);
+> > @@ -364,11 +392,12 @@ static int compacted_load_cluster_from_disk(struct z_erofs_maprecorder *m,
+> >   	err = z_erofs_reload_indexes(m, erofs_blknr(pos));
+> >   	if (err)
+> >   		return err;
+> > -	return unpack_compacted_index(m, amortizedshift, erofs_blkoff(pos));
+> > +	return unpack_compacted_index(m, amortizedshift, erofs_blkoff(pos),
+> > +				      lookahead);
+> >   }
+> >   static int z_erofs_load_cluster_from_disk(struct z_erofs_maprecorder *m,
+> > -					  unsigned int lcn)
+> > +					  unsigned int lcn, bool lookahead)
+> >   {
+> >   	const unsigned int datamode = EROFS_I(m->inode)->datalayout;
+> > @@ -376,7 +405,7 @@ static int z_erofs_load_cluster_from_disk(struct z_erofs_maprecorder *m,
+> >   		return legacy_load_cluster_from_disk(m, lcn);
+> >   	if (datamode == EROFS_INODE_FLAT_COMPRESSION)
+> > -		return compacted_load_cluster_from_disk(m, lcn);
+> > +		return compacted_load_cluster_from_disk(m, lcn, lookahead);
+> >   	return -EINVAL;
+> >   }
+> > @@ -399,7 +428,7 @@ static int z_erofs_extent_lookback(struct z_erofs_maprecorder *m,
+> >   	/* load extent head logical cluster if needed */
+> >   	lcn -= lookback_distance;
+> > -	err = z_erofs_load_cluster_from_disk(m, lcn);
+> > +	err = z_erofs_load_cluster_from_disk(m, lcn, false);
+> >   	if (err)
+> >   		return err;
+> > @@ -450,7 +479,7 @@ static int z_erofs_get_extent_compressedlen(struct z_erofs_maprecorder *m,
+> >   	if (m->compressedlcs)
+> >   		goto out;
+> > -	err = z_erofs_load_cluster_from_disk(m, lcn);
+> > +	err = z_erofs_load_cluster_from_disk(m, lcn, false);
+> >   	if (err)
+> >   		return err;
+> > @@ -498,6 +527,48 @@ static int z_erofs_get_extent_compressedlen(struct z_erofs_maprecorder *m,
+> >   	return -EFSCORRUPTED;
+> >   }
+> > +static int z_erofs_get_extent_decompressedlen(struct z_erofs_maprecorder *m)
+> > +{
+> > +	struct inode *inode = m->inode;
+> > +	struct erofs_inode *vi = EROFS_I(inode);
+> > +	struct erofs_map_blocks *map = m->map;
+> > +	unsigned int lclusterbits = vi->z_logical_clusterbits;
+> > +	u64 lcn = m->lcn, headlcn = map->m_la >> lclusterbits;
+> > +	int err;
+> > +
+> > +	do {
+> > +		/* handle the last EOF pcluster (no next HEAD lcluster) */
+> > +		if ((lcn << lclusterbits) >= inode->i_size) {
+> > +			map->m_llen = inode->i_size - map->m_la;
+> > +			return 0;
+> > +		}
+> > +
+> > +		err = z_erofs_load_cluster_from_disk(m, lcn, true);
+> > +		if (err)
+> > +			return err;
+> > +
+> > +		if (m->type == Z_EROFS_VLE_CLUSTER_TYPE_NONHEAD) {
+> > +			if (!m->delta[1])
+> > +				DBG_BUGON(m->clusterofs != 1 << lclusterbits);
+> 
+> 			DBG_BUGON(!m->delta[1] &&
+> 				m->clusterofs != 1 << lclusterbits);
+> 
+
+Ok, will update.
+
+> > +		} else if (m->type == Z_EROFS_VLE_CLUSTER_TYPE_PLAIN ||
+> > +			   m->type == Z_EROFS_VLE_CLUSTER_TYPE_HEAD) {
+> > +			/* go on until the next HEAD lcluster */
+> > +			if (lcn != headlcn)
+> > +				break;
+> > +			m->delta[1] = 1;
+> 
+> If I didn't miss anything, return value [1] of get_compacted_la_distance()
+> won't be used anyway here? right?
+
+These are two different things, first, return value [1] is used to calculate
+length to the next lcluster, e.g.
+
+   NONHEAD NONHEAD HEAD
+     ^
+     m->lcn
+so here in the first loop, delta[1] = 2, and m->type == NONHEAD,
+the second loop, m->type == HEAD, lcn != headlcn, so we are done.
+
+
+Yet here the logic is instead
+if m->lcn == m->headlcn, so m->lcn points to this lcluster HEAD, but we
+need to find the next lcluster, e.g.
+
+   HEAD NONHEAD NONHEAD NONHEAD HEAD
+    ^                             ^
+    m->lcn, m->headlcn            we need to get this
+
+so we lcn == headlcn, we need to go on and get the next HEAD lcluster
+one.
+
+It will use since m->lcn could be originally equal to headlcn (point to
+this HEAD lcluster) 
+
+Thanks,
+Gao Xiang
+
+> 
+> Thanks,
+> 
+> > +		} else {
+> > +			erofs_err(inode->i_sb, "unknown type %u @ lcn %llu of nid %llu",
+> > +				  m->type, lcn, vi->nid);
+> > +			DBG_BUGON(1);
+> > +			return -EOPNOTSUPP;
+> > +		}
+> > +		lcn += m->delta[1];
+> > +	} while (m->delta[1]);
+> > +
+> > +	map->m_llen = (lcn << lclusterbits) + m->clusterofs - map->m_la;
+> > +	return 0;
+> > +}
+> > +
+> >   int z_erofs_map_blocks_iter(struct inode *inode,
+> >   			    struct erofs_map_blocks *map,
+> >   			    int flags)
+> > @@ -531,7 +602,7 @@ int z_erofs_map_blocks_iter(struct inode *inode,
+> >   	initial_lcn = ofs >> lclusterbits;
+> >   	endoff = ofs & ((1 << lclusterbits) - 1);
+> > -	err = z_erofs_load_cluster_from_disk(&m, initial_lcn);
+> > +	err = z_erofs_load_cluster_from_disk(&m, initial_lcn, false);
+> >   	if (err)
+> >   		goto unmap_out;
+> > @@ -581,6 +652,12 @@ int z_erofs_map_blocks_iter(struct inode *inode,
+> >   	err = z_erofs_get_extent_compressedlen(&m, initial_lcn);
+> >   	if (err)
+> >   		goto out;
+> > +
+> > +	if (flags & EROFS_GET_BLOCKS_FIEMAP) {
+> > +		err = z_erofs_get_extent_decompressedlen(&m);
+> > +		if (!err)
+> > +			map->m_flags |= EROFS_MAP_FULL_MAPPED;
+> > +	}
+> >   unmap_out:
+> >   	if (m.kaddr)
+> >   		kunmap_atomic(m.kaddr);
+> > 
