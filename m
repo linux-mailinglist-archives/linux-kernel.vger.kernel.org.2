@@ -2,86 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 264973EEA39
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A953EEA48
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239270AbhHQJrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 05:47:52 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:47030 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235191AbhHQJrv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 05:47:51 -0400
-X-UUID: 06fd9a7087f2460ca6ec495ba19f2aec-20210817
-X-UUID: 06fd9a7087f2460ca6ec495ba19f2aec-20210817
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <hsin-hsiung.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 553637646; Tue, 17 Aug 2021 17:47:14 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 17 Aug 2021 17:47:13 +0800
-Received: from mtksdaap41.mediatek.inc (172.21.77.4) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 17 Aug 2021 17:47:13 +0800
-From:   Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-To:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <james.lo@mediatek.com>
-Subject: [PATCH v11 5/5] arm64: dts: mt8192: add spmi node
-Date:   Tue, 17 Aug 2021 17:47:10 +0800
-Message-ID: <1629193630-19994-6-git-send-email-hsin-hsiung.wang@mediatek.com>
-X-Mailer: git-send-email 2.6.4
-In-Reply-To: <1629193630-19994-1-git-send-email-hsin-hsiung.wang@mediatek.com>
-References: <1629193630-19994-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+        id S235204AbhHQJtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 05:49:23 -0400
+Received: from mga06.intel.com ([134.134.136.31]:55274 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235438AbhHQJtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 05:49:11 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="277059667"
+X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
+   d="scan'208";a="277059667"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 02:48:30 -0700
+X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
+   d="scan'208";a="680276924"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 02:48:28 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1mFvhm-00AhKq-Ri; Tue, 17 Aug 2021 12:48:22 +0300
+Date:   Tue, 17 Aug 2021 12:48:22 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Jonathan Lemon <jonathan.lemon@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>
+Subject: Re: [PATCH v1 net-next 1/3] ptp_ocp: Switch to use
+ module_pci_driver() macro
+Message-ID: <YRuF5hd0BL/RAEZw@smile.fi.intel.com>
+References: <20210813122737.45860-1-andriy.shevchenko@linux.intel.com>
+ <20210813111407.0c2288f1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAHp75VeEO+givZ_SvUc2Wu7=iKvoqJEWYnMD=RHZCxKhqsV-9Q@mail.gmail.com>
+ <20210816210101.cnhb4xfifzctr4kj@bsd-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210816210101.cnhb4xfifzctr4kj@bsd-mbp.dhcp.thefacebook.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add spmi node to SOC MT8192.
+On Mon, Aug 16, 2021 at 02:01:01PM -0700, Jonathan Lemon wrote:
+> On Fri, Aug 13, 2021 at 10:30:51PM +0300, Andy Shevchenko wrote:
+> > On Fri, Aug 13, 2021 at 9:15 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> > > On Fri, 13 Aug 2021 15:27:35 +0300 Andy Shevchenko wrote:
+> > > > Eliminate some boilerplate code by using module_pci_driver() instead of
+> > > > init/exit, and, if needed, moving the salient bits from init into probe.
+> > > >
+> > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > >
+> > > Jonathan has a series in flight which is fixing some of the same issues:
+> > > https://patchwork.kernel.org/project/netdevbpf/list/?series=530079&state=*
+> > >
+> > > Please hold off for a day or two so it can get merged, and if you don't
+> > > mind double check at that point which of your patches are still needed.
+> > 
+> > Actually it may be the other way around. Since patch 2 in his series
+> > is definitely an unneeded churn here, because my devm conversion will
+> > have to effectively revert it.
+> > 
+> > 
+> > > According to patchwork your series does not apply to net-next as of
+> > > last night so it'll need a respin anyway.
+> > 
+> > I hope he will chime in and see what we can do the best.
+> 
+> I'm going to submit a respin of the last patch, I screwed something
+> up from all the various trees I'm using.
+> 
+> Please update to net-next first - the firat patch in your series
+> doesn't make any longer, given the current status.
 
-Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
----
-changes since v10:
-- No change.
----
- arch/arm64/boot/dts/mediatek/mt8192.dtsi | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+I'll rebase my stuff on top of net-next and resubmit.
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-index 9810f1d441da..1237e3624e44 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-@@ -316,6 +316,23 @@
- 			clock-names = "clk13m";
- 		};
- 
-+		spmi: spmi@10027000 {
-+			compatible = "mediatek,mt6873-spmi";
-+			reg = <0 0x10027000 0 0x000e00>,
-+			      <0 0x10029000 0 0x000100>;
-+			reg-names = "pmif", "spmimst";
-+			clocks = <&infracfg CLK_INFRA_PMIC_AP>,
-+				 <&infracfg CLK_INFRA_PMIC_TMR>,
-+				 <&topckgen CLK_TOP_SPMI_MST_SEL>;
-+			clock-names = "pmif_sys_ck",
-+				      "pmif_tmr_ck",
-+				      "spmimst_clk_mux";
-+			assigned-clocks = <&topckgen CLK_TOP_PWRAP_ULPOSC_SEL>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_OSC_D10>;
-+			#address-cells = <2>;
-+			#size-cells = <0>;
-+		};
-+
- 		scp_adsp: clock-controller@10720000 {
- 			compatible = "mediatek,mt8192-scp_adsp";
- 			reg = <0 0x10720000 0 0x1000>;
+Thanks!
+
+
 -- 
-2.18.0
+With Best Regards,
+Andy Shevchenko
+
 
