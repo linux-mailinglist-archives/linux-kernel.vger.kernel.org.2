@@ -2,25 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 096043EE8A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 408E73EE8AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239355AbhHQIhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 04:37:39 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:53262 "EHLO
+        id S239494AbhHQIh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 04:37:57 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:53390 "EHLO
         mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S239087AbhHQIhb (ORCPT
+        with ESMTP id S235110AbhHQIhb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 17 Aug 2021 04:37:31 -0400
-X-UUID: 906d536dbdfd41dab732019c70efa8a7-20210817
-X-UUID: 906d536dbdfd41dab732019c70efa8a7-20210817
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+X-UUID: 1cda624192a4420aa48fa818006e613b-20210817
+X-UUID: 1cda624192a4420aa48fa818006e613b-20210817
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
         (envelope-from <chunfeng.yun@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 793689389; Tue, 17 Aug 2021 16:36:50 +0800
+        with ESMTP id 1809678107; Tue, 17 Aug 2021 16:36:52 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 17 Aug 2021 16:36:50 +0800
 Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 17 Aug 2021 16:36:49 +0800
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Tue, 17 Aug 2021 16:36:50 +0800
 Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
  Transport; Tue, 17 Aug 2021 16:36:49 +0800
@@ -35,9 +39,9 @@ CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
         <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>,
         Eddie Hung <eddie.hung@mediatek.com>
-Subject: [PATCH RESEND 7/9] usb: xhci-mtk: check boundary before check tt
-Date:   Tue, 17 Aug 2021 16:36:27 +0800
-Message-ID: <1629189389-18779-7-git-send-email-chunfeng.yun@mediatek.com>
+Subject: [PATCH RESEND 8/9] usb: xhci-mtk: add a member of num_esit
+Date:   Tue, 17 Aug 2021 16:36:28 +0800
+Message-ID: <1629189389-18779-8-git-send-email-chunfeng.yun@mediatek.com>
 X-Mailer: git-send-email 1.8.1.1.dirty
 In-Reply-To: <1629189389-18779-1-git-send-email-chunfeng.yun@mediatek.com>
 References: <1629189389-18779-1-git-send-email-chunfeng.yun@mediatek.com>
@@ -48,36 +52,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-check_sch_tt() will access fs_bus_bw[] array, check boundary
-firstly to avoid out-of-bounds issue.
+Add a member num_esit to save the number of esit, then no need
+caculate it in some functions.
 
 Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 ---
- drivers/usb/host/xhci-mtk-sch.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/usb/host/xhci-mtk-sch.c | 20 +++++++-------------
+ drivers/usb/host/xhci-mtk.h     |  2 ++
+ 2 files changed, 9 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
-index 10c0f0f6461f..c2f13d69c607 100644
+index c2f13d69c607..a9fcf7e30c41 100644
 --- a/drivers/usb/host/xhci-mtk-sch.c
 +++ b/drivers/usb/host/xhci-mtk-sch.c
-@@ -600,13 +600,14 @@ static int check_sch_bw(struct mu3h_sch_bw_info *sch_bw,
- 	 * and find a microframe where its worst bandwidth is minimum.
- 	 */
- 	for (offset = 0; offset < sch_ep->esit; offset++) {
--		ret = check_sch_tt(sch_ep, offset);
--		if (ret)
--			continue;
+@@ -297,6 +297,7 @@ static void setup_sch_info(struct xhci_ep_ctx *ep_ctx,
+ 		 CTX_TO_MAX_ESIT_PAYLOAD(le32_to_cpu(ep_ctx->tx_info));
  
- 		if ((offset + sch_ep->num_budget_microframes) > esit_boundary)
- 			break;
+ 	sch_ep->esit = get_esit(ep_ctx);
++	sch_ep->num_esit = XHCI_MTK_MAX_ESIT / sch_ep->esit;
+ 	sch_ep->ep_type = ep_type;
+ 	sch_ep->maxpkt = maxpkt;
+ 	sch_ep->offset = 0;
+@@ -401,14 +402,12 @@ static void setup_sch_info(struct xhci_ep_ctx *ep_ctx,
+ static u32 get_max_bw(struct mu3h_sch_bw_info *sch_bw,
+ 	struct mu3h_sch_ep_info *sch_ep, u32 offset)
+ {
+-	u32 num_esit;
+ 	u32 max_bw = 0;
+ 	u32 bw;
+ 	int i;
+ 	int j;
  
-+		ret = check_sch_tt(sch_ep, offset);
-+		if (ret)
-+			continue;
-+
- 		worst_bw = get_max_bw(sch_bw, sch_ep, offset);
- 		if (worst_bw > bw_boundary)
- 			continue;
+-	num_esit = XHCI_MTK_MAX_ESIT / sch_ep->esit;
+-	for (i = 0; i < num_esit; i++) {
++	for (i = 0; i < sch_ep->num_esit; i++) {
+ 		u32 base = offset + i * sch_ep->esit;
+ 
+ 		for (j = 0; j < sch_ep->num_budget_microframes; j++) {
+@@ -424,13 +423,11 @@ static u32 get_max_bw(struct mu3h_sch_bw_info *sch_bw,
+ static void update_bus_bw(struct mu3h_sch_bw_info *sch_bw,
+ 	struct mu3h_sch_ep_info *sch_ep, bool used)
+ {
+-	u32 num_esit;
+ 	u32 base;
+ 	int i;
+ 	int j;
+ 
+-	num_esit = XHCI_MTK_MAX_ESIT / sch_ep->esit;
+-	for (i = 0; i < num_esit; i++) {
++	for (i = 0; i < sch_ep->num_esit; i++) {
+ 		base = sch_ep->offset + i * sch_ep->esit;
+ 		for (j = 0; j < sch_ep->num_budget_microframes; j++) {
+ 			if (used)
+@@ -446,12 +443,11 @@ static void update_bus_bw(struct mu3h_sch_bw_info *sch_bw,
+ static int check_fs_bus_bw(struct mu3h_sch_ep_info *sch_ep, int offset)
+ {
+ 	struct mu3h_sch_tt *tt = sch_ep->sch_tt;
+-	u32 num_esit, tmp;
++	u32 tmp;
+ 	int base;
+ 	int i, j;
+ 
+-	num_esit = XHCI_MTK_MAX_ESIT / sch_ep->esit;
+-	for (i = 0; i < num_esit; i++) {
++	for (i = 0; i < sch_ep->num_esit; i++) {
+ 		base = offset + i * sch_ep->esit;
+ 
+ 		/*
+@@ -533,12 +529,10 @@ static int check_sch_tt(struct mu3h_sch_ep_info *sch_ep, u32 offset)
+ static void update_sch_tt(struct mu3h_sch_ep_info *sch_ep, bool used)
+ {
+ 	struct mu3h_sch_tt *tt = sch_ep->sch_tt;
+-	u32 base, num_esit;
++	u32 base;
+ 	int i, j;
+ 
+-	num_esit = XHCI_MTK_MAX_ESIT / sch_ep->esit;
+-
+-	for (i = 0; i < num_esit; i++) {
++	for (i = 0; i < sch_ep->num_esit; i++) {
+ 		base = sch_ep->offset + i * sch_ep->esit;
+ 
+ 		for (j = 0; j < sch_ep->num_budget_microframes; j++)
+diff --git a/drivers/usb/host/xhci-mtk.h b/drivers/usb/host/xhci-mtk.h
+index 0466bc8f7500..56dc348349af 100644
+--- a/drivers/usb/host/xhci-mtk.h
++++ b/drivers/usb/host/xhci-mtk.h
+@@ -50,6 +50,7 @@ struct mu3h_sch_bw_info {
+  * struct mu3h_sch_ep_info: schedule information for endpoint
+  *
+  * @esit: unit is 125us, equal to 2 << Interval field in ep-context
++ * @num_esit: number of @esit in a period
+  * @num_budget_microframes: number of continuous uframes
+  *		(@repeat==1) scheduled within the interval
+  * @bw_cost_per_microframe: bandwidth cost per microframe
+@@ -79,6 +80,7 @@ struct mu3h_sch_bw_info {
+  */
+ struct mu3h_sch_ep_info {
+ 	u32 esit;
++	u32 num_esit;
+ 	u32 num_budget_microframes;
+ 	u32 bw_cost_per_microframe;
+ 	struct list_head endpoint;
 -- 
 2.18.0
 
