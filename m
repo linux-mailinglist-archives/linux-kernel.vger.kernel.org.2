@@ -2,77 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6083EED4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7193EED4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:24:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237472AbhHQNYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 09:24:16 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:41823 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240054AbhHQNYN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 09:24:13 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R731e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UjQQjQ9_1629206583;
-Received: from localhost(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UjQQjQ9_1629206583)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 17 Aug 2021 21:23:03 +0800
-From:   Xianting Tian <xianting.tian@linux.alibaba.com>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org, amit@kernel.org,
-        arnd@arndb.de, osandov@fb.com
-Cc:     linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Xianting Tian <xianting.tian@linux.alibaba.com>
-Subject: [PATCH v7 2/2] virtio-console: remove unnecessary kmemdup()
-Date:   Tue, 17 Aug 2021 21:23:00 +0800
-Message-Id: <20210817132300.165014-3-xianting.tian@linux.alibaba.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210817132300.165014-1-xianting.tian@linux.alibaba.com>
-References: <20210817132300.165014-1-xianting.tian@linux.alibaba.com>
+        id S239948AbhHQNY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 09:24:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:55232 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236398AbhHQNY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 09:24:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7862C101E;
+        Tue, 17 Aug 2021 06:24:23 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 54B0F3F70D;
+        Tue, 17 Aug 2021 06:24:22 -0700 (PDT)
+Subject: Re: [PATCH] iommu/arm-smmu-v3: Simplify useless instructions in
+ arm_smmu_cmdq_build_cmd()
+To:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     John Garry <john.garry@huawei.com>
+References: <20210817113450.2026-1-thunder.leizhen@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <6fea9ce0-7b8d-bd46-6b85-f3f9ba3ddd48@arm.com>
+Date:   Tue, 17 Aug 2021 14:23:53 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20210817113450.2026-1-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hvc framework will never pass stack memory to the put_chars() function,
-So the calling of kmemdup() is unnecessary, we can remove it.
+On 2021-08-17 12:34, Zhen Lei wrote:
+> Although the parameter 'cmd' is always passed by a local array variable,
+> and only this function modifies it, the compiler does not know this. The
+> compiler almost always reads the value of cmd[i] from memory rather than
+> directly using the value cached in the register. This generates many
+> useless instruction operations and affects the performance to some extent.
 
-This revert commit c4baad5029 ("virtio-console: avoid DMA from stack")
+Which compiler? GCC 4.9 does not make the same codegen decisions that 
+GCC 10 does; Clang is different again. There are also various config 
+options which affect a compiler's inlining/optimisation choices either 
+directly or indirectly.
 
-Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
----
- drivers/char/virtio_console.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+If it's something that newer compilers can get right anyway, then 
+micro-optimising just for older ones might warrant a bit more justification.
 
-diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
-index 7eaf303a7..4ed3ffb1d 100644
---- a/drivers/char/virtio_console.c
-+++ b/drivers/char/virtio_console.c
-@@ -1117,8 +1117,6 @@ static int put_chars(u32 vtermno, const char *buf, int count)
- {
- 	struct port *port;
- 	struct scatterlist sg[1];
--	void *data;
--	int ret;
- 
- 	if (unlikely(early_put_chars))
- 		return early_put_chars(vtermno, buf, count);
-@@ -1127,14 +1125,8 @@ static int put_chars(u32 vtermno, const char *buf, int count)
- 	if (!port)
- 		return -EPIPE;
- 
--	data = kmemdup(buf, count, GFP_ATOMIC);
--	if (!data)
--		return -ENOMEM;
--
--	sg_init_one(sg, data, count);
--	ret = __send_to_port(port, sg, 1, count, data, false);
--	kfree(data);
--	return ret;
-+	sg_init_one(sg, buf, count);
-+	return __send_to_port(port, sg, 1, count, (void *)buf, false);
- }
- 
- /*
--- 
-2.17.1
+> To guide the compiler for proper optimization, 'cmd' is defined as a local
+> array variable, marked as register, and copied to the output parameter at
+> a time when the function is returned.
+> 
+> The optimization effect can be viewed by running the "size arm-smmu-v3.o"
+> command.
+> 
+> Before:
+>     text    data     bss     dec     hex
+>    27602    1348      56   29006    714e
+> 
+> After:
+>     text    data     bss     dec     hex
+>    27402    1348      56   28806    7086
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 18 +++++++++++++++---
+>   1 file changed, 15 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> index d76bbbde558b776..50a9db5bac466c7 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> @@ -233,11 +233,19 @@ static int queue_remove_raw(struct arm_smmu_queue *q, u64 *ent)
+>   	return 0;
+>   }
+>   
+> +#define arm_smmu_cmdq_copy_cmd(dst, src)	\
+> +	do {					\
+> +		dst[0] = src[0];		\
+> +		dst[1] = src[1];		\
+> +	} while (0)
+> +
+>   /* High-level queue accessors */
+> -static int arm_smmu_cmdq_build_cmd(u64 *cmd, struct arm_smmu_cmdq_ent *ent)
+> +static int arm_smmu_cmdq_build_cmd(u64 *out_cmd, struct arm_smmu_cmdq_ent *ent)
+>   {
+> -	memset(cmd, 0, 1 << CMDQ_ENT_SZ_SHIFT);
+> -	cmd[0] |= FIELD_PREP(CMDQ_0_OP, ent->opcode);
+> +	register u64 cmd[CMDQ_ENT_DWORDS];
+> +
+> +	cmd[0] = FIELD_PREP(CMDQ_0_OP, ent->opcode);
+> +	cmd[1] = 0;
+>   
+>   	switch (ent->opcode) {
+>   	case CMDQ_OP_TLBI_EL2_ALL:
+> @@ -309,6 +317,7 @@ static int arm_smmu_cmdq_build_cmd(u64 *cmd, struct arm_smmu_cmdq_ent *ent)
+>   		case PRI_RESP_SUCC:
+>   			break;
+>   		default:
+> +			arm_smmu_cmdq_copy_cmd(out_cmd, cmd);
 
+Why bother writing back a partial command when we're telling the caller 
+it's invalid anyway?
+
+>   			return -EINVAL;
+>   		}
+>   		cmd[1] |= FIELD_PREP(CMDQ_PRI_1_RESP, ent->pri.resp);
+> @@ -329,9 +338,12 @@ static int arm_smmu_cmdq_build_cmd(u64 *cmd, struct arm_smmu_cmdq_ent *ent)
+>   		cmd[0] |= FIELD_PREP(CMDQ_SYNC_0_MSIATTR, ARM_SMMU_MEMATTR_OIWB);
+>   		break;
+>   	default:
+> +		arm_smmu_cmdq_copy_cmd(out_cmd, cmd);
+
+Ditto.
+
+>   		return -ENOENT;
+>   	}
+>   
+> +	arm_smmu_cmdq_copy_cmd(out_cmd, cmd);
+
+...and then it would be simpler to open-code the assignment here.
+
+I guess if you're really concerned with avoiding temporary commands 
+being written back to the stack and reloaded, it might be worth 
+experimenting with wrapping them in a struct which can be passed around 
+by value - AAPCS64 allows passing a 16-byte composite type purely in 
+registers.
+
+Robin.
+
+> +
+>   	return 0;
+>   }
+>   
+> 
