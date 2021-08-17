@@ -2,38 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB293EE5F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 06:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AABBB3EE5F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 06:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237701AbhHQExa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 00:53:30 -0400
-Received: from verein.lst.de ([213.95.11.211]:57022 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230272AbhHQEx3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 00:53:29 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 680206736F; Tue, 17 Aug 2021 06:52:55 +0200 (CEST)
-Date:   Tue, 17 Aug 2021 06:52:55 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Jens Axboe <axboe@kernel.dk>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 6/7] lib/group_cpus: allow to group cpus in case of
- !CONFIG_SMP
-Message-ID: <20210817045255.GF3874@lst.de>
-References: <20210814123532.229494-1-ming.lei@redhat.com> <20210814123532.229494-7-ming.lei@redhat.com>
+        id S237548AbhHQEzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 00:55:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230272AbhHQEzu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 00:55:50 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C522C061764;
+        Mon, 16 Aug 2021 21:55:17 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id j1so30097903pjv.3;
+        Mon, 16 Aug 2021 21:55:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hAXABoom5XY+ws1/jiIFHmNJnWtweNFayiGnrPzUhKo=;
+        b=ewl9OoE2pnxQkOSLm43GnYt9fFJEhFLOIu9grvLJPILw3j5E4dnW+TOZAhmE/Apjxl
+         5x4TGw+X4B63h4YW4rmdCNkAHLi/K/OQdBPhM3czyyqDQOsDBvkISIWyEW0F89azcIvh
+         is5rfYxu6D/cNOpIskVZLvE1i1jfayvBLqf89Rhyf3uChgdMWHiR3j5GxhAxwRD6N3ok
+         Itgf2Mtpzx9yJW2mLZYxyizR9wKa2D7ska7MziSU0Q40+Bwy0k3qgk4ayZ+1UBn5aYNU
+         /qFXjNqV1+ZfB5WVduvwdpUZfAhZToy6gPn4MpWB7d74vvYjKyQO/AX0Avr37ZFT9Uc1
+         KEiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hAXABoom5XY+ws1/jiIFHmNJnWtweNFayiGnrPzUhKo=;
+        b=s3HsaSOqYyyFscYXB6FZYJN+ELCjZbodPdUg95+0JK9f4Bb1b6MfMrPQ39EaUs5kTk
+         0Tjbph6D/BXE5CY0/7DOGlgfjxNyaQ8+F0SDIP8BVoZC2TzrDASyuLR4CJI8nzx4KZiQ
+         MJHqQTjmADGf10Z01iXQjIv1OxUXxoAFue6APYawfCZuuire69K9z5sLp4mN4ZDnpeHH
+         BWh806e0Y9Ce/1Z09C6ED3SwNWj6ajGMA0X1n3+1eQHxGBRPKwjQ0056nvlOldimOLOR
+         AN7zluonsVSqVgw6WfeUrHrcXf32o4PjlxI6t4dIZvIqUwvVoDWofvOp7jzXYMBHskVa
+         Rqlg==
+X-Gm-Message-State: AOAM533HvmLtIMVfGul/L0/zFP8p6BS2tSgYsVhxhvXp1ivixumF0TSx
+        3i96nYQ/xL3lYHPHTddB/EU=
+X-Google-Smtp-Source: ABdhPJxhyhrtsbV/IkVXpjBzLeMLDOgoo0HmIE/UWAfWd+zR3AmkLu53p/slOhIqP2X4sg9Ehnu4fA==
+X-Received: by 2002:a63:7cb:: with SMTP id 194mr1724744pgh.308.1629176115852;
+        Mon, 16 Aug 2021 21:55:15 -0700 (PDT)
+Received: from localhost.localdomain ([1.240.193.107])
+        by smtp.googlemail.com with ESMTPSA id r9sm863091pfh.135.2021.08.16.21.55.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 21:55:15 -0700 (PDT)
+From:   Kangmin Park <l4stpr0gr4m@gmail.com>
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tedd Ho-Jeong An <tedd.an@intel.com>,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net] Bluetooth: Fix return value in hci_dev_do_close()
+Date:   Tue, 17 Aug 2021 13:55:10 +0900
+Message-Id: <20210817045510.4479-1-l4stpr0gr4m@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210814123532.229494-7-ming.lei@redhat.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 14, 2021 at 08:35:31PM +0800, Ming Lei wrote:
-> Allows group_cpus_evenly() to be called in case of !CONFIG_SMP by simply
-> assigning all CPUs into the 1st group.
+hci_error_reset() return without calling hci_dev_do_open() when
+hci_dev_do_close() return error value which is not 0.
 
-Looks good, but almost too large for an inline function.
+Also, hci_dev_close() return hci_dev_do_close() function's return
+value.
+
+But, hci_dev_do_close() return always 0 even if hdev->shutdown
+return error value. So, fix hci_dev_do_close() to save and return
+the return value of the hdev->shutdown when it is called.
+
+Fixes: a44fecbd52a4d ("Bluetooth: Add shutdown callback before closing the device")
+Signed-off-by: Kangmin Park <l4stpr0gr4m@gmail.com>
+---
+ net/bluetooth/hci_core.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index e1a545c8a69f..5f3c7515a8f0 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -1718,6 +1718,7 @@ static void hci_pend_le_actions_clear(struct hci_dev *hdev)
+ int hci_dev_do_close(struct hci_dev *hdev)
+ {
+ 	bool auto_off;
++	int ret = 0;
+ 
+ 	BT_DBG("%s %p", hdev->name, hdev);
+ 
+@@ -1730,7 +1731,7 @@ int hci_dev_do_close(struct hci_dev *hdev)
+ 	if (!test_and_clear_bit(HCI_UP, &hdev->flags)) {
+ 		cancel_delayed_work_sync(&hdev->cmd_timer);
+ 		hci_req_sync_unlock(hdev);
+-		return 0;
++		return ret;
+ 	}
+ 
+ 	hci_leds_update_powered(hdev, false);
+@@ -1803,7 +1804,7 @@ int hci_dev_do_close(struct hci_dev *hdev)
+ 	    test_bit(HCI_UP, &hdev->flags)) {
+ 		/* Execute vendor specific shutdown routine */
+ 		if (hdev->shutdown)
+-			hdev->shutdown(hdev);
++			ret = hdev->shutdown(hdev);
+ 	}
+ 
+ 	/* flush cmd  work */
+@@ -1845,7 +1846,7 @@ int hci_dev_do_close(struct hci_dev *hdev)
+ 	hci_req_sync_unlock(hdev);
+ 
+ 	hci_dev_put(hdev);
+-	return 0;
++	return ret;
+ }
+ 
+ int hci_dev_close(__u16 dev)
+-- 
+2.26.2
+
