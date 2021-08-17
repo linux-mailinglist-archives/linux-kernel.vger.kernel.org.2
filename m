@@ -2,62 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC3E3EF01C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 18:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB55C3EF01F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 18:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229738AbhHQQVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 12:21:47 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:36653 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbhHQQVp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 12:21:45 -0400
-Received: by mail-io1-f71.google.com with SMTP id e187-20020a6bb5c4000000b005b5fe391cf9so4455712iof.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 09:21:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=KOqfcwDCAAyd9Yj7KuDdDJBmhJTsKykvsP7zBce1+GE=;
-        b=CVTC/BKa+t2399qhlKBu9//UKAxjGeg0yFwNMRRaH9IOo6n+RtS5ojSQnPOiXhqtvP
-         3pxPAdgDXScTtFSy0yM7FIkyOsIjForVPhI4xwxI+CC4/A5ikJBHZeYiMsvsQlA0qWQO
-         DLOGSEg4fJTd32LBmwJNcfWjOgBSisROtmmZM6iwA/dDUgoqIqAGB5p+JyEbP1jCyHCY
-         WtOB120sSyq0Zjz0sO2xeukwzjDTkkSMaoxF/4jZaBAA8y0Tw8Exj7KX2h0wMfS7ZsIc
-         Y0SYKuijeOUNlf2ndtvs2CQ0FfqLdzU5IkcyJ9XsL9C4YacJ09qMDRC4nEkU8wUbNSUQ
-         hteQ==
-X-Gm-Message-State: AOAM533reoYAfIBps5GnN+GTg35MkveSxd0Nc0RLuRw2FXvn64+dLMmm
-        T5HNl6bdzO1+mhuxzF4koynBxAvsMphpzB0AUx9v3z2uJ4rm
-X-Google-Smtp-Source: ABdhPJzCSydA+1Z0J/QUplR71Dfv66P5r4SwQ+VQoMBL253DFHd/ocNOGwchcI097DHM9/2rZMH1E532vCgx7MXB77OVN8A7Zuqh
+        id S229699AbhHQQWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 12:22:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229721AbhHQQWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 12:22:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA8226024A;
+        Tue, 17 Aug 2021 16:21:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629217318;
+        bh=uvTnRPMf3m+BMa0dC84OgWxUTeCf5SBKHaey7ORbF60=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RHXDYfrc0vYScIDGjw7tI64vXtnESwYGy/fivZuqu7yCMOZ5w/ivrzCbE9RZxdMND
+         qvd8wiAGhAD6wrPpX7REEr7UFqwcx/cKxQJUV8Yj/1uD8uJeHkl347XKuR/iZJhlJu
+         oLJspdr9vf7Apeie+M8FAfKUtmI3jizDzwqbc8T+guDd4sKFrY7K0WqTnADkqzfmw4
+         tGQc1B1o9xuDhAXP5I8DmqsNMIEYyScbX6mrtLbYWks2iG+ehSBiy6Jng0t0SX0/03
+         QNdGIDl6XYBnbO9g+Jz6jvWfZIsLqeYY49fs1NCdU4geOFU2KMKMdS/WsuCtVK+Rgj
+         E+jmXLmFuPvQw==
+Received: by pali.im (Postfix)
+        id 747EA842; Tue, 17 Aug 2021 18:21:55 +0200 (CEST)
+Date:   Tue, 17 Aug 2021 18:21:55 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Guillaume Nault <gnault@redhat.com>
+Cc:     James Carlson <carlsonj@workingcode.com>,
+        Chris Fowler <cfowler@outpostsentinel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-ppp@vger.kernel.org" <linux-ppp@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ppp: Add rtnl attribute IFLA_PPP_UNIT_ID for specifying
+ ppp unit id
+Message-ID: <20210817162155.idyfy53qbxcsf2ga@pali>
+References: <2f10b64e-ba50-d8a5-c40a-9b9bd4264155@workingcode.com>
+ <20210811173811.GE15488@pc-32.home>
+ <20210811180401.owgmie36ydx62iep@pali>
+ <20210812092847.GB3525@pc-23.home>
+ <20210812134845.npj3m3vzkrmhx6uy@pali>
+ <20210812182645.GA10725@pc-23.home>
+ <20210812190440.fknfthdk3mazm6px@pali>
+ <20210816161114.GA3611@pc-32.home>
+ <20210816162355.7ssd53lrpclfvuiz@pali>
+ <20210817160525.GA20616@pc-32.home>
 MIME-Version: 1.0
-X-Received: by 2002:a92:b749:: with SMTP id c9mr2956629ilm.160.1629217272078;
- Tue, 17 Aug 2021 09:21:12 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 09:21:12 -0700
-In-Reply-To: <CAJfpegv1ztaEvrSX622ru-FRX1VJYZDbRWq6_4HhF0tCY+0uHQ@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c3c97c05c9c3b4ea@google.com>
-Subject: Re: [syzbot] INFO: task hung in fuse_launder_page
-From:   syzbot <syzbot+bea44a5189836d956894@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        miklos@szeredi.hu, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210817160525.GA20616@pc-32.home>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tuesday 17 August 2021 18:05:25 Guillaume Nault wrote:
+> On Mon, Aug 16, 2021 at 06:23:55PM +0200, Pali Rohár wrote:
+> > On Monday 16 August 2021 18:11:14 Guillaume Nault wrote:
+> > > Do you have plans for adding netlink support to pppd? If so, is the
+> > > project ready to accept such code?
+> > 
+> > Yes, I have already some WIP code and I'm planning to send a pull
+> > request to pppd on github for it. I guess that it could be accepted,
+> 
+> I guess you can easily use the netlink api for cases where the "unit"
+> option isn't specified and fall back to the ioctl api when it is. If
+> all goes well, then we can extend the netlink api to accept a unit id.
+> 
+> But what about the lack of netlink feedback about the created
+> interface? Are you restricted to use netlink only when the "ifname"
+> option is provided?
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Exactly, this is how I wrote my WIP code...
 
-Reported-and-tested-by: syzbot+bea44a5189836d956894@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         794c7931 Merge branch 'linus' of git://git.kernel.org/..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=96f0602203250753
-dashboard link: https://syzkaller.appspot.com/bug?extid=bea44a5189836d956894
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=169e4131300000
-
-Note: testing is done by a robot and is best-effort only.
+> > specially if there still would be backward compatibility via ioctl for
+> > kernels which do not support rtnl API.
+> 
+> Indeed, I'd expect keeping compatiblitity with old kernels that only
+> have the ioctl api to be a must (but I have no experience contributing
+> to the pppd project).
+> 
+> > One of the argument which can be
+> > used why rtnl API is better, is fixing issue: atomic creating of
+> > interface with specific name.
+> 
+> Yes, that looks useful.
+> 
