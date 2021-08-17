@@ -2,139 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D02B3EF326
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61F053EF329
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234110AbhHQUNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 16:13:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233954AbhHQUNq (ORCPT
+        id S234122AbhHQUOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 16:14:32 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:34542 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233110AbhHQUOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 16:13:46 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00507C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 13:13:12 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id hv22-20020a17090ae416b0290178c579e424so629690pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 13:13:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=Qn12Bt9lqkgM5Y8ZA32WQkTEE6ZrP4WykYQaAHbU6bw=;
-        b=ZxGaRtIt0oBicK9RMeZa/zpUJ73fThIcSyHiWhc6pHKYYanyug7eKtat/O3c5kO5mw
-         gHRwyxDy3AneGChipItpQ7AGbSoStDQNCgP17rEZ04NNruirntDKGQ5oArsT6Rf8l5mq
-         FD6bPE7pI1gIqFgVvHXZi5ErvPUUfOpbVmxvOQPjoatcIL9hafPEs2tslUe61IOOA9Ip
-         YYtM22LzKxHubSB8LayLmab6h006bJ483+BiX9MOeLdUAI384Q2kg/BSN0DCsa/q/xBh
-         /bn21nVc5wPJzHgclOptUAYiOUKZWeYsx8VyLDrycaLyO5LmotQtsp+KgX+NYlupgRkS
-         D4zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=Qn12Bt9lqkgM5Y8ZA32WQkTEE6ZrP4WykYQaAHbU6bw=;
-        b=j0VcVMK047+v60skIp5oc3A8pcLzctTwlZ+hh4rdgLoqJ0jXQCYu/KJzYbitKgHUvk
-         0Y0X0IH2CbAspfbeRaBkQDOubhShBVpTX8zU/T9LZzQjezQ39D9zM1JSudwo6itx2Sx3
-         fbR/JlwEMN3+CNvUSJ+f1WM6q6pmqBJhKtG3PaO+mem2jKUTd+5YmACNVDXaOAZWgdmU
-         1Wk5Mb8R18WctpWpUhXNHPBGjeqG8EtxuDoLn9iQTzPuQ0SyTdWkWvxpn8eO8EJyDKGN
-         jkMv4KX82Sz9k0GgxX0sdJxvlbKCqW6LGPiVn4M23IaikmGPZkDq7sV2lEcRgxvZT/oi
-         WlTQ==
-X-Gm-Message-State: AOAM532fRfRYBof5KSonFcMIZr2sbXxcOxUFKk6qv0wFsZ6P5P15xXSO
-        LedaBd2zY/d8hYr6eRLwlWq/bg==
-X-Google-Smtp-Source: ABdhPJy1rQGRBW8og3iBsiEHWYdl0Z67c7meR88EwdCS+j3BmrvipKWVwAm5pIZRYgXr8OiaPjva8A==
-X-Received: by 2002:a17:902:db01:b0:12d:ccb0:f8b1 with SMTP id m1-20020a170902db0100b0012dccb0f8b1mr4250158plx.43.1629231192511;
-        Tue, 17 Aug 2021 13:13:12 -0700 (PDT)
-Received: from smtpclient.apple ([2601:646:c200:1ef2:e1d8:e750:e609:cd1d])
-        by smtp.gmail.com with ESMTPSA id a2sm4165198pgb.19.2021.08.17.13.13.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Aug 2021 13:13:11 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v28 09/32] x86/mm: Introduce _PAGE_COW
-Date:   Tue, 17 Aug 2021 13:13:09 -0700
-Message-Id: <1A27F5DF-477B-45B7-AD33-CC68D9B7CB89@amacapital.net>
-References: <YRwT7XX36fQ2GWXn@zn.tnic>
-Cc:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Rick P Edgecombe <rick.p.edgecombe@intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-In-Reply-To: <YRwT7XX36fQ2GWXn@zn.tnic>
-To:     Borislav Petkov <bp@alien8.de>
-X-Mailer: iPhone Mail (18G82)
+        Tue, 17 Aug 2021 16:14:31 -0400
+Date:   Tue, 17 Aug 2021 20:13:55 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629231237;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h1zVwYA69SWhGYXWVxA6O0Yyf7TV48d/4Qb1uxXRKV0=;
+        b=NLc2BCR0mlEa/2jPZu2sWpvshmRYG5xDBRSqy47HeDx4HVZjsWyt3HXiYpUly87vuXE9kT
+        PbxOUn5kTPtGnHNtcMBICUf9i7naNVkHRm3w59lB6K2HIS+ZFttL12cs/12TnRB37qSbWj
+        ZFzAKsPaibfEe2ztfWpc5OhfVqnJE3bWr1DrHLa/H9rl8kl+UQ87Gatl7YwGdpqepMarTv
+        BvqIfWt49Rmz04J+BvD6RFsKSS6ymZRNfUVdNOAbW2dnctyaKablqL3xGKA6n5LJbILpGG
+        aJML7niintLSvER7M/adab2LgRfR6ofarml4+WHlIVoYJt22Iu2HupMNPsv3hQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629231237;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h1zVwYA69SWhGYXWVxA6O0Yyf7TV48d/4Qb1uxXRKV0=;
+        b=xPkWFA7RR6keQPbVDosIxKOORdP7WYCjvArIrCgl/eFG+irLzBnkY+tTMDGSP82THEuqq4
+        xzPA7BIEQLAmy+Dg==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] static_call: Update API documentation
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <YQwIorQBHEq+s73b@hirez.programming.kicks-ass.net>
+References: <YQwIorQBHEq+s73b@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Message-ID: <162923123566.25758.13896123511356080788.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the locking/core branch of tip:
 
+Commit-ID:     9ae6ab27f44ee0da47520011afc04218f90e8b12
+Gitweb:        https://git.kernel.org/tip/9ae6ab27f44ee0da47520011afc04218f90e8b12
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Thu, 05 Aug 2021 17:49:54 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 17 Aug 2021 19:09:27 +02:00
 
-> On Aug 17, 2021, at 12:53 PM, Borislav Petkov <bp@alien8.de> wrote:
->=20
-> =EF=BB=BFOn Tue, Aug 17, 2021 at 11:24:29AM -0700, Yu, Yu-cheng wrote:
->> Indeed, this can be looked at in a few ways.  We can visualize pte_write(=
-)
->> as 'CPU can write to it with MOV' or 'CPU can write to it with any opcode=
-s'.
->> Depending on whatever pte_write() is, copy-on-write code can be adjusted
->> accordingly.
->=20
-> Can be?
->=20
-> I think you should exclude shadow stack pages from being writable
-> and treat them as read-only. How the CPU writes them is immaterial -
-> pte/pmd_write() is used by normal kernel code to query whether the page
-> is writable or not by any instruction - not by the CPU.
->=20
-> And since normal kernel code cannot write shadow stack pages, then for
-> that code those pages are read-only.
->=20
-> If special kernel code using shadow stack management insns needs
-> to modify a shadow stack, then it can check whether a page is
-> pte/pmd_shstk() but that code is special anyway.
->=20
-> Hell, a shadow stack page is (Write=3D0, Dirty=3D1) so calling it writable=
+static_call: Update API documentation
 
->                  ^^^^^^^
-> is simply wrong.
+Update the comment with the new features.
 
-But it *is* writable using WRUSS, and it=E2=80=99s also writable by CALL, WR=
-SS, etc.
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Link: https://lore.kernel.org/r/YQwIorQBHEq+s73b@hirez.programming.kicks-ass.net
+---
+ include/linux/static_call.h | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-Now if the mm code tries to write protect it and expects sensible semantics,=
- the results could be interesting. At the very least, someone would need to v=
-alidate that RET reading a read only shadow stack page does the right thing.=
-
-
->=20
-> Thx.
->=20
-> --=20
-> Regards/Gruss,
->    Boris.
->=20
-> https://people.kernel.org/tglx/notes-about-netiquette
+diff --git a/include/linux/static_call.h b/include/linux/static_call.h
+index fc94faa..3e56a97 100644
+--- a/include/linux/static_call.h
++++ b/include/linux/static_call.h
+@@ -17,11 +17,17 @@
+  *   DECLARE_STATIC_CALL(name, func);
+  *   DEFINE_STATIC_CALL(name, func);
+  *   DEFINE_STATIC_CALL_NULL(name, typename);
++ *   DEFINE_STATIC_CALL_RET0(name, typename);
++ *
++ *   __static_call_return0;
++ *
+  *   static_call(name)(args...);
+  *   static_call_cond(name)(args...);
+  *   static_call_update(name, func);
+  *   static_call_query(name);
+  *
++ *   EXPORT_STATIC_CALL{,_TRAMP}{,_GPL}()
++ *
+  * Usage example:
+  *
+  *   # Start with the following functions (with identical prototypes):
+@@ -96,6 +102,33 @@
+  *   To query which function is currently set to be called, use:
+  *
+  *   func = static_call_query(name);
++ *
++ *
++ * DEFINE_STATIC_CALL_RET0 / __static_call_return0:
++ *
++ *   Just like how DEFINE_STATIC_CALL_NULL() / static_call_cond() optimize the
++ *   conditional void function call, DEFINE_STATIC_CALL_RET0 /
++ *   __static_call_return0 optimize the do nothing return 0 function.
++ *
++ *   This feature is strictly UB per the C standard (since it casts a function
++ *   pointer to a different signature) and relies on the architecture ABI to
++ *   make things work. In particular it relies on Caller Stack-cleanup and the
++ *   whole return register being clobbered for short return values. All normal
++ *   CDECL style ABIs conform.
++ *
++ *   In particular the x86_64 implementation replaces the 5 byte CALL
++ *   instruction at the callsite with a 5 byte clear of the RAX register,
++ *   completely eliding any function call overhead.
++ *
++ *   Notably argument setup is unconditional.
++ *
++ *
++ * EXPORT_STATIC_CALL() vs EXPORT_STATIC_CALL_TRAMP():
++ *
++ *   The difference is that the _TRAMP variant tries to only export the
++ *   trampoline with the result that a module can use static_call{,_cond}() but
++ *   not static_call_update().
++ *
+  */
+ 
+ #include <linux/types.h>
