@@ -2,84 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B393EEDBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6C83EEDC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237333AbhHQNun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 09:50:43 -0400
-Received: from mga17.intel.com ([192.55.52.151]:34571 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233288AbhHQNul (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 09:50:41 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10079"; a="196354485"
-X-IronPort-AV: E=Sophos;i="5.84,329,1620716400"; 
-   d="scan'208";a="196354485"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 06:50:08 -0700
-X-IronPort-AV: E=Sophos;i="5.84,329,1620716400"; 
-   d="scan'208";a="510479079"
-Received: from favalosr-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.164.120])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 06:50:08 -0700
-Subject: Re: [PATCH v5 01/12] x86/paravirt: Move halt paravirt calls under
- CONFIG_PARAVIRT
-To:     Juergen Gross <jgross@suse.com>, Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>
-References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210804181329.2899708-2-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YRTLO0eQOEChETId@zn.tnic> <057170db-9382-eb40-7bcb-4ec1de4aae62@suse.com>
- <fd603d12-1897-1f5f-17fa-b5ac643bc334@linux.intel.com>
- <fcc8c2f1-f33f-96fa-8fc7-1e6e2e6a3936@suse.com>
- <ddb9c140-caf9-ef46-d5af-ac9a1283c5df@linux.intel.com>
- <d700658f-8466-46c5-5fff-9e65a6a24720@suse.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <bf10500b-e8f8-ad28-d725-c70040a59e88@linux.intel.com>
-Date:   Tue, 17 Aug 2021 06:50:05 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S237629AbhHQNw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 09:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233288AbhHQNw6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 09:52:58 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D7DDC061764;
+        Tue, 17 Aug 2021 06:52:25 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id f9-20020a05600c1549b029025b0f5d8c6cso1972405wmg.4;
+        Tue, 17 Aug 2021 06:52:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=DdliCquo+PE2UHrK1S/P5dg8iEQs9vB2EdH9vP1ZGv0=;
+        b=ukAXUhMaFl3HyZReRiZG7YY3vvR3EZ42C2YpaD3yySq3MxnsezMQG3JPJ0iHUZwmg7
+         zYHZ7lxkodtLymgxdBDss+TZXGoHScQSmEe9DWPX10Q/rLbv5blkxly2VwWYfyd0OVk3
+         fShUeNF60iMwIYHIK0dhx9nWwR/50u9gt+1Z/PkHPdYdD3gOPKqMV3psHcWJA6UjezHH
+         g2FgR6kPgFmhRKZa/SGebZ1Ai13YsILs3eku3KAmbPFjWEK9Dgf7T8Z62kbj78R/axAx
+         WAevZ6At2ZvD0tC/GwMsWCTT1e/T0UrujmuGwSYoQhr50h38ftK4UNDAOVpttvqdOobB
+         dIuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=DdliCquo+PE2UHrK1S/P5dg8iEQs9vB2EdH9vP1ZGv0=;
+        b=FdWNlwk93PZMHdifb9IfWyk0P/OTGwV8sEIP7gHtxxbO9lXQrqCnmez8sa3oZkAiTJ
+         n0OBcrhdF3fGblfoKWdQP0neKeJplekzTamDxfYr9H/QoAzR9XStP0ncLX1QjAZj26iY
+         S0DFLOOUDRMNZsCIPjQd6fyxQIAB35dfjkcR4g+BZbszOcEEAoYNy1Y2/LBPZg4XP+wU
+         Y6VzIphGmx5dCrIzosxk3DpP8P5OHqepZwdXFLuM00irM6P2A4/4uWd5JsnM4yPa+9vx
+         oq2WZdUNELCE3F+S7A3KmYyjk/k7fulJdTxBdhplNZ+qT14zL4abj2cqEq5dv3BPhGrQ
+         vSVA==
+X-Gm-Message-State: AOAM530cTfZFZ44l23zM5TmajPO5IS+jdbKENGduYRtZlkGBlBPUDwET
+        9r8vNsnJe3qPBMwZSxpuYHE=
+X-Google-Smtp-Source: ABdhPJzSoYy1CvXrWjNtJerwsnCHpFwWy9LB94jG+Yj4qymzX0l0atghK6Evm1aCKOuTAVSYWb2BlQ==
+X-Received: by 2002:a1c:e90a:: with SMTP id q10mr3563409wmc.39.1629208343855;
+        Tue, 17 Aug 2021 06:52:23 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id s1sm2118598wmh.46.2021.08.17.06.52.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 06:52:22 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 15:52:21 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Mark Brown <broonie@kernel.org>, Bjorn Helgaas <bjorn@helgaas.com>
+Cc:     Aakash Hemadri <aakashhemadri123@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jawoslav Kysela <perex@perex.cz>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH 1/2] ASoC: tegra30: ahub: Use of_device_get_match_data
+Message-ID: <YRu/FeYK7MkHzfvY@orome.fritz.box>
+References: <cover.1628971397.git.aakashhemadri123@gmail.com>
+ <e568d621c9c05ee23732a6a6f9e3606a780b1707.1628971397.git.aakashhemadri123@gmail.com>
+ <20210816183906.GC4253@sirena.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <d700658f-8466-46c5-5fff-9e65a6a24720@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="TERzZgiTczMyTKLC"
+Content-Disposition: inline
+In-Reply-To: <20210816183906.GC4253@sirena.org.uk>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--TERzZgiTczMyTKLC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 8/17/21 6:47 AM, Juergen Gross wrote:
-> I don't see a reason to have two "#include <asm/paravirt.h>" lines in
-> one file. Why don't you use:
-> 
-> #ifdef CONFIG_PARAVIRT
-> #include <asm/paravirt.h>
-> #else
-> #ifndef __ASSEMBLY___
-> ...
-> #endif
-> #endif
-> 
-> #ifndef CONFIG_PARAVIRT_XXL
-> ...
-> #endif
+On Mon, Aug 16, 2021 at 07:39:06PM +0100, Mark Brown wrote:
+> On Sun, Aug 15, 2021 at 01:42:18AM +0530, Aakash Hemadri wrote:
+>=20
+> > -	match =3D of_match_device(tegra30_ahub_of_match, &pdev->dev);
+> > +	match =3D of_device_get_match_data(&pdev->dev);
+> >  	if (!match)
+>=20
+> Thierry, are you sure about your review here?  As others have been
+> pointing out of_device_get_match_data() returns match->data while
+> of_match_device() returns the device.
 
-Ok. I will use your format.
+Ugh... good catch. I (naively) assumed this was a mechanical conversion
+like one of the many others that have been making the rounds and
+evidently wasn't paying enough attention.
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Thanks for spotting this, Bjorn!
+
+Thierry
+
+--TERzZgiTczMyTKLC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEbvxMACgkQ3SOs138+
+s6Fuzw/+ONJup0AlXmkavB3mY/7ctPZCTYOEX1havOtaM0M7MC4gnILVLS15E5YQ
+VkfyauVywsYJZ58EigjcET0aWWyP1moX//MXamjC/QMbJYBbFHydpdSsTVdvXjpX
+j96kJMOQZ9ZIswQuZTNTU/ZkJltfjwLUT5ckt7jbc2PYMf/QqELtRAYEvbIG61oB
+/vngvh5S5RoCQCv+kyGLZDSvgpDay2H6Ko5Xs/2uBDtiZPo+OvH+NwzNRjpd4X8l
+4VuOhc6mE2796HjZ4+JG7xJ1R4mvZsNB6/HTFeiGMQhzJciB+MZhWcnGKev1WZb/
+P8n9sQzppOd9X8BtusuIKxsV/JIqmOfeRWNE2ARTkKS3UcJEduiARFb+5XO0MUxc
+xEGblAUU4dPztRK60nd/sHh2y/rbb2ChNs75WI9rTkI2o29js2yKCvdF7S2SPbGi
+p2yDgvJGzQRQyCz71wU2oLOE2rFv7QPLUjj8tMj08ZOyjD36UTXWXn7Av8csIWQe
+yvu8r/Upi1IRJAXtxKn/A4oCdEYy2ktBq54QCx16vJfTx1P6YBOKW2M2HcYEBjB1
+6ilCGVVhd1XTLH/4A31gBXVtL4Wgx9gP9SbsXR1I6VFlwv0k2RZzsxc2v69hqJLm
+OGKwxyBUZZ4yOy7/9oxHB5vvVW94r0pGaU9Rxj38pjfMTRq7pWg=
+=CZLq
+-----END PGP SIGNATURE-----
+
+--TERzZgiTczMyTKLC--
