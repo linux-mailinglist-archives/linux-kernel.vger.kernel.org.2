@@ -2,142 +2,611 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2323EEB31
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 12:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AFB43EEB35
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 12:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239585AbhHQKrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 06:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235380AbhHQKro (ORCPT
+        id S235380AbhHQKt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 06:49:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55160 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230051AbhHQKty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 06:47:44 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DEF3C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 03:47:11 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <jlu@pengutronix.de>)
-        id 1mFwcV-00084f-9I; Tue, 17 Aug 2021 12:46:59 +0200
-Received: from localhost ([127.0.0.1])
-        by ptx.hi.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <jlu@pengutronix.de>)
-        id 1mFwcT-0000h1-T6; Tue, 17 Aug 2021 12:46:57 +0200
-Message-ID: <17798cb01c5d699738f57118d4deb53504759818.camel@pengutronix.de>
-Subject: Re: [PATCH 1/2] dt-bindings: memory: convert Marvell MVEBU SDRAM
- controller to dtschema
-From:   Jan =?ISO-8859-1?Q?L=FCbbe?= <jlu@pengutronix.de>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org
-Date:   Tue, 17 Aug 2021 12:46:57 +0200
-In-Reply-To: <20210817093807.59531-1-krzysztof.kozlowski@canonical.com>
-References: <20210817093807.59531-1-krzysztof.kozlowski@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 (by Flathub.org) 
+        Tue, 17 Aug 2021 06:49:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629197360;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=t8VfS4RHD4Yrv3Wo/z4E+FOOIpmOs+dTM8MmcrNHh5M=;
+        b=LnFAk1nNmLTXBU2ZvhOBrBznpFm9l8fo5O+XnuUBjfbsotOy0dlcjfk5D0VDFbivcH8iyR
+        ptLCGOm4smLBUF3zezCL57B9qLVRLsbo7jwAKC/AmxDl4qzLrHkZ8swfoPAeCtjqlJa4Xb
+        cJFwHEoYaojorZyeI4EILs1QBcF1xFU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-413-QA7K_esePpatN9ZyFwTDRA-1; Tue, 17 Aug 2021 06:49:19 -0400
+X-MC-Unique: QA7K_esePpatN9ZyFwTDRA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C09F21018F74;
+        Tue, 17 Aug 2021 10:49:17 +0000 (UTC)
+Received: from [10.64.54.103] (vpn2-54-103.bne.redhat.com [10.64.54.103])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 84EF75C1D5;
+        Tue, 17 Aug 2021 10:49:08 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH v4 14/15] arm64: Enable async PF
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        james.morse@arm.com, mark.rutland@arm.com,
+        Jonathan.Cameron@huawei.com, will@kernel.org, maz@kernel.org,
+        pbonzini@redhat.com, shan.gavin@gmail.com,
+        kvmarm@lists.cs.columbia.edu
+References: <20210815005947.83699-1-gshan@redhat.com>
+ <20210815005947.83699-15-gshan@redhat.com>
+ <878s11miaw.fsf@vitty.brq.redhat.com>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <4dd7fc2a-377a-6c87-6e78-98aea809d718@redhat.com>
+Date:   Tue, 17 Aug 2021 20:49:03 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
+In-Reply-To: <878s11miaw.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: jlu@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-08-17 at 11:38 +0200, Krzysztof Kozlowski wrote:
-> Convert Marvell MVEBU SDRAM controller bindings to DT schema format
-> using json-schema.
+Hi Vitaly,
+
+On 8/17/21 3:05 AM, Vitaly Kuznetsov wrote:
+> Gavin Shan <gshan@redhat.com> writes:
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  .../marvell,mvebu-sdram-controller.yaml       | 31 +++++++++++++++++++
->  .../mvebu-sdram-controller.txt                | 21 -------------
->  2 files changed, 31 insertions(+), 21 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/marvell,mvebu-sdram-controller.yaml
->  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/mvebu-sdram-controller.txt
+>> This enables asynchronous page fault from guest side. The design
+>> is highlighted as below:
+>>
+>>     * The per-vCPU shared memory region, which is represented by
+>>       "struct kvm_vcpu_pv_apf_data", is allocated. The reason and
+>>       token associated with the received notifications of asynchronous
+>>       page fault are delivered through it.
+>>
+>>     * A per-vCPU table, which is represented by "struct kvm_apf_table",
+>>       is allocated. The process, on which the page-not-present notification
+>>       is received, is added into the table so that it can reschedule
+>>       itself on switching from kernel to user mode. Afterwards, the
+>>       process, identified by token, is removed from the table and put
+>>       into runnable state when page-ready notification is received.
+>>
+>>     * During CPU hotplug, the (private) SDEI event is expected to be
+>>       enabled or disabled on the affected CPU by SDEI client driver.
+>>       The (PPI) interrupt is enabled or disabled on the affected CPU
+>>       by ourself. When the system is going to reboot, the SDEI event
+>>       is disabled and unregistered and the (PPI) interrupt is disabled.
+>>
+>>     * The SDEI event and (PPI) interrupt number are retrieved from host
+>>       through SMCCC interface. Besides, the version of the asynchronous
+>>       page fault is validated when the feature is enabled on the guest.
+>>
+>>     * The feature is disabled on guest when boot parameter "no-kvmapf"
+>>       is specified.
 > 
-> diff --git a/Documentation/devicetree/bindings/memory-controllers/marvell,mvebu-sdram-controller.yaml b/Documentation/devicetree/bindings/memory-controllers/marvell,mvebu-sdram-controller.yaml
-> new file mode 100644
-> index 000000000000..14a6bc8f421f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/memory-controllers/marvell,mvebu-sdram-controller.yaml
-> @@ -0,0 +1,31 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/memory-controllers/marvell,mvebu-sdram-controller.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Marvell MVEBU SDRAM controller
-> +
-> +maintainers:
-> +  - Jan Luebbe <jlu@pengutronix.de>
-> +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: marvell,armada-xp-sdram-controller
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    memory-controller@1400 {
-> +        compatible = "marvell,armada-xp-sdram-controller";
-> +        reg = <0x1400 0x500>;
-> +    };
-> diff --git a/Documentation/devicetree/bindings/memory-controllers/mvebu-sdram-controller.txt b/Documentation/devicetree/bindings/memory-controllers/mvebu-sdram-controller.txt
-> deleted file mode 100644
-> index 89657d1d4cd4..000000000000
-> --- a/Documentation/devicetree/bindings/memory-controllers/mvebu-sdram-controller.txt
-> +++ /dev/null
-> @@ -1,21 +0,0 @@
-> -Device Tree bindings for MVEBU SDRAM controllers
-> -
-> -The Marvell EBU SoCs all have a SDRAM controller. The SDRAM controller
-> -differs from one SoC variant to another, but they also share a number
-> -of commonalities.
-> -
-> -For now, this Device Tree binding documentation only documents the
-> -Armada XP SDRAM controller.
+> Documentation/admin-guide/kernel-parameters.txt states this one is
+> x86-only:
+> 
+>          no-kvmapf       [X86,KVM] Disable paravirtualized asynchronous page
+>                          fault handling.
+> 
+> makes sense to update in this patch I believe.
+> 
 
-Please keep the description, otherwise it would be confusing why the binding is
-named marvell,mvebu-sdram-controller.yaml although it (currenly) only applies to
-the Armada XP.
+Yes, I will update in next revision.
 
-Jan
+>>
+>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>> ---
+>>   arch/arm64/kernel/Makefile |   1 +
+>>   arch/arm64/kernel/kvm.c    | 452 +++++++++++++++++++++++++++++++++++++
+>>   2 files changed, 453 insertions(+)
+>>   create mode 100644 arch/arm64/kernel/kvm.c
+>>
+>> diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
+>> index 3f1490bfb938..f0c1a6a7eaa7 100644
+>> --- a/arch/arm64/kernel/Makefile
+>> +++ b/arch/arm64/kernel/Makefile
+>> @@ -59,6 +59,7 @@ obj-$(CONFIG_ACPI)			+= acpi.o
+>>   obj-$(CONFIG_ACPI_NUMA)			+= acpi_numa.o
+>>   obj-$(CONFIG_ARM64_ACPI_PARKING_PROTOCOL)	+= acpi_parking_protocol.o
+>>   obj-$(CONFIG_PARAVIRT)			+= paravirt.o
+>> +obj-$(CONFIG_KVM_GUEST)			+= kvm.o
+>>   obj-$(CONFIG_RANDOMIZE_BASE)		+= kaslr.o
+>>   obj-$(CONFIG_HIBERNATION)		+= hibernate.o hibernate-asm.o
+>>   obj-$(CONFIG_KEXEC_CORE)		+= machine_kexec.o relocate_kernel.o	\
+>> diff --git a/arch/arm64/kernel/kvm.c b/arch/arm64/kernel/kvm.c
+>> new file mode 100644
+>> index 000000000000..effe8dc7e921
+>> --- /dev/null
+>> +++ b/arch/arm64/kernel/kvm.c
+>> @@ -0,0 +1,452 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Asynchronous page fault support.
+>> + *
+>> + * Copyright (C) 2021 Red Hat, Inc.
+>> + *
+>> + * Author(s): Gavin Shan <gshan@redhat.com>
+>> + */
+>> +
+>> +#include <linux/kernel.h>
+>> +#include <linux/spinlock.h>
+>> +#include <linux/slab.h>
+>> +#include <linux/interrupt.h>
+>> +#include <linux/irq.h>
+>> +#include <linux/of.h>
+>> +#include <linux/of_fdt.h>
+>> +#include <linux/arm-smccc.h>
+>> +#include <linux/kvm_para.h>
+>> +#include <linux/arm_sdei.h>
+>> +#include <linux/acpi.h>
+>> +#include <linux/cpuhotplug.h>
+>> +#include <linux/reboot.h>
+>> +
+>> +struct kvm_apf_task {
+>> +	unsigned int		token;
+>> +	struct task_struct	*task;
+>> +	struct swait_queue_head	wq;
+>> +};
+>> +
+>> +struct kvm_apf_table {
+>> +	raw_spinlock_t		lock;
+>> +	unsigned int		count;
+>> +	struct kvm_apf_task	tasks[0];
+>> +};
+>> +
+>> +static bool async_pf_available = true;
+>> +static DEFINE_PER_CPU_DECRYPTED(struct kvm_vcpu_pv_apf_data, apf_data) __aligned(64);
+>> +static struct kvm_apf_table __percpu *apf_tables;
+>> +static unsigned int apf_tasks;
+>> +static unsigned int apf_sdei_num;
+>> +static unsigned int apf_ppi_num;
+>> +static int apf_irq;
+>> +
+>> +static bool kvm_async_pf_add_task(struct task_struct *task,
+>> +				  unsigned int token)
+>> +{
+>> +	struct kvm_apf_table *table = this_cpu_ptr(apf_tables);
+>> +	unsigned int i, index = apf_tasks;
+>> +	bool ret = false;
+>> +
+>> +	raw_spin_lock(&table->lock);
+>> +
+>> +	if (WARN_ON(table->count >= apf_tasks))
+>> +		goto unlock;
+>> +
+>> +	for (i = 0; i < apf_tasks; i++) {
+>> +		if (!table->tasks[i].task) {
+>> +			if (index == apf_tasks) {
+>> +				ret = true;
+>> +				index = i;
+>> +			}
+>> +		} else if (table->tasks[i].task == task) {
+>> +			WARN_ON(table->tasks[i].token != token);
+>> +			ret = false;
+>> +			break;
+>> +		}
+>> +	}
+>> +
+>> +	if (!ret)
+>> +		goto unlock;
+>> +
+>> +	task->thread.data = &table->tasks[index].wq;
+>> +	set_tsk_thread_flag(task, TIF_ASYNC_PF);
+>> +
+>> +	table->count++;
+>> +	table->tasks[index].task = task;
+>> +	table->tasks[index].token = token;
+>> +
+>> +unlock:
+>> +	raw_spin_unlock(&table->lock);
+>> +	return ret;
+>> +}
+>> +
+>> +static inline void kvm_async_pf_remove_one_task(struct kvm_apf_table *table,
+>> +						unsigned int index)
+>> +{
+>> +	clear_tsk_thread_flag(table->tasks[index].task, TIF_ASYNC_PF);
+>> +	WRITE_ONCE(table->tasks[index].task->thread.data, NULL);
+>> +
+>> +	table->count--;
+>> +	table->tasks[index].task = NULL;
+>> +	table->tasks[index].token = 0;
+>> +
+>> +	swake_up_one(&table->tasks[index].wq);
+>> +}
+>> +
+>> +static bool kvm_async_pf_remove_task(unsigned int token)
+>> +{
+>> +	struct kvm_apf_table *table = this_cpu_ptr(apf_tables);
+>> +	unsigned int i;
+>> +	bool ret = (token == UINT_MAX);
+>> +
+>> +	raw_spin_lock(&table->lock);
+>> +
+>> +	for (i = 0; i < apf_tasks; i++) {
+>> +		if (!table->tasks[i].task)
+>> +			continue;
+>> +
+>> +		/* Wakeup all */
+>> +		if (token == UINT_MAX) {
+>> +			kvm_async_pf_remove_one_task(table, i);
+>> +			continue;
+>> +		}
+>> +
+>> +		if (table->tasks[i].token == token) {
+>> +			kvm_async_pf_remove_one_task(table, i);
+>> +			ret = true;
+>> +			break;
+>> +		}
+>> +	}
+>> +
+>> +	raw_spin_unlock(&table->lock);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static int kvm_async_pf_sdei_handler(unsigned int event,
+>> +				     struct pt_regs *regs,
+>> +				     void *arg)
+>> +{
+>> +	unsigned int reason = __this_cpu_read(apf_data.reason);
+>> +	unsigned int token = __this_cpu_read(apf_data.token);
+>> +	bool ret;
+>> +
+>> +	if (reason != KVM_PV_REASON_PAGE_NOT_PRESENT) {
+>> +		pr_warn("%s: Bogus notification (%d, 0x%08x)\n",
+>> +			__func__, reason, token);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	ret = kvm_async_pf_add_task(current, token);
+>> +	__this_cpu_write(apf_data.token, 0);
+>> +	__this_cpu_write(apf_data.reason, 0);
+>> +
+>> +	if (!ret)
+>> +		return -ENOSPC;
+>> +
+>> +	smp_send_reschedule(smp_processor_id());
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static irqreturn_t kvm_async_pf_irq_handler(int irq, void *dev_id)
+>> +{
+>> +	unsigned int reason = __this_cpu_read(apf_data.reason);
+>> +	unsigned int token = __this_cpu_read(apf_data.token);
+>> +	struct arm_smccc_res res;
+>> +
+>> +	if (reason != KVM_PV_REASON_PAGE_READY) {
+>> +		pr_warn("%s: Bogus interrupt %d (%d, 0x%08x)\n",
+>> +			__func__, irq, reason, token);
+> 
+> Spurrious interrupt or bogus APF reason set? Could be both I belive.
+> 
 
-> -
-> -Required properties:
-> -
-> - - compatible: for Armada XP, "marvell,armada-xp-sdram-controller"
-> - - reg: a resource specifier for the register space, which should
-> -   include all SDRAM controller registers as per the datasheet.
-> -
-> -Example:
-> -
-> -sdramc@1400 {
-> -	compatible = "marvell,armada-xp-sdram-controller";
-> -	reg = <0x1400 0x500>;
-> -};
+Yes, It could be both and the message can be more specific like below:
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+                 pr_warn("%s: Wrong interrupt (%d) or state (%d 0x%08x) received\n",
+                         __func__, irq, reason, token);
+
+>> +		return IRQ_HANDLED;
+>> +	}
+>> +
+>> +	kvm_async_pf_remove_task(token);
+>> +
+>> +	__this_cpu_write(apf_data.token, 0);
+>> +	__this_cpu_write(apf_data.reason, 0);
+>> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_ASYNC_PF_FUNC_ID,
+>> +			     ARM_SMCCC_KVM_FUNC_ASYNC_PF_IRQ_ACK, &res);
+>> +
+>> +	return IRQ_HANDLED;
+>> +}
+>> +
+>> +static int __init kvm_async_pf_available(char *arg)
+>> +{
+>> +	async_pf_available = false;
+>> +
+>> +	return 0;
+>> +}
+>> +early_param("no-kvmapf", kvm_async_pf_available);
+>> +
+>> +static void kvm_async_pf_disable(void)
+>> +{
+>> +	struct arm_smccc_res res;
+>> +	u32 enabled = __this_cpu_read(apf_data.enabled);
+>> +
+>> +	if (!enabled)
+>> +		return;
+>> +
+>> +	/* Disable the functionality */
+>> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_ASYNC_PF_FUNC_ID,
+>> +			     ARM_SMCCC_KVM_FUNC_ASYNC_PF_ENABLE,
+>> +			     0, 0, &res);
+>> +	if (res.a0 != SMCCC_RET_SUCCESS) {
+>> +		pr_warn("%s: Error %ld to disable on CPU%d\n",
+>> +			__func__, res.a0, smp_processor_id());
+>> +		return;
+>> +	}
+>> +
+>> +	__this_cpu_write(apf_data.enabled, 0);
+>> +
+>> +	pr_info("Async PF disabled on CPU%d\n", smp_processor_id());
+> 
+> Nitpicking: x86 uses
+> 
+> "setup async PF for cpu %d\n" and
+> "disable async PF for cpu %d\n"
+> 
+> which are not ideal maybe but in any case it would probably make sense
+> to be consistent across arches.
+> 
+
+Yes, It's worthwhile to do so :)
+
+> 
+>> +}
+>> +
+>> +static void kvm_async_pf_enable(void)
+>> +{
+>> +	struct arm_smccc_res res;
+>> +	u32 enabled = __this_cpu_read(apf_data.enabled);
+>> +	u64 val = virt_to_phys(this_cpu_ptr(&apf_data));
+>> +
+>> +	if (enabled)
+>> +		return;
+>> +
+>> +	val |= KVM_ASYNC_PF_ENABLED;
+>> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_ASYNC_PF_FUNC_ID,
+>> +			     ARM_SMCCC_KVM_FUNC_ASYNC_PF_ENABLE,
+>> +			     (u32)val, (u32)(val >> 32), &res);
+>> +	if (res.a0 != SMCCC_RET_SUCCESS) {
+>> +		pr_warn("%s: Error %ld to enable CPU%d\n",
+>> +			__func__, res.a0, smp_processor_id());
+>> +		return;
+>> +	}
+>> +
+>> +	__this_cpu_write(apf_data.enabled, 1);
+>> +
+>> +	pr_info("Async PF enabled on CPU%d\n", smp_processor_id());
+>> +}
+>> +
+>> +static void kvm_async_pf_cpu_disable(void *info)
+>> +{
+>> +	disable_percpu_irq(apf_irq);
+>> +	kvm_async_pf_disable();
+>> +}
+>> +
+>> +static void kvm_async_pf_cpu_enable(void *info)
+>> +{
+>> +	enable_percpu_irq(apf_irq, IRQ_TYPE_LEVEL_HIGH);
+>> +	kvm_async_pf_enable();
+>> +}
+>> +
+>> +static int kvm_async_pf_cpu_reboot_notify(struct notifier_block *nb,
+>> +					  unsigned long code,
+>> +					  void *unused)
+>> +{
+>> +	if (code == SYS_RESTART) {
+>> +		sdei_event_disable(apf_sdei_num);
+>> +		sdei_event_unregister(apf_sdei_num);
+>> +
+>> +		on_each_cpu(kvm_async_pf_cpu_disable, NULL, 1);
+>> +	}
+>> +
+>> +	return NOTIFY_DONE;
+>> +}
+>> +
+>> +static struct notifier_block kvm_async_pf_cpu_reboot_nb = {
+>> +	.notifier_call = kvm_async_pf_cpu_reboot_notify,
+>> +};
+>> +
+>> +static int kvm_async_pf_cpu_online(unsigned int cpu)
+>> +{
+>> +	kvm_async_pf_cpu_enable(NULL);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int kvm_async_pf_cpu_offline(unsigned int cpu)
+>> +{
+>> +	kvm_async_pf_cpu_disable(NULL);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int __init kvm_async_pf_check_version(void)
+>> +{
+>> +	struct arm_smccc_res res;
+>> +
+>> +	/*
+>> +	 * Check the version and v1.0.0 or higher version is required
+>> +	 * to support the functionality.
+>> +	 */
+>> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_ASYNC_PF_FUNC_ID,
+>> +			     ARM_SMCCC_KVM_FUNC_ASYNC_PF_VERSION, &res);
+>> +	if (res.a0 != SMCCC_RET_SUCCESS) {
+>> +		pr_warn("%s: Error %ld to get version\n",
+>> +			__func__, res.a0);
+>> +		return -EPERM;
+>> +	}
+>> +
+>> +	if ((res.a1 & 0xFFFFFFFFFF000000) ||
+>> +	    ((res.a1 & 0xFF0000) >> 16) < 0x1) {
+>> +		pr_warn("%s: Invalid version (0x%016lx)\n",
+>> +			__func__, res.a1);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int __init kvm_async_pf_info(void)
+>> +{
+>> +	struct arm_smccc_res res;
+>> +
+>> +	/* Retrieve number of tokens */
+>> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_ASYNC_PF_FUNC_ID,
+>> +			     ARM_SMCCC_KVM_FUNC_ASYNC_PF_SLOTS, &res);
+>> +	if (res.a0 != SMCCC_RET_SUCCESS) {
+>> +		pr_warn("%s: Error %ld to get token number\n",
+>> +			__func__, res.a0);
+>> +		return -EPERM;
+>> +	}
+>> +
+>> +	apf_tasks = res.a1 * 2;
+>> +
+>> +	/* Retrieve SDEI event number */
+>> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_ASYNC_PF_FUNC_ID,
+>> +			     ARM_SMCCC_KVM_FUNC_ASYNC_PF_SDEI, &res);
+>> +	if (res.a0 != SMCCC_RET_SUCCESS) {
+>> +		pr_warn("%s: Error %ld to get SDEI event number\n",
+>> +			__func__, res.a0);
+>> +		return -EPERM;
+>> +	}
+>> +
+>> +	apf_sdei_num = res.a1;
+>> +
+>> +	/* Retrieve (PPI) interrupt number */
+>> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_ASYNC_PF_FUNC_ID,
+>> +			     ARM_SMCCC_KVM_FUNC_ASYNC_PF_IRQ, &res);
+>> +	if (res.a0 != SMCCC_RET_SUCCESS) {
+>> +		pr_warn("%s: Error %ld to get IRQ\n",
+>> +			__func__, res.a0);
+>> +		return -EPERM;
+>> +	}
+>> +
+>> +	apf_ppi_num = res.a1;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int __init kvm_async_pf_init(void)
+>> +{
+>> +	struct kvm_apf_table *table;
+>> +	size_t size;
+>> +	int cpu, i, ret;
+>> +
+>> +	if (!kvm_para_has_feature(KVM_FEATURE_ASYNC_PF) ||
+>> +	    !async_pf_available)
+>> +		return -EPERM;
+>> +
+>> +	ret = kvm_async_pf_check_version();
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	ret = kvm_async_pf_info();
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	/* Allocate and initialize the sleeper table */
+>> +	size = sizeof(struct kvm_apf_table) +
+>> +	       apf_tasks * sizeof(struct kvm_apf_task);
+>> +	apf_tables = __alloc_percpu(size, 0);
+>> +	if (!apf_tables) {
+>> +		pr_warn("%s: Unable to alloc async PF table\n",
+>> +			__func__);
+>> +		return -ENOMEM;
+>> +	}
+>> +
+>> +	for_each_possible_cpu(cpu) {
+>> +		table = per_cpu_ptr(apf_tables, cpu);
+>> +		raw_spin_lock_init(&table->lock);
+>> +		for (i = 0; i < apf_tasks; i++)
+>> +			init_swait_queue_head(&table->tasks[i].wq);
+>> +	}
+>> +
+>> +	/*
+>> +	 * Initialize SDEI event for page-not-present notification.
+>> +	 * The SDEI event number should have been retrieved from
+>> +	 * the host.
+>> +	 */
+>> +	ret = sdei_event_register(apf_sdei_num,
+>> +				  kvm_async_pf_sdei_handler, NULL);
+>> +	if (ret) {
+>> +		pr_warn("%s: Error %d to register SDEI event\n",
+>> +			__func__, ret);
+>> +		ret = -EIO;
+>> +		goto release_tables;
+>> +	}
+>> +
+>> +	ret = sdei_event_enable(apf_sdei_num);
+>> +	if (ret) {
+>> +		pr_warn("%s: Error %d to enable SDEI event\n",
+>> +			__func__, ret);
+>> +		goto unregister_event;
+>> +	}
+>> +
+>> +	/*
+>> +	 * Initialize interrupt for page-ready notification. The
+>> +	 * interrupt number and its properties should have been
+>> +	 * retrieved from the ACPI:APFT table.
+>> +	 */
+>> +	apf_irq = acpi_register_gsi(NULL, apf_ppi_num,
+>> +				    ACPI_LEVEL_SENSITIVE, ACPI_ACTIVE_HIGH);
+>> +	if (apf_irq <= 0) {
+>> +		ret = -EIO;
+>> +		pr_warn("%s: Error %d to register IRQ\n",
+>> +			__func__, apf_irq);
+>> +		goto disable_event;
+>> +	}
+>> +
+>> +	ret = request_percpu_irq(apf_irq, kvm_async_pf_irq_handler,
+>> +				 "Asynchronous Page Fault", &apf_data);
+>> +	if (ret) {
+>> +		pr_warn("%s: Error %d to request IRQ\n",
+>> +			__func__, ret);
+>> +		goto unregister_irq;
+>> +	}
+>> +
+>> +	register_reboot_notifier(&kvm_async_pf_cpu_reboot_nb);
+>> +	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
+>> +			"arm/kvm:online", kvm_async_pf_cpu_online,
+>> +			kvm_async_pf_cpu_offline);
+>> +	if (ret < 0) {
+>> +		pr_warn("%s: Error %d to install cpu hotplug callbacks\n",
+>> +			__func__, ret);
+>> +		goto release_irq;
+>> +	}
+>> +
+>> +	/* Enable async PF on the online CPUs */
+>> +	on_each_cpu(kvm_async_pf_cpu_enable, NULL, 1);
+>> +
+>> +	return 0;
+>> +
+>> +release_irq:
+>> +	free_percpu_irq(apf_irq, &apf_data);
+>> +unregister_irq:
+>> +	acpi_unregister_gsi(apf_ppi_num);
+>> +disable_event:
+>> +	sdei_event_disable(apf_sdei_num);
+>> +unregister_event:
+>> +	sdei_event_unregister(apf_sdei_num);
+>> +release_tables:
+>> +	free_percpu(apf_tables);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static int __init kvm_guest_init(void)
+>> +{
+>> +	return kvm_async_pf_init();
+>> +}
+>> +
+>> +fs_initcall(kvm_guest_init);
+> 
+
+Thanks,
+Gavin
 
