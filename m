@@ -2,287 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 759CE3EE17B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 02:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 293D23EE1BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 02:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234958AbhHQAyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 20:54:52 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:35133 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232974AbhHQAyv (ORCPT
+        id S235657AbhHQAzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 20:55:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233167AbhHQAzr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 20:54:51 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UjGrjA7_1629161655;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UjGrjA7_1629161655)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 17 Aug 2021 08:54:17 +0800
-Date:   Tue, 17 Aug 2021 08:54:14 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Chao Yu <chao@kernel.org>
-Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
-        Huang Jianan <huangjianan@oppo.com>,
-        Lasse Collin <lasse.collin@tukaani.org>,
-        nl6720 <nl6720@gmail.com>
-Subject: Re: [PATCH 1/2] erofs: add support for the full decompressed lengthy
-Message-ID: <YRsItrKiD0Wa3oTr@B-P7TQMD6M-0146.local>
-References: <20210813052931.203280-1-hsiangkao@linux.alibaba.com>
- <20210813052931.203280-2-hsiangkao@linux.alibaba.com>
- <f3437906-f983-65f9-8471-35f94b57d889@kernel.org>
+        Mon, 16 Aug 2021 20:55:47 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A3CC0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 17:55:14 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id q21so8573025ljj.6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 17:55:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C/jXyVM8A6IIIf73CUW3opic/WD75vfkmRvuKQWW4Jo=;
+        b=Ilqv4TYrhWro5ne/pyK8Z8uNieTgQV6uYOzuf7BRghGmB8vnlhfGvOr/0/e/S1IwQs
+         7hQf66rKkZbN2FzNg/lAkY8kGf8968Opho/WF3Oda7z3Bq5zGkHWUDeKdTIMK9vnpdcr
+         Q21Q+ebQypHAX5SMsmdNk0shvXZpPmldQV8JkAnN+rTBj1EPUQqbI161vTAsodd2SjvZ
+         MCqb1O1Ze+1fb4BtL/U3gENTSpiIzkKkc+t3xLBPezJesXnuxw+T6kn1KhGum0t21LcO
+         jMIXT/hfLcwRdk65I9OuXZg0sgiZ+Ph1sisDURKJYN/RBaSvnazEEt1aLfLUFDVTen6Z
+         an+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C/jXyVM8A6IIIf73CUW3opic/WD75vfkmRvuKQWW4Jo=;
+        b=seBBGV0xCoDVQg1U1cuxJEDEDMtPRc7XLTWEqCGfABF3AEbAaZCqkTRgHEF1B8STL1
+         17sC1Nf8+XZQ3Ba00zvY83+KF+6QW7VfpGQEiooQWvNe/fE54RaAwJg9Zg2KUnlI91yM
+         ZIHS+aaByxu6Ii5UNAqykbHo6rAN8MVCzUyU/lD+ReKfoPJoiEFd6XkNKTOpkEGEZ2Ue
+         7FkEpLL5sBtbPLcRulpvVOZnx50ObNvYRuwBqBdSLoqblaKzefohRYBLp2/YDaIYB1Iq
+         Jsetee2sdWBtDscUCDfbE3IXJuaSaJWEbddw7e2n9TdDNZ8iGs855nZPuc2AhPAmRWHa
+         wDlA==
+X-Gm-Message-State: AOAM531ZrTx70iRhdv0IMQ9Qgrnh4CJtVbjDbAiY44+Z3Qw+S7bC6K3u
+        ZInOc4SHm0rSvIwHgDTYOLfWiQ==
+X-Google-Smtp-Source: ABdhPJxgPqsyxqeCXBI3IsVJLkcFyXipmzYz3hTJEmurF1pvQfTvThKjXBvusty3YDmk6qnRjBkDxQ==
+X-Received: by 2002:a05:651c:118f:: with SMTP id w15mr779302ljo.47.1629161713357;
+        Mon, 16 Aug 2021 17:55:13 -0700 (PDT)
+Received: from eriador.lan ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id z6sm40719lfb.251.2021.08.16.17.55.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 17:55:12 -0700 (PDT)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [RFC PATCH 00/15] create power sequencing subsystem
+Date:   Tue, 17 Aug 2021 03:54:52 +0300
+Message-Id: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f3437906-f983-65f9-8471-35f94b57d889@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 11:38:03PM +0800, Chao Yu wrote:
-> On 2021/8/13 13:29, Gao Xiang wrote:
-> > Previously, there is no need to get the full decompressed length since
-> > EROFS supports partial decompression. However for some other cases
-> > such as fiemap, the full decompressed length is necessary for iomap to
-> > make it work properly.
-> > 
-> > This patch adds a way to get the full decompressed length. Note that
-> > it takes more metadata overhead and it'd be avoided if possible in the
-> > performance sensitive scenario.
-> > 
-> > Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> > ---
-> >   fs/erofs/internal.h |  5 +++
-> >   fs/erofs/zmap.c     | 93 +++++++++++++++++++++++++++++++++++++++++----
-> >   2 files changed, 90 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-> > index 25b094085ca6..2a05b09e1c06 100644
-> > --- a/fs/erofs/internal.h
-> > +++ b/fs/erofs/internal.h
-> > @@ -356,6 +356,11 @@ struct erofs_map_blocks {
-> >   /* Flags used by erofs_map_blocks_flatmode() */
-> >   #define EROFS_GET_BLOCKS_RAW    0x0001
-> > +/*
-> > + * Used to get the exact decompressed length, e.g. fiemap (consider lookback
-> > + * approach instead if possible since it's quite metadata expensive.)
-> > + */
-> > +#define EROFS_GET_BLOCKS_FIEMAP	0x0002
-> >   /* zmap.c */
-> >   #ifdef CONFIG_EROFS_FS_ZIP
-> > diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
-> > index f68aea4baed7..12256ef12819 100644
-> > --- a/fs/erofs/zmap.c
-> > +++ b/fs/erofs/zmap.c
-> > @@ -212,9 +212,32 @@ static unsigned int decode_compactedbits(unsigned int lobits,
-> >   	return lo;
-> >   }
-> > +static int get_compacted_la_distance(unsigned int lclusterbits,
-> > +				     unsigned int encodebits,
-> > +				     unsigned int vcnt, u8 *in, int i)
-> > +{
-> > +	const unsigned int lomask = (1 << lclusterbits) - 1;
-> > +	unsigned int lo, d1 = 0;
-> > +	u8 type;
-> > +
-> > +	for (; i < vcnt; ++i) {
-> 
-> for (di = 0; i < vcnt; ++i, ++d1)
+This is an RFC of the proposed power sequencer subsystem. This is a
+generification of the MMC pwrseq code. The subsystem tries to abstract
+the idea of complex power-up/power-down/reset of the devices.
 
-Hi Chao,
+The primary set of devices that promted me to create this patchset is
+the Qualcomm BT+WiFi family of chips. They reside on serial+platform
+interfaces (older generations) or on serial+PCIe (newer generations).
+They require a set of external voltage regulators to be powered on and
+(some of them) have separate WiFi and Bluetooth enable GPIOs.
 
-Thanks for the review
+This patchset being an RFC tries to demonstrate the approach, design and
+usage of the pwrseq subsystem. Following issues are present in the RFC
+at this moment but will be fixed later if the overall approach would be
+viewed as acceptable:
 
-this could cause lo potential uninitialized warning (actually it's
-unpossible). So I resent [PATCH v1.1] as
+ - No documentation
+   While the code tries to be self-documenting proper documentation
+   would be required.
 
-https://lore.kernel.org/linux-erofs/20210814152727.78451-1-hsiangkao@linux.alibaba.com/
+ - Minimal device tree bindings changes
+   There are no proper updates for the DT bindings (thus neither Rob
+   Herring nor devicetree are included in the To/Cc lists). The dt
+   schema changes would be a part of v1.
 
-Please kindly help check out...
+ - Lack of proper PCIe integration
+   At this moment support for PCIe is hacked up to be able to test the
+   PCIe part of qca6390. Proper PCIe support would require automatically
+   powering up the devices before the scan basing on the proper device
+   structure in the device tree.
 
-> 
-> > +		lo = decode_compactedbits(lclusterbits, lomask,
-> > +					  in, encodebits * i, &type);
-> > +
-> > +		if (type != Z_EROFS_VLE_CLUSTER_TYPE_NONHEAD)
-> > +			return d1;
-> 
-> [1]
-> 
-> > +		++d1;
-> > +	}
-> > +
-> > +	/* vcnt - 1 (Z_EROFS_VLE_CLUSTER_TYPE_NONHEAD) item */
-> > +	if (!(lo & Z_EROFS_VLE_DI_D0_CBLKCNT))
-> > +		d1 += lo - 1;
-> > +	return d1;
-> > +}
-> > +
-> >   static int unpack_compacted_index(struct z_erofs_maprecorder *m,
-> >   				  unsigned int amortizedshift,
-> > -				  unsigned int eofs)
-> > +				  unsigned int eofs, bool lookahead)
-> >   {
-> >   	struct erofs_inode *const vi = EROFS_I(m->inode);
-> >   	const unsigned int lclusterbits = vi->z_logical_clusterbits;
-> > @@ -243,6 +266,11 @@ static int unpack_compacted_index(struct z_erofs_maprecorder *m,
-> >   	m->type = type;
-> >   	if (type == Z_EROFS_VLE_CLUSTER_TYPE_NONHEAD) {
-> >   		m->clusterofs = 1 << lclusterbits;
-> > +
-> > +		/* figure out lookahead_distance: delta[1] if needed */
-> > +		if (lookahead)
-> > +			m->delta[1] = get_compacted_la_distance(lclusterbits,
-> > +						encodebits, vcnt, in, i);
-> >   		if (lo & Z_EROFS_VLE_DI_D0_CBLKCNT) {
-> >   			if (!big_pcluster) {
-> >   				DBG_BUGON(1);
-> > @@ -313,7 +341,7 @@ static int unpack_compacted_index(struct z_erofs_maprecorder *m,
-> >   }
-> >   static int compacted_load_cluster_from_disk(struct z_erofs_maprecorder *m,
-> > -					    unsigned long lcn)
-> > +					    unsigned long lcn, bool lookahead)
-> >   {
-> >   	struct inode *const inode = m->inode;
-> >   	struct erofs_inode *const vi = EROFS_I(inode);
-> > @@ -364,11 +392,12 @@ static int compacted_load_cluster_from_disk(struct z_erofs_maprecorder *m,
-> >   	err = z_erofs_reload_indexes(m, erofs_blknr(pos));
-> >   	if (err)
-> >   		return err;
-> > -	return unpack_compacted_index(m, amortizedshift, erofs_blkoff(pos));
-> > +	return unpack_compacted_index(m, amortizedshift, erofs_blkoff(pos),
-> > +				      lookahead);
-> >   }
-> >   static int z_erofs_load_cluster_from_disk(struct z_erofs_maprecorder *m,
-> > -					  unsigned int lcn)
-> > +					  unsigned int lcn, bool lookahead)
-> >   {
-> >   	const unsigned int datamode = EROFS_I(m->inode)->datalayout;
-> > @@ -376,7 +405,7 @@ static int z_erofs_load_cluster_from_disk(struct z_erofs_maprecorder *m,
-> >   		return legacy_load_cluster_from_disk(m, lcn);
-> >   	if (datamode == EROFS_INODE_FLAT_COMPRESSION)
-> > -		return compacted_load_cluster_from_disk(m, lcn);
-> > +		return compacted_load_cluster_from_disk(m, lcn, lookahead);
-> >   	return -EINVAL;
-> >   }
-> > @@ -399,7 +428,7 @@ static int z_erofs_extent_lookback(struct z_erofs_maprecorder *m,
-> >   	/* load extent head logical cluster if needed */
-> >   	lcn -= lookback_distance;
-> > -	err = z_erofs_load_cluster_from_disk(m, lcn);
-> > +	err = z_erofs_load_cluster_from_disk(m, lcn, false);
-> >   	if (err)
-> >   		return err;
-> > @@ -450,7 +479,7 @@ static int z_erofs_get_extent_compressedlen(struct z_erofs_maprecorder *m,
-> >   	if (m->compressedlcs)
-> >   		goto out;
-> > -	err = z_erofs_load_cluster_from_disk(m, lcn);
-> > +	err = z_erofs_load_cluster_from_disk(m, lcn, false);
-> >   	if (err)
-> >   		return err;
-> > @@ -498,6 +527,48 @@ static int z_erofs_get_extent_compressedlen(struct z_erofs_maprecorder *m,
-> >   	return -EFSCORRUPTED;
-> >   }
-> > +static int z_erofs_get_extent_decompressedlen(struct z_erofs_maprecorder *m)
-> > +{
-> > +	struct inode *inode = m->inode;
-> > +	struct erofs_inode *vi = EROFS_I(inode);
-> > +	struct erofs_map_blocks *map = m->map;
-> > +	unsigned int lclusterbits = vi->z_logical_clusterbits;
-> > +	u64 lcn = m->lcn, headlcn = map->m_la >> lclusterbits;
-> > +	int err;
-> > +
-> > +	do {
-> > +		/* handle the last EOF pcluster (no next HEAD lcluster) */
-> > +		if ((lcn << lclusterbits) >= inode->i_size) {
-> > +			map->m_llen = inode->i_size - map->m_la;
-> > +			return 0;
-> > +		}
-> > +
-> > +		err = z_erofs_load_cluster_from_disk(m, lcn, true);
-> > +		if (err)
-> > +			return err;
-> > +
-> > +		if (m->type == Z_EROFS_VLE_CLUSTER_TYPE_NONHEAD) {
-> > +			if (!m->delta[1])
-> > +				DBG_BUGON(m->clusterofs != 1 << lclusterbits);
-> 
-> 			DBG_BUGON(!m->delta[1] &&
-> 				m->clusterofs != 1 << lclusterbits);
-> 
+----------------------------------------------------------------
+Dmitry Baryshkov (15):
+      power: add power sequencer subsystem
+      pwrseq: port MMC's pwrseq drivers to new pwrseq subsystem
+      mmc: core: switch to new pwrseq subsystem
+      ath10k: add support for pwrseq sequencing
+      Bluetooth: hci_qca: merge qca_power into qca_serdev
+      Bluetooth: hci_qca: merge init paths
+      Bluetooth: hci_qca: merge qca_power_on with qca_regulators_init
+      Bluetooth: hci_qca: futher rework of power on/off handling
+      Bluetooth: hci_qca: add support for pwrseq
+      pwrseq: add support for QCA BT+WiFi power sequencer
+      arm64: dts: qcom: sdm845-db845c: switch bt+wifi to qca power sequencer
+      arm64: dts: qcom: qrb5165-rb5: add bluetooth support
+      arm64: dts: qcom: sdm845-db845c: add second channel support to qca power sequencer
+      WIP: PCI: qcom: use pwrseq to power up bus devices
+      WIP: arm64: dts: qcom: qrb5165-rb5: add bus-pwrseq property to pcie0
 
-Ok, will update.
-
-> > +		} else if (m->type == Z_EROFS_VLE_CLUSTER_TYPE_PLAIN ||
-> > +			   m->type == Z_EROFS_VLE_CLUSTER_TYPE_HEAD) {
-> > +			/* go on until the next HEAD lcluster */
-> > +			if (lcn != headlcn)
-> > +				break;
-> > +			m->delta[1] = 1;
-> 
-> If I didn't miss anything, return value [1] of get_compacted_la_distance()
-> won't be used anyway here? right?
-
-These are two different things, first, return value [1] is used to calculate
-length to the next lcluster, e.g.
-
-   NONHEAD NONHEAD HEAD
-     ^
-     m->lcn
-so here in the first loop, delta[1] = 2, and m->type == NONHEAD,
-the second loop, m->type == HEAD, lcn != headlcn, so we are done.
+ .../{mmc => power/pwrseq}/mmc-pwrseq-emmc.yaml     |   0
+ .../{mmc => power/pwrseq}/mmc-pwrseq-sd8787.yaml   |   0
+ .../{mmc => power/pwrseq}/mmc-pwrseq-simple.yaml   |   0
+ arch/arm64/boot/dts/qcom/qrb5165-rb5.dts           |  51 +++
+ arch/arm64/boot/dts/qcom/sdm845-db845c.dts         |  28 +-
+ arch/arm64/boot/dts/qcom/sdm845.dtsi               |   6 +
+ drivers/bluetooth/hci_qca.c                        | 286 +++++++-------
+ drivers/mmc/core/Kconfig                           |  32 --
+ drivers/mmc/core/Makefile                          |   4 -
+ drivers/mmc/core/core.c                            |   9 +-
+ drivers/mmc/core/host.c                            |   8 +-
+ drivers/mmc/core/mmc.c                             |   3 +-
+ drivers/mmc/core/pwrseq.c                          | 117 ------
+ drivers/mmc/core/pwrseq.h                          |  58 ---
+ drivers/mmc/core/pwrseq_emmc.c                     | 120 ------
+ drivers/mmc/core/pwrseq_sd8787.c                   | 107 ------
+ drivers/mmc/core/pwrseq_simple.c                   | 164 --------
+ drivers/net/wireless/ath/ath10k/snoc.c             |  63 +++-
+ drivers/net/wireless/ath/ath10k/snoc.h             |   2 +
+ drivers/pci/controller/dwc/pcie-qcom.c             |  13 +
+ drivers/power/Kconfig                              |   1 +
+ drivers/power/Makefile                             |   1 +
+ drivers/power/pwrseq/Kconfig                       |  57 +++
+ drivers/power/pwrseq/Makefile                      |  11 +
+ drivers/power/pwrseq/core.c                        | 411 +++++++++++++++++++++
+ drivers/power/pwrseq/pwrseq_emmc.c                 | 118 ++++++
+ drivers/power/pwrseq/pwrseq_qca.c                  | 291 +++++++++++++++
+ drivers/power/pwrseq/pwrseq_sd8787.c               |  97 +++++
+ drivers/power/pwrseq/pwrseq_simple.c               | 160 ++++++++
+ include/linux/mmc/host.h                           |   4 +-
+ include/linux/pwrseq/consumer.h                    |  88 +++++
+ include/linux/pwrseq/driver.h                      |  71 ++++
+ 32 files changed, 1592 insertions(+), 789 deletions(-)
+ rename Documentation/devicetree/bindings/{mmc => power/pwrseq}/mmc-pwrseq-emmc.yaml (100%)
+ rename Documentation/devicetree/bindings/{mmc => power/pwrseq}/mmc-pwrseq-sd8787.yaml (100%)
+ rename Documentation/devicetree/bindings/{mmc => power/pwrseq}/mmc-pwrseq-simple.yaml (100%)
+ delete mode 100644 drivers/mmc/core/pwrseq.c
+ delete mode 100644 drivers/mmc/core/pwrseq.h
+ delete mode 100644 drivers/mmc/core/pwrseq_emmc.c
+ delete mode 100644 drivers/mmc/core/pwrseq_sd8787.c
+ delete mode 100644 drivers/mmc/core/pwrseq_simple.c
+ create mode 100644 drivers/power/pwrseq/Kconfig
+ create mode 100644 drivers/power/pwrseq/Makefile
+ create mode 100644 drivers/power/pwrseq/core.c
+ create mode 100644 drivers/power/pwrseq/pwrseq_emmc.c
+ create mode 100644 drivers/power/pwrseq/pwrseq_qca.c
+ create mode 100644 drivers/power/pwrseq/pwrseq_sd8787.c
+ create mode 100644 drivers/power/pwrseq/pwrseq_simple.c
+ create mode 100644 include/linux/pwrseq/consumer.h
+ create mode 100644 include/linux/pwrseq/driver.h
 
 
-Yet here the logic is instead
-if m->lcn == m->headlcn, so m->lcn points to this lcluster HEAD, but we
-need to find the next lcluster, e.g.
-
-   HEAD NONHEAD NONHEAD NONHEAD HEAD
-    ^                             ^
-    m->lcn, m->headlcn            we need to get this
-
-so we lcn == headlcn, we need to go on and get the next HEAD lcluster
-one.
-
-It will use since m->lcn could be originally equal to headlcn (point to
-this HEAD lcluster) 
-
-Thanks,
-Gao Xiang
-
-> 
-> Thanks,
-> 
-> > +		} else {
-> > +			erofs_err(inode->i_sb, "unknown type %u @ lcn %llu of nid %llu",
-> > +				  m->type, lcn, vi->nid);
-> > +			DBG_BUGON(1);
-> > +			return -EOPNOTSUPP;
-> > +		}
-> > +		lcn += m->delta[1];
-> > +	} while (m->delta[1]);
-> > +
-> > +	map->m_llen = (lcn << lclusterbits) + m->clusterofs - map->m_la;
-> > +	return 0;
-> > +}
-> > +
-> >   int z_erofs_map_blocks_iter(struct inode *inode,
-> >   			    struct erofs_map_blocks *map,
-> >   			    int flags)
-> > @@ -531,7 +602,7 @@ int z_erofs_map_blocks_iter(struct inode *inode,
-> >   	initial_lcn = ofs >> lclusterbits;
-> >   	endoff = ofs & ((1 << lclusterbits) - 1);
-> > -	err = z_erofs_load_cluster_from_disk(&m, initial_lcn);
-> > +	err = z_erofs_load_cluster_from_disk(&m, initial_lcn, false);
-> >   	if (err)
-> >   		goto unmap_out;
-> > @@ -581,6 +652,12 @@ int z_erofs_map_blocks_iter(struct inode *inode,
-> >   	err = z_erofs_get_extent_compressedlen(&m, initial_lcn);
-> >   	if (err)
-> >   		goto out;
-> > +
-> > +	if (flags & EROFS_GET_BLOCKS_FIEMAP) {
-> > +		err = z_erofs_get_extent_decompressedlen(&m);
-> > +		if (!err)
-> > +			map->m_flags |= EROFS_MAP_FULL_MAPPED;
-> > +	}
-> >   unmap_out:
-> >   	if (m.kaddr)
-> >   		kunmap_atomic(m.kaddr);
-> > 
