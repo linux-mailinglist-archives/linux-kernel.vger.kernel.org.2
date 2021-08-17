@@ -2,112 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07DFD3EE705
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 09:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A51783EE6FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 09:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238401AbhHQHLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 03:11:33 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:56528
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234669AbhHQHLc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 03:11:32 -0400
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+        id S234741AbhHQHKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 03:10:07 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:34159 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233996AbhHQHKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 03:10:06 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id B0CF140C9C
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 07:10:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629184258;
-        bh=WHeeah62hjlFErzdEXoq5NwxsOhOjcjZ4nIVDJHy4hc=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=ffY3L2eRSkqMSe137qONQFBkjCmNmfsgh3AV35cxUy0qWTVO6PdwvP9IDhjhM+rK4
-         fLjSeKpoQrzjJwlHNbXUJPv9ZBL26Cy4YJebTxT7ysxUOOaWruvvEeXFNrGPmjhppF
-         mDB1RR+yi+0ZbLYT85DgyJSkGXQmZUWbrjl6/Q3maSzGH1ULnZYi9PyAFN0ERHhGqA
-         Pb1WTSCqdgKZJa6lBPPLf4ZgerAFxFkmTTWpDhaMSFGdf20GH8TkKofClSapn1dmNO
-         /xtkJyfaNLa1SU8YqeXkpb9TIukmCcfWsTskLZyrZ1+9WlU9ht1grXgKqIzlpMXzEJ
-         o6U4+BDjQFVog==
-Received: by mail-ed1-f71.google.com with SMTP id b25-20020a05640202d9b02903be7281a80cso10148906edx.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 00:10:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WHeeah62hjlFErzdEXoq5NwxsOhOjcjZ4nIVDJHy4hc=;
-        b=cxMQi8jorqVMZU9rbwTr1yV70W+g/qQQNY5oSaiP1jLlVPGvOWmbgseE0rFrezjDns
-         497/ntrZES0So7L6ZLkING5MfOD8YiUi7/iV2mRPCXZhD5bC2sHZO8Et1AfbOqto+FfI
-         KUEVnqPaY1Tbc9VhG7rVzrMkz9p+g1QqnRnuwSM6lZ6apcNTlH4ji6OQhFrRWR1/KCKc
-         LSfurzt9nlhHpER2rm4mDLScB5vGBUh+gT6gVMsFOo806eMaEFs1qc9POv7LiPlzRItx
-         V7C3vVk2rYNnfUPwa6RfV72i+eLyRkhFEvynR7SHrtSL9D/DAMSvgLaSxGGCjy+K2Bmo
-         uOdQ==
-X-Gm-Message-State: AOAM533MoItD/QHBfVv81o1lS1S254WcFLqZatjzF3BNQpxxPsQrgs6Z
-        DTlMb2uyF6DmWazS7A6EWktCHwlYlO7yFaTJx49ZLwRoxey4rbT0/Vl0oZBv2WUFTJMbyC6N3lY
-        Dps23KlXeistva9BqaObQnX/GonuUOm95xwRWWtjw8g==
-X-Received: by 2002:a50:a455:: with SMTP id v21mr2450964edb.369.1629184258436;
-        Tue, 17 Aug 2021 00:10:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxow0aRHdptwVh6pCglt0KMTvnyI1SrKpUMvXF8rY0OLi5SPGSL/hpUBq/nJ+FQyycIBPD5Vg==
-X-Received: by 2002:a50:a455:: with SMTP id v21mr2450939edb.369.1629184258229;
-        Tue, 17 Aug 2021 00:10:58 -0700 (PDT)
-Received: from localhost.localdomain ([86.32.42.198])
-        by smtp.gmail.com with ESMTPSA id p23sm570535edt.71.2021.08.17.00.10.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 00:10:57 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [GIT PULL] pinctrl: samsung: pull for v5.15
-Date:   Tue, 17 Aug 2021 09:09:13 +0200
-Message-Id: <20210817070913.6387-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gphwn5XMPz9sRN;
+        Tue, 17 Aug 2021 17:09:29 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629184172;
+        bh=qm33RC9Y9OXmRvrthX7DLYcC/gKyEOADied9xmhIhic=;
+        h=Date:From:To:Cc:Subject:From;
+        b=fByQg/9sVQWoyG4SHdvqymD/wcSrfev9g+/dOQqKZ+ePlVyjdulGVoYZu9EDTMKCK
+         G25iXzCkGGYkD+DtOGVyoWbdxcCHdqz0RVFUezsybBT5GVf2sz6efG/KzAwvzT+6J7
+         ND2kOoBP4Pib25cBnsMORmTNXWYRfJRlc5Q/lWbqmWVgGP9IENhkY0tB8AwcV7WCmo
+         qyVefRnxZ2LpcAiGxaV3X5rskco6S7Cvo8xh3qWRkWuGPGIwLxR9rWf4xE4UGanT6X
+         OXhoWbCXd3kQpT5/LV5gbxPvWAC7gfzX0WtcjBy9Fjd/JwUHQHF7CWnA86iTp54rsd
+         MbLeCsTl/iydA==
+Date:   Tue, 17 Aug 2021 17:09:28 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the rcu tree with the tip tree
+Message-ID: <20210817170928.7980e4bb@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/Gfxi1fqkB2qv4WhiOFXhaTi";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+--Sig_/Gfxi1fqkB2qv4WhiOFXhaTi
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Just few commits for v5.15.
+Hi all,
 
-Best regards,
-Krzysztof
+Today's linux-next merge of the rcu tree got a conflict in:
 
+  kernel/time/tick-internal.h
 
-The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
+between commits:
 
-  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+  8c3b5e6ec0fe ("hrtimer: Ensure timerfd notification for HIGHRES=3Dn")
+  a761a67f591a ("timekeeping: Distangle resume and clock-was-set events")
+  17a1b8826b45 ("hrtimer: Add bases argument to clock_was_set()")
 
-are available in the Git repository at:
+from the tip tree and commit:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/pinctrl/samsung.git tags/samsung-pinctrl-5.15
+  a5e8561a2bdf ("clocksource: Make clocksource-wdtest.c safe for slow-HZ sy=
+stems")
 
-for you to fetch changes up to cdd3d945dcec0d0dab845175dc9400ab54512aa6:
+from the rcu tree.
 
-  pinctrl: samsung: Add Exynos850 SoC specific data (2021-08-13 09:39:42 +0200)
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-----------------------------------------------------------------
-Samsung pinctrl drivers changes for v5.15
+--=20
+Cheers,
+Stephen Rothwell
 
-1. Fix number of pins in one GPIO pin bank.
-2. Add support for Exynos850 SoC (Exynos3830).
+diff --cc kernel/time/tick-internal.h
+index 3548f0829e6d,5459bab2f4f7..000000000000
+--- a/kernel/time/tick-internal.h
++++ b/kernel/time/tick-internal.h
+@@@ -166,14 -166,22 +166,34 @@@ DECLARE_PER_CPU(struct hrtimer_cpu_base
+  extern u64 get_next_timer_interrupt(unsigned long basej, u64 basem);
+  void timer_clear_idle(void);
+ =20
+ +#define CLOCK_SET_WALL							\
+ +	(BIT(HRTIMER_BASE_REALTIME) | BIT(HRTIMER_BASE_REALTIME_SOFT) |	\
+ +	 BIT(HRTIMER_BASE_TAI) | BIT(HRTIMER_BASE_TAI_SOFT))
+ +
+ +#define CLOCK_SET_BOOT							\
+ +	(BIT(HRTIMER_BASE_BOOTTIME) | BIT(HRTIMER_BASE_BOOTTIME_SOFT))
+ +
+ +void clock_was_set(unsigned int bases);
+ +void clock_was_set_delayed(void);
+ +
+ +void hrtimers_resume_local(void);
+++
++ /* Since jiffies uses a simple TICK_NSEC multiplier
++  * conversion, the .shift value could be zero. However
++  * this would make NTP adjustments impossible as they are
++  * in units of 1/2^.shift. Thus we use JIFFIES_SHIFT to
++  * shift both the nominator and denominator the same
++  * amount, and give ntp adjustments in units of 1/2^8
++  *
++  * The value 8 is somewhat carefully chosen, as anything
++  * larger can result in overflows. TICK_NSEC grows as HZ
++  * shrinks, so values greater than 8 overflow 32bits when
++  * HZ=3D100.
++  */
++ #if HZ < 34
++ #define JIFFIES_SHIFT	6
++ #elif HZ < 67
++ #define JIFFIES_SHIFT	7
++ #else
++ #define JIFFIES_SHIFT	8
++ #endif
 
-----------------------------------------------------------------
-Jaehyoung Choi (1):
-      pinctrl: samsung: Fix pinctrl bank pin count
+--Sig_/Gfxi1fqkB2qv4WhiOFXhaTi
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Sam Protsenko (2):
-      dt-bindings: pinctrl: samsung: Add Exynos850 doc
-      pinctrl: samsung: Add Exynos850 SoC specific data
+-----BEGIN PGP SIGNATURE-----
 
- .../bindings/pinctrl/samsung-pinctrl.txt           |   1 +
- drivers/pinctrl/samsung/pinctrl-exynos-arm64.c     | 116 +++++++++++++++++++++
- drivers/pinctrl/samsung/pinctrl-exynos.h           |  29 ++++++
- drivers/pinctrl/samsung/pinctrl-samsung.c          |   4 +-
- drivers/pinctrl/samsung/pinctrl-samsung.h          |   1 +
- 5 files changed, 150 insertions(+), 1 deletion(-)
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEbYKkACgkQAVBC80lX
+0GwRCQgAlfwRjSyLSg1JocmDzRtvUk3E1ylhZTUmVS+kXZbBco5nFaw6LtdVe96G
+y0CodFaDYAMxJQgsKJUNQCoPbjXjjnmPKgNhxAi/540otk1y+Vm3pC9innhGbWwR
+ahu0gw5fS86L4CrYd2W6etnE0vtUejUP1zg+EP+rXf12QmZkC5fF4yCIpJPBGXj+
+Qlh10yaO+4AbLSc38q421W47bTa+dzVYZrSCtOORTqvThMt3Ub+ziOXb9j5FVV0J
+AlFglYF8AfOgcD48L5Cm/HNjBYaCmvvx12piBmCzGhjBSb+0OI8Wz4MlhH0qtVtQ
+Et7PGAwY6GS45ur+HJLL3yxRCY1Yxg==
+=Spwn
+-----END PGP SIGNATURE-----
+
+--Sig_/Gfxi1fqkB2qv4WhiOFXhaTi--
