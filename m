@@ -2,112 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F0A3EF0F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 19:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4464C3EF0FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 19:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231938AbhHQRcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 13:32:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbhHQRcn (ORCPT
+        id S232194AbhHQRhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 13:37:04 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:52364
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229716AbhHQRhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 13:32:43 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F364C061764;
-        Tue, 17 Aug 2021 10:32:10 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id oa17so249793pjb.1;
-        Tue, 17 Aug 2021 10:32:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8V0aBEAXUKbzNyPVGyzX8W8ZO8Yk8w8Fat1TgUdEyOM=;
-        b=VFWEXu36GOT7GiAwtAR0sqlNFX6kbdt0fnk3299s0fHbfObDFws6Qmmi0dIG+n1YCU
-         SkvdrUHzspkab5MnoEl8z9/M9YMXSMfQUYpcTed9Z9oeE/AC619mK8FeS1CibO3Qup0F
-         Kf0m9UR9RhGIu8J9XvRfP2GKvxf0sK8EUSxK1NfgaQWN6TuoNcZrT+d7tueuwcfk/AGW
-         SePPSNqC0k09gjEBvpwe0R5L6tcD0/UxnuM2lZEpmjokb5b5nZcd7pM64cBia3LyjTqQ
-         mRAtlXv6nX/rUHdEiFnmsJi6EK5DrE3yxbO8mn18A+e+fxho5HkxsfJPAemRL5WCXXyB
-         y4nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8V0aBEAXUKbzNyPVGyzX8W8ZO8Yk8w8Fat1TgUdEyOM=;
-        b=Ewim8+BBoZ8fqLe7hHtc7l5i7+gB7RSCRz58blqDJm9G12CO7/NAMV5LThE4Lq8RoN
-         seYtxs1TGTqOxSCrVCswtXAPth2oBvOsaGoGiRA3v4cSSMvZ2stsDHOkhgXR+lEx2qqi
-         /i0u1PQPDD8t+Y2wjNj9Xs8mN/CADKtKQsb6lWpQ7lRlaKoPipYkSrwpAKb5lysIZm8b
-         piHAvEx/QQf2egPSuylusKVX0/AA8HuCVZA6RsLtt8ktHIgjC1zPEFaoOeLY9gdw9re0
-         d7IYSGymHR57h0PhHBsfZLIW/Ve86TP1LAUBVp1jZlopHRYLelgNp6WJAmuDKNNDQI0j
-         f38g==
-X-Gm-Message-State: AOAM531VCThBM6y7tgOahe2aoKBRctUn+iGWo6+Jmofcja/rIY5GNG7S
-        W706KR7J57JRf+76mn+LB+XpgkOV1RVPCvYGrM4=
-X-Google-Smtp-Source: ABdhPJzT40SDroXs6VsQp6G+dEmQxUKECNAXIOOK47Jr9nFZl1vdZDQsxCddYvk3dxVTjDRV+nwqi8FDJb672Orhu4Y=
-X-Received: by 2002:a17:902:bb81:b0:12d:a7ec:3d85 with SMTP id
- m1-20020a170902bb8100b0012da7ec3d85mr3648635pls.17.1629221529919; Tue, 17 Aug
- 2021 10:32:09 -0700 (PDT)
+        Tue, 17 Aug 2021 13:37:03 -0400
+Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 8FB333F0A5;
+        Tue, 17 Aug 2021 17:36:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629221788;
+        bh=5/x8mWEjAurOJGYA4srik4fEE501O3SjgyLXubuBBxI=;
+        h=To:From:Cc:Subject:Message-ID:Date:MIME-Version:Content-Type;
+        b=Feh3fG1RUxt7mF2a6BvNFOHW3mVXHGdPkHMygbo3D7kNzTd/Rro/LFFPOzf144mBW
+         av1+oqazuNFxKHyFsQ6boZyaheddUh7wOhiGf33lanOwMqTA/LW1j3dY8kf/Phr8Jd
+         RG5xbS/TFcNr217wboOrgDkHOMgj+AiEjPzQ5hLITddq6VE2DP4ZZgMakW9zTMXIr+
+         7Clq3eaSqFm6iIdYUFNgUYVEd/LfJkypsWIZlpKi5uoqZXBBoEulgzLwzgj5Cl3TZ2
+         V4RtXNo64dd2SixcKfAlXq3ImGyXar2zJtxEfHaEZyrN5vsvYMzZ/BkfXl3y+21BVK
+         a/+M0DfCD/hiA==
+To:     Andrii Nakryiko <andrii@kernel.org>
+From:   Colin Ian King <colin.king@canonical.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, Yonghong Song <yhs@fb.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: re: bpf: Implement minimal BPF perf link
+Message-ID: <342670fc-948a-a76e-5a47-b3d44e3e3926@canonical.com>
+Date:   Tue, 17 Aug 2021 18:36:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210817170057.16783-1-utkarshverma294@gmail.com>
-In-Reply-To: <20210817170057.16783-1-utkarshverma294@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 17 Aug 2021 20:31:30 +0300
-Message-ID: <CAHp75Vc49M-bdRviytZojK8+vMWJPXA_7zmLx3EvyQNXh8veZA@mail.gmail.com>
-Subject: Re: [PATCH] serial: 8250_exar: Add missing call to pci_free_irq_vectors()
-To:     Utkarsh Verma <utkarshverma294@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Valmer Huhn <valmer.huhn@concurrent-rt.com>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Bjorn Helgaas <bhelgaas@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 8:05 PM Utkarsh Verma <utkarshverma294@gmail.com> wrote:
->
-> Free the pci irq vectors if the call to pci_alloc_irq_vectors() fails
-> or if the device is removed.
+Hi,
 
-+Cc: Bjorn
+Static analysis with Coverity on linux-next has detected a potential
+issue with the following commit:
 
-This patch adds no value for all the code. This needs simply better
-semantics on allocations (because freeing is happening here
-implicitly).
-Bjorn, this is an exact example why we need pcim_alloc_irq_vectors().
+commit b89fbfbb854c9afc3047e8273cc3a694650b802e
+Author: Andrii Nakryiko <andrii@kernel.org>
+Date:   Sun Aug 15 00:05:57 2021 -0700
 
-> Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
-> ---
->  drivers/tty/serial/8250/8250_exar.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250/8250_exar.c
-> index 3ffeedc29c83..38b65d6980f5 100644
-> --- a/drivers/tty/serial/8250/8250_exar.c
-> +++ b/drivers/tty/serial/8250/8250_exar.c
-> @@ -627,8 +627,10 @@ exar_pci_probe(struct pci_dev *pcidev, const struct pci_device_id *ent)
->         pci_set_master(pcidev);
->
->         rc = pci_alloc_irq_vectors(pcidev, 1, 1, PCI_IRQ_ALL_TYPES);
-> -       if (rc < 0)
-> +       if (rc < 0) {
-> +               pci_free_irq_vectors(pcidev);
->                 return rc;
-> +       }
->
->         memset(&uart, 0, sizeof(uart));
->         uart.port.flags = UPF_SHARE_IRQ | UPF_EXAR_EFR | UPF_FIXED_TYPE | UPF_FIXED_PORT;
-> @@ -677,6 +679,7 @@ static void exar_pci_remove(struct pci_dev *pcidev)
->
->         if (priv->board->exit)
->                 priv->board->exit(pcidev);
-> +       pci_free_irq_vectors(pcidev);
->  }
+    bpf: Implement minimal BPF perf link
 
+The analysis is as follows:
 
--- 
-With Best Regards,
-Andy Shevchenko
+2936 static int bpf_perf_link_attach(const union bpf_attr *attr, struct
+bpf_prog *prog)
+2937 {
+
+    1. var_decl: Declaring variable link_primer without initializer.
+
+2938        struct bpf_link_primer link_primer;
+2939        struct bpf_perf_link *link;
+2940        struct perf_event *event;
+2941        struct file *perf_file;
+2942        int err;
+2943
+
+    2. Condition attr->link_create.flags, taking false branch.
+
+2944        if (attr->link_create.flags)
+2945                return -EINVAL;
+2946
+2947        perf_file = perf_event_get(attr->link_create.target_fd);
+
+    3. Condition IS_ERR(perf_file), taking false branch.
+
+2948        if (IS_ERR(perf_file))
+2949                return PTR_ERR(perf_file);
+2950
+2951        link = kzalloc(sizeof(*link), GFP_USER);
+
+    4. Condition !link, taking false branch.
+
+2952        if (!link) {
+2953                err = -ENOMEM;
+2954                goto out_put_file;
+2955        }
+2956        bpf_link_init(&link->link, BPF_LINK_TYPE_PERF_EVENT,
+&bpf_perf_link_lops, prog);
+2957        link->perf_file = perf_file;
+2958
+2959        err = bpf_link_prime(&link->link, &link_primer);
+
+    5. Condition err, taking false branch.
+
+2960        if (err) {
+2961                kfree(link);
+2962                goto out_put_file;
+2963        }
+2964
+2965        event = perf_file->private_data;
+2966        err = perf_event_set_bpf_prog(event, prog,
+attr->link_create.perf_event.bpf_cookie);
+
+    6. Condition err, taking true branch.
+2967        if (err) {
+    7. uninit_use_in_call: Using uninitialized value link_primer.fd when
+calling bpf_link_cleanup.
+    8. uninit_use_in_call: Using uninitialized value link_primer.file
+when calling bpf_link_cleanup.
+    9. uninit_use_in_call: Using uninitialized value link_primer.id when
+calling bpf_link_cleanup.
+
+   Uninitialized pointer read (UNINIT)
+   10. uninit_use_in_call: Using uninitialized value link_primer.link
+when calling bpf_link_cleanup.
+
+2968                bpf_link_cleanup(&link_primer);
+2969                goto out_put_file;
+2970        }
+2971        /* perf_event_set_bpf_prog() doesn't take its own refcnt on
+prog */
+2972        bpf_prog_inc(prog);
+
+I'm not 100% sure if these are false-positives, but I thought I should
+report the issues as potentially there is a pointer access on an
+uninitialized pointer on line 2968.
+
+Colin
