@@ -2,184 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 238583EE92E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B049F3EE92F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235331AbhHQJIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 05:08:53 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:48460 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234843AbhHQJIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 05:08:51 -0400
-Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
-        by mail.ispras.ru (Postfix) with ESMTPSA id E0FBD40D3BFF;
-        Tue, 17 Aug 2021 09:08:06 +0000 (UTC)
-Subject: Re: [PATCH] mtd: rawnand: mxic: Enable and prepare clocks in probe
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
-        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ldv-project@linuxtesting.org" <ldv-project@linuxtesting.org>
-References: <20210812113800.12466-1-novikov@ispras.ru>
- <CAHp75VcgqZEHBTXpNApGfRkhgjpCvbgj+yxUZbbO+=0DOvZLQg@mail.gmail.com>
-From:   Evgeny Novikov <novikov@ispras.ru>
-Message-ID: <4e582d89-0ef2-a94a-250a-30aa0f2eceb2@ispras.ru>
-Date:   Tue, 17 Aug 2021 12:08:06 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S235490AbhHQJJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 05:09:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234843AbhHQJJg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 05:09:36 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B20C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 02:09:03 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id j15so8913790ila.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 02:09:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dKxH25zZecXmbG9wFcitCEqWajfTJHKmnP0GbaZrQbc=;
+        b=EJhHr94k+XtTdHgKebg3U/G/FUFrBuFOH08gFD3tUkIG6RsJlTM0I7j+u6bFlDvFqd
+         dtzYvi6oUdqA8DHwzFwd3y9lBAmH4TZRoz6C6oRuOr1svPcOJgA/BiJmM8obIT19cFFl
+         VbbT4ld5/QOp+phEyNBDSHJ+UYnBxzf1m9rB8n+4S3+A04Dhq8gOU2P0RVI37mvIPku0
+         eGltk1oc6yKsFFlrqx3t0ZbTjG6hav3Mh75CriTq6hfUnIsEav+qa/VoVbpxBsdSc6MO
+         eHGghhZwASGtZC53btYxTDQDwBdQCY/93LUcUF5EN7RQW6yHUBTCf38QduShc8mE/3hx
+         iz2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dKxH25zZecXmbG9wFcitCEqWajfTJHKmnP0GbaZrQbc=;
+        b=EtfwZd0rWeA82eByUmJTmAsFS52j++FhBKqPu5YlczQAZr/Nfp1ODA6MvN2A0vFDLc
+         se1PvGXPQ1HMNKIKLeOdbbkUTPtjFUrUqfewx8V8oEAmHwB3K90koBnbyhPVgrVlAc9u
+         WpRznU7gRQB4VfMkAjRVuW4b6ZpEV28WpNufBj7KEIgIWiPOyIVI/cHG6kFU3ZmLRZYY
+         HU/fn+0k+ATmXs8y0SHO/5tzVrs65Uyol2EAIxjYUIFD5nLtZajzGpR+impu8b4RzVpO
+         OthIi1rHtAac92fusmDR9OuONZyddl0qQyMZeVCIN7DhujqcoIsJ7KbSBbbVE8z94WOc
+         3YQQ==
+X-Gm-Message-State: AOAM532dkht66n15/kD/a8vqSnK4qJ5ORCKcy/Ag3/b8cGDKRG1VcDQH
+        VYGvzwKdE1dgat66ZeWdsgf19MpCjpmBzxvK98U=
+X-Google-Smtp-Source: ABdhPJyj0DJPGrLYmfVWwudrAHnxjIPdDDekXu/xldqANkpN9eWgGHpPCsthiIgXRCQDExAXynEg0qk37KmBJ+PC/n0=
+X-Received: by 2002:a92:6802:: with SMTP id d2mr1685358ilc.40.1629191342878;
+ Tue, 17 Aug 2021 02:09:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VcgqZEHBTXpNApGfRkhgjpCvbgj+yxUZbbO+=0DOvZLQg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <CAKmqyKMLyx+CvBQbLz-xQvwLS692tx-4xOgU7b-V2J676D29yg@mail.gmail.com>
+ <d983217b-e117-361c-0306-b131695bb93f@denx.de> <CAKmqyKOsUcta1cXxamJZnf01G9beCZrDKia068HR+J0AadgNiA@mail.gmail.com>
+ <bff9ba97-bc26-f091-ba71-5e639af524d4@denx.de>
+In-Reply-To: <bff9ba97-bc26-f091-ba71-5e639af524d4@denx.de>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Tue, 17 Aug 2021 19:08:36 +1000
+Message-ID: <CAKmqyKPF3T_Sx+hL=4OSamLdjy=0fwmrTrVeb-GY0Ja9M=mi+Q@mail.gmail.com>
+Subject: Re: Revert "video: fbdev: mxsfb: Remove driver"
+To:     Marek Vasut <marex@denx.de>
+Cc:     Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>, b.zolnierkie@samsung.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alistair Francis <alistair@alistair23.me>,
+        Sam Ravnborg <sam@ravnborg.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Mon, Aug 16, 2021 at 5:55 PM Marek Vasut <marex@denx.de> wrote:
+>
+> On 8/16/21 9:34 AM, Alistair Francis wrote:
+> > On Sun, Aug 15, 2021 at 10:31 PM Marek Vasut <marex@denx.de> wrote:
+> >>
+> >> On 8/15/21 2:16 PM, Alistair Francis wrote:
+> >>> Hello,
+> >>>
+> >>> Commit f225f1393f034 "video: fbdev: mxsfb: Remove driver" removed the
+> >>> mxsfb fbdev driver.
+> >>>
+> >>> I am now working on getting mainline Linux running on the reMarkable 2
+> >>> eInk reader [1]. Unfortunately the rM2 doesn't use the standard EPD
+> >>> controller on the i.MX SoC, but instead uses the LCD controller.
+> >>>
+> >>> eInk panels are complex to control and require writing temperature
+> >>> dependent waveforms. As these waveforms are proprietary [2] the rM
+> >>> team runs closed source software called SWTCON in userspace to control
+> >>> the panel [3].
+> >>>
+> >>> This closed source software expects the fbdev mxsfb driver and it
+> >>> doesn't work with the DRM mxsfb driver (at least not that I can get it
+> >>> to).
+> >>>
+> >>> The NXP fork of Linux also re-adds the fbdev driver [4], so they also
+> >>> see some uses for it.
+> >>>
+> >>> I was wondering if the community would be open to re-adding the fbdev
+> >>> mxsfb driver to mainline? It could be re-added with a different
+> >>> dt-binding so that it is not used by default and only enabled for
+> >>> boards when required (like for the rM2).
+> >>>
+> >>> 1: https://remarkable.com/store/remarkable-2
+> >>> 2: https://goodereader.com/blog/e-paper/e-ink-waveforms-are-a-closely-guarded-secret
+> >>> 3: https://remarkablewiki.com/tech/rm2_framebuffer
+> >>> 4: https://source.codeaurora.org/external/imx/linux-imx/log/drivers/video/fbdev/mxsfb.c?h=lf-5.10.35-2.0.0
+> >>
+> >> +CC Sam.
+> >>
+> >> What sort of special thing does your proprietary userspace do that
+> >> cannot be added to the DRM driver or the fbdev emulation (if needed) ?
+> >
+> > It's hard to tell. When using the DRM driver I get cryptic errors
+> > about the frame buffer not being available.
+>
+> Do you have fbdev emulation enabled ? Does /dev/fbX exist ?
 
-On 12.08.2021 15:13, Andy Shevchenko wrote:
->
->
-> On Thursday, August 12, 2021, Evgeny Novikov <novikov@ispras.ru 
-> <mailto:novikov@ispras.ru>> wrote:
->
->     It seems that mxic_nfc_probe() missed invocation of
->     mxic_nfc_clk_enable(). The patch fixed that. In addition, error
->     handling
->     was refined appropriately.
->
->
-> NAK. Until you provide a deeper analysis, like how this works before 
-> your change.
->
->
-> Please, don’t blindly generate patches, this can even your bot do, 
-> just think about each change and preferable test on the real hardware.
->
-> The above is to all your lovely contributions.
-
-I completely agree with you that testing and debugging on the real 
-hardware is indispensable since this can help to reason about both found 
-bugs and patches suggested. Nevertheless, there are several cases when 
-this does not work. The most obvious one is lack of appropriate devices 
-on the spot that is not an obstacle for static analysis.
-
-My patches are based on results of static verification (software model 
-checking). In a nutshell, this approach allows analyzing target programs 
-more accurately in comparison with widely used static analysis tools. 
-But this is not for free. Usually it needs much more computational 
-resources to get something meaningful (in a general case the task is 
-undecidable). Modern computer systems solve this issue partially. Worse 
-is that thorough static analysis needs more or less complete and correct 
-models of environments for target programs. For instance, for loadable 
-kernel modules it is necessary to specify correct sequences of callback 
-invocations, initialize their arguments at least to some extent and 
-develop models of some vital functions like kzalloc(). Moreover, it is 
-necessary to specify requirements if one wants to search for something 
-special rather than NULL pointer dereferences. We were able to devote a 
-relatively small part of our project to development of environment 
-models and requirement specifications for verification of the Linux 
-kernel. Also, we spent not so much time for application of our framework 
-for open source device drivers. Nevertheless, this helped to find out 
-quite a lot of bugs many of which are tricky enough. If you are 
-interested in more details I can send you our last paper and presentation.
-
-Most our bug reports were accepted by developers. Rarely they preferred 
-to fix bugs according to their needs and vision, that is especially the 
-case for considerable changes that do need appropriate hardware and 
-testing. Just a few our bug reports were ignored or rejected. In the 
-latter case developers often pointed out us what is wrong with our 
-current understanding and models of the device driver environment or 
-requirement specifications. We always welcome this feedback as it allows 
-us to refine the stuff and, thus, to avoid false alarms and invalid 
-patches. Some developers requested scripts used for finding reported 
-issues, but it is not easy to add or refer them in patches like, say, 
-for Coccinelle since there is a bunch of external files developed in 
-different domain-specific languages as well as a huge verification 
-framework, that nobody will include into the source tree of the Linux 
-kernel.
-
-Regarding your claim. We do not have an appropriate hardware. As usual 
-this bug report was prepared on the base of static verification results 
-purely. If you want to see on a particular artifact I based my decision 
-on, I can share a link to a visualized violation witness provided by a 
-verification tool. We have not any bots since used verification tools do 
-not give any suggestions on the issue roots. Maybe in some cases it is 
-possible to generate patches automatically on the base of these 
-verification results like, say, Coccinelle does, but it is another big 
-work. Of course, it is necessary to test the driver and confirm that 
-there is an issue or reject the patch. As always the feedback is welcome.
-
-If you are not gratified with my explanation it would be great if you 
-and other developers will suggest any ideas how to enhance the process 
-if you find this relevant.
-
-Best regards,
-Evgeny Novikov
+I do and /dev/fb0 exists
 
 >
->     Found by Linux Driver Verification project (linuxtesting.org
->     <http://linuxtesting.org>).
+> What sort of messages do you get and from where ?
+
+This is the error I get:
+
+xochitl[252]: Error writing variable information: Invalid argument...
+
+xochitl is the proprietary userspace code. I don't really have a good
+idea of what that error would mean.
+
+I also see this:
+
+Framebuffer has wrong id: "mxcfb"
+
 >
->     Signed-off-by: Evgeny Novikov <novikov@ispras.ru
->     <mailto:novikov@ispras.ru>>
->     Co-developed-by: Kirill Shilimanov <kirill.shilimanov@huawei.com
->     <mailto:kirill.shilimanov@huawei.com>>
->     Signed-off-by: Kirill Shilimanov <kirill.shilimanov@huawei.com
->     <mailto:kirill.shilimanov@huawei.com>>
->     ---
->      drivers/mtd/nand/raw/mxic_nand.c | 16 ++++++++++++----
->      1 file changed, 12 insertions(+), 4 deletions(-)
+> You could run strace on the application to see how it communicates with
+> the old driver via the ioctl interface and compare it with the fbdev
+> emulation on the new driver, maybe there is some odd ioctl which is not
+> emulated.
+
+I had a quick look at this.
+
+xochitl does a lot more than just controls the display, it interacts
+with lots of other hardware and strace produces a lot of logs. I also
+don't see the error when manually starting it, only at boot (but it
+still doesn't work).
+
+A quick run with
+
+strace -f xochitcl
+
+and I don't even see an access to /dev/fb0, so I'm not sure where the
+accesses are coming from.
+
+Alistair
+
 >
->     diff --git a/drivers/mtd/nand/raw/mxic_nand.c
->     b/drivers/mtd/nand/raw/mxic_nand.c
->     index da1070993994..37e75bf60ee5 100644
->     --- a/drivers/mtd/nand/raw/mxic_nand.c
->     +++ b/drivers/mtd/nand/raw/mxic_nand.c
->     @@ -509,9 +509,15 @@ static int mxic_nfc_probe(struct
->     platform_device *pdev)
->             if (IS_ERR(nfc->send_dly_clk))
->                     return PTR_ERR(nfc->send_dly_clk);
+> There is also NXP 5.10.35 fork, so you could try picking the fbdev
+> driver from there and add printks/trace_printks/etc. into both that and
+> the fbdev emulation code, to see whether how either is called and what
+> is failing/missing in the emulation.
 >
->     +       err = mxic_nfc_clk_enable(nfc);
->     +       if (err)
->     +               return err;
->     +
->             nfc->regs = devm_platform_ioremap_resource(pdev, 0);
->     -       if (IS_ERR(nfc->regs))
->     -               return PTR_ERR(nfc->regs);
->     +       if (IS_ERR(nfc->regs)) {
->     +               err = PTR_ERR(nfc->regs);
->     +               goto fail;
->     +       }
+> > It's difficult to know
+> > what is going on as I don't have access to any of the source. I
+> > suspect the userspace code could be updated to use the DRM driver, but
+> > we would need the reMarkable devs to do that.
+> >
+> > There is some effort to re-implement the proprietary user space swtcon
+> > (https://github.com/timower/rM2-stuff#swtcon), but it seems to have
+> > stalled. It wouldn't be impossible to get swtcon to work with the DRM
+> > driver, but it would require a very large amount of reverse
+> > engineering, that probably will never happen.
+> >
+> > I wanted to see what the thoughts were on re-adding the fbdev mxsfb
+> > driver. The commit message just says that because there is a DRM
+> > driver we no longer need the fbdev one, but here is a case for the
+> > fbdev driver. I was thinking that continuing to support the fbdev
+> > mxsfb driver wouldn't be too much of a maintenance burden (but that's
+> > obviously up to you). The NXP tree also seems to think the fbdev
+> > driver is worth keeping around.
 >
->             nand_chip = &nfc->chip;
->             mtd = nand_to_mtd(nand_chip);
->     @@ -527,8 +533,10 @@ static int mxic_nfc_probe(struct
->     platform_device *pdev)
->             nand_chip->controller = &nfc->controller;
+> I don't think the NXP tree is a particularly good example of best
+> practice, they don't use the mxsfb in the first place, they wrote their
+> own DRM driver for the LCDIF IP, and they also keep the fbdev driver
+> around, so yes, they have three drivers for the same IP in different
+> state of decay and with different problems, instead of one driver that
+> has all the functionality and fixes. Sigh ...
 >
->             irq = platform_get_irq(pdev, 0);
->     -       if (irq < 0)
->     -               return irq;
->     +       if (irq < 0) {
->     +               err = irq;
->     +               goto fail;
->     +       }
->
->             mxic_nfc_hw_init(nfc);
->
->     -- 
->     2.26.2
->
->
->
-> -- 
-> With Best Regards,
-> Andy Shevchenko
->
->
+> I cannot decide on the fbdev thing, that's I think up to Sam. However,
+> my suggestion would be to find out what is missing in the fbdev
+> emulation and possibly fill that in, so we will have only one driver to
+> support all the functionality.
