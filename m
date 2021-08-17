@@ -2,104 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD85F3EE364
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 03:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B6D3EE1F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 03:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237580AbhHQBdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 21:33:21 -0400
-Received: from mga09.intel.com ([134.134.136.24]:59622 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239201AbhHQBcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 21:32:05 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="215973842"
-X-IronPort-AV: E=Sophos;i="5.84,327,1620716400"; 
-   d="asc'?scan'208";a="215973842"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 18:31:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,327,1620716400"; 
-   d="asc'?scan'208";a="510166288"
-Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.143])
-  by fmsmga004.fm.intel.com with ESMTP; 16 Aug 2021 18:31:29 -0700
-Date:   Tue, 17 Aug 2021 09:08:51 +0800
-From:   Zhenyu Wang <zhenyuw@linux.intel.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        "Wang, Zhi A" <zhi.a.wang@intel.com>,
-        Jani Nikula <jani.nikula@intel.com>
-Subject: Re: refactor the i915 GVT support
-Message-ID: <20210817010851.GW13928@zhen-hp.sh.intel.com>
-Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
-References: <DM4PR11MB55496531B246A4604FC86998CAE49@DM4PR11MB5549.namprd11.prod.outlook.com>
- <20210722112636.wj277vqhg4dez5ug@sirius.home.kraxel.org>
- <20210727121224.GA2145868@nvidia.com>
- <DM4PR11MB5549EC882AA6076F3468274DCAEA9@DM4PR11MB5549.namprd11.prod.outlook.com>
- <20210728175925.GU1721383@nvidia.com>
- <20210729072022.GB31896@lst.de>
- <20210803094315.GF13928@zhen-hp.sh.intel.com>
- <20210803143058.GA1721383@nvidia.com>
- <20210804052606.GG13928@zhen-hp.sh.intel.com>
- <20210816173458.GA9183@lst.de>
+        id S235457AbhHQBN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 21:13:29 -0400
+Received: from mail-lj1-f181.google.com ([209.85.208.181]:36433 "EHLO
+        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231649AbhHQBN3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 21:13:29 -0400
+Received: by mail-lj1-f181.google.com with SMTP id y7so30218495ljp.3;
+        Mon, 16 Aug 2021 18:12:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LcDb6cdiTT2+/+iDeVpLBBojjo/JZmuIoI4va9to8jg=;
+        b=s7Q58AH41jtWNx+HjVRBO/yPdKIkPd0j99QDF+d1kLGH8a9WkIj8oN3uMfE6DysDdx
+         i52epGrdR3laBwYJfWM12utUDbtC4bNo19N2OuEQOF+67kItMNKGgxUVtzU8oYS9tgov
+         5zboQw/KvHzNBJ0Rl3S3jdB5UGyb46OVLYWl/oOXxD1k79wNcz2mRG9XO99aRKxuckOy
+         zn/lbeUEvV2RhYqdl8YU3TRJ4wx61mlyORs60CcQxR0+IUcdf1lwDyqJO2h+jxGkeq6j
+         HahxL+NfF4WgBjt5iyfBZ57HbggwJHI4RiG4KgDFQ+0aycthTKYoXmoZSwYlSdZp4Ekc
+         SBjQ==
+X-Gm-Message-State: AOAM532YFqDheKFndnegdYjOHI+XfeBzJluAcZgtyfwirV+TGCKalBfl
+        FXh2Jya1WWU6ILGUtEdYpYvzH3RSZrelqyeDX7E=
+X-Google-Smtp-Source: ABdhPJyB1qsxbqnkqQ5jHf1wNevftc7GdUwJ+dkza6fML2jtBsA6lk+NhNU6sw9pR3mYEq+Kk7Onv5EvynhAUIkvzns=
+X-Received: by 2002:a2e:9182:: with SMTP id f2mr820778ljg.57.1629162775444;
+ Mon, 16 Aug 2021 18:12:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="VouvK5X/VR+fp5FT"
-Content-Disposition: inline
-In-Reply-To: <20210816173458.GA9183@lst.de>
+References: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
+ <20210815033248.98111-3-mailhol.vincent@wanadoo.fr> <20210816084235.fr7fzau2ce7zl4d4@pengutronix.de>
+ <CAMZ6RqK5t62UppiMe9k5jG8EYvnSbFW3doydhCvp72W_X2rXAw@mail.gmail.com>
+ <20210816122519.mme272z6tqrkyc6x@pengutronix.de> <20210816123309.pfa57tke5hrycqae@pengutronix.de>
+ <20210816134342.w3bc5zjczwowcjr4@pengutronix.de> <CAMZ6RqJFxKSZahAMz9Y8hpPJPh858jxDEXsRm1YkTwf4NFAFwg@mail.gmail.com>
+ <CAMZ6Rq+ZtN+=ppPEYYm0ykJWP8_LtPNBtOM6gwM1VrpM3idsyw@mail.gmail.com>
+In-Reply-To: <CAMZ6Rq+ZtN+=ppPEYYm0ykJWP8_LtPNBtOM6gwM1VrpM3idsyw@mail.gmail.com>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Tue, 17 Aug 2021 10:12:44 +0900
+Message-ID: <CAMZ6Rq+kQ5+00p_-Pdk7v-h6_8oYA6MPP1SU-AdPH=ux++z-dQ@mail.gmail.com>
+Subject: Re: [PATCH v5 2/7] can: bittiming: allow TDC{V,O} to be zero and add can_tdc_const::tdc{v,o,f}_min
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-can <linux-can@vger.kernel.org>,
+        =?UTF-8?Q?Stefan_M=C3=A4tje?= <Stefan.Maetje@esd.eu>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Marc,
 
---VouvK5X/VR+fp5FT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch fixes the bug you just encountered: having both TDC_AUTO
+and TDC_MANUAL set at the same time. I also cleaned all garbage
+data in struct can_tdc because that was trivial.
 
-On 2021.08.16 19:34:58 +0200, Christoph Hellwig wrote:
-> On Wed, Aug 04, 2021 at 01:26:06PM +0800, Zhenyu Wang wrote:
-> > On 2021.08.03 11:30:58 -0300, Jason Gunthorpe wrote:
-> > > On Tue, Aug 03, 2021 at 05:43:15PM +0800, Zhenyu Wang wrote:
-> > > > Acked-by: Zhenyu Wang <zhenyuw@linux.intel.com>
-> > > >=20
-> > > > Thanks a lot for this effort!
-> > >=20
-> > > Great, do we have a submission plan for this? how much does it clash
-> > > with my open_device/etc patch? ie does the whole thing have to go
-> > > through the vfio tree?
-> > >=20
-> >=20
-> > I think Alex would determine when to merge open_device series, gvt part
-> > can be through vfio tree without problem. For this refactor, I would fi=
-rst
-> > merge for gvt staging to do more regression testing before sending thro=
-ugh
-> > i915 tree.
->=20
-> Any updates on this?  I'd really hate to miss this merge window.
+This patch is meant to be squashed into:
+commit ca7200319a90 ("can: netlink: add interface for CAN-FD
+Transmitter Delay Compensation (TDC)")
 
-I'm still waiting for our validation team's report on this. I'm afraid
-it might be missing for next version as i915 merge window is mostly
-till rc5...and for any change outside of gvt, it still needs to be
-acked by i915 maintainers.
+For now, I am just sharing it here so that you can continue your
+testing. I will resend the full series after we finish current
+ongoing discussion.
 
---VouvK5X/VR+fp5FT
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+---
+ drivers/net/can/dev/netlink.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index f05745c96b9c..d8cefe7d354c 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -204,6 +204,7 @@ static int can_changelink(struct net_device *dev,
+struct nlattr *tb[],
+         }
+     }
 
-iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYRsMHgAKCRCxBBozTXgY
-J/uZAJ9O1Xv+jB7s4e9+XWerKNMKnBieGACZAXpb2Wyjk+BSDBYt8ZZFoPvmEAw=
-=wtSd
------END PGP SIGNATURE-----
++    priv->ctrlmode &= ~CAN_CTRLMODE_TDC_MASK;
+     if (data[IFLA_CAN_CTRLMODE]) {
+         struct can_ctrlmode *cm;
+         u32 ctrlstatic;
+@@ -239,8 +240,6 @@ static int can_changelink(struct net_device *dev,
+struct nlattr *tb[],
+             dev->mtu = CAN_MTU;
+             memset(&priv->data_bittiming, 0,
+                    sizeof(priv->data_bittiming));
+-            memset(&priv->tdc, 0, sizeof(priv->tdc));
+-            priv->ctrlmode &= ~CAN_CTRLMODE_TDC_MASK;
+         }
 
---VouvK5X/VR+fp5FT--
+         tdc_mask = cm->mask & CAN_CTRLMODE_TDC_MASK;
+@@ -326,6 +325,7 @@ static int can_changelink(struct net_device *dev,
+struct nlattr *tb[],
+         priv->termination = termval;
+     }
+
++    memset(&priv->tdc, 0, sizeof(priv->tdc));
+     if (data[IFLA_CAN_TDC]) {
+         /* Use the provided TDC parameters */
+         err = can_tdc_changelink(dev, data[IFLA_CAN_TDC], extack);
+-- 
+2.31.1
