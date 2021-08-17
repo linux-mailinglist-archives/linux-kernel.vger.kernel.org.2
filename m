@@ -2,166 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC31A3EF29C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 21:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302B33EF2A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 21:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232560AbhHQTY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 15:24:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229905AbhHQTYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 15:24:55 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D76E61008;
-        Tue, 17 Aug 2021 19:24:21 +0000 (UTC)
-Date:   Tue, 17 Aug 2021 15:24:19 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Pingfan Liu <kernelfans@gmail.com>
-Subject: [GIT PULL] tracing: Limit the shooting in the foot of tp_printk
-Message-ID: <20210817152419.01539bf0@oasis.local.home>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230424AbhHQT2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 15:28:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229640AbhHQT2u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 15:28:50 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 352DFC061764;
+        Tue, 17 Aug 2021 12:28:17 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 108-20020a9d01750000b029050e5cc11ae3so26199675otu.5;
+        Tue, 17 Aug 2021 12:28:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aHm2WT6BVnLaYeBTIrYhaQJuTBXo3Be7mxn/H19IUPQ=;
+        b=TvRNnsNZBMCwfrqJij8MVCOGURhvAwAsXhecozG4mV+Fm128oKoDo2Av+JRPF+USWP
+         qoKkvWBs8hmTpuuI8RKzVcq/u1XRW3GgGqRMLWGA3ZJhep8dpfMdR/IEIccs//M5iCGn
+         e9ivv7Ed3dgsh26HXMQuby6QequZfcWEOaQnGmh+ikjEoazdrUH6G0P27tvlt4Bd0HlA
+         B3FTV0Ublssr5ETCQ5dKcguidykrfPPg0Zo02fjufy8lnANz1cFNR+uA6OFlUpxQzAQp
+         FVa6H12ixNTHEUhA4evY2IhJViIHmtGBGum3Wgaz5zo6DUI+VIEtSXljscm3d503Zvuj
+         oLpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=aHm2WT6BVnLaYeBTIrYhaQJuTBXo3Be7mxn/H19IUPQ=;
+        b=FN+mQWiSa5F1iE9OUNNnye4CZAxKd1PziSBO1Z45yXJ24XOZzOjUgLB2TxVbQXM0+w
+         97nkv1VkrWidY6p+4AyPpzubkAgKinxel0o+7+PCWB4KS7VSuWQCEKTTJX/+PX5HTjF/
+         Gw2h1wlaTyGmYsmj8CoMmOequRiDlDmNeQ3OTynscightVTweMxTKhDtDkZiT3c6XFsU
+         TlNbjDSINjhi36IQlQEua1AkZgcasAMP6HN6LnhZR+34aZx71vXrWoPiBoXLS+1K4Zyu
+         nRfntYXaw763dX5ORxT+MmPJzjfc5LLICjdnwsmkP3xe5JMrjt8FlC2/M55NDDus39eC
+         o8tw==
+X-Gm-Message-State: AOAM530nyfEEpM+L02aCH1zLTEaCD8Bh2SjoB8m13prcms5FimWkcGz5
+        3dhjyofVNfE+8w3R7eSLgEP7MJU7xes=
+X-Google-Smtp-Source: ABdhPJxZsoIlMhmY/BUSFAaYfOD5f7ncY6ENZ2VG/SSeGp8+LLCzi2Ux1cgS8kT4F83RVlc7nbxABw==
+X-Received: by 2002:a05:6830:85:: with SMTP id a5mr3934168oto.268.1629228496601;
+        Tue, 17 Aug 2021 12:28:16 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b19sm548667oti.34.2021.08.17.12.28.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 12:28:15 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 17 Aug 2021 12:28:13 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 00/64] 5.4.142-rc2 review
+Message-ID: <20210817192813.GA412158@roeck-us.net>
+References: <20210816171405.410986560@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210816171405.410986560@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 16, 2021 at 07:14:41PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.142 release.
+> There are 64 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 18 Aug 2021 17:13:49 +0000.
+> Anything received after that time might be too late.
+> 
 
-Linus,
+Build results:
+	total: 157 pass: 157 fail: 0
+Qemu test results:
+	total: 444 pass: 444 fail: 0
 
-tracing: Limit the shooting in the foot of tp_printk
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-The "tp_printk" option redirects the trace event output to printk at boot
-up. This is useful when a machine crashes before boot where the trace events
-can not be retrieved by the in kernel ring buffer. But it can be "dangerous"
-because trace events can be located in high frequency locations such as
-interrupts and the scheduler, where a printk can slow it down that it live
-locks the machine (because by the time the printk finishes, the next event
-is triggered). Thus tp_printk must be used with care.
-
-It was discovered that the filter logic to trace events does not apply to
-the tp_printk events. This can cause a surprise and live lock when the user
-expects it to be filtered to limit the amount of events printed to the
-console when in fact it still prints everything.
-
-
-Please pull the latest trace-v5.14-rc6 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.14-rc6
-
-Tag SHA1: bdb8b13b3e0d3878b6981d1a40df89f3813eadc9
-Head SHA1: 6c34df6f350df9579ce99d887a2b5fa14cc13b32
-
-
-Pingfan Liu (1):
-      tracing: Apply trace filters on all output channels
-
-----
- kernel/trace/trace.c | 18 +++++++++++++++---
- kernel/trace/trace.h | 32 --------------------------------
- 2 files changed, 15 insertions(+), 35 deletions(-)
----------------------------
-commit 6c34df6f350df9579ce99d887a2b5fa14cc13b32
-Author: Pingfan Liu <kernelfans@gmail.com>
-Date:   Sat Aug 14 11:45:38 2021 +0800
-
-    tracing: Apply trace filters on all output channels
-    
-    The event filters are not applied on all of the output, which results in
-    the flood of printk when using tp_printk. Unfolding
-    event_trigger_unlock_commit_regs() into trace_event_buffer_commit(), so
-    the filters can be applied on every output.
-    
-    Link: https://lkml.kernel.org/r/20210814034538.8428-1-kernelfans@gmail.com
-    
-    Cc: stable@vger.kernel.org
-    Fixes: 0daa2302968c1 ("tracing: Add tp_printk cmdline to have tracepoints go to printk()")
-    Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 33899a71fdc1..a1adb29ef5c1 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2897,14 +2897,26 @@ int tracepoint_printk_sysctl(struct ctl_table *table, int write,
- 
- void trace_event_buffer_commit(struct trace_event_buffer *fbuffer)
- {
-+	enum event_trigger_type tt = ETT_NONE;
-+	struct trace_event_file *file = fbuffer->trace_file;
-+
-+	if (__event_trigger_test_discard(file, fbuffer->buffer, fbuffer->event,
-+			fbuffer->entry, &tt))
-+		goto discard;
-+
- 	if (static_key_false(&tracepoint_printk_key.key))
- 		output_printk(fbuffer);
- 
- 	if (static_branch_unlikely(&trace_event_exports_enabled))
- 		ftrace_exports(fbuffer->event, TRACE_EXPORT_EVENT);
--	event_trigger_unlock_commit_regs(fbuffer->trace_file, fbuffer->buffer,
--				    fbuffer->event, fbuffer->entry,
--				    fbuffer->trace_ctx, fbuffer->regs);
-+
-+	trace_buffer_unlock_commit_regs(file->tr, fbuffer->buffer,
-+			fbuffer->event, fbuffer->trace_ctx, fbuffer->regs);
-+
-+discard:
-+	if (tt)
-+		event_triggers_post_call(file, tt);
-+
- }
- EXPORT_SYMBOL_GPL(trace_event_buffer_commit);
- 
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index a180abf76d4e..4a0e693000c6 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -1389,38 +1389,6 @@ event_trigger_unlock_commit(struct trace_event_file *file,
- 		event_triggers_post_call(file, tt);
- }
- 
--/**
-- * event_trigger_unlock_commit_regs - handle triggers and finish event commit
-- * @file: The file pointer associated with the event
-- * @buffer: The ring buffer that the event is being written to
-- * @event: The event meta data in the ring buffer
-- * @entry: The event itself
-- * @trace_ctx: The tracing context flags.
-- *
-- * This is a helper function to handle triggers that require data
-- * from the event itself. It also tests the event against filters and
-- * if the event is soft disabled and should be discarded.
-- *
-- * Same as event_trigger_unlock_commit() but calls
-- * trace_buffer_unlock_commit_regs() instead of trace_buffer_unlock_commit().
-- */
--static inline void
--event_trigger_unlock_commit_regs(struct trace_event_file *file,
--				 struct trace_buffer *buffer,
--				 struct ring_buffer_event *event,
--				 void *entry, unsigned int trace_ctx,
--				 struct pt_regs *regs)
--{
--	enum event_trigger_type tt = ETT_NONE;
--
--	if (!__event_trigger_test_discard(file, buffer, event, entry, &tt))
--		trace_buffer_unlock_commit_regs(file->tr, buffer, event,
--						trace_ctx, regs);
--
--	if (tt)
--		event_triggers_post_call(file, tt);
--}
--
- #define FILTER_PRED_INVALID	((unsigned short)-1)
- #define FILTER_PRED_IS_RIGHT	(1 << 15)
- #define FILTER_PRED_FOLD	(1 << 15)
+Guenter
