@@ -2,236 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C683EE68A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB49A3EE68D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234491AbhHQGZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 02:25:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233676AbhHQGZm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 02:25:42 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36815C0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:25:08 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id hs10so36567070ejc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:25:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=QL9Kz/WeADg9v9gjvShigs4+y3yLHYi1e9So++MIF5E=;
-        b=UIAPrQgA1Zy72PINQDrV8+dSvp2EysfatOLXH0WFub6SIzvVyZSx7ITImoIEr9lZiD
-         IeYDj/hzpXXDHpT9PyRY0gtjz6wrJTfznm8W7IIXtZ1RRmgJVeiFGj42m+B0o+xWt9S4
-         kNM7xvL6np0cH4CgS1n+dzEOJ1Ih1I4/08jmWa0n+/Xp7pGXZZx+4o8Mrwqw0dE9JnOB
-         e9xQjEjVkQWXWfL3AE86D5hiFF1IqcZBHDlce3G5BCJtKx4mn9lq55BoCnYBG3i5VZgd
-         KZ3filL5P7lj57HZUtWOz3FYM/25N4WICZEeM2Qsu2gMRkbAD1Ar9xQxVd2bFgHqtmBZ
-         6XUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QL9Kz/WeADg9v9gjvShigs4+y3yLHYi1e9So++MIF5E=;
-        b=cs7Nhz3fD0a91/7Z6Q1uWtVJFbZ3LlM9mOlF2H1Aj8lX3xLmKJP5NI5TMuOsHZB0+U
-         QenZ4RiTcabr1d/4HXbbL0c8S13O/whcBoCT5hSPfO4F4LPbnC8TtjzpUaXSHOGVoeD9
-         k/CBMMtegjsWn4Wq9d5Fo/8WjZDl/0TSr08u7gkm9rdqg1Hu2DyLFGAQZ+uTW1c9cPMM
-         aPIrP85tIXNfoEN8gnqyIZq9mR0XuvX38Bl2ZToylucowWltwuZHkOs5VnY421SUoYKM
-         RpfjeWnFkzn5FXTI9FKT40XDE1TORYLgOh8EBtl2u3omamkQiXu8rE/K895yh0fpT94c
-         8Ezg==
-X-Gm-Message-State: AOAM531EP09kAT7h2ziFmh6QqN3uT04Lk0TS3vPpT8rEx9g1v7hjd2f8
-        fysIAV8aP+3eJUNqr/uJ6Ngy04ZHV0XeasRUaeGn0g==
-X-Google-Smtp-Source: ABdhPJytLldrQ4W86SwhMcApQ+CdLF7vx25FN7yEqeIGoeTtbI7F6cYS5HAoolr7JYjwVP/l92ZLeGwVg7PPJw7+X7k=
-X-Received: by 2002:a17:906:c34c:: with SMTP id ci12mr2161030ejb.247.1629181507265;
- Mon, 16 Aug 2021 23:25:07 -0700 (PDT)
+        id S234388AbhHQG33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 02:29:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60458 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229460AbhHQG31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 02:29:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3152160FD9;
+        Tue, 17 Aug 2021 06:28:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629181735;
+        bh=y0HUvMC1sQq6AFsYEi1z1jFYlX4llWlauvdgseAQwKA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=J1KVWpnFU1z0mvqeX2LN1w6g64cU1amSanSKTQjm3RQexMOGjK8xrAa4oM+84elK3
+         wD5DClu7WoAMOZVwubL1IkCEvIC/6wFdnhliYeQxQ7Q2fzv0FJHcYc0y6ZyTg8Qdut
+         Jjm22sRwOpBt0cIl1j7GKOBTNSYE4q4HJZk1W+wzwbPy2/bt3zbB3NnB7KTMdV9sGr
+         8zrtZ82M+maNuYd+VQMwSb/tnbt44R+yZgyy+T0KjGL9KUK4lyKhFD+vLCeFJ/250G
+         VNgPFyB0N9KG0j4MLl6HO93iW//JJqOF34ENH3HMkAoWMX+6EZvJLJ/LpiQ32bUmdN
+         Q9FlNiUkXXTpA==
+Received: by mail-lj1-f175.google.com with SMTP id c12so18162140ljr.5;
+        Mon, 16 Aug 2021 23:28:55 -0700 (PDT)
+X-Gm-Message-State: AOAM531OTpkhcICN/hf9XYWpB8og9J4n1UKOPrGDJpg1Ygc8uVx+Oyh6
+        HGbw6SWPvgq6qjjcAUDDi/zA88Emvm27la99SfI=
+X-Google-Smtp-Source: ABdhPJwyPyxj47GyA0nsFM2W/NJJj+2fT6rvJAeElZihgyXsd/VEqIv7awRZVKSaYuNO+nnX2aL5/VPBehBQGurYRZc=
+X-Received: by 2002:a05:651c:39c:: with SMTP id e28mr1728053ljp.498.1629181733447;
+ Mon, 16 Aug 2021 23:28:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210816171400.936235973@linuxfoundation.org>
-In-Reply-To: <20210816171400.936235973@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 17 Aug 2021 11:54:55 +0530
-Message-ID: <CA+G9fYuS95iiu79qUidj_9Xkb8uDpBAN-xGSNEg2Q09MZ=v8sQ@mail.gmail.com>
-Subject: Re: [PATCH 5.10 00/98] 5.10.60-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
+References: <20210723214031.3251801-1-atish.patra@wdc.com> <20210723214031.3251801-2-atish.patra@wdc.com>
+ <CAJF2gTT+zS=ySrmQUzVe7hf56E2K7XoGjzMyeaH5oFPUNwFqZA@mail.gmail.com> <CAOnJCU+Sebr-3zt-xy9F6hGb8qj30QsH_SQvEkrvWhw6sVmbcw@mail.gmail.com>
+In-Reply-To: <CAOnJCU+Sebr-3zt-xy9F6hGb8qj30QsH_SQvEkrvWhw6sVmbcw@mail.gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Tue, 17 Aug 2021 14:28:42 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTR79Ob5ini3W=67i1A4RQnTr46TdNqmpTPLuq79PdAdcQ@mail.gmail.com>
+Message-ID: <CAJF2gTR79Ob5ini3W=67i1A4RQnTr46TdNqmpTPLuq79PdAdcQ@mail.gmail.com>
+Subject: Re: [RFC 1/5] RISC-V: Implement arch_sync_dma* functions
+To:     Atish Patra <atishp@atishpatra.org>
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        iommu@lists.linux-foundation.org, Rob Herring <robh+dt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Aug 2021 at 22:44, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Tue, Aug 17, 2021 at 11:24 AM Atish Patra <atishp@atishpatra.org> wrote:
 >
-> This is the start of the stable review cycle for the 5.10.60 release.
-> There are 98 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Mon, Aug 16, 2021 at 6:48 PM Guo Ren <guoren@kernel.org> wrote:
+> >
+> > On Sat, Jul 24, 2021 at 5:40 AM Atish Patra <atish.patra@wdc.com> wrote:
+> > >
+> > > To facilitate streaming DMA APIs, this patch introduces a set of generic
+> > > cache operations related dma sync. Any platform can use the generic ops
+> > > to provide platform specific cache management operations. Once the
+> > > standard RISC-V CMO extension is available, it can be built on top of it.
+> > >
+> > > Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> > > ---
+> > >  arch/riscv/include/asm/dma-noncoherent.h | 19 +++++++
+> > >  arch/riscv/mm/Makefile                   |  1 +
+> > >  arch/riscv/mm/dma-noncoherent.c          | 66 ++++++++++++++++++++++++
+> > >  3 files changed, 86 insertions(+)
+> > >  create mode 100644 arch/riscv/include/asm/dma-noncoherent.h
+> > >  create mode 100644 arch/riscv/mm/dma-noncoherent.c
+> > >
+> > > diff --git a/arch/riscv/include/asm/dma-noncoherent.h b/arch/riscv/include/asm/dma-noncoherent.h
+> > > new file mode 100644
+> > > index 000000000000..5bdb03c9c427
+> > > --- /dev/null
+> > > +++ b/arch/riscv/include/asm/dma-noncoherent.h
+> > > @@ -0,0 +1,19 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > > +/*
+> > > + * Copyright (c) 2021 Western Digital Corporation or its affiliates.
+> > > + */
+> > > +
+> > > +#ifndef __ASM_RISCV_DMA_NON_COHERENT_H
+> > > +#define __ASM_RISCV_DMA_NON_COHERENT_H
+> > > +
+> > > +#ifdef CONFIG_RISCV_DMA_NONCOHERENT
+> > > +struct riscv_dma_cache_sync {
+> > > +       void (*cache_invalidate)(phys_addr_t paddr, size_t size);
+> > > +       void (*cache_clean)(phys_addr_t paddr, size_t size);
+> > > +       void (*cache_flush)(phys_addr_t paddr, size_t size);
+> > > +};
+> > I like the style like this than my previous patch which using
+> > sbi_call. The c906 has custom instructions that could be called in
+> > S-mode directly.
+> >
 >
-> Responses should be made by Wed, 18 Aug 2021 17:13:38 +0000.
-> Anything received after that time might be too late.
+> How are you going to include the custom instructions in the upstream kernel ?
+In errata, call set_ops? I'm headache with that issue.
+
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.60-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
+> > Hope the patch could be soon merged, after correct the
+> > DMA_FROM/TO_DEVICE/BIDIRECTIONAL and alternatives ops_set.
+> >
+> > > +
+> > > +void riscv_dma_cache_sync_set(struct riscv_dma_cache_sync *ops);
+> > > +#endif
+> > > +
+> > > +#endif
+> > > diff --git a/arch/riscv/mm/Makefile b/arch/riscv/mm/Makefile
+> > > index 7ebaef10ea1b..959bef49098b 100644
+> > > --- a/arch/riscv/mm/Makefile
+> > > +++ b/arch/riscv/mm/Makefile
+> > > @@ -27,3 +27,4 @@ KASAN_SANITIZE_init.o := n
+> > >  endif
+> > >
+> > >  obj-$(CONFIG_DEBUG_VIRTUAL) += physaddr.o
+> > > +obj-$(CONFIG_RISCV_DMA_NONCOHERENT) += dma-noncoherent.o
+> > > diff --git a/arch/riscv/mm/dma-noncoherent.c b/arch/riscv/mm/dma-noncoherent.c
+> > > new file mode 100644
+> > > index 000000000000..2f6e9627c4aa
+> > > --- /dev/null
+> > > +++ b/arch/riscv/mm/dma-noncoherent.c
+> > > @@ -0,0 +1,66 @@
+> > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > +/*
+> > > + * RISC-V specific functions to support DMA for non-coherent devices
+> > > + *
+> > > + * Copyright (c) 2021 Western Digital Corporation or its affiliates.
+> > > + */
+> > > +
+> > > +#include <linux/dma-direct.h>
+> > > +#include <linux/dma-map-ops.h>
+> > > +#include <linux/init.h>
+> > > +#include <linux/io.h>
+> > > +#include <linux/libfdt.h>
+> > > +#include <linux/mm.h>
+> > > +#include <linux/of.h>
+> > > +#include <linux/of_fdt.h>
+> > > +#include <asm/dma-noncoherent.h>
+> > > +
+> > > +static struct riscv_dma_cache_sync *dma_cache_sync;
+> > > +unsigned long riscv_dma_uc_offset;
+> > > +
+> > > +static void __dma_sync(phys_addr_t paddr, size_t size, enum dma_data_direction dir)
+> > > +{
+> > > +       if ((dir == DMA_FROM_DEVICE) && (dma_cache_sync->cache_invalidate))
+> > > +               dma_cache_sync->cache_invalidate(paddr, size);
+> > > +       else if ((dir == DMA_TO_DEVICE) && (dma_cache_sync->cache_clean))
+> > > +               dma_cache_sync->cache_clean(paddr, size);
+> > > +       else if ((dir == DMA_BIDIRECTIONAL) && dma_cache_sync->cache_flush)
+> > > +               dma_cache_sync->cache_flush(paddr, size);
+> > > +}
+> > > +
+> > > +void arch_sync_dma_for_device(phys_addr_t paddr, size_t size, enum dma_data_direction dir)
+> > > +{
+> > > +       if (!dma_cache_sync)
+> > > +               return;
+> > > +
+> > > +       __dma_sync(paddr, size, dir);
+> > > +}
+> > > +
+> > > +void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size, enum dma_data_direction dir)
+> > > +{
+> > > +       if (!dma_cache_sync)
+> > > +               return;
+> > > +
+> > > +       __dma_sync(paddr, size, dir);
+> > > +}
+> > > +
+> > > +void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
+> > > +               const struct iommu_ops *iommu, bool coherent)
+> > > +{
+> > > +       /* If a specific device is dma-coherent, set it here */
+> > > +       dev->dma_coherent = coherent;
+> > > +}
+> > > +
+> > > +void arch_dma_prep_coherent(struct page *page, size_t size)
+> > > +{
+> > > +       void *flush_addr = page_address(page);
+> > > +
+> > > +       memset(flush_addr, 0, size);
+> > > +       if (dma_cache_sync && dma_cache_sync->cache_flush)
+> > > +               dma_cache_sync->cache_flush(__pa(flush_addr), size);
+> > > +}
+> > > +
+> > > +void riscv_dma_cache_sync_set(struct riscv_dma_cache_sync *ops)
+> > > +{
+> > > +       dma_cache_sync = ops;
+> > > +}
+> > > --
+> > > 2.31.1
+> > >
+> > > _______________________________________________
+> > > iommu mailing list
+> > > iommu@lists.linux-foundation.org
+> > > https://lists.linuxfoundation.org/mailman/listinfo/iommu
+> >
+> >
+> >
+> > --
+> > Best Regards
+> >  Guo Ren
+> >
+> > ML: https://lore.kernel.org/linux-csky/
+> > _______________________________________________
+> > iommu mailing list
+> > iommu@lists.linux-foundation.org
+> > https://lists.linuxfoundation.org/mailman/listinfo/iommu
 >
-> thanks,
 >
-> greg k-h
+>
+> --
+> Regards,
+> Atish
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-## Build
-* kernel: 5.10.60-rc2
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.10.y
-* git commit: f82f3c334fcc9444324972565f2fd882a6315d85
-* git describe: v5.10.59-99-gf82f3c334fcc
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.59-99-gf82f3c334fcc
+-- 
+Best Regards
+ Guo Ren
 
-## No regressions (compared to v5.10.59-97-g9541d53f15c1)
-
-## No fixes (compared to v5.10.59-97-g9541d53f15c1)
-
-## Test result summary
-total: 83274, pass: 70003, fail: 527, skip: 11696, xfail: 1048
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 194 total, 194 passed, 0 failed
-* arm64: 28 total, 28 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 27 total, 27 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 28 total, 28 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-arm64
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+ML: https://lore.kernel.org/linux-csky/
