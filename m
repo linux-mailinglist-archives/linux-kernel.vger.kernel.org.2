@@ -2,73 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A683EF2BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 21:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1339D3EF2B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 21:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233700AbhHQTkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 15:40:31 -0400
-Received: from mx3.wp.pl ([212.77.101.9]:20373 "EHLO mx3.wp.pl"
+        id S232226AbhHQThH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 15:37:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229640AbhHQTka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 15:40:30 -0400
-X-Greylist: delayed 399 seconds by postgrey-1.27 at vger.kernel.org; Tue, 17 Aug 2021 15:40:30 EDT
-Received: (wp-smtpd smtp.wp.pl 5063 invoked from network); 17 Aug 2021 21:33:14 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1629228794; bh=99YXkVPU4cave1Ach6qPRuVfMrqj6edfILB3QOdCh6I=;
-          h=From:To:Cc:Subject;
-          b=mZKgSkhYx4wjBI3BV/yImHPtiSM2sWjFkhvuZm7L4uNvqiuDCyFKNNnQ4ba/W0Bfk
-           K/gmSMrk+CGlpMJukgdNU/mqcNs1EhHcobXiIcgIpGMPq0R9NTYHHIg8HYzGkH/nGB
-           vxrGNtti3mdkqOMo7p+fG4WeMf3ikOs2qIqH5PkM=
-Received: from ip-5-172-255-149.free.aero2.net.pl (HELO LAPTOP-OLEK.Free) (olek2@wp.pl@[5.172.255.149])
-          (envelope-sender <olek2@wp.pl>)
-          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <hauke@hauke-m.de>; 17 Aug 2021 21:33:14 +0200
-From:   Aleksander Jan Bajkowski <olek2@wp.pl>
-To:     hauke@hauke-m.de, andrew@lunn.ch, vivien.didelot@gmail.com,
-        f.fainelli@gmail.com, olteanv@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, olek2@wp.pl, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH] net: dsa: lantiq_gswip: Add 200ms assert delay
-Date:   Tue, 17 Aug 2021 21:32:07 +0200
-Message-Id: <20210817193207.1038598-1-olek2@wp.pl>
-X-Mailer: git-send-email 2.30.2
+        id S229640AbhHQThF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 15:37:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 459506023F;
+        Tue, 17 Aug 2021 19:36:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629228991;
+        bh=lVa/cd8lqAuqi9Xb46n1dPF4Die4VhK2NzXYomfF1F8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MpJqbMTJoY9HiVSZCsZrCWmeFiwYxVmy4mvIkY/TJff233HbXI+HI8emvSQdhDnJm
+         cldRNM3O2aVw8yw8aqyKfCfpGEkKLJfWa0n1ky2BpCQvl1h4jRXohis0wYuD75rLGe
+         3fFg/KGIBqfqYC2g3Wtr+cv06xJFYMt5tkSsofOZap6dXiPj+KYJjn8xMBuUWr90xO
+         y007nNsP0lBUpseo1WG1MmFBr1gMygd03q+3kwknYO/3PNTOFzt6CjYnhWl2hT99v0
+         +jm3vyqtQmwLjH0Rg08PmYb4Kpd7SftftL4pCMPmyUGrpz80BgkA8xzCjEcD2XlFRj
+         XXwP/Yym/QKdA==
+Date:   Tue, 17 Aug 2021 21:36:28 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i2c: sun6i-pw2i: Prefer strscpy over strlcpy
+Message-ID: <YRwPvKZm8i47xFXP@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Len Baker <len.baker@gmx.com>, Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210817165859.5429-1-len.baker@gmx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-WP-MailID: 1588ed9fddcbfbe21994916a11f143bc
-X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000000 [AfMU]                               
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zfDDtb3v1My09Y6o"
+Content-Disposition: inline
+In-Reply-To: <20210817165859.5429-1-len.baker@gmx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The delay is especially needed by the xRX300 and xRX330 SoCs. Without
-this patch, some phys are sometimes not properly detected.
 
-Fixes: a09d042b086202735c4ed64 ("net: dsa: lantiq: allow to use all GPHYs on xRX300 and xRX330")
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Tested-by: Aleksander Jan Bajkowski <olek2@wp.pl> # tested on DWR966, HH5A
----
- drivers/net/dsa/lantiq_gswip.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+--zfDDtb3v1My09Y6o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswip.c
-index e78026ef6d8c..9eaf013b82a3 100644
---- a/drivers/net/dsa/lantiq_gswip.c
-+++ b/drivers/net/dsa/lantiq_gswip.c
-@@ -1884,6 +1884,12 @@ static int gswip_gphy_fw_load(struct gswip_priv *priv, struct gswip_gphy_fw *gph
- 
- 	reset_control_assert(gphy_fw->reset);
- 
-+	/* The vendor BSP uses a 200ms delay after asserting the reset line.
-+	 * Without this some users are observing that the PHY is not coming up
-+	 * on the MDIO bus.
-+	 */
-+	msleep(200);
-+
- 	ret = request_firmware(&fw, gphy_fw->fw_name, dev);
- 	if (ret) {
- 		dev_err(dev, "failed to load firmware: %s, error: %i\n",
--- 
-2.30.2
+On Tue, Aug 17, 2021 at 06:58:59PM +0200, Len Baker wrote:
+> strlcpy() reads the entire source buffer first. This read may exceed the
+> destination size limit. This is both inefficient and can lead to linear
+> read overflows if a source string is not NUL-terminated. The safe
+> replacement is strscpy().
+>=20
+> This is a previous step in the path to remove the strlcpy() function
+> entirely from the kernel [1].
+>=20
+> [1] https://github.com/KSPP/linux/issues/89
+>=20
+> Signed-off-by: Len Baker <len.baker@gmx.com>
 
+Applied to for-next, thanks!
+
+
+--zfDDtb3v1My09Y6o
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmEcD7wACgkQFA3kzBSg
+KbbAshAAqzwcYf+sCrGC16fOCkh5J4iMfSbWmFFrJB1GzLD+Prabz99WbMT9wTR1
+s4E8qEP8AH2l88yhtKcgoT4apvfeZxJi6AWJ52pD3n+noQ3xAZie3ss6dVSI1Bib
+6VI/+GeEGLZQZkM5rUXWWkYeugOJClYyj2g1aulpW4vLDa9G7rd3/FjEsMk/cMH8
+a3yyTm8tRhMGJOIiMTIhxZybdvEzQuyHMNWkhDHrjt+H+KnkQmhqBImmfijEM+HM
+uS639QWzCTw1d5mwK9VFcM0Kd4f6rrZUFLq2qw8sMB2jVgN7ZchOLnw7JhXM73ok
+SEETZe5RsaUupDkvhm9+hygBH+1klK+ZDz/G081yyPqJYXtHkYcArDPO1ZnjGNr2
+RirCAQokAa/Nly4vJWiRMGNyckLWcx2teYK9t2RTUqwtXC9ivK9b7DtmyGkLX8d1
+maIlre3Cy1DeQRuqKGBFC4/xZ9RSP+B8fsrcjnKjur3gUJaNWSCZb+Ub7F2fhiNL
+QGmzyxqUU7oGNruxICTiNniJ2qm5yNgXQwwWwCRzKt/psap1Kh1jbjgWAQ6uBAgu
+NRRrVtkw5G1s8UMtThS8Hi4BdTMwTy1klt7R+qeuqE3f/87hBHfOUCQM8mJHp12F
+RzlRw/o2bBGOlb6OMV5nDH1o/ME8c6rwmGieMXDaN4kfoJWGIn0=
+=/o4W
+-----END PGP SIGNATURE-----
+
+--zfDDtb3v1My09Y6o--
