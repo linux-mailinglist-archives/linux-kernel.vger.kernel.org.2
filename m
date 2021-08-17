@@ -2,106 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9423EE9EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A953EE9F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235427AbhHQJdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 05:33:14 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:35534 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235418AbhHQJdK (ORCPT
+        id S235741AbhHQJeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 05:34:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235005AbhHQJeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 05:33:10 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5A10621DF7;
-        Tue, 17 Aug 2021 09:32:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629192756; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J27QbjsN89ukN+TPv/Yz4fAGneJrqaWAet+7YsBbiqQ=;
-        b=1dRcIUB+LqODIrzX8P6kAvT7FXl8zWFVaINvGes9qvux3FmKE0P50q1kQ5Bglpghk3j0j2
-        sp6Y8e144ldHIOV++B7BsfLE5ZNBxNXEPOLPxyuB6xTkzBwTUkjIaYQPnjz8V4Zx0sM1FA
-        wKGrSnvEvIQY0ODCrmaX407LI4A/ddk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629192756;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J27QbjsN89ukN+TPv/Yz4fAGneJrqaWAet+7YsBbiqQ=;
-        b=eWnYWRfyqexr3GcZQ+/fW4Q3l0L5iJCEAxHz+fTXU94OtlwObGwGQWGn9LxcePQf0Qz00D
-        EtJbbp2QOnAsolDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7DDA313D26;
-        Tue, 17 Aug 2021 09:32:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id l0yCGzOCG2HaUwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Tue, 17 Aug 2021 09:32:35 +0000
-Subject: Re: [PATCH v4 35/35] mm, slub: convert kmem_cpu_slab protection to
- local_lock
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Sven Eckelmann <sven@narfation.org>, akpm@linux-foundation.org,
-        brouer@redhat.com, cl@linux.com, efault@gmx.de,
-        iamjoonsoo.kim@lge.com, jannh@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mgorman@techsingularity.net, penberg@kernel.org,
-        rientjes@google.com, tglx@linutronix.de,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <2666777.vCjUEy5FO1@sven-desktop>
- <7329198a-2a4e-ebc2-abf8-f7f38f00d5e1@suse.cz>
- <20210817091224.nqnrro34cyb67chj@linutronix.de>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <3da13f0a-2720-a38c-33a7-744668013390@suse.cz>
-Date:   Tue, 17 Aug 2021 11:31:56 +0200
+        Tue, 17 Aug 2021 05:34:09 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DD8C061764;
+        Tue, 17 Aug 2021 02:33:36 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id w21-20020a7bc1150000b02902e69ba66ce6so1689418wmi.1;
+        Tue, 17 Aug 2021 02:33:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iRnPw75pIfAeUsFqijtuEEG0yjtu25CSmo0vBZOgYeg=;
+        b=sFOaC6ZrYaUezaiuEOmtghXAaz36dJduJ+84EIUbJoJtIWqifZUNK8fzk/vqjkzBq0
+         1sq4nEVCPo3X7y6aQADD3WnPRRX+syU9JMXY/Azi3ZMfw2wi02mDcfUSryiN+FPc3CKT
+         Q7zWShFzESyI6Mrsxz898qAtYA2VgdnnODSMyx4TkgYwPj+AiStTEw9p+zHRm/oCbrfP
+         n6UyoVGID22cBgx7XDGArr3JKuygYVfp/4r3PgAzTbsRNydacJqmJmwL7MpwRhLHtHjF
+         6Ul92p/LlK7pCs/ZQq+67XrkEmHmvhAgyRoSUia6GV6qH0zEZJQ0PJJmBCG/wXcy+AA3
+         OREw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iRnPw75pIfAeUsFqijtuEEG0yjtu25CSmo0vBZOgYeg=;
+        b=Er/OGikEDTE2sCZ91Mw/YajdLJ1/eEB7JgLLbyqj56Mm5RAvNSeNZblDJvWk+0ZYB0
+         uBCUDC215uNb/RtSNwbx3QA/CKWRDilICAI4PEmMsncMp8ehv2USixYNy3GNof3Q7JtW
+         v2wvG42HWDWnh10nxUWCd43sXdevzosT7bM4TER29VGE2/pVxuNy+YLFwTXxyGmPHFtI
+         KCKpKrJL/ZWWin4Ay6o/aJbzRsoGBGVs/ePNqcvby5uvO6ltykU2t5lM4YuR52pGOAXI
+         0DkDPMBX/tC6nyiC3KZeUbZyxlAU6dJ/ih0of4MDVWiBuTRK1tYuHq4A1T4mvYe0k1n2
+         xq0g==
+X-Gm-Message-State: AOAM530ri8VHo4S60YMMFj7FrFN5FEZ4IPaYH328NbEG+sXTKSTS17aO
+        h7elyRAZFHnmK6vCpVOI5barUZQ2jZA=
+X-Google-Smtp-Source: ABdhPJyHAiUHvwGKu1jZ/kKDWjRpLUuWkvsCMUJdc7c5eaOnVNIVQyHtu/BQr6QyictO5jTFgA4qyg==
+X-Received: by 2002:a05:600c:4e87:: with SMTP id f7mr2283057wmq.121.1629192814642;
+        Tue, 17 Aug 2021 02:33:34 -0700 (PDT)
+Received: from [192.168.8.197] ([85.255.233.12])
+        by smtp.gmail.com with ESMTPSA id x18sm1718578wrw.19.2021.08.17.02.33.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Aug 2021 02:33:34 -0700 (PDT)
+To:     Stefan Metzmacher <metze@samba.org>, Jens Axboe <axboe@kernel.dk>,
+        io-uring@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <cover.1628871893.git.asml.silence@gmail.com>
+ <17841c48-093e-af1c-c7c9-aa00859eb1b9@samba.org>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [PATCH v2 0/4] open/accept directly into io_uring fixed file
+ table
+Message-ID: <78e2d63a-5d3a-6334-8177-11646d4ec261@gmail.com>
+Date:   Tue, 17 Aug 2021 10:33:03 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210817091224.nqnrro34cyb67chj@linutronix.de>
+In-Reply-To: <17841c48-093e-af1c-c7c9-aa00859eb1b9@samba.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/17/21 11:12 AM, Sebastian Andrzej Siewior wrote:
-> On 2021-08-17 10:37:48 [+0200], Vlastimil Babka wrote:
->> OK reproduced. Thanks, will investigate.
+On 8/16/21 4:45 PM, Stefan Metzmacher wrote:
+> Hi Pavel,
 > 
-> With the local_lock at the top, the needed alignment gets broken for dbl
-> cmpxchg.
+>> The behaviour is controlled by setting sqe->file_index, where 0 implies
+>> the old behaviour. If non-zero value is specified, then it will behave
+>> as described and place the file into a fixed file slot
+>> sqe->file_index - 1. A file table should be already created, the slot
+>> should be valid and empty, otherwise the operation will fail.
+>>
+>> Note 1: we can't use IOSQE_FIXED_FILE to switch between modes, because
+>> accept takes a file, and it already uses the flag with a different
+>> meaning.
+> 
+> Would it be hard to support IOSQE_FIXED_FILE for the dirfd of openat*, renameat, unlinkat, statx?
+> (And mkdirat, linkat, symlinkat when they arrive)
+> renameat and linkat might be trickier as they take two dirfds, but it
+> would make the feature more complete and useful.
 
-Right. I wondered why the checks in __pcpu_double_call_return_bool
-didn't trigger. They are VM_BUG_ON() so they did trigger after enabling
-DEBUG_VM.
+Good idea. There is nothing blocking on the io_uring side, but
+the fs part may get ugly, e.g. too intrusive. We definitely need
+to take a look
 
-> 
-> diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
-> index b5bcac29b979c..cd14aa1f9bc3c 100644
-> --- a/include/linux/slub_def.h
-> +++ b/include/linux/slub_def.h
-> @@ -42,9 +42,9 @@ enum stat_item {
->  	NR_SLUB_STAT_ITEMS };
->  
->  struct kmem_cache_cpu {
-> -	local_lock_t lock;	/* Protects the fields below except stat */
->  	void **freelist;	/* Pointer to next available object */
->  	unsigned long tid;	/* Globally unique transaction id */
-> +	local_lock_t lock;	/* Protects the fields below except stat */
->  	struct page *page;	/* The slab from which we are allocating */
->  #ifdef CONFIG_SLUB_CPU_PARTIAL
->  	struct page *partial;	/* Partially allocated frozen slabs */
-> 
-> Sebastian
-> 
-
+-- 
+Pavel Begunkov
