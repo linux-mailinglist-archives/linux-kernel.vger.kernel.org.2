@@ -2,284 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49EAF3EF3E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D8DC3EF3D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235845AbhHQUVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 16:21:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234799AbhHQUVX (ORCPT
+        id S236443AbhHQUTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 16:19:21 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:37615 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234605AbhHQURC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 16:21:23 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9910DC0698CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 13:16:25 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id w5so81199ejq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 13:16:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zCBx9edfMztVack3J/dOyrn64HMiBBn0SZqe8UufBb4=;
-        b=Vuhg74MRDEM2sRYPpMt7341EGU8CNxTrApQJ9QE+boi8CXhx+UechGUOOrQrg5cG6Q
-         9B/a8yZITa6CKN4WSbWMkP5fbmFDDRMzUNrYNHojGOde+mjgUdaxZ7uhpVhDCf+ySeGX
-         QVr2mItMF8INxG6j7/SnOKj5LiT31CkZzb8bCPenN5LE+Ntgkwse8H9FN2fUuTsUbJb1
-         BKm9t1vHbzm6vm3lcFNM28MX04Z5l/Yf5g/DyyLhJTnCe9xxyhxvT2BG92SoKkgZaNyb
-         BX+fxq9I29pOjhKbyQSpvdBmJKEQNX/KcXERhmOMX5epSSfYO+L+UyJU2/Udw/YNZuXJ
-         Miew==
+        Tue, 17 Aug 2021 16:17:02 -0400
+Received: by mail-oi1-f170.google.com with SMTP id u10so947032oiw.4;
+        Tue, 17 Aug 2021 13:16:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zCBx9edfMztVack3J/dOyrn64HMiBBn0SZqe8UufBb4=;
-        b=PzIj/PPJMwVn/p1O97lgM5q5b1aJe7ILZz9yBXElZSfRkIbZJYdDR05l4mgT8PzpTP
-         VFy7iGV2ulEujP9okIbquriq+z8WeCh5/7sD0b4MzETfzNTGIS8YqHXXw3sxY72wfab0
-         YoUaupWuHzqn8ssG6XeVlHaZOZ2PGGkGxmxEmu/KV97e+jnEVv4SfeaYIu+V9kpIIguD
-         rayEX3emopS2lGEDPYZ+lK6Ju7KE479gcWdi8Ffv0i/nC/0Zl4i5Mrmkpn+GZIezLHmg
-         QK7KxewGkV+D8zDTxBE0VYiCkXklP5tiHvTndoiI5VSKWqTWLhmknGuvy7SJNBCJ83Qi
-         kWFw==
-X-Gm-Message-State: AOAM532YrxPl4hcXXqMuhXD+4WiBq1g2PqN9CMR4xOID+vPAoL06Ptzy
-        aIsMjwG/nt4zX/seTVY/9w03+V+uPbPkM5ny88g=
-X-Google-Smtp-Source: ABdhPJyGrLTk8nQo+6t5IDULvO23RWKoe1PFgYmSBIwoB/1kegAq5/WrGm4mdBecZFyJAHZi2MWkAFocKAKb7XqCTgw=
-X-Received: by 2002:a17:907:76a1:: with SMTP id jw1mr5806404ejc.238.1629231384198;
- Tue, 17 Aug 2021 13:16:24 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TYwFvXBY4WG4kLTC4yAUxw0DO9WXwIG/O90PS5u/hQo=;
+        b=QB+silyiZEx+oFDxqwwLuqUmd08yY+cuKnaB1D7QFFm5uC5X/QXN4W+3mL3wen8xq2
+         k/zLnKrQYKrmSpZn2jvGQcTJP8Ids9QeXxvdIQUkFEelMsZz1PAI19BYe6ooCabqLBHo
+         gf9KFTQEjDtnLYPqPIOM/++q92Ywsskmo2cGb6CGpjFmxNMg56kuvfALuzVJaDFJ3SC8
+         C5hf1CxfGX39SeQJrjVRQD1CyJwoQ/HK9FIjCE/JLIFuKlcb6XKMj/rSXiE6s4wRnTxU
+         PC8KtpIxa7SWgVVhrd8I1Zvt5iSgtZ2mttymnmPeeKF2WHibXHplBHR63U2MFxD44hjv
+         rIgw==
+X-Gm-Message-State: AOAM5336mThqfqQVB8LX226Z7qG5JSPHypAIgCC0eTDWcNa+hSXNfVww
+        dnsKRWs1CrGDY7KfpRnk8g==
+X-Google-Smtp-Source: ABdhPJwMhdSyZjrMueXAleLXMIQ6atf+3kiyHC3LZVGyblyQPtwV6vU7ep6cNLxMzAhknOrbIQeiGQ==
+X-Received: by 2002:a05:6808:494:: with SMTP id z20mr3882271oid.103.1629231388824;
+        Tue, 17 Aug 2021 13:16:28 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id m25sm598062otp.41.2021.08.17.13.16.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 13:16:28 -0700 (PDT)
+Received: (nullmailer pid 768217 invoked by uid 1000);
+        Tue, 17 Aug 2021 20:16:27 -0000
+Date:   Tue, 17 Aug 2021 15:16:27 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sam Protsenko <semen.protsenko@linaro.org>
+Subject: Re: [PATCH v2 1/8] dt-bindings: clock: samsung: convert Exynos5250
+ to dtschema
+Message-ID: <YRwZG1uerWt+NAQH@robh.at.kernel.org>
+References: <20210810093145.26153-1-krzysztof.kozlowski@canonical.com>
+ <20210810093145.26153-2-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-References: <da632211-8e3e-6b1-aee-ab24734429a0@google.com> <23a77889-2ddc-b030-75cd-44ca27fd4d1@google.com>
-In-Reply-To: <23a77889-2ddc-b030-75cd-44ca27fd4d1@google.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 17 Aug 2021 13:16:12 -0700
-Message-ID: <CAHbLzkrFTxLb6jmfQBvGdnOHCAc8d8Y21c0TniHGGkVZOLPpdw@mail.gmail.com>
-Subject: Re: [PATCH 7/9] huge tmpfs: shmem_is_huge(vma, inode, index)
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210810093145.26153-2-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 1:19 AM Hugh Dickins <hughd@google.com> wrote:
->
-> Extend shmem_huge_enabled(vma) to shmem_is_huge(vma, inode, index), so
-> that a consistent set of checks can be applied, even when the inode is
-> accessed through read/write syscalls (with NULL vma) instead of mmaps
-> (the index argument is seldom of interest, but required by mount option
-> "huge=within_size").  Clean up and rearrange the checks a little.
->
-> This then replaces the checks which shmem_fault() and shmem_getpage_gfp()
-> were making, and eliminates the SGP_HUGE and SGP_NOHUGE modes.
->
-> Replace a couple of 0s by explicit SHMEM_HUGE_NEVERs; and replace the
-> obscure !shmem_mapping() symlink check by explicit S_ISLNK() - nothing
-> else needs that symlink check, so leave it there in shmem_getpage_gfp().
->
-> Signed-off-by: Hugh Dickins <hughd@google.com>
-
-Reviewed-by: Yang Shi <shy828301@gmail.com>
-
+On Tue, Aug 10, 2021 at 11:31:38AM +0200, Krzysztof Kozlowski wrote:
+> Convert Samsung Exynos5250 clock controller bindings to DT schema format
+> using json-schema.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 > ---
->  include/linux/shmem_fs.h |  9 +++--
->  mm/shmem.c               | 84 ++++++++++++----------------------------
->  2 files changed, 31 insertions(+), 62 deletions(-)
->
-> diff --git a/include/linux/shmem_fs.h b/include/linux/shmem_fs.h
-> index 7d97b15a2f7a..60c6e4eac275 100644
-> --- a/include/linux/shmem_fs.h
-> +++ b/include/linux/shmem_fs.h
-> @@ -86,7 +86,12 @@ extern void shmem_truncate_range(struct inode *inode, loff_t start, loff_t end);
->  extern int shmem_unuse(unsigned int type, bool frontswap,
->                        unsigned long *fs_pages_to_unuse);
->
-> -extern bool shmem_huge_enabled(struct vm_area_struct *vma);
-> +extern bool shmem_is_huge(struct vm_area_struct *vma,
-> +                         struct inode *inode, pgoff_t index);
-> +static inline bool shmem_huge_enabled(struct vm_area_struct *vma)
-> +{
-> +       return shmem_is_huge(vma, file_inode(vma->vm_file), vma->vm_pgoff);
-> +}
->  extern unsigned long shmem_swap_usage(struct vm_area_struct *vma);
->  extern unsigned long shmem_partial_swap_usage(struct address_space *mapping,
->                                                 pgoff_t start, pgoff_t end);
-> @@ -96,8 +101,6 @@ enum sgp_type {
->         SGP_READ,       /* don't exceed i_size, don't allocate page */
->         SGP_NOALLOC,    /* similar, but fail on hole or use fallocated page */
->         SGP_CACHE,      /* don't exceed i_size, may allocate page */
-> -       SGP_NOHUGE,     /* like SGP_CACHE, but no huge pages */
-> -       SGP_HUGE,       /* like SGP_CACHE, huge pages preferred */
->         SGP_WRITE,      /* may exceed i_size, may allocate !Uptodate page */
->         SGP_FALLOC,     /* like SGP_WRITE, but make existing page Uptodate */
->  };
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 226ac3a911e9..56ee56b1cab6 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -474,39 +474,35 @@ static bool shmem_confirm_swap(struct address_space *mapping,
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->  /* ifdef here to avoid bloating shmem.o when not necessary */
->
-> -static int shmem_huge __read_mostly;
-> +static int shmem_huge __read_mostly = SHMEM_HUGE_NEVER;
->
-> -bool shmem_huge_enabled(struct vm_area_struct *vma)
-> +bool shmem_is_huge(struct vm_area_struct *vma,
-> +                  struct inode *inode, pgoff_t index)
->  {
-> -       struct inode *inode = file_inode(vma->vm_file);
-> -       struct shmem_sb_info *sbinfo = SHMEM_SB(inode->i_sb);
->         loff_t i_size;
-> -       pgoff_t off;
->
-> -       if ((vma->vm_flags & VM_NOHUGEPAGE) ||
-> -           test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags))
-> -               return false;
-> -       if (shmem_huge == SHMEM_HUGE_FORCE)
-> -               return true;
->         if (shmem_huge == SHMEM_HUGE_DENY)
->                 return false;
-> -       switch (sbinfo->huge) {
-> -       case SHMEM_HUGE_NEVER:
-> +       if (vma && ((vma->vm_flags & VM_NOHUGEPAGE) ||
-> +           test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags)))
->                 return false;
-> +       if (shmem_huge == SHMEM_HUGE_FORCE)
-> +               return true;
+>  .../bindings/clock/exynos5250-clock.txt       | 41 ----------------
+>  .../bindings/clock/samsung,exynos-clock.yaml  | 48 +++++++++++++++++++
+>  MAINTAINERS                                   |  1 +
+>  3 files changed, 49 insertions(+), 41 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/clock/exynos5250-clock.txt
+>  create mode 100644 Documentation/devicetree/bindings/clock/samsung,exynos-clock.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/exynos5250-clock.txt b/Documentation/devicetree/bindings/clock/exynos5250-clock.txt
+> deleted file mode 100644
+> index aff266a12eeb..000000000000
+> --- a/Documentation/devicetree/bindings/clock/exynos5250-clock.txt
+> +++ /dev/null
+> @@ -1,41 +0,0 @@
+> -* Samsung Exynos5250 Clock Controller
+> -
+> -The Exynos5250 clock controller generates and supplies clock to various
+> -controllers within the Exynos5250 SoC.
+> -
+> -Required Properties:
+> -
+> -- compatible: should be one of the following.
+> -  - "samsung,exynos5250-clock" - controller compatible with Exynos5250 SoC.
+> -
+> -- reg: physical base address of the controller and length of memory mapped
+> -  region.
+> -
+> -- #clock-cells: should be 1.
+> -
+> -Each clock is assigned an identifier and client nodes can use this identifier
+> -to specify the clock which they consume.
+> -
+> -All available clocks are defined as preprocessor macros in
+> -dt-bindings/clock/exynos5250.h header and can be used in device
+> -tree sources.
+> -
+> -Example 1: An example of a clock controller node is listed below.
+> -
+> -	clock: clock-controller@10010000 {
+> -		compatible = "samsung,exynos5250-clock";
+> -		reg = <0x10010000 0x30000>;
+> -		#clock-cells = <1>;
+> -	};
+> -
+> -Example 2: UART controller node that consumes the clock generated by the clock
+> -	   controller. Refer to the standard clock bindings for information
+> -	   about 'clocks' and 'clock-names' property.
+> -
+> -	serial@13820000 {
+> -		compatible = "samsung,exynos4210-uart";
+> -		reg = <0x13820000 0x100>;
+> -		interrupts = <0 54 0>;
+> -		clocks = <&clock CLK_UART2>, <&clock CLK_SCLK_UART2>;
+> -		clock-names = "uart", "clk_uart_baud0";
+> -	};
+> diff --git a/Documentation/devicetree/bindings/clock/samsung,exynos-clock.yaml b/Documentation/devicetree/bindings/clock/samsung,exynos-clock.yaml
+> new file mode 100644
+> index 000000000000..cd6567bd8cc7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/samsung,exynos-clock.yaml
+> @@ -0,0 +1,48 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/samsung,exynos-clock.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +       switch (SHMEM_SB(inode->i_sb)->huge) {
->         case SHMEM_HUGE_ALWAYS:
->                 return true;
->         case SHMEM_HUGE_WITHIN_SIZE:
-> -               off = round_up(vma->vm_pgoff, HPAGE_PMD_NR);
-> +               index = round_up(index, HPAGE_PMD_NR);
->                 i_size = round_up(i_size_read(inode), PAGE_SIZE);
-> -               if (i_size >= HPAGE_PMD_SIZE &&
-> -                               i_size >> PAGE_SHIFT >= off)
-> +               if (i_size >= HPAGE_PMD_SIZE && (i_size >> PAGE_SHIFT) >= index)
->                         return true;
->                 fallthrough;
->         case SHMEM_HUGE_ADVISE:
-> -               /* TODO: implement fadvise() hints */
-> -               return (vma->vm_flags & VM_HUGEPAGE);
-> +               if (vma && (vma->vm_flags & VM_HUGEPAGE))
-> +                       return true;
-> +               fallthrough;
->         default:
-> -               VM_BUG_ON(1);
->                 return false;
->         }
->  }
-> @@ -680,6 +676,12 @@ static long shmem_unused_huge_count(struct super_block *sb,
->
->  #define shmem_huge SHMEM_HUGE_DENY
->
-> +bool shmem_is_huge(struct vm_area_struct *vma,
-> +                  struct inode *inode, pgoff_t index)
-> +{
-> +       return false;
-> +}
+> +title: Samsung Exynos SoC clock controller
 > +
->  static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
->                 struct shrink_control *sc, unsigned long nr_to_split)
->  {
-> @@ -1829,7 +1831,6 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
->         struct shmem_sb_info *sbinfo;
->         struct mm_struct *charge_mm;
->         struct page *page;
-> -       enum sgp_type sgp_huge = sgp;
->         pgoff_t hindex = index;
->         gfp_t huge_gfp;
->         int error;
-> @@ -1838,8 +1839,6 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
->
->         if (index > (MAX_LFS_FILESIZE >> PAGE_SHIFT))
->                 return -EFBIG;
-> -       if (sgp == SGP_NOHUGE || sgp == SGP_HUGE)
-> -               sgp = SGP_CACHE;
->  repeat:
->         if (sgp <= SGP_CACHE &&
->             ((loff_t)index << PAGE_SHIFT) >= i_size_read(inode)) {
-> @@ -1903,36 +1902,12 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
->                 return 0;
->         }
->
-> -       /* shmem_symlink() */
-> -       if (!shmem_mapping(mapping))
-> -               goto alloc_nohuge;
-> -       if (shmem_huge == SHMEM_HUGE_DENY || sgp_huge == SGP_NOHUGE)
-> +       /* Never use a huge page for shmem_symlink() */
-> +       if (S_ISLNK(inode->i_mode))
->                 goto alloc_nohuge;
-> -       if (shmem_huge == SHMEM_HUGE_FORCE)
-> -               goto alloc_huge;
-> -       switch (sbinfo->huge) {
-> -       case SHMEM_HUGE_NEVER:
-> +       if (!shmem_is_huge(vma, inode, index))
->                 goto alloc_nohuge;
-> -       case SHMEM_HUGE_WITHIN_SIZE: {
-> -               loff_t i_size;
-> -               pgoff_t off;
-> -
-> -               off = round_up(index, HPAGE_PMD_NR);
-> -               i_size = round_up(i_size_read(inode), PAGE_SIZE);
-> -               if (i_size >= HPAGE_PMD_SIZE &&
-> -                   i_size >> PAGE_SHIFT >= off)
-> -                       goto alloc_huge;
->
-> -               fallthrough;
-> -       }
-> -       case SHMEM_HUGE_ADVISE:
-> -               if (sgp_huge == SGP_HUGE)
-> -                       goto alloc_huge;
-> -               /* TODO: implement fadvise() hints */
-> -               goto alloc_nohuge;
-> -       }
-> -
-> -alloc_huge:
->         huge_gfp = vma_thp_gfp_mask(vma);
->         huge_gfp = limit_gfp_mask(huge_gfp, gfp);
->         page = shmem_alloc_and_acct_page(huge_gfp, inode, index, true);
-> @@ -2088,7 +2063,6 @@ static vm_fault_t shmem_fault(struct vm_fault *vmf)
->         struct vm_area_struct *vma = vmf->vma;
->         struct inode *inode = file_inode(vma->vm_file);
->         gfp_t gfp = mapping_gfp_mask(inode->i_mapping);
-> -       enum sgp_type sgp;
->         int err;
->         vm_fault_t ret = VM_FAULT_LOCKED;
->
-> @@ -2151,15 +2125,7 @@ static vm_fault_t shmem_fault(struct vm_fault *vmf)
->                 spin_unlock(&inode->i_lock);
->         }
->
-> -       sgp = SGP_CACHE;
-> -
-> -       if ((vma->vm_flags & VM_NOHUGEPAGE) ||
-> -           test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags))
-> -               sgp = SGP_NOHUGE;
-> -       else if (vma->vm_flags & VM_HUGEPAGE)
-> -               sgp = SGP_HUGE;
-> -
-> -       err = shmem_getpage_gfp(inode, vmf->pgoff, &vmf->page, sgp,
-> +       err = shmem_getpage_gfp(inode, vmf->pgoff, &vmf->page, SGP_CACHE,
->                                   gfp, vma, vmf, &ret);
->         if (err)
->                 return vmf_error(err);
-> @@ -3966,7 +3932,7 @@ int __init shmem_init(void)
->         if (has_transparent_hugepage() && shmem_huge > SHMEM_HUGE_DENY)
->                 SHMEM_SB(shm_mnt->mnt_sb)->huge = shmem_huge;
->         else
-> -               shmem_huge = 0; /* just in case it was patched */
-> +               shmem_huge = SHMEM_HUGE_NEVER; /* just in case it was patched */
->  #endif
->         return 0;
->
-> --
-> 2.26.2
->
+> +maintainers:
+> +  - Chanwoo Choi <cw00.choi@samsung.com>
+> +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> +  - Sylwester Nawrocki <s.nawrocki@samsung.com>
+> +  - Tomasz Figa <tomasz.figa@gmail.com>
+> +
+> +description: |
+> +  All available clocks are defined as preprocessor macros in
+> +  dt-bindings/clock/ headers.
+> +
+> +properties:
+> +  compatible:
+> +    const: samsung,exynos5250-clock
+> +
+> +  assigned-clocks: true
+> +  assigned-clock-parents: true
+> +  assigned-clock-rates: true
+
+These can be dropped. They are always allowed if 'clocks' is present.
+
+> +  clocks: true
+
+This needs to define how many.
+
+> +
+> +  "#clock-cells":
+> +    const: 1
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - "#clock-cells"
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/exynos5250.h>
+> +    clock: clock-controller@10010000 {
+> +        compatible = "samsung,exynos5250-clock";
+> +        reg = <0x10010000 0x30000>;
+> +        #clock-cells = <1>;
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 36aee8517ab0..2dbacacac3f5 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -16491,6 +16491,7 @@ L:	linux-samsung-soc@vger.kernel.org
+>  S:	Supported
+>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/snawrocki/clk.git
+>  F:	Documentation/devicetree/bindings/clock/exynos*.txt
+> +F:	Documentation/devicetree/bindings/clock/samsung,*.yaml
+>  F:	Documentation/devicetree/bindings/clock/samsung,s3c*
+>  F:	Documentation/devicetree/bindings/clock/samsung,s5p*
+>  F:	drivers/clk/samsung/
+> -- 
+> 2.30.2
+> 
+> 
