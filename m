@@ -2,259 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6120D3EF1E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 20:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FDC3EF1E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 20:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233072AbhHQSe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 14:34:28 -0400
-Received: from mga14.intel.com ([192.55.52.115]:63439 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229508AbhHQSe0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 14:34:26 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10079"; a="215893591"
-X-IronPort-AV: E=Sophos;i="5.84,329,1620716400"; 
-   d="scan'208";a="215893591"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 11:33:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,329,1620716400"; 
-   d="scan'208";a="676612472"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by fmsmga006.fm.intel.com with ESMTP; 17 Aug 2021 11:33:44 -0700
-Received: from fmsmsx609.amr.corp.intel.com (10.18.126.89) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Tue, 17 Aug 2021 11:33:43 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx609.amr.corp.intel.com (10.18.126.89) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Tue, 17 Aug 2021 11:33:43 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10 via Frontend Transport; Tue, 17 Aug 2021 11:33:43 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.48) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.10; Tue, 17 Aug 2021 11:33:41 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UkcyyC6jfDcJAgYQ4YW2RmEbKhRx5LfYLk2lGKlbud3+Dj1u52CQGCPnJw0UaytyRTbl4njJASc5TYB3pfxDVZw//H6vdXT3vN3wzMyt2I6hP0sgFTLfrNhnepVcJ6zcb4Eslbf/R9R80SbK3+1aaIr3+BscucIjLeW/1YNE1qNThDwM0xZsjAoXt+FzQ5/dy+WKq5GMkXiqS9zwzNcVaNBN4n7bQgf5QK+HHyEuCtaHJd4gobMG4CoxwoC9cYjBlPjwaAZDCwFWpj6z6PtF8Ats+KVWKYfHu0MavGlEpBA9RAi1rwmDQAXC+GzQpryGxXuFKY0USMhReZLaH7eI9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KgGIE5oN3BQfU7dbcEcy8KEj0DZiPwjHlz0jJHggLvg=;
- b=CrYVqX9J+nw/yAux8ZjwPMPNZ+SBtJNQAZYVl7r+Km5lX1lz9Vxtr77VD7MGb4wfLpudy3IlT5fduPhbndrHxAoo0xL6xctlRpeqbjq3W7bVCMqZdNJI47hA47qSyI3dRIxkglA2tf1vUUhsU0IH6XUiyqMJCU3m/2s6WHgJV4WH5pja/zB6YL1SLSfUs3hlUOHFRrXrcmpQcORmWnhJJMSHt9EtluRKKpdPXdJvM9frNIlzfKUQoi6RQEZ1bVq4SCCjPeFLd5gr+oJgxnMRD5kt6WdhmoOtGyEyzzl+z62PfjrAmZzdZGFp/MgpdGOV/SjLmnIPeCqaqzjHDulZhQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KgGIE5oN3BQfU7dbcEcy8KEj0DZiPwjHlz0jJHggLvg=;
- b=t8eoiSvqqVmzQyewgqQ6PCfA1PHfMRJpHQDCGy5wW3WjxEMNxcCBkmMvFJJnIBM8kVdlekIg2oiqIP7XWFdBZNwDt/tmGOzXIEFP/NazvbMjkjm6Ao6ZJp8ZyJR4q5tjU0ZiA89FYLaFoaM9Rm6apoxmaJkP3+JW2PVf7FdiR7A=
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
-Received: from DM8PR11MB5736.namprd11.prod.outlook.com (2603:10b6:8:11::11) by
- DM6PR11MB3580.namprd11.prod.outlook.com (2603:10b6:5:138::10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4415.14; Tue, 17 Aug 2021 18:33:34 +0000
-Received: from DM8PR11MB5736.namprd11.prod.outlook.com
- ([fe80::2920:8181:ca3f:8666]) by DM8PR11MB5736.namprd11.prod.outlook.com
- ([fe80::2920:8181:ca3f:8666%3]) with mapi id 15.20.4415.024; Tue, 17 Aug 2021
- 18:33:34 +0000
-Subject: Re: [PATCH v28 12/32] x86/mm: Update ptep_set_wrprotect() and
- pmdp_set_wrprotect() for transition from _PAGE_DIRTY to _PAGE_COW
-To:     Borislav Petkov <bp@alien8.de>
-CC:     <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-arch@vger.kernel.org>, <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Eugene Syromiatnikov" <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Rick P Edgecombe <rick.p.edgecombe@intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20210722205219.7934-1-yu-cheng.yu@intel.com>
- <20210722205219.7934-13-yu-cheng.yu@intel.com> <YRqL4QyYPaCXSmi+@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <e0da31b8-418f-ce48-bb03-d7c325e2615b@intel.com>
-Date:   Tue, 17 Aug 2021 11:33:28 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
-In-Reply-To: <YRqL4QyYPaCXSmi+@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MWHPR14CA0069.namprd14.prod.outlook.com
- (2603:10b6:300:81::31) To DM8PR11MB5736.namprd11.prod.outlook.com
- (2603:10b6:8:11::11)
+        id S232948AbhHQSel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 14:34:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhHQSej (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 14:34:39 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 501CAC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 11:34:06 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id l11so298984wrx.4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 11:34:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorfullife-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=iL4mha+qm6Tde1apuUpcImkDlPPCgksXIXOGiU4nqQM=;
+        b=LT/IPl3svjMKgmUH6BvskDKarh+tgGYdApGreghP73QEQjdvAGkIizMC/56ZDTgSwk
+         1bVefNEVi1hKi+ns/Lf9x4z95HSUcBDgbqfgNBQvQxc+PBSj0Z2nBY0+po5MsId2Dwa6
+         2w8O9wRb9Sj9iP75HFpddJlQYuCw0h92GLjWmk2wn1BKfmc5adr2yYaeOsjP/VMA0RRS
+         PiPA3sWAeonUy1z9ut/MbCpdm3PQh/QB/Y74vELaM0wLNkmLLb4Hui3U4EZu9f7c699P
+         RWHjkLF758/HyhJtQjRdH2+QZjNDzMQunY5OhP2Dw/d+1m0pkWvs/oRyoMzH68Wkk9sG
+         OmfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=iL4mha+qm6Tde1apuUpcImkDlPPCgksXIXOGiU4nqQM=;
+        b=ra/F2EXDS9X5hw5r6JQKFFN9KLd14npdWKAaZGHtN52Jt5m745cjJeGQjLOawOzBk2
+         QxSmRmQ/A19/5f0VWrQfdxBSb52QCZH9HOisJhRpYOfyIOPRMrZWLvxgTNWzt/3GhxIP
+         yyGoYkqF2RJ/nrVHOOt+DBSCNVMqrLsqbQt8HMrTT8CX9xA0qGDo/roq3VKCfEFShmSn
+         ENnedds202MNfKyej4a/yY3Hf4njWwDKzAch825HdTc8cQ/O4HCfYbNAot04gxNceCpV
+         6FCmDOfnz5HPCUNRMm8DdJTODS555aosYU3aPiOEeX9QbzwiaoqH9tW42NmvxGFkqwA+
+         Nh8w==
+X-Gm-Message-State: AOAM531FV3hm0stn0UZytqlOHZ9McOztrkHnCMb0Bl3qVQiSNCNiPjvV
+        VIDTXA1JR65JgP726obCNYPWQQ==
+X-Google-Smtp-Source: ABdhPJzj93fR1/QeH5Cs5CIZBOsh3ocX2SpZRvnEDuagUlVK+1/OKRjfLFxANt7lNpeaIXZrL5x+1A==
+X-Received: by 2002:adf:f20d:: with SMTP id p13mr5922522wro.95.1629225245003;
+        Tue, 17 Aug 2021 11:34:05 -0700 (PDT)
+Received: from localhost.localdomain (p200300d9972f1000838d8dfea5ed2c3c.dip0.t-ipconnect.de. [2003:d9:972f:1000:838d:8dfe:a5ed:2c3c])
+        by smtp.googlemail.com with ESMTPSA id k17sm3671511wrn.8.2021.08.17.11.34.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Aug 2021 11:34:04 -0700 (PDT)
+Subject: Re: [PATCH] ipc: replace costly bailout check in sysvipc_find_ipc()
+To:     Rafael Aquini <aquini@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Waiman Long <llong@redhat.com>
+References: <20210809203554.1562989-1-aquini@redhat.com>
+From:   Manfred Spraul <manfred@colorfullife.com>
+Message-ID: <0b80af66-0ff4-5278-37e1-08966157493e@colorfullife.com>
+Date:   Tue, 17 Aug 2021 20:34:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.18] (98.33.34.38) by MWHPR14CA0069.namprd14.prod.outlook.com (2603:10b6:300:81::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.15 via Frontend Transport; Tue, 17 Aug 2021 18:33:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2dd98a43-193f-47d9-ebb4-08d961ad8534
-X-MS-TrafficTypeDiagnostic: DM6PR11MB3580:
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR11MB3580F4448F6D27AB4EA6393DABFE9@DM6PR11MB3580.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: as+2loOde+15PXnlRMibNU16NatNUaAX0nJ5MIGghBkoojNUY77IiV/CpolIe1nx5CbiJbL19B1pKGbIS30xC/VQw1hPJK34ty9JS6rCrkj5wbwWNbyyjQTnIPMGYj+mrfFpgZEdJDO7MRhPEPWLOEhopRKJ0SFJV+L0/47KJNcacE5G6jrTS6wMBDvGO9p/vcvcZyIc7MSnp9w88MC78AxMu+EjCzBxU9DBhFv5HTRL5m3RgKi4Ws0/1velmc8/nX+seMx7EplFhCVCS8qNOC3DLFOY+BMNAwJcMYIPbgMGnAYBCUBKA0ckXvRq1lZnulzRUnWmVcN9rbMmoX2A4a1ADFEZMwWUI5LKODmeQeg4Gqdi1YCwPffRnwy2T5/7RLUT8P8FBnUlTB4iX+SKg/VgAFMnnab4ucfhFVCONPrVZTPM1wqU10MCIfoi84qTFDrUDXHdnvvPktYuldof7YAe/4PF0ixfw1eJ1XZhCa1i4R75W1osOjHil5uIBny2WsjMg7fUPm0pokkPbY8OQysElGauvsqZQEePLDTysX7zVitkjJUOVti/uHfDwM3rmdA6J6RqdmEDbYdEPGQ7lruzI6CSVxwLIusqHFFUaxbwOQ4w2db46d1Ji5t0qcjeqq6Y8SaTgcisVT60uugRXGz0ShxcvvsogFJty2P6ectsv6wZAADHK8//mmPbVFOQVKUaLpcRwidRll55VsJ0tacWHJnUWXbXwjZzrjr/EsmTo8ziBhQUVbiXoq5TOoFb
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR11MB5736.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(396003)(346002)(136003)(376002)(2906002)(83380400001)(478600001)(38100700002)(6486002)(53546011)(15650500001)(8676002)(956004)(8936002)(54906003)(5660300002)(6666004)(26005)(7416002)(6916009)(86362001)(31696002)(66476007)(316002)(66556008)(66946007)(4326008)(2616005)(16576012)(36756003)(31686004)(186003)(14143004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dGFRRFYxWDhyakRkR1RFd2JCYkFyajRJbnVGeWpXT1ZKYk5BK3VPVkNkdUNG?=
- =?utf-8?B?cmE5QnpmdndlQ0FaR3NaWFJFSFZ2ekNaMGkrRjF0cXFBekM2dURYREUvbmFK?=
- =?utf-8?B?WnBCZEZ6UVMwYXJ1LzBKd3FncUNZTzFpeE11MVpZR2taSm54WUMwTVFFbXg3?=
- =?utf-8?B?SXg0ZVZFT2xjbFF1R3pMVmZ1aFc4UzFBWXNKWS9OWWQvSGx6M28zODlvTFdH?=
- =?utf-8?B?WFNuQUtOeGhTbS9ZSGtsdG9tZTBEZE0yT0xNNkU3d0NZRURSZUkyc05iVC8x?=
- =?utf-8?B?OTRCNVFQcW44WE5Ubm1QQyt1TW03cE1aa1RmNnFvaitjYTJuay9jeDBudXBs?=
- =?utf-8?B?SU4vLzNlUjNCWnZoK1VnQ3RnNlhuRDFMSkgyV3NmZndPZ0pBaVZrTjlmaGVD?=
- =?utf-8?B?cWUwRVBHTENocUF1bnpCejhHNkdjM2ZCU2t1NWJXZng2UUZJRjRPazVTU1F2?=
- =?utf-8?B?V3dGR0h1cUx6S3RXblZSMVBTeWhWMG1IMHNWRUs4NWZIc3lUSWlWVk1URVYy?=
- =?utf-8?B?Ri9YZEkvRTJXQWtzTnZ1MEFOb0E1ZFFyQnZoajZJWWl4TG96VjJnZTRKSkZk?=
- =?utf-8?B?QzJFNE5UWUhpclY1R3d2VjNvQkZyZUxDMjlOY2hJNmJ1di9DRXpDcUNKU0tH?=
- =?utf-8?B?VThLdVo4NkFWanQyamZnM1N1ekhtbkc2Z010MHFUMTF1ODgrZ1FCYUxWQjh2?=
- =?utf-8?B?Y1AraGMyNFVjRW1QUWFxZ3BtZXYxUE1lQjdCTkpyOWl0MUhwcEF0VU1Jb1Yy?=
- =?utf-8?B?SWtIV2Q0M21ZblpFTElDeUhXRTI5RlEvS1pGQ3FrR1VMMCt2OElvVHpGaE1i?=
- =?utf-8?B?R3M3U0djL2dzbHIxUitoci9qRmtIRjF4N3dpMHB2ZEhnMzhQRHlnVlZPT1Nl?=
- =?utf-8?B?L0ZiNmk2UUtFMTh2WVhlNzhvNm5QNURwb3RyLytkN2FyN2RzK1pka29KYVYy?=
- =?utf-8?B?SjlFRzJEUzRtZUlXa1BmdUxlOUgxU1dJamsxNzYreVRZUFRRc3F5TjU4MzdN?=
- =?utf-8?B?OFl5dCs2ZkpMdnBGMmp1Y1JrWFAyZ2NIUlR6bkhOV2JmQTR3ODBuSE9EYjdk?=
- =?utf-8?B?RVAvMkxnb1VtWkZtSzYyYnhiTk1WK2xYSVFLekNNc2dSNXBNOUVHTW01NGZp?=
- =?utf-8?B?K0huNUIwbWJnUFRVYU1IODJ2d0N1bzc0R09WQlNsclNLS2hWSWtpY0VtaHJN?=
- =?utf-8?B?T3pBYUN3Q1EzRTJnRmJBQ2Z3WFEyOCs3Rzg4YUdsTmhLenJyRjIwa2ZNZjZY?=
- =?utf-8?B?VURJOUcrZUVBYWRaRnBzMUNlZjViNU9GRVlIUTRubjlZb3pud2RlNUhrNFRP?=
- =?utf-8?B?Ni9OTzN1ckZWVVZlSnRBUlB1VEN5RzJOdEhJODB5VVpjY0ZOTUxJZXV6MCtv?=
- =?utf-8?B?Rk1YRkFlRWxwN0pIZzZvTGg5RlExckhmNFR2K2xnQnBRay9nbk1pVmZEclRz?=
- =?utf-8?B?NmZRbmg4VkhZVUtwUm5naE1MQ1QwSjJHc1JmU3JDa0xXaUVlV050Q1pRbnRT?=
- =?utf-8?B?V09WMGR4N1lPZ1lGSGluN2NkTXYwSFpoMVVtdzFPRXV3d3VpOTUrREVHMms1?=
- =?utf-8?B?bEJwaXNZc1Zkdnk5WjFRNWNvODNvR0pmUk1WRWpvUCtKanRmdUltTkRNbVNw?=
- =?utf-8?B?TFhMMm9UeXBCcGpxYkRXMGxEVG9lN1VYaURRSG1oMlg3eVJCaE1ZQVRkd0tH?=
- =?utf-8?B?Ky9tdkEwUzg2UnJaY2FpWmRpZGNyZkk2ZTJXTDkwVm8zR21NYWJhNU5KM20r?=
- =?utf-8?Q?80ODgJNMdy3w16Ik+C5uBju0rOvMekcLJk9HPGi?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2dd98a43-193f-47d9-ebb4-08d961ad8534
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR11MB5736.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2021 18:33:34.3830
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Cy3S0REKDlI+dlF97LmQUjNCV0tS8lpzcMfgaGDW7xXKHa/RvE2y9RJamgzuMjdm3KF4OVhBEvJpqQi0tM41DA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3580
-X-OriginatorOrg: intel.com
+In-Reply-To: <20210809203554.1562989-1-aquini@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/16/2021 9:01 AM, Borislav Petkov wrote:
-> On Thu, Jul 22, 2021 at 01:51:59PM -0700, Yu-cheng Yu wrote:
->> When Shadow Stack is introduced, [R/O + _PAGE_DIRTY] PTE is reserved for
->> shadow stack.  Copy-on-write PTEs have [R/O + _PAGE_COW].
->>
->> When a PTE goes from [R/W + _PAGE_DIRTY] to [R/O + _PAGE_COW], it could
->> become a transient shadow stack PTE in two cases:
->>
->> The first case is that some processors can start a write but end up seeing
->> a read-only PTE by the time they get to the Dirty bit, creating a transient
->> shadow stack PTE.  However, this will not occur on processors supporting
->> Shadow Stack, and a TLB flush is not necessary.
->>
->> The second case is that when _PAGE_DIRTY is replaced with _PAGE_COW non-
->> atomically, a transient shadow stack PTE can be created as a result.
->> Thus, prevent that with cmpxchg.
->>
->> Dave Hansen, Jann Horn, Andy Lutomirski, and Peter Zijlstra provided many
->> insights to the issue.  Jann Horn provided the cmpxchg solution.
->>
->> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
->> Reviewed-by: Kees Cook <keescook@chromium.org>
->> Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
->> ---
->>   arch/x86/include/asm/pgtable.h | 36 ++++++++++++++++++++++++++++++++++
->>   1 file changed, 36 insertions(+)
->>
->> diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
->> index cf7316e968df..df4ce715560a 100644
->> --- a/arch/x86/include/asm/pgtable.h
->> +++ b/arch/x86/include/asm/pgtable.h
->> @@ -1278,6 +1278,24 @@ static inline pte_t ptep_get_and_clear_full(struct mm_struct *mm,
->>   static inline void ptep_set_wrprotect(struct mm_struct *mm,
->>   				      unsigned long addr, pte_t *ptep)
->>   {
->> +	/*
->> +	 * If Shadow Stack is enabled, pte_wrprotect() moves _PAGE_DIRTY
->> +	 * to _PAGE_COW (see comments at pte_wrprotect()).
->> +	 * When a thread reads a RW=1, Dirty=0 PTE and before changing it
->> +	 * to RW=0, Dirty=0, another thread could have written to the page
->> +	 * and the PTE is RW=1, Dirty=1 now.  Use try_cmpxchg() to detect
->> +	 * PTE changes and update old_pte, then try again.
->> +	 */
->> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
->> +		pte_t old_pte, new_pte;
->> +
->> +		old_pte = READ_ONCE(*ptep);
->> +		do {
->> +			new_pte = pte_wrprotect(old_pte);
->> +		} while (!try_cmpxchg(&ptep->pte, &old_pte.pte, new_pte.pte));
->> +
->> +		return;
->> +	}
->>   	clear_bit(_PAGE_BIT_RW, (unsigned long *)&ptep->pte);
->>   }
->>   
->> @@ -1322,6 +1340,24 @@ static inline pud_t pudp_huge_get_and_clear(struct mm_struct *mm,
->>   static inline void pmdp_set_wrprotect(struct mm_struct *mm,
->>   				      unsigned long addr, pmd_t *pmdp)
->>   {
->> +	/*
->> +	 * If Shadow Stack is enabled, pmd_wrprotect() moves _PAGE_DIRTY
->> +	 * to _PAGE_COW (see comments at pmd_wrprotect()).
->> +	 * When a thread reads a RW=1, Dirty=0 PMD and before changing it
->> +	 * to RW=0, Dirty=0, another thread could have written to the page
->> +	 * and the PMD is RW=1, Dirty=1 now.  Use try_cmpxchg() to detect
->> +	 * PMD changes and update old_pmd, then try again.
->> +	 */
->> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
->> +		pmd_t old_pmd, new_pmd;
->> +
->> +		old_pmd = READ_ONCE(*pmdp);
->> +		do {
->> +			new_pmd = pmd_wrprotect(old_pmd);
->> +		} while (!try_cmpxchg((pmdval_t *)pmdp, (pmdval_t *)&old_pmd, pmd_val(new_pmd)));
-> 
-> Why is that try_cmpxchg() call doing casting to its operands instead of
-> like the pte one above?
-> 
-> I.e., why aren't you doing here the same thing as above:
-> 
-> 		...
-> 		} while (!try_cmpxchg(&pmdp->pmd, &old_pmd.pmd, new_pmd.pmd));
-> 
-> ?
+Hello Rafael,
 
-If !(CONFIG_PGTABLE_LEVELS > 2), we don't have pmd_t.pmd.
+I still try to understand the code. It seems, it is more or less 
+unchanged from 2009:
 
-> 
-> Thx.
->
+|
+
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/patch/ipc/util.c?id=7ca7e564e049d8b350ec9d958ff25eaa24226352 
+|
+
+
+On 8/9/21 10:35 PM, Rafael Aquini wrote:
+> --- a/ipc/util.c
+> +++ b/ipc/util.c
+> @@ -788,21 +788,13 @@ struct pid_namespace *ipc_seq_pid_ns(struct seq_file *s)
+>   static struct kern_ipc_perm *sysvipc_find_ipc(struct ipc_ids *ids, loff_t pos,
+>   					      loff_t *new_pos)
+>   {
+> -	struct kern_ipc_perm *ipc;
+> -	int total, id;
+> -
+> -	total = 0;
+> -	for (id = 0; id < pos && total < ids->in_use; id++) {
+> -		ipc = idr_find(&ids->ipcs_idr, id);
+> -		if (ipc != NULL)
+> -			total++;
+> -	}
+> +	struct kern_ipc_perm *ipc = NULL;
+> +	int max_idx = ipc_get_maxidx(ids);
+>   
+> -	ipc = NULL;
+> -	if (total >= ids->in_use)
+> +	if (max_idx == -1 || pos > max_idx)
+>   		goto out;
+>   
+> -	for (; pos < ipc_mni; pos++) {
+> +	for (; pos <= max_idx; pos++) {
+>   		ipc = idr_find(&ids->ipcs_idr, pos);
+>   		if (ipc != NULL) {
+>   			rcu_read_lock();
+
+The change looks as correct to me. But I'm still not sure that I really 
+understand what the current code does:
+
+- first, loop over index values in the idr, starting from 0, count found 
+entries.
+
+- if we found all entries before we are at index=pos: fail
+
+- then search up to ipc_nmi for the next entry with an index >=pos.
+
+- if something is found: use it. otherwise fail.
+
+It seems the code tries to avoid that we loop until ipc_mni after the 
+last entry was found, and therefore we loop every time from 0.
+
+
+ From what I see, the change looks to be correct: You now remove the 
+first loop, and instead of searching until ipc_mni, the search ends at 
+<= max_idx.
+
+I'll try to find some time to test it.
+
+
+But: What about using idr_get_next() instead of the idr_find()?
+
+We want to find the next used index, thus idr_get_next() should be even 
+better than the for loop, ...
+
+
+--
+
+     Manfred
+
