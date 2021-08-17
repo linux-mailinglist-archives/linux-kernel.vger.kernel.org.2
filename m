@@ -2,275 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB323EF0E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 19:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F0A3EF0F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 19:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232201AbhHQR1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 13:27:03 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:39710 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230311AbhHQR1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 13:27:01 -0400
-Received: from zn.tnic (p200300ec2f1175006a73053df3c19379.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:7500:6a73:53d:f3c1:9379])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D659F1EC01B5;
-        Tue, 17 Aug 2021 19:26:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629221183;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=DNJ7vQbeipIQzVqoNzpebqgTcO1JqCy5VA8Wf98/yoc=;
-        b=g1khrBdad75yo8euxQQm3YXRG/lrWYNNavOA/yqhWhFYsf3+kH3fltXo+mjEjOxrwlbahA
-        RK9GLTwIgfvCxq0DaaKZDczWmhZrDoJ9xvCOsd6/ajPMdZM8QuqEalus8YDh1p3DgNhY7s
-        IIh11MTwqipTCOwGaV0F1PgcV7NUGrw=
-Date:   Tue, 17 Aug 2021 19:27:02 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part1 RFC v4 15/36] x86/mm: Add support to validate
- memory when changing C-bit
-Message-ID: <YRvxZtLkVNda9xwX@zn.tnic>
-References: <20210707181506.30489-1-brijesh.singh@amd.com>
- <20210707181506.30489-16-brijesh.singh@amd.com>
+        id S231938AbhHQRcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 13:32:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229716AbhHQRcn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 13:32:43 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F364C061764;
+        Tue, 17 Aug 2021 10:32:10 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id oa17so249793pjb.1;
+        Tue, 17 Aug 2021 10:32:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8V0aBEAXUKbzNyPVGyzX8W8ZO8Yk8w8Fat1TgUdEyOM=;
+        b=VFWEXu36GOT7GiAwtAR0sqlNFX6kbdt0fnk3299s0fHbfObDFws6Qmmi0dIG+n1YCU
+         SkvdrUHzspkab5MnoEl8z9/M9YMXSMfQUYpcTed9Z9oeE/AC619mK8FeS1CibO3Qup0F
+         Kf0m9UR9RhGIu8J9XvRfP2GKvxf0sK8EUSxK1NfgaQWN6TuoNcZrT+d7tueuwcfk/AGW
+         SePPSNqC0k09gjEBvpwe0R5L6tcD0/UxnuM2lZEpmjokb5b5nZcd7pM64cBia3LyjTqQ
+         mRAtlXv6nX/rUHdEiFnmsJi6EK5DrE3yxbO8mn18A+e+fxho5HkxsfJPAemRL5WCXXyB
+         y4nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8V0aBEAXUKbzNyPVGyzX8W8ZO8Yk8w8Fat1TgUdEyOM=;
+        b=Ewim8+BBoZ8fqLe7hHtc7l5i7+gB7RSCRz58blqDJm9G12CO7/NAMV5LThE4Lq8RoN
+         seYtxs1TGTqOxSCrVCswtXAPth2oBvOsaGoGiRA3v4cSSMvZ2stsDHOkhgXR+lEx2qqi
+         /i0u1PQPDD8t+Y2wjNj9Xs8mN/CADKtKQsb6lWpQ7lRlaKoPipYkSrwpAKb5lysIZm8b
+         piHAvEx/QQf2egPSuylusKVX0/AA8HuCVZA6RsLtt8ktHIgjC1zPEFaoOeLY9gdw9re0
+         d7IYSGymHR57h0PhHBsfZLIW/Ve86TP1LAUBVp1jZlopHRYLelgNp6WJAmuDKNNDQI0j
+         f38g==
+X-Gm-Message-State: AOAM531VCThBM6y7tgOahe2aoKBRctUn+iGWo6+Jmofcja/rIY5GNG7S
+        W706KR7J57JRf+76mn+LB+XpgkOV1RVPCvYGrM4=
+X-Google-Smtp-Source: ABdhPJzT40SDroXs6VsQp6G+dEmQxUKECNAXIOOK47Jr9nFZl1vdZDQsxCddYvk3dxVTjDRV+nwqi8FDJb672Orhu4Y=
+X-Received: by 2002:a17:902:bb81:b0:12d:a7ec:3d85 with SMTP id
+ m1-20020a170902bb8100b0012da7ec3d85mr3648635pls.17.1629221529919; Tue, 17 Aug
+ 2021 10:32:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210707181506.30489-16-brijesh.singh@amd.com>
+References: <20210817170057.16783-1-utkarshverma294@gmail.com>
+In-Reply-To: <20210817170057.16783-1-utkarshverma294@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 17 Aug 2021 20:31:30 +0300
+Message-ID: <CAHp75Vc49M-bdRviytZojK8+vMWJPXA_7zmLx3EvyQNXh8veZA@mail.gmail.com>
+Subject: Re: [PATCH] serial: 8250_exar: Add missing call to pci_free_irq_vectors()
+To:     Utkarsh Verma <utkarshverma294@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Valmer Huhn <valmer.huhn@concurrent-rt.com>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Bjorn Helgaas <bhelgaas@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 01:14:45PM -0500, Brijesh Singh wrote:
-> +struct __packed psc_hdr {
-> +	u16 cur_entry;
-> +	u16 end_entry;
-> +	u32 reserved;
-> +};
-> +
-> +struct __packed psc_entry {
-> +	u64	cur_page	: 12,
-> +		gfn		: 40,
-> +		operation	: 4,
-> +		pagesize	: 1,
-> +		reserved	: 7;
-> +};
-> +
-> +struct __packed snp_psc_desc {
-> +	struct psc_hdr hdr;
-> +	struct psc_entry entries[VMGEXIT_PSC_MAX_ENTRY];
-> +};
+On Tue, Aug 17, 2021 at 8:05 PM Utkarsh Verma <utkarshverma294@gmail.com> wrote:
+>
+> Free the pci irq vectors if the call to pci_alloc_irq_vectors() fails
+> or if the device is removed.
 
-The majority of kernel code puts __packed after the struct definition,
-let's put it there too pls, out of the way.
++Cc: Bjorn
 
-...
+This patch adds no value for all the code. This needs simply better
+semantics on allocations (because freeing is happening here
+implicitly).
+Bjorn, this is an exact example why we need pcim_alloc_irq_vectors().
 
-> +static int vmgexit_psc(struct snp_psc_desc *desc)
-> +{
-> +	int cur_entry, end_entry, ret;
-> +	struct snp_psc_desc *data;
-> +	struct ghcb_state state;
-> +	struct ghcb *ghcb;
-> +	struct psc_hdr *hdr;
-> +	unsigned long flags;
-> +
-> +	local_irq_save(flags);
-> +
-> +	ghcb = __sev_get_ghcb(&state);
-> +	if (unlikely(!ghcb))
-> +		panic("SEV-SNP: Failed to get GHCB\n");
-> +
-> +	/* Copy the input desc into GHCB shared buffer */
-> +	data = (struct snp_psc_desc *)ghcb->shared_buffer;
-> +	memcpy(ghcb->shared_buffer, desc, sizeof(*desc));
-> +
-> +	hdr = &data->hdr;
-> +	cur_entry = hdr->cur_entry;
-> +	end_entry = hdr->end_entry;
-> +
-> +	/*
-> +	 * As per the GHCB specification, the hypervisor can resume the guest
-> +	 * before processing all the entries. Checks whether all the entries
-> +	 * are processed. If not, then keep retrying.
-> +	 *
-> +	 * The stragtegy here is to wait for the hypervisor to change the page
-> +	 * state in the RMP table before guest access the memory pages. If the
-> +	 * page state was not successful, then later memory access will result
-> +	 * in the crash.
-> +	 */
-> +	while (hdr->cur_entry <= hdr->end_entry) {
-> +		ghcb_set_sw_scratch(ghcb, (u64)__pa(data));
-> +
-> +		ret = sev_es_ghcb_hv_call(ghcb, NULL, SVM_VMGEXIT_PSC, 0, 0);
-> +
-> +		/*
-> +		 * Page State Change VMGEXIT can pass error code through
-> +		 * exit_info_2.
-> +		 */
-> +		if (WARN(ret || ghcb->save.sw_exit_info_2,
-> +			 "SEV-SNP: page state change failed ret=%d exit_info_2=%llx\n",
-> +			 ret, ghcb->save.sw_exit_info_2))
-> +			return 1;
+> Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
+> ---
+>  drivers/tty/serial/8250/8250_exar.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250/8250_exar.c
+> index 3ffeedc29c83..38b65d6980f5 100644
+> --- a/drivers/tty/serial/8250/8250_exar.c
+> +++ b/drivers/tty/serial/8250/8250_exar.c
+> @@ -627,8 +627,10 @@ exar_pci_probe(struct pci_dev *pcidev, const struct pci_device_id *ent)
+>         pci_set_master(pcidev);
+>
+>         rc = pci_alloc_irq_vectors(pcidev, 1, 1, PCI_IRQ_ALL_TYPES);
+> -       if (rc < 0)
+> +       if (rc < 0) {
+> +               pci_free_irq_vectors(pcidev);
+>                 return rc;
+> +       }
+>
+>         memset(&uart, 0, sizeof(uart));
+>         uart.port.flags = UPF_SHARE_IRQ | UPF_EXAR_EFR | UPF_FIXED_TYPE | UPF_FIXED_PORT;
+> @@ -677,6 +679,7 @@ static void exar_pci_remove(struct pci_dev *pcidev)
+>
+>         if (priv->board->exit)
+>                 priv->board->exit(pcidev);
+> +       pci_free_irq_vectors(pcidev);
+>  }
 
-Yikes, you return here and below with interrupts disabled.
-
-All your returns need to be "goto out;" instead where you do
-
-out:
-        __sev_put_ghcb(&state);
-        local_irq_restore(flags);
-
-Yap, you very likely need to put the GHCB too.
-
-> +		/*
-> +		 * Lets do some sanity check that entry processing is not going
-> +		 * backward. This will happen only if hypervisor is tricking us.
-> +		 */
-> +		if (WARN((hdr->end_entry > end_entry) || (cur_entry > hdr->cur_entry),
-> +			"SEV-SNP: page state change processing going backward, end_entry "
-> +			"(expected %d got %d) cur_entry (expected %d got %d)\n",
-> +			end_entry, hdr->end_entry, cur_entry, hdr->cur_entry))
-> +			return 1;
-
-WARNING: quoted string split across lines
-#293: FILE: arch/x86/kernel/sev.c:750:
-+			"SEV-SNP: page state change processing going backward, end_entry "
-+			"(expected %d got %d) cur_entry (expected %d got %d)\n",
-
-If you're wondering what to do, yes, you can really stretch that string
-and shorten it too:
-
-                if (WARN((hdr->end_entry > end_entry) || (cur_entry > hdr->cur_entry),
-"SEV-SNP: PSC processing going backwards, end_entry %d (got %d) cur_entry: %d (got %d)\n",
-                         end_entry, hdr->end_entry, cur_entry, hdr->cur_entry))
-                        return 1;
-
-so that it fits on a single line and grepping can find it.
-
-> +		/* Lets verify that reserved bit is not set in the header*/
-> +		if (WARN(hdr->reserved, "Reserved bit is set in the PSC header\n"))
-
-psc_entry has a ->reserved field too and since we're iterating over the
-entries...
-
-> +			return 1;
-> +	}
-> +
-> +	__sev_put_ghcb(&state);
-> +	local_irq_restore(flags);
-> +
-> +	return 0;
-> +}
-> +
-> +static void __set_page_state(struct snp_psc_desc *data, unsigned long vaddr,
-> +			     unsigned long vaddr_end, int op)
-> +{
-> +	struct psc_hdr *hdr;
-> +	struct psc_entry *e;
-> +	unsigned long pfn;
-> +	int i;
-> +
-> +	hdr = &data->hdr;
-> +	e = data->entries;
-> +
-> +	memset(data, 0, sizeof(*data));
-> +	i = 0;
-> +
-> +	while (vaddr < vaddr_end) {
-> +		if (is_vmalloc_addr((void *)vaddr))
-> +			pfn = vmalloc_to_pfn((void *)vaddr);
-> +		else
-> +			pfn = __pa(vaddr) >> PAGE_SHIFT;
-> +
-> +		e->gfn = pfn;
-> +		e->operation = op;
-> +		hdr->end_entry = i;
-> +
-> +		/*
-> +		 * The GHCB specification provides the flexibility to
-> +		 * use either 4K or 2MB page size in the RMP table.
-> +		 * The current SNP support does not keep track of the
-> +		 * page size used in the RMP table. To avoid the
-> +		 * overlap request, use the 4K page size in the RMP
-> +		 * table.
-> +		 */
-> +		e->pagesize = RMP_PG_SIZE_4K;
-> +
-> +		vaddr = vaddr + PAGE_SIZE;
-> +		e++;
-> +		i++;
-> +	}
-> +
-> +	/* Terminate the guest on page state change failure. */
-
-That comment is kinda obvious :)
-
-> +	if (vmgexit_psc(data))
-> +		sev_es_terminate(1, GHCB_TERM_PSC);
-> +}
-> +
-> +static void set_page_state(unsigned long vaddr, unsigned int npages, int op)
-> +{
-> +	unsigned long vaddr_end, next_vaddr;
-> +	struct snp_psc_desc *desc;
-> +
-> +	vaddr = vaddr & PAGE_MASK;
-> +	vaddr_end = vaddr + (npages << PAGE_SHIFT);
-> +
-> +	desc = kmalloc(sizeof(*desc), GFP_KERNEL_ACCOUNT);
-
-kzalloc() so that you don't have to memset() later in
-__set_page_state().
-
-> +	if (!desc)
-> +		panic("failed to allocate memory");
-
-Make that error message more distinctive so that *if* it happens, one
-can pinpoint the place in the code where the panic comes from.
-
-> +	while (vaddr < vaddr_end) {
-> +		/*
-> +		 * Calculate the last vaddr that can be fit in one
-> +		 * struct snp_psc_desc.
-> +		 */
-> +		next_vaddr = min_t(unsigned long, vaddr_end,
-> +				(VMGEXIT_PSC_MAX_ENTRY * PAGE_SIZE) + vaddr);
-> +
-> +		__set_page_state(desc, vaddr, next_vaddr, op);
-> +
-> +		vaddr = next_vaddr;
-> +	}
-> +
-> +	kfree(desc);
-> +}
-> +
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+With Best Regards,
+Andy Shevchenko
