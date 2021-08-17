@@ -2,107 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B543EEC65
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 14:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED33B3EEC64
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 14:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237197AbhHQM0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 08:26:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56150 "EHLO
+        id S239895AbhHQMZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 08:25:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239755AbhHQM0O (ORCPT
+        with ESMTP id S237197AbhHQMZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 08:26:14 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02166C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 05:25:41 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id gt38so17089133ejc.13
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 05:25:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ehYfeCKaZsQiuL6rOGdqMuEfjMSHQFgZSBwxefedO90=;
-        b=uOi0pVyKP8I+9XLD80J6lRFU/URewMGwoILyautsas/7KScjvsQ/U24ZZeS/IZe6mE
-         bB+xh+CzSBYsE9jtPcONi6dhkOwV52vljKiPZtWrdNkv7SqSMP1FVHnR8eRMwDJLCLGJ
-         p/v54ufwgiOe49rYEHXbp5bS5C6PdLTqUvMiCgT2jbZcwrZlMnR9cWTziTlG/Xk7VkfR
-         IlsgeO0GJNYgK/pR3/SfGmAwYwJ+0lRGvH5ikwVpf0+5IhT1eZp86KxZYEnIDMv46UvU
-         WfMz8DRRKfwdPCt0LsyOqWLjT4EgLnxO42HuP/WAjOJpw9dy5rQGQYdx5e7dxnUlxt2Q
-         9ubQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ehYfeCKaZsQiuL6rOGdqMuEfjMSHQFgZSBwxefedO90=;
-        b=Wl8ae5lNI0g0dIEHyW5yTpO9KTLe9d18Udy+8vFLEzSXqqFgzPDUfb36CwXt5EC5iC
-         GbRJvmisVqlGornxPm9wi5lKbOaE2IG5CRVepI3wti/nuIrny7cVaUtlTjrQWEKPnnNF
-         I2GKTbVUJ3cr5Ul5jB1FowlqB/ujrbqTSP1aF+YabHlip0PXFYrDprEGKWuFFhGURgCV
-         oaa02LHMrKRLMDaWF8LM8kmRdbKWoNhQdLJMNgT48hjhaUECL1JSNqcbpU78B7hmq0CH
-         XsXSC6Wd5Z5YDIFozJVMaLMWNf8gxXo/yjdd0DzWcMBuD+Ug8n5UvxY66otp+IiYUute
-         c8XA==
-X-Gm-Message-State: AOAM532gMsBtuDLIUDVkM6Q0m4LkJAzOv9e7Mr7EFcTFCFbtoqEbFCQT
-        4DI9uYHuArvIkZsbXd7TqEYm56QDQDg=
-X-Google-Smtp-Source: ABdhPJz2jR99RTYzwyYyOWmwz/pDZkm5zDnz/Dr62exWVt/yY0MzHyzp/wlvaHHQ/vjLMc+OZFs4jg==
-X-Received: by 2002:a17:906:6d11:: with SMTP id m17mr3719942ejr.325.1629203139609;
-        Tue, 17 Aug 2021 05:25:39 -0700 (PDT)
-Received: from ?IPv6:2a02:8108:96c0:3b88::687e? ([2a02:8108:96c0:3b88::687e])
-        by smtp.gmail.com with ESMTPSA id q18sm702041ejc.84.2021.08.17.05.25.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Aug 2021 05:25:39 -0700 (PDT)
-Subject: Re: [PATCH] staging: r8188eu: Remove LINUX_VERSION_CODE check
-To:     Cai Huoqing <caihuoqing@baidu.com>, Larry.Finger@lwfinger.net,
-        phil@philpotter.co.uk, gregkh@linuxfoundation.org,
-        martin@kaiser.cx, insafonov@gmail.com
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20210817081204.2232-1-caihuoqing@baidu.com>
-From:   Michael Straube <straube.linux@gmail.com>
-Message-ID: <20992337-fac8-64c8-887f-ee4cd79bf391@gmail.com>
-Date:   Tue, 17 Aug 2021 14:24:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Tue, 17 Aug 2021 08:25:39 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1FBC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 05:25:05 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mFy9N-00028R-S4; Tue, 17 Aug 2021 14:25:01 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mFy9N-0008TF-F9; Tue, 17 Aug 2021 14:25:01 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Fabio Estevam <festevam@gmail.com>, linux-imx@nxp.com
+Subject: [PATCH v2] ARM: imx6: mask all interrupts before calling stby-poweroff sequence
+Date:   Tue, 17 Aug 2021 14:25:00 +0200
+Message-Id: <20210817122500.31953-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210817081204.2232-1-caihuoqing@baidu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/17/21 10:12 AM, Cai Huoqing wrote:
-> no need to check linux version, depending on the latest version
-> 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
->   drivers/staging/r8188eu/core/rtw_mlme.c      |  5 ----
->   drivers/staging/r8188eu/os_dep/os_intfs.c    | 26 ++------------------
->   drivers/staging/r8188eu/os_dep/rtw_android.c |  6 -----
->   drivers/staging/r8188eu/os_dep/xmit_linux.c  |  6 -----
->   4 files changed, 2 insertions(+), 41 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/core/rtw_mlme.c b/drivers/staging/r8188eu/core/rtw_mlme.c
-> index 5088b555f55d..ef9d5ad17632 100644
-> --- a/drivers/staging/r8188eu/core/rtw_mlme.c
-> +++ b/drivers/staging/r8188eu/core/rtw_mlme.c
-> @@ -3,7 +3,6 @@
->   
->   #define _RTW_MLME_C_
->   
-> -#include <linux/version.h>
->   #include "../include/osdep_service.h"
->   #include "../include/drv_types.h"
->   #include "../include/recv_osdep.h"
-> @@ -1499,11 +1498,7 @@ void rtw_dynamic_check_timer_handlder(struct adapter *adapter)
->   
+Any pending interrupt can prevent entering standby based power off state.
+To avoid it, mask all interrupts.
 
-Hi Cai,
+Fixes: 8148d2136002 ("ARM: imx6: register pm_power_off handler if "fsl,pmic-stby-poweroff" is set")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ arch/arm/mach-imx/pm-imx6.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-the LINUX_VERSION_CODE checks already have been removed in commit
+diff --git a/arch/arm/mach-imx/pm-imx6.c b/arch/arm/mach-imx/pm-imx6.c
+index 9244437cb1b9..63887ade411a 100644
+--- a/arch/arm/mach-imx/pm-imx6.c
++++ b/arch/arm/mach-imx/pm-imx6.c
+@@ -59,8 +59,11 @@
+ #define MX6Q_SUSPEND_OCRAM_SIZE		0x1000
+ #define MX6_MAX_MMDC_IO_NUM		33
+ 
++#define GIC_DIST_ENABLE_CLEAR		0x180
++
+ static void __iomem *ccm_base;
+ static void __iomem *suspend_ocram_base;
++static void __iomem *gic_raw_dist_base;
+ static void (*imx6_suspend_in_ocram_fn)(void __iomem *ocram_vbase);
+ 
+ /*
+@@ -592,6 +595,7 @@ static int __init imx6q_suspend_init(const struct imx6_pm_socdata *socdata)
+ static void __init imx6_pm_common_init(const struct imx6_pm_socdata
+ 					*socdata)
+ {
++	struct device_node *np;
+ 	struct regmap *gpr;
+ 	int ret;
+ 
+@@ -615,10 +619,29 @@ static void __init imx6_pm_common_init(const struct imx6_pm_socdata
+ 	if (!IS_ERR(gpr))
+ 		regmap_update_bits(gpr, IOMUXC_GPR1, IMX6Q_GPR1_GINT,
+ 				   IMX6Q_GPR1_GINT);
++
++	np = of_find_compatible_node(NULL, NULL, "arm,cortex-a9-gic");
++	gic_raw_dist_base = of_iomap(np, 0);
++}
++
++static void imx_gic_mask_all(void)
++{
++	int i;
++
++	if (WARN_ON(!gic_raw_dist_base))
++		return;
++
++	for (i = 0; i < 4; i++)
++		writel_relaxed(~0, gic_raw_dist_base + GIC_DIST_ENABLE_CLEAR + 4 * i);
+ }
+ 
+ static void imx6_pm_stby_poweroff(void)
+ {
++	/*
++	 * A pending interrupt can prevent power off signal to be activated.
++	 * So, mask all interrupts to avoid it.
++	 */
++	imx_gic_mask_all();
+ 	imx6_set_lpm(STOP_POWER_OFF);
+ 	imx6q_suspend_finish(0);
+ 
+-- 
+2.30.2
 
-027ed956b526 ("staging: r8188eu: remove kernel version depended code paths")
-
-But I forgot to remove the <linux/version.h> includes, nicely spotted.
-You can send a patch that removes them. :)
-
-Thanks,
-Michael
