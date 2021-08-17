@@ -2,191 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 218523EF566
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 00:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54FDB3EF57A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 00:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235507AbhHQWGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 18:06:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229700AbhHQWGV (ORCPT
+        id S235886AbhHQWIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 18:08:38 -0400
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:33502 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235388AbhHQWIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 18:06:21 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926DDC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 15:05:47 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id x16so122802pfh.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 15:05:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jjzVwaNL+v4kngg4YNK2zb91Ab2Svz6N2NTcUnOnK9A=;
-        b=SGcDFtlgtFCnLVqYQr5ehe+6RIHMf5bXnfOXaHxu5WzGCtMnmcc3mD+WNqH2JWSNPW
-         jq/5pRGPdYBX4GoNYQ4Nx8OGvzhknjU9kvfdRtWYTD7SvgjKSBNza3fmzSjKv5IQ/0G1
-         Oy4LQPbABIYHd2rWHzEHBivPtiJt/Ik/iC3NMCnRGtilQz8YKKbhWI9TRPA1ahhoRN3v
-         mnJZUtEyZO6siRFF6ky3n1/hbcpkw5iJVptrKk4CV0Xp5oxGu0jEEAYZg57nD/R5I67l
-         RjZA4kLvISweqdPeBpH57kTCjHFQnhm2JoyQ804kUitUmChAn9lzUkwvbmYqnsY/aqse
-         U5VA==
+        Tue, 17 Aug 2021 18:08:36 -0400
+Received: by mail-ot1-f43.google.com with SMTP id 61-20020a9d0d430000b02903eabfc221a9so346222oti.0;
+        Tue, 17 Aug 2021 15:08:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jjzVwaNL+v4kngg4YNK2zb91Ab2Svz6N2NTcUnOnK9A=;
-        b=gN2mE/8QYjePfcIVlWk1G1hN5XCn3zMT1bdA3lsTMSOTrS3G4x/WTp5SPxoIncFTOs
-         g/X0vMuXSa8QQZNABnH97jzIZhQPEBxIjoFl6IISHdbwsnPHn9d3KaT7WC06ASbgHRZG
-         d4mWMamUt31E7NyEqI/n7AEEdY4EKATscHJ+VvXOVh80PRGetobm8Cr2lfYKlejtJz6z
-         ktbURUKODAow2vrGI2GCBZveH7kibfQGEBExklrPjgGfLVb9GtVkZJZKAeWo5PUHTCgq
-         dO1/Y8qji7qxHhC91HzAIyc1uMVHn3bwRFhf2fWY8kSo/lnMDqCVtY5f9YVU2rUIRIMR
-         rKpQ==
-X-Gm-Message-State: AOAM533JDqE4Vy2u4XefoiZz9pRqBvGZopvlf/UDbieljD0KjKBNCXaR
-        goRpS6NSW9tXiIu4gw7uKVGLUg==
-X-Google-Smtp-Source: ABdhPJynIhDp6CbwLDea4vkQBRzwSgYZsxVIpXM5FoQZ1pKUnfTD4bCHUiJk8yT5GUxuc6WAOM9UiQ==
-X-Received: by 2002:a63:a4c:: with SMTP id z12mr5525190pgk.185.1629237946938;
-        Tue, 17 Aug 2021 15:05:46 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id j6sm3368881pfn.107.2021.08.17.15.05.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Aug 2021 15:05:46 -0700 (PDT)
-Subject: Re: [PATCH] coredump: Limit what can interrupt coredumps
-To:     Tony Battersby <tonyb@cybernetics.com>,
-        Olivier Langlois <olivier@trillion01.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Pavel Begunkov>" <asml.silence@gmail.com>
-References: <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
- <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
- <87pmwt6biw.fsf@disp2133> <87czst5yxh.fsf_-_@disp2133>
- <CAHk-=wiax83WoS0p5nWvPhU_O+hcjXwv6q3DXV8Ejb62BfynhQ@mail.gmail.com>
- <87y2bh4jg5.fsf@disp2133>
- <CAHk-=wjPiEaXjUp6PTcLZFjT8RrYX+ExtD-RY3NjFWDN7mKLbw@mail.gmail.com>
- <87sg1p4h0g.fsf_-_@disp2133> <20210614141032.GA13677@redhat.com>
- <87pmwmn5m0.fsf@disp2133>
- <4d93d0600e4a9590a48d320c5a7dd4c54d66f095.camel@trillion01.com>
- <8af373ec-9609-35a4-f185-f9bdc63d39b7@cybernetics.com>
- <9d194813-ecb1-2fe4-70aa-75faf4e144ad@kernel.dk>
- <b36eb4a26b6aff564c6ef850a3508c5b40141d46.camel@trillion01.com>
- <0bc38b13-5a7e-8620-6dce-18731f15467e@kernel.dk>
- <24c795c6-4ec4-518e-bf9b-860207eee8c7@kernel.dk>
- <05c0cadc-029e-78af-795d-e09cf3e80087@cybernetics.com>
- <b5ab8ca0-cef5-c9b7-e47f-21c0d395f82e@kernel.dk>
- <84640f18-79ee-d8e4-5204-41a2c2330ed8@kernel.dk>
- <3168284a-0b52-7845-07b1-a72bdfed915c@cybernetics.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <a56b633c-b88b-dfe8-11da-fcb3853a2edf@kernel.dk>
-Date:   Tue, 17 Aug 2021 16:05:45 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3Dkzyna3iRum7FXSG1p1Ls9wZHTi3AwS/R5FqTQ3RqI=;
+        b=XadaA+FmfZxDlsehnXnPfIk8R2i3jJgWWL35I91mwKhCiQP9MzuYNL7MkA2AfTyhKo
+         L7+qlFie20ztD2TLjRxjytdWPWvYptFwRvPmvqUvfPsUjr0NN1OGZpNnCdBmxE2/dPJP
+         0HUtIUboK3MnQx2PaMueueI3uwoY80BzHPuDqArJbLx8d3WvauDTmArTdsXEvKBpJfeI
+         0Zw+Dm0j7XWzRTiPLG1orq5ABWjl3ZO4Y3SWRjWnd4eOC6uUZO0fPKjKGm8h4devq5Ni
+         wlmJbt8lHNi99kDlkRZwBB9g5X+EB00CPwoUwWpHHGIECvORKLrzLWNr8srDm/GggZW5
+         E4dw==
+X-Gm-Message-State: AOAM530LotaDDM9SxFzmTYv0xHOXhEmfT0BNgLmDg1I5jRjtJnIp/DUT
+        jOKqzx+Svd74WT//X/WgUw==
+X-Google-Smtp-Source: ABdhPJxSEgPsC27dcBqGYTR2rv3j7Aq+8UWnVhOlX0fcl8d0ePbZWHyCkvjl04Nx56WiHX7lmn2/8A==
+X-Received: by 2002:a9d:638e:: with SMTP id w14mr4276129otk.248.1629238082258;
+        Tue, 17 Aug 2021 15:08:02 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id l67sm651583otl.3.2021.08.17.15.08.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 15:08:01 -0700 (PDT)
+Received: (nullmailer pid 924856 invoked by uid 1000);
+        Tue, 17 Aug 2021 22:08:00 -0000
+Date:   Tue, 17 Aug 2021 17:08:00 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Colin Foster <colin.foster@in-advantage.com>
+Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com,
+        UNGLinuxDriver@microchip.com, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v3 net-next 10/10] docs: devicetree: add
+ documentation for the VSC7512 SPI device
+Message-ID: <YRwzQJ9LuKrZ4aQM@robh.at.kernel.org>
+References: <20210814025003.2449143-1-colin.foster@in-advantage.com>
+ <20210814025003.2449143-11-colin.foster@in-advantage.com>
 MIME-Version: 1.0
-In-Reply-To: <3168284a-0b52-7845-07b1-a72bdfed915c@cybernetics.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210814025003.2449143-11-colin.foster@in-advantage.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/17/21 3:39 PM, Tony Battersby wrote:
-> On 8/17/21 5:28 PM, Jens Axboe wrote:
->>
->> Another approach - don't allow TWA_SIGNAL task_work to get queued if
->> PF_SIGNALED has been set on the task. This is similar to how we reject
->> task_work_add() on process exit, and the callers must be able to handle
->> that already.
->>
->> Can you test this one on top of your 5.10-stable?
->>
->>
->> diff --git a/fs/coredump.c b/fs/coredump.c
->> index 07afb5ddb1c4..ca7c1ee44ada 100644
->> --- a/fs/coredump.c
->> +++ b/fs/coredump.c
->> @@ -602,6 +602,14 @@ void do_coredump(const kernel_siginfo_t *siginfo)
->>  		.mm_flags = mm->flags,
->>  	};
->>  
->> +	/*
->> +	 * task_work_add() will refuse to add work after PF_SIGNALED has
->> +	 * been set, ensure that we flush any pending TIF_NOTIFY_SIGNAL work
->> +	 * if any was queued before that.
->> +	 */
->> +	if (test_thread_flag(TIF_NOTIFY_SIGNAL))
->> +		tracehook_notify_signal();
->> +
->>  	audit_core_dumps(siginfo->si_signo);
->>  
->>  	binfmt = mm->binfmt;
->> diff --git a/kernel/task_work.c b/kernel/task_work.c
->> index 1698fbe6f0e1..1ab28904adc4 100644
->> --- a/kernel/task_work.c
->> +++ b/kernel/task_work.c
->> @@ -41,6 +41,12 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
->>  		head = READ_ONCE(task->task_works);
->>  		if (unlikely(head == &work_exited))
->>  			return -ESRCH;
->> +		/*
->> +		 * TIF_NOTIFY_SIGNAL notifications will interfere with
->> +		 * a core dump in progress, reject them.
->> +		 */
->> +		if ((task->flags & PF_SIGNALED) && notify == TWA_SIGNAL)
->> +			return -ESRCH;
->>  		work->next = head;
->>  	} while (cmpxchg(&task->task_works, head, work) != head);
->>  
->>
-> Doesn't compile.  5.10 doesn't have TIF_NOTIFY_SIGNAL.
+On Fri, Aug 13, 2021 at 07:50:03PM -0700, Colin Foster wrote:
+> Signed-off-by: Colin Foster <colin.foster@in-advantage.com>
+> ---
+>  .../devicetree/bindings/net/dsa/ocelot.txt    | 92 +++++++++++++++++++
+>  1 file changed, 92 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/dsa/ocelot.txt b/Documentation/devicetree/bindings/net/dsa/ocelot.txt
+> index 7a271d070b72..edf560a50803 100644
+> --- a/Documentation/devicetree/bindings/net/dsa/ocelot.txt
+> +++ b/Documentation/devicetree/bindings/net/dsa/ocelot.txt
+> @@ -8,6 +8,7 @@ Currently the switches supported by the felix driver are:
+>  
+>  - VSC9959 (Felix)
+>  - VSC9953 (Seville)
+> +- VSC7511, VSC7512, VSC7513, VSC7514 via SPI
+>  
+>  The VSC9959 switch is found in the NXP LS1028A. It is a PCI device, part of the
+>  larger ENETC root complex. As a result, the ethernet-switch node is a sub-node
+> @@ -211,3 +212,94 @@ Example:
+>  		};
+>  	};
+>  };
+> +
+> +The VSC7513 and VSC7514 switches can be controlled internally via the MIPS
+> +processor. The VSC7511 and VSC7512 don't have this internal processor, but all
+> +four chips can be controlled externally through SPI with the following required
+> +properties:
+> +
+> +- compatible:
+> +	Can be "mscc,vsc7511", "mscc,vsc7512", "mscc,vsc7513", or
+> +	"mscc,vsc7514".
+> +
+> +Supported phy modes for all chips are:
+> +
+> +* phy_mode = "sgmii": on ports 0, 1, 2, 3
+> +
+> +The VSC7512 and 7514 also support:
+> +
+> +* phy_mode = "sgmii": on ports 4, 5, 6, 7
+> +* phy_mode = "qsgmii": on ports 7, 8, 10
+> +
+> +Example for control from a BeagleBone Black
+> +
+> +&spi0 {
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +
+> +	ethernet-switch@0 {
+> +		compatible = "mscc,vsc7512";
+> +		spi-max-frequency = <250000>;
+> +		reg = <0>;
+> +
+> +		ports {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			port@0 {
+> +				reg = <0>;
+> +				ethernet = <&mac>;
+> +				phy-mode = "sgmii";
+> +
+> +				fixed-link {
+> +					speed = <100>;
+> +					full-duplex;
+> +				};
+> +			};
+> +
+> +			port@1 {
+> +				reg = <1>;
+> +				label = "swp1";
+> +				phy-handle = <&sw_phy1>;
+> +				phy-mode = "sgmii";
+> +			};
+> +
+> +			port@2 {
+> +				reg = <2>;
+> +				label = "swp2";
+> +				phy-handle = <&sw_phy2>;
+> +				phy-mode = "sgmii";
+> +			};
+> +
+> +			port@3 {
+> +				reg = <3>;
+> +				label = "swp3";
+> +				phy-handle = <&sw_phy3>;
+> +				phy-mode = "sgmii";
+> +			};
+> +		};
+> +
+> +		mdio {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			sw_phy1: ethernet-phy@1 {
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				reg = <0x1>;
+> +			};
+> +
+> +			sw_phy2: ethernet-phy@2 {
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				reg = <0x2>;
+> +			};
+> +
+> +			sw_phy3: ethernet-phy@3 {
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				reg = <0x3>;
+> +			};
+> +		};
+> +	};
+> +};
 
-Oh right... Here's one hacked up for the 5.10 TWA_SIGNAL setup. Totally
-untested...
+If you want a whole new example, then convert this to DT schema. But is 
+there anything really new or different here to warrant another example?
 
-diff --git a/fs/coredump.c b/fs/coredump.c
-index c6acfc694f65..9e899ce67589 100644
---- a/fs/coredump.c
-+++ b/fs/coredump.c
-@@ -603,6 +603,19 @@ void do_coredump(const kernel_siginfo_t *siginfo)
- 		.mm_flags = mm->flags,
- 	};
- 
-+	/*
-+	 * task_work_add() will refuse to add work after PF_SIGNALED has
-+	 * been set, ensure that we flush any pending TWA_SIGNAL work
-+	 * if any was queued before that.
-+	 */
-+	if (signal_pending(current) && (current->jobctl & JOBCTL_TASK_WORK)) {
-+		task_work_run();
-+		spin_lock_irq(&current->sighand->siglock);
-+		current->jobctl &= ~JOBCTL_TASK_WORK;
-+		recalc_sigpending();
-+		spin_unlock_irq(&current->sighand->siglock);
-+	}
-+
- 	audit_core_dumps(siginfo->si_signo);
- 
- 	binfmt = mm->binfmt;
-diff --git a/kernel/task_work.c b/kernel/task_work.c
-index 8d6e1217c451..93b3f262eb4a 100644
---- a/kernel/task_work.c
-+++ b/kernel/task_work.c
-@@ -39,6 +39,12 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
- 		head = READ_ONCE(task->task_works);
- 		if (unlikely(head == &work_exited))
- 			return -ESRCH;
-+		/*
-+		 * TWA_SIGNAL notifications will interfere with
-+		 * a core dump in progress, reject them.
-+		 */
-+		if ((task->flags & PF_SIGNALED) && notify == TWA_SIGNAL)
-+			return -ESRCH;
- 		work->next = head;
- 	} while (cmpxchg(&task->task_works, head, work) != head);
- 
-
--- 
-Jens Axboe
-
+Rob
