@@ -2,126 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4C53EED31
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D5E83EED35
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239901AbhHQNSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 09:18:20 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60492 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237615AbhHQNSR (ORCPT
+        id S236635AbhHQNUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 09:20:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235267AbhHQNUb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 09:18:17 -0400
-Date:   Tue, 17 Aug 2021 15:17:41 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629206263;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u3bt7TzW/938vZc/Mx6WF9QB04VmQHL6ysb80Oa7dCU=;
-        b=rHUhQGamZA/XTF2+yWTJCtSqxRY02aDK/gmO1rKZenVH8IIhpft/EML9N9ceMRauqsMAZk
-        O5hgHIWwc+HG1c6Y5isAvJ+wTTm/HQ8rOAtuepIY4nS6GEUxcJIdFGpNftqy+EjtammeQw
-        B+5C8NUtjBHwgN21ooH0vigZvij79Dzacvr/kIrF2hHT5T/xA4CamQ5hGrK1tjcMpNtZGc
-        iuGKJsto9RL9OfBxa2BIr1EJKy2I645Inp39ilJJHAgQ64cnO2sy07mDsY43uAVHpXpbjn
-        Ja3r5Dn7hq/edYQr8jUnAKceBjjJHk283doB1mlO2ydOQycIJ0NJY4a1fg2APA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629206263;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u3bt7TzW/938vZc/Mx6WF9QB04VmQHL6ysb80Oa7dCU=;
-        b=e/qbVWtUO9Hb0fF4J3nTit/oOj4iNHDmmURhYHc471ibAr9MAo7vRtYus6cs0WDOgUMRkU
-        H5zJq8vhbw4FrxDA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: [PATCH v3 1/4] rcutorture: Don't disable softirqs with
- preemption disabled when PREEMPT_RT
-Message-ID: <20210817131741.evduh4fw7vyv2dzt@linutronix.de>
-References: <20210811201354.1976839-1-valentin.schneider@arm.com>
- <20210811201354.1976839-2-valentin.schneider@arm.com>
- <20210817121345.5iyj5epemczn3a52@linutronix.de>
+        Tue, 17 Aug 2021 09:20:31 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D93CC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 06:19:58 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1mFz0P-0008JJ-6g; Tue, 17 Aug 2021 15:19:49 +0200
+Subject: Re: [PATCH] brcmfmac: pcie: fix oops on failure to resume and reprobe
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "brcm80211-dev-list.pdl@broadcom.com" 
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        Arend van Spriel <aspriel@gmail.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Wright Feng <wright.feng@infineon.com>,
+        "SHA-cyfmac-dev-list@infineon.com" <SHA-cyfmac-dev-list@infineon.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Franky Lin <franky.lin@broadcom.com>
+References: <20210817063521.22450-1-a.fatoum@pengutronix.de>
+ <CAHp75Vfc_T04p95PgVUd+CK+ttPwX2aOC4WPD35Z01WQV1MxKw@mail.gmail.com>
+ <3a9a3789-5a13-7e72-b909-8f0826b8ab86@pengutronix.de>
+ <CAHp75VfahF=_CmS7kw5PbKs46+hXFweweq=sjwd83hccRsrH9g@mail.gmail.com>
+ <e59b23ba-7e5b-00e3-e8c9-f5c2bb89b860@pengutronix.de>
+ <85e30fb4-ce7d-6402-f93e-09efadbbcd06@pengutronix.de>
+ <CAHp75VfkOWk+CwSAOi-ibMcDOz5f0tOjxrygmUoMP1CEHxph-Q@mail.gmail.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <479c2aaa-c67e-4a98-4ed1-57c44e9484c5@pengutronix.de>
+Date:   Tue, 17 Aug 2021 15:19:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <CAHp75VfkOWk+CwSAOi-ibMcDOz5f0tOjxrygmUoMP1CEHxph-Q@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210817121345.5iyj5epemczn3a52@linutronix.de>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-17 14:13:47 [+0200], To Valentin Schneider wrote:
-> > index eecd1caef71d..4f3db1d3170d 100644
-> > --- a/kernel/rcu/rcutorture.c
-> > +++ b/kernel/rcu/rcutorture.c
-> > @@ -1548,6 +1548,8 @@ rcutorture_extend_mask(int oldmask, struct tortur=
-e_random_state *trsp)
-> >  	 * them on non-RT.
-> >  	 */
-> >  	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
-> > +		/* Can't disable bh in atomic context under PREEMPT_RT */
-> > +		mask &=3D ~(RCUTORTURE_RDR_ATOM_BH | RCUTORTURE_RDR_ATOM_RBH);
->=20
-> Let me stare at this=E2=80=A6
+On 17.08.21 15:06, Andy Shevchenko wrote:
+> On Tue, Aug 17, 2021 at 3:07 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>> On 17.08.21 14:03, Ahmad Fatoum wrote:
+>>> On 17.08.21 13:54, Andy Shevchenko wrote:
+>>>> On Tue, Aug 17, 2021 at 2:11 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>>>>> On 17.08.21 13:02, Andy Shevchenko wrote:
+>>>>>> On Tuesday, August 17, 2021, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+> 
+> ...
+> 
+>>>>>>>         err = brcmf_pcie_probe(pdev, NULL);
+>>>>>>>         if (err)
+>>>>>>> -               brcmf_err(bus, "probe after resume failed, err=%d\n", err);
+>>>>>>> +               __brcmf_err(NULL, __func__, "probe after resume failed,
+>>>>>>> err=%d\n",
+>>>>>>
+>>>>>>
+>>>>>> This is weird looking line now. Why can’t you simply use dev_err() /
+>>>>>> netdev_err()?
+>>>>>
+>>>>> That's what brcmf_err normally expands to, but in this file the macro
+>>>>> is overridden to add the extra first argument.
+>>>>
+>>>> So, then the problem is in macro here. You need another portion of
+>>>> macro(s) that will use the dev pointer directly. When you have a valid
+>>>> device, use it. And here it seems the case.
+>>>
+>>> Ah, you mean using pdev instead of the stale bus. Ye, I could do that.
+>>> Thanks for pointing out.
+>>
+>> Ah, not so easy: __brcmf_err accepts a struct brcmf_bus * as first argument,
+>> but there is none I can pass along. As the whole file uses the brcm_
+>> logging functions, I'd just leave this one without a device.
+> 
+> And what exactly prevents you to split that to something like
+> 
+> __brcm_dev_err() // as current __brcm_err with dev argument
+> {
+> ...
+> }
+> 
+> __brsm_err(bus, ...)  __brcm_dev_err(bus->dev, ...)
+> 
+> ?
 
-I would fold this
+I like my regression fixes to be short and to the point.
 
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1549,6 +1549,13 @@ rcutorture_extend_mask(int oldmask, stru
- 	 */
- 	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
- 		/*
-+		 * Can't disable bh in atomic context if bh was already
-+		 * disabled by another task on the same CPU. Instead of
-+		 * attempting to track this, just avoid disabling bh in atomic
-+		 * context.
-+		 */
-+		mask &=3D ~atomic_bhs;
-+		/*
- 		 * Can't release the outermost rcu lock in an irq disabled
- 		 * section without preemption also being disabled, if irqs
- 		 * had ever been enabled during this RCU critical section
-@@ -1559,16 +1566,6 @@ rcutorture_extend_mask(int oldmask, stru
- 		    !(mask & preempts))
- 			mask |=3D RCUTORTURE_RDR_RCU;
-=20
--		/* Can't modify atomic bh in non-atomic context */
--		if ((oldmask & atomic_bhs) && (mask & atomic_bhs) &&
--		    !(mask & preempts_irq)) {
--			mask |=3D oldmask & preempts_irq;
--			if (mask & RCUTORTURE_RDR_IRQ)
--				mask |=3D oldmask & tmp;
--		}
--		if ((mask & atomic_bhs) && !(mask & preempts_irq))
--			mask |=3D RCUTORTURE_RDR_PREEMPT;
--
- 		/* Can't modify non-atomic bh in atomic context */
- 		tmp =3D nonatomic_bhs;
- 		if (oldmask & preempts_irq)
+Cheers,
+Ahmad
 
-into the original patch and forward it upstream=E2=80=A6
 
-Sebastian
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
