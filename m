@@ -2,79 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 511413EEAC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 12:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14FF03EEAC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 12:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239243AbhHQKS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 06:18:56 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:54874 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236486AbhHQKSz (ORCPT
+        id S236240AbhHQKT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 06:19:56 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:27243 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234632AbhHQKTz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 06:18:55 -0400
-Received: from fsav415.sakura.ne.jp (fsav415.sakura.ne.jp [133.242.250.114])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 17HAI8C7041403;
-        Tue, 17 Aug 2021 19:18:08 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav415.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav415.sakura.ne.jp);
- Tue, 17 Aug 2021 19:18:08 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav415.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 17HAI8V2041399
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 17 Aug 2021 19:18:08 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH v3] block: genhd: don't call probe function with
- major_names_lock held
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>
-References: <f790f8fb-5758-ea4e-a527-0ee4af82dd44@i-love.sakura.ne.jp>
- <4e153910-bf60-2cca-fa02-b46d22b6e2c5@i-love.sakura.ne.jp>
- <20210816073313.GA27275@lst.de> <20210817081045.3609-1-hdanton@sina.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <3cf9d371-50e4-76a0-4024-64eca22befdf@i-love.sakura.ne.jp>
-Date:   Tue, 17 Aug 2021 19:18:09 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210817081045.3609-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 17 Aug 2021 06:19:55 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629195562; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=WcCFdH5JEmFHqMKvWJSTXib1yDiU97/7LOIWNYewueE=; b=ig+UMpGfrQ6xLl/1VUxztKALNyXIAqernhxUnr8tpXshmI4zoBctOxEv9L2KGog+DjmwUC1m
+ 3F4i0kNGr8Z3m3ar0K/iO05xHR4zO7hcs3IUDGb8NA0E1762oHzaOSFYFLtmdVn85A4e45gW
+ 3y9aRYnRqOTUvS7w8CeIk+UVM3c=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 611b8d29b3873958f56e7bd6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 17 Aug 2021 10:19:21
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2DF03C43617; Tue, 17 Aug 2021 10:19:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4F57EC43460;
+        Tue, 17 Aug 2021 10:19:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 4F57EC43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Maulik Shah <mkshah@codeaurora.org>
+To:     maz@kernel.org, tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-gpio@vger.kernel.org, bjorn.andersson@linaro.org,
+        linus.walleij@linaro.org, tkjos@google.com, lsrao@codeaurora.org,
+        Maulik Shah <mkshah@codeaurora.org>
+Subject: [PATCH 1/2] irqdomain: Export irq_domain_disconnect_hierarchy()
+Date:   Tue, 17 Aug 2021 15:49:05 +0530
+Message-Id: <1629195546-27811-1-git-send-email-mkshah@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/08/17 17:10, Hillf Danton wrote:
-> See if it is safe to kfree(lo) after removing it from idr, with the
-> deadlock dissolved.
+Export irq_domain_disconnect_hierarchy() so irqchip module drivers
+can use it.
 
-It is not safe to call loop_remove() after idr_remove(). Please see HIDDEN_LOOP_DEVICE magic
-in "[PATCH] loop: break loop_ctl_mutex into loop_idr_spinlock and loop_removal_mutex".
+Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+---
+ kernel/irq/irqdomain.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> 
-> --- x/drivers/block/loop.c
-> +++ y/drivers/block/loop.c
-> @@ -2459,7 +2459,9 @@ static int loop_control_remove(int idx)
->  	mutex_unlock(&lo->lo_mutex);
->  
->  	idr_remove(&loop_index_idr, lo->lo_number);
-> +	mutex_unlock(&loop_ctl_mutex);
->  	loop_remove(lo);
-> +	return 0;
->  out_unlock_ctrl:
->  	mutex_unlock(&loop_ctl_mutex);
->  	return ret;
-> --
-> 
+diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+index 0eee481..19e83e9 100644
+--- a/kernel/irq/irqdomain.c
++++ b/kernel/irq/irqdomain.c
+@@ -1216,6 +1216,7 @@ int irq_domain_disconnect_hierarchy(struct irq_domain *domain,
+ 	irqd->chip = ERR_PTR(-ENOTCONN);
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(irq_domain_disconnect_hierarchy);
+ 
+ static int irq_domain_trim_hierarchy(unsigned int virq)
+ {
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
-"[PATCH] loop: break loop_ctl_mutex into loop_idr_spinlock and loop_removal_mutex" can be a further
-improvement after "[PATCH v3] block: genhd: don't call probe function with major_names_lock held".
-
-I really would like to apply "[PATCH v3] block: genhd: don't call probe function with major_names_lock held" first.
