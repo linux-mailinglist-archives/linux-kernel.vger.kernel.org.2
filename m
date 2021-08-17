@@ -2,131 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106863EEA29
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE8F53EEA2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239298AbhHQJns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 05:43:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235403AbhHQJnq (ORCPT
+        id S236102AbhHQJoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 05:44:46 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:42892 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235402AbhHQJop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 05:43:46 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06373C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 02:43:14 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mFvcj-0006iv-Rp; Tue, 17 Aug 2021 11:43:09 +0200
-Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:dc61:eeed:d4a6:acca])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id C046B668D72;
-        Tue, 17 Aug 2021 09:43:07 +0000 (UTC)
-Date:   Tue, 17 Aug 2021 11:43:06 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     linux-can <linux-can@vger.kernel.org>,
-        Stefan =?utf-8?B?TcOkdGpl?= <Stefan.Maetje@esd.eu>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Thomas Kopp <thomas.kopp@microchip.com>
-Subject: Re: [PATCH v5 2/7] can: bittiming: allow TDC{V,O} to be zero and add
- can_tdc_const::tdc{v,o,f}_min
-Message-ID: <20210817094306.iyezzml6m7nlznri@pengutronix.de>
-References: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
- <20210815033248.98111-3-mailhol.vincent@wanadoo.fr>
- <20210816084235.fr7fzau2ce7zl4d4@pengutronix.de>
- <CAMZ6RqK5t62UppiMe9k5jG8EYvnSbFW3doydhCvp72W_X2rXAw@mail.gmail.com>
- <20210816122519.mme272z6tqrkyc6x@pengutronix.de>
- <20210816123309.pfa57tke5hrycqae@pengutronix.de>
- <CAMZ6RqK0vTtCkSM7Lim2TQCZyYTYvKYsFVwWDnyNaFghwqToXg@mail.gmail.com>
- <20210816143052.3brm6ny26jy3nbkq@pengutronix.de>
+        Tue, 17 Aug 2021 05:44:45 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17H9Pqpa013375;
+        Tue, 17 Aug 2021 11:43:46 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : subject : to
+ : cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=iQBg0AS6zUIUk6stFAs5jtKKe3PmvtRCEODGkgVmoNc=;
+ b=aJ5izF7+gl64fItY6ngezbpPsIixaPydAqMvgnaPmpjJuHEqtjtuibZJTQJsr11vpzU0
+ K1RVbPIXoSCTzmT7enfhhOkSrHfLw4YA0oYVrjo12yWX08HK2XSSkGrhNkAMR7UezVkb
+ 3vU3+P/DUja06o95Y23dKRAJ8TRF54QhbjC/AUkkocuxNWKlhGcKELCNeeVLeh8BreM4
+ Nfsn0+phqzjBbe1Gw5K7GOLfgt6RBgCB84oKxeXdXKb2tBgxEy6IHJh4tCzqAEdKJXM4
+ 1xFEYhjBvilS8ES2nZqkt7THcBRyRyDQnWu4SnC0kKhV3S110yFUxdQJTYVFpjPnNMvD qw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3afx6junxb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Aug 2021 11:43:46 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8914910002A;
+        Tue, 17 Aug 2021 11:43:44 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 75DA722AFE7;
+        Tue, 17 Aug 2021 11:43:44 +0200 (CEST)
+Received: from lmecxl0557.lme.st.com (10.75.127.44) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 17 Aug
+ 2021 11:43:43 +0200
+From:   Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Subject: Re: [PATCH] drm/stm: ltdc: improve pm_runtime to stop clocks
+To:     Marek Vasut <marex@denx.de>
+CC:     Yannick FERTRE <yannick.fertre@st.com>,
+        Philippe CORNU <philippe.cornu@st.com>,
+        Raphael GALLAIS-POU <raphael.gallais-pou@st.com>,
+        Yannick FERTRE - foss <yannick.fertre@foss.st.com>,
+        Philippe CORNU - foss <philippe.cornu@foss.st.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>
+References: <20210629115709.16145-1-raphael.gallais-pou@foss.st.com>
+ <420e243d-7541-a07e-177b-d2db11c26aef@denx.de>
+ <3bb823e4-4724-7072-fe9f-7b8a355c8e50@foss.st.com>
+ <5d65ca80-4f94-49e1-5de1-cf29e8231a6a@denx.de>
+Message-ID: <629b6666-74b3-91f0-5c6c-e26d55ea62d8@foss.st.com>
+Date:   Tue, 17 Aug 2021 11:43:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cq7vy33mil2ht6ci"
-Content-Disposition: inline
-In-Reply-To: <20210816143052.3brm6ny26jy3nbkq@pengutronix.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <5d65ca80-4f94-49e1-5de1-cf29e8231a6a@denx.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-17_03:2021-08-16,2021-08-17 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---cq7vy33mil2ht6ci
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 7/2/21 8:07 PM, Marek Vasut wrote:
+> On 7/2/21 11:23 AM, Raphael Gallais-Pou wrote:
+>> Hello Marek,
+>
+> Hi,
+>
+>> Sorry for the late answer.
+>
+> No worries, take your time
+>
+>> On 6/30/21 2:35 AM, Marek Vasut wrote:
+>>> On 6/29/21 1:58 PM, Raphael GALLAIS-POU - foss wrote:
+>>>
+>>> [...]
+>>>
+>>>> +++ b/drivers/gpu/drm/stm/ltdc.c
+>>>> @@ -425,10 +425,17 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *crtc,
+>>>>   {
+>>>>       struct ltdc_device *ldev = crtc_to_ltdc(crtc);
+>>>>       struct drm_device *ddev = crtc->dev;
+>>>> +    int ret;
+>>>>         DRM_DEBUG_DRIVER("\n");
+>>>>   -    pm_runtime_get_sync(ddev->dev);
+>>>> +    if (!pm_runtime_active(ddev->dev)) {
+>>>> +        ret = pm_runtime_get_sync(ddev->dev);
+>>>
+>>> All these if (!pm_runtime_active()) then pm_runtime_get_sync() calls look like workaround for some larger issue. Shouldn't the pm_runtime do some refcounting on its own , so this shouldn't be needed ?
+>>
+>>
+>> This problem purely comes from the driver internals, so I don't think it is a workaround.
+>>
+>> Because of the "ltdc_crtc_mode_set_nofb" function which does not have any "symmetrical" call, such as enable/disable functions, there was two calls to pm_runtime_get_sync against one call to pm_runtime_put_sync.
+>>
+>> This instability resulted in the LTDC clocks being always enabled, even when the peripheral was disabled. This could be seen in the clk_summary as explained in the patch summary among other things.
+>>
+>> By doing so, we first check if the clocks are not already activated, and in that case we call pm_runtime_get_sync.
+>
+> I just have to wonder, how come other drivers don't need these if (!pm_runtime_active()) pm_runtime_get_sync() conditions. I think they just get/put the runtime PM within a call itself, not across function calls. Maybe that could be the right fix here too ?
 
-On 16.08.2021 16:30:52, Marc Kleine-Budde wrote:
-> > Finally, I did a bit of research and found that:
-> > http://ww1.microchip.com/downloads/en/DeviceDoc/Section_56_Controller_A=
-rea_Network_with_Flexible_Data_rate_DS60001549A.pdf
 
-> > This is *not* the mcp25xxfd datasheet but it is still from
-> > Microship and as you will see, it is mostly similar to the
-> > mcp25xxfd except for, you guessed it, the TDCO.
-> >=20
-> > It reads:
-> > | TDCMOD<1:0>: Transmitter Delay Compensation Mode bits
-> > | Secondary Sample Point (SSP).
-> > | 10 =3D Auto; measure delay and add CFDxDBTCFG.TSEG1; add TDCO
-> > | 11 =3D Auto; measure delay and add CFDxDBTCFG.TSEG1; add TDCO
-> > | 01 =3D Manual; Do not measure, use TDCV plus TDCO from the register
-> > | 00 =3D Disable
-> >=20
-> > | TDCO<6:0>: Transmitter Delay Compensation Offset bits
-> > | Secondary Sample Point (SSP). Two's complement; offset can be
-> > positive, zero, or negative.
-> > | 1111111 =3D -64 x SYSCLK
-> > | .
-> > | .
-> > | .
-> > | 0111111 =3D 63 x SYSCLK
-> > | .
-> > | .
-> > | .
-> > | 0000000 =3D 0 x SYSCLK
-> >=20
-> > Here, you can clearly see that the TDCO has the exact same range
-> > as the one of the mcp25xxfd but the description of TDCMOD
-> > changes, telling us that:
-> >=20
-> > | SSP =3D TDCV (measured delay) + CFDxDBTCFG.TSEG1 (sample point) + TDCO
-> >=20
-> > Which means this is a relative TDCO.
+Hello Marek,
 
-Good catch! Microchip is investigating this.
 
-regards,
-Marc
+I've run a deeper analysis over this implementation.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+If I may take rockchip's "rockchip_drm_vop.c" driver, there is an boolean "is_enabled" set to true when crtc_atomic_enable is called.
 
---cq7vy33mil2ht6ci
-Content-Type: application/pgp-signature; name="signature.asc"
+The above implementation could save us from adding such field in the ltdc_dev structure.
 
------BEGIN PGP SIGNATURE-----
+Another solution could be in order to simply call pm_runtime_get_sync() in ltdc_crtc_mode_set_nofb() and by removing this condition in ltdc_atomic_crtc_disable() the driver behaves just like the first version of this patch.
 
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEbhKcACgkQqclaivrt
-76mRUwf/WqgGXJS5FJYsgXeQ9DB2ao8JrxXEawnFdtnwp+LzoU6Xa8+NOrcwaDE/
-74ZFUhUVOoA/gl06bwixPLrBuFt9XVCa7uJEU7fnUdKAFl99LN4F1l6dGIT1gQ3l
-Iqtl/bOhwYGVRqyOH5sXTzF/kWrBny14xoGFUk+QtNwgaGGQ2vmvZ/Cx518xJnSd
-sQNdxGK9z71oYf8lqUndIJO/zdQGRgJtABVCCanRRTtoeYf52U+pdMUmo/I/2CX9
-AHP+hCR2yCDU+R93/SMwQH0RDFQvSUZ3YsP7ANO7ROzGLaeXhdM79gA1DiOClXK6
-bLLjwDxvRhoJwmHMDc6DGrOWCfL+3g==
-=DOw1
------END PGP SIGNATURE-----
+In this way, it avoids such conditions and seems more to get along with the current implementation.
 
---cq7vy33mil2ht6ci--
+
+Regards,
+
+Raphaël
+
