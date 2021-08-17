@@ -2,72 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0E13EEA4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 692BD3EEA50
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236099AbhHQJuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 05:50:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40934 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235293AbhHQJui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 05:50:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id E0D6860FD8;
-        Tue, 17 Aug 2021 09:50:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629193805;
-        bh=WQX0BCwBBi0BanWhcJOHT8kEIcG78AYiwR4T8oK12Yo=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=KeRd5stfjiHhaJ12hyEkdeBe3rF+Z7QpC4tji/HREixKCBJG/T8lxwONd2mTHwDX4
-         3hbYBDGSSq44kPgzein7fgYut7xBFCtOZ1fq/+1DXS2d8FiGXSZzWAfaV/svuXU5V/
-         +Cjql747tMR8dSQD2sK0etnEavioCZH0KsGNWZr4ioe8Oq/FDPcgEm4M+dZ1e2f/3D
-         NvzjmPRh1YKTjmA0bOqB6abpohvr1th5J9vJu4UmjgO1S4v0gtMriDLXCb82y9aOrq
-         vAG9v6+Nr0cj7AHS8ZFZRRDcpujcGBH3Ht3aPup6eLDsCPF7I9NJVtUXJXPrFRFZ2L
-         9HxgP3UBGzmXg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D0A43609CF;
-        Tue, 17 Aug 2021 09:50:05 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S236108AbhHQJwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 05:52:24 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3654 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235293AbhHQJwW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 05:52:22 -0400
+Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GpmW25HqVz6CCR8;
+        Tue, 17 Aug 2021 17:50:54 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Tue, 17 Aug 2021 11:51:48 +0200
+Received: from [10.202.227.179] (10.202.227.179) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Tue, 17 Aug 2021 10:51:47 +0100
+Subject: Re: linux-next: build failure after merge of the scsi-mkp tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Linux Next Mailing List" <linux-next@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+References: <20210817194710.1cb707ba@canb.auug.org.au>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <c27c2909-1701-b972-dd7c-98bdc53ab8f9@huawei.com>
+Date:   Tue, 17 Aug 2021 10:51:46 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH V2 net] virtio-net: use NETIF_F_GRO_HW instead of NETIF_F_LRO
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162919380584.31873.3841510899077711786.git-patchwork-notify@kernel.org>
-Date:   Tue, 17 Aug 2021 09:50:05 +0000
-References: <20210817080659.16223-1-jasowang@redhat.com>
-In-Reply-To: <20210817080659.16223-1-jasowang@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     mst@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ivan@prestigetransportation.com,
-        xiangxia.m.yue@gmail.com, willemb@google.com, edumazet@google.com
+In-Reply-To: <20210817194710.1cb707ba@canb.auug.org.au>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.179]
+X-ClientProxiedBy: lhreml702-chm.china.huawei.com (10.201.108.51) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Tue, 17 Aug 2021 16:06:59 +0800 you wrote:
-> Commit a02e8964eaf92 ("virtio-net: ethtool configurable LRO")
-> maps LRO to virtio guest offloading features and allows the
-> administrator to enable and disable those features via ethtool.
+On 17/08/2021 10:47, Stephen Rothwell wrote:
+> Hi all,
 > 
-> This leads to several issues:
+> After merging the scsi-mkp tree, today's linux-next build (powerpc
+> ppc64_defconfig) failed like this:
 > 
-> - For a device that doesn't support control guest offloads, the "LRO"
->   can't be disabled triggering WARN in dev_disable_lro() when turning
->   off LRO or when enabling forwarding bridging etc.
+> In file included from include/linux/byteorder/big_endian.h:5,
+>                   from arch/powerpc/include/uapi/asm/byteorder.h:14,
+>                   from include/asm-generic/bitops/le.h:7,
+>                   from arch/powerpc/include/asm/bitops.h:265,
+>                   from include/linux/bitops.h:33,
+>                   from include/linux/kernel.h:12,
+>                   from include/linux/list.h:9,
+>                   from include/linux/module.h:12,
+>                   from drivers/scsi/ibmvscsi/ibmvfc.c:10:
+> drivers/scsi/ibmvscsi/ibmvfc.c: In function 'ibmvfc_queuecommand':
+> drivers/scsi/ibmvscsi/ibmvfc.c:1959:39: error: 'struct scsi_cmnd' has no member named 'tag'
+>   1959 |   vfc_cmd->task_tag = cpu_to_be64(cmnd->tag);
+>        |                                       ^~
+> include/uapi/linux/byteorder/big_endian.h:37:51: note: in definition of macro '__cpu_to_be64'
+>     37 | #define __cpu_to_be64(x) ((__force __be64)(__u64)(x))
+>        |                                                   ^
+> drivers/scsi/ibmvscsi/ibmvfc.c:1959:23: note: in expansion of macro 'cpu_to_be64'
+>   1959 |   vfc_cmd->task_tag = cpu_to_be64(cmnd->tag);
+>        |                       ^~~~~~~~~~~
 > 
-> [...]
+> Caused by commit
+> 
+>    c7c43e3c7147 ("scsi: core: Remove scsi_cmnd.tag")
+> 
+> I have used the scsi-mkp tree from next-20210816 for today.
+> 
 
-Here is the summary with links:
-  - [V2,net] virtio-net: use NETIF_F_GRO_HW instead of NETIF_F_LRO
-    https://git.kernel.org/netdev/net/c/dbcf24d15388
+sorry... I only built x86 and arm64 allmodconfig. Let me check this.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Thanks
