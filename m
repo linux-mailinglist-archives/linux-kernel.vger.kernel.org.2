@@ -2,53 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60823EF368
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 177E33EF36E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234926AbhHQUP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 16:15:29 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34608 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234145AbhHQUOl (ORCPT
+        id S235533AbhHQUPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 16:15:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234570AbhHQUOn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 16:14:41 -0400
-Date:   Tue, 17 Aug 2021 20:14:06 -0000
+        Tue, 17 Aug 2021 16:14:43 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D39C06179A;
+        Tue, 17 Aug 2021 13:14:09 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 20:14:07 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629231247;
+        s=2020; t=1629231248;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4xRiIag06cFiRpGNIp5NaO2G6wz0poMdWFffXe+Vs0A=;
-        b=KvVNXqqtK6HBrGBrPD0YYWRowWIPw/AVBhOEE42JlktHlXYqdl+3Jpi8e0aHJXQ+6qL7lq
-        A1cTojbcRrJ9fh+imsDzY3WMiKhxCaJGUlPrDcb/RQaj572wR9ZpwpnKB9ruJs4XCstB4+
-        f8xrhmu0ym7RDzq8JNg50x5RFiOosUG5i4paX3unhKEkOFlO5NJLKqMBzoqZDgQ26SeykT
-        MBtd7Ws+x6tWtmCFdvivwwdGnS0NZPCGKxfyme1mcktMCLng2FQ6SDr47t2Pnx8HxPqVbh
-        smCB30gdD97MNVWw3ihr1X95pPxy3mJCNS3egvcED/v7Ni4dBrL1XL+GyRFu3g==
+        bh=O6F9R1K3OZQATw+wdi+9So3atGE8ILpQj7SvieDKsIQ=;
+        b=BjwAB3KY/tBTaDzKifiyliM+XTrrnkliOXD8khfWLmIp+4aQ2zczrHS2NBr4bG8uL0eE/M
+        e83J4iNiRSBbvKXh9IkRK58j9USpS3beb0yQtJlWFUqiFWLPvZQky0aTAyKyCZ1zR/bwKZ
+        B65Yj+Kzas9ggpYBnaTcPOqlOgVwlfHPaUmKU9UUEEpON/Jh2b8Pq/Xc6nf/PGeR4G01HS
+        h+c1FrI8zoDO20x87CAACd37n6HibggrB/ZYXdHx/Lpu6T5dcWdibbqfgDl2yDXQ0L64Pe
+        ZglsRHCvkDa8ZLDZR7XK7AfyO88L4c+qyRcyQ0Ako9dTrX0bX8kQBbT4WGPtyg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629231247;
+        s=2020e; t=1629231248;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4xRiIag06cFiRpGNIp5NaO2G6wz0poMdWFffXe+Vs0A=;
-        b=dslM1cEEDNlgLoloM1B/6AgvotkgHL4kArqzG8YgMghz8PkUJ9yrdHbO1LEdayWRsy0Y1V
-        NUzX//qxcRZ7c4Ag==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+        bh=O6F9R1K3OZQATw+wdi+9So3atGE8ILpQj7SvieDKsIQ=;
+        b=sAu9T9UryruCL2gCB5feUlTJ3lE+JYxb0mdpDf3oP8CzHkARfVlMl5CgBkoFlNPJ2YwGvg
+        4cK3zePiO0wpcqDQ==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/rtmutex: Add mutex variant for RT
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+Subject: [tip: locking/core] locking/rtmutex: Extend the rtmutex core to
+ support ww_mutex
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210815211305.081517417@linutronix.de>
-References: <20210815211305.081517417@linutronix.de>
+In-Reply-To: <20210815211304.966139174@linutronix.de>
+References: <20210815211304.966139174@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <162923124625.25758.9078622271451263411.tip-bot2@tip-bot2>
+Message-ID: <162923124737.25758.12123045724192063646.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,321 +63,342 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     bb630f9f7a7d43869e4e7f5e4c002207396aea59
-Gitweb:        https://git.kernel.org/tip/bb630f9f7a7d43869e4e7f5e4c002207396aea59
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sun, 15 Aug 2021 23:29:01 +02:00
+Commit-ID:     add461325ec5bc39aa619a1bfcde7245e5f31ac7
+Gitweb:        https://git.kernel.org/tip/add461325ec5bc39aa619a1bfcde7245e5f31ac7
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Sun, 15 Aug 2021 23:28:58 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 17 Aug 2021 19:05:29 +02:00
+CommitterDate: Tue, 17 Aug 2021 19:05:23 +02:00
 
-locking/rtmutex: Add mutex variant for RT
+locking/rtmutex: Extend the rtmutex core to support ww_mutex
 
-Add the necessary defines, helpers and API functions for replacing struct mutex on
-a PREEMPT_RT enabled kernel with an rtmutex based variant.
+Add a ww acquire context pointer to the waiter and various functions and
+add the ww_mutex related invocations to the proper spots in the locking
+code, similar to the mutex based variant.
 
-No functional change when CONFIG_PREEMPT_RT=n
-
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210815211305.081517417@linutronix.de
+Link: https://lore.kernel.org/r/20210815211304.966139174@linutronix.de
 ---
- include/linux/mutex.h        |  66 +++++++++++++++---
- kernel/locking/mutex.c       |   4 +-
- kernel/locking/rtmutex_api.c | 122 ++++++++++++++++++++++++++++++++++-
- lib/Kconfig.debug            |  11 +--
- 4 files changed, 187 insertions(+), 16 deletions(-)
+ kernel/locking/rtmutex.c        | 121 ++++++++++++++++++++++++++++---
+ kernel/locking/rtmutex_api.c    |   4 +-
+ kernel/locking/rtmutex_common.h |   2 +-
+ kernel/locking/rwsem.c          |   2 +-
+ 4 files changed, 115 insertions(+), 14 deletions(-)
 
-diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-index 0bbc872..8f226d4 100644
---- a/include/linux/mutex.h
-+++ b/include/linux/mutex.h
-@@ -20,6 +20,18 @@
- #include <linux/osq_lock.h>
- #include <linux/debug_locks.h>
+diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
+index ac8fb2f..af7e3af 100644
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -17,9 +17,44 @@
+ #include <linux/sched/signal.h>
+ #include <linux/sched/rt.h>
+ #include <linux/sched/wake_q.h>
++#include <linux/ww_mutex.h>
  
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+# define __DEP_MAP_MUTEX_INITIALIZER(lockname)			\
-+		, .dep_map = {					\
-+			.name = #lockname,			\
-+			.wait_type_inner = LD_WAIT_SLEEP,	\
-+		}
+ #include "rtmutex_common.h"
+ 
++#ifndef WW_RT
++# define build_ww_mutex()	(false)
++# define ww_container_of(rtm)	NULL
++
++static inline int __ww_mutex_add_waiter(struct rt_mutex_waiter *waiter,
++					struct rt_mutex *lock,
++					struct ww_acquire_ctx *ww_ctx)
++{
++	return 0;
++}
++
++static inline void __ww_mutex_check_waiters(struct rt_mutex *lock,
++					    struct ww_acquire_ctx *ww_ctx)
++{
++}
++
++static inline void ww_mutex_lock_acquired(struct ww_mutex *lock,
++					  struct ww_acquire_ctx *ww_ctx)
++{
++}
++
++static inline int __ww_mutex_check_kill(struct rt_mutex *lock,
++					struct rt_mutex_waiter *waiter,
++					struct ww_acquire_ctx *ww_ctx)
++{
++	return 0;
++}
++
 +#else
-+# define __DEP_MAP_MUTEX_INITIALIZER(lockname)
++# define build_ww_mutex()	(true)
++# define ww_container_of(rtm)	container_of(rtm, struct ww_mutex, base)
++# include "ww_mutex.h"
 +#endif
 +
-+#ifndef CONFIG_PREEMPT_RT
-+
  /*
-  * Simple, straightforward mutexes with strict semantics:
+  * lock->owner state tracking:
   *
-@@ -93,16 +105,6 @@ do {									\
- 	__mutex_init((mutex), #mutex, &__key);				\
- } while (0)
+@@ -308,7 +343,28 @@ static __always_inline int rt_mutex_waiter_equal(struct rt_mutex_waiter *left,
  
--#ifdef CONFIG_DEBUG_LOCK_ALLOC
--# define __DEP_MAP_MUTEX_INITIALIZER(lockname)			\
--		, .dep_map = {					\
--			.name = #lockname,			\
--			.wait_type_inner = LD_WAIT_SLEEP,	\
--		}
--#else
--# define __DEP_MAP_MUTEX_INITIALIZER(lockname)
--#endif
--
- #define __MUTEX_INITIALIZER(lockname) \
- 		{ .owner = ATOMIC_LONG_INIT(0) \
- 		, .wait_lock = __RAW_SPIN_LOCK_UNLOCKED(lockname.wait_lock) \
-@@ -124,6 +126,50 @@ extern void __mutex_init(struct mutex *lock, const char *name,
-  */
- extern bool mutex_is_locked(struct mutex *lock);
- 
-+#else /* !CONFIG_PREEMPT_RT */
-+/*
-+ * Preempt-RT variant based on rtmutexes.
-+ */
-+#include <linux/rtmutex.h>
+ static __always_inline bool __waiter_less(struct rb_node *a, const struct rb_node *b)
+ {
+-	return rt_mutex_waiter_less(__node_2_waiter(a), __node_2_waiter(b));
++	struct rt_mutex_waiter *aw = __node_2_waiter(a);
++	struct rt_mutex_waiter *bw = __node_2_waiter(b);
 +
-+struct mutex {
-+	struct rt_mutex_base	rtmutex;
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+	struct lockdep_map	dep_map;
-+#endif
-+};
++	if (rt_mutex_waiter_less(aw, bw))
++		return 1;
 +
-+#define __MUTEX_INITIALIZER(mutexname)					\
-+{									\
-+	.rtmutex = __RT_MUTEX_BASE_INITIALIZER(mutexname.rtmutex)	\
-+	__DEP_MAP_MUTEX_INITIALIZER(mutexname)				\
-+}
-+
-+#define DEFINE_MUTEX(mutexname)						\
-+	struct mutex mutexname = __MUTEX_INITIALIZER(mutexname)
-+
-+extern void __mutex_rt_init(struct mutex *lock, const char *name,
-+			    struct lock_class_key *key);
-+extern int mutex_trylock(struct mutex *lock);
-+
-+static inline void mutex_destroy(struct mutex *lock) { }
-+
-+#define mutex_is_locked(l)	rt_mutex_base_is_locked(&(l)->rtmutex)
-+
-+#define __mutex_init(mutex, name, key)			\
-+do {							\
-+	rt_mutex_base_init(&(mutex)->rtmutex);		\
-+	__mutex_rt_init((mutex), name, key);		\
-+} while (0)
-+
-+#define mutex_init(mutex)				\
-+do {							\
-+	static struct lock_class_key __key;		\
-+							\
-+	__mutex_init((mutex), #mutex, &__key);		\
-+} while (0)
-+#endif /* CONFIG_PREEMPT_RT */
-+
- /*
-  * See kernel/locking/mutex.c for detailed documentation of these APIs.
-  * Also see Documentation/locking/mutex-design.rst.
-diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-index 9906ca6..3a65bf4 100644
---- a/kernel/locking/mutex.c
-+++ b/kernel/locking/mutex.c
-@@ -30,6 +30,7 @@
- #include <linux/debug_locks.h>
- #include <linux/osq_lock.h>
- 
-+#ifndef CONFIG_PREEMPT_RT
- #include "mutex.h"
- 
- #ifdef CONFIG_DEBUG_MUTEXES
-@@ -1066,7 +1067,8 @@ ww_mutex_lock_interruptible(struct ww_mutex *lock, struct ww_acquire_ctx *ctx)
- }
- EXPORT_SYMBOL(ww_mutex_lock_interruptible);
- 
--#endif
-+#endif /* !CONFIG_DEBUG_LOCK_ALLOC */
-+#endif /* !CONFIG_PREEMPT_RT */
- 
- /**
-  * atomic_dec_and_mutex_lock - return holding mutex if we dec to 0
-diff --git a/kernel/locking/rtmutex_api.c b/kernel/locking/rtmutex_api.c
-index 16126fc..92b7d28 100644
---- a/kernel/locking/rtmutex_api.c
-+++ b/kernel/locking/rtmutex_api.c
-@@ -454,3 +454,125 @@ void rt_mutex_debug_task_free(struct task_struct *task)
- 	DEBUG_LOCKS_WARN_ON(task->pi_blocked_on);
- }
- #endif
-+
-+#ifdef CONFIG_PREEMPT_RT
-+/* Mutexes */
-+void __mutex_rt_init(struct mutex *mutex, const char *name,
-+		     struct lock_class_key *key)
-+{
-+	debug_check_no_locks_freed((void *)mutex, sizeof(*mutex));
-+	lockdep_init_map_wait(&mutex->dep_map, name, key, 0, LD_WAIT_SLEEP);
-+}
-+EXPORT_SYMBOL(__mutex_rt_init);
-+
-+static __always_inline int __mutex_lock_common(struct mutex *lock,
-+					       unsigned int state,
-+					       unsigned int subclass,
-+					       struct lockdep_map *nest_lock,
-+					       unsigned long ip)
-+{
-+	int ret;
-+
-+	might_sleep();
-+	mutex_acquire_nest(&lock->dep_map, subclass, 0, nest_lock, ip);
-+	ret = __rt_mutex_lock(&lock->rtmutex, state);
-+	if (ret)
-+		mutex_release(&lock->dep_map, ip);
-+	else
-+		lock_acquired(&lock->dep_map, ip);
-+	return ret;
-+}
-+
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+void __sched mutex_lock_nested(struct mutex *lock, unsigned int subclass)
-+{
-+	__mutex_lock_common(lock, TASK_UNINTERRUPTIBLE, subclass, NULL, _RET_IP_);
-+}
-+EXPORT_SYMBOL_GPL(mutex_lock_nested);
-+
-+void __sched _mutex_lock_nest_lock(struct mutex *lock,
-+				   struct lockdep_map *nest_lock)
-+{
-+	__mutex_lock_common(lock, TASK_UNINTERRUPTIBLE, 0, nest_lock, _RET_IP_);
-+}
-+EXPORT_SYMBOL_GPL(_mutex_lock_nest_lock);
-+
-+int __sched mutex_lock_interruptible_nested(struct mutex *lock,
-+					    unsigned int subclass)
-+{
-+	return __mutex_lock_common(lock, TASK_INTERRUPTIBLE, subclass, NULL, _RET_IP_);
-+}
-+EXPORT_SYMBOL_GPL(mutex_lock_interruptible_nested);
-+
-+int __sched mutex_lock_killable_nested(struct mutex *lock,
-+					    unsigned int subclass)
-+{
-+	return __mutex_lock_common(lock, TASK_KILLABLE, subclass, NULL, _RET_IP_);
-+}
-+EXPORT_SYMBOL_GPL(mutex_lock_killable_nested);
-+
-+void __sched mutex_lock_io_nested(struct mutex *lock, unsigned int subclass)
-+{
-+	int token;
-+
-+	might_sleep();
-+
-+	token = io_schedule_prepare();
-+	__mutex_lock_common(lock, TASK_UNINTERRUPTIBLE, subclass, NULL, _RET_IP_);
-+	io_schedule_finish(token);
-+}
-+EXPORT_SYMBOL_GPL(mutex_lock_io_nested);
-+
-+#else /* CONFIG_DEBUG_LOCK_ALLOC */
-+
-+void __sched mutex_lock(struct mutex *lock)
-+{
-+	__mutex_lock_common(lock, TASK_UNINTERRUPTIBLE, 0, NULL, _RET_IP_);
-+}
-+EXPORT_SYMBOL(mutex_lock);
-+
-+int __sched mutex_lock_interruptible(struct mutex *lock)
-+{
-+	return __mutex_lock_common(lock, TASK_INTERRUPTIBLE, 0, NULL, _RET_IP_);
-+}
-+EXPORT_SYMBOL(mutex_lock_interruptible);
-+
-+int __sched mutex_lock_killable(struct mutex *lock)
-+{
-+	return __mutex_lock_common(lock, TASK_KILLABLE, 0, NULL, _RET_IP_);
-+}
-+EXPORT_SYMBOL(mutex_lock_killable);
-+
-+void __sched mutex_lock_io(struct mutex *lock)
-+{
-+	int token = io_schedule_prepare();
-+
-+	__mutex_lock_common(lock, TASK_UNINTERRUPTIBLE, 0, NULL, _RET_IP_);
-+	io_schedule_finish(token);
-+}
-+EXPORT_SYMBOL(mutex_lock_io);
-+#endif /* !CONFIG_DEBUG_LOCK_ALLOC */
-+
-+int __sched mutex_trylock(struct mutex *lock)
-+{
-+	int ret;
-+
-+	if (IS_ENABLED(CONFIG_DEBUG_RT_MUTEXES) && WARN_ON_ONCE(!in_task()))
++	if (!build_ww_mutex())
 +		return 0;
 +
-+	ret = __rt_mutex_trylock(&lock->rtmutex);
-+	if (ret)
-+		mutex_acquire(&lock->dep_map, 0, 1, _RET_IP_);
++	if (rt_mutex_waiter_less(bw, aw))
++		return 0;
 +
-+	return ret;
-+}
-+EXPORT_SYMBOL(mutex_trylock);
++	/* NOTE: relies on waiter->ww_ctx being set before insertion */
++	if (aw->ww_ctx) {
++		if (!bw->ww_ctx)
++			return 1;
 +
-+void __sched mutex_unlock(struct mutex *lock)
-+{
-+	mutex_release(&lock->dep_map, _RET_IP_);
-+	__rt_mutex_unlock(&lock->rtmutex);
-+}
-+EXPORT_SYMBOL(mutex_unlock);
++		return (signed long)(aw->ww_ctx->stamp -
++				     bw->ww_ctx->stamp) < 0;
++	}
 +
-+#endif /* CONFIG_PREEMPT_RT */
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 5ddd575..e5cdf98 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1235,7 +1235,7 @@ config PROVE_LOCKING
- 	depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
- 	select LOCKDEP
- 	select DEBUG_SPINLOCK
--	select DEBUG_MUTEXES
-+	select DEBUG_MUTEXES if !PREEMPT_RT
- 	select DEBUG_RT_MUTEXES if RT_MUTEXES
- 	select DEBUG_RWSEMS
- 	select DEBUG_WW_MUTEX_SLOWPATH
-@@ -1299,7 +1299,7 @@ config LOCK_STAT
- 	depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
- 	select LOCKDEP
- 	select DEBUG_SPINLOCK
--	select DEBUG_MUTEXES
-+	select DEBUG_MUTEXES if !PREEMPT_RT
- 	select DEBUG_RT_MUTEXES if RT_MUTEXES
- 	select DEBUG_LOCK_ALLOC
- 	default n
-@@ -1335,7 +1335,7 @@ config DEBUG_SPINLOCK
++	return 0;
+ }
  
- config DEBUG_MUTEXES
- 	bool "Mutex debugging: basic checks"
--	depends on DEBUG_KERNEL
-+	depends on DEBUG_KERNEL && !PREEMPT_RT
- 	help
- 	 This feature allows mutex semantics violations to be detected and
- 	 reported.
-@@ -1345,7 +1345,8 @@ config DEBUG_WW_MUTEX_SLOWPATH
- 	depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
- 	select DEBUG_LOCK_ALLOC
- 	select DEBUG_SPINLOCK
--	select DEBUG_MUTEXES
-+	select DEBUG_MUTEXES if !PREEMPT_RT
-+	select DEBUG_RT_MUTEXES if PREEMPT_RT
- 	help
- 	 This feature enables slowpath testing for w/w mutex users by
- 	 injecting additional -EDEADLK wound/backoff cases. Together with
-@@ -1368,7 +1369,7 @@ config DEBUG_LOCK_ALLOC
- 	bool "Lock debugging: detect incorrect freeing of live locks"
- 	depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
- 	select DEBUG_SPINLOCK
--	select DEBUG_MUTEXES
-+	select DEBUG_MUTEXES if !PREEMPT_RT
- 	select DEBUG_RT_MUTEXES if RT_MUTEXES
- 	select LOCKDEP
- 	help
+ static __always_inline void
+@@ -961,6 +1017,7 @@ takeit:
+ static int __sched task_blocks_on_rt_mutex(struct rt_mutex_base *lock,
+ 					   struct rt_mutex_waiter *waiter,
+ 					   struct task_struct *task,
++					   struct ww_acquire_ctx *ww_ctx,
+ 					   enum rtmutex_chainwalk chwalk)
+ {
+ 	struct task_struct *owner = rt_mutex_owner(lock);
+@@ -996,6 +1053,16 @@ static int __sched task_blocks_on_rt_mutex(struct rt_mutex_base *lock,
+ 
+ 	raw_spin_unlock(&task->pi_lock);
+ 
++	if (build_ww_mutex() && ww_ctx) {
++		struct rt_mutex *rtm;
++
++		/* Check whether the waiter should back out immediately */
++		rtm = container_of(lock, struct rt_mutex, rtmutex);
++		res = __ww_mutex_add_waiter(waiter, rtm, ww_ctx);
++		if (res)
++			return res;
++	}
++
+ 	if (!owner)
+ 		return 0;
+ 
+@@ -1281,6 +1348,7 @@ static void __sched remove_waiter(struct rt_mutex_base *lock,
+ /**
+  * rt_mutex_slowlock_block() - Perform the wait-wake-try-to-take loop
+  * @lock:		 the rt_mutex to take
++ * @ww_ctx:		 WW mutex context pointer
+  * @state:		 the state the task should block in (TASK_INTERRUPTIBLE
+  *			 or TASK_UNINTERRUPTIBLE)
+  * @timeout:		 the pre-initialized and started timer, or NULL for none
+@@ -1289,10 +1357,12 @@ static void __sched remove_waiter(struct rt_mutex_base *lock,
+  * Must be called with lock->wait_lock held and interrupts disabled
+  */
+ static int __sched rt_mutex_slowlock_block(struct rt_mutex_base *lock,
++					   struct ww_acquire_ctx *ww_ctx,
+ 					   unsigned int state,
+ 					   struct hrtimer_sleeper *timeout,
+ 					   struct rt_mutex_waiter *waiter)
+ {
++	struct rt_mutex *rtm = container_of(lock, struct rt_mutex, rtmutex);
+ 	int ret = 0;
+ 
+ 	for (;;) {
+@@ -1309,6 +1379,12 @@ static int __sched rt_mutex_slowlock_block(struct rt_mutex_base *lock,
+ 			break;
+ 		}
+ 
++		if (build_ww_mutex() && ww_ctx) {
++			ret = __ww_mutex_check_kill(rtm, waiter, ww_ctx);
++			if (ret)
++				break;
++		}
++
+ 		raw_spin_unlock_irq(&lock->wait_lock);
+ 
+ 		schedule();
+@@ -1331,6 +1407,9 @@ static void __sched rt_mutex_handle_deadlock(int res, int detect_deadlock,
+ 	if (res != -EDEADLOCK || detect_deadlock)
+ 		return;
+ 
++	if (build_ww_mutex() && w->ww_ctx)
++		return;
++
+ 	/*
+ 	 * Yell loudly and stop the task right here.
+ 	 */
+@@ -1344,31 +1423,46 @@ static void __sched rt_mutex_handle_deadlock(int res, int detect_deadlock,
+ /**
+  * __rt_mutex_slowlock - Locking slowpath invoked with lock::wait_lock held
+  * @lock:	The rtmutex to block lock
++ * @ww_ctx:	WW mutex context pointer
+  * @state:	The task state for sleeping
+  * @chwalk:	Indicator whether full or partial chainwalk is requested
+  * @waiter:	Initializer waiter for blocking
+  */
+ static int __sched __rt_mutex_slowlock(struct rt_mutex_base *lock,
++				       struct ww_acquire_ctx *ww_ctx,
+ 				       unsigned int state,
+ 				       enum rtmutex_chainwalk chwalk,
+ 				       struct rt_mutex_waiter *waiter)
+ {
++	struct rt_mutex *rtm = container_of(lock, struct rt_mutex, rtmutex);
++	struct ww_mutex *ww = ww_container_of(rtm);
+ 	int ret;
+ 
+ 	lockdep_assert_held(&lock->wait_lock);
+ 
+ 	/* Try to acquire the lock again: */
+-	if (try_to_take_rt_mutex(lock, current, NULL))
++	if (try_to_take_rt_mutex(lock, current, NULL)) {
++		if (build_ww_mutex() && ww_ctx) {
++			__ww_mutex_check_waiters(rtm, ww_ctx);
++			ww_mutex_lock_acquired(ww, ww_ctx);
++		}
+ 		return 0;
++	}
+ 
+ 	set_current_state(state);
+ 
+-	ret = task_blocks_on_rt_mutex(lock, waiter, current, chwalk);
+-
++	ret = task_blocks_on_rt_mutex(lock, waiter, current, ww_ctx, chwalk);
+ 	if (likely(!ret))
+-		ret = rt_mutex_slowlock_block(lock, state, NULL, waiter);
+-
+-	if (unlikely(ret)) {
++		ret = rt_mutex_slowlock_block(lock, ww_ctx, state, NULL, waiter);
++
++	if (likely(!ret)) {
++		/* acquired the lock */
++		if (build_ww_mutex() && ww_ctx) {
++			if (!ww_ctx->is_wait_die)
++				__ww_mutex_check_waiters(rtm, ww_ctx);
++			ww_mutex_lock_acquired(ww, ww_ctx);
++		}
++	} else {
+ 		__set_current_state(TASK_RUNNING);
+ 		remove_waiter(lock, waiter);
+ 		rt_mutex_handle_deadlock(ret, chwalk, waiter);
+@@ -1383,14 +1477,17 @@ static int __sched __rt_mutex_slowlock(struct rt_mutex_base *lock,
+ }
+ 
+ static inline int __rt_mutex_slowlock_locked(struct rt_mutex_base *lock,
++					     struct ww_acquire_ctx *ww_ctx,
+ 					     unsigned int state)
+ {
+ 	struct rt_mutex_waiter waiter;
+ 	int ret;
+ 
+ 	rt_mutex_init_waiter(&waiter);
++	waiter.ww_ctx = ww_ctx;
+ 
+-	ret = __rt_mutex_slowlock(lock, state, RT_MUTEX_MIN_CHAINWALK, &waiter);
++	ret = __rt_mutex_slowlock(lock, ww_ctx, state, RT_MUTEX_MIN_CHAINWALK,
++				  &waiter);
+ 
+ 	debug_rt_mutex_free_waiter(&waiter);
+ 	return ret;
+@@ -1399,9 +1496,11 @@ static inline int __rt_mutex_slowlock_locked(struct rt_mutex_base *lock,
+ /*
+  * rt_mutex_slowlock - Locking slowpath invoked when fast path fails
+  * @lock:	The rtmutex to block lock
++ * @ww_ctx:	WW mutex context pointer
+  * @state:	The task state for sleeping
+  */
+ static int __sched rt_mutex_slowlock(struct rt_mutex_base *lock,
++				     struct ww_acquire_ctx *ww_ctx,
+ 				     unsigned int state)
+ {
+ 	unsigned long flags;
+@@ -1416,7 +1515,7 @@ static int __sched rt_mutex_slowlock(struct rt_mutex_base *lock,
+ 	 * irqsave/restore variants.
+ 	 */
+ 	raw_spin_lock_irqsave(&lock->wait_lock, flags);
+-	ret = __rt_mutex_slowlock_locked(lock, state);
++	ret = __rt_mutex_slowlock_locked(lock, ww_ctx, state);
+ 	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
+ 
+ 	return ret;
+@@ -1428,7 +1527,7 @@ static __always_inline int __rt_mutex_lock(struct rt_mutex_base *lock,
+ 	if (likely(rt_mutex_cmpxchg_acquire(lock, NULL, current)))
+ 		return 0;
+ 
+-	return rt_mutex_slowlock(lock, state);
++	return rt_mutex_slowlock(lock, NULL, state);
+ }
+ #endif /* RT_MUTEX_BUILD_MUTEX */
+ 
+@@ -1455,7 +1554,7 @@ static void __sched rtlock_slowlock_locked(struct rt_mutex_base *lock)
+ 	/* Save current state and set state to TASK_RTLOCK_WAIT */
+ 	current_save_and_set_rtlock_wait_state();
+ 
+-	task_blocks_on_rt_mutex(lock, &waiter, current, RT_MUTEX_MIN_CHAINWALK);
++	task_blocks_on_rt_mutex(lock, &waiter, current, NULL, RT_MUTEX_MIN_CHAINWALK);
+ 
+ 	for (;;) {
+ 		/* Try to acquire the lock again */
+diff --git a/kernel/locking/rtmutex_api.c b/kernel/locking/rtmutex_api.c
+index 7f3ac09..16126fc 100644
+--- a/kernel/locking/rtmutex_api.c
++++ b/kernel/locking/rtmutex_api.c
+@@ -267,7 +267,7 @@ int __sched __rt_mutex_start_proxy_lock(struct rt_mutex_base *lock,
+ 		return 1;
+ 
+ 	/* We enforce deadlock detection for futexes */
+-	ret = task_blocks_on_rt_mutex(lock, waiter, task,
++	ret = task_blocks_on_rt_mutex(lock, waiter, task, NULL,
+ 				      RT_MUTEX_FULL_CHAINWALK);
+ 
+ 	if (ret && !rt_mutex_owner(lock)) {
+@@ -343,7 +343,7 @@ int __sched rt_mutex_wait_proxy_lock(struct rt_mutex_base *lock,
+ 	raw_spin_lock_irq(&lock->wait_lock);
+ 	/* sleep on the mutex */
+ 	set_current_state(TASK_INTERRUPTIBLE);
+-	ret = rt_mutex_slowlock_block(lock, TASK_INTERRUPTIBLE, to, waiter);
++	ret = rt_mutex_slowlock_block(lock, NULL, TASK_INTERRUPTIBLE, to, waiter);
+ 	/*
+ 	 * try_to_take_rt_mutex() sets the waiter bit unconditionally. We might
+ 	 * have to fix that up.
+diff --git a/kernel/locking/rtmutex_common.h b/kernel/locking/rtmutex_common.h
+index ccf0e36..61256de 100644
+--- a/kernel/locking/rtmutex_common.h
++++ b/kernel/locking/rtmutex_common.h
+@@ -28,6 +28,7 @@
+  * @wake_state:		Wakeup state to use (TASK_NORMAL or TASK_RTLOCK_WAIT)
+  * @prio:		Priority of the waiter
+  * @deadline:		Deadline of the waiter if applicable
++ * @ww_ctx:		WW context pointer
+  */
+ struct rt_mutex_waiter {
+ 	struct rb_node		tree_entry;
+@@ -37,6 +38,7 @@ struct rt_mutex_waiter {
+ 	unsigned int		wake_state;
+ 	int			prio;
+ 	u64			deadline;
++	struct ww_acquire_ctx	*ww_ctx;
+ };
+ 
+ /**
+diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
+index 2847833..9215b4d 100644
+--- a/kernel/locking/rwsem.c
++++ b/kernel/locking/rwsem.c
+@@ -1360,7 +1360,7 @@ static inline void __downgrade_write(struct rw_semaphore *sem)
+ 	__rt_mutex_lock(rtm, state)
+ 
+ #define rwbase_rtmutex_slowlock_locked(rtm, state)	\
+-	__rt_mutex_slowlock_locked(rtm, state)
++	__rt_mutex_slowlock_locked(rtm, NULL, state)
+ 
+ #define rwbase_rtmutex_unlock(rtm)			\
+ 	__rt_mutex_unlock(rtm)
