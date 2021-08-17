@@ -2,152 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E153EEDD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75FD3EEDCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237744AbhHQN4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 09:56:17 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18724 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234446AbhHQN4P (ORCPT
+        id S237657AbhHQNz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 09:55:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231786AbhHQNz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 09:56:15 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17HDX5Pv013840;
-        Tue, 17 Aug 2021 09:55:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=d5CdiPTaTbyN6eBruDpCa+DfpS0jXhFLk6hNMHqtTks=;
- b=dnX/odEzbO5FT0vctTpoBElB6/bsA9T1DKMoLqiqjjtl6Sc9/5kaaLZrx+6Ynt5xjsuO
- NBKRmAlPQLiaeZV1ZVlVN4ZwxbAkVQ5GCRL4TWBfTvWbvhgsmBrww+fggOJ4D5qSLY3m
- VnFckV1X26W0OxERjHPbwxAUJx7zvCUJpy4CBPksNGxI1B117gaO4+wIubupVzkQXWdd
- X1TY7cBVXprgEh3/S8Q/stug1Sh3T3hG4Bo0wG/BmgHSiAe/GKyqd3F/YoMIowID5HaT
- EOVpn/YiMWXaJTKAfq/p8dtAkBTo4fy5I1ahwDhfrp00tGT+rTOTDz1ukuzAepAKQFSM sA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3aftx54vkk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Aug 2021 09:55:23 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17HDXGjh014864;
-        Tue, 17 Aug 2021 09:55:23 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3aftx54vjr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Aug 2021 09:55:22 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17HDr1Fm014483;
-        Tue, 17 Aug 2021 13:55:21 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03fra.de.ibm.com with ESMTP id 3ae5f8vbkw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Aug 2021 13:55:21 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17HDpoAd51446024
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Aug 2021 13:51:50 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 720D8A40E9;
-        Tue, 17 Aug 2021 13:55:18 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DF9DBA4164;
-        Tue, 17 Aug 2021 13:55:14 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.53.55])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 17 Aug 2021 13:55:14 +0000 (GMT)
-Message-ID: <285cb263d9c1c16f3918c98dd36074ef16568e6d.camel@linux.ibm.com>
-Subject: Re: [PATCH v2] fscrypt: support trusted keys
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel@pengutronix.de,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        David Howells <dhowells@redhat.com>,
-        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 17 Aug 2021 09:55:13 -0400
-In-Reply-To: <a6eb6f38-b9f4-c59c-4181-2049f181e67d@pengutronix.de>
-References: <20210806150928.27857-1-a.fatoum@pengutronix.de>
-         <20210809094408.4iqwsx77u64usfx6@kernel.org> <YRGVcaquAJiuc8bp@gmail.com>
-         <20210810180636.vqwaeftv7alsodgn@kernel.org> <YRLJmaafp941uOdA@gmail.com>
-         <20210810212140.sdq5dq2wy5uaj7h7@kernel.org> <YRLvPJehAeMiYb2Z@gmail.com>
-         <20210811001743.ofzkwdwa6rcjsf4d@kernel.org>
-         <d4f5c2593380c82ceebae2c8782a1c440b35f165.camel@linux.ibm.com>
-         <YRQF09f8st95yrFZ@gmail.com>
-         <0e69a0aa394dd20347b06ae4e700aa17d52583ef.camel@linux.ibm.com>
-         <a6eb6f38-b9f4-c59c-4181-2049f181e67d@pengutronix.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 84Uu5U7eFAAITP33Xd2m5v2Efn7dIvZS
-X-Proofpoint-GUID: NuLZMrF0yc_lhQFtdjmqZyNLX9OYWT19
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-17_04:2021-08-17,2021-08-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 clxscore=1015 mlxscore=0 suspectscore=0 spamscore=0
- malwarescore=0 mlxlogscore=999 phishscore=0 lowpriorityscore=0
- impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2107140000 definitions=main-2108170082
+        Tue, 17 Aug 2021 09:55:56 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 475ECC061764;
+        Tue, 17 Aug 2021 06:55:23 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id h24-20020a1ccc180000b029022e0571d1a0so2193896wmb.5;
+        Tue, 17 Aug 2021 06:55:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=e9bZb1YY7FCvBqIDRWVhtfdiTQ+GMJ0iZin/k2ss5zg=;
+        b=LD4ux+5TV8ESgevUSUahM4UvfcpJsjjf6xwVHcmHsJCvzFBNCsj4H7/aduW+JxRCE9
+         Igw7kGnFd1pI9qtLwzkPGMIIMpgtAv/bDkpXdkdUr9Jbq3kwf7fVxNiFgdoQvGQ+t3lo
+         tSTuMespfQYYiUXRBhyI9krFhPzSr0nsquB03gVENfeBgjsw/4A70ejZnt+80uZN9A+g
+         SmavQMRRAOLWIfBBJWlPX1tca7ze50AkXkjWxqMe/k46B+DWsPV2S/HJd8B4Y+O8g6cE
+         BtV4/whpbu7pI781U2FbLXsKvHEtYWVMb8VmcSAgSCSupxLrhnVsx80RXhTSt3ilpVf+
+         pg/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=e9bZb1YY7FCvBqIDRWVhtfdiTQ+GMJ0iZin/k2ss5zg=;
+        b=DRnvG+cA6rYXQ3IOotF7+26Z6G8oKdmhM4qR2PKSRgUMWGsge2RUyJ4V+ghRK+5hJ7
+         o9g5NpErDdbHnBLbeQLL7tj7vzt6zdsKkYbbQ2Hz8ON7OWnoICTo14LL3hACtr/PnPmH
+         geq3aREfoMJcQSemPrII5b4nevyqLqPU6PcrC8Gw1y1Oug1VB410Qe3G+DUDhOh2SWFq
+         lWCmhv0j0ZTMlgol5Gk8gcUQ94kiVklZ4fNiyd/mTjNgmJmrDkEvQYuwc2Dr5mH2yB1z
+         EN2965YnRcWl5YwgoDaW61Q7iON5+FgdTZails0XfI4DB5YtQS52zRNaYvmkxc4vwBAP
+         21rA==
+X-Gm-Message-State: AOAM531PxQ4AP9qul0EZ+ZmacKSqojvlqmK3qpdwE8i/E0+zVLGpRJuB
+        4prFPawPsq1020V3Sx/FA5k=
+X-Google-Smtp-Source: ABdhPJxTMX6wNNoxC7btDvZ/uZkYsN4Pw2/KsoQIO1+M8o9zy0rayBjARqnXpLWgNKiFHPKLF/ZG3g==
+X-Received: by 2002:a05:600c:4149:: with SMTP id h9mr3457199wmm.88.1629208521913;
+        Tue, 17 Aug 2021 06:55:21 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id l19sm2335581wmi.4.2021.08.17.06.55.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 06:55:20 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 15:55:19 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Aakash Hemadri <aakashhemadri123@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Bjorn Helgaas <bjorn@helgaas.com>
+Subject: Re: [PATCH 1/2] ASoC: tegra30: ahub: Fix incorrect usage of
+ of_device_get_match_data
+Message-ID: <YRu/x+KBHtl3jg3T@orome.fritz.box>
+References: <cover.1629148177.git.aakashhemadri123@gmail.com>
+ <bb61c41f2ee0cf0d85fecdfea05f23a7205992e6.1629148177.git.aakashhemadri123@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="KPz4+EU8b92H2GEv"
+Content-Disposition: inline
+In-Reply-To: <bb61c41f2ee0cf0d85fecdfea05f23a7205992e6.1629148177.git.aakashhemadri123@gmail.com>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-08-17 at 15:04 +0200, Ahmad Fatoum wrote:
-> Hi,
-> 
-> On 12.08.21 02:54, Mimi Zohar wrote:
-> > On Wed, 2021-08-11 at 10:16 -0700, Eric Biggers wrote:
-> > 
-> >> Neither of you actually answered my question, which is whether the support for
-> >> trusted keys in dm-crypt is a mistake.  I think you're saying that it is?  That
-> >> would imply that fscrypt shouldn't support trusted keys, but rather encrypted
-> >> keys -- which conflicts with Ahmad's patch which is adding support for trusted
-> >> keys.  Note that your reasoning for this is not documented at all in the
-> >> trusted-encrypted keys documentation; it needs to be (email threads don't really
-> >> matter), otherwise how would anyone know when/how to use this feature?
-> > 
-> > True, but all of the trusted-encrypted key examples in the
-> > documentation are "encrypted" type keys, encrypted/decrypted based on a
-> > "trusted" type key.  There are no examples of using the "trusted" key
-> > type directly.  Before claiming that adding "trusted" key support in
-> > dm-crypt was a mistake, we should ask Ahmad why he felt dm-crypt needed
-> > to directly support "trusted" type keys.
-> 
-> I wanted to persist the dm-crypt key as a sealed blob. With encrypted keys,
-> I would have to persist and unseal two blobs (load trusted key blob, load
-> encrypted key blob rooted to trusted key) with no extra benefit.
-> 
-> I thus added direct support for trusted keys. Jarkko even commented on the
-> thread, but didn't voice objection to the approach (or agreement for that
-> matter), so I assumed the approach is fine.
-> 
-> I can see the utility of using a single trusted key for TPMs, but for CAAM,
-> I see none and having an encrypted key for every trusted key just makes
-> it more cumbersome.
-> 
-> In v1 here, I added encrypted key support as well, but dropped it for v2,
-> because I am not in a position to justify its use. Now that you and Eric
-> discussed it, should I send v3 with support for both encrypted and trusted
-> keys like with dm-crypt or how should we proceed?
 
-With some applications, the indirection is important.   It allows the
-"encrypted" key type to be updated/re-encypted based on a new "trusted"
-key, without affecting the on disk encrypted key usage.
+--KPz4+EU8b92H2GEv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-As much as I expected, directly using "trusted" keys is a result of the
-new trusted key sources.  I have no opinion as to whether this is/isn't
-a valid usecase.
+On Tue, Aug 17, 2021 at 02:44:51AM +0530, Aakash Hemadri wrote:
+> const struct of_device_id incorrectly assigned "match->data" using
+> of_device_get_match_data()
+>=20
+> Instead assign `const struct tegra30_ahub_soc_data *soc_data` with
+> const void *of_device_get_match_data(...)
+>=20
+> Fixes: 80165bb80433 ("ASoC: tegra30: ahub: Use of_device_get_match_data")
+>=20
+> Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
+> ---
+>  sound/soc/tegra/tegra30_ahub.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahu=
+b.c
+> index 0ac109b32329..ef011a488ceb 100644
+> --- a/sound/soc/tegra/tegra30_ahub.c
+> +++ b/sound/soc/tegra/tegra30_ahub.c
+> @@ -512,16 +512,14 @@ static const struct of_device_id tegra30_ahub_of_ma=
+tch[] =3D {
+> =20
+>  static int tegra30_ahub_probe(struct platform_device *pdev)
+>  {
+> -	const struct of_device_id *match;
+>  	const struct tegra30_ahub_soc_data *soc_data;
+>  	struct resource *res0;
+>  	void __iomem *regs_apbif, *regs_ahub;
+>  	int ret =3D 0;
+> =20
+> -	match =3D of_device_get_match_data(&pdev->dev);
+> -	if (!match)
+> +	soc_data =3D of_device_get_match_data(&pdev->dev);
+> +	if (!soc_data)
+>  		return -EINVAL;
+> -	soc_data =3D match->data;
 
-thanks,
+Minor nit: !soc_data can actually never happen for this driver. First,
+tegra30_ahub_probe() will only ever be called if there was a match with
+an entry from the OF device ID table, and then all entries have .data
+set to a valid point.
 
-Mimi
+It's a pre-existing issue, but since all of the surrounding code is
+already getting updated, perhaps it'd be a good idea to fix that up
+while at it.
 
+Thierry
+
+--KPz4+EU8b92H2GEv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEbv8cACgkQ3SOs138+
+s6G+ig//RyICugt3pq1ORDeWTVSn35BEuD0wrZkvbHA1W0YACkfbgleassIEpLpy
+IpOt/8qKXV25aEfNEkQp275Fk2hdwJFK8XVUEVCR4efxGFCFg5lZ8H2aMceLgbKq
+xHgI4P1X8bd13/uzfJ1u+75s6TxmCokWuI1o7W8NVpOYSpOJjnH/OGwzDQJJw9AB
+DEomquW626ZCYpjPa8/s9nrOsHY23EFGswmCKk5nwnxDsyCFgWB5A0LjrOaWdaPQ
+RbZ+1x0EKEbp65R205rziWZcJqSeLOHkv9Mc5RvL+aN9ACJ6EzwFi7ICG+ddrhyR
+vE0KjfWOdH5xlLRXJ7elSFl0SbIJXGHZlRsNd6CMQqkz7piIJeiDCVTJM3ZTpwwM
+YKq6ax0Dls05mhYA6wpYrWDrBTcbYytYZkUqAum+hHyu7hYrXUJq8WuKXdHyX9Jd
+pE8unNgHSTe+emJ1Q6zHh5IEqP9pJKewzsJSxQ0OP9L5tWW7ZN+LjG3UwPBOkQ+v
+ik2UiDWFu3NnQuAwO42ok4WtHUvX2m+ogjyusl/2mjhDrupZSBtVKbKCuOmwVfsS
+PYETiBrT+SGgy/lOZnibNz537/lWfKH4XjXM0U2eZT5U+GX+vJ0cXMJ5NqwQWwHi
+8FFBUYy4EKTUgoaUaN1o5frZyTy9bVqcNVOesBo5JjWVGlzF7LM=
+=lOkL
+-----END PGP SIGNATURE-----
+
+--KPz4+EU8b92H2GEv--
