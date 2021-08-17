@@ -2,199 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE5703EE6E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8013EE6EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238112AbhHQGwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 02:52:49 -0400
-Received: from hazard.jcu.cz ([160.217.1.6]:45076 "EHLO hazard.jcu.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230094AbhHQGwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 02:52:44 -0400
-Received: by hazard.jcu.cz (Postfix, from userid 1000)
-        id 7D6E53139D0; Tue, 17 Aug 2021 08:52:10 +0200 (CEST)
-Date:   Tue, 17 Aug 2021 08:52:10 +0200
-From:   Jan Marek <jmarek@jcu.cz>
-To:     linux-kernel@vger.kernel.org
-Cc:     regressions@lists.linux.dev
-Subject: [REGRESSION][BISECTED] Corrupted files on CIFS in 5.x kernels
-Message-ID: <20210817065210.iposihe4yuutfijy@hazard.jcu.cz>
-References: <20210812064542.omomndvwlsfgqgqz@hazard.jcu.cz>
+        id S234560AbhHQGzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 02:55:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230094AbhHQGzg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 02:55:36 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958A6C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:55:03 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id f10so9910347wml.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:55:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AR7pc4AE2X9QocS3y7IAlhRBIiIOCoGNDxzVV9D+6Os=;
+        b=BkMOYWOtMCIN3yujvpbGZn88HUevvRZbMYfDp2t7z6fyIy6FWuj4W/6mESxXk2nLyk
+         MyGWD5JJ7qmU6ltT/+LRuUenOfk85r8BSMzDvgB4jYh73wOaiIOb1N9rYYRMQZjIr2vq
+         BSnxjesVLJfXonkIaTPilQAzAvE0+mtz0oOn5FC1AtxfsedpbSEaCrOX4SBFm5ZxqjNO
+         ylvTfDtjLlfQc9JCMJNz/4bMAu6f5XvsQZembls5tzdPIDV/4+oUAxebBXihtgg0c0qM
+         +ZVKHBdAPrT8KfX2/ELaQ7EYcPrGr6eOtprJLbF1MfdA4H26LqplKyN7nhjHywUWiYpc
+         IzHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AR7pc4AE2X9QocS3y7IAlhRBIiIOCoGNDxzVV9D+6Os=;
+        b=F3iKou6mFWPDYvRtM5tOp1r9vZBcH46kxMuG6XZNW3D1ehO/zZyYFO/2F9+3LaLEgd
+         CP8nmxBn1qois0l/lJYvZUmdkqTDmtUBrzY194RCh/TAbn9PnnJIfMgrwbbzbeM7YFCU
+         /4rN/WL99sz00pCWDcKwPrxT9AssiJbuOUfcW72PVohiXSkDzD+wZHnR0ndk0zfuOpkS
+         ILx4K2nMX7ij+JET+/yBYkHJB7FlafhhrABVcldYxLFRWRxW/y4sfEMwS1n/md8sylYW
+         w0FblxWtK/YpyN/F//0M1m44mnnGLzXnqHVSuq1KZznLe0tz3Erku5VRcZk9Es+rzqsl
+         h0dQ==
+X-Gm-Message-State: AOAM531TICfxLbsnprh8XKpDtDobwG3Od5ROaetW9rU/Vzfq/zW2sYyB
+        iULAPTetEXPpUDFhB9rSNPG1fNR4E1c=
+X-Google-Smtp-Source: ABdhPJxxJx9dmMiiaVxEreQVfXCMJO1ePRFVrDb26mI+viVc2P8jEg0A97tcuhlpKsWBAvjjl4q+PQ==
+X-Received: by 2002:a05:600c:3b9c:: with SMTP id n28mr1686470wms.15.1629183302115;
+        Mon, 16 Aug 2021 23:55:02 -0700 (PDT)
+Received: from ?IPv6:2a02:8108:96c0:3b88::4058? ([2a02:8108:96c0:3b88::4058])
+        by smtp.gmail.com with ESMTPSA id u16sm1138248wmc.41.2021.08.16.23.55.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 23:55:01 -0700 (PDT)
+Subject: Re: [PATCH] staging: r8188eu: Add spaces before and after logical '&'
+To:     Abhishek Anand Kulkarni <kulkarniabhishekanand@gmail.com>,
+        gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210817022628.GA6595@abhishek-Lenovo-ideapad-110-15AST>
+From:   Michael Straube <straube.linux@gmail.com>
+Message-ID: <6957e465-7250-c5f4-759f-c802391268e0@gmail.com>
+Date:   Tue, 17 Aug 2021 08:54:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="wgmsen6kpo5mh5li"
-Content-Disposition: inline
-In-Reply-To: <20210812064542.omomndvwlsfgqgqz@hazard.jcu.cz>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20210817022628.GA6595@abhishek-Lenovo-ideapad-110-15AST>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/17/21 4:26 AM, Abhishek Anand Kulkarni wrote:
+> Fix Checkpatch.pl warning to add space before and after logical '&'
+> operator
+> 
+> Signed-off-by: Abhishek Anand Kulkarni <kulkaraniabhishekanand@gmail.com>
+> ---
+>   drivers/staging/r8188eu/core/rtw_ioctl_set.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/r8188eu/core/rtw_ioctl_set.c b/drivers/staging/r8188eu/core/rtw_ioctl_set.c
+> index a7f966a..570f25f 100644
+> --- a/drivers/staging/r8188eu/core/rtw_ioctl_set.c
+> +++ b/drivers/staging/r8188eu/core/rtw_ioctl_set.c
+> @@ -630,7 +630,7 @@ u8 rtw_set_802_11_add_key(struct adapter *padapter, struct ndis_802_11_key *key)
+>   		struct ndis_802_11_wep *wep = &padapter->securitypriv.ndiswep;
+>   
+>   		wep->Length = len;
+> -		keyindex = key->KeyIndex&0x7fffffff;
+> +		keyindex = key->KeyIndex & 0x7fffffff;
+>   		wep->KeyIndex = keyindex ;
+>   		wep->KeyLength = key->KeyLength;
+>   
+> 
 
---wgmsen6kpo5mh5li
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Abhishek,
 
-Hello lkml,
+there is already a pending patch that addresses this.
 
-I've did a bisect to find 'bad' commit, and I've found, that problem
-commit is:
+https://lore.kernel.org/linux-staging/20210816155818.24005-9-straube.linux@gmail.com/T/#u
 
-# first bad commit: [e8506d25f740fd058791cc12a6dfa9386ada6b96] smb3: make d=
-efault i/o size for smb3 mounts larger
-
-It seems, that problem is somewhere in cifs?
-
-Detailed information about mounting this cifs filesystem:
-
-fstab:
-
-//some.machine/jmarek       /mnt/smb   cifs    _netdev,credentials=3D/etc/c=
-red_file,forceuid,forcegid,uid=3Droot,gid=3Droot,vers=3D1.0 3 0
-
-some.machine runs Samba (sorry, I don't know, which version,
-server administrator is just now on vacancy).
-
-Questions are welcome.
-
-I can test patches, if you will need.
-
-Sincerely
-Jan Marek
-
-Dne =C4=8Ct, srp 12, 2021 at 08:45:42 CEST napsal Jan Marek:
-> Hello lkml,
->=20
-> I have problem with two "network" filesystems in 5.x kernels.
->=20
-> I've Debian Buster server with Postfix and Dovecot, users have
-> Maildir mailboxes on CEPHfs. Backup of these mailboxes are making
-> by the borgbackup to the remote machine, using CIFS.
->=20
-> Debian Buster have "normal" distro kernel v. 4.19 (in my case
-> 4.19.194-3), which works fine. I've tried to use kernel from
-> buster-backports, linux-image-5.10.0-0.bpo.8-amd64, which is
-> 5.10.46-2~bpo10+1.
->=20
-> From time of booting this kernel, I've problems with massive corruption
-> of dovecot index files on CEPHfs. I've tried to set up dovecot in
-> the similar manner, as for NFS filesystem, although mailboxes are not
-> sharing by multiple machines, but it not works.
->=20
-> As the second problem, I've cannot do borg backup of mailboxes to
-> CIFS directory - borgbackup had problem with corrupted archives.
->=20
-> When I reboot back to 4.19.194-3, problems disappeared.
->=20
-> I've tried to reproduce from my work computer, where I have
-> Debian Buster and kernel 5.12.0-19.2-liquorix-amd64, which is
-> 5.12-28.1~buster, and there is the same problem with CIFS
-> filesystem and borg backup. You can easily reproduce it:
->=20
-> 1) mount CIFS filesystem
-> 2) make directory on it
-> 3) try to init borg archive direcory from this directory
->=20
-> In my case:
->=20
-> mount /mnt/smb
-> cd /mnt/smb/tmp
-> mkdir tmp
-> borg init -e none tmp
->=20
-> I've got this (the same problem, as on email machine):
-> Inconsistency detected. Please run "borg check /mnt/smb/tmp/tmp" - althou=
-gh likely this is "beyond repair".
-> Traceback (most recent call last):
->   File "/usr/lib/python3/dist-packages/borg/archiver.py", line 4455, in m=
-ain
->     exit_code =3D archiver.run(args)
->   File "/usr/lib/python3/dist-packages/borg/archiver.py", line 4387, in r=
-un
->     return set_ec(func(args))
->   File "/usr/lib/python3/dist-packages/borg/archiver.py", line 154, in wr=
-apper
->     return method(self, args, repository=3Drepository, **kwargs)
->   File "/usr/lib/python3/dist-packages/borg/archiver.py", line 276, in do=
-_init
->     with Cache(repository, key, manifest, warn_if_unencrypted=3DFalse):
->   File "/usr/lib/python3/dist-packages/borg/cache.py", line 380, in __new=
-__
->     return local()
->   File "/usr/lib/python3/dist-packages/borg/cache.py", line 374, in local
->     lock_wait=3Dlock_wait, cache_mode=3Dcache_mode)
->   File "/usr/lib/python3/dist-packages/borg/cache.py", line 467, in __ini=
-t__
->     self.sync()
->   File "/usr/lib/python3/dist-packages/borg/cache.py", line 851, in sync
->     self.chunks =3D create_master_idx(self.chunks)
->   File "/usr/lib/python3/dist-packages/borg/cache.py", line 786, in creat=
-e_master_idx
->     master_index_capacity =3D int(len(self.repository) / ChunkIndex.MAX_L=
-OAD_FACTOR)
->   File "/usr/lib/python3/dist-packages/borg/repository.py", line 1009, in=
- __len__
->     self.index =3D self.open_index(self.get_transaction_id())
->   File "/usr/lib/python3/dist-packages/borg/repository.py", line 376, in =
-get_transaction_id
->     self.check_transaction()
->   File "/usr/lib/python3/dist-packages/borg/repository.py", line 365, in =
-check_transaction
->     raise self.CheckNeeded(msg)
-> borg.repository.Repository.CheckNeeded: Inconsistency detected. Please ru=
-n "borg check /mnt/smb/tmp/tmp" - although likely this is "beyond repair".
->=20
-> Platform: Linux hazard 5.12.0-19.2-liquorix-amd64 #1 ZEN SMP PREEMPT liqu=
-orix 5.12-28.1~buster (2021-07-22) x86_64
-> Linux: debian 10.10
-> Borg: 1.1.9  Python: CPython 3.7.3
-> PID: 3320  CWD: /mnt/smb/tmp
-> sys.argv: ['/usr/bin/borg', 'init', '-e', 'none', 'tmp']
-> SSH_ORIGINAL_COMMAND: None
->=20
-> You can try repair this archive directory, but it didn't happend:
->=20
-> borg check tmp
->=20
-> Data integrity error: Invalid segment entry size 0 - too small [segment 1=
-, offset 17]
-> Completed repository check, errors found.
->=20
-> On local filesystems, there is no problem, everythink works fine
-> - tested on ext4, JFS and XFS.
->=20
-> It seems, there is problem with caching of this filesystems?
->=20
-> Questions are welcome.
->=20
-> Sincerely
-> Jan Marek
-> --=20
-> Ing. Jan Marek
-> University of South Bohemia
-> Academic Computer Centre
-> Phone: +420389032080
-> http://www.gnu.org/philosophy/no-word-attachments.cs.html
-
-
-
---=20
-Ing. Jan Marek
-University of South Bohemia
-Academic Computer Centre
-Phone: +420389032080
-http://www.gnu.org/philosophy/no-word-attachments.cs.html
-
---wgmsen6kpo5mh5li
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQQUTxPtzAjqwmJlmbXiFFMStj9tyQUCYRtclQAKCRDiFFMStj9t
-ycAHAP95RzG9xm7wcSHwAtai3bPfRGHUgS6JRajEcztTOzXjqAD/ZICLWmalcWc+
-/XchAzu3WS66H3WtogWCPA2Q406yLQI=
-=QMav
------END PGP SIGNATURE-----
-
---wgmsen6kpo5mh5li--
+Regards,
+Michael
