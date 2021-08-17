@@ -2,85 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9C03EE9F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B92163EE9FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235556AbhHQJeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 05:34:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234593AbhHQJeo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 05:34:44 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FDC6C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 02:34:12 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 11:34:08 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629192849;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IZ6fACXUc9apVwlz8xHJ8mN1EdefFeUDadYvHeqk1X4=;
-        b=3s8hAMQiMxa0vuIbKYwmkRIGf5kGXAurxh8BLI70WIR9mypWnYmZkIB/13g+wBQDJbJLmH
-        PQyQF5ETYv+GrOHioyMtiadHUKVFELfNY0HCkz1GKFpQXWBb6a2BHiMzAXun2SJyCSwZ+n
-        uA+jbQ+TpfovebZqJfOQ4qyhpbBEt2rWb/HY16Jui4OhgSfGDzpTJjsuVgQKNUnY0EzjZ5
-        0hQflpoZYWg/be0Hue5mF19r63WQKEhh7fnkUM0GZwjpuV1ohB7IV5lVN6ps94PemKnV9i
-        E9f5krH4zdz4jC52TfcnBiyi0Y0IwToD1rop0g2qQwuEDV99uCdaktcDB9Dtvg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629192849;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IZ6fACXUc9apVwlz8xHJ8mN1EdefFeUDadYvHeqk1X4=;
-        b=bIGH2L88+AIsWN+iUd3kfGlZWpIcGLdQNkfOtDLmSa5eYpElsoU8Q4iTmGYdJJayifC69g
-        vAWEvEJW849aIxCw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Sven Eckelmann <sven@narfation.org>, akpm@linux-foundation.org,
-        brouer@redhat.com, cl@linux.com, efault@gmx.de,
-        iamjoonsoo.kim@lge.com, jannh@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mgorman@techsingularity.net, penberg@kernel.org,
-        rientjes@google.com, tglx@linutronix.de,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH v4 35/35] mm, slub: convert kmem_cpu_slab protection to
- local_lock
-Message-ID: <20210817093408.zanfoybsbnrdnav7@linutronix.de>
-References: <2666777.vCjUEy5FO1@sven-desktop>
- <7329198a-2a4e-ebc2-abf8-f7f38f00d5e1@suse.cz>
- <20210817091224.nqnrro34cyb67chj@linutronix.de>
- <3da13f0a-2720-a38c-33a7-744668013390@suse.cz>
+        id S235438AbhHQJhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 05:37:04 -0400
+Received: from mga09.intel.com ([134.134.136.24]:57488 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234593AbhHQJhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 05:37:03 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="216030318"
+X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
+   d="scan'208";a="216030318"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 02:36:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
+   d="scan'208";a="593293551"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 17 Aug 2021 02:36:27 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 17 Aug 2021 12:36:27 +0300
+Date:   Tue, 17 Aug 2021 12:36:27 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Icenowy Zheng <icenowy@aosc.io>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: typec: tcpm: always rediscover when swapping DR
+Message-ID: <YRuDG78N2mB5w37p@kuha.fi.intel.com>
+References: <20210813043131.833006-1-icenowy@aosc.io>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3da13f0a-2720-a38c-33a7-744668013390@suse.cz>
+In-Reply-To: <20210813043131.833006-1-icenowy@aosc.io>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-17 11:31:56 [+0200], Vlastimil Babka wrote:
-> On 8/17/21 11:12 AM, Sebastian Andrzej Siewior wrote:
-> > On 2021-08-17 10:37:48 [+0200], Vlastimil Babka wrote:
-> >> OK reproduced. Thanks, will investigate.
-> > 
-> > With the local_lock at the top, the needed alignment gets broken for dbl
-> > cmpxchg.
+On Fri, Aug 13, 2021 at 12:31:31PM +0800, Icenowy Zheng wrote:
+> Currently, TCPM code omits discover when swapping to gadget, and assume
+> that no altmodes are available when swapping from gadget. However, we do
+> send discover when we get attached as gadget -- this leads to modes to be
+> discovered twice when attached as gadget and then swap to host.
 > 
-> Right. I wondered why the checks in __pcpu_double_call_return_bool
-> didn't trigger. They are VM_BUG_ON() so they did trigger after enabling
-> DEBUG_VM.
+> Always re-send discover when swapping DR, regardless of what change is
+> being made; and because of this, the assumption that no altmodes are
+> registered with gadget role is broken, and altmodes de-registeration is
+> always needed now.
+> 
+> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index b9bb63d749ec..ab6d0d51ee1c 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -4495,15 +4495,14 @@ static void run_state_machine(struct tcpm_port *port)
+>  		tcpm_set_state(port, ready_state(port), 0);
+>  		break;
+>  	case DR_SWAP_CHANGE_DR:
+> -		if (port->data_role == TYPEC_HOST) {
+> -			tcpm_unregister_altmodes(port);
+> +		tcpm_unregister_altmodes(port);
+> +		if (port->data_role == TYPEC_HOST)
+>  			tcpm_set_roles(port, true, port->pwr_role,
+>  				       TYPEC_DEVICE);
+> -		} else {
+> +		else
+>  			tcpm_set_roles(port, true, port->pwr_role,
+>  				       TYPEC_HOST);
+> -			port->send_discover = true;
+> -		}
+> +		port->send_discover = true;
+>  		tcpm_ams_finish(port);
+>  		tcpm_set_state(port, ready_state(port), 0);
+>  		break;
 
-Without the right debugging enabled
+Why is it necessary to do discovery with data role swap in general?
 
-| typedef struct {
-| #ifdef CONFIG_DEBUG_LOCK_ALLOC
-|         struct lockdep_map      dep_map;
-|         struct task_struct      *owner;
-| #endif
-| } local_lock_t;
+thanks,
 
-the struct is just empty.
-
-Sebastian
+-- 
+heikki
