@@ -2,90 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0823EE45D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 04:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0CE3EE48D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 04:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236550AbhHQC1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 22:27:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233592AbhHQC1N (ORCPT
+        id S233592AbhHQCnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 22:43:04 -0400
+Received: from m1397.mail.163.com ([220.181.13.97]:6521 "EHLO
+        m1397.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233528AbhHQCnD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 22:27:13 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0C2C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 19:26:41 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id u21-20020a17090a8915b02901782c36f543so2274723pjn.4
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 19:26:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=FWNnDIf7lR/tz2VZKV6IB/1yvEwFpEjUtpbKurshWbk=;
-        b=ASqMWxEKgXs1bymmIIZU51IAFsCKQaUQRblmjypHS3OWUnJb6FBLFQbAHMQ0ERCei3
-         SQRCkIbVH2H526xT+bV27fciVbykdeliBporLf9DiVCTCwzX2zO5k33oWviHxeAS5ED5
-         ulWpP20UPmlUd2cibBn6yqi5Fp+8vgfZP7wQlR6snfurHqgFCDMN5v12LKlzxZNn6Nra
-         29Q652TgfYkCXVJ2aIYMvwQVxHkgiweARBoWbt0T7exeZqBXOmWZCbAPJ/fR2MPHLBFC
-         pJa1WzYXZ8ee6dTGqjfcF2CM6Qp1ounbybw30loPmnjL0RE/EFLyW7LxMPMOeIVxYSL3
-         0IQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=FWNnDIf7lR/tz2VZKV6IB/1yvEwFpEjUtpbKurshWbk=;
-        b=KgH/jwb6ObzPVapVnj0rxeKh9UkF9yqs1I0LPE2GEEb9O7tGYsfIe1qD2qDco6Sg44
-         LbrBI6t2kZ+flWolaoejvSqRf9O2R+gJgciwTVv9dYnsec+zjsK8Bf1SfZtiTV9Bl5xU
-         TePZ8QL518tdVLCmOQcgoO9yG4SI9BB0C0QFsarQAeDBxzG6Xazpy3vVnDUx2u2Ukgey
-         brYMIQlQGr+k2vVnGN/GTbdu2UC/7ckz4cFHFtGqh70iWWgF77CLWgvb0XjbWMiRJ/Gv
-         OgqBtiWHfOaZkTEmwMVfIv0IW0CN2MXm04FHvueCLdR1rNnzJWdMmIOiOZU/kTRha6dM
-         oTeA==
-X-Gm-Message-State: AOAM5337JZdmpUVhQ9I0Fw9AnmrOYdGZYaS1LU5Nq/yl36d1S0DDQ6GK
-        usdjvIZB17FatiK/TjOFUYU=
-X-Google-Smtp-Source: ABdhPJxmu+4ykKpn6leZGqXVL7tzI6yNh973tz7VdUisKjXeWR6Gj1z8Zd7fL4/WHtiHTJTbCY2fkg==
-X-Received: by 2002:a17:90a:1616:: with SMTP id n22mr1111887pja.141.1629167200979;
-        Mon, 16 Aug 2021 19:26:40 -0700 (PDT)
-Received: from abhishek-Lenovo-ideapad-110-15AST ([103.58.155.246])
-        by smtp.gmail.com with ESMTPSA id q13sm391431pjq.10.2021.08.16.19.26.40
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 16 Aug 2021 19:26:40 -0700 (PDT)
-From:   Abhishek Anand Kulkarni <kulkarniabhishekanand@gmail.com>
-X-Google-Original-From: Abhishek Anand Kulkarni <kulkaraniabhishekanand@gmail.com>
-Date:   Tue, 17 Aug 2021 07:56:38 +0530
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kulkarniabhishekanand@gmail.com
-Subject: [PATCH] staging: r8188eu: Add spaces before and after logical '&'
-Message-ID: <20210817022628.GA6595@abhishek-Lenovo-ideapad-110-15AST>
+        Mon, 16 Aug 2021 22:43:03 -0400
+X-Greylist: delayed 906 seconds by postgrey-1.27 at vger.kernel.org; Mon, 16 Aug 2021 22:43:00 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=2l0RO
+        Ftycxsn8LbV9SdJRrGWPtNvqewxqPbIBIKUQFw=; b=es1H6Gzf4tvzQKv/UGeM+
+        5JVl3UOmPd8Yxoc/vRW2Gyq2bvGZZdqHbZ38ZktWQpLeI5f1Pk59NU1TAFO4KM8v
+        ufugOF0/TmsT1Q+UTUxLylbgcEmSBxWKVEKU3ww7NH/uu4aQH8QZzb8XZ/2Xsn6G
+        znwDVC0QMw1lAOe6F0iZUA=
+Received: from slark_xiao$163.com ( [223.104.68.60] ) by
+ ajax-webmail-wmsvr97 (Coremail) ; Tue, 17 Aug 2021 10:27:05 +0800 (CST)
+X-Originating-IP: [223.104.68.60]
+Date:   Tue, 17 Aug 2021 10:27:05 +0800 (CST)
+From:   "Slark Xiao" <slark_xiao@163.com>
+To:     "Greg KH" <gregkh@linuxfoundation.org>
+Cc:     "Reinhard Speyerer" <rspmn@arcor.de>, johan@kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re:Re: Re: Re: [PATCH] [V2,1/1]USB: serial: option: add Foxconn
+ T77W175 composition 0x901d
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210622(1d4788a8)
+ Copyright (c) 2002-2021 www.mailtech.cn 163com
+In-Reply-To: <YRpJN414JQyfyEGo@kroah.com>
+References: <20210816035404.4210-1-slark_xiao@163.com>
+ <YRoqAJmGBpV/OuZL@arcor.de>
+ <d1d16fd.6f62.17b4e3ffa26.Coremail.slark_xiao@163.com>
+ <YRot+wBa6v529Z7q@kroah.com>
+ <278bcd0d.7189.17b4e479a3a.Coremail.slark_xiao@163.com>
+ <YRpJN414JQyfyEGo@kroah.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Message-ID: <ba9a424.f5f.17b51ef0b9d.Coremail.slark_xiao@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: YcGowAD3_+t5HhthHDrCAA--.29429W
+X-CM-SenderInfo: xvod2y5b0lt0i6rwjhhfrp/1tbiMAfxZFWByq46TwABsm
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix Checkpatch.pl warning to add space before and after logical '&'
-operator
-
-Signed-off-by: Abhishek Anand Kulkarni <kulkaraniabhishekanand@gmail.com>
----
- drivers/staging/r8188eu/core/rtw_ioctl_set.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/r8188eu/core/rtw_ioctl_set.c b/drivers/staging/r8188eu/core/rtw_ioctl_set.c
-index a7f966a..570f25f 100644
---- a/drivers/staging/r8188eu/core/rtw_ioctl_set.c
-+++ b/drivers/staging/r8188eu/core/rtw_ioctl_set.c
-@@ -630,7 +630,7 @@ u8 rtw_set_802_11_add_key(struct adapter *padapter, struct ndis_802_11_key *key)
- 		struct ndis_802_11_wep *wep = &padapter->securitypriv.ndiswep;
- 
- 		wep->Length = len;
--		keyindex = key->KeyIndex&0x7fffffff;
-+		keyindex = key->KeyIndex & 0x7fffffff;
- 		wep->KeyIndex = keyindex ;
- 		wep->KeyLength = key->KeyLength;
- 
--- 
-2.7.4
-
+CgoKCgoKCgoKCgoKCgoKCkF0IDIwMjEtMDgtMTYgMTk6MTc6MTEsICJHcmVnIEtIIiA8Z3JlZ2to
+QGxpbnV4Zm91bmRhdGlvbi5vcmc+IHdyb3RlOgo+T24gTW9uLCBBdWcgMTYsIDIwMjEgYXQgMDU6
+MjU6MjBQTSArMDgwMCwgU2xhcmsgWGlhbyB3cm90ZToKPj4gQXQgMjAyMS0wOC0xNiAxNzoyMDo1
+OSwgIkdyZWcgS0giIDxncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZz4gd3JvdGU6Cj4+ID5PbiBN
+b24sIEF1ZyAxNiwgMjAyMSBhdCAwNToxNzowMFBNICswODAwLCBTbGFyayBYaWFvIHdyb3RlOgo+
+PiA+PiAgIFNvIHNob3VsZCBJIHVzZSBVU0JfREVWSUNFX0lOVEVSRkFDRV9OVU1CRVIoUVVBTENP
+TU1fVkVORE9SX0lELCAweDkwMWQsIDB4MDApIHRvIGJpbmQgRGlhZyBwb3J0IG9ubHk/Cj4+ID4K
+Pj4gPldoeSBpcyB0aGlzIGRldmljZSB1c2luZyB0aGUgUVVBTENPTU0gdmVuZG9yIGlkIGFueXdh
+eT8gIElzIHRoaXMgYWxsb3dlZAo+PiA+YnkgUXVhbGNvbW0/Cj4+ID4KPj4gPnRoYW5rcywKPj4g
+Pgo+PiA+Z3JlZyBrLWgKPj4gCj4+IEhpIEdyZWcsCj4+ICAgT3VyIHByb2R1Y3QgYXJlIGRlc2ln
+bmVkIGJhc2VkIG9uIFF1YWxjb21tIFNEWDU1IHBsYXRmb3JtLiBTbyBpdCBzdGlsbCBzdXBwb3J0
+IFF1YWxjb21tIHZlbmRvciBJRC4KPj4gICBJIHRoaW5rIHRoZXJlIGlzIG5vIGluZnJpbmdlbWVu
+dCBhYm91dCB0aGlzIElEIGNvbWJvLgo+Cj5EbyB5b3UgaGF2ZSBwZXJtaXNzaW9uIGZyb20gUXVh
+bGNvbW0gdG8gdXNlIHRoZWlyIHZlbmRvciBpZD8gIEkga25vdwo+c29tZSB2ZW5kb3JzIGdldCB2
+ZXJ5IHVwc2V0IGFib3V0IHRoaXMuLi4KPgo+V2h5IG5vdCB1c2UgeW91ciBvd24gdmVuZG9yIGlk
+Pwo+Cj50aGFua3MsCj4KPmdyZWcgay1oCgpIaSBHcmVnLAogICBBcyBRdWFsY29tbSBtYWlubHkg
+cHJvdmlkZSBzZXJ2aWNlIHRvIHRoZWlyIGN1c3RvbWVyLCBsaWtlIFNhbXN1bmcsIEFwcGxlLCBI
+dWF3ZWksIFF1ZWN0ZWwsIEZveGNvbm4sIFNpZXJyYSBhbmQgc28gb24sIHNvIEkgYmVsaWV2ZSBh
+bGwgYXZhaWxhYmxlIFZJRC9QSURzIGFyZSBhbGxvd2VkIHRvIHVzZS4gCiAgIEkgYWxzbyBjaGVj
+a2VkIHdobyBpcyB1c2luZyBRdWFsY29tbSdzIFZJRCBpbiB0aGUgd2hvbGUga2VybmVsLCBhbmQg
+SSBmb3VuZCBvbmx5IHNvbWUgb2xkIHBsYXRmb3JtIChHb2JpIDFLLDJLLDNLIHdoaWNoIGRvbid0
+IGRvIGFueSB1cGRhdGUgZm9yIGFsbW9zdCBtb3JlIHRoYW4gMTAgeWVhcnMpIGluIHFjc2VyaWFs
+LmMgYW5kIFpURSwgU0lNY29tLCBRdWVjdGVsIGluIG9wdGlvbi5jIGFyZSB1c2luZyB0aGlzIFZJ
+RC4gU2VlbXMgUXVhbGNvbW0gd29uJ3QgZG8gdGhpcyB1cGRhdGUgaW4gdGhlIGtlcm5lbCBzaWRl
+IGJ5IHRoZW1zZWx2ZXMobGV0J3Mgc2F5IHNvbWUgbmV3IFBJRCwgOTAxeCw5MDJ4LDkwM3gsOTA0
+eCw5MDV4Li4uOTBGeCwgYW5kIDkxeHgpLiAKICAgQWJvdXQgdGhlIHF1ZXN0aW9uIHdoeSBub3Qg
+dXNlIG91ciBvd24gVklELCBiZWNhdXNlIHRoaXMgUENJRStVU0IgbW9kZSBpcyBmb3IgZGVidWcg
+cHVycG9zZS4gV2UgbmVlZCB0byBrZWVwIGEgY29tbW9uIGRlYnVnIHNldHRpbmdzIGZvciBib3Ro
+IExpbnV4IGFuZCBXaW5kb3dzIHBsYXRmb3JtLCBhbHNvIGZvciBhbGwgb3VyIGN1c3RvbWVycyBs
+aWtlIExlbm92bywgRGVsbCwgSFAsIFRlbGl0LiAKICAgSG9wZSB5b3UgY2FuIHVuZGVyc3RhbmQg
+dGhhdC4KClRoYW5rcwpTbGFyawo=
