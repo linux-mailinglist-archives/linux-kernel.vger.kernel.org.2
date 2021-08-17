@@ -2,84 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CD753EF3F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F53B3EF3EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234120AbhHQUXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 16:23:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234601AbhHQUXK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 16:23:10 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFDE0C06129D;
-        Tue, 17 Aug 2021 13:22:31 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id i9so22992294lfg.10;
-        Tue, 17 Aug 2021 13:22:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tdArbszDF0w5Eojonc3/z7aHZTmugHtPfpWzsgEPiog=;
-        b=DaWtZ1GqM4zkpnwiMS9GIDx0jpdrMeJ9ObnsMHPNwRq5WBqzIOJStvdW9Z+tUebaOM
-         IVvyH6NaqltMsUwVD5mrr+o+d2CLVE1MEKfEDkfcmithMJOUHkD/tq8IW4MejrfbSMI2
-         dLJeiTJ0Dm5ZvkIlb4QFVPI8GyR71Gkv3nHKzNSubYtZ5H4zyGqlY55o2t5aQPs5ucEP
-         WTsI8NRex5zu3hXrCmOi0cjAKVMKjqqTOB3of6gy/Aqur37VjRyxBgu+v9HG3i5pkoU1
-         tb2mx3z2PndeeEhCMoEXEIikuuPbWmeMWnvx7TZMgxAy1kMbvB2etwVGVkrRnIjfnvdq
-         8AAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tdArbszDF0w5Eojonc3/z7aHZTmugHtPfpWzsgEPiog=;
-        b=P/L1BJgbE0zZMoy04pNyic4QrTO0nRWDUaPkqNRgDfgT89ZFFpX0v7lOjU02xgYECr
-         Qu+D1QAvseAz82CCEtxIcpT43GNXBswHQtO87KfqO4xAMfMffJq7mHP5/snzaeTMH+XQ
-         tYMgCQuiRnWSen4Tw3NHC8xfidr8OIer97NosWHc27mwCEeuiAIPQPd7uT12OEQlKr9w
-         7WhKRpCr4JBPKxJIYSOpToQfwaI3Bbd51o/ZlEqWROWkc2DVA04q8n1xkD1hGzSfsojC
-         Y4PDQO69y8t2exUS+qlk1ljudpOgw+x04eYd5CJXnJV7TSSpfKdlS185KGCADYRW45hc
-         ebeA==
-X-Gm-Message-State: AOAM532eEppGPTu42c+UXBePJCKU03eOiyIcKi8gtMBI6uyFg0NnsKhV
-        HPxN9MXG0vk8h9yYK/AQiDUYCgxcKR7H/8ezjl4=
-X-Google-Smtp-Source: ABdhPJxGQcT9nkUnf9D6jfUmhvH074lalPuRiL4/yEaY5ZQBcAbNGbPO7prV5tDUlhPuXcsaVU6MwQLFzUMStGTqNbw=
-X-Received: by 2002:a05:6512:ac3:: with SMTP id n3mr3585311lfu.583.1629231750178;
- Tue, 17 Aug 2021 13:22:30 -0700 (PDT)
+        id S233528AbhHQUXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 16:23:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235959AbhHQUXC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 16:23:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 163E0600AA;
+        Tue, 17 Aug 2021 20:22:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629231748;
+        bh=xM8Fq7ZMWQEXCu1xpmZ+0XG+A2I9ImRmgv7hwNwGuQI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hP5RveA2cBN/vePeFX/3i5KSAEeAFUEIjbdXFfpFKhN7lMOPyeqWal/bZ5Ua+arp6
+         yCJtZ+ktYJlvF6o1pbjd8kRs4hp/g3CoeCjeA8RDkR2DJJrhI+pxDrvbl1gjIZi+d2
+         s7LxQuMW+C/Zz1ve8NQfjPos8mBzxvhMT+bTMtuKgKAp2W6rI/9yDm1h1cweO0OJEQ
+         KIwzfNQ7DP7y0BAf53xn9ceze18Kn5P66emhK5eH9iUn57S3pCfYnj4CGcpQsbujlD
+         TKHYq31Lr9SIL+sQ+Bgw/GCtiZac0kGWlzly93YLr2avhtBRPwMA5cTY/mA/dKCdlI
+         JhyziatJezU4Q==
+Date:   Tue, 17 Aug 2021 22:22:25 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, arnd@arndb.de,
+        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
+        yu1.wang@intel.com, conghui.chen@intel.com,
+        viresh.kumar@linaro.org, stefanha@redhat.com,
+        gregkh@linuxfoundation.org, vincent.guittot@linaro.org,
+        alex.bennee@linaro.org, jiedeng@alumni.sjtu.edu.cn
+Subject: Re: [PATCH v15] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <YRwagcZ8SUCsncEA@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, arnd@arndb.de,
+        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
+        yu1.wang@intel.com, conghui.chen@intel.com, viresh.kumar@linaro.org,
+        stefanha@redhat.com, gregkh@linuxfoundation.org,
+        vincent.guittot@linaro.org, alex.bennee@linaro.org,
+        jiedeng@alumni.sjtu.edu.cn
+References: <bcf2fb9bbe965862213f27e05f87ffc91283c0c5.1627018061.git.jie.deng@intel.com>
 MIME-Version: 1.0
-References: <20210817080118.9201-1-lukas.bulwahn@gmail.com>
-In-Reply-To: <20210817080118.9201-1-lukas.bulwahn@gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Tue, 17 Aug 2021 17:22:19 -0300
-Message-ID: <CAOMZO5CaH6GQbMaXNj+Zg_=hTXtQSoHb7DfHeqfxBmOvzvkPWA@mail.gmail.com>
-Subject: Re: [PATCH] gpio: remove the obsolete MX35 3DS BOARD MC9S08DZ60 GPIO functions
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wqGf7iqXPvdRtbI6"
+Content-Disposition: inline
+In-Reply-To: <bcf2fb9bbe965862213f27e05f87ffc91283c0c5.1627018061.git.jie.deng@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukas,
 
-On Tue, Aug 17, 2021 at 5:01 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> Commit e1324ece2af4 ("ARM: imx: Remove i.MX35 board files") removes the
-> config MACH_MX35_3DS in arch/arm/mach-imx/Kconfig.
->
-> Hence, since then, the MX35 3DS BOARD MC9S08DZ60 GPIO functions are dead
-> code as its config GPIO_MC9S08DZ60 depends on the config MACH_MX35_3DS.
->
-> Luckily, ./scripts/checkkconfigsymbols.py warns on non-existing configs:
->
-> MACH_MX35_3DS
-> Referencing files: drivers/gpio/Kconfig
->
-> Remove the obsolete MX35 3DS BOARD MC9S08DZ60 GPIO functions.
->
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+--wqGf7iqXPvdRtbI6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+On Fri, Jul 23, 2021 at 01:44:35PM +0800, Jie Deng wrote:
+> Add an I2C bus driver for virtio para-virtualization.
+>=20
+> The controller can be emulated by the backend driver in
+> any device model software by following the virtio protocol.
+>=20
+> The device specification can be found on
+> https://lists.oasis-open.org/archives/virtio-comment/202101/msg00008.html.
+>=20
+> By following the specification, people may implement different
+> backend drivers to emulate different controllers according to
+> their needs.
+>=20
+> Co-developed-by: Conghui Chen <conghui.chen@intel.com>
+> Signed-off-by: Conghui Chen <conghui.chen@intel.com>
+> Signed-off-by: Jie Deng <jie.deng@intel.com>
+> Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Tested-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+
+Okay, with rc6 being released, I won't wait for an immutable branch
+anymore. I applied this now and we will see if there will be a merge
+conflict. If so, it will be trivial to handle, I'd think. So:
+
+Applied to for-next, thanks!
+
+
+--wqGf7iqXPvdRtbI6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmEcGoEACgkQFA3kzBSg
+Kbab5BAAj+hmjTG/rpYyTFk9GZoqqGBBlIr/k97mBENtBe9nrA3TK3zkdoZRZAur
+F02VXTvcq2l/oXu5Od4wQVqMF67NRkOYKldOdN+84BQ0/9P2i7PrBhX0UrMyLk1v
+tIMGdi2ObAUwL+7/9VGCx1hleQyjp2RmDOMqIwSZr5j4cGH6lMTRR1qnwS5J8Xxe
+QRWLN7Qk+G/5k8ODa5aFMhbWQxijvtMx0eqna8Dn6AkMoXaU8F/hFxLMWDwpjxci
+FMuhQ4qSae5F89HbHmG0CZzF8ae8clExpm9pB4lVlFCU5pVirR5mYBBeWkiqQ1ZS
+JmllebetdqqUzYZVQn3bAVepxSefet9MJqGxSelFnfASJrGCqKpIOX0SXzZ1bH/h
+qm4jLsqkhCsqA2XfRWA9wINpX/S+oyJ4sds3HfzaQ/daA8C683jWPYnyCWksdOWD
+LlbqEm06v7MTsjGsQFQSP9tfTag0L3IHHxK9wneUfUF60CTvOlXkRscINyrVUUse
+epeOFzeheiuEGCMpaTkbMcKDI+gIeeBoDSFXeo1oOXyOE1WtCZewz73H+a8X+a3+
+j9SQFoq0u3WqjSiZLSMZFzrsR1hBYW2V6aSaCE4qxx7nOFRGkwazkOTNJsW76ZO0
+iptjFEPzgvHUOXMQLGGSh3aoqSfo3H90AZCqkGZFYD4mYPz5w6s=
+=c2a7
+-----END PGP SIGNATURE-----
+
+--wqGf7iqXPvdRtbI6--
