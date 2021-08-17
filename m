@@ -2,243 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5523EE6D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33AA53EE6DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238301AbhHQGqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 02:46:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27296 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234491AbhHQGqf (ORCPT
+        id S238270AbhHQGrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 02:47:18 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:8431 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230094AbhHQGrR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 02:46:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629182762;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lXzAWi/HXh25vel2OolK4VZSzbIL75BQ1OCpFeAQ1hU=;
-        b=Zbqb7ukPfaaotIV3Jag4Y04izWY4lydWSHm1jvSYX5lS0Rme4iGXJ79wwVw1WdXj7lTrOy
-        txGJSnywndcQ4K5I1K8Sxp98G5vUrfZHqauryjUm6ou/mWWwnzaUaoD3oRsH61ma0f1cup
-        5uWmRXbbeKoPDntHxefMxBY6wekzZdw=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-529-q80nXRYCNWSrmZyKLMDF4w-1; Tue, 17 Aug 2021 02:46:00 -0400
-X-MC-Unique: q80nXRYCNWSrmZyKLMDF4w-1
-Received: by mail-ej1-f71.google.com with SMTP id h22-20020a170906719600b005bc74a33a63so1711353ejk.8
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:46:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lXzAWi/HXh25vel2OolK4VZSzbIL75BQ1OCpFeAQ1hU=;
-        b=WUOTOIv9jkAq1f4UoCLIQLNwsLFhch1Hrj64IKB7DrqlTlNxCgJt7OCAic73+hyuej
-         PHVolb2bVF2hP+nY++TruRR1azMwCzXWmGraPzZq9eckqLQd0Nq6rW/1GBNZQfLYyhZ+
-         6M2LzIDxa/md/c51st6khilDtjCKzufrmpIdXcUqB9NV2dVJc/uz7OrrMgSSuz+vxevT
-         MiccHnJJdHJ3uTkVZ3IINFunMLVikE5EHtV2cGhmPEjMkTWGqeNKjSSVHIDs5FJE2r9Y
-         V7V8lZeRg4D8eE9SdINdFnEUNuxRPDfp1uxIN0HWpx/Ho/Zh80U8I7S0UI9l47gRw4PX
-         3CdA==
-X-Gm-Message-State: AOAM5335GARtCZWKddYQStOR8ZeMf9r1BfMTTIGcmg7+BtPWN8cpOELl
-        r7u58464d3Y+IAP5PVN7aWX1NMmot0JpP7xBPiYSZRXdJCT8x8ZUWfrLr2CZa3TxGO5OEodr1hd
-        L+pbUJZ2cdhGfj+njR3Ml2RKL
-X-Received: by 2002:a05:6402:2789:: with SMTP id b9mr2370510ede.44.1629182759254;
-        Mon, 16 Aug 2021 23:45:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzH2wWiYROA/dfLu4hqPoGlGhFo7q8W4+f9VoW35hDbwGSiGiLOK+rAIUjANWYFYXWhk+AKuA==
-X-Received: by 2002:a05:6402:2789:: with SMTP id b9mr2370494ede.44.1629182759049;
-        Mon, 16 Aug 2021 23:45:59 -0700 (PDT)
-Received: from redhat.com ([2.55.150.133])
-        by smtp.gmail.com with ESMTPSA id qh2sm337553ejb.75.2021.08.16.23.45.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 23:45:58 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 02:45:54 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, willemb@google.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ivan@prestigetransportation.com,
-        xiangxia.m.yue@gmail.com
-Subject: Re: [PATCH net] virtio-net: use NETIF_F_GRO_HW instead of NETIF_F_LRO
-Message-ID: <20210817023118-mutt-send-email-mst@kernel.org>
-References: <20210817020338.6400-1-jasowang@redhat.com>
+        Tue, 17 Aug 2021 02:47:17 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GphKr3tMgz87qN;
+        Tue, 17 Aug 2021 14:42:40 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 17 Aug 2021 14:46:42 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 17 Aug 2021 14:46:41 +0800
+Subject: Re: [PATCH 5.10 00/98] 5.10.60-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210816171400.936235973@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <ba83dbf8-499b-bcb8-59d3-b7181cc0e62d@huawei.com>
+Date:   Tue, 17 Aug 2021 14:46:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210817020338.6400-1-jasowang@redhat.com>
+In-Reply-To: <20210816171400.936235973@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patch is good. Suggest some tweaks to the commit log.
 
-On Tue, Aug 17, 2021 at 10:03:38AM +0800, Jason Wang wrote:
-> Commit a02e8964eaf92 ("virtio-net: ethtool configurable LRO") tries to
-> advertise LRO on behalf of the guest offloading features and allow the
 
-tries to advertise -> advertises
-
-that part actually works.
-
-allow -> allows
-
-on behalf of features is really weird. maybe "maps"?
-
-> administrator to enable and disable those features via ethtool.
+On 2021/8/17 1:14, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.60 release.
+> There are 98 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> This may lead several issues:
-
-may lead->lead to
-
+> Responses should be made by Wed, 18 Aug 2021 17:13:38 +0000.
+> Anything received after that time might be too late.
 > 
-> - For the device that doesn't support control guest offloads, the
->   "LRO" can't be disabled so we will get a warn in the
-
-warn -> warning
-
->   dev_disable_lro()
-
-.. when turning off LRO or when enabling forwarding bridging etc.
-
-> - For the device that have the control guest offloads, the guest
-
-have the -> supports
-
->   offloads were disabled in the case of bridge etc
-
-etc -> forwarding etc
-
-> which may slow down
-
-were -> are
-
-may slow -> slows
-
->   the traffic.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.60-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
 > 
-> Fixing this by using NETIF_F_GRO_HW instead. Though the spec does not
-> guaranteed to be re-segmented as original explicitly now, we can add
-
-guaranteed -> guarantee
-
-> that to the spec
-
-I would add:
-
-Further, we never advertised LRO historically before a02e8964eaf92
-("virtio-net: ethtool configurable LRO") and so bridged/forwarded
-configs effectively relied on virtio receive offloads being GRO.
-
-
-
-
-> and then we can catch the bad configuration and
-> setup.
-
-Don't know what does this part mean. How would we catch it?
-With a new flag? Let's say so.
-
+> thanks,
 > 
-> Fixes: a02e8964eaf92 ("virtio-net: ethtool configurable LRO")
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
-
-
-
-Proposed rewritten commit log:
-
-===
-[PATCH net] virtio-net: use NETIF_F_GRO_HW instead of NETIF_F_LRO
-
-Commit a02e8964eaf92 ("virtio-net: ethtool configurable LRO")
-maps LRO to virtio guest offloading features and allows the
-administrator to enable and disable those features via ethtool.
- 
-This leads to several issues:
-
-
-- For a device that doesn't support control guest offloads, the "LRO"
-  can't be disabled triggering WARN in dev_disable_lro() when turning
-  off LRO or when enabling forwarding bridging etc.
-
-- For a device that supports control guest offloads, the guest
-  offloads are disabled in cases of bridging, forwarding etc
-  slowing down the traffic.
- 
-Fix this by using NETIF_F_GRO_HW instead. Though the spec does not
-guarantee packets to be re-segmented as the original ones,
-we can add that to the spec, possibly with a flag for devices to
-differentiate between GRO and LRO.
-
-Further, we never advertised LRO historically before a02e8964eaf92
-("virtio-net: ethtool configurable LRO") and so bridged/forwarded
-configs effectively always relied on virtio receive offloads behaving
-like GRO - thus even if this breaks any configs it is at least not
-a regression.
-
-Fixes: a02e8964eaf92 ("virtio-net: ethtool configurable LRO")
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-Reported-by: Ivan <ivan@prestigetransportation.com>
-Tested-by: Ivan <ivan@prestigetransportation.com>
-Signed-off-by: Jason Wang <jasowang@redhat.com>
-
-===
-
-
-> ---
->  drivers/net/virtio_net.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
+> greg k-h
 > 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 0416a7e00914..10c382b08bce 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -63,7 +63,7 @@ static const unsigned long guest_offloads[] = {
->  	VIRTIO_NET_F_GUEST_CSUM
->  };
->  
-> -#define GUEST_OFFLOAD_LRO_MASK ((1ULL << VIRTIO_NET_F_GUEST_TSO4) | \
-> +#define GUEST_OFFLOAD_GRO_HW_MASK ((1ULL << VIRTIO_NET_F_GUEST_TSO4) | \
->  				(1ULL << VIRTIO_NET_F_GUEST_TSO6) | \
->  				(1ULL << VIRTIO_NET_F_GUEST_ECN)  | \
->  				(1ULL << VIRTIO_NET_F_GUEST_UFO))
-> @@ -2481,7 +2481,7 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
->  	        virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_ECN) ||
->  		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_UFO) ||
->  		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_CSUM))) {
-> -		NL_SET_ERR_MSG_MOD(extack, "Can't set XDP while host is implementing LRO/CSUM, disable LRO/CSUM first");
-> +		NL_SET_ERR_MSG_MOD(extack, "Can't set XDP while host is implementing GRO_HW/CSUM, disable GRO_HW/CSUM first");
->  		return -EOPNOTSUPP;
->  	}
->  
-> @@ -2612,15 +2612,15 @@ static int virtnet_set_features(struct net_device *dev,
->  	u64 offloads;
->  	int err;
->  
-> -	if ((dev->features ^ features) & NETIF_F_LRO) {
-> +	if ((dev->features ^ features) & NETIF_F_GRO_HW) {
->  		if (vi->xdp_enabled)
->  			return -EBUSY;
->  
-> -		if (features & NETIF_F_LRO)
-> +		if (features & NETIF_F_GRO_HW)
->  			offloads = vi->guest_offloads_capable;
->  		else
->  			offloads = vi->guest_offloads_capable &
-> -				   ~GUEST_OFFLOAD_LRO_MASK;
-> +				   ~GUEST_OFFLOAD_GRO_HW_MASK;
->  
->  		err = virtnet_set_guest_offloads(vi, offloads);
->  		if (err)
-> @@ -3100,9 +3100,9 @@ static int virtnet_probe(struct virtio_device *vdev)
->  		dev->features |= NETIF_F_RXCSUM;
->  	if (virtio_has_feature(vdev, VIRTIO_NET_F_GUEST_TSO4) ||
->  	    virtio_has_feature(vdev, VIRTIO_NET_F_GUEST_TSO6))
-> -		dev->features |= NETIF_F_LRO;
-> +		dev->features |= NETIF_F_GRO_HW;
->  	if (virtio_has_feature(vdev, VIRTIO_NET_F_CTRL_GUEST_OFFLOADS))
-> -		dev->hw_features |= NETIF_F_LRO;
-> +		dev->hw_features |= NETIF_F_GRO_HW;
->  
->  	dev->vlan_features = dev->features;
->  
-> -- 
-> 2.25.1
 
+Tested on arm64 and x86 for 5.10.60-rc2,
+
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.10.y
+Version: 5.10.60-rc2
+Commit: f82f3c334fcc9444324972565f2fd882a6315d85
+Compiler: gcc version 7.3.0 (GCC)
+
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8907
+passed: 8907
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8907
+passed: 8907
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
