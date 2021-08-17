@@ -2,92 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55DAA3EEB5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 13:09:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B12533EEB98
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 13:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236594AbhHQLKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 07:10:12 -0400
-Received: from ZXSHCAS2.zhaoxin.com ([203.148.12.82]:10243 "EHLO
-        ZXSHCAS2.zhaoxin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231515AbhHQLKL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 07:10:11 -0400
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS2.zhaoxin.com
- (10.28.252.162) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Tue, 17 Aug
- 2021 19:09:35 +0800
-Received: from [10.122.79.217] (221.11.61.182) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Tue, 17 Aug
- 2021 19:09:33 +0800
-Date:   Tue, 17 Aug 2021 19:09:28 +0800
-From:   <tonywwang-oc@zhaoxin.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-CC:     <a.zummo@towertech.it>, <linux-rtc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <TimGuo-oc@zhaoxin.com>,
-        <CooperYan@zhaoxin.com>, <QiyuanWang@zhaoxin.com>,
-        <HerryYang@zhaoxin.com>, <CobeChen@zhaoxin.com>,
-        <YanchenSun@zhaoxin.com>
-Subject: Re: [PATCH] rtc: Fix set RTC time delay 500ms on some Zhaoxin SOCs
-User-Agent: K-9 Mail for Android
-In-Reply-To: <YRpb4Fey2lM3aOAw@piout.net>
-References: <1629121638-3246-1-git-send-email-TonyWWang-oc@zhaoxin.com> <YRogod0HB4d7Og4E@piout.net> <a4b6b0b4-9aa5-9a75-e523-0fd7656b82cf@zhaoxin.com> <YRpb4Fey2lM3aOAw@piout.net>
-Message-ID: <7EA395FF-EB66-4274-9EDE-EC28450A0259@zhaoxin.com>
+        id S239723AbhHQL0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 07:26:13 -0400
+Received: from mga07.intel.com ([134.134.136.100]:22522 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231515AbhHQL0L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 07:26:11 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="279788857"
+X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
+   d="scan'208";a="279788857"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 04:25:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
+   d="scan'208";a="449226687"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by fmsmga007.fm.intel.com with ESMTP; 17 Aug 2021 04:25:31 -0700
+Date:   Tue, 17 Aug 2021 13:10:47 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Feng zhou <zhoufeng.zf@bytedance.com>
+Cc:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        jeffrey.t.kirsher@intel.com, magnus.karlsson@intel.com,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        duanxiongchun@bytedance.com, songmuchun@bytedance.com,
+        zhouchengming@bytedance.com, chenying.kernel@bytedance.com,
+        zhengqi.arch@bytedance.com, wangdongdong.6@bytedance.com
+Subject: Re: [PATCH] ixgbe: Fix NULL pointer dereference in ixgbe_xdp_setup
+Message-ID: <20210817111047.GA8143@ranger.igk.intel.com>
+References: <20210817075407.11961-1-zhoufeng.zf@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [221.11.61.182]
-X-ClientProxiedBy: ZXSHCAS2.zhaoxin.com (10.28.252.162) To
- zxbjmbx1.zhaoxin.com (10.29.252.163)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210817075407.11961-1-zhoufeng.zf@bytedance.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 17, 2021 at 03:54:07PM +0800, Feng zhou wrote:
+> From: Feng Zhou <zhoufeng.zf@bytedance.com>
+> 
+> The ixgbe driver currently generates a NULL pointer dereference with
+> some machine (online cpus < 63). This is due to the fact that the
+> maximum value of num_xdp_queues is nr_cpu_ids. Code is in
+> "ixgbe_set_rss_queues"".
 
+That's a good catch, but we should fix set channels callback so that it
+will not allow a setting of queues to be higher than the
+num_online_cpus().
 
-On August 16, 2021 8:36:48 PM GMT+08:00, Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
->On 16/08/2021 18:03:13+0800, Tony W Wang-oc wrote:
->> 
->> On 16/08/2021 16:24, Alexandre Belloni wrote:
->> > Hello,
->> > 
->> > On 16/08/2021 21:47:18+0800, Tony W Wang-oc wrote:
->> >> When the RTC divider is changed from reset to an operating time
->base,
->> >> the first update cycle should be 500ms later. But on some Zhaoxin
->SOCs,
->> >> this first update cycle is one second later.
->> >>
->> >> So set RTC time on these Zhaoxin SOCs will causing 500ms delay.
->> >>
->> > 
->> > Can you explain what is the relationship between writing the
->divider and
->> > the 500ms delay?
->> >> Isn't the issue that you are using systohc and set_offset_nsec is
->set to
->> > NSEC_PER_SEC / 2 ?
->> > 
->> No.
->> When using #hwclock -s to set RTC time and set_offset_nsec is
->> NSEC_PER_SEC / 2, the function mc146818_set_time() requires the first
->> update cycle after RTC divider be changed from reset to an operating
->> mode is 500ms as the MC146818A spec specified. But on some Zhaoxin
->SOCs,
->> the first update cycle of RTC is one second later after RTC divider
->be
->> changed from reset to an operating mode. So the first update cycle
->after
->> RTC divider be changed from reset to an operation mode on These SOCs
->> will causing 500ms delay with current mc146818_set_time()
->implementation.
->> 
->
->What happens with hwclock --delay=0 -s ?
+Please also include the tree in the patch subject that you're directing
+the patch to.
 
-With "hwclock --delay=0 -s" still have this problem. Actually, this 500ms delay caused by writing the RTC time on these Zhaoxin SOCs.
-As I've tested, with hwclock --delay=0 -w can fix it too. 
+I'd be also thankful if you Cc me on Intel XDP related patches.
+Thanks!
 
-Sincerely
-TonyWWang-oc
-
+> 
+> Here's how the problem repeats itself:
+> Some machine (online cpus < 63), And user set num_queues to 63 through
+> ethtool. Code is in the "ixgbe_set_channels",
+> adapter->ring_feature[RING_F_FDIR].limit = count;
+> It becames 63.
+> When user use xdp, "ixgbe_set_rss_queues" will set queues num.
+> adapter->num_rx_queues = rss_i;
+> adapter->num_tx_queues = rss_i;
+> adapter->num_xdp_queues = ixgbe_xdp_queues(adapter);
+> And rss_i's value is from
+> f = &adapter->ring_feature[RING_F_FDIR];
+> rss_i = f->indices = f->limit;
+> So "num_rx_queues" > "num_xdp_queues", when run to "ixgbe_xdp_setup",
+> for (i = 0; i < adapter->num_rx_queues; i++)
+> 	if (adapter->xdp_ring[i]->xsk_umem)
+> lead to panic.
+> Call trace:
+> [exception RIP: ixgbe_xdp+368]
+> RIP: ffffffffc02a76a0  RSP: ffff9fe16202f8d0  RFLAGS: 00010297
+> RAX: 0000000000000000  RBX: 0000000000000020  RCX: 0000000000000000
+> RDX: 0000000000000000  RSI: 000000000000001c  RDI: ffffffffa94ead90
+> RBP: ffff92f8f24c0c18   R8: 0000000000000000   R9: 0000000000000000
+> R10: ffff9fe16202f830  R11: 0000000000000000  R12: ffff92f8f24c0000
+> R13: ffff9fe16202fc01  R14: 000000000000000a  R15: ffffffffc02a7530
+> ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+>  7 [ffff9fe16202f8f0] dev_xdp_install at ffffffffa89fbbcc
+>  8 [ffff9fe16202f920] dev_change_xdp_fd at ffffffffa8a08808
+>  9 [ffff9fe16202f960] do_setlink at ffffffffa8a20235
+> 10 [ffff9fe16202fa88] rtnl_setlink at ffffffffa8a20384
+> 11 [ffff9fe16202fc78] rtnetlink_rcv_msg at ffffffffa8a1a8dd
+> 12 [ffff9fe16202fcf0] netlink_rcv_skb at ffffffffa8a717eb
+> 13 [ffff9fe16202fd40] netlink_unicast at ffffffffa8a70f88
+> 14 [ffff9fe16202fd80] netlink_sendmsg at ffffffffa8a71319
+> 15 [ffff9fe16202fdf0] sock_sendmsg at ffffffffa89df290
+> 16 [ffff9fe16202fe08] __sys_sendto at ffffffffa89e19c8
+> 17 [ffff9fe16202ff30] __x64_sys_sendto at ffffffffa89e1a64
+> 18 [ffff9fe16202ff38] do_syscall_64 at ffffffffa84042b9
+> 19 [ffff9fe16202ff50] entry_SYSCALL_64_after_hwframe at ffffffffa8c0008c
+> 
+> Fixes: 4a9b32f30f80 ("ixgbe: fix potential RX buffer starvation for
+> AF_XDP")
+> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
+> ---
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> index 14aea40da50f..5db496cc5070 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> @@ -10112,6 +10112,7 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
+>  	struct ixgbe_adapter *adapter = netdev_priv(dev);
+>  	struct bpf_prog *old_prog;
+>  	bool need_reset;
+> +	int num_queues;
+>  
+>  	if (adapter->flags & IXGBE_FLAG_SRIOV_ENABLED)
+>  		return -EINVAL;
+> @@ -10161,11 +10162,14 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
+>  	/* Kick start the NAPI context if there is an AF_XDP socket open
+>  	 * on that queue id. This so that receiving will start.
+>  	 */
+> -	if (need_reset && prog)
+> -		for (i = 0; i < adapter->num_rx_queues; i++)
+> +	if (need_reset && prog) {
+> +		num_queues = min_t(int, adapter->num_rx_queues,
+> +			adapter->num_xdp_queues);
+> +		for (i = 0; i < num_queues; i++)
+>  			if (adapter->xdp_ring[i]->xsk_pool)
+>  				(void)ixgbe_xsk_wakeup(adapter->netdev, i,
+>  						       XDP_WAKEUP_RX);
+> +	}
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.11.0
+> 
