@@ -2,134 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF8F3EF0E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 19:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB323EF0E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 19:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232261AbhHQR1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 13:27:39 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:23068 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230311AbhHQR1i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 13:27:38 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629221225; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=EfWYM7e4IPw4UxvqdMIlRmzXZnOqCrtsKfmXiL94nUE=;
- b=Hsh+QJttUSKSbJoAcAuS0/XgrpZVlT/+6fZWLA70ZV8BmlyiaWa5MyNQqOieQnv2jVdHjrXk
- owExty0tGA1qES0aAjISEYReVmNs3evSZw2uq22JXqctP1lkvH8V7bpX5LPFZDuBNtp3e2+A
- 6VrlN5Y1R3wA8MlqdLQ/mkvd37A=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 611bf159105c6568db5ad799 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 17 Aug 2021 17:26:49
- GMT
-Sender: pmaliset=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F2DD9C4360D; Tue, 17 Aug 2021 17:26:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S232201AbhHQR1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 13:27:03 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:39710 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230311AbhHQR1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 13:27:01 -0400
+Received: from zn.tnic (p200300ec2f1175006a73053df3c19379.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:7500:6a73:53d:f3c1:9379])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: pmaliset)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9C922C4338F;
-        Tue, 17 Aug 2021 17:26:47 +0000 (UTC)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D659F1EC01B5;
+        Tue, 17 Aug 2021 19:26:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1629221183;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=DNJ7vQbeipIQzVqoNzpebqgTcO1JqCy5VA8Wf98/yoc=;
+        b=g1khrBdad75yo8euxQQm3YXRG/lrWYNNavOA/yqhWhFYsf3+kH3fltXo+mjEjOxrwlbahA
+        RK9GLTwIgfvCxq0DaaKZDczWmhZrDoJ9xvCOsd6/ajPMdZM8QuqEalus8YDh1p3DgNhY7s
+        IIh11MTwqipTCOwGaV0F1PgcV7NUGrw=
+Date:   Tue, 17 Aug 2021 19:27:02 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part1 RFC v4 15/36] x86/mm: Add support to validate
+ memory when changing C-bit
+Message-ID: <YRvxZtLkVNda9xwX@zn.tnic>
+References: <20210707181506.30489-1-brijesh.singh@amd.com>
+ <20210707181506.30489-16-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 17 Aug 2021 22:56:47 +0530
-From:   Prasad Malisetty <pmaliset@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
-        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
-        svarbanov@mm-sol.com
-Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
-        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org
-Subject: Re: [PATCH v5 4/4] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY
- init in SC7280
-In-Reply-To: <1628568516-24155-5-git-send-email-pmaliset@codeaurora.org>
-References: <1628568516-24155-1-git-send-email-pmaliset@codeaurora.org>
- <1628568516-24155-5-git-send-email-pmaliset@codeaurora.org>
-Message-ID: <349b1178f071407dfad8ba3050482772@codeaurora.org>
-X-Sender: pmaliset@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210707181506.30489-16-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-10 09:38, Prasad Malisetty wrote:
-> On the SC7280, By default the clock source for pcie_1_pipe is
-> TCXO for gdsc enable. But after the PHY is initialized, the clock
-> source must be switched to gcc_pcie_1_pipe_clk from TCXO.
-> 
-> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c
-> b/drivers/pci/controller/dwc/pcie-qcom.c
-> index 8a7a300..39e3b21 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -166,6 +166,8 @@ struct qcom_pcie_resources_2_7_0 {
->  	struct regulator_bulk_data supplies[2];
->  	struct reset_control *pci_reset;
->  	struct clk *pipe_clk;
-> +	struct clk *gcc_pcie_1_pipe_clk_src;
-> +	struct clk *phy_pipe_clk;
->  };
-> 
->  union qcom_pcie_resources {
-> @@ -1167,6 +1169,16 @@ static int qcom_pcie_get_resources_2_7_0(struct
-> qcom_pcie *pcie)
->  	if (ret < 0)
->  		return ret;
-> 
-> +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
-> +		res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
-> +		if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
-> +			return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
+On Wed, Jul 07, 2021 at 01:14:45PM -0500, Brijesh Singh wrote:
+> +struct __packed psc_hdr {
+> +	u16 cur_entry;
+> +	u16 end_entry;
+> +	u32 reserved;
+> +};
 > +
-> +		res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
-> +		if (IS_ERR(res->phy_pipe_clk))
-> +			return PTR_ERR(res->phy_pipe_clk);
+> +struct __packed psc_entry {
+> +	u64	cur_page	: 12,
+> +		gfn		: 40,
+> +		operation	: 4,
+> +		pagesize	: 1,
+> +		reserved	: 7;
+> +};
+> +
+> +struct __packed snp_psc_desc {
+> +	struct psc_hdr hdr;
+> +	struct psc_entry entries[VMGEXIT_PSC_MAX_ENTRY];
+> +};
+
+The majority of kernel code puts __packed after the struct definition,
+let's put it there too pls, out of the way.
+
+...
+
+> +static int vmgexit_psc(struct snp_psc_desc *desc)
+> +{
+> +	int cur_entry, end_entry, ret;
+> +	struct snp_psc_desc *data;
+> +	struct ghcb_state state;
+> +	struct ghcb *ghcb;
+> +	struct psc_hdr *hdr;
+> +	unsigned long flags;
+> +
+> +	local_irq_save(flags);
+> +
+> +	ghcb = __sev_get_ghcb(&state);
+> +	if (unlikely(!ghcb))
+> +		panic("SEV-SNP: Failed to get GHCB\n");
+> +
+> +	/* Copy the input desc into GHCB shared buffer */
+> +	data = (struct snp_psc_desc *)ghcb->shared_buffer;
+> +	memcpy(ghcb->shared_buffer, desc, sizeof(*desc));
+> +
+> +	hdr = &data->hdr;
+> +	cur_entry = hdr->cur_entry;
+> +	end_entry = hdr->end_entry;
+> +
+> +	/*
+> +	 * As per the GHCB specification, the hypervisor can resume the guest
+> +	 * before processing all the entries. Checks whether all the entries
+> +	 * are processed. If not, then keep retrying.
+> +	 *
+> +	 * The stragtegy here is to wait for the hypervisor to change the page
+> +	 * state in the RMP table before guest access the memory pages. If the
+> +	 * page state was not successful, then later memory access will result
+> +	 * in the crash.
+> +	 */
+> +	while (hdr->cur_entry <= hdr->end_entry) {
+> +		ghcb_set_sw_scratch(ghcb, (u64)__pa(data));
+> +
+> +		ret = sev_es_ghcb_hv_call(ghcb, NULL, SVM_VMGEXIT_PSC, 0, 0);
+> +
+> +		/*
+> +		 * Page State Change VMGEXIT can pass error code through
+> +		 * exit_info_2.
+> +		 */
+> +		if (WARN(ret || ghcb->save.sw_exit_info_2,
+> +			 "SEV-SNP: page state change failed ret=%d exit_info_2=%llx\n",
+> +			 ret, ghcb->save.sw_exit_info_2))
+> +			return 1;
+
+Yikes, you return here and below with interrupts disabled.
+
+All your returns need to be "goto out;" instead where you do
+
+out:
+        __sev_put_ghcb(&state);
+        local_irq_restore(flags);
+
+Yap, you very likely need to put the GHCB too.
+
+> +		/*
+> +		 * Lets do some sanity check that entry processing is not going
+> +		 * backward. This will happen only if hypervisor is tricking us.
+> +		 */
+> +		if (WARN((hdr->end_entry > end_entry) || (cur_entry > hdr->cur_entry),
+> +			"SEV-SNP: page state change processing going backward, end_entry "
+> +			"(expected %d got %d) cur_entry (expected %d got %d)\n",
+> +			end_entry, hdr->end_entry, cur_entry, hdr->cur_entry))
+> +			return 1;
+
+WARNING: quoted string split across lines
+#293: FILE: arch/x86/kernel/sev.c:750:
++			"SEV-SNP: page state change processing going backward, end_entry "
++			"(expected %d got %d) cur_entry (expected %d got %d)\n",
+
+If you're wondering what to do, yes, you can really stretch that string
+and shorten it too:
+
+                if (WARN((hdr->end_entry > end_entry) || (cur_entry > hdr->cur_entry),
+"SEV-SNP: PSC processing going backwards, end_entry %d (got %d) cur_entry: %d (got %d)\n",
+                         end_entry, hdr->end_entry, cur_entry, hdr->cur_entry))
+                        return 1;
+
+so that it fits on a single line and grepping can find it.
+
+> +		/* Lets verify that reserved bit is not set in the header*/
+> +		if (WARN(hdr->reserved, "Reserved bit is set in the PSC header\n"))
+
+psc_entry has a ->reserved field too and since we're iterating over the
+entries...
+
+> +			return 1;
 > +	}
 > +
-
-Hi All,
-
-Greetings!
-
-I would like to check is there any other better approach instead of 
-compatible method here as well or is it fine to use compatible method.
-
-Thanks
--Prasad
-
->  	res->pipe_clk = devm_clk_get(dev, "pipe");
->  	return PTR_ERR_OR_ZERO(res->pipe_clk);
->  }
-> @@ -1255,6 +1267,12 @@ static void qcom_pcie_deinit_2_7_0(struct
-> qcom_pcie *pcie)
->  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
->  {
->  	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
-> +	struct dw_pcie *pci = pcie->pci;
-> +	struct device *dev = pci->dev;
-> +	struct device_node *node = dev->of_node;
+> +	__sev_put_ghcb(&state);
+> +	local_irq_restore(flags);
 > +
-> +	if (of_property_read_bool(node, "pipe-clk-source-switch"))
-> +		clk_set_parent(res->gcc_pcie_1_pipe_clk_src, res->phy_pipe_clk);
-> 
->  	return clk_prepare_enable(res->pipe_clk);
->  }
+> +	return 0;
+> +}
+> +
+> +static void __set_page_state(struct snp_psc_desc *data, unsigned long vaddr,
+> +			     unsigned long vaddr_end, int op)
+> +{
+> +	struct psc_hdr *hdr;
+> +	struct psc_entry *e;
+> +	unsigned long pfn;
+> +	int i;
+> +
+> +	hdr = &data->hdr;
+> +	e = data->entries;
+> +
+> +	memset(data, 0, sizeof(*data));
+> +	i = 0;
+> +
+> +	while (vaddr < vaddr_end) {
+> +		if (is_vmalloc_addr((void *)vaddr))
+> +			pfn = vmalloc_to_pfn((void *)vaddr);
+> +		else
+> +			pfn = __pa(vaddr) >> PAGE_SHIFT;
+> +
+> +		e->gfn = pfn;
+> +		e->operation = op;
+> +		hdr->end_entry = i;
+> +
+> +		/*
+> +		 * The GHCB specification provides the flexibility to
+> +		 * use either 4K or 2MB page size in the RMP table.
+> +		 * The current SNP support does not keep track of the
+> +		 * page size used in the RMP table. To avoid the
+> +		 * overlap request, use the 4K page size in the RMP
+> +		 * table.
+> +		 */
+> +		e->pagesize = RMP_PG_SIZE_4K;
+> +
+> +		vaddr = vaddr + PAGE_SIZE;
+> +		e++;
+> +		i++;
+> +	}
+> +
+> +	/* Terminate the guest on page state change failure. */
+
+That comment is kinda obvious :)
+
+> +	if (vmgexit_psc(data))
+> +		sev_es_terminate(1, GHCB_TERM_PSC);
+> +}
+> +
+> +static void set_page_state(unsigned long vaddr, unsigned int npages, int op)
+> +{
+> +	unsigned long vaddr_end, next_vaddr;
+> +	struct snp_psc_desc *desc;
+> +
+> +	vaddr = vaddr & PAGE_MASK;
+> +	vaddr_end = vaddr + (npages << PAGE_SHIFT);
+> +
+> +	desc = kmalloc(sizeof(*desc), GFP_KERNEL_ACCOUNT);
+
+kzalloc() so that you don't have to memset() later in
+__set_page_state().
+
+> +	if (!desc)
+> +		panic("failed to allocate memory");
+
+Make that error message more distinctive so that *if* it happens, one
+can pinpoint the place in the code where the panic comes from.
+
+> +	while (vaddr < vaddr_end) {
+> +		/*
+> +		 * Calculate the last vaddr that can be fit in one
+> +		 * struct snp_psc_desc.
+> +		 */
+> +		next_vaddr = min_t(unsigned long, vaddr_end,
+> +				(VMGEXIT_PSC_MAX_ENTRY * PAGE_SIZE) + vaddr);
+> +
+> +		__set_page_state(desc, vaddr, next_vaddr, op);
+> +
+> +		vaddr = next_vaddr;
+> +	}
+> +
+> +	kfree(desc);
+> +}
+> +
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
