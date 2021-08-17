@@ -2,1652 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE473EEEA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 16:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27FB53EEEA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 16:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240082AbhHQOjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 10:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233426AbhHQOjs (ORCPT
+        id S240142AbhHQOk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 10:40:56 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60956 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233426AbhHQOky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 10:39:48 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACFBC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 07:39:14 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id y34so41797612lfa.8
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 07:39:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xzZSRI9bdXi5KB6rb3tQvwLN6zA32n+hyrlEwMucfdo=;
-        b=OM0RmJW1VJXJhwQ6qVBwjAMdPyDKPY7UgT4a6+Fp7bIfAy2/gtIvvjwmdu3vEGLrRj
-         qXa9RcrXF1F58C6Cca5k7joAMkOcVFbQGr5WOW3O/5/1PvZ1ANGfGD3cV2qbRImyyqGO
-         6xWTRF6KQvVKoqhOET4vdZeBEaAwAbumbcWhIrm6nTG9qvS7zSxe3gZYocCOB1jmpo+I
-         Jt4METPADJ3EbFBiwdd2kFNeGPHd1KjWRcn1EU2NxoDys6Ep70beJBYFVyJjpULPcPi3
-         eJhJw+D1SaHUAMQie+IjK+8zDqWwvO4p9AWRTD/qc4SQq6AII2SxiKLR1jqm4ZMMRD64
-         dN0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xzZSRI9bdXi5KB6rb3tQvwLN6zA32n+hyrlEwMucfdo=;
-        b=J53A8KuVpNdIuij7wDkuRdTAnbgIpluru7UkVPWVGx3BTus2kRMMAgbrT03t0+N/zo
-         GazLhoXYyPRVU8X/ZDQBqJCsaVzmc4s9VQn5b8pe4LArMaI6erC4O9KnLbO0oneCMBfs
-         8xGIMWHQj/b0+plYkp7YWHxd8f+c+LMaacSlpvG/VuHMbESq4au8fq40c/lie1mKKrXw
-         Ug7/IfQynB/+QfaPOmTD9rCGIyntL/BD2CYtu8kv4vgOos/tMnH8c/vMFWfbvKEUxutM
-         ynxG3Kh6ED5IYJRfahBs7ymzt4ElyLXURn/TFD3bCe2cr5kOQ2u3CJ/Uwv8BokLSyKrl
-         pHwA==
-X-Gm-Message-State: AOAM5331Yj9rYc2YTKFpMRWT0kXec4V4wBXE7yuFzgqNHhZRVqDEzPC8
-        MEXFRAlpV2s1Ge3EHQOFWHY=
-X-Google-Smtp-Source: ABdhPJwji8OIvK4Wz0EBCPmlxwBWBd54DnslcmWq0Rq95yRZ9sFDOCIxrzOwsvxvLbcscJQ6+6XVIQ==
-X-Received: by 2002:a05:6512:3a4:: with SMTP id v4mr2692735lfp.70.1629211152045;
-        Tue, 17 Aug 2021 07:39:12 -0700 (PDT)
-Received: from kari-VirtualBox.telewell.oy (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id r12sm256563ljp.15.2021.08.17.07.39.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 07:39:11 -0700 (PDT)
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev, Christoph Hellwig <hch@lst.de>
-Cc:     Kari Argillander <kari.argillander@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] fs/ntfs3: Do not use driver own alloc wrappers
-Date:   Tue, 17 Aug 2021 17:38:48 +0300
-Message-Id: <20210817143848.245324-1-kari.argillander@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 17 Aug 2021 10:40:54 -0400
+Date:   Tue, 17 Aug 2021 16:40:18 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629211220;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jD5QrDzoUlwgmKT1L4ik250SzOJtPAV7eUaF5P748YM=;
+        b=PkMVUQGyZsaJRoYBJ3gtm5yRX6CkFmXK+dk6khXmyk5pHa1Q77foqp+xhMYmvTLYYwOaSI
+        neglHj8c6COsZ5IeqyXulmPKOXKUwSX/sGRSxQnTB/ZMqRMWujAkUr6dXal6EZgRcOsjM2
+        OnXoXSx5YFvaGJguwB7GENDjC+/wjcQ6ZsLH7lJkncgRQp9ttR0PesjxpBNU9CFPLVIDWA
+        b8ReGmEoguqVptk2GaOGry0Z6o7AXBwwQrsW2c3vHAbIT+y+/xZbDB2jehG2qSd9FG6VT6
+        d7HvU20SIP3ZzMlVoKfiN1RAfMmxnJiS1sBLwjfoITwxS2iRz9CegSieMGYZwQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629211220;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jD5QrDzoUlwgmKT1L4ik250SzOJtPAV7eUaF5P748YM=;
+        b=D7fovlxYAnlhodjSoHwf1NV98x3UK6cGLhONMXcQJm5S7dl+uCGmUoNFWcCuhrvXdzTkGa
+        pHzrAON0b3rvhZCw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mike Galbraith <efault@gmx.de>, Scott Wood <swood@redhat.com>
+Subject: [PATCH] rcutorture: Avoid problematic critical section nesting on RT
+Message-ID: <20210817144018.nqssoq475vitrqlv@linutronix.de>
+References: <20210811201354.1976839-1-valentin.schneider@arm.com>
+ <20210811201354.1976839-2-valentin.schneider@arm.com>
+ <20210817121345.5iyj5epemczn3a52@linutronix.de>
+ <20210817131741.evduh4fw7vyv2dzt@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210817131741.evduh4fw7vyv2dzt@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ntfs3 driver contains self made alloc wrappers. Problem with these
-wrappers is that we cannot take off example GFP_NOFS flag. It is not
-recomended use those in all places. Also if we change one driver
-specific wrapper to kernel wrapper then it would look really wierd.
-People should be most familiar with kernel wrappers so let's just use
-those ones.
+From: Scott Wood <swood@redhat.com>
 
-Driver specific alloc wrapper might also confuse some static analyzing
-tools, but I do not have real world example.
+rcutorture was generating some nesting scenarios that are not
+reasonable.  Constrain the state selection to avoid them.
 
-Following Coccinelle script was used to automate most of this patch:
+Example:
 
-virtual patch
+1. rcu_read_lock()
+2. local_irq_disable()
+3. rcu_read_unlock()
+4. local_irq_enable()
 
-@alloc depends on patch@
-expression x;
-expression y;
-@@
-(
--	ntfs_malloc(x)
-+	kmalloc(x, GFP_NOFS)
-|
--	ntfs_zalloc(x)
-+	kzalloc(x, GFP_NOFS)
-|
--	ntfs_vmalloc(x)
-+	kvmalloc(x, GFP_NOFS)
-|
--	ntfs_free(x)
-+	kfree(x)
-|
--	ntfs_vfree(x)
-+	kvfree(x)
-|
--	ntfs_memdup(x, y)
-+	kmemdup(x, y, GFP_NOFS)
-)
+If the thread is preempted between steps 1 and 2,
+rcu_read_unlock_special.b.blocked will be set, but it won't be
+acted on in step 3 because IRQs are disabled.  Thus, reporting of the
+quiescent state will be delayed beyond the local_irq_enable().
 
-Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
+For now, these scenarios will continue to be tested on non-PREEMPT_RT
+kernels, until debug checks are added to ensure that they are not
+happening elsewhere.
+
+Signed-off-by: Scott Wood <swood@redhat.com>
+[valentin.schneider@arm.com: Don't disable BH in atomic context]
+[bigeasy: remove 'preempt_disable(); local_bh_disable(); preempt_enable();
+ local_bh_enable();' from the examples because this works on RT now. ]
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
+I folded Valentin's bits.
+I removed the unbalanced preempt_disable()/migrate_disable() part from
+the description because it is supported now by the migrate disable
+implementation. I didn't find it explicit in code/ patch except as part
+of local_bh_disable().
 
-Christoph also nack about these so I CC him.
 
+ kernel/rcu/rcutorture.c |   94 ++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 80 insertions(+), 14 deletions(-)
 ---
- fs/ntfs3/attrib.c   |   6 +-
- fs/ntfs3/attrlist.c |  10 +--
- fs/ntfs3/bitmap.c   |   8 +--
- fs/ntfs3/debug.h    |   7 --
- fs/ntfs3/file.c     |   4 +-
- fs/ntfs3/frecord.c  |  29 ++++----
- fs/ntfs3/fslog.c    | 172 ++++++++++++++++++++++----------------------
- fs/ntfs3/fsntfs.c   |   8 +--
- fs/ntfs3/index.c    |  54 +++++++-------
- fs/ntfs3/inode.c    |  10 +--
- fs/ntfs3/lznt.c     |   4 +-
- fs/ntfs3/ntfs_fs.h  |  18 ++---
- fs/ntfs3/record.c   |   8 +--
- fs/ntfs3/run.c      |   8 +--
- fs/ntfs3/super.c    |  20 +++---
- fs/ntfs3/xattr.c    |  18 ++---
- 16 files changed, 189 insertions(+), 195 deletions(-)
-
-diff --git a/fs/ntfs3/attrib.c b/fs/ntfs3/attrib.c
-index 046dc57f75f2..e917a90b9e55 100644
---- a/fs/ntfs3/attrib.c
-+++ b/fs/ntfs3/attrib.c
-@@ -276,7 +276,7 @@ int attr_make_nonresident(struct ntfs_inode *ni, struct ATTRIB *attr,
- 	run_init(run);
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -61,10 +61,13 @@ MODULE_AUTHOR("Paul E. McKenney <paulmck
+ #define RCUTORTURE_RDR_RBH	 0x08	/*  ... rcu_read_lock_bh(). */
+ #define RCUTORTURE_RDR_SCHED	 0x10	/*  ... rcu_read_lock_sched(). */
+ #define RCUTORTURE_RDR_RCU	 0x20	/*  ... entering another RCU reader. */
+-#define RCUTORTURE_RDR_NBITS	 6	/* Number of bits defined above. */
++#define RCUTORTURE_RDR_ATOM_BH	 0x40	/*  ... disabling bh while atomic */
++#define RCUTORTURE_RDR_ATOM_RBH	 0x80	/*  ... RBH while atomic */
++#define RCUTORTURE_RDR_NBITS	 8	/* Number of bits defined above. */
+ #define RCUTORTURE_MAX_EXTEND	 \
+ 	(RCUTORTURE_RDR_BH | RCUTORTURE_RDR_IRQ | RCUTORTURE_RDR_PREEMPT | \
+-	 RCUTORTURE_RDR_RBH | RCUTORTURE_RDR_SCHED)
++	 RCUTORTURE_RDR_RBH | RCUTORTURE_RDR_SCHED | \
++	 RCUTORTURE_RDR_ATOM_BH | RCUTORTURE_RDR_ATOM_RBH)
+ #define RCUTORTURE_RDR_MAX_LOOPS 0x7	/* Maximum reader extensions. */
+ 					/* Must be power of two minus one. */
+ #define RCUTORTURE_RDR_MAX_SEGS (RCUTORTURE_RDR_MAX_LOOPS + 3)
+@@ -1429,31 +1432,53 @@ static void rcutorture_one_extend(int *r
+ 	WARN_ON_ONCE((idxold >> RCUTORTURE_RDR_SHIFT) > 1);
+ 	rtrsp->rt_readstate = newstate;
  
- 	/* make a copy of original attribute */
--	attr_s = ntfs_memdup(attr, asize);
-+	attr_s = kmemdup(attr, asize, GFP_NOFS);
- 	if (!attr_s) {
- 		err = -ENOMEM;
- 		goto out;
-@@ -333,7 +333,7 @@ int attr_make_nonresident(struct ntfs_inode *ni, struct ATTRIB *attr,
- 	if (err)
- 		goto out3;
+-	/* First, put new protection in place to avoid critical-section gap. */
++	/*
++	 * First, put new protection in place to avoid critical-section gap.
++	 * Disable preemption around the ATOM disables to ensure that
++	 * in_atomic() is true.
++	 */
+ 	if (statesnew & RCUTORTURE_RDR_BH)
+ 		local_bh_disable();
++	if (statesnew & RCUTORTURE_RDR_RBH)
++		rcu_read_lock_bh();
+ 	if (statesnew & RCUTORTURE_RDR_IRQ)
+ 		local_irq_disable();
+ 	if (statesnew & RCUTORTURE_RDR_PREEMPT)
+ 		preempt_disable();
+-	if (statesnew & RCUTORTURE_RDR_RBH)
+-		rcu_read_lock_bh();
+ 	if (statesnew & RCUTORTURE_RDR_SCHED)
+ 		rcu_read_lock_sched();
++	preempt_disable();
++	if (statesnew & RCUTORTURE_RDR_ATOM_BH)
++		local_bh_disable();
++	if (statesnew & RCUTORTURE_RDR_ATOM_RBH)
++		rcu_read_lock_bh();
++	preempt_enable();
+ 	if (statesnew & RCUTORTURE_RDR_RCU)
+ 		idxnew = cur_ops->readlock() << RCUTORTURE_RDR_SHIFT;
  
--	ntfs_free(attr_s);
-+	kfree(attr_s);
- 	attr->nres.data_size = cpu_to_le64(rsize);
- 	attr->nres.valid_size = attr->nres.data_size;
+-	/* Next, remove old protection, irq first due to bh conflict. */
++	/*
++	 * Next, remove old protection, in decreasing order of strength
++	 * to avoid unlock paths that aren't safe in the stronger
++	 * context.  Disable preemption around the ATOM enables in
++	 * case the context was only atomic due to IRQ disabling.
++	 */
++	preempt_disable();
+ 	if (statesold & RCUTORTURE_RDR_IRQ)
+ 		local_irq_enable();
+-	if (statesold & RCUTORTURE_RDR_BH)
++	if (statesold & RCUTORTURE_RDR_ATOM_BH)
+ 		local_bh_enable();
++	if (statesold & RCUTORTURE_RDR_ATOM_RBH)
++		rcu_read_unlock_bh();
++	preempt_enable();
+ 	if (statesold & RCUTORTURE_RDR_PREEMPT)
+ 		preempt_enable();
+-	if (statesold & RCUTORTURE_RDR_RBH)
+-		rcu_read_unlock_bh();
+ 	if (statesold & RCUTORTURE_RDR_SCHED)
+ 		rcu_read_unlock_sched();
++	if (statesold & RCUTORTURE_RDR_BH)
++		local_bh_enable();
++	if (statesold & RCUTORTURE_RDR_RBH)
++		rcu_read_unlock_bh();
++
+ 	if (statesold & RCUTORTURE_RDR_RCU) {
+ 		bool lockit = !statesnew && !(torture_random(trsp) & 0xffff);
  
-@@ -356,7 +356,7 @@ int attr_make_nonresident(struct ntfs_inode *ni, struct ATTRIB *attr,
- 	run_deallocate(sbi, run, false);
- 	run_close(run);
- out1:
--	ntfs_free(attr_s);
-+	kfree(attr_s);
- 	/*reinsert le*/
- out:
- 	return err;
-diff --git a/fs/ntfs3/attrlist.c b/fs/ntfs3/attrlist.c
-index ea561361b576..348bfb54db09 100644
---- a/fs/ntfs3/attrlist.c
-+++ b/fs/ntfs3/attrlist.c
-@@ -28,7 +28,7 @@ static inline bool al_is_valid_le(const struct ntfs_inode *ni,
- void al_destroy(struct ntfs_inode *ni)
- {
- 	run_close(&ni->attr_list.run);
--	ntfs_free(ni->attr_list.le);
-+	kfree(ni->attr_list.le);
- 	ni->attr_list.le = NULL;
- 	ni->attr_list.size = 0;
- 	ni->attr_list.dirty = false;
-@@ -51,7 +51,7 @@ int ntfs_load_attr_list(struct ntfs_inode *ni, struct ATTRIB *attr)
+@@ -1496,6 +1521,12 @@ rcutorture_extend_mask(int oldmask, stru
+ 	int mask = rcutorture_extend_mask_max();
+ 	unsigned long randmask1 = torture_random(trsp) >> 8;
+ 	unsigned long randmask2 = randmask1 >> 3;
++	unsigned long preempts = RCUTORTURE_RDR_PREEMPT | RCUTORTURE_RDR_SCHED;
++	unsigned long preempts_irq = preempts | RCUTORTURE_RDR_IRQ;
++	unsigned long nonatomic_bhs = RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH;
++	unsigned long atomic_bhs = RCUTORTURE_RDR_ATOM_BH |
++				   RCUTORTURE_RDR_ATOM_RBH;
++	unsigned long tmp;
  
- 	if (!attr->non_res) {
- 		lsize = le32_to_cpu(attr->res.data_size);
--		le = ntfs_malloc(al_aligned(lsize));
-+		le = kmalloc(al_aligned(lsize), GFP_NOFS);
- 		if (!le) {
- 			err = -ENOMEM;
- 			goto out;
-@@ -74,7 +74,7 @@ int ntfs_load_attr_list(struct ntfs_inode *ni, struct ATTRIB *attr)
- 		if (err < 0)
- 			goto out;
- 
--		le = ntfs_malloc(al_aligned(lsize));
-+		le = kmalloc(al_aligned(lsize), GFP_NOFS);
- 		if (!le) {
- 			err = -ENOMEM;
- 			goto out;
-@@ -289,7 +289,7 @@ int al_add_le(struct ntfs_inode *ni, enum ATTR_TYPE type, const __le16 *name,
- 	off = PtrOffset(al->le, le);
- 
- 	if (new_size > asize) {
--		void *ptr = ntfs_malloc(new_asize);
-+		void *ptr = kmalloc(new_asize, GFP_NOFS);
- 
- 		if (!ptr)
- 			return -ENOMEM;
-@@ -297,7 +297,7 @@ int al_add_le(struct ntfs_inode *ni, enum ATTR_TYPE type, const __le16 *name,
- 		memcpy(ptr, al->le, off);
- 		memcpy(Add2Ptr(ptr, off + sz), le, al->size - off);
- 		le = Add2Ptr(ptr, off);
--		ntfs_free(al->le);
-+		kfree(al->le);
- 		al->le = ptr;
- 	} else {
- 		memmove(Add2Ptr(le, sz), le, al->size - off);
-diff --git a/fs/ntfs3/bitmap.c b/fs/ntfs3/bitmap.c
-index 32aab0031221..d502bba323d0 100644
---- a/fs/ntfs3/bitmap.c
-+++ b/fs/ntfs3/bitmap.c
-@@ -133,7 +133,7 @@ void wnd_close(struct wnd_bitmap *wnd)
- {
- 	struct rb_node *node, *next;
- 
--	ntfs_free(wnd->free_bits);
-+	kfree(wnd->free_bits);
- 	run_close(&wnd->run);
- 
- 	node = rb_first(&wnd->start_tree);
-@@ -683,7 +683,7 @@ int wnd_init(struct wnd_bitmap *wnd, struct super_block *sb, size_t nbits)
- 	if (!wnd->bits_last)
- 		wnd->bits_last = wbits;
- 
--	wnd->free_bits = ntfs_zalloc(wnd->nwnd * sizeof(u16));
-+	wnd->free_bits = kzalloc(wnd->nwnd * sizeof(u16), GFP_NOFS);
- 	if (!wnd->free_bits)
- 		return -ENOMEM;
- 
-@@ -1354,7 +1354,7 @@ int wnd_extend(struct wnd_bitmap *wnd, size_t new_bits)
- 		new_last = wbits;
- 
- 	if (new_wnd != wnd->nwnd) {
--		new_free = ntfs_malloc(new_wnd * sizeof(u16));
-+		new_free = kmalloc(new_wnd * sizeof(u16), GFP_NOFS);
- 		if (!new_free)
- 			return -ENOMEM;
- 
-@@ -1363,7 +1363,7 @@ int wnd_extend(struct wnd_bitmap *wnd, size_t new_bits)
- 			       wnd->nwnd * sizeof(short));
- 		memset(new_free + wnd->nwnd, 0,
- 		       (new_wnd - wnd->nwnd) * sizeof(short));
--		ntfs_free(wnd->free_bits);
-+		kfree(wnd->free_bits);
- 		wnd->free_bits = new_free;
- 	}
- 
-diff --git a/fs/ntfs3/debug.h b/fs/ntfs3/debug.h
-index dfaa4c79dc6d..b4103c16d4e9 100644
---- a/fs/ntfs3/debug.h
-+++ b/fs/ntfs3/debug.h
-@@ -54,11 +54,4 @@ void ntfs_inode_printk(struct inode *inode, const char *fmt, ...)
- 	ntfs_inode_printk(inode, KERN_ERR fmt, ##__VA_ARGS__)
- #define ntfs_inode_warn(inode, fmt, ...)                                       \
- 	ntfs_inode_printk(inode, KERN_WARNING fmt, ##__VA_ARGS__)
--
--#define ntfs_malloc(s)		kmalloc(s, GFP_NOFS)
--#define ntfs_zalloc(s)		kzalloc(s, GFP_NOFS)
--#define ntfs_vmalloc(s)		kvmalloc(s, GFP_KERNEL)
--#define ntfs_free(p)		kfree(p)
--#define ntfs_vfree(p)		kvfree(p)
--#define ntfs_memdup(src, len)	kmemdup(src, len, GFP_NOFS)
- // clang-format on
-diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
-index 59344985c2e8..8d27c520bec5 100644
---- a/fs/ntfs3/file.c
-+++ b/fs/ntfs3/file.c
-@@ -900,7 +900,7 @@ static ssize_t ntfs_compress_write(struct kiocb *iocb, struct iov_iter *from)
- 		return -EOPNOTSUPP;
- 	}
- 
--	pages = ntfs_malloc(pages_per_frame * sizeof(struct page *));
-+	pages = kmalloc(pages_per_frame * sizeof(struct page *), GFP_NOFS);
- 	if (!pages)
- 		return -ENOMEM;
- 
-@@ -1076,7 +1076,7 @@ static ssize_t ntfs_compress_write(struct kiocb *iocb, struct iov_iter *from)
- 	}
- 
- out:
--	ntfs_free(pages);
-+	kfree(pages);
- 
- 	current->backing_dev_info = NULL;
- 
-diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
-index c3121bf9c62f..234668a4fd9b 100644
---- a/fs/ntfs3/frecord.c
-+++ b/fs/ntfs3/frecord.c
-@@ -388,7 +388,7 @@ bool ni_add_subrecord(struct ntfs_inode *ni, CLST rno, struct mft_inode **mi)
- {
- 	struct mft_inode *m;
- 
--	m = ntfs_zalloc(sizeof(struct mft_inode));
-+	m = kzalloc(sizeof(struct mft_inode), GFP_NOFS);
- 	if (!m)
- 		return false;
- 
-@@ -752,7 +752,7 @@ static int ni_try_remove_attr_list(struct ntfs_inode *ni)
- 	run_deallocate(sbi, &ni->attr_list.run, true);
- 	run_close(&ni->attr_list.run);
- 	ni->attr_list.size = 0;
--	ntfs_free(ni->attr_list.le);
-+	kfree(ni->attr_list.le);
- 	ni->attr_list.le = NULL;
- 	ni->attr_list.dirty = false;
- 
-@@ -787,7 +787,7 @@ int ni_create_attr_list(struct ntfs_inode *ni)
- 	 * Skip estimating exact memory requirement
- 	 * Looks like one record_size is always enough
- 	 */
--	le = ntfs_malloc(al_aligned(rs));
-+	le = kmalloc(al_aligned(rs), GFP_NOFS);
- 	if (!le) {
- 		err = -ENOMEM;
- 		goto out;
-@@ -893,7 +893,7 @@ int ni_create_attr_list(struct ntfs_inode *ni)
- 	goto out;
- 
- out1:
--	ntfs_free(ni->attr_list.le);
-+	kfree(ni->attr_list.le);
- 	ni->attr_list.le = NULL;
- 	ni->attr_list.size = 0;
- 
-@@ -1784,7 +1784,7 @@ enum REPARSE_SIGN ni_parse_reparse(struct ntfs_inode *ni, struct ATTRIB *attr,
- 		/*
- 		 * WOF - Windows Overlay Filter - used to compress files with lzx/xpress
- 		 * Unlike native NTFS file compression, the Windows Overlay Filter supports
--		 * only read operations. This means that it doesn’t need to sector-align each
-+		 * only read operations. This means that it doesnï¿½t need to sector-align each
- 		 * compressed chunk, so the compressed data can be packed more tightly together.
- 		 * If you open the file for writing, the Windows Overlay Filter just decompresses
- 		 * the entire file, turning it back into a plain file.
-@@ -2050,7 +2050,7 @@ int ni_readpage_cmpr(struct ntfs_inode *ni, struct page *page)
- 	idx = (vbo - frame_vbo) >> PAGE_SHIFT;
- 
- 	pages_per_frame = frame_size >> PAGE_SHIFT;
--	pages = ntfs_zalloc(pages_per_frame * sizeof(struct page *));
-+	pages = kzalloc(pages_per_frame * sizeof(struct page *), GFP_NOFS);
- 	if (!pages) {
- 		err = -ENOMEM;
- 		goto out;
-@@ -2088,7 +2088,7 @@ int ni_readpage_cmpr(struct ntfs_inode *ni, struct page *page)
- 
- out:
- 	/* At this point, err contains 0 or -EIO depending on the "critical" page */
--	ntfs_free(pages);
-+	kfree(pages);
- 	unlock_page(page);
- 
- 	return err;
-@@ -2133,7 +2133,7 @@ int ni_decompress_file(struct ntfs_inode *ni)
- 	frame_bits = ni_ext_compress_bits(ni);
- 	frame_size = 1u << frame_bits;
- 	pages_per_frame = frame_size >> PAGE_SHIFT;
--	pages = ntfs_zalloc(pages_per_frame * sizeof(struct page *));
-+	pages = kzalloc(pages_per_frame * sizeof(struct page *), GFP_NOFS);
- 	if (!pages) {
- 		err = -ENOMEM;
- 		goto out;
-@@ -2294,7 +2294,7 @@ int ni_decompress_file(struct ntfs_inode *ni)
- 	mapping->a_ops = &ntfs_aops;
- 
- out:
--	ntfs_free(pages);
-+	kfree(pages);
- 	if (err) {
- 		make_bad_inode(inode);
- 		ntfs_set_state(sbi, NTFS_DIRTY_ERROR);
-@@ -2560,7 +2560,7 @@ int ni_read_frame(struct ntfs_inode *ni, u64 frame_vbo, struct page **pages,
- 		goto out1;
- 	}
- 
--	pages_disk = ntfs_zalloc(npages_disk * sizeof(struct page *));
-+	pages_disk = kzalloc(npages_disk * sizeof(struct page *), GFP_NOFS);
- 	if (!pages_disk) {
- 		err = -ENOMEM;
- 		goto out2;
-@@ -2629,7 +2629,7 @@ int ni_read_frame(struct ntfs_inode *ni, u64 frame_vbo, struct page **pages,
- 			put_page(pg);
- 		}
- 	}
--	ntfs_free(pages_disk);
-+	kfree(pages_disk);
- 
- out2:
- #ifdef CONFIG_NTFS3_LZX_XPRESS
-@@ -2705,7 +2705,8 @@ int ni_write_frame(struct ntfs_inode *ni, struct page **pages,
- 		goto out;
- 	}
- 
--	pages_disk = ntfs_zalloc(pages_per_frame * sizeof(struct page *));
-+	pages_disk = kzalloc(pages_per_frame * sizeof(struct page *),
-+			     GFP_NOFS);
- 	if (!pages_disk) {
- 		err = -ENOMEM;
- 		goto out;
-@@ -2765,7 +2766,7 @@ int ni_write_frame(struct ntfs_inode *ni, struct page **pages,
- 	compr_size = compress_lznt(frame_mem, frame_size, frame_ondisk,
- 				   frame_size, sbi->compress.lznt);
- 	mutex_unlock(&sbi->compress.mtx_lznt);
--	ntfs_free(lznt);
-+	kfree(lznt);
- 
- 	if (compr_size + sbi->cluster_size > frame_size) {
- 		/* frame is not compressed */
-@@ -2814,7 +2815,7 @@ int ni_write_frame(struct ntfs_inode *ni, struct page **pages,
- 			put_page(pg);
- 		}
- 	}
--	ntfs_free(pages_disk);
-+	kfree(pages_disk);
- out:
- 	return err;
- }
-diff --git a/fs/ntfs3/fslog.c b/fs/ntfs3/fslog.c
-index 397ba6a956e7..d8275f4bcd93 100644
---- a/fs/ntfs3/fslog.c
-+++ b/fs/ntfs3/fslog.c
-@@ -406,9 +406,9 @@ struct lcb {
- static void lcb_put(struct lcb *lcb)
- {
- 	if (lcb->alloc)
--		ntfs_free(lcb->log_rec);
--	ntfs_free(lcb->lrh);
--	ntfs_free(lcb);
-+		kfree(lcb->log_rec);
-+	kfree(lcb->lrh);
-+	kfree(lcb);
+ 	WARN_ON_ONCE(mask >> RCUTORTURE_RDR_SHIFT);
+ 	/* Mostly only one bit (need preemption!), sometimes lots of bits. */
+@@ -1503,11 +1534,46 @@ rcutorture_extend_mask(int oldmask, stru
+ 		mask = mask & randmask2;
+ 	else
+ 		mask = mask & (1 << (randmask2 % RCUTORTURE_RDR_NBITS));
+-	/* Can't enable bh w/irq disabled. */
+-	if ((mask & RCUTORTURE_RDR_IRQ) &&
+-	    ((!(mask & RCUTORTURE_RDR_BH) && (oldmask & RCUTORTURE_RDR_BH)) ||
+-	     (!(mask & RCUTORTURE_RDR_RBH) && (oldmask & RCUTORTURE_RDR_RBH))))
+-		mask |= RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH;
++
++	/*
++	 * Can't enable bh w/irq disabled.
++	 */
++	tmp = atomic_bhs | nonatomic_bhs;
++	if (mask & RCUTORTURE_RDR_IRQ)
++		mask |= oldmask & tmp;
++
++	/*
++	 * Ideally these sequences would be detected in debug builds
++	 * (regardless of RT), but until then don't stop testing
++	 * them on non-RT.
++	 */
++	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
++		/*
++		 * Can't disable bh in atomic context if bh was already
++		 * disabled by another task on the same CPU. Instead of
++		 * attempting to track this, just avoid disabling bh in atomic
++		 * context.
++		 */
++		mask &= ~atomic_bhs;
++		/*
++		 * Can't release the outermost rcu lock in an irq disabled
++		 * section without preemption also being disabled, if irqs
++		 * had ever been enabled during this RCU critical section
++		 * (could leak a special flag and delay reporting the qs).
++		 */
++		if ((oldmask & RCUTORTURE_RDR_RCU) &&
++		    (mask & RCUTORTURE_RDR_IRQ) &&
++		    !(mask & preempts))
++			mask |= RCUTORTURE_RDR_RCU;
++
++		/* Can't modify non-atomic bh in atomic context */
++		tmp = nonatomic_bhs;
++		if (oldmask & preempts_irq)
++			mask &= ~tmp;
++		if ((oldmask | mask) & preempts_irq)
++			mask |= oldmask & tmp;
++	}
++
+ 	return mask ?: RCUTORTURE_RDR_RCU;
  }
  
- /*
-@@ -807,7 +807,7 @@ static inline struct RESTART_TABLE *init_rsttbl(u16 esize, u16 used)
- 	u32 off;
- 	u32 bytes = esize * used + sizeof(struct RESTART_TABLE);
- 	u32 lf = sizeof(struct RESTART_TABLE) + (used - 1) * esize;
--	struct RESTART_TABLE *t = ntfs_zalloc(bytes);
-+	struct RESTART_TABLE *t = kzalloc(bytes, GFP_NOFS);
- 
- 	t->size = cpu_to_le16(esize);
- 	t->used = cpu_to_le16(used);
-@@ -849,7 +849,7 @@ static inline struct RESTART_TABLE *extend_rsttbl(struct RESTART_TABLE *tbl,
- 
- 	rt->total = tbl->total;
- 
--	ntfs_free(tbl);
-+	kfree(tbl);
- 	return rt;
- }
- 
-@@ -1134,7 +1134,7 @@ static int read_log_page(struct ntfs_log *log, u32 vbo,
- 		return -EINVAL;
- 
- 	if (!*buffer) {
--		to_free = ntfs_malloc(bytes);
-+		to_free = kmalloc(bytes, GFP_NOFS);
- 		if (!to_free)
- 			return -ENOMEM;
- 		*buffer = to_free;
-@@ -1164,7 +1164,7 @@ static int read_log_page(struct ntfs_log *log, u32 vbo,
- 
- out:
- 	if (err && to_free) {
--		ntfs_free(to_free);
-+		kfree(to_free);
- 		*buffer = NULL;
- 	}
- 
-@@ -1181,7 +1181,7 @@ static int log_read_rst(struct ntfs_log *log, u32 l_size, bool first,
- 			struct restart_info *info)
- {
- 	u32 skip, vbo;
--	struct RESTART_HDR *r_page = ntfs_malloc(DefaultLogPageSize);
-+	struct RESTART_HDR *r_page = kmalloc(DefaultLogPageSize, GFP_NOFS);
- 
- 	if (!r_page)
- 		return -ENOMEM;
-@@ -1257,8 +1257,8 @@ static int log_read_rst(struct ntfs_log *log, u32 l_size, bool first,
- 		/* Read the entire restart area */
- 		sys_page_size = le32_to_cpu(r_page->sys_page_size);
- 		if (DefaultLogPageSize != sys_page_size) {
--			ntfs_free(r_page);
--			r_page = ntfs_zalloc(sys_page_size);
-+			kfree(r_page);
-+			r_page = kzalloc(sys_page_size, GFP_NOFS);
- 			if (!r_page)
- 				return -ENOMEM;
- 
-@@ -1266,7 +1266,7 @@ static int log_read_rst(struct ntfs_log *log, u32 l_size, bool first,
- 					  (struct RECORD_PAGE_HDR **)&r_page,
- 					  &usa_error)) {
- 				/* ignore any errors */
--				ntfs_free(r_page);
-+				kfree(r_page);
- 				r_page = NULL;
- 				continue;
- 			}
-@@ -1296,7 +1296,7 @@ static int log_read_rst(struct ntfs_log *log, u32 l_size, bool first,
- 		}
- 	}
- 
--	ntfs_free(r_page);
-+	kfree(r_page);
- 
- 	return 0;
- }
-@@ -1397,7 +1397,7 @@ static void log_create(struct ntfs_log *log, u32 l_size, const u64 last_lsn,
- static struct RESTART_AREA *log_create_ra(struct ntfs_log *log)
- {
- 	struct CLIENT_REC *cr;
--	struct RESTART_AREA *ra = ntfs_zalloc(log->restart_size);
-+	struct RESTART_AREA *ra = kzalloc(log->restart_size, GFP_NOFS);
- 
- 	if (!ra)
- 		return NULL;
-@@ -1509,7 +1509,7 @@ static int next_log_lsn(struct ntfs_log *log, const struct LFS_RECORD_HDR *rh,
- 	if (!is_lsn_in_file(log, *lsn))
- 		*lsn = 0;
- 
--	ntfs_free(page);
-+	kfree(page);
- 
- 	return 0;
- }
-@@ -1634,7 +1634,7 @@ static int last_log_lsn(struct ntfs_log *log)
- 		second_off = 0x12 * log->page_size;
- 
- 		// 0x10 == 0x12 - 0x2
--		page_bufs = ntfs_malloc(log->page_size * 0x10);
-+		page_bufs = kmalloc(log->page_size * 0x10, GFP_NOFS);
- 		if (!page_bufs)
- 			return -ENOMEM;
- 	} else {
-@@ -1646,7 +1646,7 @@ static int last_log_lsn(struct ntfs_log *log)
- 	/* Read second tail page (at pos 3/0x12000) */
- 	if (read_log_page(log, second_off, &second_tail, &usa_error) ||
- 	    usa_error || second_tail->rhdr.sign != NTFS_RCRD_SIGNATURE) {
--		ntfs_free(second_tail);
-+		kfree(second_tail);
- 		second_tail = NULL;
- 		second_file_off = 0;
- 		lsn2 = 0;
-@@ -1658,7 +1658,7 @@ static int last_log_lsn(struct ntfs_log *log)
- 	/* Read first tail page (at pos 2/0x2000 ) */
- 	if (read_log_page(log, final_off, &first_tail, &usa_error) ||
- 	    usa_error || first_tail->rhdr.sign != NTFS_RCRD_SIGNATURE) {
--		ntfs_free(first_tail);
-+		kfree(first_tail);
- 		first_tail = NULL;
- 		first_file_off = 0;
- 		lsn1 = 0;
-@@ -1759,17 +1759,17 @@ static int last_log_lsn(struct ntfs_log *log)
- 			page_pos = page_cnt = 1;
- 		}
- 	} else {
--		ntfs_free(first_tail);
--		ntfs_free(second_tail);
-+		kfree(first_tail);
-+		kfree(second_tail);
- 		goto tail_read;
- 	}
- 
--	ntfs_free(first_tail_prev);
-+	kfree(first_tail_prev);
- 	first_tail_prev = first_tail;
- 	final_off_prev = first_file_off;
- 	first_tail = NULL;
- 
--	ntfs_free(second_tail_prev);
-+	kfree(second_tail_prev);
- 	second_tail_prev = second_tail;
- 	second_off_prev = second_file_off;
- 	second_tail = NULL;
-@@ -2030,7 +2030,7 @@ static int last_log_lsn(struct ntfs_log *log)
- 	}
- 
- 	curpage_off = nextpage_off;
--	ntfs_free(page);
-+	kfree(page);
- 	page = NULL;
- 	reuse_page = 0;
- 	goto next_page;
-@@ -2092,7 +2092,7 @@ static int last_log_lsn(struct ntfs_log *log)
- 	cur_pos = 2;
- 
- next_test_page:
--	ntfs_free(tst_page);
-+	kfree(tst_page);
- 	tst_page = NULL;
- 
- 	/* Walk through the file, reading log pages */
-@@ -2151,7 +2151,7 @@ static int last_log_lsn(struct ntfs_log *log)
- 	}
- 
- 	/* Call our routine to check this log page */
--	ntfs_free(tst_page);
-+	kfree(tst_page);
- 	tst_page = NULL;
- 
- 	err = read_log_page(log, nextpage_off, &tst_page, &usa_error);
-@@ -2186,7 +2186,7 @@ static int last_log_lsn(struct ntfs_log *log)
- 			u64 off = hdr_file_off(log, tmp_page);
- 
- 			if (!page) {
--				page = ntfs_malloc(log->page_size);
-+				page = kmalloc(log->page_size, GFP_NOFS);
- 				if (!page)
- 					return -ENOMEM;
- 			}
-@@ -2231,11 +2231,11 @@ static int last_log_lsn(struct ntfs_log *log)
- 	}
- 
- out:
--	ntfs_free(second_tail);
--	ntfs_free(first_tail);
--	ntfs_free(page);
--	ntfs_free(tst_page);
--	ntfs_free(page_bufs);
-+	kfree(second_tail);
-+	kfree(first_tail);
-+	kfree(page);
-+	kfree(tst_page);
-+	kfree(page_bufs);
- 
- 	return err;
- }
-@@ -2311,7 +2311,7 @@ static int read_log_rec_buf(struct ntfs_log *log,
- 	}
- 
- out:
--	ntfs_free(ph);
-+	kfree(ph);
- 	return err;
- }
- 
-@@ -2360,7 +2360,7 @@ static int read_rst_area(struct ntfs_log *log, struct NTFS_RESTART **rst_,
- 		goto out;
- 	}
- 
--	rst = ntfs_malloc(len);
-+	rst = kmalloc(len, GFP_NOFS);
- 	if (!rst) {
- 		err = -ENOMEM;
- 		goto out;
-@@ -2375,8 +2375,8 @@ static int read_rst_area(struct ntfs_log *log, struct NTFS_RESTART **rst_,
- 	rst = NULL;
- 
- out:
--	ntfs_free(rh);
--	ntfs_free(rst);
-+	kfree(rh);
-+	kfree(rst);
- 
- 	return err;
- }
-@@ -2419,7 +2419,7 @@ static int find_log_rec(struct ntfs_log *log, u64 lsn, struct lcb *lcb)
- 	 * put a pointer to the log record the context block
- 	 */
- 	if (rh->flags & LOG_RECORD_MULTI_PAGE) {
--		void *lr = ntfs_malloc(len);
-+		void *lr = kmalloc(len, GFP_NOFS);
- 
- 		if (!lr)
- 			return -ENOMEM;
-@@ -2472,7 +2472,7 @@ static int read_log_rec_lcb(struct ntfs_log *log, u64 lsn, u32 ctx_mode,
- 	if (!verify_client_lsn(log, cr, lsn))
- 		return -EINVAL;
- 
--	lcb = ntfs_zalloc(sizeof(struct lcb));
-+	lcb = kzalloc(sizeof(struct lcb), GFP_NOFS);
- 	if (!lcb)
- 		return -ENOMEM;
- 	lcb->client = log->client_id;
-@@ -2521,7 +2521,7 @@ static int find_client_next_lsn(struct ntfs_log *log, struct lcb *lcb, u64 *lsn)
- 			break;
- 
- 		if (hdr != lcb->lrh)
--			ntfs_free(hdr);
-+			kfree(hdr);
- 
- 		hdr = NULL;
- 		err = read_log_page(log, lsn_to_vbo(log, current_lsn),
-@@ -2533,7 +2533,7 @@ static int find_client_next_lsn(struct ntfs_log *log, struct lcb *lcb, u64 *lsn)
- 			   sizeof(struct CLIENT_ID))) {
- 			/*err = -EINVAL; */
- 		} else if (LfsClientRecord == hdr->record_type) {
--			ntfs_free(lcb->lrh);
-+			kfree(lcb->lrh);
- 			lcb->lrh = hdr;
- 			*lsn = current_lsn;
- 			return 0;
-@@ -2542,7 +2542,7 @@ static int find_client_next_lsn(struct ntfs_log *log, struct lcb *lcb, u64 *lsn)
- 
- out:
- 	if (hdr != lcb->lrh)
--		ntfs_free(hdr);
-+		kfree(hdr);
- 	return err;
- 
- check_undo_next:
-@@ -2566,7 +2566,7 @@ static int find_client_next_lsn(struct ntfs_log *log, struct lcb *lcb, u64 *lsn)
- 			    (struct RECORD_PAGE_HDR **)&hdr, NULL);
- 	if (err)
- 		return err;
--	ntfs_free(lcb->lrh);
-+	kfree(lcb->lrh);
- 	lcb->lrh = hdr;
- 
- 	*lsn = next_lsn;
-@@ -2586,11 +2586,11 @@ static int read_next_log_rec(struct ntfs_log *log, struct lcb *lcb, u64 *lsn)
- 		return 0;
- 
- 	if (lcb->alloc)
--		ntfs_free(lcb->log_rec);
-+		kfree(lcb->log_rec);
- 
- 	lcb->log_rec = NULL;
- 	lcb->alloc = false;
--	ntfs_free(lcb->lrh);
-+	kfree(lcb->lrh);
- 	lcb->lrh = NULL;
- 
- 	return find_log_rec(log, *lsn, lcb);
-@@ -2987,7 +2987,7 @@ static struct ATTRIB *attr_create_nonres_log(struct ntfs_sb_info *sbi,
- 	u32 asize = name_size +
- 		    (is_ext ? SIZEOF_NONRESIDENT_EX : SIZEOF_NONRESIDENT);
- 
--	attr = ntfs_zalloc(asize);
-+	attr = kzalloc(asize, GFP_NOFS);
- 	if (!attr)
- 		return NULL;
- 
-@@ -3087,7 +3087,7 @@ static int do_action(struct ntfs_log *log, struct OPEN_ATTR_ENRTY *oe,
- 		if (inode) {
- 			mi = &ntfs_i(inode)->mi;
- 		} else if (op == InitializeFileRecordSegment) {
--			mi = ntfs_zalloc(sizeof(struct mft_inode));
-+			mi = kzalloc(sizeof(struct mft_inode), GFP_NOFS);
- 			if (!mi)
- 				return -ENOMEM;
- 			err = mi_format_new(mi, sbi, rno, 0, false);
-@@ -3181,7 +3181,7 @@ static int do_action(struct ntfs_log *log, struct OPEN_ATTR_ENRTY *oe,
- 		if (attr->type == ATTR_ALLOC)
- 			bytes = (bytes + 511) & ~511; // align
- 
--		buffer_le = ntfs_malloc(bytes);
-+		buffer_le = kmalloc(bytes, GFP_NOFS);
- 		if (!buffer_le)
- 			return -ENOMEM;
- 
-@@ -3250,11 +3250,11 @@ static int do_action(struct ntfs_log *log, struct OPEN_ATTR_ENRTY *oe,
- 
- 		oa2 = find_loaded_attr(log, attr, rno_base);
- 		if (oa2) {
--			void *p2 = ntfs_memdup(attr, le32_to_cpu(attr->size));
--
-+			void *p2 = kmemdup(attr, le32_to_cpu(attr->size),
-+					   GFP_NOFS);
- 			if (p2) {
- 				// run_close(oa2->run1);
--				ntfs_free(oa2->attr);
-+				kfree(oa2->attr);
- 				oa2->attr = p2;
- 			}
- 		}
-@@ -3317,12 +3317,12 @@ static int do_action(struct ntfs_log *log, struct OPEN_ATTR_ENRTY *oe,
- 
- 		oa2 = find_loaded_attr(log, attr, rno_base);
- 		if (oa2) {
--			void *p2 = ntfs_memdup(attr, le32_to_cpu(attr->size));
--
-+			void *p2 = kmemdup(attr, le32_to_cpu(attr->size),
-+					   GFP_NOFS);
- 			if (p2) {
- 				// run_close(&oa2->run0);
- 				oa2->run1 = &oa2->run0;
--				ntfs_free(oa2->attr);
-+				kfree(oa2->attr);
- 				oa2->attr = p2;
- 			}
- 		}
-@@ -3376,10 +3376,10 @@ static int do_action(struct ntfs_log *log, struct OPEN_ATTR_ENRTY *oe,
- 
- 		oa2 = find_loaded_attr(log, attr, rno_base);
- 		if (oa2) {
--			void *p2 = ntfs_memdup(attr, le32_to_cpu(attr->size));
--
-+			void *p2 = kmemdup(attr, le32_to_cpu(attr->size),
-+					   GFP_NOFS);
- 			if (p2) {
--				ntfs_free(oa2->attr);
-+				kfree(oa2->attr);
- 				oa2->attr = p2;
- 			}
- 		}
-@@ -3714,7 +3714,7 @@ static int do_action(struct ntfs_log *log, struct OPEN_ATTR_ENRTY *oe,
- 	else if (mi != mi2_child)
- 		mi_put(mi);
- 
--	ntfs_free(buffer_le);
-+	kfree(buffer_le);
- 
- 	return err;
- 
-@@ -3783,13 +3783,13 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
- 	if (!page_size)
- 		return -EINVAL;
- 
--	log = ntfs_zalloc(sizeof(struct ntfs_log));
-+	log = kzalloc(sizeof(struct ntfs_log), GFP_NOFS);
- 	if (!log)
- 		return -ENOMEM;
- 
- 	log->ni = ni;
- 	log->l_size = l_size;
--	log->one_page_buf = ntfs_malloc(page_size);
-+	log->one_page_buf = kmalloc(page_size, GFP_NOFS);
- 
- 	if (!log->one_page_buf) {
- 		err = -ENOMEM;
-@@ -3854,17 +3854,17 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
- 		    sp->rhdr.sign == NTFS_CHKD_SIGNATURE) {
- 			use_second_page = false;
- 		}
--		ntfs_free(sp);
-+		kfree(sp);
- 	}
- 
- 	if (use_second_page) {
--		ntfs_free(rst_info.r_page);
-+		kfree(rst_info.r_page);
- 		memcpy(&rst_info, &rst_info2, sizeof(struct restart_info));
- 		rst_info2.r_page = NULL;
- 	}
- 
- use_first_page:
--	ntfs_free(rst_info2.r_page);
-+	kfree(rst_info2.r_page);
- 
- check_restart_area:
- 	/* If the restart area is at offset 0, we want to write the second restart area first */
-@@ -4012,7 +4012,7 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
- 
- 	log->current_avail = current_log_avail(log);
- 
--	ra = ntfs_zalloc(log->restart_size);
-+	ra = kzalloc(log->restart_size, GFP_NOFS);
- 	if (!ra) {
- 		err = -ENOMEM;
- 		goto out;
-@@ -4147,7 +4147,7 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
- 		goto out;
- 	}
- 
--	trtbl = ntfs_memdup(rt, t32);
-+	trtbl = kmemdup(rt, t32, GFP_NOFS);
- 	if (!trtbl) {
- 		err = -ENOMEM;
- 		goto out;
-@@ -4187,7 +4187,7 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
- 		goto out;
- 	}
- 
--	dptbl = ntfs_memdup(rt, t32);
-+	dptbl = kmemdup(rt, t32, GFP_NOFS);
- 	if (!dptbl) {
- 		err = -ENOMEM;
- 		goto out;
-@@ -4254,7 +4254,7 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
- 	t32 = lrh_length(lrh);
- 	rec_len -= t32;
- 
--	attr_names = ntfs_memdup(Add2Ptr(lrh, t32), rec_len);
-+	attr_names = kmemdup(Add2Ptr(lrh, t32), rec_len, GFP_NOFS);
- 
- 	lcb_put(lcb);
- 	lcb = NULL;
-@@ -4289,7 +4289,7 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
- 		goto out;
- 	}
- 
--	oatbl = ntfs_memdup(rt, t32);
-+	oatbl = kmemdup(rt, t32, GFP_NOFS);
- 	if (!oatbl) {
- 		err = -ENOMEM;
- 		goto out;
-@@ -4472,7 +4472,7 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
- 			      sizeof(u64);
- 		} else {
- 			t32 = log->clst_per_page;
--			ntfs_free(dptbl);
-+			kfree(dptbl);
- 			dptbl = init_rsttbl(struct_size(dp, page_lcns, t32),
- 					    32);
- 			if (!dptbl) {
-@@ -4575,7 +4575,7 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
- 
- 		t16 = le16_to_cpu(lrh->undo_len);
- 		if (t16) {
--			oe->ptr = ntfs_malloc(t16);
-+			oe->ptr = kmalloc(t16, GFP_NOFS);
- 			if (!oe->ptr) {
- 				err = -ENOMEM;
- 				goto out;
-@@ -4680,7 +4680,7 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
- 		goto next_dirty_page;
- 	}
- 
--	oa = ntfs_zalloc(sizeof(struct OpenAttr));
-+	oa = kzalloc(sizeof(struct OpenAttr), GFP_NOFS);
- 	if (!oa) {
- 		err = -ENOMEM;
- 		goto out;
-@@ -4701,7 +4701,7 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
- 		attr = attr_create_nonres_log(sbi, oe->type, 0, oe->ptr,
- 					      oe->name_len, 0);
- 		if (!attr) {
--			ntfs_free(oa);
-+			kfree(oa);
- 			err = -ENOMEM;
- 			goto out;
- 		}
-@@ -4720,7 +4720,7 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
- 		goto fake_attr;
- 
- 	t32 = le32_to_cpu(attr->size);
--	oa->attr = ntfs_memdup(attr, t32);
-+	oa->attr = kmemdup(attr, t32, GFP_NOFS);
- 	if (!oa->attr)
- 		goto fake_attr;
- 
-@@ -4746,7 +4746,7 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
- 				 le64_to_cpu(attr->nres.evcn), svcn,
- 				 Add2Ptr(attr, roff), t32 - roff);
- 		if (err < 0) {
--			ntfs_free(oa->attr);
-+			kfree(oa->attr);
- 			oa->attr = NULL;
- 			goto fake_attr;
- 		}
-@@ -4757,7 +4757,7 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
- 
- final_oe:
- 	if (oe->is_attr_name == 1)
--		ntfs_free(oe->ptr);
-+		kfree(oe->ptr);
- 	oe->is_attr_name = 0;
- 	oe->ptr = oa;
- 	oe->name_len = attr->name_len;
-@@ -5090,7 +5090,7 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
- 	if (is_ro)
- 		goto out;
- 
--	rh = ntfs_zalloc(log->page_size);
-+	rh = kzalloc(log->page_size, GFP_NOFS);
- 	if (!rh) {
- 		err = -ENOMEM;
- 		goto out;
-@@ -5125,12 +5125,12 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
- 		err = ntfs_sb_write_run(sbi, &log->ni->file.run, log->page_size,
- 					rh, log->page_size);
- 
--	ntfs_free(rh);
-+	kfree(rh);
- 	if (err)
- 		goto out;
- 
- out:
--	ntfs_free(rst);
-+	kfree(rst);
- 	if (lcb)
- 		lcb_put(lcb);
- 
-@@ -5140,7 +5140,7 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
- 		rno = ino_get(&oe->ref);
- 
- 		if (oe->is_attr_name == 1) {
--			ntfs_free(oe->ptr);
-+			kfree(oe->ptr);
- 			oe->ptr = NULL;
- 			continue;
- 		}
-@@ -5153,20 +5153,20 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
- 			continue;
- 
- 		run_close(&oa->run0);
--		ntfs_free(oa->attr);
-+		kfree(oa->attr);
- 		if (oa->ni)
- 			iput(&oa->ni->vfs_inode);
--		ntfs_free(oa);
-+		kfree(oa);
- 	}
- 
--	ntfs_free(trtbl);
--	ntfs_free(oatbl);
--	ntfs_free(dptbl);
--	ntfs_free(attr_names);
--	ntfs_free(rst_info.r_page);
-+	kfree(trtbl);
-+	kfree(oatbl);
-+	kfree(dptbl);
-+	kfree(attr_names);
-+	kfree(rst_info.r_page);
- 
--	ntfs_free(ra);
--	ntfs_free(log->one_page_buf);
-+	kfree(ra);
-+	kfree(log->one_page_buf);
- 
- 	if (err)
- 		sbi->flags |= NTFS_FLAGS_NEED_REPLAY;
-@@ -5176,7 +5176,7 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
- 	else if (log->set_dirty)
- 		ntfs_set_state(sbi, NTFS_DIRTY_ERROR);
- 
--	ntfs_free(log);
-+	kfree(log);
- 
- 	return err;
- }
-diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
-index 92140050fb6c..5478b79181af 100644
---- a/fs/ntfs3/fsntfs.c
-+++ b/fs/ntfs3/fsntfs.c
-@@ -2038,7 +2038,7 @@ int ntfs_get_security_by_id(struct ntfs_sb_info *sbi, __le32 security_id,
- 
- 	*size = t32 - SIZEOF_SECURITY_HDR;
- 
--	p = ntfs_malloc(*size);
-+	p = kmalloc(*size, GFP_NOFS);
- 	if (!p) {
- 		err = -ENOMEM;
- 		goto out;
-@@ -2066,7 +2066,7 @@ int ntfs_get_security_by_id(struct ntfs_sb_info *sbi, __le32 security_id,
- 	p = NULL;
- 
- out:
--	ntfs_free(p);
-+	kfree(p);
- 	fnd_put(fnd_sii);
- 	ni_unlock(ni);
- 
-@@ -2118,7 +2118,7 @@ int ntfs_insert_security(struct ntfs_sb_info *sbi,
- 	*security_id = SECURITY_ID_INVALID;
- 
- 	/* Allocate a temporal buffer*/
--	d_security = ntfs_zalloc(aligned_sec_size);
-+	d_security = kzalloc(aligned_sec_size, GFP_NOFS);
- 	if (!d_security)
- 		return -ENOMEM;
- 
-@@ -2282,7 +2282,7 @@ int ntfs_insert_security(struct ntfs_sb_info *sbi,
- 	fnd_put(fnd_sdh);
- 	mark_inode_dirty(&ni->vfs_inode);
- 	ni_unlock(ni);
--	ntfs_free(d_security);
-+	kfree(d_security);
- 
- 	return err;
- }
-diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
-index 6aa9540ece47..8c2ba91374e1 100644
---- a/fs/ntfs3/index.c
-+++ b/fs/ntfs3/index.c
-@@ -681,7 +681,7 @@ static struct NTFS_DE *hdr_find_e(const struct ntfs_index *indx,
- 	if (end > 0x10000)
- 		goto next;
- 
--	offs = ntfs_malloc(sizeof(u16) * nslots);
-+	offs = kmalloc(sizeof(u16) * nslots, GFP_NOFS);
- 	if (!offs)
- 		goto next;
- 
-@@ -703,10 +703,10 @@ static struct NTFS_DE *hdr_find_e(const struct ntfs_index *indx,
- 		u16 *ptr;
- 		int new_slots = QuadAlign(2 * nslots);
- 
--		ptr = ntfs_malloc(sizeof(u16) * new_slots);
-+		ptr = kmalloc(sizeof(u16) * new_slots, GFP_NOFS);
- 		if (ptr)
- 			memcpy(ptr, offs, sizeof(u16) * max_idx);
--		ntfs_free(offs);
-+		kfree(offs);
- 		offs = ptr;
- 		nslots = new_slots;
- 		if (!ptr)
-@@ -763,7 +763,7 @@ static struct NTFS_DE *hdr_find_e(const struct ntfs_index *indx,
- 	e = Add2Ptr(hdr, offs[fnd]);
- 
- out1:
--	ntfs_free(offs);
-+	kfree(offs);
- 
- 	return e;
- #endif
-@@ -933,21 +933,21 @@ static struct indx_node *indx_new(struct ntfs_index *indx,
- 	u16 fn;
- 	u32 eo;
- 
--	r = ntfs_zalloc(sizeof(struct indx_node));
-+	r = kzalloc(sizeof(struct indx_node), GFP_NOFS);
- 	if (!r)
- 		return ERR_PTR(-ENOMEM);
- 
--	index = ntfs_zalloc(bytes);
-+	index = kzalloc(bytes, GFP_NOFS);
- 	if (!index) {
--		ntfs_free(r);
-+		kfree(r);
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
- 	err = ntfs_get_bh(ni->mi.sbi, &indx->alloc_run, vbo, bytes, &r->nb);
- 
- 	if (err) {
--		ntfs_free(index);
--		ntfs_free(r);
-+		kfree(index);
-+		kfree(r);
- 		return ERR_PTR(err);
- 	}
- 
-@@ -1026,7 +1026,7 @@ int indx_read(struct ntfs_index *indx, struct ntfs_inode *ni, CLST vbn,
- 	const struct INDEX_NAMES *name;
- 
- 	if (!in) {
--		in = ntfs_zalloc(sizeof(struct indx_node));
-+		in = kzalloc(sizeof(struct indx_node), GFP_NOFS);
- 		if (!in)
- 			return -ENOMEM;
- 	} else {
-@@ -1035,7 +1035,7 @@ int indx_read(struct ntfs_index *indx, struct ntfs_inode *ni, CLST vbn,
- 
- 	ib = in->index;
- 	if (!ib) {
--		ib = ntfs_malloc(bytes);
-+		ib = kmalloc(bytes, GFP_NOFS);
- 		if (!ib) {
- 			err = -ENOMEM;
- 			goto out;
-@@ -1082,11 +1082,11 @@ int indx_read(struct ntfs_index *indx, struct ntfs_inode *ni, CLST vbn,
- 
- out:
- 	if (ib != in->index)
--		ntfs_free(ib);
-+		kfree(ib);
- 
- 	if (*node != in) {
- 		nb_put(&in->nb);
--		ntfs_free(in);
-+		kfree(in);
- 	}
- 
- 	return err;
-@@ -1218,7 +1218,7 @@ int indx_find_sort(struct ntfs_index *indx, struct ntfs_inode *ni,
- 		    sizeof(struct NTFS_DE) + sizeof(u64)) {
- 			if (n) {
- 				fnd_pop(fnd);
--				ntfs_free(n);
-+				kfree(n);
- 			}
- 			return -EINVAL;
- 		}
-@@ -1231,7 +1231,7 @@ int indx_find_sort(struct ntfs_index *indx, struct ntfs_inode *ni,
- 		/* Try next level */
- 		e = hdr_first_de(&n->index->ihdr);
- 		if (!e) {
--			ntfs_free(n);
-+			kfree(n);
- 			return -EINVAL;
- 		}
- 
-@@ -1251,7 +1251,7 @@ int indx_find_sort(struct ntfs_index *indx, struct ntfs_inode *ni,
- 		/* Pop one level */
- 		if (n) {
- 			fnd_pop(fnd);
--			ntfs_free(n);
-+			kfree(n);
- 		}
- 
- 		level = fnd->level;
-@@ -1588,7 +1588,7 @@ static int indx_insert_into_root(struct ntfs_index *indx, struct ntfs_inode *ni,
- 	}
- 
- 	/* Make a copy of root attribute to restore if error */
--	a_root = ntfs_memdup(attr, asize);
-+	a_root = kmemdup(attr, asize, GFP_NOFS);
- 	if (!a_root) {
- 		err = -ENOMEM;
- 		goto out;
-@@ -1614,7 +1614,7 @@ static int indx_insert_into_root(struct ntfs_index *indx, struct ntfs_inode *ni,
- 	if (!to_move) {
- 		re = NULL;
- 	} else {
--		re = ntfs_memdup(e0, to_move);
-+		re = kmemdup(e0, to_move, GFP_NOFS);
- 		if (!re) {
- 			err = -ENOMEM;
- 			goto out;
-@@ -1707,7 +1707,7 @@ static int indx_insert_into_root(struct ntfs_index *indx, struct ntfs_inode *ni,
- 		 * new entry classic case when mft record is 1K and index
- 		 * buffer 4K the problem should not occurs
- 		 */
--		ntfs_free(re);
-+		kfree(re);
- 		indx_write(indx, ni, n, 0);
- 
- 		put_indx_node(n);
-@@ -1733,12 +1733,12 @@ static int indx_insert_into_root(struct ntfs_index *indx, struct ntfs_inode *ni,
- 	n = NULL;
- 
- out1:
--	ntfs_free(re);
-+	kfree(re);
- 	if (n)
- 		put_indx_node(n);
- 
- out:
--	ntfs_free(a_root);
-+	kfree(a_root);
- 	return err;
- }
- 
-@@ -1791,7 +1791,7 @@ indx_insert_into_buffer(struct ntfs_index *indx, struct ntfs_inode *ni,
- 		return -EINVAL;
- 
- 	sp_size = le16_to_cpu(sp->size);
--	up_e = ntfs_malloc(sp_size + sizeof(u64));
-+	up_e = kmalloc(sp_size + sizeof(u64), GFP_NOFS);
- 	if (!up_e)
- 		return -ENOMEM;
- 	memcpy(up_e, sp, sp_size);
-@@ -1869,7 +1869,7 @@ indx_insert_into_buffer(struct ntfs_index *indx, struct ntfs_inode *ni,
- 	}
- 
- out:
--	ntfs_free(up_e);
-+	kfree(up_e);
- 
- 	return err;
- }
-@@ -2148,7 +2148,7 @@ static int indx_get_entry_to_replace(struct ntfs_index *indx,
- 	n = fnd->nodes[level];
- 	te = hdr_first_de(&n->index->ihdr);
- 	/* Copy the candidate entry into the replacement entry buffer. */
--	re = ntfs_malloc(le16_to_cpu(te->size) + sizeof(u64));
-+	re = kmalloc(le16_to_cpu(te->size) + sizeof(u64), GFP_NOFS);
- 	if (!re) {
- 		err = -ENOMEM;
- 		goto out;
-@@ -2300,7 +2300,7 @@ int indx_delete_entry(struct ntfs_index *indx, struct ntfs_inode *ni,
- 							      fnd)
- 				    : indx_insert_into_root(indx, ni, re, e,
- 							    ctx, fnd);
--			ntfs_free(re);
-+			kfree(re);
- 
- 			if (err)
- 				goto out;
-@@ -2458,7 +2458,7 @@ int indx_delete_entry(struct ntfs_index *indx, struct ntfs_inode *ni,
- 		 * as appropriate.
- 		 */
- 		e_size = le16_to_cpu(e->size);
--		me = ntfs_memdup(e, e_size);
-+		me = kmemdup(e, e_size, GFP_NOFS);
- 		if (!me) {
- 			err = -ENOMEM;
- 			goto out;
-@@ -2504,7 +2504,7 @@ int indx_delete_entry(struct ntfs_index *indx, struct ntfs_inode *ni,
- 		 * Find the spot the tree where we want to insert the new entry.
- 		 */
- 		err = indx_insert_entry(indx, ni, me, ctx, fnd);
--		ntfs_free(me);
-+		kfree(me);
- 		if (err)
- 			goto out;
- 
-diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
-index bf51e294432e..ba8e59920587 100644
---- a/fs/ntfs3/inode.c
-+++ b/fs/ntfs3/inode.c
-@@ -1097,7 +1097,7 @@ ntfs_create_reparse_buffer(struct ntfs_sb_info *sbi, const char *symname,
- 	__le16 *rp_name;
- 	typeof(rp->SymbolicLinkReparseBuffer) *rs;
- 
--	rp = ntfs_zalloc(ntfs_reparse_bytes(2 * size + 2));
-+	rp = kzalloc(ntfs_reparse_bytes(2 * size + 2), GFP_NOFS);
- 	if (!rp)
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -1152,7 +1152,7 @@ ntfs_create_reparse_buffer(struct ntfs_sb_info *sbi, const char *symname,
- 
- 	return rp;
- out:
--	ntfs_free(rp);
-+	kfree(rp);
- 	return ERR_PTR(err);
- }
- 
-@@ -1620,7 +1620,7 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
- 
- out2:
- 	__putname(new_de);
--	ntfs_free(rp);
-+	kfree(rp);
- 
- out1:
- 	if (err)
-@@ -1862,7 +1862,7 @@ static noinline int ntfs_readlink_hlp(struct inode *inode, char *buffer,
- 			goto out;
- 		}
- 	} else {
--		rp = ntfs_malloc(i_size);
-+		rp = kmalloc(i_size, GFP_NOFS);
- 		if (!rp) {
- 			err = -ENOMEM;
- 			goto out;
-@@ -1972,7 +1972,7 @@ static noinline int ntfs_readlink_hlp(struct inode *inode, char *buffer,
- 	/* Always set last zero */
- 	buffer[err] = 0;
- out:
--	ntfs_free(to_free);
-+	kfree(to_free);
- 	return err;
- }
- 
-diff --git a/fs/ntfs3/lznt.c b/fs/ntfs3/lznt.c
-index ead9ab7d69b3..eb43b9f5149b 100644
---- a/fs/ntfs3/lznt.c
-+++ b/fs/ntfs3/lznt.c
-@@ -294,8 +294,8 @@ static inline ssize_t decompress_chunk(u8 *unc, u8 *unc_end, const u8 *cmpr,
-  */
- struct lznt *get_lznt_ctx(int level)
- {
--	struct lznt *r = ntfs_zalloc(level ? offsetof(struct lznt, hash)
--					   : sizeof(struct lznt));
-+	struct lznt *r = kzalloc(level ? offsetof(struct lznt, hash) :
-+					 sizeof(struct lznt), GFP_NOFS);
- 
- 	if (r)
- 		r->std = !level;
-diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
-index 0c3ac89c3115..ca76cd4b59ad 100644
---- a/fs/ntfs3/ntfs_fs.h
-+++ b/fs/ntfs3/ntfs_fs.h
-@@ -600,13 +600,13 @@ int indx_used_bit(struct ntfs_index *indx, struct ntfs_inode *ni, size_t *bit);
- void fnd_clear(struct ntfs_fnd *fnd);
- static inline struct ntfs_fnd *fnd_get(void)
- {
--	return ntfs_zalloc(sizeof(struct ntfs_fnd));
-+	return kzalloc(sizeof(struct ntfs_fnd), GFP_NOFS);
- }
- static inline void fnd_put(struct ntfs_fnd *fnd)
- {
- 	if (fnd) {
- 		fnd_clear(fnd);
--		ntfs_free(fnd);
-+		kfree(fnd);
- 	}
- }
- void indx_clear(struct ntfs_index *idx);
-@@ -872,20 +872,20 @@ static inline void run_init(struct runs_tree *run)
- 
- static inline struct runs_tree *run_alloc(void)
- {
--	return ntfs_zalloc(sizeof(struct runs_tree));
-+	return kzalloc(sizeof(struct runs_tree), GFP_NOFS);
- }
- 
- static inline void run_close(struct runs_tree *run)
- {
--	ntfs_vfree(run->runs);
-+	kvfree(run->runs);
- 	memset(run, 0, sizeof(*run));
- }
- 
- static inline void run_free(struct runs_tree *run)
- {
- 	if (run) {
--		ntfs_vfree(run->runs);
--		ntfs_free(run);
-+		kvfree(run->runs);
-+		kfree(run);
- 	}
- }
- 
-@@ -1046,15 +1046,15 @@ static inline void put_indx_node(struct indx_node *in)
- 	if (!in)
- 		return;
- 
--	ntfs_free(in->index);
-+	kfree(in->index);
- 	nb_put(&in->nb);
--	ntfs_free(in);
-+	kfree(in);
- }
- 
- static inline void mi_clear(struct mft_inode *mi)
- {
- 	nb_put(&mi->nb);
--	ntfs_free(mi->mrec);
-+	kfree(mi->mrec);
- 	mi->mrec = NULL;
- }
- 
-diff --git a/fs/ntfs3/record.c b/fs/ntfs3/record.c
-index 0d4a6251bddc..3a7b5dfddd53 100644
---- a/fs/ntfs3/record.c
-+++ b/fs/ntfs3/record.c
-@@ -76,14 +76,14 @@ static __le16 mi_new_attt_id(struct mft_inode *mi)
- int mi_get(struct ntfs_sb_info *sbi, CLST rno, struct mft_inode **mi)
- {
- 	int err;
--	struct mft_inode *m = ntfs_zalloc(sizeof(struct mft_inode));
-+	struct mft_inode *m = kzalloc(sizeof(struct mft_inode), GFP_NOFS);
- 
- 	if (!m)
- 		return -ENOMEM;
- 
- 	err = mi_init(m, sbi, rno);
- 	if (err) {
--		ntfs_free(m);
-+		kfree(m);
- 		return err;
- 	}
- 
-@@ -100,14 +100,14 @@ int mi_get(struct ntfs_sb_info *sbi, CLST rno, struct mft_inode **mi)
- void mi_put(struct mft_inode *mi)
- {
- 	mi_clear(mi);
--	ntfs_free(mi);
-+	kfree(mi);
- }
- 
- int mi_init(struct mft_inode *mi, struct ntfs_sb_info *sbi, CLST rno)
- {
- 	mi->sbi = sbi;
- 	mi->rno = rno;
--	mi->mrec = ntfs_malloc(sbi->record_size);
-+	mi->mrec = kmalloc(sbi->record_size, GFP_NOFS);
- 	if (!mi->mrec)
- 		return -ENOMEM;
- 
-diff --git a/fs/ntfs3/run.c b/fs/ntfs3/run.c
-index 5cdf6efe67e0..e743791da65c 100644
---- a/fs/ntfs3/run.c
-+++ b/fs/ntfs3/run.c
-@@ -253,7 +253,7 @@ void run_truncate_head(struct runs_tree *run, CLST vcn)
- 	run->count -= index;
- 
- 	if (!run->count) {
--		ntfs_vfree(run->runs);
-+		kvfree(run->runs);
- 		run->runs = NULL;
- 		run->allocated = 0;
- 	}
-@@ -292,7 +292,7 @@ void run_truncate(struct runs_tree *run, CLST vcn)
- 
- 	/* Do not reallocate array 'runs'. Only free if possible */
- 	if (!index) {
--		ntfs_vfree(run->runs);
-+		kvfree(run->runs);
- 		run->runs = NULL;
- 		run->allocated = 0;
- 	}
-@@ -387,7 +387,7 @@ bool run_add_entry(struct runs_tree *run, CLST vcn, CLST lcn, CLST len,
- 
- 			WARN_ON(!is_mft && bytes > NTFS3_RUN_MAX_BYTES);
- 
--			new_ptr = ntfs_vmalloc(bytes);
-+			new_ptr = kvmalloc(bytes, GFP_KERNEL);
- 
- 			if (!new_ptr)
- 				return false;
-@@ -398,7 +398,7 @@ bool run_add_entry(struct runs_tree *run, CLST vcn, CLST lcn, CLST len,
- 			memcpy(r + 1, run->runs + index,
- 			       sizeof(struct ntfs_run) * (run->count - index));
- 
--			ntfs_vfree(run->runs);
-+			kvfree(run->runs);
- 			run->runs = new_ptr;
- 			run->allocated = bytes;
- 
-diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-index 6be13e256c1a..6ef21da91edc 100644
---- a/fs/ntfs3/super.c
-+++ b/fs/ntfs3/super.c
-@@ -467,9 +467,9 @@ static void init_once(void *foo)
- /* noinline to reduce binary size*/
- static noinline void put_ntfs(struct ntfs_sb_info *sbi)
- {
--	ntfs_free(sbi->new_rec);
--	ntfs_vfree(ntfs_put_shared(sbi->upcase));
--	ntfs_free(sbi->def_table);
-+	kfree(sbi->new_rec);
-+	kvfree(ntfs_put_shared(sbi->upcase));
-+	kfree(sbi->def_table);
- 
- 	wnd_close(&sbi->mft.bitmap);
- 	wnd_close(&sbi->used.bitmap);
-@@ -495,14 +495,14 @@ static noinline void put_ntfs(struct ntfs_sb_info *sbi)
- 	indx_clear(&sbi->security.index_sdh);
- 	indx_clear(&sbi->reparse.index_r);
- 	indx_clear(&sbi->objid.index_o);
--	ntfs_free(sbi->compress.lznt);
-+	kfree(sbi->compress.lznt);
- #ifdef CONFIG_NTFS3_LZX_XPRESS
- 	xpress_free_decompressor(sbi->compress.xpress);
- 	lzx_free_decompressor(sbi->compress.lzx);
- #endif
- 	clear_mount_options(&sbi->options);
- 
--	ntfs_free(sbi);
-+	kfree(sbi);
- }
- 
- static void ntfs_put_super(struct super_block *sb)
-@@ -847,7 +847,7 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
- 
- 	sbi->used.bitmap.nbits = clusters;
- 
--	rec = ntfs_zalloc(record_size);
-+	rec = kzalloc(record_size, GFP_NOFS);
- 	if (!rec) {
- 		err = -ENOMEM;
- 		goto out;
-@@ -914,7 +914,7 @@ static int ntfs_fill_super(struct super_block *sb, void *data, int silent)
- 
- 	ref.high = 0;
- 
--	sbi = ntfs_zalloc(sizeof(struct ntfs_sb_info));
-+	sbi = kzalloc(sizeof(struct ntfs_sb_info), GFP_NOFS);
- 	if (!sbi)
- 		return -ENOMEM;
- 
-@@ -1180,7 +1180,7 @@ static int ntfs_fill_super(struct super_block *sb, void *data, int silent)
- 		goto out;
- 	}
- 	bytes = inode->i_size;
--	sbi->def_table = t = ntfs_malloc(bytes);
-+	sbi->def_table = t = kmalloc(bytes, GFP_NOFS);
- 	if (!t) {
- 		err = -ENOMEM;
- 		goto out;
-@@ -1246,7 +1246,7 @@ static int ntfs_fill_super(struct super_block *sb, void *data, int silent)
- 		goto out;
- 	}
- 
--	sbi->upcase = upcase = ntfs_vmalloc(0x10000 * sizeof(short));
-+	sbi->upcase = upcase = kvmalloc(0x10000 * sizeof(short), GFP_KERNEL);
- 	if (!upcase) {
- 		err = -ENOMEM;
- 		goto out;
-@@ -1276,7 +1276,7 @@ static int ntfs_fill_super(struct super_block *sb, void *data, int silent)
- 	shared = ntfs_set_shared(upcase, 0x10000 * sizeof(short));
- 	if (shared && upcase != shared) {
- 		sbi->upcase = shared;
--		ntfs_vfree(upcase);
-+		kvfree(upcase);
- 	}
- 
- 	iput(inode);
-diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
-index 98871c895e77..97975d92d297 100644
---- a/fs/ntfs3/xattr.c
-+++ b/fs/ntfs3/xattr.c
-@@ -110,7 +110,7 @@ static int ntfs_read_ea(struct ntfs_inode *ni, struct EA_FULL **ea,
- 		return -EFBIG;
- 
- 	/* Allocate memory for packed Ea */
--	ea_p = ntfs_malloc(size + add_bytes);
-+	ea_p = kmalloc(size + add_bytes, GFP_NOFS);
- 	if (!ea_p)
- 		return -ENOMEM;
- 
-@@ -142,7 +142,7 @@ static int ntfs_read_ea(struct ntfs_inode *ni, struct EA_FULL **ea,
- 	return 0;
- 
- out:
--	ntfs_free(ea_p);
-+	kfree(ea_p);
- 	*ea = NULL;
- 	return err;
- }
-@@ -193,7 +193,7 @@ static ssize_t ntfs_list_ea(struct ntfs_inode *ni, char *buffer,
- 	}
- 
- out:
--	ntfs_free(ea_all);
-+	kfree(ea_all);
- 	return err ? err : ret;
- }
- 
-@@ -251,7 +251,7 @@ static int ntfs_get_ea(struct inode *inode, const char *name, size_t name_len,
- 	err = 0;
- 
- out:
--	ntfs_free(ea_all);
-+	kfree(ea_all);
- 	if (!required)
- 		ni_unlock(ni);
- 
-@@ -352,7 +352,7 @@ static noinline int ntfs_set_ea(struct inode *inode, const char *name,
- 		}
- 
- 		if (!ea_all) {
--			ea_all = ntfs_zalloc(add);
-+			ea_all = kzalloc(add, GFP_NOFS);
- 			if (!ea_all) {
- 				err = -ENOMEM;
- 				goto out;
-@@ -474,7 +474,7 @@ static noinline int ntfs_set_ea(struct inode *inode, const char *name,
- 		ni_unlock(ni);
- 
- 	run_close(&ea_run);
--	ntfs_free(ea_all);
-+	kfree(ea_all);
- 
- 	return err;
- }
-@@ -599,7 +599,7 @@ static noinline int ntfs_set_acl_ex(struct user_namespace *mnt_userns,
- 		value = NULL;
- 	} else {
- 		size = posix_acl_xattr_size(acl->a_count);
--		value = ntfs_malloc(size);
-+		value = kmalloc(size, GFP_NOFS);
- 		if (!value)
- 			return -ENOMEM;
- 
-@@ -614,7 +614,7 @@ static noinline int ntfs_set_acl_ex(struct user_namespace *mnt_userns,
- 		set_cached_acl(inode, type, acl);
- 
- out:
--	ntfs_free(value);
-+	kfree(value);
- 
- 	return err;
- }
-@@ -880,7 +880,7 @@ static int ntfs_getxattr(const struct xattr_handler *handler, struct dentry *de,
- 			err = sd_size;
- 			memcpy(buffer, sd, sd_size);
- 		}
--		ntfs_free(sd);
-+		kfree(sd);
- 		goto out;
- 	}
- 
--- 
-2.30.2
-
