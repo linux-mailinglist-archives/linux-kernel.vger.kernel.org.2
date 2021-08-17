@@ -2,149 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6B23EE6A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 590B23EE6A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238103AbhHQGhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 02:37:39 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:53934 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237977AbhHQGhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 02:37:37 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629182225; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=iXGuKgg2bh81naBeKDWA/sZgr8If5bEpsCpMLB50+Tw=;
- b=xM9M3nmqAtyTAaxmB+3DVpbvteASs3oQbyZd6S1XrxY0e25X0tzNQTZSZoQNkXrV4oXEJe/z
- 2QeHQRFTeW6fnXibgljg2lIzncd9GJpWv/T05Zvd3hunHA+qEAkuS52RK5zAtffx5k62cT3N
- DedA0cHvr0LiUelSg4fg6Y037Tk=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 611b59109507ca1a341c3dec (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 17 Aug 2021 06:37:03
- GMT
-Sender: pmaliset=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3FC77C4360D; Tue, 17 Aug 2021 06:37:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmaliset)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AF304C4338F;
-        Tue, 17 Aug 2021 06:37:01 +0000 (UTC)
+        id S234196AbhHQGku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 02:40:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229460AbhHQGkr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 02:40:47 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5796C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:40:14 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id y144so8909419qkb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:40:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=umkzGAmsCipKcKjsq0UFHjXQk1tsTPDtPzncTzoDpWk=;
+        b=dhkEDDeRVf4DvQXo2P8JcmKd4CS1xAqu5SDnIsMBn20kLiSkcazFNxMNh9x0JMf9gT
+         kyPoX1AUHqbIpe0G2j8XSu7ZSASV4qY5QCp9GgNryZhs6y1YLhmcHjM2JP6e3yuWgj7l
+         NLjW2kXSead72edYz+1wVIhMx1KBzx1PJfSmqqBnaSecekMeZUwJRSy8CDb8ZlvcGQcZ
+         kvJezVVYiGToD4Kb62jQV0gvjUkvsMBCJy38crRD2CwUI7Y/9VeOIoU2i61tTQuogluy
+         LiDOh4V2ggxV4Zr2U8S6rnw020oy83iO5gvNJ8nFcX16k5LKU36e6Kzs+bUUI7Eubh61
+         oYlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=umkzGAmsCipKcKjsq0UFHjXQk1tsTPDtPzncTzoDpWk=;
+        b=JIQXMb57xm/E3Ha9HgGBW7SEyak82YMXm1W7mXf0siG7pnRqvRJDhY8gNI3gyvy6yo
+         /sxy++Fse5Tf8BMNsro8N/5wEZgHjHViGLqcTOF0zdGd7dfHEfvysdA5BrG+FvcjuU6C
+         HrqoEBzPA9B7iH7ktsCFMUafYykR+brTATYNq1lgN/uWVJWqA8vz7sb0LGFYvjnOwu2j
+         cEvVPHVn8yWTG952snQOB/dbhlxFJxx1SWYDDZNbKSV02nA/NNiyuyAyZeL60lkNtg/j
+         zKZlIEmmnvbcURZvkfQCkVeNDatcrvpj8OvneiwUkM92F1nH34ts0ZkDSXSfiKn+YRuX
+         Pzsg==
+X-Gm-Message-State: AOAM533I6thNTRpxPJFdhQ/gLm3Dz3sGRCp2PP9Rp1vUlp1eUq/WG5FN
+        YT4NNdmtTfjkTPN2gOQF6nw=
+X-Google-Smtp-Source: ABdhPJyajYj4hl23zFyNyv42DsXx4eYSAfVWsfQ0OLUSx4u3Kj8mraD0IP62bNK7hXucw7MTROIEGg==
+X-Received: by 2002:a05:620a:1455:: with SMTP id i21mr1429218qkl.116.1629182413199;
+        Mon, 16 Aug 2021 23:40:13 -0700 (PDT)
+Received: from LeoBras.redhat.com ([2804:431:c7f0:30b2:5c9e:50:88f3:269a])
+        by smtp.gmail.com with ESMTPSA id c11sm526938qth.29.2021.08.16.23.40.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 23:40:12 -0700 (PDT)
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        kernel test robot <lkp@intel.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Frederic Barrat <fbarrat@linux.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v6 00/11] DDW + Indirect Mapping
+Date:   Tue, 17 Aug 2021 03:39:18 -0300
+Message-Id: <20210817063929.38701-1-leobras.c@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 17 Aug 2021 12:07:01 +0530
-From:   Prasad Malisetty <pmaliset@codeaurora.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
-        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
-        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dianders@chromium.org,
-        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org
-Subject: Re: [PATCH v5 4/4] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY
- init in SC7280
-In-Reply-To: <20210812061110.GB72145@thinkpad>
-References: <1628568516-24155-1-git-send-email-pmaliset@codeaurora.org>
- <1628568516-24155-5-git-send-email-pmaliset@codeaurora.org>
- <20210812061110.GB72145@thinkpad>
-Message-ID: <4fe9e931935b85748753611aa752b9b9@codeaurora.org>
-X-Sender: pmaliset@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-12 11:41, Manivannan Sadhasivam wrote:
-> On Tue, Aug 10, 2021 at 09:38:36AM +0530, Prasad Malisetty wrote:
->> On the SC7280, By default the clock source for pcie_1_pipe is
->> TCXO for gdsc enable. But after the PHY is initialized, the clock
->> source must be switched to gcc_pcie_1_pipe_clk from TCXO.
->> 
->> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
->> ---
->>  drivers/pci/controller/dwc/pcie-qcom.c | 18 ++++++++++++++++++
->>  1 file changed, 18 insertions(+)
->> 
->> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c 
->> b/drivers/pci/controller/dwc/pcie-qcom.c
->> index 8a7a300..39e3b21 100644
->> --- a/drivers/pci/controller/dwc/pcie-qcom.c
->> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
->> @@ -166,6 +166,8 @@ struct qcom_pcie_resources_2_7_0 {
->>  	struct regulator_bulk_data supplies[2];
->>  	struct reset_control *pci_reset;
->>  	struct clk *pipe_clk;
->> +	struct clk *gcc_pcie_1_pipe_clk_src;
->> +	struct clk *phy_pipe_clk;
->>  };
->> 
->>  union qcom_pcie_resources {
->> @@ -1167,6 +1169,16 @@ static int qcom_pcie_get_resources_2_7_0(struct 
->> qcom_pcie *pcie)
->>  	if (ret < 0)
->>  		return ret;
->> 
->> +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
->> +		res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
->> +		if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
->> +			return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
->> +
->> +		res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
->> +		if (IS_ERR(res->phy_pipe_clk))
->> +			return PTR_ERR(res->phy_pipe_clk);
->> +	}
->> +
->>  	res->pipe_clk = devm_clk_get(dev, "pipe");
->>  	return PTR_ERR_OR_ZERO(res->pipe_clk);
->>  }
->> @@ -1255,6 +1267,12 @@ static void qcom_pcie_deinit_2_7_0(struct 
->> qcom_pcie *pcie)
->>  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
->>  {
->>  	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
->> +	struct dw_pcie *pci = pcie->pci;
->> +	struct device *dev = pci->dev;
->> +	struct device_node *node = dev->of_node;
->> +
->> +	if (of_property_read_bool(node, "pipe-clk-source-switch"))
-> 
-> Wondering why you didn't use the compatible here as well. This will 
-> break if the
-> property exist but the clocks are not.
-> 
-> Thanks,
-> Mani
-> 
+So far it's assumed possible to map the guest RAM 1:1 to the bus, which
+works with a small number of devices. SRIOV changes it as the user can
+configure hundreds VFs and since phyp preallocates TCEs and does not
+allow IOMMU pages bigger than 64K, it has to limit the number of TCEs
+per a PE to limit waste of physical pages.
 
-Hi Mani,
+As of today, if the assumed direct mapping is not possible, DDW creation
+is skipped and the default DMA window "ibm,dma-window" is used instead.
 
-In earlier versions we used compatible method here as well, but in v5 
-replaced compatible with new boolean flag.
+Using the DDW instead of the default DMA window may allow to expand the
+amount of memory that can be DMA-mapped, given the number of pages (TCEs)
+may stay the same (or increase) and the default DMA window offers only
+4k-pages while DDW may offer larger pages (4k, 64k, 16M ...).
 
-In recent comments as Stephen suggested, its straight forward approach. 
-if src pointer is NULL, clk_set_parent return 0 and nop
-I will remove both compatible and property read approach and update the 
-change in next version.
+Patch #1 replaces hard-coded 4K page size with a variable containing the
+correct page size for the window.
+
+Patch #2 introduces iommu_table_in_use(), and replace manual bit-field
+checking where it's used. It will be used for aborting enable_ddw() if
+there is any current iommu allocation and we are trying single window
+indirect mapping.
+
+Patch #3 introduces iommu_pseries_alloc_table() that will be helpful
+when indirect mapping needs to replace the iommu_table.
+
+Patch #4 adds helpers for adding DDWs in the list.
+
+Patch #5 refactors enable_ddw() so it returns if direct mapping is
+possible, instead of DMA offset. It helps for next patches on
+indirect DMA mapping and also allows DMA windows starting at 0x00.
+
+Patch #6 bring new helper to simplify enable_ddw(), allowing
+some reorganization for introducing indirect mapping DDW.
+
+Patch #7 adds new helper _iommu_table_setparms() and use it in other
+*setparams*() to fill iommu_table. It will also be used for creating a
+new iommu_table for indirect mapping.
+
+Patch #8 updates remove_dma_window() to accept different property names,
+so we can introduce a new property for indirect mapping.
+
+Patch #9 extracts find_existing_ddw_windows() into
+find_existing_ddw_windows_named(), and calls it by it's property name.
+This will be useful when the property for indirect mapping is created,
+so we can search the device-tree for both properties.
+
+Patch #10:
+Instead of destroying the created DDW if it doesn't map the whole
+partition, make use of it instead of the default DMA window as it improves
+performance. Also, update the iommu_table and re-generate the pools.
+It introduces a new property name for DDW with indirect DMA mapping.
+
+Patch #11:
+Does some renaming of 'direct window' to 'dma window', given the DDW
+created can now be also used in indirect mapping if direct mapping is not
+available.
+
+All patches were tested into an LPAR with an virtio-net interface that
+allows default DMA window and DDW to coexist.
+
+Changes since v5:
+- Reviews from Frederic Barrat
+- 02/11 : memset bitmap only if tbl not in use
+- 06/11 : remove_ddw() is not used in enable_ddw() error path anymore 
+  New helpers were created for that.
+- 10/11 : There was a typo, but got replaced due to 06/11 fix.
+v5 Link: http://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=253799&state=%2A&archive=both
+
+Changes since v4:
+- Solve conflicts with new upstream versions
+- Avoid unecessary code moving by doing variable declaration before definition
+- Rename _iommu_table_setparms to iommu_table_setparms_common and changed base
+  parameter from unsigned long to void* in order to avoid unecessary casting.
+- Fix breaking case for existing direct-mapping.
+- Fix IORESOURCE_MEM bound issue
+- Move new tbl to pci->table_group->tables[1] instead of replacing [0]
+v4 Link: https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=241597&state=%2A&archive=both
+
+Changes since v3:
+- Fixed inverted free order at ddw_property_create()
+- Updated goto tag naming
+v3 Link: https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=240287&state=%2A&archive=both
+
+Changes since v2:
+- Some patches got removed from the series and sent by themselves,
+- New tbl created for DDW + indirect mapping reserves MMIO32 space,
+- Improved reserved area algorithm,
+- Improved commit messages,
+- Removed define for default DMA window prop name,
+- Avoided some unnecessary renaming,
+- Removed some unnecessary empty lines,
+- Changed some code moving to forward declarations.
+v2 Link: http://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=201210&state=%2A&archive=both
 
 
->> +		clk_set_parent(res->gcc_pcie_1_pipe_clk_src, res->phy_pipe_clk);
->> 
->>  	return clk_prepare_enable(res->pipe_clk);
->>  }
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
->> 
+Leonardo Bras (11):
+  powerpc/pseries/iommu: Replace hard-coded page shift
+  powerpc/kernel/iommu: Add new iommu_table_in_use() helper
+  powerpc/pseries/iommu: Add iommu_pseries_alloc_table() helper
+  powerpc/pseries/iommu: Add ddw_list_new_entry() helper
+  powerpc/pseries/iommu: Allow DDW windows starting at 0x00
+  powerpc/pseries/iommu: Add ddw_property_create() and refactor
+    enable_ddw()
+  powerpc/pseries/iommu: Reorganize iommu_table_setparms*() with new
+    helper
+  powerpc/pseries/iommu: Update remove_dma_window() to accept property
+    name
+  powerpc/pseries/iommu: Find existing DDW with given property name
+  powerpc/pseries/iommu: Make use of DDW for indirect mapping
+  powerpc/pseries/iommu: Rename "direct window" to "dma window"
+
+ arch/powerpc/include/asm/iommu.h       |   1 +
+ arch/powerpc/include/asm/tce.h         |   8 -
+ arch/powerpc/kernel/iommu.c            |  65 ++--
+ arch/powerpc/platforms/pseries/iommu.c | 481 +++++++++++++++----------
+ 4 files changed, 330 insertions(+), 225 deletions(-)
+
+-- 
+2.32.0
+
