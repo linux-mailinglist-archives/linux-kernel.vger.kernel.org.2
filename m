@@ -2,114 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76CEB3EE1E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 02:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 381323EE1E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 02:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236904AbhHQA5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 20:57:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237878AbhHQA5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 20:57:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49CAE60295;
-        Tue, 17 Aug 2021 00:56:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629161794;
-        bh=PZEqmmXTePsChi5KMOXAzQ2pjVA+gkv4uVHb6dEQmR4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=oE8+h4N0apb1QwiiGwm6Ly2Vv4mTTTmNTb9Eg7nZt/wuny1dStOLqNj9o/DfhIMSG
-         r1V3NRRqLaEe9Py9180huQAnMYuE1mQerpwVJB/yYracCprXmkCZaJJ7zbZuIlelct
-         xgKYEa6nRE44ARKljlPQ8hI1EPFKtfZAWwhoGAkfEWc/Jj1B7oqlzWzBAdvrknVDap
-         1Z/obUo1f1G682Si77/25mzgLz69ympSRSZm1wdZBTzjkVEZQf1zTmD8XieE2TXzej
-         PNGPqPSZr/EfwZy3FocHn21Mv32DPUMafflLkehIfbdYtxRi+ab7CTadXQK2CQvmzU
-         S6TptVWTfZqgg==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH] kbuild: Enable -Wimplicit-fallthrough for clang 14.0.0+
-Date:   Mon, 16 Aug 2021 17:56:24 -0700
-Message-Id: <20210817005624.1455428-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.33.0
+        id S237421AbhHQA57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 20:57:59 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:33154 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S237458AbhHQA5X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 20:57:23 -0400
+X-UUID: ce495c5686564724827ffbe9e808d723-20210817
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=8Se+dA6bWDSCT1uz7OrMcwbFzv7R0Gbma0mJSh3g/IE=;
+        b=IreyQIm+HEdAUkdKeuVFSS3S8PPo7aKvgcFk4dE5ezLF24ACJKXIjjP5SPqXceX+95rp6EW2dvjD3iJDKh6brWwsKj29RP+npN4e+7UEznMJD1bWQzfstrEClrbOxKe27epjzjO6Uu6pNjjW7LfiFUD+ahT2TzWBpY1j3GsFvc0=;
+X-UUID: ce495c5686564724827ffbe9e808d723-20210817
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <chun-jie.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 359255259; Tue, 17 Aug 2021 08:56:47 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 17 Aug 2021 08:56:46 +0800
+Received: from mtksdccf07 (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 17 Aug 2021 08:56:46 +0800
+Message-ID: <326b8ef66a70b526d11b0e2fad4f94b22241e9c1.camel@mediatek.com>
+Subject: Re: [PATCH 08/22] clk: mediatek: Add MT8195 ccusys clock support
+From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
+To:     Chen-Yu Tsai <wenst@chromium.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Date:   Tue, 17 Aug 2021 08:56:46 +0800
+In-Reply-To: <CAGXv+5ETXT-pxuP1NFEUrV+m3RR25zD9RZmDjHxVOLOy7gGj8w@mail.gmail.com>
+References: <20210616224743.5109-1-chun-jie.chen@mediatek.com>
+         <20210616224743.5109-9-chun-jie.chen@mediatek.com>
+         <CAGXv+5ETXT-pxuP1NFEUrV+m3RR25zD9RZmDjHxVOLOy7gGj8w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang prior to 14.0.0 warns when a fallthrough annotation is in an
-unreachable spot, which can occur when IS_ENABLED(CONFIG_...) in a
-conditional statement prior to the fallthrough annotation such as
-
-  if (IS_ENABLED(CONFIG_...))
-      break;
-  fallthrough;
-
-which to clang looks like
-
-  break;
-  fallthrough;
-
-if CONFIG_... is enabled due to the control flow graph. Example of the
-warning in practice:
-
-sound/core/pcm_native.c:3812:3: warning: fallthrough annotation in
-unreachable code [-Wimplicit-fallthrough]
-                fallthrough;
-                ^
-
-Warning on unreachable annotations makes the warning too noisy and
-pointless for the kernel due to the nature of guarding some code on
-configuration options so it was disabled in commit d936eb238744 ("Revert
-"Makefile: Enable -Wimplicit-fallthrough for Clang"").
-
-This has been resolved in clang 14.0.0 by moving the unreachable warning
-to its own flag under -Wunreachable-code, which the kernel will most
-likely never enable due to situations like this.
-
-Enable -Wimplicit-fallthrough for clang 14+ so that issues such as the
-one in commit 652b44453ea9 ("habanalabs/gaudi: fix missing code in ECC
-handling") can be caught before they enter the tree.
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/236
-Link: https://github.com/llvm/llvm-project/commit/9ed4a94d6451046a51ef393cd62f00710820a7e8
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- Makefile | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index c19d1638da25..91a4a80409e1 100644
---- a/Makefile
-+++ b/Makefile
-@@ -797,11 +797,17 @@ KBUILD_CFLAGS += -Wno-gnu
- # source of a reference will be _MergedGlobals and not on of the whitelisted names.
- # See modpost pattern 2
- KBUILD_CFLAGS += -mno-global-merge
-+
-+# Warn about unmarked fall-throughs in switch statement.
-+# Clang prior to 14.0.0 warned on unreachable fallthroughs with
-+# -Wimplicit-fallthrough, which is unacceptable due to IS_ENABLED().
-+# https://bugs.llvm.org/show_bug.cgi?id=51094
-+ifeq ($(shell test $(CONFIG_CLANG_VERSION) -ge 140000; echo $$?),0)
-+KBUILD_CFLAGS += -Wimplicit-fallthrough
-+endif
- else
- 
- # Warn about unmarked fall-throughs in switch statement.
--# Disabled for clang while comment to attribute conversion happens and
--# https://github.com/ClangBuiltLinux/linux/issues/636 is discussed.
- KBUILD_CFLAGS += $(call cc-option,-Wimplicit-fallthrough=5,)
- endif
- 
-
-base-commit: a2824f19e6065a0d3735acd9fe7155b104e7edf5
--- 
-2.33.0
+T24gVHVlLCAyMDIxLTA3LTA2IGF0IDE3OjAwICswODAwLCBDaGVuLVl1IFRzYWkgd3JvdGU6DQo+
+IE9uIFRodSwgSnVuIDE3LCAyMDIxIGF0IDY6NTkgQU0gQ2h1bi1KaWUgQ2hlbg0KPiA8Y2h1bi1q
+aWUuY2hlbkBtZWRpYXRlay5jb20+IHdyb3RlOg0KPiA+IA0KPiA+IEFkZCBNVDgxOTUgY2N1c3lz
+IGNsb2NrIHByb3ZpZGVyDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogQ2h1bi1KaWUgQ2hlbiA8
+Y2h1bi1qaWUuY2hlbkBtZWRpYXRlay5jb20+DQo+IA0KPiBSZXZpZXdlZC1ieTogQ2hlbi1ZdSBU
+c2FpIDx3ZW5zdEBjaHJvbWl1bS5vcmc+DQo+IA0KPiBBbHNvLCBJIG5vdGljZWQgdGhhdCBNZWRp
+YXRlayBkcml2ZXJzIGRvbid0IHN1cHBvcnQgdGhlIHJlc2V0DQo+IGNvbnRyb2xzIGZvdW5kDQo+
+IGluIHRoZXNlIGNsb2NrIGNvbnRyb2xsZXJzLiBBcmUgdGhlcmUgcGxhbnMgdG8gYWRkIHN1cHBv
+cnQgZm9yIHRoZW0/DQoNCkF0IHByZXNlbnQsIHdlIGhhdmUgbm8gcGxhbiB0byBzdXBwb3J0IHJl
+c2V0IGNvbnRyb2wgaW4gY2xvY2sNCmNvbnRyb2xsZXJzIGJlY2F1c2Ugbm8gcmVxdWVzdCBmcm9t
+IHN1YiBzeXN0ZW0sIGJ1dCB3ZSBoYXZlIHJlc2V0DQpjb250cm9sbGVyIGluIE1UODE5NSBmcm9t
+IFRPUFJHVSBbMV0uDQoNClsxXSANCmh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJvamVj
+dC9saW51eC1tZWRpYXRlay9saXN0Lz9zZXJpZXM9NTIxMjE5DQoNCkJlc3QgUmVnYXJkcywNCkNo
+dW4tSmllDQo=
 
