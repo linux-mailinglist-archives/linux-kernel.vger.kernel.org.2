@@ -2,182 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C023EE933
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C2A3EE937
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235637AbhHQJKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 05:10:41 -0400
-Received: from mga05.intel.com ([192.55.52.43]:14085 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234843AbhHQJKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 05:10:39 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="301609600"
-X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="scan'208";a="301609600"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 02:10:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="scan'208";a="510389256"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 17 Aug 2021 02:10:05 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mFv6j-000Rbo-4L; Tue, 17 Aug 2021 09:10:05 +0000
-Date:   Tue, 17 Aug 2021 17:09:15 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS
- 213605c149ff869a7206db53eefbee14fd22a78d
-Message-ID: <611b7cbb.lVkrZGPNPbNM15pG%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S235320AbhHQJMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 05:12:25 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:49272 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234347AbhHQJMX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 05:12:23 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17GML8cg012206;
+        Tue, 17 Aug 2021 02:11:37 -0700
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2109.outbound.protection.outlook.com [104.47.70.109])
+        by mx0b-0016f401.pphosted.com with ESMTP id 3ag0qxhx7n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Aug 2021 02:11:37 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I7D11WdbXbs0fA1q1r/xtvGaI+x8caLf/xk8soV4FnMM5SrLGMqSVQe2ljpY8+KwOct/MrZcg4AmisJYmg7WpQIp1P74dM5QIwYNfzm2lMD4OEK6aNnZ46Vi35Icg25k88pVsnEwcbbO9DE/4GRM8GW+3hm/k7mUgcWYmIE6UegYBG/MWc0LqPf3anPxcac5NZEwZ357mm89XB0S6ebduFVFp/FBSNX4DdBGpzG3waEJyfm5gcoibwp1QMHjUArs/RCu99jC013xjNq4o9eMjB6Rclc7J3kvxSUHP1H/y/mRsUGBfVGRP8APiNjLcbYpD2D/08f+3tzqMDurG10zQQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7Dv1Xyp60daB0Xc640lfSfLJdWCz1KFdWQQezRW6j/A=;
+ b=fyEAGi4hqCPnJh4AbUfWiM5gsYkbgpEUiRQ+3Si3RbgATTwIe8owX4a5IKQaeOBECZgqMILnhMKug9KvMOg+28pVypHGO7Wt3OoL5tdjIhw7fpxs2/GRYd8g3cmNd9CAbdbK5XBdAzrPzHBsfMko/5TYefb0+xwx8dumochj3VfKJQ4h6jyUAbN3MvQAn+eMO8mE5H89lT3OHAcdcNKBZBzsI679EzNe1WQu97bROt1Eh+VCi+vQpjVY3oRux4YsEZ6278qdfn5NxWmgMi+rDL3MdN23bngfhe3cKRroT4ER6BuzVZ9aOGYEK3ngRerhbZKqSFyJ8dQLGOd2hYNSpQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7Dv1Xyp60daB0Xc640lfSfLJdWCz1KFdWQQezRW6j/A=;
+ b=uwEbLRL0l+ZUQ/0V1LWLu8NxFjyt8LtrYbDpPYw0MHo24tlFXyntjEQVCB7+eO/bk0oYTkjKtwp1iPbibpPCkTHdIYE99Mux646FDA2eEWfDIbetaZFi/S3WqV8IAtjvvdmSBgIrqD+jcAgJv4sozi+BtwDoxxmuvSNwV9+2vyQ=
+Received: from CY4PR1801MB2070.namprd18.prod.outlook.com
+ (2603:10b6:910:7e::28) by CY4PR18MB1061.namprd18.prod.outlook.com
+ (2603:10b6:903:a8::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14; Tue, 17 Aug
+ 2021 09:11:34 +0000
+Received: from CY4PR1801MB2070.namprd18.prod.outlook.com
+ ([fe80::5e4:5ddb:27aa:f57e]) by CY4PR1801MB2070.namprd18.prod.outlook.com
+ ([fe80::5e4:5ddb:27aa:f57e%5]) with mapi id 15.20.4415.024; Tue, 17 Aug 2021
+ 09:11:34 +0000
+From:   Bhaskara Budiredla <bbudiredla@marvell.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "will@kernel.org" <will@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [EXT] Re: [PATCH 2/2] dt-bindings: perf: Add YAML schemas for
+ Marvell CN10K LLC-TAD pmu bindings
+Thread-Topic: [EXT] Re: [PATCH 2/2] dt-bindings: perf: Add YAML schemas for
+ Marvell CN10K LLC-TAD pmu bindings
+Thread-Index: AQHXj6Fp5LolcUS7E0m2UFEK4lERhqtxWVSAgAYT1KA=
+Date:   Tue, 17 Aug 2021 09:11:34 +0000
+Message-ID: <CY4PR1801MB207047A1D761C136C9B18E76DEFE9@CY4PR1801MB2070.namprd18.prod.outlook.com>
+References: <20210812174209.1970-1-bbudiredla@marvell.com>
+ <20210812174209.1970-3-bbudiredla@marvell.com>
+ <1628856667.648308.3179071.nullmailer@robh.at.kernel.org>
+In-Reply-To: <1628856667.648308.3179071.nullmailer@robh.at.kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=marvell.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1f38b7c9-1755-44a7-db21-08d9615f02a5
+x-ms-traffictypediagnostic: CY4PR18MB1061:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CY4PR18MB1061E1B952F909B52FCAD6F2DEFE9@CY4PR18MB1061.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1107;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qGAx9dwWgmP1yGNZCYfWENKU5MiiaaGztVGpiAuLt8758+mEJ9jOKWrnAYrrr6AD6T7QYXbyhvh8iKFum4M2DrxQjvG0YaQc8rqeo8SxRafe07ILPotV5WNbYsD8pnCSmTUB2pkUQ+vcQZTz1mPAMsHQCwIV43YOQrNReuS/ltq4zPBk6p2CpvuV24gYZj2tSRuuOJpDMcdMcveviXi6E4iW9WjQQikhUHDxE9ovvLUH8vWvxxeLidnGu9IXP/47BJ2fawdRYJCbaIyEHVl/iI1T9UFWP6oALp8sg/lDyb5s99aSdOblsoxvUPVQRzGP83xayNcdRbXg4B5RWr3lDL/yla3v5WOKLpCtq2fq51Xk3v0YMKVw+ci57jxYRKKNQ9YouS8RHc/7gYyWSxQ+NbXGRtsK5EegioSYIIT4R6h4Ktl/O+wxvmyjWo8jl5hA3E2FEawN84mBtQOL4o8+fC3/vQ34BYkbuAr5BtYZyQqqObqzPjueVrBPDPtez/aVXQM/QL/202+REdfX9jyKN9dqeONIOaYmoTgXUih8H1uOi0pI+iH2uZNEGERSW5jqf5/sQw36IRJwjU8CaXDI6+0TNEC21H9hH4CkQh8qFQGAQUz8t5PCqveXPaGMgyUYMyneSLIU+u6RyKTq8VFeQpzjlj/KgKvtr+L0EfFVRKozRcEDixpArtmGlZIB5VMYSrlpikpE9Vy1Nddl8F8IJqnZJadMu7b7Dd/Cf/XYIxK1Zd5eaxy2br47EAzWSe2Jvbqij3jO/mTSSz+o0SSvuDU6FYmTj+3KAADkNgCZMb7BVgiH5h6VtphVucplh8g/+EZWMVqmqNn9lTLQlIHRpA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1801MB2070.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38100700002)(122000001)(55016002)(33656002)(9686003)(86362001)(54906003)(76116006)(64756008)(66446008)(66556008)(2906002)(83380400001)(186003)(66476007)(26005)(7696005)(6506007)(66946007)(71200400001)(5660300002)(316002)(8936002)(966005)(8676002)(6916009)(4326008)(508600001)(52536014)(38070700005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Fv8kMjgCebbxVyHETk+b3xdqFtTFNe/VoRH3A1oWSsJ2ZRKhvdMCHUJou3WH?=
+ =?us-ascii?Q?eD2GvDRoDxKQctRHTaL9e/C5m/dDNxr5GsT+tmo4S2VfXNljjZYabLq/hZVB?=
+ =?us-ascii?Q?T2TwA7ONu6RgwJ4Gi2Vja4+tszRTdwMANMEpcYOtO6IIFIKLBs/Vhw96byCJ?=
+ =?us-ascii?Q?03urNvvqwP8Epq7cOQUdVWzU3ShyYfZqbJTyqH7oe/bv7YHMbEJ5y0kaQ0Fv?=
+ =?us-ascii?Q?O/Jel/nw7+aY/ODod8qqj9ylNMSfUafsFk1+hXxPiTjMNrZv0BSshfXq3M+f?=
+ =?us-ascii?Q?qskSF5VjXZZ1bqxdFClOlcx1rbUcdQ0ymVNYGrgQs8EGJLQBo1dPtKZ2X1n5?=
+ =?us-ascii?Q?sbN9EeyZsmI1gC6Tpagrrumh4ZT1sagtxWDd7ZnYqMhHZEI0OFt7cYvy1BOh?=
+ =?us-ascii?Q?8mVvIqpoevhbc2V/5W3jnG8zv/WzHvCzH3DB2ugz4lZb7FNJkwn/rpyZaF1N?=
+ =?us-ascii?Q?VlPhOOi22z8XbguZ3H7mGMuHcVTDN/ylJdOmOcuMRL2FE3pcCyBhTbievqQu?=
+ =?us-ascii?Q?Kvyu6k9JMOOZtaGX64mxjiRmoClwUEOaZ5VwP83fJOgBRVBexR1VxRqb9U9l?=
+ =?us-ascii?Q?2F3lGIWEJZk5UYnXqdkDIuK8rYExB0QQmhFpzNC+9hLEomHjEE0fLggeK2Bf?=
+ =?us-ascii?Q?JhY41bUwPbrAFgdH+22W+k8o4y+FhC7yD8iYiqyW+vyrpkPVj5QOWRwXGvGw?=
+ =?us-ascii?Q?qmx+2x1ZH6rUjrXhQMosGjb0uyTC05TTSteRaNX4KpxOqXM/WpaQ9+k/l2nE?=
+ =?us-ascii?Q?c4MUm6N339Eu9UwPJm5f08go760mabEbMqLYmZe2tDSgeQSlNrHX5OzkR5MT?=
+ =?us-ascii?Q?bMPkkSN8cBjDOD4mtPIOEUty1i/QHDEXO4zKk6xYPt8ORHEls4cPvKnbrP0h?=
+ =?us-ascii?Q?Rfgbp7IsDQwK4hDqLM+Ua2Srl+ksKm78eaxCgfzyw3s3ChlR7luwcBWM/awM?=
+ =?us-ascii?Q?CBavuISfuDHMgVg3rVDpgFGK6uGqWBnr18xCfqeRFitZUsY1zmL8Krl4A1eE?=
+ =?us-ascii?Q?sYyTQGuihGE5F7Fsi93DuqBcYkX7PeNkwsPI7e1ksD3qErGZiczcG1IowvaS?=
+ =?us-ascii?Q?PJnDfhSOUjt8/H+ynvC2iVbZxkmdbdgrAvRn1f4tNepQ71ukSrnlF8heXc85?=
+ =?us-ascii?Q?SXCKK7yRyN66sonsucDqsXlZHFTw5hjJYav2/PzyK8drAsuMS5RqMcgNksjS?=
+ =?us-ascii?Q?y1ifYLSl8OcMqW1WB3NTZk8oX62kz/ToHucUBFtOeWkYkewGHjhz4qsusk/u?=
+ =?us-ascii?Q?T9frlEw58qikm8N1ZF9tbj0/y0t4lecLDBfzF70d1PWo+qgjf7K3CrK2SqX3?=
+ =?us-ascii?Q?KpgcRSG33tk6J5UEMxH4RSKP?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR1801MB2070.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1f38b7c9-1755-44a7-db21-08d9615f02a5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Aug 2021 09:11:34.2777
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: eRRS4vlp0nGecztM7krl/S5bcND8/LOBcdTnjgZRsYYeBvQkAgIKgfdg8YAlUsFAyuPL/6nX10v9u0NpR82now==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR18MB1061
+X-Proofpoint-ORIG-GUID: Ft-1QVYDsouBVRrGZ5uiCh6jmognutKK
+X-Proofpoint-GUID: Ft-1QVYDsouBVRrGZ5uiCh6jmognutKK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-08-17_03,2021-08-16_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: 213605c149ff869a7206db53eefbee14fd22a78d  kcsan: selftest: Cleanup and add missing __init
+Hi Rob,
 
-elapsed time: 720m
+Thanks for the steps. I seeing minimum version error, though the dtschema i=
+s latest.
 
-configs tested: 124
-configs skipped: 3
+$ make dt_binding_check
+sort: -:2: disorder: 0
+ERROR: dtschema minimum version is v2021.2.1
+Documentation/devicetree/bindings/Makefile:12: recipe for target 'check_dts=
+chema_version' failed
+make[1]: *** [check_dtschema_version] Error 1
+Makefile:1418: recipe for target 'dt_binding_check' failed
+make: *** [dt_binding_check] Error 2
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+$ pip3 show dtschema
+Name: dtschema
+Version: 2021.7
+Summary: DeviceTree validation schema and tools
+Home-page: https://github.com/devicetree-org/dt-schema
+Author: Rob Herring
+Author-email: robh@kernel.org
+License: BSD
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210816
-sh                           se7206_defconfig
-mips                          rm200_defconfig
-m68k                             allmodconfig
-xtensa                    smp_lx200_defconfig
-arm                      footbridge_defconfig
-arm                       multi_v4t_defconfig
-powerpc                         ps3_defconfig
-powerpc                  mpc866_ads_defconfig
-arm                         lpc18xx_defconfig
-arm                         lubbock_defconfig
-mips                         rt305x_defconfig
-s390                          debug_defconfig
-arm                        clps711x_defconfig
-arc                     haps_hs_smp_defconfig
-arm                         cm_x300_defconfig
-arm                             pxa_defconfig
-arm                       omap2plus_defconfig
-arm                         axm55xx_defconfig
-arm                        spear6xx_defconfig
-parisc                           alldefconfig
-powerpc                 linkstation_defconfig
-arm                       cns3420vb_defconfig
-powerpc                     mpc512x_defconfig
-arm                          lpd270_defconfig
-sh                          lboxre2_defconfig
-arm                       mainstone_defconfig
-arc                      axs103_smp_defconfig
-mips                      fuloong2e_defconfig
-mips                           jazz_defconfig
-mips                           xway_defconfig
-mips                    maltaup_xpa_defconfig
-arm                    vt8500_v6_v7_defconfig
-mips                           ip28_defconfig
-arm64                            alldefconfig
-riscv             nommu_k210_sdcard_defconfig
-sh                           se7705_defconfig
-arc                    vdk_hs38_smp_defconfig
-arm                            xcep_defconfig
-xtensa                       common_defconfig
-powerpc                      pmac32_defconfig
-powerpc                  iss476-smp_defconfig
-powerpc                 mpc8560_ads_defconfig
-riscv                               defconfig
-powerpc                     ppa8548_defconfig
-arm                         nhk8815_defconfig
-arm                       imx_v4_v5_defconfig
-powerpc                 xes_mpc85xx_defconfig
-mips                     decstation_defconfig
-arm                      jornada720_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20210816
-x86_64               randconfig-a004-20210816
-x86_64               randconfig-a003-20210816
-x86_64               randconfig-a001-20210816
-x86_64               randconfig-a005-20210816
-x86_64               randconfig-a002-20210816
-i386                 randconfig-a004-20210816
-i386                 randconfig-a003-20210816
-i386                 randconfig-a002-20210816
-i386                 randconfig-a001-20210816
-i386                 randconfig-a006-20210816
-i386                 randconfig-a005-20210816
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Thanks,
+Bhaskara
 
-clang tested configs:
-x86_64               randconfig-a011-20210816
-x86_64               randconfig-a013-20210816
-x86_64               randconfig-a016-20210816
-x86_64               randconfig-a012-20210816
-x86_64               randconfig-a015-20210816
-x86_64               randconfig-a014-20210816
-i386                 randconfig-a011-20210816
-i386                 randconfig-a015-20210816
-i386                 randconfig-a013-20210816
-i386                 randconfig-a014-20210816
-i386                 randconfig-a016-20210816
-i386                 randconfig-a012-20210816
+>-----Original Message-----
+>From: Rob Herring <robh@kernel.org>
+>Sent: Friday, August 13, 2021 5:41 PM
+>To: Bhaskara Budiredla <bbudiredla@marvell.com>
+>Cc: will@kernel.org; linux-arm-kernel@lists.infradead.org;
+>mark.rutland@arm.com; Sunil Kovvuri Goutham <sgoutham@marvell.com>;
+>devicetree@vger.kernel.org; robh+dt@kernel.org; linux-
+>kernel@vger.kernel.org
+>Subject: [EXT] Re: [PATCH 2/2] dt-bindings: perf: Add YAML schemas for
+>Marvell CN10K LLC-TAD pmu bindings
+>
+>External Email
+>
+>----------------------------------------------------------------------
+>On Thu, 12 Aug 2021 23:12:09 +0530, Bhaskara Budiredla wrote:
+>> Add device tree bindings for Last-level-cache Tag-and-data
+>> (LLC-TAD) unit PMU for Marvell CN10K SoCs.
+>>
+>> Signed-off-by: Bhaskara Budiredla <bbudiredla@marvell.com>
+>> ---
+>>  .../bindings/perf/marvell-cn10k-tad.yaml      | 45 +++++++++++++++++++
+>>  1 file changed, 45 insertions(+)
+>>  create mode 100644
+>> Documentation/devicetree/bindings/perf/marvell-cn10k-tad.yaml
+>>
+>
+>My bot found errors running 'make DT_CHECKER_FLAGS=3D-m
+>dt_binding_check'
+>on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>
+>yamllint warnings/errors:
+>
+>dtschema/dtc warnings/errors:
+>Documentation/devicetree/bindings/perf/marvell-cn10k-
+>tad.example.dts:19.32-25.11: Warning (unit_address_format): /example-
+>0/tad_pmu@0x87e280000000: unit name should not have leading "0x"
+>/builds/robherring/linux-dt-
+>review/Documentation/devicetree/bindings/perf/marvell-cn10k-
+>tad.example.dt.yaml: example-0: tad_pmu@0x87e280000000:reg:0: [34786,
+>2147483648, 0, 4096] is too long
+>	From schema: /usr/local/lib/python3.8/dist-
+>packages/dtschema/schemas/reg.yaml
+>/builds/robherring/linux-dt-
+>review/Documentation/devicetree/bindings/perf/marvell-cn10k-
+>tad.example.dt.yaml: example-0: 'tad_pmu@0x87e280000000' does not
+>match any of the regexes: '.*-names$', '.*-supply$', '^#.*-cells$', '^#[a-=
+zA-Z0-
+>9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z=
+0-9,+\\-
+>._]{0,63}@[0-9a-fA-F]+(,[0-9a-fA-F]+)*$', '^__.*__$', 'pinctrl-[0-9]+'
+>	From schema: /usr/local/lib/python3.8/dist-
+>packages/dtschema/schemas/dt-core.yaml
+>/builds/robherring/linux-dt-
+>review/Documentation/devicetree/bindings/perf/marvell-cn10k-
+>tad.example.dt.yaml: tad_pmu@0x87e280000000: 'tad-cnt', 'tad-page-size',
+>'tad-pmu-page-size' do not match any of the regexes: 'pinctrl-[0-9]+'
+>	From schema: /builds/robherring/linux-dt-
+>review/Documentation/devicetree/bindings/perf/marvell-cn10k-tad.yaml
+>
+>doc reference errors (make refcheckdocs):
+>
+>See https://urldefense.proofpoint.com/v2/url?u=3Dhttps-
+>3A__patchwork.ozlabs.org_patch_1516395&d=3DDwIBAg&c=3DnKjWec2b6R0mOy
+>Paz7xtfQ&r=3D9P_lSljSO7KnQNkCGsgu9x_Op4mstSdqWN3Olr4bUv0&m=3DKqfvr5E
+>wn5St-
+>WmEqTDaMI6uM6H5x0uiuOxZTYd15Gc&s=3DNYt8Ae1pxJhBgLN5asKagq1BUQi_
+>gqK_RBkBSmcCvAU&e=3D
+>
+>This check can fail if there are any dependencies. The base for a patch se=
+ries is
+>generally the most recent rc1.
+>
+>If you already ran 'make dt_binding_check' and didn't see the above error(=
+s),
+>then make sure 'yamllint' is installed and dt-schema is up to
+>date:
+>
+>pip3 install dtschema --upgrade
+>
+>Please check and re-submit.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
