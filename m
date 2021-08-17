@@ -2,65 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2F33EF127
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 19:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7949F3EF12A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 19:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232415AbhHQR4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 13:56:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35520 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229918AbhHQR4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 13:56:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80B6260FE6;
-        Tue, 17 Aug 2021 17:55:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629222938;
-        bh=xhUQM2AVefdOM0NxRCwRXweqyFuZlea7H723WnziN4w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HJmlx1AA/5Sf/R9MvdGN5jM9Q/3Lw729FxcHRe6uEesGxAXYj8Cva17gMRY+FxhVz
-         RY3GmoNP/wNaPmkktbLVNRWu3vQGnkFQfutULb+qpLImcsPzCaJKR+I9yk6laEDED1
-         DL9ZBCKDd35wln+g4OT6M1WdC1vmIimgaLnyHqWc=
-Date:   Tue, 17 Aug 2021 19:55:36 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] staging: r8188eu: Remove code depending on
- NAT25_LOOKUP
-Message-ID: <YRv4GLL0BsMm/lf3@kroah.com>
-References: <20210816175138.21633-1-fmdefrancesco@gmail.com>
+        id S232616AbhHQR5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 13:57:10 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:40932 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229918AbhHQR5F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 13:57:05 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 98F751C0B77; Tue, 17 Aug 2021 19:56:30 +0200 (CEST)
+Date:   Tue, 17 Aug 2021 19:56:30 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Ben Hutchings <ben.hutchings@mind.be>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 51/96] net: dsa: microchip: Fix ksz_read64()
+Message-ID: <20210817175630.GB30136@amd>
+References: <20210816125434.948010115@linuxfoundation.org>
+ <20210816125436.659359567@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="61jdw2sOBCFtR2d/"
 Content-Disposition: inline
-In-Reply-To: <20210816175138.21633-1-fmdefrancesco@gmail.com>
+In-Reply-To: <20210816125436.659359567@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 07:51:38PM +0200, Fabio M. De Francesco wrote:
-> Remove all the code related to the management of the NAT25_LOOKUP
-> method in nat25_db_handle(). The only function that used that method was
-> the now deleted nat25_handle_frame(). Remove the NAT25_LOOKUP entry from
-> the NAT25_METHOD enum because it is not anymore used everywhere else in
-> the code of the driver.
-> 
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> ---
-> 
-> v2: Patch rebased against the latest Greg K-H's tree.
-> 
->  drivers/staging/r8188eu/core/rtw_br_ext.c    | 112 -------------------
->  drivers/staging/r8188eu/include/rtw_br_ext.h |   1 -
->  2 files changed, 113 deletions(-)
 
-This change adds a build warning, which is not allowed.
+--61jdw2sOBCFtR2d/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Please merge this, and the 3/3 patch into a single change, so that it
-all is removed together, causing no build warnings at any point in time.
+Hi!
 
-thanks,
+> [ Upstream commit c34f674c8875235725c3ef86147a627f165d23b4 ]
+>=20
+> ksz_read64() currently does some dubious byte-swapping on the two
+> halves of a 64-bit register, and then only returns the high bits.
+> Replace this with a straightforward expression.
 
-greg k-h
+The code indeed is very strange, but there are just 2 users, and they
+will now receive byteswapped values, right? If it worked before, it
+will be broken.
+
+Did this get enough testing for -stable?
+
+Is hw little endian or high endian or...? Note that ksz_write64()
+still contains the strange code, at least in 5.10.
+
+Best regards,
+							Pavel
+						=09
+> +++ b/drivers/net/dsa/microchip/ksz_common.h
+> @@ -210,12 +210,8 @@ static inline int ksz_read64(struct ksz_device *dev,=
+ u32 reg, u64 *val)
+>  	int ret;
+> =20
+>  	ret =3D regmap_bulk_read(dev->regmap[2], reg, value, 2);
+> -	if (!ret) {
+> -		/* Ick! ToDo: Add 64bit R/W to regmap on 32bit systems */
+> -		value[0] =3D swab32(value[0]);
+> -		value[1] =3D swab32(value[1]);
+> -		*val =3D swab64((u64)*value);
+> -	}
+> +	if (!ret)
+> +		*val =3D (u64)value[0] << 32 | value[1];
+> =20
+>  	return ret;
+>  }
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--61jdw2sOBCFtR2d/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmEb+E4ACgkQMOfwapXb+vLY1ACfbgtvVkwqEAvCZ5IufHIfjZnT
+MOIAoKD98CkSOrEZhxLyb9svnfFtVRup
+=mXk/
+-----END PGP SIGNATURE-----
+
+--61jdw2sOBCFtR2d/--
