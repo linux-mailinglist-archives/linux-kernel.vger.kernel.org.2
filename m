@@ -2,99 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 368FC3EE0A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 02:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A018E3EE0A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 02:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234881AbhHQACc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 20:02:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234352AbhHQAC3 (ORCPT
+        id S235153AbhHQACi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 20:02:38 -0400
+Received: from mail-ej1-f42.google.com ([209.85.218.42]:34518 "EHLO
+        mail-ej1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234958AbhHQACg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 20:02:29 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B0AAC061764;
-        Mon, 16 Aug 2021 17:01:57 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id w6so15620118plg.9;
-        Mon, 16 Aug 2021 17:01:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=78YHZHnJSjDKWg8zjTZj0BCLoUOSU1vHhIJ7lXSskDk=;
-        b=gpANUohhW5ovntoe5a6jBaIVPw2LBbR7fbbt73KQZgAs0ckFkkw2W2WCF4C6rjRWoJ
-         N72su3YB9tQUFR13DjKz5C0qPCcZ5XGFvTFE6ZKpXS69a8JeSeJjhZuVwMwmDjukcfYx
-         eECKeiwLw5dIpPKYIndQMOzcfWVr6sKOweM9DOo9jA7Rz/mojP0HPvcch+W3U+IdShot
-         nhkg09h/sO6GvsJwxHVTY2Nf96gNxxfHJUGKWF//3YCcND23x4WHW9pFC50LNrRNFjQA
-         jS9wqjaPWHsiBhySp6/pOHJOLJMDb4sjJFHXSzXe8G/tzlk6tIsgUNVPdWmNhs5/PbbV
-         llAA==
+        Mon, 16 Aug 2021 20:02:36 -0400
+Received: by mail-ej1-f42.google.com with SMTP id u3so35039826ejz.1;
+        Mon, 16 Aug 2021 17:02:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=78YHZHnJSjDKWg8zjTZj0BCLoUOSU1vHhIJ7lXSskDk=;
-        b=PsYEwicG5pkCUaAwp6FeRoCpg/I0JGS+BUuJy+fSinO6yVS22h65li0gvHHru6SSYe
-         k2G3CdnxoWjcb+6ain3iPqUXYOE1XHyXuERYJavMkIWZgSd08n5fmUysPpXeA/zc2zqj
-         CtaJPu2pm8mU+P8P3enrBts9mC6JvxjqBYoAjMgY3xm2pSd+ta/PfMPMGWTIq/5oG3Qz
-         vhC3K3rIBrErBpkhmhZlxsjLqwNl/bzGNp8meT4swmL3amWA7I/ox6FDJE6Z+GxQ8hDG
-         4lcRaNRFBDeWZA62NqLAnx/VHd7a/nk3HtGzuA36GV6eKw75y5CewRkJkd/G/7/ODFlw
-         hCPQ==
-X-Gm-Message-State: AOAM531HrhLsP03RyQiv1CkxLcysV3VGKpbU3zRzJ7YZteeUk6CmZ7u5
-        5thqZitxQs7KxNUNgsjl7MI=
-X-Google-Smtp-Source: ABdhPJz8QcDhSLV5QJ2of0M+kIIloIKlQbjPLtgWVbRmX9qZFVxr85khXu2QMr15qvlR6/rQmhhl9Q==
-X-Received: by 2002:a17:90a:e88:: with SMTP id 8mr489071pjx.108.1629158516781;
-        Mon, 16 Aug 2021 17:01:56 -0700 (PDT)
-Received: from taoren-ubuntu-R90MNF91 (c-73-92-48-112.hsd1.ca.comcast.net. [73.92.48.112])
-        by smtp.gmail.com with ESMTPSA id k22sm260946pff.154.2021.08.16.17.01.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 16 Aug 2021 17:01:56 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 17:01:49 -0700
-From:   Tao Ren <rentao.bupt@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Joel Stanley <joel@jms.id.au>, Rob Herring <robh+dt@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Tao Ren <taoren@fb.com>
-Subject: Re: [PATCH v2 4/6] ARM: dts: aspeed: Add Facebook Cloudripper
- (AST2600) BMC
-Message-ID: <20210817000148.GA7547@taoren-ubuntu-R90MNF91>
-References: <20210805222818.8391-1-rentao.bupt@gmail.com>
- <20210805222818.8391-5-rentao.bupt@gmail.com>
- <CACPK8XcV5On2D4D+SXnfw1M0owwfCL4Su19jOEA7yWpq+T3jLw@mail.gmail.com>
- <20210813034016.GA21895@taoren-ubuntu-R90MNF91>
- <YRaFpq1LvRzMYr/A@lunn.ch>
- <20210814052228.GA1298@taoren-ubuntu-R90MNF91>
- <YRfgv5OknMluW7jj@lunn.ch>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=K5wMGZQ9prIRh71CsiF4fL+ypemm9zRUN8YLcm2qyP4=;
+        b=qMvaRCWkcOXithaJVmLXpwuaKAr/0zJSb46S7r+49cY9fGNID9/n5F6XMCaLLZ3x3f
+         ChcWxa8rQiDxsXPNmPV8Iq1QYG9xA7gMHvuKYciWCHYiAmjL2GaW1UKI47/ruJL+og/i
+         tD4Ve7cNaZL70kOKuJER9LgQkAwfZez7N5g60xvmZofdaDGBwtmm4Y1vMXXaajniafHT
+         ZuZfBRaWkZfsXHAkZwQWgDaiYLDqKB15aV88y/3+TVjjZ45HJUTplKK1L7uDwXhHgdIM
+         vYutof6dvYiMQ5moX7xd7dbRKgK9k4oAgAEsb1pDUBPvwafK+ecvSatT7CJqQssKzWBh
+         sCkA==
+X-Gm-Message-State: AOAM5326P889nssQIYFq58gB2nYoNAJFCFPGoN67VkhyKi414kvnx8V1
+        VJDCyKNfbq6IiGb6a+Ef/8o=
+X-Google-Smtp-Source: ABdhPJwbIAStQIsvY6nYd2xafGE+WztwQNp3Byq8JJLV82ISdOqBErzCmeSfzD0xXPsR/3+lGtA1aQ==
+X-Received: by 2002:a17:906:7095:: with SMTP id b21mr705327ejk.131.1629158522789;
+        Mon, 16 Aug 2021 17:02:02 -0700 (PDT)
+Received: from localhost (host-87-16-116-124.retail.telecomitalia.it. [87.16.116.124])
+        by smtp.gmail.com with ESMTPSA id gh23sm83504ejb.27.2021.08.16.17.02.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 17:02:02 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 02:01:57 +0200
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH net-next] stmmac: align RX buffers
+Message-ID: <20210817020157.3b9d015e@linux.microsoft.com>
+In-Reply-To: <20210816081208.522ac47c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20210614022504.24458-1-mcroce@linux.microsoft.com>
+        <871r71azjw.wl-maz@kernel.org>
+        <YROmOQ+4Kqukgd6z@orome.fritz.box>
+        <202417ef-f8ae-895d-4d07-1f9f3d89b4a4@gmail.com>
+        <87o8a49idp.wl-maz@kernel.org>
+        <fe5f99c8-5655-7fbb-a64e-b5f067c3273c@gmail.com>
+        <20210812121835.405d2e37@linux.microsoft.com>
+        <874kbuapod.wl-maz@kernel.org>
+        <20210816081208.522ac47c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Organization: Microsoft
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRfgv5OknMluW7jj@lunn.ch>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 14, 2021 at 05:26:55PM +0200, Andrew Lunn wrote:
-> > Thanks for jumping in. We are using BCM5389 and the MDIO bus is used to
-> > access BCM5389 MDC/MDIO interface in Pseudo-PHY mode.
+On Mon, 16 Aug 2021 08:12:08 -0700
+Jakub Kicinski <kuba@kernel.org> wrote:
+
+> On Thu, 12 Aug 2021 12:05:38 +0100 Marc Zyngier wrote:
+> > > A possible fix, which takes in account also the XDP headroom for
+> > > stmmac_rx_buf1_len() only could be (only compile tested, I don't
+> > > have the hardware now):  
 > > 
-> > I didn't know drivers/net/dsa, but let me check out the drivers and see
-> > if it works in the Cloudripper environment.
+> > However, this doesn't fix my issue. I still get all sort of
+> > corruption. Probably stmmac_rx_buf2_len() also need adjusting (it
+> > has a similar logic as its buf1 counterpart...)
+> > 
+> > Unless you can fix it very quickly, and given that we're towards the
+> > end of the cycle, I'd be more comfortable if we reverted this patch.
 > 
-> The b53 driver knows about this switch, so please make use of that
-> driver. See Documentation/devicetree/bindings/net/dsa/brcm,b53.yaml
-> for how you describe it in DT.
-> 
->     Andrew
+> Any luck investigating this one? The rc6 announcement sounds like
+> there may not be that many more rc releases for 5.14.
 
-Thank you Andrew for looking into it. I will update dts and send out
-followup patch after validation (perhaps after v5.15 merge window).
+Hi Jackub.
+
+Unfortunately I have only a device with stmmac, and it works fine with
+the patch. It seems that not all hardware suffers from this issue.
+
+Also, using NET_IP_ALIGN on RX is a common pattern, I think that any
+ethernet device is doing the same to align the IPv4 header.
+
+Anyway, I asked for two tests on the affected device:
+1. Change NET_IP_ALIGN with 8, to see if the DMA has problems in
+   receiving to a non word aligned address
+2. load a nop XDP program (I provided one), to see if the problem is
+   already there when XDP is used
+
+I doubt that changing also stmmac_rx_buf2_len would help,
+but it's worth a try, here is a patch:
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 7b8404a21544..73d1f0ec66ff 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -93,7 +93,7 @@ static int tc = TC_DEFAULT;
+ module_param(tc, int, 0644);
+ MODULE_PARM_DESC(tc, "DMA threshold control value");
+ 
+-#define	DEFAULT_BUFSIZE	1536
++#define	DEFAULT_BUFSIZE	1536 + XDP_PACKET_HEADROOM + NET_IP_ALIGN
+ static int buf_sz = DEFAULT_BUFSIZE;
+ module_param(buf_sz, int, 0644);
+ MODULE_PARM_DESC(buf_sz, "DMA buffer size");
+@@ -4508,12 +4508,12 @@ static unsigned int stmmac_rx_buf1_len(struct stmmac_priv *priv,
+ 
+ 	/* First descriptor, not last descriptor and not split header */
+ 	if (status & rx_not_ls)
+-		return priv->dma_buf_sz;
++		return priv->dma_buf_sz - stmmac_rx_offset(priv);
+ 
+ 	plen = stmmac_get_rx_frame_len(priv, p, coe);
+ 
+ 	/* First descriptor and last descriptor and not split header */
+-	return min_t(unsigned int, priv->dma_buf_sz, plen);
++	return min_t(unsigned int, priv->dma_buf_sz - stmmac_rx_offset(priv), plen);
+ }
+ 
+ static unsigned int stmmac_rx_buf2_len(struct stmmac_priv *priv,
+@@ -4529,12 +4529,12 @@ static unsigned int stmmac_rx_buf2_len(struct stmmac_priv *priv,
+ 
+ 	/* Not last descriptor */
+ 	if (status & rx_not_ls)
+-		return priv->dma_buf_sz;
++		return priv->dma_buf_sz - stmmac_rx_offset(priv);
+ 
+ 	plen = stmmac_get_rx_frame_len(priv, p, coe);
+ 
+ 	/* Last descriptor */
+-	return plen - len;
++	return plen - len - stmmac_rx_offset(priv);
+ }
+ 
+ static int stmmac_xdp_xmit_xdpf(struct stmmac_priv *priv, int queue,
 
 
-Thanks,
-
-Tao
+Regards,
+-- 
+per aspera ad upstream
