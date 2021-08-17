@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E273EE877
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 862723EE873
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239457AbhHQIZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 04:25:29 -0400
-Received: from mga04.intel.com ([192.55.52.120]:18135 "EHLO mga04.intel.com"
+        id S239461AbhHQIZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 04:25:22 -0400
+Received: from mga04.intel.com ([192.55.52.120]:18130 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239402AbhHQIZI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239399AbhHQIZI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 17 Aug 2021 04:25:08 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="214171947"
+X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="214171959"
 X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="scan'208";a="214171947"
+   d="scan'208";a="214171959"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 01:24:32 -0700
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 01:24:35 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="scan'208";a="471080419"
+   d="scan'208";a="471080423"
 Received: from nntpat99-84.inn.intel.com ([10.125.99.84])
-  by orsmga008.jf.intel.com with ESMTP; 17 Aug 2021 01:24:29 -0700
+  by orsmga008.jf.intel.com with ESMTP; 17 Aug 2021 01:24:32 -0700
 From:   Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
@@ -33,9 +33,9 @@ Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
         Alexander Antonov <alexander.antonov@linux.intel.com>,
         Alexei Budankov <abudankov@huawei.com>,
         Riccardo Mancini <rickyman7@gmail.com>
-Subject: [PATCH v11 19/24] perf session: Introduce reader objects in session object
-Date:   Tue, 17 Aug 2021 11:23:22 +0300
-Message-Id: <117061f9be283a79d38068818b8a0038fbe578e1.1629186429.git.alexey.v.bayduraev@linux.intel.com>
+Subject: [PATCH v11 20/24] perf session: Introduce decompressor into trace reader object
+Date:   Tue, 17 Aug 2021 11:23:23 +0300
+Message-Id: <3ffc49a1f6a621ec23782839042ca3616dc1d84c.1629186429.git.alexey.v.bayduraev@linux.intel.com>
 X-Mailer: git-send-email 2.19.0
 In-Reply-To: <cover.1629186429.git.alexey.v.bayduraev@linux.intel.com>
 References: <cover.1629186429.git.alexey.v.bayduraev@linux.intel.com>
@@ -45,102 +45,174 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow to allocate multiple reader objects, so we could load multiple
-data files located in data directory at the same time.
+Introduce decompressor into trace reader object so that decompression
+could be executed on per data file basis separately for every data
+file located in data directory.
 
-Design and implementation are based on the prototype [1], [2].
-
-[1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
-[2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
-
-Suggested-by: Jiri Olsa <jolsa@kernel.org>
 Acked-by: Namhyung Kim <namhyung@gmail.com>
 Reviewed-by: Riccardo Mancini <rickyman7@gmail.com>
 Tested-by: Riccardo Mancini <rickyman7@gmail.com>
 Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 ---
- tools/perf/util/session.c | 33 +++++++++++++++++++++------------
- tools/perf/util/session.h |  3 +++
- 2 files changed, 24 insertions(+), 12 deletions(-)
+ tools/perf/util/session.c | 54 +++++++++++++++++++++++++++++----------
+ tools/perf/util/session.h |  1 +
+ 2 files changed, 42 insertions(+), 13 deletions(-)
 
 diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index a82204d4c4d6..1f92d3cfcb1d 100644
+index 1f92d3cfcb1d..ed41bccb15ff 100644
 --- a/tools/perf/util/session.c
 +++ b/tools/perf/util/session.c
-@@ -343,6 +343,10 @@ void perf_session__delete(struct perf_session *session)
- 	auxtrace_index__free(&session->auxtrace_index);
+@@ -73,6 +73,9 @@ struct reader {
+ 	u64		 data_offset;
+ 	reader_cb_t	 process;
+ 	bool		 in_place_update;
++	struct zstd_data zstd_data;
++	struct decomp	 *decomp;
++	struct decomp	 *decomp_last;
+ 	struct reader_state state;
+ };
+ 
+@@ -85,7 +88,10 @@ static int perf_session__process_compressed_event(struct perf_session *session,
+ 	size_t decomp_size, src_size;
+ 	u64 decomp_last_rem = 0;
+ 	size_t mmap_len, decomp_len = session->header.env.comp_mmap_len;
+-	struct decomp *decomp, *decomp_last = session->decomp_last;
++	struct decomp *decomp, *decomp_last = session->active_reader ?
++		session->active_reader->decomp_last : session->decomp_last;
++	struct zstd_data *zstd_data = session->active_reader ?
++		&session->active_reader->zstd_data : &session->zstd_data;
+ 
+ 	if (decomp_last) {
+ 		decomp_last_rem = decomp_last->size - decomp_last->head;
+@@ -113,7 +119,7 @@ static int perf_session__process_compressed_event(struct perf_session *session,
+ 	src = (void *)event + sizeof(struct perf_record_compressed);
+ 	src_size = event->pack.header.size - sizeof(struct perf_record_compressed);
+ 
+-	decomp_size = zstd_decompress_stream(&(session->zstd_data), src, src_size,
++	decomp_size = zstd_decompress_stream(zstd_data, src, src_size,
+ 				&(decomp->data[decomp_last_rem]), decomp_len - decomp_last_rem);
+ 	if (!decomp_size) {
+ 		munmap(decomp, mmap_len);
+@@ -123,12 +129,22 @@ static int perf_session__process_compressed_event(struct perf_session *session,
+ 
+ 	decomp->size += decomp_size;
+ 
+-	if (session->decomp == NULL) {
+-		session->decomp = decomp;
+-		session->decomp_last = decomp;
++	if (session->active_reader) {
++		if (session->active_reader->decomp == NULL) {
++			session->active_reader->decomp = decomp;
++			session->active_reader->decomp_last = decomp;
++		} else {
++			session->active_reader->decomp_last->next = decomp;
++			session->active_reader->decomp_last = decomp;
++		}
+ 	} else {
+-		session->decomp_last->next = decomp;
+-		session->decomp_last = decomp;
++		if (session->decomp == NULL) {
++			session->decomp = decomp;
++			session->decomp_last = decomp;
++		} else {
++			session->decomp_last->next = decomp;
++			session->decomp_last = decomp;
++		}
+ 	}
+ 
+ 	pr_debug("decomp (B): %zd to %zd\n", src_size, decomp_size);
+@@ -320,11 +336,11 @@ static void perf_session__delete_threads(struct perf_session *session)
+ 	machine__delete_threads(&session->machines.host);
+ }
+ 
+-static void perf_session__release_decomp_events(struct perf_session *session)
++static void perf_decomp__release_events(struct decomp *next)
+ {
+-	struct decomp *next, *decomp;
++	struct decomp *decomp;
+ 	size_t mmap_len;
+-	next = session->decomp;
++
+ 	do {
+ 		decomp = next;
+ 		if (decomp == NULL)
+@@ -337,6 +353,8 @@ static void perf_session__release_decomp_events(struct perf_session *session)
+ 
+ void perf_session__delete(struct perf_session *session)
+ {
++	int r;
++
+ 	if (session == NULL)
+ 		return;
+ 	auxtrace__free(session);
+@@ -344,10 +362,14 @@ void perf_session__delete(struct perf_session *session)
  	perf_session__destroy_kernel_maps(session);
  	perf_session__delete_threads(session);
-+	if (session->readers) {
-+		zfree(&session->readers);
-+		session->nr_readers = 0;
-+	}
- 	perf_session__release_decomp_events(session);
+ 	if (session->readers) {
++		for (r = 0; r < session->nr_readers; r++) {
++			perf_decomp__release_events(session->readers[r].decomp);
++			zstd_fini(&session->readers[r].zstd_data);
++		}
+ 		zfree(&session->readers);
+ 		session->nr_readers = 0;
+ 	}
+-	perf_session__release_decomp_events(session);
++	perf_decomp__release_events(session->decomp);
  	perf_env__exit(&session->header.env);
  	machines__exit(&session->machines);
-@@ -2303,14 +2307,7 @@ static s64 process_simple(struct perf_session *session,
- 
- static int __perf_session__process_events(struct perf_session *session)
+ 	if (session->data) {
+@@ -2162,7 +2184,8 @@ static int __perf_session__process_decomp_events(struct perf_session *session)
  {
--	struct reader rd = {
--		.fd		= perf_data__fd(session->data),
--		.data_size	= session->header.data_size,
--		.data_offset	= session->header.data_offset,
--		.process	= process_simple,
--		.path		= session->data->file.path,
--		.in_place_update = session->data->in_place_update,
--	};
-+	struct reader *rd;
- 	struct ordered_events *oe = &session->ordered_events;
- 	struct perf_tool *tool = session->tool;
- 	struct ui_progress prog;
-@@ -2318,12 +2315,24 @@ static int __perf_session__process_events(struct perf_session *session)
+ 	s64 skip;
+ 	u64 size;
+-	struct decomp *decomp = session->decomp_last;
++	struct decomp *decomp = session->active_reader ?
++		session->active_reader->decomp_last : session->decomp_last;
  
- 	perf_tool__fill_defaults(tool);
+ 	if (!decomp)
+ 		return 0;
+@@ -2219,6 +2242,9 @@ reader__process_events(struct reader *rd, struct perf_session *session,
  
--	if (rd.data_size == 0)
--		return -1;
-+	rd = session->readers = zalloc(sizeof(struct reader));
-+	if (!rd)
-+		return -ENOMEM;
+ 	memset(mmaps, 0, sizeof(st->mmaps));
+ 
++	if (zstd_init(&rd->zstd_data, 0))
++		return -1;
 +
-+	session->nr_readers = 1;
-+
-+	*rd = (struct reader) {
-+		.fd		 = perf_data__fd(session->data),
-+		.data_size	 = session->header.data_size,
-+		.data_offset	 = session->header.data_offset,
-+		.process	 = process_simple,
-+		.path		 = session->data->file.path,
-+		.in_place_update = session->data->in_place_update,
-+	};
+ 	mmap_prot  = PROT_READ;
+ 	mmap_flags = MAP_SHARED;
  
--	ui_progress__init_size(&prog, rd.data_size, "Processing events...");
-+	ui_progress__init_size(&prog, rd->data_size, "Processing events...");
+@@ -2262,12 +2288,13 @@ reader__process_events(struct reader *rd, struct perf_session *session,
+ 		goto remap;
+ 	}
  
--	err = reader__process_events(&rd, session, &prog);
-+	err = reader__process_events(rd, session, &prog);
- 	if (err)
- 		goto out_err;
- 	/* do the final flush for ordered samples */
++	session->active_reader = rd;
+ 	size = event->header.size;
+ 
+ 	skip = -EINVAL;
+ 
+ 	if (size < sizeof(struct perf_event_header) ||
+-	    (skip = rd->process(session, event, st->file_pos, rd->path)) < 0) {
++	    (skip = perf_session__process_event(session, event, st->file_pos, rd->path)) < 0) {
+ 		pr_err("%#" PRIx64 " [%s] [%#x]: failed to process type: %d [%s]\n",
+ 		       st->file_offset + st->head, rd->path, event->header.size,
+ 		       event->header.type, strerror(-skip));
+@@ -2294,6 +2321,7 @@ reader__process_events(struct reader *rd, struct perf_session *session,
+ 		goto more;
+ 
+ out:
++	session->active_reader = NULL;
+ 	return err;
+ }
+ 
 diff --git a/tools/perf/util/session.h b/tools/perf/util/session.h
-index 308cf48e0945..b9b9468d8f17 100644
+index b9b9468d8f17..8073331d0490 100644
 --- a/tools/perf/util/session.h
 +++ b/tools/perf/util/session.h
-@@ -19,6 +19,7 @@ struct thread;
- 
- struct auxtrace;
- struct itrace_synth_opts;
-+struct reader;
- 
- struct perf_session {
- 	struct perf_header	header;
-@@ -41,6 +42,8 @@ struct perf_session {
- 	struct zstd_data	zstd_data;
- 	struct decomp		*decomp;
+@@ -44,6 +44,7 @@ struct perf_session {
  	struct decomp		*decomp_last;
-+	struct reader		*readers;
-+	int			nr_readers;
+ 	struct reader		*readers;
+ 	int			nr_readers;
++	struct reader		*active_reader;
  };
  
  struct decomp {
