@@ -2,102 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5FB3EF42E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F0C3EF439
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234027AbhHQUja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 16:39:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbhHQUj3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 16:39:29 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E12BC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 13:38:55 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id bd1so1055003oib.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 13:38:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qst5Lct6ju3ZiqLPEwiEwZCexgwlBiGnZjd8VzBBJAU=;
-        b=awQiy6mW2gRQnPCe2fzj1nM0naHRZ0XG7PtwKsN+oeM+V1LTqxkC4tbTfyZvL1lAZt
-         OR78CydauxbVPha8JB4aJdd21BS5qPmddFNVV8yHzEd+58Kq/9Dm+8zcSw9PkKmZrH+f
-         ooWZZzfZKnshQ0MrQ8SPqjrKBGnG1nbJinc73YlJ8nnH4F3ayI4snwnoduNEV59bNKWd
-         zokeFoBW9vV35/mBznhRtf7+13DqR3NGbkdJKfObe8qOzxRHvmsFjdDxq8L7bshz6HXW
-         yJb8azF3Zx0pnZE1/NxjDhWTO4HEFGPwpDUTqKGH/rxkV4gbQoFl2OZ0dizxZueg5uJK
-         nLLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qst5Lct6ju3ZiqLPEwiEwZCexgwlBiGnZjd8VzBBJAU=;
-        b=FMU3RIZKUiCHQZncs2jB3Pc1t/pef/yVGVu3KIhth+8tMDfiN5oQMBVAYzZd0Qtyer
-         esbX2ScYeU6Cv1VsWhlirIQVeVFwjmYfD5GP1dqbxHZGyrn8tZzRKTLyNwLMIJUK0X6J
-         /LMJkjDOWl6mF8VZIO73Y/vCndeDZUepdQx42uCnE0A3hOiXoUfMv/bno0EedlLxCRql
-         7HBwf32RBI/1BWAK6yphlN/PjaiOW/WPWzbKpXLp89CgxyV0DV2n+6LnXHXbJFAdclL2
-         JdpokpBaiooPg5Sc9cdOsk1W5TuC5R80iMWBUrxJMPW/AdBK+v++msq6fBNp6GLSWspI
-         Kpfg==
-X-Gm-Message-State: AOAM533COk5DcY6RxvDFxs7a51S8CGQ123lX1+cnOv8xRMoUrJ1eLatU
-        xdQserPx7t1Zwv1irT+DHD4=
-X-Google-Smtp-Source: ABdhPJwEz7DnFMOfwvP1SQynjScCfEKl40/eHeQR+3rbX+xGM3tfkwDMrJwtk6DzD4MapWrozxezgg==
-X-Received: by 2002:aca:5316:: with SMTP id h22mr4096473oib.13.1629232734996;
-        Tue, 17 Aug 2021 13:38:54 -0700 (PDT)
-Received: from vaslot-XPS-8930 (2603-8081-2340-02f5-2f69-e1eb-f257-277e.res6.spectrum.com. [2603:8081:2340:2f5:2f69:e1eb:f257:277e])
-        by smtp.gmail.com with ESMTPSA id t13sm633599oor.37.2021.08.17.13.38.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 13:38:54 -0700 (PDT)
-From:   Vishal Aslot <os.vaslot@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        os.vaslot@gmail.com
-Subject: [PATCH] mm: Changed leading spaces to tabs
-Date:   Tue, 17 Aug 2021 15:38:27 -0500
-Message-Id: <20210817203827.54586-1-os.vaslot@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        id S234579AbhHQUov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 16:44:51 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:39396 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229847AbhHQUos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 16:44:48 -0400
+Received: from zn.tnic (p200300ec2f117500b0ae8110978caeec.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:7500:b0ae:8110:978c:aeec])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 72BF51EC054F;
+        Tue, 17 Aug 2021 22:44:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1629233048;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=kGYRnAMSLbjZ/FPl31T/5mLxunyqniOXuhCt9CoiNRU=;
+        b=idhoqaoyNMw69THb+H9A2bvcCKeTLrJJEVDaSQEOLre37KzokOn5QvSNWIaUINNWyKXzfL
+        zFyPuHjYKuUCSBTfF15vmrp6mLt5UlEQXw1zBkbpwbbgFtKjzb2XpHf60liU/yGOXA4AeB
+        oQBWI2rcyv8ZFE0Nkd6kyFS0kkGo3J4=
+Date:   Tue, 17 Aug 2021 22:44:48 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part1 RFC v4 15/36] x86/mm: Add support to validate
+ memory when changing C-bit
+Message-ID: <YRwfwCo4gwjWMbD0@zn.tnic>
+References: <20210707181506.30489-1-brijesh.singh@amd.com>
+ <20210707181506.30489-16-brijesh.singh@amd.com>
+ <YRvxZtLkVNda9xwX@zn.tnic>
+ <d9aabcb8-9db2-838c-74c7-c0e759257d3f@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <d9aabcb8-9db2-838c-74c7-c0e759257d3f@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch cleans up two ERRORs produced by checkpatch.pl in internal.h.
+On Tue, Aug 17, 2021 at 03:34:41PM -0500, Brijesh Singh wrote:
+> I am not seeing any strong reason to sanity check the reserved bit in the
+> psc_entry. The fields in the psc_entry are input from guest to the
+> hypervisor. The hypervisor cannot trick a guest by changing anything in the
+> psc_entry because guest does not read the hypervisor filled value. I am okay
+> with the psc_hdr because we need to read the current and end entry after the
+> PSC completes to determine whether it was successful and sanity checking PSC
+> header makes much more sense. Let me know if you are okay with it ?
 
-Signed-off-by: Vishal Aslot <os.vaslot@gmail.com>
----
- mm/internal.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Ok, fair enough.
 
-diff --git a/mm/internal.h b/mm/internal.h
-index 31ff935b2547..c97fe964ab15 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -557,8 +557,8 @@ extern u64 hwpoison_filter_memcg;
- extern u32 hwpoison_filter_enable;
- 
- extern unsigned long  __must_check vm_mmap_pgoff(struct file *, unsigned long,
--        unsigned long, unsigned long,
--        unsigned long, unsigned long);
-+	unsigned long, unsigned long,
-+	unsigned long, unsigned long);
- 
- extern void set_pageblock_order(void);
- unsigned int reclaim_clean_pages_from_list(struct zone *zone,
-@@ -647,11 +647,11 @@ struct migration_target_control {
-  */
- #ifdef CONFIG_MMU
- int vmap_pages_range_noflush(unsigned long addr, unsigned long end,
--                pgprot_t prot, struct page **pages, unsigned int page_shift);
-+		pgprot_t prot, struct page **pages, unsigned int page_shift);
- #else
- static inline
- int vmap_pages_range_noflush(unsigned long addr, unsigned long end,
--                pgprot_t prot, struct page **pages, unsigned int page_shift)
-+		pgprot_t prot, struct page **pages, unsigned int page_shift)
- {
- 	return -EINVAL;
- }
+Thx.
+
 -- 
-2.27.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
