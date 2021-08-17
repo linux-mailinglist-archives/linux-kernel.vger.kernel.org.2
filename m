@@ -2,88 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30B03EF4D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 23:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA773EF4DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 23:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234686AbhHQVWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 17:22:36 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:36450 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230515AbhHQVWf (ORCPT
+        id S234794AbhHQVXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 17:23:24 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:43910 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230515AbhHQVXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 17:22:35 -0400
-Received: by mail-oi1-f182.google.com with SMTP id bd1so1246496oib.3;
-        Tue, 17 Aug 2021 14:22:01 -0700 (PDT)
+        Tue, 17 Aug 2021 17:23:22 -0400
+Received: by mail-ot1-f45.google.com with SMTP id x10-20020a056830408a00b004f26cead745so108838ott.10;
+        Tue, 17 Aug 2021 14:22:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=6L+5wlMt2yzIbfshHduMjrMVAdkTpwetAGTBAeNQdRg=;
-        b=jTG3eQr8kJfzQYWwrL73J28Ns/gDtyg91UPXTlnWfcIQyUvZOv4NBaepfXOIweiwvK
-         rs0N3cmXURa9qK2ZS5Baw2G6lVl3gx24GdAa+97acu9eUdKPMq52k3LkhLUM3STh1zSX
-         jB8gy7bzKgMAPSO0X4/J11JNBaKjktfyzpjSWK2aQmMMEeQwm7LY84jvmLdI7I1zMYP6
-         WR0Og32gCgNcPgjzD4O56jzPJH5weLtwoXeBXZOhpoWAfHSkJZh11NqonWUKFIhik/DH
-         IITQLTFAoEKvajudDxys71ZNlicllhjt33vBM9vuAGr818s8R4W/xX+AEYod4YV8qjMH
-         N5ZQ==
-X-Gm-Message-State: AOAM532yAND7IkZYpafEZPeljH+qerb8K3z7qijiNmMOEK7t2juV/n8d
-        j9PeClS6SkGOlbVm+9q9Hw==
-X-Google-Smtp-Source: ABdhPJwOmIKfALlUUV7/8OtxuGv3plXSNmLw/cppX34gG2KRU+NuHHV0PYqmGWcFcGmvBOy24j+mgA==
-X-Received: by 2002:aca:1911:: with SMTP id l17mr4172891oii.160.1629235321616;
-        Tue, 17 Aug 2021 14:22:01 -0700 (PDT)
+        bh=RxfsUNxQuHFeeinSXfwnppOEjR6lGfxHD88QKCCSZ40=;
+        b=ZyRV22PkX7qVooZv3DSpszE8wx+3gyeP7HU9CFcAP0lCjKHD5gd5/knPBFvsS973uK
+         HQmOOVKh2Cq7Y/zuAI1qIqnusi93HxYDEi31xZS9vpqGSC8sP2y+t+rMUWGNZldAzabR
+         KUUgmvo2bsYUMG748iB8gXzEo4hexXrTXcU2quP/UD98j8XXZfbjxubkNNkg+huk2Oan
+         uujzgRYlPcydRt/4D2IbsuGe7q/UKUKTW6tHksZeScBLR7hhx18ahuyI3jzcPSaHv1Eb
+         0ixCF/YADDOCv+SZOznSwRU144c9Rz0ueCzrDOOoYY1xLZR9hJqIK0PuM8S36F21yXBH
+         AH1w==
+X-Gm-Message-State: AOAM53309f+ig9LL8E9FqOnFkeLWgTu6lJp4H7lZkHY0YBMnz5M48EPz
+        HyaD3EOgFh0ySGNXX295yA==
+X-Google-Smtp-Source: ABdhPJwZ1XEH427kTOCof94GE7pPcfSIOvX5lcwYwNfkKoDKIPvm6zfYAh2JbL+pudnaUVZ34mRucQ==
+X-Received: by 2002:a9d:222:: with SMTP id 31mr4286176otb.79.1629235368840;
+        Tue, 17 Aug 2021 14:22:48 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s63sm753605oia.52.2021.08.17.14.21.59
+        by smtp.gmail.com with ESMTPSA id j125sm747897oif.53.2021.08.17.14.22.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 14:22:00 -0700 (PDT)
-Received: (nullmailer pid 862324 invoked by uid 1000);
-        Tue, 17 Aug 2021 21:21:58 -0000
-Date:   Tue, 17 Aug 2021 16:21:58 -0500
+        Tue, 17 Aug 2021 14:22:48 -0700 (PDT)
+Received: (nullmailer pid 863469 invoked by uid 1000);
+        Tue, 17 Aug 2021 21:22:47 -0000
+Date:   Tue, 17 Aug 2021 16:22:47 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Sam Protsenko <semen.protsenko@linaro.org>
-Cc:     linux-serial@vger.kernel.org, Tomasz Figa <tomasz.figa@gmail.com>,
-        linux-samsung-soc@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tom Gall <tom.gall@linaro.org>, Marc Zyngier <maz@kernel.org>,
-        =?utf-8?B?UGF3ZcWC?= Chmiel <pawel.mikolaj.chmiel@gmail.com>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org, Sumit Semwal <sumit.semwal@linaro.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>
-Subject: Re: [PATCH v3 3/7] dt-bindings: serial: samsung: Add Exynos850 doc
-Message-ID: <YRwodjUxlZmvrvSC@robh.at.kernel.org>
-References: <20210811114827.27322-1-semen.protsenko@linaro.org>
- <20210811114827.27322-4-semen.protsenko@linaro.org>
+To:     Lucas Stankus <lucas.p.stankus@gmail.com>
+Cc:     Michael.Hennerich@analog.com, linux-iio@vger.kernel.org,
+        Dragos.Bogdan@analog.com, Darius.Berghe@analog.com,
+        devicetree@vger.kernel.org, lars@metafoo.de, jic23@kernel.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: iio: accel: Add binding
+ documentation for ADXL313
+Message-ID: <YRwop9HL/moXSdsa@robh.at.kernel.org>
+References: <cover.1628713039.git.lucas.p.stankus@gmail.com>
+ <1b468b9d4b22f2715ff7e8de868614e533cf1f2a.1628713039.git.lucas.p.stankus@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210811114827.27322-4-semen.protsenko@linaro.org>
+In-Reply-To: <1b468b9d4b22f2715ff7e8de868614e533cf1f2a.1628713039.git.lucas.p.stankus@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Aug 2021 14:48:23 +0300, Sam Protsenko wrote:
-> Add compatible string for Exynos850 SoC.
+On Wed, 11 Aug 2021 18:17:07 -0300, Lucas Stankus wrote:
+> Add device tree binding documentation for ADXL313 3-axis accelerometer.
 > 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
 > ---
-> Changes in v3:
->   - None
-> 
-> Changes in v2:
->   - None
-> 
->  Documentation/devicetree/bindings/serial/samsung_uart.yaml | 1 +
->  1 file changed, 1 insertion(+)
+>  .../bindings/iio/accel/adi,adxl313.yaml       | 86 +++++++++++++++++++
+>  1 file changed, 86 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
