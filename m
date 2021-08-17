@@ -2,127 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 957BA3EE57F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 06:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9376E3EE580
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 06:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237473AbhHQEVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 00:21:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33782 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229754AbhHQEVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 00:21:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F7AE60F35;
-        Tue, 17 Aug 2021 04:20:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629174035;
-        bh=LwXAxW/JbRYjdBCqrHlZG4O/OKef14aoTixFDdZAp1g=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=T0Wiz+2rYAqmYBvxPhY+nP2pHfXU/XE+e7umtS+vPE3zQztFvVZF9upFQaqWUK+eS
-         H/TnKzuaZXXArPKTKlZ3RAASWszSIJZYWkad2pednSRfx+Qd+dIMoJnz1mfQXi7yyH
-         BQIcPy2VjpXB1jYwPT271i09mFYsx81EvLClobVY68SCMn1oD8vBcRuZPTD0TG+D04
-         PXvCXUWql8LlETLAg1BQo055DIyWuCflGmPpxOOHO95gu4Qc9+WuGvgpVE4mDG54aj
-         plQXt/fCMqg1TBfhuXq1zf+pm5MHvy4gWNO+UY2sVHD8EMr016tIFAduudPdVj/M9j
-         kLbJFEwsH6Saw==
-Subject: Re: [PATCH] kbuild: Enable -Wimplicit-fallthrough for clang 14.0.0+
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-References: <20210817005624.1455428-1-nathan@kernel.org>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <80fa539a-b767-76ed-dafa-4d8d1a6b063e@kernel.org>
-Date:   Mon, 16 Aug 2021 21:20:33 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231616AbhHQEXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 00:23:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229754AbhHQEXD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 00:23:03 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2D8C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 21:22:31 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id f3so23336104plg.3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 21:22:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bzoVjzOawBk1F/zYmCYxdvVOuCjAhiYRvp0jl0y4Tgo=;
+        b=fIHeA+rRJ5SSvxd3g8oZwgxkZQZdVOd03C+D2S2uKOx54FsPEkyhQzqNXpM9tTR8Ni
+         QI1Bla1Wb1TS8rkK9Fb5uCIZNXR1KtgqB5OsJMf8WvjumIBux2yHzExwpXfCJFquhBKw
+         rIBuoH6h/jInuko+SXY8lRsGVpw8CutrGj82zcnXEbX1kYsnR9l8u7micqIyo2e3Qzhg
+         ToAfrkLPPD46oKXjXMA3EUgXE4VFYcgJarRNcAoCiNISGrHm334NscFAQDntr/3zvX2i
+         AuucSSLyiGYAA/bIoTaLJRAUDh58x/cOvXMFpMHbG4d0p+6K1AnLHYwKW7x8LVVEjD81
+         c2PQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bzoVjzOawBk1F/zYmCYxdvVOuCjAhiYRvp0jl0y4Tgo=;
+        b=YrW1TnnBX6QuGNOZNoZaWWzSjx46W3MhDkFo37qHaAWfy61MFrIHRC9ra7u/nF4CmN
+         bdrm2fUwH0iW2cV/4E7LdiuN5x+vUF9b7pkO3EBR1NKn1oDjQMQddgC8NOXEn2alDuzm
+         W4MgpSLnvkCNvEfpT8b7qQrQPjI7gxCi8+xSmD7eryyZZf7dldOu04cjEXu0p87MMJJj
+         2wc74BWxhWyXTDj6e8YphDKqmuN0VMiqHILCoTLnR05bVqvFHfSno61MBgVlcTpSRfrg
+         p4Xyxm2n1eNRJsFHNW6In6KHZvd9WHI9ijUyQln+CsQ+X+ELI41ef2clrmndTMegw5Tt
+         FqFA==
+X-Gm-Message-State: AOAM530NtmNwEpFAmzgiQZG0xEi3osBcNp3FghZc8G++i/H7a3haZgGC
+        AK0qseZQiWEmRpoBlTNVIemdbBDHCNqCjw==
+X-Google-Smtp-Source: ABdhPJwlNoPNNBpmfplYC+rsV3fV9s6i9DjK5tCgRoy4qlAGsj31yRDXWcuFTUGj898lGj/YqTIpjg==
+X-Received: by 2002:a17:90a:c20d:: with SMTP id e13mr1558322pjt.200.1629174150788;
+        Mon, 16 Aug 2021 21:22:30 -0700 (PDT)
+Received: from Smcdef-MBP.lan.org ([139.177.225.253])
+        by smtp.gmail.com with ESMTPSA id z13sm600097pjd.44.2021.08.16.21.22.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 16 Aug 2021 21:22:30 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     akpm@linux-foundation.org, osalvador@suse.de, david@redhat.com,
+        mhocko@suse.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH] mm: bootmem_info: mark __init on register_page_bootmem_info_section
+Date:   Tue, 17 Aug 2021 12:22:21 +0800
+Message-Id: <20210817042221.77172-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-In-Reply-To: <20210817005624.1455428-1-nathan@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The register_page_bootmem_info_section() is only called from __init
+functions, so mark __init on it as well.
 
-On 8/16/2021 5:56 PM, Nathan Chancellor wrote:
-> Clang prior to 14.0.0 warns when a fallthrough annotation is in an
-> unreachable spot, which can occur when IS_ENABLED(CONFIG_...) in a
-> conditional statement prior to the fallthrough annotation such as
-> 
->    if (IS_ENABLED(CONFIG_...))
->        break;
->    fallthrough;
-> 
-> which to clang looks like
-> 
->    break;
->    fallthrough;
-> 
-> if CONFIG_... is enabled due to the control flow graph. Example of the
-> warning in practice:
-> 
-> sound/core/pcm_native.c:3812:3: warning: fallthrough annotation in
-> unreachable code [-Wimplicit-fallthrough]
->                  fallthrough;
->                  ^
-> 
-> Warning on unreachable annotations makes the warning too noisy and
-> pointless for the kernel due to the nature of guarding some code on
-> configuration options so it was disabled in commit d936eb238744 ("Revert
-> "Makefile: Enable -Wimplicit-fallthrough for Clang"").
-> 
-> This has been resolved in clang 14.0.0 by moving the unreachable warning
-> to its own flag under -Wunreachable-code, which the kernel will most
-> likely never enable due to situations like this.
-> 
-> Enable -Wimplicit-fallthrough for clang 14+ so that issues such as the
-> one in commit 652b44453ea9 ("habanalabs/gaudi: fix missing code in ECC
-> handling") can be caught before they enter the tree.
-> 
-> Link: https://github.com/ClangBuiltLinux/linux/issues/236
-> Link: https://github.com/llvm/llvm-project/commit/9ed4a94d6451046a51ef393cd62f00710820a7e8
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> ---
->   Makefile | 10 ++++++++--
->   1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index c19d1638da25..91a4a80409e1 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -797,11 +797,17 @@ KBUILD_CFLAGS += -Wno-gnu
->   # source of a reference will be _MergedGlobals and not on of the whitelisted names.
->   # See modpost pattern 2
->   KBUILD_CFLAGS += -mno-global-merge
-> +
-> +# Warn about unmarked fall-throughs in switch statement.
-> +# Clang prior to 14.0.0 warned on unreachable fallthroughs with
-> +# -Wimplicit-fallthrough, which is unacceptable due to IS_ENABLED().
-> +# https://bugs.llvm.org/show_bug.cgi?id=51094
-> +ifeq ($(shell test $(CONFIG_CLANG_VERSION) -ge 140000; echo $$?),0)
-> +KBUILD_CFLAGS += -Wimplicit-fallthrough
-> +endif
->   else
->   
->   # Warn about unmarked fall-throughs in switch statement.
-> -# Disabled for clang while comment to attribute conversion happens and
-> -# https://github.com/ClangBuiltLinux/linux/issues/636 is discussed.
->   KBUILD_CFLAGS += $(call cc-option,-Wimplicit-fallthrough=5,)
->   endif
->   
-> 
-> base-commit: a2824f19e6065a0d3735acd9fe7155b104e7edf5
-> 
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+ mm/bootmem_info.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Please do not apply this patch in its current form, as it does not 
-properly credit Gustavo for all of the hard work he has done for 
-enabling this warning.
+diff --git a/mm/bootmem_info.c b/mm/bootmem_info.c
+index 5b152dba7344..f03f42f426f6 100644
+--- a/mm/bootmem_info.c
++++ b/mm/bootmem_info.c
+@@ -39,7 +39,7 @@ void put_page_bootmem(struct page *page)
+ }
+ 
+ #ifndef CONFIG_SPARSEMEM_VMEMMAP
+-static void register_page_bootmem_info_section(unsigned long start_pfn)
++static void __init register_page_bootmem_info_section(unsigned long start_pfn)
+ {
+ 	unsigned long mapsize, section_nr, i;
+ 	struct mem_section *ms;
+@@ -74,7 +74,7 @@ static void register_page_bootmem_info_section(unsigned long start_pfn)
+ 
+ }
+ #else /* CONFIG_SPARSEMEM_VMEMMAP */
+-static void register_page_bootmem_info_section(unsigned long start_pfn)
++static void __init register_page_bootmem_info_section(unsigned long start_pfn)
+ {
+ 	unsigned long mapsize, section_nr, i;
+ 	struct mem_section *ms;
+-- 
+2.11.0
 
-Additionally, there should be some time for the CI systems to update 
-their clang-14 builds, as the recent 0day report shows.
-
-Cheers,
-Nathan
