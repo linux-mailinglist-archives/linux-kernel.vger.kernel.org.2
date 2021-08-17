@@ -2,99 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806483EE495
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 04:46:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4888F3EE4A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 04:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234047AbhHQCqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 22:46:32 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:14216 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233438AbhHQCqa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 22:46:30 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Gpb4G0HlRz1CXd5;
-        Tue, 17 Aug 2021 10:45:34 +0800 (CST)
-Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 17 Aug 2021 10:45:56 +0800
-Received: from [10.174.178.46] (10.174.178.46) by
- dggema761-chm.china.huawei.com (10.1.198.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 17 Aug 2021 10:45:55 +0800
-Subject: Re: [PATCH v2] mtd: mtdconcat: Check existence of _read|_write from
- subdev'master device before assigning
-To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <bbrezillon@kernel.org>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <yukuai3@huawei.com>, <sfr@canb.auug.org.au>
-References: <20210817024552.1691649-1-chengzhihao1@huawei.com>
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <8b315831-84c5-38f3-d3b7-bb53f52c28b8@huawei.com>
-Date:   Tue, 17 Aug 2021 10:45:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S236086AbhHQCz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 22:55:58 -0400
+Received: from smtpbg128.qq.com ([106.55.201.39]:26685 "EHLO smtpbg587.qq.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233634AbhHQCz5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 22:55:57 -0400
+X-QQ-mid: bizesmtp46t1629168851t8n9yung
+Received: from localhost.localdomain (unknown [182.148.12.53])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Tue, 17 Aug 2021 10:54:08 +0800 (CST)
+X-QQ-SSF: 0100000000200080B000B00A0000000
+X-QQ-FEAT: E4g7lKGTFIA4x5jhveGo8SRp7qCU/eN5I3W6cw7KVN1q3rjUlTdibvkFuE9os
+        5X4ZXCdnUnBoedEyf+T0sGQhpRxHyS4md7j93R6c77aSD/oONxUI7WF/tVl7gqyFYjJkSI7
+        2AgZN6tHQ7qH1JgSN+PoV8KHzx4FGcBdF3WOD99zrCv45vPMsvyngGnrAcx8vW8jQJbfstM
+        e33ck8opyV+k45NrZpH+02r/JxgkkmpF2WxmudEtguCPrdo4bYBcBSeUJ1DqLbAlbEV/RrJ
+        9ME+iDmkAbzqvpfpWudKIQ42Y6tKCXd9v7obK4kBGlAk4kEVQ5/iYaihNS97Af5Wx+2A==
+X-QQ-GoodBg: 0
+From:   Huilong Deng <denghuilong@cdjrlc.com>
+To:     tsbogend@alpha.franken.de, chenhuacai@kernel.org,
+        aleksandar.qemu.devel@gmail.com
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Huilong Deng <denghuilong@cdjrlc.com>
+Subject: [PATCH] MIPS: Return true/false (not 1/0) from bool functions
+Date:   Tue, 17 Aug 2021 10:53:38 +0800
+Message-Id: <20210817025338.3552-1-denghuilong@cdjrlc.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210817024552.1691649-1-chengzhihao1@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema761-chm.china.huawei.com (10.1.198.203)
-X-CFilter-Loop: Reflected
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ÔÚ 2021/8/17 10:45, Zhihao Cheng Ð´µÀ:
-Hi Miquel,
-I found a better way to fix the "WARNING" on _read|_read_oob checking. 
-Since sub-mtd device has been registered successfully, we can check 
-against the existence of _read|_read_oob callbacks by subdev's master 
-device.
-BTW, fix missing space between the SHA1 and the subject suggested by 
-Stephen.
-> Since 2431c4f5b46c3 ("mtd: Implement mtd_{read,write}() as wrappers
-> around mtd_{read,write}_oob()") don't allow _write|_read and
-> _write_oob|_read_oob existing at the same time. We should check the
-> existence of callbacks "_read and _write" from subdev's master device
-> (We can trust master device since it has been registered) before
-> assigning, otherwise following warning occurs while making
-> concatenated device:
->
->    WARNING: CPU: 2 PID: 6728 at drivers/mtd/mtdcore.c:595
->    add_mtd_device+0x7f/0x7b0
->
-> Fixes: 2431c4f5b46c3 ("mtd: Implement mtd_{read,write}() around ...")
-> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> ---
->   drivers/mtd/mtdconcat.c | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-> index af51eee6b5e8..f685a581df48 100644
-> --- a/drivers/mtd/mtdconcat.c
-> +++ b/drivers/mtd/mtdconcat.c
-> @@ -694,6 +694,10 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
->   		concat->mtd._block_markbad = concat_block_markbad;
->   	if (subdev_master->_panic_write)
->   		concat->mtd._panic_write = concat_panic_write;
-> +	if (subdev_master->_read)
-> +		concat->mtd._read = concat_read;
-> +	if (subdev_master->_write)
-> +		concat->mtd._write = concat_write;
->   
->   	concat->mtd.ecc_stats.badblocks = subdev[0]->ecc_stats.badblocks;
->   
-> @@ -755,8 +759,6 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
->   	concat->mtd.name = name;
->   
->   	concat->mtd._erase = concat_erase;
-> -	concat->mtd._read = concat_read;
-> -	concat->mtd._write = concat_write;
->   	concat->mtd._sync = concat_sync;
->   	concat->mtd._lock = concat_lock;
->   	concat->mtd._unlock = concat_unlock;
+./arch/mips/kernel/uprobes.c:261:8-9: WARNING: return of 0/1 in function
+'arch_uprobe_skip_sstep' with return type bool
+./arch/mips/kernel/uprobes.c:78:10-11: WARNING: return of 0/1 in
+function 'is_trap_insn' with return type bool
+./arch/mips/kvm/mmu.c:489:9-10: WARNING: return of 0/1 in function
+'kvm_test_age_gfn' with return type bool
+./arch/mips/kvm/mmu.c:445:8-9: WARNING: return of 0/1 in function
+'kvm_unmap_gfn_range' with return type bool
 
+Signed-off-by: Huilong Deng <denghuilong@cdjrlc.com>
+---
+ arch/mips/kernel/uprobes.c | 10 +++++-----
+ arch/mips/kvm/mmu.c        |  4 ++--
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/arch/mips/kernel/uprobes.c b/arch/mips/kernel/uprobes.c
+index 6dbe4eab0a0e..9db2a6db5f62 100644
+--- a/arch/mips/kernel/uprobes.c
++++ b/arch/mips/kernel/uprobes.c
+@@ -75,7 +75,7 @@ bool is_trap_insn(uprobe_opcode_t *insn)
+ 		case tlt_op:
+ 		case tltu_op:
+ 		case tne_op:
+-			return 1;
++			return true;
+ 		}
+ 		break;
+ 
+@@ -87,12 +87,12 @@ bool is_trap_insn(uprobe_opcode_t *insn)
+ 		case tlti_op:
+ 		case tltiu_op:
+ 		case tnei_op:
+-			return 1;
++			return true;
+ 		}
+ 		break;
+ 	}
+ 
+-	return 0;
++	return false;
+ }
+ 
+ #define UPROBE_TRAP_NR	ULONG_MAX
+@@ -254,9 +254,9 @@ unsigned long uprobe_get_swbp_addr(struct pt_regs *regs)
+  * See if the instruction can be emulated.
+  * Returns true if instruction was emulated, false otherwise.
+  *
+- * For now we always emulate so this function just returns 0.
++ * For now we always emulate so this function just returns false.
+  */
+ bool arch_uprobe_skip_sstep(struct arch_uprobe *auprobe, struct pt_regs *regs)
+ {
+-	return 0;
++	return false;
+ }
+diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
+index 6d1f68cf4edf..1bfd1b501d82 100644
+--- a/arch/mips/kvm/mmu.c
++++ b/arch/mips/kvm/mmu.c
+@@ -442,7 +442,7 @@ static int kvm_mips_mkold_gpa_pt(struct kvm *kvm, gfn_t start_gfn,
+ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
+ {
+ 	kvm_mips_flush_gpa_pt(kvm, range->start, range->end);
+-	return 1;
++	return true;
+ }
+ 
+ bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+@@ -486,7 +486,7 @@ bool kvm_test_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+ 	pte_t *gpa_pte = kvm_mips_pte_for_gpa(kvm, NULL, gpa);
+ 
+ 	if (!gpa_pte)
+-		return 0;
++		return false;
+ 	return pte_young(*gpa_pte);
+ }
+ 
+-- 
+2.32.0
 
