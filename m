@@ -2,94 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7843EE6A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6B23EE6A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238005AbhHQGhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 02:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234539AbhHQGhA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 02:37:00 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C3A3C0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:36:27 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1mFsht-0007o2-2g; Tue, 17 Aug 2021 08:36:17 +0200
-Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1mFshq-0006vl-De; Tue, 17 Aug 2021 08:36:14 +0200
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-To:     Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>
-Cc:     kernel@pengutronix.de, Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        SHA-cyfmac-dev-list@infineon.com,
-        brcm80211-dev-list.pdl@broadcom.com, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] brcmfmac: pcie: fix oops on failure to resume and reprobe
-Date:   Tue, 17 Aug 2021 08:35:22 +0200
-Message-Id: <20210817063521.22450-1-a.fatoum@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
+        id S238103AbhHQGhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 02:37:39 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:53934 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237977AbhHQGhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 02:37:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629182225; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=iXGuKgg2bh81naBeKDWA/sZgr8If5bEpsCpMLB50+Tw=;
+ b=xM9M3nmqAtyTAaxmB+3DVpbvteASs3oQbyZd6S1XrxY0e25X0tzNQTZSZoQNkXrV4oXEJe/z
+ 2QeHQRFTeW6fnXibgljg2lIzncd9GJpWv/T05Zvd3hunHA+qEAkuS52RK5zAtffx5k62cT3N
+ DedA0cHvr0LiUelSg4fg6Y037Tk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 611b59109507ca1a341c3dec (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 17 Aug 2021 06:37:03
+ GMT
+Sender: pmaliset=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3FC77C4360D; Tue, 17 Aug 2021 06:37:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmaliset)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AF304C4338F;
+        Tue, 17 Aug 2021 06:37:01 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: afa@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 17 Aug 2021 12:07:01 +0530
+From:   Prasad Malisetty <pmaliset@codeaurora.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
+        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
+        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@chromium.org,
+        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org
+Subject: Re: [PATCH v5 4/4] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY
+ init in SC7280
+In-Reply-To: <20210812061110.GB72145@thinkpad>
+References: <1628568516-24155-1-git-send-email-pmaliset@codeaurora.org>
+ <1628568516-24155-5-git-send-email-pmaliset@codeaurora.org>
+ <20210812061110.GB72145@thinkpad>
+Message-ID: <4fe9e931935b85748753611aa752b9b9@codeaurora.org>
+X-Sender: pmaliset@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When resuming from suspend, brcmf_pcie_pm_leave_D3 will first attempt a
-hot resume and then fall back to removing the PCI device and then
-reprobing. If this probe fails, the kernel will oops, because brcmf_err,
-which is called to report the failure will dereference the stale bus
-pointer. Open code and use the default bus-less brcmf_err to avoid this.
+On 2021-08-12 11:41, Manivannan Sadhasivam wrote:
+> On Tue, Aug 10, 2021 at 09:38:36AM +0530, Prasad Malisetty wrote:
+>> On the SC7280, By default the clock source for pcie_1_pipe is
+>> TCXO for gdsc enable. But after the PHY is initialized, the clock
+>> source must be switched to gcc_pcie_1_pipe_clk from TCXO.
+>> 
+>> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+>> ---
+>>  drivers/pci/controller/dwc/pcie-qcom.c | 18 ++++++++++++++++++
+>>  1 file changed, 18 insertions(+)
+>> 
+>> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c 
+>> b/drivers/pci/controller/dwc/pcie-qcom.c
+>> index 8a7a300..39e3b21 100644
+>> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+>> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+>> @@ -166,6 +166,8 @@ struct qcom_pcie_resources_2_7_0 {
+>>  	struct regulator_bulk_data supplies[2];
+>>  	struct reset_control *pci_reset;
+>>  	struct clk *pipe_clk;
+>> +	struct clk *gcc_pcie_1_pipe_clk_src;
+>> +	struct clk *phy_pipe_clk;
+>>  };
+>> 
+>>  union qcom_pcie_resources {
+>> @@ -1167,6 +1169,16 @@ static int qcom_pcie_get_resources_2_7_0(struct 
+>> qcom_pcie *pcie)
+>>  	if (ret < 0)
+>>  		return ret;
+>> 
+>> +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
+>> +		res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
+>> +		if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
+>> +			return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
+>> +
+>> +		res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
+>> +		if (IS_ERR(res->phy_pipe_clk))
+>> +			return PTR_ERR(res->phy_pipe_clk);
+>> +	}
+>> +
+>>  	res->pipe_clk = devm_clk_get(dev, "pipe");
+>>  	return PTR_ERR_OR_ZERO(res->pipe_clk);
+>>  }
+>> @@ -1255,6 +1267,12 @@ static void qcom_pcie_deinit_2_7_0(struct 
+>> qcom_pcie *pcie)
+>>  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
+>>  {
+>>  	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
+>> +	struct dw_pcie *pci = pcie->pci;
+>> +	struct device *dev = pci->dev;
+>> +	struct device_node *node = dev->of_node;
+>> +
+>> +	if (of_property_read_bool(node, "pipe-clk-source-switch"))
+> 
+> Wondering why you didn't use the compatible here as well. This will 
+> break if the
+> property exist but the clocks are not.
+> 
+> Thanks,
+> Mani
+> 
 
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
----
-To: Arend van Spriel <aspriel@gmail.com>
-To: Franky Lin <franky.lin@broadcom.com>
-To: Hante Meuleman <hante.meuleman@broadcom.com>
-To: Chi-hsien Lin <chi-hsien.lin@infineon.com>
-To: Wright Feng <wright.feng@infineon.com>
-To: Chung-hsien Hsu <chung-hsien.hsu@infineon.com>
-Cc: SHA-cyfmac-dev-list@infineon.com
-Cc: brcm80211-dev-list.pdl@broadcom.com
-Cc: netdev@vger.kernel.org
-Cc: linux-wireless@vger.kernel.org
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: linux-kernel@vger.kernel.org
----
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Mani,
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
-index 9ef94d7a7ca7..d824bea4b79d 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
-@@ -2209,7 +2209,7 @@ static int brcmf_pcie_pm_leave_D3(struct device *dev)
- 
- 	err = brcmf_pcie_probe(pdev, NULL);
- 	if (err)
--		brcmf_err(bus, "probe after resume failed, err=%d\n", err);
-+		__brcmf_err(NULL, __func__, "probe after resume failed, err=%d\n", err);
- 
- 	return err;
- }
--- 
-2.30.2
+In earlier versions we used compatible method here as well, but in v5 
+replaced compatible with new boolean flag.
 
+In recent comments as Stephen suggested, its straight forward approach. 
+if src pointer is NULL, clk_set_parent return 0 and nop
+I will remove both compatible and property read approach and update the 
+change in next version.
+
+
+>> +		clk_set_parent(res->gcc_pcie_1_pipe_clk_src, res->phy_pipe_clk);
+>> 
+>>  	return clk_prepare_enable(res->pipe_clk);
+>>  }
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
+>> 
