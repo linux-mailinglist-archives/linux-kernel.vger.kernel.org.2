@@ -2,107 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F77B3EEAED
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 12:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D083EEAF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 12:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239685AbhHQKZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 06:25:33 -0400
-Received: from mga12.intel.com ([192.55.52.136]:56026 "EHLO mga12.intel.com"
+        id S236297AbhHQK2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 06:28:17 -0400
+Received: from mout.gmx.net ([212.227.17.22]:50947 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239342AbhHQKZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 06:25:28 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="195621140"
-X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="scan'208";a="195621140"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 03:24:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="scan'208";a="593304576"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 17 Aug 2021 03:24:53 -0700
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND 2/2] driver core: platform: Remove platform_device_add_properties()
-Date:   Tue, 17 Aug 2021 13:24:49 +0300
-Message-Id: <20210817102449.39994-3-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210817102449.39994-1-heikki.krogerus@linux.intel.com>
-References: <20210817102449.39994-1-heikki.krogerus@linux.intel.com>
+        id S234093AbhHQK2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 06:28:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1629196057;
+        bh=I2J2SW/R8983FRWI3iQ+XXno6bttiS2cd9W3FEmVODw=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=bpb7+uQteNcPrcP4RhqayGCqYbsPPa7ddU+X99U3lcAvArOlVlsI7pnwpAgnY4bY2
+         lXNt/h/2q8WdyDgDj4gnaqqc91X1bca6BOYY/WPskrMD1KSBmTz8mlnrDH2GXmWIEf
+         m58+83sW7pxEKbogDm578Rhd2Ua34sQmwzFd853A=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1Mo6qp-1mqPnW2Fpr-00pcK2; Tue, 17 Aug 2021 12:27:37 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Steve French <sfrench@samba.org>, Jeff Layton <jlayton@kernel.org>,
+        Suresh Jayaraman <sjayaraman@suse.de>
+Cc:     Len Baker <len.baker@gmx.com>, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] CIFS: Fix a potencially linear read overflow
+Date:   Tue, 17 Aug 2021 12:27:09 +0200
+Message-Id: <20210817102709.15046-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:3ZNYzJz5JHvN/PlriY02eWKfty6IRLAMJHJuFNlhqOGp2xwU0Kv
+ sFsQ+QVlO8KjkZPRaqBrlrc9SJ+F4dMPHr1fP2XfTS5kak7Aaf6CHfShaqGwMFa7wRY+bmL
+ L3cpvZAwgcOrmHtJBWtbQqimRrDPhCZrTmmeMZ4bFOZLakbE6T1IEYToQYyPhz0tkWVJHCH
+ EY3zam0ab3XmAaKIIJYPA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:CDCgeYTjVHs=:cYULzbo81kmMsPAddqFNl/
+ bK3J4Oa0NxrqhGWf0BjCfSn5afm/dZONbQqC0SiCc71TUz2ebB+amK8N5FRPeAeilFK2bctEq
+ ywfKpSji1HgxLwJoZoogrp4iGs5b8irdfJ2jsSevGCeiOSA+7TQyyY+c9bB2hP6XvTvB7cuKE
+ dsxry5taq0VYSaEc9zoMszYQMAetBWWOSJjc+AMiSurweWF4QdUa4fLQogkoPqRDzNXOA+Ej6
+ RX0rTepJXaHZNN/EG82MrCYuoXLmR9KGylxoq1KKzuicu7IjfSHXnDwSlBfWiWUcch8gWOjx7
+ ttRfgWe6t5By3xj13AZAo9RgNX3pZ9+DReOvFoEkyI6ljKZSUxSaWpA5j2FWh2U/ebd+dBLxl
+ IC2ZkqbnfDaZtiWkPoulpTxTlH3Vg2mYMFqwgUyk5xcjV2y8eMftI9bED1QOqmMa/HSWExEb0
+ XsjgsuF1FtC+Y6AOa7OJGrtqrOFfgamYQW/NYJX0OEW1ngJPxzLh/0+EjG7oIIi9OU6R9aMhz
+ Eggs1plfGZQ/t8GIl9Lts3ADd8JRGP4vImUsuRJOdDjGwT5jGTy29wmZgH1KG5PAMI5pgaLm+
+ ybdmoJKrlnyh0pU2kZuVQIkgLr+11pv0v/O1GWTiiXwTDC/QyP20Ccqq0oR2jgVMSrdi3CCwe
+ mi40JeI5yk54pdYzpUlh5nGD2n5zhSDIIsblXvCWGCQuSNTVDLsB8nU4BU33DcV9WvgwS079I
+ QR3TagPcNexZ8U2KVTtX1vJ4kvuCPzwsYjgnwZH6+sERBex2WWjA04XoL7mcmeMViBMMh4n4+
+ SGadaTV5vIjVPIBiw38p7Sb9h9NNgwo1g0IGmIOCJyULmBfQhccwBPywgnKKJXn0aiY8By0PX
+ Ta0lf+jpXVla4nt/gMuPoUywLtPgOMR2780r0m/U4nFOdgZBGdeurS4Qt7covPr6MTl5hGWab
+ pUc9IqeG0sD9WuKzI4Aw3N+eQXnx1Gc1pm4VVeK0xRNbq9daVBJQyVc9RScNc7V9EwKUF8kDZ
+ j/816yUJl2u/TIYqNtRiEZE2nIP9ZpXz/TvZTpjsQqyXKAGWEihIAitiKFA8DtoYI/m3apJPu
+ orcDx0WKVtbBUfUiKWnh/TFVt2x4yl98rkYbqhAzgvTYwLtHYD9ekSmng==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are no more users for it. The last place where it's
-called is in platform_device_register_full(). Replacing that
-call with device_create_managed_software_node() and
-removing the function.
+strlcpy() reads the entire source buffer first. This read may exceed the
+destination size limit. This is both inefficient and can lead to linear
+read overflows if a source string is not NUL-terminated.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
- drivers/base/platform.c         | 20 ++------------------
- include/linux/platform_device.h |  2 --
- 2 files changed, 2 insertions(+), 20 deletions(-)
+Also, the strnlen() call does not avoid the read overflow in the strlcpy
+function when a not NUL-terminated string is passed.
 
-diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-index a94b7f4548814..652531f67135a 100644
---- a/drivers/base/platform.c
-+++ b/drivers/base/platform.c
-@@ -641,22 +641,6 @@ int platform_device_add_data(struct platform_device *pdev, const void *data,
- }
- EXPORT_SYMBOL_GPL(platform_device_add_data);
- 
--/**
-- * platform_device_add_properties - add built-in properties to a platform device
-- * @pdev: platform device to add properties to
-- * @properties: null terminated array of properties to add
-- *
-- * The function will take deep copy of @properties and attach the copy to the
-- * platform device. The memory associated with properties will be freed when the
-- * platform device is released.
-- */
--int platform_device_add_properties(struct platform_device *pdev,
--				   const struct property_entry *properties)
--{
--	return device_add_properties(&pdev->dev, properties);
--}
--EXPORT_SYMBOL_GPL(platform_device_add_properties);
--
- /**
-  * platform_device_add - add a platform device to device hierarchy
-  * @pdev: platform device we're adding
-@@ -842,8 +826,8 @@ struct platform_device *platform_device_register_full(
- 		goto err;
- 
- 	if (pdevinfo->properties) {
--		ret = platform_device_add_properties(pdev,
--						     pdevinfo->properties);
-+		ret = device_create_managed_software_node(&pdev->dev,
-+							  pdevinfo->properties, NULL);
- 		if (ret)
- 			goto err;
+So, replace this block by a call to kstrndup() that avoids this type of
+overflow and does the same.
+
+Fixes: 066ce6899484d ("cifs: rename cifs_strlcpy_to_host and make it use n=
+ew functions")
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ fs/cifs/cifs_unicode.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
+
+diff --git a/fs/cifs/cifs_unicode.c b/fs/cifs/cifs_unicode.c
+index 9bd03a231032..171ad8b42107 100644
+=2D-- a/fs/cifs/cifs_unicode.c
++++ b/fs/cifs/cifs_unicode.c
+@@ -358,14 +358,9 @@ cifs_strndup_from_utf16(const char *src, const int ma=
+xlen,
+ 		if (!dst)
+ 			return NULL;
+ 		cifs_from_utf16(dst, (__le16 *) src, len, maxlen, codepage,
+-			       NO_MAP_UNI_RSVD);
++				NO_MAP_UNI_RSVD);
+ 	} else {
+-		len =3D strnlen(src, maxlen);
+-		len++;
+-		dst =3D kmalloc(len, GFP_KERNEL);
+-		if (!dst)
+-			return NULL;
+-		strlcpy(dst, src, len);
++		dst =3D kstrndup(src, maxlen, GFP_KERNEL);
  	}
-diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
-index ed42ea9f60ba0..7c96f169d2740 100644
---- a/include/linux/platform_device.h
-+++ b/include/linux/platform_device.h
-@@ -197,8 +197,6 @@ extern int platform_device_add_resources(struct platform_device *pdev,
- 					 unsigned int num);
- extern int platform_device_add_data(struct platform_device *pdev,
- 				    const void *data, size_t size);
--extern int platform_device_add_properties(struct platform_device *pdev,
--				const struct property_entry *properties);
- extern int platform_device_add(struct platform_device *pdev);
- extern void platform_device_del(struct platform_device *pdev);
- extern void platform_device_put(struct platform_device *pdev);
--- 
-2.30.2
+
+ 	return dst;
+=2D-
+2.25.1
 
