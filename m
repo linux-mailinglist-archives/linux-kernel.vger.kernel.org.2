@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3494F3EEB74
+	by mail.lfdr.de (Postfix) with ESMTP id 7DDE13EEB75
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 13:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239719AbhHQLSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 07:18:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40844 "EHLO
+        id S239757AbhHQLTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 07:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239740AbhHQLSy (ORCPT
+        with ESMTP id S239744AbhHQLTC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 07:18:54 -0400
+        Tue, 17 Aug 2021 07:19:02 -0400
 Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B781C061796
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 04:18:21 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id c4so8314161plh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 04:18:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 668F4C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 04:18:29 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id q2so24496753plr.11
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 04:18:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bQgFJmhqZNDr9ziYED/kge4ik4AzOoubORy0cWnTvwk=;
-        b=PslEYPKmvhL3Oewd5oCaFg3vUpavsr8z1+xhGPT0m5fxt308loGk11JXCsbNxJ3+TG
-         VNdA/qVgadLYUsT/RDHDt2BdT0oPUKd7bVrAeV8dkgE8DDtLBaAKxyE/RJ3UWRNY6gCC
-         SW8NCVLiNzRUGkAv3oVhbmttHLi4gSno3aVZ9zCTY/IHpL6Fxf36LeEuRRCRpDiBKOGu
-         ukBIfaaD69W0awdahiGNLtO4USWUIc9FNHa4tF0iHNEPoOMR01irkSmiwwsRdrC0eAzo
-         ePuoR965IRW8rWvHPRd1P+s25CYmDa/32uCqn62C7Hzs3S3zaya1AE+fpwK8ODRZylLj
-         Jo5g==
+        bh=VZgTRL7Wgwjl7IC5i1br7yPq6CR5U9t78tg56mW0KMQ=;
+        b=n8qbg6E+mjkI90YVenC4WkSL2VlrhKo1d+SVpagRDw6Y6Nn+S2ZeEaG3aj5qX3rnTS
+         trZ4mdl6NKARtGk3iKZGDKPJDCOBGmFEb5UbMRAyrD3F/1a/FZgdNtQGsFhM+au38AfO
+         fVyRpskcC28iByn+qmkTStj8c0W39tHC4oi0j0A5etND/bP+sUtLWEh0RndhsDRqHifn
+         puLj2q2jVk87Y7UfkXzjya5vA6VtQX7uB4L7sITTUMkTxSEpKrfUvYVZA8Vlda604pto
+         nxEf1CbQoMHF1mhna4siwRKk+9jX7WGldB3/Mx0UxJ9J9TaVYcWzk9r3VcgZt6uuFRTz
+         EoNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bQgFJmhqZNDr9ziYED/kge4ik4AzOoubORy0cWnTvwk=;
-        b=ulME+/4RuNtvFf1Dk70AmGxX6skhXdTq4V6uYABE48TpPE8N7T0m+tHuBAFTTUWpc3
-         S2coPp6GXXZ6c778ivaOVbbx+IBtdC55qBG1TTz6FAmL5Wft8QZoqTyQ+od9fYX72Yie
-         eHWRckJsydPF7XiTqkhTgcv3X0c/P/Bhj89AIedPMbPx8sclBFGb8FOwE/CkhLtVtFl/
-         oUso/D3q256zoXB0QU75Aq3Ru2PbAUiXCjbpbwSIGJa3Z3iUBsVuj28JKFoqbEc52hjg
-         o8dMzZKO67q7R4mp2xLzf6INvRcftPapU0Ce2mVZYVkT9OB7u6s3yIDleBLvtziJ658H
-         1k/g==
-X-Gm-Message-State: AOAM533nJsmwTf0CZLM6JgBvKJuA57be0tKRjlyljVvuA+OcpJiTMom5
-        7PodMvT2sJt2zHPmLFNwDi2/Tc9PYCI=
-X-Google-Smtp-Source: ABdhPJzCw6HoSZkTTGz6OBfyvkKKWzXLoVE/wQxohXwXMxzdfTDWkiSIIJRZe2RF5dUZ0RmwzB6mYg==
-X-Received: by 2002:a17:902:ecca:b029:12d:1a3b:571f with SMTP id a10-20020a170902eccab029012d1a3b571fmr2451708plh.37.1629199100248;
-        Tue, 17 Aug 2021 04:18:20 -0700 (PDT)
+        bh=VZgTRL7Wgwjl7IC5i1br7yPq6CR5U9t78tg56mW0KMQ=;
+        b=XBPp2g7iyd7wXxvJHemqnprxeepFqk2aV9XxZjGEgWW+Sto4FDLDFAKhNVHPMcwqHA
+         geR0+VWGDgnQPUTVu4rs8j/bzZC/IMPGNW3jCiDS4OW74Qfsz4s1YYZO9TJh6f8vCW2E
+         C9esDGGsr5PYpaMM/LLUP6c7HnksddA218IBSxwr3jxUmW1/CcrCmkb/7DFtf2ciJ0Ta
+         sJDJx8Xi+pkv+3J4HEY86U+fy4nqYwEASgaLJDjpaUZAw64iFKFVuiYAz/xo84q12Z4a
+         EJhpx9musUkGryXXynBWEtrOqBIuFRUfBjWPNW52xnDFQf6ab4yl/UONvhcHMaVsLURO
+         thyQ==
+X-Gm-Message-State: AOAM5334IDNkuI1F+txyLgGaRvf7sFhE///URMUci+tTxcO6Yg4VW+6E
+        D5BFscGG2VcqqwFO7NU+o4KegrmtKUY=
+X-Google-Smtp-Source: ABdhPJw+SYSYhf6riZdpA5KLYHvlclPLmEC04pb32V12IBwspY7j4JB8sUT2jqkDp8sd5g9wM9A3WA==
+X-Received: by 2002:a65:62d1:: with SMTP id m17mr3071415pgv.370.1629199108836;
+        Tue, 17 Aug 2021 04:18:28 -0700 (PDT)
 Received: from localhost ([47.251.3.230])
-        by smtp.gmail.com with ESMTPSA id m2sm2756706pgu.15.2021.08.17.04.18.19
+        by smtp.gmail.com with ESMTPSA id b18sm2316504pfi.199.2021.08.17.04.18.27
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 17 Aug 2021 04:18:20 -0700 (PDT)
+        Tue, 17 Aug 2021 04:18:28 -0700 (PDT)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     lizefan.x@bytedance.com, lizhe.67@bytedance.com,
         Tejun Heo <tj@kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Lai Jiangshan <laijs@linux.alibaba.com>
-Subject: [PATCH 4/6] workqueue: Mark barrier work with WORK_STRUCT_INACTIVE
-Date:   Tue, 17 Aug 2021 09:32:37 +0800
-Message-Id: <20210817013239.3921-5-jiangshanlai@gmail.com>
+Subject: [PATCH 5/6] workqueue: Assign a color to barrier work items
+Date:   Tue, 17 Aug 2021 09:32:38 +0800
+Message-Id: <20210817013239.3921-6-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20210817013239.3921-1-jiangshanlai@gmail.com>
 References: <CAJhGHyBsn+rqVQzNqRw2RxtpHyrpQpa0kMtU1RcZP7TCbC6dqg@mail.gmail.com>
@@ -69,140 +69,177 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Currently, WORK_NO_COLOR has two meanings:
-	Not participate in flushing
-	Not participate in nr_active
+There was no strong reason to or not to flush barrier work items in
+flush_workqueue().  And we have to make barrier work items not participate
+in nr_active so we had been using WORK_NO_COLOR for them which also makes
+them can't be flushed by flush_workqueue().
 
-And only non-barrier work items are marked with WORK_STRUCT_INACTIVE
-when they are in inactive_works list.  The barrier work items are not
-marked INACTIVE even linked in inactive_works list since these tail
-items are always moved together with the head work item.
+And the users of flush_workqueue() often do not intend to wait barrier work
+items issued by flush_work().  That made the choice sound perfect.
 
-These definitions are simple, clean and practical. (Except a small
-blemish that only the first meaning of WORK_NO_COLOR is documented in
-include/linux/workqueue.h while both meanings are in workqueue.c)
+But barrier work items have reference to internal structure (pool_workqueue)
+and the worker thread[s] is/are still busy for the workqueue user when the
+barrrier work items are not done.  So it is reasonable to make flush_workqueue()
+also watch for flush_work() to make it more robust.
 
-But dual-purpose WORK_NO_COLOR used for barrier work items has proven to
-be problematical[1].  Only the second purpose is obligatory.  So we plan
-to make barrier work items participate in flushing but keep them still
-not participating in nr_active.
+And a problem[1] reported by Li Zhe shows that we need such robustness.
+The warning logs are listed below:
 
-So the plan is to mark barrier work items inactive without using
-WORK_NO_COLOR in this patch so that we can assign a flushing color to
-them in next patch.
+WARNING: CPU: 0 PID: 19336 at kernel/workqueue.c:4430 destroy_workqueue+0x11a/0x2f0
+*****
+destroy_workqueue: test_workqueue9 has the following busy pwq
+  pwq 4: cpus=2 node=0 flags=0x0 nice=0 active=0/1 refcnt=2
+      in-flight: 5658:wq_barrier_func
+Showing busy workqueues and worker pools:
+*****
 
-The reasonable way is to add or reuse a bit in work data of the work
-item.  But adding a bit will double the size of pool_workqueue.
+It shows that even after drain_workqueue() returns, the barrier work item
+is still in flight and the pwq (and a worker) is still busy on it.
 
-Currently, WORK_STRUCT_INACTIVE is only used in try_to_grab_pending()
-for user-queued work items and try_to_grab_pending() can't work for
-barrier work items.  So we extend WORK_STRUCT_INACTIVE to also mark
-barrier work items no matter which list they are in because we don't
-need to determind which list a barrier work item is in.
+The problem is caused by flush_workqueue() not watching flush_work():
 
-So the meaning of WORK_STRUCT_INACTIVE becomes just "the work items don't
-participate in nr_active" (no matter whether it is a barrier work item or
-a user-queued work item).  And WORK_STRUCT_INACTIVE for user-queued work
-items means they are in inactive_works list.
+Thread A				Worker
+					/* normal work item with linked */
+					process_scheduled_works()
+destroy_workqueue()			  process_one_work()
+  drain_workqueue()			    /* run normal work item */
+				 /--	    pwq_dec_nr_in_flight()
+    flush_workqueue()	    <---/
+		/* the last normal work item is done */
+  sanity_check				  process_one_work()
+				       /--  raw_spin_unlock_irq(&pool->lock)
+    raw_spin_lock_irq(&pool->lock)  <-/     /* maybe preempt */
+    *WARNING*				    wq_barrier_func()
+					    /* maybe preempt by cond_resched() */
 
-This patch does it by setting WORK_STRUCT_INACTIVE for barrier work items
-in insert_wq_barrier() and checking WORK_STRUCT_INACTIVE first in
-pwq_dec_nr_in_flight().  And the meaning of WORK_NO_COLOR is reduced to
-only "not participating in flushing".
+Thread A can get the pool lock after the Worker unlocks the pool lock before
+running wq_barrier_func().  And if there is any preemption happen around
+wq_barrier_func(), destroy_workqueue()'s sanity check is more likely to
+get the lock and catch it.  (Note: preemption is not necessary to cause the bug,
+the unlocking is enough to possibly trigger the WARNING.)
 
-There is no functionality change intended in this patch.  Because
-WORK_NO_COLOR+WORK_STRUCT_INACTIVE represents the previous WORK_NO_COLOR
-in meaning and try_to_grab_pending() doesn't use for barrier work items
-and avoids being confused by this extended WORK_STRUCT_INACTIVE.
+A simple solution might be just executing all linked barrier work items
+once without releasing pool lock after the head work item's
+pwq_dec_nr_in_flight().  But this solution has two problems:
 
-A bunch of comment for nr_active & WORK_STRUCT_INACTIVE is also added for
-documenting how WORK_STRUCT_INACTIVE works in nr_active management.
+  1) the head work item might also be barrier work item when the user-queued
+     work item is cancelled. For example:
+	thread 1:		thread 2:
+	queue_work(wq, &my_work)
+	flush_work(&my_work)
+				cancel_work_sync(&my_work);
+	/* Neiter my_work nor the barrier work is scheduled. */
+				destroy_workqueue(wq);
+	/* This is an easier way to catch the WARNING. */
+
+  2) there might be too much linked barrier work items and running them
+     all once without releasing pool lock just causes trouble.
+
+The only solution is to make flush_workqueue() aslo watch barrier work
+items.  So we have to assign a color to these barrier work items which
+is the color of the head (user-queued) work item.
+
+Assigning a color doesn't cause any problem in ative management, because
+the prvious patch made barrier work items not participate in nr_active
+via WORK_STRUCT_INACTIVE rather than reliance on the (old) WORK_NO_COLOR.
 
 [1]: https://lore.kernel.org/lkml/20210812083814.32453-1-lizhe.67@bytedance.com/
+Reported-by: Li Zhe <lizhe.67@bytedance.com>
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- kernel/workqueue.c | 42 ++++++++++++++++++++++++++++++++++--------
- 1 file changed, 34 insertions(+), 8 deletions(-)
+ kernel/workqueue.c          | 20 ++++++++++++--------
+ kernel/workqueue_internal.h |  3 ++-
+ 2 files changed, 14 insertions(+), 9 deletions(-)
 
 diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 55fc2d1688d9..1b2792b397f0 100644
+index 1b2792b397f0..803b0868433b 100644
 --- a/kernel/workqueue.c
 +++ b/kernel/workqueue.c
-@@ -205,6 +205,23 @@ struct pool_workqueue {
- 	int			refcnt;		/* L: reference count */
- 	int			nr_in_flight[WORK_NR_COLORS];
- 						/* L: nr of in_flight works */
-+
-+	/*
-+	 * nr_active management and WORK_STRUCT_INACTIVE:
-+	 *
-+	 * When pwq->nr_active >= max_active, new work item is queued to
-+	 * pwq->inactive_works instead of pool->worklist and marked with
-+	 * WORK_STRUCT_INACTIVE.
-+	 *
-+	 * All work items marked with WORK_STRUCT_INACTIVE do not participate
-+	 * in pwq->nr_active and all work items in pwq->inactive_works are
-+	 * marked with WORK_STRUCT_INACTIVE.  But not all WORK_STRUCT_INACTIVE
-+	 * work items are in pwq->inactive_works.  Some of them are ready to
-+	 * run in pool->worklist or worker->scheduled.  Those work itmes are
-+	 * only struct wq_barrier which is used for flush_work() and should
-+	 * not participate in pwq->nr_active.  For non-barrier work item, it
-+	 * is marked with WORK_STRUCT_INACTIVE iff it is in pwq->inactive_works.
-+	 */
- 	int			nr_active;	/* L: nr of active works */
- 	int			max_active;	/* L: max active works */
- 	struct list_head	inactive_works;	/* L: inactive works */
-@@ -1171,19 +1188,21 @@ static void pwq_dec_nr_in_flight(struct pool_workqueue *pwq, unsigned long work_
- {
- 	int color = get_work_color(work_data);
+@@ -1197,10 +1197,6 @@ static void pwq_dec_nr_in_flight(struct pool_workqueue *pwq, unsigned long work_
+ 		}
+ 	}
  
--	/* uncolored work items don't participate in flushing or nr_active */
-+	if (!(work_data & WORK_STRUCT_INACTIVE)) {
-+		pwq->nr_active--;
-+		if (!list_empty(&pwq->inactive_works)) {
-+			/* one down, submit an inactive one */
-+			if (pwq->nr_active < pwq->max_active)
-+				pwq_activate_first_inactive(pwq);
-+		}
-+	}
-+
-+	/* uncolored work items don't participate in flushing */
- 	if (color == WORK_NO_COLOR)
- 		goto out_put;
- 
+-	/* uncolored work items don't participate in flushing */
+-	if (color == WORK_NO_COLOR)
+-		goto out_put;
+-
  	pwq->nr_in_flight[color]--;
  
--	pwq->nr_active--;
--	if (!list_empty(&pwq->inactive_works)) {
--		/* one down, submit an inactive one */
--		if (pwq->nr_active < pwq->max_active)
--			pwq_activate_first_inactive(pwq);
--	}
--
  	/* is flush in progress and are we at the flushing tip? */
- 	if (likely(pwq->flush_color != color))
- 		goto out_put;
-@@ -1283,6 +1302,10 @@ static int try_to_grab_pending(struct work_struct *work, bool is_dwork,
- 		debug_work_deactivate(work);
- 
- 		/*
-+		 * A cancelable inactive work item must be in the
-+		 * pwq->inactive_works since a queued barrier can't be
-+		 * canceled (see the comments in insert_wq_barrier()).
-+		 *
+@@ -1307,7 +1303,7 @@ static int try_to_grab_pending(struct work_struct *work, bool is_dwork,
+ 		 * canceled (see the comments in insert_wq_barrier()).
+ 		 *
  		 * An inactive work item cannot be grabbed directly because
- 		 * it might have linked NO_COLOR work items which, if left
+-		 * it might have linked NO_COLOR work items which, if left
++		 * it might have linked barrier work items which, if left
  		 * on the inactive_works list, will confuse pwq->nr_active
-@@ -2676,6 +2699,9 @@ static void insert_wq_barrier(struct pool_workqueue *pwq,
+ 		 * management later on and cause stall.  Make sure the work
+ 		 * item is activated before grabbing.
+@@ -2235,6 +2231,7 @@ __acquires(&pool->lock)
+ 	worker->current_func = work->func;
+ 	worker->current_pwq = pwq;
+ 	work_data = *work_data_bits(work);
++	worker->current_color = get_work_color(work_data);
  
- 	barr->task = current;
- 
-+	/* The barrier work item does not participate in pwq->nr_active. */
-+	work_flags |= WORK_STRUCT_INACTIVE;
-+
  	/*
+ 	 * Record wq name for cmdline and debug reporting, may get
+@@ -2340,6 +2337,7 @@ __acquires(&pool->lock)
+ 	worker->current_work = NULL;
+ 	worker->current_func = NULL;
+ 	worker->current_pwq = NULL;
++	worker->current_color = INT_MAX;
+ 	pwq_dec_nr_in_flight(pwq, work_data);
+ }
+ 
+@@ -2683,7 +2681,8 @@ static void insert_wq_barrier(struct pool_workqueue *pwq,
+ 			      struct wq_barrier *barr,
+ 			      struct work_struct *target, struct worker *worker)
+ {
+-	unsigned int work_flags = work_color_to_flags(WORK_NO_COLOR);
++	unsigned int work_flags = 0;
++	unsigned int work_color;
+ 	struct list_head *head;
+ 
+ 	/*
+@@ -2706,17 +2705,22 @@ static void insert_wq_barrier(struct pool_workqueue *pwq,
  	 * If @target is currently being executed, schedule the
  	 * barrier to the worker; otherwise, put it after @target.
+ 	 */
+-	if (worker)
++	if (worker) {
+ 		head = worker->scheduled.next;
+-	else {
++		work_color = worker->current_color;
++	} else {
+ 		unsigned long *bits = work_data_bits(target);
+ 
+ 		head = target->entry.next;
+ 		/* there can already be other linked works, inherit and set */
+ 		work_flags |= *bits & WORK_STRUCT_LINKED;
++		work_color = get_work_color(*bits);
+ 		__set_bit(WORK_STRUCT_LINKED_BIT, bits);
+ 	}
+ 
++	pwq->nr_in_flight[work_color]++;
++	work_flags |= work_color_to_flags(work_color);
++
+ 	debug_work_activate(&barr->work);
+ 	insert_work(pwq, &barr->work, head, work_flags);
+ }
+diff --git a/kernel/workqueue_internal.h b/kernel/workqueue_internal.h
+index 498de0e909a4..e00b1204a8e9 100644
+--- a/kernel/workqueue_internal.h
++++ b/kernel/workqueue_internal.h
+@@ -30,7 +30,8 @@ struct worker {
+ 
+ 	struct work_struct	*current_work;	/* L: work being processed */
+ 	work_func_t		current_func;	/* L: current_work's fn */
+-	struct pool_workqueue	*current_pwq; /* L: current_work's pwq */
++	struct pool_workqueue	*current_pwq;	/* L: current_work's pwq */
++	unsigned int		current_color;	/* L: current_work's color */
+ 	struct list_head	scheduled;	/* L: scheduled works */
+ 
+ 	/* 64 bytes boundary on 64bit, 32 on 32bit */
 -- 
 2.19.1.6.gb485710b
 
