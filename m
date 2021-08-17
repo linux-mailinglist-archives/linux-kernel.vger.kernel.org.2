@@ -2,61 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1927A3EE983
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9628C3EE991
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239505AbhHQJTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 05:19:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239694AbhHQJSZ (ORCPT
+        id S235988AbhHQJUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 05:20:47 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:38844 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235532AbhHQJUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 05:18:25 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E38F8C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 02:17:51 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id n7so31969209ljq.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 02:17:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=dohz3+LfR9KpAjS2WevQy5X6phH+FdkSUETrg7wqW2k=;
-        b=EP2ww5P4jzJKo2ZrB/zl9OoYjezcrLl6uBxoiFRlr6Ih/E8FaMQzzThjO0niN9Hkka
-         xzFkCEekeBfBXeaiDGewRAXFUDknX3cMjtwRqVsa7B/YT/Y5+sHoAPF08JQWd7XeVU8G
-         8dPpxTUwCjmqB905u1osytgNyAAGGPatLypX7W3uTztUwxzo5i9TBanMD6lypxWHlqLV
-         f+QwAcC3iOB8G+y8rD7TLufgplBmMgO8F2D9qXP9RJ14hTveJoij4RD56TqcX+9dJtsm
-         sLfXNR0YcuhBH6Z0xQCiY0BpxOPfAyQPiXo74SEDVrfWE53gs0na2WrnuwaC60srzWo3
-         3Sfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=dohz3+LfR9KpAjS2WevQy5X6phH+FdkSUETrg7wqW2k=;
-        b=Ty/5rKFPt1sjtQbtoT7Ce8JiOUNN1BdUul3p/bG1fUWstviZdVuj2YydSMwXY0IUu/
-         Au/ZTokTHC/UPdku2tL98t/3bZFMyvGsLCPuSIxPe89INJZZOue21sNm9w7wKxc4Bqeq
-         i+mVAFj+fKxy0lBozR8Wt6hL4ywl8jrCnObVbKlF3zM9Wj+Elr6NbogpDpBUypfpgxRw
-         teHX1hDtgHWb2zRj/Bwowm0AuIpllARDq1AK9it8zWX9LxcmSisyCLDO8DEflL2ukgrh
-         W+6MNm+qmjQhiTLHwc6j90nGYrqsWiHB+agY9CiegbK4RUuO99pMtiNVGFybNhRAWxZU
-         lG5A==
-X-Gm-Message-State: AOAM532z0XGA1Ma2ZaNQ/Hxw/pDqmgN78a3v9EnXtupP3hrrAFS215UB
-        yCjbP8IxRanKz4Nq+IMSzzMHLnkIxnNi1kyGask=
-X-Google-Smtp-Source: ABdhPJyGznkxx8qJ7rPazx2ndlm2dJo0dOyqREVSKNAGvZJK5s7QjSfMLMeTL2LBk74Sd883Uj0RzYhRn7vgxBptQ9k=
-X-Received: by 2002:a2e:a447:: with SMTP id v7mr2322629ljn.46.1629191870297;
- Tue, 17 Aug 2021 02:17:50 -0700 (PDT)
+        Tue, 17 Aug 2021 05:20:43 -0400
+X-UUID: c0b9ba8ff72546fc93454425098fd795-20210817
+X-UUID: c0b9ba8ff72546fc93454425098fd795-20210817
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 371971212; Tue, 17 Aug 2021 17:20:07 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 17 Aug 2021 17:20:07 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 17 Aug 2021 17:20:06 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH v3 1/9] dt-bindings: phy: mediatek: tphy: support type switch by pericfg
+Date:   Tue, 17 Aug 2021 17:19:39 +0800
+Message-ID: <1629191987-20774-1-git-send-email-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Received: by 2002:a05:6520:47c9:b0:135:b473:148b with HTTP; Tue, 17 Aug 2021
- 02:17:49 -0700 (PDT)
-From:   "Barrister Stella Edward H.Cargo Michael" <edward.hamund@gmail.com>
-Date:   Tue, 17 Aug 2021 02:17:49 -0700
-Message-ID: <CACe0+P-s8ryEMOthhtUo5c289f2czGmoyN9UhcjOe1wB1ENBZQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Hello Sir/Madam.
-I am still waiting to read from you after my last mail to you.
+Add support type switch by pericfg register between USB3, PCIe,
+SATA, SGMII, this is used to replace the way through efuse or
+jumper.
 
-Kind Regard
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+---
+v3: no changes
+v2: add reviewed-by Rob
+---
+ .../devicetree/bindings/phy/mediatek,tphy.yaml   | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml b/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+index 838852cb8527..9e6c0f43f1c6 100644
+--- a/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
++++ b/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+@@ -201,6 +201,22 @@ patternProperties:
+           Specify the flag to enable BC1.2 if support it
+         type: boolean
+ 
++      mediatek,syscon-type:
++        $ref: /schemas/types.yaml#/definitions/phandle-array
++        maxItems: 1
++        description:
++          A phandle to syscon used to access the register of type switch,
++          the field should always be 3 cells long.
++        items:
++          items:
++            - description:
++                The first cell represents a phandle to syscon
++            - description:
++                The second cell represents the register offset
++            - description:
++                The third cell represents the index of config segment
++              enum: [0, 1, 2, 3]
++
+     required:
+       - reg
+       - "#phy-cells"
+-- 
+2.18.0
+
