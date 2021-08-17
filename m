@@ -2,206 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EADB93EE912
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C59693EE91A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235295AbhHQJEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 05:04:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37574 "EHLO
+        id S239418AbhHQJFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 05:05:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235289AbhHQJED (ORCPT
+        with ESMTP id S239151AbhHQJEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 05:04:03 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC732C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 02:03:24 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id n5so10579460pjt.4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 02:03:24 -0700 (PDT)
+        Tue, 17 Aug 2021 05:04:55 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0BB5C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 02:04:20 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id f5so27419199wrm.13
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 02:04:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PhWxmc8derdQF3ciSQTXL4gicsn8XaD0Xw+UiOkSNfE=;
-        b=dhHi8o3ngIQUg9/6xFAUsFR6MH1zfyTk5yl+TmU+QvURYS7z3XTjs6kV6XwjY7NEHg
-         xN8QipriwivaRm+bBNcJqkLhFWPPPRkC6v/AnoeyU4yT/cgG28ccgeu2NXYhLiSoOmpp
-         yEpdKPuKRHjHRFyl0zrnCgCd5bh15ui9XEOXfJsD2hP58QkL6eieRKJF3tmZXGpJU2N0
-         prwSzOzUmTwRu9PSv/6BeqsBjEwQBYTsxifqjukhfM+QoH3m3rdxV/BA1ofvDXp6Jj3+
-         JN/VE20+OzG/qKHxlgoVUowuq/43tq3LbAtN4q78Okn5ULVC+RnzLkKp6DrIof6UkrQG
-         lfBA==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=j4i/x9tyzc/3LgdLRFqgQgxEO4pmJgQLsrj80WtwhVI=;
+        b=KxIpxVtWjns4F7qLg1rRcmYAW3SH1eBW9sxDxCEB/2uN9a/FcASQ4t2WjsOxmPgxmd
+         fgz5X/LnvStc/dmaZypl8I2CLhvMTPQvq6+5wSjEtiUMwMdBFl0TqJEk7e7klYUpDrkI
+         1ao2oorbeN2dN+umv0mr5W2gM8/ZhXk0b3GGM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PhWxmc8derdQF3ciSQTXL4gicsn8XaD0Xw+UiOkSNfE=;
-        b=gG31R/Mm6Jc48cY3mitMTTJ54GX0bg7paoLP4kA+35yMJG3hEmQT5bJV9mWK3jcGdN
-         4WE9F7dmmvY2oJ38KEfluMsfvHNg04UAZRZeOzrre85bvJFyVaE5faqwUFJfOVT02NXW
-         UpnCtPsLrKm95SC5N+CizWxpBstcYvgZOAffs1vfTUSW23rGhSlBn8HlroEi9LCWde5R
-         Trph1fjM2fv2JqVZ1rQLG5zJdaoFiL3DOg60tW0WE+foQzOTpuV3m6pVzeGMWnXNCVpB
-         PwTD4Erv2I0SA7CYQWEzh+2u8DFT3FYB8+gVdFUQFW2QbfNUFyK3bnapHY2kXk4KnsF5
-         fxAw==
-X-Gm-Message-State: AOAM531JRAa4qGaIrlOE/LjEvMgbSbNL+nl6/B+ct9AUQVBRdM23gRq8
-        QM0BXNwh5H7oc8enqnZuvp8QrthntEE=
-X-Google-Smtp-Source: ABdhPJy0c3WEiR8hPLWgXGJDEd84TGY7ELR4uHSfQ8aWHNpBDXhLAAZRZQyXyzM/SfSCAriJWQDXPw==
-X-Received: by 2002:a63:1460:: with SMTP id 32mr2578900pgu.323.1629191003883;
-        Tue, 17 Aug 2021 02:03:23 -0700 (PDT)
-Received: from [10.252.0.198] (ec2-54-250-108-108.ap-northeast-1.compute.amazonaws.com. [54.250.108.108])
-        by smtp.gmail.com with ESMTPSA id d5sm1566461pju.28.2021.08.17.02.03.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Aug 2021 02:03:23 -0700 (PDT)
-Cc:     akira.tsukamoto@gmail.com,
-        Paul Walmsley <paul.walmsley@sifive.com>, linux@roeck-us.net,
-        geert@linux-m68k.org, qiuwenbo@kylinos.com.cn,
-        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] riscv: __asm_copy_to-from_user: Improve using word
- copy if size < 9*SZREG
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-References: <mhng-f83b1d51-c006-4b01-830a-0f827f0c56a1@palmerdabbelt-glaptop>
-From:   Akira Tsukamoto <akira.tsukamoto@gmail.com>
-Message-ID: <468725dc-d110-5ede-e290-c7a97feacd43@gmail.com>
-Date:   Tue, 17 Aug 2021 18:03:19 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=j4i/x9tyzc/3LgdLRFqgQgxEO4pmJgQLsrj80WtwhVI=;
+        b=m0rOhg0eguSpSUDGOtELtvHPQfrxcYe2L1L3q6HnfYJkBvO8LOOSf1HMDkBp4h5spN
+         0CPkOpQpGxFmq1U5tAtDBXsZPIt6aUfYTVQnDSSPz+F9kAOjxp25TM+RHtasfQq763ON
+         Yhh4xhN4VS8hM8EjJ8WPq7Dzj7c1TTGVDcciPvkGULvGy3rgxls9xBUEGayO96rLRt7B
+         LNliaWX2lwy35e1dL4rjq5Nzwlg96EE/U5JSMT7w1FwEciQHbsQcZX/jnyCKB6qNIl13
+         +7HtEpHqk0/iGxnNgksWR4vnav671qWtbrMaKd4TzbzNJwuiAIhLqozwnBM8lXStyahp
+         1y7w==
+X-Gm-Message-State: AOAM530el1OfNANa/u9P1NEQD5UFCPCqKK1ADLVrpweSScjl0kFGKiy2
+        /YyPxkQr0L/27mhD8Qk3Xsz8SQ==
+X-Google-Smtp-Source: ABdhPJy/Dl1NsISUcWJ7CU+4M3hb5C4YhyxhHFqeiJF0/2LxZzlK7v8qd5PIxfPQBoJAIj1gqztDvw==
+X-Received: by 2002:a05:6000:1043:: with SMTP id c3mr2732415wrx.144.1629191059584;
+        Tue, 17 Aug 2021 02:04:19 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id e17sm1625963wrs.78.2021.08.17.02.04.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 02:04:19 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 11:04:17 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Steven Price <steven.price@arm.com>, Roy Sun <Roy.Sun@amd.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jack Zhang <Jack.Zhang1@amd.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH v2 4/5] drm/scheduler: Add fence deadline support
+Message-ID: <YRt7ka8TZrjdxy/6@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>, David Airlie <airlied@linux.ie>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Steven Price <steven.price@arm.com>, Roy Sun <Roy.Sun@amd.com>,
+        Lee Jones <lee.jones@linaro.org>, Jack Zhang <Jack.Zhang1@amd.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>
+References: <20210807183804.459850-1-robdclark@gmail.com>
+ <20210807183804.459850-5-robdclark@gmail.com>
+ <e28020c5-3da3-c721-96df-9a115f105bf7@gmail.com>
+ <YRqGazgGJ2NAIzg2@phenom.ffwll.local>
+ <CAF6AEGtyA2ovPcsP_3wbD-KfJFZosc=qf=SMkE2BVMq5+=cxWw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <mhng-f83b1d51-c006-4b01-830a-0f827f0c56a1@palmerdabbelt-glaptop>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAF6AEGtyA2ovPcsP_3wbD-KfJFZosc=qf=SMkE2BVMq5+=cxWw@mail.gmail.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 8/17/2021 3:09 AM, Palmer Dabbelt wrote:
-> On Fri, 30 Jul 2021 06:52:44 PDT (-0700), akira.tsukamoto@gmail.com wrote:
->> Reduce the number of slow byte_copy when the size is in between
->> 2*SZREG to 9*SZREG by using none unrolled word_copy.
->>
->> Without it any size smaller than 9*SZREG will be using slow byte_copy
->> instead of none unrolled word_copy.
->>
->> Signed-off-by: Akira Tsukamoto <akira.tsukamoto@gmail.com>
->> ---
->>  arch/riscv/lib/uaccess.S | 46 ++++++++++++++++++++++++++++++++++++----
->>  1 file changed, 42 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
->> index 63bc691cff91..6a80d5517afc 100644
->> --- a/arch/riscv/lib/uaccess.S
->> +++ b/arch/riscv/lib/uaccess.S
->> @@ -34,8 +34,10 @@ ENTRY(__asm_copy_from_user)
->>      /*
->>       * Use byte copy only if too small.
->>       * SZREG holds 4 for RV32 and 8 for RV64
->> +     * a3 - 2*SZREG is minimum size for word_copy
->> +     *      1*SZREG for aligning dst + 1*SZREG for word_copy
->>       */
->> -    li    a3, 9*SZREG /* size must be larger than size in word_copy */
->> +    li    a3, 2*SZREG
->>      bltu    a2, a3, .Lbyte_copy_tail
->>
->>      /*
->> @@ -66,9 +68,40 @@ ENTRY(__asm_copy_from_user)
->>      andi    a3, a1, SZREG-1
->>      bnez    a3, .Lshift_copy
->>
->> +.Lcheck_size_bulk:
->> +    /*
->> +     * Evaluate the size if possible to use unrolled.
->> +     * The word_copy_unlrolled requires larger than 8*SZREG
->> +     */
->> +    li    a3, 8*SZREG
->> +    add    a4, a0, a3
->> +    bltu    a4, t0, .Lword_copy_unlrolled
->> +
->>  .Lword_copy:
->> -        /*
->> -     * Both src and dst are aligned, unrolled word copy
->> +    /*
->> +     * Both src and dst are aligned
->> +     * None unrolled word copy with every 1*SZREG iteration
->> +     *
->> +     * a0 - start of aligned dst
->> +     * a1 - start of aligned src
->> +     * t0 - end of aligned dst
->> +     */
->> +    bgeu    a0, t0, .Lbyte_copy_tail /* check if end of copy */
->> +    addi    t0, t0, -(SZREG) /* not to over run */
->> +1:
->> +    REG_L    a5, 0(a1)
->> +    addi    a1, a1, SZREG
->> +    REG_S    a5, 0(a0)
->> +    addi    a0, a0, SZREG
->> +    bltu    a0, t0, 1b
->> +
->> +    addi    t0, t0, SZREG /* revert to original value */
->> +    j    .Lbyte_copy_tail
->> +
->> +.Lword_copy_unlrolled:
->> +    /*
->> +     * Both src and dst are aligned
->> +     * Unrolled word copy with every 8*SZREG iteration
->>       *
->>       * a0 - start of aligned dst
->>       * a1 - start of aligned src
->> @@ -97,7 +130,12 @@ ENTRY(__asm_copy_from_user)
->>      bltu    a0, t0, 2b
->>
->>      addi    t0, t0, 8*SZREG /* revert to original value */
->> -    j    .Lbyte_copy_tail
->> +
->> +    /*
->> +     * Remaining might large enough for word_copy to reduce slow byte
->> +     * copy
->> +     */
->> +    j    .Lcheck_size_bulk
->>
->>  .Lshift_copy:
+On Mon, Aug 16, 2021 at 03:25:20PM -0700, Rob Clark wrote:
+> On Mon, Aug 16, 2021 at 8:38 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > On Mon, Aug 16, 2021 at 12:14:35PM +0200, Christian K�nig wrote:
+> > > Am 07.08.21 um 20:37 schrieb Rob Clark:
+> > > > From: Rob Clark <robdclark@chromium.org>
+> > > >
+> > > > As the finished fence is the one that is exposed to userspace, and
+> > > > therefore the one that other operations, like atomic update, would
+> > > > block on, we need to propagate the deadline from from the finished
+> > > > fence to the actual hw fence.
+> > > >
+> > > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> >
+> > I guess you're already letting the compositor run at a higher gpu priority
+> > so that your deadline'd drm_sched_job isn't stuck behind the app rendering
+> > the next frame?
 > 
-> I'm still not convinced that going all the way to such a large unrolling factor is a net win, but this at least provides a much smoother cost curve.
+> With the scheduler conversion we do have multiple priorities (provided
+> by scheduler) for all generations.. but not yet preemption for all
+> generations.
+> 
+> But the most common use-case where we need this ends up being display
+> composition (either fullscreen app/game or foreground app/game
+> composited via overlay) so I haven't thought too much about the next
+> step of boosting job priority.  I might leave that to someone who
+> already has preemption wired up ;-)
 
-I would like to meet and discuss the unrolling factor at some events.
-The assembler version of memset in arch/riscv/lib/memset.S had thirty two consequent unrolling loading and stores and initially I also thought it was too much unrolling and crazy. 
+Atm no-one, drm/sched isn't really aware that's a concept. I was more
+thinking of just boosting that request as a first step. Maybe within the
+same priority class we pick jobs with deadlines first, or something like
+that.
 
-However, I could not beat it with the speed with any of my customization when reducing the
-unrolling. I never thought such a large unrolling would have benefit, my initial thought was minimum two or three would be enough for five or so pipeline cores with in-order and single issue design.
-
-At the same time I experienced in the past some x86’s in-order cores would benefit from large unrolling, so I decided to go which was faster after the measurement.
-The speed of the memset is critical for clearing the entire 4KiB page. 
-
-The biggest down size is that the large unrolling will increase the binary size, and most of out-of-order cores are able to compensate without large unrolling by reordering instructions internally, so when I am able to rewrite the function with inline assembler, I would like to
-switch with #ifdef of choosing the portion of unrolling between in-order cores and out-of cores in the future. Currently all physical risc-v cores are in-order design but probably out-of-order cores are coming some time and could benefit from reducing the binary size and relaxing the required memory bandwidth.
+Preempting is an entire can of worms on top.
+-Daniel
 
 > 
-> That said, this is causing my 32-bit configs to hang.  There were a few conflicts so I may have messed something up, but nothing is jumping out at me.  I've put what I ended up with on a branch, if you have time to look that'd be great but if not then I'll take another shot at this when I get back around to it.
+> BR,
+> -R
 > 
->    https://git.kernel.org/pub/scm/linux/kernel/git/palmer/linux.git/commit/?h=wip-word_user_copy
-> 
-> Here's the backtrace, though that's probably not all that useful:
-> 
-> [    0.703694] Unable to handle kernel NULL pointer dereference at virtual address 000005a8
-> [    0.704194] Oops [#1]
-> [    0.704301] Modules linked in:[    0.704463] CPU: 2 PID: 1 Comm: init Not tainted 5.14.0-rc1-00016-g59461ddb9dbd #5
-> [    0.704660] Hardware name: riscv-virtio,qemu (DT)
-> [    0.704802] epc : walk_stackframe+0xac/0xc2[    0.704941]  ra : dump_backtrace+0x1a/0x22
-> [    0.705074] epc : c0004558 ra : c0004588 sp : c1c5fe10
-> [    0.705216]  gp : c18b41c8 tp : c1cd8000 t0 : 00000000[    0.705357]  t1 : ffffffff t2 : 00000000 s0 : c1c5fe40
-> [    0.705506]  s1 : c11313dc a0 : 00000000 a1 : 00000000
-> [    0.705647]  a2 : c06fd2c2 a3 : c11313dc a4 : c084292d[    0.705787]  a5 : 00000000 a6 : c1864cb8 a7 : 3fffffff
-> [    0.705926]  s2 : 00000000 s3 : c1123e88 s4 : 00000000
-> [    0.706066]  s5 : c11313dc s6 : c06fd2c2 s7 : 00000001[    0.706206]  s8 : 00000000 s9 : 95af6e28 s10: 00000000
-> [    0.706345]  s11: 00000001 t3 : 00000000 t4 : 00000000
-> [    0.706482]  t5 : 00000001 t6 : 00000000[    0.706594] status: 00000100 badaddr: 000005a8 cause: 0000000d
-> [    0.706809] [<c0004558>] walk_stackframe+0xac/0xc2
-> [    0.707019] [<c0004588>] dump_backtrace+0x1a/0x22[    0.707149] [<c06fd312>] show_stack+0x2c/0x38
-> [    0.707271] [<c06ffba4>] dump_stack_lvl+0x40/0x58
-> [    0.707400] [<c06ffbce>] dump_stack+0x12/0x1a[    0.707521] [<c06fd4f6>] panic+0xfa/0x2a6
-> [    0.707632] [<c000e2f4>] do_exit+0x7a8/0x7ac
-> [    0.707749] [<c000eefa>] do_group_exit+0x2a/0x7e[    0.707872] [<c000ef60>] __wake_up_parent+0x0/0x20
-> [    0.707999] [<c0003020>] ret_from_syscall+0x0/0x2
-> [    0.708385] ---[ end trace 260976561a3770d1 ]---
+> > I'm not sure whether you wire that one up as part of the conversion to
+> > drm/sched. Without that I think we might need to ponder how we can do a
+> > prio-boost for these, e.g. within a scheduling class we pick the jobs with
+> > the nearest deadline first, before we pick others.
+> > -Daniel
+> >
+> > > > ---
+> > > >   drivers/gpu/drm/scheduler/sched_fence.c | 25 +++++++++++++++++++++++++
+> > > >   drivers/gpu/drm/scheduler/sched_main.c  |  3 +++
+> > > >   include/drm/gpu_scheduler.h             |  6 ++++++
+> > > >   3 files changed, 34 insertions(+)
+> > > >
+> > > > diff --git a/drivers/gpu/drm/scheduler/sched_fence.c b/drivers/gpu/drm/scheduler/sched_fence.c
+> > > > index 69de2c76731f..f389dca44185 100644
+> > > > --- a/drivers/gpu/drm/scheduler/sched_fence.c
+> > > > +++ b/drivers/gpu/drm/scheduler/sched_fence.c
+> > > > @@ -128,6 +128,30 @@ static void drm_sched_fence_release_finished(struct dma_fence *f)
+> > > >     dma_fence_put(&fence->scheduled);
+> > > >   }
+> > > > +static void drm_sched_fence_set_deadline_finished(struct dma_fence *f,
+> > > > +                                             ktime_t deadline)
+> > > > +{
+> > > > +   struct drm_sched_fence *fence = to_drm_sched_fence(f);
+> > > > +   unsigned long flags;
+> > > > +
+> > > > +   spin_lock_irqsave(&fence->lock, flags);
+> > > > +
+> > > > +   /* If we already have an earlier deadline, keep it: */
+> > > > +   if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &f->flags) &&
+> > > > +       ktime_before(fence->deadline, deadline)) {
+> > > > +           spin_unlock_irqrestore(&fence->lock, flags);
+> > > > +           return;
+> > > > +   }
+> > > > +
+> > > > +   fence->deadline = deadline;
+> > > > +   set_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &f->flags);
+> > > > +
+> > > > +   spin_unlock_irqrestore(&fence->lock, flags);
+> > > > +
+> > > > +   if (fence->parent)
+> > > > +           dma_fence_set_deadline(fence->parent, deadline);
+> > > > +}
+> > > > +
+> > > >   static const struct dma_fence_ops drm_sched_fence_ops_scheduled = {
+> > > >     .get_driver_name = drm_sched_fence_get_driver_name,
+> > > >     .get_timeline_name = drm_sched_fence_get_timeline_name,
+> > > > @@ -138,6 +162,7 @@ static const struct dma_fence_ops drm_sched_fence_ops_finished = {
+> > > >     .get_driver_name = drm_sched_fence_get_driver_name,
+> > > >     .get_timeline_name = drm_sched_fence_get_timeline_name,
+> > > >     .release = drm_sched_fence_release_finished,
+> > > > +   .set_deadline = drm_sched_fence_set_deadline_finished,
+> > > >   };
+> > > >   struct drm_sched_fence *to_drm_sched_fence(struct dma_fence *f)
+> > > > diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
+> > > > index a2a953693b45..3ab0900d3596 100644
+> > > > --- a/drivers/gpu/drm/scheduler/sched_main.c
+> > > > +++ b/drivers/gpu/drm/scheduler/sched_main.c
+> > > > @@ -818,6 +818,9 @@ static int drm_sched_main(void *param)
+> > > >             if (!IS_ERR_OR_NULL(fence)) {
+> > > >                     s_fence->parent = dma_fence_get(fence);
+> > > > +                   if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT,
+> > > > +                                &s_fence->finished.flags))
+> > > > +                           dma_fence_set_deadline(fence, s_fence->deadline);
+> > >
+> > > Maybe move this into a dma_sched_fence_set_parent() function.
+> > >
+> > > Apart from that looks good to me.
+> > >
+> > > Regards,
+> > > Christian.
+> > >
+> > > >                     r = dma_fence_add_callback(fence, &sched_job->cb,
+> > > >                                                drm_sched_job_done_cb);
+> > > >                     if (r == -ENOENT)
+> > > > diff --git a/include/drm/gpu_scheduler.h b/include/drm/gpu_scheduler.h
+> > > > index d18af49fd009..0f08ade614ae 100644
+> > > > --- a/include/drm/gpu_scheduler.h
+> > > > +++ b/include/drm/gpu_scheduler.h
+> > > > @@ -144,6 +144,12 @@ struct drm_sched_fence {
+> > > >            */
+> > > >     struct dma_fence                finished;
+> > > > +   /**
+> > > > +    * @deadline: deadline set on &drm_sched_fence.finished which
+> > > > +    * potentially needs to be propagated to &drm_sched_fence.parent
+> > > > +    */
+> > > > +   ktime_t                         deadline;
+> > > > +
+> > > >           /**
+> > > >            * @parent: the fence returned by &drm_sched_backend_ops.run_job
+> > > >            * when scheduling the job on hardware. We signal the
+> > >
+> >
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
 
-I am suspecting the error above might be the same cause as Qiu have mentioning at the other thread.
-
-Akira
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
