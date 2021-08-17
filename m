@@ -2,115 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F413EEFF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 18:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC35D3EF002
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 18:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbhHQQGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 12:06:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23375 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229723AbhHQQGI (ORCPT
+        id S229983AbhHQQMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 12:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229696AbhHQQMk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 12:06:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629216333;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9gzzg2YwEyV3U2nBjj+cUEsKQ5qhPEMvgE1ztK9QOzY=;
-        b=RsOsE75chmxexCnrSKGeVmVOk4nzscZ/rsNy3TWTDFvIArtPpwI1h4O1axFXYQBlDlYyR2
-        RBydZX4QgP6VYXE//wjToDyWgUab4qewpgrTrwBOs6WMl3c84s9rvU2fGaNONg2JYx4BAI
-        ituw7vHmI8/2aIr1THAKeZl2gqWnh40=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-562-Xs7gxkTJPr64H2GC6iaCVw-1; Tue, 17 Aug 2021 12:05:31 -0400
-X-MC-Unique: Xs7gxkTJPr64H2GC6iaCVw-1
-Received: by mail-ed1-f71.google.com with SMTP id x24-20020aa7dad8000000b003bed477317eso4694677eds.18
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 09:05:31 -0700 (PDT)
+        Tue, 17 Aug 2021 12:12:40 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F3BC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 09:12:07 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id g21so18457834edw.4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 09:12:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lV5/yBJAE61dtnQkRvtjI+pYiYb2DR7Vqp0AekIo3ec=;
+        b=VOXnKmjFnFmS1xfKUWg3NtHjtWJEbd6idd3gAUR/1VBdcSTc8oC4UM+b4nayT8eW4g
+         7jHHzs2TDIfGlnegUD2E9dJ6Npla5VNgRnWWjPCYRZqUK54TW24BsjiD0h+UoSdokOTf
+         Ec3SRY5zEXEfFlXiB/DvCxHHmWV1uEBm2mJfU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=9gzzg2YwEyV3U2nBjj+cUEsKQ5qhPEMvgE1ztK9QOzY=;
-        b=baApUdkE0csLrbEUWYJh96NqnCfh6Pta7i5HwPY7q+K+TDSqWlvOkOmLm8s4R+AQW5
-         dxSx2SzoGJ/sBaw7aLNxC+2u8iSh1cpxs1gJeNeULmd7DJxfPW9tC7ut0UCHdBHX/LTD
-         hTTWxmJO/OuHQkRGN3bMmu64hYuAEkbJw47ve9iYfvjIAeqa9MwZ+6eSUs3cmjP127L8
-         nQIRqlhoZiyUXs/+tw8G5e38opozOe5Ej/1wto6UDW1yCSz83uQYRVJvuP/aX9PyGWQH
-         9V7ARsSxG06UctzLTooDCikGi8Gai3LM77Vj5GC1rzUnoT5NuLH+H0Umy+7PBK14WY5A
-         Nj9g==
-X-Gm-Message-State: AOAM531Jg42DJ2MJQ+G/Lx1OCW4z1jNsksRI3kEQeRDsPtNyKE1SQnWx
-        FyJI2+o5Vwb8WwqByxPy12Odj4QZCajuhLT/x1n3IspjpauI3XkjxVoNQZCZYR3jCv6uP22ZYfy
-        b3UjAHns4oILEaMibHL9KHhFH
-X-Received: by 2002:a17:906:38ce:: with SMTP id r14mr4723481ejd.268.1629216330629;
-        Tue, 17 Aug 2021 09:05:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwR1te4vfIy9M4SfzRe1qI8OFYLHdyH/4WNJ05ExASDPVCnSkyrwvya16nDl/TN1m4q9gXjsg==
-X-Received: by 2002:a17:906:38ce:: with SMTP id r14mr4723459ejd.268.1629216330407;
-        Tue, 17 Aug 2021 09:05:30 -0700 (PDT)
-Received: from pc-32.home (2a01cb058918ce00dd1a5a4f9908f2d5.ipv6.abo.wanadoo.fr. [2a01:cb05:8918:ce00:dd1a:5a4f:9908:f2d5])
-        by smtp.gmail.com with ESMTPSA id q30sm1286707edi.84.2021.08.17.09.05.26
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lV5/yBJAE61dtnQkRvtjI+pYiYb2DR7Vqp0AekIo3ec=;
+        b=Ta4B0dYCkt/ca9z5b3aBey8NQKEeeAnJvYZ+QrIY+ukWn1b73ttpRAVmoKttDdPYwb
+         Hn07UitCnMcEFJ9HhRBrEjmB1YSso8i+kuPCBbM/uIVI6xUsSgtMIm1fMIsy/9VeMLBI
+         c660YMjMzT28fLc2Xx42Alq1dpjVMUsb2x0zDu+xiphgCzxgBCcS9myuq+cTDgAd2Zj4
+         yuwZCemqwUHtgmO5p40mz663Za1qQYgAGIDkB86Y8q403L3FhmbiYcxmhWgW5anWfn1f
+         UbXzrEvop5VquHgi66/p4ZT46Dp7TQKcnv1Zjp2O33kXETWZDBkQbNikQ6kqwf4jvXGv
+         Boqw==
+X-Gm-Message-State: AOAM5336rmvsPzgPnxeevf7CHmx/V2poKhu11nzgYjUYecf4KSj6gC8S
+        YcIDjF9mSvWtGVR0wzMeJEuzeUKIeJSQQg==
+X-Google-Smtp-Source: ABdhPJzkrrlqxI3kGBOiaOnn1xEGGmjshJ1ndvFgiALEGi1Tv7L8akzppYHNOJtc9v1+4uctkfssaQ==
+X-Received: by 2002:a50:9b06:: with SMTP id o6mr5085509edi.284.1629216726174;
+        Tue, 17 Aug 2021 09:12:06 -0700 (PDT)
+Received: from alco.lan (80.71.134.83.ipv4.parknet.dk. [80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id b3sm945080ejb.7.2021.08.17.09.12.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 09:05:27 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 18:05:25 +0200
-From:   Guillaume Nault <gnault@redhat.com>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     James Carlson <carlsonj@workingcode.com>,
-        Chris Fowler <cfowler@outpostsentinel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-ppp@vger.kernel.org" <linux-ppp@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ppp: Add rtnl attribute IFLA_PPP_UNIT_ID for specifying
- ppp unit id
-Message-ID: <20210817160525.GA20616@pc-32.home>
-References: <20210810171626.z6bgvizx4eaafrbb@pali>
- <2f10b64e-ba50-d8a5-c40a-9b9bd4264155@workingcode.com>
- <20210811173811.GE15488@pc-32.home>
- <20210811180401.owgmie36ydx62iep@pali>
- <20210812092847.GB3525@pc-23.home>
- <20210812134845.npj3m3vzkrmhx6uy@pali>
- <20210812182645.GA10725@pc-23.home>
- <20210812190440.fknfthdk3mazm6px@pali>
- <20210816161114.GA3611@pc-32.home>
- <20210816162355.7ssd53lrpclfvuiz@pali>
+        Tue, 17 Aug 2021 09:12:05 -0700 (PDT)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ricardo Ribalda <ribalda@chromium.org>
+Subject: [PATCH] media: uvcvideo: Support borderline implementation of hw timestamping
+Date:   Tue, 17 Aug 2021 18:12:02 +0200
+Message-Id: <20210817161202.49560-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210816162355.7ssd53lrpclfvuiz@pali>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 06:23:55PM +0200, Pali Rohár wrote:
-> On Monday 16 August 2021 18:11:14 Guillaume Nault wrote:
-> > Do you have plans for adding netlink support to pppd? If so, is the
-> > project ready to accept such code?
-> 
-> Yes, I have already some WIP code and I'm planning to send a pull
-> request to pppd on github for it. I guess that it could be accepted,
+Some cameras do not set pts and src if there is no camera data in the
+buffer. They do this without clearing the PTS and SCR bits of the
+header. This is probably done due to a strict/borderline interpretation
+of the standard:
 
-I guess you can easily use the netlink api for cases where the "unit"
-option isn't specified and fall back to the ioctl api when it is. If
-all goes well, then we can extend the netlink api to accept a unit id.
+"STC must be captured when the first video data of a video frame is put
+on the USB bus."
 
-But what about the lack of netlink feedback about the created
-interface? Are you restricted to use netlink only when the "ifname"
-option is provided?
+Eg:
+buffer: 0xa7755c00 len 000012 header:0x8c stc 00000000 sof 0000 pts 00000000
+buffer: 0xa7755c00 len 000012 header:0x8c stc 00000000 sof 0000 pts 00000000
+buffer: 0xa7755c00 len 000668 header:0x8c stc 73779dba sof 070c pts 7376d37a
 
-> specially if there still would be backward compatibility via ioctl for
-> kernels which do not support rtnl API.
+Support those cameras by only decoding the clock if there is camera data
+in the buffer.
 
-Indeed, I'd expect keeping compatiblitity with old kernels that only
-have the ioctl api to be a must (but I have no experience contributing
-to the pppd project).
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+---
+ drivers/media/usb/uvc/uvc_video.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-> One of the argument which can be
-> used why rtnl API is better, is fixing issue: atomic creating of
-> interface with specific name.
-
-Yes, that looks useful.
+diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+index e16464606b14..6d0e474671a2 100644
+--- a/drivers/media/usb/uvc/uvc_video.c
++++ b/drivers/media/usb/uvc/uvc_video.c
+@@ -490,6 +490,18 @@ uvc_video_clock_decode(struct uvc_streaming *stream, struct uvc_buffer *buf,
+ 	if (len < header_size)
+ 		return;
+ 
++	/*
++	 * Some cameras when there is no camera data in a buffer, do not
++	 * handle properly the pts and scr. This can be due to an borderline
++	 * interpretation of the standard: "STC must be captured when the
++	 * first video data of a video frame is put on the USB bus."
++	 * Due to their internal design, their firmware cannot clear the
++	 * UVC_STREAM_PTS and UVC_STREAM_SCR bits. Which forces us to use the
++	 * length of the buffer to decide if pts and scr are valid or not.
++	 */
++	if (len == header_size)
++		return;
++
+ 	/* Extract the timestamps:
+ 	 *
+ 	 * - store the frame PTS in the buffer structure
+-- 
+2.33.0.rc1.237.g0d66db33f3-goog
 
