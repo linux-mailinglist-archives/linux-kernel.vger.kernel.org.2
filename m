@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BCFF3EE56D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 06:17:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0AD83EE56F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 06:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237458AbhHQERz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 00:17:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57406 "EHLO
+        id S237556AbhHQESJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 00:18:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbhHQERy (ORCPT
+        with ESMTP id S237520AbhHQESG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 00:17:54 -0400
+        Tue, 17 Aug 2021 00:18:06 -0400
 Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBBA3C061764;
-        Mon, 16 Aug 2021 21:17:21 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id j12-20020a17090aeb0c00b00179530520b3so2898465pjz.0;
-        Mon, 16 Aug 2021 21:17:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F86DC061764;
+        Mon, 16 Aug 2021 21:17:34 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id u21-20020a17090a8915b02901782c36f543so2778743pjn.4;
+        Mon, 16 Aug 2021 21:17:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bqqKFEqy6bW/3jaVqfILOBhErn5KinwFdoaG08aeYTU=;
-        b=GegebCJ5kKpRuiPtzMuG/9/Oizma9N2aGsdKhuGiQdC7wUiRVR1it6CtyNIc96rUr7
-         1Lrv7n2SoUcRo+zrgud1QzHI/S0+BM9EKdV1dWmlrq1uwJxcwfeJQxvy3pLlsNSIMcTG
-         xg1oWpegNMAoB7YYtWTgVXZHUg58hyrj4IZ4iY5mpZ0bZazAz4eFsNooZjOo7iBAbThg
-         7HpAbMBXtv2CXfVxxOs9YmRuPOxFRdU3q3o6KZ0QeHqAwg7StwEI9lEiUFGlI3fRDuwi
-         MjhP+iXf+gIGtZ0TtT8KVdW9vLUEtDDgiyhLwaYRs+TliqPSl2yFJRNKE5nDb3Blnm/d
-         nLTw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=aFbf5MZvdHne2nfZzSqkqs09pAcRMOYPxHTfv7PVwSk=;
+        b=gIdDzzrbItxf9RBdIOJGtF1f1VKiW5B81efUiKJIM5vqEKjS7oaj8l2DsTlGL6NhFS
+         pN/dDl8WnWH/0KBbCXmvvTm2SddGx/fi9o4bYMqTNuBg9Ok76Q6NlhRXy+SeVZZjWyYj
+         ljxtinJfGm1kAVJfWKWy7PsHuLQNAwKxD6ao0wignJAajpAehmE6Yzb0CdrjH75Bd6GS
+         D6UQhDQ2Dz+/zTz1ANlr8RcyT9oA4J2vRwP7MEeGOGiA1go4rEy2kpcCJXjzdh1A/Qwt
+         +dc+xZVLYZ40/Y1RAreCe+c2Yr/kMk2vQoql/JX3TYrqGDzpO9Dv/YWUWb7+mTBsaJ3b
+         12rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bqqKFEqy6bW/3jaVqfILOBhErn5KinwFdoaG08aeYTU=;
-        b=p86dpLmgWe7zvcBUtl3WzWHEyMdHZaftV7mQfNF/6mXm4o1aQs8FAlKi7mdiKHFggG
-         vkXndP69bK8AGIxMjtodQd6mAc8aqQPuVdboE0CMXv5SaukmJEWhPvhZJhlD8h7vfRsI
-         1Z0BeKOKQN1N8dzbWcR1zXyb0WSDHkSsV6E8Y35TxJ2fEH4qmm6FatTQEFFAxA6EPGdZ
-         CJnXI0lpqJ7S7svdBSMk5tut6TllB4qzShP0xLO7ruKDgvxVKy+jpRqAMBCYp9X0E5wj
-         c90cu5R53kUs5ZRBM/3/lLWKsHthJlVRIVmj0iaGwCdJrUmdthXB+2yP/a8wYpnxWO7m
-         tg2Q==
-X-Gm-Message-State: AOAM533Wl1L07bCu5bkKg2mTBgm2BnPg+XFhtgLVlXlmtsoTZ3XrJPC+
-        Dhg0OWT2LYG8OJ7o0veGUvk=
-X-Google-Smtp-Source: ABdhPJxghMRfCc22t7YGDNctHOJGp0NKyTLbKYqjB+T8eXlM0tsqvm0YCsdT7rjc0rp9Hu3gT+3axA==
-X-Received: by 2002:aa7:8116:0:b029:346:8678:ce26 with SMTP id b22-20020aa781160000b02903468678ce26mr1646306pfi.15.1629173841355;
-        Mon, 16 Aug 2021 21:17:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=aFbf5MZvdHne2nfZzSqkqs09pAcRMOYPxHTfv7PVwSk=;
+        b=Q6Z/To4tsARXjaUxmsIqDJJaRPzUqK/KgyNgOzOidfPv4rbDhvc85BiYkUg3JlW4gK
+         K0cqZ9EB9893e8vdyGq1MxVC0B8naVCy7cIMu6tKx7LokJlmrhS16U8oh0u8RKYrvYzi
+         K4qqsldlNd7QVum58QqR51ccg01a/fQBjA3Nek2YwLmSlrcUBXo/MjPIK1NYJhPpcAtT
+         keX13DKMN/bxzmHy2fu9YDfWFHFtBsFu83Hr4Iykc8Pmlj/lOABfAdpOkO/GUlQSeeSH
+         trhXEGCiq8xtns5MFbIFbsxW4exdsEYvsZjqV+aWk46SC/i4SbwzN4PzysKAZuU2qrYQ
+         Ll9Q==
+X-Gm-Message-State: AOAM532mzLEXIF4KcXShmIJQIMybYg4EFKxjg+aVLptAhUtncJBqvlDV
+        TJLOM0Hz2KGJlzRcMNvJ+n8=
+X-Google-Smtp-Source: ABdhPJwUmgJHOYZGmqb7CZ/IPnyklBdcoU5GSH6oVqioOWLbpzvI57uFAQR+YepvUxw6cA9JFgqcEA==
+X-Received: by 2002:a17:90a:9308:: with SMTP id p8mr1457358pjo.119.1629173853769;
+        Mon, 16 Aug 2021 21:17:33 -0700 (PDT)
 Received: from archl-on1.. ([103.51.72.143])
-        by smtp.gmail.com with ESMTPSA id g11sm705676pfo.166.2021.08.16.21.17.15
+        by smtp.gmail.com with ESMTPSA id g11sm705676pfo.166.2021.08.16.21.17.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 21:17:20 -0700 (PDT)
+        Mon, 16 Aug 2021 21:17:33 -0700 (PDT)
 From:   Anand Moon <linux.amoon@gmail.com>
 To:     linux-phy@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org,
@@ -55,74 +55,102 @@ To:     linux-phy@lists.infradead.org,
         devicetree@vger.kernel.org
 Cc:     Anand Moon <linux.amoon@gmail.com>,
         Matt Corallo <oc2udbzfd@mattcorallo.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
         Rob Herring <robh+dt@kernel.org>,
         Neil Armstrong <narmstrong@baylibre.com>,
         Kevin Hilman <khilman@baylibre.com>,
         Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
         Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>,
         Emiliano Ingrassia <ingrassia@epigenesys.com>,
         Brian Kim <brian.kim@hardkernel.com>
-Subject: [PATCHv3 0/6] Meson-8b and Meson-gxbb Fix some missing code
-Date:   Tue, 17 Aug 2021 09:45:34 +0530
-Message-Id: <20210817041548.1276-1-linux.amoon@gmail.com>
+Subject: [PATCHv3 1/6] ARM: dts: meson8b: odroidc1: Add usb phy power node
+Date:   Tue, 17 Aug 2021 09:45:35 +0530
+Message-Id: <20210817041548.1276-2-linux.amoon@gmail.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210817041548.1276-1-linux.amoon@gmail.com>
+References: <20210817041548.1276-1-linux.amoon@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Odroid C1+ and Odroid C2 USB feature is broken
+Add missing usb phy power node for usb node fix below warning.
+P5V0 regulator supply input voltage range to USB host controller.
+As described in the C1+ schematics, GPIO GPIOAO_5 is used to
+enable input power to USB ports, set it to Active Low.
 
-It's being observed the after initiation of USB phy
-the USB port goes in to suspend state, If we pass usbcore.autosuspend=-1
-via command line USB hotplug seen to be working.
+[    1.260772] dwc2 c90c0000.usb: Looking up vbus-supply from device tree
+[    1.260784] dwc2 c90c0000.usb: Looking up vbus-supply property in
+		mode /soc/usb@c90c0000 failed
 
-Another issue I observed is increase of USB interrupts event
-even if there is not much activity on USB ports.
+Fixes: 2eb79a4d15ff (ARM: dts: meson: enabling the USB Host
+		controller on Odroid-C1/C1+ board)
 
-$ cat /proc/interrupts | grep usb
- 35:   26462800          0          0          0     GIC-0  63 Level
-			c90c0000.usb, dwc2_hsotg:usb1
-8
-Changes added power node to usb phy and small code cleanup
-in usb phy.
+Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+---
+V2 > changes gpio polarity ACTIVE_HIGH to ACTIVE_LOW.
+     Fix the source power from phy-supply to vbus-supply.
 
+[1] https://lore.kernel.org/linux-devicetree/20210716103651.1455-2-linux.amoon@gmail.com/
 
-Previous version RFC.
-[0] https://patchwork.kernel.org/project/linux-amlogic/cover/20210617194154.2397-1-linux.amoon@gmail.com/
-Dopped the reorder of code changes as of now.
+V1 > Fix the Input GPIO polarity from HIGH to LOW.
 
-V1 > changes Fixed the GPIO input signal on Odroid C1+/C2
-     New patch added to fix Odroid C2.
+previous version
+[0] https://patchwork.kernel.org/project/linux-amlogic/patch/20190113181808.5768-1-linux.amoon@gmail.com
 
-[1] https://lore.kernel.org/linux-devicetree/20210716103651.1455-1-linux.amoon@gmail.com/
+changes fix the vbus-suppy to phy-supply, drop enable usb0
 
-V2 > changes Fixed the GPIO polarity for Odroid C1
-     fix the power source from phy-supply to vbus-supply 
-     added new patches to fix resolve some issues.
+    USB_PWR                       2    1      0 unknown  5000mV     0mA  5000mV  5000mV
+       phy-c1108820.phy.0-phy     2                                 0mA     0mV     0mV
+---
+ arch/arm/boot/dts/meson8b-odroidc1.dts | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
-Thanks
--Anand
-
-Anand Moon (6):
-  ARM: dts: meson8b: odroidc1: Add usb phy power node
-  ARM: dts: meson8b: odroidc1: Set usb power source to always on
-  arm64: dts: amlogic: odroidc2: Fix the chip enable signal for usb
-    power
-  arm64: dts: amlogic: odroidc2: use vbus-supply for power source for
-    usb nodes
-  phy: amlogic: meson8b-usb2: Power off the PHY by putting it into reset
-    mode
-  phy: amlogic: meson8b-usb2: don't log an error on -EPROBE_DEFER
-
- arch/arm/boot/dts/meson8b-odroidc1.dts        | 21 ++++++++++++++++++-
- .../boot/dts/amlogic/meson-gxbb-odroidc2.dts  | 10 ++++-----
- drivers/phy/amlogic/phy-meson8b-usb2.c        |  8 +++++--
- 3 files changed, 30 insertions(+), 9 deletions(-)
-
+diff --git a/arch/arm/boot/dts/meson8b-odroidc1.dts b/arch/arm/boot/dts/meson8b-odroidc1.dts
+index c440ef94e082..30ec6a7f20c7 100644
+--- a/arch/arm/boot/dts/meson8b-odroidc1.dts
++++ b/arch/arm/boot/dts/meson8b-odroidc1.dts
+@@ -32,6 +32,23 @@ emmc_pwrseq: emmc-pwrseq {
+ 		reset-gpios = <&gpio BOOT_9 GPIO_ACTIVE_LOW>;
+ 	};
+ 
++	usb_pwr_en: regulator-usb-pwr-en {
++		compatible = "regulator-fixed";
++
++		regulator-name = "USB_OTG_PWR";
++
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		/*
++		 * signal name from schematics: USB_POWER - P5V0
++		 */
++		vin-supply = <&p5v0>;
++		/*
++		 * signal name from schematics: PWREN - GPIOAO.BIT5
++		 */
++		gpios = <&gpio_ao GPIOAO_5 GPIO_ACTIVE_LOW>;
++	};
++
+ 	leds {
+ 		compatible = "gpio-leds";
+ 		blue {
+@@ -119,7 +136,6 @@ vcc_3v3: regulator-vcc-3v3 {
+ 		regulator-name = "VCC3V3";
+ 		regulator-min-microvolt = <3300000>;
+ 		regulator-max-microvolt = <3300000>;
+-
+ 		vin-supply = <&p5v0>;
+ 	};
+ 
+@@ -382,4 +398,5 @@ &usb1_phy {
+ 
+ &usb1 {
+ 	status = "okay";
++	vbus-supply = <&usb_pwr_en>;
+ };
 -- 
 2.32.0
 
