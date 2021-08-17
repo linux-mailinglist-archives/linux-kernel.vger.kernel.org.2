@@ -2,213 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFCF13EE0BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 02:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4409F3EE0C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 02:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234821AbhHQARN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 20:17:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234465AbhHQARL (ORCPT
+        id S234904AbhHQAR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 20:17:58 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:36933 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232924AbhHQAR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 20:17:11 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4827C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 17:16:38 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id c12so16960412ljr.5
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 17:16:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HNlfDTm2XkePqm/itgh7jj38glw5emSbty3MWdBxwSs=;
-        b=mmXQKiM3FDqgjRdrbWDFovfLyAdkZF3LHAqHH2N7MvdNQBb/r1/xqmuUHydP4SmZqe
-         0/oK0sWz/kWxAU9iY726bYUwZwbTNiInLJSbvfPZT+HeA97YoJHftnx/9PYTR/Q2HzG6
-         a72FRjj5NscupICDgtzz43HtjXdqbVg4idYwLNibIebjYG7bC75z8/SGkUAeZ8EoK4ma
-         ksHtAumA058oTyn0sZpgPBCDEZKr7L0VZJ17y8kUSmnjF3WhWFN7phSZ9HLuGxeokxgT
-         zlYxJlZyQvi6AO979DI6rZYjdPaH7Ei4f58ht1qw5GAVwjWLLQZqJc20PO2roQ/wQ2UC
-         y56g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HNlfDTm2XkePqm/itgh7jj38glw5emSbty3MWdBxwSs=;
-        b=UrxwNlScZQXD3wjZKlXAVwMtpee3CJpMJTwt2cSuE6LwkrjVZbdDvlNtx8+d31vdmd
-         L9xP5JDBf/o1y0VKP9TWv/8/e3KUNNH+12iEwxGPJa5bygayAxc0y4eI9BeRPJOMJOse
-         cE+5jVgg+MsibU2mQXTUq1F0lK2JijZSX0eiJv+/exo2nDgT/kj0xd5xXWEOdDHIeXfm
-         nTwgVidLtPTjTQAQ+22ydu8iTQTDxYmuEKh0B5b2j50dESyZO4UK6ZX80Uks1wTuiTqm
-         9VU4jhsBa3A/1Q829IGmIWqVtBvsv+wCH332ywtb7bb+I3s73VJCHnmjP53VE92YJmwE
-         L9aQ==
-X-Gm-Message-State: AOAM532Szb200JiyCc6ZBjXQNHJAyfwoBUDaUZMIidaFnKtJfzkPMgMK
-        qJudlUxH+9XCdpo3k6gPCta4mg==
-X-Google-Smtp-Source: ABdhPJw7bh8yH9xHSNsgIBPOF2j+W1FMlMgOg2QS/IwhOEMysQHXHMJ/sNtkBKjci56s38IYLpPJ3w==
-X-Received: by 2002:a05:651c:2105:: with SMTP id a5mr694076ljq.259.1629159396847;
-        Mon, 16 Aug 2021 17:16:36 -0700 (PDT)
-Received: from localhost.localdomain (c-fdcc225c.014-348-6c756e10.bbcust.telenor.se. [92.34.204.253])
-        by smtp.gmail.com with ESMTPSA id u15sm33927lfs.203.2021.08.16.17.16.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 17:16:36 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-To:     lee.jones@linaro.org, linux-kernel@vger.kernel.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Cory Maccarrone <darkstar6262@gmail.com>,
-        Tony Lindgren <tony@atomide.com>
-Subject: [PATCH] mfd: htc-i2cpld: Convert to a pure GPIO driver
-Date:   Tue, 17 Aug 2021 02:14:34 +0200
-Message-Id: <20210817001434.516298-1-linus.walleij@linaro.org>
-X-Mailer: git-send-email 2.31.1
+        Mon, 16 Aug 2021 20:17:58 -0400
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 17H0Gwmh028866;
+        Tue, 17 Aug 2021 09:16:58 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 17H0Gwmh028866
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1629159419;
+        bh=XbVBncXQBymx/ieyPJ6HdMsSmxJ3fpUPvSQvKQ5bVDo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=SR5bX611BWYbnFYeXtj/HbHiNhDrWtr2M96SyaS3aqdtaah7rB//1C28fqTs276VT
+         BVSj6Zi3DWgvB5HBMEy+rT6PJBPx2rGqHgY/gvXyf1oKLmBjEUZJSSXhG9E3P7fACR
+         uOJsTT2ldN/kKT717R4yLUDIpBkkiQJjPWamkr4jIspNLOcb5yGFK0EeTIamuJxY7J
+         KYFxzIsygLSWOOCXtLGFxVC16r97VUIcQmX7BCiWfXGtDtawaSoqmQcSSuXzaRStyn
+         e+L4wXzpGOmIi3V+J0YNegA1xpBLaQxUQXfqmjzbFIDmMmMG4kg9AcAApCBaqvGz3e
+         6MajQLiqghLew==
+X-Nifty-SrcIP: [209.85.214.172]
+Received: by mail-pl1-f172.google.com with SMTP id a20so22717082plm.0;
+        Mon, 16 Aug 2021 17:16:58 -0700 (PDT)
+X-Gm-Message-State: AOAM531i0s613dsd/qcYXYXaCI2L8TR0pFnoex4tpKxlUtn2lLp/Y/sM
+        h/WgL2yYANwaVDDOr9DYMtbBD7OL1NdHOcaXBQ4=
+X-Google-Smtp-Source: ABdhPJwh8T5kk8Fx0mW7+dY9QdqC7lL9mpf28QTuVLb7DJKs79tNh+ARFne0A9HP1tTn9g6V2/qKKslwPwznwKJ+yH0=
+X-Received: by 2002:a65:6459:: with SMTP id s25mr673098pgv.7.1629159418096;
+ Mon, 16 Aug 2021 17:16:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210810204240.4008685-1-ndesaulniers@google.com>
+ <CAK7LNASotywVkNjaBC7wYke70QL+a0tMJEVEvRTPpt8dDgHE9Q@mail.gmail.com> <CAKwvOdmpTt1PBnvo3RFkYnd5O2JTW7DTA9sGQJgvsDOFkVt8Ag@mail.gmail.com>
+In-Reply-To: <CAKwvOdmpTt1PBnvo3RFkYnd5O2JTW7DTA9sGQJgvsDOFkVt8Ag@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 17 Aug 2021 09:16:20 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQP93qMRP8uSZKzLR0G7tM9-vNyzAEsUceRtj2nA0kd7A@mail.gmail.com>
+Message-ID: <CAK7LNAQP93qMRP8uSZKzLR0G7tM9-vNyzAEsUceRtj2nA0kd7A@mail.gmail.com>
+Subject: Re: [PATCH] Makefile: remove stale cc-option checks
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Vitor Massaru Iha <vitor@massaru.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of passing GPIO numbers pertaining to ourselves through
-platform data, just request GPIO descriptors from our own GPIO
-chips and use them, and cut down on the unnecessary complexity.
+On Tue, Aug 17, 2021 at 3:36 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Fri, Aug 13, 2021 at 6:43 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > On Wed, Aug 11, 2021 at 5:42 AM Nick Desaulniers
+> > <ndesaulniers@google.com> wrote:
+> > >
+> > > --param=allow-store-data-races=0 was renamed to --allow-store-data-races
+> > > in the GCC 10 release.
+> > >
+> > > diff --git a/Makefile b/Makefile
+> > > index 027fdf2a14fe..3e3fb4affba1 100644
+> > > --- a/Makefile
+> > > +++ b/Makefile
+> > > @@ -844,17 +847,17 @@ KBUILD_RUSTFLAGS += -Copt-level=z
+> > >  endif
+> > >
+> > >  # Tell gcc to never replace conditional load with a non-conditional one
+> > > -KBUILD_CFLAGS  += $(call cc-option,--param=allow-store-data-races=0)
+> > > +ifdef CONFIG_CC_IS_GCC
+> >
+> >
+> > Can you insert a comment here?
+> >
+> > # GCC 10 renamed --param=allow-store-data-races=0 to --allow-store-data-races
+> >
+> >
+> > It will remind us of dropping this conditional
+> > in the (long long distant) future.
+> >
+> >
+> >
+> >
+> > > +KBUILD_CFLAGS  += $(call cc-option,--allow-store-data-races,--param=allow-store-data-races=0)
+> > >  KBUILD_CFLAGS  += $(call cc-option,-fno-allow-store-data-races)
+> > > +endif
+>
+> This report is confusing:
+> https://lore.kernel.org/linux-mm/202108160729.Lx0IJzq3-lkp@intel.com/
+> (csky gcc-11)
+>
+> >> csky-linux-gcc: error: unrecognized command-line option '--param=allow-store-data-races=0'; did you mean '--allow-store-data-races'?
+>
+> I wonder if cc-option detection for these is broken?
 
-Cc: Cory Maccarrone <darkstar6262@gmail.com>
-Cc: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- arch/arm/mach-omap1/board-htcherald.c |  9 ----
- drivers/mfd/htc-i2cpld.c              | 59 ++++++++++++---------------
- include/linux/htcpld.h                |  2 -
- 3 files changed, 26 insertions(+), 44 deletions(-)
+I do not say it is broken...
 
-diff --git a/arch/arm/mach-omap1/board-htcherald.c b/arch/arm/mach-omap1/board-htcherald.c
-index 258304edf23e..261d6c1edadd 100644
---- a/arch/arm/mach-omap1/board-htcherald.c
-+++ b/arch/arm/mach-omap1/board-htcherald.c
-@@ -141,13 +141,6 @@
- #define HTCPLD_GPIO_DOWN_DPAD		HTCPLD_BASE(7, 4)
- #define HTCPLD_GPIO_ENTER_DPAD		HTCPLD_BASE(7, 3)
- 
--/*
-- * The htcpld chip requires a gpio write to a specific line
-- * to re-enable interrupts after one has occurred.
-- */
--#define HTCPLD_GPIO_INT_RESET_HI	HTCPLD_BASE(2, 7)
--#define HTCPLD_GPIO_INT_RESET_LO	HTCPLD_BASE(2, 0)
--
- /* Chip 5 */
- #define HTCPLD_IRQ_RIGHT_KBD		HTCPLD_IRQ(0, 7)
- #define HTCPLD_IRQ_UP_KBD		HTCPLD_IRQ(0, 6)
-@@ -348,8 +341,6 @@ static struct htcpld_chip_platform_data htcpld_chips[] = {
- };
- 
- static struct htcpld_core_platform_data htcpld_pfdata = {
--	.int_reset_gpio_hi = HTCPLD_GPIO_INT_RESET_HI,
--	.int_reset_gpio_lo = HTCPLD_GPIO_INT_RESET_LO,
- 	.i2c_adapter_id	   = 1,
- 
- 	.chip		   = htcpld_chips,
-diff --git a/drivers/mfd/htc-i2cpld.c b/drivers/mfd/htc-i2cpld.c
-index 417b0355d904..a6d47ce27efe 100644
---- a/drivers/mfd/htc-i2cpld.c
-+++ b/drivers/mfd/htc-i2cpld.c
-@@ -20,7 +20,9 @@
- #include <linux/irq.h>
- #include <linux/spinlock.h>
- #include <linux/htcpld.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/driver.h>
-+#include <linux/gpio/machine.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/slab.h>
- 
- struct htcpld_chip {
-@@ -58,8 +60,8 @@ struct htcpld_data {
- 	uint               irq_start;
- 	int                nirqs;
- 	uint               chained_irq;
--	unsigned int       int_reset_gpio_hi;
--	unsigned int       int_reset_gpio_lo;
-+	struct gpio_desc   *int_reset_gpio_hi;
-+	struct gpio_desc   *int_reset_gpio_lo;
- 
- 	/* htcpld info */
- 	struct htcpld_chip *chip;
-@@ -196,9 +198,9 @@ static irqreturn_t htcpld_handler(int irq, void *dev)
- 	 * be asserted.
- 	 */
- 	if (htcpld->int_reset_gpio_hi)
--		gpio_set_value(htcpld->int_reset_gpio_hi, 1);
-+		gpiod_set_value(htcpld->int_reset_gpio_hi, 1);
- 	if (htcpld->int_reset_gpio_lo)
--		gpio_set_value(htcpld->int_reset_gpio_lo, 0);
-+		gpiod_set_value(htcpld->int_reset_gpio_lo, 0);
- 
- 	return IRQ_HANDLED;
- }
-@@ -562,35 +564,26 @@ static int htcpld_core_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	/* Request the GPIO(s) for the int reset and set them up */
--	if (pdata->int_reset_gpio_hi) {
--		ret = gpio_request(pdata->int_reset_gpio_hi, "htcpld-core");
--		if (ret) {
--			/*
--			 * If it failed, that sucks, but we can probably
--			 * continue on without it.
--			 */
--			dev_warn(dev, "Unable to request int_reset_gpio_hi -- interrupts may not work\n");
--			htcpld->int_reset_gpio_hi = 0;
--		} else {
--			htcpld->int_reset_gpio_hi = pdata->int_reset_gpio_hi;
--			gpio_set_value(htcpld->int_reset_gpio_hi, 1);
--		}
--	}
-+	htcpld->int_reset_gpio_hi = gpiochip_request_own_desc(&htcpld->chip[2].chip_out,
-+							      7, "htcpld-core", GPIO_ACTIVE_HIGH,
-+							      GPIOD_OUT_HIGH);
-+	if (!htcpld->int_reset_gpio_hi)
-+		/*
-+		 * If it failed, that sucks, but we can probably
-+		 * continue on without it.
-+		 */
-+		dev_warn(dev, "Unable to request int_reset_gpio_hi -- interrupts may not work\n");
- 
--	if (pdata->int_reset_gpio_lo) {
--		ret = gpio_request(pdata->int_reset_gpio_lo, "htcpld-core");
--		if (ret) {
--			/*
--			 * If it failed, that sucks, but we can probably
--			 * continue on without it.
--			 */
--			dev_warn(dev, "Unable to request int_reset_gpio_lo -- interrupts may not work\n");
--			htcpld->int_reset_gpio_lo = 0;
--		} else {
--			htcpld->int_reset_gpio_lo = pdata->int_reset_gpio_lo;
--			gpio_set_value(htcpld->int_reset_gpio_lo, 0);
--		}
--	}
-+
-+	htcpld->int_reset_gpio_lo = gpiochip_request_own_desc(&htcpld->chip[2].chip_out,
-+							      0, "htcpld-core", GPIO_ACTIVE_HIGH,
-+							      GPIOD_OUT_LOW);
-+	if (!htcpld->int_reset_gpio_lo)
-+		/*
-+		 * If it failed, that sucks, but we can probably
-+		 * continue on without it.
-+		 */
-+		dev_warn(dev, "Unable to request int_reset_gpio_lo -- interrupts may not work\n");
- 
- 	dev_info(dev, "Initialized successfully\n");
- 	return 0;
-diff --git a/include/linux/htcpld.h b/include/linux/htcpld.h
-index 842fce69ac06..5f8ac9b1d724 100644
---- a/include/linux/htcpld.h
-+++ b/include/linux/htcpld.h
-@@ -13,8 +13,6 @@ struct htcpld_chip_platform_data {
- };
- 
- struct htcpld_core_platform_data {
--	unsigned int                      int_reset_gpio_hi;
--	unsigned int                      int_reset_gpio_lo;
- 	unsigned int                      i2c_adapter_id;
- 
- 	struct htcpld_chip_platform_data  *chip;
+
+cc-option is defined like this:
+
+cc-option = $(call __cc-option, $(CC),\
+        $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS),$(1),$(2))
+
+
+It is checking
+$(KBUILD_CPPFLAGS) + $(KBUILD_CFLAGS)
++ --allow-store-data-races
+
+
+A few lines above, I see
+
+csky-linux-gcc: error: unrecognized argument in option '-mcpu=ck860'
+
+
+It makes all the cc-option tests fail after this line:
+KBUILD_CFLAGS += -mcpu=$(CPUTYPE) -Wa,-mcpu=$(MCPU_STR)
+
+
+Then,
+
+$(call cc-option,--allow-store-data-races,--param=allow-store-data-races=0)
+
+falls back to --param=allow-store-data-races=0
+
+
+
+
+>  Perhaps I should
+> not touch these other than to wrap them in the CONFIG_CC_IS_GCC guard?
+
+I do not think so.
+
+If an unrecognized argument appears,
+all the cc-option tests that follow are unreliable.
+
+
+
+If you are not comfortable with  it,
+you can split it.
+
+KBUILD_CFLAGS  += $(call cc-option,--allow-store-data-races)
+KBUILD_CFLAGS  += $(call cc-option,--param=allow-store-data-races=0)
+
+
+
+Or, another way of implementation is
+
+KBUILD_CFLAGS += $(call cc-ifversion, -lt, 1000,
+--allow-store-data-races, --param=allow-store-data-races=0)
+
+
+
+
+
+>
+> (Either way, I need to send a v2 in response to Naresh's report as
+> well. https://lore.kernel.org/lkml/CA+G9fYtPBp_-Ko_P7NuOX6vN9-66rjJuBt21h3arrLqEaQQn6w@mail.gmail.com/
+> It seems that -mfentry wasn't implemented for s390-linux-gnu-gcc until
+> gcc-9; so rather than remove top level support, perhaps a comment
+> about gcc-9+ s390 having support will make grepping for it easier in
+> the future).
+> --
+> Thanks,
+> ~Nick Desaulniers
+
+
+
 -- 
-2.31.1
-
+Best Regards
+Masahiro Yamada
