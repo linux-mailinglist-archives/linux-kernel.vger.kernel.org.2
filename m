@@ -2,132 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 224973EEFE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 17:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C23943EEFD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 17:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238375AbhHQP71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 11:59:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240596AbhHQP64 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 11:58:56 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F8FDC0604C7
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 08:54:08 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id g21so18382629edw.4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 08:54:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hPVxIIYJMTAKAHkD7g8fS9aJ8RhBft7CiFNnTlXmcMk=;
-        b=CEX2uMQl1Es2j48M4bpAu8pwcPofi/4shuRHG1C7Y6f8/SydLf0eFWV39lObiTbvt/
-         LYAGN7AG/iADsItx2zwyLknQVPhPLe+icGygMnVFUBo/pLrzkJPpYyrR5l+cHc+7ewv8
-         ej4xSv1/QPmPRkG1knX0YAfsquy10AS/jM301s3JX8VwUxxhnX2RXxWelHabAwzmZWHF
-         eHMWyCarIsxMNzFlLFPilAG6CnY7tZZf7RY5i4FS5XZTfGH4V0ima1sOstPZ2d1C0UPd
-         XPd8F9nKkGYkubCLZRm+IThPuwpsY8HzXDZAFP+MR9W+UIuwpXrQTRS1K/3vmZjq87Rt
-         TMpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hPVxIIYJMTAKAHkD7g8fS9aJ8RhBft7CiFNnTlXmcMk=;
-        b=VkBe0b8q5hFn4/DMeBxPbPnsmmd7A3ZUojoGmN4IBez+BhUN4R4iIRkPshKCbuvPYS
-         WZXOpm0z07peCCLsU4z+u3zD6Op2GB+SWJCGCKP68GGcrfqemPe7owgLcIRCZKUnJnnO
-         HNbTFD5aGTfi/1l0fyJMGEKwHz7+4pyktFMgghSjVAtwBvUTHkBZjdDtqLfwMKTxd8qZ
-         H6qdGzWbfZEYvF3KE+rW+kxY+gjdTYwH4Jmwu2fNnZ7se7z/Js84BFlc784ybg3QFxH+
-         R3c6DIUuUA5+2Yqlv3sGfoiwWyVY/RNkL0JuX70ERKH5NehuQmOPi+yFi+hfkBH3OYFQ
-         r7TA==
-X-Gm-Message-State: AOAM5324z1kS7OA+EketRmeWI0zPxKOeJXC5QvBvWflYRUH4Ng8bYTj1
-        1TPgWtmuws9uV0Jj3cWoFCg=
-X-Google-Smtp-Source: ABdhPJxy0HY2v5O50hYmO13eRTAGRQwTB2VT9OMXIqIlOtPKgMIMn6Xn+EAWqPjWa8zaWD7LdQ0LfQ==
-X-Received: by 2002:aa7:da4a:: with SMTP id w10mr4813168eds.206.1629215646702;
-        Tue, 17 Aug 2021 08:54:06 -0700 (PDT)
-Received: from localhost.localdomain ([213.91.86.150])
-        by smtp.googlemail.com with ESMTPSA id u2sm934555ejc.61.2021.08.17.08.54.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 08:54:05 -0700 (PDT)
-From:   Nikola Pavlica <pavlica.nikola@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@googlegroups.com, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Nikola Pavlica <pavlica.nikola@gmail.com>
-Subject: [PATCH] drm/panel-simple: Add Vivax TPC-9150 panel v2
-Date:   Tue, 17 Aug 2021 17:53:43 +0200
-Message-Id: <20210817155343.1063402-1-pavlica.nikola@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S241199AbhHQP5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 11:57:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50800 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240525AbhHQPwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 11:52:09 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D860B60C3E;
+        Tue, 17 Aug 2021 15:51:18 +0000 (UTC)
+Date:   Tue, 17 Aug 2021 16:54:18 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     "hui.liu" <hui.liu@mediatek.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        <robh+dt@kernel.org>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
+        <srv_heupstream@mediatek.com>, <zhiyong.tao@mediatek.com>,
+        <chun-hung.wu@mediatek.com>, <yingjoe.chen@mediatek.com>,
+        <seiya.wang@mediatek.com>, <matthias.bgg@gmail.com>,
+        <s.hauer@pengutronix.de>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-iio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>
+Subject: Re: [PATCH v1 1/2] iio: mtk-auxadc: add support IIO_CHAN_INFO_RAW
+ case
+Message-ID: <20210817165418.4b1cfdce@jic23-huawei>
+In-Reply-To: <470d4a7fbbcbcaa35aa9dcbaab6a2b77f98dc528.camel@mediatek.com>
+References: <20210812054844.30575-1-hui.liu@mediatek.com>
+        <20210812054844.30575-2-hui.liu@mediatek.com>
+        <20210812190725.00007449@Huawei.com>
+        <042625639032bffe73b60a5c6274511e58e34ef4.camel@mediatek.com>
+        <20210814171007.6892ae94@jic23-huawei>
+        <470d4a7fbbcbcaa35aa9dcbaab6a2b77f98dc528.camel@mediatek.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The model and make of the LCD panel of the Vivax TPC-9150 is unknown,
-hence the panel settings that were retrieved with a FEX dump are named
-after the device NOT the actual panel.
+On Tue, 17 Aug 2021 16:37:52 +0800
+hui.liu <hui.liu@mediatek.com> wrote:
 
-The LCD in question is a 50 pin MISO TFT LCD panel of the resolution
-1024x600 used by the aforementioned device.
+> On Sat, 2021-08-14 at 17:10 +0100, Jonathan Cameron wrote:
+> > On Fri, 13 Aug 2021 11:46:24 +0800
+> > hui.liu <hui.liu@mediatek.com> wrote:
+> >   
+> > > On Thu, 2021-08-12 at 19:07 +0100, Jonathan Cameron wrote:  
+> > > > On Thu, 12 Aug 2021 13:48:43 +0800
+> > > > Hui Liu <hui.liu@mediatek.com> wrote:
+> > > >     
+> > > > > Add support IIO_CHAN_INFO_RAW case.    
+> > > > 
+> > > > Why?
+> > > > 
+> > > > We almost never support both RAW and PROCESSED as userspace
+> > > > should be
+> > > > fine to use either.  There are a few reasons we've let drivers do
+> > > > this but I would like know why it matters to you and it
+> > > > definitely
+> > > > needs to be in the patch description.
+> > > >     
+> > > 
+> > > Hi Jonathan,
+> > > 
+> > > 1. To support ADC consumers' different types of requirement: some
+> > > consumers want to call iio_read_channel_raw to get raw data, the
+> > > others
+> > > use iio_read_channel_processed to get voltage.  
+> > 
+> > Give an example of the consumer using the raw channel readback
+> > (without
+> > acess to any scaling information?)
+> >   
+> 
+> > > 2. In our origin driver, if consumer call
+> > > iio_read_channel_processed,
+> > > read back value is raw data. 
+> > > 
+> > > Could we use SCALE instead of PROCESSED in patch for next version,
+> > > or
+> > > what's your suggestion?  
+> > 
+> > That would unfortunately be a userspace ABI change.  We can add
+> > interfaces
+> > but taking them away is normally a problem :( 
+> > 
+> > Your reasons here are fine, subject to information on what consumer
+> > cares
+> > about having _RAW, please resend the patch with this information
+> > added
+> > to the description.
+> > 
+> > Thanks,
+> > 
+> > Jonathan  
+> 
+> 1. We found afe/iio-rescale.c, dac/dpot-dac.c and multiplexer/iio-mux.c 
+> call iio_read_channel_raw to get raw data. If they use our ADC driver,
+> I think we should support _RAW case. 
+> If we support _RAW case, we will add more information in v2
+> description.
 
-Version 2, as Thierry kindly suggested that I fix the order in which the
-panel was ordered compared to others.
+iio-rescale has recently gained support for processed.
+https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git/commit/drivers/iio/afe/iio-rescale.c?h=testing&id=53ebee9499805add3eef630d998c40812e6a1c39
+dpot-dac is a rather obscure special case, so I doubt you actually have one of those.
+If iio-mux is relevant then we should add processed support to that driver as well.
 
-Thanks,
-Nikola
+I would rather see those users of the interface fixed than us
+having to tweak lots of drivers to provide _raw when it isn't appropriate for
+that piece of hardware.
 
-Signed-off-by: Nikola Pavlica <pavlica.nikola@gmail.com>
----
- drivers/gpu/drm/panel/panel-simple.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+Jonathan
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 4e2dad314c79..9f6080e57771 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -3989,6 +3989,30 @@ static const struct panel_desc urt_umsh_8596md_parallel = {
- 	.bus_format = MEDIA_BUS_FMT_RGB666_1X18,
- };
- 
-+static const struct drm_display_mode vivax_tpc9150_panel_mode = {
-+	.clock = 60000,
-+	.hdisplay = 1024,
-+	.hsync_start = 1024 + 160,
-+	.hsync_end = 1024 + 160 + 100,
-+	.htotal = 1024 + 160 + 100 + 60,
-+	.vdisplay = 600,
-+	.vsync_start = 600 + 12,
-+	.vsync_end = 600 + 12 + 10,
-+	.vtotal = 600 + 12 + 10 + 13,
-+};
-+
-+static const struct panel_desc vivax_tpc9150_panel = {
-+	.modes = &vivax_tpc9150_panel_mode,
-+	.num_modes = 1,
-+	.size = {
-+		.width = 223,
-+		.height = 125,
-+	},
-+	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
-+	.bus_flags = DRM_BUS_FLAG_DE_HIGH,
-+};
-+
-+
- static const struct drm_display_mode vl050_8048nt_c01_mode = {
- 	.clock = 33333,
- 	.hdisplay = 800,
-@@ -4490,6 +4514,9 @@ static const struct of_device_id platform_of_match[] = {
- 	}, {
- 		.compatible = "urt,umsh-8596md-20t",
- 		.data = &urt_umsh_8596md_parallel,
-+	}, {
-+		.compatible = "vivax,tpc9150-panel",
-+		.data = &vivax_tpc9150_panel,
- 	}, {
- 		.compatible = "vxt,vl050-8048nt-c01",
- 		.data = &vl050_8048nt_c01,
--- 
-2.32.0
+> 
+> 2. Since we change _PROCESSED readback value from raw data to voltage,
+> our consumer will make the changes synchronously. 
+> 
+> > > 
+> > > Thanks.
+> > >   
+> > > > > 
+> > > > > Signed-off-by: Hui Liu <hui.liu@mediatek.com>
+> > > > > ---
+> > > > >  drivers/iio/adc/mt6577_auxadc.c | 16 +++++++++++++++-
+> > > > >  1 file changed, 15 insertions(+), 1 deletion(-)
+> > > > > 
+> > > > > diff --git a/drivers/iio/adc/mt6577_auxadc.c
+> > > > > b/drivers/iio/adc/mt6577_auxadc.c
+> > > > > index 79c1dd68b909..e995d43287b2 100644
+> > > > > --- a/drivers/iio/adc/mt6577_auxadc.c
+> > > > > +++ b/drivers/iio/adc/mt6577_auxadc.c
+> > > > > @@ -60,7 +60,8 @@ static const struct mtk_auxadc_compatible
+> > > > > mt6765_compat = {
+> > > > >  		.type = IIO_VOLTAGE,				
+> > > > >    
+> > > > >  \
+> > > > >  		.indexed = 1,					
+> > > > >    
+> > > > >  \
+> > > > >  		.channel = (idx),				
+> > > > >     \
+> > > > > -		.info_mask_separate =
+> > > > > BIT(IIO_CHAN_INFO_PROCESSED), \
+> > > > > +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |	
+> > > > >    
+> > > > >  \
+> > > > > +				      BIT(IIO_CHAN_INFO_PROCESS
+> > > > > ED), \
+> > > > >  }
+> > > > >  
+> > > > >  static const struct iio_chan_spec mt6577_auxadc_iio_channels[]
+> > > > > = {
+> > > > > @@ -181,6 +182,19 @@ static int mt6577_auxadc_read_raw(struct
+> > > > > iio_dev *indio_dev,
+> > > > >  	struct mt6577_auxadc_device *adc_dev =
+> > > > > iio_priv(indio_dev);
+> > > > >  
+> > > > >  	switch (info) {
+> > > > > +	case IIO_CHAN_INFO_RAW:
+> > > > > +		*val = mt6577_auxadc_read(indio_dev, chan);
+> > > > > +		if (*val < 0) {
+> > > > > +			dev_notice(indio_dev->dev.parent,
+> > > > > +				"failed to sample data on
+> > > > > channel[%d]\n",
+> > > > > +				chan->channel);
+> > > > > +			return *val;
+> > > > > +		}
+> > > > > +		if (adc_dev->dev_comp->sample_data_cali)
+> > > > > +			*val = mt_auxadc_get_cali_data(*val,
+> > > > > true);
+> > > > > +
+> > > > > +		return IIO_VAL_INT;
+> > > > > +
+> > > > >  	case IIO_CHAN_INFO_PROCESSED:
+> > > > >  		*val = mt6577_auxadc_read(indio_dev, chan);
+> > > > >  		if (*val < 0) {    
+> > > > 
+> > > >     
+> > 
+> >   
 
