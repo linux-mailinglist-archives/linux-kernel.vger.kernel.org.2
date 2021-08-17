@@ -2,51 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3EF3EF11E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 19:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF7C3EF124
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 19:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232633AbhHQRwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 13:52:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34842 "EHLO mail.kernel.org"
+        id S232589AbhHQRyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 13:54:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232269AbhHQRwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 13:52:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF8A660FE6;
-        Tue, 17 Aug 2021 17:52:12 +0000 (UTC)
+        id S232376AbhHQRyr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 13:54:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BDF660FD7;
+        Tue, 17 Aug 2021 17:54:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629222733;
-        bh=/dyoKG0guNp8ZGznN909rqgVncnMmv0kevcZcyZqpnw=;
+        s=korg; t=1629222854;
+        bh=42LLOIAb6dn09xPxpgC32Toh1HzhIaYvVqgbDlhFlvk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FybZAKKSNXJrUo2qyv/k4c36voo0LPcIPlx4QExh10xbxRvtMuTrSIfG6wYty6365
-         rUj6kgUcA2KxCPWWHDAR+3c26SFaMf29Cjzl5XB28KDvP4EH/6lhSoXhcrg73zMtz0
-         y17ny5XONe1d/Lx/2hPyXZM+UBz+Vl2NfX2Rti5Q=
-Date:   Tue, 17 Aug 2021 19:52:10 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        insafonov@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: Remove LINUX_VERSION_CODE check
-Message-ID: <YRv3Stj8q7wf+B8D@kroah.com>
-References: <20210817081204.2232-1-caihuoqing@baidu.com>
+        b=IOyZRcYNCNlPpvfRWT4ADs1hcx5kJHKbUcrSt+s8NgtQBRXeAVQDXh6JLVbaIDc2B
+         eBzemFucKmuSGe0hbZQdaaqlCTRkuEG/Lmd9ZhH8Q0Iz1RXgPYX8r2TRGq4myvr5qk
+         j++ocZsLJWNza6R9M77DfN4PcVq9EA7wItC+vpKk=
+Date:   Tue, 17 Aug 2021 19:54:11 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Aakash Hemadri <aakashhemadri123@gmail.com>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        linux-staging@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] staging: rtl8732bs: Fix sparse warnings
+Message-ID: <YRv3w4y3r84mBjrU@kroah.com>
+References: <cover.1629134725.git.aakashhemadri123@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210817081204.2232-1-caihuoqing@baidu.com>
+In-Reply-To: <cover.1629134725.git.aakashhemadri123@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 04:12:04PM +0800, Cai Huoqing wrote:
-> no need to check linux version, depending on the latest version
+On Mon, Aug 16, 2021 at 11:00:41PM +0530, Aakash Hemadri wrote:
+> This patchset fixes the below sparse warnings
 > 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
->  drivers/staging/r8188eu/core/rtw_mlme.c      |  5 ----
->  drivers/staging/r8188eu/os_dep/os_intfs.c    | 26 ++------------------
->  drivers/staging/r8188eu/os_dep/rtw_android.c |  6 -----
->  drivers/staging/r8188eu/os_dep/xmit_linux.c  |  6 -----
->  4 files changed, 2 insertions(+), 41 deletions(-)
+> rtw_security.c:72:50: warning: incorrect type in assignment (different base types)
+> rtw_security.c:72:50:    expected restricted __le32 [usertype]
+> rtw_security.c:72:50:    got unsigned int
+> rtw_security.c:80:50: warning: incorrect type in assignment (different base types)
+> rtw_security.c:80:50:    expected restricted __le32 [usertype]
+> rtw_security.c:80:50:    got unsigned int
+> rtw_security.c:124:33: warning: cast to restricted __le32
+> rtw_security.c:509:58: warning: incorrect type in assignment (different base types)
+> rtw_security.c:509:58:    expected restricted __le32 [usertype]
+> rtw_security.c:509:58:    got unsigned int
+> rtw_security.c:517:58: warning: incorrect type in assignment (different base types)
+> rtw_security.c:517:58:    expected restricted __le32 [usertype]
+> rtw_security.c:517:58:    got unsigned int
+> rtw_security.c:621:41: warning: cast to restricted __le32
 > 
+> This can be applied cleanly on next-20210816, and is compile tested.
+> 
+> Aakash Hemadri (2):
+>   staging: rtl8732bs: incorrect type in assignment
+>   staging: rtl8723bs: cast to restricted __le32
+> 
+>  rtw_security.c | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
 
-Does not apply to my tree :(
+This series does not apply to my tree at all.  Please fix up and rebase
+and resubmit, after reading the mailing list archives for others that
+have attempted do do this type of work in the past for this issue.
+
+It is not a trivial change that is needed...
+
+thanks,
+
+greg k-h
