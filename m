@@ -2,116 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23EAA3EED8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319DF3EED87
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237641AbhHQNeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 09:34:17 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:54010 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236398AbhHQNeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 09:34:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=QUTwg1PYJ25ImTEHy3FkL3CVzBJV7BWBWBKF/Rs2oz0=; b=bI
-        vYiBJoFc/Gu8qwH2Jmdd3bsepBoxpVN1tvw7m21aWmRpola4ahlPxou3edeUIWeQRcLzLAS9dfRe2
-        rCaqFzto/uPQy1m9vFgJLMo8q4Fj0W2PU+sAmya2+HeZEBTl4Yu+UfUVDNVyD/tcAK49k1ly0POoZ
-        iyHow95+DTot91U=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mFzDT-000Zqm-Da; Tue, 17 Aug 2021 15:33:19 +0200
-Date:   Tue, 17 Aug 2021 15:33:19 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Jie Luo <luoj@codeaurora.org>
-Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, sricharan@codeaurora.org
-Subject: Re: [PATCH] net: phy: add qca8081 ethernet phy driver
-Message-ID: <YRu6n49p/Evecd8P@lunn.ch>
-References: <20210816113440.22290-1-luoj@codeaurora.org>
- <YRpuhIcwN2IsaHzy@lunn.ch>
- <6856a839-0fa0-1240-47cd-ae8536294bcd@codeaurora.org>
+        id S237745AbhHQNey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 09:34:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236398AbhHQNex (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 09:34:53 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B07C8C061764;
+        Tue, 17 Aug 2021 06:34:20 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id z5so39501616ybj.2;
+        Tue, 17 Aug 2021 06:34:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BETKMKviZiDMvgtIbHvU34xA814DfYBcLYLezpreZUs=;
+        b=pDE48lGfyIr3W0lDNV8OzL6CzHfl268CH0mi9l1JzkmL4Gv1eAkHwZLBFlxPkrmahH
+         V2TeptwC1G6qTatG/H1qriYttrNUSpbBCD3ZAw6ydXkKy6gtcgQDb78sfYwQrTo62OgK
+         xRIDPhI82KLfNYt4MVx97K0IeVDJSEkPz49FE0frgVXhDudICYhRjm+ayV0FMiowlHlq
+         L2Vogn/0A32d7UTxRhh3/LhABZEZGQ4l93Pv3tnhyuRnUqbnIuQssUi254qJF/+Gr1OJ
+         JRnLV80ZDN+SwSylfgcqsHgPQDtmJghX9GX8uGdnvNjdWPAhQ38+Kh0TAKbaNg6idysi
+         2Khw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BETKMKviZiDMvgtIbHvU34xA814DfYBcLYLezpreZUs=;
+        b=ClRK4WytVX3s3UXNPuncB8oDBIQj56AI0xFlrRVS3ZNMqOl5vr5dRUfoNcBjIl5MNq
+         EQWwY7JMNtsMsz9pou8bq+gys8+57iLdcga1M1fb/m6iYP7q7DxoPJdkQM2YZcZz4lTp
+         DMoB02PFDExAWs26WQubRv2bUKqtOaj2j7eVOXkiIC3H8jh0BA8HK+WRFyr2oiZvGPWp
+         oORse3NeAny//kl3YqA8mqNAlkdoz65yT+TjY/tlEiaoMOpQPgSOLhdBjhQ+t4EZN8XN
+         OqRARu2+7s8tPdDOVahKBy0+/38h8xeR44Jyrd5/Z16zkUF5VIU3OPzUMnvtuKTsIviX
+         B1IA==
+X-Gm-Message-State: AOAM533hYpXUxny3Xo4qqFeGcM+NBaep+oOZxeJZqpZZXO0zHVPdDENX
+        PKtzxh9R0M5vIfxsDexmDIpx1pc3kSEM4Bwsv/QQx9dhrF7DSQ==
+X-Google-Smtp-Source: ABdhPJzil8ThskKau6kBZWU0lc+F5yZnad7GhIzjlHB1Fx85RW5+i7/1AnsiX6ceBlE8uY/iBAt1ZLeF1wdVw/PCjgY=
+X-Received: by 2002:a25:aa94:: with SMTP id t20mr4569192ybi.127.1629207259862;
+ Tue, 17 Aug 2021 06:34:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6856a839-0fa0-1240-47cd-ae8536294bcd@codeaurora.org>
+References: <YRujeISiIjKF5eAi@debian> <YRuxrfYxahPbHmXl@linux-mips.org>
+In-Reply-To: <YRuxrfYxahPbHmXl@linux-mips.org>
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date:   Tue, 17 Aug 2021 14:33:43 +0100
+Message-ID: <CADVatmMZs0GXD8MEEVZGkj9BHtHY+FeWGhE2AuQ9US5E1HeYEQ@mail.gmail.com>
+Subject: Re: build failure of mips decstation_r4k_defconfig with binutils-2_37
+To:     Ralf Baechle <ralf@linux-mips.org>
+Cc:     "Maciej W. Rozycki" <macro@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        James Hogan <jhogan@kernel.org>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 09:10:44PM +0800, Jie Luo wrote:
-> 
-> On 8/16/2021 9:56 PM, Andrew Lunn wrote:
-> > On Mon, Aug 16, 2021 at 07:34:40PM +0800, Luo Jie wrote:
-> > > qca8081 is industry’s lowest cost and power 1-port 2.5G/1G Ethernet PHY
-> > > chip, which implements SGMII/SGMII+ for interface to SoC.
-> > Hi Luo
-> > 
-> > No Marketing claims in the commit message please. Even if it is
-> > correct now, it will soon be wrong with newer generations of
-> > devices.
-> > 
-> > And what is SGMII+? Please reference a document. Is it actually
-> > 2500BaseX?
-> 
-> Hi Andrew,
-> 
-> thanks for the comments, will remove the claims in the next patch.
-> 
-> SGMII+ is for 2500BaseX, which is same as SGMII, but the clock frequency of
-> SGMII+ is 2.5 times SGMII.
+Hi Ralf,
 
-25000BaseX is not SGMII over clocked at 2.5GHz.
+On Tue, Aug 17, 2021 at 1:55 PM Ralf Baechle <ralf@linux-mips.org> wrote:
+>
+> On Tue, Aug 17, 2021 at 12:54:32PM +0100, Sudip Mukherjee wrote:
+>
+> > While I was testing v5.4.142-rc2 I noticed mips build of
+> > decstation_r4k_defconfig fails with binutils-2_37. The error is:
+> >
+> > arch/mips/dec/prom/locore.S: Assembler messages:
+> > arch/mips/dec/prom/locore.S:29: Error: opcode not supported on this
+> > processor: r4600 (mips3) `rfe'
+> >
+> > I have also reported this at https://sourceware.org/bugzilla/show_bug.cgi?id=28241
+>
+> It would appear gas got more anal about ISA checking for the RFE instructions
+> which did only exist in MIPS I and II; MIPS III and later use ERET for
+> returning from an exception.
+>
+> The older gas I've got installed here happily accepts RFE in MIPS III/R4000
+> mode:
+>
 
-If it is using 2500BaseX then call it 2500BaseX, because 2500BaseX is
-well defined in the standards, and SGMII overclocked to 2.5G is not
-standardised.
+<snip>
 
-> > A lot of these registers look the same as the at803x. So i'm thinking
-> > you should merge these two drivers. There is a lot of code which is
-> > identical, or very similar, which you can share.
-> 
-> Hi Andrew,
-> 
-> qca8081 supports IEEE1588 feature, the IEEE1588 code may be submitted in the
-> near future,
-> 
-> so it may be a good idea to keep it out from at803x code.
+>
+> It's easy to find arguments for why this gas change is the right thing to
+> do - and not the right thing to do.
+>
+> It should be fixable by simply putting gas into mips1 mode.  Can you test
+> below patch?
 
-Please merge it. A lot of the code is the same, and a lot of the new
-code you are adding will go away once you use the helpers. And
-probably you can improve the features of the older PHYs at the same
-time, where features are the same between them.
+Tested on top of v5.4.142-rc2 and it builds again. Thanks for the
+quick reply and the patch.
 
-> > > +static int qca808x_phy_ms_seed_enable(struct phy_device *phydev, bool enable)
-> > > +{
-> > > +	u16 seed_enable = 0;
-> > > +
-> > > +	if (enable)
-> > > +		seed_enable = QCA808X_MASTER_SLAVE_SEED_ENABLE;
-> > > +
-> > > +	return qca808x_debug_reg_modify(phydev, QCA808X_PHY_DEBUG_LOCAL_SEED,
-> > > +			QCA808X_MASTER_SLAVE_SEED_ENABLE, seed_enable);
-> > > +}
-> > This is interesting. I've not seen any other PHY does this. is there
-> > documentation? Is the datasheet available?
-> 
-> this piece of code is for configuring the random seed to a lower value to
-> make the PHY linked
-> 
-> as the SLAVE mode for fixing some IOT issue, for master/slave
-> auto-negotiation, please refer to
-> 
-> https://www.ieee802.org/3/an/public/jul04/lynskey_2_0704.pdf.
 
-And what happens when this device is used in an Ethernet switch? A
-next generation of a qca8k? Take a look at
-genphy_setup_master_slave().  Use MASTER_SLAVE_CFG_MASTER_PREFERRED or
-MASTER_SLAVE_CFG_SLAVE_PREFERRED to decide how to bias the
-master/slave decision.
-
-     Andrew
+-- 
+Regards
+Sudip
