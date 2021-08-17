@@ -2,96 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796FA3EE8D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC063EE8DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239220AbhHQIsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 04:48:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234880AbhHQIst (ORCPT
+        id S235289AbhHQIva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 04:51:30 -0400
+Received: from smtprelay0013.hostedemail.com ([216.40.44.13]:36436 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234833AbhHQIvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 04:48:49 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A18C061764;
-        Tue, 17 Aug 2021 01:48:16 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id q10so27448930wro.2;
-        Tue, 17 Aug 2021 01:48:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UvsOH8jtQe+4Kanh6E/MrBCjFWLS1TOh5zSyYH4PboQ=;
-        b=LbR8LaJuOhBakcLFAAFQ2PSM/njYxfneXxDeDQYlanx3FENXuAF6gIa2xv7Wo1X2c2
-         R9OvMZUC5T3QXMdttlxfunjDSmS0SpioQKYCVIkhzwtq3u4dP8lMsia9ZL9A8x0102Nr
-         oim0c7sOWji/ztnYQeIzF18NgS9SkJtTLWsAqYrJd22trjBcZtNyJplcdFZrXqv/OkX3
-         HVgg4pi0RVbrICIsacxYUOjtNVCTWRfOdE53LABlXoMXTYZav5Cu1iN/mahqaUmtJ27E
-         4a9/JyDuXPfQWqt3DUcIe9xwZTDPxR+b2hNiao1jTATo1UFeXqaApMu09Tz5Nryua+eK
-         7/dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UvsOH8jtQe+4Kanh6E/MrBCjFWLS1TOh5zSyYH4PboQ=;
-        b=N8e7XF24i6EK9S2VSQU/j6jNf5gmsPaZd2Ynp7Z78NSY/O5w6CpBXkI3ThqP8xsQGN
-         fNIgL4maG5A5DG4hAMX0Kzil1SbpZJj0LjvrZ1EjJpDjNs4xnN/jILsA/gAx0Vcu5V7Q
-         6aoNQeyfyJQtziZQnoZWFLwnAdLbq1jaNW5aU30827A7/aCTMydzaQMBPx7rtq/+2oVt
-         yPnn/9D7otfghAaxD/w/AoHZDkxK4pbeAc602jgiU3+gXStajPTHTs09v5t2iVTJnaeE
-         UDFRK8zHfL6mH96vbKLybc3fKJoCQp7d5HwB0X+8HeE9ZJgx6qM3p7TgRRRkHh/t6K0D
-         8qIg==
-X-Gm-Message-State: AOAM532aCkSg33iCcXRhPIjp3ptl2hBkyN3E1/t5khJMzRVlwd2NCJSt
-        g+iv+VfQxWroXfK9sO6OEMo=
-X-Google-Smtp-Source: ABdhPJy2o8VurqIMFUNktoLextNJhp00f0HEhzkQIq8R2VbnLDV0HaQAeUr+eat2ZRGeJzfbzYVdIw==
-X-Received: by 2002:adf:f741:: with SMTP id z1mr2597669wrp.201.1629190095036;
-        Tue, 17 Aug 2021 01:48:15 -0700 (PDT)
-Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
-        by smtp.gmail.com with ESMTPSA id o14sm1302899wms.2.2021.08.17.01.48.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 01:48:14 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] hwmon: remove amd_energy driver in Makefile
-Date:   Tue, 17 Aug 2021 10:48:11 +0200
-Message-Id: <20210817084811.10673-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Tue, 17 Aug 2021 04:51:24 -0400
+Received: from omf17.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 6ACC0181CC1CF;
+        Tue, 17 Aug 2021 08:50:50 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf17.hostedemail.com (Postfix) with ESMTPA id 2B67627DD32;
+        Tue, 17 Aug 2021 08:50:49 +0000 (UTC)
+Message-ID: <5d8c6cb42c2ee156027699ab1e5fa5b476188678.camel@perches.com>
+Subject: Re: [PATCH] staging:iio:ade7854 surround complex defines in
+ parentheses
+From:   Joe Perches <joe@perches.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        daniel watson <ozzloy@challenge-bot.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Date:   Tue, 17 Aug 2021 01:50:46 -0700
+In-Reply-To: <YRtTRpioOFBYxcxJ@kroah.com>
+References: <20210815023115.13016-1-ozzloy@challenge-bot.com>
+         <YRizb/FGfYpGbpJy@kroah.com> <20210817043038.GA9492@challenge-bot.com>
+         <YRtTRpioOFBYxcxJ@kroah.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 2B67627DD32
+X-Stat-Signature: aj6zgh7o3amw79kd8ndqzy3na5mtho6u
+X-Spam-Status: No, score=-1.26
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18HA2mP+Mt4fwdV5dckwI6oocs8qqrpHME=
+X-HE-Tag: 1629190249-913308
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 9049572fb145 ("hwmon: Remove amd_energy driver") removes the driver,
-but misses to adjust the Makefile.
+On Tue, 2021-08-17 at 08:12 +0200, Greg Kroah-Hartman wrote:
+> On Mon, Aug 16, 2021 at 09:30:38PM -0700, daniel watson wrote:
+> > 
+> > If this is a false positive from checkpatch, I can submit it as an
+> > example to the checkpatch maintainers.  Do you think I should?
+> 
+> checkpatch is a perl script that does pattern matching, it is really
+> hard for it to determine for things like this specific example, that it
+> is not needed.
+> 
+> Try finding other valid checkpatch cleanups if you wish to contribute in
+> this way, there are loads of others under drivers/staging/ that should
+> be easy to find.
 
-Hence, ./scripts/checkkconfigsymbols.py warns:
+These macros, and several other '#define ADE7854_<FOO> <value>' instances,
+are apparently unused and could possibly be removed instead.
 
-SENSORS_AMD_ENERGY
-Referencing files: drivers/hwmon/Makefile
-
-Remove the missing piece of this driver removal.
-
-Fixes: 9049572fb145 ("hwmon: Remove amd_energy driver")
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- drivers/hwmon/Makefile | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-index 53a8f4b500b8..4b33421746c0 100644
---- a/drivers/hwmon/Makefile
-+++ b/drivers/hwmon/Makefile
-@@ -45,7 +45,6 @@ obj-$(CONFIG_SENSORS_ADT7462)	+= adt7462.o
- obj-$(CONFIG_SENSORS_ADT7470)	+= adt7470.o
- obj-$(CONFIG_SENSORS_ADT7475)	+= adt7475.o
- obj-$(CONFIG_SENSORS_AHT10)	+= aht10.o
--obj-$(CONFIG_SENSORS_AMD_ENERGY) += amd_energy.o
- obj-$(CONFIG_SENSORS_APPLESMC)	+= applesmc.o
- obj-$(CONFIG_SENSORS_ARM_SCMI)	+= scmi-hwmon.o
- obj-$(CONFIG_SENSORS_ARM_SCPI)	+= scpi-hwmon.o
--- 
-2.26.2
 
