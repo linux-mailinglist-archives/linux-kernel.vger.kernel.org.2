@@ -2,76 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9123EE5B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 06:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 797BC3EE5B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 06:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233902AbhHQEao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 00:30:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60318 "EHLO
+        id S237376AbhHQEbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 00:31:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbhHQEan (ORCPT
+        with ESMTP id S230073AbhHQEbS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 00:30:43 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 518A2C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 21:30:11 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id i13so20848852ilm.11
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 21:30:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WnD/sqQt1eHkhZeP7ZVGsBnVN9a99AUvhJ1HTLg2KCw=;
-        b=Ze8Y8t4STx8oMENHOWVzkao6MKmTjCXo/JgixRUHMzY7jtvNtQexq0jK3F0e+DNixb
-         ghinWx9X2FHgCWoNLS0y+AB6Kz5dUwiayFvL0IfdxU30oUPWjDvnbS2trjOLJP8dJDEj
-         pb4LsqJn06B5sfvBd8Dbxy1CW9aLFFHcbJK2Eo+ReYo8z2ABQKcVYSjh4j4lZZHVBdpN
-         nmlml3g3Dl0S6aKllGBvTpAZK7aQvVmjWp9jM5y0hsIzTqtfQiShmc1shJpWIAriV/WP
-         f8e8C38Po36GC09jTDGWgteCYc0d3XYXJEbqCpOHiOubeHbKHdmjLjF9xE00jbOB9woG
-         VQwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WnD/sqQt1eHkhZeP7ZVGsBnVN9a99AUvhJ1HTLg2KCw=;
-        b=O3ukdaC2ST5rIKnkM/DNGD26sAOVAxy2RuwU7hOyoyuNuGHRmi47rJjq0ISVYS4n+E
-         2pB++VbcWCT1LRwKZttKOHYdtxMBvckDHBZiH4O7lIQEj7wNGc2sfWILOYyagqf93psw
-         m2VAjCop3XxPRTBxhrBXtuh85264hCCJqoqMdwi1J42pFR0GXiJsy456TabUqgVSJWkg
-         Oqa5bwXPEKzgD4z9Mg5S+5lRbe0MOjUQHK8aAUGzJPE2IvppdHpDJ9SrGdTTQ7fGVQ2C
-         n4didZkrDxaPcej/ZXpFmmYWfs4YUtgoVs3WYgLCsf/PwxV+NB5sAvNEdnASI2ulg3dm
-         ZJvw==
-X-Gm-Message-State: AOAM531Wn4UEXjqaxc0uYb+byn+lLMGhezuWvw+3ZPmQVp7LEzYqeXuH
-        iQkTw/35CQLm5I3aTtQEv0CaqoWaeGcB5WjkL5PykAfB
-X-Google-Smtp-Source: ABdhPJw5qNj7eG2lbuCLe+728TWrldRugpkBxeEf90Ai5QDyP7o/YwWGv3U3VrVYbhxp9bHo/eOfW2LRjEhOxIEOMtU=
-X-Received: by 2002:a05:6e02:1bed:: with SMTP id y13mr1086910ilv.276.1629174610800;
- Mon, 16 Aug 2021 21:30:10 -0700 (PDT)
+        Tue, 17 Aug 2021 00:31:18 -0400
+Received: from challenge-bot.com (challenge-bot.com [IPv6:2602:fffa:fff:108a:0:16:3e15:92b8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA30C061764;
+        Mon, 16 Aug 2021 21:30:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=challenge-bot.com; s=20180430; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=80wuYmqec+tkN81Ry5/hAJbtjz7ZSJszLbUYJbgNwnc=; b=RMLTzz8heejfvkbtBduZvmdqg
+        S9yiMzEJiTPyJW7XTmDP8mzwAl6/i99oxuw5iDkQw5udghxROT+R3DANsuX4z+AtiYFt6YF/7RJc4
+        S6rTHDZdRo2xCYMCjxOQsYfmkX9ipcDO2TpadfNQXveV+GQA35NPchXc1VcB0lQ6C9EDQ=;
+Received: from ozzloy by challenge-bot.com with local (Exim 4.92)
+        (envelope-from <ozzloy@challenge-bot.com>)
+        id 1mFqkI-0004Om-NX; Mon, 16 Aug 2021 21:30:38 -0700
+Date:   Mon, 16 Aug 2021 21:30:38 -0700
+From:   daniel watson <ozzloy@challenge-bot.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging:iio:ade7854 surround complex defines in
+ parentheses
+Message-ID: <20210817043038.GA9492@challenge-bot.com>
+References: <20210815023115.13016-1-ozzloy@challenge-bot.com>
+ <YRizb/FGfYpGbpJy@kroah.com>
 MIME-Version: 1.0
-References: <20210806121521.124365-1-xianting.tian@linux.alibaba.com>
-In-Reply-To: <20210806121521.124365-1-xianting.tian@linux.alibaba.com>
-From:   Jassi Brar <jassisinghbrar@gmail.com>
-Date:   Mon, 16 Aug 2021 23:29:59 -0500
-Message-ID: <CABb+yY3i5aZQrimoWLTMQRY5WsOJ1FCGNxBN0Hz_=4qxUvoqSw@mail.gmail.com>
-Subject: Re: [PATCH] mailbox: fix a UAF bug in msg_submit()
-To:     Xianting Tian <xianting.tian@linux.alibaba.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        guoren@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YRizb/FGfYpGbpJy@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 6, 2021 at 7:15 AM Xianting Tian
-<xianting.tian@linux.alibaba.com> wrote:
->
-> We met a UAF issue during our mailbox testing.
->
-> In synchronous mailbox, we use mbox_send_message() to send a message
-> and wait for completion. mbox_send_message() calls msg_submit() to
-> send the message for the first time, if timeout, it will send the
-> message in tx_tick() for the second time.
->
-Seems like your controller's  .send_data() returns error. Can you
-please explain why it does so? Because
-send_data() only _accepts_ data for further transmission... which
-should seldom be a problem.
 
-thanks.
+If this is a false positive from checkpatch, I can submit it as an
+example to the checkpatch maintainers.  Do you think I should?
+
+On Sun, Aug 15, 2021 at 08:25:51AM +0200, Greg Kroah-Hartman wrote:
+> On Sat, Aug 14, 2021 at 07:31:15PM -0700, daniel watson wrote:
+> > Error found by checkpatch.pl
+> 
+> What error?
+
+$ git checkout 36a21d5172 drivers/staging/iio/meter/ade7854.h # before
+Updated 1 path from 638ccd1543654
+
+$ ./scripts/checkpatch.pl --terse --types COMPLEX_MACRO \
+drivers/staging/iio/meter/ade7854.h
+drivers/staging/iio/meter/ade7854.h:142: ERROR: Macros with complex
+values should be enclosed in parentheses
+drivers/staging/iio/meter/ade7854.h:143: ERROR: Macros with complex
+values should be enclosed in parentheses
+drivers/staging/iio/meter/ade7854.h:144: ERROR: Macros with complex
+values should be enclosed in parentheses
+total: 3 errors, 0 warnings, 0 checks, 173 lines checked
+
+$ git checkout 143b51a80978 drivers/staging/iio/meter/ade7854.h # after
+Updated 1 path from 21c208a36476a
+
+$ ./scripts/checkpatch.pl --terse --types COMPLEX_MACRO \
+drivers/staging/iio/meter/ade7854.h
+
+$
+
+
+> > Signed-off-by: daniel watson <ozzloy@challenge-bot.com>
+> 
+> Capitalize your name?
+
+I can remake this patch with my name capitalized if the patch is worth
+remaking.  I'll be sure to capitalize in future sign-off lines for
+Linux.
+
+
+> This is not a real change that is needed, just look at the code to
+> verify that.
+
+Agreed, this is not a huge change.
+
+I thought small changes were acceptable, if they get rid of errors from
+checkpatch.  I got that impression from this video
+
+Write and Submit your first Linux kernel Patch
+https://youtu.be/LLBrBBImJt4
+
+At around 15 minutes, you create a patch which removes curly braces
+from an if-else.  That seemed comparable to the change in this
+patch.  That video was posted over a decade ago, so I would understand
+if things are different now.
+
+> 
+> thanks,
+> 
+> greg k-h
+
+You're welcome!  Thank you too, that was a super fast response!  I am
+happy to get a direct response from you!
+
