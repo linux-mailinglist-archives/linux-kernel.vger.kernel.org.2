@@ -2,93 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA753EF087
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 18:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2472D3EF092
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 19:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230311AbhHQRAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 13:00:23 -0400
-Received: from mout.gmx.net ([212.227.15.15]:41477 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229699AbhHQRAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 13:00:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1629219567;
-        bh=Wt1Gfa74aGaeFve/KcE/rZ8HsK7KgulSzUjTwDDDzic=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=YqnZmoDWdEJX63qtoDsogNo5I0JDR8I4jMW6MCgzzslVi99tCNJRaTAcKJljGbmWd
-         OoFQ0QEXcPud34sod1PxOnoblTcP8vr1+A/jPmqTXgXYBLiPhXzwapxNcWnprBsBfd
-         fdLIpgwsvyhpsK6kFDyOVJ1IsRA4G+CKxz1SzHCE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
- (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1MDQeK-1mPM5Z2lQk-00ASZB; Tue, 17 Aug 2021 18:59:27 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     Len Baker <len.baker@gmx.com>, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] i2c: sun6i-pw2i: Prefer strscpy over strlcpy
-Date:   Tue, 17 Aug 2021 18:58:59 +0200
-Message-Id: <20210817165859.5429-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:eUX8iGeHdrCmQwqUvgLJI1PlMs2ap/qw3UAD7StzS2DGEIG7K93
- YzsVmA0OcXTvwaWHsLlX39BPkLzsLWj7tJvfc822oUEqkPdNoLnY/gCdjYSrZ6qgyIah/+t
- IUopIqUu63BntXEAYza4UcJJF4lX+PtvrcNvds2/NGZN/svsDJ5hxEriwNeLUX535Tvzj6M
- VSM2eZBRQsR09fflwYnlA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5/Wish7CQms=:Gyfn31whfCPinEUsghZsBR
- rKAjkZ3YnZeIf+Z0lyPjJfYyaJMqErXIxdtVuibw5G/g9a+04PqpHu/q0kAXXjMsr1Hlp56u4
- YDrGcJnk5oojDeNF1AelD7615kS7RPE3VtLspP9wuCU6ZihaCIH7Oi1K1wtwwi+vvl1oi/xjo
- un2A/l8LjAzRlj7rJU5eM0eREwFA/F3ip/WliZAKHzeIxB5VpiODmhGz7j8Ob1rwALINB87Ty
- ZX5T1C68Dfeg60K7S08REZr12qT+Sa2poNM5VpAM6pMYhwkKAaZDplL1qDFL7XGkYtuiutl1P
- Qmyk+YgIyZWpOBut5Hl409CyNOF2/9ZKdXaRIy9fIdnJ6I+ATYpcUrCvetgYQmb6q2LKfEyaf
- zb+xYE8JOeXo6c7rtX7y8RbOkoJB4c9Ajp//HM3MqQACphD8j6SlPA5hzEQznRnvXVn++vIAQ
- b30NL9npDuWMf8xGs+5Qp40ge3jmEFqxen5WnchImWk1OO6tDpu370WpN3Is/rXEwVpaofeM/
- ZZvin71DwbVVjA8WRl64Ux8rct8tHccTbtG+XD97ufUMr7/zUXf+Sce7n5ruXDlffg5NhvXxX
- T3vzIGWP6fbMn/D0qO0SbPBMD71lJUXdelOq52+9VtRMk8z6EsDnMpHnjSttKSnjQhcuq2EE7
- vJVazlSW5jjkKRWjVmSzhUUSIkPTyDMFcnUxIEGw0Fiki9xpw6nvI64ix95BmrVX4hq4Cqwj2
- g3WjmyrVGxxEa9S9Hlw42trTYxB5mnSC2JEK6WLgxvmrQzPd2md083h7/YxXUhRmAwG4v+eL/
- s/A83N4SIey/2Y/jT1dGWFs3QXu9fPCEDbAUov+bTuVKRBQQvkoaiaQAxhe2lwzlIFPMGit3s
- I3RK737PKEMOMfNghXEcWXxItGrYVaPCx0uoO2jhFc5805njCfOyrnxN115GNjFCO9n8iOfDn
- uJ7nWWQjvNi4Vprl2BSUNrbKZKlvQvDbJQKQkcj97v1nq7wbmODowrREHNIjei1piMtMKhgAz
- 93q55Ij+/W49q6xLNRH/k2SGR1R7R7+JFIazyJs7UdrtmavfOjCTxNUVoGzfDFQWFiaIq83sf
- Y7g33ZqX/kU5Y5VWkBexZ+JOM47rTmIKimNKBd0DxLTxTW1fSp7XWy58Q==
+        id S231538AbhHQREy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 13:04:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229723AbhHQREx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 13:04:53 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D42C061764;
+        Tue, 17 Aug 2021 10:04:19 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso6279037pjh.5;
+        Tue, 17 Aug 2021 10:04:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=74Z3GwaGrI/6L9131Hr1UbUOb6HfxaEgTCmH3K6poSk=;
+        b=mJsV1EjCjypQ/+hVsiuaTX4jdTaHW0J2geVgrgdXMLGaI4kkfM69xiSPEkYG+0XppQ
+         sTHJ+RmAbjFR9HSCTzsNB6avSLRCnQbWKv/V5iuzsqibAv8iKmZcrFTbinA6u9n+eKJ+
+         hqbLRHC1YJbvo9nQEp0Dzszz2igME0vh5S6ZmXTAGNvUEDsxpG4g18xIzViIDXkc3joM
+         QuUXeK0wLUbII158wLtnW4aF0imAXBPYOGA6hGSwMq6D5lTnsBbBG3vaylwWzZ6EFwFt
+         dg4xR5b/CeLhhdlYpNcmdb8Pwyt0qmQyFF4yq4lhefjrNj4g4W6w25o/uGYZ5AXBI0c9
+         X38A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=74Z3GwaGrI/6L9131Hr1UbUOb6HfxaEgTCmH3K6poSk=;
+        b=q3VvQw48CDUYLdLgdrvb9T2efFO24Qt8viybzSJ19/No8ai5d3dfiygeNPXSYPQg8m
+         zIv870QD5M+zxb8Y42Dtky6BHmWi6htQG8fmDwUVHPSuWe/9JfHacxC2bORBnTg96Fk7
+         2t6N/+8JxjSKVW3YedquKn87nFGnhKmIC+Dkp+degYBFoO00L3yN3yKrMlwjj3T7CKo3
+         dWz9Gu7yRG8DJIFDYGMRW/c0qHiPpBhrfMh5FDtHFMJUZ66oVhjB9raRBB5KLe/MIjhe
+         6tvMV60A5t/lTe85eU6uD4f3Gr91Zo6sI2pwsVigkmEcRRUPUmL15c1eZTWefUcM1Dj6
+         Ja7w==
+X-Gm-Message-State: AOAM533uTEhHyYI/D8bvLlMPu9E8NtYKz5xcgsO1O4FOMOG6KB+7Iz29
+        28t4/JOqWH27lwY2XL62geE=
+X-Google-Smtp-Source: ABdhPJyaiZuQKZeZ5Z5LXSWOAXvDKrX2z5w8aE/fXPs2fir6u76qA821P2ehYwrWLsKR4qx6k6WotA==
+X-Received: by 2002:a17:90a:aa8f:: with SMTP id l15mr4570586pjq.183.1629219858940;
+        Tue, 17 Aug 2021 10:04:18 -0700 (PDT)
+Received: from localhost.localdomain ([49.36.211.221])
+        by smtp.googlemail.com with ESMTPSA id 65sm3958402pgi.12.2021.08.17.10.04.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 10:04:18 -0700 (PDT)
+From:   Utkarsh Verma <utkarshverma294@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Valmer Huhn <valmer.huhn@concurrent-rt.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Utkarsh Verma <utkarshverma294@gmail.com>
+Subject: [PATCH] serial: 8250_exar: Add missing call to pci_free_irq_vectors()
+Date:   Tue, 17 Aug 2021 22:30:57 +0530
+Message-Id: <20210817170057.16783-1-utkarshverma294@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strlcpy() reads the entire source buffer first. This read may exceed the
-destination size limit. This is both inefficient and can lead to linear
-read overflows if a source string is not NUL-terminated. The safe
-replacement is strscpy().
+Free the pci irq vectors if the call to pci_alloc_irq_vectors() fails
+or if the device is removed.
 
-This is a previous step in the path to remove the strlcpy() function
-entirely from the kernel [1].
+Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
+---
+ drivers/tty/serial/8250/8250_exar.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-[1] https://github.com/KSPP/linux/issues/89
-
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
- drivers/i2c/busses/i2c-sun6i-p2wi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/i2c/busses/i2c-sun6i-p2wi.c b/drivers/i2c/busses/i2c-=
-sun6i-p2wi.c
-index 2f6f6468214d..9e3483f507ff 100644
-=2D-- a/drivers/i2c/busses/i2c-sun6i-p2wi.c
-+++ b/drivers/i2c/busses/i2c-sun6i-p2wi.c
-@@ -234,7 +234,7 @@ static int p2wi_probe(struct platform_device *pdev)
- 	if (IS_ERR(p2wi->regs))
- 		return PTR_ERR(p2wi->regs);
-
--	strlcpy(p2wi->adapter.name, pdev->name, sizeof(p2wi->adapter.name));
-+	strscpy(p2wi->adapter.name, pdev->name, sizeof(p2wi->adapter.name));
- 	irq =3D platform_get_irq(pdev, 0);
- 	if (irq < 0)
- 		return irq;
-=2D-
-2.25.1
+diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250/8250_exar.c
+index 3ffeedc29c83..38b65d6980f5 100644
+--- a/drivers/tty/serial/8250/8250_exar.c
++++ b/drivers/tty/serial/8250/8250_exar.c
+@@ -627,8 +627,10 @@ exar_pci_probe(struct pci_dev *pcidev, const struct pci_device_id *ent)
+ 	pci_set_master(pcidev);
+ 
+ 	rc = pci_alloc_irq_vectors(pcidev, 1, 1, PCI_IRQ_ALL_TYPES);
+-	if (rc < 0)
++	if (rc < 0) {
++		pci_free_irq_vectors(pcidev);
+ 		return rc;
++	}
+ 
+ 	memset(&uart, 0, sizeof(uart));
+ 	uart.port.flags = UPF_SHARE_IRQ | UPF_EXAR_EFR | UPF_FIXED_TYPE | UPF_FIXED_PORT;
+@@ -677,6 +679,7 @@ static void exar_pci_remove(struct pci_dev *pcidev)
+ 
+ 	if (priv->board->exit)
+ 		priv->board->exit(pcidev);
++	pci_free_irq_vectors(pcidev);
+ }
+ 
+ static int __maybe_unused exar_suspend(struct device *dev)
+-- 
+2.17.1
 
