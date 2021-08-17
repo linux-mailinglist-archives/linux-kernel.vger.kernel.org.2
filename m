@@ -2,251 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FB53EEEA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 16:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8423EEEA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 16:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240142AbhHQOk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 10:40:56 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60956 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233426AbhHQOky (ORCPT
+        id S240146AbhHQOmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 10:42:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233426AbhHQOl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 10:40:54 -0400
-Date:   Tue, 17 Aug 2021 16:40:18 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629211220;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jD5QrDzoUlwgmKT1L4ik250SzOJtPAV7eUaF5P748YM=;
-        b=PkMVUQGyZsaJRoYBJ3gtm5yRX6CkFmXK+dk6khXmyk5pHa1Q77foqp+xhMYmvTLYYwOaSI
-        neglHj8c6COsZ5IeqyXulmPKOXKUwSX/sGRSxQnTB/ZMqRMWujAkUr6dXal6EZgRcOsjM2
-        OnXoXSx5YFvaGJguwB7GENDjC+/wjcQ6ZsLH7lJkncgRQp9ttR0PesjxpBNU9CFPLVIDWA
-        b8ReGmEoguqVptk2GaOGry0Z6o7AXBwwQrsW2c3vHAbIT+y+/xZbDB2jehG2qSd9FG6VT6
-        d7HvU20SIP3ZzMlVoKfiN1RAfMmxnJiS1sBLwjfoITwxS2iRz9CegSieMGYZwQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629211220;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jD5QrDzoUlwgmKT1L4ik250SzOJtPAV7eUaF5P748YM=;
-        b=D7fovlxYAnlhodjSoHwf1NV98x3UK6cGLhONMXcQJm5S7dl+uCGmUoNFWcCuhrvXdzTkGa
-        pHzrAON0b3rvhZCw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mike Galbraith <efault@gmx.de>, Scott Wood <swood@redhat.com>
-Subject: [PATCH] rcutorture: Avoid problematic critical section nesting on RT
-Message-ID: <20210817144018.nqssoq475vitrqlv@linutronix.de>
-References: <20210811201354.1976839-1-valentin.schneider@arm.com>
- <20210811201354.1976839-2-valentin.schneider@arm.com>
- <20210817121345.5iyj5epemczn3a52@linutronix.de>
- <20210817131741.evduh4fw7vyv2dzt@linutronix.de>
+        Tue, 17 Aug 2021 10:41:59 -0400
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E38C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 07:41:26 -0700 (PDT)
+Received: by mail-ua1-x92c.google.com with SMTP id 67so9081533uaq.4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 07:41:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oQwGdMgVEaQNJoD4ayZe6Ia9R4DXPOPGO8jj9i6jzG8=;
+        b=JfkCT5LcQwymPexJ3rri9V1b7/8W7+6cZ2TPDP3G56sIndIly+cv1ITWv06B+29dWp
+         nxGKkMsD/54xtZuzkEMxkwZ4Tn8Qf+tYIx8nlB/K1L8r8vjUw0JZymYNwMT+0kKghSr2
+         xo5BATHLWEsOgi0mMXsZ0GLawKjfQ0Mx+v4jM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oQwGdMgVEaQNJoD4ayZe6Ia9R4DXPOPGO8jj9i6jzG8=;
+        b=Guhw2KP8tWqt5mXe2SErIjw6HJt3kqbsmYD3FKaVfizj4UckBt3HoVGJmHixsPbILl
+         5t0dU9VIbVqcoHsopHZgQAeV+iY1k/5k+yXET9BfctLPIUAqf+9ZceqyPyOGJZjS3o+l
+         j4BiLdoFVUEQYusGNi1AVFzoXPokVRRrhCWft7m7b6p+2ScUQKKKl2AmcPJtSUxScmOK
+         egemzjp49xgtqS1bhbUXL4AMRfzDrvsBByqlUQXJoV8SrVW//Z52KsXNjWOz+JsUr6kl
+         366bkpPxPyBvp8fVNEwL4dO1luy3rMwbtPpj2o1DQ7b5V3/NlzN/kFYYPGKD5fzfjbfb
+         P4oA==
+X-Gm-Message-State: AOAM532w3G35Mdry/x2REuxSQOZpo3uc8gdB++FfCoQ/QUiGkcIimNWU
+        kNcT+6qXBeIq9c7zWRjyNK2E63MMG1XLKm20ig6ieQ==
+X-Google-Smtp-Source: ABdhPJysBWxtPlX5YvPZA91uytNRqo+W86z7uuA4hyfdvyyDciZUbpmwA+HL/8yFzbIW4yxM7a7EfAROBM/g8i8ZZ7U=
+X-Received: by 2002:ab0:36ae:: with SMTP id v14mr2593917uat.8.1629211285895;
+ Tue, 17 Aug 2021 07:41:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210817131741.evduh4fw7vyv2dzt@linutronix.de>
+References: <0000000000007fcee205c970a843@google.com>
+In-Reply-To: <0000000000007fcee205c970a843@google.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Tue, 17 Aug 2021 16:41:14 +0200
+Message-ID: <CAJfpegv1ztaEvrSX622ru-FRX1VJYZDbRWq6_4HhF0tCY+0uHQ@mail.gmail.com>
+Subject: Re: [syzbot] INFO: task hung in fuse_launder_page
+To:     syzbot <syzbot+bea44a5189836d956894@syzkaller.appspotmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: multipart/mixed; boundary="000000000000f5eae105c9c24f80"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Scott Wood <swood@redhat.com>
+--000000000000f5eae105c9c24f80
+Content-Type: text/plain; charset="UTF-8"
 
-rcutorture was generating some nesting scenarios that are not
-reasonable.  Constrain the state selection to avoid them.
+On Fri, 13 Aug 2021 at 15:16, syzbot
+<syzbot+bea44a5189836d956894@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    36a21d51725a Linux 5.14-rc5
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=104b8eaa300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=e3a20bae04b96ccd
+> dashboard link: https://syzkaller.appspot.com/bug?extid=bea44a5189836d956894
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=143c0ee9300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=158fc9aa300000
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+bea44a5189836d956894@syzkaller.appspotmail.com
+>
+> INFO: task syz-executor276:8433 blocked for more than 143 seconds.
+>       Not tainted 5.14.0-rc5-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor276 state:D stack:27736 pid: 8433 ppid:  8430 flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:4681 [inline]
+>  __schedule+0x93a/0x26f0 kernel/sched/core.c:5938
+>  schedule+0xd3/0x270 kernel/sched/core.c:6017
+>  fuse_wait_on_page_writeback fs/fuse/file.c:452 [inline]
+>  fuse_wait_on_page_writeback+0x120/0x170 fs/fuse/file.c:448
+>  fuse_launder_page fs/fuse/file.c:2316 [inline]
+>  fuse_launder_page+0xe9/0x130 fs/fuse/file.c:2306
+>  do_launder_page mm/truncate.c:595 [inline]
+>  invalidate_inode_pages2_range+0x994/0xf80 mm/truncate.c:661
+>  fuse_finish_open+0x2d9/0x560 fs/fuse/file.c:202
+>  fuse_open_common+0x2f9/0x4c0 fs/fuse/file.c:254
+>  do_dentry_open+0x4c8/0x11d0 fs/open.c:826
+>  do_open fs/namei.c:3374 [inline]
+>  path_openat+0x1c23/0x27f0 fs/namei.c:3507
+>  do_filp_open+0x1aa/0x400 fs/namei.c:3534
+>  do_sys_openat2+0x16d/0x420 fs/open.c:1204
+>  do_sys_open fs/open.c:1220 [inline]
+>  __do_sys_creat fs/open.c:1294 [inline]
+>  __se_sys_creat fs/open.c:1288 [inline]
+>  __x64_sys_creat+0xc9/0x120 fs/open.c:1288
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x446409
+> RSP: 002b:00007f0e6a9f92f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000055
+> RAX: ffffffffffffffda RBX: 00000000004d34f0 RCX: 0000000000446409
+> RDX: 0000000000446409 RSI: 0000000000000000 RDI: 0000000020000280
+> RBP: 00000000004a3164 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0030656c69662f2e
+> R13: 000000000049f158 R14: 00000000004a1160 R15: 00000000004d34f8
 
-Example:
+Attached patch should fix this.
 
-1. rcu_read_lock()
-2. local_irq_disable()
-3. rcu_read_unlock()
-4. local_irq_enable()
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+master
 
-If the thread is preempted between steps 1 and 2,
-rcu_read_unlock_special.b.blocked will be set, but it won't be
-acted on in step 3 because IRQs are disabled.  Thus, reporting of the
-quiescent state will be delayed beyond the local_irq_enable().
+--000000000000f5eae105c9c24f80
+Content-Type: text/x-patch; charset="US-ASCII"; 
+	name="fuse-truncate-pagecache-on-atomic_o_trunc.patch"
+Content-Disposition: attachment; 
+	filename="fuse-truncate-pagecache-on-atomic_o_trunc.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_ksg69glp0>
+X-Attachment-Id: f_ksg69glp0
 
-For now, these scenarios will continue to be tested on non-PREEMPT_RT
-kernels, until debug checks are added to ensure that they are not
-happening elsewhere.
-
-Signed-off-by: Scott Wood <swood@redhat.com>
-[valentin.schneider@arm.com: Don't disable BH in atomic context]
-[bigeasy: remove 'preempt_disable(); local_bh_disable(); preempt_enable();
- local_bh_enable();' from the examples because this works on RT now. ]
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
-I folded Valentin's bits.
-I removed the unbalanced preempt_disable()/migrate_disable() part from
-the description because it is supported now by the migrate disable
-implementation. I didn't find it explicit in code/ patch except as part
-of local_bh_disable().
-
-
- kernel/rcu/rcutorture.c |   94 ++++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 80 insertions(+), 14 deletions(-)
----
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -61,10 +61,13 @@ MODULE_AUTHOR("Paul E. McKenney <paulmck
- #define RCUTORTURE_RDR_RBH	 0x08	/*  ... rcu_read_lock_bh(). */
- #define RCUTORTURE_RDR_SCHED	 0x10	/*  ... rcu_read_lock_sched(). */
- #define RCUTORTURE_RDR_RCU	 0x20	/*  ... entering another RCU reader. */
--#define RCUTORTURE_RDR_NBITS	 6	/* Number of bits defined above. */
-+#define RCUTORTURE_RDR_ATOM_BH	 0x40	/*  ... disabling bh while atomic */
-+#define RCUTORTURE_RDR_ATOM_RBH	 0x80	/*  ... RBH while atomic */
-+#define RCUTORTURE_RDR_NBITS	 8	/* Number of bits defined above. */
- #define RCUTORTURE_MAX_EXTEND	 \
- 	(RCUTORTURE_RDR_BH | RCUTORTURE_RDR_IRQ | RCUTORTURE_RDR_PREEMPT | \
--	 RCUTORTURE_RDR_RBH | RCUTORTURE_RDR_SCHED)
-+	 RCUTORTURE_RDR_RBH | RCUTORTURE_RDR_SCHED | \
-+	 RCUTORTURE_RDR_ATOM_BH | RCUTORTURE_RDR_ATOM_RBH)
- #define RCUTORTURE_RDR_MAX_LOOPS 0x7	/* Maximum reader extensions. */
- 					/* Must be power of two minus one. */
- #define RCUTORTURE_RDR_MAX_SEGS (RCUTORTURE_RDR_MAX_LOOPS + 3)
-@@ -1429,31 +1432,53 @@ static void rcutorture_one_extend(int *r
- 	WARN_ON_ONCE((idxold >> RCUTORTURE_RDR_SHIFT) > 1);
- 	rtrsp->rt_readstate = newstate;
- 
--	/* First, put new protection in place to avoid critical-section gap. */
-+	/*
-+	 * First, put new protection in place to avoid critical-section gap.
-+	 * Disable preemption around the ATOM disables to ensure that
-+	 * in_atomic() is true.
-+	 */
- 	if (statesnew & RCUTORTURE_RDR_BH)
- 		local_bh_disable();
-+	if (statesnew & RCUTORTURE_RDR_RBH)
-+		rcu_read_lock_bh();
- 	if (statesnew & RCUTORTURE_RDR_IRQ)
- 		local_irq_disable();
- 	if (statesnew & RCUTORTURE_RDR_PREEMPT)
- 		preempt_disable();
--	if (statesnew & RCUTORTURE_RDR_RBH)
--		rcu_read_lock_bh();
- 	if (statesnew & RCUTORTURE_RDR_SCHED)
- 		rcu_read_lock_sched();
-+	preempt_disable();
-+	if (statesnew & RCUTORTURE_RDR_ATOM_BH)
-+		local_bh_disable();
-+	if (statesnew & RCUTORTURE_RDR_ATOM_RBH)
-+		rcu_read_lock_bh();
-+	preempt_enable();
- 	if (statesnew & RCUTORTURE_RDR_RCU)
- 		idxnew = cur_ops->readlock() << RCUTORTURE_RDR_SHIFT;
- 
--	/* Next, remove old protection, irq first due to bh conflict. */
-+	/*
-+	 * Next, remove old protection, in decreasing order of strength
-+	 * to avoid unlock paths that aren't safe in the stronger
-+	 * context.  Disable preemption around the ATOM enables in
-+	 * case the context was only atomic due to IRQ disabling.
-+	 */
-+	preempt_disable();
- 	if (statesold & RCUTORTURE_RDR_IRQ)
- 		local_irq_enable();
--	if (statesold & RCUTORTURE_RDR_BH)
-+	if (statesold & RCUTORTURE_RDR_ATOM_BH)
- 		local_bh_enable();
-+	if (statesold & RCUTORTURE_RDR_ATOM_RBH)
-+		rcu_read_unlock_bh();
-+	preempt_enable();
- 	if (statesold & RCUTORTURE_RDR_PREEMPT)
- 		preempt_enable();
--	if (statesold & RCUTORTURE_RDR_RBH)
--		rcu_read_unlock_bh();
- 	if (statesold & RCUTORTURE_RDR_SCHED)
- 		rcu_read_unlock_sched();
-+	if (statesold & RCUTORTURE_RDR_BH)
-+		local_bh_enable();
-+	if (statesold & RCUTORTURE_RDR_RBH)
-+		rcu_read_unlock_bh();
-+
- 	if (statesold & RCUTORTURE_RDR_RCU) {
- 		bool lockit = !statesnew && !(torture_random(trsp) & 0xffff);
- 
-@@ -1496,6 +1521,12 @@ rcutorture_extend_mask(int oldmask, stru
- 	int mask = rcutorture_extend_mask_max();
- 	unsigned long randmask1 = torture_random(trsp) >> 8;
- 	unsigned long randmask2 = randmask1 >> 3;
-+	unsigned long preempts = RCUTORTURE_RDR_PREEMPT | RCUTORTURE_RDR_SCHED;
-+	unsigned long preempts_irq = preempts | RCUTORTURE_RDR_IRQ;
-+	unsigned long nonatomic_bhs = RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH;
-+	unsigned long atomic_bhs = RCUTORTURE_RDR_ATOM_BH |
-+				   RCUTORTURE_RDR_ATOM_RBH;
-+	unsigned long tmp;
- 
- 	WARN_ON_ONCE(mask >> RCUTORTURE_RDR_SHIFT);
- 	/* Mostly only one bit (need preemption!), sometimes lots of bits. */
-@@ -1503,11 +1534,46 @@ rcutorture_extend_mask(int oldmask, stru
- 		mask = mask & randmask2;
- 	else
- 		mask = mask & (1 << (randmask2 % RCUTORTURE_RDR_NBITS));
--	/* Can't enable bh w/irq disabled. */
--	if ((mask & RCUTORTURE_RDR_IRQ) &&
--	    ((!(mask & RCUTORTURE_RDR_BH) && (oldmask & RCUTORTURE_RDR_BH)) ||
--	     (!(mask & RCUTORTURE_RDR_RBH) && (oldmask & RCUTORTURE_RDR_RBH))))
--		mask |= RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH;
-+
-+	/*
-+	 * Can't enable bh w/irq disabled.
-+	 */
-+	tmp = atomic_bhs | nonatomic_bhs;
-+	if (mask & RCUTORTURE_RDR_IRQ)
-+		mask |= oldmask & tmp;
-+
-+	/*
-+	 * Ideally these sequences would be detected in debug builds
-+	 * (regardless of RT), but until then don't stop testing
-+	 * them on non-RT.
-+	 */
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
-+		/*
-+		 * Can't disable bh in atomic context if bh was already
-+		 * disabled by another task on the same CPU. Instead of
-+		 * attempting to track this, just avoid disabling bh in atomic
-+		 * context.
-+		 */
-+		mask &= ~atomic_bhs;
-+		/*
-+		 * Can't release the outermost rcu lock in an irq disabled
-+		 * section without preemption also being disabled, if irqs
-+		 * had ever been enabled during this RCU critical section
-+		 * (could leak a special flag and delay reporting the qs).
-+		 */
-+		if ((oldmask & RCUTORTURE_RDR_RCU) &&
-+		    (mask & RCUTORTURE_RDR_IRQ) &&
-+		    !(mask & preempts))
-+			mask |= RCUTORTURE_RDR_RCU;
-+
-+		/* Can't modify non-atomic bh in atomic context */
-+		tmp = nonatomic_bhs;
-+		if (oldmask & preempts_irq)
-+			mask &= ~tmp;
-+		if ((oldmask | mask) & preempts_irq)
-+			mask |= oldmask & tmp;
-+	}
-+
- 	return mask ?: RCUTORTURE_RDR_RCU;
- }
- 
+LS0tCiBmcy9mdXNlL2ZpbGUuYyB8ICAgIDcgKysrKystLQogMSBmaWxlIGNoYW5nZWQsIDUgaW5z
+ZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCi0tLSBhL2ZzL2Z1c2UvZmlsZS5jCisrKyBiL2Zz
+L2Z1c2UvZmlsZS5jCkBAIC0xOTgsMTIgKzE5OCwxMSBAQCB2b2lkIGZ1c2VfZmluaXNoX29wZW4o
+c3RydWN0IGlub2RlICppbm9kCiAJc3RydWN0IGZ1c2VfZmlsZSAqZmYgPSBmaWxlLT5wcml2YXRl
+X2RhdGE7CiAJc3RydWN0IGZ1c2VfY29ubiAqZmMgPSBnZXRfZnVzZV9jb25uKGlub2RlKTsKIAot
+CWlmICghKGZmLT5vcGVuX2ZsYWdzICYgRk9QRU5fS0VFUF9DQUNIRSkpCi0JCWludmFsaWRhdGVf
+aW5vZGVfcGFnZXMyKGlub2RlLT5pX21hcHBpbmcpOwogCWlmIChmZi0+b3Blbl9mbGFncyAmIEZP
+UEVOX1NUUkVBTSkKIAkJc3RyZWFtX29wZW4oaW5vZGUsIGZpbGUpOwogCWVsc2UgaWYgKGZmLT5v
+cGVuX2ZsYWdzICYgRk9QRU5fTk9OU0VFS0FCTEUpCiAJCW5vbnNlZWthYmxlX29wZW4oaW5vZGUs
+IGZpbGUpOworCiAJaWYgKGZjLT5hdG9taWNfb190cnVuYyAmJiAoZmlsZS0+Zl9mbGFncyAmIE9f
+VFJVTkMpKSB7CiAJCXN0cnVjdCBmdXNlX2lub2RlICpmaSA9IGdldF9mdXNlX2lub2RlKGlub2Rl
+KTsKIApAQCAtMjExLDEwICsyMTAsMTQgQEAgdm9pZCBmdXNlX2ZpbmlzaF9vcGVuKHN0cnVjdCBp
+bm9kZSAqaW5vZAogCQlmaS0+YXR0cl92ZXJzaW9uID0gYXRvbWljNjRfaW5jX3JldHVybigmZmMt
+PmF0dHJfdmVyc2lvbik7CiAJCWlfc2l6ZV93cml0ZShpbm9kZSwgMCk7CiAJCXNwaW5fdW5sb2Nr
+KCZmaS0+bG9jayk7CisJCXRydW5jYXRlX3BhZ2VjYWNoZShpbm9kZSwgMCk7CiAJCWZ1c2VfaW52
+YWxpZGF0ZV9hdHRyKGlub2RlKTsKIAkJaWYgKGZjLT53cml0ZWJhY2tfY2FjaGUpCiAJCQlmaWxl
+X3VwZGF0ZV90aW1lKGZpbGUpOworCX0gZWxzZSBpZiAoIShmZi0+b3Blbl9mbGFncyAmIEZPUEVO
+X0tFRVBfQ0FDSEUpKSB7CisJCWludmFsaWRhdGVfaW5vZGVfcGFnZXMyKGlub2RlLT5pX21hcHBp
+bmcpOwogCX0KKwogCWlmICgoZmlsZS0+Zl9tb2RlICYgRk1PREVfV1JJVEUpICYmIGZjLT53cml0
+ZWJhY2tfY2FjaGUpCiAJCWZ1c2VfbGlua193cml0ZV9maWxlKGZpbGUpOwogfQo=
+--000000000000f5eae105c9c24f80--
