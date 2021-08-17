@@ -2,54 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9D13EF3A3
+	by mail.lfdr.de (Postfix) with ESMTP id BEDCC3EF3A5
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235800AbhHQUQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 16:16:24 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34746 "EHLO
+        id S236693AbhHQUQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 16:16:37 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:34752 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234360AbhHQUOw (ORCPT
+        with ESMTP id S234526AbhHQUOx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 16:14:52 -0400
-Date:   Tue, 17 Aug 2021 20:14:17 -0000
+        Tue, 17 Aug 2021 16:14:53 -0400
+Date:   Tue, 17 Aug 2021 20:14:18 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629231258;
+        s=2020; t=1629231259;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=h98NzfdBEFkMYL6vJXSqNA5Ma/WhM3yeGmyBdrpXIAU=;
-        b=K40hlnBAjPcAyT8qz8CdqEYjP3Ug/AsXzlZB9elwo/laowt6WxGo1RjunPAgmU1bIum/kJ
-        yHsHkJ+emlsy1YK95RwTT+5hgeeEeWnj+fajqYCYQclmEQ8db6lJrVKSjwIxK5OO+JbkTY
-        0a/hAT016Z5CUVnqf/U9561qQnBDqPrqRfovCieGYeqaP7ULTJHStub6aODCEZrSuv1iy3
-        Ye1YH9qeq9WsYt4ncBfIreOVdXkHhltA7blK1ON5py+LaoX3Vyy9ktIphT/2Mm+XgufacJ
-        rJi+8mDM/Shnt0eAUce52Tzz277f7ovimTbWgJcYPNiERMwfIngddZzLBYjPhA==
+        bh=uwWnW4svONw2tyd4RPaVfJuMdc2arqgZ6QYFQakZySU=;
+        b=jd1Q1HbF2b9JWahum9XcZjkYeUnwCe2/6Xug0qf/Ya2BqoojE4H2lgMJfFxjiDa2nCCmzg
+        WnvCQTD3ymVu3Plv7d53raLNAuKXS+9Q4u8f+jBdoFugMbz1mcvQrOYYSZU7/fGPI1qyvQ
+        JhuiIkHaPkqBXZ+vAMENjMYvJSN/WN7pafuRTQtGduD504zeGQzSl3Q9n6t6nSqzMYdMy6
+        fx87tc/XDU+e4j5v3WiF+b6I5aOCebRwMY2Tr4FAdD7MAypFTmsz4q8O/2vfNq2ynRacqc
+        oQMQZiVuvR+Jx9r5kxAGKdEd3I374zYHT5uiu+iBbaNTARUPfwbu11aJ89Wfsw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629231258;
+        s=2020e; t=1629231259;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=h98NzfdBEFkMYL6vJXSqNA5Ma/WhM3yeGmyBdrpXIAU=;
-        b=j+ePZ5zw5GSB9kA5kVOhHncsgN5xwuk+g7JdBreYDg7QlnWvQrEfIGiFgHe3CTjzH5UmQN
-        pIdFM5xlV1Cwj3CA==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+        bh=uwWnW4svONw2tyd4RPaVfJuMdc2arqgZ6QYFQakZySU=;
+        b=kVXflVFUV9yUQOoyhPFNjuVyS2WKjphT9dTBZRiqNkWFp3QiITDVM7f+13JoNYaQXtJCJb
+        hssnOWA2/VHL5fCg==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/mutex: Move the 'struct mutex_waiter'
- definition from <linux/mutex.h> to the internal header
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+Subject: [tip: locking/core] locking/rtmutex: Squash !RT tasks to DEFAULT_PRIO
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210815211304.054325923@linutronix.de>
-References: <20210815211304.054325923@linutronix.de>
+In-Reply-To: <20210815211303.938676930@linutronix.de>
+References: <20210815211303.938676930@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <162923125721.25758.6834000266165256181.tip-bot2@tip-bot2>
+Message-ID: <162923125846.25758.3743395437613314698.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,74 +59,82 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     43d2d52d704e025518d35c3079fcbff744623166
-Gitweb:        https://git.kernel.org/tip/43d2d52d704e025518d35c3079fcbff744623166
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sun, 15 Aug 2021 23:28:33 +02:00
+Commit-ID:     715f7f9ece4685157bb59560f6c612340d730ab4
+Gitweb:        https://git.kernel.org/tip/715f7f9ece4685157bb59560f6c612340d730ab4
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Sun, 15 Aug 2021 23:28:30 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 17 Aug 2021 18:24:31 +02:00
+CommitterDate: Tue, 17 Aug 2021 17:51:02 +02:00
 
-locking/mutex: Move the 'struct mutex_waiter' definition from <linux/mutex.h> to the internal header
+locking/rtmutex: Squash !RT tasks to DEFAULT_PRIO
 
-Move the mutex waiter declaration from the public <linux/mutex.h> header
-to the internal kernel/locking/mutex.h header.
+Ensure all !RT tasks have the same prio such that they end up in FIFO
+order and aren't split up according to nice level.
 
-There is no reason to expose it outside of the core code.
+The reason why nice levels were taken into account so far is historical. In
+the early days of the rtmutex code it was done to give the PI boosting and
+deboosting a larger coverage.
 
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210815211304.054325923@linutronix.de
+Link: https://lore.kernel.org/r/20210815211303.938676930@linutronix.de
 ---
- include/linux/mutex.h  | 13 -------------
- kernel/locking/mutex.h | 13 +++++++++++++
- 2 files changed, 13 insertions(+), 13 deletions(-)
+ kernel/locking/rtmutex.c | 25 ++++++++++++++++++++-----
+ 1 file changed, 20 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-index e193235..62bafee 100644
---- a/include/linux/mutex.h
-+++ b/include/linux/mutex.h
-@@ -74,19 +74,6 @@ struct ww_mutex {
+diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
+index 951bef0..ac8fb2f 100644
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -244,11 +244,28 @@ static __always_inline bool unlock_rt_mutex_safe(struct rt_mutex_base *lock,
+ }
  #endif
- };
  
--/*
-- * This is the control structure for tasks blocked on mutex,
-- * which resides on the blocked task's kernel stack:
-- */
--struct mutex_waiter {
--	struct list_head	list;
--	struct task_struct	*task;
--	struct ww_acquire_ctx	*ww_ctx;
--#ifdef CONFIG_DEBUG_MUTEXES
--	void			*magic;
--#endif
--};
--
- #ifdef CONFIG_DEBUG_MUTEXES
- 
- #define __DEBUG_MUTEX_INITIALIZER(lockname)				\
-diff --git a/kernel/locking/mutex.h b/kernel/locking/mutex.h
-index 586e4f1..0b2a79c 100644
---- a/kernel/locking/mutex.h
-+++ b/kernel/locking/mutex.h
-@@ -7,6 +7,19 @@
-  *  Copyright (C) 2004, 2005, 2006 Red Hat, Inc., Ingo Molnar <mingo@redhat.com>
-  */
- 
-+/*
-+ * This is the control structure for tasks blocked on mutex, which resides
-+ * on the blocked task's kernel stack:
-+ */
-+struct mutex_waiter {
-+	struct list_head	list;
-+	struct task_struct	*task;
-+	struct ww_acquire_ctx	*ww_ctx;
-+#ifdef CONFIG_DEBUG_MUTEXES
-+	void			*magic;
-+#endif
-+};
++static __always_inline int __waiter_prio(struct task_struct *task)
++{
++	int prio = task->prio;
 +
- #ifdef CONFIG_DEBUG_MUTEXES
- extern void debug_mutex_lock_common(struct mutex *lock,
- 				    struct mutex_waiter *waiter);
++	if (!rt_prio(prio))
++		return DEFAULT_PRIO;
++
++	return prio;
++}
++
++static __always_inline void
++waiter_update_prio(struct rt_mutex_waiter *waiter, struct task_struct *task)
++{
++	waiter->prio = __waiter_prio(task);
++	waiter->deadline = task->dl.deadline;
++}
++
+ /*
+  * Only use with rt_mutex_waiter_{less,equal}()
+  */
+ #define task_to_waiter(p)	\
+-	&(struct rt_mutex_waiter){ .prio = (p)->prio, .deadline = (p)->dl.deadline }
++	&(struct rt_mutex_waiter){ .prio = __waiter_prio(p), .deadline = (p)->dl.deadline }
+ 
+ static __always_inline int rt_mutex_waiter_less(struct rt_mutex_waiter *left,
+ 						struct rt_mutex_waiter *right)
+@@ -698,8 +715,7 @@ static int __sched rt_mutex_adjust_prio_chain(struct task_struct *task,
+ 	 * serializes all pi_waiters access and rb_erase() does not care about
+ 	 * the values of the node being removed.
+ 	 */
+-	waiter->prio = task->prio;
+-	waiter->deadline = task->dl.deadline;
++	waiter_update_prio(waiter, task);
+ 
+ 	rt_mutex_enqueue(lock, waiter);
+ 
+@@ -969,8 +985,7 @@ static int __sched task_blocks_on_rt_mutex(struct rt_mutex_base *lock,
+ 	raw_spin_lock(&task->pi_lock);
+ 	waiter->task = task;
+ 	waiter->lock = lock;
+-	waiter->prio = task->prio;
+-	waiter->deadline = task->dl.deadline;
++	waiter_update_prio(waiter, task);
+ 
+ 	/* Get the top priority waiter on the lock */
+ 	if (rt_mutex_has_waiters(lock))
