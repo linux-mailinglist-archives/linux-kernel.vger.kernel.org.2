@@ -2,307 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15AA43EEE14
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 16:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0475E3EEE18
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 16:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237740AbhHQOHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 10:07:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46902 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230412AbhHQOH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 10:07:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9784860EE4;
-        Tue, 17 Aug 2021 14:06:52 +0000 (UTC)
-Date:   Tue, 17 Aug 2021 16:06:49 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-man <linux-man@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        containers@lists.linux-foundation.org,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCHi, man-pages] mount_namespaces.7: More clearly explain
- "locked mounts"
-Message-ID: <20210817140649.7pmz5qcelgjzgxtz@wittgenstein>
-References: <20210813220120.502058-1-mtk.manpages@gmail.com>
- <87r1et1io8.fsf@disp2133>
- <56bbb8ed-8ecf-a0be-5253-350727ae1d24@gmail.com>
+        id S239213AbhHQOHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 10:07:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239135AbhHQOHh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 10:07:37 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 676B4C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 07:07:04 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so10158903otk.9
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 07:07:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MjrWqg5iL7My1Sr03I7/kUapdaKKEVG8PdV3gZ9eQ5c=;
+        b=UAdw8iIf1KQ4XcA+YoXbiW2WnCf0aZvDhdzhGq6fdomVH2hQy6KaDEj3vfMHfALYv6
+         TQpDbwuyoIKzh3hHatjWC2nJf9moQprUZ2tg4YEEqzp0MgLOa9hAhk/tzSDVL/eHIa+K
+         AoqUgTV2lsAhSg8mt9FbUfK2nAgufws5OC++v03zH4Mzp3nPolTqZYC17k2JCsBaqqp0
+         1pNRlPEZhNBxqDufiX2TiEAwa48cot/TPWXIcOiSizQH6GGJhGjZyr4KN+nvPN8Ci5ye
+         z/mFkx04yvnmll+D0yTg0FHXOYXHEYLG3QM7swAErrb+wfe6X7k42bqTVmBCJoYERvZC
+         RSYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MjrWqg5iL7My1Sr03I7/kUapdaKKEVG8PdV3gZ9eQ5c=;
+        b=O0OJ8VvjpCwEgO51TG6A9cBRxRvi3l5pRFlqh9N1vBd95a6pV4DCAjHvpmvPGZ+9tE
+         9BEckRSlJNvV0vwc4A1fXJnAtKQY3ZGHJIJQ/M6jnoXqHVo402Vagw56Q8EdaHpi/IMn
+         Ch8ln18DwUyavdunLL5R6Px91A5qFG3/0R/70YS9m9ri7kvCNR+HcYwTq2EUgC3ZXf2q
+         Inf0+dzDKxbrtLhzRMy8eKctFV85PggMwL8kUQohDGShXH5axJm1NfMELz+SrjnoDp0s
+         tQ/Q4bhmxwGNl6KFLiY5s95hUaJoLkfmG0h39qUHhMjD6ow5s0TF2OY46GfwOik6RBLx
+         pwlg==
+X-Gm-Message-State: AOAM530UqtMPkBzqdlh5s6mRb04KtagFCAoY2OaXzlU2JMpthY6ZMTtG
+        iZNpZe0n4qWAPPI6E9dqbJhl2Q==
+X-Google-Smtp-Source: ABdhPJxgbrZTySfGDM1CDSbpZKb3negyXgjIKPfl8i3ksWXyLl4lrCduMCUTEPkrjtnienG26pp+7A==
+X-Received: by 2002:a05:6830:110a:: with SMTP id w10mr2663999otq.291.1629209223152;
+        Tue, 17 Aug 2021 07:07:03 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id m16sm438399oop.3.2021.08.17.07.07.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 07:07:02 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 09:07:00 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Thara Gopinath <thara.gopinath@linaro.org>, agross@kernel.org,
+        rui.zhang@intel.com, viresh.kumar@linaro.org, rjw@rjwysocki.net,
+        robh+dt@kernel.org, steev@kali.org, tdas@codeaurora.org,
+        mka@chromium.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [Patch v5 1/6] firmware: qcom_scm: Introduce SCM calls to access
+ LMh
+Message-ID: <YRvChF0j2NOsDuK3@builder.lan>
+References: <20210809191605.3742979-1-thara.gopinath@linaro.org>
+ <20210809191605.3742979-2-thara.gopinath@linaro.org>
+ <19659756-4716-4c5b-949a-58d362dcee22@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <56bbb8ed-8ecf-a0be-5253-350727ae1d24@gmail.com>
+In-Reply-To: <19659756-4716-4c5b-949a-58d362dcee22@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 05:12:20AM +0200, Michael Kerrisk (man-pages) wrote:
-> Hi Eric,
-> 
-> Thanks for your feedback!
-> 
-> On 8/16/21 6:03 PM, Eric W. Biederman wrote:
-> > Michael Kerrisk <mtk.manpages@gmail.com> writes:
+On Tue 17 Aug 08:17 CDT 2021, Daniel Lezcano wrote:
+
+> On 09/08/2021 21:15, Thara Gopinath wrote:
+> > Introduce SCM calls to access/configure limits management hardware(LMH).
 > > 
-> >> For a long time, this manual page has had a brief discussion of
-> >> "locked" mounts, without clearly saying what this concept is, or
-> >> why it exists. Expand the discussion with an explanation of what
-> >> locked mounts are, why mounts are locked, and some examples of the
-> >> effect of locking.
-> >>
-> >> Thanks to Christian Brauner for a lot of help in understanding
-> >> these details.
-> >>
-> >> Reported-by: Christian Brauner <christian.brauner@ubuntu.com>
-> >> Signed-off-by: Michael Kerrisk <mtk.manpages@gmail.com>
-> >> ---
-> >>
-> >> Hello Eric and others,
-> >>
-> >> After some quite helpful info from Chrstian Brauner, I've expanded
-> >> the discussion of locked mounts (a concept I didn't really have a
-> >> good grasp on) in the mount_namespaces(7) manual page. I would be
-> >> grateful to receive review comments, acks, etc., on the patch below.
-> >> Could you take a look please?
-> >>
-> >> Cheers,
-> >>
-> >> Michael
-> >>
-> >>  man7/mount_namespaces.7 | 73 +++++++++++++++++++++++++++++++++++++++++
-> >>  1 file changed, 73 insertions(+)
-> >>
-> >> diff --git a/man7/mount_namespaces.7 b/man7/mount_namespaces.7
-> >> index e3468bdb7..97427c9ea 100644
-> >> --- a/man7/mount_namespaces.7
-> >> +++ b/man7/mount_namespaces.7
-> >> @@ -107,6 +107,62 @@ operation brings across all of the mounts from the original
-> >>  mount namespace as a single unit,
-> >>  and recursive mounts that propagate between
-> >>  mount namespaces propagate as a single unit.)
-> >> +.IP
-> >> +In this context, "may not be separated" means that the mounts
-> >> +are locked so that they may not be individually unmounted.
-> >> +Consider the following example:
-> >> +.IP
-> >> +.RS
-> >> +.in +4n
-> >> +.EX
-> >> +$ \fBsudo mkdir /mnt/dir\fP
-> >> +$ \fBsudo sh \-c \(aqecho "aaaaaa" > /mnt/dir/a\(aq\fP
-> >> +$ \fBsudo mount \-\-bind -o ro /some/path /mnt/dir\fP
-> >> +$ \fBls /mnt/dir\fP   # Former contents of directory are invisible
-> > 
-> > Do we want a more motivating example such as a /proc/sys?
-
-Could be even be better to use an example involving /etc/shadow, e.g.:
-
-sudo mount --bind /etc /mnt
-sudo mount --bind /dev/null /mnt/shadow
-
-the procfs example might be a bit awkward (see below).
-
-> > 
-> > It has been common to mount over /proc files and directories that can be
-> > written to by the global root so that users in a mount namespace may not
-> > touch them.
+> > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
 > 
-> Seems reasonable. But I want to check one thing. Can you please
-> define "global root". I'm pretty sure I know what you mean, but
-> I'd like to know your definition.
+> Hi Bjorn, Andy,
+> 
+> do you mind if I pick this patch along with patch 2/6 ?
+> 
 
-(global root == root in the initial user namespace.)
+Please do!
 
-Some application container runtimes have a concept of "masked paths"
-where they overmount certain directories they want to hide with an empty
-tmpfs and some files they want to hide with /dev/null (see [1]).
-
-But I don't think this is a great example because this overmounting is
-mostly needed and done when you're running privileged containers (see [2]).
-
-There's usually no point in overmounting parts of procfs that are
-writable by global root. If you're running in an unprivileged container
-userns root can't write to any of the files that only global root can.
-Otherwise this would be a rather severe security issue.
-
-There might be a use-case for overmounting files that contain global
-information that are readable inside user namespaces but then one either
-has to question why they are readable in the first place or why this
-information needs to be hidden. Examples include /proc/kallsyms and
-/proc/keys.
-
-But overall the overmounting of procfs is most sensible when running
-privileged containers or when sharing pid namespaces and procfs is
-somehow bind-mounted from somewhere. But that means there's no user
-namespace in play which means that the mounts aren't locked.
-
-So if the container runtime has e.g. overmounted /proc/kcore with
-/dev/null then the privileged container can unmount it. To protect
-against this such privileged containers usually drop CAP_SYS_ADMIN.
-So the protection here comes from dropping capabilities not from locking
-mounts together. All of this makes this a bit of a confusing example.
-
-An example where locked mount protection is relied on heavily which I'm
-involved in is systemd(-nspawn). All custom mounts a container gets such
-as data shared from the host with the container are mounted in a separate
-(privileged) mount namespace before the container workload is cloned.
-The cloned container then gets a new mount + userns pair and hence, all
-the mounts it inherited are now locked.
-
-This way, you can e.g. share /etc with your container and just overmount
-/etc/shadow with /dev/null or a custom /etc/shadow (Reason for my
-example above.) without dropping capabilities that would prevent the
-container from mounting.
-
-So I'd suggest using a simple example. This is not about illustrating
-what container runtimes do but what the behavior of a mount namespace
-is. There's really no need to overcomplicate this.
-
-[1]: https://github.com/moby/moby/blob/51b06c6795160d8a1ba05d05d6491df7588b2957/oci/defaults.go#L90
-[2]: https://github.com/moby/moby/blob/51b06c6795160d8a1ba05d05d6491df7588b2957/oci/defaults.go#L110
-
-> 
-> >> +.EE
-> >> +.in
-> >> +.RE
-> >> +.IP
-> >> +The above steps, performed in a more privileged user namespace,
-> >> +have created a (read-only) bind mount that
-> >> +obscures the contents of the directory
-> >> +.IR /mnt/dir .
-> >> +For security reasons, it should not be possible to unmount
-> >> +that mount in a less privileged user namespace,
-> >> +since that would reveal the contents of the directory
-> >> +.IR /mnt/dir .
-> >  > +.IP
-> >> +Suppose we now create a new mount namespace
-> >> +owned by a (new) subordinate user namespace.
-> >> +The new mount namespace will inherit copies of all of the mounts
-> >> +from the previous mount namespace.
-> >> +However, those mounts will be locked because the new mount namespace
-> >> +is owned by a less privileged user namespace.
-> >> +Consequently, an attempt to unmount the mount fails:
-> >> +.IP
-> >> +.RS
-> >> +.in +4n
-> >> +.EX
-> >> +$ \fBsudo unshare \-\-user \-\-map\-root\-user \-\-mount \e\fP
-> >> +               \fBstrace \-o /tmp/log \e\fP
-> >> +               \fBumount /mnt/dir\fP
-> >> +umount: /mnt/dir: not mounted.
-> >> +$ \fBgrep \(aq^umount\(aq /tmp/log\fP
-> >> +umount2("/mnt/dir", 0)     = \-1 EINVAL (Invalid argument)
-> >> +.EE
-> >> +.in
-> >> +.RE
-> >> +.IP
-> >> +The error message from
-> >> +.BR mount (8)
-> >> +is a little confusing, but the
-> >> +.BR strace (1)
-> >> +output reveals that the underlying
-> >> +.BR umount2 (2)
-> >> +system call failed with the error
-> >> +.BR EINVAL ,
-> >> +which is the error that the kernel returns to indicate that
-> >> +the mount is locked.
-> > 
-> > Do you want to mention that you can unmount the entire subtree?  Either
-> > with pivot_root if it is locked to "/" or with
-> > "umount -l /path/to/propagated/directory".
-> 
-> Yes, I wondered about that, but hadn't got round to devising 
-> the scenario. How about this:
-> 
-> [[
->        *  Following on from the previous point, note that it is possible
->           to unmount an entire tree of mounts that propagated as a unit
->           into a mount namespace that is owned by a less privileged user
->           namespace, as illustrated in the following example.
-> 
->           First, we create new user and mount namespaces using
->           unshare(1).  In the new mount namespace, the propagation type
->           of all mounts is set to private.  We then create a shared bind
->           mount at /mnt, and a small hierarchy of mount points underneath
->           that mount point.
-> 
->               $ PS1='ns1# ' sudo unshare --user --map-root-user \
->                                      --mount --propagation private bash
->               ns1# echo $$        # We need the PID of this shell later
->               778501
->               ns1# mount --make-shared --bind /mnt /mnt
->               ns1# mkdir /mnt/x
->               ns1# mount --make-private -t tmpfs none /mnt/x
->               ns1# mkdir /mnt/x/y
->               ns1# mount --make-private -t tmpfs none /mnt/x/y
->               ns1# grep /mnt /proc/self/mountinfo | sed 's/ - .*//'
->               986 83 8:5 /mnt /mnt rw,relatime shared:344
->               989 986 0:56 / /mnt/x rw,relatime
->               990 989 0:57 / /mnt/x/y rw,relatime
-> 
->           Continuing in the same shell session, we then create a second
->           shell in a new mount namespace and a new subordinate (and thus
->           less privileged) user namespace and check the state of the
->           propagated mount points rooted at /mnt.
-> 
->               ns1# PS1='ns2# unshare --user --map-root-user \
->                                      --mount --propagation unchanged bash
->               ns2# grep /mnt /proc/self/mountinfo | sed 's/ - .*//'
->               1239 1204 8:5 /mnt /mnt rw,relatime master:344
->               1240 1239 0:56 / /mnt/x rw,relatime
->               1241 1240 0:57 / /mnt/x/y rw,relatime
-> 
->           Of note in the above output is that the propagation type of the
->           mount point /mnt has been reduced to slave, as explained near
->           the start of this subsection.  This means that submount events
->           will propagate from the master /mnt in "ns1", but propagation
->           will not occur in the opposite direction.
-> 
->           From a separate terminal window, we then use nsenter(1) to
->           enter the mount and user namespaces corresponding to "ns1".  In
->           that terminal window, we then recursively bind mount /mnt/x at
->           the location /mnt/ppp.
-> 
->               $ PS1='ns3# ' sudo nsenter -t 778501 --user --mount
->               ns3# mount --rbind --make-private /mnt/x /mnt/ppp
->               ns3# grep /mnt /proc/self/mountinfo | sed 's/ - .*//'
->               986 83 8:5 /mnt /mnt rw,relatime shared:344
->               989 986 0:56 / /mnt/x rw,relatime
->               990 989 0:57 / /mnt/x/y rw,relatime
->               1242 986 0:56 / /mnt/ppp rw,relatime
->               1243 1242 0:57 / /mnt/ppp/y rw,relatime shared:518
-> 
->           Because the propagation type of the parent mount, /mnt, was
->           shared, the recursive bind mount propagated a small tree of
->           mounts under the slave mount /mnt into "ns2", as can be
->           verified by executing the following command in that shell
->           session:
-> 
->               ns2# grep /mnt /proc/self/mountinfo | sed 's/ - .*//'
->               1239 1204 8:5 /mnt /mnt rw,relatime master:344
->               1240 1239 0:56 / /mnt/x rw,relatime
->               1241 1240 0:57 / /mnt/x/y rw,relatime
->               1244 1239 0:56 / /mnt/ppp rw,relatime
->               1245 1244 0:57 / /mnt/ppp/y rw,relatime master:518
-> 
->           While it is not possible to unmount a part of that propagated
->           subtree (/mnt/ppp/y), it is possible to unmount the entire
->           tree, as shown by the following commands:
-> 
->               ns2# umount /mnt/ppp/y
->               umount: /mnt/ppp/y: not mounted.
->               ns2# umount -l /mnt/ppp | sed 's/ - .*//'      # Succeeds...
->               ns2# grep /mnt /proc/self/mountinfo
->               1239 1204 8:5 /mnt /mnt rw,relatime master:344
->               1240 1239 0:56 / /mnt/x rw,relatime
->               1241 1240 0:57 / /mnt/x/y rw,relatime
-> ]]
-> 
-> ?
-
-I'd just add a note about mounts that propagated locked together as unit
-as being unmountable as a unit (which is intuitive but may need to be
-spelled out). But I'd leave this lenghty example as it makes the
-manpage pretty convoluted.
-
-Christian
+Regards,
+Bjorn
