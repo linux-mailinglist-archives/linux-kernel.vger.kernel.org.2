@@ -2,90 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0543EEE91
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 16:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7AC3EEE8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 16:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237928AbhHQOdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 10:33:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57176 "EHLO
+        id S239999AbhHQOdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 10:33:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230230AbhHQOdP (ORCPT
+        with ESMTP id S230230AbhHQOdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 10:33:15 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87974C061764;
-        Tue, 17 Aug 2021 07:32:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=t/NXf9hT3CA3cgqqrDKe+AlO6SB+5k2V3RXFtkOYbQ4=; b=tFa5ruuG7pDnJXirBSeaSbbB7
-        ISPMhWeZ2GDmjqUZ7mw4NRIux3pX9q43H0ZOG2oEXJn1vikWjfB4xnDd0xB+31N+aApZr3i1UYmVg
-        0CAydK3XxfF8DLg7eUhIJU4f2tRFGL+758MyGAROypwKGm/TZublfeeGzqOBxCl13Lp7q/3OCdk6i
-        xdByCkAR63aNNFTIAKN1BxekIVOVKRAqWomqMERsPsDdvqeANbCON7Z35y4CrTnBuP7CcbuGWofc6
-        7+YAvPALTkSJ+522WUi6Vijxqi/ftUIe+TpWq7GGh6LajOCaWKxwt2k2ohn1AKv5g315+1IcBDjTC
-        D2aKHxBXg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47404)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mG08i-0001VN-04; Tue, 17 Aug 2021 15:32:28 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mG08g-0000Yp-RP; Tue, 17 Aug 2021 15:32:26 +0100
-Date:   Tue, 17 Aug 2021 15:32:26 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Jie Luo <luoj@codeaurora.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>, hkallweit1@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, sricharan@codeaurora.org
-Subject: Re: [PATCH] net: phy: add qca8081 ethernet phy driver
-Message-ID: <20210817143226.GL22278@shell.armlinux.org.uk>
-References: <20210816113440.22290-1-luoj@codeaurora.org>
- <YRpuhIcwN2IsaHzy@lunn.ch>
- <6856a839-0fa0-1240-47cd-ae8536294bcd@codeaurora.org>
+        Tue, 17 Aug 2021 10:33:03 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61D0C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 07:32:29 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id v4so21816446wro.12
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 07:32:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=a37LCbVEkNxLKUrYD0zRKJGy9j+UVYaYLWEsO/NBiXQ=;
+        b=NeIYr1pKXPoG5o3f40D1sNzE8tVddFcN3DPtoRB/F+cSSqqKb21KhrPOHea9FEEYfQ
+         w0cp4CdJxBT5mheHc/OGoFcfxKwTKbywWLwLQFC4A4Pu/SpZalVO/wb02OqxtEGtYt1K
+         D2hkfidA2v3dkflycmyc8Y1j3UkOlD7dun8zwxCc8bufUbHn811Bzc4YXJ5mF/PXuwII
+         AHq268dAliBz+EZuDesHPNgRI46/UJqzW25bjE4YtW254YdVdZkuHu9u5Mhn/t1vvB6L
+         yyXpgPoDzFBMTf/o7nkN3vu/UGPrvyZZD7++QREUGfL9VhZhqZvQR1DWK3FBn+qRj6v1
+         JfIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=a37LCbVEkNxLKUrYD0zRKJGy9j+UVYaYLWEsO/NBiXQ=;
+        b=JbnBsiUo7phvjyOf0LeATwRdY6WWNxhkQXBMEmZa97BekomnVItA+8xmDA7XpD/dm5
+         /hRQIywJ9pdJU3SPqNRHJKgcyTX4GdQ04+Mhl3JoSOiwqhn3tm4V+Z2DOP1zG22uPGXC
+         xQIBVQr9vQ9X/vvHTryBwedFxG0yPHEqxE90AlqNONYnEWgR3X1H0bs+aEymmKWi3Jjz
+         WsMQMMkSfTmVWGJLLGnbIVC8JsqxRHk4I5qAzJEOhKZ1SiHp7X0DPHM1FiLiC2X4FijS
+         /IWSnEe1eXhc00JbB3h0QVMiEHamIaSUyN85FA9MptTSXOGga5HzEIdQAJmxNddK5uIS
+         ytMQ==
+X-Gm-Message-State: AOAM533EZVLaQv19yEHahX1jm1F5NcpHw8s+AFsxe9w2vkqdWbhvhfes
+        Ig/Ja1o5r+itCTVEbFKgQiY=
+X-Google-Smtp-Source: ABdhPJzhxm4IRorxYwCLy29WhrONlMfGRbkXn0aM3UPc/WkBX7x/rwzGhQmxbzsopi/vnePOf6B18g==
+X-Received: by 2002:a05:6000:12c1:: with SMTP id l1mr4595842wrx.293.1629210748535;
+        Tue, 17 Aug 2021 07:32:28 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id e10sm2601096wrt.82.2021.08.17.07.32.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 07:32:27 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 16:32:26 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND 2/2] driver core: platform: Remove
+ platform_device_add_properties()
+Message-ID: <YRvIeqDsj0dHC46r@orome.fritz.box>
+References: <20210817102449.39994-1-heikki.krogerus@linux.intel.com>
+ <20210817102449.39994-3-heikki.krogerus@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="QUbHIBi7MbB/4ZWW"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6856a839-0fa0-1240-47cd-ae8536294bcd@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20210817102449.39994-3-heikki.krogerus@linux.intel.com>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 09:10:44PM +0800, Jie Luo wrote:
-> 
-> On 8/16/2021 9:56 PM, Andrew Lunn wrote:
-> > On Mon, Aug 16, 2021 at 07:34:40PM +0800, Luo Jie wrote:
-> > > qca8081 is industry’s lowest cost and power 1-port 2.5G/1G Ethernet PHY
-> > > chip, which implements SGMII/SGMII+ for interface to SoC.
-> > Hi Luo
-> > 
-> > No Marketing claims in the commit message please. Even if it is
-> > correct now, it will soon be wrong with newer generations of
-> > devices.
-> > 
-> > And what is SGMII+? Please reference a document. Is it actually
-> > 2500BaseX?
-> 
-> Hi Andrew,
-> 
-> thanks for the comments, will remove the claims in the next patch.
-> 
-> SGMII+ is for 2500BaseX, which is same as SGMII, but the clock frequency of
-> SGMII+ is 2.5 times SGMII.
 
-Bah. Sounds like more industry wide misunderstanding of what SGMII
-vs 1000Base-X is to me... or just plain abuse of the term "SGMII"!
+--QUbHIBi7MbB/4ZWW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I think you'll find that "SGMII+" is nothing but a term Qualcomm use
-to refer to 2500BASE-X without the 16-bit in-band control word to
-the host.
+On Tue, Aug 17, 2021 at 01:24:49PM +0300, Heikki Krogerus wrote:
+> There are no more users for it. The last place where it's
+> called is in platform_device_register_full(). Replacing that
+> call with device_create_managed_software_node() and
+> removing the function.
+>=20
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> ---
+>  drivers/base/platform.c         | 20 ++------------------
+>  include/linux/platform_device.h |  2 --
+>  2 files changed, 2 insertions(+), 20 deletions(-)
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Indeed, no other users, and looks correct, too =3D):
+
+Reviewed-by: Thierry Reding <treding@nvidia.com>
+
+--QUbHIBi7MbB/4ZWW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEbyHkACgkQ3SOs138+
+s6H/AxAAuGua2VABMRq/2pmhhzblE0JdmbE/10sRo28TmEZAvue42wnuVpRKO31o
+TMXDvL0LM0XsFVWo1jm+T1YhhSHzhzKguQFa45t4mcGiKTMyqZ75/SYtOW57Fb7r
+Gav1fn4JpNtR2+6AbDlbWT31tt7vGtOkDovlpxGQiBUILzJ5c+JU0/DfnoNR+Zny
+O6pdiJ6S/5ODGVpe3OraXozAXOm3tuOmVfy00X6y1i33DLKCiyVgb6w6Ggms3nAo
+NY4wtCVTuL04sJQf2rFL/3yIiD8CizV3yvf+c0OReuWO8nupZUEK9+rB29ANHxok
+t2x5rybq7vRDwKRGX5ER88lCP/wYkjuMq+qnXzl8ujJJ5GOOFs0QrgwUtPKwKSLY
+8TmS4AKASX50HxlMQu260OqiCcM+mWJBGa0xPqEIo98dvQfTxjmvj1ITRUcQrF5k
+MxD531OrmzuC4qPW8j10YnTsPkguQaljXfnzLI9aqFHhZBKNkhU/GAjAqGLI48su
+MVsIpvPhMORzjNsOba7C7xhNTaEXbnpKq+220E62D9kifErO0VYPyQIjmg7rUKxN
+/Fjj4uVmnXDLOGblYuMK3b8nKihPNdQdL5pGfpgBBcXF3SGAZ6T160L8svXEB4NU
+p2G7DQNd0f1QtWbm7gwLIPbKE6b8vXhL4y1y7h+tCThZgaTgY7s=
+=piGF
+-----END PGP SIGNATURE-----
+
+--QUbHIBi7MbB/4ZWW--
