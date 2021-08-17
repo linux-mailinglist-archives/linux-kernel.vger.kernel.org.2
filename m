@@ -2,68 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE6F23EF4AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 23:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF413EF4AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 23:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234283AbhHQVKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 17:10:53 -0400
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:45705 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232909AbhHQVKw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 17:10:52 -0400
-Received: by mail-oi1-f169.google.com with SMTP id o20so1114105oiw.12;
-        Tue, 17 Aug 2021 14:10:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CTgAmphwn1ois5hk55721DjpVa/iUWBOuHd03LxTkuI=;
-        b=ZOcrqW4ezSW4DUG9aBS0k+fgtEzsOG5Ix/PL6ZP/F14vyJ0buIn9HPrdOJw1Ga33CN
-         aRKYMXIDfBxwhUUFlh2yld2tAUvHXY1jG67JjvrqtyFuG/mRwQlmQP0aZF34xFEAbTwa
-         4tns1FVH6Bckw9XYQXvsz5gEk0zz/CZvW+qFj8qDgG2MBiEMNjlIeBtWvtcP04YqRKL7
-         94joExLy8cR+hOX52dYl5b4uBJigSv11DYv3I6MTG743LESQ923RE91TOS1C/1Pt8umm
-         pJKJ7ED+NUHkfFc9QUZGp4WZ4KfjjGzo4qL03soes9IMPi0Gk6BPOcPEs6MVJhq84JzY
-         cImw==
-X-Gm-Message-State: AOAM532WSL/hirLU7X1NXweT2YnoX+6ytTa5L5EHfayvf5tc3sAVyEfJ
-        FX3MTP1/hY/Oh1E6I5BfMQ==
-X-Google-Smtp-Source: ABdhPJx++Rc1EBvfd+6pazZap11v9ifQAF3Fq1/XdEIekbI/RB092ivcdK5zyZaRny/3CY02mBYkMw==
-X-Received: by 2002:a05:6808:1415:: with SMTP id w21mr4115989oiv.140.1629234618442;
-        Tue, 17 Aug 2021 14:10:18 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l16sm615679ota.55.2021.08.17.14.10.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 14:10:17 -0700 (PDT)
-Received: (nullmailer pid 844799 invoked by uid 1000);
-        Tue, 17 Aug 2021 21:10:17 -0000
-Date:   Tue, 17 Aug 2021 16:10:17 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Puranjay Mohan <puranjay12@gmail.com>
-Cc:     devicetree@vger.kernel.org, Dragos.Bogdan@analog.com,
-        lars@metafoo.de, jic23@kernel.org, Darius.Berghe@analog.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michael.Hennerich@analog.com, andy.shevchenko@gmail.com
-Subject: Re: [PATCH v12 1/2] dt-bindings: iio: accel: Add DT binding doc for
- ADXL355
-Message-ID: <YRwluQS5Zr11ngE4@robh.at.kernel.org>
-References: <20210811073027.124619-1-puranjay12@gmail.com>
- <20210811073027.124619-2-puranjay12@gmail.com>
+        id S232862AbhHQVL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 17:11:26 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:54816 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229531AbhHQVLW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 17:11:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=8qoTyawVXKotmiDHx+N4CisOVDlQx6rCGZSPJMmaLy8=; b=gYnEeHPuo2g3ld0B0VjGpaynZN
+        hTvfbmNkq1MLBQf+O9bQaI1Go5NdDWQt0hWVPnGk14dJQXbj8GHB5mUXxigPoFoMD7qPasxz2QAIW
+        mHhQpVHe6UBRovBGk7IcUyoXWKFDqTvktWCdSnGcP56DXQp2Qd2iOup5m7OxAxXOGguo=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mG6Lw-000eQd-6R; Tue, 17 Aug 2021 23:10:32 +0200
+Date:   Tue, 17 Aug 2021 23:10:32 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>, kernel-team@android.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v2 1/3] net: mdio-mux: Delete unnecessary devm_kfree
+Message-ID: <YRwlyH0cjazjsSwe@lunn.ch>
+References: <20210817180841.3210484-1-saravanak@google.com>
+ <20210817180841.3210484-2-saravanak@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210811073027.124619-2-puranjay12@gmail.com>
+In-Reply-To: <20210817180841.3210484-2-saravanak@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Aug 2021 13:00:26 +0530, Puranjay Mohan wrote:
-> Add devicetree binding document for ADXL355, a 3-Axis MEMS Accelerometer.
+On Tue, Aug 17, 2021 at 11:08:39AM -0700, Saravana Kannan wrote:
+> The whole point of devm_* APIs is that you don't have to undo them if you
+> are returning an error that's going to get propagated out of a probe()
+> function. So delete unnecessary devm_kfree() call in the error return path.
 > 
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> ---
->  .../bindings/iio/accel/adi,adxl355.yaml       | 88 +++++++++++++++++++
->  1 file changed, 88 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
-> 
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> Acked-by: Marc Zyngier <maz@kernel.org>
+> Tested-by: Marc Zyngier <maz@kernel.org>
+> Acked-by: Kevin Hilman <khilman@baylibre.com>
+> Tested-by: Kevin Hilman <khilman@baylibre.com>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Please add a Fixes: tag, since you want this in stable.
+
+All three patches need fixes tags, possibly different for each patch?
+
+       Andrew
