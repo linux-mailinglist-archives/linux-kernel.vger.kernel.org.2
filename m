@@ -2,66 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE953EEBC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 13:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC9623EEBCA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 13:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236792AbhHQLdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 07:33:54 -0400
-Received: from smtpbg128.qq.com ([106.55.201.39]:41494 "EHLO smtpbg587.qq.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231515AbhHQLdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 07:33:53 -0400
-X-QQ-mid: bizesmtp37t1629199896tohp35h0
-Received: from localhost.localdomain (unknown [125.69.42.50])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Tue, 17 Aug 2021 19:31:35 +0800 (CST)
-X-QQ-SSF: 01000000004000B0C000B00A0000000
-X-QQ-FEAT: VM477jCxEMjpxWcg2ZXubi3ZjfaeY+wqXWbCqmU0fFD9YsyNh+Fn+61qUcUih
-        rDjcZBwRNFXAWu/kZOb2kpIlILsTUPWJwK9PJ/94s0aq3RbLrLE3aWG578pcm30Jchp2ngj
-        sR0e9Yz720wDi7WW8YF4vjf/uAflh/1LoQyMW1SJQggMiawcOh5AkR/hVcdvI5xLfLEEY3M
-        ECScfFImrYEYrU1LN5+stUZRrFogdDWNeb0iY2026CezFc6zPKuP21Ps/WuR8GoIFIFSkS+
-        jPCjytUyrMpxMUn/QWObeABBxI7kIr64EpM0+OS+oNPmU/tGbkC3c1uNeRSkrxQo5CioXU2
-        FpbRF8vpeMSxFaPTZA=
-X-QQ-GoodBg: 0
-From:   Jason Wang <wangborong@cdjrlc.com>
-To:     nsekhar@ti.com
-Cc:     bgolaszewski@baylibre.com, linux@armlinux.org.uk,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] ARM: davinci: dm355-evm: Fix typo in a comment
-Date:   Tue, 17 Aug 2021 19:31:12 +0800
-Message-Id: <20210817113112.17936-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.32.0
+        id S239723AbhHQLe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 07:34:57 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:14268 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236870AbhHQLe4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 07:34:56 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GpppG2wrCz871y;
+        Tue, 17 Aug 2021 19:34:14 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 17 Aug 2021 19:34:20 +0800
+Received: from thunder-town.china.huawei.com (10.174.178.242) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 17 Aug 2021 19:34:20 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        "Joerg Roedel" <joro@8bytes.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH] iommu/arm-smmu-v3: Stop pre-zeroing batch commands in arm_smmu_atc_inv_master()
+Date:   Tue, 17 Aug 2021 19:34:11 +0800
+Message-ID: <20210817113411.1962-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam5
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.178.242]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The double `the' in the comment `Keep the the order same as that of
-encoders.' is repeated. Consequently, one 'the' should be removed
-from the comment.
+Pre-zeroing the batched commands structure is inefficient, as individual
+commands are zeroed later in arm_smmu_cmdq_build_cmd(). Therefore, only
+the member 'num' needs to be initialized to 0.
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- arch/arm/mach-davinci/board-dm355-evm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/mach-davinci/board-dm355-evm.c b/arch/arm/mach-davinci/board-dm355-evm.c
-index 3c5a9e3c128a..4aeda9bd8029 100644
---- a/arch/arm/mach-davinci/board-dm355-evm.c
-+++ b/arch/arm/mach-davinci/board-dm355-evm.c
-@@ -296,7 +296,7 @@ static struct vpbe_enc_mode_info dm355evm_enc_preset_timing[] = {
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index 50a9db5bac466c7..e6882ae81fd08f6 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -1776,10 +1776,11 @@ static int arm_smmu_atc_inv_master(struct arm_smmu_master *master)
+ {
+ 	int i;
+ 	struct arm_smmu_cmdq_ent cmd;
+-	struct arm_smmu_cmdq_batch cmds = {};
++	struct arm_smmu_cmdq_batch cmds;
  
- /*
-  * The outputs available from VPBE + ecnoders. Keep the
-- * the order same as that of encoders. First those from venc followed by that
-+ * order same as that of encoders. First those from venc followed by that
-  * from encoders. Index in the output refers to index on a particular encoder.
-  * Driver uses this index to pass it to encoder when it supports more than
-  * one output. Application uses index of the array to set an output.
+ 	arm_smmu_atc_inv_to_cmd(0, 0, 0, &cmd);
+ 
++	cmds.num = 0;
+ 	for (i = 0; i < master->num_streams; i++) {
+ 		cmd.atc.sid = master->streams[i].id;
+ 		arm_smmu_cmdq_batch_add(master->smmu, &cmds, &cmd);
 -- 
-2.32.0
+2.26.0.106.g9fadedd
 
