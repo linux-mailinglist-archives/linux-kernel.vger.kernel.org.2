@@ -2,110 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 751B43EF5B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 00:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8A7B3EF5B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 00:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236220AbhHQWVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 18:21:49 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32660 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236071AbhHQWVq (ORCPT
+        id S235605AbhHQWVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 18:21:44 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:51754 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229729AbhHQWVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 18:21:46 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17HM2wau191455;
-        Tue, 17 Aug 2021 18:21:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=vvFO4lOBX4sDfEhnNEZVfUYefoksHhEC8JsUilIfQLY=;
- b=kt426Vh6MhKxFh/aWFIWcXhk/ETMf9uZICj6yABwT/t9+7Ia+Z+3yyxABD3d1xJk2ogM
- KyU7y1QVx/7Mh+fJWCv3z9uIU2Zo6tJxIq5LCgk/UlxWFYiFlN4w/fuu3CbPyRGgumyL
- NjW/huV3nDHrEoJVmMf0stWK9YFzXXkk/BTYCnig+mEZ+YVTDrWTIti+6EMvYtHvtTtK
- aEOXqz7hqQ5JIgOUBwLdOYWZw7VmQ22CKMS8nrxUK4w+WGC1zot9nlXotYFhcs7xSPW0
- Ko17MyPFGucxT2aylMxcItyqZQTuFwLnc5AuSmIDrdY9/YjMtl8CmKiBFtUjupXXx1Xb 1Q== 
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3ag7bsauju-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Aug 2021 18:21:02 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17HMD5B9031872;
-        Tue, 17 Aug 2021 22:21:02 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma04dal.us.ibm.com with ESMTP id 3ae5fdjqbc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Aug 2021 22:21:02 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17HML1T951183988
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Aug 2021 22:21:01 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2A70EAE064;
-        Tue, 17 Aug 2021 22:21:01 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4550BAE067;
-        Tue, 17 Aug 2021 22:21:00 +0000 (GMT)
-Received: from localhost (unknown [9.211.107.102])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Tue, 17 Aug 2021 22:20:59 +0000 (GMT)
-From:   Fabiano Rosas <farosas@linux.ibm.com>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Paul Mackerras <paulus@ozlabs.org>
-Cc:     linux-kernel@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH kernel] KVM: PPC: Book3S HV: Make unique debugfs nodename
-In-Reply-To: <be02290c-60a0-48af-0491-61e8a6d5b7b7@ozlabs.ru>
-References: <20210707041344.3803554-1-aik@ozlabs.ru>
- <be02290c-60a0-48af-0491-61e8a6d5b7b7@ozlabs.ru>
-Date:   Tue, 17 Aug 2021 19:20:57 -0300
-Message-ID: <87pmubu306.fsf@linux.ibm.com>
+        Tue, 17 Aug 2021 18:21:43 -0400
+Received: by mail-io1-f71.google.com with SMTP id p22-20020a5d8d160000b02905a150b13b20so16099ioj.18
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 15:21:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=umDmu+4hB/JDNHdbTJk5sLucv5/bOLVHY7bndijJFTA=;
+        b=B4xxtDpt7Q8kpAAWowr8HZYBS6BQXcpmB1vN9b95x/WrCS8Q8ZX1JnRt5v6uLABpl3
+         LHjpkCktfPq0sc/ufdIBQIzHr4mWFO9gnvZQJSd9ZRUGKi4vXnFNuR836zCvC0WuXq/T
+         QVy6f+4WPk3E3xFZbnOoecXoFEBOZlVOrB15JdgZckK43HMo6S4ZS8qBkgs+IDlXPo4V
+         4r5O8r+7YrUVthFsnhVahwkdkG3Ru+uKGXrLwN2/lffpiN3aX8qJ5N+iWtupWzRlUHCC
+         d1bFEtoZYIq29xiWAma5eDM0QT64l9RU/sE7vSuVUs7TSvgTamXpHCr7K3dl2JW8t6Bh
+         SN3A==
+X-Gm-Message-State: AOAM531llc91WC49elHibjRtO9xvwaJLxEtAOAVJx7Lf5CapMCLOGy7k
+        jcpA6D9xe7TeTL3BcMYpx4h4/UqSdF/1uIMg09lvuy9gNFM/
+X-Google-Smtp-Source: ABdhPJzaDcwt4eaiB4ndqrwZbsMFOJdKO3Yu0KMKfK1Kr5midZbCbjKzgjJY5yO6zqRjKZKrk/3nxoTRvoMMG4XwWaB7JHSI/tXL
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 627C7QllL2CLBbF8ps1glfa4cOcUce_J
-X-Proofpoint-GUID: 627C7QllL2CLBbF8ps1glfa4cOcUce_J
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-17_08:2021-08-17,2021-08-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 suspectscore=0 lowpriorityscore=0 clxscore=1015
- bulkscore=0 adultscore=0 mlxscore=0 impostorscore=0 spamscore=0
- mlxlogscore=999 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2107140000 definitions=main-2108170139
+X-Received: by 2002:a05:6e02:547:: with SMTP id i7mr3835170ils.102.1629238869490;
+ Tue, 17 Aug 2021 15:21:09 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 15:21:09 -0700
+In-Reply-To: <00000000000080486305c9a8f818@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000012030e05c9c8bc85@google.com>
+Subject: Re: [syzbot] KFENCE: use-after-free in kvm_fastop_exception
+From:   syzbot <syzbot+7b938780d5deeaaf938f@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
+        marcel@holtmann.org, mathew.j.martineau@linux.intel.com,
+        matthieu.baerts@tessares.net, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexey Kardashevskiy <aik@ozlabs.ru> writes:
+syzbot has bisected this issue to:
 
-> On 07/07/2021 14:13, Alexey Kardashevskiy wrote:
+commit c4512c63b1193c73b3f09c598a6d0a7f88da1dd8
+Author: Matthieu Baerts <matthieu.baerts@tessares.net>
+Date:   Fri Jun 25 21:25:22 2021 +0000
 
-> alternatively move this debugfs stuff under the platform-independent
-> directory, how about that?
+    mptcp: fix 'masking a bool' warning
 
-That's a good idea. I only now realized we have two separate directories
-for the same guest:
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=122b0655300000
+start commit:   b9011c7e671d Add linux-next specific files for 20210816
+git tree:       linux-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=112b0655300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=162b0655300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a245d1aa4f055cc1
+dashboard link: https://syzkaller.appspot.com/bug?extid=7b938780d5deeaaf938f
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=157a41ee300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14f78ff9300000
 
-$ ls /sys/kernel/debug/kvm/ | grep $pid
-19062-11
-vm19062               
+Reported-by: syzbot+7b938780d5deeaaf938f@syzkaller.appspotmail.com
+Fixes: c4512c63b119 ("mptcp: fix 'masking a bool' warning")
 
-Looks like we would have to implement kvm_arch_create_vcpu_debugfs for
-the vcpu information and add a similar hook for the vm.
-
->> ---
->>   arch/powerpc/kvm/book3s_hv.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->> 
->> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
->> index 1d1fcc290fca..0223ddc0eed0 100644
->> --- a/arch/powerpc/kvm/book3s_hv.c
->> +++ b/arch/powerpc/kvm/book3s_hv.c
->> @@ -5227,7 +5227,7 @@ static int kvmppc_core_init_vm_hv(struct kvm *kvm)
->>   	/*
->>   	 * Create a debugfs directory for the VM
->>   	 */
->> -	snprintf(buf, sizeof(buf), "vm%d", current->pid);
->> +	snprintf(buf, sizeof(buf), "vm%d-lp%ld", current->pid, lpid);
->>   	kvm->arch.debugfs_dir = debugfs_create_dir(buf, kvm_debugfs_dir);
->>   	kvmppc_mmu_debugfs_init(kvm);
->>   	if (radix_enabled())
->> 
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
