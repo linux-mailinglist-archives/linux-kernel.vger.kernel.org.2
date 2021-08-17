@@ -2,144 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ED713EE67D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 009193EE680
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234501AbhHQGNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 02:13:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233676AbhHQGNK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 02:13:10 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72C0C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:12:37 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id x1so2854967qtw.5
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:12:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=G5q2kw4t+Ye13oI9DBMvvqvug6wc8CKiiXAR6p+W89I=;
-        b=BBCXvOXw4li2gIL9kkbvJ5ZcdZ+itbeWzg1qIECAHIFLOfIX2XSQzcKwfXQTU/IqWt
-         0btORgGye8PrIQUXPygvdchbdYCaQyo1Q4GcGhYSSzziVV8bTFIgxygtUDIcpe2aDVp4
-         Ov2YFEmfPew8Zm21hM8gN6zOq6CR4/7HL5YLQuJcHgHM4TBgJSCHH3D6NtnqekbbjINL
-         6TCJgs9NbqCw9HqgEa8hR4bHgGT7MSpU8rwwB+Gwu8dsD7lWtUre0X0uyZyzW4gI7gR0
-         M6mjWK2nRH6HVtCKI9chJv5JQUDsjo2GIvvXVjANDGjxbPFQyV+cUAD/Eg6sWgk7wfkM
-         8W0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=G5q2kw4t+Ye13oI9DBMvvqvug6wc8CKiiXAR6p+W89I=;
-        b=f8Tra22WS8Y+UnFlqeXuClJ5rFTkaXHRV2CbZcLPxV7HZB+KMN29T7oaWqqNPMSO1G
-         Y8cX9bga5m3RZ624cHcYHl8vU8fzsUbfb51lNFH02AwXUZ1tM7DBacvfbahlAinEhD9h
-         DYpUFE26xTdPLMgDkUsueiQ28Cs+BNFo9CxIwT0tNAAsA2Kf3AH2o2nWZ70CUqLTuTF1
-         XfD3m4uF2AmyIcaSbU0cxwFnHfas3s1LhSa8d5MEQitvjSZ1XySp7CGv3r1e0TYO3qQJ
-         6mIzCPAHgPQWZev+nzK5vEqUvYo3WkSJMK3q/W2BlBeGUOIREVXnPIfgGZxCFGKSdza/
-         bdxA==
-X-Gm-Message-State: AOAM532+y0d60zhN7CLZUos6woXecUu0v9BhMQCrRtNQ9lmBc1pMd9CR
-        Okm990i4YI4PAZDVDSoTxM8=
-X-Google-Smtp-Source: ABdhPJyol1AUFCOLYakvjk8k/FnQSFqpYVx52TWd46ga3LUw/FtBCvvKbLt20uNE3CMvS+SRsEfk+Q==
-X-Received: by 2002:a05:622a:612:: with SMTP id z18mr1635720qta.330.1629180756978;
-        Mon, 16 Aug 2021 23:12:36 -0700 (PDT)
-Received: from ?IPv6:2804:431:c7f0:30b2:5c9e:50:88f3:269a? ([2804:431:c7f0:30b2:5c9e:50:88f3:269a])
-        by smtp.gmail.com with ESMTPSA id w6sm750513qkf.95.2021.08.16.23.12.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 23:12:36 -0700 (PDT)
-Message-ID: <f9f7bcd75d534ebde7cc83c4138176da4680e30f.camel@gmail.com>
-Subject: Re: [PATCH v5 08/11] powerpc/pseries/iommu: Update
- remove_dma_window() to accept property name
-From:   Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras.c@gmail.com>
-To:     Frederic Barrat <fbarrat@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        kernel test robot <lkp@intel.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date:   Tue, 17 Aug 2021 03:12:38 -0300
-In-Reply-To: <2653ee3e582ba181651e4842821e64d3323fa566.camel@gmail.com>
-References: <20210716082755.428187-1-leobras.c@gmail.com>
-         <20210716082755.428187-9-leobras.c@gmail.com>
-         <8dbd08fb-375c-9f21-f8ab-bec163b157bf@linux.ibm.com>
-         <2653ee3e582ba181651e4842821e64d3323fa566.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 
+        id S234491AbhHQGPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 02:15:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57296 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233676AbhHQGPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 02:15:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29BBA60E78;
+        Tue, 17 Aug 2021 06:15:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629180900;
+        bh=NZjiKqRb5lmmInzfCqVEdFiurrR2yJY2P60ADXWH3c4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1VTUu8ohNsUCmIpWF5K2BJtCu68kxWHlhvISHVRM30dbPZNjODkm6eFbLOIQOUtgi
+         caMChXiEbra7k1YJ4ITdQbZcpI7lORH13SSs44DO0+1zcAidDAkvhPgCiQ3kThguvk
+         27AkrHAoV7KRod8taHWWYIvhqKSHt7o2pH2HXksY=
+Date:   Tue, 17 Aug 2021 08:14:58 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Chen Huang <chenhuang5@huawei.com>
+Cc:     Roman Gushchin <guro@fb.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Wang Hai <wanghai38@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH 5.10.y 01/11] mm: memcontrol: Use helpers to read page's
+ memcg data
+Message-ID: <YRtT4obiu86hp6z3@kroah.com>
+References: <20210816072147.3481782-1-chenhuang5@huawei.com>
+ <20210816072147.3481782-2-chenhuang5@huawei.com>
+ <YRojDsTAjSnw0jIh@kroah.com>
+ <a4c545a8-fff0-38bb-4749-3483c9334daa@huawei.com>
+ <YRppmvYOftjAAl/R@kroah.com>
+ <0d3c6aa4-be05-3c93-bdcd-ac30788d82bd@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <0d3c6aa4-be05-3c93-bdcd-ac30788d82bd@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-08-17 at 02:59 -0300, Leonardo Brás wrote:
-> Hello Fred, thanks for the feedback!
+On Tue, Aug 17, 2021 at 09:45:00AM +0800, Chen Huang wrote:
 > 
-> On Tue, 2021-07-20 at 19:51 +0200, Frederic Barrat wrote:
-> > 
-> > 
-> > On 16/07/2021 10:27, Leonardo Bras wrote:
-> > > Update remove_dma_window() so it can be used to remove DDW with a
-> > > given
-> > > property name.
-> > > 
-> > > This enables the creation of new property names for DDW, so we
-> > > can
-> > > have different usage for it, like indirect mapping.
-> > > 
-> > > Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
-> > > Reviewed-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-> > > ---
-> > >   arch/powerpc/platforms/pseries/iommu.c | 21 +++++++++++--------
-> > > --
-> > >   1 file changed, 11 insertions(+), 10 deletions(-)
-> > > 
-> > > diff --git a/arch/powerpc/platforms/pseries/iommu.c
-> > > b/arch/powerpc/platforms/pseries/iommu.c
-> > > index 108c3dcca686..17c6f4706e76 100644
-> > > --- a/arch/powerpc/platforms/pseries/iommu.c
-> > > +++ b/arch/powerpc/platforms/pseries/iommu.c
-> > > @@ -830,31 +830,32 @@ static void remove_dma_window(struct
-> > > device_node *np, u32 *ddw_avail,
-> > >                         np, ret,
-> > > ddw_avail[DDW_REMOVE_PE_DMA_WIN],
-> > > liobn);
-> > >   }
-> > >   
-> > > -static void remove_ddw(struct device_node *np, bool remove_prop)
-> > > +static int remove_ddw(struct device_node *np, bool remove_prop,
-> > > const char *win_name)
-> > >   {
-> > 
-> > 
-> > Why switch to returning an int? None of the callers check it.
 > 
-> IIRC, in a previous version it did make sense, which is not the case
-> anymore. I will revert this.
+> 在 2021/8/16 21:35, Greg Kroah-Hartman 写道:
+> > On Mon, Aug 16, 2021 at 09:21:11PM +0800, Chen Huang wrote:
+> >>
+> >>
+> >> 在 2021/8/16 16:34, Greg Kroah-Hartman 写道:
+> >>> On Mon, Aug 16, 2021 at 07:21:37AM +0000, Chen Huang wrote:
+> >>>> From: Roman Gushchin <guro@fb.com>
+> >>>
+> >>> What is the git commit id of this patch in Linus's tree?
+> >>>
+> >>>>
+> >>>> Patch series "mm: allow mapping accounted kernel pages to userspace", v6.
+> >>>>
+> >>>> Currently a non-slab kernel page which has been charged to a memory cgroup
+> >>>> can't be mapped to userspace.  The underlying reason is simple: PageKmemcg
+> >>>> flag is defined as a page type (like buddy, offline, etc), so it takes a
+> >>>> bit from a page->mapped counter.  Pages with a type set can't be mapped to
+> >>>> userspace.
+> >>>>
+> >>>> But in general the kmemcg flag has nothing to do with mapping to
+> >>>> userspace.  It only means that the page has been accounted by the page
+> >>>> allocator, so it has to be properly uncharged on release.
+> >>>>
+> >>>> Some bpf maps are mapping the vmalloc-based memory to userspace, and their
+> >>>> memory can't be accounted because of this implementation detail.
+> >>>>
+> >>>> This patchset removes this limitation by moving the PageKmemcg flag into
+> >>>> one of the free bits of the page->mem_cgroup pointer.  Also it formalizes
+> >>>> accesses to the page->mem_cgroup and page->obj_cgroups using new helpers,
+> >>>> adds several checks and removes a couple of obsolete functions.  As the
+> >>>> result the code became more robust with fewer open-coded bit tricks.
+> >>>>
+> >>>> This patch (of 4):
+> >>>>
+> >>>> Currently there are many open-coded reads of the page->mem_cgroup pointer,
+> >>>> as well as a couple of read helpers, which are barely used.
+> >>>>
+> >>>> It creates an obstacle on a way to reuse some bits of the pointer for
+> >>>> storing additional bits of information.  In fact, we already do this for
+> >>>> slab pages, where the last bit indicates that a pointer has an attached
+> >>>> vector of objcg pointers instead of a regular memcg pointer.
+> >>>>
+> >>>> This commits uses 2 existing helpers and introduces a new helper to
+> >>>> converts all read sides to calls of these helpers:
+> >>>>   struct mem_cgroup *page_memcg(struct page *page);
+> >>>>   struct mem_cgroup *page_memcg_rcu(struct page *page);
+> >>>>   struct mem_cgroup *page_memcg_check(struct page *page);
+> >>>>
+> >>>> page_memcg_check() is intended to be used in cases when the page can be a
+> >>>> slab page and have a memcg pointer pointing at objcg vector.  It does
+> >>>> check the lowest bit, and if set, returns NULL.  page_memcg() contains a
+> >>>> VM_BUG_ON_PAGE() check for the page not being a slab page.
+> >>>>
+> >>>> To make sure nobody uses a direct access, struct page's
+> >>>> mem_cgroup/obj_cgroups is converted to unsigned long memcg_data.
+> >>>>
+> >>>> Signed-off-by: Roman Gushchin <guro@fb.com>
+> >>>> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> >>>> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> >>>> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> >>>> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> >>>> Acked-by: Michal Hocko <mhocko@suse.com>
+> >>>> Link: https://lkml.kernel.org/r/20201027001657.3398190-1-guro@fb.com
+> >>>> Link: https://lkml.kernel.org/r/20201027001657.3398190-2-guro@fb.com
+> >>>> Link: https://lore.kernel.org/bpf/20201201215900.3569844-2-guro@fb.com
+> >>>>
+> >>>> Conflicts:
+> >>>> 	mm/memcontrol.c
+> >>>
+> >>> The "Conflicts:" lines should be removed.
+> >>>
+> >>> Please fix up the patch series and resubmit.  But note, this seems
+> >>> really intrusive, are you sure these are all needed?
+> >>>
+> >>
+> >> OK，I will resend the patchset.
+> >> Roman Gushchin's patchset formalize accesses to the page->mem_cgroup and
+> >> page->obj_cgroups. But for LRU pages and most other raw memcg, they may
+> >> pin to a memcg cgroup pointer, which should always point to an object cgroup
+> >> pointer. That's the problem I met. And Muchun Song's patchset fix this.
+> >> So I think these are all needed.
+> > 
+> > What in-tree driver causes this to happen and under what workload?
+> > 
+> >>> What UIO driver are you using that is showing problems like this?
+> >>>
+> >>
+> >> The UIO driver is my own driver, and it's creation likes this:
+> >> First, we register a device
+> >> 	pdev = platform_device_register_simple("uio_driver,0, NULL, 0);
+> >> and use uio_info to describe the UIO driver, the page is alloced and used
+> >> for uio_vma_fault
+> >> 	info->mem[0].addr = (phys_addr_t) kzalloc(PAGE_SIZE, GFP_ATOMIC);
+> > 
+> > That is not a physical address, and is not what the uio api is for at
+> > all.  Please do not abuse it that way.
+> > 
+> >> then we register the UIO driver.
+> >> 	uio_register_device(&pdev->dev, info)
+> > 
+> > So no in-tree drivers are having problems with the existing code, only
+> > fake ones?
 > 
-> Thanks!
+> Yes, but the nullptr porblem may not just about uio driver. For now, page struct
+> has a union
+> union {
+> 	struct mem_cgroup *mem_cgroup;
+> 	struct obj_cgroup **obj_cgroups;
+> };
+> For the slab pages, the union info should belong to obj_cgroups. And for user
+> pages, it should belong to mem_cgroup. When a slab page changes its obj_cgroups,
+> then another user page which is in the same compound page of that slab page will
+> gets the wrong mem_cgroup in __mod_lruvec_page_state(), and will trigger nullptr
+> in mem_cgroup_lruvec(). Correct me if I'm wrong. Thanks!
 
-Oh, sorry about that, it is in fact still needed:
+And how can that be triggered by a user in the 5.10.y kernel tree at the
+moment?
 
-It will make sense in patch v5 10/11:
-On iommu_reconfig_notifier(), if (action == OF_RECONFIG_DETACH_NODE),
-we need to remove a DDW if it exists.
+I'm all for fixing problems, but this one does not seem like it is an
+actual issue for the 5.10 tree right now.  Am I missing something?
 
-As there may be different window names, it tests for DIRECT64_PROPNAME,
-and if it's not found, it tests for DMA64_PROPNAME.
+thanks,
 
-This approach will skip scanning for DMA64_PROPNAME if
-DIRECT64_PROPNAME was found, as both may not exist in the same node.
-But for this approach to work we need remove_ddw() to return error if
-the property is not found.
-
-Does it make sense? or should I just test for both?
-
-Best regards,
-Leonardo Bras
-
-
-
+greg k-h
