@@ -2,79 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 705CE3EE939
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2F93EE93F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235532AbhHQJNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 05:13:01 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:59020 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234347AbhHQJNA (ORCPT
+        id S235849AbhHQJOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 05:14:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234347AbhHQJOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 05:13:00 -0400
-Date:   Tue, 17 Aug 2021 11:12:24 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629191546;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vna3ay+6qfC6a6U/7R3m6EAXb7rtIYGsPklTZxXUqeY=;
-        b=Iwn1N4ZzjrNzw92s+RCTec9IgmEdVl7DLCla5o3/SqiTq19vJxrd5Zc/9f4+OMPo4AgEPA
-        OAYD3zOKnHAxZxvUSZKaynf52bSYCeAhGlTGn1Rv9ulBGt+EijzKl5b/pqQxqKumnYD/D2
-        ELS0zpsJi5XrNNKHmHM7a8xorkrffLimxaRDuJP+Z9A6udR87J2PBSZZ+aGnvJRlk8gUeS
-        bLqsIoMR1OrqPWeB8L6PVDO/d+84jTRoAhsopDzqfCCMFVsEiaOA3MTahAUZOg652sHqej
-        b5IETeIAE4DhCBosKePMIVXYDuXEqoMJePr1QwzGoaFTxGelEOUj6wiO6Wne7A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629191546;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vna3ay+6qfC6a6U/7R3m6EAXb7rtIYGsPklTZxXUqeY=;
-        b=pOyfrq8aIKWTzmlthQ2kwy0IlXHm+1Ghsxpzs6vbG40odt18B9tJSkmGyg/iv7HcW5GQF5
-        M3Z2Y5QSfIMRAMDA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Sven Eckelmann <sven@narfation.org>, akpm@linux-foundation.org,
-        brouer@redhat.com, cl@linux.com, efault@gmx.de,
-        iamjoonsoo.kim@lge.com, jannh@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mgorman@techsingularity.net, penberg@kernel.org,
-        rientjes@google.com, tglx@linutronix.de,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH v4 35/35] mm, slub: convert kmem_cpu_slab protection to
- local_lock
-Message-ID: <20210817091224.nqnrro34cyb67chj@linutronix.de>
-References: <2666777.vCjUEy5FO1@sven-desktop>
- <7329198a-2a4e-ebc2-abf8-f7f38f00d5e1@suse.cz>
+        Tue, 17 Aug 2021 05:14:03 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF38C061764;
+        Tue, 17 Aug 2021 02:13:30 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id fa24-20020a17090af0d8b0290178bfa69d97so5410934pjb.0;
+        Tue, 17 Aug 2021 02:13:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=7hFl+lvECuO7AZrUUDXWnuHbyid4dTyMDCfojPCaIqo=;
+        b=HbAwPBVxqYVBNSIWFUVtrs0IMzcWdevND/Bs5whRGJRR3xcQUwPv8ASMjr9F5vBtKs
+         UVF269FKV2jKsog2X0w9D46iqKy29PT4sdgDVUsTau49IddPeAcuLDRHDr15uPf0t9EL
+         6Xvhh/U2NQStRmd4VYneToiEWY19ADO/i/1Gyn3I/LbgirDY3AJaKScapVq6Ie5xiryz
+         BZavh8YDNJS6OyyEoYOgsNQDFW3oxspgCbVOOogXCRPkZPmBzRSnsYl0GiIrnPiJN9Tu
+         WTlJ9RvtCbaY66mhSa1YYXnbg3LV4TD0QP+jx9n8QIS8tC/G0sGS5mZluZDg3+GVT7gs
+         RLhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=7hFl+lvECuO7AZrUUDXWnuHbyid4dTyMDCfojPCaIqo=;
+        b=qwpS5QXVHgoP3lCk6fO63if/PU38dScytagqJyjmnXsllmyyIaXWfN9s4sCHoX5U58
+         wA9bnnZbLCcqk5r1GgfVrOobQ2A6M3mbq8+LV3ZPlzNrkWjwfuNryj+8GPq4M4bucHy5
+         Yf1l5QXfFF7D9OjEEDDyEiwfdDldV9+Yv7DoS6qx4n9WH6wE3g4MtszZY4pEWVp83E3T
+         ujFhn7z/JBRwmlYtUUhQX5YDj1NZnTbNgKmRKRIRYYkLeD+BzQzB5003GX9cMX/ENc4r
+         MolVPANsLnJsci6Da5DV5lXQRQTY+FYuyK0V3bJpnAOX3IgUHD9OEDepDDTMUc9cCope
+         PUbQ==
+X-Gm-Message-State: AOAM533gaGRhDsXwRQ3f0bhgEWWeI1DbLJZ5tFB26kqn18Es8mB0BJ0x
+        wFRBSFNQXFVfCCWDjb2wohA=
+X-Google-Smtp-Source: ABdhPJxHI1dM8zK2COH1XPjzlYAwHAHgWtNEqcIr/Bsks62txFI2scVFQWlvqty7C3PvXy8uJLiEhg==
+X-Received: by 2002:a17:90a:384b:: with SMTP id l11mr2699892pjf.208.1629191609882;
+        Tue, 17 Aug 2021 02:13:29 -0700 (PDT)
+Received: from [10.211.55.3] ([202.78.233.119])
+        by smtp.gmail.com with ESMTPSA id n22sm1853892pff.57.2021.08.17.02.13.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Aug 2021 02:13:28 -0700 (PDT)
+From:   Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
+To:     isdn@linux-pingi.de, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, dsterba@suse.com, jcmvbkbc@gmail.com,
+        johannes@sipsolutions.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andrianov@ispras.ru
+Subject: [question] potential race between capinc_tty_init & capi_release
+Message-ID: <af56f61a-6343-85fd-3efc-b3a2890246ac@gmail.com>
+Date:   Tue, 17 Aug 2021 14:43:22 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <7329198a-2a4e-ebc2-abf8-f7f38f00d5e1@suse.cz>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-17 10:37:48 [+0200], Vlastimil Babka wrote:
-> OK reproduced. Thanks, will investigate.
+In drivers/isdn/capi/capi.c, based on the output of a static analysis 
+tool, we found the possibility of the following race condition:
 
-With the local_lock at the top, the needed alignment gets broken for dbl
-cmpxchg. On RT it was working ;)
+In capi_init, register_chrdev registers file operations callbacks, 
+capi_fops. Then capinc_tty_init is executed.
 
-diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
-index b5bcac29b979c..cd14aa1f9bc3c 100644
---- a/include/linux/slub_def.h
-+++ b/include/linux/slub_def.h
-@@ -42,9 +42,9 @@ enum stat_item {
- 	NR_SLUB_STAT_ITEMS };
- 
- struct kmem_cache_cpu {
--	local_lock_t lock;	/* Protects the fields below except stat */
- 	void **freelist;	/* Pointer to next available object */
- 	unsigned long tid;	/* Globally unique transaction id */
-+	local_lock_t lock;	/* Protects the fields below except stat */
- 	struct page *page;	/* The slab from which we are allocating */
- #ifdef CONFIG_SLUB_CPU_PARTIAL
- 	struct page *partial;	/* Partially allocated frozen slabs */
+Simultaneously the following chain of calls can occur (after a 
+successful capi_open call).
 
-Sebastian
+capi_release -> capincci_free -> capincci_free_minor -> capiminor_free 
+-> tty_unregister_device
+
+tty_unregister_device reads capinc_tty_driver, which might not have been 
+initialized at this point. So, we have a race between capi_release and 
+capinc_tty_init.
+
+If this is a possible race scenario, maybe moving register_chrdev after 
+capinc_tty_init could fix it. But I am not sure if this will break 
+something else. Please let me know if this is a potential race and can 
+be fixed as mentioned.
+
+Since this is based on a static analysis tool, this is not tested.
