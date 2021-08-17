@@ -2,138 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B7E3EEDE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 624FB3EEDEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237588AbhHQN7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 09:59:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235971AbhHQN7E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 09:59:04 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ECADC061796
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 06:58:31 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id q16so25464707ioj.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 06:58:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RfYUDUzpE88BFM7U12PFd1PZxGOVQ4arJXsmSphggxs=;
-        b=iQRFTvEcKZRS+I7e+8UpMTn4j0ZSz8+CSXkQ1s5dr+XPZOFVvOWfL5IMxiRY10YAKp
-         Z6AsVDrZJ7IFA8nKaIPtWLJq9phbVgdJ3dx8QsCkhERsE7IiSMDjBPXGW1bvP2bNIqYW
-         o+ENNXVC/au2HIiJZorwAUNQ34Wxk2JN/gFtHGx+dGHH/O7hM/nphUWSEJRRoHen+mbP
-         /OxUeTwTx+Nu0WmSz40CnheNOlDash4wmpeVdCUiM4XGxMi6/YEBwabD7ySbR92liE22
-         mlF2ZUgqdPsuOZw7/ZCmZMPbSMjXsHAKGXZFzXjyWloPqjbrK9qr5Hgqb75ElvZZVa1n
-         SdRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RfYUDUzpE88BFM7U12PFd1PZxGOVQ4arJXsmSphggxs=;
-        b=EzBirFwlafUwjsFjk7ejZ4m1xunACWwh0HnlwLJ1oAvQ26ra/eO+QUqGV53oYIQumL
-         lt5B+MoakU3Ep3EJWTeBIFA46fYGrrB2Sb6JmWuv03auCggpm4ukS1PaDK9zpdeajdc8
-         CQdGlHiAOasHMAuIuuHbCar4DmTseA5X/IJ2PgKdPel58j2axe6uxO1MhISCia8AOsB0
-         2UvFsMrgrxGWtN7/WawXsKnSOVtV+uE6xzd95eT7vd/EF/BE4NO7L/GyOonpgAE3myLL
-         rGFKFftJkJcB1xWd5K79iXmLQ285jHuBnZhw1EDWEfVkDheL9QGbA2aIzEiwPM+G02MO
-         95zA==
-X-Gm-Message-State: AOAM533A9bazKStYq002HQE271YpxVqlXrqmXDauVyNwenK26s9TJuv5
-        /OySD4lHOkHAYA0iIfPkLe++WizAOlZr5gPFr4S76w==
-X-Google-Smtp-Source: ABdhPJy5DxApqGc5ZVwyb9Cd0z0vFRTr6eAfjR0+eKgYnhQEMzeQwy3jTzlLy/EZ69bAzZsWSGMmHxv7hV1xY9n4aBQ=
-X-Received: by 2002:a5d:9eda:: with SMTP id a26mr3069220ioe.166.1629208710636;
- Tue, 17 Aug 2021 06:58:30 -0700 (PDT)
+        id S231786AbhHQN7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 09:59:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229761AbhHQN7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 09:59:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2495960524;
+        Tue, 17 Aug 2021 13:58:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629208742;
+        bh=B06scW2J7ecNpbEphbLVfcIfuUrfEsxm2wT1v2ApOY0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sZyPGwMto71flosXVfjeoEOM/ETYsx7U1ZKgAD4baKahspqdE6vgjGktZzN0T4JbM
+         sM/5uJPsF1BeD3BWlU0U+TUVxAloUyCUx4ZLKKdvqJbgvuBDMWa1K98KqGM8RELYba
+         JjYulBVaowr99hOASMcw15lKE5e8xW6imsebgrvvoYgECzePC7U7IIIPVItyJXmUQw
+         nI9LLa7/KrARbpCLCELSe23sVSuwhhqcq5gy75j0J5DSv/e9/Rfxp5wEU4RXQ/W4d0
+         aVb1Z4WpxNhr9l2aSFTMU9jTMRMVu8BWZT5qmmITpZJHYH5jjhlMLPMqEWVJvIy+1K
+         /kPl2V+y5QiKQ==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     x86@kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH] x86/mm: fix kern_addr_valid to cope with existing but not present entries
+Date:   Tue, 17 Aug 2021 16:58:54 +0300
+Message-Id: <20210817135854.25407-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <1629132650-26277-1-git-send-email-sbhanu@codeaurora.org>
-In-Reply-To: <1629132650-26277-1-git-send-email-sbhanu@codeaurora.org>
-From:   Doug Anderson <dianders@google.com>
-Date:   Tue, 17 Aug 2021 06:58:18 -0700
-Message-ID: <CAD=FV=UqFczZ6tLzVuXhgKG9teSNTGt_RdqAxP4eXBN_eDDAtQ@mail.gmail.com>
-Subject: Re: [PATCH V1] arm64: dts: qcom: sc7180: Use maximum drive strength
- values for eMMC
-To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Sahitya Tummala <stummala@codeaurora.org>,
-        pragalla@codeaurora.org, nitirawa@codeaurora.org,
-        Ram Prakash Gupta <rampraka@codeaurora.org>,
-        Sayali Lokhande <sayalil@codeaurora.org>,
-        sartgarg@codeaurora.org, cang@codeaurora.org,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-On Mon, Aug 16, 2021 at 9:51 AM Shaik Sajida Bhanu
-<sbhanu@codeaurora.org> wrote:
->
-> The current drive strength values are not sufficient on non discrete
-> boards and this leads to CRC errors during switching to HS400 enhanced
-> strobe mode.
->
-> Hardware simulation results on non discrete boards shows up that use the
-> maximum drive strength values for data and command lines could helps
-> in avoiding these CRC errors.
->
-> So, update data and command line drive strength values to maximum.
->
-> Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+Jiri Olsa reported a fault when running:
 
-I found this CL because you created a bug for it (thanks!), but it
-would have also been nice if you had CCed some folks from Google that
-work on the trogdor project on your patch.
+	# cat /proc/kallsyms | grep ksys_read
+	ffffffff8136d580 T ksys_read
+	# objdump -d --start-address=0xffffffff8136d580 --stop-address=0xffffffff8136d590 /proc/kcore
 
+	/proc/kcore:     file format elf64-x86-64
 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> index 0f2b3c0..79d7aa6 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> @@ -1524,13 +1524,13 @@ ap_spi_fp: &spi10 {
->                 pinconf-cmd {
->                         pins = "sdc1_cmd";
->                         bias-pull-up;
-> -                       drive-strength = <10>;
-> +                       drive-strength = <16>;
->                 };
->
->                 pinconf-data {
->                         pins = "sdc1_data";
->                         bias-pull-up;
-> -                       drive-strength = <10>;
-> +                       drive-strength = <16>;
+	Segmentation fault
 
-I could be convinced that this is the right thing to do, but I want to
-really make sure that it has had sufficient testing. Specifically as
-this patch is written we'll be updating the drive strength for all
-boards. Increasing the drive strength can sometimes introduce new
-problems (reflections, noise, ...) so we have to be confident that
-we're not breaking someone that used to work by increasing the drive
-strength here. How much has this been tested?
+krava33 login: [   68.330612] general protection fault, probably for non-canonical address 0xf887ffcbff000: 0000 [#1] SMP PTI
+[   68.333118] CPU: 12 PID: 1079 Comm: objdump Not tainted 5.14.0-rc5qemu+ #508
+[   68.334922] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-4.fc34 04/01/2014
+[   68.336945] RIP: 0010:kern_addr_valid+0x150/0x300
+[   68.338082] Code: 1f 40 00 48 8b 0d e8 12 61 01 48 85 f6 0f 85 ca 00 00 00 48 81 e1 00 f0 ff ff 48 21 c1 48 b8 00 00 00 00 80 88 ff ff 48 01 ca <48> 8b 3c 02 48 f7 c7 9f ff ff ff 0f 84 d8 fe ff ff 48 89 f8 0f 1f
+[   68.342220] RSP: 0018:ffffc90000bcbc38 EFLAGS: 00010206
+[   68.343428] RAX: ffff888000000000 RBX: 0000000000001000 RCX: 000ffffffcbff000
+[   68.345029] RDX: 000ffffffcbff000 RSI: 0000000000000000 RDI: 800ffffffcbff062
+[   68.346599] RBP: ffffc90000bcbea8 R08: 0000000000001000 R09: 0000000000000000
+[   68.349000] R10: 0000000000000000 R11: 0000000000001000 R12: 00007fcc0fd80010
+[   68.350804] R13: ffffffff83400000 R14: 0000000000400000 R15: ffffffff843d23e0
+[   68.352609] FS:  00007fcc111fcc80(0000) GS:ffff888275e00000(0000) knlGS:0000000000000000
+[   68.354638] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   68.356104] CR2: 00007fcc0fd80000 CR3: 000000011226e004 CR4: 0000000000770ee0
+[   68.357896] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   68.359694] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   68.361597] PKRU: 55555554
+[   68.362460] Call Trace:
+[   68.363252]  read_kcore+0x57f/0x920
+[   68.364289]  ? rcu_read_lock_sched_held+0x12/0x80
+[   68.365630]  ? rcu_read_lock_sched_held+0x12/0x80
+[   68.366955]  ? rcu_read_lock_sched_held+0x12/0x80
+[   68.368277]  ? trace_hardirqs_on+0x1b/0xd0
+[   68.369462]  ? rcu_read_lock_sched_held+0x12/0x80
+[   68.370793]  ? lock_acquire+0x195/0x2f0
+[   68.371920]  ? lock_acquire+0x195/0x2f0
+[   68.373035]  ? rcu_read_lock_sched_held+0x12/0x80
+[   68.374364]  ? lock_acquire+0x195/0x2f0
+[   68.375498]  ? rcu_read_lock_sched_held+0x12/0x80
+[   68.376831]  ? rcu_read_lock_sched_held+0x12/0x80
+[   68.379883]  ? rcu_read_lock_sched_held+0x12/0x80
+[   68.381268]  ? lock_release+0x22b/0x3e0
+[   68.382458]  ? _raw_spin_unlock+0x1f/0x30
+[   68.383685]  ? __handle_mm_fault+0xcfc/0x15f0
+[   68.384994]  ? rcu_read_lock_sched_held+0x12/0x80
+[   68.386389]  ? lock_acquire+0x195/0x2f0
+[   68.387573]  ? rcu_read_lock_sched_held+0x12/0x80
+[   68.388969]  ? lock_release+0x22b/0x3e0
+[   68.390145]  proc_reg_read+0x55/0xa0
+[   68.391257]  ? vfs_read+0x78/0x1b0
+[   68.392336]  vfs_read+0xa7/0x1b0
+[   68.393328]  ksys_read+0x68/0xe0
+[   68.394308]  do_syscall_64+0x3b/0x90
+[   68.395391]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[   68.396804] RIP: 0033:0x7fcc11cf92e2
+[   68.397824] Code: c0 e9 b2 fe ff ff 50 48 8d 3d ea 2e 0a 00 e8 95 e9 01 00 0f 1f 44 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 0f 05 <48> 3d 00 f0 ff ff 77 56 c3 0f 1f 44 00 00 48 83 ec 28 48 89 54 24
+[   68.402420] RSP: 002b:00007ffd6e0f8da8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+[   68.404357] RAX: ffffffffffffffda RBX: 0000565439305b20 RCX: 00007fcc11cf92e2
+[   68.406061] RDX: 0000000000800000 RSI: 00007fcc0f980010 RDI: 0000000000000003
+[   68.407747] RBP: 00007fcc11dcd300 R08: 0000000000000003 R09: 00007fcc0d980010
+[   68.410937] R10: 0000000003826000 R11: 0000000000000246 R12: 00007fcc0f980010
+[   68.412624] R13: 0000000000000d68 R14: 00007fcc11dcc700 R15: 0000000000800000
+[   68.414322] Modules linked in: intel_rapl_msr intel_rapl_common nfit kvm_intel kvm irqbypass rapl iTCO_wdt iTCO_vendor_support i2c_i801 i2c_smbus lpc_ich drm drm_panel_orientation_quirks zram xfs crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel
+[   68.419591] ---[ end trace e2c30f827226966b ]---
+[   68.420969] RIP: 0010:kern_addr_valid+0x150/0x300
+[   68.422308] Code: 1f 40 00 48 8b 0d e8 12 61 01 48 85 f6 0f 85 ca 00 00 00 48 81 e1 00 f0 ff ff 48 21 c1 48 b8 00 00 00 00 80 88 ff ff 48 01 ca <48> 8b 3c 02 48 f7 c7 9f ff ff ff 0f 84 d8 fe ff ff 48 89 f8 0f 1f
+[   68.426826] RSP: 0018:ffffc90000bcbc38 EFLAGS: 00010206
+[   68.428150] RAX: ffff888000000000 RBX: 0000000000001000 RCX: 000ffffffcbff000
+[   68.429813] RDX: 000ffffffcbff000 RSI: 0000000000000000 RDI: 800ffffffcbff062
+[   68.431465] RBP: ffffc90000bcbea8 R08: 0000000000001000 R09: 0000000000000000
+[   68.433115] R10: 0000000000000000 R11: 0000000000001000 R12: 00007fcc0fd80010
+[   68.434768] R13: ffffffff83400000 R14: 0000000000400000 R15: ffffffff843d23e0
+[   68.436423] FS:  00007fcc111fcc80(0000) GS:ffff888275e00000(0000) knlGS:0000000000000000
+[   68.438354] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   68.442077] CR2: 00007fcc0fd80000 CR3: 000000011226e004 CR4: 0000000000770ee0
+[   68.443727] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   68.445370] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   68.447010] PKRU: 55555554
 
-From the discussions in the bugs, it seemed like the increased drive
-strength was only needed for one eMMC part and that eMMC part still
-had problems even after the increased drive strength, it just had
-fewer problems. It would be good to confirm that I got my data
-straight, but if it's right I'd be inclined _not_ to increase the
-drive strength and simply to make sure we don't use that eMMC part (or
-solve the problems with it in a different way). I seem to remember
-that there were other eMMC-related values that could be set. Any
-chance the problems are really there? Like `fixed-emmc-driver-type`?
+The fault happens because kern_addr_valid() dereferences existent but not
+present PMD in the high kernel mappings.
 
--Doug
+Such PMDs are created when free_kernel_image_pages() frees regions larger
+than 2Mb. In this case a part of the freed memory is mapped with PMDs and
+the set_memory_np_noalias() -> ... -> __change_page_attr() sequence will
+mark the PMD as not present rather than wipe it completely.
+
+Make kern_addr_valid() to check whether higher level page table entries are
+present before trying to dereference them to fix this issue and to avoid
+similar issues in the future.
+
+Reported-by: Jiri Olsa <jolsa@redhat.com>
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+---
+ arch/x86/mm/init_64.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+index ddeaba947eb3..07b56e90db5d 100644
+--- a/arch/x86/mm/init_64.c
++++ b/arch/x86/mm/init_64.c
+@@ -1433,18 +1433,18 @@ int kern_addr_valid(unsigned long addr)
+ 		return 0;
+ 
+ 	p4d = p4d_offset(pgd, addr);
+-	if (p4d_none(*p4d))
++	if (p4d_none(*p4d) || !p4d_present(*p4d))
+ 		return 0;
+ 
+ 	pud = pud_offset(p4d, addr);
+-	if (pud_none(*pud))
++	if (pud_none(*pud) || !pud_present(*pud))
+ 		return 0;
+ 
+ 	if (pud_large(*pud))
+ 		return pfn_valid(pud_pfn(*pud));
+ 
+ 	pmd = pmd_offset(pud, addr);
+-	if (pmd_none(*pmd))
++	if (pmd_none(*pmd) || !pmd_present(*pmd))
+ 		return 0;
+ 
+ 	if (pmd_large(*pmd))
+
+base-commit: 7c60610d476766e128cc4284bb6349732cbd6606
+-- 
+2.28.0
+
