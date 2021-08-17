@@ -2,53 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BBCD3EF3A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA063EF3C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:49:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235930AbhHQUQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 16:16:41 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34608 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234827AbhHQUOy (ORCPT
+        id S236838AbhHQUSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 16:18:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235197AbhHQUPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 16:14:54 -0400
-Date:   Tue, 17 Aug 2021 20:14:19 -0000
+        Tue, 17 Aug 2021 16:15:14 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00160C0612AF;
+        Tue, 17 Aug 2021 13:14:22 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 20:14:20 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629231260;
+        s=2020; t=1629231261;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TSf6sTg52gE4lbqamwI10g699CyE6uUqI1kk8qJ3pkE=;
-        b=ir5473G3ezoMTiqgIo+qWCVYqly+UF6mqYKabbLrKQBqnzgUSuOnmEcimcxmlrZ1u0jILd
-        Fxe0wG4rqhPrUnzhBvDjHE+kaCpXkXtRZXoA6+bubjdoy5ev62EZ8/UZFkqmttdDQauA0b
-        oqtYPYt648pPoevPcYMtqv4GlXDH47p2jSCafgWvNn47rSfCzLMfbKa96xbClUNSUEbbI9
-        gekI/9xokUTvSFs0/JWdnyayOZbSyOK5iK2XYgsJyPMWNbEQz2ztDudhUo7qKl113tG+DO
-        sL8p56VGLyUOsVrXpsIGzl2kwLsj8fby4svl3usyDPBb8h1shEvNYj6i1IFrvQ==
+        bh=rX6UN2G2Eec3psqvx0wbJUZCzaRbi3DUxopVScKDnco=;
+        b=L/Kz5cleeBJvowctraJgAuzwNgBCwnf1HRgvOf5GeNNxtSLmKjhs/XVOzs3Q2B+xsPnZNM
+        40qmEA3s6fPh7k0oYQvkxApZhh0CKjObPBNxp7ofU+lduOq21LRMCZh9EsWRd2zfq+fMy6
+        rfNka1RJtGy3Mq4v0/QmZxJUfVGgMmm6w9Tus8I9+W4x4Oz4FXhmQz1nvLTsEkltDyj2t5
+        hV2D6nygVD/JRqUyjLMEka5xANBO+082sq91T0sLOQANSZ0S6l4PVSxZk0HOa+VJEDlgiQ
+        P0eptlcjztnNlAWdkiC2+lij4QNMTyGk921KzHnnjl2IHnVCJm2FsRqBC2KGZQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629231260;
+        s=2020e; t=1629231261;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TSf6sTg52gE4lbqamwI10g699CyE6uUqI1kk8qJ3pkE=;
-        b=tOSL7AVXjn06a1DaLWGZ8kTXGqjjaphkaw6ZtEphKN/2aKB4ncpjoBPFJhrtZpi8wI4pMR
-        4+JgGqMfLTA8z8AA==
+        bh=rX6UN2G2Eec3psqvx0wbJUZCzaRbi3DUxopVScKDnco=;
+        b=rC8+xoW056iAaDMuvCUihbeqTHjG+1ijWeb6spEv7Y6TMcbOKBeaAFxZ6mVNecm9S9iqpw
+        BVa80Lq4oANZN6Cw==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/spinlock: Provide RT variant
+Subject: [tip: locking/core] locking/spinlock: Provide RT variant header:
+ <linux/spinlock_rt.h>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210815211303.826621464@linutronix.de>
-References: <20210815211303.826621464@linutronix.de>
+In-Reply-To: <20210815211303.712897671@linutronix.de>
+References: <20210815211303.712897671@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <162923125969.25758.6166313112326064815.tip-bot2@tip-bot2>
+Message-ID: <162923126079.25758.13320696954880142093.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,172 +63,232 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     0f383b6dc96e976dfbf2721b0bf10bd96103b341
-Gitweb:        https://git.kernel.org/tip/0f383b6dc96e976dfbf2721b0bf10bd96103b341
+Commit-ID:     342a93247e0837101f27bbcca26f402902df98dc
+Gitweb:        https://git.kernel.org/tip/342a93247e0837101f27bbcca26f402902df98dc
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sun, 15 Aug 2021 23:28:27 +02:00
+AuthorDate:    Sun, 15 Aug 2021 23:28:23 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 17 Aug 2021 17:48:13 +02:00
+CommitterDate: Tue, 17 Aug 2021 17:43:24 +02:00
 
-locking/spinlock: Provide RT variant
+locking/spinlock: Provide RT variant header: <linux/spinlock_rt.h>
 
-Provide the actual locking functions which make use of the general and
-spinlock specific rtmutex code.
+Provide the necessary wrappers around the actual rtmutex based spinlock
+implementation.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210815211303.826621464@linutronix.de
+Link: https://lore.kernel.org/r/20210815211303.712897671@linutronix.de
 ---
- kernel/locking/Makefile      |   1 +-
- kernel/locking/spinlock_rt.c | 129 ++++++++++++++++++++++++++++++++++-
- 2 files changed, 130 insertions(+)
- create mode 100644 kernel/locking/spinlock_rt.c
+ include/linux/spinlock.h         |  11 +-
+ include/linux/spinlock_api_smp.h |   3 +-
+ include/linux/spinlock_rt.h      | 149 ++++++++++++++++++++++++++++++-
+ 3 files changed, 162 insertions(+), 1 deletion(-)
+ create mode 100644 include/linux/spinlock_rt.h
 
-diff --git a/kernel/locking/Makefile b/kernel/locking/Makefile
-index 269f55e..683f0b7 100644
---- a/kernel/locking/Makefile
-+++ b/kernel/locking/Makefile
-@@ -25,6 +25,7 @@ obj-$(CONFIG_LOCK_SPIN_ON_OWNER) += osq_lock.o
- obj-$(CONFIG_PROVE_LOCKING) += spinlock.o
- obj-$(CONFIG_QUEUED_SPINLOCKS) += qspinlock.o
- obj-$(CONFIG_RT_MUTEXES) += rtmutex_api.o
-+obj-$(CONFIG_PREEMPT_RT) += spinlock_rt.o
- obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock.o
- obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock_debug.o
- obj-$(CONFIG_QUEUED_RWLOCKS) += qrwlock.o
-diff --git a/kernel/locking/spinlock_rt.c b/kernel/locking/spinlock_rt.c
+diff --git a/include/linux/spinlock.h b/include/linux/spinlock.h
+index 5803b56..45310ea 100644
+--- a/include/linux/spinlock.h
++++ b/include/linux/spinlock.h
+@@ -312,8 +312,10 @@ static inline void do_raw_spin_unlock(raw_spinlock_t *lock) __releases(lock)
+ 	1 : ({ local_irq_restore(flags); 0; }); \
+ })
+ 
+-/* Include rwlock functions */
++#ifndef CONFIG_PREEMPT_RT
++/* Include rwlock functions for !RT */
+ #include <linux/rwlock.h>
++#endif
+ 
+ /*
+  * Pull the _spin_*()/_read_*()/_write_*() functions/declarations:
+@@ -324,6 +326,9 @@ static inline void do_raw_spin_unlock(raw_spinlock_t *lock) __releases(lock)
+ # include <linux/spinlock_api_up.h>
+ #endif
+ 
++/* Non PREEMPT_RT kernel, map to raw spinlocks: */
++#ifndef CONFIG_PREEMPT_RT
++
+ /*
+  * Map the spin_lock functions to the raw variants for PREEMPT_RT=n
+  */
+@@ -458,6 +463,10 @@ static __always_inline int spin_is_contended(spinlock_t *lock)
+ 
+ #define assert_spin_locked(lock)	assert_raw_spin_locked(&(lock)->rlock)
+ 
++#else  /* !CONFIG_PREEMPT_RT */
++# include <linux/spinlock_rt.h>
++#endif /* CONFIG_PREEMPT_RT */
++
+ /*
+  * Pull the atomic_t declaration:
+  * (asm-mips/atomic.h needs above definitions)
+diff --git a/include/linux/spinlock_api_smp.h b/include/linux/spinlock_api_smp.h
+index 19a9be9..6b8e1a0 100644
+--- a/include/linux/spinlock_api_smp.h
++++ b/include/linux/spinlock_api_smp.h
+@@ -187,6 +187,9 @@ static inline int __raw_spin_trylock_bh(raw_spinlock_t *lock)
+ 	return 0;
+ }
+ 
++/* PREEMPT_RT has its own rwlock implementation */
++#ifndef CONFIG_PREEMPT_RT
+ #include <linux/rwlock_api_smp.h>
++#endif
+ 
+ #endif /* __LINUX_SPINLOCK_API_SMP_H */
+diff --git a/include/linux/spinlock_rt.h b/include/linux/spinlock_rt.h
 new file mode 100644
-index 0000000..edfa7b5
+index 0000000..21228d3
 --- /dev/null
-+++ b/kernel/locking/spinlock_rt.c
-@@ -0,0 +1,129 @@
++++ b/include/linux/spinlock_rt.h
+@@ -0,0 +1,149 @@
 +// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * PREEMPT_RT substitution for spin/rw_locks
-+ *
-+ * spinlocks and rwlocks on RT are based on rtmutexes, with a few twists to
-+ * resemble the non RT semantics:
-+ *
-+ * - Contrary to plain rtmutexes, spinlocks and rwlocks are state
-+ *   preserving. The task state is saved before blocking on the underlying
-+ *   rtmutex, and restored when the lock has been acquired. Regular wakeups
-+ *   during that time are redirected to the saved state so no wake up is
-+ *   missed.
-+ *
-+ * - Non RT spin/rwlocks disable preemption and eventually interrupts.
-+ *   Disabling preemption has the side effect of disabling migration and
-+ *   preventing RCU grace periods.
-+ *
-+ *   The RT substitutions explicitly disable migration and take
-+ *   rcu_read_lock() across the lock held section.
-+ */
-+#include <linux/spinlock.h>
-+#include <linux/export.h>
++#ifndef __LINUX_SPINLOCK_RT_H
++#define __LINUX_SPINLOCK_RT_H
 +
-+#define RT_MUTEX_BUILD_SPINLOCKS
-+#include "rtmutex.c"
-+
-+static __always_inline void rtlock_lock(struct rt_mutex_base *rtm)
-+{
-+	if (unlikely(!rt_mutex_cmpxchg_acquire(rtm, NULL, current)))
-+		rtlock_slowlock(rtm);
-+}
-+
-+static __always_inline void __rt_spin_lock(spinlock_t *lock)
-+{
-+	___might_sleep(__FILE__, __LINE__, 0);
-+	rtlock_lock(&lock->lock);
-+	rcu_read_lock();
-+	migrate_disable();
-+}
-+
-+void __sched rt_spin_lock(spinlock_t *lock)
-+{
-+	spin_acquire(&lock->dep_map, 0, 0, _RET_IP_);
-+	__rt_spin_lock(lock);
-+}
-+EXPORT_SYMBOL(rt_spin_lock);
-+
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+void __sched rt_spin_lock_nested(spinlock_t *lock, int subclass)
-+{
-+	spin_acquire(&lock->dep_map, subclass, 0, _RET_IP_);
-+	__rt_spin_lock(lock);
-+}
-+EXPORT_SYMBOL(rt_spin_lock_nested);
-+
-+void __sched rt_spin_lock_nest_lock(spinlock_t *lock,
-+				    struct lockdep_map *nest_lock)
-+{
-+	spin_acquire_nest(&lock->dep_map, 0, 0, nest_lock, _RET_IP_);
-+	__rt_spin_lock(lock);
-+}
-+EXPORT_SYMBOL(rt_spin_lock_nest_lock);
++#ifndef __LINUX_SPINLOCK_H
++#error Do not include directly. Use spinlock.h
 +#endif
 +
-+void __sched rt_spin_unlock(spinlock_t *lock)
-+{
-+	spin_release(&lock->dep_map, _RET_IP_);
-+	migrate_enable();
-+	rcu_read_unlock();
-+
-+	if (unlikely(!rt_mutex_cmpxchg_release(&lock->lock, current, NULL)))
-+		rt_mutex_slowunlock(&lock->lock);
-+}
-+EXPORT_SYMBOL(rt_spin_unlock);
-+
-+/*
-+ * Wait for the lock to get unlocked: instead of polling for an unlock
-+ * (like raw spinlocks do), lock and unlock, to force the kernel to
-+ * schedule if there's contention:
-+ */
-+void __sched rt_spin_lock_unlock(spinlock_t *lock)
-+{
-+	spin_lock(lock);
-+	spin_unlock(lock);
-+}
-+EXPORT_SYMBOL(rt_spin_lock_unlock);
-+
-+static __always_inline int __rt_spin_trylock(spinlock_t *lock)
-+{
-+	int ret = 1;
-+
-+	if (unlikely(!rt_mutex_cmpxchg_acquire(&lock->lock, NULL, current)))
-+		ret = rt_mutex_slowtrylock(&lock->lock);
-+
-+	if (ret) {
-+		spin_acquire(&lock->dep_map, 0, 1, _RET_IP_);
-+		rcu_read_lock();
-+		migrate_disable();
-+	}
-+	return ret;
-+}
-+
-+int __sched rt_spin_trylock(spinlock_t *lock)
-+{
-+	return __rt_spin_trylock(lock);
-+}
-+EXPORT_SYMBOL(rt_spin_trylock);
-+
-+int __sched rt_spin_trylock_bh(spinlock_t *lock)
-+{
-+	int ret;
-+
-+	local_bh_disable();
-+	ret = __rt_spin_trylock(lock);
-+	if (!ret)
-+		local_bh_enable();
-+	return ret;
-+}
-+EXPORT_SYMBOL(rt_spin_trylock_bh);
-+
 +#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+void __rt_spin_lock_init(spinlock_t *lock, const char *name,
-+			 struct lock_class_key *key)
++extern void __rt_spin_lock_init(spinlock_t *lock, const char *name,
++				struct lock_class_key *key);
++#else
++static inline void __rt_spin_lock_init(spinlock_t *lock, const char *name,
++				       struct lock_class_key *key)
 +{
-+	debug_check_no_locks_freed((void *)lock, sizeof(*lock));
-+	lockdep_init_map_wait(&lock->dep_map, name, key, 0, LD_WAIT_CONFIG);
 +}
-+EXPORT_SYMBOL(__rt_spin_lock_init);
++#endif
++
++#define spin_lock_init(slock)				\
++do {							\
++	static struct lock_class_key __key;		\
++							\
++	rt_mutex_base_init(&(slock)->lock);		\
++	__rt_spin_lock_init(slock, #slock, &__key);	\
++} while (0)
++
++extern void rt_spin_lock(spinlock_t *lock);
++extern void rt_spin_lock_nested(spinlock_t *lock, int subclass);
++extern void rt_spin_lock_nest_lock(spinlock_t *lock, struct lockdep_map *nest_lock);
++extern void rt_spin_unlock(spinlock_t *lock);
++extern void rt_spin_lock_unlock(spinlock_t *lock);
++extern int rt_spin_trylock_bh(spinlock_t *lock);
++extern int rt_spin_trylock(spinlock_t *lock);
++
++static __always_inline void spin_lock(spinlock_t *lock)
++{
++	rt_spin_lock(lock);
++}
++
++#ifdef CONFIG_LOCKDEP
++# define __spin_lock_nested(lock, subclass)				\
++	rt_spin_lock_nested(lock, subclass)
++
++# define __spin_lock_nest_lock(lock, nest_lock)				\
++	do {								\
++		typecheck(struct lockdep_map *, &(nest_lock)->dep_map);	\
++		rt_spin_lock_nest_lock(lock, &(nest_lock)->dep_map);	\
++	} while (0)
++# define __spin_lock_irqsave_nested(lock, flags, subclass)	\
++	do {							\
++		typecheck(unsigned long, flags);		\
++		flags = 0;					\
++		__spin_lock_nested(lock, subclass);		\
++	} while (0)
++
++#else
++ /*
++  * Always evaluate the 'subclass' argument to avoid that the compiler
++  * warns about set-but-not-used variables when building with
++  * CONFIG_DEBUG_LOCK_ALLOC=n and with W=1.
++  */
++# define __spin_lock_nested(lock, subclass)	spin_lock(((void)(subclass), (lock)))
++# define __spin_lock_nest_lock(lock, subclass)	spin_lock(((void)(subclass), (lock)))
++# define __spin_lock_irqsave_nested(lock, flags, subclass)	\
++	spin_lock_irqsave(((void)(subclass), (lock)), flags)
++#endif
++
++#define spin_lock_nested(lock, subclass)		\
++	__spin_lock_nested(lock, subclass)
++
++#define spin_lock_nest_lock(lock, nest_lock)		\
++	__spin_lock_nest_lock(lock, nest_lock)
++
++#define spin_lock_irqsave_nested(lock, flags, subclass)	\
++	__spin_lock_irqsave_nested(lock, flags, subclass)
++
++static __always_inline void spin_lock_bh(spinlock_t *lock)
++{
++	/* Investigate: Drop bh when blocking ? */
++	local_bh_disable();
++	rt_spin_lock(lock);
++}
++
++static __always_inline void spin_lock_irq(spinlock_t *lock)
++{
++	rt_spin_lock(lock);
++}
++
++#define spin_lock_irqsave(lock, flags)			 \
++	do {						 \
++		typecheck(unsigned long, flags);	 \
++		flags = 0;				 \
++		spin_lock(lock);			 \
++	} while (0)
++
++static __always_inline void spin_unlock(spinlock_t *lock)
++{
++	rt_spin_unlock(lock);
++}
++
++static __always_inline void spin_unlock_bh(spinlock_t *lock)
++{
++	rt_spin_unlock(lock);
++	local_bh_enable();
++}
++
++static __always_inline void spin_unlock_irq(spinlock_t *lock)
++{
++	rt_spin_unlock(lock);
++}
++
++static __always_inline void spin_unlock_irqrestore(spinlock_t *lock,
++						   unsigned long flags)
++{
++	rt_spin_unlock(lock);
++}
++
++#define spin_trylock(lock)				\
++	__cond_lock(lock, rt_spin_trylock(lock))
++
++#define spin_trylock_bh(lock)				\
++	__cond_lock(lock, rt_spin_trylock_bh(lock))
++
++#define spin_trylock_irq(lock)				\
++	__cond_lock(lock, rt_spin_trylock(lock))
++
++#define __spin_trylock_irqsave(lock, flags)		\
++({							\
++	int __locked;					\
++							\
++	typecheck(unsigned long, flags);		\
++	flags = 0;					\
++	__locked = spin_trylock(lock);			\
++	__locked;					\
++})
++
++#define spin_trylock_irqsave(lock, flags)		\
++	__cond_lock(lock, __spin_trylock_irqsave(lock, flags))
++
++#define spin_is_contended(lock)		(((void)(lock), 0))
++
++static inline int spin_is_locked(spinlock_t *lock)
++{
++	return rt_mutex_base_is_locked(&lock->lock);
++}
++
++#define assert_spin_locked(lock) BUG_ON(!spin_is_locked(lock))
++
 +#endif
