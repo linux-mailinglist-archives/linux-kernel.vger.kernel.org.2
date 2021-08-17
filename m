@@ -2,141 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9AA3EED2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4553EED28
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237594AbhHQNRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 09:17:33 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:28756 "EHLO m43-7.mailgun.net"
+        id S237561AbhHQNR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 09:17:29 -0400
+Received: from mga12.intel.com ([192.55.52.136]:5872 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231770AbhHQNRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 09:17:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629206210; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=FlGPwg1kyi05VPgPSDR9GtaHsFXAyJ6llF/JVEFOnPE=; b=fdWUgV71+tIHh6Ob5JWCOZtii9Rp93jGTC7Tb4Ll1xkJ6pBHZrFp0Cf/5yAT0ReHLNfP/rU5
- KGc9YZde9X0otG8WFkndmwh+j0qIOKFxboM55qH8fIyPN1jUfBBOeiYPiQxTZg9tHrsbGAEn
- l0HXpA6pflvfDfRZD+hWIYnxvHE=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 611bb69f9507ca1a348370c7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 17 Aug 2021 13:16:15
- GMT
-Sender: luoj=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8843DC43616; Tue, 17 Aug 2021 13:16:14 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.92.1.52] (unknown [180.166.53.36])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: luoj)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 077A2C4338F;
-        Tue, 17 Aug 2021 13:16:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 077A2C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH] net: phy: add qca8081 ethernet phy driver
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, sricharan@codeaurora.org
-References: <20210816113440.22290-1-luoj@codeaurora.org>
- <20210816140103.GK22278@shell.armlinux.org.uk>
-From:   Jie Luo <luoj@codeaurora.org>
-Message-ID: <5f517769-8987-385d-1a0c-48c3e808636c@codeaurora.org>
-Date:   Tue, 17 Aug 2021 21:16:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S237156AbhHQNRW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 09:17:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="195666339"
+X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
+   d="scan'208";a="195666339"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 06:16:26 -0700
+X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
+   d="scan'208";a="510467254"
+Received: from favalosr-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.164.120])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 06:16:26 -0700
+Subject: Re: [PATCH v5 01/12] x86/paravirt: Move halt paravirt calls under
+ CONFIG_PARAVIRT
+To:     Juergen Gross <jgross@suse.com>, Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>
+References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210804181329.2899708-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YRTLO0eQOEChETId@zn.tnic> <057170db-9382-eb40-7bcb-4ec1de4aae62@suse.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <fd603d12-1897-1f5f-17fa-b5ac643bc334@linux.intel.com>
+Date:   Tue, 17 Aug 2021 06:16:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210816140103.GK22278@shell.armlinux.org.uk>
+In-Reply-To: <057170db-9382-eb40-7bcb-4ec1de4aae62@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 8/16/2021 10:01 PM, Russell King (Oracle) wrote:
-> On Mon, Aug 16, 2021 at 07:34:40PM +0800, Luo Jie wrote:
->> +/* PMA control */
->> +#define QCA808X_PHY_MMD1_PMA_CONTROL			0x0
->> +#define QCA808X_PMA_CONTROL_SPEED_MASK			(BIT(13) | BIT(6))
->> +#define QCA808X_PMA_CONTROL_2500M			(BIT(13) | BIT(6))
->> +#define QCA808X_PMA_CONTROL_1000M			BIT(6)
->> +#define QCA808X_PMA_CONTROL_100M			BIT(13)
->> +#define QCA808X_PMA_CONTROL_10M				0x0
-> I don't think this is (a) correct, (b) any different from the IEEE 802.3
-> standard definitions. Please use the standard definitions in
-> include/uapi/linux/mdio.h.
-thanks Russell, will update it in the next patch.
->
->> +/* PMA capable */
->> +#define QCA808X_PHY_MMD1_PMA_CAP_REG			0x4
->> +#define QCA808X_STATUS_2500T_FD_CAPS			BIT(13)
-> Again, this is IEEE 802.3 standard, nothing special here. As this is
-> a standard bit, include/uapi/linux/mdio.h should be augmented with
-> it rather than introducing private definitions. Note that this is
-> _not_ 2500T but merely indicates that the "PMA/PMD is capable of
-> operating at 2.5 Gb/s". IEEE 802.3 makes no mention of the underlying
-> technology used to achieve 2.5Gbps.
-thanks for the comments, will update it to use the standard register for 
-the 2.5G capability.
->> +/* PMA type */
->> +#define QCA808X_PHY_MMD1_PMA_TYPE			0x7
->> +#define QCA808X_PMA_TYPE_MASK				GENMASK(5, 0)
->> +#define QCA808X_PMA_TYPE_2500M				0x30
->> +#define QCA808X_PMA_TYPE_1000M				0xc
->> +#define QCA808X_PMA_TYPE_100M				0xe
->> +#define QCA808X_PMA_TYPE_10M				0xf
-> This is the PMA type selection register... another IEEE 802.3 standard
-> register. You omit the underlying technology for these definitions.
->  From the IEEE 802.3 standard:
->
-> 0x30 2.5GBASE-T PMA
-> 0x0f 10BASE-T PMA/PMD
-> 0x0e 100BASE-TX PMA/PMD
-> 0x0c 1000BASE-T PMA/PMD
->
-> and we have definitions for all these already:
->
-> #define MDIO_PMA_CTRL2_1000BT           0x000c  /* 1000BASE-T type */
-> #define MDIO_PMA_CTRL2_100BTX           0x000e  /* 100BASE-TX type */
-> #define MDIO_PMA_CTRL2_10BT             0x000f  /* 10BASE-T type */
-> #define MDIO_PMA_CTRL2_2_5GBT           0x0030  /* 2.5GBaseT type */
->
-> Please make use of these.
-will use it in the next patch.
->
->> +/* AN 2.5G */
->> +#define QCA808X_PHY_MMD7_AUTONEGOTIATION_CONTROL	0x20
->> +#define QCA808X_ADVERTISE_2500FULL			BIT(7)
->> +#define QCA808X_FAST_RETRAIN_2500BT			BIT(5)
->> +#define QCA808X_ADV_LOOP_TIMING				BIT(0)
->> +
->> +/* Fast retrain related registers */
->> +#define QCA808X_PHY_MMD1_FAST_RETRAIN_STATUS_CTL	0x93
->> +#define QCA808X_FAST_RETRAIN_CTRL			0x1
-> I suspect I'm going to find that the above are standard registers
-> as well.
->
-> I think I'll also ask that once you've corrected the above, that you
-> also look to see which of the Clause 45 generic support functions you
-> can make use of in this driver, and switch it over to those - and then
-> post a revised version.
->
-> Thanks.
 
-thanks Russell for review comments, will refer to the standard registers 
-and update
+On 8/17/21 5:50 AM, Juergen Gross wrote:
+> On 12.08.21 09:18, Borislav Petkov wrote:
+>> On Wed, Aug 04, 2021 at 11:13:18AM -0700, Kuppuswamy Sathyanarayanan wrote:
+>>> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+>>>
+>>> CONFIG_PARAVIRT_XXL is mainly defined/used by XEN PV guests. For
+>>> other VM guest types, features supported under CONFIG_PARAVIRT
+>>> are self sufficient. CONFIG_PARAVIRT mainly provides support for
+>>> TLB flush operations and time related operations.
+>>>
+>>> For TDX guest as well, paravirt calls under CONFIG_PARVIRT meets
+>>> most of its requirement except the need of HLT and SAFE_HLT
+>>> paravirt calls, which is currently defined under
+>>> COFNIG_PARAVIRT_XXL.
+>>>
+>>> Since enabling CONFIG_PARAVIRT_XXL is too bloated for TDX guest
+>>> like platforms, move HLT and SAFE_HLT paravirt calls under
+>>> CONFIG_PARAVIRT.
+>>>
+>>> Moving HLT and SAFE_HLT paravirt calls are not fatal and should not
+>>> break any functionality for current users of CONFIG_PARAVIRT.
+>>>
+>>> Co-developed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>>> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>>> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+>>> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+>>> Reviewed-by: Tony Luck <tony.luck@intel.com>
+>>> ---
+>>
+>> You need to do this before sending your patches:
+>>
+>> ./scripts/get_maintainer.pl /tmp/tdx.01
+>> Thomas Gleixner <tglx@linutronix.de> (maintainer:X86 ARCHITECTURE (32-BIT AND 
+>> 64-BIT),commit_signer:1/6=17%)
+>> Ingo Molnar <mingo@redhat.com> (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT))
+>> Borislav Petkov <bp@alien8.de> (maintainer:X86 ARCHITECTURE (32-BIT AND 
+>> 64-BIT),commit_signer:6/6=100%)
+>> x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT))
+>> "H. Peter Anvin" <hpa@zytor.com> (reviewer:X86 ARCHITECTURE (32-BIT AND 64-BIT))
+>> Juergen Gross <jgross@suse.com> (supporter:PARAVIRT_OPS 
+>> INTERFACE,commit_signer:5/6=83%,authored:5/6=83%,added_lines:15/16=94%,removed_lines:38/39=97%)
+>> Deep Shah <sdeep@vmware.com> (supporter:PARAVIRT_OPS INTERFACE)
+>> "VMware, Inc." <pv-drivers@vmware.com> (supporter:PARAVIRT_OPS INTERFACE)
+>> ...
+>>
+>> and CC also the supporters - I'm pretty sure at least Juergen would like
+>> to be kept up-to-date on pv changes. I'll CC him and the others now and
+>> leave in the whole diff but make sure you do that in the future please.
+>>
+>>>   arch/x86/include/asm/irqflags.h       | 40 +++++++++++++++------------
+>>>   arch/x86/include/asm/paravirt.h       | 20 +++++++-------
+>>>   arch/x86/include/asm/paravirt_types.h |  3 +-
+>>>   arch/x86/kernel/paravirt.c            |  4 ++-
+>>>   4 files changed, 36 insertions(+), 31 deletions(-)
+>>>
+>>> diff --git a/arch/x86/include/asm/irqflags.h b/arch/x86/include/asm/irqflags.h
+>>> index c5ce9845c999..f3bb33b1715d 100644
+>>> --- a/arch/x86/include/asm/irqflags.h
+>>> +++ b/arch/x86/include/asm/irqflags.h
+>>> @@ -59,6 +59,28 @@ static inline __cpuidle void native_halt(void)
+>>>   #endif
+>>> +#ifndef CONFIG_PARAVIRT
+>>> +#ifndef __ASSEMBLY__
+>>> +/*
+>>> + * Used in the idle loop; sti takes one instruction cycle
+>>> + * to complete:
+>>> + */
+>>> +static inline __cpuidle void arch_safe_halt(void)
+>>> +{
+>>> +    native_safe_halt();
+>>> +}
+>>> +
+>>> +/*
+>>> + * Used when interrupts are already enabled or to
+>>> + * shutdown the processor:
+>>> + */
+>>> +static inline __cpuidle void halt(void)
+>>> +{
+>>> +    native_halt();
+>>> +}
+>>> +#endif /* __ASSEMBLY__ */
+>>> +#endif /* CONFIG_PARAVIRT */
+>>> +
+>>>   #ifdef CONFIG_PARAVIRT_XXL
+>>>   #include <asm/paravirt.h>
+> 
+> Did you test this with CONFIG_PARAVIRT enabled and CONFIG_PARAVIRT_XXL
+> disabled?
+> 
+> I'm asking because in this case I don't see where halt() and
+> arch_safe_halt() would be defined in case someone is including
+> asm/irqflags.h and not asm/paravirt.h.
 
-it in the next patch.
+We have tested both cases and did not hit any issues.
 
->
+1. CONFIG_PARAVIRT=y and  CONFIG_PARAVIRT_XXL=y
+2. CONFIG_PARAVIRT=y and  CONFIG_PARAVIRT_XXL=n
+
+
+>>> diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
+>>> index 04cafc057bed..124e0f6c5d1c 100644
+>>> --- a/arch/x86/kernel/paravirt.c
+>>> +++ b/arch/x86/kernel/paravirt.c
+>>> @@ -283,9 +283,11 @@ struct paravirt_patch_template pv_ops = {
+>>>       .irq.save_fl        = __PV_IS_CALLEE_SAVE(native_save_fl),
+>>>       .irq.irq_disable    = __PV_IS_CALLEE_SAVE(native_irq_disable),
+>>>       .irq.irq_enable        = __PV_IS_CALLEE_SAVE(native_irq_enable),
+>>> +#endif /* CONFIG_PARAVIRT_XXL */
+>>> +
+>>> +    /* Irq HLT ops. */
+>>
+>> What's that comment for?
+> 
+> I agree, please drop it.
+
+Yes. I will drop it.
+
+> 
+> 
+> Juergen
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
