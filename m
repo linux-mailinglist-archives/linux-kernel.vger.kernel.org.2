@@ -2,138 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB913EF62C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 01:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A5F3EF668
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 01:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236225AbhHQXhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 19:37:46 -0400
-Received: from mail-eopbgr1310078.outbound.protection.outlook.com ([40.107.131.78]:60057
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229466AbhHQXhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 19:37:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Fx3mWN/YliRSvo3iZ1gHXphQ+Zs2U5pXSFn7q6A+ZcE2M+/WGPoxdfvjAH90h6Gwm2pLCEyQsyebeA2Mub1teJeFQAE/3TxBqMUpMqTSpULkP4YJ1/hpv/iksYkKwD+udIrSasmCgynETbx+CIKetJW3rHz6IPIlfmsn1DJ1aATKpe5tncAXhHJHz2xNMw1+AxBVHZ3QK5/BfpB8pcoNBWiaK4hrLMBtNVPfWLJbLeOD+4+1QbLaKiz0UmZgmE7q+pWOkNc150pkUW1x3bZ7C+qCQ/GYBUI/qX/2cOGC2AKTd4cAPCfZq8keHBcPDRCozYLeH4sqk9ZqD8RQFtV2RA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Mx9mbdPe+DcPb5O8E024IyXlFhk5/0oCbaMcZoh+PLs=;
- b=PP4bwiajLV//ISr4IWbsYqKku8TK8DCLvzIE3RAULjzgkasqqsk7N6VxceRPjP2yPvy6nPmNiSbi3ghp3hGoC466IYKU20MnGFpI4KpvuIbRgRaycRJUQY21O5Olv9pPfCnCRxQ453h5vEEoyYwyxwOnbgr6s8t1Rqyom7mQeWJpuiFxVf9w7EMNuNINNuu2Ro0h4FYD4MUJeVUBeAoE/H5Yxx7z0rxxVPet654viBvyN1e8nrkng14W+lO9sgvd0/HdDqH4nMtTipS+rSw7JVsxOO5G2ZNQze7jVkG4uTniO5tmd3nBkXk+K8VsoNP/CuedOCKCbJIVZ17uHqrIKw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
- header.d=nec.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nec.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Mx9mbdPe+DcPb5O8E024IyXlFhk5/0oCbaMcZoh+PLs=;
- b=avrrYrCT038D1olBSAvY197oUfYHhXgJRCsRBgMTSCuA8WLWV+nlezGfSKV9j5U0Jhn8XNTMlmX1/3HS1IulyEsOZjOCS9GO326IO3T3ysP4H2vMU0NSwJLbuwvExnpIoBJUduqowBymlHdidByLdEl34aheLTHYfdW0PononoY=
-Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com (2603:1096:403:8::12)
- by TY2PR01MB3882.jpnprd01.prod.outlook.com (2603:1096:404:de::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.18; Tue, 17 Aug
- 2021 23:37:01 +0000
-Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com
- ([fe80::4401:f9e:2afb:ebc0]) by TY1PR01MB1852.jpnprd01.prod.outlook.com
- ([fe80::4401:f9e:2afb:ebc0%7]) with mapi id 15.20.4415.024; Tue, 17 Aug 2021
- 23:37:01 +0000
-From:   =?utf-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPo+OAgOebtOS5nyk=?= 
-        <naoya.horiguchi@nec.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/4] mm/hwpoison: fix potential pte_unmap_unlock pte error
-Thread-Topic: [PATCH 2/4] mm/hwpoison: fix potential pte_unmap_unlock pte
- error
-Thread-Index: AQHXkPpfFGXqAXhUhE+s+6RCLjYWAqt3USMAgAAPkYCAAP7kgA==
-Date:   Tue, 17 Aug 2021 23:37:01 +0000
-Message-ID: <20210817233701.GA485476@hori.linux.bs1.fc.nec.co.jp>
-References: <20210814105131.48814-1-linmiaohe@huawei.com>
- <20210814105131.48814-3-linmiaohe@huawei.com>
- <20210817072900.GA452155@hori.linux.bs1.fc.nec.co.jp>
- <4b0a5fcd-0b1b-6198-b6a7-d9cab5b9fae2@huawei.com>
-In-Reply-To: <4b0a5fcd-0b1b-6198-b6a7-d9cab5b9fae2@huawei.com>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nec.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 37d787e0-19a2-4524-0e9f-08d961d7e9b4
-x-ms-traffictypediagnostic: TY2PR01MB3882:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TY2PR01MB388236D5E48F1E6EED4F2755E7FE9@TY2PR01MB3882.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: x8DyoGhIEgEqULyBDZfYFHLgSZnIJTbjq4WMTMsiEresq8qHPPTENfad4BiSPZjGucZUtWoW9/mSPhPuP15c9DCWaiuIyVNWkAhQod54ftFKRjoTOic4wzeD3Pn0BM8Ld20sVeEgl0yYo/X5mVxy8u/McOT4yPLyHB3kHrJB+0hn6R20DT5jPBNchV4kcus218YrQ3kwF5cJxGmcHGBLX+ODFkuvOjBg2/wN/S/S4IoO2W0zz4YnhTNFFtj/m0M/0VO/plQgZz/X4uAyPp6ATgPHlVd7TCjlcKHeuJD2ILOU+qcZJLm/5evmnPlLrP0BwtJQ61PRDncAVz0oVkCedCnIGhsSkjYuUHxo0enqCnRrqN5Sl967/kjqnqzeWSRJOlKuAnFEQNwEE/FoTOmk5+h2gVDlhrbYwlgDGloF5N3uJIZrY/DygkKwTO6i3uLDMp45UIDydoeUw774Xs2P+LV96ZxYvQcKH+64swAx942vzxJI3q7s6s82sKuCauE58HGPw5EaWV8701I0PPgZIqodhjbOe/uwEfFeCceAU6LFlG36Xj1fWUEnbr4VDk0rIhyRQJhTflzbmKpfK+AjR0gw214xEwn92pR6WHgqznXWH8mf3c6A8FBUaZDJHc/oJpmLf4bAIK7lBG90TqttmkTawT5rk0UBD55LDAE2ZO/YG89iVLr6br7Eyqm/E+3FYPg34X1fRjkUB30kznCwkA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1852.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(4326008)(6916009)(508600001)(1076003)(316002)(186003)(6512007)(4744005)(64756008)(26005)(9686003)(71200400001)(6506007)(54906003)(53546011)(76116006)(55236004)(6486002)(66446008)(66476007)(33656002)(66556008)(66946007)(2906002)(83380400001)(8936002)(85182001)(8676002)(122000001)(38100700002)(38070700005)(86362001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WmFLelVWTDIrczUrMjJaMFJOcERMSVM5bm9GcG5qS3g2Rk1QVVFHb1J2aDJ2?=
- =?utf-8?B?Tm5OSVIxTGdwTzBLa3UzdXoyNkhsQkZsdCtJMzVxeHFDdzhUUkQvb1VYUTF2?=
- =?utf-8?B?T0NxTHZRdExQOVV0bW5NM250eDhyYmFoREMya0x6a0xBY3pTUDJDYXNOcGlu?=
- =?utf-8?B?a1ZPcXd2RDhRSHNzamg3MFZrQUJBQlV3WTVzUWp0c0srb3hVd3NLVnVuWVRI?=
- =?utf-8?B?dmh5L3c2enlKcFBPRGt1YnhYTE5HenlrVktiekJLTnk1T1dhaGdWWC82UHNa?=
- =?utf-8?B?bjB6TkhreC83NGFmMVdlZGlKSFZIcE5hb2RSS0ZqRElDdm52SG1MRDl0bVU4?=
- =?utf-8?B?SEFQMmFCVmliWnp5YW10TCtmNEpsUXdQMGRINnRWUHhLMzkyZSswYUVzQnlS?=
- =?utf-8?B?S1FRaEhKdXl4UmQvTUZYdG9MdFJIZzREbVd3SEJyNzUvS0lXZkQzRW5JdkYv?=
- =?utf-8?B?STM1ZFIvZFZLTU9OL2UrQ2c2TW9HQ3lQaTFDbzR2T3JQVTFFajVncE4xSDFi?=
- =?utf-8?B?RndQWmpLUUMwVWxQNFZzRnVJd0srNkxXdW90S0dYQitjQ1hRQnJjYnRWMXlN?=
- =?utf-8?B?TDFTWEltSGlmUnRRdjhzVGI0c29XKzJJQ3k1OEV6bDE4RU0rWFA4RkRVbFVS?=
- =?utf-8?B?SXI5Rmc4cWpmN1VleW9YOWcrellJYXU2NHNnbzR4RjRRNDlnN2tMd2U0QXNS?=
- =?utf-8?B?aE56cmNvV3VVSkVnbXNObll1SWdOS2REL3VhUy9jNVZ6NkxLOG9HcFpwOStZ?=
- =?utf-8?B?ZGRSdVNRVHNXekU0aGpZWTZQVGV1RjBtc0R5RHptdWZQZGU4ZzdwK2hpczJ1?=
- =?utf-8?B?bW1GZnhmcksxTFFpaTB6R3lWa2pGRFgvTytWeHBIWWdTMTFFakl6bGZOc1dO?=
- =?utf-8?B?ZUExeUN0NlVWQVRFT2JybFRkaVNocWtBQ0VFMHFvRkdFOGMwR2tDajhaU3d6?=
- =?utf-8?B?aEF0NnZEMFFVTEhyV3R4T0pJakk5NTNUZU9STFQ4QVVmdGNYekdqTEdvdlMz?=
- =?utf-8?B?UEI0M3g0QjYrZE40NjkydW5KOHpTd0ovR2FiNHh3QXpKckhpNmg1Y0xJdEtY?=
- =?utf-8?B?K3poZ01BT2xBS3JqUjhabktwWURmYnFkYWkvMnRwanNKSWl6ZDZvT09ZMVRF?=
- =?utf-8?B?VkNwK2hQZ3A1UlV0MkttRGZwYmhlOVhNalNNSndYdFFWMnlySThaVDgxTUhy?=
- =?utf-8?B?K1h6MzJGQUh5UTR0UkpMNnJocnltWU04RFJueEEzWHZFczBSZ2J0K05XK1Av?=
- =?utf-8?B?Q3o4TFpHaStLdzgrTmFiSFBHRCtwMUVWakJCLzdhcGJxT1BjaUhDaUZNTzFs?=
- =?utf-8?B?aGloVG1NeHlwL25EU1duWGVDTGlyVXpVVmlEVGZMdjc3ZlUxWFlPMVdPbllY?=
- =?utf-8?B?M2VmVUpjU0pUQll5NklBa0R2N01BSHhrOGtyR0owb3BRQ1hxaTUwaTJacnZj?=
- =?utf-8?B?Tm1jRGFWV3NFeWNTWEtKb0VUSGNra21GRWw4QnVmMEowb29ma3RkUDBBcEkx?=
- =?utf-8?B?elJ6aGhrOFJsN1Y1blJwRk1FeGN1L0xsSVJtQWg0c2luQzRuMkNwRlBjVXZK?=
- =?utf-8?B?SzdMMUltUHZ6aVRmTkZFVmFHa3ZWa3lKcnZVZmNUVEozcTF6Y3dmSit3SVU1?=
- =?utf-8?B?OFJNRi9ZbmJ3SHozK0hEcXJYeVZWTXVmRDRycTdIUE50OTE2REkrWGxWRDA5?=
- =?utf-8?B?NTEwdGx3SXVQeHpUOHZ4Vjk1VkJVYWh2aEoyZ1NWKzBXRXo2aXAycnZWbVA4?=
- =?utf-8?B?TDA3aUh6Tyt2TnpVVkVJQzl1MXNWUHRmUTBSdGN2UlJHcUNFQWRXdUgzSGNE?=
- =?utf-8?B?QTUwSEtlMmFWY1NrWEFBQT09?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <801EECCD6350CB46BAC719CA753255B7@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S236774AbhHQX6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 19:58:19 -0400
+Received: from gateway20.websitewelcome.com ([192.185.49.40]:47116 "EHLO
+        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235450AbhHQX6S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 19:58:18 -0400
+X-Greylist: delayed 1221 seconds by postgrey-1.27 at vger.kernel.org; Tue, 17 Aug 2021 19:58:17 EDT
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+        by gateway20.websitewelcome.com (Postfix) with ESMTP id 5336E400D2804
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 18:20:16 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id G8e2mfNqmBvjyG8e2mEk2p; Tue, 17 Aug 2021 18:37:22 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=AzVDzK8a1EEVePdeojHw8a1gJ0hcdK6QJHkvzwsDxKQ=; b=cFdaytldjPLnPidWap/zvaUh+s
+        DQNHq3Mbh59DJZ32pXWxDEQtjJ7Av/iwnObHqrh+HvSXI+MeUryFg5UkkmXc9FDllFn5dXs0npLlG
+        GY2vE/itqS/iFQQeCSnLc7wtbNoybTIP1mYCVCJOpHhItLyx2NPhXjTvURMvxY8a6/lA00odCJNx3
+        xHj39mxLjVvj0+2Wwr2pAIIXpbpKiOcQcpC/9OumnuSaZGfQAzb8ZTmolHLWIWCKOUCGneXOx91BV
+        YDTsr+J38QeY0KUkvTBMJuMg1ptKc3DVWNQy5HopKjt+TaHbNZXmD9Ii3gqKv5eRCY6at1rSiZArv
+        0aLDxiQQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:44668 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1mG8e2-001l7W-2S; Tue, 17 Aug 2021 18:37:22 -0500
+Subject: Re: [PATCH] kbuild: Enable -Wimplicit-fallthrough for clang 14.0.0+
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Philip Li <philip.li@intel.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-hardening@vger.kernel.org
+References: <20210817005624.1455428-1-nathan@kernel.org>
+ <80fa539a-b767-76ed-dafa-4d8d1a6b063e@kernel.org>
+ <CAHk-=wgFXOf9OUh3+vmWjhp1PC47RVsUkL0NszBxSWhbGzx4tw@mail.gmail.com>
+ <5c856f36-69a7-e274-f72a-c3aef195adeb@kernel.org>
+ <202108171056.EDCE562@keescook>
+ <3f28b45e-e725-8b75-042a-d34d90c56361@kernel.org>
+ <CAK7LNAQFgYgavTP2ZG9Y16XBVdPuJ98J_Ty1OrQy1GXHq6JjQQ@mail.gmail.com>
+ <71d76c41-7f9b-6d60-ba4f-0cd84596b457@embeddedor.com>
+ <202108171602.159EB2C7EA@keescook>
+ <72ae69b4-6069-ade5-a12b-8ee0435f803a@kernel.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <1f05cd38-c576-0ded-81b6-fe0b49a5059e@embeddedor.com>
+Date:   Tue, 17 Aug 2021 18:40:25 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-OriginatorOrg: nec.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY1PR01MB1852.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 37d787e0-19a2-4524-0e9f-08d961d7e9b4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Aug 2021 23:37:01.5950
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UN+bFiA4MnGvruVek1cqnIZyArSgGo3mWaB9JWdh/KIdgsg8pnS2gVDvkMTi7xPYR6l4AtIeXvCMpEgnKmjtmA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB3882
+In-Reply-To: <72ae69b4-6069-ade5-a12b-8ee0435f803a@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1mG8e2-001l7W-2S
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:44668
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 9
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCBBdWcgMTcsIDIwMjEgYXQgMDQ6MjQ6NDNQTSArMDgwMCwgTWlhb2hlIExpbiB3cm90
-ZToNCj4gT24gMjAyMS84LzE3IDE1OjI5LCBIT1JJR1VDSEkgTkFPWUEo5aCA5Y+jIOebtOS5nykg
-d3JvdGU6DQouLi4NCj4gPiBPbmUgcXVlc3Rpb24gaXMgdGhhdCBhY2NvcmRpbmcgdG8gImdyZXAg
-LXIgcHRlX3VubWFwX3VubG9jayAuIiBjb21tYW5kIG92ZXINCj4gPiB3aG9sZSBrZXJuZWwgc291
-cmNlIGNvZGUsIHB0ZV91bm1hcF91bmxvY2soKSBpcyBjYWxsZWQgd2l0aCAicHRlcCAtIDEiIGlu
-IHNvbWUgcGxhY2VzLg0KPiA+IEkgdGhpbmsgdGhhdCBub25lIG9mIHRoZW0gc2VlbXMgdG8gaGF2
-ZSAiYnJlYWsgaW4gZm9yIGxvb3AiIGluIGxvY2tlZCBwZXJpb2QsDQo+ID4gc28gdGhlIHNhbWUg
-cHJvYmxlbSBkb2VzIG5vdCBvY2N1ciB0aGVyZS4gIEJ1dCBJJ20gc3RpbGwgbm90IHN1cmUgd2h5
-IHNvbWUgcGxhY2UNCj4gPiBjYWxsIHdpdGggInB0ZXAgLSAxIiBhbmQgdGhlIG90aGVycyBjYWxs
-IHdpdGggcHRlIHJldHVybmVkIGJ5IHB0ZV9vZmZzZXRfbWFwX2xvY2soKS4NCj4gDQo+IElNTyBw
-dGVfdW5tYXBfdW5sb2NrKCkgd29ya3MgYXMgbG9uZyBhcyB0aGUgcGFzc2VkIGluIHB0ZSBiZWxv
-bmdzIHRvIHRoZSBzYW1lIHBhZ2UgcmV0dXJuZWQNCj4gZnJvbSBwdGVfb2Zmc2V0X21hcF9sb2Nr
-KCkuIEkgaGF2ZSBmaXhlZCBzb21lIHNpbWlsYXIgcGxhY2Ugd2hlcmUgcHRlX3VubWFwX3VubG9j
-aygpIGlzIGNhbGxlZA0KPiB3aXRoIHdyb25nICJwdGVwIC0gMSIgd2hlbiBJIHdhcyBsZWFybmlu
-ZyB0aGUgcmVsYXRlZCBtbSBjb2RlLg0KDQpHcmVhdCwgdGhhbmtzIGZvciBjbGFyaWZpY2F0aW9u
-Lg0KDQotIE5hb3lh
+
+
+On 8/17/21 18:23, Nathan Chancellor wrote:
+>>>> # Warn about unmarked fall-throughs in switch statement.
+>>>> # Clang prior to 14.0.0 warned on unreachable fallthroughs with
+>>>> # -Wimplicit-fallthrough, which is unacceptable due to IS_ENABLED().
+>>>> # https://bugs.llvm.org/show_bug.cgi?id=51094
+>>>> ifeq ($(firstword $(sort $(CONFIG_CLANG_VERSION) 140000)),140000)
+>>>> KBUILD_CFLAGS += -Wimplicit-fallthrough
+>>>> endif
+> 
+> Very clever and nifty trick! I have verified that it works for clang 13 and 14 along with a theoretical clang 15. Gustavo, feel free to stick a
+> 
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> Tested-by: Nathan Chancellor <nathan@kernel.org>
+> 
+> if you so desire.
+
+Yep; I just tested it locally with clang 13 and 14, too.
+
+Thanks
+--
+Gustavo
+
+
