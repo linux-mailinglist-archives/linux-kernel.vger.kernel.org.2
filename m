@@ -2,221 +2,364 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9CB3EEB2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 12:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 429773EEB2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 12:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239548AbhHQKpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 06:45:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24899 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235380AbhHQKpE (ORCPT
+        id S239696AbhHQKqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 06:46:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235380AbhHQKqL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 06:45:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629197071;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=K9dQgKcIcb5DxDNrYk+u+HmdPC32i9z4SnfjuIY8WQo=;
-        b=IoLVuQY7LB3gkybu5Be7ifrwfOxEUI4K2naQMdblLTHPGkZLaDElZl9KVB32hTjcXp8oIm
-        tnECoNwq/PgTK+DF+34tejzfFY2z8SNccanCykEiAd7GN+Ihwpym7dqRFSJyp7jSji+zsm
-        YI5IxXUeVdrxENY2pDq8JfRpzhrvbbw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-372-TQWeQCCfMaaKcTeWiUdCEA-1; Tue, 17 Aug 2021 06:44:30 -0400
-X-MC-Unique: TQWeQCCfMaaKcTeWiUdCEA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 95A185F9D4;
-        Tue, 17 Aug 2021 10:44:28 +0000 (UTC)
-Received: from [10.64.54.103] (vpn2-54-103.bne.redhat.com [10.64.54.103])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8495060C81;
-        Tue, 17 Aug 2021 10:44:21 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH v4 02/15] KVM: async_pf: Add helper function to check
- completion queue
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        james.morse@arm.com, mark.rutland@arm.com,
-        Jonathan.Cameron@huawei.com, will@kernel.org, maz@kernel.org,
-        pbonzini@redhat.com, shan.gavin@gmail.com,
-        kvmarm@lists.cs.columbia.edu
-References: <20210815005947.83699-1-gshan@redhat.com>
- <20210815005947.83699-3-gshan@redhat.com>
- <87bl5xmiu2.fsf@vitty.brq.redhat.com>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <df8ab291-905e-2812-6e4d-fb3d209ee14d@redhat.com>
-Date:   Tue, 17 Aug 2021 20:44:18 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Tue, 17 Aug 2021 06:46:11 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E08C061764;
+        Tue, 17 Aug 2021 03:45:38 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id x2-20020a1c7c02000000b002e6f1f69a1eso1535409wmc.5;
+        Tue, 17 Aug 2021 03:45:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LliqR4BffIKLKIAnT8gxu6UOIwAnFEp/t5CVTZm8b1Q=;
+        b=KptzQh6LpXfJdLHBa4wnrs1TmwbhHIeUM42RRFq/LbMAM/UR4XNddtLNryvdGHXlIX
+         TyJ0rULRpDUjJJHUctXt0bmY1zbEw2o9QNhdeKNoIrXGMXo8hTG18XvHeTfd7vNnRGsP
+         xG9H+yQYIbzJZxLlUBIzG9Ky8Dxq8hfLf0m6Yzh0r8B6/nWu0UOplI09QQD05KAWN/6Z
+         vUX1n6PQy/Covtld+vAmOYrF2RMzGrRvZm1KvrnlS/RKE7tiAbGwhmsDHas7x9aoIpLr
+         nvK+Qgqm7EL+53A3ARnf2LXg8WJ1XDHZNgUIsZi4OuK+7+7CAgeAWawAPX/G+kKP+uIp
+         3GZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LliqR4BffIKLKIAnT8gxu6UOIwAnFEp/t5CVTZm8b1Q=;
+        b=lieD69abWHByS3Wg8YgwfSYQ5a8UM7kSwvMM69mnOnt9F47Zw45lVv6fLMVS/hBvHX
+         U2iittx4jrTAK7Rydz6ml3p55eAtoI8c+0Chg7sDwInnaixr75NwftjDYNoIPJimivX5
+         Due4U2SqwcnpIrqiVck91jdEkIICaqcoP3DD5I4VC4fitNHfOS1FIqwzWO1B+q1N0D0A
+         51GGQfq2HLHewEdCfV6XKtn8AD/mBGuBK4Kz/8pKAJQNpUtL4HjaighxTQZRMfsxNnCl
+         qpMV1PvMQOd6VvqH3VQqFgGDIh76bEzHWx07hKmlrypoahgKNRuOrsBYRbgv1/FNi8Fh
+         fHyw==
+X-Gm-Message-State: AOAM532pYO5ad6XJkw3BDCIqXHxiLCGOh3XvHF0jIqYi3iEWOqzLTBaN
+        Fu8Kkgjxw5AMcsV2dLUiFfE=
+X-Google-Smtp-Source: ABdhPJzm4lFmv43l4LmGogfnFalBlFY0tCLQVBS/sNGZvZ2jg//PjG5rVhoh22nNn8HDbPYFW2bJhg==
+X-Received: by 2002:a1c:7706:: with SMTP id t6mr2663237wmi.30.1629197137064;
+        Tue, 17 Aug 2021 03:45:37 -0700 (PDT)
+Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
+        by smtp.gmail.com with ESMTPSA id 18sm1930912wmv.27.2021.08.17.03.45.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 03:45:36 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] mtd: maps: remove dead MTD map driver for PMC-Sierra MSP boards
+Date:   Tue, 17 Aug 2021 12:45:31 +0200
+Message-Id: <20210817104531.12675-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <87bl5xmiu2.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vitaly,
+Commit 1b00767fd8e1 ("MIPS: Remove PMC MSP71xx platform") removes the
+config PMC_MSP in ./arch/mips/Kconfig.
 
-On 8/17/21 2:53 AM, Vitaly Kuznetsov wrote:
-> Gavin Shan <gshan@redhat.com> writes:
-> 
->> This adds inline helper kvm_check_async_pf_completion_queue() to
->> check if there are pending completion in the queue. The empty stub
->> is also added on !CONFIG_KVM_ASYNC_PF so that the caller needn't
->> consider if CONFIG_KVM_ASYNC_PF is enabled.
->>
->> All checks on the completion queue is done by the newly added inline
->> function since list_empty() and list_empty_careful() are interchangeable.
->>
->> Signed-off-by: Gavin Shan <gshan@redhat.com>
->> ---
->>   arch/x86/kvm/x86.c       |  2 +-
->>   include/linux/kvm_host.h | 10 ++++++++++
->>   virt/kvm/async_pf.c      | 10 +++++-----
->>   virt/kvm/kvm_main.c      |  4 +---
->>   4 files changed, 17 insertions(+), 9 deletions(-)
->>
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index e5d5c5ed7dd4..7f35d9324b99 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -11591,7 +11591,7 @@ static inline bool kvm_guest_apic_has_interrupt(struct kvm_vcpu *vcpu)
->>   
->>   static inline bool kvm_vcpu_has_events(struct kvm_vcpu *vcpu)
->>   {
->> -	if (!list_empty_careful(&vcpu->async_pf.done))
->> +	if (kvm_check_async_pf_completion_queue(vcpu))
->>   		return true;
->>   
->>   	if (kvm_apic_has_events(vcpu))
->> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
->> index 85b61a456f1c..a5f990f6dc35 100644
->> --- a/include/linux/kvm_host.h
->> +++ b/include/linux/kvm_host.h
->> @@ -339,12 +339,22 @@ struct kvm_async_pf {
->>   	bool				notpresent_injected;
->>   };
->>   
->> +static inline bool kvm_check_async_pf_completion_queue(struct kvm_vcpu *vcpu)
-> 
-> Nitpicking: When not reading the implementation, I'm not exactly sure
-> what this function returns as 'check' is too ambiguous ('true' when the
-> queue is full? when it's empty? when it's not empty? when it was
-> properly set up?). I'd suggest we go with a more specific:
-> 
-> kvm_async_pf_completion_queue_empty() or something like that instead
-> (we'll have to invert the logic everywhere then).
-> 
-> Side note: x86 seems to already use a shortened 'apf' instead of
-> 'async_pf' in a number of places (e.g. 'apf_put_user_ready()'), we may
-> want to either fight this practice or support the rebelion by renaming
-> all functions from below instead :-)
-> 
+Hence, since then, the corresponding MTD map driver for PMC-Sierra MSP
+boards is dead code. Remove this dead driver.
 
-Yeah, I was wandering if the name is ambiguous when I had it. The
-reason why I had the name is to be consistent with the existing
-one, which is kvm_check_async_pf_completion().
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ drivers/mtd/maps/Kconfig        |  23 ----
+ drivers/mtd/maps/Makefile       |   1 -
+ drivers/mtd/maps/pmcmsp-flash.c | 227 --------------------------------
+ 3 files changed, 251 deletions(-)
+ delete mode 100644 drivers/mtd/maps/pmcmsp-flash.c
 
-Yes, kvm_async_pf_completion_queue_empty() is much better and I
-will include this in next revision.
-
-It's correct that x86 functions include 'apf', but the generic
-functions, shared by multiple architectures, use 'async_pf' if
-my understanding is correct. So I wouldn't bother to change
-the generic function names in this series :)
-
->> +{
->> +	return !list_empty_careful(&vcpu->async_pf.done);
->> +}
->> +
->>   void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu);
->>   void kvm_check_async_pf_completion(struct kvm_vcpu *vcpu);
->>   bool kvm_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
->>   			unsigned long hva, struct kvm_arch_async_pf *arch);
->>   int kvm_async_pf_wakeup_all(struct kvm_vcpu *vcpu);
->>   #else
->> +static inline bool kvm_check_async_pf_completion_queue(struct kvm_vcpu *vcpu)
->> +{
->> +	return false;
->> +}
->> +
->>   static inline void kvm_check_async_pf_completion(struct kvm_vcpu *vcpu) { }
->>   #endif
->>   
->> diff --git a/virt/kvm/async_pf.c b/virt/kvm/async_pf.c
->> index dd777688d14a..d145a61a046a 100644
->> --- a/virt/kvm/async_pf.c
->> +++ b/virt/kvm/async_pf.c
->> @@ -70,7 +70,7 @@ static void async_pf_execute(struct work_struct *work)
->>   		kvm_arch_async_page_present(vcpu, apf);
->>   
->>   	spin_lock(&vcpu->async_pf.lock);
->> -	first = list_empty(&vcpu->async_pf.done);
->> +	first = !kvm_check_async_pf_completion_queue(vcpu);
->>   	list_add_tail(&apf->link, &vcpu->async_pf.done);
->>   	apf->vcpu = NULL;
->>   	spin_unlock(&vcpu->async_pf.lock);
->> @@ -122,7 +122,7 @@ void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
->>   		spin_lock(&vcpu->async_pf.lock);
->>   	}
->>   
->> -	while (!list_empty(&vcpu->async_pf.done)) {
->> +	while (kvm_check_async_pf_completion_queue(vcpu)) {
->>   		struct kvm_async_pf *work =
->>   			list_first_entry(&vcpu->async_pf.done,
->>   					 typeof(*work), link);
->> @@ -138,7 +138,7 @@ void kvm_check_async_pf_completion(struct kvm_vcpu *vcpu)
->>   {
->>   	struct kvm_async_pf *work;
->>   
->> -	while (!list_empty_careful(&vcpu->async_pf.done) &&
->> +	while (kvm_check_async_pf_completion_queue(vcpu) &&
->>   	      kvm_arch_can_dequeue_async_page_present(vcpu)) {
->>   		spin_lock(&vcpu->async_pf.lock);
->>   		work = list_first_entry(&vcpu->async_pf.done, typeof(*work),
->> @@ -205,7 +205,7 @@ int kvm_async_pf_wakeup_all(struct kvm_vcpu *vcpu)
->>   	struct kvm_async_pf *work;
->>   	bool first;
->>   
->> -	if (!list_empty_careful(&vcpu->async_pf.done))
->> +	if (kvm_check_async_pf_completion_queue(vcpu))
->>   		return 0;
->>   
->>   	work = kmem_cache_zalloc(async_pf_cache, GFP_ATOMIC);
->> @@ -216,7 +216,7 @@ int kvm_async_pf_wakeup_all(struct kvm_vcpu *vcpu)
->>   	INIT_LIST_HEAD(&work->queue); /* for list_del to work */
->>   
->>   	spin_lock(&vcpu->async_pf.lock);
->> -	first = list_empty(&vcpu->async_pf.done);
->> +	first = !kvm_check_async_pf_completion_queue(vcpu);
->>   	list_add_tail(&work->link, &vcpu->async_pf.done);
->>   	spin_unlock(&vcpu->async_pf.lock);
->>   
->> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
->> index b50dbe269f4b..8795503651b1 100644
->> --- a/virt/kvm/kvm_main.c
->> +++ b/virt/kvm/kvm_main.c
->> @@ -3282,10 +3282,8 @@ static bool vcpu_dy_runnable(struct kvm_vcpu *vcpu)
->>   	if (kvm_arch_dy_runnable(vcpu))
->>   		return true;
->>   
->> -#ifdef CONFIG_KVM_ASYNC_PF
->> -	if (!list_empty_careful(&vcpu->async_pf.done))
->> +	if (kvm_check_async_pf_completion_queue(vcpu))
->>   		return true;
->> -#endif
->>   
->>   	return false;
->>   }
-> 
-
-Thanks,
-Gavin
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 6650acbc961e..aaa164b977fe 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -127,29 +127,6 @@ config MTD_PHYSMAP_GPIO_ADDR
+ 	  Extend the physmap driver to allow flashes to be partially
+ 	  physically addressed and assisted by GPIOs.
+ 
+-config MTD_PMC_MSP_EVM
+-	tristate "CFI Flash device mapped on PMC-Sierra MSP"
+-	depends on PMC_MSP && MTD_CFI
+-	help
+-	  This provides a 'mapping' driver which supports the way
+-	  in which user-programmable flash chips are connected on the
+-	  PMC-Sierra MSP eval/demo boards.
+-
+-choice
+-	prompt "Maximum mappable memory available for flash IO"
+-	depends on MTD_PMC_MSP_EVM
+-	default MSP_FLASH_MAP_LIMIT_32M
+-
+-config MSP_FLASH_MAP_LIMIT_32M
+-	bool "32M"
+-
+-endchoice
+-
+-config MSP_FLASH_MAP_LIMIT
+-	hex
+-	default "0x02000000"
+-	depends on MSP_FLASH_MAP_LIMIT_32M
+-
+ config MTD_SUN_UFLASH
+ 	tristate "Sun Microsystems userflash support"
+ 	depends on SPARC && MTD_CFI && PCI
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index 79f018cf412f..11fea9c8d561 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -25,7 +25,6 @@ physmap-objs-$(CONFIG_MTD_PHYSMAP_IXP4XX) += physmap-ixp4xx.o
+ physmap-objs			:= $(physmap-objs-y)
+ obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
+ obj-$(CONFIG_MTD_PISMO)		+= pismo.o
+-obj-$(CONFIG_MTD_PMC_MSP_EVM)   += pmcmsp-flash.o
+ obj-$(CONFIG_MTD_PCMCIA)	+= pcmciamtd.o
+ obj-$(CONFIG_MTD_SA1100)	+= sa1100-flash.o
+ obj-$(CONFIG_MTD_SBC_GXX)	+= sbc_gxx.o
+diff --git a/drivers/mtd/maps/pmcmsp-flash.c b/drivers/mtd/maps/pmcmsp-flash.c
+deleted file mode 100644
+index 2051f28ddac6..000000000000
+--- a/drivers/mtd/maps/pmcmsp-flash.c
++++ /dev/null
+@@ -1,227 +0,0 @@
+-/*
+- * Mapping of a custom board with both AMD CFI and JEDEC flash in partitions.
+- * Config with both CFI and JEDEC device support.
+- *
+- * Basically physmap.c with the addition of partitions and
+- * an array of mapping info to accommodate more than one flash type per board.
+- *
+- * Copyright 2005-2007 PMC-Sierra, Inc.
+- *
+- *  This program is free software; you can redistribute  it and/or modify it
+- *  under  the terms of  the GNU General  Public License as published by the
+- *  Free Software Foundation;  either version 2 of the  License, or (at your
+- *  option) any later version.
+- *
+- *  THIS  SOFTWARE  IS PROVIDED   ``AS  IS'' AND   ANY  EXPRESS OR IMPLIED
+- *  WARRANTIES,   INCLUDING, BUT NOT  LIMITED  TO, THE IMPLIED WARRANTIES OF
+- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN
+- *  NO  EVENT  SHALL   THE AUTHOR  BE    LIABLE FOR ANY   DIRECT, INDIRECT,
+- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+- *  NOT LIMITED   TO, PROCUREMENT OF  SUBSTITUTE GOODS  OR SERVICES; LOSS OF
+- *  USE, DATA,  OR PROFITS; OR  BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+- *  ANY THEORY OF LIABILITY, WHETHER IN  CONTRACT, STRICT LIABILITY, OR TORT
+- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- *
+- *  You should have received a copy of the  GNU General Public License along
+- *  with this program; if not, write  to the Free Software Foundation, Inc.,
+- *  675 Mass Ave, Cambridge, MA 02139, USA.
+- */
+-
+-#include <linux/slab.h>
+-#include <linux/module.h>
+-#include <linux/types.h>
+-#include <linux/kernel.h>
+-#include <linux/mtd/mtd.h>
+-#include <linux/mtd/map.h>
+-#include <linux/mtd/partitions.h>
+-
+-#include <asm/io.h>
+-
+-#include <msp_prom.h>
+-#include <msp_regs.h>
+-
+-
+-static struct mtd_info **msp_flash;
+-static struct mtd_partition **msp_parts;
+-static struct map_info *msp_maps;
+-static int fcnt;
+-
+-#define DEBUG_MARKER printk(KERN_NOTICE "%s[%d]\n", __func__, __LINE__)
+-
+-static int __init init_msp_flash(void)
+-{
+-	int i, j, ret = -ENOMEM;
+-	int offset, coff;
+-	char *env;
+-	int pcnt;
+-	char flash_name[] = "flash0";
+-	char part_name[] = "flash0_0";
+-	unsigned addr, size;
+-
+-	/* If ELB is disabled by "ful-mux" mode, we can't get at flash */
+-	if ((*DEV_ID_REG & DEV_ID_SINGLE_PC) &&
+-	    (*ELB_1PC_EN_REG & SINGLE_PCCARD)) {
+-		printk(KERN_NOTICE "Single PC Card mode: no flash access\n");
+-		return -ENXIO;
+-	}
+-
+-	/* examine the prom environment for flash devices */
+-	for (fcnt = 0; (env = prom_getenv(flash_name)); fcnt++)
+-		flash_name[5] = '0' + fcnt + 1;
+-
+-	if (fcnt < 1)
+-		return -ENXIO;
+-
+-	printk(KERN_NOTICE "Found %d PMC flash devices\n", fcnt);
+-
+-	msp_flash = kcalloc(fcnt, sizeof(*msp_flash), GFP_KERNEL);
+-	if (!msp_flash)
+-		return -ENOMEM;
+-
+-	msp_parts = kcalloc(fcnt, sizeof(*msp_parts), GFP_KERNEL);
+-	if (!msp_parts)
+-		goto free_msp_flash;
+-
+-	msp_maps = kcalloc(fcnt, sizeof(*msp_maps), GFP_KERNEL);
+-	if (!msp_maps)
+-		goto free_msp_parts;
+-
+-	/* loop over the flash devices, initializing each */
+-	for (i = 0; i < fcnt; i++) {
+-		/* examine the prom environment for flash partititions */
+-		part_name[5] = '0' + i;
+-		part_name[7] = '0';
+-		for (pcnt = 0; (env = prom_getenv(part_name)); pcnt++)
+-			part_name[7] = '0' + pcnt + 1;
+-
+-		if (pcnt == 0) {
+-			printk(KERN_NOTICE "Skipping flash device %d "
+-				"(no partitions defined)\n", i);
+-			continue;
+-		}
+-
+-		msp_parts[i] = kcalloc(pcnt, sizeof(struct mtd_partition),
+-				       GFP_KERNEL);
+-		if (!msp_parts[i])
+-			goto cleanup_loop;
+-
+-		/* now initialize the devices proper */
+-		flash_name[5] = '0' + i;
+-		env = prom_getenv(flash_name);
+-
+-		if (sscanf(env, "%x:%x", &addr, &size) < 2) {
+-			ret = -ENXIO;
+-			kfree(msp_parts[i]);
+-			goto cleanup_loop;
+-		}
+-		addr = CPHYSADDR(addr);
+-
+-		printk(KERN_NOTICE
+-			"MSP flash device \"%s\": 0x%08x at 0x%08x\n",
+-			flash_name, size, addr);
+-		/* This must matchs the actual size of the flash chip */
+-		msp_maps[i].size = size;
+-		msp_maps[i].phys = addr;
+-
+-		/*
+-		 * Platforms have a specific limit of the size of memory
+-		 * which may be mapped for flash:
+-		 */
+-		if (size > CONFIG_MSP_FLASH_MAP_LIMIT)
+-			size = CONFIG_MSP_FLASH_MAP_LIMIT;
+-
+-		msp_maps[i].virt = ioremap(addr, size);
+-		if (msp_maps[i].virt == NULL) {
+-			ret = -ENXIO;
+-			kfree(msp_parts[i]);
+-			goto cleanup_loop;
+-		}
+-
+-		msp_maps[i].bankwidth = 1;
+-		msp_maps[i].name = kstrndup(flash_name, 7, GFP_KERNEL);
+-		if (!msp_maps[i].name) {
+-			iounmap(msp_maps[i].virt);
+-			kfree(msp_parts[i]);
+-			goto cleanup_loop;
+-		}
+-
+-		for (j = 0; j < pcnt; j++) {
+-			part_name[5] = '0' + i;
+-			part_name[7] = '0' + j;
+-
+-			env = prom_getenv(part_name);
+-
+-			if (sscanf(env, "%x:%x:%n", &offset, &size,
+-						&coff) < 2) {
+-				ret = -ENXIO;
+-				kfree(msp_maps[i].name);
+-				iounmap(msp_maps[i].virt);
+-				kfree(msp_parts[i]);
+-				goto cleanup_loop;
+-			}
+-
+-			msp_parts[i][j].size = size;
+-			msp_parts[i][j].offset = offset;
+-			msp_parts[i][j].name = env + coff;
+-		}
+-
+-		/* now probe and add the device */
+-		simple_map_init(&msp_maps[i]);
+-		msp_flash[i] = do_map_probe("cfi_probe", &msp_maps[i]);
+-		if (msp_flash[i]) {
+-			msp_flash[i]->owner = THIS_MODULE;
+-			mtd_device_register(msp_flash[i], msp_parts[i], pcnt);
+-		} else {
+-			printk(KERN_ERR "map probe failed for flash\n");
+-			ret = -ENXIO;
+-			kfree(msp_maps[i].name);
+-			iounmap(msp_maps[i].virt);
+-			kfree(msp_parts[i]);
+-			goto cleanup_loop;
+-		}
+-	}
+-
+-	return 0;
+-
+-cleanup_loop:
+-	while (i--) {
+-		mtd_device_unregister(msp_flash[i]);
+-		map_destroy(msp_flash[i]);
+-		kfree(msp_maps[i].name);
+-		iounmap(msp_maps[i].virt);
+-		kfree(msp_parts[i]);
+-	}
+-	kfree(msp_maps);
+-free_msp_parts:
+-	kfree(msp_parts);
+-free_msp_flash:
+-	kfree(msp_flash);
+-	return ret;
+-}
+-
+-static void __exit cleanup_msp_flash(void)
+-{
+-	int i;
+-
+-	for (i = 0; i < fcnt; i++) {
+-		mtd_device_unregister(msp_flash[i]);
+-		map_destroy(msp_flash[i]);
+-		iounmap((void *)msp_maps[i].virt);
+-
+-		/* free the memory */
+-		kfree(msp_maps[i].name);
+-		kfree(msp_parts[i]);
+-	}
+-
+-	kfree(msp_flash);
+-	kfree(msp_parts);
+-	kfree(msp_maps);
+-}
+-
+-MODULE_AUTHOR("PMC-Sierra, Inc");
+-MODULE_DESCRIPTION("MTD map driver for PMC-Sierra MSP boards");
+-MODULE_LICENSE("GPL");
+-
+-module_init(init_msp_flash);
+-module_exit(cleanup_msp_flash);
+-- 
+2.26.2
 
