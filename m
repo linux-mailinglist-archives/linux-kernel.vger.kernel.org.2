@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB58D3EE6B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 714B73EE6B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238675AbhHQGlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 02:41:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60982 "EHLO
+        id S238724AbhHQGlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 02:41:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238490AbhHQGlK (ORCPT
+        with ESMTP id S238670AbhHQGlO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 02:41:10 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B7D6C0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:40:37 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id m3so10678967qvu.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:40:37 -0700 (PDT)
+        Tue, 17 Aug 2021 02:41:14 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D07C06129D
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:40:40 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id z24so16315687qtn.8
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:40:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=nohRkEmBhJ456vza0SGQFpwvp2m1XhmvKD+E3e6gpIc=;
-        b=S4FVU46lNzjBm03WNWtewVwQV4cjt+148/xWic1zmTpF7MIfY5aVMbp0Nau1eUGq2K
-         GGoHxejBXNeNNVZK8hF+qFLpPbaoHHD0OVC4moNtZFhiUwFPj15Jeu+UoYwwUW6s0Fih
-         8y7leivTl+gxUCi6g2yD7o38GN9nQn1wwvp0lPHUKLadkAsU/nvLkLxX8W1YmZXOEIkz
-         Wg8fQnOPNGRY/OkeJOyrp9JZZvljbz3RTrc6hJjxb/KcfSWTWU+pbtePyFoxH8dtk09g
-         sYiD9RvFqASr/b5kkP8p08SVXV4WKcIfYK8hoesqmaVNsmv639s/BJ44t0rQqcjbESWz
-         CcFw==
+        bh=mLA7Zwi0SdMcNmft7yIFY9w3dhHjKJPMdMtlCDnEiwM=;
+        b=PBCP9KJcms41RLP2tQkcatWTwHaP9hLCv6kYtOwG4y44m6+5TqA8VUiANkGUqCpagA
+         iAdSkxysz6oIGSmbb5nfIRzby+VXX5Qf1E+CuoM/6Z3l1X2WLdHznUtfdRvBdY9id9Ha
+         P2ApKg9e396YeLnT1ckYvyK1w86oROkhtsTp9lybNsJRqUqXM8fTsgsBNy5O0G3jZj9x
+         2ZHBdbf8sKz06jfD65r+k7423Oiast0VPr5uVy17LLxc5jxcdp4M1klZ3AoA4o+SniQa
+         dmFHQOM1+9LFFIGmpWJQWsE0S8blOZoSHgsyOhi3QnYSdKbngsz+IholLUU6CuOhPZj9
+         oLVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nohRkEmBhJ456vza0SGQFpwvp2m1XhmvKD+E3e6gpIc=;
-        b=qkW84Tz0jVnEk3YjVUxH8WaBRbeIRlW7YVTTOp4tDH8fO/21w/UxIadqpAcPhtv9bE
-         cxFfp6PwvlrgRdgzL53aief3N8O4yEzj9GvnsKtq+BCbKewINY7enzB4pGK/Ag0CG5ZP
-         i5fFFD2l6vaHykbhrI9Uwo70+C4rBNOFRa4X7f+0RNe0tS4W24pWSCp3K6CHLjYlMgcj
-         UTbhF9kzdBKmuvZUB+DlzxEQuxtxVTcHvguNXwnzdD1gblCw/CLwI9ePeFpozEgbC14h
-         WIJFA+ZwWyN51nf0fLsqtPAh0i0dS/TWYCFWzd0TTx14af3DXg6CkpdtpgAlz6DQKAgm
-         RY4w==
-X-Gm-Message-State: AOAM531GNP2jYzI60ryPnLxqCwE+9p51RZaDPO13b1D5fjuVfS34f2az
-        p7l0HKPxrAzB+NdI3XFbqRA=
-X-Google-Smtp-Source: ABdhPJwBDp1+3Xcd8pmbo7T1m0zjICSc6lURMHxvAjssSi2yxwvlSp2mnG+uZPLN5ecmsc1hzmXgxw==
-X-Received: by 2002:a05:6214:285:: with SMTP id l5mr1821244qvv.24.1629182436549;
-        Mon, 16 Aug 2021 23:40:36 -0700 (PDT)
+        bh=mLA7Zwi0SdMcNmft7yIFY9w3dhHjKJPMdMtlCDnEiwM=;
+        b=Fx1f0niZK64JzXgHWYfc7kgbJl2y7ZVzSR2qcB7yUI08QfZYgI6j1CAVf8J7jgOwif
+         xdBiYsPt/VWZHbmeawEu98wXeF3TcHx83HPVe5jOdL25xRgnmq0J6OZlSEt/XbZnOHPn
+         ltqAXNvqXAHdlo2xKGIGEg26zsUp18qLq8uoKz63Bl3t3d7SCw0j+jd11luYT9hbIl+M
+         BkpsAlDgKbO4ktwEReVLCmYTkYGJOcVG/rNhUnq4BblWdY7EHKaUZsGzCUklPT9I/tL2
+         iDH0oZ5mjB1v4+L+VXg1PvIAARJOW1V88ub47IrdCy7A26wVxImxHM2YJg5nM2UAcDXo
+         ibaw==
+X-Gm-Message-State: AOAM5329Yt9QfAVV3sq/OJBdxQMUX/iEbGuyT34T8NpB2l0oP+NYN4fP
+        NtQwtPw1mQK+KFe8Pqomlmw=
+X-Google-Smtp-Source: ABdhPJz/uLTzhk1Vx1uNkU15dBx1GEr8Qjeijw1KJlMdTvRN/bfbcdHlu22MaCh85G6HLdpmuH8whw==
+X-Received: by 2002:ac8:4f14:: with SMTP id b20mr1696524qte.236.1629182439455;
+        Mon, 16 Aug 2021 23:40:39 -0700 (PDT)
 Received: from LeoBras.redhat.com ([2804:431:c7f0:30b2:5c9e:50:88f3:269a])
-        by smtp.gmail.com with ESMTPSA id c11sm526938qth.29.2021.08.16.23.40.33
+        by smtp.gmail.com with ESMTPSA id c11sm526938qth.29.2021.08.16.23.40.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 23:40:36 -0700 (PDT)
+        Mon, 16 Aug 2021 23:40:39 -0700 (PDT)
 From:   Leonardo Bras <leobras.c@gmail.com>
 To:     Michael Ellerman <mpe@ellerman.id.au>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
@@ -59,9 +59,9 @@ To:     Michael Ellerman <mpe@ellerman.id.au>,
         Nicolin Chen <nicoleotsuka@gmail.com>,
         kernel test robot <lkp@intel.com>
 Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 08/11] powerpc/pseries/iommu: Update remove_dma_window() to accept property name
-Date:   Tue, 17 Aug 2021 03:39:26 -0300
-Message-Id: <20210817063929.38701-9-leobras.c@gmail.com>
+Subject: [PATCH v6 09/11] powerpc/pseries/iommu: Find existing DDW with given property name
+Date:   Tue, 17 Aug 2021 03:39:27 -0300
+Message-Id: <20210817063929.38701-10-leobras.c@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210817063929.38701-1-leobras.c@gmail.com>
 References: <20210817063929.38701-1-leobras.c@gmail.com>
@@ -71,84 +71,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update remove_dma_window() so it can be used to remove DDW with a given
-property name.
+At the moment pseries stores information about created directly mapped
+DDW window in DIRECT64_PROPNAME.
 
-This enables the creation of new property names for DDW, so we can
-have different usage for it, like indirect mapping.
+With the objective of implementing indirect DMA mapping with DDW, it's
+necessary to have another propriety name to make sure kexec'ing into older
+kernels does not break, as it would if we reuse DIRECT64_PROPNAME.
 
-Also, add return values to it so we can check if the property was found
-while removing the active DDW. This allows skipping the remaining property
-names while reducing the impact of multiple property names.
+In order to have this, find_existing_ddw_windows() needs to be able to
+look for different property names.
+
+Extract find_existing_ddw_windows() into find_existing_ddw_windows_named()
+and calls it with current property name.
 
 Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
 Reviewed-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+Reviewed-by: Frederic Barrat <fbarrat@linux.ibm.com>
 ---
- arch/powerpc/platforms/pseries/iommu.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ arch/powerpc/platforms/pseries/iommu.c | 25 +++++++++++++++----------
+ 1 file changed, 15 insertions(+), 10 deletions(-)
 
 diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
-index a47f59a8f107..901f290999d0 100644
+index 901f290999d0..e11c00b2dc1e 100644
 --- a/arch/powerpc/platforms/pseries/iommu.c
 +++ b/arch/powerpc/platforms/pseries/iommu.c
-@@ -844,31 +844,33 @@ static void remove_dma_window(struct device_node *np, u32 *ddw_avail,
- 	__remove_dma_window(np, ddw_avail, liobn);
+@@ -910,24 +910,21 @@ static struct direct_window *ddw_list_new_entry(struct device_node *pdn,
+ 	return window;
  }
  
--static void remove_ddw(struct device_node *np, bool remove_prop)
-+static int remove_ddw(struct device_node *np, bool remove_prop, const char *win_name)
+-static int find_existing_ddw_windows(void)
++static void find_existing_ddw_windows_named(const char *name)
  {
- 	struct property *win;
- 	u32 ddw_avail[DDW_APPLICABLE_SIZE];
- 	int ret = 0;
+ 	int len;
+ 	struct device_node *pdn;
+ 	struct direct_window *window;
+-	const struct dynamic_dma_window_prop *direct64;
+-
+-	if (!firmware_has_feature(FW_FEATURE_LPAR))
+-		return 0;
++	const struct dynamic_dma_window_prop *dma64;
  
-+	win = of_find_property(np, win_name, NULL);
-+	if (!win)
-+		return -EINVAL;
-+
- 	ret = of_property_read_u32_array(np, "ibm,ddw-applicable",
- 					 &ddw_avail[0], DDW_APPLICABLE_SIZE);
- 	if (ret)
--		return;
-+		return 0;
- 
--	win = of_find_property(np, DIRECT64_PROPNAME, NULL);
--	if (!win)
--		return;
- 
- 	if (win->length >= sizeof(struct dynamic_dma_window_prop))
- 		remove_dma_window(np, ddw_avail, win);
- 
- 	if (!remove_prop)
--		return;
-+		return 0;
- 
- 	ret = of_remove_property(np, win);
- 	if (ret)
- 		pr_warn("%pOF: failed to remove direct window property: %d\n",
- 			np, ret);
-+	return 0;
- }
- 
- static bool find_existing_ddw(struct device_node *pdn, u64 *dma_addr, int *window_shift)
-@@ -921,7 +923,7 @@ static int find_existing_ddw_windows(void)
- 	for_each_node_with_property(pdn, DIRECT64_PROPNAME) {
- 		direct64 = of_get_property(pdn, DIRECT64_PROPNAME, &len);
- 		if (!direct64 || len < sizeof(*direct64)) {
--			remove_ddw(pdn, true);
-+			remove_ddw(pdn, true, DIRECT64_PROPNAME);
+-	for_each_node_with_property(pdn, DIRECT64_PROPNAME) {
+-		direct64 = of_get_property(pdn, DIRECT64_PROPNAME, &len);
+-		if (!direct64 || len < sizeof(*direct64)) {
+-			remove_ddw(pdn, true, DIRECT64_PROPNAME);
++	for_each_node_with_property(pdn, name) {
++		dma64 = of_get_property(pdn, name, &len);
++		if (!dma64 || len < sizeof(*dma64)) {
++			remove_ddw(pdn, true, name);
  			continue;
  		}
  
-@@ -1565,7 +1567,7 @@ static int iommu_reconfig_notifier(struct notifier_block *nb, unsigned long acti
- 		 * we have to remove the property when releasing
- 		 * the device node.
- 		 */
--		remove_ddw(np, false);
-+		remove_ddw(np, false, DIRECT64_PROPNAME);
- 		if (pci && pci->table_group)
- 			iommu_pseries_free_group(pci->table_group,
- 					np->full_name);
+-		window = ddw_list_new_entry(pdn, direct64);
++		window = ddw_list_new_entry(pdn, dma64);
+ 		if (!window)
+ 			break;
+ 
+@@ -935,6 +932,14 @@ static int find_existing_ddw_windows(void)
+ 		list_add(&window->list, &direct_window_list);
+ 		spin_unlock(&direct_window_list_lock);
+ 	}
++}
++
++static int find_existing_ddw_windows(void)
++{
++	if (!firmware_has_feature(FW_FEATURE_LPAR))
++		return 0;
++
++	find_existing_ddw_windows_named(DIRECT64_PROPNAME);
+ 
+ 	return 0;
+ }
 -- 
 2.32.0
 
