@@ -2,144 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3FDC3EF1E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 20:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE8D3EF1EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 20:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232948AbhHQSel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 14:34:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56366 "EHLO
+        id S233442AbhHQSgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 14:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhHQSej (ORCPT
+        with ESMTP id S232620AbhHQSgG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 14:34:39 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 501CAC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 11:34:06 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id l11so298984wrx.4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 11:34:06 -0700 (PDT)
+        Tue, 17 Aug 2021 14:36:06 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A20C061764;
+        Tue, 17 Aug 2021 11:35:33 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id s3so283973ljp.11;
+        Tue, 17 Aug 2021 11:35:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorfullife-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=iL4mha+qm6Tde1apuUpcImkDlPPCgksXIXOGiU4nqQM=;
-        b=LT/IPl3svjMKgmUH6BvskDKarh+tgGYdApGreghP73QEQjdvAGkIizMC/56ZDTgSwk
-         1bVefNEVi1hKi+ns/Lf9x4z95HSUcBDgbqfgNBQvQxc+PBSj0Z2nBY0+po5MsId2Dwa6
-         2w8O9wRb9Sj9iP75HFpddJlQYuCw0h92GLjWmk2wn1BKfmc5adr2yYaeOsjP/VMA0RRS
-         PiPA3sWAeonUy1z9ut/MbCpdm3PQh/QB/Y74vELaM0wLNkmLLb4Hui3U4EZu9f7c699P
-         RWHjkLF758/HyhJtQjRdH2+QZjNDzMQunY5OhP2Dw/d+1m0pkWvs/oRyoMzH68Wkk9sG
-         OmfQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ouYM9VHMpEM8w2sBiSiM4kMsiclMCWPkcX2MmzsySN4=;
+        b=GcRGVF89SwgKWtmB++fh8Vcvh0rJKY1OAGWUy+cYaEK9Nl+TGMAD9nZGZmIzgkpRps
+         QSRe59oVgsjXLPYuWnhKVpzx+Wg9WvBwGAkPg0A54s4bOOMxrgNVS7TBDZAXixkNuoSx
+         Rdk7T3Mpj1D0Gs/JsT+BdaPJ/BI5JzFYnU9QE9HppkP/5qcGGNleOG0eqg7tTMszWSbi
+         T/TilJKi3iO2TjhmwteAdh9mAMn4kQpH4i4pQa7ox5nySa1+cjFh1HEqtqvg7EYN2MwO
+         eK7D4R+7Tp9ZUFFtisMcBGAAv1H3I1nBZ73zaXKnnMaEWt6f/AiT6PnivXmBEBy4MQPb
+         LIEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=iL4mha+qm6Tde1apuUpcImkDlPPCgksXIXOGiU4nqQM=;
-        b=ra/F2EXDS9X5hw5r6JQKFFN9KLd14npdWKAaZGHtN52Jt5m745cjJeGQjLOawOzBk2
-         QxSmRmQ/A19/5f0VWrQfdxBSb52QCZH9HOisJhRpYOfyIOPRMrZWLvxgTNWzt/3GhxIP
-         yyGoYkqF2RJ/nrVHOOt+DBSCNVMqrLsqbQt8HMrTT8CX9xA0qGDo/roq3VKCfEFShmSn
-         ENnedds202MNfKyej4a/yY3Hf4njWwDKzAch825HdTc8cQ/O4HCfYbNAot04gxNceCpV
-         6FCmDOfnz5HPCUNRMm8DdJTODS555aosYU3aPiOEeX9QbzwiaoqH9tW42NmvxGFkqwA+
-         Nh8w==
-X-Gm-Message-State: AOAM531FV3hm0stn0UZytqlOHZ9McOztrkHnCMb0Bl3qVQiSNCNiPjvV
-        VIDTXA1JR65JgP726obCNYPWQQ==
-X-Google-Smtp-Source: ABdhPJzj93fR1/QeH5Cs5CIZBOsh3ocX2SpZRvnEDuagUlVK+1/OKRjfLFxANt7lNpeaIXZrL5x+1A==
-X-Received: by 2002:adf:f20d:: with SMTP id p13mr5922522wro.95.1629225245003;
-        Tue, 17 Aug 2021 11:34:05 -0700 (PDT)
-Received: from localhost.localdomain (p200300d9972f1000838d8dfea5ed2c3c.dip0.t-ipconnect.de. [2003:d9:972f:1000:838d:8dfe:a5ed:2c3c])
-        by smtp.googlemail.com with ESMTPSA id k17sm3671511wrn.8.2021.08.17.11.34.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Aug 2021 11:34:04 -0700 (PDT)
-Subject: Re: [PATCH] ipc: replace costly bailout check in sysvipc_find_ipc()
-To:     Rafael Aquini <aquini@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Waiman Long <llong@redhat.com>
-References: <20210809203554.1562989-1-aquini@redhat.com>
-From:   Manfred Spraul <manfred@colorfullife.com>
-Message-ID: <0b80af66-0ff4-5278-37e1-08966157493e@colorfullife.com>
-Date:   Tue, 17 Aug 2021 20:34:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ouYM9VHMpEM8w2sBiSiM4kMsiclMCWPkcX2MmzsySN4=;
+        b=GrZX3VD0MQB2KrpAKa/t08FLuOwX8zgzLBQ8/ydVm1KAdiMaAIc1TAY3RJcTDHpsQr
+         /mr+YrgIluxBVCvi93zK+Y4j2wZX7bzZCPlZSnxlJJg8e4p4/PT9faLDyTuqB+w/VGtS
+         H6I92hOnd/DThuRtfB+H/fl+Wf7e3etUVShiHyfmqw4EDDfWxV4OCiwCnce0/dUG8GsI
+         0uZieVxHyjyDZts0x5mr7vy1Y/+dt9NmGCwQN4XIS5+YdJx6BXPUkg+rOMT3WV2yCfpc
+         HeQe65GIhBeEhl3+v84QjLcvmFWzFhYTmsfQezN+5O8HnRGsZ2QM6dqlPHHB1iMhZCjQ
+         0KMg==
+X-Gm-Message-State: AOAM532J85C/5w/kiWXkI2EJvtBFhCLPamDPlIQ7/alfs6WPBNuAFsbY
+        /KBfuX7o6mnzBvpx+uns9xE=
+X-Google-Smtp-Source: ABdhPJw0SXgT8GZ5K48mNK19qTuVj8zhO2h+zQR0hrgWHrJzlvs3R9mwE7tBOF0Jolacm1wL2pPfiw==
+X-Received: by 2002:a2e:a914:: with SMTP id j20mr4390799ljq.460.1629225331328;
+        Tue, 17 Aug 2021 11:35:31 -0700 (PDT)
+Received: from localhost.localdomain ([46.235.66.127])
+        by smtp.gmail.com with ESMTPSA id y4sm259724lfl.38.2021.08.17.11.35.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 11:35:30 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org,
+        andriy.shevchenko@linux.intel.com, christophe.jaillet@wanadoo.fr,
+        jesse.brandeburg@intel.com, kaixuxia@tencent.com,
+        lee.jones@linaro.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH 1/2] net: mii: make mii_ethtool_gset() return void
+Date:   Tue, 17 Aug 2021 21:34:42 +0300
+Message-Id: <680892d787669c56f0ceac0e9c113d6301fbe7c6.1629225089.git.paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210809203554.1562989-1-aquini@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Rafael,
+mii_ethtool_gset() does not return any errors. We can make it return
+void to simplify error checking in drivers, that rely on return value
+of this function.
 
-I still try to understand the code. It seems, it is more or less 
-unchanged from 2009:
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ drivers/net/mii.c   | 5 +----
+ include/linux/mii.h | 2 +-
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
-|
-
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/patch/ipc/util.c?id=7ca7e564e049d8b350ec9d958ff25eaa24226352 
-|
-
-
-On 8/9/21 10:35 PM, Rafael Aquini wrote:
-> --- a/ipc/util.c
-> +++ b/ipc/util.c
-> @@ -788,21 +788,13 @@ struct pid_namespace *ipc_seq_pid_ns(struct seq_file *s)
->   static struct kern_ipc_perm *sysvipc_find_ipc(struct ipc_ids *ids, loff_t pos,
->   					      loff_t *new_pos)
->   {
-> -	struct kern_ipc_perm *ipc;
-> -	int total, id;
-> -
-> -	total = 0;
-> -	for (id = 0; id < pos && total < ids->in_use; id++) {
-> -		ipc = idr_find(&ids->ipcs_idr, id);
-> -		if (ipc != NULL)
-> -			total++;
-> -	}
-> +	struct kern_ipc_perm *ipc = NULL;
-> +	int max_idx = ipc_get_maxidx(ids);
->   
-> -	ipc = NULL;
-> -	if (total >= ids->in_use)
-> +	if (max_idx == -1 || pos > max_idx)
->   		goto out;
->   
-> -	for (; pos < ipc_mni; pos++) {
-> +	for (; pos <= max_idx; pos++) {
->   		ipc = idr_find(&ids->ipcs_idr, pos);
->   		if (ipc != NULL) {
->   			rcu_read_lock();
-
-The change looks as correct to me. But I'm still not sure that I really 
-understand what the current code does:
-
-- first, loop over index values in the idr, starting from 0, count found 
-entries.
-
-- if we found all entries before we are at index=pos: fail
-
-- then search up to ipc_nmi for the next entry with an index >=pos.
-
-- if something is found: use it. otherwise fail.
-
-It seems the code tries to avoid that we loop until ipc_mni after the 
-last entry was found, and therefore we loop every time from 0.
-
-
- From what I see, the change looks to be correct: You now remove the 
-first loop, and instead of searching until ipc_mni, the search ends at 
-<= max_idx.
-
-I'll try to find some time to test it.
-
-
-But: What about using idr_get_next() instead of the idr_find()?
-
-We want to find the next used index, thus idr_get_next() should be even 
-better than the for loop, ...
-
-
---
-
-     Manfred
+diff --git a/drivers/net/mii.c b/drivers/net/mii.c
+index 779c3a96dba7..3e7823267a3b 100644
+--- a/drivers/net/mii.c
++++ b/drivers/net/mii.c
+@@ -50,9 +50,8 @@ static u32 mii_get_an(struct mii_if_info *mii, u16 addr)
+  * The @ecmd parameter is expected to have been cleared before calling
+  * mii_ethtool_gset().
+  *
+- * Returns 0 for success, negative on error.
+  */
+-int mii_ethtool_gset(struct mii_if_info *mii, struct ethtool_cmd *ecmd)
++void mii_ethtool_gset(struct mii_if_info *mii, struct ethtool_cmd *ecmd)
+ {
+ 	struct net_device *dev = mii->dev;
+ 	u16 bmcr, bmsr, ctrl1000 = 0, stat1000 = 0;
+@@ -131,8 +130,6 @@ int mii_ethtool_gset(struct mii_if_info *mii, struct ethtool_cmd *ecmd)
+ 	mii->full_duplex = ecmd->duplex;
+ 
+ 	/* ignore maxtxpkt, maxrxpkt for now */
+-
+-	return 0;
+ }
+ 
+ /**
+diff --git a/include/linux/mii.h b/include/linux/mii.h
+index 219b93cad1dd..12ea29e04293 100644
+--- a/include/linux/mii.h
++++ b/include/linux/mii.h
+@@ -32,7 +32,7 @@ struct mii_if_info {
+ 
+ extern int mii_link_ok (struct mii_if_info *mii);
+ extern int mii_nway_restart (struct mii_if_info *mii);
+-extern int mii_ethtool_gset(struct mii_if_info *mii, struct ethtool_cmd *ecmd);
++extern void mii_ethtool_gset(struct mii_if_info *mii, struct ethtool_cmd *ecmd);
+ extern void mii_ethtool_get_link_ksettings(
+ 	struct mii_if_info *mii, struct ethtool_link_ksettings *cmd);
+ extern int mii_ethtool_sset(struct mii_if_info *mii, struct ethtool_cmd *ecmd);
+-- 
+2.32.0
 
