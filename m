@@ -2,68 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA773EF4DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 23:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBF973EF4E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 23:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234794AbhHQVXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 17:23:24 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:43910 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230515AbhHQVXW (ORCPT
+        id S234926AbhHQVYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 17:24:37 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:39539 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230515AbhHQVYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 17:23:22 -0400
-Received: by mail-ot1-f45.google.com with SMTP id x10-20020a056830408a00b004f26cead745so108838ott.10;
-        Tue, 17 Aug 2021 14:22:49 -0700 (PDT)
+        Tue, 17 Aug 2021 17:24:35 -0400
+Received: by mail-oi1-f170.google.com with SMTP id bj40so1223657oib.6;
+        Tue, 17 Aug 2021 14:24:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=RxfsUNxQuHFeeinSXfwnppOEjR6lGfxHD88QKCCSZ40=;
-        b=ZyRV22PkX7qVooZv3DSpszE8wx+3gyeP7HU9CFcAP0lCjKHD5gd5/knPBFvsS973uK
-         HQmOOVKh2Cq7Y/zuAI1qIqnusi93HxYDEi31xZS9vpqGSC8sP2y+t+rMUWGNZldAzabR
-         KUUgmvo2bsYUMG748iB8gXzEo4hexXrTXcU2quP/UD98j8XXZfbjxubkNNkg+huk2Oan
-         uujzgRYlPcydRt/4D2IbsuGe7q/UKUKTW6tHksZeScBLR7hhx18ahuyI3jzcPSaHv1Eb
-         0ixCF/YADDOCv+SZOznSwRU144c9Rz0ueCzrDOOoYY1xLZR9hJqIK0PuM8S36F21yXBH
-         AH1w==
-X-Gm-Message-State: AOAM53309f+ig9LL8E9FqOnFkeLWgTu6lJp4H7lZkHY0YBMnz5M48EPz
-        HyaD3EOgFh0ySGNXX295yA==
-X-Google-Smtp-Source: ABdhPJwZ1XEH427kTOCof94GE7pPcfSIOvX5lcwYwNfkKoDKIPvm6zfYAh2JbL+pudnaUVZ34mRucQ==
-X-Received: by 2002:a9d:222:: with SMTP id 31mr4286176otb.79.1629235368840;
-        Tue, 17 Aug 2021 14:22:48 -0700 (PDT)
+        bh=cc1Tee25eLnpmetGn3WxZiNcJ/LLzI5Ywtl6ibNrqCc=;
+        b=s6cxB1z+hiY0Ex9KO5i5KbCJAKPbbcZ1H3GC8uFYcvbsUr0FkpJL8obp/fhQma1wwR
+         FQzmSDkLH/CWEenTYrvluX6C/RwQbltPw0r0RtfIzQz4ZkQAGgsVQUaYnPeLw+xWBVRO
+         vdq5jQ0nNZClLkYqpB4XkyLh8Qx8wQugxt/LWyJClWii7BuIxXWJ1DulOFPRZfsv9BEC
+         dC7IHe2l5XCAjIwmqSChOAPmF3BhLVqvIjOeZ68tGYZ3FjxD0V+ceQrhUQCWDQ6erwJ0
+         moUvrdppKM/5qK+F4RhVMFBpCPGuEVJ1eQqFPQd3IMbQ9uX4hdBj5KyjEq9RnhokgqF4
+         24NQ==
+X-Gm-Message-State: AOAM532kXgFXFaCq3lZAt3piehryQAIkZO+DK4pxs4hXTseE5MvKeTN6
+        A28dxTVsQyyHgXVJ4iCgXg==
+X-Google-Smtp-Source: ABdhPJxB+13MUTodakTypFZWJ0OC1eGz65e3oYzvM2LSxBEUtJ5ZgfSPnWAqFOqmy5Dv97ixorGFbA==
+X-Received: by 2002:a05:6808:10d:: with SMTP id b13mr4264105oie.79.1629235441533;
+        Tue, 17 Aug 2021 14:24:01 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j125sm747897oif.53.2021.08.17.14.22.47
+        by smtp.gmail.com with ESMTPSA id h19sm610545otr.75.2021.08.17.14.24.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 14:22:48 -0700 (PDT)
-Received: (nullmailer pid 863469 invoked by uid 1000);
-        Tue, 17 Aug 2021 21:22:47 -0000
-Date:   Tue, 17 Aug 2021 16:22:47 -0500
+        Tue, 17 Aug 2021 14:24:00 -0700 (PDT)
+Received: (nullmailer pid 865404 invoked by uid 1000);
+        Tue, 17 Aug 2021 21:23:59 -0000
+Date:   Tue, 17 Aug 2021 16:23:59 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Lucas Stankus <lucas.p.stankus@gmail.com>
-Cc:     Michael.Hennerich@analog.com, linux-iio@vger.kernel.org,
-        Dragos.Bogdan@analog.com, Darius.Berghe@analog.com,
-        devicetree@vger.kernel.org, lars@metafoo.de, jic23@kernel.org,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: iio: accel: Add binding
- documentation for ADXL313
-Message-ID: <YRwop9HL/moXSdsa@robh.at.kernel.org>
-References: <cover.1628713039.git.lucas.p.stankus@gmail.com>
- <1b468b9d4b22f2715ff7e8de868614e533cf1f2a.1628713039.git.lucas.p.stankus@gmail.com>
+To:     Dawei Chien <dawei.chien@mediatek.com>
+Cc:     Georgi Djakov <georgi.djakov@linaro.org>,
+        Ryan Case <ryandcase@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arvin Wang <arvin.wang@mediatek.com>,
+        devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Liao <jamesjj.liao@mediatek.com>,
+        Nicolas Boichat <drinkcat@google.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Fan Chen <fan.chen@mediatek.com>, linux-kernel@vger.kernel.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Subject: Re: [V11,PATCH 02/19] dt-bindings: mediatek: add compatible for
+ MT8195 dvfsrc
+Message-ID: <YRwo72vWlsY1cPw+@robh.at.kernel.org>
+References: <20210812085846.2628-1-dawei.chien@mediatek.com>
+ <20210812085846.2628-3-dawei.chien@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1b468b9d4b22f2715ff7e8de868614e533cf1f2a.1628713039.git.lucas.p.stankus@gmail.com>
+In-Reply-To: <20210812085846.2628-3-dawei.chien@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Aug 2021 18:17:07 -0300, Lucas Stankus wrote:
-> Add device tree binding documentation for ADXL313 3-axis accelerometer.
+On Thu, 12 Aug 2021 16:58:29 +0800, Dawei Chien wrote:
+> This adds dt-binding documentation of dvfsrc for Mediatek MT8195
+> SoCs Platform.
 > 
-> Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
+> Signed-off-by: Dawei Chien <dawei.chien@mediatek.com>
 > ---
->  .../bindings/iio/accel/adi,adxl313.yaml       | 86 +++++++++++++++++++
->  1 file changed, 86 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml
+>  Documentation/devicetree/bindings/soc/mediatek/dvfsrc.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
