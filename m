@@ -2,203 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A33523EF18F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 20:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9455B3EF197
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 20:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232641AbhHQSNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 14:13:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51320 "EHLO
+        id S232880AbhHQSPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 14:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232344AbhHQSNb (ORCPT
+        with ESMTP id S231438AbhHQSPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 14:13:31 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B94C061764;
-        Tue, 17 Aug 2021 11:12:57 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id bo18so494273pjb.0;
-        Tue, 17 Aug 2021 11:12:57 -0700 (PDT)
+        Tue, 17 Aug 2021 14:15:39 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24779C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 11:15:06 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id l36-20020a0568302b24b0290517526ce5e3so18502029otv.11
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 11:15:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AEtrXyrbVht35zljsINWugNhaauLisK0edRaAd64ets=;
-        b=bK8Mhr2QbAko9lJz269tBvOBVahVDVSXU3HMtLrfYERQGm616CfP9YPiNWf67+XWU1
-         nfcDpLgjVqkx85NyXTofYXy1QPzKcbZpWRvuKIx/af+rukRNkE2D38vHV2L/4UusgHCB
-         8PHbNRcgBxzF+VvudEPXKAZvH5L+w/E+Q29/Q65d18WNk9a9u9MnWU89uQzwUlCKJ+oT
-         rDUEp6b8NDPC0O1eb/Z1SLAvfujGXfdWGTDG3/5AnOpNeW7uGTWSk80avSDRIu0TrOB1
-         QQ14Q5QAbfXWMwc2N/6GYzgCLMyrGUeSMt6ugVoAQJkDTBdzK8G3c5la9VFnT8fBuL3L
-         iX/Q==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AVdaqCFH+UALpuVfO+b7JgwQXf9nnVhWLkRBb8EvjqA=;
+        b=i8zMLfL/Uz1yWRkKL8ebwiwa3gjf6qYyQ9gAtF9wsEzN9SgsFUlTEiNFR/RO8Fdt+W
+         TuvGICtLyE81yElj20y0Wy+bc4rRSa/dKhBvzW5v12t8eGB+MUANgCNa0zYJEZjqSpV9
+         QjI3k5qC2icq6i+DqMO08AJftIQivb2apI1sMytjWXAh5EK03jX19MWVTG3tTXuONItR
+         KQjRS3EQy9oOoFU+HzRBdgNBetmmWRcLAqY/f8kKDoHC1KmaN0qxC1om4ENQB1bi9Ulg
+         QAVJWYINPYu6WfjXO6a4zCL+l4QOunD4+w9Ufd2Y0srGRwBqWLUJ/Ku1GSm4yBpevvEV
+         g+oA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AEtrXyrbVht35zljsINWugNhaauLisK0edRaAd64ets=;
-        b=PjxA47JWS9Mn/6euXBSgoXK2l5AOBmQWRaezKfBMHH+j7pwT+ZAktAhx0nKwRx44jX
-         ZVSZX7Ezwr2r6pRz+DfKcREfeciN6rPVlmg0Kkowb48jYJkzufWYqZIZ8/NNmSIyxK8+
-         usOjegpLQyvmiSeyIzgMwe6hmCjRwQAr2VEsWvipQmSfGaUht0lwMaAmPPM2ZJ6DQOUR
-         PL+vInunaVR2HtxhDb0w8vNNDCa2vMmPW12msfZA8wd7gqe3ISXIv0yUaXE7M/FOHlpt
-         dQ5pPDFYGirg+M4zwRlaEBvNjk4O9EZtjRhQLMObPlOWOfLi9DYqAsVe/Fb/BgGPgVBt
-         TwrA==
-X-Gm-Message-State: AOAM530/Lxy57HzX+t6szT9EtH8MUWEDuGGvPm5KtalCuTQkB0ncBnLt
-        uqdl8WK3JneaCg1lb6YXvpQ=
-X-Google-Smtp-Source: ABdhPJyaGCS32CxoWrXMdXxsiVreUHGUUIkW/GrSwmEApXToKX9PlhnHi9d1fL+fVozROgy2TRNjDw==
-X-Received: by 2002:aa7:96c3:0:b0:3e2:1cc0:da27 with SMTP id h3-20020aa796c3000000b003e21cc0da27mr4937009pfq.65.1629223977445;
-        Tue, 17 Aug 2021 11:12:57 -0700 (PDT)
-Received: from localhost ([103.248.31.158])
-        by smtp.gmail.com with ESMTPSA id 21sm3315144pfh.103.2021.08.17.11.12.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 11:12:57 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 23:42:55 +0530
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Amey Narkhede <ameynarkhede03@gmail.com>
-Subject: Re: [PATCH v16 0/9] PCI: Expose and manage PCI device reset
-Message-ID: <20210817181255.5g3kdkvfwf2jnv2k@archlinux>
-References: <20210817180500.1253-1-ameynarkhede03@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AVdaqCFH+UALpuVfO+b7JgwQXf9nnVhWLkRBb8EvjqA=;
+        b=GTQQNc58N8OeThzVTIvLw3cUZkkRDEjdTdT4UU6kJ4rp9mbPaP51wxMQ4i861P6GWp
+         JpG+3saZKju7RXGTfcj7/G43jOzfFdgQXNbcaF99iqwzZkM7fPF2Nn28VHXQ7F9fe6Xu
+         4Vczq3FkK/dPWh7RM8Le1KH3gGOKage2gPsWG5+A7GdBuiUmu4HtIsrGoJxWXXYpZpNV
+         dffpxOX/jMdwOFRrZ8v5PPOhcti01M4Wk3dXlNLXVnAmg21JL57I+0/RNj2rC5tKuSR3
+         KwKXcyXZsFjCwr8PQPKcta+3FjbvPAmIrq7XYzTVeD6AeXuCoEFp+wJPeCNDnubVY9pP
+         ML1g==
+X-Gm-Message-State: AOAM532GPyQHtqpGEnwycrRY/jKHVMHnPK9pPq3/iH2rTfP27ZcmpMXm
+        6DttZYW5ruzXTPWT/2j1ocgpJA==
+X-Google-Smtp-Source: ABdhPJwCNka9f7F+JOOl3DJYEZSFnaJX33sUdGts2IRPhP/mJBgEsGoNl6iNRaf3cj60zaBx+KXFFA==
+X-Received: by 2002:a9d:70cc:: with SMTP id w12mr1630001otj.306.1629224105422;
+        Tue, 17 Aug 2021 11:15:05 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id x198sm570603ooa.43.2021.08.17.11.15.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Aug 2021 11:15:05 -0700 (PDT)
+Subject: Re: [PATCH] coredump: Limit what can interrupt coredumps
+To:     Olivier Langlois <olivier@trillion01.com>,
+        Tony Battersby <tonyb@cybernetics.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Pavel Begunkov>" <asml.silence@gmail.com>
+References: <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
+ <198e912402486f66214146d4eabad8cb3f010a8e.camel@trillion01.com>
+ <87eeda7nqe.fsf@disp2133>
+ <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
+ <87pmwt6biw.fsf@disp2133> <87czst5yxh.fsf_-_@disp2133>
+ <CAHk-=wiax83WoS0p5nWvPhU_O+hcjXwv6q3DXV8Ejb62BfynhQ@mail.gmail.com>
+ <87y2bh4jg5.fsf@disp2133>
+ <CAHk-=wjPiEaXjUp6PTcLZFjT8RrYX+ExtD-RY3NjFWDN7mKLbw@mail.gmail.com>
+ <87sg1p4h0g.fsf_-_@disp2133> <20210614141032.GA13677@redhat.com>
+ <87pmwmn5m0.fsf@disp2133>
+ <4d93d0600e4a9590a48d320c5a7dd4c54d66f095.camel@trillion01.com>
+ <8af373ec-9609-35a4-f185-f9bdc63d39b7@cybernetics.com>
+ <9d194813-ecb1-2fe4-70aa-75faf4e144ad@kernel.dk>
+ <b36eb4a26b6aff564c6ef850a3508c5b40141d46.camel@trillion01.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <0bc38b13-5a7e-8620-6dce-18731f15467e@kernel.dk>
+Date:   Tue, 17 Aug 2021 12:15:04 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210817180500.1253-1-ameynarkhede03@gmail.com>
+In-Reply-To: <b36eb4a26b6aff564c6ef850a3508c5b40141d46.camel@trillion01.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/08/17 11:34PM, Amey Narkhede wrote:
-> PCI and PCIe devices may support a number of possible reset mechanisms
-> for example Function Level Reset (FLR) provided via Advanced Feature or
-> PCIe capabilities, Power Management reset, bus reset, or device specific reset.
-> Currently the PCI subsystem creates a policy prioritizing these reset methods
-> which provides neither visibility nor control to userspace.
->
-> Expose the reset methods available per device to userspace, via sysfs
-> and allow an administrative user or device owner to have ability to
-> manage per device reset method priorities or exclusions.
-> This feature aims to allow greater control of a device for use cases
-> as device assignment, where specific device or platform issues may
-> interact poorly with a given reset method, and for which device specific
-> quirks have not been developed.
->
+On 8/15/21 2:42 PM, Olivier Langlois wrote:
+> On Wed, 2021-08-11 at 19:55 -0600, Jens Axboe wrote:
+>> On 8/10/21 3:48 PM, Tony Battersby wrote:
+>>> On 8/5/21 9:06 AM, Olivier Langlois wrote:
+>>>>
+>>>> Hi all,
+>>>>
+>>>> I didn't forgot about this remaining issue and I have kept thinking
+>>>> about it on and off.
+>>>>
+>>>> I did try the following on 5.12.19:
+>>>>
+>>>> diff --git a/fs/coredump.c b/fs/coredump.c
+>>>> index 07afb5ddb1c4..614fe7a54c1a 100644
+>>>> --- a/fs/coredump.c
+>>>> +++ b/fs/coredump.c
+>>>> @@ -41,6 +41,7 @@
+>>>>  #include <linux/fs.h>
+>>>>  #include <linux/path.h>
+>>>>  #include <linux/timekeeping.h>
+>>>> +#include <linux/io_uring.h>
+>>>>  
+>>>>  #include <linux/uaccess.h>
+>>>>  #include <asm/mmu_context.h>
+>>>> @@ -625,6 +626,8 @@ void do_coredump(const kernel_siginfo_t
+>>>> *siginfo)
+>>>>                 need_suid_safe = true;
+>>>>         }
+>>>>  
+>>>> +       io_uring_files_cancel(current->files);
+>>>> +
+>>>>         retval = coredump_wait(siginfo->si_signo, &core_state);
+>>>>         if (retval < 0)
+>>>>                 goto fail_creds;
+>>>> --
+>>>> 2.32.0
+>>>>
+>>>> with my current understanding, io_uring_files_cancel is supposed to
+>>>> cancel everything that might set the TIF_NOTIFY_SIGNAL.
+>>>>
+>>>> I must report that in my testing with generating a core dump
+>>>> through a
+>>>> pipe with the modif above, I still get truncated core dumps.
+>>>>
+>>>> systemd is having a weird error:
+>>>> [ 2577.870742] systemd-coredump[4056]: Failed to get COMM: No such
+>>>> process
+>>>>
+>>>> and nothing is captured
+>>>>
+>>>> so I have replaced it with a very simple shell:
+>>>> $ cat /proc/sys/kernel/core_pattern 
+>>>>> /home/lano1106/bin/pipe_core.sh %e %p
+>>>>
+>>>> ~/bin $ cat pipe_core.sh 
+>>>> #!/bin/sh
+>>>>
+>>>> cat > /home/lano1106/core/core.$1.$2
+>>>>
+>>>> BFD: warning: /home/lano1106/core/core.test.10886 is truncated:
+>>>> expected core file size >= 24129536, found: 61440
+>>>>
+>>>> I conclude from my attempt that maybe io_uring_files_cancel is not
+>>>> 100%
+>>>> cleaning everything that it should clean.
+>>>>
+>>>>
+>>>>
+>>> I just ran into this problem also - coredumps from an io_uring
+>>> program
+>>> to a pipe are truncated.  But I am using kernel 5.10.57, which does
+>>> NOT
+>>> have commit 12db8b690010 ("entry: Add support for TIF_NOTIFY_SIGNAL")
+>>> or
+>>> commit 06af8679449d ("coredump: Limit what can interrupt coredumps").
+>>> Kernel 5.4 works though, so I bisected the problem to commit
+>>> f38c7e3abfba ("io_uring: ensure async buffered read-retry is setup
+>>> properly") in kernel 5.9.  Note that my io_uring program uses only
+>>> async
+>>> buffered reads, which may be why this particular commit makes a
+>>> difference to my program.
+>>>
+>>> My io_uring program is a multi-purpose long-running program with many
+>>> threads.  Most threads don't use io_uring but a few of them do. 
+>>> Normally, my core dumps are piped to a program so that they can be
+>>> compressed before being written to disk, but I can also test writing
+>>> the
+>>> core dumps directly to disk.  This is what I have found:
+>>>
+>>> *) Unpatched 5.10.57: if a thread that doesn't use io_uring triggers
+>>> a
+>>> coredump, the core file is written correctly, whether it is written
+>>> to
+>>> disk or piped to a program, even if another thread is using io_uring
+>>> at
+>>> the same time.
+>>>
+>>> *) Unpatched 5.10.57: if a thread that uses io_uring triggers a
+>>> coredump, the core file is truncated, whether written directly to
+>>> disk
+>>> or piped to a program.
+>>>
+>>> *) 5.10.57+backport 06af8679449d: if a thread that uses io_uring
+>>> triggers a coredump, and the core is written directly to disk, then
+>>> it
+>>> is written correctly.
+>>>
+>>> *) 5.10.57+backport 06af8679449d: if a thread that uses io_uring
+>>> triggers a coredump, and the core is piped to a program, then it is
+>>> truncated.
+>>>
+>>> *) 5.10.57+revert f38c7e3abfba: core dumps are written correctly,
+>>> whether written directly to disk or piped to a program.
+>>
+>> That is very interesting. Like Olivier mentioned, it's not that actual
+>> commit, but rather the change of behavior implemented by it. Before
+>> that
+>> commit, we'd hit the async workers more often, whereas after we do the
+>> correct retry method where it's driven by the wakeup when the page is
+>> unlocked. This is purely speculation, but perhaps the fact that the
+>> process changes state potentially mid dump is why the dump ends up
+>> being
+>> truncated?
+>>
+>> I'd love to dive into this and try and figure it out. Absent a test
+>> case, at least the above gives me an idea of what to try out. I'll see
+>> if it makes it easier for me to create a case that does result in a
+>> truncated core dump.
+>>
+> Jens,
+> 
+> When I have first encountered the issue, the very first thing that I
+> did try was to create a simple test program that would synthetize the
+> problem.
+> 
+> After few time consumming failed attempts, I just gave up the idea and
+> simply settle to my prod program that showcase systematically the
+> problem every time that I kill the process with a SEGV signal.
+> 
+> In a nutshell, all the program does is to issue read operations with
+> io_uring on a TCP socket on which there is a constant data stream.
+> 
+> Now that I have a better understanding of what is going on, I think
+> that one way that could reproduce the problem consistently could be
+> along those lines:
+> 
+> 1. Create a pipe
+> 2. fork a child
+> 3. Initiate a read operation on the pipe with io_uring from the child
+> 4. Let the parent kill its child with a core dump generating signal.
+> 5. Write something in the pipe from the parent so that the io_uring
+> read operation completes while the core dump is generated.
+> 
+> I guess that I'll end up doing that if I cannot fix the issue with my
+> current setup but here is what I have attempted so far:
+> 
+> 1. Call io_uring_files_cancel from do_coredump
+> 2. Same as #1 but also make sure that TIF_NOTIFY_SIGNAL is cleared on
+> returning from io_uring_files_cancel
+> 
+> Those attempts didn't work but lurking in the io_uring dev mailing list
+> is starting to pay off. I thought that I did reach the bottom of the
+> rabbit hole in my journey of understanding io_uring but the recent
+> patch set sent by Hao Xu
+> 
+> https://lore.kernel.org/io-uring/90fce498-968e-6812-7b6a-fdf8520ea8d9@kernel.dk/T/#t
+> 
+> made me realize that I still haven't assimilated all the small io_uring
+> nuances...
+> 
+> Here is my feedback. From my casual io_uring code reader point of view,
+> it is not 100% obvious what the difference is between
+> io_uring_files_cancel and io_uring_task_cancel
+> 
+> It seems like io_uring_files_cancel is cancelling polls only if they
+> have the REQ_F_INFLIGHT flag set.
+> 
+> I have no idea what an inflight request means and why someone would
+> want to call io_uring_files_cancel over io_uring_task_cancel.
+> 
+> I guess that if I was to meditate on the question for few hours, I
+> would at some point get some illumination strike me but I believe that
+> it could be a good idea to document in the code those concepts for
+> helping casual readers...
+> 
+> Bottomline, I now understand that io_uring_files_cancel does not cancel
+> all the requests. Therefore, without fully understanding what I am
+> doing, I am going to replace my call to io_uring_files_cancel from
+> do_coredump with io_uring_task_cancel and see if this finally fix the
+> issue for good.
+> 
+> What I am trying to do is to cancel pending io_uring requests to make
+> sure that TIF_NOTIFY_SIGNAL isn't set while core dump is generated.
+> 
+> Maybe another solution would simply be to modify __dump_emit to make it
+> resilient to TIF_NOTIFY_SIGNAL as Eric W. Biederman originally
+> suggested.
+> 
+> or maybe do both...
+> 
+> Not sure which approach is best. If someone has an opinion, I would be
+> curious to hear it.
 
-Apologies. I messed my git branch dance. I sent old 9/9 patch again.
-You can find updated patches here https://lore.kernel.org/linux-pci/20210817180937.3123-1-ameynarkhede03@gmail.com/
-Again apologies for the spam.
+It does indeed sound like it's TIF_NOTIFY_SIGNAL that will trigger some
+signal_pending() and cause an interruption of the core dump. Just out of
+curiosity, what is your /proc/sys/kernel/core_pattern set to? If it's
+set to some piped process, can you try and set it to 'core' and see if
+that eliminates the truncation of the core dumps for your case?
 
-> Changes in v16:
-> 	- Refactor acpi_pci_bridge_d3() in patch 7/9
-> 	- Fixed consistency issues in patch 9/9
->
-> Changes in v15:
-> 	- Fix use of uninitialized variable in patch 3/9
->
-> Changes in v14:
-> 	- Remove duplicate entries from pdev->reset_methods as per
-> 	  Shanker's suggestion
->
-> Changes in v13:
-> 	- Added "PCI: Cache PCIe FLR capability"
-> 	- Removed memcpy in pci_init_reset_methods() and reset_method_show
-> 	- Moved reset_method sysfs attribute code from pci-sysfs.c to
-> 	  pci.c
->
-> Changes in v12:
->         - Corrected subject in 0/8 (cover letter).
->
-> Changes in v11:
->         - Alex's suggestion fallback back to other resets if the ACPI RST
->           fails. Fix "s/-EINVAL/-ENOTTY/" in 7/8 patch.
->
-> Changes in v10:
->         - Fix build error on ppc as reported by build bot
->
-> Changes in v9:
->         - Renamed has_flr bitfield to has_pcie_flr and restored
->           use of PCI_DEV_FLAGS_NO_FLR_RESET in quirk_no_flr()
->         - Cleaned up sysfs code
->
-> Changes in v8:
->         - Added has_flr bitfield to struct pci_dev to cache flr
->           capability
->         - Updated encoding scheme used in reset_methods array as per
->           Bjorn's suggestion
->         - Updated Shanker's ACPI patches
->
-> Changes in v7:
->         - Fix the pci_dev_acpi_reset() prototype mismatch
->           in case of CONFIG_ACPI=n
->
-> Changes in v6:
->         - Address Bjorn's and Krzysztof's review comments
->         - Add Shanker's updated patches along with new
->           "PCI: Setup ACPI_COMPANION early" patch
->
-> Changes in v5:
->         - Rebase the series over pci/reset branch of
->           Bjorn's pci tree to avoid merge conflicts
->           caused by recent changes in existing reset
->           sysfs attribute
->
-> Changes in v4:
->         - Change the order or strlen and strim in reset_method_store
->           function to avoid extra strlen call.
->         - Use consistent terminology in new
->           pci_reset_mode enum and rename the probe argument
->           of reset functions.
->
-> Changes in v3:
->         - Dropped "PCI: merge slot and bus reset implementations" which was
->           already accepted separately
->         - Grammar fixes
->         - Added Shanker's patches which were rebased on v2 of this series
->         - Added "PCI: Change the type of probe argument in reset functions"
->           and additional user input sanitization code in reset_method_store
->           function per review feedback from Krzysztof
->
-> Changes in v2:
->         - Use byte array instead of bitmap to keep track of
->           ordering of reset methods
->         - Fix incorrect use of reset_fn field in octeon driver
->         - Allow writing comma separated list of names of supported reset
->           methods to reset_method sysfs attribute
->         - Writing empty string instead of "none" to reset_method attribute
->           disables ability of reset the device
->
-> Amey Narkhede (6):
->   PCI: Cache PCIe FLR capability
->   PCI: Add pcie_reset_flr to follow calling convention of other reset
->     methods
->   PCI: Add new array for keeping track of ordering of reset methods
->   PCI: Remove reset_fn field from pci_dev
->   PCI: Allow userspace to query and set device reset mechanism
->   PCI: Change the type of probe argument in reset functions
->
-> Shanker Donthineni (3):
->   PCI: Define a function to set ACPI_COMPANION in pci_dev
->   PCI: Setup ACPI fwnode early and at the same time with OF
->   PCI: Add support for ACPI _RST reset method
->
->  Documentation/ABI/testing/sysfs-bus-pci       |  19 ++
->  drivers/crypto/cavium/nitrox/nitrox_main.c    |   4 +-
->  .../ethernet/cavium/liquidio/lio_vf_main.c    |   2 +-
->  drivers/pci/hotplug/pciehp.h                  |   2 +-
->  drivers/pci/hotplug/pciehp_hpc.c              |   2 +-
->  drivers/pci/hotplug/pnv_php.c                 |   4 +-
->  drivers/pci/pci-acpi.c                        |  83 +++--
->  drivers/pci/pci-sysfs.c                       |   3 +-
->  drivers/pci/pci.c                             | 287 +++++++++++++-----
->  drivers/pci/pci.h                             |  24 +-
->  drivers/pci/pcie/aer.c                        |  12 +-
->  drivers/pci/probe.c                           |  16 +-
->  drivers/pci/quirks.c                          |  25 +-
->  drivers/pci/remove.c                          |   1 -
->  include/linux/pci.h                           |  14 +-
->  include/linux/pci_hotplug.h                   |   2 +-
->  16 files changed, 351 insertions(+), 149 deletions(-)
->
-> --
-> 2.32.0
+-- 
+Jens Axboe
+
