@@ -2,180 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4865E3EF5E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 00:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612013EF5EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 00:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236616AbhHQWnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 18:43:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57288 "EHLO
+        id S235051AbhHQWve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 18:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236375AbhHQWnZ (ORCPT
+        with ESMTP id S233171AbhHQWvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 18:43:25 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 101F6C061764;
-        Tue, 17 Aug 2021 15:42:51 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id u16so400105wrn.5;
-        Tue, 17 Aug 2021 15:42:50 -0700 (PDT)
+        Tue, 17 Aug 2021 18:51:33 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1822C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 15:50:59 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id u7so190766ilk.7
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 15:50:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Ffflbpl+4vtDALct8DDSj0ySXf+/wPRBLjk61pGOG1w=;
-        b=Ngvmipbl4OXygdD1yplC0sSm51ZAMsBofymYRUIPI2R5/G56v7rAZxIlQqxaM1QUSb
-         KeutvoaEJSimT+0h49TYh2CLmJGYeC3wwERvMdNpaT31Xy7VZ9qTbVLBP+VT101XCzA+
-         ifPzbEGGiq3jqn7AoFLQVSYACS/qdAsooibXevuNS4JqvpzwLg6N4x7NrG8q2m0znw/s
-         OpzzVDvPTizPq0R9Wo/CfmFcHVGBkeYkCXMtfdqS5BlClHwtPAQfvzz4dNa1xn1ZBmPk
-         FEFPATFwPn3xUeAYRANhcIFhTq8Y/f4UXQU50Oh8oPB2J0mciiDg5SwN/nXsWSm8Jiyk
-         8jcQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kJF4ZjAfLVqVGakZdtq7slT5DgNeQPyF9be1SJwj1Hw=;
+        b=WO9c2QU3Rm2pxOkmPo3AjUE8xD5dFp5H0PSGK5grzjQmciMODNSL22Zp4RSjoEY94H
+         YfcPOe6WNeAWprC+6IYhHnqWMMYcefPncqKab6WFpoYh6SgO5pPaRz24RgIFR0BB7hZd
+         hZwXrGGKflEsK54TiEY7x007y5705IjpZ3dVDtKptBdiZDJdqVlj7kl8BdNcEFZXj64a
+         ggLzVwkDsJDp83zyN4n2mhpq99SvPffSjD3srWPL57EQRM0eKQIOLZwUhcUudv+BJ4k/
+         FyV3hprr5oHGe+X6b7/tWiRrsPSm1hLfRILzP/t1I3+7zx24CaU0IuE7aLyT/7sYMKVZ
+         +LGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Ffflbpl+4vtDALct8DDSj0ySXf+/wPRBLjk61pGOG1w=;
-        b=S2YPee99Ym7YLxrx9Ejvj5Cx4GcE5ajyPDla/7+FdYEzH77mcy+8yD6LjLV912thLk
-         9rtPn+1iYNPh2NXi1WdC7Rza8AOM086nDXsj96Gz+aClLmoiZBhrTTRfz/DNWzM0Mr9n
-         JUloDstuLZMV5l/ajn7qo8bvZkqYjXkYhfnxhrjRJDbstR1k0lCYK29tOieazF7O6wAK
-         4XQJaiUARdSaj/VLZxCSomBbwHbN6oZKs8ATwjfmzlmnNiHdyjDaVHvPNAMTILzFi+lx
-         Lu77Xv3JIyQ6gPUOSlGYC49bsyQUugSoBw3hymrHvjN2mLTTFXcN8qPeKImGXb7SPBRU
-         A11w==
-X-Gm-Message-State: AOAM531InXt3nF4dZaYc1UyYIGDsFWzx/qAVUasDxQnRD8DIx6F+5mDG
-        hqFarev2NSBUxIyv/4YtZho=
-X-Google-Smtp-Source: ABdhPJymxKM0HD6Y5FZpwLInrie03xLslp+zG0y0kBWFiQUF1syuqhv40A8fK0dtFAibk5Y8AsvAAw==
-X-Received: by 2002:adf:c681:: with SMTP id j1mr6682332wrg.119.1629240169686;
-        Tue, 17 Aug 2021 15:42:49 -0700 (PDT)
-Received: from localhost.localdomain (ip5f5bec31.dynamic.kabel-deutschland.de. [95.91.236.49])
-        by smtp.gmail.com with ESMTPSA id a3sm3976850wrx.38.2021.08.17.15.42.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 15:42:49 -0700 (PDT)
-From:   Bean Huo <huobean@gmail.com>
-To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bean Huo <beanhuo@micron.com>
-Subject: [PATCH v1 2/2] mmc: core: Let BKOPS timeout readable/writable via sysfs
-Date:   Wed, 18 Aug 2021 00:42:08 +0200
-Message-Id: <20210817224208.153652-3-huobean@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210817224208.153652-1-huobean@gmail.com>
-References: <20210817224208.153652-1-huobean@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kJF4ZjAfLVqVGakZdtq7slT5DgNeQPyF9be1SJwj1Hw=;
+        b=lFdxESqbiTAhjmecAH2lF/13ok30Vz+nr0UlhnEHTNT6z8vcOfBlQOdoo1pvDVVd7t
+         kKV4zCdh1y3d5enA19j3Y8Zde7GHdR3imCeK/xlLHRu6LTcZEYIA5tz3Qsb7vplI0RFq
+         iykqdUZv8JxvhtvMSaTb37s4Amk2e/5A8+YUegkO8c9AM3fBqpq7kPjBpzVH5OHHvo3F
+         ku+S6581YVja5qpLTxghV2Ew1wSbvmnCOgiDDMz7N6rgQ8veA9jTrJC69wR4ukwE/AOP
+         ZlnStzE0tqjs+1Jo73Dh3MdWa+ZYIxb5MhSTcAyWG3FEhzd7Q1ifli21wNxnRltgo5IH
+         QWWg==
+X-Gm-Message-State: AOAM5304vfTPwUzP3LB1QAwvZD/Uqf81u/3O1UfEftPQGUOt+yZpglEq
+        FO7589tGt7M9jJqfCIWi2zLap8Dv6DefnMQV1MTI5A==
+X-Google-Smtp-Source: ABdhPJyuXoUtjClO2XGjUvJ2jPKvvD6Oev6zK+cSmuR2nXNTv2OiJ8PR9E4e1vYMb2o+/X6JTTnGUfU3qmZ1b3XMejw=
+X-Received: by 2002:a92:c808:: with SMTP id v8mr3929501iln.110.1629240658875;
+ Tue, 17 Aug 2021 15:50:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1624978790.git.ashish.kalra@amd.com> <8fce27b8477073b9c7750f7cfc0c68f7ebd3a97d.1624978790.git.ashish.kalra@amd.com>
+In-Reply-To: <8fce27b8477073b9c7750f7cfc0c68f7ebd3a97d.1624978790.git.ashish.kalra@amd.com>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Tue, 17 Aug 2021 15:50:22 -0700
+Message-ID: <CABayD+fWA2bVe_MhR4SnOo7VH7Qs5kR5n9Jb6s7byqaP+UhXQA@mail.gmail.com>
+Subject: Re: [PATCH v5 6/6] x86/kvm: Add kexec support for SEV Live Migration.
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     pbonzini@redhat.com, seanjc@google.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com, joro@8bytes.org, bp@alien8.de,
+        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, brijesh.singh@amd.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+On Tue, Jun 29, 2021 at 8:14 AM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
+>
+> From: Ashish Kalra <ashish.kalra@amd.com>
+>
+> Reset the host's shared pages list related to kernel
+> specific page encryption status settings before we load a
+> new kernel by kexec. We cannot reset the complete
+> shared pages list here as we need to retain the
+> UEFI/OVMF firmware specific settings.
+>
+> The host's shared pages list is maintained for the
+> guest to keep track of all unencrypted guest memory regions,
+> therefore we need to explicitly mark all shared pages as
+> encrypted again before rebooting into the new guest kernel.
+>
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> ---
+>  arch/x86/kernel/kvm.c | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+>
+> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+> index a014c9bb5066..a55712ee58a1 100644
+> --- a/arch/x86/kernel/kvm.c
+> +++ b/arch/x86/kernel/kvm.c
+> @@ -869,10 +869,35 @@ static void __init kvm_init_platform(void)
+>         if (sev_active() &&
+>             kvm_para_has_feature(KVM_FEATURE_MIGRATION_CONTROL)) {
+>                 unsigned long nr_pages;
+> +               int i;
+>
+>                 pv_ops.mmu.notify_page_enc_status_changed =
+>                         kvm_sev_hc_page_enc_status;
+>
+> +               /*
+> +                * Reset the host's shared pages list related to kernel
+> +                * specific page encryption status settings before we load a
+> +                * new kernel by kexec. Reset the page encryption status
+> +                * during early boot intead of just before kexec to avoid SMP
+> +                * races during kvm_pv_guest_cpu_reboot().
+> +                * NOTE: We cannot reset the complete shared pages list
+> +                * here as we need to retain the UEFI/OVMF firmware
+> +                * specific settings.
+> +                */
+> +
+> +               for (i = 0; i < e820_table->nr_entries; i++) {
+> +                       struct e820_entry *entry = &e820_table->entries[i];
+> +
+> +                       if (entry->type != E820_TYPE_RAM)
+> +                               continue;
+> +
+> +                       nr_pages = DIV_ROUND_UP(entry->size, PAGE_SIZE);
+> +
+> +                       kvm_hypercall3(KVM_HC_MAP_GPA_RANGE, entry->addr,
+> +                                      nr_pages,
+> +                                      KVM_MAP_GPA_RANGE_ENCRYPTED | KVM_MAP_GPA_RANGE_PAGE_SZ_4K);
+> +               }
+> +
+>                 /*
+>                  * Ensure that _bss_decrypted section is marked as decrypted in the
+>                  * shared pages list.
+> --
+> 2.17.1
+>
+I believe this entire series has been reviewed. Is there any appetite
+to queue these for 915?
+They may need to be resent, since I'm not sure there is a single patch
+series that contains all the patches.
 
-For special cases, the application in the userspace wants to change
-BKOPS operation timeout value, also, wants eMMC back to R1_STATE_TRAN
-after BKOPS timeouts. A fixed BKOPS timeout value(120s) is no longer
-feasible, therefore, it is better to let the user controls its timeout
-value.
-
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- drivers/mmc/core/mmc.c     | 32 ++++++++++++++++++++++++++++++++
- drivers/mmc/core/mmc_ops.c |  3 +--
- include/linux/mmc/card.h   |  1 +
- 3 files changed, 34 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-index 838726b68ff3..617ff18b5b0e 100644
---- a/drivers/mmc/core/mmc.c
-+++ b/drivers/mmc/core/mmc.c
-@@ -29,6 +29,7 @@
- #define DEFAULT_CMD6_TIMEOUT_MS	500
- #define MIN_CACHE_EN_TIMEOUT_MS 1600
- #define CACHE_FLUSH_TIMEOUT_MS 30000 /* 30s */
-+#define MMC_BKOPS_TIMEOUT_MS	(120 * 1000) /* 120s */
- 
- static const unsigned int tran_exp[] = {
- 	10000,		100000,		1000000,	10000000,
-@@ -836,6 +837,35 @@ static ssize_t mmc_dsr_show(struct device *dev,
- 
- static DEVICE_ATTR(dsr, S_IRUGO, mmc_dsr_show, NULL);
- 
-+static ssize_t bkops_timeout_ms_show(struct device *dev,
-+				     struct device_attribute *attr, char *buf)
-+{
-+	struct mmc_card *card = mmc_dev_to_card(dev);
-+	return sysfs_emit(buf, "%d\n", card->bkops_timeout_ms);
-+}
-+
-+static ssize_t bkops_timeout_ms_store(struct device *dev,
-+				      struct device_attribute *attr,
-+				      const char *buf, size_t len)
-+{
-+	struct mmc_card *card = mmc_dev_to_card(dev);
-+	unsigned int new;
-+	int ret;
-+
-+	ret = kstrtouint(buf, 0, &new);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (new == 0)
-+		return -EINVAL;
-+
-+	card->bkops_timeout_ms = new;
-+
-+	return len;
-+}
-+
-+static DEVICE_ATTR_RW(bkops_timeout_ms);
-+
- static struct attribute *mmc_std_attrs[] = {
- 	&dev_attr_cid.attr,
- 	&dev_attr_csd.attr,
-@@ -862,6 +892,7 @@ static struct attribute *mmc_std_attrs[] = {
- 	&dev_attr_rca.attr,
- 	&dev_attr_dsr.attr,
- 	&dev_attr_cmdq_en.attr,
-+	&dev_attr_bkops_timeout_ms.attr,
- 	NULL,
- };
- ATTRIBUTE_GROUPS(mmc_std);
-@@ -1624,6 +1655,7 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
- 		card->ocr = ocr;
- 		card->type = MMC_TYPE_MMC;
- 		card->rca = 1;
-+		card->bkops_timeout_ms = MMC_BKOPS_TIMEOUT_MS;
- 		memcpy(card->raw_cid, cid, sizeof(card->raw_cid));
- 	}
- 
-diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
-index 0c54858e89c0..9af5e4671de2 100644
---- a/drivers/mmc/core/mmc_ops.c
-+++ b/drivers/mmc/core/mmc_ops.c
-@@ -19,7 +19,6 @@
- #include "host.h"
- #include "mmc_ops.h"
- 
--#define MMC_BKOPS_TIMEOUT_MS		(120 * 1000) /* 120s */
- #define MMC_SANITIZE_TIMEOUT_MS		(240 * 1000) /* 240s */
- 
- static const u8 tuning_blk_pattern_4bit[] = {
-@@ -958,7 +957,7 @@ void mmc_run_bkops(struct mmc_card *card)
- 	 * urgent levels by using an asynchronous background task, when idle.
- 	 */
- 	err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
--			 EXT_CSD_BKOPS_START, 1, MMC_BKOPS_TIMEOUT_MS);
-+			 EXT_CSD_BKOPS_START, 1, card->bkops_timeout_ms);
- 	/*
- 	 * If the BKOPS timed out, the card is probably still busy in the
- 	 * R1_STATE_PRG. Rather than continue to wait, let's try to abort
-diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
-index 74e6c0624d27..9e038d212067 100644
---- a/include/linux/mmc/card.h
-+++ b/include/linux/mmc/card.h
-@@ -294,6 +294,7 @@ struct mmc_card {
- 
- 	bool			reenable_cmdq;	/* Re-enable Command Queue */
- 
-+	unsigned int            bkops_timeout_ms;
- 	unsigned int		erase_size;	/* erase size in sectors */
-  	unsigned int		erase_shift;	/* if erase unit is power 2 */
-  	unsigned int		pref_erase;	/* in sectors */
--- 
-2.25.1
-
+--Steve
