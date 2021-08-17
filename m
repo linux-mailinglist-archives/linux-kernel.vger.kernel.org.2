@@ -2,186 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D753EE7FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 206E93EE7FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238843AbhHQIHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 04:07:51 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:59526
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238785AbhHQIHa (ORCPT
+        id S238709AbhHQIHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 04:07:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234745AbhHQIG7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 04:07:30 -0400
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id B6D0D40C9C
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 08:06:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629187614;
-        bh=gTC7PEUSA5dHECIH2h3N62kOFO0K8qY81V1jF3nxSjc=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=Yl1Q7mbudu2N5PeiyhTLfIs52kEM4idOvf2OECBEOkaFPLeeqUEcQI6Z9CKrHjh3N
-         Ace+gfMy+q1cfnC15pawF6nE0iP3MnNq7S/znzhoSwFXOTg8ZWsPen1iUIaqOxLv4t
-         HoT3pDX80fe7JMGTmgIoJujXQGgWuwbfkrJlLpVG/gHZZ9dZetxmfLuogNtRNyoEHn
-         Kpx6EzZEL/W+iC4MkiriTEOeDQKclrydi9EE2Ug5FL2CUxN/Xx3ey+4x+xpQrTgOwY
-         Cig/qpRjSJza4CR2X1iFmRW0kXLfR3JPczHyc34zqTacl0W59wgaRkejmiGoZ4bFR6
-         edQkYGIdBwmcQ==
-Received: by mail-ed1-f69.google.com with SMTP id dd25-20020a056402313900b003bed8169691so3936094edb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 01:06:54 -0700 (PDT)
+        Tue, 17 Aug 2021 04:06:59 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCDBFC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 01:06:25 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id v1so10709763qva.7
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 01:06:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=O9s4DPf1EPyNh/heSsyriAAWi5ei5uslG+fh5iqpDHM=;
+        b=cPdYKEewpU4jCNb8wD3BV92DYOU1v3r7O6UXdBAqUA0jBAcX2Eb69vIKyir7IuKIuS
+         VEYU7UFk/+56re91uN29M8zzUUMSeznJT69W2RwnfVFR2xVnZ6b9KeKrnniGWWTGqtvF
+         qtFlja3Z7RebrnzlTDc1i1CLy+RETxEVVSUBDxKeRIt/wwM2idapdUdqNxkh30zVOXmQ
+         ONlY7AYGaRXdVN4L4kNZYDyuCuT99wM4j3h+T99pMiOwZKIPQWUMpRClOPv3LGo5XLCq
+         MFFtAwNPKcBP7v8wx2EHGfNhaEq1cEFSYvJrk/AL/9c1pVwUn7KU/BRCaLtf3ibh1/gA
+         yM0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gTC7PEUSA5dHECIH2h3N62kOFO0K8qY81V1jF3nxSjc=;
-        b=pnSiZmY9FhOjTRMCunWd6VaTS44F2380AUof7N4xA68xxPhKz3rVK8wZYvNX1WZOD8
-         FK/LlgePM85xIHyHfEWfznfXNcNurnLe4RReDSq2icKkWGovkEnLj9dt5tEIlhVyzF/x
-         2rna0pjDpTSdhPsPRL7ibP4e5FW+31bwUPKLIskS21AJu4PhER6sP6BfIuuFCLzYquG9
-         nQ83gIFCOAk1RHV0NFPwMyr0XJUazuyJqYBV4X1YaEJ+1k3uNSv4Cc7E3DgMls3Zunqk
-         ZURDp+FWbaOUuQ8UMtaTEyS7kVUEXZJbCpTpF0kJmRVWKMcmWGC2K/jQDn2mJcdLAJf4
-         EOdQ==
-X-Gm-Message-State: AOAM532BgdTk2eH1bYUFPoks/ThphWN7IFRmfiSJFbl7oZCSkVHjZ8r8
-        LRAfy0RrJG9btrLE+A557ylz8fUMB9n2oP28TP+UFCh/zRUKkZt3/5PRqC/NLxovDj9E9NTFkkS
-        a3QN494HEo0ez+zjX1fiZopUQ9ZaQYoizztI2ZXTlQg==
-X-Received: by 2002:a17:906:f90c:: with SMTP id lc12mr2606297ejb.96.1629187614480;
-        Tue, 17 Aug 2021 01:06:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxug0RpA7XHKzvWpV/h62al/fvo39l+Fmdx5oDpD9qBSh34lwOsD09ucjabyGG7KZ38GYcZyQ==
-X-Received: by 2002:a17:906:f90c:: with SMTP id lc12mr2606275ejb.96.1629187614275;
-        Tue, 17 Aug 2021 01:06:54 -0700 (PDT)
-Received: from localhost.localdomain ([86.32.42.198])
-        by smtp.gmail.com with ESMTPSA id i26sm425529ejh.4.2021.08.17.01.06.53
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=O9s4DPf1EPyNh/heSsyriAAWi5ei5uslG+fh5iqpDHM=;
+        b=AWKDvas2h5Ff+XJeBWNuVGGjUkwFw1Po9+1zhXc6f5nRopnTTF56miIY7Qv5yJujft
+         /ldjT3cjITLu7zMF1im1Z1dMzIczW9dhSG5yM7nObaKuIY0UuiT2gkCq1Kt/AJVBSCVn
+         pUCc2t9RZjnGo5oK4OgKBaxxbtmhrQrntrMpM+L2DNeSbgxf3MFZzOmcCXhI5usUMin+
+         QigZ2YMXOjCQdQP22YOIPzgP0XNGYzmWD02uTOj9BD82xUJkRB4XR/znxcGjDQo71PHB
+         oe/nB2WbIVh6nosIKU+Gcg0Rejm527KeJoLstKr8MagskOYIp7u70RoORlIRqMzEclY1
+         T5Zw==
+X-Gm-Message-State: AOAM5326ad7CLEHtOFGyZIllPmD9Df8QGkpt1quLoXTNRN9/jOWbPX/4
+        xWiiDMSvWIUOXLPI321+8/y1GQ==
+X-Google-Smtp-Source: ABdhPJwWtCeso79FFWIOIARYcHD6ce/4VjU95Aj+MM9ocNEv+dznWyCx4fajWaOxbQb+hvx/ZFX7aA==
+X-Received: by 2002:a0c:f20c:: with SMTP id h12mr2013192qvk.56.1629187584811;
+        Tue, 17 Aug 2021 01:06:24 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id p187sm871565qkd.101.2021.08.17.01.06.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 01:06:53 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Markus Mayer <mmayer@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] dt-bindings: memory: convert Broadcom DPFE to dtschema
-Date:   Tue, 17 Aug 2021 10:06:17 +0200
-Message-Id: <20210817080617.14503-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Tue, 17 Aug 2021 01:06:24 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 01:06:22 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH 1/9] huge tmpfs: fix fallocate(vanilla) advance over huge
+ pages
+In-Reply-To: <da632211-8e3e-6b1-aee-ab24734429a0@google.com>
+Message-ID: <16201bd2-70e-37e2-e89b-5f929430da@google.com>
+References: <da632211-8e3e-6b1-aee-ab24734429a0@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert Broadcom DDR PHY Front End (DPFE) bindings to DT schema format
-using json-schema.
+shmem_fallocate() goes to a lot of trouble to leave its newly allocated
+pages !Uptodate, partly to identify and undo them on failure, partly to
+leave the overhead of clearing them until later.  But the huge page case
+did not skip to the end of the extent, walked through the tail pages one
+by one, and appeared to work just fine: but in doing so, cleared and
+Uptodated the huge page, so there was no way to undo it on failure.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+And by setting Uptodate too soon, it messed up both its nr_falloced and
+nr_unswapped counts, so that the intended "time to give up" heuristic
+did not work at all.
+
+Now advance immediately to the end of the huge extent, with a comment on
+why this is more than just an optimization.  But although this speeds up
+huge tmpfs fallocation, it does leave the clearing until first use, and
+some users may have come to appreciate slow fallocate but fast first use:
+if they complain, then we can consider adding a pass to clear at the end.
+
+Fixes: 800d8c63b2e9 ("shmem: add huge pages support")
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Reviewed-by: Yang Shi <shy828301@gmail.com>
 ---
- .../memory-controllers/brcm,dpfe-cpu.txt      | 27 -----------
- .../memory-controllers/brcm,dpfe-cpu.yaml     | 48 +++++++++++++++++++
- MAINTAINERS                                   |  2 +-
- 3 files changed, 49 insertions(+), 28 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/memory-controllers/brcm,dpfe-cpu.txt
- create mode 100644 Documentation/devicetree/bindings/memory-controllers/brcm,dpfe-cpu.yaml
+ mm/shmem.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/brcm,dpfe-cpu.txt b/Documentation/devicetree/bindings/memory-controllers/brcm,dpfe-cpu.txt
-deleted file mode 100644
-index 82d923ef413f..000000000000
---- a/Documentation/devicetree/bindings/memory-controllers/brcm,dpfe-cpu.txt
-+++ /dev/null
-@@ -1,27 +0,0 @@
--DDR PHY Front End (DPFE) for Broadcom STB
--=========================================
--
--DPFE and the DPFE firmware provide an interface for the host CPU to
--communicate with the DCPU, which resides inside the DDR PHY.
--
--There are three memory regions for interacting with the DCPU. These are
--specified in a single reg property.
--
--Required properties:
--  - compatible: must be "brcm,bcm7271-dpfe-cpu", "brcm,bcm7268-dpfe-cpu"
--    or "brcm,dpfe-cpu"
--  - reg: must reference three register ranges
--      - start address and length of the DCPU register space
--      - start address and length of the DCPU data memory space
--      - start address and length of the DCPU instruction memory space
--  - reg-names: must contain "dpfe-cpu", "dpfe-dmem", and "dpfe-imem";
--        they must be in the same order as the register declarations
--
--Example:
--	dpfe_cpu0: dpfe-cpu@f1132000 {
--		compatible = "brcm,bcm7271-dpfe-cpu", "brcm,dpfe-cpu";
--		reg =  <0xf1132000 0x180
--			0xf1134000 0x1000
--			0xf1138000 0x4000>;
--		reg-names = "dpfe-cpu", "dpfe-dmem", "dpfe-imem";
--	};
-diff --git a/Documentation/devicetree/bindings/memory-controllers/brcm,dpfe-cpu.yaml b/Documentation/devicetree/bindings/memory-controllers/brcm,dpfe-cpu.yaml
-new file mode 100644
-index 000000000000..769f13250047
---- /dev/null
-+++ b/Documentation/devicetree/bindings/memory-controllers/brcm,dpfe-cpu.yaml
-@@ -0,0 +1,48 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/memory-controllers/brcm,dpfe-cpu.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: DDR PHY Front End (DPFE) for Broadcom STB
-+
-+maintainers:
-+  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-+  - Markus Mayer <mmayer@broadcom.com>
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - brcm,bcm7271-dpfe-cpu
-+          - brcm,bcm7268-dpfe-cpu
-+      - const: brcm,dpfe-cpu
-+
-+  reg:
-+    items:
-+      - description: DCPU register space
-+      - description: DCPU data memory space
-+      - description: DCPU instruction memory space
-+
-+  reg-names:
-+    items:
-+      - const: dpfe-cpu
-+      - const: dpfe-dmem
-+      - const: dpfe-imem
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    dpfe-cpu@f1132000 {
-+        compatible = "brcm,bcm7271-dpfe-cpu", "brcm,dpfe-cpu";
-+        reg = <0xf1132000 0x180>,
-+              <0xf1134000 0x1000>,
-+              <0xf1138000 0x4000>;
-+        reg-names = "dpfe-cpu", "dpfe-dmem", "dpfe-imem";
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 36aee8517ab0..be8e4af8ed64 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3855,7 +3855,7 @@ M:	Markus Mayer <mmayer@broadcom.com>
- M:	bcm-kernel-feedback-list@broadcom.com
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Maintained
--F:	Documentation/devicetree/bindings/memory-controllers/brcm,dpfe-cpu.txt
-+F:	Documentation/devicetree/bindings/memory-controllers/brcm,dpfe-cpu.yaml
- F:	drivers/memory/brcmstb_dpfe.c
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 70d9ce294bb4..0cd5c9156457 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -2736,7 +2736,7 @@ static long shmem_fallocate(struct file *file, int mode, loff_t offset,
+ 	inode->i_private = &shmem_falloc;
+ 	spin_unlock(&inode->i_lock);
  
- BROADCOM STB NAND FLASH DRIVER
+-	for (index = start; index < end; index++) {
++	for (index = start; index < end; ) {
+ 		struct page *page;
+ 
+ 		/*
+@@ -2759,13 +2759,26 @@ static long shmem_fallocate(struct file *file, int mode, loff_t offset,
+ 			goto undone;
+ 		}
+ 
++		index++;
++		/*
++		 * Here is a more important optimization than it appears:
++		 * a second SGP_FALLOC on the same huge page will clear it,
++		 * making it PageUptodate and un-undoable if we fail later.
++		 */
++		if (PageTransCompound(page)) {
++			index = round_up(index, HPAGE_PMD_NR);
++			/* Beware 32-bit wraparound */
++			if (!index)
++				index--;
++		}
++
+ 		/*
+ 		 * Inform shmem_writepage() how far we have reached.
+ 		 * No need for lock or barrier: we have the page lock.
+ 		 */
+-		shmem_falloc.next++;
+ 		if (!PageUptodate(page))
+-			shmem_falloc.nr_falloced++;
++			shmem_falloc.nr_falloced += index - shmem_falloc.next;
++		shmem_falloc.next = index;
+ 
+ 		/*
+ 		 * If !PageUptodate, leave it that way so that freeable pages
 -- 
-2.30.2
+2.26.2
 
