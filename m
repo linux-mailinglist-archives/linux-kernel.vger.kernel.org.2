@@ -2,156 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A018E3EE0A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 02:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0243EE0AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 02:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235153AbhHQACi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 20:02:38 -0400
-Received: from mail-ej1-f42.google.com ([209.85.218.42]:34518 "EHLO
-        mail-ej1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234958AbhHQACg (ORCPT
+        id S232955AbhHQAEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 20:04:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232889AbhHQAEk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 20:02:36 -0400
-Received: by mail-ej1-f42.google.com with SMTP id u3so35039826ejz.1;
-        Mon, 16 Aug 2021 17:02:03 -0700 (PDT)
+        Mon, 16 Aug 2021 20:04:40 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3743AC061764;
+        Mon, 16 Aug 2021 17:04:08 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id mq2-20020a17090b3802b0290178911d298bso3073431pjb.1;
+        Mon, 16 Aug 2021 17:04:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=8OcYoQrjOQIm/iOfn/qGg5WXk6OnAW5qFwcrs/rMErI=;
+        b=H/LgA0e0aRuTUYHHg7c8649E/r5biZOpoBg7KtUO38aR75LQrqKye4P6cMEfwu1L7W
+         SBx12BW7i+wEh9nBFnKidZ2L3P1aKg7lWLx8Bj0H8InXsT2eCkjIpyrCXiUeehllATnV
+         pTmPzGF7O9Y8nNyeoan4jkhMCmJI8Ld60Dxdc2LBRmaxonfZjkz1EM+gHGfbbwzu+nbC
+         eBt7HfmcSqtsWnPjC8XebqAigfK/YsYZDA+22jz1RmFyCVT1s4s0x/cMVib3WZCupllg
+         hCBAvki+G4wr4ttmBMf1CllKVXOmRDE1x2yYK6Xi1cwOhzCxgd96e1YAljeFBr7qzYwu
+         wLCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=K5wMGZQ9prIRh71CsiF4fL+ypemm9zRUN8YLcm2qyP4=;
-        b=qMvaRCWkcOXithaJVmLXpwuaKAr/0zJSb46S7r+49cY9fGNID9/n5F6XMCaLLZ3x3f
-         ChcWxa8rQiDxsXPNmPV8Iq1QYG9xA7gMHvuKYciWCHYiAmjL2GaW1UKI47/ruJL+og/i
-         tD4Ve7cNaZL70kOKuJER9LgQkAwfZez7N5g60xvmZofdaDGBwtmm4Y1vMXXaajniafHT
-         ZuZfBRaWkZfsXHAkZwQWgDaiYLDqKB15aV88y/3+TVjjZ45HJUTplKK1L7uDwXhHgdIM
-         vYutof6dvYiMQ5moX7xd7dbRKgK9k4oAgAEsb1pDUBPvwafK+ecvSatT7CJqQssKzWBh
-         sCkA==
-X-Gm-Message-State: AOAM5326P889nssQIYFq58gB2nYoNAJFCFPGoN67VkhyKi414kvnx8V1
-        VJDCyKNfbq6IiGb6a+Ef/8o=
-X-Google-Smtp-Source: ABdhPJwbIAStQIsvY6nYd2xafGE+WztwQNp3Byq8JJLV82ISdOqBErzCmeSfzD0xXPsR/3+lGtA1aQ==
-X-Received: by 2002:a17:906:7095:: with SMTP id b21mr705327ejk.131.1629158522789;
-        Mon, 16 Aug 2021 17:02:02 -0700 (PDT)
-Received: from localhost (host-87-16-116-124.retail.telecomitalia.it. [87.16.116.124])
-        by smtp.gmail.com with ESMTPSA id gh23sm83504ejb.27.2021.08.16.17.02.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 17:02:02 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 02:01:57 +0200
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH net-next] stmmac: align RX buffers
-Message-ID: <20210817020157.3b9d015e@linux.microsoft.com>
-In-Reply-To: <20210816081208.522ac47c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20210614022504.24458-1-mcroce@linux.microsoft.com>
-        <871r71azjw.wl-maz@kernel.org>
-        <YROmOQ+4Kqukgd6z@orome.fritz.box>
-        <202417ef-f8ae-895d-4d07-1f9f3d89b4a4@gmail.com>
-        <87o8a49idp.wl-maz@kernel.org>
-        <fe5f99c8-5655-7fbb-a64e-b5f067c3273c@gmail.com>
-        <20210812121835.405d2e37@linux.microsoft.com>
-        <874kbuapod.wl-maz@kernel.org>
-        <20210816081208.522ac47c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Organization: Microsoft
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8OcYoQrjOQIm/iOfn/qGg5WXk6OnAW5qFwcrs/rMErI=;
+        b=TN+K7JM/5cL66SnKuPWM6UKRqjfCMlJVCkHKZ5uThsYMavwE9neEDPpjCZXrhlq+b/
+         Qgmgv0HfWmyH2QqfP+8xpk5enI/yxhTU5dkR1UiWPmcMFt4QTbXQYc+oVYGxlhJeQDfo
+         4oExGgRvfh4aTZHshyYhljGVlVYPgn+DEDHu9TSQcp2l+QifswNVPUGnDDM2nGvK7NP3
+         r3QGk1H3RY6dsTM9ntQyqsk0xi3YYt7y1q8AIKUAWT5swaVepqmN4pOCCfSfYONVSBPQ
+         yaTIRM749C0FyaYX9Z45cLWLeKh+zZIL4Vaest/9ajfApxz3e8Vec4FxMgmVKBAiQZHI
+         89uA==
+X-Gm-Message-State: AOAM530vYaYwrsJlwHVHevDOMZm0okGRBa+76ABmCBIAmdqJZ7mvl3c/
+        eJ396On9KRiFrfMwxwcKaaA=
+X-Google-Smtp-Source: ABdhPJwtLYKDhsKinpch6hw0rT/vGFaK/Jdkg0IXrY1PiIgMwHhRyJEkvRLLKb+Bsf7366YwpdXaRA==
+X-Received: by 2002:a62:6242:0:b029:3c6:5a66:c8f2 with SMTP id w63-20020a6262420000b02903c65a66c8f2mr667349pfb.59.1629158647726;
+        Mon, 16 Aug 2021 17:04:07 -0700 (PDT)
+Received: from taoren-ubuntu-R90MNF91 (c-73-92-48-112.hsd1.ca.comcast.net. [73.92.48.112])
+        by smtp.gmail.com with ESMTPSA id u190sm282154pfb.95.2021.08.16.17.04.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 16 Aug 2021 17:04:07 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 17:04:04 -0700
+From:   Tao Ren <rentao.bupt@gmail.com>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Tao Ren <taoren@fb.com>
+Subject: Re: [PATCH] ARM: dts: aspeed: minipack: Update flash partition table
+Message-ID: <20210817000403.GB7547@taoren-ubuntu-R90MNF91>
+References: <20210720002704.7390-1-rentao.bupt@gmail.com>
+ <20210813062435.GA24497@taoren-ubuntu-R90MNF91>
+ <CACPK8XcAqU3KASespqS3dPterpzyqD4wYH=qOS8Ok2yUrB_F+Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACPK8XcAqU3KASespqS3dPterpzyqD4wYH=qOS8Ok2yUrB_F+Q@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Aug 2021 08:12:08 -0700
-Jakub Kicinski <kuba@kernel.org> wrote:
-
-> On Thu, 12 Aug 2021 12:05:38 +0100 Marc Zyngier wrote:
-> > > A possible fix, which takes in account also the XDP headroom for
-> > > stmmac_rx_buf1_len() only could be (only compile tested, I don't
-> > > have the hardware now):  
-> > 
-> > However, this doesn't fix my issue. I still get all sort of
-> > corruption. Probably stmmac_rx_buf2_len() also need adjusting (it
-> > has a similar logic as its buf1 counterpart...)
-> > 
-> > Unless you can fix it very quickly, and given that we're towards the
-> > end of the cycle, I'd be more comfortable if we reverted this patch.
+On Mon, Aug 16, 2021 at 02:11:40AM +0000, Joel Stanley wrote:
+> On Fri, 13 Aug 2021 at 06:24, Tao Ren <rentao.bupt@gmail.com> wrote:
+> >
+> > Hi Joel,
+> >
+> > Looks like the patch is not included in "dt-for-v5.15". Any comments? Or
+> > should I send v2 if the email was not delivered?
 > 
-> Any luck investigating this one? The rc6 announcement sounds like
-> there may not be that many more rc releases for 5.14.
+> I had missed it. It's now applied for 5.15.
+> 
+> Cheers,
+> 
+> Joel
 
-Hi Jackub.
+Thank you Joel.
 
-Unfortunately I have only a device with stmmac, and it works fine with
-the patch. It seems that not all hardware suffers from this issue.
+Cheers,
 
-Also, using NET_IP_ALIGN on RX is a common pattern, I think that any
-ethernet device is doing the same to align the IPv4 header.
-
-Anyway, I asked for two tests on the affected device:
-1. Change NET_IP_ALIGN with 8, to see if the DMA has problems in
-   receiving to a non word aligned address
-2. load a nop XDP program (I provided one), to see if the problem is
-   already there when XDP is used
-
-I doubt that changing also stmmac_rx_buf2_len would help,
-but it's worth a try, here is a patch:
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 7b8404a21544..73d1f0ec66ff 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -93,7 +93,7 @@ static int tc = TC_DEFAULT;
- module_param(tc, int, 0644);
- MODULE_PARM_DESC(tc, "DMA threshold control value");
- 
--#define	DEFAULT_BUFSIZE	1536
-+#define	DEFAULT_BUFSIZE	1536 + XDP_PACKET_HEADROOM + NET_IP_ALIGN
- static int buf_sz = DEFAULT_BUFSIZE;
- module_param(buf_sz, int, 0644);
- MODULE_PARM_DESC(buf_sz, "DMA buffer size");
-@@ -4508,12 +4508,12 @@ static unsigned int stmmac_rx_buf1_len(struct stmmac_priv *priv,
- 
- 	/* First descriptor, not last descriptor and not split header */
- 	if (status & rx_not_ls)
--		return priv->dma_buf_sz;
-+		return priv->dma_buf_sz - stmmac_rx_offset(priv);
- 
- 	plen = stmmac_get_rx_frame_len(priv, p, coe);
- 
- 	/* First descriptor and last descriptor and not split header */
--	return min_t(unsigned int, priv->dma_buf_sz, plen);
-+	return min_t(unsigned int, priv->dma_buf_sz - stmmac_rx_offset(priv), plen);
- }
- 
- static unsigned int stmmac_rx_buf2_len(struct stmmac_priv *priv,
-@@ -4529,12 +4529,12 @@ static unsigned int stmmac_rx_buf2_len(struct stmmac_priv *priv,
- 
- 	/* Not last descriptor */
- 	if (status & rx_not_ls)
--		return priv->dma_buf_sz;
-+		return priv->dma_buf_sz - stmmac_rx_offset(priv);
- 
- 	plen = stmmac_get_rx_frame_len(priv, p, coe);
- 
- 	/* Last descriptor */
--	return plen - len;
-+	return plen - len - stmmac_rx_offset(priv);
- }
- 
- static int stmmac_xdp_xmit_xdpf(struct stmmac_priv *priv, int queue,
-
-
-Regards,
--- 
-per aspera ad upstream
+Tao
