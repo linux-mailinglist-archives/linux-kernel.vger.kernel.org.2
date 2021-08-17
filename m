@@ -2,421 +2,831 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6063D3EEBE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 13:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 771943EEBED
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 13:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236877AbhHQLwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 07:52:00 -0400
-Received: from smtpbg128.qq.com ([106.55.201.39]:30075 "EHLO smtpbg587.qq.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236713AbhHQLv7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 07:51:59 -0400
-X-QQ-mid: bizesmtp42t1629201074t5vdvioz
-Received: from localhost.localdomain (unknown [125.69.42.50])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Tue, 17 Aug 2021 19:51:13 +0800 (CST)
-X-QQ-SSF: 01000000004000B0C000B00A0000000
-X-QQ-FEAT: lSivdDMuKeljc6cmLZ1AVYVfz3V7TEDujLrRmDwWyozF6YrD8rQtNhLD7+2Sk
-        BndG8lt68doLiOhaRSr+MN33b+OK5i8J8cyWVBiQbWkRcg1i1e4Il2c3JXo6Pklrq9J2ngn
-        zlco99r1Ul1qDoI/0648zRwybOGcCrOg8oTiiBhSa1EGRnq4bfmWssUc48snD9iHJJQuRYZ
-        wlmba5y/K6QD7jeVF4ety1uYUht5xNUUuWvNLycAOFGi3pJILDI650XkegOsiIEuTiF24n+
-        u8oKyhdIyWfq8LaSsgmwic5exTjm1ZH6TsdQSAnDibisZ11PzW8HTvXSzkitW1BBrlI7p74
-        82colIYk7LFevoWWTMwmswGV5FfpQ==
-X-QQ-GoodBg: 0
-From:   Jason Wang <wangborong@cdjrlc.com>
-To:     benh@kernel.crashing.org
-Cc:     mpe@ellerman.id.au, yukuai3@huawei.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] macintosh: no need to initilise statics to 0
-Date:   Tue, 17 Aug 2021 19:51:04 +0800
-Message-Id: <20210817115104.30057-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam5
+        id S239713AbhHQLxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 07:53:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59004 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239157AbhHQLxJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 07:53:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE92B60E78;
+        Tue, 17 Aug 2021 11:52:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629201156;
+        bh=HMzvhIZ+p83Wjgpe2jqSoXXcnUPXT7PYmkSduEngtwM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Jdpzx165NMVJxx4kfwi494SuxLqqZ5uTLJPKSC/YWPXWgMgY5raHQkgcQlpZhe7Ct
+         w8O6pPfg2rRyNR2Dks3EYURq9Z1szUzkv92zsMxrWDQfVjQ9N2WzQ1dDQkgN862Smh
+         7iEe27k33o0Q05SQI9yR55hUfcG/xllZD3eUPFEr8RBTZ4wgTWP5kcXE07ylflwVYy
+         gMabKI0/zSji40rw0DpKMBLCZYAc+Lt4rn7hKVK3wdA3AFws6XV+fK4n3Slett7/wA
+         VgfEDdKSsi3fJZDxDlQjQCzp/V3npZxy/V8Y4uRwjkptnGwOB9uPZufbcss16xjAiM
+         UqGmE3LaSSgpA==
+Date:   Tue, 17 Aug 2021 20:52:31 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tom.zanussi@linux.intel.com
+Subject: Re: [PATCH v4] [RFC] trace: Add kprobe on tracepoint
+Message-Id: <20210817205231.0b1d2c395c95196b2129ed5c@kernel.org>
+In-Reply-To: <20210816174018.4eefc045@oasis.local.home>
+References: <20210811141433.1976072-1-tz.stoyanov@gmail.com>
+        <20210813004448.51c7de69ce432d338f4d226b@kernel.org>
+        <20210816174018.4eefc045@oasis.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Global static variables dont need to be initialised to 0. Because
-the compiler will initilise them.
+On Mon, 16 Aug 2021 17:40:18 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
----
- drivers/macintosh/mediabay.c | 10 ++---
- drivers/macintosh/via-pmu.c  | 78 ++++++++++++++++++------------------
- 2 files changed, 44 insertions(+), 44 deletions(-)
+> On Fri, 13 Aug 2021 00:44:48 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> 
+> Tzvetomir's on PTO so I'm helping out (trying to get this into the next
+> merge window).
+> 
+> > Hi,
+> > 
+> > Here is my code review.
+> > 
+> > On Wed, 11 Aug 2021 17:14:33 +0300
+> > "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+> > [...]
+> > > +
+> > > +static struct trace_eprobe *to_trace_eprobe(struct dyn_event *ev)
+> > > +{
+> > > +	return container_of(ev, struct trace_eprobe, devent);
+> > > +}
+> > > +
+> > > +static int trace_eprobe_find(struct trace_eprobe *ep)  
+> > 
+> > This function name is a bit easy to mislead. If I were you,
+> > I call it 'trace_eprobe_setup_event()'.
+> 
+> I agree the name is misleading.
+> 
+> > Or, I'll make it returns 'struct trace_event_call *' and set
+> > ep->event outside of this function. Moreover, I recommend you
+> > to call this before alloc_event_probe() and pass the result to it.
+> > e.g.
+> > 
+> > ... /* parse the target system and event */
+> > 
+> > event_call = find_and_get_event(sys_name, sys_event);
+> > if (!event_call)
+> >    goto error;
+> > 
+> > ep = alloc_event_probe(group, event, sys_name, sys_event, event_call, argc - 2);
+> > if (IS_ERR(ep))
+> 
+> To do the above, we'll need to take the event_mutex over both calls. I
+> can try that, and see what the lockdep fallout is ;-)
 
-diff --git a/drivers/macintosh/mediabay.c b/drivers/macintosh/mediabay.c
-index eab7e83c11c4..e104a95decb5 100644
---- a/drivers/macintosh/mediabay.c
-+++ b/drivers/macintosh/mediabay.c
-@@ -70,7 +70,7 @@ struct media_bay_info {
- #define MAX_BAYS	2
+OK, I got it. Then at least change the name please.
+("trace_eprobe_setup_event"?)
+
+> 
+> 
+> >    ...
+> > 
+> > > +{
+> > > +	struct trace_event_call *tp_event;
+> > > +	int ret = -ENOENT;
+> > > +	const char *name;
+> > > +
+> > > +	mutex_lock(&event_mutex);
+> > > +	list_for_each_entry(tp_event, &ftrace_events, list) {
+> > > +		if (tp_event->flags & TRACE_EVENT_FL_IGNORE_ENABLE)
+> > > +			continue;
+> > > +		if (!tp_event->class->system ||
+> > > +		    strcmp(ep->event_system, tp_event->class->system))
+> > > +			continue;
+> > > +		name = trace_event_name(tp_event);
+> > > +		if (!name ||
+> > > +		    strcmp(ep->event_name, name))
+> > > +			continue;
+> > > +		if (!try_module_get(tp_event->mod)) {
+> > > +			ret = -ENODEV;
+> > > +			break;
+> > > +		}  
+> > 
+> > BTW, this can lock the static events (because the module in where the
+> > event is locked), but can not lock the other dynamic events.
+> > Maybe we need 2 more patches.
+> > 
+> > 1) introduce TRACE_EVENT_FL_PROBE and set the flag in alloc_trace_k/uprobe().
+> >    (and eprobe will skip it)
+> 
+> I'm fine with what you suggest here.
+> 
+> 
+> > 2) introduce refcount for the trace_event_call, which prevent removing
+> >    synthetic event.
+> 
+> I rather not add another field to trace_event_call. There's one for
+> every event, which we have over a thousand events. Every field we add
+> to that structure adds more bloat to the kernel memory footprint.
+
+Indeed.
+
+> Perhaps we can have a dynamic event structure that encapsulates the
+> trace_event_call used by kprobes, et.al. and add the counter there? I
+> would require changes like:
+> 
+> static inline struct dymanic_event_call *
+> dynamic_event_from_trace_event(struct trace_event_call *call)
+> {
+> 	WARN_ON_ONCE(!(call->flags & TRACE_EVENT_FL_DYN_EVENT));
+> 	return container_of(call, struct dynamic_event_call, event);
+> }
+> 
+> [..]
+> 
+> static inline struct trace_probe_event *
+> trace_probe_event_from_call(struct trace_event_call *event_call)
+> {
+> 	struct dynamic_event_call *de = dynamic_event_from_trace_event(call);
+> 	return container_of(event_call, struct trace_probe_event, de);
+> }
+> 
+> Or maybe I can make the mod a union. As it's not needed for dynamic
+> events, perhaps I can use the void *mod as:
+> 
+> struct trace_event_call {
+> 	[..]
+> 	union {
+> 		void		*mod;
+> 		atomic_t	dynamic_ref_count;
+> 	};
+> 
+> ??
+>
+
+That's a good idea :)
  
- static struct media_bay_info media_bays[MAX_BAYS];
--static int media_bay_count = 0;
-+static int media_bay_count;
- 
- /*
-  * Wait that number of ms between each step in normal polling mode
-@@ -129,7 +129,7 @@ enum {
- /*
-  * Functions for polling content of media bay
-  */
-- 
-+
- static u8
- ohare_mb_content(struct media_bay_info *bay)
- {
-@@ -336,7 +336,7 @@ static inline void set_mb_power(struct media_bay_info* bay, int onoff)
- 		bay->ops->power(bay, 1);
- 		bay->state = mb_powering_up;
- 		pr_debug("mediabay%d: powering up\n", bay->index);
--	} else { 
-+	} else {
- 		/* Make sure everything is powered down & disabled */
- 		bay->ops->power(bay, 0);
- 		bay->state = mb_powering_down;
-@@ -577,7 +577,7 @@ static int media_bay_attach(struct macio_dev *mdev,
- 		macio_release_resources(mdev);
- 		return -ENOMEM;
- 	}
--	
-+
- 	i = media_bay_count++;
- 	bay = &media_bays[i];
- 	bay->mdev = mdev;
-@@ -745,7 +745,7 @@ static int __init media_bay_init(void)
- 	if (!machine_is(powermac))
- 		return 0;
- 
--	macio_register_driver(&media_bay_driver);	
-+	macio_register_driver(&media_bay_driver);
- 
- 	return 0;
- }
-diff --git a/drivers/macintosh/via-pmu.c b/drivers/macintosh/via-pmu.c
-index 4bdd4c45e7a7..cba4c2464dbf 100644
---- a/drivers/macintosh/via-pmu.c
-+++ b/drivers/macintosh/via-pmu.c
-@@ -158,7 +158,7 @@ static struct device_node *vias;
- static struct device_node *gpio_node;
- #endif
- static unsigned char __iomem *gpio_reg;
--static int gpio_irq = 0;
-+static int gpio_irq;
- static int gpio_irq_enabled = -1;
- static volatile int pmu_suspended;
- static spinlock_t pmu_lock;
-@@ -313,7 +313,7 @@ int __init find_via_pmu(void)
- 			PMU_INT_SNDBRT |
- 			PMU_INT_ADB |
- 			PMU_INT_TICK;
--	
-+
- 	if (of_node_name_eq(vias->parent, "ohare") ||
- 	    of_device_is_compatible(vias->parent, "ohare"))
- 		pmu_kind = PMU_OHARE_BASED;
-@@ -336,7 +336,7 @@ int __init find_via_pmu(void)
- 				PMU_INT_ADB |
- 				PMU_INT_TICK |
- 				PMU_INT_ENVIRONMENT;
--		
-+
- 		gpiop = of_find_node_by_name(NULL, "gpio");
- 		if (gpiop) {
- 			reg = of_get_property(gpiop, "reg", NULL);
-@@ -358,7 +358,7 @@ int __init find_via_pmu(void)
- 		printk(KERN_ERR "via-pmu: Can't map address !\n");
- 		goto fail_via_remap;
- 	}
--	
-+
- 	out_8(&via1[IER], IER_CLR | 0x7f);	/* disable all intrs */
- 	out_8(&via1[IFR], 0x7f);			/* clear IFR */
- 
-@@ -368,7 +368,7 @@ int __init find_via_pmu(void)
- 		goto fail_init;
- 
- 	sys_ctrler = SYS_CTRLER_PMU;
--	
-+
- 	return 1;
- 
-  fail_init:
-@@ -623,7 +623,7 @@ init_pmu(void)
- 	pmu_wait_complete(&req);
- 	if (req.reply_len > 0)
- 		pmu_version = req.reply[0];
--	
-+
- 	/* Read server mode setting */
- 	if (pmu_kind == PMU_KEYLARGO_BASED) {
- 		pmu_request(&req, NULL, 2, PMU_POWER_EVENTS,
-@@ -664,11 +664,11 @@ static void pmu_set_server_mode(int server_mode)
- 	if (server_mode)
- 		pmu_request(&req, NULL, 4, PMU_POWER_EVENTS,
- 			    PMU_PWR_SET_POWERUP_EVENTS,
--			    req.reply[0], PMU_PWR_WAKEUP_AC_INSERT); 
-+			    req.reply[0], PMU_PWR_WAKEUP_AC_INSERT);
- 	else
- 		pmu_request(&req, NULL, 4, PMU_POWER_EVENTS,
- 			    PMU_PWR_CLR_POWERUP_EVENTS,
--			    req.reply[0], PMU_PWR_WAKEUP_AC_INSERT); 
-+			    req.reply[0], PMU_PWR_WAKEUP_AC_INSERT);
- 	pmu_wait_complete(&req);
- }
- 
-@@ -684,8 +684,8 @@ done_battery_state_ohare(struct adb_request* req)
- 	 *    0x01 :  AC indicator
- 	 *    0x02 :  charging
- 	 *    0x04 :  battery exist
--	 *    0x08 :  
--	 *    0x10 :  
-+	 *    0x08 :
-+	 *    0x10 :
- 	 *    0x20 :  full charged
- 	 *    0x40 :  pcharge reset
- 	 *    0x80 :  battery exist
-@@ -708,7 +708,7 @@ done_battery_state_ohare(struct adb_request* req)
- 		pmu_power_flags |= PMU_PWR_AC_PRESENT;
- 	else
- 		pmu_power_flags &= ~PMU_PWR_AC_PRESENT;
--	
-+
- 	if (mb == PMAC_TYPE_COMET) {
- 		vmax_charged = 189;
- 		vmax_charging = 213;
-@@ -771,26 +771,26 @@ done_battery_state_smart(struct adb_request* req)
- 	/* format:
- 	 *  [0] : format of this structure (known: 3,4,5)
- 	 *  [1] : flags
--	 *  
-+	 *
- 	 *  format 3 & 4:
--	 *  
-+	 *
- 	 *  [2] : charge
- 	 *  [3] : max charge
- 	 *  [4] : current
- 	 *  [5] : voltage
--	 *  
-+	 *
- 	 *  format 5:
--	 *  
-+	 *
- 	 *  [2][3] : charge
- 	 *  [4][5] : max charge
- 	 *  [6][7] : current
- 	 *  [8][9] : voltage
- 	 */
--	 
-+
- 	unsigned int bat_flags = PMU_BATT_TYPE_SMART;
- 	int amperage;
- 	unsigned int capa, max, voltage;
--	
-+
- 	if (req->reply[1] & 0x01)
- 		pmu_power_flags |= PMU_PWR_AC_PRESENT;
- 	else
-@@ -798,7 +798,7 @@ done_battery_state_smart(struct adb_request* req)
- 
- 
- 	capa = max = amperage = voltage = 0;
--	
-+
- 	if (req->reply[1] & 0x04) {
- 		bat_flags |= PMU_BATT_PRESENT;
- 		switch(req->reply[0]) {
-@@ -897,7 +897,7 @@ static int pmu_irqstats_proc_show(struct seq_file *m, void *v)
- static int pmu_battery_proc_show(struct seq_file *m, void *v)
- {
- 	long batnum = (long)m->private;
--	
-+
- 	seq_putc(m, '\n');
- 	seq_printf(m, "flags      : %08x\n", pmu_batteries[batnum].flags);
- 	seq_printf(m, "charge     : %d\n", pmu_batteries[batnum].charge);
-@@ -932,7 +932,7 @@ static ssize_t pmu_options_proc_write(struct file *file,
- 	char tmp[33];
- 	char *label, *val;
- 	size_t fcount = count;
--	
-+
- 	if (!count)
- 		return -EINVAL;
- 	if (count > 32)
-@@ -1304,7 +1304,7 @@ pmu_suspend(void)
- 
- 	if (pmu_state == uninitialized)
- 		return;
--	
-+
- 	spin_lock_irqsave(&pmu_lock, flags);
- 	pmu_suspended++;
- 	if (pmu_suspended > 1) {
-@@ -1430,7 +1430,7 @@ pmu_handle_data(unsigned char *data, int len)
- 			      && data[1] == 0x2c && data[3] == 0xff
- 			      && (data[2] & ~1) == 0xf4))
- 				adb_input(data+1, len-1, 1);
--#endif /* CONFIG_ADB */		
-+#endif /* CONFIG_ADB */
- 		}
- 		break;
- 
-@@ -1554,7 +1554,7 @@ pmu_sr_intr(void)
- 			interrupt_data_len[int_data_last] = data_len;
- 		} else {
- 			req = current_req;
--			/* 
-+			/*
- 			 * For PMU sleep and freq change requests, we lock the
- 			 * PMU until it's explicitly unlocked. This avoids any
- 			 * spurrious event polling getting in
-@@ -1589,7 +1589,7 @@ via_pmu_interrupt(int irq, void *arg)
- 	/* This is a bit brutal, we can probably do better */
- 	spin_lock_irqsave(&pmu_lock, flags);
- 	++disable_poll;
--	
-+
- 	for (;;) {
- 		/* On 68k Macs, VIA interrupts are dispatched individually.
- 		 * Unless we are polling, the relevant IRQ flag has already
-@@ -1653,7 +1653,7 @@ via_pmu_interrupt(int irq, void *arg)
- 		} else if (current_req)
- 			pmu_start();
- 	}
--no_free_slot:			
-+no_free_slot:
- 	/* Mark the oldest buffer for flushing */
- 	if (int_data_state[!int_data_last] == int_data_ready) {
- 		int_data_state[!int_data_last] = int_data_flush;
-@@ -1670,7 +1670,7 @@ via_pmu_interrupt(int irq, void *arg)
- 		pmu_done(req);
- 		req = NULL;
- 	}
--		
-+
- 	/* Deal with interrupt datas outside of the lock */
- 	if (int_data >= 0) {
- 		pmu_handle_data(interrupt_data[int_data], interrupt_data_len[int_data]);
-@@ -1776,7 +1776,7 @@ pmu_restart(void)
- 	local_irq_disable();
- 
- 	drop_interrupts = 1;
--	
-+
- 	if (pmu_kind != PMU_KEYLARGO_BASED) {
- 		pmu_request(&req, NULL, 2, PMU_SET_INTR_MASK, PMU_INT_ADB |
- 						PMU_INT_TICK );
-@@ -1830,7 +1830,7 @@ pmu_present(void)
- /*
-  * Put the powerbook to sleep.
-  */
-- 
-+
- static u32 save_via[8];
- static int __fake_sleep;
- 
-@@ -1901,7 +1901,7 @@ static int powerbook_sleep_grackle(void)
- 
- 	pci_read_config_word(grackle, 0x70, &pmcr1);
- 	/* Apparently, MacOS uses NAP mode for Grackle ??? */
--	pmcr1 &= ~(GRACKLE_DOZE|GRACKLE_SLEEP); 
-+	pmcr1 &= ~(GRACKLE_DOZE|GRACKLE_SLEEP);
- 	pmcr1 |= GRACKLE_PM|GRACKLE_NAP;
- 	pci_write_config_word(grackle, 0x70, pmcr1);
- 
-@@ -1913,7 +1913,7 @@ static int powerbook_sleep_grackle(void)
- 
- 	/* We're awake again, stop grackle PM */
- 	pci_read_config_word(grackle, 0x70, &pmcr1);
--	pmcr1 &= ~(GRACKLE_PM|GRACKLE_DOZE|GRACKLE_SLEEP|GRACKLE_NAP); 
-+	pmcr1 &= ~(GRACKLE_PM|GRACKLE_DOZE|GRACKLE_SLEEP|GRACKLE_NAP);
- 	pci_write_config_word(grackle, 0x70, pmcr1);
- 
- 	pci_dev_put(grackle);
-@@ -1921,11 +1921,11 @@ static int powerbook_sleep_grackle(void)
- 	/* Make sure the PMU is idle */
- 	pmac_call_feature(PMAC_FTR_SLEEP_STATE,NULL,0,0);
- 	restore_via_state();
--	
-+
- 	/* Restore L2 cache */
- 	if (save_l2cr != 0xffffffff && (save_l2cr & L2CR_L2E) != 0)
-  		_set_L2CR(save_l2cr);
--	
-+
- 	/* Restore userland MMU context */
- 	switch_mmu_context(NULL, current->active_mm, NULL);
- 
-@@ -1949,7 +1949,7 @@ powerbook_sleep_Core99(void)
- 	unsigned long save_l2cr;
- 	unsigned long save_l3cr;
- 	struct adb_request req;
--	
-+
- 	if (pmac_call_feature(PMAC_FTR_SLEEP_STATE,NULL,0,-1) < 0) {
- 		printk(KERN_ERR "Sleep mode not supported on this machine\n");
- 		return -ENOSYS;
-@@ -2014,7 +2014,7 @@ powerbook_sleep_Core99(void)
- 	/* Restore L3 cache */
- 	if (save_l3cr != 0xffffffff && (save_l3cr & L3CR_L3E) != 0)
-  		_set_L3CR(save_l3cr);
--	
-+
- 	/* Restore userland MMU context */
- 	switch_mmu_context(NULL, current->active_mm, NULL);
- 
-@@ -2173,7 +2173,7 @@ pmu_open(struct inode *inode, struct file *file)
- 	return 0;
- }
- 
--static ssize_t 
-+static ssize_t
- pmu_read(struct file *file, char __user *buf,
- 			size_t count, loff_t *ppos)
- {
-@@ -2219,7 +2219,7 @@ pmu_read(struct file *file, char __user *buf,
- 	__set_current_state(TASK_RUNNING);
- 	remove_wait_queue(&pp->wait, &wait);
- 	spin_unlock_irqrestore(&pp->lock, flags);
--	
-+
- 	return ret;
- }
- 
-@@ -2236,7 +2236,7 @@ pmu_fpoll(struct file *filp, poll_table *wait)
- 	struct pmu_private *pp = filp->private_data;
- 	__poll_t mask = 0;
- 	unsigned long flags;
--	
-+
- 	if (!pp)
- 		return 0;
- 	poll_wait(filp, &pp->wait, wait);
-@@ -2500,7 +2500,7 @@ device_initcall(pmu_device_init);
- 
- 
- #ifdef DEBUG_SLEEP
--static inline void 
-+static inline void
- polled_handshake(void)
- {
- 	via2[B] &= ~TREQ; eieio();
-@@ -2511,7 +2511,7 @@ polled_handshake(void)
- 		;
- }
- 
--static inline void 
-+static inline void
- polled_send_byte(int x)
- {
- 	via1[ACR] |= SR_OUT | SR_EXT; eieio();
+> If we place a kprobe on module text, I'm guessing the kprobe itself
+> handles that module logic, we don't need to do it on the trace event.
+> 
+> > 
+> > 
+> > > +		ep->event = tp_event;
+> > > +		ret = 0;
+> > > +		break;
+> > > +	}
+> > > +	mutex_unlock(&event_mutex);
+> > > +
+> > > +	return ret;
+> > > +}
+> > > +
+> > > +static int eprobe_dyn_event_create(const char *raw_command)
+> > > +{
+> > > +	return trace_probe_create(raw_command, __trace_eprobe_create);
+> > > +}
+> > > +  
+> > [...]
+> > > +
+> > > +static struct trace_eprobe *alloc_event_probe(const char *group,
+> > > +					      const char *event,
+> > > +					      const char *sys_name,
+> > > +					      const char *sys_event,
+> > > +					      int nargs)
+> > > +{
+> > > +	struct trace_eprobe *ep;
+> > > +	int ret = -ENOMEM;
+> > > +
+> > > +	ep = kzalloc(SIZEOF_TRACE_EPROBE(nargs), GFP_KERNEL);
+> > > +	if (!ep)
+> > > +		goto error;
+> > > +	ep->event_name = kstrdup(sys_event, GFP_KERNEL);
+> > > +	if (!ep->event_name)
+> > > +		goto error;
+> > > +	ep->event_system = kstrdup(sys_name, GFP_KERNEL);
+> > > +	if (!ep->event_system)
+> > > +		goto error;
+> > > +
+> > > +	ret = trace_probe_init(&ep->tp, event, group, false);
+> > > +	if (ret < 0)
+> > > +		goto error;
+> > > +
+> > > +	dyn_event_init(&ep->devent, &eprobe_dyn_event_ops);
+> > > +	return ep;
+> > > +error:
+> > > +	trace_event_probe_cleanup(ep);
+> > > +	return ERR_PTR(ret);
+> > > +}
+> > > +
+> > > +static int trace_eprobe_tp_arg_find(struct trace_eprobe *ep, int i)  
+> > 
+> > I think 'trace_eprobe_tp_arg_update()' will be better name.
+> > Also, 'if (ep->tp.args[i].code->op == FETCH_OP_TP_ARG)' check
+> > is moved inside in this function for hiding inside of the tp.args.
+> 
+> Will update.
+> 
+> > 
+> > > +{
+> > > +	struct probe_arg *parg = &ep->tp.args[i];
+> > > +	struct ftrace_event_field *field;
+> > > +	struct list_head *head;
+> > > +
+> > > +	head = trace_get_fields(ep->event);
+> > > +	list_for_each_entry(field, head, link) {
+> > > +		if (!strcmp(parg->code->data, field->name)) {
+> > > +			kfree(parg->code->data);
+> > > +			parg->code->data = field;
+> > > +			return 0;
+> > > +		}
+> > > +	}
+> > > +	kfree(parg->code->data);
+> > > +	parg->code->data = NULL;
+> > > +	return -ENOENT;
+> > > +}
+> > > +
+> > > +static int kprobe_event_define_fields(struct trace_event_call *event_call)  
+> > 
+> > you meant 'eprobe_event_define_fields()' ? :)
+> 
+> Yes, and I'll also rename the subject of the patch. As we are adding
+> probes to tracepoints not kprobes.
+> 
+> > 
+> > > +{
+> > > +	int ret;
+> > > +	struct kprobe_trace_entry_head field;
+> > > +	struct trace_probe *tp;
+> > > +
+> > > +	tp = trace_probe_primary_from_call(event_call);
+> > > +	if (WARN_ON_ONCE(!tp))
+> > > +		return -ENOENT;
+> > > +
+> > > +	DEFINE_FIELD(unsigned long, ip, FIELD_STRING_IP, 0);  
+> > 
+> > Would you really need this 'ip' field? I think you can record the
+> 
+> No we do not. Will remove.
+> 
+> > original event ID (call->event.type) instead of ip.
+> 
+> Good idea about the "id" instead of "ip".
+> 
+> > 
+> > > +
+> > > +	return traceprobe_define_arg_fields(event_call, sizeof(field), tp);
+> > > +}
+> > > +
+> > > +static struct trace_event_fields eprobe_fields_array[] = {
+> > > +	{ .type = TRACE_FUNCTION_TYPE,
+> > > +	  .define_fields = kprobe_event_define_fields },  
+> > 
+> > Ditto.
+> > 
+> 
+> Agreed.
+> 
+> > > +	{}
+> > > +};
+> > > +
+> > > +/* Event entry printers */
+> > > +static enum print_line_t
+> > > +print_eprobe_event(struct trace_iterator *iter, int flags,
+> > > +		   struct trace_event *event)
+> > > +{
+> > > +	struct kprobe_trace_entry_head *field;
+> > > +	struct trace_seq *s = &iter->seq;
+> > > +	struct trace_probe *tp;
+> > > +
+> > > +	field = (struct kprobe_trace_entry_head *)iter->ent;
+> > > +	tp = trace_probe_primary_from_call(
+> > > +		container_of(event, struct trace_event_call, event));
+> > > +	if (WARN_ON_ONCE(!tp))
+> > > +		goto out;
+> > > +
+> > > +	trace_seq_printf(s, "%s: (", trace_probe_name(tp));
+> > > +
+> > > +	if (!seq_print_ip_sym(s, field->ip, flags | TRACE_ITER_SYM_OFFSET))
+> > > +		goto out;  
+> > 
+> > Here, you can show the original event name from the event ID.
+> 
+> OK.
+> 
+> > 
+> > > +
+> > > +	trace_seq_putc(s, ')');
+> > > +
+> > > +	if (print_probe_args(s, tp->args, tp->nr_args,
+> > > +			     (u8 *)&field[1], field) < 0)
+> > > +		goto out;
+> > > +
+> > > +	trace_seq_putc(s, '\n');
+> > > + out:
+> > > +	return trace_handle_return(s);
+> > > +}
+> > > +
+> > > +static unsigned long get_event_field(struct fetch_insn *code, void *rec)
+> > > +{
+> > > +	struct ftrace_event_field *field = code->data;
+> > > +	unsigned long val;
+> > > +	void *addr;
+> > > +
+> > > +	addr = rec + field->offset;
+> > > +
+> > > +	switch (field->size) {
+> > > +	case 1:
+> > > +		if (field->is_signed)
+> > > +			val = *(char *)addr;
+> > > +		else
+> > > +			val = *(unsigned char *)addr;
+> > > +		break;
+> > > +	case 2:
+> > > +		if (field->is_signed)
+> > > +			val = *(short *)addr;
+> > > +		else
+> > > +			val = *(unsigned short *)addr;
+> > > +		break;
+> > > +	case 4:
+> > > +		if (field->is_signed)
+> > > +			val = *(int *)addr;
+> > > +		else
+> > > +			val = *(unsigned int *)addr;
+> > > +		break;
+> > > +	default:
+> > > +		if (field->is_signed)
+> > > +			val = *(long *)addr;
+> > > +		else
+> > > +			val = *(unsigned long *)addr;
+> > > +		break;
+> > > +	}
+> > > +	return val;
+> > > +}
+> > > +
+> > > +static int get_eprobe_size(struct trace_probe *tp, void *rec)
+> > > +{
+> > > +	struct probe_arg *arg;
+> > > +	int i, len, ret = 0;
+> > > +
+> > > +	for (i = 0; i < tp->nr_args; i++) {
+> > > +		arg = tp->args + i;
+> > > +		if (unlikely(arg->dynamic)) {
+> > > +			unsigned long val;
+> > > +
+> > > +			val = get_event_field(arg->code, rec);
+> > > +			len = process_fetch_insn_bottom(arg->code + 1, val, NULL, NULL);
+> > > +			if (len > 0)
+> > > +				ret += len;
+> > > +		}
+> > > +	}
+> > > +
+> > > +	return ret;
+> > > +}
+> > > +
+> > > +/* Kprobe specific fetch functions */  
+> > [...]
+> > > +static nokprobe_inline int
+> > > +probe_mem_read(void *dest, void *src, size_t size)
+> > > +{
+> > > +#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+> > > +	if ((unsigned long)src < TASK_SIZE)
+> > > +		return probe_mem_read_user(dest, src, size);
+> > > +#endif
+> > > +	return copy_from_kernel_nofault(dest, src, size);
+> > > +}  
+> > 
+> > Hmm, these "fetch_args for kernel" APIs should finally unified with
+> > kprobe events. But at this step, this is good.
+> 
+> Agreed. For later patches though.
+> 
+> > 
+> > > +
+> > > +/* eprobe handler */
+> > > +static inline void
+> > > +__eprobe_trace_func(struct eprobe_data *edata, void *rec)
+> > > +{
+> > > +	struct kprobe_trace_entry_head *entry;
+> > > +	struct trace_event_call *call = trace_probe_event_call(&edata->ep->tp);
+> > > +	struct trace_event_buffer fbuffer;
+> > > +	int dsize;
+> > > +
+> > > +	WARN_ON(call != edata->file->event_call);
+> > > +
+> > > +	if (trace_trigger_soft_disabled(edata->file))
+> > > +		return;
+> > > +
+> > > +	fbuffer.trace_ctx = tracing_gen_ctx();
+> > > +	fbuffer.trace_file = edata->file;
+> > > +
+> > > +	dsize = get_eprobe_size(&edata->ep->tp, rec);
+> > > +	fbuffer.regs = NULL;
+> > > +
+> > > +	fbuffer.event =
+> > > +		trace_event_buffer_lock_reserve(&fbuffer.buffer, edata->file,
+> > > +					call->event.type,
+> > > +					sizeof(*entry) + edata->ep->tp.size + dsize,
+> > > +					fbuffer.trace_ctx);
+> > > +	if (!fbuffer.event)
+> > > +		return;
+> > > +
+> > > +	entry = fbuffer.entry = ring_buffer_event_data(fbuffer.event);
+> > > +	entry->ip = 0;  
+> > 
+> > Here, you can trace edata->ep->event->event.type instead of 0.
+> 
+> OK.
+> 
+> > 
+> > > +	store_trace_args(&entry[1], &edata->ep->tp, rec, sizeof(*entry), dsize);
+> > > +
+> > > +	trace_event_buffer_commit(&fbuffer);
+> > > +}
+> > > +
+> > > +/*
+> > > + * The event probe implementation uses event triggers to get access to
+> > > + * the event it is attached to, but is not an actual trigger. The below
+> > > + * functions are just stubs to fulfill what is needed to use the trigger
+> > > + * infrastructure.
+> > > + */  
+> > 
+> > OK, I got it. So eprobe is implemented on the trigger action framework.
+> > 
+> > [...]
+> > > +
+> > > +static int enable_eprobe(struct trace_eprobe *ep,
+> > > +			 struct trace_event_file *eprobe_file)
+> > > +{
+> > > +	struct event_trigger_data *trigger;
+> > > +	struct trace_event_file *file;
+> > > +	struct trace_array *tr = eprobe_file->tr;
+> > > +
+> > > +	file = find_event_file(tr, ep->event_system, ep->event_name);
+> > > +	if (!file)
+> > > +		return -ENOENT;
+> > > +	trigger = new_eprobe_trigger(ep, eprobe_file);
+> > > +	if (IS_ERR(trigger))
+> > > +		return PTR_ERR(trigger);
+> > > +
+> > > +	list_add_tail_rcu(&trigger->list, &file->triggers);
+> > > +
+> > > +	trace_event_trigger_enable_disable(file, 1);
+> > > +	update_cond_flag(file);
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static struct trace_event_functions eprobe_funcs = {
+> > > +	.trace		= print_eprobe_event
+> > > +};
+> > > +
+> > > +static int disable_eprobe(struct trace_eprobe *ep,
+> > > +			  struct trace_array *tr)
+> > > +{
+> > > +	struct event_trigger_data *trigger;
+> > > +	struct trace_event_file *file;
+> > > +	struct eprobe_data *edata;
+> > > +
+> > > +	file = find_event_file(tr, ep->event_system, ep->event_name);
+> > > +	if (!file)
+> > > +		return -ENOENT;
+> > > +
+> > > +	list_for_each_entry(trigger, &file->triggers, list) {
+> > > +		if (!(trigger->flags & EVENT_TRIGGER_FL_PROBE))
+> > > +			continue;
+> > > +		edata = trigger->private_data;
+> > > +		if (edata->ep == ep)
+> > > +			break;
+> > > +	}
+> > > +	if (list_entry_is_head(trigger, &file->triggers, list))
+> > > +		return -ENODEV;
+> > > +
+> > > +	list_del_rcu(&trigger->list);
+> > > +
+> > > +	trace_event_trigger_enable_disable(file, 0);
+> > > +	update_cond_flag(file);
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static int enable_trace_eprobe(struct trace_event_call *call,
+> > > +			       struct trace_event_file *file)
+> > > +{
+> > > +	struct trace_probe *pos, *tp;
+> > > +	struct trace_eprobe *ep;
+> > > +	bool enabled;
+> > > +	int ret = 0;
+> > > +
+> > > +	tp = trace_probe_primary_from_call(call);
+> > > +	if (WARN_ON_ONCE(!tp))
+> > > +		return -ENODEV;
+> > > +	enabled = trace_probe_is_enabled(tp);
+> > > +
+> > > +	/* This also changes "enabled" state */
+> > > +	if (file) {
+> > > +		ret = trace_probe_add_file(tp, file);
+> > > +		if (ret)
+> > > +			return ret;
+> > > +	} else
+> > > +		trace_probe_set_flag(tp, TP_FLAG_PROFILE);
+> > > +
+> > > +	if (enabled)
+> > > +		return 0;
+> > > +
+> > > +	list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
+> > > +		ep = container_of(pos, struct trace_eprobe, tp);
+> > > +		ret = enable_eprobe(ep, file);
+> > > +		if (ret)
+> > > +			break;
+> > > +		enabled = true;
+> > > +	}
+> > > +
+> > > +	if (ret) {
+> > > +		/* Failed to enable one of them. Roll back all */
+> > > +		if (enabled)
+> > > +			disable_eprobe(ep, file->tr);
+> > > +		if (file)
+> > > +			trace_probe_remove_file(tp, file);
+> > > +		else
+> > > +			trace_probe_clear_flag(tp, TP_FLAG_PROFILE);
+> > > +	}
+> > > +
+> > > +	return ret;
+> > > +}
+> > > +
+> > > +static int disable_trace_eprobe(struct trace_event_call *call,
+> > > +				struct trace_event_file *file)
+> > > +{
+> > > +	struct trace_probe *pos, *tp;
+> > > +	struct trace_eprobe *ep;
+> > > +
+> > > +	tp = trace_probe_primary_from_call(call);
+> > > +	if (WARN_ON_ONCE(!tp))
+> > > +		return -ENODEV;
+> > > +
+> > > +	if (file) {
+> > > +		if (!trace_probe_get_file_link(tp, file))
+> > > +			return -ENOENT;
+> > > +		if (!trace_probe_has_single_file(tp))
+> > > +			goto out;
+> > > +		trace_probe_clear_flag(tp, TP_FLAG_TRACE);
+> > > +	} else
+> > > +		trace_probe_clear_flag(tp, TP_FLAG_PROFILE);
+> > > +
+> > > +	if (!trace_probe_is_enabled(tp)) {
+> > > +		list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
+> > > +			ep = container_of(pos, struct trace_eprobe, tp);
+> > > +			disable_eprobe(ep, file->tr);
+> > > +		}
+> > > +	}
+> > > +
+> > > + out:
+> > > +	if (file)
+> > > +		/*
+> > > +		 * Synchronization is done in below function. For perf event,
+> > > +		 * file == NULL and perf_trace_event_unreg() calls
+> > > +		 * tracepoint_synchronize_unregister() to ensure synchronize
+> > > +		 * event. We don't need to care about it.
+> > > +		 */
+> > > +		trace_probe_remove_file(tp, file);
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static int eprobe_register(struct trace_event_call *event,
+> > > +			   enum trace_reg type, void *data)
+> > > +{
+> > > +	struct trace_event_file *file = data;
+> > > +
+> > > +	switch (type) {
+> > > +	case TRACE_REG_REGISTER:
+> > > +		return enable_trace_eprobe(event, file);
+> > > +	case TRACE_REG_UNREGISTER:
+> > > +		return disable_trace_eprobe(event, file);
+> > > +#ifdef CONFIG_PERF_EVENTS
+> > > +	case TRACE_REG_PERF_REGISTER:
+> > > +	case TRACE_REG_PERF_UNREGISTER:  
+> > 
+> > Doesn't this support perf? In that case, you can simplify enable_trace_eprobe()
+> > and disable_trace_eprobe(), because 'file' is always not NULL.
+> 
+> It should support perf. We just haven't tested it yet ;-)
+
+If you add an event probe, you can use that event from perf record etc.
+
+> 
+> Perhaps we'll add perf support as a separate patch.
+
+Yes, that makes review easier. 
+
+> 
+> > 
+> > > +	case TRACE_REG_PERF_OPEN:
+> > > +	case TRACE_REG_PERF_CLOSE:
+> > > +	case TRACE_REG_PERF_ADD:
+> > > +	case TRACE_REG_PERF_DEL:
+> > > +		return 0;
+> > > +#endif
+> > > +	}
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static inline void init_trace_eprobe_call(struct trace_eprobe *ep)
+> > > +{
+> > > +	struct trace_event_call *call = trace_probe_event_call(&ep->tp);
+> > > +
+> > > +	call->flags = TRACE_EVENT_FL_EPROBE;
+> > > +	call->event.funcs = &eprobe_funcs;
+> > > +	call->class->fields_array = eprobe_fields_array;
+> > > +	call->class->reg = eprobe_register;
+> > > +}
+> > > +
+> > > +static int __trace_eprobe_create(int argc, const char *argv[])
+> > > +{
+> > > +	/*
+> > > +	 * Argument syntax:
+> > > +	 *      e[:[GRP/]ENAME] SYSTEM.EVENT [FETCHARGS]  
+> > 
+> > Ah, OK. ENAME is also omittable.
+> > 
+> > 
+> > > +	 * Fetch args:
+> > > +	 *  <name>=$<field>[:TYPE]
+> > > +	 */
+> > > +	const char *event = NULL, *group = EPROBE_EVENT_SYSTEM;
+> > > +	unsigned int flags = TPARG_FL_KERNEL | TPARG_FL_TPOINT;
+> > > +	const char *sys_event = NULL, *sys_name = NULL;
+> > > +	struct trace_eprobe *ep = NULL;
+> > > +	char buf1[MAX_EVENT_NAME_LEN];
+> > > +	char buf2[MAX_EVENT_NAME_LEN];
+> > > +	char *tmp = NULL;
+> > > +	int ret = 0;
+> > > +	int i;
+> > > +
+> > > +	if (argc < 2)
+> > > +		return -ECANCELED;
+> > > +
+> > > +	trace_probe_log_init("event_probe", argc, argv);
+> > > +
+> > > +	event = strchr(&argv[0][1], ':');
+> > > +	if (event) {
+> > > +		event++;
+> > > +		ret = traceprobe_parse_event_name(&event, &group, buf1,
+> > > +						  event - argv[0], '/');
+> > > +		if (ret)
+> > > +			goto parse_error;
+> > > +	} else {
+> > > +		strscpy(buf1, argv[1], MAX_EVENT_NAME_LEN);
+> > > +		sanitize_event_name(buf1);
+> > > +		event = buf1;
+> > > +	}
+> > > +	if (!is_good_name(event) || !is_good_name(group))
+> > > +		goto parse_error;
+> > > +
+> > > +	sys_event = argv[1];
+> > > +	ret = traceprobe_parse_event_name(&sys_event, &sys_name, buf2,
+> > > +					  sys_event - argv[1], '.');
+> > > +	if (ret || !sys_name)
+> > > +		goto parse_error;
+> > > +	if (!is_good_name(sys_event) || !is_good_name(sys_name))
+> > > +		goto parse_error;
+> > > +	ep = alloc_event_probe(group, event, sys_name, sys_event, argc - 2);
+> > > +	if (IS_ERR(ep)) {
+> > > +		ret = PTR_ERR(ep);
+> > > +		/* This must return -ENOMEM, else there is a bug */
+> > > +		WARN_ON_ONCE(ret != -ENOMEM);
+> > > +		goto error;	/* We know ep is not allocated */
+> > > +	}
+> > > +	ret = trace_eprobe_find(ep);
+> > > +	if (ret)
+> > > +		goto error;  
+> > 
+> > As I said above, this can be called before "alloc_event_probe()".
+> 
+> I'll take a look at implementing that.
+
+OK.
+
+> 
+> > 
+> > > +
+> > > +	argc -= 2; argv += 2;
+> > > +	/* parse arguments */
+> > > +	for (i = 0; i < argc && i < MAX_TRACE_ARGS; i++) {
+> > > +		tmp = kstrdup(argv[i], GFP_KERNEL);
+> > > +		if (!tmp) {
+> > > +			ret = -ENOMEM;
+> > > +			goto error;
+> > > +		}
+> > > +		ret = traceprobe_parse_probe_arg(&ep->tp, i, tmp, flags);
+> > > +		if (ret == -EINVAL)
+> > > +			kfree(tmp);
+> > > +		if (ret)
+> > > +			goto error;	/* This can be -ENOMEM */
+> > > +		if (ep->tp.args[i].code->op == FETCH_OP_TP_ARG) {
+> > > +			ret = trace_eprobe_tp_arg_find(ep, i);  
+> > 
+> > Here, as I said above too, below code will be better encapsulated.
+> > 
+> >   /* (code->op check is done inside below function) */
+> >  ret = trace_eprobe_tp_arg_update(ep, i);
+> >  if (ret)
+> >     goto error;
+> 
+> OK.
+> 
+> > 
+> > > +			if (ret)
+> > > +				goto error;
+> > > +		}
+> > > +	}
+> > > +	ret = traceprobe_set_print_fmt(&ep->tp, false);
+> > > +	if (ret < 0)
+> > > +		goto error;
+> > > +	init_trace_eprobe_call(ep);
+> > > +	mutex_lock(&event_mutex);
+> > > +	ret = trace_probe_register_event_call(&ep->tp);
+> > > +	if (ret)
+> > > +		goto out_unlock;
+> > > +	ret = dyn_event_add(&ep->devent);
+> > > +out_unlock:
+> > > +	mutex_unlock(&event_mutex);
+> > > +	return ret;
+> > > +
+> > > +parse_error:
+> > > +	ret = -EINVAL;
+> > > +error:
+> > > +	trace_event_probe_cleanup(ep);
+> > > +	return ret;
+> > > +}
+> > > +
+> > > +/*
+> > > + * Register dynevent at core_initcall. This allows kernel to setup eprobe
+> > > + * events in postcore_initcall without tracefs.
+> > > + */
+> > > +static __init int trace_events_eprobe_init_early(void)
+> > > +{
+> > > +	int err = 0;
+> > > +
+> > > +	err = dyn_event_register(&eprobe_dyn_event_ops);
+> > > +	if (err)
+> > > +		pr_warn("Could not register eprobe_dyn_event_ops\n");
+> > > +
+> > > +	return err;
+> > > +}
+> > > +core_initcall(trace_events_eprobe_init_early);
+> > > diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+> > > index 949ef09dc537..45f5392fb35c 100644
+> > > --- a/kernel/trace/trace_events_hist.c
+> > > +++ b/kernel/trace/trace_events_hist.c
+> > > @@ -66,7 +66,8 @@
+> > >  	C(EMPTY_SORT_FIELD,	"Empty sort field"),			\
+> > >  	C(TOO_MANY_SORT_FIELDS,	"Too many sort fields (Max = 2)"),	\
+> > >  	C(INVALID_SORT_FIELD,	"Sort field must be a key or a val"),	\
+> > > -	C(INVALID_STR_OPERAND,	"String type can not be an operand in expression"),
+> > > +	C(INVALID_STR_OPERAND,	"String type can not be an operand in expression"),  \
+> > > +	C(SYNTH_ON_EPROBE,	"Synthetic event on eprobe is not supported"),  
+> > 
+> > As I and Steve discussed, I think this can be allowed and loops should be
+> > detected and avoided in the other way. Anyway, this part will be better in
+> > the separated patch.
+> 
+> Agreed.
+> 
+> > [...]
+> > 
+> > > diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+> > > index 15413ad7cef2..5a97317e91fb 100644
+> > > --- a/kernel/trace/trace_probe.c
+> > > +++ b/kernel/trace/trace_probe.c
+> > > @@ -227,12 +227,12 @@ int traceprobe_split_symbol_offset(char *symbol, long *offset)
+> > >  
+> > >  /* @buf must has MAX_EVENT_NAME_LEN size */
+> > >  int traceprobe_parse_event_name(const char **pevent, const char **pgroup,
+> > > -				char *buf, int offset)
+> > > +				char *buf, int offset, int delim)
+> > >  {
+> > >  	const char *slash, *event = *pevent;
+> > >  	int len;
+> > >  
+> > > -	slash = strchr(event, '/');
+> > > +	slash = strchr(event, delim);  
+> > 
+> > As I pointed another mail, I'm OK to use both '/' and '.' as delimiter for
+> > kprobes/uprobes too. But it must be a separated patch.
+> 
+> I'll update.
+> 
+> Thanks for taking the time with your review, it's been very valuable.
+
+Thank you!
+
+> 
+> -- Steve
+
+
 -- 
-2.32.0
-
+Masami Hiramatsu <mhiramat@kernel.org>
