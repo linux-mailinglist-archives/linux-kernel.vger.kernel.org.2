@@ -2,341 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7004A3EEA0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C25313EEA1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235611AbhHQJkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 05:40:32 -0400
-Received: from mga07.intel.com ([134.134.136.100]:16459 "EHLO mga07.intel.com"
+        id S236108AbhHQJlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 05:41:32 -0400
+Received: from mga06.intel.com ([134.134.136.31]:54776 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234856AbhHQJka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 05:40:30 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="279774322"
+        id S231520AbhHQJlb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 05:41:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="277058941"
 X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="scan'208";a="279774322"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 02:39:52 -0700
+   d="gz'50?scan'50,208,50";a="277058941"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 02:40:57 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="scan'208";a="593293975"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 17 Aug 2021 02:39:45 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 17 Aug 2021 12:39:44 +0300
-Date:   Tue, 17 Aug 2021 12:39:44 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Kyle Tso <kyletso@google.com>
-Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org, badhri@google.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: tcpm: Raise vdm_sm_running flag only when
- VDM SM is running
-Message-ID: <YRuD4HDNuWOx3Xrv@kuha.fi.intel.com>
-References: <20210816075449.2236547-1-kyletso@google.com>
+   d="gz'50?scan'50,208,50";a="520374755"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 17 Aug 2021 02:40:56 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mFvaZ-000Rdp-MI; Tue, 17 Aug 2021 09:40:55 +0000
+Date:   Tue, 17 Aug 2021 17:40:01 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: [mcgrof:20210816-add-disk-error-handling 13/64]
+ arch/um/drivers/ubd_kern.c:930:24: error: expected ';' before
+ 'out_cleanup_tags'
+Message-ID: <202108171756.rIqKsuXN-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed; boundary="8t9RHnE3ZwKMSgU+"
 Content-Disposition: inline
-In-Reply-To: <20210816075449.2236547-1-kyletso@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 03:54:49PM +0800, Kyle Tso wrote:
-> If the port is going to send Discover_Identity Message, vdm_sm_running
-> flag was intentionally set before entering Ready States in order to
-> avoid the conflict because the port and the port partner might start
-> AMS at almost the same time after entering Ready States.
-> 
-> However, the original design has a problem. When the port is doing
-> DR_SWAP from Device to Host, it raises the flag. Later in the
-> tcpm_send_discover_work, the flag blocks the procedure of sending the
-> Discover_Identity and it might never be cleared until disconnection.
 
-This is a bit off-topic, but I just asked this in another thread: Why
-do we have to do discovery with data role swap?
+--8t9RHnE3ZwKMSgU+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-thanks,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git 20210816-add-disk-error-handling
+head:   e1e79332ea1bba0e751529b114ef9d301bf962a5
+commit: 0e82333640575c9c194e39c521cb6ddb1467890f [13/64] um/drivers/ubd_kern: add error handling support for add_disk()
+config: um-x86_64_defconfig (attached as .config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build):
+        # https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/commit/?id=0e82333640575c9c194e39c521cb6ddb1467890f
+        git remote add mcgrof https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git
+        git fetch --no-tags mcgrof 20210816-add-disk-error-handling
+        git checkout 0e82333640575c9c194e39c521cb6ddb1467890f
+        # save the attached .config to linux build tree
+        mkdir build_dir
+        make W=1 O=build_dir ARCH=um SUBARCH=x86_64 SHELL=/bin/bash
 
-> Since there exists another flag send_discover representing that the port
-> is going to send Discover_Identity or not, it is enough to use that flag
-> to prevent the conflict. Also change the timing of the set/clear of
-> vdm_sm_running to indicate whether the VDM SM is actually running or
-> not.
-> 
-> Fixes: c34e85fa69b9 ("usb: typec: tcpm: Send DISCOVER_IDENTITY from dedicated work")
-> Cc: Badhri Jagan Sridharan <badhri@google.com>
-> Signed-off-by: Kyle Tso <kyletso@google.com>
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 81 ++++++++++++++++-------------------
->  1 file changed, 38 insertions(+), 43 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 5b22a1c931a9..c05ddfbaff08 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -341,6 +341,7 @@ struct tcpm_port {
->  	bool vbus_source;
->  	bool vbus_charge;
->  
-> +	/* Set to true when Discover_Identity Command is expected to be sent in Ready states. */
->  	bool send_discover;
->  	bool op_vsafe5v;
->  
-> @@ -370,6 +371,7 @@ struct tcpm_port {
->  	struct hrtimer send_discover_timer;
->  	struct kthread_work send_discover_work;
->  	bool state_machine_running;
-> +	/* Set to true when VDM State Machine has following actions. */
->  	bool vdm_sm_running;
->  
->  	struct completion tx_complete;
-> @@ -1431,6 +1433,7 @@ static void tcpm_queue_vdm(struct tcpm_port *port, const u32 header,
->  	/* Set ready, vdm state machine will actually send */
->  	port->vdm_retries = 0;
->  	port->vdm_state = VDM_STATE_READY;
-> +	port->vdm_sm_running = true;
->  
->  	mod_vdm_delayed_work(port, 0);
->  }
-> @@ -1673,7 +1676,6 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
->  				rlen = 1;
->  			} else {
->  				tcpm_register_partner_altmodes(port);
-> -				port->vdm_sm_running = false;
->  			}
->  			break;
->  		case CMD_ENTER_MODE:
-> @@ -1721,14 +1723,12 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
->  				      (VDO_SVDM_VERS(svdm_version));
->  			break;
->  		}
-> -		port->vdm_sm_running = false;
->  		break;
->  	default:
->  		response[0] = p[0] | VDO_CMDT(CMDT_RSP_NAK);
->  		rlen = 1;
->  		response[0] = (response[0] & ~VDO_SVDM_VERS_MASK) |
->  			      (VDO_SVDM_VERS(svdm_version));
-> -		port->vdm_sm_running = false;
->  		break;
->  	}
->  
-> @@ -1765,6 +1765,20 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
->  	}
->  
->  	if (PD_VDO_SVDM(p[0])) {
-> +		/*
-> +		 * Here a SVDM is received (INIT or RSP or unknown). Set the vdm_sm_running in
-> +		 * advance because we are dropping the lock but may send VDMs soon.
-> +		 * For the cases of INIT received:
-> +		 *  - If no response to send, it will be cleared later in this function.
-> +		 *  - If there are responses to send, it will be cleared in the state machine.
-> +		 * For the cases of RSP received:
-> +		 *  - If no further INIT to send, it will be cleared later in this function.
-> +		 *  - Otherwise, it will be cleared in the state machine if timeout or it will go
-> +		 *    back here until no further INIT to send.
-> +		 * For the cases of unknown type received:
-> +		 *  - We will send NAK and the flag will be cleared in the state machine.
-> +		 */
-> +		port->vdm_sm_running = true;
->  		rlen = tcpm_pd_svdm(port, adev, p, cnt, response, &adev_action);
->  	} else {
->  		if (port->negotiated_rev >= PD_REV30)
-> @@ -1833,6 +1847,8 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
->  
->  	if (rlen > 0)
->  		tcpm_queue_vdm(port, response[0], &response[1], rlen - 1);
-> +	else
-> +		port->vdm_sm_running = false;
->  }
->  
->  static void tcpm_send_vdm(struct tcpm_port *port, u32 vid, int cmd,
-> @@ -1898,8 +1914,10 @@ static void vdm_run_state_machine(struct tcpm_port *port)
->  		 * if there's traffic or we're not in PDO ready state don't send
->  		 * a VDM.
->  		 */
-> -		if (port->state != SRC_READY && port->state != SNK_READY)
-> +		if (port->state != SRC_READY && port->state != SNK_READY) {
-> +			port->vdm_sm_running = false;
->  			break;
-> +		}
->  
->  		/* TODO: AMS operation for Unstructured VDM */
->  		if (PD_VDO_SVDM(vdo_hdr) && PD_VDO_CMDT(vdo_hdr) == CMDT_INIT) {
-> @@ -2555,10 +2573,6 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->  								       TYPEC_PWR_MODE_PD,
->  								       port->pps_data.active,
->  								       port->supply_voltage);
-> -				/* Set VDM running flag ASAP */
-> -				if (port->data_role == TYPEC_HOST &&
-> -				    port->send_discover)
-> -					port->vdm_sm_running = true;
->  				tcpm_set_state(port, SNK_READY, 0);
->  			} else {
->  				/*
-> @@ -2596,14 +2610,10 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->  		switch (port->state) {
->  		case SNK_NEGOTIATE_CAPABILITIES:
->  			/* USB PD specification, Figure 8-43 */
-> -			if (port->explicit_contract) {
-> +			if (port->explicit_contract)
->  				next_state = SNK_READY;
-> -				if (port->data_role == TYPEC_HOST &&
-> -				    port->send_discover)
-> -					port->vdm_sm_running = true;
-> -			} else {
-> +			else
->  				next_state = SNK_WAIT_CAPABILITIES;
-> -			}
->  
->  			/* Threshold was relaxed before sending Request. Restore it back. */
->  			tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_PD,
-> @@ -2618,10 +2628,6 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->  			port->pps_status = (type == PD_CTRL_WAIT ?
->  					    -EAGAIN : -EOPNOTSUPP);
->  
-> -			if (port->data_role == TYPEC_HOST &&
-> -			    port->send_discover)
-> -				port->vdm_sm_running = true;
-> -
->  			/* Threshold was relaxed before sending Request. Restore it back. */
->  			tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_PD,
->  							       port->pps_data.active,
-> @@ -2697,10 +2703,6 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->  			}
->  			break;
->  		case DR_SWAP_SEND:
-> -			if (port->data_role == TYPEC_DEVICE &&
-> -			    port->send_discover)
-> -				port->vdm_sm_running = true;
-> -
->  			tcpm_set_state(port, DR_SWAP_CHANGE_DR, 0);
->  			break;
->  		case PR_SWAP_SEND:
-> @@ -2738,7 +2740,7 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->  					   PD_MSG_CTRL_NOT_SUPP,
->  					   NONE_AMS);
->  		} else {
-> -			if (port->vdm_sm_running) {
-> +			if (port->send_discover) {
->  				tcpm_queue_message(port, PD_MSG_CTRL_WAIT);
->  				break;
->  			}
-> @@ -2754,7 +2756,7 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->  					   PD_MSG_CTRL_NOT_SUPP,
->  					   NONE_AMS);
->  		} else {
-> -			if (port->vdm_sm_running) {
-> +			if (port->send_discover) {
->  				tcpm_queue_message(port, PD_MSG_CTRL_WAIT);
->  				break;
->  			}
-> @@ -2763,7 +2765,7 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->  		}
->  		break;
->  	case PD_CTRL_VCONN_SWAP:
-> -		if (port->vdm_sm_running) {
-> +		if (port->send_discover) {
->  			tcpm_queue_message(port, PD_MSG_CTRL_WAIT);
->  			break;
->  		}
-> @@ -4479,18 +4481,20 @@ static void run_state_machine(struct tcpm_port *port)
->  	/* DR_Swap states */
->  	case DR_SWAP_SEND:
->  		tcpm_pd_send_control(port, PD_CTRL_DR_SWAP);
-> +		if (port->data_role == TYPEC_DEVICE || port->negotiated_rev > PD_REV20)
-> +			port->send_discover = true;
->  		tcpm_set_state_cond(port, DR_SWAP_SEND_TIMEOUT,
->  				    PD_T_SENDER_RESPONSE);
->  		break;
->  	case DR_SWAP_ACCEPT:
->  		tcpm_pd_send_control(port, PD_CTRL_ACCEPT);
-> -		/* Set VDM state machine running flag ASAP */
-> -		if (port->data_role == TYPEC_DEVICE && port->send_discover)
-> -			port->vdm_sm_running = true;
-> +		if (port->data_role == TYPEC_DEVICE || port->negotiated_rev > PD_REV20)
-> +			port->send_discover = true;
->  		tcpm_set_state_cond(port, DR_SWAP_CHANGE_DR, 0);
->  		break;
->  	case DR_SWAP_SEND_TIMEOUT:
->  		tcpm_swap_complete(port, -ETIMEDOUT);
-> +		port->send_discover = false;
->  		tcpm_ams_finish(port);
->  		tcpm_set_state(port, ready_state(port), 0);
->  		break;
-> @@ -4502,7 +4506,6 @@ static void run_state_machine(struct tcpm_port *port)
->  		} else {
->  			tcpm_set_roles(port, true, port->pwr_role,
->  				       TYPEC_HOST);
-> -			port->send_discover = true;
->  		}
->  		tcpm_ams_finish(port);
->  		tcpm_set_state(port, ready_state(port), 0);
-> @@ -4645,8 +4648,6 @@ static void run_state_machine(struct tcpm_port *port)
->  		break;
->  	case VCONN_SWAP_SEND_TIMEOUT:
->  		tcpm_swap_complete(port, -ETIMEDOUT);
-> -		if (port->data_role == TYPEC_HOST && port->send_discover)
-> -			port->vdm_sm_running = true;
->  		tcpm_set_state(port, ready_state(port), 0);
->  		break;
->  	case VCONN_SWAP_START:
-> @@ -4662,14 +4663,10 @@ static void run_state_machine(struct tcpm_port *port)
->  	case VCONN_SWAP_TURN_ON_VCONN:
->  		tcpm_set_vconn(port, true);
->  		tcpm_pd_send_control(port, PD_CTRL_PS_RDY);
-> -		if (port->data_role == TYPEC_HOST && port->send_discover)
-> -			port->vdm_sm_running = true;
->  		tcpm_set_state(port, ready_state(port), 0);
->  		break;
->  	case VCONN_SWAP_TURN_OFF_VCONN:
->  		tcpm_set_vconn(port, false);
-> -		if (port->data_role == TYPEC_HOST && port->send_discover)
-> -			port->vdm_sm_running = true;
->  		tcpm_set_state(port, ready_state(port), 0);
->  		break;
->  
-> @@ -4677,8 +4674,6 @@ static void run_state_machine(struct tcpm_port *port)
->  	case PR_SWAP_CANCEL:
->  	case VCONN_SWAP_CANCEL:
->  		tcpm_swap_complete(port, port->swap_status);
-> -		if (port->data_role == TYPEC_HOST && port->send_discover)
-> -			port->vdm_sm_running = true;
->  		if (port->pwr_role == TYPEC_SOURCE)
->  			tcpm_set_state(port, SRC_READY, 0);
->  		else
-> @@ -5028,9 +5023,6 @@ static void _tcpm_pd_vbus_on(struct tcpm_port *port)
->  	switch (port->state) {
->  	case SNK_TRANSITION_SINK_VBUS:
->  		port->explicit_contract = true;
-> -		/* Set the VDM flag ASAP */
-> -		if (port->data_role == TYPEC_HOST && port->send_discover)
-> -			port->vdm_sm_running = true;
->  		tcpm_set_state(port, SNK_READY, 0);
->  		break;
->  	case SNK_DISCOVERY:
-> @@ -5425,15 +5417,18 @@ static void tcpm_send_discover_work(struct kthread_work *work)
->  	if (!port->send_discover)
->  		goto unlock;
->  
-> +	if (port->data_role == TYPEC_DEVICE && port->negotiated_rev < PD_REV30) {
-> +		port->send_discover = false;
-> +		goto unlock;
-> +	}
-> +
->  	/* Retry if the port is not idle */
->  	if ((port->state != SRC_READY && port->state != SNK_READY) || port->vdm_sm_running) {
->  		mod_send_discover_delayed_work(port, SEND_DISCOVER_RETRY_MS);
->  		goto unlock;
->  	}
->  
-> -	/* Only send the Message if the port is host for PD rev2.0 */
-> -	if (port->data_role == TYPEC_HOST || port->negotiated_rev > PD_REV20)
-> -		tcpm_send_vdm(port, USB_SID_PD, CMD_DISCOVER_IDENT, NULL, 0);
-> +	tcpm_send_vdm(port, USB_SID_PD, CMD_DISCOVER_IDENT, NULL, 0);
->  
->  unlock:
->  	mutex_unlock(&port->lock);
-> -- 
-> 2.33.0.rc1.237.g0d66db33f3-goog
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
--- 
-heikki
+All errors (new ones prefixed by >>):
+
+   arch/um/drivers/ubd_kern.c: In function 'ubd_add':
+>> arch/um/drivers/ubd_kern.c:930:24: error: expected ';' before 'out_cleanup_tags'
+     930 |  blk_cleanup_disk(disk)
+         |                        ^
+         |                        ;
+     931 | out_cleanup_tags:
+         | ~~~~~~~~~~~~~~~~        
+>> arch/um/drivers/ubd_kern.c:915:3: error: label 'out_cleanup_tags' used but not defined
+     915 |   goto out_cleanup_tags;
+         |   ^~~~
+
+
+vim +930 arch/um/drivers/ubd_kern.c
+
+   883	
+   884	static int ubd_add(int n, char **error_out)
+   885	{
+   886		struct ubd *ubd_dev = &ubd_devs[n];
+   887		struct gendisk *disk;
+   888		int err = 0;
+   889	
+   890		if(ubd_dev->file == NULL)
+   891			goto out;
+   892	
+   893		err = ubd_file_size(ubd_dev, &ubd_dev->size);
+   894		if(err < 0){
+   895			*error_out = "Couldn't determine size of device's file";
+   896			goto out;
+   897		}
+   898	
+   899		ubd_dev->size = ROUND_BLOCK(ubd_dev->size);
+   900	
+   901		ubd_dev->tag_set.ops = &ubd_mq_ops;
+   902		ubd_dev->tag_set.queue_depth = 64;
+   903		ubd_dev->tag_set.numa_node = NUMA_NO_NODE;
+   904		ubd_dev->tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
+   905		ubd_dev->tag_set.driver_data = ubd_dev;
+   906		ubd_dev->tag_set.nr_hw_queues = 1;
+   907	
+   908		err = blk_mq_alloc_tag_set(&ubd_dev->tag_set);
+   909		if (err)
+   910			goto out;
+   911	
+   912		disk = blk_mq_alloc_disk(&ubd_dev->tag_set, ubd_dev);
+   913		if (IS_ERR(disk)) {
+   914			err = PTR_ERR(disk);
+ > 915			goto out_cleanup_tags;
+   916		}
+   917		ubd_dev->queue = disk->queue;
+   918	
+   919		blk_queue_write_cache(ubd_dev->queue, true, false);
+   920		blk_queue_max_segments(ubd_dev->queue, MAX_SG);
+   921		blk_queue_segment_boundary(ubd_dev->queue, PAGE_SIZE - 1);
+   922		err = ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, disk);
+   923		if (err)
+   924			goto out_cleanup_disk;
+   925	
+   926		ubd_gendisk[n] = disk;
+   927		return 0;
+   928	
+   929	out_cleanup_disk:
+ > 930		blk_cleanup_disk(disk)
+   931	out_cleanup_tags:
+   932		blk_mq_free_tag_set(&ubd_dev->tag_set);
+   933	out:
+   934		return err;
+   935	}
+   936	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+--8t9RHnE3ZwKMSgU+
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+2HTuEC0fPWmS/h9B5xsWyZQAAA==
+
+--8t9RHnE3ZwKMSgU+--
