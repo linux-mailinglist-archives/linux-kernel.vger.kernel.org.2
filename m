@@ -2,179 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C4B3EE6BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E70D03EE6C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238631AbhHQGlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 02:41:45 -0400
-Received: from mail-eopbgr1410139.outbound.protection.outlook.com ([40.107.141.139]:1755
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238684AbhHQGln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 02:41:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fJtbl5brSVpsvLBQsz51JT/OgJXBqsKg2nxZw2nW2wz2jS9kJfQu74KebTcheCl+H3t/h9hIc5Ati2CvApSoMKqo/tJ2hVPw9chv1vcHo5BVOrOiFIbRkNPRsooV7Qre0w5eBK4ffnO7ooTUaq5wSJzk/nkf9Oz4YWsPmu9vVFGcYuYYEmI1UwBdVQmhBYPmBM5OMYpWQfPvs03Ga/QMiPGzw+TYYxcpNBlsXbHK1cPzujIlsW0IwpA3mZeIT3UAT1eLGHq7z4oejful2qADyYQuxZkzkBPYbjXl+v3IQOx8QOFL6I7+S5+ON47M5bHiSQEfbZ4B3wUrP5iP1eMuyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VAbEmHg4zHgoBgkpZBZiy93X2nv+B+TSIWzgasXHaJ8=;
- b=jDzSf1htpqD3i/rStI5gefWv3R3mPzIiGgHI+LE4NstV4QQzxp2lgKvTcnWKzhJC6VFbDyBu8244Vw4IPH0jc3p15elWMk1U0cCzlZlBRLut6a+4bErjpq+cqqOG3n4M9B5ZqQc+Zu8TLjWRwwkCe1irF1ZeM4KjBWv8+zPX5sGZZONBKOnTJKHpsADKbOLejFH/vzVlJZoFgPaQ6VZDvu4qJJg148l200/qXA0OXNS998SPn8crFPe3eC94K0K2qQMVerymOPTiCeUtW8YWzajETqQYdmW/gvkAq8XVfdWJw9/XvUTEbvTohN2mApDkqaKwOUg/Am94IYuyTmSx3A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VAbEmHg4zHgoBgkpZBZiy93X2nv+B+TSIWzgasXHaJ8=;
- b=TAOgptkA2mGxhkeT/IOmq/VdBP0sthTvPk1ULp8OGvEv0o1XTwXDYlBWfd/RQLervpYO7v2CF1Y+2DL5uU6OXvmKrShtsLhMZU/CrFi5cXtlnmYGbhtYZlaIaPl0lG2JxcjpNW9B3MvU1snnX3q3ywODn/dOt6TJoIikjI6vmG0=
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
- by OS3PR01MB6485.jpnprd01.prod.outlook.com (2603:1096:604:e1::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16; Tue, 17 Aug
- 2021 06:41:08 +0000
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::c6f:e31f:eaa9:60fe]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::c6f:e31f:eaa9:60fe%9]) with mapi id 15.20.4415.023; Tue, 17 Aug 2021
- 06:41:07 +0000
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-CC:     "broonie@kernel.org" <broonie@kernel.org>,
-        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>
-Subject: RE: [PATCH -next] ASoC: sh: rz-ssi: Fix return value check in
- rz_ssi_dma_request()
-Thread-Topic: [PATCH -next] ASoC: sh: rz-ssi: Fix return value check in
- rz_ssi_dma_request()
-Thread-Index: AQHXkxM86qyxelIXFUSoh7N/p/Brr6t3O6JQ
-Date:   Tue, 17 Aug 2021 06:41:07 +0000
-Message-ID: <OS0PR01MB59229720A7C243A47E7A1F1D86FE9@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-References: <20210817030027.1462671-1-yangyingliang@huawei.com>
-In-Reply-To: <20210817030027.1462671-1-yangyingliang@huawei.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9c5e1de9-58ed-48b2-d9d8-08d96149fe54
-x-ms-traffictypediagnostic: OS3PR01MB6485:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <OS3PR01MB6485E8E6261A13B8C6DE5F7986FE9@OS3PR01MB6485.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: t5hewu76IF4rIdQKMGhRZSeNTBHsBTSk0OEApdO/Jv6Sk8+5Fo6kCNcmyom7l1DggPMHM/G/3RFANcVO72NlPnMkTD+ZLBoY2i/Vq1afx9oQe7zf4N976Btdr/7A3c7VTNb/gkJFrGeR+ADwFxNQpAD+wHtQwy6k0EfRzE1f/MIJLj4S6o4guA1jbD55YS3dQJcPMLWRiR0L9joItS6i/PYKtuReymm4vqMmBcsv+vNtjlx0fNEkff9X02Kux0H+T3BTMYubfWkgbU0mdKRXemiZ4OGvxuEy8o6T43Q6wJFyUc+7FuGW9Ylrg3ndycy0mN/SOcL+gMx7W4FZtIkQFVEItk/tQI1vx3SXaMn/ka6N+uoTfHo0JnJwr26zW/0HCardOqIOLx1OPPjgEMnhgpMykG9nEQ17Kc/Mh59bXg4Ou2UTGJPL0BNfRymfoEVBJ1ztaS3O/Fv6ggQcFW9qdLFTIgtybNJXer4f+rxBA3m3JeU1kRWn8XgMBT7UIc+Zgtkvict+aOXREx8Ug3BCw0ZkVGcm9Lkell0avYH0S8UGqzX3b5GTEcFoMk4ny2BnSownFc/E8ZFbK6Von2yudR+zzsH9OykDIFsVmALr7YtVi9b3KlkGS85G+V8yQv3/rU62/RE9g55rl82MZ2lcKp5wa6BDj+6HkNKJdvOo+CwlUkarUUJDKKD832zXA4gCvuYRso8xrK/3XDOCfx1FEy97gHIOdR8PQvOw9VlW26O8FNR/0kf2E9G/bmdEsG/cFtbHDmy0DoSnl0E4oKkV5d7GzGodzQPljyAZtHYZvPc=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(366004)(396003)(39860400002)(7696005)(122000001)(6506007)(38100700002)(8936002)(2906002)(66946007)(76116006)(66476007)(66446008)(66556008)(71200400001)(33656002)(186003)(53546011)(4326008)(8676002)(64756008)(38070700005)(55016002)(316002)(966005)(110136005)(478600001)(9686003)(52536014)(83380400001)(5660300002)(26005)(86362001)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?t9/KN/5VlvQZJSyGlyIbXro3TmIoZn76erPnzhNA27VkvnbQ0sykPQg0LX1+?=
- =?us-ascii?Q?UE5Y+QbxgxU9UXvlcACH7+5P1UMvGLzz9CZWBgyvAKfvt+MkmQvnnVXr0d5e?=
- =?us-ascii?Q?nr9l3N8zaLX5nmQA9ehVChoKeXt6lIo4Cb1eCDSjhVuGUA6ESXXwIp+yyd/B?=
- =?us-ascii?Q?n4Sp6tOR9LV2YG9s2ynVIuZHUXOiHAwsh5X+BEv0SylHFOuf7WRXJ9j097gN?=
- =?us-ascii?Q?f4Yr7wniypn8wrwTzLYONzvHh74HxUNGcoBcr7FtgSBXzgkmAz8Shx/5EKJE?=
- =?us-ascii?Q?TdxtmJ+0GATT4YTaR6i221seq2x4f2N5+ZTlHDsy67sNYwtj9+WevUpKzplQ?=
- =?us-ascii?Q?t+XXiFXsyfaTHpBUyHn0ClxPbx16NbEOTW6apExyCQATNg2p8WKu11MYZJbW?=
- =?us-ascii?Q?J5jYFajB3+2ZxaO1HGkxrIBvu4XTeqqRt0lgSzFEphWzoaoFsZMOJWNxynGl?=
- =?us-ascii?Q?gBwjLJnCorPuFuzd+ES3z+Qvj6qHCFwiMdQM1EdjwJIZ84H5LlHfMo5DLJSQ?=
- =?us-ascii?Q?u/QoqKe4csj90jL+oZ6aJoDKRIck5ki94SxT/HM/T86b5zBaQ5mjsGatt3xj?=
- =?us-ascii?Q?GWFHELZQ8Ojv+8aVUDez2NMqeUqt0OiDa3U2Cp8QSfTm3DpApMTXEa5G2/E2?=
- =?us-ascii?Q?B90lJrNmlMxeIXx7QDvlXDru4pp2Cym0Y52nLhnn6BYpy+qpyEEr4rgxsmVL?=
- =?us-ascii?Q?d7vF+I1XIxvR+k4Z2X5bckr9DBBeIaKmyiAdpaSQ74I15EJ+NzppCJmEWEjx?=
- =?us-ascii?Q?hYIaQNBz9sj6WmtZ6yW0myty1F/pw7lRnAvYrV3Calc0Dlk5BEzr0mIxT9rd?=
- =?us-ascii?Q?iphWWrtl4Cty1LjS9HnUSawOixqShpiayg+XFwl/xocRgRChAmDOFPRIxpnQ?=
- =?us-ascii?Q?NOMMb89hJpNKd0fNLOlRbHHR7AEeSJwbtyo3MvRY1iuwIQSZAoJb71VkUmLZ?=
- =?us-ascii?Q?tny0UZz33hIE6edyElljPCrUwsdU04/wTrlBwHwHBLZo9E9hzhGuKj3XTqmI?=
- =?us-ascii?Q?VUht5Mglo+uZDXZCE73sGTSiNP9LYD8oB6QcKTrl9V9M3g586MPn9GiBpx6u?=
- =?us-ascii?Q?uGfBUt2gRnocvqKFnLihyYhrCcCz9idqr9FQK5n0dOsy+vF9dae+iyypbjWY?=
- =?us-ascii?Q?8sEOGtSa4zIBH5OdN5gHseeFriTAqNeEHLe2lfH7TN1oyHkussL0LPcBll+q?=
- =?us-ascii?Q?l1O99IyqlQlA0veBjwmb6rIIMV2IOhjxzL8lEpQeAwU763Rm5cBZOQhVwDIe?=
- =?us-ascii?Q?YgoupXIXiDY63/mZMeUXc9oLB1QZD/sS/BYLFTSiNXwABLWZE7dl9aNCDGRr?=
- =?us-ascii?Q?Bx/lYZ0V+C04u0op3QOwrQ37?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S237616AbhHQGnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 02:43:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230094AbhHQGna (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 02:43:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB8B860FD8;
+        Tue, 17 Aug 2021 06:42:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629182577;
+        bh=34kp4aM/l1m2Tcf3HPRzMsU+Qjm7SBbDZ+vfVjP0k68=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=em7OVWB0LXXoEkZj+7aVx8B1E1D67tQSL6OX4f+dHqChjCEjhrSAvSok8N3KDb1X+
+         8Lz/brwOx2Rcf19O+KjApL8P+bh62fHA6DN24/h9K0J7B5VKQb49oG2Rirv2txSbCc
+         QAMyasSG09HqF85es7WeGM682pqEIetcF0Y+cSKAf7nClOVihor6yDEz7Tj4Sr6duD
+         3xoYKPE52tpTTFBzHKacv6iElMiH+mLSXaZ+f0TFDBej2Vb2ayxsgUAvjPTQ7G155w
+         JskvhvTbO6PYs/cphBr2W0xSw+8RoiB3RjtCqoFHSTuhpl06l6LnvppvOlmmJ68lGD
+         W3bnCwBqavuhQ==
+Received: by mail-lj1-f175.google.com with SMTP id d16so13124452ljq.4;
+        Mon, 16 Aug 2021 23:42:57 -0700 (PDT)
+X-Gm-Message-State: AOAM533LU5yPuPGTG6bxxx1CKy/5eulDPf2z4gOuUtJQQ8oNyEeIdtn9
+        Bcl8u7ZKQI6HvLJYRIBpWeExVof14vCohgRaV1o=
+X-Google-Smtp-Source: ABdhPJwvsYfSVRDvML5GBFkxuHQ4HPPPDvI93w9Qkrgmn64TslSnV1FfYdlixNxLaOPZYsYFJBQJNRHbaA29pbEiUZk=
+X-Received: by 2002:a05:651c:150a:: with SMTP id e10mr1793800ljf.285.1629182575957;
+ Mon, 16 Aug 2021 23:42:55 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9c5e1de9-58ed-48b2-d9d8-08d96149fe54
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Aug 2021 06:41:07.4901
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: d+YWBgUa2GMMsE/L9U2v8XqH2btF208dbKdgvh1NaYB2rL2Uiik5PWfq/UVtIxhIE0zW12C9Fc4Mco49/DVkPKOCbJObZ4IKVnd4UIt51iI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB6485
+References: <20210723214031.3251801-1-atish.patra@wdc.com> <mhng-11e1ab27-21eb-4b20-9185-c256fcaaab99@palmerdabbelt-glaptop>
+ <CAOnJCU+ip1ccc9CrREi3c+15ue4Grcq+ENbQ+z_gh3CH249aAg@mail.gmail.com>
+ <CAJF2gTSMtj05cduTZ6jEqDXtaG0QTY743MRQrv08B4cocZbXJQ@mail.gmail.com> <CAOnJCUKPitLD1g1LocTw8H+G7hg04-=Dd3biHGgDPMwer2cFpw@mail.gmail.com>
+In-Reply-To: <CAOnJCUKPitLD1g1LocTw8H+G7hg04-=Dd3biHGgDPMwer2cFpw@mail.gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Tue, 17 Aug 2021 14:42:44 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQcGiudC6X=xN-0U=wuVLE2jthjuY8R7BDo1CZTTZbuVA@mail.gmail.com>
+Message-ID: <CAJF2gTQcGiudC6X=xN-0U=wuVLE2jthjuY8R7BDo1CZTTZbuVA@mail.gmail.com>
+Subject: Re: [RFC 0/5] Support non-coherent DMA on RISC-V using a global pool
+To:     Atish Patra <atishp@atishpatra.org>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        iommu@lists.linux-foundation.org,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dmitry Vyukov <dvyukov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yang Yingliang,
+On Tue, Aug 17, 2021 at 11:28 AM Atish Patra <atishp@atishpatra.org> wrote:
+>
+> On Mon, Aug 16, 2021 at 6:37 PM Guo Ren <guoren@kernel.org> wrote:
+> >
+> > 1
+> >
+> > On Thu, Jul 29, 2021 at 2:19 PM Atish Patra <atishp@atishpatra.org> wrote:
+> > >
+> > > On Wed, Jul 28, 2021 at 9:30 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+> > > >
+> > > > On Fri, 23 Jul 2021 14:40:26 PDT (-0700), Atish Patra wrote:
+> > > > > RISC-V privilege specification doesn't define an IOMMU or any method modify
+> > > > > PMA attributes or PTE entries to allow non-coherent mappings yet. In
+> > > > > the beginning, this approach was adopted assuming that most of the RISC-V
+> > > > > platforms would support full cache-coherent IO. Here is excerpt from the
+> > > > > priv spec section 3.6.5
+> > > > >
+> > > > > "In RISC-V platforms, the use of hardware-incoherent regions is discouraged
+> > > > > due to software complexity, performance, and energy impacts."
+> > > > >
+> > > > > While some of the RISC-V platforms adhere to the above suggestion, not all
+> > > > > platforms can afford to build to fully cache-coherent I/O devices. To
+> > > > > address DMA for non-coherent I/O devices, we need to mark a region of memory
+> > > > > as non-cacheable. Some of the platforms rely on a fixed region of uncached
+> > > > > memory that is remapped to the system memory while some other modify
+> > > > > the PTE entries to achieve that.
+> > > > >
+> > > > > The patch3 solves the issue for the fist use case by using a global
+> > > > > pool of memory that is reserved for DMA. The device access the reserved area
+> > > > > of the region while corresponding CPU address will be from uncached region
+> > > > > As the uncached region is remapped to the beginning of the system ram, both
+> > > > > CPU and device get the same view.
+> > > > >
+> > > > > To facilitate streaming DMA APIs, patch 1 introduces a set of generic
+> > > > > cache operations. Any platform can use the generic ops to provide platform
+> > > > > specific cache management operations. Once the standard RISC-V CMO extension
+> > > > > is available, it will also use these generic ops.
+> > > > >
+> > > > > To address the second use case, Page Based Memory Attribute (PBMT) extension
+> > > > > is proposed. Once the extension is in good shape, we can leverage that
+> > > > > using CONFIG_DIRECT_REMAP. Currently, it is selected via a compile time config
+> > > > > option. We will probably need another arch specific hooks to know if the
+> > > > > platform supports direct remap at runtime. For RISC-V, it will check the
+> > > > > presence of PBMT extension while other arch function will simply return true
+> > > >
+> > > > IIUC this is another extension that's not yet frozen or implemented in
+> > > > hardware?  Is this one compatible with what's in the c906, or is it
+> > > > doing things its own way?
+> > >
+> > > Hi Palmer,
+> > > This series doesn't implement the PBMT extension which is still in discussion.
+> > > It simply reuse the existing non-coherent dma mapping support in
+> > > upstream kernel and enable
+> > > it for RISC-V. The current version uses a non-coherent global pool. I
+> > > will update it to use arch_set_uncached
+> > > as per Christoph's suggestion. It solves the non-coherent DMA problem
+> > > for beagleV and not c906.
+> > >
+> > > I briefly mentioned the PBMT extension just to provide an idea how the
+> > > RISC-V Linux kernel
+> > > can support both unached window and PBMT extension. PBMT extension is
+> > > planned to be frozen
+> > > by the end of this year and none of the hardware has implemented it.
+> > >
+> > > The implementation in c906 is a non-standard one and will not be
+> > > supported by the default PBMT
+> > > extension implementation.
+> > The default PBMT & c908 PBMT are similar, only BIT definitions are
+> > different. I propose to support default PBMT first and give the back
+> > door to modify the PBMT definition during boot.
+> > The "protection_map[] = (__P000, __P001 ..__S000, __S001)" in
+> > mm/mmap.c has been modified by arch/mips, arm, sparc, x86, so I think
+> > it's proper solution direction.
+> >
+> > The reset problem is how to passing custom PBMT at the very early boot
+> > stage. Now I'm trying to use the DTS parsing instead of boot param hdr
+> > which Anup objected to.
+> >
+>
+> IIRC, c906 has a compatible mode that has the compliant PTE bit modifications.
+> Can you use that mode iOn the Allwinner D1 board to boot Linux ? I am
+> not sure if you have any fallback method for non-coherent DMA
+> if custom DMA_COHERENT bits are not enabled through enhanced mode ?
+We need custom PBMT(enhanced mode) to enable the dma driver on D1
+(GMAC, USB, EMMC) or these drivers couldn't work.
+D1 hasn't any uncached region in SOC design.
 
-Thanks for your patch.
-
-Already I have posted a patch for fixing it.
-
-https://patchwork.kernel.org/project/alsa-devel/patch/20210814180120.18082-=
-1-biju.das.jz@bp.renesas.com/
-
-Since you posted a similar patch as Reported-by: Hulk Robot <hulkci@huawei.=
-com>,
-I am adding my Rb tag for this patch.
-
-Regards,
-Biju
-
-
-> -----Original Message-----
-> From: Yang Yingliang <yangyingliang@huawei.com>
-> Sent: 17 August 2021 04:00
-> To: linux-kernel@vger.kernel.org; alsa-devel@alsa-project.org
-> Cc: broonie@kernel.org; Biju Das <biju.das.jz@bp.renesas.com>; Prabhakar
-> Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>; lgirdwood@gmail.co=
-m
-> Subject: [PATCH -next] ASoC: sh: rz-ssi: Fix return value check in
-> rz_ssi_dma_request()
->=20
-> In case of error, the function dma_request_chan() returns ERR_PTR() and
-> never returns NULL. Set 'dma_ch' to NULL, if dma_request_chan() returns
-> error, so the code using 'dma_ch' can work correctly.
->=20
-> Fixes: 26ac471c5354 ("ASoC: sh: rz-ssi: Add SSI DMAC support")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-
-> ---
->  sound/soc/sh/rz-ssi.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->=20
-> diff --git a/sound/soc/sh/rz-ssi.c b/sound/soc/sh/rz-ssi.c index
-> ea8d33ede5d2..5ec78fd94d94 100644
-> --- a/sound/soc/sh/rz-ssi.c
-> +++ b/sound/soc/sh/rz-ssi.c
-> @@ -676,11 +676,17 @@ static void rz_ssi_release_dma_channels(struct
-> rz_ssi_priv *ssi)  static int rz_ssi_dma_request(struct rz_ssi_priv *ssi,
-> struct device *dev)  {
->  	ssi->playback.dma_ch =3D dma_request_chan(dev, "tx");
-> +	if (IS_ERR(ssi->playback.dma_ch))
-> +		ssi->playback.dma_ch =3D NULL;
->  	ssi->capture.dma_ch =3D dma_request_chan(dev, "rx");
-> +	if (IS_ERR(ssi->capture.dma_ch))
-> +		ssi->capture.dma_ch =3D NULL;
->  	if (!ssi->playback.dma_ch && !ssi->capture.dma_ch) {
->  		ssi->playback.dma_ch =3D dma_request_chan(dev, "rt");
-> -		if (!ssi->playback.dma_ch)
-> +		if (IS_ERR(ssi->playback.dma_ch)) {
-> +			ssi->playback.dma_ch =3D NULL;
->  			goto no_dma;
-> +		}
->=20
->  		ssi->dma_rt =3D true;
->  	}
+>
+> > ref: https://lore.kernel.org/linux-riscv/1623693067-53886-1-git-send-email-guoren@kernel.org/
+> >
+> > Any comments are welcome.
+> >
+> > >
+> > >
+> > > >
+> > > > > if DIRECT_REMAP is enabled. This is required as arious different config
+> > > > > (DIRECT_REMAP, GLOBAL_POOL) will be enabled in the defconfig so that a
+> > > > > unified kernel image can boot on all RISC-V platforms.
+> > > > >
+> > > > > This patch series depends on Christoph's global pool support series[1].
+> > > > > Tested on Qemu, HiFive unleashed and beagleV. This series is also available
+> > > > > at [2].
+> > > > > This series also solves the non-coherent DMA support on beagleV but requires
+> > > > > additional beagleV specific patches[3] which will be upstreamed soon.
+> > > > >
+> > > > >
+> > > > > [1] https://lists.linuxfoundation.org/pipermail/iommu/2021-July/057266.html
+> > > > > [2] https://github.com/atishp04/linux/tree/riscv_nc_global_pool
+> > > > > [3] https://github.com/atishp04/linux/tree/wip_beaglev_dma_nc_global
+> > > > >
+> > > > > Atish Patra (5):
+> > > > > RISC-V: Implement arch_sync_dma* functions
+> > > > > of: Move of_dma_get_range to of_address.h
+> > > > > dma-mapping: Enable global non-coherent pool support for RISC-V
+> > > > > dma-direct: Allocate dma pages directly if global pool allocation
+> > > > > fails
+> > > > > RISC-V: Support a new config option for non-coherent DMA
+> > > > >
+> > > > > arch/riscv/Kconfig                       |  8 +++
+> > > > > arch/riscv/include/asm/dma-noncoherent.h | 19 +++++++
+> > > > > arch/riscv/mm/Makefile                   |  1 +
+> > > > > arch/riscv/mm/dma-noncoherent.c          | 66 ++++++++++++++++++++++++
+> > > > > drivers/of/of_private.h                  | 10 ----
+> > > > > include/linux/of_address.h               | 12 +++++
+> > > > > kernel/dma/coherent.c                    | 49 +++++++++++++++---
+> > > > > kernel/dma/direct.c                      |  7 ++-
+> > > > > 8 files changed, 152 insertions(+), 20 deletions(-)
+> > > > > create mode 100644 arch/riscv/include/asm/dma-noncoherent.h
+> > > > > create mode 100644 arch/riscv/mm/dma-noncoherent.c
+> > > >
+> > > > Can you guys please make up your minds about how this is going to be
+> > > > supported at the ISA level?  I get a different answer every day here:
+> > > > sometimes it's that these systems are not compliant, sometimes that
+> > > > Linux is the compliance suite, sometimes that we're doing an ISA
+> > > > extension, and sometimes that we're doing the SBI stuff.
+> > > >
+> > >
+> > > I am not sure whom you have talked to. I would be happy to set up a
+> > > meeting so that everybody is on
+> > > the same page if you are getting different answers every time.
+> > >
+> > > > I don't really care all that much about what the decision is, but it's
+> > > > impossible to move forward without some semblance of a plan.
+> > > >
+> > > > _______________________________________________
+> > > > linux-riscv mailing list
+> > > > linux-riscv@lists.infradead.org
+> > > > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> > >
+> > >
+> > >
+> > > --
+> > > Regards,
+> > > Atish
+> > > _______________________________________________
+> > > iommu mailing list
+> > > iommu@lists.linux-foundation.org
+> > > https://lists.linuxfoundation.org/mailman/listinfo/iommu
+> >
+> >
+> >
+> > --
+> > Best Regards
+> >  Guo Ren
+> >
+> > ML: https://lore.kernel.org/linux-csky/
+>
+>
+>
 > --
-> 2.25.1
+> Regards,
+> Atish
 
+
+
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
