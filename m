@@ -2,67 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6743EF561
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 00:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 218523EF566
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 00:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235533AbhHQWDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 18:03:21 -0400
-Received: from mail-oo1-f48.google.com ([209.85.161.48]:37763 "EHLO
-        mail-oo1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230381AbhHQWDU (ORCPT
+        id S235507AbhHQWGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 18:06:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229700AbhHQWGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 18:03:20 -0400
-Received: by mail-oo1-f48.google.com with SMTP id l12-20020a4a94cc0000b02902618ad2ea55so96482ooi.4;
-        Tue, 17 Aug 2021 15:02:46 -0700 (PDT)
+        Tue, 17 Aug 2021 18:06:21 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926DDC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 15:05:47 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id x16so122802pfh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 15:05:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jjzVwaNL+v4kngg4YNK2zb91Ab2Svz6N2NTcUnOnK9A=;
+        b=SGcDFtlgtFCnLVqYQr5ehe+6RIHMf5bXnfOXaHxu5WzGCtMnmcc3mD+WNqH2JWSNPW
+         jq/5pRGPdYBX4GoNYQ4Nx8OGvzhknjU9kvfdRtWYTD7SvgjKSBNza3fmzSjKv5IQ/0G1
+         Oy4LQPbABIYHd2rWHzEHBivPtiJt/Ik/iC3NMCnRGtilQz8YKKbhWI9TRPA1ahhoRN3v
+         mnJZUtEyZO6siRFF6ky3n1/hbcpkw5iJVptrKk4CV0Xp5oxGu0jEEAYZg57nD/R5I67l
+         RjZA4kLvISweqdPeBpH57kTCjHFQnhm2JoyQ804kUitUmChAn9lzUkwvbmYqnsY/aqse
+         U5VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ScTdPLrwQtDi3cZmXhC5N6qRhBgFnKWXKKXDfAopA1E=;
-        b=rU52YXTfz35kJB1wvnJvFjInGIX75figKq2vqXbbcN43YT/JvwLGTaSbDbmM7xFbbP
-         3GdYtu/UCrDVsk9H6IGc10bEZCmuZxmUYz5/X5sBPWAVIKfeTqQt2DOihKxbqXrcGZbK
-         KlQtN2DkfTpF353UaDxhSZdfnFn7o2SXB8DKqK8bbJiFqBeFAC54SIWHJ7HGP9Ux4Dru
-         a+zhrkqoHW50nmVKlERV6BNxrq/4T3l1obmGNbx7yus7CDfnA9oRWKINMJMKD5KSIfeW
-         S10cEGmWn4sO0QnZqFh4ykN4g1JmDD2X71+OQKkMw7kywftMQN1XXPNJ2/T+TfEIJE1n
-         W+iA==
-X-Gm-Message-State: AOAM531Aes/eNP0LpVkw/yvQUUvFdnfe1fAiiJQ3B39iIahv8fZmgf+B
-        YDIWWuMDqDDyzDun+fcm/Q==
-X-Google-Smtp-Source: ABdhPJyERq+7XZqG4HqZb1SJiiUtZw8LOQg4skKX78fNFKeMnu1izNvJAEFmOHLlZJ/0MRh5bIsMMw==
-X-Received: by 2002:a4a:b601:: with SMTP id z1mr4094467oon.7.1629237766211;
-        Tue, 17 Aug 2021 15:02:46 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p4sm687381ooa.35.2021.08.17.15.02.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 15:02:45 -0700 (PDT)
-Received: (nullmailer pid 917896 invoked by uid 1000);
-        Tue, 17 Aug 2021 22:02:44 -0000
-Date:   Tue, 17 Aug 2021 17:02:44 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Frank Rowand <frowand.list@gmail.com>
-Subject: Re: [PATCH v1 1/2] of: property: fw_devlink: Add support for "leds"
- and "backlight"
-Message-ID: <YRwyBMjtKhdXlLJU@robh.at.kernel.org>
-References: <20210814023132.2729731-1-saravanak@google.com>
- <20210814023132.2729731-2-saravanak@google.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jjzVwaNL+v4kngg4YNK2zb91Ab2Svz6N2NTcUnOnK9A=;
+        b=gN2mE/8QYjePfcIVlWk1G1hN5XCn3zMT1bdA3lsTMSOTrS3G4x/WTp5SPxoIncFTOs
+         g/X0vMuXSa8QQZNABnH97jzIZhQPEBxIjoFl6IISHdbwsnPHn9d3KaT7WC06ASbgHRZG
+         d4mWMamUt31E7NyEqI/n7AEEdY4EKATscHJ+VvXOVh80PRGetobm8Cr2lfYKlejtJz6z
+         ktbURUKODAow2vrGI2GCBZveH7kibfQGEBExklrPjgGfLVb9GtVkZJZKAeWo5PUHTCgq
+         dO1/Y8qji7qxHhC91HzAIyc1uMVHn3bwRFhf2fWY8kSo/lnMDqCVtY5f9YVU2rUIRIMR
+         rKpQ==
+X-Gm-Message-State: AOAM533JDqE4Vy2u4XefoiZz9pRqBvGZopvlf/UDbieljD0KjKBNCXaR
+        goRpS6NSW9tXiIu4gw7uKVGLUg==
+X-Google-Smtp-Source: ABdhPJynIhDp6CbwLDea4vkQBRzwSgYZsxVIpXM5FoQZ1pKUnfTD4bCHUiJk8yT5GUxuc6WAOM9UiQ==
+X-Received: by 2002:a63:a4c:: with SMTP id z12mr5525190pgk.185.1629237946938;
+        Tue, 17 Aug 2021 15:05:46 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id j6sm3368881pfn.107.2021.08.17.15.05.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Aug 2021 15:05:46 -0700 (PDT)
+Subject: Re: [PATCH] coredump: Limit what can interrupt coredumps
+To:     Tony Battersby <tonyb@cybernetics.com>,
+        Olivier Langlois <olivier@trillion01.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Pavel Begunkov>" <asml.silence@gmail.com>
+References: <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
+ <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
+ <87pmwt6biw.fsf@disp2133> <87czst5yxh.fsf_-_@disp2133>
+ <CAHk-=wiax83WoS0p5nWvPhU_O+hcjXwv6q3DXV8Ejb62BfynhQ@mail.gmail.com>
+ <87y2bh4jg5.fsf@disp2133>
+ <CAHk-=wjPiEaXjUp6PTcLZFjT8RrYX+ExtD-RY3NjFWDN7mKLbw@mail.gmail.com>
+ <87sg1p4h0g.fsf_-_@disp2133> <20210614141032.GA13677@redhat.com>
+ <87pmwmn5m0.fsf@disp2133>
+ <4d93d0600e4a9590a48d320c5a7dd4c54d66f095.camel@trillion01.com>
+ <8af373ec-9609-35a4-f185-f9bdc63d39b7@cybernetics.com>
+ <9d194813-ecb1-2fe4-70aa-75faf4e144ad@kernel.dk>
+ <b36eb4a26b6aff564c6ef850a3508c5b40141d46.camel@trillion01.com>
+ <0bc38b13-5a7e-8620-6dce-18731f15467e@kernel.dk>
+ <24c795c6-4ec4-518e-bf9b-860207eee8c7@kernel.dk>
+ <05c0cadc-029e-78af-795d-e09cf3e80087@cybernetics.com>
+ <b5ab8ca0-cef5-c9b7-e47f-21c0d395f82e@kernel.dk>
+ <84640f18-79ee-d8e4-5204-41a2c2330ed8@kernel.dk>
+ <3168284a-0b52-7845-07b1-a72bdfed915c@cybernetics.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <a56b633c-b88b-dfe8-11da-fcb3853a2edf@kernel.dk>
+Date:   Tue, 17 Aug 2021 16:05:45 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210814023132.2729731-2-saravanak@google.com>
+In-Reply-To: <3168284a-0b52-7845-07b1-a72bdfed915c@cybernetics.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Aug 2021 19:31:30 -0700, Saravana Kannan wrote:
-> Allows tracking dependencies between leds/backlights devices and their
-> consumers.
-> 
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> ---
->  drivers/of/property.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
+On 8/17/21 3:39 PM, Tony Battersby wrote:
+> On 8/17/21 5:28 PM, Jens Axboe wrote:
+>>
+>> Another approach - don't allow TWA_SIGNAL task_work to get queued if
+>> PF_SIGNALED has been set on the task. This is similar to how we reject
+>> task_work_add() on process exit, and the callers must be able to handle
+>> that already.
+>>
+>> Can you test this one on top of your 5.10-stable?
+>>
+>>
+>> diff --git a/fs/coredump.c b/fs/coredump.c
+>> index 07afb5ddb1c4..ca7c1ee44ada 100644
+>> --- a/fs/coredump.c
+>> +++ b/fs/coredump.c
+>> @@ -602,6 +602,14 @@ void do_coredump(const kernel_siginfo_t *siginfo)
+>>  		.mm_flags = mm->flags,
+>>  	};
+>>  
+>> +	/*
+>> +	 * task_work_add() will refuse to add work after PF_SIGNALED has
+>> +	 * been set, ensure that we flush any pending TIF_NOTIFY_SIGNAL work
+>> +	 * if any was queued before that.
+>> +	 */
+>> +	if (test_thread_flag(TIF_NOTIFY_SIGNAL))
+>> +		tracehook_notify_signal();
+>> +
+>>  	audit_core_dumps(siginfo->si_signo);
+>>  
+>>  	binfmt = mm->binfmt;
+>> diff --git a/kernel/task_work.c b/kernel/task_work.c
+>> index 1698fbe6f0e1..1ab28904adc4 100644
+>> --- a/kernel/task_work.c
+>> +++ b/kernel/task_work.c
+>> @@ -41,6 +41,12 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
+>>  		head = READ_ONCE(task->task_works);
+>>  		if (unlikely(head == &work_exited))
+>>  			return -ESRCH;
+>> +		/*
+>> +		 * TIF_NOTIFY_SIGNAL notifications will interfere with
+>> +		 * a core dump in progress, reject them.
+>> +		 */
+>> +		if ((task->flags & PF_SIGNALED) && notify == TWA_SIGNAL)
+>> +			return -ESRCH;
+>>  		work->next = head;
+>>  	} while (cmpxchg(&task->task_works, head, work) != head);
+>>  
+>>
+> Doesn't compile.  5.10 doesn't have TIF_NOTIFY_SIGNAL.
 
-Applied, thanks!
+Oh right... Here's one hacked up for the 5.10 TWA_SIGNAL setup. Totally
+untested...
+
+diff --git a/fs/coredump.c b/fs/coredump.c
+index c6acfc694f65..9e899ce67589 100644
+--- a/fs/coredump.c
++++ b/fs/coredump.c
+@@ -603,6 +603,19 @@ void do_coredump(const kernel_siginfo_t *siginfo)
+ 		.mm_flags = mm->flags,
+ 	};
+ 
++	/*
++	 * task_work_add() will refuse to add work after PF_SIGNALED has
++	 * been set, ensure that we flush any pending TWA_SIGNAL work
++	 * if any was queued before that.
++	 */
++	if (signal_pending(current) && (current->jobctl & JOBCTL_TASK_WORK)) {
++		task_work_run();
++		spin_lock_irq(&current->sighand->siglock);
++		current->jobctl &= ~JOBCTL_TASK_WORK;
++		recalc_sigpending();
++		spin_unlock_irq(&current->sighand->siglock);
++	}
++
+ 	audit_core_dumps(siginfo->si_signo);
+ 
+ 	binfmt = mm->binfmt;
+diff --git a/kernel/task_work.c b/kernel/task_work.c
+index 8d6e1217c451..93b3f262eb4a 100644
+--- a/kernel/task_work.c
++++ b/kernel/task_work.c
+@@ -39,6 +39,12 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
+ 		head = READ_ONCE(task->task_works);
+ 		if (unlikely(head == &work_exited))
+ 			return -ESRCH;
++		/*
++		 * TWA_SIGNAL notifications will interfere with
++		 * a core dump in progress, reject them.
++		 */
++		if ((task->flags & PF_SIGNALED) && notify == TWA_SIGNAL)
++			return -ESRCH;
+ 		work->next = head;
+ 	} while (cmpxchg(&task->task_works, head, work) != head);
+ 
+
+-- 
+Jens Axboe
+
