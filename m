@@ -2,46 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9834E3EF110
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 19:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1683EF112
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 19:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232301AbhHQRsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 13:48:20 -0400
-Received: from mail-oo1-f42.google.com ([209.85.161.42]:38737 "EHLO
-        mail-oo1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbhHQRsT (ORCPT
+        id S232415AbhHQRsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 13:48:32 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:37550 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230311AbhHQRsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 13:48:19 -0400
-Received: by mail-oo1-f42.google.com with SMTP id m11-20020a056820034b00b0028bb60b551fso1987498ooe.5;
-        Tue, 17 Aug 2021 10:47:45 -0700 (PDT)
+        Tue, 17 Aug 2021 13:48:30 -0400
+Received: by mail-ot1-f49.google.com with SMTP id n1-20020a9d1e810000b0290514da4485e4so23072442otn.4;
+        Tue, 17 Aug 2021 10:47:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=69BPOBhixVLpjqjlfcu2a3pFxgxoW9SxH8F9r9f4HkU=;
-        b=MgQ/yIj2XJ/hVHZM5NxW+igyjv+uHbw3p1jMSQQkBZBp5G9DRhLoVOfMpSN82kil7t
-         WlbFGWWol30hz/ZqJ0TqTVRsd7lqblZM2qkKnSh+I6pTMclUDqrEHLAkrSXQJa5k9qyh
-         LO7Y5NhMf1IehLRT7hyqOduA8UzzyBzIk+H8uzFZd+AU+5J1pQV9vYhZs4jKUSbfOQGQ
-         P0ry7AaXu7vo7PIfwMfI3fD+x9I0yYa45biGOCVJ8ilMHJxHj0j5PjONueN1K/dc6S5J
-         W+X1Wxg9EQfyF/72sqDaHxoPvIo5H09WkAmNOHbTjwbSzbNCohCxDv+d0negl75MFGhY
-         kipw==
-X-Gm-Message-State: AOAM530h5xSh9kJ37dT7NRRw8oGrbrnMf+/+DsTtqKDIoeTWHuheRx2B
-        GbC5yT1m31xnCrkElT3XxJPSWppUBQ==
-X-Google-Smtp-Source: ABdhPJy8zb4a3ePdH1h4YKzECFd2cKwyl8rb8yFrcTyh/bhHFJq6oYJN4ljYEArgGfxfrXWerORhUw==
-X-Received: by 2002:a05:6820:502:: with SMTP id m2mr3473070ooj.47.1629222464913;
-        Tue, 17 Aug 2021 10:47:44 -0700 (PDT)
+        bh=4YfAdp6URMwEzxS/XiQNwuq815IjwGiZo7iZNdeIi3M=;
+        b=mC2p42Mz28+W1wCeWv52b7w/zfpSbTTmp21UFXlJ6SbR1cKvpAJFIW+fi20Dz8lbvO
+         Eqh2bpnh6SG5+ov7qENz5AhbMqgpxmAYPE6g8oK7U4q5ewgrhR/XsrGt8KVfwz4CRlXt
+         ZYY/tGJA3Dfrm7F0WzdprwuKQ1y6pxHktCoVfBgxzDF0Cf4I7xafI305pj41h1H3Kspy
+         9qZ2C7JGBwZUnRI3cSnYD5MBKgzzLO6+tGGLOoE4aESUMtyKZBiV1xJuzN4moo7OCQSy
+         Cr2qUkUXVEQrPa3WSSd4qXUOKAQVufLeMJsiOP2om/P01ErqqcTX0WFKhn+kBplZEM6G
+         ytzg==
+X-Gm-Message-State: AOAM532N0EfOAc9+rZ1VwA8zRdqWbeZd5K4WVBAd8QTYEjw+7BTeZUNB
+        h7TjupkY8vaYAd1iqudW9XI/fFcCaw==
+X-Google-Smtp-Source: ABdhPJy7VVi+GLOzKivpGy0YvumVaoyarVaWyaesbRopUsLuB4FE1R2sf4Hyp3lR/rjUoReBiRlr1Q==
+X-Received: by 2002:a9d:4785:: with SMTP id b5mr3566539otf.188.1629222476823;
+        Tue, 17 Aug 2021 10:47:56 -0700 (PDT)
 Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id o133sm622812oia.10.2021.08.17.10.47.43
+        by smtp.googlemail.com with ESMTPSA id o24sm617304oie.17.2021.08.17.10.47.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 10:47:44 -0700 (PDT)
+        Tue, 17 Aug 2021 10:47:56 -0700 (PDT)
 From:   Rob Herring <robh@kernel.org>
 To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-pci@vger.kernel.org
-Subject: [PATCH] dt-bindings: PCI: faraday,ftpci100: Fix 'contains' schema usage
-Date:   Tue, 17 Aug 2021 12:47:43 -0500
-Message-Id: <20210817174743.541353-1-robh@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Yash Shah <yash.shah@sifive.com>,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH] dt-bindings: sifive-l2-cache: Fix 'select' matching
+Date:   Tue, 17 Aug 2021 12:47:55 -0500
+Message-Id: <20210817174755.541735-1-robh@kernel.org>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -49,38 +53,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'contains' keyword applies to elements within an array, so
-using 'items' only makes sense if the elements of the array are another
-array which is not the case for 'compatible' properties.
+When the schema fixups are applied to 'select' the result is a single
+entry is required for a match, but that will never match as there should
+be 2 entries. Also, a 'select' schema should have the widest possible
+match, so use 'contains' which matches the compatible string(s) in any
+position and not just the first position.
 
-Looking at the driver, it seems the intent was the condition should be
-true when 'faraday,ftpci100' is present, so we can drop
-'cortina,gemini-pci'.
-
-Fixes: 2720b991337d ("dt-bindings: PCI: ftpci100: convert faraday,ftpci100 to YAML")
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-pci@vger.kernel.org
+Fixes: 993dcfac64eb ("dt-bindings: riscv: sifive-l2-cache: convert bindings to json-schema")
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: Sagar Kadam <sagar.kadam@sifive.com>
+Cc: Yash Shah <yash.shah@sifive.com>
+Cc: linux-riscv@lists.infradead.org
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- Documentation/devicetree/bindings/pci/faraday,ftpci100.yaml | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ .../devicetree/bindings/riscv/sifive-l2-cache.yaml        | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/pci/faraday,ftpci100.yaml b/Documentation/devicetree/bindings/pci/faraday,ftpci100.yaml
-index fb32f7b55035..92efbf0f1297 100644
---- a/Documentation/devicetree/bindings/pci/faraday,ftpci100.yaml
-+++ b/Documentation/devicetree/bindings/pci/faraday,ftpci100.yaml
-@@ -113,9 +113,7 @@ if:
+diff --git a/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml b/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
+index 1d38ff76d18f..2b1f91603897 100644
+--- a/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
++++ b/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
+@@ -24,10 +24,10 @@ allOf:
+ select:
    properties:
      compatible:
-       contains:
--        items:
--          - const: cortina,gemini-pci
--          - const: faraday,ftpci100
-+        const: faraday,ftpci100
- then:
+-      items:
+-        - enum:
+-            - sifive,fu540-c000-ccache
+-            - sifive,fu740-c000-ccache
++      contains:
++        enum:
++          - sifive,fu540-c000-ccache
++          - sifive,fu740-c000-ccache
+ 
    required:
-     - interrupt-controller
+     - compatible
 -- 
 2.30.2
 
