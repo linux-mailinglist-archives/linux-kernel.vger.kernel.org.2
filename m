@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07D43EE6B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9BDF3EE6B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238592AbhHQGlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 02:41:05 -0400
+        id S238414AbhHQGlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 02:41:07 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238222AbhHQGk6 (ORCPT
+        with ESMTP id S238432AbhHQGlD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 02:40:58 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950BFC0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:40:25 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id x1so2891726qtw.5
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:40:25 -0700 (PDT)
+        Tue, 17 Aug 2021 02:41:03 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E96C0613A4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:40:28 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id d9so16296870qty.12
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:40:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rpa8D3N/U7YRxvFW0CzHkpRMhz6bKnxNujofI9Dw/U4=;
-        b=admbMO5SOXR6pazzWogTfD0bs52/z1T4mY0zJNH8E0yZuVTEePne13ZBUM4X7HqezB
-         7lon47yTuzBmHMrNXdpF8rJl2tLDovptvNYtX2iP/OiuMbd7+ugeVqwLZWoBQMXHHgqV
-         O2UD/JCkNDIk/DHB/S7NzOoBkT0WUof4JQGIRGGLnI5bcasIMmbIjTALfOer7ny2kEQD
-         DbqeeLAIheZBzY4UYIgvYMFayaz/eGKvFd5TxTGQCQv4/qK31nLNUGsKlP2+LxHeOHvu
-         7veD5sehqn148IrzJCMZEweYx7/o1YRCHMqLY1n0r/cGB2h0y+VQv0AXPldTOZQgbD0W
-         IKcw==
+        bh=a2LhOT8wKXwFFKbj1q2vhWVrDkR6KFzmfHIVvRI42P8=;
+        b=HCd7BbfbzjyuSQoAZBY0KXbca4qPV0s6Yn9+ktNA336FnJIGq3/rfhl6wo7WDrDMiX
+         vLV9LJ2Ab7BNCx2BnEmj90YUuOJ7KhP+qGcIC0Qjh3q3x8joV1k5N2lx/84KjAOFDVYw
+         llnhsznIlOY08zI3WvuSwiwWsT7nOpXV8+YXK7cQt7Io2qBkaVkwrNO9/qbN4+h4dfNg
+         uvQWfqaXnPPV+YrfzeL9dDI9bvaYFudxQQJqz6BGST85a95uXUho/74BuBDknSWhwcV0
+         HqcUe+uva4TdnVSgR/sjvYtI37oqNwXdrPt6ztsQBqWnkyayFCLpc4dbYr+Bl2U+WndR
+         N6Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rpa8D3N/U7YRxvFW0CzHkpRMhz6bKnxNujofI9Dw/U4=;
-        b=Q7nehqO5GE7C3hb51U5LLbM3VXxhy1zRO8LzQ+5mlwiJ4D06r0JFIjxRbxJ3e7QC4o
-         ACXZTzXKx0C5YV7Na03OUX7E1+/1okU3Q5AyVXF0gYjr3BnRojfvTvn8VRt652xrnIB+
-         GM/+JyVJ9v62TdwSOzQdYczOiaSiVpvPCmcN129MXhWV976hvDEPl6sR0S1cJ8r6SGug
-         In6Dit1W7/HEWaCuvet+Vw+N1a45QOW8I3bUW7g37eoK10WbZL742QhqozEgO7FbrBRK
-         DaFU1vzAa4kODFl49SA8ps7Ebx0KXNJcQ/hLYgDVcgJGJ/HpT0+6ekX8RoukGfvEEM2v
-         +h1w==
-X-Gm-Message-State: AOAM530lYoRUvuXW98PgDQ+d9GPdtdjq6Sb4s/ij9UXCvW7bZykkyLFM
-        D/tdH7JPo7o45Zl0gQ4TrIA=
-X-Google-Smtp-Source: ABdhPJxEvclZm7VvFy7GURUqpud+J60nI5WXGBRNSirUiyjGK2d9qcZFNYlmruBzR41ZPLbgX+pEkg==
-X-Received: by 2002:ac8:5dc7:: with SMTP id e7mr1706135qtx.94.1629182424864;
-        Mon, 16 Aug 2021 23:40:24 -0700 (PDT)
+        bh=a2LhOT8wKXwFFKbj1q2vhWVrDkR6KFzmfHIVvRI42P8=;
+        b=sdjOMK+ay2zMIosFoRJQZyKiTChxp5YI8cyDAF7XzbvnpXzkoJdEbOG5tIgw1X6AzM
+         1bYA/mmquvSE9OAXOTVCAXQvhLGDCgT51AiFhpUH0kTC7+PvoOA2XNmfoy7VJLkpYvPt
+         aB1y0CtJ2/3+mc44Vk33psuKWBh3E6C8Y5w96phJIxB76GN1FQXL2KEYM/H9gWx2iUC0
+         YoMOn2Ma7gFyf9rJr17i78y7T2LmpXNYeP0Ii83vryVgyHzpRMEtqmrITaNBkTjcdTpw
+         n4qn/sWHeSTwZ71zzVRtKY1bBeNdRvHnd5U6flwqDS1WKlP9bSdgrlNNtllH01DeDb9g
+         jTuA==
+X-Gm-Message-State: AOAM532+5ayy4m7NqBOUcim0dKGZqgDCJe9824ch5o0pjCSbtNEVWZK7
+        n2/aZMLrJI/ZvyAopkWVtvM=
+X-Google-Smtp-Source: ABdhPJzTPnmO3ONGgzNpn00puAX0SOcGYaRn4jh7/kafHfY84xLNphrzfIIMPtJyZHOWESRjWskZFg==
+X-Received: by 2002:ac8:665a:: with SMTP id j26mr1639544qtp.173.1629182427741;
+        Mon, 16 Aug 2021 23:40:27 -0700 (PDT)
 Received: from LeoBras.redhat.com ([2804:431:c7f0:30b2:5c9e:50:88f3:269a])
-        by smtp.gmail.com with ESMTPSA id c11sm526938qth.29.2021.08.16.23.40.22
+        by smtp.gmail.com with ESMTPSA id c11sm526938qth.29.2021.08.16.23.40.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 23:40:24 -0700 (PDT)
+        Mon, 16 Aug 2021 23:40:27 -0700 (PDT)
 From:   Leonardo Bras <leobras.c@gmail.com>
 To:     Michael Ellerman <mpe@ellerman.id.au>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
@@ -59,9 +59,9 @@ To:     Michael Ellerman <mpe@ellerman.id.au>,
         Nicolin Chen <nicoleotsuka@gmail.com>,
         kernel test robot <lkp@intel.com>
 Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 04/11] powerpc/pseries/iommu: Add ddw_list_new_entry() helper
-Date:   Tue, 17 Aug 2021 03:39:22 -0300
-Message-Id: <20210817063929.38701-5-leobras.c@gmail.com>
+Subject: [PATCH v6 05/11] powerpc/pseries/iommu: Allow DDW windows starting at 0x00
+Date:   Tue, 17 Aug 2021 03:39:23 -0300
+Message-Id: <20210817063929.38701-6-leobras.c@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210817063929.38701-1-leobras.c@gmail.com>
 References: <20210817063929.38701-1-leobras.c@gmail.com>
@@ -71,85 +71,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two functions creating direct_window_list entries in a
-similar way, so create a ddw_list_new_entry() to avoid duplicity and
-simplify those functions.
+enable_ddw() currently returns the address of the DMA window, which is
+considered invalid if has the value 0x00.
+
+Also, it only considers valid an address returned from find_existing_ddw
+if it's not 0x00.
+
+Changing this behavior makes sense, given the users of enable_ddw() only
+need to know if direct mapping is possible. It can also allow a DMA window
+starting at 0x00 to be used.
+
+This will be helpful for using a DDW with indirect mapping, as the window
+address will be different than 0x00, but it will not map the whole
+partition.
 
 Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
 Reviewed-by: Alexey Kardashevskiy <aik@ozlabs.ru>
 Reviewed-by: Frederic Barrat <fbarrat@linux.ibm.com>
 ---
- arch/powerpc/platforms/pseries/iommu.c | 32 +++++++++++++++++---------
- 1 file changed, 21 insertions(+), 11 deletions(-)
+ arch/powerpc/platforms/pseries/iommu.c | 36 +++++++++++++-------------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
 
 diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
-index 33d82865d6e6..712d1667144a 100644
+index 712d1667144a..b34b473bbdc1 100644
 --- a/arch/powerpc/platforms/pseries/iommu.c
 +++ b/arch/powerpc/platforms/pseries/iommu.c
-@@ -874,6 +874,21 @@ static u64 find_existing_ddw(struct device_node *pdn, int *window_shift)
- 	return dma_addr;
+@@ -853,25 +853,26 @@ static void remove_ddw(struct device_node *np, bool remove_prop)
+ 			np, ret);
  }
  
-+static struct direct_window *ddw_list_new_entry(struct device_node *pdn,
-+						const struct dynamic_dma_window_prop *dma64)
-+{
-+	struct direct_window *window;
-+
-+	window = kzalloc(sizeof(*window), GFP_KERNEL);
-+	if (!window)
-+		return NULL;
-+
-+	window->device = pdn;
-+	window->prop = dma64;
-+
-+	return window;
-+}
-+
- static int find_existing_ddw_windows(void)
+-static u64 find_existing_ddw(struct device_node *pdn, int *window_shift)
++static bool find_existing_ddw(struct device_node *pdn, u64 *dma_addr, int *window_shift)
  {
- 	int len;
-@@ -886,18 +901,15 @@ static int find_existing_ddw_windows(void)
+ 	struct direct_window *window;
+ 	const struct dynamic_dma_window_prop *direct64;
+-	u64 dma_addr = 0;
++	bool found = false;
  
- 	for_each_node_with_property(pdn, DIRECT64_PROPNAME) {
- 		direct64 = of_get_property(pdn, DIRECT64_PROPNAME, &len);
--		if (!direct64)
--			continue;
--
--		window = kzalloc(sizeof(*window), GFP_KERNEL);
--		if (!window || len < sizeof(struct dynamic_dma_window_prop)) {
--			kfree(window);
-+		if (!direct64 || len < sizeof(*direct64)) {
- 			remove_ddw(pdn, true);
- 			continue;
- 		}
- 
--		window->device = pdn;
--		window->prop = direct64;
-+		window = ddw_list_new_entry(pdn, direct64);
-+		if (!window)
-+			break;
-+
- 		spin_lock(&direct_window_list_lock);
- 		list_add(&window->list, &direct_window_list);
- 		spin_unlock(&direct_window_list_lock);
-@@ -1307,7 +1319,7 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
- 	dev_dbg(&dev->dev, "created tce table LIOBN 0x%x for %pOF\n",
- 		  create.liobn, dn);
- 
--	window = kzalloc(sizeof(*window), GFP_KERNEL);
-+	window = ddw_list_new_entry(pdn, ddwprop);
- 	if (!window)
- 		goto out_clear_window;
- 
-@@ -1326,8 +1338,6 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
- 		goto out_free_window;
- 	}
- 
--	window->device = pdn;
--	window->prop = ddwprop;
  	spin_lock(&direct_window_list_lock);
+ 	/* check if we already created a window and dupe that config if so */
+ 	list_for_each_entry(window, &direct_window_list, list) {
+ 		if (window->device == pdn) {
+ 			direct64 = window->prop;
+-			dma_addr = be64_to_cpu(direct64->dma_base);
++			*dma_addr = be64_to_cpu(direct64->dma_base);
+ 			*window_shift = be32_to_cpu(direct64->window_shift);
++			found = true;
+ 			break;
+ 		}
+ 	}
+ 	spin_unlock(&direct_window_list_lock);
+ 
+-	return dma_addr;
++	return found;
+ }
+ 
+ static struct direct_window *ddw_list_new_entry(struct device_node *pdn,
+@@ -1161,20 +1162,20 @@ static int iommu_get_page_shift(u32 query_page_size)
+  * pdn: the parent pe node with the ibm,dma_window property
+  * Future: also check if we can remap the base window for our base page size
+  *
+- * returns the dma offset for use by the direct mapped DMA code.
++ * returns true if can map all pages (direct mapping), false otherwise..
+  */
+-static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
++static bool enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+ {
+ 	int len = 0, ret;
+ 	int max_ram_len = order_base_2(ddw_memory_hotplug_max());
+ 	struct ddw_query_response query;
+ 	struct ddw_create_response create;
+ 	int page_shift;
+-	u64 dma_addr;
+ 	struct device_node *dn;
+ 	u32 ddw_avail[DDW_APPLICABLE_SIZE];
+ 	struct direct_window *window;
+ 	struct property *win64;
++	bool ddw_enabled = false;
+ 	struct dynamic_dma_window_prop *ddwprop;
+ 	struct failed_ddw_pdn *fpdn;
+ 	bool default_win_removed = false;
+@@ -1186,9 +1187,10 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+ 
+ 	mutex_lock(&direct_window_init_mutex);
+ 
+-	dma_addr = find_existing_ddw(pdn, &len);
+-	if (dma_addr != 0)
++	if (find_existing_ddw(pdn, &dev->dev.archdata.dma_offset, &len)) {
++		ddw_enabled = true;
+ 		goto out_unlock;
++	}
+ 
+ 	/*
+ 	 * If we already went through this for a previous function of
+@@ -1342,7 +1344,8 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
  	list_add(&window->list, &direct_window_list);
  	spin_unlock(&direct_window_list_lock);
+ 
+-	dma_addr = be64_to_cpu(ddwprop->dma_base);
++	dev->dev.archdata.dma_offset = be64_to_cpu(ddwprop->dma_base);
++	ddw_enabled = true;
+ 	goto out_unlock;
+ 
+ out_free_window:
+@@ -1374,10 +1377,10 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+ 	 * as RAM, then we failed to create a window to cover persistent
+ 	 * memory and need to set the DMA limit.
+ 	 */
+-	if (pmem_present && dma_addr && (len == max_ram_len))
+-		dev->dev.bus_dma_limit = dma_addr + (1ULL << len);
++	if (pmem_present && ddw_enabled && (len == max_ram_len))
++		dev->dev.bus_dma_limit = dev->dev.archdata.dma_offset + (1ULL << len);
+ 
+-	return dma_addr;
++	return ddw_enabled;
+ }
+ 
+ static void pci_dma_dev_setup_pSeriesLP(struct pci_dev *dev)
+@@ -1456,11 +1459,8 @@ static bool iommu_bypass_supported_pSeriesLP(struct pci_dev *pdev, u64 dma_mask)
+ 			break;
+ 	}
+ 
+-	if (pdn && PCI_DN(pdn)) {
+-		pdev->dev.archdata.dma_offset = enable_ddw(pdev, pdn);
+-		if (pdev->dev.archdata.dma_offset)
+-			return true;
+-	}
++	if (pdn && PCI_DN(pdn))
++		return enable_ddw(pdev, pdn);
+ 
+ 	return false;
+ }
 -- 
 2.32.0
 
