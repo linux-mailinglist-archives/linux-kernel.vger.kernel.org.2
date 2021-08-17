@@ -2,137 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C673EF1B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 20:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF943EF1B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 20:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232741AbhHQSVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 14:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhHQSVS (ORCPT
+        id S233003AbhHQSWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 14:22:14 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:52768 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231438AbhHQSWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 14:21:18 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A25C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 11:20:44 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id q3so28682989edt.5
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 11:20:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=essensium.com; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=JxMZknPb38LEML/Zrl22ADbZSOPinCE/VRi5nWGWDAk=;
-        b=PA0YPSPT/zjM5bEyc//9e/LK7/9ORKt+R0DfSzP2LM1QT9rCEMTMm/8yggAlOSiQNe
-         P6Vb2m2vXpSGRgiIFaX4UtvsfmAstlOMNQkMhSX9UKoTc7AwLb2KlwWPw6WKu/5jYrv/
-         KiPtkO53kzroV+bjaJi7FCDY/pWOKVkqi7od/aLINjO/5Cy02Jq5X1qabP4g178wjYd8
-         OEz5+k2yYdKilKtoU7l0dNdbo2VY5rR9aNtkrlqIq1k1NLVctLaI1e1jLJkSfdYuGZDW
-         ddrU9e5EvQQLLwMLEBs84gvbaAnrglNoGz2Dh7Wx3L/2Jazh3h59wXKY2ob6YTN6dPB+
-         7VNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=JxMZknPb38LEML/Zrl22ADbZSOPinCE/VRi5nWGWDAk=;
-        b=bnzpIvabFiIaQLDuQTHCl3IrnxbgsIgyGa1ntrRv8/Vb9xJBEyYA12DY+1S11AIzJB
-         FjiHV9k05PjOhAYv+7fIWqmdFmFIsBNTrToMiS/qIpA+s6s/KM8laBGawqUoZLzJCGUh
-         D6brQ9nhtT1GAxubA0WX2bvV41mIZArjepqO5USYd+/5O3s2VEMaIPtJ10dPtPfvFye+
-         9F2M4/VeCZnZlVqhEngUa9raUbuSyWucoUwZBjFgVzrTyzruDMupvnnj0SwJPYCh4kTx
-         AJvGaf+CxYvN+9erXdNRxzu3TvFXNAUHbjBOWiYPZ5k7igkDA7++zSrxF1FrlXhrL8P5
-         NE9g==
-X-Gm-Message-State: AOAM531+YQbFY9geF9DD4/mi4IZcdGpLr0g9McY24eEOdST2iaiyS1gf
-        /YY77jE/sWILdTOedxUKSPX4lQ==
-X-Google-Smtp-Source: ABdhPJyt9pFQrE5UrvhBLr0r70/BhVJQomD3436RtSvk4JV8WfSrQHji5uEfWOJfMVdBalL2I2DriA==
-X-Received: by 2002:a05:6402:8da:: with SMTP id d26mr5460218edz.109.1629224442987;
-        Tue, 17 Aug 2021 11:20:42 -0700 (PDT)
-Received: from cephalopod (168.7-181-91.adsl-dyn.isp.belgacom.be. [91.181.7.168])
-        by smtp.gmail.com with ESMTPSA id cr9sm1409545edb.17.2021.08.17.11.20.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 11:20:42 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 20:20:40 +0200
-From:   Ben Hutchings <ben.hutchings@essensium.com>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 51/96] net: dsa: microchip: Fix ksz_read64()
-Message-ID: <20210817182040.GA12678@cephalopod>
-References: <20210816125434.948010115@linuxfoundation.org>
- <20210816125436.659359567@linuxfoundation.org>
- <20210817175630.GB30136@amd>
+        Tue, 17 Aug 2021 14:22:11 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:53596)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mG3iT-00BChz-Gh; Tue, 17 Aug 2021 12:21:37 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:55358 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mG3iN-009Bti-1e; Tue, 17 Aug 2021 12:21:36 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org
+References: <YRrdvKEu2JQxLI5n@zeniv-ca.linux.org.uk>
+Date:   Tue, 17 Aug 2021 13:21:03 -0500
+In-Reply-To: <YRrdvKEu2JQxLI5n@zeniv-ca.linux.org.uk> (Al Viro's message of
+        "Mon, 16 Aug 2021 21:50:52 +0000")
+Message-ID: <877dgkvsog.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210817175630.GB30136@amd>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-XM-SPF: eid=1mG3iN-009Bti-1e;;;mid=<877dgkvsog.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/ObD3cJEIZ6Nc/X3TceBIxOY/d0fLtUhk=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG,
+        XM_B_SpammyWords autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4999]
+        *  1.5 TR_Symld_Words too many words that have symbols inside
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Al Viro <viro@zeniv.linux.org.uk>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 5596 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 4.0 (0.1%), b_tie_ro: 2.7 (0.0%), parse: 0.69
+        (0.0%), extract_message_metadata: 9 (0.2%), get_uri_detail_list: 1.82
+        (0.0%), tests_pri_-1000: 6 (0.1%), tests_pri_-950: 0.96 (0.0%),
+        tests_pri_-900: 0.79 (0.0%), tests_pri_-90: 90 (1.6%), check_bayes: 89
+        (1.6%), b_tokenize: 6 (0.1%), b_tok_get_all: 8 (0.1%), b_comp_prob:
+        1.94 (0.0%), b_tok_touch_all: 70 (1.3%), b_finish: 0.65 (0.0%),
+        tests_pri_0: 5474 (97.8%), check_dkim_signature: 0.39 (0.0%),
+        check_dkim_adsp: 2.3 (0.0%), poll_dns_idle: 1.07 (0.0%), tests_pri_10:
+        1.84 (0.0%), tests_pri_500: 6 (0.1%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH][RFC] fix PTRACE_KILL
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 07:56:30PM +0200, Pavel Machek wrote:
-> Hi!
-> 
-> > [ Upstream commit c34f674c8875235725c3ef86147a627f165d23b4 ]
-> > 
-> > ksz_read64() currently does some dubious byte-swapping on the two
-> > halves of a 64-bit register, and then only returns the high bits.
-> > Replace this with a straightforward expression.
-> 
-> The code indeed is very strange, but there are just 2 users, and they
-> will now receive byteswapped values, right? If it worked before, it
-> will be broken.
+Al Viro <viro@zeniv.linux.org.uk> writes:
 
-The old code swaps the bytes within each 32-bit word, attempts to
-concatenate them into a 64-bit word, then swaps the bytes within the
-64-bit word.  There is no need for byte-swapping, only (on little-
-endian platforms) a word-swap, which is what the new code does.
+> [Cc'd to security@k.o, *NOT* because I consider it a serious security hole;
+> it's just that the odds of catching relevant reviewers there are higher
+> than on l-k and there doesn't seem to be any lists where that would be
+> on-topic.  My apologies for misuse of security@k.o ;-/]
 
-> Did this get enough testing for -stable?
+Hmm.  I don't see security@kernel.org Cc'd.
 
-Yes, I actually developed and tested all the ksz8795 changes in 5.10
-before forward-porting to mainline.
+> Current implementation is racy in quite a few ways - we check that
+> the child is traced by us and use ptrace_resume() to feed it
+> SIGKILL, provided that it's still alive.
+>
+> What we do not do is making sure that the victim is in ptrace stop;
+> as the result, it can go and violate all kinds of assumptions,
+> starting with "child->sighand won't change under ptrace_resume()",
+> "child->ptrace won't get changed under user_disable_single_step()",
+> etc.
+>
+> Note that ptrace(2) manpage has this to say:
+>     
+> PTRACE_KILL
+>       Send  the  tracee a SIGKILL to terminate it.  (addr and data are
+>       ignored.)
+>     
+>       This operation is deprecated; do not use it!   Instead,  send  a
+>       SIGKILL  directly  using kill(2) or tgkill(2).  The problem with
+>       PTRACE_KILL is that it requires the  tracee  to  be  in  signal-
+>       delivery-stop,  otherwise  it  may  not work (i.e., may complete
+>       successfully but won't kill the tracee).  By contrast, sending a
+>       SIGKILL directly has no such limitation.
+>     
+> So let it check (under tasklist_lock) that the victim is traced by us
+> and call sig_send_info() to feed it SIGKILL.  It's easier that trying
+> to force ptrace_resume() into handling that mess and it's less brittle
+> that way.
 
-> Is hw little endian or high endian or...?
+I took a quick look and despite being deprecated PTRACE_KILL appears
+to still have some active users (like gcc-10).  So that seems to rule
+out just removing PTRACE_KILL.
 
-The hardware is big-endian and regmap handles any necessary
-byte-swapping for values up to 32 bits.
+I looked at the bug that PTRACE_KILL only kills a process when it is
+stopped and it is present in Linux 1.0.  Given that I expect userspace
+applications are ok with the current semantics rather than the intended
+semantics.
 
-> Note that ksz_write64() still contains the strange code, at least in
-> 5.10.
+The current semantics also include the weirdness that PTRACE_KILL only
+kills a process when it is stopped in ptrace_signal, and not at other
+ptrace stops.
 
-It's unnecessarily complex, but it does work.
+So rather than fix the code to do what was intended 27 years ago,
+why don't we accept the fact that PTRACE_KILL is equivalent
+to PTRACE_CONT with data = SIGKILL.
 
-Ben.
+If there are regressions or we really care we can tweak the return value
+to return 0 instead of -ESRCH when the process is not stopped.
 
-> 
-> Best regards,
-> 							Pavel
-> 							
-> > +++ b/drivers/net/dsa/microchip/ksz_common.h
-> > @@ -210,12 +210,8 @@ static inline int ksz_read64(struct ksz_device *dev, u32 reg, u64 *val)
-> >  	int ret;
-> >  
-> >  	ret = regmap_bulk_read(dev->regmap[2], reg, value, 2);
-> > -	if (!ret) {
-> > -		/* Ick! ToDo: Add 64bit R/W to regmap on 32bit systems */
-> > -		value[0] = swab32(value[0]);
-> > -		value[1] = swab32(value[1]);
-> > -		*val = swab64((u64)*value);
-> > -	}
-> > +	if (!ret)
-> > +		*val = (u64)value[0] << 32 | value[1];
-> >  
-> >  	return ret;
-> >  }
-> 
-> -- 
-> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Something like this:
 
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index f8589bf8d7dc..f40f0a0ff70a 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -1221,8 +1221,6 @@ int ptrace_request(struct task_struct *child, long request,
+ 		return ptrace_resume(child, request, data);
+ 
+ 	case PTRACE_KILL:
+-		if (child->exit_state)	/* already dead */
+-			return 0;
+ 		return ptrace_resume(child, request, SIGKILL);
+ 
+ #ifdef CONFIG_HAVE_ARCH_TRACEHOOK
+@@ -1304,8 +1302,7 @@ SYSCALL_DEFINE4(ptrace, long, request, long, pid, unsigned long, addr,
+ 		goto out_put_task_struct;
+ 	}
+ 
+-	ret = ptrace_check_attach(child, request == PTRACE_KILL ||
+-				  request == PTRACE_INTERRUPT);
++	ret = ptrace_check_attach(child, request == PTRACE_INTERRUPT);
+ 	if (ret < 0)
+ 		goto out_put_task_struct;
+ 
+@@ -1449,8 +1446,7 @@ COMPAT_SYSCALL_DEFINE4(ptrace, compat_long_t, request, compat_long_t, pid,
+ 		goto out_put_task_struct;
+ 	}
+ 
+-	ret = ptrace_check_attach(child, request == PTRACE_KILL ||
+-				  request == PTRACE_INTERRUPT);
++	ret = ptrace_check_attach(child, request == PTRACE_INTERRUPT);
+ 	if (!ret) {
+ 		ret = compat_arch_ptrace(child, request, addr, data);
+ 		if (ret || request != PTRACE_DETACH)
 
-
--- 
-Ben Hutchings · Senior Embedded Software Engineer, Essensium-Mind · mind.be
+Eric
