@@ -2,241 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0073EF04F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 18:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2D13EF059
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 18:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbhHQQlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 12:41:51 -0400
-Received: from mga06.intel.com ([134.134.136.31]:38258 "EHLO mga06.intel.com"
+        id S229991AbhHQQpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 12:45:11 -0400
+Received: from out0.migadu.com ([94.23.1.103]:30074 "EHLO out0.migadu.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229991AbhHQQlu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 12:41:50 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10079"; a="277170639"
-X-IronPort-AV: E=Sophos;i="5.84,329,1620716400"; 
-   d="scan'208";a="277170639"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 09:41:16 -0700
-X-IronPort-AV: E=Sophos;i="5.84,329,1620716400"; 
-   d="scan'208";a="449342732"
-Received: from aaadelek-mobl3.amr.corp.intel.com (HELO pbossart-mobl3.intel.com) ([10.212.12.89])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 09:41:15 -0700
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org,
-        liam.r.girdwood@linux.intel.com,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [RFC PATCH 2/2] ASoC: soc-pcm: test refcount before triggering
-Date:   Tue, 17 Aug 2021 11:40:54 -0500
-Message-Id: <20210817164054.250028-3-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210817164054.250028-1-pierre-louis.bossart@linux.intel.com>
-References: <20210817164054.250028-1-pierre-louis.bossart@linux.intel.com>
+        id S229477AbhHQQpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 12:45:11 -0400
+Date:   Wed, 18 Aug 2021 00:45:17 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1629218673;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9IpxX15DqOD8LIrfGJRCbPsyH+vcshClmcSkLJL6WHM=;
+        b=j9RL1ME3CgACWqYIwVG3Qd0rTa0/S4c65xtSI6PQlLkceCJXK7LOjGG4gNTaxkiMIYhkKh
+        2wdrZDlq6y5oZcN0fKZVQb9EFNOjT5C0jBQc3dvnS93RNhDgqhp5XG/hJ6GVAjWIh7CR3i
+        fFmEAxuPBQ5SX9HfWKqASGbZZ4iq6Tw=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Tao Zhou <tao.zhou@linux.dev>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        joel@joelfernandes.org, chris.hyser@oracle.com, joshdon@google.com,
+        mingo@kernel.org, vincent.guittot@linaro.org,
+        valentin.schneider@arm.com, mgorman@suse.de, taozhou@linux.dev
+Subject: Re: [PATCH] sched/core: An optimization of pick_next_task() not sure
+Message-ID: <YRvnnanIb4WEI5aJ@geo.homenetwork>
+References: <20210816154401.23919-1-tao.zhou@linux.dev>
+ <YRqz93crZIS1Mvmy@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YRqz93crZIS1Mvmy@hirez.programming.kicks-ass.net>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: tao.zhou@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On start/pause_release/resume, when more than one FE is connected to
-the same BE, it's possible that the trigger is sent more than
-once. This is not desirable, we only want to trigger a BE once, which
-is straightforward to implement with a refcount.
+Hi Peter,
 
-For stop/pause/suspend, the problem is more complicated: the check
-implemented in snd_soc_dpcm_can_be_free_stop() may fail due to a
-conceptual deadlock when we trigger the BE before the FE. In this
-case, the FE states have not yet changed, so there are corner cases
-where the TRIGGER_STOP is never sent - the dual case of start where
-multiple triggers might be sent.
+On Mon, Aug 16, 2021 at 08:52:39PM +0200, Peter Zijlstra wrote:
 
-This patch suggests an unconditional trigger in all cases, without
-checking the FE states, using a refcount protected by a spinlock.
+> On Mon, Aug 16, 2021 at 11:44:01PM +0800, Tao Zhou wrote:
+> > When find a new candidate max, wipe the stale and start over.
+> > Goto again: and use the new max to loop to pick the the task.
+> > 
+> > Here first want to get the max of the core and use this new
+> > max to loop once to pick the task on each thread.
+> > 
+> > Not sure this is an optimization and just stop here a little
+> > and move on..
+> > 
+> 
+> Did you find this retry was an issue on your workload? Or was this from
+> reading the source?
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Thank you for your reply. Sorry for my late reply.
+This was from reading the source..
+
+> 
+> > ---
+> >  kernel/sched/core.c | 52 +++++++++++++++++----------------------------
+> >  1 file changed, 20 insertions(+), 32 deletions(-)
+> > 
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index 20ffcc044134..bddcd328df96 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -5403,7 +5403,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+> >  	const struct sched_class *class;
+> >  	const struct cpumask *smt_mask;
+> >  	bool fi_before = false;
+> > -	int i, j, cpu, occ = 0;
+> > +	int i, cpu, occ = 0;
+> >  	bool need_sync;
+> >  
+> >  	if (!sched_core_enabled(rq))
+> > @@ -5508,11 +5508,27 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+> >  	 * order.
+> >  	 */
+> >  	for_each_class(class) {
+> > -again:
+> > +		struct rq *rq_i;
+> > +		struct task_struct *p;
+> > +
+> >  		for_each_cpu_wrap(i, smt_mask, cpu) {
+> > -			struct rq *rq_i = cpu_rq(i);
+> > -			struct task_struct *p;
+> > +			rq_i = cpu_rq(i);
+> > +			p = pick_task(rq_i, class, max, fi_before);
+> > +			/*
+> > +			 * If this new candidate is of higher priority than the
+> > +			 * previous; and they're incompatible; pick_task makes
+> > +			 * sure that p's priority is more than max if it doesn't
+> > +			 * match max's cookie. Update max.
+> > +			 *
+> > +			 * NOTE: this is a linear max-filter and is thus bounded
+> > +			 * in execution time.
+> > +			 */
+> > +			if (!max || !cookie_match(max, p))
+> > +				max = p;
+> > +		}
+> >  
+> > +		for_each_cpu_wrap(i, smt_mask, cpu) {
+> > +			rq_i = cpu_rq(i);
+> >  			if (rq_i->core_pick)
+> >  				continue;
+> >  
+> 
+> This now calls pick_task() twice for each CPU, which seems unfortunate;
+> perhaps add q->core_temp storage to cache that result. Also, since the
+> first iteration is now explicitly about the max filter, perhaps we
+> shouuld move that part of pick_task() into the loop and simplify things
+> further?
+
+Here is my ugly patch below..
+Not compiled..
+
+
+From b3de16fb6f3e6cd2a8a9f7a579e80df74fb2d865 Mon Sep 17 00:00:00 2001
+From: Tao Zhou <tao.zhou@linux.dev>
+Date: Wed, 18 Aug 2021 00:07:38 +0800
+Subject: [PATCH] optimize pick_next_task()
+
 ---
- include/sound/soc-dpcm.h |  2 ++
- sound/soc/soc-pcm.c      | 46 ++++++++++++++++++++++++++++++++++++----
- 2 files changed, 44 insertions(+), 4 deletions(-)
+ kernel/sched/core.c  | 71 +++++++++++++++++++++++++++++++++-----------
+ kernel/sched/sched.h |  1 +
+ 2 files changed, 54 insertions(+), 18 deletions(-)
 
-diff --git a/include/sound/soc-dpcm.h b/include/sound/soc-dpcm.h
-index e296a3949b18..6cc751002da7 100644
---- a/include/sound/soc-dpcm.h
-+++ b/include/sound/soc-dpcm.h
-@@ -101,6 +101,8 @@ struct snd_soc_dpcm_runtime {
- 	enum snd_soc_dpcm_state state;
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 20ffcc044134..c2a403bacf99 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5380,18 +5380,32 @@ pick_task(struct rq *rq, const struct sched_class *class, struct task_struct *ma
+ 	if (cookie_equals(class_pick, cookie))
+ 		return class_pick;
  
- 	int trigger_pending; /* trigger cmd + 1 if pending, 0 if not */
+-	cookie_pick = sched_core_find(rq, cookie);
++	return class_pick;
++}
+ 
+-	/*
+-	 * If class > max && class > cookie, it is the highest priority task on
+-	 * the core (so far) and it must be selected, otherwise we must go with
+-	 * the cookie pick in order to satisfy the constraint.
+-	 */
+-	if (prio_less(cookie_pick, class_pick, in_fi) &&
+-	    (!max || prio_less(max, class_pick, in_fi)))
+-		return class_pick;
++static task_struct *
++filter_max_prio(struct rq *rq, struct task_struct *class_pick,
++				struct task_struct **cookie_pick, struct task_struct *max,
++				bool in_fi)
++{
++	unsigned long cookie = rq->core->core_cookie;
+ 
+-	return cookie_pick;
++	*cookie_pick = NULL;
++	if (cookie && !cookie_equals(class_pick, cookie)) {
++		*cookie_pick = sched_core_find(rq, cookie);
++		/*
++		 * If class > max && class > cookie, it is the
++		 * highest priority task on the core (so far)
++		 * and it must be selected, otherwise we must
++		 * go with the cookie pick in order to satisfy
++		 * the constraint.
++		 */
++		if (prio_less(cookie_pick, class_pick, in_fi) &&
++		    (!max || prio_less(max, class_pick, in_fi)))
++			return class_pick;
++	}
 +
-+	int be_start; /* refcount protected by dpcm_lock */
- };
++	return NULL;
+ }
  
- #define for_each_dpcm_fe(be, stream, _dpcm)				\
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 0717f39d2eec..b2440f2f9bf5 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1534,7 +1534,7 @@ int dpcm_be_dai_startup(struct snd_soc_pcm_runtime *fe, int stream)
- 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_CLOSE;
- 			goto unwind;
- 		}
--
-+		be->dpcm[stream].be_start = 0;
- 		be->dpcm[stream].state = SND_SOC_DPCM_STATE_OPEN;
- 		count++;
- 	}
-@@ -2001,6 +2001,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
- 	int ret = 0;
- 	unsigned long flags;
- 	enum snd_soc_dpcm_state state;
-+	bool do_trigger;
- 
- 	for_each_dpcm_be(fe, stream, dpcm) {
- 		struct snd_pcm_substream *be_substream;
-@@ -2015,6 +2016,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
- 		dev_dbg(be->dev, "ASoC: trigger BE %s cmd %d\n",
- 			be->dai_link->name, cmd);
- 
-+		do_trigger = false;
- 		switch (cmd) {
- 		case SNDRV_PCM_TRIGGER_START:
- 			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
-@@ -2025,13 +2027,20 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
- 				continue;
- 			}
- 			state = be->dpcm[stream].state;
-+			if (be->dpcm[stream].be_start == 0)
-+				do_trigger = true;
-+			be->dpcm[stream].be_start++;
- 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
- 			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
- 
-+			if (!do_trigger)
+ extern void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_fi);
+@@ -5508,24 +5522,44 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 	 * order.
+ 	 */
+ 	for_each_class(class) {
+-again:
++		struct task_struct *class_pick, *cookie_pick;
++		struct rq *rq_i;
++
++		for_each_cpu_wrap(i, smt_mask, cpu) {
++			rq_i = cpu_rq(i);
++			class_pick = pick_task(rq_i, class, max, fi_before);
++			rq_i->core_temp = class_pick;
++			/*
++			 * This sibling doesn't yet have a suitable task to
++			 * run.
++			 */
++			if (!class_pick)
 +				continue;
 +
- 			ret = soc_pcm_trigger(be_substream, cmd);
- 			if (ret) {
- 				spin_lock_irqsave(&fe->card->dpcm_lock, flags);
- 				be->dpcm[stream].state = state;
-+				be->dpcm[stream].be_start--;
- 				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
- 				goto end;
- 			}
-@@ -2045,13 +2054,20 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
- 			}
- 
- 			state = be->dpcm[stream].state;
-+			if (be->dpcm[stream].be_start == 0)
-+				do_trigger = true;
-+			be->dpcm[stream].be_start++;
- 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
- 			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
- 
-+			if (!do_trigger)
-+				continue;
++			if (filter_max_prio(rq_i, class_pick, &cookie_pick, max, fi_before))
++				max = class_pick;
++		}
 +
- 			ret = soc_pcm_trigger(be_substream, cmd);
- 			if (ret) {
- 				spin_lock_irqsave(&fe->card->dpcm_lock, flags);
- 				be->dpcm[stream].state = state;
-+				be->dpcm[stream].be_start--;
- 				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
- 				goto end;
- 			}
-@@ -2065,13 +2081,20 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
- 			}
+ 		for_each_cpu_wrap(i, smt_mask, cpu) {
+-			struct rq *rq_i = cpu_rq(i);
+ 			struct task_struct *p;
++			rq_i = cpu_rq(i);
  
- 			state = be->dpcm[stream].state;
-+			if (be->dpcm[stream].be_start == 0)
-+				do_trigger = true;
-+			be->dpcm[stream].be_start++;
- 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
- 			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 			if (rq_i->core_pick)
+ 				continue;
  
-+			if (!do_trigger)
-+				continue;
+ 			/*
+-			 * If this sibling doesn't yet have a suitable task to
+-			 * run; ask for the most eligible task, given the
+-			 * highest priority task already selected for this
+-			 * core.
++			 * This sibling doesn't yet have a suitable task to
++			 * run.
+ 			 */
+-			p = pick_task(rq_i, class, max, fi_before);
+-			if (!p)
++			if (!rq_i->core_temp)
+ 				continue;
+ 
++			p = class_pick = rq_i->core_temp;
++			if (!filter_max_prio(rq_i, class_pick, &cookie_pick, max, fi_before)) {
++				if (cookie_pick)
++					p = cookie_pick;
++			}
 +
- 			ret = soc_pcm_trigger(be_substream, cmd);
- 			if (ret) {
- 				spin_lock_irqsave(&fe->card->dpcm_lock, flags);
- 				be->dpcm[stream].state = state;
-+				be->dpcm[stream].be_start--;
- 				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
- 				goto end;
- 			}
-@@ -2084,9 +2107,15 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
- 				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
- 				continue;
- 			}
-+			if ((be->dpcm[stream].state == SND_SOC_DPCM_STATE_START &&
-+			     be->dpcm[stream].be_start == 1) ||
-+			    (be->dpcm[stream].state == SND_SOC_DPCM_STATE_PAUSED &&
-+			     be->dpcm[stream].be_start == 0))
-+				do_trigger = true;
-+			be->dpcm[stream].be_start--;
- 			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 			if (!is_task_rq_idle(p))
+ 				occ++;
  
--			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
-+			if (!do_trigger)
- 				continue;
- 
- 			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
-@@ -2098,6 +2127,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
- 			if (ret) {
- 				spin_lock_irqsave(&fe->card->dpcm_lock, flags);
- 				be->dpcm[stream].state = state;
-+				be->dpcm[stream].be_start++;
- 				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
- 				goto end;
- 			}
-@@ -2109,9 +2139,12 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
- 				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
- 				continue;
- 			}
-+			if (be->dpcm[stream].be_start == 1)
-+				do_trigger = true;
-+			be->dpcm[stream].be_start--;
- 			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
- 
--			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
-+			if (!do_trigger)
- 				continue;
- 
- 			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
-@@ -2123,6 +2156,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
- 			if (ret) {
- 				spin_lock_irqsave(&fe->card->dpcm_lock, flags);
- 				be->dpcm[stream].state = state;
-+				be->dpcm[stream].be_start++;
- 				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
- 				goto end;
- 			}
-@@ -2134,9 +2168,12 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
- 				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
- 				continue;
- 			}
-+			if (be->dpcm[stream].be_start == 1)
-+				do_trigger = true;
-+			be->dpcm[stream].be_start--;
- 			spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
- 
--			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
-+			if (!do_trigger)
- 				continue;
- 
- 			spin_lock_irqsave(&fe->card->dpcm_lock, flags);
-@@ -2148,6 +2185,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
- 			if (ret) {
- 				spin_lock_irqsave(&fe->card->dpcm_lock, flags);
- 				be->dpcm[stream].state = state;
-+				be->dpcm[stream].be_start++;
- 				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
- 				goto end;
- 			}
+@@ -9024,6 +9058,7 @@ void __init sched_init(void)
+ #ifdef CONFIG_SCHED_CORE
+ 		rq->core = NULL;
+ 		rq->core_pick = NULL;
++		rq->core_temp = NULL;
+ 		rq->core_enabled = 0;
+ 		rq->core_tree = RB_ROOT;
+ 		rq->core_forceidle = false;
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 14a41a243f7b..2b21a3846b8e 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1089,6 +1089,7 @@ struct rq {
+ 	/* per rq */
+ 	struct rq		*core;
+ 	struct task_struct	*core_pick;
++	struct task_struct	*core_temp;
+ 	unsigned int		core_enabled;
+ 	unsigned int		core_sched_seq;
+ 	struct rb_root		core_tree;
 -- 
-2.25.1
+2.31.1
 
+
+Thanks,
+Tao
