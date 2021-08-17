@@ -2,97 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7949F3EF12A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 19:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D4E3EF12D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 19:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232616AbhHQR5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 13:57:10 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:40932 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229918AbhHQR5F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 13:57:05 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 98F751C0B77; Tue, 17 Aug 2021 19:56:30 +0200 (CEST)
-Date:   Tue, 17 Aug 2021 19:56:30 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Ben Hutchings <ben.hutchings@mind.be>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 51/96] net: dsa: microchip: Fix ksz_read64()
-Message-ID: <20210817175630.GB30136@amd>
-References: <20210816125434.948010115@linuxfoundation.org>
- <20210816125436.659359567@linuxfoundation.org>
+        id S232376AbhHQR6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 13:58:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36210 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229918AbhHQR6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 13:58:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87DBB60FD7;
+        Tue, 17 Aug 2021 17:58:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629223081;
+        bh=FXkhtOsU1DhgucCkfqBGz2M/mv9RZyXJ4JNhnZSuQF8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KgV/UCrxSe0y4S7duXpl7GS6AvasTEmtA0zGqfV7G7QK+z28kOFa6Aodon+7b1nS3
+         cwV1pOfMIQ32MmtUpnKKdYktV3BmW5baYaBWC1yhCmGuyOcmSOp6kuEh+fFAf9oGhb
+         0Nbetaza/mO6Y8ieEFpDCMXmxbNlEyMwqub92u80=
+Date:   Tue, 17 Aug 2021 19:57:58 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Michael Straube <straube.linux@gmail.com>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>
+Subject: Re: [PATCH] staging: r8188eu: refactor
+ rtw_is_cckrates{only}_included()
+Message-ID: <YRv4po3sLcH9VLuo@kroah.com>
+References: <20210816193125.15700-1-straube.linux@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="61jdw2sOBCFtR2d/"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210816125436.659359567@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20210816193125.15700-1-straube.linux@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---61jdw2sOBCFtR2d/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-> [ Upstream commit c34f674c8875235725c3ef86147a627f165d23b4 ]
->=20
-> ksz_read64() currently does some dubious byte-swapping on the two
-> halves of a 64-bit register, and then only returns the high bits.
-> Replace this with a straightforward expression.
-
-The code indeed is very strange, but there are just 2 users, and they
-will now receive byteswapped values, right? If it worked before, it
-will be broken.
-
-Did this get enough testing for -stable?
-
-Is hw little endian or high endian or...? Note that ksz_write64()
-still contains the strange code, at least in 5.10.
-
-Best regards,
-							Pavel
-						=09
-> +++ b/drivers/net/dsa/microchip/ksz_common.h
-> @@ -210,12 +210,8 @@ static inline int ksz_read64(struct ksz_device *dev,=
- u32 reg, u64 *val)
->  	int ret;
-> =20
->  	ret =3D regmap_bulk_read(dev->regmap[2], reg, value, 2);
-> -	if (!ret) {
-> -		/* Ick! ToDo: Add 64bit R/W to regmap on 32bit systems */
-> -		value[0] =3D swab32(value[0]);
-> -		value[1] =3D swab32(value[1]);
-> -		*val =3D swab64((u64)*value);
-> -	}
-> +	if (!ret)
-> +		*val =3D (u64)value[0] << 32 | value[1];
-> =20
->  	return ret;
+On Mon, Aug 16, 2021 at 09:31:25PM +0200, Michael Straube wrote:
+> Refactor functions rtw_is_cckrates_included() and
+> rtw_is_cckratesonly_included(). Add new helper function rtw_is_cckrate()
+> that allows to make the code more compact. Improves readability and
+> slightly reduces object file size. Change the return type to bool to
+> reflect that the functions return boolean values.
+> 
+> Suggested-by: Joe Perches <joe@perches.com>
+> Signed-off-by: Michael Straube <straube.linux@gmail.com>
+> ---
+>  drivers/staging/r8188eu/core/rtw_ieee80211.c | 27 +++++++++++---------
+>  drivers/staging/r8188eu/include/ieee80211.h  |  5 ++--
+>  2 files changed, 17 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/core/rtw_ieee80211.c b/drivers/staging/r8188eu/core/rtw_ieee80211.c
+> index 0c7231cefdda..892ffcd92cc7 100644
+> --- a/drivers/staging/r8188eu/core/rtw_ieee80211.c
+> +++ b/drivers/staging/r8188eu/core/rtw_ieee80211.c
+> @@ -68,28 +68,31 @@ int rtw_get_bit_value_from_ieee_value(u8 val)
+>  	return 0;
 >  }
+>  
+> -uint	rtw_is_cckrates_included(u8 *rate)
+> +static bool rtw_is_cckrate(u8 rate)
+>  {
+> -	u32	i = 0;
+> +	rate &= 0x7f;
+> +	return rate == 2 || rate == 4 || rate == 11 || rate == 22;
+> +}
+> +
+> +bool rtw_is_cckrates_included(u8 *rate)
+> +{
+> +	u8 r;
+>  
+> -	while (rate[i] != 0) {
+> -		if  ((((rate[i]) & 0x7f) == 2) || (((rate[i]) & 0x7f) == 4) ||
+> -		     (((rate[i]) & 0x7f) == 11)  || (((rate[i]) & 0x7f) == 22))
+> +	while ((r = *rate++)) {
+> +		if (rtw_is_cckrate(r))
+>  			return true;
+> -		i++;
+>  	}
+> +
+>  	return false;
+>  }
+>  
+> -uint	rtw_is_cckratesonly_included(u8 *rate)
+> +bool rtw_is_cckratesonly_included(u8 *rate)
+>  {
+> -	u32 i = 0;
+> +	u8 r;
+>  
+> -	while (rate[i] != 0) {
+> -		if  ((((rate[i]) & 0x7f) != 2) && (((rate[i]) & 0x7f) != 4) &&
+> -		     (((rate[i]) & 0x7f) != 11)  && (((rate[i]) & 0x7f) != 22))
+> +	while ((r = *rate++)) {
 
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Ick, no.
 
---61jdw2sOBCFtR2d/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+While it might be fun to play with pointers like this, trying to
+determine the precidence issues involved with reading from, and then
+incrementing the pointer like this is crazy.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+The original was obvious as to how it was walking through the array.
+Keep that here.
 
-iEYEARECAAYFAmEb+E4ACgkQMOfwapXb+vLY1ACfbgtvVkwqEAvCZ5IufHIfjZnT
-MOIAoKD98CkSOrEZhxLyb9svnfFtVRup
-=mXk/
------END PGP SIGNATURE-----
+Remember, we write code for humans first, compliers second.
 
---61jdw2sOBCFtR2d/--
+thanks,
+
+greg k-h
