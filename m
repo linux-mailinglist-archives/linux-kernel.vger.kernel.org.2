@@ -2,119 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFA33EE9DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2BED3EE9E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239611AbhHQJaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 05:30:20 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:51274 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239545AbhHQJaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 05:30:05 -0400
-Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
-        by mail.ispras.ru (Postfix) with ESMTPS id 3BED740D4004;
-        Tue, 17 Aug 2021 09:29:31 +0000 (UTC)
-From:   Evgeny Novikov <novikov@ispras.ru>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Evgeny Novikov <novikov@ispras.ru>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Ramuthevar Vadivel Murugan 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
-        Anton Vasilyev <vasilyev@ispras.ru>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org, stable@vger.kernel.org
-Subject: [PATCH v2] mtd: rawnand: intel: Fix error handling in probe
-Date:   Tue, 17 Aug 2021 12:29:30 +0300
-Message-Id: <20210817092930.23040-1-novikov@ispras.ru>
-X-Mailer: git-send-email 2.26.2
+        id S239369AbhHQJcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 05:32:10 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:59188 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235649AbhHQJcJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 05:32:09 -0400
+Date:   Tue, 17 Aug 2021 11:31:33 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629192695;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3v+oc/bqZeg96prM4rS81EqaAVykZtsx4aWLCDpAyV8=;
+        b=1Bs85gkppe3FSji0BN/4h7mU2N+Z2N4xFGB6NWpWjwXCpPfOiuAQ50qmpo6seVsYyXtFm5
+        uf8rfEbpSOTCoWEOOew+Eq5U7wFc+rUPFZNcJH6L6uZnO6fAofNRCil+PMRfzmaKxYykFy
+        u8e+vtUYt62FheAl8hpNhCzUX8lj93Htg4xzPDeGL3NfLLebA+z60HDFMqOSxawJdwg8JN
+        eTLCet6BeIdwkOGkcZEhBoJqm9ONg8CnkmwC+hXXen4L0IHJVf2DnVCoQC14fB72MIvP3S
+        oz6TM61l7zxGhQCddvKBPsNfNr6JaGP1YMMgUh4npQ6aMJBU23N0eu6nq87GEA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629192695;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3v+oc/bqZeg96prM4rS81EqaAVykZtsx4aWLCDpAyV8=;
+        b=vxFNw1UOK3Fv+7SupTwdwfCSBxbMsPNTE1Nt8hbP1LMj2iKMTb+SdupS/VnMRXPRE/SySK
+        87pUyj0EDr7EtdCw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Sven Eckelmann <sven@narfation.org>, akpm@linux-foundation.org,
+        brouer@redhat.com, cl@linux.com, efault@gmx.de,
+        iamjoonsoo.kim@lge.com, jannh@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        mgorman@techsingularity.net, penberg@kernel.org,
+        rientjes@google.com, tglx@linutronix.de,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v4 35/35] mm, slub: convert kmem_cpu_slab protection to
+ local_lock
+Message-ID: <20210817093133.kzwq2vx5gtrwevih@linutronix.de>
+References: <2666777.vCjUEy5FO1@sven-desktop>
+ <7329198a-2a4e-ebc2-abf8-f7f38f00d5e1@suse.cz>
+ <20210817091224.nqnrro34cyb67chj@linutronix.de>
+ <b1e88f8a-ddf1-67d2-52a3-9e57eac01406@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <b1e88f8a-ddf1-67d2-52a3-9e57eac01406@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ebu_nand_probe() did not invoke ebu_dma_cleanup() and
-clk_disable_unprepare() on some error handling paths. The patch fixes
-that.
+On 2021-08-17 11:17:18 [+0200], Vlastimil Babka wrote:
+> On 8/17/21 11:12 AM, Sebastian Andrzej Siewior wrote:
+> > On 2021-08-17 10:37:48 [+0200], Vlastimil Babka wrote:
+> >> OK reproduced. Thanks, will investigate.
+> > 
+> > With the local_lock at the top, the needed alignment gets broken for dbl
+> > cmpxchg. On RT it was working ;)
+> 
+> I'd rather have page and partial in the same cacheline as well, is it ok
+> to just move the lock as last and not care about whether it straddles
+> cachelines or not? (with CONFIG_SLUB_CPU_PARTIAL it will naturally start
+> with the next cacheline).
 
-Found by Linux Driver Verification project (linuxtesting.org).
+Moving like you suggested appears to be more efficient and saves a bit
+of memory:
 
-Fixes: 0b1039f016e8 ("mtd: rawnand: Add NAND controller support on Intel LGM SoC")
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
-Co-developed-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
-Signed-off-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
-Co-developed-by: Anton Vasilyev <vasilyev@ispras.ru>
-Signed-off-by: Anton Vasilyev <vasilyev@ispras.ru>
-Cc: stable@vger.kernel.org
----
-v2: Fix remarks from Miquel Raynal:
-    - Add a Fixes: tag.
-    - Add a Cc: stable tag.
----
- drivers/mtd/nand/raw/intel-nand-controller.c | 27 +++++++++++++-------
- 1 file changed, 18 insertions(+), 9 deletions(-)
+RT+ debug:
+struct kmem_cache_cpu {
+        void * *                   freelist;             /*     0     8 */
+        long unsigned int          tid;                  /*     8     8 */
+        struct page *              page;                 /*    16     8 */
+        struct page *              partial;              /*    24     8 */
+        local_lock_t               lock;                 /*    32   144 */
 
-diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
-index 8b49fd56cf96..29e8a546dcd6 100644
---- a/drivers/mtd/nand/raw/intel-nand-controller.c
-+++ b/drivers/mtd/nand/raw/intel-nand-controller.c
-@@ -631,19 +631,26 @@ static int ebu_nand_probe(struct platform_device *pdev)
- 	ebu_host->clk_rate = clk_get_rate(ebu_host->clk);
- 
- 	ebu_host->dma_tx = dma_request_chan(dev, "tx");
--	if (IS_ERR(ebu_host->dma_tx))
--		return dev_err_probe(dev, PTR_ERR(ebu_host->dma_tx),
--				     "failed to request DMA tx chan!.\n");
-+	if (IS_ERR(ebu_host->dma_tx)) {
-+		ret = dev_err_probe(dev, PTR_ERR(ebu_host->dma_tx),
-+				    "failed to request DMA tx chan!.\n");
-+		goto err_disable_unprepare_clk;
-+	}
- 
- 	ebu_host->dma_rx = dma_request_chan(dev, "rx");
--	if (IS_ERR(ebu_host->dma_rx))
--		return dev_err_probe(dev, PTR_ERR(ebu_host->dma_rx),
--				     "failed to request DMA rx chan!.\n");
-+	if (IS_ERR(ebu_host->dma_rx)) {
-+		ret = dev_err_probe(dev, PTR_ERR(ebu_host->dma_rx),
-+				    "failed to request DMA rx chan!.\n");
-+		ebu_host->dma_rx = NULL;
-+		goto err_cleanup_dma;
-+	}
- 
- 	resname = devm_kasprintf(dev, GFP_KERNEL, "addr_sel%d", cs);
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, resname);
--	if (!res)
--		return -EINVAL;
-+	if (!res) {
-+		ret = -EINVAL;
-+		goto err_cleanup_dma;
-+	}
- 	ebu_host->cs[cs].addr_sel = res->start;
- 	writel(ebu_host->cs[cs].addr_sel | EBU_ADDR_MASK(5) | EBU_ADDR_SEL_REGEN,
- 	       ebu_host->ebu + EBU_ADDR_SEL(cs));
-@@ -653,7 +660,8 @@ static int ebu_nand_probe(struct platform_device *pdev)
- 	mtd = nand_to_mtd(&ebu_host->chip);
- 	if (!mtd->name) {
- 		dev_err(ebu_host->dev, "NAND label property is mandatory\n");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_cleanup_dma;
- 	}
- 
- 	mtd->dev.parent = dev;
-@@ -681,6 +689,7 @@ static int ebu_nand_probe(struct platform_device *pdev)
- 	nand_cleanup(&ebu_host->chip);
- err_cleanup_dma:
- 	ebu_dma_cleanup(ebu_host);
-+err_disable_unprepare_clk:
- 	clk_disable_unprepare(ebu_host->clk);
- 
- 	return ret;
--- 
-2.26.2
+        /* size: 176, cachelines: 3, members: 5 */
+        /* last cacheline: 48 bytes */
+};
 
+RT no debug:
+struct kmem_cache_cpu {
+        void * *                   freelist;             /*     0     8 */
+        long unsigned int          tid;                  /*     8     8 */
+        struct page *              page;                 /*    16     8 */
+        struct page *              partial;              /*    24     8 */
+        local_lock_t               lock;                 /*    32    32 */
+
+        /* size: 64, cachelines: 1, members: 5 */
+};
+
+no-RT, no-debug:
+struct kmem_cache_cpu {
+        void * *                   freelist;             /*     0     8 */
+        long unsigned int          tid;                  /*     8     8 */
+        struct page *              page;                 /*    16     8 */
+        struct page *              partial;              /*    24     8 */
+        local_lock_t               lock;                 /*    32     0 */
+
+        /* size: 32, cachelines: 1, members: 5 */
+        /* last cacheline: 32 bytes */
+};
+
+no-RT, debug:
+struct kmem_cache_cpu {
+        void * *                   freelist;             /*     0     8 */
+        long unsigned int          tid;                  /*     8     8 */
+        struct page *              page;                 /*    16     8 */
+        struct page *              partial;              /*    24     8 */
+        local_lock_t               lock;                 /*    32    56 */
+
+        /* size: 88, cachelines: 2, members: 5 */
+        /* last cacheline: 24 bytes */
+};
+
+Sebastian
