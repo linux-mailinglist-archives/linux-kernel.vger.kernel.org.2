@@ -2,154 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DC13EE64F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 07:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF8A3EE656
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 07:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237824AbhHQFly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 01:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47844 "EHLO
+        id S234357AbhHQFpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 01:45:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234345AbhHQFlt (ORCPT
+        with ESMTP id S234233AbhHQFo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 01:41:49 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34EAEC0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 22:41:17 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id u1so6452851plr.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 22:41:17 -0700 (PDT)
+        Tue, 17 Aug 2021 01:44:59 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3899C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 22:44:26 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id h11so30995605ljo.12
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 22:44:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=yQcCnm71POKPspvsCR8hPl9CQM1ZzKCtB7/29ffYXws=;
-        b=zcXwDtAoAGAKI5sLfzNsFhs1A1ULfSRoyO26GxwHxPRq7+JljLRc+p6UT5sQVsUoRR
-         yr5q/VHr/ia/32yfuji3UyBfC6YZpZ65i0Opjyt+diYsXgsaCHLJHYwEVYpIPoFwNXtj
-         Jm3t9UTjyRdsc4tr+cHxxcqnhHXlfxAMk9WBjh9X0cu7VHQvXiCHi5UCGA0k9hUMnGu1
-         hQ5qB4dDYJVXGeyHnRVnDFasMtaXkb5lowufMqw7lHhXbcLIrQTDuVAqQScClGVA/A0j
-         W1c6/iQs+hoAYOxJ3uKkewDZP0CZQ7950yuUTnLPE6UUJ+YJNpZCCc+YZiDNfnyn/h71
-         QzeQ==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YOKejl87y0ski0VdMRkyNRA2v7H+vqyupx7Esp13/wE=;
+        b=a6IvKzyOyIQZqQYz+g/aLPoRbm5h20bCZsjIxf2QcwFz0VIyf7oEIDWaVkrgyH8dVy
+         h4m6QRA7pfehKCUKoALq+XGDZt5U7OBbb0gKEDtP7fuIogf7goHUm/xLrW3OSFHRYE/2
+         l/S0skrt0NKW06MSkEcsSsY+vfCoBhM6F24NE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=yQcCnm71POKPspvsCR8hPl9CQM1ZzKCtB7/29ffYXws=;
-        b=UwEUPM0wckrs6jZIlzuF1C3bANh9ieNzTd9P/1RNqSmCtudUwW4mW57jwkI2v13oR/
-         1kJHaohv1O6tMPGaVTVFtwgvsgYTSM9pb/HLQbpPTK1Jf0PUrvWRPBTqekKOw4RDp2Ry
-         aXUXlLz0VwCtUYgVwcxT4axNRGHFkbBcqkB3tW0j/BjgUm3mM579VZM781nM42mnwEmx
-         IDV1XDEOwGaMyQOVqfd+3g5xPKscf1q8x0vxHSkrL/T63lbwu//Axiyvjer72hwrI9Gs
-         16HsVPRA++gnDDGGeSwuMWcuKsbv/75MQEWCdnPhYWd147iW7i22W1rqVdjiXp7aKZLp
-         qezQ==
-X-Gm-Message-State: AOAM533rE67cEiQ4b5ocu4r5U9GYQGDPfZSOMminqdBgU8zeW64Z2R9i
-        HDFWwe8Qb7b/XmD8r4BkeqKgGA==
-X-Google-Smtp-Source: ABdhPJzp5yqlNn9XN4uPF9c7nAWZA+XWtd3Sy4mLI0yHOOtqINMGwFy8UQ5m7lSjFwEUB/r32ixK0Q==
-X-Received: by 2002:a63:a4d:: with SMTP id z13mr1809168pgk.445.1629178876720;
-        Mon, 16 Aug 2021 22:41:16 -0700 (PDT)
-Received: from [10.255.196.46] ([139.177.225.228])
-        by smtp.gmail.com with ESMTPSA id q3sm1287686pgf.18.2021.08.16.22.41.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 22:41:16 -0700 (PDT)
-To:     miklos@szeredi.hu
-Cc:     linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhoufeng.zf@bytedance.com
-From:   chenying <chenying.kernel@bytedance.com>
-Subject: ovl: fix BUG_ON() in may_delete() when called from ovl_cleanup
-Message-ID: <e6496a94-a161-dc04-c38a-d2544633acb4@bytedance.com>
-Date:   Tue, 17 Aug 2021 13:41:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YOKejl87y0ski0VdMRkyNRA2v7H+vqyupx7Esp13/wE=;
+        b=bEO7cT5jyenpyWy4iWu36qkI8KxpAghA7kFFwQMbj/KA5MeJAz1R1S1GXKWGe7ryje
+         EHUj7+uka4awX53z0WiSFzcptGr57IFZS8ZrWWbxE7m75n7KkLrRT7P4iNh3pq3p4QCE
+         sZIbLUEsTbgE0HwcMnL3XrO6g7cI63/2gexLiYE9zFVQ7RCQ/U2KhFWV5ZOw/LYKlBKp
+         vpwp6HSx/5Q666CsEapl55F+X9y56cegw1RXOVVe+NTAALN0Mx5qPEG24+xxNLViW8Pi
+         M/Td3Pm21V7u+u0QS67jA8CGVxU+BHOrFVfAYmUXabzQ85ywKznQ6PqsLh3AHRm8m9L9
+         FoqA==
+X-Gm-Message-State: AOAM532E8Dvn2faPowTNElDySuYjSLu+UcfzmH+jLGUOx1Pm+RVm4xu8
+        q9dKpGG+VjSDJDOQ7sYBm2S79LgCJKgoa7sbnHzWcA==
+X-Google-Smtp-Source: ABdhPJwDdjRJIqMRTx/tVA7vEY9ayN6r0dWnuWHx5K0aCWGb+5ATkAUHpOt5qq3zzCPruae3ZI8O0IO36YD+eRA8lIM=
+X-Received: by 2002:a05:651c:1785:: with SMTP id bn5mr1677465ljb.18.1629179065185;
+ Mon, 16 Aug 2021 22:44:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20210710081722.1828-1-zhiyong.tao@mediatek.com>
+ <20210710081722.1828-2-zhiyong.tao@mediatek.com> <CAGXv+5GXg0RuOQkh4vaRmcLpehZiXnEUXBvEaObiatAa1sXvaA@mail.gmail.com>
+ <1626940470.29611.9.camel@mhfsdcap03> <CAGXv+5F_-W4aNt0WVSDBGLo_t8orNUq59GMKk_4xVr+hMb9Ctg@mail.gmail.com>
+ <07388dac4e25e0f260725e8f80ba099d5aa80949.camel@mediatek.com>
+ <CAGXv+5EagmhYYpri+nzo6WgGz8A=oiU3Vy+2AVjho=eo6Z+DLw@mail.gmail.com>
+ <CACRpkdZ4k9Km3vBtdN6AnBM89c4355GtPMzCQ0_YHaTb4V5cKA@mail.gmail.com>
+ <CAGXv+5HohMwU8jow5QXO5MK1tO+u=5YsfhArBWCP4Dgm1Q8igg@mail.gmail.com>
+ <4fd12d5c53f6492e5fa3ba94a78b9a149f5b6ed9.camel@mediatek.com>
+ <CAGXv+5GCuNK=-z9VAOjkpJdZLUSZFPfUsQ09m1FhfTsbCYLLRw@mail.gmail.com>
+ <CACRpkdbZKh8cqqiDRUik6Ooo33e+feGwYsLjcLRvBQnT3x5M3A@mail.gmail.com> <a7c8ab68ac3513865698cde27e665bdd554f459e.camel@mediatek.com>
+In-Reply-To: <a7c8ab68ac3513865698cde27e665bdd554f459e.camel@mediatek.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Tue, 17 Aug 2021 13:44:13 +0800
+Message-ID: <CAGXv+5FtL2zaSWx4tUymx6mpCSb5dXG4XNWM9AJL+b6Ok3dxMg@mail.gmail.com>
+Subject: Re: [PATCH v10 1/2] dt-bindings: pinctrl: mt8195: add rsel define
+To:     "zhiyong.tao" <zhiyong.tao@mediatek.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        hui.liu@mediatek.com, Eddie Huang <eddie.huang@mediatek.com>,
+        Light Hsieh <light.hsieh@mediatek.com>,
+        Biao Huang <biao.huang@mediatek.com>,
+        Hongzhou Yang <hongzhou.yang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- From ee4466d66af5d214edb306dbf7f456e21cbb73ac Mon Sep 17 00:00:00 2001
-From: chenying <chenying.kernel@bytedance.com>
-Date: Mon, 16 Aug 2021 18:02:56 +0800
-Subject: [PATCH] ovl: fix BUG_ON() in may_delete() when called from 
-ovl_cleanup
+On Tue, Aug 17, 2021 at 10:21 AM zhiyong.tao <zhiyong.tao@mediatek.com> wrote:
+>
+> On Tue, 2021-08-17 at 01:00 +0200, Linus Walleij wrote:
+> > On Mon, Aug 16, 2021 at 5:38 PM Chen-Yu Tsai <wenst@chromium.org>
+> > wrote:
+> > > On Mon, Aug 16, 2021 at 6:48 PM zhiyong.tao <
+> > > zhiyong.tao@mediatek.com> wrote:
+> > > > > I'll take that as "use SI units whenever possible and
+> > > > > reasonable".
+> > > >
+> > > > ==> so It doesn't need to change the define, is it right?
+> > > > we will keep the common define.
+> > >
+> > > Actually I think it would be possible and reasonable to use SI
+> > > units
+> > > in this case, since you are the vendor and have the resistor values
+> > > to implement the support. Having different sets of values for
+> > > different
+> > > chips is nothing out of the ordinary. We already have to account
+> > > for
+> > > different number of pins and different pin functions. That is what
+> > > compatible strings are for.
+> >
+> > I fully agree with Chen-Yu's analysis here.
+> >
+> > Zhiyong can you make an attempt to use SI units (Ohms) and see
+> > what it will look like? I think it will look better for users and it
+> > will
+> > be less risk to make mistakes.
+> >
+> > Yours,
+> > Linus Walleij
+>
+> Hi Linus & chen-yu,
+>
+> The rsel actual bias resistance of each setting is different in
+> different IC. For example, in mt8195, the rsel actual bias resistance
+> setting like as:
+> MTK_PULL_SET_RSEL_000:75K in PU, 75k in PD;
+> MTK_PULL_SET
+> _RSEL_001:10k in PU, 5k in PD;
+> MTK_PULL_SET_RSEL_010:5k in PU, 75k in
+> PD;
+> MTK_PULL_SET_RSEL_011:4k in PU, 5K in PD;
+> MTK_PULL_SET_RSEL_100:3k in
+> PU, 75k in PD;
+> MTK_PULL_SET_RSEL_101:2k in PU, 5K in PD;
+> MTK_PULL_SET_RSE
+> L_110:1.5k in PU, 75k in PD;
+> MTK_PULL_SET_RSEL_111:1k in PU, 5k in PD.
+>
+> but in mt8192, the rsel actual bias resistance setting like as:
+> MTK_PULL_SET_RSEL_000:75K in PU, 75k in PD;
+> MTK_PULL_SET_RSEL_001:3k in PU, 5k in PD;
+> MTK_PULL_SET_RSEL_010:10k in PU, 75k in PD;
+> MTK_PULL_SET_RSEL_011:1k in PU, 5K in PD;
+>
+> Can you help me to provide a suggestion common define for the all
+> different IC?
+> It seems that we should add a new define, if we upstream a new IC
+> pinctrl driver in the future.
 
-If function ovl_instantiate returns an error, ovl_cleanup will be called
-and try to remove newdentry from wdir, but the newdentry has been moved to
-udir at this time. This will causes BUG_ON(victim->d_parent->d_inode !=
-dir) in fs/namei.c:may_delete.
+I assume you mean the macros used in the device tree?
 
-[25355953.608321] overlayfs: failed to get inode (-116)
-[25355953.608337] ------------[ cut here ]------------
-[25355953.608338] kernel BUG at fs/namei.c:2800!
-[25355953.610787] invalid opcode: 0000 [#1] SMP NOPTI
-[25355953.612694] CPU: 75 PID: 3739998 Comm: dockerd Kdump: loaded 
-Tainted: G        W  OE     4.19.117.bsk.4-amd64 #4.19.117.bsk.4
-[25355953.617046] Hardware name: Inspur NF5266M5/YZMB-01229-103, BIOS 
-3.1.3 06/24/2020
-[25355953.618920] RIP: 0010:may_delete+0x16f/0x190
-[25355953.621120] Code: 00 3d 00 00 20 00 74 12 41 bd ec ff ff ff 5b 44 
-89 e8 5d 41 5c 41 5d 41 5e c3 48 3b 5b 18 75 94 41 bd f0 ff ff ff eb a2 
-0f 0b <0f> 0b 41 bd fe ff ff ff eb 96 41 bd eb ff ff ff eb 8e 41 bd b5 ff
-[25355953.625147] RSP: 0018:ffff9aad5c09bb30 EFLAGS: 00010206
-[25355953.627562] RAX: ffff8ebceb709b00 RBX: ffff8e73262c3800 RCX: 
-0000000200000000
-[25355953.629381] RDX: 0000000000000000 RSI: ffff8e73262c3800 RDI: 
-ffff8e71e22b1ee0
-[25355953.631562] RBP: ffff8e71e22b3000 R08: 0000000000000038 R09: 
-ffff8e73262c2300
-[25355953.633571] R10: ffff9aad5c09bae0 R11: 0000000000000000 R12: 
-ffff8e71e22b4568
-[25355953.635193] R13: ffff8e71e22b3000 R14: ffff8ebceb709080 R15: 
-0000000000000000
-[25355953.637280] FS:  00007f3e77fff700(0000) GS:ffff8eceff6c0000(0000) 
-knlGS:0000000000000000
-[25355953.639360] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[25355953.640935] CR2: 0000000017fe3000 CR3: 0000000161380004 CR4: 
-00000000007606e0
-[25355953.642878] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 
-0000000000000000
-[25355953.644835] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 
-0000000000000400
-[25355953.646305] PKRU: 55555554
-[25355953.647995] Call Trace:
-[25355953.649891]  vfs_unlink+0x23/0x180
-[25355953.651891]  ovl_cleanup+0x36/0xb0 [overlay]
-[25355953.653682]  ovl_create_or_link+0x47a/0x600 [overlay]
-[25355953.655569]  ? inode_init_always+0x13e/0x1f0
-[25355953.657377]  ? inode_sb_list_add+0x47/0x80
-[25355953.659083]  ? ovl_fill_inode+0x34/0x130 [overlay]
-[25355953.660730]  ovl_create_object+0xd9/0x110 [overlay]
-[25355953.662392]  path_openat+0x1351/0x1430
-[25355953.663961]  ? terminate_walk+0xdd/0x100
-[25355953.665605]  ? ext4_getattr+0x7f/0x90 [ext4]
-[25355953.667019]  ? ovl_getattr+0x138/0x3c0 [overlay]
-[25355953.668075]  do_filp_open+0x99/0x110
-[25355953.669180]  ? __check_object_size+0x166/0x1b0
-[25355953.670485]  ? do_sys_open+0x12e/0x210
-[25355953.671811]  do_sys_open+0x12e/0x210
-[25355953.672966]  do_syscall_64+0x5d/0x110
-[25355953.673880]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+The point of using SI units is to get rid of the macros. Instead of:
 
-Signed-off-by: chenying <chenying.kernel@bytedance.com>
----
-  fs/overlayfs/dir.c | 6 ++++--
-  1 file changed, 4 insertions(+), 2 deletions(-)
+    bias-pull-up = <MTK_PULL_SET_RSEL_000>;
 
-diff --git a/fs/overlayfs/dir.c b/fs/overlayfs/dir.c
-index 93efe7048a77..7c1850adec28 100644
---- a/fs/overlayfs/dir.c
-+++ b/fs/overlayfs/dir.c
-@@ -542,8 +542,10 @@ static int ovl_create_over_whiteout(struct dentry 
-*dentry, struct inode *inode,
-                         goto out_cleanup;
-         }
-         err = ovl_instantiate(dentry, inode, newdentry, hardlink);
--       if (err)
--               goto out_cleanup;
-+       if (err) {
-+               ovl_cleanup(udir, newdentry);
-+               dput(newdentry);
-+       }
-  out_dput:
-         dput(upper);
-  out_unlock:
---
-2.11.0
+and
 
+    bias-pull-down = <MTK_PULL_SET_RSEL_011>;
+
+We want:
+
+    bias-pull-up = <75000>;
+
+and
+
+    bias-pull-down = <5000>;
+
+And the pinctrl driver then converts the real values in the device tree
+into register values using some lookup table.
+
+The DT schema could then enumerate all the valid resistor values,
+and get proper validity checking.
+
+Now if you really wanted to keep some symbols for mapping hardware
+register values to resistor values, you could have
+
+    #define MT8192_PULL_UP_RSEL_001      75000
+    #define MT8192_PULL_DOWN_RSEL_001     5000
+
+or have them all named MTK_PULL_{UP,DOWN}_RSEL_NNN, but split into
+different header files, one per SoC.
+
+Personally I think having the macros is a bad idea if proper values
+are available. It just adds another layer of indirection, and another
+area where errors can creep in.
+
+
+Regards
+ChenYu
