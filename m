@@ -2,336 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 601633EE6BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5303EE6AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 08:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238627AbhHQGl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 02:41:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238691AbhHQGlT (ORCPT
+        id S238291AbhHQGk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 02:40:59 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:10921 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237984AbhHQGky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 02:41:19 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DEBCC06179A
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:40:46 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id p22so20755368qki.10
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 23:40:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lC/HyJ28CoF+5fuIrRQutcc9g236fS+YJ5EtXVPU55E=;
-        b=IJOETY3dkl+oqXGg0CmDJDggX8BKbEAcPd7VSAS02kDz8lizCl2g/LnuaS4qlN45UZ
-         4ZpcP+Yl+GY08qi5goNtHrmRpMOWo8VPnKDNenzzXshXzG1G26AjaqqgfqmtV8tR2z18
-         rVaV1kYqCdQbN2uyWmk3xI7oervixB6KEAG3tCTR9fN0d4zekbobboNfWOsyyAN2ACun
-         z55tu1hTuZBOhnQnQXFxn7RS0Q2jrX9frFj5/FVxfzOhuZ4MefifQlHDTLcSAlrxG057
-         UKSrynlpVThARquTpNETLRiCZJLizUZdBKYeoh90gqpeOuvXdi768iTOPrG8JGdgyi/9
-         LYNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lC/HyJ28CoF+5fuIrRQutcc9g236fS+YJ5EtXVPU55E=;
-        b=uAAcfHvyxVFwTuIEfpTNGHHIV4LCT/wGl6Ox+oA5xu8RzfNfCoWZLszy+EN49J393O
-         uKkrsgSzPMIduuU2jiTwpb1DXy4H+4d3jFsN0uVxCK0Hkj/DoPIM6ioxCXX02H/AOYZm
-         fdMVAVmsRvaHmpszAdv+lWV6ps9H/XjimnmLVCb3rCoDbtHgvJuSLTu1pgXkW42dwLN3
-         fiXfDhrZK+4MY3AYlNtQ1kIo8VYskqJa+1iVOc1f6ZlZQFuSgweSdxD2IVKjZHFM6TFj
-         LoSeLwk2eVPQc8J9SRQl6xwYlGUqxlYhJLtmy4lsPQQg9zW3w5qCa9QJT/Nei/djQRLK
-         dEdQ==
-X-Gm-Message-State: AOAM530rt7NaLITZCplpDj1JJbwdpz78pDqj2sh/WJTxj9c/Zxt6e0hh
-        C6udsVm6TZRBMs/kzD4Lu4o=
-X-Google-Smtp-Source: ABdhPJyDjjZxUiFq6PnigSnde090rip12oROcfC7q9HbbpexK4mhsHGuUCpRofczMTDaoTmFg6M/uw==
-X-Received: by 2002:a37:9586:: with SMTP id x128mr2283188qkd.49.1629182445204;
-        Mon, 16 Aug 2021 23:40:45 -0700 (PDT)
-Received: from LeoBras.redhat.com ([2804:431:c7f0:30b2:5c9e:50:88f3:269a])
-        by smtp.gmail.com with ESMTPSA id c11sm526938qth.29.2021.08.16.23.40.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 23:40:44 -0700 (PDT)
-From:   Leonardo Bras <leobras.c@gmail.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 11/11] powerpc/pseries/iommu: Rename "direct window" to "dma window"
-Date:   Tue, 17 Aug 2021 03:39:29 -0300
-Message-Id: <20210817063929.38701-12-leobras.c@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210817063929.38701-1-leobras.c@gmail.com>
-References: <20210817063929.38701-1-leobras.c@gmail.com>
+        Tue, 17 Aug 2021 02:40:54 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629182421; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=AeeA73ZpKawSWZg+PkAg6dDlWEGmMSg3bssyiF/542M=;
+ b=Eb2j2eWiqFpK2NJ2l6LhcB++No6dTmHIDhuFIIUcNPjxgeYf2kZCLf5RWTOVYNv7XwzOKNyH
+ iqA5EFu9WhK1GbMPC7gBCdE6/QP40dwleUhfyTVDDT8+CUVI9P7oN8teNFqDM3WOBj4stzgN
+ I0p+rw9S6meCq0eWMgX0bNkuiVs=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 611b59c6105c6568db2f5850 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 17 Aug 2021 06:40:06
+ GMT
+Sender: pmaliset=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 627AAC4360C; Tue, 17 Aug 2021 06:40:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmaliset)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7A5AAC4338F;
+        Tue, 17 Aug 2021 06:40:05 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 17 Aug 2021 12:10:05 +0530
+From:   Prasad Malisetty <pmaliset@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     agross@kernel.org, bhelgaas@google.com, bjorn.andersson@linaro.org,
+        lorenzo.pieralisi@arm.com, robh+dt@kernel.org,
+        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@chromium.org,
+        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org,
+        manivannan.sadhasivam@linaro.org
+Subject: Re: [PATCH v5 4/4] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY
+ init in SC7280
+In-Reply-To: <CAE-0n50nYEAhpBADVWutm-SvUMpe+4Qte69iucJvXax=d_59=w@mail.gmail.com>
+References: <1628568516-24155-1-git-send-email-pmaliset@codeaurora.org>
+ <1628568516-24155-5-git-send-email-pmaliset@codeaurora.org>
+ <CAE-0n50nYEAhpBADVWutm-SvUMpe+4Qte69iucJvXax=d_59=w@mail.gmail.com>
+Message-ID: <c742065c0469633fe4ea3a74dc42c2f9@codeaurora.org>
+X-Sender: pmaliset@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A previous change introduced the usage of DDW as a bigger indirect DMA
-mapping when the DDW available size does not map the whole partition.
+On 2021-08-11 01:07, Stephen Boyd wrote:
+> Quoting Prasad Malisetty (2021-08-09 21:08:36)
+>> On the SC7280, By default the clock source for pcie_1_pipe is
+>> TCXO for gdsc enable. But after the PHY is initialized, the clock
+>> source must be switched to gcc_pcie_1_pipe_clk from TCXO.
+>> 
+>> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+>> ---
+>>  drivers/pci/controller/dwc/pcie-qcom.c | 18 ++++++++++++++++++
+>>  1 file changed, 18 insertions(+)
+>> 
+>> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c 
+>> b/drivers/pci/controller/dwc/pcie-qcom.c
+>> index 8a7a300..39e3b21 100644
+>> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+>> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+>> @@ -1167,6 +1169,16 @@ static int qcom_pcie_get_resources_2_7_0(struct 
+>> qcom_pcie *pcie)
+>>         if (ret < 0)
+>>                 return ret;
+>> 
+>> +       if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) 
+>> {
+>> +               res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, 
+>> "pipe_mux");
+>> +               if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
+>> +                       return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
+>> +
+>> +               res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
+>> +               if (IS_ERR(res->phy_pipe_clk))
+>> +                       return PTR_ERR(res->phy_pipe_clk);
+>> +       }
+>> +
+>>         res->pipe_clk = devm_clk_get(dev, "pipe");
+>>         return PTR_ERR_OR_ZERO(res->pipe_clk);
+>>  }
+>> @@ -1255,6 +1267,12 @@ static void qcom_pcie_deinit_2_7_0(struct 
+>> qcom_pcie *pcie)
+>>  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
+>>  {
+>>         struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
+>> +       struct dw_pcie *pci = pcie->pci;
+>> +       struct device *dev = pci->dev;
+>> +       struct device_node *node = dev->of_node;
+>> +
+>> +       if (of_property_read_bool(node, "pipe-clk-source-switch"))
+> 
+> This can be straightline code. If gcc_pcie_1_pipe_clk_src is NULL,
+> calling clk_set_parent() on it is a nop, return 0, so drop the property
+> check and only assign the clk pointer if it needs to be done.
+> 
+>> +               clk_set_parent(res->gcc_pcie_1_pipe_clk_src, 
+>> res->phy_pipe_clk);
+> 
+> Please check the return value and fail if it fails to set the parent.
+> I'd also prefer a comment indicating that we have to set the parent
+> because the GDSC must be enabled with the clk at XO speed. The DT 
+> should
+> probably also have an assigned clock parent of XO so when the driver
+> probes it is set to XO parent for gdsc enable and then this driver code
+> can change the parent to the phy pipe clk.
+> 
+>> 
+>>         return clk_prepare_enable(res->pipe_clk);
+>>  }
 
-As most of the code that manipulates direct mappings was reused for
-indirect mappings, it's necessary to rename all names and debug/info
-messages to reflect that it can be used for both kinds of mapping.
+Hi Stephen,
 
-This should cause no behavioural change, just adjust naming.
+Thanks for your review and inputs.
 
-Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
-Reviewed-by: Frederic Barrat <fbarrat@linux.ibm.com>
----
- arch/powerpc/platforms/pseries/iommu.c | 87 +++++++++++++-------------
- 1 file changed, 45 insertions(+), 42 deletions(-)
+Yes, clk_set_parent function returning NULL if src pointer is NULL. we 
+can call clk_set_parent function without any check.
 
-diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
-index 0eccc29f5573..dab5c56ffd0e 100644
---- a/arch/powerpc/platforms/pseries/iommu.c
-+++ b/arch/powerpc/platforms/pseries/iommu.c
-@@ -349,7 +349,7 @@ struct dynamic_dma_window_prop {
- 	__be32	window_shift;	/* ilog2(tce_window_size) */
- };
- 
--struct direct_window {
-+struct dma_win {
- 	struct device_node *device;
- 	const struct dynamic_dma_window_prop *prop;
- 	struct list_head list;
-@@ -369,11 +369,11 @@ struct ddw_create_response {
- 	u32 addr_lo;
- };
- 
--static LIST_HEAD(direct_window_list);
-+static LIST_HEAD(dma_win_list);
- /* prevents races between memory on/offline and window creation */
--static DEFINE_SPINLOCK(direct_window_list_lock);
-+static DEFINE_SPINLOCK(dma_win_list_lock);
- /* protects initializing window twice for same device */
--static DEFINE_MUTEX(direct_window_init_mutex);
-+static DEFINE_MUTEX(dma_win_init_mutex);
- #define DIRECT64_PROPNAME "linux,direct64-ddr-window-info"
- #define DMA64_PROPNAME "linux,dma64-ddr-window-info"
- 
-@@ -713,7 +713,10 @@ static void pci_dma_bus_setup_pSeriesLP(struct pci_bus *bus)
- 	pr_debug("pci_dma_bus_setup_pSeriesLP: setting up bus %pOF\n",
- 		 dn);
- 
--	/* Find nearest ibm,dma-window, walking up the device tree */
-+	/*
-+	 * Find nearest ibm,dma-window (default DMA window), walking up the
-+	 * device tree
-+	 */
- 	for (pdn = dn; pdn != NULL; pdn = pdn->parent) {
- 		dma_window = of_get_property(pdn, "ibm,dma-window", NULL);
- 		if (dma_window != NULL)
-@@ -869,37 +872,37 @@ static int remove_ddw(struct device_node *np, bool remove_prop, const char *win_
- 
- 	ret = of_remove_property(np, win);
- 	if (ret)
--		pr_warn("%pOF: failed to remove direct window property: %d\n",
-+		pr_warn("%pOF: failed to remove DMA window property: %d\n",
- 			np, ret);
- 	return 0;
- }
- 
- static bool find_existing_ddw(struct device_node *pdn, u64 *dma_addr, int *window_shift)
- {
--	struct direct_window *window;
--	const struct dynamic_dma_window_prop *direct64;
-+	struct dma_win *window;
-+	const struct dynamic_dma_window_prop *dma64;
- 	bool found = false;
- 
--	spin_lock(&direct_window_list_lock);
-+	spin_lock(&dma_win_list_lock);
- 	/* check if we already created a window and dupe that config if so */
--	list_for_each_entry(window, &direct_window_list, list) {
-+	list_for_each_entry(window, &dma_win_list, list) {
- 		if (window->device == pdn) {
--			direct64 = window->prop;
--			*dma_addr = be64_to_cpu(direct64->dma_base);
--			*window_shift = be32_to_cpu(direct64->window_shift);
-+			dma64 = window->prop;
-+			*dma_addr = be64_to_cpu(dma64->dma_base);
-+			*window_shift = be32_to_cpu(dma64->window_shift);
- 			found = true;
- 			break;
- 		}
- 	}
--	spin_unlock(&direct_window_list_lock);
-+	spin_unlock(&dma_win_list_lock);
- 
- 	return found;
- }
- 
--static struct direct_window *ddw_list_new_entry(struct device_node *pdn,
--						const struct dynamic_dma_window_prop *dma64)
-+static struct dma_win *ddw_list_new_entry(struct device_node *pdn,
-+					  const struct dynamic_dma_window_prop *dma64)
- {
--	struct direct_window *window;
-+	struct dma_win *window;
- 
- 	window = kzalloc(sizeof(*window), GFP_KERNEL);
- 	if (!window)
-@@ -915,7 +918,7 @@ static void find_existing_ddw_windows_named(const char *name)
- {
- 	int len;
- 	struct device_node *pdn;
--	struct direct_window *window;
-+	struct dma_win *window;
- 	const struct dynamic_dma_window_prop *dma64;
- 
- 	for_each_node_with_property(pdn, name) {
-@@ -929,9 +932,9 @@ static void find_existing_ddw_windows_named(const char *name)
- 		if (!window)
- 			break;
- 
--		spin_lock(&direct_window_list_lock);
--		list_add(&window->list, &direct_window_list);
--		spin_unlock(&direct_window_list_lock);
-+		spin_lock(&dma_win_list_lock);
-+		list_add(&window->list, &dma_win_list);
-+		spin_unlock(&dma_win_list_lock);
- 	}
- }
- 
-@@ -1231,7 +1234,7 @@ static bool enable_ddw(struct pci_dev *dev, struct device_node *pdn)
- 	const char *win_name;
- 	struct device_node *dn;
- 	u32 ddw_avail[DDW_APPLICABLE_SIZE];
--	struct direct_window *window;
-+	struct dma_win *window;
- 	struct property *win64;
- 	bool ddw_enabled = false;
- 	struct failed_ddw_pdn *fpdn;
-@@ -1244,7 +1247,7 @@ static bool enable_ddw(struct pci_dev *dev, struct device_node *pdn)
- 	pmem_present = dn != NULL;
- 	of_node_put(dn);
- 
--	mutex_lock(&direct_window_init_mutex);
-+	mutex_lock(&dma_win_init_mutex);
- 
- 	if (find_existing_ddw(pdn, &dev->dev.archdata.dma_offset, &len)) {
- 		direct_mapping = (len >= max_ram_len);
-@@ -1324,8 +1327,8 @@ static bool enable_ddw(struct pci_dev *dev, struct device_node *pdn)
- 
- 	page_shift = iommu_get_page_shift(query.page_size);
- 	if (!page_shift) {
--		dev_dbg(&dev->dev, "no supported direct page size in mask %x",
--			  query.page_size);
-+		dev_dbg(&dev->dev, "no supported page size in mask %x",
-+			query.page_size);
- 		goto out_failed;
- 	}
- 
-@@ -1384,7 +1387,7 @@ static bool enable_ddw(struct pci_dev *dev, struct device_node *pdn)
- 
- 	ret = of_add_property(pdn, win64);
- 	if (ret) {
--		dev_err(&dev->dev, "unable to add dma window property for %pOF: %d",
-+		dev_err(&dev->dev, "unable to add DMA window property for %pOF: %d",
- 			pdn, ret);
- 		goto out_free_prop;
- 	}
-@@ -1398,7 +1401,7 @@ static bool enable_ddw(struct pci_dev *dev, struct device_node *pdn)
- 		ret = walk_system_ram_range(0, memblock_end_of_DRAM() >> PAGE_SHIFT,
- 					    win64->value, tce_setrange_multi_pSeriesLP_walk);
- 		if (ret) {
--			dev_info(&dev->dev, "failed to map direct window for %pOF: %d\n",
-+			dev_info(&dev->dev, "failed to map DMA window for %pOF: %d\n",
- 				 dn, ret);
- 
- 		/* Make sure to clean DDW if any TCE was set*/
-@@ -1443,9 +1446,9 @@ static bool enable_ddw(struct pci_dev *dev, struct device_node *pdn)
- 		set_iommu_table_base(&dev->dev, newtbl);
- 	}
- 
--	spin_lock(&direct_window_list_lock);
--	list_add(&window->list, &direct_window_list);
--	spin_unlock(&direct_window_list_lock);
-+	spin_lock(&dma_win_list_lock);
-+	list_add(&window->list, &dma_win_list);
-+	spin_unlock(&dma_win_list_lock);
- 
- 	dev->dev.archdata.dma_offset = win_addr;
- 	ddw_enabled = true;
-@@ -1477,7 +1480,7 @@ static bool enable_ddw(struct pci_dev *dev, struct device_node *pdn)
- 	list_add(&fpdn->list, &failed_ddw_pdn_list);
- 
- out_unlock:
--	mutex_unlock(&direct_window_init_mutex);
-+	mutex_unlock(&dma_win_init_mutex);
- 
- 	/*
- 	 * If we have persistent memory and the window size is only as big
-@@ -1575,29 +1578,29 @@ static bool iommu_bypass_supported_pSeriesLP(struct pci_dev *pdev, u64 dma_mask)
- static int iommu_mem_notifier(struct notifier_block *nb, unsigned long action,
- 		void *data)
- {
--	struct direct_window *window;
-+	struct dma_win *window;
- 	struct memory_notify *arg = data;
- 	int ret = 0;
- 
- 	switch (action) {
- 	case MEM_GOING_ONLINE:
--		spin_lock(&direct_window_list_lock);
--		list_for_each_entry(window, &direct_window_list, list) {
-+		spin_lock(&dma_win_list_lock);
-+		list_for_each_entry(window, &dma_win_list, list) {
- 			ret |= tce_setrange_multi_pSeriesLP(arg->start_pfn,
- 					arg->nr_pages, window->prop);
- 			/* XXX log error */
- 		}
--		spin_unlock(&direct_window_list_lock);
-+		spin_unlock(&dma_win_list_lock);
- 		break;
- 	case MEM_CANCEL_ONLINE:
- 	case MEM_OFFLINE:
--		spin_lock(&direct_window_list_lock);
--		list_for_each_entry(window, &direct_window_list, list) {
-+		spin_lock(&dma_win_list_lock);
-+		list_for_each_entry(window, &dma_win_list, list) {
- 			ret |= tce_clearrange_multi_pSeriesLP(arg->start_pfn,
- 					arg->nr_pages, window->prop);
- 			/* XXX log error */
- 		}
--		spin_unlock(&direct_window_list_lock);
-+		spin_unlock(&dma_win_list_lock);
- 		break;
- 	default:
- 		break;
-@@ -1618,7 +1621,7 @@ static int iommu_reconfig_notifier(struct notifier_block *nb, unsigned long acti
- 	struct of_reconfig_data *rd = data;
- 	struct device_node *np = rd->dn;
- 	struct pci_dn *pci = PCI_DN(np);
--	struct direct_window *window;
-+	struct dma_win *window;
- 
- 	switch (action) {
- 	case OF_RECONFIG_DETACH_NODE:
-@@ -1636,15 +1639,15 @@ static int iommu_reconfig_notifier(struct notifier_block *nb, unsigned long acti
- 			iommu_pseries_free_group(pci->table_group,
- 					np->full_name);
- 
--		spin_lock(&direct_window_list_lock);
--		list_for_each_entry(window, &direct_window_list, list) {
-+		spin_lock(&dma_win_list_lock);
-+		list_for_each_entry(window, &dma_win_list, list) {
- 			if (window->device == np) {
- 				list_del(&window->list);
- 				kfree(window);
- 				break;
- 			}
- 		}
--		spin_unlock(&direct_window_list_lock);
-+		spin_unlock(&dma_win_list_lock);
- 		break;
- 	default:
- 		err = NOTIFY_DONE;
--- 
-2.32.0
+I will validate and incorporate the changes in next version.
 
+Thanks
+-Prasad
