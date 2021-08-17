@@ -2,87 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92163EE9FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7193EEA01
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235438AbhHQJhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 05:37:04 -0400
-Received: from mga09.intel.com ([134.134.136.24]:57488 "EHLO mga09.intel.com"
+        id S235960AbhHQJhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 05:37:19 -0400
+Received: from mga12.intel.com ([192.55.52.136]:53022 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234593AbhHQJhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 05:37:03 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="216030318"
+        id S235124AbhHQJhS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 05:37:18 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="195615318"
 X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="scan'208";a="216030318"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 02:36:30 -0700
-X-ExtLoop1: 1
+   d="scan'208";a="195615318"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 02:36:45 -0700
 X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="scan'208";a="593293551"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 17 Aug 2021 02:36:27 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 17 Aug 2021 12:36:27 +0300
-Date:   Tue, 17 Aug 2021 12:36:27 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Icenowy Zheng <icenowy@aosc.io>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: tcpm: always rediscover when swapping DR
-Message-ID: <YRuDG78N2mB5w37p@kuha.fi.intel.com>
-References: <20210813043131.833006-1-icenowy@aosc.io>
+   d="scan'208";a="676416363"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 02:36:43 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mFvWP-00Ah8m-U8; Tue, 17 Aug 2021 12:36:37 +0300
+Date:   Tue, 17 Aug 2021 12:36:37 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the net-next tree with the net tree
+Message-ID: <YRuDJUobH+ULYmZe@smile.fi.intel.com>
+References: <20210817141643.0705a6e9@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210813043131.833006-1-icenowy@aosc.io>
+In-Reply-To: <20210817141643.0705a6e9@canb.auug.org.au>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 12:31:31PM +0800, Icenowy Zheng wrote:
-> Currently, TCPM code omits discover when swapping to gadget, and assume
-> that no altmodes are available when swapping from gadget. However, we do
-> send discover when we get attached as gadget -- this leads to modes to be
-> discovered twice when attached as gadget and then swap to host.
+On Tue, Aug 17, 2021 at 02:16:43PM +1000, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Always re-send discover when swapping DR, regardless of what change is
-> being made; and because of this, the assumption that no altmodes are
-> registered with gadget role is broken, and altmodes de-registeration is
-> always needed now.
+> Today's linux-next merge of the net-next tree got a conflict in:
 > 
-> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
+>   drivers/ptp/Kconfig
 > 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index b9bb63d749ec..ab6d0d51ee1c 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -4495,15 +4495,14 @@ static void run_state_machine(struct tcpm_port *port)
->  		tcpm_set_state(port, ready_state(port), 0);
->  		break;
->  	case DR_SWAP_CHANGE_DR:
-> -		if (port->data_role == TYPEC_HOST) {
-> -			tcpm_unregister_altmodes(port);
-> +		tcpm_unregister_altmodes(port);
-> +		if (port->data_role == TYPEC_HOST)
->  			tcpm_set_roles(port, true, port->pwr_role,
->  				       TYPEC_DEVICE);
-> -		} else {
-> +		else
->  			tcpm_set_roles(port, true, port->pwr_role,
->  				       TYPEC_HOST);
-> -			port->send_discover = true;
-> -		}
-> +		port->send_discover = true;
->  		tcpm_ams_finish(port);
->  		tcpm_set_state(port, ready_state(port), 0);
->  		break;
+> between commit:
+> 
+>   55c8fca1dae1 ("ptp_pch: Restore dependency on PCI")
+> 
+> from the net tree and commit:
+> 
+>   e5f31552674e ("ethernet: fix PTP_1588_CLOCK dependencies")
+> 
+> from the net-next tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-Why is it necessary to do discovery with data role swap in general?
+Thanks, the result is correct.
 
-thanks,
+> diff --cc drivers/ptp/Kconfig
+> index e085c255da0c,823eae1b4b53..000000000000
+> --- a/drivers/ptp/Kconfig
+> +++ b/drivers/ptp/Kconfig
+> @@@ -90,9 -103,8 +103,9 @@@ config PTP_1588_CLOCK_INE
+>   config PTP_1588_CLOCK_PCH
+>   	tristate "Intel PCH EG20T as PTP clock"
+>   	depends on X86_32 || COMPILE_TEST
+>  -	depends on HAS_IOMEM && NET
+>  +	depends on HAS_IOMEM && PCI
+>  +	depends on NET
+> - 	imply PTP_1588_CLOCK
+> + 	depends on PTP_1588_CLOCK
+>   	help
+>   	  This driver adds support for using the PCH EG20T as a PTP
+>   	  clock. The hardware supports time stamping of PTP packets
+
+
 
 -- 
-heikki
+With Best Regards,
+Andy Shevchenko
+
+
