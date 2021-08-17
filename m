@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3FF3EECB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 14:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E23B83EECBC
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 14:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237001AbhHQMp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 08:45:59 -0400
-Received: from mga04.intel.com ([192.55.52.120]:36852 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229539AbhHQMp6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 08:45:58 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="214224082"
-X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="scan'208";a="214224082"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 05:45:25 -0700
-X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="scan'208";a="449256501"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 05:45:20 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mFySv-00Ak6X-9i; Tue, 17 Aug 2021 15:45:13 +0300
-Date:   Tue, 17 Aug 2021 15:45:13 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Elaine Zhang <zhangqing@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Abel Vesa <abel.vesa@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v4 1/4] clk: fractional-divider: Export approximation
- algorithm to the CCF users
-Message-ID: <YRuvWdI+M7JuKCPC@smile.fi.intel.com>
-References: <20210812170025.67074-1-andriy.shevchenko@linux.intel.com>
- <162879819529.19113.6409882476721828944@swboyd.mtv.corp.google.com>
- <YRY+uoTrBjkdh4Zj@smile.fi.intel.com>
+        id S237231AbhHQMsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 08:48:55 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:37555 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229539AbhHQMsx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 08:48:53 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MYNeM-1mbRY10Oji-00VPid; Tue, 17 Aug 2021 14:48:19 +0200
+Received: by mail-wr1-f45.google.com with SMTP id r7so28533985wrs.0;
+        Tue, 17 Aug 2021 05:48:18 -0700 (PDT)
+X-Gm-Message-State: AOAM530tTjOCDONB2supLX0YLTXJSp5vqdjYfeMajHbqEQPdIf22iFxv
+        vxt4YlVNjMx++zaRDE+Gkq475EtEw86cv3itynU=
+X-Google-Smtp-Source: ABdhPJzvLqUOdaDgcFLGV+XABbDpM4mCjcx48HbWxenpfaJrBkKR511cR4DsLPHZVVEVdbkZvTd3qw+I95Y1M2XpA5A=
+X-Received: by 2002:adf:e107:: with SMTP id t7mr3868804wrz.165.1629204498645;
+ Tue, 17 Aug 2021 05:48:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRY+uoTrBjkdh4Zj@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210817100845.11626-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20210817100845.11626-1-lukas.bulwahn@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 17 Aug 2021 14:48:02 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0iPsbMr1QN4Rg7hhgkGO0n956SpoDH_Wt+OcFbye1__w@mail.gmail.com>
+Message-ID: <CAK8P3a0iPsbMr1QN4Rg7hhgkGO0n956SpoDH_Wt+OcFbye1__w@mail.gmail.com>
+Subject: Re: [PATCH] watchdog: remove dead iop watchdog timer driver
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:nwkCjRYMlfl9G/dxqoPDJVtxiQ8/tlfkkCrdGDBO0wxBKu5dhXK
+ +3v3qdWwcOgvi1oP+XHo1xoLR14PLergVoU+rS3fbmdycCrdtjN1+9UR/FWemOsDXAKLorp
+ jKXtkuQ9xkqnxrbNOWG2pEwQ1uL/GzAP7sfl3E1mB9Gs9X5Uw7UfViqXH/TUs5at5vm4ifR
+ 9UDcGHkefm9SLuh3L79Dw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:kR92IiCwtpk=:nnsFKJRLVV68bQQW/M9lAE
+ Cr2BZy0R0qJEQkRh6WbluHdc3n5PkY6Btf6ti87wS1c9lkvMMSMUnoKgvMQMeM1k4tX92GJ9i
+ QXeMxJNa13Ogvd1EJri+bHr3QT/sDLgrFnHV6as3T3JpsX0scjj9RaO5fQ5vAq8HDERN7i1s2
+ /3QooNGRAWQtHjSI1ZfV8Qce4CtkjSON1zI8OESiQsnaQ2q9OBZ+jCri38lGIyORqma5rhdI4
+ vTFFb1wzRAz9mBFFrjBflsQ0cOn7CdaW3MpUkESa6g6UCNPO/E/YAqZzkG0Rs2mwXn5la1Qxd
+ 1SkE289T3RcBM1X4J4P71YuXfQRu3nMijrtaZP3pn87BZofQnpvdkDSyreAGMgqGTTiXPMwo1
+ kkEYMKv48kiWycgb8AC6A1xIYyt8tAeauZjrKNx7vMwV573HC0vD8LCGiApu7KUQnoeRIVw0l
+ TuNlP+8NXM0yDJ+5aiw/3WbFTjYRzbEor5sPFekp09PCQ9vUzoU1DHTiFsmtM0xQbV7fe7Ozl
+ +5RuSIfBccncWwKnQPihNCuuwrrHJyTpcYwL+nVXwi3mb518xkCxWGI1hlf4W3J9o0M3oYtGC
+ j6QZYPChzQMQF58NQoSCkuF7T7FcAmRWAlmjCcxSMJEUBQxbk+3SX4Ze1xw8nwhexK6wbAHeM
+ aOw8bE7zHZjhiMvESb4hPBKD4sqQ1EL0Lg4LY7Q3aY44IKg0PypTchOVqAFkRs0vmkrjztIk7
+ zQrHVPTlnxwnhX+/C7BTfj3j3yzmX/vTF1cK7K19m5hq7op3W9Ky80KeTSFMllCGWAw5AsMbS
+ DCdW1zeFEEYNdYNMSTHHRpEe/KPpg8OLFnYtdJ0g9WTKXya5vFepzivuAx0OJCylTj8FNzS
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 12:43:22PM +0300, Andy Shevchenko wrote:
-> On Thu, Aug 12, 2021 at 12:56:35PM -0700, Stephen Boyd wrote:
-> > Quoting Andy Shevchenko (2021-08-12 10:00:22)
-> > > At least one user currently duplicates some functions that are provided
-> > > by fractional divider module. Let's export approximation algorithm and
-> > > replace the open-coded variant.
-> > > 
-> > > As a bonus the exported function will get better documentation in place.
-> > Applied to clk-next
-> 
-> Thank you, Stephen!
+On Tue, Aug 17, 2021 at 12:08 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> Commit 59d3ae9a5bf6 ("ARM: remove Intel iop33x and iop13xx support")
+> removes the config ARCH_IOP13XX in ./arch/arm/Kconfig.
+>
+> Hence, since then, the corresponding iop watchdog timer driver is dead
+> code. Remove this dead driver.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-When they are expected to be visible in Linux Next?
+I would add a reference to ec2e32ca661e ("watchdog: iop_wdt only builds for
+mach-iop13xx") in the changelog, before that it could be selected but
+did not build.
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Acked-by: Arnd Bergmann <arnd@arndb.de>
