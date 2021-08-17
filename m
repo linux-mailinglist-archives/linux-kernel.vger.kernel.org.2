@@ -2,88 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B61CB3EF3DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF63B3EF3D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 22:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236486AbhHQUTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 16:19:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51458 "EHLO
+        id S237769AbhHQUTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 16:19:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237001AbhHQURK (ORCPT
+        with ESMTP id S234785AbhHQUP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 16:17:10 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1355C0617AE
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 13:14:48 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id r9so34260285lfn.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 13:14:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h6RsJUhKpxPfJy/vKi+nK+rh2IQwDL/mjuuC3wOftzQ=;
-        b=SrFvuF80cMzUMX8MpwMTW/YKW/M/N0fRxZSKfBApUBRK3mfLg+xS1wKW4AP9qOm9w1
-         4HDy/uG2/zKDqujChe0VQ+QYJyF2tmHo9OYmo5JYxX+YC2zpCz8Oam4wkDXSjoqAE8UU
-         vSOcKa1mdSUhL7J9FUt0/70FAIwkPKKRu6bZdR4JQNFCGSI8WHumH3C2VN54omX3V7Sz
-         JrR3o4lbI+uVVgHYbqiDos1jQs5/PHOeHNSEaqtYPVyKwBV1Cydj2kqM4+uib8XL7sHa
-         f2JdfMlkSp9oRXsPSuV2x+sFAYbieN+7tTG4pdstN0eOzpPQHJKzJk1DuL6xcEIGSsH7
-         luKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h6RsJUhKpxPfJy/vKi+nK+rh2IQwDL/mjuuC3wOftzQ=;
-        b=gvcplVaLyRAB+awOwN43gXOot+cOwGb7VgBIxnlji0243WyWi7OJf5fePZhivBNX9S
-         Zl1/wUCVaQS0N6C+lxPu0CR0V23WYvHvLNo+Xuir0ALYKIZlTe6oOQ8ApQ0MeMJ0UmYt
-         nvH7O6godo8wj6TkWuqp9M1DYYKUP1hKqM6BnZx77RnOnjnYQ3J3TChoPyJ/fkKC8GMP
-         f8jxq51jlN9d3w9zbxyVwuafppbbUZ4fF7tQlQXzb4T0VDXXGCutw1ogNcE7lzX8xYQQ
-         r5wBkIRcFj/fDC8T5NLxUQxqY+Hirwt8dKcMptDCLjoQ/QxYAc/zbNnGNSGI6uIc9ySw
-         22Sw==
-X-Gm-Message-State: AOAM531gI73ZL/MzjPxV3Vxv6qf5CUTx2XzM1mx+g3lbA1r61UrEXZze
-        /BGoFKHo5TQoSHqk2UumDUCwHcyCzeNk3cXtiWqAOQ==
-X-Google-Smtp-Source: ABdhPJzI2/LAXqFbf0+ZN+CXOdTsRZqakqH927p1aSOCBGQqotSbLnC5jLzf3rsA++IFCg9q3/ffVekCyzkk3mrzcaM=
-X-Received: by 2002:ac2:5d4a:: with SMTP id w10mr3659449lfd.529.1629231287282;
- Tue, 17 Aug 2021 13:14:47 -0700 (PDT)
+        Tue, 17 Aug 2021 16:15:59 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AC3DC061147;
+        Tue, 17 Aug 2021 13:14:38 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 20:14:35 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629231276;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GkJ1UXyQD2odoeQxZvwm91HcaSycrk8aQFQdmEvJHaA=;
+        b=AbhiG7JBrSTLkr0mU/UsCO3/9memIQRCZQG3KDytoPocN5sd5WzBVrfj3aWq3pINq++MRo
+        M+PeBzoJJNUyOb50a1hAB9K4TAiNBv28dY0HWjZiJvT3tEnutXgn/ySvTD3JOaWJCfZWez
+        wrTBqG3nMGjU5oe2mx5E5BwRyQHkSflLONrbF5UbV3AMjGREht7BLeBY8XKxkkIB2DyMFt
+        W8soUcquA/U1sWjsg4alMOPUNHPcKYSGjX1v+RhxlYTH5PVzCRON9RYHoKr6jkmbEHh0Jg
+        r91phSWRpNx0GZGclkKbehfeNQaclKytCGciOTrnKU/AD8hAPnOi0GPVBbWSyA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629231276;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GkJ1UXyQD2odoeQxZvwm91HcaSycrk8aQFQdmEvJHaA=;
+        b=iqBUZMcmJlOqdUESMRPHaDqYYo6zbuRlAuZgwQVgMnW6xCbZmqvmXdE/BTVluCAmcD2Pxb
+        9SPnA+CTScEqMtBw==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] sched/wakeup: Reorganize the current::__state helpers
+Cc:     Waiman Long <longman@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210815211302.200898048@linutronix.de>
+References: <20210815211302.200898048@linutronix.de>
 MIME-Version: 1.0
-References: <20210817200412.799bd992@canb.auug.org.au>
-In-Reply-To: <20210817200412.799bd992@canb.auug.org.au>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 17 Aug 2021 22:14:35 +0200
-Message-ID: <CACRpkdYNnrk35yA5u8wxMyOquxSovr9xTeYjDd61K=38Vyby4g@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the pinctrl tree with the irqchip tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Marc Zyngier <maz@kernel.org>, Jianqun Xu <jay.xu@rock-chips.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <162923127591.25758.17662255410637011047.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 12:04 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+The following commit has been merged into the locking/core branch of tip:
 
-> Today's linux-next merge of the pinctrl tree got a conflict in:
->
->   drivers/pinctrl/pinctrl-rockchip.c
->
-> between commit:
->
->   a9cb09b7be84 ("pinctrl: Bulk conversion to generic_handle_domain_irq()")
->
-> from the irqchip tree and commit:
->
->   9ce9a02039de ("pinctrl/rockchip: drop the gpio related codes")
->
-> from the pinctrl tree.
->
-> I fixed it up (the latter removed the code changed by the former, so I
-> did that) and can carry the fix as necessary.
+Commit-ID:     85019c1674890fa0408e324589e20803b3241755
+Gitweb:        https://git.kernel.org/tip/85019c1674890fa0408e324589e20803b3241755
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Sun, 15 Aug 2021 23:27:43 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 17 Aug 2021 16:45:28 +02:00
 
-I have created an immutable branch for these changes:
-https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git/log/?h=ib-rockchip
+sched/wakeup: Reorganize the current::__state helpers
 
-If it helps irqchip they can pull this in (and fix things on top if
-need be).
+In order to avoid more duplicate implementations for the debug and
+non-debug variants of the state change macros, split the debug portion out
+and make that conditional on CONFIG_DEBUG_ATOMIC_SLEEP=y.
 
-Yours,
-Linus Walleij
+Suggested-by: Waiman Long <longman@redhat.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20210815211302.200898048@linutronix.de
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+---
+ include/linux/sched.h | 48 ++++++++++++++++++++----------------------
+ 1 file changed, 23 insertions(+), 25 deletions(-)
+
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 9a9f606..4c72cf6 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -123,8 +123,6 @@ struct task_group;
+ 
+ #define task_is_stopped_or_traced(task)	((READ_ONCE(task->__state) & (__TASK_STOPPED | __TASK_TRACED)) != 0)
+ 
+-#ifdef CONFIG_DEBUG_ATOMIC_SLEEP
+-
+ /*
+  * Special states are those that do not use the normal wait-loop pattern. See
+  * the comment with set_special_state().
+@@ -132,30 +130,24 @@ struct task_group;
+ #define is_special_task_state(state)				\
+ 	((state) & (__TASK_STOPPED | __TASK_TRACED | TASK_PARKED | TASK_DEAD))
+ 
+-#define __set_current_state(state_value)			\
+-	do {							\
+-		WARN_ON_ONCE(is_special_task_state(state_value));\
+-		current->task_state_change = _THIS_IP_;		\
+-		WRITE_ONCE(current->__state, (state_value));	\
+-	} while (0)
+-
+-#define set_current_state(state_value)				\
+-	do {							\
+-		WARN_ON_ONCE(is_special_task_state(state_value));\
+-		current->task_state_change = _THIS_IP_;		\
+-		smp_store_mb(current->__state, (state_value));	\
++#ifdef CONFIG_DEBUG_ATOMIC_SLEEP
++# define debug_normal_state_change(state_value)				\
++	do {								\
++		WARN_ON_ONCE(is_special_task_state(state_value));	\
++		current->task_state_change = _THIS_IP_;			\
+ 	} while (0)
+ 
+-#define set_special_state(state_value)					\
++# define debug_special_state_change(state_value)			\
+ 	do {								\
+-		unsigned long flags; /* may shadow */			\
+ 		WARN_ON_ONCE(!is_special_task_state(state_value));	\
+-		raw_spin_lock_irqsave(&current->pi_lock, flags);	\
+ 		current->task_state_change = _THIS_IP_;			\
+-		WRITE_ONCE(current->__state, (state_value));		\
+-		raw_spin_unlock_irqrestore(&current->pi_lock, flags);	\
+ 	} while (0)
++
+ #else
++# define debug_normal_state_change(cond)	do { } while (0)
++# define debug_special_state_change(cond)	do { } while (0)
++#endif
++
+ /*
+  * set_current_state() includes a barrier so that the write of current->state
+  * is correctly serialised wrt the caller's subsequent test of whether to
+@@ -194,27 +186,33 @@ struct task_group;
+  * Also see the comments of try_to_wake_up().
+  */
+ #define __set_current_state(state_value)				\
+-	WRITE_ONCE(current->__state, (state_value))
++	do {								\
++		debug_normal_state_change((state_value));		\
++		WRITE_ONCE(current->__state, (state_value));		\
++	} while (0)
+ 
+ #define set_current_state(state_value)					\
+-	smp_store_mb(current->__state, (state_value))
++	do {								\
++		debug_normal_state_change((state_value));		\
++		smp_store_mb(current->__state, (state_value));		\
++	} while (0)
+ 
+ /*
+  * set_special_state() should be used for those states when the blocking task
+  * can not use the regular condition based wait-loop. In that case we must
+- * serialize against wakeups such that any possible in-flight TASK_RUNNING stores
+- * will not collide with our state change.
++ * serialize against wakeups such that any possible in-flight TASK_RUNNING
++ * stores will not collide with our state change.
+  */
+ #define set_special_state(state_value)					\
+ 	do {								\
+ 		unsigned long flags; /* may shadow */			\
++									\
+ 		raw_spin_lock_irqsave(&current->pi_lock, flags);	\
++		debug_special_state_change((state_value));		\
+ 		WRITE_ONCE(current->__state, (state_value));		\
+ 		raw_spin_unlock_irqrestore(&current->pi_lock, flags);	\
+ 	} while (0)
+ 
+-#endif
+-
+ #define get_current_state()	READ_ONCE(current->__state)
+ 
+ /* Task command name length: */
