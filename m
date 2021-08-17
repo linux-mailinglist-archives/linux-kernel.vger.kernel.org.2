@@ -2,189 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52EB03EE70B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 09:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3223EE712
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 09:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238291AbhHQHNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 03:13:06 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:56939 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233688AbhHQHNA (ORCPT
+        id S234669AbhHQHSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 03:18:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30994 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232999AbhHQHSY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 03:13:00 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.west.internal (Postfix) with ESMTP id 1EB592B008FF;
-        Tue, 17 Aug 2021 03:12:26 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Tue, 17 Aug 2021 03:12:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=4/94n/KGPF1vmUxfP+ZmhtXHWFk
-        9voOY4f3v9/jT4is=; b=uh/WT0klq5f6AqZrCKiOYaWIVTyNbpINzrtrQWQrLOy
-        zn9iPa50CPXgWfj9REM4+u/o6KZ05onXMh9T3ya3y2vnVLlx4S+4OhWCD1SN+2r6
-        5Y08YS8DbneXf1/LymasxgzXw9aaACgiTIGVMVaye5OBs2WMxK8vgiEY7b6Js9X2
-        rhc38CJMkhgIZruXfdMuLxyh8pJrpAjceQxgFFsEYAxXuZilQmOrcfX+9BVEhSrq
-        aqQFGR6tzEQ58PX7Oim1BhRppUIrzGEMO5VRenPl6lPj2LSqIlmJ64xvH2gULD5t
-        GYnrq6VN+RSIzJ1X5hedDfkwHoHrRnJoGqs3/LBWobg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=4/94n/
-        KGPF1vmUxfP+ZmhtXHWFk9voOY4f3v9/jT4is=; b=FW/xpWtMyCM+KWUn6W7Fxp
-        uT9cvwaaAGJOdTyVTLjJRwrc78g6+U9CEIqmqh0pznc/DvKBTFROwK9Bf9AH05cw
-        g/lM9H4gglFclCvsAMMWUB4HDsEqSCGaOX87fMpX/Fh4LWhlH/PVHACcM621Ox/L
-        NgnTdO5E/nV1vWVGmg3sSg1VtePekVqxfLJiEGw1nhh5RBQhsocW1ax61Y1YjIf3
-        lN8vOJf56+xoKNIA59JNtyphd/B7eLavR+SNDkuogrN8nBnjpDb9FEVZVAjdq52u
-        8Jl2yk07dDQ6HEdhb7fjhKDMYwTayR7Jakw4eHaF+hrb9tEkvN5s7fqduPMD67ag
-        ==
-X-ME-Sender: <xms:VmEbYUvCTXFq6hn7W8WkhggELcU8eFgT5P9HKdmoNRf6qN3siC9VSQ>
-    <xme:VmEbYRc4xYkIJJFhDH_5DuuyPH3b6jx5A5D8cEw7RNf-WH9oZ1SO9atGvaiwWef7T
-    zGvcXXLmN0MT4tlJeo>
-X-ME-Received: <xmr:VmEbYfzj8XencrovpqpdEYBbZtLYqxQMa2ujcSj3aM_CHhF9cWLfQnidDbbtgb9MU1jx5RLt0VL5C9mnFlf-12kD0mL-AKQu11TH>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrledvgdduudehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepuedtgfejueduheevgfevvdettdduleffgfffkeeltdffkeegudekjeeuveei
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:VmEbYXPmBV6mWP5-J85esk3XJ36M6-cKhgydQ0iqbB1dHgQNC2WxcA>
-    <xmx:VmEbYU811r2EH0Kl6q2VHresMHbqqEpk5G77hx_s2xo-ExytQAVHVA>
-    <xmx:VmEbYfVI1G-jftzkSLa3CVOKhyhoNnRgAMDS3YpqMXa1FWlvd01NpQ>
-    <xmx:WWEbYfVjMOHmKFS77OFi7iU4PjnXMVJbJTw0ZijdYNEuVfLvf20FV6RJy2U>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 17 Aug 2021 03:12:22 -0400 (EDT)
-Date:   Tue, 17 Aug 2021 09:12:20 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     =?utf-8?B?54+t5rab?= <fengzheng923@gmail.com>
-Cc:     lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
-        perex@perex.cz, tiwai@suse.com, wens@csie.org,
-        jernej.skrabec@gmail.com, p.zabel@pengutronix.de,
-        Samuel Holland <samuel@sholland.org>, krzk@kernel.org,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH v6 1/2] ASoC: sunxi: Add Allwinner H6 Digital MIC driver
-Message-ID: <20210817071220.idoxpwzbpemdjqdz@gilmour>
-References: <20210711122055.4529-1-fengzheng923@gmail.com>
- <20210715074750.ewbggulc5kast6ez@gilmour>
- <CAE=m61_=XfhtG9Q1r34McWWCUXt1KP67cjZ0ER62+YaGrG+b4w@mail.gmail.com>
+        Tue, 17 Aug 2021 03:18:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629184671;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Rf3UZ1ygefepa0+9j6MzSobnoEcFqDpKQ7TfnlJhrFM=;
+        b=YHD4RXmSaIBAETtBkB0x6hAiwPVMMDGLyzyklqRmf7Rt1d/N5THAxi+DTtZbB6sJQwLNTZ
+        2STKKE89QEiTb7fAujk+v8qXZA/WNHJMqYVcn3AljIxZnawY13qlYBQqZKvuVsBFGHD1vD
+        aQc75txXyIK094JxYz9CyL21Fvbgmtg=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-289-bLhqOK-BOquP-CJflxVMTg-1; Tue, 17 Aug 2021 03:17:50 -0400
+X-MC-Unique: bLhqOK-BOquP-CJflxVMTg-1
+Received: by mail-wm1-f69.google.com with SMTP id z15-20020a7bc7cf0000b02902e6a68ffd3cso586957wmk.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 00:17:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Rf3UZ1ygefepa0+9j6MzSobnoEcFqDpKQ7TfnlJhrFM=;
+        b=mc6rlG86VmHVe4CWqLSTDGN/I1Szbv4mthUR0L8DRRm+wzWqbfylR9RuRyiDRPiAdk
+         vXcl4B4E/J09foqYv/Q89q8cfQvxrsvZgf/5xSEn7XgLAoPFeUGP+XQphEhsJJ+R+i2q
+         dnRsxZkVgtEJFDn0ftk3VCVUGc2tT26p339+WtSiEn+Y0mQFNkOuqHMdifbtX0QfEtm8
+         lJy2OOiFXcgvANmbvfM263FicIjPKlz0SflKSlPZlPoH9rHKno6FpgspogSvGHX0Obeh
+         QFdZKCR5Pfjgzul3cyQcLISY29ebkNOc4Ew/jLxAEhES6111xwU4asUXDyrYXOcmAbdK
+         xU6g==
+X-Gm-Message-State: AOAM532MIen6fAgwbTs2quuxCpQ8AfsC7htCI2VEnQALF1rFlhuLk+6K
+        bB9c6fk+SLpTnvTT/UovKCQWWsThd07si1xj4xCNChXKLKIJswpJadIBYmSIf2Dp7MgThky/Bni
+        SEMSQPuOsJM4AH8vl0eeHSone2lXLFfAmLiBymlizAYVdsiqq8KRYuKAet0VQogwyOmYkEqTX
+X-Received: by 2002:a1c:4e08:: with SMTP id g8mr1880527wmh.116.1629184669094;
+        Tue, 17 Aug 2021 00:17:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxneaey6sOYZDvyNBPB+IbsKnxSHyfSd/4LlE95bb2u+osxqFP6LfAkCvBDN8Ofav3kjei/mQ==
+X-Received: by 2002:a1c:4e08:: with SMTP id g8mr1880497wmh.116.1629184668820;
+        Tue, 17 Aug 2021 00:17:48 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c65c6.dip0.t-ipconnect.de. [91.12.101.198])
+        by smtp.gmail.com with ESMTPSA id v1sm1263581wrt.93.2021.08.17.00.17.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Aug 2021 00:17:48 -0700 (PDT)
+Subject: Re: [PATCH] mm: bootmem_info: mark __init on
+ register_page_bootmem_info_section
+To:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org,
+        osalvador@suse.de, mhocko@suse.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210817042221.77172-1-songmuchun@bytedance.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <9198523b-a049-1c92-1818-989bab30628b@redhat.com>
+Date:   Tue, 17 Aug 2021 09:17:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="yncixzh4whlvhxud"
-Content-Disposition: inline
-In-Reply-To: <CAE=m61_=XfhtG9Q1r34McWWCUXt1KP67cjZ0ER62+YaGrG+b4w@mail.gmail.com>
+In-Reply-To: <20210817042221.77172-1-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 17.08.21 06:22, Muchun Song wrote:
+> The register_page_bootmem_info_section() is only called from __init
+> functions, so mark __init on it as well.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>   mm/bootmem_info.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/bootmem_info.c b/mm/bootmem_info.c
+> index 5b152dba7344..f03f42f426f6 100644
+> --- a/mm/bootmem_info.c
+> +++ b/mm/bootmem_info.c
+> @@ -39,7 +39,7 @@ void put_page_bootmem(struct page *page)
+>   }
+>   
+>   #ifndef CONFIG_SPARSEMEM_VMEMMAP
+> -static void register_page_bootmem_info_section(unsigned long start_pfn)
+> +static void __init register_page_bootmem_info_section(unsigned long start_pfn)
+>   {
+>   	unsigned long mapsize, section_nr, i;
+>   	struct mem_section *ms;
+> @@ -74,7 +74,7 @@ static void register_page_bootmem_info_section(unsigned long start_pfn)
+>   
+>   }
+>   #else /* CONFIG_SPARSEMEM_VMEMMAP */
+> -static void register_page_bootmem_info_section(unsigned long start_pfn)
+> +static void __init register_page_bootmem_info_section(unsigned long start_pfn)
+>   {
+>   	unsigned long mapsize, section_nr, i;
+>   	struct mem_section *ms;
+> 
 
---yncixzh4whlvhxud
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-Hi,
+-- 
+Thanks,
 
-On Sun, Aug 01, 2021 at 05:47:46PM +0800, =E7=8F=AD=E6=B6=9B wrote:
-> > > +     /* DMIC num is N+1 */
-> > > +     regmap_update_bits(host->regmap, SUN50I_DMIC_CH_NUM,
-> > > +                        SUN50I_DMIC_CH_NUM_N_MASK,
-> > > +                        SUN50I_DMIC_CH_NUM_N(channels - 1));
-> > > +     host->chan_en =3D (1 << channels) - 1;
-> > > +     regmap_write(host->regmap, SUN50I_DMIC_HPF_CTRL, host->chan_en);
-> >
-> > Do we need to store the channels bitmask in the main structure? It looks
-> > fairly easy to generate, so I guess we could just use a macro
->=20
-> I need to store channels bitmask and use it in sun50i_dmic_trigger functi=
-on.
+David / dhildenb
 
-But you don't need it outside of hw_params. The channel setup is
-typically done in hw_params, not in the trigger hook.
-
-[...]
-
-> > > +     /* Clocks */
-> > > +     host->bus_clk =3D devm_clk_get(&pdev->dev, "bus");
-> > > +     if (IS_ERR(host->bus_clk))
-> > > +             return dev_err_probe(&pdev->dev, PTR_ERR(host->bus_clk),
-> > > +                                  "failed to get bus clock.\n");
-> > > +
-> > > +     host->dmic_clk =3D devm_clk_get(&pdev->dev, "mod");
-> > > +     if (IS_ERR(host->dmic_clk))
-> > > +             return dev_err_probe(&pdev->dev, PTR_ERR(host->dmic_clk=
-),
-> > > +                                  "failed to get dmic clock.\n");
-> > > +
-> > > +     host->dma_params_rx.addr =3D res->start + SUN50I_DMIC_DATA;
-> > > +     host->dma_params_rx.maxburst =3D 8;
-> > > +
-> > > +     platform_set_drvdata(pdev, host);
-> > > +
-> > > +     host->rst =3D devm_reset_control_get_optional_exclusive(&pdev->=
-dev, NULL);
-> > > +     if (IS_ERR(host->rst))
-> > > +             return dev_err_probe(&pdev->dev, PTR_ERR(host->rst),
-> > > +                                  "Failed to get reset.\n");
-> >
-> > Your binding states that the reset is mandatory so you don't need the
-> > optional variant.
-> >
-> > > +     reset_control_deassert(host->rst);
-> >
-> > Can't this be moved to the runtime_pm hooks?
->=20
-> Is this necessary? I see that most of the driver files execute
-> reset_control_deassert in the probe function, and reset_control_assert
-> in the remove function.
-
-Your driver seems to not rely on the fact that the device remains
-powered between each run anyway, so yeah, that way you will completely
-power it down.
-
-> >
-> > > +     ret =3D devm_snd_soc_register_component(&pdev->dev,
-> > > +                             &sun50i_dmic_component, &sun50i_dmic_da=
-i, 1);
-> >
-> > Your second line should be aligned on the opening parenthesis
-> >
-> > > +     if (ret)
-> > > +             return dev_err_probe(&pdev->dev, ret,
-> > > +                                  "failed to register component.\n");
-> > > +
-> > > +     pm_runtime_enable(&pdev->dev);
-> > > +     if (!pm_runtime_enabled(&pdev->dev)) {
-> > > +             ret =3D sun50i_dmic_runtime_resume(&pdev->dev);
-> > > +             if (ret)
-> > > +                     goto err_unregister;
-> > > +     }
-> >
-> > We have a depends on PM on some drivers already, so I guess it would
-> > just make sense to add one more here instead of dealing with whether
-> > runtime_pm is compiled in or not.
->=20
-> I don't understand. I am referring to the sun4i-spdif.c file. Which
-> driver files should I refer to?
-
-That whole logic is there to enable the device is CONFIG_PM is not
-enabled (and thus the calls to pm_runtime_* won't do anything).
-
-Just add a depends on PM to your Kconfig entry, and call
-pm_runtime_enable there.
-
-Maxime
-
---yncixzh4whlvhxud
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYRthVAAKCRDj7w1vZxhR
-xV5tAQDgo2PFfMG3oI+WJpwKhRvxyNOZwsTG3w/3ZeravzZx4AEA8cAL7Kk9k3li
-rT0wIeYDdfx6CDXMjnnGlqzr/0YvlAs=
-=VTo/
------END PGP SIGNATURE-----
-
---yncixzh4whlvhxud--
