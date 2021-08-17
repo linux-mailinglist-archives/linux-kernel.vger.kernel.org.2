@@ -2,114 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F653EF1F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 20:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 437853EF1F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 20:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233468AbhHQSgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 14:36:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233318AbhHQSgM (ORCPT
+        id S233499AbhHQSgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 14:36:47 -0400
+Received: from smtprelay0251.hostedemail.com ([216.40.44.251]:57100 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233049AbhHQSgp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 14:36:12 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97AB3C061764;
-        Tue, 17 Aug 2021 11:35:38 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id d16so346945ljq.4;
-        Tue, 17 Aug 2021 11:35:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=QTBDXnwQGkT+4A4UuLJatqAKSgRrFvBbySkIbNpaSYE=;
-        b=QZjIRn7uwlkVj+s5yU06Kvnh0SRLIDmhwCZuVsnW16SlFCD3zkAc7e5sZ6ycLhXUZh
-         zZMyHqEm+Ic5etnaDYOFjClkOeAbgMR+e3wbo2VlDKGFzunT6ByjtWXefxDet0UVelBP
-         AX/5YTA/IQTZMN1/PsImhZwCqVMwwE5JaL69PR2YrZfKrwvU5RuQ3e0u7ORwhSipxrW9
-         ZXVcaxyPCFKb09Tu0xWXb1RoDj31JWnT2rSFT8elvMdeMAwiuEbTIKa2zevX+HemYidg
-         /W/JXqQOsJ1XBo9Yv5m30unJxWLC4NOS4MvaRhZvr8peBRUKFnXbOEaZaIQ89VDm0QEx
-         e2dQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=QTBDXnwQGkT+4A4UuLJatqAKSgRrFvBbySkIbNpaSYE=;
-        b=QLg3xnySY7QAdfahLGkyXDnEfAMwppZYCTpLePyXIqp7+kG+r99zbktXEMf3p0fTK5
-         RZZeo/l6dcmXY6yWqKcOz+WcN9L/m2AreqMD5T1PJCQ6tgl5CVdzDJELaQDOcD2or5G8
-         +c2QW0QpDfl3esuDvsvRgpWCPYeTzYXY6sSceaJIgJfoHv9hNXA58Ut+eGR5+YqCmISt
-         g9Z0pW3h4ReaXmdhjSpgMEmQQu9gP96JlPYIcaRlItQLwmtyDJOE1B2gc+nGLCDwdsUH
-         Zgi1OZuoJrIK12nh8ejP63jWp8iK6A0RvxZlmJQZOe0zbXYCWRvb0MH8woaHXef4KQXM
-         br4A==
-X-Gm-Message-State: AOAM533gGTbP58JQbYqvi4vKmpeX22IXoDXQ6XlZwtBZ9o0R32DoKqWV
-        UFJZfyuZIZrtHc+VtR/8r+s=
-X-Google-Smtp-Source: ABdhPJwbnhWtQ8TneqnM2aEr/lMnzIb4+YPLmJLc/hcb8eryahYg4crcKxa/1SYKeymcJjTuJRTUvQ==
-X-Received: by 2002:a05:651c:11c7:: with SMTP id z7mr4415069ljo.288.1629225336963;
-        Tue, 17 Aug 2021 11:35:36 -0700 (PDT)
-Received: from localhost.localdomain ([46.235.66.127])
-        by smtp.gmail.com with ESMTPSA id x27sm258004lfa.232.2021.08.17.11.35.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 11:35:36 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org,
-        andriy.shevchenko@linux.intel.com, christophe.jaillet@wanadoo.fr,
-        jesse.brandeburg@intel.com, kaixuxia@tencent.com,
-        lee.jones@linaro.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH 2/2] net: pch_gbe: remove mii_ethtool_gset() error handling
-Date:   Tue, 17 Aug 2021 21:35:33 +0300
-Message-Id: <2fd83384bde83d9cd4ad5111b03e653bd9a8fe84.1629225090.git.paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <680892d787669c56f0ceac0e9c113d6301fbe7c6.1629225089.git.paskripkin@gmail.com>
-References: <680892d787669c56f0ceac0e9c113d6301fbe7c6.1629225089.git.paskripkin@gmail.com>
+        Tue, 17 Aug 2021 14:36:45 -0400
+Received: from omf16.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id C725D18132D1B;
+        Tue, 17 Aug 2021 18:36:11 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf16.hostedemail.com (Postfix) with ESMTPA id 88B3B25510C;
+        Tue, 17 Aug 2021 18:36:10 +0000 (UTC)
+Message-ID: <11a09af791c5453175a6bdac1c51bd9fcb0685bd.camel@perches.com>
+Subject: Re: [PATCH] staging: r8188eu: refactor
+ rtw_is_cckrates{only}_included()
+From:   Joe Perches <joe@perches.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Michael Straube <straube.linux@gmail.com>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 17 Aug 2021 11:36:09 -0700
+In-Reply-To: <YRv4po3sLcH9VLuo@kroah.com>
+References: <20210816193125.15700-1-straube.linux@gmail.com>
+         <YRv4po3sLcH9VLuo@kroah.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: 88B3B25510C
+X-Spam-Status: No, score=1.60
+X-Stat-Signature: 4fmkf9xk51a9m6tpwoquu4m4r4ersfjf
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18FiyKAUKgIPzwQGuG8kuWbFPuj9F/R1aE=
+X-HE-Tag: 1629225370-1987
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since mii_ethtool_gset() becomes void in previous patch we can omit
-cheking return value of this function and make code more simple.
+On Tue, 2021-08-17 at 19:57 +0200, Greg KH wrote:
+> On Mon, Aug 16, 2021 at 09:31:25PM +0200, Michael Straube wrote:
+> > Refactor functions rtw_is_cckrates_included() and
+> > rtw_is_cckratesonly_included(). Add new helper function rtw_is_cckrate()
+> > that allows to make the code more compact. Improves readability and
+> > slightly reduces object file size. Change the return type to bool to
+> > reflect that the functions return boolean values.
+[]
+> > diff --git a/drivers/staging/r8188eu/core/rtw_ieee80211.c b/drivers/staging/r8188eu/core/rtw_ieee80211.c
+[]
+> > +bool rtw_is_cckratesonly_included(u8 *rate)
+> >  {
+> > -	u32 i = 0;
+> > +	u8 r;
+> >  
+> > 
+> > -	while (rate[i] != 0) {
+> > -		if  ((((rate[i]) & 0x7f) != 2) && (((rate[i]) & 0x7f) != 4) &&
+> > -		     (((rate[i]) & 0x7f) != 11)  && (((rate[i]) & 0x7f) != 22))
+> > +	while ((r = *rate++)) {
+> 
+> Ick, no.
+> 
+> While it might be fun to play with pointers like this, trying to
+> determine the precidence issues involved with reading from, and then
+> incrementing the pointer like this is crazy.
+> 
+> The original was obvious as to how it was walking through the array.
 
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c | 8 +-------
- drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_phy.c  | 4 +---
- 2 files changed, 2 insertions(+), 10 deletions(-)
+It's sad to believe *ptr++ is not obvious to you as it's very commonly
+used in the kernel sources (over 10,000 instances).
 
-diff --git a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-index e351f3d1608f..539bddfab2d4 100644
---- a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-+++ b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-@@ -1031,13 +1031,7 @@ static void pch_gbe_watchdog(struct timer_list *t)
- 		struct ethtool_cmd cmd = { .cmd = ETHTOOL_GSET };
- 		netdev->tx_queue_len = adapter->tx_queue_len;
- 		/* mii library handles link maintenance tasks */
--		if (mii_ethtool_gset(&adapter->mii, &cmd)) {
--			netdev_err(netdev, "ethtool get setting Error\n");
--			mod_timer(&adapter->watchdog_timer,
--				  round_jiffies(jiffies +
--						PCH_GBE_WATCHDOG_PERIOD));
--			return;
--		}
-+		mii_ethtool_gset(&adapter->mii, &cmd);
- 		hw->mac.link_speed = ethtool_cmd_speed(&cmd);
- 		hw->mac.link_duplex = cmd.duplex;
- 		/* Set the RGMII control. */
-diff --git a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_phy.c b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_phy.c
-index ed832046216a..3426f6fa2b57 100644
---- a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_phy.c
-+++ b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_phy.c
-@@ -301,9 +301,7 @@ void pch_gbe_phy_init_setting(struct pch_gbe_hw *hw)
- 	int ret;
- 	u16 mii_reg;
- 
--	ret = mii_ethtool_gset(&adapter->mii, &cmd);
--	if (ret)
--		netdev_err(adapter->netdev, "Error: mii_ethtool_gset\n");
-+	mii_ethtool_gset(&adapter->mii, &cmd);
- 
- 	ethtool_cmd_speed_set(&cmd, hw->mac.link_speed);
- 	cmd.duplex = hw->mac.link_duplex;
--- 
-2.32.0
 
