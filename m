@@ -2,63 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD143EEAFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 12:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 645393EEB00
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 12:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239545AbhHQKbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 06:31:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236220AbhHQKbl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 06:31:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBC0F600CC;
-        Tue, 17 Aug 2021 10:31:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629196268;
-        bh=gwHWOw/ASy61DLhExAAJff6S57004jn6JCY7yTCDpLY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ICnrOAIY3x8BStucty1s+XddE23iaDU6CpMMaQCdyyjQyhqEXlk8MeQHj5gjktf6u
-         B5+dsi06P+oXwRZ7NPCoXNCWPgxyny24V0QHyfLuDLy9BBl/Ajo+jDnuhsTI5/Cm/O
-         J61MyqioLWtl3yevXMwuIqNYoBnVEJgeyk8JT8FZQnE/19aazFBpEiBixUAWKQTYOo
-         gBbTogqfhVSRQAuPJ8Vx15aVHDCITtazvPkrfDaiP3aMTgbRlZ+ONa9EnrDwxEfmCg
-         wxkRGAg9dYAlpBQoQPKbMv3Xo6hPzrzSM0NXhfW52cXHXjDCFY0m8Iz1p50tl6aGwL
-         I9Fml9+Wd1E8w==
-Date:   Tue, 17 Aug 2021 16:01:04 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Anand Moon <linux.amoon@gmail.com>
-Cc:     linux-phy@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Matt Corallo <oc2udbzfd@mattcorallo.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Emiliano Ingrassia <ingrassia@epigenesys.com>,
-        Brian Kim <brian.kim@hardkernel.com>
-Subject: Re: [PATCHv3 6/6] phy: amlogic: meson8b-usb2: don't log an error on
- -EPROBE_DEFER
-Message-ID: <YRuP6JfdEZNL8tXt@matsya>
-References: <20210817041548.1276-1-linux.amoon@gmail.com>
- <20210817041548.1276-7-linux.amoon@gmail.com>
+        id S239583AbhHQKbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 06:31:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236220AbhHQKbu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 06:31:50 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272DCC06179A;
+        Tue, 17 Aug 2021 03:31:17 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id w20so40435722lfu.7;
+        Tue, 17 Aug 2021 03:31:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qMZOt5ueMN6fg1XgUmhU0282KCRD6RMSAKl1MQqd8U8=;
+        b=hd2QvJ0U+Lcn6l8mKOtXOKCcXnW4/nG6Be8smA6IJf/AmJMVuZG/A5jO9cQvnj70oV
+         6vCk0bmCKVFrEQ+x48N1CeUT1p64dz0uagrMWVZ1JkvaIAl8yxatXT1+Kvn5z89rABGF
+         gRhElFWJXVAQh++1aG7z9I+WciHBJG+YVSP4Mx7FDT0Gf/v5msQKTomjW6bAtk9yztMo
+         Pz/SrJdP0SbIXE2PpwlKL2xq6K0U1U+urS/vVXx8SV8I7yHbDkzowTl0nQKyWE6o7HKN
+         cruoMMZyv8gNwp8B3FmB2Rk5nyWfQR2MOlfALaQBdoLn27bZiCgrlt/jUnkCp56p46mA
+         BH1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qMZOt5ueMN6fg1XgUmhU0282KCRD6RMSAKl1MQqd8U8=;
+        b=gCeYZ1Rkyy6Hif9wWgn7QGdgFdLqTuPK3RB3T9hiv6yfQHlIa5hf4RqPzieeHcMZR7
+         /Aif9UTEhdO2j8Nk3awm5nxsFYphwpzk0gdmR+qpc5Kl5rEYfumh4cI5x4cG8V8t03rq
+         3cQxO+vQfnOrptMmbo94CFnEWIEyD7fyrMic4vkyZfZulk7wlJGZzPxt0Pkcyd63c5ON
+         frivk/owDXSdpcTHXzprj0qP7mogUJbot2IACyNJQ0QmFXdlLstz5yyU3jDHte/qNt4l
+         rmSTvcZwdvtiR5kcoTP4rM7O+cTBKPzZPhvQBtEWw8mMXd1hz41V7UqMFIlnsfE7EqaB
+         xCyQ==
+X-Gm-Message-State: AOAM532T0SswnLnTyRF9PL/zWGw6X5h/QXKDtT8V6WYsnwCEgGtOQ4rN
+        PreYJOCLx+shzy+RiHa+AD4i18ZKQoVdS2/c
+X-Google-Smtp-Source: ABdhPJwoWbG83NrILDBrdTVFNpU3zS+CDvxpw6b1IS8FPovIvgEu/VXweXWMoo4FeLjjCu59rALz+Q==
+X-Received: by 2002:a05:6512:3889:: with SMTP id n9mr1861128lft.589.1629196275367;
+        Tue, 17 Aug 2021 03:31:15 -0700 (PDT)
+Received: from localhost.localdomain ([46.235.67.232])
+        by smtp.gmail.com with ESMTPSA id h8sm136335ljh.27.2021.08.17.03.31.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 03:31:14 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        davem@davemloft.net
+Cc:     linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+be2baed593ea56c6a84c@syzkaller.appspotmail.com
+Subject: [PATCH] Bluetooth: add timeout sanity check to hci_inquiry
+Date:   Tue, 17 Aug 2021 13:31:08 +0300
+Message-Id: <20210817103108.1160-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210817041548.1276-7-linux.amoon@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17-08-21, 09:45, Anand Moon wrote:
-> devm_phy_create can return -EPROBE_DEFER if the vbus-supply is not ready
-> yet. Silence this warning as the driver framework will re-attempt
-> registering the PHY. Use dev_err_probe() for phy resources to indicate
-> the deferral reason when waiting for the resource to come up.
+Syzbot hit "task hung" bug in hci_req_sync(). The problem was in
+unreasonable huge inquiry timeout passed from userspace.
+Fix it by adding sanity check for timeout value and add constant to
+hsi_sock.h to inform userspace, that hci_inquiry_req::length field has
+maximum possible value.
 
-Applied, thanks
+Since hci_inquiry() is the only user of hci_req_sync() with user
+controlled timeout value, it makes sense to check timeout value in
+hci_inquiry() and don't touch hci_req_sync().
 
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-and-tested-by: syzbot+be2baed593ea56c6a84c@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+
+Hi, Bluetooth maintainers/reviewers!
+
+I believe, 60 seconds will be more than enough for inquiry request. I've
+searched for examples on the internet and maximum ir.length I found was 
+8. Maybe, we have users, which need more than 60 seconds... I look forward
+to receiving your views on this value.
+
+---
+ include/net/bluetooth/hci_sock.h | 1 +
+ net/bluetooth/hci_core.c         | 5 +++++
+ 2 files changed, 6 insertions(+)
+
+diff --git a/include/net/bluetooth/hci_sock.h b/include/net/bluetooth/hci_sock.h
+index 9949870f7d78..1cd63d4da00b 100644
+--- a/include/net/bluetooth/hci_sock.h
++++ b/include/net/bluetooth/hci_sock.h
+@@ -168,6 +168,7 @@ struct hci_inquiry_req {
+ 	__u16 dev_id;
+ 	__u16 flags;
+ 	__u8  lap[3];
++#define HCI_INQUIRY_MAX_TIMEOUT		30
+ 	__u8  length;
+ 	__u8  num_rsp;
+ };
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index e1a545c8a69f..104babf67351 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -1343,6 +1343,11 @@ int hci_inquiry(void __user *arg)
+ 		goto done;
+ 	}
+ 
++	if (ir.length > HCI_INQUIRY_MAX_TIMEOUT) {
++		err = -EINVAL;
++		goto done;
++	}
++
+ 	hci_dev_lock(hdev);
+ 	if (inquiry_cache_age(hdev) > INQUIRY_CACHE_AGE_MAX ||
+ 	    inquiry_cache_empty(hdev) || ir.flags & IREQ_CACHE_FLUSH) {
 -- 
-~Vinod
+2.32.0
+
