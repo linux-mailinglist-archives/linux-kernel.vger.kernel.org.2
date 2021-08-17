@@ -2,106 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6187A3EE984
+	by mail.lfdr.de (Postfix) with ESMTP id 1927A3EE983
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 11:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235532AbhHQJUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 05:20:08 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:33590 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239706AbhHQJSb (ORCPT
+        id S239505AbhHQJTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 05:19:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239694AbhHQJSZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 05:18:31 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9FD8D21AC4;
-        Tue, 17 Aug 2021 09:17:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629191877; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FcHJOHB9hxwBX95Lq5+fSvyv0D1B8TQkgzP6Tk5EsGg=;
-        b=Q1Ue4lmU8mSpZvw1jtNZcNdEjWJ6LtxZEWl1Yuas6TTDZltMyaivB+tgvo/T6NxxAt1ZAP
-        K4k08RVwAVpU87Z1J1lAQsmeVXF1UZ2si4CvF0JZS0U1nQW/EPxORvzKlOWQzZhHe8uKwq
-        tOcR3TKjclfz/LV/HYh2dqHx0ek5ebU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629191877;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FcHJOHB9hxwBX95Lq5+fSvyv0D1B8TQkgzP6Tk5EsGg=;
-        b=fmKxYivOY6uxbdXwnLHlF4/urCoLuB7rk5gMhM5bW0KV2l/PByOYtmeqe8r8iKvM5JzJel
-        N8WtNzm39EQIyeAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C11FE13D26;
-        Tue, 17 Aug 2021 09:17:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 5PsCLcR+G2FFTwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Tue, 17 Aug 2021 09:17:56 +0000
-Subject: Re: [PATCH v4 35/35] mm, slub: convert kmem_cpu_slab protection to
- local_lock
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Sven Eckelmann <sven@narfation.org>, akpm@linux-foundation.org,
-        brouer@redhat.com, cl@linux.com, efault@gmx.de,
-        iamjoonsoo.kim@lge.com, jannh@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mgorman@techsingularity.net, penberg@kernel.org,
-        rientjes@google.com, tglx@linutronix.de,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <2666777.vCjUEy5FO1@sven-desktop>
- <7329198a-2a4e-ebc2-abf8-f7f38f00d5e1@suse.cz>
- <20210817091224.nqnrro34cyb67chj@linutronix.de>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <b1e88f8a-ddf1-67d2-52a3-9e57eac01406@suse.cz>
-Date:   Tue, 17 Aug 2021 11:17:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Tue, 17 Aug 2021 05:18:25 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E38F8C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 02:17:51 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id n7so31969209ljq.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 02:17:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=dohz3+LfR9KpAjS2WevQy5X6phH+FdkSUETrg7wqW2k=;
+        b=EP2ww5P4jzJKo2ZrB/zl9OoYjezcrLl6uBxoiFRlr6Ih/E8FaMQzzThjO0niN9Hkka
+         xzFkCEekeBfBXeaiDGewRAXFUDknX3cMjtwRqVsa7B/YT/Y5+sHoAPF08JQWd7XeVU8G
+         8dPpxTUwCjmqB905u1osytgNyAAGGPatLypX7W3uTztUwxzo5i9TBanMD6lypxWHlqLV
+         f+QwAcC3iOB8G+y8rD7TLufgplBmMgO8F2D9qXP9RJ14hTveJoij4RD56TqcX+9dJtsm
+         sLfXNR0YcuhBH6Z0xQCiY0BpxOPfAyQPiXo74SEDVrfWE53gs0na2WrnuwaC60srzWo3
+         3Sfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=dohz3+LfR9KpAjS2WevQy5X6phH+FdkSUETrg7wqW2k=;
+        b=Ty/5rKFPt1sjtQbtoT7Ce8JiOUNN1BdUul3p/bG1fUWstviZdVuj2YydSMwXY0IUu/
+         Au/ZTokTHC/UPdku2tL98t/3bZFMyvGsLCPuSIxPe89INJZZOue21sNm9w7wKxc4Bqeq
+         i+mVAFj+fKxy0lBozR8Wt6hL4ywl8jrCnObVbKlF3zM9Wj+Elr6NbogpDpBUypfpgxRw
+         teHX1hDtgHWb2zRj/Bwowm0AuIpllARDq1AK9it8zWX9LxcmSisyCLDO8DEflL2ukgrh
+         W+6MNm+qmjQhiTLHwc6j90nGYrqsWiHB+agY9CiegbK4RUuO99pMtiNVGFybNhRAWxZU
+         lG5A==
+X-Gm-Message-State: AOAM532z0XGA1Ma2ZaNQ/Hxw/pDqmgN78a3v9EnXtupP3hrrAFS215UB
+        yCjbP8IxRanKz4Nq+IMSzzMHLnkIxnNi1kyGask=
+X-Google-Smtp-Source: ABdhPJyGznkxx8qJ7rPazx2ndlm2dJo0dOyqREVSKNAGvZJK5s7QjSfMLMeTL2LBk74Sd883Uj0RzYhRn7vgxBptQ9k=
+X-Received: by 2002:a2e:a447:: with SMTP id v7mr2322629ljn.46.1629191870297;
+ Tue, 17 Aug 2021 02:17:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210817091224.nqnrro34cyb67chj@linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a05:6520:47c9:b0:135:b473:148b with HTTP; Tue, 17 Aug 2021
+ 02:17:49 -0700 (PDT)
+From:   "Barrister Stella Edward H.Cargo Michael" <edward.hamund@gmail.com>
+Date:   Tue, 17 Aug 2021 02:17:49 -0700
+Message-ID: <CACe0+P-s8ryEMOthhtUo5c289f2czGmoyN9UhcjOe1wB1ENBZQ@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/17/21 11:12 AM, Sebastian Andrzej Siewior wrote:
-> On 2021-08-17 10:37:48 [+0200], Vlastimil Babka wrote:
->> OK reproduced. Thanks, will investigate.
-> 
-> With the local_lock at the top, the needed alignment gets broken for dbl
-> cmpxchg. On RT it was working ;)
+-- 
+Hello Sir/Madam.
+I am still waiting to read from you after my last mail to you.
 
-I'd rather have page and partial in the same cacheline as well, is it ok
-to just move the lock as last and not care about whether it straddles
-cachelines or not? (with CONFIG_SLUB_CPU_PARTIAL it will naturally start
-with the next cacheline).
-
-> diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
-> index b5bcac29b979c..cd14aa1f9bc3c 100644
-> --- a/include/linux/slub_def.h
-> +++ b/include/linux/slub_def.h
-> @@ -42,9 +42,9 @@ enum stat_item {
->  	NR_SLUB_STAT_ITEMS };
->  
->  struct kmem_cache_cpu {
-> -	local_lock_t lock;	/* Protects the fields below except stat */
->  	void **freelist;	/* Pointer to next available object */
->  	unsigned long tid;	/* Globally unique transaction id */
-> +	local_lock_t lock;	/* Protects the fields below except stat */
->  	struct page *page;	/* The slab from which we are allocating */
->  #ifdef CONFIG_SLUB_CPU_PARTIAL
->  	struct page *partial;	/* Partially allocated frozen slabs */
-> 
-> Sebastian
-> 
-
+Kind Regard
