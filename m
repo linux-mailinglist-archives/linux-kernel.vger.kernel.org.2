@@ -2,91 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 268F83EEFE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 18:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F413EEFF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 18:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbhHQQAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 12:00:54 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:44337 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229748AbhHQQAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 12:00:50 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4GpwjC12S7z9sTl;
-        Tue, 17 Aug 2021 18:00:15 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 5FYl5G2Uzyb6; Tue, 17 Aug 2021 18:00:15 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4GpwjC06SKz9sRj;
-        Tue, 17 Aug 2021 18:00:15 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D57258B7C3;
-        Tue, 17 Aug 2021 18:00:14 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id n39-hyA9LvO3; Tue, 17 Aug 2021 18:00:14 +0200 (CEST)
-Received: from po9473vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A6B088B7A9;
-        Tue, 17 Aug 2021 18:00:14 +0200 (CEST)
-Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 742D9667C7; Tue, 17 Aug 2021 16:00:14 +0000 (UTC)
-Message-Id: <000a28c51808bbd802b505af42d2cb316c2be7d3.1629216000.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/ptrace: Make user_mode() common to PPC32 and PPC64
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        id S229958AbhHQQGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 12:06:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23375 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229723AbhHQQGI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 12:06:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629216333;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9gzzg2YwEyV3U2nBjj+cUEsKQ5qhPEMvgE1ztK9QOzY=;
+        b=RsOsE75chmxexCnrSKGeVmVOk4nzscZ/rsNy3TWTDFvIArtPpwI1h4O1axFXYQBlDlYyR2
+        RBydZX4QgP6VYXE//wjToDyWgUab4qewpgrTrwBOs6WMl3c84s9rvU2fGaNONg2JYx4BAI
+        ituw7vHmI8/2aIr1THAKeZl2gqWnh40=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-562-Xs7gxkTJPr64H2GC6iaCVw-1; Tue, 17 Aug 2021 12:05:31 -0400
+X-MC-Unique: Xs7gxkTJPr64H2GC6iaCVw-1
+Received: by mail-ed1-f71.google.com with SMTP id x24-20020aa7dad8000000b003bed477317eso4694677eds.18
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 09:05:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=9gzzg2YwEyV3U2nBjj+cUEsKQ5qhPEMvgE1ztK9QOzY=;
+        b=baApUdkE0csLrbEUWYJh96NqnCfh6Pta7i5HwPY7q+K+TDSqWlvOkOmLm8s4R+AQW5
+         dxSx2SzoGJ/sBaw7aLNxC+2u8iSh1cpxs1gJeNeULmd7DJxfPW9tC7ut0UCHdBHX/LTD
+         hTTWxmJO/OuHQkRGN3bMmu64hYuAEkbJw47ve9iYfvjIAeqa9MwZ+6eSUs3cmjP127L8
+         nQIRqlhoZiyUXs/+tw8G5e38opozOe5Ej/1wto6UDW1yCSz83uQYRVJvuP/aX9PyGWQH
+         9V7ARsSxG06UctzLTooDCikGi8Gai3LM77Vj5GC1rzUnoT5NuLH+H0Umy+7PBK14WY5A
+         Nj9g==
+X-Gm-Message-State: AOAM531Jg42DJ2MJQ+G/Lx1OCW4z1jNsksRI3kEQeRDsPtNyKE1SQnWx
+        FyJI2+o5Vwb8WwqByxPy12Odj4QZCajuhLT/x1n3IspjpauI3XkjxVoNQZCZYR3jCv6uP22ZYfy
+        b3UjAHns4oILEaMibHL9KHhFH
+X-Received: by 2002:a17:906:38ce:: with SMTP id r14mr4723481ejd.268.1629216330629;
+        Tue, 17 Aug 2021 09:05:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwR1te4vfIy9M4SfzRe1qI8OFYLHdyH/4WNJ05ExASDPVCnSkyrwvya16nDl/TN1m4q9gXjsg==
+X-Received: by 2002:a17:906:38ce:: with SMTP id r14mr4723459ejd.268.1629216330407;
+        Tue, 17 Aug 2021 09:05:30 -0700 (PDT)
+Received: from pc-32.home (2a01cb058918ce00dd1a5a4f9908f2d5.ipv6.abo.wanadoo.fr. [2a01:cb05:8918:ce00:dd1a:5a4f:9908:f2d5])
+        by smtp.gmail.com with ESMTPSA id q30sm1286707edi.84.2021.08.17.09.05.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 09:05:27 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 18:05:25 +0200
+From:   Guillaume Nault <gnault@redhat.com>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     James Carlson <carlsonj@workingcode.com>,
+        Chris Fowler <cfowler@outpostsentinel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue, 17 Aug 2021 16:00:14 +0000 (UTC)
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-ppp@vger.kernel.org" <linux-ppp@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ppp: Add rtnl attribute IFLA_PPP_UNIT_ID for specifying
+ ppp unit id
+Message-ID: <20210817160525.GA20616@pc-32.home>
+References: <20210810171626.z6bgvizx4eaafrbb@pali>
+ <2f10b64e-ba50-d8a5-c40a-9b9bd4264155@workingcode.com>
+ <20210811173811.GE15488@pc-32.home>
+ <20210811180401.owgmie36ydx62iep@pali>
+ <20210812092847.GB3525@pc-23.home>
+ <20210812134845.npj3m3vzkrmhx6uy@pali>
+ <20210812182645.GA10725@pc-23.home>
+ <20210812190440.fknfthdk3mazm6px@pali>
+ <20210816161114.GA3611@pc-32.home>
+ <20210816162355.7ssd53lrpclfvuiz@pali>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210816162355.7ssd53lrpclfvuiz@pali>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Today we have:
+On Mon, Aug 16, 2021 at 06:23:55PM +0200, Pali Rohár wrote:
+> On Monday 16 August 2021 18:11:14 Guillaume Nault wrote:
+> > Do you have plans for adding netlink support to pppd? If so, is the
+> > project ready to accept such code?
+> 
+> Yes, I have already some WIP code and I'm planning to send a pull
+> request to pppd on github for it. I guess that it could be accepted,
 
-	#ifdef __powerpc64__
-	#define user_mode(regs) ((((regs)->msr) >> MSR_PR_LG) & 0x1)
-	#else
-	#define user_mode(regs) (((regs)->msr & MSR_PR) != 0)
-	#endif
+I guess you can easily use the netlink api for cases where the "unit"
+option isn't specified and fall back to the ioctl api when it is. If
+all goes well, then we can extend the netlink api to accept a unit id.
 
-With ppc64_defconfig, we get:
+But what about the lack of netlink feedback about the created
+interface? Are you restricted to use netlink only when the "ifname"
+option is provided?
 
-	if (!user_mode(regs))
-    14b4:	e9 3e 01 08 	ld      r9,264(r30)
-    14b8:	71 29 40 00 	andi.   r9,r9,16384
-    14bc:	41 82 07 a4 	beq     1c60 <.emulate_instruction+0x7d0>
+> specially if there still would be backward compatibility via ioctl for
+> kernels which do not support rtnl API.
 
-If taking the ppc32 definition of user_mode(), the exact same code
-is generated for ppc64_defconfig.
+Indeed, I'd expect keeping compatiblitity with old kernels that only
+have the ioctl api to be a must (but I have no experience contributing
+to the pppd project).
 
-So, only keep one version of user_mode(), preferably the one not
-using MSR_PR_LG which should be kept internal to reg.h.
+> One of the argument which can be
+> used why rtnl API is better, is fixing issue: atomic creating of
+> interface with specific name.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/ptrace.h | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/ptrace.h b/arch/powerpc/include/asm/ptrace.h
-index 14422e851494..fd60538737a0 100644
---- a/arch/powerpc/include/asm/ptrace.h
-+++ b/arch/powerpc/include/asm/ptrace.h
-@@ -197,11 +197,7 @@ static inline unsigned long frame_pointer(struct pt_regs *regs)
- 	return 0;
- }
- 
--#ifdef __powerpc64__
--#define user_mode(regs) ((((regs)->msr) >> MSR_PR_LG) & 0x1)
--#else
- #define user_mode(regs) (((regs)->msr & MSR_PR) != 0)
--#endif
- 
- #define force_successful_syscall_return()   \
- 	do { \
--- 
-2.25.0
+Yes, that looks useful.
 
