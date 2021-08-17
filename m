@@ -2,251 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C0D3EE841
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB253EE846
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235017AbhHQIRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 04:17:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38756 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235120AbhHQIRN (ORCPT
+        id S238847AbhHQISU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 04:18:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234706AbhHQISR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 04:17:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629188200;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e3ctewUOTsKGZENQJgUMk7UI3Zq20LDKQ2q7neygSyw=;
-        b=Ai6LCCr5vJ9hVAmpGvU2a5frn1iZgjiSUAMoeIZ2XIiz+N6PUXzdW2K55o0pz/ONMy3trc
-        S7o1sl+9WLgJawXZni2684UAfvJEeaNWxWulCQRBtPB0KHJ4rWf0Q69W5RiiM62l1aozLv
-        3AJNEsdeo6ZIUJCl+tUdp40CMgDwBAk=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-45-4vBWKEX_NQSpOZr67v9rlA-1; Tue, 17 Aug 2021 04:16:39 -0400
-X-MC-Unique: 4vBWKEX_NQSpOZr67v9rlA-1
-Received: by mail-lj1-f199.google.com with SMTP id e4-20020a05651c0904b029018bc821fd31so7035908ljq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 01:16:38 -0700 (PDT)
+        Tue, 17 Aug 2021 04:18:17 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4794EC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 01:17:45 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id az7so22160843qkb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 01:17:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=ijowZ4jcrG0Ehbu0X7RLv2m890u4vuBU8RzGN0n7bL0=;
+        b=hkL/t1N59snMllnmFaWkLsl2GgYb22030wlHiEeGop1btUrASwwzsFxbAV5LMYGE7q
+         ozjKkck4uIJ4l1yp4GbhPSoqRVn8uj5D5eatF3Z9fVPNX22tkXoXqc2N+x1RNEw8XK+Y
+         GS6Y74GADMaDC9HV+cat0PaBPrmtm9u64hTjHxzKGPZeEFb95d72hs6yQGUjYxhWnmhM
+         LZ5cGAOGrIQNAeddwbzrpmiwIVtS/7Eg67KQ15w6ZNtFK9UZ7gUiFvDLYtXzmo9UjvuI
+         PA9PwX/hWqQngtiDQwZygVZ85HzrBgyRHoJv+9zymjFDvvfF8iqcoQ492w0mOGbUv1Ds
+         k1Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e3ctewUOTsKGZENQJgUMk7UI3Zq20LDKQ2q7neygSyw=;
-        b=oDnZeD9LMpoDEGWWdtoqsCIRFg5tNre+kZSsWY+Eggw5UnUOK8iNZ188BoHnrNqCIO
-         QSNiMJH1L6kB265YR3mD2F5n/XIPg+vJBtvvEsqfeEt+0HW7MC2/MK7QK72MJQXQOC2o
-         Vj1Cc1aZWqWoWAuxmBdyrfkZCMXGOGqGfJVdV5Ntyj8cuU2ChEdpJlzMhxI36T21342a
-         tYTWCF4L66/x2lMMiyYCEBm19qIRFird/mF6WOM/wGuuCMTwKe3gvRC2s0JAvijcWJNf
-         6/j8CoNCeKcOyuaPjR0TBxx49c7ge0Fpi5fjY0QV5uOw2uP4LihERuTpFdTp+YdOys7f
-         reJA==
-X-Gm-Message-State: AOAM531VSYn/8wgIDXSCWMV3sfxiTPHHV9ck9NH6F7ubyvthe+itOrm6
-        O4nvTIglQeA5hMHuTXA3e0l67f/NyUsWSPxY4lgSes28bR/2griXFhe/gXlFf6r8id5M2pu3a4i
-        QQ3f+kWp+88ryN7ZwPOEw9mjK5TJ0+6QWvvGWXMaV
-X-Received: by 2002:a19:e00b:: with SMTP id x11mr1599236lfg.436.1629188197684;
-        Tue, 17 Aug 2021 01:16:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxOoc1hi6Z/mta4euyFcXISlA832eI1bKIDzEItOgJ0WuAxvbQdlmufrdPWFKHfL9QeQ+mYV8bZ9lcjd41KHJA=
-X-Received: by 2002:a19:e00b:: with SMTP id x11mr1599225lfg.436.1629188197483;
- Tue, 17 Aug 2021 01:16:37 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=ijowZ4jcrG0Ehbu0X7RLv2m890u4vuBU8RzGN0n7bL0=;
+        b=k5qNHffVuO0HnPrmK02zb0PTsOoH1KU6N2V9ddjNvXbbxYw2aJoNgTWE/EMUaDVWnh
+         zXhKqkugjsMlmbpCirZPefThUeJM/nkptBTLXXC3eHoY3qDEZuDCsyhZ3TxPIVm0KfXu
+         NEcHNDDkhd5mB94MtkgI+lQAnxf2pNWuMESyKnN9i6b3vHWecne8cRwLCkToc8ryNHCp
+         LkrGehyY2ayXo0LbxAruRjW4o06Ny6y8RrTe447YciQzz2ODtellUoG1f2/ZQi/WFWxt
+         Yct/UsOtyajgh1DNwL9A1fUyZkqTRMpSk8MWcAXm6FKgiXjwDHgVQ6beS9vJQPyqohQV
+         7XMA==
+X-Gm-Message-State: AOAM5306At0tdJBwV1GllgM9sl5YHzlFspbtbn5M2BOc91043qjYJPm5
+        gXEHOpc6fxak59LYY3SBuHWTHA==
+X-Google-Smtp-Source: ABdhPJyDjNDrAfBVAAvGPzIj04mSmcEsVajGGsFy6FFaXWF2QwGM7GhbPjNQfw/JroHWC0p7JHupbg==
+X-Received: by 2002:a05:620a:1222:: with SMTP id v2mr2636380qkj.1.1629188264267;
+        Tue, 17 Aug 2021 01:17:44 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id h140sm921535qke.112.2021.08.17.01.17.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 01:17:43 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 01:17:41 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH 6/9] huge tmpfs: SGP_NOALLOC to stop collapse_file() on
+ race
+In-Reply-To: <da632211-8e3e-6b1-aee-ab24734429a0@google.com>
+Message-ID: <1355343b-acf-4653-ef79-6aee40214ac5@google.com>
+References: <da632211-8e3e-6b1-aee-ab24734429a0@google.com>
 MIME-Version: 1.0
-References: <20210817020338.6400-1-jasowang@redhat.com> <20210817023118-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20210817023118-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Tue, 17 Aug 2021 16:16:26 +0800
-Message-ID: <CACGkMEuYMMBqgmpo25zc1uT2qCB09pjThDWJoWKLCz9GehccFQ@mail.gmail.com>
-Subject: Re: [PATCH net] virtio-net: use NETIF_F_GRO_HW instead of NETIF_F_LRO
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     davem <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ivan <ivan@prestigetransportation.com>,
-        Tonghao Zhang <xiangxia.m.yue@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 2:46 PM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> Patch is good. Suggest some tweaks to the commit log.
->
-> On Tue, Aug 17, 2021 at 10:03:38AM +0800, Jason Wang wrote:
-> > Commit a02e8964eaf92 ("virtio-net: ethtool configurable LRO") tries to
-> > advertise LRO on behalf of the guest offloading features and allow the
->
-> tries to advertise -> advertises
->
-> that part actually works.
->
-> allow -> allows
->
-> on behalf of features is really weird. maybe "maps"?
->
-> > administrator to enable and disable those features via ethtool.
-> >
-> > This may lead several issues:
->
-> may lead->lead to
->
-> >
-> > - For the device that doesn't support control guest offloads, the
-> >   "LRO" can't be disabled so we will get a warn in the
->
-> warn -> warning
->
-> >   dev_disable_lro()
->
-> .. when turning off LRO or when enabling forwarding bridging etc.
->
-> > - For the device that have the control guest offloads, the guest
->
-> have the -> supports
->
-> >   offloads were disabled in the case of bridge etc
->
-> etc -> forwarding etc
->
-> > which may slow down
->
-> were -> are
->
-> may slow -> slows
->
-> >   the traffic.
-> >
-> > Fixing this by using NETIF_F_GRO_HW instead. Though the spec does not
-> > guaranteed to be re-segmented as original explicitly now, we can add
->
-> guaranteed -> guarantee
->
-> > that to the spec
->
-> I would add:
->
-> Further, we never advertised LRO historically before a02e8964eaf92
-> ("virtio-net: ethtool configurable LRO") and so bridged/forwarded
-> configs effectively relied on virtio receive offloads being GRO.
->
->
->
->
-> > and then we can catch the bad configuration and
-> > setup.
->
-> Don't know what does this part mean. How would we catch it?
-> With a new flag? Let's say so.
->
-> >
-> > Fixes: a02e8964eaf92 ("virtio-net: ethtool configurable LRO")
-> > Signed-off-by: Jason Wang <jasowang@redhat.com>
->
->
->
-> Proposed rewritten commit log:
+khugepaged's collapse_file() currently uses SGP_NOHUGE to tell
+shmem_getpage() not to try allocating a huge page, in the very unlikely
+event that a racing hole-punch removes the swapped or fallocated page as
+soon as i_pages lock is dropped.
 
-Agree.
+We want to consolidate shmem's huge decisions, removing SGP_HUGE and
+SGP_NOHUGE; but cannot quite persuade ourselves that it's okay to regress
+the protection in this case - Yang Shi points out that the huge page
+would remain indefinitely, charged to root instead of the intended memcg.
 
-Post a new version.
+collapse_file() should not even allocate a small page in this case: why
+proceed if someone is punching a hole?  SGP_READ is almost the right flag
+here, except that it optimizes away from a fallocated page, with NULL to
+tell caller to fill with zeroes (like a hole); whereas collapse_file()'s
+sequence relies on using a cache page.  Add SGP_NOALLOC just for this.
 
-Thanks
+There are too many consecutive "if (page"s there in shmem_getpage_gfp():
+group it better; and fix the outdated "bring it back from swap" comment.
 
->
-> ===
-> [PATCH net] virtio-net: use NETIF_F_GRO_HW instead of NETIF_F_LRO
->
-> Commit a02e8964eaf92 ("virtio-net: ethtool configurable LRO")
-> maps LRO to virtio guest offloading features and allows the
-> administrator to enable and disable those features via ethtool.
->
-> This leads to several issues:
->
->
-> - For a device that doesn't support control guest offloads, the "LRO"
->   can't be disabled triggering WARN in dev_disable_lro() when turning
->   off LRO or when enabling forwarding bridging etc.
->
-> - For a device that supports control guest offloads, the guest
->   offloads are disabled in cases of bridging, forwarding etc
->   slowing down the traffic.
->
-> Fix this by using NETIF_F_GRO_HW instead. Though the spec does not
-> guarantee packets to be re-segmented as the original ones,
-> we can add that to the spec, possibly with a flag for devices to
-> differentiate between GRO and LRO.
->
-> Further, we never advertised LRO historically before a02e8964eaf92
-> ("virtio-net: ethtool configurable LRO") and so bridged/forwarded
-> configs effectively always relied on virtio receive offloads behaving
-> like GRO - thus even if this breaks any configs it is at least not
-> a regression.
->
-> Fixes: a02e8964eaf92 ("virtio-net: ethtool configurable LRO")
-> Acked-by: Michael S. Tsirkin <mst@redhat.com>
-> Reported-by: Ivan <ivan@prestigetransportation.com>
-> Tested-by: Ivan <ivan@prestigetransportation.com>
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
->
-> ===
->
->
-> > ---
-> >  drivers/net/virtio_net.c | 14 +++++++-------
-> >  1 file changed, 7 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > index 0416a7e00914..10c382b08bce 100644
-> > --- a/drivers/net/virtio_net.c
-> > +++ b/drivers/net/virtio_net.c
-> > @@ -63,7 +63,7 @@ static const unsigned long guest_offloads[] = {
-> >       VIRTIO_NET_F_GUEST_CSUM
-> >  };
-> >
-> > -#define GUEST_OFFLOAD_LRO_MASK ((1ULL << VIRTIO_NET_F_GUEST_TSO4) | \
-> > +#define GUEST_OFFLOAD_GRO_HW_MASK ((1ULL << VIRTIO_NET_F_GUEST_TSO4) | \
-> >                               (1ULL << VIRTIO_NET_F_GUEST_TSO6) | \
-> >                               (1ULL << VIRTIO_NET_F_GUEST_ECN)  | \
-> >                               (1ULL << VIRTIO_NET_F_GUEST_UFO))
-> > @@ -2481,7 +2481,7 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
-> >               virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_ECN) ||
-> >               virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_UFO) ||
-> >               virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_CSUM))) {
-> > -             NL_SET_ERR_MSG_MOD(extack, "Can't set XDP while host is implementing LRO/CSUM, disable LRO/CSUM first");
-> > +             NL_SET_ERR_MSG_MOD(extack, "Can't set XDP while host is implementing GRO_HW/CSUM, disable GRO_HW/CSUM first");
-> >               return -EOPNOTSUPP;
-> >       }
-> >
-> > @@ -2612,15 +2612,15 @@ static int virtnet_set_features(struct net_device *dev,
-> >       u64 offloads;
-> >       int err;
-> >
-> > -     if ((dev->features ^ features) & NETIF_F_LRO) {
-> > +     if ((dev->features ^ features) & NETIF_F_GRO_HW) {
-> >               if (vi->xdp_enabled)
-> >                       return -EBUSY;
-> >
-> > -             if (features & NETIF_F_LRO)
-> > +             if (features & NETIF_F_GRO_HW)
-> >                       offloads = vi->guest_offloads_capable;
-> >               else
-> >                       offloads = vi->guest_offloads_capable &
-> > -                                ~GUEST_OFFLOAD_LRO_MASK;
-> > +                                ~GUEST_OFFLOAD_GRO_HW_MASK;
-> >
-> >               err = virtnet_set_guest_offloads(vi, offloads);
-> >               if (err)
-> > @@ -3100,9 +3100,9 @@ static int virtnet_probe(struct virtio_device *vdev)
-> >               dev->features |= NETIF_F_RXCSUM;
-> >       if (virtio_has_feature(vdev, VIRTIO_NET_F_GUEST_TSO4) ||
-> >           virtio_has_feature(vdev, VIRTIO_NET_F_GUEST_TSO6))
-> > -             dev->features |= NETIF_F_LRO;
-> > +             dev->features |= NETIF_F_GRO_HW;
-> >       if (virtio_has_feature(vdev, VIRTIO_NET_F_CTRL_GUEST_OFFLOADS))
-> > -             dev->hw_features |= NETIF_F_LRO;
-> > +             dev->hw_features |= NETIF_F_GRO_HW;
-> >
-> >       dev->vlan_features = dev->features;
-> >
-> > --
-> > 2.25.1
->
+Signed-off-by: Hugh Dickins <hughd@google.com>
+---
+ include/linux/shmem_fs.h |  1 +
+ mm/khugepaged.c          |  2 +-
+ mm/shmem.c               | 29 +++++++++++++++++------------
+ 3 files changed, 19 insertions(+), 13 deletions(-)
+
+diff --git a/include/linux/shmem_fs.h b/include/linux/shmem_fs.h
+index 9b7f7ac52351..7d97b15a2f7a 100644
+--- a/include/linux/shmem_fs.h
++++ b/include/linux/shmem_fs.h
+@@ -94,6 +94,7 @@ extern unsigned long shmem_partial_swap_usage(struct address_space *mapping,
+ /* Flag allocation requirements to shmem_getpage */
+ enum sgp_type {
+ 	SGP_READ,	/* don't exceed i_size, don't allocate page */
++	SGP_NOALLOC,	/* similar, but fail on hole or use fallocated page */
+ 	SGP_CACHE,	/* don't exceed i_size, may allocate page */
+ 	SGP_NOHUGE,	/* like SGP_CACHE, but no huge pages */
+ 	SGP_HUGE,	/* like SGP_CACHE, huge pages preferred */
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index b0412be08fa2..045cc579f724 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -1721,7 +1721,7 @@ static void collapse_file(struct mm_struct *mm,
+ 				xas_unlock_irq(&xas);
+ 				/* swap in or instantiate fallocated page */
+ 				if (shmem_getpage(mapping->host, index, &page,
+-						  SGP_NOHUGE)) {
++						  SGP_NOALLOC)) {
+ 					result = SCAN_FAIL;
+ 					goto xa_unlocked;
+ 				}
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 740d48ef1eb5..226ac3a911e9 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -1871,26 +1871,31 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+ 		return error;
+ 	}
+ 
+-	if (page)
++	if (page) {
+ 		hindex = page->index;
+-	if (page && sgp == SGP_WRITE)
+-		mark_page_accessed(page);
+-
+-	/* fallocated page? */
+-	if (page && !PageUptodate(page)) {
++		if (sgp == SGP_WRITE)
++			mark_page_accessed(page);
++		if (PageUptodate(page))
++			goto out;
++		/* fallocated page */
+ 		if (sgp != SGP_READ)
+ 			goto clear;
+ 		unlock_page(page);
+ 		put_page(page);
+-		page = NULL;
+-		hindex = index;
+ 	}
+-	if (page || sgp == SGP_READ)
+-		goto out;
+ 
+ 	/*
+-	 * Fast cache lookup did not find it:
+-	 * bring it back from swap or allocate.
++	 * SGP_READ: succeed on hole, with NULL page, letting caller zero.
++	 * SGP_NOALLOC: fail on hole, with NULL page, letting caller fail.
++	 */
++	*pagep = NULL;
++	if (sgp == SGP_READ)
++		return 0;
++	if (sgp == SGP_NOALLOC)
++		return -ENOENT;
++
++	/*
++	 * Fast cache lookup and swap lookup did not find it: allocate.
+ 	 */
+ 
+ 	if (vma && userfaultfd_missing(vma)) {
+-- 
+2.26.2
 
