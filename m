@@ -2,114 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 797BC3EE5B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 06:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 771483EE5BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 06:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237376AbhHQEbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 00:31:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60458 "EHLO
+        id S233399AbhHQEiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 00:38:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbhHQEbS (ORCPT
+        with ESMTP id S230073AbhHQEis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 00:31:18 -0400
-Received: from challenge-bot.com (challenge-bot.com [IPv6:2602:fffa:fff:108a:0:16:3e15:92b8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA30C061764;
-        Mon, 16 Aug 2021 21:30:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=challenge-bot.com; s=20180430; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=80wuYmqec+tkN81Ry5/hAJbtjz7ZSJszLbUYJbgNwnc=; b=RMLTzz8heejfvkbtBduZvmdqg
-        S9yiMzEJiTPyJW7XTmDP8mzwAl6/i99oxuw5iDkQw5udghxROT+R3DANsuX4z+AtiYFt6YF/7RJc4
-        S6rTHDZdRo2xCYMCjxOQsYfmkX9ipcDO2TpadfNQXveV+GQA35NPchXc1VcB0lQ6C9EDQ=;
-Received: from ozzloy by challenge-bot.com with local (Exim 4.92)
-        (envelope-from <ozzloy@challenge-bot.com>)
-        id 1mFqkI-0004Om-NX; Mon, 16 Aug 2021 21:30:38 -0700
-Date:   Mon, 16 Aug 2021 21:30:38 -0700
-From:   daniel watson <ozzloy@challenge-bot.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging:iio:ade7854 surround complex defines in
- parentheses
-Message-ID: <20210817043038.GA9492@challenge-bot.com>
-References: <20210815023115.13016-1-ozzloy@challenge-bot.com>
- <YRizb/FGfYpGbpJy@kroah.com>
+        Tue, 17 Aug 2021 00:38:48 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A3EC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 21:38:16 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id i9so18151645lfg.10
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 21:38:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Uq/bBAwcycy9ILdK1/MFcUjGkBg8B9u5tF1ftRi5Jvs=;
+        b=eQWhMGR4Wzx2VRiWFtn6HkHbefAZwK1koiIBF+/62t/04vISEOfEHz4jctSwiCwSym
+         8/eJ0NnAss13r8v8P+RlBorAGjWvxqUb5flQvKImCB2tiOiklZv0qrFt3pQ2nOIwNz1r
+         GvW4LNXZh+y8c7F5cAJRs0quHLY4glemS906I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Uq/bBAwcycy9ILdK1/MFcUjGkBg8B9u5tF1ftRi5Jvs=;
+        b=IK+pHNfIt0jY2qq4XRpHzLihuZwF3iL54IJ5pHHDhWJN7U3uhIQf45uBNOXpwdAOaU
+         E6doR7pIKldR80g5dvFa2zFw56vQspoeQzWD04E8siYEjTiwUAQ8dok+jV+5Ug+bjcj2
+         2vj00sTERM/j0km5IilzfS2Btoou4NP/4QOHhhqX4q/W2k0jXLZWyZ2qqJ9zt1enpmNb
+         ZvTsYGv1kxQH/Bv+8yr5Cbx8pAADLwHc/dT7MsERxePl7RipisF6aWGZFjSS3umJ+PME
+         VDnM/AT8EfroMJK6TmAWFLxDqlzxYLIJPChq3+ZDFC/J+TZ+sJnTDzMA8l8FmQU/jC/0
+         GXkg==
+X-Gm-Message-State: AOAM531AVL1/Lnd0UyjfgNcJHmlwqMzWn9UQZYukhmOJ+n18Ca0FiS1Y
+        gGQSaPhfd+KeM3h+QlW1iB9aelSXGy5I2pos
+X-Google-Smtp-Source: ABdhPJx9TJNk0gDvY3rOcU7p8J8vYycosPn29nSyCCn3WRuTraM0bKfnQ2eo4FkJ4OhcH9/jyjtcfw==
+X-Received: by 2002:ac2:57cb:: with SMTP id k11mr960520lfo.119.1629175094211;
+        Mon, 16 Aug 2021 21:38:14 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id m20sm99183ljp.85.2021.08.16.21.38.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 21:38:13 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id x27so38906811lfu.5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 21:38:13 -0700 (PDT)
+X-Received: by 2002:a05:6512:114c:: with SMTP id m12mr943646lfg.40.1629175093063;
+ Mon, 16 Aug 2021 21:38:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRizb/FGfYpGbpJy@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210817005624.1455428-1-nathan@kernel.org> <80fa539a-b767-76ed-dafa-4d8d1a6b063e@kernel.org>
+In-Reply-To: <80fa539a-b767-76ed-dafa-4d8d1a6b063e@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 16 Aug 2021 18:37:57 -1000
+X-Gmail-Original-Message-ID: <CAHk-=wgFXOf9OUh3+vmWjhp1PC47RVsUkL0NszBxSWhbGzx4tw@mail.gmail.com>
+Message-ID: <CAHk-=wgFXOf9OUh3+vmWjhp1PC47RVsUkL0NszBxSWhbGzx4tw@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: Enable -Wimplicit-fallthrough for clang 14.0.0+
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 16, 2021 at 6:20 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> Additionally, there should be some time for the CI systems to update
+> their clang-14 builds, as the recent 0day report shows.
 
-If this is a false positive from checkpatch, I can submit it as an
-example to the checkpatch maintainers.  Do you think I should?
+What?
 
-On Sun, Aug 15, 2021 at 08:25:51AM +0200, Greg Kroah-Hartman wrote:
-> On Sat, Aug 14, 2021 at 07:31:15PM -0700, daniel watson wrote:
-> > Error found by checkpatch.pl
-> 
-> What error?
+No, the 0day report shows that the patch is buggy, and that the
 
-$ git checkout 36a21d5172 drivers/staging/iio/meter/ade7854.h # before
-Updated 1 path from 638ccd1543654
+  ifeq ($(shell test $(CONFIG_CLANG_VERSION) -ge 140000; echo $$?),0)
 
-$ ./scripts/checkpatch.pl --terse --types COMPLEX_MACRO \
-drivers/staging/iio/meter/ade7854.h
-drivers/staging/iio/meter/ade7854.h:142: ERROR: Macros with complex
-values should be enclosed in parentheses
-drivers/staging/iio/meter/ade7854.h:143: ERROR: Macros with complex
-values should be enclosed in parentheses
-drivers/staging/iio/meter/ade7854.h:144: ERROR: Macros with complex
-values should be enclosed in parentheses
-total: 3 errors, 0 warnings, 0 checks, 173 lines checked
+clearly doesn't work at all, since the flag is enabled on those
+systems with old clang versions.
 
-$ git checkout 143b51a80978 drivers/staging/iio/meter/ade7854.h # after
-Updated 1 path from 21c208a36476a
+Alternatively, the test works, but the 140000 version is not enough.
 
-$ ./scripts/checkpatch.pl --terse --types COMPLEX_MACRO \
-drivers/staging/iio/meter/ade7854.h
+So no. This patch is simply completely wrong, and doesn't fix the
+problem with Clang's buggy -Wimplicit-fallthrough flag.
 
-$
-
-
-> > Signed-off-by: daniel watson <ozzloy@challenge-bot.com>
-> 
-> Capitalize your name?
-
-I can remake this patch with my name capitalized if the patch is worth
-remaking.  I'll be sure to capitalize in future sign-off lines for
-Linux.
-
-
-> This is not a real change that is needed, just look at the code to
-> verify that.
-
-Agreed, this is not a huge change.
-
-I thought small changes were acceptable, if they get rid of errors from
-checkpatch.  I got that impression from this video
-
-Write and Submit your first Linux kernel Patch
-https://youtu.be/LLBrBBImJt4
-
-At around 15 minutes, you create a patch which removes curly braces
-from an if-else.  That seemed comparable to the change in this
-patch.  That video was posted over a decade ago, so I would understand
-if things are different now.
-
-> 
-> thanks,
-> 
-> greg k-h
-
-You're welcome!  Thank you too, that was a super fast response!  I am
-happy to get a direct response from you!
-
+              Linus
