@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E03733EEBE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 13:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C8173EEBD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 13:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236948AbhHQLte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 07:49:34 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:17030 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236713AbhHQLtc (ORCPT
+        id S239755AbhHQLjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 07:39:04 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:8432 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236758AbhHQLjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 07:49:32 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gpq2y07nzzb2Js;
-        Tue, 17 Aug 2021 19:45:14 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+        Tue, 17 Aug 2021 07:39:02 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GpppV2D1Kz88KT;
+        Tue, 17 Aug 2021 19:34:26 +0800 (CST)
+Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 17 Aug 2021 19:48:57 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 17 Aug 2021 19:48:56 +0800
-Subject: Re: [PATCH 5.4 00/64] 5.4.142-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210816171405.410986560@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <ab6a596e-2e10-6bb4-aef5-63e6b349b1b2@huawei.com>
-Date:   Tue, 17 Aug 2021 19:48:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ 15.1.2176.2; Tue, 17 Aug 2021 19:38:28 +0800
+Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
+ (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 17
+ Aug 2021 19:38:27 +0800
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <bbrezillon@kernel.org>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
+Subject: [PATCH v2 2/2] mtd: mtdconcat: Check _read,_write callbacks existence before assignment
+Date:   Tue, 17 Aug 2021 19:48:57 +0800
+Message-ID: <20210817114857.2784825-3-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210817114857.2784825-1-chengzhihao1@huawei.com>
+References: <20210817114857.2784825-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210816171405.410986560@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
 X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
+ dggema761-chm.china.huawei.com (10.1.198.203)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Since 2431c4f5b46c3 ("mtd: Implement mtd_{read,write}() as wrappers
+around mtd_{read,write}_oob()") don't allow _write|_read and
+_write_oob|_read_oob existing at the same time, we should check the
+existence of callbacks "_read and _write" from subdev's master device
+(We can trust master device since it has been registered) before
+assigning, otherwise following warning occurs while making
+concatenated device:
 
+  WARNING: CPU: 2 PID: 6728 at drivers/mtd/mtdcore.c:595
+  add_mtd_device+0x7f/0x7b0
 
-On 2021/8/17 1:14, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.142 release.
-> There are 64 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 18 Aug 2021 17:13:49 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.142-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Fixes: 2431c4f5b46c3 ("mtd: Implement mtd_{read,write}() around ...")
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ drivers/mtd/mtdconcat.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Tested on arm64 and x86 for 5.4.142-rc2,
+diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
+index af51eee6b5e8..f685a581df48 100644
+--- a/drivers/mtd/mtdconcat.c
++++ b/drivers/mtd/mtdconcat.c
+@@ -694,6 +694,10 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
+ 		concat->mtd._block_markbad = concat_block_markbad;
+ 	if (subdev_master->_panic_write)
+ 		concat->mtd._panic_write = concat_panic_write;
++	if (subdev_master->_read)
++		concat->mtd._read = concat_read;
++	if (subdev_master->_write)
++		concat->mtd._write = concat_write;
+ 
+ 	concat->mtd.ecc_stats.badblocks = subdev[0]->ecc_stats.badblocks;
+ 
+@@ -755,8 +759,6 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
+ 	concat->mtd.name = name;
+ 
+ 	concat->mtd._erase = concat_erase;
+-	concat->mtd._read = concat_read;
+-	concat->mtd._write = concat_write;
+ 	concat->mtd._sync = concat_sync;
+ 	concat->mtd._lock = concat_lock;
+ 	concat->mtd._unlock = concat_unlock;
+-- 
+2.31.1
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.4.y
-Version: 5.4.142-rc2
-Commit: 24a339d553e6ee1ba2c6216df053c7cce1e3db4c
-Compiler: gcc version 7.3.0 (GCC)
-
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8906
-passed: 8906
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8906
-passed: 8906
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
