@@ -2,72 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D021D3EE809
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E833EE80B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238797AbhHQIKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 04:10:08 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:51755 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234581AbhHQIKE (ORCPT
+        id S238936AbhHQIKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 04:10:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51286 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238841AbhHQIKI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 04:10:04 -0400
-Received: from mail-wm1-f43.google.com ([209.85.128.43]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MUl4z-1mfvUR1giP-00Qg8l; Tue, 17 Aug 2021 10:09:30 +0200
-Received: by mail-wm1-f43.google.com with SMTP id c8-20020a7bc008000000b002e6e462e95fso1234439wmb.2;
-        Tue, 17 Aug 2021 01:09:30 -0700 (PDT)
-X-Gm-Message-State: AOAM532/nYoVYQdaPNTDw/HJAla55xHpS/5pQ2ITJ01MNb4kgq3EOarN
-        CpWh2KXxroCQzhSQTghMZwGntd848CqgIz3kG0g=
-X-Google-Smtp-Source: ABdhPJw/hVeF2oi552UuzFwFxuAsd7BwTOC7LdXLOiMZcArDyclXg5p1pniYYafsm/+Q1D9cOD+vthsEizxoC+Abkac=
-X-Received: by 2002:a05:600c:1991:: with SMTP id t17mr2051915wmq.120.1629187769866;
- Tue, 17 Aug 2021 01:09:29 -0700 (PDT)
+        Tue, 17 Aug 2021 04:10:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629187775;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=O4cZfbe1X/aYRCg/BBdDBI3JyOIcujEAkXthIiBp3ow=;
+        b=S6Q2QfvRVJlpLRbselmlsQxQikcfpIW3ymSJqFyjfpjzNw8ZNOy3UG9YP8XUTlCKhzat21
+        w2ZBSsNaSOVXt7CqF3ENYOL4+uBpXpuZmHrA+HlabpRgFaorMVQyOYDZLqk03Bx9EI14KF
+        5hNVeVUQwWCdULtOEvUkRC1ir+WbtbU=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-201-UGJdqQdNNs-cl0qT9AyiyA-1; Tue, 17 Aug 2021 04:09:33 -0400
+X-MC-Unique: UGJdqQdNNs-cl0qT9AyiyA-1
+Received: by mail-wm1-f71.google.com with SMTP id y206-20020a1c7dd70000b02902e6a442ea44so676895wmc.9
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 01:09:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=O4cZfbe1X/aYRCg/BBdDBI3JyOIcujEAkXthIiBp3ow=;
+        b=K8gZ6Wv+7MqEBOEJSh+h8+LGyS5UEHb77/KwzZWICE69Rdnhbe2uDI2xh+OZYiwJhI
+         +hj4n57CLU2bmHuprRFAetVGqt2RIbLaFxn1LlQuKt7gjJe+eLne0cZexIYV/CRRd04/
+         KryOoFnh+HFbn+fqW75u5rbZczM0xm9JOy7qFK5Ct5AOxrdhd1eiiZpRSheBBLZmHN1o
+         O15zGH2eq2meM6iqE9cLJR3dhxEY+eUxgF1WEQChtqSLrBNTGtf86iNsWUGUP9FetTis
+         G+ZTPaVcW6ZPDq62nRKGHbeicN5DyNfk6Rf4N03e/VJ/fIJUweB1OYBKAp5GTPh3Jm4s
+         1ldA==
+X-Gm-Message-State: AOAM533sUvTpOTZkTB/PdA1PL9+ZIv8v+wqp5nMvcusPgi4lurrIc1sL
+        dMxniO+IpJfjnui3t18R/bkM4cXLJTkev23eHs+MfQWIaGvYhfmOUFBfdbVhkSrVOdV8jGH7Q/W
+        GDHdLP5HonHdy+fj6Hqj8N9OL
+X-Received: by 2002:a5d:4b50:: with SMTP id w16mr39828wrs.128.1629187772352;
+        Tue, 17 Aug 2021 01:09:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzG9XSMJEb5b2B9rG9dICTfbFPJqW6JTk4tB0xY+Y5O0zlhB+xe3MKU4nbJAO2cx0oBtR7Iig==
+X-Received: by 2002:a5d:4b50:: with SMTP id w16mr39821wrs.128.1629187772200;
+        Tue, 17 Aug 2021 01:09:32 -0700 (PDT)
+Received: from krava ([83.240.61.5])
+        by smtp.gmail.com with ESMTPSA id y13sm1228457wmj.27.2021.08.17.01.09.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 01:09:31 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 10:09:30 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [BUG] general protection fault when reading /proc/kcore
+Message-ID: <YRtuukdYWbwO+4VF@krava>
+References: <YRqhqz35tm3hA9CG@krava>
+ <1a05d147-e249-7682-2c86-bbd157bc9c7d@redhat.com>
+ <YRqqqvaZHDu1IKrD@krava>
+ <2b83f03c-e782-138d-6010-1e4da5829b9a@redhat.com>
+ <YRq4typgRn342B4i@kernel.org>
+ <YRtrktVtNlWMLVZR@kernel.org>
 MIME-Version: 1.0
-References: <20210817072842.8640-1-lukas.bulwahn@gmail.com>
-In-Reply-To: <20210817072842.8640-1-lukas.bulwahn@gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 17 Aug 2021 10:09:14 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1H-Of2LC9Yp36PB+dhAwvirohSVDo1y9nWshyZytWqNw@mail.gmail.com>
-Message-ID: <CAK8P3a1H-Of2LC9Yp36PB+dhAwvirohSVDo1y9nWshyZytWqNw@mail.gmail.com>
-Subject: Re: [PATCH] input: remove dead CSR Prima2 PWRC driver
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:2QKq/FQd5pk2kzFN5fPpXezwU69TUHVu0OZ9SSDS1TFm+ae8FJQ
- w3AlHn+C7tssZge064OTegWIogTtYV9PybKm5pUegLVj+l3j2peZ9ZCxwTPMPR3NLZESUQf
- eZWFyKVZbLcc+lWBRvxiNXqWBZx5OCSJh1wlPSVVNT1d16npJkzwtbAJkHy31JqAt6IcdXh
- MDi7ORAAVLDaG/Lb1Qtig==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:N+LggpEY3oM=:xLXGheIGd65UuAakDmsOib
- oeOSWQ2aSXgwWyHa5+p2hBATg04TKHgKAHUT4kDt+hQbir0nOzD2zMSfp0ROfSng5Ya2dSqAU
- VBR8EeSbIZeNAdk9lHBvPyQF0Ls7+LD0I5WDAQAwzHXcax37dRHAHCy/drBCo7ZpzBowkU6v0
- B4WiAdWE0/trNxJTM7dYtN23uf/Juiqi2HCgLtzF9NtdB7s1FqucgJk+a+JHzu27RQqrhnW9Q
- JgMBEBXkaKgR7HT4iQHZPNOcdffCEawPwbVnataFKBFZd6ZlxlCfhoMorVQx7d3+zKKmgz/4N
- T7l9nMx3mRgMXhuZlirQh/0gp6kXUsIW2GoW4KZUQJzW/gS9Ep1jj0TioN0ouXP8q7VmeCzsi
- xAJcNchb5dLO+fwKBwC6AKJGkJoJ1Y7Gz4FqxAjZW6aFTwFzIz1gUYk6yaOitkN7WaUGYQiis
- pHTYSb4EHu7qWW/FUuatZwa8q1wuIrlOrBSFYdssCPNLci6806TDGyAd1B1Tr+U3A/9RZzJxw
- LnAii/EHP1Cgal9MR2mmYmhLihdRlBXShNLLCdiy2IV0n1DgpTNp+dMy0pV+b+XN0DrgQR9hv
- iZ3YJvToTfINR1/iaivi7fG9XgDxlYKymL2S3YysJ2W/3dqp7ed29Kwk7ZIJgyjUL8bvrHHPn
- ixJTpmWduVlqrH0RAObAc2+r9iZzSvRgHEDiUfTTNhOA81oLb5HRNs+zHFvNni1Nbkujs+lO6
- vT4ScnPv4AB77WsQBUq+acYUDYunSVMaVo0zOrBupuQFwltvx0L0rJnJUPoe4Y9DIYfyEEP94
- U0JmSfx6C80OSi34YxHBWCzf65ldhi+NqdDXdtmCnEBEte0Krv6uzoIufrefBXuPs5YdgSV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YRtrktVtNlWMLVZR@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 9:29 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> Commit f3a732843acc ("ARM: remove sirf prima2/atlas platforms") removes
-> the config ARCH_SIRF in ./arch/arm/mach-prima2/Kconfig.
->
-> Hence, since then, the corresponding CSR Prima2 PWRC Driver is dead code.
-> Remove this dead driver.
->
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+On Tue, Aug 17, 2021 at 10:56:02AM +0300, Mike Rapoport wrote:
+> On Mon, Aug 16, 2021 at 10:13:18PM +0300, Mike Rapoport wrote:
+> > On Mon, Aug 16, 2021 at 08:38:43PM +0200, David Hildenbrand wrote:
+> > > On 16.08.21 20:12, Jiri Olsa wrote:
+> > > > On Mon, Aug 16, 2021 at 07:49:15PM +0200, David Hildenbrand wrote:
+> > > > > On 16.08.21 19:34, Jiri Olsa wrote:
+> > > > > > hi,
+> > > > > > I'm getting fault below when running:
+> > > > > >=20
+> > > > > > 	# cat /proc/kallsyms | grep ksys_read
+> > > > > > 	ffffffff8136d580 T ksys_read
+> > > > > > 	# objdump -d --start-address=3D0xffffffff8136d580 --stop-addre=
+ss=3D0xffffffff8136d590 /proc/kcore
+> > > > > >=20
+> > > > > > 	/proc/kcore:     file format elf64-x86-64
+> > > > > >=20
+> > > > > > 	Segmentation fault
+> > > > > >=20
+> > > > > > any idea? config is attached
+> > > > >=20
+> > > > > Just tried with a different config on 5.14.0-rc6+
+> > > > >=20
+> > > > > [root@localhost ~]# cat /proc/kallsyms | grep ksys_read
+> > > > > ffffffff8927a800 T ksys_readahead
+> > > > > ffffffff89333660 T ksys_read
+> > > > >=20
+> > > > > [root@localhost ~]# objdump -d --start-address=3D0xffffffff893336=
+60
+> > > > > --stop-address=3D0xffffffff89333670
+> > > > >=20
+> > > > > a.out:     file format elf64-x86-64
+> > > > >=20
+> > > > >=20
+> > > > >=20
+> > > > > The kern_addr_valid(start) seems to fault in your case, which is =
+weird,
+> > > > > because it merely walks the page tables. But it seems to complain=
+ about a
+> > > > > non-canonical address 0xf887ffcbff000
+> > > > >=20
+> > > > > Can you post your QEMU cmdline? Did you test this on other kernel=
+ versions?
+> > > >=20
+> > > > I'm using virt-manager so:
+> > > >=20
+> > > > /usr/bin/qemu-system-x86_64 -name guest=3Dfedora33,debug-threads=3D=
+on -S -object secret,id=3DmasterKey0,format=3Draw,file=3D/var/lib/libvirt/q=
+emu/domain-13-fedora33/master-key.aes -machine pc-q35-5.1,accel=3Dkvm,usb=
+=3Doff,vmport=3Doff,dump-guest-core=3Doff,memory-backend=3Dpc.ram -cpu Skyl=
+ake-Server-IBRS,ss=3Don,vmx=3Don,pdcm=3Don,hypervisor=3Don,tsc-adjust=3Don,=
+clflushopt=3Don,umip=3Don,pku=3Don,stibp=3Don,arch-capabilities=3Don,ssbd=
+=3Don,xsaves=3Don,ibpb=3Don,amd-stibp=3Don,amd-ssbd=3Don,skip-l1dfl-vmentry=
+=3Don,pschange-mc-no=3Don -m 8192 -object memory-backend-ram,id=3Dpc.ram,si=
+ze=3D8589934592 -overcommit mem-lock=3Doff -smp 20,sockets=3D20,cores=3D1,t=
+hreads=3D1 -uuid 2185d5a9-dbad-4d61-aa4e-97af9fd7ebca -no-user-config -node=
+faults -chardev socket,id=3Dcharmonitor,fd=3D36,server,nowait -mon chardev=
+=3Dcharmonitor,id=3Dmonitor,mode=3Dcontrol -rtc base=3Dutc,driftfix=3Dslew =
+-global kvm-pit.lost_tick_policy=3Ddelay -no-hpet -no-shutdown -global ICH9=
+-LPC.disable_s3=3D1 -global ICH9-LPC.disable_s4=3D1 -boot strict=3Don -kern=
+el /home/jolsa/qemu/run/vmlinux -initrd /home/jolsa/qemu/run/initrd -append=
+ root=3D/dev/mapper/fedora_fedora-root ro rd.lvm.lv=3Dfedora_fedora/root co=
+nsole=3Dtty0 console=3DttyS0,115200 -device pcie-root-port,port=3D0x10,chas=
+sis=3D1,id=3Dpci.1,bus=3Dpcie.0,multifunction=3Don,addr=3D0x2 -device pcie-=
+root-port,port=3D0x11,chassis=3D2,id=3Dpci.2,bus=3Dpcie.0,addr=3D0x2.0x1 -d=
+evice pcie-root-port,port=3D0x12,chassis=3D3,id=3Dpci.3,bus=3Dpcie.0,addr=
+=3D0x2.0x2 -device pcie-root-port,port=3D0x13,chassis=3D4,id=3Dpci.4,bus=3D=
+pcie.0,addr=3D0x2.0x3 -device pcie-root-port,port=3D0x14,chassis=3D5,id=3Dp=
+ci.5,bus=3Dpcie.0,addr=3D0x2.0x4 -device pcie-root-port,port=3D0x15,chassis=
+=3D6,id=3Dpci.6,bus=3Dpcie.0,addr=3D0x2.0x5 -device pcie-root-port,port=3D0=
+x16,chassis=3D7,id=3Dpci.7,bus=3Dpcie.0,addr=3D0x2.0x6 -device qemu-xhci,p2=
+=3D15,p3=3D15,id=3Dusb,bus=3Dpci.2,addr=3D0x0 -device virtio-serial-pci,id=
+=3Dvirtio-serial0,bus=3Dpci.3,addr=3D0x0 -blockdev {"driver":"file","filena=
+me":"/var/lib/libvirt/images/fedora33.qcow2","node-name":"libvirt-2-storage=
+","auto-read-only":true,"discard":"unmap"} -blockdev {"node-name":"libvirt-=
+2-format","read-only":false,"driver":"qcow2","file":"libvirt-2-storage","ba=
+cking":null} -device virtio-blk-pci,bus=3Dpci.4,addr=3D0x0,drive=3Dlibvirt-=
+2-format,id=3Dvirtio-disk0,bootindex=3D1 -device ide-cd,bus=3Dide.0,id=3Dsa=
+ta0-0-0 -netdev tap,fd=3D38,id=3Dhostnet0,vhost=3Don,vhostfd=3D39 -device v=
+irtio-net-pci,netdev=3Dhostnet0,id=3Dnet0,mac=3D52:54:00:f3:c6:e7,bus=3Dpci=
+=2E1,addr=3D0x0 -chardev pty,id=3Dcharserial0 -device isa-serial,chardev=3D=
+charserial0,id=3Dserial0 -chardev socket,id=3Dcharchannel0,fd=3D40,server,n=
+owait -device virtserialport,bus=3Dvirtio-serial0.0,nr=3D1,chardev=3Dcharch=
+annel0,id=3Dchannel0,name=3Dorg.qemu.guest_agent.0 -chardev spicevmc,id=3Dc=
+harchannel1,name=3Dvdagent -device virtserialport,bus=3Dvirtio-serial0.0,nr=
+=3D2,chardev=3Dcharchannel1,id=3Dchannel1,name=3Dcom.redhat.spice.0 -device=
+ usb-tablet,id=3Dinput0,bus=3Dusb.0,port=3D1 -spice port=3D5900,addr=3D127.=
+0.0.1,disable-ticketing,image-compression=3Doff,seamless-migration=3Don -de=
+vice qxl-vga,id=3Dvideo0,ram_size=3D67108864,vram_size=3D67108864,vram64_si=
+ze_mb=3D0,vgamem_mb=3D16,max_outputs=3D1,bus=3Dpcie.0,addr=3D0x1 -device ic=
+h9-intel-hda,id=3Dsound0,bus=3Dpcie.0,addr=3D0x1b -device hda-duplex,id=3Ds=
+ound0-codec0,bus=3Dsound0.0,cad=3D0 -chardev spicevmc,id=3Dcharredir0,name=
+=3Dusbredir -device usb-redir,chardev=3Dcharredir0,id=3Dredir0,bus=3Dusb.0,=
+port=3D2 -chardev spicevmc,id=3Dcharredir1,name=3Dusbredir -device usb-redi=
+r,chardev=3Dcharredir1,id=3Dredir1,bus=3Dusb.0,port=3D3 -device virtio-ball=
+oon-pci,id=3Dballoon0,bus=3Dpci.5,addr=3D0x0 -object rng-random,id=3Dobjrng=
+0,filename=3D/dev/urandom -device virtio-rng-pci,rng=3Dobjrng0,id=3Drng0,bu=
+s=3Dpci.6,addr=3D0x0 -sandbox on,obsolete=3Ddeny,elevateprivileges=3Ddeny,s=
+pawn=3Ddeny,resourcecontrol=3Ddeny -msg timestamp=3Don
+> > =20
+> > > > so far I tested just bpf-next/master:
+> > > >    git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+> > > >=20
+> > >=20
+> > > Just tried with upstream Linux (5.14.0-rc6) and your config without
+> > > triggering it. I'm using "-cpu host", though, on an AMD Ryzen 9 3900X
+> >=20
+> > With Jiri's config and '-cpu <very long string>' it triggers for me on
+> > v5.14-rc6.
+> >=20
+> > I'll also try to take a look tomorrow.
+>=20
+> There are some non-zero PMDs that are not present in the high kernel
+> mappings. The patch below fixes for me the issue in kern_addr_valid()
+> trying to access a not-present PMD. Jiri, can you check if it works for
+> you?
 
-Good catch!
+yep, seems to work for me.. console is quiet and I'm getting
+expected output
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+thanks,
+jirka
+
+>=20
+> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+> index ddeaba947eb3..07b56e90db5d 100644
+> --- a/arch/x86/mm/init_64.c
+> +++ b/arch/x86/mm/init_64.c
+> @@ -1433,18 +1433,18 @@ int kern_addr_valid(unsigned long addr)
+>  		return 0;
+> =20
+>  	p4d =3D p4d_offset(pgd, addr);
+> -	if (p4d_none(*p4d))
+> +	if (p4d_none(*p4d) || !p4d_present(*p4d))
+>  		return 0;
+> =20
+>  	pud =3D pud_offset(p4d, addr);
+> -	if (pud_none(*pud))
+> +	if (pud_none(*pud) || !pud_present(*pud))
+>  		return 0;
+> =20
+>  	if (pud_large(*pud))
+>  		return pfn_valid(pud_pfn(*pud));
+> =20
+>  	pmd =3D pmd_offset(pud, addr);
+> -	if (pmd_none(*pmd))
+> +	if (pmd_none(*pmd) || !pmd_present(*pmd))
+>  		return 0;
+> =20
+>  	if (pmd_large(*pmd))
+>=20
+> --=20
+> Sincerely yours,
+> Mike.
+>=20
+
