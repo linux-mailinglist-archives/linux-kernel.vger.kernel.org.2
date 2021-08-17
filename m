@@ -2,143 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 206E93EE7FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F24E3EE802
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 10:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238709AbhHQIHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 04:07:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234745AbhHQIG7 (ORCPT
+        id S238918AbhHQIIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 04:08:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42567 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238667AbhHQIHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 04:06:59 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCDBFC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 01:06:25 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id v1so10709763qva.7
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 01:06:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=O9s4DPf1EPyNh/heSsyriAAWi5ei5uslG+fh5iqpDHM=;
-        b=cPdYKEewpU4jCNb8wD3BV92DYOU1v3r7O6UXdBAqUA0jBAcX2Eb69vIKyir7IuKIuS
-         VEYU7UFk/+56re91uN29M8zzUUMSeznJT69W2RwnfVFR2xVnZ6b9KeKrnniGWWTGqtvF
-         qtFlja3Z7RebrnzlTDc1i1CLy+RETxEVVSUBDxKeRIt/wwM2idapdUdqNxkh30zVOXmQ
-         ONlY7AYGaRXdVN4L4kNZYDyuCuT99wM4j3h+T99pMiOwZKIPQWUMpRClOPv3LGo5XLCq
-         MFFtAwNPKcBP7v8wx2EHGfNhaEq1cEFSYvJrk/AL/9c1pVwUn7KU/BRCaLtf3ibh1/gA
-         yM0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=O9s4DPf1EPyNh/heSsyriAAWi5ei5uslG+fh5iqpDHM=;
-        b=AWKDvas2h5Ff+XJeBWNuVGGjUkwFw1Po9+1zhXc6f5nRopnTTF56miIY7Qv5yJujft
-         /ldjT3cjITLu7zMF1im1Z1dMzIczW9dhSG5yM7nObaKuIY0UuiT2gkCq1Kt/AJVBSCVn
-         pUCc2t9RZjnGo5oK4OgKBaxxbtmhrQrntrMpM+L2DNeSbgxf3MFZzOmcCXhI5usUMin+
-         QigZ2YMXOjCQdQP22YOIPzgP0XNGYzmWD02uTOj9BD82xUJkRB4XR/znxcGjDQo71PHB
-         oe/nB2WbIVh6nosIKU+Gcg0Rejm527KeJoLstKr8MagskOYIp7u70RoORlIRqMzEclY1
-         T5Zw==
-X-Gm-Message-State: AOAM5326ad7CLEHtOFGyZIllPmD9Df8QGkpt1quLoXTNRN9/jOWbPX/4
-        xWiiDMSvWIUOXLPI321+8/y1GQ==
-X-Google-Smtp-Source: ABdhPJwWtCeso79FFWIOIARYcHD6ce/4VjU95Aj+MM9ocNEv+dznWyCx4fajWaOxbQb+hvx/ZFX7aA==
-X-Received: by 2002:a0c:f20c:: with SMTP id h12mr2013192qvk.56.1629187584811;
-        Tue, 17 Aug 2021 01:06:24 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id p187sm871565qkd.101.2021.08.17.01.06.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 01:06:24 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 01:06:22 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH 1/9] huge tmpfs: fix fallocate(vanilla) advance over huge
- pages
-In-Reply-To: <da632211-8e3e-6b1-aee-ab24734429a0@google.com>
-Message-ID: <16201bd2-70e-37e2-e89b-5f929430da@google.com>
-References: <da632211-8e3e-6b1-aee-ab24734429a0@google.com>
+        Tue, 17 Aug 2021 04:07:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629187638;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=qVcE6UPf0wuZej4sXtxd/Uc1SmN5uwlN7K2SA3aUFHE=;
+        b=cmxmFHSn4oX60oA/ngOIqp+/QcdSyqQ+YHItTLOfsDF1I+nFdRgg3Z4VWe/gxmsBQi/wrU
+        VA4tFJtSoQhqvpNuy0ymVjdbu+/IFK+RjCPvK/HIslCEWl6zYwU8xJndzzF5viz2Aj/Dqw
+        thH/UYeFMsSw8GJ5gGYE1vujBDYodIw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-116-MGS0Ta-MPLayX6UyW_gr_Q-1; Tue, 17 Aug 2021 04:07:13 -0400
+X-MC-Unique: MGS0Ta-MPLayX6UyW_gr_Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3CB731008065;
+        Tue, 17 Aug 2021 08:07:12 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-13-175.pek2.redhat.com [10.72.13.175])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 010405C1B4;
+        Tue, 17 Aug 2021 08:07:04 +0000 (UTC)
+From:   Jason Wang <jasowang@redhat.com>
+To:     mst@redhat.com, jasowang@redhat.com
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ivan@prestigetransportation.com,
+        xiangxia.m.yue@gmail.com, willemb@google.com, edumazet@google.com
+Subject: [PATCH V2 net] virtio-net: use NETIF_F_GRO_HW instead of NETIF_F_LRO
+Date:   Tue, 17 Aug 2021 16:06:59 +0800
+Message-Id: <20210817080659.16223-1-jasowang@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-shmem_fallocate() goes to a lot of trouble to leave its newly allocated
-pages !Uptodate, partly to identify and undo them on failure, partly to
-leave the overhead of clearing them until later.  But the huge page case
-did not skip to the end of the extent, walked through the tail pages one
-by one, and appeared to work just fine: but in doing so, cleared and
-Uptodated the huge page, so there was no way to undo it on failure.
+Commit a02e8964eaf92 ("virtio-net: ethtool configurable LRO")
+maps LRO to virtio guest offloading features and allows the
+administrator to enable and disable those features via ethtool.
 
-And by setting Uptodate too soon, it messed up both its nr_falloced and
-nr_unswapped counts, so that the intended "time to give up" heuristic
-did not work at all.
+This leads to several issues:
 
-Now advance immediately to the end of the huge extent, with a comment on
-why this is more than just an optimization.  But although this speeds up
-huge tmpfs fallocation, it does leave the clearing until first use, and
-some users may have come to appreciate slow fallocate but fast first use:
-if they complain, then we can consider adding a pass to clear at the end.
+- For a device that doesn't support control guest offloads, the "LRO"
+  can't be disabled triggering WARN in dev_disable_lro() when turning
+  off LRO or when enabling forwarding bridging etc.
 
-Fixes: 800d8c63b2e9 ("shmem: add huge pages support")
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Reviewed-by: Yang Shi <shy828301@gmail.com>
+- For a device that supports control guest offloads, the guest
+  offloads are disabled in cases of bridging, forwarding etc slowing
+  down the traffic.
+
+Fix this by using NETIF_F_GRO_HW instead. Though the spec does not
+guarantee packets to be re-segmented as the original ones,
+we can add that to the spec, possibly with a flag for devices to
+differentiate between GRO and LRO.
+
+Further, we never advertised LRO historically before a02e8964eaf92
+("virtio-net: ethtool configurable LRO") and so bridged/forwarded
+configs effectively always relied on virtio receive offloads behaving
+like GRO - thus even if this breaks any configs it is at least not
+a regression.
+
+Fixes: a02e8964eaf92 ("virtio-net: ethtool configurable LRO")
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
+Reported-by: Ivan <ivan@prestigetransportation.com>
+Tested-by: Ivan <ivan@prestigetransportation.com>
+Signed-off-by: Jason Wang <jasowang@redhat.com>
 ---
- mm/shmem.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+Changes from V1:
+- Tweak the commit log
+---
+ drivers/net/virtio_net.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 70d9ce294bb4..0cd5c9156457 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -2736,7 +2736,7 @@ static long shmem_fallocate(struct file *file, int mode, loff_t offset,
- 	inode->i_private = &shmem_falloc;
- 	spin_unlock(&inode->i_lock);
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 0416a7e00914..10c382b08bce 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -63,7 +63,7 @@ static const unsigned long guest_offloads[] = {
+ 	VIRTIO_NET_F_GUEST_CSUM
+ };
  
--	for (index = start; index < end; index++) {
-+	for (index = start; index < end; ) {
- 		struct page *page;
+-#define GUEST_OFFLOAD_LRO_MASK ((1ULL << VIRTIO_NET_F_GUEST_TSO4) | \
++#define GUEST_OFFLOAD_GRO_HW_MASK ((1ULL << VIRTIO_NET_F_GUEST_TSO4) | \
+ 				(1ULL << VIRTIO_NET_F_GUEST_TSO6) | \
+ 				(1ULL << VIRTIO_NET_F_GUEST_ECN)  | \
+ 				(1ULL << VIRTIO_NET_F_GUEST_UFO))
+@@ -2481,7 +2481,7 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+ 	        virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_ECN) ||
+ 		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_UFO) ||
+ 		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_CSUM))) {
+-		NL_SET_ERR_MSG_MOD(extack, "Can't set XDP while host is implementing LRO/CSUM, disable LRO/CSUM first");
++		NL_SET_ERR_MSG_MOD(extack, "Can't set XDP while host is implementing GRO_HW/CSUM, disable GRO_HW/CSUM first");
+ 		return -EOPNOTSUPP;
+ 	}
  
- 		/*
-@@ -2759,13 +2759,26 @@ static long shmem_fallocate(struct file *file, int mode, loff_t offset,
- 			goto undone;
- 		}
+@@ -2612,15 +2612,15 @@ static int virtnet_set_features(struct net_device *dev,
+ 	u64 offloads;
+ 	int err;
  
-+		index++;
-+		/*
-+		 * Here is a more important optimization than it appears:
-+		 * a second SGP_FALLOC on the same huge page will clear it,
-+		 * making it PageUptodate and un-undoable if we fail later.
-+		 */
-+		if (PageTransCompound(page)) {
-+			index = round_up(index, HPAGE_PMD_NR);
-+			/* Beware 32-bit wraparound */
-+			if (!index)
-+				index--;
-+		}
-+
- 		/*
- 		 * Inform shmem_writepage() how far we have reached.
- 		 * No need for lock or barrier: we have the page lock.
- 		 */
--		shmem_falloc.next++;
- 		if (!PageUptodate(page))
--			shmem_falloc.nr_falloced++;
-+			shmem_falloc.nr_falloced += index - shmem_falloc.next;
-+		shmem_falloc.next = index;
+-	if ((dev->features ^ features) & NETIF_F_LRO) {
++	if ((dev->features ^ features) & NETIF_F_GRO_HW) {
+ 		if (vi->xdp_enabled)
+ 			return -EBUSY;
  
- 		/*
- 		 * If !PageUptodate, leave it that way so that freeable pages
+-		if (features & NETIF_F_LRO)
++		if (features & NETIF_F_GRO_HW)
+ 			offloads = vi->guest_offloads_capable;
+ 		else
+ 			offloads = vi->guest_offloads_capable &
+-				   ~GUEST_OFFLOAD_LRO_MASK;
++				   ~GUEST_OFFLOAD_GRO_HW_MASK;
+ 
+ 		err = virtnet_set_guest_offloads(vi, offloads);
+ 		if (err)
+@@ -3100,9 +3100,9 @@ static int virtnet_probe(struct virtio_device *vdev)
+ 		dev->features |= NETIF_F_RXCSUM;
+ 	if (virtio_has_feature(vdev, VIRTIO_NET_F_GUEST_TSO4) ||
+ 	    virtio_has_feature(vdev, VIRTIO_NET_F_GUEST_TSO6))
+-		dev->features |= NETIF_F_LRO;
++		dev->features |= NETIF_F_GRO_HW;
+ 	if (virtio_has_feature(vdev, VIRTIO_NET_F_CTRL_GUEST_OFFLOADS))
+-		dev->hw_features |= NETIF_F_LRO;
++		dev->hw_features |= NETIF_F_GRO_HW;
+ 
+ 	dev->vlan_features = dev->features;
+ 
 -- 
-2.26.2
+2.25.1
 
