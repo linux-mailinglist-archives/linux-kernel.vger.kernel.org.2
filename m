@@ -2,196 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 303503EF596
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 00:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC3D33EF597
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 00:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236159AbhHQWOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 18:14:36 -0400
-Received: from mail-dm6nam12on2058.outbound.protection.outlook.com ([40.107.243.58]:43329
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        id S235845AbhHQWQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 18:16:04 -0400
+Received: from mail-mw2nam10on2048.outbound.protection.outlook.com ([40.107.94.48]:5774
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229869AbhHQWOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 18:14:35 -0400
+        id S229869AbhHQWP7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 18:15:59 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wb+1rkb5g3oOjlLyh+tMGerPJwM3vzeUa0yCKA/owBXiSuhw+jb+KM1gPgkd4r8mo0MnENeT8uimHrM/M9sQxyAKk8SQ00KBLr89IApcfRZn7VfrHcYww4C9awbwqRPNcGe8Sy/MeajXu9YgTEHFoiWGZBrx9PpYWD8HPBQDW7AziQa/yXUmXBw+viy3ar6t41EsbrxYCDOqEM+7CBp6ybRMNVMz7O59I8zvH83HMZi3iyLwtU55gXOZxyVcfH0jQTogi1zlrfZYU4wH9dl3yhao1+1mqRTi64z/uHAqDyyR2ggKK44LetmrxmVJsnoTNIv2T2vMqXyIXeTDCb+MOQ==
+ b=joZcrQrreqvhKUu+xBY8koJa/dz/8NfQOVe6lj4GCZwbqJUvVaTx4hFM9GEVVFHyKRDfdtpL01xv9eF54kuKdGaWCsPYlgjCBytOU+XtiaX/fi/Kqfbsl/ViOjbXzW+CI6gouHw//rDhlK+jjzIy2zolRSU5kAjbK3nQQdSG/1N3dNt6hsK9f7CtCTDWHcxzYBk0Rty87vzUKuXzwWJWnH+fNSdfdgU+yvRLICyrQ8HlMqgnq3Vdzobi8uP7uUE9EwKR44AnolgFMnSGzo5U0rkydpUHmfqhYP+pFzOSJkxv/xETXMBXZduyFg156an8FiHhW0E6txrMM4HIZ6VWOg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=35BH7pL4XK1kRjaV3x8R3Am0K0hm3uIKDr9dZ2/L57A=;
- b=XRuxpbi6dK/7QNfviSvpdaioCE7lB3RBuF/1y3wYBMpkFOJYzU7bh8B5PNfRTOkYQ6Y36Gk2D5tWcgqxK+cAH9N5xYCLx25B3FM0XJlFGdeyltSGpX31aOVY6Za67o/TS7h9k3/IiD9i4+qT7l6qNsWiy8cj3OdgN7Wy/SmDxY7ziHb7P3Z4Aiqjt9ggv9+xC9sS3U64q75vTO2wf01cJdAleyVeyDKtlT2BhZOktFEcJR/R6ahtb9TS+prU+Y/p6wFY8LJVXKBrkJazK3I4vnyDlS+g74EcO4KH+6c/Kx7YRWC4DYWmBgzQdjpN7vZwr/Vu1H9iZ960vhbl6FPjJg==
+ bh=umZs9KRIWZrrCR1hoTYb52PIrNNVcbQb+cIWlwQqUSI=;
+ b=fidMpcTxxsDU8e+DXYMknego8hC1tJUO9HjYVhzTBv5O1lSdWrCEXkfxs0Tcn1ox1AerHEwRIjSDQCMLKNFiNYw19/Hv8IoxkOFxY1QoyFFf9G/JCWZonsNJavD/d0j10LF/YYoTK8PovA1lHx8SJTsvRJ0fnNzQN9NQ4veDFNBe4lo7PzmMj/B93oMLMqgD2VhJm2pC+eOMbJaH0zPHQgDFapGb46gP+BhwnoJy71UBGbwTBIgG7f2PpG0utm2QMg+sKY5fkukd3mK0uMsi43tNOFV6ljxp1t5rt6eg4mj3yYMYpKSzMRcvIz84b2zd4/X8uZ2Kr6lftFPPkRhkww==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=35BH7pL4XK1kRjaV3x8R3Am0K0hm3uIKDr9dZ2/L57A=;
- b=13db37pkehf1lJcWXIzgkC2jotDopyEXXi5dbsUKxknsvJwUBqqAlvPYGut58zshNfL1PFgMHzaI8wrM6PKmio2wEXDmQG4Jsuzk8MQZdeOsyRLLImK/GfSogQpxzHglfBEBdac0L5622v5RY83fx8fIpcSxRk5TjRD/LAsaC/Y=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by DM4PR12MB5103.namprd12.prod.outlook.com (2603:10b6:5:392::13) with
+ bh=umZs9KRIWZrrCR1hoTYb52PIrNNVcbQb+cIWlwQqUSI=;
+ b=dY7o6nDxekQ0Q/BT0TWMvZ0y0P0U0PX39ouBRfQ8hkdaTEKUJJy6V5bAzyv470XKHftJdrmdJwKuU7u9+oyX0XsV5x/xrZ0zvykl1kO8MXWoHqul6kC05TJ8Ly/oYLkZai4aPAcYBlqcFNkFazdYpmqU/Qs98WsIp0Vs2Af0mGQ=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3505.namprd12.prod.outlook.com (2603:10b6:408:69::17)
+ by BN8PR12MB3090.namprd12.prod.outlook.com (2603:10b6:408:67::26) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16; Tue, 17 Aug
- 2021 22:13:58 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d560:d21:cd59:9418]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d560:d21:cd59:9418%6]) with mapi id 15.20.4415.024; Tue, 17 Aug 2021
- 22:13:58 +0000
-Subject: Re: [PATCH Part1 RFC v4 20/36] x86/sev: Use SEV-SNP AP creation to
- start secondary CPUs
-To:     Borislav Petkov <bp@alien8.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+ 2021 22:15:23 +0000
+Received: from BN8PR12MB3505.namprd12.prod.outlook.com
+ ([fe80::8836:fe8d:8e90:a420]) by BN8PR12MB3505.namprd12.prod.outlook.com
+ ([fe80::8836:fe8d:8e90:a420%6]) with mapi id 15.20.4415.024; Tue, 17 Aug 2021
+ 22:15:23 +0000
+From:   Kim Phillips <kim.phillips@amd.com>
+To:     Arnaldo Carvalho de Melo <acme@redhat.com>, kim.phillips@amd.com
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-References: <20210707181506.30489-1-brijesh.singh@amd.com>
- <20210707181506.30489-21-brijesh.singh@amd.com> <YRwWSizr/xoWXivV@zn.tnic>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <35b57719-5f31-c71a-7a2f-d34f6e239d26@amd.com>
-Date:   Tue, 17 Aug 2021 17:13:54 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <YRwWSizr/xoWXivV@zn.tnic>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN4PR0201CA0013.namprd02.prod.outlook.com
- (2603:10b6:803:2b::23) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
+        Robert Richter <robert.richter@amd.com>,
+        Stephane Eranian <eranian@google.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: [PATCH 0/3] perf report: Add support to print a textual representation of IBS raw sample data
+Date:   Tue, 17 Aug 2021 17:15:06 -0500
+Message-Id: <20210817221509.88391-1-kim.phillips@amd.com>
+X-Mailer: git-send-email 2.31.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SA9PR13CA0180.namprd13.prod.outlook.com
+ (2603:10b6:806:28::35) To BN8PR12MB3505.namprd12.prod.outlook.com
+ (2603:10b6:408:69::17)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.30.241] (165.204.77.1) by SN4PR0201CA0013.namprd02.prod.outlook.com (2603:10b6:803:2b::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Tue, 17 Aug 2021 22:13:56 +0000
+Received: from fritz.amd.com (165.204.77.1) by SA9PR13CA0180.namprd13.prod.outlook.com (2603:10b6:806:28::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.8 via Frontend Transport; Tue, 17 Aug 2021 22:15:20 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6ced03bb-ef65-4998-c2db-08d961cc4f69
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5103:
+X-MS-Office365-Filtering-Correlation-Id: a603da88-259d-406b-ccfe-08d961cc8229
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3090:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM4PR12MB51037B266727D22E2012F09BECFE9@DM4PR12MB5103.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Microsoft-Antispam-PRVS: <BN8PR12MB3090153154F3E971CD08D78D87FE9@BN8PR12MB3090.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tyHo0us+7RWYJAqLllr6UUOMbpFcpRTEdfGR5HAfoMHnoM6+GDTKJAgefEJtX6ezVrkMtmJmA1ZoWFaV7F4BwI2IUXhqYFlhwY5hZfSe3DZSY7C2TqukFL8jX3gCeN+NrQblHrqdmmXx6Gf1IRvQzvYKBgaRbEOh7/yRaKSUWrrWxNbGdJzuaWvttegdPyfUo/Izc2T8O2S3/bvNH4zy5vhu5lWAxwRAmTowjDTwUtxXGQ8kCRmjaf3b34awwuNpOkFEGQ7kdpvsbWZ0gTOfzciUbmfDPltlFfdmSngaB3nwIRu5iIxH8NoWtF+wY33kmu0zy4GPA+CD8BTNpqJtDiI6T3dCylfRD+2S/2DAdS3M1/fCWBjvlTbAsL22RkOp4T8IrCSDq63AGEgxfUdzOVpWIhg1brZy9uy5IiAB/RzAjyoVtVTHaoq/DK/tPXNR+hvQgnEHhDZ4ui/rODrbnROL6ZQZt/rLyI8IUxlwmkHiCTOV6N/rt9ONurbuF/EPS61zzcXU9227qfFtaW383VTntUfhajqibT95GpKhHFnct26MdgVXOoRgOgN5hH4K/egluC9zsre+SSdUNA9G0kdXaMJ1vYsmCYFwAjXCTiYppPxgsKaagR4MCimZoDs/tjPXKZgMg10SFFSXhuVysJbeBXS25ftmtk0l/q1jCe5+a69YKxCiGW67ntscEXFqn8sl3K74OjW0H3BrQUzfeYh11923mHPmvQi7pz5nWNw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(396003)(376002)(39860400002)(366004)(54906003)(86362001)(8936002)(5660300002)(478600001)(186003)(26005)(956004)(38100700002)(83380400001)(53546011)(31696002)(7406005)(2616005)(36756003)(6486002)(16576012)(31686004)(6636002)(2906002)(316002)(110136005)(8676002)(66946007)(4326008)(66556008)(66476007)(7416002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: /vfwbeoRs4xJrYolcTIsIBL+g8dh8Kwtej+ffmkNy8VIReDjnGEaQvN0gw0lW6bj/bmhSCM8ji5Z2jTYVPfm+FcBBbMX2dmVeQjWIUlO9aDx+uT7GfFhb/RJbGKmwfc/ueDHeian1yULmvk4cnywxKJxnSlhdSZu91wg6YYIqc5sURBVN2YG9uHfCit2zUx+GY9wX2V1DhAiVDdJ1ld3i15BPaGjB3hP6lIQuuLGQfv1mG22u9GN3kNlcmoTu+XNras7qF7h9t52Yuk78q/G8uHeSeimalLFSM+EjJBcRaP7iYUKV60+x+P6sGFuM0qUkIlA1+cvbWwauXL4RSm5trFXE68A5SUaYyQEmTSPB4oMng2dB4tdMbHyHQMZjwNnTn3k8TSDCG8505bbQlcyuIk6u8dKMa+N00KjF1/16EVOtR4xxECXgvxd2yjh2xS11SUTLcg1uxWjyOWPjFF5ZlCKu/7dYRvMbAMETBXGd4rTa0rK0jZICQSfvdOfYikh7z2afJNAIFqbPyLmGpzjx6C69xuu9ENBTM2aCSaSMfFvPijMCRemVpHARI1C7voH+ZuHhL5bf9dDUUZdKXsiO0Ty9vrJTr7YVSTf77pwI6UuURQ8o6lTnjisJg0b1r6aYVwSlRlD1lXSb0/MIcM8I6dUOmxiORNT0nnGefLJh5nftodwLbMEhwuBOZUpl2l+rvW/4/Efb0OH9fpOhkckkom0fCkd9GmyO2wLT8SjJzX13OPAjtCOUsgxhRPPeAEthwyxyNsCSycDaXxNKAWLf50ZZ+mH4eDw2REhOPFneQE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3505.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6666004)(38100700002)(38350700002)(44832011)(4326008)(186003)(1076003)(26005)(2906002)(54906003)(7416002)(66946007)(66476007)(66556008)(86362001)(2616005)(956004)(6486002)(8676002)(316002)(83380400001)(5660300002)(8936002)(36756003)(7696005)(52116002)(508600001)(966005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cnduMkRuY0dWRWtHcldKd1BKRFRlTFVXUTUwcTN1TVhjdCtmbjhTcjUwZ1NN?=
- =?utf-8?B?TTRjY0ZZRnBOSzJERGtDSjB5S092TllRU1B1dzVieGJkNG02dm1aVXFUcytH?=
- =?utf-8?B?QlVuWmRwT2x2WWJDSFdmb1BVMVVLSHM1eksvRDV2dS9kZldtbzJDNXJYb1ZW?=
- =?utf-8?B?N1JHSWxKemVPTkJMM1RtdGFVWUIxZVBveDluL1FBVmtIN1VPSkRhL01FYWJi?=
- =?utf-8?B?OFBqUFEzdGxrZmlSYktLeGZnK1d1cTdwbHZKMnRjKytFSzRwa3Vna2JqQmdm?=
- =?utf-8?B?eE1aUVFRTU92ZXFrV2RyQWZ0T253aHEvOU5MZW1UaWdNNlgyWkdJdEpTeTBS?=
- =?utf-8?B?SzF4TEZjcFZ5ZnpKYVV1Uit6UldaaSt4Qll5S2FjVk1CUUd0WTJBeHo0NEMx?=
- =?utf-8?B?b0p4MGlCYS9Bb2pQN0hadEs0eVpyYnA3R2pmdVNQaVlxdHNHdDRrZENBMXl2?=
- =?utf-8?B?K1FLMDFkdW0xKytrZTFHTUVzTHVRTFFxN3k2VFdaRFM0YjZkWXJHS2Vralo1?=
- =?utf-8?B?TGJQVFQwUEsvTVJ2ak1hNGl3dnh2ZHcrK0lXaGxuMStVRlMwdDFQVlorWXlP?=
- =?utf-8?B?WjVvM2VPQnlyVklRZTMyZU5kRUdGMTdvWjY2WStwRWZtMnRKT3NOQ2xZYzU5?=
- =?utf-8?B?cWlFdXlLcThzampkRnk0R1lNRDlPemg3bEFSQXhNeHlXVGlhdXFydXduSTRK?=
- =?utf-8?B?SHpVR2ZuRi9sZElvZVJwNTlEUEdoRjVweXlubFZKQjl0TFZvaDFSQmQyRTcx?=
- =?utf-8?B?dW11VWZYTWpWcmZnZStGc3dsbmFneXZsUld5K1VTUUFZYVJaNVdLN1Q3WmVU?=
- =?utf-8?B?TEZFYmxXaWhMQWl0eVFYZHlDOFZCdHBwT28rVkJKWHB6cVozaEtGWXpRWll6?=
- =?utf-8?B?Wm8xd1JqbUJOdE5JSTJlSmxBd29PN1FWMlNzOEV3NjF4OHp6RFROSTRIZGtN?=
- =?utf-8?B?c3BoRUo0R1h5bXJ5WVNNdjJUMTVZbFZPdDE1ZmU4Z1gyWURHZEdKa0ZFWm5q?=
- =?utf-8?B?Qk96SUxtY0JiMGMrWHRSbnd4dzVZZmM2M2JjVlhZeHdXby9qU0xBYk9YdzJi?=
- =?utf-8?B?K2xvWjBWZWpxelJRd1JJeERLWmFvRjFiOEJZRVVQNmowRGxvOXlYK1p0VlZv?=
- =?utf-8?B?UXk0aTA0NUhlTnlIUHk0YnB1RFNEQTl6SU83RUpWMWNXUHhtOWRGaW5xUlVB?=
- =?utf-8?B?aUdHYVJhdXFoYU9BWHk5WmN6WCtZUGVYL0E3bjJpWWFDUlpEVGVMS2lpR1Jv?=
- =?utf-8?B?dlhPbDU0YXY4ZUhNa21mV3ZMTFFiS0xjK2xpbGJpRGJ6cDRpK1JMckhCaDBO?=
- =?utf-8?B?ZEg1OVpmQkR2QWM1R01RbGRwa29KMklMSXlGWkx1SDhtQXZ3eEl1ZERJbXFl?=
- =?utf-8?B?U1Jja3pJZS9jK25pbFgwWjZ4akpnTTZXd2NiVWs4clZybGdMVXAvaXkzL2N5?=
- =?utf-8?B?SElHMlU1NFNnUTBuNnovMGlqaWhJeWkySytaaWowVEVHY1NpM0htZ3Vza3hS?=
- =?utf-8?B?YWQ3U1RkSmVxRG1GWHFoTGY1eThwSlQ4Ti9tVWM1SHJNUGJVdHQ5MDc3NStO?=
- =?utf-8?B?My9xcTdlV21vb3UvdmQ2MzVwSFpPb2tWRWQxSS9DMWV3eXdNLys4VDhFSnZw?=
- =?utf-8?B?cG4vUDgyOTdteXRBb2owVzd3d2N0VW1zbktlTXR6YWE4TGdlSyt5YW1keXZ4?=
- =?utf-8?B?Znc3ODB4Z1oyU0lJdXdTR1B6WWRVdnJmUVZHVXVRelU0OXpQV2lUVXloUnpI?=
- =?utf-8?Q?/vhrUGup+JlTnao5on9baiqP4hT+7t4RYcLu8+Z?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NYfGFE+dOKEnlgGOm/uOkL9Xkd/eR/Jgnz9zmyCun8rPEz0nUd/5fdbtTqJb?=
+ =?us-ascii?Q?yJkRmmdRIokwpDNmQqyB87VRPLY1RNTLhrtonnA/rdLtEhSew0/cOEZDCi1b?=
+ =?us-ascii?Q?wAZ5WklvR9WV8X3Kq+RrK/rpoBxs0U0CIwGNfVS/ZGUbpKKRFv9ECsqq0w2Q?=
+ =?us-ascii?Q?M3QwD13xsI9Lp/DqudqtIgbirVZC5KjjQfqrPNE8mfOVe9/qxOP3QflTP+Z3?=
+ =?us-ascii?Q?pBORx6kpYnO07VsKQf2Vl03YIvoS6/wCmmTymXY4wg8XL+skvx6jkHGy1g1I?=
+ =?us-ascii?Q?da/ThOLiXRlzEe+Jlgln3QwPmJV0l1iIipuYRnEU8oLBsaKILaL6EFKbaIaJ?=
+ =?us-ascii?Q?dTxq1hwK+nOpQ1ZaUEf3wJrZOkEC+T+K6SzUwjYGtt6VgE+E9vh8tzmVICGz?=
+ =?us-ascii?Q?eHBUbhTtKQGShZOroDps3/KZZ7oYxfGPPPK9ildvkFXPwX2G7lUoshGkwCGC?=
+ =?us-ascii?Q?Y1AqZFC1izwGdLSvmzk+KjyRyKmzUITJbbl8Gc3aL0x36+6ca6GTdYqsIjDd?=
+ =?us-ascii?Q?6S7V7R6EUBJTzdqCCI6T/WD13qUVFC7RzLJC73qlhsZJ39h19kKju22+8ZeB?=
+ =?us-ascii?Q?KVKhyIsK3kyYlt9ee19OcTCK/a21tKOKpC4mAhCSNdNMk94rBY6N9hP8gvwR?=
+ =?us-ascii?Q?IAwYTaIUfnR5oVp81Iu5VI7075ajhBzWoT5UH/epVC+yUFCfSCe9CIbDwXQJ?=
+ =?us-ascii?Q?vTvk2HS7z0nrk/3PQcqz6w9Ob825bj0KwlzPVfjoc7yUBjYQLsXBuXmotVPe?=
+ =?us-ascii?Q?C4c8AjZVxWkGnun/kwFHhT3zXOkhvqWaVDaO7Tl8VmH8XWsHRcwtz71Lg+Yc?=
+ =?us-ascii?Q?N2q/4vCjKvjmKeLwMTO4zXPFA5sZgzys4FJfUCnQ9h6Gg1FTsb0SKfzXTdF7?=
+ =?us-ascii?Q?JeQ84XhKDwRCJeDTKv5i+wdCv53tycbjikkFd8SWuw9uCB6Ks+QszE9zN0eh?=
+ =?us-ascii?Q?UWwYgDz4FKwm0qkJemIdUCvBk/+T6NF14e+122p0D1t3V4/l5lai6M/KArze?=
+ =?us-ascii?Q?HzloNkJRJu5uCwTISmpGEzM57SF6cQTZQtDtphDLNlw/Ph8RHIoAwG157Ohx?=
+ =?us-ascii?Q?0aTqX3EjU1dww7aKKzWsuQ4AaoDnX7OAi7r/EFJ+YZOGv4qNIwU7udJl7spS?=
+ =?us-ascii?Q?DUjphB0qorGnE/1CN3fH/8MLRuCMqQ9D1A43XjEPgyJxiF/BssqD/0BRxpQm?=
+ =?us-ascii?Q?zfy9iGaKh4Yc85mhPtPGMC5I4FUEmfisK50PL8DbMgzC348lYsfvDdlIZs6X?=
+ =?us-ascii?Q?O0T9FSi0YHhrI1t7C1yMCSgWmDkRgEzP8m4L00UChptgZXLZzIrZREWocS8W?=
+ =?us-ascii?Q?QfN+eqDOHnZIasSiuuIOINBK?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6ced03bb-ef65-4998-c2db-08d961cc4f69
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a603da88-259d-406b-ccfe-08d961cc8229
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3505.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2021 22:13:58.5648
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2021 22:15:23.6514
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SP9Vc9TwddUauL86k8aob8dxlc3+3sLHFx1+kRkzizvTDAPTxQyUVjZVpnBL7amVBIhOQLZQvV++rfz+P4oK9w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5103
+X-MS-Exchange-CrossTenant-UserPrincipalName: CSm28Svouwv6uv+/YZWsgGxG6Do7I9XTlUws3sn/OGQ+T1T/BGAoUm8nxCS0URMp8G8uRBtxc47GwNy4XVV+bw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/17/21 3:04 PM, Borislav Petkov wrote:
-> On Wed, Jul 07, 2021 at 01:14:50PM -0500, Brijesh Singh wrote:
->> @@ -854,6 +858,207 @@ void snp_set_memory_private(unsigned long vaddr, unsigned int npages)
->>  	pvalidate_pages(vaddr, npages, 1);
->>  }
->>  
->> +static int vmsa_rmpadjust(void *va, bool vmsa)
-> 
-> I know, I know it gets a bool vmsa param but you can still call it
-> simply rmpadjust() because this is what it does - it is a wrapper around
-> the insn. Just like pvalidate() and so on.
+Hello Linux perf tools users and maintainers,
 
-Well, yes and no. It really is just setting or clearing the VMSA page
-attribute. It isn't trying to update permissions for the lower VMPLs, so I
-didn't want to mislabel it as a general rmpadjust function. But it's a
-simple enough thing to change and if multiple VMPL levels are ever
-supported it can be evaluated at that time.
+The first patch in this series prepares the perf tool to support
+retrieving cpuid and pmu_mappings data when in report mode,
+information that is needed to accurately decode IBS data.
 
-> 
-> ...
-> 
->> +static int wakeup_cpu_via_vmgexit(int apic_id, unsigned long start_ip)
->> +{
->> +	struct sev_es_save_area *cur_vmsa, *vmsa;
->> +	struct ghcb_state state;
->> +	unsigned long flags;
->> +	struct ghcb *ghcb;
->> +	int cpu, err, ret;
->> +	u8 sipi_vector;
->> +	u64 cr4;
->> +
->> +	if ((sev_hv_features & GHCB_HV_FT_SNP_AP_CREATION) != GHCB_HV_FT_SNP_AP_CREATION)
->> +		return -EOPNOTSUPP;
->> +
->> +	/*
->> +	 * Verify the desired start IP against the known trampoline start IP
->> +	 * to catch any future new trampolines that may be introduced that
->> +	 * would require a new protected guest entry point.
->> +	 */
->> +	if (WARN_ONCE(start_ip != real_mode_header->trampoline_start,
->> +		      "unsupported SEV-SNP start_ip: %lx\n", start_ip))
-> 
-> "Unsupported... " - with a capital letter
+The second patch adds a header file tools/arch/x86/include/asm/amd-ibs.h
+from a separate kernel-side submittion [1].
 
-Will do.
+The third patch allows the tool to print a textual representation
+of the sample data recorded by IBS.
 
-Thanks,
-Tom
+[1] https://lore.kernel.org/lkml/20210817221048.88063-9-kim.phillips@amd.com
 
-> 
->> +		return -EINVAL;
->> +
->> +	/* Override start_ip with known protected guest start IP */
->> +	start_ip = real_mode_header->sev_es_trampoline_start;
->> +
-> 
-> ...
-> 
+Kim Phillips (3):
+  perf env: Add perf_env__cpuid, perf_env__{nr_}pmu_mappings
+  perf report: Add tools/arch/x86/include/asm/amd-ibs.h
+  perf report: Add support to print a textual representation of IBS raw
+    sample data
+
+ tools/arch/x86/include/asm/amd-ibs.h | 132 ++++++++++++
+ tools/perf/check-headers.sh          |   1 +
+ tools/perf/util/Build                |   1 +
+ tools/perf/util/amd-sample-raw.c     | 290 +++++++++++++++++++++++++++
+ tools/perf/util/env.c                |  78 +++++++
+ tools/perf/util/env.h                |   5 +
+ tools/perf/util/sample-raw.c         |   8 +
+ tools/perf/util/sample-raw.h         |   6 +-
+ 8 files changed, 520 insertions(+), 1 deletion(-)
+ create mode 100644 tools/arch/x86/include/asm/amd-ibs.h
+ create mode 100644 tools/perf/util/amd-sample-raw.c
+
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Joao Martins <joao.m.martins@oracle.com>
+Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Michael Petlan <mpetlan@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Robert Richter <robert.richter@amd.com>
+Cc: Stephane Eranian <eranian@google.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-perf-users@vger.kernel.org
+
+-- 
+2.31.1
+
+
