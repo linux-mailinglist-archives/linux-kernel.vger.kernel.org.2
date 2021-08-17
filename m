@@ -2,153 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F613EEC01
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 13:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3F683EEC04
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 13:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239767AbhHQL5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 07:57:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49576 "EHLO
+        id S239839AbhHQL7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 07:59:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237001AbhHQL5j (ORCPT
+        with ESMTP id S236933AbhHQL7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 07:57:39 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 456E9C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 04:57:06 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id oa17so31648315pjb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 04:57:06 -0700 (PDT)
+        Tue, 17 Aug 2021 07:59:09 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8864C0613C1;
+        Tue, 17 Aug 2021 04:58:36 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 79-20020a1c0452000000b002e6cf79e572so1718452wme.1;
+        Tue, 17 Aug 2021 04:58:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5eVWcqoojYYHru/CT40TixXoXoJZblc78933GWI+qc4=;
-        b=Z+URnrGA0iYXyqx0+EwysvNVtOVd/Qg1weNCKom9Cykq/vKnuc/3Ozg0SuDdh8H9Jl
-         INx88aBuUSjXb+wrOFcWiXYtydeSGYZgbe7lq/4+OzyaYskq1ZNsFNjU63ZBOSFtNX2q
-         sva2h9Tucj6yOM3qYeQPRZlfOV0RjZlGok/fc=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=NMClj8Ypq+ih4H38J99oyoEKMrmlbDDN3Ps+QAMa1xs=;
+        b=bIBakpYrI9wwQ1Xh4C+E1Z2fLukRCYhJMuKjnhmNzGyWVpuoYIo/Byg989ZIXsHd+u
+         69obgaoYAcJPB9MnAuPcFZRSSsNxoHcqNqa5KemgcVRis90tFLdqKvfsWMKqYULLTcJe
+         2ydnWOtyTwzEM84MaGHXl40noHnvGsX1Xv9tDhq/HzzyHSmxf80xJru6pre2qJUVKGUq
+         SBxrxkGvoVCaO0qTLE+wPMG23iuvz5SF/Vb6QfOOz0XrvDVkx6hnab4dTvuZoqa5i5lJ
+         DXLzxDnqAKQjAFsW/X6JR9xebIippblqsi6s7HdWm/y0bWNMTWZmhZagtF3NjCrA+QQu
+         Wu4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5eVWcqoojYYHru/CT40TixXoXoJZblc78933GWI+qc4=;
-        b=eCBnm5XfWsapemA1E0/02fXfcOR8UupYSN1OXhBqw5Cvjo0UP5IivYeyIqOj7k3Hpr
-         7w0lC3PFlGkubKjK9COg9aox5ZtVjO8eY2PMum7t6z+/D0c9m/h2nXN2j+b7IsoPArZQ
-         UnICA2NdO7gdMhuqY9c26+fLXiY80FQTzb3KU4EFCucw5w8KwdFrJIKJqlQtnTOQJYUB
-         yku1bzZhocfNcG/SCSDS3/2K9IwcLpPRFsgoiImBWq+n5w564yCHAYfdPLHG4NCWdMOf
-         2eLYrehmyHDwz1xqFAzeaxWNneWlUT7hAKFYmcURujlMEIXlYqCiJy9Ad/6F4GNJDqRH
-         x/uw==
-X-Gm-Message-State: AOAM531YmCLwlb1j416msy1KcvUmzx2PaNQxsaBTiPEEBBrdM8gDK9rm
-        3N857gUN2L0q5yqYQdP4in8k/g==
-X-Google-Smtp-Source: ABdhPJyELtpHZ2cwJXA+46vVbt40ueVOgtpSjStycCk1fXsL7JKuECiBqUZZ+dxXVh6iLCDlkTKYGw==
-X-Received: by 2002:a17:902:f688:b0:12d:7aa6:1e44 with SMTP id l8-20020a170902f68800b0012d7aa61e44mr2773102plg.8.1629201425796;
-        Tue, 17 Aug 2021 04:57:05 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:8aab:cb84:5fe8:99dd])
-        by smtp.gmail.com with ESMTPSA id y5sm2200275pjy.37.2021.08.17.04.57.02
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=NMClj8Ypq+ih4H38J99oyoEKMrmlbDDN3Ps+QAMa1xs=;
+        b=AzhHi+NL9Q5kjskxmj8wM0M2Qr4AM95JCuvRed0t46IJm4PI+d9R+2EBg/I9EDcnTA
+         N1wwlkgvhUjWcxT18/xKI3DqUvWMp4VfyJ55GQ8y0LvDk6bu5hlkCo+8P+xVBa3g8cfo
+         AagvuXYZHkeqTmZV0rfasgem95kTBIKkO6uEFMcQ0VbmpaHrcdtNggfH4RvaHyQ5cW2Z
+         vukjTyp0SQtc1hA9Mp3UfnOg2bzgp9fkDqAaOkJvpMoqcGfMgYcodcmSQgtrj12eE/Rr
+         WhpAdu564oHIA958Ukcd/AVtOzHzjfc53NqwKl1l1J1mXw8WZLHV+EN8/ZKxLcUMVHMk
+         SI6g==
+X-Gm-Message-State: AOAM533UkQvqTQnrX+dxFK5E/Mr8llwIT/XzQl2aFqV4an+90LI9eLpB
+        71xfRSpd8bXq1fEp2LWA8Q==
+X-Google-Smtp-Source: ABdhPJx+pgqxk/ydLNFWco1xyvjugqvDdGvhC4GowXrMj4t92Lng9dX2AFx3EeIxAmYh8zbKo6+g5A==
+X-Received: by 2002:a05:600c:b51:: with SMTP id k17mr2917586wmr.149.1629201515461;
+        Tue, 17 Aug 2021 04:58:35 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.250.98])
+        by smtp.gmail.com with ESMTPSA id b15sm2153773wrq.5.2021.08.17.04.58.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 04:57:05 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 20:56:59 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv4 8/8] videobuf2: handle non-contiguous DMA allocations
-Message-ID: <YRukCziknzz/3/sV@google.com>
-References: <20210727070517.443167-1-senozhatsky@chromium.org>
- <20210727070517.443167-9-senozhatsky@chromium.org>
- <fd1e8bbe-4cbe-9586-7c8f-0896af043d4a@xs4all.nl>
+        Tue, 17 Aug 2021 04:58:35 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 14:58:33 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     acme@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: [PATCH] perf, android: fixup get_current_dir_name() compilation
+Message-ID: <YRukaQbrgDWhiwGr@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <fd1e8bbe-4cbe-9586-7c8f-0896af043d4a@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+strdup() prototype doesn't live in stdlib.h .
 
-On (21/08/03 12:15), Hans Verkuil wrote:
-> >  static void *vb2_dc_vaddr(struct vb2_buffer *vb, void *buf_priv)
-> >  {
-> >  	struct vb2_dc_buf *buf = buf_priv;
-> > -	struct dma_buf_map map;
-> > -	int ret;
-> >  
-> > -	if (!buf->vaddr && buf->db_attach) {
-> > -		ret = dma_buf_vmap(buf->db_attach->dmabuf, &map);
-> > -		buf->vaddr = ret ? NULL : map.vaddr;
-> > +	if (buf->vaddr)
-> > +		return buf->vaddr;
-> > +
-> > +	if (buf->db_attach) {
-> > +		struct dma_buf_map map;
-> > +
-> > +		if (!dma_buf_vmap(buf->db_attach->dmabuf, &map))
-> > +			buf->vaddr = map.vaddr;
-> > +
-> > +		return buf->vaddr;
-> >  	}
-> >  
-> > +	if (!buf->coherent_mem)
-> > +		buf->vaddr = dma_vmap_noncontiguous(buf->dev, buf->size,
-> > +						    buf->dma_sgt);
-> >  	return buf->vaddr;
-> >  }
-> 
-> This function really needs a bunch of comments.
-> 
-> What I want to see here specifically is under which circumstances this function
-> can return NULL.
-> 
-> - dma_buf_vmap returns an error
-> - for non-coherent memory dma_vmap_noncontiguous returns an error
-> - coherent memory with DMA_ATTR_NO_KERNEL_MAPPING set.
+Add limits.h for PATH_MAX definition as well.
 
-OK, I added some comments.
-
-> In the latter case, if a buffer with coherent memory and DMA_ATTR_NO_KERNEL_MAPPING
-> is exported as a dma_buf, and dma_buf_vmap is called by the importer of this dma-buf,
-> what happens then? I think that in that case dma_buf_vmap should return an error?
-
-Should we error out in vb2_dc_vaddr() in this case?
-
+Signed-off-by: Alexey Dobriyan (SK hynix) <adobriyan@gmail.com>
 ---
 
-diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-index d4089d0b5ec5..e1d8ae1548fa 100644
---- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-+++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-@@ -102,6 +102,9 @@ static void *vb2_dc_vaddr(struct vb2_buffer *vb, void *buf_priv)
-        if (buf->db_attach) {
-                struct dma_buf_map map;
+ tools/perf/util/get_current_dir_name.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- a/tools/perf/util/get_current_dir_name.c
++++ b/tools/perf/util/get_current_dir_name.c
+@@ -3,8 +3,9 @@
+ //
+ #ifndef HAVE_GET_CURRENT_DIR_NAME
+ #include "get_current_dir_name.h"
++#include <limits.h>
++#include <string.h>
+ #include <unistd.h>
+-#include <stdlib.h>
  
-+               if (WARN_ON(buf->attrs & DMA_ATTR_NO_KERNEL_MAPPING))
-+                       return NULL;
-+
-                if (!dma_buf_vmap(buf->db_attach->dmabuf, &map))
-                        buf->vaddr = map.vaddr;
+ /* Android's 'bionic' library, for one, doesn't have this */
  
-
----
-
-
-[..]
-> > @@ -362,7 +451,7 @@ static int vb2_dc_dmabuf_ops_vmap(struct dma_buf *dbuf, struct dma_buf_map *map)
-> >  {
-> >  	struct vb2_dc_buf *buf = dbuf->priv;
-> >  
-> > -	dma_buf_map_set_vaddr(map, buf->vaddr);
-> > +	dma_buf_map_set_vaddr(map, vb2_dc_vaddr(buf->vb, buf));
-> 
-> vb2_dc_vaddr() can return NULL, shouldn't this function return an error in that case?
-
-Done, thanks.
-
-> BTW, looking at where vb2_plane_vaddr() is called in drivers I notice that most (all?)
-> drivers do not check for NULL. Somewhat scary, to be honest. That's a separate issue, though.
-
-I may have some time in the future and can add missing if-s to the
-drivers.
