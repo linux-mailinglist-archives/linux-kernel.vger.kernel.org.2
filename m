@@ -2,118 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D033EEF02
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 17:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8673EEF63
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 17:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236565AbhHQPRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 11:17:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229545AbhHQPRi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 11:17:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA2CC60FC3;
-        Tue, 17 Aug 2021 15:17:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629213424;
-        bh=jdfQynrxi1WCYfDGA9Kc0r4i3sDA4a3bcitAeciJd04=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Q6iQOsjG6U03LH0Egg7KyLUWwjxpuXN+HAtNzhf03hufk+1/XkGwt5gKmgfUpLXNn
-         +UEFTWW0YVt3lRpKaTi0lwijyygOZC5Y3TrJdlszDShNrmW5gbl8umudhNAVfZtcH6
-         cxiXDSsByJ0Uk6w2Vow1rblLoZWXcltbd89P1/Gyn6lP1DNg4Bw5fVLGRSqQ7jX5IA
-         lZNB2jOktW4J1lO54sTpnO5fgaW8Djq7bsm8gE/FzocMsSR2m4Mt8bYm+x9+GOvmgW
-         1qdHWR1gPps2meE+mSh4/v/af2MCAA9PgeEFk3sF8K05S+sQFhZAkCXWw1udcI3G8Q
-         2DddKtSRUtWVQ==
-Received: by mail-oi1-f172.google.com with SMTP id t35so32369662oiw.9;
-        Tue, 17 Aug 2021 08:17:04 -0700 (PDT)
-X-Gm-Message-State: AOAM5330AI+YwqY9j29eODkJ/ueS/RVI3yMUa9T6rB0srkqwrYo5ZCNo
-        DkCb1LmCgcuPsYwajZvW0tTS8ndUDZZow4/zN5w=
-X-Google-Smtp-Source: ABdhPJzOgeV4HsR1ZXLpL94lV6IB9SCXpV41WI6ICwlsMcf3iidx7UFawkqkNj9pUA5Cy+fF+cUE5T6JdTPwYvjIj/w=
-X-Received: by 2002:aca:ea54:: with SMTP id i81mr2855390oih.174.1629213424190;
- Tue, 17 Aug 2021 08:17:04 -0700 (PDT)
+        id S238023AbhHQPrt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Aug 2021 11:47:49 -0400
+Received: from mx0b-000b4001.pphosted.com ([148.163.143.220]:53504 "EHLO
+        mx0b-000b4001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230369AbhHQPrh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 11:47:37 -0400
+X-Greylist: delayed 1254 seconds by postgrey-1.27 at vger.kernel.org; Tue, 17 Aug 2021 11:47:19 EDT
+Received: from pps.filterd (m0143840.ppops.net [127.0.0.1])
+        by mx0a-000b4001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17HFD69v031116;
+        Tue, 17 Aug 2021 15:25:31 GMT
+Received: from az1-msa-prod02.server.ufl.edu (az1-msa-prod02.server.ufl.edu [128.227.74.23])
+        by mx0a-000b4001.pphosted.com with ESMTP id 3afq3404xd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Aug 2021 15:25:31 +0000
+Received: from exmbxprd14.ad.ufl.edu (exmbxprd14.ad.ufl.edu [10.36.133.40])
+        by az1-msa-prod02.server.ufl.edu (Postfix) with ESMTPS id B16F140071;
+        Tue, 17 Aug 2021 11:25:30 -0400 (EDT)
+Received: from exmbxprd26.ad.ufl.edu (128.227.145.170) by
+ exmbxprd14.ad.ufl.edu (10.36.133.40) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Tue, 17 Aug 2021 11:25:30 -0400
+Received: from exmbxprd27.ad.ufl.edu (128.227.145.171) by
+ exmbxprd26.ad.ufl.edu (128.227.145.170) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Tue, 17 Aug 2021 11:25:30 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.109)
+ by exmbxprd27.ad.ufl.edu (128.227.145.171) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23 via Frontend Transport; Tue, 17 Aug 2021 11:25:30 -0400
+Received: from BN6PR2201MB1732.namprd22.prod.outlook.com
+ (2603:10b6:405:69::22) by BN6PR2201MB1266.namprd22.prod.outlook.com
+ (2603:10b6:405:20::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.21; Tue, 17 Aug
+ 2021 15:19:58 +0000
+Received: from BN6PR2201MB1732.namprd22.prod.outlook.com
+ ([fe80::f163:3de6:54e2:72fa]) by BN6PR2201MB1732.namprd22.prod.outlook.com
+ ([fe80::f163:3de6:54e2:72fa%4]) with mapi id 15.20.4415.024; Tue, 17 Aug 2021
+ 15:19:58 +0000
+From:   "Yavuz, Tuba" <tuba@ece.ufl.edu>
+To:     Salvatore Bonaccorso <carnil@debian.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+CC:     David Miller <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "oneukum@suse.com" <oneukum@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH v2] net: hso: do not call unregister if not registered
+Thread-Topic: [PATCH v2] net: hso: do not call unregister if not registered
+Thread-Index: AQHWmLFJUXxOb9bp30CoMp3KZfB8UamGkWoAgAB5N4CB8JquAIACH8ms
+Date:   Tue, 17 Aug 2021 15:19:57 +0000
+Message-ID: <BN6PR2201MB173238B760C0E5B72428E2CF90FE9@BN6PR2201MB1732.namprd22.prod.outlook.com>
+References: <20201002114323.GA3296553@kroah.com>
+ <20201003.170042.489590204097552946.davem@davemloft.net>
+ <20201004071433.GA212114@kroah.com> <YRoLSvowhZsyKbOk@eldamar.lan>
+In-Reply-To: <YRoLSvowhZsyKbOk@eldamar.lan>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: debian.org; dkim=none (message not signed)
+ header.d=none;debian.org; dmarc=none action=none header.from=ece.ufl.edu;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d12a8c02-8ace-447b-6f5f-08d961927997
+x-ms-traffictypediagnostic: BN6PR2201MB1266:
+x-microsoft-antispam-prvs: <BN6PR2201MB1266F9B760C78BD3006EFF4690FE9@BN6PR2201MB1266.namprd22.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xJxWOD49L7apb++7aVhY9UN0foFfI2Sxw0k7ArPkMkIwPi/GlXsAp4CSpI5TxnjUojd2bmQDe4S+BPecEnsmYYwLUcxLYfFtuBOaVgye3K68kNdH2VKz0SF8+sM6b4aCIyB1+QqZBFv4TpRraza4TbpGxJ4PlDT229JRwO2qAn8Iu8tsnnQNrs3/UtJ7iJHdBi/XIiJSJgyOtr2efYS4BLGZQAP0gWLE1oNT1U6rqo31H0FWTBtSjOK8d2G1dhh4s5ApTvEjFacdcQPppnYLJw/DdH43nFiazFvTcOHkIQXVvbIUNgPnxrl0kOc/1sOakzO+v90uqyV+MS1LVxhMc8mePIkhbT7RueEHOXkmceu7IB/tuEMm74wfpGRMZ2m7PRK4x4tEgxk+7E9mIRzkE5r0ofM3O26z9YJf7c9OxADtxk55fR/huSd6yyyHKKdg9ijmD2suNuwR8oQoEaFAjOux5h1Oau8HX+ExArJPcyonXjtW/S3rh3fpNx78C+kGZRmSgtPHrVaOZTm6ro+FIJcy964rd30hi6HrJFi9OYD10lMnJWHUBlUHQE7z9XRjjqGeuUoR4CrD2krAkyH/zFo9PhvM0eUZ6BfluItV5zW/ivPO4V+3d61k7xBqtiHCILRNUxUirXZkJVyx5UvNxMGFZHtUuZrNwKjjcP9NfyNZfUe7cafM+bpHqBiZZSZvaJMAInxY8/rTQsDYyEARGA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR2201MB1732.namprd22.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(75432002)(6506007)(53546011)(2906002)(122000001)(508600001)(38100700002)(86362001)(8676002)(7696005)(38070700005)(52536014)(66946007)(64756008)(4326008)(8936002)(66556008)(66476007)(55016002)(54906003)(33656002)(186003)(9686003)(71200400001)(316002)(786003)(26005)(66446008)(76116006)(5660300002)(110136005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?o0QbKzFF6Yl/aaGBUmQgypAM+VgoCvZoxnMKS3IrMNV6ZC5waqAklzPtRdB0?=
+ =?us-ascii?Q?ag4u0PK//1nb2XNFegYegY5pq7zTfB3c8iej87hwtBdCpEeGJRw6KXr2NpEQ?=
+ =?us-ascii?Q?yfQF/PJhVqGQcUHT/9HXviKPfDh5DEXKD69wAbb0j4pHZejl6Cx8oEmvFpeL?=
+ =?us-ascii?Q?XZbLHWWvSrZZ9elz1XvPLjyhP/fkcz4L0udpyWJk3Nf0nDNlADnichlYInEy?=
+ =?us-ascii?Q?PZ0J+w5wdplCyuFMLZYpggGVAi5LFZctA0avG0ookG9xtqLdvV3q6ZSiO50E?=
+ =?us-ascii?Q?UpUbNydaDVbnhheE9We37HKyq3Yvymygkqc0IVVxtyJ4D28Z0lgrEBeUWzi2?=
+ =?us-ascii?Q?mu66iCZMTMjwktFReeWHVHI58fKWQrx+XD6w83ZmkpKURMO3un4SMSIXuuKf?=
+ =?us-ascii?Q?GSu75ORM0qe0uZVjHUHNvXDLhnmPv7pniAxVpxLubK3CS0TFbEg8PqOVFbpm?=
+ =?us-ascii?Q?nLPCnb80MA/sWYCPriUtz6mLMPp/koaRH2Q5gLEQB8FKwwH9QZ83oijWY9Z7?=
+ =?us-ascii?Q?NJ/Zh+OxSxRP6EE/rZVyopnNPDZuGjyBCgGEEsIKYXwkXsrL+vCLm6tPu8de?=
+ =?us-ascii?Q?7aA4WsclOlLYTBZmwoFCPO22Qz0bQuGj3h/Y9Sk9umBaDdkGh1MUOGDltBtC?=
+ =?us-ascii?Q?ZyufJJhCTCfdXICCKr5OySt47hHl4QbRjViiFWLlPyRoKmwCd85IXtFiYZjW?=
+ =?us-ascii?Q?O9K8CbyxtbjsSLWmdI6gRMkycUMygdkd7K4McdxcjphFaCYdGBOcssLrvCyo?=
+ =?us-ascii?Q?OF2ABL/I6U5ZgNWPAqroQJx8x5/3oTjmYL8tclKZgE4Ol4VUuCyRGIR5umK5?=
+ =?us-ascii?Q?77Cx+2JOdJzcGibMY/XS6tiqy0gdRVdo3Go///oEB9BEXktFeMZFPXNq7j6f?=
+ =?us-ascii?Q?kZTpx1yhGtBxLB6GsrpZp7b0P7EXraALD+5wZV2blz6+/fmJjb2ZxNjDU0wt?=
+ =?us-ascii?Q?AzmS9Wz4LQw/rmKVK2qYjEfZgb84z4xMnHO5uab688X2ACyannfRfrEuJxm8?=
+ =?us-ascii?Q?yOxGOBdvSKrE1lusiP6i8VVaKBsGjCOCzaFuG/Ktoy316AipNFQYrousIEM+?=
+ =?us-ascii?Q?cxkE2IS/Zr88QLixrIBwfXjzahAGgAJw4Wtr27XHleiXmgN62GSF0pLr9Ni7?=
+ =?us-ascii?Q?2gKRtJL8s1k+37CmjLo00TlycP6g0rbMLQ4KT3rwUF7hkv2Wg89PpA6uzKq/?=
+ =?us-ascii?Q?bDkemqGcYEcy3LWJws1S1rEsd+fLzMPrOpclk+EMEXgFUajIZEleWpn/aLQ7?=
+ =?us-ascii?Q?rgMWZWHD+WlzxLZxVVNJ+wt68AaDzjaPJWZLh8jCB4IS6YFomW9bs3Lao3JH?=
+ =?us-ascii?Q?RNY=3D?=
+x-ms-exchange-transport-forked: True
+arc-seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FrEFPh++bz7oGoLb83vruzwY1zgho2Mt2BBi0TmcFLV6j/TWpABPehNaNSxJXcIzsvHPFOdp6YAIsyFBataYOzI4wdrrKlFrfRZqOqd8L9xAE0ynbQyAHHAN9rwqYIq409Xwfd8smutD0OO+iQk8ZUKyRd7ClbZlF2k2Cef3/ADqGWgUN8xcYWzNewZb+/4576Vvnb6w7zG2vjUeMi+HxSs3Q+Qgogihka9uHDgaKljeDostL0MKvlpG+D9XyOG5E2eiSRZxS8L745nlRG7T1TbKSJl4niLB/xXV/PlVDKwYBX5z9Ln91O7JzSjJfnbYGbb0CdB1RgVdyBTPuuDkRw==
+arc-message-signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8Yyrcuez/HhEhxtbT5WrlnITeKRUtz5TWe3syI3ERE4=;
+ b=DmyJ3cF5vPS86xeDqDnD/nXniGrnphThK8WEHOZEfcZJ+TG396CtEqb9Kyk38Xe7y6qUB9Tkp4T7CmQqJhD1nm7RrflfIXOiOwfEWEhpUa6q8IMuPSQf+cGRk18veFivIPO0n8em+1xv4U6G1Dyv5/t9wXp2rYF6a9/ejBpiGmWMVkWHlz8tLF/yOyXo9fs9u2czAasAIJWXDpdx+vYcr8Erlm0JNkqSRwejxiFLqkhnQyQvBdlr7KaN17rIya0vTDw8dtwsXAsnG52m4xD1DJYIPwvDwJqjHzAZa4WLdVRHID4EIuGnvIZj97HLLp9SpwHoAzlJbikgv+0MiWEdTw==
+arc-authentication-results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ece.ufl.edu; dmarc=pass action=none header.from=ece.ufl.edu;
+ dkim=pass header.d=ece.ufl.edu; arc=none
+x-ms-exchange-crosstenant-authas: Internal
+x-ms-exchange-crosstenant-authsource: BN6PR2201MB1732.namprd22.prod.outlook.com
+x-ms-exchange-crosstenant-network-message-id: d12a8c02-8ace-447b-6f5f-08d961927997
+x-ms-exchange-crosstenant-originalarrivaltime: 17 Aug 2021 15:19:58.0444 (UTC)
+x-ms-exchange-crosstenant-fromentityheader: Hosted
+x-ms-exchange-crosstenant-id: 0d4da0f8-4a31-4d76-ace6-0a62331e1b84
+x-ms-exchange-crosstenant-mailboxtype: HOSTED
+x-ms-exchange-crosstenant-userprincipalname: m9aCYVoNt6ZDLai5xDec8pNhiRErtDQCo/mBtt6ShzuxickN4v6YMb+lRe5RhiuZ
+x-ms-exchange-transport-crosstenantheadersstamped: BN6PR2201MB1266
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20210810134127.1394269-1-valentin.schneider@arm.com>
- <20210810134127.1394269-3-valentin.schneider@arm.com> <87y2989xhh.wl-maz@kernel.org>
-In-Reply-To: <87y2989xhh.wl-maz@kernel.org>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 17 Aug 2021 17:16:53 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXH0iO2+GMN+hsX2dMo4FDpXjv0SvNeTCYWPer70Yx8Qug@mail.gmail.com>
-Message-ID: <CAMj1kXH0iO2+GMN+hsX2dMo4FDpXjv0SvNeTCYWPer70Yx8Qug@mail.gmail.com>
-Subject: Re: [SPLAT 2/3] irqchip/gic-v3-its: Sleeping spinlocks down gic_reserve_range()
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: ece.ufl.edu
+X-Proofpoint-ORIG-GUID: lXqRPhaojZffiZKC4xR59Jt_jFTitYt7
+X-Proofpoint-GUID: lXqRPhaojZffiZKC4xR59Jt_jFTitYt7
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-17_05:2021-08-17,2021-08-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=999
+ lowpriorityscore=0 adultscore=0 spamscore=0 phishscore=0
+ priorityscore=1501 suspectscore=0 malwarescore=0 bulkscore=0
+ impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108170094
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Aug 2021 at 10:50, Marc Zyngier <maz@kernel.org> wrote:
->
-> [+ Ard]
->
-> On Tue, 10 Aug 2021 14:41:26 +0100,
-> Valentin Schneider <valentin.schneider@arm.com> wrote:
-> >
-> > [    0.134518] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:35
-> > [    0.134520] in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 0, name: swapper/1
-> > [    0.134522] 1 lock held by swapper/1/0:
-> > [    0.134523] #0: ffff008f3624f728 ((lock).lock){+.+.}-{2:2}, at: get_page_from_freelist (mm/page_alloc.c:3673 mm/page_alloc.c:3704 mm/page_alloc.c:4166)
-> > [    0.134533] irq event stamp: 0
-> > [    0.134534] hardirqs last enabled at (0): 0x0
-> > [    0.134538] hardirqs last disabled at (0): copy_process (./include/linux/lockdep.h:195 ./include/linux/lockdep.h:202 ./include/linux/lockdep.h:208 ./include/linux/seqlock.h:78 kernel/fork.c:2084)
-> > [    0.134542] softirqs last enabled at (0): copy_process (./include/linux/lockdep.h:195 ./include/linux/lockdep.h:202 ./include/linux/lockdep.h:208 ./include/linux/seqlock.h:78 kernel/fork.c:2084)
-> > [    0.134545] softirqs last disabled at (0): 0x0
-> > [    0.134547] Preemption disabled at:
-> > [    0.134547] rt_mutex_slowunlock (kernel/locking/rtmutex.c:1223)
-> > [    0.134552] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.14.0-rc4-rt6-torture+ #56
-> > [    0.134555] Call trace:
-> > [    0.134556] dump_backtrace (arch/arm64/kernel/stacktrace.c:151)
-> > [    0.134558] show_stack (arch/arm64/kernel/stacktrace.c:217)
-> > [    0.134559] dump_stack_lvl (lib/dump_stack.c:106)
-> > [    0.134563] dump_stack (lib/dump_stack.c:113)
-> > [    0.134565] ___might_sleep (kernel/sched/core.c:9306)
-> > [    0.134567] rt_spin_lock (kernel/locking/rtmutex.c:1641 (discriminator 4) kernel/locking/spinlock_rt.c:30 (discriminator 4) kernel/locking/spinlock_rt.c:36 (discriminator 4) kernel/locking/spinlock_rt.c:44 (discriminator 4))
-> > [    0.134569] get_page_from_freelist (mm/page_alloc.c:3673 mm/page_alloc.c:3704 mm/page_alloc.c:4166)
-> > [    0.134571] __alloc_pages (mm/page_alloc.c:5391)
-> > [    0.134573] alloc_page_interleave (mm/mempolicy.c:2119)
-> > [    0.134576] alloc_pages (mm/mempolicy.c:2249)
-> > [    0.134577] new_slab (mm/slub.c:1740 mm/slub.c:1877 mm/slub.c:1940)
-> > [    0.134580] ___slab_alloc (mm/slub.c:2951)
-> > [    0.134582] __slab_alloc.isra.0 (mm/slub.c:3038)
-> > [    0.134584] kmem_cache_alloc_trace (mm/slub.c:3129 mm/slub.c:3171 mm/slub.c:3188)
-> > [    0.134587] efi_mem_reserve_iomem (drivers/firmware/efi/efi.c:905)
-> > [    0.134590] efi_mem_reserve_persistent (drivers/firmware/efi/efi.c:952)
-> > [    0.134593] its_cpu_init (drivers/irqchip/irq-gic-v3-its.c:3074 drivers/irqchip/irq-gic-v3-its.c:5196)
-> > [    0.134596] gic_starting_cpu (drivers/irqchip/irq-gic.c:798)
-> > [    0.134599] cpuhp_invoke_callback (kernel/cpu.c:180)
-> > [    0.134601] cpuhp_invoke_callback_range (kernel/cpu.c:656)
-> > [    0.134603] notify_cpu_starting (kernel/cpu.c:1270)
-> > [    0.134605] secondary_start_kernel (arch/arm64/kernel/smp.c:243)
-> > [    0.134608] __secondary_switched (arch/arm64/kernel/head.S:661)
->
-> The issue is that although the redistributor tables have been
-> allocated ahead of time (outside of any cpuhp callback), they cannot
-> be programmed into the RDs until the corresponding CPUs have been
-> brought up (the registers may not be accessible).
->
-> For the same reason, we don't know whether we can free them (because
-> there is already a table programmed there) or have to reserve them
-> with an efi_mem_reserve_persistent() call. efi_mem_reserve_iomem()
-> uses GFP_ATOMIC for its allocation, but this is not sufficient for RT
-> anymore.
->
-> We could postpone the reservation of the memory to a later point (it
-> is only useful for kexec), but it isn't clear where that point is. The
-> CPU is not quite up yet, and we can't easily IPI the boot CPU to do
-> the reserve call.
->
+Hi Salvatore,
 
-The kzalloc() call in question is used to allocate the struct resource
-which is inserted in to the iomem resource tree. This could definitely
-be postponed, given that the kernel itself does not care about these
-entries, only user space (IIUC)
+I think it would be best if one of the developers of the hso driver could develop a patch along the lines of David Miller's earlier suggestion.
+
+Best,
+
+Tuba
+
+________________________________________
+From: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com> on behalf of Salvatore Bonaccorso <carnil@debian.org>
+Sent: Monday, August 16, 2021 2:52 AM
+To: Greg KH
+Cc: David Miller; Yavuz, Tuba; netdev@vger.kernel.org; kuba@kernel.org; oneukum@suse.com; linux-kernel@vger.kernel.org; linux-usb@vger.kernel.org
+Subject: Re: [PATCH v2] net: hso: do not call unregister if not registered
+
+[External Email]
+
+Hi Greg, Tuba,
+
+On Sun, Oct 04, 2020 at 09:14:33AM +0200, Greg KH wrote:
+> On Sat, Oct 03, 2020 at 05:00:42PM -0700, David Miller wrote:
+> > From: Greg KH <gregkh@linuxfoundation.org>
+> > Date: Fri, 2 Oct 2020 13:43:23 +0200
+> >
+> > > @@ -2366,7 +2366,8 @@ static void hso_free_net_device(struct hso_device *hso_dev, bool bailout)
+> > >
+> > >   remove_net_device(hso_net->parent);
+> > >
+> > > - if (hso_net->net)
+> > > + if (hso_net->net &&
+> > > +     hso_net->net->reg_state == NETREG_REGISTERED)
+> > >           unregister_netdev(hso_net->net);
+> > >
+> > >   /* start freeing */
+> >
+> > I really want to get out of the habit of drivers testing the internal
+> > netdev registration state to make decisions.
+> >
+> > Instead, please track this internally.  You know if you registered the
+> > device or not, therefore use that to control whether you try to
+> > unregister it or not.
+>
+> Fair enough.  Tuba, do you want to fix this up in this way, or do you
+> recommend that someone else do it?
+
+Do I miss something, or did that possibly fall through the cracks?
+
+I was checking some open issues on a downstream distro side and found
+htat this thread did not got a follow-up.
+
+Regards,
+Salvatore
