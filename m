@@ -2,101 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2CB73EF2EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 21:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC733EF2F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 21:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233595AbhHQTyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 15:54:24 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:60408 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233658AbhHQTyW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 15:54:22 -0400
-Received: from zn.tnic (p200300ec2f117500b0ae8110978caeec.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:7500:b0ae:8110:978c:aeec])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9B1A41EC030F;
-        Tue, 17 Aug 2021 21:53:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629230022;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=aIPbkILpcrd+GjwKNb2Ar1grIyTzLxIuzU20uQTvckM=;
-        b=YQJb4Z7vHcSycsuDkROq8+S722knun6LHl0bmKH2CQr5g1k7r8t8LVNTPXyMCk9n3OuN/4
-        edcppWeEwOk63eHEXk7sMxlSD4sqyIT6KK10prREwkg+OqHbMPuX16XGTwRXbGG459/Fz4
-        RKyzTHY9Gs2iFZ/pb7nwiX2YUpf4ll0=
-Date:   Tue, 17 Aug 2021 21:54:21 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Rick P Edgecombe <rick.p.edgecombe@intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v28 09/32] x86/mm: Introduce _PAGE_COW
-Message-ID: <YRwT7XX36fQ2GWXn@zn.tnic>
-References: <20210722205219.7934-1-yu-cheng.yu@intel.com>
- <20210722205219.7934-10-yu-cheng.yu@intel.com>
- <YRpBVu7dCBjks71I@zn.tnic>
- <59b9b98b-28e7-fc13-f13b-0079e184826f@intel.com>
+        id S233700AbhHQT4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 15:56:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229649AbhHQT4b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 15:56:31 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B73C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 12:55:58 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mG5Bj-0007dJ-9H; Tue, 17 Aug 2021 21:55:55 +0200
+Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:4c82:b09e:fec8:3248])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 499F1669233;
+        Tue, 17 Aug 2021 19:55:53 +0000 (UTC)
+Date:   Tue, 17 Aug 2021 21:55:51 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     linux-can@vger.kernel.org,
+        Stefan =?utf-8?B?TcOkdGpl?= <Stefan.Maetje@esd.eu>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 5/7] can: netlink: add interface for CAN-FD
+ Transmitter Delay Compensation (TDC)
+Message-ID: <20210817195551.wwgu7dnhb6qyvo7n@pengutronix.de>
+References: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
+ <20210815033248.98111-6-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="femi54sv3tzgjgry"
 Content-Disposition: inline
-In-Reply-To: <59b9b98b-28e7-fc13-f13b-0079e184826f@intel.com>
+In-Reply-To: <20210815033248.98111-6-mailhol.vincent@wanadoo.fr>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 11:24:29AM -0700, Yu, Yu-cheng wrote:
-> Indeed, this can be looked at in a few ways.  We can visualize pte_write()
-> as 'CPU can write to it with MOV' or 'CPU can write to it with any opcodes'.
-> Depending on whatever pte_write() is, copy-on-write code can be adjusted
-> accordingly.
 
-Can be?
+--femi54sv3tzgjgry
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I think you should exclude shadow stack pages from being writable
-and treat them as read-only. How the CPU writes them is immaterial -
-pte/pmd_write() is used by normal kernel code to query whether the page
-is writable or not by any instruction - not by the CPU.
+On 15.08.2021 12:32:46, Vincent Mailhol wrote:
+> +static int can_tdc_changelink(struct net_device *dev, const struct nlatt=
+r *nla,
+> +			      struct netlink_ext_ack *extack)
+> +{
+> +	struct nlattr *tb_tdc[IFLA_CAN_TDC_MAX + 1];
+> +	struct can_priv *priv =3D netdev_priv(dev);
+> +	struct can_tdc *tdc =3D &priv->tdc;
+> +	const struct can_tdc_const *tdc_const =3D priv->tdc_const;
+> +	int err;
+> +
+> +	if (!tdc_const || !can_tdc_is_enabled(priv))
+> +		return -EOPNOTSUPP;
+> +
+> +	if (dev->flags & IFF_UP)
+> +		return -EBUSY;
+> +
+> +	err =3D nla_parse_nested(tb_tdc, IFLA_CAN_TDC_MAX, nla,
+> +			       can_tdc_policy, extack);
+> +	if (err)
+> +		return err;
+> +
+> +	if (tb_tdc[IFLA_CAN_TDC_TDCV]) {
+> +		u32 tdcv =3D nla_get_u32(tb_tdc[IFLA_CAN_TDC_TDCV]);
+> +
+> +		if (tdcv < tdc_const->tdcv_min || tdcv > tdc_const->tdcv_max)
+> +			return -EINVAL;
+> +
+> +		tdc->tdcv =3D tdcv;
 
-And since normal kernel code cannot write shadow stack pages, then for
-that code those pages are read-only.
+You have to assign to a temporary struct first, and set the priv->tdc
+after complete validation, otherwise you end up with inconsistent
+values.
 
-If special kernel code using shadow stack management insns needs
-to modify a shadow stack, then it can check whether a page is
-pte/pmd_shstk() but that code is special anyway.
+> +	}
+> +
+> +	if (tb_tdc[IFLA_CAN_TDC_TDCO]) {
+> +		u32 tdco =3D nla_get_u32(tb_tdc[IFLA_CAN_TDC_TDCO]);
+> +
+> +		if (tdco < tdc_const->tdco_min || tdco > tdc_const->tdco_max)
+> +			return -EINVAL;
+> +
+> +		tdc->tdco =3D tdco;
+> +	}
+> +
+> +	if (tb_tdc[IFLA_CAN_TDC_TDCF]) {
+> +		u32 tdcf =3D nla_get_u32(tb_tdc[IFLA_CAN_TDC_TDCF]);
+> +
+> +		if (tdcf < tdc_const->tdcf_min || tdcf > tdc_const->tdcf_max)
+> +			return -EINVAL;
+> +
+> +		tdc->tdcf =3D tdcf;
+> +	}
+> +
+> +	return 0;
+> +}
 
-Hell, a shadow stack page is (Write=0, Dirty=1) so calling it writable
-			      ^^^^^^^
-is simply wrong.
+To reproduce (ip pseudo-code only :D ):
 
-Thx.
+ip down
+ip up tdc-mode manual tdco 111 tdcv 33  # 111 is out of range, 33 is valid
+ip down
+ip up                                   # results in tdco=3D0 tdcv=3D33 mod=
+e=3Dmanual
 
--- 
-Regards/Gruss,
-    Boris.
+Marc
 
-https://people.kernel.org/tglx/notes-about-netiquette
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--femi54sv3tzgjgry
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEcFEUACgkQqclaivrt
+76nN1ggAr4yOd2SysaDbW1q1G/J0QK6Q8Seymr9AqJ4CpYspWe/iEEipRUQIDmBz
+5iiSt/NnFqMh9wyxL2gmawzZQA9gwv82r+dfFI+3zW4OdEoO+Qw6Z1PNwGB/EDTa
+9FOWJvb+8aE5cdiF47Yl7l4geUWqq2mxeAJ1ULEFqkmNBkmr4WuYIIQWroycl4z6
+O8wG1H//MuoMnCUr7TzKl4jiuwSIamcUhGfmsAzJ8LVPNhoVmg1VQ7acghUhEf8c
+Iet9QLefSIcsuJ2Nfx5FUYlJ4SL5h65ZYZdAYcgRCip2d/J50gS7wEMznqO32LVp
+vh36Inpa5enOTjJvOPo/HXTCtlpAxw==
+=zn8F
+-----END PGP SIGNATURE-----
+
+--femi54sv3tzgjgry--
