@@ -2,75 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AD923EF4A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 23:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6F23EF4AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 23:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235252AbhHQVJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 17:09:05 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:40620 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbhHQVJD (ORCPT
+        id S234283AbhHQVKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 17:10:53 -0400
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:45705 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232909AbhHQVKw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 17:09:03 -0400
-Received: by mail-ot1-f53.google.com with SMTP id h63-20020a9d14450000b02904ce97efee36so84200oth.7;
-        Tue, 17 Aug 2021 14:08:29 -0700 (PDT)
+        Tue, 17 Aug 2021 17:10:52 -0400
+Received: by mail-oi1-f169.google.com with SMTP id o20so1114105oiw.12;
+        Tue, 17 Aug 2021 14:10:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=vVmiL6sO/8PBqKgDbJLK+oYb67QzQfk5U3FNkQ/KB/c=;
-        b=O3thdILL0/iN/53jQGn63PRhS44R9PhOTrivBw7hUqKQsQHwtWc3EUMYvwobQHMgr1
-         WpDI6c6KeQ/X/Zijb+gyqHW7gSrjuXJ6N1TlM0CW8Ei0CK7R0h1rX0DQNTL7WozGcIPa
-         fGPWj/yFO8ccgMrifsWuvW2DSmcwDgKpbSS9oLu6pBYAuhGHsrxps4hK8MBalkRZRxnB
-         QS08pKR4MMXAUWwyvG9b9BO+iQMCHbUPQPUKumN3btaUvmU7O1Mc5dhTYaL4qRkCuXtb
-         URcQfAwTS1ufxpKMj1hRScrsQgAJOK/JTQKwq1m6sMJZXCoJL/ckVRGoMyFxggEWnuo4
-         H+lw==
-X-Gm-Message-State: AOAM530LRid36ftvPBeClVrd3nAkvXddGyvbP04BItuWFtzLnwk3IV6N
-        pMtRC8jc3tPjy++oKvL2uw==
-X-Google-Smtp-Source: ABdhPJyrLsnOoyuZp+dqpbVXvkN4IFmz8gfMFaJvQJ9a5KV3+ozPdKywI8LpYOfjJ5dtIKTGBIxJSw==
-X-Received: by 2002:a05:6830:1f54:: with SMTP id u20mr4067346oth.320.1629234509272;
-        Tue, 17 Aug 2021 14:08:29 -0700 (PDT)
+        bh=CTgAmphwn1ois5hk55721DjpVa/iUWBOuHd03LxTkuI=;
+        b=ZOcrqW4ezSW4DUG9aBS0k+fgtEzsOG5Ix/PL6ZP/F14vyJ0buIn9HPrdOJw1Ga33CN
+         aRKYMXIDfBxwhUUFlh2yld2tAUvHXY1jG67JjvrqtyFuG/mRwQlmQP0aZF34xFEAbTwa
+         4tns1FVH6Bckw9XYQXvsz5gEk0zz/CZvW+qFj8qDgG2MBiEMNjlIeBtWvtcP04YqRKL7
+         94joExLy8cR+hOX52dYl5b4uBJigSv11DYv3I6MTG743LESQ923RE91TOS1C/1Pt8umm
+         pJKJ7ED+NUHkfFc9QUZGp4WZ4KfjjGzo4qL03soes9IMPi0Gk6BPOcPEs6MVJhq84JzY
+         cImw==
+X-Gm-Message-State: AOAM532WSL/hirLU7X1NXweT2YnoX+6ytTa5L5EHfayvf5tc3sAVyEfJ
+        FX3MTP1/hY/Oh1E6I5BfMQ==
+X-Google-Smtp-Source: ABdhPJx++Rc1EBvfd+6pazZap11v9ifQAF3Fq1/XdEIekbI/RB092ivcdK5zyZaRny/3CY02mBYkMw==
+X-Received: by 2002:a05:6808:1415:: with SMTP id w21mr4115989oiv.140.1629234618442;
+        Tue, 17 Aug 2021 14:10:18 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id c75sm651427oob.47.2021.08.17.14.08.28
+        by smtp.gmail.com with ESMTPSA id l16sm615679ota.55.2021.08.17.14.10.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 14:08:28 -0700 (PDT)
-Received: (nullmailer pid 842238 invoked by uid 1000);
-        Tue, 17 Aug 2021 21:08:28 -0000
-Date:   Tue, 17 Aug 2021 16:08:28 -0500
+        Tue, 17 Aug 2021 14:10:17 -0700 (PDT)
+Received: (nullmailer pid 844799 invoked by uid 1000);
+        Tue, 17 Aug 2021 21:10:17 -0000
+Date:   Tue, 17 Aug 2021 16:10:17 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Georgi Djakov <djakov@kernel.org>,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3 4/6] dt-bindings: interconnect: Add Qualcomm MSM8996
- DT bindings
-Message-ID: <YRwlTPkLr1lQT2bT@robh.at.kernel.org>
-References: <20210811043451.189776-1-y.oudjana@protonmail.com>
- <20210811043451.189776-5-y.oudjana@protonmail.com>
+To:     Puranjay Mohan <puranjay12@gmail.com>
+Cc:     devicetree@vger.kernel.org, Dragos.Bogdan@analog.com,
+        lars@metafoo.de, jic23@kernel.org, Darius.Berghe@analog.com,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michael.Hennerich@analog.com, andy.shevchenko@gmail.com
+Subject: Re: [PATCH v12 1/2] dt-bindings: iio: accel: Add DT binding doc for
+ ADXL355
+Message-ID: <YRwluQS5Zr11ngE4@robh.at.kernel.org>
+References: <20210811073027.124619-1-puranjay12@gmail.com>
+ <20210811073027.124619-2-puranjay12@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210811043451.189776-5-y.oudjana@protonmail.com>
+In-Reply-To: <20210811073027.124619-2-puranjay12@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Aug 2021 04:37:10 +0000, Yassine Oudjana wrote:
-> Add bindings for interconnects on Qualcomm MSM8996.
+On Wed, 11 Aug 2021 13:00:26 +0530, Puranjay Mohan wrote:
+> Add devicetree binding document for ADXL355, a 3-Axis MEMS Accelerometer.
 > 
-> Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
+> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
 > ---
-> Changes since v2:
->  - Dual-license qcom,msm8996.h and move it to the dt bindings patch
-> 
->  .../bindings/interconnect/qcom,rpm-qos.yaml   |  14 ++
->  .../dt-bindings/interconnect/qcom,msm8996.h   | 163 ++++++++++++++++++
->  2 files changed, 177 insertions(+)
->  create mode 100644 include/dt-bindings/interconnect/qcom,msm8996.h
+>  .../bindings/iio/accel/adi,adxl355.yaml       | 88 +++++++++++++++++++
+>  1 file changed, 88 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
