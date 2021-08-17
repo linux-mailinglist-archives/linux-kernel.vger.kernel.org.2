@@ -2,107 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C91F33EEC69
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 14:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8CA43EEC6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 14:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239844AbhHQM1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 08:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236683AbhHQM1r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 08:27:47 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67035C061764;
-        Tue, 17 Aug 2021 05:27:14 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id z1so3252085ioh.7;
-        Tue, 17 Aug 2021 05:27:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i5GEOxhJC+X6hk3uJOQSth+y052VdXubyLMOywle/R4=;
-        b=BMtr3fTuMzn8aLeOLWhz49DE/VSAu8ytkw8qR4lp3JTE7VnxSL5X/LNrmZGcOX5IHl
-         CPS+/VRUhJIoFSPMEmL1c5JZB+xn7oaEFIqbYqy5811SXYSCQggqhTahO4LuB5Sf86um
-         rmXIWB1Q2F++tkBsNHEoYTnCR/3AE81rXwBGFFCw9uyr3a3wwGPxvRT4lMCcRa0HwIcl
-         7DFoLo7siaF9rV34bLfM+IJqv4sC+jmcIOmP1YESnxtbxxTZ3/7azdYCfhtvPEdkFFHO
-         +kuz28zTb95oQKZL7DVx60Wsqt5ht8dQyr0sneXVw1tz3tEuj6HqI5dTYL3Zn5oFd0cu
-         PDTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i5GEOxhJC+X6hk3uJOQSth+y052VdXubyLMOywle/R4=;
-        b=SmUXbSApqLFw/T3ebKpd91z0he+0nzdBop2w+NZUU2XznA/0FEVcHeA/mQxHKIlE6E
-         61evZkMllz6cwOZaTLU4FP9FEv40hHQ4uVGauIwI+aReWuSw5iuEipmHkUGCg6Xa73td
-         SAaTUyRWboean/FEvAG8O8I/RD/sTaDZPwFOzM6pYW3r5/1L5a9QIAwgsvgOyI8ufKfC
-         54Wxjbomy16XDN1vx5vS1oUpQwPtXVjChWQbaM7bw/ZLeS6iGEqkMSncBsqxa6CjOypa
-         Iy4SBn6d6T9HdXenvLKtMzrBRUJPA/w6sBLYNQ8WWhA9ST6KFh74HAoqI93UN5KJglgF
-         CeRw==
-X-Gm-Message-State: AOAM53006+GDl30KnahEqlQk0T81a7JdoNUbSOMyVbDLQBlBBg9eBnWY
-        FM9hPpCYnoOXHlAOfCzICy8QdFbteK408gOxon14Bl3129Uk2A==
-X-Google-Smtp-Source: ABdhPJw52mErSSl8TCt+pFsR8tz7Fd74wx0m939I8a2YkDqPMvQJxAAGpnD2aRRcI25P11fwbtaAuiWdrdmveHm/Pxs=
-X-Received: by 2002:a05:6602:48c:: with SMTP id y12mr2723179iov.14.1629203233860;
- Tue, 17 Aug 2021 05:27:13 -0700 (PDT)
+        id S237231AbhHQM27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 08:28:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234866AbhHQM2y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 08:28:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1911B6023F;
+        Tue, 17 Aug 2021 12:28:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629203301;
+        bh=geigma0GEh1kh7nbZKs6FoG3y8PjVJoUk2XewbAE77w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fZN234TlSJyxnfsm69zZNuAlqAr3lp2I0aAC1hlU2HCo16Gw58H43KlDSziVtmzca
+         4LMdH6HOUw8+LIyW7Rmd0s9pCCL08YoWjJ7PAxZXIsJnDn7qyGnQQtZptmvKWi3BBX
+         spvV/9oeJbyhoy5bVh+Wp9DBO9YsZ1lGkrvefDQAXgfIF628qM/LfNeVxAhofjONQw
+         AS+fINbXHFf8zhre0/0L0ozEIxgR7vuzfPTRNq7lBfnHoB/TRBKm2eZKLeFcDuc9Wy
+         05g/Gsi9roF2yzxZ347ctkTW71SeJavolcLhlWPzGZq1obNurrA746BOAApikkPLZw
+         Am+qFseWF/6tA==
+Date:   Tue, 17 Aug 2021 13:28:16 +0100
+From:   Will Deacon <will@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Marco Elver <elver@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: LKMM: Read dependencies of writes ordered by dma_wmb()?
+Message-ID: <20210817122816.GA12746@willie-the-truck>
+References: <YRo58c+JGOvec7tc@elver.google.com>
+ <20210816145945.GB121345@rowland.harvard.edu>
+ <YRqfJz/lpUaZpxq7@elver.google.com>
+ <20210816192109.GC121345@rowland.harvard.edu>
+ <20210816205057.GN4126399@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-References: <20210816065417.3987596-1-chenhuacai@loongson.cn>
- <20210816182750.26i535ilc6nef5k6@offworld> <874kbpp5zd.ffs@tglx>
- <CAAhV-H5TKLMi0GSQmh9RFK_k5eNRwx8AE8MjMKjJfbnyVYP-+w@mail.gmail.com>
- <871r6spn0r.ffs@tglx> <CAAhV-H6=MbBFwgxT75Bqr5SY0e5E6gtpCUCZhrVgFE_h1A0q2A@mail.gmail.com>
- <87y290o304.ffs@tglx> <YRuFMbUi7ZN315dY@hirez.programming.kicks-ass.net>
-In-Reply-To: <YRuFMbUi7ZN315dY@hirez.programming.kicks-ass.net>
-From:   Huacai Chen <chenhuacai@gmail.com>
-Date:   Tue, 17 Aug 2021 20:27:03 +0800
-Message-ID: <CAAhV-H4GVWw0eNYRWmGY66A6FVKcexAGr-Wh_=9VgxxEkpiKJA@mail.gmail.com>
-Subject: Re: [PATCH] futex: Fix fault_in_user_writeable()
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Hongchen Zhang <zhanghongchen@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210816205057.GN4126399@paulmck-ThinkPad-P17-Gen-1>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, all,
+Just on this bit...
 
-On Tue, Aug 17, 2021 at 5:45 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Aug 17, 2021 at 11:05:15AM +0200, Thomas Gleixner wrote:
-> > Huacai,
-> >
-> > On Tue, Aug 17 2021 at 15:38, Huacai Chen wrote:
-> > > On Tue, Aug 17, 2021 at 3:07 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> > > On X86, it returns 0; on MIPS64 without patch, it hangs in kernel; on
-> > > MIPS64 with this patch, it returns -1.
-> >
-> > As expected.
-> >
-> > > Then, I want to know, on "W implies R" archs (such as X86), should it
-> > > return 0? Maybe return -1 is more reasonable? (because the VMA is
-> > > marked as write-only). If this program should return -1, then I don't
-> > > think this is a MIPS-specific problem.
-> >
-> > No. mmap(.., PROT_WRITE...) is simply impossible on x86 and implies
-> > PROT_READ as documented in mmap(2).
-> >
-> > So why should this fail and only fail in the fault case, but succeed
-> > when the PTE is already established?
->
-> I wouldn't actually mind if it failed on fault -- it's the 'best' we can
-> do on x86. Doing a RmW op on PROT_WRITE is silly and deserves all the
-> wreckage it can get.
-If we must fix it in arch code, there are two methods: 1, don't use
-write-only map (modify protection_map as Liu Lichao did); 2, override
-arch_vma_access_permitted() to do extra checks. Thomas, which is
-better?
+On Mon, Aug 16, 2021 at 01:50:57PM -0700, Paul E. McKenney wrote:
+> 5.	The dma_mb(), dma_rmb(), and dma_wmb() appear to be specific
+> 	to ARMv8.
 
-Huacai
+These are useful on other architectures too! IIRC, they were added by x86 in
+the first place. They're designed to be used with dma_alloc_coherent()
+allocations where you're sharing something like a ring buffer with a device
+and they guarantee accesses won't be reordered before they become visible
+to the device. They _also_ provide the same ordering to other CPUs.
+
+I gave a talk at LPC about some of this, which might help (or might make
+things worse...):
+
+https://www.youtube.com/watch?v=i6DayghhA8Q
+
+Ignore the bits about mmiowb() as we got rid of that.
+
+Will
