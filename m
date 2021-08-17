@@ -2,160 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F1A3EF237
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 20:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5B33EF239
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 20:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233385AbhHQSrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 14:47:35 -0400
-Received: from mail-bn1nam07on2138.outbound.protection.outlook.com ([40.107.212.138]:11502
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233257AbhHQSr0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 14:47:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PbalMKEYGrpFJ3VxBuSjPjA+jcwp/7dTvc7vneAUCc8HaJCHNpy8PK/kTYqtIa8Rj31f8cF9GMCk06JkZuwseagobVrw1KU0CZY7nNjTgdGOSgvSnUk8ubobN2hfNgL06s6lewjTcREb8g5buLgkNvbkPwENNAdSh2zsQWemmH9JFGws2FVkzBTy7sHyxYbXomN8S/FQ97UkCbFPKkssfWetPhJB/UvtN2OmfiSlROmcV5zoUUxcFQAc/M1IQ7C9fdjh0yh+uQqbCNK40NSx7ylsrFcbd/tepw7lqoJciC0oGLu4tEZV1UQoCp4euVJNbvPbnxl7pMCw0ZawAOLllg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cY9ed4xmu7ybTVfu6hKfVohSu1WMRNHDvuary7aSSzg=;
- b=e4ppDj5dBzNkI3mc0uJbJ0/RdAg8Ohsx2eDGvhxIB3ydyvwwBBwlUGj3edi19wykU+LiAFb0qEmn+ueSS9fcfUDy5PlvrqQhA9qXTdOOqFnh8Ir/DCUbQgvkNemSVxXabUAqV0YTU66GjZWQgV9Ih7aIJgwOLcrR6mj+cVLTlXueBqHBtmx0M/aWMJzMXzUuiHEchbA1XUl6kwmHFEqFY8qC4mvJwUPI12WMa5xxQWwWfZQzNtQk1qCEiT4XGh+V54VBwaY/7ltJ0pwcGtAUx7wlF2dC0v6BqvbZgr4Qc5JBSEQIP6G3Yh/5b6tQFCcmdSisSP+hEgkrR0c0p8dr1A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cY9ed4xmu7ybTVfu6hKfVohSu1WMRNHDvuary7aSSzg=;
- b=iMjfvtcGfkxjULT+m6+VtSHZzxBISCNuhlqAhzW0BLeKy/6GUA1T8Zp9cAXV58BN5hvDUZEWuLlr0d88IFHw78o0e+7CzTf5g9THWSPcjzCb6bzrQIa3sRd8owmz8Pi8qvZ+AAe+37saVc8MigdxIs0MBFl9rQNVind8kIAVeRrrw/K2H/95XOVkpd8eG2EW0FZGJn3u/hR0mWKIWjNdvftGfilV8uZiGawI5PnK0dbKBy/NBCgSyZzexxGL+oQIMdiZ9TAKN20JhCpIYQYppue0cy+rfOZF+srhDx1ka0J0OmGT/wYU8PCcs/49KFrGfTPVbkvXvLQY2wHf0hrUCQ==
-Received: from CH0PR01MB7153.prod.exchangelabs.com (2603:10b6:610:ea::7) by
- CH2PR01MB6053.prod.exchangelabs.com (2603:10b6:610:48::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4415.19; Tue, 17 Aug 2021 18:46:50 +0000
-Received: from CH0PR01MB7153.prod.exchangelabs.com
- ([fe80::d897:7ba8:32ef:e745]) by CH0PR01MB7153.prod.exchangelabs.com
- ([fe80::d897:7ba8:32ef:e745%8]) with mapi id 15.20.4415.024; Tue, 17 Aug 2021
- 18:46:50 +0000
-From:   "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>
-To:     Tuo Li <islituo@gmail.com>,
-        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        "baijiaju1990@gmail.com" <baijiaju1990@gmail.com>
-Subject: RE: [BUG] RDMA/hw/qib/qib_iba6120: possible buffer underflow in
- rcvctrl_6120_mod()
-Thread-Topic: [BUG] RDMA/hw/qib/qib_iba6120: possible buffer underflow in
- rcvctrl_6120_mod()
-Thread-Index: AQHXj0yz3j6i/QAMWUyKAFPjwbGrqat4C51AgAAElkA=
-Date:   Tue, 17 Aug 2021 18:46:49 +0000
-Message-ID: <CH0PR01MB71533E6E001E18D387AFF604F2FE9@CH0PR01MB7153.prod.exchangelabs.com>
-References: <9c03a5f4-865b-000e-0206-9e01f876261a@gmail.com>
- <CH0PR01MB71533F43952BA6C56AC21C4EF2FE9@CH0PR01MB7153.prod.exchangelabs.com>
-In-Reply-To: <CH0PR01MB71533F43952BA6C56AC21C4EF2FE9@CH0PR01MB7153.prod.exchangelabs.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none
- header.from=cornelisnetworks.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1ebfdc44-d0bc-4897-9147-08d961af5fa2
-x-ms-traffictypediagnostic: CH2PR01MB6053:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CH2PR01MB6053CEAB6DE5136C7D72D740F2FE9@CH2PR01MB6053.prod.exchangelabs.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: GYMHaBbBtnHGau00kYzKH1jHZfjmxucGhgMqUS0wd3miYsquGAZ7UD5WnvE9k1gj3QoYKvB8sG7HtJxiUbJ3zh2aMWo01XmzZb4fVGJ25HV+Obd8aoOE9QPh43D1PIR75uwxvEa2B5ynD6j+gtTuZAWVxxVAn8pycyl8bhXt9QYLfK8BDk3BvnlJXIuuZaBjMqUHQiEbS5+AcYx0XoTDhqImhjDbtt5n7lfYe/xRLIK386AuhvvNtv0Zwf1WXMv1t1AZRSX42JqRgnc6EWuqL3hxwmTyBr71lAbCEfYL0t/Go3qmnyZyKmou4zJydw0pu6TZjmV49G8075M8q0hH4OCHTKvbetje7716sutdaCpPGrJK9yDvDTgolIm9zGICy5RhfRcgnvZJV7c3/HzsAXm/euzBNGvjhJ0v+HJ4E/R/wYiWPcdwkJMuZschJiIWSIYETOSvrazGTWYSBvL8byuPU7M9rwqQNhazouHKwMSSnH7KAMh0I4JGvSbP9bU1WrzRGCDcAMd6gB9YfLtS1qL5PjD1jNbqWyWDm7FGyfyv4NfbQGufaQ1uAGZTy4qynIbHDUc2rT0B2Bf/mEOVwnR2Ou9wWYP9qK8zG+QhvElhkUNefUxInpQxtgM79pjBRetOnnZho1Bq3I80xlnPU3LBd39yDH2rgPH8H0SLLck8lEsvIO5afeoxoGZZDi3G+LafGlSzJfS8W2vtsc8Fgw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR01MB7153.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(39840400004)(376002)(396003)(64756008)(38070700005)(66556008)(66446008)(66476007)(66946007)(76116006)(26005)(7696005)(9686003)(8676002)(186003)(5660300002)(4326008)(122000001)(2906002)(8936002)(6506007)(52536014)(478600001)(38100700002)(55016002)(71200400001)(110136005)(54906003)(316002)(86362001)(33656002)(2940100002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Y0xpWW5mcTE1SGJzM21IUUo1Y0IwZEIzOHB2dnArOW9GSS9MU3p0bGp5OFVr?=
- =?utf-8?B?eGxENHVVc25jVThpY00yaWhnb2hxRFpQVEtmS0t0MGF2Z1Y2SVJYREkzS2lD?=
- =?utf-8?B?bEFNUWQ4eHh6ZFcycFRIZXRZUkQveFlhcWFlOWlicS8venIyQS9rUW0rcGxw?=
- =?utf-8?B?MEtZZW95VE95a2N6UXRHSS9QTkEwYUNYZCtFdlV6YzFHbytSZjR2dDRvV0xr?=
- =?utf-8?B?U2JVOVJOT21mNERDQ0xWeC8vV0R6MEZHUE1wRDNQaG5GWFF6UCtqeFpSTTBP?=
- =?utf-8?B?bGUrV3pKeUtvTktrNjRCdGRVMFoweVJoeG8vOTZGSEMxQ2tCWVFxNVRZNWd6?=
- =?utf-8?B?QWhIV1k0aUYvOGZOeEdxdGxNNGZtdHhhMjdhT1F3U1U5NE9Nekp5MVhqVnRC?=
- =?utf-8?B?S0NSZ1pXU2s1QjdKSUwveU5tcjNCN3VxNmNibWY2UzFvSXlTR2tPd2hwNHhj?=
- =?utf-8?B?ZkdFdzl4OWd0MnExVGw1NURiN3Q5NzZhVi9pWXBVZnV3MlV3OEdjNmhZWFo1?=
- =?utf-8?B?SzVmVjFNS254OFVLY3VyWlRmOWk2MjNBaDVTV2Iva1dOcmlvbVFkalpXZFRM?=
- =?utf-8?B?MzRlTTRWYlI0dzVGT2IvSFJlb2JzNThIdGQ4NEVSckhhOXp3bEZoQ0liVHRC?=
- =?utf-8?B?SHpMTDNoYm8wbG1MQXp1ZUlKWG5tdlcyakwwYXViUUo5cDJJQ3JwSWRSbzY3?=
- =?utf-8?B?WUxlUFJiV0RITnVLeFd1bEgyamFQS2oyaVIyb0xqWmsya2Q4c05jc3QvRWZC?=
- =?utf-8?B?SnRNTHBpNEJJNUhLRWFNL0hyTzB3V252QnJLSUJrR1BBQWxkdU14RWpRVG0w?=
- =?utf-8?B?enNMcTh5QzZCaVpNbUdBNTkyelpkN21xeXJMWnpLMENIUnVYc3lQYnJtOVo4?=
- =?utf-8?B?VGlTV0lPUzBIWDVsWlJlelJRaHVYZ09VeldWemQwK3pNR0o2WFhUMGd3czVP?=
- =?utf-8?B?ODUvcHQzY25yWjdKQnRSK0dCU2swR1NjQnlXM1FQNTQwTUNiVUtJaUNZSGlM?=
- =?utf-8?B?WXhqVzIybnp3UjdMYWJTZkJ1Ynp0QlA3WW1WOU9RbldtSE12ZlZXWkd2czZM?=
- =?utf-8?B?dTRhQld3dFg1VHdyZisyeVQ1aWd3T3BGcWFuMi9JUm1Bb3E5aG1VY1d2KytF?=
- =?utf-8?B?TlAzeGphU2swbTZlSFlYQVo2UzYvaUgva1RsR3dHejdCWU5YZklma2VKYlhW?=
- =?utf-8?B?WDRXUUl0R2pOc2dURWl3b1JpS0VnNjdSanRQeG9pa0tNSDVEVUFNbVYvVSs5?=
- =?utf-8?B?NnpqTm1LK2Y2ZEZMckNmWXRuUXR5THM0dkszdGhvVWxSQzk0WWU1Q1RMYmxR?=
- =?utf-8?B?MkY5REhMb0xTZk9yUURFRVd1SEsvNytTcGJaWExNZzM3NkE5UXlZbHJEQ09z?=
- =?utf-8?B?dkdhamZ0WGhKeVIzZ1BxeWw1Z2NlKzBraU1rSmMxdEZqQWZTZEFteU03MG40?=
- =?utf-8?B?SFJRM0dtNStvQlhid3ZkQTM2aURRT0R3cnZoYitMR1BobGswTVRaR2FPbTdC?=
- =?utf-8?B?VWRTTHp6NlNOeHk2akJvbENzTzNKWStYZ251My9YUFUvcWk3YlRhMEwwakVX?=
- =?utf-8?B?TksrQWF5R1c4R3I4VVBheWVvMHRrVFAzYnlUK3R1TkNIcUc4ejhhUHNVSi9k?=
- =?utf-8?B?UFpnTkh3R0VZaThLQkhra1NpMm5GbUQ2NXpXTkdVd2w0TkhmOGt4UkdKOHgw?=
- =?utf-8?B?MmFCZXBMRHIrcVVGcTJKVzZnVEF2eXNaMDlSWDlERjlzMjJINlVoQTJDTVpJ?=
- =?utf-8?Q?gJ97R9bCL/mj+EhWtQ=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S233257AbhHQSsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 14:48:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50639 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232923AbhHQSsC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 14:48:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629226048;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C4+uwsWxjoOT7bvze9LXayv54Gs2tbBgtTykgdzB31M=;
+        b=iyCHwGO4n15tu6ONZenWkYsDOFgo2wKEfV4vNIbtQyLC97AYuq84ndBVAO/ix3RhKWPD2Z
+        Zm1+WzGWhSl78tee13TnrgswDboVEDD8I5GiGsSs+GtDlyoTB7SWFZUvSqRsqeXsyFr+x1
+        vI+iLDhGoO5eBU5t3T40cW8RvesEYtk=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-248-9Pz2t76GPaGvD4lrp34m5A-1; Tue, 17 Aug 2021 14:47:27 -0400
+X-MC-Unique: 9Pz2t76GPaGvD4lrp34m5A-1
+Received: by mail-ej1-f70.google.com with SMTP id gg1-20020a170906e281b029053d0856c4cdso6380680ejb.15
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 11:47:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=C4+uwsWxjoOT7bvze9LXayv54Gs2tbBgtTykgdzB31M=;
+        b=n7ZWGAQvy4x/RE6JvhhdZp7wMKVaD/pALdUIuYKkifYkQs6akFUlrZQDJOIyAJ+a8r
+         mnSgopaQQ8of315rP+a3SPh4Qj625+xLYXWVUR++9KM68u9haOaGFxxbzKys6Y+JMvvC
+         MHTMmsYNVs5DHKS6c0cuQtMVzLMeYbDvbZR4QNEsm6+/1hL6nkbeARCM1gXwUgUgkuR0
+         A7FLU9Sg6SOHfm+T6bCwqJzU8XCyP+M1twxlejo5t+p26hAGHjI0Mg9+DcyVD3X1amaR
+         LiNWto2iU4QEXevTqgZSufab8aVZIimvbmfJa3AT/zTAyyjWaA0hrdSeGv8OyuNrUgah
+         33ug==
+X-Gm-Message-State: AOAM532wwHxzHcr1k3GQojvJ6LPU4dowiid/BBpMyU4oYdhBViTbCU6H
+        kK0oadcbfyIcyvim6hqOFPalF7HBsK8QKfwZh6Ufq/IkuBY3dPMQVDLSL7eTo0kKNLckR+lg3EK
+        DjvBr8kgI7+VrSNzL5QYK1xuJ
+X-Received: by 2002:a17:906:b08e:: with SMTP id x14mr5443714ejy.40.1629226045326;
+        Tue, 17 Aug 2021 11:47:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzjByuwQ9bYwlmTHdGVcGgInS5vSr/YgVNNA+jOrBRTbXJO1OcJ6tAizLKJwBFDicmGeYM3HQ==
+X-Received: by 2002:a17:906:b08e:: with SMTP id x14mr5443696ejy.40.1629226045144;
+        Tue, 17 Aug 2021 11:47:25 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id ca4sm1093211ejb.1.2021.08.17.11.47.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Aug 2021 11:47:24 -0700 (PDT)
+Subject: Re: [PATCH v7 1/5] platform/x86/intel: intel_pmc_core: Move
+ intel_pmc_core* files to pmc subfolder
+To:     Gayatri Kammela <gayatri.kammela@intel.com>,
+        platform-driver-x86@vger.kernel.org
+Cc:     mgross@linux.intel.com, irenic.rajneesh@gmail.com,
+        andriy.shevchenko@linux.intel.com, vicamo.yang@canonical.com,
+        srinivas.pandruvada@intel.com, david.e.box@intel.com,
+        chao.qin@intel.com, linux-kernel@vger.kernel.org,
+        tamar.mashiah@intel.com, gregkh@linuxfoundation.org,
+        rajatja@google.com, Shyam-sundar.S-k@amd.com,
+        Alexander.Deucher@amd.com, mlimonci@amd.com,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <cover.1629091915.git.gayatri.kammela@intel.com>
+ <81b6292e50af54fb7eeabfefde6f4a3d283b0b96.1629091915.git.gayatri.kammela@intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <c07aa6a9-2cf9-db15-bf8c-9e6ac536a521@redhat.com>
+Date:   Tue, 17 Aug 2021 20:47:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR01MB7153.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ebfdc44-d0bc-4897-9147-08d961af5fa2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Aug 2021 18:46:49.9882
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3nQ5vVCd14N8R6/BIA3Jk+Lg1P+H4zj8reynMf+E4yhI5KbXO/o0WupGf9THQqYXQg4BQT6lYNR1BRYtjNyQC2/18jujKeAGoRedzI18d5ANea0i8OkbT2jAVhI9XVin
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR01MB6053
+In-Reply-To: <81b6292e50af54fb7eeabfefde6f4a3d283b0b96.1629091915.git.gayatri.kammela@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBTdWJqZWN0OiBSRTogW0JVR10gUkRNQS9ody9xaWIvcWliX2liYTYxMjA6IHBvc3NpYmxlIGJ1
-ZmZlciB1bmRlcmZsb3cgaW4NCj4gcmN2Y3RybF82MTIwX21vZCgpDQo+IA0KPiA+IFN1YmplY3Q6
-IFtCVUddIFJETUEvaHcvcWliL3FpYl9pYmE2MTIwOiBwb3NzaWJsZSBidWZmZXIgdW5kZXJmbG93
-IGluDQo+ID4gcmN2Y3RybF82MTIwX21vZCgpDQo+ID4NCj4gPiBIZWxsbywNCj4gPg0KPiA+IE91
-ciBzdGF0aWMgYW5hbHlzaXMgdG9vbCByZXBvcnRzIGEgcG9zc2libGUgYnVmZmVyIHVuZGVyZmxv
-dyBpbg0KPiA+IHFpYl9pYmE2MTIwLmMgaW4gTGludXggNS4xNC4wLXJjMzoNCj4gPg0KPiA+IFRo
-ZSB2YXJpYWJsZSBjdHh0IGlzIGNoZWNrZWQgaW46DQo+ID4gMjExMDrCoMKgwqAgaWYgKGN0eHQg
-PCAwKQ0KPiA+DQo+ID4gVGhpcyBpbmRpY2F0ZXMgdGhhdCBjdHh0IGNhbiBiZSBuZWdhdGl2ZS4N
-Cj4gPiBJZiBzbywgcG9zc2libGUgYnVmZmVyIHVuZGVyZmxvd3Mgd2lsbCBvY2N1cjoNCj4gPiAy
-MTIwOsKgwqDCoCBxaWJfd3JpdGVfa3JlZ19jdHh0KGRkLCBrcl9yY3ZoZHJ0YWlsYWRkciwgY3R4
-dCwNCj4gPiBkZC0+cmNkW2N0eHRdLT5yY3ZoZHJxdGFpbGFkZHJfcGh5cyk7DQo+ID4gMjEyMjrC
-oMKgwqAgcWliX3dyaXRlX2tyZWdfY3R4dChkZCwga3JfcmN2aGRyYWRkciwgY3R4dCwNCj4gPiBk
-ZC0+cmNkW2N0eHRdLT5yY3ZoZHJxX3BoeXMpOw0KPiA+DQo+ID4gSG93ZXZlciwgSSBhbSBub3Qg
-c3VyZSB3aGV0aGVyIGN0eHQgPCAwIGFuZCBvcCAmDQo+IFFJQl9SQ1ZDVFJMX0NUWFRfRU5CDQo+
-ID4gY2FuIGJlIHRydWUgYXQgdGhlIHNhbWUgdGltZS4NCj4gPg0KPiA+IEFueSBmZWVkYmFjayB3
-b3VsZCBiZSBhcHByZWNpYXRlZCwgdGhhbmtzIQ0KPiA+DQo+IA0KPiBMb29rIGF0IHRoZSBhc3Np
-Z25tZW50IHRvIGZfcmN2Y3RybCBhbmQgdGhlIGNhbGxzIHVzaW5nIHRoYXQgdmFyaWFibGU6DQo+
-IDUgcWliX2liYTYxMjAuYyAgcWliX2luaXRfaWJhNjEyMF9mdW5jcyAzNDYzIGRkLT5mX3JjdmN0
-cmwgPQ0KPiByY3ZjdHJsXzYxMjBfbW9kOw0KPiA2IHFpYl9pYmE3MjIwLmMgIHFpYl9pbml0X2li
-YTcyMjBfZnVuY3MgNDUwOCBkZC0+Zl9yY3ZjdHJsID0NCj4gcmN2Y3RybF83MjIwX21vZDsNCj4g
-NyBxaWJfaWJhNzMyMi5jICBxaWJfaW5pdF9pYmE3MzIyX2Z1bmNzIDcxOTggZGQtPmZfcmN2Y3Ry
-bCA9DQo+IHJjdmN0cmxfNzMyMl9tb2Q7DQo+IA0KPiBBbGwgdGhlc2UgZnVuY3Rpb25zIGhhdmUg
-dGhlIHNhbWUgImlzc3VlIi4gICBUaGUgLTEgcGFyYW1ldGVyIGltcGxpZXMgYWxsDQo+IGNvbnRl
-eHRzIGFuZCB0aGUgLTEgY3R4dCBoYXBwZW5zIGZyb20gaW5pdF9hZnRlcl9yZXNldCgpIGFuZA0K
-PiBxaWJfc2h1dGRvd25fZGV2aWNlKCkgYW5kIGJ5IGNvZGUgaW5zcGVjdGlvbiwgIHRoZXkgb25s
-eSBvciBpbiBvcGVyYXRpb25zDQo+IHRoYXQgbGFjayBRSUJfUkNWQ1RSTF9DVFhUX0VOQiwgdGh1
-cyBhdm9pZGluZyB0aGUgY29kZSBwYXRoIHRoYXQgd3JpdGVzIGENCj4gcGVyIGNvbnRleHQgQ1NS
-IHVzaW5nIHRoZSBjdHh0IGFzIGFuIGluZGV4Lg0KPiANCj4gSSBkb24ndCB0aGluayB0aGlzIGlz
-IGFuIGlzc3VlLg0KPiANCg0KU2Vjb25kIHRob3VnaHMuDQoNClNlZSBzZW5kY3RybF83MzIyX21v
-ZCgpLg0KDQpUaGVyZSBpcyBhbiBlYXN5IGZpeCBhcyBzaG93biBpbiB0aGUgNzMyMiB2ZXJzaW9u
-IG9mIHRoZSBmX3JjdmN0cmw6DQoNCiAgICAgICAgaWYgKGN0eHQgPCAwKSB7DQogICAgICAgICAg
-ICAgICAgbWFzayA9ICgxVUxMIDw8IGRkLT5jdHh0Y250KSAtIDE7DQogICAgICAgICAgICAgICAg
-cmNkID0gTlVMTDsNCiAgICAgICAgfSBlbHNlIHsNCiAgICAgICAgICAgICAgICBtYXNrID0gKDFV
-TEwgPDwgY3R4dCk7DQogICAgICAgICAgICAgICAgcmNkID0gZGQtPnJjZFtjdHh0XTsNCiAgICAg
-ICAgfQ0KICAgICAgICBpZiAoKG9wICYgUUlCX1JDVkNUUkxfQ1RYVF9FTkIpICYmIHJjZCkgew0K
-DQpUaGUgYXNzaWdubWVudCB0byB0aGUgcmNkIHBvaW50ZXIgZW5zdXJlcyB0aGUgY29kZSBjYW4g
-bmV2ZXIgYmUgcmVhY2hlZC4NCg0KVGhpcyB0ZWNobmlxdWUgY291bGQgYmUgcG9ydGVkIHRvIHRo
-ZSBvdGhlciB0d28gcm91dGluZXMuDQoNCk1pa2UNCg==
+Hi,
+
+On 8/16/21 6:58 PM, Gayatri Kammela wrote:
+> As part of collecting Intel x86 specific drivers in their own
+> folder, move intel_pmc_core* files to its own subfolder there.
+> 
+> Cc: Chao Qin <chao.qin@intel.com>
+> Cc: Srinivas Pandruvada <srinivas.pandruvada@intel.com>
+> Cc: David Box <david.e.box@intel.com>
+> Cc: You-Sheng Yang <vicamo.yang@canonical.com>
+> Cc: Hans de Goede <hdegoede@redhat.com>
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Acked-by: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Gayatri Kammela <gayatri.kammela@intel.com>
+> ---
+>  MAINTAINERS                                   |  2 +-
+>  drivers/platform/x86/Kconfig                  | 21 ------------------
+>  drivers/platform/x86/Makefile                 |  1 -
+>  drivers/platform/x86/intel/Kconfig            |  1 +
+>  drivers/platform/x86/intel/Makefile           |  1 +
+>  drivers/platform/x86/intel/pmc/Kconfig        | 22 +++++++++++++++++++
+>  drivers/platform/x86/intel/pmc/Makefile       |  6 +++++
+>  .../{intel_pmc_core.c => intel/pmc/core.c}    |  2 +-
+>  .../{intel_pmc_core.h => intel/pmc/core.h}    |  0
+>  .../pmc/core_platform.c}                      |  0
+>  10 files changed, 32 insertions(+), 24 deletions(-)
+>  create mode 100644 drivers/platform/x86/intel/pmc/Kconfig
+>  create mode 100644 drivers/platform/x86/intel/pmc/Makefile
+>  rename drivers/platform/x86/{intel_pmc_core.c => intel/pmc/core.c} (99%)
+>  rename drivers/platform/x86/{intel_pmc_core.h => intel/pmc/core.h} (100%)
+>  rename drivers/platform/x86/{intel_pmc_core_pltdrv.c => intel/pmc/core_platform.c} (100%)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index fd25e4ecf0b9..5e118faf8018 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -9477,7 +9477,7 @@ M:	David E Box <david.e.box@intel.com>
+>  L:	platform-driver-x86@vger.kernel.org
+>  S:	Maintained
+>  F:	Documentation/ABI/testing/sysfs-platform-intel-pmc
+> -F:	drivers/platform/x86/intel_pmc_core*
+> +F:	drivers/platform/x86/intel/pmc/core*
+>  
+>  INTEL PMIC GPIO DRIVERS
+>  M:	Andy Shevchenko <andy@kernel.org>
+> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+> index d12db6c316ea..c4ee38eba44b 100644
+> --- a/drivers/platform/x86/Kconfig
+> +++ b/drivers/platform/x86/Kconfig
+> @@ -1187,27 +1187,6 @@ config INTEL_MRFLD_PWRBTN
+>  	  To compile this driver as a module, choose M here: the module
+>  	  will be called intel_mrfld_pwrbtn.
+>  
+> -config INTEL_PMC_CORE
+> -	tristate "Intel PMC Core driver"
+> -	depends on PCI
+> -	depends on ACPI
+> -	help
+> -	  The Intel Platform Controller Hub for Intel Core SoCs provides access
+> -	  to Power Management Controller registers via various interfaces. This
+> -	  driver can utilize debugging capabilities and supported features as
+> -	  exposed by the Power Management Controller. It also may perform some
+> -	  tasks in the PMC in order to enable transition into the SLPS0 state.
+> -	  It should be selected on all Intel platforms supported by the driver.
+> -
+> -	  Supported features:
+> -		- SLP_S0_RESIDENCY counter
+> -		- PCH IP Power Gating status
+> -		- LTR Ignore / LTR Show
+> -		- MPHY/PLL gating status (Sunrisepoint PCH only)
+> -		- SLPS0 Debug registers (Cannonlake/Icelake PCH)
+> -		- Low Power Mode registers (Tigerlake and beyond)
+> -		- PMC quirks as needed to enable SLPS0/S0ix
+> -
+>  config INTEL_PMT_CLASS
+>  	tristate
+>  	help
+> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+> index 7ee369aab10d..43d36f8c36f1 100644
+> --- a/drivers/platform/x86/Makefile
+> +++ b/drivers/platform/x86/Makefile
+> @@ -128,7 +128,6 @@ obj-$(CONFIG_INTEL_UNCORE_FREQ_CONTROL)		+= intel-uncore-frequency.o
+>  obj-$(CONFIG_INTEL_BXTWC_PMIC_TMU)	+= intel_bxtwc_tmu.o
+>  obj-$(CONFIG_INTEL_CHTDC_TI_PWRBTN)	+= intel_chtdc_ti_pwrbtn.o
+>  obj-$(CONFIG_INTEL_MRFLD_PWRBTN)	+= intel_mrfld_pwrbtn.o
+> -obj-$(CONFIG_INTEL_PMC_CORE)		+= intel_pmc_core.o intel_pmc_core_pltdrv.o
+
+This Makefile line will build 2 separate .ko files: intel_pmc_core.ko and
+intel_pmc_core_pltdrv.ko when CONFIG_INTEL_PMC_CORE=m
+
+>  obj-$(CONFIG_INTEL_PMT_CLASS)		+= intel_pmt_class.o
+>  obj-$(CONFIG_INTEL_PMT_TELEMETRY)	+= intel_pmt_telemetry.o
+>  obj-$(CONFIG_INTEL_PMT_CRASHLOG)	+= intel_pmt_crashlog.o
+
+<snip>
+
+> diff --git a/drivers/platform/x86/intel/pmc/Makefile b/drivers/platform/x86/intel/pmc/Makefile
+> new file mode 100644
+> index 000000000000..c92e66846a4a
+> --- /dev/null
+> +++ b/drivers/platform/x86/intel/pmc/Makefile
+> @@ -0,0 +1,6 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +
+> +obj-$(CONFIG_INTEL_PMC_CORE)	+= intel_pmc_core.o
+> +intel_pmc_core-objs		:= core.o \
+> +				   core_platform.o
+
+Whereas this will now build a single intel_pmc_core.ko containing both object files,
+but the 2 .c files have:
+
+module_platform_driver(pmc_core_driver);
+(which is a macro expanding to a module_init + module_exit function)
+
+resp.
+
+module_init(pmc_core_platform_init);
+module_exit(pmc_core_platform_exit);
+
+So now we have 2 module_init (and _exit) functions in a single .ko
+file and the build will fail, not good.
+
+Also instead of "intel_pmc_core-objs :=" you should use "intel_pmc_core-y :="
+
+And this series is based on 5.14-rc6, causing it to not apply
+because the pmt driver has already been moved to
+drivers/platform/x86 and this patch is using a base which
+is missing that move.
+
+pdx86 patches should be based on:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+Please make sure the next version is based on my review-hans branch,
+there are some other intel driver renames in flight (and e.g. the
+pmt one has already landed) and I would like to be able to apply
+this without needing to manually resolve conflicts.
+
+Regards,
+
+Hans
+
+
+
+> diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel/pmc/core.c
+> similarity index 99%
+> rename from drivers/platform/x86/intel_pmc_core.c
+> rename to drivers/platform/x86/intel/pmc/core.c
+> index b0e486a6bdfb..f9de78b08e5d 100644
+> --- a/drivers/platform/x86/intel_pmc_core.c
+> +++ b/drivers/platform/x86/intel/pmc/core.c
+> @@ -31,7 +31,7 @@
+>  #include <asm/msr.h>
+>  #include <asm/tsc.h>
+>  
+> -#include "intel_pmc_core.h"
+> +#include "core.h"
+>  
+>  #define ACPI_S0IX_DSM_UUID		"57a6512e-3979-4e9d-9708-ff13b2508972"
+>  #define ACPI_GET_LOW_MODE_REGISTERS	1
+> diff --git a/drivers/platform/x86/intel_pmc_core.h b/drivers/platform/x86/intel/pmc/core.h
+> similarity index 100%
+> rename from drivers/platform/x86/intel_pmc_core.h
+> rename to drivers/platform/x86/intel/pmc/core.h
+> diff --git a/drivers/platform/x86/intel_pmc_core_pltdrv.c b/drivers/platform/x86/intel/pmc/core_platform.c
+> similarity index 100%
+> rename from drivers/platform/x86/intel_pmc_core_pltdrv.c
+> rename to drivers/platform/x86/intel/pmc/core_platform.c
+> 
+
