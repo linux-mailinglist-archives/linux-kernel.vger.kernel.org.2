@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F003EF2C5
+	by mail.lfdr.de (Postfix) with ESMTP id 5274D3EF2C6
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 21:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233916AbhHQTnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 15:43:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46336 "EHLO mail.kernel.org"
+        id S233831AbhHQTnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 15:43:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232744AbhHQTnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232923AbhHQTnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 17 Aug 2021 15:43:37 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 41DB661058;
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E8C161053;
         Tue, 17 Aug 2021 19:43:04 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@goodmis.org>)
-        id 1mG4zH-004TMk-8y; Tue, 17 Aug 2021 15:43:03 -0400
-Message-ID: <20210817194303.112728960@goodmis.org>
+        id 1mG4zH-004TNI-FB; Tue, 17 Aug 2021 15:43:03 -0400
+Message-ID: <20210817194303.305479503@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 17 Aug 2021 15:42:10 -0400
+Date:   Tue, 17 Aug 2021 15:42:11 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Namhyung Kim <namhyung@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [for-next][PATCH 03/19] tracing/histogram: Update the documentation for the buckets modifier
+Subject: [for-next][PATCH 04/19] tracing: Have histogram types be constant when possible
 References: <20210817194207.947725935@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,158 +37,136 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Update both the tracefs README file as well as the histogram.rst to
-include an explanation of what the buckets modifier is and how to use it.
-Include an example with the wakeup_latency example for both log2 and the
-buckets modifiers as there was no existing log2 example.
+Instead of kstrdup("const", GFP_KERNEL), have the hist_field type simply
+assign the constant hist_field->type = "const"; And when the value passed
+to it is a variable, use "kstrdup_const(var, GFP_KERNEL);" which will just
+copy the value if the variable is already a constant. This saves on having
+to allocate when not needed.
 
-Link: https://lkml.kernel.org/r/20210707213922.167218794@goodmis.org
+All frees of the hist_field->type will need to use kfree_const().
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+Link: https://lkml.kernel.org/r/20210722142837.280718447@goodmis.org
+
+Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
 Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Documentation/trace/histogram.rst | 92 +++++++++++++++++++++++++++++--
- kernel/trace/trace.c              |  1 +
- 2 files changed, 87 insertions(+), 6 deletions(-)
+ kernel/trace/trace_events_hist.c | 32 ++++++++++++++------------------
+ 1 file changed, 14 insertions(+), 18 deletions(-)
 
-diff --git a/Documentation/trace/histogram.rst b/Documentation/trace/histogram.rst
-index f99be8062bc8..4e650671f245 100644
---- a/Documentation/trace/histogram.rst
-+++ b/Documentation/trace/histogram.rst
-@@ -77,6 +77,7 @@ Documentation written by Tom Zanussi
- 	.syscall    display a syscall id as a system call name
- 	.execname   display a common_pid as a program name
- 	.log2       display log2 value rather than raw number
-+	.buckets=size  display grouping of values rather than raw number
- 	.usecs      display a common_timestamp in microseconds
- 	=========== ==========================================
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index 8e87c4a429fd..bb466a82b938 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -1616,7 +1616,9 @@ static void __destroy_hist_field(struct hist_field *hist_field)
  
-@@ -228,7 +229,7 @@ Extended error information
-   that lists the total number of bytes requested for each function in
-   the kernel that made one or more calls to kmalloc::
+ 	kfree(hist_field->var.name);
+ 	kfree(hist_field->name);
+-	kfree(hist_field->type);
++
++	/* Can likely be a const */
++	kfree_const(hist_field->type);
  
--    # echo 'hist:key=call_site:val=bytes_req' > \
-+    # echo 'hist:key=call_site:val=bytes_req.buckets=32' > \
-             /sys/kernel/debug/tracing/events/kmem/kmalloc/trigger
+ 	kfree(hist_field->system);
+ 	kfree(hist_field->event_name);
+@@ -1673,9 +1675,7 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
+ 	if (flags & HIST_FIELD_FL_HITCOUNT) {
+ 		hist_field->fn = hist_field_counter;
+ 		hist_field->size = sizeof(u64);
+-		hist_field->type = kstrdup("u64", GFP_KERNEL);
+-		if (!hist_field->type)
+-			goto free;
++		hist_field->type = "u64";
+ 		goto out;
+ 	}
  
-   This tells the tracing system to create a 'hist' trigger using the
-@@ -1823,20 +1824,99 @@ and variables defined on other events (see Section 2.2.3 below on
- how that is done using hist trigger 'onmatch' action). Once that is
- done, the 'wakeup_latency' synthetic event instance is created.
+@@ -1690,7 +1690,7 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
+ 			hist_field_bucket;
+ 		hist_field->operands[0] = create_hist_field(hist_data, field, fl, NULL);
+ 		hist_field->size = hist_field->operands[0]->size;
+-		hist_field->type = kstrdup(hist_field->operands[0]->type, GFP_KERNEL);
++		hist_field->type = kstrdup_const(hist_field->operands[0]->type, GFP_KERNEL);
+ 		if (!hist_field->type)
+ 			goto free;
+ 		goto out;
+@@ -1699,18 +1699,14 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
+ 	if (flags & HIST_FIELD_FL_TIMESTAMP) {
+ 		hist_field->fn = hist_field_timestamp;
+ 		hist_field->size = sizeof(u64);
+-		hist_field->type = kstrdup("u64", GFP_KERNEL);
+-		if (!hist_field->type)
+-			goto free;
++		hist_field->type = "u64";
+ 		goto out;
+ 	}
  
--A histogram can now be defined for the new synthetic event::
--
--  # echo 'hist:keys=pid,prio,lat.log2:sort=pid,lat' >> \
--        /sys/kernel/debug/tracing/events/synthetic/wakeup_latency/trigger
--
- The new event is created under the tracing/events/synthetic/ directory
- and looks and behaves just like any other event::
+ 	if (flags & HIST_FIELD_FL_CPU) {
+ 		hist_field->fn = hist_field_cpu;
+ 		hist_field->size = sizeof(int);
+-		hist_field->type = kstrdup("unsigned int", GFP_KERNEL);
+-		if (!hist_field->type)
+-			goto free;
++		hist_field->type = "unsigned int";
+ 		goto out;
+ 	}
  
-   # ls /sys/kernel/debug/tracing/events/synthetic/wakeup_latency
-         enable  filter  format  hist  id  trigger
+@@ -1723,7 +1719,7 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
+ 		flags |= HIST_FIELD_FL_STRING;
  
-+A histogram can now be defined for the new synthetic event::
-+
-+  # echo 'hist:keys=pid,prio,lat.log2:sort=lat' >> \
-+        /sys/kernel/debug/tracing/events/synthetic/wakeup_latency/trigger
-+
-+The above shows the latency "lat" in a power of 2 grouping.
-+
- Like any other event, once a histogram is enabled for the event, the
- output can be displayed by reading the event's 'hist' file.
+ 		hist_field->size = MAX_FILTER_STR_VAL;
+-		hist_field->type = kstrdup(field->type, GFP_KERNEL);
++		hist_field->type = kstrdup_const(field->type, GFP_KERNEL);
+ 		if (!hist_field->type)
+ 			goto free;
  
-+  # cat /sys/kernel/debug/tracing/events/synthetic/wakeup_latency/hist
-+
-+  # event histogram
-+  #
-+  # trigger info: hist:keys=pid,prio,lat.log2:vals=hitcount:sort=lat.log2:size=2048 [active]
-+  #
-+
-+  { pid:       2035, prio:          9, lat: ~ 2^2  } hitcount:         43
-+  { pid:       2034, prio:          9, lat: ~ 2^2  } hitcount:         60
-+  { pid:       2029, prio:          9, lat: ~ 2^2  } hitcount:        965
-+  { pid:       2034, prio:        120, lat: ~ 2^2  } hitcount:          9
-+  { pid:       2033, prio:        120, lat: ~ 2^2  } hitcount:          5
-+  { pid:       2030, prio:          9, lat: ~ 2^2  } hitcount:        335
-+  { pid:       2030, prio:        120, lat: ~ 2^2  } hitcount:         10
-+  { pid:       2032, prio:        120, lat: ~ 2^2  } hitcount:          1
-+  { pid:       2035, prio:        120, lat: ~ 2^2  } hitcount:          2
-+  { pid:       2031, prio:          9, lat: ~ 2^2  } hitcount:        176
-+  { pid:       2028, prio:        120, lat: ~ 2^2  } hitcount:         15
-+  { pid:       2033, prio:          9, lat: ~ 2^2  } hitcount:         91
-+  { pid:       2032, prio:          9, lat: ~ 2^2  } hitcount:        125
-+  { pid:       2029, prio:        120, lat: ~ 2^2  } hitcount:          4
-+  { pid:       2031, prio:        120, lat: ~ 2^2  } hitcount:          3
-+  { pid:       2029, prio:        120, lat: ~ 2^3  } hitcount:          2
-+  { pid:       2035, prio:          9, lat: ~ 2^3  } hitcount:         41
-+  { pid:       2030, prio:        120, lat: ~ 2^3  } hitcount:          1
-+  { pid:       2032, prio:          9, lat: ~ 2^3  } hitcount:         32
-+  { pid:       2031, prio:          9, lat: ~ 2^3  } hitcount:         44
-+  { pid:       2034, prio:          9, lat: ~ 2^3  } hitcount:         40
-+  { pid:       2030, prio:          9, lat: ~ 2^3  } hitcount:         29
-+  { pid:       2033, prio:          9, lat: ~ 2^3  } hitcount:         31
-+  { pid:       2029, prio:          9, lat: ~ 2^3  } hitcount:         31
-+  { pid:       2028, prio:        120, lat: ~ 2^3  } hitcount:         18
-+  { pid:       2031, prio:        120, lat: ~ 2^3  } hitcount:          2
-+  { pid:       2028, prio:        120, lat: ~ 2^4  } hitcount:          1
-+  { pid:       2029, prio:          9, lat: ~ 2^4  } hitcount:          4
-+  { pid:       2031, prio:        120, lat: ~ 2^7  } hitcount:          1
-+  { pid:       2032, prio:        120, lat: ~ 2^7  } hitcount:          1
-+
-+  Totals:
-+      Hits: 2122
-+      Entries: 30
-+      Dropped: 0
-+
-+
-+The latency values can also be grouped linearly by a given size with
-+the ".buckets" modifier and specify a size (in this case groups of 10).
-+
-+  # echo 'hist:keys=pid,prio,lat.buckets=10:sort=lat' >> \
-+        /sys/kernel/debug/tracing/events/synthetic/wakeup_latency/trigger
-+
-+  # event histogram
-+  #
-+  # trigger info: hist:keys=pid,prio,lat.buckets=10:vals=hitcount:sort=lat.buckets=10:size=2048 [active]
-+  #
-+
-+  { pid:       2067, prio:          9, lat: ~ 0-9 } hitcount:        220
-+  { pid:       2068, prio:          9, lat: ~ 0-9 } hitcount:        157
-+  { pid:       2070, prio:          9, lat: ~ 0-9 } hitcount:        100
-+  { pid:       2067, prio:        120, lat: ~ 0-9 } hitcount:          6
-+  { pid:       2065, prio:        120, lat: ~ 0-9 } hitcount:          2
-+  { pid:       2066, prio:        120, lat: ~ 0-9 } hitcount:          2
-+  { pid:       2069, prio:          9, lat: ~ 0-9 } hitcount:        122
-+  { pid:       2069, prio:        120, lat: ~ 0-9 } hitcount:          8
-+  { pid:       2070, prio:        120, lat: ~ 0-9 } hitcount:          1
-+  { pid:       2068, prio:        120, lat: ~ 0-9 } hitcount:          7
-+  { pid:       2066, prio:          9, lat: ~ 0-9 } hitcount:        365
-+  { pid:       2064, prio:        120, lat: ~ 0-9 } hitcount:         35
-+  { pid:       2065, prio:          9, lat: ~ 0-9 } hitcount:        998
-+  { pid:       2071, prio:          9, lat: ~ 0-9 } hitcount:         85
-+  { pid:       2065, prio:          9, lat: ~ 10-19 } hitcount:          2
-+  { pid:       2064, prio:        120, lat: ~ 10-19 } hitcount:          2
-+
-+  Totals:
-+      Hits: 2112
-+      Entries: 16
-+      Dropped: 0
-+
- 2.2.3 Hist trigger 'handlers' and 'actions'
- -------------------------------------------
+@@ -1736,7 +1732,7 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
+ 	} else {
+ 		hist_field->size = field->size;
+ 		hist_field->is_signed = field->is_signed;
+-		hist_field->type = kstrdup(field->type, GFP_KERNEL);
++		hist_field->type = kstrdup_const(field->type, GFP_KERNEL);
+ 		if (!hist_field->type)
+ 			goto free;
  
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index a1adb29ef5c1..be0169594de5 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -5654,6 +5654,7 @@ static const char readme_msg[] =
- 	"\t            .execname   display a common_pid as a program name\n"
- 	"\t            .syscall    display a syscall id as a syscall name\n"
- 	"\t            .log2       display log2 value rather than raw number\n"
-+	"\t            .buckets=size  display values in groups of size rather than raw number\n"
- 	"\t            .usecs      display a common_timestamp in microseconds\n\n"
- 	"\t    The 'pause' parameter can be used to pause an existing hist\n"
- 	"\t    trigger or to start a hist trigger but not log any events\n"
+@@ -1822,7 +1818,7 @@ static int init_var_ref(struct hist_field *ref_field,
+ 		}
+ 	}
+ 
+-	ref_field->type = kstrdup(var_field->type, GFP_KERNEL);
++	ref_field->type = kstrdup_const(var_field->type, GFP_KERNEL);
+ 	if (!ref_field->type) {
+ 		err = -ENOMEM;
+ 		goto free;
+@@ -2215,7 +2211,7 @@ static struct hist_field *parse_unary(struct hist_trigger_data *hist_data,
+ 	expr->operands[0] = operand1;
+ 	expr->operator = FIELD_OP_UNARY_MINUS;
+ 	expr->name = expr_str(expr, 0);
+-	expr->type = kstrdup(operand1->type, GFP_KERNEL);
++	expr->type = kstrdup_const(operand1->type, GFP_KERNEL);
+ 	if (!expr->type) {
+ 		ret = -ENOMEM;
+ 		goto free;
+@@ -2355,7 +2351,7 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
+ 
+ 	expr->operator = field_op;
+ 	expr->name = expr_str(expr, 0);
+-	expr->type = kstrdup(operand1->type, GFP_KERNEL);
++	expr->type = kstrdup_const(operand1->type, GFP_KERNEL);
+ 	if (!expr->type) {
+ 		ret = -ENOMEM;
+ 		goto free;
+@@ -2743,10 +2739,10 @@ static struct hist_field *create_var(struct hist_trigger_data *hist_data,
+ 	var->var.hist_data = var->hist_data = hist_data;
+ 	var->size = size;
+ 	var->var.name = kstrdup(name, GFP_KERNEL);
+-	var->type = kstrdup(type, GFP_KERNEL);
++	var->type = kstrdup_const(type, GFP_KERNEL);
+ 	if (!var->var.name || !var->type) {
++		kfree_const(var->type);
+ 		kfree(var->var.name);
+-		kfree(var->type);
+ 		kfree(var);
+ 		var = ERR_PTR(-ENOMEM);
+ 	}
 -- 
 2.30.2
