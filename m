@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87C7C3EF2C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 21:45:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F003EF2C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 21:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233849AbhHQTnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 15:43:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46312 "EHLO mail.kernel.org"
+        id S233916AbhHQTnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 15:43:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232631AbhHQTnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232744AbhHQTnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 17 Aug 2021 15:43:37 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1358761056;
+        by mail.kernel.org (Postfix) with ESMTPSA id 41DB661058;
         Tue, 17 Aug 2021 19:43:04 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@goodmis.org>)
-        id 1mG4zH-004TMC-2h; Tue, 17 Aug 2021 15:43:03 -0400
-Message-ID: <20210817194302.918591420@goodmis.org>
+        id 1mG4zH-004TMk-8y; Tue, 17 Aug 2021 15:43:03 -0400
+Message-ID: <20210817194303.112728960@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 17 Aug 2021 15:42:09 -0400
+Date:   Tue, 17 Aug 2021 15:42:10 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Namhyung Kim <namhyung@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>
-Subject: [for-next][PATCH 02/19] tracing: Add linear buckets to histogram logic
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [for-next][PATCH 03/19] tracing/histogram: Update the documentation for the buckets modifier
 References: <20210817194207.947725935@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,221 +38,158 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-There's been several times I wished the histogram logic had a "grouping"
-feature for the buckets. Currently, each bucket has a size of one. That
-is, if you trace the amount of requested allocations, each allocation is
-its own bucket, even if you are interested in what allocates 100 bytes or
-less, 100 to 200, 200 to 300, etc.
+Update both the tracefs README file as well as the histogram.rst to
+include an explanation of what the buckets modifier is and how to use it.
+Include an example with the wakeup_latency example for both log2 and the
+buckets modifiers as there was no existing log2 example.
 
-Also, without grouping, it fills up the allocated histogram buckets
-quickly. If you are tracking latency, and don't care if something is 200
-microseconds off, or 201 microseconds off, but want to track them by say
-10 microseconds each. This can not currently be done.
-
-There is a log2 but that grouping get's too big too fast for a lot of
-cases.
-
-Introduce a "buckets=SIZE" command to each field where it will record in a
-rounded number. For example:
-
- ># echo 'hist:keys=bytes_req.buckets=100:sort=bytes_req' > events/kmem/kmalloc/trigger
- ># cat events/kmem/kmalloc/hist
- # event histogram
- #
- # trigger info:
- hist:keys=bytes_req.buckets=100:vals=hitcount:sort=bytes_req.buckets=100:size=2048
- [active]
- #
-
- { bytes_req: ~ 0-99 } hitcount:       3149
- { bytes_req: ~ 100-199 } hitcount:       1468
- { bytes_req: ~ 200-299 } hitcount:         39
- { bytes_req: ~ 300-399 } hitcount:        306
- { bytes_req: ~ 400-499 } hitcount:        364
- { bytes_req: ~ 500-599 } hitcount:         32
- { bytes_req: ~ 600-699 } hitcount:         69
- { bytes_req: ~ 700-799 } hitcount:         37
- { bytes_req: ~ 1200-1299 } hitcount:         16
- { bytes_req: ~ 1400-1499 } hitcount:         30
- { bytes_req: ~ 2000-2099 } hitcount:          6
- { bytes_req: ~ 4000-4099 } hitcount:       2168
- { bytes_req: ~ 5000-5099 } hitcount:          6
-
- Totals:
-     Hits: 7690
-     Entries: 13
-     Dropped: 0
-
-Link: https://lkml.kernel.org/r/20210707213921.980359719@goodmis.org
+Link: https://lkml.kernel.org/r/20210707213922.167218794@goodmis.org
 
 Acked-by: Namhyung Kim <namhyung@kernel.org>
-Reviewed-by: Tom Zanussi <zanussi@kernel.org>
 Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-Tested-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/trace_events_hist.c | 65 ++++++++++++++++++++++++++++----
- 1 file changed, 58 insertions(+), 7 deletions(-)
+ Documentation/trace/histogram.rst | 92 +++++++++++++++++++++++++++++--
+ kernel/trace/trace.c              |  1 +
+ 2 files changed, 87 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index a48aa2a2875b..8e87c4a429fd 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -121,6 +121,7 @@ struct hist_field {
- 	unsigned int			size;
- 	unsigned int			offset;
- 	unsigned int                    is_signed;
-+	unsigned long			buckets;
- 	const char			*type;
- 	struct hist_field		*operands[HIST_FIELD_OPERANDS_MAX];
- 	struct hist_trigger_data	*hist_data;
-@@ -219,6 +220,27 @@ static u64 hist_field_log2(struct hist_field *hist_field,
- 	return (u64) ilog2(roundup_pow_of_two(val));
- }
+diff --git a/Documentation/trace/histogram.rst b/Documentation/trace/histogram.rst
+index f99be8062bc8..4e650671f245 100644
+--- a/Documentation/trace/histogram.rst
++++ b/Documentation/trace/histogram.rst
+@@ -77,6 +77,7 @@ Documentation written by Tom Zanussi
+ 	.syscall    display a syscall id as a system call name
+ 	.execname   display a common_pid as a program name
+ 	.log2       display log2 value rather than raw number
++	.buckets=size  display grouping of values rather than raw number
+ 	.usecs      display a common_timestamp in microseconds
+ 	=========== ==========================================
  
-+static u64 hist_field_bucket(struct hist_field *hist_field,
-+			     struct tracing_map_elt *elt,
-+			     struct trace_buffer *buffer,
-+			     struct ring_buffer_event *rbe,
-+			     void *event)
-+{
-+	struct hist_field *operand = hist_field->operands[0];
-+	unsigned long buckets = hist_field->buckets;
+@@ -228,7 +229,7 @@ Extended error information
+   that lists the total number of bytes requested for each function in
+   the kernel that made one or more calls to kmalloc::
+ 
+-    # echo 'hist:key=call_site:val=bytes_req' > \
++    # echo 'hist:key=call_site:val=bytes_req.buckets=32' > \
+             /sys/kernel/debug/tracing/events/kmem/kmalloc/trigger
+ 
+   This tells the tracing system to create a 'hist' trigger using the
+@@ -1823,20 +1824,99 @@ and variables defined on other events (see Section 2.2.3 below on
+ how that is done using hist trigger 'onmatch' action). Once that is
+ done, the 'wakeup_latency' synthetic event instance is created.
+ 
+-A histogram can now be defined for the new synthetic event::
+-
+-  # echo 'hist:keys=pid,prio,lat.log2:sort=pid,lat' >> \
+-        /sys/kernel/debug/tracing/events/synthetic/wakeup_latency/trigger
+-
+ The new event is created under the tracing/events/synthetic/ directory
+ and looks and behaves just like any other event::
+ 
+   # ls /sys/kernel/debug/tracing/events/synthetic/wakeup_latency
+         enable  filter  format  hist  id  trigger
+ 
++A histogram can now be defined for the new synthetic event::
 +
-+	u64 val = operand->fn(operand, elt, buffer, rbe, event);
++  # echo 'hist:keys=pid,prio,lat.log2:sort=lat' >> \
++        /sys/kernel/debug/tracing/events/synthetic/wakeup_latency/trigger
 +
-+	if (WARN_ON_ONCE(!buckets))
-+		return val;
++The above shows the latency "lat" in a power of 2 grouping.
 +
-+	if (val >= LONG_MAX)
-+		val = div64_ul(val, buckets);
-+	else
-+		val = (u64)((unsigned long)val / buckets);
-+	return val * buckets;
-+}
+ Like any other event, once a histogram is enabled for the event, the
+ output can be displayed by reading the event's 'hist' file.
+ 
++  # cat /sys/kernel/debug/tracing/events/synthetic/wakeup_latency/hist
 +
- static u64 hist_field_plus(struct hist_field *hist_field,
- 			   struct tracing_map_elt *elt,
- 			   struct trace_buffer *buffer,
-@@ -318,6 +340,7 @@ enum hist_field_flags {
- 	HIST_FIELD_FL_VAR_REF		= 1 << 14,
- 	HIST_FIELD_FL_CPU		= 1 << 15,
- 	HIST_FIELD_FL_ALIAS		= 1 << 16,
-+	HIST_FIELD_FL_BUCKET		= 1 << 17,
- };
- 
- struct var_defs {
-@@ -1109,7 +1132,8 @@ static const char *hist_field_name(struct hist_field *field,
- 	if (field->field)
- 		field_name = field->field->name;
- 	else if (field->flags & HIST_FIELD_FL_LOG2 ||
--		 field->flags & HIST_FIELD_FL_ALIAS)
-+		 field->flags & HIST_FIELD_FL_ALIAS ||
-+		 field->flags & HIST_FIELD_FL_BUCKET)
- 		field_name = hist_field_name(field->operands[0], ++level);
- 	else if (field->flags & HIST_FIELD_FL_CPU)
- 		field_name = "common_cpu";
-@@ -1470,6 +1494,8 @@ static const char *get_hist_field_flags(struct hist_field *hist_field)
- 		flags_str = "syscall";
- 	else if (hist_field->flags & HIST_FIELD_FL_LOG2)
- 		flags_str = "log2";
-+	else if (hist_field->flags & HIST_FIELD_FL_BUCKET)
-+		flags_str = "buckets";
- 	else if (hist_field->flags & HIST_FIELD_FL_TIMESTAMP_USECS)
- 		flags_str = "usecs";
- 
-@@ -1658,9 +1684,10 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
- 		goto out;
- 	}
- 
--	if (flags & HIST_FIELD_FL_LOG2) {
--		unsigned long fl = flags & ~HIST_FIELD_FL_LOG2;
--		hist_field->fn = hist_field_log2;
-+	if (flags & (HIST_FIELD_FL_LOG2 | HIST_FIELD_FL_BUCKET)) {
-+		unsigned long fl = flags & ~(HIST_FIELD_FL_LOG2 | HIST_FIELD_FL_BUCKET);
-+		hist_field->fn = flags & HIST_FIELD_FL_LOG2 ? hist_field_log2 :
-+			hist_field_bucket;
- 		hist_field->operands[0] = create_hist_field(hist_data, field, fl, NULL);
- 		hist_field->size = hist_field->operands[0]->size;
- 		hist_field->type = kstrdup(hist_field->operands[0]->type, GFP_KERNEL);
-@@ -1953,7 +1980,7 @@ static struct hist_field *parse_var_ref(struct hist_trigger_data *hist_data,
- 
- static struct ftrace_event_field *
- parse_field(struct hist_trigger_data *hist_data, struct trace_event_file *file,
--	    char *field_str, unsigned long *flags)
-+	    char *field_str, unsigned long *flags, unsigned long *buckets)
- {
- 	struct ftrace_event_field *field = NULL;
- 	char *field_name, *modifier, *str;
-@@ -1980,7 +2007,22 @@ parse_field(struct hist_trigger_data *hist_data, struct trace_event_file *file,
- 			*flags |= HIST_FIELD_FL_LOG2;
- 		else if (strcmp(modifier, "usecs") == 0)
- 			*flags |= HIST_FIELD_FL_TIMESTAMP_USECS;
--		else {
-+		else if (strncmp(modifier, "bucket", 6) == 0) {
-+			int ret;
++  # event histogram
++  #
++  # trigger info: hist:keys=pid,prio,lat.log2:vals=hitcount:sort=lat.log2:size=2048 [active]
++  #
 +
-+			modifier += 6;
++  { pid:       2035, prio:          9, lat: ~ 2^2  } hitcount:         43
++  { pid:       2034, prio:          9, lat: ~ 2^2  } hitcount:         60
++  { pid:       2029, prio:          9, lat: ~ 2^2  } hitcount:        965
++  { pid:       2034, prio:        120, lat: ~ 2^2  } hitcount:          9
++  { pid:       2033, prio:        120, lat: ~ 2^2  } hitcount:          5
++  { pid:       2030, prio:          9, lat: ~ 2^2  } hitcount:        335
++  { pid:       2030, prio:        120, lat: ~ 2^2  } hitcount:         10
++  { pid:       2032, prio:        120, lat: ~ 2^2  } hitcount:          1
++  { pid:       2035, prio:        120, lat: ~ 2^2  } hitcount:          2
++  { pid:       2031, prio:          9, lat: ~ 2^2  } hitcount:        176
++  { pid:       2028, prio:        120, lat: ~ 2^2  } hitcount:         15
++  { pid:       2033, prio:          9, lat: ~ 2^2  } hitcount:         91
++  { pid:       2032, prio:          9, lat: ~ 2^2  } hitcount:        125
++  { pid:       2029, prio:        120, lat: ~ 2^2  } hitcount:          4
++  { pid:       2031, prio:        120, lat: ~ 2^2  } hitcount:          3
++  { pid:       2029, prio:        120, lat: ~ 2^3  } hitcount:          2
++  { pid:       2035, prio:          9, lat: ~ 2^3  } hitcount:         41
++  { pid:       2030, prio:        120, lat: ~ 2^3  } hitcount:          1
++  { pid:       2032, prio:          9, lat: ~ 2^3  } hitcount:         32
++  { pid:       2031, prio:          9, lat: ~ 2^3  } hitcount:         44
++  { pid:       2034, prio:          9, lat: ~ 2^3  } hitcount:         40
++  { pid:       2030, prio:          9, lat: ~ 2^3  } hitcount:         29
++  { pid:       2033, prio:          9, lat: ~ 2^3  } hitcount:         31
++  { pid:       2029, prio:          9, lat: ~ 2^3  } hitcount:         31
++  { pid:       2028, prio:        120, lat: ~ 2^3  } hitcount:         18
++  { pid:       2031, prio:        120, lat: ~ 2^3  } hitcount:          2
++  { pid:       2028, prio:        120, lat: ~ 2^4  } hitcount:          1
++  { pid:       2029, prio:          9, lat: ~ 2^4  } hitcount:          4
++  { pid:       2031, prio:        120, lat: ~ 2^7  } hitcount:          1
++  { pid:       2032, prio:        120, lat: ~ 2^7  } hitcount:          1
 +
-+			if (*modifier == 's')
-+				modifier++;
-+			if (*modifier != '=')
-+				goto error;
-+			modifier++;
-+			ret = kstrtoul(modifier, 0, buckets);
-+			if (ret || !(*buckets))
-+				goto error;
-+			*flags |= HIST_FIELD_FL_BUCKET;
-+		} else {
-+ error:
- 			hist_err(tr, HIST_ERR_BAD_FIELD_MODIFIER, errpos(modifier));
- 			field = ERR_PTR(-EINVAL);
- 			goto out;
-@@ -2049,6 +2091,7 @@ static struct hist_field *parse_atom(struct hist_trigger_data *hist_data,
- 	char *s, *ref_system = NULL, *ref_event = NULL, *ref_var = str;
- 	struct ftrace_event_field *field = NULL;
- 	struct hist_field *hist_field = NULL;
-+	unsigned long buckets = 0;
- 	int ret = 0;
++  Totals:
++      Hits: 2122
++      Entries: 30
++      Dropped: 0
++
++
++The latency values can also be grouped linearly by a given size with
++the ".buckets" modifier and specify a size (in this case groups of 10).
++
++  # echo 'hist:keys=pid,prio,lat.buckets=10:sort=lat' >> \
++        /sys/kernel/debug/tracing/events/synthetic/wakeup_latency/trigger
++
++  # event histogram
++  #
++  # trigger info: hist:keys=pid,prio,lat.buckets=10:vals=hitcount:sort=lat.buckets=10:size=2048 [active]
++  #
++
++  { pid:       2067, prio:          9, lat: ~ 0-9 } hitcount:        220
++  { pid:       2068, prio:          9, lat: ~ 0-9 } hitcount:        157
++  { pid:       2070, prio:          9, lat: ~ 0-9 } hitcount:        100
++  { pid:       2067, prio:        120, lat: ~ 0-9 } hitcount:          6
++  { pid:       2065, prio:        120, lat: ~ 0-9 } hitcount:          2
++  { pid:       2066, prio:        120, lat: ~ 0-9 } hitcount:          2
++  { pid:       2069, prio:          9, lat: ~ 0-9 } hitcount:        122
++  { pid:       2069, prio:        120, lat: ~ 0-9 } hitcount:          8
++  { pid:       2070, prio:        120, lat: ~ 0-9 } hitcount:          1
++  { pid:       2068, prio:        120, lat: ~ 0-9 } hitcount:          7
++  { pid:       2066, prio:          9, lat: ~ 0-9 } hitcount:        365
++  { pid:       2064, prio:        120, lat: ~ 0-9 } hitcount:         35
++  { pid:       2065, prio:          9, lat: ~ 0-9 } hitcount:        998
++  { pid:       2071, prio:          9, lat: ~ 0-9 } hitcount:         85
++  { pid:       2065, prio:          9, lat: ~ 10-19 } hitcount:          2
++  { pid:       2064, prio:        120, lat: ~ 10-19 } hitcount:          2
++
++  Totals:
++      Hits: 2112
++      Entries: 16
++      Dropped: 0
++
+ 2.2.3 Hist trigger 'handlers' and 'actions'
+ -------------------------------------------
  
- 	s = strchr(str, '.');
-@@ -2086,7 +2129,7 @@ static struct hist_field *parse_atom(struct hist_trigger_data *hist_data,
- 	} else
- 		str = s;
- 
--	field = parse_field(hist_data, file, str, flags);
-+	field = parse_field(hist_data, file, str, flags, &buckets);
- 	if (IS_ERR(field)) {
- 		ret = PTR_ERR(field);
- 		goto out;
-@@ -2097,6 +2140,7 @@ static struct hist_field *parse_atom(struct hist_trigger_data *hist_data,
- 		ret = -ENOMEM;
- 		goto out;
- 	}
-+	hist_field->buckets = buckets;
- 
- 	return hist_field;
-  out:
-@@ -4698,6 +4742,11 @@ static void hist_trigger_print_key(struct seq_file *m,
- 		} else if (key_field->flags & HIST_FIELD_FL_LOG2) {
- 			seq_printf(m, "%s: ~ 2^%-2llu", field_name,
- 				   *(u64 *)(key + key_field->offset));
-+		} else if (key_field->flags & HIST_FIELD_FL_BUCKET) {
-+			unsigned long buckets = key_field->buckets;
-+			uval = *(u64 *)(key + key_field->offset);
-+			seq_printf(m, "%s: ~ %llu-%llu", field_name,
-+				   uval, uval + buckets -1);
- 		} else if (key_field->flags & HIST_FIELD_FL_STRING) {
- 			seq_printf(m, "%s: %-50s", field_name,
- 				   (char *)(key + key_field->offset));
-@@ -5137,6 +5186,8 @@ static void hist_field_print(struct seq_file *m, struct hist_field *hist_field)
- 				seq_printf(m, ".%s", flags);
- 		}
- 	}
-+	if (hist_field->buckets)
-+		seq_printf(m, "=%ld", hist_field->buckets);
- }
- 
- static int event_hist_trigger_print(struct seq_file *m,
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index a1adb29ef5c1..be0169594de5 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -5654,6 +5654,7 @@ static const char readme_msg[] =
+ 	"\t            .execname   display a common_pid as a program name\n"
+ 	"\t            .syscall    display a syscall id as a syscall name\n"
+ 	"\t            .log2       display log2 value rather than raw number\n"
++	"\t            .buckets=size  display values in groups of size rather than raw number\n"
+ 	"\t            .usecs      display a common_timestamp in microseconds\n\n"
+ 	"\t    The 'pause' parameter can be used to pause an existing hist\n"
+ 	"\t    trigger or to start a hist trigger but not log any events\n"
 -- 
 2.30.2
