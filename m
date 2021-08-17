@@ -2,134 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 480CD3EEC3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 14:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF883EEC40
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 14:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239888AbhHQMOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 08:14:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53458 "EHLO
+        id S239907AbhHQMOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 08:14:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236113AbhHQMOW (ORCPT
+        with ESMTP id S236113AbhHQMOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 08:14:22 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 703ABC061764;
-        Tue, 17 Aug 2021 05:13:49 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 14:13:45 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629202426;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d+uxAWrK6C0K97c8hr+MoI9FmXO1BEDPSMGIWGczVk8=;
-        b=yrlAYk9W1HkvijTPh6VaegiUXmmAdYVcDOkdESa0jH/HQYqih+P+5LqH2QRQOBCmjOCOvK
-        oaK1y7xnAS2Fn3a+xQ9/iyH1hO+oNt4KyhK9u4nM7eukazdjM/Y+2NdJtOVddf/X87zihV
-        G9b81Qk6himwgAR7xg4OSMbkrNMZsCHs0gXJq47wnSvB2vBr7nn16QnOE65lWLAgyQ4Zbz
-        uKH2Hs4ksrRMk+oCuh9HWRkrF2GFcS78Y7ontWCgfSVwGslm/TGeoL/YLhtkwo3sk2KuZ3
-        twe0CYOOhF+OoM/rizz4ljcQF39bk49m1+vE9Gkdiyzyh0YwAG7b+m/4gnvc8g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629202427;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d+uxAWrK6C0K97c8hr+MoI9FmXO1BEDPSMGIWGczVk8=;
-        b=v/OZAm542MS2E32XiA5RqzfEd9kCCfdxNFDNsNISAfhDREJorL86wsOolhrmT5IlqkhX2m
-        c9C0u9GW5DUbeGBA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
+        Tue, 17 Aug 2021 08:14:48 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6B1C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 05:14:15 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id k8so9310887wrn.3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 05:14:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ix6jNCDi/nRG6HwuIPNkhPwWUXVhcH/J6lfAEhtZJ30=;
+        b=k7jDQ3lYwh5gRgesXbULLe2Lee+ryIsRGqtui+o172BzP0k0ajqgLPIogS7Se1iYEk
+         3NqZzYMOfkcJK/YNWqzKQXQir7ff7DkUFYQkPdn1WIrS0v+Ix0dWJtE8YKGLqiiAr5CG
+         XQsfpsN/boyQQlemHGRisR6jaaG9xYkdTlL+BpAz+6C66fqRg+hr5uxk3BTl7vtJI64O
+         ySinXJkOPwyrCu3xnoonQ/KbTnO7NttEibR4W3ptYysPgwpOugRx6c7bJ5xWNljYFYR8
+         j/lvNadDlMtVDrMgXAiFD1k/x2uXea9oxKDCesvbTtA0dipj9dyQnAmGETKKFO6aGndN
+         oQJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ix6jNCDi/nRG6HwuIPNkhPwWUXVhcH/J6lfAEhtZJ30=;
+        b=KHWJRwUM71JaRwKqDZ+BRZNFr5bhUg24WwJPyljXl+cLFhFEjQz40GuG0JZ3IM3Uo1
+         TtdaBfl72xjfhYeeijh0fhnoSs6N3aQB0lrsKxa/AujdupbCLxJwzjg+QaORJffS63Kj
+         uMp09eT+nYeH4Bd4zgceaz6OKvsUtVJiUNUzZqMdOac5mOQMsVQMoXVrzi8jkYyfp4hm
+         x5HU5VEWZP7CL2t8YkfbHFaxkMzSn/804AkxTUXvIv6eIeMu8wALZtQXkOTalMtarUr6
+         NgRX/V2lsNhM+3DtkBHDE4bdVRiF9hLKo4g5aWvkH3DH23k1k/FOrH6P0T4MPJ9O9yIS
+         23Lw==
+X-Gm-Message-State: AOAM531PdpFjPqezIE54HE+GAXLcMkOJt+ECcTxEK8WcoCabmC4YDlC9
+        tF5aKnKr8JPC9a2mofQOQVOlww==
+X-Google-Smtp-Source: ABdhPJyPhYtxa6i2ZoiZ2i3Jle7sNsGS/ALFbF6EXN4Ntl5ChGDzionaQZMSOKNOEm4TqVjVgjAQMg==
+X-Received: by 2002:adf:e94c:: with SMTP id m12mr3744998wrn.235.1629202453271;
+        Tue, 17 Aug 2021 05:14:13 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:15:13:b13d:94d3:30db:869e])
+        by smtp.gmail.com with ESMTPSA id p8sm1868998wme.22.2021.08.17.05.14.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 05:14:12 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 14:14:06 +0200
+From:   Marco Elver <elver@google.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
         Boqun Feng <boqun.feng@gmail.com>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: [PATCH v3 1/4] rcutorture: Don't disable softirqs with
- preemption disabled when PREEMPT_RT
-Message-ID: <20210817121345.5iyj5epemczn3a52@linutronix.de>
-References: <20210811201354.1976839-1-valentin.schneider@arm.com>
- <20210811201354.1976839-2-valentin.schneider@arm.com>
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: LKMM: Read dependencies of writes ordered by dma_wmb()?
+Message-ID: <YRuoDhY6gXnx/XEW@elver.google.com>
+References: <YRo58c+JGOvec7tc@elver.google.com>
+ <20210816145945.GB121345@rowland.harvard.edu>
+ <YRqfJz/lpUaZpxq7@elver.google.com>
+ <20210816192109.GC121345@rowland.harvard.edu>
+ <20210816205057.GN4126399@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210811201354.1976839-2-valentin.schneider@arm.com>
+In-Reply-To: <20210816205057.GN4126399@paulmck-ThinkPad-P17-Gen-1>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-11 21:13:51 [+0100], Valentin Schneider wrote:
-> Running RCU torture with CONFIG_PREEMPT_RT under v5.14-rc4-rt6 triggers:
->=20
-> [    8.755472] DEBUG_LOCKS_WARN_ON(this_cpu_read(softirq_ctrl.cnt))
-> [    8.755482] WARNING: CPU: 1 PID: 137 at kernel/softirq.c:172 __local_b=
-h_disable_ip (kernel/softirq.c:172 (discriminator 31))
-> [    8.755500] Modules linked in:
-> [    8.755506] CPU: 1 PID: 137 Comm: rcu_torture_rea Not tainted 5.14.0-r=
-c4-rt6 #171
-> [    8.755514] Hardware name: ARM Juno development board (r0) (DT)
-> [    8.755518] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=3D--)
-> [    8.755622] Call trace:
-> [    8.755624] __local_bh_disable_ip (kernel/softirq.c:172 (discriminator=
- 31))
-> [    8.755633] rcutorture_one_extend (kernel/rcu/rcutorture.c:1453)
-> [    8.755640] rcu_torture_one_read (kernel/rcu/rcutorture.c:1601 kernel/=
-rcu/rcutorture.c:1645)
-> [    8.755645] rcu_torture_reader (kernel/rcu/rcutorture.c:1737)
-> [    8.755650] kthread (kernel/kthread.c:327)
-> [    8.755656] ret_from_fork (arch/arm64/kernel/entry.S:783)
-> [    8.755663] irq event stamp: 11959
-> [    8.755666] hardirqs last enabled at (11959): __rcu_read_unlock (kerne=
-l/rcu/tree_plugin.h:695 kernel/rcu/tree_plugin.h:451)
-> [    8.755675] hardirqs last disabled at (11958): __rcu_read_unlock (kern=
-el/rcu/tree_plugin.h:661 kernel/rcu/tree_plugin.h:451)
-> [    8.755683] softirqs last enabled at (11950): __local_bh_enable_ip (./=
-arch/arm64/include/asm/irqflags.h:85 kernel/softirq.c:261)
-> [    8.755692] softirqs last disabled at (11942): rcutorture_one_extend (=
-=2E/include/linux/bottom_half.h:19 kernel/rcu/rcutorture.c:1441)
->=20
-> Per this warning, softirqs cannot be disabled in a non-preemptible region
-> under CONFIG_PREEMPT_RT. Adjust RCU torture accordingly.
->=20
-> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-> ---
->  kernel/rcu/rcutorture.c | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index eecd1caef71d..4f3db1d3170d 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -1548,6 +1548,8 @@ rcutorture_extend_mask(int oldmask, struct torture_=
-random_state *trsp)
->  	 * them on non-RT.
->  	 */
->  	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
-> +		/* Can't disable bh in atomic context under PREEMPT_RT */
-> +		mask &=3D ~(RCUTORTURE_RDR_ATOM_BH | RCUTORTURE_RDR_ATOM_RBH);
+On Mon, Aug 16, 2021 at 01:50PM -0700, Paul E. McKenney wrote:
+> On Mon, Aug 16, 2021 at 03:21:09PM -0400, Alan Stern wrote:
+[...]
+> > Access ordering of devices is difficult to describe.  How do you tell a 
+> > memory model (either a theoretical one or one embedded in code like 
+> > KCSAN) that a particular interrupt handler routine can't be called until 
+> > after a particular write has enabled the device to generate an IRQ?
+> > 
+> > In the case you mention, how do you tell the memory model that the code 
+> > on CPU 1 can't run until after CPU 0 has executed a particular write, one 
+> > which is forced by some memory barrier to occur _after_ all the potential 
+> > overwrites its worried about?
+> 
+> What Alan said on the difficulty!
+> 
+> However, KCSAN has the advantage of not needing to specify the outcomes,
+> which is much of the complexity.  For LKMM to do a good job of handling
+> devices, we would need a model of each device(!).
 
-Let me stare at this=E2=80=A6
+For full models, like the formal LKMM, I agree it's extremely difficult!
 
->  		/*
->  		 * Can't release the outermost rcu lock in an irq disabled
->  		 * section without preemption also being disabled, if irqs
-> --=20
-> 2.25.1
+KCSAN has the advantage that it's a "dynamic analysis" tool, relying on
+merely instrumenting real code and running on the real HW. The real HW
+is still in charge of generating interrupts, and real devices (like that
+E1000 device, though in this case virtualized by QEMU) aren't in any way
+abstracted or modeled.
 
-Sebastian
+KCSAN's (and any other sanitizer's) primary goals is to just _detect_
+certain classes of bugs by making these detectable via instrumentation
+but otherwise run real code and HW.
+
+Thus far, for KCSAN this has been trivial because all it does is keep an
+eye on reads and writes, and observes if accesses race; and then, per
+rules for data races (it needs to know about plain and marked accesses),
+it decides if something is a reportable data race.
+
+The real HW is entirely in charge of when and if something executes
+concurrently.
+
+One problem with instrumentation, however, is that it adds certain
+overheads which make some effects of the hardware very unlikely to
+observe. For example, the effects of weak memory. Therefore, I'm
+teaching KCSAN a limited set of weak memory effects allowed by the LKMM
+by pretending the current CPU reordered an access (currently just
+"load/store buffering").
+
+To avoid false positives, however, the tool now has to know about memory
+barriers, otherwise it might simulate reordering too aggressively.
+
+Because KCSAN relies on compiler instrumentation, we are simply limited
+to analyzing what is happening on CPUs, but devices are invisible, and
+just observe what happens as a result on other CPUs if a device is
+involved.
+
+The case with E1000 and dma_wmb() came about because KCSAN is now able
+to detect races between 2 CPUs because dma_wmb() doesn't seem to say
+anything about ordering among CPUs.
+
+The main points are:
+
+1. KCSAN doesn't need a model for devices because it's still running on
+   real HW with real devices that are in charge of generating interrupts.
+
+2. In the case with the E1000 driver, a real device causes CPU 1 to run
+   the interrupt, which does a free to memory that might still be read/written
+   to if CPU 0 reordered its accesses (simulated by KCSAN). That reordering
+   can be inhibited by the right barrier, but we haven't found it in the
+   code yet. At least the dma_wmb() isn't required to order the writes
+   between the 2 CPUs (AFAIK).
+
+> > > What would be more useful?
+> > > 
+> > > 1. Let the architecture decide how they want KCSAN to instrument non-smp
+> > >    barriers, given it's underspecified. This means KCSAN would report
+> > >    different races on different architectures, but keep the noise down.
+> > > 
+> > > 2. Assume the weakest possible model, where non-smp barriers just do
+> > >    nothing wrt other CPUs.
+> > 
+> > I don't think either of those would work out very well.  The problem 
+> > isn't how you handle the non-smp barriers; the problem is how you 
+> > describe to the memory model the way devices behave.
+> 
+> There are some architecture-independent ordering guarantees for MMIO
+> which go something like this:
+> 
+> 0.	MMIO readX() and writeX() accesses to the same device are
+> 	implicitly ordered, whether relaxed or not.
+> 
+> 1.	Locking partitions non-relaxed MMIO accesses in the manner that
+> 	you would expect.  For example, if CPU 0 does an MMIO write,
+> 	then releases a lock, and later CPU 1 acquires that same lock and
+> 	does an MMIO read, CPU 0's MMIO write is guaranteed to happen
+> 	before CPU 1's MMIO read.  PowerPC has to jump through a few
+> 	hoops to make this happen.
+> 
+> 	Relaxed MMIO accesses such as readb_relaxed() can be reordered
+> 	with locking primitives on some architectures.
+> 
+> 2.	smp_*() memory barriers are not guaranteed to affect MMIO
+> 	accesses, especially not in kernels built with CONFIG_SMP=n.
+> 
+> 3.	The mb() memory barrier is required to order prior MMIO
+> 	accesses against subsequent MMIO accesses.  The wmb() and rmb()
+> 	memory barriers are required to order prior order prior MMIO
+> 	write/reads against later MMIO writes/reads, respectively.
+> 	These memory barriers also order normal memory accesses in
+> 	the same way as their smp_*() counterparts.
+> 
+> 4.	The mmiowb() memory barrier can be slightly weaker than wmb(),
+> 	as it is in ia64, but I have lost track of the details.
+> 
+> 5.	The dma_mb(), dma_rmb(), and dma_wmb() appear to be specific
+> 	to ARMv8.
+> 
+> 6.	Non-relaxed MMIO writeX() accesses force ordering of prior
+> 	normal memory writes before any DMA initiated by the writeX().
+> 
+> 7.	Non-relaxed MMIO readX() accesses force ordering of later
+> 	normal memory reads after any DMA whose completion is reported
+> 	by the readX().  These readX() accesses are also ordered before
+> 	any subsequent delay loops.
+> 
+> Some more detail is available in memory-barriers.txt and in this LWN
+> article:  https://lwn.net/Articles/698014/
+> 
+> I wish I could promise you that these are both fully up to date, but
+> it is almost certain that updates are needed.
+
+Thanks, that's useful. What I can tell is that most I/O ops and barriers
+have no effect on other CPUs (except for mb() etc.). For KCSAN that's
+all that matters.
+
+[...]
+> > > Which might be an argument to make KCSAN's non-smp barrier
+> > > instrumentation arch-dependent, because some drivers might in fact be
+> > > written with some target architectures and their properties in mind. At
+> > > least it would help keep the noise down, and those architecture that
+> > > want to see such races certainly still could.
+> > > 
+> > > Any preferences?
+> > 
+> > I'm not a good person to ask; I have never used KCSAN.  However...
+> > 
+> > While some drivers are indeed written for particular architectures or 
+> > systems, I doubt that they rely very heavily on the special properties of 
+> > their target architectures/systems to avoid races.  Rather, they rely on 
+> > the hardware to behave correctly, just as non-arch-specific drivers do.
+> > 
+> > Furthermore, the kernel tries pretty hard to factor out arch-specific 
+> > synchronization mechanisms and related concepts into general-purpose 
+> > abstractions (in the way that smp_mb() is generally available but is 
+> > defined differently for different architectures, for example).  Drivers 
+> > tend to rely on these abstractions rather than on the arch-specific 
+> > properties directly.
+> > 
+> > In short, trying to make KCSAN's handling of device I/O into something 
+> > arch-specific doesn't seem (to me) like a particular advantageous 
+> > approach.  Other people are likely to have different opinions.
+
+As explained above, KCSAN just instruments C code but still runs on real
+HW with real devices. All I'm trying to figure out is what I/O ops and
+barriers say about making accesses visible to other CPUs to avoid false
+positives.
+
+However, it seems by this discussing I'm starting to conclude that the
+E1000 race might in fact be something allowed, although very unlikely.
+
+The main question I was trying to answer is "should such cases be
+reported or not?", since KCSAN's goal is not to model the system
+faithfully, but to detect bugs. Either way is possible, and I don't have
+a preference. I'm leaning towards "no assumptions, report everything"
+now, because the "access reordering" mode won't be enabled by default.
+
+Thanks,
+-- Marco
