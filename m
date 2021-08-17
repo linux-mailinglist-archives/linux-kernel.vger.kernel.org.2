@@ -2,196 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A2B3EE75A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 09:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F31283EE75D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 09:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238579AbhHQHiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 03:38:50 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:40349 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234402AbhHQHis (ORCPT
+        id S238597AbhHQHjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 03:39:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234402AbhHQHjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 03:38:48 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 24740580ACF;
-        Tue, 17 Aug 2021 03:38:15 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 17 Aug 2021 03:38:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=+bMu1Ljjo2MZK0+5p6uccJMVSlW
-        iMcV687SCKmX/GLE=; b=kV5vwKjn6g+KeJYoI57epVjPe13hYg+w8CWomo+8A8q
-        cXCS3mO4Xi27cHrGwpGnFxk7D7tRRbzkMaW9x56X8lowgHLvOOa9lL8tXWjoplTL
-        Pj3HwH0PFXD4pKMjvAmsy6354tS0IfZ12qur05BbTOPAYgF3oKnBuaHhXKSYTP+B
-        n1sxSFvqyxcHPjLWOQ/hW/796vc0KD86gMO4vz7XaCtt76zfbTA6r3V+QaZBIEoe
-        rAZwnH2aRvRpqCiRjup9gG0lzfqwYrLnWeZraU7Slv9gG5tOv4mg/d5BC1JYt76H
-        fvpucFXs/k3rAJJBO9QT4JwK+IDFgtEBuYQTVJBuLtg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=+bMu1L
-        jjo2MZK0+5p6uccJMVSlWiMcV687SCKmX/GLE=; b=ALlhFNv0fEY/sYD+d1JLtz
-        f4gvXXBcIp3M2SmqW6PeJ7fcwKWC96ME7+J9z055sEfPh6/PikvBo5yFQhx4T7MU
-        AJ90l9QYUnD0iT/RAjHlJxBV48PeqF/3pb8O2W7FRzljGToFZR0Tn9T2XHt+gIz8
-        louw0ee2Grur0Zjg/QEUzD3Apby+KlezZrcVVdYZ2sznGBjcgWSyVc2ygKn1pMyf
-        F17AJHEOMBtnwFCiDFHA5QJVx1/aa/bse5dBrs4rprNZWS6xCqE+uSOTotJ+5gQe
-        0ATFip6Gw5KQo5FIW26HdbS4zauIdiyl1Y5yDg+DXwi04Df5kxrxCDTfkLh7o/eg
-        ==
-X-ME-Sender: <xms:Y2cbYcrJtXWTtqoC5SE_qBXvT7Ag0avqjOseiLb4GYQyf0w5iCGVcw>
-    <xme:Y2cbYSqD4OtB4owkvfSx9CA0GsmYPeNXXBtm8RgnjiQyr6p8WWscPUnBT7YcvG7jy
-    PFC_OzcbbONmA41H-A>
-X-ME-Received: <xmr:Y2cbYRPth3K9y6DbfNxNMS9jnd_O8_9fywPw28K5tfdAPf60VtaCUor41Dw6m7z9-JZAD2oUdSPA4fVgCPi6BJPnb8CFAKkWQWlp>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrledvgdduvddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:ZGcbYT5vRi_b8JspRjKCVK5o8tYG7aNvmoHJsRj3f-Up38pSdKH5wQ>
-    <xmx:ZGcbYb7VWvZf5xQelL7ykDfoqreziftoaDtEOiKCWyIyJw-ywrHWJw>
-    <xmx:ZGcbYThSxND8U1h2GtKkWEv_AIEMX4Buhhr5Vgkt0Jg-iksrSzgWsg>
-    <xmx:Z2cbYSIoQlbgh_UocOKSBLouKr_A3uNlHXDXhOKqAVF3w8nEFgwKaQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 17 Aug 2021 03:38:11 -0400 (EDT)
-Date:   Tue, 17 Aug 2021 09:38:10 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org
-Subject: Re: [PATCH v8 02/11] dt-bindings: rtc: sun6i: Add H616 compatible
- string
-Message-ID: <20210817073810.7stuzrppyjf4spab@gilmour>
-References: <20210723153838.6785-1-andre.przywara@arm.com>
- <20210723153838.6785-3-andre.przywara@arm.com>
- <20210726144137.6dauuxdssu7yszox@gilmour>
- <20210802013938.29fa18ed@slackpad.fritz.box>
+        Tue, 17 Aug 2021 03:39:42 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6FABC061764;
+        Tue, 17 Aug 2021 00:39:09 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id z1so2296825ioh.7;
+        Tue, 17 Aug 2021 00:39:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MDPsHQ/akN4vCRT1wIJ4JXeom4VNeQEZd5BhT+CkH8s=;
+        b=XVM4mv5bsoQcsFcig6CBjSCpH2lzT36DktAQOp/CMO/Q5BRq3F3ZeQrEt4OE0pmzv+
+         Q4NzbovwBeYXaXqdmJ2SCoAs3BMRnXcunStVZ14jLyjS9z6CbKzPnnJBfJIK3SNZzOCq
+         IEnnYmWA+IFSVDRDqZPB2hGwUSEwc9tTHvC9ZO8K6oKOQeq2RrqaDN/hnf9XjQJZ8TaC
+         iEptgJpwEWKpFsml4JL/DckzOsTFPxq1j9sydwRfFJZnbzDXZqPKYXKaUn0/zKgmqcI5
+         BTKCXUcHV5kbP5773t3mJE/TzO5571Hx3Ej/Iyly1B3mC36qQksEYaUYhf6FIUYN9xs1
+         El3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MDPsHQ/akN4vCRT1wIJ4JXeom4VNeQEZd5BhT+CkH8s=;
+        b=OX/9W9BAX/fAABny4WyEUMEHIy2seO5qk1HqmjH2kmToHU3x1o0p2HDJzY6qZjtHsS
+         In0iFtx4yAyygjYAU/o48z8jxJ657zJhvLx8Tfy9O7JRFJNaFpO4alF7m42d3s8yjq+h
+         f7hLfaU5PJ+VQRzKF3/4ziJlPIbxYaVZ7DBEzPe6aME2nNiWkbsN88naLKRaFjP4W/bV
+         /o/df2okc7LikOWF6IaoynvRfoyKNSMQfBGQW2qLoBglxwzZO1lbaNpAIUdWTeeLVVM7
+         xaxmobremh0uZWEI8QKO1n00X6q3wXvqMkaBRMSDLEvXryqni9p/lWdqTAqvetb+4r0H
+         Fsbg==
+X-Gm-Message-State: AOAM531vhlHsYpHe9En/c9tN/QqdNkNduyU2Y3BqJgabMn6Gw/i4vxZz
+        ANAd7FRJAeApYK5fKMWopL9m9lCSUKOFvYr32Xk=
+X-Google-Smtp-Source: ABdhPJwcxmRXQPXRbI43BkpbAqymYA3NA65lCUbhsJYYXLZ/TEWVEN2wJF15cEtFmqMOV1TVlzC3/C/ptjnxqC6ip4w=
+X-Received: by 2002:a05:6602:1210:: with SMTP id y16mr1865988iot.159.1629185949315;
+ Tue, 17 Aug 2021 00:39:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ggkfv7hwuuflnmjz"
-Content-Disposition: inline
-In-Reply-To: <20210802013938.29fa18ed@slackpad.fritz.box>
+References: <20210816065417.3987596-1-chenhuacai@loongson.cn>
+ <20210816182750.26i535ilc6nef5k6@offworld> <874kbpp5zd.ffs@tglx>
+ <CAAhV-H5TKLMi0GSQmh9RFK_k5eNRwx8AE8MjMKjJfbnyVYP-+w@mail.gmail.com> <871r6spn0r.ffs@tglx>
+In-Reply-To: <871r6spn0r.ffs@tglx>
+From:   Huacai Chen <chenhuacai@gmail.com>
+Date:   Tue, 17 Aug 2021 15:38:58 +0800
+Message-ID: <CAAhV-H6=MbBFwgxT75Bqr5SY0e5E6gtpCUCZhrVgFE_h1A0q2A@mail.gmail.com>
+Subject: Re: [PATCH] futex: Fix fault_in_user_writeable()
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Hongchen Zhang <zhanghongchen@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Thomas,
 
---ggkfv7hwuuflnmjz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, Aug 17, 2021 at 3:07 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> On Tue, Aug 17 2021 at 09:53, Huacai Chen wrote:
+> > On Tue, Aug 17, 2021 at 3:03 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+> >> That's surely one way to fix that. If that does not work for whatever
+> >> reason, then we really don't want this find_vma() hack there, but rather
+> >> something like:
+> > I don't know why find_vma() is unacceptable here, there is also
+> > find_vma() in fixup_user_fault().
+>
+> Wrong. find_extend_vma() != find_vma(). Aside of that fixup_user_fault()
+> does way more than that.
+>
+> >>     if (IS_ENABLED(CONFIG_ARCH_USER_FAULT_VOODOO) && get_user(&tmp, uaddr))
+> >>         return -EFAULT;
+> >
+> > get_user() may be better than find_vma(), but can we drop
+> > CONFIG_ARCH_USER_FAULT_VOODOO here? On those "W implies R" archs,
+> > get_user() always success, this can simplify the logic.
+>
+> For architectures which imply R fixup_user_fault() is way more
+> effinicient than taking the fault on get_user() and then invoking
+> fixup_user_fault() to ensure that the mapping is writeable.
+>
+> No, we are not making stuff less efficient just because of MIPS.
+>
 
-Hi,
+We use this program to test MIPS and X86:
 
-On Mon, Aug 02, 2021 at 01:39:38AM +0100, Andre Przywara wrote:
-> On Mon, 26 Jul 2021 16:41:37 +0200
-> Maxime Ripard <maxime@cerno.tech> wrote:
->=20
-> > Hi,
-> >=20
-> > On Fri, Jul 23, 2021 at 04:38:29PM +0100, Andre Przywara wrote:
-> > > Add the obvious compatible name to the existing RTC binding.
-> > > The actual RTC part of the device uses a different day/month/year
-> > > storage scheme, so it's not compatible with the previous devices.
-> > > Also the clock part is quite different, as there is no external 32K L=
-OSC
-> > > oscillator input.
-> > >=20
-> > > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> > >
-> > > ---
-> > >  .../bindings/rtc/allwinner,sun6i-a31-rtc.yaml      | 14 ++++++++++++=
-++
-> > >  1 file changed, 14 insertions(+)
-> > >=20
-> > > diff --git a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a3=
-1-rtc.yaml b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.=
-yaml
-> > > index beeb90e55727..d8a6500e5840 100644
-> > > --- a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.y=
-aml
-> > > +++ b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.y=
-aml
-> > > @@ -26,6 +26,7 @@ properties:
-> > >            - const: allwinner,sun50i-a64-rtc
-> > >            - const: allwinner,sun8i-h3-rtc
-> > >        - const: allwinner,sun50i-h6-rtc
-> > > +      - const: allwinner,sun50i-h616-rtc
-> > > =20
-> > >    reg:
-> > >      maxItems: 1
-> > > @@ -104,6 +105,19 @@ allOf:
-> > >            minItems: 3
-> > >            maxItems: 3
-> > > =20
-> > > +  - if:
-> > > +      properties:
-> > > +        compatible:
-> > > +          contains:
-> > > +            const: allwinner,sun50i-h616-rtc
-> > > +
-> > > +    then:
-> > > +      properties:
-> > > +        clock-output-names:
-> > > +          minItems: 3
-> > > +          maxItems: 3 =20
-> >=20
-> > You don't need both of them when they are equal
-> >=20
-> > > +        clocks: false
-> > > + =20
-> >=20
-> > It's not entirely clear to me what those clocks are about though. If we
-> > look at the clock output in the user manual, it looks like there's only
-> > two clocks that are actually being output: the 32k "fanout" clock and
-> > the losc. What are the 3 you're talking about?]
->=20
-> I see three: the raw SYSTEM "CLK32K_LOSC", the RTC input + debounce
-> clock (/32), and the multiplexed PAD.
+int main(int argc, char** argv)
+{
+        int fd;
+        void *ptr;
+        int ret;
+        int syscall_nr = 98;
 
-But the input and debounce clock is only for the RTC itself right? So it
-should be local to the driver and doesn't need to be made available to
-the other drivers
+        fd = open("/dev/zero", O_RDWR);
+        if (fd == -1)
+                exit(EXIT_FAILURE);
 
-Either way, what this list is must be documented.
+        ptr = mmap(NULL, 16384, PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, fd, 0);
+        close(fd);
+        /*
+         * futex syscall nr:
+         * x86_64: 202
+         * MIPS84: 5194
+         */
+#ifdef __mips__
+        syscall_nr = 5194;
+#elif __x86_64__
+        syscall_nr = 202;
+#endif
 
-> > Also, it looks like the 32k fanout clock needs at least the hosc or
-> > pll-periph in input, so we probably don't want to ask for no parent
-> > clock?
->=20
-> Well, we never seem to reference the HOSC this way, this was always
-> somewhat explicit. And yes, there is PLL-PERIPH as an input, but we
-> don't support this yet. So I went with 0 input clocks *for now*: the
-> driver can then ignore all clocks, so any clock referenced in the DT
-> later won't cause any harm. This will all be addressed by Samuel's RTC
-> clock patch, which will also touch the H6, IIRC. And it looks like we
-> will need to touch the binding anyway then, but can then just *extend*
-> this.
+        ret = syscall(syscall_nr,ptr,FUTEX_LOCK_PI,0, NULL, NULL, 0,0);
+        printf("syscall %d ret = %d\n",syscall_nr,ret);
 
-You mentioned that series several times already and never provided an
-explanation for what it was supposed to be doing except fixing
-everything. What's the general plan for that series?
+        return 0;
+}
 
-Maxime
+On X86, it returns 0; on MIPS64 without patch, it hangs in kernel; on
+MIPS64 with this patch, it returns -1.
 
---ggkfv7hwuuflnmjz
-Content-Type: application/pgp-signature; name="signature.asc"
+Then, I want to know, on "W implies R" archs (such as X86), should it
+return 0? Maybe return -1 is more reasonable? (because the VMA is
+marked as write-only). If this program should return -1, then I don't
+think this is a MIPS-specific problem.
 
------BEGIN PGP SIGNATURE-----
+Huacai
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYRtnYgAKCRDj7w1vZxhR
-xa/CAP9hbwXj022ukapaHrTpQ2r92mfnkV387OMFnrGF9gS4IgD/YU6D6Z6bzoG4
-DqHj9PzBXYYPYXEmg4uN6r7bDdNT+QU=
-=0frR
------END PGP SIGNATURE-----
-
---ggkfv7hwuuflnmjz--
+> Thanks,
+>
+>         tglx
