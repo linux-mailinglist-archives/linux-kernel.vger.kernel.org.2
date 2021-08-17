@@ -2,116 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29FAF3EE52D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 05:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6F73EE538
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 05:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237278AbhHQDms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 23:42:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237045AbhHQDmp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 23:42:45 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89D9DC0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 20:42:12 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id m24-20020a17090a7f98b0290178b1a81700so3968358pjl.4
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 20:42:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=JCOFQBT2H8r+cJYdeiAd3yX79xIHiz7jSYTg79TH8Rw=;
-        b=NlkUBJq6j28D7GK7CAAupxV+5tfzRl1Ucoc41Ew3cXEWi2jH4mjRk1YkvUYoUx7zez
-         J0qtw4OHsY3c4vNj2606aEZntzQqv/UaLZyu6hLnklVZKhU+oMnc7Ht4GSF4whS6IKrR
-         31XqyQNn3IuLIbGBJpd9QB3j2Q6KlxF9Sft+ZArDUu+WcQ46nLWTs4vYwcmCQckS+qUK
-         axU8ZcYkgr6+ZL9nIlAvD9ulIlSkcO+IRsvRYlu9jpErze9Xy+AIyS3CXvTLE8m4jtRu
-         9TgyjNx4fM6pAoIHI3//UPctkkHXBxmaclE4UZR7tRjsM4ECzBvQT6mZCCMyWhNdQ5ua
-         qyVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=JCOFQBT2H8r+cJYdeiAd3yX79xIHiz7jSYTg79TH8Rw=;
-        b=GN22601Tbyp6ByixBYmLSn7lobUJuuwAs/aRiPgu26SZ5GuSM7P82/WwHYcRZD05Zr
-         BOCurlDRUnsSLqkyyHmZ9dM1Tc9BB3RXJqJpqQ0xudmyAHGnfsZPtTeQqCcm7kmC8M9i
-         I1xyEk3ojORR630T0iw9mmL+qbKfWogFo6cXdg86x6rren9bmo3VokatVWrvBYflKS66
-         QVKtzs1ej9hsd3z9NAYXbTAD0sUDQ/Ur/vEkW6CSqKkmBpM/OZf73odpSgSUqSfF/qk3
-         7M3pvnEW7yOPo4UAcBmj/5NZC1GzOx7/O490nk2a205adA433UAp3ADhmFEkxDj8C2y9
-         Tk/Q==
-X-Gm-Message-State: AOAM533tW+IBw1vbo+Z590aU9rDWW5+l2mFusnixAIpEx8vdQebL9Ajl
-        3MxZwEbMXUSVTwvGFaghv7ulQQ==
-X-Google-Smtp-Source: ABdhPJyBcs3PMQO6TNBu95yHIEU0AGNrEDxs8TdvoQSKr14DVGi5d/593wOkeOBqc07k1cdbKSyiZw==
-X-Received: by 2002:a05:6a00:24c1:b0:3e2:1171:34dd with SMTP id d1-20020a056a0024c100b003e2117134ddmr1484836pfv.27.1629171732105;
-        Mon, 16 Aug 2021 20:42:12 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id h17sm601338pfh.192.2021.08.16.20.42.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 20:42:11 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 09:12:06 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Hector Yuan <hector.yuan@mediatek.com>
-Cc:     linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wsd_upstream@mediatek.com
-Subject: Re: [PATCH v13 2/2] cpufreq: mediatek-hw: Add support for CPUFREQ HW
-Message-ID: <20210817034206.hmpjdz4bqvwxfn3c@vireshk-i7>
-References: <1627574891-26514-1-git-send-email-hector.yuan@mediatek.com>
- <1627574891-26514-3-git-send-email-hector.yuan@mediatek.com>
- <20210803071302.b4ttoqgqdq4dfmwe@vireshk-i7>
- <1629118594.3246.13.camel@mtkswgap22>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1629118594.3246.13.camel@mtkswgap22>
-User-Agent: NeoMutt/20180716-391-311a52
+        id S237712AbhHQDvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 23:51:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57476 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233889AbhHQDvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 23:51:01 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C7F960EB5;
+        Tue, 17 Aug 2021 03:50:28 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1mFq7O-004OJQ-TR; Mon, 16 Aug 2021 23:50:26 -0400
+Message-ID: <20210817034255.421910614@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Mon, 16 Aug 2021 23:42:55 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        linux-trace-devel@vger.kernel.org
+Subject: [PATCH v6 0/7] tracing: Creation of event probe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-08-21, 20:56, Hector Yuan wrote:
-> On Tue, 2021-08-03 at 12:43 +0530, Viresh Kumar wrote:
-> > On 30-07-21, 00:08, Hector Yuan wrote:
-> > > +	for (i = REG_FREQ_LUT_TABLE; i < REG_ARRAY_SIZE; i++)
-> > > +		c->reg_bases[i] = base + offsets[i];
-> > > +
-> > > +	ret = of_perf_domain_get_sharing_cpumask(index, "performance-domains",
-> > 
-> > Instead of parsing parsing "performance-domains" twice, I would rather
-> > pass a CPU number here instead of index.
-> > 
-> Sorry, could you give me more details? For now, will use index to parse
-> per-cpu to related cpus.You mean pass policy->cpu or? Thanks.
+This is a patch series that adds the event probe feature and tries to
+incorporate all of Masami's comments.
 
-Yes, pass the cpu number from policy->cpu instead.
+While updating Tzvetomir's patch, I found some other things that could be
+changed as well, and some was added as extra patches.
 
-> > > +	latency = readl_relaxed(c->reg_bases[REG_FREQ_LATENCY]);
-> > > +	if (!latency)
-> > > +		latency = CPUFREQ_ETERNAL;
-> > > +
-> > > +	/* us convert to ns */
-> > > +	policy->cpuinfo.transition_latency = latency * 1000;
-> > 
-> > You want to multiple CPUFREQ_ETERNAL too ?
+For instance, removing the customize struct size macros from kprobe and
+uprobe events and using the struct_size() macro.
 
-s/multiple/multiply/
+To implement "REC->type" and show the event type for the trace event, the
+traceprobe_set_print_fmt() needed to be updated to allow for that.
 
-Sorry about this.
+Instead of allocating a temp buffer that traceprobe_parse_probe_arg() can
+manipulate, just have that function do the allocation instead of placing the
+burden onto the callers.
 
-> Yes, may be different power domain with different transition latency.
-> > > +
-> > > +	policy->fast_switch_possible = true;
-> > > +
-> > > +	qos_request = kzalloc(sizeof(*qos_request), GFP_KERNEL);
-> > 
-> > This is a small structure, why not allocate it on stack instead ?
-> > 
-> For qos part, we'd like to take more time to re-consider the SW flow and
-> put this to another patch set.Is this okay to you?
+Anyway, here's version 6!
 
-So you will drop entire qos stuff ? Fine by me.
+-- Steve
 
--- 
-viresh
+
+Steven Rostedt (VMware) (6):
+      tracing: Add DYNAMIC flag for dynamic events
+      tracing: Have dynamic events have a ref counter
+      tracing/probe: Have traceprobe_parse_probe_arg() take a const arg
+      tracing/probes: Allow for dot delimiter as well as slash for system names
+      tracing/probes: Use struct_size() instead of defining custom macros
+      tracing/probe: Change traceprobe_set_print_fmt() to take a type
+
+Tzvetomir Stoyanov (VMware) (1):
+      tracing: Add a probe that attaches to trace events
+
+----
+ include/linux/trace_events.h        |  52 ++-
+ kernel/trace/Makefile               |   1 +
+ kernel/trace/trace.c                |   4 +-
+ kernel/trace/trace.h                |  18 +
+ kernel/trace/trace_dynevent.c       |  38 ++
+ kernel/trace/trace_dynevent.h       |   4 +-
+ kernel/trace/trace_eprobe.c         | 895 ++++++++++++++++++++++++++++++++++++
+ kernel/trace/trace_event_perf.c     |   6 +-
+ kernel/trace/trace_events.c         |  22 +-
+ kernel/trace/trace_events_synth.c   |  21 +-
+ kernel/trace/trace_events_trigger.c |  20 +-
+ kernel/trace/trace_kprobe.c         |  43 +-
+ kernel/trace/trace_probe.c          |  81 ++--
+ kernel/trace/trace_probe.h          |  15 +-
+ kernel/trace/trace_probe_tmpl.h     |   6 +-
+ kernel/trace/trace_uprobe.c         |  34 +-
+ 16 files changed, 1156 insertions(+), 104 deletions(-)
+ create mode 100644 kernel/trace/trace_eprobe.c
