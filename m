@@ -2,119 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D5E83EED35
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:20:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93C533EED3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 15:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236635AbhHQNUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 09:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235267AbhHQNUb (ORCPT
+        id S237517AbhHQNVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 09:21:41 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:51071 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235267AbhHQNVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 09:20:31 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D93CC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 06:19:58 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1mFz0P-0008JJ-6g; Tue, 17 Aug 2021 15:19:49 +0200
-Subject: Re: [PATCH] brcmfmac: pcie: fix oops on failure to resume and reprobe
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "brcm80211-dev-list.pdl@broadcom.com" 
-        <brcm80211-dev-list.pdl@broadcom.com>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Wright Feng <wright.feng@infineon.com>,
-        "SHA-cyfmac-dev-list@infineon.com" <SHA-cyfmac-dev-list@infineon.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Franky Lin <franky.lin@broadcom.com>
-References: <20210817063521.22450-1-a.fatoum@pengutronix.de>
- <CAHp75Vfc_T04p95PgVUd+CK+ttPwX2aOC4WPD35Z01WQV1MxKw@mail.gmail.com>
- <3a9a3789-5a13-7e72-b909-8f0826b8ab86@pengutronix.de>
- <CAHp75VfahF=_CmS7kw5PbKs46+hXFweweq=sjwd83hccRsrH9g@mail.gmail.com>
- <e59b23ba-7e5b-00e3-e8c9-f5c2bb89b860@pengutronix.de>
- <85e30fb4-ce7d-6402-f93e-09efadbbcd06@pengutronix.de>
- <CAHp75VfkOWk+CwSAOi-ibMcDOz5f0tOjxrygmUoMP1CEHxph-Q@mail.gmail.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <479c2aaa-c67e-4a98-4ed1-57c44e9484c5@pengutronix.de>
-Date:   Tue, 17 Aug 2021 15:19:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Tue, 17 Aug 2021 09:21:39 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 53CB8200004;
+        Tue, 17 Aug 2021 13:21:03 +0000 (UTC)
+Date:   Tue, 17 Aug 2021 15:21:03 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     tonywwang-oc@zhaoxin.com
+Cc:     a.zummo@towertech.it, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, TimGuo-oc@zhaoxin.com,
+        CooperYan@zhaoxin.com, QiyuanWang@zhaoxin.com,
+        HerryYang@zhaoxin.com, CobeChen@zhaoxin.com, YanchenSun@zhaoxin.com
+Subject: Re: [PATCH] rtc: Fix set RTC time delay 500ms on some Zhaoxin SOCs
+Message-ID: <YRu3v0pb/Z54XxWJ@piout.net>
+References: <1629121638-3246-1-git-send-email-TonyWWang-oc@zhaoxin.com>
+ <YRogod0HB4d7Og4E@piout.net>
+ <a4b6b0b4-9aa5-9a75-e523-0fd7656b82cf@zhaoxin.com>
+ <YRpb4Fey2lM3aOAw@piout.net>
+ <7EA395FF-EB66-4274-9EDE-EC28450A0259@zhaoxin.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfkOWk+CwSAOi-ibMcDOz5f0tOjxrygmUoMP1CEHxph-Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7EA395FF-EB66-4274-9EDE-EC28450A0259@zhaoxin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.08.21 15:06, Andy Shevchenko wrote:
-> On Tue, Aug 17, 2021 at 3:07 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
->> On 17.08.21 14:03, Ahmad Fatoum wrote:
->>> On 17.08.21 13:54, Andy Shevchenko wrote:
->>>> On Tue, Aug 17, 2021 at 2:11 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
->>>>> On 17.08.21 13:02, Andy Shevchenko wrote:
->>>>>> On Tuesday, August 17, 2021, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+On 17/08/2021 19:09:28+0800, tonywwang-oc@zhaoxin.com wrote:
 > 
-> ...
 > 
->>>>>>>         err = brcmf_pcie_probe(pdev, NULL);
->>>>>>>         if (err)
->>>>>>> -               brcmf_err(bus, "probe after resume failed, err=%d\n", err);
->>>>>>> +               __brcmf_err(NULL, __func__, "probe after resume failed,
->>>>>>> err=%d\n",
->>>>>>
->>>>>>
->>>>>> This is weird looking line now. Why can’t you simply use dev_err() /
->>>>>> netdev_err()?
->>>>>
->>>>> That's what brcmf_err normally expands to, but in this file the macro
->>>>> is overridden to add the extra first argument.
->>>>
->>>> So, then the problem is in macro here. You need another portion of
->>>> macro(s) that will use the dev pointer directly. When you have a valid
->>>> device, use it. And here it seems the case.
->>>
->>> Ah, you mean using pdev instead of the stale bus. Ye, I could do that.
->>> Thanks for pointing out.
->>
->> Ah, not so easy: __brcmf_err accepts a struct brcmf_bus * as first argument,
->> but there is none I can pass along. As the whole file uses the brcm_
->> logging functions, I'd just leave this one without a device.
+> On August 16, 2021 8:36:48 PM GMT+08:00, Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
+> >On 16/08/2021 18:03:13+0800, Tony W Wang-oc wrote:
+> >> 
+> >> On 16/08/2021 16:24, Alexandre Belloni wrote:
+> >> > Hello,
+> >> > 
+> >> > On 16/08/2021 21:47:18+0800, Tony W Wang-oc wrote:
+> >> >> When the RTC divider is changed from reset to an operating time
+> >base,
+> >> >> the first update cycle should be 500ms later. But on some Zhaoxin
+> >SOCs,
+> >> >> this first update cycle is one second later.
+> >> >>
+> >> >> So set RTC time on these Zhaoxin SOCs will causing 500ms delay.
+> >> >>
+> >> > 
+> >> > Can you explain what is the relationship between writing the
+> >divider and
+> >> > the 500ms delay?
+> >> >> Isn't the issue that you are using systohc and set_offset_nsec is
+> >set to
+> >> > NSEC_PER_SEC / 2 ?
+> >> > 
+> >> No.
+> >> When using #hwclock -s to set RTC time and set_offset_nsec is
+> >> NSEC_PER_SEC / 2, the function mc146818_set_time() requires the first
+> >> update cycle after RTC divider be changed from reset to an operating
+> >> mode is 500ms as the MC146818A spec specified. But on some Zhaoxin
+> >SOCs,
+> >> the first update cycle of RTC is one second later after RTC divider
+> >be
+> >> changed from reset to an operating mode. So the first update cycle
+> >after
+> >> RTC divider be changed from reset to an operation mode on These SOCs
+> >> will causing 500ms delay with current mc146818_set_time()
+> >implementation.
+> >> 
+> >
+> >What happens with hwclock --delay=0 -s ?
 > 
-> And what exactly prevents you to split that to something like
+> With "hwclock --delay=0 -s" still have this problem. Actually, this 500ms delay caused by writing the RTC time on these Zhaoxin SOCs.
+> As I've tested, with hwclock --delay=0 -w can fix it too. 
 > 
-> __brcm_dev_err() // as current __brcm_err with dev argument
-> {
-> ...
-> }
-> 
-> __brsm_err(bus, ...)  __brcm_dev_err(bus->dev, ...)
-> 
-> ?
 
-I like my regression fixes to be short and to the point.
-
-Cheers,
-Ahmad
+Both -s and -w end up calling set_hardware_clock_exact() so both should
+end up with the correct time. If this is not the case, then hwclock
+needs to be fixed.
 
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
