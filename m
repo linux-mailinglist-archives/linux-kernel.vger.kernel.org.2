@@ -2,175 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D573EE7E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 09:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 343E63EE7E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 09:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238767AbhHQHzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 03:55:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238597AbhHQHzw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 03:55:52 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F52C0617AF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 00:55:19 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so3834428pjr.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 00:55:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=6syxEk4ci6YIB/Nq5OYMmva/mb8yTCwuOVtI6kBv8o4=;
-        b=ACQXwBJ7OYjyZRVhhS/c9nneyhB/7GFHh3dEptJSMrZINFg36aQMQ7Gt7s7mEUBpCw
-         zQlnh/X4OgBYC+KUUJhyCLfP1qSGXkpJPWAGfJpM/INHjdAZ8/L1JkEYsFztN3Yjcf8Y
-         CLx5rb8MRnnLnlOw941FjpRCL/gP5pp6YSMCeI+89Jy/Rd1+N1g4DWNkDQt5p2lrVfbf
-         /2f4gxbIqWPYLcL72Mw6S4MUH55MP9SVIVTvv1bjke3ugxDHQALvD0J7WbGxZqFUjEZx
-         7P1AM3kpvDdhJRiWVIeigZKSst/k+rzUIj9Law8crvuO6T67AGjOgt6Tme7gr0jaocjL
-         3BQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6syxEk4ci6YIB/Nq5OYMmva/mb8yTCwuOVtI6kBv8o4=;
-        b=WH6k8Fj7bfSA79NLQ8jYLvB1U1BA3a0ex5OBvRK5V04+I0OWaJAgT52meN9+mdK1vi
-         udBvgn52kxs9U2ulTXWQml4FfoMwKaUPX6XZr/sQH8JUKzXBBuFQNgngB9TynwDbOYDq
-         RyeQkgwmi0U9uan6mlUfTVqepho3NlVQ+fAhDNxs/f4UwTL5SDWzXAoJJuM7/uP0DQEJ
-         xdntm4OezWOjCy9TNVwNI0Xhv+5QP+7l+bRhrFQ4nuEOHxP5anMEXjOTEwlGwWKtvVFI
-         1xCyDm8QXHwJGwaPpHk0wrV6MVSwBLPOypnsgzjRc2a9D/HrtfTp6kWInnhRImoIIK5s
-         bbjw==
-X-Gm-Message-State: AOAM532SxUyufhnXs4cD1Qi/8HVLM/qNIhXNpqum7+V52i06lcxow8ea
-        SPB1WxgwHfJosBwEuA9F1VfPFQ==
-X-Google-Smtp-Source: ABdhPJy9z80wO3ZS4ZOBoRu271xrntCgw/Td4lOHD9BJvY7rOCcDAdlvae5dCy1DGcWdIK214rqywQ==
-X-Received: by 2002:a17:90b:4a09:: with SMTP id kk9mr2300035pjb.163.1629186918789;
-        Tue, 17 Aug 2021 00:55:18 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id c12sm1471425pfl.56.2021.08.17.00.55.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 00:55:18 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 13:25:15 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-Message-ID: <20210817075515.vyyv7z37e6jcrhsl@vireshk-i7>
-References: <20210817012754.8710-1-digetx@gmail.com>
- <20210817012754.8710-2-digetx@gmail.com>
+        id S238797AbhHQH4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 03:56:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234741AbhHQH4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 03:56:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE6B66054E;
+        Tue, 17 Aug 2021 07:56:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629186969;
+        bh=ialWZUiGma+hiJ6vkQY6KCDbFYDPBfUEF0qvlOeHQf0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fCAY0aWmgY4G3vZ1IAkz6dHYzN1/ODUqsvYo7yeLWv1j+ViKOgARmsZC4Yu4KPMRL
+         HexDsoLGIYCg7MBa0n8BY1l0HUIwCv1hEpC4tcZznMNivKUF1mfg87eI/5PGA6lTNE
+         uaxV+TTbtVo9gcv3TJLjrjZe5m3F7VuMeXCO8F1rBh0oAOWBGmnYHWlTF2T5cHjP6C
+         Hwy+H7aS6lfgOASd2L1H2n+nGbRTEhRbutmNe+akyNM6uImXnGFQELvj6sOf7MWBfa
+         w584KTmHAXudd90oBkArD45WBS6UsJhHgoAnYLmpeFZEhngAaqLRPuSLJEMI/fq+Ts
+         8xywIR2CAKDTQ==
+Date:   Tue, 17 Aug 2021 10:56:02 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [BUG] general protection fault when reading /proc/kcore
+Message-ID: <YRtrktVtNlWMLVZR@kernel.org>
+References: <YRqhqz35tm3hA9CG@krava>
+ <1a05d147-e249-7682-2c86-bbd157bc9c7d@redhat.com>
+ <YRqqqvaZHDu1IKrD@krava>
+ <2b83f03c-e782-138d-6010-1e4da5829b9a@redhat.com>
+ <YRq4typgRn342B4i@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210817012754.8710-2-digetx@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YRq4typgRn342B4i@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17-08-21, 04:27, Dmitry Osipenko wrote:
-> Add dev_pm_opp_sync() helper which syncs OPP table with hardware state
-> and vice versa.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/opp/core.c     | 42 +++++++++++++++++++++++++++++++++++++++---
->  include/linux/pm_opp.h |  6 ++++++
->  2 files changed, 45 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index 5543c54dacc5..18016e49605f 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -939,7 +939,8 @@ static int _set_required_opps(struct device *dev,
->  	return ret;
->  }
->  
-> -static void _find_current_opp(struct device *dev, struct opp_table *opp_table)
-> +static struct dev_pm_opp *
-> +_find_current_opp(struct device *dev, struct opp_table *opp_table)
->  {
->  	struct dev_pm_opp *opp = ERR_PTR(-ENODEV);
->  	unsigned long freq;
-> @@ -961,7 +962,7 @@ static void _find_current_opp(struct device *dev, struct opp_table *opp_table)
->  		mutex_unlock(&opp_table->lock);
->  	}
->  
-> -	opp_table->current_opp = opp;
-> +	return opp;
->  }
->  
->  static int _disable_opp_table(struct device *dev, struct opp_table *opp_table)
-> @@ -1003,7 +1004,7 @@ static int _set_opp(struct device *dev, struct opp_table *opp_table,
->  
->  	/* Find the currently set OPP if we don't know already */
->  	if (unlikely(!opp_table->current_opp))
-> -		_find_current_opp(dev, opp_table);
-> +		opp_table->current_opp = _find_current_opp(dev, opp_table);
->  
->  	old_opp = opp_table->current_opp;
->  
-> @@ -2931,3 +2932,38 @@ int dev_pm_opp_sync_regulators(struct device *dev)
->  	return ret;
->  }
->  EXPORT_SYMBOL_GPL(dev_pm_opp_sync_regulators);
-> +
-> +/**
-> + * dev_pm_opp_sync() - Sync OPP state
-> + * @dev:	device for which we do this operation
-> + *
-> + * Initialize OPP table accordingly to current clock rate or
-> + * first available OPP if clock not available for this device.
-> + *
-> + * Return: 0 on success or a negative error value.
-> + */
-> +int dev_pm_opp_sync(struct device *dev)
-> +{
-> +	struct opp_table *opp_table;
-> +	struct dev_pm_opp *opp;
-> +	int ret = 0;
-> +
-> +	/* Device may not have OPP table */
-> +	opp_table = _find_opp_table(dev);
-> +	if (IS_ERR(opp_table))
-> +		return 0;
-> +
-> +	if (!_get_opp_count(opp_table))
-> +		goto put_table;
-> +
-> +	opp = _find_current_opp(dev, opp_table);
-> +	ret = _set_opp(dev, opp_table, opp, opp->rate);
+On Mon, Aug 16, 2021 at 10:13:18PM +0300, Mike Rapoport wrote:
+> On Mon, Aug 16, 2021 at 08:38:43PM +0200, David Hildenbrand wrote:
+> > On 16.08.21 20:12, Jiri Olsa wrote:
+> > > On Mon, Aug 16, 2021 at 07:49:15PM +0200, David Hildenbrand wrote:
+> > > > On 16.08.21 19:34, Jiri Olsa wrote:
+> > > > > hi,
+> > > > > I'm getting fault below when running:
+> > > > >=20
+> > > > > 	# cat /proc/kallsyms | grep ksys_read
+> > > > > 	ffffffff8136d580 T ksys_read
+> > > > > 	# objdump -d --start-address=3D0xffffffff8136d580 --stop-address=
+=3D0xffffffff8136d590 /proc/kcore
+> > > > >=20
+> > > > > 	/proc/kcore:     file format elf64-x86-64
+> > > > >=20
+> > > > > 	Segmentation fault
+> > > > >=20
+> > > > > any idea? config is attached
+> > > >=20
+> > > > Just tried with a different config on 5.14.0-rc6+
+> > > >=20
+> > > > [root@localhost ~]# cat /proc/kallsyms | grep ksys_read
+> > > > ffffffff8927a800 T ksys_readahead
+> > > > ffffffff89333660 T ksys_read
+> > > >=20
+> > > > [root@localhost ~]# objdump -d --start-address=3D0xffffffff89333660
+> > > > --stop-address=3D0xffffffff89333670
+> > > >=20
+> > > > a.out:     file format elf64-x86-64
+> > > >=20
+> > > >=20
+> > > >=20
+> > > > The kern_addr_valid(start) seems to fault in your case, which is we=
+ird,
+> > > > because it merely walks the page tables. But it seems to complain a=
+bout a
+> > > > non-canonical address 0xf887ffcbff000
+> > > >=20
+> > > > Can you post your QEMU cmdline? Did you test this on other kernel v=
+ersions?
+> > >=20
+> > > I'm using virt-manager so:
+> > >=20
+> > > /usr/bin/qemu-system-x86_64 -name guest=3Dfedora33,debug-threads=3Don=
+ -S -object secret,id=3DmasterKey0,format=3Draw,file=3D/var/lib/libvirt/qem=
+u/domain-13-fedora33/master-key.aes -machine pc-q35-5.1,accel=3Dkvm,usb=3Do=
+ff,vmport=3Doff,dump-guest-core=3Doff,memory-backend=3Dpc.ram -cpu Skylake-=
+Server-IBRS,ss=3Don,vmx=3Don,pdcm=3Don,hypervisor=3Don,tsc-adjust=3Don,clfl=
+ushopt=3Don,umip=3Don,pku=3Don,stibp=3Don,arch-capabilities=3Don,ssbd=3Don,=
+xsaves=3Don,ibpb=3Don,amd-stibp=3Don,amd-ssbd=3Don,skip-l1dfl-vmentry=3Don,=
+pschange-mc-no=3Don -m 8192 -object memory-backend-ram,id=3Dpc.ram,size=3D8=
+589934592 -overcommit mem-lock=3Doff -smp 20,sockets=3D20,cores=3D1,threads=
+=3D1 -uuid 2185d5a9-dbad-4d61-aa4e-97af9fd7ebca -no-user-config -nodefaults=
+ -chardev socket,id=3Dcharmonitor,fd=3D36,server,nowait -mon chardev=3Dchar=
+monitor,id=3Dmonitor,mode=3Dcontrol -rtc base=3Dutc,driftfix=3Dslew -global=
+ kvm-pit.lost_tick_policy=3Ddelay -no-hpet -no-shutdown -global ICH9-LPC.di=
+sable_s3=3D1 -global ICH9-LPC.disable_s4=3D1 -boot strict=3Don -kernel /hom=
+e/jolsa/qemu/run/vmlinux -initrd /home/jolsa/qemu/run/initrd -append root=
+=3D/dev/mapper/fedora_fedora-root ro rd.lvm.lv=3Dfedora_fedora/root console=
+=3Dtty0 console=3DttyS0,115200 -device pcie-root-port,port=3D0x10,chassis=
+=3D1,id=3Dpci.1,bus=3Dpcie.0,multifunction=3Don,addr=3D0x2 -device pcie-roo=
+t-port,port=3D0x11,chassis=3D2,id=3Dpci.2,bus=3Dpcie.0,addr=3D0x2.0x1 -devi=
+ce pcie-root-port,port=3D0x12,chassis=3D3,id=3Dpci.3,bus=3Dpcie.0,addr=3D0x=
+2.0x2 -device pcie-root-port,port=3D0x13,chassis=3D4,id=3Dpci.4,bus=3Dpcie.=
+0,addr=3D0x2.0x3 -device pcie-root-port,port=3D0x14,chassis=3D5,id=3Dpci.5,=
+bus=3Dpcie.0,addr=3D0x2.0x4 -device pcie-root-port,port=3D0x15,chassis=3D6,=
+id=3Dpci.6,bus=3Dpcie.0,addr=3D0x2.0x5 -device pcie-root-port,port=3D0x16,c=
+hassis=3D7,id=3Dpci.7,bus=3Dpcie.0,addr=3D0x2.0x6 -device qemu-xhci,p2=3D15=
+,p3=3D15,id=3Dusb,bus=3Dpci.2,addr=3D0x0 -device virtio-serial-pci,id=3Dvir=
+tio-serial0,bus=3Dpci.3,addr=3D0x0 -blockdev {"driver":"file","filename":"/=
+var/lib/libvirt/images/fedora33.qcow2","node-name":"libvirt-2-storage","aut=
+o-read-only":true,"discard":"unmap"} -blockdev {"node-name":"libvirt-2-form=
+at","read-only":false,"driver":"qcow2","file":"libvirt-2-storage","backing"=
+:null} -device virtio-blk-pci,bus=3Dpci.4,addr=3D0x0,drive=3Dlibvirt-2-form=
+at,id=3Dvirtio-disk0,bootindex=3D1 -device ide-cd,bus=3Dide.0,id=3Dsata0-0-=
+0 -netdev tap,fd=3D38,id=3Dhostnet0,vhost=3Don,vhostfd=3D39 -device virtio-=
+net-pci,netdev=3Dhostnet0,id=3Dnet0,mac=3D52:54:00:f3:c6:e7,bus=3Dpci.1,add=
+r=3D0x0 -chardev pty,id=3Dcharserial0 -device isa-serial,chardev=3Dcharseri=
+al0,id=3Dserial0 -chardev socket,id=3Dcharchannel0,fd=3D40,server,nowait -d=
+evice virtserialport,bus=3Dvirtio-serial0.0,nr=3D1,chardev=3Dcharchannel0,i=
+d=3Dchannel0,name=3Dorg.qemu.guest_agent.0 -chardev spicevmc,id=3Dcharchann=
+el1,name=3Dvdagent -device virtserialport,bus=3Dvirtio-serial0.0,nr=3D2,cha=
+rdev=3Dcharchannel1,id=3Dchannel1,name=3Dcom.redhat.spice.0 -device usb-tab=
+let,id=3Dinput0,bus=3Dusb.0,port=3D1 -spice port=3D5900,addr=3D127.0.0.1,di=
+sable-ticketing,image-compression=3Doff,seamless-migration=3Don -device qxl=
+-vga,id=3Dvideo0,ram_size=3D67108864,vram_size=3D67108864,vram64_size_mb=3D=
+0,vgamem_mb=3D16,max_outputs=3D1,bus=3Dpcie.0,addr=3D0x1 -device ich9-intel=
+-hda,id=3Dsound0,bus=3Dpcie.0,addr=3D0x1b -device hda-duplex,id=3Dsound0-co=
+dec0,bus=3Dsound0.0,cad=3D0 -chardev spicevmc,id=3Dcharredir0,name=3Dusbred=
+ir -device usb-redir,chardev=3Dcharredir0,id=3Dredir0,bus=3Dusb.0,port=3D2 =
+-chardev spicevmc,id=3Dcharredir1,name=3Dusbredir -device usb-redir,chardev=
+=3Dcharredir1,id=3Dredir1,bus=3Dusb.0,port=3D3 -device virtio-balloon-pci,i=
+d=3Dballoon0,bus=3Dpci.5,addr=3D0x0 -object rng-random,id=3Dobjrng0,filenam=
+e=3D/dev/urandom -device virtio-rng-pci,rng=3Dobjrng0,id=3Drng0,bus=3Dpci.6=
+,addr=3D0x0 -sandbox on,obsolete=3Ddeny,elevateprivileges=3Ddeny,spawn=3Dde=
+ny,resourcecontrol=3Ddeny -msg timestamp=3Don
+> =20
+> > > so far I tested just bpf-next/master:
+> > >    git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+> > >=20
+> >=20
+> > Just tried with upstream Linux (5.14.0-rc6) and your config without
+> > triggering it. I'm using "-cpu host", though, on an AMD Ryzen 9 3900X
+>=20
+> With Jiri's config and '-cpu <very long string>' it triggers for me on
+> v5.14-rc6.
+>=20
+> I'll also try to take a look tomorrow.
 
-And I am not sure how this will end up working, since new OPP will be
-equal to old one. Since I see you call this from resume() at many
-places.
+There are some non-zero PMDs that are not present in the high kernel
+mappings. The patch below fixes for me the issue in kern_addr_valid()
+trying to access a not-present PMD. Jiri, can you check if it works for
+you?
 
-what exactly are you trying to do here ? Those details would be good
-to have in commit log as well, I haven't really followed V7 of your
-series.
+diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+index ddeaba947eb3..07b56e90db5d 100644
+--- a/arch/x86/mm/init_64.c
++++ b/arch/x86/mm/init_64.c
+@@ -1433,18 +1433,18 @@ int kern_addr_valid(unsigned long addr)
+ 		return 0;
+=20
+ 	p4d =3D p4d_offset(pgd, addr);
+-	if (p4d_none(*p4d))
++	if (p4d_none(*p4d) || !p4d_present(*p4d))
+ 		return 0;
+=20
+ 	pud =3D pud_offset(p4d, addr);
+-	if (pud_none(*pud))
++	if (pud_none(*pud) || !pud_present(*pud))
+ 		return 0;
+=20
+ 	if (pud_large(*pud))
+ 		return pfn_valid(pud_pfn(*pud));
+=20
+ 	pmd =3D pmd_offset(pud, addr);
+-	if (pmd_none(*pmd))
++	if (pmd_none(*pmd) || !pmd_present(*pmd))
+ 		return 0;
+=20
+ 	if (pmd_large(*pmd))
 
--- 
-viresh
+--=20
+Sincerely yours,
+Mike.
