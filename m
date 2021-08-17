@@ -2,105 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 137993EF09F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 19:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B13143EF0A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 19:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231967AbhHQRKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 13:10:11 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33654 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231637AbhHQRKF (ORCPT
+        id S229699AbhHQRLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 13:11:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229723AbhHQRLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 13:10:05 -0400
-Date:   Tue, 17 Aug 2021 19:09:25 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629220166;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pua/3tjO7aIRXX12+cyflypDu8x21Lu5L5biSj5T99Q=;
-        b=YD3Vht+o8To9S+hGwb+xNIUKaaST5m0SQIawHWrrnR4/fsCUYmTQBQZ/0ToWgzcOcoCuCN
-        oZWqQi2hODx16ZVD9str+sWpO7fC5hLDCMf5RgSdPI72cFIq1wOMiraZL5AABD4T1HRU/N
-        pP0IAYWgQw9otSDnEaBI5FZOeSgh02Ji241N2gEz3IFQO5fdgNAoojs6wWw3HvtCKD4YTr
-        x3cOfLTYuoNL/uRL4l36/jCvb489Ia9rvzKqeNJzdG1gYdnGAPSFSI4SDbehZtmjl5bRRi
-        RTzBp8PhHhOCuXWaTrAwfkRxP0N+gj+8yOm2rWzjInEq5/7CzgQxkQeto56ApQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629220166;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pua/3tjO7aIRXX12+cyflypDu8x21Lu5L5biSj5T99Q=;
-        b=HpqKGx3k0um5s2EPmjYfPHpbuLBCi0eO6tySgz/NBu6CU/39l03bVrV6GVZbss3RYLU6Or
-        GPzX1T4JuaejwfBA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: [PATCH v3 2/4] sched: Introduce migratable()
-Message-ID: <20210817170925.2jwqvgvmqab2glwu@linutronix.de>
-References: <20210811201354.1976839-1-valentin.schneider@arm.com>
- <20210811201354.1976839-3-valentin.schneider@arm.com>
+        Tue, 17 Aug 2021 13:11:31 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AF54C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 10:10:57 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id p38so42885605lfa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 10:10:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=esKjOu29CtbHKWBXCsPcW8MIgPET8SIonOgdr3g5nyg=;
+        b=vMiR0ARsypmr79UUSYTDBofqOVcAN344d7ssRjsdeE5ThfuRqwaaQemLcxm5dk6kA9
+         NobN2xX9NS5968wMgMYjf8l+hDaXfu25vXq833X6MwoMsdf9D4R1IDmFUpt7+ha3330F
+         03t5J8uV3xZ0+cogXHGKcrW2IY9Fmjh31Gn15qPGNRfridQzQmW3hDnqMQ/jSVDFwvrY
+         Ys3MaUkUER/3A3A+bGItS+jSN10+jDUPCV2IxmqnU248IG85oSLue9Cr+QpbwG3WsE8G
+         XAgjxsBrgA7vdS4FzTVAv6RakkZt7H3WAKtoNNqp4tz1c1/xW3lQt+W6i7RPPgqsjp3D
+         u0XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=esKjOu29CtbHKWBXCsPcW8MIgPET8SIonOgdr3g5nyg=;
+        b=NtRPIocYX40ehtTBCktO8gsJn6yrAbhjxS9b3FSrBcx73rPszLuhfE0tpNXWE5WQKa
+         RX9qmB96lvoBZqdscg7/X/p5kgsTDnko4x4ISm74hDYsMahamNCAa2oE+yh0V9RCVeGL
+         wUmaCVg61K3atHth1lvpRUUt/k1lveut5kCe5MMDoledF9g4p2/Tsh8dtIHFBqWkhhEe
+         TZrI/cljiu8r9HC7MEKJGaCdiIKDyQK+8N2KzIc2LZMbCnRFfaDnKdlvKbJDZDW2D0Ti
+         qCM9NbuMaugrx9HoSNLaFy1hXQeNsSBhLv0WG002IeuwkItrpeLN5DdYbTxvCAke7eTb
+         R8vw==
+X-Gm-Message-State: AOAM533CpXGnTJbdjIbPsfqYt0ClTyzfG/iemBLqk4IfW2zgve9mHCec
+        gE+q5bVHZfrWPwm6z1lshrTjCokWlg/CNFnYo0b3mg==
+X-Google-Smtp-Source: ABdhPJyRoyCjCJjG1YJbZsYykcq+KMEvv4mDyL3FMY3AADLwVYmc4aaMSmoU9hmVVEmp2/FqGlRdRwvjn9H7P2gGYfA=
+X-Received: by 2002:a19:7507:: with SMTP id y7mr3093130lfe.358.1629220255213;
+ Tue, 17 Aug 2021 10:10:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20210811031734.GA5193@xsang-OptiPlex-9020> <CAHk-=wiSHHSuSQsCCLOxQA+cbcvjmEeMsTCMWPT1sFVngd9-ig@mail.gmail.com>
+ <20210812031910.GA63920@shbuild999.sh.intel.com> <20210816032855.GB72770@shbuild999.sh.intel.com>
+ <YRrbpRsvdDoom9iG@cmpxchg.org> <20210817024500.GC72770@shbuild999.sh.intel.com>
+ <20210817164737.GA23342@blackbody.suse.cz>
+In-Reply-To: <20210817164737.GA23342@blackbody.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 17 Aug 2021 10:10:43 -0700
+Message-ID: <CALvZod4-bsv+Mn19Q9LK3DzL8GC_LuZyJyQ83RiwRiTbCJhCZQ@mail.gmail.com>
+Subject: Re: [mm] 2d146aa3aa: vm-scalability.throughput -36.4% regression
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Feng Tang <feng.tang@intel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Zhengjun Xing <zhengjun.xing@linux.intel.com>,
+        andi.kleen@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210811201354.1976839-3-valentin.schneider@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-11 21:13:52 [+0100], Valentin Schneider wrote:
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index debc960f41e3..8ba7b4a7ee69 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1715,6 +1715,16 @@ static inline bool is_percpu_thread(void)
->  #endif
->  }
-> =20
-> +/* Is the current task guaranteed to stay on its current CPU? */
-> +static inline bool migratable(void)
+On Tue, Aug 17, 2021 at 9:47 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote=
+:
+>
+> On Tue, Aug 17, 2021 at 10:45:00AM +0800, Feng Tang <feng.tang@intel.com>=
+ wrote:
+> > Initially from the perf-c2c data, the in-cacheline hotspots are only
+> > 0x0, and 0x10, and if we extends to 2 cachelines, there is one more
+> > offset 0x54 (css.flags), but still I can't figure out which member
+> > inside the 128 bytes range is written frequenty.
+>
+> Is it certain that perf-c2c reported offsets are the cacheline of the
+> first bytes of struct cgroup_subsys_state? (Yeah, it looks to me so,
+> given what code accesses those and your padding fixing it. I'm just
+> raising it in case there was anything non-obvious.)
+>
+> >
+> > /* pah info for cgroup_subsys_state */
+> > struct cgroup_subsys_state {
+> >       struct cgroup *            cgroup;               /*     0     8 *=
+/
+> >       struct cgroup_subsys *     ss;                   /*     8     8 *=
+/
+> >       struct percpu_ref          refcnt;               /*    16    16 *=
+/
+> >       struct list_head           sibling;              /*    32    16 *=
+/
+> >       struct list_head           children;             /*    48    16 *=
+/
+> >       /* --- cacheline 1 boundary (64 bytes) --- */
+> >       struct list_head           rstat_css_node;       /*    64    16 *=
+/
+> >       int                        id;                   /*    80     4 *=
+/
+> >       unsigned int               flags;                /*    84     4 *=
+/
+> >       u64                        serial_nr;            /*    88     8 *=
+/
+> >       atomic_t                   online_cnt;           /*    96     4 *=
+/
+> >
+> >       /* XXX 4 bytes hole, try to pack */
+> >
+> >       struct work_struct         destroy_work;         /*   104    32 *=
+/
+> >       /* --- cacheline 2 boundary (128 bytes) was 8 bytes ago --- */
+> >
+> > Since the test run implies this is cacheline related, and I'm not very
+> > familiar with the mem_cgroup code, the original perf-c2c log is attache=
+d
+> > which may give more hints.
+>
+> As noted by Johannes, even in atomic mode, the refcnt would have the
+> atomic part elsewhere. The other members shouldn't be written frequently
+> unless there are some intense modifications of the cgroup tree in
+> parallel.
+> Does the benchmark create lots of memory cgroups in such a fashion?
 
-I'm going to rename this in my tree to `is_migratable' because of
-|security/keys/trusted-keys/trusted_core.c:45:22: error: =E2=80=98migratabl=
-e=E2=80=99 redeclared as different kind of symbol
-|   45 | static unsigned char migratable;
-|      |                      ^~~~~~~~~~
-|In file included from arch/arm64/include/asm/compat.h:16,
-|                 from arch/arm64/include/asm/stat.h:13,
-|                 from include/linux/stat.h:6,
-|                 from include/linux/sysfs.h:22,
-|                 from include/linux/kobject.h:20,
-|                 from include/linux/of.h:17,
-|                 from include/linux/irqdomain.h:35,
-|                 from include/linux/acpi.h:13,
-|                 from include/linux/tpm.h:21,
-|                 from include/keys/trusted-type.h:12,
-|                 from security/keys/trusted-keys/trusted_core.c:10:
-|include/linux/sched.h:1719:20: note: previous definition of =E2=80=98migra=
-table=E2=80=99 was here
-| 1719 | static inline bool migratable(void)
-|      |                    ^~~~~~~~~~
-
-Sebastian
+From what I know the benchmark is running in the root cgroup and there
+is no cgroup manipulation.
