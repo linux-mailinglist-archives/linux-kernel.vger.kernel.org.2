@@ -2,177 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14FE73EE55A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 06:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BCFF3EE56D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 06:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237462AbhHQENy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 00:13:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56412 "EHLO
+        id S237458AbhHQERz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 00:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbhHQENw (ORCPT
+        with ESMTP id S229477AbhHQERy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 00:13:52 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5D7AC0613A3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 21:13:19 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mFqTN-0003Bb-S1; Tue, 17 Aug 2021 06:13:09 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mFqTM-0006ZY-8h; Tue, 17 Aug 2021 06:13:08 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, David Jander <david@protonic.nl>
-Subject: [PATCH v2 3/3] can: dev: provide optional GPIO based termination support
-Date:   Tue, 17 Aug 2021 06:13:06 +0200
-Message-Id: <20210817041306.25185-4-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210817041306.25185-1-o.rempel@pengutronix.de>
-References: <20210817041306.25185-1-o.rempel@pengutronix.de>
+        Tue, 17 Aug 2021 00:17:54 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBBA3C061764;
+        Mon, 16 Aug 2021 21:17:21 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id j12-20020a17090aeb0c00b00179530520b3so2898465pjz.0;
+        Mon, 16 Aug 2021 21:17:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bqqKFEqy6bW/3jaVqfILOBhErn5KinwFdoaG08aeYTU=;
+        b=GegebCJ5kKpRuiPtzMuG/9/Oizma9N2aGsdKhuGiQdC7wUiRVR1it6CtyNIc96rUr7
+         1Lrv7n2SoUcRo+zrgud1QzHI/S0+BM9EKdV1dWmlrq1uwJxcwfeJQxvy3pLlsNSIMcTG
+         xg1oWpegNMAoB7YYtWTgVXZHUg58hyrj4IZ4iY5mpZ0bZazAz4eFsNooZjOo7iBAbThg
+         7HpAbMBXtv2CXfVxxOs9YmRuPOxFRdU3q3o6KZ0QeHqAwg7StwEI9lEiUFGlI3fRDuwi
+         MjhP+iXf+gIGtZ0TtT8KVdW9vLUEtDDgiyhLwaYRs+TliqPSl2yFJRNKE5nDb3Blnm/d
+         nLTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bqqKFEqy6bW/3jaVqfILOBhErn5KinwFdoaG08aeYTU=;
+        b=p86dpLmgWe7zvcBUtl3WzWHEyMdHZaftV7mQfNF/6mXm4o1aQs8FAlKi7mdiKHFggG
+         vkXndP69bK8AGIxMjtodQd6mAc8aqQPuVdboE0CMXv5SaukmJEWhPvhZJhlD8h7vfRsI
+         1Z0BeKOKQN1N8dzbWcR1zXyb0WSDHkSsV6E8Y35TxJ2fEH4qmm6FatTQEFFAxA6EPGdZ
+         CJnXI0lpqJ7S7svdBSMk5tut6TllB4qzShP0xLO7ruKDgvxVKy+jpRqAMBCYp9X0E5wj
+         c90cu5R53kUs5ZRBM/3/lLWKsHthJlVRIVmj0iaGwCdJrUmdthXB+2yP/a8wYpnxWO7m
+         tg2Q==
+X-Gm-Message-State: AOAM533Wl1L07bCu5bkKg2mTBgm2BnPg+XFhtgLVlXlmtsoTZ3XrJPC+
+        Dhg0OWT2LYG8OJ7o0veGUvk=
+X-Google-Smtp-Source: ABdhPJxghMRfCc22t7YGDNctHOJGp0NKyTLbKYqjB+T8eXlM0tsqvm0YCsdT7rjc0rp9Hu3gT+3axA==
+X-Received: by 2002:aa7:8116:0:b029:346:8678:ce26 with SMTP id b22-20020aa781160000b02903468678ce26mr1646306pfi.15.1629173841355;
+        Mon, 16 Aug 2021 21:17:21 -0700 (PDT)
+Received: from archl-on1.. ([103.51.72.143])
+        by smtp.gmail.com with ESMTPSA id g11sm705676pfo.166.2021.08.16.21.17.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 21:17:20 -0700 (PDT)
+From:   Anand Moon <linux.amoon@gmail.com>
+To:     linux-phy@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Anand Moon <linux.amoon@gmail.com>,
+        Matt Corallo <oc2udbzfd@mattcorallo.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Emiliano Ingrassia <ingrassia@epigenesys.com>,
+        Brian Kim <brian.kim@hardkernel.com>
+Subject: [PATCHv3 0/6] Meson-8b and Meson-gxbb Fix some missing code
+Date:   Tue, 17 Aug 2021 09:45:34 +0530
+Message-Id: <20210817041548.1276-1-linux.amoon@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For CAN buses to work, a termination resistor has to be present at both
-ends of the bus. This resistor is usually 120 Ohms, other values may be
-required for special bus topologies.
+On Odroid C1+ and Odroid C2 USB feature is broken
 
-This patch adds support for a generic GPIO based CAN termination. The
-resistor value has to be specified via device tree, and it can only be
-attached to or detached from the bus. By default the termination is not
-active.
+It's being observed the after initiation of USB phy
+the USB port goes in to suspend state, If we pass usbcore.autosuspend=-1
+via command line USB hotplug seen to be working.
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- drivers/net/can/dev/dev.c | 54 +++++++++++++++++++++++++++++++++++++++
- include/linux/can/dev.h   |  8 ++++++
- 2 files changed, 62 insertions(+)
+Another issue I observed is increase of USB interrupts event
+even if there is not much activity on USB ports.
 
-diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
-index 311d8564d611..b4a6c7a6fc18 100644
---- a/drivers/net/can/dev/dev.c
-+++ b/drivers/net/can/dev/dev.c
-@@ -15,6 +15,7 @@
- #include <linux/can/dev.h>
- #include <linux/can/skb.h>
- #include <linux/can/led.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/of.h>
- 
- #define MOD_DESC "CAN device driver interface"
-@@ -400,10 +401,57 @@ void close_candev(struct net_device *dev)
- }
- EXPORT_SYMBOL_GPL(close_candev);
- 
-+static int can_set_termination(struct net_device *ndev, u16 term)
-+{
-+	struct can_priv *priv = netdev_priv(ndev);
-+	int set;
-+
-+	if (term == priv->termination_gpio_ohms[CAN_TERMINATION_GPIO_ENABLED])
-+		set = 1;
-+	else
-+		set = 0;
-+
-+	gpiod_set_value(priv->termination_gpio, set);
-+
-+	return 0;
-+}
-+
-+static int can_get_termination(struct net_device *ndev)
-+{
-+	struct can_priv *priv = netdev_priv(ndev);
-+	struct device *dev = ndev->dev.parent;
-+	struct gpio_desc *gpio;
-+	u16 term;
-+	int ret;
-+
-+	/* Disabling termination by default is the safe choice: Else if many
-+	 * bus participants enable it, no communication is possible at all.
-+	 */
-+	gpio = devm_gpiod_get_optional(dev, "termination", GPIOD_OUT_LOW);
-+	if (IS_ERR(gpio))
-+		return dev_err_probe(dev, PTR_ERR(gpio),
-+				     "Cannot get termination-gpios\n");
-+
-+	ret = device_property_read_u16(dev, "termination-ohms", &term);
-+	if (ret)
-+		return ret;
-+
-+	priv->termination_const_cnt = ARRAY_SIZE(priv->termination_gpio_ohms);
-+	priv->termination_const = priv->termination_gpio_ohms;
-+	priv->termination_gpio = gpio;
-+	priv->termination_gpio_ohms[CAN_TERMINATION_GPIO_DISABLED] =
-+		CAN_TERMINATION_DISABLED;
-+	priv->termination_gpio_ohms[CAN_TERMINATION_GPIO_ENABLED] = term;
-+	priv->do_set_termination = can_set_termination;
-+
-+	return 0;
-+}
-+
- /* Register the CAN network device */
- int register_candev(struct net_device *dev)
- {
- 	struct can_priv *priv = netdev_priv(dev);
-+	int err;
- 
- 	/* Ensure termination_const, termination_const_cnt and
- 	 * do_set_termination consistency. All must be either set or
-@@ -419,6 +467,12 @@ int register_candev(struct net_device *dev)
- 	if (!priv->data_bitrate_const != !priv->data_bitrate_const_cnt)
- 		return -EINVAL;
- 
-+	if (!priv->termination_const) {
-+		err = can_get_termination(dev);
-+		if (err)
-+			return err;
-+	}
-+
- 	dev->rtnl_link_ops = &can_link_ops;
- 	netif_carrier_off(dev);
- 
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 27b275e463da..2413253e54c7 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -32,6 +32,12 @@ enum can_mode {
- 	CAN_MODE_SLEEP
- };
- 
-+enum can_termination_gpio {
-+	CAN_TERMINATION_GPIO_DISABLED = 0,
-+	CAN_TERMINATION_GPIO_ENABLED,
-+	CAN_TERMINATION_GPIO_MAX,
-+};
-+
- /*
-  * CAN common private data
-  */
-@@ -55,6 +61,8 @@ struct can_priv {
- 	unsigned int termination_const_cnt;
- 	const u16 *termination_const;
- 	u16 termination;
-+	struct gpio_desc *termination_gpio;
-+	u16 termination_gpio_ohms[CAN_TERMINATION_GPIO_MAX];
- 
- 	enum can_state state;
- 
+$ cat /proc/interrupts | grep usb
+ 35:   26462800          0          0          0     GIC-0  63 Level
+			c90c0000.usb, dwc2_hsotg:usb1
+8
+Changes added power node to usb phy and small code cleanup
+in usb phy.
+
+
+Previous version RFC.
+[0] https://patchwork.kernel.org/project/linux-amlogic/cover/20210617194154.2397-1-linux.amoon@gmail.com/
+Dopped the reorder of code changes as of now.
+
+V1 > changes Fixed the GPIO input signal on Odroid C1+/C2
+     New patch added to fix Odroid C2.
+
+[1] https://lore.kernel.org/linux-devicetree/20210716103651.1455-1-linux.amoon@gmail.com/
+
+V2 > changes Fixed the GPIO polarity for Odroid C1
+     fix the power source from phy-supply to vbus-supply 
+     added new patches to fix resolve some issues.
+
+Thanks
+-Anand
+
+Anand Moon (6):
+  ARM: dts: meson8b: odroidc1: Add usb phy power node
+  ARM: dts: meson8b: odroidc1: Set usb power source to always on
+  arm64: dts: amlogic: odroidc2: Fix the chip enable signal for usb
+    power
+  arm64: dts: amlogic: odroidc2: use vbus-supply for power source for
+    usb nodes
+  phy: amlogic: meson8b-usb2: Power off the PHY by putting it into reset
+    mode
+  phy: amlogic: meson8b-usb2: don't log an error on -EPROBE_DEFER
+
+ arch/arm/boot/dts/meson8b-odroidc1.dts        | 21 ++++++++++++++++++-
+ .../boot/dts/amlogic/meson-gxbb-odroidc2.dts  | 10 ++++-----
+ drivers/phy/amlogic/phy-meson8b-usb2.c        |  8 +++++--
+ 3 files changed, 30 insertions(+), 9 deletions(-)
+
 -- 
-2.30.2
+2.32.0
 
