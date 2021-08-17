@@ -2,109 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD563EEA8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 12:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 176303EEA90
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 12:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239544AbhHQKHU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Aug 2021 06:07:20 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:36325 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239303AbhHQKFE (ORCPT
+        id S239243AbhHQKHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 06:07:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239342AbhHQKFp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 06:05:04 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 6A8D524000F;
-        Tue, 17 Aug 2021 10:04:02 +0000 (UTC)
-Date:   Tue, 17 Aug 2021 12:04:01 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Zhihao Cheng <chengzhihao1@huawei.com>
-Cc:     <richard@nod.at>, <vigneshr@ti.com>, <bbrezillon@kernel.org>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <yukuai3@huawei.com>, <sfr@canb.auug.org.au>
-Subject: Re: [PATCH v2] mtd: mtdconcat: Check existence of _read|_write from
- subdev'master device before assigning
-Message-ID: <20210817120401.1ccf98bd@xps13>
-In-Reply-To: <8b315831-84c5-38f3-d3b7-bb53f52c28b8@huawei.com>
-References: <20210817024552.1691649-1-chengzhihao1@huawei.com>
-        <8b315831-84c5-38f3-d3b7-bb53f52c28b8@huawei.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Tue, 17 Aug 2021 06:05:45 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED8FC0613C1;
+        Tue, 17 Aug 2021 03:04:19 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GpmpN6Zl8z9sRK;
+        Tue, 17 Aug 2021 20:04:12 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629194656;
+        bh=a5vBp05i0w+6dipIg/OspEpX80RBiZzeW3gLpgTDYE0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=K736wvBQAeOMYhW10/5rrjSZ0i3XBaHadyADeMa2KvCD2r6N/rLWEo9FSRtlzKfQz
+         BRjjB5VkmBqeueLPuU2RTI71bUN36yjPlWKUF+00I5he1RhxoVsf+/gqb3YD9ObWEG
+         KH/qhzZASWAD8DbSi/dEUjaTcKvxRQe2NO1jNwr6QoZRN8qxXsJu8ZjrfxX1CmF8Tl
+         6g1qkZ60QIkNLf0V7FRxt19aqS8J7SF2pzl65OUytMpx7nYmMbEYHU7jMrHKf/Ukx5
+         JgmMFFjdCWnUuuv+9SHt9VA4lOqzSix0R2io4NA+lhUI4lNK2EQV/BI77QUdwSV+P3
+         685o3HSsupGAg==
+Date:   Tue, 17 Aug 2021 20:04:12 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     Jianqun Xu <jay.xu@rock-chips.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the pinctrl tree with the irqchip tree
+Message-ID: <20210817200412.799bd992@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; boundary="Sig_/Hk5d0=.3ZZ3m5bQKIuoxfeR";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhihao,
+--Sig_/Hk5d0=.3ZZ3m5bQKIuoxfeR
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Zhihao Cheng <chengzhihao1@huawei.com> wrote on Tue, 17 Aug 2021
-10:45:55 +0800:
+Hi all,
 
-> 在 2021/8/17 10:45, Zhihao Cheng 写道:
-> Hi Miquel,
-> I found a better way to fix the "WARNING" on _read|_read_oob checking. Since sub-mtd device has been registered successfully, we can check against the existence of _read|_read_oob callbacks by subdev's master device.
-> BTW, fix missing space between the SHA1 and the subject suggested by Stephen.
+Today's linux-next merge of the pinctrl tree got a conflict in:
 
-I am a bit lost, I need to see the big picture again. I will drop the
-current patches that applied, please resend the full series with a
-changelog.
+  drivers/pinctrl/pinctrl-rockchip.c
 
-> > Since 2431c4f5b46c3 ("mtd: Implement mtd_{read,write}() as wrappers
-> > around mtd_{read,write}_oob()") don't allow _write|_read and
-> > _write_oob|_read_oob existing at the same time. We should check the
+between commit:
 
-                                                  , we
+  a9cb09b7be84 ("pinctrl: Bulk conversion to generic_handle_domain_irq()")
 
-> > existence of callbacks "_read and _write" from subdev's master device
-> > (We can trust master device since it has been registered) before
-> > assigning, otherwise following warning occurs while making
-> > concatenated device:
-> >
-> >    WARNING: CPU: 2 PID: 6728 at drivers/mtd/mtdcore.c:595
-> >    add_mtd_device+0x7f/0x7b0
-> >
-> > Fixes: 2431c4f5b46c3 ("mtd: Implement mtd_{read,write}() around ...")
+from the irqchip tree and commit:
 
-                                                             ^
-Wrong commit message
+  9ce9a02039de ("pinctrl/rockchip: drop the gpio related codes")
 
-> > Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> > ---
+from the pinctrl tree.
 
-Also, please shorten a bit the two commit titles, like:
+I fixed it up (the latter removed the code changed by the former, so I
+did that) and can carry the fix as necessary. This is now fixed as far
+as linux-next is concerned, but any non trivial conflicts should be
+mentioned to your upstream maintainer when your tree is submitted for
+merging.  You may also want to consider cooperating with the maintainer
+of the conflicting tree to minimise any particularly complex conflicts.
 
-mtd: mtdconcat: Judge callback existence based on the master
+--=20
+Cheers,
+Stephen Rothwell
 
-Finally, in the other patch, there is a typo in the example
-reproduce.c (combine misspelled).
+--Sig_/Hk5d0=.3ZZ3m5bQKIuoxfeR
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-> >   drivers/mtd/mtdconcat.c | 6 ++++--
-> >   1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-> > index af51eee6b5e8..f685a581df48 100644
-> > --- a/drivers/mtd/mtdconcat.c
-> > +++ b/drivers/mtd/mtdconcat.c
-> > @@ -694,6 +694,10 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
-> >   		concat->mtd._block_markbad = concat_block_markbad;
-> >   	if (subdev_master->_panic_write)
-> >   		concat->mtd._panic_write = concat_panic_write;
-> > +	if (subdev_master->_read)
-> > +		concat->mtd._read = concat_read;
-> > +	if (subdev_master->_write)
-> > +		concat->mtd._write = concat_write;  
-> >   >   	concat->mtd.ecc_stats.badblocks = subdev[0]->ecc_stats.badblocks;
-> >   > @@ -755,8 +759,6 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c  
-> >   	concat->mtd.name = name;  
-> >   >   	concat->mtd._erase = concat_erase;  
-> > -	concat->mtd._read = concat_read;
-> > -	concat->mtd._write = concat_write;
-> >   	concat->mtd._sync = concat_sync;
-> >   	concat->mtd._lock = concat_lock;
-> >   	concat->mtd._unlock = concat_unlock;  
-> 
-> 
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Miquèl
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEbiZwACgkQAVBC80lX
+0GzAbAf6A+vnqy0crTp/QZiL6Xjw4grziQBJCjgtIDxS7BFqhnc5ls74lS3Wy070
+q2goxA6C34fX3QAAfVFPJ81Gs6kv+5fIxWwKhnmHPVSGY+2b0hn0WjPzkrF2Jt3t
+h/pr9/AA3CEuym7kccPEsZ7GqSDLjFi4SO3aaG/nSGSHIwvQtU7ekDVnVBPfvZw2
+NENUQ46TQVOa3Odf/IT0/Sr7kc6BMuZ1JLXqDI+JPrTxHgYIkfj7KNQfaM7zOVgq
+FeLwOlijtyUO/bnSxmpNoInnxgCs+NCwhJde7trzD0E4RmOIftecN3i9bISrIxup
+8eok8uLCu6fWicQVD+UjcA0zWCOTeQ==
+=uzMx
+-----END PGP SIGNATURE-----
+
+--Sig_/Hk5d0=.3ZZ3m5bQKIuoxfeR--
