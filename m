@@ -2,215 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF98E3EEDF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 16:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 676053EEDFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 16:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236040AbhHQOC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 10:02:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23092 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229761AbhHQOCy (ORCPT
+        id S240027AbhHQODl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 10:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229761AbhHQODh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 10:02:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629208940;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FQOOQWrkkMC5WZkin69mUpEkGTi3n+C8zjW3rnwQ78M=;
-        b=MXKKdTB+i/Htubf1mv8JQ6+6oZk06kB0eEsIY0XMMLDWuIN/e6Qd2+G2XnnaM6Krew+2Mw
-        DqV5DXLAe1Btw7HCBLXUtMvjpPKEH8MkEFjU65aUx+ypYTSXvK1IO+x15aR/3B8Y1XwX/o
-        ZxHAO1tpVMLWGTUJvQ7qleJTpsNzPHY=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-176-RmzS5TpqOHaglNAuvI8dHg-1; Tue, 17 Aug 2021 10:02:19 -0400
-X-MC-Unique: RmzS5TpqOHaglNAuvI8dHg-1
-Received: by mail-wr1-f70.google.com with SMTP id k15-20020a5d628f0000b029015501bab520so6639823wru.16
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 07:02:19 -0700 (PDT)
+        Tue, 17 Aug 2021 10:03:37 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BADD3C061764;
+        Tue, 17 Aug 2021 07:03:03 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id k8so9836739wrn.3;
+        Tue, 17 Aug 2021 07:03:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=VVEiHKfbgxJy3Si7x9qMwuCkodu1ovrZav3yAuRw/WQ=;
+        b=NGu0DCEpleG+Ep+gjrtMwj36Cigf1Xn/FwALxpXcDjG/HheiEOcqif1j7C30iNyDoR
+         UfnkWvY654GbLJJiiHR7imSwFIKyv9XLT96K8+GsD6oCLfWY1318PUVuH4QQVpXL+5MB
+         sWXWF+45ADknPxGX3t+Xe/QTitR63+pwekLYS4LtFAdHYnksZWahfT+1GTFaodEeWnqA
+         eOx7tn6jgCs37eoODu+VwLdsRQzuUuonwBBcsUzg/5aaFUc8Y73zeAXoNTr9PLjG3bO9
+         GV9fg3sIOtBFLYnWBNiTabJSWHMGHfUzG0ouqf+ehjLzM7Ukg8pSAWhUps4ZDVmX+JZ9
+         8Aqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=FQOOQWrkkMC5WZkin69mUpEkGTi3n+C8zjW3rnwQ78M=;
-        b=ZeY35hIz3d2ZUYetpCnbVAz/Nao3/aQPh7SYK/whooBpwZ2FDbyW5ODh834PPmEFbP
-         PXBKkQ92LfDCP47tzQ0eY4Ru5Wgc8yjzN7eZ92PQz4Kt5HFhCkJ4KLMqXdht8Zq/1L3i
-         73RrNeXsk5FyExT2KUf9XzHWXWUE8/jALruaUFwkkFQBhu1gBp9vfTMgnLLIsL+fmpPw
-         DanfCr0yegH9Tlakm6PGWHi0yWmMQXwWcWipd0wgkvdQRHaNaMMqFak6gpZRUvMiLEt6
-         U6KWUcR1HqTm6dhixZYmEaJl7St7WkXnoEQ+gqqe86RAy4JoorttUivqcOBmyXqmGp7b
-         gkbA==
-X-Gm-Message-State: AOAM532WZmDc+n/mDir3lCz1Iu4h18fJ5a1aYwt63vewICG1VO1/t9g1
-        qC/h4FRG1dZf3/cauePAhdbSEQauMrPCDB2jWjZJqbcH9phjvo48d69dO6bn02oxJbMIzEJM4G6
-        lVts6VXRVqWuKeg06BzXAIX3t
-X-Received: by 2002:a05:600c:286:: with SMTP id 6mr3493260wmk.164.1629208938233;
-        Tue, 17 Aug 2021 07:02:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw2mh+Gs2QiKpClObPwC097nWaw3TR1+Ayjgfwgyium8cuBSjwUMakQySF9mR1p8y4p/Oko3g==
-X-Received: by 2002:a05:600c:286:: with SMTP id 6mr3493227wmk.164.1629208937948;
-        Tue, 17 Aug 2021 07:02:17 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c65c6.dip0.t-ipconnect.de. [91.12.101.198])
-        by smtp.gmail.com with ESMTPSA id h8sm2163118wmb.35.2021.08.17.07.02.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Aug 2021 07:02:17 -0700 (PDT)
-Subject: Re: [PATCH] x86/mm: fix kern_addr_valid to cope with existing but not
- present entries
-From:   David Hildenbrand <david@redhat.com>
-To:     Mike Rapoport <rppt@kernel.org>, x86@kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20210817135854.25407-1-rppt@kernel.org>
- <d35b3132-9a90-84b9-7907-ad321171b422@redhat.com>
-Organization: Red Hat
-Message-ID: <1d1b6736-49f1-266a-d93f-9eb444fc53da@redhat.com>
-Date:   Tue, 17 Aug 2021 16:02:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=VVEiHKfbgxJy3Si7x9qMwuCkodu1ovrZav3yAuRw/WQ=;
+        b=ReM7+3sfUUKSQWVP5mdazSd2AN39sOb0KmiRI07hDeQpu8VcBZ8Kssd555117FHKKc
+         pwUXumiurByshwIbtfiG67fHDI8cgSjOay1Cz3OaKIT1fm9LGzm0OSzc2Y4dnogAOHVg
+         sapWxRKnUBA69Zeva56+8JVZfGzAlcWeBjDg/6jsbsB/x5zbEqq45lt7j1okyyAtTmrW
+         LQsUsxeDUn574dIutus5OWe0D/QFUcVE4XCwoOUSNgeRL2fNJ3PurTw2h9DHwYpdNLh2
+         xeuZCetGhWXBBAv/1YBC6odVIer1hS9occ25QZE/MNf80pNehuutMwsZ3C3qhcUvaVHg
+         nkRw==
+X-Gm-Message-State: AOAM530j8f2NSQGyB7RukPTwIsKHDo+VPoy+lNZsPu8OMVV2no0/NBOi
+        oteSmjeU5JVsglI0B07KQW4=
+X-Google-Smtp-Source: ABdhPJygrj9qfA9fJB+/HxTzsq0FYpI1BCHKBArAxcgyM8xNpQ/5kTdymiAaBBuoBgqjg4SIBuMyfQ==
+X-Received: by 2002:adf:f282:: with SMTP id k2mr4338657wro.255.1629208982405;
+        Tue, 17 Aug 2021 07:03:02 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id d8sm2628053wrx.12.2021.08.17.07.03.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 07:03:01 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 16:02:59 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Subject: Re: [PATCH v8 11/34] gpu: host1x: Add runtime PM and OPP support
+Message-ID: <YRvBkyfFCqthBIBV@orome.fritz.box>
+References: <20210817012754.8710-1-digetx@gmail.com>
+ <20210817012754.8710-12-digetx@gmail.com>
+ <CAPDyKFrax-EYtO03W5QWM2tcWLWeMM8hHZCRYFcsenuiP2zObQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <d35b3132-9a90-84b9-7907-ad321171b422@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="fGItigaj8JHSG5hJ"
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFrax-EYtO03W5QWM2tcWLWeMM8hHZCRYFcsenuiP2zObQ@mail.gmail.com>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.08.21 16:01, David Hildenbrand wrote:
-> On 17.08.21 15:58, Mike Rapoport wrote:
->> From: Mike Rapoport <rppt@linux.ibm.com>
->>
->> Jiri Olsa reported a fault when running:
->>
->> 	# cat /proc/kallsyms | grep ksys_read
->> 	ffffffff8136d580 T ksys_read
->> 	# objdump -d --start-address=0xffffffff8136d580 --stop-address=0xffffffff8136d590 /proc/kcore
->>
->> 	/proc/kcore:     file format elf64-x86-64
->>
->> 	Segmentation fault
->>
->> krava33 login: [   68.330612] general protection fault, probably for non-canonical address 0xf887ffcbff000: 0000 [#1] SMP PTI
->> [   68.333118] CPU: 12 PID: 1079 Comm: objdump Not tainted 5.14.0-rc5qemu+ #508
->> [   68.334922] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-4.fc34 04/01/2014
->> [   68.336945] RIP: 0010:kern_addr_valid+0x150/0x300
->> [   68.338082] Code: 1f 40 00 48 8b 0d e8 12 61 01 48 85 f6 0f 85 ca 00 00 00 48 81 e1 00 f0 ff ff 48 21 c1 48 b8 00 00 00 00 80 88 ff ff 48 01 ca <48> 8b 3c 02 48 f7 c7 9f ff ff ff 0f 84 d8 fe ff ff 48 89 f8 0f 1f
->> [   68.342220] RSP: 0018:ffffc90000bcbc38 EFLAGS: 00010206
->> [   68.343428] RAX: ffff888000000000 RBX: 0000000000001000 RCX: 000ffffffcbff000
->> [   68.345029] RDX: 000ffffffcbff000 RSI: 0000000000000000 RDI: 800ffffffcbff062
->> [   68.346599] RBP: ffffc90000bcbea8 R08: 0000000000001000 R09: 0000000000000000
->> [   68.349000] R10: 0000000000000000 R11: 0000000000001000 R12: 00007fcc0fd80010
->> [   68.350804] R13: ffffffff83400000 R14: 0000000000400000 R15: ffffffff843d23e0
->> [   68.352609] FS:  00007fcc111fcc80(0000) GS:ffff888275e00000(0000) knlGS:0000000000000000
->> [   68.354638] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [   68.356104] CR2: 00007fcc0fd80000 CR3: 000000011226e004 CR4: 0000000000770ee0
->> [   68.357896] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> [   68.359694] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->> [   68.361597] PKRU: 55555554
->> [   68.362460] Call Trace:
->> [   68.363252]  read_kcore+0x57f/0x920
->> [   68.364289]  ? rcu_read_lock_sched_held+0x12/0x80
->> [   68.365630]  ? rcu_read_lock_sched_held+0x12/0x80
->> [   68.366955]  ? rcu_read_lock_sched_held+0x12/0x80
->> [   68.368277]  ? trace_hardirqs_on+0x1b/0xd0
->> [   68.369462]  ? rcu_read_lock_sched_held+0x12/0x80
->> [   68.370793]  ? lock_acquire+0x195/0x2f0
->> [   68.371920]  ? lock_acquire+0x195/0x2f0
->> [   68.373035]  ? rcu_read_lock_sched_held+0x12/0x80
->> [   68.374364]  ? lock_acquire+0x195/0x2f0
->> [   68.375498]  ? rcu_read_lock_sched_held+0x12/0x80
->> [   68.376831]  ? rcu_read_lock_sched_held+0x12/0x80
->> [   68.379883]  ? rcu_read_lock_sched_held+0x12/0x80
->> [   68.381268]  ? lock_release+0x22b/0x3e0
->> [   68.382458]  ? _raw_spin_unlock+0x1f/0x30
->> [   68.383685]  ? __handle_mm_fault+0xcfc/0x15f0
->> [   68.384994]  ? rcu_read_lock_sched_held+0x12/0x80
->> [   68.386389]  ? lock_acquire+0x195/0x2f0
->> [   68.387573]  ? rcu_read_lock_sched_held+0x12/0x80
->> [   68.388969]  ? lock_release+0x22b/0x3e0
->> [   68.390145]  proc_reg_read+0x55/0xa0
->> [   68.391257]  ? vfs_read+0x78/0x1b0
->> [   68.392336]  vfs_read+0xa7/0x1b0
->> [   68.393328]  ksys_read+0x68/0xe0
->> [   68.394308]  do_syscall_64+0x3b/0x90
->> [   68.395391]  entry_SYSCALL_64_after_hwframe+0x44/0xae
->> [   68.396804] RIP: 0033:0x7fcc11cf92e2
->> [   68.397824] Code: c0 e9 b2 fe ff ff 50 48 8d 3d ea 2e 0a 00 e8 95 e9 01 00 0f 1f 44 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 0f 05 <48> 3d 00 f0 ff ff 77 56 c3 0f 1f 44 00 00 48 83 ec 28 48 89 54 24
->> [   68.402420] RSP: 002b:00007ffd6e0f8da8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
->> [   68.404357] RAX: ffffffffffffffda RBX: 0000565439305b20 RCX: 00007fcc11cf92e2
->> [   68.406061] RDX: 0000000000800000 RSI: 00007fcc0f980010 RDI: 0000000000000003
->> [   68.407747] RBP: 00007fcc11dcd300 R08: 0000000000000003 R09: 00007fcc0d980010
->> [   68.410937] R10: 0000000003826000 R11: 0000000000000246 R12: 00007fcc0f980010
->> [   68.412624] R13: 0000000000000d68 R14: 00007fcc11dcc700 R15: 0000000000800000
->> [   68.414322] Modules linked in: intel_rapl_msr intel_rapl_common nfit kvm_intel kvm irqbypass rapl iTCO_wdt iTCO_vendor_support i2c_i801 i2c_smbus lpc_ich drm drm_panel_orientation_quirks zram xfs crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel
->> [   68.419591] ---[ end trace e2c30f827226966b ]---
->> [   68.420969] RIP: 0010:kern_addr_valid+0x150/0x300
->> [   68.422308] Code: 1f 40 00 48 8b 0d e8 12 61 01 48 85 f6 0f 85 ca 00 00 00 48 81 e1 00 f0 ff ff 48 21 c1 48 b8 00 00 00 00 80 88 ff ff 48 01 ca <48> 8b 3c 02 48 f7 c7 9f ff ff ff 0f 84 d8 fe ff ff 48 89 f8 0f 1f
->> [   68.426826] RSP: 0018:ffffc90000bcbc38 EFLAGS: 00010206
->> [   68.428150] RAX: ffff888000000000 RBX: 0000000000001000 RCX: 000ffffffcbff000
->> [   68.429813] RDX: 000ffffffcbff000 RSI: 0000000000000000 RDI: 800ffffffcbff062
->> [   68.431465] RBP: ffffc90000bcbea8 R08: 0000000000001000 R09: 0000000000000000
->> [   68.433115] R10: 0000000000000000 R11: 0000000000001000 R12: 00007fcc0fd80010
->> [   68.434768] R13: ffffffff83400000 R14: 0000000000400000 R15: ffffffff843d23e0
->> [   68.436423] FS:  00007fcc111fcc80(0000) GS:ffff888275e00000(0000) knlGS:0000000000000000
->> [   68.438354] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [   68.442077] CR2: 00007fcc0fd80000 CR3: 000000011226e004 CR4: 0000000000770ee0
->> [   68.443727] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> [   68.445370] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->> [   68.447010] PKRU: 55555554
->>
->> The fault happens because kern_addr_valid() dereferences existent but not
->> present PMD in the high kernel mappings.
->>
->> Such PMDs are created when free_kernel_image_pages() frees regions larger
->> than 2Mb. In this case a part of the freed memory is mapped with PMDs and
->> the set_memory_np_noalias() -> ... -> __change_page_attr() sequence will
->> mark the PMD as not present rather than wipe it completely.
->>
->> Make kern_addr_valid() to check whether higher level page table entries are
->> present before trying to dereference them to fix this issue and to avoid
->> similar issues in the future.
-> 
-> Why not fix the setting code?
-> 
->>
->> Reported-by: Jiri Olsa <jolsa@redhat.com>
->> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
->> ---
->>    arch/x86/mm/init_64.c | 6 +++---
->>    1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
->> index ddeaba947eb3..07b56e90db5d 100644
->> --- a/arch/x86/mm/init_64.c
->> +++ b/arch/x86/mm/init_64.c
->> @@ -1433,18 +1433,18 @@ int kern_addr_valid(unsigned long addr)
->>    		return 0;
->>    
->>    	p4d = p4d_offset(pgd, addr);
->> -	if (p4d_none(*p4d))
->> +	if (p4d_none(*p4d) || !p4d_present(*p4d))
->>    		return 0;
-> 
-> if (!p4d_present(*p4d))
-> 	return 0;
-> 
-> should be sufficient I think.
-> 
-> Same applies to the others.
-> 
-> 
 
-Oh, and I forgot, can we come up with Fixes: and Cc: stable tags?
+--fGItigaj8JHSG5hJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Thanks,
+On Tue, Aug 17, 2021 at 02:04:38PM +0200, Ulf Hansson wrote:
+> On Tue, 17 Aug 2021 at 03:30, Dmitry Osipenko <digetx@gmail.com> wrote:
+> >
+> > Add runtime PM and OPP support to the Host1x driver. It's required for
+> > enabling system-wide DVFS and supporting dynamic power management using
+> > a generic power domain. For the starter we will keep host1x always-on
+> > because dynamic power management require a major refactoring of the dri=
+ver
+> > code since lot's of code paths will need the RPM handling and we're goi=
+ng
+> > to remove some of these paths in the future. Host1x doesn't consume much
+> > power so it is good enough, we at least need to resume Host1x in order
+> > to initialize the power state.
+> >
+> > Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+> > Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
+> > Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
+> > Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> > ---
+>=20
+> [...]
+>=20
+> > +
+> >  static int host1x_probe(struct platform_device *pdev)
+> >  {
+> >         struct host1x *host;
+> > @@ -394,6 +423,10 @@ static int host1x_probe(struct platform_device *pd=
+ev)
+> >         /* set common host1x device data */
+> >         platform_set_drvdata(pdev, host);
+> >
+> > +       err =3D devm_tegra_core_dev_init_opp_table_simple(&pdev->dev);
+> > +       if (err)
+> > +               return err;
+> > +
+> >         host->regs =3D devm_ioremap_resource(&pdev->dev, regs);
+> >         if (IS_ERR(host->regs))
+> >                 return PTR_ERR(host->regs);
+> > @@ -423,12 +456,9 @@ static int host1x_probe(struct platform_device *pd=
+ev)
+> >                 return err;
+> >         }
+> >
+> > -       host->rst =3D devm_reset_control_get(&pdev->dev, "host1x");
+> > -       if (IS_ERR(host->rst)) {
+> > -               err =3D PTR_ERR(host->rst);
+> > -               dev_err(&pdev->dev, "failed to get reset: %d\n", err);
+> > +       err =3D host1x_get_resets(host);
+> > +       if (err)
+> >                 return err;
+> > -       }
+> >
+> >         err =3D host1x_iommu_init(host);
+> >         if (err < 0) {
+> > @@ -443,22 +473,10 @@ static int host1x_probe(struct platform_device *p=
+dev)
+> >                 goto iommu_exit;
+> >         }
+> >
+> > -       err =3D clk_prepare_enable(host->clk);
+> > -       if (err < 0) {
+> > -               dev_err(&pdev->dev, "failed to enable clock\n");
+> > -               goto free_channels;
+> > -       }
+> > -
+> > -       err =3D reset_control_deassert(host->rst);
+> > -       if (err < 0) {
+> > -               dev_err(&pdev->dev, "failed to deassert reset: %d\n", e=
+rr);
+> > -               goto unprepare_disable;
+> > -       }
+> > -
+>=20
+> Removing the clk_prepare_enable() and reset_control_deassert() from
+> host1x_probe(), might not be a good idea. See more about why, below.
+>=20
+> >         err =3D host1x_syncpt_init(host);
+> >         if (err) {
+> >                 dev_err(&pdev->dev, "failed to initialize syncpts\n");
+> > -               goto reset_assert;
+> > +               goto free_channels;
+> >         }
+> >
+> >         err =3D host1x_intr_init(host, syncpt_irq);
+> > @@ -467,10 +485,14 @@ static int host1x_probe(struct platform_device *p=
+dev)
+> >                 goto deinit_syncpt;
+> >         }
+> >
+> > -       host1x_debug_init(host);
+> > +       pm_runtime_enable(&pdev->dev);
+> >
+> > -       if (host->info->has_hypervisor)
+> > -               host1x_setup_sid_table(host);
+> > +       /* the driver's code isn't ready yet for the dynamic RPM */
+> > +       err =3D pm_runtime_resume_and_get(&pdev->dev);
+>=20
+> If the driver is being built with the CONFIG_PM Kconfig option being
+> unset, pm_runtime_resume_and_get() will return 0 to indicate success -
+> and without calling the ->runtime_resume() callback.
+> In other words, the clock will remain gated and the reset will not be
+> deasserted, likely causing the driver to be malfunctioning.
+>=20
+> If the driver isn't ever being built with CONFIG_PM unset, feel free
+> to ignore my above comments.
+>=20
+> Otherwise, if it needs to work both with and without CONFIG_PM being
+> set, you may use the following pattern in host1x_probe() to deploy
+> runtime PM support:
+>=20
+> "Enable the needed resources to probe the device"
+> pm_runtime_get_noresume()
+> pm_runtime_set_active()
+> pm_runtime_enable()
+>=20
+> "Before successfully completing probe"
+> pm_runtime_put()
 
-David / dhildenb
+We made a conscious decision a few years ago to have ARCH_TEGRA select
+PM on both 32-bit and 64-bit ARM, specifically to avoid the need to do
+this dance (though there are still a few drivers left that do this, I
+think).
 
+So I think this should be unnecessary. Unless perhaps if the sysfs PM
+controls have any influence on this. As far as I know, as long as the
+PM kconfig option is enabled, the sysfs control only influence the
+runtime behaviour (i.e. setting the sysfs PM control to "on" is going
+to force runtime PM to be resumed) but there's no way to disable
+runtime PM altogether via sysfs that would make the above necessary.
+
+Thierry
+
+--fGItigaj8JHSG5hJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEbwZMACgkQ3SOs138+
+s6EqjxAAs5FWbje3iCJOP7sod6VEu/M7e7ZG4mEPa2/e+EajCY0rD+kJaknBVNdK
+htJY+3B3pez2I2TjXZtaFOzcXEVl0e94EIQb8bY1wZEFLg91V6DTPfnvbEPb9BN8
+kzesliKQKiVhD/gG5D/9K7TnEFThE2JTj02MDE7Q6opTEaxlKgAN8jrbkNCuAOUg
+wCrzFqRzmbVuuZrGkA/xApbfCh7lTLObvJ1enX9IB0s/WZZfej3PrylP5U379Nab
+OA1JisBmk5NHgi8djWyeN/X+urNAYDixcJIfwPqs3yqb3+piiG+X+oNX8Xz6byUt
+bZJ86CC/A4XGufnL7A0+ZKrd/UYNH3WE17R16LxFytD1chZQ82aWyVIJPGLW+42q
+k6lWheWwNsn2Gua2ZOlUfkC9fRD6Sj/fSnqRS0zgslnq/n80VGIz/35q2zCZ1tiG
+D4hRPhQukShFXdCy/HaNXbtdXfTGZH8owlNDiDArmoIclSj+828GRbMqDTJDVxUs
+RldB6jISMtRo/iBpCoj9VM1h01kedIHXimkm8zsOyVWYapi6ScKSbMqWaPS02SSe
+Fc5t4wnn/jSruWZ5HVHU+iOOmlU6Buli+4cQZQIsUOb4FD4V+BrEO3ArlYzxkzH5
+mAM+3LofUzwqGi67FOn92GGM/LJZcDAX6v5c8WjnpM1uh5VdR5g=
+=8GYQ
+-----END PGP SIGNATURE-----
+
+--fGItigaj8JHSG5hJ--
