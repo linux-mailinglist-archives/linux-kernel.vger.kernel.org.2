@@ -2,80 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8CC73EF608
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 01:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B31F63EF616
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 01:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236377AbhHQXSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 19:18:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54702 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229466AbhHQXSY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 19:18:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629242269;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iqLeheCmzUoPSckkbkHc4q/EKrZdzeXZx6eM4WD1qck=;
-        b=BQEHbxvN+OGh51mixhh8+5YWwTz/1Uc0gXfWCrKfXezVq7AnPr6FdQSocGL+XWjnLissR5
-        SebfyWuvRat2dpYlOnuJL3hN+prqt7wLYaudKx2PDxWZKypLfvbn0LIXzq7ko85N81oQFU
-        RPNHomG1UD4t3LOV2gL/ALs43gg7RUA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-265-cxAPWYwxPOWuRvO00cBsHg-1; Tue, 17 Aug 2021 19:17:45 -0400
-X-MC-Unique: cxAPWYwxPOWuRvO00cBsHg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CE9D61009600;
-        Tue, 17 Aug 2021 23:17:43 +0000 (UTC)
-Received: from asgard.redhat.com (unknown [10.36.110.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3057719D9B;
-        Tue, 17 Aug 2021 23:17:37 +0000 (UTC)
-Date:   Wed, 18 Aug 2021 01:17:34 +0200
-From:   Eugene Syromiatnikov <esyr@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     joel@joelfernandes.org, chris.hyser@oracle.com, joshdon@google.com,
-        mingo@kernel.org, vincent.guittot@linaro.org,
-        valentin.schneider@arm.com, mgorman@suse.de,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        Christian Brauner <christian.brauner@ubuntu.com>, ldv@strace.io
-Subject: Re: [PATCH 18/19] sched: prctl() core-scheduling interface
-Message-ID: <20210817231734.GA4449@asgard.redhat.com>
-References: <20210422120459.447350175@infradead.org>
- <20210422123309.039845339@infradead.org>
- <20210817151542.GA1665@asgard.redhat.com>
- <YRvbS5ypWhcsBzzU@hirez.programming.kicks-ass.net>
+        id S234753AbhHQXYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 19:24:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45176 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229466AbhHQXYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 19:24:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66EE760FD7;
+        Tue, 17 Aug 2021 23:23:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629242624;
+        bh=/GnHgdBzB1zvgbKqo8gzvmlUQTPw53iwDmu/OsunGdA=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=trSh2BL99Bb9FxJgK31SwOsCbxNuksew8j/Lc39KJmyobbiF/6/fdtg+P7yLX7MfL
+         zvBcH+qOAbU4lDZ4lZeC5+/GpqfmNgeB+ySo6gC+rAwmGwUt7MHfpidb0tnPW1ppfh
+         dtr5XnLG6E+hCczUg3c8q+NOvnDRiZBLOOuIR14eFqLCE5C6xXoP3+GRl6X8/KvffE
+         mjWmDdDmWWz8jsJ4/69ky3VmwQBK6VzHIjo6UwzMy2YvFq55i1+8ASuwKdp+HJe1TG
+         hQI6K5Vld7EUxahUkPf12BKG0qm8YSCbxYieKxxo18csSaNjvcUBX+h8A8jr0ohKOo
+         tnP6ulT1pVpAg==
+Subject: Re: [PATCH] kbuild: Enable -Wimplicit-fallthrough for clang 14.0.0+
+To:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Philip Li <philip.li@intel.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-hardening@vger.kernel.org
+References: <20210817005624.1455428-1-nathan@kernel.org>
+ <80fa539a-b767-76ed-dafa-4d8d1a6b063e@kernel.org>
+ <CAHk-=wgFXOf9OUh3+vmWjhp1PC47RVsUkL0NszBxSWhbGzx4tw@mail.gmail.com>
+ <5c856f36-69a7-e274-f72a-c3aef195adeb@kernel.org>
+ <202108171056.EDCE562@keescook>
+ <3f28b45e-e725-8b75-042a-d34d90c56361@kernel.org>
+ <CAK7LNAQFgYgavTP2ZG9Y16XBVdPuJ98J_Ty1OrQy1GXHq6JjQQ@mail.gmail.com>
+ <71d76c41-7f9b-6d60-ba4f-0cd84596b457@embeddedor.com>
+ <202108171602.159EB2C7EA@keescook>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <72ae69b4-6069-ade5-a12b-8ee0435f803a@kernel.org>
+Date:   Tue, 17 Aug 2021 16:23:41 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRvbS5ypWhcsBzzU@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <202108171602.159EB2C7EA@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 05:52:43PM +0200, Peter Zijlstra wrote:
-> Urgh... lemme guess, your HP BIOS is funny and reports more possible
-> CPUs than you actually have resulting in cpu_possible_mask !=
-> cpu_online_mask. Alternatively, you booted with nr_cpus= or something
-> daft like that.
-
-Yep, it seems to be the case:
-
-    # cat /sys/devices/system/cpu/possible
-    0-7
-    # cat /sys/devices/system/cpu/online
-    0-3
-
+On 8/17/2021 4:06 PM, Kees Cook wrote:
+> On Tue, Aug 17, 2021 at 04:33:25PM -0500, Gustavo A. R. Silva wrote:
+>>
+>>
+>> On 8/17/21 16:17, Masahiro Yamada wrote:
+>>> On Wed, Aug 18, 2021 at 3:25 AM Nathan Chancellor <nathan@kernel.org> wrote:
+>>>>
+>>>> On 8/17/2021 11:03 AM, Kees Cook wrote:
+>>>>> On Mon, Aug 16, 2021 at 09:55:28PM -0700, Nathan Chancellor wrote:
+>>>>>> If you/Gustavo would prefer, I can upgrade that check to
+>>>>>>
+>>>>>> ifneq ($(call cc-option, -Wunreachable-code-fallthrough),)
+>>>>>>
+>>>>>> I was just trying to save a call to the compiler, as that is more expensive
+>>>>>> than a shell test call.
+>>>>>
+>>>>> I prefer the option test -- this means no changes are needed on the
+>>>>> kernel build side if it ever finds itself backported to earlier versions
+>>>>> (and it handles the current case of "14" not meaning "absolute latest").
+>>>>>
+>>>>> More specifically, I think you want this (untested):
+>>>>
+>>>> That should work but since -Wunreachable-code-fallthrough is off by
+>>>> default, I did not really see a reason to include it in KBUILD_CFLAGS. I
+>>>> do not have a strong opinion though, your version is smaller than mine
+>>>> is so we can just go with that. I'll defer to Gustavo on it since he has
+>>>> put in all of the work cleaning up the warnings.
+>>>
+>>>
+>>>
+>>> https://github.com/llvm/llvm-project/commit/9ed4a94d6451046a51ef393cd62f00710820a7e8
+>>>
+>>>     did two things:
+>>>
+>>>   (1) Change the -Wimplicit-fallthrough behavior so that it fits
+>>>        to our use in the kernel
+>>>
+>>>   (2) Add a new option -Wunreachable-code-fallthrough
+>>>        that works like the previous -Wimplicit-fallthrough of
+>>>        Clang <= 13.0.0
+>>>
+>>>
+>>> They are separate things.
+>>>
+>>> Checking the presence of -Wunreachable-code-fallthrough
+>>> does not make sense since we are only interested in (1) here.
+>>>
+>>> So, checking the Clang version is sensible and matches
+>>> the explanation in the comment block.
 > 
-> That code does for_each_possible_cpus(i) { rq_lock_irq(cpu_rq(i)); },
-> which, because of core-sched, needs rq->core set-up, but because these
-> CPUs have never been online, that's not done and *BOOM*.
-> 
-> Or something like that.. I'll try and have a look tomorrow, I'm in dire
-> need of sleep.
-> 
+> I thought one of the problems (which is quickly draining away) that
+> needed to be solved here is that some Clang trunk builds (that report
+> as version 14) don't yet have support for -Wunreachable-code-fallthrough
+> since they aren't new enough.
 
+Philip, how often is the kernel test robot's clang version rebuilt? 
+Would it be possible to bump it to latest ToT or at least 
+9ed4a94d6451046a51ef393cd62f00710820a7e8 so that we do not get bit by 
+this warning when we go to enable this flag?
+
+I do not know of any other CI aside from ours that is testing with tip 
+of tree clang and ours should already have a clang that includes my 
+patch since it comes from apt.llvm.org.
+
+>>> # Warn about unmarked fall-throughs in switch statement.
+>>> # Clang prior to 14.0.0 warned on unreachable fallthroughs with
+>>> # -Wimplicit-fallthrough, which is unacceptable due to IS_ENABLED().
+>>> # https://bugs.llvm.org/show_bug.cgi?id=51094
+>>> ifeq ($(firstword $(sort $(CONFIG_CLANG_VERSION) 140000)),140000)
+>>> KBUILD_CFLAGS += -Wimplicit-fallthrough
+>>> endif
+
+Very clever and nifty trick! I have verified that it works for clang 13 
+and 14 along with a theoretical clang 15. Gustavo, feel free to stick a
+
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Tested-by: Nathan Chancellor <nathan@kernel.org>
+
+if you so desire.
+
+>>>
+>>> The $(sort ...) is alphabetical sort, not numeric sort.
+>>> It works for us because the minimum Clang version is 10.0.1
+>>> (that is CONFIG_CLANG_VERSION is always 6-digit)
+>>>
+>>> It will break when Clang version 100.0.0 is released.
+>>>
+>>> But, before that, we will raise the minimum supported clang version,
+>>> and this conditional will go away.
+> 
+> If a version test is preferred, cool; this is a nice trick. :)
+> 
+>> I like this. :)
+>>
+>> I'm going to make the 0-day robot test it in my tree, first.
+> 
+> Sounds good to me!
+> 
