@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACCD93F0704
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D06A3F0708
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239633AbhHROrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 10:47:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54568 "EHLO
+        id S239506AbhHROrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 10:47:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239519AbhHROrk (ORCPT
+        with ESMTP id S239629AbhHROrn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 10:47:40 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4FCCC061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:47:05 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id by4so3626662edb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:47:05 -0700 (PDT)
+        Wed, 18 Aug 2021 10:47:43 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35EFEC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:47:08 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id bo19so3525931edb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:47:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vNVfBtmdSEQMHS7NoA4wKiTmeDTFKx5xuSiT5cX6rdQ=;
-        b=IOgQGJmbcbWP/GZ5G+/xSr0a1QHxH3JvD8MK4+fmidRvQekv/jZ5OWdHrDsfxnrhka
-         jfNNFVgp5HNJoF0S4vaTSSzFq2J0XwG2/m7zkW7ugBlXiHDb+jAoZlrn6vO+Wup6CL7u
-         Vpsccuwcx9PtDgiTEtupb5Y7pJ7riUYCjIvUvizYeqX7jLbNQ4rVmtE6RDcBu6K9qWdK
-         0tsBe70yTbqqUcHG4zNZ02ipGLr0g7MXoK2t924OSGwtHr+yFeeMg5hmc5Prr/w3ZsNu
-         6AIvk1j+S3bypYU80LiPoIWc+bw5ePxMsZvnsLdhIfeXbLgwCBcVj7wFEIoLCDv3yIOV
-         mk7Q==
+        bh=icsU2c4V7+U87qo1ckZmLrJ2sA4CpW/juiJiyR0EYQw=;
+        b=H2nEEL9iAcu2bnwpcjo6Mdr4TgkXA/9QqMtfJmxcmUorajIrrx04PJdHlaY1mXVoQJ
+         a2nZqCrMTRnagWFtxNqfsbuJvYzn2x37+Ilzi9BzFLvegYymkhEuIrlzuMgWe6V+Bwgh
+         vBiDdDTbUgJ5PX57E3Tzl/pJJNVIY3pytq/G/MW0nZc+W5/qsKFlRo0ENDaWOFl6VAcD
+         FhJFtzPRkVBL39IMSDZC/6Ts+Kqr6EvjPhu/+x1Dj70XMWYH7ObIBNb2ddnKcKnLXMPZ
+         6H29wEsZ6CN4de8RBcqP3ixralaJ/5MwSJ/z4wSuVJu3Zy+aRgWqlKvGE/YkKzV93F6r
+         kPXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vNVfBtmdSEQMHS7NoA4wKiTmeDTFKx5xuSiT5cX6rdQ=;
-        b=H66Y7QpcrI18xglRyg55YJ2GK+dLO7wBh32wzWpIgwjqEF+rh9SNHm4Ha5G/rcdzOd
-         pSs1yydV9Eik54nVR87cpIHR8i1IirpZh58qHdevAfj5aVCidJ8jyfnqbfj4MpmIClC0
-         UiJOHTkwFzcRlJO9jGp+VOPqy8TdJxCQpHxrWdRAc0+mxHkIQDySO69UABcUAPIy6Zjq
-         kzTQm/mFd+2cFlczgEqaVdGD6Dn3P1qg++h9JjYnSw7QfWBZ5p1gQOX2IP2Kec0EjIHf
-         zqzBj/SOaj827KHXW31tY4UCZV9U+MhWWeeVt61IT1D5dxpvhslK76+5m2NUX2Dbm2lD
-         ptJQ==
-X-Gm-Message-State: AOAM530BR/x9zwT7qlfIG2C2/vvtB2vDy4nVcvp4iiYUPB+6NUno7Nh8
-        Jz0WnOyr84AvwHtMS54dN68=
-X-Google-Smtp-Source: ABdhPJzvloc74qMfIzl/6q9qLOKDLfOuqz0NR6SdFazcCDy8tXovf3+knaR82YSJJPp7PSoOUHTn+Q==
-X-Received: by 2002:aa7:d54f:: with SMTP id u15mr7976174edr.178.1629298024282;
-        Wed, 18 Aug 2021 07:47:04 -0700 (PDT)
+        bh=icsU2c4V7+U87qo1ckZmLrJ2sA4CpW/juiJiyR0EYQw=;
+        b=fRc9KSgPMMXuD2odf9eWudZN7V+DD2AD3U/3/YN+2RS4tQitH/FYfUjvmDDB23eejn
+         onFe3n7J7tvMb5G5rE8+HuD6tLHpOKHO6WtFd1boR1cgQw0Dk9yJMs8LzqW1qlsF2oA4
+         eCEyEQCvZSN0bgedj06L5no8oFuSDBekw9AiwMaUMfZdJITmgXaZsmwH0QJqRb6lWFe7
+         YTMJeYsXXyFiQsi0L05OmrBdWFrMeYpIBH/3l/LuXP9pcbDWF/6BrB+Li0DJpK9zPhgh
+         P2zVx7lZuNFHYtwpx4rqe2HUHaEKQSLnqptqBz02rpjjGpovptzZ3roBm0qPOE1K/crK
+         m0kw==
+X-Gm-Message-State: AOAM5337+Phpe3AnOiIWjgTvmLj2GrowXTdaHSXZ7wII+eP4JNxMLn2L
+        ogGEuzknqu2svtnTzMnTrrA=
+X-Google-Smtp-Source: ABdhPJwM6xuEDtGMvk/m6OHHby1b74xL4bKzdUKxbakaO5bNUGtTJ4tBP98RfyG/vDG4sxVhN2Pddg==
+X-Received: by 2002:aa7:d04c:: with SMTP id n12mr10646382edo.342.1629298026898;
+        Wed, 18 Aug 2021 07:47:06 -0700 (PDT)
 Received: from localhost.localdomain (neth7.eastcode.net. [79.143.160.90])
-        by smtp.googlemail.com with ESMTPSA id x17sm2152808ejj.58.2021.08.18.07.47.03
+        by smtp.googlemail.com with ESMTPSA id x17sm2152808ejj.58.2021.08.18.07.47.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 07:47:03 -0700 (PDT)
+        Wed, 18 Aug 2021 07:47:06 -0700 (PDT)
 From:   Nikola Pavlica <pavlica.nikola@gmail.com>
 To:     dri-devel@lists.freedesktop.org
 Cc:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
@@ -55,9 +55,9 @@ Cc:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
         linux-sunxi@googlegroups.com, linux-sunxi@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Nikola Pavlica <pavlica.nikola@gmail.com>
-Subject: [PATCH 2/3] dt-bindings: display: simple: Add Vivax TPC-9150 panel
-Date:   Wed, 18 Aug 2021 16:46:47 +0200
-Message-Id: <20210818144648.72665-2-pavlica.nikola@gmail.com>
+Subject: [PATCH 3/3] dt-bindings: add vendor prefix for Vivax
+Date:   Wed, 18 Aug 2021 16:46:48 +0200
+Message-Id: <20210818144648.72665-3-pavlica.nikola@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210818144648.72665-1-pavlica.nikola@gmail.com>
 References: <20210818144648.72665-1-pavlica.nikola@gmail.com>
@@ -67,36 +67,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This tablet display is unique and hence must be added to documentation.
-Unfortunately, it's real make and number is not known due to obscure and
-missing documentation and lack of writing on the display assembly
-itself.
+Add vendor prefix for the Vivax brand by M SAN Grupa d.o.o.
 
-So the natural alternative that came to mind is to name the panel after
-the device that contained it (an Android tablet). Hopefully that isn't
-an issue.
-
-I can confirm that the parameters that I've obtained are correct since
-they came from a dump of the original Android OS.
+Source (in Croatian): https://www.vivax.com/hr/o-nama.aspx
 
 Signed-off-by: Nikola Pavlica <pavlica.nikola@gmail.com>
 ---
- .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-index 62b0d54d87b7..d0efefa5a820 100644
---- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-@@ -285,6 +285,8 @@ properties:
-       - urt,umsh-8596md-11t
-       - urt,umsh-8596md-19t
-       - urt,umsh-8596md-20t
-+        # Vivax TPC-9150 tablet 9.0" WSVGA TFT LCD panel
-+      - vivax,tpc9150-panel
-         # VXT 800x480 color TFT LCD panel
-       - vxt,vl050-8048nt-c01
-         # Winstar Display Corporation 3.5" QVGA (320x240) TFT LCD panel
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index f6064d84a424..c234c392538d 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -1206,6 +1206,8 @@ patternProperties:
+     description: Vitesse Semiconductor Corporation
+   "^vivante,.*":
+     description: Vivante Corporation
++  "^vivax,.*":
++    description: Vivax brand by M SAN Grupa d.o.o.
+   "^vocore,.*":
+     description: VoCore Studio
+   "^voipac,.*":
 -- 
 2.32.0
 
