@@ -2,144 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E07213EFE8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A55803EFE8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239449AbhHRIE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 04:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43452 "EHLO
+        id S238405AbhHRIFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 04:05:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239262AbhHRIDQ (ORCPT
+        with ESMTP id S239324AbhHRIDb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 04:03:16 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631D6C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:02:41 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id h29so1344798ila.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:02:41 -0700 (PDT)
+        Wed, 18 Aug 2021 04:03:31 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D784BC0613D9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:02:48 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id h9so3249177ejs.4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:02:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dUiC54xyp77ZqTLVrL1seoO6HZNPy9RfQND7sKSb1ZY=;
-        b=NW3h32unzYNVpVfPFQ+MXD1ecjWX22E9d3sgk8jEgssFC+EUGte9LzopMdZt0fiF9L
-         4XoGgVP/vaAdY1nzhBySbw7I1NdchUL5QfbRBVbXxGoQxOyXHQM+YrbgY6awT/JWI+/G
-         3YniK2VoUDa7LmFhNW62FGd70ZADoJlt2vXGtWQ+ug70HNLF4T8gRF+HP81++IqbC4Bh
-         R6U0PLFUH5b1FxLir1EgMO85spZNUz93V/OY4HOvoWPx+Uh4IVKzy341ohqP7bD4FAmb
-         XHj4vXeZOG4fqHBb/ar7l+r88QIECw2BiIiS5j7bNNJJUc0OJ35BdQQKwo4adBXSG0E1
-         GBlg==
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=to:references:from:subject:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=mZorCO9dHkK9Z+tLmMENe4sm60DKPCbLZG525gkchFY=;
+        b=q6tSnI/hcRssEOPOa+x3Tf6o11TQuaH2Vap6Kz/BOFM9d8cBeudswn2ue6jCVrUA4S
+         42aKPQUMpoBdV2RXEgmBUIuk69wyU09Q4FQn03q87aSLbbeEY54b2aoOEervw8/Vx+Ze
+         RCJDnJWxh+ehYx2l3x9QePYppFzgIhAk9I8Ez1Ui/r1WtLXPhmjlzTE3HypQH/Fmpzd7
+         SjM0w8dE0TQs34HsvUHqSMipeoMFYXXws5EnPFxxmOIzbHU88B37Y4hS/JToPTiLOeXH
+         AyFYW4fBlKR+vnJPKKKZP7U495i7gia5DqO5LG6OjQ4IZEWUmmQmIn1+olH/pn0q4YR7
+         i/iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dUiC54xyp77ZqTLVrL1seoO6HZNPy9RfQND7sKSb1ZY=;
-        b=bTOsH348GHQuDlSgojUyzdEWX2aXHFQqMLCIhOX7FmrleJ2tu9rqVPUHTh4FJFieK/
-         N06vr2urPKW0sulUwkOcGt2mkP9jgBoKA+Kds0bOPM1u4Jtxy6d1OM8m3NxVtUQ0M/xm
-         AgXTpL/LsK4hbnP5cJuqbs14j1Wbxuhc8L4RYcAmK518Imb2QBWn1/yUweM//mHcwW0t
-         Ahgev0mj0gx9lagCe6cmJcXsXCnhet5tYVhqEb7dNfH8blSnRt5Z2lrGoW7feRTYzypL
-         jotWiZEzI88ApwCypK7Rg5EjgQ8PUdXG/rMogmTBNGX4PHLoPEZrazeHg/L8CeNIUWt0
-         7vCA==
-X-Gm-Message-State: AOAM531smG5WOFXjJLYpBvke227J5EdiDtjhQPdHlS4EhOEQu+leY9gA
-        xcpFD9EcztsM/Wj90mLlvgXTvG9J4hhE02UkEVjL/FptK3v6wQ==
-X-Google-Smtp-Source: ABdhPJxYm2rzoSVaXH9oUjj6P7/25mAdgOc8oLPmxW+rh/RGl6k+2MutdZNxsIKVgc0tSBxNcYYETFXuNfigPMarL3U=
-X-Received: by 2002:a92:9409:: with SMTP id c9mr5192801ili.135.1629273760464;
- Wed, 18 Aug 2021 01:02:40 -0700 (PDT)
+        h=x-gm-message-state:to:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mZorCO9dHkK9Z+tLmMENe4sm60DKPCbLZG525gkchFY=;
+        b=OmCTWvn4Vc5ZWdIpKocN04n0OHlpFXytkHEXUuXo2Mx2I/62LbUOv7tDcXRcE4lRVM
+         RUOPr5Wx6xQGu8P0rtRX4W7rdzzBkyBzdlTcYvZaMVTDh+KQF8MkgQhPRwv9MJMzK3Pc
+         Da65lelSwFZpdmf79fbMlXdwb4S4IanRhZIz34ASb0IDdHGlU5cU2p/fzaUTVwKHOppi
+         juwnvC5VlM56x2W8yDsTx+deKkmUq61HWPkUjkjOqCA3zz2c6by8+YOoZwUpJa8/kiNS
+         uuNlBOKiCMuhBVo9973UmLYwsxbhp7253Tfo10nfx1a7/jT+mEyivBGlem9VnhKevviV
+         Co3g==
+X-Gm-Message-State: AOAM533jPX4x/k8JXijea7B8RA14b/+t2kgVuC/UpM72T3McN16hI9im
+        QRKCkVB3sAPMGh6W1s0yHBwr9aYff8wxbqI2M6c=
+X-Google-Smtp-Source: ABdhPJx/EKzaFi+cRnqWvYi6W0WthKoTJQPIJ62VMOaDiheyKphteFXp8M2RNgE7IjrEAbkEAeFxvw==
+X-Received: by 2002:a17:906:c1da:: with SMTP id bw26mr8561207ejb.253.1629273767444;
+        Wed, 18 Aug 2021 01:02:47 -0700 (PDT)
+Received: from tsr-lap-08.nix.tessares.net ([213.211.156.192])
+        by smtp.gmail.com with ESMTPSA id c25sm2185584eds.93.2021.08.18.01.02.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Aug 2021 01:02:47 -0700 (PDT)
+To:     syzbot <syzbot+7b938780d5deeaaf938f@syzkaller.appspotmail.com>,
+        davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
+        marcel@holtmann.org, mathew.j.martineau@linux.intel.com,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <00000000000012030e05c9c8bc85@google.com>
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+Subject: Re: [syzbot] KFENCE: use-after-free in kvm_fastop_exception
+Message-ID: <58cef9e0-69de-efdb-4035-7c1ed3d23132@tessares.net>
+Date:   Wed, 18 Aug 2021 10:02:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210813043131.833006-1-icenowy@aosc.io> <YRuDG78N2mB5w37p@kuha.fi.intel.com>
- <58034df4-f18c-ab3e-1fcc-dc85fc35320f@roeck-us.net>
-In-Reply-To: <58034df4-f18c-ab3e-1fcc-dc85fc35320f@roeck-us.net>
-From:   Kyle Tso <kyletso@google.com>
-Date:   Wed, 18 Aug 2021 16:02:24 +0800
-Message-ID: <CAGZ6i=1s9X58tOwoiGAxMkMVBTyGTjysOSe9bP8Q4WosmCtymw@mail.gmail.com>
-Subject: Re: [PATCH] usb: typec: tcpm: always rediscover when swapping DR
-To:     Guenter Roeck <linux@roeck-us.net>, Icenowy Zheng <icenowy@aosc.io>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Badhri Jagan Sridharan <badhri@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <00000000000012030e05c9c8bc85@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 11:13 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 8/17/21 2:36 AM, Heikki Krogerus wrote:
-> > On Fri, Aug 13, 2021 at 12:31:31PM +0800, Icenowy Zheng wrote:
-> >> Currently, TCPM code omits discover when swapping to gadget, and assume
-> >> that no altmodes are available when swapping from gadget. However, we do
-> >> send discover when we get attached as gadget -- this leads to modes to be
-> >> discovered twice when attached as gadget and then swap to host.
-> >>
-> >> Always re-send discover when swapping DR, regardless of what change is
-> >> being made; and because of this, the assumption that no altmodes are
-> >> registered with gadget role is broken, and altmodes de-registeration is
-> >> always needed now.
-> >>
-> >> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
-> >> ---
-> >>   drivers/usb/typec/tcpm/tcpm.c | 9 ++++-----
-> >>   1 file changed, 4 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> >> index b9bb63d749ec..ab6d0d51ee1c 100644
-> >> --- a/drivers/usb/typec/tcpm/tcpm.c
-> >> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> >> @@ -4495,15 +4495,14 @@ static void run_state_machine(struct tcpm_port *port)
-> >>              tcpm_set_state(port, ready_state(port), 0);
-> >>              break;
-> >>      case DR_SWAP_CHANGE_DR:
-> >> -            if (port->data_role == TYPEC_HOST) {
-> >> -                    tcpm_unregister_altmodes(port);
-> >> +            tcpm_unregister_altmodes(port);
-> >> +            if (port->data_role == TYPEC_HOST)
-> >>                      tcpm_set_roles(port, true, port->pwr_role,
-> >>                                     TYPEC_DEVICE);
-> >> -            } else {
-> >> +            else
-> >>                      tcpm_set_roles(port, true, port->pwr_role,
-> >>                                     TYPEC_HOST);
-> >> -                    port->send_discover = true;
-> >> -            }
-> >> +            port->send_discover = true;
-> >>              tcpm_ams_finish(port);
-> >>              tcpm_set_state(port, ready_state(port), 0);
-> >>              break;
-> >
-> > Why is it necessary to do discovery with data role swap in general?
-> >
-> > thanks,
-> >
->
-> Additional question: There are two patches pending related to DR_SWAP
-> and discovery. Are they both needed, or do they both solve the same
-> problem ?
->
-> Thanks,
-> Guenter
+Hello,
 
-Hi, I just noticed this patch.
+On 18/08/2021 00:21, syzbot wrote:
+> syzbot has bisected this issue to:
+> 
+> commit c4512c63b1193c73b3f09c598a6d0a7f88da1dd8
+> Author: Matthieu Baerts <matthieu.baerts@tessares.net>
+> Date:   Fri Jun 25 21:25:22 2021 +0000
+> 
+>     mptcp: fix 'masking a bool' warning
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=122b0655300000
+> start commit:   b9011c7e671d Add linux-next specific files for 20210816
+> git tree:       linux-next
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=112b0655300000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=162b0655300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=a245d1aa4f055cc1
+> dashboard link: https://syzkaller.appspot.com/bug?extid=7b938780d5deeaaf938f
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=157a41ee300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14f78ff9300000
 
-Part of this patch and part of my patch
-https://lore.kernel.org/r/20210816075449.2236547-1-kyletso@google.com
-are to solve the same problem that Discover_Identity is not sent in a
-case where the port becomes UFP after DR_SWAP while in PD3.
+I'm pretty sure the commit c4512c63b119 ("mptcp: fix 'masking a bool'
+warning") doesn't introduce the reported bug. This minor fix is specific
+to MPTCP which doesn't seem to be used here.
 
-The difference (for the DR_SWAP part) is that my patch does not set
-the flag "send_discover" if the port becomes UFP after PD2 DR_SWAP.
-That is because in PD2 Spec, UFP is not allowed to be the SVDM
-Initiator.
+I'm not sure how I can tell syzbot this is a false positive.
 
-This patch indeed solves another problem where
-tcpm_unregister_altmodes should be called during PD3 DR_SWAP because
-the port partner may return mode data in the latest Discover_Mode. For
-the PD2 case, I don't think it needs to be called because PD2 DFP will
-always return NAK for Discover_Mode. However it is fine because it is
-safe to call tcpm_unregister_altmodes even if there is no mode data.
-
-In fact, when I was tracing the code I found another bug. PD2 UFP is
-not allowed to send Discover_Identity and Discover_Mode. I can send
-another patch to address this problem.
-
-thanks,
-Kyle
+Cheers,
+Matt
+-- 
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
