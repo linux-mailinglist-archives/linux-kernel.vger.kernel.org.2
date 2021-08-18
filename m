@@ -2,79 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8D13F0E1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 00:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC023F0E21
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 00:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234426AbhHRW2U convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 18 Aug 2021 18:28:20 -0400
-Received: from mga07.intel.com ([134.134.136.100]:52412 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232456AbhHRW2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 18:28:19 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="280178010"
-X-IronPort-AV: E=Sophos;i="5.84,332,1620716400"; 
-   d="scan'208";a="280178010"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 15:27:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,332,1620716400"; 
-   d="scan'208";a="531873941"
-Received: from irsmsx605.ger.corp.intel.com ([163.33.146.138])
-  by fmsmga002.fm.intel.com with ESMTP; 18 Aug 2021 15:27:42 -0700
-Received: from tjmaciei-mobl5.localnet (10.209.60.224) by
- IRSMSX605.ger.corp.intel.com (163.33.146.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Wed, 18 Aug 2021 23:27:38 +0100
-From:   Thiago Macieira <thiago.macieira@intel.com>
-To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
-CC:     Borislav Petkov <bp@alien8.de>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to protect dynamic user state
-Date:   Wed, 18 Aug 2021 15:27:35 -0700
-Message-ID: <2658618.gP76fVu5Ab@tjmaciei-mobl5>
-Organization: Intel Corporation
-In-Reply-To: <C3EBA85C-8708-4BAD-BB78-C975250BEFFF@intel.com>
-References: <20210730145957.7927-1-chang.seok.bae@intel.com> <3399412.qF98CnctbS@tjmaciei-mobl5> <C3EBA85C-8708-4BAD-BB78-C975250BEFFF@intel.com>
+        id S234600AbhHRW2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 18:28:47 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:40964 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232456AbhHRW2q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 18:28:46 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R261e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=bo.liu@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Ujs6Crv_1629325684;
+Received: from rsjd01523.et2sqa(mailfrom:bo.liu@linux.alibaba.com fp:SMTPD_---0Ujs6Crv_1629325684)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 19 Aug 2021 06:28:10 +0800
+Date:   Thu, 19 Aug 2021 06:28:04 +0800
+From:   Liu Bo <bo.liu@linux.alibaba.com>
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>
+Cc:     linux-erofs@lists.ozlabs.org, Chao Yu <chao@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peng Tao <tao.peng@linux.alibaba.com>,
+        Eryu Guan <eguan@linux.alibaba.com>,
+        Liu Jiang <gerry@linux.alibaba.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>
+Subject: Re: [PATCH 1/2] erofs: introduce chunk-based file on-disk format
+Message-ID: <20210818222804.GA73193@rsjd01523.et2sqa>
+Reply-To: bo.liu@linux.alibaba.com
+References: <20210818070713.4437-1-hsiangkao@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
-X-Originating-IP: [10.209.60.224]
-X-ClientProxiedBy: orsmsx605.amr.corp.intel.com (10.22.229.18) To
- IRSMSX605.ger.corp.intel.com (163.33.146.138)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210818070713.4437-1-hsiangkao@linux.alibaba.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, 18 August 2021 14:12:06 PDT Bae, Chang Seok wrote:
-> On Aug 18, 2021, at 14:04, Thiago Macieira <thiago.macieira@intel.com>
-> wrote:
-> > But it's not the only possible solution. A future kernel could decide to
-> > leave some bits off and only enable upon request. That's how
-> > macOS/Darwin does its AVX512 support.
+On Wed, Aug 18, 2021 at 03:07:12PM +0800, Gao Xiang wrote:
+> Currently, uncompressed data except for tail-packing inline is
+> consecutive on disk.
 > 
+> In order to support chunk-based data deduplication, add a new
+> corresponding inode data layout.
 > 
-> Even if XCR0 is ever switched, doesn’t XGETBV(0) return it for the
-> *current*  task?
+> In the future, the data source of chunks can be either (un)compressed.
+> 
+> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> ---
+>  Documentation/filesystems/erofs.rst | 16 ++++++++++--
+>  fs/erofs/erofs_fs.h                 | 40 +++++++++++++++++++++++++++--
+>  2 files changed, 52 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/filesystems/erofs.rst b/Documentation/filesystems/erofs.rst
+> index 868e3972227f..b46d0fc46eb6 100644
+> --- a/Documentation/filesystems/erofs.rst
+> +++ b/Documentation/filesystems/erofs.rst
+> @@ -156,13 +156,14 @@ may not. All metadatas can be now observed in two different spaces (views):
+>  
+>      Xattrs, extents, data inline are followed by the corresponding inode with
+>      proper alignment, and they could be optional for different data mappings.
+> -    _currently_ total 4 valid data mappings are supported:
+> +    _currently_ total 5 data layouts are supported:
+>  
+>      ==  ====================================================================
+>       0  flat file data without data inline (no extent);
+>       1  fixed-sized output data compression (with non-compacted indexes);
+>       2  flat file data with tail packing data inline (no extent);
+> -     3  fixed-sized output data compression (with compacted indexes, v5.3+).
+> +     3  fixed-sized output data compression (with compacted indexes, v5.3+);
+> +     4  chunk-based file (v5.15+).
+>      ==  ====================================================================
+>  
+>      The size of the optional xattrs is indicated by i_xattr_count in inode
+> @@ -213,6 +214,17 @@ Note that apart from the offset of the first filename, nameoff0 also indicates
+>  the total number of directory entries in this block since it is no need to
+>  introduce another on-disk field at all.
+>  
+> +Chunk-based file
+> +----------------
+> +In order to support chunk-based file deduplication, a new inode data layout has
+> +been supported since Linux v5.15: Files are split in equal-sized data chunks
+> +with ``extents`` area of the inode metadata indicating how to get the chunk
+> +data: these can be simply as a 4-byte block address array or in the 8-byte
+> +chunk index form (see struct erofs_inode_chunk_index in erofs_fs.h for more
+> +details.)
+> +
+> +By the way, chunk-based files are all uncompressed for now.
+> +
+>  Data compression
+>  ----------------
+>  EROFS implements LZ4 fixed-sized output compression which generates fixed-sized
+> diff --git a/fs/erofs/erofs_fs.h b/fs/erofs/erofs_fs.h
+> index 0f8da74570b4..6210fe434930 100644
+> --- a/fs/erofs/erofs_fs.h
+> +++ b/fs/erofs/erofs_fs.h
+> @@ -4,6 +4,7 @@
+>   *
+>   * Copyright (C) 2017-2018 HUAWEI, Inc.
+>   *             https://www.huawei.com/
+> + * Copyright (C) 2021, Alibaba Cloud
+>   */
+>  #ifndef __EROFS_FS_H
+>  #define __EROFS_FS_H
+> @@ -19,10 +20,12 @@
+>  #define EROFS_FEATURE_INCOMPAT_LZ4_0PADDING	0x00000001
+>  #define EROFS_FEATURE_INCOMPAT_COMPR_CFGS	0x00000002
+>  #define EROFS_FEATURE_INCOMPAT_BIG_PCLUSTER	0x00000002
+> +#define EROFS_FEATURE_INCOMPAT_CHUNKED_FILE	0x00000004
+>  #define EROFS_ALL_FEATURE_INCOMPAT		\
+>  	(EROFS_FEATURE_INCOMPAT_LZ4_0PADDING | \
+>  	 EROFS_FEATURE_INCOMPAT_COMPR_CFGS | \
+> -	 EROFS_FEATURE_INCOMPAT_BIG_PCLUSTER)
+> +	 EROFS_FEATURE_INCOMPAT_BIG_PCLUSTER | \
+> +	 EROFS_FEATURE_INCOMPAT_CHUNKED_FILE)
+>  
+>  #define EROFS_SB_EXTSLOT_SIZE	16
+>  
+> @@ -64,13 +67,16 @@ struct erofs_super_block {
+>   * inode, [xattrs], last_inline_data, ... | ... | no-holed data
+>   * 3 - inode compression D:
+>   * inode, [xattrs], map_header, extents ... | ...
+> - * 4~7 - reserved
+> + * 4 - inode chunk-based E:
+> + * inode, [xattrs], chunk indexes ... | ...
+> + * 5~7 - reserved
+>   */
+>  enum {
+>  	EROFS_INODE_FLAT_PLAIN			= 0,
+>  	EROFS_INODE_FLAT_COMPRESSION_LEGACY	= 1,
+>  	EROFS_INODE_FLAT_INLINE			= 2,
+>  	EROFS_INODE_FLAT_COMPRESSION		= 3,
+> +	EROFS_INODE_CHUNK_BASED			= 4,
+>  	EROFS_INODE_DATALAYOUT_MAX
+>  };
+>  
+> @@ -90,6 +96,19 @@ static inline bool erofs_inode_is_data_compressed(unsigned int datamode)
+>  #define EROFS_I_ALL	\
+>  	((1 << (EROFS_I_DATALAYOUT_BIT + EROFS_I_DATALAYOUT_BITS)) - 1)
+>  
+> +/* indicate chunk blkbits, thus `chunksize = blocksize << chunk blkbits' */
 
-That's the point. If the kernel decides that feature bit 19 will be left off 
-in XCR0, how shall userspace know the kernel supports the feature through the 
-arch_prctl syscall you added?
+A typo in the quotation marks.  (`chunksize = ) should be ('chunksize =)
 
-Not that I am advising we adopt this strategy. We don't need more 
-fragmentation on how we enable the features. But having this syscall gives us 
-flexibility in case we do need it in the future.
+Otherwise it looks good.
 
--- 
-Thiago Macieira - thiago.macieira (AT) intel.com
-  Software Architect - Intel DPG Cloud Engineering
+Reviewed-by: Liu Bo <bo.liu@linux.alibaba.com>
 
+thanks,
+liubo
 
-
+> +#define EROFS_CHUNK_FORMAT_BLKBITS_MASK		0x001F
+> +/* with chunk indexes or just a 4-byte blkaddr array */
+> +#define EROFS_CHUNK_FORMAT_INDEXES		0x0020
+> +
+> +#define EROFS_CHUNK_FORMAT_ALL	\
+> +	(EROFS_CHUNK_FORMAT_BLKBITS_MASK | EROFS_CHUNK_FORMAT_INDEXES)
+> +
+> +struct erofs_inode_chunk_info {
+> +	__le16 format;		/* chunk blkbits */
+> +	__le16 reserved;
+> +};
+> +
+>  /* 32-byte reduced form of an ondisk inode */
+>  struct erofs_inode_compact {
+>  	__le16 i_format;	/* inode format hints */
+> @@ -107,6 +126,9 @@ struct erofs_inode_compact {
+>  
+>  		/* for device files, used to indicate old/new device # */
+>  		__le32 rdev;
+> +
+> +		/* for chunk-based files, it contains the summary info */
+> +		struct erofs_inode_chunk_info c;
+>  	} i_u;
+>  	__le32 i_ino;           /* only used for 32-bit stat compatibility */
+>  	__le16 i_uid;
+> @@ -135,6 +157,9 @@ struct erofs_inode_extended {
+>  
+>  		/* for device files, used to indicate old/new device # */
+>  		__le32 rdev;
+> +
+> +		/* for chunk-based files, it contains the summary info */
+> +		struct erofs_inode_chunk_info c;
+>  	} i_u;
+>  
+>  	/* only used for 32-bit stat compatibility */
+> @@ -204,6 +229,15 @@ static inline unsigned int erofs_xattr_entry_size(struct erofs_xattr_entry *e)
+>  				 e->e_name_len + le16_to_cpu(e->e_value_size));
+>  }
+>  
+> +/* represent a zeroed chunk (hole) */
+> +#define EROFS_NULL_ADDR			-1
+> +
+> +struct erofs_inode_chunk_index {
+> +	__le32 blkaddr;
+> +	__le16 device_id;	/* back-end storage id, always 0 for now */
+> +	__le16 reserved;	/* reserved, don't care */
+> +};
+> +
+>  /* maximum supported size of a physical compression cluster */
+>  #define Z_EROFS_PCLUSTER_MAX_SIZE	(1024 * 1024)
+>  
+> @@ -338,6 +372,8 @@ static inline void erofs_check_ondisk_layout_definitions(void)
+>  	BUILD_BUG_ON(sizeof(struct erofs_inode_extended) != 64);
+>  	BUILD_BUG_ON(sizeof(struct erofs_xattr_ibody_header) != 12);
+>  	BUILD_BUG_ON(sizeof(struct erofs_xattr_entry) != 4);
+> +	BUILD_BUG_ON(sizeof(struct erofs_inode_chunk_info) != 4);
+> +	BUILD_BUG_ON(sizeof(struct erofs_inode_chunk_index) != 8);
+>  	BUILD_BUG_ON(sizeof(struct z_erofs_map_header) != 8);
+>  	BUILD_BUG_ON(sizeof(struct z_erofs_vle_decompressed_index) != 8);
+>  	BUILD_BUG_ON(sizeof(struct erofs_dirent) != 12);
+> -- 
+> 2.24.4
