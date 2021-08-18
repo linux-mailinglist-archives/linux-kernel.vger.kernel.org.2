@@ -2,87 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD51C3EFD07
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0787F3EFD0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238493AbhHRGoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 02:44:38 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:33447 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238280AbhHRGoh (ORCPT
+        id S238280AbhHRGrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 02:47:45 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:45772 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238046AbhHRGro (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 02:44:37 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id EA5175C0259;
-        Wed, 18 Aug 2021 02:44:02 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 18 Aug 2021 02:44:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=zzoOCl2YreUt7MfN2Ool90MUXMU
-        XImkpZjNooyEe0Ac=; b=qGyZU/e5mtYaTVwX0UHaEohjjaNINhPX+/hEggeB4Ed
-        6t9xQ0PVlusJV2vv/yQXEAFBLFt8EOutsCmZo+4dPyOB2mA5uTho0w9KqlNc7E3b
-        xUbukQFxgv+ETvU+XhqYsXWcun5+obn7tixApT3CqWT8yINgxTEjrxWuT5Qzl5Im
-        ZTEwwIqaLVszK3b5ZEEK3J3XVXfJoDI081YA48xqhXlSGLkJjAja3wR/1KoPmlwI
-        Jr4EkAb1sV847nRFhYofNoxEJlVxnQ6rI7AJlb+Av6ysLkNJXv+Ix0+IT6Ysr5sV
-        7s5vSPqMiM2/1v9nd4BufHkFmImLxx1IIXzX39v0MbA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=zzoOCl
-        2YreUt7MfN2Ool90MUXMUXImkpZjNooyEe0Ac=; b=rPRElJXU3AILQ5wm18OW7G
-        9phavvnnMqDtV/bKmofjzcay6EJkxWt80+jBwEPS6CpyN+CcEvXb5Niy4hGbGY07
-        lMZwlnv+b3v80adhb/LhIBi0h9L8KbaDJpIXP8b0PN889ZoAmdOXN6Ffp1izApmj
-        yxHgOX0K+X6aQ6Mf5Y15rLofTMjwCUz5nJVPYQxh4Ajogm1Fb6epwfkbQC6h1jA3
-        cdntNYeAV3DmNzByZ3A6zYywKXMnS1cIdGkmweVdkJiRG4p4KjJHTbDB7pscGFG8
-        2/zspNHd+ihkuLSJCp7FGzaKK6SJZTB3OpOskj6OFq6qFnfPcsHmEg5cLrmuyLlg
-        ==
-X-ME-Sender: <xms:MqwcYfeIxDHEaLZsgOaI76wOfG6ZypfEqGgq0RO43cIfuFVx4GJV4w>
-    <xme:MqwcYVNXZoE3EqaKeHzago-wY_dHeDZD5DvTCyYF-JOF7hc9aD-2TqG-Y_9a-6z8z
-    RspGfIcxOivVw>
-X-ME-Received: <xmr:MqwcYYgY7HzeiiZaQucD6mundeoYeQkSiVDbGBWZoCNZxfBQUM0hvz605h1UyVzLoXbUVSbjBq3h8xWDfNzreQo34VBPDVMf>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleeggddutdejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
-    drtghomh
-X-ME-Proxy: <xmx:MqwcYQ8O1CB0LaescJ3AaPo3W-hcT1P_V4VDMiKYoquAfg3WR7qBJw>
-    <xmx:MqwcYbs6A7OqsNptxLB5WMCQsokLeY-IJl-qu-SkrUfIXbwbaQJhdg>
-    <xmx:MqwcYfGfbu5LbHF45H_DB9x8fh_fJ15es219_qP6QF5McihVSAuucg>
-    <xmx:MqwcYRAzcuWCKSoKsCDDGxowcuG728y1C8YLVsdexeDcDSZDv2xTpw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 18 Aug 2021 02:44:01 -0400 (EDT)
-Date:   Wed, 18 Aug 2021 08:43:58 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     dan.carpenter@oracle.com, yangyingliang@huawei.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] staging: r8188eu: Remove unused including
- <linux/version.h>
-Message-ID: <YRysLl5Yu/ngNOl3@kroah.com>
-References: <20210818063653.2851-1-caihuoqing@baidu.com>
+        Wed, 18 Aug 2021 02:47:44 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 210661C0B77; Wed, 18 Aug 2021 08:47:09 +0200 (CEST)
+Date:   Wed, 18 Aug 2021 08:47:08 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc:     intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
+        kernel list <linux-kernel@vger.kernel.org>,
+        rodrigo.vivi@intel.com
+Subject: Re: 5.13-rc6 on thinkpad X220: graphics hangs with recent mainline
+Message-ID: <20210818064708.GB22282@amd>
+References: <20210624095359.GA29649@duo.ucw.cz>
+ <162487567602.6944.6736788493261786550@jlahtine-mobl.ger.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="IiVenqGWf+H9Y6IX"
 Content-Disposition: inline
-In-Reply-To: <20210818063653.2851-1-caihuoqing@baidu.com>
+In-Reply-To: <162487567602.6944.6736788493261786550@jlahtine-mobl.ger.corp.intel.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 02:36:53PM +0800, Cai Huoqing wrote:
-> Remove including <linux/version.h> that don't need it
-> 
-> v1->v2: remove "based on staging-next" from commit message
-> v2->v3: add changelog to commit message
 
-As the documentation states, these lines need to go below the --- line,
-right?
+--IiVenqGWf+H9Y6IX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Please fix up and send a v4.
+Hi!
+> > I'm getting graphics problems with 5.13-rc:
+> >=20
+> > Debian 10.9, X, chromium and flightgear is in use. Things were more
+> > stable than this with previous kernels.
+> >=20
+> > Any ideas?
+>=20
+> The error you are seeing:
+>=20
+> > [185300.784992] i915 0000:00:02.0: [drm] Resetting chip for stopped hea=
+rtbeat on rcs0
+> > [185300.888694] i915 0000:00:02.0: [drm] fgfs[27370] context reset due =
+to GPU hang
+>=20
+> That just indicates that the rendering took too long. It could be caused
+> by a change in how the application renders, userspace driver or i915. So
+> a previously on-the-edge-of-timeout operation may have got pushed beyond
+> the timeout, or the rendering genuinely got completely stuck.
+>=20
+> If you only updated the kernel, not the application or userspace, could
+> you bisect the commit that introduced the behavior and report:
+>=20
+> https://gitlab.freedesktop.org/drm/intel/-/wikis/How-to-file-i915-bugs
+>=20
+> We have changes around this area, so would be helpful if you can bisect
+> the commit that started the behavior.
 
-thanks,
+So with more recent kernels, problem went away. Is it possible it was
+one of those "aborted fence aborts both application and X" problems?
 
-greg k-h
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--IiVenqGWf+H9Y6IX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmEcrOwACgkQMOfwapXb+vIC3QCeJirTC9Cf5I7TcizH8NrCvzRG
+W34AnR3UwIkupopApaBERV9hTCObwWH6
+=3y6B
+-----END PGP SIGNATURE-----
+
+--IiVenqGWf+H9Y6IX--
