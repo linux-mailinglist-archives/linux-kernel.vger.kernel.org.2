@@ -2,144 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 020643EF9E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 07:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A25E3EF9FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 07:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237287AbhHRFOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 01:14:40 -0400
-Received: from mail-lf1-f53.google.com ([209.85.167.53]:45724 "EHLO
-        mail-lf1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232380AbhHRFOi (ORCPT
+        id S237665AbhHRFWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 01:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236055AbhHRFWI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 01:14:38 -0400
-Received: by mail-lf1-f53.google.com with SMTP id g13so1930651lfj.12;
-        Tue, 17 Aug 2021 22:14:03 -0700 (PDT)
+        Wed, 18 Aug 2021 01:22:08 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807E1C061764;
+        Tue, 17 Aug 2021 22:21:34 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id h9so2789005ljq.8;
+        Tue, 17 Aug 2021 22:21:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yOpS1WKSzyXtmkcc56y1iDICg2EoTDsJHsY4fPaSb5w=;
+        b=czCBETSSjNQa96HeR8S2cXF9WItzalDZ+Bims31/WwUHmduqBSoEIrz2EHd1Rplnvm
+         FFwAvQOnG91Y+0pNG7gcjM8fuOK7PmDvtjcps1eXeHj5mFDM7T8Il2gc/dhcMiEnsq3U
+         dYqtv8hjrv5XQwoHcnwTEBGrRK1459O7Zm+K8cjotiTE0HUOwS7EWfdq/k1AdFePe/7T
+         qIjtoVkBbmE3Zl1qSkUzqZv9CvHixrI856MdhPDyYrJSZk10aF2YpSr+G4t557R0fLe2
+         gENb/8qw1Cif5pMMEHqGyMJt9OlS6t5IEPg7dmTF9mJyzzfy4L6tBS3Gp6x5EtTq9Otk
+         Id/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dThlhLLrplnuLh2UP7jmiTXGduhqKRmat16fPmXeSs4=;
-        b=mJMGN8v2uzWYrKsMoCbN/zimJ+q+km9nqHHf00Nw/i0zZ9aChKgb+MqX/n3hsizlCh
-         2if2pDhs/Aq5iNpxMyp2tIG2oX3bmtdYw27M+OMEGy/A9vt5RCFHxj7REJJxhDptpXID
-         YSHQmMz4BPpeMRx5rx8EYb/NHJ1aaA00IEulfbYkLdcUnLnm2YV10xWLPfg23k19P97Q
-         etwKG5LPsOR43rkYgjRucyuekdBoj/VNTURRNrP1NemTnxhr/kGMVD26x8vE0T5g65Us
-         6XnGeoVxZgZ/6PFG+9aWhYPsBTZiOPIQw0foMuSKnHFftzqAkg7v6PlgJtJ8QI7V+5UA
-         ckbQ==
-X-Gm-Message-State: AOAM532rc/NUUIEtYO8OZUYN8Jq3hY2xJFPs+CGN2FJHTV99apgNUz/Y
-        WqFn0+fz24D7+shASMKCUPw0Sy3eg4hw8HJmHL8=
-X-Google-Smtp-Source: ABdhPJzGqt8rmnrhyLdtbX+v8/EnvPatnAlw9hMVu1/WitSQD341ru1TC1ELyRE65BhkPZnlrfdXY1mSAqt/mVKCk4k=
-X-Received: by 2002:ac2:5d27:: with SMTP id i7mr5022735lfb.488.1629263642539;
- Tue, 17 Aug 2021 22:14:02 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yOpS1WKSzyXtmkcc56y1iDICg2EoTDsJHsY4fPaSb5w=;
+        b=KyTN+66JReUiZ1nBMEpIdN+P9S79uEbMiu3M16czSgFJ05YwvKLskilB2QqFZVk62J
+         prZHpbsfHzIx5e87MhH/gACK7omP8L9NIP7VpxCLK3S0yThlJNzngWHTDQb3DnCwnCBz
+         Q7O+mvHisqBaIz/jNC3sDZqf72kjslbVVJWwiSMBcsS0kRMTbgNLsxcb6A1nloJlzmix
+         5sg5M2+xYysgiBpIxaqfyEu5CONXY3xQlNOp+9ZlD+EaoyKZjnLp/1unMczoaLYZuccj
+         RBb7l3o7A2E7Yliyg4mnTMLSM6KsbrW6LKSWxEjO/NWj5egYPIKIb/UDHDLUB7taJg1K
+         R1+g==
+X-Gm-Message-State: AOAM532uIzrUOlr8c26HbMOuf5JWdSxIDRVwco2Tvnd2Af/8PdpZ5Ji+
+        yuoCMn8yi7o3CporXX1hvtPIyyVZkV4=
+X-Google-Smtp-Source: ABdhPJz2ztpis7OKP5puANjPipNjZh3C0caocgaMorHlmoNO+0jB7HIjn/fYUFG6yGBcOjPS91/Jnw==
+X-Received: by 2002:a2e:8553:: with SMTP id u19mr1498129ljj.158.1629264092744;
+        Tue, 17 Aug 2021 22:21:32 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-85-91.dynamic.spd-mgts.ru. [46.138.85.91])
+        by smtp.googlemail.com with ESMTPSA id d9sm487076ljq.54.2021.08.17.22.21.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Aug 2021 22:21:32 -0700 (PDT)
+Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20210817012754.8710-1-digetx@gmail.com>
+ <20210817012754.8710-2-digetx@gmail.com>
+ <20210817075515.vyyv7z37e6jcrhsl@vireshk-i7>
+ <710261d9-7ae3-5155-c0a2-f8aed2408d0b@gmail.com>
+ <20210818035533.ieqkexltfvvf2p4n@vireshk-i7>
+ <5b2a80c1-9743-e633-6257-ede94c8a274c@gmail.com>
+ <20210818043131.7klajx6drvvkftoc@vireshk-i7>
+ <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
+ <20210818045307.4brb6cafkh3adjth@vireshk-i7>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
+Date:   Wed, 18 Aug 2021 08:21:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210818034010.800652-1-keescook@chromium.org>
-In-Reply-To: <20210818034010.800652-1-keescook@chromium.org>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Wed, 18 Aug 2021 14:13:51 +0900
-Message-ID: <CAMZ6RqK4Rn4d-1CZsg9vJiAMHhxN6fgcqukdHpGwXoGTyNVr_Q@mail.gmail.com>
-Subject: Re: [PATCH] can: etas_es58x: Replace 0-element raw_msg array
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
-        linux-can <linux-can@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210818045307.4brb6cafkh3adjth@vireshk-i7>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed. 18 Aug 2021 at 12:40, Kees Cook <keescook@chromium.org> wrote:
-> While raw_msg isn't a fixed size, it does have a maximum size. Adjust the
-> struct to represent this and avoid the following warning when building
-> with -Wzero-length-bounds:
->
-> drivers/net/can/usb/etas_es58x/es58x_fd.c: In function 'es58x_fd_tx_can_msg':
-> drivers/net/can/usb/etas_es58x/es58x_fd.c:360:35: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[]'} [-Wzero-length-bounds]
->   360 |  tx_can_msg = (typeof(tx_can_msg))&es58x_fd_urb_cmd->raw_msg[msg_len];
->       |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from drivers/net/can/usb/etas_es58x/es58x_core.h:22,
->                  from drivers/net/can/usb/etas_es58x/es58x_fd.c:17:
-> drivers/net/can/usb/etas_es58x/es58x_fd.h:231:6: note: while referencing 'raw_msg'
->   231 |   u8 raw_msg[0];
->       |      ^~~~~~~
->
-> Cc: Wolfgang Grandegger <wg@grandegger.com>
-> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>
-> Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-> Cc: linux-can@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  drivers/net/can/usb/etas_es58x/es581_4.h  | 2 +-
->  drivers/net/can/usb/etas_es58x/es58x_fd.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/net/can/usb/etas_es58x/es581_4.h b/drivers/net/can/usb/etas_es58x/es581_4.h
-> index 4bc60a6df697..af38c4938859 100644
-> --- a/drivers/net/can/usb/etas_es58x/es581_4.h
-> +++ b/drivers/net/can/usb/etas_es58x/es581_4.h
-> @@ -192,7 +192,7 @@ struct es581_4_urb_cmd {
->                 struct es581_4_rx_cmd_ret rx_cmd_ret;
->                 __le64 timestamp;
->                 u8 rx_cmd_ret_u8;
-> -               u8 raw_msg[0];
-> +               u8 raw_msg[USHRT_MAX];
->         } __packed;
->
->         __le16 reserved_for_crc16_do_not_use;
-> diff --git a/drivers/net/can/usb/etas_es58x/es58x_fd.h b/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> index ee18a87e40c0..e0319b8358ef 100644
-> --- a/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> +++ b/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> @@ -228,7 +228,7 @@ struct es58x_fd_urb_cmd {
->                 struct es58x_fd_tx_ack_msg tx_ack_msg;
->                 __le64 timestamp;
->                 __le32 rx_cmd_ret_le32;
-> -               u8 raw_msg[0];
-> +               u8 raw_msg[USHRT_MAX];
->         } __packed;
->
->         __le16 reserved_for_crc16_do_not_use;
-> --
-> 2.30.2
+18.08.2021 07:53, Viresh Kumar пишет:
+> On 18-08-21, 07:37, Dmitry Osipenko wrote:
+>> This will set voltage level without having an actively used hardware.
+>> Take a 3d driver for example, if you set the rate on probe and
+>> rpm-resume will never be called, then the voltage will be set high,
+>> while hardware is kept suspended if userspace will never wake it up by
+>> executing a 3d job.
+> 
+> What exactly are we looking to achieve with this stuff ? Cache the
+> current performance state with genpd (based on the state bootloader's
+> has set) ?
 
-raw_msg is part of a union so its maximum size is implicitly the
-biggest size of the other member of that union:
+Yes, GENPD will cache the perf state across suspend/resume and initially
+cached value is out of sync with h/w.
 
-| struct es58x_fd_urb_cmd {
-|     __le16 SOF;
-|    u8 cmd_type;
-|    u8 cmd_id;
-|    u8 channel_idx;
-|    __le16 msg_len;
-|
-|    union {
-|        struct es58x_fd_tx_conf_msg tx_conf_msg;
-|        u8 tx_can_msg_buf[ES58X_FD_TX_BULK_MAX * ES58X_FD_CANFD_TX_LEN];
-|        u8 rx_can_msg_buf[ES58X_FD_RX_BULK_MAX * ES58X_FD_CANFD_RX_LEN];
-|        struct es58x_fd_echo_msg echo_msg[ES58X_FD_ECHO_BULK_MAX];
-|        struct es58x_fd_rx_event_msg rx_event_msg;
-|        struct es58x_fd_tx_ack_msg tx_ack_msg;
-|        __le64 timestamp;
-|        __le32 rx_cmd_ret_le32;
-|        u8 raw_msg[0];
-|    } __packed;
-|
-|    __le16 reserved_for_crc16_do_not_use;
-| } __packed;
+> Or anything else as well ?
 
-ram_msg can then be used to manipulate the other fields at the byte level.
-I am sorry but I fail to understand why this is an issue.
+Nothing else. But let me clarify it all again.
 
-Also, the proposed fix drastically increases the size of the structure.
+Initially the performance state of all GENPDs is 0 for all devices.
 
+The clock rate is preinitialized for all devices to a some default rate
+by clk driver, or by bootloader or by assigned-clocks in DT.
 
-Yours sincerely,
-Vincent
+When device is rpm-resumed, the resume callback of a device driver
+enables the clock.
+
+Before clock is enabled, the voltage needs to be configured in
+accordance to the clk rate.
+
+So now we have a GENPD with pstate=0 on a first rpm-resume, which
+doesn't match the h/w configuration. Calling dev_pm_opp_sync() sets the
+pstate in accordance to the h/w config.
+
+In a previous v7 I proposed to preset the rpm_pstate of GENPD (perf
+level that is restored before device is rpm-resumed) from PD's
+attach_dev callback, but Ulf didn't like that because it requires to use
+and modify GENPD 'private' variables from a PD driver. We decided that
+will be better to make device drivers to explicitly sync the perf state,
+which I implemented in this v8.
