@@ -2,215 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924E83F0C8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 22:18:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6ADC3F0C99
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 22:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233690AbhHRUS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 16:18:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233509AbhHRUSt (ORCPT
+        id S233378AbhHRUV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 16:21:58 -0400
+Received: from smtprelay0011.hostedemail.com ([216.40.44.11]:49906 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232564AbhHRUVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 16:18:49 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C04B8C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 13:18:14 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id a201-20020a1c7fd2000000b002e6d33447f9so4157988wmd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 13:18:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=nHfCCbHIXfL8S0LAJ+5b/okpSRYN0l8zL9APPGHUHjM=;
-        b=JNxUjQJfF8Rfgw0pIVdmau+KQ+tvGbR5jwxsNL+C4ZDxsjgE+iui13LWXrzEM2oi4e
-         JExJW4m3jOmYpeYqh5Jm5a8nfWjtKnJpIJqhmxMEVzERO+5UnEh+APgQwU6jjDW2aU50
-         dWaLO+Kt1o238ME+il7oVvZb/cGa/r219D06M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=nHfCCbHIXfL8S0LAJ+5b/okpSRYN0l8zL9APPGHUHjM=;
-        b=b/KjcCz2uODvl34/Cjdmc3ivrNNwz/NmJI13APUKwNu/oxg8xJLUDkPf/QT42Og+i8
-         rHSWLapF/7BcdtrxYgIbmQmB01RhBTLteNq5vZN6sw343r8HpzMVkTcwhj2uPc4kwYMP
-         MxSWP1pfkfn82yQw5TlZPGGzTp8XoponPbbfhHdk0XsV6bNJeKR3jU0pKL3+O+RS8qWW
-         AqZKgReY4RvOazE81Jom/bvOd1eDyYEQaDmeiFM2T83Wg8X+bd2uWsrV8s9Cc9mgxRN2
-         E+Mnj0VTrlZDIGx2cY/L3Wwh1AhXC4kTy5Vqfs3dbTpzi8wYm8Zc9cpNxum+HgSylnbc
-         DwVA==
-X-Gm-Message-State: AOAM532Af2kM1ZPn8JLD0DATjcWWS0RMYyYEIhQMudjHooFI/+fHEzfa
-        TS4m7PrcT9VHnpM6gRqx7m54ig==
-X-Google-Smtp-Source: ABdhPJzYHZ/Yv7qcLsqA2BQ79yMvS71B29G7UVMNEpzfrAnk3wq8PLoDzLhcnwZ7fYeUBBem9GqVjA==
-X-Received: by 2002:a05:600c:290:: with SMTP id 16mr10314299wmk.187.1629317893281;
-        Wed, 18 Aug 2021 13:18:13 -0700 (PDT)
-Received: from localhost (82-69-42-66.dsl.in-addr.zen.co.uk. [82.69.42.66])
-        by smtp.gmail.com with ESMTPSA id a18sm5639913wmg.43.2021.08.18.13.18.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 13:18:12 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 21:18:10 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Leon Yang <lnyng@fb.com>, Roman Gushchin <guro@fb.com>,
-        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm: memcontrol: fix occasional OOMs due to proportional
- memory.low reclaim
-Message-ID: <YR1rAoFNegl6CrPz@chrisdown.name>
-References: <20210817180506.220056-1-hannes@cmpxchg.org>
+        Wed, 18 Aug 2021 16:21:55 -0400
+Received: from omf11.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id C7C3D837F27B;
+        Wed, 18 Aug 2021 20:21:19 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf11.hostedemail.com (Postfix) with ESMTPA id 755AE20A293;
+        Wed, 18 Aug 2021 20:21:18 +0000 (UTC)
+Message-ID: <71535d629266751273c15cc05dd7c987cb9c43b6.camel@perches.com>
+Subject: Re: [RFC PATCH 1/5] checkpatch: improve handling of revert commits
+From:   Joe Perches <joe@perches.com>
+To:     Denis Efremov <efremov@linux.com>, linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, Jiri Kosina <jkosina@suse.cz>,
+        Willy Tarreau <w@1wt.eu>
+Date:   Wed, 18 Aug 2021 13:21:16 -0700
+In-Reply-To: <3d347d4b-1576-754f-8633-ba6084cc0661@linux.com>
+References: <20210818154646.925351-1-efremov@linux.com>
+         <20210818154646.925351-2-efremov@linux.com>
+         <cc5801790fea258e20fa6b7e26de7806ae8e0dda.camel@perches.com>
+         <3d347d4b-1576-754f-8633-ba6084cc0661@linux.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210817180506.220056-1-hannes@cmpxchg.org>
-User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
+Content-Transfer-Encoding: 8bit
+X-Stat-Signature: hhfmrgmbujahqjyp41s16enabxmyxkkm
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: 755AE20A293
+X-Spam-Status: No, score=5.20
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/Jl11ClCXS3+2aw80kHkkrPC9TM8JV7qY=
+X-HE-Tag: 1629318078-364882
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Johannes Weiner writes:
->We've noticed occasional OOM killing when memory.low settings are in
->effect for cgroups. This is unexpected and undesirable as memory.low
->is supposed to express non-OOMing memory priorities between cgroups.
->
->The reason for this is proportional memory.low reclaim. When cgroups
->are below their memory.low threshold, reclaim passes them over in the
->first round, and then retries if it couldn't find pages anywhere else.
->But when cgroups are slighly above their memory.low setting, page scan
->force is scaled down and diminished in proportion to the overage, to
->the point where it can cause reclaim to fail as well - only in that
->case we currently don't retry, and instead trigger OOM.
->
->To fix this, hook proportional reclaim into the same retry logic we
->have in place for when cgroups are skipped entirely. This way if
->reclaim fails and some cgroups were scanned with dimished pressure,
->we'll try another full-force cycle before giving up and OOMing.
->
->Reported-by: Leon Yang <lnyng@fb.com>
->Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+On Wed, 2021-08-18 at 19:21 +0300, Denis Efremov wrote:
+> 
+> On 8/18/21 7:00 PM, Joe Perches wrote:
+> > On Wed, 2021-08-18 at 18:46 +0300, Denis Efremov wrote:
+> > > Properly handle commits like:
+> > > commit f2791e7eadf4 ("Revert "floppy: refactor open() flags handling"")
+> > 
+> > Try this one:
+> > 
+> > https://lore.kernel.org/lkml/7f55d9d0369f1ea840fab83eeb77f9f3601fee41.camel@perches.com/
+> > 
+> 
+> It works but why not to use .+? then?
+> I'm not sure that non-greedy patterns will properly handle commits like:
+> $ git log --oneline | fgrep '")'
+> 
+> e.g. 
+> commit ece2619fe8ed ("extcon: arizona: Fix flags parameter to the gpiod_get("wlf,micd-pol") call")
 
-Thanks for tracking this down! Agreed that this looks like a good stable 
-candidate.
+The only way to handle that is to use the $balanced_parens test but
+it wouldn't work on Andrew's perl version 5.8
 
-Acked-by: Chris Down <chris@chrisdown.name>
+Andrew?  Do you still use perl 5.8?  It's almost 20 years old now.
+Does anyone still use perl versions 5.8 or lower?
 
->---
-> include/linux/memcontrol.h | 29 +++++++++++++++--------------
-> mm/vmscan.c                | 27 +++++++++++++++++++--------
-> 2 files changed, 34 insertions(+), 22 deletions(-)
->
->diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
->index bfe5c486f4ad..24797929d8a1 100644
->--- a/include/linux/memcontrol.h
->+++ b/include/linux/memcontrol.h
->@@ -612,12 +612,15 @@ static inline bool mem_cgroup_disabled(void)
-> 	return !cgroup_subsys_enabled(memory_cgrp_subsys);
-> }
->
->-static inline unsigned long mem_cgroup_protection(struct mem_cgroup *root,
->-						  struct mem_cgroup *memcg,
->-						  bool in_low_reclaim)
->+static inline void mem_cgroup_protection(struct mem_cgroup *root,
->+					 struct mem_cgroup *memcg,
->+					 unsigned long *min,
->+					 unsigned long *low)
-> {
->+	*min = *low = 0;
->+
-> 	if (mem_cgroup_disabled())
->-		return 0;
->+		return;
->
-> 	/*
-> 	 * There is no reclaim protection applied to a targeted reclaim.
->@@ -653,13 +656,10 @@ static inline unsigned long mem_cgroup_protection(struct mem_cgroup *root,
-> 	 *
-> 	 */
-> 	if (root == memcg)
->-		return 0;
->-
->-	if (in_low_reclaim)
->-		return READ_ONCE(memcg->memory.emin);
->+		return;
->
->-	return max(READ_ONCE(memcg->memory.emin),
->-		   READ_ONCE(memcg->memory.elow));
->+	*min = READ_ONCE(memcg->memory.emin);
->+	*low = READ_ONCE(memcg->memory.elow);
-> }
->
-> void mem_cgroup_calculate_protection(struct mem_cgroup *root,
->@@ -1147,11 +1147,12 @@ static inline void memcg_memory_event_mm(struct mm_struct *mm,
-> {
-> }
->
->-static inline unsigned long mem_cgroup_protection(struct mem_cgroup *root,
->-						  struct mem_cgroup *memcg,
->-						  bool in_low_reclaim)
->+static inline void mem_cgroup_protection(struct mem_cgroup *root,
->+					 struct mem_cgroup *memcg,
->+					 unsigned long *min,
->+					 unsigned long *low)
-> {
->-	return 0;
->+	*min = *low = 0;
-> }
->
-> static inline void mem_cgroup_calculate_protection(struct mem_cgroup *root,
->diff --git a/mm/vmscan.c b/mm/vmscan.c
->index 4620df62f0ff..701106e1829c 100644
->--- a/mm/vmscan.c
->+++ b/mm/vmscan.c
->@@ -100,9 +100,12 @@ struct scan_control {
-> 	unsigned int may_swap:1;
->
-> 	/*
->-	 * Cgroups are not reclaimed below their configured memory.low,
->-	 * unless we threaten to OOM. If any cgroups are skipped due to
->-	 * memory.low and nothing was reclaimed, go back for memory.low.
->+	 * Cgroup memory below memory.low is protected as long as we
->+	 * don't threaten to OOM. If any cgroup is reclaimed at
->+	 * reduced force or passed over entirely due to its memory.low
->+	 * setting (memcg_low_skipped), and nothing is reclaimed as a
->+	 * result, then go back back for one more cycle that reclaims
->+	 * the protected memory (memcg_low_reclaim) to avert OOM.
-> 	 */
-> 	unsigned int memcg_low_reclaim:1;
-> 	unsigned int memcg_low_skipped:1;
->@@ -2537,15 +2540,14 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
-> 	for_each_evictable_lru(lru) {
-> 		int file = is_file_lru(lru);
-> 		unsigned long lruvec_size;
->+		unsigned long low, min;
-> 		unsigned long scan;
->-		unsigned long protection;
->
-> 		lruvec_size = lruvec_lru_size(lruvec, lru, sc->reclaim_idx);
->-		protection = mem_cgroup_protection(sc->target_mem_cgroup,
->-						   memcg,
->-						   sc->memcg_low_reclaim);
->+		mem_cgroup_protection(sc->target_mem_cgroup, memcg,
->+				      &min, &low);
->
->-		if (protection) {
->+		if (min || low) {
-> 			/*
-> 			 * Scale a cgroup's reclaim pressure by proportioning
-> 			 * its current usage to its memory.low or memory.min
->@@ -2576,6 +2578,15 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
-> 			 * hard protection.
-> 			 */
-> 			unsigned long cgroup_size = mem_cgroup_size(memcg);
->+			unsigned long protection;
->+
->+			/* memory.low scaling, make sure we retry before OOM */
->+			if (!sc->memcg_low_reclaim && low > min) {
->+				protection = low;
->+				sc->memcg_low_skipped = 1;
->+			} else {
->+				protection = min;
->+			}
->
-> 			/* Avoid TOCTOU with earlier protection check */
-> 			cgroup_size = max(cgroup_size, protection);
->-- 
->2.32.0
->
+From checkpatch:
+
+# Using $balanced_parens, $LvalOrFunc, or $FuncArg
+# requires at least perl version v5.10.0
+# Any use must be runtime checked with $^V
+
+our $balanced_parens = qr/(\((?:[^\(\)]++|(?-1))*\))/;
+our $LvalOrFunc	= qr{((?:[\&\*]\s*)?$Lval)\s*($balanced_parens{0,1})\s*};
+our $FuncArg = qr{$Typecast{0,1}($LvalOrFunc|$Constant|$String)};
+
+So maybe:
+
+> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> > > @@ -3200,20 +3200,20 @@ sub process {
+> > >  			$long = 1 if ($line =~ /\bcommit\s+[0-9a-f]{41,}/i);
+> > >  			$space = 0 if ($line =~ /\bcommit [0-9a-f]/i);
+> > >  			$case = 0 if ($line =~ /\b[Cc]ommit\s+[0-9a-f]{5,40}[^A-F]/);
+> > > -			if ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("([^"]+)"\)/i) {
+> > > +			if ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("(.+)"\)/i) {
+
+So that could be:
+			if ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+($balanced_parens)/i
+
+> > >  				$orig_desc = $1;
+> > >  				$hasparens = 1;
+> > >  			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s*$/i &&
+> > >  				 defined $rawlines[$linenr] &&
+> > > -				 $rawlines[$linenr] =~ /^\s*\("([^"]+)"\)/) {
+> > > +				 $rawlines[$linenr] =~ /^\s*\("(.+)"\)/) {
+
+and
+
+  			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s*$/i &&
+ 				 defined $rawlines[$linenr] &&
+				"$line $rawlines[$linenr]" =~ /\bcommit\s+[0-9a-f]{5,}\s+($balanced_parens)/i
+
+> > >  				$orig_desc = $1;
+> > >  				$hasparens = 1;
+> > > -			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("[^"]+$/i &&
+> > > +			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\(".+$/i &&
+> > >  				 defined $rawlines[$linenr] &&
+> > > -				 $rawlines[$linenr] =~ /^\s*[^"]+"\)/) {
+> > > -				$line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("([^"]+)$/i;
+> > > +				 $rawlines[$linenr] =~ /^\s*.+"\)/) {
+> > > +				$line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("(.+)$/i;
+
+etc...
+
+> > >  				$orig_desc = $1;
+> > > -				$rawlines[$linenr] =~ /^\s*([^"]+)"\)/;
+> > > +				$rawlines[$linenr] =~ /^\s*(.+)"\)/;
+> > >  				$orig_desc .= " " . $1;
+> > >  				$hasparens = 1;
+> > >  			}
+> > 
+
+
