@@ -2,137 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF7E3F0025
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F8513F0029
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231342AbhHRJPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:15:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230428AbhHRJOz (ORCPT
+        id S232124AbhHRJPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 05:15:06 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:52222 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229822AbhHRJO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:14:55 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E741C0617AD
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:14:20 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id qe12-20020a17090b4f8c00b00179321cbae7so1922063pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:14:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tDuCq4cpa/FhfVLg3d4eOXI0t92SH+lRUdr1ZBj+304=;
-        b=quAhTr+R/08xh/ignvyvF/El1dD/NQftWfiNTcAu87cJhuBhgI+As0zoEiydqeW6PP
-         Ex/zHp4EDoA27CiqypV1XRJjyjppnIr9cuHPeEqT4Jz0u4Gd7rGoODV0vOYF2r+fXVrC
-         O9YNeAY5lMNde/fcVIInzFs4EQNgUzhxxcNX6YMHjHSIPhU1rXEQOl9Aq3E25JLQ/9fv
-         VxP/TlWw72/n6skEH8miH2qbrmh27V7jR6dmqc1oF+jbwQP/bhXkGIrzGuJgVHwfQUpg
-         jLxJj1fuqBdXtzbuG0/ZFv6pjltmBS+1GsQZASCe+7q/ocD5Ye+29smqIZ7DN+BRR4O7
-         VT3w==
+        Wed, 18 Aug 2021 05:14:58 -0400
+Received: by mail-il1-f197.google.com with SMTP id r5-20020a92d985000000b002246fb2807cso854819iln.18
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:14:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tDuCq4cpa/FhfVLg3d4eOXI0t92SH+lRUdr1ZBj+304=;
-        b=G+O2vlsPq1PEzshyJAOBKiBPpsfG27CnWPr6XM+hBofUCGq9iJkMBBadXkDp76eUUj
-         JMrKPLcF6kpCIiE8tQwFYVg8dfWyzW5bZira0F6hblDcZ913U3+/c3z8cFWiJwHKoxXO
-         QcZWPsltnfYMyjfiAOUto9zjvFEIyUP3DtK3pKX+M6o2SjtBVqMeladDyz0y9nlS3A9S
-         /MfJfOtAKidOVS/k9qk5+/UKR3X3SdP2j7/g/x+ev234uEjY3FDLoeS/OOJYzqzAhSQh
-         lg8ZJ4OWU9QAjX+6YlHjOm7rDodOyX8D8m1kBnpBeJvIokbdMsvZ8dt7yoM5ECfake0I
-         z9eA==
-X-Gm-Message-State: AOAM530Nxr1wLkFRbOwbAJYuED+e9558OsL6gpMcyb5WSaGtQX8S7959
-        MTE43QEnBrLfyB8KA7OKEwR9ZQ==
-X-Google-Smtp-Source: ABdhPJz4yEie/eMLpBAmymSzx5jt3Od7muuoKSX0aK0QfqCy9SYA7S2Wvgljmd2wM1mkIsijUEW0lQ==
-X-Received: by 2002:a17:90a:d791:: with SMTP id z17mr8231461pju.203.1629278059957;
-        Wed, 18 Aug 2021 02:14:19 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id a8sm1540816pfo.79.2021.08.18.02.14.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 02:14:19 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 14:44:17 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-Message-ID: <20210818091417.dvlnsxlgybdsn76x@vireshk-i7>
-References: <20210818035533.ieqkexltfvvf2p4n@vireshk-i7>
- <5b2a80c1-9743-e633-6257-ede94c8a274c@gmail.com>
- <20210818043131.7klajx6drvvkftoc@vireshk-i7>
- <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
- <20210818045307.4brb6cafkh3adjth@vireshk-i7>
- <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
- <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
- <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
- <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
- <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=nVWhK4cQDXyby++FlrRCSICOsNIa8m6BHgR2s+fOqjk=;
+        b=DWALdkdXgql4XZAWhhbbnsFz4rXXFtUf0Q3xtlRRmdE9G88RBFKn1jpPoAv566GU5x
+         ORQ5HF1zYKYHa+RjMlrA9vzMF56Of1irXQoK972O81DmG1rgUbNAPjLL2vOCf30/ZHXQ
+         oHALdySwgzSN0xaxBIrXQR8G/oJcrOzWHN9on85+k1/a4+lJPbncE5JROhW3RBL/o3s5
+         WtU3jTiy+YLIfN1QLh/UAkW8pODXFPu9I+hNh4i4ynPuYfEsaqMdiHBf08YPwA0YeF+T
+         LbRq9Q2OwaTsk4FycImwjie7iGoCzaBcdnQolWEKtuQUOAEuqGaoNeoqZb1OzUZML+SK
+         6x/g==
+X-Gm-Message-State: AOAM533QcJjWhhOcIpTmeRWNK+gB+gtjs75rm39bQTquGtrxBpK4VQBx
+        nNeafGehmFqtVDCY/xwm60kR3XBDN9RbP4RnCXHaOUCafd7B
+X-Google-Smtp-Source: ABdhPJwETxoSv9A/LHlkyJimAET8MJOM+95bPE4OlxYrGxsjgWP2LcMj/M+jNwC1+6HCFL1vN4vC+VQpv59Ch3E1bPGZFZw7T9m2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+X-Received: by 2002:a05:6e02:1294:: with SMTP id y20mr5242782ilq.42.1629278063605;
+ Wed, 18 Aug 2021 02:14:23 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 02:14:23 -0700
+In-Reply-To: <000000000000d77b6505c767b8f8@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000038c55d05c9d1dc3b@google.com>
+Subject: Re: [syzbot] WARNING in hid_submit_ctrl/usb_submit_urb
+From:   syzbot <syzbot+9b57a46bf1801ce2a2ca@syzkaller.appspotmail.com>
+To:     benjamin.tissoires@redhat.com, jikos@kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-08-21, 10:29, Ulf Hansson wrote:
-> Me and Dmitry discussed adding a new genpd callback for this. I agreed
-> that it seems like a reasonable thing to add, if he insists.
-> 
-> The intent was to invoke the new callback from __genpd_dev_pm_attach()
-> when the device has been attached to its genpd. This allows the
-> callback, to invoke clk_get_rate() and then dev_pm_opp_set_rate(), to
-> update the vote according to the current state of the HW.
+syzbot has found a reproducer for the following issue on:
 
-I wouldn't call dev_pm_opp_set_rate() from there, since it means
-configure and enable (both) for different resources, clk, regulator,
-genpd, etc..
+HEAD commit:    794c7931a242 Merge branch 'linus' of git://git.kernel.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13af2205300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=96f0602203250753
+dashboard link: https://syzkaller.appspot.com/bug?extid=9b57a46bf1801ce2a2ca
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11ae58ce300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11d71731300000
 
-What we need here is just configure. So something like this then:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9b57a46bf1801ce2a2ca@syzkaller.appspotmail.com
 
-- genpd->get_performance_state()
-  -> dev_pm_opp_get_current_opp() //New API
-  -> dev_pm_genpd_set_performance_state(dev, current_opp->pstate);
+------------[ cut here ]------------
+usb 1-1: BOGUS control dir, pipe 80000280 doesn't match bRequestType a1
+WARNING: CPU: 0 PID: 8434 at drivers/usb/core/urb.c:410 usb_submit_urb+0x149d/0x18a0 drivers/usb/core/urb.c:410
+Modules linked in:
+CPU: 0 PID: 8434 Comm: syz-executor752 Not tainted 5.14.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:usb_submit_urb+0x149d/0x18a0 drivers/usb/core/urb.c:410
+Code: 7c 24 40 e8 45 64 1f fc 48 8b 7c 24 40 e8 4b fc 0b ff 45 89 e8 44 89 f1 4c 89 e2 48 89 c6 48 c7 c7 e0 b2 27 8a e8 01 fc 91 03 <0f> 0b e9 a5 ee ff ff e8 17 64 1f fc 0f b6 1d 19 ca 01 08 31 ff 41
+RSP: 0018:ffffc90000effbd0 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: ffff888027944058 RCX: 0000000000000000
+RDX: ffff8880235db880 RSI: ffffffff815d85c5 RDI: fffff520001dff6c
+RBP: ffff888021618140 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815d23fe R11: 0000000000000000 R12: ffff888018aff118
+R13: 00000000000000a1 R14: 0000000080000280 R15: ffff888021900400
+FS:  000000000223d300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005614a6c2a160 CR3: 00000000222ca000 CR4: 0000000000350ef0
+Call Trace:
+ hid_submit_ctrl+0x6ec/0xd80 drivers/hid/usbhid/hid-core.c:416
+ usbhid_restart_ctrl_queue.isra.0+0x244/0x3a0 drivers/hid/usbhid/hid-core.c:258
+ __usbhid_submit_report+0x6f0/0xd50 drivers/hid/usbhid/hid-core.c:603
+ usbhid_submit_report drivers/hid/usbhid/hid-core.c:640 [inline]
+ usbhid_init_reports+0xd7/0x3b0 drivers/hid/usbhid/hid-core.c:780
+ hiddev_ioctl+0xb27/0x1630 drivers/hid/usbhid/hiddev.c:689
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:1069 [inline]
+ __se_sys_ioctl fs/ioctl.c:1055 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x444619
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 21 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe70eb96d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00000000004004a0 RCX: 0000000000444619
+RDX: 0000000000000000 RSI: 0000000000004805 RDI: 0000000000000004
+RBP: 0000000000403ea0 R08: 0000000000000001 R09: 00000000004004a0
+R10: 000000000000001f R11: 0000000000000246 R12: 0000000000403f30
+R13: 0000000000000000 R14: 00000000004b2018 R15: 00000000004004a0
+----------------
+Code disassembly (best guess):
+   0:	7c 24                	jl     0x26
+   2:	40 e8 45 64 1f fc    	rex callq 0xfc1f644d
+   8:	48 8b 7c 24 40       	mov    0x40(%rsp),%rdi
+   d:	e8 4b fc 0b ff       	callq  0xff0bfc5d
+  12:	45 89 e8             	mov    %r13d,%r8d
+  15:	44 89 f1             	mov    %r14d,%ecx
+  18:	4c 89 e2             	mov    %r12,%rdx
+  1b:	48 89 c6             	mov    %rax,%rsi
+  1e:	48 c7 c7 e0 b2 27 8a 	mov    $0xffffffff8a27b2e0,%rdi
+  25:	e8 01 fc 91 03       	callq  0x391fc2b
+  2a:	0f 0b                	ud2     <-- trapping instruction
+  2c:	e9 a5 ee ff ff       	jmpq   0xffffeed6
+  31:	e8 17 64 1f fc       	callq  0xfc1f644d
+  36:	0f b6 1d 19 ca 01 08 	movzbl 0x801ca19(%rip),%ebx        # 0x801ca56
+  3d:	31 ff                	xor    %edi,%edi
+  3f:	41                   	rex.B
 
-This can be done just once from probe() then.
-
-> I am not sure if/why that approach seemed insufficient?
-> 
-> Another option to solve the problem, I think, is simply to patch
-> drivers to let them call dev_pm_opp_set_rate() during ->probe(), this
-> should synchronize the HW state too.
-
-Dmitry already mentioned that this will make the device start
-consuming power, and he doesn't want that, else we need an explicit
-disble call as well.
-
--- 
-viresh
