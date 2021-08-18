@@ -2,132 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E883EF8EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 05:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 434E93EF8F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 05:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237254AbhHRD4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 23:56:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237210AbhHRD4L (ORCPT
+        id S237378AbhHRD4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 23:56:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46713 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236392AbhHRD4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 23:56:11 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74385C0617AE
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 20:55:36 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id k24so861674pgh.8
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 20:55:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=VGIhwyovjc9cLTorbY5F7s7VUrCyo5ROsIE6mKdF2i8=;
-        b=rsLZ+5+cs34CeKm8FdeypOasGszO5Z+LGg/gURNdpo/BaltaeBSvKidQFxg+U/P7vq
-         S/zusxLUtdDoCDzHAq+gTq22WAB40n4Qkk0Ku4cXOc+uTEyaQRKWv/b52rLV4JZHB+rE
-         GpTGxz7vZkIm7Ms92t/jEfqzxajkgCcDGx/hfYVqqHH+Ja2QK6EJtgOjTFD7Mons7/7z
-         jRQRosrCR9tYeU2COXGJUOTnQsHGWC5eYAYHYZf+lDoWMOvzM0YqaRI8vzA1Q6qR94h5
-         JdL36SX2xj7RIzuN9CFefrR3429SFDWAFHYvDz+a1OiNH/4h5wRF/0Uqw9a4yTL9NaQb
-         DX8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=VGIhwyovjc9cLTorbY5F7s7VUrCyo5ROsIE6mKdF2i8=;
-        b=PCFhsH3ofP9L9CAmsS+duy+Tf38Wi+eQGGLeXu/xbG8gLbOD+A5Ud3gyONHM+qK2V3
-         p8cLxxdYvvzKRSV0P5IWCl1RpchHHvSzyk2W99/aA5IWPSWcSz3fHTR87GonoToeIeQH
-         Y08WHGYm0ads7pnPrhDJe8nK2k78lZ+9t2lmCUxi31GWHMSo7rXj53vs0B/u19d/Ozm7
-         GTK3PMX3cLqcLAlSL23X7XajtEwmrRHvQC+Fuzx9ijjNfbc+KIEgj+BGvT1f9O8gLMAh
-         xx+dxMYX7vQesIK2G2Frwy7k8M5+ZfgTJqgEekSNta6LIC2u28w1mvWwMHC/tgYMeJtP
-         Dzig==
-X-Gm-Message-State: AOAM533KIjrbhhSjHQAHrNv2CMOnUmWQ4UP3vZHBH48WctjS/yEjqHt0
-        86dlmzHbkk8HsOrFG/ouBENwwg==
-X-Google-Smtp-Source: ABdhPJxZ0gvNmqzlYvzU9rK9OQ8NNCMq9wCIZZhKFhU5FN4x6UJRSgCEgSUhRZIdfilYavV9v+XkrA==
-X-Received: by 2002:a62:a20d:0:b029:35b:73da:dc8d with SMTP id m13-20020a62a20d0000b029035b73dadc8dmr7200457pff.54.1629258935761;
-        Tue, 17 Aug 2021 20:55:35 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id u21sm4880194pgk.57.2021.08.17.20.55.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 20:55:35 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 09:25:33 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-Message-ID: <20210818035533.ieqkexltfvvf2p4n@vireshk-i7>
-References: <20210817012754.8710-1-digetx@gmail.com>
- <20210817012754.8710-2-digetx@gmail.com>
- <20210817075515.vyyv7z37e6jcrhsl@vireshk-i7>
- <710261d9-7ae3-5155-c0a2-f8aed2408d0b@gmail.com>
+        Tue, 17 Aug 2021 23:56:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629258975;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZQHYMXJcgCjoNKEEL5x5yhztahB+htLkxP7MwFCB/4Y=;
+        b=CgI6jIaJKcxf86grMbwoaGCbpaXONFO3f4rNc8es5SaT+fF8VBk1e9JJQkOdPNVItb+ACA
+        4krsAUd4mmS+es8DKbG8oTCuvubiFiz7Y0E+ZP2ZDs/K7KPYYIEG3rp9anHlx9YIfdXKKy
+        P/vi2wsxjqT3CAA07xx1ChvK7YRu+lg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-448-_i89I_Y3OXKRiu44R7to6A-1; Tue, 17 Aug 2021 23:56:14 -0400
+X-MC-Unique: _i89I_Y3OXKRiu44R7to6A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8C8D0801AC0;
+        Wed, 18 Aug 2021 03:56:12 +0000 (UTC)
+Received: from T590 (ovpn-8-28.pek2.redhat.com [10.72.8.28])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7E26E19D9D;
+        Wed, 18 Aug 2021 03:56:03 +0000 (UTC)
+Date:   Wed, 18 Aug 2021 11:55:57 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     axboe@kernel.dk, jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, kashyap.desai@broadcom.com,
+        hare@suse.de
+Subject: Re: [PATCH v2 05/11] blk-mq-sched: Rename blk_mq_sched_alloc_{tags
+ -> map_and_request}()
+Message-ID: <YRyEzcoou9khUD7S@T590>
+References: <1628519378-211232-1-git-send-email-john.garry@huawei.com>
+ <1628519378-211232-6-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <710261d9-7ae3-5155-c0a2-f8aed2408d0b@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <1628519378-211232-6-git-send-email-john.garry@huawei.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17-08-21, 18:49, Dmitry Osipenko wrote:
-> 17.08.2021 10:55, Viresh Kumar пишет:
-> ...
-> >> +int dev_pm_opp_sync(struct device *dev)
-> >> +{
-> >> +	struct opp_table *opp_table;
-> >> +	struct dev_pm_opp *opp;
-> >> +	int ret = 0;
-> >> +
-> >> +	/* Device may not have OPP table */
-> >> +	opp_table = _find_opp_table(dev);
-> >> +	if (IS_ERR(opp_table))
-> >> +		return 0;
-> >> +
-> >> +	if (!_get_opp_count(opp_table))
-> >> +		goto put_table;
-> >> +
-> >> +	opp = _find_current_opp(dev, opp_table);
-> >> +	ret = _set_opp(dev, opp_table, opp, opp->rate);
-> > 
-> > And I am not sure how this will end up working, since new OPP will be
-> > equal to old one. Since I see you call this from resume() at many
-> > places.
+On Mon, Aug 09, 2021 at 10:29:32PM +0800, John Garry wrote:
+> Function blk_mq_sched_alloc_tags() does same as
+> __blk_mq_alloc_map_and_request(), so give a similar name to be consistent.
 > 
-> Initially OPP table is "uninitialized" and opp_table->enabled=false,
-> hence the first sync always works even if OPP is equal to old one. Once
-> OPP has been synced, all further syncs are NO-OPs, hence it doesn't
-> matter how many times syncing is called.
+> Similarly rename label err_free_tags -> err_free_map_and_request.
 > 
-> https://elixir.bootlin.com/linux/v5.14-rc6/source/drivers/opp/core.c#L1012
+> Signed-off-by: John Garry <john.garry@huawei.com>
 
-Right, but how will this work from Resume ? Won't that be a no-op ?
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
 
 -- 
-viresh
+Ming
+
