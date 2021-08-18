@@ -2,118 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698093EFE1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 608103EFE2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240044AbhHRHpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 03:45:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43714 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239331AbhHRHpR (ORCPT
+        id S238978AbhHRHr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 03:47:28 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56978 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238014AbhHRHr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 03:45:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629272682;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZDR9dCcFnqRjQs5BKATK3dgD8MpAQds3bSLfGElXMe8=;
-        b=WlAhQdAbYFWddbS6F8X00DrfUXo8+l/ErQ3McYq8trxzgrP/k+OwvwqBHEVYUc7PR6hk7K
-        c4KfE9ttDIcuNmTSkOVbRHW7IARmT2yxZqhKd+La7/nXjuiuEyJkyWQd/CRhmgJXddHr7P
-        VdUUq2C8bHyjKevBTaq7NGswwYJtkDU=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-148-rnDZ9SHwM12SrOjPw4sJ4g-1; Wed, 18 Aug 2021 03:44:41 -0400
-X-MC-Unique: rnDZ9SHwM12SrOjPw4sJ4g-1
-Received: by mail-ed1-f69.google.com with SMTP id u4-20020a50eac40000b02903bddc52675eso609440edp.4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 00:44:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZDR9dCcFnqRjQs5BKATK3dgD8MpAQds3bSLfGElXMe8=;
-        b=rd5b2ZkGuYMjp7kk9KRQxbJU1HYblMjqJGcjAujt8dJ1ZKkwmFtSI59/swmj1QdJ6K
-         y3jBHIQt5WFIH8kALbty4l3mUNvjYXzjZzcz4wCNjUIeukXw+3lfGv+L7x/M6kHyjFBN
-         OTDfTq4YTW3glzoK4ulz6ia6sTFBBqMMlobCGvhyXuTPEI9zg6ziJUIy3eoTqF5Ayb9e
-         r/2joDByInAubcNtULVfBXpbLjivFdwKbUE78h4kpWnkwsbjgVFFjf5ccuPN4ePUCoeG
-         PkZRhbIJXLwEfaIEu3QvRjvgx82nB6tFs9liDw9raSu+N5/AJIBGwoLbiG6LAJSqSoFU
-         5n6w==
-X-Gm-Message-State: AOAM532N+bR45RFdYVaVg4xUw0uPAQgTAof3PFC/mPSDguT1MFAcrIMk
-        bWTMqge9YCAHZDQX2j7hjG9+xjqXyteQ9xCHGHtNj2xXYv/SnBB6MmiOWI3xoCNXhnGN6tcuMYf
-        r0Lkdw8OzTi2ly7N9Jjqs3tSwO1W8QryRyBSkyIAtlcXKnU5X7o6+INpiOSCTKjnzIhlYwGC6cl
-        dg
-X-Received: by 2002:a17:907:7704:: with SMTP id kw4mr8246928ejc.23.1629272679692;
-        Wed, 18 Aug 2021 00:44:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyJukV8qhSL3IKMdZaVPX1Am3u9IqxVfcSdgXafbeyr5DVxLVIs4LXx7LTNaUwgrNB8vmKAbQ==
-X-Received: by 2002:a17:907:7704:: with SMTP id kw4mr8246912ejc.23.1629272679404;
-        Wed, 18 Aug 2021 00:44:39 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id b5sm1660448ejq.56.2021.08.18.00.44.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 00:44:39 -0700 (PDT)
-Subject: Re: [PATCH] platform/x86: gigabyte-wmi: add support for X570 GAMING X
-To:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
-        platform-driver-x86@vger.kernel.org,
-        Mark Gross <mgross@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org
-References: <20210817154628.84992-1-linux@weissschuh.net>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <b1b43dfd-7057-6ef4-6f03-154f1df4cb4b@redhat.com>
-Date:   Wed, 18 Aug 2021 09:44:38 +0200
+        Wed, 18 Aug 2021 03:47:27 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17I7WSvU121113;
+        Wed, 18 Aug 2021 03:46:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=eJB6fTRU9cbwtN+NHePzNgp+wq+hrto0ebgKHTEg/aA=;
+ b=UBgwNwpqF5nVgn4zfY6VYhGqjW/Tl240ZQ+seZ32cs/hAN1hDQWfrgkNt0to8cXr0KeP
+ 7/tTBL1KVEN4oMKrHCcFd6e7ulqgYM4H434ag8Dk8zrqG3vU2r9dimAAIsf7tyA+pogN
+ iAFlc7hTTU2/WsFvCd0pX6PkUMaO3AndFOYx1vSaqT/i/jgYBVQcX1d+TLo3FPUIQX1R
+ CF/zoMjY+eKyWXmhyLtsAlvJOr6H4O8BY7oH5TXT63rHoRS41mmQHzVziEr425N7ybfW
+ 23ujPzW0aob4EBBkgexzDKvNpmxrv1qkQX0HpQwKQPz3JrSC6MOs7iK/M1oHiuzq+p3o dA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3agfdxf1fj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Aug 2021 03:46:53 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17I7WqBw122267;
+        Wed, 18 Aug 2021 03:46:53 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3agfdxf1f1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Aug 2021 03:46:52 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17I7gxdW025587;
+        Wed, 18 Aug 2021 07:46:50 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04ams.nl.ibm.com with ESMTP id 3ae5f8e4sg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Aug 2021 07:46:50 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17I7klld26149366
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Aug 2021 07:46:47 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2D5D2A405F;
+        Wed, 18 Aug 2021 07:46:47 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 980C4A4064;
+        Wed, 18 Aug 2021 07:46:46 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.174.181])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 18 Aug 2021 07:46:46 +0000 (GMT)
+Subject: Re: [PATCH 1/2] KVM: s390: gaccess: Cleanup access to guest frames
+To:     Janis Schoetterl-Glausch <scgl@linux.ibm.com>, kvm@vger.kernel.org,
+        borntraeger@de.ibm.com, imbrenda@linux.ibm.com,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Cc:     david@redhat.com, cohuck@redhat.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210816150718.3063877-1-scgl@linux.ibm.com>
+ <20210816150718.3063877-2-scgl@linux.ibm.com>
+From:   Janosch Frank <frankja@linux.ibm.com>
+Message-ID: <81df4ea7-edb0-5b94-a500-1526230fca22@linux.ibm.com>
+Date:   Wed, 18 Aug 2021 09:46:46 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210817154628.84992-1-linux@weissschuh.net>
+In-Reply-To: <20210816150718.3063877-2-scgl@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: z4q2UCb3VdKcjunKotQ8BGbUCKNayC_o
+X-Proofpoint-ORIG-GUID: mmJ2mAMFCyM-aoW9BMauN7GCcTXyCIIk
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-18_02:2021-08-17,2021-08-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ lowpriorityscore=0 spamscore=0 impostorscore=0 phishscore=0
+ priorityscore=1501 mlxlogscore=999 mlxscore=0 bulkscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108180047
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 8/17/21 5:46 PM, Thomas Weißschuh wrote:
-> Reported as working here:
-> https://github.com/t-8ch/linux-gigabyte-wmi-driver/issues/1#issuecomment-900263115
+On 8/16/21 5:07 PM, Janis Schoetterl-Glausch wrote:
+> Introduce a helper function for guest frame access.
+> Rewrite the calculation of the gpa and the length of the segment
+> to be more readable.
 > 
-> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-
-I've also added this to the fixes branch so that it will be
-included in the next (and last) fixes-pullreq to Linus for 5.14 .
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
+Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
 
 > ---
->  drivers/platform/x86/gigabyte-wmi.c | 1 +
->  1 file changed, 1 insertion(+)
+>  arch/s390/kvm/gaccess.c | 48 +++++++++++++++++++++++++----------------
+>  1 file changed, 29 insertions(+), 19 deletions(-)
 > 
-> diff --git a/drivers/platform/x86/gigabyte-wmi.c b/drivers/platform/x86/gigabyte-wmi.c
-> index 5529d7b0abea..d65aa43e6f72 100644
-> --- a/drivers/platform/x86/gigabyte-wmi.c
-> +++ b/drivers/platform/x86/gigabyte-wmi.c
-> @@ -146,6 +146,7 @@ static const struct dmi_system_id gigabyte_wmi_known_working_platforms[] = {
->  	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550M DS3H"),
->  	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("Z390 I AORUS PRO WIFI-CF"),
->  	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("X570 AORUS ELITE"),
-> +	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("X570 GAMING X"),
->  	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("X570 I AORUS PRO WIFI"),
->  	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("X570 UD"),
->  	{ }
-> 
-> base-commit: 009c9aa5be652675a06d5211e1640e02bbb1c33d
+> diff --git a/arch/s390/kvm/gaccess.c b/arch/s390/kvm/gaccess.c
+> index b9f85b2dc053..df83de0843de 100644
+> --- a/arch/s390/kvm/gaccess.c
+> +++ b/arch/s390/kvm/gaccess.c
+> @@ -827,11 +827,26 @@ static int guest_page_range(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar,
+>  	return 0;
+>  }
+>  
+> +static int access_guest_frame(struct kvm *kvm, enum gacc_mode mode, gpa_t gpa,
+> +			      void *data, unsigned int len)
+> +{
+> +	gfn_t gfn = gpa_to_gfn(gpa);
+> +	unsigned int offset = offset_in_page(gpa);
+> +	int rc;
+> +
+> +	if (mode == GACC_STORE)
+> +		rc = kvm_write_guest_page(kvm, gfn, data, offset, len);
+> +	else
+> +		rc = kvm_read_guest_page(kvm, gfn, data, offset, len);
+> +	return rc;
+> +}
+> +
+>  int access_guest(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar, void *data,
+>  		 unsigned long len, enum gacc_mode mode)
+>  {
+>  	psw_t *psw = &vcpu->arch.sie_block->gpsw;
+> -	unsigned long _len, nr_pages, gpa, idx;
+> +	unsigned long nr_pages, gpa, idx;
+> +	unsigned int seg;
+>  	unsigned long pages_array[2];
+>  	unsigned long *pages;
+>  	int need_ipte_lock;
+> @@ -855,15 +870,12 @@ int access_guest(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar, void *data,
+>  		ipte_lock(vcpu);
+>  	rc = guest_page_range(vcpu, ga, ar, pages, nr_pages, asce, mode);
+>  	for (idx = 0; idx < nr_pages && !rc; idx++) {
+> -		gpa = *(pages + idx) + (ga & ~PAGE_MASK);
+> -		_len = min(PAGE_SIZE - (gpa & ~PAGE_MASK), len);
+> -		if (mode == GACC_STORE)
+> -			rc = kvm_write_guest(vcpu->kvm, gpa, data, _len);
+> -		else
+> -			rc = kvm_read_guest(vcpu->kvm, gpa, data, _len);
+> -		len -= _len;
+> -		ga += _len;
+> -		data += _len;
+> +		gpa = pages[idx] + offset_in_page(ga);
+> +		seg = min(PAGE_SIZE - offset_in_page(gpa), len);
+> +		rc = access_guest_frame(vcpu->kvm, mode, gpa, data, seg);
+> +		len -= seg;
+> +		ga += seg;
+> +		data += seg;
+>  	}
+>  	if (need_ipte_lock)
+>  		ipte_unlock(vcpu);
+> @@ -875,19 +887,17 @@ int access_guest(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar, void *data,
+>  int access_guest_real(struct kvm_vcpu *vcpu, unsigned long gra,
+>  		      void *data, unsigned long len, enum gacc_mode mode)
+>  {
+> -	unsigned long _len, gpa;
+> +	unsigned long gpa;
+> +	unsigned int seg;
+>  	int rc = 0;
+>  
+>  	while (len && !rc) {
+>  		gpa = kvm_s390_real_to_abs(vcpu, gra);
+> -		_len = min(PAGE_SIZE - (gpa & ~PAGE_MASK), len);
+> -		if (mode)
+> -			rc = write_guest_abs(vcpu, gpa, data, _len);
+> -		else
+> -			rc = read_guest_abs(vcpu, gpa, data, _len);
+> -		len -= _len;
+> -		gra += _len;
+> -		data += _len;
+> +		seg = min(PAGE_SIZE - offset_in_page(gpa), len);
+> +		rc = access_guest_frame(vcpu->kvm, mode, gpa, data, seg);
+> +		len -= seg;
+> +		gra += seg;
+> +		data += seg;
+>  	}
+>  	return rc;
+>  }
 > 
 
