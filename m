@@ -2,92 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8ADE3F027E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 13:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4933F0280
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 13:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235256AbhHRLSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 07:18:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233798AbhHRLSh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 07:18:37 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4291CC061764;
-        Wed, 18 Aug 2021 04:18:02 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id o15so1378071wmr.3;
-        Wed, 18 Aug 2021 04:18:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=npcrXFBJjU968BkHBeT2qoRCIDqfxC7izKMFTpUlPDQ=;
-        b=iRGgMnhAfeNa+YdR2DDIilZ+e59oWTMFPwPPlmreODpxo7y1lAT+8/1JsEnR5zU3h2
-         y/2pKuJ41vR8gR2lhfW7WQ29QnWqqDSVNGNOph/C2pRYbu7uhDuARAB/KDgxdV75/WY+
-         n+vxeCUx7V5Go0LE4A6vdRN3ogGXEpo30ULpqRMgMAnPjK4b+RoyHciGNEez1KDU1ayK
-         B8iwzSAIeVnDB48Tai4vHlMCAjA/QYZmh1FBab1hzAjHTf5VkQvhWf2TW8yNKlmQ5z+y
-         CGYeezw3bv6KNM6KIsemHtThN0FxZJ0V+qWws4qxl1eFg/EM3byBz7wIq6Lnk5q5g9/K
-         Hejg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=npcrXFBJjU968BkHBeT2qoRCIDqfxC7izKMFTpUlPDQ=;
-        b=IlMQNafWjgJWGiLkMyKMG8f4ruVKxtOquFKAdAgBBFP0zNToYJptOuCL5QNxE3Hw0A
-         FHQB2maPVUnkQxst+7VEuhOo/HCZ1BSz7QfQMEuTkVAatfZKWkebVM2ok/raAf8O+hFv
-         jETjE2+hsGkvLXQfEUHW7BEwqMEqZWS3YtBSFi+XGLT+s3oFD01xwxPSrX4O8cIzlKHb
-         dgV2pTdrlj20DgrWOY/mMXB8qL0DBL1EjGYITpEgB+dFV6FHrsa7lYLkfUvp/8frByq4
-         yoxwbt0GdiMFuGqajiwOXB9KY5az0blG3wFDoY7vw8DweVQ0rpPCpOTiP7jcQ9HZQsDh
-         GfKg==
-X-Gm-Message-State: AOAM532e6sv10aN4gNAB5UAZQy42V5VNMA0VMadXFJCxMWb86INV2kkC
-        NJOkhRdDsJPTl15YfRZSHx+92zp8RAs=
-X-Google-Smtp-Source: ABdhPJx+bmnU9lYeMmZWV7Lki51hGDj4DGDffJPKKxD6Nif5lxcWMujQD938JOQQWXkCjk8tCW5y6g==
-X-Received: by 2002:a05:600c:4a29:: with SMTP id c41mr7823042wmp.86.1629285480817;
-        Wed, 18 Aug 2021 04:18:00 -0700 (PDT)
-Received: from chgm-pc-linux.bachmann.at ([185.67.228.2])
-        by smtp.gmail.com with ESMTPSA id f198sm4929586wmf.11.2021.08.18.04.17.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 04:18:00 -0700 (PDT)
-From:   Christian Gmeiner <christian.gmeiner@gmail.com>
-To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Christian Gmeiner <christian.gmeiner@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: ti: k3-am64-mcu: Add pinctrl
-Date:   Wed, 18 Aug 2021 13:17:46 +0200
-Message-Id: <20210818111747.88569-1-christian.gmeiner@gmail.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S235459AbhHRLUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 07:20:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56902 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233798AbhHRLUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 07:20:00 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D068C6109E;
+        Wed, 18 Aug 2021 11:19:25 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mGJbP-005jkk-Lh; Wed, 18 Aug 2021 12:19:23 +0100
+Date:   Wed, 18 Aug 2021 12:19:23 +0100
+Message-ID: <87o89vroec.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Saravana Kannan <saravanak@google.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Neil Armstrong <narmstrong@baylibre.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH 1/2] irqchip: irq-meson-gpio: make it possible to build as a module
+In-Reply-To: <CAGETcx-FS_88nQuF=xN4iJJ-nGnaeTnO-iiGpZuNELqE42FtoA@mail.gmail.com>
+References: <87r1hwwier.wl-maz@kernel.org>
+        <7h7diwgjup.fsf@baylibre.com>
+        <87im0m277h.wl-maz@kernel.org>
+        <CAGETcx9OukoWM_qprMse9aXdzCE=GFUgFEkfhhNjg44YYsOQLw@mail.gmail.com>
+        <87sfzpwq4f.wl-maz@kernel.org>
+        <CAGETcx95kHrv8wA-O+-JtfH7H9biJEGJtijuPVN0V5dUKUAB3A@mail.gmail.com>
+        <CAGETcx8bpWQEnkpJ0YW9GqX8WE0ewT45zqkbWWdZ0ktJBhG4yQ@mail.gmail.com>
+        <YQuZ2cKVE+3Os25Z@google.com>
+        <YRpeVLf18Z+1R7WE@google.com>
+        <CAGETcx-gSJD0Ra=U_55k3Anps11N_3Ev9gEQV6NaXOvqwP0J3g@mail.gmail.com>
+        <YRtkE62O+4EiyzF9@google.com>
+        <CAGETcx-FS_88nQuF=xN4iJJ-nGnaeTnO-iiGpZuNELqE42FtoA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: saravanak@google.com, lee.jones@linaro.org, narmstrong@baylibre.com, andrew@lunn.ch, khilman@baylibre.com, jbrunet@baylibre.com, linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the definition of the pinctrl for the MCU domain.
+On Tue, 17 Aug 2021 19:12:34 +0100,
+Saravana Kannan <saravanak@google.com> wrote:
+> 
+> On Tue, Aug 17, 2021 at 12:24 AM Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > On Mon, 16 Aug 2021, Saravana Kannan wrote:
+> > > > > > I sent out the proper fix as a series:
+> > > > > > https://lore.kernel.org/lkml/20210804214333.927985-1-saravanak@google.com/T/#t
+> > > > > >
+> > > > > > Marc, can you give it a shot please?
+> > > > > >
+> > > > > > -Saravana
+> > > > >
+> > > > > Superstar!  Thanks for taking the time to rectify this for all of us.
+> > > >
+> > > > Just to clarify:
+> > > >
+> > > >   Are we waiting on a subsequent patch submission at this point?
+> > >
+> > > Not that I'm aware of. Andrew added a "Reviewed-by" to all 3 of my
+> > > proper fix patches. I didn't think I needed to send any newer patches.
+> > > Is there some reason you that I needed to?
+> >
+> > Actually, I meant *this* patch.
+> 
+> I think it'll be nice if Neil addresses the stuff Marc mentioned
+> (ideally) using the macros I suggested. Not sure if Marc is waiting on
+> that though. Marc also probably wants my mdio-mux series to merge
+> first before he takes this patch. So that it doesn't break networking
+> in his device.
 
-Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
----
- arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Yup. Two things need to happen here:
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi
-index 59cc58f7d0c8..2bb5c9ff172c 100644
---- a/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi
-@@ -97,4 +97,12 @@ mcu_gpio0: gpio@4201000 {
- 		clocks = <&k3_clks 79 0>;
- 		clock-names = "gpio";
- 	};
-+
-+	mcu_pmx0: pinctrl@4084000 {
-+		compatible = "pinctrl-single";
-+		reg = <0x00 0x4084000 0x00 0x84>;
-+		#pinctrl-cells = <1>;
-+		pinctrl-single,register-width = <32>;
-+		pinctrl-single,function-mask = <0xffffffff>;
-+	};
- };
+- the MDIO fixes must be merged (I think they are queued, from what I
+  can see)
+
+- the irqchip patch must be fixed so that the driver cannot be
+  unloaded (Saravana did explain what needs to be done).
+
+Once these two condition are met, I'll happily take this patch.
+
+	M.
+
 -- 
-2.31.1
-
+Without deviation from the norm, progress is not possible.
