@@ -2,298 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8343EFCCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E783EFCCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239251AbhHRGbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 02:31:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50088 "EHLO
+        id S239161AbhHRGb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 02:31:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238781AbhHRGbr (ORCPT
+        with ESMTP id S239143AbhHRGbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 02:31:47 -0400
+        Wed, 18 Aug 2021 02:31:48 -0400
 Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA60C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:31:13 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id n20-20020a2540140000b0290593b8e64cd5so1836730yba.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:31:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90CE6C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:31:14 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id o3-20020a2541030000b0290557cf3415f8so1874328yba.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:31:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=axDz8FmbUkmwoP5Po1n0WrbURWOp6eK+Sy9KgBfPnX8=;
-        b=tMJdGo0VdmwhtsmfaZ+8rkd4E9lkxdQ44NTW3d4/TNpCinw/fAFDzywEKib15cClPi
-         W29Wg6lpdN+bZgNq9Vd3h4q/1uzr+5hqEfenQ6HyCLa6QbL33fZSCMLzbTULgjUGwpI+
-         BXmZg8SRzvZbXVtkQBlaLzEKm8WV77UfxsQ8EG6tQhxw6/Eh23ojg4fHfZC7QgWEo1ji
-         DDtk9ZcuKvr1BNn+esg0iIEsM4XejbvsJ+161wy6H40w1DQU0zhTeR6Qc0qXfc3jhHfB
-         OSV1hDsLPUfb0gbAc/64uz9OCgvP0IMwvygx6lIZRwZoCsDlkU53OLv5tpYI+ITQhfO/
-         zGEA==
+        bh=r28OOl9H0j68087MxXenLvNFF4q/L5LmucJPA1P1rF0=;
+        b=rVacPqv+ksAvDz+9AzHa3UA8YFJnchxgAhITykWT0kxNmHdqCt/DAMGYBXtFWBzdAw
+         UzvzekE5eXZhtYXiInhdds4rbazWL2e8SFPVHUTGBWlGoWlFjQjsFG7H8fdm3sVFRrQW
+         CFVuV2fjqGRF2ixE+rJiDYBWDDGU/m+XKJeE5lrzOOrs34yZw1Ln+xkk4ovZWFoIZoZa
+         qCrHFEneIQhdNP2RXcj/F4CpHXU0rbR7/8YAGVM5R73tsv7EDGpvPGvc4a+NpC+R39BQ
+         Ur9JQcBxVNokNwE8GV6vwh3SSZ/rfbxBm3LxCp2vVHVrgTnlp/1EuNSgPFpyUabNGaju
+         +HbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=axDz8FmbUkmwoP5Po1n0WrbURWOp6eK+Sy9KgBfPnX8=;
-        b=dD4/za178fz7QMAJcBMJdkoFTCVqvkL1zGzHBLrhrHdGhSzjFo6X14bIzrzY9ILXWt
-         iXSD2K869B9X54uGWS9rIRDe9Tax9ysqxo+oeaLy/v4YsjP7ayd75dCBPT+iS2JST3LA
-         NCSxH6Jl0tfMD2XYX4m3BFOF9+6ksovNpB7L8MxOI63kOPyz9vKIh0aHpneZw0k88dMz
-         AeGz7bPyjIH2+AVBnw0YVow0lU1WA81JZ7vH3AXcrCCGz/loivXb44gG9MIpNQfLVXCt
-         H2laoR2BmRkext6EZ9salpVvlh/BXwdyyeELnAu900JX9XQ0YEVfxLcWt0OCNufp6CyY
-         4cZg==
-X-Gm-Message-State: AOAM5320KM5XXdoDMi3sp3Xv5mK1urtm1rU3r20xIV3l20U0GlPH66cD
-        3EL7SZTJM0ok4PMn58sEr36u75Bt6AI=
-X-Google-Smtp-Source: ABdhPJz9k/2W2LmgADoTsZbfpB5d6btee0nxlX6DF/x7Ki85TCn69a1MVMx/WICufFas9KT4dBOAj2dLDVU=
+        bh=r28OOl9H0j68087MxXenLvNFF4q/L5LmucJPA1P1rF0=;
+        b=c5gLHS54oFVwS8A4nw6R5+3FUpr7eopfkVC5KPqqX1KA/CZaghoce6XiEhgS6QWwKb
+         33wa8T6zkj9nYvXmEavFSrkiHkGTkZ1YWF4kC8u1DG4eqjF6UOWIdzAcZ6DLluNdh+Sq
+         yi7CB1OchFoeEH9PZPfmx/xWsYz3TlwQLrFHA168mIpuJtA3iL15ISnaD22IuuK7WFqn
+         WTWBcH0qhPjC+adXzm25ZQ1bzj+F7gsKkucDPhA804LwdAmHQRICUXprRub/HcpACLOw
+         RE6bjXTMLraDVCMoXpFpHNO9bg2j4p/4mEgg8Nc4iqVePnvtNDESv6KQZOF/7NTAN/9O
+         bg/A==
+X-Gm-Message-State: AOAM530kzhv8KQe5gDBQs8yE/+ZrerIxPTtwtunLO8Xtw1YSbkXqBVK8
+        7pnx53EK1e7rIhq508MiRe/jAa8PV+E=
+X-Google-Smtp-Source: ABdhPJxKa+6gSOMXKC9+9yKBARFPL7honqMsWyRtIkHW0A5Nhi7abOtfmKUl4eee1vwoKxR4P+tGRKOMAyI=
 X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:41f0:f89:87cd:8bd0])
- (user=yuzhao job=sendgmr) by 2002:a25:cf8a:: with SMTP id f132mr9779192ybg.387.1629268272384;
- Tue, 17 Aug 2021 23:31:12 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 00:30:57 -0600
+ (user=yuzhao job=sendgmr) by 2002:a25:2688:: with SMTP id m130mr9020507ybm.146.1629268273873;
+ Tue, 17 Aug 2021 23:31:13 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 00:30:58 -0600
 In-Reply-To: <20210818063107.2696454-1-yuzhao@google.com>
-Message-Id: <20210818063107.2696454-2-yuzhao@google.com>
+Message-Id: <20210818063107.2696454-3-yuzhao@google.com>
 Mime-Version: 1.0
 References: <20210818063107.2696454-1-yuzhao@google.com>
 X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
-Subject: [PATCH v4 01/11] mm: x86, arm64: add arch_has_hw_pte_young()
+Subject: [PATCH v4 02/11] mm: x86: add CONFIG_ARCH_HAS_NONLEAF_PMD_YOUNG
 From:   Yu Zhao <yuzhao@google.com>
 To:     linux-mm@kvack.org
 Cc:     linux-kernel@vger.kernel.org, Hillf Danton <hdanton@sina.com>,
-        page-reclaim@google.com, Yu Zhao <yuzhao@google.com>
+        page-reclaim@google.com, Yu Zhao <yuzhao@google.com>,
+        Konstantin Kharlamov <Hi-Angel@yandex.ru>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some architectures set the accessed bit in PTEs automatically, e.g.,
-x86, and arm64 v8.2 and later. On architectures that do not have this
-capability, clearing the accessed bit in a PTE triggers a page fault
-following the TLB miss.
+Some architectures support the accessed bit on non-leaf PMD entries,
+e.g., x86_64 sets the accessed bit on a non-leaf PMD entry when using
+it as part of linear address translation [1]. As an optimization, page
+table walkers who are interested in the accessed bit can skip the PTEs
+under a non-leaf PMD entry if the accessed bit is cleared on this
+non-leaf PMD entry.
 
-Being aware of this capability can help make better decisions, i.e.,
-whether to limit the size of each batch of PTEs and the burst of
-batches when clearing the accessed bit.
+Although an inline function may be preferable, this capability is
+added as a configuration option to look consistent when used with the
+existing macros.
+
+[1]: Intel 64 and IA-32 Architectures Software Developer's Manual
+     Volume 3 (October 2019), section 4.8
 
 Signed-off-by: Yu Zhao <yuzhao@google.com>
+Tested-by: Konstantin Kharlamov <Hi-Angel@yandex.ru>
 ---
- arch/arm64/include/asm/cpufeature.h | 19 ++++++-------------
- arch/arm64/include/asm/pgtable.h    | 10 ++++------
- arch/arm64/kernel/cpufeature.c      | 19 +++++++++++++++++++
- arch/arm64/mm/proc.S                | 12 ------------
- arch/arm64/tools/cpucaps            |  1 +
- arch/x86/include/asm/pgtable.h      |  6 +++---
- include/linux/pgtable.h             | 12 ++++++++++++
- mm/memory.c                         | 14 +-------------
- 8 files changed, 46 insertions(+), 47 deletions(-)
+ arch/Kconfig                   | 9 +++++++++
+ arch/x86/Kconfig               | 1 +
+ arch/x86/include/asm/pgtable.h | 3 ++-
+ arch/x86/mm/pgtable.c          | 5 ++++-
+ include/linux/pgtable.h        | 4 ++--
+ 5 files changed, 18 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-index 9bb9d11750d7..2020b9e818c8 100644
---- a/arch/arm64/include/asm/cpufeature.h
-+++ b/arch/arm64/include/asm/cpufeature.h
-@@ -776,6 +776,12 @@ static inline bool system_supports_tlb_range(void)
- 		cpus_have_const_cap(ARM64_HAS_TLB_RANGE);
- }
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 129df498a8e1..5b6b4f95372f 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -1282,6 +1282,15 @@ config ARCH_SPLIT_ARG64
+ config ARCH_HAS_ELFCORE_COMPAT
+ 	bool
  
-+/* Check whether hardware update of the Access flag is supported. */
-+static inline bool system_has_hw_af(void)
-+{
-+	return IS_ENABLED(CONFIG_ARM64_HW_AFDBM) && cpus_have_const_cap(ARM64_HW_AF);
-+}
++config ARCH_HAS_NONLEAF_PMD_YOUNG
++	bool
++	depends on PGTABLE_LEVELS > 2
++	help
++	  Architectures that select this are able to set the accessed bit on
++	  non-leaf PMD entries in addition to leaf PTE entries where pages are
++	  mapped. For them, page table walkers that clear the accessed bit may
++	  stop at non-leaf PMD entries if they do not see the accessed bit.
 +
- extern int do_emulate_mrs(struct pt_regs *regs, u32 sys_reg, u32 rt);
+ source "kernel/gcov/Kconfig"
  
- static inline u32 id_aa64mmfr0_parange_to_phys_shift(int parange)
-@@ -799,19 +805,6 @@ static inline u32 id_aa64mmfr0_parange_to_phys_shift(int parange)
- 	}
- }
- 
--/* Check whether hardware update of the Access flag is supported */
--static inline bool cpu_has_hw_af(void)
--{
--	u64 mmfr1;
--
--	if (!IS_ENABLED(CONFIG_ARM64_HW_AFDBM))
--		return false;
--
--	mmfr1 = read_cpuid(ID_AA64MMFR1_EL1);
--	return cpuid_feature_extract_unsigned_field(mmfr1,
--						ID_AA64MMFR1_HADBS_SHIFT);
--}
--
- static inline bool cpu_has_pan(void)
- {
- 	u64 mmfr1 = read_cpuid(ID_AA64MMFR1_EL1);
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index f09bf5c02891..b63a6a7b62ee 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -993,13 +993,11 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
-  * page after fork() + CoW for pfn mappings. We don't always have a
-  * hardware-managed access flag on arm64.
-  */
--static inline bool arch_faults_on_old_pte(void)
-+static inline bool arch_has_hw_pte_young(void)
- {
--	WARN_ON(preemptible());
--
--	return !cpu_has_hw_af();
-+	return system_has_hw_af();
- }
--#define arch_faults_on_old_pte		arch_faults_on_old_pte
-+#define arch_has_hw_pte_young		arch_has_hw_pte_young
- 
- /*
-  * Experimentally, it's cheap to set the access flag in hardware and we
-@@ -1007,7 +1005,7 @@ static inline bool arch_faults_on_old_pte(void)
-  */
- static inline bool arch_wants_old_prefaulted_pte(void)
- {
--	return !arch_faults_on_old_pte();
-+	return arch_has_hw_pte_young();
- }
- #define arch_wants_old_prefaulted_pte	arch_wants_old_prefaulted_pte
- 
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index 0ead8bfedf20..d05de77626f5 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -1650,6 +1650,14 @@ static bool has_hw_dbm(const struct arm64_cpu_capabilities *cap,
- 	return true;
- }
- 
-+static void cpu_enable_hw_af(struct arm64_cpu_capabilities const *cap)
-+{
-+	u64 val = read_sysreg(tcr_el1);
-+
-+	write_sysreg(val | TCR_HA, tcr_el1);
-+	isb();
-+	local_flush_tlb_all();
-+}
- #endif
- 
- #ifdef CONFIG_ARM64_AMU_EXTN
-@@ -2126,6 +2134,17 @@ static const struct arm64_cpu_capabilities arm64_features[] = {
- 		.matches = has_hw_dbm,
- 		.cpu_enable = cpu_enable_hw_dbm,
- 	},
-+	{
-+		.desc = "Hardware update of the Access flag",
-+		.type = ARM64_CPUCAP_SYSTEM_FEATURE,
-+		.capability = ARM64_HW_AF,
-+		.sys_reg = SYS_ID_AA64MMFR1_EL1,
-+		.sign = FTR_UNSIGNED,
-+		.field_pos = ID_AA64MMFR1_HADBS_SHIFT,
-+		.min_field_value = 1,
-+		.matches = has_cpuid_feature,
-+		.cpu_enable = cpu_enable_hw_af,
-+	},
- #endif
- 	{
- 		.desc = "CRC32 instructions",
-diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
-index 35936c5ae1ce..b066d5712e3d 100644
---- a/arch/arm64/mm/proc.S
-+++ b/arch/arm64/mm/proc.S
-@@ -478,18 +478,6 @@ SYM_FUNC_START(__cpu_setup)
- 	 * Set the IPS bits in TCR_EL1.
- 	 */
- 	tcr_compute_pa_size tcr, #TCR_IPS_SHIFT, x5, x6
--#ifdef CONFIG_ARM64_HW_AFDBM
--	/*
--	 * Enable hardware update of the Access Flags bit.
--	 * Hardware dirty bit management is enabled later,
--	 * via capabilities.
--	 */
--	mrs	x9, ID_AA64MMFR1_EL1
--	and	x9, x9, #0xf
--	cbz	x9, 1f
--	orr	tcr, tcr, #TCR_HA		// hardware Access flag update
--1:
--#endif	/* CONFIG_ARM64_HW_AFDBM */
- 	msr	mair_el1, mair
- 	msr	tcr_el1, tcr
- 	/*
-diff --git a/arch/arm64/tools/cpucaps b/arch/arm64/tools/cpucaps
-index 49305c2e6dfd..d52f50671e60 100644
---- a/arch/arm64/tools/cpucaps
-+++ b/arch/arm64/tools/cpucaps
-@@ -35,6 +35,7 @@ HAS_STAGE2_FWB
- HAS_SYSREG_GIC_CPUIF
- HAS_TLB_RANGE
- HAS_VIRT_HOST_EXTN
-+HW_AF
- HW_DBM
- KVM_PROTECTED_MODE
- MISMATCHED_CACHE_TYPE
+ source "scripts/gcc-plugins/Kconfig"
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 88fb922c23a0..36a81d31f711 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -84,6 +84,7 @@ config X86
+ 	select ARCH_HAS_PMEM_API		if X86_64
+ 	select ARCH_HAS_PTE_DEVMAP		if X86_64
+ 	select ARCH_HAS_PTE_SPECIAL
++	select ARCH_HAS_NONLEAF_PMD_YOUNG	if X86_64
+ 	select ARCH_HAS_UACCESS_FLUSHCACHE	if X86_64
+ 	select ARCH_HAS_COPY_MC			if X86_64
+ 	select ARCH_HAS_SET_MEMORY
 diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-index 448cd01eb3ec..3908780fc408 100644
+index 3908780fc408..01a1763123ff 100644
 --- a/arch/x86/include/asm/pgtable.h
 +++ b/arch/x86/include/asm/pgtable.h
-@@ -1397,10 +1397,10 @@ static inline bool arch_has_pfn_modify_check(void)
- 	return boot_cpu_has_bug(X86_BUG_L1TF);
- }
+@@ -817,7 +817,8 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
  
--#define arch_faults_on_old_pte arch_faults_on_old_pte
--static inline bool arch_faults_on_old_pte(void)
-+#define arch_has_hw_pte_young arch_has_hw_pte_young
-+static inline bool arch_has_hw_pte_young(void)
+ static inline int pmd_bad(pmd_t pmd)
  {
--	return false;
-+	return true;
+-	return (pmd_flags(pmd) & ~_PAGE_USER) != _KERNPG_TABLE;
++	return (pmd_flags(pmd) & ~(_PAGE_USER | _PAGE_ACCESSED)) !=
++	       (_KERNPG_TABLE & ~_PAGE_ACCESSED);
  }
  
- #endif	/* __ASSEMBLY__ */
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index e24d2c992b11..3a8221fa2c76 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -258,6 +258,18 @@ static inline int pmdp_clear_flush_young(struct vm_area_struct *vma,
- #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
- #endif
+ static inline unsigned long pages_to_mb(unsigned long npg)
+diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
+index 3481b35cb4ec..a224193d84bf 100644
+--- a/arch/x86/mm/pgtable.c
++++ b/arch/x86/mm/pgtable.c
+@@ -550,7 +550,7 @@ int ptep_test_and_clear_young(struct vm_area_struct *vma,
+ 	return ret;
+ }
  
-+#ifndef arch_has_hw_pte_young
-+static inline bool arch_has_hw_pte_young(void)
-+{
-+	/*
-+	 * Those arches which have hw access flag feature need to implement
-+	 * their own helper. By default, "false" means pagefault will be hit
-+	 * on old pte.
-+	 */
-+	return false;
-+}
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++#if defined(CONFIG_TRANSPARENT_HUGEPAGE) || defined(CONFIG_ARCH_HAS_NONLEAF_PMD_YOUNG)
+ int pmdp_test_and_clear_young(struct vm_area_struct *vma,
+ 			      unsigned long addr, pmd_t *pmdp)
+ {
+@@ -562,6 +562,9 @@ int pmdp_test_and_clear_young(struct vm_area_struct *vma,
+ 
+ 	return ret;
+ }
 +#endif
 +
- #ifndef __HAVE_ARCH_PTEP_GET_AND_CLEAR
- static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
- 				       unsigned long address,
-diff --git a/mm/memory.c b/mm/memory.c
-index 25fc46e87214..2f96179db219 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -121,18 +121,6 @@ int randomize_va_space __read_mostly =
- 					2;
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ int pudp_test_and_clear_young(struct vm_area_struct *vma,
+ 			      unsigned long addr, pud_t *pudp)
+ {
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index 3a8221fa2c76..483d5ff7a33e 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -211,7 +211,7 @@ static inline int ptep_test_and_clear_young(struct vm_area_struct *vma,
  #endif
  
--#ifndef arch_faults_on_old_pte
--static inline bool arch_faults_on_old_pte(void)
--{
--	/*
--	 * Those arches which don't have hw access flag feature need to
--	 * implement their own helper. By default, "true" means pagefault
--	 * will be hit on old pte.
--	 */
--	return true;
--}
--#endif
--
- #ifndef arch_wants_old_prefaulted_pte
- static inline bool arch_wants_old_prefaulted_pte(void)
- {
-@@ -2769,7 +2757,7 @@ static inline bool cow_user_page(struct page *dst, struct page *src,
- 	 * On architectures with software "accessed" bits, we would
- 	 * take a double page fault, so mark it accessed here.
- 	 */
--	if (arch_faults_on_old_pte() && !pte_young(vmf->orig_pte)) {
-+	if (!arch_has_hw_pte_young() && !pte_young(vmf->orig_pte)) {
- 		pte_t entry;
+ #ifndef __HAVE_ARCH_PMDP_TEST_AND_CLEAR_YOUNG
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++#if defined(CONFIG_TRANSPARENT_HUGEPAGE) || defined(CONFIG_ARCH_HAS_NONLEAF_PMD_YOUNG)
+ static inline int pmdp_test_and_clear_young(struct vm_area_struct *vma,
+ 					    unsigned long address,
+ 					    pmd_t *pmdp)
+@@ -232,7 +232,7 @@ static inline int pmdp_test_and_clear_young(struct vm_area_struct *vma,
+ 	BUILD_BUG();
+ 	return 0;
+ }
+-#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
++#endif /* CONFIG_TRANSPARENT_HUGEPAGE || CONFIG_ARCH_HAS_NONLEAF_PMD_YOUNG */
+ #endif
  
- 		vmf->pte = pte_offset_map_lock(mm, vmf->pmd, addr, &vmf->ptl);
+ #ifndef __HAVE_ARCH_PTEP_CLEAR_YOUNG_FLUSH
 -- 
 2.33.0.rc1.237.g0d66db33f3-goog
 
