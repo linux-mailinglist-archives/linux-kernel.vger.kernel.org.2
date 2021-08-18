@@ -2,146 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19563EFA85
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66BF73EFC9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238029AbhHRGB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 02:01:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237998AbhHRGBT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 02:01:19 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63CE8C0613A4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:00:37 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id j12-20020a17090aeb0c00b00179530520b3so8274588pjz.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:00:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jSLfXbs59mtRstzo4Hk2BNosvMcxHU6QjHDYVbvhF94=;
-        b=IZiDZuRS1dgbax2OIM0qBL1zjf9wYlmKLTEfzJy5RuUwQu4eQ6Cqmnd2ZfQ9EnnS5E
-         Jr1fAcgL/JdFgkFZ89xjBuBPSORKqFiw+3e1WhRfjnkRI6XhhARyc2h+l5KPSXucToC1
-         5NtBgghBSCisOGicrsb9AX3gqpRGgB9wryJPh6wD220SUglcmvJcuJFjUggtI/Et9Qhq
-         yJL8iRXbbCgl4lZdUfxZejEJadW6CurxesAMbeYQ33LbfTu1KA1dNxOq6HMfw0FLGwDr
-         OcBg18AVZFD7ZTL3PphKIXIDGtjeF3qBwk12Pxl3ByoW3VLzL+hvaHjyLcAcizZ3cE8S
-         xzgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jSLfXbs59mtRstzo4Hk2BNosvMcxHU6QjHDYVbvhF94=;
-        b=J+3qj41xoaPfWhZ/NAzqfAk+Wp3rsCXuo1wcfVwWTZioMNMA1ClwLfuaH1X+ps5R5C
-         aCNPs6MsMk14l/P8WYLzWhrj8l9c05k4FQYutTPZZwyK6Uf34Op/6R0mIxTcNSLRuoML
-         jDOc63hVAdZy8Xmjd11hfdnbfb+Vr4AQWXWJEqL69WpF8ABecnYVRMKUUMCSs6h6hOD/
-         AaU3Gty/ArsOrv7ZI25jL79ndF0oJg+Ulc2Ujn0MloBQsssccSOjZ1/NDeBFxVbf3KJX
-         662Ee6Dcset15VUJjBwTMKGd5Mrefg1Fx7ZlLOVAvs8uTAF9Nkq/LSfex7UgFXXdClmq
-         aOcg==
-X-Gm-Message-State: AOAM532hF8MvWPVTEFxEh7YjXH9s/YcpQAQWRakWATCCb7EQWBVrYn2D
-        Q/2Jlx16gJC1azF58iy7pKC3Jw==
-X-Google-Smtp-Source: ABdhPJz6nHvt8tLhRUxNLQv5z93Dx/TL1iQrf7p3Xot0rNlhIhtJA6nFhb5bwd/3tPACvE5mJ3aZJA==
-X-Received: by 2002:a17:902:edc8:b029:12d:4a06:1c25 with SMTP id q8-20020a170902edc8b029012d4a061c25mr5874222plk.61.1629266436958;
-        Tue, 17 Aug 2021 23:00:36 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id 136sm6020660pge.77.2021.08.17.23.00.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 23:00:36 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 11:30:34 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-Message-ID: <20210818060034.tdu3ocbqlnao336u@vireshk-i7>
-References: <20210817012754.8710-2-digetx@gmail.com>
- <20210817075515.vyyv7z37e6jcrhsl@vireshk-i7>
- <710261d9-7ae3-5155-c0a2-f8aed2408d0b@gmail.com>
- <20210818035533.ieqkexltfvvf2p4n@vireshk-i7>
- <5b2a80c1-9743-e633-6257-ede94c8a274c@gmail.com>
- <20210818043131.7klajx6drvvkftoc@vireshk-i7>
- <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
- <20210818045307.4brb6cafkh3adjth@vireshk-i7>
- <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
- <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
-User-Agent: NeoMutt/20180716-391-311a52
+        id S240270AbhHRG0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 02:26:47 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:39040 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239622AbhHRG0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 02:26:05 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 629391A1481;
+        Wed, 18 Aug 2021 08:25:30 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 2AD7D1A146D;
+        Wed, 18 Aug 2021 08:25:30 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id BA890183AD27;
+        Wed, 18 Aug 2021 14:25:28 +0800 (+08)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl_rpmsg: Check -EPROBE_DEFER for getting clocks
+Date:   Wed, 18 Aug 2021 14:03:34 +0800
+Message-Id: <1629266614-6942-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-08-21, 11:28, Viresh Kumar wrote:
-> On 18-08-21, 08:21, Dmitry Osipenko wrote:
-> > Yes, GENPD will cache the perf state across suspend/resume and initially
-> > cached value is out of sync with h/w.
-> > 
-> > Nothing else. But let me clarify it all again.
-> 
-> Thanks for your explanation.
-> 
-> > Initially the performance state of all GENPDs is 0 for all devices.
-> > 
-> > The clock rate is preinitialized for all devices to a some default rate
-> > by clk driver, or by bootloader or by assigned-clocks in DT.
-> > 
-> > When device is rpm-resumed, the resume callback of a device driver
-> > enables the clock.
-> > 
-> > Before clock is enabled, the voltage needs to be configured in
-> > accordance to the clk rate.
-> > 
-> > So now we have a GENPD with pstate=0 on a first rpm-resume, which
-> > doesn't match the h/w configuration. Calling dev_pm_opp_sync() sets the
-> > pstate in accordance to the h/w config.
-> 
-> What about calling dev_pm_opp_set_rate(dev, clk_get_rate(dev)) here
-> instead ? That will work, right ? The advantage is it works without
-> any special routine to do so.
-> 
-> I also wonder looking at your gr3d.c changes, you set a set-opp
-> helper, but the driver doesn't call set_opp_rate at all. Who calls it
-> ?
-> 
-> And if it is all about just syncing the genpd core, then can the genpd
-> core do something like what clk framework does? i.e. allow a new
-> optional genpd callback, get_performance_state() (just like
-> set_performance_state()), which can be called initially by the core to
-> get the performance to something other than zero. opp-set-rate is
-> there to set the performance state and enable the stuff as well.
-> That's why it looks incorrect in your case, where the function was
-> only required to be called once, and you are ending up calling it on
-> each resume. Limiting that with another local variable is bad as well.
+The devm_clk_get() may return -EPROBE_DEFER, then clocks
+will be assigned to NULL wrongly. As the clocks are
+optional so we can use devm_clk_get_optional() instead of
+devm_clk_get().
 
-Ulf, this last part is for you :)
+Fixes: b73d9e6225e8 ("ASoC: fsl_rpmsg: Add CPU DAI driver for audio base on rpmsg")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_rpmsg.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
+diff --git a/sound/soc/fsl/fsl_rpmsg.c b/sound/soc/fsl/fsl_rpmsg.c
+index ea5c973e2e84..d60f4dac6c1b 100644
+--- a/sound/soc/fsl/fsl_rpmsg.c
++++ b/sound/soc/fsl/fsl_rpmsg.c
+@@ -165,25 +165,25 @@ static int fsl_rpmsg_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	/* Get the optional clocks */
+-	rpmsg->ipg = devm_clk_get(&pdev->dev, "ipg");
++	rpmsg->ipg = devm_clk_get_optional(&pdev->dev, "ipg");
+ 	if (IS_ERR(rpmsg->ipg))
+-		rpmsg->ipg = NULL;
++		return PTR_ERR(rpmsg->ipg);
+ 
+-	rpmsg->mclk = devm_clk_get(&pdev->dev, "mclk");
++	rpmsg->mclk = devm_clk_get_optional(&pdev->dev, "mclk");
+ 	if (IS_ERR(rpmsg->mclk))
+-		rpmsg->mclk = NULL;
++		return PTR_ERR(rpmsg->mclk);
+ 
+-	rpmsg->dma = devm_clk_get(&pdev->dev, "dma");
++	rpmsg->dma = devm_clk_get_optional(&pdev->dev, "dma");
+ 	if (IS_ERR(rpmsg->dma))
+-		rpmsg->dma = NULL;
++		return PTR_ERR(rpmsg->dma);
+ 
+-	rpmsg->pll8k = devm_clk_get(&pdev->dev, "pll8k");
++	rpmsg->pll8k = devm_clk_get_optional(&pdev->dev, "pll8k");
+ 	if (IS_ERR(rpmsg->pll8k))
+-		rpmsg->pll8k = NULL;
++		return PTR_ERR(rpmsg->pll8k);
+ 
+-	rpmsg->pll11k = devm_clk_get(&pdev->dev, "pll11k");
++	rpmsg->pll11k = devm_clk_get_optional(&pdev->dev, "pll11k");
+ 	if (IS_ERR(rpmsg->pll11k))
+-		rpmsg->pll11k = NULL;
++		return PTR_ERR(rpmsg->pll11k);
+ 
+ 	platform_set_drvdata(pdev, rpmsg);
+ 	pm_runtime_enable(&pdev->dev);
 -- 
-viresh
+2.27.0
+
