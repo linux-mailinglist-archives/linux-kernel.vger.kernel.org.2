@@ -2,156 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2AA93F08E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 638B53F08E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbhHRQSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 12:18:24 -0400
-Received: from relay2.mymailcheap.com ([217.182.66.162]:44586 "EHLO
-        relay2.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhHRQSW (ORCPT
+        id S231569AbhHRQSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 12:18:31 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41390 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231285AbhHRQSa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 12:18:22 -0400
-X-Greylist: delayed 7873 seconds by postgrey-1.27 at vger.kernel.org; Wed, 18 Aug 2021 12:18:21 EDT
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay2.mymailcheap.com (Postfix) with ESMTPS id 147043EDEC;
-        Wed, 18 Aug 2021 18:17:45 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id 5B3B22A0E2;
-        Wed, 18 Aug 2021 12:17:44 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1629303464;
-        bh=dXlIh5EcDgUrISWE28Be2K+p9CFZNPBwZmmKZa8jYUs=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Dg/iAneMuRVZ1sj4oVuA2qBFuRkGDwGgmlbUZiKlyWcYetb5eipRsynxCIRYSNGhC
-         ownDnaOkGFUmnkxWoVUWS99EtsqgEa4oW2K6cSYe3wa7Ey2dATpHdlprTLcoF0PALo
-         giy5oqAnkOcq24Yi/5Smo55u4n4I/KIs7bzw8AVY=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id xSOWq2qN6OZk; Wed, 18 Aug 2021 12:17:40 -0400 (EDT)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Wed, 18 Aug 2021 12:17:35 -0400 (EDT)
-Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 32E624118B;
-        Wed, 18 Aug 2021 16:17:34 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="oTLHwd1S";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from ice-e5v2.lan (unknown [59.41.161.108])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id F12C74118B;
-        Wed, 18 Aug 2021 16:17:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1629303448; bh=dXlIh5EcDgUrISWE28Be2K+p9CFZNPBwZmmKZa8jYUs=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=oTLHwd1ShtdiTmOPgoUw0/56MRCYPZ+UYd4VNrbierJiMtJVpggjSGcIcZ1JwRsb9
-         0rAeOI0teJXUNziz2888Qa9T+NLa78G/3Fq6gQHVNtRvhHMZqN+v+EuqfYgkW2+ElL
-         6paGOwXSEC959LsZ6Al4G7nfv859uHXmcRaMV7xQ=
-Message-ID: <2d4fc6bac74691c4447ae33b99794389b089d42c.camel@aosc.io>
-Subject: Re: [PATCH] usb: typec: tcpm: always rediscover when swapping DR
-From:   Icenowy Zheng <icenowy@aosc.io>
-To:     Kyle Tso <kyletso@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 19 Aug 2021 00:17:19 +0800
-In-Reply-To: <CAGZ6i=2a6ueLghhDTPCP_gumZ=HUYWRLCKkveyVnNQLgP+zyow@mail.gmail.com>
-References: <20210813043131.833006-1-icenowy@aosc.io>
-         <YRuDG78N2mB5w37p@kuha.fi.intel.com>
-         <E91C97D0-7DB9-4455-AED2-4C25B7D2D22D@aosc.io>
-         <YRuW0fENBEcIVkZb@kuha.fi.intel.com> <YR0Rlj+jk9dnoG6N@kroah.com>
-         <E1804EE0-CBA1-4BE8-875B-57E82EDECDBE@aosc.io> <YR0bw+k0S94cmeDS@kroah.com>
-         <CAGZ6i=2a6ueLghhDTPCP_gumZ=HUYWRLCKkveyVnNQLgP+zyow@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0 
+        Wed, 18 Aug 2021 12:18:30 -0400
+Date:   Wed, 18 Aug 2021 18:17:52 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629303473;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=COIZjFE+QpiqW1vgmef7bfSA5uIv7ItVkGPh67WOnuI=;
+        b=0tq0RyJndnU205fpXjnwy/AajvpF8L/7ellXA2SGrYReE5E8yIxdLYsh5gmH1NJVrIjzaZ
+        vYG6Zm2qcqLWlZ87qzTDl/Jy9CCjDIOiLhQcFt6VZWmpVhT9ABxwBI6VuH1nwQ9ibU92y0
+        AZuCvEdn9iO4rqQ3jQ9fECg3G2N2ao4Dq325Z04vcZ2pRd6e/GO7oa19k5ALTRYzFavoAQ
+        xrihDtMeby4S1F7Bc78N9DfuqV/pLKJuTCHmNmQPeMYF0xz8J+zl34XvbNraVuSWX4ZZJn
+        LUHPFSE8lhN062LltrixFTXN2lcvC8CQIAPfbwGqqHMLcwe7Rv/28qBaLi6f6Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629303473;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=COIZjFE+QpiqW1vgmef7bfSA5uIv7ItVkGPh67WOnuI=;
+        b=UM8gwUAtzbvGGD8ByCKwJDdMCltoMKTzKUqQX2QMTEL9GuXRt1sKhCCeMeesnRHT6txoLO
+        zmJ+s1Xd+W6U3EAA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Jeaho Hwang <jhhwang@rtst.co.kr>
+Cc:     Peter Chen <peter.chen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, linux-rt-users@vger.kernel.org,
+        team-linux@rtst.co.kr, mkbyeon@lselectric.co.kr,
+        khchoib@lselectric.co.kr
+Subject: Re: [PATCH v2] usb: chipidea: local_irq_save/restore added for
+ hw_ep_prime
+Message-ID: <20210818161752.vu6abfv3e6bfqz23@linutronix.de>
+References: <20210817095313.GA671484@ubuntu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 32E624118B
-X-Rspamd-Server: mail20.mymailcheap.com
-X-Spamd-Result: default: False [-0.10 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.161.108:received];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[aosc.io];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         RCPT_COUNT_FIVE(0.00)[6];
-         ML_SERVERS(-3.10)[148.251.23.173];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210817095313.GA671484@ubuntu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2021-08-19星期四的 00:13 +0800，Kyle Tso写道：
-> On Wed, Aug 18, 2021 at 10:40 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> > 
-> > On Wed, Aug 18, 2021 at 10:02:24PM +0800, Icenowy Zheng wrote:
-> > > 
-> > > 
-> > > 于 2021年8月18日 GMT+08:00 下午9:56:38, Greg Kroah-Hartman < 
-> > > gregkh@linuxfoundation.org> 写到:
-> > > > On Tue, Aug 17, 2021 at 02:00:33PM +0300, Heikki Krogerus
-> > > > wrote:
-> > > > > > > Why is it necessary to do discovery with data role swap
-> > > > > > > in general?
-> > > > > > 
-> > > > > > I think it could be possible for devices to expose
-> > > > > > different altmode
-> > > > > > with different role.
-> > > > > 
-> > > > > OK. FWIW:
-> > > > > 
-> > > > > Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> > > > 
-> > > > Is this conflicting with  
-> > > > https://lore.kernel.org/r/20210816075449.2236547-1-kyletso@google.com
-> > > >  ?
-> > > > 
-> > > > Which of these two should I take, both?  Neither?
-> > > 
-> > > Don't take this, it's against spec.
-> > 
-> > Ok, now dropped.  What about the linked patch above?  Does that
-> > work for
-> > you instead?
-> > 
-> > thanks,
-> > 
-> > greg k-h
+On 2021-08-17 18:53:13 [+0900], Jeaho Hwang wrote:
+> hw_ep_prime sometimes fails if irq occurs while it rus on RT kernel.
+
+How/ why does it fail? Which IRQ occurs? Does it also occur without RT
+and with threadirqs enabled?
+
+> local_irq_save/restore is added inside the function to gurantee atomicity.
+> only effective for preempt_rt since hw_ep_prime is called inside top half
+> or spin_lock_irqsave. No effect is expected for standard linux.
+
+How is that helping?
+#1 
+  udc_irq() -> isr_tr_complete_handler() -> isr_tr_complete_low ->
+   _hardware_dequeue() -> reprime_dtd() -> hw_ep_prime()
+
+udc_irq() acquires ci->lock.
+
+#2 
+  ep_queue -> _ep_queue() ->_hardware_enqueue() -> hw_ep_prime()
+
+ep_queue acquires hwep->lock. Which is actually ci->lock.
+
+So if I read this right then hw_ep_prime() may not be interrupted in the
+middle of its operation (but preempted) because each path is protected
+by the lock.
+
+isr_tr_complete_low() drops hwep->lock and acquires it again so it that
+phase another thread may acquire it.
+
+> Signed-off-by: Jeaho Hwang <jhhwang@rtst.co.kr>
 > 
-> Hi Icenowy,
-> 
-> Could you revisit the patch for the tcpm_unregister_altmodes part?
-> I think that is still a problem.
+> diff --git a/drivers/usb/chipidea/udc.c b/drivers/usb/chipidea/udc.c
+> index 8834ca613721..a624eddb3e22 100644
+> --- a/drivers/usb/chipidea/udc.c
+> +++ b/drivers/usb/chipidea/udc.c
+> @@ -191,22 +191,31 @@ static int hw_ep_get_halt(struct ci_hdrc *ci, int num, int dir)
+>  static int hw_ep_prime(struct ci_hdrc *ci, int num, int dir, int is_ctrl)
+>  {
+>  	int n = hw_ep_bit(num, dir);
+> +	unsigned long flags;
+> +	int ret = 0;
+>  
+>  	/* Synchronize before ep prime */
+>  	wmb();
+>  
+> -	if (is_ctrl && dir == RX && hw_read(ci, OP_ENDPTSETUPSTAT, BIT(num)))
+> +	/* irq affects this routine so irq should be disabled on RT.
+> +	 * on standard kernel, irq is already disabled by callers.
 
-Well I think it's okay, but I know none about PD3, and I have no PD3
-device either.
+The important part is _how_ it is affected. If locking works then
+nothing should read/ write the HW register. If the lock is briefly
+dropped then another thread _may_ read/ write the registers but not
+within this function.
 
-So I prefer to continue on fix on dropping the discover sent on
-snk_attach instead of working on this, because I know nothing about
-this, and in my limited knowledge the code looks fine here.
+If this function here is sensitive to timing (say the cpu_relax() loop
+gets interrupt for 1ms) then it has to be documented as such.
 
-> 
-> thanks,
-> Kyle
+> +	 */
+> +	local_irq_save(flags);
+> +	if (is_ctrl && dir == RX && hw_read(ci, OP_ENDPTSETUPSTAT, BIT(num))) {
+> +		local_irq_restore(flags);
+>  		return -EAGAIN;
+> +	}
+>  
+>  	hw_write(ci, OP_ENDPTPRIME, ~0, BIT(n));
+>  
+>  	while (hw_read(ci, OP_ENDPTPRIME, BIT(n)))
+>  		cpu_relax();
+>  	if (is_ctrl && dir == RX && hw_read(ci, OP_ENDPTSETUPSTAT, BIT(num)))
+> -		return -EAGAIN;
+> +		ret = -EAGAIN;
+>  
+> +	local_irq_restore(flags);
+>  	/* status shoult be tested according with manual but it doesn't work */
+> -	return 0;
+> +	return ret;
+>  }
+>  
+>  /**
 
+Sebastian
