@@ -2,138 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582C23F0A42
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:29:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 432683F0A4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231800AbhHRRa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 13:30:27 -0400
-Received: from mail-bn8nam12on2072.outbound.protection.outlook.com ([40.107.237.72]:42401
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229528AbhHRRaW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 13:30:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C73qI39fBIGFyNdmt4BLFUE+cdgQFNMGktoqyN88MyIJZ/GbiQjdSHG/HcX87doZfzprkIsVx0jM6kXoKOLTfEauVuni8SIFra+XiORgOMOfIHevRH0AKB7eVPlRBQ1QJac2Cj1/q1FFtrZ6/aSLW7UrKoDsgjs4xyg+rQiNUWb7wexzdd2/rpIek27y1NCCBh0vKaFaLWRQ4REdikalPlv3trZS4PvZ4asBFmIX6H1EvfU7ifm6H8Tr/zqgEyVBy7O+MPqKrP46EBc+FipRPLbAPAN/nqhQrexTc6tm9uCAkrAfd0tbAVkqC1KHuacjfO3mCYGM2V4m3YLTgYmPbQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JTvyDyaqbGtX6kt3qhhEAMiKrlY/rvu7lI+HCaAZsyY=;
- b=nZoG2sJS+/iCldYUfkeahAuakbvh1r+1m5ShQlL32A9kxwEIuFxUOAnOle+0WeejraTyWH1w7KNVZCu+XZpG+Jub/EWjt/j0FqQkDh2nYKta1d09a9tRFbOka/dzVqVeClqlGpDwFr0IZa+VadUzhpxOog/eSAZCm9JL5fdhMuIuiPLuB87COFxPL8xikyJ6Vd+8U+6iCT+DAt+5HsW+W3WAyIONxHvZ4uvQLRCtiLMpqDICx/0IcH7Yo4QZLN2bzhcak3lqyVsiTQwVlsHkJ7hQ4v/QK72ZATE98/+pblMrFdj5SoreZx+eaZz1LfKGe0y2OgLEfuLfKS2wfbhQuA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JTvyDyaqbGtX6kt3qhhEAMiKrlY/rvu7lI+HCaAZsyY=;
- b=W4LQmcydbzo+E1v5xeit6xBWGzP39dafVBbaM6gYfIR398jjrE1qlKYM1QgxnNxdrjZR7zbf8S9w+kFpZqHhpvAfiJS6t8ME1N7eixdOMzQbyhKQw/JRRiCgXDO/oYS7trItH84RkqkfkBOghZiJM6u2Y8af9b5F3WUuig/vm50=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3505.namprd12.prod.outlook.com (2603:10b6:408:69::17)
- by BN6PR12MB1585.namprd12.prod.outlook.com (2603:10b6:405:9::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16; Wed, 18 Aug
- 2021 17:29:45 +0000
-Received: from BN8PR12MB3505.namprd12.prod.outlook.com
- ([fe80::8836:fe8d:8e90:a420]) by BN8PR12MB3505.namprd12.prod.outlook.com
- ([fe80::8836:fe8d:8e90:a420%6]) with mapi id 15.20.4436.019; Wed, 18 Aug 2021
- 17:29:45 +0000
-From:   Kim Phillips <kim.phillips@amd.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Kim Phillips <kim.phillips@amd.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org
-Subject: [PATCH] perf/amd: Fix i386 build error: redefinition of 'get_ibs_caps'
-Date:   Wed, 18 Aug 2021 12:29:35 -0500
-Message-Id: <20210818172935.54392-1-kim.phillips@amd.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <202108182341.z6digIOK-lkp@intel.com>
-References: <202108182341.z6digIOK-lkp@intel.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SA9PR13CA0065.namprd13.prod.outlook.com
- (2603:10b6:806:23::10) To BN8PR12MB3505.namprd12.prod.outlook.com
- (2603:10b6:408:69::17)
+        id S232797AbhHRRbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 13:31:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232344AbhHRRa6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 13:30:58 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6EA7C0617A8
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 10:30:22 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id gz13-20020a17090b0ecdb0290178c0e0ce8bso5589021pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 10:30:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f0BrIgVGw/jCYpqJ3H+F4qUtbfNvuOB1X91iZBuDC9A=;
+        b=ad89yAgXBvfkM7spD8Sv7sX2M8JXooM0nNTjjnjpxEWjGLZ+/x8DRYVlawSP2AWynx
+         xa/ddOs+k/3LkmkcG9sIwm7LhTury8Re7Z9xDaoOGlQUQUj2N8Y+LAGzciS1No5rLekQ
+         yQ0ubA7IhdJSx6stObIDwrv/dHQMmUU6v+vLk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f0BrIgVGw/jCYpqJ3H+F4qUtbfNvuOB1X91iZBuDC9A=;
+        b=BPcnTYYNhwN9ZK14UgnpZMsGlXKmW7iydKKBxuUMgqK5aHqKbBz5tD/SkuAgiTIuIV
+         ICYuL87P8H91GLwpHsyO1tsx/ZZiOkE2CezJ6sGRslu9XGAl154CKYrKfPxBLK9mJRhE
+         HrXC1SqWjoWtAxDnJrkLFTQSvpe1Fl64uC3FmLCS6pAyjkDwjGhVD+w0Zg3GryvDwkQq
+         qi/cUFa3+QZ9DuSFamejyqzG5g25vRZUTnKeLIcsixHsYImAMfhx+okZXPdOCf535XxU
+         i5KpLNJ3Uzp9XXSR465U6EZX5+D1MPAijBbKVmfuFm5cMCiIWJCAGmXx/IOBp2xRvkF5
+         KtUg==
+X-Gm-Message-State: AOAM5315QjnYziE5uQoZOPXbB4jnougMPNGd0sI2wFblZDpZET8hgpen
+        LCwhg1ouLMU3p49WqY4S44wbEA==
+X-Google-Smtp-Source: ABdhPJyXScRZGfEaKhr+9LvN0h45ICPwhBofxuzETltNHug2/+3Ps8ajNcaW7BhsAWvF5GeBwrOePg==
+X-Received: by 2002:a17:903:2446:b0:12d:b732:4656 with SMTP id l6-20020a170903244600b0012db7324656mr8294673pls.25.1629307822401;
+        Wed, 18 Aug 2021 10:30:22 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h20sm384041pfn.173.2021.08.18.10.30.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 10:30:21 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
+        Al Cooper <alcooperx@gmail.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v2 0/2] USB: EHCI: Add register array bounds to HCS ports
+Date:   Wed, 18 Aug 2021 10:30:16 -0700
+Message-Id: <20210818173018.2259231-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from fritz.amd.com (165.204.77.1) by SA9PR13CA0065.namprd13.prod.outlook.com (2603:10b6:806:23::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.12 via Frontend Transport; Wed, 18 Aug 2021 17:29:45 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d0e12666-b7ed-4f26-0046-08d9626dc57f
-X-MS-TrafficTypeDiagnostic: BN6PR12MB1585:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN6PR12MB15850A8546FEC72E5CFA2D2487FF9@BN6PR12MB1585.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:216;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: avU01fk/dLdXAk/bVJ1ejrnWfdWJIybQdQaWAotoCXEJVDZy7/dUY8zNWatpnY8mNaFneRyc/0D6moA5oZytbIWhDBFAnGdmX6gAdP64rTFah4d+b3HXiJ5F2FJeE1D0cyo7RgM482L7IOBsAQaEuB2Na+4LfN8bymQZZumB3lS3CmIMEWJaBipoCy46yavfmx9xm9ej5b1W3jHn2T13w88e3QkgKQ6RBXeHjb9LpmBmC7e+lRFX4J2BrS12zwKiyh9elRubRvLlx85tiVAEE1SXmCmpWtnAAjzF0m3B3l5zX5B91ntv/h/L5FJQi+IIUi8VX9IVgqrsfdM6KscirY110EWpvwypgs8RrMxVBLULn+zJlp1NO/SRBWWmZHDjcm6FJXA6A+U3Ykl+53DAufOQx5HWXdMUE8Nmb/6ipu2ih/qhaClIKTQ7T5XyVRG7FPxOhmOYtBKSTcIbhvX7mtBICODDbgWv2yRUzTH5pj7F3GK9CoJ4KjrFZX6LHWck4Xa7VkHW1019BigZ8OliM59wAH4Qu+znp7GVzIqXrt8CfT6TxG4DBGeepWx2EgOgIbdaS9Lx7tk8J/xdPeMLgyrAZLPxWgG92ffStfHbT9+GB395WYk3F0cjZyz0cu0siftisd8BO8QJRTkP0ryDKfsX5V7F93xzeFrvK2ShnwMv3tWj8t2naMkkGXX1bpvveiIEqDnCCIEASP3R8Bn5nA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3505.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(366004)(396003)(376002)(346002)(8676002)(52116002)(7696005)(956004)(86362001)(2616005)(5660300002)(83380400001)(478600001)(8936002)(186003)(4326008)(316002)(36756003)(44832011)(1076003)(6916009)(38350700002)(6666004)(66946007)(2906002)(54906003)(66556008)(6486002)(66476007)(38100700002)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QYxbyPbuG9n4Fo7Hhq46FjiH6OFflV5voR+RZ9g12Bh3EmV8STRKs61DoUlm?=
- =?us-ascii?Q?pAf7X/U7Ojx/YwByeryVorVjq4RgiBadn+MfR1wRI5Kdlx1nl01AGP8m6CGY?=
- =?us-ascii?Q?+D0CceQTYVvUVFhV8iLaT5+qIUMrvMZj249q5gemGROR5XpKw5kVCE3tJgL2?=
- =?us-ascii?Q?fWyaW2ESUejov/R86m0K3Z4PeCQp1PiSVdo6P2VZ2WKQZVSs73CU/nqSKjSy?=
- =?us-ascii?Q?8rFde1YM3Wf5YNhLfArgbtKkbiTnDM3UGikyILRYspsLpwTTqLLqyFy9A6jL?=
- =?us-ascii?Q?cDG5uQpMy2swSzP/dov80H17bJm/VchcLeNf8XiZIHOU9xkRFf6/amffY1gW?=
- =?us-ascii?Q?Ij5QRX8tgq70cgwK9vVDNnCnWcWq9Bsw0cMnjlpbGAW9amYKKjTHZo+nMGgf?=
- =?us-ascii?Q?+6lUjq4ibD67qq6OdgBT+AmG2VtzrvklQ1GTRvCx266dOXqHUYkB/7D/bg4c?=
- =?us-ascii?Q?TnB9q/NF/cY/+DaCpsoBglASjJVRyJriLXqB2h8ZFjPRMEWs/gGxE6dwj9Tg?=
- =?us-ascii?Q?Tyh93m0p3GpdUfeI0q+TtrgJSybvol0DlCE+puemPUps2Cm95lvZ5GPECKae?=
- =?us-ascii?Q?jtl/SRJRcWO+HOoEtNhNlZs38RtHAGdffpI2Ocs7IP9br/yyL9avgsh+3A+s?=
- =?us-ascii?Q?d4eJw96oK+SPbZEJN+3M+ogI+lxx43HXhCrNauYn7ZQnYYmH9lyhfLnHqiMp?=
- =?us-ascii?Q?LOrAILDdlUAhoA4g982ZuT7l9S9eI5Cs9PE5J/JpnK9263HZoc6OLuzoQQ0f?=
- =?us-ascii?Q?ZXp8OckbXaflHDkdlfa7cUh89z92d6YbCjw3LRc77P5E0QxbbofHvVcV7ugG?=
- =?us-ascii?Q?WY0nnkW+H21uNLC/0RlNR32PFacXzEDa8vKH8YHY3VSTFrrinLpS5vyf2oEu?=
- =?us-ascii?Q?QwZpiqf41PlseoOzKBPkQkVc99bDZjKGXLOctPPc539bKYzdS767CNceIY/m?=
- =?us-ascii?Q?sEBMrlfTYy/iErvamjRRw5bAXZFCuvOnL64mNmr2avOO81C7KFTAo2UsBW4Z?=
- =?us-ascii?Q?u8Cye/StE3ZjO9uX3OQhQP3qmXQNX/HyvzVwWH4mKd3i8YOQBAbHNZAyC11x?=
- =?us-ascii?Q?9wfwXmCsqZR5Musyl0K6fCERswyOfTP0tkdFUAebiMtBXUbP65n3h6PoTj1W?=
- =?us-ascii?Q?Ecf2MexXY6oO7Cd5XGqxt4sWcJ6f/mODnDL7xhw3bCiyEE0ASMzF5+gNwOHw?=
- =?us-ascii?Q?i1EFLTmFtYT785n5Xss9LR9g11dntiyH1k0SiuP/318ZC6mttnIcmJofAm8U?=
- =?us-ascii?Q?1aYPtiu4iBM1749hPB2pYYP/FFo7Euc0C9j5LMPa+k1Yelr177xndLx0DxBy?=
- =?us-ascii?Q?eI0hgkJP4BDA+QOTfJ1SyWEl?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d0e12666-b7ed-4f26-0046-08d9626dc57f
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3505.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2021 17:29:45.6176
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5ove9B3+q6ok9BHnf+JXGT6ONfPAnzilNvnILeYKHx+hPW/1UUMk/xMc7gnexWhwORBSH/ziW6Z9E50aeMfEEg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1585
+X-Developer-Signature: v=1; a=openpgp-sha256; l=907; h=from:subject; bh=9B2VM9Lpb8IVZx7MEMfRI517cmacE2jksMMxurJKH7g=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhHUOpZQ9I4PVphZK8YzvgrpCcsAqL8NiVWEHUpjTW BCvM8SiJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYR1DqQAKCRCJcvTf3G3AJhfsEA CqZbMM71xrQTnirsBMBBDWAT7q9ChVvUxdhSuKtWqaWLyVrbKhwSSG7P+pQJCl1R42zdQdINXf+FLX S5WL/0vKEcTaaXAb658WmwA++UeYw8ka+PsyuLlOUS4hAeQPwQNMWseqy3rd5Y77IEQIYg9a1exUbU DjKhaTcUZWFLfWlPqb/YMrMdQFHcTo0ya61NXAROnWNcyOmvbH0ba+Gtfm3PsLd9tcVTV+AdjxGOs6 i7FWbAVifR9BYbCXPQWWUYlLy6QzaEiHBrj/ID8adu9hQI83t/PrUQy4t1uCt7fGe0TzZIFpjtyZ0r 6/CgfODGYatxkVKgag3A6wMkkaMhPMmhfGMq2sLIMqJRksUBpERGYYyH9P+jt6K+CVj+4M4dNyapT0 IZPnZ+R+O31jF6ubOXxdSveEzG7j0K4efjB6T22qjiptVgrVBhXKhFTDGxb/fPZpHMogpBG10Ystzw SDgCC9D9or6E9XJqgHhoLnUw+6KlYXCflgmBeRIzASlvIhHw+B4E4/177DxZEo2WCHT7EkqlW+6KfP Ih1tgAQ1V74j3tJBdFq3V7mi4sg8auW3mU3LqKlWKeA1htCuK1Tc2N+Yjxxep3e/H+j9r06IQGjyzF x8TYHBctspZt9seKEPTzza0t2N5Jn1eD2Sjf3UGAmWu2mbkfT5mA5eozi+og==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 6c3f8af52cfc ("perf/amd/uncore: Allow the driver to be
-built as a module") accidentally contained some unwanted ibs.o
-Makefile dependency changes.  Undo them, and leave just the
-uncore.o changes needed by the commit.
+Hi,
 
-Fixes: 6c3f8af52cfc ("perf/amd/uncore: Allow the driver to be built as a module")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Kim Phillips <kim.phillips@amd.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: linux-kernel@vger.kernel.org
-Cc: kbuild-all@lists.01.org
----
- arch/x86/events/amd/Makefile | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This is cleaning up some of the remaining things to be able to apply
+-Warray-bounds and -Wzero-length-bounds globally. Only after doing my
+own version of the port_status patch did I find Arnd's earlier
+patches, including for the weird Broadcom stuff[1].
 
-diff --git a/arch/x86/events/amd/Makefile b/arch/x86/events/amd/Makefile
-index ec45a12deb8b..6cbe38d5fd9d 100644
---- a/arch/x86/events/amd/Makefile
-+++ b/arch/x86/events/amd/Makefile
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
--obj-$(CONFIG_CPU_SUP_AMD)		+= core.o ibs.o
-+obj-$(CONFIG_CPU_SUP_AMD)		+= core.o
- obj-$(CONFIG_PERF_EVENTS_AMD_POWER)	+= power.o
-+obj-$(CONFIG_X86_LOCAL_APIC)		+= ibs.o
- obj-$(CONFIG_PERF_EVENTS_AMD_UNCORE)	+= amd-uncore.o
- amd-uncore-objs				:= uncore.o
- ifdef CONFIG_AMD_IOMMU
+No binary differences.
+
+v2:
+- use 0x80 as base for brcm registers (stern)
+- switch HCS_N_PORTS_MAX to decimal (stern)
+- update various comments (stern)
+v1: https://lore.kernel.org/lkml/20210818043035.1308062-1-keescook@chromium.org
+
+Thanks!
+
+-Kees
+
+[1] https://lore.kernel.org/lkml/20200527134320.869042-1-arnd@arndb.de/#t
+
+Kees Cook (2):
+  USB: EHCI: Add register array bounds to HCS ports
+  USB: EHCI: Add alias for Broadcom INSNREG
+
+ drivers/usb/host/ehci-brcm.c | 11 ++++-------
+ include/linux/usb/ehci_def.h | 33 +++++++++++++++++++++------------
+ 2 files changed, 25 insertions(+), 19 deletions(-)
+
 -- 
-2.31.1
+2.30.2
 
