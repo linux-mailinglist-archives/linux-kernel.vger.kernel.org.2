@@ -2,186 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519943F04E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6484D3F04E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237836AbhHRNeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 09:34:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46342 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237694AbhHRNen (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 09:34:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629293648;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sdI0zO0U4tESozCIhpT5qJCrx4O9+KHKjI6mFEcj2rg=;
-        b=XBOZgGBWlHAtcHHtReimf/kzvMtItMuoy8EvYFzo8+ydZbEZOMXnUQZpN30L2zUY0KmDZ2
-        jQRzqs4yrMUpeRSjKFDiEftRYzQr7RNRqopVqRe4HAngHQvAIxHG6SojrUhBl8ZhdP8+DK
-        exF0tCuXuRXeX4ANXqsNJ4tCeSc2nQY=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-123-5H30oV_aOLeIJiKgJAuMiA-1; Wed, 18 Aug 2021 09:34:07 -0400
-X-MC-Unique: 5H30oV_aOLeIJiKgJAuMiA-1
-Received: by mail-ej1-f72.google.com with SMTP id s11-20020a170906060b00b005be824f15daso881456ejb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 06:34:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sdI0zO0U4tESozCIhpT5qJCrx4O9+KHKjI6mFEcj2rg=;
-        b=Z8tWeWmn8oNngvjbjQFLITGUfiJXggvK/C5eshvlC6k7/k1CXEKppFZc5VYgbjEGXH
-         +o49duroYXaF1hSHgSfqHLZJLGH7OTWKfEhRFY3r0xmFzERF94yaAfWa47XYjyCLrU8f
-         +6ogogXT6tARuAn6FELYs1bJlLrcSinuZmd+B3a7E8NG6PS5GVQsPV4yOmCIBclsWTRz
-         OvaRMRIN5+5K9P65D9ht0lXSYgf5hLCPSc6ksetTeOH5hceoo0iocKbqR2NdzSKFstuO
-         rBuI8o0fnzJrBp/TS7t+ggCprCmlcyxB4s34NGOnb+sbDwn3giyOfhEfRbr4d4EbXhwP
-         SN3g==
-X-Gm-Message-State: AOAM533HllHHaEPSld9aofGzKKTO1znq+Nt1POXJ7wRgJsyYF4LmB7G1
-        n+52JUfsDWkIreijIJaG6sCYBuwcy1aBHL/+JttxF0MmZghgKnJ433EGelgtJfi3BhF9F7ZPn9o
-        yqygi/KaL61HP4BfQfWOvY/BX
-X-Received: by 2002:a17:906:85d0:: with SMTP id i16mr9993257ejy.552.1629293645981;
-        Wed, 18 Aug 2021 06:34:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwOL3cCbGxWnE+tgrrzO5dzEtwXXaw2YaTmo1Qg/eVh4C6krWPbBo+gKKyyvsYpFmAPIJ7sjw==
-X-Received: by 2002:a17:906:85d0:: with SMTP id i16mr9993227ejy.552.1629293645756;
-        Wed, 18 Aug 2021 06:34:05 -0700 (PDT)
-Received: from miu.piliscsaba.redhat.com (catv-86-101-169-16.catv.broadband.hu. [86.101.169.16])
-        by smtp.gmail.com with ESMTPSA id kg18sm2090922ejc.9.2021.08.18.06.34.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 06:34:05 -0700 (PDT)
-From:   Miklos Szeredi <mszeredi@redhat.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        garyhuang <zjh.20052005@163.com>
-Subject: [PATCH v2 2/2] ovl: enable RCU'd ->get_acl()
-Date:   Wed, 18 Aug 2021 15:34:00 +0200
-Message-Id: <20210818133400.830078-3-mszeredi@redhat.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210818133400.830078-1-mszeredi@redhat.com>
-References: <20210818133400.830078-1-mszeredi@redhat.com>
+        id S237545AbhHRNfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 09:35:50 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:35228 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236731AbhHRNfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 09:35:44 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629293709; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=D83uvmIKfB3mWVd8vO6++LBuXNB1BJ5IR3kbxJlaHJk=; b=s+i1uotMDOaEd5OcTCMQga8GZ0wnd1SJpKh3SLiz3II6glNAR3o8y3OeUJ/6oX+WGbIWfVQs
+ 3T80xX/1SaBFynY0BH6/R0YyAVLDcDWU7LWekBV1L+jtmCMJq9o+CtdHXNRIRvgtdtPelV5/
+ Z2ji1OJ77hWXkeHBV2TVkJyMrdo=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 611d0c79454b7a558fb27d91 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 18 Aug 2021 13:34:49
+ GMT
+Sender: luoj=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EB928C4360C; Wed, 18 Aug 2021 13:34:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [10.92.1.52] (unknown [180.166.53.36])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: luoj)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 700F5C4338F;
+        Wed, 18 Aug 2021 13:34:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 700F5C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH] net: phy: add qca8081 ethernet phy driver
+To:     Michael Walle <michael@walle.cc>
+Cc:     andrew@lunn.ch, davem@davemloft.net, hkallweit1@gmail.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux@armlinux.org.uk, netdev@vger.kernel.org,
+        sricharan@codeaurora.org
+References: <6856a839-0fa0-1240-47cd-ae8536294bcd@codeaurora.org>
+ <20210818074102.78006-1-michael@walle.cc>
+From:   Jie Luo <luoj@codeaurora.org>
+Message-ID: <9aa1543b-e1b8-fba2-1b93-c954dd2e3e50@codeaurora.org>
+Date:   Wed, 18 Aug 2021 21:34:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210818074102.78006-1-michael@walle.cc>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Overlayfs does not cache ACL's (to avoid double caching).  Instead it just
-calls the underlying filesystem's i_op->get_acl(), which will return the
-cached value, if possible.
 
-In rcu path walk, however, get_cached_acl_rcu() is employed to get the
-value from the cache, which will fail on overlayfs resulting in dropping
-out of rcu walk mode.  This can result in a big performance hit in certain
-situations.
+On 8/18/2021 3:41 PM, Michael Walle wrote:
+>> qca8081 supports IEEE1588 feature, the IEEE1588 code may be submitted in
+>> the near future,
+>>
+>> so it may be a good idea to keep it out from at803x code.
+> The AR8031 also supports PTP. Unfortunately, there is no public datasheet
+> for the QCA8081, so I can't have a look if both are similar.
+>
+> See also,
+> https://lore.kernel.org/netdev/20200228180226.22986-1-michael@walle.cc/
+>
+> -michael
 
-Fix by calling ->get_acl() with LOOKUP_RCU flag in case of ACL_DONT_CACHE
-(which indicates pass-through)
+Hi Michael,
 
-Reported-by: garyhuang <zjh.20052005@163.com>
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
----
- fs/overlayfs/inode.c      | 7 ++++---
- fs/posix_acl.c            | 8 +++++++-
- include/linux/fs.h        | 5 +++++
- include/linux/posix_acl.h | 3 ++-
- 4 files changed, 18 insertions(+), 5 deletions(-)
+Thanks for this comment. it is true that AR8031 supports basic PTP 
+features.
 
-diff --git a/fs/overlayfs/inode.c b/fs/overlayfs/inode.c
-index 727154a1d3ce..6a55231b262a 100644
---- a/fs/overlayfs/inode.c
-+++ b/fs/overlayfs/inode.c
-@@ -13,6 +13,7 @@
- #include <linux/fiemap.h>
- #include <linux/fileattr.h>
- #include <linux/security.h>
-+#include <linux/namei.h>
- #include "overlayfs.h"
- 
- 
-@@ -454,12 +455,12 @@ struct posix_acl *ovl_get_acl(struct inode *inode, int type, int flags)
- 	const struct cred *old_cred;
- 	struct posix_acl *acl;
- 
--	if (flags)
--		return ERR_PTR(-EINVAL);
--
- 	if (!IS_ENABLED(CONFIG_FS_POSIX_ACL) || !IS_POSIXACL(realinode))
- 		return NULL;
- 
-+	if (flags & LOOKUP_RCU)
-+		return get_cached_acl_rcu(realinode, type);
-+
- 	old_cred = ovl_override_creds(inode->i_sb);
- 	acl = get_acl(realinode, type);
- 	revert_creds(old_cred);
-diff --git a/fs/posix_acl.c b/fs/posix_acl.c
-index 6b7f793e2b6f..4d1c6c266cf0 100644
---- a/fs/posix_acl.c
-+++ b/fs/posix_acl.c
-@@ -22,6 +22,7 @@
- #include <linux/xattr.h>
- #include <linux/export.h>
- #include <linux/user_namespace.h>
-+#include <linux/namei.h>
- 
- static struct posix_acl **acl_by_type(struct inode *inode, int type)
- {
-@@ -56,7 +57,12 @@ EXPORT_SYMBOL(get_cached_acl);
- 
- struct posix_acl *get_cached_acl_rcu(struct inode *inode, int type)
- {
--	return rcu_dereference(*acl_by_type(inode, type));
-+	struct posix_acl *acl = rcu_dereference(*acl_by_type(inode, type));
-+
-+	if (acl == ACL_DONT_CACHE)
-+		acl = inode->i_op->get_acl(inode, type, LOOKUP_RCU);
-+
-+	return acl;
- }
- EXPORT_SYMBOL(get_cached_acl_rcu);
- 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 1c56d4fc4efe..20b7db2d0a85 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -581,6 +581,11 @@ static inline void mapping_allow_writable(struct address_space *mapping)
- 
- struct posix_acl;
- #define ACL_NOT_CACHED ((void *)(-1))
-+/*
-+ * ACL_DONT_CACHE is for stacked filesystems, that rely on underlying fs to
-+ * cache the ACL.  This also means that ->get_acl() can be called in RCU mode
-+ * with the LOOKUP_RCU flag.
-+ */
- #define ACL_DONT_CACHE ((void *)(-3))
- 
- static inline struct posix_acl *
-diff --git a/include/linux/posix_acl.h b/include/linux/posix_acl.h
-index 307094ebb88c..b65c877d92b8 100644
---- a/include/linux/posix_acl.h
-+++ b/include/linux/posix_acl.h
-@@ -72,6 +72,8 @@ extern struct posix_acl *get_posix_acl(struct inode *, int);
- extern int set_posix_acl(struct user_namespace *, struct inode *, int,
- 			 struct posix_acl *);
- 
-+struct posix_acl *get_cached_acl_rcu(struct inode *inode, int type);
-+
- #ifdef CONFIG_FS_POSIX_ACL
- int posix_acl_chmod(struct user_namespace *, struct inode *, umode_t);
- extern int posix_acl_create(struct inode *, umode_t *, struct posix_acl **,
-@@ -84,7 +86,6 @@ extern int simple_set_acl(struct user_namespace *, struct inode *,
- extern int simple_acl_create(struct inode *, struct inode *);
- 
- struct posix_acl *get_cached_acl(struct inode *inode, int type);
--struct posix_acl *get_cached_acl_rcu(struct inode *inode, int type);
- void set_cached_acl(struct inode *inode, int type, struct posix_acl *acl);
- void forget_cached_acl(struct inode *inode, int type);
- void forget_all_cached_acls(struct inode *inode);
--- 
-2.31.1
+please refer to the following link for the outline features of qca801.
+
+https://www.qualcomm.com/products/qca8081
 
