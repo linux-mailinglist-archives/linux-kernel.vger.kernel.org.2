@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5363F0618
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 099AB3F0614
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240159AbhHROP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 10:15:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46544 "EHLO
+        id S239516AbhHROPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 10:15:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239259AbhHRONN (ORCPT
+        with ESMTP id S239436AbhHRONR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 10:13:13 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 067D4C0617AD
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:12:39 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id mq3so2657529pjb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:12:39 -0700 (PDT)
+        Wed, 18 Aug 2021 10:13:17 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B496C0612A6
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:12:42 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id oa17so2718432pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:12:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=pathpartnertech.com; s=google;
         h=mime-version:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=zbBQY85hf0DJA80HZOhbjuaZgt6Gb4YxfzekrvOLT5E=;
-        b=TFCfYoF7DSEIiR83W4Y/iZJ73p/5qo7kniJ145l7jCrRfAOu+jvYpxJHOufSxlibEq
-         9LjAJRFUqFBadL0xcbXSu7sFbgCZ2syRzX7qPeCiosBZD/hXBzfcRkbOrqMyXBxtNM9Z
-         OaVGVGy2j5aGrA8ATGbwdF3/czY8ol9Ev+Nc3Kr92q5VKGE14EPXsSzTBliOr1EHGaHc
-         SRn1gjteYTmfCoqIoFUygZPs82xtiS4L+LiItXVlfrQ0zciWA9hBWvebLZoEv4aVBXId
-         tc7GrOcGvsZD3nLtld4JluO24Hsc5A8UfS7FYBB66HSUMKwt0FoeCY/5nOtflwf8EENK
-         lGbA==
+        bh=zcqx/i1R3db3IODFMYP7WV7EnMO91W9GUlRjKdLW1pk=;
+        b=JTpML9x0sae59apqcgeDT3t9/2gyhVQRgcGHiU/V2/E4Lhv++Y0Y57xtfynj5SmmPN
+         5S1HdTpoquPINBnblVawQCgAJ40x6C0jiPRtwSwtRAVBwNyxCpj4yxf45eWPuUzZggOM
+         S+SBsiGhBlXldM9l5OFRkA1Crc+uph2zBDtbkqD54eDV1a4K3VNiFOz0h/h6fTVslFmU
+         i/PNo5TdNKurfyN5YEFe8bXYGjaM+iNo0LOvtUZa/1++8/8OgSaZGDE2nO1AN0hJOms1
+         9wfLNkCaW7K6POq5nSrdw1VgkwDk1GBtiDfRxTenFKQUaLleiLvyqiwMdm9y2PZFjqAQ
+         JPWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :in-reply-to:references;
-        bh=zbBQY85hf0DJA80HZOhbjuaZgt6Gb4YxfzekrvOLT5E=;
-        b=RQU8fPxDmtdPQtq7tIu0yj2RHZLeAp03O/WwSgXEv3NdFNVORMrMpPAc+5OgzUifHe
-         zExJAJDzlJjDhXfhad6TYJjpI7zD5SHs6dvgDaSU9BhPB5HHqgGkeNMPm6kFmvtrvCa4
-         KWnday/0FR4V2r9VkFqquA2HBs/TgKth6svb68jyWCJxguiL5QdJKB1kUt4VRqMLGHQy
-         OpL9hN9i5FHU/abjlwXs8E2k31l+rMUGWYVLeG3xOlJuLZGgwjAkNFRMZ+ip0u0A7a9S
-         5j+67+XPMwqZb3qm94dapLvaZaTXQVjrwXgGKUkS1Dx4fezxyUEBr6k9iCU7gZyaZ5BD
-         97mg==
+        bh=zcqx/i1R3db3IODFMYP7WV7EnMO91W9GUlRjKdLW1pk=;
+        b=baMdrHWGZGOW5Qn99Njxt+Vu4ey5C0eCeSJF9ixvNAan+I+yFDdbrYpBRQU6dTHzsQ
+         g++cO/Dvc3h4Q4J6hKSSZJlMSFwPJTz5LZML+jxK0ZCR+w6PLCRse5gllRgl9v0TqjAF
+         1eHAR/IKeOGYpaMGVs/je8CODic91GzLKDuUnz8EYalZG2dL/YHaYjdo8CjkUPNMjtR+
+         RzV21I0VuhSlZN2mSAqKH/nHJH855FkO+nM/dt41UHIJfqL6OyQ520UvW+eqsCMTGNRy
+         unVcNf0OEpgeg5IE1af1y0+bHBW3B6hV/jQDnd+DF0WhKry2CEgdG77vP8VqcVW9SZDO
+         damQ==
 MIME-Version: 1.0
-X-Gm-Message-State: AOAM531nGm9QeEIiSh1k2IOk8YF98ESZuKT+q5AkRtOIoQ6uoPbxHG2w
-        g9zZUgJIHsIql4NsrIR22Nv9L914wcOEDriq7K06E77eyNKBIJykEtkMEPY9BF/eghQV5LmI+cP
-        Ql2XBFN6OAH8L3uZ4kQ==
-X-Google-Smtp-Source: ABdhPJxPwqUSexPtcCioT9j7n3SjnVQrEfnvyOmKzXbIKPgytMBKqARk0NA0G+21t/4PVLS73MUhKA==
-X-Received: by 2002:a17:90a:648b:: with SMTP id h11mr9809084pjj.141.1629295957001;
-        Wed, 18 Aug 2021 07:12:37 -0700 (PDT)
+X-Gm-Message-State: AOAM533b1s9q3k5WG7Coesll7mUcrKS1gJ93YMBSDt6Y0akjJdBiNabT
+        LCL4AbuVEPXEbAeoPPpf8HJv7Gmw+KXNLenarvEi3NoaYrEdnQTSoA8acMuFkH/kD1Ok8UQcLfZ
+        o3UmTI6rBuSGXm1T6Rg==
+X-Google-Smtp-Source: ABdhPJyrsdLR6dBCgysB/xVeZ+4VLu6KxekJESGQAuKQxCME6OdSt9xr5jfaAVEhy+80aUuLhrQ3+w==
+X-Received: by 2002:a17:903:41c2:b0:12d:a7aa:40a8 with SMTP id u2-20020a17090341c200b0012da7aa40a8mr7631961ple.61.1629295960700;
+        Wed, 18 Aug 2021 07:12:40 -0700 (PDT)
 Received: from localhost.localdomain ([49.207.214.181])
-        by smtp.gmail.com with ESMTPSA id e8sm8084343pgg.31.2021.08.18.07.12.32
+        by smtp.gmail.com with ESMTPSA id e8sm8084343pgg.31.2021.08.18.07.12.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 07:12:36 -0700 (PDT)
+        Wed, 18 Aug 2021 07:12:40 -0700 (PDT)
 From:   sidraya.bj@pathpartnertech.com
 To:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
@@ -57,9 +57,9 @@ Cc:     prashanth.ka@pathpartnertech.com, praneeth@ti.com,
         mchehab@kernel.org, linux-media@vger.kernel.org,
         praveen.ap@pathpartnertech.com,
         Sidraya <sidraya.bj@pathpartnertech.com>
-Subject: [PATCH 13/30] v4l: vxd-dec: Add Bistream Preparser (BSPP) module
-Date:   Wed, 18 Aug 2021 19:40:20 +0530
-Message-Id: <20210818141037.19990-14-sidraya.bj@pathpartnertech.com>
+Subject: [PATCH 14/30] v4l: vxd-dec: Add common headers
+Date:   Wed, 18 Aug 2021 19:40:21 +0530
+Message-Id: <20210818141037.19990-15-sidraya.bj@pathpartnertech.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210818141037.19990-1-sidraya.bj@pathpartnertech.com>
 References: <20210818141037.19990-1-sidraya.bj@pathpartnertech.com>
@@ -70,2927 +70,104 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sidraya <sidraya.bj@pathpartnertech.com>
 
-Contains the implementation of Bitstream preparser, it supports
-preparsing of H264, HEVC and MJPEG bitstreams at present.
-It uses software shift register implementation for bitstream parsing.
+This patch includes all the common headers which is related
+to h264, HEVC and MJPEG firmware data and error defines and pixel format.
 
-Signed-off-by: Lakshmi Sankar <lakshmisankar-t@ti.com>
-
+Signed-off-by: Amit Makani <amit.makani@ti.com>
 Signed-off-by: Sidraya <sidraya.bj@pathpartnertech.com>
 ---
- MAINTAINERS                                   |   11 +
- drivers/staging/media/vxd/decoder/bspp.c      | 2479 ++++++++++++++
- drivers/staging/media/vxd/decoder/bspp.h      |  363 ++
- drivers/staging/media/vxd/decoder/bspp_int.h  |  514 +++
- .../media/vxd/decoder/h264_secure_parser.c    | 3051 +++++++++++++++++
- .../media/vxd/decoder/h264_secure_parser.h    |  278 ++
- .../media/vxd/decoder/hevc_secure_parser.c    | 2895 ++++++++++++++++
- .../media/vxd/decoder/hevc_secure_parser.h    |  455 +++
- .../media/vxd/decoder/jpeg_secure_parser.c    |  645 ++++
- .../media/vxd/decoder/jpeg_secure_parser.h    |   37 +
- drivers/staging/media/vxd/decoder/swsr.c      | 1657 +++++++++
- drivers/staging/media/vxd/decoder/swsr.h      |  278 ++
- 12 files changed, 12663 insertions(+)
- create mode 100644 drivers/staging/media/vxd/decoder/bspp.c
- create mode 100644 drivers/staging/media/vxd/decoder/bspp.h
- create mode 100644 drivers/staging/media/vxd/decoder/bspp_int.h
- create mode 100644 drivers/staging/media/vxd/decoder/h264_secure_parser.c
- create mode 100644 drivers/staging/media/vxd/decoder/h264_secure_parser.h
- create mode 100644 drivers/staging/media/vxd/decoder/hevc_secure_parser.c
- create mode 100644 drivers/staging/media/vxd/decoder/hevc_secure_parser.h
- create mode 100644 drivers/staging/media/vxd/decoder/jpeg_secure_parser.c
- create mode 100644 drivers/staging/media/vxd/decoder/jpeg_secure_parser.h
- create mode 100644 drivers/staging/media/vxd/decoder/swsr.c
- create mode 100644 drivers/staging/media/vxd/decoder/swsr.h
+ MAINTAINERS                                   |  14 +
+ drivers/staging/media/vxd/common/img_errors.h | 104 +++
+ drivers/staging/media/vxd/common/img_mem.h    |  43 +
+ .../staging/media/vxd/decoder/fw_interface.h  | 818 ++++++++++++++++++
+ .../staging/media/vxd/decoder/h264fw_data.h   | 652 ++++++++++++++
+ .../staging/media/vxd/decoder/hevcfw_data.h   | 472 ++++++++++
+ .../staging/media/vxd/decoder/img_pixfmts.h   | 195 +++++
+ .../media/vxd/decoder/img_profiles_levels.h   |  33 +
+ .../staging/media/vxd/decoder/jpegfw_data.h   |  83 ++
+ drivers/staging/media/vxd/decoder/mmu_defs.h  |  42 +
+ .../staging/media/vxd/decoder/scaler_setup.h  |  59 ++
+ drivers/staging/media/vxd/decoder/vdec_defs.h | 548 ++++++++++++
+ drivers/staging/media/vxd/decoder/vxd_ext.h   |  74 ++
+ .../staging/media/vxd/decoder/vxd_mmu_defs.h  |  30 +
+ drivers/staging/media/vxd/decoder/vxd_props.h |  80 ++
+ 15 files changed, 3247 insertions(+)
+ create mode 100644 drivers/staging/media/vxd/common/img_errors.h
+ create mode 100644 drivers/staging/media/vxd/common/img_mem.h
+ create mode 100644 drivers/staging/media/vxd/decoder/fw_interface.h
+ create mode 100644 drivers/staging/media/vxd/decoder/h264fw_data.h
+ create mode 100644 drivers/staging/media/vxd/decoder/hevcfw_data.h
+ create mode 100644 drivers/staging/media/vxd/decoder/img_pixfmts.h
+ create mode 100644 drivers/staging/media/vxd/decoder/img_profiles_levels.h
+ create mode 100644 drivers/staging/media/vxd/decoder/jpegfw_data.h
+ create mode 100644 drivers/staging/media/vxd/decoder/mmu_defs.h
+ create mode 100644 drivers/staging/media/vxd/decoder/scaler_setup.h
+ create mode 100644 drivers/staging/media/vxd/decoder/vdec_defs.h
+ create mode 100644 drivers/staging/media/vxd/decoder/vxd_ext.h
+ create mode 100644 drivers/staging/media/vxd/decoder/vxd_mmu_defs.h
+ create mode 100644 drivers/staging/media/vxd/decoder/vxd_props.h
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 6c3f7a55ce9b..baf1f19e21f7 100644
+index baf1f19e21f7..c7a6a0974415 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -19560,9 +19560,20 @@ F:	drivers/staging/media/vxd/common/talmmu_api.c
- F:	drivers/staging/media/vxd/common/talmmu_api.h
- F:	drivers/staging/media/vxd/common/work_queue.c
- F:	drivers/staging/media/vxd/common/work_queue.h
-+F:	drivers/staging/media/vxd/decoder/bspp.c
-+F:	drivers/staging/media/vxd/decoder/bspp.h
-+F:	drivers/staging/media/vxd/decoder/bspp_int.h
-+F:	drivers/staging/media/vxd/decoder/h264_secure_parser.c
-+F:	drivers/staging/media/vxd/decoder/h264_secure_parser.h
-+F:	drivers/staging/media/vxd/decoder/hevc_secure_parser.c
-+F:	drivers/staging/media/vxd/decoder/hevc_secure_parser.h
+@@ -19545,6 +19545,8 @@ F:	drivers/staging/media/vxd/common/hash.c
+ F:	drivers/staging/media/vxd/common/hash.h
+ F:	drivers/staging/media/vxd/common/idgen_api.c
+ F:	drivers/staging/media/vxd/common/idgen_api.h
++F:	drivers/staging/media/vxd/common/img_errors.h
++F:	drivers/staging/media/vxd/common/img_mem.h
+ F:	drivers/staging/media/vxd/common/img_mem_man.c
+ F:	drivers/staging/media/vxd/common/img_mem_man.h
+ F:	drivers/staging/media/vxd/common/img_mem_unified.c
+@@ -19563,26 +19565,38 @@ F:	drivers/staging/media/vxd/common/work_queue.h
+ F:	drivers/staging/media/vxd/decoder/bspp.c
+ F:	drivers/staging/media/vxd/decoder/bspp.h
+ F:	drivers/staging/media/vxd/decoder/bspp_int.h
++F:	drivers/staging/media/vxd/decoder/fw_interface.h
+ F:	drivers/staging/media/vxd/decoder/h264_secure_parser.c
+ F:	drivers/staging/media/vxd/decoder/h264_secure_parser.h
++F:	drivers/staging/media/vxd/decoder/h264fw_data.h
+ F:	drivers/staging/media/vxd/decoder/hevc_secure_parser.c
+ F:	drivers/staging/media/vxd/decoder/hevc_secure_parser.h
++F:	drivers/staging/media/vxd/decoder/hevcfw_data.h
  F:	drivers/staging/media/vxd/decoder/hw_control.c
  F:	drivers/staging/media/vxd/decoder/hw_control.h
  F:	drivers/staging/media/vxd/decoder/img_dec_common.h
-+F:	drivers/staging/media/vxd/decoder/jpeg_secure_parser.c
-+F:	drivers/staging/media/vxd/decoder/jpeg_secure_parser.h
-+F:	drivers/staging/media/vxd/decoder/swsr.c
-+F:	drivers/staging/media/vxd/decoder/swsr.h
++F:	drivers/staging/media/vxd/decoder/img_pixfmts.h
++F:	drivers/staging/media/vxd/decoder/img_profiles_levels.h
+ F:	drivers/staging/media/vxd/decoder/jpeg_secure_parser.c
+ F:	drivers/staging/media/vxd/decoder/jpeg_secure_parser.h
++F:	drivers/staging/media/vxd/decoder/jpegfw_data.h
++F:	drivers/staging/media/vxd/decoder/mmu_defs.h
++F:	drivers/staging/media/vxd/decoder/scaler_setup.h
+ F:	drivers/staging/media/vxd/decoder/swsr.c
+ F:	drivers/staging/media/vxd/decoder/swsr.h
  F:	drivers/staging/media/vxd/decoder/translation_api.c
  F:	drivers/staging/media/vxd/decoder/translation_api.h
++F:	drivers/staging/media/vxd/decoder/vdec_defs.h
  F:	drivers/staging/media/vxd/decoder/vdec_mmu_wrapper.c
-diff --git a/drivers/staging/media/vxd/decoder/bspp.c b/drivers/staging/media/vxd/decoder/bspp.c
+ F:	drivers/staging/media/vxd/decoder/vdec_mmu_wrapper.h
+ F:	drivers/staging/media/vxd/decoder/vxd_core.c
+ F:	drivers/staging/media/vxd/decoder/vxd_dec.c
+ F:	drivers/staging/media/vxd/decoder/vxd_dec.h
++F:	drivers/staging/media/vxd/decoder/vxd_ext.h
+ F:	drivers/staging/media/vxd/decoder/vxd_int.c
+ F:	drivers/staging/media/vxd/decoder/vxd_int.h
++F:	drivers/staging/media/vxd/decoder/vxd_mmu_defs.h
++F;	drivers/staging/media/vxd/decoder/vxd_props.h
+ F:	drivers/staging/media/vxd/decoder/vxd_pvdec.c
+ F:	drivers/staging/media/vxd/decoder/vxd_pvdec_priv.h
+ F:	drivers/staging/media/vxd/decoder/vxd_pvdec_regs.h
+diff --git a/drivers/staging/media/vxd/common/img_errors.h b/drivers/staging/media/vxd/common/img_errors.h
 new file mode 100644
-index 000000000000..b3a03e99a2c2
+index 000000000000..1f583b0284dc
 --- /dev/null
-+++ b/drivers/staging/media/vxd/decoder/bspp.c
-@@ -0,0 +1,2479 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * VXD Bitstream Buffer Pre-Parser
-+ *
-+ * Copyright (c) Imagination Technologies Ltd.
-+ * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com/
-+ *
-+ * Authors:
-+ *	Lakshmi Sankar <lakshmisankar-t@ti.com>
-+ *
-+ * Re-written for upstreming
-+ *	Prashanth Kumar Amai <prashanth.ka@pathpartnertech.com>
-+ *	Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
-+ */
-+
-+#include <linux/slab.h>
-+#include <linux/printk.h>
-+#include <linux/mutex.h>
-+#include <linux/dma-mapping.h>
-+#include <media/v4l2-ctrls.h>
-+#include <media/v4l2-device.h>
-+#include <media/v4l2-mem2mem.h>
-+
-+#include "bspp.h"
-+#include "h264_secure_parser.h"
-+#include "hevc_secure_parser.h"
-+#ifdef HAS_JPEG
-+#include "jpeg_secure_parser.h"
-+#endif
-+#include "lst.h"
-+#include "swsr.h"
-+#include "vdecdd_defs.h"
-+
-+#define BSPP_ERR_MSG_LENGTH     1024
-+
-+/*
-+ * This type defines the exception flag to catch the error if more catch block
-+ * is required to catch different kind of error then more enum can be added
-+ * @breif BSPP exception handler to catch the errors
-+ */
-+enum bspp_exception_handler {
-+	/* BSPP parse exception handler */
-+	BSPP_EXCEPTION_HANDLER_NONE = 0x00,
-+	/* Jump at exception (external use) */
-+	BSPP_EXCEPTION_HANDLER_JUMP,
-+	BSPP_EXCEPTION_FORCE32BITS = 0x7FFFFFFFU
-+};
-+
-+/*
-+ * This structure contains bitstream buffer information.
-+ * @brief  BSPP Bitstream Buffer Information
-+ */
-+struct bspp_bitstream_buffer {
-+	void **lst_link;
-+	struct bspp_ddbuf_info ddbuf_info;
-+	unsigned int data_size;
-+	unsigned int bufmap_id;
-+	enum vdec_bstr_element_type bstr_element_type;
-+	unsigned long long bytes_read;
-+	void *pict_tag_param;
-+};
-+
-+/*
-+ * This structure contains shift-register state.
-+ * @brief  BSPP Shift-register State
-+ */
-+struct bspp_parse_ctx {
-+	void *swsr_context;
-+	enum swsr_exception exception;
-+};
-+
-+/*
-+ * This structure contains context for the current picture.
-+ * @brief  BSPP Picture Context
-+ */
-+struct bspp_pict_ctx {
-+	struct bspp_sequence_hdr_info *sequ_hdr_info;
-+	int closed_gop;
-+	struct bspp_pict_hdr_info pict_hdr_info[VDEC_H264_MVC_MAX_VIEWS];
-+	struct bspp_sequence_hdr_info *ext_sequ_hdr_info;
-+	int present;
-+	int invalid;
-+	int unsupported;
-+	int finished;
-+	unsigned int new_pict_signalled;
-+};
-+
-+/*
-+ * This structure contains resources allocated for the stream.
-+ * @brief  BSPP Stream Resource Allocations
-+ */
-+struct bspp_stream_alloc_data {
-+	struct lst_t sequence_data_list[SEQUENCE_SLOTS];
-+	struct lst_t pps_data_list[PPS_SLOTS];
-+	struct lst_t available_sequence_list;
-+	struct lst_t available_ppss_list;
-+	struct lst_t raw_data_list_available;
-+	struct lst_t raw_data_list_used;
-+	struct lst_t vps_data_list[VPS_SLOTS];
-+	struct lst_t raw_sei_alloc_list;
-+	struct lst_t available_vps_list;
-+};
-+
-+struct bspp_raw_sei_alloc {
-+	void **lst_link;
-+	struct vdec_raw_bstr_data raw_sei_data;
-+};
-+
-+/*
-+ * This structure contains bitstream parsing state information for the current
-+ * group of buffers.
-+ * @brief  BSPP Bitstream Parsing State Information
-+ */
-+struct bspp_grp_bstr_ctx {
-+	enum vdec_vid_std vid_std;
-+	int disable_mvc;
-+	int delim_present;
-+	void *swsr_context;
-+	enum bspp_unit_type unit_type;
-+	enum bspp_unit_type last_unit_type;
-+	int not_pic_unit_yet;
-+	int not_ext_pic_unit_yet;
-+	unsigned int total_data_size;
-+	unsigned int total_bytes_read;
-+	struct lst_t buffer_chain;
-+	struct lst_t in_flight_bufs;
-+	struct lst_t *pre_pict_seg_list[3];
-+	struct lst_t *pict_seg_list[3];
-+	void **pict_tag_param_array[3];
-+	struct lst_t *segment_list;
-+	void **pict_tag_param;
-+	struct lst_t *free_segments;
-+	unsigned int segment_offset;
-+	int insert_start_code;
-+	unsigned char start_code_suffix;
-+	unsigned char current_view_idx;
-+};
-+
-+/*
-+ * This structure contains the stream context information.
-+ * @brief  BSPP Stream Context Information
-+ */
-+struct bspp_str_context {
-+	enum vdec_vid_std vid_std;
-+	int disable_mvc;
-+	int full_scan;
-+	int immediate_decode;
-+	enum vdec_bstr_format bstr_format;
-+	struct vdec_codec_config codec_config;
-+	unsigned int user_str_id;
-+	struct bspp_vid_std_features vid_std_features;
-+	struct bspp_swsr_ctx swsr_ctx;
-+	struct bspp_parser_callbacks parser_callbacks;
-+	struct bspp_stream_alloc_data str_alloc;
-+	unsigned int sequ_hdr_id;
-+	unsigned char *sequ_hdr_info;
-+	unsigned char *secure_sequence_info;
-+	unsigned char *pps_info;
-+	unsigned char *secure_pps_info;
-+	unsigned char *raw_data;
-+	struct bspp_grp_bstr_ctx grp_bstr_ctx;
-+	struct bspp_parse_ctx parse_ctx;
-+	struct bspp_inter_pict_data inter_pict_data;
-+	struct lst_t decoded_pictures_list;
-+	/* Mutex for secure access */
-+	struct mutex *bspp_mutex;
-+	int intra_frame_closed_gop;
-+	struct bspp_pict_ctx pict_ctx;
-+	struct bspp_parse_state parse_state;
-+};
-+
-+/*
-+ * This structure contains the standard related parser functions.
-+ * @brief  BSPP Standard Related Functions
-+ */
-+struct bspp_parser_functions {
-+	/* Pointer to standard-specific parser configuration function */
-+	bspp_cb_set_parser_config set_parser_config;
-+	/* Pointer to standard-specific unit type determining function */
-+	bspp_cb_determine_unit_type determine_unit_type;
-+};
-+
-+static struct bspp_parser_functions parser_fxns[VDEC_STD_MAX] = {
-+	/* VDEC_STD_UNDEFINED */
-+	{ NULL, NULL },
-+	/* VDEC_STD_MPEG2 */
-+	{ NULL, NULL },
-+	/* VDEC_STD_MPEG4 */
-+	{ NULL, NULL },
-+	/* VDEC_STD_H263 */
-+	{ NULL, NULL },
-+	/* VDEC_STD_H264 */
-+	{ bspp_h264_set_parser_config, bspp_h264_determine_unittype },
-+	/* VDEC_STD_VC1 */
-+	{ NULL, NULL },
-+	/* VDEC_STD_AVS */
-+	{ NULL, NULL },
-+	/* VDEC_STD_REAL */
-+	{ NULL, NULL },
-+	/* VDEC_STD_JPEG */
-+#ifdef HAS_JPEG
-+	{ bspp_jpeg_setparser_config, bspp_jpeg_determine_unit_type },
-+#else
-+	{ NULL, NULL },
-+#endif
-+	/* VDEC_STD_VP6 */
-+	{ NULL, NULL },
-+	/* VDEC_STD_VP8 */
-+	{ NULL, NULL },
-+	/* VDEC_STD_SORENSON */
-+	{ NULL, NULL },
-+	/* VDEC_STD_HEVC */
-+	{ bspp_hevc_set_parser_config, bspp_hevc_determine_unittype },
-+};
-+
-+/*
-+ * @Function	bspp_get_pps_hdr
-+ * @Description	Obtains the most recent PPS header of a given Id.
-+ */
-+struct bspp_pps_info *bspp_get_pps_hdr(void *str_res_handle, unsigned int pps_id)
-+{
-+	struct bspp_stream_alloc_data *alloc_data =
-+		(struct bspp_stream_alloc_data *)str_res_handle;
-+
-+	if (pps_id >= PPS_SLOTS || !alloc_data)
-+		return NULL;
-+
-+	return lst_last(&alloc_data->pps_data_list[pps_id]);
-+}
-+
-+/*
-+ * @Function	bspp_get_sequ_hdr
-+ * @Description	Obtains the most recent sequence header of a given Id.
-+ */
-+struct bspp_sequence_hdr_info *bspp_get_sequ_hdr(void *str_res_handle,
-+						 unsigned int sequ_id)
-+{
-+	struct bspp_stream_alloc_data *alloc_data =
-+		(struct bspp_stream_alloc_data *)str_res_handle;
-+	if (sequ_id >= SEQUENCE_SLOTS || !alloc_data)
-+		return NULL;
-+
-+	return lst_last(&alloc_data->sequence_data_list[sequ_id]);
-+}
-+
-+/*
-+ * @Function	bspp_free_bitstream_elem
-+ * @Description	Frees a bitstream chain element.
-+ */
-+static void bspp_free_bitstream_elem(struct bspp_bitstream_buffer *bstr_buf)
-+{
-+	memset(bstr_buf, 0, sizeof(struct bspp_bitstream_buffer));
-+
-+	kfree(bstr_buf);
-+}
-+
-+/*
-+ * @Function	bspp_create_segment
-+ * @Description Constructs a bitstream segment for the current unit and adds
-+ *		it to the list.
-+ */
-+static int bspp_create_segment(struct bspp_grp_bstr_ctx *grp_btsr_ctx,
-+			       struct bspp_bitstream_buffer *cur_buf)
-+{
-+	struct bspp_bitstr_seg *segment;
-+	unsigned int result;
-+
-+	/*
-+	 * Only create a segment when data (not in a previous segment) has been
-+	 * parsed from the buffer.
-+	 */
-+	if (cur_buf->bytes_read != grp_btsr_ctx->segment_offset) {
-+		/* Allocate a software shift-register context structure */
-+		segment = lst_removehead(grp_btsr_ctx->free_segments);
-+		if (!segment) {
-+			result = IMG_ERROR_COULD_NOT_OBTAIN_RESOURCE;
-+			goto error;
-+		}
-+		memset(segment, 0, sizeof(struct bspp_bitstr_seg));
-+
-+		segment->bufmap_id = cur_buf->bufmap_id;
-+		segment->data_size = (unsigned int)cur_buf->bytes_read
-+			- grp_btsr_ctx->segment_offset;
-+		segment->data_byte_offset = grp_btsr_ctx->segment_offset;
-+
-+		if (cur_buf->bytes_read == cur_buf->data_size) {
-+			/* This is the last segment in the buffer. */
-+			segment->bstr_seg_flag |= VDECDD_BSSEG_LASTINBUFF;
-+		}
-+
-+		/*
-+		 * Next segment will start part way through the buffer
-+		 * (current read position).
-+		 */
-+		grp_btsr_ctx->segment_offset = (unsigned int)cur_buf->bytes_read;
-+
-+		if (grp_btsr_ctx->insert_start_code) {
-+			segment->bstr_seg_flag |= VDECDD_BSSEG_INSERT_STARTCODE;
-+			segment->start_code_suffix = grp_btsr_ctx->start_code_suffix;
-+			grp_btsr_ctx->insert_start_code = 0;
-+		}
-+
-+		lst_add(grp_btsr_ctx->segment_list, segment);
-+
-+		/*
-+		 * If multiple segments correspond to the same (picture)
-+		 * stream-unit, update it only the first time
-+		 */
-+		if (cur_buf->pict_tag_param && grp_btsr_ctx->pict_tag_param &&
-+		    (grp_btsr_ctx->segment_list ==
-+		     grp_btsr_ctx->pict_seg_list[0] ||
-+		     grp_btsr_ctx->segment_list ==
-+		     grp_btsr_ctx->pict_seg_list[1] ||
-+		     grp_btsr_ctx->segment_list ==
-+		     grp_btsr_ctx->pict_seg_list[2]))
-+			*grp_btsr_ctx->pict_tag_param = cur_buf->pict_tag_param;
-+	}
-+
-+	return IMG_SUCCESS;
-+error:
-+	return result;
-+}
-+
-+/*
-+ * @Function bspp_DetermineUnitType
-+ *
-+ */
-+static int bspp_determine_unit_type(enum vdec_vid_std vid_std,
-+				    unsigned char unit_type,
-+				    int disable_mvc,
-+				    enum bspp_unit_type *unit_type_enum)
-+{
-+	/* Determine the unit type from the NAL type. */
-+	if (vid_std < VDEC_STD_MAX && parser_fxns[vid_std].determine_unit_type)
-+		parser_fxns[vid_std].determine_unit_type(unit_type, disable_mvc, unit_type_enum);
-+	else
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+
-+	return IMG_SUCCESS;
-+}
-+
-+/*
-+ * @Function	bspp_shift_reg_cb
-+ *
-+ */
-+static void bspp_shift_reg_cb(enum swsr_cbevent event,
-+			      struct bspp_grp_bstr_ctx *grp_btsr_ctx,
-+			      unsigned char nal_type,
-+			      unsigned char **data_buffer,
-+			      unsigned long long *data_size)
-+{
-+	unsigned int result;
-+
-+	switch (event) {
-+	case SWSR_EVENT_INPUT_BUFFER_START: {
-+		struct bspp_bitstream_buffer *next_buf;
-+
-+		/* Take the next bitstream buffer for use in shift-register. */
-+		next_buf = lst_removehead(&grp_btsr_ctx->buffer_chain);
-+
-+		if (next_buf && data_buffer && data_size) {
-+			lst_add(&grp_btsr_ctx->in_flight_bufs, next_buf);
-+
-+			*data_buffer = next_buf->ddbuf_info.cpu_virt_addr;
-+			*data_size = next_buf->data_size;
-+
-+			next_buf->bytes_read = 0;
-+		} else {
-+			goto error;
-+		}
-+	}
-+	break;
-+	case SWSR_EVENT_OUTPUT_BUFFER_END: {
-+		struct bspp_bitstream_buffer *cur_buf;
-+
-+		cur_buf = lst_removehead(&grp_btsr_ctx->in_flight_bufs);
-+
-+		if (cur_buf) {
-+			/*
-+			 * Indicate that the whole buffer content has been
-+			 * used.
-+			 */
-+			cur_buf->bytes_read = cur_buf->data_size;
-+			grp_btsr_ctx->total_bytes_read += (unsigned int)cur_buf->bytes_read;
-+
-+			/*
-+			 * Construct segment for current buffer and add to
-+			 * active list.
-+			 */
-+			result = bspp_create_segment(grp_btsr_ctx, cur_buf);
-+			if (result != IMG_SUCCESS)
-+				goto error;
-+
-+			/*
-+			 * Next segment will start at the beginning of the next
-+			 * buffer.
-+			 */
-+			grp_btsr_ctx->segment_offset = 0;
-+
-+			/* Destroy the bitstream element. */
-+			bspp_free_bitstream_elem(cur_buf);
-+		} else {
-+			goto error;
-+		}
-+	}
-+	break;
-+
-+	case SWSR_EVENT_DELIMITER_NAL_TYPE:
-+		/*
-+		 * Initialise the unit type with the last (unclassified or
-+		 * unsupported types are not retained since they.
-+		 */
-+		grp_btsr_ctx->unit_type = grp_btsr_ctx->last_unit_type;
-+
-+		/*
-+		 * Determine the unit type without consuming any data (start
-+		 * code) from shift-register. Segments are created automatically
-+		 * when a new buffer is requested by the shift-register so the
-+		 * unit type must be known in order to switch over the segment
-+		 * list.
-+		 */
-+		result = bspp_determine_unit_type(grp_btsr_ctx->vid_std, nal_type,
-+						  grp_btsr_ctx->disable_mvc,
-+						  &grp_btsr_ctx->unit_type);
-+
-+		/*
-+		 * Only look to change bitstream segment list when the unit type
-+		 * is different and the current unit contains data that could be
-+		 * placed in a new list.
-+		 */
-+		if (grp_btsr_ctx->last_unit_type != grp_btsr_ctx->unit_type &&
-+		    grp_btsr_ctx->unit_type != BSPP_UNIT_UNSUPPORTED &&
-+		    grp_btsr_ctx->unit_type != BSPP_UNIT_UNCLASSIFIED) {
-+			int prev_pict_data;
-+			int curr_pict_data;
-+
-+			prev_pict_data = (grp_btsr_ctx->last_unit_type == BSPP_UNIT_PICTURE ||
-+					  grp_btsr_ctx->last_unit_type ==
-+					  BSPP_UNIT_SKIP_PICTURE) ? 1 : 0;
-+
-+			curr_pict_data = (grp_btsr_ctx->unit_type == BSPP_UNIT_PICTURE ||
-+					  grp_btsr_ctx->unit_type ==
-+					  BSPP_UNIT_SKIP_PICTURE) ? 1 : 0;
-+
-+			/*
-+			 * When switching between picture and non-picture
-+			 * units.
-+			 */
-+			if ((prev_pict_data && !curr_pict_data) ||
-+			    (!prev_pict_data && curr_pict_data)) {
-+				/*
-+				 * Only delimit unit change when we're not the
-+				 * first unit and  we're not already in the last
-+				 * segment list.
-+				 */
-+				if (grp_btsr_ctx->last_unit_type != BSPP_UNIT_NONE &&
-+				    grp_btsr_ctx->segment_list !=
-+				    grp_btsr_ctx->pict_seg_list[2]) {
-+					struct bspp_bitstream_buffer *cur_buf =
-+						lst_first(&grp_btsr_ctx->in_flight_bufs);
-+					if (!cur_buf)
-+						goto error;
-+
-+					/*
-+					 * Update the offset within current buf.
-+					 */
-+					swsr_get_byte_offset_curbuf(grp_btsr_ctx->swsr_context,
-+								    &cur_buf->bytes_read);
-+
-+					/*
-+					 * Create the last segment of the
-+					 * previous type (which may split a
-+					 * buffer into two). If the unit is
-+					 * exactly at the start of a buffer this
-+					 * will not create a zero-byte segment.
-+					 */
-+					result = bspp_create_segment(grp_btsr_ctx, cur_buf);
-+					if (result != IMG_SUCCESS)
-+						goto error;
-+				}
-+
-+				/* Point at the next segment list. */
-+				if (grp_btsr_ctx->segment_list
-+					== grp_btsr_ctx->pre_pict_seg_list[0]) {
-+					grp_btsr_ctx->segment_list =
-+						grp_btsr_ctx->pict_seg_list[0];
-+					grp_btsr_ctx->pict_tag_param =
-+						grp_btsr_ctx->pict_tag_param_array[0];
-+				} else if (grp_btsr_ctx->segment_list
-+					== grp_btsr_ctx->pict_seg_list[0])
-+					grp_btsr_ctx->segment_list =
-+						grp_btsr_ctx->pre_pict_seg_list[1];
-+				else if (grp_btsr_ctx->segment_list
-+					== grp_btsr_ctx->pre_pict_seg_list[1]) {
-+					grp_btsr_ctx->segment_list =
-+						grp_btsr_ctx->pict_seg_list[1];
-+					grp_btsr_ctx->pict_tag_param =
-+						grp_btsr_ctx->pict_tag_param_array[1];
-+				} else if (grp_btsr_ctx->segment_list
-+					== grp_btsr_ctx->pict_seg_list[1])
-+					grp_btsr_ctx->segment_list =
-+						grp_btsr_ctx->pre_pict_seg_list[2];
-+				else if (grp_btsr_ctx->segment_list
-+					== grp_btsr_ctx->pre_pict_seg_list[2]) {
-+					grp_btsr_ctx->segment_list =
-+						grp_btsr_ctx->pict_seg_list[2];
-+					grp_btsr_ctx->pict_tag_param =
-+						grp_btsr_ctx->pict_tag_param_array[2];
-+				}
-+			}
-+
-+			grp_btsr_ctx->last_unit_type = grp_btsr_ctx->unit_type;
-+		}
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+error:
-+	return;
-+}
-+
-+/*
-+ * @Function	bspp_exception_handler
-+ *
-+ */
-+static void bspp_exception_handler(enum swsr_exception exception, void *parse_ctx_handle)
-+{
-+	struct bspp_parse_ctx *parse_ctx = (struct bspp_parse_ctx *)parse_ctx_handle;
-+
-+	/* Store the exception. */
-+	parse_ctx->exception = exception;
-+
-+	switch (parse_ctx->exception) {
-+	case SWSR_EXCEPT_NO_EXCEPTION:
-+		break;
-+	case SWSR_EXCEPT_ENCAPULATION_ERROR1:
-+		break;
-+	case SWSR_EXCEPT_ENCAPULATION_ERROR2:
-+		break;
-+	case SWSR_EXCEPT_ACCESS_INTO_SCP:
-+		break;
-+	case SWSR_EXCEPT_ACCESS_BEYOND_EOD:
-+		break;
-+	case SWSR_EXCEPT_EXPGOULOMB_ERROR:
-+		break;
-+	case SWSR_EXCEPT_WRONG_CODEWORD_ERROR:
-+		break;
-+	case SWSR_EXCEPT_NO_SCP:
-+		break;
-+	case SWSR_EXCEPT_INVALID_CONTEXT:
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+	/* Clear the exception. */
-+	swsr_check_exception(parse_ctx->swsr_context);
-+}
-+
-+/*
-+ * @Function	bspp_reset_sequence
-+ *
-+ */
-+static void bspp_reset_sequence(struct bspp_str_context *str_ctx,
-+				struct bspp_sequence_hdr_info *sequ_hdr_info)
-+{
-+	/* Temporarily store relevant sequence fields. */
-+	struct bspp_ddbuf_array_info aux_fw_sequence = sequ_hdr_info->fw_sequence;
-+	void *aux_secure_sequence_info_hndl = sequ_hdr_info->secure_sequence_info;
-+
-+	struct bspp_ddbuf_array_info *tmp = &sequ_hdr_info->fw_sequence;
-+
-+	/* Reset all related structures. */
-+	memset(((unsigned char *)tmp->ddbuf_info.cpu_virt_addr + tmp->buf_offset), 0x00,
-+	       sequ_hdr_info->fw_sequence.buf_element_size);
-+
-+	if (str_ctx->parser_callbacks.reset_data_cb)
-+		str_ctx->parser_callbacks.reset_data_cb(BSPP_UNIT_SEQUENCE,
-+			sequ_hdr_info->secure_sequence_info);
-+	else
-+		memset(aux_secure_sequence_info_hndl, 0, str_ctx->vid_std_features.seq_size);
-+
-+	memset(sequ_hdr_info, 0, sizeof(*sequ_hdr_info));
-+
-+	/* Restore relevant sequence fields. */
-+	sequ_hdr_info->fw_sequence = aux_fw_sequence;
-+	sequ_hdr_info->sequ_hdr_info.bufmap_id = aux_fw_sequence.ddbuf_info.bufmap_id;
-+	sequ_hdr_info->sequ_hdr_info.buf_offset = aux_fw_sequence.buf_offset;
-+	sequ_hdr_info->secure_sequence_info = aux_secure_sequence_info_hndl;
-+}
-+
-+/*
-+ * @Function	bspp_reset_pps
-+ *
-+ */
-+static void bspp_reset_pps(struct bspp_str_context *str_ctx,
-+			   struct bspp_pps_info *pps_info)
-+{
-+	/* Temporarily store relevant PPS fields. */
-+	struct bspp_ddbuf_array_info aux_fw_pps = pps_info->fw_pps;
-+	void *aux_secure_pps_info_hndl = pps_info->secure_pps_info;
-+	struct bspp_ddbuf_array_info *tmp = &pps_info->fw_pps;
-+
-+	/* Reset all related structures. */
-+	memset(((unsigned char *)tmp->ddbuf_info.cpu_virt_addr + tmp->buf_offset), 0x00,
-+	       pps_info->fw_pps.buf_element_size);
-+
-+	/* Reset the parser specific data. */
-+	if (str_ctx->parser_callbacks.reset_data_cb)
-+		str_ctx->parser_callbacks.reset_data_cb(BSPP_UNIT_PPS, pps_info->secure_pps_info);
-+
-+	/* Reset the common data. */
-+	memset(pps_info, 0, sizeof(*pps_info));
-+
-+	/* Restore relevant PPS fields. */
-+	pps_info->fw_pps = aux_fw_pps;
-+	pps_info->bufmap_id = aux_fw_pps.ddbuf_info.bufmap_id;
-+	pps_info->buf_offset = aux_fw_pps.buf_offset;
-+	pps_info->secure_pps_info = aux_secure_pps_info_hndl;
-+}
-+
-+/*
-+ * @Function	bspp_stream_submit_buffer
-+ *
-+ */
-+int bspp_stream_submit_buffer(void *str_context_handle,
-+			      const struct bspp_ddbuf_info *ddbuf_info,
-+			      unsigned int bufmap_id,
-+			      unsigned int data_size,
-+			      void *pict_tag_param,
-+			      enum vdec_bstr_element_type bstr_element_type)
-+{
-+	struct bspp_str_context *str_ctx = (struct bspp_str_context *)str_context_handle;
-+	struct bspp_bitstream_buffer *bstr_buf;
-+	unsigned int result = IMG_SUCCESS;
-+
-+	if (!str_context_handle) {
-+		result = IMG_ERROR_INVALID_PARAMETERS;
-+		goto error;
-+	}
-+
-+	if (bstr_element_type == VDEC_BSTRELEMENT_UNDEFINED ||
-+	    bstr_element_type >= VDEC_BSTRELEMENT_MAX) {
-+		result = IMG_ERROR_INVALID_PARAMETERS;
-+		goto error;
-+	}
-+
-+	/*
-+	 * Check that the new bitstream buffer is compatible with those
-+	 * before.
-+	 */
-+	bstr_buf = lst_last(&str_ctx->grp_bstr_ctx.buffer_chain);
-+	if (bstr_buf && bstr_buf->bstr_element_type != bstr_element_type) {
-+		result = IMG_ERROR_INVALID_PARAMETERS;
-+		goto error;
-+	}
-+
-+	/* Allocate a bitstream buffer chain element structure */
-+	bstr_buf = kmalloc(sizeof(*bstr_buf), GFP_KERNEL);
-+	if (!bstr_buf) {
-+		result = IMG_ERROR_OUT_OF_MEMORY;
-+		goto error;
-+	}
-+	memset(bstr_buf, 0, sizeof(*bstr_buf));
-+
-+	/* Queue buffer in a chain since units might span buffers. */
-+	if (ddbuf_info)
-+		bstr_buf->ddbuf_info = *ddbuf_info;
-+
-+	bstr_buf->data_size = data_size;
-+	bstr_buf->bstr_element_type = bstr_element_type;
-+	bstr_buf->pict_tag_param = pict_tag_param;
-+	bstr_buf->bufmap_id = bufmap_id;
-+	lst_add(&str_ctx->grp_bstr_ctx.buffer_chain, bstr_buf);
-+
-+	str_ctx->grp_bstr_ctx.total_data_size += data_size;
-+
-+error:
-+	return result;
-+}
-+
-+/*
-+ * @Function	bspp_sequence_hdr_info
-+ *
-+ */
-+static struct bspp_sequence_hdr_info *bspp_obtain_sequence_hdr(struct bspp_str_context *str_ctx)
-+{
-+	struct bspp_stream_alloc_data *str_alloc = &str_ctx->str_alloc;
-+	struct bspp_sequence_hdr_info *sequ_hdr_info;
-+
-+	/*
-+	 * Obtain any partially filled sequence data else provide a new one
-+	 * (always new for H.264 and HEVC)
-+	 */
-+	sequ_hdr_info = lst_last(&str_alloc->sequence_data_list[BSPP_DEFAULT_SEQUENCE_ID]);
-+	if (!sequ_hdr_info || sequ_hdr_info->ref_count > 0 || str_ctx->vid_std == VDEC_STD_H264 ||
-+	    str_ctx->vid_std == VDEC_STD_HEVC) {
-+		/* Get Sequence resource. */
-+		sequ_hdr_info = lst_removehead(&str_alloc->available_sequence_list);
-+		if (sequ_hdr_info) {
-+			bspp_reset_sequence(str_ctx, sequ_hdr_info);
-+			sequ_hdr_info->sequ_hdr_info.sequ_hdr_id = BSPP_INVALID;
-+		}
-+	}
-+
-+	return sequ_hdr_info;
-+}
-+
-+/*
-+ * @Function	bspp_submit_picture_decoded
-+ *
-+ */
-+int bspp_submit_picture_decoded(void *str_context_handle,
-+				struct bspp_picture_decoded *picture_decoded)
-+{
-+	struct bspp_picture_decoded *picture_decoded_elem;
-+	struct bspp_str_context *str_ctx = (struct bspp_str_context *)str_context_handle;
-+
-+	/* Validate input arguments. */
-+	if (!str_context_handle)
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+
-+	picture_decoded_elem = kmalloc(sizeof(*picture_decoded_elem), GFP_KERNEL);
-+	if (!picture_decoded_elem)
-+		return IMG_ERROR_MALLOC_FAILED;
-+
-+	*picture_decoded_elem = *picture_decoded;
-+
-+	/* Lock access to the list for adding a picture - HIGH PRIORITY */
-+	mutex_lock_nested(str_ctx->bspp_mutex, SUBCLASS_BSPP);
-+
-+	lst_add(&str_ctx->decoded_pictures_list, picture_decoded_elem);
-+
-+	/* Unlock access to the list for adding a picture - HIGH PRIORITY */
-+	mutex_unlock(str_ctx->bspp_mutex);
-+
-+	return IMG_SUCCESS;
-+}
-+
-+/*
-+ * @Function	bspp_check_and_detach_pps_info
-+ *
-+ */
-+static void bspp_check_and_detach_pps_info(struct bspp_stream_alloc_data *str_alloc,
-+					   unsigned int pps_id)
-+{
-+	if (pps_id != BSPP_INVALID) {
-+		struct bspp_pps_info *pps_info = lst_first(&str_alloc->pps_data_list[pps_id]);
-+
-+		if (!pps_info) /* Invalid id */
-+			return;
-+
-+		pps_info->ref_count--;
-+		/* If nothing references it any more */
-+		if (pps_info->ref_count == 0) {
-+			struct bspp_pps_info *next_pps_info = lst_next(pps_info);
-+
-+			/*
-+			 * If it is not the last sequence in the slot list
-+			 * remove it and return it to the pool-list
-+			 */
-+			if (next_pps_info) {
-+				lst_remove(&str_alloc->pps_data_list[pps_id], pps_info);
-+				lst_addhead(&str_alloc->available_ppss_list, pps_info);
-+			}
-+		}
-+	}
-+}
-+
-+/*
-+ * @Function	bspp_picture_decoded
-+ *
-+ */
-+static int bspp_picture_decoded(struct bspp_str_context *str_ctx,
-+				struct bspp_picture_decoded *picture_decoded)
-+{
-+	struct bspp_stream_alloc_data *str_alloc = &str_ctx->str_alloc;
-+
-+	/* Manage Sequence */
-+	if (picture_decoded->sequ_hdr_id != BSPP_INVALID) {
-+		struct bspp_sequence_hdr_info *seq =
-+			lst_first(&str_alloc->sequence_data_list[picture_decoded->sequ_hdr_id]);
-+
-+		if (!seq)
-+			return IMG_ERROR_INVALID_ID;
-+
-+		if (picture_decoded->not_decoded) {
-+			/* Release sequence data. */
-+			if (str_ctx->parser_callbacks.release_data_cb)
-+				str_ctx->parser_callbacks.release_data_cb((void *)str_alloc,
-+					BSPP_UNIT_SEQUENCE, seq->secure_sequence_info);
-+		}
-+
-+		seq->ref_count--;
-+		/* If nothing references it any more */
-+		if (seq->ref_count == 0) {
-+			struct bspp_sequence_hdr_info *next_sequ_hdr_info = lst_next(seq);
-+
-+			/*
-+			 * If it is not the last sequence in the slot list
-+			 * remove it and return it to the pool-list
-+			 */
-+			if (next_sequ_hdr_info) {
-+				lst_remove(&str_alloc->sequence_data_list
-+					   [picture_decoded->sequ_hdr_id], seq);
-+				/* Release sequence data. */
-+				if (str_ctx->parser_callbacks.release_data_cb)
-+					str_ctx->parser_callbacks.release_data_cb((void *)str_alloc,
-+						BSPP_UNIT_SEQUENCE, seq->secure_sequence_info);
-+
-+				lst_addhead(&str_alloc->available_sequence_list, seq);
-+			}
-+		}
-+	}
-+
-+	/*
-+	 * Expect at least one valid PPS for H.264 and always invalid for all
-+	 * others
-+	 */
-+	bspp_check_and_detach_pps_info(str_alloc, picture_decoded->pps_id);
-+	bspp_check_and_detach_pps_info(str_alloc, picture_decoded->second_pps_id);
-+
-+	return IMG_SUCCESS;
-+}
-+
-+/*
-+ * @Function	bspp_service_pictures_decoded
-+ *
-+ */
-+static int bspp_service_pictures_decoded(struct bspp_str_context *str_ctx)
-+{
-+	struct bspp_picture_decoded *picture_decoded;
-+
-+	while (1) {
-+		/*
-+		 * Lock access to the list for removing a picture -
-+		 * LOW PRIORITY
-+		 */
-+		mutex_lock_nested(str_ctx->bspp_mutex, SUBCLASS_BSPP);
-+
-+		picture_decoded = lst_removehead(&str_ctx->decoded_pictures_list);
-+
-+		/*
-+		 * Unlock access to the list for removing a picture -
-+		 * LOW PRIORITY
-+		 */
-+		mutex_unlock(str_ctx->bspp_mutex);
-+
-+		if (!picture_decoded)
-+			break;
-+
-+		bspp_picture_decoded(str_ctx, picture_decoded);
-+		kfree(picture_decoded);
-+	}
-+
-+	return IMG_SUCCESS;
-+}
-+
-+static void bspp_remove_unused_vps(struct bspp_str_context *str_ctx, unsigned int vps_id)
-+{
-+	struct bspp_stream_alloc_data *str_alloc = &str_ctx->str_alloc;
-+	struct bspp_vps_info *temp_vps_info = NULL;
-+	struct bspp_vps_info *next_temp_vps_info = NULL;
-+
-+	/*
-+	 * Check the whole Vps slot list for any unused Vpss
-+	 * BEFORE ADDING THE NEW ONE, if found remove them
-+	 */
-+	next_temp_vps_info = lst_first(&str_alloc->vps_data_list[vps_id]);
-+	while (next_temp_vps_info) {
-+		/* Set Temp, it is the one which we will potentially remove */
-+		temp_vps_info = next_temp_vps_info;
-+		/*
-+		 *  Set Next Temp, it is the one for the next iteration
-+		 * (we cannot ask for next after removing it)
-+		 */
-+		next_temp_vps_info = lst_next(temp_vps_info);
-+		/* If it is not used remove it */
-+		if (temp_vps_info->ref_count == 0 && next_temp_vps_info) {
-+			/* Return resource to the available pool */
-+			lst_remove(&str_alloc->vps_data_list[vps_id], temp_vps_info);
-+			lst_addhead(&str_alloc->available_vps_list, temp_vps_info);
-+		}
-+	}
-+}
-+
-+static void bspp_remove_unused_pps(struct bspp_str_context *str_ctx, unsigned int pps_id)
-+{
-+	struct bspp_stream_alloc_data *str_alloc = &str_ctx->str_alloc;
-+	struct bspp_pps_info *temp_pps_info = NULL;
-+	struct bspp_pps_info *next_temp_pps_info = NULL;
-+
-+	/*
-+	 * Check the whole PPS slot list for any unused PPSs BEFORE ADDING
-+	 * THE NEW ONE, if found remove them
-+	 */
-+	next_temp_pps_info = lst_first(&str_alloc->pps_data_list[pps_id]);
-+	while (next_temp_pps_info) {
-+		/* Set Temp, it is the one which we will potentially remove */
-+		temp_pps_info = next_temp_pps_info;
-+		/*
-+		 * Set Next Temp, it is the one for the next iteration
-+		 * (we cannot ask for next after removing it)
-+		 */
-+		next_temp_pps_info = lst_next(temp_pps_info);
-+		/* If it is not used remove it */
-+		if (temp_pps_info->ref_count == 0 && next_temp_pps_info) {
-+			/* Return resource to the available pool */
-+			lst_remove(&str_alloc->pps_data_list[pps_id], temp_pps_info);
-+			lst_addhead(&str_alloc->available_ppss_list, temp_pps_info);
-+		}
-+	}
-+}
-+
-+static void bspp_remove_unused_sequence(struct bspp_str_context *str_ctx, unsigned int sps_id)
-+{
-+	struct bspp_stream_alloc_data *str_alloc = &str_ctx->str_alloc;
-+	struct bspp_sequence_hdr_info *seq = NULL;
-+	struct bspp_sequence_hdr_info *next_seq = NULL;
-+
-+	/*
-+	 * Check the whole sequence slot list for any unused sequences,
-+	 * if found remove them
-+	 */
-+	next_seq = lst_first(&str_alloc->sequence_data_list[sps_id]);
-+	while (next_seq) {
-+		/* Set Temp, it is the one which we will potentially remove */
-+		seq = next_seq;
-+		/*
-+		 * Set Next Temp, it is the one for the next iteration (we
-+		 * cannot ask for next after removing it)
-+		 */
-+		next_seq = lst_next(seq);
-+
-+		/*
-+		 * If the head is no longer used and there is something after,
-+		 * remove it
-+		 */
-+		if (seq->ref_count == 0 && next_seq) {
-+			/* Return resource to the pool-list */
-+			lst_remove(&str_alloc->sequence_data_list[sps_id], seq);
-+			if (str_ctx->parser_callbacks.release_data_cb) {
-+				str_ctx->parser_callbacks.release_data_cb
-+							((void *)str_alloc,
-+							 BSPP_UNIT_SEQUENCE,
-+							 seq->secure_sequence_info);
-+			}
-+			lst_addhead(&str_alloc->available_sequence_list, seq);
-+		}
-+	}
-+}
-+
-+/*
-+ * @Function	bspp_return_or_store_sequence_hdr
-+ *
-+ */
-+static int bspp_return_or_store_sequence_hdr(struct bspp_str_context *str_ctx,
-+					     enum bspp_error_type parse_error,
-+					     struct bspp_sequence_hdr_info *sequ_hdr_info)
-+{
-+	struct bspp_stream_alloc_data *str_alloc = &str_ctx->str_alloc;
-+	struct bspp_sequence_hdr_info *prev_sequ_hdr_info;
-+
-+	if (((parse_error & BSPP_ERROR_UNRECOVERABLE) || (parse_error & BSPP_ERROR_UNSUPPORTED)) &&
-+	    sequ_hdr_info->sequ_hdr_info.sequ_hdr_id != BSPP_INVALID) {
-+		prev_sequ_hdr_info =
-+			lst_last(&str_alloc->sequence_data_list
-+					[sequ_hdr_info->sequ_hdr_info.sequ_hdr_id]);
-+
-+		/* check if it's not the same pointer */
-+		if (prev_sequ_hdr_info && prev_sequ_hdr_info != sequ_hdr_info) {
-+			/*
-+			 * Throw away corrupted sequence header if a previous "good" one exists.
-+			 */
-+			sequ_hdr_info->sequ_hdr_info.sequ_hdr_id = BSPP_INVALID;
-+		}
-+	}
-+
-+	/* Store or return Sequence resource. */
-+	if (sequ_hdr_info->sequ_hdr_info.sequ_hdr_id != BSPP_INVALID) {
-+		/* Only add when not already in list. */
-+		if (sequ_hdr_info != lst_last(&str_alloc->sequence_data_list
-+				[sequ_hdr_info->sequ_hdr_info.sequ_hdr_id])) {
-+			/*
-+			 * Add new sequence header (not already in list) to end
-+			 * of the slot-list.
-+			 */
-+			lst_add(&str_alloc->sequence_data_list
-+				[sequ_hdr_info->sequ_hdr_info.sequ_hdr_id], sequ_hdr_info);
-+		}
-+
-+		bspp_remove_unused_sequence(str_ctx, sequ_hdr_info->sequ_hdr_info.sequ_hdr_id);
-+	} else {
-+		/*
-+		 * if unit was not a sequnce info, add resource to the
-+		 * pool-list
-+		 */
-+		lst_addhead(&str_alloc->available_sequence_list, sequ_hdr_info);
-+	}
-+
-+	return IMG_SUCCESS;
-+}
-+
-+/*
-+ * @Function	bspp_get_resource
-+ *
-+ */
-+static int bspp_get_resource(struct bspp_str_context *str_ctx,
-+			     struct bspp_pict_hdr_info *pict_hdr_info,
-+			     struct bspp_unit_data *unit_data)
-+{
-+	int result = IMG_SUCCESS;
-+	struct bspp_stream_alloc_data *str_alloc = &str_ctx->str_alloc;
-+
-+	switch (unit_data->unit_type) {
-+	case BSPP_UNIT_VPS:
-+		/* Get VPS resource (HEVC only). */
-+		if (unit_data->vid_std != VDEC_STD_HEVC)
-+			break;
-+		unit_data->out.vps_info = lst_removehead(&str_alloc->available_vps_list);
-+		if (!unit_data->out.vps_info) {
-+			result = IMG_ERROR_COULD_NOT_OBTAIN_RESOURCE;
-+		} else {
-+			unit_data->out.vps_info->vps_id = BSPP_INVALID;
-+			unit_data->out.vps_info->ref_count = 0;
-+		}
-+		break;
-+	case BSPP_UNIT_SEQUENCE:
-+		unit_data->out.sequ_hdr_info = bspp_obtain_sequence_hdr(str_ctx);
-+		if (!unit_data->out.sequ_hdr_info)
-+			result = IMG_ERROR_COULD_NOT_OBTAIN_RESOURCE;
-+
-+		break;
-+
-+	case BSPP_UNIT_PPS:
-+		/* Get PPS resource (H.264 only). */
-+		unit_data->out.pps_info = lst_removehead(&str_alloc->available_ppss_list);
-+		/* allocate and return extra resources */
-+		if (!unit_data->out.pps_info) {
-+			result = IMG_ERROR_COULD_NOT_OBTAIN_RESOURCE;
-+		} else {
-+			bspp_reset_pps(str_ctx, unit_data->out.pps_info);
-+			unit_data->out.pps_info->pps_id = BSPP_INVALID;
-+		}
-+		break;
-+
-+	case BSPP_UNIT_PICTURE:
-+	case BSPP_UNIT_SKIP_PICTURE:
-+		unit_data->out.pict_hdr_info = pict_hdr_info;
-+#ifdef HAS_JPEG
-+		if (unit_data->vid_std == VDEC_STD_JPEG) {
-+			unit_data->impl_sequ_hdr_info = bspp_obtain_sequence_hdr(str_ctx);
-+			if (!unit_data->impl_sequ_hdr_info)
-+				result = IMG_ERROR_COULD_NOT_OBTAIN_RESOURCE;
-+		}
-+#endif
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+	return result;
-+}
-+
-+/*
-+ * @Function	bspp_file_resource
-+ * @Description	Stores or returns all resources provided to parse unit.
-+ */
-+static int bspp_file_resource(struct bspp_str_context *str_ctx, struct bspp_unit_data *unit_data)
-+{
-+	unsigned int result = IMG_SUCCESS;
-+	struct bspp_stream_alloc_data *str_alloc = &str_ctx->str_alloc;
-+
-+	switch (unit_data->unit_type) {
-+	case BSPP_UNIT_VPS:
-+		/* Store or return VPS resource (HEVC only) */
-+		if (unit_data->vid_std != VDEC_STD_HEVC)
-+			break;
-+
-+		if (unit_data->out.vps_info->vps_id != BSPP_INVALID) {
-+			lst_add(&str_alloc->vps_data_list[unit_data->out.vps_info->vps_id],
-+				unit_data->out.vps_info);
-+
-+			bspp_remove_unused_vps(str_ctx, unit_data->out.vps_info->vps_id);
-+		} else {
-+			lst_addhead(&str_alloc->available_vps_list, unit_data->out.vps_info);
-+		}
-+		break;
-+	case BSPP_UNIT_SEQUENCE:
-+		result = bspp_return_or_store_sequence_hdr(str_ctx, unit_data->parse_error,
-+							   unit_data->out.sequ_hdr_info);
-+		VDEC_ASSERT(result == IMG_SUCCESS);
-+		break;
-+
-+	case BSPP_UNIT_PPS:
-+		/* Store or return PPS resource (H.264 only). */
-+		if (unit_data->out.pps_info->pps_id != BSPP_INVALID) {
-+			/*
-+			 * if unit was a PPS info, add resource to the slot-list
-+			 * AFTER REMOVING THE UNUSED ONES otherwise this will be
-+			 * removed along the rest unless special provision for
-+			 * last is made
-+			 */
-+			lst_add(&str_alloc->pps_data_list[unit_data->out.pps_info->pps_id],
-+				unit_data->out.pps_info);
-+
-+			bspp_remove_unused_pps(str_ctx, unit_data->out.pps_info->pps_id);
-+		} else {
-+			/*
-+			 * if unit was not a PPS info, add resource to the
-+			 * pool-list
-+			 */
-+			lst_addhead(&str_alloc->available_ppss_list, unit_data->out.pps_info);
-+		}
-+		break;
-+
-+	case BSPP_UNIT_PICTURE:
-+	case BSPP_UNIT_SKIP_PICTURE:
-+#ifdef HAS_JPEG
-+		if (unit_data->vid_std == VDEC_STD_JPEG) {
-+			result = bspp_return_or_store_sequence_hdr(str_ctx,
-+								   unit_data->parse_error,
-+								   unit_data->impl_sequ_hdr_info);
-+			VDEC_ASSERT(result == IMG_SUCCESS);
-+		}
-+#endif
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+	return result;
-+}
-+
-+/*
-+ * @Function	bspp_process_unit
-+ *
-+ */
-+static int bspp_process_unit(struct bspp_str_context *str_ctx,
-+			     unsigned int size_delim_bits,
-+			     struct bspp_pict_ctx *pict_ctx,
-+			     struct bspp_parse_state *parse_state)
-+{
-+	struct bspp_unit_data unit_data;
-+	unsigned long long unit_size = 0; /* Unit size (in bytes, size delimited only). */
-+	unsigned int result;
-+	unsigned char vidx = str_ctx->grp_bstr_ctx.current_view_idx;
-+	struct bspp_pict_hdr_info *curr_pict_hdr_info;
-+
-+	/*
-+	 * during call to swsr_consume_delim(), above.
-+	 * Setup default unit data.
-+	 */
-+	memset(&unit_data, 0, sizeof(struct bspp_unit_data));
-+
-+	if (str_ctx->grp_bstr_ctx.delim_present) {
-+		/* Consume delimiter and catch any exceptions. */
-+		/*
-+		 * Consume the bitstream unit delimiter (size or
-+		 * start code prefix).
-+		 * When size-delimited the unit size is also returned
-+		 * so that the next unit can be found.
-+		 */
-+		result = swsr_consume_delim(str_ctx->swsr_ctx.swsr_context,
-+					    str_ctx->swsr_ctx.emulation_prevention,
-+					    size_delim_bits, &unit_size);
-+		if (result != IMG_SUCCESS)
-+			goto error;
-+	}
-+
-+	unit_data.unit_type = str_ctx->grp_bstr_ctx.unit_type;
-+	unit_data.vid_std = str_ctx->vid_std;
-+	unit_data.delim_present = str_ctx->grp_bstr_ctx.delim_present;
-+	unit_data.codec_config = &str_ctx->codec_config;
-+	unit_data.parse_state = parse_state;
-+	unit_data.pict_sequ_hdr_id = str_ctx->sequ_hdr_id;
-+	unit_data.str_res_handle = &str_ctx->str_alloc;
-+	unit_data.unit_data_size = str_ctx->grp_bstr_ctx.total_data_size;
-+	unit_data.intra_frm_as_closed_gop = str_ctx->intra_frame_closed_gop;
-+
-+	/* ponit to picture headers, check boundaries */
-+	curr_pict_hdr_info = vidx < VDEC_H264_MVC_MAX_VIEWS ?
-+		&pict_ctx->pict_hdr_info[vidx] : NULL;
-+	unit_data.parse_state->next_pict_hdr_info =
-+		vidx + 1 < VDEC_H264_MVC_MAX_VIEWS ?
-+		&pict_ctx->pict_hdr_info[vidx + 1] : NULL;
-+	unit_data.parse_state->is_prefix = 0;
-+
-+	/* Obtain output data containers. */
-+	result = bspp_get_resource(str_ctx, curr_pict_hdr_info, &unit_data);
-+	if (result != IMG_SUCCESS)
-+		return result;
-+
-+	/* Process Unit and catch any exceptions. */
-+	/*
-+	 * Call the standard-specific function to parse the bitstream
-+	 * unit.
-+	 */
-+	result = str_ctx->parser_callbacks.parse_unit_cb(str_ctx->swsr_ctx.swsr_context,
-+			&unit_data);
-+	if (result != IMG_SUCCESS) {
-+		pr_err("Failed to process unit, error = %d", unit_data.parse_error);
-+		goto error;
-+	}
-+
-+	if (unit_data.parse_error != BSPP_ERROR_NONE)
-+		pr_err("Issues found while processing unit, error = %d\n", unit_data.parse_error);
-+
-+	/* Store or return resource used for parsing unit. */
-+	result = bspp_file_resource(str_ctx, &unit_data);
-+
-+	if (!str_ctx->inter_pict_data.seen_closed_gop &&
-+	    str_ctx->grp_bstr_ctx.unit_type == BSPP_UNIT_PICTURE &&
-+		unit_data.slice &&
-+		(unit_data.out.pict_hdr_info &&
-+		unit_data.out.pict_hdr_info->intra_coded) &&
-+		str_ctx->vid_std != VDEC_STD_H264)
-+		unit_data.new_closed_gop = 1;
-+
-+	if (unit_data.new_closed_gop) {
-+		str_ctx->inter_pict_data.seen_closed_gop = 1;
-+		str_ctx->inter_pict_data.new_closed_gop = 1;
-+	}
-+
-+	/*
-+	 * Post-process unit (use local context in case
-+	 * parse function tried to change the unit type.
-+	 */
-+	if (str_ctx->grp_bstr_ctx.unit_type == BSPP_UNIT_PICTURE ||
-+	    str_ctx->grp_bstr_ctx.unit_type == BSPP_UNIT_SKIP_PICTURE) {
-+		if (str_ctx->inter_pict_data.new_closed_gop) {
-+			pict_ctx->closed_gop = 1;
-+			str_ctx->inter_pict_data.new_closed_gop = 0;
-+		}
-+
-+		if (unit_data.ext_slice && str_ctx->grp_bstr_ctx.not_ext_pic_unit_yet &&
-+		    unit_data.pict_sequ_hdr_id != BSPP_INVALID) {
-+			unsigned int id = unit_data.pict_sequ_hdr_id;
-+
-+			str_ctx->grp_bstr_ctx.not_ext_pic_unit_yet = 0;
-+			pict_ctx->ext_sequ_hdr_info =
-+				lst_last(&str_ctx->str_alloc.sequence_data_list[id]);
-+		}
-+
-+		if (unit_data.slice) {
-+			if (!curr_pict_hdr_info) {
-+				VDEC_ASSERT(0);
-+				return -EINVAL;
-+			}
-+			if (str_ctx->grp_bstr_ctx.not_pic_unit_yet &&
-+			    unit_data.pict_sequ_hdr_id != BSPP_INVALID) {
-+				str_ctx->grp_bstr_ctx.not_pic_unit_yet = 0;
-+
-+				/*
-+				 * depend upon the picture header being
-+				 * populated (in addition to slice data).
-+				 */
-+				pict_ctx->present = 1;
-+
-+				/*
-+				 * Update the picture context from the last unit parsed.
-+				 * This context must be stored since a non-picture unit may follow.
-+				 * Obtain current instance of sequence data for given ID.
-+				 */
-+				if (!pict_ctx->sequ_hdr_info) {
-+					unsigned int id = unit_data.pict_sequ_hdr_id;
-+
-+					pict_ctx->sequ_hdr_info =
-+					lst_last(&str_ctx->str_alloc.sequence_data_list[id]);
-+
-+					/* Do the sequence flagging/reference-counting */
-+					pict_ctx->sequ_hdr_info->ref_count++;
-+				}
-+
-+				/* Override the field here. */
-+				if (str_ctx->swsr_ctx.sr_config.delim_type == SWSR_DELIM_NONE) {
-+					if (str_ctx->grp_bstr_ctx.unit_type ==
-+						BSPP_UNIT_SKIP_PICTURE) {
-+						/* VDECFW_SKIPPED_PICTURE; */
-+						curr_pict_hdr_info->parser_mode =
-+							VDECFW_SKIPPED_PICTURE;
-+						curr_pict_hdr_info->pic_data_size = 0;
-+					} else {
-+						/* VDECFW_SIZE_SIDEBAND; */
-+						curr_pict_hdr_info->parser_mode =
-+							VDECFW_SIZE_SIDEBAND;
-+						curr_pict_hdr_info->pic_data_size =
-+							str_ctx->grp_bstr_ctx.total_data_size;
-+					}
-+				} else if (str_ctx->swsr_ctx.sr_config.delim_type ==
-+					   SWSR_DELIM_SIZE) {
-+					if (str_ctx->swsr_ctx.sr_config.delim_length <= 8)
-+						/* VDECFW_SIZE_DELIMITED_1_ONLY; */
-+						curr_pict_hdr_info->parser_mode =
-+							VDECFW_SIZE_DELIMITED_1_ONLY;
-+					else if (str_ctx->swsr_ctx.sr_config.delim_length <= 16)
-+						/* VDECFW_SIZE_DELIMITED_2_ONLY; */
-+						curr_pict_hdr_info->parser_mode =
-+							VDECFW_SIZE_DELIMITED_2_ONLY;
-+					else if (str_ctx->swsr_ctx.sr_config.delim_length <= 32)
-+						/* VDECFW_SIZE_DELIMITED_4_ONLY; */
-+						curr_pict_hdr_info->parser_mode =
-+							VDECFW_SIZE_DELIMITED_4_ONLY;
-+
-+					curr_pict_hdr_info->pic_data_size +=
-+						((unsigned int)unit_size
-+						+ (size_delim_bits / 8));
-+				} else if (str_ctx->swsr_ctx.sr_config.delim_type == SWSR_DELIM_SCP)
-+					/* VDECFW_SCP_ONLY; */
-+					curr_pict_hdr_info->parser_mode = VDECFW_SCP_ONLY;
-+			}
-+
-+			/*
-+			 * for MVC, the Slice Extension should also have the
-+			 * same ParserMode as the Base view.
-+			 */
-+			if (unit_data.parse_state->next_pict_hdr_info) {
-+				unit_data.parse_state->next_pict_hdr_info->parser_mode =
-+					curr_pict_hdr_info->parser_mode;
-+			}
-+
-+			if (unit_data.parse_error & BSPP_ERROR_UNSUPPORTED) {
-+				pict_ctx->invalid = 1;
-+				pict_ctx->unsupported = 1;
-+			} else if (!str_ctx->full_scan) {
-+				/*
-+				 * Only parse up to and including the first
-+				 * valid video slice unless full scanning.
-+				 */
-+				pict_ctx->finished = 1;
-+			}
-+		}
-+	}
-+
-+	if (unit_data.extracted_all_data) {
-+		enum swsr_found found;
-+
-+		swsr_byte_align(str_ctx->swsr_ctx.swsr_context);
-+
-+		found = swsr_check_delim_or_eod(str_ctx->swsr_ctx.swsr_context);
-+		if (found != SWSR_FOUND_DELIM && found != SWSR_FOUND_EOD) {
-+			/*
-+			 * Should already be at the next delimiter or EOD.
-+			 * Any bits left at the end of the unit could indicate
-+			 * corrupted syntax or erroneous parsing.
-+			 */
-+		}
-+	}
-+
-+	return IMG_SUCCESS;
-+
-+error:
-+	if (unit_data.unit_type == BSPP_UNIT_PICTURE ||
-+	    unit_data.unit_type == BSPP_UNIT_SKIP_PICTURE)
-+		pict_ctx->invalid = 1;
-+
-+	/*
-+	 * Tidy-up resources.
-+	 * Store or return resource used for parsing unit.
-+	 */
-+	bspp_file_resource(str_ctx, &unit_data);
-+
-+	return result;
-+}
-+
-+/*
-+ * @Function	bspp_terminate_buffer
-+ *
-+ */
-+static int bspp_terminate_buffer(struct bspp_grp_bstr_ctx *grp_btsr_ctx,
-+				 struct bspp_bitstream_buffer *buf)
-+{
-+	int result = -1;
-+
-+	/* Indicate that all the data in buffer should be added to segment. */
-+	buf->bytes_read = buf->data_size;
-+
-+	result = bspp_create_segment(grp_btsr_ctx, buf);
-+	if (result != IMG_SUCCESS)
-+		return result;
-+
-+	/* Next segment will start at the beginning of the next buffer. */
-+	grp_btsr_ctx->segment_offset = 0;
-+
-+	bspp_free_bitstream_elem(buf);
-+
-+	return result;
-+}
-+
-+/*
-+ * @Function	bspp_jump_to_next_view
-+ *
-+ */
-+static int bspp_jump_to_next_view(struct bspp_grp_bstr_ctx *grp_btsr_ctx,
-+				  struct bspp_preparsed_data *preparsed_data,
-+				  struct bspp_parse_state *parse_state)
-+{
-+	struct bspp_bitstream_buffer *cur_buf;
-+	int result;
-+	unsigned int i;
-+	unsigned char vidx;
-+
-+	if (!grp_btsr_ctx || !parse_state || !preparsed_data) {
-+		result = IMG_ERROR_INVALID_PARAMETERS;
-+		goto error;
-+	}
-+
-+	vidx = grp_btsr_ctx->current_view_idx;
-+
-+	if (vidx >= VDEC_H264_MVC_MAX_VIEWS) {
-+		result = IMG_ERROR_NOT_SUPPORTED;
-+		goto error;
-+	}
-+
-+	/* get current buffer */
-+	cur_buf = (struct bspp_bitstream_buffer *)lst_first(&grp_btsr_ctx->in_flight_bufs);
-+	if (!cur_buf) {
-+		result = IMG_ERROR_CANCELLED;
-+		goto error;
-+	}
-+
-+	if (cur_buf->bufmap_id != parse_state->prev_buf_map_id) {
-+		/*
-+		 * If we moved to the next buffer while parsing the slice
-+		 * header of the new view we have to reduce the size of
-+		 * the last segment up to the beginning of the new view slice
-+		 * and create a new segment from that point up to the end of
-+		 * the buffer. The new segment should belong to the new view.
-+		 * THIS ONLY WORKS IF THE SLICE HEADER DOES NOT SPAN MORE THAN
-+		 * TWO BUFFERS. If we want to support the case that the slice
-+		 * header of the new view spans multiple buffer we either have
-+		 * here remove all the segments up to the point were we find
-+		 * the buffer we are looking for, then adjust the size of this
-+		 * segment and then add the segments we removed to the next
-+		 * view list or we can implement a mechanism like the one that
-+		 * peeks for the NAL unit type and delimit the next view
-+		 * segment before parsing the first slice of the view.
-+		 */
-+		struct bspp_bitstr_seg *segment;
-+
-+		segment = lst_last(grp_btsr_ctx->segment_list);
-+		if (segment && segment->bufmap_id == parse_state->prev_buf_map_id) {
-+			struct bspp_bitstream_buffer prev_buf;
-+
-+			segment->data_size -= parse_state->prev_buf_data_size
-+				- parse_state->prev_byte_offset_buf;
-+			segment->bstr_seg_flag &= ~VDECDD_BSSEG_LASTINBUFF;
-+
-+			/*
-+			 * Change the segmenOffset value with the value it
-+			 * would have if we had delemited the segment correctly
-+			 * beforehand.
-+			 */
-+			grp_btsr_ctx->segment_offset = parse_state->prev_byte_offset_buf;
-+
-+			/* set lists of segments to new view... */
-+			for (i = 0; i < BSPP_MAX_PICTURES_PER_BUFFER; i++) {
-+				grp_btsr_ctx->pre_pict_seg_list[i] =
-+					&preparsed_data->ext_pictures_data[vidx].pre_pict_seg_list
-+					[i];
-+				grp_btsr_ctx->pict_seg_list[i] =
-+					&preparsed_data->ext_pictures_data[vidx].pict_seg_list[i];
-+
-+				lst_init(grp_btsr_ctx->pre_pict_seg_list[i]);
-+				lst_init(grp_btsr_ctx->pict_seg_list[i]);
-+			}
-+			/* and current segment list */
-+			grp_btsr_ctx->segment_list = grp_btsr_ctx->pict_seg_list[0];
-+
-+			memset(&prev_buf, 0, sizeof(struct bspp_bitstream_buffer));
-+			prev_buf.bufmap_id = segment->bufmap_id;
-+			prev_buf.data_size = parse_state->prev_buf_data_size;
-+			prev_buf.bytes_read = prev_buf.data_size;
-+
-+			/* Create the segment the first part of the next view */
-+			result = bspp_create_segment(grp_btsr_ctx, &prev_buf);
-+			if (result != IMG_SUCCESS)
-+				goto error;
-+		} else {
-+			result = IMG_ERROR_NOT_SUPPORTED;
-+			goto error;
-+		}
-+	} else {
-+		/*
-+		 * the data just parsed belongs to new view, so use previous byte
-+		 * offset
-+		 */
-+		cur_buf->bytes_read = parse_state->prev_byte_offset_buf;
-+
-+		/* Create the segment for previous view */
-+		result = bspp_create_segment(grp_btsr_ctx, cur_buf);
-+		if (result != IMG_SUCCESS)
-+			goto error;
-+
-+		/* set lists of segments to new view */
-+		for (i = 0; i < BSPP_MAX_PICTURES_PER_BUFFER; i++) {
-+			grp_btsr_ctx->pre_pict_seg_list[i] =
-+				&preparsed_data->ext_pictures_data[vidx].pre_pict_seg_list[i];
-+			grp_btsr_ctx->pict_seg_list[i] =
-+				&preparsed_data->ext_pictures_data[vidx].pict_seg_list[i];
-+
-+			lst_init(grp_btsr_ctx->pre_pict_seg_list[i]);
-+			lst_init(grp_btsr_ctx->pict_seg_list[i]);
-+		}
-+		/* and current segment list */
-+		grp_btsr_ctx->segment_list = grp_btsr_ctx->pict_seg_list[0];
-+	}
-+
-+	/* update prefix flag */
-+	preparsed_data->ext_pictures_data[vidx].is_prefix = parse_state->is_prefix;
-+	/* and view index */
-+	grp_btsr_ctx->current_view_idx++;
-+
-+	/* set number of extended pictures */
-+	preparsed_data->num_ext_pictures = grp_btsr_ctx->current_view_idx;
-+
-+error:
-+	return result;
-+}
-+
-+static void bspp_reset_pict_state(struct bspp_str_context *str_ctx, struct bspp_pict_ctx *pict_ctx,
-+				  struct bspp_parse_state *parse_state)
-+{
-+	memset(pict_ctx, 0, sizeof(struct bspp_pict_ctx));
-+	memset(parse_state, 0, sizeof(struct bspp_parse_state));
-+
-+	/* Setup group buffer processing state. */
-+	parse_state->inter_pict_ctx = &str_ctx->inter_pict_data;
-+	parse_state->prev_bottom_pic_flag = (unsigned char)BSPP_INVALID;
-+	parse_state->next_pic_is_new = 1;
-+	parse_state->prev_frame_num = BSPP_INVALID;
-+	parse_state->second_field_flag = 0;
-+	parse_state->first_chunk = 1;
-+}
-+
-+/*
-+ * @Function	bspp_stream_preparse_buffers
-+ * @Description	Buffer list cannot be processed since units in this last buffer
-+ * may not be complete. Must wait until a buffer is provided with end-of-picture
-+ * signalled. When the buffer indicates that units won't span then we can
-+ * process the bitstream buffer chain.
-+ */
-+int bspp_stream_preparse_buffers(void *str_context_handle,
-+				 const struct bspp_ddbuf_info *contig_buf_info,
-+				 unsigned int contig_buf_map_id, struct lst_t *segments,
-+				 struct bspp_preparsed_data *preparsed_data,
-+				 int end_of_pic)
-+{
-+	struct bspp_str_context *str_ctx = (struct bspp_str_context *)str_context_handle;
-+	struct bspp_pict_ctx *pict_ctx = &str_ctx->pict_ctx;
-+	struct bspp_parse_state *parse_state = &str_ctx->parse_state;
-+	int i;
-+	unsigned int unit_count = 0, num_arrays = 0;
-+	unsigned int size_delim_bits = 0;
-+	enum swsr_found found = SWSR_FOUND_NONE;
-+	unsigned int result;
-+	struct bspp_bitstr_seg *segment;
-+	struct lst_t temp_list;
-+
-+	/*
-+	 * since it is new picture, resetting the context status to
-+	 * beginning
-+	 */
-+	/* TODO: revisit this */
-+	pict_ctx->finished = 0;
-+	pict_ctx->new_pict_signalled = 0;
-+
-+	if (!str_context_handle)
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+
-+	if (!segments || !preparsed_data)
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+
-+	/* Check that bitstream buffers have been registered. */
-+	if (!lst_last(&str_ctx->grp_bstr_ctx.buffer_chain))
-+		return IMG_ERROR_OPERATION_PROHIBITED;
-+
-+	/* Initialise the output data. */
-+	memset(preparsed_data, 0, sizeof(struct bspp_preparsed_data));
-+
-+	if (!parse_state->initialised) {
-+		bspp_reset_pict_state(str_ctx, pict_ctx, parse_state);
-+		parse_state->initialised = 1;
-+	}
-+
-+	for (i = 0; i < 3; i++) {
-+		lst_init(&preparsed_data->picture_data.pre_pict_seg_list[i]);
-+		lst_init(&preparsed_data->picture_data.pict_seg_list[i]);
-+	}
-+
-+	/* Initialise parsing for this video standard. */
-+	if (str_ctx->parser_callbacks.initialise_parsing_cb && parse_state->first_chunk)
-+		str_ctx->parser_callbacks.initialise_parsing_cb(parse_state);
-+
-+	parse_state->first_chunk = 0;
-+
-+	for (i = 0; i < VDEC_H264_MVC_MAX_VIEWS; i++) {
-+		pict_ctx->pict_hdr_info[i].pict_aux_data.id = BSPP_INVALID;
-+		pict_ctx->pict_hdr_info[i].second_pict_aux_data.id = BSPP_INVALID;
-+	}
-+
-+	/* Setup buffer group bitstream context. */
-+	str_ctx->grp_bstr_ctx.vid_std = str_ctx->vid_std;
-+	str_ctx->grp_bstr_ctx.disable_mvc = str_ctx->disable_mvc;
-+	str_ctx->grp_bstr_ctx.delim_present = 1;
-+	str_ctx->grp_bstr_ctx.swsr_context = str_ctx->swsr_ctx.swsr_context;
-+	str_ctx->grp_bstr_ctx.unit_type = BSPP_UNIT_NONE;
-+	str_ctx->grp_bstr_ctx.last_unit_type = BSPP_UNIT_NONE;
-+	str_ctx->grp_bstr_ctx.not_pic_unit_yet = 1;
-+	str_ctx->grp_bstr_ctx.not_ext_pic_unit_yet = 1;
-+	str_ctx->grp_bstr_ctx.total_bytes_read = 0;
-+	str_ctx->grp_bstr_ctx.current_view_idx = 0;
-+
-+	for (i = 0; i < 3; i++) {
-+		str_ctx->grp_bstr_ctx.pre_pict_seg_list[i] =
-+			&preparsed_data->picture_data.pre_pict_seg_list[i];
-+		str_ctx->grp_bstr_ctx.pict_seg_list[i] =
-+			&preparsed_data->picture_data.pict_seg_list[i];
-+		str_ctx->grp_bstr_ctx.pict_tag_param_array[i] =
-+			&preparsed_data->picture_data.pict_tag_param[i];
-+	}
-+	str_ctx->grp_bstr_ctx.segment_list = str_ctx->grp_bstr_ctx.pre_pict_seg_list[0];
-+	str_ctx->grp_bstr_ctx.pict_tag_param = str_ctx->grp_bstr_ctx.pict_tag_param_array[0];
-+	str_ctx->grp_bstr_ctx.free_segments = segments;
-+	str_ctx->grp_bstr_ctx.segment_offset = 0;
-+	str_ctx->grp_bstr_ctx.insert_start_code = 0;
-+
-+	/*
-+	 * Before processing the units service all the picture decoded events
-+	 * to free the resources1794
-+	 */
-+	bspp_service_pictures_decoded(str_ctx);
-+
-+	/*
-+	 * A picture currently being parsed is already decoded (may happen
-+	 * after dwr in low latency mode) and its recourses were freed. Skip
-+	 * the rest of the picture.
-+	 */
-+	if (pict_ctx->sequ_hdr_info && pict_ctx->sequ_hdr_info->ref_count == 0) {
-+		pict_ctx->present = 0;
-+		pict_ctx->finished = 1;
-+	}
-+
-+	/*
-+	 * For bitstreams without unit delimiters treat all the buffers as
-+	 * a single unit whose type is defined by the first buffer element.
-+	 */
-+	if (str_ctx->swsr_ctx.sr_config.delim_type == SWSR_DELIM_NONE) {
-+		struct bspp_bitstream_buffer *cur_buf =
-+			lst_first(&str_ctx->grp_bstr_ctx.buffer_chain);
-+
-+		/* if there is no picture data we must be skipped. */
-+		if (!cur_buf || cur_buf->data_size == 0) {
-+			str_ctx->grp_bstr_ctx.unit_type = BSPP_UNIT_SKIP_PICTURE;
-+		} else if (cur_buf->bstr_element_type == VDEC_BSTRELEMENT_CODEC_CONFIG) {
-+			str_ctx->grp_bstr_ctx.unit_type = BSPP_UNIT_SEQUENCE;
-+		} else if (cur_buf->bstr_element_type == VDEC_BSTRELEMENT_PICTURE_DATA ||
-+			 cur_buf->bstr_element_type == VDEC_BSTRELEMENT_UNSPECIFIED) {
-+			str_ctx->grp_bstr_ctx.unit_type = BSPP_UNIT_PICTURE;
-+			str_ctx->grp_bstr_ctx.segment_list = str_ctx->grp_bstr_ctx.pict_seg_list[0];
-+		}
-+
-+		str_ctx->grp_bstr_ctx.delim_present = 0;
-+	}
-+
-+	/*
-+	 * Load the first section (buffer) of biststream into the software
-+	 * shift-register. BSPP maps "buffer" to "section" and allows for
-+	 * contiguous parsing of all buffers since unit boundaries are not
-+	 * known up-front. Unit parsing and segment creation is happening in a
-+	 * single pass.
-+	 */
-+	result = swsr_start_bitstream(str_ctx->swsr_ctx.swsr_context,
-+				      &str_ctx->swsr_ctx.sr_config,
-+				      str_ctx->grp_bstr_ctx.total_data_size,
-+				      str_ctx->swsr_ctx.emulation_prevention);
-+
-+	/* Seek for next delimiter or end of data and catch any exceptions. */
-+	if (str_ctx->grp_bstr_ctx.delim_present) {
-+		/* Locate the first bitstream unit. */
-+		found = swsr_seek_delim_or_eod(str_ctx->swsr_ctx.swsr_context);
-+	}
-+
-+	if (str_ctx->swsr_ctx.sr_config.delim_type == SWSR_DELIM_SIZE) {
-+		struct bspp_bitstream_buffer *cur_buf =
-+			lst_first(&str_ctx->grp_bstr_ctx.in_flight_bufs);
-+
-+		if (cur_buf->bstr_element_type == VDEC_BSTRELEMENT_CODEC_CONFIG &&
-+		    str_ctx->parser_callbacks.parse_codec_config_cb) {
-+			/* Parse codec config header and catch any exceptions */
-+			str_ctx->parser_callbacks.parse_codec_config_cb
-+						(str_ctx->swsr_ctx.swsr_context,
-+						 &unit_count,
-+						 &num_arrays,
-+						 &str_ctx->swsr_ctx.sr_config.delim_length,
-+						 &size_delim_bits);
-+		} else {
-+			size_delim_bits = str_ctx->swsr_ctx.sr_config.delim_length;
-+		}
-+	}
-+
-+	/* Process all the bitstream units until the picture is located. */
-+	while (found != SWSR_FOUND_EOD && !pict_ctx->finished) {
-+		struct bspp_bitstream_buffer *cur_buf =
-+			lst_first(&str_ctx->grp_bstr_ctx.in_flight_bufs);
-+
-+		if (!cur_buf) {
-+			pr_err("%s: cur_buf pointer is NULL\n", __func__);
-+			result = IMG_ERROR_INVALID_PARAMETERS;
-+			goto error;
-+		}
-+
-+		if (str_ctx->swsr_ctx.sr_config.delim_type ==
-+			SWSR_DELIM_SIZE && cur_buf->bstr_element_type ==
-+			VDEC_BSTRELEMENT_CODEC_CONFIG &&
-+			str_ctx->parser_callbacks.update_unit_counts_cb) {
-+			/*
-+			 * Parse middle part of codec config header and catch
-+			 * any exceptions.
-+			 */
-+			str_ctx->parser_callbacks.update_unit_counts_cb
-+						(str_ctx->swsr_ctx.swsr_context,
-+						 &unit_count,
-+						 &num_arrays);
-+		}
-+
-+		/* Process the next unit. */
-+		result = bspp_process_unit(str_ctx, size_delim_bits, pict_ctx, parse_state);
-+		if (result == IMG_ERROR_NOT_SUPPORTED)
-+			goto error;
-+
-+		if (str_ctx->swsr_ctx.sr_config.delim_type != SWSR_DELIM_NONE)
-+			str_ctx->grp_bstr_ctx.delim_present = 1;
-+
-+		/* jump to the next view */
-+		if (parse_state->new_view) {
-+			result = bspp_jump_to_next_view(&str_ctx->grp_bstr_ctx,
-+							preparsed_data,
-+							parse_state);
-+			if (result != IMG_SUCCESS)
-+				goto error;
-+
-+			parse_state->new_view = 0;
-+		}
-+
-+		if (!pict_ctx->finished) {
-+			/*
-+			 * Seek for next delimiter or end of data and catch any
-+			 * exceptions.
-+			 */
-+			/* Locate the next bitstream unit or end of data */
-+			found = swsr_seek_delim_or_eod(str_ctx->swsr_ctx.swsr_context);
-+
-+			{
-+				struct bspp_bitstream_buffer *buf;
-+				/* Update the offset within current buffer. */
-+				swsr_get_byte_offset_curbuf(str_ctx->grp_bstr_ctx.swsr_context,
-+							    &parse_state->prev_byte_offset_buf);
-+				buf = lst_first(&str_ctx->grp_bstr_ctx.in_flight_bufs);
-+				if (buf) {
-+					parse_state->prev_buf_map_id = buf->bufmap_id;
-+					parse_state->prev_buf_data_size = buf->data_size;
-+				}
-+			}
-+		}
-+	}
-+
-+	/* Finalize parsing for this video standard. */
-+	if (str_ctx->parser_callbacks.finalise_parsing_cb && end_of_pic) {
-+		str_ctx->parser_callbacks.finalise_parsing_cb((void *)&str_ctx->str_alloc,
-+			parse_state);
-+	}
-+
-+	/*
-+	 * Create segments for each buffer held by the software shift register
-+	 * (and not yet processed).
-+	 */
-+	while (lst_first(&str_ctx->grp_bstr_ctx.in_flight_bufs)) {
-+		struct bspp_bitstream_buffer *buf =
-+			lst_removehead(&str_ctx->grp_bstr_ctx.in_flight_bufs);
-+
-+		result = bspp_terminate_buffer(&str_ctx->grp_bstr_ctx, buf);
-+	}
-+
-+	/*
-+	 * Create segments for each buffer not yet requested by the shift
-+	 * register.
-+	 */
-+	while (lst_first(&str_ctx->grp_bstr_ctx.buffer_chain)) {
-+		struct bspp_bitstream_buffer *buf =
-+			lst_removehead(&str_ctx->grp_bstr_ctx.buffer_chain);
-+
-+		result = bspp_terminate_buffer(&str_ctx->grp_bstr_ctx, buf);
-+	}
-+
-+	/*
-+	 * Populate the parsed data information for picture only if one is
-+	 * present. The anonymous data has already been added to the
-+	 * appropriate segment list.
-+	 */
-+	if (pict_ctx->present && !pict_ctx->invalid) {
-+		if (!pict_ctx->new_pict_signalled) {
-+			/*
-+			 * Provide data about sequence used by picture.
-+			 * Signal "new sequence" if the sequence header is new
-+			 * or has changed. always switch seq when changing base
-+			 * and additional views
-+			 */
-+			if (pict_ctx->sequ_hdr_info) {
-+				if (pict_ctx->sequ_hdr_info->sequ_hdr_info.sequ_hdr_id !=
-+					str_ctx->sequ_hdr_id ||
-+					pict_ctx->sequ_hdr_info->ref_count == 1 ||
-+					pict_ctx->ext_sequ_hdr_info ||
-+					pict_ctx->closed_gop) {
-+					preparsed_data->new_sequence = 1;
-+					preparsed_data->sequ_hdr_info =
-+						pict_ctx->sequ_hdr_info->sequ_hdr_info;
-+				}
-+			}
-+
-+			/* Signal "new subsequence" and its common header information. */
-+			if (pict_ctx->ext_sequ_hdr_info) {
-+				preparsed_data->new_sub_sequence = 1;
-+				preparsed_data->ext_sequ_hdr_info =
-+					pict_ctx->ext_sequ_hdr_info->sequ_hdr_info;
-+
-+				for (i = 0; i < VDEC_H264_MVC_MAX_VIEWS - 1;
-+					i++) {
-+					/*
-+					 * prefix is always the last one
-+					 * do not attach any header info to it
-+					 */
-+					if (preparsed_data->ext_pictures_data[i].is_prefix)
-+						break;
-+
-+					/* attach headers */
-+					preparsed_data->ext_pictures_data[i].sequ_hdr_id =
-+					pict_ctx->ext_sequ_hdr_info->sequ_hdr_info.sequ_hdr_id;
-+					pict_ctx->ext_sequ_hdr_info->ref_count++;
-+					preparsed_data->ext_pictures_data[i].pict_hdr_info =
-+						pict_ctx->pict_hdr_info[i + 1];
-+				}
-+
-+				preparsed_data->ext_pictures_data
-+					[0].pict_hdr_info.first_pic_of_sequence =
-+					preparsed_data->new_sub_sequence;
-+
-+				/*
-+				 * Update the base view common sequence info
-+				 * with the number of views that the stream has.
-+				 * Otherwise the number of views is inconsistent
-+				 * between base view sequence and dependent view
-+				 * sequences. Also base view sequence appears
-+				 * with one view and the driver calculates the
-+				 * wrong number of resources.
-+				 */
-+				preparsed_data->sequ_hdr_info.com_sequ_hdr_info.num_views =
-+				preparsed_data->ext_sequ_hdr_info.com_sequ_hdr_info.num_views;
-+			}
-+
-+			/* Signal if this picture is the first in a closed GOP */
-+			if (pict_ctx->closed_gop) {
-+				preparsed_data->closed_gop = 1;
-+				preparsed_data->sequ_hdr_info.com_sequ_hdr_info.not_dpb_flush =
-+					str_ctx->inter_pict_data.not_dpb_flush;
-+			}
-+
-+			/*
-+			 * Signal "new picture" and its common header
-+			 * information.
-+			 */
-+			preparsed_data->new_picture = 1;
-+			if (pict_ctx->sequ_hdr_info) {
-+				preparsed_data->picture_data.sequ_hdr_id =
-+					pict_ctx->sequ_hdr_info->sequ_hdr_info.sequ_hdr_id;
-+			}
-+			preparsed_data->picture_data.pict_hdr_info = pict_ctx->pict_hdr_info[0];
-+
-+			preparsed_data->picture_data.pict_hdr_info.first_pic_of_sequence =
-+				preparsed_data->new_sequence;
-+			if (contig_buf_info)
-+				preparsed_data->picture_data.pict_hdr_info.fragmented_data = 1;
-+			else
-+				preparsed_data->picture_data.pict_hdr_info.fragmented_data = 0;
-+
-+			str_ctx->sequ_hdr_id = preparsed_data->picture_data.sequ_hdr_id;
-+
-+			pict_ctx->new_pict_signalled = 1;
-+
-+			/*
-+			 * aso/fmo supported only when a frame is submitted as
-+			 * a whole
-+			 */
-+			if (parse_state->discontinuous_mb && !end_of_pic)
-+				result = IMG_ERROR_NOT_SUPPORTED;
-+		} else {
-+			preparsed_data->new_fragment = 1;
-+
-+			if (parse_state->discontinuous_mb)
-+				result = IMG_ERROR_NOT_SUPPORTED;
-+		}
-+
-+		lst_init(&temp_list);
-+
-+		segment = lst_removehead(&preparsed_data->picture_data.pict_seg_list[0]);
-+		while (segment) {
-+			lst_add(&temp_list, segment);
-+			segment = lst_removehead(&preparsed_data->picture_data.pict_seg_list[0]);
-+		}
-+
-+		segment = lst_removehead(&str_ctx->inter_pict_data.pic_prefix_seg);
-+		while (segment) {
-+			lst_add(&preparsed_data->picture_data.pict_seg_list[0],
-+				segment);
-+			segment = lst_removehead(&str_ctx->inter_pict_data.pic_prefix_seg);
-+		}
-+
-+		segment = lst_removehead(&temp_list);
-+		while (segment) {
-+			lst_add(&preparsed_data->picture_data.pict_seg_list[0],
-+				segment);
-+			segment = lst_removehead(&temp_list);
-+		}
-+
-+		for (i = 0; i < VDEC_H264_MVC_MAX_VIEWS; i++) {
-+			unsigned int j;
-+			struct bspp_picture_data *ext_pic_data =
-+				&preparsed_data->ext_pictures_data[i];
-+
-+			if (preparsed_data->ext_pictures_data[i].is_prefix) {
-+				for (j = 0; j < BSPP_MAX_PICTURES_PER_BUFFER;
-+					j++) {
-+					segment = lst_removehead(&ext_pic_data->pict_seg_list[j]);
-+					while (segment) {
-+						lst_add(&str_ctx->inter_pict_data.pic_prefix_seg,
-+							segment);
-+						segment = lst_removehead
-+								(&ext_pic_data->pict_seg_list[j]);
-+					}
-+				}
-+				preparsed_data->num_ext_pictures--;
-+				break;
-+			}
-+		}
-+	} else if (pict_ctx->present && pict_ctx->sequ_hdr_info) {
-+		/*
-+		 * Reduce the reference count since this picture will not be
-+		 * decoded.
-+		 */
-+		pict_ctx->sequ_hdr_info->ref_count--;
-+		/* Release sequence data. */
-+		if (str_ctx->parser_callbacks.release_data_cb) {
-+			str_ctx->parser_callbacks.release_data_cb((void *)&str_ctx->str_alloc,
-+				BSPP_UNIT_SEQUENCE,
-+				pict_ctx->sequ_hdr_info->secure_sequence_info);
-+		}
-+	}
-+
-+	/* Reset the group bitstream context */
-+	lst_init(&str_ctx->grp_bstr_ctx.buffer_chain);
-+	memset(&str_ctx->grp_bstr_ctx, 0, sizeof(str_ctx->grp_bstr_ctx));
-+
-+	/*
-+	 * for now: return IMG_ERROR_NOT_SUPPORTED only if explicitly set by
-+	 * parser
-+	 */
-+	result = (result == IMG_ERROR_NOT_SUPPORTED) ?
-+		IMG_ERROR_NOT_SUPPORTED : IMG_SUCCESS;
-+
-+	if (end_of_pic)
-+		parse_state->initialised = 0;
-+
-+	return result;
-+
-+error:
-+	/* Free the SWSR list of buffers */
-+	while (lst_first(&str_ctx->grp_bstr_ctx.in_flight_bufs))
-+		lst_removehead(&str_ctx->grp_bstr_ctx.in_flight_bufs);
-+
-+	return result;
-+}
-+
-+/*
-+ * @Function	bspp_stream_destroy
-+ *
-+ */
-+int bspp_stream_destroy(void *str_context_handle)
-+{
-+	struct bspp_str_context *str_ctx = (struct bspp_str_context *)str_context_handle;
-+	unsigned int i;
-+	unsigned int sps_id;
-+	unsigned int pps_id;
-+	struct bspp_sequence_hdr_info *sequ_hdr_info;
-+	struct bspp_pps_info *pps_info;
-+	unsigned int result;
-+
-+	/* Validate input arguments. */
-+	if (!str_context_handle) {
-+		result = IMG_ERROR_INVALID_PARAMETERS;
-+		goto error;
-+	}
-+
-+	swsr_deinitialise(str_ctx->swsr_ctx.swsr_context);
-+
-+	/*
-+	 * Service all the picture decoded events and free any unused
-+	 * resources.
-+	 */
-+	bspp_service_pictures_decoded(str_ctx);
-+	for (sps_id = 0; sps_id < SEQUENCE_SLOTS; sps_id++)
-+		bspp_remove_unused_sequence(str_ctx, sps_id);
-+
-+	if (str_ctx->vid_std_features.uses_pps) {
-+		for (pps_id = 0; pps_id < PPS_SLOTS; pps_id++)
-+			bspp_remove_unused_pps(str_ctx, pps_id);
-+	}
-+
-+	if (str_ctx->vid_std_features.uses_vps) {
-+		struct bspp_vps_info *vps_info;
-+
-+		for (i = 0; i < VPS_SLOTS; ++i) {
-+			vps_info = lst_removehead(&str_ctx->str_alloc.vps_data_list[i]);
-+
-+			if (vps_info)
-+				lst_add(&str_ctx->str_alloc.available_vps_list, vps_info);
-+
-+			/*
-+			 * when we are done with the stream we should have MAXIMUM 1 VPS
-+			 * per slot, so after removing this one we should have none
-+			 * In case of "decodenframes" this is not true because we send more
-+			 * pictures for decode than what we expect to receive back, which
-+			 * means that potentially additional sequences/PPS are in the list
-+			 */
-+			vps_info = lst_removehead(&str_ctx->str_alloc.vps_data_list[i]);
-+			if (vps_info) {
-+				do {
-+					lst_add(&str_ctx->str_alloc.available_vps_list, vps_info);
-+					vps_info =
-+					lst_removehead(&str_ctx->str_alloc.vps_data_list[i]);
-+				} while (vps_info);
-+			}
-+			VDEC_ASSERT(lst_empty(&str_ctx->str_alloc.vps_data_list[i]));
-+		}
-+
-+		vps_info = NULL;
-+		for (i = 0; i < MAX_VPSS; ++i) {
-+			VDEC_ASSERT(!lst_empty(&str_ctx->str_alloc.available_vps_list));
-+			vps_info = lst_removehead(&str_ctx->str_alloc.available_vps_list);
-+			if (vps_info) {
-+				kfree(vps_info->secure_vpsinfo);
-+				kfree(vps_info);
-+			} else {
-+				VDEC_ASSERT(vps_info);
-+				pr_err("vps still active at shutdown\n");
-+			}
-+		}
-+		VDEC_ASSERT(lst_empty(&str_ctx->str_alloc.available_vps_list));
-+	}
-+
-+	/* Free the memory required for this stream. */
-+	for (i = 0; i < SEQUENCE_SLOTS; i++) {
-+		sequ_hdr_info = lst_removehead(&str_ctx->str_alloc.sequence_data_list[i]);
-+		if (sequ_hdr_info) {
-+			if (str_ctx->parser_callbacks.release_data_cb)
-+				str_ctx->parser_callbacks.release_data_cb
-+					((void *)&str_ctx->str_alloc,
-+					BSPP_UNIT_SEQUENCE,
-+					sequ_hdr_info->secure_sequence_info);
-+			lst_add(&str_ctx->str_alloc.available_sequence_list,
-+				sequ_hdr_info);
-+		}
-+
-+		/*
-+		 * when we are done with the stream we should have MAXIMUM 1
-+		 * sequence per slot, so after removing this one we should have
-+		 * none In case of "decoded frames" this is not true because we
-+		 * send more pictures for decode than what we expect to receive
-+		 * back, which means that potentially additional sequences/PPS
-+		 * are in the list
-+		 */
-+		sequ_hdr_info = lst_removehead(&str_ctx->str_alloc.sequence_data_list[i]);
-+		if (sequ_hdr_info) {
-+			unsigned int count_extra_sequences = 0;
-+
-+			do {
-+				count_extra_sequences++;
-+				if (str_ctx->parser_callbacks.release_data_cb) {
-+					str_ctx->parser_callbacks.release_data_cb
-+						((void *)&str_ctx->str_alloc,
-+						 BSPP_UNIT_SEQUENCE,
-+						 sequ_hdr_info->secure_sequence_info);
-+				}
-+				lst_add(&str_ctx->str_alloc.available_sequence_list,
-+					sequ_hdr_info);
-+				sequ_hdr_info =
-+					lst_removehead(&str_ctx->str_alloc.sequence_data_list[i]);
-+			} while (sequ_hdr_info);
-+		}
-+	}
-+
-+	if (str_ctx->vid_std_features.uses_pps) {
-+		for (i = 0; i < PPS_SLOTS; i++) {
-+			pps_info = lst_removehead(&str_ctx->str_alloc.pps_data_list[i]);
-+			if (pps_info)
-+				lst_add(&str_ctx->str_alloc.available_ppss_list, pps_info);
-+
-+			/*
-+			 * when we are done with the stream we should have
-+			 * MAXIMUM 1 PPS per slot, so after removing this one
-+			 * we should have none
-+			 * In case of "decodedframes" this is not true because
-+			 * we send more pictures for decode than what we expect
-+			 * to receive back, which means that potentially
-+			 * additional sequences/PPS are in the list
-+			 */
-+			pps_info = lst_removehead(&str_ctx->str_alloc.pps_data_list[i]);
-+			if (pps_info) {
-+				unsigned int count_extra_ppss = 0;
-+
-+				do {
-+					count_extra_ppss++;
-+					lst_add(&str_ctx->str_alloc.available_ppss_list,
-+						pps_info);
-+					pps_info =
-+					lst_removehead(&str_ctx->str_alloc.pps_data_list[i]);
-+				} while (pps_info);
-+			}
-+		}
-+	}
-+
-+	for (i = 0; i < MAX_SEQUENCES; i++) {
-+		sequ_hdr_info = lst_removehead(&str_ctx->str_alloc.available_sequence_list);
-+		if (sequ_hdr_info && str_ctx->parser_callbacks.destroy_data_cb)
-+			str_ctx->parser_callbacks.destroy_data_cb
-+				(BSPP_UNIT_SEQUENCE, sequ_hdr_info->secure_sequence_info);
-+	}
-+
-+	kfree(str_ctx->secure_sequence_info);
-+	str_ctx->secure_sequence_info = NULL;
-+	kfree(str_ctx->sequ_hdr_info);
-+	str_ctx->sequ_hdr_info = NULL;
-+
-+	if (str_ctx->vid_std_features.uses_pps) {
-+		for (i = 0; i < MAX_PPSS; i++) {
-+			pps_info = lst_removehead(&str_ctx->str_alloc.available_ppss_list);
-+			if (pps_info && str_ctx->parser_callbacks.destroy_data_cb)
-+				str_ctx->parser_callbacks.destroy_data_cb
-+							(BSPP_UNIT_PPS, pps_info->secure_pps_info);
-+		}
-+
-+		kfree(str_ctx->secure_pps_info);
-+		str_ctx->secure_pps_info = NULL;
-+		kfree(str_ctx->pps_info);
-+		str_ctx->pps_info = NULL;
-+	}
-+
-+	/* destroy mutex */
-+	mutex_destroy(str_ctx->bspp_mutex);
-+	kfree(str_ctx->bspp_mutex);
-+	str_ctx->bspp_mutex = NULL;
-+
-+	kfree(str_ctx);
-+
-+	return IMG_SUCCESS;
-+error:
-+	return result;
-+}
-+
-+/*
-+ * @Function	bspp_set_codec_config
-+ *
-+ */
-+int bspp_set_codec_config(const void *str_context_handle,
-+			  const struct vdec_codec_config *codec_config)
-+{
-+	struct bspp_str_context *str_ctx = (struct bspp_str_context *)str_context_handle;
-+	unsigned int result = IMG_SUCCESS;
-+
-+	/* Validate input arguments. */
-+	if (!str_context_handle || !codec_config) {
-+		result = IMG_ERROR_INVALID_PARAMETERS;
-+		goto error;
-+	}
-+
-+	switch (str_ctx->vid_std) {
-+	default:
-+		result = IMG_ERROR_NOT_SUPPORTED;
-+		break;
-+	}
-+error:
-+	return result;
-+}
-+
-+/*
-+ * @Function	bspp_stream_create
-+ *
-+ */
-+int bspp_stream_create(const struct vdec_str_configdata *str_config_data,
-+		       void **str_ctx_handle,
-+		       struct bspp_ddbuf_array_info fw_sequence[],
-+		       struct bspp_ddbuf_array_info fw_pps[])
-+{
-+	struct bspp_str_context *str_ctx;
-+	unsigned int result = IMG_SUCCESS;
-+	unsigned int i;
-+	struct bspp_sequence_hdr_info *sequ_hdr_info;
-+	struct bspp_pps_info *pps_info;
-+	struct bspp_parse_state *parse_state;
-+
-+	/* Allocate a stream structure */
-+	str_ctx = kmalloc(sizeof(*str_ctx), GFP_KERNEL);
-+	if (!str_ctx) {
-+		result = IMG_ERROR_OUT_OF_MEMORY;
-+		goto error;
-+	}
-+	memset(str_ctx, 0, sizeof(*str_ctx));
-+
-+	/* Initialise the stream context structure. */
-+	str_ctx->sequ_hdr_id = BSPP_INVALID;
-+	str_ctx->vid_std = str_config_data->vid_std;
-+	str_ctx->bstr_format = str_config_data->bstr_format;
-+	str_ctx->disable_mvc = str_config_data->disable_mvc;
-+	str_ctx->full_scan = str_config_data->full_scan;
-+	str_ctx->immediate_decode = str_config_data->immediate_decode;
-+	str_ctx->intra_frame_closed_gop = str_config_data->intra_frame_closed_gop;
-+
-+	parse_state = &str_ctx->parse_state;
-+
-+	/* Setup group buffer processing state. */
-+	parse_state->inter_pict_ctx = &str_ctx->inter_pict_data;
-+	parse_state->prev_bottom_pic_flag = (unsigned char)BSPP_INVALID;
-+	parse_state->next_pic_is_new = 1;
-+	parse_state->prev_frame_num = BSPP_INVALID;
-+	parse_state->second_field_flag = 0;
-+
-+	lst_init(&str_ctx->grp_bstr_ctx.buffer_chain);
-+
-+	if (str_ctx->vid_std < VDEC_STD_MAX && parser_fxns[str_ctx->vid_std].set_parser_config) {
-+		parser_fxns[str_ctx->vid_std].set_parser_config(str_ctx->bstr_format,
-+			&str_ctx->vid_std_features,
-+			&str_ctx->swsr_ctx,
-+			&str_ctx->parser_callbacks,
-+			&str_ctx->inter_pict_data);
-+	} else {
-+		result = IMG_ERROR_NOT_SUPPORTED;
-+		goto error;
-+	}
-+
-+	/* Allocate the memory required for this stream for Sequence/PPS info */
-+	lst_init(&str_ctx->str_alloc.available_sequence_list);
-+
-+	str_ctx->sequ_hdr_info = kmalloc((MAX_SEQUENCES * sizeof(struct bspp_sequence_hdr_info)),
-+					 GFP_KERNEL);
-+	if (!str_ctx->sequ_hdr_info) {
-+		result = IMG_ERROR_OUT_OF_MEMORY;
-+		goto error;
-+	}
-+	memset(str_ctx->sequ_hdr_info, 0x00,
-+	       (MAX_SEQUENCES * sizeof(struct bspp_sequence_hdr_info)));
-+
-+	str_ctx->secure_sequence_info =
-+		kmalloc((MAX_SEQUENCES * str_ctx->vid_std_features.seq_size),
-+			GFP_KERNEL);
-+	if (!str_ctx->secure_sequence_info) {
-+		result = IMG_ERROR_OUT_OF_MEMORY;
-+		goto error;
-+	}
-+	memset(str_ctx->secure_sequence_info, 0x00,
-+	       (MAX_SEQUENCES * str_ctx->vid_std_features.seq_size));
-+
-+	sequ_hdr_info = (struct bspp_sequence_hdr_info *)(str_ctx->sequ_hdr_info);
-+	for (i = 0; i < MAX_SEQUENCES; i++) {
-+		/* Deal with the device memory for FW SPS data */
-+		sequ_hdr_info->fw_sequence = fw_sequence[i];
-+		sequ_hdr_info->sequ_hdr_info.bufmap_id =
-+			fw_sequence[i].ddbuf_info.bufmap_id;
-+		sequ_hdr_info->sequ_hdr_info.buf_offset =
-+			fw_sequence[i].buf_offset;
-+		sequ_hdr_info->secure_sequence_info = (void *)(str_ctx->secure_sequence_info +
-+			(i * str_ctx->vid_std_features.seq_size));
-+
-+		lst_add(&str_ctx->str_alloc.available_sequence_list,
-+			sequ_hdr_info);
-+		sequ_hdr_info++;
-+	}
-+
-+	if (str_ctx->vid_std_features.uses_pps) {
-+		lst_init(&str_ctx->str_alloc.available_ppss_list);
-+		str_ctx->pps_info = kmalloc((MAX_PPSS * sizeof(struct bspp_pps_info)), GFP_KERNEL);
-+		if (!str_ctx->pps_info) {
-+			result = IMG_ERROR_OUT_OF_MEMORY;
-+			goto error;
-+		}
-+		memset(str_ctx->pps_info, 0x00, (MAX_PPSS * sizeof(struct bspp_pps_info)));
-+		str_ctx->secure_pps_info = kmalloc((MAX_PPSS * str_ctx->vid_std_features.pps_size),
-+						   GFP_KERNEL);
-+		if (!str_ctx->secure_pps_info) {
-+			result = IMG_ERROR_OUT_OF_MEMORY;
-+			goto error;
-+		}
-+		memset(str_ctx->secure_pps_info, 0x00,
-+		       (MAX_PPSS * str_ctx->vid_std_features.pps_size));
-+
-+		pps_info = (struct bspp_pps_info *)(str_ctx->pps_info);
-+		for (i = 0; i < MAX_PPSS; i++) {
-+			/* Deal with the device memory for FW PPS data */
-+			pps_info->fw_pps = fw_pps[i];
-+			pps_info->bufmap_id = fw_pps[i].ddbuf_info.bufmap_id;
-+			pps_info->buf_offset = fw_pps[i].buf_offset;
-+
-+			/*
-+			 * We have no container for the PPS that passes down to the kernel,
-+			 * for this reason the h264 secure parser needs to populate that
-+			 * info into the picture header (Second)PictAuxData.
-+			 */
-+			pps_info->secure_pps_info = (void *)(str_ctx->secure_pps_info + (i *
-+							str_ctx->vid_std_features.pps_size));
-+
-+			lst_add(&str_ctx->str_alloc.available_ppss_list, pps_info);
-+			pps_info++;
-+		}
-+
-+		/* As only standards that use PPS also use VUI, initialise
-+		 * the appropriate data structures here.
-+		 * Initialise the list of raw bitstream data containers.
-+		 */
-+		lst_init(&str_ctx->str_alloc.raw_data_list_available);
-+		lst_init(&str_ctx->str_alloc.raw_data_list_used);
-+	}
-+
-+	if (str_ctx->vid_std_features.uses_vps) {
-+		struct bspp_vps_info *vps_info;
-+
-+		lst_init(&str_ctx->str_alloc.available_vps_list);
-+		for (i = 0; i < MAX_VPSS; ++i) {
-+			vps_info = kmalloc(sizeof(*vps_info), GFP_KERNEL);
-+			VDEC_ASSERT(vps_info);
-+			if (!vps_info) {
-+				result = IMG_ERROR_OUT_OF_MEMORY;
-+				goto error;
-+			}
-+
-+			memset(vps_info, 0x00, sizeof(struct bspp_vps_info));
-+			/*
-+			 * for VPS we do not allocate device memory since (at least for now)
-+			 * there is no need to pass any data from VPS directly to FW
-+			 */
-+			/* Allocate memory for BSPP local VPS data structure. */
-+			vps_info->secure_vpsinfo =
-+				kmalloc(str_ctx->vid_std_features.vps_size, GFP_KERNEL);
-+
-+			VDEC_ASSERT(vps_info->secure_vpsinfo);
-+			if (!vps_info->secure_vpsinfo) {
-+				result = IMG_ERROR_OUT_OF_MEMORY;
-+				goto error;
-+			}
-+			memset(vps_info->secure_vpsinfo, 0, str_ctx->vid_std_features.vps_size);
-+
-+			lst_add(&str_ctx->str_alloc.available_vps_list, vps_info);
-+		}
-+	}
-+
-+	/* ... and initialise the lists that will use this data */
-+	for (i = 0; i < SEQUENCE_SLOTS; i++)
-+		lst_init(&str_ctx->str_alloc.sequence_data_list[i]);
-+
-+	if (str_ctx->vid_std_features.uses_pps)
-+		for (i = 0; i < PPS_SLOTS; i++)
-+			lst_init(&str_ctx->str_alloc.pps_data_list[i]);
-+
-+	str_ctx->bspp_mutex = kzalloc(sizeof(*str_ctx->bspp_mutex), GFP_KERNEL);
-+	if (!str_ctx->bspp_mutex) {
-+		result = -ENOMEM;
-+		goto error;
-+	}
-+	mutex_init(str_ctx->bspp_mutex);
-+
-+	/* Initialise the software shift-register */
-+	swsr_initialise(bspp_exception_handler, &str_ctx->parse_ctx,
-+			(swsr_callback_fxn) bspp_shift_reg_cb,
-+			&str_ctx->grp_bstr_ctx,
-+			&str_ctx->swsr_ctx.swsr_context);
-+
-+	/* Setup the parse context */
-+	str_ctx->parse_ctx.swsr_context = str_ctx->swsr_ctx.swsr_context;
-+
-+	*str_ctx_handle = str_ctx;
-+
-+	return IMG_SUCCESS;
-+
-+error:
-+	if (str_ctx) {
-+		kfree(str_ctx->sequ_hdr_info);
-+		kfree(str_ctx->secure_sequence_info);
-+		kfree(str_ctx->pps_info);
-+		kfree(str_ctx->secure_pps_info);
-+		kfree(str_ctx);
-+	}
-+
-+	return result;
-+}
-+
-+void bspp_freeraw_sei_datacontainer(const void *str_res,
-+				    struct vdec_raw_bstr_data *rawsei_datacontainer)
-+{
-+	struct bspp_raw_sei_alloc *rawsei_alloc = NULL;
-+
-+	/* Check input params. */
-+	if (str_res && rawsei_datacontainer) {
-+		struct bspp_stream_alloc_data *alloc_data =
-+			(struct bspp_stream_alloc_data *)str_res;
-+
-+		rawsei_alloc = container_of(rawsei_datacontainer,
-+					    struct bspp_raw_sei_alloc,
-+					    raw_sei_data);
-+		memset(&rawsei_alloc->raw_sei_data, 0, sizeof(rawsei_alloc->raw_sei_data));
-+		lst_remove(&alloc_data->raw_sei_alloc_list, rawsei_alloc);
-+		kfree(rawsei_alloc);
-+	}
-+}
-+
-+void bspp_freeraw_sei_datalist(const void *str_res, struct vdec_raw_bstr_data *rawsei_datalist)
-+{
-+	/* Check input params. */
-+	if (rawsei_datalist && str_res) {
-+		struct vdec_raw_bstr_data *sei_raw_datacurr = NULL;
-+
-+		/* Start fromm the first element... */
-+		sei_raw_datacurr = rawsei_datalist;
-+		/* Free all the linked raw SEI data containers. */
-+		while (sei_raw_datacurr) {
-+			struct vdec_raw_bstr_data *seiraw_datanext =
-+				sei_raw_datacurr->next;
-+			bspp_freeraw_sei_datacontainer(str_res, sei_raw_datacurr);
-+			sei_raw_datacurr = seiraw_datanext;
-+		}
-+	}
-+}
-+
-+void bspp_streamrelese_rawbstrdataplain(const void *str_res, const void *rawdata)
-+{
-+	struct bspp_stream_alloc_data *str_alloc =
-+		(struct bspp_stream_alloc_data *)str_res;
-+	struct bspp_raw_bitstream_data *rawbstrdata =
-+		(struct bspp_raw_bitstream_data *)rawdata;
-+
-+	if (rawbstrdata) {
-+		/* Decrement the raw bitstream data reference count. */
-+		rawbstrdata->ref_count--;
-+		/* If no entity is referencing the raw
-+		 * bitstream data any more
-+		 */
-+		if (rawbstrdata->ref_count == 0) {
-+			/* ... free the raw bistream data buffer... */
-+			kfree(rawbstrdata->raw_bitstream_data.data);
-+			memset(&rawbstrdata->raw_bitstream_data, 0,
-+			       sizeof(rawbstrdata->raw_bitstream_data));
-+			/* ...and return it to the list. */
-+			lst_remove(&str_alloc->raw_data_list_used, rawbstrdata);
-+			lst_add(&str_alloc->raw_data_list_available, rawbstrdata);
-+		}
-+	}
-+}
-+
-+struct bspp_vps_info *bspp_get_vpshdr(void *str_res, unsigned int vps_id)
-+{
-+	struct bspp_stream_alloc_data *alloc_data =
-+		(struct bspp_stream_alloc_data *)str_res;
-+
-+	if (vps_id >= VPS_SLOTS || !alloc_data)
-+		return NULL;
-+
-+	return lst_last(&alloc_data->vps_data_list[vps_id]);
-+}
-diff --git a/drivers/staging/media/vxd/decoder/bspp.h b/drivers/staging/media/vxd/decoder/bspp.h
-new file mode 100644
-index 000000000000..2198d9d6966e
---- /dev/null
-+++ b/drivers/staging/media/vxd/decoder/bspp.h
-@@ -0,0 +1,363 @@
++++ b/drivers/staging/media/vxd/common/img_errors.h
+@@ -0,0 +1,104 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * VXD Bitstream Buffer Pre-Parser
-+ *
-+ * Copyright (c) Imagination Technologies Ltd.
-+ * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com/
-+ *
-+ * Authors:
-+ *	Lakshmi Sankar <lakshmisankar-t@ti.com>
-+ * Re-written for upstreming
-+ *	Prashanth Kumar Amai <prashanth.ka@pathpartnertech.com>
-+ *	Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
-+ */
-+#ifndef __BSPP_H__
-+#define __BSPP_H__
-+
-+#include <linux/types.h>
-+
-+#include "h264fw_data.h"
-+#include "lst.h"
-+#include "vdec_defs.h"
-+
-+/*
-+ * There are up to 2 pictures in each buffer
-+ * (plus trailing data for the next picture, e.g. PPS).
-+ */
-+#define BSPP_MAX_PICTURES_PER_BUFFER 3
-+
-+#define BSPP_INVALID ((unsigned int)(-1))
-+
-+/*
-+ * This enables signalling of closed gop at every I frame. Add resilience to
-+ * seeking functionality.
-+ */
-+#define I_FRAME_SIGNALS_CLOSED_GOP
-+
-+/*
-+ * enum bspp_error_type - enumeration of parsing error , different error flag
-+ *	for different data unit
-+ */
-+enum bspp_error_type {
-+	/* No Error in parsing. */
-+	BSPP_ERROR_NONE                      = (0),
-+	/* Correction in VSH, Replaced VSH with faulty one */
-+	BSPP_ERROR_CORRECTION_VSH            = (1 << 0),
-+	/*
-+	 * Correction in parsed Value, clamp the value if it goes beyond
-+	 * the limit
-+	 */
-+	BSPP_ERROR_CORRECTION_VALIDVALUE     = (1 << 1),
-+	/* Error in Aux data (i.e. PPS in H.264) parsing */
-+	BSPP_ERROR_AUXDATA                   = (1 << 2),
-+	/* Error in  parsing, more data remains in VSH data unit after parsing */
-+	BSPP_ERROR_DATA_REMAINS              = (1 << 3),
-+	/* Error in  parsing, parsed codeword is invalid */
-+	BSPP_ERROR_INVALID_VALUE             = (1 << 4),
-+	/* Error in  parsing, parsing error */
-+	BSPP_ERROR_DECODE                    = (1 << 5),
-+	/* reference frame is not available for decoding */
-+	BSPP_ERROR_NO_REF_FRAME              = (1 << 6),
-+	/* Non IDR frame loss detected */
-+	BSPP_ERROR_NONIDR_FRAME_LOSS         = (1 << 7),
-+	/* IDR frame loss detected */
-+	BSPP_ERROR_IDR_FRAME_LOSS            = (1 << 8),
-+	/* Error in  parsing, insufficient data to complete parsing */
-+	BSPP_ERROR_INSUFFICIENT_DATA         = (1 << 9),
-+	/* Severe Error, Error indicates, no support for this picture data */
-+	BSPP_ERROR_UNSUPPORTED               = (1 << 10),
-+	/* Severe Error, Error in which could not be recovered */
-+	BSPP_ERROR_UNRECOVERABLE             = (1 << 11),
-+	/* Severe Error, to indicate that NAL Header is absent after SCP */
-+	BSPP_ERROR_NO_NALHEADER              = (1 << 12),
-+	BSPP_ERROR_NO_SEQUENCE_HDR           = (1 << 13),
-+	BSPP_ERROR_SIGNALED_IN_STREAM        = (1 << 14),
-+	BSPP_ERROR_UNKNOWN_DATAUNIT_DETECTED = (1 << 15),
-+	BSPP_ERROR_NO_PPS                    = (1 << 16),
-+	BSPP_ERROR_NO_VPS                    = (1 << 17),
-+	BSPP_ERROR_OUT_OF_MEMORY             = (1 << 18),
-+	/* The shift value of the last error bit */
-+	BSPP_ERROR_MAX_SHIFT                 = 18,
-+	BSPP_ERROR_FORCE32BITS               = 0x7FFFFFFFU
-+};
-+
-+/*
-+ * struct bspp_ddbuf_info - Buffer info
-+ * @buf_size: The size of the buffer (in bytes)
-+ * @cpu_virt_addr: The CPU virtual address  (mapped into the local cpu MMU)
-+ * @mem_attrib: Memory attributes
-+ * @bufmap_id: buffer mappind id
-+ */
-+struct bspp_ddbuf_info {
-+	unsigned int buf_size;
-+	void *cpu_virt_addr;
-+	enum sys_emem_attrib mem_attrib;
-+	unsigned int buf_id;
-+	unsigned int bufmap_id;
-+};
-+
-+/*
-+ * struct bspp_ddbuf_array_info - Buffer array info
-+ * @ddbuf_info: Buffer info (container)
-+ * @buf_element_size: Size of each element
-+ * @buf_offset: Offset for each element
-+ */
-+struct bspp_ddbuf_array_info {
-+	struct bspp_ddbuf_info ddbuf_info;
-+	unsigned int buf_element_size;
-+	unsigned int buf_offset;
-+};
-+
-+/**
-+ * struct bspp_bitstr_seg - Bitstream segment
-+ * @lst_padding:
-+ * @data_size: Size of data
-+ * @data_byte_offset: Offset for data
-+ * @bstr_seg_flag: flag indicates the bitstream segment type
-+ * @start_code_suffix: start code prefix
-+ * @bufmap_id: Buffer map ID
-+ */
-+struct bspp_bitstr_seg {
-+	void *lst_padding;
-+	unsigned int data_size;
-+	unsigned int data_byte_offset;
-+	unsigned int bstr_seg_flag;
-+	unsigned char start_code_suffix;
-+	unsigned int bufmap_id;
-+};
-+
-+/*
-+ * struct bspp_pict_data - Picture Header Data Information
-+ * @bufmap_id: Buffer ID to use inside kernel #VXDIO_sDdBufInfo
-+ * @buf_offset: Buffer offset (for packed device buffers, e.g. PPS)
-+ * @pic_data: Picture data
-+ * @size: Size (in bytes) of data.
-+ * @data_id: Data identifier.
-+ */
-+struct bspp_pict_data {
-+	unsigned int bufmap_id;
-+	unsigned int buf_offset;
-+	void *pic_data;
-+	unsigned int size;
-+	unsigned int id;
-+};
-+
-+/*
-+ * struct bspp_pict_hdr_info - Picture Header Information
-+ */
-+struct bspp_pict_hdr_info {
-+	/*
-+	 * Picture is entirely intra-coded and doesn't use any reference data.
-+	 * NOTE: should be IMG_FALSE if this cannot be determined.
-+	 */
-+	int intra_coded;
-+	/* Picture might be referenced by subsequent pictures. */
-+	int ref;
-+	/* Picture is a field as part of a frame. */
-+	int field;
-+	/* Emulation prevention bytes are present in picture data. */
-+	int emulation_prevention;
-+	/* Post Processing */
-+	int post_processing;
-+	/* Macroblocks within the picture may not occur in raster-scan order */
-+	int discontinuous_mbs;
-+	/* Flag to indicate data is span across mulitple buffer. */
-+	int fragmented_data;
-+	/* SOS fields count value */
-+	unsigned char sos_count;
-+	/* This picture is the first of the sequence or not */
-+	int first_pic_of_sequence;
-+
-+	enum vdecfw_parsermode parser_mode;
-+	/* Total size of picture data which is going to be submitted. */
-+	unsigned int pic_data_size;
-+	/* Size of coded frame as specified in the bitstream. */
-+	struct vdec_pict_size coded_frame_size;
-+	/* Display information for picture */
-+	struct vdec_pict_disp_info disp_info;
-+
-+	/* Picture auxiliary data (e.g. H.264 SPS/PPS) */
-+	struct bspp_pict_data pict_aux_data;
-+	/* Picture auxiliary data (e.g. H.264 SPS/PPS) for 2nd picture */
-+	struct bspp_pict_data second_pict_aux_data;
-+	/* Slice group-map data. */
-+	struct bspp_pict_data pict_sgm_data;
-+#ifdef HAS_JPEG
-+	/* JPEG specific picture header information.*/
-+	struct vdec_jpeg_pict_hdr_info jpeg_pict_hdr_info;
-+#endif
-+
-+	struct h264_pict_hdr_info {
-+		void *raw_vui_data;
-+		void *raw_sei_data_list_first_field;
-+		void *raw_sei_data_list_second_field;
-+		unsigned char nal_ref_idc;
-+		unsigned short frame_num;
-+	} h264_pict_hdr_info;
-+
-+	struct {        /* HEVC specific frame information.*/
-+		int range_ext_present;
-+		int is_full_range_ext;
-+		void *raw_vui_data;
-+		void *raw_sei_datalist_firstfield;
-+		void *raw_sei_datalist_secondfield;
-+	} hevc_pict_hdr_info;
-+};
-+
-+/*
-+ * struct bspp_sequ_hdr_info - Sequence header information
-+ */
-+struct bspp_sequ_hdr_info {
-+	unsigned int sequ_hdr_id;
-+	unsigned int ref_count;
-+	struct vdec_comsequ_hdrinfo com_sequ_hdr_info;
-+	unsigned int bufmap_id;
-+	unsigned int buf_offset;
-+};
-+
-+/*
-+ * struct bspp_picture_data - Picture data
-+ */
-+struct bspp_picture_data {
-+	/* Anonymous */
-+	/*
-+	 * Bitstream segments that contain other (non-picture) data before
-+	 * the picture in the buffer (elements of type #VDECDD_sBitStrSeg).
-+	 */
-+	struct lst_t pre_pict_seg_list[BSPP_MAX_PICTURES_PER_BUFFER];
-+	/* Picture */
-+	unsigned int sequ_hdr_id;
-+	struct bspp_pict_hdr_info pict_hdr_info;
-+	/*
-+	 * Bitstream segments that contain picture data, one for each field
-+	 * (if present in same group of buffers (elements of type
-+	 * #VDECDD_sBitStrSeg).
-+	 */
-+	struct lst_t pict_seg_list[BSPP_MAX_PICTURES_PER_BUFFER];
-+	void *pict_tag_param[BSPP_MAX_PICTURES_PER_BUFFER];
-+	int is_prefix;
-+};
-+
-+/*
-+ * struct bspp_preparsed_data - Pre-parsed buffer information
-+ */
-+struct bspp_preparsed_data {
-+	/* Sequence */
-+	int new_sequence;
-+	struct bspp_sequ_hdr_info sequ_hdr_info;
-+	int sequence_end;
-+
-+	/* Closed GOP */
-+	int closed_gop;
-+
-+	/* Picture */
-+	int new_picture;
-+	int new_fragment;
-+	struct bspp_picture_data picture_data;
-+
-+	/* Additional pictures (MVC extension) */
-+	int new_sub_sequence;
-+	struct bspp_sequ_hdr_info ext_sequ_hdr_info;
-+	/* non-base view pictures + picture prefix for next frame */
-+	struct bspp_picture_data ext_pictures_data[VDEC_H264_MVC_MAX_VIEWS];
-+	unsigned int num_ext_pictures;
-+
-+	/*
-+	 * Additional information
-+	 * Flags word to indicate error in parsing/decoding - see
-+	 * #VDEC_eErrorType
-+	 */
-+	unsigned int error_flags;
-+};
-+
-+/*
-+ * struct bspp_picture_decoded - used to store picture-decoded information for
-+ * resource handling (sequences/PPSs)
-+ */
-+struct bspp_picture_decoded {
-+	void **lst_link;
-+	unsigned int sequ_hdr_id;
-+	unsigned int pps_id;
-+	unsigned int second_pps_id;
-+	int not_decoded;
-+	struct vdec_raw_bstr_data *sei_raw_data_first_field;
-+	struct vdec_raw_bstr_data *sei_raw_data_second_field;
-+};
-+
-+/*
-+ * @Function	bspp_stream_create
-+ * @Description	Creates a stream context for which to pre-parse bitstream
-+ *		buffers. The following allocations will take place:
-+ *		- Local storage for high-level header parameters (secure)
-+ *		- Host memory for common sequence information (insecure)
-+ *		- Device memory for Sequence information (secure)
-+ *		- Device memory for PPS (secure, H.264 only)
-+ * @Input	vdec_str_configdata : config data corresponding to bitstream
-+ * @Output	str_context : A pointer used to return the stream context handle
-+ * @Input	fw_sequ: FW sequence data
-+ * @Input	fw_pps: FW pps data
-+ * @Return	This function returns either IMG_SUCCESS or an error code.
-+ */
-+int bspp_stream_create(const struct vdec_str_configdata *str_config_data,
-+		       void **str_context,
-+		       struct bspp_ddbuf_array_info fw_sequ[],
-+		       struct bspp_ddbuf_array_info fw_pps[]);
-+
-+/*
-+ * @Function	bspp_set_codec_config
-+ * @Description	This function is used to set the out-of-band codec config data.
-+ * @Input	str_context_handle     : Stream context handle.
-+ * @Input	codec_config   : Codec-config data
-+ * @Return	This function returns either IMG_SUCCESS or an error code.
-+ */
-+int bspp_set_codec_config(const void *str_context_handle,
-+			  const struct vdec_codec_config *codec_config);
-+
-+/*
-+ * @Function	bspp_stream_destroy
-+ * @Description	Destroys a stream context used to pre-parse bitstream buffers.
-+ * @Input	str_context_handle  : Stream context handle.
-+ * @Return	This function returns either IMG_SUCCESS or an error code.
-+ */
-+int bspp_stream_destroy(void *str_context_handle);
-+
-+/*
-+ * @Function	bspp_submit_picture_decoded
-+ */
-+int bspp_submit_picture_decoded(void *str_context_handle,
-+				struct bspp_picture_decoded *picture_decoded);
-+
-+/*
-+ * @Function	bspp_stream_submit_buffer
-+ */
-+int bspp_stream_submit_buffer(void *str_context_handle,
-+			      const struct bspp_ddbuf_info *ddbuf_info,
-+			      unsigned int bufmap_id,
-+			      unsigned int data_size,
-+			      void *pict_tag_param,
-+			      enum vdec_bstr_element_type bstr_element_type);
-+
-+/*
-+ * @Function	bspp_stream_preparse_buffers
-+ * @Description	Pre-parses bistream buffer and returns picture information in
-+ *		structure that also signals when the buffer is last in picture.
-+ * @Input	str_context_handle: Stream context handle.
-+ * @Input	contiguous_buf_info : Contiguous buffer information
-+ *		multiple segments that may be non contiguous in memory
-+ * @Input	contiguous_buf_map_id : Contiguous Buffer Map id
-+ * @Input	segments: Pointer to a list of segments (see #VDECDD_sBitStrSeg)
-+ * @Output	preparsed_data: Container to return picture information. Only
-+ *		provide when buffer is last in picture (see #bForceEop in
-+ *		function #VDEC_StreamSubmitBstrBuf)
-+ * @Output	eos_flag: flag indicates end of stream
-+ * @Return	int : This function returns either IMG_SUCCESS or an error code.
-+ */
-+int bspp_stream_preparse_buffers
-+	(void *str_context_handle,
-+	const struct bspp_ddbuf_info *contiguous_buf_info,
-+	unsigned int contiguous_buf_map_id,
-+	struct lst_t *segments,
-+	struct bspp_preparsed_data *preparsed_data,
-+	int eos_flag);
-+
-+#endif /* __BSPP_H__   */
-diff --git a/drivers/staging/media/vxd/decoder/bspp_int.h b/drivers/staging/media/vxd/decoder/bspp_int.h
-new file mode 100644
-index 000000000000..e37c8c9c415b
---- /dev/null
-+++ b/drivers/staging/media/vxd/decoder/bspp_int.h
-@@ -0,0 +1,514 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * VXD Bitstream Buffer Pre-Parser Internal
++ * Error codes.
 + *
 + * Copyright (c) Imagination Technologies Ltd.
 + * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com/
@@ -3001,3712 +178,1325 @@ index 000000000000..e37c8c9c415b
 + * Re-written for upstreamimg
 + *	Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
 + */
-+#ifndef __BSPP_INT_H__
-+#define __BSPP_INT_H__
-+
-+#include "bspp.h"
-+#include "swsr.h"
-+
-+#define VDEC_MB_DIMENSION  (16)
-+#define MAX_COMPONENTS  (4)
-+
-+#define print_value(a, ...)
-+
-+#define BSPP_DEFAULT_SEQUENCE_ID   (0)
-+
-+enum bspp_unit_type {
-+	BSPP_UNIT_NONE = 0,
-+	/* Only relevant for HEVC. */
-+	BSPP_UNIT_VPS,
-+	/* Only relevant for h.264 and HEVC */
-+	BSPP_UNIT_SEQUENCE, BSPP_UNIT_PPS,
-+	/*
-+	 * !< Data from these units should be placed in non-picture bitstream
-+	 *  segment lists. In conformant streams these units should not occur
-+	 *  in-between the picture data.
-+	 */
-+	BSPP_UNIT_PICTURE,
-+	BSPP_UNIT_SKIP_PICTURE,
-+	BSPP_UNIT_NON_PICTURE,
-+	BSPP_UNIT_UNCLASSIFIED,
-+	/* Unit is unsupported, don't change segment list */
-+	BSPP_UNIT_UNSUPPORTED,
-+	BSPP_UNIT_MAX,
-+	BSPP_UNIT_FORCE32BITS = 0x7FFFFFFFU
-+};
-+
-+struct bspp_raw_bitstream_data {
-+	void **lst_link;
-+	unsigned int ref_count;
-+	struct vdec_raw_bstr_data raw_bitstream_data;
-+};
-+
-+/*
-+ * struct bspp_h264_inter_pict_ctx
-+ * @Brief: This structure contains H264 state to be retained between pictures.
-+ */
-+struct bspp_h264_inter_pict_ctx {
-+	/*
-+	 *  The following get applied to every picture until updated
-+	 * (bitstream properties)
-+	 */
-+	int disable_vdmc_filt;
-+	int b4x4transform_mb_unavailable;
-+	/*
-+	 *  The following get applied to the next picture only
-+	 * (picture properties)
-+	 */
-+	int repeat_first_field;
-+	unsigned int max_frm_repeat;
-+	/*
-+	 *  Control variable to decide when to attach the SEI info
-+	 * (picture properties) to a picture
-+	 */
-+	int sei_info_attached_to_pic;
-+	/*
-+	 * The following variable is an approximation because we cannot
-+	 * parse out-of-order, it takes value as described:
-+	 *	 1) Initially it is BSPP_INVALID
-+	 *	 2) The first SPS sets it to its SPSid
-+	 *	 3) The last bspp_H264SeiBufferingPeriod sets it, and it is used
-+	 * for every SEI parsing until updated by another
-+	 * bspp_H264SeiBufferingPeriod message
-+	 */
-+	unsigned int active_sps_for_sei_parsing;
-+	unsigned short current_view_id;
-+	struct vdec_raw_bstr_data *sei_raw_data_list;
-+};
-+
-+/* This structure contains HEVC state to be retained between pictures. */
-+struct bspp_hevc_inter_pict_ctx {
-+	/* Picture count in a sequence */
-+	unsigned int seq_pic_count;
-+	struct {
-+		/* There was EOS NAL detected and no new picture yet */
-+		unsigned eos_detected : 1;
-+		/* This is first picture after EOS NAL */
-+		unsigned first_after_eos : 1;
-+	};
-+
-+	/* control variable to decide when to attach the SEI info
-+	 * (picture properties) to a picture.
-+	 */
-+	unsigned char sei_info_attached_to_pic;
-+	/* Raw SEI list to be attached to a picture. */
-+	struct vdec_raw_bstr_data *sei_rawdata_list;
-+	/* Handle to a picture header field to attach the raw SEI list to. */
-+	void **hndl_pichdr_sei_rawdata_list;
-+};
-+
-+/*
-+ * struct bspp_inter_pict_data
-+ * @Brief	This structure contains state to be retained between pictures.
-+ */
-+struct bspp_inter_pict_data {
-+	/* A closed GOP has occurred in the bitstream. */
-+	int seen_closed_gop;
-+	/* Closed GOP has been signaled by a unit before the next picture */
-+	int new_closed_gop;
-+	/* Indicates whether or not DPB flush is needed */
-+	int not_dpb_flush;
-+	struct lst_t pic_prefix_seg;
-+	union {
-+		struct bspp_h264_inter_pict_ctx h264_ctx;
-+		struct bspp_hevc_inter_pict_ctx hevc_ctx;
-+	};
-+};
-+
-+/*
-+ * struct bspp_parse_state
-+ * @Brief	This structure contains parse state
-+ */
-+struct bspp_parse_state {
-+	struct bspp_inter_pict_data *inter_pict_ctx;
-+	int initialised;
-+
-+	/* Input/Output (H264 etc. state). */
-+	/* For SCP ASO detection we need to log 3 components */
-+	unsigned int prev_first_mb_in_slice[MAX_COMPONENTS];
-+	struct bspp_pict_hdr_info *next_pict_hdr_info;
-+	unsigned char prev_bottom_pic_flag;
-+	unsigned char second_field_flag;
-+	unsigned char next_pic_is_new;
-+	unsigned int prev_frame_num;
-+	unsigned int prev_pps_id;
-+	unsigned int prev_field_pic_flag;
-+	unsigned int prev_nal_ref_idc;
-+	unsigned int prev_pic_order_cnt_lsb;
-+	int prev_delta_pic_order_cnt_bottom;
-+	int prev_delta_pic_order_cnt[2];
-+	int prev_nal_unit_type;
-+	int prev_idr_pic_id;
-+	int discontinuous_mb;
-+	/* Position in bitstream before parsing a unit */
-+	unsigned long long prev_byte_offset_buf;
-+	unsigned int prev_buf_map_id;
-+	unsigned int prev_buf_data_size;
-+	/*
-+	 * !< Flags word to indicate error in parsing/decoding
-+	 * - see #VDEC_eErrorType.
-+	 */
-+	unsigned int error_flags;
-+	/* Outputs. */
-+	int new_closed_gop;
-+	unsigned char new_view;
-+	unsigned char is_prefix;
-+	int first_chunk;
-+};
-+
-+/*
-+ * struct bspp_pps_info
-+ * @Brief	Contains PPS information
-+ */
-+struct bspp_pps_info {
-+	void **lst_link;
-+	/* PPS Id. INSECURE MEMORY HOST */
-+	unsigned int pps_id;
-+	/* Reference count for PPS. INSECURE MEMORY HOST */
-+	unsigned int ref_count;
-+	struct bspp_ddbuf_array_info fw_pps;
-+	/* Buffer ID to be used in Kernel */
-+	unsigned int bufmap_id;
-+	/* Parsing Info.    SECURE MEMORY HOST   */
-+	void *secure_pps_info;
-+	/* Buffer Offset to be used in kernel */
-+	unsigned int buf_offset;
-+};
-+
-+/*
-+ * struct bspp_sequence_hdr_info
-+ * @Brief	Contains SPS information
-+ */
-+struct bspp_sequence_hdr_info {
-+	void **lst_link;
-+	/* Reference count for sequence header */
-+	unsigned int ref_count;
-+	struct bspp_sequ_hdr_info sequ_hdr_info;
-+	struct bspp_ddbuf_array_info fw_sequence;
-+	/* Parsing Info.  SECURE MEMORY HOST */
-+	void *secure_sequence_info;
-+};
-+
-+enum bspp_element_status {
-+	BSPP_UNALLOCATED = 0,
-+	BSPP_AVAILABLE,
-+	BSPP_UNAVAILABLE,
-+	BSPP_STATUSMAX,
-+	BSPP_FORCE32BITS = 0x7FFFFFFFU
-+};
-+
-+struct bspp_vps_info {
-+	void **lst_link;
-+	/* VPS Id   INSECURE MEMORY HOST */
-+	unsigned int vps_id;
-+	/* Reference count for video header. INSECURE MEMORY HOST */
-+	unsigned int ref_count;
-+	/*!< Parsing Info. SECURE MEMORY HOST */
-+	void *secure_vpsinfo;
-+};
-+
-+/*
-+ * struct bspp_unit_data
-+ * @Brief	Contains bitstream unit data
-+ */
-+struct bspp_unit_data {
-+	/* Input. */
-+	/* Indicates which output data to populate */
-+	enum bspp_unit_type unit_type;
-+	/* Video Standard of unit to parse */
-+	enum vdec_vid_std vid_std;
-+	/* Indicates whether delimiter is present for unit */
-+	int delim_present;
-+	/* Codec configuration used by this stream */
-+	const struct vdec_codec_config *codec_config;
-+	void *str_res_handle;
-+	/* Needed for calculating the size of the last fragment */
-+	unsigned int unit_data_size;
-+	/* Input/Output. */
-+	struct bspp_parse_state *parse_state;
-+	/* Output */
-+	/* eVidStd == VDEC_STD_H263 && BSPP_UNIT_PICTURE. */
-+	struct bspp_sequence_hdr_info *impl_sequ_hdr_info;
-+	/* Union of output data for each of the unit types. */
-+	union {
-+		/* BSPP_UNIT_SEQUENCE. */
-+		struct bspp_sequence_hdr_info *sequ_hdr_info;
-+		/* BSPP_UNIT_PPS. */
-+		struct bspp_pps_info *pps_info;
-+		/* BSPP_UNIT_PICTURE. */
-+		struct bspp_pict_hdr_info *pict_hdr_info;
-+		/* For Video Header (HEVC) */
-+		struct bspp_vps_info *vps_info;
-+	} out;
-+
-+	/*
-+	 * For picture it should give the SequenceHdrId, for anything
-+	 * else it should contain BSPP_INVALID. This value is pre-loaded
-+	 * with the sequence ID of the last picture.
-+	 */
-+	unsigned int pict_sequ_hdr_id;
-+	/* State: output. */
-+	/*
-+	 * Picture unit (BSPP_UNIT_PICTURE) contains slice data.
-+	 * Picture header information must be populated once this unit has been
-+	 * parsed.
-+	 */
-+	int slice;
-+	int ext_slice; /* Current slice belongs to non-base view (MVC only) */
-+	/*
-+	 * True if we meet a unit that signifies closed gop, different
-+	 * for each standard.
-+	 */
-+	int new_closed_gop;
-+	/* True if the end of a sequence of pictures has been reached. */
-+	int sequence_end;
-+	/*
-+	 * Extracted all data from unit whereby shift-register should now
-+	 * be at the next delimiter or end of data (when byte-aligned).
-+	 */
-+	int extracted_all_data;
-+	/* Indicates the presence of any errors while processing this unit. */
-+	enum bspp_error_type parse_error;
-+	/* To turn on/off considering I-Frames as ClosedGop boundaries. */
-+	int intra_frm_as_closed_gop;
-+};
-+
-+/*
-+ * struct bspp_swsr_ctx
-+ * @brief	BSPP Software Shift Register Context Information
-+ */
-+struct bspp_swsr_ctx {
-+	/*
-+	 * Default configuration for the shift-register for this
-+	 * stream. The delimiter type may be adjusted for each unit
-+	 * where the buffer requires it. Information about how to
-+	 * process each unit will be passed down with the picture
-+	 * header information.
-+	 */
-+	struct swsr_config sr_config;
-+	/*
-+	 * Emulation prevention scheme present in bitstream. This is
-+	 * sometimes not ascertained (e.g. VC-1) until the first
-+	 * bitstream buffer (often codec configuration) has been
-+	 * received.
-+	 */
-+	enum swsr_emprevent emulation_prevention;
-+	/* Software shift-register context. */
-+	void *swsr_context;
-+};
-+
-+/*
-+ * struct bspp_vid_std_features
-+ * @brief  BSPP Video Standard Specific Features and Information
-+ */
-+struct bspp_vid_std_features {
-+	/* The size of the sequence header structure for this video standard */
-+	unsigned long seq_size;
-+	/* This video standard uses Picture Parameter Sets. */
-+	int uses_pps;
-+	/*
-+	 * The size of the Picture Parameter Sets structure for
-+	 * this video standard.
-+	 */
-+	unsigned long pps_size;
-+	/* This video standard uses Video Parameter Sets. */
-+	int uses_vps;
-+	/*
-+	 * The size of the Video Parameter Sets structure for
-+	 * this video standard
-+	 */
-+	unsigned long vps_size;
-+};
-+
-+/*
-+ * @Function	bspp_cb_parse_unit
-+ * @Description	Function prototype for the parse unit callback functions.
-+ * @Input	swsr_context_handle: A handle to software shift-register context
-+ * @InOut	unit_data: A pointer to unit data which includes input & output
-+ *		parameters as defined by structure.
-+ * @Return	int : This function returns either IMG_SUCCESS or an error code.
-+ */
-+typedef int (*bspp_cb_parse_unit)(void *swsr_context_handle,
-+				    struct bspp_unit_data *unit_data);
-+
-+/*
-+ * @Function	bspp_pfnReleaseData
-+ * @Description	This is a function prototype for the data releasing callback
-+ *		functions.
-+ * @Input	str_alloc_handle   : A handle to stream related resources.
-+ * @Input	data_type   : A type of data which is to be released.
-+ * @Input	data_handle : A handle for data which is to be released.
-+ * @Return	int : This function returns either IMG_SUCCESS or an error code.
-+ */
-+typedef int (*bspp_cb_release_data)(void *str_alloc_handle,
-+				      enum bspp_unit_type data_type,
-+				      void *data_handle);
-+
-+/*
-+ * @Function	bspp_cb_reset_data
-+ * @Description	This is a function prototype for the data resetting callback
-+ *		functions.
-+ * @Input	data_type   : A type of data which is to be reset.
-+ * @InOut	data_handle : A handle for data which is to be reset.
-+ * @Return	int : This function returns either IMG_SUCCESS or an error code.
-+ */
-+typedef int (*bspp_cb_reset_data)(enum bspp_unit_type data_type,
-+				    void *data_handle);
-+
-+/*
-+ * @Function	bspp_cb_destroy_data
-+ * @Description	This is a function prototype for the data destruction callback
-+ *		functions.
-+ * @Input	data_type   : A type of data which is to be destroyed.
-+ * @InOut	data_handle : A handle for data which is to be destroyed.
-+ * @Return	int : This function returns either IMG_SUCCESS or an error code.
-+ */
-+typedef int (*bspp_cb_destroy_data)(enum bspp_unit_type data_type,
-+				      void *data_handle);
-+
-+/*
-+ * @Function	bspp_cb_parse_codec_config
-+ * @Description	This is a function prototype for parsing codec config bitstream
-+ *		element for size delimited bitstreams.
-+ * @Input	swsr_context_handle: A handle to Shift Register processing
-+ *		current bitstream.
-+ * @Output	unit_count: A pointer to variable in which to return unit count.
-+ * @Output	unit_array_count: A pointer to variable in which to return unit
-+ *		array count.
-+ * @Output	delim_length: A pointer to variable in which to return NAL
-+ *		delimiter length in bits.
-+ * @Output	size_delim_length: A pointer to variable in which to return size
-+ *		delimiter length in bits.
-+ * @Return	None.
-+ */
-+typedef void (*bspp_cb_parse_codec_config)(void *swsr_context_handle,
-+					   unsigned int *unit_count,
-+					   unsigned int *unit_array_count,
-+					   unsigned int *delim_length,
-+					   unsigned int *size_delim_length);
-+
-+/*
-+ * @Function	bspp_cb_update_unit_counts
-+ * @Description	This is a function prototype for updating unit counts for size
-+ *		delimited bitstreams.
-+ * @Input	swsr_context_handle: A handle to Shift Register processing
-+ *		current bitstream.
-+ * @InOut	unit_count: A pointer to variable holding current unit count
-+ * @InOut	unit_array_count: A pointer to variable holding current unit
-+ *		array count.
-+ * @Return	None.
-+ */
-+typedef void (*bspp_cb_update_unit_counts)(void *swsr_context_handle,
-+					   unsigned int *unit_count,
-+					   unsigned int *unit_array_count);
-+
-+/*
-+ * @Function	bspp_cb_initialise_parsing
-+ * @Description	This prototype is for unit group parsing initialization.
-+ * @InOut	parse_state: The current unit group parsing state.
-+ * @Return	None.
-+ */
-+typedef void (*bspp_cb_initialise_parsing)(struct bspp_parse_state *prs_state);
-+
-+/*
-+ * @Function	bspp_cb_finalise_parsing
-+ * @Description	This is prototype is for unit group parsing finalization.
-+ * @Input	str_alloc_handle: A handle to stream related resources.
-+ * @InOut	parse_state: The current unit group parsing state.
-+ * @Return	None.
-+ */
-+typedef void (*bspp_cb_finalise_parsing)(void *str_alloc_handle,
-+					 struct bspp_parse_state *parse_state);
-+
-+/*
-+ * struct bspp_parser_callbacks
-+ * @brief	BSPP Standard Related Parser Callback Functions
-+ */
-+struct bspp_parser_callbacks {
-+	/* Pointer to standard-specific unit parsing callback function. */
-+	bspp_cb_parse_unit parse_unit_cb;
-+	/* Pointer to standard-specific data releasing callback function. */
-+	bspp_cb_release_data release_data_cb;
-+	/* Pointer to standard-specific data resetting callback function. */
-+	bspp_cb_reset_data reset_data_cb;
-+	/* Pointer to standard-specific data destruction callback function. */
-+	bspp_cb_destroy_data destroy_data_cb;
-+	/* Pointer to standard-specific codec config parsing callback function */
-+	bspp_cb_parse_codec_config parse_codec_config_cb;
-+	/* Pointer to standard-specific unit count updating callback function */
-+	bspp_cb_update_unit_counts update_unit_counts_cb;
-+	/*
-+	 * Pointer to standard-specific unit group parsing initialization
-+	 * function.
-+	 */
-+	bspp_cb_initialise_parsing initialise_parsing_cb;
-+	/*
-+	 * Pointer to standard-specific unit group parsing finalization
-+	 * function
-+	 */
-+	bspp_cb_finalise_parsing finalise_parsing_cb;
-+};
-+
-+/*
-+ * @Function	bspp_cb_set_parser_config
-+ * @Description	Prototype is for the setting parser config callback functions.
-+ * @Input	bstr_format: Input bitstream format.
-+ * @Output	vid_std_features: Features of video standard for this bitstream.
-+ * @Output	swsr_ctx: Software Shift Register settings for this bitstream.
-+ * @Output	parser_callbacks: Parser functions to be used for parsing this
-+ *		bitstream.
-+ * @Output	inter_pict_data: Inter-picture settings specific for this
-+ *		bitstream.
-+ * @Return	int : This function returns either IMG_SUCCESS or an error code.
-+ */
-+typedef int (*bspp_cb_set_parser_config)(enum vdec_bstr_format bstr_format,
-+					   struct bspp_vid_std_features *vid_std_features,
-+					   struct bspp_swsr_ctx *swsr_ctx,
-+					   struct bspp_parser_callbacks *parser_callbacks,
-+					   struct bspp_inter_pict_data *inter_pict_data);
-+
-+/*
-+ * @Function	bspp_cb_determine_unit_type
-+ * @Description	This is a function prototype for determining the BSPP unit type
-+ *		based on the bitstream (video standard specific) unit type
-+ *		callback functions.
-+ * @Input	bitstream_unit_type: Bitstream (video standard specific) unit
-+ *		type.
-+ * @Input	disable_mvc: Skip MVC related units (relevant for standards
-+ *		that support it).
-+ * @InOut	bspp_unit_type *: Last BSPP unit type on input. Current BSPP
-+ *		unit type on output.
-+ * @Return	None.
-+ */
-+typedef void (*bspp_cb_determine_unit_type)(unsigned char bitstream_unit_type,
-+					    int disable_mvc,
-+					    enum bspp_unit_type *bspp_unit_type);
-+
-+struct bspp_pps_info *bspp_get_pps_hdr(void *str_res_handle, unsigned int pps_id);
-+
-+struct bspp_sequence_hdr_info *bspp_get_sequ_hdr(void *str_res_handle,
-+						 unsigned int sequ_id);
-+
-+struct bspp_vps_info *bspp_get_vpshdr(void *str_res, unsigned int vps_id);
-+
-+void bspp_streamrelese_rawbstrdataplain(const void *str_res,
-+					const void *rawdata);
-+
-+void bspp_freeraw_sei_datacontainer(const void *str_res,
-+				    struct vdec_raw_bstr_data *rawsei_datacontainer);
-+
-+void bspp_freeraw_sei_datalist(const void *str_res,
-+			       struct vdec_raw_bstr_data *rawsei_datalist);
-+
-+#endif /* __BSPP_INT_H__   */
-diff --git a/drivers/staging/media/vxd/decoder/h264_secure_parser.c b/drivers/staging/media/vxd/decoder/h264_secure_parser.c
-new file mode 100644
-index 000000000000..3973749eac58
---- /dev/null
-+++ b/drivers/staging/media/vxd/decoder/h264_secure_parser.c
-@@ -0,0 +1,3051 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * h.264 secure data unit parsing API.
-+ *
-+ * Copyright (c) Imagination Technologies Ltd.
-+ * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com/
-+ *
-+ * Authors:
-+ *	Lakshmi Sankar <lakshmisankar-t@ti.com>
-+ * Re-written for upstreming
-+ *	Prashanth Kumar Amai <prashanth.ka@pathpartnertech.com>
-+ *	Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
-+ */
++#ifndef __IMG_ERRORS__
++#define __IMG_ERRORS__
 +
 +#include <linux/dma-mapping.h>
 +#include <media/v4l2-ctrls.h>
 +#include <media/v4l2-device.h>
 +#include <media/v4l2-mem2mem.h>
 +
-+#include "bspp.h"
-+#include "bspp_int.h"
-+#include "h264_secure_parser.h"
-+#include "pixel_api.h"
-+#include "swsr.h"
-+#include "vdec_defs.h"
++#define IMG_DBG_ASSERT(expected) ({WARN_ON(!(expected)); 0; })
 +
-+/*
-+ * Reduce DPB to 1 when no pic reordering.
++/**
++ *IMG_SUCCESS - IMG_SUCCESS
 + */
-+#define SL_MAX_REF_IDX          32
-+#define VUI_CPB_CNT_MAX         32
-+#define MAX_SPS_COUNT           32
-+#define MAX_PPS_COUNT           256
-+/* changed from 810 */
-+#define MAX_SLICE_GROUPMBS      65536
-+#define MAX_SPS_COUNT           32
-+#define MAX_PPS_COUNT           256
-+#define MAX_SLICEGROUP_COUNT    8
-+#define MAX_WIDTH_IN_MBS        256
-+#define MAX_HEIGHT_IN_MBS       256
-+#define MAX_COLOR_PLANE         4
-+#define H264_MAX_SGM_SIZE       8196
-+
-+#define H264_MAX_CHROMA_QP_INDEX_OFFSET (12)
-+#define H264_MIN_CHROMA_QP_INDEX_OFFSET (-12)
-+
++#define IMG_SUCCESS                                     (0)
++/* @brief Timeout */
++#define IMG_ERROR_TIMEOUT                               (1)
++/* @brief memory allocation failed */
++#define IMG_ERROR_MALLOC_FAILED                         (2)
++/* @brief Unspecified fatal error */
++#define IMG_ERROR_FATAL                                 (3)
++/* @brief Memory allocation failed */
++#define IMG_ERROR_OUT_OF_MEMORY                         (4)
++/* @brief Device is not found */
++#define IMG_ERROR_DEVICE_NOT_FOUND                      (5)
++/* @brief Device is not available/in use */
++#define IMG_ERROR_DEVICE_UNAVAILABLE                    (6)
++/* @brief Generic/unspecified failure */
++#define IMG_ERROR_GENERIC_FAILURE                       (7)
++/* @brief Operation was interrupted - retry */
++#define IMG_ERROR_INTERRUPTED                           (8)
++/* @brief Invalid id  */
++#define IMG_ERROR_INVALID_ID                            (9)
++/* @brief A signature value was found to be incorrect */
++#define IMG_ERROR_SIGNATURE_INCORRECT                   (10)
++/* @brief The provided parameters were inconsistent/incorrect */
++#define IMG_ERROR_INVALID_PARAMETERS                    (11)
++/* @brief A list/pool has run dry     */
++#define IMG_ERROR_STORAGE_TYPE_EMPTY                    (12)
++/* @brief A list is full      */
++#define IMG_ERROR_STORAGE_TYPE_FULL                     (13)
++/* @brief Something has already occurred which the code thinks has not */
++#define IMG_ERROR_ALREADY_COMPLETE                      (14)
++/* @brief A state machine is in an unexpected/illegal state */
++#define IMG_ERROR_UNEXPECTED_STATE                      (15)
++/* @brief A required resource could not be created/locked */
++#define IMG_ERROR_COULD_NOT_OBTAIN_RESOURCE             (16)
 +/*
-+ * AVC Profile IDC definitions
++ * @brief An attempt to access a structure/resource was
++ * made before it was initialised
 + */
-+enum h264_profile_idc {
-+	h264_profile_cavlc444   = 44,   /*  YUV 4:4:4/14 "CAVLC 4:4:4" */
-+	h264_profile_baseline   = 66,   /* YUV 4:2:0/8  "Baseline" */
-+	h264_profile_main       = 77,   /* YUV 4:2:0/8  "Main" */
-+	h264_profile_scalable   = 83,   /* YUV 4:2:0/8  "Scalable" */
-+	h264_profile_extended   = 88,   /* YUV 4:2:0/8  "Extended" */
-+	h264_profile_high       = 100,  /* YUV 4:2:0/8  "High" */
-+	h264_profile_hig10     = 110,  /* YUV 4:2:0/10 "High 10" */
-+	h264_profile_mvc_high   = 118,  /* YUV 4:2:0/8  "Multiview High" */
-+	h264_profile_high422    = 122,  /* YUV 4:2:2/10 "High 4:2:2" */
-+	h264_profile_mvc_stereo = 128,  /* YUV 4:2:0/8  "Stereo High" */
-+	h264_profile_high444    = 244,  /* YUV 4:4:4/14 "High 4:4:4" */
-+	h264_profile_FORCE32BITS = 0x7FFFFFFFU
-+};
-+
++#define IMG_ERROR_NOT_INITIALISED                       (17)
 +/*
-+ * Remap H.264 colour format into internal representation.
++ * @brief An attempt to initialise a structure/resource
++ * was made when it has already been initialised
 + */
-+static const enum pixel_fmt_idc pixel_format_idc[] = {
-+	PIXEL_FORMAT_MONO,
-+	PIXEL_FORMAT_420,
-+	PIXEL_FORMAT_422,
-+	PIXEL_FORMAT_444,
-+};
-+
-+/*
-+ * Pixel Aspect Ratio
-+ */
-+static const unsigned short pixel_aspect[17][2] = {
-+	{ 0, 1 },
-+	{ 1, 1 },
-+	{ 12, 11 },
-+	{ 10, 11 },
-+	{ 16, 11 },
-+	{ 40, 33 },
-+	{ 24, 11 },
-+	{ 20, 11 },
-+	{ 32, 11 },
-+	{ 80, 33 },
-+	{ 18, 11 },
-+	{ 15, 11 },
-+	{ 64, 33 },
-+	{ 160, 99 },
-+	{ 4, 3 },
-+	{ 3, 2 },
-+	{ 2, 1 },
-+};
-+
-+/*
-+ * Table 7-3, 7-4: Default Scaling lists
-+ */
-+static const unsigned char default_4x4_intra[16] = {
-+	6, 13, 13, 20,
-+	20, 20, 28, 28,
-+	28, 28, 32, 32,
-+	32, 37, 37, 42
-+};
-+
-+static const unsigned char default_4x4_inter[16] = {
-+	10, 14, 14, 20,
-+	20, 20, 24, 24,
-+	24, 24, 27, 27,
-+	27, 30, 30, 34
-+};
-+
-+static const unsigned char default_8x8_intra[64] = {
-+	6, 10, 10, 13, 11, 13, 16, 16,
-+	16, 16, 18, 18, 18, 18, 18, 23,
-+	23, 23, 23, 23, 23, 25, 25, 25,
-+	25, 25, 25, 25, 27, 27, 27, 27,
-+	27, 27, 27, 27, 29, 29, 29, 29,
-+	29, 29, 29, 31, 31, 31, 31, 31,
-+	31, 33, 33, 33, 33, 33, 36, 36,
-+	36, 36, 38, 38, 38, 40, 40, 42
-+};
-+
-+static const unsigned char default_8x8_inter[64] = {
-+	9, 13, 13, 15, 13, 15, 17, 17,
-+	17, 17, 19, 19, 19, 19, 19, 21,
-+	21, 21, 21, 21, 21, 22, 22, 22,
-+	22, 22, 22, 22, 24, 24, 24, 24,
-+	24, 24, 24, 24, 25, 25, 25, 25,
-+	25, 25, 25, 27, 27, 27, 27, 27,
-+	27, 28, 28, 28, 28, 28, 30, 30,
-+	30, 30, 32, 32, 32, 33, 33, 35
-+};
-+
-+/*
-+ * to be use if no q matrix is chosen
-+ */
-+static const unsigned char default_4x4_org[16] = {
-+	16, 16, 16, 16,
-+	16, 16, 16, 16,
-+	16, 16, 16, 16,
-+	16, 16, 16, 16
-+};
-+
-+/*
-+ * to be use if no q matrix is chosen
-+ */
-+static const unsigned char default_8x8_org[64] = {
-+	16, 16, 16, 16, 16, 16, 16, 16,
-+	16, 16, 16, 16, 16, 16, 16, 16,
-+	16, 16, 16, 16, 16, 16, 16, 16,
-+	16, 16, 16, 16, 16, 16, 16, 16,
-+	16, 16, 16, 16, 16, 16, 16, 16,
-+	16, 16, 16, 16, 16, 16, 16, 16,
-+	16, 16, 16, 16, 16, 16, 16, 16,
-+	16, 16, 16, 16, 16, 16, 16, 16
-+};
-+
-+/*
-+ * source: ITU-T H.264 2010/03, page 20 Table 6-1
-+ */
-+static const int bspp_subheightc[] = { -1, 2, 1, 1 };
-+
-+/*
-+ * source: ITU-T H.264 2010/03, page 20 Table 6-1
-+ */
-+static const int bspp_subwidthc[] = { -1, 2, 2, 1 };
-+
-+/*
-+ * inline functions for Minimum and Maximum value
-+ */
-+static inline unsigned int umin(unsigned int a, unsigned int b)
-+{
-+	return (((a) < (b)) ? (a) : (b));
-+}
-+
-+static inline int smin(int a, int b)
-+{
-+	return (((a) < (b)) ? (a) : (b));
-+}
-+
-+static inline int smax(int a, int b)
-+{
-+	return (((a) > (b)) ? (a) : (b));
-+}
-+
-+static void set_if_not_determined_yet(int *determined,
-+				      unsigned char condition,
-+				      int *target,
-+				      unsigned int value)
-+{
-+	if ((!(*determined)) && (condition)) {
-+		*target = value;
-+		*determined = 1;
-+	}
-+}
-+
-+static int bspp_h264_get_subwidthc(int chroma_format_idc, int separate_colour_plane_flag)
-+{
-+	return bspp_subwidthc[chroma_format_idc];
-+}
-+
-+static int bspp_h264_get_subheightc(int chroma_format_idc, int separate_colour_plane_flag)
-+{
-+	return bspp_subheightc[chroma_format_idc];
-+}
-+
-+static unsigned int h264ceillog2(unsigned int value)
-+{
-+	unsigned int status = 0;
-+
-+	value -= 1;
-+	while (value > 0) {
-+		value >>= 1;
-+		status++;
-+	}
-+	return status;
-+}
-+
-+/*
-+ * @Function              bspp_h264_set_default_vui
-+ * @Description           Sets default values of the VUI info
-+ */
-+static void bspp_h264_set_default_vui(struct bspp_h264_vui_info *vui_info)
-+{
-+	unsigned int *nal_hrd_bitrate_valueminus1 = NULL;
-+	unsigned int *vcl_hrd_bitrate_valueminus1 = NULL;
-+	unsigned int *nal_hrd_cpbsize_valueminus1 = NULL;
-+	unsigned int *vcl_hrd_cpbsize_valueminus1 = NULL;
-+	unsigned char *nal_hrd_cbr_flag = NULL;
-+	unsigned char *vcl_hrd_cbr_flag = NULL;
-+
-+	/* Saving pointers */
-+	nal_hrd_bitrate_valueminus1 = vui_info->nal_hrd_parameters.bit_rate_value_minus1;
-+	vcl_hrd_bitrate_valueminus1 = vui_info->vcl_hrd_parameters.bit_rate_value_minus1;
-+
-+	nal_hrd_cpbsize_valueminus1 = vui_info->nal_hrd_parameters.cpb_size_value_minus1;
-+	vcl_hrd_cpbsize_valueminus1 = vui_info->vcl_hrd_parameters.cpb_size_value_minus1;
-+
-+	nal_hrd_cbr_flag = vui_info->nal_hrd_parameters.cbr_flag;
-+	vcl_hrd_cbr_flag = vui_info->vcl_hrd_parameters.cbr_flag;
-+
-+	/* Cleaning sVUIInfo */
-+	if (vui_info->nal_hrd_parameters.bit_rate_value_minus1)
-+		memset(vui_info->nal_hrd_parameters.bit_rate_value_minus1, 0x00,
-+		       VDEC_H264_MAXIMUMVALUEOFCPB_CNT * sizeof(unsigned int));
-+
-+	if (vui_info->nal_hrd_parameters.cpb_size_value_minus1)
-+		memset(vui_info->nal_hrd_parameters.cpb_size_value_minus1, 0x00,
-+		       VDEC_H264_MAXIMUMVALUEOFCPB_CNT * sizeof(unsigned int));
-+
-+	if (vui_info->vcl_hrd_parameters.cpb_size_value_minus1)
-+		memset(vui_info->vcl_hrd_parameters.cpb_size_value_minus1, 0x00,
-+		       VDEC_H264_MAXIMUMVALUEOFCPB_CNT * sizeof(unsigned int));
-+
-+	if (vui_info->nal_hrd_parameters.cbr_flag)
-+		memset(vui_info->nal_hrd_parameters.cbr_flag, 0x00,
-+		       VDEC_H264_MAXIMUMVALUEOFCPB_CNT * sizeof(unsigned char));
-+
-+	if (vui_info->vcl_hrd_parameters.cbr_flag)
-+		memset(vui_info->vcl_hrd_parameters.cbr_flag, 0x00,
-+		       VDEC_H264_MAXIMUMVALUEOFCPB_CNT * sizeof(unsigned char));
-+
-+	/* Make sure you set default for everything */
-+	memset(vui_info, 0, sizeof(*vui_info));
-+	vui_info->video_format                            = 5;
-+	vui_info->colour_primaries                        = 2;
-+	vui_info->transfer_characteristics                = 2;
-+	vui_info->matrix_coefficients                     = 2;
-+	vui_info->motion_vectors_over_pic_boundaries_flag = 1;
-+	vui_info->max_bytes_per_pic_denom                 = 2;
-+	vui_info->max_bits_per_mb_denom                   = 1;
-+	vui_info->log2_max_mv_length_horizontal           = 16;
-+	vui_info->log2_max_mv_length_vertical             = 16;
-+
-+#ifdef REDUCED_DPB_NO_PIC_REORDERING
-+	vui_info->max_dec_frame_buffering                 = 1;
-+	vui_info->num_reorder_frames                      = 0;
-+#else
-+	vui_info->max_dec_frame_buffering                 = 0;
-+	vui_info->num_reorder_frames                      = vui_info->max_dec_frame_buffering;
-+#endif
-+
-+	/* Restoring pointers */
-+	vui_info->nal_hrd_parameters.bit_rate_value_minus1 = nal_hrd_bitrate_valueminus1;
-+	vui_info->vcl_hrd_parameters.bit_rate_value_minus1 = vcl_hrd_bitrate_valueminus1;
-+
-+	vui_info->nal_hrd_parameters.cpb_size_value_minus1 = nal_hrd_cpbsize_valueminus1;
-+	vui_info->vcl_hrd_parameters.cpb_size_value_minus1 = vcl_hrd_cpbsize_valueminus1;
-+
-+	vui_info->nal_hrd_parameters.cbr_flag = nal_hrd_cbr_flag;
-+	vui_info->vcl_hrd_parameters.cbr_flag = vcl_hrd_cbr_flag;
-+}
-+
-+/*
-+ * @Function              bspp_h264_hrd_param_parser
-+ * @Description           Parse the HRD parameter
-+ */
-+static enum bspp_error_type bspp_h264_hrd_param_parser
-+					(void *swsr_context,
-+					 struct bspp_h264_hrdparam_info *h264_hrd_param_info)
-+{
-+	unsigned int sched_sel_idx;
-+
-+	VDEC_ASSERT(swsr_context);
-+	h264_hrd_param_info->cpb_cnt_minus1 = swsr_read_unsigned_expgoulomb(swsr_context);
-+
-+	if (h264_hrd_param_info->cpb_cnt_minus1 >= 32)
-+		pr_info("pb_cnt_minus1 is not within the range");
-+
-+	h264_hrd_param_info->bit_rate_scale = swsr_read_bits(swsr_context, 4);
-+	h264_hrd_param_info->cpb_size_scale = swsr_read_bits(swsr_context, 4);
-+
-+	if (!h264_hrd_param_info->bit_rate_value_minus1) {
-+		h264_hrd_param_info->bit_rate_value_minus1 = kcalloc
-+							(VDEC_H264_MAXIMUMVALUEOFCPB_CNT,
-+							 sizeof(unsigned int), GFP_KERNEL);
-+		VDEC_ASSERT(h264_hrd_param_info->bit_rate_value_minus1);
-+		if (!h264_hrd_param_info->bit_rate_value_minus1)
-+			return BSPP_ERROR_OUT_OF_MEMORY;
-+	}
-+
-+	if (!h264_hrd_param_info->cpb_size_value_minus1) {
-+		h264_hrd_param_info->cpb_size_value_minus1 = kcalloc
-+							(VDEC_H264_MAXIMUMVALUEOFCPB_CNT,
-+							 sizeof(unsigned int),
-+							 GFP_KERNEL);
-+		VDEC_ASSERT(h264_hrd_param_info->cpb_size_value_minus1);
-+		if (!h264_hrd_param_info->cpb_size_value_minus1)
-+			return BSPP_ERROR_OUT_OF_MEMORY;
-+	}
-+
-+	if (!h264_hrd_param_info->cbr_flag) {
-+		h264_hrd_param_info->cbr_flag =
-+			kcalloc(VDEC_H264_MAXIMUMVALUEOFCPB_CNT, sizeof(unsigned char), GFP_KERNEL);
-+		VDEC_ASSERT(h264_hrd_param_info->cbr_flag);
-+		if (!h264_hrd_param_info->cbr_flag)
-+			return BSPP_ERROR_OUT_OF_MEMORY;
-+	}
-+
-+	for (sched_sel_idx = 0; sched_sel_idx <= h264_hrd_param_info->cpb_cnt_minus1;
-+		sched_sel_idx++) {
-+		h264_hrd_param_info->bit_rate_value_minus1[sched_sel_idx] =
-+			swsr_read_unsigned_expgoulomb(swsr_context);
-+		h264_hrd_param_info->cpb_size_value_minus1[sched_sel_idx] =
-+			swsr_read_unsigned_expgoulomb(swsr_context);
-+
-+		if (h264_hrd_param_info->cpb_size_value_minus1[sched_sel_idx] == 0xffffffff)
-+			/* 65 bit pattern, 32 0's -1 - 32 0's then value should be 0 */
-+			h264_hrd_param_info->cpb_size_value_minus1[sched_sel_idx] = 0;
-+
-+		h264_hrd_param_info->cbr_flag[sched_sel_idx] = swsr_read_bits(swsr_context, 1);
-+	}
-+
-+	h264_hrd_param_info->initial_cpb_removal_delay_length_minus1 = swsr_read_bits(swsr_context,
-+										      5);
-+	h264_hrd_param_info->cpb_removal_delay_length_minus1 = swsr_read_bits(swsr_context, 5);
-+	h264_hrd_param_info->dpb_output_delay_length_minus1 = swsr_read_bits(swsr_context, 5);
-+	h264_hrd_param_info->time_offset_length = swsr_read_bits(swsr_context, 5);
-+
-+	return BSPP_ERROR_NONE;
-+}
-+
-+/*
-+ * @Function              bspp_h264_get_default_hrd_param
-+ * @Description           Get default value of the HRD parameter
-+ */
-+static void bspp_h264_get_default_hrd_param(struct bspp_h264_hrdparam_info *h264_hrd_param_info)
-+{
-+	/* other parameters already set to '0' */
-+	h264_hrd_param_info->initial_cpb_removal_delay_length_minus1 = 23;
-+	h264_hrd_param_info->cpb_removal_delay_length_minus1        = 23;
-+	h264_hrd_param_info->dpb_output_delay_length_minus1         = 23;
-+	h264_hrd_param_info->time_offset_length                   = 24;
-+}
-+
-+/*
-+ * @Function              bspp_h264_vui_parser
-+ * @Description           Parse the VUI info
-+ */
-+static enum bspp_error_type bspp_h264_vui_parser(void *swsr_context,
-+						 struct bspp_h264_vui_info *vui_info,
-+						 struct bspp_h264_sps_info *sps_info)
-+{
-+	enum bspp_error_type vui_parser_error = BSPP_ERROR_NONE;
-+
-+	vui_info->aspect_ratio_info_present_flag = swsr_read_bits(swsr_context, 1);
-+	if (vui_info->aspect_ratio_info_present_flag) {
-+		vui_info->aspect_ratio_idc = swsr_read_bits(swsr_context, 8);
-+		/* Extended SAR */
-+		if (vui_info->aspect_ratio_idc == 255) {
-+			vui_info->sar_width = swsr_read_bits(swsr_context, 16);
-+			vui_info->sar_height = swsr_read_bits(swsr_context, 16);
-+		} else if (vui_info->aspect_ratio_idc < 17) {
-+			vui_info->sar_width = pixel_aspect[vui_info->aspect_ratio_idc][0];
-+			vui_info->sar_height = pixel_aspect[vui_info->aspect_ratio_idc][1];
-+		} else {
-+			/* we can consider this error as a aux data error */
-+			vui_parser_error |= BSPP_ERROR_INVALID_VALUE;
-+		}
-+	}
-+
-+	vui_info->overscan_info_present_flag = swsr_read_bits(swsr_context, 1);
-+	if (vui_info->overscan_info_present_flag)
-+		vui_info->overscan_appropriate_flag = swsr_read_bits(swsr_context, 1);
-+
-+	vui_info->video_signal_type_present_flag = swsr_read_bits(swsr_context, 1);
-+	if (vui_info->video_signal_type_present_flag) {
-+		vui_info->video_format = swsr_read_bits(swsr_context, 3);
-+		vui_info->video_full_range_flag = swsr_read_bits(swsr_context, 1);
-+		vui_info->colour_description_present_flag = swsr_read_bits(swsr_context, 1);
-+		if (vui_info->colour_description_present_flag) {
-+			vui_info->colour_primaries = swsr_read_bits(swsr_context, 8);
-+			vui_info->transfer_characteristics = swsr_read_bits(swsr_context, 8);
-+			vui_info->matrix_coefficients = swsr_read_bits(swsr_context, 8);
-+		}
-+	}
-+
-+	vui_info->chroma_location_info_present_flag = swsr_read_bits(swsr_context, 1);
-+	if (vui_info->chroma_location_info_present_flag) {
-+		vui_info->chroma_sample_loc_type_top_field = swsr_read_unsigned_expgoulomb
-+										(swsr_context);
-+		vui_info->chroma_sample_loc_type_bottom_field = swsr_read_unsigned_expgoulomb
-+										(swsr_context);
-+	}
-+
-+	vui_info->timing_info_present_flag = swsr_read_bits(swsr_context, 1);
-+	if (vui_info->timing_info_present_flag) {
-+		vui_info->num_units_in_tick = swsr_read_bits(swsr_context, 16);
-+		vui_info->num_units_in_tick <<= 16;     /* SR can only do up to 31 bit reads */
-+		vui_info->num_units_in_tick |= swsr_read_bits(swsr_context, 16);
-+		vui_info->time_scale = swsr_read_bits(swsr_context, 16);
-+		vui_info->time_scale <<= 16;     /* SR can only do up to 31 bit reads */
-+		vui_info->time_scale |= swsr_read_bits(swsr_context, 16);
-+		if (!vui_info->num_units_in_tick || !vui_info->time_scale)
-+			vui_parser_error  |=  BSPP_ERROR_INVALID_VALUE;
-+
-+		vui_info->fixed_frame_rate_flag = swsr_read_bits(swsr_context, 1);
-+	}
-+
-+	/* no default values */
-+	vui_info->nal_hrd_parameters_present_flag = swsr_read_bits(swsr_context, 1);
-+	if (vui_info->nal_hrd_parameters_present_flag)
-+		vui_parser_error |= bspp_h264_hrd_param_parser(swsr_context,
-+				&vui_info->nal_hrd_parameters);
-+	else
-+		bspp_h264_get_default_hrd_param(&vui_info->nal_hrd_parameters);
-+
-+	vui_info->vcl_hrd_parameters_present_flag = swsr_read_bits(swsr_context, 1);
-+
-+	if (vui_info->vcl_hrd_parameters_present_flag)
-+		vui_parser_error |= bspp_h264_hrd_param_parser(swsr_context,
-+				&vui_info->vcl_hrd_parameters);
-+	else
-+		bspp_h264_get_default_hrd_param(&vui_info->vcl_hrd_parameters);
-+
-+	if (vui_info->nal_hrd_parameters_present_flag || vui_info->vcl_hrd_parameters_present_flag)
-+		vui_info->low_delay_hrd_flag = swsr_read_bits(swsr_context, 1);
-+
-+	vui_info->pic_struct_present_flag = swsr_read_bits(swsr_context, 1);
-+	vui_info->bitstream_restriction_flag = swsr_read_bits(swsr_context, 1);
-+	if (vui_info->bitstream_restriction_flag) {
-+		vui_info->motion_vectors_over_pic_boundaries_flag = swsr_read_bits(swsr_context, 1);
-+		vui_info->max_bytes_per_pic_denom = swsr_read_unsigned_expgoulomb(swsr_context);
-+		vui_info->max_bits_per_mb_denom = swsr_read_unsigned_expgoulomb(swsr_context);
-+		vui_info->log2_max_mv_length_horizontal =
-+			swsr_read_unsigned_expgoulomb(swsr_context);
-+		vui_info->log2_max_mv_length_vertical = swsr_read_unsigned_expgoulomb(swsr_context);
-+		vui_info->num_reorder_frames = swsr_read_unsigned_expgoulomb(swsr_context);
-+		vui_info->max_dec_frame_buffering = swsr_read_unsigned_expgoulomb(swsr_context);
-+	}
-+
-+	if ((sps_info->profile_idc == h264_profile_baseline ||
-+	     sps_info->profile_idc == h264_profile_extended) &&
-+	    sps_info->max_num_ref_frames == 1) {
-+		vui_info->bitstream_restriction_flag = 1;
-+		vui_info->num_reorder_frames = 0;
-+		vui_info->max_dec_frame_buffering = 1;
-+	}
-+
-+	if (vui_info->num_reorder_frames > 32)
-+		vui_parser_error |= BSPP_ERROR_UNSUPPORTED;
-+
-+	return vui_parser_error;
-+}
-+
-+/*
-+ * Parse scaling list
-+ */
-+static enum bspp_error_type bspp_h264_scl_listparser(void *swsr_context,
-+						     unsigned char *scaling_list,
-+						     unsigned char sizeof_scaling_list,
-+						     unsigned char *usedefaultscalingmatrixflag)
-+{
-+	enum bspp_error_type parse_error = BSPP_ERROR_NONE;
-+	int delta_scale;
-+	unsigned int lastscale = 8;
-+	unsigned int nextscale = 8;
-+	unsigned int j;
-+
-+	VDEC_ASSERT(swsr_context);
-+	VDEC_ASSERT(scaling_list);
-+	VDEC_ASSERT(usedefaultscalingmatrixflag);
-+
-+	if (!scaling_list || !swsr_context || !usedefaultscalingmatrixflag) {
-+		parse_error = BSPP_ERROR_UNRECOVERABLE;
-+		return parse_error;
-+	}
-+
-+	/* 7.3.2.1.1 */
-+	for (j = 0; j < sizeof_scaling_list; j++) {
-+		if (nextscale != 0) {
-+			delta_scale = swsr_read_signed_expgoulomb(swsr_context);
-+			if ((-128 > delta_scale) || delta_scale > 127)
-+				parse_error |= BSPP_ERROR_INVALID_VALUE;
-+			nextscale = (lastscale + delta_scale + 256) & 0xff;
-+			*usedefaultscalingmatrixflag = (j == 0 && nextscale == 0);
-+		}
-+		scaling_list[j] = (nextscale == 0) ? lastscale : nextscale;
-+		lastscale = scaling_list[j];
-+	}
-+	return parse_error;
-+}
-+
-+/*
-+ * Parse the SPS NAL unit
-+ */
-+static enum bspp_error_type bspp_h264_sps_parser(void *swsr_context,
-+						 void *str_res,
-+						 struct bspp_h264_seq_hdr_info *h264_seq_hdr_info)
-+{
-+	unsigned int i;
-+	unsigned char scaling_list_num;
-+	struct bspp_h264_sps_info *sps_info;
-+	struct bspp_h264_vui_info *vui_info;
-+	enum bspp_error_type sps_parser_error = BSPP_ERROR_NONE;
-+	enum bspp_error_type vui_parser_error = BSPP_ERROR_NONE;
-+
-+	sps_info = &h264_seq_hdr_info->sps_info;
-+	vui_info = &h264_seq_hdr_info->vui_info;
-+
-+	/* Set always the default VUI/MVCExt, their values
-+	 * may be used even if VUI/MVCExt not present
-+	 */
-+	bspp_h264_set_default_vui(vui_info);
-+#ifdef DEBUG_DECODER_DRIVER
-+	pr_info("Parsing Sequence Parameter Set");
-+#endif
-+	sps_info->profile_idc = swsr_read_bits(swsr_context, 8);
-+	if (sps_info->profile_idc != H264_PROFILE_BASELINE &&
-+	    sps_info->profile_idc != H264_PROFILE_MAIN &&
-+	    sps_info->profile_idc != H264_PROFILE_SCALABLE &&
-+	    sps_info->profile_idc != H264_PROFILE_EXTENDED &&
-+	    sps_info->profile_idc != H264_PROFILE_HIGH &&
-+	    sps_info->profile_idc != H264_PROFILE_HIGH10 &&
-+	    sps_info->profile_idc != H264_PROFILE_MVC_HIGH &&
-+	    sps_info->profile_idc != H264_PROFILE_HIGH422 &&
-+	    sps_info->profile_idc != H264_PROFILE_CAVLC444 &&
-+	    sps_info->profile_idc != H264_PROFILE_MVC_STEREO &&
-+	    sps_info->profile_idc != H264_PROFILE_HIGH444) {
-+		pr_err("Invalid Profile ID [%d],Parsed by BSPP", sps_info->profile_idc);
-+		return BSPP_ERROR_UNSUPPORTED;
-+	}
-+	sps_info->constraint_set_flags = swsr_read_bits(swsr_context, 8);
-+	sps_info->level_idc = swsr_read_bits(swsr_context, 8);
-+
-+	/* sequence parameter set id */
-+	sps_info->seq_parameter_set_id = swsr_read_unsigned_expgoulomb(swsr_context);
-+	if (sps_info->seq_parameter_set_id >= MAX_SPS_COUNT) {
-+		pr_err("SPS ID [%d] goes beyond the limit", sps_info->seq_parameter_set_id);
-+		return BSPP_ERROR_UNSUPPORTED;
-+	}
-+
-+	/* High profile settings */
-+	if (sps_info->profile_idc == H264_PROFILE_HIGH ||
-+	    sps_info->profile_idc == H264_PROFILE_HIGH10 ||
-+	    sps_info->profile_idc == H264_PROFILE_HIGH422 ||
-+	    sps_info->profile_idc == H264_PROFILE_HIGH444 ||
-+	    sps_info->profile_idc == H264_PROFILE_CAVLC444 ||
-+	    sps_info->profile_idc == H264_PROFILE_MVC_HIGH ||
-+	    sps_info->profile_idc == H264_PROFILE_MVC_STEREO) {
-+#ifdef DEBUG_DECODER_DRIVER
-+		pr_info("This is High Profile Bitstream");
-+#endif
-+		sps_info->chroma_format_idc = swsr_read_unsigned_expgoulomb(swsr_context);
-+		if (sps_info->chroma_format_idc > 3) {
-+			pr_err("chroma_format_idc[%d] is not within the range",
-+			       sps_info->chroma_format_idc);
-+			sps_parser_error |= BSPP_ERROR_INVALID_VALUE;
-+		}
-+		if (sps_info->chroma_format_idc == 3)
-+			sps_info->separate_colour_plane_flag = swsr_read_bits(swsr_context, 1);
-+		else
-+			sps_info->separate_colour_plane_flag = 0;
-+
-+		sps_info->bit_depth_luma_minus8 = swsr_read_unsigned_expgoulomb(swsr_context);
-+		if (sps_info->bit_depth_luma_minus8 > 6)
-+			sps_parser_error |= BSPP_ERROR_INVALID_VALUE;
-+
-+		sps_info->bit_depth_chroma_minus8 = swsr_read_unsigned_expgoulomb(swsr_context);
-+		if (sps_info->bit_depth_chroma_minus8 > 6)
-+			sps_parser_error |= BSPP_ERROR_INVALID_VALUE;
-+
-+		sps_info->qpprime_y_zero_transform_bypass_flag = swsr_read_bits(swsr_context, 1);
-+		sps_info->seq_scaling_matrix_present_flag = swsr_read_bits(swsr_context, 1);
-+		if (sps_info->seq_scaling_matrix_present_flag) {
-+#ifdef DEBUG_DECODER_DRIVER
-+			pr_info("seq_scaling_matrix_present_flag is available");
-+#endif
-+			scaling_list_num = (sps_info->chroma_format_idc != 3) ? 8 : 12;
-+
-+			if (!sps_info->scllst4x4seq) {
-+				sps_info->scllst4x4seq =
-+					kmalloc((sizeof(unsigned char[H264FW_NUM_4X4_LISTS]
-+							[H264FW_4X4_SIZE])), GFP_KERNEL);
-+				if (!sps_info->scllst4x4seq) {
-+					sps_parser_error |= BSPP_ERROR_OUT_OF_MEMORY;
-+				} else {
-+					VDEC_ASSERT(sps_info->scllst4x4seq);
-+					memset(sps_info->scllst4x4seq, 0x00,
-+					       sizeof(unsigned char[H264FW_NUM_4X4_LISTS]
-+					       [H264FW_4X4_SIZE]));
-+				}
-+			}
-+			if (!sps_info->scllst8x8seq) {
-+				sps_info->scllst8x8seq =
-+					kmalloc((sizeof(unsigned char[H264FW_NUM_8X8_LISTS]
-+							[H264FW_8X8_SIZE])), GFP_KERNEL);
-+				if (!sps_info->scllst8x8seq) {
-+					sps_parser_error |= BSPP_ERROR_OUT_OF_MEMORY;
-+				} else {
-+					VDEC_ASSERT(sps_info->scllst8x8seq);
-+					memset(sps_info->scllst8x8seq, 0x00,
-+					       sizeof(unsigned char[H264FW_NUM_8X8_LISTS]
-+						      [H264FW_8X8_SIZE]));
-+				}
-+			}
-+
-+		{
-+			unsigned char(*scllst4x4seq)[H264FW_NUM_4X4_LISTS]
-+				[H264FW_4X4_SIZE] =
-+			(unsigned char (*)[H264FW_NUM_4X4_LISTS][H264FW_4X4_SIZE])
-+						sps_info->scllst4x4seq;
-+			unsigned char(*scllst8x8seq)[H264FW_NUM_8X8_LISTS]
-+				[H264FW_8X8_SIZE] =
-+				(unsigned char (*)[H264FW_NUM_8X8_LISTS]
-+				 [H264FW_8X8_SIZE])
-+				sps_info->scllst8x8seq;
-+
-+			for (i = 0; i < scaling_list_num; i++) {
-+				unsigned char *ptr =
-+					&sps_info->usedefaultscalingmatrixflag_seq[i];
-+
-+				sps_info->seq_scaling_list_present_flag[i] =
-+							swsr_read_bits(swsr_context, 1);
-+				if (sps_info->seq_scaling_list_present_flag[i]) {
-+					if (i < 6) {
-+						sps_parser_error |=
-+							bspp_h264_scl_listparser
-+							(swsr_context,
-+							 (*scllst4x4seq)[i], 16,
-+							 ptr);
-+					} else {
-+						sps_parser_error |=
-+							bspp_h264_scl_listparser
-+							(swsr_context,
-+							 (*scllst8x8seq)[i - 6], 64,
-+							 ptr);
-+					}
-+				}
-+			}
-+		}
-+		}
-+	} else {
-+		/* default values in here */
-+		sps_info->chroma_format_idc = 1;
-+		sps_info->bit_depth_luma_minus8 = 0;
-+		sps_info->bit_depth_chroma_minus8 = 0;
-+		sps_info->qpprime_y_zero_transform_bypass_flag = 0;
-+		sps_info->seq_scaling_matrix_present_flag = 0;
-+	}
-+
-+	sps_info->log2_max_frame_num_minus4 = swsr_read_unsigned_expgoulomb(swsr_context);
-+	if (sps_info->log2_max_frame_num_minus4 > 12) {
-+		pr_err("log2_max_frame_num_minus4[%d] is not within range  [0 - 12]",
-+		       sps_info->log2_max_frame_num_minus4);
-+		sps_parser_error |= BSPP_ERROR_INVALID_VALUE;
-+	}
-+
-+	sps_info->pic_order_cnt_type = swsr_read_unsigned_expgoulomb(swsr_context);
-+	if (sps_info->pic_order_cnt_type > 2) {
-+		pr_err("pic_order_cnt_type[%d] is not within range  [0 - 2]",
-+		       sps_info->pic_order_cnt_type);
-+		sps_parser_error |= BSPP_ERROR_INVALID_VALUE;
-+	}
-+
-+	if (sps_info->pic_order_cnt_type == 0) {
-+		sps_info->log2_max_pic_order_cnt_lsb_minus4 = swsr_read_unsigned_expgoulomb
-+										(swsr_context);
-+		if (sps_info->log2_max_pic_order_cnt_lsb_minus4 > 12) {
-+			pr_err("log2_max_pic_order_cnt_lsb_minus4[%d] is not within range  [0 - 12]",
-+			       sps_info->log2_max_pic_order_cnt_lsb_minus4);
-+			sps_info->log2_max_pic_order_cnt_lsb_minus4 = 12;
-+			sps_parser_error |= BSPP_ERROR_CORRECTION_VALIDVALUE;
-+		}
-+	} else if (sps_info->pic_order_cnt_type == 1) {
-+		sps_info->delta_pic_order_always_zero_flag = swsr_read_bits(swsr_context, 1);
-+		sps_info->offset_for_non_ref_pic = swsr_read_signed_expgoulomb(swsr_context);
-+		sps_info->offset_for_top_to_bottom_field = swsr_read_signed_expgoulomb
-+										(swsr_context);
-+		sps_info->num_ref_frames_in_pic_order_cnt_cycle = swsr_read_unsigned_expgoulomb
-+										(swsr_context);
-+		if (sps_info->num_ref_frames_in_pic_order_cnt_cycle > 255) {
-+			pr_err("num_ref_frames_in_pic_order_cnt_cycle[%d] is not within range  [0 - 256]",
-+			       sps_info->num_ref_frames_in_pic_order_cnt_cycle);
-+			sps_parser_error |= BSPP_ERROR_INVALID_VALUE;
-+		}
-+
-+		if (!sps_info->offset_for_ref_frame) {
-+			sps_info->offset_for_ref_frame =
-+				kmalloc((H264FW_MAX_CYCLE_REF_FRAMES * sizeof(unsigned int)),
-+					GFP_KERNEL);
-+			if (!sps_info->offset_for_ref_frame) {
-+				pr_err("out of memory");
-+				sps_parser_error |= BSPP_ERROR_OUT_OF_MEMORY;
-+			}
-+		}
-+
-+		if (sps_info->offset_for_ref_frame) {
-+			VDEC_ASSERT(sps_info->num_ref_frames_in_pic_order_cnt_cycle <=
-+				    H264FW_MAX_CYCLE_REF_FRAMES);
-+			memset(sps_info->offset_for_ref_frame, 0x00,
-+			       (H264FW_MAX_CYCLE_REF_FRAMES * sizeof(unsigned int)));
-+			for (i = 0; i < sps_info->num_ref_frames_in_pic_order_cnt_cycle; i++) {
-+				/* check the max value and if it crosses then exit from the loop */
-+				sps_info->offset_for_ref_frame[i] = swsr_read_signed_expgoulomb
-+										(swsr_context);
-+			}
-+		}
-+	} else if (sps_info->pic_order_cnt_type != 2) {
-+		sps_parser_error |= BSPP_ERROR_INVALID_VALUE;
-+	}
-+	sps_info->max_num_ref_frames = swsr_read_unsigned_expgoulomb(swsr_context);
-+
-+	if (sps_info->max_num_ref_frames > 16) {
-+		pr_err("num_ref_frames[%d] is not within range [0 - 16]",
-+		       sps_info->max_num_ref_frames);
-+		sps_parser_error |= BSPP_ERROR_INVALID_VALUE;
-+	}
-+	sps_info->gaps_in_frame_num_value_allowed_flag = swsr_read_bits(swsr_context, 1);
-+	sps_info->pic_width_in_mbs_minus1 = swsr_read_unsigned_expgoulomb(swsr_context);
-+	if (sps_info->pic_width_in_mbs_minus1 >= MAX_WIDTH_IN_MBS) {
-+		pr_err("pic_width_in_mbs_minus1[%d] is not within range",
-+		       sps_info->pic_width_in_mbs_minus1);
-+		sps_parser_error |= BSPP_ERROR_INVALID_VALUE;
-+	}
-+	sps_info->pic_height_in_map_units_minus1 = swsr_read_unsigned_expgoulomb(swsr_context);
-+	if (sps_info->pic_height_in_map_units_minus1 >= MAX_HEIGHT_IN_MBS) {
-+		pr_err("pic_height_in_map_units_minus1[%d] is not within range",
-+		       sps_info->pic_height_in_map_units_minus1);
-+		sps_parser_error |= BSPP_ERROR_INVALID_VALUE;
-+	}
-+
-+	sps_info->frame_mbs_only_flag = swsr_read_bits(swsr_context, 1);
-+	if (!sps_info->frame_mbs_only_flag)
-+		sps_info->mb_adaptive_frame_field_flag = swsr_read_bits(swsr_context, 1);
-+	else
-+		sps_info->mb_adaptive_frame_field_flag = 0;
-+
-+	sps_info->direct_8x8_inference_flag = swsr_read_bits(swsr_context, 1);
-+
-+	sps_info->frame_cropping_flag = swsr_read_bits(swsr_context, 1);
-+	if (sps_info->frame_cropping_flag) {
-+		sps_info->frame_crop_left_offset = swsr_read_unsigned_expgoulomb(swsr_context);
-+		sps_info->frame_crop_right_offset = swsr_read_unsigned_expgoulomb(swsr_context);
-+		sps_info->frame_crop_top_offset = swsr_read_unsigned_expgoulomb(swsr_context);
-+		sps_info->frame_crop_bottom_offset = swsr_read_unsigned_expgoulomb(swsr_context);
-+	} else {
-+		sps_info->frame_crop_left_offset = 0;
-+		sps_info->frame_crop_right_offset = 0;
-+		sps_info->frame_crop_top_offset = 0;
-+		sps_info->frame_crop_bottom_offset = 0;
-+	}
-+
-+	sps_info->vui_parameters_present_flag = swsr_read_bits(swsr_context, 1);
-+	/* initialise matrix_coefficients to 2 (unspecified) */
-+	vui_info->matrix_coefficients = 2;
-+
-+	if (sps_info->vui_parameters_present_flag) {
-+#ifdef DEBUG_DECODER_DRIVER
-+		pr_info("vui_parameters_present_flag is available");
-+#endif
-+		/* save the SPS parse error in temp variable */
-+		vui_parser_error = bspp_h264_vui_parser(swsr_context, vui_info, sps_info);
-+		if (vui_parser_error != BSPP_ERROR_NONE)
-+			sps_parser_error  |= BSPP_ERROR_AUXDATA;
-+
-+#ifdef REDUCED_DPB_NO_PIC_REORDERING
-+		vui_info->max_dec_frame_buffering = 1;
-+		vui_info->num_reorder_frames = 0;
-+#endif
-+	}
-+
-+	if (sps_info->profile_idc == H264_PROFILE_MVC_HIGH ||
-+	    sps_info->profile_idc == H264_PROFILE_MVC_STEREO) {
-+		pr_err("No MVC Support for this version\n");
-+	}
-+
-+	if (swsr_check_exception(swsr_context) != SWSR_EXCEPT_NO_EXCEPTION)
-+		sps_parser_error |= BSPP_ERROR_INSUFFICIENT_DATA;
-+
-+	return sps_parser_error;
-+}
-+
-+/*
-+ * Parse the PPS NAL unit
-+ */
-+static enum bspp_error_type bspp_h264_pps_parser(void *swsr_context,
-+						 void *str_res,
-+						 struct bspp_h264_pps_info *h264_pps_info)
-+{
-+	int i, group, chroma_format_idc;
-+	unsigned int number_bits_per_slicegroup_id;
-+	unsigned char n_scaling_list;
-+	unsigned char more_rbsp_data;
-+	unsigned int result;
-+	enum bspp_error_type pps_parse_error = BSPP_ERROR_NONE;
-+
-+	VDEC_ASSERT(swsr_context);
-+
-+	h264_pps_info->pps_id = swsr_read_unsigned_expgoulomb(swsr_context);
-+	if (h264_pps_info->pps_id >= MAX_PPS_COUNT) {
-+		pr_err("Picture Parameter Set(PPS) ID is not within the range");
-+		h264_pps_info->pps_id = (int)BSPP_INVALID;
-+		return BSPP_ERROR_UNSUPPORTED;
-+	}
-+	h264_pps_info->seq_parameter_set_id = swsr_read_unsigned_expgoulomb(swsr_context);
-+	if (h264_pps_info->seq_parameter_set_id >= MAX_SPS_COUNT) {
-+		pr_err("Sequence Parameter Set(SPS) ID is not within the range");
-+		h264_pps_info->seq_parameter_set_id = (int)BSPP_INVALID;
-+		return BSPP_ERROR_UNSUPPORTED;
-+	}
-+
-+	{
-+		/*
-+		 * Get the chroma_format_idc from sps. Because of MVC sharing sps and subset sps ids
-+		 * (H.7.4.1.2.1).
-+		 * At this point is not clear if this pps refers to an sps or a subset sps.
-+		 * It should be finehowever for the case of chroma_format_idc to try and locate
-+		 * a subset sps if there isn't a normal one.
-+		 */
-+		struct bspp_h264_seq_hdr_info *h264_seq_hdr_info;
-+		struct bspp_sequence_hdr_info *seq_hdr_info;
-+
-+		seq_hdr_info = bspp_get_sequ_hdr(str_res, h264_pps_info->seq_parameter_set_id);
-+
-+		if (!seq_hdr_info) {
-+			seq_hdr_info = bspp_get_sequ_hdr(str_res,
-+							 h264_pps_info->seq_parameter_set_id + 32);
-+			if (!seq_hdr_info)
-+				return BSPP_ERROR_NO_SEQUENCE_HDR;
-+		}
-+
-+		h264_seq_hdr_info =
-+			(struct bspp_h264_seq_hdr_info *)seq_hdr_info->secure_sequence_info;
-+
-+		chroma_format_idc = h264_seq_hdr_info->sps_info.chroma_format_idc;
-+	}
-+
-+	h264_pps_info->entropy_coding_mode_flag = swsr_read_bits(swsr_context, 1);
-+	h264_pps_info->pic_order_present_flag = swsr_read_bits(swsr_context, 1);
-+	h264_pps_info->num_slice_groups_minus1 = swsr_read_unsigned_expgoulomb(swsr_context);
-+	if ((h264_pps_info->num_slice_groups_minus1 + 1) >
-+		MAX_SLICEGROUP_COUNT) {
-+		h264_pps_info->num_slice_groups_minus1 =
-+			MAX_SLICEGROUP_COUNT - 1;
-+		pps_parse_error |= BSPP_ERROR_UNRECOVERABLE;
-+	}
-+
-+	if (h264_pps_info->num_slice_groups_minus1 > 0) {
-+		h264_pps_info->slice_group_map_type = swsr_read_unsigned_expgoulomb(swsr_context);
-+		pr_err("slice_group_map_type is : %d, Parsed by BSPP",
-+		       h264_pps_info->slice_group_map_type);
-+		if (h264_pps_info->slice_group_map_type > 6) {
-+			pr_err("slice_group_map_type [%d] is not within the range [ 0- 6 ]",
-+			       h264_pps_info->slice_group_map_type);
-+			       pps_parse_error |= BSPP_ERROR_UNRECOVERABLE;
-+		}
-+
-+		if (h264_pps_info->slice_group_map_type == 0) {
-+			for (group = 0; group <= h264_pps_info->num_slice_groups_minus1; group++) {
-+				h264_pps_info->run_length_minus1[group] =
-+					swsr_read_unsigned_expgoulomb(swsr_context);
-+			}
-+		} else if (h264_pps_info->slice_group_map_type == 2) {
-+			for (group = 0; group < h264_pps_info->num_slice_groups_minus1; group++) {
-+				h264_pps_info->top_left[group] = swsr_read_unsigned_expgoulomb
-+										(swsr_context);
-+				h264_pps_info->bottom_right[group] =
-+					swsr_read_unsigned_expgoulomb(swsr_context);
-+			}
-+		} else if (h264_pps_info->slice_group_map_type == 3 ||
-+			h264_pps_info->slice_group_map_type == 4 ||
-+			h264_pps_info->slice_group_map_type == 5) {
-+			h264_pps_info->slice_group_change_direction_flag = swsr_read_bits
-+									(swsr_context, 1);
-+			h264_pps_info->slice_group_change_rate_minus1 =
-+				swsr_read_unsigned_expgoulomb(swsr_context);
-+		} else if (h264_pps_info->slice_group_map_type == 6) {
-+			h264_pps_info->pic_size_in_map_unit = swsr_read_unsigned_expgoulomb
-+										(swsr_context);
-+			if (h264_pps_info->pic_size_in_map_unit >= H264_MAX_SGM_SIZE) {
-+				pr_err("pic_size_in_map_units_minus1 [%d] is not within the range",
-+				       h264_pps_info->pic_size_in_map_unit);
-+				pps_parse_error |= BSPP_ERROR_UNRECOVERABLE;
-+			}
-+			number_bits_per_slicegroup_id = h264ceillog2
-+				(h264_pps_info->num_slice_groups_minus1 + 1);
-+
-+			if ((h264_pps_info->pic_size_in_map_unit + 1) >
-+				h264_pps_info->h264_ppssgm_info.slicegroupidnum) {
-+				unsigned char *slice_group_id =
-+					kmalloc(((h264_pps_info->pic_size_in_map_unit + 1) *
-+						sizeof(unsigned char)),
-+						GFP_KERNEL);
-+				if (!slice_group_id) {
-+					pr_err("out of memory");
-+					pps_parse_error |= BSPP_ERROR_OUT_OF_MEMORY;
-+				} else {
-+					pr_err("reallocating SGM info from size %lu bytes to size %lu bytes",
-+					       h264_pps_info->h264_ppssgm_info.slicegroupidnum *
-+					       sizeof(unsigned char),
-+					       (h264_pps_info->pic_size_in_map_unit + 1) *
-+					       sizeof(unsigned char));
-+					if (h264_pps_info->h264_ppssgm_info.slice_group_id) {
-+						memcpy
-+						(slice_group_id,
-+						 h264_pps_info->h264_ppssgm_info.slice_group_id,
-+						 h264_pps_info->h264_ppssgm_info.slicegroupidnum *
-+						 sizeof(unsigned char));
-+						kfree
-+						(h264_pps_info->h264_ppssgm_info.slice_group_id);
-+					}
-+					h264_pps_info->h264_ppssgm_info.slicegroupidnum =
-+						(h264_pps_info->pic_size_in_map_unit + 1);
-+					h264_pps_info->h264_ppssgm_info.slice_group_id =
-+						slice_group_id;
-+				}
-+			}
-+
-+			VDEC_ASSERT((h264_pps_info->pic_size_in_map_unit + 1) <=
-+				h264_pps_info->h264_ppssgm_info.slicegroupidnum);
-+			for (i = 0; i <= h264_pps_info->pic_size_in_map_unit; i++)
-+				h264_pps_info->h264_ppssgm_info.slice_group_id[i] =
-+					swsr_read_bits(swsr_context, number_bits_per_slicegroup_id);
-+		}
-+	}
-+
-+	for (i = 0; i < H264FW_MAX_REFPIC_LISTS; i++) {
-+		h264_pps_info->num_ref_idx_lx_active_minus1[i] = swsr_read_unsigned_expgoulomb
-+										(swsr_context);
-+		if (h264_pps_info->num_ref_idx_lx_active_minus1[i] >=
-+			SL_MAX_REF_IDX) {
-+			pr_err("num_ref_idx_lx_active_minus1[%d] [%d] is not within the range",
-+			       i, h264_pps_info->num_ref_idx_lx_active_minus1[i]);
-+			pps_parse_error |= BSPP_ERROR_UNRECOVERABLE;
-+		}
-+	}
-+
-+	h264_pps_info->weighted_pred_flag = swsr_read_bits(swsr_context, 1);
-+	h264_pps_info->weighted_bipred_idc = swsr_read_bits(swsr_context, 2);
-+	h264_pps_info->pic_init_qp_minus26 = swsr_read_signed_expgoulomb(swsr_context);
-+	if (h264_pps_info->pic_init_qp_minus26 > 26)
-+		pr_err("pic_init_qp_minus26[%d] is not within the range [-25 , 26]",
-+		       h264_pps_info->pic_init_qp_minus26);
-+
-+	h264_pps_info->pic_init_qs_minus26 = swsr_read_signed_expgoulomb(swsr_context);
-+	if (h264_pps_info->pic_init_qs_minus26 > 26)
-+		pr_err("pic_init_qs_minus26[%d] is not within the range [-25 , 26]",
-+		       h264_pps_info->pic_init_qs_minus26);
-+
-+	h264_pps_info->chroma_qp_index_offset = swsr_read_signed_expgoulomb(swsr_context);
-+	if (h264_pps_info->chroma_qp_index_offset > H264_MAX_CHROMA_QP_INDEX_OFFSET)
-+		h264_pps_info->chroma_qp_index_offset = H264_MAX_CHROMA_QP_INDEX_OFFSET;
-+
-+	else if (h264_pps_info->chroma_qp_index_offset < H264_MIN_CHROMA_QP_INDEX_OFFSET)
-+		h264_pps_info->chroma_qp_index_offset = H264_MIN_CHROMA_QP_INDEX_OFFSET;
-+
-+	h264_pps_info->deblocking_filter_control_present_flag = swsr_read_bits(swsr_context, 1);
-+	h264_pps_info->constrained_intra_pred_flag = swsr_read_bits(swsr_context, 1);
-+	h264_pps_info->redundant_pic_cnt_present_flag = swsr_read_bits(swsr_context, 1);
-+
-+	/* Check for more rbsp data. */
-+	result = swsr_check_more_rbsp_data(swsr_context, &more_rbsp_data);
-+	if (result == 0 && more_rbsp_data) {
-+#ifdef DEBUG_DECODER_DRIVER
-+		pr_info("More RBSP data is available");
-+#endif
-+		/* Fidelity Range Extensions Stuff */
-+		h264_pps_info->transform_8x8_mode_flag = swsr_read_bits(swsr_context, 1);
-+		h264_pps_info->pic_scaling_matrix_present_flag = swsr_read_bits(swsr_context, 1);
-+		if (h264_pps_info->pic_scaling_matrix_present_flag) {
-+			if (!h264_pps_info->scllst4x4pic) {
-+				h264_pps_info->scllst4x4pic =
-+					kmalloc((sizeof(unsigned char[H264FW_NUM_4X4_LISTS]
-+								[H264FW_4X4_SIZE])), GFP_KERNEL);
-+				if (!h264_pps_info->scllst4x4pic) {
-+					pps_parse_error |= BSPP_ERROR_OUT_OF_MEMORY;
-+				} else {
-+					VDEC_ASSERT(h264_pps_info->scllst4x4pic);
-+					memset(h264_pps_info->scllst4x4pic, 0x00,
-+					       sizeof(unsigned char[H264FW_NUM_4X4_LISTS]
-+					       [H264FW_4X4_SIZE]));
-+				}
-+			}
-+			if (!h264_pps_info->scllst8x8pic) {
-+				h264_pps_info->scllst8x8pic =
-+					kmalloc((sizeof(unsigned char[H264FW_NUM_8X8_LISTS]
-+								[H264FW_8X8_SIZE])), GFP_KERNEL);
-+				if (!h264_pps_info->scllst8x8pic) {
-+					pps_parse_error |= BSPP_ERROR_OUT_OF_MEMORY;
-+				} else {
-+					VDEC_ASSERT(h264_pps_info->scllst8x8pic);
-+					memset(h264_pps_info->scllst8x8pic, 0x00,
-+					       sizeof(unsigned char[H264FW_NUM_8X8_LISTS]
-+					       [H264FW_8X8_SIZE]));
-+				}
-+			}
-+		{
-+			unsigned char(*scllst4x4pic)[H264FW_NUM_4X4_LISTS][H264FW_4X4_SIZE] =
-+					(unsigned char (*)[H264FW_NUM_4X4_LISTS][H264FW_4X4_SIZE])
-+					h264_pps_info->scllst4x4pic;
-+			unsigned char(*scllst8x8pic)[H264FW_NUM_8X8_LISTS][H264FW_8X8_SIZE] =
-+					(unsigned char (*)[H264FW_NUM_8X8_LISTS][H264FW_8X8_SIZE])
-+					h264_pps_info->scllst8x8pic;
-+
-+			/*
-+			 * For chroma_format =3 (YUV444) total list would be 12
-+			 * if transform_8x8_mode_flag is enabled else  6.
-+			 */
-+			n_scaling_list = 6 + (chroma_format_idc != 3 ? 2 : 6) *
-+				h264_pps_info->transform_8x8_mode_flag;
-+			if (n_scaling_list > 12)
-+				pps_parse_error |= BSPP_ERROR_UNRECOVERABLE;
-+
-+			VDEC_ASSERT(h264_pps_info->scllst4x4pic);
-+			VDEC_ASSERT(h264_pps_info->scllst8x8pic);
-+			for (i = 0; i < n_scaling_list; i++) {
-+				unsigned char *ptr =
-+					&h264_pps_info->usedefaultscalingmatrixflag_pic[i];
-+
-+				h264_pps_info->pic_scaling_list_present_flag[i] =
-+					swsr_read_bits(swsr_context, 1);
-+				if (h264_pps_info->pic_scaling_list_present_flag[i]) {
-+					if (i < 6)
-+						pps_parse_error |=
-+							bspp_h264_scl_listparser
-+							(swsr_context,
-+							 (*scllst4x4pic)[i], 16, ptr);
-+					else
-+						pps_parse_error |=
-+							bspp_h264_scl_listparser
-+							(swsr_context,
-+							(*scllst8x8pic)[i - 6], 64, ptr);
-+				}
-+			}
-+		}
-+		}
-+		h264_pps_info->second_chroma_qp_index_offset = swsr_read_signed_expgoulomb
-+										(swsr_context);
-+
-+		if (h264_pps_info->second_chroma_qp_index_offset > H264_MAX_CHROMA_QP_INDEX_OFFSET)
-+			h264_pps_info->second_chroma_qp_index_offset =
-+				H264_MAX_CHROMA_QP_INDEX_OFFSET;
-+		else if (h264_pps_info->second_chroma_qp_index_offset <
-+			H264_MIN_CHROMA_QP_INDEX_OFFSET)
-+			h264_pps_info->second_chroma_qp_index_offset =
-+				H264_MIN_CHROMA_QP_INDEX_OFFSET;
-+	} else {
-+		h264_pps_info->second_chroma_qp_index_offset =
-+			h264_pps_info->chroma_qp_index_offset;
-+	}
-+
-+	if (swsr_check_exception(swsr_context) != SWSR_EXCEPT_NO_EXCEPTION)
-+		pps_parse_error |= BSPP_ERROR_INSUFFICIENT_DATA;
-+
-+	return pps_parse_error;
-+}
-+
-+static int bspp_h264_release_sequ_hdr_info(void *str_alloc, void *secure_sps_info)
-+{
-+	struct bspp_h264_seq_hdr_info *h264_seq_hdr_info =
-+					(struct bspp_h264_seq_hdr_info *)secure_sps_info;
-+
-+	if (!h264_seq_hdr_info)
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+
-+	return 0;
-+}
-+
-+static int bspp_h264_reset_seq_hdr_info(void *secure_sps_info)
-+{
-+	struct bspp_h264_seq_hdr_info *h264_seq_hdr_info = NULL;
-+	unsigned int *nal_hrd_bitrate_valueminus1 = NULL;
-+	unsigned int *vcl_hrd_bitrate_valueminus1 = NULL;
-+	unsigned int *nal_hrd_cpbsize_valueminus1 = NULL;
-+	unsigned int *vcl_hrd_cpbsize_valueminus1 = NULL;
-+	unsigned char *nal_hrd_cbrflag = NULL;
-+	unsigned char *vcl_hrd_cbrflag = NULL;
-+	unsigned int *offset_for_ref_frame = NULL;
-+	unsigned char *scllst4x4seq = NULL;
-+	unsigned char *scllst8x8seq = NULL;
-+
-+	if (!secure_sps_info)
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+
-+	h264_seq_hdr_info = (struct bspp_h264_seq_hdr_info *)secure_sps_info;
-+
-+	offset_for_ref_frame = h264_seq_hdr_info->sps_info.offset_for_ref_frame;
-+	scllst4x4seq = h264_seq_hdr_info->sps_info.scllst4x4seq;
-+	scllst8x8seq = h264_seq_hdr_info->sps_info.scllst8x8seq;
-+	nal_hrd_bitrate_valueminus1 =
-+		h264_seq_hdr_info->vui_info.nal_hrd_parameters.bit_rate_value_minus1;
-+	vcl_hrd_bitrate_valueminus1 =
-+		h264_seq_hdr_info->vui_info.vcl_hrd_parameters.bit_rate_value_minus1;
-+	nal_hrd_cpbsize_valueminus1 =
-+		h264_seq_hdr_info->vui_info.nal_hrd_parameters.cpb_size_value_minus1;
-+	vcl_hrd_cpbsize_valueminus1 =
-+		h264_seq_hdr_info->vui_info.vcl_hrd_parameters.cpb_size_value_minus1;
-+	nal_hrd_cbrflag = h264_seq_hdr_info->vui_info.nal_hrd_parameters.cbr_flag;
-+	vcl_hrd_cbrflag = h264_seq_hdr_info->vui_info.vcl_hrd_parameters.cbr_flag;
-+
-+	/* Cleaning vui_info */
-+	if (h264_seq_hdr_info->vui_info.nal_hrd_parameters.bit_rate_value_minus1)
-+		memset(h264_seq_hdr_info->vui_info.nal_hrd_parameters.bit_rate_value_minus1,
-+		       0x00, VDEC_H264_MAXIMUMVALUEOFCPB_CNT * sizeof(unsigned int));
-+
-+	if (h264_seq_hdr_info->vui_info.nal_hrd_parameters.cpb_size_value_minus1)
-+		memset(h264_seq_hdr_info->vui_info.nal_hrd_parameters.cpb_size_value_minus1,
-+		       0x00, VDEC_H264_MAXIMUMVALUEOFCPB_CNT * sizeof(unsigned int));
-+
-+	if (h264_seq_hdr_info->vui_info.vcl_hrd_parameters.cpb_size_value_minus1)
-+		memset(h264_seq_hdr_info->vui_info.vcl_hrd_parameters.cpb_size_value_minus1,
-+		       0x00, VDEC_H264_MAXIMUMVALUEOFCPB_CNT * sizeof(unsigned int));
-+
-+	if (h264_seq_hdr_info->vui_info.nal_hrd_parameters.cbr_flag)
-+		memset(h264_seq_hdr_info->vui_info.nal_hrd_parameters.cbr_flag,
-+		       0x00, VDEC_H264_MAXIMUMVALUEOFCPB_CNT * sizeof(unsigned char));
-+
-+	if (h264_seq_hdr_info->vui_info.vcl_hrd_parameters.cbr_flag)
-+		memset(h264_seq_hdr_info->vui_info.vcl_hrd_parameters.cbr_flag,
-+		       0x00, VDEC_H264_MAXIMUMVALUEOFCPB_CNT * sizeof(unsigned char));
-+
-+	/* Cleaning sps_info */
-+	if (h264_seq_hdr_info->sps_info.offset_for_ref_frame)
-+		memset(h264_seq_hdr_info->sps_info.offset_for_ref_frame, 0x00,
-+		       H264FW_MAX_CYCLE_REF_FRAMES * sizeof(unsigned int));
-+
-+	if (h264_seq_hdr_info->sps_info.scllst4x4seq)
-+		memset(h264_seq_hdr_info->sps_info.scllst4x4seq, 0x00,
-+		       sizeof(unsigned char[H264FW_NUM_4X4_LISTS][H264FW_4X4_SIZE]));
-+
-+	if (h264_seq_hdr_info->sps_info.scllst8x8seq)
-+		memset(h264_seq_hdr_info->sps_info.scllst8x8seq, 0x00,
-+		       sizeof(unsigned char[H264FW_NUM_8X8_LISTS][H264FW_8X8_SIZE]));
-+
-+	/* Erasing the structure */
-+	memset(h264_seq_hdr_info, 0, sizeof(*h264_seq_hdr_info));
-+
-+	/* Restoring pointers */
-+	h264_seq_hdr_info->sps_info.offset_for_ref_frame = offset_for_ref_frame;
-+	h264_seq_hdr_info->sps_info.scllst4x4seq = scllst4x4seq;
-+	h264_seq_hdr_info->sps_info.scllst8x8seq = scllst8x8seq;
-+
-+	h264_seq_hdr_info->vui_info.nal_hrd_parameters.bit_rate_value_minus1 =
-+		nal_hrd_bitrate_valueminus1;
-+	h264_seq_hdr_info->vui_info.vcl_hrd_parameters.bit_rate_value_minus1 =
-+		vcl_hrd_bitrate_valueminus1;
-+
-+	h264_seq_hdr_info->vui_info.nal_hrd_parameters.cpb_size_value_minus1 =
-+		nal_hrd_cpbsize_valueminus1;
-+	h264_seq_hdr_info->vui_info.vcl_hrd_parameters.cpb_size_value_minus1 =
-+		vcl_hrd_cpbsize_valueminus1;
-+
-+	h264_seq_hdr_info->vui_info.nal_hrd_parameters.cbr_flag = nal_hrd_cbrflag;
-+	h264_seq_hdr_info->vui_info.vcl_hrd_parameters.cbr_flag = vcl_hrd_cbrflag;
-+
-+	return 0;
-+}
-+
-+static int bspp_h264_reset_pps_info(void *secure_pps_info)
-+{
-+	struct bspp_h264_pps_info *h264_pps_info = NULL;
-+	unsigned short slicegroupidnum = 0;
-+	unsigned char *slice_group_id = NULL;
-+	unsigned char *scllst4x4pic = NULL;
-+	unsigned char *scllst8x8pic = NULL;
-+
-+	if (!secure_pps_info)
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+
-+	h264_pps_info = (struct bspp_h264_pps_info *)secure_pps_info;
-+
-+	/*
-+	 * Storing temp values (we want to leave the SGM structure
-+	 * it may be useful again instead of reallocating later
-+	 */
-+	slice_group_id = h264_pps_info->h264_ppssgm_info.slice_group_id;
-+	slicegroupidnum = h264_pps_info->h264_ppssgm_info.slicegroupidnum;
-+	scllst4x4pic = h264_pps_info->scllst4x4pic;
-+	scllst8x8pic = h264_pps_info->scllst8x8pic;
-+
-+	if (h264_pps_info->h264_ppssgm_info.slice_group_id)
-+		memset(h264_pps_info->h264_ppssgm_info.slice_group_id, 0x00,
-+		       h264_pps_info->h264_ppssgm_info.slicegroupidnum * sizeof(unsigned char));
-+
-+	if (h264_pps_info->scllst4x4pic)
-+		memset(h264_pps_info->scllst4x4pic, 0x00,
-+		       sizeof(unsigned char[H264FW_NUM_4X4_LISTS][H264FW_4X4_SIZE]));
-+
-+	if (h264_pps_info->scllst8x8pic)
-+		memset(h264_pps_info->scllst8x8pic, 0x00,
-+		       sizeof(unsigned char[H264FW_NUM_8X8_LISTS][H264FW_8X8_SIZE]));
-+
-+	/* Erasing the structure */
-+	memset(h264_pps_info, 0x00, sizeof(*h264_pps_info));
-+
-+	/* Copy the temp variable back */
-+	h264_pps_info->h264_ppssgm_info.slicegroupidnum = slicegroupidnum;
-+	h264_pps_info->h264_ppssgm_info.slice_group_id = slice_group_id;
-+	h264_pps_info->scllst4x4pic = scllst4x4pic;
-+	h264_pps_info->scllst8x8pic = scllst8x8pic;
-+
-+	return 0;
-+}
-+
-+static enum bspp_error_type bspp_h264_pict_hdr_parser
-+					(void *swsr_context, void *str_res,
-+					 struct bspp_h264_slice_hdr_info *h264_slice_hdr_info,
-+					 struct bspp_pps_info **pps_info,
-+					 struct bspp_sequence_hdr_info **seq_hdr_info,
-+					 enum h264_nalunittype nal_unit_type,
-+					 unsigned char nal_ref_idc)
-+{
-+	enum bspp_error_type slice_parse_error = BSPP_ERROR_NONE;
-+	struct bspp_h264_pps_info *h264_pps_info;
-+	struct bspp_pps_info *pps_info_loc;
-+	struct bspp_h264_seq_hdr_info *h264_seq_hdr_info;
-+	struct bspp_sequence_hdr_info *seq_hdr_info_loc;
-+	int id_loc;
-+
-+	VDEC_ASSERT(swsr_context);
-+
-+	memset(h264_slice_hdr_info, 0, sizeof(*h264_slice_hdr_info));
-+
-+	h264_slice_hdr_info->first_mb_in_slice = swsr_read_unsigned_expgoulomb(swsr_context);
-+	h264_slice_hdr_info->slice_type = (enum bspp_h264_slice_type)swsr_read_unsigned_expgoulomb
-+										(swsr_context);
-+	if ((unsigned int)h264_slice_hdr_info->slice_type > 9) {
-+		pr_err("Slice Type [%d] invalid, set to P", h264_slice_hdr_info->slice_type);
-+		h264_slice_hdr_info->slice_type = (enum bspp_h264_slice_type)0;
-+		slice_parse_error |= BSPP_ERROR_CORRECTION_VALIDVALUE;
-+	}
-+	h264_slice_hdr_info->slice_type =
-+		(enum bspp_h264_slice_type)(h264_slice_hdr_info->slice_type % 5);
-+
-+	h264_slice_hdr_info->pps_id = swsr_read_unsigned_expgoulomb(swsr_context);
-+	if (h264_slice_hdr_info->pps_id >= MAX_PPS_COUNT) {
-+		pr_err("Picture Parameter ID [%d] invalid, set to 0", h264_slice_hdr_info->pps_id);
-+		h264_slice_hdr_info->pps_id = 0;
-+		slice_parse_error |= BSPP_ERROR_CORRECTION_VALIDVALUE;
-+	}
-+
-+	/* Set relevant PPS and SPS */
-+	pps_info_loc = bspp_get_pps_hdr(str_res, h264_slice_hdr_info->pps_id);
-+
-+	if (!pps_info_loc) {
-+		slice_parse_error |= BSPP_ERROR_NO_PPS;
-+		goto error;
-+	}
-+	h264_pps_info = (struct bspp_h264_pps_info *)pps_info_loc->secure_pps_info;
-+	if (!h264_pps_info) {
-+		slice_parse_error |= BSPP_ERROR_NO_PPS;
-+		goto error;
-+	}
-+	VDEC_ASSERT(h264_pps_info->pps_id == h264_slice_hdr_info->pps_id);
-+	*pps_info = pps_info_loc;
-+
-+	/* seq_parameter_set_id is always in range 0-31,
-+	 * so we can add offset indicating subsequence header
-+	 */
-+	id_loc = h264_pps_info->seq_parameter_set_id;
-+	id_loc = (nal_unit_type == H264_NALTYPE_SLICE_SCALABLE ||
-+		nal_unit_type == H264_NALTYPE_SLICE_IDR_SCALABLE ||
-+		nal_unit_type == H264_NALTYPE_SUBSET_SPS) ? id_loc + 32 : id_loc;
-+
-+	seq_hdr_info_loc = bspp_get_sequ_hdr(str_res, id_loc);
-+
-+	if (!seq_hdr_info_loc) {
-+		slice_parse_error |= BSPP_ERROR_NO_SEQUENCE_HDR;
-+		goto error;
-+	}
-+	h264_seq_hdr_info = (struct bspp_h264_seq_hdr_info *)seq_hdr_info_loc->secure_sequence_info;
-+	VDEC_ASSERT((unsigned int)h264_seq_hdr_info->sps_info.seq_parameter_set_id ==
-+		h264_pps_info->seq_parameter_set_id);
-+	*seq_hdr_info = seq_hdr_info_loc;
-+
-+	/*
-+	 * For MINIMAL parsing in secure mode, slice header parsing can stop
-+	 * here, may be problematic with field-coded streams and splitting
-+	 * fields
-+	 */
-+	if (h264_seq_hdr_info->sps_info.separate_colour_plane_flag)
-+		h264_slice_hdr_info->colour_plane_id = swsr_read_bits(swsr_context, 2);
-+
-+	else
-+		h264_slice_hdr_info->colour_plane_id = 0;
-+
-+	h264_slice_hdr_info->frame_num = swsr_read_bits
-+					(swsr_context,
-+					 h264_seq_hdr_info->sps_info.log2_max_frame_num_minus4
-+					 + 4);
-+
-+	VDEC_ASSERT(h264_slice_hdr_info->frame_num <
-+		(1UL << (h264_seq_hdr_info->sps_info.log2_max_frame_num_minus4 + 4)));
-+
-+	if (!h264_seq_hdr_info->sps_info.frame_mbs_only_flag) {
-+		if (h264_slice_hdr_info->slice_type == B_SLICE &&
-+		    !h264_seq_hdr_info->sps_info.direct_8x8_inference_flag)
-+			slice_parse_error |= BSPP_ERROR_INVALID_VALUE;
-+
-+		h264_slice_hdr_info->field_pic_flag = swsr_read_bits(swsr_context, 1);
-+		if (h264_slice_hdr_info->field_pic_flag)
-+			h264_slice_hdr_info->bottom_field_flag = swsr_read_bits(swsr_context, 1);
-+		else
-+			h264_slice_hdr_info->bottom_field_flag = 0;
-+	} else {
-+		h264_slice_hdr_info->field_pic_flag = 0;
-+		h264_slice_hdr_info->bottom_field_flag = 0;
-+	}
-+
-+	/*
-+	 * At this point we have everything we need, but we still lack all the
-+	 * conditions for detecting new pictures (needed for error cases)
-+	 */
-+	if (nal_unit_type == H264_NALTYPE_IDR_SLICE)
-+		h264_slice_hdr_info->idr_pic_id = swsr_read_unsigned_expgoulomb(swsr_context);
-+
-+	if (h264_seq_hdr_info->sps_info.pic_order_cnt_type == 0) {
-+		h264_slice_hdr_info->pic_order_cnt_lsb = swsr_read_bits
-+				(swsr_context,
-+				 h264_seq_hdr_info->sps_info.log2_max_pic_order_cnt_lsb_minus4 + 4);
-+		if (h264_pps_info->pic_order_present_flag && !h264_slice_hdr_info->field_pic_flag)
-+			h264_slice_hdr_info->delta_pic_order_cnt_bottom =
-+							swsr_read_signed_expgoulomb(swsr_context);
-+	}
-+
-+	if (h264_seq_hdr_info->sps_info.pic_order_cnt_type == 1 &&
-+	    !h264_seq_hdr_info->sps_info.delta_pic_order_always_zero_flag) {
-+		h264_slice_hdr_info->delta_pic_order_cnt[0] = swsr_read_signed_expgoulomb
-+									(swsr_context);
-+		if (h264_pps_info->pic_order_present_flag && !h264_slice_hdr_info->field_pic_flag)
-+			h264_slice_hdr_info->delta_pic_order_cnt[1] = swsr_read_signed_expgoulomb
-+										(swsr_context);
-+	}
-+
-+	if (h264_pps_info->redundant_pic_cnt_present_flag)
-+		h264_slice_hdr_info->redundant_pic_cnt =
-+			swsr_read_unsigned_expgoulomb(swsr_context);
-+
-+	/* For FMO streams, we need to go further */
-+	if (h264_pps_info->num_slice_groups_minus1 != 0 &&
-+	    h264_pps_info->slice_group_map_type >= 3 &&
-+	    h264_pps_info->slice_group_map_type <= 5) {
-+		if (h264_slice_hdr_info->slice_type == B_SLICE)
-+			swsr_read_bits(swsr_context, 1);
-+
-+		if (h264_slice_hdr_info->slice_type == P_SLICE ||
-+		    h264_slice_hdr_info->slice_type == SP_SLICE ||
-+		    h264_slice_hdr_info->slice_type == B_SLICE) {
-+			h264_slice_hdr_info->num_ref_idx_active_override_flag =
-+				swsr_read_bits(swsr_context, 1);
-+			if (h264_slice_hdr_info->num_ref_idx_active_override_flag) {
-+				h264_slice_hdr_info->num_ref_idx_lx_active_minus1[0] =
-+					swsr_read_unsigned_expgoulomb(swsr_context);
-+				if (h264_slice_hdr_info->slice_type == B_SLICE)
-+					h264_slice_hdr_info->num_ref_idx_lx_active_minus1[1] =
-+						swsr_read_unsigned_expgoulomb(swsr_context);
-+			}
-+		}
-+
-+		if (h264_slice_hdr_info->slice_type != SI_SLICE &&
-+		    h264_slice_hdr_info->slice_type != I_SLICE) {
-+			/* Reference picture list modification */
-+			/* parse reordering info and pack into commands */
-+			unsigned int i;
-+			unsigned int cmd_num, list_num;
-+			unsigned int command;
-+
-+			i = (h264_slice_hdr_info->slice_type == B_SLICE) ? 2 : 1;
-+
-+			for (list_num = 0; list_num < i; list_num++) {
-+				cmd_num = 0;
-+				if (swsr_read_bits(swsr_context, 1)) {
-+					do {
-+						command =
-+							swsr_read_unsigned_expgoulomb(swsr_context);
-+					if (command != 3) {
-+						swsr_read_unsigned_expgoulomb(swsr_context);
-+						cmd_num++;
-+					}
-+					} while (command != 3 && cmd_num <= SL_MAX_REF_IDX);
-+				}
-+			}
-+		}
-+
-+		if ((h264_pps_info->weighted_pred_flag &&
-+		     h264_slice_hdr_info->slice_type == P_SLICE) ||
-+		    (h264_pps_info->weighted_bipred_idc &&
-+		     h264_slice_hdr_info->slice_type == B_SLICE)) {
-+			int mono_chrome;
-+			unsigned int list, i, j, k;
-+
-+			mono_chrome = (!h264_seq_hdr_info->sps_info.chroma_format_idc) ? 1 : 0;
-+
-+			swsr_read_unsigned_expgoulomb(swsr_context);
-+			if (!mono_chrome)
-+				swsr_read_unsigned_expgoulomb(swsr_context);
-+
-+			k = (h264_slice_hdr_info->slice_type == B_SLICE) ? 2 : 1;
-+
-+			for (list = 0; list < k; list++) {
-+				for (i = 0;
-+					i <=
-+					h264_slice_hdr_info->num_ref_idx_lx_active_minus1[list];
-+					i++) {
-+					if (swsr_read_bits(swsr_context, 1)) {
-+						swsr_read_signed_expgoulomb(swsr_context);
-+						swsr_read_signed_expgoulomb(swsr_context);
-+					}
-+
-+				if (!mono_chrome && (swsr_read_bits(swsr_context, 1))) {
-+					for (j = 0; j < 2; j++) {
-+						swsr_read_signed_expgoulomb
-+								(swsr_context);
-+						swsr_read_signed_expgoulomb
-+								(swsr_context);
-+					}
-+				}
-+				}
-+			}
-+		}
-+
-+		if (nal_ref_idc != 0) {
-+			unsigned int memmanop;
-+
-+			if (nal_unit_type == H264_NALTYPE_IDR_SLICE) {
-+				swsr_read_bits(swsr_context, 1);
-+				swsr_read_bits(swsr_context, 1);
-+			}
-+			if (swsr_read_bits(swsr_context, 1)) {
-+				do {
-+					/* clamp 0--6 */
-+					memmanop = swsr_read_unsigned_expgoulomb
-+								(swsr_context);
-+				if (memmanop != 0 && memmanop != 5) {
-+					if (memmanop == 3) {
-+						swsr_read_unsigned_expgoulomb
-+							(swsr_context);
-+						swsr_read_unsigned_expgoulomb
-+							(swsr_context);
-+					} else {
-+						swsr_read_unsigned_expgoulomb
-+							(swsr_context);
-+					}
-+				}
-+				} while (memmanop != 0);
-+			}
-+		}
-+
-+		if (h264_pps_info->entropy_coding_mode_flag &&
-+		    h264_slice_hdr_info->slice_type != I_SLICE)
-+			swsr_read_unsigned_expgoulomb(swsr_context);
-+
-+		swsr_read_signed_expgoulomb(swsr_context);
-+
-+		if (h264_slice_hdr_info->slice_type == SP_SLICE ||
-+		    h264_slice_hdr_info->slice_type == SI_SLICE) {
-+			if (h264_slice_hdr_info->slice_type == SP_SLICE)
-+				swsr_read_bits(swsr_context, 1);
-+
-+			/* slice_qs_delta */
-+			swsr_read_signed_expgoulomb(swsr_context);
-+		}
-+
-+		if (h264_pps_info->deblocking_filter_control_present_flag) {
-+			if (swsr_read_unsigned_expgoulomb(swsr_context) != 1) {
-+				swsr_read_signed_expgoulomb(swsr_context);
-+				swsr_read_signed_expgoulomb(swsr_context);
-+			}
-+		}
-+
-+		if (h264_pps_info->slice_group_map_type >= 3 &&
-+		    h264_pps_info->slice_group_map_type <= 5) {
-+			unsigned int num_slice_group_map_units =
-+				(h264_seq_hdr_info->sps_info.pic_height_in_map_units_minus1 + 1) *
-+				(h264_seq_hdr_info->sps_info.pic_width_in_mbs_minus1 + 1);
-+
-+			unsigned short slice_group_change_rate =
-+				(h264_pps_info->slice_group_change_rate_minus1 + 1);
-+
-+			unsigned int width = h264ceillog2(num_slice_group_map_units /
-+					slice_group_change_rate +
-+					(num_slice_group_map_units % slice_group_change_rate ==
-+					 0 ? 0 : 1) + 1);                          /* (7-32) */
-+			h264_slice_hdr_info->slice_group_change_cycle = swsr_read_bits(swsr_context,
-+										       width);
-+		}
-+	}
-+
-+error:
-+	return slice_parse_error;
-+}
-+
-+static void bspp_h264_select_scaling_list(struct h264fw_picture_ps *h264fw_pps_info,
-+					  struct bspp_h264_pps_info *h264_pps_info,
-+					  struct bspp_h264_seq_hdr_info *h264_seq_hdr_info)
-+{
-+	unsigned int num8x8_lists;
-+	unsigned int i;
-+	const unsigned char *quant_matrix = NULL;
-+	unsigned char (*scllst4x4pic)[H264FW_NUM_4X4_LISTS][H264FW_4X4_SIZE] =
-+	(unsigned char (*)[H264FW_NUM_4X4_LISTS][H264FW_4X4_SIZE])h264_pps_info->scllst4x4pic;
-+	unsigned char (*scllst8x8pic)[H264FW_NUM_8X8_LISTS][H264FW_8X8_SIZE] =
-+	(unsigned char (*)[H264FW_NUM_8X8_LISTS][H264FW_8X8_SIZE])h264_pps_info->scllst8x8pic;
-+
-+	unsigned char (*scllst4x4seq)[H264FW_NUM_4X4_LISTS][H264FW_4X4_SIZE] =
-+		(unsigned char (*)[H264FW_NUM_4X4_LISTS][H264FW_4X4_SIZE])
-+		h264_seq_hdr_info->sps_info.scllst4x4seq;
-+	unsigned char (*scllst8x8seq)[H264FW_NUM_8X8_LISTS][H264FW_8X8_SIZE] =
-+		(unsigned char (*)[H264FW_NUM_8X8_LISTS][H264FW_8X8_SIZE])
-+		h264_seq_hdr_info->sps_info.scllst8x8seq;
-+
-+	if (h264_seq_hdr_info->sps_info.seq_scaling_matrix_present_flag) {
-+		VDEC_ASSERT(h264_seq_hdr_info->sps_info.scllst4x4seq);
-+		VDEC_ASSERT(h264_seq_hdr_info->sps_info.scllst8x8seq);
-+	}
-+
-+	if (h264_pps_info->pic_scaling_matrix_present_flag) {
-+		for (i = 0; i < H264FW_NUM_4X4_LISTS; i++) {
-+			if (h264_pps_info->pic_scaling_list_present_flag[i]) {
-+				if (h264_pps_info->usedefaultscalingmatrixflag_pic[i])
-+					quant_matrix =
-+						(i > 2) ? default_4x4_inter : default_4x4_intra;
-+				else
-+					quant_matrix = (*scllst4x4pic)[i];
-+
-+			} else {
-+				if (h264_seq_hdr_info->sps_info.seq_scaling_matrix_present_flag) {
-+					/* SPS matrix present - use fallback rule B */
-+					/* first 4x4 Intra list */
-+					if (i == 0) {
-+						if
-+				(h264_seq_hdr_info->sps_info.seq_scaling_list_present_flag[i] &&
-+				!h264_seq_hdr_info->sps_info.usedefaultscalingmatrixflag_seq[i]) {
-+							VDEC_ASSERT
-+							(h264_seq_hdr_info->sps_info.scllst4x4seq);
-+					if (scllst4x4seq)
-+						quant_matrix = (*scllst4x4seq)[i];
-+					} else {
-+						quant_matrix = default_4x4_intra;
-+					}
-+					}
-+					/* first 4x4 Inter list */
-+					else if (i == 3) {
-+						if
-+				(h264_seq_hdr_info->sps_info.seq_scaling_list_present_flag[i] &&
-+				!h264_seq_hdr_info->sps_info.usedefaultscalingmatrixflag_seq[i]) {
-+							VDEC_ASSERT
-+							(h264_seq_hdr_info->sps_info.scllst4x4seq);
-+					if (scllst4x4seq)
-+						quant_matrix = (*scllst4x4seq)[i];
-+					} else {
-+						quant_matrix = default_4x4_inter;
-+					}
-+					} else {
-+						quant_matrix =
-+							h264fw_pps_info->scalinglist4x4[i - 1];
-+					}
-+				} else {
-+					/* SPS matrix not present - use fallback rule A */
-+					/* first 4x4 Intra list */
-+					if (i == 0)
-+						quant_matrix = default_4x4_intra;
-+					/* first 4x4 Interlist */
-+					else if (i == 3)
-+						quant_matrix = default_4x4_inter;
-+					else
-+						quant_matrix =
-+							h264fw_pps_info->scalinglist4x4[i - 1];
-+				}
-+			}
-+			if (!quant_matrix) {
-+				VDEC_ASSERT(0);
-+				return;
-+			}
-+			/* copy correct 4x4 list to output - as selected by PPS */
-+			memcpy(h264fw_pps_info->scalinglist4x4[i], quant_matrix,
-+			       sizeof(h264fw_pps_info->scalinglist4x4[i]));
-+		}
-+	} else {
-+		/* PPS matrix not present, use SPS information */
-+		if (h264_seq_hdr_info->sps_info.seq_scaling_matrix_present_flag) {
-+			for (i = 0; i < H264FW_NUM_4X4_LISTS; i++) {
-+				if (h264_seq_hdr_info->sps_info.seq_scaling_list_present_flag[i]) {
-+					if
-+					(h264_seq_hdr_info->sps_info.usedefaultscalingmatrixflag_seq
-+											[i]) {
-+						quant_matrix = (i > 2) ? default_4x4_inter
-+							: default_4x4_intra;
-+					} else {
-+						VDEC_ASSERT
-+							(h264_seq_hdr_info->sps_info.scllst4x4seq);
-+					if (scllst4x4seq)
-+						quant_matrix = (*scllst4x4seq)[i];
-+					}
-+				} else {
-+					/* SPS list not present - use fallback rule A */
-+					/* first 4x4 Intra list */
-+					if (i == 0)
-+						quant_matrix = default_4x4_intra;
-+					else if (i == 3) /* first 4x4 Inter list */
-+						quant_matrix = default_4x4_inter;
-+					else
-+						quant_matrix =
-+							h264fw_pps_info->scalinglist4x4[i - 1];
-+				}
-+				if (quant_matrix) {
-+					/* copy correct 4x4 list to output - as selected by SPS */
-+					memcpy(h264fw_pps_info->scalinglist4x4[i], quant_matrix,
-+					       sizeof(h264fw_pps_info->scalinglist4x4[i]));
-+				}
-+			}
-+		} else {
-+			/* SPS matrix not present - use flat lists */
-+			quant_matrix = default_4x4_org;
-+			for (i = 0; i < H264FW_NUM_4X4_LISTS; i++)
-+				memcpy(h264fw_pps_info->scalinglist4x4[i], quant_matrix,
-+				       sizeof(h264fw_pps_info->scalinglist4x4[i]));
-+		}
-+	}
-+
-+	/* 8x8 matrices */
-+	num8x8_lists = (h264_seq_hdr_info->sps_info.chroma_format_idc == 3) ? 6 : 2;
-+	if (h264_pps_info->transform_8x8_mode_flag) {
-+		unsigned char *seq_scllstflg =
-+			h264_seq_hdr_info->sps_info.seq_scaling_list_present_flag;
-+		unsigned char *def_sclmatflg_seq =
-+			h264_seq_hdr_info->sps_info.usedefaultscalingmatrixflag_seq;
-+
-+		if (h264_pps_info->pic_scaling_matrix_present_flag) {
-+			for (i = 0; i < num8x8_lists; i++) {
-+				if (h264_pps_info->pic_scaling_list_present_flag[i +
-+					H264FW_NUM_4X4_LISTS]) {
-+					if (h264_pps_info->usedefaultscalingmatrixflag_pic[i +
-+							H264FW_NUM_4X4_LISTS]) {
-+						quant_matrix = (i & 0x1) ? default_8x8_inter
-+							: default_8x8_intra;
-+					} else {
-+						VDEC_ASSERT(h264_pps_info->scllst8x8pic);
-+					if (scllst8x8pic)
-+						quant_matrix = (*scllst8x8pic)[i];
-+					}
-+				} else {
-+					if
-+				(h264_seq_hdr_info->sps_info.seq_scaling_matrix_present_flag) {
-+						/* SPS matrix present - use fallback rule B */
-+						/* list 6 - first 8x8 Intra list */
-+				if (i == 0) {
-+					if (seq_scllstflg[i +
-+						H264FW_NUM_4X4_LISTS] &&
-+						!def_sclmatflg_seq[i +
-+						H264FW_NUM_4X4_LISTS]) {
-+						VDEC_ASSERT
-+						(h264_seq_hdr_info->sps_info.scllst8x8seq);
-+					if (scllst8x8seq)
-+						quant_matrix = (*scllst8x8seq)[i];
-+					} else {
-+						quant_matrix = default_8x8_intra;
-+						}
-+				/* list 7 - first 8x8 Inter list */
-+				} else if (i == 1) {
-+					if (seq_scllstflg[i +
-+							H264FW_NUM_4X4_LISTS] &&
-+							!def_sclmatflg_seq[i +
-+							H264FW_NUM_4X4_LISTS]) {
-+						VDEC_ASSERT
-+						(h264_seq_hdr_info->sps_info.scllst8x8seq);
-+					if (scllst8x8seq)
-+						quant_matrix = (*scllst8x8seq)[i];
-+					} else {
-+						quant_matrix = default_8x8_inter;
-+					}
-+					} else {
-+						quant_matrix =
-+							h264fw_pps_info->scalinglist8x8[i - 2];
-+					}
-+				} else {
-+						/* SPS matrix not present - use fallback rule A */
-+						/* list 6 - first 8x8 Intra list */
-+					if (i == 0)
-+						quant_matrix = default_8x8_intra;
-+					/* list 7 - first 8x8 Inter list */
-+					else if (i == 1)
-+						quant_matrix = default_8x8_inter;
-+					else
-+						quant_matrix =
-+							h264fw_pps_info->scalinglist8x8[i - 2];
-+				}
-+				}
-+				if (quant_matrix) {
-+					/* copy correct 8x8 list to output - as selected by PPS */
-+					memcpy(h264fw_pps_info->scalinglist8x8[i], quant_matrix,
-+					       sizeof(h264fw_pps_info->scalinglist8x8[i]));
-+				}
-+			}
-+		} else {
-+			/* PPS matrix not present, use SPS information */
-+			if (h264_seq_hdr_info->sps_info.seq_scaling_matrix_present_flag) {
-+				for (i = 0; i < num8x8_lists; i++) {
-+					if (seq_scllstflg[i + H264FW_NUM_4X4_LISTS] &&
-+					    def_sclmatflg_seq[i + H264FW_NUM_4X4_LISTS]) {
-+						quant_matrix =
-+							(i & 0x1) ? default_8x8_inter :
-+							default_8x8_intra;
-+					} else if ((seq_scllstflg[i + H264FW_NUM_4X4_LISTS]) &&
-+						   !(def_sclmatflg_seq[i + H264FW_NUM_4X4_LISTS])) {
-+						VDEC_ASSERT
-+							(h264_seq_hdr_info->sps_info.scllst8x8seq);
-+					if (scllst8x8seq)
-+						quant_matrix = (*scllst8x8seq)[i];
-+					} else if (!(seq_scllstflg[i + H264FW_NUM_4X4_LISTS]) &&
-+						   (i == 0)) {
-+						/* SPS list not present - use fallback rule A */
-+						/* list 6 - first 8x8 Intra list */
-+						quant_matrix = default_8x8_intra;
-+					} else if (!(seq_scllstflg[i + H264FW_NUM_4X4_LISTS]) &&
-+						   (i == 1)) {
-+						/* list 7 - first 8x8 Inter list */
-+						quant_matrix = default_8x8_inter;
-+					} else {
-+						quant_matrix =
-+							h264fw_pps_info->scalinglist8x8
-+							[i - 2];
-+					}
-+					if (quant_matrix) {
-+						/* copy correct 8x8 list to output -
-+						 * as selected by SPS
-+						 */
-+						memcpy(h264fw_pps_info->scalinglist8x8[i],
-+						       quant_matrix,
-+						       sizeof(h264fw_pps_info->scalinglist8x8[i]));
-+					}
-+				}
-+			} else {
-+				/* SPS matrix not present - use flat lists */
-+				quant_matrix = default_8x8_org;
-+				for (i = 0; i < num8x8_lists; i++)
-+					memcpy(h264fw_pps_info->scalinglist8x8[i], quant_matrix,
-+					       sizeof(h264fw_pps_info->scalinglist8x8[i]));
-+			}
-+		}
-+	}
-+}
-+
-+static void bspp_h264_fwpps_populate(struct bspp_h264_pps_info *h264_pps_info,
-+				     struct h264fw_picture_ps *h264fw_pps_info)
-+{
-+	h264fw_pps_info->deblocking_filter_control_present_flag =
-+					h264_pps_info->deblocking_filter_control_present_flag;
-+	h264fw_pps_info->transform_8x8_mode_flag = h264_pps_info->transform_8x8_mode_flag;
-+	h264fw_pps_info->entropy_coding_mode_flag = h264_pps_info->entropy_coding_mode_flag;
-+	h264fw_pps_info->redundant_pic_cnt_present_flag =
-+						h264_pps_info->redundant_pic_cnt_present_flag;
-+	h264fw_pps_info->weighted_bipred_idc = h264_pps_info->weighted_bipred_idc;
-+	h264fw_pps_info->weighted_pred_flag = h264_pps_info->weighted_pred_flag;
-+	h264fw_pps_info->pic_order_present_flag = h264_pps_info->pic_order_present_flag;
-+	h264fw_pps_info->pic_init_qp = h264_pps_info->pic_init_qp_minus26 + 26;
-+	h264fw_pps_info->constrained_intra_pred_flag = h264_pps_info->constrained_intra_pred_flag;
-+	VDEC_ASSERT(sizeof(h264fw_pps_info->num_ref_lx_active_minus1) ==
-+		    sizeof(h264_pps_info->num_ref_idx_lx_active_minus1));
-+	VDEC_ASSERT(sizeof(h264fw_pps_info->num_ref_lx_active_minus1) ==
-+		    sizeof(unsigned char) * H264FW_MAX_REFPIC_LISTS);
-+	memcpy(h264fw_pps_info->num_ref_lx_active_minus1,
-+	       h264_pps_info->num_ref_idx_lx_active_minus1,
-+	       sizeof(h264fw_pps_info->num_ref_lx_active_minus1));
-+	h264fw_pps_info->slice_group_map_type = h264_pps_info->slice_group_map_type;
-+	h264fw_pps_info->num_slice_groups_minus1 = h264_pps_info->num_slice_groups_minus1;
-+	h264fw_pps_info->slice_group_change_rate_minus1 =
-+					h264_pps_info->slice_group_change_rate_minus1;
-+	h264fw_pps_info->chroma_qp_index_offset = h264_pps_info->chroma_qp_index_offset;
-+	h264fw_pps_info->second_chroma_qp_index_offset =
-+						h264_pps_info->second_chroma_qp_index_offset;
-+}
-+
-+static void bspp_h264_fwseq_hdr_populate(struct bspp_h264_seq_hdr_info *h264_seq_hdr_info,
-+					 struct h264fw_sequence_ps *h264_fwseq_hdr_info)
-+{
-+	/* Basic SPS */
-+	h264_fwseq_hdr_info->profile_idc = h264_seq_hdr_info->sps_info.profile_idc;
-+	h264_fwseq_hdr_info->chroma_format_idc = h264_seq_hdr_info->sps_info.chroma_format_idc;
-+	h264_fwseq_hdr_info->separate_colour_plane_flag =
-+		h264_seq_hdr_info->sps_info.separate_colour_plane_flag;
-+	h264_fwseq_hdr_info->bit_depth_luma_minus8 =
-+		h264_seq_hdr_info->sps_info.bit_depth_luma_minus8;
-+	h264_fwseq_hdr_info->bit_depth_chroma_minus8 =
-+		h264_seq_hdr_info->sps_info.bit_depth_chroma_minus8;
-+	h264_fwseq_hdr_info->delta_pic_order_always_zero_flag =
-+		h264_seq_hdr_info->sps_info.delta_pic_order_always_zero_flag;
-+	h264_fwseq_hdr_info->log2_max_pic_order_cnt_lsb =
-+		h264_seq_hdr_info->sps_info.log2_max_pic_order_cnt_lsb_minus4 + 4;
-+	h264_fwseq_hdr_info->max_num_ref_frames = h264_seq_hdr_info->sps_info.max_num_ref_frames;
-+	h264_fwseq_hdr_info->log2_max_frame_num =
-+		h264_seq_hdr_info->sps_info.log2_max_frame_num_minus4 + 4;
-+	h264_fwseq_hdr_info->pic_order_cnt_type = h264_seq_hdr_info->sps_info.pic_order_cnt_type;
-+	h264_fwseq_hdr_info->frame_mbs_only_flag = h264_seq_hdr_info->sps_info.frame_mbs_only_flag;
-+	h264_fwseq_hdr_info->gaps_in_frame_num_value_allowed_flag =
-+		h264_seq_hdr_info->sps_info.gaps_in_frame_num_value_allowed_flag;
-+	h264_fwseq_hdr_info->constraint_set_flags =
-+		h264_seq_hdr_info->sps_info.constraint_set_flags;
-+	h264_fwseq_hdr_info->level_idc = h264_seq_hdr_info->sps_info.level_idc;
-+	h264_fwseq_hdr_info->num_ref_frames_in_pic_order_cnt_cycle =
-+		h264_seq_hdr_info->sps_info.num_ref_frames_in_pic_order_cnt_cycle;
-+	h264_fwseq_hdr_info->mb_adaptive_frame_field_flag =
-+		h264_seq_hdr_info->sps_info.mb_adaptive_frame_field_flag;
-+	h264_fwseq_hdr_info->offset_for_non_ref_pic =
-+		h264_seq_hdr_info->sps_info.offset_for_non_ref_pic;
-+	h264_fwseq_hdr_info->offset_for_top_to_bottom_field =
-+		h264_seq_hdr_info->sps_info.offset_for_top_to_bottom_field;
-+	h264_fwseq_hdr_info->pic_width_in_mbs_minus1 =
-+		h264_seq_hdr_info->sps_info.pic_width_in_mbs_minus1;
-+	h264_fwseq_hdr_info->pic_height_in_map_units_minus1 =
-+		h264_seq_hdr_info->sps_info.pic_height_in_map_units_minus1;
-+	h264_fwseq_hdr_info->direct_8x8_inference_flag =
-+		h264_seq_hdr_info->sps_info.direct_8x8_inference_flag;
-+	h264_fwseq_hdr_info->qpprime_y_zero_transform_bypass_flag =
-+		h264_seq_hdr_info->sps_info.qpprime_y_zero_transform_bypass_flag;
-+
-+	if (h264_seq_hdr_info->sps_info.offset_for_ref_frame)
-+		memcpy(h264_fwseq_hdr_info->offset_for_ref_frame,
-+		       h264_seq_hdr_info->sps_info.offset_for_ref_frame,
-+		       sizeof(h264_fwseq_hdr_info->offset_for_ref_frame));
-+	else
-+		memset(h264_fwseq_hdr_info->offset_for_ref_frame, 0x00,
-+		       sizeof(h264_fwseq_hdr_info->offset_for_ref_frame));
-+
-+	memset(h264_fwseq_hdr_info->anchor_inter_view_reference_id_list, 0x00,
-+	       sizeof(h264_fwseq_hdr_info->anchor_inter_view_reference_id_list));
-+	memset(h264_fwseq_hdr_info->non_anchor_inter_view_reference_id_list, 0x00,
-+	       sizeof(h264_fwseq_hdr_info->non_anchor_inter_view_reference_id_list));
-+
-+#ifdef REDUCED_DPB_NO_PIC_REORDERING
-+	/* From VUI */
-+	h264_fwseq_hdr_info->max_dec_frame_buffering =
-+		h264_seq_hdr_info->vui_info.max_dec_frame_buffering;
-+	h264_fwseq_hdr_info->num_reorder_frames = h264_seq_hdr_info->vui_info.num_reorder_frames;
-+#else
-+	/* From VUI */
-+	if (h264_seq_hdr_info->vui_info.bitstream_restriction_flag) {
-+		VDEC_ASSERT(h264_seq_hdr_info->sps_info.vui_parameters_present_flag);
-+		h264_fwseq_hdr_info->max_dec_frame_buffering =
-+			h264_seq_hdr_info->vui_info.max_dec_frame_buffering;
-+		h264_fwseq_hdr_info->num_reorder_frames =
-+			h264_seq_hdr_info->vui_info.num_reorder_frames;
-+	} else {
-+		h264_fwseq_hdr_info->max_dec_frame_buffering = 1;
-+		h264_fwseq_hdr_info->num_reorder_frames = 16;
-+	}
-+#endif
-+}
-+
-+static void bspp_h264_commonseq_hdr_populate(struct bspp_h264_seq_hdr_info *h264_seq_hdr_info,
-+					     struct vdec_comsequ_hdrinfo *comseq_hdr_info)
-+{
-+	struct bspp_h264_sps_info *sps_info = &h264_seq_hdr_info->sps_info;
-+	struct bspp_h264_vui_info *vui_info = &h264_seq_hdr_info->vui_info;
-+
-+	comseq_hdr_info->codec_profile = sps_info->profile_idc;
-+	comseq_hdr_info->codec_level = sps_info->level_idc;
-+
-+	if (sps_info->vui_parameters_present_flag && vui_info->timing_info_present_flag) {
-+		comseq_hdr_info->frame_rate_num = vui_info->time_scale;
-+		comseq_hdr_info->frame_rate_den = 2 * vui_info->num_units_in_tick;
-+		comseq_hdr_info->frame_rate = ((long)comseq_hdr_info->frame_rate_num) /
-+			((long)comseq_hdr_info->frame_rate_den);
-+	}
-+
-+	/*
-+	 * ColorSpace Description was present in the VUI parameters.
-+	 * copy it in CommonSeqHdr info for use by application.
-+	 */
-+	if (vui_info->video_signal_type_present_flag & vui_info->colour_description_present_flag) {
-+		comseq_hdr_info->color_space_info.is_present = TRUE;
-+		comseq_hdr_info->color_space_info.color_primaries = vui_info->colour_primaries;
-+		comseq_hdr_info->color_space_info.transfer_characteristics =
-+			vui_info->transfer_characteristics;
-+		comseq_hdr_info->color_space_info.matrix_coefficients =
-+			vui_info->matrix_coefficients;
-+	}
-+
-+	if (vui_info->aspect_ratio_info_present_flag) {
-+		comseq_hdr_info->aspect_ratio_num = vui_info->sar_width;
-+		comseq_hdr_info->aspect_ratio_den = vui_info->sar_height;
-+	}
-+
-+	comseq_hdr_info->interlaced_frames = sps_info->frame_mbs_only_flag ? 0 : 1;
-+
-+	/* pixel_info populate */
-+	VDEC_ASSERT(sps_info->chroma_format_idc < 4);
-+	comseq_hdr_info->pixel_info.chroma_fmt = (sps_info->chroma_format_idc == 0) ? 0 : 1;
-+	comseq_hdr_info->pixel_info.chroma_fmt_idc = pixel_format_idc[sps_info->chroma_format_idc];
-+	comseq_hdr_info->pixel_info.chroma_interleave =
-+		((sps_info->chroma_format_idc == 0) ||
-+		(sps_info->chroma_format_idc == 3 && sps_info->separate_colour_plane_flag)) ?
-+		PIXEL_INVALID_CI : PIXEL_UV_ORDER;
-+	comseq_hdr_info->pixel_info.num_planes =
-+		(sps_info->chroma_format_idc == 0) ? 1 :
-+		(sps_info->chroma_format_idc == 3 && sps_info->separate_colour_plane_flag) ? 3 : 2;
-+	comseq_hdr_info->pixel_info.bitdepth_y = sps_info->bit_depth_luma_minus8 + 8;
-+	comseq_hdr_info->pixel_info.bitdepth_c = sps_info->bit_depth_chroma_minus8 + 8;
-+	comseq_hdr_info->pixel_info.mem_pkg =
-+		(comseq_hdr_info->pixel_info.bitdepth_y > 8 ||
-+		comseq_hdr_info->pixel_info.bitdepth_c > 8) ?
-+		PIXEL_BIT10_MSB_MP : PIXEL_BIT8_MP;
-+	comseq_hdr_info->pixel_info.pixfmt =
-+		pixel_get_pixfmt(comseq_hdr_info->pixel_info.chroma_fmt_idc,
-+				 comseq_hdr_info->pixel_info.chroma_interleave,
-+				 comseq_hdr_info->pixel_info.mem_pkg,
-+				 comseq_hdr_info->pixel_info.bitdepth_y,
-+				 comseq_hdr_info->pixel_info.bitdepth_c,
-+				 comseq_hdr_info->pixel_info.num_planes);
-+
-+	/* max_frame_size populate */
-+	comseq_hdr_info->max_frame_size.width = (sps_info->pic_width_in_mbs_minus1 + 1) * 16;
-+	/*
-+	 * H264 has always coded size MB aligned. For sequences which *may* have Field-Coded
-+	 * pictures, as described by the frame_mbs_only_flag, the pic_height_in_map_units_minus1
-+	 * refers to field height in MBs, so to find the actual Frame height we need to do
-+	 * Field_MBs_InHeight * 32
-+	 */
-+	comseq_hdr_info->max_frame_size.height = (sps_info->pic_height_in_map_units_minus1 + 1) *
-+						(sps_info->frame_mbs_only_flag ? 1 : 2) * 16;
-+
-+	/* Passing 2*N to vxd_dec so that get_nbuffers can use formula N+3 for all codecs*/
-+	comseq_hdr_info->max_ref_frame_num  = 2 * sps_info->max_num_ref_frames;
-+
-+	comseq_hdr_info->field_codec_mblocks = sps_info->mb_adaptive_frame_field_flag;
-+	comseq_hdr_info->min_pict_buf_num = vui_info->max_dec_frame_buffering;
-+
-+	/* orig_display_region populate */
-+	if (sps_info->frame_cropping_flag) {
-+		int sub_width_c, sub_height_c, crop_unit_x, crop_unit_y;
-+		int frame_crop_left, frame_crop_right, frame_crop_top, frame_crop_bottom;
-+
-+		sub_width_c = bspp_h264_get_subwidthc(sps_info->chroma_format_idc,
-+						      sps_info->separate_colour_plane_flag);
-+
-+		sub_height_c = bspp_h264_get_subheightc(sps_info->chroma_format_idc,
-+							sps_info->separate_colour_plane_flag);
-+
-+		/* equation source: ITU-T H.264 2010/03, page 77 */
-+		/* ChromaArrayType == 0 */
-+		if (sps_info->separate_colour_plane_flag || sps_info->chroma_format_idc == 0) {
-+			/* (7-18) */
-+			crop_unit_x = 1;
-+			/* (7-19) */
-+			crop_unit_y = 2 - sps_info->frame_mbs_only_flag;
-+			/* ChromaArrayType == chroma_format_idc */
-+		} else {
-+			/* (7-20) */
-+			crop_unit_x = sub_width_c;
-+			/* (7-21) */
-+			crop_unit_y = sub_height_c * (2 - sps_info->frame_mbs_only_flag);
-+		}
-+
-+		VDEC_ASSERT(sps_info->frame_crop_left_offset <=
-+			(comseq_hdr_info->max_frame_size.width / crop_unit_x) -
-+			(sps_info->frame_crop_right_offset + 1));
-+
-+		VDEC_ASSERT(sps_info->frame_crop_top_offset <=
-+			(comseq_hdr_info->max_frame_size.height / crop_unit_y) -
-+			(sps_info->frame_crop_bottom_offset + 1));
-+		frame_crop_left = crop_unit_x * sps_info->frame_crop_left_offset;
-+		frame_crop_right = comseq_hdr_info->max_frame_size.width -
-+			(crop_unit_x * sps_info->frame_crop_right_offset);
-+		frame_crop_top = crop_unit_y * sps_info->frame_crop_top_offset;
-+		frame_crop_bottom = comseq_hdr_info->max_frame_size.height -
-+			(crop_unit_y * sps_info->frame_crop_bottom_offset);
-+		comseq_hdr_info->orig_display_region.left_offset = (unsigned int)frame_crop_left;
-+		comseq_hdr_info->orig_display_region.top_offset = (unsigned int)frame_crop_top;
-+		comseq_hdr_info->orig_display_region.width = (frame_crop_right - frame_crop_left);
-+		comseq_hdr_info->orig_display_region.height = (frame_crop_bottom - frame_crop_top);
-+	} else {
-+		comseq_hdr_info->orig_display_region.left_offset = 0;
-+		comseq_hdr_info->orig_display_region.top_offset = 0;
-+		comseq_hdr_info->orig_display_region.width = comseq_hdr_info->max_frame_size.width;
-+		comseq_hdr_info->orig_display_region.height =
-+			comseq_hdr_info->max_frame_size.height;
-+	}
-+
-+#ifdef REDUCED_DPB_NO_PIC_REORDERING
-+	comseq_hdr_info->max_reorder_picts = vui_info->max_dec_frame_buffering;
-+#else
-+	if (sps_info->vui_parameters_present_flag && vui_info->bitstream_restriction_flag)
-+		comseq_hdr_info->max_reorder_picts = vui_info->max_dec_frame_buffering;
-+	else
-+		comseq_hdr_info->max_reorder_picts = 0;
-+#endif
-+	comseq_hdr_info->separate_chroma_planes =
-+		h264_seq_hdr_info->sps_info.separate_colour_plane_flag ? 1 : 0;
-+}
-+
-+static void bspp_h264_pict_hdr_populate(enum h264_nalunittype nal_unit_type,
-+					struct bspp_h264_slice_hdr_info *h264_slice_hdr_info,
-+					struct vdec_comsequ_hdrinfo *comseq_hdr_info,
-+					struct bspp_pict_hdr_info *pict_hdr_info)
-+{
-+	/*
-+	 * H264 has slice coding type, not picture. The bReference contrary to the rest of the
-+	 * standards is set explicitly from the NAL externally (see just below the call to
-+	 * bspp_h264_pict_hdr_populate) pict_hdr_info->bReference = ? (Set externally for H264)
-+	 */
-+	pict_hdr_info->intra_coded = (nal_unit_type == H264_NALTYPE_IDR_SLICE) ? 1 : 0;
-+	pict_hdr_info->field = h264_slice_hdr_info->field_pic_flag;
-+
-+	pict_hdr_info->post_processing = 0;
-+	/* For H264 Maximum and Coded sizes are the same */
-+	pict_hdr_info->coded_frame_size.width = comseq_hdr_info->max_frame_size.width;
-+	/* For H264 Maximum and Coded sizes are the same */
-+	pict_hdr_info->coded_frame_size.height = comseq_hdr_info->max_frame_size.height;
-+	/*
-+	 * For H264 Encoded Display size has been precomputed as part of the
-+	 * common sequence info
-+	 */
-+	pict_hdr_info->disp_info.enc_disp_region = comseq_hdr_info->orig_display_region;
-+	/*
-+	 * For H264 there is no resampling, so encoded and actual display
-+	 * regions are the same
-+	 */
-+	pict_hdr_info->disp_info.disp_region = comseq_hdr_info->orig_display_region;
-+	/* H264 does not have that */
-+	pict_hdr_info->disp_info.num_pan_scan_windows = 0;
-+	memset(pict_hdr_info->disp_info.pan_scan_windows, 0,
-+	       sizeof(pict_hdr_info->disp_info.pan_scan_windows));
-+}
-+
-+static int bspp_h264_destroy_seq_hdr_info(const void *secure_sps_info)
-+{
-+	struct bspp_h264_seq_hdr_info *h264_seq_hdr_info = NULL;
-+
-+	if (!secure_sps_info)
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+
-+	h264_seq_hdr_info = (struct bspp_h264_seq_hdr_info *)secure_sps_info;
-+
-+	/* Cleaning vui_info */
-+	kfree(h264_seq_hdr_info->vui_info.nal_hrd_parameters.bit_rate_value_minus1);
-+	kfree(h264_seq_hdr_info->vui_info.nal_hrd_parameters.cpb_size_value_minus1);
-+	kfree(h264_seq_hdr_info->vui_info.nal_hrd_parameters.cbr_flag);
-+	kfree(h264_seq_hdr_info->vui_info.vcl_hrd_parameters.bit_rate_value_minus1);
-+	kfree(h264_seq_hdr_info->vui_info.vcl_hrd_parameters.cpb_size_value_minus1);
-+	kfree(h264_seq_hdr_info->vui_info.vcl_hrd_parameters.cbr_flag);
-+
-+	/* Cleaning sps_info */
-+	kfree(h264_seq_hdr_info->sps_info.offset_for_ref_frame);
-+	kfree(h264_seq_hdr_info->sps_info.scllst4x4seq);
-+	kfree(h264_seq_hdr_info->sps_info.scllst8x8seq);
-+
-+	return 0;
-+}
-+
-+static int bspp_h264_destroy_pps_info(const void *secure_pps_info)
-+{
-+	struct bspp_h264_pps_info *h264_pps_info = NULL;
-+
-+	if (!secure_pps_info)
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+
-+	h264_pps_info = (struct bspp_h264_pps_info *)secure_pps_info;
-+	kfree(h264_pps_info->h264_ppssgm_info.slice_group_id);
-+	h264_pps_info->h264_ppssgm_info.slicegroupidnum = 0;
-+	kfree(h264_pps_info->scllst4x4pic);
-+	kfree(h264_pps_info->scllst8x8pic);
-+
-+	return 0;
-+}
-+
-+static int bspp_h264_destroy_data(enum bspp_unit_type data_type, void *data_handle)
-+{
-+	int result = 0;
-+
-+	if (!data_handle)
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+
-+	switch (data_type) {
-+	case BSPP_UNIT_SEQUENCE:
-+		result = bspp_h264_destroy_seq_hdr_info(data_handle);
-+		break;
-+	case BSPP_UNIT_PPS:
-+		result = bspp_h264_destroy_pps_info(data_handle);
-+		break;
-+	default:
-+		break;
-+	}
-+	return result;
-+}
-+
-+static void bspp_h264_generate_slice_groupmap(struct bspp_h264_slice_hdr_info *h264_slice_hdr_info,
-+					      struct bspp_h264_seq_hdr_info *h264_seq_hdr_info,
-+					      struct bspp_h264_pps_info *h264_pps_info,
-+					      unsigned char *map_unit_to_slice_groupmap,
-+					      unsigned int map_size)
-+{
-+	int group;
-+	unsigned int num_slice_group_mapunits;
-+	unsigned int i = 0, j, k = 0;
-+	unsigned char num_slice_groups = h264_pps_info->num_slice_groups_minus1 + 1;
-+	unsigned int pic_width_in_mbs = h264_seq_hdr_info->sps_info.pic_width_in_mbs_minus1 + 1;
-+	unsigned int pic_height_in_map_units =
-+		h264_seq_hdr_info->sps_info.pic_height_in_map_units_minus1 + 1;
-+
-+	num_slice_group_mapunits = map_size;
-+	if (h264_pps_info->slice_group_map_type == 6) {
-+		if ((unsigned int)num_slice_groups != num_slice_group_mapunits) {
-+			VDEC_ASSERT
-+			("wrong pps->num_slice_group_map_units_minus1 for used SPS and FMO type 6"
-+					==
-+					NULL);
-+			if (num_slice_group_mapunits >
-+				h264_pps_info->h264_ppssgm_info.slicegroupidnum)
-+				num_slice_group_mapunits =
-+					h264_pps_info->h264_ppssgm_info.slicegroupidnum;
-+		}
-+	}
-+
-+	/* only one slice group */
-+	if (h264_pps_info->num_slice_groups_minus1 == 0) {
-+		memset(map_unit_to_slice_groupmap, 0, map_size * sizeof(unsigned char));
-+		return;
-+	}
-+	if (h264_pps_info->num_slice_groups_minus1 >= MAX_SLICEGROUP_COUNT) {
-+		memset(map_unit_to_slice_groupmap, 0, map_size * sizeof(unsigned char));
-+		return;
-+	}
-+	if (h264_pps_info->slice_group_map_type == 0) {
-+		do {
-+			for (group =
-+				0;
-+				group <= h264_pps_info->num_slice_groups_minus1 &&
-+				i < num_slice_group_mapunits;
-+				i += h264_pps_info->run_length_minus1[group++] + 1) {
-+				for (j = 0;
-+					j <= h264_pps_info->run_length_minus1[group] &&
-+					i + j < num_slice_group_mapunits;
-+					j++)
-+					map_unit_to_slice_groupmap[i + j] = group;
-+			}
-+		} while (i < num_slice_group_mapunits);
-+	} else if (h264_pps_info->slice_group_map_type == 1) {
-+		for (i = 0; i < num_slice_group_mapunits; i++) {
-+			map_unit_to_slice_groupmap[i] = ((i % pic_width_in_mbs) +
-+				(((i / pic_width_in_mbs) *
-+				(h264_pps_info->num_slice_groups_minus1 + 1)) / 2)) %
-+				(h264_pps_info->num_slice_groups_minus1 + 1);
-+		}
-+	} else if (h264_pps_info->slice_group_map_type == 2) {
-+		unsigned int y_top_left, x_top_left, y_bottom_right, x_bottom_right, x, y;
-+
-+		for (i = 0; i < num_slice_group_mapunits; i++)
-+			map_unit_to_slice_groupmap[i] = h264_pps_info->num_slice_groups_minus1;
-+
-+		for (group = h264_pps_info->num_slice_groups_minus1 - 1; group >= 0; group--) {
-+			y_top_left = h264_pps_info->top_left[group] / pic_width_in_mbs;
-+			x_top_left = h264_pps_info->top_left[group] % pic_width_in_mbs;
-+			y_bottom_right = h264_pps_info->bottom_right[group] / pic_width_in_mbs;
-+			x_bottom_right = h264_pps_info->bottom_right[group] % pic_width_in_mbs;
-+			for (y = y_top_left; y <= y_bottom_right; y++)
-+				for (x = x_top_left; x <= x_bottom_right; x++) {
-+					if (h264_pps_info->top_left[group] >
-+						h264_pps_info->bottom_right[group] ||
-+						h264_pps_info->bottom_right[group] >=
-+						num_slice_group_mapunits)
-+						continue;
-+					map_unit_to_slice_groupmap[y * pic_width_in_mbs +
-+					x] = group;
-+				}
-+		}
-+	} else if (h264_pps_info->slice_group_map_type == 3) {
-+		int left_bound, top_bound, right_bound, bottom_bound;
-+		int x, y, x_dir, y_dir;
-+		int map_unit_vacant;
-+
-+		unsigned int mapunits_in_slicegroup_0 =
-+			umin((unsigned int)((h264_pps_info->slice_group_change_rate_minus1 + 1) *
-+				h264_slice_hdr_info->slice_group_change_cycle),
-+				(unsigned int)num_slice_group_mapunits);
-+
-+		for (i = 0; i < num_slice_group_mapunits; i++)
-+			map_unit_to_slice_groupmap[i] = 2;
-+
-+		x = (pic_width_in_mbs - h264_pps_info->slice_group_change_direction_flag) / 2;
-+		y = (pic_height_in_map_units - h264_pps_info->slice_group_change_direction_flag) /
-+			2;
-+
-+		left_bound = x;
-+		top_bound = y;
-+		right_bound = x;
-+		bottom_bound = y;
-+
-+		x_dir = h264_pps_info->slice_group_change_direction_flag - 1;
-+		y_dir = h264_pps_info->slice_group_change_direction_flag;
-+
-+		for (k = 0; k < num_slice_group_mapunits; k += map_unit_vacant) {
-+			map_unit_vacant =
-+				(map_unit_to_slice_groupmap[y * pic_width_in_mbs + x] ==
-+				2);
-+			if (map_unit_vacant)
-+				map_unit_to_slice_groupmap[y * pic_width_in_mbs + x] =
-+					(k >= mapunits_in_slicegroup_0);
-+
-+			if (x_dir == -1 && x == left_bound) {
-+				left_bound = smax(left_bound - 1, 0);
-+				x = left_bound;
-+				x_dir = 0;
-+				y_dir = 2 * h264_pps_info->slice_group_change_direction_flag - 1;
-+			} else if (x_dir == 1 && x == right_bound) {
-+				right_bound = smin(right_bound + 1, (int)pic_width_in_mbs - 1);
-+				x = right_bound;
-+				x_dir = 0;
-+				y_dir = 1 - 2 * h264_pps_info->slice_group_change_direction_flag;
-+			} else if (y_dir == -1 && y == top_bound) {
-+				top_bound = smax(top_bound - 1, 0);
-+				y = top_bound;
-+				x_dir = 1 - 2 * h264_pps_info->slice_group_change_direction_flag;
-+				y_dir = 0;
-+			} else if (y_dir == 1 && y == bottom_bound) {
-+				bottom_bound = smin(bottom_bound + 1,
-+						    (int)pic_height_in_map_units - 1);
-+				y = bottom_bound;
-+				x_dir = 2 * h264_pps_info->slice_group_change_direction_flag - 1;
-+				y_dir = 0;
-+			} else {
-+				x = x + x_dir;
-+				y = y + y_dir;
-+			}
-+		}
-+	} else if (h264_pps_info->slice_group_map_type == 4) {
-+		unsigned int mapunits_in_slicegroup_0 =
-+			umin((unsigned int)((h264_pps_info->slice_group_change_rate_minus1 + 1) *
-+				h264_slice_hdr_info->slice_group_change_cycle),
-+				(unsigned int)num_slice_group_mapunits);
-+		unsigned int sizeof_upper_left_group =
-+			h264_pps_info->slice_group_change_direction_flag ?
-+			(num_slice_group_mapunits -
-+			mapunits_in_slicegroup_0) : mapunits_in_slicegroup_0;
-+		for (i = 0; i < num_slice_group_mapunits; i++) {
-+			if (i < sizeof_upper_left_group)
-+				map_unit_to_slice_groupmap[i] =
-+					h264_pps_info->slice_group_change_direction_flag;
-+
-+			else
-+				map_unit_to_slice_groupmap[i] = 1 -
-+					h264_pps_info->slice_group_change_direction_flag;
-+		}
-+	} else if (h264_pps_info->slice_group_map_type == 5) {
-+		unsigned int mapunits_in_slicegroup_0 =
-+			umin((unsigned int)((h264_pps_info->slice_group_change_rate_minus1 + 1) *
-+				h264_slice_hdr_info->slice_group_change_cycle),
-+				(unsigned int)num_slice_group_mapunits);
-+		unsigned int sizeof_upper_left_group =
-+			h264_pps_info->slice_group_change_direction_flag ?
-+			(num_slice_group_mapunits -
-+			mapunits_in_slicegroup_0) : mapunits_in_slicegroup_0;
-+
-+		for (j = 0; j < (unsigned int)pic_width_in_mbs; j++) {
-+			for (i = 0; i < (unsigned int)pic_height_in_map_units; i++) {
-+				if (k++ < sizeof_upper_left_group)
-+					map_unit_to_slice_groupmap[i * pic_width_in_mbs + j] =
-+						h264_pps_info->slice_group_change_direction_flag;
-+				else
-+					map_unit_to_slice_groupmap[i * pic_width_in_mbs + j] =
-+						1 -
-+						h264_pps_info->slice_group_change_direction_flag;
-+			}
-+		}
-+	} else if (h264_pps_info->slice_group_map_type == 6) {
-+		VDEC_ASSERT(num_slice_group_mapunits <=
-+			    h264_pps_info->h264_ppssgm_info.slicegroupidnum);
-+		for (i = 0; i < num_slice_group_mapunits; i++)
-+			map_unit_to_slice_groupmap[i] =
-+				h264_pps_info->h264_ppssgm_info.slice_group_id[i];
-+	}
-+}
-+
-+static int bspp_h264_parse_mvc_slice_extension(void *swsr_context,
-+					       struct bspp_h264_inter_pict_ctx *inter_pict_ctx)
-+{
-+	if (!swsr_read_bits(swsr_context, 1)) {
-+		swsr_read_bits(swsr_context, 7);
-+		inter_pict_ctx->current_view_id = swsr_read_bits(swsr_context, 10);
-+		swsr_read_bits(swsr_context, 6);
-+		return 1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int bspp_h264_unitparser_compile_sgmdata
-+			(struct bspp_h264_slice_hdr_info *h264_slice_hdr_info,
-+			 struct bspp_h264_seq_hdr_info *h264_seq_hdr_info,
-+			 struct bspp_h264_pps_info *h264_pps_info,
-+			 struct bspp_pict_hdr_info *pict_hdr_info)
-+{
-+	memset(&pict_hdr_info->pict_sgm_data, 0, sizeof(*&pict_hdr_info->pict_sgm_data));
-+
-+	pict_hdr_info->pict_sgm_data.id = 1;
-+
-+	/* Allocate memory for SGM. */
-+	pict_hdr_info->pict_sgm_data.size =
-+		(h264_seq_hdr_info->sps_info.pic_height_in_map_units_minus1 + 1) *
-+		(h264_seq_hdr_info->sps_info.pic_width_in_mbs_minus1 + 1);
-+
-+	pict_hdr_info->pict_sgm_data.pic_data = kmalloc((pict_hdr_info->pict_sgm_data.size),
-+							GFP_KERNEL);
-+	VDEC_ASSERT(pict_hdr_info->pict_sgm_data.pic_data);
-+	if (!pict_hdr_info->pict_sgm_data.pic_data) {
-+		pict_hdr_info->pict_sgm_data.id = BSPP_INVALID;
-+		return IMG_ERROR_OUT_OF_MEMORY;
-+	}
-+
-+	bspp_h264_generate_slice_groupmap(h264_slice_hdr_info, h264_seq_hdr_info, h264_pps_info,
-+					  pict_hdr_info->pict_sgm_data.pic_data,
-+					  pict_hdr_info->pict_sgm_data.size);
-+
-+	/* check the discontinuous_mbs_flaginCurrFrame flag for FMO */
-+	/* NO FMO support */
-+	pict_hdr_info->discontinuous_mbs = 0;
-+
-+	return 0;
-+}
-+
-+static int bspp_h264_unit_parser(void *swsr_context, struct bspp_unit_data *unit_data)
-+{
-+	unsigned int result = 0;
-+	enum bspp_error_type parse_error = BSPP_ERROR_NONE;
-+	enum h264_nalunittype nal_unit_type;
-+	unsigned char nal_ref_idc;
-+	struct bspp_h264_inter_pict_ctx *interpicctx;
-+	struct bspp_sequence_hdr_info *out_seq_info;
-+	unsigned char id;
-+
-+	interpicctx = &unit_data->parse_state->inter_pict_ctx->h264_ctx;
-+	out_seq_info = unit_data->out.sequ_hdr_info;
-+
-+	/* At this point we should be EXACTLY at the NALTYPE byte */
-+	/* parse the nal header type */
-+	swsr_read_bits(swsr_context, 1);
-+	nal_ref_idc = swsr_read_bits(swsr_context, 2);
-+	nal_unit_type = (enum h264_nalunittype)swsr_read_bits(swsr_context, 5);
-+
-+	switch (unit_data->unit_type) {
-+	case BSPP_UNIT_SEQUENCE:
-+		VDEC_ASSERT(nal_unit_type == H264_NALTYPE_SEQUENCE_PARAMETER_SET ||
-+			    nal_unit_type == H264_NALTYPE_SUBSET_SPS);
-+		{
-+			unsigned char id_loc;
-+			/* Parse SPS structure */
-+			struct bspp_h264_seq_hdr_info *h264_seq_hdr_info =
-+			(struct bspp_h264_seq_hdr_info *)(out_seq_info->secure_sequence_info);
-+			/* FW SPS Data structure */
-+			struct bspp_ddbuf_array_info *tmp = &out_seq_info->fw_sequence;
-+			struct h264fw_sequence_ps *h264_fwseq_hdr_info =
-+			(struct h264fw_sequence_ps *)((unsigned char *)tmp->ddbuf_info.cpu_virt_addr
-+				+ tmp->buf_offset);
-+			/* Common Sequence Header Info */
-+			struct vdec_comsequ_hdrinfo *comseq_hdr_info =
-+				&out_seq_info->sequ_hdr_info.com_sequ_hdr_info;
-+
-+#ifdef DEBUG_DECODER_DRIVER
-+			pr_info("Unit Parser:Found SEQUENCE_PARAMETER_SET NAL unit");
-+#endif
-+			VDEC_ASSERT(h264_seq_hdr_info);
-+			VDEC_ASSERT(h264_fwseq_hdr_info);
-+			if (!h264_seq_hdr_info)
-+				return IMG_ERROR_ALREADY_COMPLETE;
-+
-+			if (!h264_fwseq_hdr_info)
-+				return IMG_ERROR_ALREADY_COMPLETE;
-+
-+			/* Call SPS parser to populate the "Parse SPS Structure" */
-+			unit_data->parse_error |=
-+				bspp_h264_sps_parser(swsr_context, unit_data->str_res_handle,
-+						     h264_seq_hdr_info);
-+			/* From "Parse SPS Structure" populate the "FW SPS Data Structure" */
-+			bspp_h264_fwseq_hdr_populate(h264_seq_hdr_info, h264_fwseq_hdr_info);
-+			/*
-+			 * From "Parse SPS Structure" populate the
-+			 * "Common Sequence Header Info"
-+			 */
-+			bspp_h264_commonseq_hdr_populate(h264_seq_hdr_info, comseq_hdr_info);
-+			/* Set the SPS ID */
-+			/*
-+			 * seq_parameter_set_id is always in range 0-31, so we can
-+			 * add offset indicating subsequence header
-+			 */
-+			id_loc = h264_seq_hdr_info->sps_info.seq_parameter_set_id;
-+			out_seq_info->sequ_hdr_info.sequ_hdr_id =
-+				(nal_unit_type == H264_NALTYPE_SLICE_SCALABLE ||
-+				nal_unit_type == H264_NALTYPE_SLICE_IDR_SCALABLE ||
-+				nal_unit_type == H264_NALTYPE_SUBSET_SPS) ? id_loc + 32 : id_loc;
-+
-+			/*
-+			 * Set the first SPS ID as Active SPS ID for SEI parsing
-+			 * to cover the case of not having SeiBufferingPeriod to
-+			 * give us the SPS ID
-+			 */
-+			if (interpicctx->active_sps_for_sei_parsing == BSPP_INVALID)
-+				interpicctx->active_sps_for_sei_parsing =
-+					h264_seq_hdr_info->sps_info.seq_parameter_set_id;
-+		}
-+		break;
-+
-+	case BSPP_UNIT_PPS:
-+		VDEC_ASSERT(nal_unit_type == H264_NALTYPE_PICTURE_PARAMETER_SET);
-+		{
-+			/* Parse PPS structure */
-+			struct bspp_h264_pps_info *h264_pps_info =
-+			(struct bspp_h264_pps_info *)(unit_data->out.pps_info->secure_pps_info);
-+			/* FW PPS Data structure */
-+			struct bspp_ddbuf_array_info *tmp = &unit_data->out.pps_info->fw_pps;
-+			struct h264fw_picture_ps *h264fw_pps_info =
-+				(struct h264fw_picture_ps *)((unsigned char *)
-+						tmp->ddbuf_info.cpu_virt_addr + tmp->buf_offset);
-+
-+#ifdef DEBUG_DECODER_DRIVER
-+			pr_info("Unit Parser:Found PICTURE_PARAMETER_SET NAL unit");
-+#endif
-+			VDEC_ASSERT(h264_pps_info);
-+			VDEC_ASSERT(h264fw_pps_info);
-+
-+			/* Call PPS parser to populate the "Parse PPS Structure" */
-+			unit_data->parse_error |=
-+				bspp_h264_pps_parser(swsr_context, unit_data->str_res_handle,
-+						     h264_pps_info);
-+			/* From "Parse PPS Structure" populate the "FW PPS Data Structure"
-+			 * - the scaling lists
-+			 */
-+			bspp_h264_fwpps_populate(h264_pps_info, h264fw_pps_info);
-+			/* Set the PPS ID */
-+			unit_data->out.pps_info->pps_id = h264_pps_info->pps_id;
-+		}
-+		break;
-+
-+	case BSPP_UNIT_PICTURE:
-+		if (nal_unit_type == H264_NALTYPE_SLICE_PREFIX) {
-+			if (bspp_h264_parse_mvc_slice_extension(swsr_context, interpicctx))
-+				pr_err("%s: No MVC support\n", __func__);
-+		} else if (nal_unit_type == H264_NALTYPE_SLICE_SCALABLE ||
-+			nal_unit_type == H264_NALTYPE_SLICE_IDR_SCALABLE ||
-+			nal_unit_type == H264_NALTYPE_SLICE ||
-+			nal_unit_type == H264_NALTYPE_IDR_SLICE) {
-+			struct bspp_h264_slice_hdr_info h264_slice_hdr_info;
-+			struct bspp_h264_pps_info *h264_pps_info;
-+			struct bspp_pps_info *pps_info;
-+			struct h264fw_picture_ps *h264fw_pps_info;
-+			struct h264fw_sequence_ps *h264_fwseq_hdr_info;
-+			struct bspp_h264_seq_hdr_info *h264_seq_hdr_info;
-+			struct bspp_sequence_hdr_info *sequ_hdr_info;
-+			struct bspp_ddbuf_array_info *tmp1;
-+			struct bspp_ddbuf_array_info *tmp2;
-+			int current_pic_is_new = 0;
-+			int determined = 0;
-+			int id_loc;
-+
-+#ifdef DEBUG_DECODER_DRIVER
-+			pr_info("Unit Parser:Found PICTURE DATA unit");
-+#endif
-+
-+			unit_data->slice = 1;
-+			unit_data->ext_slice = 0;
-+
-+			if (nal_unit_type == H264_NALTYPE_SLICE_SCALABLE ||
-+			    nal_unit_type == H264_NALTYPE_SLICE_IDR_SCALABLE) {
-+				pr_err("%s: No SVC support\n", __func__);
-+			}
-+
-+			VDEC_ASSERT(unit_data->out.pict_hdr_info);
-+			if (!unit_data->out.pict_hdr_info)
-+				return IMG_ERROR_CANCELLED;
-+
-+			/* Default */
-+			unit_data->out.pict_hdr_info->discontinuous_mbs = 0;
-+
-+			/*
-+			 * Parse the Pic Header, return Parse SPS/PPS
-+			 * structures
-+			 */
-+			parse_error = bspp_h264_pict_hdr_parser(swsr_context,
-+								unit_data->str_res_handle,
-+								&h264_slice_hdr_info,
-+								&pps_info,
-+								&sequ_hdr_info,
-+								nal_unit_type,
-+								nal_ref_idc);
-+
-+			if (parse_error) {
-+				unit_data->parse_error |= parse_error;
-+				return IMG_ERROR_CANCELLED;
-+			}
-+
-+			/*
-+			 * We are signalling closed GOP at every I frame
-+			 * This does not conform 100% with the
-+			 * specification but insures that seeking always
-+			 * works.
-+			 */
-+			unit_data->new_closed_gop = h264_slice_hdr_info.slice_type ==
-+				I_SLICE ? 1 : 0;
-+
-+			/*
-+			 * Now pps_info and sequ_hdr_info contain the
-+			 * PPS/SPS info related to this picture
-+			 */
-+			h264_pps_info = (struct bspp_h264_pps_info *)pps_info->secure_pps_info;
-+			h264_seq_hdr_info =
-+			(struct bspp_h264_seq_hdr_info *)sequ_hdr_info->secure_sequence_info;
-+
-+			tmp1 = &pps_info->fw_pps;
-+			tmp2 = &sequ_hdr_info->fw_sequence;
-+
-+			h264fw_pps_info = (struct h264fw_picture_ps *)((unsigned char *)
-+						tmp1->ddbuf_info.cpu_virt_addr + tmp1->buf_offset);
-+			h264_fwseq_hdr_info = (struct h264fw_sequence_ps *)((unsigned char *)
-+					tmp2->ddbuf_info.cpu_virt_addr + tmp2->buf_offset);
-+			VDEC_ASSERT(h264_slice_hdr_info.pps_id == h264_pps_info->pps_id);
-+			VDEC_ASSERT(h264_pps_info->seq_parameter_set_id ==
-+				(unsigned int)h264_seq_hdr_info->sps_info.seq_parameter_set_id);
-+
-+			/*
-+			 * Update the decoding-related FW SPS info related to the current picture
-+			 * with the SEI data that were potentially received and also relate to
-+			 * the current info. Until we receive the picture we do not know which
-+			 * sequence to update with the SEI data.
-+			 * Setfrom last SEI, needed for decoding
-+			 */
-+			h264_fwseq_hdr_info->disable_vdmc_filt = interpicctx->disable_vdmc_filt;
-+			h264_fwseq_hdr_info->transform4x4_mb_not_available =
-+							interpicctx->b4x4transform_mb_unavailable;
-+
-+			/*
-+			 * Determine if current slice is a new picture, and update the related
-+			 * params for future reference
-+			 * Order of checks is important
-+			 */
-+			{
-+				struct bspp_parse_state *state = unit_data->parse_state;
-+
-+				set_if_not_determined_yet(&determined, state->new_view,
-+							  &current_pic_is_new, 1);
-+				set_if_not_determined_yet(&determined, state->next_pic_is_new,
-+							  &current_pic_is_new, 1);
-+				set_if_not_determined_yet
-+					(&determined,
-+					 (h264_slice_hdr_info.redundant_pic_cnt > 0),
-+					 &current_pic_is_new, 0);
-+				set_if_not_determined_yet
-+					(&determined,
-+					 (state->prev_frame_num !=
-+					  h264_slice_hdr_info.frame_num),
-+					 &current_pic_is_new, 1);
-+				set_if_not_determined_yet
-+					(&determined,
-+					 (state->prev_pps_id != h264_slice_hdr_info.pps_id),
-+					 &current_pic_is_new, 1);
-+				set_if_not_determined_yet
-+					(&determined,
-+					 (state->prev_field_pic_flag !=
-+					  h264_slice_hdr_info.field_pic_flag),
-+					 &current_pic_is_new, 1);
-+				set_if_not_determined_yet
-+					(&determined,
-+					 ((h264_slice_hdr_info.field_pic_flag) &&
-+					  (state->prev_bottom_pic_flag !=
-+					   h264_slice_hdr_info.bottom_field_flag)),
-+					 &current_pic_is_new, 1);
-+				set_if_not_determined_yet
-+					(&determined,
-+					 ((state->prev_nal_ref_idc == 0 || nal_ref_idc == 0) &&
-+					  (state->prev_nal_ref_idc != nal_ref_idc)),
-+					 &current_pic_is_new, 1);
-+				set_if_not_determined_yet
-+					(&determined,
-+					 ((h264_seq_hdr_info->sps_info.pic_order_cnt_type == 0) &&
-+					  ((state->prev_pic_order_cnt_lsb !=
-+					    h264_slice_hdr_info.pic_order_cnt_lsb) ||
-+					   (state->prev_delta_pic_order_cnt_bottom !=
-+					    h264_slice_hdr_info.delta_pic_order_cnt_bottom))),
-+					 &current_pic_is_new, 1);
-+				set_if_not_determined_yet
-+					(&determined,
-+					 ((h264_seq_hdr_info->sps_info.pic_order_cnt_type == 1) &&
-+					  ((state->prev_delta_pic_order_cnt[0] !=
-+					    h264_slice_hdr_info.delta_pic_order_cnt[0]) ||
-+					   (state->prev_delta_pic_order_cnt[1] !=
-+					    h264_slice_hdr_info.delta_pic_order_cnt[1]))),
-+					 &current_pic_is_new, 1);
-+				set_if_not_determined_yet
-+					(&determined,
-+					 ((state->prev_nal_unit_type ==
-+					   (int)H264_NALTYPE_IDR_SLICE ||
-+					   nal_unit_type == (int)H264_NALTYPE_IDR_SLICE) &&
-+					  (state->prev_nal_unit_type !=
-+					   (int)nal_unit_type)),
-+					 &current_pic_is_new, 1);
-+				set_if_not_determined_yet(&determined,
-+							  ((state->prev_nal_unit_type ==
-+							    (int)H264_NALTYPE_IDR_SLICE) &&
-+							   (state->prev_idr_pic_id !=
-+							    h264_slice_hdr_info.idr_pic_id)),
-+							  &current_pic_is_new, 1);
-+
-+				/*
-+				 * Update whatever is not updated already in different places of
-+				 * the code or just needs to be updated here
-+				 */
-+				state->prev_frame_num = h264_slice_hdr_info.frame_num;
-+				state->prev_pps_id = h264_slice_hdr_info.pps_id;
-+				state->prev_field_pic_flag =
-+					h264_slice_hdr_info.field_pic_flag;
-+				state->prev_nal_ref_idc = nal_ref_idc;
-+				state->prev_pic_order_cnt_lsb =
-+					h264_slice_hdr_info.pic_order_cnt_lsb;
-+				state->prev_delta_pic_order_cnt_bottom =
-+					h264_slice_hdr_info.delta_pic_order_cnt_bottom;
-+				state->prev_delta_pic_order_cnt[0] =
-+					h264_slice_hdr_info.delta_pic_order_cnt[0];
-+				state->prev_delta_pic_order_cnt[1] =
-+					h264_slice_hdr_info.delta_pic_order_cnt[1];
-+				state->prev_nal_unit_type = (int)nal_unit_type;
-+				state->prev_idr_pic_id = h264_slice_hdr_info.idr_pic_id;
-+			}
-+
-+			/* Detect second field and manage the prev_bottom_pic_flag flag */
-+			if (h264_slice_hdr_info.field_pic_flag && current_pic_is_new) {
-+				unit_data->parse_state->prev_bottom_pic_flag =
-+					h264_slice_hdr_info.bottom_field_flag;
-+			}
-+
-+			/* Detect ASO    Just met new pic */
-+			id = h264_slice_hdr_info.colour_plane_id;
-+			if (current_pic_is_new) {
-+				unsigned int i;
-+
-+				for (i = 0; i < MAX_COMPONENTS; i++)
-+					unit_data->parse_state->prev_first_mb_in_slice[i] = 0;
-+			} else if (unit_data->parse_state->prev_first_mb_in_slice[id] >
-+				h264_slice_hdr_info.first_mb_in_slice) {
-+				/* We just found ASO */
-+				unit_data->parse_state->discontinuous_mb = 1;
-+			}
-+			unit_data->parse_state->prev_first_mb_in_slice[id] =
-+				h264_slice_hdr_info.first_mb_in_slice;
-+
-+			/* We may already knew we were DiscontinuousMB */
-+			if (unit_data->parse_state->discontinuous_mb)
-+				unit_data->out.pict_hdr_info->discontinuous_mbs =
-+					unit_data->parse_state->discontinuous_mb;
-+
-+			/*
-+			 * We want to calculate the scaling lists only once per picture/field,
-+			 * not every slice We want to populate the VDEC Picture Header Info
-+			 * only once per picture/field, not every slice
-+			 */
-+			if (current_pic_is_new) {
-+				/* Common Sequence Header Info fetched */
-+				struct vdec_comsequ_hdrinfo *comseq_hdr_info =
-+					&sequ_hdr_info->sequ_hdr_info.com_sequ_hdr_info;
-+				struct bspp_pict_data *type_pict_aux_data;
-+
-+				unit_data->parse_state->next_pic_is_new = 0;
-+
-+				/* Generate SGM for this picture */
-+				if (h264_pps_info->num_slice_groups_minus1 != 0 &&
-+				    h264_pps_info->slice_group_map_type <= 6) {
-+					bspp_h264_unitparser_compile_sgmdata
-+								(&h264_slice_hdr_info,
-+								 h264_seq_hdr_info,
-+								 h264_pps_info,
-+								 unit_data->out.pict_hdr_info);
-+				} else {
-+					unit_data->out.pict_hdr_info->pict_sgm_data.pic_data = NULL;
-+					unit_data->out.pict_hdr_info->pict_sgm_data.bufmap_id = 0;
-+					unit_data->out.pict_hdr_info->pict_sgm_data.buf_offset = 0;
-+					unit_data->out.pict_hdr_info->pict_sgm_data.id =
-+						BSPP_INVALID;
-+					unit_data->out.pict_hdr_info->pict_sgm_data.size = 0;
-+				}
-+
-+				unit_data->parse_state->discontinuous_mb =
-+					unit_data->out.pict_hdr_info->discontinuous_mbs;
-+
-+				/*
-+				 * Select the scaling lists based on h264_pps_info and
-+				 * h264_seq_hdr_info and pass them to h264fw_pps_info
-+				 */
-+				bspp_h264_select_scaling_list(h264fw_pps_info,
-+							      h264_pps_info,
-+							      h264_seq_hdr_info);
-+
-+				/*
-+				 * Uses the common sequence/SINGLE-slice info to populate the
-+				 * VDEC Picture Header Info
-+				 */
-+				bspp_h264_pict_hdr_populate(nal_unit_type, &h264_slice_hdr_info,
-+							    comseq_hdr_info,
-+							    unit_data->out.pict_hdr_info);
-+
-+				/* Store some raw bitstream fields for output. */
-+				unit_data->out.pict_hdr_info->h264_pict_hdr_info.frame_num =
-+					h264_slice_hdr_info.frame_num;
-+				unit_data->out.pict_hdr_info->h264_pict_hdr_info.nal_ref_idc =
-+					nal_ref_idc;
-+
-+				/*
-+				 * Update the display-related picture header information with
-+				 * the related SEI parsed data The display-related SEI is
-+				 * used only for the first picture after the SEI
-+				 */
-+				if (!interpicctx->sei_info_attached_to_pic) {
-+					interpicctx->sei_info_attached_to_pic = 1;
-+					if (interpicctx->active_sps_for_sei_parsing !=
-+						h264_seq_hdr_info->sps_info.seq_parameter_set_id) {
-+						/*
-+						 * We tried to guess the SPS ID that we should use
-+						 * to parse the SEI, but we guessed wrong
-+						 */
-+						pr_err("Parsed SEI with wrong SPS, data may be parsed wrong");
-+					}
-+					unit_data->out.pict_hdr_info->disp_info.repeat_first_fld =
-+						interpicctx->repeat_first_field;
-+					unit_data->out.pict_hdr_info->disp_info.max_frm_repeat =
-+						interpicctx->max_frm_repeat;
-+					/* SEI - Not supported */
-+				}
-+
-+				/*
-+				 * For Idr slices update the Active
-+				 * Sequence ID for SEI parsing,
-+				 * error resilient
-+				 */
-+				if (nal_unit_type == H264_NALTYPE_IDR_SLICE)
-+					interpicctx->active_sps_for_sei_parsing =
-+						h264_seq_hdr_info->sps_info.seq_parameter_set_id;
-+
-+				/*
-+				 * Choose the appropriate auxiliary data
-+				 * structure to populate.
-+				 */
-+				if (unit_data->parse_state->second_field_flag)
-+					type_pict_aux_data =
-+						&unit_data->out.pict_hdr_info->second_pict_aux_data;
-+
-+				else
-+					type_pict_aux_data =
-+						&unit_data->out.pict_hdr_info->pict_aux_data;
-+
-+				/*
-+				 * We have no container for the PPS that
-+				 * passes down to the kernel, for this
-+				 * reason the h264 secure parser needs
-+				 * to populate that info into the
-+				 * picture header (Second)PictAuxData.
-+				 */
-+				type_pict_aux_data->bufmap_id = pps_info->bufmap_id;
-+				type_pict_aux_data->buf_offset = pps_info->buf_offset;
-+				type_pict_aux_data->pic_data = (void *)h264fw_pps_info;
-+				type_pict_aux_data->id = h264_pps_info->pps_id;
-+				type_pict_aux_data->size = sizeof(struct h264fw_picture_ps);
-+
-+				pps_info->ref_count++;
-+
-+				/* This info comes from NAL directly */
-+				unit_data->out.pict_hdr_info->ref = (nal_ref_idc == 0) ? 0 : 1;
-+			}
-+			if (nal_unit_type == H264_NALTYPE_IDR_SLICE)
-+				unit_data->new_closed_gop = 1;
-+
-+			/* Return the SPS ID */
-+			/*
-+			 * seq_parameter_set_id is always in range 0-31,
-+			 * so we can add offset indicating subsequence header
-+			 */
-+			id_loc = h264_pps_info->seq_parameter_set_id;
-+			unit_data->pict_sequ_hdr_id =
-+				(nal_unit_type == H264_NALTYPE_SLICE_SCALABLE ||
-+				nal_unit_type ==
-+				H264_NALTYPE_SLICE_IDR_SCALABLE) ? id_loc + 32 : id_loc;
-+
-+		} else if (nal_unit_type == H264_NALTYPE_SLICE_PARTITION_A ||
-+			nal_unit_type == H264_NALTYPE_SLICE_PARTITION_B ||
-+			nal_unit_type == H264_NALTYPE_SLICE_PARTITION_C) {
-+			unit_data->slice = 1;
-+
-+			pr_err("Unsupported Slice NAL type: %d", nal_unit_type);
-+			unit_data->parse_error = BSPP_ERROR_UNSUPPORTED;
-+		}
-+		break;
-+
-+	case BSPP_UNIT_UNCLASSIFIED:
-+		if (nal_unit_type == H264_NALTYPE_ACCESS_UNIT_DELIMITER) {
-+			unit_data->parse_state->next_pic_is_new = 1;
-+		} else if (nal_unit_type == H264_NALTYPE_SLICE_PREFIX ||
-+			nal_unit_type == H264_NALTYPE_SUBSET_SPS) {
-+			/* if mvc disabled do nothing */
-+		} else {
-+			/* Should not have any other type of unclassified data. */
-+			pr_err("unclassified data detected!\n");
-+		}
-+		break;
-+
-+	case BSPP_UNIT_NON_PICTURE:
-+		if (nal_unit_type == H264_NALTYPE_END_OF_SEQUENCE ||
-+		    nal_unit_type == H264_NALTYPE_END_OF_STREAM) {
-+			unit_data->parse_state->next_pic_is_new = 1;
-+		} else if (nal_unit_type == H264_NALTYPE_FILLER_DATA ||
-+			nal_unit_type == H264_NALTYPE_SEQUENCE_PARAMETER_SET_EXTENSION ||
-+			nal_unit_type == H264_NALTYPE_AUXILIARY_SLICE) {
-+		} else if (nal_unit_type == H264_NALTYPE_SLICE_SCALABLE ||
-+			nal_unit_type == H264_NALTYPE_SLICE_IDR_SCALABLE) {
-+			/* if mvc disabled do nothing */
-+		} else {
-+			/* Should not have any other type of non-picture data. */
-+			VDEC_ASSERT(0);
-+		}
-+		break;
-+
-+	case BSPP_UNIT_UNSUPPORTED:
-+		pr_err("Unsupported NAL type: %d", nal_unit_type);
-+		unit_data->parse_error = BSPP_ERROR_UNKNOWN_DATAUNIT_DETECTED;
-+		break;
-+
-+	default:
-+		VDEC_ASSERT(0);
-+		break;
-+	}
-+
-+	return result;
-+}
-+
-+static int bspp_h264releasedata(void *str_alloc, enum bspp_unit_type data_type, void *data_handle)
-+{
-+	int result = 0;
-+
-+	if (!data_handle)
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+
-+	switch (data_type) {
-+	case BSPP_UNIT_SEQUENCE:
-+		result = bspp_h264_release_sequ_hdr_info(str_alloc, data_handle);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return result;
-+}
-+
-+static int bspp_h264resetdata(enum bspp_unit_type data_type, void *data_handle)
-+{
-+	int result = 0;
-+
-+	if (!data_handle)
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+
-+	switch (data_type) {
-+	case BSPP_UNIT_SEQUENCE:
-+		result = bspp_h264_reset_seq_hdr_info(data_handle);
-+		break;
-+	case BSPP_UNIT_PPS:
-+		result = bspp_h264_reset_pps_info(data_handle);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return result;
-+}
-+
-+static void bspp_h264parse_codecconfig(void *swsr_ctx,
-+				       unsigned int *unitcount,
-+				       unsigned int *unit_arraycount,
-+				       unsigned int *delimlength,
-+				       unsigned int *size_delimlength)
-+{
-+	unsigned long long value = 6;
-+
-+	/*
-+	 * Set the shift-register up to provide next 6 bytes
-+	 * without emulation prevention detection.
-+	 */
-+	swsr_consume_delim(swsr_ctx, SWSR_EMPREVENT_NONE, 0, &value);
-+
-+	/*
-+	 * Codec config header must be read for size delimited data (H.264)
-+	 * to get to the start of each unit.
-+	 * This parsing follows section 5.2.4.1.1 of ISO/IEC 14496-15:2004(E).
-+	 */
-+	/* Configuration version. */
-+	swsr_read_bits(swsr_ctx, 8);
-+	/* AVC Profile Indication. */
-+	swsr_read_bits(swsr_ctx, 8);
-+	/* Profile compatibility. */
-+	swsr_read_bits(swsr_ctx, 8);
-+	/* AVC Level Indication. */
-+	swsr_read_bits(swsr_ctx, 8);
-+	*delimlength = ((swsr_read_bits(swsr_ctx, 8) & 0x3) + 1) * 8;
-+	*unitcount = swsr_read_bits(swsr_ctx, 8) & 0x1f;
-+
-+	/* Size delimiter is only 2 bytes for H.264 codec configuration. */
-+	*size_delimlength = 2 * 8;
-+}
-+
-+static void bspp_h264update_unitcounts(void *swsr_ctx,
-+				       unsigned int *unitcount,
-+				       unsigned int *unit_arraycount)
-+{
-+	if (*unitcount == 0) {
-+		unsigned long long value = 1;
-+
-+		/*
-+		 * Set the shift-register up to provide next 1 byte without
-+		 * emulation prevention detection.
-+		 */
-+		swsr_consume_delim(swsr_ctx, SWSR_EMPREVENT_NONE, 0, &value);
-+
-+		*unitcount = swsr_read_bits(swsr_ctx, 8);
-+	}
-+
-+	(*unitcount)--;
-+}
-+
-+/*
-+ * Sets the parser configuration
-+ */
-+int bspp_h264_set_parser_config(enum vdec_bstr_format bstr_format,
-+				struct bspp_vid_std_features *pvidstd_features,
-+				struct bspp_swsr_ctx *pswsr_ctx,
-+				struct bspp_parser_callbacks *pparser_callbacks,
-+				struct bspp_inter_pict_data *pinterpict_data)
-+{
-+	/* Set h.246 parser callbacks. */
-+	pparser_callbacks->parse_unit_cb = bspp_h264_unit_parser;
-+	pparser_callbacks->release_data_cb = bspp_h264releasedata;
-+	pparser_callbacks->reset_data_cb = bspp_h264resetdata;
-+	pparser_callbacks->destroy_data_cb = bspp_h264_destroy_data;
-+	pparser_callbacks->parse_codec_config_cb = bspp_h264parse_codecconfig;
-+	pparser_callbacks->update_unit_counts_cb = bspp_h264update_unitcounts;
-+
-+	/* Set h.246 specific features. */
-+	pvidstd_features->seq_size = sizeof(struct bspp_h264_seq_hdr_info);
-+	pvidstd_features->uses_pps = 1;
-+	pvidstd_features->pps_size = sizeof(struct bspp_h264_pps_info);
-+
-+	/* Set h.246 specific shift register config. */
-+	pswsr_ctx->emulation_prevention = SWSR_EMPREVENT_00000300;
-+	pinterpict_data->h264_ctx.active_sps_for_sei_parsing = BSPP_INVALID;
-+
-+	if (bstr_format == VDEC_BSTRFORMAT_DEMUX_BYTESTREAM ||
-+	    bstr_format == VDEC_BSTRFORMAT_ELEMENTARY) {
-+		pswsr_ctx->sr_config.delim_type = SWSR_DELIM_SCP;
-+		pswsr_ctx->sr_config.delim_length = 3 * 8;
-+		pswsr_ctx->sr_config.scp_value = 0x000001;
-+	} else if (bstr_format == VDEC_BSTRFORMAT_DEMUX_SIZEDELIMITED) {
-+		pswsr_ctx->sr_config.delim_type = SWSR_DELIM_SIZE;
-+		/* Set the default size-delimiter number of bits */
-+		pswsr_ctx->sr_config.delim_length = 4 * 8;
-+	} else {
-+		VDEC_ASSERT(0);
-+		return IMG_ERROR_NOT_SUPPORTED;
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * This function determines the BSPP unit type based on the
-+ * provided bitstream (H264 specific) unit type
-+ */
-+void bspp_h264_determine_unittype(unsigned char bitstream_unittype,
-+				  int disable_mvc,
-+				  enum bspp_unit_type *bspp_unittype)
-+{
-+	unsigned char type = bitstream_unittype & 0x1f;
-+
-+	switch (type) {
-+	case H264_NALTYPE_SLICE_PREFIX:
-+		*bspp_unittype = disable_mvc ? BSPP_UNIT_UNCLASSIFIED : BSPP_UNIT_PICTURE;
-+		break;
-+	case H264_NALTYPE_SUBSET_SPS:
-+		*bspp_unittype = disable_mvc ? BSPP_UNIT_UNCLASSIFIED : BSPP_UNIT_SEQUENCE;
-+		break;
-+	case H264_NALTYPE_SLICE_SCALABLE:
-+	case H264_NALTYPE_SLICE_IDR_SCALABLE:
-+		*bspp_unittype = disable_mvc ? BSPP_UNIT_NON_PICTURE : BSPP_UNIT_PICTURE;
-+		break;
-+	case H264_NALTYPE_SEQUENCE_PARAMETER_SET:
-+		*bspp_unittype = BSPP_UNIT_SEQUENCE;
-+		break;
-+	case H264_NALTYPE_PICTURE_PARAMETER_SET:
-+		*bspp_unittype = BSPP_UNIT_PPS;
-+		break;
-+	case H264_NALTYPE_SLICE:
-+	case H264_NALTYPE_SLICE_PARTITION_A:
-+	case H264_NALTYPE_SLICE_PARTITION_B:
-+	case H264_NALTYPE_SLICE_PARTITION_C:
-+	case H264_NALTYPE_IDR_SLICE:
-+		*bspp_unittype = BSPP_UNIT_PICTURE;
-+		break;
-+	case H264_NALTYPE_ACCESS_UNIT_DELIMITER:
-+	case H264_NALTYPE_SUPPLEMENTAL_ENHANCEMENT_INFO:
-+		/*
-+		 * Each of these NAL units should not change unit type if
-+		 * current is picture, since they can occur anywhere, any number
-+		 * of times
-+		 */
-+		*bspp_unittype = BSPP_UNIT_UNCLASSIFIED;
-+		break;
-+	case H264_NALTYPE_END_OF_SEQUENCE:
-+	case H264_NALTYPE_END_OF_STREAM:
-+	case H264_NALTYPE_FILLER_DATA:
-+	case H264_NALTYPE_SEQUENCE_PARAMETER_SET_EXTENSION:
-+	case H264_NALTYPE_AUXILIARY_SLICE:
-+		*bspp_unittype = BSPP_UNIT_NON_PICTURE;
-+		break;
-+	default:
-+		*bspp_unittype = BSPP_UNIT_UNSUPPORTED;
-+		break;
-+	}
-+}
-diff --git a/drivers/staging/media/vxd/decoder/h264_secure_parser.h b/drivers/staging/media/vxd/decoder/h264_secure_parser.h
++#define IMG_ERROR_ALREADY_INITIALISED                   (18)
++/* @brief A provided value exceeded stated bounds */
++#define IMG_ERROR_VALUE_OUT_OF_RANGE                    (19)
++/* @brief The operation has been cancelled */
++#define IMG_ERROR_CANCELLED                             (20)
++/* @brief A specified minimum has not been met */
++#define IMG_ERROR_MINIMUM_LIMIT_NOT_MET                 (21)
++/* @brief The requested feature or mode is not supported */
++#define IMG_ERROR_NOT_SUPPORTED                         (22)
++/* @brief A device or process was idle */
++#define IMG_ERROR_IDLE                                  (23)
++/* @brief A device or process was busy */
++#define IMG_ERROR_BUSY                                  (24)
++/* @brief The device or resource has been disabled */
++#define IMG_ERROR_DISABLED                              (25)
++/* @brief The requested operation is not permitted at this time */
++#define IMG_ERROR_OPERATION_PROHIBITED                  (26)
++/* @brief The entry read from the MMU page directory is invalid */
++#define IMG_ERROR_MMU_PAGE_DIRECTORY_FAULT              (27)
++/* @brief The entry read from an MMU page table is invalid */
++#define IMG_ERROR_MMU_PAGE_TABLE_FAULT                  (28)
++/* @brief The entry read from an MMU page catalogue is invalid */
++#define IMG_ERROR_MMU_PAGE_CATALOGUE_FAULT              (29)
++/* @brief Memory can not be freed as it is still been used */
++#define IMG_ERROR_MEMORY_IN_USE                         (30)
++/* @brief A mismatch has unexpectedly occurred in data */
++#define IMG_ERROR_TEST_MISMATCH                         (31)
++
++#define IMG_ERROR_INVALID_CONTEXT			(32)
++
++#define IMG_ERROR_RETRY					(33)
++#define IMG_ERROR_UNDEFINED				(34)
++#define IMG_ERROR_INVALID_SIZE				(35)
++#define IMG_ERROR_SURFACE_LOCKED			(36)
++
++#endif /* __IMG_ERRORS__ */
+diff --git a/drivers/staging/media/vxd/common/img_mem.h b/drivers/staging/media/vxd/common/img_mem.h
 new file mode 100644
-index 000000000000..68789dfcc439
+index 000000000000..c8b5e2311d14
 --- /dev/null
-+++ b/drivers/staging/media/vxd/decoder/h264_secure_parser.h
-@@ -0,0 +1,278 @@
++++ b/drivers/staging/media/vxd/common/img_mem.h
+@@ -0,0 +1,43 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * h.264 secure data unit parsing API.
++ * Typedefs for memory pool and attributes
 + *
 + * Copyright (c) Imagination Technologies Ltd.
 + * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com/
 + *
 + * Authors:
-+ *	Lakshmi Sankar <lakshmisankar-t@ti.com>
-+ * Re-written for upstreming
-+ *	Prashanth Kumar Amai <prashanth.ka@pathpartnertech.com>
++ *	Amit Makani <amit.makani@ti.com>
++ *
++ * Re-written for upstreamimg
 + *	Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
 + */
-+#ifndef __H264SECUREPARSER_H__
-+#define __H264SECUREPARSER_H__
-+
-+#include "bspp_int.h"
-+#include "vdec_defs.h"
++#ifndef __IMG_MEM__
++#define __IMG_MEM__
 +
 +/*
-+ * enum h264_nalunittype
-+ * @Description Contains H264 NAL unit types
++ * This type defines the memory attributes.
++ * @0x00000001: Memory to be allocated as cached
++ * @0x00000002: Memory to be allocated as uncached
++ * @0x00000004: Memory to be allocated as write-combined
++ *	(or equivalent buffered/burst writes mechanism)
++ * @0x00001000: Memory can be read only by the core
++ * @0x00002000: Memory can be written only by the core
++ * @0x00010000: Memory should be readable by the cpu
++ * @0x00020000: Memory should be writable by the cpu
 + */
-+enum h264_nalunittype {
-+	H264_NALTYPE_UNSPECIFIED                      = 0,
-+	H264_NALTYPE_SLICE                            = 1,
-+	H264_NALTYPE_SLICE_PARTITION_A                = 2,
-+	H264_NALTYPE_SLICE_PARTITION_B                = 3,
-+	H264_NALTYPE_SLICE_PARTITION_C                = 4,
-+	H264_NALTYPE_IDR_SLICE                        = 5,
-+	H264_NALTYPE_SUPPLEMENTAL_ENHANCEMENT_INFO    = 6,
-+	H264_NALTYPE_SEQUENCE_PARAMETER_SET           = 7,
-+	H264_NALTYPE_PICTURE_PARAMETER_SET            = 8,
-+	H264_NALTYPE_ACCESS_UNIT_DELIMITER            = 9,
-+	H264_NALTYPE_END_OF_SEQUENCE                  = 10,
-+	H264_NALTYPE_END_OF_STREAM                    = 11,
-+	H264_NALTYPE_FILLER_DATA                      = 12,
-+	H264_NALTYPE_SEQUENCE_PARAMETER_SET_EXTENSION = 13,
-+	H264_NALTYPE_SLICE_PREFIX                     = 14,
-+	H264_NALTYPE_SUBSET_SPS                       = 15,
-+	H264_NALTYPE_AUXILIARY_SLICE                  = 19,
-+	H264_NALTYPE_SLICE_SCALABLE                   = 20,
-+	H264_NALTYPE_SLICE_IDR_SCALABLE               = 21,
-+	H264_NALTYPE_MAX                              = 31,
-+	H264_NALTYPE_FORCE32BITS                      = 0x7FFFFFFFU
++enum sys_emem_attrib {
++	SYS_MEMATTRIB_CACHED             = 0x00000001,
++	SYS_MEMATTRIB_UNCACHED           = 0x00000002,
++	SYS_MEMATTRIB_WRITECOMBINE       = 0x00000004,
++	SYS_MEMATTRIB_SECURE             = 0x00000010,
++	SYS_MEMATTRIB_INPUT              = 0x00000100,
++	SYS_MEMATTRIB_OUTPUT             = 0x00000200,
++	SYS_MEMATTRIB_INTERNAL           = 0x00000400,
++	SYS_MEMATTRIB_CORE_READ_ONLY     = 0x00001000,
++	SYS_MEMATTRIB_CORE_WRITE_ONLY    = 0x00002000,
++	SYS_MEMATTRIB_CPU_READ           = 0x00010000,
++	SYS_MEMATTRIB_CPU_WRITE          = 0x00020000,
++	SYS_MEMATTRIB_FORCE32BITS = 0x7FFFFFFFU
++};
++
++#endif /* __IMG_MEM__ */
+diff --git a/drivers/staging/media/vxd/decoder/fw_interface.h b/drivers/staging/media/vxd/decoder/fw_interface.h
+new file mode 100644
+index 000000000000..6da3d835b950
+--- /dev/null
++++ b/drivers/staging/media/vxd/decoder/fw_interface.h
+@@ -0,0 +1,818 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * IMG MSVDX core Registers
++ * This file contains the MSVDX_CORE_REGS_H Definitions
++ *
++ * Copyright (c) Imagination Technologies Ltd.
++ * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com/
++ *
++ * Authors:
++ *	Amit Makani <amit.makani@ti.com>
++ *
++ * Re-written for upstreamimg
++ *	Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
++ */
++
++#ifndef FW_INTERFACE_H_
++#define FW_INTERFACE_H_
++
++/* TODO For now this macro defined, need to think and enable */
++#define VDEC_USE_PVDEC_COMPATIBILITY    1
++
++#define MSG_TYPE_PADDING                                (0x00)
++/* Start of parser specific Host->MTX messages */
++#define MSG_TYPE_START_PSR_HOSTMTX_MSG  (0x80)
++/* Start of parser specific MTX->Host message */
++#define MSG_TYPE_START_PSR_MTXHOST_MSG  (0xC0)
++
++enum {
++	FW_DEVA_INIT = MSG_TYPE_START_PSR_HOSTMTX_MSG,
++	FW_DEVA_DECODE_FE,
++	FW_DEVA_RES_0,
++	FW_DEVA_RES_1,
++	FW_DEVA_DECODE_BE,
++	FW_DEVA_HOST_BE_OPP,
++	FW_DEVA_DEBLOCK,
++	FW_DEVA_INTRA_OOLD,
++	FW_DEVA_ENDFRAME,
++
++	FW_DEVA_PARSE,
++	FW_DEVA_PARSE_FRAGMENT,
++	FW_DEVA_BEGINFRAME,
++
++#ifdef VDEC_USE_PVDEC_COMPATIBILITY
++#ifdef VDEC_USE_PVDEC_SEC
++	FWBSP_INIT,
++	FWBSP_PARSE_BITSTREAM,
++	FWDEC_DECODE,
++#endif /* VDEC_USE_PVDEC_SEC */
++#endif /* VDEC_USE_PVDEC_COMPATIBILITY */
++
++	/* Sent by the firmware on the MTX to the host. */
++	FW_DEVA_COMPLETED = MSG_TYPE_START_PSR_MTXHOST_MSG,
++#ifndef VDEC_USE_PVDEC_COMPATIBILITY
++	FW_DEVA_RES_2,
++	FW_DEVA_RES_3,
++	FW_DEVA_RES_4,
++	FW_DEVA_RES_5,
++
++	FW_DEVA_RES_6,
++	FW_DEVA_CONTIGUITY_WARNING,
++	FW_DEVA_PANIC,
++	FW_DEVA_RES_7,
++	FW_DEVA_RES_8,
++#else   /* ndef VDEC_USE_PVDEC_COMPATIBILITY */
++	FW_DEVA_PANIC,
++	FW_ASSERT,
++	FW_PERF,
++	/* An empty completion message sent by new vxd driver */
++	FW_VXD_EMPTY_COMPL,
++	FW_DEC_REQ_RECEIVED,
++	FW_SO,
++#ifdef VDEC_USE_PVDEC_SEC
++	FWBSP_NEW_SEQ,
++	FWBSP_NEW_PIC,
++	FWBSP_BUF_EMPTY,
++	FWBSP_ERROR,
++	FWDEC_COMPLETED,
++#endif /* VDEC_USE_PVDEC_SEC */
++#endif /* VDEC_USE_PVDEC_COMPATIBILITY */
++	FW_DEVA_SIGNATURES_LEGACY      = 0xD0,
++	FW_DEVA_SIGNATURES_HEVC        = 0xE0,
++	FW_DEVA_SIGNATURES_FORCE32BITS = 0x7FFFFFFFU
++};
++
++/* Defines the Host/Firmware communication area */
++#ifndef VDEC_USE_PVDEC_COMPATIBILITY
++#define COMMS_HEADER_SIZE               (0x34)
++#else /* def VDEC_USE_PVDEC_COMPATIBILITY */
++#define COMMS_HEADER_SIZE       (0x40)
++#endif /* def VDEC_USE_PVDEC_COMPATIBILITY */
++/* dwords */
++#define PVDEC_COM_RAM_FW_STATUS_OFFSET                          0x00
++#define PVDEC_COM_RAM_TASK_STATUS_OFFSET                        0x04
++#define PVDEC_COM_RAM_FW_ID_OFFSET                              0x08
++#define PVDEC_COM_RAM_FW_MTXPC_OFFSET                           0x0c
++#define PVDEC_COM_RAM_MSG_COUNTER_OFFSET                        0x10
++#define PVDEC_COM_RAM_SIGNATURE_OFFSET                          0x14
++#define PVDEC_COM_RAM_TO_HOST_BUF_SIZE_AND_OFFSET_OFFSET        0x18
++#define PVDEC_COM_RAM_TO_HOST_RD_INDEX_OFFSET                   0x1c
++#define PVDEC_COM_RAM_TO_HOST_WRT_INDEX_OFFSET                  0x20
++#define PVDEC_COM_RAM_TO_MTX_BUF_SIZE_AND_OFFSET_OFFSET         0x24
++#define PVDEC_COM_RAM_TO_MTX_RD_INDEX_OFFSET                    0x28
++#define PVDEC_COM_RAM_FLAGS_OFFSET                              0x2c
++#define PVDEC_COM_RAM_TO_MTX_WRT_INDEX_OFFSET                   0x30
++#ifdef VDEC_USE_PVDEC_COMPATIBILITY
++#define PVDEC_COM_RAM_STATE_BUF_SIZE_AND_OFFSET_OFFSET          0x34
++#define PVDEC_COM_RAM_FW_MMU_REPORT_OFFSET                      0x38
++#endif /* VDEC_USE_PVDEC_COMPATIBILITY */
++/* fields */
++#define PVDEC_COM_RAM_TO_HOST_BUF_SIZE_AND_OFFSET_SIZE_MASK     0xFFFF
++#define PVDEC_COM_RAM_TO_HOST_BUF_SIZE_AND_OFFSET_SIZE_SHIFT    0
++#define PVDEC_COM_RAM_TO_HOST_BUF_SIZE_AND_OFFSET_OFFSET_MASK   0xFFFF0000
++#define PVDEC_COM_RAM_TO_HOST_BUF_SIZE_AND_OFFSET_OFFSET_SHIFT  16
++
++#define PVDEC_COM_RAM_TO_MTX_BUF_SIZE_AND_OFFSET_SIZE_MASK      0xFFFF
++#define PVDEC_COM_RAM_TO_MTX_BUF_SIZE_AND_OFFSET_SIZE_SHIFT     0
++#define PVDEC_COM_RAM_TO_MTX_BUF_SIZE_AND_OFFSET_OFFSET_MASK    0xFFFF0000
++#define PVDEC_COM_RAM_TO_MTX_BUF_SIZE_AND_OFFSET_OFFSET_SHIFT   16
++#ifdef VDEC_USE_PVDEC_COMPATIBILITY
++#define PVDEC_COM_RAM_STATE_BUF_SIZE_AND_OFFSET_SIZE_MASK       0xFFFF
++#define PVDEC_COM_RAM_STATE_BUF_SIZE_AND_OFFSET_SIZE_SHIFT      0
++#define PVDEC_COM_RAM_STATE_BUF_SIZE_AND_OFFSET_OFFSET_MASK     0xFFFF0000
++#define PVDEC_COM_RAM_STATE_BUF_SIZE_AND_OFFSET_OFFSET_SHIFT    16
++#endif /* VDEC_USE_PVDEC_COMPATIBILITY */
++#define PVDEC_COM_RAM_BUF_GET_SIZE(_reg_, _name_) \
++	(((_reg_) & PVDEC_COM_RAM_ ## _name_ ## _BUF_SIZE_AND_OFFSET_SIZE_MASK) >> \
++	 PVDEC_COM_RAM_ ## _name_ ## _BUF_SIZE_AND_OFFSET_SIZE_SHIFT)
++#define PVDEC_COM_RAM_BUF_GET_OFFSET(_reg_, _name_) \
++	(((_reg_) & \
++	  PVDEC_COM_RAM_ ## _name_ ## _BUF_SIZE_AND_OFFSET_OFFSET_MASK) >> \
++	 PVDEC_COM_RAM_ ## _name_ ## _BUF_SIZE_AND_OFFSET_OFFSET_SHIFT)
++#define PVDEC_COM_RAM_BUF_SET_SIZE_AND_OFFSET(_name_, _size_, _offset_) \
++	((((_size_) << \
++		PVDEC_COM_RAM_ ## _name_ ## _BUF_SIZE_AND_OFFSET_SIZE_SHIFT) \
++	  & PVDEC_COM_RAM_ ## _name_ ## _BUF_SIZE_AND_OFFSET_SIZE_MASK) | \
++	 (((_offset_) << \
++		PVDEC_COM_RAM_ ## _name_ ## _BUF_SIZE_AND_OFFSET_OFFSET_SHIFT) \
++	  & PVDEC_COM_RAM_ ## _name_ ## _BUF_SIZE_AND_OFFSET_OFFSET_MASK))
++/* values */
++/* Firmware ready signature value */
++	#define FW_READY_SIGNATURE                              (0xA5A5A5A5)
++
++/* Firmware status values */
++	#define FW_STATUS_BUSY                                  0
++	#define FW_STATUS_IDLE                                  1
++	#define FW_STATUS_PANIC                                 2
++	#define FW_STATUS_ASSERT                                3
++	#define FW_STATUS_GAMEOVER                              4
++	#define FW_STATUS_FEWATCHDOG                            5
++	#define FW_STATUS_EPWATCHDOG                            6
++	#define FW_STATUS_BEWATCHDOG                            7
++#ifdef VDEC_USE_PVDEC_COMPATIBILITY
++	#define FW_STATUS_SO                                    8
++	#define FW_STATUS_INIT                                  0xF
++#endif
++
++/* Decode Message Flags */
++	#define FW_DEVA_RENDER_IS_FIRST_SLICE                   (0x00000001)
++/* This is H264 Mbaff - required for state store */
++	#define FW_DEVA_FORCE_RECON_WRITE_DISABLE               (0x00000002)
++	#define FW_DEVA_RENDER_IS_LAST_SLICE                    (0x00000004)
++/* Prevents insertion of end of picture or flush at VEC EOS */
++	#define FW_DEVA_DECODE_DISABLE_EOF_DETECTION            (0x00000008)
++
++	#define FW_DEVA_CONTEXT_BUFFER_INVALID                  (0x00000010)
++	#define FW_DEVA_FORCE_ALT_OUTPUT                        (0x00000020)
++	#define FW_SECURE_STREAM                                (0x00000040)
++	#define FW_LOW_LATENCY                                  (0x00000080)
++
++	#define FW_DEVA_CONTIGUITY_DETECTION                    (0x00000100)
++	#define FW_DEVA_FORCE_INIT_CMDS                         (0x00000200)
++	#define FW_DEVA_DEBLOCK_ENABLE                          (0x00000400)
++#ifdef VDEC_USE_PVDEC_COMPATIBILITY
++	#define FW_VDEC_SEND_SIGNATURES                         (0x00000800)
++#else
++/*							(0x00000800) */
++#endif /* VDEC_USE_PVDEC_COMPATIBILITY */
++
++	#define FW_DEVA_FORCE_AUX_LINE_BUF_DISABLE              (0x00001000)
++/*
++ * Cause no response message to be sent, and no interrupt
++ * generation on successful completion
++ */
++	#define FW_DEVA_RENDER_NO_RESPONSE_MSG                  (0x00002000)
++/*
++ * Cause an interrupt if a response message is generated
++ * on successful completion
++ */
++	#define FW_DEVA_RENDER_HOST_INT                         (0x00004000)
++/* Report contiguity errors to host */
++	#define FW_DEVA_CONTIGUITY_REPORTING                    (0x00008000)
++
++	#define FW_DEVA_VC1_SKIPPED_PICTURE                     (0x00010000)
++	#define FW_INTERNAL_RENDER_SWITCH                       (0x00020000)
++	#define FW_DEVA_UNSUPPORTED                             (0x00040000)
++	#define DEBLOCKING_FORCED_OFF                           (0x00080000)
++#ifdef VDEC_USE_PVDEC_COMPATIBILITY
++	#define FW_VDEC_CMD_PENDING                             (0x00100000)
++#else
++/*							(0x00100000) */
++#endif
++/* Only for debug */
++	#define DETECTED_RENDEC_FULL                            (0x00200000)
++/* Only for debug */
++	#define DETECTED_RENDEC_EMPTY                           (0x00400000)
++	#define FW_ONE_PASS_PARSE                               (0x00800000)
++
++	#define FW_DEVA_EARLY_COMPLETE                          (0x01000000)
++	#define FW_DEVA_FE_EP_SIGNATURES_READY                  (0x02000000)
++	#define FW_VEC_EOS                                      (0x04000000)
++/* hardware has reported an error relating to this command */
++	#define FW_DEVA_ERROR_DETECTED_ENT                      (0x08000000)
++
++	#define FW_DEVA_ERROR_DETECTED_PIX                      (0x10000000)
++	#define FW_DEVA_MP_SYNC                                 (0x20000000)
++	#define MORE_THAN_ONE_MB                                (0x40000000)
++	#define REATTEMPT_SINGLEPIPE                            (0x80000000)
++/* end of message flags */
++#ifdef VDEC_USE_PVDEC_COMPATIBILITY
++/* VDEC Decode Message Flags */
++/*
++ * H.264/H.265 are to be configured in SIZE_DELIMITED mode rather than SCP mode.
++ */
++#define FW_VDEC_NAL_SIZE_DELIM                  (0x00000001)
++/* Indicates if MMU cache shall be flushed. */
++#define FW_VDEC_MMU_FLUSH_CACHE                 (0x00000002)
++/* end of message flags */
++#endif /* VDEC_USE_PVDEC_COMPATIBILITY */
++
++/* FW flags */
++/* TODO : Temporary for HW testing */
++	#define FWFLAG_DISABLE_VDEB_PRELOAD             (0x00000001)
++	#define FWFLAG_BIG_TO_HOST_BUFFER               (0x00000002)
++/* FS is default regarless of this flag */
++	#define FWFLAG_FORCE_FS_FLOW                    (0x00000004)
++	#define FWFLAG_DISABLE_WATCHDOG_TIMERS          (0x00000008)
++
++	#define FWFLAG_DISABLE_AEH                      (0x00000020)
++	#define FWFLAG_DISABLE_AUTONOMOUS_RESET         (0x00000040)
++	#define FWFLAG_NON_ACCUMULATING_HWSIGS          (0x00000080)
++
++	#define FWFLAG_DISABLE_2PASS_DEBLOCK            (0x00000100)
++	#define FWFLAG_NO_INT_ON_TOHOST_FULL            (0x00000200)
++	#define FWFLAG_RETURN_VDEB_CR                   (0x00000800)
++
++	#define FWFLAG_DISABLE_AUTOCLOCKGATING          (0x00001000)
++	#define FWFLAG_DISABLE_IDLE_GPIO                (0x00002000)
++	#define FWFLAG_XPL                              (0x00004000)
++	#define FWFLAG_INFINITE_MTX_TIMEOUT             (0x00008000)
++
++	#define FWFLAG_DECOUPLE_BE_FE                   (0x00010000)
++	#define FWFLAG_ENABLE_SECURITY                  (0x00080000)
++
++	#define FWFLAG_ENABLE_CONCEALMENT               (0x00100000)
++/* Not currently supported */
++/*	#define	FWFLAG_PREEMPT				(0x00200000) */
++/* NA in FS */
++	#define FWFLAG_FORCE_FLUSHING                   (0x00400000)
++/* NA in FS */
++	#define FWFLAG_DISABLE_GENC_FLUSHING            (0x00800000)
++
++	#define FWFLAG_DISABLE_COREWDT_TIMERS           (0x01000000)
++	#define FWFLAG_DISABLE_RENDEC_AUTOFLUSH         (0x02000000)
++	#define FWFLAG_FORCE_STRICT_SINGLEPIPE          (0x04000000)
++	#define FWFLAG_CONSISTENT_MULTIPIPE_FLOW        (0x08000000)
++
++	#define FWFLAG_DISABLE_IDLE_FAST_EVAL           (0x10000000)
++	#define FWFLAG_FAKE_COMPLETION                  (0x20000000)
++	#define FWFLAG_MAN_PP_CLK                       (0x40000000)
++	#define FWFLAG_STACK_CHK                        (0x80000000)
++
++/* end of FW flags */
++
++#ifdef FW_STACK_USAGE_TRACKING
++/* FW task identifiers */
++enum task_id {
++	TASK_ID_RX = 0,
++	TASK_ID_TX,
++	TASK_ID_EP1,
++	TASK_ID_FE1,
++	TASK_ID_FE2,
++	TASK_ID_FE3,
++	TASK_ID_BE1,
++	TASK_ID_BE2,
++	TASK_ID_BE3,
++	TASK_ID_PARSER,
++	TASK_ID_MAX,
++	TASK_ID_FORCE32BITS = 0x7FFFFFFFU
++};
++
++/* FW task stack info utility macros */
++#define TASK_STACK_SIZE_MASK   0xFFFF
++#define TASK_STACK_SIZE_SHIFT  0
++#define TASK_STACK_USED_MASK   0xFFFF0000
++#define TASK_STACK_USED_SHIFT  16
++#define TASK_STACK_SET_INFO(_task_id_, _stack_info_, _size_, _used_) \
++	(_stack_info_[_task_id_] = \
++		 ((_size_) << TASK_STACK_SIZE_SHIFT) | \
++		 ((_used_) << TASK_STACK_USED_SHIFT))
++#define TASK_STACK_GET_SIZE(_task_id_, _stack_info_) \
++	((_stack_info_[_task_id_] & TASK_STACK_SIZE_MASK) >> \
++	 TASK_STACK_SIZE_SHIFT)
++#define TASK_STACK_GET_USED(_task_id_, _stack_info_) \
++	((_stack_info_[_task_id_] & TASK_STACK_USED_MASK) >> \
++	 TASK_STACK_USED_SHIFT)
++#endif /* FW_STACK_USAGE_TRACKING */
++
++/* Control Allocation */
++#define CMD_MASK                                (0xF0000000)
++
++/* Ctrl Allocation Header */
++#define CMD_CTRL_ALLOC_HEADER                   (0x90000000)
++
++struct ctrl_alloc_header {
++	unsigned int cmd_additional_params;
++	unsigned int slice_params;
++	union {
++		unsigned int vp8_probability_data;
++		unsigned int h264_pipeintra_buffersize;
++	};
++	unsigned int chroma_strides;
++	unsigned int slice_first_mb_yx;
++	unsigned int pic_last_mb_yx;
++	/* VC1 only : Store Range Map flags in bottom bits of [0] */
++	unsigned int alt_output_addr[2];
++	unsigned int alt_output_flags;
++	/* H264 Only : Extended Operating Mode */
++	unsigned int ext_opmode;
++};
++
++#define CMD_CTRL_ALLOC_HEADER_DWSIZE \
++	(sizeof(struct ctrl_alloc_header) / sizeof(unsigned int))
++
++/* Additional Parameter flags */
++#define VC1_PARSEHDR_MASK               (0x00000001)
++#define VC1_SKIPPIC_MASK                (0x00000002)
++
++#define VP6_BUFFOFFSET_MASK             (0x0000ffff)
++#define VP6_MULTISTREAM_MASK            (0x01000000)
++#define VP6_FRAMETYPE_MASK              (0x02000000)
++
++#define VP8_BUFFOFFSET_MASK             (0x00ffffff)
++#define VP8_PARTITIONSCOUNT_MASK        (0x0f000000)
++#define VP8_PARTITIONSCOUNT_SHIFT       (24)
++
++/* Nop Command */
++#define CMD_NOP                         (0x00000000)
++#define CMD_NOP_DWSIZE                  (1)
++
++/* Register Block */
++#define CMD_REGISTER_BLOCK                      (0x10000000)
++#define CMD_REGISTER_BLOCK_PATCHING_REQUIRED    (0x01000000)
++#define CMD_REGISTER_BLOCK_FLAG_PRELOAD         (0x04000000)
++#define CMD_REGISTER_BLOCK_FLAG_VLC_DATA        (0x08000000)
++
++/* Rendec Command */
++#define CMD_RENDEC_BLOCK                        (0x50000000)
++#define CMD_RENDEC_BLOCK_FLAG_MASK              (0x0F000000)
++#define CMD_RENDEC_FORCE                        (0x08000000)
++#define CMD_RENDEC_PATCHING_REQUIRED            (0x01000000)
++#define CMD_RENDEC_WORD_COUNT_MASK              (0x00ff0000)
++#define CMD_RENDEC_WORD_COUNT_SHIFT             (16)
++#define CMD_RENDEC_ADDRESS_MASK                 (0x0000ffff)
++#define CMD_RENDEC_ADDRESS_SHIFT                (0)
++
++#ifndef VDEC_USE_PVDEC_SEC
++/* Deblock */
++#define CMD_DEBLOCK                             (0x70000000)
++#define CMD_DEBLOCK_TYPE_STD                    (0x00000000)
++#define CMD_DEBLOCK_TYPE_OOLD                   (0x00000001)
++#define CMD_DEBLOCK_TYPE_SKIP                   (0x00000002)
++/* End Of Frame */
++#define CMD_DEBLOCK_TYPE_EF                     (0x00000003)
++
++struct deblock_cmd {
++	unsigned int cmd; /* 0x70000000 */
++	unsigned int source_mb_data;
++	unsigned int address_a[2];
++};
++
++#define CMD_DEBLOCK_DWSIZE              (sizeof(DEBLOCK_CMD) / sizeof(unsigned int))
++#endif /* !VDEC_USE_PVDEC_SEC */
++
++/* Skip */
++#define CMD_CONDITIONAL_SKIP                    (0x80000000)
++#define CMD_CONDITIONAL_SKIP_DWSIZE             (1)
++#define CMD_CONDITIONAL_SKIP_DWORDS             (0x0000ffff)
++#define CMD_CONDITIONAL_SKIP_CONTEXT_SWITCH     BIT(20)
++
++/* DMA */
++#define CMD_DMA                                 (0xE0000000)
++#define CMD_DMA_DMA_TYPE_MASK                   (0x03000000)
++#define CMD_DMA_DMA_TYPE_SHIFT                  (24)
++#define CMD_DMA_FLAG_MASK                       (0x00100000)
++#define CMD_DMA_FLAG_SHIFT                      (20)
++#define CMD_DMA_DMA_SIZE_MASK                   (0x000fffff)
++
++#define CMD_DMA_OFFSET_FLAG                     (0x00100000)
++
++#define CMD_DMA_MAX_OFFSET                      (0xFFF)
++#define CMD_DMA_TYPE_VLC_TABLE                  (0 << CMD_DMA_DMA_TYPE_SHIFT)
++#define CMD_DMA_TYPE_PROBABILITY_DATA           BIT(CMD_DMA_DMA_TYPE_SHIFT)
++
++struct dma_cmd {
++	unsigned int cmd;
++	unsigned int dev_virt_add;
++};
++
++#define CMD_DMA_DWSIZE                          (sizeof(DMA_CMD) / sizeof(unsigned int))
++
++struct dma_cmd_offset_dwsize {
++	unsigned int cmd;
++	unsigned int dev_virt_add;
++	unsigned int byte_offset;
++};
++
++#define CMD_DMA_OFFSET_DWSIZE   (sizeof(DMA_CMD_WITH_OFFSET) / sizeof(unsigned int))
++
++/* HOST COPY */
++#define CMD_HOST_COPY                           (0xF0000000)
++#define CMD_HOST_COPY_SIZE_MASK                 (0x000fffff)
++
++struct host_copy_cmd {
++	unsigned int cmd;
++	unsigned int src_dev_virt_add;
++	unsigned int dst_dev_virt_add;
++};
++
++#define CMD_HOST_COPY_DWSIZE            (sizeof(HOST_COPY_CMD) / sizeof(unsigned int))
++
++/* Shift register setup and Bitstream DMA */
++#define CMD_SR_SETUP                            (0xB0000000)
++#define CMD_SR_ENABLE_RBDU_EXTRACTION           (0x00000001)
++#define CMD_SR_ENABLE_AES_COUNTER               (0x00000002)
++#define CMD_SR_VERIFY_STARTCODE                 (0x00000004)
++#define CMD_SR_BITSTR_ADDR_DEREF                (0x00000008)
++#define CMD_SR_BITSTR_PARSE_KEY                 (0x00000010)
++
++struct sr_setup_cmd {
++	unsigned int cmd;
++	unsigned int bitstream_offset_bits;
++	unsigned int bitstream_size_bytes;
++};
++
++#define CMD_SR_DWSIZE                   (sizeof(SR_SETUP_CMD) / sizeof(unsigned int))
++
++#define CMD_BITSTREAM_DMA                       (0xA0000000)
++#define CMD_BITSTREAM_DMA_DWSIZE                (2)
++/* VC1 Parse Header Command */
++#define CMD_PARSE_HEADER                        (0x30000000)
++#define CMD_PARSE_HEADER_CONTEXT_MASK           (0x000000ff)
++#define CMD_PARSE_HEADER_NEWSLICE               (0x00000001)
++#define CMD_PARSE_HEADER_SKIP_PIC               (0x00000002)
++#define CMD_PARSE_HEADER_ONEPASSPARSE           (0x00000004)
++#define CMD_PARSE_HEADER_NUMSLICE_MINUS1        (0x00ffff00)
++
++struct parse_header_cmd {
++	unsigned int cmd;
++	unsigned int seq_hdr_data;
++	unsigned int pic_dimensions;
++	unsigned int bitplane_addr[3];
++	unsigned int vlc_table_addr;
++};
++
++#define CMD_PARSE_DWSIZE                (sizeof(PARSE_HEADER_CMD) / sizeof(unsigned int))
++
++#define CMD_SLICE_INFO                          (0x20000000)
++#define CMD_SLICE_INFO_SLICENUM                 (0xff000000)
++#define CMD_SLICE_INFO_FIRSTMBY                 (0x00ff0000)
++#define CMD_SLICE_INFO_MBBITOFFSET              (0x0000ffff)
++
++struct slice_info {
++	unsigned char slice_num;
++	unsigned char slice_first_mby;
++	unsigned short slice_mb_bitoffset;
++};
++
++#ifdef VDEC_USE_PVDEC_COMPATIBILITY
++/* VDEC extension */
++#define CMD_VDEC_EXT                            (0xC0000000)
++#ifdef VDEC_USE_PVDEC_SEC
++/*
++ * Used only between firmware secure modules FWBSP->FWDEC,
++ * thus the structure is defined in firmware structures.h
++ */
++#define CMD_VDEC_SECURE_EXT                     (0x40000000)
++#endif/* VDEC_USE_PVDEC_SEC */
++
++#define MEM2REG_SIZE_HOST_PART_MASK 0x0000FFFF
++#define MEM2REG_SIZE_HOST_PART_SHIFT 0
++
++#define MEM2REG_SIZE_BUF_TOTAL_MASK 0xFFFF0000
++#define MEM2REG_SIZE_BUF_TOTAL_SHIFT 16
++
++struct vdec_ext_cmd {
++	unsigned int cmd;
++	unsigned int trans_id;
++	unsigned int hdr_addr;
++	unsigned int hdr_size;
++	unsigned int ctx_save_addr;
++	unsigned int ctx_load_addr;
++	unsigned int buf_ctrl_addr;
++	unsigned int seq_addr;
++	unsigned int pps_addr;
++	unsigned int pps_2addr;
++	unsigned int mem_to_reg_addr;
++	/* 31-16: buff size, 15-0: size filled by host; dwords */
++	unsigned int mem_to_reg_size;
++	unsigned int slice_params_addr;
++	unsigned int slice_params_size;  /* dwords */
++	unsigned int last_luma_recon;
++	unsigned int last_chroma_recon;
++	unsigned int luma_err_base;
++	unsigned int chroma_err_base;
++	unsigned int scaled_display_size;
++	unsigned int horz_scale_control;
++	unsigned int vert_scale_control;
++	unsigned int scale_output_size;
++	unsigned int vlc_idx_table_size;
++	unsigned int vlc_idx_table_addr;
++	unsigned int vlc_tables_size;
++	unsigned int vlc_tables_addr;
++	unsigned int display_picture_size;
++	unsigned int parser_mode;
++	/* needed for separate colour planes */
++	unsigned int intra_buf_base_addr;
++	unsigned int intra_buf_size_per_plane;
++	unsigned int intra_buf_size_per_pipe;
++	unsigned int chroma2reconstructed_addr;
++	unsigned int luma_alt_addr;
++	unsigned int chroma_alt_addr;
++	unsigned int chroma2alt_addr;
++	unsigned int aux_line_buf_size_per_pipe;
++	unsigned int aux_line_buffer_base_addr;
++	unsigned int alt_output_pict_rotation;
++	/* miscellaneous flags */
++	struct {
++		unsigned is_chromainterleaved   : 1;
++		unsigned is_packedformat        : 1;
++		unsigned is_discontinuousmbs    : 1;
++	};
++};
++
++#define CMD_VDEC_EXT_DWSIZE             (sizeof(VDEC_EXT_CMD) / sizeof(unsigned int))
++#endif /* VDEC_USE_PVDEC_COMPATIBILITY */
++
++/* Completion */
++#define CMD_COMPLETION                          (0x60000000)
++#define CMD_COMPLETION_DWSIZE                   (1)
++
++#ifdef VDEC_USE_PVDEC_SEC
++/* Slice done */
++#define CMD_SLICE_DONE                          (0x70000000)
++#define CMD_SLICE_DONE_DWSIZE                   (1)
++#endif /* VDEC_USE_PVDEC_SEC */
++
++/* Bitstream segments */
++#define CMD_BITSTREAM_SEGMENTS                  (0xD0000000)
++#define CMD_BITSTREAM_SEGMENTS_MINUS1_MASK      (0x0000001F)
++#define CMD_BITSTREAM_PARSE_BLK_MASK            (0x0000FF00)
++#ifdef VDEC_USE_PVDEC_COMPATIBILITY
++#define CMD_BITSTREAM_SEGMENTS_MORE_FOLLOW_MASK (0x00000020)
++#define CMD_BITSTREAM_EOP_MASK                  (0x00000040)
++#define CMD_BITSTREAM_BS_TOT_SIZE_WORD_OFFSET   (1)
++#define CMD_BITSTREAM_BS_SEG_LIST_WORD_OFFSET   (2)
++#define CMD_BITSTREAM_HDR_DW_SIZE       CMD_BITSTREAM_BS_SEG_LIST_WORD_OFFSET
++
++#define CMD_BITSTREAM_SEGMENTS_MAX_NUM          (60)
++#endif /* VDEC_USE_PVDEC_COMPATIBILITY */
++
++#ifdef VDEC_USE_PVDEC_COMPATIBILITY
++/* Signatures */
++/* Signature set ids (see hwSignatureModules.c for exact order). */
++/* -- FRONT END/ENTROPY_PIPE ----------------------------------- */
++/*
++ * Signature group 0:
++ * REG(PVDEC_ENTROPY, CR_SR_SIGNATURE)
++ * REG(MSVDX_VEC,     CR_SR_CRC)
++ */
++#define PVDEC_SIGNATURE_GROUP_0  BIT(0)
++/*
++ * Signature group 1:
++ * REG(PVDEC_ENTROPY, CR_HEVC_PARSER_SIGNATURE)
++ * REG(PVDEC_ENTROPY, CR_ENCAP_SIGNATURE)
++ */
++#define PVDEC_SIGNATURE_GROUP_1  BIT(1)
++/*
++ * Signature group 2:
++ * REG(PVDEC_ENTROPY, CR_GENC_ENGINE_OUTPUT_SIGNATURE)
++ */
++#define PVDEC_SIGNATURE_GROUP_2  BIT(2)
++/*
++ * Signature group 3:
++ * REGREP(PVDEC_ENTROPY, CR_GENC_BUFFER_SIGNATURE, 0)
++ * REGREP(PVDEC_ENTROPY, CR_GENC_BUFFER_SIGNATURE, 1)
++ * REGREP(PVDEC_ENTROPY, CR_GENC_BUFFER_SIGNATURE, 2)
++ * REGREP(PVDEC_ENTROPY, CR_GENC_BUFFER_SIGNATURE, 3)
++ * REG(   PVDEC_ENTROPY, CR_GENC_FRAGMENT_SIGNATURE)
++ * REG(   PVDEC_ENTROPY, CR_GENC_FRAGMENT_READ_SIGNATURE)
++ * REG(   PVDEC_ENTROPY, CR_GENC_FRAGMENT_WRADDR_SIGNATURE)
++ */
++#define PVDEC_SIGNATURE_GROUP_3  BIT(3)
++/* -- GENC_DEC -------------------------------------------------- */
++/*
++ * Signature group 4:
++ * REG(   PVDEC_VEC_BE, CR_GDEC_FRAGMENT_REQ_SIGNATURE)
++ * REG(   PVDEC_VEC_BE, CR_GDEC_SYS_WR_SIGNATURE)
++ * REG(   PVDEC_VEC_BE, CR_GDEC_MEM2REG_SYS_WR_SIGNATURE)
++ * REG(   PVDEC_VEC_BE, CR_SLICE_STRUCTURE_REQ_SIGNATURE)
++ * REG(   PVDEC_VEC_BE, CR_SLICE_STRUCTURE_OVER1K_REQ_SIGNATURE)
++ * REG(   PVDEC_VEC_BE, CR_MEM_STRUCTURE_REQ_SIGNATURE)
++ * REGREP(PVDEC_VEC_BE, CR_GDEC_DATA_REQ_SIGNATURE, 0)
++ * REGREP(PVDEC_VEC_BE, CR_GDEC_DATA_REQ_SIGNATURE, 1)
++ * REGREP(PVDEC_VEC_BE, CR_GDEC_DATA_REQ_SIGNATURE, 2)
++ * REGREP(PVDEC_VEC_BE, CR_GDEC_DATA_REQ_SIGNATURE, 3)
++ */
++#define PVDEC_SIGNATURE_GROUP_4  BIT(4)
++/*
++ * Signature group 5:
++ * REG(   PVDEC_VEC_BE, CR_GDEC_FRAGMENT_SIGNATURE)
++ * REG(   PVDEC_VEC_BE, CR_SLICE_STRUCTURE_SIGNATURE)
++ * REG(   PVDEC_VEC_BE, CR_SLICE_STRUCTURE_OVER1K_SIGNATURE)
++ * REG(   PVDEC_VEC_BE, CR_MEM_STRUCTURE_SIGNATURE)
++ * REGREP(PVDEC_VEC_BE, CR_GDEC_BUFFER_SIGNATURE, 0)
++ * REGREP(PVDEC_VEC_BE, CR_GDEC_BUFFER_SIGNATURE, 1)
++ * REGREP(PVDEC_VEC_BE, CR_GDEC_BUFFER_SIGNATURE, 2)
++ * REGREP(PVDEC_VEC_BE, CR_GDEC_BUFFER_SIGNATURE, 3)
++ */
++#define PVDEC_SIGNATURE_GROUP_5  BIT(5)
++/* -- RESIDUAL AND COMMAND DEBUG--------------------------------- */
++/*
++ * Signature group 12:
++ * REG(PVDEC_VEC_BE, CR_DECODE_TO_COMMAND_PRIME_SIGNATURE)
++ * REG(PVDEC_VEC_BE, CR_DECODE_TO_COMMAND_SECOND_SIGNATURE)
++ */
++#define PVDEC_SIGNATURE_GROUP_12  BIT(12)
++/*
++ * Signature group 13:
++ * REG(PVDEC_VEC_BE, CR_DECODE_TO_RESIDUAL_PRIME_SIGNATURE)
++ * REG(PVDEC_VEC_BE, CR_DECODE_TO_RESIDUAL_SECOND_SIGNATURE)
++ */
++#define PVDEC_SIGNATURE_GROUP_13  BIT(13)
++/*
++ * Signature group 14:
++ * REG(PVDEC_VEC_BE, CR_COMMAND_ABOVE_READ_SIGNATURE)
++ * REG(PVDEC_VEC_BE, CR_COMMAND_ABOVE_WRITE_SIGNATURE)
++ */
++#define PVDEC_SIGNATURE_GROUP_14  BIT(14)
++/*
++ * Signature group 15:
++ * REG(PVDEC_VEC_BE, CR_TEMPORAL_READ_SIGNATURE)
++ * REG(PVDEC_VEC_BE, CR_TEMPORAL_WRITE_SIGNATURE)
++ */
++#define PVDEC_SIGNATURE_GROUP_15  BIT(15)
++/* --VEC--------------------------------------------------------- */
++/*
++ * Signature group 16:
++ * REG(PVDEC_VEC_BE, CR_COMMAND_OUTPUT_SIGNATURE)
++ * REG(MSVDX_VEC,    CR_VEC_IXFORM_SIGNATURE)
++ */
++#define PVDEC_SIGNATURE_GROUP_16  BIT(16)
++/*
++ * Signature group 17:
++ * REG(PVDEC_VEC_BE, CR_RESIDUAL_OUTPUT_SIGNATURE)
++ * REG(MSVDX_VEC,    CR_VEC_COMMAND_SIGNATURE)
++ */
++#define PVDEC_SIGNATURE_GROUP_17  BIT(17)
++/* --VDMC-------------------------------------------------------- */
++/*
++ * Signature group 18:
++ * REG(MSVDX_VDMC, CR_VDMC_REFERENCE_CACHE_SIGNATURE)
++ * REG(MSVDX_VDMC, CR_VDMC_REFERENCE_CACHE_MEM_WADDR_SIGNATURE)
++ * REG(MSVDX_VDMC, CR_VDMC_REFERENCE_CACHE_MEM_RADDR_SIGNATURE)
++ * REG(MSVDX_VDMC, CR_VDMC_REFERENCE_CACHE_MEM_WDATA_SIGNATURE)
++ */
++#define PVDEC_SIGNATURE_GROUP_18  BIT(18)
++/*
++ * Signature group 19:
++ * REG(MSVDX_VDMC, CR_VDMC_2D_FILTER_PIPELINE_SIGNATURE)
++ */
++#define PVDEC_SIGNATURE_GROUP_19  BIT(19)
++/*
++ * Signature group 20:
++ * REG(MSVDX_VDMC, CR_VDMC_PIXEL_RECONSTRUCTION_SIGNATURE)
++ */
++#define PVDEC_SIGNATURE_GROUP_20  BIT(20)
++/*
++ * Signature group 21:
++ * REG(MSVDX_VDMC, CR_VDMC_MCU_SIGNATURE)
++ */
++#define PVDEC_SIGNATURE_GROUP_21  BIT(21)
++/* ---VDEB------------------------------------------------------- */
++/*
++ * Signature group 22:
++ * REG(MSVDX_VDEB, CR_VDEB_SYS_MEM_RDATA_LUMA_SIGNATURE)
++ * REG(MSVDX_VDEB, CR_VDEB_SYS_MEM_RDATA_CHROMA_SIGNATURE)
++ */
++#define PVDEC_SIGNATURE_GROUP_22  BIT(22)
++/*
++ * Signature group 23:
++ * REG(MSVDX_VDEB, CR_VDEB_SYS_MEM_ADDR_SIGNATURE)
++ */
++#define PVDEC_SIGNATURE_GROUP_23  BIT(23)
++/*
++ * Signature group 24:
++ * REG(MSVDX_VDEB, CR_VDEB_SYS_MEM_WDATA_SIGNATURE)
++ */
++#define PVDEC_SIGNATURE_GROUP_24  BIT(24)
++/* ---SCALER----------------------------------------------------- */
++/*
++ * Signature group 25:
++ * REG(MSVDX_VDEB, CR_VDEB_SCALE_ADDR_SIGNATURE)
++ */
++#define PVDEC_SIGNATURE_GROUP_25  BIT(25)
++/*
++ * Signature group 26:
++ * REG(MSVDX_VDEB, CR_VDEB_SCALE_WDATA_SIGNATURE)
++ */
++#define PVDEC_SIGNATURE_GROUP_26  BIT(26)
++/* ---PICTURE CHECKSUM------------------------------------------- */
++/*
++ * Signature group 27:
++ * REG(MSVDX_VDEB, CR_VDEB_HEVC_CHECKSUM_LUMA)
++ * REG(MSVDX_VDEB, CR_VDEB_HEVC_CHECKSUM_CB)
++ * REG(MSVDX_VDEB, CR_VDEB_HEVC_CHECKSUM_CR)
++ */
++#define PVDEC_SIGNATURE_GROUP_27  BIT(27)
++#define PVDEC_SIGNATURE_NEW_METHOD  BIT(31)
++
++/* Debug messages */
++#define DEBUG_DATA_TYPE_MASK             0xF
++#define DEBUG_DATA_TYPE_SHIFT            28
++
++#define DEBUG_DATA_MSG_TYPE_MASK         0x1
++#define DEBUG_DATA_MSG_TYPE_SHIFT        15
++
++#define DEBUG_DATA_MSG_ARG_COUNT_MASK    0x7
++#define DEBUG_DATA_MSG_ARG_COUNT_SHIFT   12
++
++#define DEBUG_DATA_MSG_LINE_NO_MASK      0xFFF
++#define DEBUG_DATA_MSG_LINE_NO_SHIFT     0
++
++#define DEBUG_DATA_TYPE_HEADER  (0)
++#define DEBUG_DATA_TYPE_STRING  (1)
++#define DEBUG_DATA_TYPE_PARAMS  (2)
++#define DEBUG_DATA_TYPE_MSG     (3)
++#define DEBUG_DATA_TYPE_PERF    (6)
++
++#define DEBUG_DATA_MSG_TYPE_LOG     0
++#define DEBUG_DATA_MSG_TYPE_ASSERT  1
++
++#define DEBUG_DATA_TAPE_PERF_INC_TIME_MASK   0x1
++#define DEBUG_DATA_TYPE_PERF_INC_TIME_SHIFT  28
++#define DEBUG_DATA_TYPE_PERF_INC_TIME        0x1
++
++#define DEBUG_DATA_SET_TYPE(val, type, data_type) \
++	({ \
++		data_type __val = val; \
++		((__val) = (__val & ~(DEBUG_DATA_TYPE_MASK << DEBUG_DATA_TYPE_SHIFT)) | \
++			   ((type) << DEBUG_DATA_TYPE_SHIFT)); })
++
++#define DEBUG_DATA_MSG_SET_ARG_COUNT(val, ac, data_type) \
++	({ \
++		data_type __val = val; \
++		(__val = (__val & \
++			  ~(DEBUG_DATA_MSG_ARG_COUNT_MASK << DEBUG_DATA_MSG_ARG_COUNT_SHIFT)) \
++			 | ((ac) << DEBUG_DATA_MSG_ARG_COUNT_SHIFT)); })
++
++#define DEBUG_DATA_MSG_SET_LINE_NO(val, ln, type) \
++	({ \
++		type __val = val; \
++		(__val = (__val & \
++			  ~(DEBUG_DATA_MSG_LINE_NO_MASK << DEBUG_DATA_MSG_LINE_NO_SHIFT)) \
++			 | ((ln) << DEBUG_DATA_MSG_LINE_NO_SHIFT)); })
++
++#define DEBUG_DATA_MSG_SET_TYPE(val, tp, type) \
++	({ \
++		type __val = val; \
++		(__val = (__val & \
++			  ~(DEBUG_DATA_MSG_TYPE_MASK << DEBUG_DATA_MSG_TYPE_SHIFT)) \
++			 | ((tp) << DEBUG_DATA_MSG_TYPE_SHIFT)); })
++
++#define DEBUG_DATA_GET_TYPE(val) \
++	(((val) >> DEBUG_DATA_TYPE_SHIFT) & DEBUG_DATA_TYPE_MASK)
++#define DEBUG_DATA_TYPE_PERF_IS_INC_TIME(val) \
++	(((val) >> DEBUG_DATA_TYPE_PERF_INC_TIME_SHIFT) \
++	 & DEBUG_DATA_TAPE_PERF_INC_TIME_MASK)
++#define DEBUG_DATA_MSG_GET_ARG_COUNT(val) \
++	(((val) >> DEBUG_DATA_MSG_ARG_COUNT_SHIFT) \
++	 & DEBUG_DATA_MSG_ARG_COUNT_MASK)
++#define DEBUG_DATA_MSG_GET_LINE_NO(val) \
++	(((val) >> DEBUG_DATA_MSG_LINE_NO_SHIFT) \
++	 & DEBUG_DATA_MSG_LINE_NO_MASK)
++#define DEBUG_DATA_MSG_GET_TYPE(val) \
++	(((val) >> DEBUG_DATA_MSG_TYPE_SHIFT) & DEBUG_DATA_MSG_TYPE_MASK)
++#define DEBUG_DATA_MSG_TYPE_IS_ASSERT(val) \
++	(DEBUG_DATA_MSG_GET_TYPE(val) == DEBUG_DATA_MSG_TYPE_ASSERT \
++	 ? IMG_TRUE : IMG_FALSE)
++#define DEBUG_DATA_MSG_TYPE_IS_LOG(val) \
++	(DEBUG_DATA_MSG_GET_TYPE(val) == DEBUG_DATA_MSG_TYPE_LOG ? \
++	 IMG_TRUE : IMG_FALSE)
++
++#define DEBUG_DATA_MSG_LAT(ln, ac, tp)            \
++	(((ln) << DEBUG_DATA_MSG_LINE_NO_SHIFT) | \
++	 ((ac) << DEBUG_DATA_MSG_ARG_COUNT_SHIFT) | \
++	 ((tp) << DEBUG_DATA_MSG_TYPE_SHIFT))
++/* FWBSP-mode specific defines. */
++#ifdef VDEC_USE_PVDEC_SEC
++/**
++ * FWBSP_ENC_BSTR_BUF_QUEUE_LEN - Suggested number of bitstream buffers submitted (queued)
++ * to firmware for processing at the same time.
++ */
++#define FWBSP_ENC_BSTR_BUF_QUEUE_LEN 1
++
++#endif /* VDEC_USE_PVDEC_SEC */
++
++#endif /* VDEC_USE_PVDEC_COMPATIBILITY */
++#endif /* FW_INTERFACE_H_ */
+diff --git a/drivers/staging/media/vxd/decoder/h264fw_data.h b/drivers/staging/media/vxd/decoder/h264fw_data.h
+new file mode 100644
+index 000000000000..e098d27948d0
+--- /dev/null
++++ b/drivers/staging/media/vxd/decoder/h264fw_data.h
+@@ -0,0 +1,652 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Public data structures for the h264 parser firmware module.
++ *
++ * Copyright (c) Imagination Technologies Ltd.
++ * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com/
++ *
++ * Authors:
++ *	Amit Makani <amit.makani@ti.com>
++ *
++ * Re-written for upstreamimg
++ *	Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
++ */
++
++/* Include shared header version here to replace the standard version */
++#include "h264fw_data_shared.h"
++
++#ifndef _H264FW_DATA_H_
++#define _H264FW_DATA_H_
++
++#include "vdecfw_shared.h"
++
++/* Maximum number of alternative CPB specifications in the stream */
++#define H264_MAXIMUMVALUEOFCPB_CNT  32
++
++/*
++ * The maximum DPB size is related to the number of MVC views supported
++ * The size is defined in H.10.2 for the H.264 spec.
++ * If the number of views needs to be changed the DPB size should be too
++ * The limits are as follows:
++ * NumViews		1,  2,  4,  8, 16
++ * MaxDpbFrames:	16, 16, 32, 48, 64
++ */
++#ifdef H264_ENABLE_MVC
++#define H264FW_MAX_NUM_VIEWS            4
++#define H264FW_MAX_DPB_SIZE             32
++#define H264FW_MAX_NUM_MVC_REFS         16
++#else
++#define H264FW_MAX_NUM_VIEWS            1
++#define H264FW_MAX_DPB_SIZE             16
++#define H264FW_MAX_NUM_MVC_REFS         1
++#endif
++
++/* Maximum value for num_ref_frames_in_pic_order_cnt_cycle */
++#define H264FW_MAX_CYCLE_REF_FRAMES     256
++
++/* 4x4 scaling list size */
++#define H264FW_4X4_SIZE                 16
++/* 8x8 scaling list size */
++#define H264FW_8X8_SIZE                 64
++/* Number of 4x4 scaling lists */
++#define H264FW_NUM_4X4_LISTS            6
++/* Number of 8x8 scaling lists */
++#define H264FW_NUM_8X8_LISTS            6
++
++/* Number of reference picture lists */
++#define H264FW_MAX_REFPIC_LISTS         2
++
++/*
++ * The maximum number of slice groups
++ * remove if slice group map is prepared on the host
++ */
++#define H264FW_MAX_SLICE_GROUPS         8
++
++/* The maximum number of planes for 4:4:4 separate color plane streams */
++#define H264FW_MAX_PLANES               3
++
++#define H264_MAX_SGM_SIZE               8196
++
++#define IS_H264_HIGH_PROFILE(profile_idc, type) \
++	({ \
++		type __profile_idc = profile_idc;       \
++		((__profile_idc) == H264_PROFILE_HIGH) ||      \
++		((__profile_idc) == H264_PROFILE_HIGH10) ||      \
++		((__profile_idc) == H264_PROFILE_HIGH422) ||      \
++		((__profile_idc) == H264_PROFILE_HIGH444) ||      \
++		((__profile_idc) == H264_PROFILE_CAVLC444) ||      \
++		((__profile_idc) == H264_PROFILE_MVC_HIGH) ||      \
++		((__profile_idc) == H264_PROFILE_MVC_STEREO); })        \
++
++/*
++ * This type describes the H.264 NAL unit types
++ */
++enum h264_enaltype {
++	H264FW_NALTYPE_SLICE               = 1,
++	H264FW_NALTYPE_IDRSLICE            = 5,
++	H264FW_NALTYPE_SEI                 = 6,
++	H264FW_NALTYPE_SPS                 = 7,
++	H264FW_NALTYPE_PPS                 = 8,
++	H264FW_NALTYPE_AUD                 = 9,
++	H264FW_NALTYPE_EOSEQ               = 10,
++	H264FW_NALTYPE_EOSTR               = 11,
++	H264FW_NALTYPE_PREFIX              = 14,
++	H264FW_NALTYPE_SUBSET_SPS          = 15,
++	H264FW_NALTYPE_AUXILIARY_SLICE     = 19,
++	H264FW_NALTYPE_EXTSLICE            = 20,
++	H264FW_NALTYPE_EXTSLICE_DEPTH_VIEW = 21,
++	H264FW_NALTYPE_FORCE32BITS         = 0x7FFFFFFFU
 +};
 +
 +/*
-+ * struct bspp_h264_sps_info
-+ * @Description	H264 SPS parsed information
++ * AVC Profile IDC definitions
 + */
-+struct bspp_h264_sps_info {
-+	unsigned int profile_idc;
-+	unsigned int constraint_set_flags;
-+	unsigned int level_idc;
-+	unsigned char seq_parameter_set_id;
++enum h264_eprofileidc {
++	/* YUV 4:4:4/14 "CAVLC 4:4:4 */
++	H264_PROFILE_CAVLC444    =       44,
++	/* YUV 4:2:0/8  "Baseline */
++	H264_PROFILE_BASELINE    =       66,
++	/* YUV 4:2:0/8  "Main */
++	H264_PROFILE_MAIN        =       77,
++	/* YUV 4:2:0/8  "Scalable" */
++	H264_PROFILE_SCALABLE    =       83,
++	/* YUV 4:2:0/8  "Extended" */
++	H264_PROFILE_EXTENDED    =       88,
++	/* YUV 4:2:0/8  "High" */
++	H264_PROFILE_HIGH        =       100,
++	/* YUV 4:2:0/10 "High 10" */
++	H264_PROFILE_HIGH10      =       110,
++	/* YUV 4:2:0/8  "Multiview High" */
++	H264_PROFILE_MVC_HIGH    =       118,
++	/* YUV 4:2:2/10 "High 4:2:2" */
++	H264_PROFILE_HIGH422     =       122,
++	/* YUV 4:2:0/8  "Stereo High" */
++	H264_PROFILE_MVC_STEREO  =       128,
++	/* YUV 4:4:4/14 "High 4:4:4" */
++	H264_PROFILE_HIGH444     =       244,
++	H264_PROFILE_FORCE32BITS = 0x7FFFFFFFU
++};
++
++/*
++ * This type defines the constraint set flags
++ */
++enum h264fw_econstraint_flag {
++	/* Compatible with Baseline profile */
++	H264FW_CONSTRAINT_BASELINE_SHIFT   =       7,
++	/* Compatible with Main profile */
++	H264FW_CONSTRAINT_MAIN_SHIFT       =       6,
++	/* Compatible with Extended profile */
++	H264FW_CONSTRAINT_EXTENDED_SHIFT   =       5,
++	/* Compatible with Intra profiles */
++	H264FW_CONSTRAINT_INTRA_SHIFT      =       4,
++	/* Compatible with Multiview High profile */
++	H264FW_CONSTRAINT_MULTIHIGH_SHIFT  =       3,
++	/* Compatible with Stereo High profile */
++	H264FW_CONSTRAINT_STEREOHIGH_SHIFT =       2,
++	/* Reserved flag */
++	H264FW_CONSTRAINT_RESERVED6_SHIFT  =       1,
++	/* Reserved flag */
++	H264FW_CONSTRAINT_RESERVED7_SHIFT  =       0,
++	H264FW_CONSTRAINT_FORCE32BITS      = 0x7FFFFFFFU
++};
++
++/*
++ * This enum describes the reference status of an H.264 picture.
++ * Unpaired fields should have all eRefStatusX set to the same value
++ *
++ * For Frame, Mbaff, and Pair types individual fields and frame ref status
++ * should be set accordingly.
++ *
++ * eRefStatusFrame    eRefStatusTop   eRefStatusBottom
++ * UNUSED             UNUSED          UNUSED
++ * SHORTTERM          SHORTTERM       SHORTTERM
++ * LONGTERM           LONGTERM        LONGTERM
++ *
++ * UNUSED             SHORT/LONGTERM  UNUSED
++ * UNUSED             UNUSED          SHORT/LONGTERM
++ *
++ * SHORTTERM          LONGTERM        SHORTTERM
++ * SHORTTERM          SHORTTERM       LONGTERM
++ * NB: It is not clear from the spec if the Frame should be marked as short
++ * or long term in this case
++ */
++enum h264fw_ereference {
++	/* Picture is unused for reference */
++	H264FW_REF_UNUSED = 0,
++	/* used for short term reference */
++	H264FW_REF_SHORTTERM,
++	/* used for Long Term reference */
++	H264FW_REF_LONGTERM,
++	H264FW_REF_FORCE32BITS = 0x7FFFFFFFU
++};
++
++/*
++ * This type defines the picture structure.
++ */
++enum h264fw_epicture_type {
++	/* No valid picture */
++	H264FW_TYPE_NONE = 0,
++	/* Picture contains the top (even) lines of the frame */
++	H264FW_TYPE_TOP,
++	/* Picture contains the bottom (odd) lines of the frame */
++	H264FW_TYPE_BOTTOM,
++	/* Picture contains the entire frame */
++	H264FW_TYPE_FRAME,
++	/* Picture contains an MBAFF frame */
++	H264FW_TYPE_MBAFF,
++	/* Picture contains top and bottom lines of the frame */
++	H264FW_TYPE_PAIR,
++	H264FW_TYPE_FORCE32BITS = 0x7FFFFFFFU
++};
++
++/*
++ * This describes the SPS header data required by the H264 firmware that should
++ * be supplied by the Host.
++ */
++struct h264fw_sequence_ps {
++	/* syntax elements from SPS */
++	/* syntax element from bitstream - 8 bit */
++	unsigned char profile_idc;
++	/* syntax element from bitstream - 2 bit */
 +	unsigned char chroma_format_idc;
-+	int separate_colour_plane_flag;
-+	unsigned int bit_depth_luma_minus8;
-+	unsigned int bit_depth_chroma_minus8;
-+	unsigned char qpprime_y_zero_transform_bypass_flag;
-+	int seq_scaling_matrix_present_flag;
-+	unsigned char seq_scaling_list_present_flag[12];
-+	unsigned int log2_max_frame_num_minus4;
-+	unsigned int pic_order_cnt_type;
-+	unsigned int log2_max_pic_order_cnt_lsb_minus4;
-+	int delta_pic_order_always_zero_flag;
-+	int offset_for_non_ref_pic;
-+	int offset_for_top_to_bottom_field;
-+	unsigned int num_ref_frames_in_pic_order_cnt_cycle;
-+	unsigned int *offset_for_ref_frame;
-+	unsigned int max_num_ref_frames;
-+	int gaps_in_frame_num_value_allowed_flag;
-+	unsigned int pic_width_in_mbs_minus1;
-+	unsigned int pic_height_in_map_units_minus1;
-+	int frame_mbs_only_flag;
-+	int mb_adaptive_frame_field_flag;
-+	int direct_8x8_inference_flag;
-+	int frame_cropping_flag;
-+	unsigned int frame_crop_left_offset;
-+	unsigned int frame_crop_right_offset;
-+	unsigned int frame_crop_top_offset;
-+	unsigned int frame_crop_bottom_offset;
-+	int vui_parameters_present_flag;
-+	/* mvc_vui_parameters_present_flag;   UNUSED */
-+	int bmvcvuiparameterpresentflag;
++	/* syntax element from bitstream - 1 bit */
++	unsigned char separate_colour_plane_flag;
++	/* syntax element from bitstream - 3 bit */
++	unsigned char bit_depth_luma_minus8;
++	/* syntax element from bitstream - 3 bit */
++	unsigned char bit_depth_chroma_minus8;
++	/* syntax element from bitstream - 1 bit */
++	unsigned char delta_pic_order_always_zero_flag;
++	/* syntax element from bitstream - 4+ bit */
++	unsigned char log2_max_pic_order_cnt_lsb;
++	/* syntax element from bitstream - 5 bit */
++	unsigned char max_num_ref_frames;
++	/* syntax element from bitstream - 4+ bit */
++	unsigned char log2_max_frame_num;
++	/* syntax element from bitstream - 2 bit */
++	unsigned char pic_order_cnt_type;
++	/* syntax element from bitstream - 1 bit */
++	unsigned char frame_mbs_only_flag;
++	/* syntax element from bitstream - 1 bit */
++	unsigned char gaps_in_frame_num_value_allowed_flag;
++
 +	/*
-+	 * scaling lists are derived from both SPS and PPS information
-+	 * but will change whenever the PPS changes
-+	 * The derived set of tables are associated here with the PPS
-+	 * NB: These are in H.264 order
++	 * set0--7 flags as they occur in the bitstream (including reserved
++	 * values)
 +	 */
-+	/* derived from SPS and PPS - 8 bit each */
-+	unsigned char *scllst4x4seq;
-+	/* derived from SPS and PPS - 8 bit each */
-+	unsigned char *scllst8x8seq;
-+	/* This is not direct parsed data, though it is extracted */
-+	unsigned char usedefaultscalingmatrixflag_seq[12];
++	unsigned char constraint_set_flags;
++	/* syntax element from bitstream - 8 bit */
++	unsigned char level_idc;
++	/* syntax element from bitstream - 8 bit */
++	unsigned char num_ref_frames_in_pic_order_cnt_cycle;
++	/* syntax element from bitstream - 1 bit */
++	unsigned char mb_adaptive_frame_field_flag;
++	/* syntax element from bitstream - 32 bit */
++	int offset_for_non_ref_pic;
++	/* syntax element from bitstream - 32 bit */
++	int offset_for_top_to_bottom_field;
++
++	/* syntax element from bitstream */
++	unsigned int pic_width_in_mbs_minus1;
++	/* syntax element from bitstream */
++	unsigned int pic_height_in_map_units_minus1;
++	/* syntax element from bitstream - 1 bit */
++	unsigned char direct_8x8_inference_flag;
++	/* syntax element from bitstream */
++	unsigned char qpprime_y_zero_transform_bypass_flag;
++
++	/* syntax element from bitstream - 32 bit each */
++	int offset_for_ref_frame[H264FW_MAX_CYCLE_REF_FRAMES];
++
++	/* From VUI information */
++	unsigned char num_reorder_frames;
++	/*
++	 * From VUI/MVC SEI, 0 indicates not set, any actual 0 value will be
++	 * inferred by the firmware
++	 */
++	unsigned char max_dec_frame_buffering;
++
++	/* From SPS MVC Extension - for the current view_id */
++	/* Number of views in this stream */
++	unsigned char num_views;
++	/* a Map in order of VOIdx of view_id's */
++	unsigned short view_ids[H264FW_MAX_NUM_VIEWS];
++
++	/* Disable VDMC horizontal/vertical filtering */
++	unsigned char disable_vdmc_filt;
++	/* Disable CABAC 4:4:4 4x4 transform as not available */
++	unsigned char transform4x4_mb_not_available;
++
++	/* anchor reference list */
++	unsigned short anchor_inter_view_reference_id_list[2]
++	[H264FW_MAX_NUM_VIEWS][H264FW_MAX_NUM_MVC_REFS];
++	/* nonanchor reference list */
++	unsigned short non_anchor_inter_view_reference_id_list[2]
++	[H264FW_MAX_NUM_VIEWS][H264FW_MAX_NUM_MVC_REFS];
++	/* number of elements in aui16AnchorInterViewReferenceIndiciesLX[] */
++	unsigned short num_anchor_refsx[2][H264FW_MAX_NUM_VIEWS];
++	/* number of elements in aui16NonAnchorInterViewReferenceIndiciesLX[] */
++	unsigned short num_non_anchor_refsx[2][H264FW_MAX_NUM_VIEWS];
 +};
 +
-+struct bspp_h264_hrdparam_info {
++/*
++ * This structure represents HRD parameters.
++ */
++struct h264fw_hrd {
++	/* cpb_cnt_minus1 */
 +	unsigned char cpb_cnt_minus1;
++	/* bit_rate_scale */
 +	unsigned char bit_rate_scale;
++	/* cpb_size_scale */
 +	unsigned char cpb_size_scale;
-+	unsigned int *bit_rate_value_minus1;
-+	unsigned int *cpb_size_value_minus1;
-+	unsigned char *cbr_flag;
++	/* bit_rate_value_minus1 */
++	unsigned int bit_rate_value_minus1[H264_MAXIMUMVALUEOFCPB_CNT];
++	/* cpb_size_value_minus1 */
++	unsigned int cpb_size_value_minus1[H264_MAXIMUMVALUEOFCPB_CNT];
++	/* cbr_flag */
++	unsigned char cbr_flag[H264_MAXIMUMVALUEOFCPB_CNT];
++	/* initial_cpb_removal_delay_length_minus1 */
 +	unsigned char initial_cpb_removal_delay_length_minus1;
++	/* cpb_removal_delay_length_minus1 */
 +	unsigned char cpb_removal_delay_length_minus1;
++	/* dpb_output_delay_length_minus1 */
 +	unsigned char dpb_output_delay_length_minus1;
++	/* time_offset_length */
 +	unsigned char time_offset_length;
 +};
 +
-+struct bspp_h264_vui_info {
-+	unsigned char aspect_ratio_info_present_flag;
-+	unsigned int aspect_ratio_idc;
-+	unsigned int sar_width;
-+	unsigned int sar_height;
-+	unsigned char overscan_info_present_flag;
-+	unsigned char overscan_appropriate_flag;
-+	unsigned char video_signal_type_present_flag;
-+	unsigned int video_format;
-+	unsigned char video_full_range_flag;
-+	unsigned char colour_description_present_flag;
-+	unsigned int colour_primaries;
-+	unsigned int transfer_characteristics;
-+	unsigned int matrix_coefficients;
-+	unsigned char chroma_location_info_present_flag;
++/*
++ * This structure represents the VUI parameters data.
++ */
++struct h264fw_vui {
++	int aspect_ratio_info_present_flag;
++	unsigned char aspect_ratio_idc;
++	unsigned short sar_width;
++	unsigned short sar_height;
++	int overscan_info_present_flag;
++	int overscan_appropriate_flag;
++	int video_signal_type_present_flag;
++	unsigned char video_format;
++	int video_full_range_flag;
++	int colour_description_present_flag;
++	unsigned char colour_primaries;
++	unsigned char transfer_characteristics;
++	unsigned char matrix_coefficients;
++	int chroma_location_info_present_flag;
 +	unsigned int chroma_sample_loc_type_top_field;
 +	unsigned int chroma_sample_loc_type_bottom_field;
-+	unsigned char timing_info_present_flag;
++	int timing_info_present_flag;
 +	unsigned int num_units_in_tick;
 +	unsigned int time_scale;
-+	unsigned char fixed_frame_rate_flag;
-+	unsigned char nal_hrd_parameters_present_flag;
-+	struct bspp_h264_hrdparam_info nal_hrd_parameters;
-+	unsigned char vcl_hrd_parameters_present_flag;
-+	struct bspp_h264_hrdparam_info vcl_hrd_parameters;
-+	unsigned char low_delay_hrd_flag;
-+	unsigned char pic_struct_present_flag;
-+	unsigned char bitstream_restriction_flag;
-+	unsigned char motion_vectors_over_pic_boundaries_flag;
++	int fixed_frame_rate_flag;
++	int nal_hrd_parameters_present_flag;
++	struct h264fw_hrd nal_hrd_params;
++	int vcl_hrd_parameters_present_flag;
++	struct h264fw_hrd vcl_hrd_params;
++	int low_delay_hrd_flag;
++	int pic_struct_present_flag;
++	int bitstream_restriction_flag;
++	int motion_vectors_over_pic_boundaries_flag;
 +	unsigned int max_bytes_per_pic_denom;
 +	unsigned int max_bits_per_mb_denom;
 +	unsigned int log2_max_mv_length_vertical;
@@ -6716,3043 +1506,309 @@ index 000000000000..68789dfcc439
 +};
 +
 +/*
-+ * struct bspp_h264_seq_hdr_info
-+ * @Description	Contains everything parsed from the Sequence Header.
++ * This describes the HW specific SPS header data required by the H264
++ * firmware that should be supplied by the Host.
 + */
-+struct bspp_h264_seq_hdr_info {
-+	/* Video sequence header information */
-+	struct bspp_h264_sps_info sps_info;
-+	/* VUI sequence header information. */
-+	struct bspp_h264_vui_info vui_info;
-+};
++struct h264fw_ddsequence_ps {
++	/* pre-packed registers derived from SPS */
++	/* Value for CR_VEC_ENTDEC_FE_CONTROL */
++	unsigned int regentdec_control;
 +
-+/**
-+ * struct bspp_h264_ppssgm_info - This structure contains H264 PPS parse data.
-+ * @slice_group_id: slice_group_id
-+ * @slicegroupidnum: slicegroupidnum
-+ */
-+struct bspp_h264_ppssgm_info {
-+	unsigned char *slice_group_id;
-+	unsigned short slicegroupidnum;
++	/* NB: This register should contain the 4-bit SGM flag */
++	/* Value for CR_VEC_H264_FE_SPS0 & CR_VEC_H264_BE_SPS0 combined */
++	unsigned int reg_sps0;
++	/* Value of CR_VEC_H264_BE_INTRA_8x8 */
++	unsigned int reg_beintra;
++	/* Value of CR_VEC_H264_FE_CABAC444 */
++	unsigned int reg_fecaabac444;
++	/* Treat CABAC 4:4:4 4x4 transform as not available */
++	unsigned char transform4x4_mb_notavialbale;
++	/* Disable VDMC horizontal/vertical filtering */
++	unsigned char disable_vdmcfilt;
 +};
 +
 +/*
-+ * struct bspp_h264_pps_info
-+ * @Description	This structure contains H264 PPS parse data.
++ * This describes the PPS header data required by the H264 firmware that should
++ * be supplied by the Host.
 + */
-+struct bspp_h264_pps_info {
-+	/* pic_parameter_set_id: defines the PPS ID of the current PPS */
-+	int pps_id;
-+	/* seq_parameter_set_id: defines the SPS that current PPS points to */
-+	int seq_parameter_set_id;
-+	int entropy_coding_mode_flag;
-+	int pic_order_present_flag;
-+	unsigned char num_slice_groups_minus1;
-+	unsigned char slice_group_map_type;
-+	unsigned short run_length_minus1[8];
-+	unsigned short top_left[8];
-+	unsigned short bottom_right[8];
-+	int slice_group_change_direction_flag;
-+	unsigned short slice_group_change_rate_minus1;
-+	unsigned short pic_size_in_map_unit;
-+	struct bspp_h264_ppssgm_info h264_ppssgm_info;
-+	unsigned char num_ref_idx_lx_active_minus1[H264FW_MAX_REFPIC_LISTS];
-+	int weighted_pred_flag;
++struct h264fw_picture_ps {
++	/* syntax elements from the PPS */
++	/* syntax element from bitstream - 1 bit */
++	unsigned char deblocking_filter_control_present_flag;
++	/* syntax element from bitstream - 1 bit */
++	unsigned char transform_8x8_mode_flag;
++	/* syntax element from bitstream - 1 bit */
++	unsigned char entropy_coding_mode_flag;
++	/* syntax element from bitstream - 1 bit */
++	unsigned char redundant_pic_cnt_present_flag;
++
++	/* syntax element from bitstream - 2 bit */
 +	unsigned char weighted_bipred_idc;
-+	int pic_init_qp_minus26;
-+	int pic_init_qs_minus26;
-+	int chroma_qp_index_offset;
-+	int deblocking_filter_control_present_flag;
-+	int constrained_intra_pred_flag;
-+	int redundant_pic_cnt_present_flag;
-+	int transform_8x8_mode_flag;
-+	int pic_scaling_matrix_present_flag;
-+	unsigned char pic_scaling_list_present_flag[12];
-+	int second_chroma_qp_index_offset;
++	/* syntax element from bitstream - 1 bit */
++	unsigned char weighted_pred_flag;
++	/* syntax element from bitstream - 1 bit */
++	unsigned char pic_order_present_flag;
++
++	/* 26 + syntax element from bitstream - 7 bit */
++	unsigned char pic_init_qp;
++	/* syntax element from bitstream - 1 bit */
++	unsigned char constrained_intra_pred_flag;
++	/* syntax element from bitstream - 5 bit each */
++	unsigned char num_ref_lx_active_minus1[H264FW_MAX_REFPIC_LISTS];
++
++	/* syntax element from bitstream - 3 bit */
++	unsigned char slice_group_map_type;
++	/* syntax element from bitstream - 3 bit */
++	unsigned char num_slice_groups_minus1;
++	/* syntax element from bitstream - 13 bit */
++	unsigned short slice_group_change_rate_minus1;
++
++	/* syntax element from bitstream */
++	unsigned int chroma_qp_index_offset;
++	/* syntax element from bitstream */
++	unsigned int second_chroma_qp_index_offset;
++
++	/* scaling lists are derived from both SPS and PPS information */
++	/* but will change whenever the PPS changes */
++	/* The derived set of tables are associated here with the PPS */
++	/* NB: These are in H.264 order */
++	/* derived from SPS and PPS - 8 bit each */
++	unsigned char scalinglist4x4[H264FW_NUM_4X4_LISTS][H264FW_4X4_SIZE];
++	/* derived from SPS and PPS - 8 bit each */
++	unsigned char scalinglist8x8[H264FW_NUM_8X8_LISTS][H264FW_8X8_SIZE];
++};
++
++/*
++ * This describes the HW specific PPS header data required by the H264
++ * firmware that should be supplied by the Host.
++ */
++struct h264fw_dd_picture_ps {
++	/* values derived from the PPS */
++	/* Value for MSVDX_CMDS_SLICE_PARAMS_MODE_CONFIG */
++	unsigned char vdmc_mode_config;
++
++	/* pre-packed registers derived from the PPS */
++	/* Value for CR_VEC_H264_FE_PPS0 & CR_VEC_H264_BE_PPS0 combined */
++	unsigned int reg_pps0;
 +
 +	/*
 +	 * scaling lists are derived from both SPS and PPS information
 +	 * but will change whenever the PPS changes
 +	 * The derived set of tables are associated here with the PPS
-+	 * NB: These are in H.264 order
++	 * But this will become invalid if the SPS changes and will have to be
++	 * recalculated
++	 * These tables MUST be aligned on a 32-bit boundary
++	 * NB: These are in MSVDX order
 +	 */
 +	/* derived from SPS and PPS - 8 bit each */
-+	unsigned char *scllst4x4pic;
++	unsigned char scalinglist4x4[H264FW_NUM_4X4_LISTS][H264FW_4X4_SIZE];
 +	/* derived from SPS and PPS - 8 bit each */
-+	unsigned char *scllst8x8pic;
-+	/* This is not direct parsed data, though it is extracted */
-+	unsigned char usedefaultscalingmatrixflag_pic[12];
++	unsigned char scalinglist8x8[H264FW_NUM_8X8_LISTS][H264FW_8X8_SIZE];
 +};
 +
 +/*
-+ * enum bspp_h264_slice_type
-+ * @Description	contains H264 slice types
++ * This describes the H.264 parser component "Header data", shown in the
++ * Firmware Memory Layout diagram. This data is required by the H264 firmware
++ * and should be supplied by the Host.
 + */
-+enum bspp_h264_slice_type {
-+	P_SLICE = 0,
-+	B_SLICE,
-+	I_SLICE,
-+	SP_SLICE,
-+	SI_SLICE,
-+	SLICE_TYPE_FORCE32BITS = 0x7FFFFFFFU
++struct h264fw_header_data {
++	/* Decode buffers and output control for the current picture */
++	/* Primary decode buffer base addresses */
++	struct vdecfw_image_buffer primary;
++	/* buffer base addresses for alternate output */
++	struct vdecfw_image_buffer alternate;
++	/* Output control: rotation, scaling, oold, etc. */
++	unsigned int pic_cmds[VDECFW_CMD_MAX];
++	/* Macroblock parameters base address for the picture */
++	unsigned int mbparams_base_address;
++
++	unsigned int mbparams_size_per_plane;
++
++	/* Buffers for context preload for colour plane switching (6.x.x) */
++	unsigned int preload_buffer_base_address
++	[H264FW_MAX_PLANES];
++
++	/*
++	 * slice group map should be calculated on Host
++	 * (using some slice params) and base address provided here
++	 */
++	/* Base address of active slice group map */
++	/* Base address of active slice group map */
++	unsigned int slicegroupmap_base_address;
++
++	/* H264 specific control */
++	/* do second pass Intra Deblock on frame */
++	unsigned int do_old __attribute__ (aligned(4));
++	/* set to IMG_FALSE to disable second-pass deblock */
++	unsigned int two_pass_flag __attribute__ (aligned(4));
++	/* set to IMG_TRUE to disable MVC */
++	unsigned int disable_mvc __attribute__ (aligned(4));
++	/*
++	 * Do we have second PPS in uipSecondPPSInfoSource provided for the
++	 * second field
++	 */
++	unsigned int second_pps __attribute__ (aligned(4));
 +};
 +
 +/*
-+ * struct bspp_h264_slice_hdr_info
-+ * @Description This structure contains H264 slice header information
++ * This describes an H.264 picture. It is part of the Context data
 + */
-+struct bspp_h264_slice_hdr_info {
-+	unsigned short first_mb_in_slice;
-+	enum bspp_h264_slice_type slice_type;
++struct h264fw_picture {
++	/* Primary (reconstructed) picture buffers */
++	struct vdecfw_image_buffer primary;
++	/* Secondary (alternative) picture buffers */
++	struct vdecfw_image_buffer alternate;
++	/* Macroblock parameters base address for the picture */
++	unsigned int mbparams_base_address;
 +
-+	/* data to ID new picture */
-+	unsigned int pps_id;
-+	unsigned int frame_num;
-+	unsigned char colour_plane_id;
-+	unsigned char field_pic_flag;
++	/* Unique ID for this picture */
++	unsigned int transaction_id;
++	/* Picture type */
++	enum h264fw_epicture_type pricture_type;
++
++	/* Reference status of the picture */
++	enum h264fw_ereference ref_status_bottom;
++	/* Reference status of the picture */
++	enum h264fw_ereference ref_status_top;
++	/* Reference status of the picture */
++	enum h264fw_ereference ref_status_frame;
++
++	/* Frame Number */
++	unsigned int frame_number;
++	/* Short term reference info */
++	int fame_number_wrap;
++	/* long term reference number - should be 8-bit */
++	unsigned int longterm_frame_idx;
++
++	/* Top field order count for this picture */
++	int top_field_order_count;
++	/* Bottom field order count for this picture */
++	int bottom_field_order_count;
++	/* MVC view_id */
++	unsigned short view_id;
++	/*
++	 * When picture is in the DPB Offset to use into the MSVDX DPB reg table
++	 * when the current picture is the same view as this.
++	 */
++	unsigned char view_dpb_offset;
++	/* Flags for this picture for the display process */
++	unsigned char display_flags;
++
++	/* IMG_FALSE if sent to display, or otherwise not needed for display */
++	unsigned char needed_for_output;
++};
++
++/*
++ * This structure describes frame data for POC calculation
++ */
++struct h264fw_poc_picture_data {
++	/* type 0,1,2 */
++	unsigned char mmco_5_flag;
++
++	/* type 0 */
 +	unsigned char bottom_field_flag;
-+	unsigned int idr_pic_id;
-+	unsigned int pic_order_cnt_lsb;
-+	int delta_pic_order_cnt_bottom;
-+	int delta_pic_order_cnt[2];
-+	unsigned int redundant_pic_cnt;
++	unsigned short pic_order_cnt_lsb;
++	int top_field_order_count;
++	int pic_order_count_msb;
 +
-+	/* Things we need to read out when doing In Secure */
-+	unsigned char num_ref_idx_active_override_flag;
-+	unsigned char num_ref_idx_lx_active_minus1[2];
-+	unsigned short slice_group_change_cycle;
++	/* type 1,2 */
++	int16 frame_num;
++	int frame_num_offset;
++
++	/* output */
++	int bottom_filed_order_count;
 +};
 +
 +/*
-+ * @Function	bspp_h264_set_parser_config
-+ * @Description	Sets the parser configuration
++ * This structure describes picture data for determining Complementary
++ * Field Pairs
 + */
-+int bspp_h264_set_parser_config(enum vdec_bstr_format bstr_format,
-+				struct bspp_vid_std_features *pvidstd_features,
-+				struct bspp_swsr_ctx *pswsr_ctx,
-+				struct bspp_parser_callbacks *pparser_callbacks,
-+				struct bspp_inter_pict_data *pinterpict_data);
++struct h264fw_last_pic_data {
++	/* Unique ID for this picture */
++	unsigned int transaction_id;
++	/* Picture type */
++	enum h264fw_epicture_type picture_type;
++	/* Reference status of the picture */
++	enum h264fw_ereference ref_status_frame;
++	/* Frame Number */
++	unsigned int frame_number;
++
++	unsigned int luma_recon;
++	unsigned int chroma_recon;
++	unsigned int chroma_2_recon;
++	unsigned int luma_alter;
++	unsigned int chroma_alter;
++	unsigned int chroma_2_alter;
++	struct vdecfw_image_buffer primary;
++	struct vdecfw_image_buffer alternate;
++	unsigned int mbparams_base_address;
++	/* Top field order count for this picture */
++	int top_field_order_count;
++	/* Bottom field order count for this picture */
++	int bottom_field_order_count;
++};
 +
 +/*
-+ * @Function	bspp_h264_determine_unittype
-+ * @Description	This function determines the BSPP unit type based on the
-+ *		provided bitstream (H264 specific) unit type
++ * This describes the H.264 parser component "Context data", shown in the
++ * Firmware Memory Layout diagram. This data is the state preserved across
++ * pictures. It is loaded and saved by the Firmware, but requires the host to
++ * provide buffer(s) for this.
 + */
-+void bspp_h264_determine_unittype(unsigned char bitstream_unittype,
-+				  int disable_mvc,
-+				  enum bspp_unit_type *pbsppunittype);
++struct h264fw_context_data {
++	/* Decoded Picture Buffer */
++	struct h264fw_picture dpb[H264FW_MAX_DPB_SIZE];
++	/*
++	 * Inter-view reference components - also used as detail of the previous
++	 * picture for any particular view, can be used to determine
++	 * complemetary field pairs
++	 */
++	struct h264fw_picture interview_prediction_ref[H264FW_MAX_NUM_VIEWS];
++	/* previous ref pic for type0, previous pic for type1&2 */
++	struct h264fw_poc_picture_data prev_poc_pic_data[H264FW_MAX_NUM_VIEWS];
++	/* previous picture information to detect complementary field pairs */
++	struct h264fw_last_pic_data last_pic_data[H264FW_MAX_NUM_VIEWS];
++	struct h264fw_last_pic_data last_displayed_pic_data
++	[H264FW_MAX_NUM_VIEWS];
 +
-+#endif /*__H264SECUREPARSER_H__ */
-diff --git a/drivers/staging/media/vxd/decoder/hevc_secure_parser.c b/drivers/staging/media/vxd/decoder/hevc_secure_parser.c
++	/* previous reference frame number for each view */
++	unsigned short prev_ref_frame_num[H264FW_MAX_NUM_VIEWS];
++	/* Bitmap of used slots in each view DPB */
++	unsigned short dpb_bitmap[H264FW_MAX_NUM_VIEWS];
++
++	/* DPB size */
++	unsigned int dpb_size;
++	/* Number of pictures in DPB */
++	unsigned int dpb_fullness;
++
++	unsigned char prev_display_flags;
++	int prev_display;
++	int prev_release;
++	/* Active parameter sets */
++	/* Sequence Parameter Set data */
++	struct h264fw_sequence_ps sps;
++	/* Picture Parameter Set data */
++	struct h264fw_picture_ps pps;
++	/*
++	 * Picture Parameter Set data for second field when in the same buffer
++	 */
++	struct h264fw_picture_ps second_pps;
++
++	/* Set if stream is MVC */
++	int mvc;
++	/* DPB long term reference information */
++	int max_longterm_frame_idx[H264FW_MAX_NUM_VIEWS];
++};
++
++#endif /* _H264FW_DATA_H_ */
+diff --git a/drivers/staging/media/vxd/decoder/hevcfw_data.h b/drivers/staging/media/vxd/decoder/hevcfw_data.h
 new file mode 100644
-index 000000000000..35fbd7155420
+index 000000000000..cdfe8d067d90
 --- /dev/null
-+++ b/drivers/staging/media/vxd/decoder/hevc_secure_parser.c
-@@ -0,0 +1,2895 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * hevc secure data unit parsing API.
-+ *
-+ * Copyright (c) Imagination Technologies Ltd.
-+ * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com/
-+ *
-+ * Authors:
-+ *	Angela Stegmaier <angelabaker@ti.com>
-+ * Re-written for upstreming
-+ *	Prashanth Kumar Amai <prashanth.ka@pathpartnertech.com>
-+ *	Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
-+ */
-+
-+#include <linux/dma-mapping.h>
-+#include <media/v4l2-ctrls.h>
-+#include <media/v4l2-device.h>
-+#include <media/v4l2-mem2mem.h>
-+
-+#include "bspp_int.h"
-+#include "hevc_secure_parser.h"
-+#include "hevcfw_data.h"
-+#include "pixel_api.h"
-+#include "swsr.h"
-+#include "vdec_defs.h"
-+#include "vdecdd_utils.h"
-+
-+#if defined(DEBUG_DECODER_DRIVER)
-+#define BSPP_HEVC_SYNTAX(fmt, ...)      pr_info("[hevc] " fmt, ## __VA_ARGS__)
-+
-+#else
-+
-+#define BSPP_HEVC_SYNTAX(fmt, ...)
-+#endif
-+
-+static void HEVC_SWSR_U1(unsigned char *what, unsigned char *where, void *swsr_ctx)
-+{
-+	*where = swsr_read_bits(swsr_ctx, 1);
-+#ifdef DEBUG_DECODER_DRIVER
-+	pr_info("%s, u(1) : %u", what, *where);
-+#endif
-+}
-+
-+static void HEVC_SWSR_UN(unsigned char *what, unsigned int *where,
-+			 unsigned char numbits, void *swsr_ctx)
-+{
-+	*where = swsr_read_bits(swsr_ctx, numbits);
-+#ifdef DEBUG_DECODER_DRIVER
-+	pr_info("%s, u(%u) : %u", what, numbits, *where);
-+#endif
-+}
-+
-+static void HEVC_SWSR_UE(unsigned char *what, unsigned int *where, void *swsr_ctx)
-+{
-+	*where = swsr_read_unsigned_expgoulomb(swsr_ctx);
-+#ifdef DEBUG_DECODER_DRIVER
-+	pr_info("%s, ue(v) : %u", what, *where);
-+#endif
-+}
-+
-+static void HEVC_SWSR_SE(unsigned char *what, int *where, void *swsr_ctx)
-+{
-+	*where = swsr_read_signed_expgoulomb(swsr_ctx);
-+#ifdef DEBUG_DECODER_DRIVER
-+	pr_info("%s, se(v) : %u", what, *where);
-+#endif
-+}
-+
-+static void HEVC_SWSR_FN(unsigned char *what, unsigned char *where,
-+			 unsigned char numbits, unsigned char pattern,
-+			 enum bspp_error_type *bspperror, void *swsr_ctx)
-+{
-+	*where = swsr_read_bits(swsr_ctx, numbits);
-+#ifdef DEBUG_DECODER_DRIVER
-+	pr_info("%s, f(%u) : %u", what, numbits, *where);
-+#endif
-+	if (*where != pattern) {
-+		*bspperror |= BSPP_ERROR_INVALID_VALUE;
-+		pr_warn("Invalid value of %s (f(%u), expected: %u, got: %u)",
-+			what, numbits, pattern, *where);
-+	}
-+}
-+
-+static void HEVC_UCHECK(unsigned char *what, unsigned int val,
-+			unsigned int expected,
-+			enum bspp_error_type *bspperror)
-+{
-+	if (val != expected) {
-+		*bspperror |= BSPP_ERROR_INVALID_VALUE;
-+		pr_warn("Invalid value of %s (expected: %u, got: %u)",
-+			what, expected, val);
-+	}
-+}
-+
-+static void HEVC_RANGEUCHECK(unsigned char *what, unsigned int val,
-+			     unsigned int min, unsigned int max,
-+	enum bspp_error_type *bspperror)
-+{
-+	if ((min > 0 && val < min) || val > max) {
-+		*bspperror |= BSPP_ERROR_INVALID_VALUE;
-+		pr_warn("Value of %s out of range (expected: [%u, %u], got: %u)",
-+			what, min, max, val);
-+	}
-+}
-+
-+static void HEVC_RANGESCHECK(unsigned char *what, int val, int min, int max,
-+			     enum bspp_error_type *bspperror)
-+{
-+	if (val < min || val > max) {
-+		*bspperror |= BSPP_ERROR_INVALID_VALUE;
-+		pr_warn("Value of %s out of range (expected: [%d, %d], got: %d)",
-+			what, min, max, val);
-+	}
-+}
-+
-+#define HEVC_STATIC_ASSERT(expr) ((void)sizeof(unsigned char[1 - 2 * !(expr)]))
-+
-+#define HEVC_MIN(a, b, type) ({ \
-+		type __a = a; \
-+		type __b = b; \
-+		(((__a) <= (__b)) ? (__a) : (__b)); })
-+#define HEVC_MAX(a, b, type) ({ \
-+		type __a = a; \
-+		type __b = b; \
-+		(((__a) >= (__b)) ? (__a) : (__b)); })
-+#define HEVC_ALIGN(_val, _alignment, type) ({ \
-+		type val = _val; \
-+		type alignment = _alignment; \
-+		(((val) + (alignment) - 1) & ~((alignment) - 1)); })
-+
-+static const enum pixel_fmt_idc pixelformat_idc[] = {
-+	PIXEL_FORMAT_MONO,
-+	PIXEL_FORMAT_420,
-+	PIXEL_FORMAT_422,
-+	PIXEL_FORMAT_444
-+};
-+
-+static enum bspp_error_type bspp_hevc_parse_vps(void *sr_ctx, struct bspp_hevc_vps *vps);
-+
-+static void bspp_hevc_sublayhrdparams(void *sr_ctx,
-+				      struct bspp_hevc_hrd_parameters *hrdparams,
-+				      unsigned char sublayer_id);
-+
-+static void bspp_hevc_parsehrdparams(void *sr_ctx,
-+				     struct bspp_hevc_hrd_parameters *hrdparams,
-+				     unsigned char common_infpresent,
-+				     unsigned char max_numsublayers_minus1);
-+
-+static enum bspp_error_type bspp_hevc_parsesps(void *sr_ctx,
-+					       void *str_res,
-+					       struct bspp_hevc_sps *sps);
-+
-+static enum bspp_error_type bspp_hevc_parsepps(void *sr_ctx, void *str_res,
-+					       struct bspp_hevc_pps *pps);
-+
-+static int bspp_hevc_reset_ppsinfo(void *secure_ppsinfo);
-+
-+static void bspp_hevc_dotilecalculations(struct bspp_hevc_sps *sps,
-+					 struct bspp_hevc_pps *pps);
-+
-+static enum bspp_error_type bspp_hevc_parse_slicesegmentheader
-+		(void *sr_ctx, void *str_res,
-+		 struct bspp_hevc_slice_segment_header *ssh,
-+		 unsigned char nalunit_type,
-+		 struct bspp_vps_info **vpsinfo,
-+		 struct bspp_sequence_hdr_info **spsinfo,
-+		 struct bspp_pps_info **ppsinfo);
-+
-+static enum bspp_error_type bspp_hevc_parse_profiletierlevel
-+			(void *sr_ctx,
-+			 struct bspp_hevc_profile_tierlevel *ptl,
-+			 unsigned char vps_maxsublayers_minus1);
-+
-+static void bspp_hevc_getdefault_scalinglist(unsigned char size_id, unsigned char matrix_id,
-+					     const unsigned char **default_scalinglist,
-+					     unsigned int *size);
-+
-+static enum bspp_error_type bspp_hevc_parse_scalinglistdata
-+				(void *sr_ctx,
-+				 struct bspp_hevc_scalinglist_data *scaling_listdata);
-+
-+static void bspp_hevc_usedefault_scalinglists(struct bspp_hevc_scalinglist_data *scaling_listdata);
-+
-+static enum bspp_error_type bspp_hevc_parse_shortterm_refpicset
-+		(void *sr_ctx,
-+		 struct bspp_hevc_shortterm_refpicset *st_refpicset,
-+		 unsigned char st_rps_idx,
-+		 unsigned char in_slice_header);
-+
-+static void bspp_hevc_fillcommonseqhdr(struct bspp_hevc_sps *sps,
-+				       struct vdec_comsequ_hdrinfo *common_seq);
-+
-+static void bspp_hevc_fillpicturehdr(struct vdec_comsequ_hdrinfo *common_seq,
-+				     enum hevc_nalunittype nalunit_type,
-+				     struct bspp_pict_hdr_info *picture_hdr,
-+				     struct bspp_hevc_sps *sps,
-+				     struct bspp_hevc_pps *pps,
-+				     struct bspp_hevc_vps *vps);
-+
-+static void bspp_hevc_fill_fwsps(struct bspp_hevc_sps *sps,
-+				 struct hevcfw_sequence_ps *fwsps);
-+
-+static void bspp_hevc_fill_fwst_rps(struct bspp_hevc_shortterm_refpicset *strps,
-+				    struct hevcfw_short_term_ref_picset *fwstrps);
-+
-+static void bspp_hevc_fill_fwpps(struct bspp_hevc_pps *pps,
-+				 struct hevcfw_picture_ps *fw_pps);
-+
-+static void bspp_hevc_fill_fw_scaling_lists(struct bspp_hevc_pps *pps,
-+					    struct bspp_hevc_sps *sps,
-+					    struct hevcfw_picture_ps *fw_pps);
-+
-+static unsigned int bspp_ceil_log2(unsigned int linear_val);
-+
-+static unsigned char bspp_hevc_picture_is_irap(enum hevc_nalunittype nalunit_type);
-+
-+static unsigned char bspp_hevc_picture_is_cra(enum hevc_nalunittype nalunit_type);
-+
-+static unsigned char bspp_hevc_picture_is_idr(enum hevc_nalunittype nalunit_type);
-+
-+static unsigned char bspp_hevc_picture_is_bla(enum hevc_nalunittype nalunit_type);
-+
-+static unsigned char bspp_hevc_picture_getnorasl_outputflag
-+						(enum hevc_nalunittype nalunit_type,
-+						 struct bspp_hevc_inter_pict_ctx *inter_pict_ctx);
-+
-+static unsigned char bspp_hevc_range_extensions_is_enabled
-+					(struct bspp_hevc_profile_tierlevel *profile_tierlevel);
-+
-+static int bspp_hevc_unitparser(void *swsr_ctx, struct bspp_unit_data *unitdata)
-+{
-+	void *sr_ctx = swsr_ctx;
-+	int result = 0;
-+	enum bspp_error_type parse_err = BSPP_ERROR_NONE;
-+	struct bspp_inter_pict_data *inter_pict_ctx =
-+				unitdata->parse_state->inter_pict_ctx;
-+	unsigned char forbidden_zero_bit = 0;
-+	unsigned char nal_unit_type = 0;
-+	unsigned char nuh_layer_id = 0;
-+	unsigned char nuh_temporal_id_plus1 = 0;
-+
-+	HEVC_SWSR_FN("forbidden_zero_bit", &forbidden_zero_bit, 1, 0, &parse_err, sr_ctx);
-+	HEVC_SWSR_UN("nal_unit_type", (unsigned int *)&nal_unit_type, 6, sr_ctx);
-+	/* for current version of HEVC nuh_layer_id "shall be equal to 0" */
-+	HEVC_SWSR_FN("nuh_layer_id", &nuh_layer_id, 6, 0, &parse_err, sr_ctx);
-+	HEVC_SWSR_UN("nuh_temporal_id_plus1", (unsigned int *)&nuh_temporal_id_plus1, 3, sr_ctx);
-+
-+	switch (unitdata->unit_type) {
-+	case BSPP_UNIT_VPS:
-+	{
-+		struct bspp_hevc_vps *vps =
-+			(struct bspp_hevc_vps *)unitdata->out.vps_info->secure_vpsinfo;
-+
-+		unitdata->parse_error |= bspp_hevc_parse_vps(sr_ctx, vps);
-+		unitdata->out.vps_info->vps_id =
-+			vps->vps_video_parameter_set_id;
-+	}
-+	break;
-+
-+	case BSPP_UNIT_SEQUENCE:
-+	{
-+		struct bspp_ddbuf_array_info *tmp;
-+		struct hevcfw_sequence_ps *fwsps;
-+		struct vdec_comsequ_hdrinfo *common_seq;
-+		struct bspp_hevc_sps *sps =
-+			(struct bspp_hevc_sps *)unitdata->out.sequ_hdr_info->secure_sequence_info;
-+
-+		unitdata->parse_error |= bspp_hevc_parsesps(sr_ctx,
-+				unitdata->str_res_handle,
-+				sps);
-+		unitdata->out.sequ_hdr_info->sequ_hdr_info.sequ_hdr_id =
-+			sps->sps_seq_parameter_set_id;
-+
-+		tmp = &unitdata->out.sequ_hdr_info->fw_sequence;
-+		/* handle firmware headers */
-+		fwsps =
-+		(struct hevcfw_sequence_ps *)((unsigned char *)tmp->ddbuf_info.cpu_virt_addr +
-+			tmp->buf_offset);
-+
-+		bspp_hevc_fill_fwsps(sps, fwsps);
-+
-+		/* handle common sequence header */
-+		common_seq =
-+			&unitdata->out.sequ_hdr_info->sequ_hdr_info.com_sequ_hdr_info;
-+
-+		bspp_hevc_fillcommonseqhdr(sps, common_seq);
-+	}
-+	break;
-+
-+	case BSPP_UNIT_PPS:
-+	{
-+		struct bspp_ddbuf_array_info *tmp;
-+		struct hevcfw_picture_ps *fw_pps;
-+		struct bspp_hevc_pps *pps =
-+			(struct bspp_hevc_pps *)unitdata->out.pps_info->secure_pps_info;
-+
-+		unitdata->parse_error |= bspp_hevc_parsepps(sr_ctx,
-+				unitdata->str_res_handle,
-+				pps);
-+		unitdata->out.pps_info->pps_id = pps->pps_pic_parameter_set_id;
-+
-+		tmp = &unitdata->out.pps_info->fw_pps;
-+		/* handle firmware headers */
-+		fw_pps =
-+		(struct hevcfw_picture_ps *)((unsigned char *)tmp->ddbuf_info.cpu_virt_addr +
-+			tmp->buf_offset);
-+		bspp_hevc_fill_fwpps(pps, fw_pps);
-+	}
-+	break;
-+
-+	case BSPP_UNIT_PICTURE:
-+	{
-+		struct bspp_hevc_slice_segment_header ssh;
-+		struct bspp_vps_info *vps_info = NULL;
-+		struct bspp_sequence_hdr_info *sequ_hdr_info = NULL;
-+		struct bspp_hevc_sps *hevc_sps = NULL;
-+		struct bspp_pps_info *ppsinfo = NULL;
-+		enum bspp_error_type parse_error;
-+		struct bspp_ddbuf_array_info *tmp;
-+		struct hevcfw_picture_ps *fw_pps;
-+		struct bspp_pict_data *pictdata;
-+		struct bspp_hevc_pps *pps;
-+
-+		/*
-+		 * EOS has to be attached to picture data, so it can be used
-+		 * for NoRaslOutputFlag calculation in FW
-+		 */
-+		inter_pict_ctx->hevc_ctx.eos_detected = 0;
-+		if (nal_unit_type == HEVC_NALTYPE_EOS) {
-+			inter_pict_ctx->hevc_ctx.eos_detected = 1;
-+			break;
-+		}
-+
-+		parse_error = bspp_hevc_parse_slicesegmentheader(sr_ctx,
-+								 unitdata->str_res_handle,
-+								 &ssh,
-+								 nal_unit_type,
-+								 &vps_info,
-+								 &sequ_hdr_info,
-+								 &ppsinfo);
-+		unitdata->parse_error |= parse_error;
-+		unitdata->slice = 1;
-+
-+		if (parse_error != BSPP_ERROR_NONE &&
-+		    parse_error != BSPP_ERROR_CORRECTION_VALIDVALUE) {
-+			result = IMG_ERROR_CANCELLED;
-+			break;
-+		}
-+
-+		/* if we just started new picture. */
-+		if (ssh.first_slice_segment_in_pic_flag) {
-+			tmp = &ppsinfo->fw_pps;
-+			/* handle firmware headers */
-+			fw_pps =
-+			(struct hevcfw_picture_ps *)((unsigned char *)tmp->ddbuf_info.cpu_virt_addr
-+				+ tmp->buf_offset);
-+
-+			inter_pict_ctx->hevc_ctx.first_after_eos = 0;
-+			if (inter_pict_ctx->hevc_ctx.eos_detected) {
-+				inter_pict_ctx->hevc_ctx.first_after_eos = 1;
-+				inter_pict_ctx->hevc_ctx.eos_detected = 0;
-+			}
-+
-+			/* fill common picture header */
-+			bspp_hevc_fillpicturehdr(&sequ_hdr_info->sequ_hdr_info.com_sequ_hdr_info,
-+						 (enum hevc_nalunittype)nal_unit_type,
-+						 unitdata->out.pict_hdr_info,
-+						 (struct bspp_hevc_sps *)
-+						 sequ_hdr_info->secure_sequence_info,
-+						 (struct bspp_hevc_pps *)ppsinfo->secure_pps_info,
-+						 (struct bspp_hevc_vps *)vps_info->secure_vpsinfo);
-+
-+			bspp_hevc_fill_fw_scaling_lists(ppsinfo->secure_pps_info,
-+							sequ_hdr_info->secure_sequence_info,
-+							fw_pps);
-+
-+			pictdata = &unitdata->out.pict_hdr_info->pict_aux_data;
-+			/*
-+			 * We have no container for the PPS that passes down
-+			 * to the kernel, for this reason the hevc secure parser
-+			 * needs to populate that info into the picture
-+			 * header PictAuxData.
-+			 */
-+			pictdata->bufmap_id = ppsinfo->bufmap_id;
-+			pictdata->buf_offset = ppsinfo->buf_offset;
-+			pictdata->pic_data = fw_pps;
-+			pictdata->id = fw_pps->pps_pic_parameter_set_id;
-+			pictdata->size = sizeof(*fw_pps);
-+
-+			ppsinfo->ref_count++;
-+
-+			/* new Coded Video Sequence indication */
-+			if (nal_unit_type == HEVC_NALTYPE_IDR_W_RADL ||
-+			    nal_unit_type == HEVC_NALTYPE_IDR_N_LP ||
-+			    nal_unit_type == HEVC_NALTYPE_BLA_N_LP ||
-+			    nal_unit_type == HEVC_NALTYPE_BLA_W_RADL ||
-+			    nal_unit_type == HEVC_NALTYPE_BLA_W_LP ||
-+			    nal_unit_type == HEVC_NALTYPE_CRA) {
-+				unitdata->new_closed_gop = 1;
-+				inter_pict_ctx->hevc_ctx.seq_pic_count = 0;
-+			}
-+
-+			/* Attach SEI data to the picture. */
-+	if (!inter_pict_ctx->hevc_ctx.sei_info_attached_to_pic) {
-+				/*
-+				 *  If there is already a non-empty SEI list
-+				 *  available
-+				 */
-+		if (inter_pict_ctx->hevc_ctx.sei_rawdata_list) {
-+			/* attach it to the picture header. */
-+			unitdata->out.pict_hdr_info->hevc_pict_hdr_info.raw_sei_datalist_firstfield
-+					=
-+				(void *)inter_pict_ctx->hevc_ctx.sei_rawdata_list;
-+			inter_pict_ctx->hevc_ctx.sei_info_attached_to_pic = 1;
-+		} else {
-+				/* Otherwise expose a handle a picture header field to
-+				 * attach SEI list later.
-+				 */
-+			inter_pict_ctx->hevc_ctx.hndl_pichdr_sei_rawdata_list =
-+		&unitdata->out.pict_hdr_info->hevc_pict_hdr_info.raw_sei_datalist_firstfield;
-+			}
-+	}
-+
-+			/* Attach raw VUI data to the picture header. */
-+			hevc_sps = (struct bspp_hevc_sps *)sequ_hdr_info->secure_sequence_info;
-+			if (hevc_sps->vui_raw_data) {
-+				hevc_sps->vui_raw_data->ref_count++;
-+				unitdata->out.pict_hdr_info->hevc_pict_hdr_info.raw_vui_data =
-+					(void *)hevc_sps->vui_raw_data;
-+			}
-+
-+			inter_pict_ctx->hevc_ctx.seq_pic_count++;
-+
-+			/* NoOutputOfPriorPicsFlag */
-+			inter_pict_ctx->not_dpb_flush = 0;
-+			if (unitdata->new_closed_gop &&
-+			    bspp_hevc_picture_is_irap((enum hevc_nalunittype)nal_unit_type) &&
-+			    bspp_hevc_picture_getnorasl_outputflag((enum hevc_nalunittype)
-+								   nal_unit_type,
-+								   &inter_pict_ctx->hevc_ctx)) {
-+				if (bspp_hevc_picture_is_cra((enum hevc_nalunittype)nal_unit_type))
-+					inter_pict_ctx->not_dpb_flush = 1;
-+				else
-+					inter_pict_ctx->not_dpb_flush =
-+						ssh.no_output_of_prior_pics_flag;
-+			}
-+
-+			unitdata->parse_state->next_pic_is_new = 0;
-+		}
-+
-+		pps = (struct bspp_hevc_pps *)ppsinfo->secure_pps_info;
-+		unitdata->pict_sequ_hdr_id = pps->pps_seq_parameter_set_id;
-+	}
-+	break;
-+
-+	case BSPP_UNIT_UNCLASSIFIED:
-+	case BSPP_UNIT_NON_PICTURE:
-+	case BSPP_UNIT_UNSUPPORTED:
-+		break;
-+
-+	default:
-+		VDEC_ASSERT("Unknown BSPP Unit Type" == NULL);
-+		break;
-+	}
-+
-+	return result;
-+}
-+
-+static void bspp_hevc_initialiseparsing(struct bspp_parse_state *parse_state)
-+{
-+	/* Indicate that SEI info has not yet been attached to this picture. */
-+	parse_state->inter_pict_ctx->hevc_ctx.sei_info_attached_to_pic = 0;
-+}
-+
-+static void bspp_hevc_finaliseparsing(void *str_alloc, struct bspp_parse_state *parse_state)
-+{
-+	/*
-+	 * If SEI info has not yet been attached to the picture and
-+	 * there is anything to be attached.
-+	 */
-+	if (!parse_state->inter_pict_ctx->hevc_ctx.sei_info_attached_to_pic &&
-+	    parse_state->inter_pict_ctx->hevc_ctx.sei_rawdata_list) {
-+		/* attach the SEI list if there is a handle provided for that. */
-+		if (parse_state->inter_pict_ctx->hevc_ctx.hndl_pichdr_sei_rawdata_list) {
-+			/* Attach the raw SEI list to the picture. */
-+			*parse_state->inter_pict_ctx->hevc_ctx.hndl_pichdr_sei_rawdata_list =
-+				(void *)parse_state->inter_pict_ctx->hevc_ctx.sei_rawdata_list;
-+			/* Reset the inter-picture data. */
-+			parse_state->inter_pict_ctx->hevc_ctx.hndl_pichdr_sei_rawdata_list = NULL;
-+		} else {
-+			/* Nowhere to attach the raw SEI list, so just free it. */
-+			bspp_freeraw_sei_datalist
-+				(str_alloc, parse_state->inter_pict_ctx->hevc_ctx.sei_rawdata_list);
-+		}
-+	}
-+
-+	/* Indicate that SEI info has been attached to the picture. */
-+	parse_state->inter_pict_ctx->hevc_ctx.sei_info_attached_to_pic = 1;
-+	/* Reset the inter-picture SEI list. */
-+	parse_state->inter_pict_ctx->hevc_ctx.sei_rawdata_list = NULL;
-+}
-+
-+static enum bspp_error_type bspp_hevc_parse_vps(void *sr_ctx, struct bspp_hevc_vps *vps)
-+{
-+	unsigned int parse_err = BSPP_ERROR_NONE;
-+	unsigned int i, j;
-+
-+	VDEC_ASSERT(vps);
-+	VDEC_ASSERT(sr_ctx);
-+
-+	memset(vps, 0, sizeof(struct bspp_hevc_vps));
-+
-+	HEVC_SWSR_UN("vps_video_parameter_set_id",
-+		     (unsigned int *)&vps->vps_video_parameter_set_id, 4, sr_ctx);
-+	HEVC_SWSR_UN("vps_reserved_three_2bits",
-+		     (unsigned int *)&vps->vps_reserved_three_2bits, 2, sr_ctx);
-+	HEVC_SWSR_UN("vps_max_layers_minus1",
-+		     (unsigned int *)&vps->vps_max_layers_minus1, 6, sr_ctx);
-+	HEVC_SWSR_UN("vps_max_sub_layers_minus1",
-+		     (unsigned int *)&vps->vps_max_sub_layers_minus1, 3, sr_ctx);
-+	HEVC_RANGEUCHECK("vps_max_sub_layers_minus1", vps->vps_max_sub_layers_minus1, 0,
-+			 HEVC_MAX_NUM_SUBLAYERS - 1, &parse_err);
-+	HEVC_SWSR_U1("vps_temporal_id_nesting_flag",
-+		     &vps->vps_temporal_id_nesting_flag, sr_ctx);
-+	HEVC_SWSR_UN("vps_reserved_0xffff_16bits",
-+		     (unsigned int *)&vps->vps_reserved_0xffff_16bits, 16, sr_ctx);
-+
-+	if (vps->vps_max_sub_layers_minus1 == 0)
-+		HEVC_UCHECK("vps_temporal_id_nesting_flag",
-+			    vps->vps_temporal_id_nesting_flag, 1, &parse_err);
-+
-+	parse_err |= bspp_hevc_parse_profiletierlevel(sr_ctx, &vps->profiletierlevel,
-+						      vps->vps_max_sub_layers_minus1);
-+
-+	HEVC_SWSR_U1("vps_sub_layer_ordering_info_present_flag",
-+		     &vps->vps_sub_layer_ordering_info_present_flag, sr_ctx);
-+	for (i = vps->vps_sub_layer_ordering_info_present_flag ?
-+		0 : vps->vps_max_sub_layers_minus1;
-+		i <= vps->vps_max_sub_layers_minus1; ++i) {
-+		HEVC_SWSR_UE("vps_max_dec_pic_buffering_minus1",
-+			     (unsigned int *)&vps->vps_max_dec_pic_buffering_minus1[i], sr_ctx);
-+		HEVC_SWSR_UE("vps_max_num_reorder_pics",
-+			     (unsigned int *)&vps->vps_max_num_reorder_pics[i], sr_ctx);
-+		HEVC_SWSR_UE("vps_max_latency_increase_plus1",
-+			     (unsigned int *)&vps->vps_max_latency_increase_plus1[i], sr_ctx);
-+	}
-+
-+	HEVC_SWSR_UN("vps_max_layer_id", (unsigned int *)&vps->vps_max_layer_id, 6, sr_ctx);
-+	HEVC_SWSR_UE("vps_num_layer_sets_minus1",
-+		     (unsigned int *)&vps->vps_num_layer_sets_minus1, sr_ctx);
-+
-+	for (i = 1; i <= vps->vps_num_layer_sets_minus1; ++i) {
-+		for (j = 0; j <= vps->vps_max_layer_id; ++j) {
-+			HEVC_SWSR_U1("layer_id_included_flag",
-+				     &vps->layer_id_included_flag[i][j], sr_ctx);
-+		}
-+	}
-+
-+	HEVC_SWSR_U1("vps_timing_info_present_flag", &vps->vps_timing_info_present_flag, sr_ctx);
-+	if (vps->vps_timing_info_present_flag) {
-+		HEVC_SWSR_UN("vps_num_units_in_tick",
-+			     (unsigned int *)&vps->vps_num_units_in_tick, 32, sr_ctx);
-+		HEVC_SWSR_UN("vps_time_scale",
-+			     (unsigned int *)&vps->vps_time_scale, 32, sr_ctx);
-+		HEVC_SWSR_U1("vps_poc_proportional_to_timing_flag",
-+			     &vps->vps_poc_proportional_to_timing_flag, sr_ctx);
-+		if (vps->vps_poc_proportional_to_timing_flag)
-+			HEVC_SWSR_UE("vps_num_ticks_poc_diff_one_minus1",
-+				     (unsigned int *)&vps->vps_num_ticks_poc_diff_one_minus1,
-+				     sr_ctx);
-+
-+		HEVC_SWSR_UE("vps_num_hrd_parameters",
-+			     (unsigned int *)&vps->vps_num_hrd_parameters, sr_ctx);
-+
-+		/* consume hrd_parameters */
-+		for (i = 0; i < vps->vps_num_hrd_parameters; i++) {
-+			unsigned short hrd_layer_set_idx;
-+			unsigned char cprms_present_flag = 1;
-+			struct bspp_hevc_hrd_parameters hrdparams;
-+
-+			HEVC_SWSR_UE("hrd_layer_set_idx",
-+				     (unsigned int *)&hrd_layer_set_idx, sr_ctx);
-+			if (i > 0)
-+				HEVC_SWSR_U1("cprms_present_flag", &cprms_present_flag, sr_ctx);
-+
-+			bspp_hevc_parsehrdparams(sr_ctx, &hrdparams,
-+						 cprms_present_flag,
-+						 vps->vps_max_sub_layers_minus1);
-+		}
-+	}
-+	HEVC_SWSR_U1("vps_extension_flag", &vps->vps_extension_flag, sr_ctx);
-+
-+	return (enum bspp_error_type)parse_err;
-+}
-+
-+static void bspp_hevc_sublayhrdparams(void *sr_ctx,
-+				      struct bspp_hevc_hrd_parameters *hrdparams,
-+				      unsigned char sublayer_id)
-+{
-+	unsigned char i;
-+	unsigned char cpb_cnt = hrdparams->cpb_cnt_minus1[sublayer_id];
-+	struct bspp_hevc_sublayer_hrd_parameters *sublay_hrdparams =
-+		&hrdparams->sublayhrdparams[sublayer_id];
-+
-+	VDEC_ASSERT(sr_ctx);
-+	VDEC_ASSERT(hrdparams);
-+	VDEC_ASSERT(cpb_cnt < HEVC_MAX_CPB_COUNT);
-+	VDEC_ASSERT(sublayer_id < HEVC_MAX_NUM_SUBLAYERS);
-+
-+	for (i = 0; i <= cpb_cnt; i++) {
-+		HEVC_SWSR_UE("bit_rate_value_minus1",
-+			     (unsigned int *)&sublay_hrdparams->bit_rate_value_minus1[i], sr_ctx);
-+		HEVC_SWSR_UE("cpb_size_value_minus1",
-+			     (unsigned int *)&sublay_hrdparams->cpb_size_value_minus1[i], sr_ctx);
-+		if (hrdparams->sub_pic_hrd_params_present_flag) {
-+			HEVC_SWSR_UE("cpb_size_du_value_minus1",
-+				     (unsigned int *)
-+				     &sublay_hrdparams->cpb_size_du_value_minus1[i],
-+				     sr_ctx);
-+			HEVC_SWSR_UE("bit_rate_du_value_minus1",
-+				     (unsigned int *)
-+				     &sublay_hrdparams->bit_rate_du_value_minus1[i],
-+				     sr_ctx);
-+		}
-+		HEVC_SWSR_U1("cbr_flag", &sublay_hrdparams->cbr_flag[i], sr_ctx);
-+	}
-+}
-+
-+static void bspp_hevc_parsehrdparams(void *sr_ctx,
-+				     struct bspp_hevc_hrd_parameters *hrdparams,
-+				     unsigned char common_infpresent,
-+				     unsigned char max_numsublayers_minus1)
-+{
-+	unsigned char i;
-+
-+	VDEC_ASSERT(sr_ctx);
-+	VDEC_ASSERT(hrdparams);
-+	VDEC_ASSERT(max_numsublayers_minus1 < HEVC_MAX_NUM_SUBLAYERS);
-+
-+	memset(hrdparams, 0, sizeof(struct bspp_hevc_hrd_parameters));
-+
-+	if (common_infpresent) {
-+		HEVC_SWSR_U1("nal_hrd_parameters_present_flag",
-+			     &hrdparams->nal_hrd_parameters_present_flag, sr_ctx);
-+		HEVC_SWSR_U1("vcl_hrd_parameters_present_flag",
-+			     &hrdparams->vcl_hrd_parameters_present_flag, sr_ctx);
-+		if (hrdparams->nal_hrd_parameters_present_flag ||
-+		    hrdparams->vcl_hrd_parameters_present_flag) {
-+			HEVC_SWSR_U1("sub_pic_hrd_params_present_flag",
-+				     &hrdparams->sub_pic_hrd_params_present_flag,
-+				     sr_ctx);
-+			if (hrdparams->sub_pic_hrd_params_present_flag) {
-+				HEVC_SWSR_UN("tick_divisor_minus2",
-+					     (unsigned int *)&hrdparams->tick_divisor_minus2,
-+					     8, sr_ctx);
-+				HEVC_SWSR_UN
-+				("du_cpb_removal_delay_increment_length_minus1",
-+				 (unsigned int *)
-+				 &hrdparams->du_cpb_removal_delay_increment_length_minus1,
-+				 5, sr_ctx);
-+				HEVC_SWSR_U1("sub_pic_cpb_params_in_pic_timing_sei_flag",
-+					     &hrdparams->sub_pic_cpb_params_in_pic_timing_sei_flag,
-+					     sr_ctx);
-+				HEVC_SWSR_UN("dpb_output_delay_du_length_minus1",
-+					     (unsigned int *)
-+					     &hrdparams->dpb_output_delay_du_length_minus1,
-+					     5, sr_ctx);
-+			}
-+			HEVC_SWSR_UN("bit_rate_scale",
-+				     (unsigned int *)&hrdparams->bit_rate_scale, 4, sr_ctx);
-+			HEVC_SWSR_UN("cpb_size_scale",
-+				     (unsigned int *)&hrdparams->cpb_size_scale, 4, sr_ctx);
-+			if (hrdparams->sub_pic_hrd_params_present_flag)
-+				HEVC_SWSR_UN("cpb_size_du_scale",
-+					     (unsigned int *)&hrdparams->cpb_size_du_scale,
-+					     4, sr_ctx);
-+
-+			HEVC_SWSR_UN("initial_cpb_removal_delay_length_minus1",
-+				     (unsigned int *)
-+				     &hrdparams->initial_cpb_removal_delay_length_minus1,
-+				     5, sr_ctx);
-+			HEVC_SWSR_UN("au_cpb_removal_delay_length_minus1",
-+				     (unsigned int *)&hrdparams->au_cpb_removal_delay_length_minus1,
-+				     5, sr_ctx);
-+			HEVC_SWSR_UN("dpb_output_delay_length_minus1",
-+				     (unsigned int *)&hrdparams->dpb_output_delay_length_minus1,
-+				     5, sr_ctx);
-+		}
-+	}
-+	for (i = 0; i <= max_numsublayers_minus1; i++) {
-+		HEVC_SWSR_U1("fixed_pic_rate_general_flag",
-+			     &hrdparams->fixed_pic_rate_general_flag[i], sr_ctx);
-+		hrdparams->fixed_pic_rate_within_cvs_flag[i] =
-+			hrdparams->fixed_pic_rate_general_flag[i];
-+		if (!hrdparams->fixed_pic_rate_general_flag[i])
-+			HEVC_SWSR_U1("fixed_pic_rate_within_cvs_flag",
-+				     &hrdparams->fixed_pic_rate_within_cvs_flag[i],
-+				     sr_ctx);
-+
-+		if (hrdparams->fixed_pic_rate_within_cvs_flag[i])
-+			HEVC_SWSR_UE("elemental_duration_in_tc_minus1",
-+				     (unsigned int *)&hrdparams->elemental_duration_in_tc_minus1[i],
-+				     sr_ctx);
-+		else
-+			HEVC_SWSR_U1("low_delay_hrd_flag",
-+				     &hrdparams->low_delay_hrd_flag[i], sr_ctx);
-+
-+		if (!hrdparams->low_delay_hrd_flag[i])
-+			HEVC_SWSR_UE("cpb_cnt_minus1",
-+				     (unsigned int *)&hrdparams->cpb_cnt_minus1[i], sr_ctx);
-+
-+		if (hrdparams->nal_hrd_parameters_present_flag)
-+			bspp_hevc_sublayhrdparams(sr_ctx, hrdparams, i);
-+
-+		if (hrdparams->vcl_hrd_parameters_present_flag)
-+			bspp_hevc_sublayhrdparams(sr_ctx, hrdparams, i);
-+	}
-+}
-+
-+static enum bspp_error_type bspp_hevc_parsevui_parameters
-+			(void *sr_ctx,
-+			 struct bspp_hevc_vui_params *vui_params,
-+			 unsigned char sps_max_sub_layers_minus1)
-+{
-+	enum bspp_error_type parse_err = BSPP_ERROR_NONE;
-+
-+	VDEC_ASSERT(sr_ctx);
-+	VDEC_ASSERT(vui_params);
-+
-+	memset(vui_params, 0, sizeof(struct bspp_hevc_vui_params));
-+
-+	HEVC_SWSR_U1("aspect_ratio_info_present_flag",
-+		     &vui_params->aspect_ratio_info_present_flag, sr_ctx);
-+	if (vui_params->aspect_ratio_info_present_flag) {
-+		HEVC_SWSR_UN("aspect_ratio_idc",
-+			     (unsigned int *)&vui_params->aspect_ratio_idc, 8, sr_ctx);
-+		if (vui_params->aspect_ratio_idc == HEVC_EXTENDED_SAR) {
-+			HEVC_SWSR_UN("sar_width",
-+				     (unsigned int *)&vui_params->sar_width, 16, sr_ctx);
-+			HEVC_SWSR_UN("sar_height",
-+				     (unsigned int *)&vui_params->sar_height, 16, sr_ctx);
-+		}
-+	}
-+	HEVC_SWSR_U1("overscan_info_present_flag",
-+		     &vui_params->overscan_info_present_flag, sr_ctx);
-+
-+	if (vui_params->overscan_info_present_flag)
-+		HEVC_SWSR_U1("overscan_appropriate_flag",
-+			     &vui_params->overscan_appropriate_flag, sr_ctx);
-+
-+	HEVC_SWSR_U1("video_signal_type_present_flag",
-+		     &vui_params->video_signal_type_present_flag, sr_ctx);
-+
-+	if (vui_params->video_signal_type_present_flag) {
-+		HEVC_SWSR_UN("video_format",
-+			     (unsigned int *)&vui_params->video_format, 3, sr_ctx);
-+		HEVC_SWSR_U1("video_full_range_flag",
-+			     &vui_params->video_full_range_flag, sr_ctx);
-+		HEVC_SWSR_U1("colour_description_present_flag",
-+			     &vui_params->colour_description_present_flag,
-+			     sr_ctx);
-+		if (vui_params->colour_description_present_flag) {
-+			HEVC_SWSR_UN("colour_primaries",
-+				     (unsigned int *)&vui_params->colour_primaries, 8, sr_ctx);
-+			HEVC_SWSR_UN("transfer_characteristics",
-+				     (unsigned int *)&vui_params->transfer_characteristics,
-+				     8, sr_ctx);
-+			HEVC_SWSR_UN("matrix_coeffs",
-+				     (unsigned int *)&vui_params->matrix_coeffs, 8, sr_ctx);
-+		}
-+	}
-+
-+	HEVC_SWSR_U1("chroma_loc_info_present_flag",
-+		     &vui_params->chroma_loc_info_present_flag, sr_ctx);
-+	if (vui_params->chroma_loc_info_present_flag) {
-+		HEVC_SWSR_UE("chroma_sample_loc_type_top_field",
-+			     (unsigned int *)&vui_params->chroma_sample_loc_type_top_field,
-+			     sr_ctx);
-+		HEVC_RANGEUCHECK("chroma_sample_loc_type_top_field",
-+				 vui_params->chroma_sample_loc_type_top_field,
-+				 0, 5, &parse_err);
-+		HEVC_SWSR_UE("chroma_sample_loc_type_bottom_field",
-+			     (unsigned int *)&vui_params->chroma_sample_loc_type_bottom_field,
-+			     sr_ctx);
-+		HEVC_RANGEUCHECK("chroma_sample_loc_type_bottom_field",
-+				 vui_params->chroma_sample_loc_type_bottom_field,
-+				 0, 5, &parse_err);
-+	}
-+	HEVC_SWSR_U1("neutral_chroma_indication_flag",
-+		     &vui_params->neutral_chroma_indication_flag, sr_ctx);
-+	HEVC_SWSR_U1("field_seq_flag",
-+		     &vui_params->field_seq_flag, sr_ctx);
-+	HEVC_SWSR_U1("frame_field_info_present_flag",
-+		     &vui_params->frame_field_info_present_flag, sr_ctx);
-+	HEVC_SWSR_U1("default_display_window_flag",
-+		     &vui_params->default_display_window_flag, sr_ctx);
-+	if (vui_params->default_display_window_flag) {
-+		HEVC_SWSR_UE("def_disp_win_left_offset",
-+			     (unsigned int *)&vui_params->def_disp_win_left_offset, sr_ctx);
-+		HEVC_SWSR_UE("def_disp_win_right_offset",
-+			     (unsigned int *)&vui_params->def_disp_win_right_offset, sr_ctx);
-+		HEVC_SWSR_UE("def_disp_win_top_offset",
-+			     (unsigned int *)&vui_params->def_disp_win_top_offset, sr_ctx);
-+		HEVC_SWSR_UE("def_disp_win_bottom_offset",
-+			     (unsigned int *)&vui_params->def_disp_win_bottom_offset, sr_ctx);
-+	}
-+	HEVC_SWSR_U1("vui_timing_info_present_flag",
-+		     &vui_params->vui_timing_info_present_flag, sr_ctx);
-+	if (vui_params->vui_timing_info_present_flag) {
-+		HEVC_SWSR_UN("vui_num_units_in_tick",
-+			     (unsigned int *)&vui_params->vui_num_units_in_tick, 32, sr_ctx);
-+		HEVC_SWSR_UN("vui_time_scale",
-+			     (unsigned int *)&vui_params->vui_time_scale, 32, sr_ctx);
-+		HEVC_SWSR_U1("vui_poc_proportional_to_timing_flag",
-+			     &vui_params->vui_poc_proportional_to_timing_flag,
-+			     sr_ctx);
-+		if (vui_params->vui_poc_proportional_to_timing_flag)
-+			HEVC_SWSR_UE("vui_num_ticks_poc_diff_one_minus1",
-+				     (unsigned int *)&vui_params->vui_num_ticks_poc_diff_one_minus1,
-+				     sr_ctx);
-+
-+		HEVC_SWSR_U1("vui_hrd_parameters_present_flag",
-+			     &vui_params->vui_hrd_parameters_present_flag,
-+			     sr_ctx);
-+		if (vui_params->vui_hrd_parameters_present_flag)
-+			bspp_hevc_parsehrdparams(sr_ctx, &vui_params->vui_hrd_params,
-+						 1, sps_max_sub_layers_minus1);
-+	}
-+	HEVC_SWSR_U1("bitstream_restriction_flag",
-+		     &vui_params->bitstream_restriction_flag, sr_ctx);
-+
-+	if (vui_params->bitstream_restriction_flag) {
-+		HEVC_SWSR_U1("tiles_fixed_structure_flag",
-+			     &vui_params->tiles_fixed_structure_flag, sr_ctx);
-+		HEVC_SWSR_U1("motion_vectors_over_pic_boundaries_flag",
-+			     &vui_params->motion_vectors_over_pic_boundaries_flag,
-+			     sr_ctx);
-+		HEVC_SWSR_U1("restricted_ref_pic_lists_flag",
-+			     &vui_params->restricted_ref_pic_lists_flag, sr_ctx);
-+
-+		HEVC_SWSR_UE("min_spatial_segmentation_idc",
-+			     (unsigned int *)&vui_params->min_spatial_segmentation_idc, sr_ctx);
-+		HEVC_RANGEUCHECK("min_spatial_segmentation_idc",
-+				 vui_params->min_spatial_segmentation_idc,
-+				 0, 4095, &parse_err);
-+
-+		HEVC_SWSR_UE("max_bytes_per_pic_denom",
-+			     (unsigned int *)&vui_params->max_bytes_per_pic_denom, sr_ctx);
-+		HEVC_RANGEUCHECK("max_bytes_per_pic_denom", vui_params->max_bytes_per_pic_denom,
-+				 0, 16, &parse_err);
-+
-+		HEVC_SWSR_UE("max_bits_per_min_cu_denom",
-+			     (unsigned int *)&vui_params->max_bits_per_min_cu_denom, sr_ctx);
-+		HEVC_RANGEUCHECK("max_bits_per_min_cu_denom", vui_params->max_bits_per_min_cu_denom,
-+				 0, 16, &parse_err);
-+
-+		HEVC_SWSR_UE("log2_max_mv_length_horizontal",
-+			     (unsigned int *)&vui_params->log2_max_mv_length_horizontal, sr_ctx);
-+		HEVC_RANGEUCHECK("log2_max_mv_length_horizontal",
-+				 vui_params->log2_max_mv_length_horizontal,
-+				 0, 16, &parse_err);
-+
-+		HEVC_SWSR_UE("log2_max_mv_length_vertical",
-+			     (unsigned int *)&vui_params->log2_max_mv_length_vertical, sr_ctx);
-+		HEVC_RANGEUCHECK("log2_max_mv_length_vertical",
-+				 vui_params->log2_max_mv_length_vertical,
-+				 0, 15, &parse_err);
-+	}
-+
-+	return parse_err;
-+}
-+
-+static enum bspp_error_type bspp_hevc_parse_spsrange_extensions
-+					(void *sr_ctx,
-+					 struct bspp_hevc_sps_range_exts *range_exts)
-+{
-+	enum bspp_error_type parse_err = BSPP_ERROR_NONE;
-+
-+	VDEC_ASSERT(sr_ctx);
-+	VDEC_ASSERT(range_exts);
-+
-+	memset(range_exts, 0, sizeof(struct bspp_hevc_sps_range_exts));
-+
-+	HEVC_SWSR_U1("transform_skip_rotation_enabled_flag",
-+		     &range_exts->transform_skip_rotation_enabled_flag, sr_ctx);
-+	HEVC_SWSR_U1("transform_skip_context_enabled_flag",
-+		     &range_exts->transform_skip_context_enabled_flag, sr_ctx);
-+	HEVC_SWSR_U1("implicit_rdpcm_enabled_flag",
-+		     &range_exts->implicit_rdpcm_enabled_flag, sr_ctx);
-+	HEVC_SWSR_U1("explicit_rdpcm_enabled_flag",
-+		     &range_exts->explicit_rdpcm_enabled_flag, sr_ctx);
-+	HEVC_SWSR_U1("extended_precision_processing_flag",
-+		     &range_exts->extended_precision_processing_flag, sr_ctx);
-+	HEVC_UCHECK("extended_precision_processing_flag",
-+		    range_exts->extended_precision_processing_flag,
-+		    0, &parse_err);
-+	HEVC_SWSR_U1("intra_smoothing_disabled_flag",
-+		     &range_exts->intra_smoothing_disabled_flag, sr_ctx);
-+	HEVC_SWSR_U1("high_precision_offsets_enabled_flag",
-+		     &range_exts->high_precision_offsets_enabled_flag, sr_ctx);
-+	HEVC_SWSR_U1("persistent_rice_adaptation_enabled_flag",
-+		     &range_exts->persistent_rice_adaptation_enabled_flag,
-+		     sr_ctx);
-+	HEVC_SWSR_U1("cabac_bypass_alignment_enabled_flag",
-+		     &range_exts->cabac_bypass_alignment_enabled_flag, sr_ctx);
-+
-+	return parse_err;
-+}
-+
-+static unsigned char
-+bspp_hevc_checksps_range_extensions(struct bspp_hevc_sps_range_exts *range_exts)
-+{
-+	VDEC_ASSERT(range_exts);
-+
-+	if (range_exts->transform_skip_rotation_enabled_flag ||
-+	    range_exts->transform_skip_context_enabled_flag ||
-+	    range_exts->implicit_rdpcm_enabled_flag ||
-+	    range_exts->explicit_rdpcm_enabled_flag ||
-+	    range_exts->extended_precision_processing_flag ||
-+	    range_exts->intra_smoothing_disabled_flag ||
-+	    range_exts->persistent_rice_adaptation_enabled_flag ||
-+	    range_exts->cabac_bypass_alignment_enabled_flag)
-+		return 1;
-+	/*
-+	 *  Note: high_precision_offsets_enabled_flag is supported even
-+	 * if hw capabilities (bHevcRangeExt is not set)
-+	 */
-+	return 0;
-+}
-+
-+static enum bspp_error_type bspp_hevc_parsesps(void *sr_ctx,
-+					       void *str_res,
-+					       struct bspp_hevc_sps *sps)
-+{
-+	enum bspp_error_type parse_err = BSPP_ERROR_NONE;
-+	unsigned char i;
-+	unsigned int min_cblog2_size_y;
-+
-+	if (!sr_ctx || !sps) {
-+		VDEC_ASSERT(0);
-+		return BSPP_ERROR_INVALID_VALUE;
-+	}
-+
-+	memset(sps, 0, sizeof(struct bspp_hevc_sps));
-+
-+	HEVC_SWSR_UN("sps_video_parameter_set_id",
-+		     (unsigned int *)&sps->sps_video_parameter_set_id, 4, sr_ctx);
-+	HEVC_SWSR_UN("sps_max_sub_layers_minus1",
-+		     (unsigned int *)&sps->sps_max_sub_layers_minus1, 3, sr_ctx);
-+	HEVC_RANGEUCHECK("sps_max_sub_layers_minus1", sps->sps_max_sub_layers_minus1, 0,
-+			 HEVC_MAX_NUM_SUBLAYERS - 1, &parse_err);
-+	HEVC_SWSR_U1("sps_temporal_id_nesting_flag",
-+		     &sps->sps_temporal_id_nesting_flag, sr_ctx);
-+
-+	if (sps->sps_max_sub_layers_minus1 == 0)
-+		HEVC_UCHECK("sps_temporal_id_nesting_flag",
-+			    sps->sps_temporal_id_nesting_flag, 1, &parse_err);
-+
-+	parse_err |= bspp_hevc_parse_profiletierlevel
-+				(sr_ctx, &sps->profile_tier_level,
-+				 sps->sps_max_sub_layers_minus1);
-+
-+	HEVC_SWSR_UE("sps_seq_parameter_set_id",
-+		     (unsigned int *)&sps->sps_seq_parameter_set_id, sr_ctx);
-+	HEVC_RANGEUCHECK("sps_seq_parameter_set_id", sps->sps_seq_parameter_set_id, 0,
-+			 HEVC_MAX_SPS_COUNT - 1, &parse_err);
-+
-+	HEVC_SWSR_UE("chroma_format_idc", (unsigned int *)&sps->chroma_format_idc, sr_ctx);
-+	HEVC_RANGEUCHECK("chroma_format_idc", sps->chroma_format_idc, 0, 3, &parse_err);
-+
-+	if (sps->chroma_format_idc == 3)
-+		HEVC_SWSR_U1("separate_colour_plane_flag",
-+			     &sps->separate_colour_plane_flag, sr_ctx);
-+
-+	HEVC_SWSR_UE("pic_width_in_luma_samples",
-+		     (unsigned int *)&sps->pic_width_in_luma_samples, sr_ctx);
-+	HEVC_SWSR_UE("pic_height_in_luma_samples",
-+		     (unsigned int *)&sps->pic_height_in_luma_samples, sr_ctx);
-+
-+	HEVC_SWSR_U1("conformance_window_flag", &sps->conformance_window_flag, sr_ctx);
-+
-+	if (sps->pic_width_in_luma_samples == 0 ||
-+	    sps->pic_height_in_luma_samples == 0) {
-+		pr_warn("Invalid video dimensions (%u, %u)",
-+			sps->pic_width_in_luma_samples,
-+			sps->pic_height_in_luma_samples);
-+		parse_err |= BSPP_ERROR_UNRECOVERABLE;
-+	}
-+
-+	if (sps->conformance_window_flag) {
-+		HEVC_SWSR_UE("conf_win_left_offset",
-+			     (unsigned int *)&sps->conf_win_left_offset, sr_ctx);
-+		HEVC_SWSR_UE("conf_win_right_offset",
-+			     (unsigned int *)&sps->conf_win_right_offset, sr_ctx);
-+		HEVC_SWSR_UE("conf_win_top_offset",
-+			     (unsigned int *)&sps->conf_win_top_offset, sr_ctx);
-+		HEVC_SWSR_UE("conf_win_bottom_offset",
-+			     (unsigned int *)&sps->conf_win_bottom_offset, sr_ctx);
-+	}
-+
-+	HEVC_SWSR_UE("bit_depth_luma_minus8",
-+		     (unsigned int *)&sps->bit_depth_luma_minus8, sr_ctx);
-+	HEVC_RANGEUCHECK("bit_depth_luma_minus8",
-+			 sps->bit_depth_luma_minus8, 0, 6, &parse_err);
-+	HEVC_SWSR_UE("bit_depth_chroma_minus8",
-+		     (unsigned int *)&sps->bit_depth_chroma_minus8, sr_ctx);
-+	HEVC_RANGEUCHECK("bit_depth_chroma_minus8", sps->bit_depth_chroma_minus8,
-+			 0, 6, &parse_err);
-+
-+	HEVC_SWSR_UE("log2_max_pic_order_cnt_lsb_minus4",
-+		     (unsigned int *)&sps->log2_max_pic_order_cnt_lsb_minus4, sr_ctx);
-+	HEVC_RANGEUCHECK("log2_max_pic_order_cnt_lsb_minus4",
-+			 sps->log2_max_pic_order_cnt_lsb_minus4,
-+			 0, 12, &parse_err);
-+
-+	HEVC_SWSR_U1("sps_sub_layer_ordering_info_present_flag",
-+		     &sps->sps_sub_layer_ordering_info_present_flag, sr_ctx);
-+	for (i = (sps->sps_sub_layer_ordering_info_present_flag ?
-+		0 : sps->sps_max_sub_layers_minus1);
-+		i <= sps->sps_max_sub_layers_minus1; ++i) {
-+		HEVC_SWSR_UE("sps_max_dec_pic_buffering_minus1",
-+			     (unsigned int *)&sps->sps_max_dec_pic_buffering_minus1[i], sr_ctx);
-+		HEVC_SWSR_UE("sps_max_num_reorder_pics",
-+			     (unsigned int *)&sps->sps_max_num_reorder_pics[i], sr_ctx);
-+		HEVC_SWSR_UE("sps_max_latency_increase_plus1",
-+			     (unsigned int *)&sps->sps_max_latency_increase_plus1[i], sr_ctx);
-+	}
-+
-+	HEVC_SWSR_UE("log2_min_luma_coding_block_size_minus3",
-+		     (unsigned int *)&sps->log2_min_luma_coding_block_size_minus3, sr_ctx);
-+	HEVC_SWSR_UE("log2_diff_max_min_luma_coding_block_size",
-+		     (unsigned int *)&sps->log2_diff_max_min_luma_coding_block_size, sr_ctx);
-+	HEVC_SWSR_UE("log2_min_transform_block_size_minus2",
-+		     (unsigned int *)&sps->log2_min_transform_block_size_minus2, sr_ctx);
-+	HEVC_SWSR_UE("log2_diff_max_min_transform_block_size",
-+		     (unsigned int *)&sps->log2_diff_max_min_transform_block_size, sr_ctx);
-+	HEVC_SWSR_UE("max_transform_hierarchy_depth_inter",
-+		     (unsigned int *)&sps->max_transform_hierarchy_depth_inter, sr_ctx);
-+	HEVC_SWSR_UE("max_transform_hierarchy_depth_intra",
-+		     (unsigned int *)&sps->max_transform_hierarchy_depth_intra, sr_ctx);
-+
-+	HEVC_SWSR_U1("scaling_list_enabled_flag", &sps->scaling_list_enabled_flag, sr_ctx);
-+
-+	if (sps->scaling_list_enabled_flag) {
-+		HEVC_SWSR_U1("sps_scaling_list_data_present_flag",
-+			     &sps->sps_scaling_list_data_present_flag, sr_ctx);
-+		if (sps->sps_scaling_list_data_present_flag)
-+			parse_err |= bspp_hevc_parse_scalinglistdata(sr_ctx,
-+								     &sps->scalinglist_data);
-+		else
-+			bspp_hevc_usedefault_scalinglists(&sps->scalinglist_data);
-+	}
-+
-+	HEVC_SWSR_U1("amp_enabled_flag", &sps->amp_enabled_flag, sr_ctx);
-+	HEVC_SWSR_U1("sample_adaptive_offset_enabled_flag",
-+		     &sps->sample_adaptive_offset_enabled_flag, sr_ctx);
-+	HEVC_SWSR_U1("pcm_enabled_flag", &sps->pcm_enabled_flag, sr_ctx);
-+
-+	if (sps->pcm_enabled_flag) {
-+		HEVC_SWSR_UN("pcm_sample_bit_depth_luma_minus1",
-+			     (unsigned int *)&sps->pcm_sample_bit_depth_luma_minus1,
-+			     4, sr_ctx);
-+		HEVC_SWSR_UN("pcm_sample_bit_depth_chroma_minus1",
-+			     (unsigned int *)&sps->pcm_sample_bit_depth_chroma_minus1,
-+			     4, sr_ctx);
-+		HEVC_SWSR_UE("log2_min_pcm_luma_coding_block_size_minus3",
-+			     (unsigned int *)&sps->log2_min_pcm_luma_coding_block_size_minus3,
-+			     sr_ctx);
-+		HEVC_SWSR_UE("log2_diff_max_min_pcm_luma_coding_block_size",
-+			     (unsigned int *)&sps->log2_diff_max_min_pcm_luma_coding_block_size,
-+			     sr_ctx);
-+		HEVC_SWSR_U1("pcm_loop_filter_disabled_flag",
-+			     &sps->pcm_loop_filter_disabled_flag, sr_ctx);
-+	} else {
-+		sps->pcm_sample_bit_depth_luma_minus1 = 7;
-+		sps->pcm_sample_bit_depth_chroma_minus1 = 7;
-+		sps->log2_min_pcm_luma_coding_block_size_minus3 = 0;
-+		sps->log2_diff_max_min_pcm_luma_coding_block_size = 2;
-+	}
-+
-+	HEVC_SWSR_UE("num_short_term_ref_pic_sets",
-+		     (unsigned int *)&sps->num_short_term_ref_pic_sets, sr_ctx);
-+	HEVC_RANGEUCHECK("num_short_term_ref_pic_sets", sps->num_short_term_ref_pic_sets, 0,
-+			 HEVC_MAX_NUM_ST_REF_PIC_SETS - 1, &parse_err);
-+
-+	for (i = 0; i < sps->num_short_term_ref_pic_sets; ++i) {
-+		parse_err |= bspp_hevc_parse_shortterm_refpicset(sr_ctx,
-+				sps->rps_list,
-+				i,
-+				0);
-+	}
-+
-+	HEVC_SWSR_U1("long_term_ref_pics_present_flag",
-+		     &sps->long_term_ref_pics_present_flag, sr_ctx);
-+	if (sps->long_term_ref_pics_present_flag) {
-+		HEVC_SWSR_UE("num_long_term_ref_pics_sps",
-+			     (unsigned int *)&sps->num_long_term_ref_pics_sps, sr_ctx);
-+		HEVC_RANGEUCHECK("num_long_term_ref_pics_sps",
-+				 sps->num_long_term_ref_pics_sps, 0,
-+				 HEVC_MAX_NUM_LT_REF_PICS, &parse_err);
-+		for (i = 0; i < sps->num_long_term_ref_pics_sps; ++i) {
-+			HEVC_SWSR_UN("lt_ref_pic_poc_lsb_sps",
-+				     (unsigned int *)&sps->lt_ref_pic_poc_lsb_sps[i],
-+				     sps->log2_max_pic_order_cnt_lsb_minus4 + 4,
-+				     sr_ctx);
-+			HEVC_SWSR_U1("used_by_curr_pic_lt_sps_flag",
-+				     &sps->used_by_curr_pic_lt_sps_flag[i],
-+				     sr_ctx);
-+		}
-+	}
-+
-+	HEVC_SWSR_U1("sps_temporal_mvp_enabled_flag", &sps->sps_temporal_mvp_enabled_flag, sr_ctx);
-+	HEVC_SWSR_U1("strong_intra_smoothing_enabled_flag",
-+		     &sps->strong_intra_smoothing_enabled_flag, sr_ctx);
-+	HEVC_SWSR_U1("vui_parameters_present_flag", &sps->vui_parameters_present_flag, sr_ctx);
-+
-+	if (sps->vui_parameters_present_flag)
-+		bspp_hevc_parsevui_parameters(sr_ctx, &sps->vui_params,
-+					      sps->sps_max_sub_layers_minus1);
-+
-+	HEVC_SWSR_U1("sps_extension_present_flag", &sps->sps_extension_present_flag, sr_ctx);
-+	if (sps->sps_extension_present_flag &&
-+	    bspp_hevc_range_extensions_is_enabled(&sps->profile_tier_level)) {
-+		HEVC_SWSR_U1("sps_range_extensions_flag", &sps->sps_range_extensions_flag, sr_ctx);
-+
-+		HEVC_SWSR_UN("sps_extension_7bits", (unsigned int *)&sps->sps_extension_7bits, 7,
-+			     sr_ctx);
-+		/*
-+		 *  ignore extension data. Although we inform
-+		 * if some non-zero data was found
-+		 */
-+		HEVC_UCHECK("sps_extension_7bits", sps->sps_extension_7bits, 0, &parse_err);
-+		/*
-+		 * TODO ?: the newest HEVC spec (10/2014) splits
-+		 * "sps_extension_7bits" to * sps_multilayer_extension_flag (1)
-+		 * sps_extension_6bits (6)
-+		 */
-+		if (sps->sps_range_extensions_flag)
-+			parse_err |= bspp_hevc_parse_spsrange_extensions
-+						(sr_ctx, &sps->range_exts);
-+	}
-+	/*
-+	 * calculate "derived" variables needed further in the parsing process
-+	 * (of other headers) and save them for later use
-+	 */
-+	sps->sub_width_c = 1;
-+	sps->sub_height_c = 1;
-+	if (sps->chroma_format_idc == 2) {
-+		sps->sub_width_c = 2;
-+	} else if (sps->chroma_format_idc == 1) {
-+		sps->sub_width_c = 2;
-+		sps->sub_height_c = 2;
-+	}
-+
-+	min_cblog2_size_y = sps->log2_min_luma_coding_block_size_minus3 + 3;
-+	sps->ctb_log2size_y =
-+		min_cblog2_size_y + sps->log2_diff_max_min_luma_coding_block_size;
-+	sps->ctb_size_y = 1 << sps->ctb_log2size_y;
-+
-+	if (sps->ctb_size_y > 0) {
-+		/* use integer division with rounding up */
-+		sps->pic_width_in_ctbs_y =
-+			(sps->pic_width_in_luma_samples + sps->ctb_size_y - 1)
-+			/ sps->ctb_size_y;
-+		sps->pic_height_in_ctbs_y =
-+			(sps->pic_height_in_luma_samples + sps->ctb_size_y - 1)
-+			/ sps->ctb_size_y;
-+	} else {
-+		parse_err |= BSPP_ERROR_INVALID_VALUE;
-+	}
-+
-+	sps->pic_size_in_ctbs_y =
-+		sps->pic_width_in_ctbs_y * sps->pic_height_in_ctbs_y;
-+
-+	sps->max_pic_order_cnt_lsb =
-+		1 << (sps->log2_max_pic_order_cnt_lsb_minus4 + 4);
-+
-+	for (i = 0; i <= sps->sps_max_sub_layers_minus1; ++i) {
-+		sps->sps_max_latency_pictures[i] =
-+			sps->sps_max_num_reorder_pics[i] +
-+			sps->sps_max_latency_increase_plus1[i] - 1;
-+	}
-+
-+	BSPP_HEVC_SYNTAX("ctb_size_y: %u", sps->ctb_size_y);
-+	BSPP_HEVC_SYNTAX("pic_width_in_ctbs_y: %u", sps->pic_width_in_ctbs_y);
-+	BSPP_HEVC_SYNTAX("pic_height_in_ctbs_y: %u", sps->pic_height_in_ctbs_y);
-+	BSPP_HEVC_SYNTAX("pic_size_in_ctbs_y: %u", sps->pic_size_in_ctbs_y);
-+
-+	return parse_err;
-+}
-+
-+static int bspp_hevc_release_sequhdrinfo(void *str_alloc, void *secure_spsinfo)
-+{
-+	struct bspp_hevc_sps *hevc_sps = (struct bspp_hevc_sps *)secure_spsinfo;
-+
-+	if (!hevc_sps)
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+
-+	/* Release the raw VIU data. */
-+	bspp_streamrelese_rawbstrdataplain(str_alloc, (void *)hevc_sps->vui_raw_data);
-+	return 0;
-+}
-+
-+static int bspp_hevc_releasedata(void *str_alloc, enum bspp_unit_type data_type,
-+				 void *data_handle)
-+{
-+	int result = 0;
-+
-+	if (!data_handle)
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+
-+	switch (data_type) {
-+	case BSPP_UNIT_SEQUENCE:
-+		result = bspp_hevc_release_sequhdrinfo(str_alloc, data_handle);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return result;
-+}
-+
-+static int bspp_hevc_reset_ppsinfo(void *secure_ppsinfo)
-+{
-+	struct bspp_hevc_pps *hevc_pps = NULL;
-+
-+	if (!secure_ppsinfo)
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+
-+	hevc_pps = (struct bspp_hevc_pps *)secure_ppsinfo;
-+
-+	memset(hevc_pps, 0, sizeof(*hevc_pps));
-+
-+	return 0;
-+}
-+
-+static int bspp_hevc_resetdata(enum bspp_unit_type data_type, void *data_handle)
-+{
-+	int result = 0;
-+
-+	switch (data_type) {
-+	case BSPP_UNIT_PPS:
-+		result = bspp_hevc_reset_ppsinfo(data_handle);
-+		break;
-+	default:
-+		break;
-+	}
-+	return result;
-+}
-+
-+static enum bspp_error_type bspp_hevc_parsepps_range_extensions
-+			(void *sr_ctx,
-+			 struct bspp_hevc_pps_range_exts *range_exts,
-+			 unsigned char transform_skip_enabled_flag,
-+			 unsigned char log2_diff_max_min_luma_coding_block_size)
-+{
-+	enum bspp_error_type parse_err = BSPP_ERROR_NONE;
-+
-+	VDEC_ASSERT(sr_ctx);
-+	VDEC_ASSERT(range_exts);
-+
-+	memset(range_exts, 0, sizeof(struct bspp_hevc_pps_range_exts));
-+
-+	if (transform_skip_enabled_flag)
-+		HEVC_SWSR_UE("log2_max_transform_skip_block_size_minus2",
-+			     (unsigned int *)&range_exts->log2_max_transform_skip_block_size_minus2,
-+			     sr_ctx);
-+
-+	HEVC_SWSR_U1("cross_component_prediction_enabled_flag",
-+		     &range_exts->cross_component_prediction_enabled_flag,
-+		     sr_ctx);
-+	HEVC_UCHECK("cross_component_prediction_enabled_flag",
-+		    range_exts->cross_component_prediction_enabled_flag, 0,
-+		    &parse_err);
-+
-+	HEVC_SWSR_U1("chroma_qp_offset_list_enabled_flag",
-+		     &range_exts->chroma_qp_offset_list_enabled_flag, sr_ctx);
-+
-+	if (range_exts->chroma_qp_offset_list_enabled_flag) {
-+		unsigned char i;
-+
-+		HEVC_SWSR_UE("diff_cu_chroma_qp_offset_depth",
-+			     (unsigned int *)&range_exts->diff_cu_chroma_qp_offset_depth,
-+			     sr_ctx);
-+		HEVC_RANGEUCHECK("diff_cu_chroma_qp_offset_depth",
-+				 range_exts->diff_cu_chroma_qp_offset_depth, 0,
-+				 log2_diff_max_min_luma_coding_block_size,
-+				 &parse_err);
-+
-+		HEVC_SWSR_UE("chroma_qp_offset_list_len_minus1",
-+			     (unsigned int *)&range_exts->chroma_qp_offset_list_len_minus1,
-+			     sr_ctx);
-+		HEVC_RANGEUCHECK("chroma_qp_offset_list_len_minus1",
-+				 range_exts->chroma_qp_offset_list_len_minus1,
-+				 0, HEVC_MAX_CHROMA_QP - 1, &parse_err);
-+		for (i = 0; i <= range_exts->chroma_qp_offset_list_len_minus1; i++) {
-+			HEVC_SWSR_SE("cb_qp_offset_list",
-+				     (int *)&range_exts->cb_qp_offset_list[i], sr_ctx);
-+			HEVC_RANGESCHECK("cb_qp_offset_list", range_exts->cb_qp_offset_list[i],
-+					 -12, 12, &parse_err);
-+			HEVC_SWSR_SE("cr_qp_offset_list",
-+				     (int *)&range_exts->cr_qp_offset_list[i], sr_ctx);
-+			HEVC_RANGESCHECK("cr_qp_offset_list", range_exts->cr_qp_offset_list[i],
-+					 -12, 12, &parse_err);
-+		}
-+	}
-+	HEVC_SWSR_UE("log2_sao_offset_scale_luma",
-+		     (unsigned int *)&range_exts->log2_sao_offset_scale_luma, sr_ctx);
-+	HEVC_UCHECK("log2_sao_offset_scale_luma",
-+		    range_exts->log2_sao_offset_scale_luma, 0, &parse_err);
-+	HEVC_SWSR_UE("log2_sao_offset_scale_chroma",
-+		     (unsigned int *)&range_exts->log2_sao_offset_scale_chroma, sr_ctx);
-+	HEVC_UCHECK("log2_sao_offset_scale_chroma",
-+		    range_exts->log2_sao_offset_scale_chroma, 0, &parse_err);
-+
-+	return parse_err;
-+}
-+
-+static unsigned char bspp_hevc_checkppsrangeextensions
-+				(struct bspp_hevc_pps_range_exts *range_exts)
-+{
-+	VDEC_ASSERT(range_exts);
-+
-+	if (range_exts->log2_max_transform_skip_block_size_minus2 ||
-+	    range_exts->cross_component_prediction_enabled_flag)
-+		return 1;
-+	/*
-+	 * Note: chroma_qp_offset_list_enabled_flag is supported even
-+	 * if hw capabilities (bHevcRangeExt is not set)
-+	 */
-+	return 0;
-+}
-+
-+static enum bspp_error_type bspp_hevc_parsepps
-+			(void *sr_ctx, void *str_res,
-+			 struct bspp_hevc_pps *pps)
-+{
-+	enum bspp_error_type parse_err = BSPP_ERROR_NONE;
-+	struct bspp_sequence_hdr_info *spsinfo = NULL;
-+	struct bspp_hevc_sps *sps = NULL;
-+
-+	VDEC_ASSERT(sr_ctx);
-+	VDEC_ASSERT(pps);
-+	memset(pps, 0, sizeof(struct bspp_hevc_pps));
-+
-+	HEVC_SWSR_UE("pps_pic_parameter_set_id",
-+		     (unsigned int *)&pps->pps_pic_parameter_set_id, sr_ctx);
-+	HEVC_RANGEUCHECK("pps_pic_parameter_set_id", pps->pps_pic_parameter_set_id, 0,
-+			 HEVC_MAX_PPS_COUNT - 1, &parse_err);
-+	HEVC_SWSR_UE("pps_seq_parameter_set_id",
-+		     (unsigned int *)&pps->pps_seq_parameter_set_id, sr_ctx);
-+	HEVC_RANGEUCHECK("pps_seq_parameter_set_id", pps->pps_seq_parameter_set_id, 0,
-+			 HEVC_MAX_SPS_COUNT - 1, &parse_err);
-+
-+	spsinfo = bspp_get_sequ_hdr(str_res, pps->pps_seq_parameter_set_id);
-+	if (!spsinfo) {
-+		parse_err |= BSPP_ERROR_NO_SEQUENCE_HDR;
-+	} else {
-+		sps = (struct bspp_hevc_sps *)spsinfo->secure_sequence_info;
-+		VDEC_ASSERT(sps->sps_seq_parameter_set_id ==
-+			pps->pps_seq_parameter_set_id);
-+	}
-+
-+	HEVC_SWSR_U1("dependent_slice_segments_enabled_flag",
-+		     &pps->dependent_slice_segments_enabled_flag, sr_ctx);
-+	HEVC_SWSR_U1("output_flag_present_flag",
-+		     &pps->output_flag_present_flag, sr_ctx);
-+	HEVC_SWSR_UN("num_extra_slice_header_bits",
-+		     (unsigned int *)&pps->num_extra_slice_header_bits, 3, sr_ctx);
-+	HEVC_SWSR_U1("sign_data_hiding_enabled_flag", &pps->sign_data_hiding_enabled_flag, sr_ctx);
-+	HEVC_SWSR_U1("cabac_init_present_flag", &pps->cabac_init_present_flag, sr_ctx);
-+	HEVC_SWSR_UE("num_ref_idx_l0_default_active_minus1",
-+		     (unsigned int *)&pps->num_ref_idx_l0_default_active_minus1, sr_ctx);
-+	HEVC_RANGEUCHECK("num_ref_idx_l0_default_active_minus1",
-+			 pps->num_ref_idx_l0_default_active_minus1, 0, 14, &parse_err);
-+	HEVC_SWSR_UE("num_ref_idx_l1_default_active_minus1",
-+		     (unsigned int *)&pps->num_ref_idx_l1_default_active_minus1, sr_ctx);
-+	HEVC_RANGEUCHECK("num_ref_idx_l1_default_active_minus1",
-+			 pps->num_ref_idx_l1_default_active_minus1, 0, 14, &parse_err);
-+	HEVC_SWSR_SE("init_qp_minus26", (int *)&pps->init_qp_minus26, sr_ctx);
-+
-+	if (sps)
-+		HEVC_RANGESCHECK("init_qp_minus26", pps->init_qp_minus26,
-+				 -(26 + (6 * sps->bit_depth_luma_minus8)), 25, &parse_err);
-+
-+	HEVC_SWSR_U1("constrained_intra_pred_flag", &pps->constrained_intra_pred_flag, sr_ctx);
-+	HEVC_SWSR_U1("transform_skip_enabled_flag", &pps->transform_skip_enabled_flag, sr_ctx);
-+
-+	HEVC_SWSR_U1("cu_qp_delta_enabled_flag", &pps->cu_qp_delta_enabled_flag, sr_ctx);
-+
-+	if (pps->cu_qp_delta_enabled_flag)
-+		HEVC_SWSR_UE("diff_cu_qp_delta_depth",
-+			     (unsigned int *)&pps->diff_cu_qp_delta_depth, sr_ctx);
-+
-+	HEVC_SWSR_SE("pps_cb_qp_offset", (int *)&pps->pps_cb_qp_offset, sr_ctx);
-+	HEVC_RANGESCHECK("pps_cb_qp_offset", pps->pps_cb_qp_offset, -12, 12, &parse_err);
-+	HEVC_SWSR_SE("pps_cr_qp_offset", (int *)&pps->pps_cr_qp_offset, sr_ctx);
-+	HEVC_RANGESCHECK("pps_cr_qp_offset", pps->pps_cr_qp_offset, -12, 12, &parse_err);
-+	HEVC_SWSR_U1("pps_slice_chroma_qp_offsets_present_flag",
-+		     &pps->pps_slice_chroma_qp_offsets_present_flag, sr_ctx);
-+	HEVC_SWSR_U1("weighted_pred_flag", &pps->weighted_pred_flag, sr_ctx);
-+	HEVC_SWSR_U1("weighted_bipred_flag", &pps->weighted_bipred_flag, sr_ctx);
-+	HEVC_SWSR_U1("transquant_bypass_enabled_flag",
-+		     &pps->transquant_bypass_enabled_flag, sr_ctx);
-+	HEVC_SWSR_U1("tiles_enabled_flag", &pps->tiles_enabled_flag, sr_ctx);
-+	HEVC_SWSR_U1("entropy_coding_sync_enabled_flag",
-+		     &pps->entropy_coding_sync_enabled_flag, sr_ctx);
-+
-+	if (pps->tiles_enabled_flag) {
-+		HEVC_SWSR_UE("num_tile_columns_minus1",
-+			     (unsigned int *)&pps->num_tile_columns_minus1, sr_ctx);
-+		HEVC_RANGEUCHECK("num_tile_columns_minus1", pps->num_tile_columns_minus1, 0,
-+				 HEVC_MAX_TILE_COLS - 1, &parse_err);
-+
-+		if (pps->num_tile_columns_minus1 > HEVC_MAX_TILE_COLS)
-+			pps->num_tile_columns_minus1 = HEVC_MAX_TILE_COLS;
-+
-+		HEVC_SWSR_UE("num_tile_rows_minus1", (unsigned int *)&pps->num_tile_rows_minus1,
-+			     sr_ctx);
-+		HEVC_RANGEUCHECK("num_tile_rows_minus1", pps->num_tile_rows_minus1, 0,
-+				 HEVC_MAX_TILE_ROWS - 1, &parse_err);
-+
-+		if (pps->num_tile_rows_minus1 > HEVC_MAX_TILE_ROWS)
-+			pps->num_tile_rows_minus1 = HEVC_MAX_TILE_ROWS;
-+
-+		HEVC_SWSR_U1("uniform_spacing_flag", &pps->uniform_spacing_flag, sr_ctx);
-+
-+		if (!pps->uniform_spacing_flag) {
-+			unsigned char i = 0;
-+
-+			for (i = 0; i < pps->num_tile_columns_minus1; ++i)
-+				HEVC_SWSR_UE("column_width_minus1",
-+					     (unsigned int *)&pps->column_width_minus1[i],
-+					     sr_ctx);
-+
-+			for (i = 0; i < pps->num_tile_rows_minus1; ++i)
-+				HEVC_SWSR_UE("row_height_minus1",
-+					     (unsigned int *)&pps->row_height_minus1[i],
-+					     sr_ctx);
-+		}
-+		HEVC_SWSR_U1("loop_filter_across_tiles_enabled_flag",
-+			     &pps->loop_filter_across_tiles_enabled_flag, sr_ctx);
-+	} else {
-+		pps->loop_filter_across_tiles_enabled_flag = 1;
-+	}
-+
-+	HEVC_SWSR_U1("pps_loop_filter_across_slices_enabled_flag",
-+		     &pps->pps_loop_filter_across_slices_enabled_flag, sr_ctx);
-+
-+	HEVC_SWSR_U1("deblocking_filter_control_present_flag",
-+		     &pps->deblocking_filter_control_present_flag, sr_ctx);
-+
-+	if (pps->deblocking_filter_control_present_flag) {
-+		HEVC_SWSR_U1("deblocking_filter_override_enabled_flag",
-+			     &pps->deblocking_filter_override_enabled_flag, sr_ctx);
-+		HEVC_SWSR_U1("pps_deblocking_filter_disabled_flag",
-+			     &pps->pps_deblocking_filter_disabled_flag, sr_ctx);
-+		if (!pps->pps_deblocking_filter_disabled_flag) {
-+			HEVC_SWSR_SE("pps_beta_offset_div2", (int *)&pps->pps_beta_offset_div2,
-+				     sr_ctx);
-+			HEVC_RANGESCHECK("pps_beta_offset_div2", pps->pps_beta_offset_div2, -6, 6,
-+					 &parse_err);
-+			HEVC_SWSR_SE("pps_tc_offset_div2", (int *)&pps->pps_tc_offset_div2, sr_ctx);
-+			HEVC_RANGESCHECK("pps_tc_offset_div2", pps->pps_tc_offset_div2, -6, 6,
-+					 &parse_err);
-+		}
-+	}
-+
-+	HEVC_SWSR_U1("pps_scaling_list_data_present_flag",
-+		     &pps->pps_scaling_list_data_present_flag, sr_ctx);
-+	if (pps->pps_scaling_list_data_present_flag)
-+		parse_err |= bspp_hevc_parse_scalinglistdata(sr_ctx, &pps->scaling_list);
-+
-+	HEVC_SWSR_U1("lists_modification_present_flag",
-+		     &pps->lists_modification_present_flag, sr_ctx);
-+	HEVC_SWSR_UE("log2_parallel_merge_level_minus2",
-+		     (unsigned int *)&pps->log2_parallel_merge_level_minus2, sr_ctx);
-+	HEVC_SWSR_U1("slice_segment_header_extension_present_flag",
-+		     &pps->slice_segment_header_extension_present_flag, sr_ctx);
-+
-+	HEVC_SWSR_U1("pps_extension_present_flag", &pps->pps_extension_present_flag, sr_ctx);
-+	if (pps->pps_extension_present_flag &&
-+	    bspp_hevc_range_extensions_is_enabled(&sps->profile_tier_level)) {
-+		HEVC_SWSR_U1("pps_range_extensions_flag",
-+			     &pps->pps_range_extensions_flag, sr_ctx);
-+		HEVC_SWSR_UN("pps_extension_7bits",
-+			     (unsigned int *)&pps->pps_extension_7bits, 7, sr_ctx);
-+		/*
-+		 * ignore extension data. Although we inform
-+		 * if some non-zero data was found
-+		 */
-+		HEVC_UCHECK("pps_extension_7bits", pps->pps_extension_7bits, 0, &parse_err);
-+
-+		/*
-+		 * TODO ?: the newest HEVC spec (10/2014) splits "pps_extension_7bits" to
-+		 * pps_multilayer_extension_flag (1)
-+		 * pps_extension_6bits (6)
-+		 */
-+		if (pps->pps_range_extensions_flag && sps) {
-+			parse_err |= bspp_hevc_parsepps_range_extensions
-+					(sr_ctx,
-+					 &pps->range_exts,
-+					 pps->transform_skip_enabled_flag,
-+					 sps->log2_diff_max_min_luma_coding_block_size);
-+		}
-+	}
-+
-+	/* calculate derived elements */
-+	if (pps->tiles_enabled_flag && sps)
-+		bspp_hevc_dotilecalculations(sps, pps);
-+
-+	return parse_err;
-+}
-+
-+static void bspp_hevc_dotilecalculations(struct bspp_hevc_sps *sps,
-+					 struct bspp_hevc_pps *pps)
-+{
-+	unsigned short colwidth[HEVC_MAX_TILE_COLS];
-+	unsigned short rowheight[HEVC_MAX_TILE_ROWS];
-+	unsigned char i;
-+
-+	if (!pps->tiles_enabled_flag) {
-+		pps->max_tile_height_in_ctbs_y = sps->pic_height_in_ctbs_y;
-+		return;
-+	}
-+
-+	if (pps->uniform_spacing_flag) {
-+		for (i = 0; i <= pps->num_tile_columns_minus1; ++i) {
-+			colwidth[i] = ((i + 1) * sps->pic_width_in_ctbs_y) /
-+				(pps->num_tile_columns_minus1 + 1) -
-+				(i * sps->pic_width_in_ctbs_y) /
-+				(pps->num_tile_columns_minus1 + 1);
-+		}
-+
-+		for (i = 0; i <= pps->num_tile_rows_minus1; ++i) {
-+			rowheight[i] = ((i + 1) * sps->pic_height_in_ctbs_y) /
-+				(pps->num_tile_rows_minus1 + 1) -
-+				(i * sps->pic_height_in_ctbs_y) /
-+				(pps->num_tile_rows_minus1 + 1);
-+		}
-+
-+		pps->max_tile_height_in_ctbs_y = rowheight[0];
-+	} else {
-+		pps->max_tile_height_in_ctbs_y = 0;
-+
-+		colwidth[pps->num_tile_columns_minus1] = sps->pic_width_in_ctbs_y;
-+		for (i = 0; i <= pps->num_tile_columns_minus1; ++i) {
-+			colwidth[i] = pps->column_width_minus1[i] + 1;
-+			colwidth[pps->num_tile_columns_minus1] -= colwidth[i];
-+		}
-+
-+		rowheight[pps->num_tile_rows_minus1] = sps->pic_height_in_ctbs_y;
-+		for (i = 0; i <= pps->num_tile_rows_minus1; ++i) {
-+			rowheight[i] = pps->row_height_minus1[i] + 1;
-+			rowheight[pps->num_tile_rows_minus1] -= rowheight[i];
-+
-+			if (rowheight[i] > pps->max_tile_height_in_ctbs_y)
-+				pps->max_tile_height_in_ctbs_y = rowheight[i];
-+		}
-+
-+		if (rowheight[pps->num_tile_rows_minus1] > pps->max_tile_height_in_ctbs_y)
-+			pps->max_tile_height_in_ctbs_y =
-+					rowheight[pps->num_tile_rows_minus1];
-+	}
-+
-+	for (i = 0; i <= pps->num_tile_columns_minus1; ++i)
-+		pps->col_bd[i + 1] = pps->col_bd[i] + colwidth[i];
-+
-+	for (i = 0; i <= pps->num_tile_rows_minus1; ++i)
-+		pps->row_bd[i + 1] = pps->row_bd[i] + rowheight[i];
-+}
-+
-+static enum bspp_error_type bspp_hevc_parse_slicesegmentheader
-+		(void *sr_ctx, void *str_res,
-+		 struct bspp_hevc_slice_segment_header *ssh,
-+		 unsigned char nalunit_type,
-+		 struct bspp_vps_info **vpsinfo,
-+		 struct bspp_sequence_hdr_info **spsinfo,
-+		 struct bspp_pps_info **ppsinfo)
-+{
-+	enum bspp_error_type parse_err = BSPP_ERROR_NONE;
-+	struct bspp_hevc_pps *pps = NULL;
-+	struct bspp_hevc_sps *sps = NULL;
-+	struct bspp_hevc_vps *vps = NULL;
-+
-+	VDEC_ASSERT(sr_ctx);
-+	VDEC_ASSERT(ssh);
-+	VDEC_ASSERT(vpsinfo);
-+	VDEC_ASSERT(spsinfo);
-+	VDEC_ASSERT(ppsinfo);
-+
-+	memset(ssh, 0, sizeof(struct bspp_hevc_slice_segment_header));
-+
-+	HEVC_SWSR_U1("first_slice_segment_in_pic_flag",
-+		     &ssh->first_slice_segment_in_pic_flag, sr_ctx);
-+
-+	if (bspp_hevc_picture_is_irap((enum hevc_nalunittype)nalunit_type))
-+		HEVC_SWSR_U1("no_output_of_prior_pics_flag",
-+			     &ssh->no_output_of_prior_pics_flag, sr_ctx);
-+
-+	HEVC_SWSR_UE("slice_pic_parameter_set_id", (unsigned int *)&ssh->slice_pic_parameter_set_id,
-+		     sr_ctx);
-+	HEVC_RANGEUCHECK("slice_pic_parameter_set_id", ssh->slice_pic_parameter_set_id, 0,
-+			 HEVC_MAX_PPS_COUNT - 1, &parse_err);
-+
-+	if (ssh->slice_pic_parameter_set_id >= HEVC_MAX_PPS_COUNT) {
-+		pr_warn("PPS Id invalid (%u), setting to 0",
-+			ssh->slice_pic_parameter_set_id);
-+		ssh->slice_pic_parameter_set_id = 0;
-+		parse_err &= ~BSPP_ERROR_INVALID_VALUE;
-+		parse_err |= BSPP_ERROR_CORRECTION_VALIDVALUE;
-+	}
-+
-+	/* set PPS */
-+	*ppsinfo = bspp_get_pps_hdr(str_res, ssh->slice_pic_parameter_set_id);
-+	if (!(*ppsinfo)) {
-+		parse_err |= BSPP_ERROR_NO_PPS;
-+		goto error;
-+	}
-+	pps = (struct bspp_hevc_pps *)(*ppsinfo)->secure_pps_info;
-+	if (!pps) {
-+		parse_err |= BSPP_ERROR_NO_PPS;
-+		goto error;
-+	}
-+	VDEC_ASSERT(pps->pps_pic_parameter_set_id == ssh->slice_pic_parameter_set_id);
-+
-+	*spsinfo = bspp_get_sequ_hdr(str_res, pps->pps_seq_parameter_set_id);
-+	if (!(*spsinfo)) {
-+		parse_err |= BSPP_ERROR_NO_SEQUENCE_HDR;
-+		goto error;
-+	}
-+	sps = (struct bspp_hevc_sps *)(*spsinfo)->secure_sequence_info;
-+	VDEC_ASSERT(sps->sps_seq_parameter_set_id == pps->pps_seq_parameter_set_id);
-+
-+	*vpsinfo = bspp_get_vpshdr(str_res, sps->sps_video_parameter_set_id);
-+	if (!(*vpsinfo)) {
-+		parse_err |= BSPP_ERROR_NO_VPS;
-+		goto error;
-+	}
-+	vps = (struct bspp_hevc_vps *)(*vpsinfo)->secure_vpsinfo;
-+	VDEC_ASSERT(vps->vps_video_parameter_set_id == sps->sps_video_parameter_set_id);
-+
-+	if (!ssh->first_slice_segment_in_pic_flag) {
-+		if (pps->dependent_slice_segments_enabled_flag)
-+			HEVC_SWSR_U1("dependent_slice_segment_flag",
-+				     &ssh->dependent_slice_segment_flag, sr_ctx);
-+
-+		HEVC_SWSR_UN("slice_segment_address",
-+			     (unsigned int *)&ssh->slice_segment_address,
-+			     bspp_ceil_log2(sps->pic_size_in_ctbs_y), sr_ctx);
-+	}
-+
-+error:
-+	return parse_err;
-+}
-+
-+static enum bspp_error_type bspp_hevc_parse_profiletierlevel
-+		(void *sr_ctx,
-+		 struct bspp_hevc_profile_tierlevel *ptl,
-+		 unsigned char vps_maxsublayers_minus1)
-+{
-+	enum bspp_error_type parse_err = BSPP_ERROR_NONE;
-+	unsigned char i, j;
-+	unsigned int res = 0;
-+
-+	VDEC_ASSERT(sr_ctx);
-+	VDEC_ASSERT(ptl);
-+	VDEC_ASSERT(vps_maxsublayers_minus1 < HEVC_MAX_NUM_SUBLAYERS);
-+
-+	memset(ptl, 0, sizeof(struct bspp_hevc_profile_tierlevel));
-+
-+	HEVC_SWSR_UN("general_profile_space", (unsigned int *)&ptl->general_profile_space, 2,
-+		     sr_ctx);
-+	HEVC_SWSR_U1("general_tier_flag", &ptl->general_tier_flag, sr_ctx);
-+	HEVC_SWSR_UN("general_profile_idc", (unsigned int *)&ptl->general_profile_idc, 5, sr_ctx);
-+
-+	for (j = 0; j < HEVC_MAX_NUM_PROFILE_IDC; ++j) {
-+		HEVC_SWSR_U1("general_profile_compatibility_flag",
-+			     &ptl->general_profile_compatibility_flag[j],
-+			     sr_ctx);
-+	}
-+
-+	HEVC_SWSR_U1("general_progressive_source_flag",
-+		     &ptl->general_progressive_source_flag, sr_ctx);
-+	HEVC_SWSR_U1("general_interlaced_source_flag",
-+		     &ptl->general_interlaced_source_flag, sr_ctx);
-+	HEVC_SWSR_U1("general_non_packed_constraint_flag",
-+		     &ptl->general_non_packed_constraint_flag, sr_ctx);
-+	HEVC_SWSR_U1("general_frame_only_constraint_flag",
-+		     &ptl->general_frame_only_constraint_flag, sr_ctx);
-+
-+	if (ptl->general_profile_idc == 4 ||
-+	    ptl->general_profile_compatibility_flag[4]) {
-+		HEVC_SWSR_U1("general_max_12bit_constraint_flag",
-+			     &ptl->general_max_12bit_constraint_flag, sr_ctx);
-+		HEVC_SWSR_U1("general_max_10bit_constraint_flag",
-+			     &ptl->general_max_10bit_constraint_flag, sr_ctx);
-+		HEVC_SWSR_U1("general_max_8bit_constraint_flag",
-+			     &ptl->general_max_8bit_constraint_flag, sr_ctx);
-+		HEVC_SWSR_U1("general_max_422chroma_constraint_flag",
-+			     &ptl->general_max_422chroma_constraint_flag,
-+			     sr_ctx);
-+		HEVC_SWSR_U1("general_max_420chroma_constraint_flag",
-+			     &ptl->general_max_420chroma_constraint_flag,
-+			     sr_ctx);
-+		HEVC_SWSR_U1("general_max_monochrome_constraint_flag",
-+			     &ptl->general_max_monochrome_constraint_flag,
-+			     sr_ctx);
-+		HEVC_SWSR_U1("general_intra_constraint_flag",
-+			     &ptl->general_intra_constraint_flag, sr_ctx);
-+		HEVC_SWSR_U1("general_one_picture_only_constraint_flag",
-+			     &ptl->general_one_picture_only_constraint_flag,
-+			     sr_ctx);
-+		HEVC_SWSR_U1("general_lower_bit_rate_constraint_flag",
-+			     &ptl->general_lower_bit_rate_constraint_flag,
-+			     sr_ctx);
-+		HEVC_SWSR_UN("general_reserved_zero_35bits", &res, 32, sr_ctx);
-+		HEVC_UCHECK("general_reserved_zero_35bits", res, 0, &parse_err);
-+		HEVC_SWSR_UN("general_reserved_zero_35bits", &res, 3, sr_ctx);
-+		HEVC_UCHECK("general_reserved_zero_35bits", res, 0, &parse_err);
-+	} else {
-+		HEVC_SWSR_UN("general_reserved_zero_44bits (1)", &res, 32, sr_ctx);
-+		HEVC_UCHECK("general_reserved_zero_44bits (1)", res, 0, &parse_err);
-+		HEVC_SWSR_UN("general_reserved_zero_44bits (2)", &res, 12, sr_ctx);
-+		HEVC_UCHECK("general_reserved_zero_44bits (2)", res, 0, &parse_err);
-+	}
-+
-+	HEVC_SWSR_UN("general_level_idc", (unsigned int *)&ptl->general_level_idc, 8, sr_ctx);
-+	HEVC_RANGEUCHECK("general_level_idc", ptl->general_level_idc,
-+			 HEVC_LEVEL_IDC_MIN, HEVC_LEVEL_IDC_MAX, &parse_err);
-+
-+	for (i = 0; i < vps_maxsublayers_minus1; ++i) {
-+		HEVC_SWSR_U1("sub_layer_profile_present_flag",
-+			     &ptl->sub_layer_profile_present_flag[i], sr_ctx);
-+		HEVC_SWSR_U1("sub_layer_level_present_flag",
-+			     &ptl->sub_layer_level_present_flag[i], sr_ctx);
-+	}
-+
-+	if (vps_maxsublayers_minus1 > 0) {
-+		for (i = vps_maxsublayers_minus1; i < 8; ++i) {
-+			HEVC_SWSR_UN("reserved_zero_2bits", &res, 2, sr_ctx);
-+			HEVC_UCHECK("reserved_zero_2bits", res, 0, &parse_err);
-+		}
-+	}
-+
-+	for (i = 0; i < vps_maxsublayers_minus1; ++i) {
-+		if (ptl->sub_layer_profile_present_flag[i]) {
-+			HEVC_SWSR_UN("sub_layer_profile_space",
-+				     (unsigned int *)&ptl->sub_layer_profile_space[i], 2, sr_ctx);
-+			HEVC_SWSR_U1("sub_layer_tier_flag", &ptl->sub_layer_tier_flag[i], sr_ctx);
-+			HEVC_SWSR_UN("sub_layer_profile_idc",
-+				     (unsigned int *)&ptl->sub_layer_profile_idc[i], 5, sr_ctx);
-+			for (j = 0; j < HEVC_MAX_NUM_PROFILE_IDC; ++j)
-+				HEVC_SWSR_U1("sub_layer_profile_compatibility_flag",
-+					     &ptl->sub_layer_profile_compatibility_flag[i][j],
-+					     sr_ctx);
-+
-+			HEVC_SWSR_U1("sub_layer_progressive_source_flag",
-+				     &ptl->sub_layer_progressive_source_flag[i],
-+				     sr_ctx);
-+			HEVC_SWSR_U1("sub_layer_interlaced_source_flag",
-+				     &ptl->sub_layer_interlaced_source_flag[i],
-+				     sr_ctx);
-+			HEVC_SWSR_U1("sub_layer_non_packed_constraint_flag",
-+				     &ptl->sub_layer_non_packed_constraint_flag[i],
-+				     sr_ctx);
-+			HEVC_SWSR_U1("sub_layer_frame_only_constraint_flag",
-+				     &ptl->sub_layer_frame_only_constraint_flag[i],
-+				     sr_ctx);
-+
-+			if (ptl->sub_layer_profile_idc[i] == 4 ||
-+			    ptl->sub_layer_profile_compatibility_flag[i][4]) {
-+				HEVC_SWSR_U1("sub_layer_max_12bit_constraint_flag",
-+					     &ptl->sub_layer_max_12bit_constraint_flag[i],
-+					     sr_ctx);
-+				HEVC_SWSR_U1("sub_layer_max_10bit_constraint_flag",
-+					     &ptl->sub_layer_max_10bit_constraint_flag[i],
-+					     sr_ctx);
-+				HEVC_SWSR_U1("sub_layer_max_8bit_constraint_flag",
-+					     &ptl->sub_layer_max_8bit_constraint_flag[i],
-+					     sr_ctx);
-+				HEVC_SWSR_U1("sub_layer_max_422chroma_constraint_flag",
-+					     &ptl->sub_layer_max_422chroma_constraint_flag[i],
-+					     sr_ctx);
-+				HEVC_SWSR_U1("sub_layer_max_420chroma_constraint_flag",
-+					     &ptl->sub_layer_max_420chroma_constraint_flag[i],
-+					     sr_ctx);
-+				HEVC_SWSR_U1("sub_layer_max_monochrome_constraint_flag",
-+					     &ptl->sub_layer_max_monochrome_constraint_flag[i],
-+					     sr_ctx);
-+				HEVC_SWSR_U1("sub_layer_intra_constraint_flag",
-+					     &ptl->sub_layer_intra_constraint_flag[i],
-+					     sr_ctx);
-+				HEVC_SWSR_U1("sub_layer_one_picture_only_constraint_flag",
-+					     &ptl->sub_layer_one_picture_only_constraint_flag[i],
-+					     sr_ctx);
-+				HEVC_SWSR_U1("sub_layer_lower_bit_rate_constraint_flag",
-+					     &ptl->sub_layer_lower_bit_rate_constraint_flag[i],
-+					     sr_ctx);
-+				HEVC_SWSR_UN("sub_layer_reserved_zero_35bits",
-+					     &res, 32, sr_ctx);
-+				HEVC_UCHECK("sub_layer_reserved_zero_35bits",
-+					    res, 0, &parse_err);
-+				HEVC_SWSR_UN("sub_layer_reserved_zero_35bits",
-+					     &res, 3, sr_ctx);
-+				HEVC_UCHECK("sub_layer_reserved_zero_35bits",
-+					    res, 0, &parse_err);
-+			} else {
-+				HEVC_SWSR_UN("sub_layer_reserved_zero_44bits (1)",
-+					     &res, 32, sr_ctx);
-+				HEVC_UCHECK("sub_layer_reserved_zero_44bits (1)",
-+					    res, 0, &parse_err);
-+				HEVC_SWSR_UN("sub_layer_reserved_zero_44bits (2)",
-+					     &res, 12, sr_ctx);
-+				HEVC_UCHECK("sub_layer_reserved_zero_44bits (2)",
-+					    res, 0, &parse_err);
-+			}
-+		}
-+		if (ptl->sub_layer_level_present_flag[i])
-+			HEVC_SWSR_UN("sub_layer_level_idc",
-+				     (unsigned int *)&ptl->sub_layer_level_idc[i], 8, sr_ctx);
-+	}
-+	return parse_err;
-+}
-+
-+/* Default scaling lists */
-+#define HEVC_SCALING_LIST_0_SIZE 16
-+#define HEVC_SCALING_LIST_123_SIZE 64
-+
-+static const unsigned char def_4x4[HEVC_SCALING_LIST_0_SIZE] = {
-+	16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16
-+};
-+
-+static const unsigned char def_8x8_intra[HEVC_SCALING_LIST_123_SIZE] = {
-+	16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 17, 16, 17, 16, 17, 18,
-+	17, 18, 18, 17, 18, 21, 19, 20, 21, 20, 19, 21, 24, 22, 22, 24,
-+	24, 22, 22, 24, 25, 25, 27, 30, 27, 25, 25, 29, 31, 35, 35, 31,
-+	29, 36, 41, 44, 41, 36, 47, 54, 54, 47, 65, 70, 65, 88, 88, 115
-+};
-+
-+static const unsigned char def_8x8_inter[HEVC_SCALING_LIST_123_SIZE] = {
-+	16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 17, 17, 17, 17, 17, 18,
-+	18, 18, 18, 18, 18, 20, 20, 20, 20, 20, 20, 20, 24, 24, 24, 24,
-+	24, 24, 24, 24, 25, 25, 25, 25, 25, 25, 25, 28, 28, 28, 28, 28,
-+	28, 33, 33, 33, 33, 33, 41, 41, 41, 41, 54, 54, 54, 71, 71, 91
-+};
-+
-+/*
-+ * Scan order mapping when translating scaling lists from bitstream order
-+ * to PVDEC order
-+ */
-+static const unsigned char HEVC_INV_ZZ_SCAN4[HEVC_SCALING_LIST_MATRIX_SIZE / 4]  = {
-+	0,  1,  2,  4,  3,  6,  7, 10,  5,  8,  9, 12, 11, 13, 14, 15
-+};
-+
-+static const unsigned char HEVC_INV_ZZ_SCAN8[HEVC_SCALING_LIST_MATRIX_SIZE] = {
-+	0,  1,  2,  4,  3,  6,  7, 11,  5,  8,  9, 13, 12, 17, 18, 24,
-+	10, 15, 16, 22, 21, 28, 29, 36, 23, 30, 31, 38, 37, 43, 44, 49,
-+	14, 19, 20, 26, 25, 32, 33, 40, 27, 34, 35, 42, 41, 47, 48, 53,
-+	39, 45, 46, 51, 50, 54, 55, 58, 52, 56, 57, 60, 59, 61, 62, 63
-+};
-+
-+static void bspp_hevc_getdefault_scalinglist
-+		(unsigned char size_id, unsigned char matrix_id,
-+		 const unsigned char **default_scalinglist,
-+		 unsigned int *size)
-+{
-+	static const unsigned char *defaultlists
-+	[HEVC_SCALING_LIST_NUM_SIZES][HEVC_SCALING_LIST_NUM_MATRICES] = {
-+		{ def_4x4, def_4x4, def_4x4, def_4x4, def_4x4, def_4x4 },
-+		{ def_8x8_intra, def_8x8_intra, def_8x8_intra,
-+		  def_8x8_inter, def_8x8_inter, def_8x8_inter },
-+		{ def_8x8_intra, def_8x8_intra, def_8x8_intra,
-+		  def_8x8_inter, def_8x8_inter, def_8x8_inter },
-+		{ def_8x8_intra, def_8x8_inter, NULL, NULL, NULL, NULL }
-+	};
-+
-+	static const unsigned int lists_sizes
-+	[HEVC_SCALING_LIST_NUM_SIZES][HEVC_SCALING_LIST_NUM_MATRICES] = {
-+		{ sizeof(def_4x4), sizeof(def_4x4), sizeof(def_4x4),
-+		  sizeof(def_4x4), sizeof(def_4x4), sizeof(def_4x4) },
-+		{ sizeof(def_8x8_intra), sizeof(def_8x8_intra),
-+		  sizeof(def_8x8_intra), sizeof(def_8x8_inter),
-+		  sizeof(def_8x8_inter), sizeof(def_8x8_inter) },
-+		{ sizeof(def_8x8_intra), sizeof(def_8x8_intra),
-+		  sizeof(def_8x8_intra), sizeof(def_8x8_inter),
-+		  sizeof(def_8x8_inter), sizeof(def_8x8_inter) },
-+		{ sizeof(def_8x8_intra), sizeof(def_8x8_inter), 0, 0, 0, 0 }
-+	};
-+
-+	/* to assert that input to this function was correct */
-+	VDEC_ASSERT(size_id < 4);
-+	VDEC_ASSERT(size_id < 3 ? (matrix_id < 6) : (matrix_id < 2));
-+
-+	*default_scalinglist = defaultlists[size_id][matrix_id];
-+	*size = lists_sizes[size_id][matrix_id];
-+}
-+
-+static enum bspp_error_type bspp_hevc_parse_scalinglistdata
-+			(void *sr_ctx,
-+			 struct bspp_hevc_scalinglist_data *scaling_listdata)
-+{
-+	enum bspp_error_type parse_err = BSPP_ERROR_NONE;
-+	unsigned char size_id, matrix_id;
-+
-+	for (size_id = 0; size_id < HEVC_SCALING_LIST_NUM_SIZES; ++size_id) {
-+		for (matrix_id = 0; matrix_id < ((size_id == 3) ? 2 : 6);
-+			++matrix_id) {
-+			/*
-+			 * Select scaling list on which we will operate in
-+			 * the iteration
-+			 */
-+			unsigned char *scalinglist = scaling_listdata->lists[size_id][matrix_id];
-+
-+			unsigned char scaling_list_pred_mode_flag = 0;
-+
-+			HEVC_SWSR_U1("scaling_list_pred_mode_flag",
-+				     &scaling_list_pred_mode_flag, sr_ctx);
-+			if (!scaling_list_pred_mode_flag) {
-+				unsigned char scaling_list_pred_matrix_id_delta = 0;
-+				const unsigned char *defaultlist = NULL;
-+				unsigned int listsize = 0;
-+
-+				HEVC_SWSR_UE("scaling_list_pred_matrixid_delta",
-+					     (unsigned int *)&scaling_list_pred_matrix_id_delta,
-+					     sr_ctx);
-+
-+				bspp_hevc_getdefault_scalinglist(size_id,
-+								 matrix_id,
-+								 &defaultlist,
-+								 &listsize);
-+
-+				if (scaling_list_pred_matrix_id_delta == 0) {
-+					/* use default one */
-+					memcpy(scalinglist, defaultlist, listsize);
-+					if (size_id > 1)
-+						scaling_listdata->dccoeffs[size_id -
-+						2][matrix_id] = 8 + 8;
-+				} else {
-+					unsigned char ref_matrix_id =
-+						matrix_id - scaling_list_pred_matrix_id_delta;
-+					unsigned char *refscalinglist =
-+						scaling_listdata->lists[size_id][ref_matrix_id];
-+					/*
-+					 *  use reference list given by
-+					 * scaling_list_pred_matrix_id_delta
-+					 */
-+					memcpy(scalinglist, refscalinglist, listsize);
-+					if (size_id > 1)
-+						scaling_listdata->dccoeffs[size_id - 2][matrix_id] =
-+							scaling_listdata->dccoeffs[size_id -
-+							2][ref_matrix_id];
-+				}
-+			} else {
-+				/*
-+				 * scaling list coefficients
-+				 * signalled explicitly
-+				 */
-+				static const short coef_startvalue = 8;
-+				static const unsigned char matrix_max_coef_num = 64;
-+
-+				short next_coef = coef_startvalue;
-+				unsigned char coef_num =
-+					HEVC_MIN(matrix_max_coef_num,
-+						 (1 << (4 + (size_id << 1))), unsigned char);
-+
-+				unsigned char i;
-+
-+				if (size_id > 1) {
-+					short scaling_list_dc_coef_minus8 = 0;
-+
-+					HEVC_SWSR_SE("scaling_list_dc_coef_minus8",
-+						     (int *)&scaling_list_dc_coef_minus8,
-+						     sr_ctx);
-+					HEVC_RANGESCHECK("scaling_list_dc_coef_minus8",
-+							 scaling_list_dc_coef_minus8,
-+							 -7, 247, &parse_err);
-+
-+					next_coef = scaling_list_dc_coef_minus8 + 8;
-+					scaling_listdata->dccoeffs[size_id - 2][matrix_id] =
-+						(unsigned char)next_coef;
-+				}
-+				for (i = 0; i < coef_num; ++i) {
-+					short scaling_list_delta_coef = 0;
-+
-+					HEVC_SWSR_SE("scaling_list_delta_coef",
-+						     (int *)&scaling_list_delta_coef, sr_ctx);
-+					HEVC_RANGESCHECK("scaling_list_delta_coef",
-+							 scaling_list_delta_coef, -128, 127,
-+							 &parse_err);
-+
-+					next_coef = (next_coef + scaling_list_delta_coef + 256) &
-+											0xFF;
-+					scalinglist[i] = next_coef;
-+				}
-+			}
-+		}
-+	}
-+
-+#ifdef DEBUG_DECODER_DRIVER
-+	/* print calculated scaling lists */
-+	for (size_id = 0; size_id < HEVC_SCALING_LIST_NUM_SIZES; ++size_id) {
-+		for (matrix_id = 0; matrix_id < ((size_id == 3) ? 2 : 6);
-+			++matrix_id) {
-+			unsigned char i = 0;
-+			/*
-+			 * Select scaling list on which we will operate
-+			 * in the iteration
-+			 */
-+			unsigned char *scalinglist = scaling_listdata->lists[size_id][matrix_id];
-+
-+			for (; i < ((size_id == 0) ? 16 : 64); ++i) {
-+				BSPP_HEVC_SYNTAX("scalinglist[%u][%u][%u] = %u",
-+						 size_id,
-+						 matrix_id,
-+						 i,
-+						 scalinglist[i]);
-+			}
-+		}
-+	}
-+#endif
-+
-+	return parse_err;
-+}
-+
-+static void
-+bspp_hevc_usedefault_scalinglists(struct bspp_hevc_scalinglist_data *scaling_listdata)
-+{
-+	unsigned char size_id, matrix_id;
-+
-+	for (size_id = 0; size_id < HEVC_SCALING_LIST_NUM_SIZES; ++size_id) {
-+		for (matrix_id = 0; matrix_id < ((size_id == 3) ? 2 : 6);
-+			++matrix_id) {
-+			unsigned char *list = scaling_listdata->lists[size_id][matrix_id];
-+			const unsigned char *defaultlist = NULL;
-+			unsigned int listsize = 0;
-+
-+			bspp_hevc_getdefault_scalinglist(size_id, matrix_id, &defaultlist,
-+							 &listsize);
-+
-+			memcpy(list, defaultlist, listsize);
-+		}
-+	}
-+
-+	memset(scaling_listdata->dccoeffs, 8 + 8, sizeof(scaling_listdata->dccoeffs));
-+}
-+
-+static enum bspp_error_type bspp_hevc_parse_shortterm_refpicset
-+				(void *sr_ctx,
-+				 struct bspp_hevc_shortterm_refpicset *st_refpicset,
-+				 unsigned char st_rps_idx,
-+				 unsigned char in_slice_header)
-+{
-+	/*
-+	 * Note: unfortunately short term ref pic set has to be
-+	 * "partially-decoded" and parsed at the same time because derived
-+	 * syntax elements are used for prediction of subsequent
-+	 * short term ref pic sets.
-+	 */
-+	enum bspp_error_type parse_err = BSPP_ERROR_NONE;
-+
-+	struct bspp_hevc_shortterm_refpicset *strps =
-+		&st_refpicset[st_rps_idx];
-+	unsigned char inter_ref_pic_set_prediction_flag = 0;
-+	unsigned int i = 0;
-+
-+	memset(strps, 0, sizeof(*strps));
-+
-+	if (st_rps_idx != 0) {
-+		HEVC_SWSR_U1("inter_ref_pic_set_prediction_flag",
-+			     &inter_ref_pic_set_prediction_flag, sr_ctx);
-+	}
-+
-+	if (inter_ref_pic_set_prediction_flag) {
-+		signed char j = 0;
-+		unsigned char j_8 = 0;
-+		unsigned char ref_rps_idx = 0;
-+		int delta_rps = 0;
-+		unsigned char i = 0;
-+		unsigned char delta_idx_minus1 = 0;
-+		unsigned char delta_rps_sign = 0;
-+		unsigned short abs_delta_rps_minus1 = 0;
-+		unsigned char used_by_curr_pic_flag[HEVC_MAX_NUM_REF_PICS];
-+		unsigned char use_delta_flag[HEVC_MAX_NUM_REF_PICS];
-+
-+		struct bspp_hevc_shortterm_refpicset *ref_strps = NULL;
-+
-+		if (in_slice_header) {
-+			HEVC_SWSR_UE("delta_idx_minus1", (unsigned int *)&delta_idx_minus1, sr_ctx);
-+			HEVC_RANGEUCHECK("delta_idx_minus1", delta_idx_minus1, 0, st_rps_idx - 1,
-+					 &parse_err);
-+		}
-+
-+		HEVC_SWSR_U1("delta_rps_sign", &delta_rps_sign, sr_ctx);
-+		HEVC_SWSR_UE("abs_delta_rps_minus1", (unsigned int *)&abs_delta_rps_minus1, sr_ctx);
-+		HEVC_RANGEUCHECK("abs_delta_rps_minus1", abs_delta_rps_minus1, 0, ((1 << 15) - 1),
-+				 &parse_err);
-+
-+		ref_rps_idx = st_rps_idx - (delta_idx_minus1 + 1);
-+		ref_strps = &st_refpicset[ref_rps_idx];
-+
-+		memset(use_delta_flag, 1, sizeof(use_delta_flag));
-+
-+		for (j_8 = 0; j_8 <= ref_strps->num_delta_pocs; ++j_8) {
-+			HEVC_SWSR_U1("used_by_curr_pic_flag", &used_by_curr_pic_flag[j_8], sr_ctx);
-+			if (!used_by_curr_pic_flag[j_8])
-+				HEVC_SWSR_U1("use_delta_flag", &use_delta_flag[j_8], sr_ctx);
-+		}
-+
-+		delta_rps =
-+			(1 - 2 * delta_rps_sign) * (abs_delta_rps_minus1 + 1);
-+
-+		/*
-+		 * predict delta POC values of current strps from
-+		 * reference strps
-+		 */
-+		for (j = ref_strps->num_positive_pics - 1; j >= 0; --j) {
-+			int dpoc = ref_strps->delta_poc_s1[j] + delta_rps;
-+
-+			if (dpoc < 0 && use_delta_flag[ref_strps->num_negative_pics + j]) {
-+				strps->delta_poc_s0[i] = dpoc;
-+				strps->used_bycurr_pic_s0[i++] =
-+					used_by_curr_pic_flag[ref_strps->num_negative_pics + j];
-+			}
-+		}
-+
-+		if (delta_rps < 0 && use_delta_flag[ref_strps->num_delta_pocs]) {
-+			strps->delta_poc_s0[i] = delta_rps;
-+			strps->used_bycurr_pic_s0[i++] =
-+				used_by_curr_pic_flag[ref_strps->num_delta_pocs];
-+		}
-+
-+		for (j_8 = 0; j_8 < ref_strps->num_negative_pics; ++j_8) {
-+			int dpoc = ref_strps->delta_poc_s0[j_8] + delta_rps;
-+
-+			if (dpoc < 0 && use_delta_flag[j_8]) {
-+				strps->delta_poc_s0[i] = dpoc;
-+				strps->used_bycurr_pic_s0[i++] = used_by_curr_pic_flag[j_8];
-+			}
-+		}
-+
-+		strps->num_negative_pics = i;
-+
-+		i = 0;
-+		for (j = ref_strps->num_negative_pics - 1; j >= 0; --j) {
-+			int dpoc = ref_strps->delta_poc_s0[j] + delta_rps;
-+
-+			if (dpoc > 0 && use_delta_flag[j]) {
-+				strps->delta_poc_s1[i] = dpoc;
-+				strps->used_bycurr_pic_s1[i++] =
-+					used_by_curr_pic_flag[j];
-+			}
-+		}
-+
-+		if (delta_rps > 0 && use_delta_flag[ref_strps->num_delta_pocs]) {
-+			strps->delta_poc_s1[i] = delta_rps;
-+			strps->used_bycurr_pic_s1[i++] =
-+				used_by_curr_pic_flag[ref_strps->num_delta_pocs];
-+		}
-+
-+		for (j_8 = 0; j_8 < ref_strps->num_positive_pics; ++j_8) {
-+			int dpoc = ref_strps->delta_poc_s1[j_8] + delta_rps;
-+
-+			if (dpoc > 0 && use_delta_flag[ref_strps->num_negative_pics + j_8]) {
-+				strps->delta_poc_s1[i] = dpoc;
-+				strps->used_bycurr_pic_s1[i++] =
-+					used_by_curr_pic_flag[ref_strps->num_negative_pics + j_8];
-+			}
-+		}
-+
-+		strps->num_positive_pics = i;
-+		strps->num_delta_pocs = strps->num_negative_pics + strps->num_positive_pics;
-+		if (strps->num_delta_pocs > (HEVC_MAX_NUM_REF_PICS - 1)) {
-+			strps->num_delta_pocs = HEVC_MAX_NUM_REF_PICS - 1;
-+			parse_err |= BSPP_ERROR_CORRECTION_VALIDVALUE;
-+		}
-+	} else {
-+		unsigned char num_negative_pics = 0;
-+		unsigned char num_positive_pics = 0;
-+		unsigned short delta_poc_s0_minus1[HEVC_MAX_NUM_REF_PICS];
-+		unsigned char used_by_curr_pic_s0_flag[HEVC_MAX_NUM_REF_PICS];
-+		unsigned short delta_poc_s1_minus1[HEVC_MAX_NUM_REF_PICS];
-+		unsigned char used_by_curr_pic_s1_flag[HEVC_MAX_NUM_REF_PICS];
-+		unsigned char j = 0;
-+
-+		HEVC_SWSR_UE("num_negative_pics", (unsigned int *)&num_negative_pics, sr_ctx);
-+		if (num_negative_pics > HEVC_MAX_NUM_REF_PICS) {
-+			num_negative_pics = HEVC_MAX_NUM_REF_PICS;
-+			parse_err |= BSPP_ERROR_CORRECTION_VALIDVALUE;
-+		}
-+		HEVC_SWSR_UE("num_positive_pics", (unsigned int *)&num_positive_pics, sr_ctx);
-+		if (num_positive_pics > HEVC_MAX_NUM_REF_PICS) {
-+			num_positive_pics = HEVC_MAX_NUM_REF_PICS;
-+			parse_err |= BSPP_ERROR_CORRECTION_VALIDVALUE;
-+		}
-+
-+		for (j = 0; j < num_negative_pics; ++j) {
-+			HEVC_SWSR_UE("delta_poc_s0_minus1",
-+				     (unsigned int *)&delta_poc_s0_minus1[j], sr_ctx);
-+			HEVC_RANGEUCHECK("delta_poc_s0_minus1", delta_poc_s0_minus1[j], 0,
-+					 ((1 << 15) - 1), &parse_err);
-+			HEVC_SWSR_U1("used_by_curr_pic_s0_flag",
-+				     &used_by_curr_pic_s0_flag[j], sr_ctx);
-+
-+			if (j == 0)
-+				strps->delta_poc_s0[j] =
-+					-(delta_poc_s0_minus1[j] + 1);
-+			else
-+				strps->delta_poc_s0[j] = strps->delta_poc_s0[j - 1] -
-+							(delta_poc_s0_minus1[j] + 1);
-+
-+			strps->used_bycurr_pic_s0[j] = used_by_curr_pic_s0_flag[j];
-+		}
-+
-+		for (j = 0; j < num_positive_pics; j++) {
-+			HEVC_SWSR_UE("delta_poc_s1_minus1",
-+				     (unsigned int *)&delta_poc_s1_minus1[j], sr_ctx);
-+			HEVC_RANGEUCHECK("delta_poc_s1_minus1", delta_poc_s1_minus1[j], 0,
-+					 ((1 << 15) - 1), &parse_err);
-+			HEVC_SWSR_U1("used_by_curr_pic_s1_flag",
-+				     &used_by_curr_pic_s1_flag[j], sr_ctx);
-+
-+			if (j == 0)
-+				strps->delta_poc_s1[j] =
-+					(delta_poc_s1_minus1[j] + 1);
-+			else
-+				strps->delta_poc_s1[j] = strps->delta_poc_s1[j - 1] +
-+							(delta_poc_s1_minus1[j] + 1);
-+			strps->used_bycurr_pic_s1[j] = used_by_curr_pic_s1_flag[j];
-+		}
-+
-+		strps->num_negative_pics = num_negative_pics;
-+		strps->num_positive_pics = num_positive_pics;
-+		strps->num_delta_pocs = strps->num_negative_pics + strps->num_positive_pics;
-+		if (strps->num_delta_pocs > (HEVC_MAX_NUM_REF_PICS - 1)) {
-+			strps->num_delta_pocs = HEVC_MAX_NUM_REF_PICS - 1;
-+			parse_err |= BSPP_ERROR_CORRECTION_VALIDVALUE;
-+		}
-+	}
-+
-+	BSPP_HEVC_SYNTAX
-+		("strps[%u]: num_delta_pocs: %u (%u (num_negative_pics) + %u (num_positive_pics))",
-+		 st_rps_idx, strps->num_delta_pocs, strps->num_negative_pics,
-+		 strps->num_positive_pics);
-+
-+	for (i = 0; i < strps->num_negative_pics; ++i) {
-+		BSPP_HEVC_SYNTAX("StRps[%u][%u]: delta_poc_s0: %d, used_bycurr_pic_s0: %u",
-+				 st_rps_idx, i, strps->delta_poc_s0[i],
-+				 strps->used_bycurr_pic_s0[i]);
-+	}
-+
-+	for (i = 0; i < strps->num_positive_pics; ++i) {
-+		BSPP_HEVC_SYNTAX("StRps[%u][%u]: delta_poc_s1: %d, used_bycurr_pic_s1: %u",
-+				 st_rps_idx, i, strps->delta_poc_s1[i],
-+				 strps->used_bycurr_pic_s1[i]);
-+	}
-+
-+	return parse_err;
-+}
-+
-+static void bspp_hevc_fillcommonseqhdr(struct bspp_hevc_sps *sps,
-+				       struct vdec_comsequ_hdrinfo *common_seq)
-+{
-+	struct bspp_hevc_vui_params *vui = &sps->vui_params;
-+	unsigned char chroma_idc = sps->chroma_format_idc;
-+	struct pixel_pixinfo *pixel_info = &common_seq->pixel_info;
-+	unsigned int maxsub_layersmin1;
-+	unsigned int maxdpb_size;
-+	struct vdec_rect *rawdisp_region;
-+
-+	common_seq->codec_profile = sps->profile_tier_level.general_profile_idc;
-+	common_seq->codec_level   = sps->profile_tier_level.general_level_idc;
-+
-+	if (sps->vui_parameters_present_flag &&
-+	    vui->vui_timing_info_present_flag) {
-+		common_seq->frame_rate_num = vui->vui_time_scale;
-+		common_seq->frame_rate_den = vui->vui_num_units_in_tick;
-+		common_seq->frame_rate =
-+			1 * common_seq->frame_rate_num / common_seq->frame_rate_den;
-+	}
-+
-+	if (vui->aspect_ratio_info_present_flag) {
-+		common_seq->aspect_ratio_num = vui->sar_width;
-+		common_seq->aspect_ratio_den = vui->sar_height;
-+	}
-+
-+	common_seq->interlaced_frames = 0;
-+
-+	/* handle pixel format definitions */
-+	pixel_info->chroma_fmt = chroma_idc == 0 ? 0 : 1;
-+	pixel_info->chroma_fmt_idc = pixelformat_idc[chroma_idc];
-+	pixel_info->chroma_interleave =
-+		chroma_idc == 0 ? PIXEL_INVALID_CI : PIXEL_UV_ORDER;
-+	pixel_info->bitdepth_y = sps->bit_depth_luma_minus8 + 8;
-+	pixel_info->bitdepth_c = sps->bit_depth_chroma_minus8 + 8;
-+
-+	pixel_info->mem_pkg = (pixel_info->bitdepth_y > 8 ||
-+		(pixel_info->bitdepth_c > 8 && pixel_info->chroma_fmt)) ?
-+		PIXEL_BIT10_MSB_MP : PIXEL_BIT8_MP;
-+	pixel_info->num_planes =
-+		chroma_idc == 0 ? 1 : (sps->separate_colour_plane_flag ? 3 : 2);
-+
-+	pixel_info->pixfmt = pixel_get_pixfmt(pixel_info->chroma_fmt_idc,
-+					      pixel_info->chroma_interleave,
-+					      pixel_info->mem_pkg,
-+					      pixel_info->bitdepth_y,
-+					      pixel_info->chroma_fmt ?
-+					      pixel_info->bitdepth_c : PIXEL_INVALID_BDC,
-+					      pixel_info->num_planes);
-+
-+	common_seq->max_frame_size.width = sps->pic_width_in_ctbs_y * sps->ctb_size_y;
-+	common_seq->max_frame_size.height = sps->pic_height_in_ctbs_y * sps->ctb_size_y;
-+
-+	common_seq->frame_size.width = sps->pic_width_in_luma_samples;
-+	common_seq->frame_size.height = sps->pic_height_in_luma_samples;
-+
-+	/* Get HEVC max num ref pictures and pass to bspp info*/
-+	vdecddutils_ref_pic_hevc_get_maxnum(common_seq, &common_seq->max_ref_frame_num);
-+
-+	common_seq->field_codec_mblocks = 0;
-+
-+	maxsub_layersmin1 = sps->sps_max_sub_layers_minus1;
-+	maxdpb_size =
-+		HEVC_MAX(sps->sps_max_dec_pic_buffering_minus1[maxsub_layersmin1] + 1,
-+			 sps->sps_max_num_reorder_pics[maxsub_layersmin1], unsigned char);
-+
-+	if (sps->sps_max_latency_increase_plus1[maxsub_layersmin1]) {
-+		maxdpb_size =
-+			HEVC_MAX(maxdpb_size,
-+				 sps->sps_max_latency_pictures[maxsub_layersmin1], unsigned int);
-+	}
-+
-+	maxdpb_size = HEVC_MIN(maxdpb_size,
-+			       HEVC_MAX_NUM_REF_IDX_ACTIVE + 1, unsigned int);
-+
-+	common_seq->min_pict_buf_num = HEVC_MAX(maxdpb_size, 6, unsigned int);
-+
-+	common_seq->picture_reordering = 1;
-+	common_seq->post_processing = 0;
-+
-+	/* handle display region calculation */
-+	rawdisp_region = &common_seq->raw_display_region;
-+
-+	rawdisp_region->width = sps->pic_width_in_luma_samples;
-+	rawdisp_region->height = sps->pic_height_in_luma_samples;
-+	rawdisp_region->top_offset = 0;
-+	rawdisp_region->left_offset = 0;
-+
-+	if (sps->conformance_window_flag) {
-+		struct vdec_rect *disp_region =
-+			&common_seq->orig_display_region;
-+
-+		disp_region->top_offset =
-+			sps->sub_height_c * sps->conf_win_top_offset;
-+		disp_region->left_offset =
-+			sps->sub_width_c * sps->conf_win_left_offset;
-+		disp_region->width =
-+			sps->pic_width_in_luma_samples -
-+			disp_region->left_offset -
-+			sps->sub_width_c * sps->conf_win_right_offset;
-+		disp_region->height =
-+			sps->pic_height_in_luma_samples -
-+			disp_region->top_offset -
-+			sps->sub_height_c * sps->conf_win_bottom_offset;
-+	} else {
-+		common_seq->orig_display_region =
-+			common_seq->raw_display_region;
-+	}
-+}
-+
-+static void bspp_hevc_fillpicturehdr(struct vdec_comsequ_hdrinfo *common_seq,
-+				     enum hevc_nalunittype nalunit_type,
-+				     struct bspp_pict_hdr_info *picture_hdr,
-+				     struct bspp_hevc_sps *sps,
-+				     struct bspp_hevc_pps *pps,
-+				     struct bspp_hevc_vps *vps)
-+{
-+	picture_hdr->intra_coded = (nalunit_type == HEVC_NALTYPE_IDR_W_RADL ||
-+		nalunit_type == HEVC_NALTYPE_IDR_N_LP);
-+	picture_hdr->field = 0;
-+	picture_hdr->post_processing = 0;
-+	picture_hdr->discontinuous_mbs = 0;
-+	picture_hdr->pict_aux_data.id = BSPP_INVALID;
-+	picture_hdr->second_pict_aux_data.id = BSPP_INVALID;
-+	picture_hdr->pict_sgm_data.id = BSPP_INVALID;
-+	picture_hdr->coded_frame_size.width =
-+		HEVC_ALIGN(sps->pic_width_in_luma_samples, HEVC_MIN_CODED_UNIT_SIZE, unsigned int);
-+	picture_hdr->coded_frame_size.height =
-+		HEVC_ALIGN(sps->pic_height_in_luma_samples, HEVC_MIN_CODED_UNIT_SIZE, unsigned int);
-+	picture_hdr->disp_info.enc_disp_region = common_seq->orig_display_region;
-+	picture_hdr->disp_info.disp_region = common_seq->orig_display_region;
-+	picture_hdr->disp_info.raw_disp_region = common_seq->raw_display_region;
-+	picture_hdr->disp_info.num_pan_scan_windows = 0;
-+	picture_hdr->hevc_pict_hdr_info.range_ext_present =
-+			(sps->profile_tier_level.general_profile_idc == 4) ||
-+			sps->profile_tier_level.general_profile_compatibility_flag[4];
-+
-+	picture_hdr->hevc_pict_hdr_info.is_full_range_ext = 0;
-+	if (picture_hdr->hevc_pict_hdr_info.range_ext_present &&
-+	    (bspp_hevc_checkppsrangeextensions(&pps->range_exts) ||
-+	    bspp_hevc_checksps_range_extensions(&sps->range_exts)))
-+		picture_hdr->hevc_pict_hdr_info.is_full_range_ext = 1;
-+
-+	memset(picture_hdr->disp_info.pan_scan_windows, 0,
-+	       sizeof(picture_hdr->disp_info.pan_scan_windows));
-+}
-+
-+static void bspp_hevc_fill_fwsps(struct bspp_hevc_sps *sps, struct hevcfw_sequence_ps *fwsps)
-+{
-+	unsigned char i;
-+
-+	fwsps->pic_width_in_luma_samples = sps->pic_width_in_luma_samples;
-+	fwsps->pic_height_in_luma_samples = sps->pic_height_in_luma_samples;
-+	fwsps->num_short_term_ref_pic_sets = sps->num_short_term_ref_pic_sets;
-+	fwsps->num_long_term_ref_pics_sps = sps->num_long_term_ref_pics_sps;
-+	fwsps->sps_max_sub_layers_minus1 = sps->sps_max_sub_layers_minus1;
-+	fwsps->max_transform_hierarchy_depth_inter =
-+				sps->max_transform_hierarchy_depth_inter;
-+	fwsps->max_transform_hierarchy_depth_intra =
-+				sps->max_transform_hierarchy_depth_intra;
-+	fwsps->log2_diff_max_min_transform_block_size =
-+				sps->log2_diff_max_min_transform_block_size;
-+	fwsps->log2_min_transform_block_size_minus2 =
-+				sps->log2_min_transform_block_size_minus2;
-+	fwsps->log2_diff_max_min_luma_coding_block_size =
-+				sps->log2_diff_max_min_luma_coding_block_size;
-+	fwsps->log2_min_luma_coding_block_size_minus3 =
-+				sps->log2_min_luma_coding_block_size_minus3;
-+
-+	HEVC_STATIC_ASSERT(sizeof(sps->sps_max_dec_pic_buffering_minus1) ==
-+			   sizeof(fwsps->sps_max_dec_pic_buffering_minus1));
-+	memcpy(fwsps->sps_max_dec_pic_buffering_minus1, sps->sps_max_dec_pic_buffering_minus1,
-+	       sizeof(fwsps->sps_max_dec_pic_buffering_minus1[0]) *
-+	       (sps->sps_max_sub_layers_minus1 + 1));
-+
-+	HEVC_STATIC_ASSERT(sizeof(sps->sps_max_num_reorder_pics) ==
-+			   sizeof(fwsps->sps_max_num_reorder_pics));
-+	memcpy(fwsps->sps_max_num_reorder_pics, sps->sps_max_num_reorder_pics,
-+	       sizeof(fwsps->sps_max_num_reorder_pics[0]) *
-+	       (sps->sps_max_sub_layers_minus1 + 1));
-+
-+	HEVC_STATIC_ASSERT(sizeof(sps->sps_max_latency_increase_plus1) ==
-+			   sizeof(fwsps->sps_max_latency_increase_plus1));
-+	memcpy(fwsps->sps_max_latency_increase_plus1, sps->sps_max_latency_increase_plus1,
-+	       sizeof(fwsps->sps_max_latency_increase_plus1[0]) *
-+	       (sps->sps_max_sub_layers_minus1 + 1));
-+
-+	fwsps->chroma_format_idc = sps->chroma_format_idc;
-+	fwsps->separate_colour_plane_flag = sps->separate_colour_plane_flag;
-+	fwsps->log2_max_pic_order_cnt_lsb_minus4 =
-+		sps->log2_max_pic_order_cnt_lsb_minus4;
-+	fwsps->long_term_ref_pics_present_flag =
-+		sps->long_term_ref_pics_present_flag;
-+	fwsps->sample_adaptive_offset_enabled_flag =
-+		sps->sample_adaptive_offset_enabled_flag;
-+	fwsps->sps_temporal_mvp_enabled_flag =
-+		sps->sps_temporal_mvp_enabled_flag;
-+	fwsps->bit_depth_luma_minus8 = sps->bit_depth_luma_minus8;
-+	fwsps->bit_depth_chroma_minus8 = sps->bit_depth_chroma_minus8;
-+	fwsps->pcm_sample_bit_depth_luma_minus1 =
-+		sps->pcm_sample_bit_depth_luma_minus1;
-+	fwsps->pcm_sample_bit_depth_chroma_minus1 =
-+		sps->pcm_sample_bit_depth_chroma_minus1;
-+	fwsps->log2_min_pcm_luma_coding_block_size_minus3 =
-+		sps->log2_min_pcm_luma_coding_block_size_minus3;
-+	fwsps->log2_diff_max_min_pcm_luma_coding_block_size =
-+		sps->log2_diff_max_min_pcm_luma_coding_block_size;
-+	fwsps->pcm_loop_filter_disabled_flag =
-+		sps->pcm_loop_filter_disabled_flag;
-+	fwsps->amp_enabled_flag = sps->amp_enabled_flag;
-+	fwsps->pcm_enabled_flag = sps->pcm_enabled_flag;
-+	fwsps->strong_intra_smoothing_enabled_flag =
-+		sps->strong_intra_smoothing_enabled_flag;
-+	fwsps->scaling_list_enabled_flag = sps->scaling_list_enabled_flag;
-+	fwsps->transform_skip_rotation_enabled_flag =
-+		sps->range_exts.transform_skip_rotation_enabled_flag;
-+	fwsps->transform_skip_context_enabled_flag =
-+		sps->range_exts.transform_skip_context_enabled_flag;
-+	fwsps->implicit_rdpcm_enabled_flag =
-+		sps->range_exts.implicit_rdpcm_enabled_flag;
-+	fwsps->explicit_rdpcm_enabled_flag =
-+		sps->range_exts.explicit_rdpcm_enabled_flag;
-+	fwsps->extended_precision_processing_flag =
-+		sps->range_exts.extended_precision_processing_flag;
-+	fwsps->intra_smoothing_disabled_flag =
-+		sps->range_exts.intra_smoothing_disabled_flag;
-+	/* high precision makes no sense for 8 bit luma & chroma,
-+	 * so forward this parameter only when bitdepth > 8
-+	 */
-+	if (sps->bit_depth_luma_minus8 || sps->bit_depth_chroma_minus8)
-+		fwsps->high_precision_offsets_enabled_flag =
-+			sps->range_exts.high_precision_offsets_enabled_flag;
-+
-+	fwsps->persistent_rice_adaptation_enabled_flag =
-+		sps->range_exts.persistent_rice_adaptation_enabled_flag;
-+	fwsps->cabac_bypass_alignment_enabled_flag =
-+		sps->range_exts.cabac_bypass_alignment_enabled_flag;
-+
-+	HEVC_STATIC_ASSERT(sizeof(sps->lt_ref_pic_poc_lsb_sps) ==
-+			   sizeof(fwsps->lt_ref_pic_poc_lsb_sps));
-+	HEVC_STATIC_ASSERT(sizeof(sps->used_by_curr_pic_lt_sps_flag) ==
-+			   sizeof(fwsps->used_by_curr_pic_lt_sps_flag));
-+	memcpy(fwsps->lt_ref_pic_poc_lsb_sps, sps->lt_ref_pic_poc_lsb_sps,
-+	       sizeof(fwsps->lt_ref_pic_poc_lsb_sps[0]) *
-+		sps->num_long_term_ref_pics_sps);
-+	memcpy(fwsps->used_by_curr_pic_lt_sps_flag, sps->used_by_curr_pic_lt_sps_flag,
-+	       sizeof(fwsps->used_by_curr_pic_lt_sps_flag[0]) * sps->num_long_term_ref_pics_sps);
-+
-+	for (i = 0; i < sps->num_short_term_ref_pic_sets; ++i)
-+		bspp_hevc_fill_fwst_rps(&sps->rps_list[i], &fwsps->st_rps_list[i]);
-+
-+	/* derived elements */
-+	fwsps->pic_size_in_ctbs_y = sps->pic_size_in_ctbs_y;
-+	fwsps->pic_height_in_ctbs_y = sps->pic_height_in_ctbs_y;
-+	fwsps->pic_width_in_ctbs_y = sps->pic_width_in_ctbs_y;
-+	fwsps->ctb_size_y = sps->ctb_size_y;
-+	fwsps->ctb_log2size_y = sps->ctb_log2size_y;
-+	fwsps->max_pic_order_cnt_lsb = sps->max_pic_order_cnt_lsb;
-+
-+	HEVC_STATIC_ASSERT(sizeof(sps->sps_max_latency_pictures) ==
-+			   sizeof(fwsps->sps_max_latency_pictures));
-+	memcpy(fwsps->sps_max_latency_pictures, sps->sps_max_latency_pictures,
-+	       sizeof(fwsps->sps_max_latency_pictures[0]) *
-+	      (sps->sps_max_sub_layers_minus1 + 1));
-+}
-+
-+static void bspp_hevc_fill_fwst_rps(struct bspp_hevc_shortterm_refpicset *strps,
-+				    struct hevcfw_short_term_ref_picset *fwstrps)
-+{
-+	fwstrps->num_delta_pocs = strps->num_delta_pocs;
-+	fwstrps->num_negative_pics = strps->num_negative_pics;
-+	fwstrps->num_positive_pics = strps->num_positive_pics;
-+
-+	HEVC_STATIC_ASSERT(sizeof(strps->delta_poc_s0) ==
-+			   sizeof(fwstrps->delta_poc_s0));
-+	memcpy(fwstrps->delta_poc_s0, strps->delta_poc_s0,
-+	       sizeof(fwstrps->delta_poc_s0[0]) * strps->num_negative_pics);
-+
-+	HEVC_STATIC_ASSERT(sizeof(strps->delta_poc_s1) ==
-+			   sizeof(fwstrps->delta_poc_s1));
-+	memcpy(fwstrps->delta_poc_s1, strps->delta_poc_s1,
-+	       sizeof(fwstrps->delta_poc_s1[0]) * strps->num_positive_pics);
-+
-+	HEVC_STATIC_ASSERT(sizeof(strps->used_bycurr_pic_s0) ==
-+			   sizeof(fwstrps->used_bycurr_pic_s0));
-+	memcpy(fwstrps->used_bycurr_pic_s0, strps->used_bycurr_pic_s0,
-+	       sizeof(fwstrps->used_bycurr_pic_s0[0]) * strps->num_negative_pics);
-+
-+	HEVC_STATIC_ASSERT(sizeof(strps->used_bycurr_pic_s1) ==
-+			   sizeof(fwstrps->used_bycurr_pic_s1));
-+	memcpy(fwstrps->used_bycurr_pic_s1, strps->used_bycurr_pic_s1,
-+	       sizeof(fwstrps->used_bycurr_pic_s1[0]) * strps->num_positive_pics);
-+}
-+
-+static void bspp_hevc_fill_fwpps(struct bspp_hevc_pps *pps, struct hevcfw_picture_ps *fw_pps)
-+{
-+	fw_pps->pps_pic_parameter_set_id = pps->pps_pic_parameter_set_id;
-+	fw_pps->num_tile_columns_minus1 = pps->num_tile_columns_minus1;
-+	fw_pps->num_tile_rows_minus1 = pps->num_tile_rows_minus1;
-+	fw_pps->diff_cu_qp_delta_depth = pps->diff_cu_qp_delta_depth;
-+	fw_pps->init_qp_minus26 = pps->init_qp_minus26;
-+	fw_pps->pps_beta_offset_div2 = pps->pps_beta_offset_div2;
-+	fw_pps->pps_tc_offset_div2 = pps->pps_tc_offset_div2;
-+	fw_pps->pps_cb_qp_offset = pps->pps_cb_qp_offset;
-+	fw_pps->pps_cr_qp_offset = pps->pps_cr_qp_offset;
-+	fw_pps->log2_parallel_merge_level_minus2 =
-+		pps->log2_parallel_merge_level_minus2;
-+
-+	fw_pps->dependent_slice_segments_enabled_flag =
-+		pps->dependent_slice_segments_enabled_flag;
-+	fw_pps->output_flag_present_flag = pps->output_flag_present_flag;
-+	fw_pps->num_extra_slice_header_bits = pps->num_extra_slice_header_bits;
-+	fw_pps->lists_modification_present_flag =
-+		pps->lists_modification_present_flag;
-+	fw_pps->cabac_init_present_flag = pps->cabac_init_present_flag;
-+	fw_pps->weighted_pred_flag = pps->weighted_pred_flag;
-+	fw_pps->weighted_bipred_flag = pps->weighted_bipred_flag;
-+	fw_pps->pps_slice_chroma_qp_offsets_present_flag =
-+		pps->pps_slice_chroma_qp_offsets_present_flag;
-+	fw_pps->deblocking_filter_override_enabled_flag =
-+		pps->deblocking_filter_override_enabled_flag;
-+	fw_pps->tiles_enabled_flag = pps->tiles_enabled_flag;
-+	fw_pps->entropy_coding_sync_enabled_flag =
-+		pps->entropy_coding_sync_enabled_flag;
-+	fw_pps->slice_segment_header_extension_present_flag =
-+		pps->slice_segment_header_extension_present_flag;
-+	fw_pps->transquant_bypass_enabled_flag =
-+		pps->transquant_bypass_enabled_flag;
-+	fw_pps->cu_qp_delta_enabled_flag = pps->cu_qp_delta_enabled_flag;
-+	fw_pps->transform_skip_enabled_flag = pps->transform_skip_enabled_flag;
-+	fw_pps->sign_data_hiding_enabled_flag =
-+		pps->sign_data_hiding_enabled_flag;
-+	fw_pps->num_ref_idx_l0_default_active_minus1 =
-+		pps->num_ref_idx_l0_default_active_minus1;
-+	fw_pps->num_ref_idx_l1_default_active_minus1 =
-+		pps->num_ref_idx_l1_default_active_minus1;
-+	fw_pps->constrained_intra_pred_flag =  pps->constrained_intra_pred_flag;
-+	fw_pps->pps_deblocking_filter_disabled_flag =
-+		pps->pps_deblocking_filter_disabled_flag;
-+	fw_pps->pps_loop_filter_across_slices_enabled_flag =
-+		pps->pps_loop_filter_across_slices_enabled_flag;
-+	fw_pps->loop_filter_across_tiles_enabled_flag =
-+		pps->loop_filter_across_tiles_enabled_flag;
-+	fw_pps->log2_max_transform_skip_block_size_minus2 =
-+		pps->range_exts.log2_max_transform_skip_block_size_minus2;
-+	fw_pps->cross_component_prediction_enabled_flag =
-+		pps->range_exts.cross_component_prediction_enabled_flag;
-+	fw_pps->chroma_qp_offset_list_enabled_flag =
-+		pps->range_exts.chroma_qp_offset_list_enabled_flag;
-+	fw_pps->diff_cu_chroma_qp_offset_depth =
-+		pps->range_exts.diff_cu_chroma_qp_offset_depth;
-+	fw_pps->chroma_qp_offset_list_len_minus1 =
-+		pps->range_exts.chroma_qp_offset_list_len_minus1;
-+	memcpy(fw_pps->cb_qp_offset_list, pps->range_exts.cb_qp_offset_list,
-+	       sizeof(pps->range_exts.cb_qp_offset_list));
-+	memcpy(fw_pps->cr_qp_offset_list, pps->range_exts.cr_qp_offset_list,
-+	       sizeof(pps->range_exts.cr_qp_offset_list));
-+
-+	/* derived elements */
-+	HEVC_STATIC_ASSERT(sizeof(pps->col_bd) == sizeof(fw_pps->col_bd));
-+	HEVC_STATIC_ASSERT(sizeof(pps->row_bd) == sizeof(fw_pps->row_bd));
-+	memcpy(fw_pps->col_bd, pps->col_bd, sizeof(fw_pps->col_bd));
-+	memcpy(fw_pps->row_bd, pps->row_bd, sizeof(fw_pps->row_bd));
-+}
-+
-+static void bspp_hevc_fill_fw_scaling_lists(struct bspp_hevc_pps *pps,
-+					    struct bspp_hevc_sps *sps,
-+					    struct hevcfw_picture_ps *fw_pps)
-+{
-+	signed char size_id, matrix_id;
-+	unsigned char *scalinglist;
-+	/*
-+	 * We are starting at 1 to leave space for addresses,
-+	 * filled by lower layer
-+	 */
-+	unsigned int *scaling_lists = &fw_pps->scaling_lists[1];
-+	unsigned char i;
-+
-+	struct bspp_hevc_scalinglist_data *scaling_listdata =
-+		pps->pps_scaling_list_data_present_flag ?
-+		&pps->scaling_list :
-+		&sps->scalinglist_data;
-+
-+	if (!sps->scaling_list_enabled_flag)
-+		return;
-+
-+	fw_pps->scaling_list_enabled_flag = sps->scaling_list_enabled_flag;
-+
-+	for (size_id = HEVC_SCALING_LIST_NUM_SIZES - 1;
-+		size_id >= 0; --size_id) {
-+		const unsigned char *zz =
-+			(size_id == 0 ? HEVC_INV_ZZ_SCAN4 : HEVC_INV_ZZ_SCAN8);
-+
-+		for (matrix_id = 0; matrix_id < ((size_id == 3) ? 2 : 6);
-+			++matrix_id) {
-+			/*
-+			 * Select scaling list on which we will operate
-+			 * in the iteration
-+			 */
-+			scalinglist =
-+				scaling_listdata->lists[size_id][matrix_id];
-+
-+			for (i = 0; i < ((size_id == 0) ? 16 : 64); i += 4) {
-+				*scaling_lists =
-+					scalinglist[zz[i + 3]] << 24 |
-+					scalinglist[zz[i + 2]] << 16 |
-+					scalinglist[zz[i + 1]] << 8 |
-+					scalinglist[zz[i]];
-+				scaling_lists += 2;
-+			}
-+		}
-+	}
-+
-+	for (i = 0; i < 2; ++i) {
-+		*scaling_lists = scaling_listdata->dccoeffs[1][i];
-+		scaling_lists += 2;
-+	}
-+
-+	for (i = 0; i < 6; ++i) {
-+		*scaling_lists = scaling_listdata->dccoeffs[0][i];
-+		scaling_lists += 2;
-+	}
-+}
-+
-+static unsigned int bspp_ceil_log2(unsigned int linear_val)
-+{
-+	unsigned int log_val = 0;
-+
-+	if (linear_val > 0)
-+		--linear_val;
-+
-+	while (linear_val > 0) {
-+		linear_val >>= 1;
-+		++log_val;
-+	}
-+
-+	return log_val;
-+}
-+
-+static unsigned char bspp_hevc_picture_is_irap(enum hevc_nalunittype nalunit_type)
-+{
-+	return (nalunit_type >= HEVC_NALTYPE_BLA_W_LP) &&
-+	       (nalunit_type <= HEVC_NALTYPE_RSV_IRAP_VCL23);
-+}
-+
-+static unsigned char bspp_hevc_picture_is_cra(enum hevc_nalunittype nalunit_type)
-+{
-+	return (nalunit_type == HEVC_NALTYPE_CRA);
-+}
-+
-+static unsigned char bspp_hevc_picture_is_idr(enum hevc_nalunittype nalunit_type)
-+{
-+	return (nalunit_type == HEVC_NALTYPE_IDR_N_LP) ||
-+	       (nalunit_type == HEVC_NALTYPE_IDR_W_RADL);
-+}
-+
-+static unsigned char bspp_hevc_picture_is_bla(enum hevc_nalunittype nalunit_type)
-+{
-+	return (nalunit_type >= HEVC_NALTYPE_BLA_W_LP) &&
-+	       (nalunit_type <= HEVC_NALTYPE_BLA_N_LP);
-+}
-+
-+static unsigned char bspp_hevc_picture_getnorasl_outputflag
-+					(enum hevc_nalunittype nalunit_type,
-+					 struct bspp_hevc_inter_pict_ctx *inter_pict_ctx)
-+{
-+	VDEC_ASSERT(inter_pict_ctx);
-+
-+	if (bspp_hevc_picture_is_idr(nalunit_type) ||
-+	    bspp_hevc_picture_is_bla(nalunit_type) ||
-+	    inter_pict_ctx->first_after_eos ||
-+	    (bspp_hevc_picture_is_cra(nalunit_type) && inter_pict_ctx->seq_pic_count == 1))
-+		return 1;
-+
-+	return 0;
-+}
-+
-+static unsigned char bspp_hevc_range_extensions_is_enabled
-+				(struct bspp_hevc_profile_tierlevel *profile_tierlevel)
-+{
-+	unsigned char is_enabled;
-+
-+	is_enabled = profile_tierlevel->general_profile_idc >= 4 ||
-+		profile_tierlevel->general_profile_compatibility_flag[4];
-+
-+	return is_enabled;
-+}
-+
-+static void bspp_hevc_parse_codec_config(void *hndl_swsr_ctx, unsigned int *unit_count,
-+					 unsigned int *unit_array_count,
-+					 unsigned int *delim_length,
-+					 unsigned int *size_delim_length)
-+{
-+	unsigned long long value = 23;
-+
-+	/*
-+	 * Set the shift-register up to provide next 23 bytes
-+	 * without emulation prevention detection.
-+	 */
-+	swsr_consume_delim(hndl_swsr_ctx, SWSR_EMPREVENT_NONE, 0, &value);
-+	/*
-+	 * Codec config header must be read for size delimited data (HEVC)
-+	 * to get to the start of each unit.
-+	 * This parsing follows section 8.3.3.1.2 of ISO/IEC 14496-15:2013.
-+	 */
-+	swsr_read_bits(hndl_swsr_ctx, 8 * 4);
-+	swsr_read_bits(hndl_swsr_ctx, 8 * 4);
-+	swsr_read_bits(hndl_swsr_ctx, 8 * 4);
-+	swsr_read_bits(hndl_swsr_ctx, 8 * 4);
-+	swsr_read_bits(hndl_swsr_ctx, 8 * 4);
-+	swsr_read_bits(hndl_swsr_ctx, 8);
-+
-+	*delim_length = ((swsr_read_bits(hndl_swsr_ctx, 8) & 0x3) + 1) * 8;
-+	*unit_array_count = swsr_read_bits(hndl_swsr_ctx, 8);
-+
-+	/* Size delimiter is only 2 bytes for HEVC codec configuration. */
-+	*size_delim_length = 2 * 8;
-+}
-+
-+static void bspp_hevc_update_unitcounts(void *hndl_swsr_ctx, unsigned int *unit_count,
-+					unsigned int *unit_array_count)
-+{
-+	if (*unit_array_count != 0) {
-+		unsigned long long value = 3;
-+
-+		if (*unit_count == 0) {
-+			/*
-+			 * Set the shift-register up to provide next 3 bytes
-+			 * without emulation prevention detection.
-+			 */
-+			swsr_consume_delim(hndl_swsr_ctx, SWSR_EMPREVENT_NONE, 0, &value);
-+
-+			swsr_read_bits(hndl_swsr_ctx, 8);
-+			*unit_count = swsr_read_bits(hndl_swsr_ctx, 16);
-+
-+			(*unit_array_count)--;
-+			(*unit_count)--;
-+		}
-+	}
-+}
-+
-+void bspp_hevc_determine_unittype(unsigned char bitstream_unittype,
-+				  int disable_mvc,
-+				  enum bspp_unit_type *bspp_unittype)
-+{
-+	/* 6 bits for NAL Unit Type in HEVC */
-+	unsigned char type = (bitstream_unittype >> 1) & 0x3f;
-+
-+	switch (type) {
-+	case HEVC_NALTYPE_VPS:
-+		*bspp_unittype = BSPP_UNIT_VPS;
-+		break;
-+
-+	case HEVC_NALTYPE_SPS:
-+		*bspp_unittype = BSPP_UNIT_SEQUENCE;
-+		break;
-+
-+	case HEVC_NALTYPE_PPS:
-+		*bspp_unittype = BSPP_UNIT_PPS;
-+		break;
-+
-+	case HEVC_NALTYPE_TRAIL_N:
-+	case HEVC_NALTYPE_TRAIL_R:
-+	case HEVC_NALTYPE_TSA_N:
-+	case HEVC_NALTYPE_TSA_R:
-+	case HEVC_NALTYPE_STSA_N:
-+	case HEVC_NALTYPE_STSA_R:
-+	case HEVC_NALTYPE_RADL_N:
-+	case HEVC_NALTYPE_RADL_R:
-+	case HEVC_NALTYPE_RASL_N:
-+	case HEVC_NALTYPE_RASL_R:
-+	case HEVC_NALTYPE_BLA_W_LP:
-+	case HEVC_NALTYPE_BLA_W_RADL:
-+	case HEVC_NALTYPE_BLA_N_LP:
-+	case HEVC_NALTYPE_IDR_W_RADL:
-+	case HEVC_NALTYPE_IDR_N_LP:
-+	case HEVC_NALTYPE_CRA:
-+	case HEVC_NALTYPE_EOS:
-+		/* Attach EOS to picture data, so it can be detected in FW */
-+		*bspp_unittype = BSPP_UNIT_PICTURE;
-+		break;
-+
-+	case HEVC_NALTYPE_AUD:
-+	case HEVC_NALTYPE_PREFIX_SEI:
-+	case HEVC_NALTYPE_SUFFIX_SEI:
-+	case HEVC_NALTYPE_EOB:
-+	case HEVC_NALTYPE_FD:
-+		*bspp_unittype = BSPP_UNIT_NON_PICTURE;
-+		break;
-+
-+	default:
-+		*bspp_unittype = BSPP_UNIT_UNSUPPORTED;
-+		break;
-+	}
-+}
-+
-+int bspp_hevc_set_parser_config(enum vdec_bstr_format bstr_format,
-+				struct bspp_vid_std_features *pvidstd_features,
-+				struct bspp_swsr_ctx *pswsr_ctx,
-+				struct bspp_parser_callbacks *parser_callbacks,
-+				struct bspp_inter_pict_data *pinterpict_data)
-+{
-+	/* set HEVC parser callbacks. */
-+	parser_callbacks->parse_unit_cb         = bspp_hevc_unitparser;
-+	parser_callbacks->release_data_cb       = bspp_hevc_releasedata;
-+	parser_callbacks->reset_data_cb         = bspp_hevc_resetdata;
-+	parser_callbacks->parse_codec_config_cb = bspp_hevc_parse_codec_config;
-+	parser_callbacks->update_unit_counts_cb = bspp_hevc_update_unitcounts;
-+	parser_callbacks->initialise_parsing_cb = bspp_hevc_initialiseparsing;
-+	parser_callbacks->finalise_parsing_cb   = bspp_hevc_finaliseparsing;
-+
-+	/* Set HEVC specific features. */
-+	pvidstd_features->seq_size = sizeof(struct bspp_hevc_sequ_hdr_info);
-+	pvidstd_features->uses_vps  = 1;
-+	pvidstd_features->vps_size = sizeof(struct bspp_hevc_vps);
-+	pvidstd_features->uses_pps  = 1;
-+	pvidstd_features->pps_size = sizeof(struct bspp_hevc_pps);
-+
-+	/* Set HEVC specific shift register config. */
-+	pswsr_ctx->emulation_prevention = SWSR_EMPREVENT_00000300;
-+
-+	if (bstr_format == VDEC_BSTRFORMAT_DEMUX_BYTESTREAM ||
-+	    bstr_format == VDEC_BSTRFORMAT_ELEMENTARY) {
-+		pswsr_ctx->sr_config.delim_type = SWSR_DELIM_SCP;
-+		pswsr_ctx->sr_config.delim_length = 3 * 8;
-+		pswsr_ctx->sr_config.scp_value = 0x000001;
-+	} else if (bstr_format == VDEC_BSTRFORMAT_DEMUX_SIZEDELIMITED) {
-+		pswsr_ctx->sr_config.delim_type = SWSR_DELIM_SIZE;
-+		pswsr_ctx->sr_config.delim_length = 4 * 8;
-+	} else {
-+		return IMG_ERROR_NOT_SUPPORTED;
-+	}
-+
-+	return 0;
-+}
-diff --git a/drivers/staging/media/vxd/decoder/hevc_secure_parser.h b/drivers/staging/media/vxd/decoder/hevc_secure_parser.h
-new file mode 100644
-index 000000000000..72424e8b8041
---- /dev/null
-+++ b/drivers/staging/media/vxd/decoder/hevc_secure_parser.h
-@@ -0,0 +1,455 @@
++++ b/drivers/staging/media/vxd/decoder/hevcfw_data.h
+@@ -0,0 +1,472 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * h.264 secure data unit parsing API.
++ * Public data structures for the hevc parser firmware module.
 + *
 + * Copyright (c) Imagination Technologies Ltd.
 + * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com/
@@ -9763,94 +1819,77 @@ index 000000000000..72424e8b8041
 + * Re-written for upstreming
 + *	Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
 + */
-+#ifndef __HEVCSECUREPARSER_H__
-+#define __HEVCSECUREPARSER_H__
 +
-+#include "bspp_int.h"
++/* Include shared header version here to replace the standard version. */
++#include "hevcfw_data_shared.h"
 +
-+#define HEVC_MAX_NUM_PROFILE_IDC        (32)
-+#define HEVC_MAX_NUM_SUBLAYERS          (7)
-+#define HEVC_MAX_VPS_OP_SETS_PLUS1      (1024)
-+#define HEVC_MAX_VPS_NUH_RESERVED_ZERO_LAYER_ID_PLUS1   (1)
-+#define HEVC_MAX_NUM_REF_PICS           (16)
-+#define HEVC_MAX_NUM_ST_REF_PIC_SETS    (65)
-+#define HEVC_MAX_NUM_LT_REF_PICS        (32)
-+#define HEVC_MAX_NUM_REF_IDX_ACTIVE     (15)
-+#define HEVC_LEVEL_IDC_MIN              (30)
-+#define HEVC_LEVEL_IDC_MAX              (186)
-+#define HEVC_1_0_PROFILE_IDC_MAX        (3)
-+#define HEVC_MAX_CPB_COUNT              (32)
-+#define HEVC_MIN_CODED_UNIT_SIZE        (8)
++#ifndef _HEVCFW_DATA_H_
++#define _HEVCFW_DATA_H_
 +
-+/* hevc scaling lists (all values are maximum possible ones) */
-+#define HEVC_SCALING_LIST_NUM_SIZES     (4)
-+#define HEVC_SCALING_LIST_NUM_MATRICES  (6)
-+#define HEVC_SCALING_LIST_MATRIX_SIZE   (64)
++#include "vdecfw_shared.h"
 +
-+#define HEVC_MAX_TILE_COLS              (20)
-+#define HEVC_MAX_TILE_ROWS              (22)
++#define HEVC_MAX_SPS_COUNT              16
++#define HEVC_MAX_PPS_COUNT              64
 +
-+#define HEVC_EXTENDED_SAR               (255)
++#define HEVCFW_MAX_NUM_PROFILE_IDC 32
 +
-+#define HEVC_MAX_CHROMA_QP              (6)
++#define HEVCFW_MAX_NUM_REF_PICS 16
++#define HEVCFW_MAX_NUM_ST_REF_PIC_SETS 65
++#define HEVCFW_MAX_NUM_LT_REF_PICS 32
++#define HEVCFW_MAX_NUM_SUBLAYERS 7
++#define HEVCFW_SCALING_LISTS_BUFSIZE 256
++#define HEVCFW_MAX_TILE_COLS 20
++#define HEVCFW_MAX_TILE_ROWS 22
 +
-+enum hevc_nalunittype {
-+	HEVC_NALTYPE_TRAIL_N        = 0,
-+	HEVC_NALTYPE_TRAIL_R        = 1,
-+	HEVC_NALTYPE_TSA_N          = 2,
-+	HEVC_NALTYPE_TSA_R          = 3,
-+	HEVC_NALTYPE_STSA_N         = 4,
-+	HEVC_NALTYPE_STSA_R         = 5,
-+	HEVC_NALTYPE_RADL_N         = 6,
-+	HEVC_NALTYPE_RADL_R         = 7,
-+	HEVC_NALTYPE_RASL_N         = 8,
-+	HEVC_NALTYPE_RASL_R         = 9,
-+	HEVC_NALTYPE_RSV_VCL_N10    = 10,
-+	HEVC_NALTYPE_RSV_VCL_R11    = 11,
-+	HEVC_NALTYPE_RSV_VCL_N12    = 12,
-+	HEVC_NALTYPE_RSV_VCL_R13    = 13,
-+	HEVC_NALTYPE_RSV_VCL_N14    = 14,
-+	HEVC_NALTYPE_RSV_VCL_R15    = 15,
-+	HEVC_NALTYPE_BLA_W_LP       = 16,
-+	HEVC_NALTYPE_BLA_W_RADL     = 17,
-+	HEVC_NALTYPE_BLA_N_LP       = 18,
-+	HEVC_NALTYPE_IDR_W_RADL     = 19,
-+	HEVC_NALTYPE_IDR_N_LP       = 20,
-+	HEVC_NALTYPE_CRA            = 21,
-+	HEVC_NALTYPE_RSV_IRAP_VCL22 = 22,
-+	HEVC_NALTYPE_RSV_IRAP_VCL23 = 23,
-+	HEVC_NALTYPE_VPS            = 32,
-+	HEVC_NALTYPE_SPS            = 33,
-+	HEVC_NALTYPE_PPS            = 34,
-+	HEVC_NALTYPE_AUD            = 35,
-+	HEVC_NALTYPE_EOS            = 36,
-+	HEVC_NALTYPE_EOB            = 37,
-+	HEVC_NALTYPE_FD             = 38,
-+	HEVC_NALTYPE_PREFIX_SEI     = 39,
-+	HEVC_NALTYPE_SUFFIX_SEI     = 40,
-+	HEVC_NALTYPE_FORCE32BITS    = 0x7FFFFFFFU
++#define HEVCFW_MAX_CHROMA_QP 6
++
++#define HEVCFW_MAX_DPB_SIZE HEVCFW_MAX_NUM_REF_PICS
++#define HEVCFW_REF_PIC_LIST0 0
++#define HEVCFW_REF_PIC_LIST1 1
++#define HEVCFW_NUM_REF_PIC_LISTS 2
++#define HEVCFW_NUM_DPB_DIFF_REGS 4
++
++/* non-critical errors */
++#define HEVC_ERR_INVALID_VALUE (20)
++#define HEVC_ERR_CORRECTION_VALIDVALUE (21)
++
++#define HEVC_IS_ERR_CRITICAL(err) \
++	((err) > HEVC_ERR_CORRECTION_VALIDVALUE ? 1 : 0)
++
++/* critical errors */
++#define HEVC_ERR_INV_VIDEO_DIMENSION (22)
++#define HEVC_ERR_NO_SEQUENCE_HDR (23)
++#define HEVC_ERR_SPS_EXT_UNSUPP (24 | VDECFW_UNSUPPORTED_CODE_BASE)
++#define HEVC_ERR_PPS_EXT_UNSUPP (25 | VDECFW_UNSUPPORTED_CODE_BASE)
++
++#define HEVC_ERR_FAILED_TO_STORE_VPS (100)
++#define HEVC_ERR_FAILED_TO_STORE_SPS (101)
++#define HEVC_ERR_FAILED_TO_STORE_PPS (102)
++
++#define HEVC_ERR_FAILED_TO_FETCH_VPS (103)
++#define HEVC_ERR_FAILED_TO_FETCH_SPS (104)
++#define HEVC_ERR_FAILED_TO_FETCH_PPS (105)
++/* HEVC Scaling Lists (all values are maximum possible ones) */
++#define HEVCFW_SCALING_LIST_NUM_SIZES 4
++#define HEVCFW_SCALING_LIST_NUM_MATRICES 6
++#define HEVCFW_SCALING_LIST_MATRIX_SIZE 64
++
++struct hevcfw_scaling_listdata {
++	unsigned char dc_coeffs
++	[HEVCFW_SCALING_LIST_NUM_SIZES - 2]
++	[HEVCFW_SCALING_LIST_NUM_MATRICES];
++	unsigned char lists
++	[HEVCFW_SCALING_LIST_NUM_SIZES]
++	[HEVCFW_SCALING_LIST_NUM_MATRICES]
++	[HEVCFW_SCALING_LIST_MATRIX_SIZE];
 +};
 +
-+enum bspp_hevcslicetype {
-+	HEVC_SLICE_B           = 0,
-+	HEVC_SLICE_P           = 1,
-+	HEVC_SLICE_I           = 2,
-+	HEVC_SLICE_FORCE32BITS = 0x7FFFFFFFU
-+};
-+
-+/* HEVC NAL unit header */
-+struct bspp_hevcnalheader {
-+	unsigned char nal_unit_type;
-+	unsigned char nuh_layer_id;
-+	unsigned char nuh_temporal_id_plus1;
-+};
-+
-+/* HEVC video profile_tier_level */
-+struct bspp_hevc_profile_tierlevel {
++/* HEVC Video Profile_Tier_Level */
++struct hevcfw_profile_tier_level {
 +	unsigned char general_profile_space;
 +	unsigned char general_tier_flag;
 +	unsigned char general_profile_idc;
-+	unsigned char general_profile_compatibility_flag[HEVC_MAX_NUM_PROFILE_IDC];
++	unsigned char general_profile_compatibility_flag[HEVCFW_MAX_NUM_PROFILE_IDC];
 +	unsigned char general_progressive_source_flag;
 +	unsigned char general_interlaced_source_flag;
 +	unsigned char general_non_packed_constraint_flag;
@@ -9865,113 +1904,44 @@ index 000000000000..72424e8b8041
 +	unsigned char general_one_picture_only_constraint_flag;
 +	unsigned char general_lower_bit_rate_constraint_flag;
 +	unsigned char general_level_idc;
-+	unsigned char sub_layer_profile_present_flag[HEVC_MAX_NUM_SUBLAYERS - 1];
-+	unsigned char sub_layer_level_present_flag[HEVC_MAX_NUM_SUBLAYERS - 1];
-+	unsigned char sub_layer_profile_space[HEVC_MAX_NUM_SUBLAYERS - 1];
-+	unsigned char sub_layer_tier_flag[HEVC_MAX_NUM_SUBLAYERS - 1];
-+	unsigned char sub_layer_profile_idc[HEVC_MAX_NUM_SUBLAYERS - 1];
-+	unsigned char sub_layer_profile_compatibility_flag[HEVC_MAX_NUM_SUBLAYERS -
-+						   1][HEVC_MAX_NUM_PROFILE_IDC];
-+	unsigned char sub_layer_progressive_source_flag[HEVC_MAX_NUM_SUBLAYERS - 1];
-+	unsigned char sub_layer_interlaced_source_flag[HEVC_MAX_NUM_SUBLAYERS - 1];
-+	unsigned char sub_layer_non_packed_constraint_flag[HEVC_MAX_NUM_SUBLAYERS - 1];
-+	unsigned char sub_layer_frame_only_constraint_flag[HEVC_MAX_NUM_SUBLAYERS - 1];
-+	unsigned char sub_layer_max_12bit_constraint_flag[HEVC_MAX_NUM_SUBLAYERS - 1];
-+	unsigned char sub_layer_max_10bit_constraint_flag[HEVC_MAX_NUM_SUBLAYERS - 1];
-+	unsigned char sub_layer_max_8bit_constraint_flag[HEVC_MAX_NUM_SUBLAYERS - 1];
-+	unsigned char sub_layer_max_422chroma_constraint_flag[HEVC_MAX_NUM_SUBLAYERS - 1];
-+	unsigned char sub_layer_max_420chroma_constraint_flag[HEVC_MAX_NUM_SUBLAYERS - 1];
-+	unsigned char sub_layer_max_monochrome_constraint_flag[HEVC_MAX_NUM_SUBLAYERS - 1];
-+	unsigned char sub_layer_intra_constraint_flag[HEVC_MAX_NUM_SUBLAYERS - 1];
-+	unsigned char sub_layer_one_picture_only_constraint_flag[HEVC_MAX_NUM_SUBLAYERS - 1];
-+	unsigned char sub_layer_lower_bit_rate_constraint_flag[HEVC_MAX_NUM_SUBLAYERS - 1];
-+	unsigned char sub_layer_level_idc[HEVC_MAX_NUM_SUBLAYERS - 1];
++	unsigned char sub_layer_profile_present_flag[HEVCFW_MAX_NUM_SUBLAYERS - 1];
++	unsigned char sub_layer_level_present_flag[HEVCFW_MAX_NUM_SUBLAYERS - 1];
++	unsigned char sub_layer_profile_space[HEVCFW_MAX_NUM_SUBLAYERS - 1];
++	unsigned char sub_layer_tier_flag[HEVCFW_MAX_NUM_SUBLAYERS - 1];
++	unsigned char sub_layer_profile_idc[HEVCFW_MAX_NUM_SUBLAYERS - 1];
++	unsigned char sub_layer_profile_compatibility_flag[HEVCFW_MAX_NUM_SUBLAYERS -
++						   1][HEVCFW_MAX_NUM_PROFILE_IDC];
++	unsigned char sub_layer_progressive_source_flag[HEVCFW_MAX_NUM_SUBLAYERS - 1];
++	unsigned char sub_layer_interlaced_source_flag[HEVCFW_MAX_NUM_SUBLAYERS - 1];
++	unsigned char sub_layer_non_packed_constraint_flag[HEVCFW_MAX_NUM_SUBLAYERS - 1];
++	unsigned char sub_layer_frame_only_constraint_flag[HEVCFW_MAX_NUM_SUBLAYERS - 1];
++	unsigned char sub_layer_max_12bit_constraint_flag[HEVCFW_MAX_NUM_SUBLAYERS - 1];
++	unsigned char sub_layer_max_10bit_constraint_flag[HEVCFW_MAX_NUM_SUBLAYERS - 1];
++	unsigned char sub_layer_max_8bit_constraint_flag[HEVCFW_MAX_NUM_SUBLAYERS - 1];
++	unsigned char sub_layer_max_422chroma_constraint_flag[HEVCFW_MAX_NUM_SUBLAYERS - 1];
++	unsigned char sub_layer_max_420chroma_constraint_flag[HEVCFW_MAX_NUM_SUBLAYERS - 1];
++	unsigned char sub_layer_max_monochrome_constraint_flag[HEVCFW_MAX_NUM_SUBLAYERS - 1];
++	unsigned char sub_layer_intra_constraint_flag[HEVCFW_MAX_NUM_SUBLAYERS - 1];
++	unsigned char sub_layer_one_picture_only_constraint_flag[HEVCFW_MAX_NUM_SUBLAYERS - 1];
++	unsigned char sub_layer_lower_bit_rate_constraint_flag[HEVCFW_MAX_NUM_SUBLAYERS - 1];
++	unsigned char sub_layer_level_idc[HEVCFW_MAX_NUM_SUBLAYERS - 1];
 +};
 +
-+/* HEVC sub layer HRD parameters */
-+struct bspp_hevc_sublayer_hrd_parameters {
-+	unsigned char bit_rate_value_minus1[HEVC_MAX_CPB_COUNT];
-+	unsigned char cpb_size_value_minus1[HEVC_MAX_CPB_COUNT];
-+	unsigned char cpb_size_du_value_minus1[HEVC_MAX_CPB_COUNT];
-+	unsigned char bit_rate_du_value_minus1[HEVC_MAX_CPB_COUNT];
-+	unsigned char cbr_flag[HEVC_MAX_CPB_COUNT];
-+};
-+
-+/* HEVC HRD parameters */
-+struct bspp_hevc_hrd_parameters {
-+	unsigned char nal_hrd_parameters_present_flag;
-+	unsigned char vcl_hrd_parameters_present_flag;
-+	unsigned char sub_pic_hrd_params_present_flag;
-+	unsigned char tick_divisor_minus2;
-+	unsigned char du_cpb_removal_delay_increment_length_minus1;
-+	unsigned char sub_pic_cpb_params_in_pic_timing_sei_flag;
-+	unsigned char dpb_output_delay_du_length_minus1;
-+	unsigned char bit_rate_scale;
-+	unsigned char cpb_size_scale;
-+	unsigned char cpb_size_du_scale;
-+	unsigned char initial_cpb_removal_delay_length_minus1;
-+	unsigned char au_cpb_removal_delay_length_minus1;
-+	unsigned char dpb_output_delay_length_minus1;
-+	unsigned char fixed_pic_rate_general_flag[HEVC_MAX_NUM_SUBLAYERS];
-+	unsigned char fixed_pic_rate_within_cvs_flag[HEVC_MAX_NUM_SUBLAYERS];
-+	unsigned char elemental_duration_in_tc_minus1[HEVC_MAX_NUM_SUBLAYERS];
-+	unsigned char low_delay_hrd_flag[HEVC_MAX_NUM_SUBLAYERS];
-+	unsigned char cpb_cnt_minus1[HEVC_MAX_NUM_SUBLAYERS];
-+	struct bspp_hevc_sublayer_hrd_parameters sublayhrdparams[HEVC_MAX_NUM_SUBLAYERS];
-+};
-+
-+/* HEVC video parameter set */
-+struct bspp_hevc_vps {
-+	unsigned char is_different;
-+	unsigned char is_sent;
-+	unsigned char is_available;
++struct hevcfw_video_ps {
++	int is_different;
++	int is_sent;
++	int is_available;
 +	unsigned char vps_video_parameter_set_id;
 +	unsigned char vps_reserved_three_2bits;
 +	unsigned char vps_max_layers_minus1;
 +	unsigned char vps_max_sub_layers_minus1;
 +	unsigned char vps_temporal_id_nesting_flag;
 +	unsigned short vps_reserved_0xffff_16bits;
-+	struct bspp_hevc_profile_tierlevel profiletierlevel;
-+	unsigned char vps_max_dec_pic_buffering_minus1[HEVC_MAX_NUM_SUBLAYERS];
-+	unsigned char vps_max_num_reorder_pics[HEVC_MAX_NUM_SUBLAYERS];
-+	unsigned char vps_max_latency_increase_plus1[HEVC_MAX_NUM_SUBLAYERS];
-+	unsigned char vps_sub_layer_ordering_info_present_flag;
-+	unsigned char vps_max_layer_id;
-+	unsigned char vps_num_layer_sets_minus1;
-+	unsigned char layer_id_included_flag[HEVC_MAX_VPS_OP_SETS_PLUS1]
-+		[HEVC_MAX_VPS_NUH_RESERVED_ZERO_LAYER_ID_PLUS1];
-+	unsigned char vps_timing_info_present_flag;
-+	unsigned int vps_num_units_in_tick;
-+	unsigned int vps_time_scale;
-+	unsigned char vps_poc_proportional_to_timing_flag;
-+	unsigned char vps_num_ticks_poc_diff_one_minus1;
-+	unsigned char vps_num_hrd_parameters;
-+	unsigned char *hrd_layer_set_idx;
-+	unsigned char *cprms_present_flag;
-+	unsigned char vps_extension_flag;
-+	unsigned char vps_extension_data_flag;
++	struct hevcfw_profile_tier_level profile_tier_level;
 +};
 +
-+/* HEVC scaling lists */
-+struct bspp_hevc_scalinglist_data {
-+	unsigned char dccoeffs[HEVC_SCALING_LIST_NUM_SIZES - 2][HEVC_SCALING_LIST_NUM_MATRICES];
-+	unsigned char lists[HEVC_SCALING_LIST_NUM_SIZES][HEVC_SCALING_LIST_NUM_MATRICES]
-+		[HEVC_SCALING_LIST_MATRIX_SIZE];
-+};
-+
-+/* HEVC short term reference picture set */
-+struct bspp_hevc_shortterm_refpicset {
-+	unsigned char num_negative_pics;
-+	unsigned char num_positive_pics;
-+	short delta_poc_s0[HEVC_MAX_NUM_REF_PICS];
-+	short delta_poc_s1[HEVC_MAX_NUM_REF_PICS];
-+	unsigned char used_bycurr_pic_s0[HEVC_MAX_NUM_REF_PICS];
-+	unsigned char used_bycurr_pic_s1[HEVC_MAX_NUM_REF_PICS];
-+	unsigned char num_delta_pocs;
-+};
-+
-+/* HEVC video usability information */
-+struct bspp_hevc_vui_params {
++/* HEVC Video Usability Information */
++struct hevcfw_vui_params {
 +	unsigned char aspect_ratio_info_present_flag;
 +	unsigned char aspect_ratio_idc;
 +	unsigned short sar_width;
@@ -9999,23 +1969,60 @@ index 000000000000..72424e8b8041
 +	unsigned char vui_timing_info_present_flag;
 +	unsigned int vui_num_units_in_tick;
 +	unsigned int vui_time_scale;
-+	unsigned char vui_poc_proportional_to_timing_flag;
-+	unsigned int vui_num_ticks_poc_diff_one_minus1;
-+	unsigned char vui_hrd_parameters_present_flag;
-+	struct bspp_hevc_hrd_parameters vui_hrd_params;
-+	unsigned char bitstream_restriction_flag;
-+	unsigned char tiles_fixed_structure_flag;
-+	unsigned char motion_vectors_over_pic_boundaries_flag;
-+	unsigned char restricted_ref_pic_lists_flag;
-+	unsigned short min_spatial_segmentation_idc;
-+	unsigned char max_bytes_per_pic_denom;
-+	unsigned char max_bits_per_min_cu_denom;
-+	unsigned char log2_max_mv_length_horizontal;
-+	unsigned char log2_max_mv_length_vertical;
 +};
 +
-+/* HEVC sps range extensions */
-+struct bspp_hevc_sps_range_exts {
++/* HEVC Short Term Reference Picture Set */
++struct hevcfw_short_term_ref_picset {
++	unsigned char num_negative_pics;
++	unsigned char num_positive_pics;
++	short delta_poc_s0[HEVCFW_MAX_NUM_REF_PICS];
++	short delta_poc_s1[HEVCFW_MAX_NUM_REF_PICS];
++	unsigned char used_bycurr_pic_s0[HEVCFW_MAX_NUM_REF_PICS];
++	unsigned char used_bycurr_pic_s1[HEVCFW_MAX_NUM_REF_PICS];
++	unsigned char num_delta_pocs;
++};
++
++/*
++ * This describes the SPS header data required by the HEVC firmware that should
++ * be supplied by the Host.
++ */
++struct hevcfw_sequence_ps {
++	/* syntax elements from SPS */
++	unsigned short pic_width_in_luma_samples;
++	unsigned short pic_height_in_luma_samples;
++	unsigned char num_short_term_ref_pic_sets;
++	unsigned char num_long_term_ref_pics_sps;
++	unsigned short lt_ref_pic_poc_lsb_sps[HEVCFW_MAX_NUM_LT_REF_PICS];
++	unsigned char used_by_curr_pic_lt_sps_flag[HEVCFW_MAX_NUM_LT_REF_PICS];
++	struct hevcfw_short_term_ref_picset st_rps_list[HEVCFW_MAX_NUM_ST_REF_PIC_SETS];
++	unsigned char sps_max_sub_layers_minus1;
++	unsigned char sps_max_dec_pic_buffering_minus1[HEVCFW_MAX_NUM_SUBLAYERS];
++	unsigned char sps_max_num_reorder_pics[HEVCFW_MAX_NUM_SUBLAYERS];
++	unsigned int sps_max_latency_increase_plus1[HEVCFW_MAX_NUM_SUBLAYERS];
++	unsigned char max_transform_hierarchy_depth_inter;
++	unsigned char max_transform_hierarchy_depth_intra;
++	unsigned char log2_diff_max_min_transform_block_size;
++	unsigned char log2_min_transform_block_size_minus2;
++	unsigned char log2_diff_max_min_luma_coding_block_size;
++	unsigned char log2_min_luma_coding_block_size_minus3;
++	unsigned char chroma_format_idc;
++	unsigned char separate_colour_plane_flag;
++	unsigned char num_extra_slice_header_bits;
++	unsigned char log2_max_pic_order_cnt_lsb_minus4;
++	unsigned char long_term_ref_pics_present_flag;
++	unsigned char sample_adaptive_offset_enabled_flag;
++	unsigned char sps_temporal_mvp_enabled_flag;
++	unsigned char bit_depth_luma_minus8;
++	unsigned char bit_depth_chroma_minus8;
++	unsigned char pcm_sample_bit_depth_luma_minus1;
++	unsigned char pcm_sample_bit_depth_chroma_minus1;
++	unsigned char log2_min_pcm_luma_coding_block_size_minus3;
++	unsigned char log2_diff_max_min_pcm_luma_coding_block_size;
++	unsigned char pcm_loop_filter_disabled_flag;
++	unsigned char amp_enabled_flag;
++	unsigned char pcm_enabled_flag;
++	unsigned char strong_intra_smoothing_enabled_flag;
++	unsigned char scaling_list_enabled_flag;
 +	unsigned char transform_skip_rotation_enabled_flag;
 +	unsigned char transform_skip_context_enabled_flag;
 +	unsigned char implicit_rdpcm_enabled_flag;
@@ -10025,846 +2032,501 @@ index 000000000000..72424e8b8041
 +	unsigned char high_precision_offsets_enabled_flag;
 +	unsigned char persistent_rice_adaptation_enabled_flag;
 +	unsigned char cabac_bypass_alignment_enabled_flag;
-+};
-+
-+/* HEVC sequence parameter set */
-+struct bspp_hevc_sps {
-+	unsigned char is_different;
-+	unsigned char is_sent;
-+	unsigned char is_available;
++	/* derived elements */
++	unsigned int pic_size_in_ctbs_y;
++	unsigned short pic_height_in_ctbs_y;
++	unsigned short pic_width_in_ctbs_y;
++	unsigned char ctb_size_y;
++	unsigned char ctb_log2size_y;
++	int max_pic_order_cnt_lsb;
++	unsigned int sps_max_latency_pictures[HEVCFW_MAX_NUM_SUBLAYERS];
++	unsigned char pps_seq_parameter_set_id;
 +	unsigned char sps_video_parameter_set_id;
-+	unsigned char sps_max_sub_layers_minus1;
 +	unsigned char sps_temporal_id_nesting_flag;
-+	struct bspp_hevc_profile_tierlevel profile_tier_level;
 +	unsigned char sps_seq_parameter_set_id;
-+	unsigned char chroma_format_idc;
-+	unsigned char separate_colour_plane_flag;
-+	unsigned int pic_width_in_luma_samples;
-+	unsigned int pic_height_in_luma_samples;
++	/* local */
 +	unsigned char conformance_window_flag;
 +	unsigned short conf_win_left_offset;
 +	unsigned short conf_win_right_offset;
 +	unsigned short conf_win_top_offset;
 +	unsigned short conf_win_bottom_offset;
-+	unsigned char bit_depth_luma_minus8;
-+	unsigned char bit_depth_chroma_minus8;
-+	unsigned char log2_max_pic_order_cnt_lsb_minus4;
 +	unsigned char sps_sub_layer_ordering_info_present_flag;
-+	unsigned char sps_max_dec_pic_buffering_minus1[HEVC_MAX_NUM_SUBLAYERS];
-+	unsigned char sps_max_num_reorder_pics[HEVC_MAX_NUM_SUBLAYERS];
-+	unsigned int sps_max_latency_increase_plus1[HEVC_MAX_NUM_SUBLAYERS];
-+	unsigned char log2_min_luma_coding_block_size_minus3;
-+	unsigned char log2_diff_max_min_luma_coding_block_size;
-+	unsigned char log2_min_transform_block_size_minus2;
-+	unsigned char log2_diff_max_min_transform_block_size;
-+	unsigned char max_transform_hierarchy_depth_inter;
-+	unsigned char max_transform_hierarchy_depth_intra;
-+	unsigned char scaling_list_enabled_flag;
 +	unsigned char sps_scaling_list_data_present_flag;
-+	struct bspp_hevc_scalinglist_data scalinglist_data;
-+	unsigned char amp_enabled_flag;
-+	unsigned char sample_adaptive_offset_enabled_flag;
-+	unsigned char pcm_enabled_flag;
-+	unsigned char pcm_sample_bit_depth_luma_minus1;
-+	unsigned char pcm_sample_bit_depth_chroma_minus1;
-+	unsigned char log2_min_pcm_luma_coding_block_size_minus3;
-+	unsigned char log2_diff_max_min_pcm_luma_coding_block_size;
-+	unsigned char pcm_loop_filter_disabled_flag;
-+	unsigned char num_short_term_ref_pic_sets;
-+	struct bspp_hevc_shortterm_refpicset rps_list[HEVC_MAX_NUM_ST_REF_PIC_SETS];
-+	unsigned char long_term_ref_pics_present_flag;
-+	unsigned char num_long_term_ref_pics_sps;
-+	unsigned short lt_ref_pic_poc_lsb_sps[HEVC_MAX_NUM_LT_REF_PICS];
-+	unsigned char used_by_curr_pic_lt_sps_flag[HEVC_MAX_NUM_LT_REF_PICS];
-+	unsigned char sps_temporal_mvp_enabled_flag;
-+	unsigned char strong_intra_smoothing_enabled_flag;
 +	unsigned char vui_parameters_present_flag;
-+	struct bspp_hevc_vui_params vui_params;
 +	unsigned char sps_extension_present_flag;
-+	unsigned char sps_range_extensions_flag;
-+	struct bspp_hevc_sps_range_exts range_exts;
-+	unsigned char sps_extension_7bits;
-+	unsigned char sps_extension_data_flag;
++	struct hevcfw_vui_params vui_params;
 +	/* derived elements */
 +	unsigned char sub_width_c;
 +	unsigned char sub_height_c;
-+	unsigned char ctb_log2size_y;
-+	unsigned char ctb_size_y;
-+	unsigned int pic_width_in_ctbs_y;
-+	unsigned int pic_height_in_ctbs_y;
-+	unsigned int pic_size_in_ctbs_y;
-+	int max_pic_order_cnt_lsb;
-+	unsigned int sps_max_latency_pictures[HEVC_MAX_NUM_SUBLAYERS];
-+	/* raw vui data as extracted from bitstream. */
-+	struct bspp_raw_bitstream_data *vui_raw_data;
++	struct hevcfw_profile_tier_level profile_tier_level;
++	struct hevcfw_scaling_listdata scaling_listdata;
 +};
 +
-+/**
-+ * struct bspp_hevc_sequ_hdr_info - This structure contains HEVC sequence
-+ *					header information (VPS, SPS, VUI)
-+ *					contains everything parsed from the
-+ *					video/sequence header.
-+ * @vps: HEVC sequence header information
-+ * @sps:HEVC sequence header information
++/*
++ * This describes the HEVC parser component "Header data", shown in the
++ * Firmware Memory Layout diagram. This data is required by the HEVC firmware
++ * and should be supplied by the Host.
 + */
-+struct bspp_hevc_sequ_hdr_info {
-+	struct bspp_hevc_vps vps;
-+	struct bspp_hevc_sps sps;
++struct hevcfw_headerdata {
++	/* Decode buffers and output control for the current picture */
++	/* Primary decode buffer base addresses */
++	struct vdecfw_image_buffer primary;
++	/* buffer base addresses for alternate output */
++	struct vdecfw_image_buffer alternate;
++	/* address of buffer for temporal mv params */
++	unsigned int temporal_outaddr;
 +};
 +
-+/* HEVC pps range extensions */
-+struct bspp_hevc_pps_range_exts {
++/*
++ * This describes the PPS header data required by the HEVC firmware that should
++ * be supplied by the Host.
++ */
++struct hevcfw_picture_ps {
++	/* syntax elements from the PPS */
++	unsigned char pps_pic_parameter_set_id;
++	unsigned char num_tile_columns_minus1;
++	unsigned char num_tile_rows_minus1;
++	unsigned char diff_cu_qp_delta_depth;
++	unsigned char init_qp_minus26;
++	unsigned char pps_beta_offset_div2;
++	unsigned char pps_tc_offset_div2;
++	unsigned char pps_cb_qp_offset;
++	unsigned char pps_cr_qp_offset;
++	unsigned char log2_parallel_merge_level_minus2;
++	unsigned char dependent_slice_segments_enabled_flag;
++	unsigned char output_flag_present_flag;
++	unsigned char num_extra_slice_header_bits;
++	unsigned char lists_modification_present_flag;
++	unsigned char cabac_init_present_flag;
++	unsigned char weighted_pred_flag;
++	unsigned char weighted_bipred_flag;
++	unsigned char pps_slice_chroma_qp_offsets_present_flag;
++	unsigned char deblocking_filter_override_enabled_flag;
++	unsigned char tiles_enabled_flag;
++	unsigned char entropy_coding_sync_enabled_flag;
++	unsigned char slice_segment_header_extension_present_flag;
++	unsigned char transquant_bypass_enabled_flag;
++	unsigned char cu_qp_delta_enabled_flag;
++	unsigned char transform_skip_enabled_flag;
++	unsigned char sign_data_hiding_enabled_flag;
++	unsigned char num_ref_idx_l0_default_active_minus1;
++	unsigned char num_ref_idx_l1_default_active_minus1;
++	unsigned char constrained_intra_pred_flag;
++	unsigned char pps_deblocking_filter_disabled_flag;
++	unsigned char pps_loop_filter_across_slices_enabled_flag;
++	unsigned char loop_filter_across_tiles_enabled_flag;
++	/* rewritten from SPS, maybe at some point we could get rid of this */
++	unsigned char scaling_list_enabled_flag;
 +	unsigned char log2_max_transform_skip_block_size_minus2;
 +	unsigned char cross_component_prediction_enabled_flag;
 +	unsigned char chroma_qp_offset_list_enabled_flag;
 +	unsigned char diff_cu_chroma_qp_offset_depth;
-+	unsigned char chroma_qp_offset_list_len_minus1;
-+	unsigned char cb_qp_offset_list[HEVC_MAX_CHROMA_QP];
-+	unsigned char cr_qp_offset_list[HEVC_MAX_CHROMA_QP];
-+	unsigned char log2_sao_offset_scale_luma;
-+	unsigned char log2_sao_offset_scale_chroma;
-+};
-+
-+/* HEVC picture parameter set */
-+struct bspp_hevc_pps {
-+	unsigned char is_available;
-+	unsigned char is_param_copied;
-+	unsigned char pps_pic_parameter_set_id;
-+	unsigned char pps_seq_parameter_set_id;
-+	unsigned char dependent_slice_segments_enabled_flag;
-+	unsigned char output_flag_present_flag;
-+	unsigned char num_extra_slice_header_bits;
-+	unsigned char sign_data_hiding_enabled_flag;
-+	unsigned char cabac_init_present_flag;
-+	unsigned char num_ref_idx_l0_default_active_minus1;
-+	unsigned char num_ref_idx_l1_default_active_minus1;
-+	unsigned char init_qp_minus26;
-+	unsigned char constrained_intra_pred_flag;
-+	unsigned char transform_skip_enabled_flag;
-+	unsigned char cu_qp_delta_enabled_flag;
-+	unsigned char diff_cu_qp_delta_depth;
-+	int pps_cb_qp_offset;
-+	int pps_cr_qp_offset;
-+	unsigned char pps_slice_chroma_qp_offsets_present_flag;
-+	unsigned char weighted_pred_flag;
-+	unsigned char weighted_bipred_flag;
-+	unsigned char transquant_bypass_enabled_flag;
-+	unsigned char tiles_enabled_flag;
-+	unsigned char entropy_coding_sync_enabled_flag;
-+	unsigned char num_tile_columns_minus1;
-+	unsigned char num_tile_rows_minus1;
-+	unsigned char uniform_spacing_flag;
-+	unsigned char column_width_minus1[HEVC_MAX_TILE_COLS];
-+	unsigned char row_height_minus1[HEVC_MAX_TILE_ROWS];
-+	unsigned char loop_filter_across_tiles_enabled_flag;
-+	unsigned char pps_loop_filter_across_slices_enabled_flag;
-+	unsigned char deblocking_filter_control_present_flag;
-+	unsigned char deblocking_filter_override_enabled_flag;
-+	unsigned char pps_deblocking_filter_disabled_flag;
-+	unsigned char pps_beta_offset_div2;
-+	unsigned char pps_tc_offset_div2;
-+	unsigned char pps_scaling_list_data_present_flag;
-+	struct bspp_hevc_scalinglist_data scaling_list;
-+	unsigned char lists_modification_present_flag;
-+	unsigned char log2_parallel_merge_level_minus2;
-+	unsigned char slice_segment_header_extension_present_flag;
-+	unsigned char pps_extension_present_flag;
-+	unsigned char pps_range_extensions_flag;
-+	struct bspp_hevc_pps_range_exts range_exts;
-+	unsigned char pps_extension_7bits;
-+	unsigned char pps_extension_data_flag;
-+	/* derived elements */
-+	unsigned short col_bd[HEVC_MAX_TILE_COLS + 1];
-+	unsigned short row_bd[HEVC_MAX_TILE_ROWS + 1];
-+	/* PVDEC derived elements */
-+	unsigned int max_tile_height_in_ctbs_y;
-+};
-+
-+/* HEVC slice segment header */
-+struct bspp_hevc_slice_segment_header {
-+	unsigned char bslice_is_idr;
-+	unsigned char first_slice_segment_in_pic_flag;
-+	unsigned char no_output_of_prior_pics_flag;
-+	unsigned char slice_pic_parameter_set_id;
-+	unsigned char dependent_slice_segment_flag;
-+	unsigned int slice_segment_address;
-+};
-+
-+/*
-+ * @Function   bspp_hevc_set_parser_config
-+ * sets the parser configuration.
-+ */
-+int bspp_hevc_set_parser_config(enum vdec_bstr_format bstr_format,
-+				struct bspp_vid_std_features *pvidstd_features,
-+				struct bspp_swsr_ctx *pswsr_ctx,
-+				struct bspp_parser_callbacks *pparser_callbacks,
-+				struct bspp_inter_pict_data *pinterpict_data);
-+
-+void bspp_hevc_determine_unittype(unsigned char bitstream_unittype,
-+				  int disable_mvc,
-+				  enum bspp_unit_type *bspp_unittype);
-+
-+#endif /*__H264SECUREPARSER_H__ */
-diff --git a/drivers/staging/media/vxd/decoder/jpeg_secure_parser.c b/drivers/staging/media/vxd/decoder/jpeg_secure_parser.c
-new file mode 100644
-index 000000000000..7effd67034be
---- /dev/null
-+++ b/drivers/staging/media/vxd/decoder/jpeg_secure_parser.c
-@@ -0,0 +1,645 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * h.264 secure data unit parsing API.
-+ *
-+ * Copyright (c) Imagination Technologies Ltd.
-+ * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com/
-+ *
-+ * Authors:
-+ *	Sunita Nadampalli <sunitan@ti.com>
-+ *
-+ * Re-written for upstreming
-+ *	Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
-+ */
-+
-+#include <linux/dma-mapping.h>
-+#include <media/v4l2-ctrls.h>
-+#include <media/v4l2-device.h>
-+#include <media/v4l2-mem2mem.h>
-+
-+#include "bspp_int.h"
-+#include "jpeg_secure_parser.h"
-+#include "jpegfw_data.h"
-+#include "swsr.h"
-+
-+#define JPEG_MCU_SIZE 8
-+
-+#define JPEG_MAX_COMPONENTS 4
-+#define MAX_SETS_HUFFMAN_TABLES 2
-+#define MAX_QUANT_TABLES 4
-+
-+#define TABLE_CLASS_DC  0
-+#define TABLE_CLASS_AC  1
-+#define TABLE_CLASS_NUM 2
-+
-+/* Marker Codes */
-+#define CODE_SOF_BASELINE 0xC0
-+#define CODE_SOF1         0xC1
-+#define CODE_SOF2         0xC2
-+#define CODE_SOF3         0xC3
-+#define CODE_SOF5         0xC5
-+#define CODE_SOF6         0xC6
-+#define CODE_SOF7         0xC7
-+#define CODE_SOF8         0xC8
-+#define CODE_SOF9         0xC9
-+#define CODE_SOF10        0xCA
-+#define CODE_SOF11        0xCB
-+#define CODE_SOF13        0xCD
-+#define CODE_SOF14        0xCE
-+#define CODE_SOF15        0xCF
-+#define CODE_DHT          0xC4
-+#define CODE_RST0         0xD0
-+#define CODE_RST1         0xD1
-+#define CODE_RST2         0xD2
-+#define CODE_RST3         0xD3
-+#define CODE_RST4         0xD4
-+#define CODE_RST5         0xD5
-+#define CODE_RST6         0xD6
-+#define CODE_RST7         0xD7
-+#define CODE_SOI          0xD8
-+#define CODE_EOI          0xD9
-+#define CODE_SOS          0xDA
-+#define CODE_DQT          0xDB
-+#define CODE_DRI          0xDD
-+#define CODE_APP0         0xE0
-+#define CODE_APP1         0xE1
-+#define CODE_APP2         0xE2
-+#define CODE_APP3         0xE3
-+#define CODE_APP4         0xE4
-+#define CODE_APP5         0xE5
-+#define CODE_APP6         0xE6
-+#define CODE_APP7         0xE7
-+#define CODE_APP8         0xE8
-+#define CODE_APP9         0xE9
-+#define CODE_APP10        0xEA
-+#define CODE_APP11        0xEB
-+#define CODE_APP12        0xEC
-+#define CODE_APP13        0xED
-+#define CODE_APP14        0xEE
-+#define CODE_APP15        0xEF
-+#define CODE_M_DAC        0xCC
-+#define CODE_COMMENT      0xFE
-+
-+enum bspp_exception_handler {
-+	/* BSPP parse exception handler */
-+	BSPP_EXCEPTION_HANDLER_NONE = 0x00,
-+	/* Jump at exception (external use) */
-+	BSPP_EXCEPTION_HANDLER_JUMP,
-+	BSPP_EXCEPTION_HANDLER_FORCE32BITS = 0x7FFFFFFFU
-+};
-+
-+struct components {
-+	unsigned char identifier;
-+	unsigned char horz_factor;
-+	unsigned char vert_factor;
-+	unsigned char quant_table;
-+};
-+
-+struct jpeg_segment_sof {
-+	unsigned char precision;
-+	unsigned short height;
-+	unsigned short width;
-+	unsigned char component;
-+	struct components components[JPEG_VDEC_MAX_COMPONENTS];
-+};
-+
-+struct jpeg_segment_header {
-+	unsigned char type;
-+	unsigned short payload_size;
-+};
-+
-+/*
-+ * Read bitstream data that may LOOK like SCP
-+ * (but in fact is regular data and should be read as such)
-+ * @return 8bits read from the bitstream
-+ */
-+static unsigned char bspp_jpeg_readbyte_asdata(void *swsr_ctx)
-+{
-+	if (swsr_check_delim_or_eod(swsr_ctx) == SWSR_FOUND_DELIM) {
-+		swsr_consume_delim(swsr_ctx, SWSR_EMPREVENT_NONE, 8, NULL);
-+		return 0xFF;
-+	} else {
-+		return swsr_read_bits(swsr_ctx, 8);
-+	}
-+}
-+
-+/*
-+ * Read bitstream data that may LOOK like SCP
-+ * (but in fact be regular data should be read as such)
-+ * @return 16bits read from the bitstream
-+ */
-+static unsigned short bspp_jpeg_readword_asdata(void *swsr_ctx)
-+{
-+	unsigned short byte1 = bspp_jpeg_readbyte_asdata(swsr_ctx);
-+	unsigned short byte2 = bspp_jpeg_readbyte_asdata(swsr_ctx);
-+
-+	return (byte1 << 8 | byte2);
-+}
-+
-+/*
-+ * Access regular bitstream data that may LOOK like SCP
-+ * (but in fact be regular data)
-+ */
-+static void bspp_jpeg_consume_asdata(void *swsr_ctx, int len)
-+{
-+	while (len > 0) {
-+		bspp_jpeg_readbyte_asdata(swsr_ctx);
-+		len--;
-+	}
-+}
-+
-+/*
-+ * Parse SOF segment
-+ */
-+static enum bspp_error_type bspp_jpeg_segment_parse_sof(void *swsr_ctx,
-+							struct jpeg_segment_sof *sof_header)
-+{
-+	unsigned char comp_ind;
-+
-+	sof_header->precision = swsr_read_bits(swsr_ctx, 8);
-+	if (sof_header->precision != 8) {
-+		pr_warn("Sample precision has invalid value %d\n",
-+			sof_header->precision);
-+		return BSPP_ERROR_INVALID_VALUE;
-+	}
-+
-+	sof_header->height = bspp_jpeg_readword_asdata(swsr_ctx);
-+	sof_header->width = bspp_jpeg_readword_asdata(swsr_ctx);
-+	if (sof_header->height < JPEG_MCU_SIZE || sof_header->width < JPEG_MCU_SIZE) {
-+		pr_warn("Sample X/Y smaller than macroblock\n");
-+		return BSPP_ERROR_INVALID_VALUE;
-+	}
-+	sof_header->component = swsr_read_bits(swsr_ctx, 8);
-+	if (sof_header->component > JPEG_MAX_COMPONENTS) {
-+		pr_warn("Number of components (%d) is greater than max allowed\n",
-+			sof_header->component);
-+		return BSPP_ERROR_INVALID_VALUE;
-+	}
-+	/* parse the component */
-+	for (comp_ind = 0; comp_ind < sof_header->component; comp_ind++) {
-+		sof_header->components[comp_ind].identifier = swsr_read_bits(swsr_ctx, 8);
-+		sof_header->components[comp_ind].horz_factor = swsr_read_bits(swsr_ctx, 4);
-+		sof_header->components[comp_ind].vert_factor = swsr_read_bits(swsr_ctx, 4);
-+		sof_header->components[comp_ind].quant_table = swsr_read_bits(swsr_ctx, 8);
-+
-+		pr_debug("components[%d]=(identifier=%d; horz_factor=%d; vert_factor=%d; quant_table=%d)",
-+			 comp_ind,
-+			 sof_header->components[comp_ind].identifier,
-+			 sof_header->components[comp_ind].horz_factor,
-+			 sof_header->components[comp_ind].vert_factor,
-+			 sof_header->components[comp_ind].quant_table);
-+	}
-+
-+	return BSPP_ERROR_NONE;
-+}
-+
-+/*
-+ * Seeks to delimeter if we're not already on one
-+ */
-+static enum swsr_found bspp_jpeg_tryseek_delimeter(void *swsr_ctx)
-+{
-+	enum swsr_found was_delim_or_eod = swsr_check_delim_or_eod(swsr_ctx);
-+
-+	if (was_delim_or_eod != SWSR_FOUND_DELIM)
-+		was_delim_or_eod = swsr_seek_delim_or_eod(swsr_ctx);
-+
-+	return was_delim_or_eod;
-+}
-+
-+static enum swsr_found bspp_jpeg_tryconsume_delimeters(void *swsr_ctx)
-+{
-+	enum swsr_found is_delim_or_eod = swsr_check_delim_or_eod(swsr_ctx);
-+
-+	while (is_delim_or_eod == SWSR_FOUND_DELIM) {
-+		swsr_consume_delim(swsr_ctx, SWSR_EMPREVENT_NONE, 8, NULL);
-+		is_delim_or_eod = swsr_check_delim_or_eod(swsr_ctx);
-+	}
-+	return is_delim_or_eod;
-+}
-+
-+static enum swsr_found bspp_jpeg_tryseek_and_consume_delimeters(void *swsr_ctx)
-+{
-+	enum swsr_found is_delim_or_eod;
-+
-+	bspp_jpeg_tryseek_delimeter(swsr_ctx);
-+	is_delim_or_eod = bspp_jpeg_tryconsume_delimeters(swsr_ctx);
-+	return is_delim_or_eod;
-+}
-+
-+/*
-+ * Read segment type and size
-+ * @return IMG_TRUE when header is found,
-+ * IMG_FALSE if it has to be called again
-+ */
-+static unsigned char bspp_jpeg_segment_read_header(void *swsr_ctx,
-+						   struct bspp_unit_data *unit_data,
-+						   struct jpeg_segment_header *jpeg_segment_header)
-+{
-+	bspp_jpeg_tryconsume_delimeters(swsr_ctx);
-+	jpeg_segment_header->type = swsr_read_bits(swsr_ctx, 8);
-+
-+	if (jpeg_segment_header->type != 0)
-+		pr_debug("NAL=0x%x\n", jpeg_segment_header->type);
-+
-+	jpeg_segment_header->payload_size = 0;
-+
-+	switch (jpeg_segment_header->type) {
-+	case CODE_SOS:
-+	case CODE_DRI:
-+	case CODE_SOF_BASELINE:
-+	case CODE_SOF1:
-+	case CODE_SOF2:
-+	case CODE_SOF3:
-+	case CODE_SOF5:
-+	case CODE_SOF6:
-+	case CODE_SOF7:
-+	case CODE_SOF8:
-+	case CODE_SOF9:
-+	case CODE_SOF10:
-+	case CODE_SOF11:
-+	case CODE_SOF13:
-+	case CODE_SOF14:
-+	case CODE_SOF15:
-+	case CODE_APP0:
-+	case CODE_APP1:
-+	case CODE_APP2:
-+	case CODE_APP3:
-+	case CODE_APP4:
-+	case CODE_APP5:
-+	case CODE_APP6:
-+	case CODE_APP7:
-+	case CODE_APP8:
-+	case CODE_APP9:
-+	case CODE_APP10:
-+	case CODE_APP11:
-+	case CODE_APP12:
-+	case CODE_APP13:
-+	case CODE_APP14:
-+	case CODE_APP15:
-+	case CODE_DHT:
-+	case CODE_DQT:
-+	case CODE_COMMENT:
-+	{
-+		jpeg_segment_header->payload_size =
-+			bspp_jpeg_readword_asdata(swsr_ctx) - 2;
-+	}
-+	break;
-+	case CODE_EOI:
-+	case CODE_SOI:
-+	case CODE_RST0:
-+	case CODE_RST1:
-+	case CODE_RST2:
-+	case CODE_RST3:
-+	case CODE_RST4:
-+	case CODE_RST5:
-+	case CODE_RST6:
-+	case CODE_RST7:
-+		/*
-+		 * jpeg_segment_header->payload_size reset to 0 previously,
-+		 * so just break.
-+		 */
-+		break;
-+	case 0:
-+	{
-+		/*
-+		 * Emulation prevention is OFF which means that 0 after
-+		 * 0xff will not be swallowed
-+		 * and has to be treated as data
-+		 */
-+		bspp_jpeg_tryseek_and_consume_delimeters(swsr_ctx);
-+		return 0;
-+	}
-+	default:
-+	{
-+		pr_err("BAD NAL=%#x\n", jpeg_segment_header->type);
-+		unit_data->parse_error |= BSPP_ERROR_UNRECOVERABLE;
-+	}
-+	}
-+
-+	pr_debug("payloadSize=%#x\n", jpeg_segment_header->payload_size);
-+	return 1;
-+}
-+
-+static void bspp_jpeg_calculate_mcus(struct jpeg_segment_sof *data_sof,
-+				     unsigned char *alignment_width,
-+				     unsigned char *alignment_height)
-+{
-+	unsigned char i;
-+	unsigned char max_horz_factor = 0;
-+	unsigned char max_vert_factor = 0;
-+	unsigned short mcu_width = 0;
-+	unsigned short mcu_height = 0;
-+
-+	/* Determine maximum scale factors */
-+	for (i = 0; i < data_sof->component; i++) {
-+		unsigned char horz_factor = data_sof->components[i].horz_factor;
-+		unsigned char vert_factor = data_sof->components[i].vert_factor;
-+
-+		max_horz_factor = horz_factor > max_horz_factor ? horz_factor : max_horz_factor;
-+		max_vert_factor = vert_factor > max_vert_factor ? vert_factor : max_vert_factor;
-+	}
 +	/*
-+	 * Alignment we want to have must be:
-+	 * - mutliple of VDEC_MB_DIMENSION
-+	 * - at least of the size that will fit whole MCUs
++	 * PVDEC derived elements. HEVCFW_SCALING_LISTS_BUFSIZE is
++	 * multiplied by 2 to ensure that there will be space for address of
++	 * each element. These addresses are completed in lower layer.
 +	 */
-+	*alignment_width =
-+		VDEC_ALIGN_SIZE((8 * max_horz_factor), VDEC_MB_DIMENSION,
-+				unsigned int, unsigned int);
-+	*alignment_height =
-+		VDEC_ALIGN_SIZE((8 * max_vert_factor), VDEC_MB_DIMENSION,
-+				unsigned int, unsigned int);
++	unsigned int scaling_lists[HEVCFW_SCALING_LISTS_BUFSIZE * 2];
++	/* derived elements */
++	unsigned short col_bd[HEVCFW_MAX_TILE_COLS + 1];
++	unsigned short row_bd[HEVCFW_MAX_TILE_ROWS + 1];
 +
-+	/* Calculate dimensions in MCUs */
-+	mcu_width += (data_sof->width + (8 * max_horz_factor) - 1) / (8 * max_horz_factor);
-+	mcu_height += (data_sof->height + (8 * max_vert_factor) - 1) / (8 * max_vert_factor);
++	unsigned char chroma_qp_offset_list_len_minus1;
++	unsigned char cb_qp_offset_list[HEVCFW_MAX_CHROMA_QP];
++	unsigned char cr_qp_offset_list[HEVCFW_MAX_CHROMA_QP];
 +
-+#ifdef DEBUG_DECODER_DRIVER
-+	pr_info("%s; w=%d; w[MCU]=%d\n", __func__, data_sof->width, mcu_width);
-+	pr_info("%s; h=%d; h[MCU]=%d\n", __func__, data_sof->height, mcu_height);
-+#endif
-+}
++	unsigned char uniform_spacing_flag;
++	unsigned char column_width_minus1[HEVCFW_MAX_TILE_COLS];
++	unsigned char row_height_minus1[HEVCFW_MAX_TILE_ROWS];
 +
-+static int bspp_jpeg_common_seq_hdr_populate(struct jpeg_segment_sof *sof_header,
-+					     struct vdec_comsequ_hdrinfo *com_sequ_hdr_info,
-+					     unsigned char alignment_width,
-+					     unsigned char alignment_height)
-+{
-+	unsigned short i;
-+	int res;
-+	struct img_pixfmt_desc format_desc;
++	unsigned char pps_seq_parameter_set_id;
++	unsigned char deblocking_filter_control_present_flag;
++	unsigned char pps_scaling_list_data_present_flag;
++	unsigned char pps_extension_present_flag;
 +
-+	memset(&format_desc, 0, sizeof(struct img_pixfmt_desc));
-+	memset(com_sequ_hdr_info, 0, sizeof(*com_sequ_hdr_info));
++	struct hevcfw_scaling_listdata scaling_list;
++};
 +
-+	com_sequ_hdr_info->max_frame_size.width = VDEC_ALIGN_SIZE(sof_header->width,
-+								  alignment_width,
-+								  unsigned int, unsigned int);
-+	com_sequ_hdr_info->max_frame_size.height = VDEC_ALIGN_SIZE(sof_header->height,
-+								   alignment_height, unsigned int,
-+								   unsigned int);
-+	com_sequ_hdr_info->frame_size.width = sof_header->width;
-+	com_sequ_hdr_info->frame_size.height = sof_header->height;
-+	com_sequ_hdr_info->orig_display_region.width = sof_header->width;
-+	com_sequ_hdr_info->orig_display_region.height = sof_header->height;
++/* This enum determines reference picture status */
++enum hevcfw_reference_type {
++	HEVCFW_REF_UNUSED      = 0,
++	HEVCFW_REF_SHORTTERM,
++	HEVCFW_REF_LONGTERM,
++	HEVCFW_REF_FORCE32BITS = 0x7FFFFFFFU
++};
 +
-+	com_sequ_hdr_info->pixel_info.bitdepth_y = 8;
-+	com_sequ_hdr_info->pixel_info.bitdepth_c = 8;
-+	com_sequ_hdr_info->pixel_info.num_planes = sof_header->component;
-+	/*  actually we have to set foramt accroding to the following table
-+	 * H1    V1    H2    V2    H3    V3    J:a:b     h/v
-+	 * 1     1     1     1     1     1     4:4:4     1/1
-+	 * 1     2     1     1     1     1     4:4:0     1/2
-+	 * 1     4     1     1     1     1     4:4:1*     1/4
-+	 * 1     4     1     2     1     2     4:4:0     1/2
-+	 * 2     1     1     1     1     1     4:2:2     2/1
-+	 * 2     2     1     1     1     1     4:2:0     2/2
-+	 * 2     2     2     1     2     1     4:4:0     1/2
-+	 * 2     4     1     1     1     1     4:2:1*     2/4
-+	 * 4     1     1     1     1     1     4:1:1     4/1
-+	 * 4     1     2     1     2     1     4:2:2     2/1
-+	 * 4     2     1     1     1     1     4:1:0     4/2
-+	 * 4     4     2     2     2     2     4:2:0     2/2
++/* This describes an HEVC picture. It is part of the Context data */
++struct hevcfw_picture {
++	/* Primary (reconstructed) picture buffers */
++	struct vdecfw_image_buffer primary;
++	/* Secondary (alternative) picture buffers */
++	struct vdecfw_image_buffer alternate;
++	/* Unique ID for this picture */
++	unsigned int transaction_id;
++	/* nut of first ssh of picture, determines picture type */
++	unsigned char nalunit_type;
++	/* Picture Order Count (frame number) */
++	int pic_order_cnt_val;
++	/* Slice Picture Order Count Lsb */
++	int slice_pic_ordercnt_lsb;
++	unsigned char pic_output_flag;
++	/* information about long-term pictures */
++	unsigned short dpb_longterm_flags;
++	unsigned int dpb_pic_order_diff[HEVCFW_NUM_DPB_DIFF_REGS];
++	/* address of buffer for temporal mv params */
++	unsigned int temporal_outaddr;
++	/* worst case Dpb diff for the current pic */
++	unsigned int dpb_diff;
++};
++
++/*
++ * This is a wrapper for a picture to hold it in a Decoded Picture Buffer
++ * for further reference
++ */
++struct hevcfw_picture_in_dpb {
++	/* DPB data about the picture */
++	enum hevcfw_reference_type ref_type;
++	unsigned char valid;
++	unsigned char needed_for_output;
++	unsigned char pic_latency_count;
++	/* Picture itself */
++	struct hevcfw_picture picture;
++};
++
++/*
++ * This describes an HEVC's Decoded Picture Buffer (DPB).
++ * It is part of the Context data
++ */
++#define HEVCFW_DPB_IDX_INVALID  -1
++
++struct hevcfw_decoded_picture_buffer {
++	/* reference pictures */
++	struct hevcfw_picture_in_dpb pictures[HEVCFW_MAX_DPB_SIZE];
++	/* organizational data of DPB */
++	unsigned int fullness;
++};
++
++/*
++ * This describes an HEVC's Reference Picture Set (RPS).
++ * It is part of the Context data
++ */
++struct hevcfw_reference_picture_set {
++	/* sizes of poc lists */
++	unsigned char num_pocst_curr_before;
++	unsigned char num_pocst_curr_after;
++	unsigned char num_pocst_foll;
++	unsigned char num_poclt_curr;
++	unsigned char num_poclt_foll;
++	/* poc lists */
++	int pocst_curr_before[HEVCFW_MAX_NUM_REF_PICS];
++	int pocst_curr_after[HEVCFW_MAX_NUM_REF_PICS];
++	int pocst_foll[HEVCFW_MAX_NUM_REF_PICS];
++	int poclt_curr[HEVCFW_MAX_NUM_REF_PICS];
++	int poclt_foll[HEVCFW_MAX_NUM_REF_PICS];
++	/* derived elements */
++	unsigned char curr_delta_pocmsb_presentflag[HEVCFW_MAX_NUM_REF_PICS];
++	unsigned char foll_delta_pocmsb_presentflag[HEVCFW_MAX_NUM_REF_PICS];
++	/* reference picture sets: indices in DPB */
++	unsigned char ref_picsetlt_curr[HEVCFW_MAX_NUM_REF_PICS];
++	unsigned char ref_picsetlt_foll[HEVCFW_MAX_NUM_REF_PICS];
++	unsigned char ref_picsetst_curr_before[HEVCFW_MAX_NUM_REF_PICS];
++	unsigned char ref_picsetst_curr_after[HEVCFW_MAX_NUM_REF_PICS];
++	unsigned char ref_picsetst_foll[HEVCFW_MAX_NUM_REF_PICS];
++};
++
++/*
++ * This describes the HEVC parser component "Context data", shown in the
++ * Firmware Memory Layout diagram. This data is the state preserved across
++ * pictures. It is loaded and saved by the Firmware, but requires the host to
++ * provide buffer(s) for this.
++ */
++struct hevcfw_ctx_data {
++	struct hevcfw_sequence_ps sps;
++	struct hevcfw_picture_ps pps;
++	/*
++	 * data from last picture with TemporalId = 0 that is not a RASL, RADL
++	 * or sub-layer non-reference picture
 +	 */
-+	if (sof_header->component == (JPEG_MAX_COMPONENTS - 1)) {
-+		com_sequ_hdr_info->pixel_info.chroma_fmt = PIXEL_MULTICHROME;
-+		if ((sof_header->components[1].horz_factor == 1 &&
-+		     sof_header->components[1].vert_factor == 1) &&
-+		    (sof_header->components[2].horz_factor == 1 &&
-+		     sof_header->components[2].vert_factor == 1)) {
-+			if (sof_header->components[0].horz_factor == 1 &&
-+			    sof_header->components[0].vert_factor == 1) {
-+				com_sequ_hdr_info->pixel_info.chroma_fmt_idc = PIXEL_FORMAT_444;
-+			} else if (sof_header->components[0].horz_factor == 2) {
-+				if (sof_header->components[0].vert_factor == 1) {
-+					com_sequ_hdr_info->pixel_info.chroma_fmt_idc =
-+						PIXEL_FORMAT_422;
-+				} else if (sof_header->components[0].vert_factor == 2) {
-+					com_sequ_hdr_info->pixel_info.chroma_fmt_idc =
-+						PIXEL_FORMAT_420;
-+				} else {
-+					com_sequ_hdr_info->pixel_info.chroma_fmt_idc =
-+						PIXEL_FORMAT_444;
-+				}
-+			} else if ((sof_header->components[0].horz_factor == 4) &&
-+				   (sof_header->components[0].vert_factor == 1)) {
-+				com_sequ_hdr_info->pixel_info.chroma_fmt_idc = PIXEL_FORMAT_411;
-+			} else {
-+				com_sequ_hdr_info->pixel_info.chroma_fmt_idc = PIXEL_FORMAT_444;
-+			}
-+		} else {
-+			com_sequ_hdr_info->pixel_info.chroma_fmt_idc = PIXEL_FORMAT_444;
-+		}
-+	} else {
-+		com_sequ_hdr_info->pixel_info.chroma_fmt = PIXEL_MONOCHROME;
-+		com_sequ_hdr_info->pixel_info.chroma_fmt_idc = PIXEL_FORMAT_MONO;
-+	}
++	int prev_pic_order_cnt_lsb;
++	int prev_pic_order_cnt_msb;
++	unsigned char last_irapnorasl_output_flag;
++	/*
++	 * Decoded Pictures Buffer holds information about decoded pictures
++	 * needed for further INTER decoding
++	 */
++	struct hevcfw_decoded_picture_buffer dpb;
++	/* Reference Picture Set is determined on per-picture basis */
++	struct hevcfw_reference_picture_set rps;
++	/*
++	 * Reference Picture List is determined using data from Reference
++	 * Picture Set and from Slice (Segment) Header on per-slice basis
++	 */
++	unsigned char ref_pic_list[HEVCFW_NUM_REF_PIC_LISTS][HEVCFW_MAX_NUM_REF_PICS];
++	/*
++	 * Reference Picture List used to send reflist to the host, the only
++	 * difference is that missing references are marked
++	 * with HEVCFW_DPB_IDX_INVALID
++	 */
++	unsigned char ref_pic_listhlp[HEVCFW_NUM_REF_PIC_LISTS][HEVCFW_MAX_NUM_REF_PICS];
 +
-+	for (i = 0; (i < sof_header->component) && (i < IMG_MAX_NUM_PLANES); i++) {
-+		format_desc.planes[i] = 1;
-+		format_desc.h_numer[i] = sof_header->components[i].horz_factor;
-+		format_desc.v_numer[i] = sof_header->components[i].vert_factor;
-+	}
++	unsigned int pic_count;
++	unsigned int slice_segment_count;
++	/* There was EOS NAL detected and no new picture yet */
++	int eos_detected;
++	/* This is first picture after EOS NAL */
++	int first_after_eos;
++};
 +
-+	res = pixel_gen_pixfmt(&com_sequ_hdr_info->pixel_info.pixfmt, &format_desc);
-+	if (res != 0) {
-+		pr_err("Failed to generate pixel format.\n");
-+		return res;
-+	}
-+
-+	return 0;
-+}
-+
-+static void bspp_jpeg_pict_hdr_populate(struct jpeg_segment_sof *sof_header,
-+					struct bspp_pict_hdr_info *pict_hdr_info)
-+{
-+	memset(pict_hdr_info, 0, sizeof(*pict_hdr_info));
-+
-+	pict_hdr_info->intra_coded = 1;
-+	pict_hdr_info->ref = 0;
-+
-+	pict_hdr_info->coded_frame_size.width = (unsigned int)sof_header->width;
-+	pict_hdr_info->coded_frame_size.height = (unsigned int)sof_header->height;
-+	pict_hdr_info->disp_info.enc_disp_region.width = (unsigned int)sof_header->width;
-+	pict_hdr_info->disp_info.enc_disp_region.height = (unsigned int)sof_header->height;
-+
-+	pict_hdr_info->pict_aux_data.id = BSPP_INVALID;
-+	pict_hdr_info->second_pict_aux_data.id = BSPP_INVALID;
-+	pict_hdr_info->pict_sgm_data.id = BSPP_INVALID;
-+}
-+
-+static int bspp_jpeg_parse_picture_unit(void *swsr_ctx,
-+					struct bspp_unit_data *unit_data)
-+{
-+	/* assume we'll be fine */
-+	unit_data->parse_error = BSPP_ERROR_NONE;
-+
-+	while ((unit_data->parse_error == BSPP_ERROR_NONE) &&
-+	       !(unit_data->slice || unit_data->extracted_all_data)) {
-+		struct jpeg_segment_header segment_header;
-+		/*
-+		 *  Try hard to read segment header. The only limit we set here is EOD-
-+		 *  if it happens, we will get an exception, to stop this madness.
-+		 */
-+		while (!bspp_jpeg_segment_read_header(swsr_ctx, unit_data, &segment_header) &&
-+		       unit_data->parse_error == BSPP_ERROR_NONE)
-+			;
-+
-+		switch (segment_header.type) {
-+		case CODE_SOF1:
-+		case CODE_SOF2:
-+		case CODE_SOF3:
-+		case CODE_SOF5:
-+		case CODE_SOF6:
-+		case CODE_SOF8:
-+		case CODE_SOF9:
-+		case CODE_SOF10:
-+		case CODE_SOF11:
-+		case CODE_SOF13:
-+		case CODE_SOF14:
-+		case CODE_SOF15:
-+		{
-+			bspp_jpeg_consume_asdata(swsr_ctx, segment_header.payload_size);
-+			bspp_jpeg_tryseek_delimeter(swsr_ctx);
-+			unit_data->extracted_all_data = 1;
-+			unit_data->slice = 1;
-+			unit_data->parse_error |= BSPP_ERROR_UNSUPPORTED;
-+			return IMG_ERROR_NOT_SUPPORTED;
-+		}
-+		case CODE_SOI:
-+		{
-+			/*
-+			 * Reinitialize context at the beginning of each image
-+			 */
-+		}
-+		break;
-+		case CODE_EOI:
-+		{
-+			/*
-+			 * Some more frames can be concatenated after SOI,
-+			 * but we'll discard it for now
-+			 */
-+			while (bspp_jpeg_tryseek_and_consume_delimeters(swsr_ctx) != SWSR_FOUND_EOD)
-+				;
-+			unit_data->extracted_all_data = 1;
-+			return 0;
-+		}
-+		case CODE_SOF_BASELINE:
-+		{
-+			int res;
-+			unsigned char alignment_width = 0;
-+			unsigned char alignment_height = 0;
-+			struct jpeg_segment_sof sof_data;
-+
-+			struct bspp_sequ_hdr_info *sequ_hdr_info =
-+				&unit_data->impl_sequ_hdr_info->sequ_hdr_info;
-+
-+			memset(&sof_data, 0, sizeof(*&sof_data));
-+
-+			/* SOF is the only segment we are interested in- parse it */
-+			unit_data->parse_error |= bspp_jpeg_segment_parse_sof(swsr_ctx, &sof_data);
-+			/*
-+			 * to correctly allocate size for frame we need to have correct MCUs to
-+			 * get alignment info
-+			 */
-+			bspp_jpeg_calculate_mcus(&sof_data, &alignment_width, &alignment_height);
-+
-+			/* fill in headers expected by BSPP framework */
-+			res = bspp_jpeg_common_seq_hdr_populate(&sof_data,
-+								&sequ_hdr_info->com_sequ_hdr_info,
-+								alignment_width,
-+								alignment_height);
-+			if (res != 0) {
-+				unit_data->parse_error |= BSPP_ERROR_UNRECOVERABLE;
-+				return res;
-+			}
-+
-+			bspp_jpeg_pict_hdr_populate(&sof_data, unit_data->out.pict_hdr_info);
-+
-+			/* fill in sequence IDs for header and picture */
-+			sequ_hdr_info->sequ_hdr_id = BSPP_DEFAULT_SEQUENCE_ID;
-+			unit_data->pict_sequ_hdr_id = BSPP_DEFAULT_SEQUENCE_ID;
-+
-+			/* reset SOS fields counter value */
-+			unit_data->out.pict_hdr_info->sos_count = 0;
-+		}
-+		break;
-+		case CODE_SOS:
-+		{
-+			/* increment the SOS fields counter */
-+			unit_data->out.pict_hdr_info->sos_count++;
-+
-+			unit_data->slice = 1;
-+			bspp_jpeg_consume_asdata(swsr_ctx, segment_header.payload_size);
-+			return 0;
-+		}
-+		case CODE_DRI:
-+			break;
-+		default:
-+		{
-+#ifdef DEBUG_DECODER_DRIVER
-+			pr_info("Skipping over 0x%x bytes\n", segment_header.payload_size);
-+#endif
-+			bspp_jpeg_consume_asdata(swsr_ctx, segment_header.payload_size);
-+		}
-+		break;
-+		}
-+		/*
-+		 * After parsing segment we should already be on delimeter.
-+		 * Consume it, so header parsing can be started.
-+		 */
-+		bspp_jpeg_tryseek_and_consume_delimeters(swsr_ctx);
-+	}
-+	return 0;
-+}
-+
-+int bspp_jpeg_unit_parser(void *swsr_ctx, struct bspp_unit_data *unit_data)
-+{
-+	int retval = 0;
-+
-+	switch (unit_data->unit_type) {
-+	case BSPP_UNIT_PICTURE:
-+	{
-+		retval = bspp_jpeg_parse_picture_unit(swsr_ctx, unit_data);
-+		unit_data->new_closed_gop = 1;
-+	}
-+	break;
-+	default:
-+	{
-+		unit_data->parse_error = BSPP_ERROR_INVALID_VALUE;
-+	}
-+	break;
-+	}
-+
-+	return retval;
-+}
-+
-+int bspp_jpeg_setparser_config(enum vdec_bstr_format bstr_format,
-+			       struct bspp_vid_std_features *pvidstd_features,
-+			       struct bspp_swsr_ctx *pswsr_ctx,
-+			       struct bspp_parser_callbacks *pparser_callbacks,
-+			       struct bspp_inter_pict_data *pinterpict_data)
-+{
-+	/* Set JPEG parser callbacks. */
-+	pparser_callbacks->parse_unit_cb = bspp_jpeg_unit_parser;
-+
-+	/* Set JPEG specific features. */
-+	pvidstd_features->seq_size = sizeof(struct bspp_jpeg_sequ_hdr_info);
-+	pvidstd_features->uses_vps  = 0;
-+	pvidstd_features->uses_pps  = 0;
-+
-+	/* Set JPEG specific shift register config. */
-+	pswsr_ctx->emulation_prevention = SWSR_EMPREVENT_NONE;
-+	pswsr_ctx->sr_config.delim_type = SWSR_DELIM_SCP;
-+	pswsr_ctx->sr_config.delim_length = 8;
-+	pswsr_ctx->sr_config.scp_value = 0xFF;
-+
-+	return 0;
-+}
-+
-+void bspp_jpeg_determine_unit_type(unsigned char bitstream_unittype,
-+				   int disable_mvc,
-+				   enum bspp_unit_type *bspp_unittype)
-+{
-+	*bspp_unittype = BSPP_UNIT_PICTURE;
-+}
-diff --git a/drivers/staging/media/vxd/decoder/jpeg_secure_parser.h b/drivers/staging/media/vxd/decoder/jpeg_secure_parser.h
++#endif /* _HEVCFW_DATA_H_ */
+diff --git a/drivers/staging/media/vxd/decoder/img_pixfmts.h b/drivers/staging/media/vxd/decoder/img_pixfmts.h
 new file mode 100644
-index 000000000000..439a38504b96
+index 000000000000..f21c8f9da4b5
 --- /dev/null
-+++ b/drivers/staging/media/vxd/decoder/jpeg_secure_parser.h
-@@ -0,0 +1,37 @@
++++ b/drivers/staging/media/vxd/decoder/img_pixfmts.h
+@@ -0,0 +1,195 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * JPEG secure data unit parsing API.
++ * VXD DEC SYSDEV and UI Interface header
++ *
++ * Copyright (c) Imagination Technologies Ltd.
++ * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com/
++ *
++ * Authors:
++ *	Amit Makani <amit.makani@ti.com>
++ */
++
++#ifndef __IMG_PIXFMTS_H__
++#define __IMG_PIXFMTS_H__
++/*
++ * @brief Old pixel format definition
++ *
++ * @note These definitions are different in HW documentation(current to HW doc):
++ * @li PL8 is defined as PL111
++ * @li PL12 is sometime used wrongly for monochrome formats instead of PL_Y
++ */
++enum img_pixfmt {
++	IMG_PIXFMT_CLUT1              =   0,
++	IMG_PIXFMT_CLUT2              =   1,
++	IMG_PIXFMT_CLUT4              =   2,
++	IMG_PIXFMT_I4A4               =   3,
++	IMG_PIXFMT_I8A8               =   4,
++	IMG_PIXFMT_A8I8               =   51,
++	IMG_PIXFMT_RGB8               =   5,
++	IMG_PIXFMT_RGB332             =   6,
++	IMG_PIXFMT_RGB555             =   7,
++	IMG_PIXFMT_ARGB4444           =   8,
++	IMG_PIXFMT_ABGR4444           =   57,
++	IMG_PIXFMT_RGBA4444           =   58,
++	IMG_PIXFMT_BGRA4444           =   59,
++	IMG_PIXFMT_ARGB1555           =   9,
++	IMG_PIXFMT_ABGR1555           =   60,
++	IMG_PIXFMT_RGBA5551           =   61,
++	IMG_PIXFMT_BGRA5551           =   62,
++	IMG_PIXFMT_RGB565             =   10,
++	IMG_PIXFMT_BGR565             =   63,
++	IMG_PIXFMT_RGB888             =   11,
++	IMG_PIXFMT_RSGSBS888          =   68,
++	IMG_PIXFMT_ARGB8888           =   12,
++	IMG_PIXFMT_ABGR8888           =   41,
++	IMG_PIXFMT_BGRA8888           =   42,
++	IMG_PIXFMT_RGBA8888           =   56,
++	IMG_PIXFMT_ARGB8332           =   43,
++	IMG_PIXFMT_ARGB8161616        =   64,
++	IMG_PIXFMT_ARGB2101010        =   67,
++	IMG_PIXFMT_UYVY8888           =   13,
++	IMG_PIXFMT_VYUY8888           =   14,
++	IMG_PIXFMT_YVYU8888           =   15,
++	IMG_PIXFMT_YUYV8888           =   16,
++	IMG_PIXFMT_UYVY10101010       =   17,
++	IMG_PIXFMT_VYAUYA8888         =   18,
++	IMG_PIXFMT_YUV101010          =   19,
++	IMG_PIXFMT_AYUV4444           =   20,
++	IMG_PIXFMT_YUV888             =   21,
++	IMG_PIXFMT_AYUV8888           =   22,
++	IMG_PIXFMT_AYUV2101010        =   23,
++	IMG_PIXFMT_411PL111YUV8       =   120,
++	IMG_PIXFMT_411PL12YUV8        =   121,
++	IMG_PIXFMT_411PL12YVU8        =   24,
++	IMG_PIXFMT_420PL12YUV8        =   25,
++	IMG_PIXFMT_420PL12YVU8        =   26,
++	IMG_PIXFMT_422PL12YUV8        =   27,
++	IMG_PIXFMT_422PL12YVU8        =   28,
++	IMG_PIXFMT_420PL8YUV8         =   47,
++	IMG_PIXFMT_422PL8YUV8         =   48,
++	IMG_PIXFMT_420PL12YUV8_A8     = 31,
++	IMG_PIXFMT_422PL12YUV8_A8     = 32,
++	IMG_PIXFMT_PL12Y8             =   33,
++	IMG_PIXFMT_PL12YV8            =   35,
++	IMG_PIXFMT_PL12IMC2           =   36,
++	IMG_PIXFMT_A4                 =   37,
++	IMG_PIXFMT_A8                 =   38,
++	IMG_PIXFMT_YUV8               =   39,
++	IMG_PIXFMT_CVBS10             =   40,
++	IMG_PIXFMT_PL12YV12           =   44,
++#if ((!defined(METAG) && !defined(MTXG)) || defined(__linux__))
++	IMG_PIXFMT_F16                = 52,
++	IMG_PIXFMT_F32                = 53,
++	IMG_PIXFMT_F16F16F16F16       = 65,
++#endif
++	IMG_PIXFMT_L16                = 54,
++	IMG_PIXFMT_L32                = 55,
++	IMG_PIXFMT_Y1                 = 66,
++	IMG_PIXFMT_444PL111YUV8       = 69,
++	IMG_PIXFMT_444PL12YUV8        = 137,
++	IMG_PIXFMT_444PL12YVU8        = 138,
++	IMG_PIXFMT_PL12Y10            =   34,
++	IMG_PIXFMT_PL12Y10_LSB        =  96,
++	IMG_PIXFMT_PL12Y10_MSB        =  97,
++	IMG_PIXFMT_420PL8YUV10        =   49,
++	IMG_PIXFMT_420PL111YUV10_LSB  = 71,
++	IMG_PIXFMT_420PL111YUV10_MSB  = 72,
++	IMG_PIXFMT_420PL12YUV10       = 29,
++	IMG_PIXFMT_420PL12YUV10_LSB   = 74,
++	IMG_PIXFMT_420PL12YUV10_MSB   = 75,
++	IMG_PIXFMT_420PL12YVU10       = 45,
++	IMG_PIXFMT_420PL12YVU10_LSB   = 77,
++	IMG_PIXFMT_420PL12YVU10_MSB   = 78,
++	IMG_PIXFMT_422PL8YUV10        =   50,
++	IMG_PIXFMT_422PL111YUV10_LSB  = 122,
++	IMG_PIXFMT_422PL111YUV10_MSB  = 123,
++	IMG_PIXFMT_422PL12YUV10       = 30,
++	IMG_PIXFMT_422PL12YUV10_LSB   = 80,
++	IMG_PIXFMT_422PL12YUV10_MSB   = 81,
++	IMG_PIXFMT_422PL12YVU10       = 46,
++	IMG_PIXFMT_422PL12YVU10_LSB   = 83,
++	IMG_PIXFMT_422PL12YVU10_MSB   = 84,
++	IMG_PIXFMT_444PL111YUV10      = 85,
++	IMG_PIXFMT_444PL111YUV10_LSB  = 86,
++	IMG_PIXFMT_444PL111YUV10_MSB  = 87,
++	IMG_PIXFMT_444PL12YUV10       = 139,
++	IMG_PIXFMT_444PL12YUV10_LSB   = 141,
++	IMG_PIXFMT_444PL12YUV10_MSB   = 142,
++	IMG_PIXFMT_444PL12YVU10       = 140,
++	IMG_PIXFMT_444PL12YVU10_LSB   = 143,
++	IMG_PIXFMT_444PL12YVU10_MSB   = 144,
++	IMG_PIXFMT_420PL12Y8UV10      = 88,
++	IMG_PIXFMT_420PL12Y8UV10_LSB  = 98,
++	IMG_PIXFMT_420PL12Y8UV10_MSB  = 99,
++	IMG_PIXFMT_420PL12Y8VU10      = 89,
++	IMG_PIXFMT_420PL12Y8VU10_LSB  = 100,
++	IMG_PIXFMT_420PL12Y8VU10_MSB  = 101,
++	IMG_PIXFMT_420PL111Y8UV10     = 70,
++	IMG_PIXFMT_420PL111Y8UV10_LSB = 127,
++	IMG_PIXFMT_420PL111Y8UV10_MSB = 125,
++	IMG_PIXFMT_422PL12Y8UV10      = 90,
++	IMG_PIXFMT_422PL12Y8UV10_LSB  = 102,
++	IMG_PIXFMT_422PL12Y8UV10_MSB  = 103,
++	IMG_PIXFMT_422PL12Y8VU10      = 91,
++	IMG_PIXFMT_422PL12Y8VU10_LSB  = 104,
++	IMG_PIXFMT_422PL12Y8VU10_MSB  = 105,
++	IMG_PIXFMT_444PL12Y8UV10      = 151,
++	IMG_PIXFMT_444PL12Y8UV10_LSB  = 153,
++	IMG_PIXFMT_444PL12Y8UV10_MSB  = 154,
++	IMG_PIXFMT_444PL12Y8VU10      = 152,
++	IMG_PIXFMT_444PL12Y8VU10_LSB  = 155,
++	IMG_PIXFMT_444PL12Y8VU10_MSB  = 156,
++	IMG_PIXFMT_420PL12Y10UV8      = 92,
++	IMG_PIXFMT_420PL12Y10UV8_LSB  = 106,
++	IMG_PIXFMT_420PL12Y10UV8_MSB  = 107,
++
++	IMG_PIXFMT_420PL12Y10VU8      = 93,
++	IMG_PIXFMT_420PL12Y10VU8_LSB  = 108,
++	IMG_PIXFMT_420PL12Y10VU8_MSB  = 109,
++
++	IMG_PIXFMT_420PL111Y10UV8     = 129,
++	IMG_PIXFMT_420PL111Y10UV8_LSB = 133,
++	IMG_PIXFMT_420PL111Y10UV8_MSB = 131,
++	IMG_PIXFMT_422PL12Y10UV8      = 94,
++	IMG_PIXFMT_422PL12Y10UV8_LSB  = 110,
++	IMG_PIXFMT_422PL12Y10UV8_MSB  = 111,
++	IMG_PIXFMT_422PL12Y10VU8      = 95,
++	IMG_PIXFMT_422PL12Y10VU8_LSB  = 112,
++	IMG_PIXFMT_422PL12Y10VU8_MSB  = 113,
++
++	IMG_PIXFMT_444PL111Y10UV8     = 114,
++	IMG_PIXFMT_444PL111Y10UV8_LSB = 115,
++	IMG_PIXFMT_444PL111Y10UV8_MSB = 116,
++	IMG_PIXFMT_444PL111Y8UV10     = 117,
++	IMG_PIXFMT_444PL111Y8UV10_LSB = 118,
++	IMG_PIXFMT_444PL111Y8UV10_MSB = 119,
++	IMG_PIXFMT_444PL12Y10UV8      = 145,
++	IMG_PIXFMT_444PL12Y10UV8_LSB  = 147,
++	IMG_PIXFMT_444PL12Y10UV8_MSB  = 148,
++	IMG_PIXFMT_444PL12Y10VU8      = 146,
++	IMG_PIXFMT_444PL12Y10VU8_LSB  = 149,
++	IMG_PIXFMT_444PL12Y10VU8_MSB  = 150,
++	IMG_PIXFMT_422PL111Y8UV10     = 124,
++	IMG_PIXFMT_422PL111Y8UV10_MSB = 126,
++	IMG_PIXFMT_422PL111Y8UV10_LSB = 128,
++
++	IMG_PIXFMT_422PL111Y10UV8     = 130,
++	IMG_PIXFMT_422PL111Y10UV8_LSB = 134,
++	IMG_PIXFMT_422PL111Y10UV8_MSB = 132,
++	IMG_PIXFMT_420PL8YUV12        = 160,
++	IMG_PIXFMT_422PL8YUV12        = 161,
++	IMG_PIXFMT_444PL8YUV12        = 162,
++	IMG_PIXFMT_420PL8YUV14        = 163,
++	IMG_PIXFMT_422PL8YUV14        = 164,
++	IMG_PIXFMT_444PL8YUV14        = 165,
++	IMG_PIXFMT_420PL8YUV16        = 166,
++	IMG_PIXFMT_422PL8YUV16        = 167,
++	IMG_PIXFMT_444PL8YUV16        = 168,
++	IMG_PIXFMT_UNDEFINED          = 255,
++
++	IMG_PIXFMT_ARBPLANAR8         = 65536,
++	IMG_PIXFMT_ARBPLANAR8_LAST    = IMG_PIXFMT_ARBPLANAR8 + 0xffff,
++	IMG_PIXFMT_FORCE32BITS        = 0x7FFFFFFFU
++};
++
++#endif
+diff --git a/drivers/staging/media/vxd/decoder/img_profiles_levels.h b/drivers/staging/media/vxd/decoder/img_profiles_levels.h
+new file mode 100644
+index 000000000000..710b429f7f3e
+--- /dev/null
++++ b/drivers/staging/media/vxd/decoder/img_profiles_levels.h
+@@ -0,0 +1,33 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * VXD DEC SYSDEV and UI Interface header
++ *
++ * Copyright (c) Imagination Technologies Ltd.
++ * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com/
++ *
++ * Authors:
++ *	Amit Makani <amit.makani@ti.com>
++ *
++ * Re-written for upstreamimg
++ *	Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
++ */
++
++#ifndef __IMG_PROFILES_LEVELS_H
++#define __IMG_PROFILES_LEVELS_H
++
++#include "vdecdd_utils.h"
++
++/* Minimum level value for h.264 */
++#define H264_LEVEL_MIN              (9)
++/* Maximum level value for h.264 */
++#define H264_LEVEL_MAX             (52)
++/* Number of major levels for h.264 (5 + 1 for special levels) */
++#define H264_LEVEL_MAJOR_NUM        (6)
++/* Number of minor levels for h.264 */
++#define H264_LEVEL_MINOR_NUM            (4)
++/* Number of major levels for HEVC */
++#define HEVC_LEVEL_MAJOR_NUM        (6)
++/* Number of minor levels for HEVC */
++#define HEVC_LEVEL_MINOR_NUM        (3)
++
++#endif /*__IMG_PROFILES_LEVELS_H */
+diff --git a/drivers/staging/media/vxd/decoder/jpegfw_data.h b/drivers/staging/media/vxd/decoder/jpegfw_data.h
+new file mode 100644
+index 000000000000..d84e5d73f844
+--- /dev/null
++++ b/drivers/staging/media/vxd/decoder/jpegfw_data.h
+@@ -0,0 +1,83 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Public data structures for the h264 parser firmware module.
 + *
 + * Copyright (c) Imagination Technologies Ltd.
 + * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com/
@@ -10875,1977 +2537,945 @@ index 000000000000..439a38504b96
 + * Re-written for upstreming
 + *	Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
 + */
-+#ifndef __JPEGSECUREPARSER_H__
-+#define __JPEGSECUREPARSER_H__
 +
-+#include "bspp_int.h"
++#include "jpegfw_data_shared.h"
++
++#ifndef _JPEGFW_DATA_H_
++#define _JPEGFW_DATA_H_
++
++#define JPEG_VDEC_8x8_DCT_SIZE             64 //!< Number of elements in 8x8 DCT
++#define JPEG_VDEC_MAX_COMPONENTS           4  //!< Maximum number of component in JPEG
++#define JPEG_VDEC_MAX_SETS_HUFFMAN_TABLES  2  //!< Maximum set of huffman table in JPEG
++#define JPEG_VDEC_MAX_QUANT_TABLES         4  //!< Maximum set of quantisation table in JPEG
++#define JPEG_VDEC_TABLE_CLASS_NUM          2  //!< Maximum set of class of huffman table in JPEG
++#define JPEG_VDEC_PLANE_MAX                4  //!< Maximum number of planes
++
++struct hentry {
++	unsigned short code;
++	unsigned char codelen;
++	unsigned char value;
++};
 +
 +/**
-+ * struct bspp_jpeg_sequ_hdr_info - bspp_jpeg_sequ_hdr_info dummu structure
-+ * @dummy: dummy structure
++ * struct vdec_jpeg_huffman_tableinfo - This structure contains JPEG huffmant table
++ * @bits: number of bits
++ * @values: codeword value
++ *
++ * NOTE: Should only contain JPEG specific information.
++ * JPEG Huffman Table Information
 + */
-+struct bspp_jpeg_sequ_hdr_info {
++struct vdec_jpeg_huffman_tableinfo {
++	/* number of bits */
++	unsigned char bits[16];
++	/* codeword value */
++	unsigned char values[256];
++};
++
++/*
++ * This structure contains JPEG DeQunatisation table
++ * NOTE: Should only contain JPEG specific information.
++ * @brief  JPEG Dequantisation Table Information
++ */
++struct vdec_jpeg_de_quant_tableinfo {
++	/* Qunatisation precision */
++	unsigned char precision;
++	/* Qunatisation Value for 8x8 DCT  */
++	unsigned short elements[64];
++};
++
++/*
++ * This describes the JPEG parser component "Header data", shown in the
++ * Firmware Memory Layout diagram. This data is required by the JPEG firmware
++ * and should be supplied by the Host.
++ */
++struct jpegfw_header_data {
++	/* Primary decode buffer base addresses */
++	struct vdecfw_image_buffer primary;
++	/* Reference (output) picture base addresses */
++	unsigned int plane_offsets[JPEG_VDEC_PLANE_MAX];
++	/* SOS fields count value */
++	unsigned char hdr_sos_count;
++};
++
++/*
++ * This describes the JPEG  parser component "Context data".
++ * JPEG does not need any data to be saved between pictures, this structure
++ * is needed only to fit in firmware framework.
++ */
++struct jpegfw_context_data {
 +	unsigned int dummy;
 +};
 +
-+int bspp_jpeg_setparser_config(enum vdec_bstr_format bstr_format,
-+			       struct bspp_vid_std_features *pvidstd_features,
-+			       struct bspp_swsr_ctx *pswsr_ctx,
-+			       struct bspp_parser_callbacks *pparser_callbacks,
-+			       struct bspp_inter_pict_data *pinterpict_data);
-+
-+void bspp_jpeg_determine_unit_type(unsigned char bitstream_unittype,
-+				   int disable_mvc,
-+				   enum bspp_unit_type *bspp_unittype);
-+
-+#endif /*__JPEGSECUREPARSER_H__ */
-diff --git a/drivers/staging/media/vxd/decoder/swsr.c b/drivers/staging/media/vxd/decoder/swsr.c
++#endif /* _JPEGFW_DATA_H_ */
+diff --git a/drivers/staging/media/vxd/decoder/mmu_defs.h b/drivers/staging/media/vxd/decoder/mmu_defs.h
 new file mode 100644
-index 000000000000..d59f8b06b397
+index 000000000000..0ea65509071d
 --- /dev/null
-+++ b/drivers/staging/media/vxd/decoder/swsr.c
-@@ -0,0 +1,1657 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Software Shift Register Access fucntions
-+ *
-+ * Copyright (c) Imagination Technologies Ltd.
-+ * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com/
-+ *
-+ * Authors:
-+ *	Lakshmi Sankar <lakshmisankar-t@ti.com>
-+ * Re-written for upstreming
-+ *	Prashanth Kumar Amai <prashanth.ka@pathpartnertech.com>
-+ *	Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
-+ */
-+
-+#include <linux/dma-mapping.h>
-+#include <media/v4l2-ctrls.h>
-+#include <media/v4l2-device.h>
-+#include <media/v4l2-mem2mem.h>
-+
-+#include "swsr.h"
-+#include "vdec_defs.h"
-+
-+#define NBIT_8BYTE_MASK(n)    ((1ULL << (n)) - 1)
-+
-+/* Input FIFO length (in bytes). */
-+#define SWSR_INPUT_FIFO_LENGTH      8
-+
-+/* Output FIFO length (in bits). */
-+#define SWSR_OUTPUT_FIFO_LENGTH     64
-+
-+#define SWSR_NALTYPE_LENGTH         8
-+
-+#define SWSR_MAX_SYNTAX_LENGTH      32
-+
-+#define SWSR_ASSERT(expected) ({WARN_ON(!(expected)); 0; })
-+
-+struct swsr_buffer {
-+	void **lst_link;
-+	/* Pointer to bitstream data. */
-+	unsigned char *data;
-+	/* Number of bytes of bitstream */
-+	unsigned long long num_bytes;
-+	/* Index (in bytes) to next data within the buffer */
-+	unsigned long long byte_offset;
-+	/* Number of bytes read from input FIFO */
-+	unsigned long long num_bytes_read;
-+};
-+
-+struct swsr_input {
-+	/* Bitstream data (byte-based and pre emu prev) - left aligned. */
-+	unsigned long long fifo;
-+	/* Number of *bytes* in Input FIFO */
-+	unsigned int num_bytes;
-+	struct swsr_config config;
-+	/* Emulation prevention mode used to process data in Input FIFO */
-+	enum swsr_emprevent emprevent;
-+	/* Number of bytes in emulation prevention sequence */
-+	unsigned int emprev_seq_len;
-+	/* Size of bitstream declared at initialisation */
-+	unsigned long long bitstream_size;
-+	/*
-+	 * Number of bytes required from input buffer before checking
-+	 * next emulation prevention sequence.
-+	 */
-+	unsigned int bytes_for_next_sequ;
-+	/* Byte count read from size delimiter */
-+	unsigned long long byte_count;
-+	unsigned long long bytes_read_since_delim;
-+	/* Cumulative offset (in bytes) into input buffer data */
-+	unsigned long long bitstream_offset;
-+	/* Bitstream delimiter found (see #SWSR_delim_type) */
-+	unsigned char delim_found;
-+	/*
-+	 * No More Valid Data before next delimiter.
-+	 * Set only for SWSR_EMPREVENT_00000300.
-+	 */
-+	unsigned char no_moredata;
-+	/* Pointer to current input buffer in the context of Input FIFO */
-+	struct swsr_buffer *buf;
-+	/* Start offset within buffer of current delimited unit */
-+	long delimited_unit_start_offset;
-+	/* Size of current delimited unit (if already calculated) */
-+	unsigned int delimited_unit_size;
-+	/* Current bit offset within the current delimited unit */
-+	unsigned int delimunit_bitofst;
-+};
-+
-+struct swsr_output {
-+	/*
-+	 * Bitstream data (post emulation prevention removal
-+	 * delimiter checking) - left aligned.
-+	 */
-+	unsigned long long fifo;
-+	/* Number of *bits* in Output FIFO */
-+	unsigned int num_bits;
-+	unsigned long long totalbits_consumed;
-+};
-+
-+struct swsr_buffer_ctx {
-+	/*
-+	 * Callback function to notify event and provide/request data.
-+	 * See #SWSR_eCbEvent for event types and description
-+	 * of CB argument usage.
-+	 */
-+	swsr_callback_fxn cb_fxn;
-+	/* Caller supplied pointer for callback */
-+	void *cb_param;
-+	/* List of buffers */
-+	struct lst_t free_buffer_list;
-+	/*
-+	 * List of buffers (#SWSR_sBufferCtx) whose data reside
-+	 * in the Input/Output FIFOs.
-+	 */
-+	struct lst_t used_buffer_list;
-+};
-+
-+struct swsr_context {
-+	/* IMG_TRUE if the context is initialised */
-+	unsigned char initialised;
-+	/* A pointer to an exception handler */
-+	swsr_except_handler_fxn exception_handler_fxn;
-+	/* Caller supplied pointer */
-+	void *pexception_param;
-+	/* Last recorded exception */
-+	enum swsr_exception exception;
-+	/* Buffer context data */
-+	struct swsr_buffer_ctx buffer_ctx;
-+	/* Context of shift register input. */
-+	struct swsr_input input;
-+	/* Context of shift register output */
-+	struct swsr_output output;
-+};
-+
-+static unsigned long long left_aligned_nbit_8byte_mask(unsigned int mask, unsigned int nbits)
-+{
-+	return (((unsigned long long)mask << (64 - nbits)) |
-+			(unsigned long long)NBIT_8BYTE_MASK(64 - nbits));
-+}
-+
-+/*
-+ * buffer has been exhausted and there is still more bytes declared in bitstream
-+ */
-+static int swsr_extractbyte(struct swsr_context *ctx, unsigned char *byte_ext)
-+{
-+	struct swsr_input *input;
-+	struct swsr_buffer_ctx *buf_ctx;
-+	unsigned char byte = 0;
-+	unsigned long long cur_byte_offset;
-+	unsigned int result = 0;
-+
-+	if (!ctx || !byte_ext)
-+		return IMG_ERROR_FATAL;
-+
-+	input = &ctx->input;
-+	buf_ctx = &ctx->buffer_ctx;
-+
-+	cur_byte_offset = input->bitstream_offset;
-+
-+	if (input->buf && input->buf->byte_offset < input->buf->num_bytes) {
-+		input->bitstream_offset++;
-+		byte = input->buf->data[input->buf->byte_offset++];
-+	} else if (input->bitstream_offset < input->bitstream_size) {
-+		struct swsr_buffer *buffer;
-+
-+		buffer = lst_removehead(&buf_ctx->free_buffer_list);
-+		if (!buffer)
-+			return IMG_ERROR_FATAL;
-+
-+		buffer->num_bytes_read = 0;
-+		buffer->byte_offset = 0;
-+
-+		buf_ctx->cb_fxn(SWSR_EVENT_INPUT_BUFFER_START,
-+			buf_ctx->cb_param, 0,
-+			&buffer->data, &buffer->num_bytes);
-+		SWSR_ASSERT(buffer->data && buffer->num_bytes > 0);
-+
-+		if (buffer->data && buffer->num_bytes > 0) {
-+			input->buf = buffer;
-+
-+			/* Add input buffer to output buffer list. */
-+			lst_add(&buf_ctx->used_buffer_list, input->buf);
-+
-+			input->bitstream_offset++;
-+			byte = input->buf->data[input->buf->byte_offset++];
-+		}
-+	}
-+
-+	{
-+		struct swsr_buffer *buffer = input->buf;
-+
-+		if (!buffer)
-+			buffer = lst_first(&buf_ctx->used_buffer_list);
-+
-+		if (!buffer || buffer->num_bytes_read > buffer->num_bytes) {
-+			input->delimited_unit_start_offset = -1;
-+			input->delimited_unit_size = 0;
-+		}
-+	}
-+	/* If the bitstream offset hasn't increased we failed to read a byte. */
-+	if (cur_byte_offset == input->bitstream_offset) {
-+		input->buf = NULL;
-+		result = IMG_ERROR_COULD_NOT_OBTAIN_RESOURCE;
-+	}
-+
-+	*byte_ext = byte;
-+
-+	return result;
-+}
-+
-+static unsigned char swsr_checkfor_delimiter(struct swsr_context *ctx)
-+{
-+	struct swsr_input *input;
-+	unsigned char delim_found = 0;
-+
-+	input = &ctx->input;
-+
-+	/* Check for delimiter. */
-+	if (input->config.delim_type == SWSR_DELIM_SCP) {
-+		unsigned int shift = (SWSR_INPUT_FIFO_LENGTH * 8)
-+			- input->config.delim_length;
-+		unsigned long long sequ = input->fifo >> shift;
-+
-+		/*
-+		 * Check if the SCP value is matched outside of
-+		 * emulation prevention data.
-+		 */
-+		if (sequ == input->config.scp_value && input->bytes_for_next_sequ == 0)
-+			delim_found = 1;
-+
-+	} else if (input->config.delim_type == SWSR_DELIM_SIZE) {
-+		delim_found = (input->bytes_read_since_delim >= input->byte_count) ? 1 : 0;
-+	}
-+
-+	return delim_found;
-+}
-+
-+static int swsr_increment_cur_bufoffset(struct swsr_context *ctx)
-+{
-+	struct swsr_buffer_ctx *buf_ctx;
-+	struct swsr_buffer *cur_buf;
-+
-+	buf_ctx = &ctx->buffer_ctx;
-+
-+	/* Update the number of bytes read from input FIFO for current buffer */
-+	cur_buf = lst_first(&buf_ctx->used_buffer_list);
-+	if (cur_buf->num_bytes_read >= cur_buf->num_bytes) {
-+		/* Mark current bitstream buffer as fully consumed */
-+		cur_buf->num_bytes_read = cur_buf->num_bytes;
-+
-+		/* Notify the application that the old buffer is exhausted. */
-+		buf_ctx->cb_fxn(SWSR_EVENT_OUTPUT_BUFFER_END,
-+			buf_ctx->cb_param, 0,
-+			NULL, NULL);
-+
-+		/*
-+		 * Discard the buffer whose data was at the head of
-+		 * the input FIFO.
-+		 */
-+		cur_buf = lst_removehead(&buf_ctx->used_buffer_list);
-+		/* Add the buffer container to free list. */
-+		lst_add(&buf_ctx->free_buffer_list, cur_buf);
-+
-+		/*
-+		 * Since the byte that we read was actually from the next
-+		 * buffer increment it's counter.
-+		 */
-+		cur_buf = lst_first(&buf_ctx->used_buffer_list);
-+		cur_buf->num_bytes_read++;
-+	} else {
-+		cur_buf->num_bytes_read++;
-+	}
-+
-+	return 0;
-+}
-+
-+static enum swsr_found swsr_readbyte_from_inputfifo(struct swsr_context *ctx,
-+						    unsigned char *byte)
-+{
-+	struct swsr_input *input;
-+	enum swsr_found found = SWSR_FOUND_NONE;
-+	unsigned int result = 0;
-+
-+	input = &ctx->input;
-+
-+	input->delim_found |= swsr_checkfor_delimiter(ctx);
-+
-+	/*
-+	 * Refill the input FIFO before checking for emulation prevention etc.
-+	 * The only exception is when there are no more bytes left to extract
-+	 * from input buffer.
-+	 */
-+	while (input->num_bytes < SWSR_INPUT_FIFO_LENGTH && result == 0) {
-+		unsigned char byte;
-+
-+		result = swsr_extractbyte(ctx, &byte);
-+		if (result == 0) {
-+			input->fifo |= ((unsigned long long)byte <<
-+				((SWSR_INPUT_FIFO_LENGTH - 1 - input->num_bytes) * 8));
-+			input->num_bytes += 1;
-+		}
-+	}
-+
-+	if (input->num_bytes == 0) {
-+		found = SWSR_FOUND_EOD;
-+	} else if (!input->delim_found) {
-+		/*
-+		 * Check for emulation prevention when enabled and enough
-+		 * bytes are remaining in input FIFO.
-+		 */
-+		if (input->emprevent != SWSR_EMPREVENT_NONE &&
-+		    /*
-+		     * Ensure you have enough bytes to check for emulation
-+		     * prevention.
-+		     */
-+		    input->num_bytes >= input->emprev_seq_len &&
-+		    (input->config.delim_type != SWSR_DELIM_SIZE ||
-+		    /*
-+		     * Ensure that you don't remove emu bytes beyond current
-+		     * delimited unit.
-+		     */
-+		     ((input->bytes_read_since_delim + input->emprev_seq_len) <
-+		     input->byte_count)) && input->bytes_for_next_sequ == 0) {
-+			unsigned char emprev_removed = 0;
-+			unsigned int shift = (SWSR_INPUT_FIFO_LENGTH - input->emprev_seq_len) * 8;
-+			unsigned long long sequ = input->fifo >> shift;
-+
-+			if (input->emprevent == SWSR_EMPREVENT_00000300) {
-+				if ((sequ & 0xffffff00) == 0x00000300) {
-+					if ((sequ & 0x000000ff) > 0x03)
-+						pr_err("Invalid start code emulation preventionbytes found\n");
-+
-+					/*
-+					 * Instead of trying to remove the emulation prevention
-+					 * byte from the middle of the FIFO simply make it zero
-+					 * and drop the next byte from the FIFO which will
-+					 * also be zero.
-+					 */
-+					input->fifo &= left_aligned_nbit_8byte_mask
-+							(0xffff00ff,
-+							 input->emprev_seq_len * 8);
-+					input->fifo <<= 8;
-+
-+					emprev_removed = 1;
-+				} else if ((sequ & 0xffffffff) == 0x00000000 ||
-+					(sequ & 0xffffffff) == 0x00000001) {
-+					input->no_moredata = 1;
-+				}
-+			} else if (input->emprevent == SWSR_EMPREVENT_ff00) {
-+				if (sequ == 0xff00) {
-+					/* Remove the zero byte. */
-+					input->fifo <<= 8;
-+					input->fifo |= (0xff00ULL << shift);
-+					emprev_removed = 1;
-+				}
-+			} else if (input->emprevent == SWSR_EMPREVENT_000002) {
-+				/*
-+				 * Remove the emulation prevention bytes
-+				 * if we find 22 consecutive 0 bits
-+				 * (from a byte-aligned position?!)
-+				 */
-+				if (sequ == 0x000002) {
-+					/*
-+					 * Appear to "remove" the 0x02 byte by clearing
-+					 * it and then dropping the top (zero) byte.
-+					 */
-+					input->fifo &= left_aligned_nbit_8byte_mask
-+							(0xffff00,
-+							 input->emprev_seq_len * 8);
-+					input->fifo <<= 8;
-+					emprev_removed = 1;
-+				}
-+			}
-+
-+			if (emprev_removed) {
-+				input->num_bytes--;
-+				input->bytes_read_since_delim++;
-+
-+				/* Increment the buffer offset for the
-+				 *  byte that has been removed.
-+				 */
-+				swsr_increment_cur_bufoffset(ctx);
-+
-+				/*
-+				 * Signal that two more new bytes in the emulation
-+				 * prevention sequence are required before another match
-+				 * can be made.
-+				 */
-+				input->bytes_for_next_sequ = input->emprev_seq_len - 2;
-+			}
-+		}
-+
-+		if (input->bytes_for_next_sequ > 0)
-+			input->bytes_for_next_sequ--;
-+
-+		/* return the first bytes from read data */
-+		*byte = (unsigned char)(input->fifo >> ((SWSR_INPUT_FIFO_LENGTH - 1) * 8));
-+		input->fifo <<= 8;
-+
-+		input->num_bytes--;
-+		input->bytes_read_since_delim++;
-+
-+		/* Increment the buffer offset for byte that has been read. */
-+		swsr_increment_cur_bufoffset(ctx);
-+
-+		found = SWSR_FOUND_DATA;
-+	} else {
-+		found = SWSR_FOUND_DELIM;
-+	}
-+
-+	return found;
-+}
-+
-+static enum swsr_found swsr_consumebyte_from_inputfifo
-+	(struct swsr_context *ctx, unsigned char *byte)
-+{
-+	enum swsr_found found;
-+
-+	found = swsr_readbyte_from_inputfifo(ctx, byte);
-+
-+	if (found == SWSR_FOUND_DATA) {
-+		/* Only whole bytes can be read from Input FIFO. */
-+		ctx->output.totalbits_consumed += 8;
-+		ctx->input.delimunit_bitofst += 8;
-+	}
-+
-+	return found;
-+}
-+
-+static int swsr_fill_outputfifo(struct swsr_context *ctx)
-+{
-+	unsigned char byte;
-+	enum swsr_found found = SWSR_FOUND_DATA;
-+
-+	/* Fill output FIFO with whole bytes up to (but not over) max length */
-+	while (ctx->output.num_bits <= (SWSR_OUTPUT_FIFO_LENGTH - 8) && found == SWSR_FOUND_DATA) {
-+		found = swsr_readbyte_from_inputfifo(ctx, &byte);
-+		if (found == SWSR_FOUND_DATA) {
-+			ctx->output.fifo |= ((unsigned long long)byte <<
-+				(SWSR_OUTPUT_FIFO_LENGTH - 8 - ctx->output.num_bits));
-+			ctx->output.num_bits += 8;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static unsigned int swsr_getbits_from_outputfifo(struct swsr_context *ctx,
-+						 unsigned int numbits,
-+						 unsigned char bconsume)
-+{
-+	unsigned int bitsread;
-+
-+	/*
-+	 * Fetch more bits from the input FIFO if the output FIFO
-+	 * doesn't have enough bits to satisfy the request on its own.
-+	 */
-+	if (numbits > ctx->output.num_bits)
-+		swsr_fill_outputfifo(ctx);
-+
-+	/* Ensure that are now enough bits in the output FIFO. */
-+	if (numbits > ctx->output.num_bits) {
-+		/* Tried to access into an SCP or other delimiter. */
-+		if (ctx->input.delim_found) {
-+			ctx->exception = SWSR_EXCEPT_ACCESS_INTO_SCP;
-+		} else {
-+			/*
-+			 * Data has been exhausted if after extracting bits
-+			 * there are still not enough bits in the internal
-+			 * storage to fulfil the number requested.
-+			 */
-+			ctx->exception = SWSR_EXCEPT_ACCESS_BEYOND_EOD;
-+		}
-+
-+		ctx->exception_handler_fxn(ctx->exception, ctx->pexception_param);
-+
-+		/* Return zero if the bits couldn't be obtained */
-+		bitsread = 0;
-+	} else {
-+		unsigned int shift;
-+
-+		/* Extract all the bits from the output FIFO */
-+		shift = (SWSR_OUTPUT_FIFO_LENGTH - numbits);
-+		bitsread = (unsigned int)(ctx->output.fifo >> shift);
-+
-+		if (bconsume) {
-+			/* Update output FIFO. */
-+			ctx->output.fifo <<= numbits;
-+			ctx->output.num_bits -= numbits;
-+		}
-+	}
-+
-+	if (bconsume && ctx->exception == SWSR_EXCEPT_NO_EXCEPTION) {
-+		ctx->output.totalbits_consumed += numbits;
-+		ctx->input.delimunit_bitofst += numbits;
-+	}
-+
-+	/* Return the bits */
-+	return bitsread;
-+}
-+
-+int swsr_read_signed_expgoulomb(void *ctx_hndl)
-+{
-+	struct swsr_context *ctx = (struct swsr_context *)ctx_hndl;
-+	unsigned int exp_goulomb;
-+	unsigned char unsign;
-+
-+	/* Validate input arguments. */
-+	if (!ctx) {
-+		pr_err("Invalid arguments to function: %s\n", __func__);
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+	}
-+
-+	if (!ctx->initialised) {
-+		pr_err("SWSR not yet initialised: %s", __func__);
-+		return IMG_ERROR_NOT_INITIALISED;
-+	}
-+
-+	/* Read unsigned value then convert to signed value */
-+	exp_goulomb = swsr_read_unsigned_expgoulomb(ctx);
-+
-+	unsign = exp_goulomb & 1;
-+	exp_goulomb >>= 1;
-+	exp_goulomb = (unsign) ? exp_goulomb + 1 : -(int)exp_goulomb;
-+
-+	if (ctx->exception != SWSR_EXCEPT_NO_EXCEPTION)
-+		ctx->exception_handler_fxn(ctx->exception, ctx->pexception_param);
-+
-+	/* Return the signed value */
-+	return exp_goulomb;
-+}
-+
-+static unsigned int swsr_readunsigned_expgoulomb(struct swsr_context *ctx)
-+{
-+	unsigned int numbits = 0;
-+	unsigned int bitpeeked;
-+	unsigned int bitread;
-+	unsigned int setbits;
-+	unsigned int expgoulomb;
-+
-+	/* Loop until we have found a non-zero nibble or reached 31 0-bits */
-+	/* first read is 3 bits only to prevent an illegal 32-bit peek */
-+	numbits = 1;
-+	do {
-+		bitpeeked = swsr_peekbits(ctx, numbits);
-+		/* Check for non-zero nibble */
-+		if (bitpeeked != 0)
-+			break;
-+
-+		numbits++;
-+
-+	} while (numbits < 32);
-+
-+	/* Correct the number of leading zero bits */
-+	numbits--;
-+
-+	if (bitpeeked) {
-+		/* read leading zeros and 1-bit */
-+		bitread = swsr_read_bits(ctx, numbits + 1);
-+		if (bitread != 1)
-+			ctx->exception = SWSR_EXCEPT_EXPGOULOMB_ERROR;
-+	} else {
-+		/*
-+		 * read 31 zero bits - special case to deal with 31 or 32
-+		 * leading zeros
-+		 */
-+		bitread = swsr_read_bits(ctx, 31);
-+		if (bitread != 0)
-+			ctx->exception = SWSR_EXCEPT_EXPGOULOMB_ERROR;
-+
-+		/*
-+		 * next 3 bits make either 31 0-bit code:'1xx',
-+		 * or 32 0-bit code:'010'
-+		 */
-+		/*
-+		 * only valid 32 0-bit code is:'0..010..0'
-+		 * and results in 0xffffffff
-+		 */
-+		bitpeeked = swsr_peekbits(ctx, 3);
-+
-+		if (ctx->exception == SWSR_EXCEPT_NO_EXCEPTION) {
-+			if (0x4 & bitpeeked) {
-+				bitread = swsr_read_bits(ctx, 1);
-+				numbits = 31;
-+			} else {
-+				if (bitpeeked != 2)
-+					ctx->exception = SWSR_EXCEPT_EXPGOULOMB_ERROR;
-+
-+				bitread = swsr_read_bits(ctx, 3);
-+				bitread = swsr_read_bits(ctx, 31);
-+				if (bitread != 0)
-+					ctx->exception = SWSR_EXCEPT_EXPGOULOMB_ERROR;
-+
-+				return 0xffffffff;
-+			}
-+		} else {
-+			/* encountered an exception while reading code */
-+			/* just return a valid value */
-+			return 0;
-+		}
-+	}
-+
-+	/* read data bits */
-+	bitread = 0;
-+	if (numbits)
-+		bitread = swsr_read_bits(ctx, numbits);
-+
-+	/* convert exp-goulomb to value */
-+	setbits = (1 << numbits) - 1;
-+	expgoulomb = setbits + bitread;
-+	/* Return the value */
-+	return expgoulomb;
-+}
-+
-+unsigned int swsr_read_unsigned_expgoulomb(void *ctx_hndl)
-+{
-+	struct swsr_context *ctx = (struct swsr_context *)ctx_hndl;
-+	unsigned int value;
-+
-+	/* Validate input arguments. */
-+	if (!ctx) {
-+		pr_err("Invalid arguments to function: %s\n", __func__);
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+	}
-+
-+	if (!ctx->initialised) {
-+		pr_err("SWSR not yet initialised: %s\n", __func__);
-+		return IMG_ERROR_NOT_INITIALISED;
-+	}
-+
-+	value = swsr_readunsigned_expgoulomb(ctx);
-+
-+	if (ctx->exception != SWSR_EXCEPT_NO_EXCEPTION)
-+		ctx->exception_handler_fxn(ctx->exception, ctx->pexception_param);
-+
-+	return value;
-+}
-+
-+enum swsr_exception swsr_check_exception(void *ctx_hndl)
-+{
-+	struct swsr_context *ctx = (struct swsr_context *)ctx_hndl;
-+	enum swsr_exception exception;
-+
-+	/* Validate input arguments. */
-+	if (!ctx) {
-+		pr_err("Invalid arguments to function: %s\n", __func__);
-+		return (enum swsr_exception)IMG_ERROR_INVALID_PARAMETERS;
-+	}
-+
-+	exception = ctx->exception;
-+
-+	if (!ctx->initialised) {
-+		pr_err("SWSR not yet initialised: %s\n", __func__);
-+		return (enum swsr_exception)IMG_ERROR_NOT_INITIALISED;
-+	}
-+
-+	ctx->exception = SWSR_EXCEPT_NO_EXCEPTION;
-+	return exception;
-+}
-+
-+int swsr_check_more_rbsp_data(void *ctx_hndl, unsigned char *more_rbsp_data)
-+{
-+	struct swsr_context *ctx = (struct swsr_context *)ctx_hndl;
-+
-+	int rembitsinbyte;
-+	unsigned char currentbyte;
-+	int numof_aligned_rembits;
-+	unsigned long long rest_alignedbytes;
-+	unsigned char moredata = 0;
-+
-+	/* Validate input arguments. */
-+	if (!ctx) {
-+		pr_err("Invalid arguments to function: %s\n", __func__);
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+	}
-+
-+	if (!ctx->initialised) {
-+		pr_err("SWSR not yet initialised: %s\n", __func__);
-+		return IMG_ERROR_NOT_INITIALISED;
-+	}
-+
-+	if (ctx->input.emprevent != SWSR_EMPREVENT_00000300) {
-+		pr_err("SWSR cannot determine More RBSP data for a stream without SWSR_EMPREVENT_00000300: %s\n",
-+		       __func__);
-+		return IMG_ERROR_OPERATION_PROHIBITED;
-+	}
-+
-+	/*
-+	 * Always fill the output FIFO to ensure the no_moredata flag is set
-+	 * when there are enough remaining bytes
-+	 */
-+
-+	swsr_fill_outputfifo(ctx);
-+
-+	if (ctx->output.num_bits != 0) {
-+		/* Calculate the number of bits in the MS byte */
-+		rembitsinbyte = (ctx->output.num_bits & 0x7);
-+		if (rembitsinbyte == 0)
-+			rembitsinbyte = 8;
-+
-+		numof_aligned_rembits = (ctx->output.num_bits - rembitsinbyte);
-+
-+		/* Peek the value of last byte. */
-+		currentbyte = swsr_peekbits(ctx, rembitsinbyte);
-+		rest_alignedbytes = (ctx->output.fifo >>
-+			(64 - ctx->output.num_bits)) &
-+			((1ULL << numof_aligned_rembits) - 1);
-+
-+		if ((currentbyte == (1 << (rembitsinbyte - 1))) &&
-+		    (numof_aligned_rembits == 0 || (rest_alignedbytes == 0 &&
-+		    ((((((unsigned int)numof_aligned_rembits >> 3)) <
-+		    ctx->input.emprev_seq_len) &&
-+		    ctx->input.num_bytes == 0) || ctx->input.no_moredata))))
-+			moredata = 0;
-+		else
-+			moredata = 1;
-+	}
-+
-+	*more_rbsp_data = moredata;
-+
-+	return 0;
-+}
-+
-+unsigned int swsr_read_onebit(void *ctx_hndl)
-+{
-+	struct swsr_context *ctx = (struct swsr_context *)ctx_hndl;
-+	unsigned int bitread;
-+
-+	/* Validate input arguments. */
-+	if (!ctx_hndl) {
-+		VDEC_ASSERT(0);
-+		return -EIO;
-+	}
-+
-+	ctx = (struct swsr_context *)ctx_hndl;
-+
-+	if (!ctx->initialised) {
-+		pr_err("SWSR not yet initialised: %s\n", __func__);
-+		return IMG_ERROR_NOT_INITIALISED;
-+	}
-+
-+	/* Optimize with inline code (specific version of call below). */
-+	bitread = swsr_read_bits(ctx, 1);
-+
-+	return bitread;
-+}
-+
-+unsigned int swsr_read_bits(void *ctx_hndl, unsigned int no_bits)
-+{
-+	struct swsr_context *ctx;
-+
-+	/* Validate input arguments. */
-+	if (!ctx_hndl) {
-+		VDEC_ASSERT(0);
-+		return -EIO;
-+	}
-+
-+	ctx = (struct swsr_context *)ctx_hndl;
-+
-+	/* Validate input arguments. */
-+	if (!ctx->initialised) {
-+		pr_err("%s: Invalid SWSR context\n", __func__);
-+		ctx->exception = SWSR_EXCEPT_INVALID_CONTEXT;
-+		ctx->exception_handler_fxn(ctx->exception, ctx->pexception_param);
-+
-+		return 0;
-+	}
-+
-+	if (no_bits > SWSR_MAX_SYNTAX_LENGTH) {
-+		pr_err("Maximum symbol length exceeded\n");
-+		ctx->exception = SWSR_EXCEPT_WRONG_CODEWORD_ERROR;
-+		ctx->exception_handler_fxn(ctx->exception, ctx->pexception_param);
-+
-+		return 0;
-+	}
-+
-+	return swsr_getbits_from_outputfifo(ctx, no_bits, 1);
-+}
-+
-+int swsr_read_signedbits(void *ctx_hndl, unsigned int no_bits)
-+{
-+	struct swsr_context *ctx;
-+	int outbits = 0;
-+
-+	/* Validate input arguments. */
-+	if (!ctx_hndl) {
-+		VDEC_ASSERT(0);
-+		return -EIO;
-+	}
-+
-+	ctx = (struct swsr_context *)ctx_hndl;
-+
-+	/* Check if the context has been initialized. */
-+	if (!ctx->initialised) {
-+		pr_err("%s: Invalid SWSR context\n", __func__);
-+		ctx->exception = SWSR_EXCEPT_INVALID_CONTEXT;
-+		ctx->exception_handler_fxn(ctx->exception, ctx->pexception_param);
-+
-+		return 0;
-+	}
-+
-+	if ((no_bits + 1) > SWSR_MAX_SYNTAX_LENGTH) {
-+		pr_err("Maximum symbol length exceeded\n");
-+		ctx->exception = SWSR_EXCEPT_WRONG_CODEWORD_ERROR;
-+		ctx->exception_handler_fxn(ctx->exception, ctx->pexception_param);
-+
-+		return 0;
-+	}
-+	outbits = swsr_getbits_from_outputfifo(ctx, no_bits, 1);
-+
-+	return (swsr_getbits_from_outputfifo(ctx, 1, 1)) ? -outbits : outbits;
-+}
-+
-+unsigned int swsr_peekbits(void *ctx_hndl, unsigned int no_bits)
-+{
-+	struct swsr_context *ctx;
-+
-+	/* validate input parameters */
-+	if (!ctx_hndl) {
-+		VDEC_ASSERT(0);
-+		return -EIO;
-+	}
-+
-+	ctx = (struct swsr_context *)ctx_hndl;
-+
-+	/* Validate input arguments. */
-+	if (!ctx->initialised) {
-+		pr_err("%s: Invalid SWSR context\n", __func__);
-+		ctx->exception = SWSR_EXCEPT_INVALID_CONTEXT;
-+		ctx->exception_handler_fxn(ctx->exception, ctx->pexception_param);
-+
-+		return 0;
-+	}
-+
-+	if (no_bits > SWSR_MAX_SYNTAX_LENGTH) {
-+		pr_err("Maximum symbol length exceeded\n");
-+		ctx->exception = SWSR_EXCEPT_WRONG_CODEWORD_ERROR;
-+		ctx->exception_handler_fxn(ctx->exception, ctx->pexception_param);
-+
-+		return 0;
-+	}
-+
-+	return swsr_getbits_from_outputfifo(ctx, no_bits, 0);
-+}
-+
-+int swsr_byte_align(void *ctx_hndl)
-+{
-+	struct swsr_context *ctx = (struct swsr_context *)ctx_hndl;
-+	unsigned int numbits;
-+
-+	/* Validate input arguments. */
-+	if (!ctx) {
-+		pr_err("Invalid arguments to function: %s\n", __func__);
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+	}
-+
-+	if (!ctx->initialised) {
-+		pr_err("SWSR not yet initialised: %s\n", __func__);
-+		return IMG_ERROR_NOT_INITIALISED;
-+	}
-+
-+	numbits = (ctx->output.num_bits & 0x7);
-+	/* Read the required number of bits if not already byte-aligned. */
-+	if (numbits != 0)
-+		swsr_read_bits(ctx, numbits);
-+
-+	SWSR_ASSERT((ctx->output.num_bits & 0x7) == 0);
-+
-+	return 0;
-+}
-+
-+int swsr_get_total_bitsconsumed(void *ctx_hndl, unsigned long long *total_bitsconsumed)
-+{
-+	struct swsr_context *ctx = (struct swsr_context *)ctx_hndl;
-+
-+	/* Validate input arguments. */
-+	if (!ctx || !total_bitsconsumed) {
-+		pr_err("Invalid arguments to function: %s\n", __func__);
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+	}
-+
-+	if (!ctx->initialised) {
-+		pr_err("SWSR not yet initialised: %s\n", __func__);
-+		return IMG_ERROR_NOT_INITIALISED;
-+	}
-+
-+	*total_bitsconsumed = ctx->output.totalbits_consumed;
-+
-+	return 0;
-+}
-+
-+int swsr_get_byte_offset_curbuf(void *ctx_hndl, unsigned long long *byte_offset)
-+{
-+	struct swsr_context *ctx = (struct swsr_context *)ctx_hndl;
-+	struct swsr_buffer *outbuf;
-+
-+	/* Validate input arguments. */
-+	if (!ctx || !byte_offset) {
-+		pr_err("Invalid arguments to function: %s\n", __func__);
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+	}
-+
-+	if (!ctx->initialised) {
-+		pr_err("SWSR not yet initialised: %s\n", __func__);
-+		return IMG_ERROR_NOT_INITIALISED;
-+	}
-+
-+	if (ctx->output.num_bits != 0) {
-+		pr_err("SWSR output FIFO not empty. First seek to next delimiter: %s\n",
-+		       __func__);
-+		return IMG_ERROR_OPERATION_PROHIBITED;
-+	}
-+
-+	outbuf = lst_first(&ctx->buffer_ctx.used_buffer_list);
-+	if (outbuf)
-+		*byte_offset = outbuf->num_bytes_read;
-+	else
-+		return IMG_ERROR_COULD_NOT_OBTAIN_RESOURCE;
-+
-+	return 0;
-+}
-+
-+static int swsr_update_emprevent(enum swsr_emprevent emprevent,
-+				 struct swsr_context *ctx)
-+{
-+	struct swsr_input *input;
-+
-+	input = &ctx->input;
-+
-+	input->emprevent = emprevent;
-+	switch (input->emprevent) {
-+	case SWSR_EMPREVENT_00000300:
-+		input->emprev_seq_len = 4;
-+		break;
-+
-+	case SWSR_EMPREVENT_ff00:
-+		input->emprev_seq_len = 2;
-+		break;
-+
-+	case SWSR_EMPREVENT_000002:
-+		input->emprev_seq_len = 3;
-+		break;
-+
-+	default:
-+		input->emprev_seq_len = 0;
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+int swsr_consume_delim(void *ctx_hndl, enum swsr_emprevent emprevent,
-+		       unsigned int size_delim_length, unsigned long long *byte_count)
-+{
-+	struct swsr_context *ctx = (struct swsr_context *)ctx_hndl;
-+	struct swsr_input *input;
-+	unsigned long long delimiter = 0;
-+
-+	/* Validate input arguments. */
-+	if (!ctx || emprevent >= SWSR_EMPREVENT_MAX ||
-+	    (ctx->input.config.delim_type == SWSR_DELIM_SIZE &&
-+	    size_delim_length > SWSR_MAX_DELIM_LENGTH)) {
-+		pr_err("Invalid arguments to function: %s\n", __func__);
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+	}
-+
-+	if (!ctx->initialised) {
-+		pr_err("SWSR not yet initialised: %s\n", __func__);
-+		return IMG_ERROR_NOT_INITIALISED;
-+	}
-+
-+	if (ctx->input.config.delim_type == SWSR_DELIM_SIZE &&
-+	    size_delim_length == 0 && !byte_count) {
-+		pr_err("Byte count value must be provided when size delimiter is zero length: %s\n",
-+		       __func__);
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+	}
-+
-+	input = &ctx->input;
-+
-+	/*
-+	 * Ensure that the input is at a delimiter since emulation prevention
-+	 * removal will not have spanned into this next unit.
-+	 * This allows emulation prevention detection modes to be changed.
-+	 * Now check for delimiter.
-+	 */
-+	input->delim_found = swsr_checkfor_delimiter(ctx);
-+
-+	if (!input->delim_found)
-+		return IMG_ERROR_UNEXPECTED_STATE;
-+
-+	/* Output bitstream FIFOs should be empty. */
-+	/* NOTE: flush output queue using seek function. */
-+	SWSR_ASSERT(ctx->output.num_bits == 0);
-+
-+	/* Only update the delimiter length for size delimiters. */
-+	if (input->config.delim_type == SWSR_DELIM_SIZE)
-+		input->config.delim_length = size_delim_length;
-+
-+	/* Update the emulation prevention detection/removal scheme */
-+	swsr_update_emprevent(emprevent, ctx);
-+
-+	/*
-+	 * Peek at the NAL type and return in callback only
-+	 * when delimiter is in bitstream.
-+	 */
-+	if (input->config.delim_length) {
-+		unsigned int shift;
-+		unsigned char naltype;
-+
-+		/*
-+		 * Peek at the next 8-bits after the delimiter that
-+		 * resides in internal FIFO.
-+		 */
-+		shift = SWSR_OUTPUT_FIFO_LENGTH -
-+			(input->config.delim_length + SWSR_NALTYPE_LENGTH);
-+		naltype = (input->fifo >> shift) & NBIT_8BYTE_MASK(SWSR_NALTYPE_LENGTH);
-+
-+		/*
-+		 * Notify caller of NAL type so that bitstream segmentation
-+		 * can take place before the delimiter is consumed
-+		 */
-+		ctx->buffer_ctx.cb_fxn(SWSR_EVENT_DELIMITER_NAL_TYPE, ctx->buffer_ctx.cb_param,
-+			naltype, NULL, NULL);
-+	}
-+
-+	/*
-+	 * Clear the delimiter found flag and reset bytes read to allow
-+	 * reading of data from input FIFO.
-+	 */
-+	input->delim_found = 0;
-+
-+	if (input->config.delim_length != 0) {
-+		unsigned long long scpvalue = input->config.scp_value;
-+		unsigned int i;
-+		unsigned char byte = 0;
-+
-+		/*
-+		 * Ensure that delimiter is not detected while delimiter
-+		 * is read.
-+		 */
-+		if (input->config.delim_type == SWSR_DELIM_SIZE) {
-+			input->bytes_read_since_delim = 0;
-+			input->byte_count = (input->config.delim_length + 7) / 8;
-+		} else if (input->config.delim_type == SWSR_DELIM_SCP) {
-+			input->config.scp_value = 0xdeadbeefdeadbeefUL;
-+		}
-+
-+		/*
-+		 * Fill output FIFO only with bytes at least partially
-+		 * used for delimiter.
-+		 */
-+		for (i = 0; i < ((input->config.delim_length + 7) / 8); i++) {
-+			swsr_readbyte_from_inputfifo(ctx, &byte);
-+
-+			ctx->output.fifo |= ((unsigned long long)byte <<
-+				(SWSR_OUTPUT_FIFO_LENGTH - 8 - ctx->output.num_bits));
-+			ctx->output.num_bits += 8;
-+		}
-+
-+		/*
-+		 * Read delimiter from output FIFO leaving any remaining
-+		 * non-byte-aligned bits behind.
-+		 */
-+		delimiter = swsr_getbits_from_outputfifo(ctx, input->config.delim_length, 1);
-+
-+		/* Restore SCP value. */
-+		if (input->config.delim_type == SWSR_DELIM_SCP)
-+			input->config.scp_value = scpvalue;
-+	} else {
-+		/*
-+		 * For size delimited bitstreams without a delimiter use
-+		 * the byte count provided.
-+		 */
-+		SWSR_ASSERT(*byte_count > 0);
-+		delimiter = *byte_count;
-+		SWSR_ASSERT(input->config.delim_type == SWSR_DELIM_SIZE);
-+	}
-+
-+	if (input->config.delim_type == SWSR_DELIM_SCP)
-+		SWSR_ASSERT((delimiter & NBIT_8BYTE_MASK(input->config.delim_length)) ==
-+			input->config.scp_value);
-+	else if (input->config.delim_type == SWSR_DELIM_SIZE) {
-+		input->byte_count = delimiter;
-+
-+		/* Return byte count if argument provided. */
-+		if (byte_count)
-+			*byte_count = input->byte_count;
-+	}
-+
-+	input->bytes_read_since_delim = 0;
-+	{
-+		struct swsr_buffer *buffer = input->buf;
-+
-+		if (!buffer)
-+			buffer = lst_first(&ctx->buffer_ctx.used_buffer_list);
-+		if (buffer)
-+			input->delimited_unit_start_offset = (long)buffer->num_bytes_read;
-+		else
-+			input->delimited_unit_start_offset = 0;
-+	}
-+	input->delimited_unit_size = 0;
-+	input->delimunit_bitofst = 0;
-+
-+	input->no_moredata = 0;
-+
-+	return 0;
-+}
-+
-+enum swsr_found swsr_seek_delim_or_eod(void *ctx_hndl)
-+{
-+	struct swsr_context *ctx = (struct swsr_context *)ctx_hndl;
-+	enum swsr_found found = SWSR_FOUND_DATA;
-+	unsigned char byte;
-+
-+	/* Validate input arguments. */
-+	if (!ctx) {
-+		pr_err("Invalid arguments to function: %s\n", __func__);
-+		return (enum swsr_found)IMG_ERROR_INVALID_PARAMETERS;
-+	}
-+
-+	if (!ctx->initialised) {
-+		pr_err("SWSR not yet initialised: %s\n", __func__);
-+		return (enum swsr_found)IMG_ERROR_NOT_INITIALISED;
-+	}
-+
-+	/* Read the residual contents of the output FIFO */
-+	swsr_byte_align(ctx);
-+	while (ctx->output.num_bits > 0) {
-+		SWSR_ASSERT((ctx->output.num_bits & 0x7) == 0);
-+		swsr_read_bits(ctx, 8);
-+	}
-+	SWSR_ASSERT(ctx->output.num_bits == 0);
-+	if (ctx->input.config.delim_type == SWSR_DELIM_SCP) {
-+		struct swsr_input *input = &ctx->input;
-+		struct swsr_output *output = &ctx->output;
-+
-+		while (found == SWSR_FOUND_DATA) {
-+			unsigned char *offset;
-+			unsigned int delimlength_inbytes;
-+			unsigned char *startoffset;
-+			unsigned long long mask;
-+			unsigned long long scp;
-+			unsigned char scpfirstbyte;
-+
-+			/*
-+			 * ensure that all the data in the input FIFO comes
-+			 * from the current buffer
-+			 */
-+			if (input->buf && input->buf->byte_offset <= input->num_bytes) {
-+				found = swsr_consumebyte_from_inputfifo(ctx, &byte);
-+				continue;
-+			}
-+
-+			/* consume remaining bytes from the FIFO */
-+			if (!input->buf) {
-+				found = swsr_consumebyte_from_inputfifo(ctx, &byte);
-+				continue;
-+			}
-+
-+			delimlength_inbytes = (input->config.delim_length + 7) / 8;
-+
-+			/*
-+			 * Make the mask and the scp value byte aligned to
-+			 * speed up things
-+			 */
-+			mask = ((1UL << input->config.delim_length) - 1) <<
-+				(8 * delimlength_inbytes - input->config.delim_length);
-+			scp = input->config.scp_value <<
-+				(8 * delimlength_inbytes - input->config.delim_length);
-+			scpfirstbyte = (scp >> 8 * (delimlength_inbytes - 1)) & 0xFF;
-+
-+			/* rollback the input FIFO */
-+			input->buf->byte_offset -= input->num_bytes;
-+			input->buf->num_bytes_read -= input->num_bytes;
-+			input->bitstream_offset -= input->num_bytes;
-+			input->num_bytes = 0;
-+			input->fifo = 0;
-+
-+			startoffset = input->buf->data + input->buf->byte_offset;
-+
-+			while (found == SWSR_FOUND_DATA) {
-+				offset = memchr(input->buf->data + input->buf->byte_offset,
-+						scpfirstbyte,
-+						input->buf->num_bytes -
-+						(input->buf->byte_offset + delimlength_inbytes -
-+						1));
-+
-+				if (offset) {
-+					unsigned int i;
-+
-+					/*
-+					 * load bytes that might be SCP into
-+					 * the FIFO
-+					 */
-+					for (i = 0; i < delimlength_inbytes; i++) {
-+						input->fifo <<= 8;
-+						input->fifo |= offset[i];
-+					}
-+
-+					input->buf->byte_offset = offset - input->buf->data;
-+
-+					if ((input->fifo & mask) == scp) {
-+						unsigned long long bytesread = offset
-+							- startoffset;
-+
-+						/*
-+						 * Scp found, fill the rest of
-+						 * the FIFO
-+						 */
-+					for (i = delimlength_inbytes;
-+						i < SWSR_INPUT_FIFO_LENGTH &&
-+						input->buf->byte_offset + i <
-+						input->buf->num_bytes;
-+						i++) {
-+						input->fifo <<= 8;
-+						input->fifo |= offset[i];
-+					}
-+
-+						input->fifo <<= (SWSR_INPUT_FIFO_LENGTH - i) * 8;
-+
-+						input->bytes_for_next_sequ = 0;
-+						input->num_bytes = i;
-+
-+						input->buf->byte_offset += i;
-+
-+						input->buf->num_bytes_read = offset -
-+							input->buf->data;
-+						input->bitstream_offset += bytesread + i;
-+
-+						output->totalbits_consumed += bytesread * 8;
-+
-+						input->delimunit_bitofst += bytesread * 8;
-+
-+						output->num_bits = 0;
-+						output->fifo = 0;
-+
-+						SWSR_ASSERT(swsr_checkfor_delimiter(ctx));
-+
-+						found = SWSR_FOUND_DELIM;
-+					} else {
-+						input->buf->byte_offset++;
-+					}
-+				} else {
-+					/* End of the current buffer */
-+					unsigned int bytesread = input->buf->num_bytes -
-+						(startoffset - input->buf->data);
-+					unsigned int i;
-+
-+					/* update offsets */
-+					input->bitstream_offset += bytesread;
-+					output->totalbits_consumed += bytesread * 8;
-+					input->delimunit_bitofst += bytesread * 8;
-+
-+					input->buf->byte_offset = input->buf->num_bytes;
-+					input->buf->num_bytes_read = input->buf->num_bytes -
-+						(delimlength_inbytes - 1);
-+
-+					/* load remaining bytes to FIFO */
-+					offset = input->buf->data +
-+						input->buf->num_bytes -
-+						(delimlength_inbytes - 1);
-+					for (i = 0; i < delimlength_inbytes - 1;
-+						i++) {
-+						input->fifo <<= 8;
-+						input->fifo |= offset[i];
-+					}
-+
-+					input->fifo <<= (SWSR_INPUT_FIFO_LENGTH - i) * 8;
-+
-+					input->bytes_for_next_sequ = 0;
-+					input->num_bytes = delimlength_inbytes - 1;
-+
-+					output->num_bits = 0;
-+					output->fifo = 0;
-+
-+					/*
-+					 * Consume a few bytes from the next
-+					 * byte to check if there is scp on
-+					 * buffers boundary
-+					 */
-+					for (i = 0;
-+						i < delimlength_inbytes && found == SWSR_FOUND_DATA;
-+						i++) {
-+						found = swsr_consumebyte_from_inputfifo(ctx, &byte);
-+						SWSR_ASSERT(found != SWSR_FOUND_NONE);
-+					}
-+
-+					break;
-+				}
-+			}
-+		}
-+	} else {
-+		/*
-+		 * Extract data from input FIFO until data is not found either
-+		 * because we have run out or a SCP has been detected.
-+		 */
-+		while (found == SWSR_FOUND_DATA) {
-+			found = swsr_consumebyte_from_inputfifo(ctx, &byte);
-+			SWSR_ASSERT(found != SWSR_FOUND_NONE);
-+		}
-+	}
-+
-+	/*
-+	 * When the end of data has been reached there should be no
-+	 * more data in the input FIFO.
-+	 */
-+	if (found == SWSR_FOUND_EOD)
-+		SWSR_ASSERT(ctx->input.num_bytes == 0);
-+
-+	SWSR_ASSERT(found != SWSR_FOUND_DATA);
-+	return found;
-+}
-+
-+enum swsr_found swsr_check_delim_or_eod(void *ctx_hndl)
-+{
-+	struct swsr_context *ctx = (struct swsr_context *)ctx_hndl;
-+	enum swsr_found found = SWSR_FOUND_DATA;
-+
-+	/* Validate input arguments. */
-+	if (!ctx) {
-+		pr_err("Invalid arguments to function: %s\n", __func__);
-+
-+		return (enum swsr_found)IMG_ERROR_INVALID_PARAMETERS;
-+	}
-+
-+	if (!ctx->initialised) {
-+		pr_err("SWSR not yet initialised: %s\n", __func__);
-+
-+		return (enum swsr_found)IMG_ERROR_NOT_INITIALISED;
-+	}
-+
-+	/*
-+	 * End of data when all FIFOs are empty and there is nothing left to
-+	 * read from the input buffers.
-+	 */
-+	if (ctx->output.num_bits == 0 && ctx->input.num_bytes == 0 &&
-+	    ctx->input.bitstream_offset >= ctx->input.bitstream_size)
-+		found = SWSR_FOUND_EOD;
-+	else if (ctx->output.num_bits == 0 && swsr_checkfor_delimiter(ctx)) {
-+		/*
-+		 * Output queue is empty and delimiter is at the head of
-+		 * input queue.
-+		 */
-+		found = SWSR_FOUND_DELIM;
-+	}
-+
-+	return found;
-+}
-+
-+int swsr_start_bitstream(void *ctx_hndl, const struct swsr_config *config,
-+			 unsigned long long bitstream_size, enum swsr_emprevent emprevent)
-+{
-+	struct swsr_context *ctx = (struct swsr_context *)ctx_hndl;
-+	struct swsr_buffer *buffer;
-+	unsigned int result;
-+
-+	/* Validate input arguments. */
-+	if (!ctx || !config || config->delim_type >= SWSR_DELIM_MAX ||
-+	    config->delim_length > SWSR_MAX_DELIM_LENGTH ||
-+	    config->scp_value > NBIT_8BYTE_MASK(config->delim_length) ||
-+	    emprevent >= SWSR_EMPREVENT_MAX) {
-+		pr_err("Invalid arguments to function: %s\n", __func__);
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+	}
-+
-+	if (!ctx->initialised) {
-+		pr_err("SWSR not yet initialised: %s\n", __func__);
-+		return IMG_ERROR_NOT_INITIALISED;
-+	}
-+
-+	/* Move all used buffers into free list */
-+	buffer = lst_removehead(&ctx->buffer_ctx.used_buffer_list);
-+	while (buffer) {
-+		lst_add(&ctx->buffer_ctx.free_buffer_list, buffer);
-+		buffer = lst_removehead(&ctx->buffer_ctx.used_buffer_list);
-+	}
-+
-+	/* Clear all the shift-register state (except config) */
-+	memset(&ctx->input, 0, sizeof(ctx->input));
-+	memset(&ctx->output, 0, sizeof(ctx->output));
-+
-+	/* Update input FIFO configuration */
-+	ctx->input.bitstream_size = bitstream_size;
-+	ctx->input.config = *config;
-+	result = swsr_update_emprevent(emprevent, ctx);
-+	SWSR_ASSERT(result == 0);
-+
-+	/*
-+	 * Signal delimiter found to ensure that no data is read out of
-+	 * input FIFO
-+	 * while fetching the first bitstream data into input FIFO.
-+	 */
-+	ctx->input.delim_found = 1;
-+	result = swsr_fill_outputfifo(ctx);
-+	SWSR_ASSERT(result == 0);
-+
-+	/* Now check for delimiter. */
-+	ctx->input.delim_found = swsr_checkfor_delimiter(ctx);
-+
-+	return 0;
-+}
-+
-+int swsr_deinitialise(void *ctx_hndl)
-+{
-+	struct swsr_context *ctx = (struct swsr_context *)ctx_hndl;
-+	struct swsr_buffer *buffer;
-+
-+	/* Validate input arguments. */
-+	if (!ctx) {
-+		pr_err("Invalid arguments to function: %s\n", __func__);
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+	}
-+
-+	if (!ctx->initialised) {
-+		pr_err("SWSR not yet initialised: %s\n", __func__);
-+		return IMG_ERROR_NOT_INITIALISED;
-+	}
-+
-+	/* Free all used buffer containers */
-+	buffer = lst_removehead(&ctx->buffer_ctx.used_buffer_list);
-+	while (buffer) {
-+		kfree(buffer);
-+		buffer = lst_removehead(&ctx->buffer_ctx.used_buffer_list);
-+	}
-+
-+	/* Free all free buffer containers. */
-+	buffer = lst_removehead(&ctx->buffer_ctx.free_buffer_list);
-+	while (buffer) {
-+		kfree(buffer);
-+		buffer = lst_removehead(&ctx->buffer_ctx.free_buffer_list);
-+	}
-+
-+	ctx->initialised = 0;
-+	kfree(ctx);
-+
-+	return 0;
-+}
-+
-+int swsr_initialise(swsr_except_handler_fxn exception_handler_fxn,
-+		    void *exception_cbparam, swsr_callback_fxn callback_fxn,
-+		    void *cb_param, void **ctx_hndl)
-+{
-+	struct swsr_context *ctx;
-+	struct swsr_buffer *buffer;
-+	unsigned int i;
-+	unsigned int result;
-+
-+	/* Validate input arguments. */
-+	if (!exception_handler_fxn || !exception_cbparam || !callback_fxn ||
-+	    !cb_param || !ctx_hndl) {
-+		pr_err("Invalid arguments to function: %s\n", __func__);
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+	}
-+
-+	/* Allocate and initialise shift-register context */
-+	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-+	if (!ctx) {
-+		VDEC_ASSERT(0);
-+		return -EINVAL;
-+	}
-+
-+	/* Setup shift-register context */
-+	ctx->exception_handler_fxn = exception_handler_fxn;
-+	ctx->pexception_param = exception_cbparam;
-+
-+	ctx->buffer_ctx.cb_fxn = callback_fxn;
-+	ctx->buffer_ctx.cb_param = cb_param;
-+
-+	/*
-+	 * Allocate a new buffer container for each byte in internal storage.
-+	 * This is the theoretical maximum number of buffers in the SWSR at
-+	 * any one time.
-+	 */
-+	for (i = 0; i < SWSR_INPUT_FIFO_LENGTH + (SWSR_OUTPUT_FIFO_LENGTH / 8);
-+		i++) {
-+		/* Allocate a buffer container */
-+		buffer = kzalloc(sizeof(*buffer), GFP_KERNEL);
-+		SWSR_ASSERT(buffer);
-+		if (!buffer) {
-+			result = IMG_ERROR_OUT_OF_MEMORY;
-+			goto error;
-+		}
-+
-+		/* Add container to free list */
-+		lst_add(&ctx->buffer_ctx.free_buffer_list, buffer);
-+	}
-+
-+	SWSR_ASSERT(SWSR_MAX_SYNTAX_LENGTH <= (sizeof(unsigned int) * 8));
-+
-+	ctx->initialised = 1;
-+	*ctx_hndl = ctx;
-+
-+	return 0;
-+error:
-+	buffer = lst_removehead(&ctx->buffer_ctx.free_buffer_list);
-+	while (buffer) {
-+		kfree(buffer);
-+		buffer = lst_removehead(&ctx->buffer_ctx.free_buffer_list);
-+	}
-+	kfree(ctx);
-+
-+	return result;
-+}
-+
-+static unsigned char swsr_israwdata_extraction_supported(struct swsr_context *ctx)
-+{
-+	/*
-+	 * For now only h.264/HEVC like 0x000001 SCP delimited
-+	 * bistreams are supported.
-+	 */
-+	if (ctx->input.config.delim_type == SWSR_DELIM_SCP &&
-+	    ctx->input.config.delim_length == (3 * 8) &&
-+	    ctx->input.config.scp_value == 0x000001)
-+		return 1;
-+
-+	return 0;
-+}
-+
-+static int swsr_getcurrent_delimited_unitsize(struct swsr_context *ctx, unsigned int *size)
-+{
-+	struct swsr_buffer *buf;
-+
-+	buf = ctx->input.buf;
-+	if (!buf)
-+		buf = lst_first(&ctx->buffer_ctx.used_buffer_list);
-+
-+	if (buf && ctx->input.delimited_unit_start_offset >= 0 &&
-+	    ctx->input.delimited_unit_start_offset < buf->num_bytes) {
-+		unsigned long long bufptr =
-+			(unsigned long long)ctx->input.delimited_unit_start_offset;
-+		unsigned int zeros = 0;
-+
-+		/* Scan the current buffer for the next SCP. */
-+		while (1) {
-+			/* Look for two consecutive 0 bytes. */
-+			while ((bufptr < buf->num_bytes) && (zeros < 2)) {
-+				if (buf->data[bufptr++] == 0)
-+					zeros++;
-+				else
-+					zeros = 0;
-+			}
-+			/*
-+			 * If we're not at the end of the buffer already and
-+			 * the next byte is 1, we've got it.
-+			 */
-+			/*
-+			 * If we're at the end of the buffer, just assume
-+			 * we've got it too
-+			 * as we do not support buffer spanning units.
-+			 */
-+			if (bufptr < buf->num_bytes && buf->data[bufptr] == 1) {
-+				break;
-+			} else if (bufptr == buf->num_bytes) {
-+				zeros = 0;
-+				break;
-+			}
-+			/*
-+			 * Finally just decrease the number of 0s found
-+			 * already and go on scanning.
-+			 */
-+			else
-+				zeros = 1;
-+		}
-+		/* Calculate the unit size. */
-+		ctx->input.delimited_unit_size = (unsigned int)(bufptr -
-+			(unsigned long long)ctx->input.delimited_unit_start_offset) - zeros;
-+		*size = ctx->input.delimited_unit_size;
-+	} else {
-+		return IMG_ERROR_COULD_NOT_OBTAIN_RESOURCE;
-+	}
-+
-+	return 0;
-+}
-+
-+int swsr_get_current_delimited_unitsize(void *ctx_hndl, unsigned int *size)
-+{
-+	struct swsr_context *ctx = (struct swsr_context *)ctx_hndl;
-+
-+	/* Validate input arguments. */
-+	if (!ctx || !size) {
-+		pr_err("Invalid arguments to function: %s\n", __func__);
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+	}
-+
-+	if (!ctx->initialised) {
-+		pr_err("SWSR not yet initialised: %s\n", __func__);
-+		return IMG_ERROR_NOT_INITIALISED;
-+	}
-+
-+	if (!swsr_israwdata_extraction_supported(ctx))
-+		return IMG_ERROR_NOT_SUPPORTED;
-+
-+	return swsr_getcurrent_delimited_unitsize(ctx, size);
-+}
-+
-+int swsr_get_current_delimited_unit(void *ctx_hndl, unsigned char *data, unsigned int *size)
-+{
-+	struct swsr_context *ctx = (struct swsr_context *)ctx_hndl;
-+	struct swsr_buffer *buf;
-+	unsigned int copysize;
-+
-+	/* Validate input arguments. */
-+	if (!ctx || !data || !size || *size == 0) {
-+		pr_err("Invalid arguments to function: %s\n", __func__);
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+	}
-+
-+	if (!ctx->initialised) {
-+		pr_err("SWSR not yet initialised: %s\n", __func__);
-+		return IMG_ERROR_NOT_INITIALISED;
-+	}
-+
-+	if (!swsr_israwdata_extraction_supported(ctx))
-+		return IMG_ERROR_NOT_SUPPORTED;
-+
-+	buf = ctx->input.buf;
-+	if (!buf)
-+		buf = lst_first(&ctx->buffer_ctx.used_buffer_list);
-+
-+	if (buf && ctx->input.delimited_unit_start_offset >= 0) {
-+		if (ctx->input.delimited_unit_size == 0)
-+			swsr_getcurrent_delimited_unitsize(ctx, &copysize);
-+
-+		if (ctx->input.delimited_unit_size < *size)
-+			*size = ctx->input.delimited_unit_size;
-+
-+		memcpy(data, buf->data + ctx->input.delimited_unit_start_offset, *size);
-+	} else {
-+		return IMG_ERROR_COULD_NOT_OBTAIN_RESOURCE;
-+	}
-+
-+	return 0;
-+}
-+
-+int swsr_get_current_delimited_unit_bit_offset(void *ctx_hndl, unsigned int *bit_offset)
-+{
-+	struct swsr_context *ctx = (struct swsr_context *)ctx_hndl;
-+
-+	/* Validate input arguments. */
-+	if (!ctx || !bit_offset) {
-+		pr_err("Invalid arguments to function: %s\n", __func__);
-+		return IMG_ERROR_INVALID_PARAMETERS;
-+	}
-+
-+	if (!ctx->initialised) {
-+		pr_err("SWSR not yet initialised: %s\n", __func__);
-+		return IMG_ERROR_NOT_INITIALISED;
-+	}
-+
-+	if (!swsr_israwdata_extraction_supported(ctx))
-+		return IMG_ERROR_NOT_SUPPORTED;
-+
-+	if (ctx->input.delimited_unit_start_offset >= 0)
-+		*bit_offset = ctx->input.delimunit_bitofst;
-+
-+	return 0;
-+}
-diff --git a/drivers/staging/media/vxd/decoder/swsr.h b/drivers/staging/media/vxd/decoder/swsr.h
-new file mode 100644
-index 000000000000..5c27e8c41240
---- /dev/null
-+++ b/drivers/staging/media/vxd/decoder/swsr.h
-@@ -0,0 +1,278 @@
++++ b/drivers/staging/media/vxd/decoder/mmu_defs.h
+@@ -0,0 +1,42 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * Software Shift Register Access fucntions
++ * V-DEC MMU Definitions
 + *
 + * Copyright (c) Imagination Technologies Ltd.
 + * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com/
 + *
 + * Authors:
-+ *	Lakshmi Sankar <lakshmisankar-t@ti.com>
++ *	Amit Makani <amit.makani@ti.com>
++ */
++
++#ifndef _VXD_MMU_DEF_H_
++#define _VXD_MMU_DEF_H_
++
++/*
++ * This type defines MMU variant.
++ */
++enum mmu_etype {
++	MMU_TYPE_NONE        = 0,
++	MMU_TYPE_32BIT,
++	MMU_TYPE_36BIT,
++	MMU_TYPE_40BIT,
++	MMU_TYPE_FORCE32BITS = 0x7FFFFFFFU
++};
++
++/**
++ * enum mmu_eheap_id - This type defines the MMU heaps.
++ * @MMU_HEAP_IMAGE_BUFFERS_UNTILED: Heap for untiled video buffers
++ * @MMU_HEAP_BITSTREAM_BUFFERS : Heap for bitstream buffers
++ * @MMU_HEAP_STREAM_BUFFERS : Heap for Stream buffers
++ * @MMU_HEAP_MAX : Number of heaps
++ * @MMU_HEAP_FORCE32BITS: MMU_HEAP_FORCE32BITS
++ */
++enum mmu_eheap_id {
++	MMU_HEAP_IMAGE_BUFFERS_UNTILED = 0x00,
++	MMU_HEAP_BITSTREAM_BUFFERS,
++	MMU_HEAP_STREAM_BUFFERS,
++	MMU_HEAP_MAX,
++	MMU_HEAP_FORCE32BITS           = 0x7FFFFFFFU
++};
++
++#endif /* _VXD_MMU_DEFS_H_ */
+diff --git a/drivers/staging/media/vxd/decoder/scaler_setup.h b/drivers/staging/media/vxd/decoder/scaler_setup.h
+new file mode 100644
+index 000000000000..55dc000e07a2
+--- /dev/null
++++ b/drivers/staging/media/vxd/decoder/scaler_setup.h
+@@ -0,0 +1,59 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * VXD DEC constants calculation and scalling coefficients
 + *
-+ * Re-written for upstreming
-+ *	Prashanth Kumar Amai <prashanth.ka@pathpartnertech.com>
++ * Copyright (c) Imagination Technologies Ltd.
++ * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com/
++ *
++ * Authors:
++ *	Amit Makani <amit.makani@ti.com>
++ */
++
++#ifndef _SCALER_SETUP_H
++#define _SCALER_SETUP_H
++
++#define LOWP                            11
++#define HIGHP                           14
++
++#define FIXED(a, digits)                ((int)((a) * (1 << (digits))))
++
++struct scaler_params {
++	unsigned int vert_pitch;
++	unsigned int vert_startpos;
++	unsigned int vert_pitch_chroma;
++	unsigned int vert_startpos_chroma;
++	unsigned int horz_pitch;
++	unsigned int horz_startpos;
++	unsigned int horz_pitch_chroma;
++	unsigned int horz_startpos_chroma;
++	unsigned char fixed_point_shift;
++};
++
++struct scaler_filter {
++	unsigned char bhoriz_bilinear;
++	unsigned char bvert_bilinear;
++};
++
++struct scaler_pitch {
++	int horiz_luma;
++	int vert_luma;
++	int horiz_chroma;
++	int vert_chroma;
++};
++
++struct scaler_config {
++	enum vdec_vid_std vidstd;
++	const struct vxd_coreprops *coreprops;
++	struct pixel_pixinfo *in_pixel_info;
++	const struct pixel_pixinfo *out_pixel_info;
++	unsigned char bfield_coded;
++	unsigned char bseparate_chroma_planes;
++	unsigned int recon_width;
++	unsigned int recon_height;
++	unsigned int mb_width;
++	unsigned int mb_height;
++	unsigned int scale_width;
++	unsigned int scale_height;
++};
++
++#endif /* _SCALER_SETUP_H */
+diff --git a/drivers/staging/media/vxd/decoder/vdec_defs.h b/drivers/staging/media/vxd/decoder/vdec_defs.h
+new file mode 100644
+index 000000000000..d7f182fd96d3
+--- /dev/null
++++ b/drivers/staging/media/vxd/decoder/vdec_defs.h
+@@ -0,0 +1,548 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * VXD Decoder common header
++ *
++ * Copyright (c) Imagination Technologies Ltd.
++ * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com/
++ *
++ * Authors:
++ *	Amit Makani <amit.makani@ti.com>
++ *
++ * Re-written for upstreamimg
 + *	Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
 + */
-+#ifndef _SWSR_H
-+#define _SWSR_H
 +
-+#include <linux/types.h>
++#ifndef __VDEC_DEFS_H__
++#define __VDEC_DEFS_H__
 +
-+#include "img_errors.h"
-+#include "lst.h"
++#include "img_mem.h"
++#include "img_pixfmts.h"
++#ifdef HAS_JPEG
++#include "jpegfw_data.h"
++#endif
++#include "pixel_api.h"
++#include "vdecfw_shared.h"
 +
-+#define SWSR_MAX_DELIM_LENGTH   (8 * 8)
++#define VDEC_MAX_PANSCAN_WINDOWS        4
++#define VDEC_MB_DIMENSION               (16)
 +
-+enum swsr_exception {
-+	SWSR_EXCEPT_NO_EXCEPTION = 0x00,
-+	SWSR_EXCEPT_ENCAPULATION_ERROR1,
-+	SWSR_EXCEPT_ENCAPULATION_ERROR2,
-+	SWSR_EXCEPT_ACCESS_INTO_SCP,
-+	SWSR_EXCEPT_ACCESS_BEYOND_EOD,
-+	SWSR_EXCEPT_EXPGOULOMB_ERROR,
-+	SWSR_EXCEPT_WRONG_CODEWORD_ERROR,
-+	SWSR_EXCEPT_NO_SCP,
-+	SWSR_EXCEPT_INVALID_CONTEXT,
-+	SWSR_EXCEPT_FORCE32BITS = 0x7FFFFFFFU
-+};
++#define MAX_PICS_IN_SYSTEM      (8)
++#define SEQUENCE_SLOTS          (8)
++#define PPS_SLOTS               (8)
++/* Only for HEVC */
++#define VPS_SLOTS               (16)
++#define MAX_VPSS                (MAX_PICS_IN_SYSTEM + VPS_SLOTS)
++#define MAX_SEQUENCES           (MAX_PICS_IN_SYSTEM + SEQUENCE_SLOTS)
++#define MAX_PPSS                (MAX_PICS_IN_SYSTEM + PPS_SLOTS)
 +
-+enum swsr_cbevent {
-+	SWSR_EVENT_INPUT_BUFFER_START = 0,
-+	SWSR_EVENT_OUTPUT_BUFFER_END,
-+	SWSR_EVENT_DELIMITER_NAL_TYPE,
-+	SWSR_EVENT_FORCE32BITS        = 0x7FFFFFFFU
-+};
++#define VDEC_H264_MAXIMUMVALUEOFCPB_CNT 32
++#define VDEC_H264_MVC_MAX_VIEWS         (H264FW_MAX_NUM_VIEWS)
 +
-+enum swsr_found {
-+	SWSR_FOUND_NONE        = 0,
-+	SWSR_FOUND_EOD,
-+	SWSR_FOUND_DELIM,
-+	SWSR_FOUND_DATA,
-+	SWSR_FOUND_FORCE32BITS = 0x7FFFFFFFU
-+};
++#define VDEC_ASSERT(expected) ({ WARN_ON(!(expected)); 0; })
 +
-+enum swsr_delim_type {
-+	SWSR_DELIM_NONE        = 0,
-+	SWSR_DELIM_SCP,
-+	SWSR_DELIM_SIZE,
-+	SWSR_DELIM_MAX,
-+	SWSR_DELIM_FORCE32BITS = 0x7FFFFFFFU
-+};
++#define VDEC_ALIGN_SIZE(_val, _alignment, val_type, align_type) \
++	({ \
++		val_type val = _val; \
++		align_type alignment = _alignment; \
++		(((val) + (alignment) - 1) & ~((alignment) - 1)); })
 +
-+enum swsr_emprevent {
-+	SWSR_EMPREVENT_NONE = 0x00,
-+	SWSR_EMPREVENT_00000300,
-+	SWSR_EMPREVENT_ff00,
-+	SWSR_EMPREVENT_000002,
-+	SWSR_EMPREVENT_MAX,
-+	SWSR_EMPREVENT_FORCE32BITS = 0x7FFFFFFFU
-+};
-+
-+struct swsr_config {
-+	enum swsr_delim_type delim_type;
-+	unsigned int delim_length;
-+	unsigned long long scp_value;
++/*
++ * This type defines the video standard.
++ * @brief  VDEC Video Standards
++ */
++enum vdec_vid_std {
++	VDEC_STD_UNDEFINED = 0,
++	VDEC_STD_MPEG2,
++	VDEC_STD_MPEG4,
++	VDEC_STD_H263,
++	VDEC_STD_H264,
++	VDEC_STD_VC1,
++	VDEC_STD_AVS,
++	VDEC_STD_REAL,
++	VDEC_STD_JPEG,
++	VDEC_STD_VP6,
++	VDEC_STD_VP8,
++	VDEC_STD_SORENSON,
++	VDEC_STD_HEVC,
++	VDEC_STD_MAX,
++	VDEC_STD_FORCE32BITS = 0x7FFFFFFFU
 +};
 +
 +/*
-+ * This is the function prototype for the caller supplier exception handler.
++ * This type defines the bitstream format. Should be done at the
++ * start of decoding.
++ * @brief  VDEC Bitstream Format
++ */
++enum vdec_bstr_format {
++	VDEC_BSTRFORMAT_UNDEFINED = 0,
++	VDEC_BSTRFORMAT_ELEMENTARY,
++	VDEC_BSTRFORMAT_DEMUX_BYTESTREAM,
++	VDEC_BSTRFORMAT_DEMUX_SIZEDELIMITED,
++	VDEC_BSTRFORMAT_MAX,
++	VDEC_BSTRFORMAT_FORCE32BITS = 0x7FFFFFFFU
++};
++
++/*
++ * This type defines the Type of payload. Could change with every buffer.
++ * @brief  VDEC Bitstream Element Type
++ */
++enum vdec_bstr_element_type {
++	VDEC_BSTRELEMENT_UNDEFINED = 0,
++	VDEC_BSTRELEMENT_UNSPECIFIED,
++	VDEC_BSTRELEMENT_CODEC_CONFIG,
++	VDEC_BSTRELEMENT_PICTURE_DATA,
++	VDEC_BSTRELEMENT_MAX,
++	VDEC_BSTRELEMENT_FORCE32BITS = 0x7FFFFFFFU
++};
++
++/*
++ * This structure contains the stream configuration details.
++ * @brief  VDEC Stream Configuration Information
++ */
++struct vdec_str_configdata {
++	enum vdec_vid_std vid_std;
++	enum vdec_bstr_format bstr_format;
++	unsigned int user_str_id;
++	unsigned char update_yuv;
++	unsigned char bandwidth_efficient;
++	unsigned char disable_mvc;
++	unsigned char full_scan;
++	unsigned char immediate_decode;
++	unsigned char intra_frame_closed_gop;
++};
++
++/*
++ * This type defines the buffer type categories.
++ * @brief  Buffer Types
++ */
++enum vdec_buf_type {
++	VDEC_BUFTYPE_BITSTREAM,
++	VDEC_BUFTYPE_PICTURE,
++	VDEC_BUFTYPE_ALL,
++	VDEC_BUFTYPE_MAX,
++	VDEC_BUFTYPE_FORCE32BITS = 0x7FFFFFFFU
++};
++
++/*
++ * This structure contains information related to a picture plane.
++ * @brief  Picture Plane Information
++ */
++struct vdec_plane_info {
++	unsigned int offset;
++	unsigned int stride;
++	unsigned int size;
++};
++
++/*
++ * This structure describes the VDEC picture dimensions.
++ * @brief  VDEC Picture Size
++ */
++struct vdec_pict_size {
++	unsigned int width;
++	unsigned int height;
++};
++
++/*
++ * This enumeration defines the colour plane indices.
++ * @brief  Colour Plane Indices
++ */
++enum vdec_color_planes {
++	VDEC_PLANE_VIDEO_Y     = 0,
++	VDEC_PLANE_VIDEO_YUV   = 0,
++	VDEC_PLANE_VIDEO_U     = 1,
++	VDEC_PLANE_VIDEO_UV    = 1,
++	VDEC_PLANE_VIDEO_V     = 2,
++	VDEC_PLANE_VIDEO_A     = 3,
++	VDEC_PLANE_LIGHT_R     = 0,
++	VDEC_PLANE_LIGHT_G     = 1,
++	VDEC_PLANE_LIGHT_B     = 2,
++	VDEC_PLANE_INK_C       = 0,
++	VDEC_PLANE_INK_M       = 1,
++	VDEC_PLANE_INK_Y       = 2,
++	VDEC_PLANE_INK_K       = 3,
++	VDEC_PLANE_MAX         = 4,
++	VDEC_PLANE_FORCE32BITS = 0x7FFFFFFFU
++};
++
++/*
++ * This structure describes the rendered region of a picture buffer (i.e. where
++ * the image data is written.
++ * @brief  Picture Buffer Render Information
++ */
++struct vdec_pict_rendinfo {
++	unsigned int rendered_size;
++	struct vdec_plane_info plane_info[VDEC_PLANE_MAX];
++	unsigned int stride_alignment;
++	struct vdec_pict_size rend_pict_size;
++};
++
++/*
++ * This structure contains information required to configure the picture
++ * buffers
++ * @brief  Picture Buffer Configuration
++ */
++struct vdec_pict_bufconfig {
++	unsigned int coded_width;
++	unsigned int coded_height;
++	enum img_pixfmt pixel_fmt;
++	unsigned int stride[IMG_MAX_NUM_PLANES];
++	unsigned int stride_alignment;
++	unsigned char byte_interleave;
++	unsigned int buf_size;
++	unsigned char packed;
++	unsigned int chroma_offset[IMG_MAX_NUM_PLANES];
++	unsigned int plane_size[IMG_MAX_NUM_PLANES];
++};
++
++/*
++ * This structure describes the VDEC Display Rectangle.
++ * @brief  VDEC Display Rectangle
++ */
++struct vdec_rect {
++	unsigned int top_offset;
++	unsigned int left_offset;
++	unsigned int width;
++	unsigned int height;
++};
++
++/*
++ * This structure contains the Color Space Description that may be present
++ * in SequenceDisplayExtn(MPEG2), VUI parameters(H264), Visual Object(MPEG4)
++ * for the application to use.
++ * @brief  Stream Color Space Properties
++ */
++struct vdec_color_space_desc {
++	unsigned char is_present;
++	unsigned char color_primaries;
++	unsigned char transfer_characteristics;
++	unsigned char matrix_coefficients;
++};
++
++/*
++ * This structure contains common (standard agnostic) sequence header
++ * information, which is required for image buffer allocation and display.
++ * @brief  Sequence Header Information (common)
++ */
++struct vdec_comsequ_hdrinfo {
++	unsigned int codec_profile;
++	unsigned int codec_level;
++	unsigned int bitrate;
++	long frame_rate;
++	unsigned int frame_rate_num;
++	unsigned int frame_rate_den;
++	unsigned int aspect_ratio_num;
++	unsigned int aspect_ratio_den;
++	unsigned char interlaced_frames;
++	struct pixel_pixinfo pixel_info;
++	struct vdec_pict_size max_frame_size;
++	unsigned int max_ref_frame_num;
++	struct vdec_pict_size frame_size;
++	unsigned char field_codec_mblocks;
++	unsigned int min_pict_buf_num;
++	unsigned char picture_reordering;
++	unsigned char post_processing;
++	struct vdec_rect orig_display_region;
++	struct vdec_rect raw_display_region;
++	unsigned int num_views;
++	unsigned int max_reorder_picts;
++	unsigned char separate_chroma_planes;
++	unsigned char not_dpb_flush;
++	struct vdec_color_space_desc color_space_info;
++};
++
++/*
++ * This structure contains the standard specific codec configuration
++ * @brief Codec configuration
++ */
++struct vdec_codec_config {
++	unsigned int default_height;
++	unsigned int default_width;
++};
++
++/*
++ * This structure describes the decoded picture attributes (relative to the
++ * encoded, where necessary, e.g. rotation angle).
++ * @brief  Stream Output Configuration
++ */
++struct vdec_str_opconfig {
++	struct pixel_pixinfo pixel_info;
++	unsigned char force_oold;
++};
++
++/*
++ * This type defines the "play" mode.
++ * @brief  Play Mode
++ */
++enum vdec_play_mode {
++	VDEC_PLAYMODE_PARSE_ONLY,
++	VDEC_PLAYMODE_NORMAL_DECODE,
++	VDEC_PLAYMODE_MAX,
++	VDEC_PLAYMODE_FORCE32BITS = 0x7FFFFFFFU
++};
++
++/*
++ * This type defines the bitstream processing error info.
++ * @brief  Bitstream Processing Error Info
++ */
++struct vdec_bstr_err_info {
++	unsigned int sequence_err;
++	unsigned int picture_err;
++	unsigned int other_err;
++};
++
++/*
++ * This structure describes the VDEC Pan Scan Window.
++ * @brief  VDEC Pan Scan Window
++ */
++struct vdec_window {
++	unsigned int ui32topoffset;
++	unsigned int ui32leftoffset;
++	unsigned int ui32width;
++	unsigned int ui32height;
++};
++
++/*
++ * This structure contains the VDEC picture display properties.
++ * @brief  VDEC Picture Display Properties
++ */
++struct vdec_pict_disp_info {
++	struct vdec_rect enc_disp_region;
++	struct vdec_rect disp_region;
++	struct vdec_rect raw_disp_region;
++	unsigned char top_fld_first;
++	unsigned char out_top_fld_first;
++	unsigned int max_frm_repeat;
++	unsigned int repeat_first_fld;
++	unsigned int num_pan_scan_windows;
++	struct vdec_window pan_scan_windows[VDEC_MAX_PANSCAN_WINDOWS];
++};
++
++/*
++ * This structure contains VXD hardware signatures.
++ * @brief  VXD Hardware signatures
++ */
++struct vdec_pict_hwcrc {
++	unsigned char first_fld_rcvd;
++	unsigned int crc_vdmc_pix_recon;
++	unsigned int vdeb_sysmem_wrdata;
++};
++
++struct vdec_features {
++	unsigned char valid;
++	unsigned char mpeg2;
++	unsigned char mpeg4;
++	unsigned char h264;
++	unsigned char vc1;
++	unsigned char avs;
++	unsigned char real;
++	unsigned char jpeg;
++	unsigned char vp6;
++	unsigned char vp8;
++	unsigned char hevc;
++	unsigned char hd;
++	unsigned char rotation;
++	unsigned char scaling;
++	unsigned char scaling_oold;
++	unsigned char scaling_extnd_strides;
++};
++
++/*
++ * This type defines the auxiliary info for picture queued for decoding.
++ * @brief  Auxiliary Decoding Picture Info
++ */
++struct vdec_dec_pict_auxinfo {
++	unsigned int seq_hdr_id;
++	unsigned int pps_id;
++	unsigned int second_pps_id;
++	unsigned char not_decoded;
++};
++
++/*
++ * This type defines the decoded picture state.
++ * @brief  Decoded Picture State
++ */
++enum vdec_pict_state {
++	VDEC_PICT_STATE_NOT_DECODED,
++	VDEC_PICT_STATE_DECODED,
++	VDEC_PICT_STATE_TERMINATED,
++	VDEC_PICT_STATE_MAX,
++	VDEC_PICT_STATE_FORCE32BITS = 0x7FFFFFFFU
++};
++
++/*
++ * This type defines the container for various picture tags.
++ * @brief  Picture Tag Container
++ */
++struct vdec_pict_tag_container {
++	enum img_buffer_type pict_type;
++	unsigned long long pict_tag_param;
++	unsigned long long sideband_info;
++	struct vdec_pict_hwcrc pict_hwcrc;
++};
++
++/*
++ * This structure describes raw bitstream data chunk.
++ * @brief  Raw Bitstream Data Chunk
++ */
++struct vdec_raw_bstr_data {
++	unsigned int size;
++	unsigned int bit_offset;
++	unsigned char *data;
++	struct vdec_raw_bstr_data *next;
++};
++
++/*
++ * This type defines the supplementary picture data.
++ * @brief  Supplementary Picture Data
++ */
++struct vdec_pict_supl_data {
++	struct vdec_raw_bstr_data *raw_vui_data;
++	struct vdec_raw_bstr_data *raw_sei_list_first_fld;
++	struct vdec_raw_bstr_data *raw_sei_list_second_fld;
++	union {
++		struct h264_pict_supl_data {
++			unsigned char nal_ref_idc;
++			unsigned short frame_num;
++		} data;
++	};
++};
++
++/*
++ * This structure contains decoded picture information for display.
++ * @brief  Decoded Picture Information
++ */
++struct vdec_dec_pict_info {
++	enum vdec_pict_state pict_state;
++	enum img_buffer_type buf_type;
++	unsigned char interlaced_flds;
++	unsigned int err_flags;
++	unsigned int err_level;
++	struct vdec_pict_tag_container first_fld_tag_container;
++	struct vdec_pict_tag_container second_fld_tag_container;
++	struct vdec_str_opconfig op_config;
++	struct vdec_pict_rendinfo rend_info;
++	struct vdec_pict_disp_info disp_info;
++	unsigned int last_in_seq;
++	unsigned int decode_id;
++	unsigned int id_for_hwcrc_chk;
++	unsigned short view_id;
++	unsigned int timestamp;
++	struct vdec_pict_supl_data pict_supl_data;
++};
++
++struct vdec_pict_rend_config {
++	struct vdec_pict_size coded_pict_size;
++	unsigned char packed;
++	unsigned char byte_interleave;
++	unsigned int stride_alignment;
++};
++
++/*
++ * This structure contains unsupported feature flags.
++ * @brief  Unsupported Feature Flags
++ */
++struct vdec_unsupp_flags {
++	unsigned int str_cfg;
++	unsigned int str_opcfg;
++	unsigned int op_bufcfg;
++	unsigned int seq_hdr;
++	unsigned int pict_hdr;
++};
++
++/*
++ * This type defines the error , error in parsing, error in decoding etc.
++ * @brief  VDEC parsing/decoding error  Information
++ */
++enum vdec_error_type {
++	VDEC_ERROR_NONE                 = (0),
++	VDEC_ERROR_SR_ERROR             = (1 << 0),
++	VDEC_ERROR_FEHW_TIMEOUT         = (1 << 1),
++	VDEC_ERROR_FEHW_DECODE          = (1 << 2),
++	VDEC_ERROR_BEHW_TIMEOUT         = (1 << 3),
++	VDEC_ERROR_SERVICE_TIMER_EXPIRY = (1 << 4),
++	VDEC_ERROR_MISSING_REFERENCES   = (1 << 5),
++	VDEC_ERROR_MMU_FAULT            = (1 << 6),
++	VDEC_ERROR_DEVICE               = (1 << 7),
++	VDEC_ERROR_CORRUPTED_REFERENCE  = (1 << 8),
++	VDEC_ERROR_MMCO                 = (1 << 9),
++	VDEC_ERROR_MBS_DROPPED          = (1 << 10),
++	VDEC_ERROR_MAX                  = (1 << 11),
++	VDEC_ERROR_FORCE32BITS          = 0x7FFFFFFFU
++};
++
++/*
++ * This structure contains information relating to a buffer.
++ * @brief  Buffer Information
++ */
++struct vdec_buf_info {
++	void *cpu_linear_addr;
++	unsigned int buf_id;
++	struct vdec_pict_bufconfig pictbuf_cfg;
++	int fd;
++	/* The following are fields used internally within VDEC... */
++	unsigned int buf_size;
++	enum sys_emem_attrib mem_attrib;
++	void *buf_alloc_handle;
++	void *buf_map_handle;
++};
++
++#ifdef HAS_JPEG
++/*
++ * This structure contains JPEG sequence header information.
++ * NOTE: Should only contain JPEG specific information.
++ * @brief  JPEG sequence header Information
++ */
++struct vdec_jpeg_sequ_hdr_info {
++	/* total component in jpeg */
++	unsigned char num_component;
++	/* precision */
++	unsigned char precision;
++};
++
++/*
++ * This structure contains JPEG start of frame segment header
++ * NOTE: Should only contain JPEG specific information.
++ * @brief  JPEG SOF header Information
++ */
++struct vdec_jpeg_sof_component_hdr {
++	/* component identifier. */
++	unsigned char identifier;
++	/* Horizontal scaling. */
++	unsigned char horz_factor;
++	/* Verticale scaling */
++	unsigned char vert_factor;
++	/* Qunatisation tables . */
++	unsigned char quant_table;
++};
++
++/*
++ * This structure contains JPEG start of scan segment header
++ * NOTE: Should only contain JPEG specific information.
++ * @brief  JPEG SOS header Information
++ */
++struct vdec_jpeg_sos_component_hdr {
++	/* component identifier. */
++	unsigned char component_index;
++	/* Huffman DC tables. */
++	unsigned char dc_table;
++	/* Huffman AC table .*/
++	unsigned char ac_table;
++};
++
++struct vdec_jpeg_pict_hdr_info {
++	/* Start of frame component header */
++	struct vdec_jpeg_sof_component_hdr sof_comp[JPEG_VDEC_MAX_COMPONENTS];
++	/* Start of Scan component header */
++	struct vdec_jpeg_sos_component_hdr sos_comp[JPEG_VDEC_MAX_COMPONENTS];
++	/* Huffman tables */
++	struct vdec_jpeg_huffman_tableinfo huff_tables[JPEG_VDEC_TABLE_CLASS_NUM]
++						[JPEG_VDEC_MAX_SETS_HUFFMAN_TABLES];
++	/* Quantization tables */
++	struct vdec_jpeg_de_quant_tableinfo quant_tables[JPEG_VDEC_MAX_QUANT_TABLES];
++	/* Number of MCU in the restart interval */
++	unsigned short interval;
++	unsigned int test;
++};
++#endif
++
++#endif
+diff --git a/drivers/staging/media/vxd/decoder/vxd_ext.h b/drivers/staging/media/vxd/decoder/vxd_ext.h
+new file mode 100644
+index 000000000000..fa92c9001c73
+--- /dev/null
++++ b/drivers/staging/media/vxd/decoder/vxd_ext.h
+@@ -0,0 +1,74 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * VXD DEC Low-level device interface component
 + *
-+ * NOTE: The internally recorded exception is reset to #SWSR_EXCEPT_NO_EXCEPTION
-+ * on return from SWSR_CheckException() or a call to the caller supplied
-+ * exception handler see #SWSR_pfnExceptHandler.
++ * Copyright (c) Imagination Technologies Ltd.
++ * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com/
 + *
-+ * NOTE: By defining an exception handler the caller can handle Shift Register
-+ * errors as they occur - for example, using a structure exception mechanism
-+ * such as setjmp/longjmp.
++ * Authors:
++ *	Amit Makani <amit.makani@ti.com>
 + */
-+typedef void (*swsr_except_handler_fxn)(enum swsr_exception exception,
-+					void *callback_param);
 +
++#ifndef _VXD_EXT_H
++#define _VXD_EXT_H
++
++#define VLR_COMPLETION_COMMS_AREA_SIZE             476
++
++/* Word Size of buffer used to pass messages between LISR and HISR */
++#define VXD_SIZE_MSG_BUFFER   (1 * 1024)
++
++/* This structure describes macroblock coordinates. */
++struct vxd_mb_coords {
++	unsigned int x;
++	unsigned int y;
++};
++
++/* This structure contains firmware and decoding pipe state information. */
++struct vxd_pipestate {
++	unsigned char is_pipe_present;
++	unsigned char cur_codec;
++	unsigned int acheck_point[VDECFW_CHECKPOINT_MAX];
++	unsigned int firmware_action;
++	unsigned int fe_slices;
++	unsigned int be_slices;
++	unsigned int fe_errored_slices;
++	unsigned int be_errored_slices;
++	unsigned int be_mbs_dropped;
++	unsigned int be_mbs_recovered;
++	struct vxd_mb_coords fe_mb;
++	struct vxd_mb_coords be_mb;
++};
++
++/* This structure contains firmware and decoder core state information. */
++struct vxd_firmware_state {
++	unsigned int fw_step;
++	struct vxd_pipestate pipe_state[VDECFW_MAX_DP];
++};
++
++/* This structure contains the video decoder device state. */
++struct vxd_states {
++	struct vxd_firmware_state fw_state;
++};
++
++struct vxd_pict_attrs {
++	unsigned int dwrfired;
++	unsigned int mmufault;
++	unsigned int deverror;
++};
++
++/* This type defines the message attributes. */
++enum vxd_msg_attr {
++	VXD_MSG_ATTR_NONE        = 0,
++	VXD_MSG_ATTR_DECODED     = 1,
++	VXD_MSG_ATTR_FATAL       = 2,
++	VXD_MSG_ATTR_CANCELED    = 3,
++	VXD_MSG_ATTR_FORCE32BITS = 0x7FFFFFFFU
++};
++
++enum vxd_msg_flag {
++	VXD_MSG_FLAG_DROP        = 0,
++	VXD_MSG_FLAG_EXCL        = 1,
++	VXD_MSG_FLAG_FORCE32BITS = 0x7FFFFFFFU
++};
++
++#endif /* VXD_EXT_H */
+diff --git a/drivers/staging/media/vxd/decoder/vxd_mmu_defs.h b/drivers/staging/media/vxd/decoder/vxd_mmu_defs.h
+new file mode 100644
+index 000000000000..77d493cb39f2
+--- /dev/null
++++ b/drivers/staging/media/vxd/decoder/vxd_mmu_defs.h
+@@ -0,0 +1,30 @@
++/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * This is the function prototype for the caller supplier to retrieve the data
-+ * from the application
-+ */
-+typedef void (*swsr_callback_fxn)(enum swsr_cbevent event,
-+				  void *priv_data,
-+				  unsigned char nal_type, unsigned char **data_buffer,
-+				  unsigned long long *data_size);
-+
-+int swsr_get_total_bitsconsumed(void *context, unsigned long long *total_bitsconsumed);
-+
-+/*
-+ * This function is used to return the offset into the current bitstream buffer
-+ * on the shift-register output FIFO. Call after #SWSR_SeekDelimOrEOD to
-+ * determine the offset of an delimiter.
-+ */
-+int swsr_get_byte_offset_curbuf(void *context, unsigned long long *byte_offset);
-+
-+/*
-+ * This function is used to read a signed Exp-Goulomb value from the Shift
-+ * Register.
++ * V-DEC MMU Definitions
 + *
-+ * NOTE: If this function is used to attempt to read into a Start-Code-Prefix
-+ * or beyond the End-Of-Data then and exception is generated which can be
-+ * handled by the caller supplied exception handler see
-+ * #SWSR_pfnExceptionHandler. If no exception handler has been supplied (or the
-+ * exception handler returns) then the exception is recorded and can be obtained
-+ * using SWSR_CheckException(). In this event the function returns 0.
-+ */
-+int swsr_read_signed_expgoulomb(void *context);
-+
-+/*
-+ * This function is used to read a unsigned Exp-Goulomb value from the Shift
-+ * Register.
++ * Copyright (c) Imagination Technologies Ltd.
++ * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com/
 + *
-+ * NOTE: If this function is used to attempt to read into a Start-Code-Prefix
-+ * or beyond the End-Of-Data then and exception is generated which can be
-+ * handled by the caller supplied exception handler see
-+ * #SWSR_pfnExceptionHandler. If no exception handler has been supplied (or the
-+ * exception handler returns) then the exception is recorded and can be obtained
-+ * using SWSR_CheckException(). In this event the function returns 0.
++ * Authors:
++ *	Amit Makani <amit.makani@ti.com>
 + */
-+unsigned int swsr_read_unsigned_expgoulomb(void *context);
++
++#ifndef _VXD_MMU_DEF_H_
++#define _VXD_MMU_DEF_H_
 +
 +/*
-+ * This function is used to check for exceptions.
++ * This type defines the MMU heaps.
++ * @0:	Heap for untiled video buffers
++ * @1:	Heap for bitstream buffers
++ * @2:	Heap for Stream buffers
++ * @3:	Number of heaps
++ */
++enum mmu_eheap_id {
++	MMU_HEAP_IMAGE_BUFFERS_UNTILED = 0x00,
++	MMU_HEAP_BITSTREAM_BUFFERS,
++	MMU_HEAP_STREAM_BUFFERS,
++	MMU_HEAP_MAX,
++	MMU_HEAP_FORCE32BITS           = 0x7FFFFFFFU
++};
++
++#endif /* _VXD_MMU_DEFS_H_ */
+diff --git a/drivers/staging/media/vxd/decoder/vxd_props.h b/drivers/staging/media/vxd/decoder/vxd_props.h
+new file mode 100644
+index 000000000000..bdab182859a7
+--- /dev/null
++++ b/drivers/staging/media/vxd/decoder/vxd_props.h
+@@ -0,0 +1,80 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Low-level VXD interface component
 + *
-+ * NOTE: The internally recorded exception is reset to #SWSR_EXCEPT_NO_EXCEPTION
-+ * on return from SWSR_CheckException() or a call to the caller supplied
-+ * exception  handler see #SWSR_pfnExceptionHandler.
-+ */
-+enum swsr_exception swsr_check_exception(void *context);
-+
-+/*
-+ * This function is used to check for bitstream data with
-+ * SWSR_EMPREVENT_00000300 whether more RBSP data is present.
-+ */
-+int swsr_check_more_rbsp_data(void *context, unsigned char *more_rbsp_data);
-+
-+/*
-+ * This function is used to read a single bit from the Shift Register.
++ * Copyright (c) Imagination Technologies Ltd.
++ * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com/
 + *
-+ * NOTE: If this function is used to attempt to read into a Start-Code-Prefix
-+ * or beyond the End-Of-Data then and exception is generated which can be
-+ * handled by the caller supplied exception handler see
-+ * #SWSR_pfnExceptionHandler. If no exception handler has been supplied (or the
-+ * exception handler returns) then the exception is recorded and can be obtained
-+ * using SWSR_CheckException(). In this event the function returns 0.
-+ */
-+unsigned int swsr_read_onebit(void *context);
-+
-+/*
-+ * This function is used to consume a number of bits from the Shift Register.
++ * Authors:
++ *	Amit Makani <amit.makani@ti.com>
 + *
-+ * NOTE: If this function is used to attempt to read into a Start-Code-Prefix
-+ * or beyond the End-Of-Data then and exception is generated which can be
-+ * handled by the caller supplied exception handler see
-+ * #SWSR_pfnExceptionHandler. If no exception handler has been supplied (or the
-+ * exception handler returns) then the exception is recorded and can be obtained
-+ * using SWSR_CheckException(). In this event the function returns 0.
++ * Re-written for upstreamimg
++ *	Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
 + */
-+unsigned int swsr_read_bits(void *context, unsigned int no_bits);
 +
-+int swsr_read_signedbits(void *context, unsigned int no_bits);
++#ifndef _VXD_PROPS_H
++#define _VXD_PROPS_H
 +
-+/*
-+ * This function is used to peek at number of bits from the Shift Register. The
-+ * bits are not consumed.
-+ *
-+ * NOTE: If this function is used to attempt to read into a Start-Code-Prefix
-+ * or beyond the End-Of-Data then and exception is generated which can be
-+ * handled by the caller supplied exception handler see
-+ * #SWSR_pfnExceptionHandler. If no exception handler has been supplied (or
-+ * the exception handler returns) then the exception is recorded and can be
-+ * obtained using SWSR_CheckException(). In this event the function returns 0.
-+ */
-+unsigned int swsr_peekbits(void *context, unsigned int no_bits);
++#include "vdec_defs.h"
++#include "imgmmu.h"
 +
-+/*
-+ * Makes the shift-register output byte-aligned by consuming the remainder of
-+ * the current partially read byte.
-+ */
-+int swsr_byte_align(void *context);
++#define VDEC_MAX_PIXEL_PIPES 2
 +
-+/*
-+ * Consume the next delimiter whose length should be specified if delimiter type
-+ * is #SWSR_DELIM_SIZE. The emulation prevention detection/removal scheme can
-+ * also be specified for this and subsequent units.
-+ *
-+ * Consumes the unit delimiter from the bitstream buffer. The delimiter type
-+ * depends upon the bitstream format.
-+ */
-+int swsr_consume_delim(void *context,
-+		       enum swsr_emprevent emprevent,
-+		       unsigned int size_delim_length,
-+		       unsigned long long *byte_count);
++#define VXD_MAX_CORES    1
++#define VER_STR_LEN      64
 +
-+/*
-+ * Seek for the next delimiter or end of bitstream data if no delimiter is
-+ * found.
-+ */
-+enum swsr_found swsr_seek_delim_or_eod(void *context);
++#define CORE_REVISION(maj, min, maint) \
++	((((maj) & 0xff) << 16) | (((min) & 0xff) << 8) | (((maint) & 0xff)))
++#define MAJOR_REVISION(rev)     (((rev) >> 16) & 0xff)
++#define MINOR_REVISION(rev)     (((rev) >> 8) & 0xff)
++#define MAINT_REVISION(rev)     ((rev) & 0xff)
 +
-+/*
-+ * Check if shift-register is at a delimiter or end of data.
-+ */
-+enum swsr_found swsr_check_delim_or_eod(void *context);
++#define FROM_REV(maj, min, maint, type) \
++	({ \
++		type __maj = maj; \
++		type __min = min; \
++		(((maj_rev) > (__maj)) || \
++		 (((maj_rev) == (__maj)) && ((min_rev) > (__min))) || \
++		 (((maj_rev) == (__maj)) && ((min_rev) == (__min)) && \
++		  ((int)(maint_rev) >= (maint)))); })
 +
-+/*
-+ * This function automatically fetches the first bitstream buffer (using
-+ * callback with event type #SWSR_EVENT_INPUT_BUFFER_START) before returning.
-+ */
-+int swsr_start_bitstream(void *context,
-+			 const struct swsr_config *pconfig,
-+			 unsigned long long bitstream_size,
-+			 enum swsr_emprevent emprevent);
++struct vxd_vidstd_props {
++	enum vdec_vid_std vidstd;
++	unsigned int core_rev;
++	unsigned int min_width;
++	unsigned int min_height;
++	unsigned int max_width;
++	unsigned int max_height;
++	unsigned int max_macroblocks;
++	unsigned int max_luma_bitdepth;
++	unsigned int max_chroma_bitdepth;
++	enum pixel_fmt_idc max_chroma_format;
++};
 +
-+/*
-+ * This function is used to de-initialise the Shift Register.
-+ */
-+int swsr_deinitialise(void *context);
++struct vxd_coreprops {
++	unsigned char aversion[VER_STR_LEN];
++	unsigned char mpeg2[VDEC_MAX_PIXEL_PIPES];
++	unsigned char mpeg4[VDEC_MAX_PIXEL_PIPES];
++	unsigned char h264[VDEC_MAX_PIXEL_PIPES];
++	unsigned char vc1[VDEC_MAX_PIXEL_PIPES];
++	unsigned char avs[VDEC_MAX_PIXEL_PIPES];
++	unsigned char real[VDEC_MAX_PIXEL_PIPES];
++	unsigned char jpeg[VDEC_MAX_PIXEL_PIPES];
++	unsigned char vp6[VDEC_MAX_PIXEL_PIPES];
++	unsigned char vp8[VDEC_MAX_PIXEL_PIPES];
++	unsigned char hevc[VDEC_MAX_PIXEL_PIPES];
++	unsigned char rotation_support[VDEC_MAX_PIXEL_PIPES];
++	unsigned char scaling_support[VDEC_MAX_PIXEL_PIPES];
++	unsigned char hd_support;
++	unsigned int num_streams[VDEC_MAX_PIXEL_PIPES];
++	unsigned int num_entropy_pipes;
++	unsigned int num_pixel_pipes;
++	struct vxd_vidstd_props vidstd_props[VDEC_STD_MAX];
++	enum mmu_etype mmu_type;
++	unsigned char mmu_support_stride_per_context;
++	unsigned char mmu_support_secure;
++	/* Range extensions supported by hw -> used only by hevc */
++	unsigned char hevc_range_ext[VDEC_MAX_PIXEL_PIPES];
++};
 +
-+/*
-+ * This function is used to initialise the Shift Register.
-+ *
-+ * NOTE: If no exception handler is provided (pfnExceptionHandler == IMG_NULL)
-+ * then the caller must check for exceptions using the function
-+ * SWSR_CheckException().
-+ *
-+ * NOTE: If pui8RbduBuffer is IMG_NULL then the bit stream is not encapsulated
-+ * so the Shift Register needn't perform and de-encapsulation.  However,
-+ * if this is not IMG_NULL then, from time to time, the Shift Register APIs
-+ * will de-encapsulate portions of the bit stream into this intermediate buffer
-+ * - the larger the buffer the less frequent the de-encapsulation function
-+ * needs to be called.
-+ */
-+int swsr_initialise(swsr_except_handler_fxn exception_handler_fxn,
-+		    void *exception_cbparam,
-+		    swsr_callback_fxn callback_fxn,
-+		    void *cb_param,
-+		    void **context);
-+
-+/*
-+ *  This function is used to return the size in bytes of the delimited unit
-+ *  that's currently being processed.
-+ *
-+ *  NOTE: This size includes all the emulation prevention bytes present
-+ *  in the delimited unit.
-+ */
-+int swsr_get_current_delimited_unitsize(void *context, unsigned int *size);
-+
-+/*
-+ * This function is used to copy the delimited unit that's currently being
-+ * processed to the provided buffer.
-+ *
-+ * NOTE: This delimited unit includes all the emulation prevention bytes present
-+ * in it.
-+ */
-+int swsr_get_current_delimited_unit(void *context, unsigned char *data, unsigned int *size);
-+
-+/*
-+ * This function is used to return the bit offset the shift register is at
-+ * in processing the current delimited unit.
-+ *
-+ * NOTE: This offset does not count emulation prevention bytes.
-+ */
-+int swsr_get_current_delimited_unit_bit_offset(void *context, unsigned int *bit_offset);
-+
-+#endif /* _SWSR_H */
++#endif /* _VXD_PROPS_H */
 -- 
 2.17.1
 
