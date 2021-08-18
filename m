@@ -2,141 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30B33F00A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 493693F00A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232078AbhHRJgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:36:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37606 "EHLO
+        id S232769AbhHRJg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 05:36:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234135AbhHRJfo (ORCPT
+        with ESMTP id S233271AbhHRJfo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 18 Aug 2021 05:35:44 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CF1C0617AF
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B52C0617AD
         for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:35:03 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id i28so3346334lfl.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:35:03 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 108-20020a9d01750000b029050e5cc11ae3so2443045otu.5
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:35:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
+        d=ffwll.ch; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=oiHvib23/P491CLaRgXvFmChy35OD4Cm4iT1dt+Oh64=;
-        b=ZEXrzZn8yIRrwRBAbkQqjyDUM1Y1ntGz22UCVGWj4pa8ds9y1rSNm13RRW2Zbu1ewG
-         rBn6QqJmL0FXQmDfsvP4crAiRZoezMZEvTCPpEdS1lWr+KIwFbDoQFfLqsbyi+aIyMn3
-         2cpqNcKCR2xP4oZ+5okAnYjRgAPhb7/oHmHRo=
+        bh=+Xyn/PM5YP2/IFB7tHgsnFcmbLe6blpVJ1aozmlu1ow=;
+        b=gykCm02M32GyZzKN1jfPZSs6ksGKG8l2HXfkmk5eKcJSlW5ZG7T0cBaM6blIbOzxSm
+         mE6oC/HNp/hdxXahUd3yM8+s//fCqPmr2cM/b4lDVrkeFWGFD5OhwWzexvIvVZrYSA/o
+         5RvVMnMJ/nxikIQRWfFHgxPgKIrsz/pQyKHKM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=oiHvib23/P491CLaRgXvFmChy35OD4Cm4iT1dt+Oh64=;
-        b=kZMKsrwqdQbyV8YDhbZH5KfPY+gmtYrh+lf1DX7kCoi1fgs7p2FZA/89b5KAiqczEt
-         Yhsf5HivvLNK0dvAIuNj3qGDW2afoPOISHHYDOmzMsveNT1bANgawfTC4Z5i+TpWkkBd
-         bR8MPu5tlblRgzVPlxWhqYMNSq5KHUXIMLtcjewM50YH04Fn2r+6ytBqfOOvlvN7vt2f
-         ZDI+EoLpyDpm8JqwJ9XtseINsbTHcfcYVSKdr4cP3F3QQFe6co9vRdyc6TxlTD1GTCwh
-         iW2T3EFzznA7aw6a1wPARl7H0FhCZrS7O/zbC6gFJhMj/lTlQZth9+57EOtq9l4kfQbB
-         58uw==
-X-Gm-Message-State: AOAM532oZHEm640BdDipuqfDYKMSXDfdjUdLN84M7z3vUL7Qa35/sMp7
-        qcllvqo5U9V/vJRonJguhnIG9B2em+TcJ8pV+j1Cqw==
-X-Google-Smtp-Source: ABdhPJwoXvjX95NQrkUEtTh9/QSK0DDOWwz14GzEQTgLURMiW93dA3wt3YYyRzKwajrJJxceQBuTcuJDyIYDiI2xWhI=
-X-Received: by 2002:a05:6512:952:: with SMTP id u18mr3991386lft.288.1629279302276;
+        bh=+Xyn/PM5YP2/IFB7tHgsnFcmbLe6blpVJ1aozmlu1ow=;
+        b=Kt2fc4AlZkkb3E7YzrHn8BN0Q/t58LQnfGpDBYaTzPot6CVvlm2BWIP1FwSKsLippm
+         bu6gsLzFtZhPZ+39JIL3HjyKsBavnSo6liWC+cX6i08Ez5UWAyw24O1zS+8LvdnKYv6z
+         u+6/uX3B0Ng0i37PzNxEMm4IUTVUy1L+zKmbgOeBCnPLw2ktCSfInVQ52IG4lM8lJdzA
+         gpd3+qlj7emSL7eThjGlJGwCzCFHyVyHoHV89V4C+aJIHVJYH3bi5nFGEp9FV0Px89PF
+         JoTjZ4ytBoeKZh3Omey9RJVTrG+rHGyJofmgkGRLAp/pV43VBBAPQMeHV7fduo5TIG9x
+         LMLg==
+X-Gm-Message-State: AOAM533OIiYN4fO3h5hyHpySxoC/5gFj6kD+W7NWoeTas7TpyzlAwCSw
+        Jf50/+K1pylVPW+AzcpLCGfr11egOjaLMYRM0e2z4qDZ4dI=
+X-Google-Smtp-Source: ABdhPJzzKnNN6vTQEqveeY3cTCAGgV7gRJVSFEJ7nlgeJN7LO2mJNz++CF+lAxXxgRgj3f7Ugw8Xdn5CgD7rk7Hez/s=
+X-Received: by 2002:a9d:65da:: with SMTP id z26mr6101976oth.303.1629279302395;
  Wed, 18 Aug 2021 02:35:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210812084348.6521-1-david@redhat.com> <87o8a2d0wf.fsf@disp2133>
- <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com> <87lf56bllc.fsf@disp2133>
- <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
- <87eeay8pqx.fsf@disp2133> <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
- <87h7ft2j68.fsf@disp2133> <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
- <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com> <YRcyqbpVqwwq3P6n@casper.infradead.org>
- <87k0kkxbjn.fsf_-_@disp2133>
-In-Reply-To: <87k0kkxbjn.fsf_-_@disp2133>
-From:   Rodrigo Campos <rodrigo@kinvolk.io>
-Date:   Wed, 18 Aug 2021 11:34:26 +0200
-Message-ID: <CACaBj2ZgrA2JeeGenXxEf5ha6OYaFrj2=iuVXnQxC=kZLZpjng@mail.gmail.com>
-Subject: Re: Removing Mandatory Locks
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        David Laight <David.Laight@aculab.com>,
-        David Hildenbrand <david@redhat.com>,
+References: <20210818074352.29950-1-galpress@amazon.com>
+In-Reply-To: <20210818074352.29950-1-galpress@amazon.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 18 Aug 2021 11:34:51 +0200
+Message-ID: <CAKMK7uGZ_eX+XfYJU6EkKEOVrHz3q6QMxaEbyyD3_1iqj9YSjw@mail.gmail.com>
+Subject: Re: [RFC] Make use of non-dynamic dmabuf in RDMA
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Oded Gabbay <ogabbay@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 6:49 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+On Wed, Aug 18, 2021 at 9:45 AM Gal Pressman <galpress@amazon.com> wrote:
 >
-> Matthew Wilcox <willy@infradead.org> writes:
+> Hey all,
 >
-> > On Fri, Aug 13, 2021 at 05:49:19PM -0700, Andy Lutomirski wrote:
-> >> [0] we have mandatory locks, too. Sigh.
-> >
-> > I'd love to remove that.  Perhaps we could try persuading more of the
-> > distros to disable the CONFIG option first.
+> Currently, the RDMA subsystem can only work with dynamic dmabuf
+> attachments, which requires the RDMA device to support on-demand-paging
+> (ODP) which is not common on most devices (only supported by mlx5).
 >
-> Yes.  The support is disabled in RHEL8.
+> While the dynamic requirement makes sense for certain GPUs, some devices
+> (such as habanalabs) have device memory that is always "pinned" and do
+> not need/use the move_notify operation.
+>
+> The motivation of this RFC is to use habanalabs as the dmabuf exporter,
+> and EFA as the importer to allow for peer2peer access through libibverbs.
+>
+> This draft patch changes the dmabuf driver to differentiate between
+> static/dynamic attachments by looking at the move_notify op instead of
+> the importer_ops struct, and allowing the peer2peer flag to be enabled
+> in case of a static exporter.
+>
+> Thanks
+>
+> Signed-off-by: Gal Pressman <galpress@amazon.com>
 
-If it helps, it seems to be enabled on the just released debian stable:
-    $ grep CONFIG_MANDATORY_FILE_LOCKING /boot/config-5.10.0-8-amd64
-    CONFIG_MANDATORY_FILE_LOCKING=y
+Given that habanalabs dma-buf support is very firmly in limbo (at
+least it's not yet in linux-next or anywhere else) I think you want to
+solve that problem first before we tackle the additional issue of
+making p2p work without dynamic dma-buf. Without that it just doesn't
+make a lot of sense really to talk about solutions here.
+-Daniel
 
-Also the new 5.13 kernel in experimental has it too:
-    $ grep CONFIG_MANDATORY_FILE_LOCKING /boot/config-5.13.0-trunk-amd64
-    CONFIG_MANDATORY_FILE_LOCKING=y
+> ---
+>  drivers/dma-buf/dma-buf.c             | 5 +++--
+>  drivers/infiniband/core/umem_dmabuf.c | 2 +-
+>  include/linux/dma-buf.h               | 2 +-
+>  3 files changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> index 511fe0d217a0..e3faad8f492c 100644
+> --- a/drivers/dma-buf/dma-buf.c
+> +++ b/drivers/dma-buf/dma-buf.c
+> @@ -727,7 +727,8 @@ dma_buf_dynamic_attach(struct dma_buf *dmabuf, struct device *dev,
+>         if (WARN_ON(!dmabuf || !dev))
+>                 return ERR_PTR(-EINVAL);
+>
+> -       if (WARN_ON(importer_ops && !importer_ops->move_notify))
+> +       if (WARN_ON(importer_ops && !importer_ops->move_notify &&
+> +                   dma_buf_is_dynamic(attach->dmabuf)))
+>                 return ERR_PTR(-EINVAL);
+>
+>         attach = kzalloc(sizeof(*attach), GFP_KERNEL);
+> @@ -1048,7 +1049,7 @@ void dma_buf_move_notify(struct dma_buf *dmabuf)
+>         dma_resv_assert_held(dmabuf->resv);
+>
+>         list_for_each_entry(attach, &dmabuf->attachments, node)
+> -               if (attach->importer_ops)
+> +               if (attach->importer_ops && attach->importer_ops->move_notify)
+>                         attach->importer_ops->move_notify(attach);
+>  }
+>  EXPORT_SYMBOL_GPL(dma_buf_move_notify);
+> diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
+> index c6e875619fac..c502ae828bd3 100644
+> --- a/drivers/infiniband/core/umem_dmabuf.c
+> +++ b/drivers/infiniband/core/umem_dmabuf.c
+> @@ -118,7 +118,7 @@ struct ib_umem_dmabuf *ib_umem_dmabuf_get(struct ib_device *device,
+>         if (check_add_overflow(offset, (unsigned long)size, &end))
+>                 return ret;
+>
+> -       if (unlikely(!ops || !ops->move_notify))
+> +       if (unlikely(!ops))
+>                 return ret;
+>
+>         dmabuf = dma_buf_get(fd);
+> diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+> index efdc56b9d95f..4b2e99012cb1 100644
+> --- a/include/linux/dma-buf.h
+> +++ b/include/linux/dma-buf.h
+> @@ -473,7 +473,7 @@ static inline bool dma_buf_is_dynamic(struct dma_buf *dmabuf)
+>  static inline bool
+>  dma_buf_attachment_is_dynamic(struct dma_buf_attachment *attach)
+>  {
+> -       return !!attach->importer_ops;
+> +       return !!attach->importer_ops->move_notify;
+>  }
+>
+>  struct dma_buf_attachment *dma_buf_attach(struct dma_buf *dmabuf,
+> --
+> 2.32.0
+>
+
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
