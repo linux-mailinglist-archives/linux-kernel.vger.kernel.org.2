@@ -2,107 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 674663F0A0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C442D3F0A10
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhHRRPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 13:15:48 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:39732
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229784AbhHRRPr (ORCPT
+        id S231926AbhHRRPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 13:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231402AbhHRRPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 13:15:47 -0400
-Received: from localhost.localdomain (1-171-94-217.dynamic-ip.hinet.net [1.171.94.217])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 6944F412AE;
-        Wed, 18 Aug 2021 17:15:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629306911;
-        bh=iRuFjsARmqnJPsilk5plyw8IeGSZnpqAZVyvL098pEk=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=jiYdyVSPQAebYzKXrA/NqUaZV1sUHDSbxQGXsxlfqNO9uybD9g3qxSuiW4cTMDysl
-         xs/D5ia+LiIEXLnylbYYb9t/9fIojFas9I71n1ft78fbbcW2XxDq/QEJJLLYqhfoYB
-         eXMGKrszNZ72RxBPVW5fMSqLfL9Y3f6Db4hPZY3BBglf36Br2ixp+GZ2jmzK0+37re
-         slS1T5UeyBbbWsRwwa8B9eznbAbC40JXbyK8if+fz4AyR19c2LpYUuH43x+D4epSez
-         Cl3I78opnMUdRdbw9XAE70VDbF98JnCs5bkZ1z8JU+9mEl6H/emeyPAc8FViLf1TEw
-         77AxTaNLGTBPA==
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Imre Deak <imre.deak@intel.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
-        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] drm/i915/dp: Use max params for panels < eDP 1.4
-Date:   Thu, 19 Aug 2021 01:14:55 +0800
-Message-Id: <20210818171457.536107-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 18 Aug 2021 13:15:51 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7300C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 10:15:16 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id t42so239703pfg.12
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 10:15:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Gp5MQDOc8DOpdoJfov78aS5vkhhsZanfg4O8SWdKrOQ=;
+        b=pJjHrEUuNzwqBOkYt/5z9tP8PVQCpTT2T+SBb+Vacjja6mrM7GjbQQPIr7+uwZyf6U
+         qutTpTtpSLmxCICdZLSMJnUciFohYBZ6i2bgJExtUr1aQ/z/Vwlthoa7JpbhzxURhkD1
+         a1XPceVR2ZTAwWwpvHj/5k1IrWjeQzhPgB75kkJjQsUblUYzzbXeODxAFilg3FScjEaH
+         lpr24ulPAw4UyD714TaTJrvnBMf9Zq78smgJyHcOcR+d+ovOkIJ0chia1fKKrL7EbRg3
+         cDqeTIYdWmR+zDaNkcszTsj4Z/OmwjEPnCoU/qg+bSxLd+nHo5F0MaItW+UBWc71qB1V
+         e6mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Gp5MQDOc8DOpdoJfov78aS5vkhhsZanfg4O8SWdKrOQ=;
+        b=kU/xN2/5r0g23jm4D9w289/wy2i3LJb0T6hryntVuNeHESHULjE+3yRhxjV8uVZ4Kz
+         7rg8vYOsi2g1h2MDVNR4oQZkbUQvFqlNg/jOmdcygFN/jJ4NP+sIjlCf1ym/pxP3cMG5
+         aNsjhQRPf8RJF4ucB2vGdbD0BZDTyk5OQsTXeDTehMgQBUNifcy7XxGC/tFcpBat7n+M
+         GQltsmatOJo4T4EgstkHRVBL3vxfmpAcCprZPhTcXmvOFwiiT78EEkW++sEtxMEzdc/A
+         0whZ7TJhn9lzynNOM2G13IEqTeZeD3eXKMZqv+aaylIDqo+hFUL9bpRuxaDK34Pc0Jba
+         fajg==
+X-Gm-Message-State: AOAM530ytRqM7wjrZj3MifWnON6mtUhtl36Yh+BJzd6tHqaYl3sG08TB
+        CXfrEry5sJZ5ks+63k0QbHWFCQ==
+X-Google-Smtp-Source: ABdhPJz4j0LMjV3VzZ7ne7evfri/AHBXkGJEAQEA0I0rF/c9BPIbMdG7tU+A3YL5jbJVnKS+2FlYIg==
+X-Received: by 2002:aa7:921a:0:b029:2cf:b55b:9d52 with SMTP id 26-20020aa7921a0000b02902cfb55b9d52mr10234698pfo.35.1629306915978;
+        Wed, 18 Aug 2021 10:15:15 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id t10sm5630629pji.30.2021.08.18.10.15.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 10:15:15 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 17:15:09 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wei Huang <wei.huang2@amd.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com
+Subject: Re: [PATCH v3 2/3] KVM: x86: Handle the case of 5-level shadow page
+ table
+Message-ID: <YR1AHVwUM8AS5JvQ@google.com>
+References: <20210818165549.3771014-1-wei.huang2@amd.com>
+ <20210818165549.3771014-3-wei.huang2@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210818165549.3771014-3-wei.huang2@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Users reported that after commit 2bbd6dba84d4 ("drm/i915: Try to use
-fast+narrow link on eDP again and fall back to the old max strategy on
-failure"), the screen starts to have wobbly effect.
+The shortlog is very misleading.  KVM already supports 5-level paging for
+traditional shadow paging.  This is specifically for shadowing nNPT, and it's
+specifically for shadow everything _except_ 5-level nNPT.  Something like:
 
-Commit a5c936add6a2 ("drm/i915/dp: Use slow and wide link training for
-everything") doesn't help either, that means the affected eDP 1.2 panels
-only work with max params.
+KVM: x86/mmu: Support shadowing nNPT when 5-level paging is enabled in host
 
-So use max params for panels < eDP 1.4 as Windows does to solve the
-issue.
 
-v2:
- - Check eDP 1.4 instead of DPCD 1.1 to apply max params
+On Wed, Aug 18, 2021, Wei Huang wrote:
+> When the 5-level page table CPU flag is exposed, KVM code needs to handle
+> this case by pointing mmu->root_hpa to a properly-constructed 5-level page
+> table.
 
-Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3714
-Fixes: 2bbd6dba84d4 ("drm/i915: Try to use fast+narrow link on eDP again and fall back to the old max strategy on failure")
-Fixes: a5c936add6a2 ("drm/i915/dp: Use slow and wide link training for everything")
-Suggested-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/gpu/drm/i915/display/intel_dp.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-index 75d4ebc669411..f87fad78f1a9f 100644
---- a/drivers/gpu/drm/i915/display/intel_dp.c
-+++ b/drivers/gpu/drm/i915/display/intel_dp.c
-@@ -1330,14 +1330,16 @@ intel_dp_compute_link_config(struct intel_encoder *encoder,
- 	limits.min_bpp = intel_dp_min_bpp(pipe_config->output_format);
- 	limits.max_bpp = intel_dp_max_bpp(intel_dp, pipe_config);
- 
--	if (intel_dp->use_max_params) {
-+	if (intel_dp->use_max_params ||
-+	    intel_dp->edp_dpcd[0] < DP_EDP_14) {
- 		/*
- 		 * Use the maximum clock and number of lanes the eDP panel
- 		 * advertizes being capable of in case the initial fast
--		 * optimal params failed us. The panels are generally
--		 * designed to support only a single clock and lane
--		 * configuration, and typically on older panels these
--		 * values correspond to the native resolution of the panel.
-+		 * optimal params failed us or the EDP rev is earlier than 1.4.
-+		 * The panels are generally designed to support only a single
-+		 * clock and lane configuration, and typically on older panels
-+		 * these values correspond to the native resolution of the
-+		 * panel.
- 		 */
- 		limits.min_lane_count = limits.max_lane_count;
- 		limits.min_clock = limits.max_clock;
--- 
-2.32.0
-
+Similarly, this is wrong, or maybe just poorly worded.  This has nothing to do
+with LA57 being exposed to the guest, it's purely the host using 5-level paging
+and NPT being enabled and exposed to L1.
