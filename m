@@ -2,114 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E273F0A74
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 662553F0A7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbhHRRqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 13:46:12 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:49832 "EHLO mail.skyhub.de"
+        id S230187AbhHRRtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 13:49:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229448AbhHRRqK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 13:46:10 -0400
-Received: from zn.tnic (p200300ec2f0cc30025743e574fa309df.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:c300:2574:3e57:4fa3:9df])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B5C741EC0545;
-        Wed, 18 Aug 2021 19:45:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629308729;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Rm1R61L2TyziZYdmq4RN129Oj2rm0BKJ+VZjrBh0K14=;
-        b=fA0uWfxS1+n4Q29B8zvlRpHWS77CfXF5wvVNLN+E/VhuJvd0NEntV0hK4kGgKEYe2oBM24
-        7X1PxUNLl4sjSIoC/lf3Fa8Au6Q85HHgIHDDyHvFmV8SsQV7++WUAGBZexb45ybYudFNmv
-        rQyCecStB5dF8LEmct8qi7FYWVSIoyU=
-Date:   Wed, 18 Aug 2021 19:46:09 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thiago Macieira <thiago.macieira@intel.com>
-Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>, luto@kernel.org,
-        tglx@linutronix.de, mingo@kernel.org, x86@kernel.org,
-        len.brown@intel.com, dave.hansen@intel.com, jing2.liu@intel.com,
-        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to
- protect dynamic user state
-Message-ID: <YR1HYRRN0HMTxXrw@zn.tnic>
-References: <20210730145957.7927-1-chang.seok.bae@intel.com>
- <20210730145957.7927-13-chang.seok.bae@intel.com>
- <YR00U19168BGoRB9@zn.tnic>
- <3181031.RqgVF4sTRC@tjmaciei-mobl5>
+        id S229475AbhHRRtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 13:49:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 528AD610FE;
+        Wed, 18 Aug 2021 17:48:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629308908;
+        bh=zqcSN8ZGJ3s8loJMchk4AR8wKBbnZFyztg2k5c0/Osc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IhovrD4wgmaF314dMXzAmi4/DSDqlvgZsE+nVDMNaDI4NXPM3ekZnEikDfp1co8Ax
+         IfDD3gNGVAA15MVXBV1yGI60iVTVq6FHppmk7IFFB8mXBnOw/RfBqLw1S3ncijhJet
+         JemOhyM3h1i8/k4qF/RkCXU7VHSrs4B5Gl++CmB1f9c5CaEtxahow6ytyiTcr4rV0v
+         FqTTFSrkQuGFkrLxPSna+duobnOXf5L47QbgtvezFLxV//vykyGZsTLt4xYQFvF+YP
+         GcpZQTV0g6a+SOsw1VdLCLuezuubBE5KB98A5+S+i7MFp5WRK97PsNe78jZTaMyrbV
+         tJLvYLp6E5r3A==
+Received: by mail-lf1-f42.google.com with SMTP id t9so6341838lfc.6;
+        Wed, 18 Aug 2021 10:48:28 -0700 (PDT)
+X-Gm-Message-State: AOAM531lFnSTnFjh1qAmY2IWvnVl2DfLfmmonick8cRlLk/MIZ6lhqCn
+        9wqoGATQw3rS+AOwI+UuhHWF6O3rBCuC7VtHwHo=
+X-Google-Smtp-Source: ABdhPJzJ5z9zjxwGjwH8G46iwqR2FJHrzZt9Iwx23Ux3DbKP6t/DL6ge2Jjw2vnOIw+SKyMuVgaNMF+WcH+gjg8MxJ8=
+X-Received: by 2002:ac2:44c3:: with SMTP id d3mr7198748lfm.281.1629308906675;
+ Wed, 18 Aug 2021 10:48:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <3181031.RqgVF4sTRC@tjmaciei-mobl5>
+References: <20210818105820.91894-1-liuxu623@gmail.com> <20210818105820.91894-3-liuxu623@gmail.com>
+In-Reply-To: <20210818105820.91894-3-liuxu623@gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Wed, 18 Aug 2021 10:48:15 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7KmO0ErC3_KySMzag1bnbJAEAmXgOQS9jd8-scFai=tg@mail.gmail.com>
+Message-ID: <CAPhsuW7KmO0ErC3_KySMzag1bnbJAEAmXgOQS9jd8-scFai=tg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Test for get_netns_cookie
+To:     Xu Liu <liuxu623@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 10:20:58AM -0700, Thiago Macieira wrote:
-> Why not?
+On Wed, Aug 18, 2021 at 4:00 AM Xu Liu <liuxu623@gmail.com> wrote:
 >
-> It could help diagnosing why this code has a failure if XFD is somehow 
-> missing. That can happen with hypervisors or future CPUs.
+> Add test to use get_netns_cookie() from BPF_PROG_TYPE_SOCK_OPS.
+>
+> Signed-off-by: Xu Liu <liuxu623@gmail.com>
 
-You're new to this...
+Acked-by: Song Liu <songliubraving@fb.com>
 
-tools/arch/x86/kcpuid/kcpuid.c should be used for all CPUID querying
-needs.
-
-<snipping the SIGILL question for now because it might become moot>
-
-> That's a good question, but I thought it had been discussed and agreed that we 
-> didn't want to extend the buffers at the moment the application requested the 
-> bits, because it may never need them.
-
-Huh? An application doing prctl(GIVE_ME_AMX) and then it might never
-need it? That's only that application's fault then.
-
-> This was probably a defence against applications requesting all bits
-> without knowing whether they'll need them at all.
-
-That sounds like a badly programmed application.
-
-> The way the API to userspace is implemented, the only way to find
-> out if the kernel supports a given state is to enable it. It's not
-> currently possible to ask "do you support AMX tile data?"
-
-Then our API needs improving. An app should be able to ask the kernel
-"Do you support AMX?" get a proper answer and act accordingly.
-
-> and then go about the application's merry way until it determines it
-> really wants to do matrix multiplications. In the case of applications
-> with plugins, they need to have that answer before the load the
-> plugin, which usually happens at application start.
-
-I don't see a problem with the app doing at load time:
-
-A: Heey, kernel, do you support AMX?
-K: Yes
-A: Allocate a dynamic FPU buffer for me then pls.
-
-> I was going to suggest a new API to return the supported bits, but
-> hadn't yet because it wasn't required for this patchset to work.
-
-I think you should. The important part is having the API good and
-complete.
-
-> So long as that API landed at or before the time a new bit was added,
-> userspace would be able to cope. But if the kernel is going to
-> allocate the bits at the moment of the system call *and* we wish for
-> userspace not to request more than it really needs, then we'll need
-> this extra API right now.
-
-No no, once the API hits upstream, it is cast in stone. So it better
-be done in full with the patchset, in one go. No later significant API
-additions or changes, none especially after apps start using it.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> ---
+>  .../selftests/bpf/prog_tests/netns_cookie.c   | 61 +++++++++++++++++++
+>  .../selftests/bpf/progs/netns_cookie_prog.c   | 39 ++++++++++++
+>  2 files changed, 100 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/netns_cookie.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/netns_cookie_prog.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/netns_cookie.c b/tools/testing/selftests/bpf/prog_tests/netns_cookie.c
+> new file mode 100644
+> index 000000000000..6f3cd472fb65
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/netns_cookie.c
+> @@ -0,0 +1,61 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <test_progs.h>
+> +#include "netns_cookie_prog.skel.h"
+> +#include "network_helpers.h"
+> +
+> +#ifndef SO_NETNS_COOKIE
+> +#define SO_NETNS_COOKIE 71
+> +#endif
+> +
+> +static int duration;
+> +
+> +void test_netns_cookie(void)
+> +{
+> +       int server_fd = 0, client_fd = 0, cgroup_fd = 0, err = 0, val = 0;
+> +       struct netns_cookie_prog *skel;
+> +       uint64_t cookie_expected_value;
+> +       socklen_t vallen = sizeof(cookie_expected_value);
+> +
+> +       skel = netns_cookie_prog__open_and_load();
+> +       if (!ASSERT_OK_PTR(skel, "skel_open"))
+> +               return;
+> +
+> +       cgroup_fd = test__join_cgroup("/netns_cookie");
+> +       if (CHECK(cgroup_fd < 0, "join_cgroup", "cgroup creation failed\n"))
+> +               goto out;
+> +
+> +       skel->links.get_netns_cookie_sockops = bpf_program__attach_cgroup(
+> +               skel->progs.get_netns_cookie_sockops, cgroup_fd);
+> +       if (!ASSERT_OK_PTR(skel->links.get_netns_cookie_sockops, "prog_attach"))
+> +               goto close_cgroup_fd;
+> +
+> +       server_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0, 0);
+> +       if (CHECK(server_fd < 0, "start_server", "errno %d\n", errno))
+> +               goto close_cgroup_fd;
+> +
+> +       client_fd = connect_to_fd(server_fd, 0);
+> +       if (CHECK(client_fd < 0, "connect_to_fd", "errno %d\n", errno))
+> +               goto close_server_fd;
+> +
+> +       err = bpf_map_lookup_elem(bpf_map__fd(skel->maps.netns_cookies),
+> +                               &client_fd, &val);
+> +       if (!ASSERT_OK(err, "map_lookup(socket_cookies)"))
+> +               goto close_client_fd;
+> +
+> +       err = getsockopt(client_fd, SOL_SOCKET, SO_NETNS_COOKIE,
+> +                               &cookie_expected_value, &vallen);
+> +       if (!ASSERT_OK(err, "getsockopt)"))
+> +               goto close_client_fd;
+> +
+> +       ASSERT_EQ(val, cookie_expected_value, "cookie_value");
+> +
+> +close_client_fd:
+> +       close(client_fd);
+> +close_server_fd:
+> +       close(server_fd);
+> +close_cgroup_fd:
+> +       close(cgroup_fd);
+> +out:
+> +       netns_cookie_prog__destroy(skel);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/netns_cookie_prog.c b/tools/testing/selftests/bpf/progs/netns_cookie_prog.c
+> new file mode 100644
+> index 000000000000..4ed8d75aa299
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/netns_cookie_prog.c
+> @@ -0,0 +1,39 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include "vmlinux.h"
+> +
+> +#include <bpf/bpf_helpers.h>
+> +
+> +#define AF_INET6 10
+> +
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_SK_STORAGE);
+> +       __uint(map_flags, BPF_F_NO_PREALLOC);
+> +       __type(key, int);
+> +       __type(value, int);
+> +} netns_cookies SEC(".maps");
+> +
+> +SEC("sockops")
+> +int get_netns_cookie_sockops(struct bpf_sock_ops *ctx)
+> +{
+> +       struct bpf_sock *sk = ctx->sk;
+> +       int *cookie;
+> +
+> +       if (ctx->family != AF_INET6)
+> +               return 1;
+> +
+> +       if (ctx->op != BPF_SOCK_OPS_TCP_CONNECT_CB)
+> +               return 1;
+> +
+> +       if (!sk)
+> +               return 1;
+> +
+> +       cookie = bpf_sk_storage_get(&netns_cookies, sk, 0,
+> +                               BPF_SK_STORAGE_GET_F_CREATE);
+> +       if (!cookie)
+> +               return 1;
+> +
+> +       *cookie = bpf_get_netns_cookie(ctx);
+> +
+> +       return 1;
+> +}
+> --
+> 2.28.0
+>
