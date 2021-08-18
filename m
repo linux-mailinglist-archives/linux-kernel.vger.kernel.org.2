@@ -2,112 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 738C33EFF88
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3983EFF8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233874AbhHRItq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 04:49:46 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:56807 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229703AbhHRIte (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 04:49:34 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 6E8D1580BD1;
-        Wed, 18 Aug 2021 04:48:58 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Wed, 18 Aug 2021 04:48:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=W4WryS7HHijg/d6xGj/1w29IrGV
-        lpwWub58kCGVVnck=; b=NneQBjfOr2tJDSGNiDQqBJBOi9i/Idqhindv+lHbhtE
-        4c57ganI8JBNr/djZ0T2DM97DAr9vJ6LzhaZCiqHPwUIsRIgu7PKJ2oQ7qu3arLQ
-        IoRLPHaB1F/9ZpMiBWYS4JtWbNlMPZNVw9msG3jvPTw16QUUNDKPj8zrKPbao/fc
-        QSqnz4iEWKG6mHbZIw3stHPLe4CelfA5ZuMh38lqKamSy0FNX+bhl95UYgxSCAq6
-        GOzxXG8EtcRfeE/+iBTas+RwXmSAILA1QG6rDMpj/TqJth71+TEVhdY1Jx4FAHGl
-        twIektkWH03FAWhPJWRdZ266kSpw35y8EaLlEnwYsLA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=W4WryS
-        7HHijg/d6xGj/1w29IrGVlpwWub58kCGVVnck=; b=UAbGQ6O3jyafNNeatU1HFu
-        RsxvRdb0D2yTLyxp2y20HZQf0rk+/zi405Whe661SVo3YLH2F4Jrwh6LgZG3Zdti
-        pR02P59fMgmbIXu8VpgYZTGFzd1R3cH2Fs/gKeLDPe72LUjFhx3gadEBz0Em9cOk
-        o+Jj0CzsDSSGeHIANdEybGR3jrqJMCQzOLOlljC6yudaqeo0FqFNP7KHX3i1MWFU
-        /hvCOVyIkkvh5IEsmmg6p4edzYycyDQavUsSOwy+FLFbRX/PLuLGVi8TObOuaI8J
-        ud4hvOGjux+vHEknyg7BIs53MP/bzH2/uBpESFJYE64crg2y9cyoqlCRyIXq5H3Q
-        ==
-X-ME-Sender: <xms:d8kcYbCjuz1kIE_vl81vizUDDKp-D6HAXXwyG0xSJ_uBFfWTs_tl3g>
-    <xme:d8kcYRjuKqxmAVFFYn51daBqNsWG4bBsM6buuf_uGbIVX86W3jn7jkVXNecs_oizA
-    bqDZweWD_YPiLx91TE>
-X-ME-Received: <xmr:d8kcYWlIsSVlAEL4aDBXOB0eBXBdCP0NaC_G-u3cVylfWI71BFAw0e_JWy9nctUuP-9bFCU2peFJ0t189CDILx8h3PB9qAFskzOA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleehgddtkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
-    igihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:d8kcYdyWOWcVb8din-VnRCOl8RQmlCtWBce172KE7WsbVJHzCEDLYA>
-    <xmx:d8kcYQSoIsh2Ln921GhBK03zp5zvsT8zACXuD5q8J4OQAGA3--PpDQ>
-    <xmx:d8kcYQa-SzZThmV6gBZtSWFP0TcMhpksR_DtWsXTrlUOrdy2dS7anw>
-    <xmx:eskcYUZeBfqB0nm96YXwEBR4msCzgPrQ-k0tf_MfbL0ZZNb9BORX5g>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 18 Aug 2021 04:48:55 -0400 (EDT)
-Date:   Wed, 18 Aug 2021 10:48:54 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Icenowy Zheng <icenowy@sipeed.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Samuel Holland <samuel@sholland.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 07/17] pinctrl: sunxi: add support for R329 CPUX pin
- controller
-Message-ID: <20210818084854.4zo6u5heeamdg7kw@gilmour>
-References: <20210802062212.73220-1-icenowy@sipeed.com>
- <20210802062212.73220-8-icenowy@sipeed.com>
+        id S232168AbhHRIu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 04:50:57 -0400
+Received: from mga06.intel.com ([134.134.136.31]:5234 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229703AbhHRIux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 04:50:53 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10079"; a="277309063"
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
+   d="scan'208";a="277309063"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 01:50:19 -0700
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
+   d="scan'208";a="680682863"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 01:50:16 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mGHH0-00B3PC-4O; Wed, 18 Aug 2021 11:50:10 +0300
+Date:   Wed, 18 Aug 2021 11:50:10 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Pavel Skripkin <paskripkin@gmail.com>, davem@davemloft.net,
+        christophe.jaillet@wanadoo.fr, jesse.brandeburg@intel.com,
+        kaixuxia@tencent.com, lee.jones@linaro.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] net: mii: make mii_ethtool_gset() return void
+Message-ID: <YRzJwjuoJvjfEJpa@smile.fi.intel.com>
+References: <680892d787669c56f0ceac0e9c113d6301fbe7c6.1629225089.git.paskripkin@gmail.com>
+ <20210817173904.306fb7c1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="dcvksnzz7qawnlnn"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210802062212.73220-8-icenowy@sipeed.com>
+In-Reply-To: <20210817173904.306fb7c1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 17, 2021 at 05:39:04PM -0700, Jakub Kicinski wrote:
+> On Tue, 17 Aug 2021 21:34:42 +0300 Pavel Skripkin wrote:
+> > mii_ethtool_gset() does not return any errors. We can make it return
+> > void to simplify error checking in drivers, that rely on return value
+> > of this function.
+> > 
+> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> 
+> This breaks the build and therefore would be a nuisance in bisection.
+> Please squash the changes or invert the order.
 
---dcvksnzz7qawnlnn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Please invert the order. You will need slightly different justification for the
+PCH GBE patch. Feel free to add my
 
-On Mon, Aug 02, 2021 at 02:22:02PM +0800, Icenowy Zheng wrote:
-> Allwinner R329 SoC has two pin controllers similar to ones on previous
-> SoCs, one in CPUX power domain and another in CPUS.
->=20
-> This patch adds support for the CPUX domain pin controller.
->=20
-> Signed-off-by: Icenowy Zheng <icenowy@sipeed.com>
+Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Acked-by: Maxime Ripard <maxime@cerno.tech>
+to the PCH GBE one.
 
-Maxime
+-- 
+With Best Regards,
+Andy Shevchenko
 
---dcvksnzz7qawnlnn
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYRzJdgAKCRDj7w1vZxhR
-xTunAQCWVewXBg8PV0Obg3qYR7GDoK+QedPMi3CbY4w/8FG+9AD/VEHtEsWFakpV
-o7XD8iEgs2xj9aBuGSlqjOCDGSu35QQ=
-=2vtO
------END PGP SIGNATURE-----
-
---dcvksnzz7qawnlnn--
