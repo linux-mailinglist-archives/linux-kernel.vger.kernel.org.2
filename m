@@ -2,134 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 371233F0834
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 228F73F0837
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239903AbhHRPm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 11:42:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230360AbhHRPmy (ORCPT
+        id S239914AbhHRPnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 11:43:32 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:20130 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230360AbhHRPnb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 11:42:54 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2095C061764;
-        Wed, 18 Aug 2021 08:42:19 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 839857C78; Wed, 18 Aug 2021 11:42:17 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 839857C78
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1629301337;
-        bh=FC/u5PHU9ytrdzLe82ecXUKTKca95aRfgvSHOdfIXFI=;
-        h=Date:To:Cc:Subject:References:In-Reply-To:From:From;
-        b=IoOG1oC+EZ/ID0s+DoSOxYoI1E9Tu+nwDKzBTCpDP7QVUB+APnj3BhbpYTcklzF+V
-         cJBa9or753k6Le4EKbbv5VxjwUJjjWE6p3alhBll+UZTrJxa7eUtdrtUsIsXnI25Wg
-         eIt/1B5dUXgfEFVIgoXy37fTL/OHhwDk6bfyZPRg=
-Date:   Wed, 18 Aug 2021 11:42:17 -0400
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        David Laight <David.Laight@aculab.com>,
-        David Hildenbrand <david@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
-        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Subject: Re: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
-Message-ID: <20210818154217.GB24115@fieldses.org>
-References: <20210812084348.6521-1-david@redhat.com>
- <87o8a2d0wf.fsf@disp2133>
- <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com>
- <87lf56bllc.fsf@disp2133>
- <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
- <87eeay8pqx.fsf@disp2133>
- <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
- <87h7ft2j68.fsf@disp2133>
- <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
- <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
+        Wed, 18 Aug 2021 11:43:31 -0400
+X-UUID: 2f8fd4dc22c844b9a98383ffecdfbb40-20210818
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=86dDfb5H+rm8NM4C/7EdNI/WVjklVl5YtluKeCEmmaM=;
+        b=bmb2sM5qw+JbUIzKGsqp2BT1yLOcLfdwgzHgLVpvJjga/Vgycw60U3GT4m5jHRcdbJFOAdh7HV+FvY2Kq4dylKrOEqsOT2WqxPyrNPhUIZ6HiLwOjg7uUREaRJzI0P3KC7PKYCuBtB/3d7ItYBSjm2zpDVbe7koZnkmdJV0ycY4=;
+X-UUID: 2f8fd4dc22c844b9a98383ffecdfbb40-20210818
+Received: from mtkmrs31.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <houlong.wei@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1092501207; Wed, 18 Aug 2021 23:42:49 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 18 Aug
+ 2021 23:42:45 +0800
+Received: from mhfsdcap04 (10.17.3.154) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 18 Aug 2021 23:42:44 +0800
+Message-ID: <14b9c2efb28d84712b7b4e7b67b6c87558cd9f5d.camel@mediatek.com>
+Subject: Re: [PATCH v6 7/9] media: mtk-mdp: use mdp-rdma0 alias to point to
+ MDP master
+From:   houlong wei <houlong.wei@mediatek.com>
+To:     Eizan Miyamoto <eizan@chromium.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "wenst@chromium.org" <wenst@chromium.org>,
+        Yong Wu =?UTF-8?Q?=28=E5=90=B4=E5=8B=87=29?= 
+        <Yong.Wu@mediatek.com>,
+        "enric.balletbo@collabora.com" <enric.balletbo@collabora.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
+        "Andrew-CT Chen =?UTF-8?Q?=28=E9=99=B3=E6=99=BA=E8=BF=AA=29?=" 
+        <Andrew-CT.Chen@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "Minghsiu Tsai =?UTF-8?Q?=28=E8=94=A1=E6=98=8E=E4=BF=AE=29?=" 
+        <Minghsiu.Tsai@mediatek.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>, <houlong.wei@mediatek.com>
+Date:   Wed, 18 Aug 2021 23:42:45 +0800
+In-Reply-To: <CAOak1e924x8E+kM2WJ3oGPxxt_R=b79BtbxPAdENamvjVamnEw@mail.gmail.com>
+References: <20210802121215.703023-1-eizan@chromium.org>
+         <20210802220943.v6.7.I2049e180dca12e0d1b3178bfc7292dcf9e05ac28@changeid>
+         <bf98c5ee749bca755bd46832f858536dbf51a2a4.camel@mediatek.com>
+         <9f23beea197495d017a548ef483584714a3673f9.camel@mediatek.com>
+         <CAOak1e924x8E+kM2WJ3oGPxxt_R=b79BtbxPAdENamvjVamnEw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-From:   bfields@fieldses.org (J. Bruce Fields)
+X-TM-SNTS-SMTP: 5605CBA0DE33A0953E955550ED951D96D8291363804197D7A25242AB0FE584F32000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 05:49:19PM -0700, Andy Lutomirski wrote:
-> I’ll bite.  How about we attack this in the opposite direction: remove
-> the deny write mechanism entirely.
+T24gV2VkLCAyMDIxLTA4LTE4IGF0IDE1OjUwICswODAwLCBFaXphbiBNaXlhbW90byB3cm90ZToN
+Cj4gSGkgSG91bG9uZywNCj4gDQo+IFRoYW5rIHlvdSBmb3IgeW91ciByZXZpZXcgb24gdGhpcyBz
+ZXJpZXMsIGl0IGlzIG11Y2ggYXBwcmVjaWF0ZWQuDQo+IA0KPiBPbiBNb24sIEF1ZyAxNiwgMjAy
+MSBhdCAyOjUzIFBNIGhvdWxvbmcgd2VpIDxob3Vsb25nLndlaUBtZWRpYXRlay5jb20NCj4gPiB3
+cm90ZToNCj4gPiBJcyB5b3VyIHJlbW92aW5nICJtZWRpYXRlayx2cHUiIG5lY2Vzc2FyeSBmb3Ig
+dGhpcyBzZXJpZXMgIlJlZmFjdG9yDQo+ID4gTVRLDQo+ID4gTURQIGRyaXZlciBpbnRvIGNvcmUv
+Y29tcG9uZW50cyIgPw0KPiANCj4gUmVtb3ZpbmcgaXQgaXMgbm90IHN0cmljdGx5IG5lY2Vzc2Fy
+eSBmb3IgdGhlIHNlcmllcyB0byBmdW5jdGlvbiwgSQ0KPiB3aWxsIHJlLXVwbG9hZCB0aGUgc2Vy
+aWVzIGFuZCBvbWl0IHRoZSBmb2xsb3dpbmcgY2hhbmdlczoNCj4gLSBbUEFUQ0ggdjYgOC85XSBk
+dHM6IG10ay1tZHA6IHJlbW92ZSBtZWRpYXRlayx2cHUgcHJvcGVydHkgZnJvbQ0KPiBwcmltYXJ5
+IE1EUCBkZXZpY2UNCj4gLSBbUEFUQ0ggdjYgOS85XSBkdC1iaW5kaW5nczogbWVkaWF0ZWs6IHJl
+bW92ZSB2cHUgcmVxdWlyZW1lbnQgZnJvbQ0KPiBtdGstbWRwDQo+IA0KPiBEbyBwbGVhc2UgbGV0
+IG1lIGtub3cgaWYgeW91IG1lYW50IHNvbWV0aGluZyBkaWZmZXJlbnQuDQo+IA0KPiBUaGFua3Ms
+DQo+IA0KPiBFaXphbg0KPiANCj4gDQpIaSBFaXphbiwNCg0KVGhhbmtzIGZvciB5b3VyIGhlbHAg
+YW5kIGVmZm9ydC4gSXQncyBleGFjdGx5IHdoYXQgSSBleHByZXNzZWQuDQoNClJlZ2FyZHMsDQpI
+b3Vsb25nDQo+IA0KPiANCj4gPiANCj4gPiBJbiBzb21lIE1lZGlhVGVrIHByb2plY3RzIChub3Qg
+dXBzdHJlYW0geWV0KSwgdGhlIGRldmljZS10cmVlIG5vZGUNCj4gPiBuYW1lDQo+ID4gInZwdSIg
+bWF5IGJlIGNoYW5nZWQgdG8gc29tZXRoaW5nIGxpa2UgInZwdTAiLCAidnB1MSIgb3Igb3RoZXIN
+Cj4gPiBuYW1lLA0KPiA+IHdoaWNoIGRlcGVuZHMgb24gdGhlIGltcGxlbWVudGF0aW9uIG9mICJt
+dGstdnB1IiBkcml2ZXIuIFdlIGNhbg0KPiA+IHNwZWNpZnkNCj4gPiB0aGUgZGlmZmVyZW50IHBo
+YW5kbGUgdG8gIm1lZGlhdGVrLHZwdSIgaW4gLmR0c2kgZmlsZS4gSWYgd2UgdXNlDQo+ID4gb2Zf
+ZmluZF9ub2RlX2J5X25hbWUoKSB0byBnZXQgdGhlIHZwdV9ub2RlLCB3ZSBoYXZlIHRvIG1vZGlm
+eSB0aGUNCj4gPiBuYW1lDQo+ID4gc3RyaW5nIGluIGRpZmZlcmVudCBwcm9qZWN0Lg0KPiA+IElm
+IHRoZSBhbnN3ZXIgb2YgbXkgcHJldmlvdXMgcXVlc3Rpb25zIGlzICJObyIsIEkgcHJlZmVyIHRv
+IHNsb3cNCj4gPiBkb3duDQo+ID4gdGhlIG1vZGlmaWNhdGlvbiBvZiByZW1vdmluZyAibWVkaWF0
+ZWssdnB1Ii4NCj4gPiANCj4gPiBTb3JyeSBmb3IgbGF0ZSByZXBseS4NCj4gPiANCj4gPiBSZWdh
+cmRzLA0KPiA+IEhvdWxvbmcNCg==
 
-For what it's worth, Windows has open flags that allow denying read or
-write opens.  They also made their way into the NFSv4 protocol, but
-knfsd enforces them only against other NFSv4 clients.  Last I checked,
-Samba attempted to emulate them using flock (and there's a comment to
-that effect on the flock syscall in fs/locks.c).  I don't know what Wine
-does.
-
-Pavel Shilovsky posted flags adding O_DENY* flags years ago:
-
-	https://lwn.net/Articles/581005/
-
-I keep thinking I should look back at those some day but will probably
-never get to it.
-
-I've no idea how Windows applications use them, though I'm told it's
-common.
-
---b.
