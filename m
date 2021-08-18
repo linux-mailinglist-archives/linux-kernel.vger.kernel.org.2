@@ -2,199 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF063F0ED4
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 01:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B3E3F0EDD
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 01:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235379AbhHRXvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 19:51:41 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:30688 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235102AbhHRXvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 19:51:39 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629330663; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=PRojEF4+B72P85N1/U722I4p93PKn0g0EmAfMe1xw7U=; b=CQ+8MSBdCl2kyz2W1txNXBPzzng/C29k9glqeqraffO2jLMNKnQqhHFVJCQHq7W9I9c//jpu
- AhNhk22uCG8Q0VJmZo/d7/LuZlVdTz7mTdZ8WgMDwLWfZSAc/R3pF48niwZOeDTSjPXGvB8+
- vZMSZXfmxKR49TQ55DmF0ToZwto=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 611d9cd83f14248172f151e5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 18 Aug 2021 23:50:48
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3A1CCC4361C; Wed, 18 Aug 2021 23:50:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E4D5FC43460;
-        Wed, 18 Aug 2021 23:50:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E4D5FC43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
-        quic_jhugo@quicinc.com, Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH v1 2/2] bus: mhi: core: Optimize and update MMIO register write method
-Date:   Wed, 18 Aug 2021 16:50:34 -0700
-Message-Id: <1629330634-36465-3-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1629330634-36465-1-git-send-email-bbhatt@codeaurora.org>
-References: <1629330634-36465-1-git-send-email-bbhatt@codeaurora.org>
+        id S235102AbhHRX46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 19:56:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234949AbhHRX44 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 19:56:56 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FDFC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 16:56:21 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id z23-20020a17090abd97b0290176898bbb9cso2147488pjr.8
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 16:56:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=Scvb2gfJzrYfNJq90EL74fT7SS7nVGstZhceM9SRTyY=;
+        b=CPqsJcRdPyzWVw2UkNu0Wn9hUr9Qxq5bXEX1GOFSOmGUzn4ZXDSKec71mwcN+FHo9/
+         J7Hl7xy+UKc/xgVNUN88urCR/U61zjMcY6asIwsJ1NN2YS9qGf+aKvKCDIrLpWvwMxY7
+         2BngKUPmIzEBdYGZPYHGwKJ9jNq1gVsHj9z0RLCoU1r/NmEOi3G9vIVtbVYCcORZAjlI
+         UndfdDGE3KQaTr65pLvCdgbH6llmSIJz96OFnUlXCMFadPkBkt7tK63U5VkNx63TbLCo
+         ERRq3MYzS7Mvlz1HG8GN5rM0km+KLmdMUSZjv6uehqHwlltzlCfbOOiB7zBMlniQMnlZ
+         qqtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=Scvb2gfJzrYfNJq90EL74fT7SS7nVGstZhceM9SRTyY=;
+        b=PKc/jwTK10VI9xfGG6T8z8lTmBDyAqrxSaWm1XRj1JeSAhxxSEukRWz8iheHEZGn6I
+         XE7qZGGytpZ/31DNWF/gStHnm3NTegxo08Gcu9I+SHQyI/FHPsDO13RvJpHiEx4DV1/Z
+         zHBEUnXauZuaiSkO5PcghlcZkB+YVl1X32841VCzaEqjof2bLsVVAhm92RJ5jsVa8Xi4
+         ZsvYFzYEyAJbNhnp15QRkAKwTlfACjf9zTuxKRJ9QznyRrsrc4SOvEH9UfB0gNPyk1vM
+         SBNm5fsmIOYutfzpLZ/duqumIsCP1kkf48aU1cZ8kQAUFACcx8kBJqiz1OBcGXwS7jJ/
+         Jsww==
+X-Gm-Message-State: AOAM5334hnHVKQJZuOEHx8Hyr/oln7Pqmkd//OVTc3GuYE9VbcAol8tm
+        Y19KGygi5gBAZxL8Zi0ur/SKWVfxFjE=
+X-Google-Smtp-Source: ABdhPJyqChTXz2F80g0qJy/+xySrxm2DGETkwfuo5JqfDwHZAekTYYLYUCbmnHGiPShsiTlZr2Nz/k/ji+0=
+X-Received: from seanjc.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3e5])
+ (user=seanjc job=sendgmr) by 2002:a17:902:e9c6:b029:12d:4cb3:3985 with SMTP
+ id 6-20020a170902e9c6b029012d4cb33985mr9312260plk.56.1629330980601; Wed, 18
+ Aug 2021 16:56:20 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Wed, 18 Aug 2021 23:56:15 +0000
+Message-Id: <20210818235615.2047588-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
+Subject: [PATCH] KVM: x86/mmu: Complete prefetch for trailing SPTEs for
+ direct, legacy MMU
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@google.com>,
+        Ben Gardon <bgardon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As of now, MMIO writes done after ready state transition use the
-mhi_write_reg_field() API even though the whole register is being
-written in most cases. Optimize this process by using mhi_write_reg()
-API instead for those writes and use the mhi_write_reg_field()
-API for MHI config registers only.
+Make a final call to direct_pte_prefetch_many() if there are "trailing"
+SPTEs to prefetch, i.e. SPTEs for GFNs following the faulting GFN.  The
+call to direct_pte_prefetch_many() in the loop only handles the case
+where there are !PRESENT SPTEs preceding a PRESENT SPTE.
 
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+E.g. if the faulting GFN is a multiple of 8 (the prefetch size) and all
+SPTEs for the following GFNs are !PRESENT, the loop will terminate with
+"start = sptep+1" and not prefetch any SPTEs.
+
+Prefetching trailing SPTEs as intended can drastically reduce the number
+of guest page faults, e.g. accessing the first byte of every 4kb page in
+a 6gb chunk of virtual memory, in a VM with 8gb of preallocated memory,
+the number of pf_fixed events observed in L0 drops from ~1.75M to <0.27M.
+
+Note, this only affects memory that is backed by 4kb pages as KVM doesn't
+prefetch when installing hugepages.  Shadow paging prefetching is not
+affected as it does not batch the prefetches due to the need to process
+the corresponding guest PTE.  The TDP MMU is not affected because it
+doesn't have prefetching, yet...
+
+Fixes: 957ed9effd80 ("KVM: MMU: prefetch ptes when intercepted guest #PF")
+Cc: Sergey Senozhatsky <senozhatsky@google.com>
+Cc: Ben Gardon <bgardon@google.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- drivers/bus/mhi/core/init.c | 64 ++++++++++++++++++++++-----------------------
- 1 file changed, 31 insertions(+), 33 deletions(-)
 
-diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-index 0917465..e4be171 100644
---- a/drivers/bus/mhi/core/init.c
-+++ b/drivers/bus/mhi/core/init.c
-@@ -433,75 +433,65 @@ int mhi_init_mmio(struct mhi_controller *mhi_cntrl)
- 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
- 	struct {
- 		u32 offset;
--		u32 mask;
--		u32 shift;
- 		u32 val;
- 	} reg_info[] = {
- 		{
--			CCABAP_HIGHER, U32_MAX, 0,
-+			CCABAP_HIGHER,
- 			upper_32_bits(mhi_cntrl->mhi_ctxt->chan_ctxt_addr),
- 		},
- 		{
--			CCABAP_LOWER, U32_MAX, 0,
-+			CCABAP_LOWER,
- 			lower_32_bits(mhi_cntrl->mhi_ctxt->chan_ctxt_addr),
- 		},
- 		{
--			ECABAP_HIGHER, U32_MAX, 0,
-+			ECABAP_HIGHER,
- 			upper_32_bits(mhi_cntrl->mhi_ctxt->er_ctxt_addr),
- 		},
- 		{
--			ECABAP_LOWER, U32_MAX, 0,
-+			ECABAP_LOWER,
- 			lower_32_bits(mhi_cntrl->mhi_ctxt->er_ctxt_addr),
- 		},
- 		{
--			CRCBAP_HIGHER, U32_MAX, 0,
-+			CRCBAP_HIGHER,
- 			upper_32_bits(mhi_cntrl->mhi_ctxt->cmd_ctxt_addr),
- 		},
- 		{
--			CRCBAP_LOWER, U32_MAX, 0,
-+			CRCBAP_LOWER,
- 			lower_32_bits(mhi_cntrl->mhi_ctxt->cmd_ctxt_addr),
- 		},
- 		{
--			MHICFG, MHICFG_NER_MASK, MHICFG_NER_SHIFT,
--			mhi_cntrl->total_ev_rings,
--		},
--		{
--			MHICFG, MHICFG_NHWER_MASK, MHICFG_NHWER_SHIFT,
--			mhi_cntrl->hw_ev_rings,
--		},
--		{
--			MHICTRLBASE_HIGHER, U32_MAX, 0,
-+			MHICTRLBASE_HIGHER,
- 			upper_32_bits(mhi_cntrl->iova_start),
- 		},
- 		{
--			MHICTRLBASE_LOWER, U32_MAX, 0,
-+			MHICTRLBASE_LOWER,
- 			lower_32_bits(mhi_cntrl->iova_start),
- 		},
- 		{
--			MHIDATABASE_HIGHER, U32_MAX, 0,
-+			MHIDATABASE_HIGHER,
- 			upper_32_bits(mhi_cntrl->iova_start),
- 		},
- 		{
--			MHIDATABASE_LOWER, U32_MAX, 0,
-+			MHIDATABASE_LOWER,
- 			lower_32_bits(mhi_cntrl->iova_start),
- 		},
- 		{
--			MHICTRLLIMIT_HIGHER, U32_MAX, 0,
-+			MHICTRLLIMIT_HIGHER,
- 			upper_32_bits(mhi_cntrl->iova_stop),
- 		},
- 		{
--			MHICTRLLIMIT_LOWER, U32_MAX, 0,
-+			MHICTRLLIMIT_LOWER,
- 			lower_32_bits(mhi_cntrl->iova_stop),
- 		},
- 		{
--			MHIDATALIMIT_HIGHER, U32_MAX, 0,
-+			MHIDATALIMIT_HIGHER,
- 			upper_32_bits(mhi_cntrl->iova_stop),
- 		},
- 		{
--			MHIDATALIMIT_LOWER, U32_MAX, 0,
-+			MHIDATALIMIT_LOWER,
- 			lower_32_bits(mhi_cntrl->iova_stop),
- 		},
--		{ 0, 0, 0 }
-+		{0, 0}
- 	};
- 
- 	dev_dbg(dev, "Initializing MHI registers\n");
-@@ -544,14 +534,22 @@ int mhi_init_mmio(struct mhi_controller *mhi_cntrl)
- 	mhi_cntrl->mhi_cmd[PRIMARY_CMD_RING].ring.db_addr = base + CRDB_LOWER;
- 
- 	/* Write to MMIO registers */
--	for (i = 0; reg_info[i].offset; i++) {
--		ret = mhi_write_reg_field(mhi_cntrl, base, reg_info[i].offset,
--					  reg_info[i].mask, reg_info[i].shift,
--					  reg_info[i].val);
--		if (ret) {
--			dev_err(dev, "Unable to write to MMIO registers");
--			return ret;
--		}
-+	for (i = 0; reg_info[i].offset; i++)
-+		mhi_write_reg(mhi_cntrl, base, reg_info[i].offset,
-+			      reg_info[i].val);
-+
-+	ret = mhi_write_reg_field(mhi_cntrl, base, MHICFG, MHICFG_NER_MASK,
-+				  MHICFG_NER_SHIFT, mhi_cntrl->total_ev_rings);
-+	if (ret) {
-+		dev_err(dev, "Unable to read MHICFG register\n");
-+		return ret;
-+	}
-+
-+	ret = mhi_write_reg_field(mhi_cntrl, base, MHICFG, MHICFG_NHWER_MASK,
-+				  MHICFG_NHWER_SHIFT, mhi_cntrl->hw_ev_rings);
-+	if (ret) {
-+		dev_err(dev, "Unable to read MHICFG register\n");
-+		return ret;
+Cc'd Ben as this highlights a potential gap with the TDP MMU, which lacks
+prefetching of any sort.  For large VMs, which are likely backed by
+hugepages anyways, this is a non-issue as the benefits of holding mmu_lock
+for read likely masks the cost of taking more VM-Exits.  But VMs with a
+small number of vCPUs won't benefit as much from parallel page faults,
+e.g. there's no benefit at all if there's a single vCPU.
+
+ arch/x86/kvm/mmu/mmu.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index a272ccbddfa1..daf7df35f788 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -2818,11 +2818,13 @@ static void __direct_pte_prefetch(struct kvm_vcpu *vcpu,
+ 			if (!start)
+ 				continue;
+ 			if (direct_pte_prefetch_many(vcpu, sp, start, spte) < 0)
+-				break;
++				return;
+ 			start = NULL;
+ 		} else if (!start)
+ 			start = spte;
  	}
++	if (start)
++		direct_pte_prefetch_many(vcpu, sp, start, spte);
+ }
  
- 	return 0;
+ static void direct_pte_prefetch(struct kvm_vcpu *vcpu, u64 *sptep)
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.33.0.rc1.237.g0d66db33f3-goog
 
