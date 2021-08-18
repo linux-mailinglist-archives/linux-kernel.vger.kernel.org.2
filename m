@@ -2,217 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E81433F0494
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F2E3F04A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236849AbhHRN0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 09:26:46 -0400
-Received: from mail-bn7nam10on2083.outbound.protection.outlook.com ([40.107.92.83]:3521
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233722AbhHRN0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 09:26:41 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ua5Yz6tdW+1hAlC3PAgpfTaT3l1qri8/a/2ItXC3RQVnr2tCPGusiHpvIcppkyncAwwFijuWyNJEU/CDfO46e+DORCY4cxjC1Pkro5nE3eopPai16hADRmXmGzXFsXOq1vqvojkk9mxW9iWYHvfGxmX2saH78dBxe00k5xmvEaJhX+e9XpGa3Bsy/NlEV9lKmBtQGvF7SusS2BFTVPjGTDxDwEyJrKM1NtUyZFlCosVKHUnluCuKOrW7cC68zdgXA4x4vjCQPe4oT/QhDHVIkD0HUCaz79yD5vcyLoT0D34iANHdwTJjx/BoAlHa/6A2vwlCrSTRQqnx6iUa37hkXQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rj9l0Upb5Ynv380yrMUceXNmP7CHMRPze/u7ChYANn8=;
- b=BGIlCuEMIZT9bsAMT0OH/d6vTi96xmn85V6BiBEDmOumoACyUdGRqgmqez6NAGELmaC9fw6Y86kRV0ksKWGrLJvjgVTKL9L8TCIKAWIWrW5NFpRGklHnFW+F8DhkqmFzi1mOgvWefjCij0cGBhCZweHFnIh1eH8XlblR2y10+qHzfDI7TAk4hYSaMKtAPurqvBWH/dpp9dBeBdA+szaJgHq+BGoBgaDo3shEh6mv0Zv24t+4sGPE55hB50eu+of6SnjPZ5S0ah7tAkhP3o1qfxAOCEGaLzCx/CDkkZHqP66muKk3pPc7diwDlvPj4acDHasGn9ItYxi7Tlt36UbV8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rj9l0Upb5Ynv380yrMUceXNmP7CHMRPze/u7ChYANn8=;
- b=pxT9GkUp15ETMP6gEF7dSR+huavIJ8Qep2TcjSBHDVWaxGrukaO5zvHGyInjhp64lY3Sf/Z56UITvKMcCuWsPlecFL3QPb0YQdweNSyez58ovew+xpZWznElu7mqjx+z8lwVd4jrE28F1AMir5Ed9Ed6Fv6e/OR93I6u3L7Q/bI=
-Authentication-Results: lists.linaro.org; dkim=none (message not signed)
- header.d=none;lists.linaro.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4334.namprd12.prod.outlook.com (2603:10b6:208:1d1::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16; Wed, 18 Aug
- 2021 13:26:05 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::dce2:96e5:aba2:66fe]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::dce2:96e5:aba2:66fe%6]) with mapi id 15.20.4415.024; Wed, 18 Aug 2021
- 13:26:05 +0000
-Subject: Re: [PATCH] drm/prime: fix a potential double put (release) bug
-To:     Wentao_Liang <Wentao_Liang_g@163.com>,
-        maarten.lankhorst@linux.intel.com
-Cc:     mripard@kernel.org, tzimmermann@suse.de, airlied@linux.ie,
-        daniel@ffwll.ch, sumit.semwal@linaro.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-References: <20210818130231.3484-1-Wentao_Liang_g@163.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <14aa6dfe-faba-8632-01a4-8119f199005c@amd.com>
-Date:   Wed, 18 Aug 2021 15:25:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210818130231.3484-1-Wentao_Liang_g@163.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: AM4PR0101CA0084.eurprd01.prod.exchangelabs.com
- (2603:10a6:200:41::52) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S237757AbhHRN1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 09:27:20 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32826 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S237008AbhHRN1F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 09:27:05 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17ID2unw131842;
+        Wed, 18 Aug 2021 09:26:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=mUOjUwhOg1TZwyuf8+PsacD68XEMl2xjesMrps7k50c=;
+ b=mq0PAKjbq+jRma050zrpbvRRAcTjVxCIlN0Fauqg8IKeynwddgE8/HfW6/x5eDyWjgJM
+ z7DoSoacuVL2unfe91H8l6+NCdPViFwN4MySYYhyDLm6FgjMT70BBIfPdRHj1y01rEDe
+ KPHa4iLlCzyFK8rOim9SU9Dobo8Gj8rwkQRBials3BhKb9Qg5tewSxt/UW6VP37pOCV7
+ PWHjAvuDrHfgKKac2hOWkGl0nx+P/ZTq3DCTTgJI4Q8mfXFli6Kt7UOyp+BJ6fcxIMEZ
+ mdppecdNKgvqQeAwIGWepcLorQt0yMMkVKJXcGnqaK4BLaZ+SPEajzo6QRaW3dHeB5Qe 0A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3agp1yknj2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Aug 2021 09:26:27 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17ID3S7Y137158;
+        Wed, 18 Aug 2021 09:26:27 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3agp1yknh3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Aug 2021 09:26:27 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17IDCPRS007447;
+        Wed, 18 Aug 2021 13:26:25 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06fra.de.ibm.com with ESMTP id 3ae53hdrjq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Aug 2021 13:26:25 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17IDQLG256754586
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Aug 2021 13:26:21 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0318F4C062;
+        Wed, 18 Aug 2021 13:26:21 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7219F4C059;
+        Wed, 18 Aug 2021 13:26:20 +0000 (GMT)
+Received: from p-imbrenda.bredband2.com (unknown [9.145.14.177])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 18 Aug 2021 13:26:20 +0000 (GMT)
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     kvm@vger.kernel.org
+Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, frankja@linux.ibm.com,
+        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ulrich.Weigand@de.ibm.com
+Subject: [PATCH v4 00/14] KVM: s390: pv: implement lazy destroy for reboot
+Date:   Wed, 18 Aug 2021 15:26:06 +0200
+Message-Id: <20210818132620.46770-1-imbrenda@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.31.55.180] (165.204.72.6) by AM4PR0101CA0084.eurprd01.prod.exchangelabs.com (2603:10a6:200:41::52) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Wed, 18 Aug 2021 13:26:03 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2bf913f5-823e-4487-bff0-08d9624bbb4d
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4334:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB43346435B4EA3F28A0F3DAFF83FF9@MN2PR12MB4334.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: t3KlR73et6hdgvNgqJ8wWn0xnzfM5Ql+lDko1Rhf36EDHfyb2KLM6FTiKhO7P8SYM+ccL9A5YKeUFn15+lHhenaynDaJUKyI3DHqNv1jouSfHNmRdGlwOjRXJEWKJg/kKKMHcF3bzZfpP/X5ioH1p+75B6g3zfjnXlWllvD9Y+Ir018+oBZbFVx61ZJqucrQ+EY+oRFEvvfziRczGht+Ia+6VuWdHPhyC0C9e3qb3+6leA7JiZInzsN793XlUmNptqWH/lXRFFMIEhA6Wn40ITbwiWTULdHBBuTDPNGpyjKNoI9MZ0dj40rNOBJCMr5qujO3PpVUUotxK4vFCkBMPCQZgppVCV/hAphYreqPS4+71NAZfEu03VFWbyEMYK0/3S/nEi9zvRlfM6LqnMoJ6DQttzw4feW+eMRvrBeWymAT/NAVXVNNYNLHb+/9aHfmWqJuShFvgj87SBICoKlEVI7M8uixKmHlInaDdvleWTkR87o3S+5ZGwabM4ESVRLryX/rIryT3F0YNuXde3WsWyrJ+6SfRG6nZgVjCHIwSQxvGcjVmKqCU9iiIYIrHUg+nOX6dX6t8Wq7o0CRIwodzWzBkeA9kXnCq7u17XOFR+TKHmsFhita8LxGE2jiDT6WZ5E7mE/PSFIzLsPJVJkhEILt9VapiQ9qL3VRUQ1S/kthvEoK6i+IVYGD12TO7zOU66bdJ4QLTCIiNNesf4MV8A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(396003)(39860400002)(346002)(66476007)(7416002)(36756003)(83380400001)(6666004)(6486002)(31696002)(2616005)(66556008)(38100700002)(186003)(4326008)(86362001)(26005)(5660300002)(956004)(478600001)(31686004)(66946007)(16576012)(316002)(8936002)(2906002)(8676002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YXl6ZER2YUI0cVM4WkNGd2NrcklZMHQ3T0ZaTnl6d1QwbUJyd3JleE1lYzJa?=
- =?utf-8?B?ZVZkaDdlNHVGRUh6SEZrMWhjK2RTOXFKc0plRHFWK2NJWVNGcTRYb3ZFNm4x?=
- =?utf-8?B?aytlOTJUOXB4Ry8valVaSDNjdmN3RUw4RUhDc2lPYlpGNzJwc1dDTjBOVHp0?=
- =?utf-8?B?N1RJdG5XSlkwK0cvTDlRNTFNYnNnZjhqRkpsWk12VU1DbGRkb2cway9laEhn?=
- =?utf-8?B?M0lWS1NRTmZvdStHbVhqS2gxODhoeUFkT3g5MlBVQk1QS3NZTlRQRUtWeWVz?=
- =?utf-8?B?U3pPTlFuRVNRc3lrNVM2R2NsOXI1VE5OMWkyTEF4aTBWaTJzeldic1Q4VzNI?=
- =?utf-8?B?MHRuOVFvTkNVQmpmSTNvc1dBdEhXemczdVFoMGpqWGdzaEZqcy9YcFFFd0lj?=
- =?utf-8?B?MXNFbTV6azhyekJTcDVaaENMRnRnYkFOb0dxMGVQUUlpck1nY1RMRnErQ3lV?=
- =?utf-8?B?ZHdtV2I0dCtIdVdEelZmYjQxQ2ZCemplN1Y3NHdiMkFvWVFNNDBpTG1NdElt?=
- =?utf-8?B?Q2NhV1FkRDM2T1dkNUJzTEJPb0xUekc4RmNHSVlnNWNRbjZGY1U1VHh4L2w5?=
- =?utf-8?B?ZmJiMGdGYklGcGhENzdmQUk5VFJFSlVkZVdOUGVvejdHV1M3aVNKZUFxdzMz?=
- =?utf-8?B?em5uNDJxT29TYTNPc0R4OTJ4QzZOVHVGSHA1QWZiY0FtZVpldWNrSVBhYjJ5?=
- =?utf-8?B?cVZjUHVjZnNVZFlIUU0rbFQ5NE0yUFErZVFXVWljbXZxSU1jSmMrRncxMElY?=
- =?utf-8?B?MXRCWmtuMXUvbmxPVS9WVjRKN3VUdDZNYkpkYWd1dmdvSUlLMmJnWk1uSTM1?=
- =?utf-8?B?TWdwRVdEYVhDeXhQMFExRVpZK3BsUjRCZmhlL0pva2pkUVJBNlBMZHV4YXdI?=
- =?utf-8?B?MGJKUXh2ZXBKYkxaaHA2NUVMcGtJemhoVnR3TVBoRHhJeGtiV2ZmbHFJeUQ4?=
- =?utf-8?B?TUtnc3plbHVqbk1UeURXZEpiRGdKbldYVE1XbWlORkZiN3FtcXJmbEtISGw2?=
- =?utf-8?B?blE0OC82b2RsdUpRZTJrK3R5anEvVk1IRG9BUXhYY1dGbDdIZEVHZkhaaERp?=
- =?utf-8?B?VzhCWUJoL29Fc0JXa1JsN2I4Ry9OaVVrNlltNHZtcElBb09Zd09ZbmtnNFQy?=
- =?utf-8?B?ZzVOREdzL1ZHdWdyUGFORlNGMi9KZEI3UWxZb0cwSW9Wd3hLRmF0SnozVUxx?=
- =?utf-8?B?aHVuWmQxSUZyQ3B0aXNwSHo3akhDREpmSHB3WmRyUUZxY0gxL2xsY1p0Kys2?=
- =?utf-8?B?d0hxdHRBVzVodHRmRVBEYjE5aXRHZmVDd3FSVmZQSmYvTzh1UHZBNFpPZ3hn?=
- =?utf-8?B?L21tSTlHbklVS3Y3ZVhsZ3FSY2NJY3BiRzU0N1VXOFZiaVNSYlFYR05vbW9o?=
- =?utf-8?B?RTZMT1YrbVB6M2FlT3lmR0h2U2FyV1BjRWlNc1VJeGV5bGdRSEZHeTdJVGVh?=
- =?utf-8?B?R1piZ2VZUTRhS1FTU1lJNGR5M1F2TWd4TmFMcUl5b0Vwd3RVYkdnZHZoejJk?=
- =?utf-8?B?b2M1V2ozcjlEcUdMNWo4Ylc1N3RzWGhUU3dXK3ZJWHIxZFRVallEM2ZRQmFB?=
- =?utf-8?B?SjJXbmtQOWxuMDh6S3J0ZlpLSHVEc1pkWDhGaXZjMHk2eWpOTWZHRVpTVjBo?=
- =?utf-8?B?N0FwcmcxRDJEQldJMHNLWTlMcEI5TldhWldCTXl5NFI3M3l3UW81aUphcDA5?=
- =?utf-8?B?Q3YzWDd1YnRsNVcrTFZkaVYyV1BNVjBlSzYzMUZXL0xsUkgyTnNzMEZDUERv?=
- =?utf-8?Q?moZywUUsmFhUmX1ocMD4w8ldhxgV8n9bYliUWGM?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2bf913f5-823e-4487-bff0-08d9624bbb4d
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2021 13:26:05.6428
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: n7nEg4eOeM6/imh5lBT8PIWLY+/jAWBU93cc3BVhTh8dmBFEBufAGXApbVE27fLG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4334
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: JR3QSBUheSgf3km6gZoA80_7BqPyroUP
+X-Proofpoint-GUID: o2RMMCMGx3hGSPMf39ierqi7Wijms6LO
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-18_04:2021-08-17,2021-08-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1015
+ priorityscore=1501 lowpriorityscore=0 phishscore=0 malwarescore=0
+ mlxscore=0 bulkscore=0 impostorscore=0 suspectscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108180082
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 18.08.21 um 15:02 schrieb Wentao_Liang:
-> In line 317 (#1), drm_gem_prime_import() is called, it will call
-> drm_gem_prime_import_dev(). At the end of the function
-> drm_gem_prime_import_dev() (line 956, #2), "dma_buf_put(dma_buf);" puts
-> dma_buf->file and may cause it to be released. However, after
-> drm_gem_prime_import() returning, the dma_buf may be put again by the
-> same put function in lines 342, 351 and 358 (#3, #4, #5). Putting the
-> dma_buf improperly more than once can lead to an incorrect dma_buf-
->> file put.
-> We believe that the put of the dma_buf in the function
-> drm_gem_prime_import() is unnecessary (#2). We can fix the above bug by
-> removing the redundant "dma_buf_put(dma_buf);" in line 956.
+Previously, when a protected VM was rebooted or when it was shut down,
+its memory was made unprotected, and then the protected VM itself was
+destroyed. Looping over the whole address space can take some time,
+considering the overhead of the various Ultravisor Calls (UVCs). This
+means that a reboot or a shutdown would take a potentially long amount
+of time, depending on the amount of used memory.
 
-Guys I'm getting tired of NAKing those incorrect reference count analysis.
+This patchseries implements a deferred destroy mechanism for protected
+guests. When a protected guest is destroyed, its memory is cleared in
+background, allowing the guest to restart or terminate significantly
+faster than before.
 
-The dma_buf_put() in the error handling of drm_gem_prime_import_dev() 
-function is balanced with the get_dma_buf() in the same function 
-directly above.
+There are 2 possibilities when a protected VM is torn down:
+* it still has an address space associated (reboot case)
+* it does not have an address space anymore (shutdown case)
 
-This is for the creating a GEM object for a DMA-buf imported from other 
-device use case and certainly correct.
+For the reboot case, the reference count of the mm is increased, and
+then a background thread is started to clean up. Once the thread went
+through the whole address space, the protected VM is actually
+destroyed.
 
-The various dma_buf_put() in drm_gem_prime_fd_to_handle() is balanced 
-with the dma_buf_get(prime_fd) at the beginning of the function.
+This means that the same address space can have memory belonging to
+more than one protected guest, although only one will be running, the
+others will in fact not even have any CPUs.
 
-This is for extracting the DMA-buf from the file descriptor and keeping 
-a reference to it while we are busy importing it (e.g. to prevent a race 
-when somebody changes the fd at the same time).
+The shutdown case is more controversial, and it will be dealt with in a
+future patchseries.
 
-As far as I can see this is correct as well.
+When a guest is destroyed, its memory still counts towards its memory
+control group until it's actually freed (I tested this experimentally)
 
-Regards,
-Christian.
+v3->v4
+* added patch 2
+* split patch 3
+* removed the shutdown part -- will be a separate patchseries
+* moved the patch introducing the module parameter
 
->
->   314     if (dev->driver->gem_prime_import)
->   315         obj = dev->driver->gem_prime_import(dev, dma_buf);
->   316     else
->   317         obj = drm_gem_prime_import(dev, dma_buf);
->   				//#1 call to drm_gem_prime_import
-> 				//   ->drm_gem_prime_import_dev
-> 				//   ->dma_buf_put
->   ...
->
->   336     ret = drm_prime_add_buf_handle(&file_priv->prime,
->   337             dma_buf, *handle);
->
->   ...
->
->   342     dma_buf_put(dma_buf);  //#3 put again
->   343
->   344     return 0;
->   345
->   346 fail:
->
->   351     dma_buf_put(dma_buf); //#4 put again
->   352     return ret;
->
->   356 out_put:
->   357     mutex_unlock(&file_priv->prime.lock);
->   358     dma_buf_put(dma_buf);  //#5 put again
->   359     return ret;
->   360 }
->
->   905 struct drm_gem_object *drm_gem_prime_import_dev
->   							(struct drm_device *dev,
->   906                         struct dma_buf *dma_buf,
->   907                         struct device *attach_dev)
->   908 {
->
->   ...
->
->   952 fail_unmap:
->   953     dma_buf_unmap_attachment(attach, sgt, DMA_BIDIRECTIONAL);
->   954 fail_detach:
->   955     dma_buf_detach(dma_buf, attach);
->   956     dma_buf_put(dma_buf);  //#2 the first put of dma_buf
-> 								//	 (unnecessary)
->   957
->   958     return ERR_PTR(ret);
->   959 }
->
-> Signed-off-by: Wentao_Liang <Wentao_Liang_g@163.com>
-> ---
->   drivers/gpu/drm/drm_prime.c | 1 -
->   1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
-> index 2a54f86856af..cef03ad0d5cd 100644
-> --- a/drivers/gpu/drm/drm_prime.c
-> +++ b/drivers/gpu/drm/drm_prime.c
-> @@ -953,7 +953,6 @@ struct drm_gem_object *drm_gem_prime_import_dev(struct drm_device *dev,
->   	dma_buf_unmap_attachment(attach, sgt, DMA_BIDIRECTIONAL);
->   fail_detach:
->   	dma_buf_detach(dma_buf, attach);
-> -	dma_buf_put(dma_buf);
->   
->   	return ERR_PTR(ret);
->   }
+v2->v3
+* added definitions for CC return codes for the UVC instruction
+* improved make_secure_pte:
+  - renamed rc to cc
+  - added comments to explain why returning -EAGAIN is ok
+* fixed kvm_s390_pv_replace_asce and kvm_s390_pv_remove_old_asce:
+  - renamed
+  - added locking
+  - moved to gmap.c
+* do proper error management in do_secure_storage_access instead of
+  trying again hoping to get a different exception
+* fix outdated patch descriptions
+
+v1->v2
+* rebased on a more recent kernel
+* improved/expanded some patch descriptions
+* improves/expanded some comments
+* added patch 1, which prevents stall notification when the system is
+  under heavy load.
+* rename some members of struct deferred_priv to improve readability
+* avoid an use-after-free bug of the struct mm in case of shutdown
+* add missing return when lazy destroy is disabled
+* add support for OOM notifier
+
+Claudio Imbrenda (14):
+  KVM: s390: pv: add macros for UVC CC values
+  KVM: s390: pv: avoid double free of sida page
+  KVM: s390: pv: avoid stalls for kvm_s390_pv_init_vm
+  KVM: s390: pv: avoid stalls when making pages secure
+  KVM: s390: pv: leak the ASCE page when destroy fails
+  KVM: s390: pv: properly handle page flags for protected guests
+  KVM: s390: pv: handle secure storage violations for protected guests
+  KVM: s390: pv: handle secure storage exceptions for normal guests
+  KVM: s390: pv: refactor s390_reset_acc
+  KVM: s390: pv: usage counter instead of flag
+  KVM: s390: pv: add export before import
+  KVM: s390: pv: module parameter to fence lazy destroy
+  KVM: s390: pv: lazy destroy for reboot
+  KVM: s390: pv: avoid export before import if possible
+
+ arch/s390/include/asm/gmap.h    |   6 +-
+ arch/s390/include/asm/pgtable.h |   9 +-
+ arch/s390/include/asm/uv.h      |  16 ++-
+ arch/s390/kernel/uv.c           | 115 ++++++++++++++++++--
+ arch/s390/kvm/kvm-s390.c        |   6 +-
+ arch/s390/kvm/kvm-s390.h        |   2 +-
+ arch/s390/kvm/pv.c              | 185 ++++++++++++++++++++++++++++----
+ arch/s390/mm/fault.c            |  20 +++-
+ arch/s390/mm/gmap.c             | 141 +++++++++++++++++++-----
+ 9 files changed, 434 insertions(+), 66 deletions(-)
+
+-- 
+2.31.1
 
