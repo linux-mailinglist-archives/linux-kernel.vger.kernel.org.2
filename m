@@ -2,131 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6DD3F0725
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7AE3F071D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239606AbhHROxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 10:53:22 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:39310 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239048AbhHROxV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 10:53:21 -0400
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 17IEqL1F025131
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 23:52:21 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 17IEqL1F025131
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1629298342;
-        bh=4xBGs3s+HePiP6vkus0TyPzdPu7uR7OKLc02dzXS7u4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lZGGxLUUHrhtHkZPTAUqet0YfI41L3F/zspbG7DFSHrljmdSAG7P9lZOZB6Y6tnUf
-         wM7diSdV44gB4K9kzHBnRzDqIPOB4pazeIPRzm/X3P8WYnPQZn3uJ8oXwlTcjSaUFa
-         dJ5HRMYc9e2VwfdhtQGrzK+YMXOOGN97ttRA9IIH//f33MtOzZ5ZFsr1xywScWoPjs
-         KeH+CQcl2MV75Fv6RbRimZMtAgP7nsjzxOpo0/PZWTkKo1vWi7X8xmH7Ween6Ps60q
-         BcPFr0XeIIoqB13ZpWfmMEV933cslp6LEHBo0x49GfLaRWHaJB6KD3aHdYKq8SyIYX
-         oJAzshsiaS/4w==
-X-Nifty-SrcIP: [209.85.216.50]
-Received: by mail-pj1-f50.google.com with SMTP id bo18so2851498pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:52:21 -0700 (PDT)
-X-Gm-Message-State: AOAM531GkxjWHErFrtQvDMXKgxbr4xlJXWognx2ouuBPFH9vaMWPamyH
-        sFuPhMyzz6cccTn/vjczZzXy6t0Rah/AZTVd2Us=
-X-Google-Smtp-Source: ABdhPJwCI4esRQd0Q2sKZc8wzvn5zqM3bZ2TDGOQB8jCKcQcgn336SWMhx33PcRV1FZPFXN1xhmgmSYgYJzkymCNE1Q=
-X-Received: by 2002:a17:90a:7384:: with SMTP id j4mr9455656pjg.153.1629298340800;
- Wed, 18 Aug 2021 07:52:20 -0700 (PDT)
+        id S239526AbhHROwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 10:52:31 -0400
+Received: from mga17.intel.com ([192.55.52.151]:1553 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239503AbhHROwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 10:52:30 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="196596161"
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
+   d="scan'208";a="196596161"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 07:51:55 -0700
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
+   d="scan'208";a="449785281"
+Received: from ksawchu-mobl.amr.corp.intel.com (HELO [10.212.83.236]) ([10.212.83.236])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 07:51:53 -0700
+Subject: Re: [RFC PATCH 1/2] driver core: export
+ driver_deferred_probe_trigger()
+To:     Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     alsa-devel@alsa-project.org,
+        "Rafael J . Wysocki" <rafael@kernel.org>, tiwai@suse.de,
+        linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com,
+        vkoul@kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Christoph Hellwig <hch@lst.de>
+References: <20210817190057.255264-1-pierre-louis.bossart@linux.intel.com>
+ <20210817190057.255264-2-pierre-louis.bossart@linux.intel.com>
+ <YRyeR6imvSwOOasQ@kroah.com> <20210818115736.GA4177@sirena.org.uk>
+ <YR0Ji7DQXoo0z4vP@kroah.com> <20210818134814.GF4177@sirena.org.uk>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <14235b8d-d375-6e2d-cae9-33adf9c48120@linux.intel.com>
+Date:   Wed, 18 Aug 2021 09:51:51 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <269701460.117528.1629210189833@office.mailbox.org>
-In-Reply-To: <269701460.117528.1629210189833@office.mailbox.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 18 Aug 2021 23:51:44 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQQh6kM3k4=UP9R1HQ5+QWzRZZ1Cse_nWv8nOOSkJ93wQ@mail.gmail.com>
-Message-ID: <CAK7LNAQQh6kM3k4=UP9R1HQ5+QWzRZZ1Cse_nWv8nOOSkJ93wQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] x86, Makefile: Move the CPU-specific 64-bit tuning
- settings to arch/x86/Makefile.cpu
-To:     Tor Vic <torvic9@mailbox.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210818134814.GF4177@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 11:23 PM torvic9 via Clang Built Linux
-<clang-built-linux@googlegroups.com> wrote:
->
-> In accordance with the FIXME comment in arch/x86/Makefile, move the
-> CPU-specific 64-bit tuning settings to arch/x86/Makefile.cpu.
->
-> Signed-off-by: Tor Vic <torvic9@mailbox.org>
-> ---
->  arch/x86/Makefile     | 11 ++---------
->  arch/x86/Makefile.cpu | 12 ++++++++++++
->  2 files changed, 14 insertions(+), 9 deletions(-)
->  create mode 100644 arch/x86/Makefile.cpu
->
-> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-> index 307fd0000a83..94105d7ad22c 100644
-> --- a/arch/x86/Makefile
-> +++ b/arch/x86/Makefile
-> @@ -119,15 +119,8 @@ else
->         # Use -mskip-rax-setup if supported.
->         KBUILD_CFLAGS += $(call cc-option,-mskip-rax-setup)
->
-> -        # FIXME - should be integrated in Makefile.cpu (Makefile_32.cpu)
-> -        cflags-$(CONFIG_MK8) += $(call cc-option,-march=k8)
-> -        cflags-$(CONFIG_MPSC) += $(call cc-option,-march=nocona)
-> -
-> -        cflags-$(CONFIG_MCORE2) += \
-> -                $(call cc-option,-march=core2,$(call cc-option,-mtune=generic))
-> -       cflags-$(CONFIG_MATOM) += $(call cc-option,-march=atom) \
-> -               $(call cc-option,-mtune=atom,$(call cc-option,-mtune=generic))
-> -        cflags-$(CONFIG_GENERIC_CPU) += $(call cc-option,-mtune=generic)
-> +        # CPU-specific tuning (64-bit).
-> +        include arch/x86/Makefile.cpu
 
 
+>>> The issue is that the driver core is using drivers completing probe as a
+>>> proxy for resources becoming available.  That works most of the time
+>>> because most probes are fully synchronous but it breaks down if a
+>>> resource provider registers resources outside of probe, we might still
+>>> be fine if system boot is still happening and something else probes but
+>>> only through luck.
+> 
+>> The driver core is not using that as a proxy, that is up to the driver
+>> itself or not.  All probe means is "yes, this driver binds to this
+>> device, thank you!" for that specific bus/class type.  That's all, if
+>> the driver needs to go off and do real work before it can properly
+>> control the device, wonderful, have it go and do that async.
+> 
+> Right, which is what is happening here - but the deferred probe
+> machinery in the core is reading more into the probe succeeding than it
+> should.
+
+I think Greg was referring to the use of the PROBE_PREFER_ASYNCHRONOUS
+probe type. We tried just that and got a nice WARN_ON because we are
+using request_module() to deal with HDaudio codecs. The details are in
+[1] but the kernel code is unambiguous...
+
+        /*
+	 * We don't allow synchronous module loading from async.  Module
+	 * init may invoke async_synchronize_full() which will end up
+	 * waiting for this task which already is waiting for the module
+	 * loading to complete, leading to a deadlock.
+	 */
+	WARN_ON_ONCE(wait && current_is_async());
 
 
-See
-https://patchwork.kernel.org/project/linux-kbuild/patch/20210724183556.76680-1-masahiroy@kernel.org/
+The reason why we use a workqueue is because we are otherwise painted in
+a corner by conflicting requirements.
 
+a) we have to use request_module()
+b) we cannot use the async probe because of the request_module()
+c) we have to avoid blocking on boot
 
+I understand the resistance to exporting this function, no one in our
+team was really happy about it, but no one could find an alternate
+solution. If there is something better, I am all ears.
 
+Thanks
+-Pierre
 
-
->          KBUILD_CFLAGS += $(cflags-y)
->
->          KBUILD_CFLAGS += -mno-red-zone
-> diff --git a/arch/x86/Makefile.cpu b/arch/x86/Makefile.cpu
-> new file mode 100644
-> index 000000000000..fb407ae94d90
-> --- /dev/null
-> +++ b/arch/x86/Makefile.cpu
-> @@ -0,0 +1,12 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +# CPU tuning section (64-bit) - shared with UML.
-> +# Must change only cflags-y (or [yn]), not CFLAGS! That makes a difference for UML.
-> +
-> +cflags-$(CONFIG_MK8) += $(call cc-option,-march=k8)
-> +cflags-$(CONFIG_MPSC) += $(call cc-option,-march=nocona)
-> +
-> +cflags-$(CONFIG_MCORE2) += \
-> +       $(call cc-option,-march=core2,$(call cc-option,-mtune=generic))
-> +cflags-$(CONFIG_MATOM) += $(call cc-option,-march=atom) \
-> +       $(call cc-option,-mtune=atom,$(call cc-option,-mtune=generic))
-> +cflags-$(CONFIG_GENERIC_CPU) += $(call cc-option,-mtune=generic)
-> --
-> 2.32.0
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/269701460.117528.1629210189833%40office.mailbox.org.
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+[1] https://github.com/thesofproject/linux/pull/3079
