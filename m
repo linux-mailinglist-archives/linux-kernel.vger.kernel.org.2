@@ -2,90 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC62E3F18AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 14:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F303F190C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 14:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238957AbhHSMBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 08:01:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36600 "EHLO
+        id S231745AbhHSMSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 08:18:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238105AbhHSMBE (ORCPT
+        with ESMTP id S230005AbhHSMSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 08:01:04 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21568C061575;
-        Thu, 19 Aug 2021 05:00:28 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gr3HY0bgLz9sRf;
-        Thu, 19 Aug 2021 22:00:24 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629374425;
-        bh=OCa7BZNi6CQjW4gp5BQB4RigU91hPy2R/nxrD1Q5B80=;
-        h=Date:From:To:Cc:Subject:From;
-        b=oRER3yC1YccBii1pfFSBVejAvQvJQ7yXHCJhDfwSXBgSyzCxw1F3HVOXJW+PUbD1q
-         fRePimst+KQSF4a1EESB5P+dJGW5ngMV785IMApDvJThu1R7JQ8jvra6404TDnVlgz
-         dKG5sZqeGXrewPUQviO6enQ/DAOuwUIqDm6OY7pwm7jQvMsqcGQgsK52tDnvupTA1/
-         XSBkgdgZl+esfyD7nfNGyEunQE4lamiRrGiaIEKcfMiMSxmJrpE94A1lzdc/27IDGW
-         J18Pn6tOTeiRxRfSPstFtA/GCrlnT6UZRmFhvqGkQRlt8BqhJ3c0Vj1cUptzhMn2P4
-         lK371Vr7D3/Cw==
-Date:   Thu, 19 Aug 2021 22:00:23 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the aspeed tree
-Message-ID: <20210819220023.7b828d3a@canb.auug.org.au>
+        Thu, 19 Aug 2021 08:18:54 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5BA5C061575;
+        Thu, 19 Aug 2021 05:18:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HwP/nMh1cO8cF7GObYL+nv9FmhI1pvtnORa3FRBGMnE=; b=WUnIjLgD7Owt4dgF8MGz1ihYek
+        Pb39fkA0P/KvqKWQqBrqBKRWLo8yWHSgLrdt5k7R4YlidDhBidqkLGYbQZGxg3cCkIkOZToiAuTMN
+        joMHaSWppnXh4gOKUntHJ10SAmsbMDYei8p4hAghu/OePiTAPpKFDMECjqL8MDF8QOzWE9IVrJo12
+        g6Kxp6T6kbi+1/JVeGpL459DTV/oc5/ieuOadDEcVgA1eSqz/yNa0i9cp/veUaUHjBaIYIHUHNICW
+        /VRNw9ZjtfaTttDN7U/iot2oUHG+JYf8nP4g6ocNLMSgfvbZ4tnRdHELk8iGXTcFUGb4+veO77jNX
+        mRMC1CxA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mGgzZ-00B6Mc-5J; Thu, 19 Aug 2021 12:17:53 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C955F981DD4; Wed, 18 Aug 2021 18:20:34 +0200 (CEST)
+Date:   Wed, 18 Aug 2021 18:20:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Darren Hart <dvhart@infradead.org>,
+        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        kernel@collabora.com, krisman@collabora.com,
+        linux-api@vger.kernel.org, libc-alpha@sourceware.org,
+        mtk.manpages@gmail.com, Davidlohr Bueso <dave@stgolabs.net>
+Subject: Re: [PATCH 2/4] futex2: Implement vectorized wait
+Message-ID: <20210818162034.GA26408@worktop.programming.kicks-ass.net>
+References: <20210805190405.59110-1-andrealmeid@collabora.com>
+ <20210805190405.59110-3-andrealmeid@collabora.com>
+ <87v94310gm.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/mC5i/OxZBhZcgnQxD7yh=Ma";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87v94310gm.ffs@tglx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/mC5i/OxZBhZcgnQxD7yh=Ma
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Aug 18, 2021 at 01:00:57PM +0200, Thomas Gleixner wrote:
+> > +/**
+> > + * struct futex_waitv - A waiter for vectorized wait
+> > + * @val:   Expected value at uaddr
+> > + * @uaddr: User address to wait on
+> > + * @flags: Flags for this waiter
+> > + */
+> > +struct futex_waitv {
+> > +	__u64 val;
+> 
+> Again. Why u64?
 
-Hi all,
+So I think the idea was that if we're going to do new syscalls, we
+should cater for future extentions, one of which was 64bit futexes (for
+64bit archs) (along with u{8,16,32})
 
-In commit
+The previous set of patches implemented a more complete replacement ABI
+-- which I rather liked, however the implementation was completely
+disjoint from the existing futexes, which was a non-starter for me.
 
-  2f9b25fa6682 ("soc: aspeed: Re-enable FWH2AHB on AST2600")
+Anyway, yes, current futexes are u32, but if we want to ever do u64
+futexes, we should either do this syscall with a u64, or already plan to
+retire the whole syscall.
 
-Fixes tag
+Obiously this would've made good Changelog material, but alas it wasn't
+there.
 
-  Fixes: deb50313ba83 ("soc: aspeed-lpc-ctrl: LPC to AHB mapping on ast2600=
-")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: 5042d3f278de ("soc: aspeed-lpc-ctrl: LPC to AHB mapping on ast2600")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/mC5i/OxZBhZcgnQxD7yh=Ma
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEeR9cACgkQAVBC80lX
-0GwcsQf/UFPrw2l/8w3NTxfyQKmsRltW8znvUr1TO96fxGGiqFP6CfUbIpqWI885
-797g9xG75oZZ0vRhKRj83CJQssq7BPmKPXByKnXHp3int3hLNu9OJ7Wtc6vX8JI6
-SxmC/Jq5/uAePKo//38xDu34Xh8slrGZK69kLI4SH+nVxLV38OXz/T6y/nyGphkd
-+9jW2vFx0DATrORKbu7PK+aQrOH3UD2EaEuR5k8aju0rdO9W+bC/j3y0rvZv5MuO
-+Xbz2G9aaPGsRmHcWxEOBkEXyaiMaKZx4/cHdAIITKWKWfdi/Ul1ztgQeHliPONL
-AQdYjwVPC9KDhRjvYfvSmPIU92PW5g==
-=8Dn5
------END PGP SIGNATURE-----
-
---Sig_/mC5i/OxZBhZcgnQxD7yh=Ma--
