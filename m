@@ -2,198 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF823EFE4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C47623EFE53
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239230AbhHRHzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 03:55:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36010 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239196AbhHRHz2 (ORCPT
+        id S239499AbhHRH4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 03:56:18 -0400
+Received: from mail-lf1-f46.google.com ([209.85.167.46]:33508 "EHLO
+        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239275AbhHRH4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 03:55:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629273293;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rHHegR8YoGT81fHSlGS+4eqOOM+TED5s1uOzx8W7ou0=;
-        b=VJjMqpRpw/EueTnDh4iiD/Z9/gqgoXn9g0uPnJ7jWOOwhcaV5pbD27ZG4MXNUDCNIYxQns
-        Q79gsCk3Lfka3YMsxbCj2vi5TvSf6UuqRWTsFeka64oCzOs3Jdcwp0jPpiHjxe/Q8YBV/A
-        CmXFaqCJCZkchHW2kmRBQjdNNZekftw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-524-7agWVU01N6CubiWSnC_TFw-1; Wed, 18 Aug 2021 03:54:52 -0400
-X-MC-Unique: 7agWVU01N6CubiWSnC_TFw-1
-Received: by mail-wr1-f72.google.com with SMTP id k15-20020a5d628f0000b029015501bab520so311518wru.16
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 00:54:52 -0700 (PDT)
+        Wed, 18 Aug 2021 03:56:08 -0400
+Received: by mail-lf1-f46.google.com with SMTP id p38so2894758lfa.0;
+        Wed, 18 Aug 2021 00:55:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=rHHegR8YoGT81fHSlGS+4eqOOM+TED5s1uOzx8W7ou0=;
-        b=as7NXH6eJcwDIZOmN0w+xxLwu/aMK5XYzbDtO0sWVL2SMoC3RrtfwpNPqm2StRqWDy
-         YnxIwwkDeUM1k0oVT8fEQzj7BSgvGMH+BgcjNRCbchHYgcAjpBOyY7rEbb6VKz9lYAmC
-         JsVaIzR90oZ9tX0HMY201QdcbROxF/pEsXjijU1oaFioM0sHLOKylZX2UlNlZvLTSRI1
-         67pYD7IYuxLhOJJy2qcdTWYV60Jbbm9UxQXX4SB9/Oi3uv8f6tKcn3Oetle6LcmTD/oo
-         8CYeajpeOcw8MSmUT7uaiNJ5KEFC5U7Zy4VSLQOCVd0A6FVgPyrfoqlfJdJ0X3+z5hQQ
-         6FAQ==
-X-Gm-Message-State: AOAM531XJ7lknekJCpdUGRPu2Ex6bGigaxD5elmyGSLbCJBfY8fk6yLh
-        0UXyeBfezyodosh0pAm3jcb1U7JF0UUc+YhzPSSG4MPbq6Aq/KRnQ62zH46xrA8pjfm7lLf1tqT
-        boUygm9y/BnFV2fQgEyRqyzMjrtj6tpmb//oeVNnlp0G+gC/M/zuQCQEAfzfc1KtVA/U57Vta
-X-Received: by 2002:a1c:2905:: with SMTP id p5mr7253529wmp.146.1629273291386;
-        Wed, 18 Aug 2021 00:54:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxTn9JozhHmC98KaokBtJ55BnGOTt9cwSgq6tHNIiBtm8UI2eAVrwAyAnivCF2wQXM6+PL5FQ==
-X-Received: by 2002:a1c:2905:: with SMTP id p5mr7253507wmp.146.1629273291144;
-        Wed, 18 Aug 2021 00:54:51 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6417.dip0.t-ipconnect.de. [91.12.100.23])
-        by smtp.gmail.com with ESMTPSA id b12sm4702991wmd.42.2021.08.18.00.54.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 00:54:50 -0700 (PDT)
-To:     Janis Schoetterl-Glausch <scgl@linux.ibm.com>, kvm@vger.kernel.org,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com,
-        imbrenda@linux.ibm.com, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Cc:     cohuck@redhat.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210816150718.3063877-1-scgl@linux.ibm.com>
- <20210816150718.3063877-2-scgl@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH 1/2] KVM: s390: gaccess: Cleanup access to guest frames
-Message-ID: <d11128bb-18f6-5210-6f42-74a89d8edcf7@redhat.com>
-Date:   Wed, 18 Aug 2021 09:54:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OKNqcjyMKvezCUeqQ9JLkZ4cJ3Qp1tm5Mjp0xQPfVdk=;
+        b=KL93TLEfVVWKQlk9QF5xuI3dfpCI8RPbYAw0WT8QHMc7FcyQENZutcXYw7kuq1EH4Z
+         vcyVg7ZRehOhMA1W7SusE5Trf4TSXxrE2gtEij0mGVbVGz9CwsUhk+Ge5WZtfVq10yHB
+         kZAha8RNscVFV8aZa8m+obW9FYmp1M9kVmdnXgVqrD7QiEM0zdeD41v+yD+d0mcSMOw1
+         F8cORnoxfY6R3zppmB2yv39hNvbZmEg9pVvfn67HYodqzuYaGMhKj6ln79mvMPretcuT
+         PfWNgZPOeU40z6hqrfEr+y62Bb3PeEmVsg0VN22dWnrvv7I3RUODPF7ZTxQcQs7NxXmA
+         aLLw==
+X-Gm-Message-State: AOAM533vwkQcuayi3Yci5yNHmL+2eGfPXLPsBx0HccC9VjEgtbVtAOBI
+        nA5CIEn8fi3HcPwEpAOl6YcQtvg3EtgeuD3o0Yc=
+X-Google-Smtp-Source: ABdhPJzvrTUEsuu+UliVD0ZQ+G9FKD87vbsYb/+XxmogarBDMIyGh6vgVKWqgJPt1W2rNzsulcpbB/8ovtLoJb5k9UY=
+X-Received: by 2002:ac2:5ec7:: with SMTP id d7mr5435897lfq.234.1629273332108;
+ Wed, 18 Aug 2021 00:55:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210816150718.3063877-2-scgl@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210818034010.800652-1-keescook@chromium.org>
+ <CAMZ6RqK4Rn4d-1CZsg9vJiAMHhxN6fgcqukdHpGwXoGTyNVr_Q@mail.gmail.com> <202108172320.1540EC10C@keescook>
+In-Reply-To: <202108172320.1540EC10C@keescook>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Wed, 18 Aug 2021 16:55:20 +0900
+Message-ID: <CAMZ6RqLecbytJFQDC35n7YiqBbrB3--POofnXFeH77Zi2xzqWA@mail.gmail.com>
+Subject: Re: [PATCH] can: etas_es58x: Replace 0-element raw_msg array
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        linux-can <linux-can@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.08.21 17:07, Janis Schoetterl-Glausch wrote:
-> Introduce a helper function for guest frame access.
-> Rewrite the calculation of the gpa and the length of the segment
-> to be more readable.
-> 
-> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
-> ---
->   arch/s390/kvm/gaccess.c | 48 +++++++++++++++++++++++++----------------
->   1 file changed, 29 insertions(+), 19 deletions(-)
-> 
-> diff --git a/arch/s390/kvm/gaccess.c b/arch/s390/kvm/gaccess.c
-> index b9f85b2dc053..df83de0843de 100644
-> --- a/arch/s390/kvm/gaccess.c
-> +++ b/arch/s390/kvm/gaccess.c
-> @@ -827,11 +827,26 @@ static int guest_page_range(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar,
->   	return 0;
->   }
->   
-> +static int access_guest_frame(struct kvm *kvm, enum gacc_mode mode, gpa_t gpa,
-> +			      void *data, unsigned int len)
+On Wed. 18 Aug 2021 at 15:48, Kees Cook <keescook@chromium.org> wrote:
+> On Wed, Aug 18, 2021 at 02:13:51PM +0900, Vincent MAILHOL wrote:
+> > On Wed. 18 Aug 2021 at 12:40, Kees Cook <keescook@chromium.org> wrote:
+> > > While raw_msg isn't a fixed size, it does have a maximum size. Adjust the
+> > > struct to represent this and avoid the following warning when building
+> > > with -Wzero-length-bounds:
+> > >
+> > > drivers/net/can/usb/etas_es58x/es58x_fd.c: In function 'es58x_fd_tx_can_msg':
+> > > drivers/net/can/usb/etas_es58x/es58x_fd.c:360:35: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[]'} [-Wzero-length-bounds]
+> > >   360 |  tx_can_msg = (typeof(tx_can_msg))&es58x_fd_urb_cmd->raw_msg[msg_len];
+> > >       |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > In file included from drivers/net/can/usb/etas_es58x/es58x_core.h:22,
+> > >                  from drivers/net/can/usb/etas_es58x/es58x_fd.c:17:
+> > > drivers/net/can/usb/etas_es58x/es58x_fd.h:231:6: note: while referencing 'raw_msg'
+> > >   231 |   u8 raw_msg[0];
+> > >       |      ^~~~~~~
+> > >
+> > > Cc: Wolfgang Grandegger <wg@grandegger.com>
+> > > Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> > > Cc: "David S. Miller" <davem@davemloft.net>
+> > > Cc: Jakub Kicinski <kuba@kernel.org>
+> > > Cc: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>
+> > > Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+> > > Cc: linux-can@vger.kernel.org
+> > > Cc: netdev@vger.kernel.org
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > ---
+> > >  drivers/net/can/usb/etas_es58x/es581_4.h  | 2 +-
+> > >  drivers/net/can/usb/etas_es58x/es58x_fd.h | 2 +-
+> > >  2 files changed, 2 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/net/can/usb/etas_es58x/es581_4.h b/drivers/net/can/usb/etas_es58x/es581_4.h
+> > > index 4bc60a6df697..af38c4938859 100644
+> > > --- a/drivers/net/can/usb/etas_es58x/es581_4.h
+> > > +++ b/drivers/net/can/usb/etas_es58x/es581_4.h
+> > > @@ -192,7 +192,7 @@ struct es581_4_urb_cmd {
+> > >                 struct es581_4_rx_cmd_ret rx_cmd_ret;
+> > >                 __le64 timestamp;
+> > >                 u8 rx_cmd_ret_u8;
+> > > -               u8 raw_msg[0];
+> > > +               u8 raw_msg[USHRT_MAX];
+> > >         } __packed;
+> > >
+> > >         __le16 reserved_for_crc16_do_not_use;
+> > > diff --git a/drivers/net/can/usb/etas_es58x/es58x_fd.h b/drivers/net/can/usb/etas_es58x/es58x_fd.h
+> > > index ee18a87e40c0..e0319b8358ef 100644
+> > > --- a/drivers/net/can/usb/etas_es58x/es58x_fd.h
+> > > +++ b/drivers/net/can/usb/etas_es58x/es58x_fd.h
+> > > @@ -228,7 +228,7 @@ struct es58x_fd_urb_cmd {
+> > >                 struct es58x_fd_tx_ack_msg tx_ack_msg;
+> > >                 __le64 timestamp;
+> > >                 __le32 rx_cmd_ret_le32;
+> > > -               u8 raw_msg[0];
+> > > +               u8 raw_msg[USHRT_MAX];
+> > >         } __packed;
+> > >
+> > >         __le16 reserved_for_crc16_do_not_use;
+> > > --
+> > > 2.30.2
+> >
+> > raw_msg is part of a union so its maximum size is implicitly the
+> > biggest size of the other member of that union:
+>
+> Yup, understood. See below...
+>
+> >
+> > | struct es58x_fd_urb_cmd {
+> > |     __le16 SOF;
+> > |    u8 cmd_type;
+> > |    u8 cmd_id;
+> > |    u8 channel_idx;
+> > |    __le16 msg_len;
+> > |
+> > |    union {
+> > |        struct es58x_fd_tx_conf_msg tx_conf_msg;
+> > |        u8 tx_can_msg_buf[ES58X_FD_TX_BULK_MAX * ES58X_FD_CANFD_TX_LEN];
+> > |        u8 rx_can_msg_buf[ES58X_FD_RX_BULK_MAX * ES58X_FD_CANFD_RX_LEN];
+> > |        struct es58x_fd_echo_msg echo_msg[ES58X_FD_ECHO_BULK_MAX];
+> > |        struct es58x_fd_rx_event_msg rx_event_msg;
+> > |        struct es58x_fd_tx_ack_msg tx_ack_msg;
+> > |        __le64 timestamp;
+> > |        __le32 rx_cmd_ret_le32;
+> > |        u8 raw_msg[0];
+> > |    } __packed;
+> > |
+> > |    __le16 reserved_for_crc16_do_not_use;
+> > | } __packed;
+> >
+> > ram_msg can then be used to manipulate the other fields at the byte level.
+> > I am sorry but I fail to understand why this is an issue.
+>
+> The issue is with using a 0-element array (these are being removed from
+> the kernel[1] so we can add -Warray-bounds). Normally in this situation I
+> would replace the 0-element array with a flexible array, but this
+> case is unusual in several ways:
+>
+> - There is a trailing struct member (reserved_for_crc16_do_not_use),
+>   which is never accessed (good), and documented as "please never access
+>   this".
 
-I know, "frame" is a beautiful term for "page" -- can we just avoid 
-using it because we're not using it anywhere else here? :)
+Yes. And FYI, this field is here so that
+| sizeof(struct es58x_fd_urb_cmd)
+returns the correct maximum size.
 
-What's wrong with "access_guest_page()" ?
+And, of course, because this structure will be sent to the
+device, there is no possibility to reorder those fields.
 
+> - struct es58x_fd_urb_cmd is statically allocated (it is written into
+>   from the URB handler).
+>
+> - The message lengths coming from the USB device are stored in a u16,
+>   which looked like it was possible to overflow the buffer.
+>
+> In taking a closer look, I see that the URB command length is checked,
+> and the in-data length is checked as well, so the overflow concern
+> appears to be addressed.
+>
+> > Also, the proposed fix drastically increases the size of the structure.
+>
+> Indeed. I will send a v2, now that I see that the overflow concern isn't
+> an issue.
 
-> +{
-> +	gfn_t gfn = gpa_to_gfn(gpa);
-> +	unsigned int offset = offset_in_page(gpa);
-> +	int rc;
+Thanks for the explanation. That makes sense.
 
-You could turn both const. You might want to consider 
-reverse-christmas-treeing this.
+At the end, the only goal of raw_msg[] is to have a tag pointing
+to the beginning of the union. It would be virtually identical to
+something like:
+|    u8 raw_msg[];
+|    union {
+|        /* ... */
+|    } __packed ;
 
-> +
-> +	if (mode == GACC_STORE)
-> +		rc = kvm_write_guest_page(kvm, gfn, data, offset, len);
-> +	else
-> +		rc = kvm_read_guest_page(kvm, gfn, data, offset, len);
+I had a look at your work and especially at your struct_group() macro.
+Do you think it would make sense to introduce a union_group()?
 
-Personally, I prefer passing in pfn + offset instead of a gpa. Also 
-avoids having to convert back and forth.
+Result would look like:
 
-> +	return rc;
-> +}
-> +
->   int access_guest(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar, void *data,
->   		 unsigned long len, enum gacc_mode mode)
->   {
->   	psw_t *psw = &vcpu->arch.sie_block->gpsw;
-> -	unsigned long _len, nr_pages, gpa, idx;
-> +	unsigned long nr_pages, gpa, idx;
-> +	unsigned int seg;
+|    union_group_attr(urb_msg, __packed, /* raw_msg renamed to urb_msg */
+|        struct es58x_fd_tx_conf_msg tx_conf_msg;
+|        u8 tx_can_msg_buf[ES58X_FD_TX_BULK_MAX * ES58X_FD_CANFD_TX_LEN];
+|        u8 rx_can_msg_buf[ES58X_FD_RX_BULK_MAX * ES58X_FD_CANFD_RX_LEN];
+|        struct es58x_fd_echo_msg echo_msg[ES58X_FD_ECHO_BULK_MAX];
+|        struct es58x_fd_rx_event_msg rx_event_msg;
+|        struct es58x_fd_tx_ack_msg tx_ack_msg;
+|        __le64 timestamp;
+|        __le32 rx_cmd_ret_le32;
+|    );
 
-Dito, reverse christmas tree might be worth keeping.
+And I can then use urb_msg in place of the old raw_msg (might
+need a bit of rework here and there but I can take care of it).
 
->   	unsigned long pages_array[2];
->   	unsigned long *pages;
->   	int need_ipte_lock;
-> @@ -855,15 +870,12 @@ int access_guest(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar, void *data,
->   		ipte_lock(vcpu);
->   	rc = guest_page_range(vcpu, ga, ar, pages, nr_pages, asce, mode);
->   	for (idx = 0; idx < nr_pages && !rc; idx++) {
-> -		gpa = *(pages + idx) + (ga & ~PAGE_MASK);
-> -		_len = min(PAGE_SIZE - (gpa & ~PAGE_MASK), len);
-> -		if (mode == GACC_STORE)
-> -			rc = kvm_write_guest(vcpu->kvm, gpa, data, _len);
-> -		else
-> -			rc = kvm_read_guest(vcpu->kvm, gpa, data, _len);
-> -		len -= _len;
-> -		ga += _len;
-> -		data += _len;
-> +		gpa = pages[idx] + offset_in_page(ga);
-> +		seg = min(PAGE_SIZE - offset_in_page(gpa), len);
-> +		rc = access_guest_frame(vcpu->kvm, mode, gpa, data, seg);
-> +		len -= seg;
-> +		ga += seg;
-> +		data += seg;
->   	}
->   	if (need_ipte_lock)
->   		ipte_unlock(vcpu);
-> @@ -875,19 +887,17 @@ int access_guest(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar, void *data,
->   int access_guest_real(struct kvm_vcpu *vcpu, unsigned long gra,
->   		      void *data, unsigned long len, enum gacc_mode mode)
->   {
-> -	unsigned long _len, gpa;
-> +	unsigned long gpa;
-> +	unsigned int seg;
->   	int rc = 0;
->   
->   	while (len && !rc) {
->   		gpa = kvm_s390_real_to_abs(vcpu, gra);
-> -		_len = min(PAGE_SIZE - (gpa & ~PAGE_MASK), len);
-> -		if (mode)
-> -			rc = write_guest_abs(vcpu, gpa, data, _len);
-> -		else
-> -			rc = read_guest_abs(vcpu, gpa, data, _len);
-> -		len -= _len;
-> -		gra += _len;
-> -		data += _len;
-> +		seg = min(PAGE_SIZE - offset_in_page(gpa), len);
+This is the most pretty way I can think of to remove this zero length array.
+Keeping the raw_msg[] but with another size seems odd to me.
 
-What does "seg" mean? I certainly know when "len" means -- which is also 
-what the function eats.
+Or maybe I would be the only one using this feature in the full
+tree? In that case, maybe it would make sense to keep the
+union_group_attr() macro local to the etas_es58x driver?
 
-> +		rc = access_guest_frame(vcpu->kvm, mode, gpa, data, seg);
-> +		len -= seg;
-> +		gra += seg;
-> +		data += seg;
->   	}
->   	return rc;
->   }
-> 
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+Yours sincerely,
+Vincent
