@@ -2,102 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3233EFD8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B583EFD9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239181AbhHRHNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 03:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59578 "EHLO
+        id S240269AbhHRHOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 03:14:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239108AbhHRHM0 (ORCPT
+        with ESMTP id S239622AbhHRHNT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 03:12:26 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9127DC06179A;
-        Wed, 18 Aug 2021 00:11:51 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id x12so1824185wrr.11;
-        Wed, 18 Aug 2021 00:11:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FUltDGbcXfm3L3aKEFjmaGZSqXkkHLKLtJ13isiVEoQ=;
-        b=dLfHj03e0E8HEqiG5P2c9osIlABLNIaht2LMk0gC92MgsC5sQkRq2g+g2TzOWFi0UX
-         6W7P9P+CW1XG2af32Dbv5QhIBdqFaqjeb1SssG+kj4rwMSe74Dxs8xfmlp6AEKweRioN
-         /A6mtcB3u5vVRW8GRRaU95w5uAumtPCo52FL3C7aiE/mGrUXXaty6JLRVDngV0VdFB4I
-         kOTlTdthYkCMzB9XecExfdah1/gdV6VFfRrjfsDZ8k31/eMY9CgqZGQaA0775RHZqNRj
-         RU1elpQvYamRCbiqkDyOf9bUqKSN6/8q40MfbnPtN+A2jbUSmxzhSCgZd+RZo2uyCYhJ
-         vkpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FUltDGbcXfm3L3aKEFjmaGZSqXkkHLKLtJ13isiVEoQ=;
-        b=ahH0ykYLTTPAhaVQJ9ZLGdLY50P7SUU6QOUSaEYCXttC+RpAhbnnh/ARKQtsr6Hjjk
-         QgGo1AByc7CUiBAQSXF5038vNk9VfxBRN4Qt0ObCmqyT+1Woec99gPjeGPqRz81jOfEO
-         ca36vO/fyGCORrZHxTnzdCKdqGEaOgCc+8ZucIX10+HoslWhJQHcZl8uq5DJrbj4327t
-         X95iDv5fbdnxQrgHc62LyXSomtXmBtyPUgyshuVggSf+/063y7fomN9jhoF9BGxlAFAr
-         Fl9nleXWIN/Jdbxpd1+EpdBs/oBjp+YNtG2B3VyrGRbTPvQK3JlLI5WGTn3QdrsqmeNG
-         YHNQ==
-X-Gm-Message-State: AOAM532cb6vqcfQTvo5JOKxenclLw/uliQYjV93T0/XdpThp1a44bwLg
-        Rma2Pdz46K142Q49oUKZTvQ=
-X-Google-Smtp-Source: ABdhPJyfWLzgLWSk53JT1d3llQfEeYHOYhA95fVRuSVdzS94w2Pos6wRnvQPxVc9MUuS5mNxbC7VqQ==
-X-Received: by 2002:a5d:61c1:: with SMTP id q1mr8658881wrv.87.1629270710074;
-        Wed, 18 Aug 2021 00:11:50 -0700 (PDT)
-Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
-        by smtp.gmail.com with ESMTPSA id r10sm4925729wrp.28.2021.08.18.00.11.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 00:11:49 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        linux-usb@vger.kernel.org
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 3/3] usb: remove reference to deleted config STB03xxx
-Date:   Wed, 18 Aug 2021 09:11:37 +0200
-Message-Id: <20210818071137.22711-4-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210818071137.22711-1-lukas.bulwahn@gmail.com>
-References: <20210818071137.22711-1-lukas.bulwahn@gmail.com>
+        Wed, 18 Aug 2021 03:13:19 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8282DC0612AC
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 00:12:44 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mGFkY-00050G-M3; Wed, 18 Aug 2021 09:12:34 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mGFkX-0005NQ-NS; Wed, 18 Aug 2021 09:12:33 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, David Jander <david@protonic.nl>
+Subject: [PATCH v2 0/3] can: provide GPIO based termination 
+Date:   Wed, 18 Aug 2021 09:12:29 +0200
+Message-Id: <20210818071232.20585-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 7583b63c343c ("powerpc/40x: Remove STB03xxx") removes the config
-STB03xxx, but left a reference in ./drivers/usb/Kconfig behind.
+changes v3:
+- use u32 instead of u16 for termination-ohms
+- extend error handling
 
-Hence, ./scripts/checkkconfigsymbols.py warns:
+changes v2:
+- add CAN_TERMINATION_GPIO_MAX
+- remove fsl,scu-index from yaml example. It is not used on imx6q
 
-STB03xxx
-Referencing files: drivers/usb/Kconfig
+Oleksij Rempel (3):
+  dt-bindings: can-controller: add support for termination-gpios
+  dt-bindings: can: fsl,flexcan: enable termination-* bindings
+  can: dev: provide optional GPIO based termination support
 
-Remove this reference to the deleted config.
+ .../bindings/net/can/can-controller.yaml      |  9 +++
+ .../bindings/net/can/fsl,flexcan.yaml         | 17 +++++
+ drivers/net/can/dev/dev.c                     | 66 +++++++++++++++++++
+ include/linux/can/dev.h                       |  8 +++
+ 4 files changed, 100 insertions(+)
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- drivers/usb/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/usb/Kconfig b/drivers/usb/Kconfig
-index 26475b409b53..578a439e71b5 100644
---- a/drivers/usb/Kconfig
-+++ b/drivers/usb/Kconfig
-@@ -11,7 +11,7 @@ config USB_OHCI_BIG_ENDIAN_MMIO
- 
- config USB_OHCI_LITTLE_ENDIAN
- 	bool
--	default n if STB03xxx || PPC_MPC52xx
-+	default n if PPC_MPC52xx
- 	default y
- 
- config USB_EHCI_BIG_ENDIAN_MMIO
 -- 
-2.26.2
+2.30.2
 
