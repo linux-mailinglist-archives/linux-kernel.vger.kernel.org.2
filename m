@@ -2,111 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFAF83EFF9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9DB3EFFAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229950AbhHRIxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 04:53:36 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:40537 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229574AbhHRIxf (ORCPT
+        id S230162AbhHRI4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 04:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229820AbhHRIz7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 04:53:35 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 78424580B7E;
-        Wed, 18 Aug 2021 04:53:00 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 18 Aug 2021 04:53:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=hUJVt56LeH6CO/Ss0tzAR6FmDaW
-        a16mjlZgsEEsdqPE=; b=pYT9qKre/I8UORqTDPdRqiZAvR0s0+Zf/e4KXNXARXC
-        Dltx7WKmLFvzXVJyyBcwamLjxN8KPv9E8Mf5hEPcYTmALdmjffHTknk7pdi8oEhI
-        ro01jWOnAwrbFX56ca682OM/n6/BOxNTYd+pmyBEZ9vfj+d/Uu0uje3G8sEhSWX2
-        +EgpFkHyFuzDAv7HO1JezhsShBkdw8z+gYhymH8SoSCpze/hm7Lg+L9QHOrXClAr
-        ofAiXjs+4c9XgddaugKmldpMcsZYN7RjDhggxsOHq2PhqkS0ZQTVRBSgQz3JARiL
-        Vh8GcexmAuu3bV9ZdwBh0me53dXH82f4UVAUkNCe1RA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=hUJVt5
-        6LeH6CO/Ss0tzAR6FmDaWa16mjlZgsEEsdqPE=; b=LmfS3yO2lH2slpO0GTxI+g
-        4zbx366vsWUtjixVyYHf6sly6syh3oIVawncgew3fOMJQW+D13CmO+tWkmMEMCbE
-        QPN3W9PyHucSV7M/ep7KAnKGWxAaFtlajaMmSRAuZH4y2XZXVAwbywRxpEU979d1
-        gG8hwyuEIyh9WlPIZANfQBC1DLQYByxkscHnZTXMSAMiF4oleUkOkLIHG/HDhNRT
-        BxkPN/7ebOtAq9nLgLt+kIxPkXSM1OyQiLYirzudMJVZpXdyqbFhjWkwvGvGMgil
-        b6Q5crwDFuslCoZUZTPrlPlAkkbX2vb1/FI0K8cm7EBtR/ylJV5WIxmEhSemZhiA
-        ==
-X-ME-Sender: <xms:asocYdQqtqgtk8UoEZRs-1VZtnwkIbujyOvucpMoqW3f9wBhuxaPpg>
-    <xme:asocYWzQcBsT2wWE9H2bu4HYAQV_TNJa6tC29BtLjnfQ8P1RXVr2lfecvMg3rPZ5v
-    1iU-_P2Um0hVrm_QXI>
-X-ME-Received: <xmr:asocYS0eOs2A317OTKjmTiv3UVcikHi3R6F1DAMtr7npsF4OtELoPJf36jb8Wad5o1iNcgvUW37kyRkFb1_y6mD1h7hdQrE4QNe5>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleehgddtlecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
-    igihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:asocYVCzOrXCRlDmBHAOE9REI2pcCIg0M5Jo7Un3_bbufkW7aERkrg>
-    <xmx:asocYWj9G9HUdMRO7Uq-X-jw1Pf6Qa-is2BYX6DmszuIo_LQZeNlvA>
-    <xmx:asocYZrxXHtO2Y97AfvnyY8GN81TRs7nqPbuTOzQm6Y2KSeXCJHBSg>
-    <xmx:bMocYdqe2oTBkWjibi3sw_6qWLwM11CzMgv37jTLSXc9XJqXno0ivQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 18 Aug 2021 04:52:58 -0400 (EDT)
-Date:   Wed, 18 Aug 2021 10:52:56 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Icenowy Zheng <icenowy@sipeed.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Samuel Holland <samuel@sholland.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/17] pinctrl: sunxi: add support for R329 R-PIO pin
- controller
-Message-ID: <20210818085256.p5m5zwri6jfkgihy@gilmour>
-References: <20210802062212.73220-1-icenowy@sipeed.com>
- <20210802062212.73220-9-icenowy@sipeed.com>
+        Wed, 18 Aug 2021 04:55:59 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14241C061764;
+        Wed, 18 Aug 2021 01:55:23 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id x7so3708667ljn.10;
+        Wed, 18 Aug 2021 01:55:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=PyuHTiYtcp7PenUOgX16JRdXO479FYx66sP5cfTDtJ8=;
+        b=bFhAKTFYhRq6nSBU53V7nBfYhXxkjiAhCqJps2SBtRGMCJIXp+7lU6McxX8loQ6meE
+         fSG/FM3TmRbrP/b8JPftQvirvT0vqmE8IBifTejnoi6fVmyDgoVZJi0A2nL7TEJ5ep6U
+         o2VSz0DNti8zycJniW8NTFPj0oSHwn9/KbdCQon5p3dgkjGpfZjfSf9d8VaQbCgzW7AF
+         xcA2d+ms1Dm0JAK5Ztk4Qxii2GLc9+YyZSyRDLbM8q8GIfUWYUD2PlJCGYGdRSa9U/SY
+         wlL63UXYJiyw80MiPemF3cVUtFHjQpfvfBbn2auULEHwWpm/C6cbpNM1CHQtc6q3bxgN
+         f9Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PyuHTiYtcp7PenUOgX16JRdXO479FYx66sP5cfTDtJ8=;
+        b=BlTUqSkQpk/9Fc47ea6C798OCLe1seYD/jZuiUYoaIcewbU9eVq+YKfq8kf29xRcNE
+         JphiwLv128X5VInOYG/JrVTe10GQI4cTRpAYCJrmV+5k1pq138UDMOcg13YiufutSwOA
+         1Q0GyJVa7ZFRf8SL7xFbYVTE6STzm3iAwb7/1d7MW6PpxMisiViO9xOubqbjmmjsGs6L
+         oOudwkfap5IAyMvJPpevV7J8S+M+z/B/bUZEcmOSrDTX8lS/IoruXQRGCg7wNtS4wIeK
+         3OfjpnB/SqFODHYvHJ3D6sKqDmMlc3bgYQ6qy757FW1qJs/FLyoQhP47p1o88C9w2tA+
+         6XFg==
+X-Gm-Message-State: AOAM532llg9xnFPxgXrmwrkGueuvVGythGXIiMGeW7xcPGt2ghsBjfly
+        Iuu5pqG0kN2Qxo0SqjYdM6g=
+X-Google-Smtp-Source: ABdhPJzBpe3DARPr+h0Pu2Yu7QwdF+94FYfIVaP5pXL2ykMkVckZmxUEm9OoslOsTrhEkgEvNsI3Fg==
+X-Received: by 2002:a2e:b611:: with SMTP id r17mr7101788ljn.10.1629276921412;
+        Wed, 18 Aug 2021 01:55:21 -0700 (PDT)
+Received: from localhost.localdomain ([46.61.204.60])
+        by smtp.gmail.com with ESMTPSA id g5sm432730lfe.174.2021.08.18.01.55.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Aug 2021 01:55:20 -0700 (PDT)
+Subject: Re: [syzbot] KFENCE: use-after-free in kvm_fastop_exception
+To:     Matthieu Baerts <matthieu.baerts@tessares.net>,
+        syzbot <syzbot+7b938780d5deeaaf938f@syzkaller.appspotmail.com>,
+        davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
+        marcel@holtmann.org, mathew.j.martineau@linux.intel.com,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <00000000000012030e05c9c8bc85@google.com>
+ <58cef9e0-69de-efdb-4035-7c1ed3d23132@tessares.net>
+ <6736a510-20a1-9fb5-caf4-86334cabbbb6@gmail.com>
+ <32aeb66e-d4f0-26b5-a140-4477bb87067f@tessares.net>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+Message-ID: <3a8dd8db-61d6-603e-b270-5faf1be02c6b@gmail.com>
+Date:   Wed, 18 Aug 2021 11:55:19 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="y3qmd24y6c6k2nk5"
-Content-Disposition: inline
-In-Reply-To: <20210802062212.73220-9-icenowy@sipeed.com>
+In-Reply-To: <32aeb66e-d4f0-26b5-a140-4477bb87067f@tessares.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/18/21 11:21 AM, Matthieu Baerts wrote:
+> Hi Pavel,
+> 
+[snip]
+>>>
+>>> I'm pretty sure the commit c4512c63b119 ("mptcp: fix 'masking a bool'
+>>> warning") doesn't introduce the reported bug. This minor fix is specific
+>>> to MPTCP which doesn't seem to be used here.
+>>>
+>>> I'm not sure how I can tell syzbot this is a false positive.
+>>>
+>> 
+>> 
+>> looks like it's fs/namei bug. Similar reports:
+>> 
+>> https://syzkaller.appspot.com/bug?id=517fa734b92b7db404c409b924cf5c997640e324
+>> 
+>> 
+>> https://syzkaller.appspot.com/bug?id=484483daf3652b40dae18531923aa9175d392a4d
+> 
+> Thank you for having checked!
+> Should we mark them as "#syz dup" if you think they have the same root
+> cause?
+> 
 
---y3qmd24y6c6k2nk5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I think, yes, but I want to receive feedback from fs people about this 
+bug. There were huge updates last month, and, maybe, I am missing some 
+details. Alloc/free calltrace is the same, but anyway, I want some 
+confirmation to not close different bugs by mistake :)
 
-On Mon, Aug 02, 2021 at 02:22:03PM +0800, Icenowy Zheng wrote:
-> Allwinner R320 SoC has a pin controller in the CPUS power domain.
->=20
-> Add support for it.
->=20
-> Signed-off-by: Icenowy Zheng <icenowy@sipeed.com>
+If these bugs really have same root case I will close them manually 
+after fix posted.
 
-Acked-by: Maxime Ripard <maxime@cerno.tech>
-
-Maxime
-
---y3qmd24y6c6k2nk5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYRzKaAAKCRDj7w1vZxhR
-xeb7AQCdPHQNxn+5UZz7+HuzV1Nz6N9y2L/WWbaPRQKiJ3QoBgEAo/E4qRSjVikO
-4Wi5L4ItXDMDwWnCI0H4yfl/iXK9XwI=
-=5Twl
------END PGP SIGNATURE-----
-
---y3qmd24y6c6k2nk5--
+>> It's not false positive. I've suggested the fix here:
+>> https://groups.google.com/g/syzkaller-bugs/c/HE3c2fP5nic/m/1Yk17GBeAwAJ
+>> I am waiting for author comments about the fix :)
+>> 
+>> But, yes, syzbot bisection is often wrong, so don't rely on it much :)
+> 
+> Yes sorry, I wanted to say the bisection picked a wrong commit :)
+> 
+> All good then if syzbot often blames the wrong modification :)
+> 
+With regards,
+Pavel Skripkin
