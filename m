@@ -2,136 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9BC3EF792
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 03:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 532EB3EF79E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 03:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235533AbhHRBgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 21:36:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39812 "EHLO
+        id S236121AbhHRBiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 21:38:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234723AbhHRBgs (ORCPT
+        with ESMTP id S234723AbhHRBiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 21:36:48 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E2FC061764;
-        Tue, 17 Aug 2021 18:36:14 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id x5so554913ill.3;
-        Tue, 17 Aug 2021 18:36:14 -0700 (PDT)
+        Tue, 17 Aug 2021 21:38:01 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F81BC061764;
+        Tue, 17 Aug 2021 18:37:27 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id d4so1029316lfk.9;
+        Tue, 17 Aug 2021 18:37:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mTlSpJCOzYSWnHbCprL/LUgcu5gZ9W6lRJHq3m6wgZk=;
-        b=iW5IOfKJ/qGWdHJ2LaVQt4BPBwNdma2W7XPIbEedF5x9QtSmWqXi0t47R7gspHSAE9
-         YMfgUbj1wDyH2kIO/W3JZVL6coNuCmVvmzoTAgGWemMjql3So83TMdBOVa/ueZ+4ZzBM
-         FwO8dty9fGehQjQY1x0AEyMctRUHFIz3gNx0Pu95jf62/M0CGdemV+i+Ik8YBd89Iytt
-         txf/q7UXb00R2G+mbHAAifqw4FnvV7ffP3AdQBjtv+Hud9Ahm9L5Fn/0AyJFOE8OeHba
-         innVQtnFRhnjNKmK+ARDpeUo2BAqS+syMCUENoHb4mYtvrVQEjlfD5QN/6IDLxrtSb/l
-         QJYQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oqxDNn5HuSgDYxtU1DC9Dd6JFHUoPgcSzl8BngM0suw=;
+        b=tH07Ag8eiBTNGPOIyiICGem/XAlGbrx9wzA1AYXo5k0KS9zDRDkRtCVqSG5jFzW2VO
+         GjAu9tNgXKNtwAzjnF/jHaAKn3t9S2/BI/ubLCao4tYBfnPsNCQfKpg5NbRkjXPFfl89
+         o2AFA8APp2Hb5BZhl84unBgpnMCH8jZKxkejm1GjOdyNjXG4drZ4cuhx3rMCgcFD6NUP
+         PbFOcLMGACtfUZ2JeTEXxuvnXov1sCN/Toqiy/qwb8+yrYekuN1OEWngV0f+9HB2mVTI
+         IJdr97jZuur2MRVfVSk2iXaYSGLsNIixSiM5hkfvafyYXNZKmo6LxpEEX8DqogXnEx3D
+         VoRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mTlSpJCOzYSWnHbCprL/LUgcu5gZ9W6lRJHq3m6wgZk=;
-        b=EBXpqFOq3ZJzNx9ktuIcBlKEpTmw17VgBxBszrtWvO8erj3B9SV/PBF3ugBlmrOcuk
-         u/r8/N8/Ashbp7xiCsCl4IUBqQ6TgfvQQwi6LdpZcSvZU5jVAkT8N4yD8pIZL1Jxzo7Q
-         O0S99Q2l2idJswJ3Gs4LRtf4VDBkEP2uY7fAX+e9MKMmZBkZdOdlOBbWrECJGQgAxmrb
-         Cdw57dtuRETR1KpG6tJZipB2dERhKUY8wXobXkyHo0Ejw00QhZUAHJMu3jXKtAtoODQQ
-         l51uGeJL6oy6kC43WZFTvT7cY8vCEA0NfQQiulCtqjJmqTsnW/PPzUL6dVq7FiVxETIm
-         /K6g==
-X-Gm-Message-State: AOAM530ipW7qS4ELYyCfnvFGQ8A8Zl/j+P4j0agFkR7Llt0eo5+RlZIo
-        xGQ1LBu731GxvTl32eheqxufCvg89XkM9KK+YVQH7UzK
-X-Google-Smtp-Source: ABdhPJyxUkahOsLKnX8Ep/9lBH+xqyhCNmyJPUcgJpmnQvOulOk8TGU+hJcupEH8yrzbehczHT9tghdgUkVkYpsU/30=
-X-Received: by 2002:a05:6e02:13f3:: with SMTP id w19mr4242402ilj.164.1629250573650;
- Tue, 17 Aug 2021 18:36:13 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oqxDNn5HuSgDYxtU1DC9Dd6JFHUoPgcSzl8BngM0suw=;
+        b=NwQErHqH9Z/E1HnWwHnEJ7oGH4NgwuH3mVvp+CCB7rqTdT2tEYfxB9AkWhDahtHeqc
+         iSovX21xedEqIcoVsAWPujGQuFRzwA4SgOAKV17SSLshk6CpzpcJll4usdLinPsvPqzH
+         dt/qah85P47PhcrYLY/Docf0S+WqTEL+AtJbFIMx6l4aZZvT41QWErfBweYuMxZh+OXr
+         /IVSNMcZ4X2hupnYryQOV4Dg6zCtHDYMW4Q8A+2BZvtWnRd/zfpM6yblhd3ziEsaRkn0
+         XaxbN1+jQ7QIL3RUSEHzeC8GMK+XP02ZGi0s51AiIAgI/bwIMceh6RUfaf5ZeMDyf20W
+         +xgA==
+X-Gm-Message-State: AOAM533RRMXI80MzMLDhY3FxMSz2LVOz9fqoihcuHn+6Y7PDm3o/3ASH
+        nS7IyNLEEt38gFyVsG1jlU9Du0mRets=
+X-Google-Smtp-Source: ABdhPJzO8yX4UrQj2zwLBNG/ezqRBlNp4JuMFF5+U48En2dYUq2KE3FpodsT/MFV5XUcHXk+BK/l0g==
+X-Received: by 2002:a05:6512:3441:: with SMTP id j1mr4537443lfr.388.1629250645475;
+        Tue, 17 Aug 2021 18:37:25 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-85-91.dynamic.spd-mgts.ru. [46.138.85.91])
+        by smtp.googlemail.com with ESMTPSA id d25sm409518lja.31.2021.08.17.18.37.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Aug 2021 18:37:24 -0700 (PDT)
+Subject: Re: [PATCH v8 09/34] dt-bindings: host1x: Document Memory Client
+ resets of Host1x, GR2D and GR3D
+To:     Rob Herring <robh@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20210817012754.8710-1-digetx@gmail.com>
+ <20210817012754.8710-10-digetx@gmail.com>
+ <YRxfWJJ6+1GgVs33@robh.at.kernel.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <fa9a1fb7-8a87-de1a-e40a-fdc4f4d05d57@gmail.com>
+Date:   Wed, 18 Aug 2021 04:37:23 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210814035129.154242-1-jiangshanlai@gmail.com>
-In-Reply-To: <20210814035129.154242-1-jiangshanlai@gmail.com>
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-Date:   Wed, 18 Aug 2021 09:36:02 +0800
-Message-ID: <CAJhGHyBbWBwyVZvcT_ExghfDp_D+nw_s=izcgjBcLXnPjmWbdA@mail.gmail.com>
-Subject: Re: [PATCH] x86/kvm: Don't enable IRQ when IRQ enabled in kvm_wait
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YRxfWJJ6+1GgVs33@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping
+18.08.2021 04:16, Rob Herring пишет:
+> On Tue, Aug 17, 2021 at 04:27:29AM +0300, Dmitry Osipenko wrote:
+>> Memory Client should be blocked before hardware reset is asserted in order
+>> to prevent memory corruption and hanging of memory controller.
+>>
+>> Document Memory Client resets of Host1x, GR2D and GR3D hardware units.
+>>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  .../bindings/display/tegra/nvidia,tegra20-host1x.txt          | 4 ++++
+>>  1 file changed, 4 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt b/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt
+>> index 62861a8fb5c6..07a08653798b 100644
+>> --- a/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt
+>> +++ b/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt
+>> @@ -18,6 +18,7 @@ Required properties:
+>>  - resets: Must contain an entry for each entry in reset-names.
+>>    See ../reset/reset.txt for details.
+>>  - reset-names: Must include the following entries:
+>> +  - mc
+>>    - host1x
+> 
+> New entries should be at the end. Order matters.
 
-On Sat, Aug 14, 2021 at 9:36 PM Lai Jiangshan <jiangshanlai@gmail.com> wrote:
->
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
->
-> Commit f4e61f0c9add3 ("x86/kvm: Fix broken irq restoration in kvm_wait")
-> replaced "local_irq_restore() when IRQ enabled" with "local_irq_enable()
-> when IRQ enabled" to suppress a warnning.
->
-> Although there is no similar debugging warnning for doing local_irq_enable()
-> when IRQ enabled as doing local_irq_restore() in the same IRQ situation.  But
-> doing local_irq_enable() when IRQ enabled is no less broken as doing
-> local_irq_restore() and we'd better avoid it.
->
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> ---
->
-> The original debugging warnning was introduced in commit 997acaf6b4b5
-> ("lockdep: report broken irq restoration").  I think a similar debugging
-> check and warnning should also be added to "local_irq_enable() when IRQ
-> enabled" and even maybe "local_irq_disable() when IRQ disabled" to detect
-> something this:
->
->     | local_irq_save(flags);
->     | local_irq_disable();
->     | local_irq_restore(flags);
->     | local_irq_enable();
->
-> Or even we can do the check in lockdep+TRACE_IRQFLAGS:
->
-> In lockdep_hardirqs_on_prepare(), lockdep_hardirqs_enabled() was checked
-> (and exit) before checking DEBUG_LOCKS_WARN_ON(!irqs_disabled()), so lockdep
-> can't give any warning for these kind of situations.  If we did the check
-> in lockdep, we would have found the problem before, and we don't need
-> 997acaf6b4b5.
->
-> Any thought? Mark? Peter?
->
->  arch/x86/kernel/kvm.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-> index a26643dc6bd6..b656456c3a94 100644
-> --- a/arch/x86/kernel/kvm.c
-> +++ b/arch/x86/kernel/kvm.c
-> @@ -884,10 +884,11 @@ static void kvm_wait(u8 *ptr, u8 val)
->         } else {
->                 local_irq_disable();
->
-> +               /* safe_halt() will enable IRQ */
->                 if (READ_ONCE(*ptr) == val)
->                         safe_halt();
-> -
-> -               local_irq_enable();
-> +               else
-> +                       local_irq_enable();
->         }
->  }
->
-> --
-> 2.19.1.6.gb485710b
->
+Indeed, order matters. In this case it matters by the hardware because
+memory reset must be asserted before the controller's reset. We rely on
+it in the code of the GENPD driver. Hence it's the intended order in
+this patch.
