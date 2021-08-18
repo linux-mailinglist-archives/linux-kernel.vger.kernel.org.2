@@ -2,125 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A61213EF942
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 06:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC7C3EF952
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 06:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232450AbhHRE3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 00:29:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhHRE3P (ORCPT
+        id S237236AbhHREaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 00:30:23 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:33353 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237378AbhHREaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 00:29:15 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106B9C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 21:28:41 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id x4so930681pgh.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 21:28:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M4OMUrZpxJEGBppNP6I6AWvsCoN2WAaAil0LMMI5r7w=;
-        b=YGtvo4t4xs4zqvtZ50FJJp/fthSkuSt28mL+68Mg+C6c/viofJiHvmRcp0QO3rdzof
-         1/4droGy6AFsOeCm6LjfKInmaKmO7NCUzWuuAjKbuKqhKBBLmf3f2xRinXEp7GnSqEZs
-         TqNHxqK8YnzTBGYxzn9imexx5V9BncTlx1ettwwtFd4mu+ji3j4QCC/CNLNG5A4ppnsW
-         nvRMCrbGZWdoqH+bweKmgW0+G6GZrX30zfNZY6wabsy2SrdUppH5p/L9mgg49/MY2nER
-         5awbSp50/gfxfQKlhJMvNa4RE9IPiQVYMdz5Vaqn4lY3usCmoKW8edO4QhMPT9I7kgYV
-         hH6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M4OMUrZpxJEGBppNP6I6AWvsCoN2WAaAil0LMMI5r7w=;
-        b=JMkgJK5j3qeBingPSXuTum5tBmDmEbnpLgCQNDiZHX0JEY2WaJdqfGng+nMo+E1+C1
-         bxt+NR5Sl3O9Ps5NQDtzeoXYSs8CkXrKd6oIHORKHQATwtoCIXaGaeMnzBlAONiVMICA
-         a3UFZ7aA4LK7jFMS4msr3Rk7nYobeOXU+U3wxRthjvNNNCzLbLTK+b0FaxOYh6yXmb9l
-         zHr3TCean1XZdZ/wsFQ8dl8FTQqNxf4yKcuNDsbm4BeXm/BnMugv9PCWa5qd4jjOPdbZ
-         G+npE9ODvjJcwMzGJuzMi5KNTTSWVXPh0L65lNqOgfNqV5NjvweR3nZ/1sTdOE0ZfV3V
-         Y/Jg==
-X-Gm-Message-State: AOAM5334WbQHc3wOw+jVA3LvVrcpEGsiTxDmj2hbDccZf+bf9PqEj++X
-        mMCcQihO59gQW3rHedrXHBjQlLjA1wL1RfJggjtbOg==
-X-Google-Smtp-Source: ABdhPJzS7aro7xemGhZ/swsjZFolSNdOJiyUhcWH5G61FbbOY6yFGtv4AhGW+idHpc5sL2zDwUsyjMcQx3UtMw/sRsM=
-X-Received: by 2002:a63:f804:: with SMTP id n4mr6884502pgh.341.1629260920403;
- Tue, 17 Aug 2021 21:28:40 -0700 (PDT)
+        Wed, 18 Aug 2021 00:30:21 -0400
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 17I4TNtQ027267;
+        Wed, 18 Aug 2021 13:29:24 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 17I4TNtQ027267
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1629260964;
+        bh=PpMGCNaWd4BEDbC0/8VA91QAy4TmkP9+B95/axi+84Q=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JotFhWbOC8xwA/rAWyc/1iToeGbCUruGQoK531vV5UcNJ5xXFRzsdpT0I0+/v3qcr
+         JLYN7czdb/7w9IZihhyV5GMhAFohRkSMgBlAnoOnO37jQ8djOt5e1L1lapLmcHU2Iy
+         MrAjpWlizKUSlrgVkAO49oXCFX/METEu3xQHGDFVj051+pgGAQXbep/Bf6Wu0haNIS
+         veuT8tk4DTYtLQQZaPJQozYOgrnEi9O6/AN9Fz/RvKD/+GdlOfliiPcRAJxqhReHrW
+         q/lF4HdXWFfoQ44/fTVZ1RMEC9rcWgAUREepfFv3iRSG3PqUQmNWNq4l5i34+JEgCM
+         3SV7JGaSOBw0Q==
+X-Nifty-SrcIP: [209.85.215.178]
+Received: by mail-pg1-f178.google.com with SMTP id r2so937318pgl.10;
+        Tue, 17 Aug 2021 21:29:24 -0700 (PDT)
+X-Gm-Message-State: AOAM530poIUtApbaewCi5zyM5zRbDByOxnPBM25AHsy/DwjmcmTR9+sM
+        4f99bJc04DTykFLL08TvyqMTutdn2heY7V86650=
+X-Google-Smtp-Source: ABdhPJyMR3ZRIGDNqW3+MuvaOJXaNBSklUp2QU7ZI9rq3fO8xoXmD6qX6AZTdU1BCUg194aW9/cex+2OOepxaMNFrLU=
+X-Received: by 2002:aa7:8e56:0:b029:3cd:c2ec:6c1c with SMTP id
+ d22-20020aa78e560000b02903cdc2ec6c1cmr7043311pfr.80.1629260963273; Tue, 17
+ Aug 2021 21:29:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210814052519.86679-1-songmuchun@bytedance.com>
- <20210814052519.86679-4-songmuchun@bytedance.com> <YRx76SlTkTT8a1BI@carbon.dhcp.thefacebook.com>
-In-Reply-To: <YRx76SlTkTT8a1BI@carbon.dhcp.thefacebook.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 18 Aug 2021 12:28:02 +0800
-Message-ID: <CAMZfGtWhQcfFwkTq59ZboHe5iaLqeGhb9M8GzjEMWZwwYxB43w@mail.gmail.com>
-Subject: Re: [PATCH v1 03/12] mm: memcontrol: make lruvec lock safe when LRU
- pages are reparented
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com, "Singh, Balbir" <bsingharora@gmail.com>,
-        Yang Shi <shy828301@gmail.com>, Alex Shi <alexs@kernel.org>,
-        Muchun Song <smuchun@gmail.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>
+References: <20210814234102.2315551-1-masahiroy@kernel.org>
+ <3afe5054-8129-fe42-b5a4-00bd091b1a0c@kernel.org> <CAFP8O3JtOpb368h4PBbYnR4fsqRYkX_TKuCKrS-Csu=dMMNiKA@mail.gmail.com>
+In-Reply-To: <CAFP8O3JtOpb368h4PBbYnR4fsqRYkX_TKuCKrS-Csu=dMMNiKA@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 18 Aug 2021 13:28:45 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAStyrVnrc4GQ7MNQizBpKbRk-1WmNQEw5mzAp2+LYUiyA@mail.gmail.com>
+Message-ID: <CAK7LNAStyrVnrc4GQ7MNQizBpKbRk-1WmNQEw5mzAp2+LYUiyA@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: Fix 'no symbols' warning when CONFIG_TRIM_UNUSD_KSYMS=y
+To:     =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 11:18 AM Roman Gushchin <guro@fb.com> wrote:
+On Sun, Aug 15, 2021 at 12:18 PM F=C4=81ng-ru=C3=AC S=C3=B2ng <maskray@goog=
+le.com> wrote:
 >
-> On Sat, Aug 14, 2021 at 01:25:10PM +0800, Muchun Song wrote:
-> > The diagram below shows how to make the folio lruvec lock safe when LRU
-> > pages are reparented.
+> On Sat, Aug 14, 2021 at 6:15 PM Nathan Chancellor <nathan@kernel.org> wro=
+te:
 > >
-> > folio_lruvec_lock(folio)
-> >     retry:
-> >       lruvec = folio_lruvec(folio);
-> >
-> >         // The folio is reparented at this time.
-> >         spin_lock(&lruvec->lru_lock);
-> >
-> >         if (unlikely(lruvec_memcg(lruvec) != folio_memcg(folio)))
-> >             // Acquired the wrong lruvec lock and need to retry.
-> >             // Because this folio is on the parent memcg lruvec list.
-> >             goto retry;
-> >
-> >         // If we reach here, it means that folio_memcg(folio) is stable.
-> >
-> > memcg_reparent_objcgs(memcg)
-> >     // lruvec belongs to memcg and lruvec_parent belongs to parent memcg.
-> >     spin_lock(&lruvec->lru_lock);
-> >     spin_lock(&lruvec_parent->lru_lock);
-> >
-> >     // Move all the pages from the lruvec list to the parent lruvec list.
-> >
-> >     spin_unlock(&lruvec_parent->lru_lock);
-> >     spin_unlock(&lruvec->lru_lock);
-> >
-> > After we acquire the lruvec lock, we need to check whether the folio is
-> > reparented. If so, we need to reacquire the new lruvec lock. On the
-> > routine of the LRU pages reparenting, we will also acquire the lruvec
-> > lock (will be implemented in the later patch). So folio_memcg() cannot
-> > be changed when we hold the lruvec lock.
-> >
-> > Since lruvec_memcg(lruvec) is always equal to folio_memcg(folio) after
-> > we hold the lruvec lock, lruvec_memcg_debug() check is pointless. So
-> > remove it.
-> >
-> > This is a preparation for reparenting the LRU pages.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > Acked-by: Roman Gushchin <guro@fb.com>
+> > On 8/14/2021 4:41 PM, Masahiro Yamada wrote:
+> > > When CONFIG_TRIM_UNUSED_KSYMS is enabled, I see some warnings like th=
+is:
+> > >
+> > >    nm: arch/x86/entry/vdso/vdso32/note.o: no symbols
+> > >
+> > > $NM (both GNU nm and llvm-nm) warns when no symbol is found in the
+> > > object. Suppress the stderr.
+> > >
+> > > Fixes: bbda5ec671d3 ("kbuild: simplify dependency generation for CONF=
+IG_TRIM_UNUSED_KSYMS")
+> > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 >
-> Maybe it's mostly s/page/folio, but the patch looks quite differently
-> in comparison to the version I did ack. In general, please, drop acks
-> when there are significant changes between versions.
+> LGTM.
+>
+> FWIW binutils>=3D2.37 `nm -q` can be used to suppress "no symbols"
+> https://sourceware.org/bugzilla/show_bug.cgi?id=3D27408
+>
+> llvm-nm>=3D13.0.0 supports -q as well.
 
-Got it. I'll drop all acks in the next version. Thanks.
 
->
-> Thanks!
+Thanks for the info.
+Perhaps, I can note the future migration to -q
+in a comment.
+
+
+
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
