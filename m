@@ -2,190 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C9F3EFF2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E71383EFF37
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239666AbhHRIbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 04:31:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50280 "EHLO
+        id S238769AbhHRIfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 04:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239511AbhHRIa7 (ORCPT
+        with ESMTP id S238582AbhHRIfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 04:30:59 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6743CC0617AD
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:30:25 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id gz13-20020a17090b0ecdb0290178c0e0ce8bso4789463pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:30:25 -0700 (PDT)
+        Wed, 18 Aug 2021 04:35:15 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4321AC0613D9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:34:41 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id s11so1507177pgr.11
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:34:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=jL/DkoxZCdzlNexUG7tJ6IG5zbZczoSvIVash/JCFrw=;
-        b=mjex+yt3nPZrktov1+DZ6Bq446vp3EnZsY5Rp2Z4n5iBYWDavjtfqeXt7QZMyuGeQx
-         dmQdu6z3qA1rLvrmaBhTr9RPti/HhOVCjaTV6tvJ/yTjU+xPSVxAQpRZvQwYAgUYofeO
-         mmH2cRgxyDimzxfU4p2xlVikV5Eqxe3uztSntLF0ehtUzbOzCC1Otex7gfri/ddagDJv
-         9dp7MYgwkA567XF/7ghDiEEu0ngZj6uWW6MzAqVr9yQGP+u2DQ2SwhCcZxAd6Jrq2EIp
-         +VMMflY5XYtq41M4/KXWx2ofrDQxrH8xbTuuekFqJwiPORh37Tltgjju+vkismI+2vhj
-         7XKw==
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mZp/mhDkH4ig1ld6XLX33/9sqE9sEjBNvxVZC8FkvXA=;
+        b=qSulCpTew7c3zfmlIgOJ7vgVUTMIITlwihKDUEFmvYXA8qfonm85VNj3jOXeLZGWzI
+         CUhVmdlunApiovitqV8qQ/ZpQ9e9yyxs4V26XvkPX+LS75mnA1ujSMmj7cSf7c93OETb
+         GbrcxiwuGsG6uGCsul/WwzLVZX1rxdUPO17Cxyz+jQvBj6jgyHZI26wPa7HZWJN9fIiG
+         j6PzExDVHc4mbyS+1nB1H7kg2l0/8rW2OpYTCJ4Im6prsDIch7WTJz5z8o+yJ5EUzLU5
+         xCRRoxjWA19DxuO25vDGV4YFlkGFOad/6jEAp/LlOsnM5QPzToSqRMBB+ploRNzbRf0a
+         fXIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=jL/DkoxZCdzlNexUG7tJ6IG5zbZczoSvIVash/JCFrw=;
-        b=bLfUknivWTeJ7Zfos2pjU5jTRRlwHG76Tj49TxYhXVCVcS5uqY5NXN94ZnbCym0amt
-         3FQysTgKjtqEpLl/wxKWBbupH2VFIaFbijM/T340TKffT14clNgl3pGx1KQiHY22Pwck
-         ZQfurSxCB4LdkQTLuYMRa1G6cCxJl88nAKD4EWyAy+uIdF1DEJ9u6j2azPSpM78wMRJn
-         OZ5GD/C6XLSNQJQsDu4XGKsg6CXZ/0ZNDyrT4Y7rRboZH1Ld/Q9kUGfPPFye7TN/TXou
-         ROths3KeBMpRf5oe05snvZwhRC+xtX43DZfXhJWXKVJJyHhoV4qk1LNUKb5OWr+QWqEl
-         tyAA==
-X-Gm-Message-State: AOAM532HxJYL5ZsP6ogFltbMPI5lE5SkFxX48KdhkUXp1oSzyrEuLnti
-        TLO7tTFOQFnXyS/LglG2Uc2rww==
-X-Google-Smtp-Source: ABdhPJxad1KK36PAE+4ALDJhHQYzMsdq97PArLHgXYjcLRlD/AHutLCPOJ3acpkjSavyCEuDCIetRA==
-X-Received: by 2002:a17:90b:3007:: with SMTP id hg7mr8245674pjb.66.1629275424835;
-        Wed, 18 Aug 2021 01:30:24 -0700 (PDT)
-Received: from [10.254.37.14] ([139.177.225.244])
-        by smtp.gmail.com with ESMTPSA id 11sm5003086pfl.41.2021.08.18.01.30.18
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mZp/mhDkH4ig1ld6XLX33/9sqE9sEjBNvxVZC8FkvXA=;
+        b=kCtDnTokaEds+wknaQ5SSo3cItyDC8NmfjyKUQlj1JvdPiyNH1d0/LXF7Zi3ExdV0Y
+         YhFoYtQ4bJmXbb6XWcDgN+WbXtOm7NzzzPL09PrgbyeyXpVLTl4+MEhymR/pGs8lXHbx
+         kXx1fLqDoy0E25zs+TJ8yR8U6khgYhFkxdavzH8uO8quKR0EaEx9L8ngVek3Hu2QR5lP
+         hq+u0Fk9T/HQMcPxLRONJBMvLs1J/c1SPVhuh4XC+wT131vmVn+vBtQjDTjLpRqqqlHz
+         Mzk18krmdrmoJ5qFuXnmaBIQg5lkQe2Y/sDfsWDZUH6u4jntxkWcCMpaF07RvJUXXlmn
+         ad9g==
+X-Gm-Message-State: AOAM530LLGWKaHz1HvKjhhWU+vDEMF/+gT98O8Vox/rxpplj2w/Gdrab
+        hpYWTBkJ6PChbZyTVs2ROOT9L19IH2UphQ==
+X-Google-Smtp-Source: ABdhPJzmK5OA5pl1B6yGn90CYWy1+VFcm6lNS0F46W7wZ6uk6zzHyv3HAEWvl1Cjsg/oTKYsP7E0UA==
+X-Received: by 2002:a63:4f54:: with SMTP id p20mr7807415pgl.437.1629275680603;
+        Wed, 18 Aug 2021 01:34:40 -0700 (PDT)
+Received: from [10.2.24.177] ([61.120.150.70])
+        by smtp.gmail.com with ESMTPSA id c12sm4931671pfl.56.2021.08.18.01.34.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 01:30:24 -0700 (PDT)
-Subject: Re: [External] Re: [PATCH] ixgbe: Fix NULL pointer dereference in
- ixgbe_xdp_setup
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, jeffrey.t.kirsher@intel.com,
-        magnus.karlsson@intel.com, intel-wired-lan@lists.osuosl.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, duanxiongchun@bytedance.com,
-        songmuchun@bytedance.com, zhouchengming@bytedance.com,
-        chenying.kernel@bytedance.com, zhengqi.arch@bytedance.com,
-        wangdongdong.6@bytedance.com
-References: <20210817075407.11961-1-zhoufeng.zf@bytedance.com>
- <20210817111047.GA8143@ranger.igk.intel.com>
-From:   zhoufeng <zhoufeng.zf@bytedance.com>
-Message-ID: <5bddff53-9b78-99db-1d8e-23b3d38167a1@bytedance.com>
-Date:   Wed, 18 Aug 2021 16:30:15 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        Wed, 18 Aug 2021 01:34:40 -0700 (PDT)
+Subject: PING: [PATCH] crypto: public_key: fix overflow during implicit
+ conversion
+To:     dhowells@redhat.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net
+Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210810063954.628244-1-pizhenwei@bytedance.com>
+From:   zhenwei pi <pizhenwei@bytedance.com>
+Message-ID: <4dcd4254-030b-4489-d5d3-e320eb2953e7@bytedance.com>
+Date:   Wed, 18 Aug 2021 16:33:49 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210817111047.GA8143@ranger.igk.intel.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210810063954.628244-1-pizhenwei@bytedance.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+PING
 
-ÔÚ 2021/8/17 ÏÂÎç7:10, Maciej Fijalkowski Ð´µÀ:
-> On Tue, Aug 17, 2021 at 03:54:07PM +0800, Feng zhou wrote:
->> From: Feng Zhou <zhoufeng.zf@bytedance.com>
->>
->> The ixgbe driver currently generates a NULL pointer dereference with
->> some machine (online cpus < 63). This is due to the fact that the
->> maximum value of num_xdp_queues is nr_cpu_ids. Code is in
->> "ixgbe_set_rss_queues"".
+On 8/10/21 2:39 PM, zhenwei pi wrote:
+> Hit kernel warning like this, it can be reproduced by verifying 256
+> bytes datafile by keyctl command.
 > 
-> That's a good catch, but we should fix set channels callback so that it
-> will not allow a setting of queues to be higher than the
-> num_online_cpus().
+>   WARNING: CPU: 5 PID: 344556 at crypto/rsa-pkcs1pad.c:540 pkcs1pad_verify+0x160/0x190
+>   ...
+>   Call Trace:
+>    public_key_verify_signature+0x282/0x380
+>    ? software_key_query+0x12d/0x180
+>    ? keyctl_pkey_params_get+0xd6/0x130
+>    asymmetric_key_verify_signature+0x66/0x80
+>    keyctl_pkey_verify+0xa5/0x100
+>    do_syscall_64+0x35/0xb0
+>    entry_SYSCALL_64_after_hwframe+0x44/0xae
 > 
-> Please also include the tree in the patch subject that you're directing
-> the patch to.
+> '.digest_size(u8) = params->in_len(u32)' leads overflow of an u8 value,
+> so use u32 instead of u8 of digest. And reorder struct
+> public_key_signature, it could save 8 bytes on a 64 bit machine.
+> 
+> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+> ---
+>   include/crypto/public_key.h | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/crypto/public_key.h b/include/crypto/public_key.h
+> index 47accec68cb0..f603325c0c30 100644
+> --- a/include/crypto/public_key.h
+> +++ b/include/crypto/public_key.h
+> @@ -38,9 +38,9 @@ extern void public_key_free(struct public_key *key);
+>   struct public_key_signature {
+>   	struct asymmetric_key_id *auth_ids[2];
+>   	u8 *s;			/* Signature */
+> -	u32 s_size;		/* Number of bytes in signature */
+>   	u8 *digest;
+> -	u8 digest_size;		/* Number of bytes in digest */
+> +	u32 s_size;		/* Number of bytes in signature */
+> +	u32 digest_size;	/* Number of bytes in digest */
+>   	const char *pkey_algo;
+>   	const char *hash_algo;
+>   	const char *encoding;
 > 
 
-Ok, Besides it, I will add more code in "ixgbe_set_channels":
-/* verify the number of channels does not exceed num_online_cpus */
-if (count > num_online_cpus())
-	return -EINVAL;
-If user want set queues num to be higher than the num_online_cpus(),
-return error(-EINVAL).
-
-What do you think?
-
-> I'd be also thankful if you Cc me on Intel XDP related patches.
-> Thanks!
-> 
-
-Ok, of course.
-
-
->>
->> Here's how the problem repeats itself:
->> Some machine (online cpus < 63), And user set num_queues to 63 through
->> ethtool. Code is in the "ixgbe_set_channels",
->> adapter->ring_feature[RING_F_FDIR].limit = count;
->> It becames 63.
->> When user use xdp, "ixgbe_set_rss_queues" will set queues num.
->> adapter->num_rx_queues = rss_i;
->> adapter->num_tx_queues = rss_i;
->> adapter->num_xdp_queues = ixgbe_xdp_queues(adapter);
->> And rss_i's value is from
->> f = &adapter->ring_feature[RING_F_FDIR];
->> rss_i = f->indices = f->limit;
->> So "num_rx_queues" > "num_xdp_queues", when run to "ixgbe_xdp_setup",
->> for (i = 0; i < adapter->num_rx_queues; i++)
->> 	if (adapter->xdp_ring[i]->xsk_umem)
->> lead to panic.
->> Call trace:
->> [exception RIP: ixgbe_xdp+368]
->> RIP: ffffffffc02a76a0  RSP: ffff9fe16202f8d0  RFLAGS: 00010297
->> RAX: 0000000000000000  RBX: 0000000000000020  RCX: 0000000000000000
->> RDX: 0000000000000000  RSI: 000000000000001c  RDI: ffffffffa94ead90
->> RBP: ffff92f8f24c0c18   R8: 0000000000000000   R9: 0000000000000000
->> R10: ffff9fe16202f830  R11: 0000000000000000  R12: ffff92f8f24c0000
->> R13: ffff9fe16202fc01  R14: 000000000000000a  R15: ffffffffc02a7530
->> ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
->>   7 [ffff9fe16202f8f0] dev_xdp_install at ffffffffa89fbbcc
->>   8 [ffff9fe16202f920] dev_change_xdp_fd at ffffffffa8a08808
->>   9 [ffff9fe16202f960] do_setlink at ffffffffa8a20235
->> 10 [ffff9fe16202fa88] rtnl_setlink at ffffffffa8a20384
->> 11 [ffff9fe16202fc78] rtnetlink_rcv_msg at ffffffffa8a1a8dd
->> 12 [ffff9fe16202fcf0] netlink_rcv_skb at ffffffffa8a717eb
->> 13 [ffff9fe16202fd40] netlink_unicast at ffffffffa8a70f88
->> 14 [ffff9fe16202fd80] netlink_sendmsg at ffffffffa8a71319
->> 15 [ffff9fe16202fdf0] sock_sendmsg at ffffffffa89df290
->> 16 [ffff9fe16202fe08] __sys_sendto at ffffffffa89e19c8
->> 17 [ffff9fe16202ff30] __x64_sys_sendto at ffffffffa89e1a64
->> 18 [ffff9fe16202ff38] do_syscall_64 at ffffffffa84042b9
->> 19 [ffff9fe16202ff50] entry_SYSCALL_64_after_hwframe at ffffffffa8c0008c
->>
->> Fixes: 4a9b32f30f80 ("ixgbe: fix potential RX buffer starvation for
->> AF_XDP")
->> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
->> ---
->>   drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 8 ++++++--
->>   1 file changed, 6 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
->> index 14aea40da50f..5db496cc5070 100644
->> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
->> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
->> @@ -10112,6 +10112,7 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
->>   	struct ixgbe_adapter *adapter = netdev_priv(dev);
->>   	struct bpf_prog *old_prog;
->>   	bool need_reset;
->> +	int num_queues;
->>   
->>   	if (adapter->flags & IXGBE_FLAG_SRIOV_ENABLED)
->>   		return -EINVAL;
->> @@ -10161,11 +10162,14 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
->>   	/* Kick start the NAPI context if there is an AF_XDP socket open
->>   	 * on that queue id. This so that receiving will start.
->>   	 */
->> -	if (need_reset && prog)
->> -		for (i = 0; i < adapter->num_rx_queues; i++)
->> +	if (need_reset && prog) {
->> +		num_queues = min_t(int, adapter->num_rx_queues,
->> +			adapter->num_xdp_queues);
->> +		for (i = 0; i < num_queues; i++)
->>   			if (adapter->xdp_ring[i]->xsk_pool)
->>   				(void)ixgbe_xsk_wakeup(adapter->netdev, i,
->>   						       XDP_WAKEUP_RX);
->> +	}
->>   
->>   	return 0;
->>   }
->> -- 
->> 2.11.0
->>
+-- 
+zhenwei pi
