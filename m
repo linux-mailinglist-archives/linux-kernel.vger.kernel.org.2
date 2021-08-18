@@ -2,65 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9215D3EF8BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 05:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A86FF3EF8C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 05:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236854AbhHRDhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 23:37:13 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:60699 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236297AbhHRDhJ (ORCPT
+        id S236705AbhHRDib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 23:38:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236111AbhHRDi2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 23:37:09 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R761e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=houwenlong93@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0UjbGkIu_1629257792;
-Received: from localhost(mailfrom:houwenlong93@linux.alibaba.com fp:SMTPD_---0UjbGkIu_1629257792)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 18 Aug 2021 11:36:32 +0800
-From:   Hou Wenlong <houwenlong93@linux.alibaba.com>
-To:     kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Avi Kivity <avi@redhat.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] kvm: fix wrong exception emulation in check_rdtsc
-Date:   Wed, 18 Aug 2021 11:36:31 +0800
-Message-Id: <1297c0dd3f1bb47a6d089f850b629c7aa0247040.1629257115.git.houwenlong93@linux.alibaba.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 17 Aug 2021 23:38:28 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD58C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 20:37:54 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id x16so772299pfh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 20:37:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=CIqXxZQMTfYf4KMWVdTMecbn2bp1Cy3dF+snZnUCor0=;
+        b=M4aL//HWus/ItMfUDjKFkNtL6bXZ+RaJqIQS2scGji60+vB4vhgzGtpnPTCO8fvrTr
+         bRLJwf0SDFdMZh0b/z/T/Og7loudWl/gY4/scDaiXq1N26UH19zvEEaYg7MUJPpqlZ3a
+         XIjQdgc3G77Tm5K/f/fwD4RNjzVcbQuyCAA1yeavivJz/6xpvhUO1/iN/tvjYjCm6zcF
+         XUdaKe/Ty30DX5wiDKtJ2KAg45mm3+ec7gc7O8Yofn+L/rATdz0E4/I4j0pPKqYf7cVx
+         q0BUYgmvmVqdgwBgSalrYNsB0z/TU8At6SFePmn/lJPAGBhCujBgA3Gd6b917AqUxklw
+         M5Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=CIqXxZQMTfYf4KMWVdTMecbn2bp1Cy3dF+snZnUCor0=;
+        b=jnNNJQC7eewNc1Sw5ab9JBJJTRzU1jre7KlK8LICjpNVWVB4rR8QaeSpIuqfaqgRWO
+         lChFq1EGhs4vhyqIPGkR4UckVAgvRhtki+ODnQrExK7VD3U/oLpCcI2kMlUMNDnMHrdX
+         myxCZmRgSpk5XhX8ciX4VPqq+gt4n7Hkqtc+83B6FGrhJuHuctXaMJlwY+EPp1Sjr8AR
+         NlAHD9/ma7e9Vf3s2zX6+G6pQy1cg67i3uaRZhvgquQCvGckZjn7KiZMIs/kbyUbK0ES
+         qwWTS3l2XsbVRz4sdr3pDCCUKFO4WobLGyXf9iRe8mTpBdpaOD6m+ZzwioFT/44INXTP
+         1tXg==
+X-Gm-Message-State: AOAM533ZqBh+phTQSohMXzRUTKBcSbI6X7jbOQLs2Z1k7U8PBIu0g3Xy
+        J8AyADMp+y4KILixVVFLKZOtoQ==
+X-Google-Smtp-Source: ABdhPJzOGxsw50WI5481yu1W8E5V0EvRZ+mP8uNqjTo8rrInZA/Ke2EUBvabuKvfYMAk2yI2gnDwsQ==
+X-Received: by 2002:a65:64d1:: with SMTP id t17mr6676899pgv.291.1629257874429;
+        Tue, 17 Aug 2021 20:37:54 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id h22sm4018298pfv.76.2021.08.17.20.37.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 20:37:53 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 09:07:51 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, rjw@rjwysocki.net, robh+dt@kernel.org,
+        steev@kali.org, tdas@codeaurora.org, mka@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [Patch v5 3/6] cpufreq: qcom-cpufreq-hw: Add dcvs interrupt
+ support
+Message-ID: <20210818033751.uulg5tgwfddmwp47@vireshk-i7>
+References: <20210809191605.3742979-1-thara.gopinath@linaro.org>
+ <20210809191605.3742979-4-thara.gopinath@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210809191605.3742979-4-thara.gopinath@linaro.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to Intel's SDM Vol2 and AMD's APM Vol3, when
-CR4.TSD is set, use rdtsc/rdtscp instruction above privilege
-level 0 should trigger a #GP.
+On 09-08-21, 15:16, Thara Gopinath wrote:
+> Add interrupt support to notify the kernel of h/w initiated frequency
+> throttling by LMh. Convey this to scheduler via thermal presssure
+> interface.
+> 
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> ---
+> 
+> v4->v5:
+> 	- Changed throttle_lock from a spinlock to mutex to take potential
+> 	  race between LMh de-init sequence and reenabling of
+> 	  interrupts/polling after a thermal throttle event.
+> 	- Other cosmetic fixes as pointed out by Viresh.
 
-Fixes: d7eb82030699e ("KVM: SVM: Add intercept checks for remaining group7 instructions")
-Signed-off-by: Hou Wenlong <houwenlong93@linux.alibaba.com>
----
- arch/x86/kvm/emulate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Applied. Thanks.
 
-diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-index 2837110e66ed..c589ac832265 100644
---- a/arch/x86/kvm/emulate.c
-+++ b/arch/x86/kvm/emulate.c
-@@ -4206,7 +4206,7 @@ static int check_rdtsc(struct x86_emulate_ctxt *ctxt)
- 	u64 cr4 = ctxt->ops->get_cr(ctxt, 4);
- 
- 	if (cr4 & X86_CR4_TSD && ctxt->ops->cpl(ctxt))
--		return emulate_ud(ctxt);
-+		return emulate_gp(ctxt, 0);
- 
- 	return X86EMUL_CONTINUE;
- }
 -- 
-2.31.1
-
+viresh
