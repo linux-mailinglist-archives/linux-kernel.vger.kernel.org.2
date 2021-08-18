@@ -2,150 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 856093F0C77
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 22:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 240923F0C7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 22:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233384AbhHRUML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 16:12:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25399 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232564AbhHRUME (ORCPT
+        id S233436AbhHRUNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 16:13:43 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:48097 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232969AbhHRUNl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 16:12:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629317488;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MLs6kjcvM8JscWCnRxRfzkFiQuDwgW1TjvaPNWOcLuE=;
-        b=SpFC92UtAuhmphFzANigXy15M5/RDiIfIvzyHxWUuE9tpHnQl0lVDtYmg/ZdcavMJPo3iJ
-        3eRB0ntmsNmu07UJaai5BghPfBkbWJKTGiiVcs5eTQ8ShafEB+oiWQ67csUToILBJAbwtk
-        x/xXkmD3jkjm4vb4fpVXFV1a1oRTxbo=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-208-byTFS5Z_OVqlrUcQ4BloMQ-1; Wed, 18 Aug 2021 16:11:27 -0400
-X-MC-Unique: byTFS5Z_OVqlrUcQ4BloMQ-1
-Received: by mail-ej1-f71.google.com with SMTP id gv53-20020a1709072bf500b005c0428ef7e7so1281523ejc.21
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 13:11:26 -0700 (PDT)
+        Wed, 18 Aug 2021 16:13:41 -0400
+Received: by mail-io1-f69.google.com with SMTP id f1-20020a5edf01000000b005b85593f933so1868261ioq.14
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 13:13:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MLs6kjcvM8JscWCnRxRfzkFiQuDwgW1TjvaPNWOcLuE=;
-        b=KyJeVgl3Q9LJx/c+ZlJJWv4cyNAx9NRWzLZ04a8SHxScNpUMU8tss3Oh3g+9JOSfbq
-         6XtrRixxckHczN/AYQ4NzCe6JpxlA0VmpNmVYTm3enQGy65xnaFTsbsx1IWKAtqw0RED
-         P7LNj0j7O0qghnVO4GyZ9xXB5YGADVC8vjnfGo5c2EB+b/Nwd3EUe8WrLyJPV3FHobG4
-         ULekoCzM99BzYK42LjfmSAYGaRCc8i6fxnPDtoBDx5Ud8sYGUADX9rY4Oh3xheyUyu71
-         Dritrfiao6uyHMMVG7B6489ZnOQn0VWfNrLhEs70sMac0Wj+1NlRPpnK4It67E+lwLvq
-         DKJg==
-X-Gm-Message-State: AOAM532Bbic6Nj5OWbuWy2cs1lBdJghGdhH2rrceEf75Yw3q+aLQcaSm
-        6PvjYDOJKDgSEwhNDBLO0EEgzsRzrhL869YsNCwLscEwlaqRPM0GrTep1yFfr1LpUwzJL6MpuJ/
-        vhbsflaPBXzWuHYRq15iTLrD6
-X-Received: by 2002:a17:906:f190:: with SMTP id gs16mr11713416ejb.439.1629317485833;
-        Wed, 18 Aug 2021 13:11:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz/BgGyHdAEnrW2mb49uKtrU4aN5u4gAYv/XRY8V8vSeIN6dDnAL66mGaOiytPd76Wjbjpzlg==
-X-Received: by 2002:a17:906:f190:: with SMTP id gs16mr11713403ejb.439.1629317485685;
-        Wed, 18 Aug 2021 13:11:25 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id v1sm335171ejd.31.2021.08.18.13.11.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 13:11:25 -0700 (PDT)
-Subject: Re: [PATCH v5 1/1] asus-wmi: Add support for platform_profile
-To:     =?UTF-8?Q?Barnab=c3=a1s_P=c5=91cze?= <pobrn@protonmail.com>,
-        "Luke D. Jones" <luke@ljones.dev>
-Cc:     linux-kernel@vger.kernel.org, hadess@hadess.net,
-        platform-driver-x86@vger.kernel.org
-References: <20210818190731.19170-1-luke@ljones.dev>
- <20210818190731.19170-2-luke@ljones.dev>
- <tkJb_14m7EeHjs3G_DaqN0tMCLMA4qNheZDxfrsnGHoxFrsxOebsq46o8pXT-f7i2SgcZiFGk8FEy6BWVeT7xtTShgbyXqYNyeu58bayOS0=@protonmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <028ac156-6fac-487b-3e24-e9e92d6a0b4d@redhat.com>
-Date:   Wed, 18 Aug 2021 22:11:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=5Yk/eiQ6KrFu/vHlR0f2hOKUDdwbHPflHULMacmR8bo=;
+        b=YDiBanocD8FZs6fsjSIzwNAr8MQJTAFnfaNkIr42boTikjZsk8XLs/MOJGRZpaGL9o
+         cCZb0GBkP0eOCCcHbqCCpQIiKXvbrJFOmSZImOWl7j/a+WtIrdYDz5aIrn+n/qLQ2AHe
+         nnN5UCb4m3OuAH4d6KGftaVEd51WcIO6nUqN2C+26P+P/78ppP6iq8KRu4EuwA1CDlgf
+         38AeZHZBnh/nkR8eSsuZyrUQL9fg7RJVvLG6oeqz0988Q7xhFyTBGXwJguFy/ftRvNkN
+         m4KyZ8/jEyVELBb0piHnJDcflI0d37pWxgIVCa2uSAMLANZr9F/tX6I7eZYymo+evppE
+         arlg==
+X-Gm-Message-State: AOAM5303K+aYzc1Nk6meOLl2BCjXzDTBdFP3n+Jpmt/4tp38wYfb8jDE
+        C41UiriSfAH5pO9vHIGIhiLwDqwLMXVWs8EfvO4cTx6iyUrW
+X-Google-Smtp-Source: ABdhPJy0qr44PsK++dTzPpRCSLNNVfh6l63Dc89uxnPCmHyKkP0kc0S/LQswtNBUAU7+5vg6R5jwNA9YLcGjSCYoz0Y/+n5knkva
 MIME-Version: 1.0
-In-Reply-To: <tkJb_14m7EeHjs3G_DaqN0tMCLMA4qNheZDxfrsnGHoxFrsxOebsq46o8pXT-f7i2SgcZiFGk8FEy6BWVeT7xtTShgbyXqYNyeu58bayOS0=@protonmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:1905:: with SMTP id p5mr9581118jal.25.1629317586462;
+ Wed, 18 Aug 2021 13:13:06 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 13:13:06 -0700
+In-Reply-To: <20210818184927.GD197200@rowland.harvard.edu>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f7ab1005c9db0f8e@google.com>
+Subject: Re: [syzbot] WARNING in hid_submit_ctrl/usb_submit_urb
+From:   syzbot <syzbot+9b57a46bf1801ce2a2ca@syzkaller.appspotmail.com>
+To:     benjamin.tissoires@redhat.com, jikos@kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, mkubecek@suse.cz,
+        stern@rowland.harvard.edu, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
 
-On 8/18/21 9:25 PM, Barnabás Pőcze wrote:
-> Hi
-> 
-> 
-> 2021. augusztus 18., szerda 21:07 keltezéssel, Luke D. Jones írta:
->> Add initial support for platform_profile where the support is
->> based on availability of ASUS_THROTTLE_THERMAL_POLICY.
->>
->> Because throttle_thermal_policy is used by platform_profile and is
->> writeable separately to platform_profile any userspace changes to
->> throttle_thermal_policy need to notify platform_profile.
->>
->> In future throttle_thermal_policy sysfs should be removed so that
->> only one method controls the laptop power profile.
->>
->> Signed-off-by: Luke D. Jones <luke@ljones.dev>
->> ---
->>  drivers/platform/x86/Kconfig    |   1 +
->>  drivers/platform/x86/asus-wmi.c | 130 +++++++++++++++++++++++++++++++-
->>  2 files changed, 127 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
->> index d12db6c316ea..46dec48a36c1 100644
->> --- a/drivers/platform/x86/Kconfig
->> +++ b/drivers/platform/x86/Kconfig
->> [...]
->> +static int platform_profile_set(struct platform_profile_handler *pprof,
->> +				enum platform_profile_option profile)
->> +{
->> +	struct asus_wmi *asus;
->> +	int tp;
->> +
->> +	asus = container_of(pprof, struct asus_wmi, platform_profile_handler);
->> +
->> +	switch (profile) {
->> +	case PLATFORM_PROFILE_PERFORMANCE:
->> +		tp = ASUS_THROTTLE_THERMAL_POLICY_OVERBOOST;
->> +		break;
->> +	case PLATFORM_PROFILE_BALANCED:
->> +		tp = ASUS_THROTTLE_THERMAL_POLICY_DEFAULT;
->> +		break;
->> +	case PLATFORM_PROFILE_QUIET:
->> +		tp = ASUS_THROTTLE_THERMAL_POLICY_SILENT;
->> +		break;
->> +	default:
->> +		return -EOPNOTSUPP;
->> +	}
->> +
->> +	asus->throttle_thermal_policy_mode = tp;
->> +	return throttle_thermal_policy_write(asus);
-> 
-> Here the new mode will be stored even if activating it fails, no?
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+WARNING in hid_submit_ctrl/usb_submit_urb
 
-Yes I noticed this too. This is the same way how writing to
-the throttle_thermal_policy sysfs file works, so this is consistent.
+------------[ cut here ]------------
+usb 1-1: BOGUS control dir, pipe 80000280 doesn't match bRequestType a1
+WARNING: CPU: 1 PID: 10180 at drivers/usb/core/urb.c:410 usb_submit_urb+0x149d/0x18a0 drivers/usb/core/urb.c:410
+Modules linked in:
+CPU: 1 PID: 10180 Comm: syz-executor.0 Not tainted 5.14.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:usb_submit_urb+0x149d/0x18a0 drivers/usb/core/urb.c:410
+Code: 7c 24 40 e8 45 64 1f fc 48 8b 7c 24 40 e8 4b fc 0b ff 45 89 e8 44 89 f1 4c 89 e2 48 89 c6 48 c7 c7 e0 b2 27 8a e8 01 fc 91 03 <0f> 0b e9 a5 ee ff ff e8 17 64 1f fc 0f b6 1d 19 ca 01 08 31 ff 41
+RSP: 0018:ffffc9000a68fbd0 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: ffff88802e22d058 RCX: 0000000000000000
+RDX: ffff88801b2a1c40 RSI: ffffffff815d85c5 RDI: fffff520014d1f6c
+RBP: ffff888018fcd910 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815d23fe R11: 0000000000000000 R12: ffff8880155fb9d8
+R13: 00000000000000a1 R14: 0000000080000280 R15: ffff88801c247600
+FS:  00007fdbff87b700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000050eab0 CR3: 000000003d108000 CR4: 0000000000350ee0
+Call Trace:
+ hid_submit_ctrl+0x6ff/0xde0 drivers/hid/usbhid/hid-core.c:415
+ usbhid_restart_ctrl_queue.isra.0+0x244/0x3a0 drivers/hid/usbhid/hid-core.c:258
+ __usbhid_submit_report+0x6f0/0xd50 drivers/hid/usbhid/hid-core.c:602
+ usbhid_submit_report drivers/hid/usbhid/hid-core.c:639 [inline]
+ usbhid_init_reports+0xd7/0x3b0 drivers/hid/usbhid/hid-core.c:779
+ hiddev_ioctl+0xb27/0x1630 drivers/hid/usbhid/hiddev.c:689
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:1069 [inline]
+ __se_sys_ioctl fs/ioctl.c:1055 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665e9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fdbff87b188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665e9
+RDX: 0000000000000000 RSI: 0000000000004805 RDI: 0000000000000004
+RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffddbcdc2ff R14: 00007fdbff87b300 R15: 0000000000022000
+----------------
+Code disassembly (best guess):
+   0:	7c 24                	jl     0x26
+   2:	40 e8 45 64 1f fc    	rex callq 0xfc1f644d
+   8:	48 8b 7c 24 40       	mov    0x40(%rsp),%rdi
+   d:	e8 4b fc 0b ff       	callq  0xff0bfc5d
+  12:	45 89 e8             	mov    %r13d,%r8d
+  15:	44 89 f1             	mov    %r14d,%ecx
+  18:	4c 89 e2             	mov    %r12,%rdx
+  1b:	48 89 c6             	mov    %rax,%rsi
+  1e:	48 c7 c7 e0 b2 27 8a 	mov    $0xffffffff8a27b2e0,%rdi
+  25:	e8 01 fc 91 03       	callq  0x391fc2b
+  2a:	0f 0b                	ud2     <-- trapping instruction
+  2c:	e9 a5 ee ff ff       	jmpq   0xffffeed6
+  31:	e8 17 64 1f fc       	callq  0xfc1f644d
+  36:	0f b6 1d 19 ca 01 08 	movzbl 0x801ca19(%rip),%ebx        # 0x801ca56
+  3d:	31 ff                	xor    %edi,%edi
+  3f:	41                   	rex.B
 
-I know it is a bit weird, but normally the throttle_thermal_policy_write()
-call never fails (throttle_thermal_policy_store does not check it at all).
 
-And even if it fails, what does that mean we certainly did make the ACPI
-call maybe the profile was actually changed but then some later ACPI code
-setting up the return buffer failed ?  Or maybe the ACPI code did actually
-never get around to forwarding the value to e.g. the EC ?
+Tested on:
 
-We basically don't know ...
-
-IOW I think this is fine as is, it is a bit weird but it is consistent
-with the existing callers of throttle_thermal_policy_write().
-
-Regards,
-
-Hans
+commit:         794c7931 Merge branch 'linus' of git://git.kernel.org/..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=126c1765300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=96f0602203250753
+dashboard link: https://syzkaller.appspot.com/bug?extid=9b57a46bf1801ce2a2ca
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=152c3561300000
 
