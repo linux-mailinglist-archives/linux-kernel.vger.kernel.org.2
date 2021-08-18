@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3E83F07A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 528C13F079B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239659AbhHRPOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 11:14:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239866AbhHRPOr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 11:14:47 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F4AC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 08:14:12 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id w24so1847913wmi.5
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 08:14:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Da0DCFGolB9uAM2tKDPuHVOlQ6ovhGIdi2wnEJL3jXc=;
-        b=JqZOf7zXT9L88sx2XhatvSar77vpGtprbyBun1lpZtJkBsF+4ehXeieZmHzpi9PLaS
-         vnfRTYvY4mLwIWtikv3stTQ73/K8xZZ7i665vDbr0iKXPrKEiUjNRKf1aFOcmJLD6pJe
-         t8OKIH6jT3o8Vo7Lzt5QlglKpxiKeJTMDtMdU9Piaz7txTB1P+PrgxbU9Hv25TvZh39P
-         HAXJM0cwfE1AEtLDilFWuBp4BjpdqBiOi+Y6/Hwh+aW4loV+2i7cSC3VA47moIWgppLR
-         /wRH8qbEZQl2uMvS+eTwmm6zsxfjZJM6QKry80ezpD5cXAoOgL01r3zghpua9u9SFoKq
-         ijNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Da0DCFGolB9uAM2tKDPuHVOlQ6ovhGIdi2wnEJL3jXc=;
-        b=jbgpgoL5DcrNwn6pYUB51XipsxNJn8JUi2Q/B7jKKi8un0ALjmwerNMeXeM96Wo5PE
-         Gzldhz2EeKxQb6h1UI64IyDjj/JTe48TP/3GG8+pfHXnyz/Ks/MCzxvI7M0AEARsmzQO
-         qqxcBTKnxWKcJByFTLgeItOhDLEYls/QLJULlIeD0V4CcqvNAOw8tNFxfl77sOpfkCx1
-         LdaE45MWMsupNOzrq9VfAzpWMqmGY3xN+JwPtO8nDaDqtgTDd+ANtfl5g3DhP7L2FrrG
-         pArXtebRexcOoAwBdXN6cwZN/3xSop8Ya58hrjX4/6uWQwWkGCo8f1jC21sXIAkS/6CX
-         pjlA==
-X-Gm-Message-State: AOAM532IFefOxsP/d9myqXAha6y5Y+O75BoMnvXBi1/VAFZUvu48Pnz7
-        BFcKciJm8zUEumu9Sqgri907YYwge3ut5PGN
-X-Google-Smtp-Source: ABdhPJznDIbrC67RLd4q1jhvYx2titLrWoxzZktsdZNo655PU1Rk/lZxfAqsbScG+aYG6eBYozaydw==
-X-Received: by 2002:a1c:4a:: with SMTP id 71mr9102711wma.87.1629299640460;
-        Wed, 18 Aug 2021 08:14:00 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id l21sm101829wmh.31.2021.08.18.08.13.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 08:14:00 -0700 (PDT)
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>, Jonathan Corbet <corbet@lwn.net>
-Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
-        dmaengine@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patches@linaro.org
-Subject: [PATCH 2/2] Documentation: dmaengine: Correctly describe dmatest with channel unset
-Date:   Wed, 18 Aug 2021 16:13:15 +0100
-Message-Id: <20210818151315.9505-3-daniel.thompson@linaro.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210818151315.9505-1-daniel.thompson@linaro.org>
-References: <20210818151315.9505-1-daniel.thompson@linaro.org>
+        id S239735AbhHRPOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 11:14:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:45182 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239608AbhHRPOK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 11:14:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3362E101E;
+        Wed, 18 Aug 2021 08:13:34 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 518DD3F40C;
+        Wed, 18 Aug 2021 08:13:31 -0700 (PDT)
+Subject: Re: [PATCH v4 00/24] iommu: Refactor DMA domain strictness
+To:     Joerg Roedel <joro@8bytes.org>, Sven Peter <sven@svenpeter.dev>
+Cc:     will@kernel.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
+        john.garry@huawei.com, dianders@chromium.org, rajatja@google.com,
+        chenxiang66@hisilicon.com,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Yong Wu <yong.wu@mediatek.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+References: <cover.1628682048.git.robin.murphy@arm.com>
+ <YRzvGxTW8m+NUcSi@8bytes.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <914d7243-7f9d-425e-1ff7-6be218e04913@arm.com>
+Date:   Wed, 18 Aug 2021 16:13:24 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YRzvGxTW8m+NUcSi@8bytes.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the documentation states that channels must be configured before
-running the dmatest. This has not been true since commit 6b41030fdc79
-("dmaengine: dmatest: Restore default for channel"). Fix accordingly.
+On 2021-08-18 12:29, Joerg Roedel wrote:
+> On Wed, Aug 11, 2021 at 01:21:14PM +0100, Robin Murphy wrote:
+>> Robin Murphy (24):
+>>    iommu: Pull IOVA cookie management into the core
+>>    iommu/amd: Drop IOVA cookie management
+>>    iommu/arm-smmu: Drop IOVA cookie management
+>>    iommu/vt-d: Drop IOVA cookie management
+>>    iommu/exynos: Drop IOVA cookie management
+>>    iommu/ipmmu-vmsa: Drop IOVA cookie management
+>>    iommu/mtk: Drop IOVA cookie management
+>>    iommu/rockchip: Drop IOVA cookie management
+>>    iommu/sprd: Drop IOVA cookie management
+>>    iommu/sun50i: Drop IOVA cookie management
+>>    iommu/virtio: Drop IOVA cookie management
+>>    iommu/dma: Unexport IOVA cookie management
+>>    iommu/dma: Remove redundant "!dev" checks
+>>    iommu: Indicate queued flushes via gather data
+>>    iommu/io-pgtable: Remove non-strict quirk
+>>    iommu: Introduce explicit type for non-strict DMA domains
+>>    iommu/amd: Prepare for multiple DMA domain types
+>>    iommu/arm-smmu: Prepare for multiple DMA domain types
+>>    iommu/vt-d: Prepare for multiple DMA domain types
+>>    iommu: Express DMA strictness via the domain type
+>>    iommu: Expose DMA domain strictness via sysfs
+>>    iommu: Only log strictness for DMA domains
+>>    iommu: Merge strictness and domain type configs
+>>    iommu: Allow enabling non-strict mode dynamically
+> 
+> Applied all except patch 12. Please re-submit patch 12 together with the
+> APPLE DART fixups after v5.15-rc1 is out.
 
-Fixes: 6b41030fdc79 ("dmaengine: dmatest: Restore default for channel")
-Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
----
- Documentation/driver-api/dmaengine/dmatest.rst | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Brilliant, thanks for fixing that up!
 
-diff --git a/Documentation/driver-api/dmaengine/dmatest.rst b/Documentation/driver-api/dmaengine/dmatest.rst
-index 529cc2cbbb1b..cf9859cd0b43 100644
---- a/Documentation/driver-api/dmaengine/dmatest.rst
-+++ b/Documentation/driver-api/dmaengine/dmatest.rst
-@@ -153,13 +153,14 @@ Part 5 - Handling channel allocation
- Allocating Channels
- -------------------
- 
--Channels are required to be configured prior to starting the test run.
--Attempting to run the test without configuring the channels will fail.
-+Channels do not need to be configured prior to starting a test run. Attempting
-+to run the test without configuring the channels will result in testing any
-+channels that are available.
- 
- Example::
- 
-     % echo 1 > /sys/module/dmatest/parameters/run
--    dmatest: Could not start test, no channels configured
-+    dmatest: No channels configured, continue with any
- 
- Channels are registered using the "channel" parameter. Channels can be requested by their
- name, once requested, the channel is registered and a pending thread is added to the test list.
--- 
-2.30.2
+Sven - I've prepared the follow-up patches already[1], so consider 
+yourself off the hook (I see no point in trying to fix the nominal DART 
+cookie bugs between now and then) :)
 
+Cheers,
+Robin.
+
+[1] https://gitlab.arm.com/linux-arm/linux-rm/-/commits/iommu/fq-fixes
