@@ -2,175 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF053F09DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 683933F09E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbhHRREq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 13:04:46 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:6642 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231716AbhHRRET (ORCPT
+        id S231926AbhHRREl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 13:04:41 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:33539 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229946AbhHRREP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 13:04:19 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17IH3PYQ101051;
-        Wed, 18 Aug 2021 13:03:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=rEuWT4UhoOXF6FchikCv8NH2kVska2ycyMLBPtJR+Rs=;
- b=dzFPFMpkSSO03SRsPGheCkzVV/eWc4u0UZ6OSGLWWe/EGVKjeDY947ryEZEzxrwVbVxZ
- MNg9/pIg8n782xk21iR+jT5zz6GjJL8yGX8QTu3oBQMS5jDuw3ub6zhpjJxg1QKD/CZG
- wNFC2UCYUxEcC+aDaTFOYBKeu4iCyE5Wp2MsmztbxADnn1JDzCggRkH7blLUizGZsD+C
- N3/IZQi+f7XFEWrNgGHXAF8cjxIw9Lmra/YFXqEieIaA+FoSp0zyJdDBPynQbVle8Xsv
- tslyNIwn5w2Hr8/JO3TUGAErwhVelCyQ8NjquIV83KGoDheQ3PHyV4Kxo7v/36stS7cH fQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3agcf6n8qy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Aug 2021 13:03:40 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17IH3e8x102110;
-        Wed, 18 Aug 2021 13:03:40 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3agcf6n8q3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Aug 2021 13:03:40 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17IH2hJ5001154;
-        Wed, 18 Aug 2021 17:03:37 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03fra.de.ibm.com with ESMTP id 3agh2xhdjq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Aug 2021 17:03:37 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17IH3YlD55574812
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Aug 2021 17:03:34 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DD4AD11C08E;
-        Wed, 18 Aug 2021 17:03:33 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7F0A511C06F;
-        Wed, 18 Aug 2021 17:03:33 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.145.60.230])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 18 Aug 2021 17:03:33 +0000 (GMT)
-Subject: Re: [PATCH 1/2] s390/vfio-ap: r/w lock for PQAP interception handler
- function pointer
-To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        jgg@nvidia.com, alex.williamson@redhat.com, kwankhede@nvidia.com,
-        david@redhat.com
-References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
- <20210719193503.793910-2-akrowiak@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <1a9f15d7-0f4d-00a0-0a8b-f1c08aa52eeb@de.ibm.com>
-Date:   Wed, 18 Aug 2021 19:03:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 18 Aug 2021 13:04:15 -0400
+Received: by mail-ot1-f48.google.com with SMTP id 61-20020a9d0d430000b02903eabfc221a9so4975546oti.0;
+        Wed, 18 Aug 2021 10:03:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Eo6vbBN+sMIqmgFNP0NRrf/cRm9sBhxTH+Nv1PO+yrI=;
+        b=CUpaNWD1/SDH6PT71mAISVzjRvb7RsVh0ru9k4l57Y1oJIEQccN6sn+veS49ECRj5M
+         pxqr0Ec1/c2KJ4n+qHKRg7IgIhFCQHpzrSHyjeG7079COzDcUbKBYKrlV4GXnWmedB6d
+         GxjoyTfah2zDrxdgO5CrwcFHQHNrkP6ojPNvElF8+ooSs/yDH+lSKaTnWKyK74AuxHPX
+         yt0ndQlxRQxhbFXtVHMcuoY2FyCkvgR86iAnmSK5Wr6FWaoBe8zoNQueMoA0RNvY/J3l
+         h9/q4eZy/VW8YqoYMIe8WQ0rVwI7eGI0GOjw/KOBHsFlKi378O+WIkNzMG05/yjxwWkQ
+         L1QQ==
+X-Gm-Message-State: AOAM530BhmPW9bVUM9IIyo90KfPkRtVIqWEq5XFoqt3XHEgWNv0wmnuW
+        xZmJd1zC3vrlQlHtc4OqQA==
+X-Google-Smtp-Source: ABdhPJzwGHBEWhUDKwV/R8H1tRothaXrBmNH+xzvQTSnuAeylgwBkyZG7YvOlOS2AOuUkSiraaN5bA==
+X-Received: by 2002:a9d:6c4c:: with SMTP id g12mr7671344otq.298.1629306220319;
+        Wed, 18 Aug 2021 10:03:40 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id w14sm117365otl.58.2021.08.18.10.03.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 10:03:39 -0700 (PDT)
+Received: (nullmailer pid 2762303 invoked by uid 1000);
+        Wed, 18 Aug 2021 17:03:38 -0000
+Date:   Wed, 18 Aug 2021 12:03:38 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sinthu Raja <sinthu.raja@mistralsolutions.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>, Suman Anna <s-anna@ti.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Nishanth Menon <nm@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Sinthu Raja <sinthu.raja@ti.com>
+Subject: Re: [PATCH V1] dt-bindings: remoteproc: k3-dsp: Update example to
+ remove board specific
+Message-ID: <YR09antwlqven6fD@robh.at.kernel.org>
+References: <20210818074030.1877-1-sinthu.raja@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20210719193503.793910-2-akrowiak@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 8esBHBRvTeZXmToWV2rRtM8SKxuaFnPH
-X-Proofpoint-GUID: N5nR6NEjY5Up8PX1REPUMZw0FYOi6x5g
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-18_05:2021-08-17,2021-08-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- mlxscore=0 suspectscore=0 phishscore=0 adultscore=0 priorityscore=1501
- bulkscore=0 clxscore=1015 mlxlogscore=999 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108180107
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210818074030.1877-1-sinthu.raja@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.07.21 21:35, Tony Krowiak wrote:
-> The function pointer to the interception handler for the PQAP instruction
-> can get changed during the interception process. Let's add a
-> semaphore to struct kvm_s390_crypto to control read/write access to the
-> function pointer contained therein.
+On Wed, Aug 18, 2021 at 01:10:30PM +0530, Sinthu Raja wrote:
+> The example includes a board-specific compatible property, but developers
+> need to add the board name each time when a new board is added to the K3
+> J721E SoC list. This grows the compatible string-list. So, drop the
+> board-specific compatible string and add cbass_main as a parent node to
+> avoid parent node and child node address-cells mismatch error.
 > 
-> The semaphore must be locked for write access by the vfio_ap device driver
-> when notified that the KVM pointer has been set or cleared. It must be
-> locked for read access by the interception framework when the PQAP
-> instruction is intercepted.
-> 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
+
+The author and S-o-b emails don't match.
+
 > ---
->   arch/s390/include/asm/kvm_host.h      |  8 +++-----
->   arch/s390/kvm/kvm-s390.c              |  1 +
->   arch/s390/kvm/priv.c                  | 10 ++++++----
->   drivers/s390/crypto/vfio_ap_ops.c     | 23 +++++++++++++++++------
->   drivers/s390/crypto/vfio_ap_private.h |  2 +-
->   5 files changed, 28 insertions(+), 16 deletions(-)
+> Changes in V1:
+> Fixed alignment issue which caused the yaml parse error.
 > 
-> diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
-> index 9b4473f76e56..f18849d259e6 100644
-> --- a/arch/s390/include/asm/kvm_host.h
-> +++ b/arch/s390/include/asm/kvm_host.h
-> @@ -798,14 +798,12 @@ struct kvm_s390_cpu_model {
->   	unsigned short ibc;
->   };
->   
-> -struct kvm_s390_module_hook {
-> -	int (*hook)(struct kvm_vcpu *vcpu);
-> -	struct module *owner;
-> -};
-> +typedef int (*crypto_hook)(struct kvm_vcpu *vcpu);
->   
->   struct kvm_s390_crypto {
->   	struct kvm_s390_crypto_cb *crycb;
-> -	struct kvm_s390_module_hook *pqap_hook;
-> +	struct rw_semaphore pqap_hook_rwsem;
-> +	crypto_hook *pqap_hook;
->   	__u32 crycbd;
->   	__u8 aes_kw;
->   	__u8 dea_kw;
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index b655a7d82bf0..a08f242a9f27 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -2630,6 +2630,7 @@ static void kvm_s390_crypto_init(struct kvm *kvm)
->   {
->   	kvm->arch.crypto.crycb = &kvm->arch.sie_page2->crycb;
->   	kvm_s390_set_crycb_format(kvm);
-> +	init_rwsem(&kvm->arch.crypto.pqap_hook_rwsem);
->   
->   	if (!test_kvm_facility(kvm, 76))
->   		return;
-> diff --git a/arch/s390/kvm/priv.c b/arch/s390/kvm/priv.c
-> index 9928f785c677..6bed9406c1f3 100644
-> --- a/arch/s390/kvm/priv.c
-> +++ b/arch/s390/kvm/priv.c
-> @@ -610,6 +610,7 @@ static int handle_io_inst(struct kvm_vcpu *vcpu)
->   static int handle_pqap(struct kvm_vcpu *vcpu)
->   {
->   	struct ap_queue_status status = {};
-> +	crypto_hook pqap_hook;
->   	unsigned long reg0;
->   	int ret;
->   	uint8_t fc;
-> @@ -657,15 +658,16 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
->   	 * Verify that the hook callback is registered, lock the owner
->   	 * and call the hook.
->   	 */
-> +	down_read(&vcpu->kvm->arch.crypto.pqap_hook_rwsem);
->   	if (vcpu->kvm->arch.crypto.pqap_hook) {
-> -		if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
-> -			return -EOPNOTSUPP;
-> -		ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
-> -		module_put(vcpu->kvm->arch.crypto.pqap_hook->owner);
-> +		pqap_hook = *vcpu->kvm->arch.crypto.pqap_hook;
-
-Dont we have to check for NULL here? If not can you add a comment why?
-
-Otherwise this looks good.
-
-
-> +		ret = pqap_hook(vcpu);
-[...]
+>  .../devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml     | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
+> index 6070456a7b67..e44a9397b8db 100644
+> --- a/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
+> +++ b/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
+> @@ -132,10 +132,8 @@ required:
+>  unevaluatedProperties: false
+>  
+>  examples:
+> -  - |
+> -    / {
+> -        model = "Texas Instruments K3 J721E SoC";
+> -        compatible = "ti,j721e";
+> +  - |+
+> +    cbass_main {
+>          #address-cells = <2>;
+>          #size-cells = <2>;
+>  
+> -- 
+> 2.31.1
+> 
+> 
