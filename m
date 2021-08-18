@@ -2,477 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D423F0BB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 21:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A713F0BB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 21:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233254AbhHRTX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 15:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233143AbhHRTXw (ORCPT
+        id S233036AbhHRT0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 15:26:46 -0400
+Received: from mail-0201.mail-europe.com ([51.77.79.158]:36368 "EHLO
+        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231743AbhHRT0o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 15:23:52 -0400
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A01FC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 12:23:17 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 03:23:49 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1629314594;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zR8AgviWwfupP5W5OTqV/PzgJfb0C3ZI9EqSk/FGxng=;
-        b=thM0rPDA96qQDclzyNeWqaXjCUiDlzAPjM96PRR5HyAostY8gXM/mWSbWxlRRcYO8CBuMy
-        FlcNY/qtQA4GRbPGKTIfYA8xKqLon7dn5zfwE4DyG0R5toKB8/DqbU4VIBvqCTEgAk6nps
-        Gps5Ze57mQVXcbdmbeYJhCs38pfbpzI=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Tao Zhou <tao.zhou@linux.dev>
-To:     tao.zhou@linux.dev
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        tglx@linutronix.de, joel@joelfernandes.org, chris.hyser@oracle.com,
-        joshdon@google.com, mingo@kernel.org, vincent.guittot@linaro.org,
-        valentin.schneider@arm.com, mgorman@suse.de
-Subject: Re: [PATCH] sched/core: An optimization of pick_next_task() not sure
-Message-ID: <YR1eRde9ljk2yvfv@geo.homenetwork>
-References: <20210816154401.23919-1-tao.zhou@linux.dev>
- <YRqz93crZIS1Mvmy@hirez.programming.kicks-ass.net>
- <YRvnnanIb4WEI5aJ@geo.homenetwork>
+        Wed, 18 Aug 2021 15:26:44 -0400
+Date:   Wed, 18 Aug 2021 19:25:34 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1629314736;
+        bh=aWCsmwMyxCJOb9In9GRwiA+fRn6ttPi9bOrwWBDIw/g=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=dbTawmSQsBNAK/D8C7+bkqzfl9WexM/FCxkQnF4xH9XV5Dx9n2relLrzsskAjR/w7
+         fFFapM59in3qswxfaGxG3iII7qfJggDs24FNZo1jE28Tw72My4iSrY7yDNq8mpIEga
+         3xhCGxQaH4LVAIT17yZy3lYFrXcCnxOZ5J0FR97I=
+To:     "Luke D. Jones" <luke@ljones.dev>
+From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     linux-kernel@vger.kernel.org, hdegoede@redhat.com,
+        hadess@hadess.net, platform-driver-x86@vger.kernel.org
+Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Subject: Re: [PATCH v5 1/1] asus-wmi: Add support for platform_profile
+Message-ID: <tkJb_14m7EeHjs3G_DaqN0tMCLMA4qNheZDxfrsnGHoxFrsxOebsq46o8pXT-f7i2SgcZiFGk8FEy6BWVeT7xtTShgbyXqYNyeu58bayOS0=@protonmail.com>
+In-Reply-To: <20210818190731.19170-2-luke@ljones.dev>
+References: <20210818190731.19170-1-luke@ljones.dev> <20210818190731.19170-2-luke@ljones.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRvnnanIb4WEI5aJ@geo.homenetwork>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: tao.zhou@linux.dev
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 12:45:17AM +0800, Tao Zhou wrote:
+Hi
 
-> Hi Peter,
-> 
-> On Mon, Aug 16, 2021 at 08:52:39PM +0200, Peter Zijlstra wrote:
-> 
-> > On Mon, Aug 16, 2021 at 11:44:01PM +0800, Tao Zhou wrote:
-> > > When find a new candidate max, wipe the stale and start over.
-> > > Goto again: and use the new max to loop to pick the the task.
-> > > 
-> > > Here first want to get the max of the core and use this new
-> > > max to loop once to pick the task on each thread.
-> > > 
-> > > Not sure this is an optimization and just stop here a little
-> > > and move on..
-> > > 
-> > 
-> > Did you find this retry was an issue on your workload? Or was this from
-> > reading the source?
-> 
-> Thank you for your reply. Sorry for my late reply.
-> This was from reading the source..
-> 
-> > 
-> > > ---
-> > >  kernel/sched/core.c | 52 +++++++++++++++++----------------------------
-> > >  1 file changed, 20 insertions(+), 32 deletions(-)
-> > > 
-> > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > > index 20ffcc044134..bddcd328df96 100644
-> > > --- a/kernel/sched/core.c
-> > > +++ b/kernel/sched/core.c
-> > > @@ -5403,7 +5403,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
-> > >  	const struct sched_class *class;
-> > >  	const struct cpumask *smt_mask;
-> > >  	bool fi_before = false;
-> > > -	int i, j, cpu, occ = 0;
-> > > +	int i, cpu, occ = 0;
-> > >  	bool need_sync;
-> > >  
-> > >  	if (!sched_core_enabled(rq))
-> > > @@ -5508,11 +5508,27 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
-> > >  	 * order.
-> > >  	 */
-> > >  	for_each_class(class) {
-> > > -again:
-> > > +		struct rq *rq_i;
-> > > +		struct task_struct *p;
-> > > +
-> > >  		for_each_cpu_wrap(i, smt_mask, cpu) {
-> > > -			struct rq *rq_i = cpu_rq(i);
-> > > -			struct task_struct *p;
-> > > +			rq_i = cpu_rq(i);
-> > > +			p = pick_task(rq_i, class, max, fi_before);
-> > > +			/*
-> > > +			 * If this new candidate is of higher priority than the
-> > > +			 * previous; and they're incompatible; pick_task makes
-> > > +			 * sure that p's priority is more than max if it doesn't
-> > > +			 * match max's cookie. Update max.
-> > > +			 *
-> > > +			 * NOTE: this is a linear max-filter and is thus bounded
-> > > +			 * in execution time.
-> > > +			 */
-> > > +			if (!max || !cookie_match(max, p))
-> > > +				max = p;
-> > > +		}
-> > >  
-> > > +		for_each_cpu_wrap(i, smt_mask, cpu) {
-> > > +			rq_i = cpu_rq(i);
-> > >  			if (rq_i->core_pick)
-> > >  				continue;
-> > >  
-> > 
-> > This now calls pick_task() twice for each CPU, which seems unfortunate;
-> > perhaps add q->core_temp storage to cache that result. Also, since the
-> > first iteration is now explicitly about the max filter, perhaps we
-> > shouuld move that part of pick_task() into the loop and simplify things
-> > further?
-> 
-> Here is my ugly patch below..
-> Not compiled..
-> 
-> 
-> >From b3de16fb6f3e6cd2a8a9f7a579e80df74fb2d865 Mon Sep 17 00:00:00 2001
-> From: Tao Zhou <tao.zhou@linux.dev>
-> Date: Wed, 18 Aug 2021 00:07:38 +0800
-> Subject: [PATCH] optimize pick_next_task()
-> 
+
+2021. augusztus 18., szerda 21:07 keltez=C3=A9ssel, Luke D. Jones =C3=ADrta=
+:
+> Add initial support for platform_profile where the support is
+> based on availability of ASUS_THROTTLE_THERMAL_POLICY.
+>
+> Because throttle_thermal_policy is used by platform_profile and is
+> writeable separately to platform_profile any userspace changes to
+> throttle_thermal_policy need to notify platform_profile.
+>
+> In future throttle_thermal_policy sysfs should be removed so that
+> only one method controls the laptop power profile.
+>
+> Signed-off-by: Luke D. Jones <luke@ljones.dev>
 > ---
->  kernel/sched/core.c  | 71 +++++++++++++++++++++++++++++++++-----------
->  kernel/sched/sched.h |  1 +
->  2 files changed, 54 insertions(+), 18 deletions(-)
-> 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 20ffcc044134..c2a403bacf99 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -5380,18 +5380,32 @@ pick_task(struct rq *rq, const struct sched_class *class, struct task_struct *ma
->  	if (cookie_equals(class_pick, cookie))
->  		return class_pick;
->  
-> -	cookie_pick = sched_core_find(rq, cookie);
-> +	return class_pick;
-> +}
->  
-> -	/*
-> -	 * If class > max && class > cookie, it is the highest priority task on
-> -	 * the core (so far) and it must be selected, otherwise we must go with
-> -	 * the cookie pick in order to satisfy the constraint.
-> -	 */
-> -	if (prio_less(cookie_pick, class_pick, in_fi) &&
-> -	    (!max || prio_less(max, class_pick, in_fi)))
-> -		return class_pick;
-> +static task_struct *
-> +filter_max_prio(struct rq *rq, struct task_struct *class_pick,
-> +				struct task_struct **cookie_pick, struct task_struct *max,
-> +				bool in_fi)
+>  drivers/platform/x86/Kconfig    |   1 +
+>  drivers/platform/x86/asus-wmi.c | 130 +++++++++++++++++++++++++++++++-
+>  2 files changed, 127 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+> index d12db6c316ea..46dec48a36c1 100644
+> --- a/drivers/platform/x86/Kconfig
+> +++ b/drivers/platform/x86/Kconfig
+> [...]
+> +static int platform_profile_set(struct platform_profile_handler *pprof,
+> +=09=09=09=09enum platform_profile_option profile)
 > +{
-> +	unsigned long cookie = rq->core->core_cookie;
->  
-> -	return cookie_pick;
-> +	*cookie_pick = NULL;
-> +	if (cookie && !cookie_equals(class_pick, cookie)) {
-> +		*cookie_pick = sched_core_find(rq, cookie);
-> +		/*
-> +		 * If class > max && class > cookie, it is the
-> +		 * highest priority task on the core (so far)
-> +		 * and it must be selected, otherwise we must
-> +		 * go with the cookie pick in order to satisfy
-> +		 * the constraint.
-> +		 */
-> +		if (prio_less(cookie_pick, class_pick, in_fi) &&
-> +		    (!max || prio_less(max, class_pick, in_fi)))
-> +			return class_pick;
-> +	}
+> +=09struct asus_wmi *asus;
+> +=09int tp;
 > +
-> +	return NULL;
->  }
->  
->  extern void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_fi);
-> @@ -5508,24 +5522,44 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->  	 * order.
->  	 */
->  	for_each_class(class) {
-> -again:
-> +		struct task_struct *class_pick, *cookie_pick;
-> +		struct rq *rq_i;
+> +=09asus =3D container_of(pprof, struct asus_wmi, platform_profile_handle=
+r);
 > +
-> +		for_each_cpu_wrap(i, smt_mask, cpu) {
-> +			rq_i = cpu_rq(i);
-> +			class_pick = pick_task(rq_i, class, max, fi_before);
-> +			rq_i->core_temp = class_pick;
-> +			/*
-> +			 * This sibling doesn't yet have a suitable task to
-> +			 * run.
-> +			 */
-> +			if (!class_pick)
-> +				continue;
+> +=09switch (profile) {
+> +=09case PLATFORM_PROFILE_PERFORMANCE:
+> +=09=09tp =3D ASUS_THROTTLE_THERMAL_POLICY_OVERBOOST;
+> +=09=09break;
+> +=09case PLATFORM_PROFILE_BALANCED:
+> +=09=09tp =3D ASUS_THROTTLE_THERMAL_POLICY_DEFAULT;
+> +=09=09break;
+> +=09case PLATFORM_PROFILE_QUIET:
+> +=09=09tp =3D ASUS_THROTTLE_THERMAL_POLICY_SILENT;
+> +=09=09break;
+> +=09default:
+> +=09=09return -EOPNOTSUPP;
+> +=09}
 > +
-> +			if (filter_max_prio(rq_i, class_pick, &cookie_pick, max, fi_before))
-> +				max = class_pick;
-> +		}
-> +
->  		for_each_cpu_wrap(i, smt_mask, cpu) {
-> -			struct rq *rq_i = cpu_rq(i);
->  			struct task_struct *p;
-> +			rq_i = cpu_rq(i);
->  
->  			if (rq_i->core_pick)
->  				continue;
->  
->  			/*
-> -			 * If this sibling doesn't yet have a suitable task to
-> -			 * run; ask for the most eligible task, given the
-> -			 * highest priority task already selected for this
-> -			 * core.
-> +			 * This sibling doesn't yet have a suitable task to
-> +			 * run.
->  			 */
-> -			p = pick_task(rq_i, class, max, fi_before);
-> -			if (!p)
-> +			if (!rq_i->core_temp)
->  				continue;
->  
-> +			p = class_pick = rq_i->core_temp;
-> +			if (!filter_max_prio(rq_i, class_pick, &cookie_pick, max, fi_before)) {
-> +				if (cookie_pick)
-> +					p = cookie_pick;
-> +			}
-> +
->  			if (!is_task_rq_idle(p))
->  				occ++;
->  
-> @@ -9024,6 +9058,7 @@ void __init sched_init(void)
->  #ifdef CONFIG_SCHED_CORE
->  		rq->core = NULL;
->  		rq->core_pick = NULL;
-> +		rq->core_temp = NULL;
->  		rq->core_enabled = 0;
->  		rq->core_tree = RB_ROOT;
->  		rq->core_forceidle = false;
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 14a41a243f7b..2b21a3846b8e 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -1089,6 +1089,7 @@ struct rq {
->  	/* per rq */
->  	struct rq		*core;
->  	struct task_struct	*core_pick;
-> +	struct task_struct	*core_temp;
->  	unsigned int		core_enabled;
->  	unsigned int		core_sched_seq;
->  	struct rb_root		core_tree;
-> -- 
-> 2.31.1
-> 
-> 
-> Thanks,
-> Tao
+> +=09asus->throttle_thermal_policy_mode =3D tp;
+> +=09return throttle_thermal_policy_write(asus);
+
+Here the new mode will be stored even if activating it fails, no?
 
 
-Based on the above suggestion and the source. Here is another try.
-Compiled.
+> +}
+> [...]
 
 
-From d8847ff57366c894a9d456bfe25a2bdb1b5f7759 Mon Sep 17 00:00:00 2001
-From: Tao Zhou <tao.zhou@linux.dev>
-Date: Thu, 19 Aug 2021 03:17:27 +0800
-Subject: [PATCH] sched/core: Optimize pick_next_task().
-
----
- kernel/sched/core.c  | 113 ++++++++++++++++++++++---------------------
- kernel/sched/sched.h |   1 +
- 2 files changed, 58 insertions(+), 56 deletions(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 20ffcc044134..212647ed2598 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -5355,7 +5355,7 @@ static inline bool cookie_match(struct task_struct *a, struct task_struct *b)
- static struct task_struct *
- pick_task(struct rq *rq, const struct sched_class *class, struct task_struct *max, bool in_fi)
- {
--	struct task_struct *class_pick, *cookie_pick;
-+	struct task_struct *class_pick;
- 	unsigned long cookie = rq->core->core_cookie;
- 
- 	class_pick = class->pick_task(rq);
-@@ -5370,30 +5370,40 @@ pick_task(struct rq *rq, const struct sched_class *class, struct task_struct *ma
- 		if (max && class_pick->core_cookie &&
- 		    prio_less(class_pick, max, in_fi))
- 			return idle_sched_class.pick_task(rq);
--
--		return class_pick;
- 	}
- 
--	/*
--	 * If class_pick is idle or matches cookie, return early.
--	 */
--	if (cookie_equals(class_pick, cookie))
--		return class_pick;
-+	return class_pick;
-+}
- 
--	cookie_pick = sched_core_find(rq, cookie);
-+static struct task_struct *
-+filter_max_prio(struct rq *rq, struct task_struct *class_pick, struct task_struct *max, bool in_fi)
-+{
-+	unsigned long cookie = rq->core->core_cookie;
-+	struct task_struct *cookie_pick = NULL;
- 
--	/*
--	 * If class > max && class > cookie, it is the highest priority task on
--	 * the core (so far) and it must be selected, otherwise we must go with
--	 * the cookie pick in order to satisfy the constraint.
--	 */
--	if (prio_less(cookie_pick, class_pick, in_fi) &&
--	    (!max || prio_less(max, class_pick, in_fi)))
--		return class_pick;
-+	if (cookie) {
-+		if (!cookie_equals(class_pick, cookie)) {
-+			cookie_pick = sched_core_find(rq, cookie);
-+			/*
-+			 * If class > max && class > cookie, it is the
-+			 * highest priority task on the core (so far)
-+			 * and it must be selected, otherwise we must
-+			 * go with the cookie pick in order to satisfy
-+			 * the constraint.
-+			 */
-+			if (prio_less(cookie_pick, class_pick, in_fi) &&
-+			    (!max || prio_less(max, class_pick, in_fi)))
-+				return class_pick;
-+			if (!rq->core_temp)
-+				swap(rq->core_temp, cookie_pick);
-+		} else if (prio_less(max, class_pick, in_fi))
-+			return class_pick;
-+	}
- 
--	return cookie_pick;
-+	return NULL;
- }
- 
-+
- extern void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_fi);
- 
- static struct task_struct *
-@@ -5403,7 +5413,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 	const struct sched_class *class;
- 	const struct cpumask *smt_mask;
- 	bool fi_before = false;
--	int i, j, cpu, occ = 0;
-+	int i, cpu, occ = 0;
- 	bool need_sync;
- 
- 	if (!sched_core_enabled(rq))
-@@ -5508,24 +5518,43 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 	 * order.
- 	 */
- 	for_each_class(class) {
--again:
-+		struct task_struct *class_pick;
-+		struct rq *rq_i;
-+
-+		for_each_cpu_wrap(i, smt_mask, cpu) {
-+			rq_i = cpu_rq(i);
-+			class_pick = pick_task(rq_i, class, max, fi_before);
-+			rq_i->core_temp = class_pick;
-+			/*
-+			 * This sibling doesn't yet have a suitable task to run.
-+			 */
-+			if (!class_pick)
-+				continue;
-+
-+			if (filter_max_prio(rq_i, class_pick, max, fi_before))
-+				max = class_pick;
-+		}
-+
- 		for_each_cpu_wrap(i, smt_mask, cpu) {
--			struct rq *rq_i = cpu_rq(i);
- 			struct task_struct *p;
-+			rq_i = cpu_rq(i);
- 
- 			if (rq_i->core_pick)
- 				continue;
- 
- 			/*
--			 * If this sibling doesn't yet have a suitable task to
--			 * run; ask for the most eligible task, given the
--			 * highest priority task already selected for this
--			 * core.
-+			 * This sibling doesn't yet have a suitable task to run.
- 			 */
--			p = pick_task(rq_i, class, max, fi_before);
--			if (!p)
-+			if (!rq_i->core_temp)
- 				continue;
- 
-+			p = rq_i->core_temp;
-+			class_pick = NULL;
-+			swap(rq_i->core_temp, class_pick);
-+			if (!filter_max_prio(rq_i, class_pick, max, fi_before))
-+				if (rq_i->core_temp)
-+					p = rq_i->core_temp;
-+
- 			if (!is_task_rq_idle(p))
- 				occ++;
- 
-@@ -5535,35 +5564,6 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 				if (!fi_before)
- 					rq->core->core_forceidle_seq++;
- 			}
--
--			/*
--			 * If this new candidate is of higher priority than the
--			 * previous; and they're incompatible; we need to wipe
--			 * the slate and start over. pick_task makes sure that
--			 * p's priority is more than max if it doesn't match
--			 * max's cookie.
--			 *
--			 * NOTE: this is a linear max-filter and is thus bounded
--			 * in execution time.
--			 */
--			if (!max || !cookie_match(max, p)) {
--				struct task_struct *old_max = max;
--
--				rq->core->core_cookie = p->core_cookie;
--				max = p;
--
--				if (old_max) {
--					rq->core->core_forceidle = false;
--					for_each_cpu(j, smt_mask) {
--						if (j == i)
--							continue;
--
--						cpu_rq(j)->core_pick = NULL;
--					}
--					occ = 1;
--					goto again;
--				}
--			}
- 		}
- 	}
- 
-@@ -9024,6 +9024,7 @@ void __init sched_init(void)
- #ifdef CONFIG_SCHED_CORE
- 		rq->core = NULL;
- 		rq->core_pick = NULL;
-+		rq->core_temp = NULL;
- 		rq->core_enabled = 0;
- 		rq->core_tree = RB_ROOT;
- 		rq->core_forceidle = false;
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 14a41a243f7b..2b21a3846b8e 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1089,6 +1089,7 @@ struct rq {
- 	/* per rq */
- 	struct rq		*core;
- 	struct task_struct	*core_pick;
-+	struct task_struct	*core_temp;
- 	unsigned int		core_enabled;
- 	unsigned int		core_sched_seq;
- 	struct rb_root		core_tree;
--- 
-2.31.1
-
-
-Thanks,
-Tao
+Best regards,
+Barnab=C3=A1s P=C5=91cze
