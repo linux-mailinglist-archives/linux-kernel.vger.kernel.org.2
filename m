@@ -2,94 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC49E3F0A25
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6DF3F0A2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhHRRT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 13:19:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhHRRTz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 13:19:55 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC56CC061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 10:19:19 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id gt38so6445909ejc.13
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 10:19:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=lfIld6KktdG6ygRj5PayLJShMaK9SwgoTaMox5h6Ix0=;
-        b=itFg3/xP+wNRJhubosvd/kWlSnhRaQ6tX4tf3B/NQ63RK2bSU1D089DfqxfN0FhO8H
-         dtKDHoog6BB9vJyzwgdySBe5zScKtMuIV7ZPAefYX8H3dTpuaQC1D2zPjNAbbkGKcq9D
-         3G7up1FPPdyJ3fKckRm84rKJCpm/cpBmMZLVGrMFrGACejroVDr7YJBmJsKs1CUZzIQW
-         tS/C+KmSEeqUF3xDvhS2Kdp47pbCfkf0rUt4HJFMNwYNwKMEwN+XNZPuMvFAZNbeH2iy
-         ClGQCbITSyiY7FldM2Sw+b8il5KVMJmMHtTBD3H8pmWYYXqFOlu9jLmHhmJXxw3f1xfy
-         CTwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=lfIld6KktdG6ygRj5PayLJShMaK9SwgoTaMox5h6Ix0=;
-        b=SDi9myGpxAVPqUg7pt60VO99nue1X8BiT2jUzxI00XLH80rNH82at5eIqv5dgqsOE7
-         QenV2jkIo1XH6XCgyymtN3WlBNR3uXEUwMppLgmzReO06H+BDHnJz+h/TDcyup66nPmh
-         ss8D/zjKpv9MBZFpKlatNamMzDBIbvB27bwMxG0yq/bv58lEcJ4HEXH8LqRJQFa+4yu9
-         Qdm61lVqNwx9+1KLoUeEuj3PWfNpE8wdRADkXkksl5+SFUgyuI9ieqXK18Cf3t8gLWVk
-         CjIzu1vx6gH0Jv1mBF+i6klQSwmJK67ndxKa1qWmN4Ox53zBF93Auii885LJDTwwwWxq
-         LNaw==
-X-Gm-Message-State: AOAM533DXQZZmvjL4UpFp/EAfAVGsqn/8BPh6/u3Q7kTE1RLEJJrC2Tg
-        h339vbzp5WIuv3y6FfZIRj8QgVwZrFLrysIPjxI=
-X-Google-Smtp-Source: ABdhPJzFW0qszLZbHXaRqXctN3U/nOBDca85EzWsFiOksmTuYxrIok0IQ8p33Pm07m5nF37AZg+UCX9UIBfpwMqrsx0=
-X-Received: by 2002:a17:906:8a79:: with SMTP id hy25mr10675314ejc.427.1629307157480;
- Wed, 18 Aug 2021 10:19:17 -0700 (PDT)
+        id S231143AbhHRRWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 13:22:22 -0400
+Received: from mga18.intel.com ([134.134.136.126]:55431 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229661AbhHRRWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 13:22:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="203529559"
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
+   d="scan'208";a="203529559"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 10:21:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
+   d="scan'208";a="531775841"
+Received: from irsmsx605.ger.corp.intel.com ([163.33.146.138])
+  by fmsmga002.fm.intel.com with ESMTP; 18 Aug 2021 10:21:05 -0700
+Received: from tjmaciei-mobl5.localnet (10.209.60.224) by
+ IRSMSX605.ger.corp.intel.com (163.33.146.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Wed, 18 Aug 2021 18:21:02 +0100
+From:   Thiago Macieira <thiago.macieira@intel.com>
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Borislav Petkov <bp@alien8.de>
+CC:     <luto@kernel.org>, <tglx@linutronix.de>, <mingo@kernel.org>,
+        <x86@kernel.org>, <len.brown@intel.com>, <dave.hansen@intel.com>,
+        <jing2.liu@intel.com>, <ravi.v.shankar@intel.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to protect dynamic user state
+Date:   Wed, 18 Aug 2021 10:20:58 -0700
+Message-ID: <3181031.RqgVF4sTRC@tjmaciei-mobl5>
+Organization: Intel Corporation
+In-Reply-To: <YR00U19168BGoRB9@zn.tnic>
+References: <20210730145957.7927-1-chang.seok.bae@intel.com> <20210730145957.7927-13-chang.seok.bae@intel.com> <YR00U19168BGoRB9@zn.tnic>
 MIME-Version: 1.0
-Received: by 2002:a17:907:765c:0:0:0:0 with HTTP; Wed, 18 Aug 2021 10:19:16
- -0700 (PDT)
-Reply-To: m.mariam.deng@fastservice.com
-From:   Miss Mariam Dim Deng <missmadimdeng@gmail.com>
-Date:   Wed, 18 Aug 2021 19:19:16 +0200
-Message-ID: <CAMUhcvz2Yx=hAGZPDCQW_pSkM7x0TMHEWDfaWt3VV+P1zwZw4g@mail.gmail.com>
-Subject: Please help, save my life and become my investiment partner
-To:     missmadimdeng@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [10.209.60.224]
+X-ClientProxiedBy: orsmsx605.amr.corp.intel.com (10.22.229.18) To
+ IRSMSX605.ger.corp.intel.com (163.33.146.138)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please help me and save my life.
+On Wednesday, 18 August 2021 09:24:51 PDT Borislav Petkov wrote:
+> > +#define X86_FEATURE_XFD                        (10*32+ 4) /* eXtended
+> > Feature Disabling */
+> 
+> Add "" at the marker above - it doesn't look like we wanna show "xfd" in
+> /proc/cpuinfo.
 
-How you are today and your family, I am a citizen of Sudan but
-currently staying in Burkina Faso. My name is Miss Mariam Dim Deng, 24
-years old and I'm from Sudan.
-My late father Dr. Dominic Dim Deng was the former Minister for SPLA
-Affair and Special Adviser to President Salva Kiir of South Sudan for
-Decentralization. You can read more about the crash through the below
-site: http://news.bbc.co.uk/2/hi/africa/7380412.stm
+Why not?
 
-I am the only surviving daughter of my late father, I was taken to a
-refugee camp in another country after the death of my father, now I am
-of age and have been liberated from the refugee camp. I have claimed
-my father=E2=80=99s funds and remaining,   I want to establish an industry =
-in
-your country, so you will help me to relocate to your country with my
-fathers fund for investment in your country. Or provide an account to
-receive the fund for joint business.
-Please can you be my partner and to assist me on how to establish an
-industry, out of the fund I will give you some percentage for helping me, p=
-lease
-.
-Please if you are interested include the below information in your reply
-1. Your full name:
-2. Your residence address:
-3. Your age: and sex:
-4. Your passport or identity card:
-5. Your private (mobile) phone:
-6. Your Occupation:
-7 .Your House / Office Address:
-Please reply as soon as possible for the next step.
+It could help diagnosing why this code has a failure if XFD is somehow 
+missing. That can happen with hypervisors or future CPUs.
 
-Sincerely,
-Your beloved Mariam Dim Deng
+> > +                               /* Raise a signal when it failed to
+> > handle. */ +                               if (err)
+> > +                                       force_sig_fault(SIGILL,
+> > ILL_ILLOPC,
+> > +                                                      
+> > error_get_trap_addr(regs));> 
+> Where is it documented that that configuration of SIG* types means,
+> failure to allocate the dynamic buffer?
+
+This wasn't part of the memory failure, but now that you've pointed out, yes, 
+we are getting a SIGILL in case the kernel failed to allocate memory too. 
+
+This is the same code path we get if the task executes an AMX instruction 
+without first requesting support for it via the system call. At my request, 
+Chang changed it from SIGSEGV to SIGILL, because that's the behaviour one 
+would see if the kernel did not support AMX at all, hadn't enabled it in XCR0 
+or the CPU didn't support the instructions.
+
+I don't know how to best handle killing the application if the kernel is OOM 
+(see below, though). Maybe it should SIGKILL instead. The problem with sending 
+a SIGSEGV is debuggability: if I get a core dump of this crash, which is 
+likely going to happen in a load instruction, I'll spend a lot time trying to 
+understand why the pointer in that instruction wasn't correct. Very few people 
+will ever consider it may have another reason.
+
+> To the general picture: why is this thing even allocating a buffer in #NM?
+> 
+> Why isn't the buffer pre-allocated for the process after latter having
+> done prctl() so that when an #NM happens, no allocation happens at all?
+
+That's a good question, but I thought it had been discussed and agreed that we 
+didn't want to extend the buffers at the moment the application requested the 
+bits, because it may never need them. This was probably a defence against 
+applications requesting all bits without knowing whether they'll need them at 
+all.
+
+The way the API to userspace is implemented, the only way to find out if the 
+kernel supports a given state is to enable it. It's not currently possible to 
+ask "do you support AMX tile data?" and then go about the application's merry 
+way until it determines it really wants to do matrix multiplications. In the 
+case of applications with plugins, they need to have that answer before the 
+load the plugin, which usually happens at application start.
+
+I was going to suggest a new API to return the supported bits, but hadn't yet 
+because it wasn't required for this patchset to work. So long as that API 
+landed at or before the time a new bit was added, userspace would be able to 
+cope. But if the kernel is going to allocate the bits at the moment of the 
+system call *and* we wish for userspace not to request more than it really 
+needs, then we'll need this extra API right now.
+
+-- 
+Thiago Macieira - thiago.macieira (AT) intel.com
+  Software Architect - Intel DPG Cloud Engineering
+
+
+
