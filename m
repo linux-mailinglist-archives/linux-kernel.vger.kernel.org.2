@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D4C3F033D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 14:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 650333F0341
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 14:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234949AbhHRMGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 08:06:11 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:53500 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235168AbhHRMGI (ORCPT
+        id S236528AbhHRMGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 08:06:20 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:35652 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235358AbhHRMGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 18 Aug 2021 08:06:08 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 2CC7620070;
+        by smtp-out1.suse.de (Postfix) with ESMTP id 2DD8E22031;
         Wed, 18 Aug 2021 12:05:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
         t=1629288333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Tn6D90iiLsb4IxhJIealrzVbHO75LAAXZtFjemxcuD4=;
-        b=udQdDomnjekz6QUNNwMDFN28CjCjQvZ0QXTUx9+PrBk/JhLepukkr8O7Rfd/O2KVuh1cnT
-        mcoq2uJ4RIix3tL2snllpZBRRLXzRmksVtqFGdRFyeYjsAx4Mbo6hV9HPXXgg9S/TbHAf8
-        Og7muASTPiSqM6O6lJ8Bqj8+OhV4HPc=
+        bh=swJyPQGAzH4b6Jy9/zoJjKAUe/5cuKhRUPwssLPQDNI=;
+        b=fY0cVzRp1TgEEVqpu1uqOorozEh1y0bq3L0laRdffvWVXPId4yL39WEC+x/Oeb9CtHqHq0
+        i5NSjIZelR0x1fXCRyO++ophmnLzrLk1xzDCPG3vRZ5Ep8tPkRQcAVN2hf/HCIY+AmJ84N
+        q5TC+tM4OqeVZQN16tg+AOXZLEAtvQE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
         s=susede2_ed25519; t=1629288333;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Tn6D90iiLsb4IxhJIealrzVbHO75LAAXZtFjemxcuD4=;
-        b=4zw1AW6MuUlFmI0bELHcQ0k4510gePTHt/IJQRRBu86rvNHyDAt/nYsaO9qsxQkG4gHz27
-        Hwygz6/j7O23tBAg==
+        bh=swJyPQGAzH4b6Jy9/zoJjKAUe/5cuKhRUPwssLPQDNI=;
+        b=mWRRoR5npJuDr87GIBuBmboaqbt7VHyqQ2nbrVAp/Pbf++cJzcoCrHuXlqPF5v8sv5cMgB
+        PFqwsKXm7QAfcHBg==
 Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
-        by relay2.suse.de (Postfix) with ESMTP id 55558A3B9A;
+        by relay2.suse.de (Postfix) with ESMTP id 5557CA3B9C;
         Wed, 18 Aug 2021 12:05:31 +0000 (UTC)
 Received: by adalid.arch.suse.de (Postfix, from userid 17828)
-        id 7FD2E518CF7D; Wed, 18 Aug 2021 14:05:31 +0200 (CEST)
+        id 84E4D518CF7F; Wed, 18 Aug 2021 14:05:31 +0200 (CEST)
 From:   Daniel Wagner <dwagner@suse.de>
 To:     linux-nvme@lists.infradead.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -49,11 +49,10 @@ Cc:     linux-kernel@vger.kernel.org,
         Wen Xiong <wenxiong@us.ibm.com>,
         Himanshu Madhani <himanshu.madhani@oracle.com>,
         James Smart <jsmart2021@gmail.com>,
-        Chao Leng <lengchao@huawei.com>,
         Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH v5 2/3] nvme-fc: avoid race between time out and tear down
-Date:   Wed, 18 Aug 2021 14:05:29 +0200
-Message-Id: <20210818120530.130501-3-dwagner@suse.de>
+Subject: [PATCH v5 3/3] nvme-fc: fix controller reset hang during traffic
+Date:   Wed, 18 Aug 2021 14:05:30 +0200
+Message-Id: <20210818120530.130501-4-dwagner@suse.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210818120530.130501-1-dwagner@suse.de>
 References: <20210818120530.130501-1-dwagner@suse.de>
@@ -65,44 +64,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: James Smart <jsmart2021@gmail.com>
 
-To avoid race between time out and tear down, in tear down process,
-first we quiesce the queue, and then delete the timer and cancel
-the time out work for the queue.
+commit fe35ec58f0d3 ("block: update hctx map when use multiple maps")
+exposed an issue where we may hang trying to wait for queue freeze
+during I/O. We call blk_mq_update_nr_hw_queues which may attempt to freeze
+the queue. However we never started queue freeze when starting the
+reset, which means that we have inflight pending requests that entered the
+queue that we will not complete once the queue is quiesced.
 
-This patch merges the admin and io sync ops into the queue teardown logic
-as shown in the RDMA patch 3017013dcc "nvme-rdma: avoid race between time
-out and tear down". There is no teardown_lock in nvme-fc.
+So start a freeze before we quiesce the queue, and unfreeze the queue
+after we successfully connected the I/O queues (the unfreeze is already
+present in the code). blk_mq_update_nr_hw_queues will be called only
+after we are sure that the queue was already frozen.
+
+This follows to how the pci driver handles resets.
+
+This patch added logic introduced in commit 9f98772ba307 "nvme-rdma: fix
+controller reset hang during traffic".
 
 Signed-off-by: James Smart <jsmart2021@gmail.com>
-CC: Chao Leng <lengchao@huawei.com>
+CC: Sagi Grimberg <sagi@grimberg.me>
 Tested-by: Daniel Wagner <dwagner@suse.de>
-[dwagner: updated commit id referenced in commit message]
 Reviewed-by: Daniel Wagner <dwagner@suse.de>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
 ---
- drivers/nvme/host/fc.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/nvme/host/fc.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
-index 8e59e6d142c1..3ff783a2e9f7 100644
+index 3ff783a2e9f7..99dadab2724c 100644
 --- a/drivers/nvme/host/fc.c
 +++ b/drivers/nvme/host/fc.c
-@@ -2487,6 +2487,7 @@ __nvme_fc_abort_outstanding_ios(struct nvme_fc_ctrl *ctrl, bool start_queues)
- 	 */
- 	if (ctrl->ctrl.queue_count > 1) {
- 		nvme_stop_queues(&ctrl->ctrl);
-+		nvme_sync_io_queues(&ctrl->ctrl);
- 		blk_mq_tagset_busy_iter(&ctrl->tag_set,
- 				nvme_fc_terminate_exchange, &ctrl->ctrl);
- 		blk_mq_tagset_wait_completed_request(&ctrl->tag_set);
-@@ -2510,6 +2511,7 @@ __nvme_fc_abort_outstanding_ios(struct nvme_fc_ctrl *ctrl, bool start_queues)
- 	 * clean up the admin queue. Same thing as above.
- 	 */
- 	blk_mq_quiesce_queue(ctrl->ctrl.admin_q);
-+	blk_sync_queue(ctrl->ctrl.admin_q);
- 	blk_mq_tagset_busy_iter(&ctrl->admin_tag_set,
- 				nvme_fc_terminate_exchange, &ctrl->ctrl);
- 	blk_mq_tagset_wait_completed_request(&ctrl->admin_tag_set);
+@@ -2974,9 +2974,10 @@ nvme_fc_recreate_io_queues(struct nvme_fc_ctrl *ctrl)
+ 			return -ENODEV;
+ 		}
+ 		blk_mq_update_nr_hw_queues(&ctrl->tag_set, nr_io_queues);
+-		nvme_unfreeze(&ctrl->ctrl);
+ 	}
+ 
++	nvme_unfreeze(&ctrl->ctrl);
++
+ 	return 0;
+ 
+ out_delete_hw_queues:
+@@ -3215,6 +3216,9 @@ nvme_fc_delete_association(struct nvme_fc_ctrl *ctrl)
+ 	ctrl->iocnt = 0;
+ 	spin_unlock_irqrestore(&ctrl->lock, flags);
+ 
++	if (ctrl->ctrl.queue_count > 1)
++		nvme_start_freeze(&ctrl->ctrl);
++
+ 	__nvme_fc_abort_outstanding_ios(ctrl, false);
+ 
+ 	/* kill the aens as they are a separate path */
 -- 
 2.29.2
 
