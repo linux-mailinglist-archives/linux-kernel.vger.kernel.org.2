@@ -2,100 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B313F002B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E597A3F0030
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231454AbhHRJRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229780AbhHRJRK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:17:10 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39B9C061764;
-        Wed, 18 Aug 2021 02:16:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BA4/xVLnaIPuATSnRGf49DCaYMo1+WItwkXiR/2kQnw=; b=IErH/qBGGW6WOy8h0UdsdyzTJ/
-        KeDPtm007TIrgcS+9evjB+U+bYrdszrYhYll4O5sved0cQK6uQy8yiL8IP6VbF4jODyXcouUCW981
-        hzBsNCf8Z7DJ1v46Nc1Mb2wdqYTNgv3QBALB7RYr9VKkyoLonvi1RM8zHMrgCbo6kwRtTCoVZCjlG
-        /OAq9mktI6iecU7qVQbKZP3lEccE5DzM1In160sbEsYa1BnEm/vnJfNWcYfD7m0epk7NIA3uzIWK/
-        EEaqoVfQTL8LuTRQd3EINpHSP5A99QGVGY+zZmZwzqtUUbzNb48tGRz4CPKxutg00/ibXEq9KqmFn
-        N+mMK2MA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mGHfm-003dFm-E3; Wed, 18 Aug 2021 09:15:50 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2169D30009A;
-        Wed, 18 Aug 2021 11:15:45 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 030E52027CE08; Wed, 18 Aug 2021 11:15:44 +0200 (CEST)
-Date:   Wed, 18 Aug 2021 11:15:44 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        mingo@redhat.com, kernel-team@fb.com,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Like Xu <like.xu@linux.intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>
-Subject: Re: [RFC] bpf: lbr: enable reading LBR from tracing bpf programs
-Message-ID: <YRzPwClswwxHXVHe@hirez.programming.kicks-ass.net>
-References: <20210818012937.2522409-1-songliubraving@fb.com>
+        id S231569AbhHRJSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 05:18:06 -0400
+Received: from mga14.intel.com ([192.55.52.115]:30577 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230253AbhHRJSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 05:18:02 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10079"; a="216014814"
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
+   d="scan'208";a="216014814"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 02:17:27 -0700
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
+   d="scan'208";a="676997102"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 02:17:25 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mGHhH-00B3oa-07; Wed, 18 Aug 2021 12:17:19 +0300
+Date:   Wed, 18 Aug 2021 12:17:18 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH] lib/vsprintf: don't increment buf in bitmap_list_string
+Message-ID: <YRzQHkF8inFrdfQM@smile.fi.intel.com>
+References: <20210817193735.269942-1-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210818012937.2522409-1-songliubraving@fb.com>
+In-Reply-To: <20210817193735.269942-1-yury.norov@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 06:29:37PM -0700, Song Liu wrote:
-> The typical way to access LBR is via hardware perf_event. For CPUs with
-> FREEZE_LBRS_ON_PMI support, PMI could capture reliable LBR. On the other
-> hand, LBR could also be useful in non-PMI scenario. For example, in
-> kretprobe or bpf fexit program, LBR could provide a lot of information
-> on what happened with the function.
-> 
-> In this RFC, we try to enable LBR for BPF program. This works like:
->   1. Create a hardware perf_event with PERF_SAMPLE_BRANCH_* on each CPU;
->   2. Call a new bpf helper (bpf_get_branch_trace) from the BPF program;
->   3. Before calling this bpf program, the kernel stops LBR on local CPU,
->      make a copy of LBR, and resumes LBR;
->   4. In the bpf program, the helper access the copy from #3.
-> 
-> Please see tools/testing/selftests/bpf/[progs|prog_tests]/get_call_trace.c
-> for a detailed example. Not that, this process is far from ideal, but it
-> allows quick prototype of this feature.
-> 
-> AFAICT, the biggest challenge here is that we are now sharing LBR in PMI
-> and out of PMI, which could trigger some interesting race conditions.
-> However, if we allow some level of missed/corrupted samples, this should
-> still be very useful.
-> 
-> Please share your thoughts and comments on this. Thanks in advance!
+On Tue, Aug 17, 2021 at 12:37:35PM -0700, Yury Norov wrote:
 
-> +int bpf_branch_record_read(void)
-> +{
-> +	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-> +
-> +	intel_pmu_lbr_disable_all();
-> +	intel_pmu_lbr_read();
-> +	memcpy(this_cpu_ptr(&bpf_lbr_entries), cpuc->lbr_entries,
-> +	       sizeof(struct perf_branch_entry) * x86_pmu.lbr_nr);
-> +	*this_cpu_ptr(&bpf_lbr_cnt) = x86_pmu.lbr_nr;
-> +	intel_pmu_lbr_enable_all(false);
-> +	return 0;
-> +}
+Thanks!
 
-Urgghhh.. I so really hate BPF specials like this. Also, the PMI race
-you describe is because you're doing abysmal layer violations. If you'd
-have used perf_pmu_disable() that wouldn't have been a problem.
+> Increment is confusing as the buf is overritten at the same line.
 
-I'd much rather see a generic 'fake/inject' PMI facility, something that
-works across the board and isn't tied to x86/intel.
+> Fixes: b1c4af4d3d6b (vsprintf: rework bitmap_list_string) (next-20210817)
+
+Fixes tag has its special format. I don't think we need it here, just to ask
+Andrew in comments that it needs to be folded.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
