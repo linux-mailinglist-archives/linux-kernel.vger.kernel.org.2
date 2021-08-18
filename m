@@ -2,110 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C293F03E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 14:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41DBB3F03E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 14:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236646AbhHRMmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 08:42:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236320AbhHRMmH (ORCPT
+        id S235649AbhHRMpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 08:45:10 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:40568 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233634AbhHRMpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 08:42:07 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31645C061764;
-        Wed, 18 Aug 2021 05:41:33 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id w21-20020a7bc1150000b02902e69ba66ce6so1700937wmi.1;
-        Wed, 18 Aug 2021 05:41:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BdAGUCyYQ4noYy9BmzZUbXym0YMYKVh78nm2c4sCaNo=;
-        b=QYgwx9dlaH3RyUx/fnHN4Y6omSMw5U3O0ah91g35q7jVcI4dHVdFaNlCAdci13bVeR
-         suo33HFIYdKFnq4fJ4fe46eLIB0DEHfW0gQnunFK9UotHj+5C6KGF12/5QBzbiS3jZ2y
-         SVCHPCM+ztoxWXAZEzGNQgqBpc58ZaKALwgm6IBzLYv6HDimXgIBNTwo//C71fOLZlAn
-         nK2XD5wDJEFm7z1KFGODM6Cm2Dwk4eb8pq5hH05OTNlMSqKAH0lLMvYmJx+uU6orLu7x
-         wUTLsYC51JHA00/WP57cFAUcyotGJsTNCjdZy2QSY24l4JotdNC4vwjc6WdVuXGB/aiw
-         aNfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BdAGUCyYQ4noYy9BmzZUbXym0YMYKVh78nm2c4sCaNo=;
-        b=lmYbCqA2JYBhM83/PhvrFBUPexWycku2FZPX21L+JDqChdtbWq+6tVrBgRY9G+lKyX
-         EpfGdFIWDQTLPlU7CCt2XVtXtdHiy57Qu5yxZpXtSEYgeYGhxvssQTgPwQKazbtO1Vfx
-         SzuRecNhuRhg1yKN1AbE3FUFhqz/WtHQDLnKhS1rJFSpdE2s4pE4COCtEbTFZX5hK7k9
-         bCWjK9lgX6tgpNrxgfAiaPhAETCq2UjecoCvyxY1RulUUc9DQnxedHIoWLAy2ovPRkqd
-         Qr1nEj3U2sELOxVQVTivoB+QD7+Fv0eIkP5L+r3peTz7suAT9Wginf6rToQ3SiwknWSV
-         jdHA==
-X-Gm-Message-State: AOAM532yZy07VgBIDfZFEpqWnjS4590OYt/I5fCBaRysWFfIkoQ+RAmd
-        9CT01t2EUw+rIUarE6XWZYg=
-X-Google-Smtp-Source: ABdhPJyZRhqaYkeCZQae/8p1e2NVcwuFX4TMTiDaEpXsViXU87cjD/bV2wjYHtpTMOTxNDHl4WsObQ==
-X-Received: by 2002:a05:600c:4ba4:: with SMTP id e36mr8524581wmp.82.1629290491753;
-        Wed, 18 Aug 2021 05:41:31 -0700 (PDT)
-Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
-        by smtp.gmail.com with ESMTPSA id a11sm5720454wrq.6.2021.08.18.05.41.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 05:41:31 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Cc:     Sandy Huang <hjc@rock-chips.com>,
-        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
-        Emma Anholt <emma@anholt.net>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 5/5] drm: omap: remove obsolete selection of OMAP2_DSS in config DRM_OMAP
-Date:   Wed, 18 Aug 2021 14:41:14 +0200
-Message-Id: <20210818124114.28545-6-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210818124114.28545-1-lukas.bulwahn@gmail.com>
-References: <20210818124114.28545-1-lukas.bulwahn@gmail.com>
+        Wed, 18 Aug 2021 08:45:05 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7C4D622065;
+        Wed, 18 Aug 2021 12:44:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629290670; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ydc0Xa0Qi2UmrhOCGiJvOEbT86AEUgdj8LlPA7LoqJU=;
+        b=eWAdmWw5jyv14jB+gl+nZWJwCeSVxadiuFxA5NaLm9oZaUQKbCwBUr8b3lDOkQ+C/Qisv+
+        gywzhArkgpVZEjDzow9KqO+ymMQj7z5z0cC7QMdTvUcqTT8xE44+lWEnffCW4WGDrxmS0y
+        PvVEyBxMPFgIUjBTjKXhF4Lv6v5gsmc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629290670;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ydc0Xa0Qi2UmrhOCGiJvOEbT86AEUgdj8LlPA7LoqJU=;
+        b=xt2xX7LIubnglerRkfdkNvxAX6YqOS2uKdAEQLdkw/MB/7G2asxbJHeyO3mKAmV7y6YW67
+        g5yRqXio/igYlHAw==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 6B5ED1371C;
+        Wed, 18 Aug 2021 12:44:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id nFTtGa4AHWGIUwAAGKfGzw
+        (envelope-from <dwagner@suse.de>); Wed, 18 Aug 2021 12:44:30 +0000
+Date:   Wed, 18 Aug 2021 14:44:30 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Hannes Reinecke <hare@suse.de>, yi.he@emc.com
+Subject: Re: [PATCH] nvme-tcp: Do not reset transport on data digest errors
+Message-ID: <20210818124430.hokmfa25lnhxnswu@carbon.lan>
+References: <20210805121541.77613-1-dwagner@suse.de>
+ <47ef76c6-4430-ca24-405e-a226d4303a39@grimberg.me>
+ <20210809090947.luoqaooi7gc6u6yu@carbon>
+ <2e91c065-d3c6-1bef-5906-1a4648368894@grimberg.me>
+ <20210811103146.ytqj5mqpioiba56x@carbon.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811103146.ytqj5mqpioiba56x@carbon.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 55b68fb856b5 ("drm/omap: squash omapdrm sub-modules into one")
-removes the config OMAP2_DSS in ./drivers/gpu/drm/omapdrm/dss/Kconfig,
-while moving the other configs into./drivers/gpu/drm/omapdrm/Kconfig, but
-misses to remove an obsolete selection of OMAP2_DSS in config DRM_OMAP.
+On Wed, Aug 11, 2021 at 12:31:46PM +0200, Daniel Wagner wrote:
+> > It is the correct place, lets see that it doesn't increase the struct.
+> 
+> It should not according pahole:
 
-Hence, ./scripts/checkkconfigsymbols.py warns:
-
-OMAP2_DSS
-Referencing files: drivers/gpu/drm/omapdrm/Kconfig
-
-Remove this reference in an obsolete selection.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- drivers/gpu/drm/omapdrm/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/omapdrm/Kconfig b/drivers/gpu/drm/omapdrm/Kconfig
-index e7281da5bc6a..d6e4df291d6f 100644
---- a/drivers/gpu/drm/omapdrm/Kconfig
-+++ b/drivers/gpu/drm/omapdrm/Kconfig
-@@ -3,7 +3,6 @@ config DRM_OMAP
- 	tristate "OMAP DRM"
- 	depends on DRM
- 	depends on ARCH_OMAP2PLUS || ARCH_MULTIPLATFORM
--	select OMAP2_DSS
- 	select DRM_KMS_HELPER
- 	select VIDEOMODE_HELPERS
- 	select HDMI
--- 
-2.26.2
-
+Anything I need to do to get this patch accepted?
