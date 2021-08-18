@@ -2,114 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1095D3F0D3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 23:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A29C3F0D3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 23:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233994AbhHRVWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 17:22:40 -0400
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:60361 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhHRVWj (ORCPT
+        id S234069AbhHRVXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 17:23:03 -0400
+Received: from smtprelay0254.hostedemail.com ([216.40.44.254]:39158 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230506AbhHRVXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 17:22:39 -0400
-Received: from pop-os.home ([90.126.253.178])
-        by mwinf5d40 with ME
-        id j9N1250013riaq2039N1R2; Wed, 18 Aug 2021 23:22:02 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 18 Aug 2021 23:22:02 +0200
-X-ME-IP: 90.126.253.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     leoyang.li@nxp.com
-Cc:     linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] soc: fsl: guts: Fix a resource leak in the error handling path of 'fsl_guts_probe()'
-Date:   Wed, 18 Aug 2021 23:21:59 +0200
-Message-Id: <b12e8c5c5d6ab3061d9504de8fbaefcad6bbc385.1629321668.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Wed, 18 Aug 2021 17:23:02 -0400
+Received: from omf11.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 878D31848505F;
+        Wed, 18 Aug 2021 21:22:26 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf11.hostedemail.com (Postfix) with ESMTPA id 42B3320A297;
+        Wed, 18 Aug 2021 21:22:25 +0000 (UTC)
+Message-ID: <23c8ebaa0921d5597df9fc1d6cbbcc4f354f80c5.camel@perches.com>
+Subject: Re: [RFC PATCH 1/5] checkpatch: improve handling of revert commits
+From:   Joe Perches <joe@perches.com>
+To:     Denis Efremov <efremov@linux.com>, linux-kselftest@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, Jiri Kosina <jkosina@suse.cz>,
+        Willy Tarreau <w@1wt.eu>
+Date:   Wed, 18 Aug 2021 14:22:23 -0700
+In-Reply-To: <3d347d4b-1576-754f-8633-ba6084cc0661@linux.com>
+References: <20210818154646.925351-1-efremov@linux.com>
+         <20210818154646.925351-2-efremov@linux.com>
+         <cc5801790fea258e20fa6b7e26de7806ae8e0dda.camel@perches.com>
+         <3d347d4b-1576-754f-8633-ba6084cc0661@linux.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=5.20
+X-Stat-Signature: pia39gbk7oo3ws6cnkt79e1s3fk5kp9d
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 42B3320A297
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+xCm96ndFXzv/PD4vqbk7Q+/a51qSjMXg=
+X-HE-Tag: 1629321745-465152
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an error occurs after 'of_find_node_by_path()', the reference taken for
-'root' will never be released and some memory will leak.
+Hey Denis:
 
-Instead of adding an error handling path and modifying all the
-'return -SOMETHING' into 'goto errorpath', use 'devm_add_action_or_reset()'
-to release the reference when needed.
+Try this one please and let me know what you think...
 
-Simplify the remove function accordingly.
-
-As an extra benefit, the 'root' global variable can now be removed as well.
-
-Fixes: 3c0d64e867ed ("soc: fsl: guts: reuse machine name from device tree")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
-Compile tested only
----
- drivers/soc/fsl/guts.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ scripts/checkpatch.pl | 31 +++++++++++++------------------
+ 1 file changed, 13 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/soc/fsl/guts.c b/drivers/soc/fsl/guts.c
-index d5e9a5f2c087..4d9476c7b87c 100644
---- a/drivers/soc/fsl/guts.c
-+++ b/drivers/soc/fsl/guts.c
-@@ -28,7 +28,6 @@ struct fsl_soc_die_attr {
- static struct guts *guts;
- static struct soc_device_attribute soc_dev_attr;
- static struct soc_device *soc_dev;
--static struct device_node *root;
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 161ce7fe5d1e5..4e2e79eff9b8c 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3196,26 +3196,21 @@ sub process {
+ 				$orig_commit = lc($1);
+ 			}
  
- 
- /* SoC die attribute definition for QorIQ platform */
-@@ -136,14 +135,23 @@ static u32 fsl_guts_get_svr(void)
- 	return svr;
- }
- 
-+static void fsl_guts_put_root(void *data)
-+{
-+	struct device_node *root = data;
+-			$short = 0 if ($line =~ /\bcommit\s+[0-9a-f]{12,40}/i);
+-			$long = 1 if ($line =~ /\bcommit\s+[0-9a-f]{41,}/i);
+-			$space = 0 if ($line =~ /\bcommit [0-9a-f]/i);
+-			$case = 0 if ($line =~ /\b[Cc]ommit\s+[0-9a-f]{5,40}[^A-F]/);
+-			if ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("([^"]+)"\)/i) {
+-				$orig_desc = $1;
+-				$hasparens = 1;
+-			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s*$/i &&
+-				 defined $rawlines[$linenr] &&
+-				 $rawlines[$linenr] =~ /^\s*\("([^"]+)"\)/) {
+-				$orig_desc = $1;
+-				$hasparens = 1;
+-			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("[^"]+$/i &&
+-				 defined $rawlines[$linenr] &&
+-				 $rawlines[$linenr] =~ /^\s*[^"]+"\)/) {
+-				$line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("([^"]+)$/i;
++			my $input = $line;
++			for (my $n = 0; $n < 2; $n++) {
++				$input .= " $rawlines[$linenr + $n]" if ($#lines >= $linenr + $n);
++			}
 +
-+	of_node_put(root);
-+}
-+
- static int fsl_guts_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
- 	struct device *dev = &pdev->dev;
-+	struct device_node *root;
- 	struct resource *res;
- 	const struct fsl_soc_die_attr *soc_die;
- 	const char *machine;
- 	u32 svr;
-+	int ret;
++			$short = 0 if ($input =~ /\bcommit\s+[0-9a-f]{12,40}/i);
++			$long = 1 if ($input =~ /\bcommit\s+[0-9a-f]{41,}/i);
++			$space = 0 if ($input =~ /\bcommit [0-9a-f]/i);
++			$case = 0 if ($input =~ /\b[Cc]ommit\s+[0-9a-f]{5,40}[^A-F]/);
++			if ($input =~ /\bcommit\s+[0-9a-f]{5,}\s+($balanced_parens)/i) {
+ 				$orig_desc = $1;
+-				$rawlines[$linenr] =~ /^\s*([^"]+)"\)/;
+-				$orig_desc .= " " . $1;
+ 				$hasparens = 1;
++				# Always strip leading/trailing parens then double quotes if existing
++				$orig_desc = substr($orig_desc, 1, -1);
++				$orig_desc = substr($orig_desc, 1, -1) if ($orig_desc =~ /^".*"$/);
+ 			}
  
- 	/* Initialize guts */
- 	guts = devm_kzalloc(dev, sizeof(*guts), GFP_KERNEL);
-@@ -159,6 +167,10 @@ static int fsl_guts_probe(struct platform_device *pdev)
- 
- 	/* Register soc device */
- 	root = of_find_node_by_path("/");
-+	ret = devm_add_action_or_reset(dev, fsl_guts_put_root, root);
-+	if (ret)
-+		return ret;
-+
- 	if (of_property_read_string(root, "model", &machine))
- 		of_property_read_string_index(root, "compatible", 0, &machine);
- 	if (machine)
-@@ -197,7 +209,7 @@ static int fsl_guts_probe(struct platform_device *pdev)
- static int fsl_guts_remove(struct platform_device *dev)
- {
- 	soc_device_unregister(soc_dev);
--	of_node_put(root);
-+
- 	return 0;
- }
- 
--- 
-2.30.2
+ 			($id, $description) = git_commit_info($orig_commit,
+
 
