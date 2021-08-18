@@ -2,111 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B153F0E65
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 00:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 128CD3F0E6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 00:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232954AbhHRWxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 18:53:48 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:30426 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229478AbhHRWxq (ORCPT
+        id S233928AbhHRWyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 18:54:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234135AbhHRWyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 18:53:46 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17IMYfYK077350;
-        Wed, 18 Aug 2021 18:53:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=osAy7ESwkiqn3l7E+004J/iSv+fiZ24QoD3Wg4uPYhM=;
- b=o+HMKdT3wQSGx9ENEON/9FhkXIcKC+JtTs3PLoq5fLVpKOYsajCQSpTzYy5Ugzj0Slyu
- RcWvlllnOydFjc2aEj/dXy+dwqN1qL9lhHVZnxEEZF3Qh2m/EZWQhGibM3eLtdeOy+H9
- l10GsG6tBOZgS9KABD1fPg1+ygskPu472v5VnVB4mT4+JyI0YPhD0P5m4zgrHRqW0fwS
- 4u+CoNppeELc9TTMwvTpaAUGymzxcqqZR0HVWNwExQq/saRN28nKx+hAysICl4sD3TNv
- zf6/p0l54DvfzYF2AQ6g75a1ivEBILH9hN3PYNS0nysYgGnBTZcVFGq3Tirm/rVIc1qj PQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3agfdy6has-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Aug 2021 18:53:09 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17IMZRAj085105;
-        Wed, 18 Aug 2021 18:53:08 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3agfdy6ha8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Aug 2021 18:53:08 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17IMqDCw006124;
-        Wed, 18 Aug 2021 22:53:06 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 3ae5f8fbtm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Aug 2021 22:53:06 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17IMr2Zi54198768
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Aug 2021 22:53:02 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9A228A4062;
-        Wed, 18 Aug 2021 22:53:02 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9E701A4066;
-        Wed, 18 Aug 2021 22:53:01 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.56.174])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Wed, 18 Aug 2021 22:53:01 +0000 (GMT)
-Date:   Thu, 19 Aug 2021 00:52:58 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        jgg@nvidia.com, kwankhede@nvidia.com, david@redhat.com,
-        pbonzini@redhat.com, frankja@linux.ibm.com, imbrenda@linux.ibm.com
-Subject: Re: [PATCH 0/2] s390/vfio-ap: do not open code locks for
- VFIO_GROUP_NOTIFY_SET_KVM notification
-Message-ID: <20210819005258.790163dd.pasic@linux.ibm.com>
-In-Reply-To: <4dac22cf-1956-41eb-88da-f16af58530a3@de.ibm.com>
-References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
-        <3f45fe31-6666-ac87-3a98-dd942b5dfb3c@linux.ibm.com>
-        <20210802155355.22b98789.pasic@linux.ibm.com>
-        <6f37ef28-3cce-2f4f-3173-2c1e916900cc@linux.ibm.com>
-        <6d64bd83-1519-6065-a4cd-9356c6be5d1a@de.ibm.com>
-        <20210818103908.31eb5848.alex.williamson@redhat.com>
-        <4dac22cf-1956-41eb-88da-f16af58530a3@de.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Wed, 18 Aug 2021 18:54:40 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E360EC0617AD
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 15:54:04 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id w13-20020a17090aea0db029017897a5f7bcso3427480pjy.5
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 15:54:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Bdg/OtOV5wymBEUwuQlX5+GK5JjmwLGgSiZ+Tmmadzg=;
+        b=bGU4j745GyvuoiOCvJ9XjMdyezUrxYO1pPcd3Nh9uTw2AHyNof0gLDjkyhM8xE1bpY
+         ZhK4WiLLT0bHAnhPZz+LIR1+EgOwNsqitav2SEBVEKiVfgPXmLnjjumcy0TFltdAkpUp
+         +Y/iv2y66lHJkcJw8yDjHLrdQLAKo5xhCntkA7/YsKW0wiAtv4Qvj7Ok2yu75nvP5VG/
+         kQ33sD5kcz6G3nunSMjMr3GEhOael40I5f0/SkDnOprQdLkOYlZpBPRnAiPwJ3is8bPU
+         tVhgUeDxPTVKaaCpoehLowvGyCLbirnVXNHyIzEPJxHcN9722SczInchAhVN3qboCzK5
+         oo2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Bdg/OtOV5wymBEUwuQlX5+GK5JjmwLGgSiZ+Tmmadzg=;
+        b=gyEQY6D9i10crfHS9unHV82m11aDxGqWNxDzwRs0Q8V9Smxc4LLMv3zlwNM9zQdPr8
+         3W0C/XPNZINOXl+fwGSfrlF0QaoqGQr3kqUMPqaNW3AkD6dOiMZ9feWi0UuS6NXnRifS
+         e4isEhibR+8fFoycpGtSGAzDY79lY8lfRce4eJ0wQeueJK37pUQuMiPPJIRjbnCrsiXp
+         qc+RKVx1cSz3mW1MbtYhx8ighArU04JrjdSH7b1zduAcox7kyLMaUe8WKlAxS0r5jJEu
+         oPZ4iBS7rdxAL/NRMWXKG4RqYmgG0vdChQcKYoKmI4DdMvlsNCfeCBpy8q5h54+Du9vv
+         2cSA==
+X-Gm-Message-State: AOAM532XH9SJJGFrv1qc8/Hhlrd/kkOrT2YZhB7DfAC8hXdJYkahmXpg
+        X5mb3CLRztdl0jrQH0m+VETILA==
+X-Google-Smtp-Source: ABdhPJzzXby04WbbyigGFBDREGEkGV8RqUxAeMQ0ojYzJgYocP/xgVxlZiD/Hh9heqjmIsz5yKhdZw==
+X-Received: by 2002:a17:90a:af88:: with SMTP id w8mr11746328pjq.104.1629327244194;
+        Wed, 18 Aug 2021 15:54:04 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id s26sm894895pgv.46.2021.08.18.15.54.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 15:54:03 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 22:53:58 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
+        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 53/63] KVM: x86: Use struct_group() to zero decode
+ cache
+Message-ID: <YR2PhlO3njPcFOkg@google.com>
+References: <20210818060533.3569517-1-keescook@chromium.org>
+ <20210818060533.3569517-54-keescook@chromium.org>
+ <YR0jIEzEcUom/7rd@google.com>
+ <202108180922.6C9E385A1@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: n2q-DKlkF-jjM-H6WI_JOFS9kIZwB0Bx
-X-Proofpoint-ORIG-GUID: mca0-ImpELqLfwFMnfsc1jKc6cayoDDd
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-18_07:2021-08-17,2021-08-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
- lowpriorityscore=0 spamscore=0 impostorscore=0 phishscore=0
- priorityscore=1501 mlxlogscore=999 mlxscore=0 bulkscore=0 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108180135
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202108180922.6C9E385A1@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Aug 2021 18:50:47 +0200
-Christian Borntraeger <borntraeger@de.ibm.com> wrote:
-
-> > that Halil's concern's around open/close races are addressed by Jason's
-> > device_open/close series that's already in my next branch and he
-> > provided an Ack, but there's still the above question regarding the
-> > kvm->lock that was looking for a review from... I'm not sure, maybe
-> > Connie or Paolo.  Christian, is this specifically what you're ack'ing?  
+On Wed, Aug 18, 2021, Kees Cook wrote:
+> On Wed, Aug 18, 2021 at 03:11:28PM +0000, Sean Christopherson wrote:
+> > From dbdca1f4cd01fee418c252e54c360d518b2b1ad6 Mon Sep 17 00:00:00 2001
+> > From: Sean Christopherson <seanjc@google.com>
+> > Date: Wed, 18 Aug 2021 08:03:08 -0700
+> > Subject: [PATCH] KVM: x86: Replace memset() "optimization" with normal
+> >  per-field writes
+> > 
+> > Explicitly zero select fields in the emulator's decode cache instead of
+> > zeroing the fields via a gross memset() that spans six fields.  gcc and
+> > clang are both clever enough to batch the first five fields into a single
+> > quadword MOV, i.e. memset() and individually zeroing generate identical
+> > code.
+> > 
+> > Removing the wart also prepares KVM for FORTIFY_SOURCE performing
+> > compile-time and run-time field bounds checking for memset().
+> > 
+> > No functional change intended.
+> > 
+> > Reported-by: Kees Cook <keescook@chromium.org>
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
 > 
-> My understanding was that Halil was ok in the end?
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> 
+> Do you want me to take this patch into my tree, or do you want to carry
+> it for KVM directly?
 
-Yes, I'm OK with it provided it is merged after Jason's patch that makes
-it a non-issue.
+That's a Paolo question :-)
 
-Regards,
-Halil
+What's the expected timeframe for landing stricter bounds checking?  If it's
+5.16 or later, the easiest thing would be to squeak this into 5.15.
