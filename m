@@ -2,140 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C360B3EFF0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9523EFF12
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239672AbhHRIWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 04:22:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239616AbhHRIWa (ORCPT
+        id S239667AbhHRIXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 04:23:08 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38898 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239585AbhHRIXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 04:22:30 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4FEC0613A3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:21:54 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id d11so3281157eja.8
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:21:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=IUGQJMpYD6agvdMJfJSqVaqnT5bLEbnIc4RgJSXH0jg=;
-        b=KFd67qyoRkJqm+Tr0NAOAYYZhcgR6yxB489Fw38wCDJh37MO/2O2e4e8oPY+PO6uB6
-         HH49ENUWtwE8gUtSvSSfOWgLs7LRZ3wgVA3tY71FoC81cixhJJmmkHCA2ueBmqusfYdH
-         1h9Il7+pczkTiA8ExiLy+6fUZ7wjwFSVh7WP8qSCKCYTeGvt21zrqIqrh5pgcmsivxiY
-         hU1bG4vm1e2csd8SwXEQr7ZDzQm0ENmMxUHxH3xrgueNiKd2SixlWP5Ycp734PiN3TtK
-         gcS1gpjidTmNlIyp0ks2qWTjW9va8I8qSogu4J6+7SGkfAH+/o6HVnovDpUZdE2c7Xaf
-         g6kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IUGQJMpYD6agvdMJfJSqVaqnT5bLEbnIc4RgJSXH0jg=;
-        b=t7IPB7LiAIPGpKmSMfCDTyYw84DE3nR7zx0/g8qxn58zCIrGdy3NAf0+jSrfEevgkz
-         y93OXx0CPgsauotYPCVrud16VOESoxbRlIT/asW/ON6oQwaPqsBqrXRoS2N8VtM6WEzB
-         BtCm+jRCnnrZ4OKhVEAy93M82tAadJanRqyZF8ZMd8zl2Ypyo6qnYSLU6LUECH4A5du2
-         PGOcssqRk/26Kt7vnjLNqapkh0XcfjweWl6E2cIJbMZznZy+SjhI3CGV4TAbjdqSQ5oE
-         5D0c6rJwC9i2IwPKPEhKhr0jHDwW/9Poq3zADhv8Tz9f5qeLfoNUxjZX3DeFVgrpx7oh
-         y2zQ==
-X-Gm-Message-State: AOAM531dlgATJuNzx8s9x71u30SXYygcGJ0dBsDjffBgACNUY8XGRiNV
-        fsdIyHr7r/A8/7ziAV4iN8oCzQ==
-X-Google-Smtp-Source: ABdhPJzKr1rmco8bFNuuVJquILRCkMGTN+jBNA9OPDgxFXrFZPGoyq0JQUUheWmPtUZUeQ01JFh3Ig==
-X-Received: by 2002:a17:907:1b29:: with SMTP id mp41mr8648294ejc.459.1629274913056;
-        Wed, 18 Aug 2021 01:21:53 -0700 (PDT)
-Received: from tsr-lap-08.nix.tessares.net ([213.211.156.192])
-        by smtp.gmail.com with ESMTPSA id ko11sm1694143ejc.54.2021.08.18.01.21.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 01:21:52 -0700 (PDT)
-Subject: Re: [syzbot] KFENCE: use-after-free in kvm_fastop_exception
-To:     Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot <syzbot+7b938780d5deeaaf938f@syzkaller.appspotmail.com>,
-        davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
-        marcel@holtmann.org, mathew.j.martineau@linux.intel.com,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-References: <00000000000012030e05c9c8bc85@google.com>
- <58cef9e0-69de-efdb-4035-7c1ed3d23132@tessares.net>
- <6736a510-20a1-9fb5-caf4-86334cabbbb6@gmail.com>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Message-ID: <32aeb66e-d4f0-26b5-a140-4477bb87067f@tessares.net>
-Date:   Wed, 18 Aug 2021 10:21:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 18 Aug 2021 04:23:04 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629274949;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eIKylyUWkupQ9je6VYA0DlcPMd0VOEOkiwD0SYFuUcA=;
+        b=t708+qM/V0hDY6Z7CG8nDlJf+wvq+3GsYL3OoqC48q84J9Y7TXN+mzFgfYFpWVeSwwn5GQ
+        +/fN0sEIKcU/tnjkGyWFMK2QPhHdOHRQnN11TrfWOB67CCjmvx7IV1L84tazavRDYb1bge
+        9cPcQZ4SoeJZRwydnWmB8O8C6S7130Gez07TbC/6/vxvEhHS3hBWTUvKy0tDMJ+24C7NMw
+        isW7pN5w41mXpj9+8066Yopp9PAH2bBmfSEye2ePb6vazMXvY8aHWqu/EHhBuYfCNwuWsG
+        yJcceAmOflCQxR/fPg7oRzzAHsi2IsaHZbbmfBlhTC3peBuR1WBSJl+b5v2ldg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629274949;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eIKylyUWkupQ9je6VYA0DlcPMd0VOEOkiwD0SYFuUcA=;
+        b=tX6dAZ/rxVw5b6rSz44n9KJ3ScmG2XosRTrnEGrJEDRxbzi05kpGRtIfPWWsc6W0DYnHBT
+        x6nwRmV17FzxesBw==
+To:     =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@collabora.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     kernel@collabora.com, krisman@collabora.com,
+        linux-api@vger.kernel.org, libc-alpha@sourceware.org,
+        mtk.manpages@gmail.com, Davidlohr Bueso <dave@stgolabs.net>,
+        =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@collabora.com>
+Subject: Re: [PATCH 1/4] futex: Prepare for futex_wait_multiple()
+In-Reply-To: <20210805190405.59110-2-andrealmeid@collabora.com>
+References: <20210805190405.59110-1-andrealmeid@collabora.com>
+ <20210805190405.59110-2-andrealmeid@collabora.com>
+Date:   Wed, 18 Aug 2021 10:22:28 +0200
+Message-ID: <8735r72md7.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <6736a510-20a1-9fb5-caf4-86334cabbbb6@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+Andre,
 
-On 18/08/2021 10:12, Pavel Skripkin wrote:
-> On 8/18/21 11:02 AM, Matthieu Baerts wrote:
->> Hello,
->>
->> On 18/08/2021 00:21, syzbot wrote:
->>> syzbot has bisected this issue to:
->>>
->>> commit c4512c63b1193c73b3f09c598a6d0a7f88da1dd8
->>> Author: Matthieu Baerts <matthieu.baerts@tessares.net>
->>> Date:   Fri Jun 25 21:25:22 2021 +0000
->>>
->>>     mptcp: fix 'masking a bool' warning
->>>
->>> bisection log: 
->>> https://syzkaller.appspot.com/x/bisect.txt?x=122b0655300000
->>> start commit:   b9011c7e671d Add linux-next specific files for 20210816
->>> git tree:       linux-next
->>> final oops:    
->>> https://syzkaller.appspot.com/x/report.txt?x=112b0655300000
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=162b0655300000
->>> kernel config: 
->>> https://syzkaller.appspot.com/x/.config?x=a245d1aa4f055cc1
->>> dashboard link:
->>> https://syzkaller.appspot.com/bug?extid=7b938780d5deeaaf938f
->>> syz repro:     
->>> https://syzkaller.appspot.com/x/repro.syz?x=157a41ee300000
->>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14f78ff9300000
->>
->> I'm pretty sure the commit c4512c63b119 ("mptcp: fix 'masking a bool'
->> warning") doesn't introduce the reported bug. This minor fix is specific
->> to MPTCP which doesn't seem to be used here.
->>
->> I'm not sure how I can tell syzbot this is a false positive.
->>
-> 
-> 
-> looks like it's fs/namei bug. Similar reports:
-> 
-> https://syzkaller.appspot.com/bug?id=517fa734b92b7db404c409b924cf5c997640e324
-> 
-> 
-> https://syzkaller.appspot.com/bug?id=484483daf3652b40dae18531923aa9175d392a4d
+On Thu, Aug 05 2021 at 16:04, Andr=C3=A9 Almeida wrote:
+> +/*
+> + * Futex flags used to encode options to functions and preserve them acr=
+oss
+> + * restarts.
+> + */
+> +#ifdef CONFIG_MMU
+> +# define FLAGS_SHARED		0x01
+> +#else
+> +/*
+> + * NOMMU does not have per process address space. Let the compiler optim=
+ize
+> + * code away.
+> + */
+> +# define FLAGS_SHARED		0x00
+> +#endif
+> +#define FLAGS_CLOCKRT		0x02
+> +#define FLAGS_HAS_TIMEOUT	0x04
+> +
+>  /*
+>   * Futexes are matched on equal values of this key.
+>   * The key type depends on whether it's a shared or private mapping.
+> @@ -50,8 +66,52 @@ union futex_key {
+>  	} both;
+>  };
+>=20=20
+> +/**
+> + * struct futex_q - The hashed futex queue entry, one per waiting task
+> + * @list:		priority-sorted list of tasks waiting on this futex
+> + * @task:		the task waiting on the futex
+> + * @lock_ptr:		the hash bucket lock
+> + * @key:		the key the futex is hashed on
+> + * @pi_state:		optional priority inheritance state
+> + * @rt_waiter:		rt_waiter storage for use with requeue_pi
+> + * @requeue_pi_key:	the requeue_pi target futex key
+> + * @bitset:		bitset for the optional bitmasked wakeup
+> + *
+> + * We use this hashed waitqueue, instead of a normal wait_queue_entry_t,=
+ so
+> + * we can wake only the relevant ones (hashed queues may be shared).
+> + *
+> + * A futex_q has a woken state, just like tasks have TASK_RUNNING.
+> + * It is considered woken when plist_node_empty(&q->list) || q->lock_ptr=
+ =3D=3D 0.
+> + * The order of wakeup is always to make the first condition true, then
+> + * the second.
+> + *
+> + * PI futexes are typically woken before they are removed from the hash =
+list via
+> + * the rt_mutex code. See unqueue_me_pi().
+> + */
+> +struct futex_q {
+> +	struct plist_node list;
+> +
+> +	struct task_struct *task;
+> +	spinlock_t *lock_ptr;
+> +	union futex_key key;
+> +	struct futex_pi_state *pi_state;
+> +	struct rt_mutex_waiter *rt_waiter;
+> +	union futex_key *requeue_pi_key;
+> +	u32 bitset;
+> +} __randomize_layout;
+> +
+>  #define FUTEX_KEY_INIT (union futex_key) { .both =3D { .ptr =3D 0ULL } }
+>=20=20
+> +static const struct futex_q futex_q_init =3D {
+> +	/* list gets initialized in queue_me()*/
+> +	.key =3D FUTEX_KEY_INIT,
+> +	.bitset =3D FUTEX_BITSET_MATCH_ANY
+> +};
+> +
+> +inline struct hrtimer_sleeper *
+> +futex_setup_timer(ktime_t *time, struct hrtimer_sleeper *timeout,
+> +		  int flags, u64 range_ns);
+> +
 
-Thank you for having checked!
-Should we mark them as "#syz dup" if you think they have the same root
-cause?
+None of these things belong into the global header. Please move them to
+kernel/futex.h.
 
-> It's not false positive. I've suggested the fix here:
-> https://groups.google.com/g/syzkaller-bugs/c/HE3c2fP5nic/m/1Yk17GBeAwAJ
-> I am waiting for author comments about the fix :)
-> 
-> But, yes, syzbot bisection is often wrong, so don't rely on it much :)
+Thanks,
 
-Yes sorry, I wanted to say the bisection picked a wrong commit :)
-
-All good then if syzbot often blames the wrong modification :)
-
-Cheers,
-Matt
--- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+        tglx
