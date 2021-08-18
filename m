@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF093EFA5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 07:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 914A03EFA5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 07:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237618AbhHRFwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 01:52:17 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:59376 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237856AbhHRFwQ (ORCPT
+        id S237945AbhHRFw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 01:52:28 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:51590 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237912AbhHRFw1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 01:52:16 -0400
+        Wed, 18 Aug 2021 01:52:27 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id DC05E21FF9;
-        Wed, 18 Aug 2021 05:51:40 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 3DA581FF84;
+        Wed, 18 Aug 2021 05:51:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1629265900; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1629265912; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=JDYguPju9/kPVOrdvj2ecQ6HV2Um3jbt5Pj+dMvZWls=;
-        b=GAHoJJJDoygCHqXZ3aOczRyPolrBFhIQi7V4QXFEUoJgPT3qNv1yB8nTfGd7StoOjSMUrt
-        bXeTJKa3fNhRbIsj+LYRi2++mK9lJhtaApZIM8nNIEHUoKHbUd7aXnJGNwx1X7ivm177bq
-        7uX9Ihqq14LRJ8OQ0q4W6vEb22U2DJE=
+        bh=gOBc9QdWJpbD5fpGkPq549vmg28skbux9e9YpodQJTk=;
+        b=qzAdBGy5rYkTSAlLyP4u4NM16KcDyZe2pS/M4qdRjm95dVo1gZXfcFcenf+4CMBtN4OQ7M
+        BirLcIzri6rhp/lWqaKok0Xm5uTddGhr7u+61+lKuU/mcYVwuurDvNhIafSESReMU8qH88
+        sYWdqVpTq3TlNiyVShw4gtRTMFD855M=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1629265900;
+        s=susede2_ed25519; t=1629265912;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=JDYguPju9/kPVOrdvj2ecQ6HV2Um3jbt5Pj+dMvZWls=;
-        b=nkJDNSlzTnYWCUouxMfWcX6LbxFTPHHlTHazc1i7Rt/8GMTrECKa4d2Oh/PdqnjLry9IAL
-        3XQf/Dpvs0Pv1FBQ==
+        bh=gOBc9QdWJpbD5fpGkPq549vmg28skbux9e9YpodQJTk=;
+        b=rPqTmXMsZtZur8zJB+j40Z0K0F5HPKvext8Hzc0g/DGEEYOiGipIzbdE+ZMDwx+M+KNlHB
+        aE2qSV6Og6mJioCA==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
-        by relay2.suse.de (Postfix) with ESMTP id BEA82A3B91;
-        Wed, 18 Aug 2021 05:51:40 +0000 (UTC)
-Date:   Wed, 18 Aug 2021 07:51:40 +0200
-Message-ID: <s5hpmubcnbn.wl-tiwai@suse.de>
+        by relay2.suse.de (Postfix) with ESMTP id 30BD2A3B91;
+        Wed, 18 Aug 2021 05:51:52 +0000 (UTC)
+Date:   Wed, 18 Aug 2021 07:51:52 +0200
+Message-ID: <s5ho89vcnbb.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Nathan Chancellor <nathan@kernel.org>
 Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
         alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] ALSA: hda/sigmatel - Sink stac_shutup() into stac_suspend()
-In-Reply-To: <20210818012705.311963-1-nathan@kernel.org>
+Subject: Re: [PATCH 2/2] ALSA: hda/analog - Sink ad198x_shutup() and shuffle CONFIG_PM guards
+In-Reply-To: <20210818012705.311963-2-nathan@kernel.org>
 References: <20210818012705.311963-1-nathan@kernel.org>
+        <20210818012705.311963-2-nathan@kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -52,22 +53,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Aug 2021 03:27:04 +0200,
+On Wed, 18 Aug 2021 03:27:05 +0200,
 Nathan Chancellor wrote:
 > 
 > When CONFIG_PM is not set, there is an unused function warning:
 > 
-> sound/pci/hda/patch_sigmatel.c:4383:13: warning: unused function
-> 'stac_shutup' [-Wunused-function]
-> static void stac_shutup(struct hda_codec *codec)
+> sound/pci/hda/patch_analog.c:115:13: warning: unused function
+> 'ad198x_shutup' [-Wunused-function]
+> static void ad198x_shutup(struct hda_codec *codec)
 >             ^
 > 1 warning generated.
 > 
-> Sink the contents of stac_shutup() into stac_suspend() since
-> stac_shutup() is only called in that one location now.
+> Sink ad198x_shutup() into ad198x_suspend(), as it is only called in that
+> one space. Move the CONFIG_PM guards above ad198x_power_eapd_write() as
+> it is only called in ad198x_power_eapd(), which is in turn only called
+> in ad198x_power_eapd(). Those two functions are large enough that they
+> are left alone.
 > 
 > Fixes: 327b34f2a97d ("ALSA: hda: Nuke unused reboot_notify callback")
 > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
 
 Thanks, applied.
 
