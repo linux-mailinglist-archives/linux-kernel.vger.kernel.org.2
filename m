@@ -2,61 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65ACA3F08AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A23F3F08B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233896AbhHRQDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 12:03:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44256 "EHLO
+        id S230459AbhHRQFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 12:05:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbhHRQDU (ORCPT
+        with ESMTP id S229471AbhHRQFp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 12:03:20 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4002FC061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 09:02:46 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id a13so3501257iol.5
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 09:02:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=nsH4CrKT3J6+fs9dWVy3c039Y9wb3g5ZuRIL9UvGmwA=;
-        b=kibxOclBRsWa+EFYgSsKjVl4DVTLUKqywz3EiBOM0ESVvcUHCe2Nt9kFw13Tp4sD/n
-         r4+S5SlBV3KhTf5R2/LinLxmRpvJLk0ryaYFHZUxrrI9NqCiq0BUsha+hhXRtMqIQ8fg
-         qGVfvnVHw8L0+g9p4bsi2diZSeo6wlxHPhizmRBJqRfIs/3sTxOe1Fd5uh70HsQ8edR+
-         POrp45hO5J0djlQKcgHbS2cSCzSg0k+lB6BUH/DaP/FYAH5v+8UG9V47H+uUbP2nA84e
-         ruNNl9nA/Q2o4HLuR5lC5iPrSnxtXk4/woRL2awz4P46oLg5S5ORLhb8cxR5oO2ftHPp
-         U73g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=nsH4CrKT3J6+fs9dWVy3c039Y9wb3g5ZuRIL9UvGmwA=;
-        b=MIkv7PxVUni8Lxkx/NL4NjcHZX0ToH6fqx0T0W0Hae0dGYzanDtRyB0Ogeh2SLIpmW
-         kvit8I1NIMQgpY9WesSWyuYKTRDJhr+lX1K+uzD6I9dBMe95YCK7YQ8M7RdHYAkHiyKI
-         R2S+/cQGNUqxnJS7D+1VP9PbGUrUaepyqznGmMRa5Lh8BWnkJA5caU39RAaJItJtECbH
-         PFDn71jChMJNI4Es6GJDF6tyRHLgGiALTfJ+MVGXDQZvUfgBLQUCFTtRgI8ZfD6KP4LG
-         Llo+lJrjCH0ktf6Lird9sFs89oebfZY+v0/g4hUdmV+2wzQG+94mMaQtGAdEiqxrY3ht
-         muYw==
-X-Gm-Message-State: AOAM5325+btsrJ/nAWEv3UgdvwmewfZUuAlFdJNFcCWFJB9mULvXkwy/
-        0kKXRNj8XIPj4+0wNlenF4J9ZVJhz8Ju2+EU+HQ=
-X-Google-Smtp-Source: ABdhPJwE5NY/WREqY2f14GnI2UMbDlEz9OdfGTSIw1mnLUKBI73AuqnDwShLTX33gyvoA/5qX22p2XUqVd1wUOdrzyY=
-X-Received: by 2002:a5d:81c1:: with SMTP id t1mr7710372iol.31.1629302565688;
- Wed, 18 Aug 2021 09:02:45 -0700 (PDT)
+        Wed, 18 Aug 2021 12:05:45 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA02C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 09:05:10 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mGO3s-0008WN-Ib; Wed, 18 Aug 2021 18:05:04 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mGO3p-00088y-QS; Wed, 18 Aug 2021 18:05:01 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mGO3p-0003yw-Pb; Wed, 18 Aug 2021 18:05:01 +0200
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: [PATCH] clk: expand clk_ignore_unused mechanism to keep only a few clks on
+Date:   Wed, 18 Aug 2021 18:04:57 +0200
+Message-Id: <20210818160457.320598-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Sender: zakpaobube@gmail.com
-Received: by 2002:a05:6e02:667:0:0:0:0 with HTTP; Wed, 18 Aug 2021 09:02:45
- -0700 (PDT)
-From:   Jenny Ross <jrs61644@gmail.com>
-Date:   Wed, 18 Aug 2021 16:02:45 +0000
-X-Google-Sender-Auth: kQb_cdgtARn3Wm6yVzeAgkApk6o
-Message-ID: <CAE2s6NL2ZT=0DTw7QrgnUe0XpHwQYmr-476kZNPo7OuZv+ARhA@mail.gmail.com>
-Subject: Please can i have your attention,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+X-Patch-Hashes: v=1; h=sha256; i=6fYG3N27aP3RxGkdjJx+eQpQfw+B/9UsoCC6yr5DVh4=; m=Wdwflwi90I4cCBeib1j1UNX47P0rpqfdzRni5sSiBLg=; p=kc1PwVF5dTn2HiF8Yhbu+eW52ORveCw6bmJWvdZ5dzA=; g=f4a36396aa3bbd06149d2f39257e07a5c4e8afbb
+X-Patch-Sig: m=pgp; i=u.kleine-koenig@pengutronix.de; s=0x0D2511F322BFAB1C1580266BE2DCDD9132669BD6; b=iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmEdL6YACgkQwfwUeK3K7An02wf+Jhw xQRBiTEgWzp681eUqbGP+vZXXAD8TX4H3XgFOVOi4VX07YO8G0bnSK5a3FTEQA6p1+kTViaJRJNjn 3QR0ep4V81Yt8ArYGbYsrgyBKytqSfe4ozfXefTv5dp0muwF5YoHVyOe+O4rN6ZvlVdKnt4oG0qfQ SScpQ8hG2ogWyQ5kpGw6xhIDuZ4tKI7g5fE0+FpchjN3Mx5j+1mTV1Pyhxxh0oZN2WDYojmFf0x4C wIdurkHHhsJ6C5lg1s4/gASxGKtqctjjNwJzSL74JHNn8WYSdwTnRT+Snb/Xb8QtomhErDDTenh1G Oj/DkFOcXQRA7B/YEsPUyIUt7eahpZw==
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, my name is Jenny Ross, please your attention is needed, i have
-something to share with you.
+Allow to pass an integer n that results in only keeping n unused clocks
+enabled.
+
+This helps to debug the problem if you only know that clk_ignore_unused
+helps but you have no clue yet which clock is the culprit.
+
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ Documentation/driver-api/clk.rst |  4 +++-
+ drivers/clk/clk.c                | 33 ++++++++++++++++++++++++--------
+ 2 files changed, 28 insertions(+), 9 deletions(-)
+
+diff --git a/Documentation/driver-api/clk.rst b/Documentation/driver-api/clk.rst
+index 3cad45d14187..65ae7c3e2b33 100644
+--- a/Documentation/driver-api/clk.rst
++++ b/Documentation/driver-api/clk.rst
+@@ -259,7 +259,9 @@ the disabling means that the driver will remain functional while the issues
+ are sorted out.
+ 
+ To bypass this disabling, include "clk_ignore_unused" in the bootargs to the
+-kernel.
++kernel. If you pass "clk_ignore_unused=n" (where n is an integer) the first n
++found clocks are not disabled which can be useful for bisecting over the unused
++clks if you don't know yet which of them is reponsible for your problem.
+ 
+ Locking
+ =======
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 65508eb89ec9..7189a56bb29f 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -1236,6 +1236,8 @@ static void __init clk_unprepare_unused_subtree(struct clk_core *core)
+ 	clk_pm_runtime_put(core);
+ }
+ 
++static unsigned clk_unused_keep_on __initdata;
++
+ static void __init clk_disable_unused_subtree(struct clk_core *core)
+ {
+ 	struct clk_core *child;
+@@ -1266,12 +1268,17 @@ static void __init clk_disable_unused_subtree(struct clk_core *core)
+ 	 * back to .disable
+ 	 */
+ 	if (clk_core_is_enabled(core)) {
+-		trace_clk_disable(core);
+-		if (core->ops->disable_unused)
+-			core->ops->disable_unused(core->hw);
+-		else if (core->ops->disable)
+-			core->ops->disable(core->hw);
+-		trace_clk_disable_complete(core);
++		if (clk_unused_keep_on) {
++			pr_warn("Keep unused clk \"%s\" on\n", core->name);
++			clk_unused_keep_on -= 1;
++		} else {
++			trace_clk_disable(core);
++			if (core->ops->disable_unused)
++				core->ops->disable_unused(core->hw);
++			else if (core->ops->disable)
++				core->ops->disable(core->hw);
++			trace_clk_disable_complete(core);
++		}
+ 	}
+ 
+ unlock_out:
+@@ -1283,9 +1290,17 @@ static void __init clk_disable_unused_subtree(struct clk_core *core)
+ }
+ 
+ static bool clk_ignore_unused __initdata;
+-static int __init clk_ignore_unused_setup(char *__unused)
++static int __init clk_ignore_unused_setup(char *keep)
+ {
+-	clk_ignore_unused = true;
++	if (*keep == '=') {
++		int ret;
++
++		ret = kstrtouint(keep + 1, 0, &clk_unused_keep_on);
++		if (ret < 0)
++			pr_err("Warning: failed to parse clk_ignore_unused parameter, ignoring");
++	} else {
++		clk_ignore_unused = true;
++	}
+ 	return 1;
+ }
+ __setup("clk_ignore_unused", clk_ignore_unused_setup);
+@@ -1297,6 +1312,8 @@ static int __init clk_disable_unused(void)
+ 	if (clk_ignore_unused) {
+ 		pr_warn("clk: Not disabling unused clocks\n");
+ 		return 0;
++	} else if (clk_ignore_unused) {
++		pr_warn("clk: Not disabling %u unused clocks\n", clk_ignore_unused);
+ 	}
+ 
+ 	clk_prepare_lock();
+-- 
+2.30.2
+
