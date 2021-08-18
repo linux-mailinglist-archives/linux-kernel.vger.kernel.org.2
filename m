@@ -2,203 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B30D3F0934
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B43273F0938
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232580AbhHRQfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 12:35:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbhHRQfi (ORCPT
+        id S232706AbhHRQfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 12:35:50 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:51624 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231901AbhHRQfq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 12:35:38 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B78C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 09:35:03 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id m24-20020a17090a7f98b0290178b1a81700so2691594pjl.4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 09:35:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=m1+hMN42icqTlxVWLTEkH0/pkiGKB8NQcMU6EbHVJG8=;
-        b=Mt3IY0k0VkCNIkfPQhsBY3B4z79w4r4++PooLHAONBUnzJjrzVuEhPjAJwV2FL8xp7
-         PlhWqmkMBIDvGjH6i1IM7fMtFTAbntsgFrD6Qp3BuWQzTM0aBspGJJyKpSV1wQ8uHkBK
-         KdD7ohp4BxnIm8kEKQUkbL4T3wU0KSqNL+E74=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m1+hMN42icqTlxVWLTEkH0/pkiGKB8NQcMU6EbHVJG8=;
-        b=ZR9Q/QHnas2kMgWEa5QEp984937vis2xqFfGYzUbyOE68QfnJkApkSOHMr0gMypBJD
-         GslL9YdNn6dGt/s0eoalxrCQAzK134wGHs+TbP43ElejgAFwY4goeoE87BnhYPUihPht
-         cobehS/iPMgejODy/bU32DbU9GRqt2whdkVPClAFUxnlLGtbH0oKU4gssTfrrkvBPtDS
-         4/hYVXViVXYldn51k26J4kybxUZQAOc2PANtLum1VAZVo2ZAoZqmo73MPEC3JWHCFkgY
-         gdHM0p64l8BSdECo0DdFa8PbdiXe5uxinR9qzJWYYS/R5A02c2bZYU43ER+C1IZyLPeH
-         ZLRQ==
-X-Gm-Message-State: AOAM531K/Jf6athgCzlMGmjCt2S7Y/fxYK4dmqhQUPmqV51l3Ue1geN3
-        m5faFPEUDkOqekVqgFh7xf64zw==
-X-Google-Smtp-Source: ABdhPJzW2zNeRcHd7qe6M0HKGzkNMa+UEgzEFvjDRd8IQcbcxugUUS9wiUmRFP2v2rVEL64AsplTrQ==
-X-Received: by 2002:a17:902:c94c:b0:12d:905f:d80d with SMTP id i12-20020a170902c94c00b0012d905fd80dmr8031229pla.21.1629304503073;
-        Wed, 18 Aug 2021 09:35:03 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:1d24:fb00:9009:ffbe])
-        by smtp.gmail.com with UTF8SMTPSA id p30sm261393pfh.116.2021.08.18.09.35.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 09:35:02 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 09:35:00 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Krishna Manikandan <mkrishn@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Rajeev Nandan <rajeevny@codeaurora.org>,
-        kalyan_t@codeaurora.org, sbillaka@codeaurora.org,
-        abhinavk@codeaurora.org, robdclark@gmail.com, swboyd@chromium.org,
-        bjorn.andersson@linaro.org, khsieh@codeaurora.org,
-        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        robh+dt@kernel.org
-Subject: Re: [PATCH v1 3/4] arm64: dts: qcom: sc7280: Add DSI display nodes
-Message-ID: <YR02tKJcautEPQHC@google.com>
-References: <1629282424-4070-1-git-send-email-mkrishn@codeaurora.org>
- <1629282424-4070-3-git-send-email-mkrishn@codeaurora.org>
+        Wed, 18 Aug 2021 12:35:46 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17IGZ7Ts091851;
+        Wed, 18 Aug 2021 11:35:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1629304507;
+        bh=/jm50KId1immFSMoeS4vydlo9Xu7gBnpdDVtC4QxEek=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=bhgw1DzgvJ3XY6Lk8ry1FP2wjv5TGD2ActOp/rLKzP7VY00Qu0EnAEAh2pnTKrXLd
+         c3n3Ezl4qQ0CZ/4SK2fvx8AEE7cUI+GSQfBvr+sPG3jRmqivGNB3aSHwXedLhduvMz
+         HUs7sJtEIvfalYJ4T/3vosByUT2P6M6W65kgxFlY=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17IGZ7Gm065220
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 18 Aug 2021 11:35:07 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 18
+ Aug 2021 11:35:07 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 18 Aug 2021 11:35:07 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17IGZ7YY128276;
+        Wed, 18 Aug 2021 11:35:07 -0500
+Date:   Wed, 18 Aug 2021 11:35:07 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     <sidraya.bj@pathpartnertech.com>
+CC:     <gregkh@linuxfoundation.org>, <linux-staging@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <prashanth.ka@pathpartnertech.com>,
+        <praneeth@ti.com>, <mchehab@kernel.org>,
+        <linux-media@vger.kernel.org>, <praveen.ap@pathpartnertech.com>
+Subject: Re: [PATCH 30/30] ARM64: ti_sdk_arm64_release_defconfig: Enable
+ d5520 video decoder driver
+Message-ID: <20210818163507.trdnzmq22ubutgvh@calibrate>
+References: <20210818141037.19990-1-sidraya.bj@pathpartnertech.com>
+ <20210818141037.19990-31-sidraya.bj@pathpartnertech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <1629282424-4070-3-git-send-email-mkrishn@codeaurora.org>
+In-Reply-To: <20210818141037.19990-31-sidraya.bj@pathpartnertech.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 03:57:03PM +0530, Krishna Manikandan wrote:
-> From: Rajeev Nandan <rajeevny@codeaurora.org>
+On 19:40-20210818, sidraya.bj@pathpartnertech.com wrote:
+> From: Sidraya <sidraya.bj@pathpartnertech.com>
 > 
-> Add DSI controller and PHY nodes for sc7280.
+> This patch enables d5520 video decoder driver as module
+> on J721e board.
 > 
-> Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
-
-You should sign off patches you send, even if you aren't the original author.
-
+> Signed-off-by: Sidraya <sidraya.bj@pathpartnertech.com>
 > ---
->  arch/arm64/boot/dts/qcom/sc7280.dtsi | 101 +++++++++++++++++++++++++++++++++++
->  1 file changed, 101 insertions(+)
+>  MAINTAINERS                                   |    1 +
+>  .../configs/ti_sdk_arm64_release_defconfig    | 7407 +++++++++++++++++
+>  2 files changed, 7408 insertions(+)
+>  create mode 100644 arch/arm64/configs/ti_sdk_arm64_release_defconfig
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index fd7ff1c..aadf55d 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -1483,6 +1483,18 @@
->  
->  				status = "disabled";
->  
-> +				ports {
-> +					#address-cells = <1>;
-> +					#size-cells = <0>;
-> +
-> +					port@0 {
-> +						reg = <0>;
-> +						dpu_intf1_out: endpoint {
-> +							remote-endpoint = <&dsi0_in>;
-> +						};
-> +					};
-> +				};
-> +
->  				mdp_opp_table: mdp-opp-table {
->  					compatible = "operating-points-v2";
->  
-> @@ -1507,6 +1519,95 @@
->  					};
->  				};
->  			};
-> +
-> +			dsi0: dsi@ae94000 {
-> +				compatible = "qcom,mdss-dsi-ctrl";
-> +				reg = <0 0x0ae94000 0 0x400>;
-> +				reg-names = "dsi_ctrl";
-> +
-> +				interrupt-parent = <&mdss>;
-> +				interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +				clocks = <&dispcc DISP_CC_MDSS_BYTE0_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_BYTE0_INTF_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_PCLK0_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_ESC0_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_AHB_CLK>,
-> +					 <&gcc GCC_DISP_HF_AXI_CLK>;
-> +				clock-names = "byte",
-> +					      "byte_intf",
-> +					      "pixel",
-> +					      "core",
-> +					      "iface",
-> +					      "bus";
-> +
-> +				operating-points-v2 = <&dsi_opp_table>;
-> +				power-domains = <&rpmhpd SC7280_CX>;
-> +
-> +				phys = <&dsi_phy>;
-> +				phy-names = "dsi";
-> +
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +
-> +				status = "disabled";
-> +
-> +				ports {
-> +					#address-cells = <1>;
-> +					#size-cells = <0>;
-> +
-> +					port@0 {
-> +						reg = <0>;
-> +						dsi0_in: endpoint {
-> +							remote-endpoint = <&dpu_intf1_out>;
-> +						};
-> +					};
-> +
-> +					port@1 {
-> +						reg = <1>;
-> +						dsi0_out: endpoint {
-> +						};
-> +					};
-> +				};
-> +
-> +				dsi_opp_table: dsi-opp-table {
-> +					compatible = "operating-points-v2";
-> +
-> +					opp-187500000 {
-> +						opp-hz = /bits/ 64 <187500000>;
-> +						required-opps = <&rpmhpd_opp_low_svs>;
-> +					};
-> +
-> +					opp-300000000 {
-> +						opp-hz = /bits/ 64 <300000000>;
-> +						required-opps = <&rpmhpd_opp_svs>;
-> +					};
-> +
-> +					opp-358000000 {
-> +						opp-hz = /bits/ 64 <358000000>;
-> +						required-opps = <&rpmhpd_opp_svs_l1>;
-> +					};
-> +				};
-> +			};
-> +
-> +			dsi_phy: dsi-phy@ae94400 {
-> +				compatible = "qcom,sc7280-dsi-phy-7nm";
-> +				reg = <0 0x0ae94400 0 0x200>,
-> +				      <0 0x0ae94600 0 0x280>,
-> +				      <0 0x0ae94900 0 0x280>;
-> +				reg-names = "dsi_phy",
-> +					    "dsi_phy_lane",
-> +					    "dsi_pll";
-> +
-> +				#clock-cells = <1>;
-> +				#phy-cells = <0>;
-> +
-> +				clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
-> +					 <&rpmhcc RPMH_CXO_CLK>;
-> +				clock-names = "iface", "ref";
-> +
-> +				status = "disabled";
-> +			};
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index c7b4c860f8a7..db47fcafbcfc 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -19537,6 +19537,7 @@ M:	Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
+>  L:	linux-media@vger.kernel.org
+>  S:	Maintained
+>  F:	Documentation/devicetree/bindings/media/img,d5520-vxd.yaml
+> +F:	arch/arm64/configs/tisdk_j7-evm_defconfig
 
-I'm not an expect, but this looks sane to me and it's very similar to the
-SC7180 config.
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Sigh.. no.
+
+>  F:	drivers/staging/media/vxd/common/addr_alloc.c
+>  F:	drivers/staging/media/vxd/common/addr_alloc.h
+>  F:	drivers/staging/media/vxd/common/dq.c
+> diff --git a/arch/arm64/configs/ti_sdk_arm64_release_defconfig b/arch/arm64/configs/ti_sdk_arm64_release_defconfig
+> new file mode 100644
+> index 000000000000..a424c76d29da
+> --- /dev/null
+> +++ b/arch/arm64/configs/ti_sdk_arm64_release_defconfig
+> @@ -0,0 +1,7407 @@
+> +#
+> +# Automatically generated file; DO NOT EDIT.
+> +# Linux/arm64 5.10.41 Kernel Configuration
+> +#
+
+^^ NAK. we DONOT want to see additional configs in arm64 and definitely
+not one based on 5.10
+
+> 
+> This
+> message contains confidential information and is intended only 
+> for the
+> individual(s) named. If you are not the intended
+
+If you are sending confidential information to a public mailing list,
+you might want to start talking to legal folks in your company.
+
+> recipient, you are 
+> notified that disclosing, copying, distributing or taking any
+> action in 
+> reliance on the contents of this mail and attached file/s is strictly
+> prohibited. Please notify the
+> sender immediately and delete this e-mail 
+> from your system. E-mail transmission
+> cannot be guaranteed to be secured or 
+> error-free as information could be
+> intercepted, corrupted, lost, destroyed, 
+> arrive late or incomplete, or contain
+> viruses. The sender therefore does 
+> not accept liability for any errors or
+> omissions in the contents of this 
+> message, which arise as a result of e-mail
+> transmission.
+
+^^ please use a different mail provider.
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
