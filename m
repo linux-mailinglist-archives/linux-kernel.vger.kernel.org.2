@@ -2,139 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F18DC3EFCA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4EE3EFCB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238493AbhHRG13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 02:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48402 "EHLO
+        id S238487AbhHRG2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 02:28:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240245AbhHRG1P (ORCPT
+        with ESMTP id S239137AbhHRG2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 02:27:15 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4029BC061224
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:26:07 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id c12so3080360ljr.5
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:26:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0niOOKpLOqJWr+G2N4qsyCfMLmKR4C8+b8TBbZbKaU8=;
-        b=Et8efFBgzM1OWhTpqkovSGInq7BYnqTenDPJF5Sfp/8L2BDfO3pcqtdv6gK9Xf6rVi
-         bPlFqq3u2Mlnv1Oxq7zttZXNhuIFaIoCKH5Il61HHre6WKqQXBgZ2rtyo6Ql01WiAgAf
-         iqwYaadnd/cBDGdzYU20uWob0rjtS561A0+w4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0niOOKpLOqJWr+G2N4qsyCfMLmKR4C8+b8TBbZbKaU8=;
-        b=cTajntYZmX6vZU+etHOUqIRr/l0eiFsxj3VAEYQSf8aGpG3pkHXMrSKa/uvHRdviwl
-         W/8R5XSw2OnrLr9jcIxmsgnXnXweIu3K15ksarSEn6shEIPNQt4BENOcTCa5WF+uE0Xt
-         uasSxcP4GWbK0qL5cd5roG4s7Pm4q5BxiA2ZFv9iRRC4vdmVQ4BI7qw6y3AXdXkal6o5
-         FA5kQjCTgEYyrKi+nopVG3ZGaeLvMfKMYqMSXEomCtsc10lknubKEWl4sP+WUJih8OJ7
-         Se6J/QHsBEkzpXWSXyUEhaXFU2IN8JzUtVRiGlO6lfPFF5bGdFJj5A4SFsc2jfNHvtky
-         c0Qw==
-X-Gm-Message-State: AOAM530d3YZ0NkYtgqK0lEVXC0DayS7gATSwWmKTK8A+eLWyZjb8WohG
-        yZjZRO49jL/Bwyh80Od5tuhVq01uww5wbt7pgVOWtA==
-X-Google-Smtp-Source: ABdhPJycOOwNmb0zD73kqTDlXcUFSNdJdOw1Y3p1pB/PjGtP3t4iluned8prH8xjVYxNIs08EqJIS54IEOaxSu1nOPY=
-X-Received: by 2002:a2e:7d0e:: with SMTP id y14mr6438392ljc.251.1629267965676;
- Tue, 17 Aug 2021 23:26:05 -0700 (PDT)
+        Wed, 18 Aug 2021 02:28:05 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F11C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:27:28 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mGF2W-0007Xm-Bs; Wed, 18 Aug 2021 08:27:04 +0200
+Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:ed04:8488:5061:54d4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 7335C66975A;
+        Wed, 18 Aug 2021 06:26:59 +0000 (UTC)
+Date:   Wed, 18 Aug 2021 08:26:57 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-wireless@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 59/63] can: flexcan: Use struct_group() to zero struct
+ flexcan_regs regions
+Message-ID: <20210818062657.6hvn75kf5o5cgey2@pengutronix.de>
+References: <20210818060533.3569517-1-keescook@chromium.org>
+ <20210818060533.3569517-60-keescook@chromium.org>
 MIME-Version: 1.0
-References: <20210710081722.1828-1-zhiyong.tao@mediatek.com>
- <20210710081722.1828-2-zhiyong.tao@mediatek.com> <CAGXv+5GXg0RuOQkh4vaRmcLpehZiXnEUXBvEaObiatAa1sXvaA@mail.gmail.com>
- <1626940470.29611.9.camel@mhfsdcap03> <CAGXv+5F_-W4aNt0WVSDBGLo_t8orNUq59GMKk_4xVr+hMb9Ctg@mail.gmail.com>
- <07388dac4e25e0f260725e8f80ba099d5aa80949.camel@mediatek.com>
- <CAGXv+5EagmhYYpri+nzo6WgGz8A=oiU3Vy+2AVjho=eo6Z+DLw@mail.gmail.com>
- <CACRpkdZ4k9Km3vBtdN6AnBM89c4355GtPMzCQ0_YHaTb4V5cKA@mail.gmail.com>
- <CAGXv+5HohMwU8jow5QXO5MK1tO+u=5YsfhArBWCP4Dgm1Q8igg@mail.gmail.com>
- <4fd12d5c53f6492e5fa3ba94a78b9a149f5b6ed9.camel@mediatek.com>
- <CAGXv+5GCuNK=-z9VAOjkpJdZLUSZFPfUsQ09m1FhfTsbCYLLRw@mail.gmail.com>
- <CACRpkdbZKh8cqqiDRUik6Ooo33e+feGwYsLjcLRvBQnT3x5M3A@mail.gmail.com>
- <a7c8ab68ac3513865698cde27e665bdd554f459e.camel@mediatek.com>
- <CAGXv+5FtL2zaSWx4tUymx6mpCSb5dXG4XNWM9AJL+b6Ok3dxMg@mail.gmail.com>
- <d40f6d5fd26aedb13e7a393202e5794b1893ecf8.camel@mediatek.com> <CACRpkdYkwXr76Kq5WYdz=1KkLTpaByAL1vJFo8V+2mncqs8-3Q@mail.gmail.com>
-In-Reply-To: <CACRpkdYkwXr76Kq5WYdz=1KkLTpaByAL1vJFo8V+2mncqs8-3Q@mail.gmail.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Wed, 18 Aug 2021 14:25:54 +0800
-Message-ID: <CAGXv+5EUAVFJd7VZsDgpOK_6fhs12ztwKHioghq5ZQHzFKY89w@mail.gmail.com>
-Subject: Re: [PATCH v10 1/2] dt-bindings: pinctrl: mt8195: add rsel define
-To:     "zhiyong.tao" <zhiyong.tao@mediatek.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        hui.liu@mediatek.com, Eddie Huang <eddie.huang@mediatek.com>,
-        Light Hsieh <light.hsieh@mediatek.com>,
-        Biao Huang <biao.huang@mediatek.com>,
-        Hongzhou Yang <hongzhou.yang@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Seiya Wang <seiya.wang@mediatek.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kduqcl3tf4g5uel5"
+Content-Disposition: inline
+In-Reply-To: <20210818060533.3569517-60-keescook@chromium.org>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 4:09 AM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Tue, Aug 17, 2021 at 9:51 AM zhiyong.tao <zhiyong.tao@mediatek.com> wrote:
->
-> > In one chip, If GPIO is different, the MTXXXX_PULL_UP_RSEL_001 may
-> > means different actual bias resistance setting.
-> >
-> > For example,
-> >
-> > KPROW IO
-> > Paramters       Descriptions                   Min      Typ     Max
-> >  UNIT
-> > Rpd     Input pull-down resistance      40      75      190     Kohm
-> > Rpu     Input pull-up resistance        40      75      190     Kohm
-> > Rpd     Input pull-down resistance      0.8     1.6     2       Kohm
-> > Rpu     Input pull-up resistance        0.8     1.6     2       Kohm
->
-> This is exactly why we should try to use SI units in the device tree.
-> I assume that the software can eventually configure which resistance
-> it gets?
->
-> The electronics people will say make sure it is pulled down by around
-> 80 kOhm, they can put that on the device tree and your code can
-> say, "hm 40 < 80 < 190 this is OK" and let the value pass.
->
-> We do not define these exact semantics, it is up to the driver code
-> to decide what to do with the Ohm value 80000 in this case, but
-> it makes perfect sent for me to let it pass and fail if someone
-> for example requests 20 kOhm, or at least print a helpful warning:
->
-> dev_warn(dev, "the requested resistance %d is out of range, supported
-> range %d to %d kOhm\n",
->                  val, low, high);
->
-> This is what makes the SI units really helpful for people writing device
-> trees: solve real integration tasks and make it easy to do the right thing.
 
-I think this makes a lot of sense. The driver could select the closest
-setting. And from what Zhiyong mentioned offline, the resistor values
-aren't exact as specified in the datasheet. I suppose this is expected
-with any electronics. So the hardware integration will say to pull up
-or down by some value, and the driver will do its best to fulfill that
-request. That precludes DT schema checking for the values used, but I
-think that is a good compromise.
+--kduqcl3tf4g5uel5
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Zhiyong also mentioned that some of their downstream integrators might
-not be able to deal with actual values, and would prefer symbols tied
-to specific RSEL values. I think that would be doable together using
-some _magic_ values, but I would prefer not to if it were avoidable.
+On 17.08.2021 23:05:29, Kees Cook wrote:
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field bounds checking for memset(), avoid intentionally writing across
+> neighboring fields.
+>=20
+> Add struct_group() to mark both regions of struct flexcan_regs that get
+> initialized to zero. Avoid the future warnings:
+>=20
+> In function 'fortify_memset_chk',
+>     inlined from 'memset_io' at ./include/asm-generic/io.h:1169:2,
+>     inlined from 'flexcan_ram_init' at drivers/net/can/flexcan.c:1403:2:
+> ./include/linux/fortify-string.h:199:4: warning: call to '__write_overflo=
+w_field' declared with attribute warning: detected write beyond size of fie=
+ld (1st parameter); maybe use struct_group()? [-Wattribute-warning]
+>   199 |    __write_overflow_field(p_size_field, size);
+>       |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> In function 'fortify_memset_chk',
+>     inlined from 'memset_io' at ./include/asm-generic/io.h:1169:2,
+>     inlined from 'flexcan_ram_init' at drivers/net/can/flexcan.c:1408:3:
+> ./include/linux/fortify-string.h:199:4: warning: call to '__write_overflo=
+w_field' declared with attribute warning: detected write beyond size of fie=
+ld (1st parameter); maybe use struct_group()? [-Wattribute-warning]
+>   199 |    __write_overflow_field(p_size_field, size);
+>       |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>=20
+> Cc: Wolfgang Grandegger <wg@grandegger.com>
+> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: linux-can@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
-Regards
-ChenYu
+> -	memset_io(&regs->mb[0][0], 0,
+> -		  offsetof(struct flexcan_regs, rx_smb1[3]) -
+> -		  offsetof(struct flexcan_regs, mb[0][0]) + 0x4);
+> +	memset_io(&regs->init, 0, sizeof(regs->init));
+
+This even makes the code more readable! \o/
+
+>  	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
+> -		memset_io(&regs->tx_smb_fd[0], 0,
+> -			  offsetof(struct flexcan_regs, rx_smb1_fd[17]) -
+> -			  offsetof(struct flexcan_regs, tx_smb_fd[0]) + 0x4);
+> +		memset_io(&regs->init_fd, 0, sizeof(regs->init_fd));
+> =20
+>  	reg_ctrl2 &=3D ~FLEXCAN_CTRL2_WRMFRZ;
+>  	priv->write(reg_ctrl2, &regs->ctrl2);
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--kduqcl3tf4g5uel5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEcqC4ACgkQqclaivrt
+76lMtAf+PLTf+69ONg9/KGwncoo4yvZ5m8bSKHLYfYYuCITf4oOnHWQIBFT3P8Fn
+GMKihDcISmFKjqSbFu8aJSqtNFhYzGB0uIUjuhW+15TJRH7SUTZCuT/U6VPXrEWi
+qWCGvkl3szxqSpDVrbCW5ChnnsAZ3Nj2pXV+gkB62mvtcwTdqFBczMfbKHNhLHgv
+BYjF2uWTN51iadHR3Kese6EccsTaIoCrqZjnGrlJSBVLtt66BT101RY0pE9890e+
++p/LRFYivNeT0DnAObs8TDghwzxWlqfE3nR1QLSvENRbMBSzhEbipc7oz3DQJC4v
+WM/41iCaZScHUFfgxPrBqtGtM1p9RA==
+=LXIZ
+-----END PGP SIGNATURE-----
+
+--kduqcl3tf4g5uel5--
