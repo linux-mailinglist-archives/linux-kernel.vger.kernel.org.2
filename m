@@ -2,83 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C72ED3F0D3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 23:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1095D3F0D3A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 23:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234031AbhHRVWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 17:22:49 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:11248 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229531AbhHRVWs (ORCPT
+        id S233994AbhHRVWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 17:22:40 -0400
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:60361 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhHRVWj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 17:22:48 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17ILFTlP011078
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 14:22:13 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=1XAcXeotTNZYxlSdxodQK4KYcxGdw6dJbsXyr2ovw/w=;
- b=oPQFYWXTUumFBRUyhJszg4FPNmD8yQBhl5SvBQ4oq0EIH/exE4rcoaPzQN494zDPNP6v
- ynPpDgFwBBsLXgSZIJHik9G1bqUdwAvwhizVPzC8yeyBvEHzf96LrqX13kQzwDpGSvqs
- LQiKRoKbf9jK1T2tS1cG7Xbj7O9w6e0Faz0= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3ags1v5vyq-13
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 14:22:12 -0700
-Received: from intmgw001.05.ash7.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 18 Aug 2021 14:22:10 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 7AF1DD1ADBC8; Wed, 18 Aug 2021 14:22:07 -0700 (PDT)
-From:   Song Liu <songliubraving@fb.com>
-To:     <linux-kernel@vger.kernel.org>, <x86@kernel.org>
-CC:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <hpa@zytor.com>, <linux-mm@kvack.org>, <kernel-team@fb.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH] x86/mm: add select HAVE_ARCH_HUGE_VMALLOC in Kconfig
-Date:   Wed, 18 Aug 2021 14:21:48 -0700
-Message-ID: <20210818212148.3927001-1-songliubraving@fb.com>
+        Wed, 18 Aug 2021 17:22:39 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d40 with ME
+        id j9N1250013riaq2039N1R2; Wed, 18 Aug 2021 23:22:02 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 18 Aug 2021 23:22:02 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     leoyang.li@nxp.com
+Cc:     linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] soc: fsl: guts: Fix a resource leak in the error handling path of 'fsl_guts_probe()'
+Date:   Wed, 18 Aug 2021 23:21:59 +0200
+Message-Id: <b12e8c5c5d6ab3061d9504de8fbaefcad6bbc385.1629321668.git.christophe.jaillet@wanadoo.fr>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: mKXZtB0TaRA7rwoeUZWCTURSx1B3LADb
-X-Proofpoint-ORIG-GUID: mKXZtB0TaRA7rwoeUZWCTURSx1B3LADb
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-18_07:2021-08-17,2021-08-18 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 spamscore=0
- malwarescore=0 lowpriorityscore=0 mlxlogscore=872 mlxscore=0
- suspectscore=0 bulkscore=0 priorityscore=1501 adultscore=0 impostorscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108180132
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add "select HAVE_ARCH_HUGE_VMALLOC if HAVE_ARCH_HUGE_VMAP", so that huge
-vmalloc is enabled for X86_64 || X86_PAE.
+If an error occurs after 'of_find_node_by_path()', the reference taken for
+'root' will never be released and some memory will leak.
 
-Signed-off-by: Song Liu <songliubraving@fb.com>
+Instead of adding an error handling path and modifying all the
+'return -SOMETHING' into 'goto errorpath', use 'devm_add_action_or_reset()'
+to release the reference when needed.
+
+Simplify the remove function accordingly.
+
+As an extra benefit, the 'root' global variable can now be removed as well.
+
+Fixes: 3c0d64e867ed ("soc: fsl: guts: reuse machine name from device tree")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- arch/x86/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Compile tested only
+---
+ drivers/soc/fsl/guts.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index a68bf2db0d3ea..6344c572555e0 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -154,6 +154,7 @@ config X86
- 	select HAVE_ACPI_APEI_NMI		if ACPI
- 	select HAVE_ALIGNED_STRUCT_PAGE		if SLUB
- 	select HAVE_ARCH_AUDITSYSCALL
-+	select HAVE_ARCH_HUGE_VMALLOC		if HAVE_ARCH_HUGE_VMAP
- 	select HAVE_ARCH_HUGE_VMAP		if X86_64 || X86_PAE
- 	select HAVE_ARCH_JUMP_LABEL
- 	select HAVE_ARCH_JUMP_LABEL_RELATIVE
---=20
+diff --git a/drivers/soc/fsl/guts.c b/drivers/soc/fsl/guts.c
+index d5e9a5f2c087..4d9476c7b87c 100644
+--- a/drivers/soc/fsl/guts.c
++++ b/drivers/soc/fsl/guts.c
+@@ -28,7 +28,6 @@ struct fsl_soc_die_attr {
+ static struct guts *guts;
+ static struct soc_device_attribute soc_dev_attr;
+ static struct soc_device *soc_dev;
+-static struct device_node *root;
+ 
+ 
+ /* SoC die attribute definition for QorIQ platform */
+@@ -136,14 +135,23 @@ static u32 fsl_guts_get_svr(void)
+ 	return svr;
+ }
+ 
++static void fsl_guts_put_root(void *data)
++{
++	struct device_node *root = data;
++
++	of_node_put(root);
++}
++
+ static int fsl_guts_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct device *dev = &pdev->dev;
++	struct device_node *root;
+ 	struct resource *res;
+ 	const struct fsl_soc_die_attr *soc_die;
+ 	const char *machine;
+ 	u32 svr;
++	int ret;
+ 
+ 	/* Initialize guts */
+ 	guts = devm_kzalloc(dev, sizeof(*guts), GFP_KERNEL);
+@@ -159,6 +167,10 @@ static int fsl_guts_probe(struct platform_device *pdev)
+ 
+ 	/* Register soc device */
+ 	root = of_find_node_by_path("/");
++	ret = devm_add_action_or_reset(dev, fsl_guts_put_root, root);
++	if (ret)
++		return ret;
++
+ 	if (of_property_read_string(root, "model", &machine))
+ 		of_property_read_string_index(root, "compatible", 0, &machine);
+ 	if (machine)
+@@ -197,7 +209,7 @@ static int fsl_guts_probe(struct platform_device *pdev)
+ static int fsl_guts_remove(struct platform_device *dev)
+ {
+ 	soc_device_unregister(soc_dev);
+-	of_node_put(root);
++
+ 	return 0;
+ }
+ 
+-- 
 2.30.2
 
