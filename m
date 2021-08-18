@@ -2,58 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E597A3F0030
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 476AC3F0032
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231569AbhHRJSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:18:06 -0400
-Received: from mga14.intel.com ([192.55.52.115]:30577 "EHLO mga14.intel.com"
+        id S231454AbhHRJTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 05:19:00 -0400
+Received: from mga09.intel.com ([134.134.136.24]:14187 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230253AbhHRJSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:18:02 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10079"; a="216014814"
+        id S230118AbhHRJS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 05:18:58 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10079"; a="216284259"
 X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
-   d="scan'208";a="216014814"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 02:17:27 -0700
+   d="scan'208";a="216284259"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 02:18:23 -0700
 X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
-   d="scan'208";a="676997102"
+   d="scan'208";a="531480216"
 Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 02:17:25 -0700
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 02:18:21 -0700
 Received: from andy by smile with local (Exim 4.94.2)
         (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mGHhH-00B3oa-07; Wed, 18 Aug 2021 12:17:19 +0300
-Date:   Wed, 18 Aug 2021 12:17:18 +0300
+        id 1mGHiA-00B3qD-PH; Wed, 18 Aug 2021 12:18:14 +0300
+Date:   Wed, 18 Aug 2021 12:18:14 +0300
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH] lib/vsprintf: don't increment buf in bitmap_list_string
-Message-ID: <YRzQHkF8inFrdfQM@smile.fi.intel.com>
-References: <20210817193735.269942-1-yury.norov@gmail.com>
+        Wolfram Sang <wsa@the-dreams.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the akpm-current tree with the i2c
+ tree
+Message-ID: <YRzQVpCLwRDcKEN2@smile.fi.intel.com>
+References: <20210818165439.1fc613e2@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210817193735.269942-1-yury.norov@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210818165439.1fc613e2@canb.auug.org.au>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 12:37:35PM -0700, Yury Norov wrote:
+On Wed, Aug 18, 2021 at 04:54:39PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the akpm-current tree got a conflict in:
+> 
+>   include/linux/units.h
+> 
+> between commit:
+> 
+>   26471d4a6cf8 ("units: Add SI metric prefix definitions")
+> 
+> from the i2c tree and commits:
+> 
+>   d874da9a830f ("units: change from 'L' to 'UL'")
+>   390618bdc78a ("units: add the HZ macros")
+> 
+> from the akpm-current tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-Thanks!
+This is correct fix, thank you, Stephen!
 
-> Increment is confusing as the buf is overritten at the same line.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+> 
+> diff --cc include/linux/units.h
+> index 4a25e0cc8fb3,8b8dc8a84d93..000000000000
+> --- a/include/linux/units.h
+> +++ b/include/linux/units.h
+> @@@ -4,25 -4,13 +4,29 @@@
+>   
+>   #include <linux/math.h>
+>   
+>  +/* Metric prefixes in accordance with Système international (d'unités) */
+>  +#define PETA	1000000000000000ULL
+>  +#define TERA	1000000000000ULL
+>  +#define GIGA	1000000000UL
+>  +#define MEGA	1000000UL
+>  +#define KILO	1000UL
+>  +#define HECTO	100UL
+>  +#define DECA	10UL
+>  +#define DECI	10UL
+>  +#define CENTI	100UL
+>  +#define MILLI	1000UL
+>  +#define MICRO	1000000UL
+>  +#define NANO	1000000000UL
+>  +#define PICO	1000000000000ULL
+>  +#define FEMTO	1000000000000000ULL
+>  +
+> - #define MILLIWATT_PER_WATT	1000L
+> - #define MICROWATT_PER_MILLIWATT	1000L
+> - #define MICROWATT_PER_WATT	1000000L
+> + #define HZ_PER_KHZ		1000UL
+> + #define KHZ_PER_MHZ		1000UL
+> + #define HZ_PER_MHZ		1000000UL
+> + 
+> + #define MILLIWATT_PER_WATT	1000UL
+> + #define MICROWATT_PER_MILLIWATT	1000UL
+> + #define MICROWATT_PER_WATT	1000000UL
+>   
+>   #define ABSOLUTE_ZERO_MILLICELSIUS -273150
+>   
 
-> Fixes: b1c4af4d3d6b (vsprintf: rework bitmap_list_string) (next-20210817)
 
-Fixes tag has its special format. I don't think we need it here, just to ask
-Andrew in comments that it needs to be folded.
 
 -- 
 With Best Regards,
