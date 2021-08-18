@@ -2,314 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF323F0147
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 12:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B1D63F0157
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 12:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233855AbhHRKJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 06:09:13 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10188 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233539AbhHRKI7 (ORCPT
+        id S233868AbhHRKKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 06:10:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233706AbhHRKKA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 06:08:59 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17IA4uDw116913;
-        Wed, 18 Aug 2021 06:08:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=QBg4YKjBgxoS8cUqlhRCYzFYZVz/JCU0DmHCbhz9S9o=;
- b=LXwI+QnATCZVKVwppTE6mo9asSGpnvSAx0F/D9Ij5AXfHbtl7drbvDaXiTTP0hs7700a
- c+HxvhfoSfQrwx+VqQa1vP8C7U2n3zEJvRIH8Z1+oq/0KKa3CkFWPrjDNAtwZqBHDAVP
- JqCXJJqF+9Sje/kyQ3o16iVrkAA5qQBHH6+wfHYyFaU7+uUb07uMD/9G/oAHE9uotDcn
- MDqoC4GJR3dHA5BQ3aUZ06Xbk2TVAw8VPb9JiFNXPhGexqmCFRHrLwQmeU5JHPSSBNnM
- aeZ1+mv5XzE8m5Y3wD2dghxRVSKdz+I0+TajRvbB6X++dHhU926H8PJr6SLxVKAvkcpH VQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3agp1nxc9w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Aug 2021 06:08:24 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17IA52Oo117411;
-        Wed, 18 Aug 2021 06:08:24 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3agp1nxc9f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Aug 2021 06:08:24 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17IA7Ad1000447;
-        Wed, 18 Aug 2021 10:08:22 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06ams.nl.ibm.com with ESMTP id 3ae53hxcwe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Aug 2021 10:08:22 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17IA4p7t53477812
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Aug 2021 10:04:51 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A9EE34C05E;
-        Wed, 18 Aug 2021 10:08:18 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1BC444C04A;
-        Wed, 18 Aug 2021 10:08:18 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.145.14.177])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 18 Aug 2021 10:08:18 +0000 (GMT)
-Date:   Wed, 18 Aug 2021 12:08:15 +0200
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Janis Schoetterl-Glausch <scgl@linux.ibm.com>
-Cc:     kvm@vger.kernel.org, borntraeger@de.ibm.com, frankja@linux.ibm.com,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, david@redhat.com,
-        cohuck@redhat.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] KVM: s390: gaccess: Refactor access address range
- check
-Message-ID: <20210818120815.6e048149@p-imbrenda>
-In-Reply-To: <20210816150718.3063877-3-scgl@linux.ibm.com>
-References: <20210816150718.3063877-1-scgl@linux.ibm.com>
-        <20210816150718.3063877-3-scgl@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Wed, 18 Aug 2021 06:10:00 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6AFC0613D9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 03:09:26 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id f13so1386463vsl.13
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 03:09:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oSMbBaxj5kYnNMOz3HCW8c2GlUKNZpl4G8kt8vaDvcU=;
+        b=NUh5EB/TshJuP06sY5queTXRGXqZEcl6UMqE3f6o4C7Yia1aQ7YYVwjSqato7REGKR
+         ytMlzGxdm1dXPtaK5whOZ0H7rSbvF5peR2wviaOGrorE6BcPYImZyUzulxDwUsFPuWLL
+         5meVhpkcaBkJDevWoxCSWZsvC5nJ7ZnpAY2bGN7+nkDxVClk3HURgKAukKwevldHPSBd
+         uKsOCzfFz4fP/YbEiE46NuL+3ooaMnSQgmklXAz6fLHlvgEGNgwEPm1JpSu0mHG8iX+S
+         G1rewHtqg4EDw2hrAD1fMBl1z5/lSpUx+/rIUDOZ+tcCTRi6DZjOeA44wsHIAFoqgBbV
+         KNmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oSMbBaxj5kYnNMOz3HCW8c2GlUKNZpl4G8kt8vaDvcU=;
+        b=brtOXjSHNbFenp0DVnEd/+cQz2t4l/mAjr+tniCeGMEPFm+2Ht74js2fraQwHdWKQc
+         dV0vgdmj/V2/FkZdwsegH+7IxmaNeXYzsvQOxzfML7BecJs1vJab8VuZ5J/p+/NwwnE+
+         7g14p6fNqNn4dyhTf1JYdDyYEo0pS2nL1ya5OkpjqVmQhgUWfQ3vWsUvDUmahDcT4rNT
+         20/kNsK3q+ldteIQJi2BWCLdoE9BCy69f6txsk8+10AYiDCtkpw2PbLDCR9b+3KNiPIo
+         lJDnqWqGfIC+pCLETQytZib87IdpnkF0hV3Adcd7Rj4CNZyHkKisdrcNAW1x4en3RZIj
+         Gnzg==
+X-Gm-Message-State: AOAM532gkBEpsJb2SZ85zTtzxpIHlEHHy6qy02cdPLHkLpqffWtUL3eI
+        228aIT9ZDv9pvQNF//oLwJHa3UkF8MjLBs5ZboKQzA==
+X-Google-Smtp-Source: ABdhPJxX5vUHiF4S9rKI8AwIyB37h/2agUjbKLWH1bKK7BdK0tRX0vp1siQiAlDeJWpHDBxGhS/HHDjvQsTJxQC3MTQ=
+X-Received: by 2002:a05:6102:5f4:: with SMTP id w20mr6416911vsf.34.1629281364036;
+ Wed, 18 Aug 2021 03:09:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ffk4o2FR6aiU1o0tQRAl5esKg0JbwDGw
-X-Proofpoint-ORIG-GUID: drQLDQnLtpKqS6EF83ZTGxwhGrRhDw3n
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-18_03:2021-08-17,2021-08-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=999
- mlxscore=0 suspectscore=0 bulkscore=0 malwarescore=0 lowpriorityscore=0
- phishscore=0 priorityscore=1501 spamscore=0 impostorscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108180063
+References: <20210818043131.7klajx6drvvkftoc@vireshk-i7> <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
+ <20210818045307.4brb6cafkh3adjth@vireshk-i7> <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
+ <20210818055849.ybfajzu75ecpdrbn@vireshk-i7> <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
+ <20210818062723.dqamssfkf7lf7cf7@vireshk-i7> <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
+ <20210818091417.dvlnsxlgybdsn76x@vireshk-i7> <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
+ <20210818095044.e2ntsm45h5cddk7s@vireshk-i7>
+In-Reply-To: <20210818095044.e2ntsm45h5cddk7s@vireshk-i7>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 18 Aug 2021 12:08:47 +0200
+Message-ID: <CAPDyKFrFF00xGDWPCQnPwF0_QkG4TB2UqggpuBpp8LY_CMKP-A@mail.gmail.com>
+Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Aug 2021 17:07:17 +0200
-Janis Schoetterl-Glausch <scgl@linux.ibm.com> wrote:
+On Wed, 18 Aug 2021 at 11:50, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 18-08-21, 11:41, Ulf Hansson wrote:
+> > On Wed, 18 Aug 2021 at 11:14, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > > What we need here is just configure. So something like this then:
+> > >
+> > > - genpd->get_performance_state()
+> > >   -> dev_pm_opp_get_current_opp() //New API
+> > >   -> dev_pm_genpd_set_performance_state(dev, current_opp->pstate);
+> > >
+> > > This can be done just once from probe() then.
+> >
+> > How would dev_pm_opp_get_current_opp() work? Do you have a suggestion?
+>
+> The opp core already has a way of finding current OPP, that's what
+> Dmitry is trying to use here. It finds it using clk_get_rate(), if
+> that is zero, it picks the lowest freq possible.
+>
+> > I am sure I understand the problem. When a device is getting probed,
+> > it needs to consume power, how else can the corresponding driver
+> > successfully probe it?
+>
+> Dmitry can answer that better, but a device doesn't necessarily need
+> to consume energy in probe. It can consume bus clock, like APB we
+> have, but the more energy consuming stuff can be left disabled until
+> the time a user comes up. Probe will just end up registering the
+> driver and initializing it.
 
-> Do not round down the first address to the page boundary, just translate
-> it normally, which gives the value we care about in the first place.
-> Given this, translating a single address is just the special case of
-> translating a range spanning a single page.
-> 
-> Make the output optional, so the function can be used to just check a
-> range.
+That's perfectly fine, as then it's likely that it won't vote for an
+OPP, but can postpone that as well.
 
-I like the idea, but see a few nits below
+Perhaps the problem is rather that the HW may already carry a non-zero
+vote made from a bootloader. If the consumer driver tries to clear
+that vote (calling dev_pm_opp_set_rate(dev, 0), for example), it would
+still not lead to any updates of the performance state in genpd,
+because genpd internally has initialized the performance-state to
+zero.
 
-> 
-> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
-> ---
->  arch/s390/kvm/gaccess.c | 91 ++++++++++++++++++-----------------------
->  1 file changed, 39 insertions(+), 52 deletions(-)
-> 
-> diff --git a/arch/s390/kvm/gaccess.c b/arch/s390/kvm/gaccess.c
-> index df83de0843de..e5a19d8b30e2 100644
-> --- a/arch/s390/kvm/gaccess.c
-> +++ b/arch/s390/kvm/gaccess.c
-> @@ -794,35 +794,45 @@ static int low_address_protection_enabled(struct kvm_vcpu *vcpu,
->  	return 1;
->  }
->  
-> -static int guest_page_range(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar,
-> -			    unsigned long *pages, unsigned long nr_pages,
-> -			    const union asce asce, enum gacc_mode mode)
-> +/* Stores the gpas for each page in a real/virtual range into @gpas
-> + * Modifies the 'struct kvm_s390_pgm_info pgm' member of @vcpu in the same
-> + * way read_guest/write_guest do, the meaning of the return value is likewise
+Dmitry?
 
-this comment is a bit confusing; why telling us to look what a
-different function is doing?
+>
+> --
+> viresh
 
-either don't mention this at all (since it's more or less the expected
-behaviour), or explain in full what's going on
-
-> + * the same.
-> + * If @gpas is NULL only the checks are performed.
-> + */
-> +static int guest_range_to_gpas(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar,
-> +			       unsigned long *gpas, unsigned long len,
-> +			       const union asce asce, enum gacc_mode mode)
->  {
->  	psw_t *psw = &vcpu->arch.sie_block->gpsw;
-> +	unsigned long gpa;
-> +	unsigned int seg;
-> +	unsigned int offset = offset_in_page(ga);
->  	int lap_enabled, rc = 0;
->  	enum prot_type prot;
->  
->  	lap_enabled = low_address_protection_enabled(vcpu, asce);
-> -	while (nr_pages) {
-> +	while ((seg = min(PAGE_SIZE - offset, len)) != 0) {
-
-I'm not terribly fond of assignments-as-values; moreover offset is used
-only once.
-
-why not something like:
-
-	seg = min(PAGE_SIZE - offset, len);
-	while (seg) {
-
-		...
-
-		seg = min(PAGE_SIZE, len);
-	}
-
-or maybe even:
-
-	seg = min(PAGE_SIZE - offset, len);
-	for (; seg; seg = min(PAGE_SIZE, len)) {
-
-(although the one with the while is perhaps more readable)
-
->  		ga = kvm_s390_logical_to_effective(vcpu, ga);
->  		if (mode == GACC_STORE && lap_enabled && is_low_address(ga))
->  			return trans_exc(vcpu, PGM_PROTECTION, ga, ar, mode,
->  					 PROT_TYPE_LA);
-> -		ga &= PAGE_MASK;
->  		if (psw_bits(*psw).dat) {
-> -			rc = guest_translate(vcpu, ga, pages, asce, mode, &prot);
-> +			rc = guest_translate(vcpu, ga, &gpa, asce, mode, &prot);
->  			if (rc < 0)
->  				return rc;
->  		} else {
-> -			*pages = kvm_s390_real_to_abs(vcpu, ga);
-> -			if (kvm_is_error_gpa(vcpu->kvm, *pages))
-> +			gpa = kvm_s390_real_to_abs(vcpu, ga);
-> +			if (kvm_is_error_gpa(vcpu->kvm, gpa))
->  				rc = PGM_ADDRESSING;
->  		}
->  		if (rc)
->  			return trans_exc(vcpu, rc, ga, ar, mode, prot);
-> -		ga += PAGE_SIZE;
-> -		pages++;
-> -		nr_pages--;
-> +		if (gpas)
-> +			*gpas++ = gpa;
-> +		offset = 0;
-> +		ga += seg;
-> +		len -= seg;
->  	}
->  	return 0;
->  }
-> @@ -845,10 +855,10 @@ int access_guest(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar, void *data,
->  		 unsigned long len, enum gacc_mode mode)
->  {
->  	psw_t *psw = &vcpu->arch.sie_block->gpsw;
-> -	unsigned long nr_pages, gpa, idx;
-> +	unsigned long nr_pages, idx;
->  	unsigned int seg;
-> -	unsigned long pages_array[2];
-> -	unsigned long *pages;
-> +	unsigned long gpa_array[2];
-> +	unsigned long *gpas;
-
-reverse Christmas tree?
-
-also, since you're touching this: have you checked if a different size
-for the array would bring any benefit?
-2 seems a little too small, but I have no idea if anything bigger would
-bring any advantages.
-
->  	int need_ipte_lock;
->  	union asce asce;
->  	int rc;
-> @@ -860,27 +870,25 @@ int access_guest(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar, void *data,
->  	if (rc)
->  		return rc;
->  	nr_pages = (((ga & ~PAGE_MASK) + len - 1) >> PAGE_SHIFT) + 1;
-> -	pages = pages_array;
-> -	if (nr_pages > ARRAY_SIZE(pages_array))
-> -		pages = vmalloc(array_size(nr_pages, sizeof(unsigned long)));
-> -	if (!pages)
-> +	gpas = gpa_array;
-> +	if (nr_pages > ARRAY_SIZE(gpa_array))
-> +		gpas = vmalloc(array_size(nr_pages, sizeof(unsigned long)));
-> +	if (!gpas)
->  		return -ENOMEM;
->  	need_ipte_lock = psw_bits(*psw).dat && !asce.r;
->  	if (need_ipte_lock)
->  		ipte_lock(vcpu);
-> -	rc = guest_page_range(vcpu, ga, ar, pages, nr_pages, asce, mode);
-> +	rc = guest_range_to_gpas(vcpu, ga, ar, gpas, len, asce, mode);
->  	for (idx = 0; idx < nr_pages && !rc; idx++) {
-> -		gpa = pages[idx] + offset_in_page(ga);
-> -		seg = min(PAGE_SIZE - offset_in_page(gpa), len);
-> -		rc = access_guest_frame(vcpu->kvm, mode, gpa, data, seg);
-> +		seg = min(PAGE_SIZE - offset_in_page(gpas[idx]), len);
-> +		rc = access_guest_frame(vcpu->kvm, mode, gpas[idx], data, seg);
->  		len -= seg;
-> -		ga += seg;
->  		data += seg;
->  	}
->  	if (need_ipte_lock)
->  		ipte_unlock(vcpu);
-> -	if (nr_pages > ARRAY_SIZE(pages_array))
-> -		vfree(pages);
-> +	if (nr_pages > ARRAY_SIZE(gpa_array))
-> +		vfree(gpas);
->  	return rc;
->  }
->  
-> @@ -914,8 +922,6 @@ int access_guest_real(struct kvm_vcpu *vcpu, unsigned long gra,
->  int guest_translate_address(struct kvm_vcpu *vcpu, unsigned long gva, u8 ar,
->  			    unsigned long *gpa, enum gacc_mode mode)
->  {
-> -	psw_t *psw = &vcpu->arch.sie_block->gpsw;
-> -	enum prot_type prot;
->  	union asce asce;
->  	int rc;
->  
-> @@ -923,23 +929,7 @@ int guest_translate_address(struct kvm_vcpu *vcpu, unsigned long gva, u8 ar,
->  	rc = get_vcpu_asce(vcpu, &asce, gva, ar, mode);
->  	if (rc)
->  		return rc;
-> -	if (is_low_address(gva) && low_address_protection_enabled(vcpu, asce)) {
-> -		if (mode == GACC_STORE)
-> -			return trans_exc(vcpu, PGM_PROTECTION, gva, 0,
-> -					 mode, PROT_TYPE_LA);
-> -	}
-> -
-> -	if (psw_bits(*psw).dat && !asce.r) {	/* Use DAT? */
-> -		rc = guest_translate(vcpu, gva, gpa, asce, mode, &prot);
-> -		if (rc > 0)
-> -			return trans_exc(vcpu, rc, gva, 0, mode, prot);
-> -	} else {
-> -		*gpa = kvm_s390_real_to_abs(vcpu, gva);
-> -		if (kvm_is_error_gpa(vcpu->kvm, *gpa))
-> -			return trans_exc(vcpu, rc, gva, PGM_ADDRESSING, mode, 0);
-> -	}
-> -
-> -	return rc;
-> +	return guest_range_to_gpas(vcpu, gva, ar, gpa, 1, asce, mode);
->  }
->  
->  /**
-> @@ -948,17 +938,14 @@ int guest_translate_address(struct kvm_vcpu *vcpu, unsigned long gva, u8 ar,
->  int check_gva_range(struct kvm_vcpu *vcpu, unsigned long gva, u8 ar,
->  		    unsigned long length, enum gacc_mode mode)
->  {
-> -	unsigned long gpa;
-> -	unsigned long currlen;
-> +	union asce asce;
->  	int rc = 0;
->  
-> +	rc = get_vcpu_asce(vcpu, &asce, gva, ar, mode);
-> +	if (rc)
-> +		return rc;
->  	ipte_lock(vcpu);
-> -	while (length > 0 && !rc) {
-> -		currlen = min(length, PAGE_SIZE - (gva % PAGE_SIZE));
-> -		rc = guest_translate_address(vcpu, gva, ar, &gpa, mode);
-> -		gva += currlen;
-> -		length -= currlen;
-> -	}
-> +	rc = guest_range_to_gpas(vcpu, gva, ar, NULL, length, asce, mode);
->  	ipte_unlock(vcpu);
->  
->  	return rc;
-
+Kind regards
+Uffe
