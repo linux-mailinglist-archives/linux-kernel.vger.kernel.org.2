@@ -2,127 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B193F06EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EBB23F06F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239506AbhHROo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 10:44:27 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:52788
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239422AbhHROo0 (ORCPT
+        id S239658AbhHROph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 10:45:37 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:55283 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S239422AbhHROpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 10:44:26 -0400
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 259D440CD7
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 14:43:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629297831;
-        bh=Ym2NH7kLd3Wo06ZfZyv8MWAmg9zO0sWLSjyMTnIEUB0=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=tsyCXCS3jjP/uA6QXrlZh8/PRXo1cLOqTpgksj743ld5xP8ZcTSz4a75XAh9HaPdZ
-         zaF1ZEIURfhL/55xvLArGB5RbgFSqI15j/06rC8KX7+XXGzghpxOOkQfa6tam8IX01
-         GjbLudaXVKbtANdGNzJAnUXrPmgMqMfEZEdYvFv2ipEOwmehDd8pN2NxfX8wy+o2Gr
-         rfvvhhNZeFlGOufhBtFNwTRJGYX5yVYNAi/MGcoxO0ILIMMuGEcOilF+1TghDPFHKi
-         0p0h68Go+cWiNp5L7jjuxWWJnBftH3qZUfv3+cF5TJxZXBjyLucCnY4MmwYGARZbgC
-         LQ7TC/TmHxB6w==
-Received: by mail-ed1-f71.google.com with SMTP id n4-20020aa7c6840000b02903be94ce771fso1161682edq.11
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:43:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ym2NH7kLd3Wo06ZfZyv8MWAmg9zO0sWLSjyMTnIEUB0=;
-        b=WN0xceJrD1CJaM2EviWKoXwSbJclwl0t7llM7csrvmM7rNHk+km4yWuuQV4O0A3GVk
-         2k868m2mbeIrojEE8Ii3bNBUk1iRBy4I8PW/BSDI22XoJ85bguhGy8tybj6QmAoviq7t
-         cNgEabkBSBuCMSsD80U+DUUsTw2Wghblfq+BokDxpuLk+8pA5Jv1U4bJ7zK9oKwd5Ht3
-         Fzq/njPNdjcfTOrFW3y5ZlyM82ssqdpWUQZQQnmfJpv4Q4b3+XgPDrM+MwmOFbzam/WP
-         nMrR8L/yBS/2LTevhoSkamwFAQuaH/4tsDfCunMguxVtQ+w5i+xpf14KIxmoB1+YaQ4g
-         VRdA==
-X-Gm-Message-State: AOAM532JPlNZ4ncDac02EADk8DHff3psf74R67Drmoh7KzpNegKHu8W+
-        H4wq1I3Fi/EuXREP7DnwFwN4oTK4sOFWSp5OOMhsmjMgG2FWXoK2K+xmFZKWgV9ufhkhSS//gZ3
-        m30LS7W8MeiM/wytRLKtXAvkSEDMRW7aWtqemeYONnw==
-X-Received: by 2002:a50:eb95:: with SMTP id y21mr10368735edr.5.1629297830725;
-        Wed, 18 Aug 2021 07:43:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzChPEIgyhED0qbDqb7annT/YZib35pAtXfFKjieVRsRdjPmve/sr9l695zsiB4e2LvNRwzsg==
-X-Received: by 2002:a50:eb95:: with SMTP id y21mr10368717edr.5.1629297830603;
-        Wed, 18 Aug 2021 07:43:50 -0700 (PDT)
-Received: from [192.168.8.102] ([86.32.42.198])
-        by smtp.gmail.com with ESMTPSA id g9sm2139187ejo.60.2021.08.18.07.43.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 07:43:50 -0700 (PDT)
-Subject: Re: [PATCH] dt-bindings: memory: convert Samsung Exynos DMC to
- dtschema
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Lukasz Luba <lukasz.luba@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>
-References: <20210813125414.104467-1-krzysztof.kozlowski@canonical.com>
- <73eebe7b-46da-137b-1938-09a5b453320a@arm.com>
- <0ec05a0b-9499-3bf4-a231-ea53b1cf99ed@canonical.com>
- <CAL_JsqLOHY0P=Y8-Ss0cYr54SWgpV0zktEg8p-Cj_F+juDQNoA@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <aaa53a2a-c15b-8017-4e44-dd3f883b2378@canonical.com>
-Date:   Wed, 18 Aug 2021 16:43:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 18 Aug 2021 10:45:17 -0400
+Received: (qmail 195955 invoked by uid 1000); 18 Aug 2021 10:44:42 -0400
+Date:   Wed, 18 Aug 2021 10:44:42 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Al Cooper <alcooperx@gmail.com>,
+        linux-usb@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 1/2] USB: EHCI: Add register array bounds to HCS ports
+Message-ID: <20210818144442.GC193695@rowland.harvard.edu>
+References: <20210818043035.1308062-1-keescook@chromium.org>
+ <20210818043035.1308062-2-keescook@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqLOHY0P=Y8-Ss0cYr54SWgpV0zktEg8p-Cj_F+juDQNoA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210818043035.1308062-2-keescook@chromium.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/08/2021 16:31, Rob Herring wrote:
-> On Mon, Aug 16, 2021 at 3:32 AM Krzysztof Kozlowski
-> <krzysztof.kozlowski@canonical.com> wrote:
->>
->> On 16/08/2021 09:53, Lukasz Luba wrote:
->>> Hi Krzysztof,
->>>
->>> On 8/13/21 1:54 PM, Krzysztof Kozlowski wrote:
->>>> Convert Samsung Exynos5422 SoC frequency and voltage scaling for
->>>> Dynamic Memory Controller to DT schema format using json-schema.
->>>>
->>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->>>> ---
->>>>   .../memory-controllers/exynos5422-dmc.txt     |  84 -----------
->>>>   .../samsung,exynos5422-dmc.yaml               | 137 ++++++++++++++++++
->>>>   MAINTAINERS                                   |   2 +-
->>>
->>> I'm not an expert in this DT scripts and why it complains. Maybe it
->>> complains because the "samsung,exynos-ppmu" is defined in the .txt
->>> file... (?)
->>> Although, in general looks OK.
->>>
->>> Acked-by: Lukasz Luba <lukasz.luba@arm.com>
->>
->> I think the warning (triggered by DT_CHECKER_FLAGS=-m) can be ignored
->> because it complains about compatible in example which is not present in
->> the bindings. Usually it means someone wrote example not matching the
->> bindings (e.g. a typo in compatible) but here it is on purpose.
+On Tue, Aug 17, 2021 at 09:30:33PM -0700, Kees Cook wrote:
+> The original EHCI register struct used a trailing 0-element array for
+> addressing the N_PORTS-many available registers. However, after
+> commit a46af4ebf9ff ("USB: EHCI: define extension registers like normal ones")
+> the 0-element array started to overlap the USBMODE extension register.
 > 
-> Ultimately, it will mean the binding is undocumented (or a typo). But
-> right now, it means the binding is undocumented with a schema. It's
-> off by default because there's still about 80 warnings. It's turned on
-> for the bot so we don't add more. So please don't ignore it.
+> To avoid future compile-time warnings about accessing indexes within a
+> 0-element array, rearrange the struct to actually describe the expected
+> layout (max 15 registers) with a union. All offsets remain the same, and
+> bounds checking becomes possible on accesses to port_status and hostpc.
 > 
+> There are no binary differences, and struct offsets continue to match.
 
-By "Ignore" I meant here that it is a false positive, so it can be
-ignored. The warning is about compatible "samsung,exynos-ppmu" used in
-the example. However this exynos-ppmu is not part of this bindings and
-is documented elsewhere:
-Documentation/devicetree/bindings/devfreq/event/exynos-ppmu.txt
+Two comments...
 
+> ---
+>  include/linux/usb/ehci_def.h | 24 +++++++++++++-----------
+>  1 file changed, 13 insertions(+), 11 deletions(-)
+> 
+> diff --git a/include/linux/usb/ehci_def.h b/include/linux/usb/ehci_def.h
+> index 78e006355557..5398f571113b 100644
+> --- a/include/linux/usb/ehci_def.h
+> +++ b/include/linux/usb/ehci_def.h
+> @@ -45,6 +45,7 @@ struct ehci_caps {
+>  #define HCS_PORTROUTED(p)	((p)&(1 << 7))	/* true: port routing */
+>  #define HCS_PPC(p)		((p)&(1 << 4))	/* true: port power control */
+>  #define HCS_N_PORTS(p)		(((p)>>0)&0xf)	/* bits 3:0, ports on HC */
+> +#define HCS_N_PORTS_MAX		0xf		/* N_PORTS valid 0x1-0xF */
 
-Best regards,
-Krzysztof
+I would prefer to see this value in decimal.  It seems very odd to say 
+something like "The maximum number of ports is 0xf".
+
+>  
+>  	u32		hcc_params;      /* HCCPARAMS - offset 0x8 */
+>  /* EHCI 1.1 addendum */
+> @@ -126,8 +127,9 @@ struct ehci_regs {
+>  	u32		configured_flag;
+>  #define FLAG_CF		(1<<0)		/* true: we'll support "high speed" */
+>  
+> -	/* PORTSC: offset 0x44 */
+> -	u32		port_status[0];	/* up to N_PORTS */
+> +	union {
+> +		/* PORTSC: offset 0x44 */
+> +		u32	port_status[HCS_N_PORTS_MAX];
+
+Please don't lose the second comment.
+
+>  /* EHCI 1.1 addendum */
+>  #define PORTSC_SUSPEND_STS_ACK 0
+>  #define PORTSC_SUSPEND_STS_NYET 1
+> @@ -164,28 +166,28 @@ struct ehci_regs {
+>  #define PORT_CSC	(1<<1)		/* connect status change */
+>  #define PORT_CONNECT	(1<<0)		/* device connected */
+>  #define PORT_RWC_BITS   (PORT_CSC | PORT_PEC | PORT_OCC)
+> -
+> -	u32		reserved3[9];
+> -
+> -	/* USBMODE: offset 0x68 */
+> -	u32		usbmode;	/* USB Device mode */
+> +		struct {
+> +			u32	reserved3[9];
+> +			/* USBMODE: offset 0x68 */
+> +			u32	usbmode;	/* USB Device mode */
+> +		};
+>  #define USBMODE_SDIS	(1<<3)		/* Stream disable */
+>  #define USBMODE_BE	(1<<2)		/* BE/LE endianness select */
+>  #define USBMODE_CM_HC	(3<<0)		/* host controller mode */
+>  #define USBMODE_CM_IDLE	(0<<0)		/* idle state */
+> -
+> -	u32		reserved4[6];
+> +	};
+> +	u32		reserved4;
+>  
+>  /* Moorestown has some non-standard registers, partially due to the fact that
+>   * its EHCI controller has both TT and LPM support. HOSTPCx are extensions to
+>   * PORTSCx
+>   */
+>  	/* HOSTPC: offset 0x84 */
+> -	u32		hostpc[0];	/* HOSTPC extension */
+> +	u32		hostpc[HCS_N_PORTS_MAX];
+>  #define HOSTPC_PHCD	(1<<22)		/* Phy clock disable */
+>  #define HOSTPC_PSPD	(3<<25)		/* Port speed detection */
+>  
+> -	u32		reserved5[17];
+> +	u32		reserved5[2];
+>  
+>  	/* USBMODE_EX: offset 0xc8 */
+>  	u32		usbmode_ex;	/* USB Device mode extension */
+
+Otherwise okay.
+
+Alan Stern
