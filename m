@@ -2,63 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 840303EF6F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 02:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C217F3EF704
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 02:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237214AbhHRAj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 20:39:57 -0400
-Received: from smtprelay0052.hostedemail.com ([216.40.44.52]:36988 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232410AbhHRAjz (ORCPT
+        id S236481AbhHRAxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 20:53:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58579 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234919AbhHRAxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 20:39:55 -0400
-Received: from omf09.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 09BE7837F24D;
-        Wed, 18 Aug 2021 00:39:21 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id A5A501E04D4;
-        Wed, 18 Aug 2021 00:39:19 +0000 (UTC)
-Message-ID: <d96db1d04062a2a88eb51f319c2aef0a440755c3.camel@perches.com>
-Subject: Re: [PATCH] net/mlx4: Use ARRAY_SIZE to get an array's size
-From:   Joe Perches <joe@perches.com>
-To:     Jason Wang <wangborong@cdjrlc.com>, kuba@kernel.org
-Cc:     davem@davemloft.net, tariqt@nvidia.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 17 Aug 2021 17:39:18 -0700
-In-Reply-To: <20210817121106.44189-1-wangborong@cdjrlc.com>
-References: <20210817121106.44189-1-wangborong@cdjrlc.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Tue, 17 Aug 2021 20:53:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629247988;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OlpWao7vU3JW787/tdi8ZHrj116Lw/4JmcqJlEJe7xY=;
+        b=AiSX+O3x0kw/34uzreHMH3u4PqDgLNZg6rycUFManXN7j9VQqUyg235hYN02ru81vH94nO
+        feBzzBslVDkDqGFfQYXiUFlAjili09c3NfvvP5IHc+uS/BPfKmlP5X8gW8JDCux95HZxYz
+        z0gLSMdkwmoXC7i1ZnS9BAqXcx8bjvk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-267-OQKfPFW7OvaMR3DEyJhmbg-1; Tue, 17 Aug 2021 20:53:06 -0400
+X-MC-Unique: OQKfPFW7OvaMR3DEyJhmbg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F4CD18C8C00;
+        Wed, 18 Aug 2021 00:53:05 +0000 (UTC)
+Received: from T590 (ovpn-8-28.pek2.redhat.com [10.72.8.28])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DA3BC19D9D;
+        Wed, 18 Aug 2021 00:52:56 +0000 (UTC)
+Date:   Wed, 18 Aug 2021 08:52:51 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, bvanassche@acm.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        Keith Busch <kbusch@kernel.org>
+Subject: Re: [PATCH RFC] blk_mq: clear rq mapping in driver tags before
+ freeing rqs in sched tags
+Message-ID: <YRxZ44tu8o1MPruT@T590>
+References: <20210817022306.1622027-1-yukuai3@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.03
-X-Stat-Signature: dz48nf6d9o5s49khmid9bhzxjdkbjf3u
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: A5A501E04D4
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+jgr6IHto8RE+dUh89yfcZj1brUyoKS4E=
-X-HE-Tag: 1629247159-857219
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210817022306.1622027-1-yukuai3@huawei.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-08-17 at 20:11 +0800, Jason Wang wrote:
-> The ARRAY_SIZE macro is defined to get an array's size which is
-> more compact and more formal in linux source. Thus, we can replace
-> the long sizeof(arr)/sizeof(arr[0]) with the compact ARRAY_SIZE.
-[]
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/qp.c b/drivers/net/ethernet/mellanox/mlx4/qp.c
-[]
-> @@ -739,7 +739,7 @@ static void mlx4_cleanup_qp_zones(struct mlx4_dev *dev)
->  		int i;
->  
+On Tue, Aug 17, 2021 at 10:23:06AM +0800, Yu Kuai wrote:
+> If ioscheduler is not none, hctx->tags->rq[tag] will point to
+> hctx->sched_tags->static_rq[internel_tag] in blk_mq_get_driver_tag().
+> However, static_rq of sched_tags might be freed through switching
+> elevator or increasing nr_requests. Thus leave a window for some drivers
+> to get the freed request through blk_mq_tag_to_rq(tags, tag).
+
+I believe I have explained that it is bug of driver which has knowledge
+if the passed tag is valid or not. We are clear that driver need to cover
+race between normal completion and timeout/error handling.
+
 > 
->  		for (i = 0;
-> -		     i < sizeof(qp_table->zones_uids)/sizeof(qp_table->zones_uids[0]);
-> +		     i < ARRAY_SIZE(qp_table->zones_uids);
->  		     i++) {
+> It's difficult to fix this uaf from driver side, I'm thinking about
 
-trivia:  could now be a single line
+So far not see any analysis on why the uaf is triggered, care to
+investigate the reason?
 
-		for (i = 0; i < ARRAY_SIZE(qp_table->zones_uids); i++) {
+> following solution:
+> 
+> a. clear rq mapping in driver tags before freeing rqs in sched tags
 
+We have done that already, see blk_mq_free_rqs().
+
+> b. provide a new interface to replace blk_mq_tag_to_rq(), the new
+> interface will make sure it won't return freed rq.
+
+b) in your previous patch can't avoid uaf:
+
+https://lore.kernel.org/linux-block/YRHa%2FkeJ4pHP3hnL@T590/
+
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  block/blk-mq-sched.c | 10 +++++++++-
+>  block/blk-mq.c       | 13 +++++++++++--
+>  block/blk-mq.h       |  2 ++
+>  3 files changed, 22 insertions(+), 3 deletions(-)
+> 
+> diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
+> index 0f006cabfd91..9f11f17b8380 100644
+> --- a/block/blk-mq-sched.c
+> +++ b/block/blk-mq-sched.c
+> @@ -662,8 +662,16 @@ void blk_mq_sched_free_requests(struct request_queue *q)
+>  	int i;
+>  
+>  	queue_for_each_hw_ctx(q, hctx, i) {
+> -		if (hctx->sched_tags)
+> +		if (hctx->sched_tags) {
+> +			/*
+> +			 * We are about to free requests in 'sched_tags[]',
+> +			 * however, 'tags[]' may still point to these requests.
+> +			 * Thus we need to clear rq mapping in 'tags[]' before
+> +			 * freeing requests in sched_tags[].
+> +			 */
+> +			blk_mq_clear_rq_mapping(q->tag_set, hctx->tags, i);
+>  			blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i);
+
+blk_mq_clear_rq_mapping() has been called in blk_mq_free_rqs()
+for clearing the request reference.
+
+In theory, we only need to clear it in case of real io sched, but
+so far we do it for both io sched and none.
+
+> +		}
+>  	}
+>  }
+>  
+> diff --git a/block/blk-mq.c b/block/blk-mq.c
+> index d185be64c85f..b1e30464f87f 100644
+> --- a/block/blk-mq.c
+> +++ b/block/blk-mq.c
+> @@ -2314,8 +2314,8 @@ static size_t order_to_size(unsigned int order)
+>  }
+>  
+>  /* called before freeing request pool in @tags */
+> -static void blk_mq_clear_rq_mapping(struct blk_mq_tag_set *set,
+> -		struct blk_mq_tags *tags, unsigned int hctx_idx)
+> +void blk_mq_clear_rq_mapping(struct blk_mq_tag_set *set,
+> +			     struct blk_mq_tags *tags, unsigned int hctx_idx)
+>  {
+>  	struct blk_mq_tags *drv_tags = set->tags[hctx_idx];
+>  	struct page *page;
+> @@ -3632,6 +3632,15 @@ int blk_mq_update_nr_requests(struct request_queue *q, unsigned int nr)
+>  			if (!ret && blk_mq_is_sbitmap_shared(set->flags))
+>  				blk_mq_tag_resize_shared_sbitmap(set, nr);
+>  		} else {
+> +			/*
+> +			 * We are about to free requests in 'sched_tags[]',
+> +			 * however, 'tags[]' may still point to these requests.
+> +			 * Thus we need to clear rq mapping in 'tags[]' before
+> +			 * freeing requests in sched_tags[].
+> +			 */
+> +			if (nr > hctx->sched_tags->nr_tags)
+> +				blk_mq_clear_rq_mapping(set, hctx->tags, i);
+> +
+>  			ret = blk_mq_tag_update_depth(hctx, &hctx->sched_tags,
+>  							nr, true);
+
+The request reference has been cleared too in blk_mq_tag_update_depth():
+
+	blk_mq_tag_update_depth
+		blk_mq_free_rqs
+			blk_mq_clear_rq_mapping
+
+
+Thanks, 
+Ming
 
