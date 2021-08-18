@@ -2,167 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D85453F0B4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 20:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2BA3F0B51
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 20:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232854AbhHRSx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 14:53:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbhHRSxz (ORCPT
+        id S232657AbhHRS4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 14:56:38 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:42660 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229558AbhHRS4e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 14:53:55 -0400
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A74F3C0613D9
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 11:53:20 -0700 (PDT)
-Received: by mail-ua1-x935.google.com with SMTP id x19so1428497uat.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 11:53:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VVLIclKpwLs/EllaJbXfDnAEhIbk0tUG6YwA3fwwsCM=;
-        b=VjlI5vzQcP68jcedrwYoawmC/G17u6wAsVnk2VtuJccgIigT3lKCeDhz2qPLg4HV8i
-         sFM1WZNVUbOUTdV9g/SYBPp6518FCH7aaj4RxhvJs0KRHb8kRR8F952Ls1EKsBhMOR7r
-         vjO308Z+rRostL8ZJjuA23xq8hm4Oi5M9W6uo=
+        Wed, 18 Aug 2021 14:56:34 -0400
+Received: by mail-ot1-f44.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so5304834otk.9;
+        Wed, 18 Aug 2021 11:55:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VVLIclKpwLs/EllaJbXfDnAEhIbk0tUG6YwA3fwwsCM=;
-        b=uni2w33NqIa40T37PyAqvJIGMXbMoUMf3NYeYUss3Pl+dBz2k3Sp52Y98269Vi1MbT
-         o6HNtQXA56lR8M1WK2jMhtq6qGjt7JmWyQzfYrZAlGDPSM8Zr1E8I6OoV9SsmeosQHd2
-         cydTAtlXrSU1rIWIWrZwqXpLIyQqYfJnqtUnlFDqjYErGagvCKfbqBBxbEy/pICLUAMk
-         D8vfAHTZLDABquLLuFesncoYR+XVksj8eBDABFgL/oZB/PWpvYEk82YrNHuvpCo7KNo0
-         JddrIYaaZAxLUuQkkl1ih1xC+pGO16AXmH3mF+ptcr2rQhz79X1KyuQXxzKMIN/lV2dk
-         HwtQ==
-X-Gm-Message-State: AOAM5304SNhxrAQSVnJWBU0nxbVHAf/n2TW2oDfgeRzdo4UZeVadhwpq
-        AajxMvPo4HPZAxSFQfOGGQ00dvxx9DQDcxd2+Yztdg==
-X-Google-Smtp-Source: ABdhPJw9qBXplks3neJYHjam2XpKpKF9oCj3I1kKEha/Gcfljy/ZP8Wqa52TxoXoGqXRYSN+XnIRi+y/yNKBN2gEN5A=
-X-Received: by 2002:ab0:3a8f:: with SMTP id r15mr8238862uaw.13.1629312799709;
- Wed, 18 Aug 2021 11:53:19 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xWsYvh/LTYe0LzAvjbl9HXu1rWTJ4xzE3ozlxUWmos0=;
+        b=mztIjb1sYA+aATtwZuIqT84FJCFyuGa72WSsYDF6L3E1za/8pDJ8ExSEPYv91+CWqy
+         nyWXb5PQC0Xshr9F0/xnlgaktuavwRz7rYm/bYutAxVQnAWMJlLIm6fpH4TPn48wmcrf
+         voPq3nZoTLxa4eH5Pu1uk6l8sHqladFrW+NDrFNhWXteekR0BkfnehLwwHYX3klCwZrL
+         lDjDl7hB8vTXu7/al3WwOfk8aK4MzqDuHhHU42IcBMGVVhU/cYHavCWCVQ/rWyEubzih
+         Bn/SYFs8AFu7PEgOojJDO2EOh/x28FVGvhg0pxUUnjSkl9i9IV3o+V8gln5zSmLxo7BU
+         kNIA==
+X-Gm-Message-State: AOAM530xOcO6yS9giYD0Dx9Mes1fhH2MZY6X5Xt56AMmca1zsW5u+5KI
+        w2eFWfHbRD2aiBXuRPH2Jg==
+X-Google-Smtp-Source: ABdhPJycZFAQsFLqSs0WqCDFx7NVrqGuvB4UVAsngphoqXwLVv7ukzVwgxjimFWudflox7pHc07jwQ==
+X-Received: by 2002:a05:6830:14d5:: with SMTP id t21mr7949953otq.271.1629312958716;
+        Wed, 18 Aug 2021 11:55:58 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id x3sm108989ooe.32.2021.08.18.11.55.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 11:55:58 -0700 (PDT)
+Received: (nullmailer pid 2912057 invoked by uid 1000);
+        Wed, 18 Aug 2021 18:55:57 -0000
+Date:   Wed, 18 Aug 2021 13:55:57 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: memory: convert H8/300 bus controller to
+ dtschema
+Message-ID: <YR1XvR50rcUBafts@robh.at.kernel.org>
+References: <20210818113325.85216-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-References: <20210818133400.830078-1-mszeredi@redhat.com> <20210818133400.830078-3-mszeredi@redhat.com>
- <CAHk-=wga+3G+mR-UyQ=pwqN2iS04k-O61bssvzyVk+vkdZkd1Q@mail.gmail.com>
-In-Reply-To: <CAHk-=wga+3G+mR-UyQ=pwqN2iS04k-O61bssvzyVk+vkdZkd1Q@mail.gmail.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 18 Aug 2021 20:53:08 +0200
-Message-ID: <CAJfpeguQxpd6Wgc0Jd3ks77zcsAv_bn0q17L3VNnnmPKu11t8A@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] ovl: enable RCU'd ->get_acl()
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        garyhuang <zjh.20052005@163.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210818113325.85216-1-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Aug 2021 at 20:34, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Wed, Aug 18, 2021 at 6:34 AM Miklos Szeredi <mszeredi@redhat.com> wrote:
-> >
-> >  struct posix_acl *get_cached_acl_rcu(struct inode *inode, int type)
-> >  {
-> > -       return rcu_dereference(*acl_by_type(inode, type));
-> > +       struct posix_acl *acl = rcu_dereference(*acl_by_type(inode, type));
-> > +
-> > +       if (acl == ACL_DONT_CACHE)
-> > +               acl = inode->i_op->get_acl(inode, type, LOOKUP_RCU);
-> > +
-> > +       return acl;
-> >  }
->
-> What? No.
->
-> You just made get_cached_acl_rcu() return ERR_PTR(-EINVAL) for most filesystems.
->
-> So now you've changed the behavior of get_cached_acl_rcu() ENTIRELY.
->
-> It used to return either
->  (a) the ACL
->  (b) NULL
->  (c) ACL_DONT_CACHE/ACL_NOT_CACHED
->
-> but now you've changed that (c) case to "ACL_NOT_CACHED or random error value".
->
-> You can't just mix these kinds of entirely different return values like that.
->
-> So no, this is not at all acceptable.
->
-> I would suggest:
->
->  (a) make the first patch actually test explicitly for LOOKUP_RCU, so
-> that it's clear to the filesystems what is going on.
->
->      So instead of that pattern of
->
->         if (flags)
->                 return ERR_PTR(-EINVAL);
->
->      I'd suggest using
->
->         if (flags & LOOKUP_RCU)
->                 return ERR_PTR(-ECHILD);
+On Wed, Aug 18, 2021 at 01:33:25PM +0200, Krzysztof Kozlowski wrote:
+> Convert H8/300 bus controller bindings to DT schema format using
+> json-schema.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>  .../memory-controllers/renesas,h8300-bsc.txt  | 12 -------
+>  .../memory-controllers/renesas,h8300-bsc.yaml | 35 +++++++++++++++++++
+>  2 files changed, 35 insertions(+), 12 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/renesas,h8300-bsc.txt
+>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/renesas,h8300-bsc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/memory-controllers/renesas,h8300-bsc.txt b/Documentation/devicetree/bindings/memory-controllers/renesas,h8300-bsc.txt
+> deleted file mode 100644
+> index cdf406c902e2..000000000000
+> --- a/Documentation/devicetree/bindings/memory-controllers/renesas,h8300-bsc.txt
+> +++ /dev/null
+> @@ -1,12 +0,0 @@
+> -* H8/300 bus controller
+> -
+> -Required properties:
+> -  - compatible: Must be "renesas,h8300-bsc".
+> -  - reg: Base address and length of BSC registers.
+> -
+> -Example.
+> -	bsc: memory-controller@fee01e {
+> -		compatible = "renesas,h8300h-bsc", "renesas,h8300-bsc";
+> -		reg = <0xfee01e 8>;
+> -	};
+> -
+> diff --git a/Documentation/devicetree/bindings/memory-controllers/renesas,h8300-bsc.yaml b/Documentation/devicetree/bindings/memory-controllers/renesas,h8300-bsc.yaml
+> new file mode 100644
+> index 000000000000..70487bb685cb
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/memory-controllers/renesas,h8300-bsc.yaml
+> @@ -0,0 +1,35 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/memory-controllers/renesas,h8300-bsc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: H8/300 bus controller
+> +
+> +maintainers:
+> +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> +  - Yoshinori Sato <ysato@users.sourceforge.jp>
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: renesas,h8300-bsc
+> +      - items:
+> +          - const: renesas,h8300h-bsc
+> +          - const: renesas,h8300-bsc
 
-Okay.
+Seems what's actually in use is:
 
->
->    so that it actually matches what lookup does for the "I can't do
-> this under RCU", and so that any reader of the code understands what
-> "flags" is all about.
->
-> And then
->
->  (b) make the get_cached_acl_rcu() case handle errors _properly_
-> instead of mixing the special ACL cache markers with error returns.
->
->      So instead of
->
->         if (acl == ACL_DONT_CACHE)
->                 acl = inode->i_op->get_acl(inode, type, LOOKUP_RCU);
->
->      maybe something more along the lines of
->
->         if (acl == ACL_DONT_CACHE) {
->                 struct posix_acl *lookup_acl;
->                 lookup_acl = inode->i_op->get_acl(inode, type, LOOKUP_RCU);
->                 if (!IS_ERR(lookup_acl))
->                         acl = lookup_acl;
->         }
->
->      or whatever.
+items:
+  - enum: 
+      - renesas,h8300h-bsc
+      - renesas,h8s-bsc
+  - const: renesas,h8300-bsc
 
-Yes, that's better.   Just to explain why my version was not actually
-buggy:  ACL_DONT_CACHE is only used in overlayfs and not in any other
-filesystem, so ->get_acl(... LOOKUP_RCU) not returning an error was
-implicit in the implementation.   But your version makes that error
-handling explicit, which is definitely an improvement.
-
->
-> I disagree with Al that a "bool" would be better. I think LOOKUP_RCU
-> is good documentation, and consistent with lookup, but it really needs
-> to be *consistent*.  Thus that
->
->         if (flags & LOOKUP_RCU)
->                 return ERR_PTR(-ECHILD);
->
-> pattern, not some "test underscibed flags, return -EINVAL" pattern
-> that looks entirely nonsensical.
-
-Al suggested:
-
- if (rcu)
-   return ERR_PTR(-ECHILD);
-
-which is also good documentation.  It also makes sure that "flags" is
-not overloaded with other functionality (which was the reason for the
-defensive "if any flag set return error" pattern).
-
-Thanks,
-Miklos
+Rob
