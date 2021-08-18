@@ -2,69 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3E03F0B49
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 20:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D85453F0B4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 20:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232918AbhHRSwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 14:52:08 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:40784 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbhHRSwD (ORCPT
+        id S232854AbhHRSx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 14:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229952AbhHRSxz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 14:52:03 -0400
-Received: by mail-ot1-f49.google.com with SMTP id h63-20020a9d14450000b02904ce97efee36so5293629oth.7;
-        Wed, 18 Aug 2021 11:51:28 -0700 (PDT)
+        Wed, 18 Aug 2021 14:53:55 -0400
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A74F3C0613D9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 11:53:20 -0700 (PDT)
+Received: by mail-ua1-x935.google.com with SMTP id x19so1428497uat.2
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 11:53:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VVLIclKpwLs/EllaJbXfDnAEhIbk0tUG6YwA3fwwsCM=;
+        b=VjlI5vzQcP68jcedrwYoawmC/G17u6wAsVnk2VtuJccgIigT3lKCeDhz2qPLg4HV8i
+         sFM1WZNVUbOUTdV9g/SYBPp6518FCH7aaj4RxhvJs0KRHb8kRR8F952Ls1EKsBhMOR7r
+         vjO308Z+rRostL8ZJjuA23xq8hm4Oi5M9W6uo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ckY8TfLizlLki6TSxo5wp0folJ6pA7dMxy8jTNP3IZY=;
-        b=DZEDb/gQfS4iusdxG8OgNDO26DcJC9k4U++pQrF6br8pDd0RlKGX91pF+ZFKAlbFkJ
-         MEfW0+fI1OQ5dryRmZ+l8fsYYKdAMMLiNBJ/0XgN5mDDYUBckzroOpJtBOOmzq4ti0LU
-         0iqrqEzzh8okrjzjUwZtKLWyxibly+letAuryOrBwg8vofLJs2t+tLlYPU91ZegnvNWX
-         51qtBex6QoGy1jETM+oJYqSObZzFVrDQgwvWGZWPU+zqYLA+93j7iA+5seo1Fr8zrgoL
-         2fFIJEYO/3MPNTNHCyE4nKUV79NWhSNr4myHGOFoRTcKGImMPmTgIxMKfKHBPP/QDwjX
-         NJwQ==
-X-Gm-Message-State: AOAM532LVWTVzG4B6KddcxJV0z7ZgyVeRLeVjZGzNmGIvIicWtliDbwU
-        w/XOZuptw4xnnO+nJDwMVw==
-X-Google-Smtp-Source: ABdhPJyQZCJea37RRp0wPPTpjcG5B5YEc2fW3prsf1QYQ/lhvUwj6e81S4Bo4n6TCsH/D9uM6sETTw==
-X-Received: by 2002:a05:6830:2428:: with SMTP id k8mr6223477ots.57.1629312688240;
-        Wed, 18 Aug 2021 11:51:28 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id g10sm81438oof.37.2021.08.18.11.51.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 11:51:27 -0700 (PDT)
-Received: (nullmailer pid 2905622 invoked by uid 1000);
-        Wed, 18 Aug 2021 18:51:26 -0000
-Date:   Wed, 18 Aug 2021 13:51:26 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: memory: convert TI a8xx DDR2/mDDR memory
- controller to dtschema
-Message-ID: <YR1WrqkZGZaqDQzt@robh.at.kernel.org>
-References: <20210818113248.85084-1-krzysztof.kozlowski@canonical.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VVLIclKpwLs/EllaJbXfDnAEhIbk0tUG6YwA3fwwsCM=;
+        b=uni2w33NqIa40T37PyAqvJIGMXbMoUMf3NYeYUss3Pl+dBz2k3Sp52Y98269Vi1MbT
+         o6HNtQXA56lR8M1WK2jMhtq6qGjt7JmWyQzfYrZAlGDPSM8Zr1E8I6OoV9SsmeosQHd2
+         cydTAtlXrSU1rIWIWrZwqXpLIyQqYfJnqtUnlFDqjYErGagvCKfbqBBxbEy/pICLUAMk
+         D8vfAHTZLDABquLLuFesncoYR+XVksj8eBDABFgL/oZB/PWpvYEk82YrNHuvpCo7KNo0
+         JddrIYaaZAxLUuQkkl1ih1xC+pGO16AXmH3mF+ptcr2rQhz79X1KyuQXxzKMIN/lV2dk
+         HwtQ==
+X-Gm-Message-State: AOAM5304SNhxrAQSVnJWBU0nxbVHAf/n2TW2oDfgeRzdo4UZeVadhwpq
+        AajxMvPo4HPZAxSFQfOGGQ00dvxx9DQDcxd2+Yztdg==
+X-Google-Smtp-Source: ABdhPJw9qBXplks3neJYHjam2XpKpKF9oCj3I1kKEha/Gcfljy/ZP8Wqa52TxoXoGqXRYSN+XnIRi+y/yNKBN2gEN5A=
+X-Received: by 2002:ab0:3a8f:: with SMTP id r15mr8238862uaw.13.1629312799709;
+ Wed, 18 Aug 2021 11:53:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818113248.85084-1-krzysztof.kozlowski@canonical.com>
+References: <20210818133400.830078-1-mszeredi@redhat.com> <20210818133400.830078-3-mszeredi@redhat.com>
+ <CAHk-=wga+3G+mR-UyQ=pwqN2iS04k-O61bssvzyVk+vkdZkd1Q@mail.gmail.com>
+In-Reply-To: <CAHk-=wga+3G+mR-UyQ=pwqN2iS04k-O61bssvzyVk+vkdZkd1Q@mail.gmail.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 18 Aug 2021 20:53:08 +0200
+Message-ID: <CAJfpeguQxpd6Wgc0Jd3ks77zcsAv_bn0q17L3VNnnmPKu11t8A@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] ovl: enable RCU'd ->get_acl()
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        garyhuang <zjh.20052005@163.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Aug 2021 13:32:48 +0200, Krzysztof Kozlowski wrote:
-> Convert Texas Instruments da8xx DDR2/mDDR memory controller bindings to
-> DT schema format using json-schema.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  .../memory-controllers/ti,da8xx-ddrctl.yaml   | 35 +++++++++++++++++++
->  .../memory-controllers/ti-da8xx-ddrctl.txt    | 20 -----------
->  2 files changed, 35 insertions(+), 20 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,da8xx-ddrctl.yaml
->  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/ti-da8xx-ddrctl.txt
-> 
+On Wed, 18 Aug 2021 at 20:34, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Wed, Aug 18, 2021 at 6:34 AM Miklos Szeredi <mszeredi@redhat.com> wrote:
+> >
+> >  struct posix_acl *get_cached_acl_rcu(struct inode *inode, int type)
+> >  {
+> > -       return rcu_dereference(*acl_by_type(inode, type));
+> > +       struct posix_acl *acl = rcu_dereference(*acl_by_type(inode, type));
+> > +
+> > +       if (acl == ACL_DONT_CACHE)
+> > +               acl = inode->i_op->get_acl(inode, type, LOOKUP_RCU);
+> > +
+> > +       return acl;
+> >  }
+>
+> What? No.
+>
+> You just made get_cached_acl_rcu() return ERR_PTR(-EINVAL) for most filesystems.
+>
+> So now you've changed the behavior of get_cached_acl_rcu() ENTIRELY.
+>
+> It used to return either
+>  (a) the ACL
+>  (b) NULL
+>  (c) ACL_DONT_CACHE/ACL_NOT_CACHED
+>
+> but now you've changed that (c) case to "ACL_NOT_CACHED or random error value".
+>
+> You can't just mix these kinds of entirely different return values like that.
+>
+> So no, this is not at all acceptable.
+>
+> I would suggest:
+>
+>  (a) make the first patch actually test explicitly for LOOKUP_RCU, so
+> that it's clear to the filesystems what is going on.
+>
+>      So instead of that pattern of
+>
+>         if (flags)
+>                 return ERR_PTR(-EINVAL);
+>
+>      I'd suggest using
+>
+>         if (flags & LOOKUP_RCU)
+>                 return ERR_PTR(-ECHILD);
 
-Applied, thanks!
+Okay.
+
+>
+>    so that it actually matches what lookup does for the "I can't do
+> this under RCU", and so that any reader of the code understands what
+> "flags" is all about.
+>
+> And then
+>
+>  (b) make the get_cached_acl_rcu() case handle errors _properly_
+> instead of mixing the special ACL cache markers with error returns.
+>
+>      So instead of
+>
+>         if (acl == ACL_DONT_CACHE)
+>                 acl = inode->i_op->get_acl(inode, type, LOOKUP_RCU);
+>
+>      maybe something more along the lines of
+>
+>         if (acl == ACL_DONT_CACHE) {
+>                 struct posix_acl *lookup_acl;
+>                 lookup_acl = inode->i_op->get_acl(inode, type, LOOKUP_RCU);
+>                 if (!IS_ERR(lookup_acl))
+>                         acl = lookup_acl;
+>         }
+>
+>      or whatever.
+
+Yes, that's better.   Just to explain why my version was not actually
+buggy:  ACL_DONT_CACHE is only used in overlayfs and not in any other
+filesystem, so ->get_acl(... LOOKUP_RCU) not returning an error was
+implicit in the implementation.   But your version makes that error
+handling explicit, which is definitely an improvement.
+
+>
+> I disagree with Al that a "bool" would be better. I think LOOKUP_RCU
+> is good documentation, and consistent with lookup, but it really needs
+> to be *consistent*.  Thus that
+>
+>         if (flags & LOOKUP_RCU)
+>                 return ERR_PTR(-ECHILD);
+>
+> pattern, not some "test underscibed flags, return -EINVAL" pattern
+> that looks entirely nonsensical.
+
+Al suggested:
+
+ if (rcu)
+   return ERR_PTR(-ECHILD);
+
+which is also good documentation.  It also makes sure that "flags" is
+not overloaded with other functionality (which was the reason for the
+defensive "if any flag set return error" pattern).
+
+Thanks,
+Miklos
