@@ -2,214 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C47623EFE53
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BA223EFE50
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239499AbhHRH4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 03:56:18 -0400
-Received: from mail-lf1-f46.google.com ([209.85.167.46]:33508 "EHLO
-        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239275AbhHRH4I (ORCPT
+        id S239253AbhHRH4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 03:56:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50157 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238342AbhHRH4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 03:56:08 -0400
-Received: by mail-lf1-f46.google.com with SMTP id p38so2894758lfa.0;
-        Wed, 18 Aug 2021 00:55:32 -0700 (PDT)
+        Wed, 18 Aug 2021 03:56:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629273326;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BYRAiIatE3uIXVhGsrzHYNlVabGLMIXPtsHVU4zwers=;
+        b=RM8dQVkP1XsKFCIfkhlsUJIh/Fx3eYQUnKMo8PZOVXIjRnMCnuLzC35y4/L5MvuWcuNwT4
+        3ll+GFakHo03yLz5IfWZ4aGB17u+LkKEYDz8WpilGYGrzAYrDs43bVNAlYPwNwWkmOJU8F
+        ps9fBdWwrahyFJQFIEQi8HEl7hoOWCY=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-497-SP69ypUdO9uQyp7jTfjP-A-1; Wed, 18 Aug 2021 03:55:25 -0400
+X-MC-Unique: SP69ypUdO9uQyp7jTfjP-A-1
+Received: by mail-wm1-f71.google.com with SMTP id b196-20020a1c80cd0000b02902e677003785so1935907wmd.7
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 00:55:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OKNqcjyMKvezCUeqQ9JLkZ4cJ3Qp1tm5Mjp0xQPfVdk=;
-        b=KL93TLEfVVWKQlk9QF5xuI3dfpCI8RPbYAw0WT8QHMc7FcyQENZutcXYw7kuq1EH4Z
-         vcyVg7ZRehOhMA1W7SusE5Trf4TSXxrE2gtEij0mGVbVGz9CwsUhk+Ge5WZtfVq10yHB
-         kZAha8RNscVFV8aZa8m+obW9FYmp1M9kVmdnXgVqrD7QiEM0zdeD41v+yD+d0mcSMOw1
-         F8cORnoxfY6R3zppmB2yv39hNvbZmEg9pVvfn67HYodqzuYaGMhKj6ln79mvMPretcuT
-         PfWNgZPOeU40z6hqrfEr+y62Bb3PeEmVsg0VN22dWnrvv7I3RUODPF7ZTxQcQs7NxXmA
-         aLLw==
-X-Gm-Message-State: AOAM533vwkQcuayi3Yci5yNHmL+2eGfPXLPsBx0HccC9VjEgtbVtAOBI
-        nA5CIEn8fi3HcPwEpAOl6YcQtvg3EtgeuD3o0Yc=
-X-Google-Smtp-Source: ABdhPJzvrTUEsuu+UliVD0ZQ+G9FKD87vbsYb/+XxmogarBDMIyGh6vgVKWqgJPt1W2rNzsulcpbB/8ovtLoJb5k9UY=
-X-Received: by 2002:ac2:5ec7:: with SMTP id d7mr5435897lfq.234.1629273332108;
- Wed, 18 Aug 2021 00:55:32 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=BYRAiIatE3uIXVhGsrzHYNlVabGLMIXPtsHVU4zwers=;
+        b=B0IJKOFHe1t4q8pJ3WqsBXBgXOGqHLhj6nIV+nAPyj6MYxEl3IMwXCIRg6XGTupubr
+         vI4wQmmp3TDRL4QY10pC1BYqnsHQfsTnPUCdHHO+rwVFpHOJtkdRApg2KxIZtUqgXHPT
+         yXTzOQ4fc39z+fg1JF/okry3df2SbfJkRWH5aeTlQxfk7L2Fko0VO1M9oDgcKLVb9fp7
+         8R3wH7muWdhr7wWywmQBKmHKsgJJXTSxY6VOxQFAHPGkGojSv+ayzuu7rg2cgvX1NyAz
+         Hn67/tk3fI/egilMOw7x+lceLJxvrbUD0TaKg/9xVSMxTUCF5lzryybkYhYImnYo3HiG
+         LVgg==
+X-Gm-Message-State: AOAM530ilmtOFbu36Rl4haukQX+ge281kQaui8loVc72lbrTZkAJidw6
+        O669lHfJsa7LuV7SJv2gEdkDpf4gdoFQMQh9POqFMX0euKD6f73bx2j+hcTYz7JVkIxY5JN7h01
+        dBhPF/9HRqkWTmtiR99Ba4vCGw0cdjhwNVhbngvXYenNJvICvXMpzvy/lzGFIGKeJqIsDvL3L
+X-Received: by 2002:a05:600c:4f13:: with SMTP id l19mr6960275wmq.171.1629273324135;
+        Wed, 18 Aug 2021 00:55:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJykaIJUh3V6bo2I6EXx8+Adkp+WDStWpE1etNSQpAJhhF9uRfYxFYFKYgNeDxWvPw4aK9wI0g==
+X-Received: by 2002:a05:600c:4f13:: with SMTP id l19mr6960251wmq.171.1629273323924;
+        Wed, 18 Aug 2021 00:55:23 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6417.dip0.t-ipconnect.de. [91.12.100.23])
+        by smtp.gmail.com with ESMTPSA id c9sm5018941wrm.43.2021.08.18.00.55.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Aug 2021 00:55:23 -0700 (PDT)
+Subject: Re: [PATCH 1/2] mm: hwpoison: don't drop slab caches for offlining
+ non-LRU page
+To:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>
+Cc:     Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        Yang Shi <shy828301@gmail.com>,
+        "osalvador@suse.de" <osalvador@suse.de>,
+        "tdmackey@twitter.com" <tdmackey@twitter.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210816180909.3603-1-shy828301@gmail.com>
+ <20210818063042.GA2310427@u2004>
+ <dd225992-ec89-a911-b318-f4a91c70ed42@redhat.com>
+ <20210818075316.GB501393@hori.linux.bs1.fc.nec.co.jp>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <c0082d37-dd36-5d83-f759-cf05a9e00b77@redhat.com>
+Date:   Wed, 18 Aug 2021 09:55:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210818034010.800652-1-keescook@chromium.org>
- <CAMZ6RqK4Rn4d-1CZsg9vJiAMHhxN6fgcqukdHpGwXoGTyNVr_Q@mail.gmail.com> <202108172320.1540EC10C@keescook>
-In-Reply-To: <202108172320.1540EC10C@keescook>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Wed, 18 Aug 2021 16:55:20 +0900
-Message-ID: <CAMZ6RqLecbytJFQDC35n7YiqBbrB3--POofnXFeH77Zi2xzqWA@mail.gmail.com>
-Subject: Re: [PATCH] can: etas_es58x: Replace 0-element raw_msg array
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
-        linux-can <linux-can@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210818075316.GB501393@hori.linux.bs1.fc.nec.co.jp>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed. 18 Aug 2021 at 15:48, Kees Cook <keescook@chromium.org> wrote:
-> On Wed, Aug 18, 2021 at 02:13:51PM +0900, Vincent MAILHOL wrote:
-> > On Wed. 18 Aug 2021 at 12:40, Kees Cook <keescook@chromium.org> wrote:
-> > > While raw_msg isn't a fixed size, it does have a maximum size. Adjust the
-> > > struct to represent this and avoid the following warning when building
-> > > with -Wzero-length-bounds:
-> > >
-> > > drivers/net/can/usb/etas_es58x/es58x_fd.c: In function 'es58x_fd_tx_can_msg':
-> > > drivers/net/can/usb/etas_es58x/es58x_fd.c:360:35: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[]'} [-Wzero-length-bounds]
-> > >   360 |  tx_can_msg = (typeof(tx_can_msg))&es58x_fd_urb_cmd->raw_msg[msg_len];
-> > >       |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > In file included from drivers/net/can/usb/etas_es58x/es58x_core.h:22,
-> > >                  from drivers/net/can/usb/etas_es58x/es58x_fd.c:17:
-> > > drivers/net/can/usb/etas_es58x/es58x_fd.h:231:6: note: while referencing 'raw_msg'
-> > >   231 |   u8 raw_msg[0];
-> > >       |      ^~~~~~~
-> > >
-> > > Cc: Wolfgang Grandegger <wg@grandegger.com>
-> > > Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> > > Cc: "David S. Miller" <davem@davemloft.net>
-> > > Cc: Jakub Kicinski <kuba@kernel.org>
-> > > Cc: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>
-> > > Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-> > > Cc: linux-can@vger.kernel.org
-> > > Cc: netdev@vger.kernel.org
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > ---
-> > >  drivers/net/can/usb/etas_es58x/es581_4.h  | 2 +-
-> > >  drivers/net/can/usb/etas_es58x/es58x_fd.h | 2 +-
-> > >  2 files changed, 2 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/net/can/usb/etas_es58x/es581_4.h b/drivers/net/can/usb/etas_es58x/es581_4.h
-> > > index 4bc60a6df697..af38c4938859 100644
-> > > --- a/drivers/net/can/usb/etas_es58x/es581_4.h
-> > > +++ b/drivers/net/can/usb/etas_es58x/es581_4.h
-> > > @@ -192,7 +192,7 @@ struct es581_4_urb_cmd {
-> > >                 struct es581_4_rx_cmd_ret rx_cmd_ret;
-> > >                 __le64 timestamp;
-> > >                 u8 rx_cmd_ret_u8;
-> > > -               u8 raw_msg[0];
-> > > +               u8 raw_msg[USHRT_MAX];
-> > >         } __packed;
-> > >
-> > >         __le16 reserved_for_crc16_do_not_use;
-> > > diff --git a/drivers/net/can/usb/etas_es58x/es58x_fd.h b/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> > > index ee18a87e40c0..e0319b8358ef 100644
-> > > --- a/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> > > +++ b/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> > > @@ -228,7 +228,7 @@ struct es58x_fd_urb_cmd {
-> > >                 struct es58x_fd_tx_ack_msg tx_ack_msg;
-> > >                 __le64 timestamp;
-> > >                 __le32 rx_cmd_ret_le32;
-> > > -               u8 raw_msg[0];
-> > > +               u8 raw_msg[USHRT_MAX];
-> > >         } __packed;
-> > >
-> > >         __le16 reserved_for_crc16_do_not_use;
-> > > --
-> > > 2.30.2
-> >
-> > raw_msg is part of a union so its maximum size is implicitly the
-> > biggest size of the other member of that union:
->
-> Yup, understood. See below...
->
-> >
-> > | struct es58x_fd_urb_cmd {
-> > |     __le16 SOF;
-> > |    u8 cmd_type;
-> > |    u8 cmd_id;
-> > |    u8 channel_idx;
-> > |    __le16 msg_len;
-> > |
-> > |    union {
-> > |        struct es58x_fd_tx_conf_msg tx_conf_msg;
-> > |        u8 tx_can_msg_buf[ES58X_FD_TX_BULK_MAX * ES58X_FD_CANFD_TX_LEN];
-> > |        u8 rx_can_msg_buf[ES58X_FD_RX_BULK_MAX * ES58X_FD_CANFD_RX_LEN];
-> > |        struct es58x_fd_echo_msg echo_msg[ES58X_FD_ECHO_BULK_MAX];
-> > |        struct es58x_fd_rx_event_msg rx_event_msg;
-> > |        struct es58x_fd_tx_ack_msg tx_ack_msg;
-> > |        __le64 timestamp;
-> > |        __le32 rx_cmd_ret_le32;
-> > |        u8 raw_msg[0];
-> > |    } __packed;
-> > |
-> > |    __le16 reserved_for_crc16_do_not_use;
-> > | } __packed;
-> >
-> > ram_msg can then be used to manipulate the other fields at the byte level.
-> > I am sorry but I fail to understand why this is an issue.
->
-> The issue is with using a 0-element array (these are being removed from
-> the kernel[1] so we can add -Warray-bounds). Normally in this situation I
-> would replace the 0-element array with a flexible array, but this
-> case is unusual in several ways:
->
-> - There is a trailing struct member (reserved_for_crc16_do_not_use),
->   which is never accessed (good), and documented as "please never access
->   this".
+On 18.08.21 09:53, HORIGUCHI NAOYA(堀口 直也) wrote:
+> On Wed, Aug 18, 2021 at 09:24:01AM +0200, David Hildenbrand wrote:
+> ...
+>>
+>> Might we want to add a TODO in the code? We have a similar one in
+>> mm/page_isolation.c:set_migratetype_isolate() and it's certainly a reminder
+>> that something of value is missing.
+> 
+> Yes, that will be helpful.  The below's what's in my mind, but if someone
+> has better idea, that's fine.
+> 
+> @@ -296,11 +296,9 @@ void shake_page(struct page *p, int access)
+>   	}
+>   	
+>   	/*
+> -	 * Only call shrink_node_slabs here (which would also shrink
+> -	 * other caches) if access is not potentially fatal.
+> +	 * TODO: Could shrink slab caches here if a lightweight range-based
+> +	 * shrinker will be available.
+>   	 */
+> -	if (access)
+> -		drop_slab_node(page_to_nid(p));
+>   }
+>   EXPORT_SYMBOL_GPL(shake_page);
 
-Yes. And FYI, this field is here so that
-| sizeof(struct es58x_fd_urb_cmd)
-returns the correct maximum size.
+Just what I had in mind, thanks!
 
-And, of course, because this structure will be sent to the
-device, there is no possibility to reorder those fields.
 
-> - struct es58x_fd_urb_cmd is statically allocated (it is written into
->   from the URB handler).
->
-> - The message lengths coming from the USB device are stored in a u16,
->   which looked like it was possible to overflow the buffer.
->
-> In taking a closer look, I see that the URB command length is checked,
-> and the in-data length is checked as well, so the overflow concern
-> appears to be addressed.
->
-> > Also, the proposed fix drastically increases the size of the structure.
->
-> Indeed. I will send a v2, now that I see that the overflow concern isn't
-> an issue.
+-- 
+Thanks,
 
-Thanks for the explanation. That makes sense.
+David / dhildenb
 
-At the end, the only goal of raw_msg[] is to have a tag pointing
-to the beginning of the union. It would be virtually identical to
-something like:
-|    u8 raw_msg[];
-|    union {
-|        /* ... */
-|    } __packed ;
-
-I had a look at your work and especially at your struct_group() macro.
-Do you think it would make sense to introduce a union_group()?
-
-Result would look like:
-
-|    union_group_attr(urb_msg, __packed, /* raw_msg renamed to urb_msg */
-|        struct es58x_fd_tx_conf_msg tx_conf_msg;
-|        u8 tx_can_msg_buf[ES58X_FD_TX_BULK_MAX * ES58X_FD_CANFD_TX_LEN];
-|        u8 rx_can_msg_buf[ES58X_FD_RX_BULK_MAX * ES58X_FD_CANFD_RX_LEN];
-|        struct es58x_fd_echo_msg echo_msg[ES58X_FD_ECHO_BULK_MAX];
-|        struct es58x_fd_rx_event_msg rx_event_msg;
-|        struct es58x_fd_tx_ack_msg tx_ack_msg;
-|        __le64 timestamp;
-|        __le32 rx_cmd_ret_le32;
-|    );
-
-And I can then use urb_msg in place of the old raw_msg (might
-need a bit of rework here and there but I can take care of it).
-
-This is the most pretty way I can think of to remove this zero length array.
-Keeping the raw_msg[] but with another size seems odd to me.
-
-Or maybe I would be the only one using this feature in the full
-tree? In that case, maybe it would make sense to keep the
-union_group_attr() macro local to the etas_es58x driver?
-
-Yours sincerely,
-Vincent
