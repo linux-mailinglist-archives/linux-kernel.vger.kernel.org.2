@@ -2,71 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 545F43F0D9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 23:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D48B3F0D9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 23:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234131AbhHRVn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 17:43:26 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:44348 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234009AbhHRVnY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 17:43:24 -0400
-Received: from [212.185.68.41] (helo=phil.client.m3-hotspots.de)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mGTKf-0001Wh-RY; Wed, 18 Aug 2021 23:42:45 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Johan Jonker <jbx6244@gmail.com>, Peter Geis <pgwipeout@gmail.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH v2 0/8] fixes and enablement for rk356x
-Date:   Wed, 18 Aug 2021 23:42:44 +0200
-Message-Id: <162932289621.2860738.15310161824918921933.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210728180034.717953-1-pgwipeout@gmail.com>
-References: <20210728180034.717953-1-pgwipeout@gmail.com>
+        id S234225AbhHRVnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 17:43:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234140AbhHRVnv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 17:43:51 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EEC0C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 14:43:16 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id n5so3546848pjt.4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 14:43:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Urwa3UzEqM6bx1rqTWjruQFp6e8+joKwTq2oMTg9VIE=;
+        b=HFPtXnpPGToF7LCczbWSo9uUFLMpq1xJe6bOqNTdwgZ/Hr6PAZgnVrspCPVfWRhFWt
+         rXuBP7jVpW7XDWjtzuYMkoW3oqSSAq2RPNpjdDYIAu3KB9SdI8VnW2apoOES+q2zYfNP
+         HifGUo6eGQfzj1Zd/Oisr47+RHwWxJUbxEQij+zH6t0HWiNLVvUGyBjHWbIKN588QnxF
+         bXGIf1/FeTC4ph2lD1GqFNF3cbPOpCZoeYAPHQCavJdwom5os3Pbz/92qDQic+qC9Fu5
+         04DFs+QWycTIIZ05qptcENV8520XVElyTa/b2FsAHIISxxksSkaKOMpNletTdNPmAVbw
+         WHIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Urwa3UzEqM6bx1rqTWjruQFp6e8+joKwTq2oMTg9VIE=;
+        b=m8hGI8TR1HR21Rjcd7QVFbOUAVpFzav+z9cHcOlLYpSq4mBAmrmHCRmW/qIV9XwPjI
+         2hKdsBtWo9qSVt1mnXNbRTCjjgcu3GQr0DcgVHdzDVErvWPt8kpOrSPYFuSO/qLTn12N
+         KcZvkxOs4eizj3AandHDzkfVAcSZU8GZfY/ABu9AN3uzQKZQXH+y2Gx1qgRGZBUwBr9v
+         MT44jMIUh07CghvqrYzNqaKCJiwt4foNz9WBkHfWGukOqcd9Cf5jCftgPKVpY1DOboB4
+         46QHaKdPB5M/8KDgVM4F31H2YCLk03+SSa0fg0Sv/jw2c+1v5iTmcEdWGfTCXYphMI0s
+         EHgg==
+X-Gm-Message-State: AOAM532vBTaWi/sVsYzuf+pyRitAaitoVLEBmpRcAVt5Lvn3ISgo8vBm
+        IL7edGY0R0VnOwuF1nDfdOhDSg==
+X-Google-Smtp-Source: ABdhPJxt6sDtb2wo4PVjm4LVmvOTJ2/mxYkpW4jXJXIh0eYt3JJ/1DSVMNFXZHEPQlo6BCB0iUrAGA==
+X-Received: by 2002:a17:902:e9c6:b029:12d:4cb3:3985 with SMTP id 6-20020a170902e9c6b029012d4cb33985mr8921304plk.56.1629322995681;
+        Wed, 18 Aug 2021 14:43:15 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id r16sm705172pje.10.2021.08.18.14.43.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 14:43:15 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 21:43:09 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Hou Wenlong <houwenlong93@linux.alibaba.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Avi Kivity <avi@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kvm: fix wrong exception emulation in check_rdtsc
+Message-ID: <YR1+7awNToPmkitb@google.com>
+References: <1297c0dd3f1bb47a6d089f850b629c7aa0247040.1629257115.git.houwenlong93@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1297c0dd3f1bb47a6d089f850b629c7aa0247040.1629257115.git.houwenlong93@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Jul 2021 14:00:26 -0400, Peter Geis wrote:
-> Good Morning,
+On Wed, Aug 18, 2021, Hou Wenlong wrote:
+> According to Intel's SDM Vol2 and AMD's APM Vol3, when
+> CR4.TSD is set, use rdtsc/rdtscp instruction above privilege
+> level 0 should trigger a #GP.
 > 
-> This series aims to fix some early issues with the rk356x and enable
-> nodes that are currently supported by the available drivers.
+> Fixes: d7eb82030699e ("KVM: SVM: Add intercept checks for remaining group7 instructions")
+> Signed-off-by: Hou Wenlong <houwenlong93@linux.alibaba.com>
+> ---
+>  arch/x86/kvm/emulate.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> 1. fixes the mbi-alias, which points to the wrong location
-> 2. fixes the rockchip clk-pll to work without a grf node
-> 3. adds the gpio debounce clocks which are necessary for gpio to bind
-> 4. adds the common gmac1 node
-> 5. adds the tsadc nodes
-> 6. adjusts the gpll and ppll clocks to better support hardware
-> 7. enables the gmac1 on the Quartz64
-> 8. adds thermal support to the Quartz64
+> diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
+> index 2837110e66ed..c589ac832265 100644
+> --- a/arch/x86/kvm/emulate.c
+> +++ b/arch/x86/kvm/emulate.c
+> @@ -4206,7 +4206,7 @@ static int check_rdtsc(struct x86_emulate_ctxt *ctxt)
+>  	u64 cr4 = ctxt->ops->get_cr(ctxt, 4);
+>  
+>  	if (cr4 & X86_CR4_TSD && ctxt->ops->cpl(ctxt))
+> -		return emulate_ud(ctxt);
+> +		return emulate_gp(ctxt, 0);
+
+Heh, I was having some serious deja vu, but the fix I was thinking of was
+for em_rdpid, and that was changing #GP -> #UD (commit a9e2e0ae6860).
+
+Reviewed-by: Sean Christopherson <seanjc@google.com>
+
+>  	return X86EMUL_CONTINUE;
+>  }
+> -- 
+> 2.31.1
 > 
-> [...]
-
-Applied, thanks!
-
-[5/8] arm64: dts: rockchip: add rk3568 tsadc nodes
-      commit: 1a9563ba0a59b221156d80a3a77a43fdd144576c
-
-[I've moved the tsadc-pin pin setting to the second pinctrl
- block meant to hand-crafted pin settings in rk3568-pinctrl.dtsi]
-
-
-[8/8] arm64: dts: rockchip: add thermal support to Quartz64 Model A
-      commit: d0e2e61b3cbaab474e2093ceb2073c4441bd36f8
-
-Looks like we're all done with that series now.
-
-Best regards,
--- 
-Heiko Stuebner <heiko@sntech.de>
