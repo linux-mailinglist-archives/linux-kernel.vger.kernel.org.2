@@ -2,115 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 261D93F088A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3BD13F0896
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240271AbhHRPyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 11:54:37 -0400
-Received: from mail-lf1-f53.google.com ([209.85.167.53]:41676 "EHLO
-        mail-lf1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236905AbhHRPyg (ORCPT
+        id S240051AbhHRP4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 11:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239944AbhHRP4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 11:54:36 -0400
-Received: by mail-lf1-f53.google.com with SMTP id y34so5597360lfa.8;
-        Wed, 18 Aug 2021 08:54:01 -0700 (PDT)
+        Wed, 18 Aug 2021 11:56:00 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7EDC061764;
+        Wed, 18 Aug 2021 08:55:25 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id c12so5966908ljr.5;
+        Wed, 18 Aug 2021 08:55:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FDEHOwK/tV+p4BwibJ2eZxjOpc4MiqVcjf+8RCPnl/I=;
+        b=H0RQfIKG86hjucXIS4WiNewr/HEa0soca6FW/SoC/rnEEopBHfFKy8EBd0pGQounk/
+         Oq9/0nUk373C3fZI609KQfoxLIlCX33VL4jD/UoSCTP1jNz94LT73hGlRg0OGe2pZPMl
+         Oibirrv4BUfG5Z6A9XvafJxus+f47S5hMtsDMR0PfSid8tbadkJELX8svkntbABSkpcD
+         RimCcpLAmvdux+9g7Wlco/fYko0MP+hTZL/CMoVJHvmpnxNhBGRdHEtQ4ME9XbOrtsOg
+         Ou9Bf0Prbo4kHm9SvJmQDHot8vFIRpjN5c2/oXbQGbbtlY4/TvTgQHm5WSs8SXzEzrL/
+         q0pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=BHMjZ/i4Omck1upCZSLIcKpTxWs6ScKdudtkHXwFkLE=;
-        b=kIAGGTZeQM0Ibms+kJwy8pA8L6EfqqeVEwF3moFKOrx6ov3go2zXy4J1DcI/Wj4X5u
-         4AOIsAaOpd0czWRqpxQWC2eN3c9PEceL70s2ofS8YphQsquo9K/k3wn+q+tk0r4K+Ch3
-         4UVWjPoVU0ph112LKSsNF6POt339wYGwVZ4vCp/SvY/Weq0MVEF9jxSWaRDyX7sGnjJs
-         w/n5/AnBSWe+vO0vZrQ+G1krGMioxgky5l0nk8V2aMzA2ex41uIeLoG66UtP1KMha4zD
-         hEEyz1wkNRVKk9Vv1ML1wpUrlx7CkE5zoPWe32D31U5zXlPFqJFhlMSGnlJsg15WaXcs
-         EG1Q==
-X-Gm-Message-State: AOAM531AAwqr08LI/ctkYCW4zqT5sAR7rvlVnBHgSafzlx2zUFuk4zdp
-        ibwZ6J4dGhFbKmhr3AJEm5PIbyibRzofIQh8
-X-Google-Smtp-Source: ABdhPJzX63+YdtxMD3d2t0KhRquyfJSWRbwehMnKvCRyitRNSB4q0CCa4GjIT1G2HjeO+ujGwlCaDg==
-X-Received: by 2002:a05:6512:1501:: with SMTP id bq1mr7028514lfb.286.1629302040079;
-        Wed, 18 Aug 2021 08:54:00 -0700 (PDT)
-Received: from [10.68.32.40] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
-        by smtp.gmail.com with ESMTPSA id n18sm27302ljg.40.2021.08.18.08.53.59
+        bh=FDEHOwK/tV+p4BwibJ2eZxjOpc4MiqVcjf+8RCPnl/I=;
+        b=qIEojt5AjO1DBQW4Ighx74dbqHTjCmaXzeCd9DHsabHSFaQ7QFNlDy7v0t9NTINotE
+         O/cw3SEp+CX+9+nxE/YijQ41RRYCPe905VV/rK7Ck3n8BYlifB3437OCISKNawClcElg
+         2okE5kGBj33dZAxzxvPppTG+KPk5UzC5vnq05lbDa1edW/nUFIMTR9/XUCOYHaFWJTc+
+         wvU/T/GENQtiJiJDVA353iERXt8REkMzS3YvO4Av0LXRWcDt+xorNpYmWmQl1dWfs74b
+         +fdjlRTvn/HKOFpPeOjAuqnGnXVG+xJ9UmnDORXfBrqqOxD+BkWrDtamwErbGcmiqM1t
+         m+dg==
+X-Gm-Message-State: AOAM531nFi1Ww7pB1o+krdO6pafeLIX6mfj/OWLgg+TVbY/ZseZqEina
+        agLHafcpm+hTRIg9Xrr+0GTr1m2bo64=
+X-Google-Smtp-Source: ABdhPJwH2B3VgRzJIvI+pIkKDsVXz6Nb3IHX68qBDgW7hPMqkLurd3vlILu0yEDQld58r5qYiUr6VQ==
+X-Received: by 2002:a2e:300a:: with SMTP id w10mr8608460ljw.510.1629302124200;
+        Wed, 18 Aug 2021 08:55:24 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-85-91.dynamic.spd-mgts.ru. [46.138.85.91])
+        by smtp.googlemail.com with ESMTPSA id y8sm7917lfh.249.2021.08.18.08.55.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 08:53:59 -0700 (PDT)
-Subject: Re: [PATCH] Revert "floppy: reintroduce O_NDELAY fix"
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        regressions@lists.linux.dev, Mark Hounschell <markh@compro.net>,
-        Wim Osterholt <wim@djo.tudelft.nl>,
-        Kurt Garloff <kurt@garloff.de>, stable@vger.kernel.org
-References: <de10cb47-34d1-5a88-7751-225ca380f735@compro.net>
- <20210808074246.33449-1-efremov@linux.com>
- <nycvar.YFH.7.76.2108160914070.8253@cbobk.fhfr.pm>
-From:   Denis Efremov <efremov@linux.com>
-Message-ID: <5ca95b90-c6e0-99b3-b129-75dc05cfb1d4@linux.com>
-Date:   Wed, 18 Aug 2021 18:53:58 +0300
+        Wed, 18 Aug 2021 08:55:23 -0700 (PDT)
+Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+References: <20210818035533.ieqkexltfvvf2p4n@vireshk-i7>
+ <5b2a80c1-9743-e633-6257-ede94c8a274c@gmail.com>
+ <20210818043131.7klajx6drvvkftoc@vireshk-i7>
+ <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
+ <20210818045307.4brb6cafkh3adjth@vireshk-i7>
+ <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
+ <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
+ <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
+ <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
+ <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
+ <20210818091417.dvlnsxlgybdsn76x@vireshk-i7>
+ <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <f1314a47-9e8b-58e1-7c3f-0afb1ec8e70a@gmail.com>
+Date:   Wed, 18 Aug 2021 18:55:22 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <nycvar.YFH.7.76.2108160914070.8253@cbobk.fhfr.pm>
+In-Reply-To: <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 8/16/21 10:17 AM, Jiri Kosina wrote:
-> On Sun, 8 Aug 2021, Denis Efremov wrote:
-> 
->> The patch breaks userspace implementations (e.g. fdutils) and introduces
->> regressions in behaviour. Previously, it was possible to O_NDELAY open a
->> floppy device with no media inserted or with write protected media without
->> an error. Some userspace tools use this particular behavior for probing.
+18.08.2021 12:41, Ulf Hansson пишет:
+> On Wed, 18 Aug 2021 at 11:14, Viresh Kumar <viresh.kumar@linaro.org> wrote:
 >>
->> It's not the first time when we revert this patch. Previous revert is in
->> commit f2791e7eadf4 (Revert "floppy: refactor open() flags handling").
+>> On 18-08-21, 10:29, Ulf Hansson wrote:
+>>> Me and Dmitry discussed adding a new genpd callback for this. I agreed
+>>> that it seems like a reasonable thing to add, if he insists.
+
+Either way gives the equal result. The new callback allows to remove the
+boilerplate dev_pm_opp_set_rate(clk_get_rate() code from the rpm-resume
+of consumer devices, that's it.
+
+>>> The intent was to invoke the new callback from __genpd_dev_pm_attach()
+>>> when the device has been attached to its genpd. This allows the
+>>> callback, to invoke clk_get_rate() and then dev_pm_opp_set_rate(), to
+>>> update the vote according to the current state of the HW.
 >>
->> This reverts commit 8a0c014cd20516ade9654fc13b51345ec58e7be8.
+>> I wouldn't call dev_pm_opp_set_rate() from there, since it means
+>> configure and enable (both) for different resources, clk, regulator,
+>> genpd, etc..
 > 
-> By reverting it you bring back the bugs that were fixed by it
-
-I agree with you, that O_NDELAY is broken for floppies (and always been).
-However, just by removing O_NDELAY we break many existing tools that use
-it for probing and ioctl-only opens. With the patch tools fail to open the
-device without a diskette and try to read a diskette if there is one (this is
-not as fast on a real hardware as in QEMU).
-I think that there should be a better fix that doesn't break existing tools.
-It appears that people still use software that depends on O_NDELAY in floppies.
-Same patch was already reverted in 2016 (presumably) by the same reason.
-
->  -- e.g. the 
-> possibility to livelock mmap() on the returned fd to keep waiting on the 
-> page unlock bit forever
-
-As far as I understand this is a problem only for syzkaller.
-And this is not a security issue nowadays since most distributions
-(I don't know exceptions) require at least "disk" group to access floppies.
-Do you know a link for the syzkaller reproducer?
-
-> or the functionality bug reported at [1], and 
-> likely others.
+> Right, good point!
 > 
-> [1] https://bugzilla.suse.com/show_bug.cgi?id=1181018
+> dev_pm_opp_set_rate() is best called from consumer drivers, as they
+> need to be in control.
+>> What we need here is just configure. So something like this then:
+The intent wasn't to use dev_pm_opp_set_rate() from
+__genpd_dev_pm_attach(), but to set genpd->rpm_pstate in accordance to
+the h/w configuration.
 
-The patch starts to return -ENXIO for O_NDELAY|O_RDONLY opens and devices
-without a diskette. I don't think this is an expected behavior during 
-libblkid probing.
+On Tegra we have a chain of PDs and it's not trivial to convert the
+device's OPP into pstate because only the parent domain can translate
+the required OPP.
 
-Probably there is a better fix for [1], maybe even an additional workaround
-for floppies in libblkid. They already have workarounds for cdroms
-https://github.com/karelzak/util-linux/commit/dc30fd4383e57a0440cdb0e16ba5c4336a43b290
+Viresh, please take a look at what I did in [1]. Maybe it could be done
+in another way.
 
-I started to add simple tests https://lkml.org/lkml/2021/8/18/845
-However, I failed to reproduce mount bug [1], probably
-because I don't know how to configure cloudinit properly. I tried to reproduce
-a mount fail bug with open("/dev/fd0", O_NDELAY|O_RDONLY) and mount("/dev/fd0", ...)
-but it works. Looks like there should be something else in between...
-
-Regards,
-Denis
+[1]
+https://patchwork.ozlabs.org/project/linux-tegra/patch/20210701232728.23591-3-digetx@gmail.com/
