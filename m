@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 005663F03D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 14:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0AC3F03D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 14:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235397AbhHRMlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 08:41:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53042 "EHLO
+        id S235793AbhHRMl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 08:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231500AbhHRMlw (ORCPT
+        with ESMTP id S231500AbhHRMlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 08:41:52 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED5EC061764;
-        Wed, 18 Aug 2021 05:41:17 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id q11-20020a7bce8b0000b02902e6880d0accso4334015wmj.0;
-        Wed, 18 Aug 2021 05:41:17 -0700 (PDT)
+        Wed, 18 Aug 2021 08:41:55 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57417C061764;
+        Wed, 18 Aug 2021 05:41:20 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id f13-20020a1c6a0d000000b002e6fd0b0b3fso2669043wmc.3;
+        Wed, 18 Aug 2021 05:41:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uZAPhX+VRT0+zIBhSL6SCOTLLnMplq+LWNcok53Ws3w=;
-        b=onfEfOxQYoF+a8qU2x61VOBJrzjDHAstnxzW6zGSre5KbQdBOVly2I7x26Hl2lZNbp
-         pQ4rKO4AxWQR1KjtXdb7p/CRqlG8kPScH6MCMZWXyww5UI2qbboFWfJqP6E4NCu97cw4
-         Oo4gKbsyojmv/mu1wiy7qWGirW88V2ncIvrTXLVayf3qRR7QPLyF9158IBmBYQSkxYft
-         i4w1xUFEGwpGYXcxkGWpOXXKtqm8hSEHtvm7T4Buf3bFEMFDyQy70D5wditE/oW/1hM4
-         BCKco4zzy98f/ZBod4dlTsepd9D4/r+zJfnCBzxx+Px8XV1Zg4fGs3azs6Mj3qimHHsW
-         X3UA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=LKHb4NbS7zSt/cAMTh5zeYF+NOqO7vbF0bCJdamG5w8=;
+        b=ja/16Vr9ki6o1rA6ri6QHlVCzMftWzn+OYFQapVIpbv257k3j7V/fjkHafTOT0nGvf
+         i6LABOswPGff+2sGLiMXYL+ApmjSBkeyENpajzTX60EcQBA+92QWzWvYnt8rwSuZLWmy
+         qCZTc2tlCyn8x9qxTf9znRysZ0LpPAHS/wzxql08x5bEGnbAfvBq6lnIkD8LcmpQntez
+         nlzC2m9JvqCuRiVd4RB3t689UDLbFPGMEZfwOJ4Q8sTmducPGwC8J2yE2c9zUT6YFxc1
+         xyzoEacrxeRt2pKRV+58wzHQKK0wJkivPxWsrpGWZ7AH0CGbvpavv6t2LADyXhHzX9WQ
+         8UEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uZAPhX+VRT0+zIBhSL6SCOTLLnMplq+LWNcok53Ws3w=;
-        b=oYa4LroGPCkziVnEcF5jFDp27EbFhz3Xxv7dTOsTXMtuZo2E13AgUQX9g2wMFsBp73
-         nVV7wiH5KEAYSmO1rRijdnz5oOystqclV9jKHo+Zn029d+eUJIS0g4loEI3hucXlkfRt
-         CHW+UO+xzyxkaMMtRPxHo/G56pW1Gu3p9fabHIQMFFJt5XZVpELVN2uCwWs1QX7rgzm/
-         ztIyfuIQwY5IgNbRm1ZN/FV44OfZB19sUnbDDRLNiIhhAJdwVyQvchjUou9E369Tt/8x
-         vSRk+oOs6nkSrQrCy2dC83tXsFs5gKMKqBmZbuGfKh/W7xqWIy6R9q/5z093T9x2cJaD
-         7Zqw==
-X-Gm-Message-State: AOAM531kOyDlNKtXSno0nVhQu2mAH9VCcs4RvRci4aj/nHcMKHSbPVv1
-        IiJr/oFhMUP37QjqU/GL8Ts=
-X-Google-Smtp-Source: ABdhPJwMNKElc3mMVCtoj2HEUn6d5ePvfz81G1zAIxYIDk10lE9hSomFsNs711+ZPErCAs0lDCkW8w==
-X-Received: by 2002:a7b:cf31:: with SMTP id m17mr8258237wmg.109.1629290475788;
-        Wed, 18 Aug 2021 05:41:15 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=LKHb4NbS7zSt/cAMTh5zeYF+NOqO7vbF0bCJdamG5w8=;
+        b=A3yyX6/EQFeAtCt0Kh4Rwk0L/Woi8RKry5qLcMLVh2IlUKF73BzF60TcfpETkOtOwk
+         CcH0jn3ikSAACelJlKhDmj9YRgkVx5HVX8f5Iweob35iJgXlhGYVYXyMV16+VErg5Ez4
+         V4RtBn57zUKuE6q8PzqNJ8LXWZHRWETU83h1ylrHKjbA7FEN1b40302t+JIKMZNgfDrE
+         BPb738ImIr1TfWsifh6OhItu4ACq52uFIQYqRZ3HT7S59WDXREKJ6eIGVxNx+y8gQ0W/
+         x5kdlhkKANq/Ass1hJSQ/GjraUjxsXn7TL4NxriwGqVQumtJyMdwaPJFPqq0hkHUneLz
+         Ouvw==
+X-Gm-Message-State: AOAM5300z/ATYXr2wbSx5w1e3i+u34/j3k3O3WSZ+ukWTrw5yv8g1uv9
+        Ks0UbQGDZIWaOGs5CC1n3oE=
+X-Google-Smtp-Source: ABdhPJw7gq+uZcEL/myC5985B59dRsdZKI1OrUOlw2agxfZ4Cwb3rYGc90xQ/81U/eABQrJtLqfQFg==
+X-Received: by 2002:a1c:440a:: with SMTP id r10mr8334657wma.8.1629290478949;
+        Wed, 18 Aug 2021 05:41:18 -0700 (PDT)
 Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
-        by smtp.gmail.com with ESMTPSA id a11sm5720454wrq.6.2021.08.18.05.41.14
+        by smtp.gmail.com with ESMTPSA id a11sm5720454wrq.6.2021.08.18.05.41.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 05:41:15 -0700 (PDT)
+        Wed, 18 Aug 2021 05:41:18 -0700 (PDT)
 From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
 To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
@@ -65,96 +65,46 @@ Cc:     Sandy Huang <hjc@rock-chips.com>,
         linux-rockchip@lists.infradead.org,
         kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 0/5] Kconfig symbol clean-up on gpu
-Date:   Wed, 18 Aug 2021 14:41:09 +0200
-Message-Id: <20210818124114.28545-1-lukas.bulwahn@gmail.com>
+Subject: [PATCH 1/5] drm: rockchip: remove reference to non-existing config DRM_RGB
+Date:   Wed, 18 Aug 2021 14:41:10 +0200
+Message-Id: <20210818124114.28545-2-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210818124114.28545-1-lukas.bulwahn@gmail.com>
+References: <20210818124114.28545-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear DRM maintainers,
+commit 1f0f01515172 ("drm/rockchip: Add support for Rockchip Soc RGB
+output interface") accidently adds to select the non-existing config
+DRM_RGB in ./drivers/gpu/drm/rockchip/Kconfig.
 
-The script ./scripts/checkkconfigsymbols.py warns on invalid references to
-Kconfig symbols (often, minor typos, name confusions or outdated references).
+Luckily, ./scripts/checkkconfigsymbols.py warns on non-existing configs:
 
-This patch series addresses all issues reported by ./scripts/checkkconfigsymbols.py
-in ./drivers/gpu/ for Kconfig and Makefile files. Issues in the Kconfig and
-Makefile files indicate some shortcomings in the overall build definitions, and
-often are true actionable issues to address.
+DRM_RGB
+Referencing files: drivers/gpu/drm/rockchip/Kconfig
 
-These issues can be identified and filtered by:
+So, remove the reference to the non-existing config DRM_RGB.
 
-  ./scripts/checkkconfigsymbols.py | grep -E "drivers/gpu/.*(Kconfig|Makefile)" -B 1 -A 1
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ drivers/gpu/drm/rockchip/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-After applying this patch series on linux-next (next-20210817), the command
-above yields just one further issues to address:
-
-DRM_AMD_DC_DCE11_0
-Referencing files: drivers/gpu/drm/amd/display/dc/dce100/Makefile
-
-  Conclusion: No action required.
-  Rationale:
-    drivers/gpu/drm/amd/display/dc/dce100/Makefile refers to
-    DRM_AMD_DC_DCE11_0 in a comment, after an "ifdef 0".
-
-
-Please pick this patch series into your drm-next tree.
-
-Best regards,
-
-Lukas
-
-Lukas Bulwahn (5):
-  drm: rockchip: remove reference to non-existing config DRM_RGB
-  drm: amdgpu: remove obsolete reference to config CHASH
-  drm: v3d: correct reference to config ARCH_BRCMSTB
-  drm: zte: remove obsolete DRM Support for ZTE SoCs
-  drm: omap: remove obsolete selection of OMAP2_DSS in config DRM_OMAP
-
- drivers/gpu/drm/Kconfig              |   1 -
- drivers/gpu/drm/Makefile             |   1 -
- drivers/gpu/drm/omapdrm/Kconfig      |   1 -
- drivers/gpu/drm/rockchip/Kconfig     |   1 -
- drivers/gpu/drm/v3d/Kconfig          |   2 +-
- drivers/gpu/drm/zte/Kconfig          |  10 -
- drivers/gpu/drm/zte/Makefile         |  10 -
- drivers/gpu/drm/zte/zx_common_regs.h |  28 -
- drivers/gpu/drm/zte/zx_drm_drv.c     | 184 ------
- drivers/gpu/drm/zte/zx_drm_drv.h     |  34 -
- drivers/gpu/drm/zte/zx_hdmi.c        | 760 ----------------------
- drivers/gpu/drm/zte/zx_hdmi_regs.h   |  66 --
- drivers/gpu/drm/zte/zx_plane.c       | 537 ----------------
- drivers/gpu/drm/zte/zx_plane.h       |  26 -
- drivers/gpu/drm/zte/zx_plane_regs.h  | 120 ----
- drivers/gpu/drm/zte/zx_tvenc.c       | 400 ------------
- drivers/gpu/drm/zte/zx_tvenc_regs.h  |  27 -
- drivers/gpu/drm/zte/zx_vga.c         | 527 ---------------
- drivers/gpu/drm/zte/zx_vga_regs.h    |  33 -
- drivers/gpu/drm/zte/zx_vou.c         | 921 ---------------------------
- drivers/gpu/drm/zte/zx_vou.h         |  64 --
- drivers/gpu/drm/zte/zx_vou_regs.h    | 212 ------
- 22 files changed, 1 insertion(+), 3964 deletions(-)
- delete mode 100644 drivers/gpu/drm/zte/Kconfig
- delete mode 100644 drivers/gpu/drm/zte/Makefile
- delete mode 100644 drivers/gpu/drm/zte/zx_common_regs.h
- delete mode 100644 drivers/gpu/drm/zte/zx_drm_drv.c
- delete mode 100644 drivers/gpu/drm/zte/zx_drm_drv.h
- delete mode 100644 drivers/gpu/drm/zte/zx_hdmi.c
- delete mode 100644 drivers/gpu/drm/zte/zx_hdmi_regs.h
- delete mode 100644 drivers/gpu/drm/zte/zx_plane.c
- delete mode 100644 drivers/gpu/drm/zte/zx_plane.h
- delete mode 100644 drivers/gpu/drm/zte/zx_plane_regs.h
- delete mode 100644 drivers/gpu/drm/zte/zx_tvenc.c
- delete mode 100644 drivers/gpu/drm/zte/zx_tvenc_regs.h
- delete mode 100644 drivers/gpu/drm/zte/zx_vga.c
- delete mode 100644 drivers/gpu/drm/zte/zx_vga_regs.h
- delete mode 100644 drivers/gpu/drm/zte/zx_vou.c
- delete mode 100644 drivers/gpu/drm/zte/zx_vou.h
- delete mode 100644 drivers/gpu/drm/zte/zx_vou_regs.h
-
+diff --git a/drivers/gpu/drm/rockchip/Kconfig b/drivers/gpu/drm/rockchip/Kconfig
+index 558f1b58bd69..9f1ecefc3933 100644
+--- a/drivers/gpu/drm/rockchip/Kconfig
++++ b/drivers/gpu/drm/rockchip/Kconfig
+@@ -9,7 +9,6 @@ config DRM_ROCKCHIP
+ 	select DRM_ANALOGIX_DP if ROCKCHIP_ANALOGIX_DP
+ 	select DRM_DW_HDMI if ROCKCHIP_DW_HDMI
+ 	select DRM_DW_MIPI_DSI if ROCKCHIP_DW_MIPI_DSI
+-	select DRM_RGB if ROCKCHIP_RGB
+ 	select GENERIC_PHY if ROCKCHIP_DW_MIPI_DSI
+ 	select GENERIC_PHY_MIPI_DPHY if ROCKCHIP_DW_MIPI_DSI
+ 	select SND_SOC_HDMI_CODEC if ROCKCHIP_CDN_DP && SND_SOC
 -- 
 2.26.2
 
