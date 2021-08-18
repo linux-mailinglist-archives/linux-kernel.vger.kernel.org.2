@@ -2,158 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCCF3F0780
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA703F0783
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239506AbhHRPGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 11:06:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59108 "EHLO
+        id S239608AbhHRPHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 11:07:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239208AbhHRPGs (ORCPT
+        with ESMTP id S235131AbhHRPHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 11:06:48 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFAEC061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 08:06:13 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id a93so5936578ybi.1
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 08:06:13 -0700 (PDT)
+        Wed, 18 Aug 2021 11:07:36 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03F0C061764;
+        Wed, 18 Aug 2021 08:07:01 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id y34so5294815lfa.8;
+        Wed, 18 Aug 2021 08:07:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KYJwSm6eCcwSwyminZRoSw8P5cz5zWYev61l8HFaS3A=;
-        b=ZVq8iO+uckPOD9FvTvEYE4mUDy8Ejl5KoV9LVDV8uLfdwt5zB4pojw8fKAvHmbjWKz
-         vPAAU/vAc/B0uq1YKn1JvBhhsReFIi8AfL/uv0tNfu3pUYeCK2DViliZSZQo09R7MExT
-         nx67enUXn0TMnH8vgRoBx1+2WusV86lc/Nr8Lqg72QnpOc6aVw7fQGx6Mklr/xzyp3JB
-         CqAD+Uwb1svUuSOrApC9QaSVHw0MnIC1HVtELveawZ01FrwzAAsbmXu9ED5fI9ko45KN
-         kKTqlvrANXf7pfbflSkUKhn/4gT/Ci/2ekBXUAjbgnXm0n5xWTcU4vEOu9Tupt6Jn61u
-         cpyg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=hpXTPXK1ibNyRndd2z4OxzfYUmUkDAM0OJ5r1uqfGjw=;
+        b=Lnby+xsvPy5y/+y/cRXf1EQaqsXKlWFS0cky80HAYrRYVQVy8eqTbjYWicQuzisYA+
+         uwjAdyx1kNqoM5F55YZ1fZkDctN5X128018xYz9wVqfSk7JXbEaZ4Uhrbjl8DlIjEFZ6
+         7FM4NjKn8Vxrmg1ojsBbPFZ89XF5cyOiw6S1/vKqRf8hJNYDQaLKd72L+K7Yi+0WPjlJ
+         rN2xjezJ/+2LfGHyVDjTtlkXYdMb/9mMSeawQZV87M1PyF366luRkeiio5q8F5SBQ78I
+         etNem7u2LoBeZVsB+0cxWgxWcQronQGCMxe/wCHVn8Roy6QsaO9gJ9n0FuS3juZEuHpo
+         UAhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KYJwSm6eCcwSwyminZRoSw8P5cz5zWYev61l8HFaS3A=;
-        b=LCFVphS/QVp7VDNP27ZrYbFzdDsh8qv4gG4Pt/GKH6aoSTCtWDP8j2EafUFCfybr0M
-         3iI0yN2L8DH43CjcVVnBlBUc3gfrnFFkU7zj8JngkE41iwsowuoDxKXrPAB6jPSZ29bx
-         Su3Gr6C4oVWo5cHNWV6F8XUN1edZn7v+oFJV11+L7KUNy/kxA2IuGHAkiPTcVaBwqeyP
-         mu5LDrBagm5y8jZRHMzSPbE0Cv0ZfkYU4CqoreZcsv74QMm5lZINXrHyCb91UU+4fQeK
-         SjBSTo/fF24FufqDnFeftF/i4vB1kgMx5F2h4iPR7xVNkwF/2avQ6OvT5qcRTQ2w6osm
-         i8tQ==
-X-Gm-Message-State: AOAM530q5fhSb/lK7D9Sna2rSDYtbfe+QMK+6F7mlLUPFM9iUUqwICBj
-        wD+6hoYw266NtGPTkOPs6nfJkPaTuHAOSahuq0bROA7IbFk=
-X-Google-Smtp-Source: ABdhPJy3kL6U2SIXU5UKwKHqeTBXGJsXc7NewkgI9xpOKlqzoMSqGg01ZiJ2wgDLNSr41LX6krBMIqKNdTB5K8pceoI=
-X-Received: by 2002:a25:cc52:: with SMTP id l79mr11563745ybf.459.1629299172676;
- Wed, 18 Aug 2021 08:06:12 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=hpXTPXK1ibNyRndd2z4OxzfYUmUkDAM0OJ5r1uqfGjw=;
+        b=sT2m9xaPRf240uPjM0dtKx9KQIoZTzJHeZHbMPJpSZsgm5v05MYC7xxY6Tat+GgY7p
+         Mv8x05xXLzyKskm8q2gaf4hOaBcSu1VIow5aY5hT7xgyovyrEfb3f5ORXJQDs7Muf3Ds
+         Cv8h1II6/RWJGDnDgJWdufjPX3gUWGXYS9OVZvwu4kcRRvC69MWT22og9MyU9O/CuAVm
+         kKctvcwNzao+bPdnuA04r/hl+0ww79/uPOsJK1NgrdpKE/TOe+tN1iBLuDXgEI0qxIcE
+         7JiVIPFrdpuDrfE+4zrqbilBz1xNvUc8w+2EfwabT212UT025a2ibPPTM/65PKlnE60S
+         u8PA==
+X-Gm-Message-State: AOAM5307FYED4ZYyJiy44ALWTfZv6XjLK66f5OtMSf5U8ltIhHwIdNSB
+        QlEq9Fi6glyvJl019V9NyOw=
+X-Google-Smtp-Source: ABdhPJzCOWLA8LkvS1HCGXpzALuQrjOzmyeSXstCJmQqthtbcgF8x1zP9tMIe4OYOOtMS7EcwL4Weg==
+X-Received: by 2002:a19:2d0e:: with SMTP id k14mr6573783lfj.409.1629299219839;
+        Wed, 18 Aug 2021 08:06:59 -0700 (PDT)
+Received: from localhost.localdomain ([46.235.66.127])
+        by smtp.gmail.com with ESMTPSA id f14sm13489ljk.42.2021.08.18.08.06.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 08:06:59 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org,
+        andriy.shevchenko@linux.intel.com, christophe.jaillet@wanadoo.fr,
+        kaixuxia@tencent.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH v3 1/2] net: pch_gbe: remove mii_ethtool_gset() error handling
+Date:   Wed, 18 Aug 2021 18:06:30 +0300
+Message-Id: <7e8946ac52de91a963beb7fa0354a19a21c5cf73.1629298981.git.paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <YR0gTWn4G0xkekxF@smile.fi.intel.com>
+References: <YR0gTWn4G0xkekxF@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20210816180519.1021311-1-samitolvanen@google.com> <CAK7LNASAHN=-uj73Uwk10aXbsR8AkUM_P=3NX_dq2SiFTqUctg@mail.gmail.com>
-In-Reply-To: <CAK7LNASAHN=-uj73Uwk10aXbsR8AkUM_P=3NX_dq2SiFTqUctg@mail.gmail.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Wed, 18 Aug 2021 08:06:01 -0700
-Message-ID: <CABCJKudQhagwdb-UfGE2JQN8H29NSpMd5PgVoftJYRp5ZwpRrA@mail.gmail.com>
-Subject: Re: [PATCH v4] kbuild: Fix TRIM_UNUSED_KSYMS with LTO_CLANG
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 7:34 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Tue, Aug 17, 2021 at 3:05 AM Sami Tolvanen <samitolvanen@google.com> wrote:
-> >
-> > With CONFIG_LTO_CLANG, we currently link modules into native
-> > code just before modpost, which means with TRIM_UNUSED_KSYMS
-> > enabled, we still look at the LLVM bitcode in the .o files when
-> > generating the list of used symbols. As the bitcode doesn't
-> > yet have calls to compiler intrinsics and llvm-nm doesn't see
-> > function references that only exist in function-level inline
-> > assembly, we currently need a whitelist for TRIM_UNUSED_KSYMS to
-> > work with LTO.
-> >
-> > This change moves module LTO linking to happen earlier, and
-> > thus avoids the issue with LLVM bitcode and TRIM_UNUSED_KSYMS
-> > entirely, allowing us to also drop the whitelist from
-> > gen_autoksyms.sh.
-> >
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1369
-> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> > Reviewed-by: Alexander Lobakin <alobakin@pm.me>
-> > Tested-by: Alexander Lobakin <alobakin@pm.me>
-> > ---
-> > Changes in v4:
-> > - Added .lto.o to targets to actually fix the use of if_changed.
-> > - Replaced an unnecessary mod-prelink-ext with .lto.
-> >
-> > Changes in v3:
-> > - Added missing FORCE.
-> >
-> > Changes in v2:
-> > - Fixed a couple of typos.
-> > - Fixed objtool arguments for .lto.o to always include --module.
-> >
-> > ---
-> >  scripts/Makefile.build    | 28 +++++++++++++++++++++++++++-
-> >  scripts/Makefile.lib      |  7 +++++++
-> >  scripts/Makefile.modfinal | 21 ++-------------------
-> >  scripts/Makefile.modpost  | 22 +++-------------------
-> >  scripts/gen_autoksyms.sh  | 12 ------------
-> >  5 files changed, 39 insertions(+), 51 deletions(-)
-> >
-> > diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-> > index 02197cb8e3a7..a6f43afd09bb 100644
-> > --- a/scripts/Makefile.build
-> > +++ b/scripts/Makefile.build
-> > @@ -88,6 +88,10 @@ endif
-> >
-> >  targets-for-modules := $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
-> >
-> > +ifdef CONFIG_LTO_CLANG
-> > +targets-for-modules += $(patsubst %.o, %.lto.o, $(filter %.o, $(obj-m)))
-> > +endif
-> > +
-> >  ifdef need-modorder
-> >  targets-for-modules += $(obj)/modules.order
-> >  endif
-> > @@ -271,12 +275,34 @@ $(obj)/%.o: $(src)/%.c $(recordmcount_source) $$(objtool_dep) FORCE
-> >         $(call if_changed_rule,cc_o_c)
-> >         $(call cmd,force_checksrc)
-> >
-> > +ifdef CONFIG_LTO_CLANG
-> > +# Module .o files may contain LLVM bitcode, compile them into native code
-> > +# before ELF processing
-> > +quiet_cmd_cc_lto_link_modules = LTO [M] $@
-> > +cmd_cc_lto_link_modules =                                              \
-> > +       $(LD) $(ld_flags) -r -o $@                                      \
-> > +               $(shell [ -s $(@:.lto.o=.o.symversions) ] &&            \
-> > +                       echo -T $(@:.lto.o=.o.symversions))             \
-> > +               --whole-archive $(filter-out FORCE,$^)
-> > +
-> > +ifdef CONFIG_STACK_VALIDATION
-> > +# objtool was skipped for LLVM bitcode, run it now that we have compiled
-> > +# modules into native code
-> > +cmd_cc_lto_link_modules += ;                                           \
-> > +       $(objtree)/tools/objtool/objtool $(objtool_args) --module       \
-> > +               $(@:.ko=.lto.o)
->
->
-> What is this "$(@:.ko=.lto.o)" doing ?
->
-> The target is already suffixed with .lto.o
-> so $(@:.ko=.lto.o) should be the same as $@
+mii_ethtool_gset() does not return any errors, so error handling can be
+omitted to make code more simple.
 
-Good catch, probably a leftover from an earlier iteration.
+Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
 
-> Shall I fix it locally unless
-> I find more questionable code?
+Changes in v3:
+	No changes
 
-Please do.
+Changes in v2:
+	inverted the order of patches
 
-Sami
+---
+ drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c | 8 +-------
+ drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_phy.c  | 4 +---
+ 2 files changed, 2 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
+index e351f3d1608f..539bddfab2d4 100644
+--- a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
++++ b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
+@@ -1031,13 +1031,7 @@ static void pch_gbe_watchdog(struct timer_list *t)
+ 		struct ethtool_cmd cmd = { .cmd = ETHTOOL_GSET };
+ 		netdev->tx_queue_len = adapter->tx_queue_len;
+ 		/* mii library handles link maintenance tasks */
+-		if (mii_ethtool_gset(&adapter->mii, &cmd)) {
+-			netdev_err(netdev, "ethtool get setting Error\n");
+-			mod_timer(&adapter->watchdog_timer,
+-				  round_jiffies(jiffies +
+-						PCH_GBE_WATCHDOG_PERIOD));
+-			return;
+-		}
++		mii_ethtool_gset(&adapter->mii, &cmd);
+ 		hw->mac.link_speed = ethtool_cmd_speed(&cmd);
+ 		hw->mac.link_duplex = cmd.duplex;
+ 		/* Set the RGMII control. */
+diff --git a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_phy.c b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_phy.c
+index ed832046216a..3426f6fa2b57 100644
+--- a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_phy.c
++++ b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_phy.c
+@@ -301,9 +301,7 @@ void pch_gbe_phy_init_setting(struct pch_gbe_hw *hw)
+ 	int ret;
+ 	u16 mii_reg;
+ 
+-	ret = mii_ethtool_gset(&adapter->mii, &cmd);
+-	if (ret)
+-		netdev_err(adapter->netdev, "Error: mii_ethtool_gset\n");
++	mii_ethtool_gset(&adapter->mii, &cmd);
+ 
+ 	ethtool_cmd_speed_set(&cmd, hw->mac.link_speed);
+ 	cmd.duplex = hw->mac.link_duplex;
+-- 
+2.32.0
+
