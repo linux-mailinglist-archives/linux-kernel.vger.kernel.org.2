@@ -2,136 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 241703F0CD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 22:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5E4B3F0CD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 22:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233849AbhHRUf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 16:35:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51348 "EHLO
+        id S233886AbhHRUfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 16:35:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233425AbhHRUf0 (ORCPT
+        with ESMTP id S233847AbhHRUfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 16:35:26 -0400
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65641C061764;
-        Wed, 18 Aug 2021 13:34:51 -0700 (PDT)
-Received: by mail-oo1-xc32.google.com with SMTP id n1-20020a4ac7010000b0290262f3c22a63so1090975ooq.9;
-        Wed, 18 Aug 2021 13:34:51 -0700 (PDT)
+        Wed, 18 Aug 2021 16:35:41 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3474C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 13:35:05 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id gt38so7598018ejc.13
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 13:35:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4Ve2qXUvVG1g/FHypMlz1AcAcLOtOAXueWHwDO5ReDY=;
-        b=cY0Go6/qB3WGaGerkculzpd1mi7htexGDJ8vjhkyrIHCIxgE4R2XL5SLmD5ndYz3Iq
-         9qW41cuGb51KIidZ2NBKOAJtxDicQrJ/LIoFgACGDNejv0DujMakf7+v6jNkRfWkjJ3e
-         0YcfuHrb/yIiXa0YFmq5UaqVpv539DcPCnoxC1zKDBLK/BLl96zJVZjK4JzPedNJJKJy
-         Y/2/oHJQVm3iZ62nA18DL9jJZMkDQdo/oCXsFyINq84h5jpjC3e6V13uMZJGRM35RPrk
-         8B7dObnoStCEWIFokiOYBe+AqCPwcANOb3ty7wcHjwspcNho9QfYR95w6tJwqHKGmcK1
-         tW8g==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2w1vSuT1tH9Ybxo97VpBG8kj77ZOt5fncj54b1Z/4R4=;
+        b=m3jlFtgdrR9kQKISjmF6YSNHIN6AUjyLp5Qshmuz62x/bGt9ZuZJl+lx7FYD0EWa5n
+         SxM59XGaNKETVufiqmddRoQnYoDkjrmwGbHxm0a3i4tt+v4NKtsgRnhI7FPQBLSJucKM
+         W0NJ+L8my4LfGEc07qEeFAq+rPwTBK7BnQbK0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=4Ve2qXUvVG1g/FHypMlz1AcAcLOtOAXueWHwDO5ReDY=;
-        b=EHxC71IHTbgzDFDOqkxyAyOIyU7uYR0ZD1e9joy+m8M4UgyboI/q1b0NsgBDuppbWo
-         Hbgqih1LLeT3c7Zh0m3frUMq/xZrcoeL+xZVhqfUpn10SHl9wPhci2+pR0ZNfkzfHHyO
-         QSOCoerxbi63gjFoj1Su6GwU2xVYGtSXyI+aSFocbIUJr4X/c1UDgopu57Tcb68aNY+t
-         J6+gg1xsRT4CbET1gBEz5vyKPjdFm3CLJw31KraxcDfn1W13xwzby+2Q11OV2yRS9jrC
-         b7jFowLfpIkNI4Fw5dNrJ2mShMlG9f0a2xxxBta0wM0TRT6fTtQLOram/hQXMl2fbXJV
-         QexQ==
-X-Gm-Message-State: AOAM530ajWJJ5BS8/x5fHkbhzhAB1I797NBSjDezG6ohryeoihpxHxir
-        SgictUMv7KuM5hBeRBCSRxx13zIfxDQ=
-X-Google-Smtp-Source: ABdhPJzZjs7NkPCLV2PjCE4YhE7Nkzpq/+l/UxNvtoQzVqp7hxQaN0vWEqsCA30AQbvD/Ngks3+oiA==
-X-Received: by 2002:a4a:b601:: with SMTP id z1mr8160473oon.7.1629318890688;
-        Wed, 18 Aug 2021 13:34:50 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v29sm179058ooe.31.2021.08.18.13.34.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 13:34:50 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] Watchdog: sp5100_tco: Replace watchdog cd6h/cd7h port I/O
- accesses with MMIO accesses
-To:     Terry Bowman <Terry.Bowman@amd.com>, linux-watchdog@vger.kernel.org
-Cc:     wim@linux-watchdog.org, linux-kernel@vger.kernel.org,
-        rrichter@amd.com, thomas.lendacky@amd.com
-References: <20210813213216.54780-1-Terry.Bowman@amd.com>
- <416a67a7-646b-eb8d-b617-80cbbbc028c6@roeck-us.net>
- <396d4558-9ddf-55e8-75bf-cb1a15de393a@amd.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <b32c2263-94a1-fef5-4455-6d7bef40a968@roeck-us.net>
-Date:   Wed, 18 Aug 2021 13:34:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=2w1vSuT1tH9Ybxo97VpBG8kj77ZOt5fncj54b1Z/4R4=;
+        b=FhjlE/njS5MWMgNk9NktW4cR2zDTmzf1r2TWk1gF33bSsabHpB+UlB/I0lSaF2MReX
+         HqHHpZW1y7ojKOepqRqe1YB5+qaaWH4a+bjXCQX/1DX0O8VC8Aecy9e2NR6nkQ4cgyd+
+         Y3tRAhv1XC82f+rB9elSFvehJWAZCquufHJ4yTNAwK9zEY8ANvd3FHABI3pN4chvfZoh
+         xfEBU6w8BeDcupPf1j+1BmyCDdnWAep4so9l3rMSf8K8SBE1vQj9u0C83tzEjOL3hWZq
+         mFMsC4RkdNQB1h1jj6vQT2pZYMC4z6v7o5UFMovUMomh8lGDHgYDcFomP3pBlWBhZ47O
+         59FA==
+X-Gm-Message-State: AOAM531EkPMqE0lYSUdOXKusMu4NCOwm0b37GGbc1oaw1kB2Xi73EYxf
+        78aCqRNzOmGHvjDDmx2rfNmGD+sB8TnQrQ==
+X-Google-Smtp-Source: ABdhPJwWQIvnGTiQlyxemd0ECkMsnSw7ex01olghXILxpbidr3dEckq/7kspPKT9iQnSY5HHdqCfSQ==
+X-Received: by 2002:a17:906:d9dc:: with SMTP id qk28mr3519111ejb.491.1629318904574;
+        Wed, 18 Aug 2021 13:35:04 -0700 (PDT)
+Received: from alco.lan (80.71.134.83.ipv4.parknet.dk. [80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id f19sm602192edt.44.2021.08.18.13.35.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 13:35:04 -0700 (PDT)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ricardo Ribalda <ribalda@chromium.org>
+Subject: [PATCH v2] media: uvcvideo: Quirk for hardware with invalid sof
+Date:   Wed, 18 Aug 2021 22:35:02 +0200
+Message-Id: <20210818203502.269889-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
 MIME-Version: 1.0
-In-Reply-To: <396d4558-9ddf-55e8-75bf-cb1a15de393a@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/16/21 2:29 PM, Terry Bowman wrote:
-> 
-> 
-> On 8/13/21 5:37 PM, Guenter Roeck wrote:
->> On 8/13/21 2:32 PM, Terry Bowman wrote:
->>> Use MMIO instead of port I/O during SMBus controller address discovery.
->>> Also, update how EFCH capability is determined by replacing a family check
->>> with a PCI revision ID check.
->>>
->>> cd6h/cd7h port I/O can be disabled on recent AMD hardware. Read accesses to
->>> disabled cd6h/cd7h port I/O will return F's and written data is dropped.
->>> The recommended workaround to handle disabled cd6h/cd7h port I/O is
->>> replacing port I/O with MMIO accesses. The MMIO access method has been
->>> available since at least SMBus controllers using PCI revision 0x59.
->>>
->>> The sp5100_tco driver uses a CPU family match of 17h to determine
->>> EFCH_PM_DECODEEN_WDT_TMREN register support. Using a family check requires
->>> driver updates for each new AMD CPU family following 17h. This patch
->>> replaces the family check with a check for SMBus PCI revision ID 0x59 and
->>> later. Note: Family 17h processors use SMBus PCI revision ID 0x59. The
->>> intent is to use the PCI revision ID check to support future AMD processors
->>> while minimizing required driver changes. The caveat with this change is
->>> the sp5100_tco driver must be updated if a new AMD processor family changes
->>> the EFCH design or the SMBus PCI ID value doesn't follow this pattern.
->>>
->>> Tested with forced WDT reset using `cat >> /dev/watchdog`.
->>>
->>
->> I am sorry, I don't understand why the new code can not use devm functions,
->> why the new data structure is necessary in the first place, and why it is
->> not possible to improve alignment with the existing code. This will require
->> a substantial amount of time to review to ensure that the changes are not
->> excessive (at first glance it for sure looks like that to me).
->>
->> Guenter
->>
-> 
-> Hi Guenter,
-> 
-> I can change the patch to use devm functions as you mentioned. My
-> understanding is the patch's reservation and mapping related functions
-> are the focus. I originally chose not to use devm functions because the
-> patch's MMIO reserved and mapped resources are not held for the driver
-> lifetime as is the case for most device managed resources. The
-> sp5100_tco driver must only hold these MMIO resources briefly because
-> other drivers use the same EFCH MMIO registers. An example of another
-> driver using the same registers is the piix4_smbus driver (drivers/i2c
-> /busses/i2c-piix4.c). This patch can be changed to use the devm
-> functions but the driver may not benefit from the device management.
-> 
-> The 'struct efch_cfg' addition is needed for MMIO reads/writes as well
-> as during cleanup when leaving sp5100_region_setup(). This structure was
-> chosen to contain the data instead of passing multiple parameters to
-> each EFCH function called.
-> 
-> Do you have any recommendations for how to best improve the alignment?
-> 
+The hardware timestamping code has the assumption than the device_sof
+and the host_sof run at the same frequency (1 KHz).
 
-Overall it seems to me that it might make more sense to implement this
-as new driver instead of messing with the existing driver. Have you
-thought about that ?
+Unfortunately, this is not the case for all the hardware. Add a quirk to
+support such hardware.
 
-Guenter
+Note on how to identify such hardware:
+When running with "yavta -c /dev/videoX" Look for periodic jumps of the
+fps. Eg:
+
+30 (6) [-] none 30 614400 B 21.245557 21.395214 34.133 fps ts mono/SoE
+31 (7) [-] none 31 614400 B 21.275327 21.427246 33.591 fps ts mono/SoE
+32 (0) [-] none 32 614400 B 21.304739 21.459256 34.000 fps ts mono/SoE
+33 (1) [-] none 33 614400 B 21.334324 21.495274 33.801 fps ts mono/SoE
+34 (2) [-] none 34 614400 B 21.529237 21.527297 5.130 fps ts mono/SoE
+35 (3) [-] none 35 614400 B 21.649416 21.559306 8.321 fps ts mono/SoE
+36 (4) [-] none 36 614400 B 21.678789 21.595320 34.045 fps ts mono/SoE
+...
+99 (3) [-] none 99 614400 B 23.542226 23.696352 33.541 fps ts mono/SoE
+100 (4) [-] none 100 614400 B 23.571578 23.728404 34.069 fps ts mono/SoE
+101 (5) [-] none 101 614400 B 23.601425 23.760420 33.504 fps ts mono/SoE
+102 (6) [-] none 102 614400 B 23.798324 23.796428 5.079 fps ts mono/SoE
+103 (7) [-] none 103 614400 B 23.916271 23.828450 8.478 fps ts mono/SoE
+104 (0) [-] none 104 614400 B 23.945720 23.860479 33.957 fps ts mono/SoE
+
+They happen because the delta_sof calculated at
+uvc_video_clock_host_sof(), wraps periodically, as both clocks drift.
+
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+---
+v2: Fix typo in frequency
+
+ drivers/media/usb/uvc/uvc_driver.c |  9 +++++++++
+ drivers/media/usb/uvc/uvc_video.c  | 11 +++++++++--
+ drivers/media/usb/uvc/uvcvideo.h   |  2 ++
+ 3 files changed, 20 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+index 9a791d8ef200..d1e6cba10b15 100644
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -2771,6 +2771,15 @@ static const struct usb_device_id uvc_ids[] = {
+ 	  .bInterfaceSubClass	= 1,
+ 	  .bInterfaceProtocol	= 0,
+ 	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRLS_ON_INIT) },
++	/* Logitech HD Pro Webcam C922 */
++	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
++				| USB_DEVICE_ID_MATCH_INT_INFO,
++	  .idVendor		= 0x046d,
++	  .idProduct		= 0x085c,
++	  .bInterfaceClass	= USB_CLASS_VIDEO,
++	  .bInterfaceSubClass	= 1,
++	  .bInterfaceProtocol	= 0,
++	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_INVALID_DEVICE_SOF) },
+ 	/* Chicony CNF7129 (Asus EEE 100HE) */
+ 	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
+ 				| USB_DEVICE_ID_MATCH_INT_INFO,
+diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+index 6d0e474671a2..760ab015cf9c 100644
+--- a/drivers/media/usb/uvc/uvc_video.c
++++ b/drivers/media/usb/uvc/uvc_video.c
+@@ -518,13 +518,20 @@ uvc_video_clock_decode(struct uvc_streaming *stream, struct uvc_buffer *buf,
+ 	/* To limit the amount of data, drop SCRs with an SOF identical to the
+ 	 * previous one.
+ 	 */
+-	dev_sof = get_unaligned_le16(&data[header_size - 2]);
++	if (stream->dev->quirks & UVC_QUIRK_INVALID_DEVICE_SOF)
++		dev_sof = usb_get_current_frame_number(stream->dev->udev);
++	else
++		dev_sof = get_unaligned_le16(&data[header_size - 2]);
++
+ 	if (dev_sof == stream->clock.last_sof)
+ 		return;
+ 
+ 	stream->clock.last_sof = dev_sof;
+ 
+-	host_sof = usb_get_current_frame_number(stream->dev->udev);
++	if (stream->dev->quirks & UVC_QUIRK_INVALID_DEVICE_SOF)
++		host_sof = dev_sof;
++	else
++		host_sof = usb_get_current_frame_number(stream->dev->udev);
+ 	time = uvc_video_get_time();
+ 
+ 	/* The UVC specification allows device implementations that can't obtain
+diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+index cce5e38133cd..89d909661915 100644
+--- a/drivers/media/usb/uvc/uvcvideo.h
++++ b/drivers/media/usb/uvc/uvcvideo.h
+@@ -209,6 +209,8 @@
+ #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT	0x00000400
+ #define UVC_QUIRK_FORCE_Y8		0x00000800
+ #define UVC_QUIRK_FORCE_BPP		0x00001000
++#define UVC_QUIRK_INVALID_DEVICE_SOF	0x00002000
++
+ 
+ /* Format flags */
+ #define UVC_FMT_FLAG_COMPRESSED		0x00000001
+-- 
+2.33.0.rc2.250.ged5fa647cd-goog
+
