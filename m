@@ -2,204 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1673B3EF8D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 05:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 447113EF8DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 05:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236730AbhHRDpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 23:45:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234435AbhHRDpA (ORCPT
+        id S236814AbhHRDun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 23:50:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20844 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236105AbhHRDul (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 23:45:00 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B503C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 20:44:26 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id f16-20020a056830205000b00519b99d3dcbso1145609otp.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 20:44:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dOY/Y+m8CtGs2t22YoW318N2LcUpxV+MpuaJ5LhTgsc=;
-        b=aLy58NDwB5iWg0GHfBe12kmdCiuAYo9opAjTnoggWlFAx23pcpHyAXkeBjVJdVAcI+
-         y2hLvIe7bGl3c7IbxKwD2jADhSpX2mh7rFTGtMUwEp9fTkcRI17RG7mRzcOB5wZVNk3c
-         Hgy9R3VSP2qotmwK+iPSpLpRRmWWeHRIO/jHIvzIQ9B09uT4Yk+IW/qstqhpAEEc6jBD
-         0DCz4QZuGFNiPHeyaceIo4Ipn0WxaQ3XnAADSyHNe0ybSxadh2+foMXNVSdp136YJJ/R
-         9KbpdIMTejZMUN407CjyuCUKCeVJvuG0uA4Xr5l8Mp6VdbGXjqC5gZWFBn48D3EI4rXA
-         6ekQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dOY/Y+m8CtGs2t22YoW318N2LcUpxV+MpuaJ5LhTgsc=;
-        b=PL0ccY45V7kE6bCPjUCU8jIwqItkD6rtKn94jcNFXI99dvkR7eqyh5kdYZWR9RNDPU
-         pFFyO0d3cixbQE3cK4wM1QD8t8yBAkqWfH3l8VjIBcj/2ZLH3RpZtbtUfBY6l0IDZE9s
-         sYhdWm3a8kbY2fXEcJe9fynwgWm+3mxh1hrW20s6BdQkHE4fatJdFVmmfz6C2q8W6rcQ
-         0UdTuA9jMTw4IHgh6TRKXCfDBwTERwyy02rDLPZqr3udKmiM/zpQEQrRTAashHnDE32V
-         pqOlVhE3wr727mnEw5nOaY+GZPxe/Rf563izU4yacbCh+LVxEAjAV4Nc+/oip3gD2XOw
-         t/FA==
-X-Gm-Message-State: AOAM531fx7DkFUSMmtCpEAYN5ZlwPx9viEMpFVWPvKz0povEk3iksDFj
-        P5bI9AqX1THfjD5HDOrcOi7+pg==
-X-Google-Smtp-Source: ABdhPJwnVYK5fYr39j7qhmd0jRrOO7rMEezuFGQlLvSOJkLU4zHxBqJ5DgiwAELpKicRaga+Gs1gCg==
-X-Received: by 2002:a9d:649a:: with SMTP id g26mr5174265otl.92.1629258265750;
-        Tue, 17 Aug 2021 20:44:25 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id u126sm835593ooa.23.2021.08.17.20.44.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 20:44:25 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 22:44:23 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Amit Pundir <amit.pundir@linaro.org>
-Subject: Re: [PATCH 29/29] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
-Message-ID: <YRyCFx0ZOYTMhinf@builder.lan>
-References: <YPf+shNM6cXb3mfe@kroah.com>
- <d853df77-8d36-30b0-dd26-da1bfcb068e0@kernel.org>
- <20210721112531.xvu6ni5ksaehsrjh@mobilestation>
- <CALAqxLViEqSO17P3JGRGYJh-wDoHaJiQQV48zeoRgnar4Xd5Bg@mail.gmail.com>
- <20210722181221.xh3r5kyu7zlcojjx@mobilestation>
- <YPnEO6NVFZDS1s//@yoga>
- <CALAqxLUT0e+mHMVo685oVTxR8y76733cN0yciQ7ePS6GRE+_dg@mail.gmail.com>
- <20210722220918.l7j6zw3aaa27qato@mobilestation>
- <CALAqxLXrs0_Xs0JV5H-wS1q2CJ7XhW5Dj90eu=uazkRXXEMUxQ@mail.gmail.com>
- <20210815194617.sbrkutxzldqbxfat@mobilestation>
+        Tue, 17 Aug 2021 23:50:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629258607;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=crpAJBvumCuaEt8C+B+Kra3+47n/05Aja6kzedcOsJc=;
+        b=LX7EDcoHYBG7Vf5D0ZeMAKgS2EqJ407fvIcYEouGkHaHtoc4muTyIM40gY5xSi9aJ5P3Rp
+        uJAtf/nA5CAGlFPHy9KZwfn4KH3JjkXlxrO0FRkxKwk2qz1M16g8lK+gaf02zA3ySdzoM8
+        5RluDOl4szFDR4uHH54eGv18j7Kk/BI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-238-DAgbj7X2OAeNJl632j7qSA-1; Tue, 17 Aug 2021 23:50:03 -0400
+X-MC-Unique: DAgbj7X2OAeNJl632j7qSA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BF2688042DB;
+        Wed, 18 Aug 2021 03:50:01 +0000 (UTC)
+Received: from T590 (ovpn-8-28.pek2.redhat.com [10.72.8.28])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3083810429FC;
+        Wed, 18 Aug 2021 03:49:52 +0000 (UTC)
+Date:   Wed, 18 Aug 2021 11:49:47 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     axboe@kernel.dk, jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, kashyap.desai@broadcom.com,
+        hare@suse.de
+Subject: Re: [PATCH v2 03/11] blk-mq: Relocate shared sbitmap resize in
+ blk_mq_update_nr_requests()
+Message-ID: <YRyDWxgxOJSYhpDy@T590>
+References: <1628519378-211232-1-git-send-email-john.garry@huawei.com>
+ <1628519378-211232-4-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210815194617.sbrkutxzldqbxfat@mobilestation>
+In-Reply-To: <1628519378-211232-4-git-send-email-john.garry@huawei.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 15 Aug 14:46 CDT 2021, Serge Semin wrote:
+On Mon, Aug 09, 2021 at 10:29:30PM +0800, John Garry wrote:
+> For shared sbitmap, if the call to blk_mq_tag_update_depth() was
+> successful for any hctx when hctx->sched_tags is not set, then it would be
+> successful for all (due to nature in which blk_mq_tag_update_depth()
+> fails).
+> 
+> As such, there is no need to call blk_mq_tag_resize_shared_sbitmap() for
+> each hctx. So relocate the call until after the hctx iteration under the
+> !q->elevator check, which is equivalent (to !hctx->sched_tags).
+> 
+> Signed-off-by: John Garry <john.garry@huawei.com>
 
-> Hello John
-> 
-> On Fri, Aug 13, 2021 at 06:06:24PM -0700, John Stultz wrote:
-> > On Thu, Jul 22, 2021 at 3:09 PM Serge Semin <fancer.lancer@gmail.com> wrote:
-> > > On Thu, Jul 22, 2021 at 01:09:05PM -0700, John Stultz wrote:
-> > > > On Thu, Jul 22, 2021 at 12:17 PM Bjorn Andersson
-> > > > <bjorn.andersson@linaro.org> wrote:
-> > > > > > On Jul 21, 2021, 1:45 PM +0200, Krzysztof Kozlowski wrote:
-> > > > > > > I had impression that kernel defines interfaces which should be used and
-> > > > > > > are stable (e.g. syscalls, sysfs and so on). This case is example of
-> > > > > > > user-space relying on something not being marked as part of ABI. Instead
-> > > > > > > they found something working for them and now it is being used in "we
-> > > > > > > cannot break existing systems". Basically, AOSP unilaterally created a
-> > > > > > > stable ABI and now kernel has to stick to it.
-> > > > > > >
-> > > > > > > Really, all normal systems depend on aliases or names and here we have
-> > > > > > > dependency on device address. I proposed way how AOSP should be fixed.
-> > > > > > > Anything happened? Nope.
-> > > > > >
-> > > > > > First time he sent a possible solution for the problem:
-> > > > > > https://lore.kernel.org/lkml/20201221210423.GA2504@kozik-lap/
-> > > > > >
-> > > > > > To sum up you could have used one of the more portable approaches
-> > > > > > 1. add an udc alias to the controller and use it then to refer to the
-> > > > > > corresponding USB controller
-> > > > >
-> > > > > Is there such a thing as "UDC alias"? Or are you suggesting that we
-> > > > > should add such feature?
-> > > > >
-> > > > > I think it would be wonderful if we could identify the UDCs on our
-> > > > > boards as "USB1" and "USB2", or "the one and only USB-C connector". But
-> > > > > unless that will fall back to the existing naming it would break John's
-> > > > > _existing_ userspace.
-> > > >
-> > >
-> > > > Well, I'd not hold up the existing userspace I'm using as sacrosanct
-> > > > (AOSP devices still usually don't have to work cross-kernel versions -
-> > > > devboards being the main exception). I'm fine if we can rework
-> > > > userland as proposed, so that the issues can be avoided, but I
-> > > > honestly don't have enough context to really understand what that
-> > > > looks like (no idea what udc aliases are).
-> > > >
-> > > > And whatever we do, the main constraint is that userland has to be
-> > > > able to work with existing LTS kernels and newer kernels.
-> > >
-> > > As I said in my response to Bjorn even if it is added to the kernel it
-> > > won't get to the official LTSes as it would be a new kernel feature.
-> > > New features aren't normally backported to the older kernels.
-> > >
-> > > >
-> > > > > > 2. search through DT-nodes looking for a specific compatible/reg
-> > > > > > DT-properties.
-> > > > > >
-> > > > >
-> > > > > We could define that this is the way, but again we didn't yesterday so
-> > > > > your proposal is not backwards compatible.
-> > > >
-> > >
-> > > > It may be backwards compatible, but I'm still not clear exactly how it
-> > > > would work.
-> > > >
-> > > > I guess if we look through all
-> > > > sys/bus/platform/devices/*/of_node/compatbile strings for the desired
-> > > > "snps,dwc3", then find which of the directories have the desired
-> > > > address in the string? (The suggestion for looking at reg seems
-> > > > better, but I don't get a char value out of the dwc3 of_node/reg
-> > > > file).
-> > >
-> > > The algorithm is simple:
-> > > 1) You know what USB controllers you have on your platform. They are
-> > > supposed to be compatible with snps,dwc3 string and have some pre-defined
-> > > base address.
-> > > 2) Find all the files in the directory /sys/class/udc/.
-> > > 3) Walk through all the directories in /sys/bus/platform/devices/ with
-> > > names found in 2) and stop on the device with matching compatible/base
-> > > address defined in 1).
-> > >
-> > > In my case the strings could be retrieved like this:
-> > > USB_NAME_COMPAT=$(/sys/bus/platform/devices/1f100000.usb/of_node/compatible | tr '\0' '\t' | cut -f1)
-> > > USB_DEVICE_ADDR="$(head -c 4 /sys/bus/platform/devices/1f100000.usb/of_node/reg | hexdump -ve '/1 "%02x"' | sed -e 's/^0*//g')"
-> > 
-> > 
-> 
-> > Hey Serge,
-> >    I just wanted to follow up here.  Amit has reworked the db845c AOSP
-> > userland so that it no longer uses the fixed node name, but instead
-> > probes for it:
-> >   https://android-review.googlesource.com/c/device/linaro/dragonboard/+/1774872
-> > 
-> > Admittedly, it does take a short-cut.  As your algorithm above,
-> > digging up the devices and finding the sys/bus path to read the reg
-> > value and pipe through hexdump (which android doesn't have) seemed
-> > overly obtuse when the address is in the node name itself (while the
-> > only way to be sure, one normally doesn't use spectroscopy to
-> > determine the value of a coin when you can read what's printed on it
-> > :).  But, should the node naming be further changed at least the
-> > infrastructure we have can be reworked fairly easily to adapt now.
-> > 
-> > In any case, as we can handle the name change now, if you want to
-> > resubmit your patch, we would no longer object (but can't promise no
-> > one else might be bitten).  Sorry for the delay this caused, and we
-> > appreciate you working with us to find a solution.
-> 
-> Great! Thanks for sending the notification. I'll resend the patch with a
-> reference to your report and to the update made to AOSP, as soon as I
-> am done with my current task.
-> 
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
 
-Amit's change makes future versions of AOSP able to cope with changes in
-the UDC name, unfortunately it doesn't change the fact that renaming the
-node breaks compatibility in non-Android user space (or any existing
-branches/tags of AOSP).
+-- 
+Ming
 
-Regards,
-Bjorn
