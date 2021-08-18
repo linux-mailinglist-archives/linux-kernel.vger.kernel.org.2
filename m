@@ -2,110 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7D43F031B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 13:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BB83F0321
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 14:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235095AbhHRL7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 07:59:03 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:49273 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231500AbhHRL7A (ORCPT
+        id S233971AbhHRMAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 08:00:53 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3661 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231476AbhHRMAv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 07:59:00 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id B7C425C00BD;
-        Wed, 18 Aug 2021 07:58:25 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 18 Aug 2021 07:58:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=v2JFN1
-        DSkjegBrCPzVOFqy6vNBDTyF74NPfYbQKl8VY=; b=WoGtXsb/tGGM7lsYaoNrTu
-        yd4c6g/VafZ1PHspTeku62MGkMVDlSREXbDnGwO2mzIgIe7GgWwIJ1dhoj5jNGAj
-        9Zanm42OAMMO98w/unDkeQo3ej7tjpMWI0fHEhrCFN3HpypE6d8s0wMaNqYCnDJj
-        eyhrkCs0z7H1XzR+tXHzEmIB1EOR7fdftR+FFvmY7IbKp9rPzNCm39LiZuaClxEF
-        fP2VbPn4JLZJICLtvxNdK+MEk8ULIBz8kbm693VSPh5yk53VZya6jVbTaHJ5fXTZ
-        GgGpwJ+XA3eR/7gb8VXDVBHthdXcXOxpUyRz4Im5pJdq4ZPPvi4/4850NeIYhAmA
-        ==
-X-ME-Sender: <xms:4fUcYZDrKRxbFHseIQLgNapptiRONL2wwrCDlbIk0yxskCFliWLctA>
-    <xme:4fUcYXjIMvhN-iGo25qlWidLJFhH5JJDDr3YPAK53ZlY5PQFeIbN5mDHqIrgTZ5SN
-    SQ9ZiGw47qz6fM>
-X-ME-Received: <xmr:4fUcYUmDuyMtRhkcWr8Zv2NZIb9ogm1Q5-xSbVz2DWcHTNTgT-clYvFDpoIPsfbf4dhjWKfndGp6pRP6ptUXOxAQ3ylS9A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleehgdegiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttdertd
-    dttddvnecuhfhrohhmpefkughoucfutghhihhmmhgvlhcuoehiughoshgthhesihguohhs
-    tghhrdhorhhgqeenucggtffrrghtthgvrhhnpedtffekkeefudffveegueejffejhfetgf
-    euuefgvedtieehudeuueekhfduheelteenucevlhhushhtvghrufhiiigvpedtnecurfgr
-    rhgrmhepmhgrihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:4fUcYTzo-UgiW7eEuoKX_NcK_pI55gRkpCqnn6rOf9ISkWPvcJvWMQ>
-    <xmx:4fUcYeSNofQLY5sxWkpGVaYC5jNFJ7xxZWJpjlRxxdtvyuX9IHi7rA>
-    <xmx:4fUcYWbeWlUMDF5UknMZT4YwJxuzuuaZ2xbZofL2stELneLq35wGvQ>
-    <xmx:4fUcYcdqPtVKJLVWsWWVEQ6H6CbXGcihU9dg8DgPHvUVSuNUzrSrwg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 18 Aug 2021 07:58:24 -0400 (EDT)
-Date:   Wed, 18 Aug 2021 14:58:19 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     13145886936@163.com
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
-Subject: Re: [PATCH] flow_offload: action should not be NULL when it is
- referenced
-Message-ID: <YRz1297sFSjG7/Cc@shredder>
-References: <20210626115606.1243151-1-13145886936@163.com>
+        Wed, 18 Aug 2021 08:00:51 -0400
+Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GqRJp6N8vz6BHR9;
+        Wed, 18 Aug 2021 19:59:22 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 18 Aug 2021 14:00:15 +0200
+Received: from [10.202.227.179] (10.202.227.179) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 18 Aug 2021 13:00:14 +0100
+Subject: Re: [PATCH v2 06/11] blk-mq: Pass driver tags to
+ blk_mq_clear_rq_mapping()
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     <axboe@kernel.dk>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <kashyap.desai@broadcom.com>, <hare@suse.de>
+References: <1628519378-211232-1-git-send-email-john.garry@huawei.com>
+ <1628519378-211232-7-git-send-email-john.garry@huawei.com>
+ <YRyGb/Ay3lvUZs/V@T590>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <23448833-593c-139f-6051-9b8e7d3deade@huawei.com>
+Date:   Wed, 18 Aug 2021 13:00:13 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210626115606.1243151-1-13145886936@163.com>
+In-Reply-To: <YRyGb/Ay3lvUZs/V@T590>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.179]
+X-ClientProxiedBy: lhreml748-chm.china.huawei.com (10.201.108.198) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 26, 2021 at 04:56:06AM -0700, 13145886936@163.com wrote:
-> From: gushengxian <gushengxian@yulong.com>
+>>   
+>> @@ -2346,8 +2345,11 @@ static void blk_mq_clear_rq_mapping(struct blk_mq_tag_set *set,
+>>   void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
+>>   		     unsigned int hctx_idx)
+>>   {
+>> +	struct blk_mq_tags *drv_tags;
+>>   	struct page *page;
+>>   
+>> +		drv_tags = set->tags[hctx_idx];
 > 
-> "action" should not be NULL when it is referenced.
-> 
-> Signed-off-by: gushengxian <13145886936@163.com>
-> Signed-off-by: gushengxian <gushengxian@yulong.com>
-> ---
->  include/net/flow_offload.h | 12 +++++++-----
->  1 file changed, 7 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/net/flow_offload.h b/include/net/flow_offload.h
-> index dc5c1e69cd9f..69c9eabf8325 100644
-> --- a/include/net/flow_offload.h
-> +++ b/include/net/flow_offload.h
-> @@ -319,12 +319,14 @@ flow_action_mixed_hw_stats_check(const struct flow_action *action,
->  	if (flow_offload_has_one_action(action))
->  		return true;
->  
-> -	flow_action_for_each(i, action_entry, action) {
-> -		if (i && action_entry->hw_stats != last_hw_stats) {
-> -			NL_SET_ERR_MSG_MOD(extack, "Mixing HW stats types for actions is not supported");
-> -			return false;
-> +	if (action) {
 
-This patch generates a smatch warning:
+Hi Ming,
 
-include/net/flow_offload.h:322 flow_action_mixed_hw_stats_check() warn: variable dereferenced before check 'action' (see line 319)
+> Indent.
 
-Why the patch is needed? 'action' is already dereferenced in
-flow_offload_has_one_action()
+That's intentional, as we have from later patch:
 
-> +		flow_action_for_each(i, action_entry, action) {
-> +			if (i && action_entry->hw_stats != last_hw_stats) {
-> +				NL_SET_ERR_MSG_MOD(extack, "Mixing HW stats types for actions is not supported");
-> +				return false;
-> +			}
-> +			last_hw_stats = action_entry->hw_stats;
->  		}
-> -		last_hw_stats = action_entry->hw_stats;
->  	}
->  	return true;
->  }
-> -- 
-> 2.25.1
+void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags 
+*tags, unsigned int hctx_idx)
+{
+	struct blk_mq_tags *drv_tags;
+	struct page *page;
+
++	if (blk_mq_is_sbitmap_shared(set->flags))
++		drv_tags = set->shared_sbitmap_tags;
++	else
+		drv_tags = set->tags[hctx_idx];
+
+	...
+
+	blk_mq_clear_rq_mapping(drv_tags, tags);
+
+}
+
+And it's just nice to not re-indent later.
+
 > 
+>> +
+>>   	if (tags->static_rqs && set->ops->exit_request) {
+>>   		int i;
+>>   
+>> @@ -2361,7 +2363,7 @@ void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
+>>   		}
+>>   	}
+>>   
+>> -	blk_mq_clear_rq_mapping(set, tags, hctx_idx);
+>> +	blk_mq_clear_rq_mapping(drv_tags, tags);
 > 
+> Maybe you can pass set->tags[hctx_idx] directly since there is only one
+> reference on it.
+> 
+
+Again, intentional for similar reason, as above.
+
+Thanks,
+John
+
