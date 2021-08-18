@@ -2,145 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A56E3EFCF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFB33EFCFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238577AbhHRGl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 02:41:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52412 "EHLO
+        id S238093AbhHRGmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 02:42:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238284AbhHRGlZ (ORCPT
+        with ESMTP id S236730AbhHRGmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 02:41:25 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB29C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:40:50 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id gr13so2792683ejb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:40:50 -0700 (PDT)
+        Wed, 18 Aug 2021 02:42:18 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4659FC061764;
+        Tue, 17 Aug 2021 23:41:44 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id h24-20020a1ccc180000b029022e0571d1a0so1057680wmb.5;
+        Tue, 17 Aug 2021 23:41:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=l0GE7O9lgTGJhOP7fE0g74eXRovQf9cW+0IjH4bHJbA=;
-        b=ccWcM8AXjUhcSVmHYJXhvqv/LY8yZJeP49V8eVhiaYYp3prmRr4Y95buOjVap82Qnm
-         Ly6ZW1FBf0cex2Uknwt1nNpJazOao86lWh/iMSAO2LceYoYavdjGGXBB4cj+tTuFXty2
-         GSSVwgnz/15PEL1dZggfebasIgWhnAG7ntcuexwhKGkwivGIhvnaGFArI93dvY43DAvh
-         +Q0gDfNOqGua+d7TXtN3UOOExUoOdeaEEHhJf3Y8Ba/TcDABxKttWzS4XMokdHapTUsN
-         ISjIH5rQ/FWKpM91ujfZpAl5dFG2sMQYAPU/6yN/DgQapBelktPlgiHG6XXfzDT4Ey38
-         n7jA==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AcoE87R52VyKOHG28xukneuIANPukP0XGTGJ2UbaRWQ=;
+        b=fSJEiK8mzY/9sHx+lIix/vXIsZux5UcOrmqHIKFFn6AFzXA16kA8wY8tXgEWjSJ8Lm
+         JVZbcK9v67RTRrO4H9ViCz8+tTJnDGbpPGwTjvmjYIYQ5oP6vkCOaXp73cPYglu5RFXi
+         cCJNXfPk/HN74TLzICueAgB/uVmNjv1ccTM1UHfd2bGqhWWiDT+HgJjCbB0Vj7d2m3zP
+         p3ruTGxFqReyEQi4dE9EH38Q46UbBJWyqhlkN2QcPB+EVpg0e8SpDfTYUgjzWizmNb+b
+         GuT8n3Cxl9k9vpcX3Z5HKgj5QmptwBrNPVvzbJJRDAMDWLtd4I6Xsh8f38O+QtMwYlbs
+         vuGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=l0GE7O9lgTGJhOP7fE0g74eXRovQf9cW+0IjH4bHJbA=;
-        b=Dpx5KBegVYqCZdFKbXFL82oowGxh0mqHW+08Cby8v1vUE7e+cLu0/qYCAzNLKtdlb/
-         eB67srTmKcizZdtFoGEQr1gHTqKgLos9c1ouMYaNUv+nI+nSrXjtN1ebwLSF0KWv+j/Y
-         mA31Zw85Hwz9HT0HMln6YPWA+ipABW3ohcbKHWfIb9wxTWhf4UzmpxgqEgn1+xZNPVVm
-         AQQd+7crpVtuY4vz3qR3Z3u+90a1guA6g4tywKLcaPyN5Ur2FJ/iU4l2qqaUq0Ro0Zs6
-         eszd+tEetUf4oMkneWnp3w8lAEfb9rUKTEnkAmuHKTwILGJDpgywvW33NwLsJjyYRVQa
-         ucYQ==
-X-Gm-Message-State: AOAM530nkRWhkaO/vyckzDpvUUFDGsbZePHgp5PzIXHXhZUsApB6gAN6
-        SGWnB3NRmS1Oqnimj//Aq3/GI4AxStg=
-X-Google-Smtp-Source: ABdhPJw0jFKRAtlaFluKfoZSoXIdCnCAw7WU6OmdSLXHsK9LCpQ+/d8H9b30W4RiTPTzt21up7tu1A==
-X-Received: by 2002:a17:906:704e:: with SMTP id r14mr8141339ejj.293.1629268849643;
-        Tue, 17 Aug 2021 23:40:49 -0700 (PDT)
-Received: from ?IPv6:2a02:8108:96c0:3b88::687e? ([2a02:8108:96c0:3b88::687e])
-        by smtp.gmail.com with ESMTPSA id c21sm2059686edv.27.2021.08.17.23.40.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Aug 2021 23:40:49 -0700 (PDT)
-Subject: Re: [PATCH v3] staging: r8188eu: Remove unused including
- <linux/version.h>
-To:     Cai Huoqing <caihuoqing@baidu.com>, dan.carpenter@oracle.com,
-        greg@kroah.com, yangyingliang@huawei.com
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20210818063653.2851-1-caihuoqing@baidu.com>
-From:   Michael Straube <straube.linux@gmail.com>
-Message-ID: <ccfad7c8-35df-6ffb-4bc1-d45ee59ba0e7@gmail.com>
-Date:   Wed, 18 Aug 2021 08:40:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=AcoE87R52VyKOHG28xukneuIANPukP0XGTGJ2UbaRWQ=;
+        b=GmogE87SlYz/AmxtomQfD8v76fG/zu1ta7nC0GAEiyT8I+1VggmNM5Oz8AKWSP+bZk
+         ZNoa4E4mtSAyEG0+aejdWkubkDf7BfF0AxF+EojDirCXji9Z6bnCT+RG060Q8YNK/gAb
+         MaId6+GCrxPvjNhc4aYzzk9m2TCnYEmPw7PLofoVlJ6vV9r5NHR5K9vUVr/wKHxId7Eq
+         FMlOqKh/lrgp8R+1lVswMCntzbSX5jJzH3N8cjUS/Az8DP6Ac+VUzK8DEgPrjJoRDJfL
+         0mIjN257IBTEHrx5RQe0D4DYyrMnHIW+oRnTEmdaceYE8y/L9gDqNSSWAor3DQBvEZUg
+         D2Aw==
+X-Gm-Message-State: AOAM531XC2+zWNCewOGlJk2Ef/DzOxmESQlc1Utc9EMKOqFa5OCV6wp/
+        22GpM4auXGqHYmN7U01qEVvXTECOBLM=
+X-Google-Smtp-Source: ABdhPJwEOHOCBm92kSOopobU33IB1fbEqL6eDL2ttMM07p39cfeSqG8JM1ie1mhI+cnHppoMpGKV9w==
+X-Received: by 2002:a05:600c:2c4a:: with SMTP id r10mr6992863wmg.68.1629268902891;
+        Tue, 17 Aug 2021 23:41:42 -0700 (PDT)
+Received: from gmail.com (77-234-64-129.pool.digikabel.hu. [77.234.64.129])
+        by smtp.gmail.com with ESMTPSA id r8sm4927717wrj.11.2021.08.17.23.41.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 23:41:42 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 18 Aug 2021 08:41:40 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     manfred@colorfullife.com, stern@rowland.harvard.edu,
+        parri.andrea@gmail.com, will@kernel.org, peterz@infradead.org,
+        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
+        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
+        dlustig@nvidia.com, joel@joelfernandes.org, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [GIT PULL lkmm] LKMM commits for v5.15
+Message-ID: <YRyrpPhEdRCnRmlq@gmail.com>
+References: <20210812002535.GA405507@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-In-Reply-To: <20210818063653.2851-1-caihuoqing@baidu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210812002535.GA405507@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+* Paul E. McKenney <paulmck@kernel.org> wrote:
 
-On 8/18/21 8:36 AM, Cai Huoqing wrote:
-> Remove including <linux/version.h> that don't need it
+> Hello, Ingo!
 > 
-> v1->v2: remove "based on staging-next" from commit message
-> v2->v3: add changelog to commit message
-
-You should put the v1->v2 lines below the --- line, so it
-will not appear in the final commit message.
-
+> This pull request contains changes for the Linux-kernel memory model
+> (LKMM).  These changes focus on documentation, providing additional
+> examples and use cases.  These have been posted to LKML:
 > 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
-
---> here
-
->   drivers/staging/r8188eu/core/rtw_mlme.c      | 1 -
->   drivers/staging/r8188eu/os_dep/os_intfs.c    | 1 -
->   drivers/staging/r8188eu/os_dep/rtw_android.c | 1 -
->   drivers/staging/r8188eu/os_dep/xmit_linux.c  | 1 -
->   4 files changed, 4 deletions(-)
+> https://lore.kernel.org/lkml/20210721211003.869892-1-paulmck@kernel.org/
+> https://lore.kernel.org/lkml/20210721211003.869892-2-paulmck@kernel.org/
+> https://lore.kernel.org/lkml/20210721211003.869892-3-paulmck@kernel.org/
+> https://lore.kernel.org/lkml/20210721211003.869892-4-paulmck@kernel.org/
 > 
-> diff --git a/drivers/staging/r8188eu/core/rtw_mlme.c b/drivers/staging/r8188eu/core/rtw_mlme.c
-> index d5ef5783f4ad..82b74ebdaabd 100644
-> --- a/drivers/staging/r8188eu/core/rtw_mlme.c
-> +++ b/drivers/staging/r8188eu/core/rtw_mlme.c
-> @@ -3,7 +3,6 @@
->   
->   #define _RTW_MLME_C_
->   
-> -#include <linux/version.h>
->   #include "../include/osdep_service.h"
->   #include "../include/drv_types.h"
->   #include "../include/recv_osdep.h"
-> diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
-> index f4bf4732578a..aef978eef4d7 100644
-> --- a/drivers/staging/r8188eu/os_dep/os_intfs.c
-> +++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
-> @@ -12,7 +12,6 @@
->   
->   #include "../include/usb_osintf.h"
->   #include "../include/rtw_br_ext.h"
-> -#include <linux/version.h>
->   
->   MODULE_LICENSE("GPL");
->   MODULE_DESCRIPTION("Realtek Wireless Lan Driver");
-> diff --git a/drivers/staging/r8188eu/os_dep/rtw_android.c b/drivers/staging/r8188eu/os_dep/rtw_android.c
-> index bdd381606ba6..af0072e2cb5f 100644
-> --- a/drivers/staging/r8188eu/os_dep/rtw_android.c
-> +++ b/drivers/staging/r8188eu/os_dep/rtw_android.c
-> @@ -3,7 +3,6 @@
->   
->   #include <linux/module.h>
->   #include <linux/netdevice.h>
-> -#include <linux/version.h>
->   #include "../include/rtw_android.h"
->   #include "../include/osdep_service.h"
->   #include "../include/rtw_debug.h"
-> diff --git a/drivers/staging/r8188eu/os_dep/xmit_linux.c b/drivers/staging/r8188eu/os_dep/xmit_linux.c
-> index 4f1ce346b3a5..69966c696130 100644
-> --- a/drivers/staging/r8188eu/os_dep/xmit_linux.c
-> +++ b/drivers/staging/r8188eu/os_dep/xmit_linux.c
-> @@ -3,7 +3,6 @@
->   
->   #define _XMIT_OSDEP_C_
->   
-> -#include <linux/version.h>
->   #include "../include/osdep_service.h"
->   #include "../include/drv_types.h"
->   #include "../include/if_ether.h"
+> They have been exposed to -next and the kernel test robot, not that these
+> services do all that much for documentation changes.
 > 
+> The following changes since commit 2734d6c1b1a089fb593ef6a23d4b70903526fe0c:
+> 
+>   Linux 5.14-rc2 (2021-07-18 14:13:49 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git lkmm
+> 
+> for you to fetch changes up to 87859a8e3f083bd57b34e6a962544d775a76b15f:
+> 
+>   tools/memory-model: Document data_race(READ_ONCE()) (2021-07-27 11:48:55 -0700)
+> 
+> ----------------------------------------------------------------
+> Manfred Spraul (1):
+>       tools/memory-model: Heuristics using data_race() must handle all values
+> 
+> Paul E. McKenney (3):
+>       tools/memory-model: Make read_foo_diagnostic() more clearly diagnostic
+>       tools/memory-model: Add example for heuristic lockless reads
+>       tools/memory-model: Document data_race(READ_ONCE())
+> 
+>  .../memory-model/Documentation/access-marking.txt  | 151 ++++++++++++++++++---
+>  1 file changed, 135 insertions(+), 16 deletions(-)
 
-Thanks,
-Michael
+Pulled into tip:locking/debug, thanks a lot Paul!
+
+	Ingo
