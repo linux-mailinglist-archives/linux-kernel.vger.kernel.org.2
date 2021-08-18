@@ -2,201 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632153F0B57
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 20:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 529FE3F0B5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 20:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233036AbhHRS6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 14:58:45 -0400
-Received: from mail-eopbgr70045.outbound.protection.outlook.com ([40.107.7.45]:36430
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229558AbhHRS6j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 14:58:39 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=He6KfXEUmsu8cRFgg+ckenu7Px1pzjRlXv8n8hXBZtoVkePP061jYlfuIkRn8Hx0VJXnhJT/F/XV0hyEcJ+89K6GDanqpH+4WgxqXnyNHK2tWWOTNdzWzrIHJdQUiKoeo7XXbAdz5cNf9Vib+8y83h4Lqp+G5EuLLklHZLg6QLICIuX05APQHxqwPxthGDVsotip7YDHakQdyUPk5ghJB07ozo5aJXZkSf1zzh0Df9GUAPKk1h+B3I0IR3+EMBsBrGUR/WQqG9lyySLEmgajczy8jdksgK2nZKl2ibmpwb8NCUDR5cB9N3reF1Rj4jWcbyUobsxR/HbCB8vVoQcTaA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uSt9xUnoUUi5uFJkMbBGmOAN5BRnvSQDxuYQtmZ/CgI=;
- b=dhpmfQberGGeHeNZ5QmZQEOCQ0AuKi8pxzNEjo1buBz1ZCVWUueuocUOgtt7wfLkQrImq+6c/WrPz+HE/i9iFNar1gmuhSasjjp1Mf6lJCs25527tS4VNEnam8YILj0HPTt7Y9mLf6mDDHAmkD1+7t/WJ9bab9SELsdOI78i1OZRovsIlNyhHDEuVjLtzYKeiahrBGT/Bxew8aGXhitJ2RXQTEpOOkLWQT4/GHHPvsS46d37rqIIV8c0s4vnPiVlYJK+VLQ3iYFCnxl45QkiIgVRM/Kt7mMiONcJhR8RWy7yb0s0h26bLdHrdx6OgIubuZWgA4K62tT0usy2R1Vccw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uSt9xUnoUUi5uFJkMbBGmOAN5BRnvSQDxuYQtmZ/CgI=;
- b=YI/ydjFLAVwDdK9ZZZ68LUt+XdAatJKUTc4ajpt9n+zIwp72JKvPzYj6MQov2509aWSKdhl4pQzRCT64YFKPnG7MIrYFn3stSuV3orv1gRSJCVu7rSEscy14ui6cTRBJtPpgO0xl2ZSQ+Y/ikkYIkv4Tx/4SMG6t8XSZGVJsl08=
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
- by VI1PR04MB3197.eurprd04.prod.outlook.com (2603:10a6:802:b::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.15; Wed, 18 Aug
- 2021 18:58:00 +0000
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::109:1995:3e6b:5bd0]) by VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::109:1995:3e6b:5bd0%2]) with mapi id 15.20.4415.024; Wed, 18 Aug 2021
- 18:58:00 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>,
-        "joergen.andreasen@microchip.com" <joergen.andreasen@microchip.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
-        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
-        "vishal@chelsio.com" <vishal@chelsio.com>,
-        "saeedm@mellanox.com" <saeedm@mellanox.com>,
-        "jiri@mellanox.com" <jiri@mellanox.com>,
-        "idosch@mellanox.com" <idosch@mellanox.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "kuba@kernel.org" <kuba@kernel.org>, Po Liu <po.liu@nxp.com>,
-        Leo Li <leoyang.li@nxp.com>
-Subject: Re: [RFC v2 net-next 5/8] net: dsa: felix: support psfp filter on
- vsc9959
-Thread-Topic: [RFC v2 net-next 5/8] net: dsa: felix: support psfp filter on
- vsc9959
-Thread-Index: AQHXk/d+YbIxm9WgDUCf14eDNGcnWKt5nf2A
-Date:   Wed, 18 Aug 2021 18:58:00 +0000
-Message-ID: <20210818185759.5bedb6cpw7k4bgaf@skbuf>
-References: <20210818061922.12625-1-xiaoliang.yang_1@nxp.com>
- <20210818061922.12625-6-xiaoliang.yang_1@nxp.com>
-In-Reply-To: <20210818061922.12625-6-xiaoliang.yang_1@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c9577bf4-2180-4d89-1b7a-08d9627a19ac
-x-ms-traffictypediagnostic: VI1PR04MB3197:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR04MB3197FDA77B60C703BBDBD6ABE0FF9@VI1PR04MB3197.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9bvEOgf8ehjIq7GrJPw4BVqDqeTx5eiRA5e6ncF+fIW5gqIVlw6I+JJZQMQr0wcJSp88kBCU+9o56XyZr49UBzWuzaVqSbUqJ+y+AgiFibUHs1ni/l1S5QFj+8fH/0kk8JnyTvunww3FCjR/MuP3SRnmy9sgLXQcD3/eqYdUK6sYEQK8q79Ct2AIXdo/sMIQKQJ8bXfI/qhGzrMKTB+zEcvrkYQ++dHFRFjNb6W3It8ZT6zpbXai3A/aiw+1fYrd49X5E4hcsRRdgySq4UwzgCsCm7hhIhSibwb6Q9BOUU6dSH0QfKiSl+acS7XvnN6CGKavd3w7okKDPd33WKksd23IkKk4rRx6DbCP1bB9QPS5j7xon/fuS4thsfRWRz+QkMLWaMZeKK2SwhLNzcDVGUSDNR/SCcDHD9LGuNiGX9W1h049/Bja+vzDdHST2ywANa4rMtgXkeNxr//OrzmPo1elcZAYUNp7dN4KQSw2wFDZVRAxH9ZOak3no0mucuz2Tk9zKb2voRTEoh9jB1vCZ3Q7KUZ5THQS+0gwYIGq915XQvDBH0nXcVXXoJsZTyxLGtVwNNldIoj+wNf4XKd7dJstRZSkvN7z+jM6QwRypLnKGK626aAfNyNtJAVLS0aIvvg/XTET5omi9FwGPDeRwnpfUf3oHw+nzigOhNeEE3/28TNowjm6Nnq7qKmhjMNasQHcatMeOYXWPV0QmTUkcA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(366004)(396003)(39860400002)(136003)(346002)(376002)(76116006)(71200400001)(9686003)(66446008)(316002)(83380400001)(66556008)(186003)(44832011)(6512007)(7416002)(8936002)(66476007)(86362001)(478600001)(33716001)(26005)(6636002)(66946007)(1076003)(6862004)(64756008)(38070700005)(122000001)(38100700002)(4326008)(8676002)(2906002)(6486002)(6506007)(5660300002)(54906003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?DJFYjbmFnau648RB/OJozKmSd9SicWvYUb1s2vc0SUGR5cdiszx8PoP9ahzB?=
- =?us-ascii?Q?7GxhoJOdZaG0zeJGG6QhZL/RsL6JQsynywsw9B4OgUrmDr9zgULC9CvW0MOz?=
- =?us-ascii?Q?n4OryRmig9HILJU4L4Gz+GrQ8vr9t2Ix4G/GbVZYCaWAvcwLMVLqJSft1QRi?=
- =?us-ascii?Q?/VGRW9EhwGfe2b8vBAhbRt/X9U/nGerz7ceW5UmcYVb/EDt36r0vA2U1uR1I?=
- =?us-ascii?Q?FPyMwqsKwRbsuThhFV4QR7mB6JXh7aAtOTTFrauHeMYNWIWvmnUMQ6aWCwxU?=
- =?us-ascii?Q?KsCryS7oO0weSM2KGRivAGJEZ7qT4vMItj7P/3OlaSudnmKlxkpZV4w8XroG?=
- =?us-ascii?Q?z8Si6fmfV+BxllUym+mIkfP7AgwUKPc3QxYpFraOkX+b3Ts6DcBb7ZhqI65J?=
- =?us-ascii?Q?NL670+bbqZRB0WqfQAWTPB4LWSwjT6DBiJB29UeAQ4O+fgO3tMrot2gDpOQP?=
- =?us-ascii?Q?1+thtUDmU9y7bplt/DBhxAYN7Mj8e4m0A6RGohIR9M6l5cnNtgDeOqhv7hvq?=
- =?us-ascii?Q?Kg2K62HvJ1X+LoQJZXmf8qZYOFtoZkt/bhuYPel5+zO4gvLF4zjXjAx0sYFg?=
- =?us-ascii?Q?ZD/aOi54/W0JP4qA4zrkrReHCczy49OO96nUeyhbcCH3Tce2c6NXwrLhVwgY?=
- =?us-ascii?Q?TQ/VxG8aFJ87hsmC20Q/UyyqxMRrdOBUHCC1nBGtdPbs/ZgKO0Yp6KOPenyP?=
- =?us-ascii?Q?QC67ObhHrCZd2dNSFrQm8DOGRtcyecX9Bno9IcwLdalFv1LM+VzTZ+jiwZCv?=
- =?us-ascii?Q?jRg0q7fBOiZHxpGGsoptHQe3rS3mTkoqgHgpkWFqyMCAxoqIqNtMEIoWFTcH?=
- =?us-ascii?Q?COapMH06bMkGfXizPsY2R/dlXMdhikV0KTYu/0gCmN2HzOOcKjSkXWWx3HwS?=
- =?us-ascii?Q?P2j8EbnaRSmUKibQFNDUG82obmAOxW1bN3wEFinypdPs+gLJ7w1PhuOEHV7W?=
- =?us-ascii?Q?OW8GQv2cWzNYhXYa5ZjKqxV8Jf6Z13Tx9LrBPvroREIdmhiij7Ye+BRxjI2h?=
- =?us-ascii?Q?hA/ormHZyK9P75d0VQX/B5Z5jB65QJdWyGLfCJ5qR6lcCsqA2KCOJX7njmVz?=
- =?us-ascii?Q?knNGQSuaRV8lornIltliuwXi91Q/wDQPf2Y2PdeeZeOwtkpgWcQA6m3IxmnO?=
- =?us-ascii?Q?GXAiF9bVGy3SYNftc4sxnSZLLi0Z5n1R+IMFHhyQWa/7MJtZpoqUfpF+9HjJ?=
- =?us-ascii?Q?6iw7bjvUwV96eLWDd5hpH8+hQsqeLS3V3NRChEsCpp8po8AeTsTc6OauSeQu?=
- =?us-ascii?Q?3Su7HSWdQelYH1RG4APFuyZHxIdrr4REBgcOl6nsEqH5QW7KLZURKtYRN5Aw?=
- =?us-ascii?Q?a4y22eC7e227sN9p6g7mzC0I?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <A5D8BDBD30E1334BA17FA2CD1891F442@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S233074AbhHRS76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 14:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232404AbhHRS74 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 14:59:56 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECCB1C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 11:59:20 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id z20so7123735ejf.5
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 11:59:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=U1zyi1q7r3FuL+wJh5Ih7H/8fdJI5IwoBKaDIus7E2s=;
+        b=uhtyKsOOPmcbpIYQ/tuIUGQpbFG2dRI/UNRe0vUocT2cJmfJ1PDKxAdEqVbpyosFxw
+         wSXtywoYBBusCCqZ/WDIaGhkNtGNcAaDprXBLa6scHS5C28HfKjlEKjUZTMKrp9uwaz2
+         g8CqBr5hTdSx13/qYEbmlYSaJJXwEmb+akv0vqmRB7j82UB6EM8oyQ2ZbbthUyGJtqUt
+         71aCb28ahPnhlyyiNdiPtb4FLIacGOomPXcATrSVW4Lip8C/OHIpnZ0Qb1SV8BbXsrnn
+         NX/1JjYpxZcoDWCmP5rhTf8rHobd2y878ZEcJKMnsvTmualU987sgfYHWWShlIhw41kD
+         eOSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=U1zyi1q7r3FuL+wJh5Ih7H/8fdJI5IwoBKaDIus7E2s=;
+        b=oDlyirVrbMUqFcmphWlWDGVYd5wIGmuEA318WI8T2/0U2sF4/gslsV/IVfJuH7ZvdG
+         5r701szcExh7SDirfA9FaOLH8H9vQqiAnCDHdmZ8uag4tlVcvcCrMhgspUVFR4A0HUgW
+         NXSmiz68/edN1NMCwGHOeAvyudvA6tsWYxQWLrkG4uFImlmxCT77kz61Blq44DcDtn6Z
+         wYCCiD4HCVujqQYWVWYYBDreuSKA0XUPYp09zoVv0L6PLlavMlTkpofaeDJ29J3HqtCq
+         swfEGapLZKq4WyMrNWVmCVh0vdfDcL07XIG15H+i88Df0p67sQcTdRBemWoAYU15d1jF
+         juDA==
+X-Gm-Message-State: AOAM533Y/0w8YhNigotTkbJsNajOnVy/8di0o0dxuCx63HIyciaQy+V9
+        hJy5bBdzEtP49S0crWGZNwks5K+ZKkJpJnUczh3Q
+X-Google-Smtp-Source: ABdhPJw1AZje9L1Ml35RnyfG5pEKMOFRry97/jH8x8P45R8xQa7mBiF5FdtzzWX+UiP8gbrJtRQ0eTIKE4Hhkn77bD8=
+X-Received: by 2002:a17:906:488a:: with SMTP id v10mr11058189ejq.91.1629313159447;
+ Wed, 18 Aug 2021 11:59:19 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c9577bf4-2180-4d89-1b7a-08d9627a19ac
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Aug 2021 18:58:00.3858
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: q5Y/9viWc5JnmtdpA67z9m68Qk6LajLj9VYDgci8B+WZUljkyxhxeKqDVUmvaznIKtnRqIdMk2Q7OuTFREJLGw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3197
+References: <20210814183359.4061-1-michael.weiss@aisec.fraunhofer.de> <20210814183359.4061-2-michael.weiss@aisec.fraunhofer.de>
+In-Reply-To: <20210814183359.4061-2-michael.weiss@aisec.fraunhofer.de>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 18 Aug 2021 14:59:08 -0400
+Message-ID: <CAHC9VhRB1iviuOyeqi3L4DC8LNfnkz1HXC3hdqNvqm2sZQYXMQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dm: introduce audit event module for device mapper
+To:     =?UTF-8?Q?Michael_Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        Song Liu <song@kernel.org>, Eric Paris <eparis@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-audit@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 02:19:19PM +0800, Xiaoliang Yang wrote:
-> +struct felix_psfp_list {
-> +	struct list_head stream_list;
-> +	struct list_head sfi_list;
-> +	struct list_head sgi_list;
-> +};
+On Sat, Aug 14, 2021 at 2:34 PM Michael Wei=C3=9F
+<michael.weiss@aisec.fraunhofer.de> wrote:
+>
+> To be able to send auditing events to user space, we introduce
+> a generic dm-audit module. It provides helper functions to emit
+> audit events through the kernel audit subsystem. We claim the
+> AUDIT_DM type=3D1336 out of the audit event messages range in the
+> corresponding userspace api in 'include/uapi/linux/audit.h' for
+> those events.
+>
+> Following commits to device mapper targets actually will make
+> use of this to emit those events in relevant cases.
+>
+> Signed-off-by: Michael Wei=C3=9F <michael.weiss@aisec.fraunhofer.de>
+
+Hi Michael,
+
+You went into more detail in your patchset cover letter, e.g. example
+audit records, which I think would be helpful here in the commit
+description so we have it as part of the git log.  I don't want to
+discourage you from writing cover letters, but don't forget that the
+cover letters can be lost to the ether after a couple of years whereas
+the git log has a much longer lifetime (we hope!) and a tighter
+binding to the related code.
+
+> ---
+>  drivers/md/Kconfig         | 10 +++++++
+>  drivers/md/Makefile        |  4 +++
+>  drivers/md/dm-audit.c      | 59 ++++++++++++++++++++++++++++++++++++++
+>  drivers/md/dm-audit.h      | 33 +++++++++++++++++++++
+>  include/uapi/linux/audit.h |  1 +
+>  5 files changed, 107 insertions(+)
+>  create mode 100644 drivers/md/dm-audit.c
+>  create mode 100644 drivers/md/dm-audit.h
+>
+> diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
+> index 0602e82a9516..48adbec12148 100644
+> --- a/drivers/md/Kconfig
+> +++ b/drivers/md/Kconfig
+> @@ -608,6 +608,7 @@ config DM_INTEGRITY
+>         select CRYPTO
+>         select CRYPTO_SKCIPHER
+>         select ASYNC_XOR
+> +       select DM_AUDIT if AUDIT
+>         help
+>           This device-mapper target emulates a block device that has
+>           additional per-sector tags that can be used for storing
+> @@ -640,4 +641,13 @@ config DM_ZONED
+>
+>           If unsure, say N.
+>
+> +config DM_AUDIT
+> +       bool "DM audit events"
+> +       depends on AUDIT
+> +       help
+> +         Generate audit events for device-mapper.
 > +
-
-Hmm, is there any reason why this data structure is not part of struct ocel=
-ot?
-Three empty list_head items should not consume that much memory. To
-reiterate, now we're trying to minimize the stuff that sits in DSA vs
-what is in the ocelot library itself.
-
-Microchip people, please shout if you have other hardware with this TSN
-implementation that can be supported by the ocelot driver.
-
->  /* Platform-specific information */
->  struct felix_info {
->  	const struct resource		*target_io_res;
-> @@ -36,6 +42,8 @@ struct felix_info {
->  	 */
->  	bool				quirk_no_xtr_irq;
-> =20
-> +	struct felix_psfp_list		*psfp;
+> +         Enables audit logging of several security relevant events in th=
+e
+> +         particular device-mapper targets, especially the integrity targ=
+et.
 > +
->  	int	(*mdio_bus_alloc)(struct ocelot *ocelot);
->  	void	(*mdio_bus_free)(struct ocelot *ocelot);
->  	void	(*phylink_validate)(struct ocelot *ocelot, int port,
-> diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/oce=
-lot/felix_vsc9959.c
-> index f966a253d1c7..4bb3c4023b85 100644
-> --- a/drivers/net/dsa/ocelot/felix_vsc9959.c
-> +++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
-> +struct felix_stream_filter_counters {
-> +	u32 match;
-> +	u32 not_pass_gate;
-> +	u32 not_pass_sdu;
-> +	u32 red;
-> +};
+>  endif # MD
+> diff --git a/drivers/md/Makefile b/drivers/md/Makefile
+> index a74aaf8b1445..4cd47623c742 100644
+> --- a/drivers/md/Makefile
+> +++ b/drivers/md/Makefile
+> @@ -103,3 +103,7 @@ endif
+>  ifeq ($(CONFIG_DM_VERITY_VERIFY_ROOTHASH_SIG),y)
+>  dm-verity-objs                 +=3D dm-verity-verify-sig.o
+>  endif
 > +
-> +static struct felix_psfp_list vsc9959_psfp;
-
-You cannot just do that, instantiate a singleton structure in a driver
-that can potentially probe on more than one switch in a system. It is
-just not proper driver design. Just put the lists
-
-> +static bool vsc9959_stream_table_lookup(struct list_head *stream_list,
-> +					struct felix_stream *stream)
+> +ifeq ($(CONFIG_DM_AUDIT),y)
+> +dm-mod-objs                            +=3D dm-audit.o
+> +endif
+> diff --git a/drivers/md/dm-audit.c b/drivers/md/dm-audit.c
+> new file mode 100644
+> index 000000000000..c7e5824821bb
+> --- /dev/null
+> +++ b/drivers/md/dm-audit.c
+> @@ -0,0 +1,59 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Creating audit records for mapped devices.
+> + *
+> + * Copyright (C) 2021 Fraunhofer AISEC. All rights reserved.
+> + *
+> + * Authors: Michael Wei=C3=9F <michael.weiss@aisec.fraunhofer.de>
+> + */
+> +
+> +#include <linux/audit.h>
+> +#include <linux/module.h>
+> +#include <linux/device-mapper.h>
+> +#include <linux/bio.h>
+> +#include <linux/blkdev.h>
+> +
+> +#include "dm-audit.h"
+> +#include "dm-core.h"
+> +
+> +void dm_audit_log_bio(const char *dm_msg_prefix, const char *op,
+> +                     struct bio *bio, sector_t sector, int result)
 > +{
-> +	struct felix_stream *tmp;
+> +       struct audit_buffer *ab;
 > +
-> +	list_for_each_entry(tmp, stream_list, list)
-> +		if (ether_addr_equal(tmp->dmac, stream->dmac) &&
-> +		    tmp->vid =3D=3D stream->vid)
-> +			return 1;
+> +       if (audit_enabled =3D=3D AUDIT_OFF)
+> +               return;
 > +
-> +	return 0;
-
-A function that returns bool should return true or false.
-
+> +       ab =3D audit_log_start(audit_context(), GFP_KERNEL, AUDIT_DM);
+> +       if (unlikely(!ab))
+> +               return;
+> +
+> +       audit_log_format(ab, "module=3D%s dev=3D%d:%d op=3D%s sector=3D%l=
+lu res=3D%d",
+> +                        dm_msg_prefix, MAJOR(bio->bi_bdev->bd_dev),
+> +                        MINOR(bio->bi_bdev->bd_dev), op, sector, result)=
+;
+> +       audit_log_end(ab);
 > +}
+> +EXPORT_SYMBOL_GPL(dm_audit_log_bio);
 > +
-> +static struct felix_stream *
-> +vsc9959_stream_table_get(struct list_head *stream_list, unsigned long id=
-)
+> +void dm_audit_log_target(const char *dm_msg_prefix, const char *op,
+> +                        struct dm_target *ti, int result)
 > +{
-> +	struct felix_stream *tmp;
+> +       struct audit_buffer *ab;
+> +       struct mapped_device *md =3D dm_table_get_md(ti->table);
 > +
-> +	list_for_each_entry(tmp, stream_list, list)
-> +		if (tmp->id =3D=3D id)
-> +			return tmp;
+> +       if (audit_enabled =3D=3D AUDIT_OFF)
+> +               return;
 > +
-> +	return NULL;
+> +       ab =3D audit_log_start(audit_context(), GFP_KERNEL, AUDIT_DM);
+> +       if (unlikely(!ab))
+> +               return;
+> +
+> +       audit_log_format(ab, "module=3D%s dev=3D%s op=3D%s",
+> +                        dm_msg_prefix, dm_device_name(md), op);
+> +
+> +       if (!result && !strcmp("ctr", op))
+> +               audit_log_format(ab, " error_msg=3D'%s'", ti->error);
+> +       audit_log_format(ab, " res=3D%d", result);
+> +       audit_log_end(ab);
 > +}
 
-I mostly don't have a problem with the rest of the patch. When you send
-v3 you can just drop the RFC tag.=
+Generally speaking we try to keep a consistent format and ordering
+within a given audit record type.  However you appear to have at least
+three different formats for the AUDIT_DM record in this patch:
+
+  "... module=3D%s dev=3D%d:%d op=3D%s sector=3D%llu res=3D%d"
+  "... module=3D%s dev=3D%s op=3D%s error_msg=3D'%s' res=3D%d"
+  "... module=3D%s dev=3D%s op=3D%s res=3D%d"
+
+The first thing that jumps out is that some fields, e.g. "sector", are
+not always present in the record; we typically handle this by using a
+"?" for the field value in those cases where you would otherwise drop
+the field from the record, for example the following record:
+
+  "... module=3D%s dev=3D%s op=3D%s res=3D%d"
+
+... would be rewritten like this:
+
+  "... module=3D%s dev=3D%s op=3D%s sector=3D? res=3D%d"
+
+The second thing that I noticed is that the "dev" field changes from a
+"major:minor" number representation to an arbitrary string value, e.g.
+"dev=3D%s".  This generally isn't something we do with audit records,
+please stick to a single representation for a given audit
+record-type/field combination.
+
+--=20
+paul moore
+www.paul-moore.com
