@@ -2,122 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C9DB3EFFAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEB9F3EFFAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230162AbhHRI4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 04:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56358 "EHLO
+        id S230216AbhHRI5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 04:57:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbhHRIz7 (ORCPT
+        with ESMTP id S229549AbhHRI5C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 04:55:59 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14241C061764;
-        Wed, 18 Aug 2021 01:55:23 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id x7so3708667ljn.10;
-        Wed, 18 Aug 2021 01:55:22 -0700 (PDT)
+        Wed, 18 Aug 2021 04:57:02 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35BECC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:56:28 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id d4so3076118lfk.9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:56:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=PyuHTiYtcp7PenUOgX16JRdXO479FYx66sP5cfTDtJ8=;
-        b=bFhAKTFYhRq6nSBU53V7nBfYhXxkjiAhCqJps2SBtRGMCJIXp+7lU6McxX8loQ6meE
-         fSG/FM3TmRbrP/b8JPftQvirvT0vqmE8IBifTejnoi6fVmyDgoVZJi0A2nL7TEJ5ep6U
-         o2VSz0DNti8zycJniW8NTFPj0oSHwn9/KbdCQon5p3dgkjGpfZjfSf9d8VaQbCgzW7AF
-         xcA2d+ms1Dm0JAK5Ztk4Qxii2GLc9+YyZSyRDLbM8q8GIfUWYUD2PlJCGYGdRSa9U/SY
-         wlL63UXYJiyw80MiPemF3cVUtFHjQpfvfBbn2auULEHwWpm/C6cbpNM1CHQtc6q3bxgN
-         f9Kw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RpVCA+HiLct3rjHe6ucM4AvKd8lS1LzE0nTcYyla1JY=;
+        b=cPiyNL+7q1dClbwJ+Le6I8CEPAnTMT4V3BmBnqGPpj7r8UjlBX5iV0YSRvzjp+dg4M
+         C7JuggpeEuLPrTwBN76kAyR0NoMFn4ZKsnjHlonHyk1v1BjG1wnQQHlm0SteFgZ9bySS
+         nGC3qOFWt3Q4NuwEbiPao4pdi4qBJNEwphTs+pnhCr28p6vD5BGkj/dUCCY4isvkf+rj
+         01OJv/dtcyCUniQ8QTj4kjrylGOyV4iaXqaLouVJ3/l38uTFAmlTh1VOTIcXaEdMpJcd
+         OwqJEB7+ZRsOFlbrT7yMHE8vMdUZthz/+PCUoLsWH3vqio88k1AdC+zBDr07eikcyBYS
+         XAQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PyuHTiYtcp7PenUOgX16JRdXO479FYx66sP5cfTDtJ8=;
-        b=BlTUqSkQpk/9Fc47ea6C798OCLe1seYD/jZuiUYoaIcewbU9eVq+YKfq8kf29xRcNE
-         JphiwLv128X5VInOYG/JrVTe10GQI4cTRpAYCJrmV+5k1pq138UDMOcg13YiufutSwOA
-         1Q0GyJVa7ZFRf8SL7xFbYVTE6STzm3iAwb7/1d7MW6PpxMisiViO9xOubqbjmmjsGs6L
-         oOudwkfap5IAyMvJPpevV7J8S+M+z/B/bUZEcmOSrDTX8lS/IoruXQRGCg7wNtS4wIeK
-         3OfjpnB/SqFODHYvHJ3D6sKqDmMlc3bgYQ6qy757FW1qJs/FLyoQhP47p1o88C9w2tA+
-         6XFg==
-X-Gm-Message-State: AOAM532llg9xnFPxgXrmwrkGueuvVGythGXIiMGeW7xcPGt2ghsBjfly
-        Iuu5pqG0kN2Qxo0SqjYdM6g=
-X-Google-Smtp-Source: ABdhPJzBpe3DARPr+h0Pu2Yu7QwdF+94FYfIVaP5pXL2ykMkVckZmxUEm9OoslOsTrhEkgEvNsI3Fg==
-X-Received: by 2002:a2e:b611:: with SMTP id r17mr7101788ljn.10.1629276921412;
-        Wed, 18 Aug 2021 01:55:21 -0700 (PDT)
-Received: from localhost.localdomain ([46.61.204.60])
-        by smtp.gmail.com with ESMTPSA id g5sm432730lfe.174.2021.08.18.01.55.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 01:55:20 -0700 (PDT)
-Subject: Re: [syzbot] KFENCE: use-after-free in kvm_fastop_exception
-To:     Matthieu Baerts <matthieu.baerts@tessares.net>,
-        syzbot <syzbot+7b938780d5deeaaf938f@syzkaller.appspotmail.com>,
-        davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
-        marcel@holtmann.org, mathew.j.martineau@linux.intel.com,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-References: <00000000000012030e05c9c8bc85@google.com>
- <58cef9e0-69de-efdb-4035-7c1ed3d23132@tessares.net>
- <6736a510-20a1-9fb5-caf4-86334cabbbb6@gmail.com>
- <32aeb66e-d4f0-26b5-a140-4477bb87067f@tessares.net>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-Message-ID: <3a8dd8db-61d6-603e-b270-5faf1be02c6b@gmail.com>
-Date:   Wed, 18 Aug 2021 11:55:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RpVCA+HiLct3rjHe6ucM4AvKd8lS1LzE0nTcYyla1JY=;
+        b=HAwmEGz2pRcBZd7CW/Lq6NL0qnHFPhz1BP6qWbGJ2kEwzJ9MtQh8J09Ryv2qyv3hyc
+         g2rFYDOEwITbkfO+3h5BUAE3rqj/MEa1ZwDvaRG+szAzNX4EKLcjBobFBpoBxpWyn2WT
+         Ju56nownAMmgY40QmOXZF3XS7c4mO1GPgBNV/U4pwBTTnX+p4OUFWIEa2+FOoI07FIsi
+         K+I1xTfjwNGZjWt1Bwk28bkp8M4vb5+Fs6UiKkyX1vGc83GyKXItsm7JQ8tUr4hV9/rc
+         QAm34emvAlsUYzckCKj/mbwTY/w96Dqlve0ShuzFXCy51E+NtgfeqHGN/P+dH5pXesXL
+         XqFg==
+X-Gm-Message-State: AOAM533iAPY7EM2rAqJzUTN/htRkszCahvn2/wPhtjFOOXw+RlRspe4U
+        OJ/NZgiTsUTNvEbyU49vV3E2+smLA4xgFd5K
+X-Google-Smtp-Source: ABdhPJwtLrN+Z+wJe7Xq9ADe9v6hoMKOnuILVBbTokrcKt8v3ogCQvfLWzfSBS/4RK91P983kWaCsw==
+X-Received: by 2002:a05:6512:3f08:: with SMTP id y8mr5264543lfa.221.1629276986567;
+        Wed, 18 Aug 2021 01:56:26 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id u20sm200857ljl.76.2021.08.18.01.56.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 01:56:26 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 11:56:23 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Joe Perches <joe@perches.com>
+Subject: Re: [PATCH v3 1/3] fs/ntfs3: Fix one none utf8 char in source file
+Message-ID: <20210818085623.quzdiekdg2y2vj7n@kari-VirtualBox>
+References: <20210818010649.412912-1-kari.argillander@gmail.com>
+ <20210818010649.412912-2-kari.argillander@gmail.com>
+ <20210818053300.GA9165@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <32aeb66e-d4f0-26b5-a140-4477bb87067f@tessares.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210818053300.GA9165@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/18/21 11:21 AM, Matthieu Baerts wrote:
-> Hi Pavel,
+On Wed, Aug 18, 2021 at 07:33:00AM +0200, Christoph Hellwig wrote:
+> On Wed, Aug 18, 2021 at 04:06:47AM +0300, Kari Argillander wrote:
+> > In one source file there is for some reason non utf8 char. But hey this
+> > is fs development so this kind of thing might happen.
 > 
-[snip]
->>>
->>> I'm pretty sure the commit c4512c63b119 ("mptcp: fix 'masking a bool'
->>> warning") doesn't introduce the reported bug. This minor fix is specific
->>> to MPTCP which doesn't seem to be used here.
->>>
->>> I'm not sure how I can tell syzbot this is a false positive.
->>>
->> 
->> 
->> looks like it's fs/namei bug. Similar reports:
->> 
->> https://syzkaller.appspot.com/bug?id=517fa734b92b7db404c409b924cf5c997640e324
->> 
->> 
->> https://syzkaller.appspot.com/bug?id=484483daf3652b40dae18531923aa9175d392a4d
-> 
-> Thank you for having checked!
-> Should we mark them as "#syz dup" if you think they have the same root
-> cause?
-> 
+> Pleaese also refomat these comments while you're at it.  While going
+> over 80 characters is ok in exceptions for readability that is per
+> definition never the case for a block comment.
 
-I think, yes, but I want to receive feedback from fs people about this 
-bug. There were huge updates last month, and, maybe, I am missing some 
-details. Alloc/free calltrace is the same, but anyway, I want some 
-confirmation to not close different bugs by mistake :)
+Yeah. Totally good option. I already did it and looks lot better.
 
-If these bugs really have same root case I will close them manually 
-after fix posted.
+On Wed, Aug 18, 2021 at 07:23:40AM +0200, Christoph Hellwig wrote:
+> On Wed, Aug 18, 2021 at 04:06:46AM +0300, Kari Argillander wrote:
+> > In ntfs3 driver there is allocation made like this ntfs_malloc().
+> > Patch 2/3 will converter these to kernel ones like kmalloc(). After I
+> > did this then checkpatch raise warnings about array allocations so I
+> > fix these in patch 3/3.
+> > 
+> > I also notice when I made patch that there is broken utf8 char so I
+> > wanted first fix that because it raised some warning in my editor and
+> > did not want to "break" patch 2/3. So patch 1/3 address that. I did
+> > try to apply this and it seem to work without issues.
+> 
+> So this mostly looks sensible, but I still haven't actually seen
+> the codebase this applies to posted anywhere as far as I can tell.
 
->> It's not false positive. I've suggested the fix here:
->> https://groups.google.com/g/syzkaller-bugs/c/HE3c2fP5nic/m/1Yk17GBeAwAJ
->> I am waiting for author comments about the fix :)
->> 
->> But, yes, syzbot bisection is often wrong, so don't rely on it much :)
-> 
-> Yes sorry, I wanted to say the bisection picked a wrong commit :)
-> 
-> All good then if syzbot often blames the wrong modification :)
-> 
-With regards,
-Pavel Skripkin
+Yeah that's true. Only place for mention this is here (link). I have
+asked that Konstantin will send patch series v28 to mailing lists. I
+will resist resending v4 before Konstantin has sended.
+https://lore.kernel.org/ntfs3/a9114805f777461eac6fbb0e8e5c46f6@paragon-software.com/
