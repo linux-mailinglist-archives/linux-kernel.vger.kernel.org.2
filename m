@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19063F0132
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 12:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 150543F013D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 12:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234294AbhHRKEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 06:04:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44470 "EHLO
+        id S233733AbhHRKGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 06:06:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234243AbhHRKEs (ORCPT
+        with ESMTP id S233320AbhHRKFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 06:04:48 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544EDC0613A4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 03:04:10 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id v2so2237590edq.10
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 03:04:10 -0700 (PDT)
+        Wed, 18 Aug 2021 06:05:40 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AE8C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 03:05:06 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id qk33so3792585ejc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 03:05:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=date:from:to:cc:subject:message-id:mail-followup-to:references
          :mime-version:content-disposition:in-reply-to;
-        bh=aMU29SN6YoovEcOrsusWnZbE8h+1MpQpJA0/wZfLGeE=;
-        b=VuWlpnTGk6pLgRyLxLDnxv4NkP9nRhdxy0N90/5pUe8bPs6Uj9DlrqMj6WsvKlpXXI
-         111QEnOZPfJS/mHK8sfTzq5rrN40iXdDm7HI7rmq/xmBL8FDwz+BFyPzr5yB3ovwv8zV
-         0GGNgLYV0nqj01x2rcDXp61Hl2zl/sKi6V54I=
+        bh=+UugXJNovZ2vqktgPlIQAdEvTrXzjK5N1Cr++nIj3DA=;
+        b=R42e8IjQDth0gJLIVgsbrUrhAc6d0ey998kv2PQoRChb7eJx00eZ1Gm0c/EhfBivkC
+         IBNmrGkJ8ApCpeW2C+4cEd65TeabJc9SlX1xYSqdk72h0IEQ+khLKq7zNM6jv5wHaBvB
+         ZXdjx0ctrHer5bc0vfxlwQtTRpuI1JQHIunWU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id
          :mail-followup-to:references:mime-version:content-disposition
          :in-reply-to;
-        bh=aMU29SN6YoovEcOrsusWnZbE8h+1MpQpJA0/wZfLGeE=;
-        b=jJPJMi6rgsocZ4As28CkCSeRHiHdFvSQoo2Gvf4/zEhkLy0pgZ9qUZ04jri2fjTEWr
-         tb22rx2AaGRWuYjW8kKiNm4OUI039IWmt+0goVMxPZQ8nsgjJWfOEHeF7KgnCsXM6zI5
-         r+2TkSRdQVUNnQsIZHVtaB/bAm5p96jXLK+yBYqP2dx4Y8N0PmI8avNG7ztJSKjxVuX7
-         XwLED+MSOWJGlhHY9T0Kn1BQJRlxqWX0Ff5A4IzQpm3gE2nlK33wChaYf7jxVeptbT0e
-         ifLUQKIcqYxAAs/BBobOHhRMm8tOgjcI9tUqdKQcJ+P5pHjoAffgbcxGoSbz/WPfa5Rw
-         skOw==
-X-Gm-Message-State: AOAM531ptFMNxYydDVZ35MKjEykLL4Bs9XtCsj2/RhhrK1/r8sAvBPAF
-        mOD6ETIopsa/y0kizdWWnsuOKg==
-X-Google-Smtp-Source: ABdhPJzQXPwY+sWxgn3k6s9LT4/gWaw0MMn3Os6faeWcHmmeyRNaM7zRWGLx0tEfvU1T3JleVgbcdA==
-X-Received: by 2002:a05:6402:14d9:: with SMTP id f25mr9279034edx.343.1629281048926;
-        Wed, 18 Aug 2021 03:04:08 -0700 (PDT)
+        bh=+UugXJNovZ2vqktgPlIQAdEvTrXzjK5N1Cr++nIj3DA=;
+        b=l5sREF4CxNHCra0X7Lo44iCvviNMNvSb0sSiz3BeWyNRz1RkfhICcDQxGMZOivVXVt
+         ZF+PMau24pM0VVPzTdBWiwgWVY9TeVKbT3Ge2dOW1K1aJFV1J0H0srp6b1NkTJxb1ZLw
+         ziTGjVlFAMEG4J5kS8fgztRadW0t/y0obqjcCrmOEsD8GnLeNFObyfRpqdCzuEBd7HuC
+         aONyw4z36l2FMzhCuuIbMMl3lc4RLdIBpT2V5bz0x2BACnR5S086fAYhAam2y7PlYYp7
+         //zGely+hyebKqNzsldIPyVWTw/MCDKEukol/Uvjz6CXFmoWaP8x0Wv0FQzl63qcREwK
+         yPkA==
+X-Gm-Message-State: AOAM530+FTQDhOPW8UDo/eT6gOj3PxtQhIe2R9y/zx1U+VlG2kXAGf60
+        gVEEPJqFKBsLDRLatc43ro1fyw==
+X-Google-Smtp-Source: ABdhPJyCL0wNSTVtmCi+TFUYXg5lqc4ePLGIxn2k+rFjGuAVDwSBiMK9lqUgzHWBYJDOF+Ij9NGXdA==
+X-Received: by 2002:a17:906:150c:: with SMTP id b12mr8875986ejd.275.1629281104548;
+        Wed, 18 Aug 2021 03:05:04 -0700 (PDT)
 Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id d16sm2384140edu.8.2021.08.18.03.04.07
+        by smtp.gmail.com with ESMTPSA id e22sm2384475eds.45.2021.08.18.03.05.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 03:04:08 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 12:04:06 +0200
+        Wed, 18 Aug 2021 03:05:03 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 12:05:01 +0200
 From:   Daniel Vetter <daniel@ffwll.ch>
 To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
@@ -58,9 +58,9 @@ Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
         linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
         skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
         linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH v3 3/9] drm: check for null master in
- drm_is_current_master_locked
-Message-ID: <YRzbFnkricE65Hn5@phenom.ffwll.local>
+Subject: Re: [PATCH v3 2/9] drm: hold master_lookup_lock when releasing a
+ drm_file's master
+Message-ID: <YRzbTUM8ggXlIEyr@phenom.ffwll.local>
 Mail-Followup-To: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
         maarten.lankhorst@linux.intel.com, mripard@kernel.org,
         tzimmermann@suse.de, airlied@linux.ie, sumit.semwal@linaro.org,
@@ -72,55 +72,54 @@ Mail-Followup-To: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
         gregkh@linuxfoundation.org,
         linux-kernel-mentees@lists.linuxfoundation.org
 References: <20210818073824.1560124-1-desmondcheongzx@gmail.com>
- <20210818073824.1560124-4-desmondcheongzx@gmail.com>
+ <20210818073824.1560124-3-desmondcheongzx@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210818073824.1560124-4-desmondcheongzx@gmail.com>
+In-Reply-To: <20210818073824.1560124-3-desmondcheongzx@gmail.com>
 X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 03:38:18PM +0800, Desmond Cheong Zhi Xi wrote:
-> There is a window after calling drm_master_release, and before a file
-> is freed, where drm_file can have is_master set to true, but both the
-> drm_file and drm_device have no master.
+On Wed, Aug 18, 2021 at 03:38:17PM +0800, Desmond Cheong Zhi Xi wrote:
+> When drm_file.master changes value, the corresponding
+> drm_device.master_lookup_lock should be held.
 > 
-> This could result in wrongly approving permissions in
-> drm_is_current_master_locked. Add a check that fpriv->master is
-> non-NULl to guard against this scenario.
+> In drm_master_release, a call to drm_master_put sets the
+> file_priv->master to NULL, so we protect this section with
+> drm_device.master_lookup_lock.
 > 
 > Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 
-This should be impossible, drm_master_release is only called when the
-struct file is released, which means all ioctls and anything else have
-finished (they hold a temporary reference).
+At this points all refcounts to drm_file have disappeared, so yeah this is
+a lockless access, but also no one can observe it anymore. See also next
+patch.
 
-fpriv->master can change (if the drm_file becomes newly minted master and
-wasnt one before through the setmaster ioctl), but it cannot become NULL
-before it's completely gone from the system.
+Hence I think the current code is fine.
 -Daniel
 
-
 > ---
->  drivers/gpu/drm/drm_auth.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  drivers/gpu/drm/drm_auth.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
 > diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
-> index 8c0e0dba1611..f9267b21556e 100644
+> index 8efb58aa7d95..8c0e0dba1611 100644
 > --- a/drivers/gpu/drm/drm_auth.c
 > +++ b/drivers/gpu/drm/drm_auth.c
-> @@ -66,7 +66,8 @@ static bool drm_is_current_master_locked(struct drm_file *fpriv)
->  	lockdep_assert_once(lockdep_is_held(&fpriv->minor->dev->master_lookup_lock) ||
->  			    lockdep_is_held(&fpriv->minor->dev->master_mutex));
+> @@ -373,8 +373,11 @@ void drm_master_release(struct drm_file *file_priv)
+>  	}
 >  
-> -	return fpriv->is_master && drm_lease_owner(fpriv->master) == fpriv->minor->dev->master;
-> +	return (fpriv->is_master && fpriv->master &&
-> +		drm_lease_owner(fpriv->master) == fpriv->minor->dev->master);
+>  	/* drop the master reference held by the file priv */
+> -	if (file_priv->master)
+> +	if (file_priv->master) {
+> +		spin_lock(&dev->master_lookup_lock);
+>  		drm_master_put(&file_priv->master);
+> +		spin_unlock(&dev->master_lookup_lock);
+> +	}
+>  	mutex_unlock(&dev->master_mutex);
 >  }
 >  
->  /**
 > -- 
 > 2.25.1
 > 
