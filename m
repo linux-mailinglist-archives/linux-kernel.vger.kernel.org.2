@@ -2,170 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63EFC3F0052
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9BF3F0050
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232720AbhHRJXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:23:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232505AbhHRJWO (ORCPT
+        id S232579AbhHRJWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 05:22:47 -0400
+Received: from relay5.mymailcheap.com ([159.100.248.207]:40673 "EHLO
+        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231229AbhHRJVw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:22:14 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227AAC06129F
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:20:56 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id cn28so2087314edb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:20:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PoOTSY4e/N6XTP41frejZoX11mBfIpeON8K+FJ/LM7o=;
-        b=U1ccjTf9lEyQvKQIuBK+Dl6b1HPvgOkglfglVV5ThcfcTOe4h76ipU82oWLbSuSf+o
-         tFXirEUsYFgEOKKTKschypRJ2q6ObekeXw0i1xiWSr+TbluX4g+DNOC34OqlZDlxFmag
-         MZL3CprKrFCcHhkG7N9vdYE0pcXyMQQuqV+YQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PoOTSY4e/N6XTP41frejZoX11mBfIpeON8K+FJ/LM7o=;
-        b=ccNSdSD5XNiYKFtdRs0O7VNaXyX2LYL0DCiCb2Ocrhf3ZaE9gcV8Nd78z2gk3Qqm3N
-         Vi86M65nlmLHej6w/qONDri0hyIV7XNOQ1wFMR7QhRmD5kJvG9AEXhS5NV+rc14J52mY
-         l1KjYfWqp+2sS4+dI+xvlnd9rrRT+GUsKZ8wT3jITl8SUymW7I2VlGRiZbOVWeQNxlLR
-         iHUAayckVGlGBVGgMOY8prGzHbWToAXk93gqOpQh2JyKzUHq5yTKfAzUOlSBm0tI0o8b
-         jdny1kyXCgNvC+B9lZ+ioZw6aXc/aoooxRvzcsdneu/x6DkXI8kh8I1SljHqMXvO6Btl
-         NXFQ==
-X-Gm-Message-State: AOAM5314f3bi22vznwE9NAFt76FUtHbBXb8ut8LR0KjHmm6LAmbtlKfs
-        DBvM1NtWtVhEpXNjBBjKpcLly9SA+jJwaQ==
-X-Google-Smtp-Source: ABdhPJxdeaVg85bfNYTjA6Wq/8RhLMSmR0sO2UrQggu9H+qqwA7d+f8wUQiahTHXZdWGriaTTywXSQ==
-X-Received: by 2002:aa7:ccc9:: with SMTP id y9mr8978099edt.329.1629278454327;
-        Wed, 18 Aug 2021 02:20:54 -0700 (PDT)
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com. [209.85.221.52])
-        by smtp.gmail.com with ESMTPSA id m19sm2257386edd.38.2021.08.18.02.20.53
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 02:20:53 -0700 (PDT)
-Received: by mail-wr1-f52.google.com with SMTP id q10so2426464wro.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:20:53 -0700 (PDT)
-X-Received: by 2002:a05:6000:1808:: with SMTP id m8mr9325235wrh.192.1629278452675;
- Wed, 18 Aug 2021 02:20:52 -0700 (PDT)
+        Wed, 18 Aug 2021 05:21:52 -0400
+X-Greylist: delayed 85105 seconds by postgrey-1.27 at vger.kernel.org; Wed, 18 Aug 2021 05:21:51 EDT
+Received: from relay4.mymailcheap.com (relay4.mymailcheap.com [137.74.80.155])
+        by relay5.mymailcheap.com (Postfix) with ESMTPS id CF9A3260EB;
+        Wed, 18 Aug 2021 09:21:15 +0000 (UTC)
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay4.mymailcheap.com (Postfix) with ESMTPS id 13EC32000C;
+        Wed, 18 Aug 2021 09:21:08 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id 282222A0C8;
+        Wed, 18 Aug 2021 05:21:07 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1629278467;
+        bh=Ka+Dx9RH3tuXhALIBTAbuUwAQQjOY5opWBs8RplNu6Q=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=fRFzwqfKL/QnUD3HG75V2kWiP3Wou1s8qe0mPhroh9GDuLLzmm9qDpNbW60Yxmzfl
+         XgU2brB8KxTt3dVehuIdJd/UucmTYkfbjPyvf+5M5skYtIZ2BCdMzWnf9i5C91ULI4
+         xtyb+ID/Tn4+5HZuuo5MGv3LGRugZ/MmRknbjyO4=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id jANVpBvcB0h7; Wed, 18 Aug 2021 05:21:02 -0400 (EDT)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Wed, 18 Aug 2021 05:21:02 -0400 (EDT)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 4FB5E40097;
+        Wed, 18 Aug 2021 09:21:01 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="u1Fx14Fd";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [127.0.0.1] (unknown [112.96.109.179])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 3092B42546;
+        Wed, 18 Aug 2021 09:20:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1629278449; bh=Ka+Dx9RH3tuXhALIBTAbuUwAQQjOY5opWBs8RplNu6Q=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=u1Fx14FdhZgEpqL28ehYkFlf8onmFqDgZIh58GaRZ/ICHGz69S7pkPhz4l0Qo54BO
+         INL54PxSrz/aHKcIbboa1G9m/aImXjttO/i9smdEkKViwtM2UNF/u9sDglKoiHRwu6
+         boDpxFfr0xKsUIFLTfbAwuaqMK3ifNflP3af95jY=
+Date:   Wed, 18 Aug 2021 17:20:41 +0800
+From:   Icenowy Zheng <icenowy@aosc.io>
+To:     Kyle Tso <kyletso@google.com>, Guenter Roeck <linux@roeck-us.net>
+CC:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Badhri Jagan Sridharan <badhri@google.com>
+Subject: Re: [PATCH] usb: typec: tcpm: always rediscover when swapping DR
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CAGZ6i=1s9X58tOwoiGAxMkMVBTyGTjysOSe9bP8Q4WosmCtymw@mail.gmail.com>
+References: <20210813043131.833006-1-icenowy@aosc.io> <YRuDG78N2mB5w37p@kuha.fi.intel.com> <58034df4-f18c-ab3e-1fcc-dc85fc35320f@roeck-us.net> <CAGZ6i=1s9X58tOwoiGAxMkMVBTyGTjysOSe9bP8Q4WosmCtymw@mail.gmail.com>
+Message-ID: <949C620F-CA75-4A14-96DD-E42A349FC6EF@aosc.io>
 MIME-Version: 1.0
-References: <20210727070517.443167-1-senozhatsky@chromium.org>
- <20210727070517.443167-9-senozhatsky@chromium.org> <fd1e8bbe-4cbe-9586-7c8f-0896af043d4a@xs4all.nl>
- <YRukCziknzz/3/sV@google.com>
-In-Reply-To: <YRukCziknzz/3/sV@google.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Wed, 18 Aug 2021 18:20:40 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5BA4M89nQThm4gQgLp-LWzFfwnYw2HPyAs2QgUVn-ZLNQ@mail.gmail.com>
-Message-ID: <CAAFQd5BA4M89nQThm4gQgLp-LWzFfwnYw2HPyAs2QgUVn-ZLNQ@mail.gmail.com>
-Subject: Re: [PATCHv4 8/8] videobuf2: handle non-contiguous DMA allocations
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: 4FB5E40097
+X-Rspamd-Server: mail20.mymailcheap.com
+X-Spamd-Result: default: False [-0.10 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         RECEIVED_SPAMHAUS_PBL(0.00)[112.96.109.179:received];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(0.00)[aosc.io];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 8:57 PM Sergey Senozhatsky
-<senozhatsky@chromium.org> wrote:
->
-> Hi,
->
-> On (21/08/03 12:15), Hans Verkuil wrote:
-> > >  static void *vb2_dc_vaddr(struct vb2_buffer *vb, void *buf_priv)
-> > >  {
-> > >     struct vb2_dc_buf *buf = buf_priv;
-> > > -   struct dma_buf_map map;
-> > > -   int ret;
-> > >
-> > > -   if (!buf->vaddr && buf->db_attach) {
-> > > -           ret = dma_buf_vmap(buf->db_attach->dmabuf, &map);
-> > > -           buf->vaddr = ret ? NULL : map.vaddr;
-> > > +   if (buf->vaddr)
-> > > +           return buf->vaddr;
-> > > +
-> > > +   if (buf->db_attach) {
-> > > +           struct dma_buf_map map;
-> > > +
-> > > +           if (!dma_buf_vmap(buf->db_attach->dmabuf, &map))
-> > > +                   buf->vaddr = map.vaddr;
-> > > +
-> > > +           return buf->vaddr;
-> > >     }
-> > >
-> > > +   if (!buf->coherent_mem)
-> > > +           buf->vaddr = dma_vmap_noncontiguous(buf->dev, buf->size,
-> > > +                                               buf->dma_sgt);
-> > >     return buf->vaddr;
-> > >  }
-> >
-> > This function really needs a bunch of comments.
-> >
-> > What I want to see here specifically is under which circumstances this function
-> > can return NULL.
-> >
-> > - dma_buf_vmap returns an error
-> > - for non-coherent memory dma_vmap_noncontiguous returns an error
-> > - coherent memory with DMA_ATTR_NO_KERNEL_MAPPING set.
->
-> OK, I added some comments.
->
-> > In the latter case, if a buffer with coherent memory and DMA_ATTR_NO_KERNEL_MAPPING
-> > is exported as a dma_buf, and dma_buf_vmap is called by the importer of this dma-buf,
-> > what happens then? I think that in that case dma_buf_vmap should return an error?
->
-> Should we error out in vb2_dc_vaddr() in this case?
 
-Yes, because there is no way to create a kernel mapping for buffer
-allocated with dma_alloc_coherent() post-factum. Of course it's not
-the case for dma_alloc_noncontiguous() for which we can create the
-kernel mapping on demand.
+
+=E4=BA=8E 2021=E5=B9=B48=E6=9C=8818=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=884=
+:02:24, Kyle Tso <kyletso@google=2Ecom> =E5=86=99=E5=88=B0:
+>On Tue, Aug 17, 2021 at 11:13 PM Guenter Roeck <linux@roeck-us=2Enet> wro=
+te:
+>>
+>> On 8/17/21 2:36 AM, Heikki Krogerus wrote:
+>> > On Fri, Aug 13, 2021 at 12:31:31PM +0800, Icenowy Zheng wrote:
+>> >> Currently, TCPM code omits discover when swapping to gadget, and ass=
+ume
+>> >> that no altmodes are available when swapping from gadget=2E However,=
+ we do
+>> >> send discover when we get attached as gadget -- this leads to modes =
+to be
+>> >> discovered twice when attached as gadget and then swap to host=2E
+>> >>
+>> >> Always re-send discover when swapping DR, regardless of what change =
+is
+>> >> being made; and because of this, the assumption that no altmodes are
+>> >> registered with gadget role is broken, and altmodes de-registeration=
+ is
+>> >> always needed now=2E
+>> >>
+>> >> Signed-off-by: Icenowy Zheng <icenowy@aosc=2Eio>
+>> >> ---
+>> >>   drivers/usb/typec/tcpm/tcpm=2Ec | 9 ++++-----
+>> >>   1 file changed, 4 insertions(+), 5 deletions(-)
+>> >>
+>> >> diff --git a/drivers/usb/typec/tcpm/tcpm=2Ec b/drivers/usb/typec/tcp=
+m/tcpm=2Ec
+>> >> index b9bb63d749ec=2E=2Eab6d0d51ee1c 100644
+>> >> --- a/drivers/usb/typec/tcpm/tcpm=2Ec
+>> >> +++ b/drivers/usb/typec/tcpm/tcpm=2Ec
+>> >> @@ -4495,15 +4495,14 @@ static void run_state_machine(struct tcpm_po=
+rt *port)
+>> >>              tcpm_set_state(port, ready_state(port), 0);
+>> >>              break;
+>> >>      case DR_SWAP_CHANGE_DR:
+>> >> -            if (port->data_role =3D=3D TYPEC_HOST) {
+>> >> -                    tcpm_unregister_altmodes(port);
+>> >> +            tcpm_unregister_altmodes(port);
+>> >> +            if (port->data_role =3D=3D TYPEC_HOST)
+>> >>                      tcpm_set_roles(port, true, port->pwr_role,
+>> >>                                     TYPEC_DEVICE);
+>> >> -            } else {
+>> >> +            else
+>> >>                      tcpm_set_roles(port, true, port->pwr_role,
+>> >>                                     TYPEC_HOST);
+>> >> -                    port->send_discover =3D true;
+>> >> -            }
+>> >> +            port->send_discover =3D true;
+>> >>              tcpm_ams_finish(port);
+>> >>              tcpm_set_state(port, ready_state(port), 0);
+>> >>              break;
+>> >
+>> > Why is it necessary to do discovery with data role swap in general?
+>> >
+>> > thanks,
+>> >
+>>
+>> Additional question: There are two patches pending related to DR_SWAP
+>> and discovery=2E Are they both needed, or do they both solve the same
+>> problem ?
+>>
+>> Thanks,
+>> Guenter
+>
+>Hi, I just noticed this patch=2E
+>
+>Part of this patch and part of my patch
+>https://lore=2Ekernel=2Eorg/r/20210816075449=2E2236547-1-kyletso@google=
+=2Ecom
+>are to solve the same problem that Discover_Identity is not sent in a
+>case where the port becomes UFP after DR_SWAP while in PD3=2E
+>
+>The difference (for the DR_SWAP part) is that my patch does not set
+>the flag "send_discover" if the port becomes UFP after PD2 DR_SWAP=2E
+>That is because in PD2 Spec, UFP is not allowed to be the SVDM
+>Initiator=2E
+>
+>This patch indeed solves another problem where
+>tcpm_unregister_altmodes should be called during PD3 DR_SWAP because
+>the port partner may return mode data in the latest Discover_Mode=2E For
+>the PD2 case, I don't think it needs to be called because PD2 DFP will
+>always return NAK for Discover_Mode=2E However it is fine because it is
+>safe to call tcpm_unregister_altmodes even if there is no mode data=2E
+>
+>In fact, when I was tracing the code I found another bug=2E PD2 UFP is
+>not allowed to send Discover_Identity and Discover_Mode=2E I can send
+>another patch to address this problem=2E
+
+Well, to be honest, it's why I send this patch=2E
+
+I didn't read PD spec before, so I assumed UFP is okay to send
+discover, and this is what I got wrong=2E I should remove the
+discover sending flag when we attach as sink=2E
+
+Will it be okay for me to send this patch? It should help my device here=
+=2E
 
 >
-> ---
->
-> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> index d4089d0b5ec5..e1d8ae1548fa 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> @@ -102,6 +102,9 @@ static void *vb2_dc_vaddr(struct vb2_buffer *vb, void *buf_priv)
->         if (buf->db_attach) {
->                 struct dma_buf_map map;
->
-> +               if (WARN_ON(buf->attrs & DMA_ATTR_NO_KERNEL_MAPPING))
-> +                       return NULL;
-> +
-
-Why here? It's the case for buffers imported _into_ vb2, not exported
-from vb2 and imported to other users.
-
->                 if (!dma_buf_vmap(buf->db_attach->dmabuf, &map))
->                         buf->vaddr = map.vaddr;
->
->
-> ---
->
->
-> [..]
-> > > @@ -362,7 +451,7 @@ static int vb2_dc_dmabuf_ops_vmap(struct dma_buf *dbuf, struct dma_buf_map *map)
-> > >  {
-> > >     struct vb2_dc_buf *buf = dbuf->priv;
-> > >
-> > > -   dma_buf_map_set_vaddr(map, buf->vaddr);
-> > > +   dma_buf_map_set_vaddr(map, vb2_dc_vaddr(buf->vb, buf));
-> >
-> > vb2_dc_vaddr() can return NULL, shouldn't this function return an error in that case?
->
-> Done, thanks.
->
-> > BTW, looking at where vb2_plane_vaddr() is called in drivers I notice that most (all?)
-> > drivers do not check for NULL. Somewhat scary, to be honest. That's a separate issue, though.
->
-> I may have some time in the future and can add missing if-s to the
-> drivers.
+>thanks,
+>Kyle
