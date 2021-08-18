@@ -2,143 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 658683F011D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA9B3F010F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233539AbhHRJ6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43008 "EHLO
+        id S232797AbhHRJ5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 05:57:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233399AbhHRJ61 (ORCPT
+        with ESMTP id S231910AbhHRJ5p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:58:27 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F0D4C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:57:53 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id qk33so3754012ejc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:57:53 -0700 (PDT)
+        Wed, 18 Aug 2021 05:57:45 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F2B4C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:57:11 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id bo19so2213396edb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:57:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cOrU+6OcE97uL6ouGjWh0x6thEo5SKV/Sco0r/RwJFI=;
-        b=d1t5xwP5b/qjhfYN7HTvkxsnltgZi9S/CAqn+ye7pz/aqd/Ez713er+ABELcRJjSVB
-         EVPwXK3wLaHN5LMusCTKMeYb9Mug1C3+SQ0aw4Iji+C7d9pJaIv0qT9bJXuKbrOwHAMJ
-         IhPGzhW+LsphGGus+Uav/YbCni1G8P34e9w1kCnujJcvIPwiP6JR+JmyLPyJ4gEZYHox
-         qDeivCKW54Oe2vWjvXmUaN6Jlx213XVQXYujDTBaN84uY8tYhWSLUjm+9URcdpQSpQQl
-         4NB3me7WWZew85P0gKOQ0qGrTLGXFX2HfMb7I0zibnH1t6MX1p5Bt3SyABqiKxu38imp
-         Q/pw==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Rn4A30qTQOxkstQYw62Y3prioOpHXXbJvzGKouAI1jo=;
+        b=HxuZ7amf0x5rDg8Pv2sDkTar7KFdTSrkayed1hQb/rSNUcLT73vKapTE8H9oodlrl+
+         XrKtbghyhAs5x9vzvwVUrXrR09KztnaG2Yh4SVOy5u7XPIz8jTtUtcddn80S6gYaezG8
+         v4/iegN2atmH28uNfVXvvavIu21o+9JE6gq04=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cOrU+6OcE97uL6ouGjWh0x6thEo5SKV/Sco0r/RwJFI=;
-        b=qYKZJRoFBVlOnTZ2Mia1MhKZ5BoP6+8Gi7I7UEUDOXjjWc6/mnfJIE9ETlOC3LhQyo
-         Ud33tgOyEzi5EP3W40SNoB3tqtUtXpAaq73s3nZK69aNnzXGpxUuByhTmFqkcu14NxPn
-         mTENQ7OPGbs1CMy9J2cJHpA35p++UWZSickG3TqD5HdpAmfPsVdRod6pkTz9kZUJT8vf
-         9wQzSAD2QzL0ziIGtLaggkyfpY2uz1pLgb+0tYVW9/0pdje+AEAc5BouUYFoqCHD22v6
-         HlQXbUwcqt4aSB3ihxTtG7vqI2hZu8X1Ep7GDdb88qlDR+BhTnd8cvGrG5XrE09bMQ1q
-         v6hA==
-X-Gm-Message-State: AOAM532Gmrafelcwxs9eVs9ZTkU9IG7rNIvsqNvjpm29EVOWxDGglV9o
-        o9PwyfbJM1Ay1K6Bd+TWCn4xCBKH0YY=
-X-Google-Smtp-Source: ABdhPJw9vrTdd9brdlKky3LZ0QUj1iq2VaVLZ7IO5nQZ5fqttDA+mqfcaZ78SV6h/BHbTbf4ttiaDA==
-X-Received: by 2002:a17:907:f86:: with SMTP id kb6mr9076647ejc.138.1629280671747;
-        Wed, 18 Aug 2021 02:57:51 -0700 (PDT)
-Received: from ?IPv6:2a02:8108:96c0:3b88::687e? ([2a02:8108:96c0:3b88::687e])
-        by smtp.gmail.com with ESMTPSA id h13sm1817031ejq.77.2021.08.18.02.57.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 02:57:51 -0700 (PDT)
-Subject: Re: [PATCH v4] staging: r8188eu: Remove unused including
- <linux/version.h>
-To:     Cai Huoqing <caihuoqing@baidu.com>, dan.carpenter@oracle.com,
-        greg@kroah.com, yangyingliang@huawei.com
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20210818095331.3422-1-caihuoqing@baidu.com>
-From:   Michael Straube <straube.linux@gmail.com>
-Message-ID: <b66cf51b-b363-53d7-48be-dec524f3c8ac@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=Rn4A30qTQOxkstQYw62Y3prioOpHXXbJvzGKouAI1jo=;
+        b=fii1UEfj/mUA1wLkbsCejCabj1TO8RfxXsMonp8jFg2HcAHPqqeD539LxhtaJhhfqf
+         Bd/DmEOzRJE7+n/R7o7KajN3Lk3mUwbfi6g1xV1NBDTEe6HJbRxran7KVu0IwnwWzFoX
+         xEfBtZb/JuqXd9deBNJLiZt6aFY9im/E4K0hTQIWDyyrrlCTbnditpf7BWus4METNCmn
+         Dv1UqixMUYrlB0KqglP7Bf3H13YXCXpNT+GNHiy7/RHLBKkYIMePvMJcbcchsdMer/TK
+         nvMT/BpXrlIENzVY4ySAZb6XbxyqU7lE+wMIVIkXWO441U5tEsvdcz+vTaHWQ6kBFY4n
+         aSXg==
+X-Gm-Message-State: AOAM533Q4M/Ke4Gu6J9saELQNe8VMDaJbL8QfV9DwGOOfK1vljNQWXdG
+        ZjamvEk8Wan7DRfDBR833qaJcg==
+X-Google-Smtp-Source: ABdhPJwYW1o49qUAQxejWY4Sn7eDQRTvw9cFiL03omJ6m7BCOJhQgKMgxhygSTQ/CZCejqpBO/2g4w==
+X-Received: by 2002:a05:6402:29a:: with SMTP id l26mr9269082edv.347.1629280629996;
+        Wed, 18 Aug 2021 02:57:09 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id q21sm1789736eji.59.2021.08.18.02.57.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 02:57:09 -0700 (PDT)
 Date:   Wed, 18 Aug 2021 11:57:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] drm/i915: Use designated initializers for init/exit table
+Message-ID: <YRzZcwR0O9Fv8asJ@phenom.ffwll.local>
+Mail-Followup-To: Kees Cook <keescook@chromium.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org,
+        Jason Ekstrand <jason@jlekstrand.net>, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20210817233357.2379455-1-keescook@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <20210818095331.3422-1-caihuoqing@baidu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210817233357.2379455-1-keescook@chromium.org>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/18/21 11:53 AM, Cai Huoqing wrote:
-> Remove including <linux/version.h> that don't need it
+On Tue, Aug 17, 2021 at 04:33:57PM -0700, Kees Cook wrote:
+> The kernel builds with -Werror=designated-init, and __designated_init
+> is used by CONFIG_GCC_PLUGIN_RANDSTRUCT for automatically selected (all
+> function pointer) structures. Include the field names in the init/exit
+> table. Avoids warnings like:
 > 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> drivers/gpu/drm/i915/i915_module.c:59:4: error: positional initialization of field in 'struct' declared with 'designated_init' attribute [-Werror=designated-init]
+> 
+> Cc: Jani Nikula <jani.nikula@linux.intel.com>
+> Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+> Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: intel-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Fixes: a04ea6ae7c67 ("drm/i915: Use a table for i915_init/exit (v2)")
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+
+Applied to drm-intel-gt-next, should show up in linux-next/next merge
+window eventually (that branch isn't in linux-next for reasons).
+-Daniel
+
 > ---
-> v1->v2: remove "based on staging-next" from commit message
-> v2->v3: add changelog to commit message
-> v3->v4: move the modified change under the --- line
+>  drivers/gpu/drm/i915/i915_module.c | 37 +++++++++++++++++++-----------
+>  1 file changed, 24 insertions(+), 13 deletions(-)
 > 
->   drivers/staging/r8188eu/core/rtw_mlme.c      | 1 -
->   drivers/staging/r8188eu/os_dep/os_intfs.c    | 1 -
->   drivers/staging/r8188eu/os_dep/rtw_android.c | 1 -
->   drivers/staging/r8188eu/os_dep/xmit_linux.c  | 1 -
->   4 files changed, 4 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/core/rtw_mlme.c b/drivers/staging/r8188eu/core/rtw_mlme.c
-> index d5ef5783f4ad..82b74ebdaabd 100644
-> --- a/drivers/staging/r8188eu/core/rtw_mlme.c
-> +++ b/drivers/staging/r8188eu/core/rtw_mlme.c
-> @@ -3,7 +3,6 @@
->   
->   #define _RTW_MLME_C_
->   
-> -#include <linux/version.h>
->   #include "../include/osdep_service.h"
->   #include "../include/drv_types.h"
->   #include "../include/recv_osdep.h"
-> diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
-> index f4bf4732578a..aef978eef4d7 100644
-> --- a/drivers/staging/r8188eu/os_dep/os_intfs.c
-> +++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
-> @@ -12,7 +12,6 @@
->   
->   #include "../include/usb_osintf.h"
->   #include "../include/rtw_br_ext.h"
-> -#include <linux/version.h>
->   
->   MODULE_LICENSE("GPL");
->   MODULE_DESCRIPTION("Realtek Wireless Lan Driver");
-> diff --git a/drivers/staging/r8188eu/os_dep/rtw_android.c b/drivers/staging/r8188eu/os_dep/rtw_android.c
-> index bdd381606ba6..af0072e2cb5f 100644
-> --- a/drivers/staging/r8188eu/os_dep/rtw_android.c
-> +++ b/drivers/staging/r8188eu/os_dep/rtw_android.c
-> @@ -3,7 +3,6 @@
->   
->   #include <linux/module.h>
->   #include <linux/netdevice.h>
-> -#include <linux/version.h>
->   #include "../include/rtw_android.h"
->   #include "../include/osdep_service.h"
->   #include "../include/rtw_debug.h"
-> diff --git a/drivers/staging/r8188eu/os_dep/xmit_linux.c b/drivers/staging/r8188eu/os_dep/xmit_linux.c
-> index 4f1ce346b3a5..69966c696130 100644
-> --- a/drivers/staging/r8188eu/os_dep/xmit_linux.c
-> +++ b/drivers/staging/r8188eu/os_dep/xmit_linux.c
-> @@ -3,7 +3,6 @@
->   
->   #define _XMIT_OSDEP_C_
->   
-> -#include <linux/version.h>
->   #include "../include/osdep_service.h"
->   #include "../include/drv_types.h"
->   #include "../include/if_ether.h"
+> diff --git a/drivers/gpu/drm/i915/i915_module.c b/drivers/gpu/drm/i915/i915_module.c
+> index c578ea8f56a0..d8b4482c69d0 100644
+> --- a/drivers/gpu/drm/i915/i915_module.c
+> +++ b/drivers/gpu/drm/i915/i915_module.c
+> @@ -47,19 +47,30 @@ static const struct {
+>     int (*init)(void);
+>     void (*exit)(void);
+>  } init_funcs[] = {
+> -	{ i915_check_nomodeset, NULL },
+> -	{ i915_active_module_init, i915_active_module_exit },
+> -	{ i915_buddy_module_init, i915_buddy_module_exit },
+> -	{ i915_context_module_init, i915_context_module_exit },
+> -	{ i915_gem_context_module_init, i915_gem_context_module_exit },
+> -	{ i915_objects_module_init, i915_objects_module_exit },
+> -	{ i915_request_module_init, i915_request_module_exit },
+> -	{ i915_scheduler_module_init, i915_scheduler_module_exit },
+> -	{ i915_vma_module_init, i915_vma_module_exit },
+> -	{ i915_mock_selftests, NULL },
+> -	{ i915_pmu_init, i915_pmu_exit },
+> -	{ i915_register_pci_driver, i915_unregister_pci_driver },
+> -	{ i915_perf_sysctl_register, i915_perf_sysctl_unregister },
+> +	{ .init = i915_check_nomodeset },
+> +	{ .init = i915_active_module_init,
+> +	  .exit = i915_active_module_exit },
+> +	{ .init = i915_buddy_module_init,
+> +	  .exit = i915_buddy_module_exit },
+> +	{ .init = i915_context_module_init,
+> +	  .exit = i915_context_module_exit },
+> +	{ .init = i915_gem_context_module_init,
+> +	  .exit = i915_gem_context_module_exit },
+> +	{ .init = i915_objects_module_init,
+> +	  .exit = i915_objects_module_exit },
+> +	{ .init = i915_request_module_init,
+> +	  .exit = i915_request_module_exit },
+> +	{ .init = i915_scheduler_module_init,
+> +	  .exit = i915_scheduler_module_exit },
+> +	{ .init = i915_vma_module_init,
+> +	  .exit = i915_vma_module_exit },
+> +	{ .init = i915_mock_selftests },
+> +	{ .init = i915_pmu_init,
+> +	  .exit = i915_pmu_exit },
+> +	{ .init = i915_register_pci_driver,
+> +	  .exit = i915_unregister_pci_driver },
+> +	{ .init = i915_perf_sysctl_register,
+> +	  .exit = i915_perf_sysctl_unregister },
+>  };
+>  static int init_progress;
+>  
+> -- 
+> 2.30.2
 > 
 
-Looks good to me now.
-
-Acked-by: Michael Straube <straube.linux@gmail.com>
-
-
-Thanks,
-
-Michael
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
