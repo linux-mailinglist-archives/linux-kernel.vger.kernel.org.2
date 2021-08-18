@@ -2,97 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C71F3F008D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC293F008F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233498AbhHRJdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:33:04 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:39800 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233703AbhHRJcU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:32:20 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 6BDC422065;
-        Wed, 18 Aug 2021 09:31:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629279084;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MjEVLCKBlTSswofPN1pNmxlP19qpFPg2jUD4se0XdyA=;
-        b=Vce+IAwmUDcfv2b7QGyi2Dv7EKo/Co6jwhdkPnVadZs3PhYLf7tUr6B9fRUUxtOcBZk6+N
-        B9XQg+cRWkemeBBWnWGk1wfHVQuq5Xnz4OC/hrrv7YBobuFDHB3iZwPRwWeZB5fMRC+UY8
-        0ZVGoxSYWv4akI4SI4AnM5BUhMcP4k4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629279084;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MjEVLCKBlTSswofPN1pNmxlP19qpFPg2jUD4se0XdyA=;
-        b=SFOFKtThDem3M1F/rOZMlyJlFmdOZ4+c7ISuV48nRhjMQ1VbfvtT61ULNqlr3zoJHsVSVM
-        ACnXbdzsW0b8HLBQ==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 4E36EA3B94;
-        Wed, 18 Aug 2021 09:31:24 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B0437DA72C; Wed, 18 Aug 2021 11:28:27 +0200 (CEST)
-Date:   Wed, 18 Aug 2021 11:28:27 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
-        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 49/63] btrfs: Use memset_startat() to clear end of
- struct
-Message-ID: <20210818092827.GO5047@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
-        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-hardening@vger.kernel.org
-References: <20210818060533.3569517-1-keescook@chromium.org>
- <20210818060533.3569517-50-keescook@chromium.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818060533.3569517-50-keescook@chromium.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+        id S233757AbhHRJel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 05:34:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233145AbhHRJbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 05:31:40 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A0B1460462;
+        Wed, 18 Aug 2021 09:31:06 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mGHua-005iO1-Os; Wed, 18 Aug 2021 10:31:04 +0100
+Date:   Wed, 18 Aug 2021 10:31:04 +0100
+Message-ID: <87tujnrtev.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Maulik Shah <mkshah@codeaurora.org>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        bjorn.andersson@linaro.org, linus.walleij@linaro.org,
+        tkjos@google.com, lsrao@codeaurora.org
+Subject: Re: [PATCH 2/2] irqchip: qcom-pdc: Disconnect domain hierarchy for GPIO_NO_WAKE_IRQs
+In-Reply-To: <1629195546-27811-2-git-send-email-mkshah@codeaurora.org>
+References: <1629195546-27811-1-git-send-email-mkshah@codeaurora.org>
+        <1629195546-27811-2-git-send-email-mkshah@codeaurora.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: mkshah@codeaurora.org, tglx@linutronix.de, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org, bjorn.andersson@linaro.org, linus.walleij@linaro.org, tkjos@google.com, lsrao@codeaurora.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 11:05:19PM -0700, Kees Cook wrote:
-> In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> field bounds checking for memset(), avoid intentionally writing across
-> neighboring fields.
-> 
-> Use memset_startat() so memset() doesn't get confused about writing
-> beyond the destination member that is intended to be the starting point
-> of zeroing through the end of the struct.
-> 
-> Cc: Chris Mason <clm@fb.com>
-> Cc: Josef Bacik <josef@toxicpanda.com>
-> Cc: David Sterba <dsterba@suse.com>
-> Cc: linux-btrfs@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+Hi Maulik,
 
-Acked-by: David Sterba <dsterba@suse.com>
+In the future, please always add a cover-letter email if sending a
+series that has more than a single patch. This considerably helps the
+tracking, and gives you an opportunity to explain what you are doing.
+
+On Tue, 17 Aug 2021 11:19:06 +0100,
+Maulik Shah <mkshah@codeaurora.org> wrote:
+> 
+> gpio_to_irq() reports error at irq_domain_trim_hierarchy() for non wakeup
+> capable GPIOs that do not have dedicated interrupt at GIC.
+> 
+> Since PDC irqchip do not allocate irq at parent GIC domain for such GPIOs
+> indicate same by using irq_domain_disconnect_hierarchy().
+> 
+> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+> ---
+>  drivers/irqchip/qcom-pdc.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
+> index 32d5920..0ba0461 100644
+> --- a/drivers/irqchip/qcom-pdc.c
+> +++ b/drivers/irqchip/qcom-pdc.c
+> @@ -324,8 +324,11 @@ static int qcom_pdc_gpio_alloc(struct irq_domain *domain, unsigned int virq,
+>  	if (ret)
+>  		return ret;
+>  
+> -	if (hwirq == GPIO_NO_WAKE_IRQ)
+> +	if (hwirq == GPIO_NO_WAKE_IRQ) {
+> +		if (domain->parent)
+> +			irq_domain_disconnect_hierarchy(domain->parent, virq);
+>  		return 0;
+> +	}
+>  
+>  	parent_hwirq = get_parent_hwirq(hwirq);
+>  	if (parent_hwirq == PDC_NO_PARENT_IRQ)
+
+It feels like you are papering over the core of the problem, which is
+that most of the GPIO_NO_WAKE_IRQ stuff should simply go away now that
+we have a way to drop parts of the hierarchy.
+
+I had a go at that a few months back, but never had the opportunity to
+actually test the resulting code[1]. Could you please give it a go and
+let me know what breaks?
+
+Thanks,
+
+	M.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/commit/?h=irq/qcom-pdc-nowake&id=331b2ba388a4a79b5c40b8addf56cbe35099a410
+
+-- 
+Without deviation from the norm, progress is not possible.
