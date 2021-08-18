@@ -2,176 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDBBE3F0237
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 13:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 024BF3F0244
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 13:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233798AbhHRLFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 07:05:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58688 "EHLO
+        id S235210AbhHRLJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 07:09:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235386AbhHRLFZ (ORCPT
+        with ESMTP id S234913AbhHRLJE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 07:05:25 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64A7FC061764;
-        Wed, 18 Aug 2021 04:04:50 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id o2so1862182pgr.9;
-        Wed, 18 Aug 2021 04:04:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=hHEvx+DciMHPaAAUI2b26GpkXwkLrmJnNJKWZvAtgjM=;
-        b=YxKXP5uIO/hVvmKzVkjT1jy0g2WvBdrpaBeuRN3+4jOpQT6bb0f0fkLYFh6xPvKnt7
-         KnDuFSzJ3Ics2n9d4Sgff61DnrePBeNTyV7ICxalbr2x8F/HdPkNbTc0JJCG2xpoxWVe
-         FC+Fpk5FwnzYmgL+wbSjcgfVIR2bko8lIahrCQbw8GI1fbfIqQ3H7GFpnelJ3davWiX7
-         u8RlHktDowYtkqN7n3Qr8SFl3w8PxtuVc5+F4Qdm8m9N/vjKllX09Y8ZalHZ4M1vtGaA
-         /OogFh3kybxpKVUvFLb9L71Epr6MUYZBf/AEPFU06PlVUxU3XK0248/vC6W+15rJGiIs
-         eWuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=hHEvx+DciMHPaAAUI2b26GpkXwkLrmJnNJKWZvAtgjM=;
-        b=MtRK6ScdmEa7pY/pwmGaTN1/oHktf1rMGSvKvOmlN0eFtnd4sWqNqkHd5WJjizJ4Z4
-         J7NCRoMgotR3ryE7KbpURhgytl5ktb2AwD2QwrWV00kuql2F/jH2TqNh8u6TKlPfgykI
-         FK3g+v23Qyv2bcDeQyH+O05YUm5uUPWpTOxhE5v01EVTTi6yvAAs+eeT3rccxwFVlDEH
-         9ADIaUaQmAqeqlxJteuwDAbFpeGug02foaZfSmllmzITsjtZzm1HNjW7rBmIUN4ICWgD
-         ePYTiI25SZjx/e/232fxx6o3P67tfJ3btcaUaLohLUUIKqKiIo0xBK3swisgyqE9qQRb
-         M/fA==
-X-Gm-Message-State: AOAM530DSQRSS8HsZjyDX3D7uWRWLQGp/irM/ycPV2fjOZCJgwa38uy5
-        AcFP7kqiLRc9WI3IUuM2lUZ8qTw1rITvriXlanESTleIGPKO8CSu
-X-Google-Smtp-Source: ABdhPJyDM3deYwulB1E7i7DzepL/aFCXVmBefbjTPmKuIiciuythubudmIhM31+pCJus6GglBQy7Yt5jMSMKTzjeAS8=
-X-Received: by 2002:a05:6a00:d41:b0:3e1:3316:2ef with SMTP id
- n1-20020a056a000d4100b003e1331602efmr8914223pfv.40.1629284689900; Wed, 18 Aug
- 2021 04:04:49 -0700 (PDT)
+        Wed, 18 Aug 2021 07:09:04 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515DBC061764;
+        Wed, 18 Aug 2021 04:08:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xF3XSQocGKr3XFWdPGOP9gXsahAr6PzRo/gjqi7SrQw=; b=elMK4wMFZCS7zOtF3Kqr6Qx0Ts
+        BvtKhauM9WXNcWGqt3xyFwwLDMmg90XOftPK1TKxNZ0ElZqghYwMSu3VOshfKq4mJu1NEJYfOIlYP
+        8cerDUID75lFIm370aWtQuziRuBEoaeDNezJSUJel6Yl3VVLphnSA+Rd20hQ/ylzHco+tr15iyuwt
+        7OgloetCQ4m6OvROCo+b4zZLTBFME+nvxfRaOMPCK6tmOmz4n2Ro40g9DgtqcHiugbFqYN1GBXPkD
+        52RPR8u0bGSmYe20+e/zG6OCtyDULgROSbjweT1C1NdTWbBzQ/+ZYma2siK9FR6AMQmH2Nx0WL2if
+        cDwJNvXg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mGJOb-003k4v-97; Wed, 18 Aug 2021 11:06:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 859E53012AD;
+        Wed, 18 Aug 2021 13:06:08 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6CF20200FBAE0; Wed, 18 Aug 2021 13:06:08 +0200 (CEST)
+Date:   Wed, 18 Aug 2021 13:06:08 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>, kernel-team@android.com
+Subject: Re: [PATCH v11 08/16] sched: Allow task CPU affinity to be
+ restricted on asymmetric systems
+Message-ID: <YRzpoFdCqHHsjFpW@hirez.programming.kicks-ass.net>
+References: <20210730112443.23245-1-will@kernel.org>
+ <20210730112443.23245-9-will@kernel.org>
+ <YRvRfZ/NnuNyIu3s@hirez.programming.kicks-ass.net>
+ <20210818104227.GA13828@willie-the-truck>
 MIME-Version: 1.0
-References: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com>
- <20210726125436.58685-3-andriy.shevchenko@linux.intel.com>
- <YRpihHP3kDz5nYV9@google.com> <CAHp75VdcWsNFervoU7e4_m7qVKAnWXzF2z2mUgKg06-qmwn-2A@mail.gmail.com>
- <YRppKOxp4Jya5iEI@google.com> <YRpva4gS1LfncPUj@smile.fi.intel.com>
- <YRpz5UEDQbpewq5o@google.com> <CAHp75VczCKwNQE8k6_e9Trk0qkD2EumFVxxG5w2BTYhiOTDUzA@mail.gmail.com>
- <YRtkt8e25ZSeOICx@google.com> <CAHp75Ve-24wno-z8rQSCtgBdf6_a70TFf3aCJPP7JSFPG8sfhg@mail.gmail.com>
- <YRyp3x14ziGYlOAx@google.com>
-In-Reply-To: <YRyp3x14ziGYlOAx@google.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 18 Aug 2021 14:04:13 +0300
-Message-ID: <CAHp75VcJ481AhPi=DPE-OpwQNZKqCpVpNbyP7WSj-_05EoDaUQ@mail.gmail.com>
-Subject: Re: [PATCH v1 3/4] mfd: intel_quark_i2c_gpio: Convert GPIO to use
- software nodes
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210818104227.GA13828@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 9:34 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> On Tue, 17 Aug 2021, Andy Shevchenko wrote:
->
-> > On Tue, Aug 17, 2021 at 10:26 AM Lee Jones <lee.jones@linaro.org> wrote=
-:
-> > > On Mon, 16 Aug 2021, Andy Shevchenko wrote:
-> > > > On Mon, Aug 16, 2021 at 5:19 PM Lee Jones <lee.jones@linaro.org> wr=
-ote:
-> > > > > On Mon, 16 Aug 2021, Andy Shevchenko wrote:
-> >
-> > ...
-> >
-> > > > > > > > Would it be okay for you to pull the immutable tag?
-> > > > > > >
-> > > > > > > What immutable tag?
-> > > > > >
-> > > > > > It's here:
-> > > > > > https://git.kernel.org/pub/scm/linux/kernel/git/andy/linux-gpio=
--intel.git/tag/?h=3Dintel-gpio-v5.15-1
-> > > > >
-> > > > > My Ack can't be merged like that.
-> > > >
-> > > > Which one? There are two on different patches.
-> > >
-> > > The one that I specifically said was "for my own reference".
-> > >
-> > > > Do you have any documentation on the rules you imply by MFD?
-> > >
-> > > No, the documentation is provided with the tag.
-> >
-> > I see.
-> >
-> > So, what is the recommended solution?
->
-> I planned to take the patch.
->
-> I'm also happy to take the set, if they are interdependent.
->
-> What is the reason the MFD patch doesn't apply to my tree?
+On Wed, Aug 18, 2021 at 11:42:28AM +0100, Will Deacon wrote:
 
-What I did right now:
+> Ah, sorry. I didn't realise you couldn't _free_ with a raw lock held in RT.
+> Is there somewhere I can read up on that?
 
-$ git checkout -b test-mfd-merge mfd/for-mfd-next
-Updating files: 100% (8674/8674), done.
-Branch 'test-mfd-merge' set up to track remote branch 'for-mfd-next' from '=
-mfd'.
-Switched to a new branch 'test-mfd-merge'
-
-$ b4 am 20210726125436.58685-2-andriy.shevchenko@linux.intel.com
-Looking up https://lore.kernel.org/r/20210726125436.58685-2-andriy.shevchen=
-ko%40linux.intel.com
-Grabbing thread from lore.kernel.org/linux-gpio
-Analyzing 28 messages in the thread
----
-Writing ./20210726_andriy_shevchenko_gpio_dwapb_unify_acpi_enumeration_chec=
-ks_in_get_irq_and_configure_irqs.mbx
-  [PATCH v1 1/4] gpio: dwapb: Unify ACPI enumeration checks in
-get_irq() and configure_irqs()
-    + Acked-by: Lee Jones <lee.jones@linaro.org> (=E2=9C=93 DKIM/linaro.org=
-)
-    + Acked-by: Serge Semin <fancer.lancer@gmail.com> (=E2=9C=93 DKIM/gmail=
-.com)
-    + Tested-by: Serge Semin <fancer.lancer@gmail.com> (=E2=9C=93 DKIM/gmai=
-l.com)
-  [PATCH v1 2/4] gpio: dwapb: Read GPIO base from gpio-base property
-  [PATCH v1 3/4] mfd: intel_quark_i2c_gpio: Convert GPIO to use software no=
-des
-    + Reviewed-by: Linus Walleij <linus.walleij@linaro.org> (=E2=9C=93 DKIM=
-/linaro.org)
-  [PATCH v1 4/4] gpio: dwapb: Get rid of legacy platform data
-    + Acked-by: Serge Semin <fancer.lancer@gmail.com> (=E2=9C=93 DKIM/gmail=
-.com)
-    + Tested-by: Serge Semin <fancer.lancer@gmail.com> (=E2=9C=93 DKIM/gmai=
-l.com)
----
-Total patches: 4
----
- Link: https://lore.kernel.org/r/20210726125436.58685-1-andriy.shevchenko@l=
-inux.intel.com
- Base: not found (applies clean to current tree)
-       git am ./20210726_andriy_shevchenko_gpio_dwapb_unify_acpi_enumeratio=
-n_checks_in_get_irq_and_configure_irqs.mbx
-
-$ git am ./20210726_andriy_shevchenko_gpio_dwapb_unify_acpi_enumeration_che=
-cks_in_get_irq_and_configure_irqs.mbx
-Applying: gpio: dwapb: Unify ACPI enumeration checks in get_irq() and
-configure_irqs()
-Applying: gpio: dwapb: Read GPIO base from gpio-base property
-Applying: mfd: intel_quark_i2c_gpio: Convert GPIO to use software nodes
-Applying: gpio: dwapb: Get rid of legacy platform data
-
-### here we need to rebase and add your tag
-
-No conflicts, no nothing with your current _published_ for-mfd-next.
-Do you have local changes that have not been yet visible?
-
-Alternatively you may pull the tag I have.
-
---=20
-With Best Regards,
-Andy Shevchenko
+It's because the allocators use spinlock_t, which cannot nest inside
+raw_spinlock_t.
