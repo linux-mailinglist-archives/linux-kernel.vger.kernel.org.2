@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B38B3EF96E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 06:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D71F93EF97E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 06:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237676AbhHREcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 00:32:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50854 "EHLO
+        id S237435AbhHREfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 00:35:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237354AbhHREcI (ORCPT
+        with ESMTP id S237122AbhHREe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 00:32:08 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66DF4C061796
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 21:31:34 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id c17so942732pgc.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 21:31:34 -0700 (PDT)
+        Wed, 18 Aug 2021 00:34:58 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A2FAC06179A
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 21:34:23 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id n12so1036650plf.4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 21:34:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to
          :user-agent;
-        bh=1HMKBtZVmoU7Rc9QD3kyFw8BSxbQ1XXUucrR+Z4oVdk=;
-        b=WNnzDrjKSuo57M5U/vvksnesnE3XSYhvmOFwkkjYoF4N6XG+ta8N8NZzIFWeIE0OGt
-         m4GJMPaxMYVC2//z4Hj1hbmM69h0o2zIOCkq7g914IVwVDrfUCYp2Fyx5EFg3zpe7op6
-         sBuMx6G4//Vj5k5oQ3p1EjIx0FNqKDs8PZoGLd5zLM/K21YuDJix7HN32JKNpXc9lV5b
-         /CqWxJPWJu6lybUtbqgsRNAUEAdjQXqyLlNMosG1SgkdTrL/H77eBngh5FCPI3mbp5WM
-         Y5XCL3BSH33gOEYrWigS1sIOtvjBIhuytq+nTcM3RY+gm1vUp6Ia4lgmwIFSUDCDGDVu
-         UE0A==
+        bh=eqqpYWePv3bA2FFLn8JZZpHhH3Zi1uHmK7sHrQbWFRw=;
+        b=HTtKdG+zPt9q7oo6G+tDPFjywlUf2fIlTsljJrBXemAFCqVrXkLJH2J4prixqFwlWE
+         J0unc6IdtxCIWudbX02SO4ATFxlaCA1/SoUQMq5P6D3Yk+OduOvpAgff7we5YXfkgCXL
+         xlXEBHCz776bTxOcJUNBOjuFaUsXP9ZzpIxEjcZgNlKhHXQmSXT4WG5V74nVrjqmloLj
+         jHkkS9fxFa3uYd/EQoKSWBdLGmIyIORJT1upv4QdPBmxwIAVox5/qef1kPsgzwvpXT4k
+         bTjafbU59iMyj4iWu6735iceyC6eQ4HGcIB0qT1Sv4H6XxtMpHDdFpm5Po4IlPj8a0jc
+         JKEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to:user-agent;
-        bh=1HMKBtZVmoU7Rc9QD3kyFw8BSxbQ1XXUucrR+Z4oVdk=;
-        b=CUR2xQbosdodq7ER+9P7Bvx0SIa51/hIM+qAjHClqIojqtHnUJPoxyaEFteG+z1oSq
-         hH3r/xujMSF3UCuXShKN2qIIn2LNctrVSY0M9tOzQVSAzPr632SX50MsktqTGcDOt995
-         jySE7lFcZrIsv5SxtZC8i/3PXFABUrA7p4U6Wob2ZktcqvmOfrYu+yWYc+Molw3QONwB
-         xz7g9WapjfB/TNeyhbVwhNRG9a2VFvSbmizmNP/MIPQrojhG1smqHLnl7qZvmY4G2DGg
-         m6+o7MX6iEl5ExLk1MvU0GIEo6CLDibG+nImaxdoqHkG18V8qaMrVO1vnwjq1zCqCmK/
-         yztA==
-X-Gm-Message-State: AOAM5309SBoRhgWi3jaNOkw0YSzBeA2Ppi6h3ygLPKNQLEYWJkl/CTfW
-        lfO6hp8pttDePYVNXbjuBicefQ==
-X-Google-Smtp-Source: ABdhPJxMvaeYlR6ulOVs6g7ClDkUxVRC1d9pxaerEppmknwXG/wEM2I8f172Oe2lWr6x04vVo8i8LA==
-X-Received: by 2002:a62:a117:0:b029:394:dddf:6b00 with SMTP id b23-20020a62a1170000b0290394dddf6b00mr7062959pff.50.1629261093845;
-        Tue, 17 Aug 2021 21:31:33 -0700 (PDT)
+        bh=eqqpYWePv3bA2FFLn8JZZpHhH3Zi1uHmK7sHrQbWFRw=;
+        b=OgAWNfOE8vXFb8ydm9oumdmIObrIbIdjLfj7y8jfFxnjsoFD4HCMEmEIVGVndl5Lkr
+         4gZClc6yb0t59CJfGvl9WTQd2gufuXHuqpq3ET6JFUvwN5sUPAFaGMi64gVhB44uCc+T
+         MEa9yk2idB+cdNkLrVXHbw6ADsZMrF9H1EJg1x05FSJsEYvoLg1/Dzy4dluFC+rJwcsQ
+         9FR/izUIQIuysphPvbHWca1ADC22hSoNp3NBk5k7ivuaudbpL7JBMG8EYH37J1FOZznD
+         QzENmTjCFIDJYtoCY47RvBIYEXwIKsYn87yzjPbp3aYQmXBaJ3a+otK5tfQIB/Rf45DG
+         +fMA==
+X-Gm-Message-State: AOAM5310hjuPpOxVY8OUCkC33T3Ojd68TmxyJwdOmaYPe5XNQie8KVPX
+        594HkxNLsAmQ0CTi0Yw7xC22OA==
+X-Google-Smtp-Source: ABdhPJyyJyLRvTMcV2VMadnYuEIWvMA5nKw+OEK9l2guzi40QLIRwlX68yRwxZh/lfXmuYEMO47Zng==
+X-Received: by 2002:a17:90b:1983:: with SMTP id mv3mr940040pjb.185.1629261263184;
+        Tue, 17 Aug 2021 21:34:23 -0700 (PDT)
 Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id a17sm4156560pff.30.2021.08.17.21.31.33
+        by smtp.gmail.com with ESMTPSA id f5sm4152122pfn.134.2021.08.17.21.34.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 21:31:33 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 10:01:31 +0530
+        Tue, 17 Aug 2021 21:34:22 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 10:04:21 +0530
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Dmitry Osipenko <digetx@gmail.com>
 Cc:     Thierry Reding <thierry.reding@gmail.com>,
@@ -81,63 +81,39 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-clk@vger.kernel.org
 Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-Message-ID: <20210818043131.7klajx6drvvkftoc@vireshk-i7>
+Message-ID: <20210818043421.cxa4gjrzerakmxxm@vireshk-i7>
 References: <20210817012754.8710-1-digetx@gmail.com>
  <20210817012754.8710-2-digetx@gmail.com>
  <20210817075515.vyyv7z37e6jcrhsl@vireshk-i7>
  <710261d9-7ae3-5155-c0a2-f8aed2408d0b@gmail.com>
  <20210818035533.ieqkexltfvvf2p4n@vireshk-i7>
  <5b2a80c1-9743-e633-6257-ede94c8a274c@gmail.com>
+ <6df0ed60-e497-0af2-09b6-a9d82f502f17@gmail.com>
+ <6438bdfb-3e9e-40dd-fa7c-c79f0892e12a@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5b2a80c1-9743-e633-6257-ede94c8a274c@gmail.com>
+In-Reply-To: <6438bdfb-3e9e-40dd-fa7c-c79f0892e12a@gmail.com>
 User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-08-21, 07:12, Dmitry Osipenko wrote:
-> 18.08.2021 06:55, Viresh Kumar пишет:
-> > On 17-08-21, 18:49, Dmitry Osipenko wrote:
-> >> 17.08.2021 10:55, Viresh Kumar пишет:
-> >> ...
-> >>>> +int dev_pm_opp_sync(struct device *dev)
-> >>>> +{
-> >>>> +	struct opp_table *opp_table;
-> >>>> +	struct dev_pm_opp *opp;
-> >>>> +	int ret = 0;
-> >>>> +
-> >>>> +	/* Device may not have OPP table */
-> >>>> +	opp_table = _find_opp_table(dev);
-> >>>> +	if (IS_ERR(opp_table))
-> >>>> +		return 0;
-> >>>> +
-> >>>> +	if (!_get_opp_count(opp_table))
-> >>>> +		goto put_table;
-> >>>> +
-> >>>> +	opp = _find_current_opp(dev, opp_table);
-> >>>> +	ret = _set_opp(dev, opp_table, opp, opp->rate);
-> >>>
-> >>> And I am not sure how this will end up working, since new OPP will be
-> >>> equal to old one. Since I see you call this from resume() at many
-> >>> places.
+On 18-08-21, 07:30, Dmitry Osipenko wrote:
+> 18.08.2021 07:29, Dmitry Osipenko пишет:
+> >> The first resume initializes the OPP state on sync, all further syncs on
+> >> resume are no-ops.
 > >>
-> >> Initially OPP table is "uninitialized" and opp_table->enabled=false,
-> >> hence the first sync always works even if OPP is equal to old one. Once
-> >> OPP has been synced, all further syncs are NO-OPs, hence it doesn't
-> >> matter how many times syncing is called.
-> >>
-> >> https://elixir.bootlin.com/linux/v5.14-rc6/source/drivers/opp/core.c#L1012
 > > 
-> > Right, but how will this work from Resume ? Won't that be a no-op ?
+> > Notice that we use GENPD here. GENPD core takes care of storing PD's
+> > performance state (voltage in case of Tegra) and dropping it to 0 after
+> > rpm-suspend, GENPD core also restores the state before rpm-resume.
 > 
-> The first resume initializes the OPP state on sync, all further syncs on
-> resume are no-ops.
+> By 'here' I mean in this series.
 
-But the OPPs should already be initialized as someone must have called
-opp-set-rate earlier ? Why do this from resume and not probe ?
+It is still not clear to me why you need to this on resume, and not
+probe.
 
 -- 
 viresh
