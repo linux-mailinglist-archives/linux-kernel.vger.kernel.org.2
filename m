@@ -2,122 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 116CE3EFFDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5EA3EFFE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231484AbhHRJD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:03:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229780AbhHRJDx (ORCPT
+        id S231785AbhHRJEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 05:04:14 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:43773 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230391AbhHRJDz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:03:53 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE75C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:03:18 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id w6so1369851plg.9
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:03:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Wi6GiW3siAeArZqvWLcz46sruMCMOkQL9Tx1MHP2F9M=;
-        b=O6b9QEJX2A+BMP2t/Jopnb3uLzfw7MkxdgYGDPd8kXg7lj6i5rW4b1KQUD7duBp0NW
-         ARZb6rSvwK8yUjjDtTmZ/No5b/N6TJNMpFMfjHQcB66xfWC5jxVfZdmVgg/rw4tb9D9m
-         KTQ5SvRW25g7NfqelO4dYcMxQcfvJG7CIhrVQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Wi6GiW3siAeArZqvWLcz46sruMCMOkQL9Tx1MHP2F9M=;
-        b=cyycmAbUyP+MEhea6Q0qbMU1HkQu4kFkZr05PJMO75XyP5FwEaxoaGmB4/QbS5Yj4/
-         kQ2IQdr6BYm/8yGLMpLODAfyUr2UI0hja/01HEwIu891oVVh21ONeVC9bW7iMZtZ8Jlz
-         2usvP9AtGK5Kpx7CckQiWVQ7CRi0H4DKE20xq+dukLWcvCTN2clVFwXDoGvUpRM2qryY
-         1s6A/x/w+dv8cB8QzVa73/JchrSsnOFnU1/+3FJcASSUpOsABoPBclzycG9InxzaGnJi
-         CUKyxN5RfhbK4IDM4YP1VYILDggKdEMuHC8yzSLRMUk+fOdEqGA56kpOMOSBA5GIs/PT
-         4JCQ==
-X-Gm-Message-State: AOAM530IErtFd6qR0SIEBaoJteHLOP/45YX8h/j1SiWxKp8KoUUyaTrF
-        Vy4C5peRufnpGlAxWd1DCJk6yg==
-X-Google-Smtp-Source: ABdhPJwBy4P3b9ZHL/uuEc5QK3+QU7JmWq9RZXhEv09uSY9Rwkh8duMfsoih0ejFVq5RU4iOGkX0cA==
-X-Received: by 2002:a17:903:22cd:b0:12d:8876:eea7 with SMTP id y13-20020a17090322cd00b0012d8876eea7mr6462580plg.75.1629277398247;
-        Wed, 18 Aug 2021 02:03:18 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y13sm5730422pfq.147.2021.08.18.02.03.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 02:03:17 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 02:03:16 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
-        linux-can <linux-can@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] can: etas_es58x: Replace 0-element raw_msg array
-Message-ID: <202108180159.5C1CEE70F@keescook>
-References: <20210818034010.800652-1-keescook@chromium.org>
- <CAMZ6RqK4Rn4d-1CZsg9vJiAMHhxN6fgcqukdHpGwXoGTyNVr_Q@mail.gmail.com>
- <202108172320.1540EC10C@keescook>
- <CAMZ6RqLecbytJFQDC35n7YiqBbrB3--POofnXFeH77Zi2xzqWA@mail.gmail.com>
+        Wed, 18 Aug 2021 05:03:55 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id CFD34580BC3;
+        Wed, 18 Aug 2021 05:03:20 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Wed, 18 Aug 2021 05:03:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=1oLfxulgP1UBLG90dU8MLOI1oWP
+        w7sLiAhVxgO9QDz0=; b=D1qDctKjWkF39D+TTYnS8PAVJp4Pn5dVi+Q9GiWEwIO
+        Obb9Hk4cNpvPKVR8uc4Mit1ikKC5/4pjwOP9cTUBXKc0iQffwcYkvOI76CvtByJp
+        RIiSIVDJa/TDme/7EUPVi6a+KShoRu1Ef+NP6o1J91QhpUoQ0uusMlVq3zEBS/cS
+        OQk1i3IU+LhqOtoFfsX6fhhHIsz9D9BJyfCeMqqzv3AAPEHYgO3UPNkd+Fiy5tnG
+        7yKjqxERIQPgPEyElrpW7F91zbsAe1/DktbzpgvQrRUD1NMaLrlqVhgNfZrM352r
+        g8076etf6lV6NibbKgt2x5H+t7kwnM4jriFfnAA8NJA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=1oLfxu
+        lgP1UBLG90dU8MLOI1oWPw7sLiAhVxgO9QDz0=; b=RxRIMjtVFA808iV+xaKvE1
+        7zGdpcMS0FbDGnWjoo14lpZNiar37GxNFX+9kYG5SnR5DB3uEs6TTdo0M1WKyrts
+        6gP0bSlY9UT8ERW40m+5cAqPqzw7S15gaQKpYArI+GYWaLbZtWeAtEi51zto+2sv
+        EuexVF7IR+9ht1ZAgFhoGTra+Nk8KCaP/rLk0hW5WWUWk21XrqCX/o2vGfyV1753
+        OQRMw+XqbEz3REoXHue0PkVp3wENoCTJiQ9poenlTodZGBUlv/AL7wc2AbDp6FOH
+        h8/v+8mYc4orsHHaM5CFN9m2xAiK5vitaHhkK5YKu7PDB9DOS5vfjnCuBwL2Vdnw
+        ==
+X-ME-Sender: <xms:18wcYbrCqRN9HB4AdgdS3VFJcYFdtcCYz9QB_L16VqStxjM08IyliQ>
+    <xme:18wcYVohqfuaRrJjQ24qsU7jpumbuHpHK2ls77U4F7gTOl63KYi47XgqKcYY-SYZb
+    tps2yXY_fcQ2pDOBQc>
+X-ME-Received: <xmr:18wcYYNnUt01lXsdYgUapjsAwgwGsoyKvtGjlQUoewsCFB5Gcalvya7eID33LOAr9gBttPhY_OafbWfVRbtaUmKfv5-tgRTh24RD>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleehgdduudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
+    igihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:18wcYe4wvZB18pPZMflU-SCbhcNEXObPhakx8n5mbIhXNAwt8FJQBw>
+    <xmx:18wcYa5tL1b9-3h9Yq47b6YO8D46O2FossfVtgwgMYmb0Yr9023HvQ>
+    <xmx:18wcYWijCtBtKrtFnB57uUyPQ86dO9OAN9Ux7_H-93xngPauhrPr2Q>
+    <xmx:2MwcYShgsDF4uBV6F6UtOx_5Zdm10LfZCAbrXbF5R9Ro14ZcqC0gsQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 18 Aug 2021 05:03:18 -0400 (EDT)
+Date:   Wed, 18 Aug 2021 11:03:17 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Icenowy Zheng <icenowy@sipeed.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Samuel Holland <samuel@sholland.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 14/17] dt-bindings: arm: sunxi: add compatible strings
+ for Sipeed MaixSense
+Message-ID: <20210818090317.xqo62oy23jbc27ti@gilmour>
+References: <20210802062212.73220-1-icenowy@sipeed.com>
+ <20210802062212.73220-15-icenowy@sipeed.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ormuvhszpiekcbgs"
 Content-Disposition: inline
-In-Reply-To: <CAMZ6RqLecbytJFQDC35n7YiqBbrB3--POofnXFeH77Zi2xzqWA@mail.gmail.com>
+In-Reply-To: <20210802062212.73220-15-icenowy@sipeed.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 04:55:20PM +0900, Vincent MAILHOL wrote:
-> At the end, the only goal of raw_msg[] is to have a tag pointing
-> to the beginning of the union. It would be virtually identical to
-> something like:
-> |    u8 raw_msg[];
-> |    union {
-> |        /* ... */
-> |    } __packed ;
-> 
-> I had a look at your work and especially at your struct_group() macro.
-> Do you think it would make sense to introduce a union_group()?
-> 
-> Result would look like:
-> 
-> |    union_group_attr(urb_msg, __packed, /* raw_msg renamed to urb_msg */
-> |        struct es58x_fd_tx_conf_msg tx_conf_msg;
-> |        u8 tx_can_msg_buf[ES58X_FD_TX_BULK_MAX * ES58X_FD_CANFD_TX_LEN];
-> |        u8 rx_can_msg_buf[ES58X_FD_RX_BULK_MAX * ES58X_FD_CANFD_RX_LEN];
-> |        struct es58x_fd_echo_msg echo_msg[ES58X_FD_ECHO_BULK_MAX];
-> |        struct es58x_fd_rx_event_msg rx_event_msg;
-> |        struct es58x_fd_tx_ack_msg tx_ack_msg;
-> |        __le64 timestamp;
-> |        __le32 rx_cmd_ret_le32;
-> |    );
-> 
-> And I can then use urb_msg in place of the old raw_msg (might
-> need a bit of rework here and there but I can take care of it).
-> 
-> This is the most pretty way I can think of to remove this zero length array.
-> Keeping the raw_msg[] but with another size seems odd to me.
-> 
-> Or maybe I would be the only one using this feature in the full
-> tree? In that case, maybe it would make sense to keep the
-> union_group_attr() macro local to the etas_es58x driver?
 
-I actually ended up with something close to this idea, but more
-generalized for other cases in the kernel. There was a sane way to
-include a "real" flexible array in a union (or alone in a struct), so
-I've proposed this flex_array() helper:
-https://lore.kernel.org/lkml/20210818081118.1667663-2-keescook@chromium.org/
+--ormuvhszpiekcbgs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-and then it's just a drop-in replacement for all the places that need
-this fixed, including etas_es58x:
-https://lore.kernel.org/lkml/20210818081118.1667663-3-keescook@chromium.org/#Z30drivers:net:can:usb:etas_es58x:es581_4.h
+On Mon, Aug 02, 2021 at 02:22:09PM +0800, Icenowy Zheng wrote:
+> Sipeed MaixSense is an Allwinner R329 development kit based on Maix IIA
+> SoM.
+>=20
+> Add compatible strings for it.
+>=20
+> Signed-off-by: Icenowy Zheng <icenowy@sipeed.com>
+> ---
+>  Documentation/devicetree/bindings/arm/sunxi.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml b/Documenta=
+tion/devicetree/bindings/arm/sunxi.yaml
+> index 889128acf49a..bce306908eff 100644
+> --- a/Documentation/devicetree/bindings/arm/sunxi.yaml
+> +++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
+> @@ -444,6 +444,12 @@ properties:
+>            - const: haoyu,a10-marsboard
+>            - const: allwinner,sun4i-a10
+> =20
+> +      - description: Sipeed MaixSense
+> +        items:
+> +          - const: sipeed,maixsense
+> +          - const: sipeed,maix-iia
+> +          - const: allwinner,sun50i-r329
+> +
 
-Hopefully this will work out; I think it's as clean as we can get for
-now. :)
+This should be ordered
 
--- 
-Kees Cook
+Maxime
+
+--ormuvhszpiekcbgs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYRzM1QAKCRDj7w1vZxhR
+xSjaAQCzT8tHWjZy7l9ZYXLHyVRhaTmkMGSJ9SyEvLZrV7+2NAEA5p16uIIRlTLH
+s/VcIaQAnSRkJ0h6DWvT44dlObEK4Aw=
+=j6EF
+-----END PGP SIGNATURE-----
+
+--ormuvhszpiekcbgs--
