@@ -2,250 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 499953EFB80
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4877B3EFB58
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238670AbhHRGNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 02:13:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238205AbhHRGNM (ORCPT
+        id S238305AbhHRGKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 02:10:47 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:30752 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238236AbhHRGJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 02:13:12 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEEF3C0363CD
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:06:07 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id w68so1060202pfd.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:06:07 -0700 (PDT)
+        Wed, 18 Aug 2021 02:09:40 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17I62dc4003684;
+        Wed, 18 Aug 2021 06:08:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : references : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=M4i4KZAYhC6Y57TL094lRKWSayBdmaSx45KF0u/F9o8=;
+ b=FIZ1/RRhv22UW3qAfDpGoVfvmEKYSCnmCacU8IRC1HNKYiUtMhQG8JoOKc62pdO3BcC+
+ k3e7xOp9kTW7cJNOQoEVOBe232F0weCSMBFEtCnghO8wh1ss4cL/IXi85tthwNHQJRMe
+ vvgcLo81dt0sDyuFXfHKH1LwXa5kHDHGRTXc2FQsK2pCG5kb0wpdG3oFX5yqAgfckTQr
+ wF+dF7pnNXKQ49MIA4R/eFXGsaU7rkWxLI06qeQVFURp/fGeWUr6gORSlYsDAurkrPP5
+ egx7Z+iaMDaSKp0Ymt+u3ZcLcC7lke3VPQVbN/gkG6Tqceaa4SzGQMDYkRLdZVHBzR6N Pw== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : references : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=M4i4KZAYhC6Y57TL094lRKWSayBdmaSx45KF0u/F9o8=;
+ b=EL52k3dBsjjgyEXjc1F/39jDuZNTBRb8i7vygt86lSAtex+lxkcuAO4RtO8Hp3LkI0//
+ eLDEa3WnKo+ybvguB8o2FeaLNgSopYkdo3pcoTzaZoLdBKMP9I/szPEIJwPG8RY63onq
+ dsyt5cn9JAkULJAttlFt7V0WXNjdcDJEi2xpa0fC6GVFQcFtKnTaC9yADq68jwrwMW3L
+ 5wSEGUfBnO0swWxA+Bzr82iwww7v+EYoHXNQL+JbN5rpauOOEoaanmk3czAb/cd9algk
+ mSoL/sfQmc25IzdyRvqggSqirtZO4zvP36m3lIy3vDP4vcgiA6Bh3H5WrQEyD336o4MS qw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3afgpgnnsd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Aug 2021 06:08:47 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17I6150H166766;
+        Wed, 18 Aug 2021 06:08:46 GMT
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1anam02lp2049.outbound.protection.outlook.com [104.47.57.49])
+        by userp3020.oracle.com with ESMTP id 3aeqkvkcdh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Aug 2021 06:08:46 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bAS0VuxltIZ3x1jUQZgvrMhW0P3uEndHgK36N/Rs40CCsZl+5jYpO7DCmiKD8fgIK38pD+TWwhwA1xPMkml9OTRCoyxoA1iJFQfeQtWyO79E5kFrsqy6nJQcXya7czCMGnu9Tekvs65PIJKJrrEETXfAsSTRD2Pa7UYuNtszLHWdVmrqt65XvthSoskOyLsy//GUaBMoEE8yywANdRmdtr83YSPHjcy2UsD8XpP4D5s7fy7P8Feu1K0cPhBhatgcGzjBt+cgBrxZM/Vg0ij4scaY/XnFg08rvKYZCTH2PGpQj8AMi0IB8bQyjZfjTsRX56Pss+MHbmHP2yDC7AlvcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M4i4KZAYhC6Y57TL094lRKWSayBdmaSx45KF0u/F9o8=;
+ b=aBcIL39On2eU+jVH7uo4+ZC+H8RCB/GczWa51W6QdLl44ohGq52yHbCreL3lDmMEjyNNl4H6F9Yj1PJloBf+B9xq5aas7ThpuarkEnchZoRSyq01IONPV8bu7X9t1R+kBCj/zq121ZKZQKoJoLjEL9rpp+Mw0nHiuKE44bj+IngufltQ/Lb6IGTeCOqt/Z+FJ48xqVP/e9ZN0gJgHXZXUpcKTiECvzuW0IrBjcbw2IXfwFQxP+Og4+maPIfbM4XUPSCycFxr+A/c9ibw617v0vdpXZitgsHt7i6qHrOaTYwYVFrpvPv1Z8QTpZy7baxYfKciLD6jLxtHvqb3xDmbkA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0bRXcGnjUc7NVLeCTdRJyE4ge8RgoyPp9mDS2KzOq8s=;
-        b=WQqdtls/I5KQTun/hms341YldczQzpNKS3BfKfWY/GwZZ0hWoG9we6ibSjWW7lx/A3
-         n6thS6+Nyek/C9pXuosZvP3ZzBi7YorfMd8mKDm8qDfvHb0EJADzUaECrtRMe9FIa9KN
-         qz2Nc4X0B0W57jPUBjUc42oG7dCdby25RRrX0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0bRXcGnjUc7NVLeCTdRJyE4ge8RgoyPp9mDS2KzOq8s=;
-        b=BbVSmRvtZDEIMXSWUZGCyqmgyip162VazAJelDe0UxR4y7IhkyByLcH5wNWY4/f5PM
-         Zvv4Cs+LR4lxl/wwcfaA23WMHPQNade0XzKI6ZQ2+UNWq2ijMDJYmllTDv0M5kOTlaMU
-         go5pT6DZcBZQR/O2NknE1QIjdzc2HRYpqWMij81bR5v1QoOw1PF4DQLjLmLZ/tVztFgZ
-         h2958BiZSwKmcR+Qbm6msgtSTEZsa2ZVgYcvFtgOWbj3SzD1YWriIN2pi09+r41FvbyB
-         dGdaHxWpa6vArhIxLRBmH3VWlwjj2iEsUl+JXv6i6QWJRo7zMxDrXJUSQCVAPnzDWh6p
-         SoNQ==
-X-Gm-Message-State: AOAM533m4IN9Ey9FLWlYtn2GwXIOO77qEPSBz9+AherFStg52pHqNEcH
-        gtld8Zk7eEqF+kXcbM5zW7cXkQ==
-X-Google-Smtp-Source: ABdhPJzf07hn4/UJFD8k9v/PFTouOU2hjIEruQiURQ/GtTe5NoEQV+QNXrPpXGYcUZ9Mijvig6sL0A==
-X-Received: by 2002:aa7:8206:0:b029:3c6:2846:3f9f with SMTP id k6-20020aa782060000b02903c628463f9fmr7834685pfi.30.1629266766977;
-        Tue, 17 Aug 2021 23:06:06 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id l18sm4571594pff.24.2021.08.17.23.06.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 23:06:04 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
-        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH v2 63/63] fortify: Work around Clang inlining bugs
-Date:   Tue, 17 Aug 2021 23:05:33 -0700
-Message-Id: <20210818060533.3569517-64-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210818060533.3569517-1-keescook@chromium.org>
-References: <20210818060533.3569517-1-keescook@chromium.org>
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7591; h=from:subject; bh=Hec0xxMOh0cK4yBYBOcb5aqhxRAjnc34rm5FBOgOGD0=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhHKMs6ml8yWGswBEn8BNaWTcv46iAfG0OJbmF8YMg oAEj0wmJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYRyjLAAKCRCJcvTf3G3AJmy1EA Cxa4AsWTCF8/uDP8AV7JotgjiK7+Wd6hTmjaB2izxSIO3ujFU7lf++q7Flx4Rk0Khk2tYC5yFzkf1q KsVqRI+lR033mk6KdPSJ9FrfNzNJz8wPKrUcmvO1yC5Ew7NsSbVcFG9rAJTpUGSp6PB33hEZa7ao6X g00L0SWHv3JrcPqQxfPVH40XS0edTmHg2xsJ5mtz/NsFH7sjkVvbomQwzPWIWneWOUFnBoNs+gvf6t vSf2XOihAR71V0F5AszPaupkbs6G5njj1px9/ENBv3HIa208Q3y8DpqsvqamaITfm+fmWG8CrO/7OT jWWUwcLUoiPAzcKaa+OKE5ii0xStgjRPNhoJKsOJU0dDqt0/5/X37hzygJ+A+cggmAIfMoTzmE9a8f appSBcljh4nYutCtxDKnbc2yqCBtKYTAlZ+vqGGAe35wFrXKhNNsQK7c8ciBk7F+G4tdWcsfmTfE+h Z4gxHVqy2JU4v0EWPwh/KVUbbHw6edMeAslLgW8TyhklAWJSFhjGecLkyTpx66usdMKTWdYMmrbu8O PytqhJuULFGtFs5i5jkysrms3SGobkhoweDZHzjT82RPdfsZchVOG0LZfHsmuh54DBoXEf/9bw4Zgm QQ4sjZ4Ski2g83oskEkT+N7EABOdA+mCeKE78rnk61IM+xXh4/vRHiEA0ipw==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M4i4KZAYhC6Y57TL094lRKWSayBdmaSx45KF0u/F9o8=;
+ b=aDla9B/bgoKWsufFsW0HHuf7KTtKE8AL6RdPWHntab5Wo8iXmuOmTZ2wEOqgeC3QjlqzI6ywCv8aK86TY1SrBCMWv4mBdGmf+CH6lFyCb5zcGUQ8BJkmLstWlj1yExil+fSLdiGdu1mdyZ8yJ2npDuFSaTGFoptwiZIClfwT24E=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=oracle.com;
+Received: from SJ0PR10MB4429.namprd10.prod.outlook.com (2603:10b6:a03:2d1::14)
+ by SJ0PR10MB4656.namprd10.prod.outlook.com (2603:10b6:a03:2d1::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16; Wed, 18 Aug
+ 2021 06:08:44 +0000
+Received: from SJ0PR10MB4429.namprd10.prod.outlook.com
+ ([fe80::bc10:efd4:f1f4:31c7]) by SJ0PR10MB4429.namprd10.prod.outlook.com
+ ([fe80::bc10:efd4:f1f4:31c7%5]) with mapi id 15.20.4415.024; Wed, 18 Aug 2021
+ 06:08:44 +0000
+Subject: Re: [PATCH RESEND v6 1/9] pagemap: Introduce ->memory_failure()
+From:   Jane Chu <jane.chu@oracle.com>
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        nvdimm@lists.linux.dev, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, dm-devel@redhat.com
+Cc:     djwong@kernel.org, dan.j.williams@intel.com, david@fromorbit.com,
+        hch@lst.de, agk@redhat.com, snitzer@redhat.com
+References: <20210730100158.3117319-1-ruansy.fnst@fujitsu.com>
+ <20210730100158.3117319-2-ruansy.fnst@fujitsu.com>
+ <1d286104-28f4-d442-efed-4344eb8fa5a1@oracle.com>
+ <de19af2a-e9e6-0d43-8b14-c13b9ec38a9d@oracle.com>
+ <beee643c-0fd9-b0f7-5330-0d64bde499d3@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <78c22960-3f6d-8e5d-890a-72915236bedc@oracle.com>
+Date:   Tue, 17 Aug 2021 23:08:40 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+In-Reply-To: <beee643c-0fd9-b0f7-5330-0d64bde499d3@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SA9PR10CA0019.namprd10.prod.outlook.com
+ (2603:10b6:806:a7::24) To SJ0PR10MB4429.namprd10.prod.outlook.com
+ (2603:10b6:a03:2d1::14)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.159.249.154] (138.3.200.26) by SA9PR10CA0019.namprd10.prod.outlook.com (2603:10b6:806:a7::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.18 via Frontend Transport; Wed, 18 Aug 2021 06:08:42 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 02f3c103-1c0a-4671-0720-08d9620ea270
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB4656:
+X-Microsoft-Antispam-PRVS: <SJ0PR10MB4656345C8FD784CF7E57C06BF3FF9@SJ0PR10MB4656.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: h8wnMyFzjnYSt0obBV+rMMwdvCiBAettySHs8CcyQNYIAh3vz27YVZJkaF8TYkKWsZBZ5yytw/biALMt69VqzClj3eDAJiaU6WHV94BH3sgRR4hPz7V1ZfLtX62/J7hXqfNF7kH7iRdiCx6rjgKVHJ5ez7cM5VPcQEm86mbrH9I9HdwUoW3E3fsZDCwVz7EsRK4RTEA/s07rg287tLyDQSzIq/kBYH4uMt18PSZYwR6c0FF+s2lbhugEvKrzOtW+hS9sq0h76aDRBHrh3y5+fWAjylaVIh9xDae4dZLHmqlktpWVLjKm0dnWPkjVKh4uxnP0w7BGnx8n7wKDHZBeW5Z/L5eT1+mjXlvdGqUPZ3XpFiUZyZkvx7dohpQ9blQ0kyjVPGHSk6h9MvWjBZpk8l+BHZVrkAosRtwmzaVshK9vXzFEhgiKNFbOAbDssN72uiU2G2BhNT912a4LAf0s14hA7ZwAI5Y38cxU1n2omCxJs/8xXPfWeHntlNG3jHkz9E15qjsHDiR8avHkwIAZgBnYy4qIqxVNvxirffIoi8FMhGCo42TBBRmKHJvi4WHkcP5FMoWJ/+gEWkSGiwIodHw6ckVp4+65eIQx84SSX1slvCfOBDVKPLcJSK4eDVhLoAmNthzhmJjYHjI4TPslpXB/1j16iRk7y2C95NrQD51YsB5f3o4a9vyMNkn1oOD5+K/SwnGy94wqsqoBczSljTWnRVlVMC8gLWDTJj2eKC8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4429.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(86362001)(36916002)(66946007)(7416002)(8676002)(4326008)(44832011)(66476007)(26005)(66556008)(508600001)(8936002)(5660300002)(6486002)(36756003)(2616005)(16576012)(31686004)(2906002)(316002)(53546011)(38100700002)(83380400001)(956004)(31696002)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eDhJTDlxMVFCMVczUWsxVlhwYmpRTlpvNjZSUW44VEpSaE1sSkFMNk81U3d0?=
+ =?utf-8?B?N0FMSlZkaUQ2ekh6WEpsUkpNL3BFa0JhS0RuSEFtOWNxOGFSY01IaEFza2Z6?=
+ =?utf-8?B?VzlwS2RLTmFydnZGNm9GNEdLYTdPSnVpOE5QLzc3SkVCaVBaZy9ScFVZdm9q?=
+ =?utf-8?B?bVFzRDV2d0JtNVdjb095NnhXQVRBRExNNUlSZ0N6T2YrMk1TcXY0eGhUbVBC?=
+ =?utf-8?B?YzJNSEk1eXlrT0N3bWJ5TytIR3JQVDBxOG9DVERjcXEyZEtMbk5WdHdZaVEr?=
+ =?utf-8?B?WU56eERxd0xrUTZWR2dJbDAxSWthNE9PYWFaS3J3a05qQTZ2MGJ5MU5JK1RF?=
+ =?utf-8?B?T0p6ekhoMXlNVkg0ei9FOW5mSzl3bDVkSVRLNVg0WWJIbUJ4cUZ1Y1hEaXhH?=
+ =?utf-8?B?NmY3MEM1YXJlS2tLM1ZzS1BiWWZWUFJTc2hIRWJMd3A1ZHRaZWpPWTd4blRU?=
+ =?utf-8?B?alR1Y3dlU251V3RjYUJTcVNtZndIWFFBYmVUcXJsN1YvRUU3SVV1cVNMek9F?=
+ =?utf-8?B?cTQzSzhRaElybDdpRjJnRUlKM0tWcnJLUVFrVlVXUElhN25jN1lmTzB1cWxW?=
+ =?utf-8?B?cXVwbG82V0kzbVNVT05Ic01VQy9MbThUeHM4aW9aODI0dEs2MXUrUHZzK1RF?=
+ =?utf-8?B?dTViWGVzL0FFNDYrNlpicVpqNjlnMERGdEQ1cWx0ZlZwSFQ5ZWxFQTBiN1hD?=
+ =?utf-8?B?UituOU40N21zdHgrbktLRWJQYnlyQSs1cWE5TnRUN0gybXQ1akJjTTlQeXRz?=
+ =?utf-8?B?eDZkMWtDcTRoN0JqWU9PWXViMVpnMFljWkVXcDFpTE5hd3dCdEQxNTZhcEtF?=
+ =?utf-8?B?TVMraElEVFNiaDl5NE5xWCtvdDRUSzhIZ3c2UXI0ME9GYitlR1lCQXJuemJD?=
+ =?utf-8?B?Zng0T0NZYytCZld3ejVLTklYbndyS2dmbHIybS8zd2JGQUMyZVRmcy9SNFI5?=
+ =?utf-8?B?cDgzY1BPWXBhSXk1NCs0akJjM1JEdFNMMnVpZDJNamFCWGVJQXlwR1BvZDdK?=
+ =?utf-8?B?Zm1wNG1IUlBNMHA4ci8xdWVhU3Fib3ZhZ1hsamtuQjJWMFJycXR4dTkrb0Jq?=
+ =?utf-8?B?UmttZGw5UDFvNjczSVlPcGFrWlVBbjVXZFpLRHEwTEQ4cG9WU3Y3WEpLemlv?=
+ =?utf-8?B?ZFNYc2grYjVDWFowS1pzVlVMMkMvVExhZXJrMzF1c1FiTzdaYS9hYWg3OUx6?=
+ =?utf-8?B?OVBWeTFkVG5ZOTgxRjFFWmRXY2VPb0d4K3pDVmhWUHVPUWpaNDRoTlhqSUZD?=
+ =?utf-8?B?M3dOaU5TdlNwMjZPQ2NJNWthSUJyUG1yV1EwamRNQklYcnJSc2dPcS9TcUxo?=
+ =?utf-8?B?eVliWjdjUEphZVB5eUQwQWovRTVWZFJNV1RCWmVUMmlDL0RpTXkrNE5QQUtH?=
+ =?utf-8?B?TUZpNlNyVyt6TTljSER4b08vaHFRRE9CalR1WEQ3anlLWUVIdkxtSlBIeUx5?=
+ =?utf-8?B?ZW8vZ1BZNEVNeEV1OFUxQjhyU3RYSG5VZGo0aFJscEJ2YVVBeGdTKzJzN21M?=
+ =?utf-8?B?WVUrMjJ0Myt3UUlxRWtKVE1kU2NKa1M4YUJQT0FGOGMvTzBlbkRvMnVtR3lN?=
+ =?utf-8?B?QU4vNFZncnQxSTQ0Nk96UVRESzlZV05HS2dYZFZRREtJa2tMd003MmdybGhE?=
+ =?utf-8?B?SWVIVVJjSGRxWjRjTy81TFc3dFQzWDAvWWp4Z1NKcnRDaEdwcnREdEpmcFZI?=
+ =?utf-8?B?cFRnOElmYldyUkdPY3JzNWVySS9xRVdiekwxUmdSQ3dGQ2NBUE5za1ppTkJk?=
+ =?utf-8?Q?OjHhLpQAuIGPxGqDqOt6iF45Rwn1sd3EklCYXZ4?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 02f3c103-1c0a-4671-0720-08d9620ea270
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4429.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2021 06:08:44.5563
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +J4+0tNW8f+jODfD80tvOTBn4gZvwWlzyBJj8xdzqstDfuAsK9xglAZRaZrAs/HkI3jAvzicxIvdFvsQdhy1ow==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4656
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10079 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 malwarescore=0
+ mlxscore=0 spamscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108180038
+X-Proofpoint-GUID: IIrNvFR3-VYflODdUfnxvCD7PloUGzMs
+X-Proofpoint-ORIG-GUID: IIrNvFR3-VYflODdUfnxvCD7PloUGzMs
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To enable FORTIFY_SOURCE support for Clang, the kernel must work around
-a pair of bugs, related to Clang's inlining.
 
-Change all the fortified APIs into macros with different inline names to
-bypass Clang's broken inline-of-a-builtin detection:
-https://bugs.llvm.org/show_bug.cgi?id=50322
+On 8/17/2021 10:43 PM, Jane Chu wrote:
+> More information -
+> 
+> On 8/16/2021 10:20 AM, Jane Chu wrote:
+>> Hi, ShiYang,
+>>
+>> So I applied the v6 patch series to my 5.14-rc3 as it's what you 
+>> indicated is what v6 was based at, and injected a hardware poison.
+>>
+>> I'm seeing the same problem that was reported a while ago after the
+>> poison was consumed - in the SIGBUS payload, the si_addr is missing:
+>>
+>> ** SIGBUS(7): canjmp=1, whichstep=0, **
+>> ** si_addr(0x(nil)), si_lsb(0xC), si_code(0x4, BUS_MCEERR_AR) **
+>>
+>> The si_addr ought to be 0x7f6568000000 - the vaddr of the first page
+>> in this case.
+> 
+> The failure came from here :
+> 
+> [PATCH RESEND v6 6/9] xfs: Implement ->notify_failure() for XFS
+> 
+> +static int
+> +xfs_dax_notify_failure(
+> ...
+> +    if (!xfs_sb_version_hasrmapbt(&mp->m_sb)) {
+> +        xfs_warn(mp, "notify_failure() needs rmapbt enabled!");
+> +        return -EOPNOTSUPP;
+> +    }
+> 
+> I am not familiar with XFS, but I have a few questions I hope to get 
+> answers -
+> 
+> 1) What does it take and cost to make
+>     xfs_sb_version_hasrmapbt(&mp->m_sb) to return true?
+> 
+> 2) For a running environment that fails the above check, is it
+>     okay to leave the poison handle in limbo and why?
+> 
+> 3) If the above regression is not acceptable, any potential remedy?
 
-Lift all misbehaving __builtin_object_size() calls into the macros to
-bypass Clang's broken __builtin_object_size() arguments-of-an-inline
-visibility:
-https://github.com/ClangBuiltLinux/linux/issues/1401
+How about moving the check to prior to the notifier registration?
+And register only if the check is passed?  This seems better
+than an alternative which is to fall back to the legacy memory_failure
+handling in case the filesystem returns -EOPNOTSUPP.
 
-Thankfully, due to how the inlining already behaves in GCC, this change
-has no effect on GCC builds, but allows Clang to finally gain full
-FORTIFY coverage.
+thanks,
+-jane
 
-However, because of a third bug which had no work-arounds, FORTIFY_SOURCE
-will only work with Clang version 13 and later. Update the Kconfig to
-reflect the new requirements.
-
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- include/linux/fortify-string.h | 55 +++++++++++++++++++++-------------
- security/Kconfig               |  2 +-
- 2 files changed, 36 insertions(+), 21 deletions(-)
-
-diff --git a/include/linux/fortify-string.h b/include/linux/fortify-string.h
-index 7de4673dfe2c..e62d3633a329 100644
---- a/include/linux/fortify-string.h
-+++ b/include/linux/fortify-string.h
-@@ -48,10 +48,10 @@ extern char *__underlying_strncpy(char *p, const char *q, __kernel_size_t size)
- #define __underlying_strncpy	__builtin_strncpy
- #endif
- 
--__FORTIFY_INLINE char *strncpy(char *p, const char *q, __kernel_size_t size)
-+#define strncpy(p, q, s) __fortify_strncpy(p, q, s, __builtin_object_size(p, 1))
-+__FORTIFY_INLINE char *__fortify_strncpy(char *p, const char *q,
-+					 __kernel_size_t size, size_t p_size)
- {
--	size_t p_size = __builtin_object_size(p, 1);
--
- 	if (__builtin_constant_p(size) && p_size < size)
- 		__write_overflow();
- 	if (p_size < size)
-@@ -71,9 +71,10 @@ __FORTIFY_INLINE char *strcat(char *p, const char *q)
- }
- 
- extern __kernel_size_t __real_strnlen(const char *, __kernel_size_t) __RENAME(strnlen);
--__FORTIFY_INLINE __kernel_size_t strnlen(const char *p, __kernel_size_t maxlen)
-+#define strnlen(p, s) __fortify_strnlen(p, s, __builtin_object_size(p, 1))
-+__FORTIFY_INLINE __kernel_size_t __fortify_strnlen(const char *p, size_t maxlen,
-+						   size_t p_size)
- {
--	size_t p_size = __builtin_object_size(p, 1);
- 	size_t p_len = __compiletime_strlen(p);
- 	size_t ret;
- 
-@@ -108,10 +109,14 @@ __FORTIFY_INLINE __kernel_size_t strlen(const char *p)
- 
- /* defined after fortified strlen to reuse it */
- extern size_t __real_strlcpy(char *, const char *, size_t) __RENAME(strlcpy);
--__FORTIFY_INLINE size_t strlcpy(char *p, const char *q, size_t size)
-+#define strlcpy(p, q, s) __fortify_strlcpy(p, q, s,			\
-+					   __builtin_object_size(p, 1),	\
-+					   __builtin_object_size(q, 1))
-+__FORTIFY_INLINE size_t __fortify_strlcpy(char *p, const char *q,
-+					  size_t size,
-+					  const size_t p_size,
-+					  const size_t q_size)
- {
--	size_t p_size = __builtin_object_size(p, 1);
--	size_t q_size = __builtin_object_size(q, 1);
- 	size_t q_len;	/* Full count of source string length. */
- 	size_t len;	/* Count of characters going into destination. */
- 
-@@ -135,12 +140,15 @@ __FORTIFY_INLINE size_t strlcpy(char *p, const char *q, size_t size)
- 
- /* defined after fortified strnlen to reuse it */
- extern ssize_t __real_strscpy(char *, const char *, size_t) __RENAME(strscpy);
--__FORTIFY_INLINE ssize_t strscpy(char *p, const char *q, size_t size)
-+#define strscpy(p, q, s) __fortify_strscpy(p, q, s,			\
-+					   __builtin_object_size(p, 1),	\
-+					   __builtin_object_size(q, 1))
-+__FORTIFY_INLINE ssize_t __fortify_strscpy(char *p, const char *q,
-+					   size_t size,
-+					   const size_t p_size,
-+					   const size_t q_size)
- {
- 	size_t len;
--	/* Use string size rather than possible enclosing struct size. */
--	size_t p_size = __builtin_object_size(p, 1);
--	size_t q_size = __builtin_object_size(q, 1);
- 
- 	/* If we cannot get size of p and q default to call strscpy. */
- 	if (p_size == (size_t) -1 && q_size == (size_t) -1)
-@@ -181,11 +189,13 @@ __FORTIFY_INLINE ssize_t strscpy(char *p, const char *q, size_t size)
- }
- 
- /* defined after fortified strlen and strnlen to reuse them */
--__FORTIFY_INLINE char *strncat(char *p, const char *q, __kernel_size_t count)
-+#define strncat(p, q, count)	__fortify_strncat(p, q, count, \
-+						  __builtin_object_size(p, 1), \
-+						  __builtin_object_size(q, 1))
-+__FORTIFY_INLINE char *__fortify_strncat(char *p, const char *q, size_t count,
-+					 size_t p_size, size_t q_size)
- {
- 	size_t p_len, copy_len;
--	size_t p_size = __builtin_object_size(p, 1);
--	size_t q_size = __builtin_object_size(q, 1);
- 
- 	if (p_size == (size_t)-1 && q_size == (size_t)-1)
- 		return __underlying_strncat(p, q, count);
-@@ -352,7 +362,8 @@ __FORTIFY_INLINE void fortify_memcpy_chk(__kernel_size_t size,
- 		memmove)
- 
- extern void *__real_memscan(void *, int, __kernel_size_t) __RENAME(memscan);
--__FORTIFY_INLINE void *memscan(void *p, int c, __kernel_size_t size)
-+#define memscan(p, c, s) __fortify_memscan(p, c, s)
-+__FORTIFY_INLINE void *__fortify_memscan(void *p, int c, __kernel_size_t size)
- {
- 	size_t p_size = __builtin_object_size(p, 0);
- 
-@@ -363,7 +374,8 @@ __FORTIFY_INLINE void *memscan(void *p, int c, __kernel_size_t size)
- 	return __real_memscan(p, c, size);
- }
- 
--__FORTIFY_INLINE int memcmp(const void *p, const void *q, __kernel_size_t size)
-+#define memcmp(p, q, s) __fortify_memcmp(p, q, s)
-+__FORTIFY_INLINE int __fortify_memcmp(const void *p, const void *q, __kernel_size_t size)
- {
- 	size_t p_size = __builtin_object_size(p, 0);
- 	size_t q_size = __builtin_object_size(q, 0);
-@@ -379,7 +391,8 @@ __FORTIFY_INLINE int memcmp(const void *p, const void *q, __kernel_size_t size)
- 	return __underlying_memcmp(p, q, size);
- }
- 
--__FORTIFY_INLINE void *memchr(const void *p, int c, __kernel_size_t size)
-+#define memchr(p, c, s) __fortify_memchr(p, c, s)
-+__FORTIFY_INLINE void *__fortify_memchr(const void *p, int c, __kernel_size_t size)
- {
- 	size_t p_size = __builtin_object_size(p, 0);
- 
-@@ -391,7 +404,8 @@ __FORTIFY_INLINE void *memchr(const void *p, int c, __kernel_size_t size)
- }
- 
- void *__real_memchr_inv(const void *s, int c, size_t n) __RENAME(memchr_inv);
--__FORTIFY_INLINE void *memchr_inv(const void *p, int c, size_t size)
-+#define memchr_inv(p, c, s) __fortify_memchr_inv(p, c, s)
-+__FORTIFY_INLINE void *__fortify_memchr_inv(const void *p, int c, size_t size)
- {
- 	size_t p_size = __builtin_object_size(p, 0);
- 
-@@ -415,7 +429,8 @@ __FORTIFY_INLINE void *kmemdup(const void *p, size_t size, gfp_t gfp)
- }
- 
- /* Defined after fortified strlen to reuse it. */
--__FORTIFY_INLINE char *strcpy(char *p, const char *q)
-+#define strcpy(p, q) __fortify_strcpy(p, q)
-+__FORTIFY_INLINE char *__fortify_strcpy(char *p, const char *q)
- {
- 	size_t p_size = __builtin_object_size(p, 1);
- 	size_t q_size = __builtin_object_size(q, 1);
-diff --git a/security/Kconfig b/security/Kconfig
-index fe6c0395fa02..530a15566b1d 100644
---- a/security/Kconfig
-+++ b/security/Kconfig
-@@ -193,7 +193,7 @@ config FORTIFY_SOURCE
- 	depends on ARCH_HAS_FORTIFY_SOURCE
- 	# https://bugs.llvm.org/show_bug.cgi?id=50322
- 	# https://bugs.llvm.org/show_bug.cgi?id=41459
--	depends on !CC_IS_CLANG
-+	depends on !CC_IS_CLANG || CLANG_VERSION >= 130000
- 	help
- 	  Detect overflows of buffers in common string and memory functions
- 	  where the compiler can determine and validate the buffer sizes.
--- 
-2.30.2
-
+> 
+> thanks!
+> -jane
+> 
+> 
+>>
+>> Something is not right...
+>>
+>> thanks,
+>> -jane
+>>
+>>
+>> On 8/5/2021 6:17 PM, Jane Chu wrote:
+>>> The filesystem part of the pmem failure handling is at minimum built
+>>> on PAGE_SIZE granularity - an inheritance from general memory_failure 
+>>> handling.  However, with Intel's DCPMEM technology, the error blast
+>>> radius is no more than 256bytes, and might get smaller with future
+>>> hardware generation, also advanced atomic 64B write to clear the poison.
+>>> But I don't see any of that could be incorporated in, given that the
+>>> filesystem is notified a corruption with pfn, rather than an exact
+>>> address.
+>>>
+>>> So I guess this question is also for Dan: how to avoid unnecessarily
+>>> repairing a PMD range for a 256B corrupt range going forward?
+>>>
+>>> thanks,
+>>> -jane
+>>>
+>>>
+>>> On 7/30/2021 3:01 AM, Shiyang Ruan wrote:
+>>>> When memory-failure occurs, we call this function which is implemented
+>>>> by each kind of devices.  For the fsdax case, pmem device driver
+>>>> implements it.  Pmem device driver will find out the filesystem in 
+>>>> which
+>>>> the corrupted page located in.  And finally call filesystem handler to
+>>>> deal with this error.
+>>>>
+>>>> The filesystem will try to recover the corrupted data if necessary.
+>>>
+>>
+> 
