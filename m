@@ -2,118 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 220793EF736
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 03:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E11E3EF743
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 03:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237330AbhHRBN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 21:13:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40572 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232294AbhHRBNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 21:13:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BFEA6101A;
-        Wed, 18 Aug 2021 01:12:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629249171;
-        bh=S8IVosKYq3uGM5PpqT7ajdvdqx5XHpErpy3tG/+l8vQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=J91kq0uaiNCX8Hx1ZJO1LFAEVV7KbzmTaEL+XrAGb3+CnD1BF4Hm2k6iPKCVfKtHH
-         ri9GhE75cTx0d6r4BOB0EQM37kJc/z7nVmLCAz8OBZ2743716+IjJJN4OhiTUMRsF5
-         Z+rzQyaiQH2PBfC5R3AsLM5iVTBtszj1uHRJunpCp0hKFnggkBul7mOJKnk4A6YWZu
-         7IXhb0itDe17Lts8QUUu9TY8VA6e06ptyQXTiyiVrJgmTaWHqnJ47vsyYeIyScVCb8
-         qzjtxz3UOX/zvdNQ4y7CEZeZ6e4ZZP5yNBt8wIujxV8bBN2JN7qYnZ18IINSJvBSvR
-         M0/wAsHWs54CQ==
-Subject: Re: [PATCH] scsi: st: Add missing break in switch statement in
- st_ioctl()
-To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     =?UTF-8?Q?Kai_M=c3=a4kisara?= <Kai.Makisara@kolumbus.fi>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-References: <20210817235531.172995-1-nathan@kernel.org>
- <7843ce6b-92ae-7b6c-1fc-acb0ffe2bbc0@linux-m68k.org>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <a3499a19-d9ed-b8e5-341e-0aa02774b645@kernel.org>
-Date:   Tue, 17 Aug 2021 18:12:49 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S237412AbhHRBPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 21:15:48 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:35374 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232294AbhHRBPo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 21:15:44 -0400
+Received: by mail-ot1-f45.google.com with SMTP id f16-20020a056830205000b00519b99d3dcbso807650otp.2;
+        Tue, 17 Aug 2021 18:15:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RM2dmchpI6KmQKuD+RgubJedkIA6WkX9t/jyVLdUt3Q=;
+        b=M/yPllpnPj3TZCZVEA18tJCv0QVZrZggPomFdRAhNbq9gQbXUAUdvRZNHsSF36y72M
+         0l1ky8wIehQvPxVmUQRU9qtc15Emjy/xV5oExxJN66WqBw0GJHEApsYlg5dBzBXk3NDs
+         KFowaVVlsWeFxBGveWZxOTvUPIF+0zd9DRshAjtDwKgO8jjOLAVmpE5HYZbxh/GHDsci
+         uxBh9TDdsVuK2eDptDSYiQZZ5W1mHQbxUiCcE/oCOvl8DOpn5zBIr/cT3C6WO+wsYlbs
+         FUhROK8iZ8pRq5hIUrvs+0glR2sNsSqhERk9gMQ5GLqjPqZYPpO2OsdkKD7smxvOolln
+         435A==
+X-Gm-Message-State: AOAM531fxHcv2v3ead0V9UchaMijLKVLlDYc6XB9tIO2P4CvC7scT/mX
+        I1AzhmDBH5bmBm25+PiehQ==
+X-Google-Smtp-Source: ABdhPJydb95sxSyCE8JTQ37Yp3+d+zCUT2I4Mgdlk82Qz5QqNFm3xA06SoTPwD6X93TSb4zbZLUInw==
+X-Received: by 2002:a05:6830:1f54:: with SMTP id u20mr4796930oth.320.1629249309809;
+        Tue, 17 Aug 2021 18:15:09 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id o7sm662196oih.34.2021.08.17.18.15.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 18:15:08 -0700 (PDT)
+Received: (nullmailer pid 1174643 invoked by uid 1000);
+        Wed, 18 Aug 2021 01:15:06 -0000
+Date:   Tue, 17 Aug 2021 20:15:06 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH v8 06/34] dt-bindings: clock: tegra-car: Document new
+ tegra-clocks sub-node
+Message-ID: <YRxfGtWPXeSQXuHo@robh.at.kernel.org>
+References: <20210817012754.8710-1-digetx@gmail.com>
+ <20210817012754.8710-7-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <7843ce6b-92ae-7b6c-1fc-acb0ffe2bbc0@linux-m68k.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210817012754.8710-7-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/17/2021 5:54 PM, Finn Thain wrote:
-> On Tue, 17 Aug 2021, Nathan Chancellor wrote:
+On Tue, Aug 17, 2021 at 04:27:26AM +0300, Dmitry Osipenko wrote:
+> Document tegra-clocks sub-node which describes Tegra SoC clocks that
+> require a higher voltage of the core power domain in order to operate
+> properly on a higher clock rates.  Each node contains a phandle to OPP
+> table and power domain.
 > 
->> Clang + -Wimplicit-fallthrough warns:
->>
->> drivers/scsi/st.c:3831:2: warning: unannotated fall-through between
->> switch labels [-Wimplicit-fallthrough]
->>          default:
->>          ^
->> drivers/scsi/st.c:3831:2: note: insert 'break;' to avoid fall-through
->>          default:
->>          ^
->>          break;
->> 1 warning generated.
->>
->> Clang's -Wimplicit-fallthrough is a little bit more pedantic than GCC's,
->> requiring every case block to end in break, return, or fallthrough,
->> rather than allowing implicit fallthroughs to cases that just contain
->> break or return. Add a break so that there is no more warning, as has
->> been done all over the tree already.
->>
->> Fixes: 2e27f576abc6 ("scsi: scsi_ioctl: Call scsi_cmd_ioctl() from scsi_ioctl()")
->> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
->> ---
->>   drivers/scsi/st.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/scsi/st.c b/drivers/scsi/st.c
->> index 2d1b0594af69..0e36a36ed24d 100644
->> --- a/drivers/scsi/st.c
->> +++ b/drivers/scsi/st.c
->> @@ -3828,6 +3828,7 @@ static long st_ioctl(struct file *file, unsigned int cmd_in, unsigned long arg)
->>   	case CDROM_SEND_PACKET:
->>   		if (!capable(CAP_SYS_RAWIO))
->>   			return -EPERM;
->> +		break;
->>   	default:
->>   		break;
->>   	}
->>
->> base-commit: 58dd8f6e1cf8c47e81fbec9f47099772ab75278b
->>
+> The root PLLs and system clocks don't have any specific device dedicated
+> to them, clock controller is in charge of managing power for them.
 > 
-> Well, that sure is ugly.
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../bindings/clock/nvidia,tegra20-car.yaml    | 51 +++++++++++++++++++
+>  1 file changed, 51 insertions(+)
 > 
-> Do you think the following change would cause any static checkers to spit
-> their dummys and throw their toys out of the pram?
-> 
-> @@ -3828,6 +3828,7 @@ static long st_ioctl(struct file *file, unsigned int cmd_in, unsigned long arg)
->   	case CDROM_SEND_PACKET:
->   		if (!capable(CAP_SYS_RAWIO))
->   			return -EPERM;
-> +		break;
-> -	default:
-> -		break;
->   	}
->   	
+> diff --git a/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml b/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
+> index 459d2a525393..7f5cd27e4ce0 100644
+> --- a/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
+> +++ b/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
+> @@ -42,6 +42,48 @@ properties:
+>    "#reset-cells":
+>      const: 1
+>  
+> +  tegra-clocks:
+> +    description: child nodes are the output clocks from the CAR
+> +    type: object
+> +
+> +    patternProperties:
+> +      "^[a-z]+[0-9]+$":
+> +        type: object
+> +        properties:
+> +          compatible:
+> +            allOf:
+> +              - items:
+> +                  - enum:
+> +                      - nvidia,tegra20-sclk
+> +                      - nvidia,tegra30-sclk
+> +                      - nvidia,tegra30-pllc
+> +                      - nvidia,tegra30-plle
+> +                      - nvidia,tegra30-pllm
+> +              - const: nvidia,tegra-clock
 
-I cannot speak for other static checkers but clang does not complain in 
-this instance. cmd_in is the switch value, which is unsigned int; as far 
-as I am aware, clang will only complain about a switch not handling all 
-values when switching on an enumerated type.
+You are saying the first string must be both one of the enums and 
+'nvidia,tegra-clock'. You don't get an error because your pattern 
+doesn't match 'sclk'.
 
-Gustavo, if you are already handling all of the other warnings in -next, 
-do you want to take this one too?
+> +
+> +          operating-points-v2:
+> +            $ref: /schemas/types.yaml#/definitions/phandle
+> +            description:
+> +              Phandle to OPP table that contains frequencies, voltages and
+> +              opp-supported-hw property, which is a bitfield indicating
+> +              SoC process or speedo ID mask.
 
-Cheers,
-Nathan
+Just 'operating-points-v2: true' is enough.
+
+> +
+> +          clocks:
+> +            items:
+> +              - description: node's clock
+> +
+> +          power-domains:
+> +            maxItems: 1
+> +            description: phandle to the core SoC power domain
+> +
+> +        required:
+> +          - compatible
+> +          - operating-points-v2
+> +          - clocks
+> +          - power-domains
+> +
+> +        additionalProperties: false
+> +
+>  required:
+>    - compatible
+>    - reg
+> @@ -59,6 +101,15 @@ examples:
+>          reg = <0x60006000 0x1000>;
+>          #clock-cells = <1>;
+>          #reset-cells = <1>;
+> +
+> +        tegra-clocks {
+> +            sclk {
+> +                compatible = "nvidia,tegra20-sclk", "nvidia,tegra-clock";
+> +                operating-points-v2 = <&opp_table>;
+> +                clocks = <&tegra_car TEGRA20_CLK_SCLK>;
+> +                power-domains = <&domain>;
+> +            };
+> +        };
+>      };
+>  
+>      usb-controller@c5004000 {
+> -- 
+> 2.32.0
+> 
+> 
