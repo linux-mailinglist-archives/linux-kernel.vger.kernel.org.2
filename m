@@ -2,138 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A600B3EF7EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 04:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1EE3EF7F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 04:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236543AbhHRCIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 22:08:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233920AbhHRCH5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 22:07:57 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B294C061764;
-        Tue, 17 Aug 2021 19:07:23 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id w4so644021ljh.13;
-        Tue, 17 Aug 2021 19:07:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZdWGOBRulL4VUr2nkxtGmp68zHpJN18S3Cy3ExunZB8=;
-        b=ZbJ4H3eCNv1Bvw3hVzD9YPDeNyOTQ/GmXBdTT71urRvt/nxoTwLH1fzA/K6qn+n13V
-         EMyJFOcQBAXmK3unujC0pekGKV+GhAYdJyvRHdQzj7rWIPi7xVLg/WMJcPcQ5PirKj3r
-         mCWcJAQa780CvmoxoDAaM90aUyQvNJACNApvjKFPAAm9WwsGGlEyD1f2fvSTTM9fYxeK
-         t5Z+FLcqvZcqhqpvPAUYUBL8uyZLNwpVWq6XOlWr029EcHcHjhy6C69qNnGWOe53OGMD
-         UD0ZHK+jZlCvKxlNNnLY/8mNCqP91QRuXBKGfyt7TpkAkHcvIpzE8oPTRJStoeU2i7/F
-         OFxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZdWGOBRulL4VUr2nkxtGmp68zHpJN18S3Cy3ExunZB8=;
-        b=IJviccCdFwT+KoMnlqEoCg7Us869jV85n22YQtA5Q6ILVQHVn8KYbaRjYw8/Mjalk3
-         HnlJMj5bEc2bcJaw4KKYg1fdCbnBDpen0uV4fP7tWMpuEeT965SG1QPqTJE6dUmqF6g/
-         ffZsl6Li5SVd7hxfENwsSEVONMOgQE05s6XUtJMDutlyFTSeKXd6H6Jy6ukS8TBB/6tz
-         P7Jjrj84BjD+JL7elTiMq3UamdI/YV/k/JZG8iDTl23xcxBm8ygOEMPXIdUSFjR3qkaj
-         0na7JQCzWoRDQtGyQeN4dgPbbXem0n+2wE186Uhj1KoFciI8RY7TyPVdgd91+ALMfRsi
-         G/3w==
-X-Gm-Message-State: AOAM530a5pyWArEVjR7lkY62q30zaHyZOABlML5OeI6Yv5PjjiXxTVKa
-        EDQXD6+pnadARhzmF8/pXayny/RpQHI=
-X-Google-Smtp-Source: ABdhPJxciZnUMzd7GVFJFA8FMA0hGtsUp4JHBzMUe6n55lLwaZhk7ErG9OStqzAcGbzrvom9TXW02A==
-X-Received: by 2002:a2e:9256:: with SMTP id v22mr5752535ljg.150.1629252441273;
-        Tue, 17 Aug 2021 19:07:21 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-85-91.dynamic.spd-mgts.ru. [46.138.85.91])
-        by smtp.googlemail.com with ESMTPSA id 27sm353157lfz.146.2021.08.17.19.07.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Aug 2021 19:07:20 -0700 (PDT)
-Subject: Re: [PATCH v8 09/34] dt-bindings: host1x: Document Memory Client
- resets of Host1x, GR2D and GR3D
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20210817012754.8710-1-digetx@gmail.com>
- <20210817012754.8710-10-digetx@gmail.com>
- <YRxfWJJ6+1GgVs33@robh.at.kernel.org>
- <fa9a1fb7-8a87-de1a-e40a-fdc4f4d05d57@gmail.com>
- <9deced25-b184-7b5b-cebf-0ad82bd959db@gmail.com>
-Message-ID: <7f35b432-d113-99fa-88ca-20601ccf7e04@gmail.com>
-Date:   Wed, 18 Aug 2021 05:07:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S236518AbhHRCKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 22:10:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233380AbhHRCK0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 22:10:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AC4F60F5E;
+        Wed, 18 Aug 2021 02:09:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629252592;
+        bh=B15pn2XunpVBloy8qLk8GOdp/fRGBs/dMCBl1c1wvW8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HuBUUoZEtHR8q3eIHhlcYOMaxVYN9EtN5/AnsOeRV7mlH1f3r4Nz5Ka5dQpaVrr7f
+         AzEuFy1vbDUheHR+mm3qjkfrCzg9oclx9Sbc2tfkAlxLEFIUnPkRRhMUpwipNFBN3B
+         y751zJkymZ/G6drWdcxb+8ixCgP29n0XLQIX1azSirCxo7Z/oDqBRKWV3xTgNFK6dk
+         VCkItm1/os96sMi5D3/7K5HqrOD50nuI00r6bWq/s1XyqhWnIRWW8NZjhw5PvNg7i6
+         GbDirjDIVLcodJ3YerbdyN/5Y436Zu3NzcajsGgBRXWkhw3TPkYbfRwn1rysZJyN4P
+         9N6z4Z09XR3RQ==
+Date:   Wed, 18 Aug 2021 05:09:50 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel@pengutronix.de,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        David Howells <dhowells@redhat.com>,
+        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] fscrypt: support trusted keys
+Message-ID: <20210818020950.GA23184@iki.fi>
+References: <20210810212140.sdq5dq2wy5uaj7h7@kernel.org>
+ <YRLvPJehAeMiYb2Z@gmail.com>
+ <20210811001743.ofzkwdwa6rcjsf4d@kernel.org>
+ <d4f5c2593380c82ceebae2c8782a1c440b35f165.camel@linux.ibm.com>
+ <YRQF09f8st95yrFZ@gmail.com>
+ <0e69a0aa394dd20347b06ae4e700aa17d52583ef.camel@linux.ibm.com>
+ <a6eb6f38-b9f4-c59c-4181-2049f181e67d@pengutronix.de>
+ <285cb263d9c1c16f3918c98dd36074ef16568e6d.camel@linux.ibm.com>
+ <b77836af-42a1-5aca-9363-d050352bd8aa@pengutronix.de>
+ <f4264f0a83c1b080ad2a22d63ecf1fcca87dfebb.camel@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <9deced25-b184-7b5b-cebf-0ad82bd959db@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f4264f0a83c1b080ad2a22d63ecf1fcca87dfebb.camel@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-18.08.2021 05:04, Dmitry Osipenko пишет:
-> 18.08.2021 04:37, Dmitry Osipenko пишет:
->> 18.08.2021 04:16, Rob Herring пишет:
->>> On Tue, Aug 17, 2021 at 04:27:29AM +0300, Dmitry Osipenko wrote:
->>>> Memory Client should be blocked before hardware reset is asserted in order
->>>> to prevent memory corruption and hanging of memory controller.
->>>>
->>>> Document Memory Client resets of Host1x, GR2D and GR3D hardware units.
->>>>
->>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>>> ---
->>>>  .../bindings/display/tegra/nvidia,tegra20-host1x.txt          | 4 ++++
->>>>  1 file changed, 4 insertions(+)
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt b/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt
->>>> index 62861a8fb5c6..07a08653798b 100644
->>>> --- a/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt
->>>> +++ b/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt
->>>> @@ -18,6 +18,7 @@ Required properties:
->>>>  - resets: Must contain an entry for each entry in reset-names.
->>>>    See ../reset/reset.txt for details.
->>>>  - reset-names: Must include the following entries:
->>>> +  - mc
->>>>    - host1x
->>>
->>> New entries should be at the end. Order matters.
->>
->> Indeed, order matters. In this case it matters by the hardware because
->> memory reset must be asserted before the controller's reset. We rely on
->> it in the code of the GENPD driver. Hence it's the intended order in
->> this patch.
->>
+On Tue, Aug 17, 2021 at 10:24:44AM -0400, Mimi Zohar wrote:
+> On Tue, 2021-08-17 at 16:13 +0200, Ahmad Fatoum wrote:
+> > On 17.08.21 15:55, Mimi Zohar wrote:
+> > > I have no opinion as to whether this is/isn't a valid usecase.
+> > 
+> > So you'd be fine with merging trusted key support as is and leave encrypted
+> > key support to someone who has a valid use case and wants to argue
+> > in its favor?
 > 
-> Although, my bad. It should be to reorder items here, it's not a GENPD
-> binding.
-> 
+> That decision as to whether it makes sense to support trusted keys
+> directly, based on the new trust sources, is a decision left up to the
+> maintainer(s) of the new usecase and the new trust sources maintainer
+> Jarkko.
 
-* should be fine
+I'm fine with "direct", as long as also "indirect" is supported.
 
-I'll change it in v9.
+/Jarkko
