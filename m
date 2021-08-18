@@ -2,156 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9693F0EB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 01:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3643F0EB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 01:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235017AbhHRXjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 19:39:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234889AbhHRXjv (ORCPT
+        id S234949AbhHRXmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 19:42:33 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:57505 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232885AbhHRXma (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 19:39:51 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99176C061764;
-        Wed, 18 Aug 2021 16:39:15 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GqkrH2g1Dz9sCD;
-        Thu, 19 Aug 2021 09:39:11 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629329951;
-        bh=kKEePCdpnsgLL0cYj2Gl6xKm6IynRHinLW/FV1ku9UA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=iSX2uVw43RnKTCXWriXrPgz2oSpc6j2UvBSqm99Vhy88cqJPveNooJAreDR3LLKBP
-         o/E7QKRFY1ovRESGPw3iH+FPqCrkWKX+yVupMnD2BSYhpC72pGipMN1QQf3hynjzni
-         K/gg06BhE8Flmcy7FIv08MDZNQ4eSTjDNmaYeI4hii2NK+lF+O0ZRDrsFIS4r0xqse
-         PvEnRf6KLxn/Fw3GwPOua7mOGu97haKebf6jjlvOP8NvrfOfJ4nVTuCz3Itk5Cfzmo
-         Xp7TPH91F/ZcS+fcjlWJGobdADMP8FsEe35SsBT30xe5qU3TPQqhdjF0fkGes4Y5+i
-         NLC87EoTUtISg==
-Date:   Thu, 19 Aug 2021 09:39:10 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the overlayfs tree
-Message-ID: <20210819093910.55f96720@canb.auug.org.au>
+        Wed, 18 Aug 2021 19:42:30 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 6E4CE580E03;
+        Wed, 18 Aug 2021 19:41:54 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 18 Aug 2021 19:41:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=hFvEoVWwSCuTh+jP7I60pj2evE
+        WcEGXz9qnhOKOKqxA=; b=W1xshOxYDoRTbnyH9NBniCWY7B8A6XItrnkOCFACma
+        DPEGYs8iDPiqiXCmMEQFmNz3IsYSQk90qnW7Mph/lQ3wUqraVYc/GLus65gsZhqV
+        t9Kvs92F11oBWhrNB7OEEmCsGHacKEIr9+dCc6sK8bZQK4+5N+LTp5PN+SX4gLYn
+        0ut164v925TzszwGO3MI9DAGB/jhnRBH8midGMDSLa6wzwWGcziXjCXxu+dTgvp5
+        z5qZg4PHK/F+LjiARFtvBeKtpOUxgXTYuy76ifggKcFjJPy5+TeLBXRmAwP1zAZr
+        993OZEBvckT+3Nd9VsLwuplSM97mwCcnZMYiiyIdU3Pg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=hFvEoVWwSCuTh+jP7
+        I60pj2evEWcEGXz9qnhOKOKqxA=; b=jJn9P1bERLvQZT2LKLfRgx9qd2+NW0pZ0
+        MDahjBQ5iejDast4AzcnHBUsaECFdqMKnWJ7bj54UNZ0RjgLLHOOsCPzwVTnrCmp
+        AxpZUX4FEOFzB5IitXqnnPEpacRdSQsVDAQ8+TQTUNoSfMrX3H6pMMRLzqte5GSC
+        tVU8I5AUbBiG/EPsPvQcYIQGCnf9ExhWsro+b9MeWSmiDhxL+Zp5kkiYqOyedrIw
+        +k5ff2wgnb/wtDcuwvlxkfk8QXteOXd8XWj/vmHlKVlvzSoOdtNe+doUOiQA4Ca3
+        mDchsAFoqpgMfQttGUgbrhXdb6gsY2M64H7BrR6e1CX7hXNZ9Icuw==
+X-ME-Sender: <xms:wZodYR-mqycKHd_EKdDh4upWtv5WRPTG5peBrq8K3Ckthqy8MroCwQ>
+    <xme:wZodYVux32lO_cF5TFgVNypMZBwDMWOF2ov_aH3bgykluu8VrHZ4OkiqLMw811VAp
+    1mIY1o2TOv_U5DQXA>
+X-ME-Received: <xmr:wZodYfCd2m4JVpkKfzn5oc63V4SXX4YVUrud0xg56uAWl4unDWAtcfzIpy6SEY9wBiqJ2tg2i-V8Hhflnc8pcpTiCIIJ5pGYTmj3iA2pnnI5dg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleeigddvgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecufghrlhcuvffnffculddvfedmnegovehorghsthgrlh
+    dqhfeguddvqddtvdculdduhedtmdenucfjughrpefhvffufffkofgggfestdekredtredt
+    tdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqeenuc
+    ggtffrrghtthgvrhhnpeefgeehudeljeegueeguedvgeeuveelieetudffgfdvkeelheek
+    vdejfffhfeefjeenucffohhmrghinheplhhkmhhlrdhorhhgpdhgihhthhhusgdrtghomh
+    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihu
+    segugihuuhhurdighiii
+X-ME-Proxy: <xmx:wZodYVdLHpsBwesXnwKl_sRHF1BPwy0GFKZSXPb7-AhQ71eCucjQIA>
+    <xmx:wZodYWMCDmZAaVXwOhq2FrPnVyzQUbdBGqVKBOYcMg_6UW0AsnH-HQ>
+    <xmx:wZodYXmSRpiTzs0qZ2Z3g7AH3EvXdLXvXzPPzHPhmw8dV5jFCL1Alw>
+    <xmx:wpodYTqqrbxRjq1cIgDXXTpZGof2wGgZ2SWwKoe8VEzW2HTOxhGVWg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 18 Aug 2021 19:41:53 -0400 (EDT)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     bpf@vger.kernel.org, yhs@fb.com, andriin@fb.com
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, kernel-team@fb.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next 0/2] Add bpf_task_pt_regs() helper
+Date:   Wed, 18 Aug 2021 16:41:40 -0700
+Message-Id: <cover.1629329560.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/tZ.8Jlv1y24eJx6I72QWSVh";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/tZ.8Jlv1y24eJx6I72QWSVh
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The motivation behind this helper is to access userspace pt_regs in a
+kprobe handler.
 
-Hi all,
+uprobe's ctx is the userspace pt_regs. kprobe's ctx is the kernelspace
+pt_regs. bpf_task_pt_regs() allows accessing userspace pt_regs in a
+kprobe handler. The final case (kernelspace pt_regs in uprobe) is
+pretty rare (usermode helper) so I think that can be solved later if
+necessary.
 
-After merging the overlayfs tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+More concretely, this helper is useful in doing BPF-based DWARF stack
+unwinding. Currently the kernel can only do framepointer based stack
+unwinds for userspace code. This is because the DWARF state machines are
+too fragile to be computed in kernelspace [0]. The idea behind
+DWARF-based stack unwinds w/ BPF is to copy a chunk of the userspace
+stack (while in prog context) and send it up to userspace for unwinding
+(probably with libunwind) [1]. This would effectively enable profiling
+applications with -fomit-frame-pointer using kprobes and uprobes.
 
-fs/ntfs3/file.c:1231:13: error: initialization of 'struct posix_acl * (*)(s=
-truct inode *, int,  bool)' {aka 'struct posix_acl * (*)(struct inode *, in=
-t,  _Bool)'} from incompatible pointer type 'struct posix_acl * (*)(struct =
-inode *, int)' [-Werror=3Dincompatible-pointer-types]
- 1231 |  .get_acl =3D ntfs_get_acl,
-      |             ^~~~~~~~~~~~
-fs/ntfs3/file.c:1231:13: note: (near initialization for 'ntfs_file_inode_op=
-erations.get_acl')
+[0]: https://lkml.org/lkml/2012/2/10/356
+[1]: https://github.com/danobi/bpf-dwarf-walk
 
-Caused by commit
+Daniel Xu (2):
+  bpf: Add bpf_task_pt_regs() helper
+  bpf: selftests: Add bpf_task_pt_regs() selftest
 
-  0cad6246621b ("vfs: add rcu argument to ->get_acl() callback")
+ include/uapi/linux/bpf.h                      |  7 +++
+ kernel/trace/bpf_trace.c                      | 20 ++++++++
+ tools/include/uapi/linux/bpf.h                |  7 +++
+ .../selftests/bpf/prog_tests/task_pt_regs.c   | 50 +++++++++++++++++++
+ .../selftests/bpf/progs/test_task_pt_regs.c   | 29 +++++++++++
+ 5 files changed, 113 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/task_pt_regs.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_task_pt_regs.c
 
-interacting with commits
-
-  4534a70b7056 ("fs/ntfs3: Add headers and misc files")
-  82cae269cfa9 ("fs/ntfs3: Add initialization of super block")
-  4342306f0f0d ("fs/ntfs3: Add file operations and implementation")
-
-from the ntfs3 tree.
-
-I have added the following merge resolution patch.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Thu, 19 Aug 2021 09:31:21 +1000
-Subject: [PATCH] ntfs3: fix up for "vfs: add rcu argument to ->get_acl() ca=
-llback"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- fs/ntfs3/ntfs_fs.h | 2 +-
- fs/ntfs3/xattr.c   | 7 +++++--
- 2 files changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
-index 0c3ac89c3115..a0655b8b7be1 100644
---- a/fs/ntfs3/ntfs_fs.h
-+++ b/fs/ntfs3/ntfs_fs.h
-@@ -787,7 +787,7 @@ int ntfs_cmp_names_cpu(const struct cpu_str *uni1, cons=
-t struct le_str *uni2,
-=20
- /* globals from xattr.c */
- #ifdef CONFIG_NTFS3_FS_POSIX_ACL
--struct posix_acl *ntfs_get_acl(struct inode *inode, int type);
-+struct posix_acl *ntfs_get_acl(struct inode *inode, int type, bool rcu);
- int ntfs_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
- 		 struct posix_acl *acl, int type);
- int ntfs_init_acl(struct user_namespace *mnt_userns, struct inode *inode,
-diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
-index 98871c895e77..9239c388050e 100644
---- a/fs/ntfs3/xattr.c
-+++ b/fs/ntfs3/xattr.c
-@@ -539,8 +539,11 @@ static struct posix_acl *ntfs_get_acl_ex(struct user_n=
-amespace *mnt_userns,
-  *
-  * inode_operations::get_acl
-  */
--struct posix_acl *ntfs_get_acl(struct inode *inode, int type)
-+struct posix_acl *ntfs_get_acl(struct inode *inode, int type, bool rcu)
- {
-+	if (rcu)
-+		return ERR_PTR(-ECHILD);
-+
- 	/* TODO: init_user_ns? */
- 	return ntfs_get_acl_ex(&init_user_ns, inode, type, 0);
- }
-@@ -640,7 +643,7 @@ static int ntfs_xattr_get_acl(struct user_namespace *mn=
-t_userns,
- 	if (!(inode->i_sb->s_flags & SB_POSIXACL))
- 		return -EOPNOTSUPP;
-=20
--	acl =3D ntfs_get_acl(inode, type);
-+	acl =3D ntfs_get_acl(inode, type, false);
- 	if (IS_ERR(acl))
- 		return PTR_ERR(acl);
-=20
---=20
+-- 
 2.32.0
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/tZ.8Jlv1y24eJx6I72QWSVh
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEdmh4ACgkQAVBC80lX
-0GyR1wf/fTDmlk70M++s983WWXSug6CxcjOYauA/Z1xx5njKGwLEi24QDtskYI4H
-z0Fedr/A69x9yMAWKLsOz6ewcrltK8shDZEKURKYz0DvATwJAYVN/R8erIBpj52D
-ZD/ON89DRj9WCXrnmpEDEMWZFMs4oJ5iDjd3eXAHOJfDOhWgNe0YYxmPRTKtDGO/
-O1jOp+rRHo7rt+p4K5Gz7+9iPUrgC23VxBhr+VWtHPkovOpn9TA4Znl+DWyBSuwC
-EHVS3NL5pJpcgsK6xQktTfAiV3lgSf30tgBI1jf1DFG1h0kEvjCsM2KO45knAmfT
-QEdG5MQXZ+MUg3GKWz2fxkzqv/0Xbw==
-=S0dB
------END PGP SIGNATURE-----
-
---Sig_/tZ.8Jlv1y24eJx6I72QWSVh--
