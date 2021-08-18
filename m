@@ -2,103 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3BC33EFF57
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347153EFF62
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239225AbhHRIiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 04:38:46 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:19281 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237883AbhHRIim (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 04:38:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1629275889; x=1660811889;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=Cs2eoNXPps/j86YzVA6CeH9OzMSl/g0AtoxGtzsYxzY=;
-  b=qSapbQxehzaU32dJowTQiT9U5GMy1Wr/Wm99Ww4jPUbNgboz3Q6i9sRU
-   M3T48yGXJWEUnzClJfY6llfwzINb++3ADoPka39soto670rtKrRl3Pmy+
-   l08f/KN4DebOwXOq7TkM8UGxN2ykxof1Ll+lBfkVac4MJUYAzCPA6Rkxu
-   E=;
-X-IronPort-AV: E=Sophos;i="5.84,330,1620691200"; 
-   d="scan'208";a="134675497"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-6001.iad6.amazon.com with ESMTP; 18 Aug 2021 08:38:01 +0000
-Received: from EX13D19EUB003.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com (Postfix) with ESMTPS id E0809A299E;
-        Wed, 18 Aug 2021 08:37:56 +0000 (UTC)
-Received: from 8c85908914bf.ant.amazon.com (10.43.160.90) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Wed, 18 Aug 2021 08:37:49 +0000
-Subject: Re: [RFC] Make use of non-dynamic dmabuf in RDMA
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-CC:     <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@habana.ai>,
-        Tomer Tayar <ttayar@habana.ai>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jianxin Xiong <jianxin.xiong@intel.com>
-References: <20210818074352.29950-1-galpress@amazon.com>
- <3abaef49-2733-8b5e-3eaa-662a2a57b96e@amd.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <01573693-cf7a-a160-2f60-5049dfba1ecd@amazon.com>
-Date:   Wed, 18 Aug 2021 11:37:31 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        id S239218AbhHRIkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 04:40:19 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:52414 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238656AbhHRIkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 04:40:17 -0400
+Received: from zn.tnic (p4fed307d.dip0.t-ipconnect.de [79.237.48.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 53A0F1EC0345;
+        Wed, 18 Aug 2021 10:39:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1629275976;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=VasVNSq4gd8Mrv+rRUUXRrEVEG/zyKOK8zOsDpdUhA8=;
+        b=Yrf4DQSz1/Vx2Gs6IIl5JsuKogIzqVeNQM7uiItJdpRnZBiF1pa9OewR6hash59iHTyvuW
+        NlE3QFjxjGpIundXvTH8IGvM2keM7D/CG56+sCJfBFGVi6HGCnCfl5/XY3BQ1N8M9Tjvy+
+        L9OFtzimJdaNb10F0huQNz0MMJecjlM=
+Date:   Wed, 18 Aug 2021 10:38:04 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part1 RFC v4 20/36] x86/sev: Use SEV-SNP AP creation to
+ start secondary CPUs
+Message-ID: <YRzG7OcnbQpz7uok@zn.tnic>
+References: <20210707181506.30489-1-brijesh.singh@amd.com>
+ <20210707181506.30489-21-brijesh.singh@amd.com>
+ <YRwWSizr/xoWXivV@zn.tnic>
+ <35b57719-5f31-c71a-7a2f-d34f6e239d26@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <3abaef49-2733-8b5e-3eaa-662a2a57b96e@amd.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.43.160.90]
-X-ClientProxiedBy: EX13D42UWB003.ant.amazon.com (10.43.161.45) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <35b57719-5f31-c71a-7a2f-d34f6e239d26@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/08/2021 11:00, Christian König wrote:
-> Am 18.08.21 um 09:43 schrieb Gal Pressman:
->> Hey all,
->>
->> Currently, the RDMA subsystem can only work with dynamic dmabuf
->> attachments, which requires the RDMA device to support on-demand-paging
->> (ODP) which is not common on most devices (only supported by mlx5).
->>
->> While the dynamic requirement makes sense for certain GPUs, some devices
->> (such as habanalabs) have device memory that is always "pinned" and do
->> not need/use the move_notify operation.
->>
->> The motivation of this RFC is to use habanalabs as the dmabuf exporter,
->> and EFA as the importer to allow for peer2peer access through libibverbs.
->>
->> This draft patch changes the dmabuf driver to differentiate between
->> static/dynamic attachments by looking at the move_notify op instead of
->> the importer_ops struct, and allowing the peer2peer flag to be enabled
->> in case of a static exporter.
-> 
-> Well NAK to the general approach, this can be solved much easier.
-> 
-> If you can't support dynamic moves while using the buffer then just pin all
-> buffers during import/export.
-> 
-> This avoids the move notification and the framework/exporter can still correctly
-> account for pinned buffers.
-> 
-> But please note that at least amdgpu never uses P2P support for pinned buffers
-> since we want to avoid that unmoveable buffers clutter video memory and create
-> conflicts with V4L and scanout.
-> 
-> If you don't have such concerns in habanalabs then you can implement the pinning
-> there while keeping P2P still enabled.
-Thanks Christian!
+On Tue, Aug 17, 2021 at 05:13:54PM -0500, Tom Lendacky wrote:
+> Well, yes and no. It really is just setting or clearing the VMSA page
+> attribute. It isn't trying to update permissions for the lower VMPLs, so I
+> didn't want to mislabel it as a general rmpadjust function. But it's a
+> simple enough thing to change and if multiple VMPL levels are ever
+> supported it can be evaluated at that time.
 
-Are you suggesting to pass an empty move_notify callback instead of passing NULL?
-Also, doesn't the pin operation move the memory from the device to host memory?
+You got it - when we need more RMPADJUST functionality, then that should
+be the function that gets the beefing up.
+
+:-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
