@@ -2,141 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7B43F09F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5D93F0A00
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231977AbhHRRLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 13:11:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60236 "EHLO
+        id S232404AbhHRRLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 13:11:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230116AbhHRRLh (ORCPT
+        with ESMTP id S229889AbhHRRLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 13:11:37 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA1D2C0613D9
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 10:11:02 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id t42so227084pfg.12
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 10:11:02 -0700 (PDT)
+        Wed, 18 Aug 2021 13:11:42 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A168FC061764;
+        Wed, 18 Aug 2021 10:11:06 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id i28so6143423lfl.2;
+        Wed, 18 Aug 2021 10:11:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a0h+TEUN+dwMuxMWfVo3bvlWUMIfpZXCfROxPjF14kk=;
-        b=jDsABRYgBIIzrUssvhLgBVDGZE0Cf22oHKeXq227eBIsN2vBP9YrH/iXeV5oktQ1wT
-         MDOsGDHaFL+mNosGVecwy6VMOUWLYny6ZrO/00J9/0F759bmWDSQCihcQ1MjVA6f2xpW
-         agQZlkMoQK959gPQ5CKqAi/+MkBvk1YivITLoknQj4KYHgw74XQDL3qjxl4tpMYtvejl
-         tjRH2ZHWo1jP3P4njwM94m2JVxmh0FimSMyqzoyCdqqIzO7Fa/CCjv5bEHYm7vMOipfO
-         eYkEZ7cUvaJCVuf2qCApHQrS9TcUMGKlSKOzom110bFoLwum/gYX12zdGlb04yShzMrm
-         KAsA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jqE9ClhGb0c32X3v7BncGGF0woKsX2XgQIGx9qgWIH0=;
+        b=pzxMEO2UMuT/mHPfPLSjCbX3ZOkDKV6nZIXJP5/zPjCNpAmYvVuFYDC5xhuzIXGAng
+         k06Q5T/VtECFuIzWKjrForzIl4lzYGT5926+k7EPC9XdDRz2131oKSvSnQpNDCIjUZeV
+         vAmDMRNzl3coOfWSZz4CU+fD10VCYBpA5I6tzFaCdMPL/E4hBdGPJ8T64iETHNj36g5/
+         4Zr7nRwBnt0A/FIqmj1kKX08k9xT8d+vmEYX1QK+8VovTTlsqt2R6xS22Go2zElhhlPR
+         euQHMQkRAQQ2VSVWBb0NpqmpPCycMssSiywU+Zr1oEUGDcugw9A5VFVSxFxuj21XbpAw
+         m+bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a0h+TEUN+dwMuxMWfVo3bvlWUMIfpZXCfROxPjF14kk=;
-        b=iROz2uOVo/ZgOVpHvpBobNa9Y0mmwGEcmxdBOdNzDybrPdI73Ga0qnxtwY3BNjWUq7
-         tJOGWyew91tV9yUxvlcZFBL9EMo7Zmx50nlttYqn5u48YQNwAXa2AS+EDFLoXoittiJP
-         3X4sxKQa2X2jnYlpIHRbItLoj7lvaf2Po2qzIFgcx8R5/xaEspxoeX0W4BgjMvIBaicq
-         l2Y5JdXrM3Qn73kj6QjdbouXi+dXunIaEFWsW1DQ2r2WfbbHJpwn5qZdAE9h/c1Ex/wH
-         ZsWCbCnJ/oh8sj2lbtuZi3qW41JzZ561q5ulOwsaiynWuo1bCynNP6YxtAwViIIjHAXx
-         Nk8g==
-X-Gm-Message-State: AOAM5312cODjQj86yZfXBx/MI7zUeJdnqgb9Mk3OnkxGw247pknjpfNu
-        npvTRlW/LeHhjz9tSzxqiZes7c5cjuo8+Q4QEv4t6g==
-X-Google-Smtp-Source: ABdhPJzdnb/dj0te4AmEpXNnOuagyYA3beOwcj2486U3TAeBRF2kxocNgKDFE/I3ReZg4NnJJpeR0A7dwtzSQubN+nk=
-X-Received: by 2002:a05:6a00:16c6:b029:32d:e190:9dd0 with SMTP id
- l6-20020a056a0016c6b029032de1909dd0mr10326420pfc.70.1629306662392; Wed, 18
- Aug 2021 10:11:02 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jqE9ClhGb0c32X3v7BncGGF0woKsX2XgQIGx9qgWIH0=;
+        b=dGzsMHHXKiSmbMVeU78bpMPsi6QTWsLew0z0frcF/rj/GTaJLcOrujiRz6f8/LnUck
+         GBMpgmcciF07Z9A/OXBDwEl1EhBR8dzZW+4ue2v7LrWhLbi5M7Yv0zx9ZCyqg9YAHIk4
+         tMt6sNVxAeBbJNmloJZW++hqVxHNsWAKNZQpnPiKRY1knj+8na7jbJfYSyXBvvh5Zr8B
+         3p67VoLf9a7To+/JnU4nVp0tdLfiHaTef/C1wsQ4AlLOW2q1sdH7zTQFuZJqXaaw5Bwx
+         D3/JXQbi5RpfhfdFUB+eH1SkbhXr+td1ULLNXq3ur/N6VTuuSUW7e1m9NuLvvYTjaO+n
+         tcjg==
+X-Gm-Message-State: AOAM532rB1TBMhMEh0k2nz8PmrZstJcq7N1Y1t4/P7DkYGhVhI7gjdAV
+        oD9LXBhkOFxQUVwtuS3Tt1IAVJjOVGA=
+X-Google-Smtp-Source: ABdhPJx8mXn6y5y5nU5HWp3Gqd9IJG4zaBOIqyrwTbYskADisL9LhAfipeaTsyrerunkulv/neb4gw==
+X-Received: by 2002:a05:6512:2149:: with SMTP id s9mr6957434lfr.365.1629306664851;
+        Wed, 18 Aug 2021 10:11:04 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-85-91.dynamic.spd-mgts.ru. [46.138.85.91])
+        by smtp.googlemail.com with ESMTPSA id x191sm25857lff.29.2021.08.18.10.11.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Aug 2021 10:11:04 -0700 (PDT)
+Subject: Re: [PATCH v8 07/34] clk: tegra: Support runtime PM and power domain
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20210817012754.8710-1-digetx@gmail.com>
+ <20210817012754.8710-8-digetx@gmail.com> <YR0UBi/ejy+oF4Hm@orome.fritz.box>
+ <da7356cb-05ee-ba84-8a7c-6e69d853a805@gmail.com>
+ <YR04YHGEluqLIZeo@orome.fritz.box>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <ad99db08-4696-1636-5829-5260f93dc681@gmail.com>
+Date:   Wed, 18 Aug 2021 20:11:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210730100158.3117319-1-ruansy.fnst@fujitsu.com>
- <20210730100158.3117319-2-ruansy.fnst@fujitsu.com> <1d286104-28f4-d442-efed-4344eb8fa5a1@oracle.com>
- <de19af2a-e9e6-0d43-8b14-c13b9ec38a9d@oracle.com> <beee643c-0fd9-b0f7-5330-0d64bde499d3@oracle.com>
- <78c22960-3f6d-8e5d-890a-72915236bedc@oracle.com> <OSBPR01MB2920AD0C7FD02E238D0C387AF4FF9@OSBPR01MB2920.jpnprd01.prod.outlook.com>
-In-Reply-To: <OSBPR01MB2920AD0C7FD02E238D0C387AF4FF9@OSBPR01MB2920.jpnprd01.prod.outlook.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 18 Aug 2021 10:10:51 -0700
-Message-ID: <CAPcyv4gS=sYbC3gzMN0uQ5SAhDJ8CAC81tz7AtMueqLfuzGDOw@mail.gmail.com>
-Subject: Re: [PATCH RESEND v6 1/9] pagemap: Introduce ->memory_failure()
-To:     "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>
-Cc:     Jane Chu <jane.chu@oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "hch@lst.de" <hch@lst.de>, "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YR04YHGEluqLIZeo@orome.fritz.box>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 12:52 AM ruansy.fnst@fujitsu.com
-<ruansy.fnst@fujitsu.com> wrote:
->
->
->
-> > -----Original Message-----
-> > From: Jane Chu <jane.chu@oracle.com>
-> > Subject: Re: [PATCH RESEND v6 1/9] pagemap: Introduce ->memory_failure()
-> >
-> >
-> > On 8/17/2021 10:43 PM, Jane Chu wrote:
-> > > More information -
-> > >
-> > > On 8/16/2021 10:20 AM, Jane Chu wrote:
-> > >> Hi, ShiYang,
-> > >>
-> > >> So I applied the v6 patch series to my 5.14-rc3 as it's what you
-> > >> indicated is what v6 was based at, and injected a hardware poison.
-> > >>
-> > >> I'm seeing the same problem that was reported a while ago after the
-> > >> poison was consumed - in the SIGBUS payload, the si_addr is missing:
-> > >>
-> > >> ** SIGBUS(7): canjmp=1, whichstep=0, **
-> > >> ** si_addr(0x(nil)), si_lsb(0xC), si_code(0x4, BUS_MCEERR_AR) **
-> > >>
-> > >> The si_addr ought to be 0x7f6568000000 - the vaddr of the first page
-> > >> in this case.
-> > >
-> > > The failure came from here :
-> > >
-> > > [PATCH RESEND v6 6/9] xfs: Implement ->notify_failure() for XFS
-> > >
-> > > +static int
-> > > +xfs_dax_notify_failure(
-> > > ...
-> > > +    if (!xfs_sb_version_hasrmapbt(&mp->m_sb)) {
-> > > +        xfs_warn(mp, "notify_failure() needs rmapbt enabled!");
-> > > +        return -EOPNOTSUPP;
-> > > +    }
-> > >
-> > > I am not familiar with XFS, but I have a few questions I hope to get
-> > > answers -
-> > >
-> > > 1) What does it take and cost to make
-> > >     xfs_sb_version_hasrmapbt(&mp->m_sb) to return true?
->
-> Enable rmpabt feature when making xfs filesystem
->    `mkfs.xfs -m rmapbt=1 /path/to/device`
-> BTW, reflink is enabled by default.
->
-> > >
-> > > 2) For a running environment that fails the above check, is it
-> > >     okay to leave the poison handle in limbo and why?
-> It will fall back to the old handler.  I think you have already known it.
->
-> > >
-> > > 3) If the above regression is not acceptable, any potential remedy?
-> >
-> > How about moving the check to prior to the notifier registration?
-> > And register only if the check is passed?  This seems better than an
-> > alternative which is to fall back to the legacy memory_failure handling in case
-> > the filesystem returns -EOPNOTSUPP.
->
-> Sounds like a nice solution.  I think I can add an is_notify_supported() interface in dax_holder_ops and check it when register dax_holder.
+18.08.2021 19:42, Thierry Reding пишет:
+> On Wed, Aug 18, 2021 at 06:05:21PM +0300, Dmitry Osipenko wrote:
+>> 18.08.2021 17:07, Thierry Reding пишет:
+>>> On Tue, Aug 17, 2021 at 04:27:27AM +0300, Dmitry Osipenko wrote:
+>>> [...]
+>>>> +struct clk *tegra_clk_register(struct clk_hw *hw)
+>>>> +{
+>>>> +	struct platform_device *pdev;
+>>>> +	struct device *dev = NULL;
+>>>> +	struct device_node *np;
+>>>> +	const char *dev_name;
+>>>> +
+>>>> +	np = tegra_clk_get_of_node(hw);
+>>>> +
+>>>> +	if (!of_device_is_available(np))
+>>>> +		goto put_node;
+>>>> +
+>>>> +	dev_name = kasprintf(GFP_KERNEL, "tegra_clk_%s", hw->init->name);
+>>>> +	if (!dev_name)
+>>>> +		goto put_node;
+>>>> +
+>>>> +	pdev = of_platform_device_create(np, dev_name, NULL);
+>>>> +	if (!pdev) {
+>>>> +		pr_err("%s: failed to create device for %pOF\n", __func__, np);
+>>>> +		kfree(dev_name);
+>>>> +		goto put_node;
+>>>> +	}
+>>>> +
+>>>> +	dev = &pdev->dev;
+>>>> +	pm_runtime_enable(dev);
+>>>> +put_node:
+>>>> +	of_node_put(np);
+>>>> +
+>>>> +	return clk_register(dev, hw);
+>>>> +}
+>>>
+>>> This looks wrong. Why do we need struct platform_device objects for each
+>>> of these clocks? That's going to be a massive amount of platform devices
+>>> and they will completely mess up sysfs.
+>>
+>> RPM works with a device. It's not a massive amount of devices, it's one
+>> device for T20 and four devices for T30.
+> 
+> I'm still not sure I understand why we need to call RPM functions on a
+> clock. And even if they are few, it seems wrong to make these platform
+> devices.
 
-Shouldn't the fs avoid registering a memory failure handler if it is
-not prepared to take over? For example, shouldn't this case behave
-identically to ext4 that will not even register a callback?
+Before clock is enabled, we need to raise core voltage. After clock is
+disabled, the voltage should be dropped. CCF+RPM takes care of handling
+this for us.
+
+> Perhaps they can be simple struct device:s instead? Ideally they would
+> also be parented to the CAR so that they appear in the right place in
+> the sysfs hierarchy.
+
+Could you please clarify what do you mean by 'simple struct device:s'?
+These clock devices should be OF devices with a of_node and etc,
+otherwise we can't use OPP framework.
+
+We don't have driver for CAR to bind. I guess we could try to add a
+'dummy' CAR driver that will create sub-devices for the rpm-clocks, is
+this what you're wanting?
