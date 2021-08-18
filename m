@@ -2,115 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 128CD3F0E6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 00:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7533F0E6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 00:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233928AbhHRWyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 18:54:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234135AbhHRWyk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 18:54:40 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E360EC0617AD
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 15:54:04 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id w13-20020a17090aea0db029017897a5f7bcso3427480pjy.5
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 15:54:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Bdg/OtOV5wymBEUwuQlX5+GK5JjmwLGgSiZ+Tmmadzg=;
-        b=bGU4j745GyvuoiOCvJ9XjMdyezUrxYO1pPcd3Nh9uTw2AHyNof0gLDjkyhM8xE1bpY
-         ZhK4WiLLT0bHAnhPZz+LIR1+EgOwNsqitav2SEBVEKiVfgPXmLnjjumcy0TFltdAkpUp
-         +Y/iv2y66lHJkcJw8yDjHLrdQLAKo5xhCntkA7/YsKW0wiAtv4Qvj7Ok2yu75nvP5VG/
-         kQ33sD5kcz6G3nunSMjMr3GEhOael40I5f0/SkDnOprQdLkOYlZpBPRnAiPwJ3is8bPU
-         tVhgUeDxPTVKaaCpoehLowvGyCLbirnVXNHyIzEPJxHcN9722SczInchAhVN3qboCzK5
-         oo2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Bdg/OtOV5wymBEUwuQlX5+GK5JjmwLGgSiZ+Tmmadzg=;
-        b=gyEQY6D9i10crfHS9unHV82m11aDxGqWNxDzwRs0Q8V9Smxc4LLMv3zlwNM9zQdPr8
-         3W0C/XPNZINOXl+fwGSfrlF0QaoqGQr3kqUMPqaNW3AkD6dOiMZ9feWi0UuS6NXnRifS
-         e4isEhibR+8fFoycpGtSGAzDY79lY8lfRce4eJ0wQeueJK37pUQuMiPPJIRjbnCrsiXp
-         qc+RKVx1cSz3mW1MbtYhx8ighArU04JrjdSH7b1zduAcox7kyLMaUe8WKlAxS0r5jJEu
-         oPZ4iBS7rdxAL/NRMWXKG4RqYmgG0vdChQcKYoKmI4DdMvlsNCfeCBpy8q5h54+Du9vv
-         2cSA==
-X-Gm-Message-State: AOAM532XH9SJJGFrv1qc8/Hhlrd/kkOrT2YZhB7DfAC8hXdJYkahmXpg
-        X5mb3CLRztdl0jrQH0m+VETILA==
-X-Google-Smtp-Source: ABdhPJzzXby04WbbyigGFBDREGEkGV8RqUxAeMQ0ojYzJgYocP/xgVxlZiD/Hh9heqjmIsz5yKhdZw==
-X-Received: by 2002:a17:90a:af88:: with SMTP id w8mr11746328pjq.104.1629327244194;
-        Wed, 18 Aug 2021 15:54:04 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id s26sm894895pgv.46.2021.08.18.15.54.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 15:54:03 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 22:53:58 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
-        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 53/63] KVM: x86: Use struct_group() to zero decode
- cache
-Message-ID: <YR2PhlO3njPcFOkg@google.com>
-References: <20210818060533.3569517-1-keescook@chromium.org>
- <20210818060533.3569517-54-keescook@chromium.org>
- <YR0jIEzEcUom/7rd@google.com>
- <202108180922.6C9E385A1@keescook>
+        id S234785AbhHRWz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 18:55:27 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:55329 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230515AbhHRWz0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 18:55:26 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gqjrx70Qpz9sSs;
+        Thu, 19 Aug 2021 08:54:41 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629327282;
+        bh=IXeg0veOTz8NqVmFLu65PO69E235ItarSfjI6yHpA9Y=;
+        h=Date:From:To:Cc:Subject:From;
+        b=LCRozLAUlja+60SrR8h/aBr3Y8pLyo+ExROkXc/jfAOwj6DDWoP8m9gTC/gnKogV7
+         EZJWdCIuynjqRiUVXyHureV+DbI0Ztm/mvFofeaUErvapiotnIjXgcMB2j60BzBmbM
+         oci1kNMbJojkblsmRHZaFJteSXA0MIFFGE8kpaBiYzQqKyXBTxIOogtCOdlw5M5qYV
+         z8Os0CjPopww1Sr52DHmvREyUpKyyL6+NoFpa7VmGtTlWfZzXa0R8s8wcqdcXzJSES
+         mXOB+sFH2y4GryEPlZ8IFKijGuN1p9z1msctf0PsBiu0qkz0zmUn/elJXitjXuXze1
+         Z0HveF4VofGkw==
+Date:   Thu, 19 Aug 2021 08:54:40 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the dma-mapping tree
+Message-ID: <20210819085440.0ef51c24@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202108180922.6C9E385A1@keescook>
+Content-Type: multipart/signed; boundary="Sig_/_qIZvZr7lHIGCrDWYnGA8AV";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021, Kees Cook wrote:
-> On Wed, Aug 18, 2021 at 03:11:28PM +0000, Sean Christopherson wrote:
-> > From dbdca1f4cd01fee418c252e54c360d518b2b1ad6 Mon Sep 17 00:00:00 2001
-> > From: Sean Christopherson <seanjc@google.com>
-> > Date: Wed, 18 Aug 2021 08:03:08 -0700
-> > Subject: [PATCH] KVM: x86: Replace memset() "optimization" with normal
-> >  per-field writes
-> > 
-> > Explicitly zero select fields in the emulator's decode cache instead of
-> > zeroing the fields via a gross memset() that spans six fields.  gcc and
-> > clang are both clever enough to batch the first five fields into a single
-> > quadword MOV, i.e. memset() and individually zeroing generate identical
-> > code.
-> > 
-> > Removing the wart also prepares KVM for FORTIFY_SOURCE performing
-> > compile-time and run-time field bounds checking for memset().
-> > 
-> > No functional change intended.
-> > 
-> > Reported-by: Kees Cook <keescook@chromium.org>
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> 
-> Do you want me to take this patch into my tree, or do you want to carry
-> it for KVM directly?
+--Sig_/_qIZvZr7lHIGCrDWYnGA8AV
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-That's a Paolo question :-)
+Hi all,
 
-What's the expected timeframe for landing stricter bounds checking?  If it's
-5.16 or later, the easiest thing would be to squeak this into 5.15.
+After merging the dma-mapping tree, today's linux-next build (powerpc
+ppc64_defconfig) produced this warning:
+
+kernel/dma/coherent.c:325:29: warning: 'dma_reserved_default_memory' define=
+d but not used [-Wunused-variable]
+  325 | static struct reserved_mem *dma_reserved_default_memory __initdata;
+      |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Introduced by commit
+
+  b7987aff1d0c ("dma-mapping: make the global coherent pool conditional")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/_qIZvZr7lHIGCrDWYnGA8AV
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEdj7AACgkQAVBC80lX
+0GyL7gf+L/vV4c1ebXhgDe3eI+SnkAnzWxpLBffP6hV5paWmhoOPWVlgPUnN+KSk
+HUMLYHbB2APMb4Wp4wo5lVp7eFGkamH+a22aF24Z6YVplPC9dRWvKnrW3+YG8WM0
+o43Ky7odFdPlyGojK82W9JuWFStf2CSE6nUU9NKzzs+5owBjSBZhDYH7KsbBwUFB
+WwNkzPQ8kUj5NbhVGPKjo2jRgQRVFx7szWPs/a5TffJzPj1Z49zRtanwEdS70QrZ
+IPwDkKy/aRsxtq1fhLE9B/qPb27JmzZbCuCsDWUvmNqpe2okEvz3TEcw1mOgrxbx
+XFZjIMirDIrfze9950u8Nti4Bwb8TQ==
+=8Sa3
+-----END PGP SIGNATURE-----
+
+--Sig_/_qIZvZr7lHIGCrDWYnGA8AV--
