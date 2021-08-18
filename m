@@ -2,127 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FC03F047D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD7A3F0428
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236629AbhHRNUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 09:20:48 -0400
-Received: from mail-m971.mail.163.com ([123.126.97.1]:43348 "EHLO
-        mail-m971.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235943AbhHRNUo (ORCPT
+        id S236716AbhHRNDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 09:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236629AbhHRNDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 09:20:44 -0400
-X-Greylist: delayed 921 seconds by postgrey-1.27 at vger.kernel.org; Wed, 18 Aug 2021 09:20:43 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=1ty22
-        VOMwZz6zNP9VFFtEN/bLi/9Opdu0wufpsZYxvU=; b=i7B4+rwLQ+mjFUw+4LiCg
-        wuTOwj4+GIIggPwv/s+CqaBR5YrmzueXWvpchOZeltR7OomoWEgxjXu46GIz/Nga
-        ukQC0qXZ0dOA3Quo59Pt0Ywa3h5QiIWMzHlplguIbLNAWJjdyLv6sP2XreKZZuzD
-        EwMhX7wwXVHfiayv6MqLZk=
-Received: from localhost.localdomain (unknown [111.201.47.26])
-        by smtp1 (Coremail) with SMTP id GdxpCgD3FkzqBB1hdtlmOA--.179S4;
-        Wed, 18 Aug 2021 21:02:41 +0800 (CST)
-From:   Wentao_Liang <Wentao_Liang_g@163.com>
-To:     maarten.lankhorst@linux.intel.com
-Cc:     mripard@kernel.org, tzimmermann@suse.de, airlied@linux.ie,
-        daniel@ffwll.ch, sumit.semwal@linaro.org, christian.koenig@amd.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        Wentao_Liang <Wentao_Liang_g@163.com>
-Subject: [PATCH] drm/prime: fix a potential double put (release) bug
-Date:   Wed, 18 Aug 2021 21:02:31 +0800
-Message-Id: <20210818130231.3484-1-Wentao_Liang_g@163.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GdxpCgD3FkzqBB1hdtlmOA--.179S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Kw4rGF4xWr43CrWDJr17Awb_yoW8Kr1fpF
-        WYyFyUKrWUtF4jqFyfAF1kZan09w45Ga1xXrW3Jw4Yv3WFqr1DWF9rAr9Fyr15G34Dtw1S
-        yFyUXry5JryUCF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jkYFAUUUUU=
-X-Originating-IP: [111.201.47.26]
-X-CM-SenderInfo: xzhq3t5rboxtpqjbwqqrwthudrp/xtbBQhHyL1++M90j-wAAsd
+        Wed, 18 Aug 2021 09:03:42 -0400
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 596BEC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 06:03:07 -0700 (PDT)
+Received: by mail-wm1-x349.google.com with SMTP id 5-20020a1c00050000b02902e67111d9f0so619417wma.4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 06:03:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=RrG3CyO9Gjt37gk9O8igCLRvqsHUd/YOk6xR8PM41xQ=;
+        b=mUuxo16hVJ+iZgyLxC/SaVrM1114EX1QQ8bF2KypKKGX1JQEyAfvoujkSpT0sGjXTh
+         MmG7VHJVTVnSrFHhgY0E8Xr0I7tz+ZAMbyqFV312p3CuLzmNv/iH1Rjv/ge2Oe426hqh
+         pup5K/Ou0j9iqKQLgX+OxbxI8iAoZyYbSleEejVKg5aDm+a0zwEyEkD6QzV7IEUCMxs8
+         jaydHwdr9D2u1R3P9aAmXFZ/SavvdP9B7wfMP3mRTX1DjzGLo5XGcaZD6GGDueu7ehZe
+         nqpdtyOxPLHHmPgYQUVC1EMuERPjPRKxHlidRCzvKDJKXzywaY5qkAhb2zSu0pifJh3g
+         1C8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=RrG3CyO9Gjt37gk9O8igCLRvqsHUd/YOk6xR8PM41xQ=;
+        b=O5otmZm/BjrawoFjCObWHhMSxsjp1adpz9sDhXbiBPI5LGJEvENlKcOn6K+mAlkkxt
+         aQgXIYpoS/PXxcvE/LvGJivMdI36iloHjw4YD9myjCMXcmKD2PxeqBA4ZILYldj4DJMM
+         VGGk6gz7ehs8aP4XiGlrM4sYgj/8gTzl9cc+0Zfrf2aVt5UMwFP8b1fMs4G81Uyu1Fny
+         R+KBBP7VgwQF+wsAesD0weqZW5yUk/w9GpdeuEHgVbNgVuFkwJSKqQEJpM7t07t+J99A
+         OtlViI8NSIVOjjHp3+XoL4GHSBpQuQpAfIbO70ufRiN5ugl1n9E0gdOCR5L8mwSQfgOS
+         UnSQ==
+X-Gm-Message-State: AOAM531aTpEon2peTL+E8eY0ZS81RKIAlt0vA3EWnQo5+e9NfTWINbXD
+        WLVy9FygLNcjBvXwVRilZ8iYzzen7Q==
+X-Google-Smtp-Source: ABdhPJzbSbjgQk5lmEa3hM+PK3vcJ+Jbea7iM+3mGTQTNzNWuNnofg3TzKJCoftHPaHYa4/ctrMFY6/l4Q==
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:52dc:2f6d:34df:96a5])
+ (user=elver job=sendgmr) by 2002:a05:600c:35d3:: with SMTP id
+ r19mr574288wmq.1.1629291785265; Wed, 18 Aug 2021 06:03:05 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 15:03:00 +0200
+Message-Id: <20210818130300.2482437-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
+Subject: [PATCH] kfence: fix is_kfence_address() for addresses below KFENCE_POOL_SIZE
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, akpm@linux-foundation.org
+Cc:     glider@google.com, dvyukov@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kasan-dev@googlegroups.com,
+        Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In line 317 (#1), drm_gem_prime_import() is called, it will call
-drm_gem_prime_import_dev(). At the end of the function
-drm_gem_prime_import_dev() (line 956, #2), "dma_buf_put(dma_buf);" puts
-dma_buf->file and may cause it to be released. However, after
-drm_gem_prime_import() returning, the dma_buf may be put again by the
-same put function in lines 342, 351 and 358 (#3, #4, #5). Putting the
-dma_buf improperly more than once can lead to an incorrect dma_buf-
->file put.
+Originally the addr != NULL check was meant to take care of the case
+where __kfence_pool == NULL (KFENCE is disabled). However, this does not
+work for addresses where addr > 0 && addr < KFENCE_POOL_SIZE.
 
-We believe that the put of the dma_buf in the function
-drm_gem_prime_import() is unnecessary (#2). We can fix the above bug by
-removing the redundant "dma_buf_put(dma_buf);" in line 956.
+This can be the case on NULL-deref where addr > 0 && addr < PAGE_SIZE or
+any other faulting access with addr < KFENCE_POOL_SIZE. While the kernel
+would likely crash, the stack traces and report might be confusing due
+to double faults upon KFENCE's attempt to unprotect such an address.
 
- 314     if (dev->driver->gem_prime_import)
- 315         obj = dev->driver->gem_prime_import(dev, dma_buf);
- 316     else
- 317         obj = drm_gem_prime_import(dev, dma_buf);
- 				//#1 call to drm_gem_prime_import
-				//   ->drm_gem_prime_import_dev
-				//   ->dma_buf_put
- ...
+Fix it by just checking that __kfence_pool != NULL instead.
 
- 336     ret = drm_prime_add_buf_handle(&file_priv->prime,
- 337             dma_buf, *handle);
-
- ...
-
- 342     dma_buf_put(dma_buf);  //#3 put again
- 343
- 344     return 0;
- 345
- 346 fail:
-
- 351     dma_buf_put(dma_buf); //#4 put again
- 352     return ret;
-
- 356 out_put:
- 357     mutex_unlock(&file_priv->prime.lock);
- 358     dma_buf_put(dma_buf);  //#5 put again
- 359     return ret;
- 360 }
-
- 905 struct drm_gem_object *drm_gem_prime_import_dev
- 							(struct drm_device *dev,
- 906                         struct dma_buf *dma_buf,
- 907                         struct device *attach_dev)
- 908 {
-
- ...
-
- 952 fail_unmap:
- 953     dma_buf_unmap_attachment(attach, sgt, DMA_BIDIRECTIONAL);
- 954 fail_detach:
- 955     dma_buf_detach(dma_buf, attach);
- 956     dma_buf_put(dma_buf);  //#2 the first put of dma_buf
-								//	 (unnecessary)
- 957
- 958     return ERR_PTR(ret);
- 959 }
-
-Signed-off-by: Wentao_Liang <Wentao_Liang_g@163.com>
+Fixes: 0ce20dd84089 ("mm: add Kernel Electric-Fence infrastructure")
+Reported-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+Signed-off-by: Marco Elver <elver@google.com>
+Cc: <stable@vger.kernel.org>    [5.12+]
 ---
- drivers/gpu/drm/drm_prime.c | 1 -
- 1 file changed, 1 deletion(-)
+ include/linux/kfence.h | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
-index 2a54f86856af..cef03ad0d5cd 100644
---- a/drivers/gpu/drm/drm_prime.c
-+++ b/drivers/gpu/drm/drm_prime.c
-@@ -953,7 +953,6 @@ struct drm_gem_object *drm_gem_prime_import_dev(struct drm_device *dev,
- 	dma_buf_unmap_attachment(attach, sgt, DMA_BIDIRECTIONAL);
- fail_detach:
- 	dma_buf_detach(dma_buf, attach);
--	dma_buf_put(dma_buf);
- 
- 	return ERR_PTR(ret);
+diff --git a/include/linux/kfence.h b/include/linux/kfence.h
+index a70d1ea03532..3fe6dd8a18c1 100644
+--- a/include/linux/kfence.h
++++ b/include/linux/kfence.h
+@@ -51,10 +51,11 @@ extern atomic_t kfence_allocation_gate;
+ static __always_inline bool is_kfence_address(const void *addr)
+ {
+ 	/*
+-	 * The non-NULL check is required in case the __kfence_pool pointer was
+-	 * never initialized; keep it in the slow-path after the range-check.
++	 * The __kfence_pool != NULL check is required to deal with the case
++	 * where __kfence_pool == NULL && addr < KFENCE_POOL_SIZE. Keep it in
++	 * the slow-path after the range-check!
+ 	 */
+-	return unlikely((unsigned long)((char *)addr - __kfence_pool) < KFENCE_POOL_SIZE && addr);
++	return unlikely((unsigned long)((char *)addr - __kfence_pool) < KFENCE_POOL_SIZE && __kfence_pool);
  }
+ 
+ /**
 -- 
-2.25.1
+2.33.0.rc1.237.g0d66db33f3-goog
 
