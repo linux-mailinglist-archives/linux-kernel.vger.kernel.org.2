@@ -2,93 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D06A3F0708
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6048C3F0718
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239506AbhHROrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 10:47:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54582 "EHLO
+        id S239487AbhHROwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 10:52:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239629AbhHROrn (ORCPT
+        with ESMTP id S238483AbhHROv6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 10:47:43 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35EFEC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:47:08 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id bo19so3525931edb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:47:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=icsU2c4V7+U87qo1ckZmLrJ2sA4CpW/juiJiyR0EYQw=;
-        b=H2nEEL9iAcu2bnwpcjo6Mdr4TgkXA/9QqMtfJmxcmUorajIrrx04PJdHlaY1mXVoQJ
-         a2nZqCrMTRnagWFtxNqfsbuJvYzn2x37+Ilzi9BzFLvegYymkhEuIrlzuMgWe6V+Bwgh
-         vBiDdDTbUgJ5PX57E3Tzl/pJJNVIY3pytq/G/MW0nZc+W5/qsKFlRo0ENDaWOFl6VAcD
-         FhJFtzPRkVBL39IMSDZC/6Ts+Kqr6EvjPhu/+x1Dj70XMWYH7ObIBNb2ddnKcKnLXMPZ
-         6H29wEsZ6CN4de8RBcqP3ixralaJ/5MwSJ/z4wSuVJu3Zy+aRgWqlKvGE/YkKzV93F6r
-         kPXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=icsU2c4V7+U87qo1ckZmLrJ2sA4CpW/juiJiyR0EYQw=;
-        b=fRc9KSgPMMXuD2odf9eWudZN7V+DD2AD3U/3/YN+2RS4tQitH/FYfUjvmDDB23eejn
-         onFe3n7J7tvMb5G5rE8+HuD6tLHpOKHO6WtFd1boR1cgQw0Dk9yJMs8LzqW1qlsF2oA4
-         eCEyEQCvZSN0bgedj06L5no8oFuSDBekw9AiwMaUMfZdJITmgXaZsmwH0QJqRb6lWFe7
-         YTMJeYsXXyFiQsi0L05OmrBdWFrMeYpIBH/3l/LuXP9pcbDWF/6BrB+Li0DJpK9zPhgh
-         P2zVx7lZuNFHYtwpx4rqe2HUHaEKQSLnqptqBz02rpjjGpovptzZ3roBm0qPOE1K/crK
-         m0kw==
-X-Gm-Message-State: AOAM5337+Phpe3AnOiIWjgTvmLj2GrowXTdaHSXZ7wII+eP4JNxMLn2L
-        ogGEuzknqu2svtnTzMnTrrA=
-X-Google-Smtp-Source: ABdhPJwM6xuEDtGMvk/m6OHHby1b74xL4bKzdUKxbakaO5bNUGtTJ4tBP98RfyG/vDG4sxVhN2Pddg==
-X-Received: by 2002:aa7:d04c:: with SMTP id n12mr10646382edo.342.1629298026898;
-        Wed, 18 Aug 2021 07:47:06 -0700 (PDT)
-Received: from localhost.localdomain (neth7.eastcode.net. [79.143.160.90])
-        by smtp.googlemail.com with ESMTPSA id x17sm2152808ejj.58.2021.08.18.07.47.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 07:47:06 -0700 (PDT)
-From:   Nikola Pavlica <pavlica.nikola@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@googlegroups.com, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Nikola Pavlica <pavlica.nikola@gmail.com>
-Subject: [PATCH 3/3] dt-bindings: add vendor prefix for Vivax
-Date:   Wed, 18 Aug 2021 16:46:48 +0200
-Message-Id: <20210818144648.72665-3-pavlica.nikola@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210818144648.72665-1-pavlica.nikola@gmail.com>
-References: <20210818144648.72665-1-pavlica.nikola@gmail.com>
+        Wed, 18 Aug 2021 10:51:58 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A2CC0613CF;
+        Wed, 18 Aug 2021 07:51:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=HOaj1CFejRIbwr2VFBMVbAvfMNsHrt4NdWstS9REF68=; b=Aj5fAFbydfz0/Deokqjb2WKKvL
+        9YgEpwirvN4vz+VVeLVYe23oHc+w3OD+50HYqyyWjBSf7iouxmuWbvFtQUOksyAQbRf3GQsYwI0fD
+        Gkdb6EqLK4tUW9Y9qXZ8nsqQ+kROmbMRd4BF376wW0tNKUY/v1AdzGV+xAATONOavvXaMQBEhSpWU
+        q+5Q6YYli5SYBbRf/c0gIVn9dWbV55vUuNmbYXe7DLur5a6YxvEuqdFaQXdZE5N19L8jwrR/c+TCr
+        t6WzqdpE8IAwNdlfGycTco8Ks+2Dtg3lfWzR+NhqRbN89vKz3cZyHF6MZpI92hAhurJ0WfN2oq03Q
+        a/khoIrA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mGMst-003wkf-Th; Wed, 18 Aug 2021 14:49:51 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        stable@vger.kernel.org
+Subject: [PATCH] mm: Remove bogus VM_BUG_ON
+Date:   Wed, 18 Aug 2021 15:49:32 +0100
+Message-Id: <20210818144932.940640-1-willy@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add vendor prefix for the Vivax brand by M SAN Grupa d.o.o.
+It is not safe to check page->index without holding the page lock.
+It can be changed if the page is moved between the swap cache and the
+page cache for a shmem file, for example.  There is a VM_BUG_ON below
+which checks page->index is correct after taking the page lock.
 
-Source (in Croatian): https://www.vivax.com/hr/o-nama.aspx
-
-Signed-off-by: Nikola Pavlica <pavlica.nikola@gmail.com>
+Cc: stable@vger.kernel.org
+Fixes: 5c211ba29deb ("mm: add and use find_lock_entries")
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ mm/filemap.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index f6064d84a424..c234c392538d 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -1206,6 +1206,8 @@ patternProperties:
-     description: Vitesse Semiconductor Corporation
-   "^vivante,.*":
-     description: Vivante Corporation
-+  "^vivax,.*":
-+    description: Vivax brand by M SAN Grupa d.o.o.
-   "^vocore,.*":
-     description: VoCore Studio
-   "^voipac,.*":
+diff --git a/mm/filemap.c b/mm/filemap.c
+index d1458ecf2f51..34de0b14aaa9 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2033,17 +2033,16 @@ unsigned find_lock_entries(struct address_space *mapping, pgoff_t start,
+ 	XA_STATE(xas, &mapping->i_pages, start);
+ 	struct page *page;
+ 
+ 	rcu_read_lock();
+ 	while ((page = find_get_entry(&xas, end, XA_PRESENT))) {
+ 		if (!xa_is_value(page)) {
+ 			if (page->index < start)
+ 				goto put;
+-			VM_BUG_ON_PAGE(page->index != xas.xa_index, page);
+ 			if (page->index + thp_nr_pages(page) - 1 > end)
+ 				goto put;
+ 			if (!trylock_page(page))
+ 				goto put;
+ 			if (page->mapping != mapping || PageWriteback(page))
+ 				goto unlock;
+ 			VM_BUG_ON_PAGE(!thp_contains(page, xas.xa_index),
+ 					page);
 -- 
-2.32.0
+2.30.2
 
