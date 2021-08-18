@@ -2,94 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11EC3F04D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FAF3F04DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237277AbhHRNe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 09:34:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233722AbhHRNe1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 09:34:27 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C0CE6109E;
-        Wed, 18 Aug 2021 13:33:51 +0000 (UTC)
-Date:   Wed, 18 Aug 2021 09:33:49 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
-        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 50/63] tracing: Use memset_startat() to zero struct
- trace_iterator
-Message-ID: <20210818093349.3144276b@oasis.local.home>
-In-Reply-To: <20210818060533.3569517-51-keescook@chromium.org>
-References: <20210818060533.3569517-1-keescook@chromium.org>
-        <20210818060533.3569517-51-keescook@chromium.org>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S237614AbhHRNem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 09:34:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26824 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237534AbhHRNek (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 09:34:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629293646;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=9atu5PWpeWQekmjZpl8cMY0yO4zwVLTKAR4uiWOjOtw=;
+        b=U55qawyNmC2Q5uCKHoKq0aKiJ7Udvfz18xCi+v5E068krFv/4WBHis9Ocqo61wrgs6nKsF
+        hyGfPYaXRPqBOGPqeqN7x0wvNiUKvwAmy9xU+hwIf0N4F0uVb6buDVQ//xwiK3mjkVW8an
+        NwOVM4y5S4ErXbPUXKiE4bSqtfAklwY=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-FIswytb4OBO5-aTIDcjq5w-1; Wed, 18 Aug 2021 09:34:05 -0400
+X-MC-Unique: FIswytb4OBO5-aTIDcjq5w-1
+Received: by mail-ed1-f69.google.com with SMTP id o17-20020aa7d3d1000000b003beaf992d17so1035635edr.13
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 06:34:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9atu5PWpeWQekmjZpl8cMY0yO4zwVLTKAR4uiWOjOtw=;
+        b=tsJ7Qu8byAhTyUwbJa8UxYEmsK8PwMo0LUMpnS8cK4pZDcjdz+wGx/OOi1wh2VU9Rc
+         IH2lx3rGKDGTELmyXSZ2bL1UTXxs7nDW3nLKs8mLUY8Ewj3Yw/OikKLft+6BRy4CKOCQ
+         ZlsvRBR1LkQwngc9ijf2/0OI24Tb8ZswtJfHE2a0Zf3E9+rL2yOfnCGHyZD0zbW6j4Sk
+         DvZ8X+c2EN56zf6xzvU5Ki3oO4nLUydUGrbxLW5x/7AvXE36Ouqw6Z31Y+N6Pr7AseES
+         ue3HB+yeuj65+/IOkrFFnzl84h9q0MQv5gbAxTlRw8gjINMRNuAkZA+mEkf4srTcsxmq
+         jfAg==
+X-Gm-Message-State: AOAM531ZXG7ggFIelK0rQkbGRoq5mbY9jZKo3BSs6JQ6GVkm3sFwEz8j
+        i2E8abn+OCkl6RsfRMcMaXPut/otkozECneTt1AvFlq5L2Qlbdufyzaw2369+6LMYpzspLhCaXo
+        NlophTOt1FSyIkFJqrFtuRg8m
+X-Received: by 2002:aa7:d319:: with SMTP id p25mr10394133edq.197.1629293643217;
+        Wed, 18 Aug 2021 06:34:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyRQYRpxw2Qhgc/ZAxOVdRSo4vUAvMeMIWE5ubx7bGW0c4xOeoVYQTT6WJ6FOemMkD1YFUpUQ==
+X-Received: by 2002:aa7:d319:: with SMTP id p25mr10394085edq.197.1629293642713;
+        Wed, 18 Aug 2021 06:34:02 -0700 (PDT)
+Received: from miu.piliscsaba.redhat.com (catv-86-101-169-16.catv.broadband.hu. [86.101.169.16])
+        by smtp.gmail.com with ESMTPSA id kg18sm2090922ejc.9.2021.08.18.06.34.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 06:34:02 -0700 (PDT)
+From:   Miklos Szeredi <mszeredi@redhat.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: [PATCH v2 0/2] allow overlayfs to do RCU lookups
+Date:   Wed, 18 Aug 2021 15:33:58 +0200
+Message-Id: <20210818133400.830078-1-mszeredi@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Aug 2021 23:05:20 -0700
-Kees Cook <keescook@chromium.org> wrote:
+I'd really like to fix this in some form, but not getting any response
+[1][2][3].
 
-> In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> field bounds checking for memset(), avoid intentionally writing across
-> neighboring fields.
-> 
-> Use memset_startat() to avoid confusing memset() about writing beyond
-> the target struct member.
-> 
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  kernel/trace/trace.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 13587e771567..9ff8c31975cd 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -6691,9 +6691,7 @@ tracing_read_pipe(struct file *filp, char __user *ubuf,
->  		cnt = PAGE_SIZE - 1;
->  
->  	/* reset all but tr, trace, and overruns */
-> -	memset(&iter->seq, 0,
-> -	       sizeof(struct trace_iterator) -
-> -	       offsetof(struct trace_iterator, seq));
-> +	memset_startat(iter, 0, seq);
+Al, Linus, can you please comment?
 
-I can't find memset_startat() in mainline nor linux-next. I don't see it
-in this thread either, but since this has 63 patches, I could have
-easily missed it.
-
-This change really should belong to a patch set that just introduces
-memset_startat() (and perhaps memset_after()) and then updates all the
-places that should use it. That way I can give it a proper review. In
-other words, you should break this patch set up into smaller, more
-digestible portions for the reviewers.
+I'm happy to take this through the overlayfs tree, just need an ACK for the
+VFS API change.
 
 Thanks,
+Miklos
 
--- Steve
+[1] https://lore.kernel.org/linux-fsdevel/20210323160629.228597-1-mszeredi@redhat.com/
+[2] https://lore.kernel.org/linux-fsdevel/CAJfpegv4ttfCZY0DPm+SSc85eL5m3jqhdOS_avu1+WMZhdg7iA@mail.gmail.com/
+[3] https://lore.kernel.org/linux-fsdevel/20210810120807.456788-1-mszeredi@redhat.com/
 
+v2: just a minor fix for the CONFIG_FS_POSIX_ACL=n case.
+---
+Miklos Szeredi (2):
+  vfs: add flags argument to ->get_acl() callback
+  ovl: enable RCU'd ->get_acl()
 
+ Documentation/filesystems/locking.rst |  2 +-
+ Documentation/filesystems/vfs.rst     |  2 +-
+ fs/9p/acl.c                           |  5 ++++-
+ fs/9p/acl.h                           |  2 +-
+ fs/bad_inode.c                        |  2 +-
+ fs/btrfs/acl.c                        |  5 ++++-
+ fs/btrfs/ctree.h                      |  2 +-
+ fs/ceph/acl.c                         |  5 ++++-
+ fs/ceph/super.h                       |  2 +-
+ fs/erofs/xattr.c                      |  5 ++++-
+ fs/erofs/xattr.h                      |  2 +-
+ fs/ext2/acl.c                         |  5 ++++-
+ fs/ext2/acl.h                         |  2 +-
+ fs/ext4/acl.c                         |  5 ++++-
+ fs/ext4/acl.h                         |  2 +-
+ fs/f2fs/acl.c                         |  5 ++++-
+ fs/f2fs/acl.h                         |  2 +-
+ fs/fuse/acl.c                         |  5 ++++-
+ fs/fuse/fuse_i.h                      |  2 +-
+ fs/gfs2/acl.c                         |  5 ++++-
+ fs/gfs2/acl.h                         |  2 +-
+ fs/jffs2/acl.c                        |  5 ++++-
+ fs/jffs2/acl.h                        |  2 +-
+ fs/jfs/acl.c                          |  5 ++++-
+ fs/jfs/jfs_acl.h                      |  2 +-
+ fs/nfs/nfs3_fs.h                      |  2 +-
+ fs/nfs/nfs3acl.c                      |  5 ++++-
+ fs/ocfs2/acl.c                        |  5 ++++-
+ fs/ocfs2/acl.h                        |  2 +-
+ fs/orangefs/acl.c                     |  5 ++++-
+ fs/orangefs/orangefs-kernel.h         |  2 +-
+ fs/overlayfs/inode.c                  |  6 +++++-
+ fs/overlayfs/overlayfs.h              |  2 +-
+ fs/posix_acl.c                        | 10 ++++++++--
+ fs/reiserfs/acl.h                     |  2 +-
+ fs/reiserfs/xattr_acl.c               |  5 ++++-
+ fs/xfs/xfs_acl.c                      |  5 ++++-
+ fs/xfs/xfs_acl.h                      |  4 ++--
+ include/linux/fs.h                    |  7 ++++++-
+ include/linux/posix_acl.h             |  3 ++-
+ 40 files changed, 106 insertions(+), 42 deletions(-)
 
->  	cpumask_clear(iter->started);
->  	trace_seq_init(&iter->seq);
->  	iter->pos = -1;
+-- 
+2.31.1
 
