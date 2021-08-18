@@ -2,179 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 627523F0A6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 639663F0A73
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230116AbhHRRn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 13:43:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229528AbhHRRn1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 13:43:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 683CC60EFE;
-        Wed, 18 Aug 2021 17:42:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629308572;
-        bh=Kvx9pR6r9hqTWbisgbYGcOhwlBAi7rb9Hch+ls7rI6M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JRQwBzroKWZmZbkF285UgcI9uXEKrKcGgIQlwT6dY4SntAIS+765YQMOBa46YqfKo
-         NNFGK272r2q8xxnCdnTnbLDzDNQ0QxWaXo3lHuzGBfNmOd/1DIZ+thVyQrGlhWQ9wW
-         LuYbJ5aOq7KUWV7lbrnIut18mWxp9EoP62U4elIeb+spHaIAfJxH0zbSwy9M0kT5yt
-         cCnaNm4++5I84k+1tXGr9VfT5DygpheMQxApwKWA45JEDLMNsgMdyo5PELPNeXbDEI
-         iFFdglEOEaKU957IpxB5lTMgk1/ol+fg/tV9qiBH+PniGVfoqRLhaDBRuq29nC5J5i
-         YIM+cYXHof1MQ==
-Date:   Wed, 18 Aug 2021 20:42:42 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] x86/mm: fix kern_addr_valid to cope with existing but
- not present entries
-Message-ID: <YR1GkuNjpzYLm3qw@kernel.org>
-References: <20210817135854.25407-1-rppt@kernel.org>
- <d35b3132-9a90-84b9-7907-ad321171b422@redhat.com>
+        id S230147AbhHRRp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 13:45:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229448AbhHRRp5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 13:45:57 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38EE2C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 10:45:22 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id lo4so6682210ejb.7
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 10:45:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6Uovgw6HtB8nCaHLgQeNwVXL7QPb2LFvG/OTd/4a5ak=;
+        b=kTrFTfdZwBdHy76qEQOosd/JNgO9DHO3/3Fa6bHn+fmmaof5wf4BiiE3mRbELN9JIj
+         4fT93V+hTpd62/0WNVZVC2KfwrD0dn8pDlRKcalsElL9l/zMVygVutUk9REdxVBHnrPT
+         bkoJxO8dxOc45W+t+4hWLhcb6dMDeuYNBAEg3bFhrVsTxV+1V3CE49MlLw6l6jRLmnDv
+         9bMa4KzJ9UbwU+nlyvRrUsWH4pNDA1ZfDZI7OELxYJd+BOIsvINbiH9KngvUK4Xk+IjT
+         YrJvXsl4bczMww3m38J9zQULzv5YhXVwBkD2Y6HEp0HxEguTMVg2QSQwPXJ2X4VpCWCt
+         GlEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6Uovgw6HtB8nCaHLgQeNwVXL7QPb2LFvG/OTd/4a5ak=;
+        b=Mxl65QwReVsc5QgPG5cc3LgZYfO/pgE2nvqjWmxp4t74ASDGuidaXX1QhZGw6Mz35g
+         OWYM9zE+qmjJI9wkNT4FCaZ/xuf0pIsbmYv+pkkeG1FEj2VZrNwBpe7A98Fw3jzd+Jq5
+         vA47zy+82BAD9cXg1pzm6CDvOOaniEWRB9/Xja9GORelIKxvfNjHRBUf40k8TW/b/puv
+         3UTYK07Yye6bKwDyDMKDKsB9XG8s+T3OMzcu3XV8dAhi7W+3AqapzGZx7eqZjgDAWyW8
+         PJsbthzW0yUY1pKGFJ3ZFGamh43hd1osP3Vjv8PlngJufIkhrln7f48EkSwoGcRDPqDX
+         WIBA==
+X-Gm-Message-State: AOAM531lksJ5cD64AVtgVyZk1hErFMe9j37gxfVB17fitgKCeOnZROPV
+        Er2wSvpO5j7WdSG9yobyOeFfJdd48ODYyXBYQv4=
+X-Google-Smtp-Source: ABdhPJy0mPtO0GH+4nza/OV3TXTnQCCdo0FpbI2ezsp730DZJi7NV1LcxjxadMNfe40MGAgUIi8Pw2NTyQ0D8ZD+bpo=
+X-Received: by 2002:a17:906:491a:: with SMTP id b26mr11135731ejq.25.1629308720854;
+ Wed, 18 Aug 2021 10:45:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d35b3132-9a90-84b9-7907-ad321171b422@redhat.com>
+References: <20210816180909.3603-1-shy828301@gmail.com> <YRq+kCOW4zb4vfxA@casper.infradead.org>
+ <CAHbLzkoE6h9dmRp6zfaKdLjq2y24+PV-yBUv6RMXtzKvPFdBkw@mail.gmail.com> <20210818050239.GA496938@hori.linux.bs1.fc.nec.co.jp>
+In-Reply-To: <20210818050239.GA496938@hori.linux.bs1.fc.nec.co.jp>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 18 Aug 2021 10:45:08 -0700
+Message-ID: <CAHbLzkqHJ6imN_T2UwgJErj6eBuMx-mLY7=e_dU0cL-7hNkirg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm: hwpoison: don't drop slab caches for offlining
+ non-LRU page
+To:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "tdmackey@twitter.com" <tdmackey@twitter.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 04:01:13PM +0200, David Hildenbrand wrote:
-> On 17.08.21 15:58, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > Jiri Olsa reported a fault when running:
-> > 
-> > 	# cat /proc/kallsyms | grep ksys_read
-> > 	ffffffff8136d580 T ksys_read
-> > 	# objdump -d --start-address=0xffffffff8136d580 --stop-address=0xffffffff8136d590 /proc/kcore
-> > 
-> > 	/proc/kcore:     file format elf64-x86-64
-> > 
-> > 	Segmentation fault
-> > 
-> > krava33 login: [   68.330612] general protection fault, probably for non-canonical address 0xf887ffcbff000: 0000 [#1] SMP PTI
-> > [   68.333118] CPU: 12 PID: 1079 Comm: objdump Not tainted 5.14.0-rc5qemu+ #508
-> > [   68.334922] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-4.fc34 04/01/2014
-> > [   68.336945] RIP: 0010:kern_addr_valid+0x150/0x300
-> > [   68.338082] Code: 1f 40 00 48 8b 0d e8 12 61 01 48 85 f6 0f 85 ca 00 00 00 48 81 e1 00 f0 ff ff 48 21 c1 48 b8 00 00 00 00 80 88 ff ff 48 01 ca <48> 8b 3c 02 48 f7 c7 9f ff ff ff 0f 84 d8 fe ff ff 48 89 f8 0f 1f
-> > [   68.342220] RSP: 0018:ffffc90000bcbc38 EFLAGS: 00010206
-> > [   68.343428] RAX: ffff888000000000 RBX: 0000000000001000 RCX: 000ffffffcbff000
-> > [   68.345029] RDX: 000ffffffcbff000 RSI: 0000000000000000 RDI: 800ffffffcbff062
-> > [   68.346599] RBP: ffffc90000bcbea8 R08: 0000000000001000 R09: 0000000000000000
-> > [   68.349000] R10: 0000000000000000 R11: 0000000000001000 R12: 00007fcc0fd80010
-> > [   68.350804] R13: ffffffff83400000 R14: 0000000000400000 R15: ffffffff843d23e0
-> > [   68.352609] FS:  00007fcc111fcc80(0000) GS:ffff888275e00000(0000) knlGS:0000000000000000
-> > [   68.354638] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [   68.356104] CR2: 00007fcc0fd80000 CR3: 000000011226e004 CR4: 0000000000770ee0
-> > [   68.357896] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > [   68.359694] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > [   68.361597] PKRU: 55555554
-> > [   68.362460] Call Trace:
-> > [   68.363252]  read_kcore+0x57f/0x920
-> > [   68.364289]  ? rcu_read_lock_sched_held+0x12/0x80
-> > [   68.365630]  ? rcu_read_lock_sched_held+0x12/0x80
-> > [   68.366955]  ? rcu_read_lock_sched_held+0x12/0x80
-> > [   68.368277]  ? trace_hardirqs_on+0x1b/0xd0
-> > [   68.369462]  ? rcu_read_lock_sched_held+0x12/0x80
-> > [   68.370793]  ? lock_acquire+0x195/0x2f0
-> > [   68.371920]  ? lock_acquire+0x195/0x2f0
-> > [   68.373035]  ? rcu_read_lock_sched_held+0x12/0x80
-> > [   68.374364]  ? lock_acquire+0x195/0x2f0
-> > [   68.375498]  ? rcu_read_lock_sched_held+0x12/0x80
-> > [   68.376831]  ? rcu_read_lock_sched_held+0x12/0x80
-> > [   68.379883]  ? rcu_read_lock_sched_held+0x12/0x80
-> > [   68.381268]  ? lock_release+0x22b/0x3e0
-> > [   68.382458]  ? _raw_spin_unlock+0x1f/0x30
-> > [   68.383685]  ? __handle_mm_fault+0xcfc/0x15f0
-> > [   68.384994]  ? rcu_read_lock_sched_held+0x12/0x80
-> > [   68.386389]  ? lock_acquire+0x195/0x2f0
-> > [   68.387573]  ? rcu_read_lock_sched_held+0x12/0x80
-> > [   68.388969]  ? lock_release+0x22b/0x3e0
-> > [   68.390145]  proc_reg_read+0x55/0xa0
-> > [   68.391257]  ? vfs_read+0x78/0x1b0
-> > [   68.392336]  vfs_read+0xa7/0x1b0
-> > [   68.393328]  ksys_read+0x68/0xe0
-> > [   68.394308]  do_syscall_64+0x3b/0x90
-> > [   68.395391]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > [   68.396804] RIP: 0033:0x7fcc11cf92e2
-> > [   68.397824] Code: c0 e9 b2 fe ff ff 50 48 8d 3d ea 2e 0a 00 e8 95 e9 01 00 0f 1f 44 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 0f 05 <48> 3d 00 f0 ff ff 77 56 c3 0f 1f 44 00 00 48 83 ec 28 48 89 54 24
-> > [   68.402420] RSP: 002b:00007ffd6e0f8da8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-> > [   68.404357] RAX: ffffffffffffffda RBX: 0000565439305b20 RCX: 00007fcc11cf92e2
-> > [   68.406061] RDX: 0000000000800000 RSI: 00007fcc0f980010 RDI: 0000000000000003
-> > [   68.407747] RBP: 00007fcc11dcd300 R08: 0000000000000003 R09: 00007fcc0d980010
-> > [   68.410937] R10: 0000000003826000 R11: 0000000000000246 R12: 00007fcc0f980010
-> > [   68.412624] R13: 0000000000000d68 R14: 00007fcc11dcc700 R15: 0000000000800000
-> > [   68.414322] Modules linked in: intel_rapl_msr intel_rapl_common nfit kvm_intel kvm irqbypass rapl iTCO_wdt iTCO_vendor_support i2c_i801 i2c_smbus lpc_ich drm drm_panel_orientation_quirks zram xfs crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel
-> > [   68.419591] ---[ end trace e2c30f827226966b ]---
-> > [   68.420969] RIP: 0010:kern_addr_valid+0x150/0x300
-> > [   68.422308] Code: 1f 40 00 48 8b 0d e8 12 61 01 48 85 f6 0f 85 ca 00 00 00 48 81 e1 00 f0 ff ff 48 21 c1 48 b8 00 00 00 00 80 88 ff ff 48 01 ca <48> 8b 3c 02 48 f7 c7 9f ff ff ff 0f 84 d8 fe ff ff 48 89 f8 0f 1f
-> > [   68.426826] RSP: 0018:ffffc90000bcbc38 EFLAGS: 00010206
-> > [   68.428150] RAX: ffff888000000000 RBX: 0000000000001000 RCX: 000ffffffcbff000
-> > [   68.429813] RDX: 000ffffffcbff000 RSI: 0000000000000000 RDI: 800ffffffcbff062
-> > [   68.431465] RBP: ffffc90000bcbea8 R08: 0000000000001000 R09: 0000000000000000
-> > [   68.433115] R10: 0000000000000000 R11: 0000000000001000 R12: 00007fcc0fd80010
-> > [   68.434768] R13: ffffffff83400000 R14: 0000000000400000 R15: ffffffff843d23e0
-> > [   68.436423] FS:  00007fcc111fcc80(0000) GS:ffff888275e00000(0000) knlGS:0000000000000000
-> > [   68.438354] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [   68.442077] CR2: 00007fcc0fd80000 CR3: 000000011226e004 CR4: 0000000000770ee0
-> > [   68.443727] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > [   68.445370] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > [   68.447010] PKRU: 55555554
-> > 
-> > The fault happens because kern_addr_valid() dereferences existent but not
-> > present PMD in the high kernel mappings.
-> > 
-> > Such PMDs are created when free_kernel_image_pages() frees regions larger
-> > than 2Mb. In this case a part of the freed memory is mapped with PMDs and
-> > the set_memory_np_noalias() -> ... -> __change_page_attr() sequence will
-> > mark the PMD as not present rather than wipe it completely.
-> > 
-> > Make kern_addr_valid() to check whether higher level page table entries are
-> > present before trying to dereference them to fix this issue and to avoid
-> > similar issues in the future.
-> 
-> Why not fix the setting code?
- 
-Because I'm not sure it won't backfire in some other place. 
-Fixing kern_addr_valid() looks safe and easy for backporting.
- 
-> > Reported-by: Jiri Olsa <jolsa@redhat.com>
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > ---
-> >   arch/x86/mm/init_64.c | 6 +++---
-> >   1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-> > index ddeaba947eb3..07b56e90db5d 100644
-> > --- a/arch/x86/mm/init_64.c
-> > +++ b/arch/x86/mm/init_64.c
-> > @@ -1433,18 +1433,18 @@ int kern_addr_valid(unsigned long addr)
-> >   		return 0;
-> >   	p4d = p4d_offset(pgd, addr);
-> > -	if (p4d_none(*p4d))
-> > +	if (p4d_none(*p4d) || !p4d_present(*p4d))
-> >   		return 0;
-> 
-> if (!p4d_present(*p4d))
-> 	return 0;
-> 
-> should be sufficient I think.
-> 
-> Same applies to the others.
+On Tue, Aug 17, 2021 at 10:02 PM HORIGUCHI NAOYA(=E5=A0=80=E5=8F=A3=E3=80=
+=80=E7=9B=B4=E4=B9=9F)
+<naoya.horiguchi@nec.com> wrote:
+>
+> On Mon, Aug 16, 2021 at 01:24:25PM -0700, Yang Shi wrote:
+> > On Mon, Aug 16, 2021 at 12:38 PM Matthew Wilcox <willy@infradead.org> w=
+rote:
+> > >
+> > > On Mon, Aug 16, 2021 at 11:09:08AM -0700, Yang Shi wrote:
+> > > > But the most disappointing thing is all the effort doesn't make the=
+ page
+> > > > offline, it just returns:
+> > > >
+> > > > soft_offline: 0x1469f2: unknown non LRU page type 5ffff0000000000 (=
+)
+> > >
+> > > It's a shame it doesn't call dump_page().  There might be more
+> > > interesting information somewhere in struct page that would help us
+> > > figure out what kind of page it was in your environment.  For example=
+,
+> > > it might be a page table page or a page allocated for vmalloc(), and
+> > > in both those cases, there are things we might be able to do (we'd
+> > > certainly be able to figure out that it isn't worth shrinking slab!)
+> >
+> > Yes,  dump_page() could provide more information to us. I could add a
+> > new patch or just update this patch to call dump_page() if offline is
+> > failed if the hwpoison maintainer agrees to this as well.
+>
+> I agree with showing more information in failure case. Thanks for the inp=
+ut.
 
-Agree.
+By reading the code, it seems get_any_page() is called to shake the
+page for both soft offline and memory_failure(), so it seems like a
+good place to call dump_page() if -EIO is going to be returned, which
+hwpoison can't handle the page, otherwise we may need call dump_page()
+in a couple of different places.
 
--- 
-Sincerely yours,
-Mike.
+Although dump_page() will be called with pcp disabled and holding
+memory hotplug lock if it is called by get_any_page(), but I'm
+supposed it should be not a big deal.
+
+>
+> - Naoya Horiguchi
