@@ -2,99 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E69C3F0D17
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 23:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E433F0D18
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 23:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233941AbhHRVFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 17:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233378AbhHRVFK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 17:05:10 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B2EC061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 14:04:34 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id q2so3623764pgt.6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 14:04:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IABWnr1aCDsDwxBBopzlg3HkRiMd7COJyG2pUzXE8/s=;
-        b=Zqem0CoZzHLfKbevjQtLba+oPmNjxfqaUhbg758CCWbVL3Wrgsd0LChYumYDgT8nHV
-         qXI38/TU57+DVyPDVWoD9EBR93b3G6c4a+oZmh44MnpRWPQD3Y87jvx77ewvhtyv0Y9m
-         2cY4BXqC4SNIlGg0H/SqUG3+Xxrnmj9F9H2ss=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IABWnr1aCDsDwxBBopzlg3HkRiMd7COJyG2pUzXE8/s=;
-        b=EFyGScLr31jrfESONm2F4upFwBlODH2JBgYguQ8t/9k2zlTdhFc2eq+Wl5NsV2/hMI
-         r5ae+GlfReZBOB+4ALkqSHcwo7elIy6tcAdTBL8ht63V6RRwitrmoZmb7vNTUWprQd7S
-         uM2VY/3S19wm8WoRY8rYbgmj0x/L0Vr6RHbBRBy2Z4DK41u8aVkXlh7E8hrrgUR6DfYZ
-         EwjsGMVPxTdJ18Of8XFOwwQ1LNFe+ZTV74UhditOYDsj+5X72LOYhzbsUp1OOKA6u8xd
-         WunAeBEf5vA+A1ZKpBH5gD82LRnY/rrvlt00ABXsNqMjN5z4/rAlyNwCuhy6zZ0lQuzY
-         lA+w==
-X-Gm-Message-State: AOAM530UBKt28cZnBkYrv9aEtAhKcCR1iiDDu1mK1oAOQ0DoQGp4129R
-        uxvkV+NnCUmLRW+zJcKu9StuYg==
-X-Google-Smtp-Source: ABdhPJzPYdmt1qIf1rGmc2u4in8hFFk0iRvjXLJ/SLffXJm1J8kmYOU3/WVPFV9cKWaMBooTd5z2+Q==
-X-Received: by 2002:a63:f656:: with SMTP id u22mr10801321pgj.392.1629320674444;
-        Wed, 18 Aug 2021 14:04:34 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id f5sm687890pjo.23.2021.08.18.14.04.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 14:04:33 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 14:04:31 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>, linux-mm@kvack.org,
-        linux-kbuild@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 1/5] Compiler Attributes: Add __alloc_size() for better
- bounds checking
-Message-ID: <202108181404.B5E8739C3C@keescook>
-References: <20210818050841.2226600-1-keescook@chromium.org>
- <20210818050841.2226600-2-keescook@chromium.org>
- <d326fbfc-dc96-b6e9-6fd8-31df3eb9f1cb@kernel.org>
+        id S233971AbhHRVF0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 18 Aug 2021 17:05:26 -0400
+Received: from mga14.intel.com ([192.55.52.115]:22657 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233378AbhHRVFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 17:05:24 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="216155443"
+X-IronPort-AV: E=Sophos;i="5.84,332,1620716400"; 
+   d="scan'208";a="216155443"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 14:04:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,332,1620716400"; 
+   d="scan'208";a="449905446"
+Received: from irsmsx605.ger.corp.intel.com ([163.33.146.138])
+  by fmsmga007.fm.intel.com with ESMTP; 18 Aug 2021 14:04:47 -0700
+Received: from tjmaciei-mobl5.localnet (10.209.60.224) by
+ IRSMSX605.ger.corp.intel.com (163.33.146.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Wed, 18 Aug 2021 22:04:44 +0100
+From:   Thiago Macieira <thiago.macieira@intel.com>
+To:     Borislav Petkov <bp@alien8.de>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>
+CC:     "Lutomirski, Andy" <luto@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to protect dynamic user state
+Date:   Wed, 18 Aug 2021 14:04:41 -0700
+Message-ID: <3399412.qF98CnctbS@tjmaciei-mobl5>
+Organization: Intel Corporation
+In-Reply-To: <BCC327C2-CF9F-4910-B626-315E515E9A3A@intel.com>
+References: <20210730145957.7927-1-chang.seok.bae@intel.com> <YR1HYRRN0HMTxXrw@zn.tnic> <BCC327C2-CF9F-4910-B626-315E515E9A3A@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d326fbfc-dc96-b6e9-6fd8-31df3eb9f1cb@kernel.org>
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
+X-Originating-IP: [10.209.60.224]
+X-ClientProxiedBy: orsmsx605.amr.corp.intel.com (10.22.229.18) To
+ IRSMSX605.ger.corp.intel.com (163.33.146.138)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 11:04:32AM -0700, Nathan Chancellor wrote:
-> On 8/17/2021 10:08 PM, Kees Cook wrote:
-> > GCC and Clang can use the alloc_size attribute to better inform the
-> > results of __builtin_object_size() (for compile-time constant values).
-> > Clang can additionally use alloc_size to informt the results of
-> > __builtin_dynamic_object_size() (for run-time values).
-> > 
-> > Additionally disables -Wno-alloc-size-larger-than since the allocators
-> > already reject SIZE_MAX, and the compile-time warnings aren't helpful.
+On Wednesday, 18 August 2021 13:43:50 PDT Bae, Chang Seok wrote:
+> > Then our API needs improving. An app should be able to ask the kernel
+> > "Do you support AMX?" get a proper answer and act accordingly.
 > 
-> In addition to what Miguel said, it might be helpful to mention that this
-> warning is GCC specific, I was a little confused at first as to why it was
-> just being added in the GCC only block :)
+> Maybe I’m missing something, but I wonder what’s the difference from
+> reading  XCR0.
 
-Yes, good point. I'll call it out in particular.
+That assumes the kernel will always enable the bits in XCR0, like it is doing 
+today and with your patch, because modifying it is a VM exit.
 
-> Otherwise, the attribute addition looks good to me. I will add my tag on v2.
-
-Thanks!
+But it's not the only possible solution. A future kernel could decide to leave 
+some bits off and only enable upon request. That's how macOS/Darwin does its 
+AVX512 support.
 
 -- 
-Kees Cook
+Thiago Macieira - thiago.macieira (AT) intel.com
+  Software Architect - Intel DPG Cloud Engineering
+
+
+
