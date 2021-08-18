@@ -2,98 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2CB23EF732
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 03:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 220793EF736
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 03:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237505AbhHRBK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 21:10:56 -0400
-Received: from lucky1.263xmail.com ([211.157.147.130]:58228 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232294AbhHRBKz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 21:10:55 -0400
-Received: from localhost (unknown [192.168.167.70])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 6CDABD7844;
-        Wed, 18 Aug 2021 09:09:59 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P4989T139771053602560S1629248997664310_;
-        Wed, 18 Aug 2021 09:09:58 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <1202da6092116cff8f89b39414f39eb5>
-X-RL-SENDER: jay.xu@rock-chips.com
-X-SENDER: xjq@rock-chips.com
-X-LOGIN-NAME: jay.xu@rock-chips.com
-X-FST-TO: lgirdwood@gmail.com
-X-RCPT-COUNT: 9
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jianqun Xu <jay.xu@rock-chips.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, ulf.hansson@linaro.org,
-        lee.jones@linaro.org, zhangchangzhong@huawei.com, heiko@sntech.de
-Cc:     linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jianqun Xu <jay.xu@rock-chips.com>
-Subject: [PATCH v3] soc: rockchip: io-domain: set 3.3V before regulator disable
-Date:   Wed, 18 Aug 2021 09:09:56 +0800
-Message-Id: <20210818010956.1446770-1-jay.xu@rock-chips.com>
-X-Mailer: git-send-email 2.25.1
+        id S237330AbhHRBN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 21:13:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40572 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232294AbhHRBNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 21:13:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BFEA6101A;
+        Wed, 18 Aug 2021 01:12:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629249171;
+        bh=S8IVosKYq3uGM5PpqT7ajdvdqx5XHpErpy3tG/+l8vQ=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=J91kq0uaiNCX8Hx1ZJO1LFAEVV7KbzmTaEL+XrAGb3+CnD1BF4Hm2k6iPKCVfKtHH
+         ri9GhE75cTx0d6r4BOB0EQM37kJc/z7nVmLCAz8OBZ2743716+IjJJN4OhiTUMRsF5
+         Z+rzQyaiQH2PBfC5R3AsLM5iVTBtszj1uHRJunpCp0hKFnggkBul7mOJKnk4A6YWZu
+         7IXhb0itDe17Lts8QUUu9TY8VA6e06ptyQXTiyiVrJgmTaWHqnJ47vsyYeIyScVCb8
+         qzjtxz3UOX/zvdNQ4y7CEZeZ6e4ZZP5yNBt8wIujxV8bBN2JN7qYnZ18IINSJvBSvR
+         M0/wAsHWs54CQ==
+Subject: Re: [PATCH] scsi: st: Add missing break in switch statement in
+ st_ioctl()
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     =?UTF-8?Q?Kai_M=c3=a4kisara?= <Kai.Makisara@kolumbus.fi>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+References: <20210817235531.172995-1-nathan@kernel.org>
+ <7843ce6b-92ae-7b6c-1fc-acb0ffe2bbc0@linux-m68k.org>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <a3499a19-d9ed-b8e5-341e-0aa02774b645@kernel.org>
+Date:   Tue, 17 Aug 2021 18:12:49 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <7843ce6b-92ae-7b6c-1fc-acb0ffe2bbc0@linux-m68k.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do a fix to rockchip io-domain, follow this orders:
+On 8/17/2021 5:54 PM, Finn Thain wrote:
+> On Tue, 17 Aug 2021, Nathan Chancellor wrote:
+> 
+>> Clang + -Wimplicit-fallthrough warns:
+>>
+>> drivers/scsi/st.c:3831:2: warning: unannotated fall-through between
+>> switch labels [-Wimplicit-fallthrough]
+>>          default:
+>>          ^
+>> drivers/scsi/st.c:3831:2: note: insert 'break;' to avoid fall-through
+>>          default:
+>>          ^
+>>          break;
+>> 1 warning generated.
+>>
+>> Clang's -Wimplicit-fallthrough is a little bit more pedantic than GCC's,
+>> requiring every case block to end in break, return, or fallthrough,
+>> rather than allowing implicit fallthroughs to cases that just contain
+>> break or return. Add a break so that there is no more warning, as has
+>> been done all over the tree already.
+>>
+>> Fixes: 2e27f576abc6 ("scsi: scsi_ioctl: Call scsi_cmd_ioctl() from scsi_ioctl()")
+>> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+>> ---
+>>   drivers/scsi/st.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/scsi/st.c b/drivers/scsi/st.c
+>> index 2d1b0594af69..0e36a36ed24d 100644
+>> --- a/drivers/scsi/st.c
+>> +++ b/drivers/scsi/st.c
+>> @@ -3828,6 +3828,7 @@ static long st_ioctl(struct file *file, unsigned int cmd_in, unsigned long arg)
+>>   	case CDROM_SEND_PACKET:
+>>   		if (!capable(CAP_SYS_RAWIO))
+>>   			return -EPERM;
+>> +		break;
+>>   	default:
+>>   		break;
+>>   	}
+>>
+>> base-commit: 58dd8f6e1cf8c47e81fbec9f47099772ab75278b
+>>
+> 
+> Well, that sure is ugly.
+> 
+> Do you think the following change would cause any static checkers to spit
+> their dummys and throw their toys out of the pram?
+> 
+> @@ -3828,6 +3828,7 @@ static long st_ioctl(struct file *file, unsigned int cmd_in, unsigned long arg)
+>   	case CDROM_SEND_PACKET:
+>   		if (!capable(CAP_SYS_RAWIO))
+>   			return -EPERM;
+> +		break;
+> -	default:
+> -		break;
+>   	}
+>   	
 
-* system running state
-  -> io-domain vsel to 3.3V (actually is done by pre-disable)
-    -> regulator_enable
-      -> vsel change according to regulator voltage
+I cannot speak for other static checkers but clang does not complain in 
+this instance. cmd_in is the switch value, which is unsigned int; as far 
+as I am aware, clang will only complain about a switch not handling all 
+values when switching on an enumerated type.
 
-* system running state
-  -> io-domain vsel to 3.3V
-    -> regulator_disable
+Gustavo, if you are already handling all of the other warnings in -next, 
+do you want to take this one too?
 
-Found on some Rockchip SoCs, the regulator enable or disable without
-care about the io-domain maybe caused soc damaged.
-
-Tested on RV1126 EVB.
-
-Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
----
-v3:
- - abandon PRE-ENABLE patch
- - delete the EVENT_PRE_ENABLE case
-v2: none
-v1: first version
-
- drivers/soc/rockchip/io-domain.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/soc/rockchip/io-domain.c b/drivers/soc/rockchip/io-domain.c
-index cf8182fc3642..3c59077fafb1 100644
---- a/drivers/soc/rockchip/io-domain.c
-+++ b/drivers/soc/rockchip/io-domain.c
-@@ -123,6 +123,12 @@ static int rockchip_iodomain_notify(struct notifier_block *nb,
- 	} else if (event & (REGULATOR_EVENT_VOLTAGE_CHANGE |
- 			    REGULATOR_EVENT_ABORT_VOLTAGE_CHANGE)) {
- 		uV = (unsigned long)data;
-+	} else if (event & REGULATOR_EVENT_PRE_ENABLE) {
-+		uV = MAX_VOLTAGE_3_3;
-+	} else if (event & REGULATOR_EVENT_PRE_DISABLE) {
-+		uV = MAX_VOLTAGE_3_3;
-+	} else if (event & REGULATOR_EVENT_ENABLE) {
-+		uV = regulator_get_voltage(supply->reg);
- 	} else {
- 		return NOTIFY_OK;
- 	}
--- 
-2.25.1
-
-
-
+Cheers,
+Nathan
