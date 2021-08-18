@@ -2,98 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42513EFDDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:39:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D41F53EFDDE
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239017AbhHRHjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 03:39:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21210 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238718AbhHRHjm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 03:39:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629272347;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LCsUAX7qCf8kQi+TyECU3+D4leV6a/JZLtzwwZWNnR0=;
-        b=QZCKWl1k8lZicWCfYwHaDb2tJ0pIddUDMrzsjUCyfHOPPtgyC/u/9KbnSrUbErS4dtbChX
-        LUuaZw7q/Ep0iDj4rOWNWKCJyUo2BWZq678I2gj8xaZolJteJWEcm9HpzahDKNwMTPu3bK
-        CLLloojDO+g+sPkf22lcI9QeD9f04VA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-560-BTz8WkvsMZG-DzqPP69k4w-1; Wed, 18 Aug 2021 03:39:06 -0400
-X-MC-Unique: BTz8WkvsMZG-DzqPP69k4w-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A2DA108BC7B;
-        Wed, 18 Aug 2021 07:39:05 +0000 (UTC)
-Received: from T590 (ovpn-8-40.pek2.redhat.com [10.72.8.40])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8CB3A5D9C6;
-        Wed, 18 Aug 2021 07:38:56 +0000 (UTC)
-Date:   Wed, 18 Aug 2021 15:38:51 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     axboe@kernel.dk, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, kashyap.desai@broadcom.com,
-        hare@suse.de
-Subject: Re: [PATCH v2 08/11] blk-mq: Add blk_mq_ops.init_request_no_hctx()
-Message-ID: <YRy5C1s0HetZCHQ1@T590>
-References: <1628519378-211232-1-git-send-email-john.garry@huawei.com>
- <1628519378-211232-9-git-send-email-john.garry@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1628519378-211232-9-git-send-email-john.garry@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        id S239089AbhHRHjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 03:39:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44398 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239059AbhHRHjy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 03:39:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD05C61076;
+        Wed, 18 Aug 2021 07:39:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1629272360;
+        bh=uOsjx46pIEb9R/raJK1EVvRJGCZHDt9swlO23X7+9TY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kmtio6ETvuhtdSkDBzspOiKPUJQKbHt16CweehjMBb6GMcri0DqdVPgj+OS6xCjrc
+         21KWPUclxRyUJKMF7oY+lRyq34gRi2XMxNzvjukosRHBhxbSopzywqMxaNvFhYygR9
+         rjlt6b+7m0F2VDifHEmpdjZBRBdyDj35J9CQ+MH0=
+Date:   Wed, 18 Aug 2021 00:39:19 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [PATCH] mm: introduce PAGEFLAGS_MASK to replace ((1UL <<
+ NR_PAGEFLAGS) - 1)
+Message-Id: <20210818003919.5bd008fec6cb0436af2443c4@linux-foundation.org>
+In-Reply-To: <YRyQNEc79Km6M9xc@carbon.dhcp.thefacebook.com>
+References: <20210817033032.76089-1-songmuchun@bytedance.com>
+        <YRxtZ3X8QGv/bui5@carbon.dhcp.thefacebook.com>
+        <CAMZfGtV4LXDmv=Gyd5bKPy-V-3a4y3R62XGXnvZyeQ_xqCabJg@mail.gmail.com>
+        <YRyQNEc79Km6M9xc@carbon.dhcp.thefacebook.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 10:29:35PM +0800, John Garry wrote:
-> Add a variant of the init_request function which does not pass a hctx_idx
-> arg.
+On Tue, 17 Aug 2021 21:44:36 -0700 Roman Gushchin <guro@fb.com> wrote:
+
+> On Wed, Aug 18, 2021 at 12:35:08PM +0800, Muchun Song wrote:
+> > On Wed, Aug 18, 2021 at 10:16 AM Roman Gushchin <guro@fb.com> wrote:
+> > >
+> > > On Tue, Aug 17, 2021 at 11:30:32AM +0800, Muchun Song wrote:
+> > > > Instead of hard-coding ((1UL << NR_PAGEFLAGS) - 1) everywhere, introducing
+> > > > PAGEFLAGS_MASK to make the code clear to get the page flags.
+> > > >
+> > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > > ---
+> > > >  include/linux/page-flags.h      | 4 +++-
+> > > >  include/trace/events/page_ref.h | 4 ++--
+> > > >  lib/test_printf.c               | 2 +-
+> > > >  lib/vsprintf.c                  | 2 +-
+> > > >  4 files changed, 7 insertions(+), 5 deletions(-)
+> > > >
+> > > > diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> > > > index 54c4af35c628..1f951ac24a5e 100644
+> > > > --- a/include/linux/page-flags.h
+> > > > +++ b/include/linux/page-flags.h
+> > > > @@ -180,6 +180,8 @@ enum pageflags {
+> > > >       PG_reported = PG_uptodate,
+> > > >  };
+> > > >
+> > > > +#define PAGEFLAGS_MASK               (~((1UL << NR_PAGEFLAGS) - 1))
+> > >
+> > > Hm, isn't it better to invert it? Like
+> > > #define PAGEFLAGS_MASK          ((1UL << NR_PAGEFLAGS) - 1)
+> > >
+> > > It feels more usual and will simplify the rest of the patch.
+> > 
+> > Actually, I learned from PAGE_MASK. So I thought the macro
+> > like xxx_MASK should be the format of 0xff...ff00...00. I don't
+> > know if it is an unwritten rule. I can invert PAGEFLAGS_MASK
+> > if it's not a rule.
 > 
-> This is important for shared sbitmap support, as it needs to be ensured for
-> introducing shared static rqs that the LLDD cannot think that requests
-> are associated with a specific HW queue.
+> There are many examples of both approached in the kernel tree,
+> however I'd say the more common is without "~" (out of my head).
 > 
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> ---
->  block/blk-mq.c         | 15 ++++++++++-----
->  include/linux/blk-mq.h |  7 +++++++
->  2 files changed, 17 insertions(+), 5 deletions(-)
+> It's definitely OK to define it like
+> #define PAGEFLAGS_MASK          ((1UL << NR_PAGEFLAGS) - 1)
 > 
-> diff --git a/block/blk-mq.c b/block/blk-mq.c
-> index f14cc2705f9b..4d6723cfa582 100644
-> --- a/block/blk-mq.c
-> +++ b/block/blk-mq.c
-> @@ -2427,13 +2427,15 @@ struct blk_mq_tags *blk_mq_alloc_rq_map(struct blk_mq_tag_set *set,
->  static int blk_mq_init_request(struct blk_mq_tag_set *set, struct request *rq,
->  			       unsigned int hctx_idx, int node)
->  {
-> -	int ret;
-> +	int ret = 0;
->  
-> -	if (set->ops->init_request) {
-> +	if (set->ops->init_request)
->  		ret = set->ops->init_request(set, rq, hctx_idx, node);
-> -		if (ret)
-> -			return ret;
-> -	}
-> +	else if (set->ops->init_request_no_hctx)
-> +		ret = set->ops->init_request_no_hctx(set, rq, node);
 
-The only shared sbitmap user of SCSI does not use passed hctx_idx, not
-sure we need such new callback.
-
-If you really want to do this, just wondering why not pass '-1' as
-hctx_idx in case of shared sbitmap?
-
-
-Thanks,
-Ming
-
+PAGE_MASK has always seemed weird to me but I figured that emulating it
+would be the approach of least surprise.  Might be wrong about that...
