@@ -2,136 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C50C3F096D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552A43F0971
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231756AbhHRQoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 12:44:55 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:53164 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhHRQox (ORCPT
+        id S231716AbhHRQp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 12:45:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbhHRQpZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 12:44:53 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17IGiFwm094931;
-        Wed, 18 Aug 2021 11:44:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1629305055;
-        bh=s1fQOrd2AGCGmTDAq1P48wzKCCxRSu9avGN2pWSwF9k=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=S9Atjj2m+KY6N9xDp+HDV9bw/Vrz/lKDCeCcQudJAALKOr91gT4UzWLMU/JroPm9g
-         092kQp9vr1tV9V+AmUBrnM0ISycxjY+xYRR+kbg407PEoKrwUfLRzFhHh+4NXyHUeY
-         8XrRhhLKuxy9+uyUXGAKSCWD6/fWc3W0D4KHoBDE=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17IGiFdE075940
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 18 Aug 2021 11:44:15 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 18
- Aug 2021 11:44:15 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 18 Aug 2021 11:44:15 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17IGiFGv055811;
-        Wed, 18 Aug 2021 11:44:15 -0500
-Date:   Wed, 18 Aug 2021 11:44:15 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     <sidraya.bj@pathpartnertech.com>
-CC:     <gregkh@linuxfoundation.org>, <linux-staging@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>, <prashanth.ka@pathpartnertech.com>,
-        <praneeth@ti.com>, <mchehab@kernel.org>,
-        <linux-media@vger.kernel.org>, <praveen.ap@pathpartnertech.com>
-Subject: Re: [PATCH 29/30] arm64: dts: dra82: Add v4l2 vxd_dec device node
-Message-ID: <20210818164415.2wizi43eidtngqca@siberian>
-References: <20210818141037.19990-1-sidraya.bj@pathpartnertech.com>
- <20210818141037.19990-30-sidraya.bj@pathpartnertech.com>
+        Wed, 18 Aug 2021 12:45:25 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE867C061764;
+        Wed, 18 Aug 2021 09:44:47 -0700 (PDT)
+From:   =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1629305085;
+        bh=wWwd4MyQJDYzauJEMt5VgHmZ+zXTu/AeGXQimomoJII=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eNAXXf5gQszDghpeQBhVIm3RqeLFT97qGA65r6aHElTjFEtA4lnKG36O8zXNMFB4m
+         jRxBasrdIHUqTcUmlRb0b1hNOtfV/wnSTBp6YaTqKHyMArxQ2gr6Cwj23VdAr3LM3b
+         lL9DbljxUKp9nn9cWtmGp1AlOuucqD+Gld/dc5Vw=
+To:     platform-driver-x86@vger.kernel.org,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>
+Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] platform/x86: gigabyte-wmi: add support for B450M S2H V2
+Date:   Wed, 18 Aug 2021 18:44:35 +0200
+Message-Id: <20210818164435.99821-1-linux@weissschuh.net>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210818141037.19990-30-sidraya.bj@pathpartnertech.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-^^ $subject
-you might want to run:
-git log --oneline arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+Reported as working here:
+https://github.com/t-8ch/linux-gigabyte-wmi-driver/issues/1#issuecomment-901207693
 
-to see precedence of usage.
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ drivers/platform/x86/gigabyte-wmi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 19:40-20210818, sidraya.bj@pathpartnertech.com wrote:
-> From: Sidraya <sidraya.bj@pathpartnertech.com>
-> 
-> Enable v4l2 vxd_dec on dra82
+diff --git a/drivers/platform/x86/gigabyte-wmi.c b/drivers/platform/x86/gigabyte-wmi.c
+index 5529d7b0abea..a2beaea18d2f 100644
+--- a/drivers/platform/x86/gigabyte-wmi.c
++++ b/drivers/platform/x86/gigabyte-wmi.c
+@@ -140,6 +140,7 @@ static u8 gigabyte_wmi_detect_sensor_usability(struct wmi_device *wdev)
+ 	}}
+ 
+ static const struct dmi_system_id gigabyte_wmi_known_working_platforms[] = {
++	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B450M S2H V2"),
+ 	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550 AORUS ELITE"),
+ 	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550 GAMING X V2"),
+ 	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550M AORUS PRO-P"),
 
-s/dra82/j721e
-
-> 
-> Signed-off-by: Angela Stegmaier <angelabaker@ti.com>
-> Signed-off-by: Sidraya <sidraya.bj@pathpartnertech.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-> index cf3482376c1e..a10eb7bcce74 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-> @@ -1242,6 +1242,15 @@
->  		power-domains = <&k3_pds 193 TI_SCI_PD_EXCLUSIVE>;
->  	};
->  
-> +	d5520: video-decoder@4300000 {
-> +	       /* IMG D5520 driver configuration */
-> +	       compatible = "img,d5500-vxd";
-> +	       reg = <0x00 0x04300000>,
-> +		     <0x00 0x100000>;
-> +	       power-domains = <&k3_pds 144 TI_SCI_PD_EXCLUSIVE>;
-> +	       interrupts = <GIC_SPI 180 IRQ_TYPE_LEVEL_HIGH>;
-> +	};
-> +
->  	ufs_wrapper: ufs-wrapper@4e80000 {
->  		compatible = "ti,j721e-ufs";
->  		reg = <0x0 0x4e80000 0x0 0x100>;
-> -- 
-> 2.17.1
-> 
-> 
-> -- 
-> 
-> 
-> 
-> 
-> 
-> 
-> This
-> message contains confidential information and is intended only 
-> for the
-> individual(s) named. If you are not the intended
-> recipient, you are 
-
-You might want to look up the MAINTAINER file to see who this patch
-and what list this should have been addressed to.
-
-Further I DONOT want to see a single bit of confidential information
-based patch in my tree. Please discuss with your legal department
-and since TI is mentioned in the patches, please discuss with TI's
-legal team as well.
-
-This patch, IMHO, series mis-represents TI's legal position and
-respect for upstream community and in no way represents the quality
-of patches we(TI) would like to contribute to upstream and DOES NOT
-represent the quality of contributions or collaboration expected of TI
-or representatives of TI.
-
-So, sorry NAK for the complete series.
-
+base-commit: 009c9aa5be652675a06d5211e1640e02bbb1c33d
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+2.33.0
+
