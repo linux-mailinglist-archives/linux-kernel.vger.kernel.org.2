@@ -2,84 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347153EFF62
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 968313EFF5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239218AbhHRIkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 04:40:19 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:52414 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238656AbhHRIkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 04:40:17 -0400
-Received: from zn.tnic (p4fed307d.dip0.t-ipconnect.de [79.237.48.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 53A0F1EC0345;
-        Wed, 18 Aug 2021 10:39:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629275976;
+        id S239180AbhHRIjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 04:39:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37049 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238050AbhHRIi4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 04:38:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629275902;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=VasVNSq4gd8Mrv+rRUUXRrEVEG/zyKOK8zOsDpdUhA8=;
-        b=Yrf4DQSz1/Vx2Gs6IIl5JsuKogIzqVeNQM7uiItJdpRnZBiF1pa9OewR6hash59iHTyvuW
-        NlE3QFjxjGpIundXvTH8IGvM2keM7D/CG56+sCJfBFGVi6HGCnCfl5/XY3BQ1N8M9Tjvy+
-        L9OFtzimJdaNb10F0huQNz0MMJecjlM=
-Date:   Wed, 18 Aug 2021 10:38:04 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part1 RFC v4 20/36] x86/sev: Use SEV-SNP AP creation to
- start secondary CPUs
-Message-ID: <YRzG7OcnbQpz7uok@zn.tnic>
-References: <20210707181506.30489-1-brijesh.singh@amd.com>
- <20210707181506.30489-21-brijesh.singh@amd.com>
- <YRwWSizr/xoWXivV@zn.tnic>
- <35b57719-5f31-c71a-7a2f-d34f6e239d26@amd.com>
+         in-reply-to:in-reply-to:references:references;
+        bh=b+amw47qxCoKw4icq6FPPyv77CAwQdV1ZQlpMJar6JI=;
+        b=S0OQGdtOOvx2VP4z2vbnQYFgWTZmabF5C9m7cDFAavPPGwPTfusd5hF6ZlD1mZN/LzxnBy
+        F9/SFk7Gqzd5+b/dVfawtWpDACzceUCMJiIxSuqKyPgZ48bN8UdsC82+pCzxPgrZX8jvQX
+        6AiQLrDawhvNfrUj9CdtU6zrB8SFrOA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-160-1o05g6u4O7SX6qdbTA33lA-1; Wed, 18 Aug 2021 04:38:20 -0400
+X-MC-Unique: 1o05g6u4O7SX6qdbTA33lA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1A61344B3;
+        Wed, 18 Aug 2021 08:38:19 +0000 (UTC)
+Received: from T590 (ovpn-8-40.pek2.redhat.com [10.72.8.40])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6791510013D6;
+        Wed, 18 Aug 2021 08:38:12 +0000 (UTC)
+Date:   Wed, 18 Aug 2021 16:38:06 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Jens Axboe <axboe@kernel.dk>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [PATCH 4/7] genirq/affinity: rename irq_build_affinity_masks as
+ group_cpus_evenly
+Message-ID: <YRzG7mMFI+n/QJyG@T590>
+References: <20210814123532.229494-1-ming.lei@redhat.com>
+ <20210814123532.229494-5-ming.lei@redhat.com>
+ <20210817045027.GD3874@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <35b57719-5f31-c71a-7a2f-d34f6e239d26@amd.com>
+In-Reply-To: <20210817045027.GD3874@lst.de>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 05:13:54PM -0500, Tom Lendacky wrote:
-> Well, yes and no. It really is just setting or clearing the VMSA page
-> attribute. It isn't trying to update permissions for the lower VMPLs, so I
-> didn't want to mislabel it as a general rmpadjust function. But it's a
-> simple enough thing to change and if multiple VMPL levels are ever
-> supported it can be evaluated at that time.
+On Tue, Aug 17, 2021 at 06:50:27AM +0200, Christoph Hellwig wrote:
+> s/as/to/ in the subjects.
+> 
+> On Sat, Aug 14, 2021 at 08:35:29PM +0800, Ming Lei wrote:
+> > Map irq vector into group, so we can abstract the algorithm for generic
+> > use case.
+> 
+> s/vector/vectors/
 
-You got it - when we need more RMPADJUST functionality, then that should
-be the function that gets the beefing up.
+One group actually is abstracted from one irq vector, and it can represent
+vector, blk-mq hw queue and others. Currently genirq/affinity spreads
+vectors across all possible cpus, since this patch we spread groups
+among all possible cpus evenly.
 
-:-)
+Thanks,
+Ming
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
