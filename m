@@ -2,150 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C2053EFA72
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 07:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 146DE3EFA7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237984AbhHRF71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 01:59:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237976AbhHRF70 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 01:59:26 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C1EFC061796
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 22:58:52 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id c4so1117068plh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 22:58:52 -0700 (PDT)
+        id S237974AbhHRGAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 02:00:55 -0400
+Received: from mail-co1nam11on2049.outbound.protection.outlook.com ([40.107.220.49]:48736
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237805AbhHRGAr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 02:00:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bYRUTkRXaHXuMj+Hejk+JavVHfyTA2jnLwOu1MO7KGkyYJHR77H1X03gFlTOmXgdq8L2WIQWffg+iqEko7GLhApImQeTd34FPGQa5FdfOI+pl92VGQ6KOmjRTvtNleLqTpN7w4pd87Rg26xoZdO8ijJFNNmG2wKiC7mogHNsH+nYBgkWZCSZDxEixcVZw3C2PgsHViKeeyo+d5Baoh0cDAX5wRw5NtrebwnXPaqjQN6oaUhuJ3LBxiqIS6YBJ91XzMz/sRpfHUUxpNnRnOWM0W4v9DmdEXFxnYbcCjXpvE6yPpUQSTVGizEYBknD8USFtouBSpTiiqpdCpOoItnucw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=b6iz96RZ0Pu2UNOzkbFCbLO8MECiBtoxEqHdTXtHjDM=;
+ b=kcRdbyk8drdsPRXDGjyJuLKALJuWf2jKjMbG9kI/Y054DM2LaUFHhxpFrVZmwLc6FB+sAG97rfENEEK5wmz9Q3YgKD9umt8FwHITNGxO4cMYx8O6X+PFa3nf+zDQHZFbEKGR49k+s6ZIVBGLAj0BaiZ2Imef4SIA3csBAjd78Ig1IK1Y6zL5qkmsWbVxHDrL/8+aeh19sjdR1KY7bfxfafcrp0+0C7Cc3fdPqsEPiEfWxGMTNxGZW8yeYGs2mfv0crpknOFmEXEjtsDTTdPuKACfBl9dSWzAQ0dZPHUps752GHglrQbggsc7m8Bh13yuXLNPPUqe7lJXVO/glsNcQA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=gmail.com smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/oqvyX1+fZTz+wtMw2AZVqGvrykbTQj8oIvIXJk4fnQ=;
-        b=BiNyX/6IYojCpnpyPGFzrgnh8ilV1S48JvAdE+mM4BuP7CRu2FKtWLmHb+6pMAnjSh
-         /wfP9QCG/Q2Ukj1ZByvNzYSCb76F2+QCOquffMB7/VgJzMfI6biDam1D93oJFOcKLxY5
-         r0ui6XTLNwvZZ2QgeJ+nHG0xrCIvTYYP76CrkUOXqGHCkZrCx8j9IwfpGrJOMhMeq8y0
-         k2mkEWBfMzJhbTlNZAz6IL2S8V/0dB0U3qYFm8ylkevVbHpEgfdJ2weIyvMA0dAHIkMr
-         BJ+3m2Wz3q/+kbkLCXBH7Ci4zKCVmfsRmjz+f2zh3gygpbMTckDnXDsC8v0GIrUYRu/5
-         PVGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/oqvyX1+fZTz+wtMw2AZVqGvrykbTQj8oIvIXJk4fnQ=;
-        b=NgrrpNyomOJiIyfOVD49jOdOdMZxD0zy1DmyNt64MpL3YrzYwzCaJuRwYx2gfeNnRx
-         rR4YOLK6IqtpvdB+/1DbUyJbppvdHWUIdJFjyM5JQy5RxuJduH5uZc6kmk6gfn/NW3N1
-         /J4iq7Kz8wfMtM3Jf8Zni1lmx7jxQlBKxDwMuZ1lgJdbVY1blHN56wsGsNS2yKR8wsRf
-         gl33Ccz4m3qzigBD/eV7TdloP5jWF2Cd7b9d5iLd0ixpnD/qSHbudtazp/izsEcpGCJO
-         DAcbjR0ZMt5NdrrliuHHtfGdkaoO2HT3zcjUA0Tf5rH5TklevUFPnMI2xyxzcAy05o8w
-         XrLg==
-X-Gm-Message-State: AOAM530LyPqFy+kHw9cVvTEMoPjQAs0hzBqjkDa3JgJL6WofnWpEelwp
-        IsLPrr4+cB6/9f6z3MNc0jfveg==
-X-Google-Smtp-Source: ABdhPJxmfawJmjScyveR+qRjue44WOBbTuswMGRMZAcW5NbsgTVLKIK8N3zHMPdQxwr8K+gezRoAzQ==
-X-Received: by 2002:a17:90a:db89:: with SMTP id h9mr7820049pjv.214.1629266331439;
-        Tue, 17 Aug 2021 22:58:51 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id g14sm4668532pfr.31.2021.08.17.22.58.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 22:58:51 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 11:28:49 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-Message-ID: <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
-References: <20210817012754.8710-1-digetx@gmail.com>
- <20210817012754.8710-2-digetx@gmail.com>
- <20210817075515.vyyv7z37e6jcrhsl@vireshk-i7>
- <710261d9-7ae3-5155-c0a2-f8aed2408d0b@gmail.com>
- <20210818035533.ieqkexltfvvf2p4n@vireshk-i7>
- <5b2a80c1-9743-e633-6257-ede94c8a274c@gmail.com>
- <20210818043131.7klajx6drvvkftoc@vireshk-i7>
- <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
- <20210818045307.4brb6cafkh3adjth@vireshk-i7>
- <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=b6iz96RZ0Pu2UNOzkbFCbLO8MECiBtoxEqHdTXtHjDM=;
+ b=Oxxevvgf1G5i8W1tCB2YhvosmgIz7E+17CToMDVeGY90FXBWraDbeEIf+Ci04autL1sjkjefudxwRhjn5SZFsno9Fugde9lSI79fCbuvEF4ZlR51itMYSGEiN1djsT2PR43nZyhVYfvwnBA3e/kHlnNGYhHYy9zwqAS9ltmGMQE=
+Received: from DM5PR22CA0014.namprd22.prod.outlook.com (2603:10b6:3:101::24)
+ by CH2PR02MB6936.namprd02.prod.outlook.com (2603:10b6:610:5e::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14; Wed, 18 Aug
+ 2021 06:00:12 +0000
+Received: from DM3NAM02FT025.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:3:101:cafe::b) by DM5PR22CA0014.outlook.office365.com
+ (2603:10b6:3:101::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend
+ Transport; Wed, 18 Aug 2021 06:00:11 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ DM3NAM02FT025.mail.protection.outlook.com (10.13.4.112) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4436.19 via Frontend Transport; Wed, 18 Aug 2021 06:00:11 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Tue, 17 Aug 2021 23:00:07 -0700
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Tue, 17 Aug 2021 23:00:07 -0700
+Envelope-to: git@xilinx.com,
+ saikrishna12468@gmail.com,
+ linux-gpio@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linus.walleij@linaro.org
+Received: from [172.30.17.109] (port=44820)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1mGEcP-0005rr-8y; Tue, 17 Aug 2021 23:00:05 -0700
+Subject: Re: [PATCH] pinctrl: pinctrl-zynq: Add warning for not to use
+ 'io-standard'
+To:     Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        Michal Simek <michal.simek@xilinx.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <git@xilinx.com>, <saikrishna12468@gmail.com>
+References: <1629265999-33358-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <447d7205-f562-72c2-8317-031cd733d60c@xilinx.com>
+Date:   Wed, 18 Aug 2021 08:00:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <1629265999-33358-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 550fe484-61ba-4546-4072-08d9620d70f5
+X-MS-TrafficTypeDiagnostic: CH2PR02MB6936:
+X-Microsoft-Antispam-PRVS: <CH2PR02MB69365A58ED0A910BBC34E7C1C6FF9@CH2PR02MB6936.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZUiLyattBjq9iqfvJPKW9yU8NzQGiwLWgdXdukoGPveS8zKHmVxk9SAzVzzuM/AkWYC22sV0djtyUXSB12zV8W2l6PtqWFuO/IcmysjlEULGhiQDRLYvXyPjt9WU1Ic3rJtWBFrfpenYFM3lcmVTiEf3fQzhr7skmoLQI+frgnncaqJWxh4JMPtaORfNEJ76F5EfiTH85PnDSQBbweQ8gMPGoeafH7F2NvSNDkFqVQQBuU59+EcHWp+FC7xg7RL2Z2RdJnGclPexB76GgCU+1trBlSt6WS+7qtiJwswufzuG3Gy+T+RXs/Rj6mT7dDoC466RCIi2A85K6YZiEX0T7U0RXvDrPIRN3ywRr1cgRbHzF2mqti/sROg25LgZNs2QtgkSUL1edXwKbKbdo/08lPqYt6aIMyj5czBh8CUrG9mDcyKlFEuYRnSc+3I7rkMlitm3/znIJpHJyz5I6k3HrbGg8V9PEzK7VPsuq1pbGcVqj++K/LuB9DbBWft5zAp2pugOZa4+wH3R/fGpkv/Z8pHDHSSdYmE43C+aJ3QU+mp8iTK95iwu5hQIDblLvGtlN0iLKBtaIj2VIBNtIxV0KlsgWR9WHVn8GqDog7u22qc5tt7K/4zfYgDs6nhLprkAtOkdujcCXDi96kDQgobfA0CMTyPk19BU2nnGhAfxYXR203sEeUWh92rAssRfZNkNrnzBqIgWGiC6JMoTUfd9UrNO1J4PfEIIsvZ7WX6tP2UTjswbUCabBRYDyMvqV1y17OSo4ZI4N6ME4NedfM6GhQ==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(396003)(39860400002)(136003)(376002)(346002)(36840700001)(46966006)(36906005)(82740400003)(83380400001)(2906002)(53546011)(8676002)(47076005)(426003)(478600001)(7636003)(9786002)(8936002)(5660300002)(54906003)(110136005)(26005)(31696002)(70206006)(70586007)(36860700001)(4326008)(356005)(336012)(2616005)(44832011)(36756003)(31686004)(186003)(316002)(82310400003)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2021 06:00:11.7954
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 550fe484-61ba-4546-4072-08d9620d70f5
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT025.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR02MB6936
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-08-21, 08:21, Dmitry Osipenko wrote:
-> Yes, GENPD will cache the perf state across suspend/resume and initially
-> cached value is out of sync with h/w.
+
+
+On 8/18/21 7:53 AM, Sai Krishna Potthuri wrote:
+> This patch add warning message saying 'io-standard' property is deprecated
+> and instead use 'power-source' property for configuring power supplies.
+> This gives an indication for Zynq pinctrl users to migrate to use
+> 'power-source' property.
 > 
-> Nothing else. But let me clarify it all again.
-
-Thanks for your explanation.
-
-> Initially the performance state of all GENPDs is 0 for all devices.
+> Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+> ---
+>  drivers/pinctrl/pinctrl-zynq.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> The clock rate is preinitialized for all devices to a some default rate
-> by clk driver, or by bootloader or by assigned-clocks in DT.
+> diff --git a/drivers/pinctrl/pinctrl-zynq.c b/drivers/pinctrl/pinctrl-zynq.c
+> index a96af8a..5b269b6 100644
+> --- a/drivers/pinctrl/pinctrl-zynq.c
+> +++ b/drivers/pinctrl/pinctrl-zynq.c
+> @@ -1028,6 +1028,8 @@ static int zynq_pinconf_cfg_get(struct pinctrl_dev *pctldev,
+>  		break;
+>  	}
+>  	case PIN_CONFIG_IOSTANDARD:
+> +		dev_warn(pctldev->dev, "io-standard is deprecated, please use power-source");
+> +		fallthrough;
+>  	case PIN_CONFIG_POWER_SOURCE:
+>  		arg = zynq_pinconf_iostd_get(reg);
+>  		break;
+> @@ -1079,6 +1081,8 @@ static int zynq_pinconf_cfg_set(struct pinctrl_dev *pctldev,
+>  
+>  			break;
+>  		case PIN_CONFIG_IOSTANDARD:
+> +			dev_warn(pctldev->dev, "io-standard is deprecated, please use power-source");
+> +			fallthrough;
+>  		case PIN_CONFIG_POWER_SOURCE:
+>  			if (arg <= zynq_iostd_min || arg >= zynq_iostd_max) {
+>  				dev_warn(pctldev->dev,
 > 
-> When device is rpm-resumed, the resume callback of a device driver
-> enables the clock.
-> 
-> Before clock is enabled, the voltage needs to be configured in
-> accordance to the clk rate.
-> 
-> So now we have a GENPD with pstate=0 on a first rpm-resume, which
-> doesn't match the h/w configuration. Calling dev_pm_opp_sync() sets the
-> pstate in accordance to the h/w config.
 
-What about calling dev_pm_opp_set_rate(dev, clk_get_rate(dev)) here
-instead ? That will work, right ? The advantage is it works without
-any special routine to do so.
 
-I also wonder looking at your gr3d.c changes, you set a set-opp
-helper, but the driver doesn't call set_opp_rate at all. Who calls it
-?
+Acked-by: Michal Simek <michal.simek@xilinx.com>
 
-And if it is all about just syncing the genpd core, then can the genpd
-core do something like what clk framework does? i.e. allow a new
-optional genpd callback, get_performance_state() (just like
-set_performance_state()), which can be called initially by the core to
-get the performance to something other than zero. opp-set-rate is
-there to set the performance state and enable the stuff as well.
-That's why it looks incorrect in your case, where the function was
-only required to be called once, and you are ending up calling it on
-each resume. Limiting that with another local variable is bad as well.
+Linus: would be good to know how long we should keep the support for
+this deprecated dt property.
 
-> In a previous v7 I proposed to preset the rpm_pstate of GENPD (perf
-> level that is restored before device is rpm-resumed) from PD's
-> attach_dev callback, but Ulf didn't like that because it requires to use
-> and modify GENPD 'private' variables from a PD driver. We decided that
-> will be better to make device drivers to explicitly sync the perf state,
-> which I implemented in this v8.
-
--- 
-viresh
+Thanks,
+Michal
