@@ -2,74 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86AB33F03A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 14:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A463F03A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 14:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235966AbhHRMVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 08:21:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48704 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235606AbhHRMVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 08:21:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F40361051;
-        Wed, 18 Aug 2021 12:20:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629289257;
-        bh=r76n+lUH1cjChAlZYjOsIQBwKYMBDvkY61lTq1hdo0s=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=qlAFXXqJ8CIvbTD+B9Wznqp0KHrM21Hrj3U+WANCdxmAG+DZnJZhoXq7aSvK78sk4
-         HkT3gAIybYnb3T/PPHBH3m7JT08xTxGwvzK+3J0bd5URxHAuFM3Nu7UYVd1cePpt0O
-         AEsD2aO4TqIKGWMN3Eosys16xZtAUKjt4IK5ZnCd73sG1Mn+1OP8H90SQb61FrecfG
-         DQE9IvlPgD0Vs7UUeUZJ2oh5+e/kGs+OLWMt2SzmGKcK+q2na6VJp11lfPDLYZeO//
-         egd8ioK/OotRXb+P+CCF39PDHppoq+1o1hcH98Vbu4gfPXpbXOqyAP0sjw0cUY0XdV
-         Xp+5F6y0eVC1Q==
-Message-ID: <3e0961dec832a54bc6a59776831e5467ed231333.camel@kernel.org>
-Subject: Re: [fscrypt][RFC PATCH v2] ceph: don't allow changing layout on
- encrypted files/directories
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 18 Aug 2021 08:20:55 -0400
-In-Reply-To: <20210817140439.1442-1-lhenriques@suse.de>
-References: <20210817140439.1442-1-lhenriques@suse.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+        id S236028AbhHRMW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 08:22:29 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:55372 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235550AbhHRMW1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 08:22:27 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E144D1FFA2;
+        Wed, 18 Aug 2021 12:21:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629289311; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZwEvRtIuyZEjCL/vXUBtkJZmR2erkZdAfEZBkHpZlxw=;
+        b=Z0dWAVnQqeFhuAJpni2TL/i9Gff5CwWehE4oQF+fyNALjOxVVtNkezGMGg90YUhr2neSJ7
+        tUX3hW64JUIdL5ZiauTs2IFZkO/FOHu2TpRXUs66xEjMnR0/WGOfyiOWDuOI33wR2eliCw
+        RZMQYx3tcqFcM579BCVEq7dpmXg/7TY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629289311;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZwEvRtIuyZEjCL/vXUBtkJZmR2erkZdAfEZBkHpZlxw=;
+        b=Z+721H+As6XuSxoWxCwuLiO8DCMp1tNx9P/ZuyeViJknaTyeE43wAHb/SfcT89P28lY0A3
+        YaabV2T0bAv93iAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D03E614454;
+        Wed, 18 Aug 2021 12:21:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id w+aZMl/7HGGKJAAAMHmgww
+        (envelope-from <hare@suse.de>); Wed, 18 Aug 2021 12:21:51 +0000
+Subject: Re: [PATCH v5 3/3] nvme-fc: fix controller reset hang during traffic
+To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        James Smart <james.smart@broadcom.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Wen Xiong <wenxiong@us.ibm.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        James Smart <jsmart2021@gmail.com>
+References: <20210818120530.130501-1-dwagner@suse.de>
+ <20210818120530.130501-4-dwagner@suse.de>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <ba6ebacb-6554-7683-7a7f-577241356bfa@suse.de>
+Date:   Wed, 18 Aug 2021 14:21:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210818120530.130501-4-dwagner@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-08-17 at 15:04 +0100, Luis Henriques wrote:
-> Encryption is currently only supported on files/directories with layouts
-> where stripe_count=1.  Forbid changing layouts when encryption is involved.
+On 8/18/21 2:05 PM, Daniel Wagner wrote:
+> From: James Smart <jsmart2021@gmail.com>
 > 
-> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> commit fe35ec58f0d3 ("block: update hctx map when use multiple maps")
+> exposed an issue where we may hang trying to wait for queue freeze
+> during I/O. We call blk_mq_update_nr_hw_queues which may attempt to freeze
+> the queue. However we never started queue freeze when starting the
+> reset, which means that we have inflight pending requests that entered the
+> queue that we will not complete once the queue is quiesced.
+> 
+> So start a freeze before we quiesce the queue, and unfreeze the queue
+> after we successfully connected the I/O queues (the unfreeze is already
+> present in the code). blk_mq_update_nr_hw_queues will be called only
+> after we are sure that the queue was already frozen.
+> 
+> This follows to how the pci driver handles resets.
+> 
+> This patch added logic introduced in commit 9f98772ba307 "nvme-rdma: fix
+> controller reset hang during traffic".
+> 
+> Signed-off-by: James Smart <jsmart2021@gmail.com>
+> CC: Sagi Grimberg <sagi@grimberg.me>
+> Tested-by: Daniel Wagner <dwagner@suse.de>
+> Reviewed-by: Daniel Wagner <dwagner@suse.de>
 > ---
-> Changes since v1:
-> - dropped changes to ceph_sync_setxattr(), MDS shall be responsible for
->   preventing layout changes on encrypted dirs/files
+>  drivers/nvme/host/fc.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 > 
->  fs/ceph/ioctl.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/fs/ceph/ioctl.c b/fs/ceph/ioctl.c
-> index 477ecc667aee..480d18bb2ff0 100644
-> --- a/fs/ceph/ioctl.c
-> +++ b/fs/ceph/ioctl.c
-> @@ -294,6 +294,10 @@ static long ceph_set_encryption_policy(struct file *file, unsigned long arg)
->  	struct inode *inode = file_inode(file);
->  	struct ceph_inode_info *ci = ceph_inode(inode);
+> diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
+> index 3ff783a2e9f7..99dadab2724c 100644
+> --- a/drivers/nvme/host/fc.c
+> +++ b/drivers/nvme/host/fc.c
+> @@ -2974,9 +2974,10 @@ nvme_fc_recreate_io_queues(struct nvme_fc_ctrl *ctrl)
+>  			return -ENODEV;
+>  		}
+>  		blk_mq_update_nr_hw_queues(&ctrl->tag_set, nr_io_queues);
+> -		nvme_unfreeze(&ctrl->ctrl);
+>  	}
 >  
-> +	/* encrypted directories can't have striped layout */
-> +	if (ci->i_layout.stripe_count > 1)
-> +		return -EINVAL;
+> +	nvme_unfreeze(&ctrl->ctrl);
 > +
->  	ret = vet_mds_for_fscrypt(file);
->  	if (ret)
->  		return ret;
+>  	return 0;
+>  
+>  out_delete_hw_queues:
+> @@ -3215,6 +3216,9 @@ nvme_fc_delete_association(struct nvme_fc_ctrl *ctrl)
+>  	ctrl->iocnt = 0;
+>  	spin_unlock_irqrestore(&ctrl->lock, flags);
+>  
+> +	if (ctrl->ctrl.queue_count > 1)
+> +		nvme_start_freeze(&ctrl->ctrl);
+> +
+>  	__nvme_fc_abort_outstanding_ios(ctrl, false);
+>  
+>  	/* kill the aens as they are a separate path */
+> 
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-Thanks Luis. I've gone ahead and merged this into my fscrypt pile.
+Cheers,
+
+Hannes
 -- 
-Jeff Layton <jlayton@kernel.org>
-
+Dr. Hannes Reinecke		           Kernel Storage Architect
+hare@suse.de			                  +49 911 74053 688
+SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), GF: Felix Imendörffer
