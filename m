@@ -2,228 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 175383F0028
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:14:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF7E3F0025
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231926AbhHRJPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:15:03 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:22241 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231373AbhHRJO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:14:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629278062; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=tl/IdrL1MX3Cp8bKiIsLn/8t7yxW9DakiGF9QhbN0oU=; b=IHiO05Ont7QvCpcanCwtPAi4nDG1DZghxd7yhnhALoLMU072C+TmKfJe9eqFG6L6WYCVg5yr
- wLjsmR4bRsyQOdL3t1fbVpktKV501MWayfTvhDVVTjRpUwc6ceFZTY/4ijQ2VM106uxpOGLp
- 8QhURYArlcdXZLa4wPCLfj47SHQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 611ccf6d66ff1079041e29ef (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 18 Aug 2021 09:14:21
- GMT
-Sender: sanm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3949EC43460; Wed, 18 Aug 2021 09:14:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.104] (unknown [49.206.46.153])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sanm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 799BCC4338F;
-        Wed, 18 Aug 2021 09:14:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 799BCC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v8 6/6] usb: dwc3: qcom: Keep power domain on to support
- wakeup
-To:     Felipe Balbi <balbi@kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pratham Pratap <prathampratap@codeaurora.org>
-References: <1624882097-23265-1-git-send-email-sanm@codeaurora.org>
- <1624882097-23265-7-git-send-email-sanm@codeaurora.org>
- <YNo97HQXmYjUNz/C@google.com> <87fswjzx52.fsf@kernel.org>
-From:   Sandeep Maheswaram <sanm@codeaurora.org>
-Message-ID: <5ecee092-dba9-071c-940b-55e16f4d7a90@codeaurora.org>
-Date:   Wed, 18 Aug 2021 14:44:13 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231342AbhHRJPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 05:15:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230428AbhHRJOz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 05:14:55 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E741C0617AD
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:14:20 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id qe12-20020a17090b4f8c00b00179321cbae7so1922063pjb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:14:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tDuCq4cpa/FhfVLg3d4eOXI0t92SH+lRUdr1ZBj+304=;
+        b=quAhTr+R/08xh/ignvyvF/El1dD/NQftWfiNTcAu87cJhuBhgI+As0zoEiydqeW6PP
+         Ex/zHp4EDoA27CiqypV1XRJjyjppnIr9cuHPeEqT4Jz0u4Gd7rGoODV0vOYF2r+fXVrC
+         O9YNeAY5lMNde/fcVIInzFs4EQNgUzhxxcNX6YMHjHSIPhU1rXEQOl9Aq3E25JLQ/9fv
+         VxP/TlWw72/n6skEH8miH2qbrmh27V7jR6dmqc1oF+jbwQP/bhXkGIrzGuJgVHwfQUpg
+         jLxJj1fuqBdXtzbuG0/ZFv6pjltmBS+1GsQZASCe+7q/ocD5Ye+29smqIZ7DN+BRR4O7
+         VT3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tDuCq4cpa/FhfVLg3d4eOXI0t92SH+lRUdr1ZBj+304=;
+        b=G+O2vlsPq1PEzshyJAOBKiBPpsfG27CnWPr6XM+hBofUCGq9iJkMBBadXkDp76eUUj
+         JMrKPLcF6kpCIiE8tQwFYVg8dfWyzW5bZira0F6hblDcZ913U3+/c3z8cFWiJwHKoxXO
+         QcZWPsltnfYMyjfiAOUto9zjvFEIyUP3DtK3pKX+M6o2SjtBVqMeladDyz0y9nlS3A9S
+         /MfJfOtAKidOVS/k9qk5+/UKR3X3SdP2j7/g/x+ev234uEjY3FDLoeS/OOJYzqzAhSQh
+         lg8ZJ4OWU9QAjX+6YlHjOm7rDodOyX8D8m1kBnpBeJvIokbdMsvZ8dt7yoM5ECfake0I
+         z9eA==
+X-Gm-Message-State: AOAM530Nxr1wLkFRbOwbAJYuED+e9558OsL6gpMcyb5WSaGtQX8S7959
+        MTE43QEnBrLfyB8KA7OKEwR9ZQ==
+X-Google-Smtp-Source: ABdhPJz4yEie/eMLpBAmymSzx5jt3Od7muuoKSX0aK0QfqCy9SYA7S2Wvgljmd2wM1mkIsijUEW0lQ==
+X-Received: by 2002:a17:90a:d791:: with SMTP id z17mr8231461pju.203.1629278059957;
+        Wed, 18 Aug 2021 02:14:19 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id a8sm1540816pfo.79.2021.08.18.02.14.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 02:14:19 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 14:44:17 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
+Message-ID: <20210818091417.dvlnsxlgybdsn76x@vireshk-i7>
+References: <20210818035533.ieqkexltfvvf2p4n@vireshk-i7>
+ <5b2a80c1-9743-e633-6257-ede94c8a274c@gmail.com>
+ <20210818043131.7klajx6drvvkftoc@vireshk-i7>
+ <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
+ <20210818045307.4brb6cafkh3adjth@vireshk-i7>
+ <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
+ <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
+ <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
+ <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
+ <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87fswjzx52.fsf@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Felipe,
+On 18-08-21, 10:29, Ulf Hansson wrote:
+> Me and Dmitry discussed adding a new genpd callback for this. I agreed
+> that it seems like a reasonable thing to add, if he insists.
+> 
+> The intent was to invoke the new callback from __genpd_dev_pm_attach()
+> when the device has been attached to its genpd. This allows the
+> callback, to invoke clk_get_rate() and then dev_pm_opp_set_rate(), to
+> update the vote according to the current state of the HW.
 
-On 7/12/2021 3:12 PM, Felipe Balbi wrote:
-> Hi,
->
-> Matthias Kaehlcke <mka@chromium.org> writes:
->> On Mon, Jun 28, 2021 at 05:38:17PM +0530, Sandeep Maheswaram wrote:
->>> If wakeup capable devices are connected to the controller (directly
->>> or through hubs) at suspend time keep the power domain on in order
->>> to support wakeup from these devices.
->>>
->>> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
->>> ---
->>> Checking phy_power_off flag instead of usb_wakeup_enabled_descendants
->>> to keep gdsc active.
->>>
->>>   drivers/usb/dwc3/dwc3-qcom.c | 13 +++++++++++++
->>>   1 file changed, 13 insertions(+)
->>>
->>> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
->>> index 82125bc..ba31aa3 100644
->>> --- a/drivers/usb/dwc3/dwc3-qcom.c
->>> +++ b/drivers/usb/dwc3/dwc3-qcom.c
->>> @@ -17,6 +17,7 @@
->>>   #include <linux/of_platform.h>
->>>   #include <linux/platform_device.h>
->>>   #include <linux/phy/phy.h>
->>> +#include <linux/pm_domain.h>
->>>   #include <linux/usb/of.h>
->>>   #include <linux/reset.h>
->>>   #include <linux/iopoll.h>
->>> @@ -355,9 +356,15 @@ static int dwc3_qcom_suspend(struct dwc3_qcom *qcom)
->>>   	u32 val;
->>>   	int i, ret;
->>>   
->>> +	struct dwc3 *dwc = platform_get_drvdata(qcom->dwc3);
->>> +	struct generic_pm_domain *genpd = pd_to_genpd(qcom->dev->pm_domain);
->>> +
->>>   	if (qcom->is_suspended)
->>>   		return 0;
->>>   
->>> +	if (!dwc->phy_power_off && dwc->xhci)
->>> +		genpd->flags |= GENPD_FLAG_ACTIVE_WAKEUP;
->>> +
->>>   	val = readl(qcom->qscratch_base + PWR_EVNT_IRQ_STAT_REG);
->>>   	if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
->>>   		dev_err(qcom->dev, "HS-PHY not in L2\n");
->>> @@ -382,9 +389,15 @@ static int dwc3_qcom_resume(struct dwc3_qcom *qcom)
->>>   	int ret;
->>>   	int i;
->>>   
->>> +	struct dwc3 *dwc = platform_get_drvdata(qcom->dwc3);
->>> +	struct generic_pm_domain *genpd = pd_to_genpd(qcom->dev->pm_domain);
->>> +
->>>   	if (!qcom->is_suspended)
->>>   		return 0;
->>>   
->>> +	if (dwc->xhci)
->>> +		genpd->flags &= ~GENPD_FLAG_ACTIVE_WAKEUP;
->>> +
->>>   	if (device_may_wakeup(qcom->dev))
->>>   		dwc3_qcom_disable_interrupts(qcom);
->>>   
->> This is essentially the same as v7, which Felipe NAKed
->> (https://patchwork.kernel.org/project/linux-arm-msm/patch/1619586716-8687-6-git-send-email-sanm@codeaurora.org/)
->>
->> I think Felipe wants to see the handling of the power domain in the
->> xhci-plat driver. One problem here is that the power domain is owned
-> this is not exactly what I meant to say, though. I want drivers to be
-> self-contained. I.e. dwc3 doesn't modify xhci data and vice-versa. There
-> are a few assummpmtions that we can make, though. The structure is
-> usually like this:
->
-> glue {
->    dwc3 {
->      xhci
->    };
-> };
->
-> This means that in order for glue_suspend() to run, dwc3 has to suspend
-> first and xhci has to suspend before dwc3.
->
-> For example, in the suspend call above, qcom (the glue) is directly
-> accessing dwc3 core data, which is incorrect. It looks like we want to
-> know if the PHY is not powered off and if it isn't, then we want to
-> change the power domain ACTIVE_WAKEUP flag. Now, phy_power_off is false
-> whenever any of xHCI's children enable USB wakeup.
->
-> It seems like we need to way to generically propagate that knowledge up
-> the parent tree. I.e., a parent needs to know if its child is wakeup
-> capable, then dwc3 could, in its suspend routine:
->
-> static int dwc3_suspend(struct device *dev)
-> {
-> 	/* ... */
->
-> 	if (device_children_wakeup_capable(dev))
->          	device_enable_wakeup(dev);
->
-> 	/* ... */
-> }
+I wouldn't call dev_pm_opp_set_rate() from there, since it means
+configure and enable (both) for different resources, clk, regulator,
+genpd, etc..
 
-Can we use like  this device_may_wakeup(&dwc->xhci->dev) to check if 
-children is wakeup capable like below ?
+What we need here is just configure. So something like this then:
 
-static int dwc3_suspend_common(struct dwc3 *dwc, pm_message_t msg)
-{
-	
-/* ... */
-	if (!PMSG_IS_AUTO(msg) && !device_may_wakeup(&dwc->xhci->dev)) {
-			dwc3_core_exit(dwc);
-			break;
-	}
+- genpd->get_performance_state()
+  -> dev_pm_opp_get_current_opp() //New API
+  -> dev_pm_genpd_set_performance_state(dev, current_opp->pstate);
 
-/* ... */
+This can be done just once from probe() then.
 
-  }
+> I am not sure if/why that approach seemed insufficient?
+> 
+> Another option to solve the problem, I think, is simply to patch
+> drivers to let them call dev_pm_opp_set_rate() during ->probe(), this
+> should synchronize the HW state too.
 
-> and similarly for qcom glue:
->
-> static int dwc3_qcom_suspend(struct device *dev)
-> {
-> 	/* ... */
->
->
-> 	if (device_children_wakeup_capable(dev)) {
->          	device_enable_wakeup(dev);
-> 		genpd->flags |= GENPD_FLAG_ACTIVE_WAKEUP;
->          }
->
-> 	/* ... */
-> }
->
-> It also seems plausible that this could be done at driver core and
-> completely hidden away from drivers.
+Dmitry already mentioned that this will make the device start
+consuming power, and he doesn't want that, else we need an explicit
+disble call as well.
 
-And in qcom glue like this
-
-static int dwc3_qcom_suspend(struct dwc3_qcom *qcom)
-{
-
-/* ... */
-
-     struct dwc3 *dwc = platform_get_drvdata(qcom->dwc3);
-
-
-     if (device_may_wakeup(&dwc->xhci->dev) && dwc->xhci)
-         genpd->flags |= GENPD_FLAG_ACTIVE_WAKEUP;
-
-/* ... */
-
-}
-
-
+-- 
+viresh
