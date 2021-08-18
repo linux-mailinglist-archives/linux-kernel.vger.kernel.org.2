@@ -2,197 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 409C43F0142
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 12:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF323F0147
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 12:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233477AbhHRKIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 06:08:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40996 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232954AbhHRKIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 06:08:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED15860524;
-        Wed, 18 Aug 2021 10:08:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629281287;
-        bh=kXLnEEJGec2eHlvfXuRhjzOVRMGWMGYMdxf6pPnhCEI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DoTYj/xgaXnPG/f7+VG4/U1MQnMebyvI/oU1GFrS1OgLGAh5hpohjrRAhZsRDvRcG
-         eBbKUYmemu/gl8EYLGgEptDnIi/VMd6Tx+BT8ZXqyS2yqCphWLRUruI1c1sucQRgAN
-         nD0hPdBJhATiSCOEa+trgP1kurPYKCH9R7UsaahfrDDZKWZjiN/Xzu7daTENW3vQET
-         ymKNbReIGkjxfdRU4/yrtxmp0gX+11M0JTf6IFo3wg51ift9G3QzzY/Il0aW2iOuHU
-         ImvyqLvOtQArM5QPJa1RxKrXR9reqCSAsE9537Q235bDhSvIgT6GiZv1MMhQipP36/
-         bb2AjmY0Dx6ZA==
-Date:   Wed, 18 Aug 2021 12:08:02 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org
-Subject: Re: [PATCH v11 01/11] phy: HiSilicon: Add driver for Kirin 970 PCIe
- PHY
-Message-ID: <20210818120802.3ba5fd59@coco.lan>
-In-Reply-To: <20210818110123.33eba838@coco.lan>
-References: <cover.1628755058.git.mchehab+huawei@kernel.org>
-        <7788c5ead6d6f5a6f9e5faaee4460eb2149967c4.1628755058.git.mchehab+huawei@kernel.org>
-        <YRuSnXHSZHhBC40r@matsya>
-        <20210818110123.33eba838@coco.lan>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S233855AbhHRKJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 06:09:13 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10188 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233539AbhHRKI7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 06:08:59 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17IA4uDw116913;
+        Wed, 18 Aug 2021 06:08:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=QBg4YKjBgxoS8cUqlhRCYzFYZVz/JCU0DmHCbhz9S9o=;
+ b=LXwI+QnATCZVKVwppTE6mo9asSGpnvSAx0F/D9Ij5AXfHbtl7drbvDaXiTTP0hs7700a
+ c+HxvhfoSfQrwx+VqQa1vP8C7U2n3zEJvRIH8Z1+oq/0KKa3CkFWPrjDNAtwZqBHDAVP
+ JqCXJJqF+9Sje/kyQ3o16iVrkAA5qQBHH6+wfHYyFaU7+uUb07uMD/9G/oAHE9uotDcn
+ MDqoC4GJR3dHA5BQ3aUZ06Xbk2TVAw8VPb9JiFNXPhGexqmCFRHrLwQmeU5JHPSSBNnM
+ aeZ1+mv5XzE8m5Y3wD2dghxRVSKdz+I0+TajRvbB6X++dHhU926H8PJr6SLxVKAvkcpH VQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3agp1nxc9w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Aug 2021 06:08:24 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17IA52Oo117411;
+        Wed, 18 Aug 2021 06:08:24 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3agp1nxc9f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Aug 2021 06:08:24 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17IA7Ad1000447;
+        Wed, 18 Aug 2021 10:08:22 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 3ae53hxcwe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Aug 2021 10:08:22 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17IA4p7t53477812
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Aug 2021 10:04:51 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A9EE34C05E;
+        Wed, 18 Aug 2021 10:08:18 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1BC444C04A;
+        Wed, 18 Aug 2021 10:08:18 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.145.14.177])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 18 Aug 2021 10:08:18 +0000 (GMT)
+Date:   Wed, 18 Aug 2021 12:08:15 +0200
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     Janis Schoetterl-Glausch <scgl@linux.ibm.com>
+Cc:     kvm@vger.kernel.org, borntraeger@de.ibm.com, frankja@linux.ibm.com,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, david@redhat.com,
+        cohuck@redhat.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] KVM: s390: gaccess: Refactor access address range
+ check
+Message-ID: <20210818120815.6e048149@p-imbrenda>
+In-Reply-To: <20210816150718.3063877-3-scgl@linux.ibm.com>
+References: <20210816150718.3063877-1-scgl@linux.ibm.com>
+        <20210816150718.3063877-3-scgl@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ffk4o2FR6aiU1o0tQRAl5esKg0JbwDGw
+X-Proofpoint-ORIG-GUID: drQLDQnLtpKqS6EF83ZTGxwhGrRhDw3n
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-18_03:2021-08-17,2021-08-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=999
+ mlxscore=0 suspectscore=0 bulkscore=0 malwarescore=0 lowpriorityscore=0
+ phishscore=0 priorityscore=1501 spamscore=0 impostorscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108180063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 18 Aug 2021 11:01:23 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+On Mon, 16 Aug 2021 17:07:17 +0200
+Janis Schoetterl-Glausch <scgl@linux.ibm.com> wrote:
 
-> Hi Vinod,
+> Do not round down the first address to the page boundary, just translate
+> it normally, which gives the value we care about in the first place.
+> Given this, translating a single address is just the special case of
+> translating a range spanning a single page.
 > 
-> Em Tue, 17 Aug 2021 16:12:37 +0530
-> Vinod Koul <vkoul@kernel.org> escreveu:
+> Make the output optional, so the function can be used to just check a
+> range.
+
+I like the idea, but see a few nits below
+
 > 
-> > > +	/* FIXME: calling it causes an Asynchronous SError interrupt */
-> > > +//	kirin_pcie_clk_ctrl(phy, false);    
-> > 
-> > when will you fix the fixme and pls remove the deadcode  
+> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
+> ---
+>  arch/s390/kvm/gaccess.c | 91 ++++++++++++++++++-----------------------
+>  1 file changed, 39 insertions(+), 52 deletions(-)
 > 
-> Working with clocks on this SoC is very tricky: there are lots of clock
-> lines (~70) that are critical for this device to work. Such lines are
-> enabled via the Device's firmware, and are supposed to be always
-> powered. Powering off such clock lines cause a SError.
-> 
-> Most clocks on this device are managed by the clk-hikey3670 driver.
-> At the current state of clk-hi3670, the only way for HiKey 970
-> to even boot is to add:
-> 
-> 	clk_ignore_unused=true
-> 
-> as a Kernel boot parameter. That is the solution given by the downstream
-> official distributions for HiKey970 at 96boards.
-> 
-> The fix is to flag the critical clocks with CLK_IS_CRITICAL at the
-> clk-hi3670 driver, but finding the right clock set has been a challenge.
-> 
-> I spent the last couple of weeks trying to identify the critical ones,
-> as I'm aiming to be able to use a Kernel built with a default arm64
-> one of my goals is to have this device working fine with a
-> "make defconfig" Kernel.
-> 
-> So, I added this patch:
-> 
-> 	https://lore.kernel.org/lkml/2d2de5e902ced072bcfd5e5311d6b10326b9245b.1627041240.git.mchehab+huawei@kernel.org/
-> 
-> to my tree (which reduces the set of clocks using CLK_IGNORE_UNUSED
-> from 308 to 163 clocks). Than I ran script that was dropping the
-> flag one by one, boots the new Kernel and do a sanity check. When it 
-> fails to boot, I manually dropped the patch, and re-run the script
-> to test the remaining clocks. After a couple of weeks, I reached a patch
-> with 78 clock lines that seemed critical, but the resulting patch was
-> not stable, as, depending on the day I boot the Kernel with such patch,
-> it crashes with SError in a couple of seconds after booting, or 
-> cause the Ethernet firmware to not load.
-> 
-> I intend to keep trying to find the clock lines that can't be disabled,
-> but this is very time consuming, as I couldn't find any documentation
-> about that. So, it has to be done empirically.
-> 
+> diff --git a/arch/s390/kvm/gaccess.c b/arch/s390/kvm/gaccess.c
+> index df83de0843de..e5a19d8b30e2 100644
+> --- a/arch/s390/kvm/gaccess.c
+> +++ b/arch/s390/kvm/gaccess.c
+> @@ -794,35 +794,45 @@ static int low_address_protection_enabled(struct kvm_vcpu *vcpu,
+>  	return 1;
+>  }
+>  
+> -static int guest_page_range(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar,
+> -			    unsigned long *pages, unsigned long nr_pages,
+> -			    const union asce asce, enum gacc_mode mode)
+> +/* Stores the gpas for each page in a real/virtual range into @gpas
+> + * Modifies the 'struct kvm_s390_pgm_info pgm' member of @vcpu in the same
+> + * way read_guest/write_guest do, the meaning of the return value is likewise
+
+this comment is a bit confusing; why telling us to look what a
+different function is doing?
+
+either don't mention this at all (since it's more or less the expected
+behaviour), or explain in full what's going on
+
+> + * the same.
+> + * If @gpas is NULL only the checks are performed.
+> + */
+> +static int guest_range_to_gpas(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar,
+> +			       unsigned long *gpas, unsigned long len,
+> +			       const union asce asce, enum gacc_mode mode)
+>  {
+>  	psw_t *psw = &vcpu->arch.sie_block->gpsw;
+> +	unsigned long gpa;
+> +	unsigned int seg;
+> +	unsigned int offset = offset_in_page(ga);
+>  	int lap_enabled, rc = 0;
+>  	enum prot_type prot;
+>  
+>  	lap_enabled = low_address_protection_enabled(vcpu, asce);
+> -	while (nr_pages) {
+> +	while ((seg = min(PAGE_SIZE - offset, len)) != 0) {
+
+I'm not terribly fond of assignments-as-values; moreover offset is used
+only once.
+
+why not something like:
+
+	seg = min(PAGE_SIZE - offset, len);
+	while (seg) {
+
+		...
+
+		seg = min(PAGE_SIZE, len);
+	}
+
+or maybe even:
+
+	seg = min(PAGE_SIZE - offset, len);
+	for (; seg; seg = min(PAGE_SIZE, len)) {
+
+(although the one with the while is perhaps more readable)
+
+>  		ga = kvm_s390_logical_to_effective(vcpu, ga);
+>  		if (mode == GACC_STORE && lap_enabled && is_low_address(ga))
+>  			return trans_exc(vcpu, PGM_PROTECTION, ga, ar, mode,
+>  					 PROT_TYPE_LA);
+> -		ga &= PAGE_MASK;
+>  		if (psw_bits(*psw).dat) {
+> -			rc = guest_translate(vcpu, ga, pages, asce, mode, &prot);
+> +			rc = guest_translate(vcpu, ga, &gpa, asce, mode, &prot);
+>  			if (rc < 0)
+>  				return rc;
+>  		} else {
+> -			*pages = kvm_s390_real_to_abs(vcpu, ga);
+> -			if (kvm_is_error_gpa(vcpu->kvm, *pages))
+> +			gpa = kvm_s390_real_to_abs(vcpu, ga);
+> +			if (kvm_is_error_gpa(vcpu->kvm, gpa))
+>  				rc = PGM_ADDRESSING;
+>  		}
+>  		if (rc)
+>  			return trans_exc(vcpu, rc, ga, ar, mode, prot);
+> -		ga += PAGE_SIZE;
+> -		pages++;
+> -		nr_pages--;
+> +		if (gpas)
+> +			*gpas++ = gpa;
+> +		offset = 0;
+> +		ga += seg;
+> +		len -= seg;
+>  	}
+>  	return 0;
+>  }
+> @@ -845,10 +855,10 @@ int access_guest(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar, void *data,
+>  		 unsigned long len, enum gacc_mode mode)
+>  {
+>  	psw_t *psw = &vcpu->arch.sie_block->gpsw;
+> -	unsigned long nr_pages, gpa, idx;
+> +	unsigned long nr_pages, idx;
+>  	unsigned int seg;
+> -	unsigned long pages_array[2];
+> -	unsigned long *pages;
+> +	unsigned long gpa_array[2];
+> +	unsigned long *gpas;
+
+reverse Christmas tree?
+
+also, since you're touching this: have you checked if a different size
+for the array would bring any benefit?
+2 seems a little too small, but I have no idea if anything bigger would
+bring any advantages.
+
+>  	int need_ipte_lock;
+>  	union asce asce;
+>  	int rc;
+> @@ -860,27 +870,25 @@ int access_guest(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar, void *data,
+>  	if (rc)
+>  		return rc;
+>  	nr_pages = (((ga & ~PAGE_MASK) + len - 1) >> PAGE_SHIFT) + 1;
+> -	pages = pages_array;
+> -	if (nr_pages > ARRAY_SIZE(pages_array))
+> -		pages = vmalloc(array_size(nr_pages, sizeof(unsigned long)));
+> -	if (!pages)
+> +	gpas = gpa_array;
+> +	if (nr_pages > ARRAY_SIZE(gpa_array))
+> +		gpas = vmalloc(array_size(nr_pages, sizeof(unsigned long)));
+> +	if (!gpas)
+>  		return -ENOMEM;
+>  	need_ipte_lock = psw_bits(*psw).dat && !asce.r;
+>  	if (need_ipte_lock)
+>  		ipte_lock(vcpu);
+> -	rc = guest_page_range(vcpu, ga, ar, pages, nr_pages, asce, mode);
+> +	rc = guest_range_to_gpas(vcpu, ga, ar, gpas, len, asce, mode);
+>  	for (idx = 0; idx < nr_pages && !rc; idx++) {
+> -		gpa = pages[idx] + offset_in_page(ga);
+> -		seg = min(PAGE_SIZE - offset_in_page(gpa), len);
+> -		rc = access_guest_frame(vcpu->kvm, mode, gpa, data, seg);
+> +		seg = min(PAGE_SIZE - offset_in_page(gpas[idx]), len);
+> +		rc = access_guest_frame(vcpu->kvm, mode, gpas[idx], data, seg);
+>  		len -= seg;
+> -		ga += seg;
+>  		data += seg;
+>  	}
+>  	if (need_ipte_lock)
+>  		ipte_unlock(vcpu);
+> -	if (nr_pages > ARRAY_SIZE(pages_array))
+> -		vfree(pages);
+> +	if (nr_pages > ARRAY_SIZE(gpa_array))
+> +		vfree(gpas);
+>  	return rc;
+>  }
+>  
+> @@ -914,8 +922,6 @@ int access_guest_real(struct kvm_vcpu *vcpu, unsigned long gra,
+>  int guest_translate_address(struct kvm_vcpu *vcpu, unsigned long gva, u8 ar,
+>  			    unsigned long *gpa, enum gacc_mode mode)
+>  {
+> -	psw_t *psw = &vcpu->arch.sie_block->gpsw;
+> -	enum prot_type prot;
+>  	union asce asce;
+>  	int rc;
+>  
+> @@ -923,23 +929,7 @@ int guest_translate_address(struct kvm_vcpu *vcpu, unsigned long gva, u8 ar,
+>  	rc = get_vcpu_asce(vcpu, &asce, gva, ar, mode);
+>  	if (rc)
+>  		return rc;
+> -	if (is_low_address(gva) && low_address_protection_enabled(vcpu, asce)) {
+> -		if (mode == GACC_STORE)
+> -			return trans_exc(vcpu, PGM_PROTECTION, gva, 0,
+> -					 mode, PROT_TYPE_LA);
+> -	}
 > -
-> 
-> In any case, fixing it doesn't sound a critical issue for the PHY
-> driver. I mean, right now, this patchset allows removing and 
-> re-inseting the PCIe driver, which is already an improvement over the
-> original upstream driver, which was missing the power-off logic for
-> Kirin 960.
-> 
-> With this patchset, both power-off/power-on logic for both HiKey960
-> (where the PHY is inside the pcie-kirin driver) and for HiKey970,
-> which uses this PHY driver. On both devices, I tested an endless loop 
-> with rmmod/modprobe for the PCIe.
-> 
-> Besides that, in practice, removing PCIe in runtime is something that
-> people usually don't do.
-> 
-> So, while it would be cool to balance the clock disable logic,
-> I don't think this is a critical issue in this particular case.
-> 
-> Thanks,
-> Mauro
+> -	if (psw_bits(*psw).dat && !asce.r) {	/* Use DAT? */
+> -		rc = guest_translate(vcpu, gva, gpa, asce, mode, &prot);
+> -		if (rc > 0)
+> -			return trans_exc(vcpu, rc, gva, 0, mode, prot);
+> -	} else {
+> -		*gpa = kvm_s390_real_to_abs(vcpu, gva);
+> -		if (kvm_is_error_gpa(vcpu->kvm, *gpa))
+> -			return trans_exc(vcpu, rc, gva, PGM_ADDRESSING, mode, 0);
+> -	}
+> -
+> -	return rc;
+> +	return guest_range_to_gpas(vcpu, gva, ar, gpa, 1, asce, mode);
+>  }
+>  
+>  /**
+> @@ -948,17 +938,14 @@ int guest_translate_address(struct kvm_vcpu *vcpu, unsigned long gva, u8 ar,
+>  int check_gva_range(struct kvm_vcpu *vcpu, unsigned long gva, u8 ar,
+>  		    unsigned long length, enum gacc_mode mode)
+>  {
+> -	unsigned long gpa;
+> -	unsigned long currlen;
+> +	union asce asce;
+>  	int rc = 0;
+>  
+> +	rc = get_vcpu_asce(vcpu, &asce, gva, ar, mode);
+> +	if (rc)
+> +		return rc;
+>  	ipte_lock(vcpu);
+> -	while (length > 0 && !rc) {
+> -		currlen = min(length, PAGE_SIZE - (gva % PAGE_SIZE));
+> -		rc = guest_translate_address(vcpu, gva, ar, &gpa, mode);
+> -		gva += currlen;
+> -		length -= currlen;
+> -	}
+> +	rc = guest_range_to_gpas(vcpu, gva, ar, NULL, length, asce, mode);
+>  	ipte_unlock(vcpu);
+>  
+>  	return rc;
 
-Btw, this is one of such panic errors:
-
-[    4.468948] hi3670_pcie_phy fc000000.pcie-phy: PIPE clk is not stable
-[    4.522530] SError Interrupt on CPU4, code 0xbf000002 -- SError
-[    4.522535] CPU: 4 PID: 223 Comm: systemd-udevd Not tainted 5.14.0-rc1+ #370
-[    4.522537] Hardware name: HiKey970 (DT)
-[    4.522539] pstate: 400000c5 (nZcv daIF -PAN -UAO -TCO BTYPE=--)
-[    4.522540] pc : el1_interrupt+0x20/0x80
-[    4.522542] lr : el1h_64_irq_handler+0x18/0x24
-[    4.522543] sp : ffff800012903610
-[    4.522543] x29: ffff800012903610 x28: ffff000108410e40 x27: ffff0001bf3e4100
-[    4.522551] x26: 0000000000000000 x25: 0000000000000000 x24: ffff0001009dec10
-[    4.522554] x23: 0000000040000005 x22: ffff800010ed1330 x21: ffff800012903790
-[    4.522556] x20: ffff8000104e42e0 x19: ffff800012903640 x18: 0000000000000000
-[    4.522559] x17: 0000000000000000 x16: 0000000000000000 x15: 0763072007450750
-[    4.522563] x14: 074907500720073a x13: ffff0001b87e0000 x12: 000000000000053a
-[    4.522565] x11: 00000000000001be x10: ffff0001bf2386c0 x9 : 00000000ffff0000
-[    4.522568] x8 : ffff0001b87e0000 x7 : ffff0001bf2386c0 x6 : 0000000000000000
-[    4.522571] x5 : ffff00010370aac0 x4 : ffff000108410e40 x3 : ffff800011f20cd8
-[    4.522573] x2 : ffff000108410e40 x1 : 00000000000000c0 x0 : ffff800012903640
-[    4.522577] Kernel panic - not syncing: Asynchronous SError Interrupt
-[    4.522578] CPU: 4 PID: 223 Comm: systemd-udevd Not tainted 5.14.0-rc1+ #370
-[    4.522579] Hardware name: HiKey970 (DT)
-[    4.522579] Call trace:
-[    4.522580]  dump_backtrace+0x0/0x1e0
-[    4.522581]  show_stack+0x18/0x24
-[    4.522581]  dump_stack_lvl+0x68/0x84
-[    4.522582]  dump_stack+0x18/0x34
-[    4.522583]  panic+0x16c/0x334
-[    4.522583]  nmi_panic+0x8c/0x90
-[    4.522584]  arm64_serror_panic+0x78/0x84
-[    4.522585]  do_serror+0x58/0x5c
-[    4.522586]  el1h_64_error_handler+0x30/0x50
-[    4.522586]  el1h_64_error+0x78/0x7c
-[    4.522588]  el1_interrupt+0x20/0x80
-[    4.522588]  el1h_64_irq_handler+0x18/0x24
-[    4.522589]  el1h_64_irq+0x78/0x7c
-[    4.522590]  mutex_lock_io+0xf0/0x370
-[    4.522591]  clk_unprepare+0x28/0x50
-[    4.522591]  kirin_pcie_clk_ctrl+0x164/0x1a0 [phy_hi3670_pcie]
-[    4.522592]  hi3670_pcie_phy_power_on+0x720/0xb00 [phy_hi3670_pcie]
-[    4.522593]  phy_power_on+0x78/0x130
-[    4.522594]  kirin_pcie_probe+0x6a8/0x88c [pcie_kirin]
-[    4.522595]  platform_probe+0x68/0xe0
-[    4.522596]  really_probe+0x1b0/0x42c
-[    4.522596]  __driver_probe_device+0x114/0x190
-[    4.522597]  driver_probe_device+0x40/0x100
-[    4.522598]  __driver_attach+0xcc/0x1e0
-[    4.522599]  bus_for_each_dev+0x70/0xd0
-[    4.522600]  driver_attach+0x24/0x30
-[    4.522601]  bus_add_driver+0x140/0x234
-[    4.522601]  driver_register+0x78/0x130
-[    4.522602]  __platform_driver_register+0x28/0x34
-[    4.522603]  kirin_pcie_driver_init+0x24/0x1000 [pcie_kirin]
-[    4.522604]  do_one_initcall+0x50/0x1b0
-[    4.522605]  do_init_module+0x5c/0x254
-[    4.522605]  load_module+0x21cc/0x2820
-[    4.522606]  __do_sys_finit_module+0xbc/0x130
-[    4.522607]  __arm64_sys_finit_module+0x24/0x30
-[    4.522608]  invoke_syscall+0x48/0x114
-[    4.522608]  el0_svc_common+0xc4/0xdc
-[    4.522609]  do_el0_svc+0x28/0x90
-[    4.522610]  el0_svc+0x2c/0x54
-[    4.522610]  el0t_64_sync_handler+0x1a4/0x1b0
-[    4.522611]  el0t_64_sync+0x198/0x19c
-[    4.522633] SMP: stopping secondary CPUs
-[    4.522634] Kernel Offset: disabled
-[    4.522635] CPU features: 0x00003051,00000846
-[    4.522636] Memory Limit: none
-
-Thanks,
-Mauro
