@@ -2,51 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FEE3F05B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:07:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C95033F05BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238872AbhHROHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 10:07:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238763AbhHROHp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 10:07:45 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B9FC061764;
-        Wed, 18 Aug 2021 07:07:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
-        Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=t7yJ2bcNJWGSBC482VMdmiWbdC42sC3SvF5Zv1MVXCs=; b=ge1JcuFqixlF6ZBbUsgYLAhvJH
-        +xq/awS6k8DsxuCZKonmuQed2vow//8m0Kp/Qu2ZSXq/lYw4ZrDzrlaQV+U46crDuVyj++K5F3AGm
-        4ptV1sU2ctHhIlelzdEq8IrtrwvPNs/njqbHr5egStvYVi+CbUjZouAFOZnXZhG+f76OAukEZiV5O
-        QPdvSZRct7b5O0eqkoCJAlHKslpf/4BI4Ut9u6qIHIVH5u4obDFimZna3QR7174KLihL/B+b6U+Ru
-        iKTVDG3ADOEjmBc6jd+yUmDMgW97GSfCDVw8kM0YE3DSBPRqWL0pOFrGOlXOq2LMZy4I3gIlceCJG
-        6iz+3WsA==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mGMDm-005oZI-Uv; Wed, 18 Aug 2021 14:07:10 +0000
-Date:   Wed, 18 Aug 2021 07:07:10 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     fstests@vger.kernel.org
-Cc:     jeyu@kernel.org, linux-kernel@vger.kernel.org
-Subject: git fstests tree alias
-Message-ID: <YR0UDlcXWl7rhRF9@bombadil.infradead.org>
+        id S238531AbhHROIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 10:08:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237887AbhHROIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 10:08:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AD14610A3;
+        Wed, 18 Aug 2021 14:07:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629295664;
+        bh=hGLlWsyvSf4AqdvWej7th3DOiRfeRhKplfyBiO2scnI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Gzai0b48N7Q8tCJJN53hvTcDbMHxQnGmBDyS23Pi5XB25fFs/omG6ojBTD0l2J0Kt
+         hcGF5k42AgA/9E0cVp+KkdmDweT2LNii2l+B6VjwhAzAOldDCQY/O+keXR2RKdsJ4F
+         cF7XdbGUv/fdGQTtl0UDLcec33qrQ28JWcSI5vYZf4wvTZIeoREtvP6ff+U53Ud9YW
+         Q5Re3Gbs3mmHrGllt6DR8GNxoHaYxb4die41n0sFa5YfCcqCtT5OaV3M4AFGLygiO7
+         0eqP74vaSV5mnLV10A1226CI1Mgl/jkndTQRZXGHgCgZh6+xXr1nI2lsu7wCS8zSyP
+         lJZ2joRSkPWHA==
+Received: by mail-ej1-f51.google.com with SMTP id u3so5359833ejz.1;
+        Wed, 18 Aug 2021 07:07:44 -0700 (PDT)
+X-Gm-Message-State: AOAM531bxE8ek4DN3UQCQxXW/cfhGI9ksTzzs7RCR5jYDSCBufD3cEsX
+        8gUGDNM3cVTangj7O+6IM7XqxB7RyHvr9+M/oA==
+X-Google-Smtp-Source: ABdhPJyMRU9wZavLT2iM1oxpue184YEj4Ok01jg2LrhdI+xH47FqlsX6LU8vqZAm3uqWGAejuZaCJKMLTeJts4wK0rA=
+X-Received: by 2002:a17:906:8cd:: with SMTP id o13mr10111594eje.341.1629295663029;
+ Wed, 18 Aug 2021 07:07:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+References: <20210818130950.3715-1-Wentao_Liang_g@163.com>
+In-Reply-To: <20210818130950.3715-1-Wentao_Liang_g@163.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 18 Aug 2021 09:07:31 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLfvfi42QGkM_WqKUm0GPZ6z=ybBz9kaR5UakKd0mzGEw@mail.gmail.com>
+Message-ID: <CAL_JsqLfvfi42QGkM_WqKUm0GPZ6z=ybBz9kaR5UakKd0mzGEw@mail.gmail.com>
+Subject: Re: [PATCH] drivers:of:property.c: fix a potential double put
+ (release) bug
+To:     Wentao_Liang <Wentao_Liang_g@163.com>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     Frank Rowand <frowand.list@gmail.com>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is nice that we have fstests on vger, I think this helps
-with many FS developers who are new adopting and getting used
-to the fact that we use fstests for *any* filesystem. However
-the git tree is still misleading. While I don't think we can
-phase out the old one, can we at least get an alias?
++Saravana
 
-pub/scm/fs/fstests.git ?
-
-  Luis
+On Wed, Aug 18, 2021 at 8:26 AM Wentao_Liang <Wentao_Liang_g@163.com> wrote:
+>
+> In line 1423 (#1), of_link_to_phandle() is called. In the function
+> (line 1140, #2), "of_node_put(sup_np);" drops the reference to phandle
+> and may cause phandle to be released. However, after the function
+> returns, the phandle is subsequently dropped again (line 1424, #3) by
+> the same put function. Double putting the phandle can lead to an
+> incorrect reference count.
+>
+> We believe that the first put of the phandle is unnecessary (#3). We
+> can fix the above bug by removing the redundant "of_node_put()" in line
+> 1423.
+>
+> 1401 static int of_link_property(struct device_node *con_np,
+>                                 const char *prop_name)
+> 1402 {
+> ...
+> 1409     while (!matched && s->parse_prop) {
+> ...
+> 1414
+> 1415         while ((phandle = s->parse_prop(con_np, prop_name, i))) {
+> ...
+>                  //#1 phandle is dropped in this function
+> 1423             of_link_to_phandle(con_dev_np, phandle);
+>
+> 1424             //#3 the second drop to phandle
+>                  of_node_put(phandle);
+>
+> 1425             of_node_put(con_dev_np);
+> 1426         }
+> ...
+> 1428     }
+> 1429     return 0;
+> 1430 }
+>
+> 1095 static int of_link_to_phandle(struct device_node *con_np,
+> 1096                   struct device_node *sup_np)
+> 1097 {
+> 1098     struct device *sup_dev;
+> 1099     struct device_node *tmp_np = sup_np;
+> ...
+> 1140     of_node_put(sup_np);  //#2 the first drop to phandle
+>                                //   (unnecessary)
+> 1141
+> 1142     return 0;
+> 1143 }
+>
+> Signed-off-by: Wentao_Liang <Wentao_Liang_g@163.com>
+> ---
+>  drivers/of/property.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/of/property.c b/drivers/of/property.c
+> index 6c028632f425..408fdde1a20c 100644
+> --- a/drivers/of/property.c
+> +++ b/drivers/of/property.c
+> @@ -1137,7 +1137,6 @@ static int of_link_to_phandle(struct device_node *con_np,
+>         put_device(sup_dev);
+>
+>         fwnode_link_add(of_fwnode_handle(con_np), of_fwnode_handle(sup_np));
+> -       of_node_put(sup_np);
+>
+>         return 0;
+>  }
+> --
+> 2.25.1
+>
