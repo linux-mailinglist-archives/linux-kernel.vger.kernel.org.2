@@ -2,95 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4E13F00E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 665693F00EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232909AbhHRJtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:49:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231218AbhHRJt2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:49:28 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3866AC061764;
-        Wed, 18 Aug 2021 02:48:54 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id oa17so2286702pjb.1;
-        Wed, 18 Aug 2021 02:48:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qqJQyuJFyTHwC9lyEFRttsDj7WqwK+8wkKgjyNUmasw=;
-        b=s4PJI2LtSPf9JBsLqPOqwY7ZDNzcn6GxgcoPUAEpUYSY2YPA7LJ1N7JCM3ctruJ/Gz
-         3fwBZqvg6vwpWXBYfHrBkgvGSVJrlBVQd3vIQF2kWmF7CRyyJnSagRw+lY1LlNdg87M6
-         +io9VTot8Cy7HKJ1eP4f0jAn2ocpkFQAbb6yndtdYwfqeN9Ofj0HxWzjin3jZko3RAOG
-         GzkGmq4QjLus6VxIweqFNfksArEZSeGBNqrLDCJKmLguXoJjenTIXfFn4gDRatW9oXoV
-         HQYLPfSO0mKo4xfECgBiyiZPDxUNa8rr5R5KMpZHXJJBGLEXRuYINWrgWnfY9lJuAuQb
-         hm5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qqJQyuJFyTHwC9lyEFRttsDj7WqwK+8wkKgjyNUmasw=;
-        b=CcnflJ8KduFyh+9mXjPjbB0IjgZowxuMUM9Jlrw/Tc9ZWLfZ/OYf5aSI9anigH/F6b
-         nHwaC1J7TXhVxhYLnEVsW1fUycKPtxkvrqyFHRnaHS7k4R/X7GvfvtCOp42lswqSnjnf
-         3zGTg+gIzAxZqwfBzPCrBr5d6CaX37tg2d30oR7ytceAT3Rwo5rv3VKvgOnKyhZUWzuv
-         Q0vfP2r4rhaar0xr6gWjC+o0hFYm3KY0ew56RTUpn4YMjDxqdDXr8pW1iZGEWWL/a45f
-         Cz8uUL5ImL5TM04LL3fakMiiwYLGgRaeP+Zb1kmRT4oJj7xgakHgo5mbNyPy7XtWD1Js
-         2IoQ==
-X-Gm-Message-State: AOAM530pXRu6Rg7TwNMAgo1PPsTf4wtBj57DCzjuFU/qZlz8mVGJpt9/
-        T4MuRwImCRZ2Ns3mTeRbmBbb/F6GRCf3byiAyQk=
-X-Google-Smtp-Source: ABdhPJwAiERleQGo81GSbIcTJzaQap2TocUupq2Hr3zIpigH+DkeSLSAfQ4KewCwkRYw3NH9uaUbqJ+C0zRiH8ymfh8=
-X-Received: by 2002:a17:902:e786:b029:12d:2a7:365f with SMTP id
- cp6-20020a170902e786b029012d02a7365fmr6531086plb.21.1629280133698; Wed, 18
- Aug 2021 02:48:53 -0700 (PDT)
+        id S232844AbhHRJum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 05:50:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36556 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231960AbhHRJuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 05:50:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 24C8760EBD;
+        Wed, 18 Aug 2021 09:50:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629280206;
+        bh=nPk6m8gVc4yQgj1atF2k+8YATLZH+Boe21wz3rbQ36w=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=BkjWZxWsdedRuVW1EQbTs8GYVNf5T6awS8SChUpoOVWJWN9qJrCOndmmSOyshpXxT
+         5An+GwkCE6L9PCpPvii831IGV6ngDy7y2VsI4vNnTWS8QF6Anoq6mxwyQ56OeclCoM
+         AjGnmktAc5vFiwyH6WSSQJFKvjeN+NDIU2cfQ4jz958IIjAYDqwGvYkJzPRCjZm9sV
+         H+J462EU1cSNn9gJNqojEydJqV0h9VmUWNL9s+QwmzVzyT05jwa304qppsBkhZhGs1
+         6tHIqNba9/Ofh2kHe7GWN/GeDLLE9Hf3mIBggplVakCJKRkw2rvL10e2H6CYZp9jKf
+         UxYW6Y7QUYq7Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 196EA60A2E;
+        Wed, 18 Aug 2021 09:50:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210818043035.1308062-1-keescook@chromium.org> <20210818043035.1308062-2-keescook@chromium.org>
-In-Reply-To: <20210818043035.1308062-2-keescook@chromium.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 18 Aug 2021 12:48:17 +0300
-Message-ID: <CAHp75VdE3akTqmJ6VE4+Q4F959JscvZpiJok4=2JmjDjubtuxw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] USB: EHCI: Add register array bounds to HCS ports
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Al Cooper <alcooperx@gmail.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        linux-usb@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v3 0/3] Clean up and fix error handling in mdio_mux_init()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162928020609.23266.3797943730217405111.git-patchwork-notify@kernel.org>
+Date:   Wed, 18 Aug 2021 09:50:06 +0000
+References: <20210818033804.3281057-1-saravanak@google.com>
+In-Reply-To: <20210818033804.3281057-1-saravanak@google.com>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org, jon.mason@broadcom.com,
+        david.daney@cavium.com, maz@kernel.org, narmstrong@baylibre.com,
+        khilman@baylibre.com, kernel-team@android.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 7:30 AM Kees Cook <keescook@chromium.org> wrote:
->
-> The original EHCI register struct used a trailing 0-element array for
-> addressing the N_PORTS-many available registers. However, after
-> commit a46af4ebf9ff ("USB: EHCI: define extension registers like normal ones")
-> the 0-element array started to overlap the USBMODE extension register.
->
-> To avoid future compile-time warnings about accessing indexes within a
-> 0-element array, rearrange the struct to actually describe the expected
-> layout (max 15 registers) with a union. All offsets remain the same, and
-> bounds checking becomes possible on accesses to port_status and hostpc.
+Hello:
 
-...
+This series was applied to netdev/net.git (refs/heads/master):
 
->         /* HOSTPC: offset 0x84 */
-> -       u32             hostpc[0];      /* HOSTPC extension */
-> +       u32             hostpc[HCS_N_PORTS_MAX];
->  #define HOSTPC_PHCD    (1<<22)         /* Phy clock disable */
->  #define HOSTPC_PSPD    (3<<25)         /* Port speed detection */
->
-> -       u32             reserved5[17];
-> +       u32             reserved5[2];
+On Tue, 17 Aug 2021 20:38:00 -0700 you wrote:
+> This patch series was started due to -EPROBE_DEFER not being handled
+> correctly in mdio_mux_init() and causing issues [1]. While at it, I also
+> did some more error handling fixes and clean ups. The -EPROBE_DEFER fix is
+> the last patch.
+> 
+> Ideally, in the last patch we'd treat any error similar to -EPROBE_DEFER
+> but I'm not sure if it'll break any board/platforms where some child
+> mdiobus never successfully registers. If we treated all errors similar to
+> -EPROBE_DEFER, then none of the child mdiobus will work and that might be a
+> regression. If people are sure this is not a real case, then I can fix up
+> the last patch to always fail the entire mdio-mux init if any of the child
+> mdiobus registration fails.
+> 
+> [...]
 
-Shouldn't it be rather [17 - PORT_MAX]? for accuracy?
-Or also a union approach?
+Here is the summary with links:
+  - [net,v3,1/3] net: mdio-mux: Delete unnecessary devm_kfree
+    https://git.kernel.org/netdev/net/c/663d946af5fb
+  - [net,v3,2/3] net: mdio-mux: Don't ignore memory allocation errors
+    https://git.kernel.org/netdev/net/c/99d81e942474
+  - [net,v3,3/3] net: mdio-mux: Handle -EPROBE_DEFER correctly
+    https://git.kernel.org/netdev/net/c/7bd0cef5dac6
 
--- 
-With Best Regards,
-Andy Shevchenko
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
