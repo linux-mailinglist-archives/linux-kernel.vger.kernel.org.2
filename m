@@ -2,108 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF993F0391
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 14:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3BB3F0394
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 14:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235876AbhHRML6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 08:11:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56584 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237757AbhHRMKc (ORCPT
+        id S235550AbhHRMMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 08:12:19 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:36254 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236705AbhHRMLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 08:10:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629288597;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=5GDrPFRa2eKnOg4exCIwK3YrwGtnkSUqkhmYgDmqIcE=;
-        b=dcjkKgRV28k3078bReWmDAQpMpFniVl7mB7O052YSpqbSa5TomgDO1+V6doJmHWHd0wR6M
-        Jz92crAnOCk9Bq9/aRNPj2MbsHV6/LpQoJqkErZl0Vtyz3H0cVXOCgaXgf68PkFlmrpoTn
-        d91yxLclNBj1m3WhVy6smKxFdK3VdTw=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-212-Zx3MrSz-PBWyK2wD9lYr3g-1; Wed, 18 Aug 2021 08:09:56 -0400
-X-MC-Unique: Zx3MrSz-PBWyK2wD9lYr3g-1
-Received: by mail-wr1-f70.google.com with SMTP id h24-20020adfa4d8000000b00156d9931072so517828wrb.15
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 05:09:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5GDrPFRa2eKnOg4exCIwK3YrwGtnkSUqkhmYgDmqIcE=;
-        b=cUArlQxBB8ko3CPv1POzgULlP4WOHc5C5/UtZNC0A535J/VA6NW4YnXRK6ryKtwnNl
-         NHoZ+G330iFkOIg7oW1n0QtCdod1I83Bt8YPq5he5I/DBR7LW/is4QIBfkoh/U1+BH8e
-         csXAn9rZMI7iTP1+YrISuV/K7TozRp9DCRbQ4lyYJYRgeFGKDdeGy9cv53PJfOqKGYJ7
-         5S+A5CV0m16uLHaKIqw8nCzq+Aws8FJTK2s9yht4135I12ZR2MwMbk5qR6jCjzc48wE6
-         aAVOo59nFIJXTbolwJsU/dz4UnGrkCmWSL4/FjsRS2mT6L1FhtE9izVKGjHkhNDTOUUP
-         WolQ==
-X-Gm-Message-State: AOAM531yORCvFh7BAo3ugTRLiU5ScUP7n/qQOgn7Tzo3jRB5/2SfL4fU
-        85mGJYwUuBmk1levQ7GhBTBbBN9VIt5kxutoNoM74BM0pi6+Zi8TafKy2N7IAzQhHb3wtNC5L2R
-        L1W4ZJ6jhNKdm4tTFXzU/c/Uqzd84aCGJb/wANYqGti2LZu4Vv+TSW9Wc/cJRme86qSLQlvhqJ2
-        o=
-X-Received: by 2002:a5d:4688:: with SMTP id u8mr10313341wrq.148.1629288593123;
-        Wed, 18 Aug 2021 05:09:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxTZMSPiUP9WNF76FTt/bZHXX75asXwyrBkzDdMBM/M++3nLeesGub4u+XGerxdc379+cM+jw==
-X-Received: by 2002:a5d:4688:: with SMTP id u8mr10313297wrq.148.1629288592804;
-        Wed, 18 Aug 2021 05:09:52 -0700 (PDT)
-Received: from minerva.redhat.com ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id z15sm5495999wrp.30.2021.08.18.05.09.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 05:09:52 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Javier Martinez Canillas <javierm@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH] drm: Remove unused code to load the non-existing fbcon.ko
-Date:   Wed, 18 Aug 2021 14:09:48 +0200
-Message-Id: <20210818120948.451896-1-javierm@redhat.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 18 Aug 2021 08:11:48 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 20F222202F;
+        Wed, 18 Aug 2021 12:11:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629288673; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=el5G+/qzJWRZ4s7uTvHXhGJka4MlHXy2M/mbJCRFexA=;
+        b=wBCMnIDU/l4eHgKMidl+M71zJm2lWN7he72CFBePB5xIQ0Esb8F2nkELIqEbcjeMcti7bq
+        wKxdtNKNT9SMPZCf2lp46kkIJwSvZnhG3ZYkpwmfVdybjknzgzj+x2zjgTudAZvcfmFX09
+        g0PgBoFoBWehqMTSV0Hvc82Evame79Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629288673;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=el5G+/qzJWRZ4s7uTvHXhGJka4MlHXy2M/mbJCRFexA=;
+        b=kE9wZ7qEFhfIRwPC8Uz3mBKOyq3VtKTl131fLhWJy4yhcuAIfsJ4j5iFtM9wPe1hvdxUHV
+        2hmP/muVQnh/XOCA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 18DE7A3B9A;
+        Wed, 18 Aug 2021 12:11:13 +0000 (UTC)
+Date:   Wed, 18 Aug 2021 14:11:13 +0200
+Message-ID: <s5hv943ar6m.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] sound fixes for 5.14-rc7
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 6104c37094e7 ("fbcon: Make fbcon a built-time depency for fbdev")
-changed the FRAMEBUFFER_CONSOLE Kconfig symbol from tristate to bool.
+Linus,
 
-But the drm_kms_helper_init() function still attempts to load the fbcon
-module, even when this is always built-in since the mentioned change.
+please pull sound fixes for v5.14-rc7 from:
 
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.14-rc7
+
+The topmost commit is 4bf61ad5f0204b67ba570da6e5c052c2095e29df
+
+----------------------------------------------------------------
+
+sound fixes for 5.14-rc7
+
+Hopefully the last PR for 5.14: here includes only a few regression
+fixes and trivial device quirks.
+
+----------------------------------------------------------------
+
+Imre Deak (1):
+      ALSA: hda: Fix hang during shutdown due to link reset
+
+Jaroslav Kysela (1):
+      ALSA: hda - fix the 'Capture Switch' value change notifications
+
+Kristin Paget (1):
+      ALSA: hda/realtek: Enable 4-speaker output for Dell XPS 15 9510 laptop
+
+Takashi Iwai (1):
+      ALSA: hda/via: Apply runtime PM workaround for ASUS B23E
+
+Takashi Sakamoto (1):
+      ALSA: oxfw: fix functioal regression for silence in Apogee Duet FireWire
+
 ---
+ sound/firewire/oxfw/oxfw-stream.c |  9 ++++++++-
+ sound/firewire/oxfw/oxfw.c        |  6 ++++--
+ sound/firewire/oxfw/oxfw.h        |  5 +++++
+ sound/pci/hda/hda_generic.c       | 10 +++++++---
+ sound/pci/hda/hda_intel.c         | 12 +++++++++---
+ sound/pci/hda/patch_realtek.c     |  1 +
+ sound/pci/hda/patch_via.c         |  1 +
+ 7 files changed, 35 insertions(+), 9 deletions(-)
 
- drivers/gpu/drm/drm_kms_helper_common.c | 11 -----------
- 1 file changed, 11 deletions(-)
-
-diff --git a/drivers/gpu/drm/drm_kms_helper_common.c b/drivers/gpu/drm/drm_kms_helper_common.c
-index f933da1656eb..47e92400548d 100644
---- a/drivers/gpu/drm/drm_kms_helper_common.c
-+++ b/drivers/gpu/drm/drm_kms_helper_common.c
-@@ -64,17 +64,6 @@ MODULE_PARM_DESC(edid_firmware,
+diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
+index 0ef242fdd3bc..fff18b5d4e05 100644
+--- a/sound/firewire/oxfw/oxfw-stream.c
++++ b/sound/firewire/oxfw/oxfw-stream.c
+@@ -153,7 +153,7 @@ static int init_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
+ 	struct cmp_connection *conn;
+ 	enum cmp_direction c_dir;
+ 	enum amdtp_stream_direction s_dir;
+-	unsigned int flags = CIP_UNAWARE_SYT;
++	unsigned int flags = 0;
+ 	int err;
  
- static int __init drm_kms_helper_init(void)
- {
--	/*
--	 * The Kconfig DRM_KMS_HELPER selects FRAMEBUFFER_CONSOLE (if !EXPERT)
--	 * but the module doesn't depend on any fb console symbols.  At least
--	 * attempt to load fbcon to avoid leaving the system without a usable
--	 * console.
--	 */
--	if (IS_ENABLED(CONFIG_DRM_FBDEV_EMULATION) &&
--	    IS_MODULE(CONFIG_FRAMEBUFFER_CONSOLE) &&
--	    !IS_ENABLED(CONFIG_EXPERT))
--		request_module_nowait("fbcon");
--
- 	return drm_dp_aux_dev_init();
+ 	if (!(oxfw->quirks & SND_OXFW_QUIRK_BLOCKING_TRANSMISSION))
+@@ -161,6 +161,13 @@ static int init_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
+ 	else
+ 		flags |= CIP_BLOCKING;
+ 
++	// OXFW 970/971 has no function to generate playback timing according to the sequence
++	// of value in syt field, thus the packet should include NO_INFO value in the field.
++	// However, some models just ignore data blocks in packet with NO_INFO for audio data
++	// processing.
++	if (!(oxfw->quirks & SND_OXFW_QUIRK_IGNORE_NO_INFO_PACKET))
++		flags |= CIP_UNAWARE_SYT;
++
+ 	if (stream == &oxfw->tx_stream) {
+ 		conn = &oxfw->out_conn;
+ 		c_dir = CMP_OUTPUT;
+diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+index 84971d78d152..cb5b5e3a481b 100644
+--- a/sound/firewire/oxfw/oxfw.c
++++ b/sound/firewire/oxfw/oxfw.c
+@@ -159,8 +159,10 @@ static int detect_quirks(struct snd_oxfw *oxfw, const struct ieee1394_device_id
+ 		return snd_oxfw_scs1x_add(oxfw);
+ 	}
+ 
+-	if (entry->vendor_id == OUI_APOGEE && entry->model_id == MODEL_DUET_FW)
+-		oxfw->quirks |= SND_OXFW_QUIRK_BLOCKING_TRANSMISSION;
++	if (entry->vendor_id == OUI_APOGEE && entry->model_id == MODEL_DUET_FW) {
++		oxfw->quirks |= SND_OXFW_QUIRK_BLOCKING_TRANSMISSION |
++				SND_OXFW_QUIRK_IGNORE_NO_INFO_PACKET;
++	}
+ 
+ 	/*
+ 	 * TASCAM FireOne has physical control and requires a pair of additional
+diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
+index ee47abcb0c90..c13034f6c2ca 100644
+--- a/sound/firewire/oxfw/oxfw.h
++++ b/sound/firewire/oxfw/oxfw.h
+@@ -42,6 +42,11 @@ enum snd_oxfw_quirk {
+ 	SND_OXFW_QUIRK_BLOCKING_TRANSMISSION = 0x04,
+ 	// Stanton SCS1.d and SCS1.m support unique transaction.
+ 	SND_OXFW_QUIRK_SCS_TRANSACTION = 0x08,
++	// Apogee Duet FireWire ignores data blocks in packet with NO_INFO for audio data
++	// processing, while output level meter moves. Any value in syt field of packet takes
++	// the device to process audio data even if the value is invalid in a point of
++	// IEC 61883-1/6.
++	SND_OXFW_QUIRK_IGNORE_NO_INFO_PACKET = 0x10,
+ };
+ 
+ /* This is an arbitrary number for convinience. */
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index e97d00585e8e..481d8f8d3396 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -3460,7 +3460,7 @@ static int cap_put_caller(struct snd_kcontrol *kcontrol,
+ 	struct hda_gen_spec *spec = codec->spec;
+ 	const struct hda_input_mux *imux;
+ 	struct nid_path *path;
+-	int i, adc_idx, err = 0;
++	int i, adc_idx, ret, err = 0;
+ 
+ 	imux = &spec->input_mux;
+ 	adc_idx = kcontrol->id.index;
+@@ -3470,9 +3470,13 @@ static int cap_put_caller(struct snd_kcontrol *kcontrol,
+ 		if (!path || !path->ctls[type])
+ 			continue;
+ 		kcontrol->private_value = path->ctls[type];
+-		err = func(kcontrol, ucontrol);
+-		if (err < 0)
++		ret = func(kcontrol, ucontrol);
++		if (ret < 0) {
++			err = ret;
+ 			break;
++		}
++		if (ret > 0)
++			err = 1;
+ 	}
+ 	mutex_unlock(&codec->control_mutex);
+ 	if (err >= 0 && spec->cap_sync_hook)
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 0322b289505e..0062c18b646a 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -883,10 +883,11 @@ static unsigned int azx_get_pos_skl(struct azx *chip, struct azx_dev *azx_dev)
+ 	return azx_get_pos_posbuf(chip, azx_dev);
  }
  
--- 
-2.31.1
-
+-static void azx_shutdown_chip(struct azx *chip)
++static void __azx_shutdown_chip(struct azx *chip, bool skip_link_reset)
+ {
+ 	azx_stop_chip(chip);
+-	azx_enter_link_reset(chip);
++	if (!skip_link_reset)
++		azx_enter_link_reset(chip);
+ 	azx_clear_irq_pending(chip);
+ 	display_power(chip, false);
+ }
+@@ -895,6 +896,11 @@ static void azx_shutdown_chip(struct azx *chip)
+ static DEFINE_MUTEX(card_list_lock);
+ static LIST_HEAD(card_list);
+ 
++static void azx_shutdown_chip(struct azx *chip)
++{
++	__azx_shutdown_chip(chip, false);
++}
++
+ static void azx_add_card_list(struct azx *chip)
+ {
+ 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+@@ -2385,7 +2391,7 @@ static void azx_shutdown(struct pci_dev *pci)
+ 		return;
+ 	chip = card->private_data;
+ 	if (chip && chip->running)
+-		azx_shutdown_chip(chip);
++		__azx_shutdown_chip(chip, true);
+ }
+ 
+ /* PCI IDs */
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index a065260d0d20..96f32eaa24df 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8332,6 +8332,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0a2e, "Dell", ALC236_FIXUP_DELL_AIO_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1028, 0x0a30, "Dell", ALC236_FIXUP_DELL_AIO_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1028, 0x0a58, "Dell", ALC255_FIXUP_DELL_HEADSET_MIC),
++	SND_PCI_QUIRK(0x1028, 0x0a61, "Dell XPS 15 9510", ALC289_FIXUP_DUAL_SPK),
+ 	SND_PCI_QUIRK(0x1028, 0x164a, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x164b, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
+diff --git a/sound/pci/hda/patch_via.c b/sound/pci/hda/patch_via.c
+index a5c1a2c4eae4..773a136161f1 100644
+--- a/sound/pci/hda/patch_via.c
++++ b/sound/pci/hda/patch_via.c
+@@ -1041,6 +1041,7 @@ static const struct hda_fixup via_fixups[] = {
+ };
+ 
+ static const struct snd_pci_quirk vt2002p_fixups[] = {
++	SND_PCI_QUIRK(0x1043, 0x13f7, "Asus B23E", VIA_FIXUP_POWER_SAVE),
+ 	SND_PCI_QUIRK(0x1043, 0x1487, "Asus G75", VIA_FIXUP_ASUS_G75),
+ 	SND_PCI_QUIRK(0x1043, 0x8532, "Asus X202E", VIA_FIXUP_INTMIC_BOOST),
+ 	SND_PCI_QUIRK_VENDOR(0x1558, "Clevo", VIA_FIXUP_POWER_SAVE),
