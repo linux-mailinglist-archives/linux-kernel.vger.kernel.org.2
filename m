@@ -2,110 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2997B3F0E92
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 01:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 838CF3F0E99
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 01:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234867AbhHRXTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 19:19:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36082 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234791AbhHRXTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 19:19:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80EE36109F;
-        Wed, 18 Aug 2021 23:19:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1629328753;
-        bh=yTnTdUc2FJ+hnloFknl4xzYCBGT0SKFtOXGmR2H+Gcc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=g5WQ5XEKuqNkZvg501/hNDfCi1BlX7V+Oxm7YQsoC9u8SKDmi2hIfJkyZ7Dw5bByJ
-         aRsxrH+mToBBVxnAGWKoYrAU/Vb6aVRdYbk6Em/zj3tKecYvijnejNzbMKVLIWeX3A
-         6Ddg2jhv+0FOyxn8lVSeWg3SHzSJsJIIdT+d8NkI=
-Date:   Wed, 18 Aug 2021 16:19:12 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, Joe Perches <joe@perches.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>, linux-mm@kvack.org,
-        linux-kbuild@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 1/7] Compiler Attributes: Add __alloc_size() for
- better bounds checking
-Message-Id: <20210818161912.f14722707e06de1f046e948d@linux-foundation.org>
-In-Reply-To: <20210818214021.2476230-2-keescook@chromium.org>
-References: <20210818214021.2476230-1-keescook@chromium.org>
-        <20210818214021.2476230-2-keescook@chromium.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S234866AbhHRX0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 19:26:20 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:12412 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232862AbhHRX0T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 19:26:19 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17IN2lrF085317;
+        Wed, 18 Aug 2021 19:25:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=YTNqZyC2/6p5fS0FUwFAEPGP7neDfdKiHZy0ngFIL/k=;
+ b=j6AUbCNUbVydMWeACew4Xj6rTTI0IjH02qAPc5NpO9QgqIoj/GbjG9nMOg/Cb19thpzP
+ MXmdBBUoXPQ9W9RzL1E5rSN4ywItXlzfWP0mltxiYqAZRRQIn+b8EDjctF6iW9O+l19v
+ RP7d2sehK50htM+AWrpveYTn4NFkLtGoknomuZJxbzUAjjMp7ZapsO6ty6lbW5wUEihq
+ 57LQLv5bPf9rONNdqzQVm+Yr9yIh3YC+/TI6To55Wbo5uiRayBEbtNLdkvxjwfEWXlHg
+ nSUf5I6QOqZVc6uH7GYxwqHk5XapTdlUEt1xn+/kf9yfq6AaDSyXq6TroCSqrtZx/FJo FA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3agkvn69hk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Aug 2021 19:25:42 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17INNLZF013191;
+        Wed, 18 Aug 2021 19:25:42 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3agkvn69gn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Aug 2021 19:25:42 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17IND7j7012827;
+        Wed, 18 Aug 2021 23:25:39 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 3ae5f8fch8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Aug 2021 23:25:39 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17INM8pO61538716
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Aug 2021 23:22:08 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 53A63A4057;
+        Wed, 18 Aug 2021 23:25:36 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 62193A408C;
+        Wed, 18 Aug 2021 23:25:35 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.56.174])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Wed, 18 Aug 2021 23:25:35 +0000 (GMT)
+Date:   Thu, 19 Aug 2021 01:25:32 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com
+Subject: Re: [PATCH 1/2] s390/vfio-ap: r/w lock for PQAP interception
+ handler function pointer
+Message-ID: <20210819012532.0e9c443c.pasic@linux.ibm.com>
+In-Reply-To: <1a9f15d7-0f4d-00a0-0a8b-f1c08aa52eeb@de.ibm.com>
+References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
+        <20210719193503.793910-2-akrowiak@linux.ibm.com>
+        <1a9f15d7-0f4d-00a0-0a8b-f1c08aa52eeb@de.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: WWIhEEBxA1vwnxTFDOPVUJBuufTmYfbw
+X-Proofpoint-GUID: 7gIiEgAPEFP-CyJY1rlqNG2_lfp2z9lv
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-18_07:2021-08-17,2021-08-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1015
+ priorityscore=1501 malwarescore=0 impostorscore=0 mlxscore=0 phishscore=0
+ spamscore=0 bulkscore=0 lowpriorityscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108180135
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Aug 2021 14:40:15 -0700 Kees Cook <keescook@chromium.org> wrote:
+On Wed, 18 Aug 2021 19:03:33 +0200
+Christian Borntraeger <borntraeger@de.ibm.com> wrote:
 
-> GCC and Clang can use the "alloc_size" attribute to better inform the
-> results of __builtin_object_size() (for compile-time constant values).
-> Clang can additionally use alloc_size to inform the results of
-> __builtin_dynamic_object_size() (for run-time values).
+> On 19.07.21 21:35, Tony Krowiak wrote:
+> > The function pointer to the interception handler for the PQAP instruction
+> > can get changed during the interception process. Let's add a
+> > semaphore to struct kvm_s390_crypto to control read/write access to the
+> > function pointer contained therein.
+> > 
+> > The semaphore must be locked for write access by the vfio_ap device driver
+> > when notified that the KVM pointer has been set or cleared. It must be
+> > locked for read access by the interception framework when the PQAP
+> > instruction is intercepted.
+> > 
+> > Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> > Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> > ---
+> >   arch/s390/include/asm/kvm_host.h      |  8 +++-----
+> >   arch/s390/kvm/kvm-s390.c              |  1 +
+> >   arch/s390/kvm/priv.c                  | 10 ++++++----
+> >   drivers/s390/crypto/vfio_ap_ops.c     | 23 +++++++++++++++++------
+> >   drivers/s390/crypto/vfio_ap_private.h |  2 +-
+> >   5 files changed, 28 insertions(+), 16 deletions(-)
+> > 
+> > diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
+> > index 9b4473f76e56..f18849d259e6 100644
+> > --- a/arch/s390/include/asm/kvm_host.h
+> > +++ b/arch/s390/include/asm/kvm_host.h
+> > @@ -798,14 +798,12 @@ struct kvm_s390_cpu_model {
+> >   	unsigned short ibc;
+> >   };
+> >   
+> > -struct kvm_s390_module_hook {
+> > -	int (*hook)(struct kvm_vcpu *vcpu);
+> > -	struct module *owner;
+> > -};
+> > +typedef int (*crypto_hook)(struct kvm_vcpu *vcpu);
+> >   
+> >   struct kvm_s390_crypto {
+> >   	struct kvm_s390_crypto_cb *crycb;
+> > -	struct kvm_s390_module_hook *pqap_hook;
+> > +	struct rw_semaphore pqap_hook_rwsem;
+> > +	crypto_hook *pqap_hook;
+> >   	__u32 crycbd;
+> >   	__u8 aes_kw;
+> >   	__u8 dea_kw;
+> > diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+> > index b655a7d82bf0..a08f242a9f27 100644
+> > --- a/arch/s390/kvm/kvm-s390.c
+> > +++ b/arch/s390/kvm/kvm-s390.c
+> > @@ -2630,6 +2630,7 @@ static void kvm_s390_crypto_init(struct kvm *kvm)
+> >   {
+> >   	kvm->arch.crypto.crycb = &kvm->arch.sie_page2->crycb;
+> >   	kvm_s390_set_crycb_format(kvm);
+> > +	init_rwsem(&kvm->arch.crypto.pqap_hook_rwsem);
+> >   
+> >   	if (!test_kvm_facility(kvm, 76))
+> >   		return;
+> > diff --git a/arch/s390/kvm/priv.c b/arch/s390/kvm/priv.c
+> > index 9928f785c677..6bed9406c1f3 100644
+> > --- a/arch/s390/kvm/priv.c
+> > +++ b/arch/s390/kvm/priv.c
+> > @@ -610,6 +610,7 @@ static int handle_io_inst(struct kvm_vcpu *vcpu)
+> >   static int handle_pqap(struct kvm_vcpu *vcpu)
+> >   {
+> >   	struct ap_queue_status status = {};
+> > +	crypto_hook pqap_hook;
+> >   	unsigned long reg0;
+> >   	int ret;
+> >   	uint8_t fc;
+> > @@ -657,15 +658,16 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
+> >   	 * Verify that the hook callback is registered, lock the owner
+> >   	 * and call the hook.
+> >   	 */
+> > +	down_read(&vcpu->kvm->arch.crypto.pqap_hook_rwsem);
+> >   	if (vcpu->kvm->arch.crypto.pqap_hook) {                     <--- HERE
+> > -		if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
+> > -			return -EOPNOTSUPP;
+> > -		ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
+> > -		module_put(vcpu->kvm->arch.crypto.pqap_hook->owner);
+> > +		pqap_hook = *vcpu->kvm->arch.crypto.pqap_hook;  
 > 
-> Because GCC sees the frequent use of struct_size() as an allocator size
-> argument, and notices it can return SIZE_MAX (the overflow indication),
-> it complains about these call sites may overflow (since SIZE_MAX is
-> greater than the default -Walloc-size-larger-than=PTRDIFF_MAX). This
-> isn't helpful since we already know a SIZE_MAX will be caught at run-time
-> (this was an intentional design). Instead, just disable this check as
-> it is both a false positive and redundant. (Clang does not have this
-> warning option.)
+> Dont we have to check for NULL here? If not can you add a comment why?
+
+I believe we did the necessary check on the line I just marked with
+"<--- HERE". 
+
+I find that "*" operator confusing in this context as it doesn't do
+any good for us. I believe this situation is described in 6.5.3.2.4 of
+the c11 standard. For convenience I will cite from the corresponding
+draft:
+"The unary * operator denotes indirection. If the operand points to a
+function, the result is a function designator; if it points to an
+object, the result is an lvalue designating the object. If the operand
+has type ‘‘pointer to type’’, the result has type ‘‘type’’. If an
+invalid value has been assigned to the pointer, the behavior of the
+unary * operator is undefined."
+
+Frankly I also fail to see the benefit of introducing the local variable
+named "pqap_hook", but back then I decided to not complain about style.
+
+Regards,
+Halil
+
 > 
-> ...
->
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1078,9 +1078,13 @@ KBUILD_CFLAGS += $(call cc-disable-warning, stringop-overflow)
->  # Another good warning that we'll want to enable eventually
->  KBUILD_CFLAGS += $(call cc-disable-warning, restrict)
->  
-> -# Enabled with W=2, disabled by default as noisy
->  ifdef CONFIG_CC_IS_GCC
-> +# Enabled with W=2, disabled by default as noisy
->  KBUILD_CFLAGS += -Wno-maybe-uninitialized
-> +
-> +# The allocators already balk at large sizes, so silence the compiler
-> +# warnings for bounds checks involving those possible values.
-> +KBUILD_CFLAGS += -Wno-alloc-size-larger-than
->  endif
->  
->  # disable invalid "can't wrap" optimizations for signed / pointers
-
-Makefile has changed.  I did this:
-
---- a/Makefile~compiler-attributes-add-__alloc_size-for-better-bounds-checking
-+++ a/Makefile
-@@ -1003,6 +1003,12 @@ KBUILD_CFLAGS += $(call cc-disable-warni
- # Enabled with W=2, disabled by default as noisy
- KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
- 
-+ifdef CONFIG_CC_IS_GCC
-+# The allocators already balk at large sizes, so silence the compiler
-+# warnings for bounds checks involving those possible values.
-+KBUILD_CFLAGS += -Wno-alloc-size-larger-than
-+endif
-+
- # disable invalid "can't wrap" optimizations for signed / pointers
- KBUILD_CFLAGS	+= -fno-strict-overflow
- 
-_
+> 
+> > +		ret = pqap_hook(vcpu);  
+> [...]
 
