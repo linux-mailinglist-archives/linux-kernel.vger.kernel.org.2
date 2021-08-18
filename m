@@ -2,157 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2E43F044A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:05:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B8A3F044C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237121AbhHRNGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 09:06:17 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:42900 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236614AbhHRNGQ (ORCPT
+        id S236691AbhHRNGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 09:06:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235224AbhHRNGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 09:06:16 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17ID5aW4086265;
-        Wed, 18 Aug 2021 08:05:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1629291936;
-        bh=CSvpw5yzpEsObQQ/2pV3/bp6WVTuspaj32I/WVC7q78=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=Az5UT/meW9RrAGO+K23lnCg0om2iELjvPMYR7YXkLQhogNLhWcuO68acXKsPYBQ1s
-         x2IT4S96+M5DM0j5S6mLthx6ewiTmi06tOjpnx6WSUKOE6z760jMV6uRBiREzRNpSZ
-         BrvjnGbSnlaWAjz1WKY7LVRvs3sP2kkuPGz8tUqs=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17ID5ae6030705
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 18 Aug 2021 08:05:36 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 18
- Aug 2021 08:05:35 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 18 Aug 2021 08:05:36 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17ID5ZQm071711;
-        Wed, 18 Aug 2021 08:05:35 -0500
-Date:   Wed, 18 Aug 2021 08:05:35 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Sinthu Raja <sinthu.raja@mistralsolutions.com>,
-        "Nagalla, Hari" <hnagalla@ti.com>
-CC:     Ohad Ben-Cohen <ohad@wizery.com>, Rob Herring <robh+dt@kernel.org>,
-        Suman Anna <s-anna@ti.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Lokesh Vutla <lokeshvutla@ti.com>,
-        Sinthu Raja <sinthu.raja@ti.com>
-Subject: Re: [PATCH V1] dt-bindings: remoteproc: k3-dsp: Update example to
- remove board specific
-Message-ID: <20210818130535.siv7jpjjzfwonwdt@unsteady>
-References: <20210818074030.1877-1-sinthu.raja@ti.com>
+        Wed, 18 Aug 2021 09:06:41 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C52FC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 06:06:06 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id i28so4981039ljm.7
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 06:06:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Rk4rh69c/LenRpcagjkzH2FMHZv4am/6zYYDtLbS6zQ=;
+        b=D8J5AxoGo/R1bYxJerREYFlOpFtxx08VFZncQnr18H9cXs3kJ0kCgLDJIZmPzoSuRn
+         REZtiglkzQJGgzBpy1IoBzywedBBh2aqrBhBjEQmfQXlc1mEq2s1z6KRAQAjfEpm+DZ2
+         EwGOS0CB0Q7mP7dmoaLp8L+ZCJFA29yNmrIc1gV+iMFP/ArnB9/cX5YRUYtxbEFDQ/t2
+         IFh78wmlF+n3s/gHzb/T/s/lXw/+cTpAbZLreto/MnbTo/HeBFD//HaqdCJ6n4AYxZKE
+         hb23vW+/qIVs/EHl+ehTmVVMTjOsdEKMh/HlLxOfKXDcUUoG56Ahd0oSj/67DJJc5V6e
+         5/tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Rk4rh69c/LenRpcagjkzH2FMHZv4am/6zYYDtLbS6zQ=;
+        b=FHFCYhZQi59ylUUkLQRVbLGw4RzKP4x9MJwqpdtBAIk0+ZGlwDTK0Np9Jv+K+0IqK4
+         AbeBfUCyT4wqgmD5r48PdFHqfb9/RvQyrZ2qmcIUO8rwmwqAiw9kJtXcqpqaHJ3tkqRf
+         sqJDcSXJiGuWWfKxXrlswkAPH8bud2qZ6H5etRdEZyw4by1Pkvnc1WGLQTb3v/gAsM7Y
+         JS6gcrh15QkEujqVtm7nZ/Wyb9zGmDOD9haZ8RodiptqYOe8EIge8+M1doQU06tBBZa+
+         X9DwwYc9y8KmU8w7Lvbxj8JxZpAYhPL2vlfESH8e+NSolZcceNv76yIrHEyGndLWYUOA
+         gTrA==
+X-Gm-Message-State: AOAM533Pm81LKxL661Q7A6O++1JGn6ROs27YE7A9CSYFlW7hFTux7ei2
+        Pc297hAW/oemhK5gFostszkNVbVsVyZ6iEbRUC8=
+X-Google-Smtp-Source: ABdhPJyX+qSFcnkMypKNvRD+GHxK6RLnrHlxl8mrp+Z3l83Fk84TN88aHEoGDoKzNG81HYnyhr5Z+u0NBaoneShtT/k=
+X-Received: by 2002:a2e:9544:: with SMTP id t4mr8048704ljh.250.1629291964738;
+ Wed, 18 Aug 2021 06:06:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210818074030.1877-1-sinthu.raja@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Received: by 2002:a2e:bba0:0:0:0:0:0 with HTTP; Wed, 18 Aug 2021 06:06:04
+ -0700 (PDT)
+Reply-To: dorischrstpher@gmail.com
+From:   Doris Christopher <dorischristopher78@gmail.com>
+Date:   Wed, 18 Aug 2021 13:06:04 +0000
+Message-ID: <CAO6C80F9=J4n3i-ZkUNSGVWz3VSg9zwoNM1rohUYPjDNKkgCsw@mail.gmail.com>
+Subject: Greetings,is me Mrs. Doris Christopher
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13:10-20210818, Sinthu Raja wrote:
-> The example includes a board-specific compatible property, but developers
-> need to add the board name each time when a new board is added to the K3
-> J721E SoC list. This grows the compatible string-list. So, drop the
-> board-specific compatible string and add cbass_main as a parent node to
+Greetings, I really hope this message finds you in peace and will
+bring hope to the needy, less privileged around your reach. With the
+introduction of Identity, I am Mrs. Doris Christopher I am contacting
+you with faith in expecting to hear from you soon. I found your
+contact during my search for a person who I can trust and I decided to
+contact you hoping for a response and not finding it an offense
+barging into your privacy without your permission.
 
-What is cbass_main node?
-
-> avoid parent node and child node address-cells mismatch error.
-> 
-
-I think you mean that since the existing example uses address cells and
-size for 64bit addresses and sizes, you are introducing a bus segment
-indicative of the same capability to reduce the churn in the binding.
-Correct? if so, rephrase accordingly.
-
-> Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
-
-Your From: and Signed-off-by email IDs do not match. You might want to
-re-read the contribution guidelines documentation in linux kernel.
-
-This should be also tagged with Fixes: since it is fixing a pre-existing
-binding that slipped through our review.
-
-NOTE: at least my test.. (I think rob's system will still complain)
-base: next-20210818
-b4 am -o  ~/tmp -3 -g -t -l -c -s --no-cover 20210818074030.1877-1-sinthu.raja@ti.com
-	https://pastebin.ubuntu.com/p/VxzzvzpY9N/
-
-I mean, both these can be caught with checkpatch and standard checks, so
-did you see that in your basic vett prior to posting?
-
-> ---
-> Changes in V1:
-> Fixed alignment issue which caused the yaml parse error.
-
-Some 101 comments:
-
-A) when you post a new revision, post a url like previous versions in
-   diffstat - :
-   https://lore.kernel.org/linux-devicetree/20210817152005.21575-1-sinthu.raja@ti.com/
-B) When you are sending the very first patch, it is already V1 and
-   does'nt need to be explicitly stated. this update to your original
-   post is a V2, so, when you update this patch to address the review
-   comments, the next revision will be V3.
-
-> 
->  .../devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml     | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
-> index 6070456a7b67..e44a9397b8db 100644
-> --- a/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
-> +++ b/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
-> @@ -132,10 +132,8 @@ required:
->  unevaluatedProperties: false
->  
->  examples:
-> -  - |
-> -    / {
-> -        model = "Texas Instruments K3 J721E SoC";
-> -        compatible = "ti,j721e";
-> +  - |+
-
-minor detail: you are also doing one additional change -> you are now using
-the standard example template and adding the example node instead of a
-complete example node as well here. Personally, I do prefer this
-approach rather than the previous example.
-
-> +    cbass_main {
->          #address-cells = <2>;
->          #size-cells = <2>;
-
-
-
-Usually, when one sees problems like these, they tend to be
-symptomatic, and we need to look if there is a similar pattern of
-error else where in the codebase.
-
-Sigh, in this case, I see the same problem in:
-a) Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml
-b) Documentation/devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml
-
-Hari, Sinthu,
-Can we fix these in a series that belongs to each maintainer?
-
->  
-> -- 
-> 2.31.1
-> 
-
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+I want to Impact in a Humanitarian/Charity Project with a legitimate
+sum of $3.9 US (Three Million Nine Hundred Thousands United States
+Dollars) I want to use this sum to bring hope and great help to the
+needy that will enormously benefit from this , Your immediate reply is
+expected as soon as possible inorder to know more about you before
+confiding this amount through you. Your religion, Belief does not
+matter much to me, What matters most is using the money with the fear
+of Almighty God,Your sincere reply will be highly appreciated.
+,
+My greetings in the love of God,
+Mrs. Doris Christopher
