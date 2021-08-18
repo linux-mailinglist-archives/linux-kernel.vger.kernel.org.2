@@ -2,259 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD453F0E22
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 00:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F65A3F0E29
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 00:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234642AbhHRWaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 18:30:07 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:41936 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232456AbhHRWaF (ORCPT
+        id S234713AbhHRWam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 18:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234651AbhHRWai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 18:30:05 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=bo.liu@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UjqEgEW_1629325768;
-Received: from rsjd01523.et2sqa(mailfrom:bo.liu@linux.alibaba.com fp:SMTPD_---0UjqEgEW_1629325768)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 19 Aug 2021 06:29:28 +0800
-Date:   Thu, 19 Aug 2021 06:29:28 +0800
-From:   Liu Bo <bo.liu@linux.alibaba.com>
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>
-Cc:     linux-erofs@lists.ozlabs.org, Chao Yu <chao@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peng Tao <tao.peng@linux.alibaba.com>,
-        Eryu Guan <eguan@linux.alibaba.com>,
-        Liu Jiang <gerry@linux.alibaba.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>
-Subject: Re: [PATCH 2/2] erofs: support reading chunk-based uncompressed files
-Message-ID: <20210818222928.GB73193@rsjd01523.et2sqa>
-Reply-To: bo.liu@linux.alibaba.com
-References: <20210818070713.4437-1-hsiangkao@linux.alibaba.com>
- <20210818070713.4437-2-hsiangkao@linux.alibaba.com>
+        Wed, 18 Aug 2021 18:30:38 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E483C06179A
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 15:30:03 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id a5so2760873plh.5
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 15:30:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=DUTuMfsQqxqX+3pR2oz9dVJNWsHg80kq142ck8zdj0s=;
+        b=HXqi8rpNQlqRCRobulkOlcaA4+c6J/4aW1kHG07w5z+LW3VAsPY7L3ovHbYLAvr6BW
+         z8PYA40q5a4/E1aSSd1f0X7nRnd2FNDMsOqvNHCn+M7iSwPw+3HB842oCYFV1odUjD4+
+         aowm4n1LLC28ISLDG0efepefjXmirvRMkeWhE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=DUTuMfsQqxqX+3pR2oz9dVJNWsHg80kq142ck8zdj0s=;
+        b=eU+g10YP6b3wV7ePiA+852Gt/5Oey48paHafVqEl+Y9uE0YiXNPTNDimkeVOqIqbzg
+         xLhrLLMf/XqEnezR1ZdDmezmNa0bcaHHvhUOB45wZd9I2buJLhOuFgaeak50nbDtCW9P
+         8+IBB/hyX0E+CDzh657se3bpeti0NKb34kcwC5K5LDbrGhuVebsiX0WZUMrD9erI/KBv
+         XHFlJXRSkgO+U0cMb7OgXpJ7m6A2la1rps10rQZQZKFam3qpSSCU5pPXz6/MbCYCMOaS
+         7Y2UVV2SM73aZbVqBRgyo0j/0U523O6RgunaRFGIfSpmLofZozdg9VUZjGp/qL49LrBU
+         XrkA==
+X-Gm-Message-State: AOAM533t61nzZh7HXV8BbMdLjACrQ/DFBwopgBRbswiOa7J7pbsaMY15
+        ZFtWf2lRtvKOC56i8AesbrtODQ==
+X-Google-Smtp-Source: ABdhPJwejqek+pQNgEJHoUL+LD8id8sswOa0BezZLWGyCwRRYJ3BmiAhJE1bgJAMyKte9lbr8NDHRw==
+X-Received: by 2002:a17:90a:a581:: with SMTP id b1mr1663300pjq.153.1629325803017;
+        Wed, 18 Aug 2021 15:30:03 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id n185sm862325pfn.171.2021.08.18.15.30.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 15:30:02 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 15:30:01 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wang Wensheng <wangwensheng4@huawei.com>,
+        linux-staging@lists.linux.dev, linux-wireless@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        linux-block@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        clang-built-linux@googlegroups.com, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kbuild@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 61/63] powerpc: Split memset() to avoid multi-field
+ overflow
+Message-ID: <202108181528.9CDB56FEC@keescook>
+References: <20210818060533.3569517-1-keescook@chromium.org>
+ <20210818060533.3569517-62-keescook@chromium.org>
+ <7630b0bc-4389-6283-d8b9-c532df916d60@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210818070713.4437-2-hsiangkao@linux.alibaba.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7630b0bc-4389-6283-d8b9-c532df916d60@csgroup.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 03:07:13PM +0800, Gao Xiang wrote:
-> Add runtime support for chunk-based uncompressed files
-> described in the previous patch.
->
-
-Reviewed-by: Liu Bo <bo.liu@linux.alibaba.com>
-thanks,
-liubo
-
-> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> ---
->  fs/erofs/data.c     | 90 ++++++++++++++++++++++++++++++++++++++++-----
->  fs/erofs/inode.c    | 18 ++++++++-
->  fs/erofs/internal.h |  5 +++
->  3 files changed, 102 insertions(+), 11 deletions(-)
+On Wed, Aug 18, 2021 at 08:42:18AM +0200, Christophe Leroy wrote:
 > 
-> diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-> index b2a22aabc9bc..78d625709481 100644
-> --- a/fs/erofs/data.c
-> +++ b/fs/erofs/data.c
-> @@ -2,6 +2,7 @@
->  /*
->   * Copyright (C) 2017-2018 HUAWEI, Inc.
->   *             https://www.huawei.com/
-> + * Copyright (C) 2021, Alibaba Cloud
->   */
->  #include "internal.h"
->  #include <linux/prefetch.h>
-> @@ -37,13 +38,6 @@ static int erofs_map_blocks_flatmode(struct inode *inode,
->  	nblocks = DIV_ROUND_UP(inode->i_size, PAGE_SIZE);
->  	lastblk = nblocks - tailendpacking;
->  
-> -	if (offset >= inode->i_size) {
-> -		/* leave out-of-bound access unmapped */
-> -		map->m_flags = 0;
-> -		map->m_plen = 0;
-> -		goto out;
-> -	}
-> -
->  	/* there is no hole in flatmode */
->  	map->m_flags = EROFS_MAP_MAPPED;
->  
-> @@ -78,14 +72,90 @@ static int erofs_map_blocks_flatmode(struct inode *inode,
->  		goto err_out;
->  	}
->  
-> -out:
->  	map->m_llen = map->m_plen;
-> -
->  err_out:
->  	trace_erofs_map_blocks_flatmode_exit(inode, map, flags, 0);
->  	return err;
->  }
->  
-> +static int erofs_map_blocks(struct inode *inode,
-> +			    struct erofs_map_blocks *map, int flags)
-> +{
-> +	struct super_block *sb = inode->i_sb;
-> +	struct erofs_inode *vi = EROFS_I(inode);
-> +	struct erofs_inode_chunk_index *idx;
-> +	struct page *page;
-> +	u64 chunknr;
-> +	unsigned int unit;
-> +	erofs_off_t pos;
-> +	int err = 0;
-> +
-> +	if (map->m_la >= inode->i_size) {
-> +		/* leave out-of-bound access unmapped */
-> +		map->m_flags = 0;
-> +		map->m_plen = 0;
-> +		goto out;
-> +	}
-> +
-> +	if (vi->datalayout != EROFS_INODE_CHUNK_BASED)
-> +		return erofs_map_blocks_flatmode(inode, map, flags);
-> +
-> +	if (vi->chunkformat & EROFS_CHUNK_FORMAT_INDEXES)
-> +		unit = sizeof(*idx);	/* chunk index */
-> +	else
-> +		unit = 4;		/* block map */
-> +
-> +	chunknr = map->m_la >> vi->chunkbits;
-> +	pos = ALIGN(iloc(EROFS_SB(sb), vi->nid) + vi->inode_isize +
-> +		    vi->xattr_isize, unit) + unit * chunknr;
-> +
-> +	page = erofs_get_meta_page(inode->i_sb, erofs_blknr(pos));
-> +	if (IS_ERR(page))
-> +		return PTR_ERR(page);
-> +
-> +	map->m_la = chunknr << vi->chunkbits;
-> +	map->m_plen = min_t(erofs_off_t, 1UL << vi->chunkbits,
-> +			    roundup(inode->i_size - map->m_la, EROFS_BLKSIZ));
-> +
-> +	/* handle block map */
-> +	if (!(vi->chunkformat & EROFS_CHUNK_FORMAT_INDEXES)) {
-> +		__le32 *blkaddr = page_address(page) + erofs_blkoff(pos);
-> +
-> +		if (le32_to_cpu(*blkaddr) == EROFS_NULL_ADDR) {
-> +			map->m_flags = 0;
-> +		} else {
-> +			map->m_pa = blknr_to_addr(le32_to_cpu(*blkaddr));
-> +			map->m_flags = EROFS_MAP_MAPPED;
-> +		}
-> +		goto out_unlock;
-> +	}
-> +	/* parse chunk indexes */
-> +	idx = page_address(page) + erofs_blkoff(pos);
-> +	switch (le32_to_cpu(idx->blkaddr)) {
-> +	case EROFS_NULL_ADDR:
-> +		map->m_flags = 0;
-> +		break;
-> +	default:
-> +		/* only one device is supported for now */
-> +		if (idx->device_id) {
-> +			erofs_err(sb, "invalid device id %u @ %llu for nid %llu",
-> +				  le32_to_cpu(idx->device_id),
-> +				  chunknr, vi->nid);
-> +			err = -EFSCORRUPTED;
-> +			goto out_unlock;
-> +		}
-> +		map->m_pa = blknr_to_addr(le32_to_cpu(idx->blkaddr));
-> +		map->m_flags = EROFS_MAP_MAPPED;
-> +		break;
-> +	}
-> +out_unlock:
-> +	unlock_page(page);
-> +	put_page(page);
-> +out:
-> +	map->m_llen = map->m_plen;
-> +	return err;
-> +}
-> +
->  static int erofs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
->  		unsigned int flags, struct iomap *iomap, struct iomap *srcmap)
->  {
-> @@ -95,7 +165,7 @@ static int erofs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
->  	map.m_la = offset;
->  	map.m_llen = length;
->  
-> -	ret = erofs_map_blocks_flatmode(inode, &map, EROFS_GET_BLOCKS_RAW);
-> +	ret = erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW);
->  	if (ret < 0)
->  		return ret;
->  
-> diff --git a/fs/erofs/inode.c b/fs/erofs/inode.c
-> index 92728da1d206..036a6cc97d10 100644
-> --- a/fs/erofs/inode.c
-> +++ b/fs/erofs/inode.c
-> @@ -2,6 +2,7 @@
->  /*
->   * Copyright (C) 2017-2018 HUAWEI, Inc.
->   *             https://www.huawei.com/
-> + * Copyright (C) 2021, Alibaba Cloud
->   */
->  #include "xattr.h"
->  
-> @@ -122,7 +123,9 @@ static struct page *erofs_read_inode(struct inode *inode,
->  		/* total blocks for compressed files */
->  		if (erofs_inode_is_data_compressed(vi->datalayout))
->  			nblks = le32_to_cpu(die->i_u.compressed_blocks);
-> -
-> +		else if (vi->datalayout == EROFS_INODE_CHUNK_BASED)
-> +			/* fill chunked inode summary info */
-> +			vi->chunkformat = __le16_to_cpu(die->i_u.c.format);
->  		kfree(copied);
->  		break;
->  	case EROFS_INODE_LAYOUT_COMPACT:
-> @@ -160,6 +163,8 @@ static struct page *erofs_read_inode(struct inode *inode,
->  		inode->i_size = le32_to_cpu(dic->i_size);
->  		if (erofs_inode_is_data_compressed(vi->datalayout))
->  			nblks = le32_to_cpu(dic->i_u.compressed_blocks);
-> +		else if (vi->datalayout == EROFS_INODE_CHUNK_BASED)
-> +			vi->chunkformat = __le16_to_cpu(dic->i_u.c.format);
->  		break;
->  	default:
->  		erofs_err(inode->i_sb,
-> @@ -169,6 +174,17 @@ static struct page *erofs_read_inode(struct inode *inode,
->  		goto err_out;
->  	}
->  
-> +	if (vi->datalayout == EROFS_INODE_CHUNK_BASED) {
-> +		if (!(vi->chunkformat & EROFS_CHUNK_FORMAT_ALL)) {
-> +			erofs_err(inode->i_sb,
-> +				  "unsupported chunk format %x of nid %llu",
-> +				  vi->chunkformat, vi->nid);
-> +			err = -EOPNOTSUPP;
-> +			goto err_out;
-> +		}
-> +		vi->chunkbits = LOG_BLOCK_SIZE +
-> +			(vi->chunkformat & EROFS_CHUNK_FORMAT_BLKBITS_MASK);
-> +	}
->  	inode->i_mtime.tv_sec = inode->i_ctime.tv_sec;
->  	inode->i_atime.tv_sec = inode->i_ctime.tv_sec;
->  	inode->i_mtime.tv_nsec = inode->i_ctime.tv_nsec;
-> diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-> index 25b094085ca6..0a46e149aadd 100644
-> --- a/fs/erofs/internal.h
-> +++ b/fs/erofs/internal.h
-> @@ -2,6 +2,7 @@
->  /*
->   * Copyright (C) 2017-2018 HUAWEI, Inc.
->   *             https://www.huawei.com/
-> + * Copyright (C) 2021, Alibaba Cloud
->   */
->  #ifndef __EROFS_INTERNAL_H
->  #define __EROFS_INTERNAL_H
-> @@ -260,6 +261,10 @@ struct erofs_inode {
->  
->  	union {
->  		erofs_blk_t raw_blkaddr;
-> +		struct {
-> +			unsigned short	chunkformat;
-> +			unsigned char	chunkbits;
-> +		};
->  #ifdef CONFIG_EROFS_FS_ZIP
->  		struct {
->  			unsigned short z_advise;
-> -- 
-> 2.24.4
+> 
+> Le 18/08/2021 à 08:05, Kees Cook a écrit :
+> > In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> > field bounds checking for memset(), avoid intentionally writing across
+> > neighboring fields.
+> > 
+> > Instead of writing across a field boundary with memset(), move the call
+> > to just the array, and an explicit zeroing of the prior field.
+> > 
+> > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> > Cc: Qinglang Miao <miaoqinglang@huawei.com>
+> > Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+> > Cc: Hulk Robot <hulkci@huawei.com>
+> > Cc: Wang Wensheng <wangwensheng4@huawei.com>
+> > Cc: linuxppc-dev@lists.ozlabs.org
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > Reviewed-by: Michael Ellerman <mpe@ellerman.id.au>
+> > Link: https://lore.kernel.org/lkml/87czqsnmw9.fsf@mpe.ellerman.id.au
+> > ---
+> >   drivers/macintosh/smu.c | 3 ++-
+> >   1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/macintosh/smu.c b/drivers/macintosh/smu.c
+> > index 94fb63a7b357..59ce431da7ef 100644
+> > --- a/drivers/macintosh/smu.c
+> > +++ b/drivers/macintosh/smu.c
+> > @@ -848,7 +848,8 @@ int smu_queue_i2c(struct smu_i2c_cmd *cmd)
+> >   	cmd->read = cmd->info.devaddr & 0x01;
+> >   	switch(cmd->info.type) {
+> >   	case SMU_I2C_TRANSFER_SIMPLE:
+> > -		memset(&cmd->info.sublen, 0, 4);
+> > +		cmd->info.sublen = 0;
+> > +		memset(&cmd->info.subaddr, 0, 3);
+> 
+> subaddr[] is a table, should the & be avoided ?
+
+It results in the same thing, but it's better form to not have the &; I
+will fix this.
+
+> And while at it, why not use sizeof(subaddr) instead of 3 ?
+
+Agreed. :)
+
+Thanks!
+
+-- 
+Kees Cook
