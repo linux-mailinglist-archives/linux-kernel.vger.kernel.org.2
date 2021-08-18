@@ -2,105 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5DAF3F0099
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A8D3F0094
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233051AbhHRJgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:36:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59708 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233370AbhHRJc7 (ORCPT
+        id S233872AbhHRJfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 05:35:37 -0400
+Received: from mail-lj1-f173.google.com ([209.85.208.173]:35707 "EHLO
+        mail-lj1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233729AbhHRJe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:32:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629279137;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RHYvNfODo5ETK+AbX2YYLKozZTeELQw3jUzDzquAaQ8=;
-        b=Af/juhH7fjHGL4c37iuIJ7iAMLxiArAeLxSXk1wKhOF4lFmPSssYZkhHJM1nGOxotE4HB1
-        ias8Dlx8WPpf51qi0rfJoCfnZshly9VjiZ496apPTAgVaBAewI6wNyZrXZkCgoGYVgQK1n
-        84xeo5v41zbxUBSHlOwF9QjSrBiGqRY=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-564-63J6SglzP3KpL8ive1c2UA-1; Wed, 18 Aug 2021 05:32:16 -0400
-X-MC-Unique: 63J6SglzP3KpL8ive1c2UA-1
-Received: by mail-wr1-f71.google.com with SMTP id n18-20020adfe792000000b00156ae576abdso388400wrm.9
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:32:16 -0700 (PDT)
+        Wed, 18 Aug 2021 05:34:28 -0400
+Received: by mail-lj1-f173.google.com with SMTP id y6so3964461lje.2;
+        Wed, 18 Aug 2021 02:33:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=RHYvNfODo5ETK+AbX2YYLKozZTeELQw3jUzDzquAaQ8=;
-        b=lZ1Pt35MXdVUmO2pBkSuyxmM/K02vXNhPdNDvhnE6Ee53kWRq4Ht64Xg8pSDd9D4vt
-         Mx3Scp/vLVTqLotFUw0UNO3Hc05tZUz/QyBUSRArojjpmPCyieqA8dRIyM7BNDPfw/Mj
-         r0pA6puwVOXq665XP8lOKWFmG5X7gnBZ2rAAbkyk5nPLuI3rwjZCMcL9KAXpB1ee9EuQ
-         AQpnlYSiNemdM/sJvxrS/cK8HUk2i7EkZtHhLw9qgUHm3g4hwXOL/mPphIjU3QQSPz59
-         rpcumBXL2qDdU66XxPmTv3lI5brfjvCOmTr7PdHHMMQf4Or8ehwkwpej6os98J7QxYkQ
-         L4AQ==
-X-Gm-Message-State: AOAM530IqRULXXVGDY2F50z7Frw0lEqxmtoCEbXnxVgQ7cbfnlQ6MGJm
-        cdUPlqsLvcwPeJy3zeH2KfdNK9iCKZAA68MY38EhogD4SwMdARJL1w5DmrrAY436F8mvvdioMUO
-        eybPvSo7sD0WBdC64VUoJMxX0
-X-Received: by 2002:adf:f290:: with SMTP id k16mr9291910wro.88.1629279135301;
-        Wed, 18 Aug 2021 02:32:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwyyJoTAzImUF2IbKFC+1grXiIm6uPRSomp1hYc24EninkNxslFaPaoRrZa3p9prXkxmGnZEQ==
-X-Received: by 2002:adf:f290:: with SMTP id k16mr9291890wro.88.1629279135138;
-        Wed, 18 Aug 2021 02:32:15 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id 204sm4784923wmb.38.2021.08.18.02.32.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 02:32:14 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     suleiman@google.com, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
-        x86@kernel.org, Hikaru Nishida <hikalium@chromium.org>,
-        linux-kernel@vger.kernel.org, dme@dme.org, tglx@linutronix.de,
-        mlevitsk@redhat.com
-Subject: Re: [v2 PATCH 3/4] x86/kvm: Add host side support for virtual
- suspend time injection
-In-Reply-To: <2ec642dd-dde6-bee6-3de3-0fa78d288995@redhat.com>
-References: <20210806100710.2425336-1-hikalium@chromium.org>
- <20210806190607.v2.3.Ib0cb8ecae99f0ccd0e2814b310adba00b9e81d94@changeid>
- <2ec642dd-dde6-bee6-3de3-0fa78d288995@redhat.com>
-Date:   Wed, 18 Aug 2021 11:32:13 +0200
-Message-ID: <87o89vksiq.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CzC7eMg6GoorXihbZpnBiMn0rer4lRtJPAUz1wNS7Ds=;
+        b=DLZXoPf7Dv9d35O+flm97fCaasEQnPwFPFtSRBSvjLOsvq5Xixo7UkXN/U09L/Htaq
+         QEXQQ38ScqBKZDJ5wH2iCa9yGbeCiKj4H3Ls6vwIKKPTfeAK/uZMb/gEJgxtPK3UQukP
+         txvFkcsI2/rQNRKouXjwUNrtPRZZR5ISjKZ637+FQl/1vj5buwDFQlSY1xMLtp9ar8xN
+         6myV1g4EWi4zDuYv8RJuOrlZcr4wA1ji4mR8W70L6dw2Dh2LOzITt7F2XgA6MMYWMjkm
+         JKYKFU8HH9VBf7QobF7QvMtMCm8pcLlym9r/noUYVVeg+Liy1fFq9+kAFMxe+Akfn1sV
+         9N/A==
+X-Gm-Message-State: AOAM532CQi+7UVwEX2cfdxrqMI+OVOTLYg6ZPijsrgIV7dat5kd+F/jA
+        b10xeC9LuUnmO4pIB/Iu3RW2WhyQBqOh0OVnfi4=
+X-Google-Smtp-Source: ABdhPJwHqkci/wVHZz1RIQo9bHJpWPoiaE+GXkLl0fV34qDOm85KGMeIPwC/RwTgPkoYJWCGg83a0bkp1B1FDN32yQQ=
+X-Received: by 2002:a2e:a288:: with SMTP id k8mr6989386lja.315.1629279230564;
+ Wed, 18 Aug 2021 02:33:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210818034010.800652-1-keescook@chromium.org>
+ <CAMZ6RqK4Rn4d-1CZsg9vJiAMHhxN6fgcqukdHpGwXoGTyNVr_Q@mail.gmail.com>
+ <202108172320.1540EC10C@keescook> <CAMZ6RqLecbytJFQDC35n7YiqBbrB3--POofnXFeH77Zi2xzqWA@mail.gmail.com>
+ <202108180159.5C1CEE70F@keescook>
+In-Reply-To: <202108180159.5C1CEE70F@keescook>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Wed, 18 Aug 2021 18:33:39 +0900
+Message-ID: <CAMZ6RqK=Q3mvV5gyPVhBsFxE+JPANHNrgFqs=bvTgkbXjwT4Eg@mail.gmail.com>
+Subject: Re: [PATCH] can: etas_es58x: Replace 0-element raw_msg array
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        linux-can <linux-can@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paolo Bonzini <pbonzini@redhat.com> writes:
-
-> On 06/08/21 12:07, Hikaru Nishida wrote:
->> +#if defined(CONFIG_KVM_VIRT_SUSPEND_TIMING) || \
->> +	defined(CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST)
->> +#define VIRT_SUSPEND_TIMING_VECTOR	0xec
->> +#endif
+On Wed. 18 Aug 2021 at 18:03, Kees Cook <keescook@chromium.org> wrote:
+> On Wed, Aug 18, 2021 at 04:55:20PM +0900, Vincent MAILHOL wrote:
+> > At the end, the only goal of raw_msg[] is to have a tag pointing
+> > to the beginning of the union. It would be virtually identical to
+> > something like:
+> > |    u8 raw_msg[];
+> > |    union {
+> > |        /* ... */
+> > |    } __packed ;
+> >
+> > I had a look at your work and especially at your struct_group() macro.
+> > Do you think it would make sense to introduce a union_group()?
+> >
+> > Result would look like:
+> >
+> > |    union_group_attr(urb_msg, __packed, /* raw_msg renamed to urb_msg */
+> > |        struct es58x_fd_tx_conf_msg tx_conf_msg;
+> > |        u8 tx_can_msg_buf[ES58X_FD_TX_BULK_MAX * ES58X_FD_CANFD_TX_LEN];
+> > |        u8 rx_can_msg_buf[ES58X_FD_RX_BULK_MAX * ES58X_FD_CANFD_RX_LEN];
+> > |        struct es58x_fd_echo_msg echo_msg[ES58X_FD_ECHO_BULK_MAX];
+> > |        struct es58x_fd_rx_event_msg rx_event_msg;
+> > |        struct es58x_fd_tx_ack_msg tx_ack_msg;
+> > |        __le64 timestamp;
+> > |        __le32 rx_cmd_ret_le32;
+> > |    );
+> >
+> > And I can then use urb_msg in place of the old raw_msg (might
+> > need a bit of rework here and there but I can take care of it).
+> >
+> > This is the most pretty way I can think of to remove this zero length array.
+> > Keeping the raw_msg[] but with another size seems odd to me.
+> >
+> > Or maybe I would be the only one using this feature in the full
+> > tree? In that case, maybe it would make sense to keep the
+> > union_group_attr() macro local to the etas_es58x driver?
 >
-> No need to use a new vector.  You can rename the existing 
-> MSR_KVM_ASYNC_PF_INT to MSR_KVM_HYPERVISOR_CALLBACK_INT or something 
-> like that, and add the code to sysvec_kvm_asyncpf_interrupt.
+> I actually ended up with something close to this idea, but more
+> generalized for other cases in the kernel. There was a sane way to
+> include a "real" flexible array in a union (or alone in a struct), so
+> I've proposed this flex_array() helper:
+> https://lore.kernel.org/lkml/20210818081118.1667663-2-keescook@chromium.org/
+>
+> and then it's just a drop-in replacement for all the places that need
+> this fixed, including etas_es58x:
+> https://lore.kernel.org/lkml/20210818081118.1667663-3-keescook@chromium.org/#Z30drivers:net:can:usb:etas_es58x:es581_4.h
+>
+> Hopefully this will work out; I think it's as clean as we can get for
+> now. :)
 
-On the host side, I'd vote for keeping MSR_KVM_ASYNC_PF_INT for async PF
-mechanism only for two reasons:
-- We may want to use (currently reserved) upper 56 bits of it for new
-asyncPF related features (e.g. flags) and it would be unnatural to add
-them to 'MSR_KVM_HYPERVISOR_CALLBACK_INT'
-- We should probably leave it to the guest if it wants to share 'suspend
-time' notification interrupt with async PF (and if it actually wants to
-get one/another).
+The __flex_array itself is a nasty hack :D but the rest is clean.
 
-On the guest side, it is perfectly fine to reuse
-HYPERVISOR_CALLBACK_VECTOR for everything.
+Is this compliant to the C standard? Well, I guess that as long
+as both GCC and LLVM supports it, it is safe to add it to the
+kernel.
 
--- 
-Vitaly
+I like the final result. I will do a bit more testing and give my
+acknowledgement if everything goes well.
 
+
+Yours sincerely,
+Vincent
