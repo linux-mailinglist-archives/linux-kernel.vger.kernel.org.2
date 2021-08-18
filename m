@@ -2,188 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F2F53F05B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55FEE3F05B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238906AbhHROHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 10:07:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45150 "EHLO
+        id S238872AbhHROHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 10:07:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238257AbhHROHs (ORCPT
+        with ESMTP id S238763AbhHROHp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 10:07:48 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A683C0617AD
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:07:13 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id h9so5337052ejs.4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:07:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=64zifREinBHAwmFxgrDBcSqFtKr4jlCZS5WKAwKoAXg=;
-        b=Dqv70yX93zXZr6jzmhvMeWNIKTnXuLw0MEEK7GV3TiU2x5BvM11uG8NZWDKBrQ8KFf
-         Uod5IWznhUW0T4R7w/UCTcOGE+TI0Bz76CA3wlCkzsNkXqm7X8Esf7ozHWvrYptriVmT
-         0QXozwG4Q6j7K+YdY16ETjLy6mMCgA7F1hAs0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=64zifREinBHAwmFxgrDBcSqFtKr4jlCZS5WKAwKoAXg=;
-        b=l0fRG17iarUtS+3KZbXEiI8Ch2wYqIAmGfF9Tkgg1c8uaune2ZXi7Z7s0HpWvPs/Dh
-         gD/WfOmFVqloRFfnZpD/TcWXWGXXXRHIIC7sD54jFvK5tDxNuTn517XjGG6DMf+ra4Jn
-         8J6WbnEdQnWcX9dz1XANGakUJHFqXen3aBkNz1f7th6nn3yMrymYt3PB6/H5nMRxWBmu
-         oAbqdKPIjAQD4h8/wL77ksQOfeLClBGaEei6sLBBW1ojy2EUTLL6vJ80M8YfQ5wpMtNG
-         ES2o/wPV/wZkyQf2ypyf7Pq5hpzLKCeYN1uWnvmGt6cNvHnKa8fLzxeX/J3vBccUPW8f
-         upQQ==
-X-Gm-Message-State: AOAM5309F4BznSNtn+zvhi0AzIrMQH73/POQPeC9WPYfdp8IBV/n+6Zr
-        95wqfsnwgnekOkOvobV+pe5rYjYVd/Omdw==
-X-Google-Smtp-Source: ABdhPJxqqKOBz+of90XjDMG6gzll1zUAgspFw9u1WR+Axp7BK9MoT+c8eS8ZPFhua2tvp7B7/05Hfg==
-X-Received: by 2002:a17:906:8444:: with SMTP id e4mr10116391ejy.516.1629295631579;
+        Wed, 18 Aug 2021 10:07:45 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B9FC061764;
         Wed, 18 Aug 2021 07:07:11 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id m6sm40070edc.82.2021.08.18.07.07.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 07:07:11 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 16:07:09 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Wentao_Liang <Wentao_Liang_g@163.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        sumit.semwal@linaro.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH] drm/prime: fix a potential double put (release) bug
-Message-ID: <YR0UDT9G4G37hHtL@phenom.ffwll.local>
-Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Wentao_Liang <Wentao_Liang_g@163.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, sumit.semwal@linaro.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-References: <20210818130231.3484-1-Wentao_Liang_g@163.com>
- <14aa6dfe-faba-8632-01a4-8119f199005c@amd.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
+        Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=t7yJ2bcNJWGSBC482VMdmiWbdC42sC3SvF5Zv1MVXCs=; b=ge1JcuFqixlF6ZBbUsgYLAhvJH
+        +xq/awS6k8DsxuCZKonmuQed2vow//8m0Kp/Qu2ZSXq/lYw4ZrDzrlaQV+U46crDuVyj++K5F3AGm
+        4ptV1sU2ctHhIlelzdEq8IrtrwvPNs/njqbHr5egStvYVi+CbUjZouAFOZnXZhG+f76OAukEZiV5O
+        QPdvSZRct7b5O0eqkoCJAlHKslpf/4BI4Ut9u6qIHIVH5u4obDFimZna3QR7174KLihL/B+b6U+Ru
+        iKTVDG3ADOEjmBc6jd+yUmDMgW97GSfCDVw8kM0YE3DSBPRqWL0pOFrGOlXOq2LMZy4I3gIlceCJG
+        6iz+3WsA==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mGMDm-005oZI-Uv; Wed, 18 Aug 2021 14:07:10 +0000
+Date:   Wed, 18 Aug 2021 07:07:10 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     fstests@vger.kernel.org
+Cc:     jeyu@kernel.org, linux-kernel@vger.kernel.org
+Subject: git fstests tree alias
+Message-ID: <YR0UDlcXWl7rhRF9@bombadil.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <14aa6dfe-faba-8632-01a4-8119f199005c@amd.com>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 03:25:59PM +0200, Christian König wrote:
-> Am 18.08.21 um 15:02 schrieb Wentao_Liang:
-> > In line 317 (#1), drm_gem_prime_import() is called, it will call
-> > drm_gem_prime_import_dev(). At the end of the function
-> > drm_gem_prime_import_dev() (line 956, #2), "dma_buf_put(dma_buf);" puts
-> > dma_buf->file and may cause it to be released. However, after
-> > drm_gem_prime_import() returning, the dma_buf may be put again by the
-> > same put function in lines 342, 351 and 358 (#3, #4, #5). Putting the
-> > dma_buf improperly more than once can lead to an incorrect dma_buf-
-> > > file put.
-> > We believe that the put of the dma_buf in the function
-> > drm_gem_prime_import() is unnecessary (#2). We can fix the above bug by
-> > removing the redundant "dma_buf_put(dma_buf);" in line 956.
-> 
-> Guys I'm getting tired of NAKing those incorrect reference count analysis.
-> 
-> The dma_buf_put() in the error handling of drm_gem_prime_import_dev()
-> function is balanced with the get_dma_buf() in the same function directly
-> above.
-> 
-> This is for the creating a GEM object for a DMA-buf imported from other
-> device use case and certainly correct.
-> 
-> The various dma_buf_put() in drm_gem_prime_fd_to_handle() is balanced with
-> the dma_buf_get(prime_fd) at the beginning of the function.
-> 
-> This is for extracting the DMA-buf from the file descriptor and keeping a
-> reference to it while we are busy importing it (e.g. to prevent a race when
-> somebody changes the fd at the same time).
-> 
-> As far as I can see this is correct as well.
+It is nice that we have fstests on vger, I think this helps
+with many FS developers who are new adopting and getting used
+to the fact that we use fstests for *any* filesystem. However
+the git tree is still misleading. While I don't think we can
+phase out the old one, can we at least get an alias?
 
-Yeah the analysis is just high-grade nonsense. The current code looks
-correct, the analysis presented here, not.
--Daniel
+pub/scm/fs/fstests.git ?
 
-
-> 
-> Regards,
-> Christian.
-> 
-> > 
-> >   314     if (dev->driver->gem_prime_import)
-> >   315         obj = dev->driver->gem_prime_import(dev, dma_buf);
-> >   316     else
-> >   317         obj = drm_gem_prime_import(dev, dma_buf);
-> >   				//#1 call to drm_gem_prime_import
-> > 				//   ->drm_gem_prime_import_dev
-> > 				//   ->dma_buf_put
-> >   ...
-> > 
-> >   336     ret = drm_prime_add_buf_handle(&file_priv->prime,
-> >   337             dma_buf, *handle);
-> > 
-> >   ...
-> > 
-> >   342     dma_buf_put(dma_buf);  //#3 put again
-> >   343
-> >   344     return 0;
-> >   345
-> >   346 fail:
-> > 
-> >   351     dma_buf_put(dma_buf); //#4 put again
-> >   352     return ret;
-> > 
-> >   356 out_put:
-> >   357     mutex_unlock(&file_priv->prime.lock);
-> >   358     dma_buf_put(dma_buf);  //#5 put again
-> >   359     return ret;
-> >   360 }
-> > 
-> >   905 struct drm_gem_object *drm_gem_prime_import_dev
-> >   							(struct drm_device *dev,
-> >   906                         struct dma_buf *dma_buf,
-> >   907                         struct device *attach_dev)
-> >   908 {
-> > 
-> >   ...
-> > 
-> >   952 fail_unmap:
-> >   953     dma_buf_unmap_attachment(attach, sgt, DMA_BIDIRECTIONAL);
-> >   954 fail_detach:
-> >   955     dma_buf_detach(dma_buf, attach);
-> >   956     dma_buf_put(dma_buf);  //#2 the first put of dma_buf
-> > 								//	 (unnecessary)
-> >   957
-> >   958     return ERR_PTR(ret);
-> >   959 }
-> > 
-> > Signed-off-by: Wentao_Liang <Wentao_Liang_g@163.com>
-> > ---
-> >   drivers/gpu/drm/drm_prime.c | 1 -
-> >   1 file changed, 1 deletion(-)
-> > 
-> > diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
-> > index 2a54f86856af..cef03ad0d5cd 100644
-> > --- a/drivers/gpu/drm/drm_prime.c
-> > +++ b/drivers/gpu/drm/drm_prime.c
-> > @@ -953,7 +953,6 @@ struct drm_gem_object *drm_gem_prime_import_dev(struct drm_device *dev,
-> >   	dma_buf_unmap_attachment(attach, sgt, DMA_BIDIRECTIONAL);
-> >   fail_detach:
-> >   	dma_buf_detach(dma_buf, attach);
-> > -	dma_buf_put(dma_buf);
-> >   	return ERR_PTR(ret);
-> >   }
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+  Luis
