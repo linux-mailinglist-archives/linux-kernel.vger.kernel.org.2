@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4AA3F0702
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACCD93F0704
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239393AbhHROri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 10:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54548 "EHLO
+        id S239633AbhHROrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 10:47:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239019AbhHROrg (ORCPT
+        with ESMTP id S239519AbhHROrk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 10:47:36 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA803C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:47:01 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id z20so5578925ejf.5
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:47:01 -0700 (PDT)
+        Wed, 18 Aug 2021 10:47:40 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4FCCC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:47:05 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id by4so3626662edb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:47:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HQ+SRnnm5XJPlQZM6OIpSav/h3nKkAs0Le4aeSpFCXA=;
-        b=Ni7orkw/le15lYw5vCMDy4GHQSmgE9WZ4CUrCjjj4+NZVJakJD2ijy6HsbopsTnj0m
-         Bf//m3e0+UDyYAiWhsoR1lUxOzbJIrQviug1Rr4T97HJXbXl2wxlQc75BcA6VqWcJ6L4
-         Ie0JzBOu+b6PBIYjbNrojs06cmBIEiePhlnT8u2GWuL4mVHbxBZ1Arw6+xog5fVy3FDP
-         94bJ3vY6ztMIcoE7+hP0oJH9wu85nIOA7yEV8CX9NTDImXvidhfT7XzHHJb7wZncUw6n
-         q5fcVrHSyW9mnE2RlU1Jif3y4dqtHvxLQNDvOdyseMQeHESH4lXFHcNyP7c5l7wsvh82
-         6eAg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=vNVfBtmdSEQMHS7NoA4wKiTmeDTFKx5xuSiT5cX6rdQ=;
+        b=IOgQGJmbcbWP/GZ5G+/xSr0a1QHxH3JvD8MK4+fmidRvQekv/jZ5OWdHrDsfxnrhka
+         jfNNFVgp5HNJoF0S4vaTSSzFq2J0XwG2/m7zkW7ugBlXiHDb+jAoZlrn6vO+Wup6CL7u
+         Vpsccuwcx9PtDgiTEtupb5Y7pJ7riUYCjIvUvizYeqX7jLbNQ4rVmtE6RDcBu6K9qWdK
+         0tsBe70yTbqqUcHG4zNZ02ipGLr0g7MXoK2t924OSGwtHr+yFeeMg5hmc5Prr/w3ZsNu
+         6AIvk1j+S3bypYU80LiPoIWc+bw5ePxMsZvnsLdhIfeXbLgwCBcVj7wFEIoLCDv3yIOV
+         mk7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HQ+SRnnm5XJPlQZM6OIpSav/h3nKkAs0Le4aeSpFCXA=;
-        b=SZMD8aZGBl2UNd4ONhTmD4iHJzeuwl4L7iKRwEfhCVkpOZ4MXMGqRfAOaFxYunXqwY
-         BVXucnJcyl0MAaSIXONjB2xh07GeYEqCCXD09nToUlhgQpvvnSY5g5DNKxtBVss+x+Sv
-         lGxZaJ1HVEVGVyC+FLCGxck+ezO0mp5+YXOZi9YZq/1VPZz1kPjurESNmKJCg3VMrt6M
-         yTIv+8aNtZkn+lMnUbJBlcIopoTIFlzOwnsnGxuyhXbKJTNAs01EyTg5b0osnUtjfEMJ
-         3EdvV+8CDTiQDTruB8c7Hbn0dWJx4mG1U2cgztBOzl0j7wkiurC9zXR8Y3wXrypSBk7Z
-         x7SA==
-X-Gm-Message-State: AOAM5302YFBFY7qFCx9AvQJJ5SoLaIVQBI9BDXz4hHPakIXcxcQMZx3W
-        DJd4llB2FRywAY67Qlb9oNs=
-X-Google-Smtp-Source: ABdhPJwLeErQ/Dftz4tZkbzpAElWSCWqNwGHJoaGRngb7u9Pfi29mdZrz9e5NfvT8AznHd+n7xTsGg==
-X-Received: by 2002:a17:906:a14b:: with SMTP id bu11mr10212811ejb.260.1629298020386;
-        Wed, 18 Aug 2021 07:47:00 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=vNVfBtmdSEQMHS7NoA4wKiTmeDTFKx5xuSiT5cX6rdQ=;
+        b=H66Y7QpcrI18xglRyg55YJ2GK+dLO7wBh32wzWpIgwjqEF+rh9SNHm4Ha5G/rcdzOd
+         pSs1yydV9Eik54nVR87cpIHR8i1IirpZh58qHdevAfj5aVCidJ8jyfnqbfj4MpmIClC0
+         UiJOHTkwFzcRlJO9jGp+VOPqy8TdJxCQpHxrWdRAc0+mxHkIQDySO69UABcUAPIy6Zjq
+         kzTQm/mFd+2cFlczgEqaVdGD6Dn3P1qg++h9JjYnSw7QfWBZ5p1gQOX2IP2Kec0EjIHf
+         zqzBj/SOaj827KHXW31tY4UCZV9U+MhWWeeVt61IT1D5dxpvhslK76+5m2NUX2Dbm2lD
+         ptJQ==
+X-Gm-Message-State: AOAM530BR/x9zwT7qlfIG2C2/vvtB2vDy4nVcvp4iiYUPB+6NUno7Nh8
+        Jz0WnOyr84AvwHtMS54dN68=
+X-Google-Smtp-Source: ABdhPJzvloc74qMfIzl/6q9qLOKDLfOuqz0NR6SdFazcCDy8tXovf3+knaR82YSJJPp7PSoOUHTn+Q==
+X-Received: by 2002:aa7:d54f:: with SMTP id u15mr7976174edr.178.1629298024282;
+        Wed, 18 Aug 2021 07:47:04 -0700 (PDT)
 Received: from localhost.localdomain (neth7.eastcode.net. [79.143.160.90])
-        by smtp.googlemail.com with ESMTPSA id x17sm2152808ejj.58.2021.08.18.07.46.58
+        by smtp.googlemail.com with ESMTPSA id x17sm2152808ejj.58.2021.08.18.07.47.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 07:46:59 -0700 (PDT)
+        Wed, 18 Aug 2021 07:47:03 -0700 (PDT)
 From:   Nikola Pavlica <pavlica.nikola@gmail.com>
 To:     dri-devel@lists.freedesktop.org
 Cc:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
@@ -55,87 +55,48 @@ Cc:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
         linux-sunxi@googlegroups.com, linux-sunxi@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Nikola Pavlica <pavlica.nikola@gmail.com>
-Subject: [PATCH 1/3] drm/panel-simple: Add Vivax TPC-9150 panel v4
-Date:   Wed, 18 Aug 2021 16:46:46 +0200
-Message-Id: <20210818144648.72665-1-pavlica.nikola@gmail.com>
+Subject: [PATCH 2/3] dt-bindings: display: simple: Add Vivax TPC-9150 panel
+Date:   Wed, 18 Aug 2021 16:46:47 +0200
+Message-Id: <20210818144648.72665-2-pavlica.nikola@gmail.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210818144648.72665-1-pavlica.nikola@gmail.com>
+References: <20210818144648.72665-1-pavlica.nikola@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The model and make of the LCD panel of the Vivax TPC-9150 is unknown,
-hence the panel settings that were retrieved with a FEX dump are named
-after the device NOT the actual panel.
+This tablet display is unique and hence must be added to documentation.
+Unfortunately, it's real make and number is not known due to obscure and
+missing documentation and lack of writing on the display assembly
+itself.
 
-The LCD in question is a 50 pin MISO TFT LCD panel of the resolution
-1024x600 used by the aforementioned device.
+So the natural alternative that came to mind is to name the panel after
+the device that contained it (an Android tablet). Hopefully that isn't
+an issue.
 
-Version 2, as Thierry kindly suggested that I fix the order in which the
-panel was ordered compared to others.
-
-Version 3, filling in the required info suggested by Sam. Plus some
-factual issues that I've corrected myself (tested working)
-
-Version 4, rearranged the display parameters and fix invalid bit format
-issue. (Thanks Sam)
-
-Thanks,
-Nikola
+I can confirm that the parameters that I've obtained are correct since
+they came from a dump of the original Android OS.
 
 Signed-off-by: Nikola Pavlica <pavlica.nikola@gmail.com>
 ---
- drivers/gpu/drm/panel/panel-simple.c | 29 ++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 4e2dad314c79..9e06c375f8a0 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -3989,6 +3989,32 @@ static const struct panel_desc urt_umsh_8596md_parallel = {
- 	.bus_format = MEDIA_BUS_FMT_RGB666_1X18,
- };
-
-+static const struct drm_display_mode vivax_tpc9150_panel_mode = {
-+	.clock = 60000,
-+	.hdisplay = 1024,
-+	.hsync_start = 1024 + 160,
-+	.hsync_end = 1024 + 160 + 100,
-+	.htotal = 1024 + 160 + 100 + 60,
-+	.vdisplay = 600,
-+	.vsync_start = 600 + 12,
-+	.vsync_end = 600 + 12 + 10,
-+	.vtotal = 600 + 12 + 10 + 13,
-+};
-+
-+static const struct panel_desc vivax_tpc9150_panel = {
-+	.modes = &vivax_tpc9150_panel_mode,
-+	.num_modes = 1,
-+	.bpc = 6,
-+	.size = {
-+		.width = 200,
-+		.height = 115,
-+	},
-+	.bus_format = MEDIA_BUS_FMT_RGB666_1X18,
-+	.bus_flags = DRM_BUS_FLAG_DE_HIGH,
-+	.connector_type = DRM_MODE_CONNECTOR_LVDS,
-+};
-+
-+
- static const struct drm_display_mode vl050_8048nt_c01_mode = {
- 	.clock = 33333,
- 	.hdisplay = 800,
-@@ -4490,6 +4516,9 @@ static const struct of_device_id platform_of_match[] = {
- 	}, {
- 		.compatible = "urt,umsh-8596md-20t",
- 		.data = &urt_umsh_8596md_parallel,
-+	}, {
-+		.compatible = "vivax,tpc9150-panel",
-+		.data = &vivax_tpc9150_panel,
- 	}, {
- 		.compatible = "vxt,vl050-8048nt-c01",
- 		.data = &vl050_8048nt_c01,
---
+diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+index 62b0d54d87b7..d0efefa5a820 100644
+--- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
++++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+@@ -285,6 +285,8 @@ properties:
+       - urt,umsh-8596md-11t
+       - urt,umsh-8596md-19t
+       - urt,umsh-8596md-20t
++        # Vivax TPC-9150 tablet 9.0" WSVGA TFT LCD panel
++      - vivax,tpc9150-panel
+         # VXT 800x480 color TFT LCD panel
+       - vxt,vl050-8048nt-c01
+         # Winstar Display Corporation 3.5" QVGA (320x240) TFT LCD panel
+-- 
 2.32.0
 
