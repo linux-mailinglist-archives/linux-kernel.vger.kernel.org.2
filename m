@@ -2,134 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2B63EF905
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 06:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E373EF90E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 06:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232450AbhHREMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 00:12:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhHREMl (ORCPT
+        id S232450AbhHRERK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 00:17:10 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:54369 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229448AbhHRERK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 00:12:41 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8005DC061764;
-        Tue, 17 Aug 2021 21:12:07 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id w4so1066552ljh.13;
-        Tue, 17 Aug 2021 21:12:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dMTTYDqSJMZu388pZDsE0iPTn5UycM6CSLQvWN7EXiM=;
-        b=oQvzSg1jZXl+3O5uWNXSIj0EIiigE3D8tdhxfqAYJH6UqgsCzmL3hP6cSREL6xokAp
-         5KKoBF6NlIdSV51xYA8rOXF7SiPPUFEsJnNMVx/Mj1G+zfMpWhRPLIe9M8DhtO6iPc1S
-         p2IPm0+QPqq1JCeEdyb3YV8sJWla7reBX08TZVdwmZTeasDkEcg8u8nsshUvr36URZPn
-         TsiBBjquSJBmTUeTPM4bWFxBpZ+SJu/UDOougRzNQhHeIs1d4mB022t1K5UV5mIhOyHv
-         D9ODeTS1/BkXQUvCftgq3yLT1B2G++QLewhjit+yDz2z/g1qknqoAwH4qRPZOYrgDn/j
-         MmUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dMTTYDqSJMZu388pZDsE0iPTn5UycM6CSLQvWN7EXiM=;
-        b=afWUSVwXvkRUMbd/2YfXjkOPMALNYUIC9VhzWSGzgNoV0dNV6XtWw2MYaz89tipRWA
-         p9w5pYOldL9cnvgZH5nA0nRpjlmRW8z9Bmd1ZRqbuYpARspbUmXox4YpCYAqpihO7R9B
-         VfT9+Vz/qgRyigsCny7zy3wxpqgChlavdrR5b7PD4junUjtLq0Bh4EgTkscM0P8MGrhv
-         1HmKWSQMGLn/kkogxKG6nMv5dGmVx2s6Dxc1m/rN82c6CHteG5WwXXvy1NgVNBujVCXg
-         9A7QsDRXYn4Ai6zp/3C66SvYiP/0JkaDFxxPF03V9R2bowq8n+F+kAkP0j0SN6TjLrrN
-         hJhA==
-X-Gm-Message-State: AOAM532KMSUVTe12OkK4G/GKZQZ0VCtt4neh1sSgzqagpK9vuhaqex+N
-        mDzdjp7V0630dqwAzu8rHVsDEEi2/zo=
-X-Google-Smtp-Source: ABdhPJygrWrrk6YBOzsJmDVVKkQ3PCLKwObyA1oxnH+eZ3W64yk1hEef6yD4M/Yl5d3DG6PdHy9Hjg==
-X-Received: by 2002:a2e:9e8e:: with SMTP id f14mr5999025ljk.468.1629259925795;
-        Tue, 17 Aug 2021 21:12:05 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-85-91.dynamic.spd-mgts.ru. [46.138.85.91])
-        by smtp.googlemail.com with ESMTPSA id m16sm373567lfh.243.2021.08.17.21.12.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Aug 2021 21:12:05 -0700 (PDT)
-Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20210817012754.8710-1-digetx@gmail.com>
- <20210817012754.8710-2-digetx@gmail.com>
- <20210817075515.vyyv7z37e6jcrhsl@vireshk-i7>
- <710261d9-7ae3-5155-c0a2-f8aed2408d0b@gmail.com>
- <20210818035533.ieqkexltfvvf2p4n@vireshk-i7>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <5b2a80c1-9743-e633-6257-ede94c8a274c@gmail.com>
-Date:   Wed, 18 Aug 2021 07:12:04 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 18 Aug 2021 00:17:10 -0400
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 17I4GDob010755;
+        Wed, 18 Aug 2021 13:16:14 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 17I4GDob010755
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1629260174;
+        bh=u+KzkIZNFPABZpmtSGRCIoTvtezCpdOxcTloBpyZCGo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Jwf/Bmhl1vgxqzWLTy95GIxPAoJO6cEXc6zwjl4aDPSFgIVseAjqKA5ScHKoOGBB+
+         c9w/gFPH0YPtbNGDsrKfozm61Qi8i6IiswcukTWmhCZvGCZ2VCulhsbJES1g/Szf6m
+         NpD0yYZ5ACR1cWLuUo9suvGPsEI4UxfdIwDpPZxckO7RiPszB15vCWDoYEMzas/bJN
+         hAtq3/mSwvBet38Jn+72/5OmvON2pGPrTM6qAVrLuu4Krns0gvhoXB4e4RPaf1yQhV
+         XpMPqmCO0+f5tWnbdvzyJaGZLGmvc/xFXVk0kFIiL0lS50pIi2PZEruNeJgFYYlIep
+         8dkvGdG0vlPiw==
+X-Nifty-SrcIP: [209.85.216.44]
+Received: by mail-pj1-f44.google.com with SMTP id bo18so1874505pjb.0;
+        Tue, 17 Aug 2021 21:16:14 -0700 (PDT)
+X-Gm-Message-State: AOAM532iGl/TSfv+ZN5st2Qyn8mizJ5dfufrZBrbIoNHH5Fmaksy0RfO
+        +m8186rhMt+bzwmdfaKC6eQZmEZZmelwdNFEBgI=
+X-Google-Smtp-Source: ABdhPJwRWHqQYxHOSvmBHtdtPwclwMiGtse484aWVNvPuAahWF6qXQVhoiIJ+p9VOCix6zRbsoGlYKPjYkwZKycH9L4=
+X-Received: by 2002:a17:902:bc41:b029:12d:3f9b:401e with SMTP id
+ t1-20020a170902bc41b029012d3f9b401emr5540904plz.47.1629260173523; Tue, 17 Aug
+ 2021 21:16:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210818035533.ieqkexltfvvf2p4n@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210817005624.1455428-1-nathan@kernel.org> <80fa539a-b767-76ed-dafa-4d8d1a6b063e@kernel.org>
+ <CAHk-=wgFXOf9OUh3+vmWjhp1PC47RVsUkL0NszBxSWhbGzx4tw@mail.gmail.com>
+ <5c856f36-69a7-e274-f72a-c3aef195adeb@kernel.org> <202108171056.EDCE562@keescook>
+ <3f28b45e-e725-8b75-042a-d34d90c56361@kernel.org> <CAK7LNAQFgYgavTP2ZG9Y16XBVdPuJ98J_Ty1OrQy1GXHq6JjQQ@mail.gmail.com>
+ <71d76c41-7f9b-6d60-ba4f-0cd84596b457@embeddedor.com> <202108171602.159EB2C7EA@keescook>
+ <72ae69b4-6069-ade5-a12b-8ee0435f803a@kernel.org>
+In-Reply-To: <72ae69b4-6069-ade5-a12b-8ee0435f803a@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 18 Aug 2021 13:15:36 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQW6LMnfU6reTNzDLneX+mBFSKHgbF5epQ+6GQZr7vWLQ@mail.gmail.com>
+Message-ID: <CAK7LNAQW6LMnfU6reTNzDLneX+mBFSKHgbF5epQ+6GQZr7vWLQ@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: Enable -Wimplicit-fallthrough for clang 14.0.0+
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Philip Li <philip.li@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-18.08.2021 06:55, Viresh Kumar пишет:
-> On 17-08-21, 18:49, Dmitry Osipenko wrote:
->> 17.08.2021 10:55, Viresh Kumar пишет:
->> ...
->>>> +int dev_pm_opp_sync(struct device *dev)
->>>> +{
->>>> +	struct opp_table *opp_table;
->>>> +	struct dev_pm_opp *opp;
->>>> +	int ret = 0;
->>>> +
->>>> +	/* Device may not have OPP table */
->>>> +	opp_table = _find_opp_table(dev);
->>>> +	if (IS_ERR(opp_table))
->>>> +		return 0;
->>>> +
->>>> +	if (!_get_opp_count(opp_table))
->>>> +		goto put_table;
->>>> +
->>>> +	opp = _find_current_opp(dev, opp_table);
->>>> +	ret = _set_opp(dev, opp_table, opp, opp->rate);
->>>
->>> And I am not sure how this will end up working, since new OPP will be
->>> equal to old one. Since I see you call this from resume() at many
->>> places.
->>
->> Initially OPP table is "uninitialized" and opp_table->enabled=false,
->> hence the first sync always works even if OPP is equal to old one. Once
->> OPP has been synced, all further syncs are NO-OPs, hence it doesn't
->> matter how many times syncing is called.
->>
->> https://elixir.bootlin.com/linux/v5.14-rc6/source/drivers/opp/core.c#L1012
-> 
-> Right, but how will this work from Resume ? Won't that be a no-op ?
+On Wed, Aug 18, 2021 at 8:23 AM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> On 8/17/2021 4:06 PM, Kees Cook wrote:
+> > On Tue, Aug 17, 2021 at 04:33:25PM -0500, Gustavo A. R. Silva wrote:
+> >>
+> >>
+> >> On 8/17/21 16:17, Masahiro Yamada wrote:
+> >>> On Wed, Aug 18, 2021 at 3:25 AM Nathan Chancellor <nathan@kernel.org> wrote:
+> >>>>
+> >>>> On 8/17/2021 11:03 AM, Kees Cook wrote:
+> >>>>> On Mon, Aug 16, 2021 at 09:55:28PM -0700, Nathan Chancellor wrote:
+> >>>>>> If you/Gustavo would prefer, I can upgrade that check to
+> >>>>>>
+> >>>>>> ifneq ($(call cc-option, -Wunreachable-code-fallthrough),)
+> >>>>>>
+> >>>>>> I was just trying to save a call to the compiler, as that is more expensive
+> >>>>>> than a shell test call.
+> >>>>>
+> >>>>> I prefer the option test -- this means no changes are needed on the
+> >>>>> kernel build side if it ever finds itself backported to earlier versions
+> >>>>> (and it handles the current case of "14" not meaning "absolute latest").
+> >>>>>
+> >>>>> More specifically, I think you want this (untested):
+> >>>>
+> >>>> That should work but since -Wunreachable-code-fallthrough is off by
+> >>>> default, I did not really see a reason to include it in KBUILD_CFLAGS. I
+> >>>> do not have a strong opinion though, your version is smaller than mine
+> >>>> is so we can just go with that. I'll defer to Gustavo on it since he has
+> >>>> put in all of the work cleaning up the warnings.
+> >>>
+> >>>
+> >>>
+> >>> https://github.com/llvm/llvm-project/commit/9ed4a94d6451046a51ef393cd62f00710820a7e8
+> >>>
+> >>>     did two things:
+> >>>
+> >>>   (1) Change the -Wimplicit-fallthrough behavior so that it fits
+> >>>        to our use in the kernel
+> >>>
+> >>>   (2) Add a new option -Wunreachable-code-fallthrough
+> >>>        that works like the previous -Wimplicit-fallthrough of
+> >>>        Clang <= 13.0.0
+> >>>
+> >>>
+> >>> They are separate things.
+> >>>
+> >>> Checking the presence of -Wunreachable-code-fallthrough
+> >>> does not make sense since we are only interested in (1) here.
+> >>>
+> >>> So, checking the Clang version is sensible and matches
+> >>> the explanation in the comment block.
+> >
+> > I thought one of the problems (which is quickly draining away) that
+> > needed to be solved here is that some Clang trunk builds (that report
+> > as version 14) don't yet have support for -Wunreachable-code-fallthrough
+> > since they aren't new enough.
+>
+> Philip, how often is the kernel test robot's clang version rebuilt?
+> Would it be possible to bump it to latest ToT or at least
+> 9ed4a94d6451046a51ef393cd62f00710820a7e8 so that we do not get bit by
+> this warning when we go to enable this flag?
+>
+> I do not know of any other CI aside from ours that is testing with tip
+> of tree clang and ours should already have a clang that includes my
+> patch since it comes from apt.llvm.org.
+>
+> >>> # Warn about unmarked fall-throughs in switch statement.
+> >>> # Clang prior to 14.0.0 warned on unreachable fallthroughs with
+> >>> # -Wimplicit-fallthrough, which is unacceptable due to IS_ENABLED().
+> >>> # https://bugs.llvm.org/show_bug.cgi?id=51094
+> >>> ifeq ($(firstword $(sort $(CONFIG_CLANG_VERSION) 140000)),140000)
+> >>> KBUILD_CFLAGS += -Wimplicit-fallthrough
+> >>> endif
+>
+> Very clever and nifty trick! I have verified that it works for clang 13
+> and 14 along with a theoretical clang 15. Gustavo, feel free to stick a
 
-The first resume initializes the OPP state on sync, all further syncs on
-resume are no-ops.
+
+I am not the inventor of this code, though :-)
+
+I mimicked the code in Buildroot:
+https://github.com/buildroot/buildroot/blob/2021.05/Makefile#L104
+
+
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
