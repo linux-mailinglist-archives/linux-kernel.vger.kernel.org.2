@@ -2,90 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 812E73F01C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 12:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 313E83F0136
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 12:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233733AbhHRKfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 06:35:18 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:43477 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234956AbhHRKdu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 06:33:50 -0400
-Received: from epcas3p4.samsung.com (unknown [182.195.41.22])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210818103301epoutp02d9e37b4c03961be9f4d2e137ce5189da~cYA7TV0kr2000920009epoutp02I
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 10:33:01 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210818103301epoutp02d9e37b4c03961be9f4d2e137ce5189da~cYA7TV0kr2000920009epoutp02I
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1629282782;
-        bh=4aiXT+GEVaX3PC1jXQ85xbsODWb/XUmXvvq3QVjF7xA=;
-        h=Subject:Reply-To:From:To:Date:References:From;
-        b=L6bCuWXx5RAwA4vnbprKmVB4brIVsVX07OInhHb6eE4/WqoIxoCa/xIPIMm3v/v8P
-         i/aMrNHyujgAGX0w5Chp7NeFv8cIzZLrpd0d+AUy1o2k/Qk25I/tjR7pZ50zQbqHTl
-         XxQ75AdaNRp+JUylkytcj2XGE+aI1HFyzZ8qUGyE=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas3p3.samsung.com (KnoxPortal) with ESMTP id
-        20210818103301epcas3p3f00d398e34733791bbfd889d14f774cc~cYA7BEwr80952209522epcas3p3Q;
-        Wed, 18 Aug 2021 10:33:01 +0000 (GMT)
-Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp4.localdomain
-        (Postfix) with ESMTP id 4GqPP94dXTz4x9QB; Wed, 18 Aug 2021 10:33:01 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: [PATCH] scsi: ufs: ufshpb: Fix typo in comments
-Reply-To: keosung.park@samsung.com
-Sender: Keoseong Park <keosung.park@samsung.com>
-From:   Keoseong Park <keosung.park@samsung.com>
-To:     ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <1891546521.01629282781634.JavaMail.epsvc@epcpadp4>
-Date:   Wed, 18 Aug 2021 18:41:39 +0900
-X-CMS-MailID: 20210818094139epcms2p745d70390a0e328f3ecc3b266f092c9f7
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20210818094139epcms2p745d70390a0e328f3ecc3b266f092c9f7
-References: <CGME20210818094139epcms2p745d70390a0e328f3ecc3b266f092c9f7@epcms2p7>
+        id S233731AbhHRKFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 06:05:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234317AbhHRKE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 06:04:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D16EF6109E;
+        Wed, 18 Aug 2021 10:04:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629281062;
+        bh=R9THNafsQYxOtTzoJp4an+Oz+xi/hoKlYEp8lGHOa5M=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
+        b=Wc1JA9Zrijwgh+6GF1RIzHax4WJL7k6gCqk9QbMYKaDx1j4dTTqKf1cIKWthewr2t
+         dNbVyWE9YrWtYlkX1xD4kMI3OLRBjthnA/bie6raPQc+JEUK+tNd6sDWz2BeD0iEu9
+         lPmSOznBSGhlCIRjT1rrsYl22O001BzQdEWKUE7pe6nG3sq5/Q/yofA0mts3ikrNGy
+         jBH1dQh4CxhvhpoOaSkdcqC1HZ/JGPoxD6Wh+bCRsI6FFUyLadLmtMX625zWhjuC/A
+         xC0gSVJD1nq8j2PpOiaGu4rGqKGzmNhW5E9n9AccpMlKeIzfMBEQ5CedHqTIKP0YDc
+         bAV3HGABBrCGQ==
+References: <CAKXUXMwgWfX8+OvY0aCwRNukencwJERAZzU7p4eOLXQ2zv6rAg@mail.gmail.com>
+User-agent: mu4e 1.6.3; emacs 27.2
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Manish Narani <manish.narani@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Dependency of USB_DWC3_XILINX on ARCH_VERSAL
+Date:   Wed, 18 Aug 2021 13:02:19 +0300
+In-reply-to: <CAKXUXMwgWfX8+OvY0aCwRNukencwJERAZzU7p4eOLXQ2zv6rAg@mail.gmail.com>
+Message-ID: <87pmubf4rh.fsf@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change "allcation" to "allocation"
 
-Signed-off-by: Keoseong Park <keosung.park@samsung.com>
----
- drivers/scsi/ufs/ufshpb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Lukas,
 
-diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-index 9acce92a356b..bae98e197711 100644
---- a/drivers/scsi/ufs/ufshpb.c
-+++ b/drivers/scsi/ufs/ufshpb.c
-@@ -255,7 +255,7 @@ static bool ufshpb_test_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
- 	/*
- 	 * If the region state is active, mctx must be allocated.
- 	 * In this case, check whether the region is evicted or
--	 * mctx allcation fail.
-+	 * mctx allocation fail.
- 	 */
- 	if (unlikely(!srgn->mctx)) {
- 		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
+Lukas Bulwahn <lukas.bulwahn@gmail.com> writes:
+> Commit 84770f028fab ("usb: dwc3: Add driver for Xilinx platforms")
+> adds the config USB_DWC3_XILINX, which depends on the config
+> ARCH_VERSAL. However, the config ARCH_VERSAL is not defined in the
+> current mainline kernel repository.
+>
+> Will a definition of ARCH_VERSAL follow eventually (soon?) for
+> mainline, is there just a further out-of-tree development for which
+> the dependency is useful or is this just a mistake and can be
+> corrected?
+
+IMHO, we should have COMPILE_TEST added. Something like this:
+
+modified   drivers/usb/dwc3/Kconfig
+@@ -151,7 +151,7 @@ config USB_DWC3_IMX8MP
+ 
+ config USB_DWC3_XILINX
+ 	tristate "Xilinx Platforms"
+-	depends on (ARCH_ZYNQMP || ARCH_VERSAL) && OF
++	depends on (ARCH_ZYNQMP || ARCH_VERSAL || COMPILE_TEST) && OF
+ 	default USB_DWC3
+ 	help
+ 	  Support Xilinx SoCs with DesignWare Core USB3 IP.
+
+Care to test, please
+
 -- 
-2.17.1
-
+balbi
