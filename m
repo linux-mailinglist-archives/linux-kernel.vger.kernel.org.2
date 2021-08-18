@@ -2,78 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF733F0BCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 21:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 602753F0BCF
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 21:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233111AbhHRTar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 15:30:47 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:33654 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229965AbhHRTaq (ORCPT
+        id S233243AbhHRTdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 15:33:19 -0400
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:38599 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229965AbhHRTdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 15:30:46 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 4FF751C0B77; Wed, 18 Aug 2021 21:30:10 +0200 (CEST)
-Date:   Wed, 18 Aug 2021 21:30:09 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Pavel Machek <pavel@denx.de>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>, Ashok Raj <ashok.raj@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH 5.4 49/62] PCI/MSI: Enable and mask MSI-X early
-Message-ID: <20210818193009.GC28932@amd>
-References: <20210816125428.198692661@linuxfoundation.org>
- <20210816125429.897761686@linuxfoundation.org>
- <20210817073655.GA15132@amd>
- <YRyuefFT4N/y0plX@kroah.com>
- <YRzQvhDRyBWdEs5G@kroah.com>
+        Wed, 18 Aug 2021 15:33:18 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d76 with ME
+        id j7Yf250073riaq2037YfrR; Wed, 18 Aug 2021 21:32:41 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 18 Aug 2021 21:32:41 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     alcooperx@gmail.com, balbi@kernel.org, gregkh@linuxfoundation.org,
+        f.fainelli@gmail.com
+Cc:     linux-usb@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 1/2] usb: bdc: Fix an error handling path in 'bdc_probe()' when no suitable DMA config is available
+Date:   Wed, 18 Aug 2021 21:32:38 +0200
+Message-Id: <0c5910979f39225d5d8fe68c9ab1c147c68ddee1.1629314734.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="1SQmhf2mF2YjsYvc"
-Content-Disposition: inline
-In-Reply-To: <YRzQvhDRyBWdEs5G@kroah.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If no suitable DMA configuration is available, a previous 'bdc_phy_init()'
+call must be undone by a corresponding 'bdc_phy_exit()' call.
 
---1SQmhf2mF2YjsYvc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Branch to the existing error handling path instead of returning
+directly.
 
-On Wed 2021-08-18 11:19:58, Greg Kroah-Hartman wrote:
-> On Wed, Aug 18, 2021 at 08:53:45AM +0200, Greg Kroah-Hartman wrote:
-> > On Tue, Aug 17, 2021 at 09:36:55AM +0200, Pavel Machek wrote:
-> > > Hi!
-> > >=20
-> > > I'm sorry to report here, but 4.4 patches were not yet sent to the
-> > > lists (and it may be worth correcting before release).
-> >=20
-> > Yes, they are known to not be complete and incorrect at the moment,
-> > others have reported this to me.  I will be working on these later
-> > today, thanks.
->=20
-> Now should be all fixed up thanks to some patches sent by Thomas.
+Fixes: cc29d4f67757 ("usb: bdc: Add support for USB phy")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+checkpatch.pl warns that:
+   WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
+   #29: FILE: drivers/usb/gadget/udc/bdc/bdc_core.c:563:
+   +			ret = -ENOTSUPP;
+I've never seen this warning before and don't want to make a blind fix for that.
+Let me know if I should fix it or not.
+---
+drivers/usb/gadget/udc/bdc/bdc_core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I can't spot a bug any more; thank you,
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+diff --git a/drivers/usb/gadget/udc/bdc/bdc_core.c b/drivers/usb/gadget/udc/bdc/bdc_core.c
+index 0bef6b3f049b..251db57e51fa 100644
+--- a/drivers/usb/gadget/udc/bdc/bdc_core.c
++++ b/drivers/usb/gadget/udc/bdc/bdc_core.c
+@@ -560,7 +560,8 @@ static int bdc_probe(struct platform_device *pdev)
+ 		if (ret) {
+ 			dev_err(dev,
+ 				"No suitable DMA config available, abort\n");
+-			return -ENOTSUPP;
++			ret = -ENOTSUPP;
++			goto phycleanup;
+ 		}
+ 		dev_dbg(dev, "Using 32-bit address\n");
+ 	}
+-- 
+2.30.2
 
---1SQmhf2mF2YjsYvc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmEdX8EACgkQMOfwapXb+vJYpACgjotMosSK9t6sgItT0VM8Mscn
-1y0An3mTg3hr2U1XAW7aXC+A1+jA7Xur
-=Tbc4
------END PGP SIGNATURE-----
-
---1SQmhf2mF2YjsYvc--
