@@ -2,111 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62BA13F0B0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 20:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 318F03F0B15
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 20:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232326AbhHRS3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 14:29:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50038 "EHLO
+        id S230316AbhHRSel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 14:34:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhHRS3v (ORCPT
+        with ESMTP id S229953AbhHRSei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 14:29:51 -0400
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF65C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 11:29:16 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4Gqbyf5wZdzQkj1;
-        Wed, 18 Aug 2021 20:29:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:content-language:content-type
-        :content-type:in-reply-to:mime-version:date:date:message-id:from
-        :from:references:subject:subject:received; s=mail20150812; t=
-        1629311351; bh=8yFvBMUga1EVpv+SYC9LNVr5Eqe0h/P1ceZIwCgztko=; b=H
-        hs1DQWIWzQpPNrWc4uZDBALlXRB2UfeUCeS7pwpRXEXQ4v12/XxQe1ob8fGvZRIx
-        swsVdx0M5ZTYYYZEHcU1dxxM0/+W0cIK7GN0OUVXpvkMD+Dlhr5xWXUMtRPtJ17J
-        B8Q5fE7ErRU4szS4z03dqKtxB/XWJH5ZmX50zNG1AESKmT9eSeT6NnTwTpdWNxse
-        iGjTj7HlHUaWjRZnEFHqIpNMlxhSWwiYdQ7icJiudtBxidqPIw6NEvgum+oPwtOQ
-        1tzc4tPHwnEsbHI01Yj5k8vfMU2+OvToSYhRCM6x/uHtOiOFUkspzzEM0yCTOI36
-        ETI2+S9z6ss4zbBLPQTkA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1629311353;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w5sdReL5aVMcQw1mZdSVeTxvGoot/SnqNO7EPVVP9pM=;
-        b=KsPfb/oJRLypSlQq1BqBLXOXbp2JrqappFzk0Aq6wYVUZWzm+lGDV21sNMsU5cbHM7qc7w
-        dioyCpdCcpN7OWRevU2s+b6kjNyYXQ5IO72um0YkhhatVTU08S06zs4M3nCTOSQFK9+Il/
-        Apm4e/Ghs5icspd1fpISLEHK8pf7p1S2nzU0VFbblGMawNzpyHhEME56qQMGpJhQqqYUgw
-        hNBoNBXEemZSHRIMo1bUxWn7RCchZ5Lbrjp7UNQ9n4vZmeC8tYkUj4nCl1tnR4Q+AnxAjI
-        ufC5J4g51WB9eot+zddTi2t00DI5snCkK/GikrpLb5qfeJMOea9/3cyvpDj+hQ==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de [80.241.56.125]) (amavisd-new, port 10030)
-        with ESMTP id VlfYjx7ppfLM; Wed, 18 Aug 2021 20:29:11 +0200 (CEST)
-Subject: Re: [PATCH 2/2] x86, Makefile: Add new generic x86-64 settings
- v2/v3/v4
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "graysky@archlinux.us" <graysky@archlinux.us>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>
-References: <269701460.117528.1629210189833@office.mailbox.org>
- <796036867.117557.1629210288168@office.mailbox.org>
- <YRwBs89eogLJEiRn@zn.tnic>
- <1708009975.124311.1629299321026@office.mailbox.org>
- <YR1KDD/azm1IDr9u@zn.tnic>
-From:   Tor Vic <torvic9@mailbox.org>
-Message-ID: <25f1e81a-84f7-e63c-2989-cd4fddd695e7@mailbox.org>
-Date:   Wed, 18 Aug 2021 18:28:47 +0000
+        Wed, 18 Aug 2021 14:34:38 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D617C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 11:34:03 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so5222859otk.9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 11:34:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Vgeh/MzsdgwRSXW6dyIwI2/BL0uvJknZ4Sn+7U4jq50=;
+        b=DhCQE9W2ArEvgMqCCf1kvbZPaabjdblH2zbUsaT4Jgemxapu3HQp0ev2pW9UhBaxXz
+         eBamkvJRYr/6gZES2Wi4gkMgt77GnYA/bJaC6EcaEFJaXe6/OPtusvv7eb5NUfYKswOr
+         uw34Gz62iOzUc4iMbHzdngw0NEN+Y0zN+vTLo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Vgeh/MzsdgwRSXW6dyIwI2/BL0uvJknZ4Sn+7U4jq50=;
+        b=M7q9OclYALWjDLvt1qqISlBddjePTF+SZCjbBe9dUhmfdPz6LVvVBC0c40HUxXSVMx
+         PGtg71UaBQIidi4nFRVyCqcGsurZjXdwHp2QKBtfBdSmGGGwtVnZacxy5VuwcQ7QykEs
+         vLzBecMBtJT15loqOaHe4IG5eeUI8PvVX/WHp+LFkAGKwKS0wtU2WkzW1bYUxZVgO4NB
+         3x7av4MRTx3ZTUaaKoAZUVREVCa3VIxQwWxwBAeGbbIeqs+N3s+4FUflgAPoSLP30jqx
+         vRxZJoJffI/5swwfUUhaWQnOt+rya8RyiYXDrHa+2uxnSkAEUZmTxxaEmwTC3kKcUJRK
+         DA+w==
+X-Gm-Message-State: AOAM532fEBxERFjmUI8w0yEdxF5nfPqa5Iv9CyWV8A6FJV3qPR5O0MiF
+        Hzbn8vZVCaYDZW8bI0B79EBUvg==
+X-Google-Smtp-Source: ABdhPJxMhv6/aTc07g+aRu0kKwlSBZngH3ac2/UzBiPg0iYY592dYXV1r/vGD/eQSlFnx2neGTkSkg==
+X-Received: by 2002:a9d:887:: with SMTP id 7mr8265142otf.120.1629311642661;
+        Wed, 18 Aug 2021 11:34:02 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id j6sm112299ooj.11.2021.08.18.11.34.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Aug 2021 11:34:02 -0700 (PDT)
+Subject: Re: [PATCH] x86/sgx: Add SGX_MemTotal to /proc/meminfo
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Jethro Beekman <jethro@fortanix.com>
+Cc:     linux-sgx@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Saravanan D <saravanand@fb.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210818132509.545997-1-jarkko@kernel.org>
+ <acd5a925-ce86-9934-5e1c-d0bcee3f606b@fortanix.com>
+ <20210818134026.GA7967@iki.fi>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <ffcef189-78fd-1b57-88bb-577708fb7abc@linuxfoundation.org>
+Date:   Wed, 18 Aug 2021 12:34:00 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YR1KDD/azm1IDr9u@zn.tnic>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210818134026.GA7967@iki.fi>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: DC5BD1813
-X-Rspamd-UID: 643fc7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/18/21 7:40 AM, Jarkko Sakkinen wrote:
+> On Wed, Aug 18, 2021 at 03:29:59PM +0200, Jethro Beekman wrote:
+>> On 2021-08-18 15:25, Jarkko Sakkinen wrote:
+>>> The amount of SGX memory on the system is determined by the BIOS and it
+>>> varies wildly between systems.  It can be from dozens of MB's on desktops
+>>> or VM's, up to many GB's on servers.  Just like for regular memory, it is
+>>> sometimes useful to know the amount of usable SGX memory in the system.
+>>>
+>>> Add SGX_MemTotal field to /proc/meminfo, which shows the total amount of
+>>> usable SGX memory in the system.  E.g. with 32 MB reserved for SGX from
+>>> BIOS, the printout would be:
+>>>
+>>> SGX_MemTotal:      22528 kB
+>>>
+>>> It is less than 32 MB because some of the space is reserved for Enclave
+>>> Page Cache Metadata (EPCM), which contains state variables for all the
+>>> pages in the Enclave Page Cache (EPC).  The latter contains the pages,
+>>> which applications can use to create enclaves.
+>>>
+>>> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+>>> ---
+>>>   Documentation/x86/sgx.rst      |  6 ++++++
+>>>   arch/x86/include/asm/sgx.h     | 10 +++++++---
+>>>   arch/x86/kernel/cpu/sgx/main.c |  7 ++++++-
+>>>   arch/x86/mm/pat/set_memory.c   |  5 +++++
+>>>   4 files changed, 24 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
+>>> index dd0ac96ff9ef..68ee171e1d8f 100644
+>>> --- a/Documentation/x86/sgx.rst
+>>> +++ b/Documentation/x86/sgx.rst
+>>> @@ -250,3 +250,9 @@ user wants to deploy SGX applications both on the host and in guests
+>>>   on the same machine, the user should reserve enough EPC (by taking out
+>>>   total virtual EPC size of all SGX VMs from the physical EPC size) for
+>>>   host SGX applications so they can run with acceptable performance.
+>>> +
+>>> +Supplemental fields for /proc/meminfo
+>>> +=====================================
+>>> +
+>>> +SGX_MemTotal
+>>> +	The total usable SGX protected memory in kilobytes.
+>>> diff --git a/arch/x86/include/asm/sgx.h b/arch/x86/include/asm/sgx.h
+>>> index 05f3e21f01a7..2ae9dc8c9411 100644
+>>> --- a/arch/x86/include/asm/sgx.h
+>>> +++ b/arch/x86/include/asm/sgx.h
+>>> @@ -365,6 +365,13 @@ struct sgx_sigstruct {
+>>>    * comment!
+>>>    */
+>>>   
+>>> +#if defined(CONFIG_X86_SGX) || defined(CONFIG_X86_SGX_KVM)
+>>> +extern unsigned long sgx_nr_all_pages;
+>>> +
+>>> +int sgx_set_attribute(unsigned long *allowed_attributes,
+>>> +		      unsigned int attribute_fd);
+>>> +#endif
+>>> +
+>>>   #ifdef CONFIG_X86_SGX_KVM
+>>>   int sgx_virt_ecreate(struct sgx_pageinfo *pageinfo, void __user *secs,
+>>>   		     int *trapnr);
+>>> @@ -372,7 +379,4 @@ int sgx_virt_einit(void __user *sigstruct, void __user *token,
+>>>   		   void __user *secs, u64 *lepubkeyhash, int *trapnr);
+>>>   #endif
+>>>   
+>>> -int sgx_set_attribute(unsigned long *allowed_attributes,
+>>> -		      unsigned int attribute_fd);
+>>> -
+>>
+>> This change seems unrelated?
+> 
+> It's just a good practice not to define symbols that do not exist, so that
+> if the symbol is ever used, we get a compilation error, not linking error.
+> 
+> Since this is included to set_memory.c, based on this conclusion, I added
+> the check.
+> 
+
+It would make sense to make this change in a separate patch since.
+
+thanks,
+-- Shuah
 
 
-On 18.08.21 17:59, Borislav Petkov wrote:
-> On Wed, Aug 18, 2021 at 05:08:40PM +0200, torvic9@mailbox.org wrote:
->> I ran some quick checks and benchmarks, and your doubts seem to be
->> justified. A 5.14-rc6 kernel compiled with the default 'generic' and
->> one built with 'x86-64-v3' even have the exact same uncompressed file
->> size. Benchmarks were inconclusive as well.
-> 
-> Lemme preface this with a IMHO:
-> 
-> Yeah, those -march machine-specific compiler switches don't really
-> show any perf improvements for kernels because, well, if you look at
-> the instruction stream a kernel executes, there's not really a whole
-> lot left to optimize after -O2.
-> 
-> Also, the percentage of time a machine spends in the kernel should be a
-> lot smaller (orders of magnitude) than in userspace - the operative word
-> being *should* here :-) - so there really isn't anything to optimize.
-> 
-> Not to say that there aren't a gazillion other places in the kernel that
-> could use more eyes and testing. ^Hint hint^
 
-That's something I'd like to help with, hence my (not very good)
-submissions.
-You're one of the kernel colonels, so I'm happy to get some *useful*
-feedback which enables noobs like me to get a better understanding of
-the kernel stuff.
-Also, credits to graysky because this is actually based on his work.
-
-> 
-> Thx.
-> 
