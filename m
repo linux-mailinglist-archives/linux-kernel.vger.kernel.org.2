@@ -2,718 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7902C3F0810
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF6F83F07FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239846AbhHRPbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 11:31:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54246 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233732AbhHRPbO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 11:31:14 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E2E16109F;
-        Wed, 18 Aug 2021 15:30:40 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1mGNWZ-004ZHk-0q; Wed, 18 Aug 2021 11:30:39 -0400
-Message-ID: <20210818153038.864149276@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Wed, 18 Aug 2021 11:24:51 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Deepthi Dhulipalla <dedhul@microsoft.com>,
-        Carlos Cardenas <Carlos.Cardenas@microsoft.com>,
-        Beau Belgrave <beaub@microsoft.com>
-Subject: [RFC][PATCH 2/2] tracing: Disable "other" permission bits in the tracefs files
-References: <20210818152449.512418563@goodmis.org>
+        id S239703AbhHRPYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 11:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239494AbhHRPXz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 11:23:55 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3211C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 08:23:20 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id t66so3488761qkb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 08:23:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Sh1SraHVKaCYA/y70zjirB3iehLFCX2xZsdhvuOQh88=;
+        b=XkMCbtl+eZtb55uTMetMU9KUOhB+qRnNM3uZXlAmeZpddXY/wZoe7XofhB7B4YBokQ
+         hhEjjVEdsH6mx04H5ujrwzMJ6HIj6pulZY6nEFceFaV0Br4kFhSfbqsltefjakyHov3F
+         Pk2kGoGug/UenLupgEIV4BQuovuILRp8Tb5UNkgnx0b4hEMTetWtjgIHk4GSYZLmTvHR
+         O8NW9kh6mj+qkJDHIGGK97Z+pYsHIZRLXcrzNpKtTwCYYSMTGBn1jeYWevdsk9E4duGS
+         s1bjLw3cdagRos9fVdXF2EEyOhGFEGshTbqGvTxK//NRnHhUytk+U1EywV252QHDpdbK
+         Pt2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Sh1SraHVKaCYA/y70zjirB3iehLFCX2xZsdhvuOQh88=;
+        b=cYshuDG0uIqOGk7asqCdj83UDv5OyATZkPskNSDGYzUm4JgS2ht8AvsWLgTuF07G34
+         SR4al2mC7aY17v5EAj3kmw22ZDus9B6Cr39gacShj0BoTWKwEqOAMzvftUw3S/XPeUn5
+         JLLlikE6hOTwYoc1xh+nd8uiaPzbmC1JeNaHEIDXqghHbXrlusMT8b514ZkraijGkv3l
+         rf5oXdSQV0daohoHVHIY7l3FxrHVlEckJRsmyCQsubSNiR+HbaPWjZxqUwUYqnBJ0ioe
+         sIBlbUzNuEG8xVm1hHEzhVgY/gS4g8rQg4x2AUCsKT8CWOi4SdlNSB/m0k7YRkzixW7X
+         wjtA==
+X-Gm-Message-State: AOAM530TFXpDCLn0m2r3hjkqJV9ftS87rZkw5MOPlVRuQ44EQs4ODpBs
+        5ZQiXtqXT/BzElIc0RE1sPInoqT8lsgN0A==
+X-Google-Smtp-Source: ABdhPJxVogDZb0BxpUKcYfpDQa7/1wYIvo2KElxVcSRIGrKNLK7arzO2wONNyCE3QM/KXusnIvwWEw==
+X-Received: by 2002:a37:b4d:: with SMTP id 74mr8195759qkl.92.1629300199808;
+        Wed, 18 Aug 2021 08:23:19 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id v27sm42407qkj.129.2021.08.18.08.23.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 08:23:19 -0700 (PDT)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Rik van Riel <riel@surriel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH] mm: vmscan: fix missing psi annotation for node_reclaim()
+Date:   Wed, 18 Aug 2021 11:24:57 -0400
+Message-Id: <20210818152457.35846-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+In a debugging session the other day, Rik noticed that node_reclaim()
+was missing memstall annotations. This means we'll miss pressure and
+lost productivity resulting from reclaim on an overloaded local NUMA
+node when vm.zone_reclaim_mode is enabled.
 
-When building the files in the tracefs file system, do not by default set
-any permissions for OTH (other). This will make it easier for admins who
-want to define a group for accessing tracefs and not having to first
-disable all the permission bits for "other" in the file system.
+There haven't been any reports, but that's likely because
+vm.zone_reclaim_mode hasn't been a commonly used feature recently, and
+the intersection between such setups and psi users is probably
+nil. Although, secondary memory such as CXL-connected DIMMS,
+persistent memory etc. and the page demotion patches that handle them
+(https://lore.kernel.org/lkml/20210401183216.443C4443@viggo.jf.intel.com/)
+could soon make this a more common codepath again.
 
-As tracing can leak sensitive information, it should never by default
-allowing all users access. An admin can still set the permission bits for
-others to have access, which may be useful for creating a honeypot and
-seeing who takes advantage of it and roots the machine.
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Reported-by: Rik van Riel <riel@surriel.com>
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- kernel/trace/ftrace.c                 | 23 +++++----
- kernel/trace/trace.c                  | 73 ++++++++++++++-------------
- kernel/trace/trace.h                  |  3 ++
- kernel/trace/trace_dynevent.c         |  2 +-
- kernel/trace/trace_events.c           | 42 +++++++--------
- kernel/trace/trace_events_synth.c     |  4 +-
- kernel/trace/trace_functions_graph.c  |  2 +-
- kernel/trace/trace_hwlat.c            |  6 +--
- kernel/trace/trace_kprobe.c           |  8 +--
- kernel/trace/trace_osnoise.c          | 14 ++---
- kernel/trace/trace_printk.c           |  2 +-
- kernel/trace/trace_recursion_record.c |  4 +-
- kernel/trace/trace_stack.c            |  6 +--
- kernel/trace/trace_stat.c             |  6 +--
- kernel/trace/trace_uprobe.c           |  4 +-
- 15 files changed, 103 insertions(+), 96 deletions(-)
+ mm/vmscan.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 7b180f61e6d3..9bde92578b3a 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -988,8 +988,9 @@ static __init void ftrace_profile_tracefs(struct dentry *d_tracer)
- 		}
- 	}
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 701106e1829c..8ec4412c6116 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -4424,11 +4424,13 @@ static int __node_reclaim(struct pglist_data *pgdat, gfp_t gfp_mask, unsigned in
+ 		.may_swap = 1,
+ 		.reclaim_idx = gfp_zone(gfp_mask),
+ 	};
++	unsigned long pflags;
+ 
+ 	trace_mm_vmscan_node_reclaim_begin(pgdat->node_id, order,
+ 					   sc.gfp_mask);
+ 
+ 	cond_resched();
++	psi_memstall_enter(&pflags);
+ 	fs_reclaim_acquire(sc.gfp_mask);
+ 	/*
+ 	 * We need to be able to allocate from the reserves for RECLAIM_UNMAP
+@@ -4453,6 +4455,7 @@ static int __node_reclaim(struct pglist_data *pgdat, gfp_t gfp_mask, unsigned in
+ 	current->flags &= ~PF_SWAPWRITE;
+ 	memalloc_noreclaim_restore(noreclaim_flag);
+ 	fs_reclaim_release(sc.gfp_mask);
++	psi_memstall_leave(&pflags);
+ 
+ 	trace_mm_vmscan_node_reclaim_end(sc.nr_reclaimed);
  
--	entry = tracefs_create_file("function_profile_enabled", 0644,
--				    d_tracer, NULL, &ftrace_profile_fops);
-+	entry = tracefs_create_file("function_profile_enabled",
-+				    TRACE_MODE_WRITE, d_tracer, NULL,
-+				    &ftrace_profile_fops);
- 	if (!entry)
- 		pr_warn("Could not create tracefs 'function_profile_enabled' entry\n");
- }
-@@ -6109,10 +6110,10 @@ void ftrace_create_filter_files(struct ftrace_ops *ops,
- 				struct dentry *parent)
- {
- 
--	trace_create_file("set_ftrace_filter", 0644, parent,
-+	trace_create_file("set_ftrace_filter", TRACE_MODE_WRITE, parent,
- 			  ops, &ftrace_filter_fops);
- 
--	trace_create_file("set_ftrace_notrace", 0644, parent,
-+	trace_create_file("set_ftrace_notrace", TRACE_MODE_WRITE, parent,
- 			  ops, &ftrace_notrace_fops);
- }
- 
-@@ -6139,19 +6140,19 @@ void ftrace_destroy_filter_files(struct ftrace_ops *ops)
- static __init int ftrace_init_dyn_tracefs(struct dentry *d_tracer)
- {
- 
--	trace_create_file("available_filter_functions", 0444,
-+	trace_create_file("available_filter_functions", TRACE_MODE_READ,
- 			d_tracer, NULL, &ftrace_avail_fops);
- 
--	trace_create_file("enabled_functions", 0444,
-+	trace_create_file("enabled_functions", TRACE_MODE_READ,
- 			d_tracer, NULL, &ftrace_enabled_fops);
- 
- 	ftrace_create_filter_files(&global_ops, d_tracer);
- 
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
--	trace_create_file("set_graph_function", 0644, d_tracer,
-+	trace_create_file("set_graph_function", TRACE_MODE_WRITE, d_tracer,
- 				    NULL,
- 				    &ftrace_graph_fops);
--	trace_create_file("set_graph_notrace", 0644, d_tracer,
-+	trace_create_file("set_graph_notrace", TRACE_MODE_WRITE, d_tracer,
- 				    NULL,
- 				    &ftrace_graph_notrace_fops);
- #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
-@@ -7494,10 +7495,10 @@ static const struct file_operations ftrace_no_pid_fops = {
- 
- void ftrace_init_tracefs(struct trace_array *tr, struct dentry *d_tracer)
- {
--	trace_create_file("set_ftrace_pid", 0644, d_tracer,
-+	trace_create_file("set_ftrace_pid", TRACE_MODE_WRITE, d_tracer,
- 			    tr, &ftrace_pid_fops);
--	trace_create_file("set_ftrace_notrace_pid", 0644, d_tracer,
--			    tr, &ftrace_no_pid_fops);
-+	trace_create_file("set_ftrace_notrace_pid", TRACE_MODE_WRITE,
-+			  d_tracer, tr, &ftrace_no_pid_fops);
- }
- 
- void __init ftrace_init_tracefs_toplevel(struct trace_array *tr,
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index be0169594de5..4ef6d55a2e2b 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -1714,7 +1714,8 @@ static void trace_create_maxlat_file(struct trace_array *tr,
- {
- 	INIT_WORK(&tr->fsnotify_work, latency_fsnotify_workfn);
- 	init_irq_work(&tr->fsnotify_irqwork, latency_fsnotify_workfn_irq);
--	tr->d_max_latency = trace_create_file("tracing_max_latency", 0644,
-+	tr->d_max_latency = trace_create_file("tracing_max_latency",
-+					      TRACE_MODE_WRITE,
- 					      d_tracer, &tr->max_latency,
- 					      &tracing_max_lat_fops);
- }
-@@ -1751,8 +1752,8 @@ void latency_fsnotify(struct trace_array *tr)
- #else
- 
- #define trace_create_maxlat_file(tr, d_tracer)				\
--	trace_create_file("tracing_max_latency", 0644, d_tracer,	\
--			  &tr->max_latency, &tracing_max_lat_fops)
-+	trace_create_file("tracing_max_latency", TRACE_MODE_WRITE,	\
-+			  d_tracer, &tr->max_latency, &tracing_max_lat_fops)
- 
- #endif
- 
-@@ -6063,7 +6064,7 @@ trace_insert_eval_map_file(struct module *mod, struct trace_eval_map **start,
- 
- static void trace_create_eval_file(struct dentry *d_tracer)
- {
--	trace_create_file("eval_map", 0444, d_tracer,
-+	trace_create_file("eval_map", TRACE_MODE_READ, d_tracer,
- 			  NULL, &tracing_eval_map_fops);
- }
- 
-@@ -8576,27 +8577,27 @@ tracing_init_tracefs_percpu(struct trace_array *tr, long cpu)
- 	}
- 
- 	/* per cpu trace_pipe */
--	trace_create_cpu_file("trace_pipe", 0444, d_cpu,
-+	trace_create_cpu_file("trace_pipe", TRACE_MODE_READ, d_cpu,
- 				tr, cpu, &tracing_pipe_fops);
- 
- 	/* per cpu trace */
--	trace_create_cpu_file("trace", 0644, d_cpu,
-+	trace_create_cpu_file("trace", TRACE_MODE_WRITE, d_cpu,
- 				tr, cpu, &tracing_fops);
- 
--	trace_create_cpu_file("trace_pipe_raw", 0444, d_cpu,
-+	trace_create_cpu_file("trace_pipe_raw", TRACE_MODE_READ, d_cpu,
- 				tr, cpu, &tracing_buffers_fops);
- 
--	trace_create_cpu_file("stats", 0444, d_cpu,
-+	trace_create_cpu_file("stats", TRACE_MODE_READ, d_cpu,
- 				tr, cpu, &tracing_stats_fops);
- 
--	trace_create_cpu_file("buffer_size_kb", 0444, d_cpu,
-+	trace_create_cpu_file("buffer_size_kb", TRACE_MODE_READ, d_cpu,
- 				tr, cpu, &tracing_entries_fops);
- 
- #ifdef CONFIG_TRACER_SNAPSHOT
--	trace_create_cpu_file("snapshot", 0644, d_cpu,
-+	trace_create_cpu_file("snapshot", TRACE_MODE_WRITE, d_cpu,
- 				tr, cpu, &snapshot_fops);
- 
--	trace_create_cpu_file("snapshot_raw", 0444, d_cpu,
-+	trace_create_cpu_file("snapshot_raw", TRACE_MODE_READ, d_cpu,
- 				tr, cpu, &snapshot_raw_fops);
- #endif
- }
-@@ -8802,8 +8803,8 @@ create_trace_option_file(struct trace_array *tr,
- 	topt->opt = opt;
- 	topt->tr = tr;
- 
--	topt->entry = trace_create_file(opt->name, 0644, t_options, topt,
--				    &trace_options_fops);
-+	topt->entry = trace_create_file(opt->name, TRACE_MODE_WRITE,
-+					t_options, topt, &trace_options_fops);
- 
- }
- 
-@@ -8878,7 +8879,7 @@ create_trace_option_core_file(struct trace_array *tr,
- 	if (!t_options)
- 		return NULL;
- 
--	return trace_create_file(option, 0644, t_options,
-+	return trace_create_file(option, TRACE_MODE_WRITE, t_options,
- 				 (void *)&tr->trace_flags_index[index],
- 				 &trace_options_core_fops);
- }
-@@ -9403,28 +9404,28 @@ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer)
- 	struct trace_event_file *file;
- 	int cpu;
- 
--	trace_create_file("available_tracers", 0444, d_tracer,
-+	trace_create_file("available_tracers", TRACE_MODE_READ, d_tracer,
- 			tr, &show_traces_fops);
- 
--	trace_create_file("current_tracer", 0644, d_tracer,
-+	trace_create_file("current_tracer", TRACE_MODE_WRITE, d_tracer,
- 			tr, &set_tracer_fops);
- 
--	trace_create_file("tracing_cpumask", 0644, d_tracer,
-+	trace_create_file("tracing_cpumask", TRACE_MODE_WRITE, d_tracer,
- 			  tr, &tracing_cpumask_fops);
- 
--	trace_create_file("trace_options", 0644, d_tracer,
-+	trace_create_file("trace_options", TRACE_MODE_WRITE, d_tracer,
- 			  tr, &tracing_iter_fops);
- 
--	trace_create_file("trace", 0644, d_tracer,
-+	trace_create_file("trace", TRACE_MODE_WRITE, d_tracer,
- 			  tr, &tracing_fops);
- 
--	trace_create_file("trace_pipe", 0444, d_tracer,
-+	trace_create_file("trace_pipe", TRACE_MODE_READ, d_tracer,
- 			  tr, &tracing_pipe_fops);
- 
--	trace_create_file("buffer_size_kb", 0644, d_tracer,
-+	trace_create_file("buffer_size_kb", TRACE_MODE_WRITE, d_tracer,
- 			  tr, &tracing_entries_fops);
- 
--	trace_create_file("buffer_total_size_kb", 0444, d_tracer,
-+	trace_create_file("buffer_total_size_kb", TRACE_MODE_READ, d_tracer,
- 			  tr, &tracing_total_entries_fops);
- 
- 	trace_create_file("free_buffer", 0200, d_tracer,
-@@ -9435,25 +9436,25 @@ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer)
- 
- 	file = __find_event_file(tr, "ftrace", "print");
- 	if (file && file->dir)
--		trace_create_file("trigger", 0644, file->dir, file,
--				  &event_trigger_fops);
-+		trace_create_file("trigger", TRACE_MODE_WRITE, file->dir,
-+				  file, &event_trigger_fops);
- 	tr->trace_marker_file = file;
- 
- 	trace_create_file("trace_marker_raw", 0220, d_tracer,
- 			  tr, &tracing_mark_raw_fops);
- 
--	trace_create_file("trace_clock", 0644, d_tracer, tr,
-+	trace_create_file("trace_clock", TRACE_MODE_WRITE, d_tracer, tr,
- 			  &trace_clock_fops);
- 
--	trace_create_file("tracing_on", 0644, d_tracer,
-+	trace_create_file("tracing_on", TRACE_MODE_WRITE, d_tracer,
- 			  tr, &rb_simple_fops);
- 
--	trace_create_file("timestamp_mode", 0444, d_tracer, tr,
-+	trace_create_file("timestamp_mode", TRACE_MODE_READ, d_tracer, tr,
- 			  &trace_time_stamp_mode_fops);
- 
- 	tr->buffer_percent = 50;
- 
--	trace_create_file("buffer_percent", 0444, d_tracer,
-+	trace_create_file("buffer_percent", TRACE_MODE_READ, d_tracer,
- 			tr, &buffer_percent_fops);
- 
- 	create_trace_options_dir(tr);
-@@ -9466,11 +9467,11 @@ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer)
- 		MEM_FAIL(1, "Could not allocate function filter files");
- 
- #ifdef CONFIG_TRACER_SNAPSHOT
--	trace_create_file("snapshot", 0644, d_tracer,
-+	trace_create_file("snapshot", TRACE_MODE_WRITE, d_tracer,
- 			  tr, &snapshot_fops);
- #endif
- 
--	trace_create_file("error_log", 0644, d_tracer,
-+	trace_create_file("error_log", TRACE_MODE_WRITE, d_tracer,
- 			  tr, &tracing_err_log_fops);
- 
- 	for_each_tracing_cpu(cpu)
-@@ -9663,19 +9664,19 @@ static __init int tracer_init_tracefs(void)
- 	init_tracer_tracefs(&global_trace, NULL);
- 	ftrace_init_tracefs_toplevel(&global_trace, NULL);
- 
--	trace_create_file("tracing_thresh", 0644, NULL,
-+	trace_create_file("tracing_thresh", TRACE_MODE_WRITE, NULL,
- 			&global_trace, &tracing_thresh_fops);
- 
--	trace_create_file("README", 0444, NULL,
-+	trace_create_file("README", TRACE_MODE_READ, NULL,
- 			NULL, &tracing_readme_fops);
- 
--	trace_create_file("saved_cmdlines", 0444, NULL,
-+	trace_create_file("saved_cmdlines", TRACE_MODE_READ, NULL,
- 			NULL, &tracing_saved_cmdlines_fops);
- 
--	trace_create_file("saved_cmdlines_size", 0644, NULL,
-+	trace_create_file("saved_cmdlines_size", TRACE_MODE_WRITE, NULL,
- 			  NULL, &tracing_saved_cmdlines_size_fops);
- 
--	trace_create_file("saved_tgids", 0444, NULL,
-+	trace_create_file("saved_tgids", TRACE_MODE_READ, NULL,
- 			NULL, &tracing_saved_tgids_fops);
- 
- 	trace_eval_init();
-@@ -9687,7 +9688,7 @@ static __init int tracer_init_tracefs(void)
- #endif
- 
- #ifdef CONFIG_DYNAMIC_FTRACE
--	trace_create_file("dyn_ftrace_total_info", 0444, NULL,
-+	trace_create_file("dyn_ftrace_total_info", TRACE_MODE_READ, NULL,
- 			NULL, &tracing_dyn_info_fops);
- #endif
- 
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 4a0e693000c6..ed28a9aac98f 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -27,6 +27,9 @@
- #include <asm/syscall.h>	/* some archs define it here */
- #endif
- 
-+#define TRACE_MODE_WRITE	0640
-+#define TRACE_MODE_READ		0440
-+
- enum trace_type {
- 	__TRACE_FIRST_TYPE = 0,
- 
-diff --git a/kernel/trace/trace_dynevent.c b/kernel/trace/trace_dynevent.c
-index e57cc0870892..d804206d1f05 100644
---- a/kernel/trace/trace_dynevent.c
-+++ b/kernel/trace/trace_dynevent.c
-@@ -224,7 +224,7 @@ static __init int init_dynamic_event(void)
- 	if (ret)
- 		return 0;
- 
--	entry = tracefs_create_file("dynamic_events", 0644, NULL,
-+	entry = tracefs_create_file("dynamic_events", TRACE_MODE_WRITE, NULL,
- 				    NULL, &dynamic_events_ops);
- 
- 	/* Event list interface */
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index 80e96989770e..478f328c30d1 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -2311,7 +2311,8 @@ event_subsystem_dir(struct trace_array *tr, const char *name,
- 	/* the ftrace system is special, do not create enable or filter files */
- 	if (strcmp(name, "ftrace") != 0) {
- 
--		entry = tracefs_create_file("filter", 0644, dir->entry, dir,
-+		entry = tracefs_create_file("filter", TRACE_MODE_WRITE,
-+					    dir->entry, dir,
- 					    &ftrace_subsystem_filter_fops);
- 		if (!entry) {
- 			kfree(system->filter);
-@@ -2319,7 +2320,7 @@ event_subsystem_dir(struct trace_array *tr, const char *name,
- 			pr_warn("Could not create tracefs '%s/filter' entry\n", name);
- 		}
- 
--		trace_create_file("enable", 0644, dir->entry, dir,
-+		trace_create_file("enable", TRACE_MODE_WRITE, dir->entry, dir,
- 				  &ftrace_system_enable_fops);
- 	}
- 
-@@ -2401,12 +2402,12 @@ event_create_dir(struct dentry *parent, struct trace_event_file *file)
- 	}
- 
- 	if (call->class->reg && !(call->flags & TRACE_EVENT_FL_IGNORE_ENABLE))
--		trace_create_file("enable", 0644, file->dir, file,
-+		trace_create_file("enable", TRACE_MODE_WRITE, file->dir, file,
- 				  &ftrace_enable_fops);
- 
- #ifdef CONFIG_PERF_EVENTS
- 	if (call->event.type && call->class->reg)
--		trace_create_file("id", 0444, file->dir,
-+		trace_create_file("id", TRACE_MODE_READ, file->dir,
- 				  (void *)(long)call->event.type,
- 				  &ftrace_event_id_fops);
- #endif
-@@ -2422,22 +2423,22 @@ event_create_dir(struct dentry *parent, struct trace_event_file *file)
- 	 * triggers or filters.
- 	 */
- 	if (!(call->flags & TRACE_EVENT_FL_IGNORE_ENABLE)) {
--		trace_create_file("filter", 0644, file->dir, file,
--				  &ftrace_event_filter_fops);
-+		trace_create_file("filter", TRACE_MODE_WRITE, file->dir,
-+				  file, &ftrace_event_filter_fops);
- 
--		trace_create_file("trigger", 0644, file->dir, file,
--				  &event_trigger_fops);
-+		trace_create_file("trigger", TRACE_MODE_WRITE, file->dir,
-+				  file, &event_trigger_fops);
- 	}
- 
- #ifdef CONFIG_HIST_TRIGGERS
--	trace_create_file("hist", 0444, file->dir, file,
-+	trace_create_file("hist", TRACE_MODE_READ, file->dir, file,
- 			  &event_hist_fops);
- #endif
- #ifdef CONFIG_HIST_TRIGGERS_DEBUG
--	trace_create_file("hist_debug", 0444, file->dir, file,
-+	trace_create_file("hist_debug", TRACE_MODE_READ, file->dir, file,
- 			  &event_hist_debug_fops);
- #endif
--	trace_create_file("format", 0444, file->dir, call,
-+	trace_create_file("format", TRACE_MODE_READ, file->dir, call,
- 			  &ftrace_event_format_fops);
- 
- #ifdef CONFIG_TRACE_EVENT_INJECT
-@@ -3426,7 +3427,7 @@ create_event_toplevel_files(struct dentry *parent, struct trace_array *tr)
- 	struct dentry *d_events;
- 	struct dentry *entry;
- 
--	entry = tracefs_create_file("set_event", 0644, parent,
-+	entry = tracefs_create_file("set_event", TRACE_MODE_WRITE, parent,
- 				    tr, &ftrace_set_event_fops);
- 	if (!entry) {
- 		pr_warn("Could not create tracefs 'set_event' entry\n");
-@@ -3439,7 +3440,7 @@ create_event_toplevel_files(struct dentry *parent, struct trace_array *tr)
- 		return -ENOMEM;
- 	}
- 
--	entry = trace_create_file("enable", 0644, d_events,
-+	entry = trace_create_file("enable", TRACE_MODE_WRITE, d_events,
- 				  tr, &ftrace_tr_enable_fops);
- 	if (!entry) {
- 		pr_warn("Could not create tracefs 'enable' entry\n");
-@@ -3448,24 +3449,25 @@ create_event_toplevel_files(struct dentry *parent, struct trace_array *tr)
- 
- 	/* There are not as crucial, just warn if they are not created */
- 
--	entry = tracefs_create_file("set_event_pid", 0644, parent,
-+	entry = tracefs_create_file("set_event_pid", TRACE_MODE_WRITE, parent,
- 				    tr, &ftrace_set_event_pid_fops);
- 	if (!entry)
- 		pr_warn("Could not create tracefs 'set_event_pid' entry\n");
- 
--	entry = tracefs_create_file("set_event_notrace_pid", 0644, parent,
--				    tr, &ftrace_set_event_notrace_pid_fops);
-+	entry = tracefs_create_file("set_event_notrace_pid",
-+				    TRACE_MODE_WRITE, parent, tr,
-+				    &ftrace_set_event_notrace_pid_fops);
- 	if (!entry)
- 		pr_warn("Could not create tracefs 'set_event_notrace_pid' entry\n");
- 
- 	/* ring buffer internal formats */
--	entry = trace_create_file("header_page", 0444, d_events,
-+	entry = trace_create_file("header_page", TRACE_MODE_READ, d_events,
- 				  ring_buffer_print_page_header,
- 				  &ftrace_show_header_fops);
- 	if (!entry)
- 		pr_warn("Could not create tracefs 'header_page' entry\n");
- 
--	entry = trace_create_file("header_event", 0444, d_events,
-+	entry = trace_create_file("header_event", TRACE_MODE_READ, d_events,
- 				  ring_buffer_print_entry_header,
- 				  &ftrace_show_header_fops);
- 	if (!entry)
-@@ -3682,8 +3684,8 @@ __init int event_trace_init(void)
- 	if (!tr)
- 		return -ENODEV;
- 
--	entry = tracefs_create_file("available_events", 0444, NULL,
--				    tr, &ftrace_avail_fops);
-+	entry = tracefs_create_file("available_events", TRACE_MODE_READ,
-+				    NULL, tr, &ftrace_avail_fops);
- 	if (!entry)
- 		pr_warn("Could not create tracefs 'available_events' entry\n");
- 
-diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-index 9315fc03e303..4b633095dc90 100644
---- a/kernel/trace/trace_events_synth.c
-+++ b/kernel/trace/trace_events_synth.c
-@@ -2222,8 +2222,8 @@ static __init int trace_events_synth_init(void)
- 	if (err)
- 		goto err;
- 
--	entry = tracefs_create_file("synthetic_events", 0644, NULL,
--				    NULL, &synth_events_fops);
-+	entry = tracefs_create_file("synthetic_events", TRACE_MODE_WRITE,
-+				    NULL, NULL, &synth_events_fops);
- 	if (!entry) {
- 		err = -ENODEV;
- 		goto err;
-diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
-index 0de6837722da..6b5ff3ba4251 100644
---- a/kernel/trace/trace_functions_graph.c
-+++ b/kernel/trace/trace_functions_graph.c
-@@ -1340,7 +1340,7 @@ static __init int init_graph_tracefs(void)
- 	if (ret)
- 		return 0;
- 
--	trace_create_file("max_graph_depth", 0644, NULL,
-+	trace_create_file("max_graph_depth", TRACE_MODE_WRITE, NULL,
- 			  NULL, &graph_depth_fops);
- 
- 	return 0;
-diff --git a/kernel/trace/trace_hwlat.c b/kernel/trace/trace_hwlat.c
-index 1b83d75eb103..d0a730d99a33 100644
---- a/kernel/trace/trace_hwlat.c
-+++ b/kernel/trace/trace_hwlat.c
-@@ -782,21 +782,21 @@ static int init_tracefs(void)
- 	if (!top_dir)
- 		return -ENOMEM;
- 
--	hwlat_sample_window = tracefs_create_file("window", 0640,
-+	hwlat_sample_window = tracefs_create_file("window", TRACE_MODE_WRITE,
- 						  top_dir,
- 						  &hwlat_window,
- 						  &trace_min_max_fops);
- 	if (!hwlat_sample_window)
- 		goto err;
- 
--	hwlat_sample_width = tracefs_create_file("width", 0644,
-+	hwlat_sample_width = tracefs_create_file("width", TRACE_MODE_WRITE,
- 						 top_dir,
- 						 &hwlat_width,
- 						 &trace_min_max_fops);
- 	if (!hwlat_sample_width)
- 		goto err;
- 
--	hwlat_thread_mode = trace_create_file("mode", 0644,
-+	hwlat_thread_mode = trace_create_file("mode", TRACE_MODE_WRITE,
- 					      top_dir,
- 					      NULL,
- 					      &thread_mode_fops);
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index ea6178cb5e33..39cfae84247d 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -1930,16 +1930,16 @@ static __init int init_kprobe_trace(void)
- 	if (ret)
- 		return 0;
- 
--	entry = tracefs_create_file("kprobe_events", 0644, NULL,
--				    NULL, &kprobe_events_ops);
-+	entry = tracefs_create_file("kprobe_events", TRACE_MODE_WRITE,
-+				    NULL, NULL, &kprobe_events_ops);
- 
- 	/* Event list interface */
- 	if (!entry)
- 		pr_warn("Could not create tracefs 'kprobe_events' entry\n");
- 
- 	/* Profile interface */
--	entry = tracefs_create_file("kprobe_profile", 0444, NULL,
--				    NULL, &kprobe_profile_ops);
-+	entry = tracefs_create_file("kprobe_profile", TRACE_MODE_READ,
-+				    NULL, NULL, &kprobe_profile_ops);
- 
- 	if (!entry)
- 		pr_warn("Could not create tracefs 'kprobe_profile' entry\n");
-diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index 65b08b8e5bf8..81000d5a3c19 100644
---- a/kernel/trace/trace_osnoise.c
-+++ b/kernel/trace/trace_osnoise.c
-@@ -1856,38 +1856,38 @@ static int init_tracefs(void)
- 	if (!top_dir)
- 		return 0;
- 
--	tmp = tracefs_create_file("period_us", 0640, top_dir,
-+	tmp = tracefs_create_file("period_us", TRACE_MODE_WRITE, top_dir,
- 				  &osnoise_period, &trace_min_max_fops);
- 	if (!tmp)
- 		goto err;
- 
--	tmp = tracefs_create_file("runtime_us", 0644, top_dir,
-+	tmp = tracefs_create_file("runtime_us", TRACE_MODE_WRITE, top_dir,
- 				  &osnoise_runtime, &trace_min_max_fops);
- 	if (!tmp)
- 		goto err;
- 
--	tmp = tracefs_create_file("stop_tracing_us", 0640, top_dir,
-+	tmp = tracefs_create_file("stop_tracing_us", TRACE_MODE_WRITE, top_dir,
- 				  &osnoise_stop_tracing_in, &trace_min_max_fops);
- 	if (!tmp)
- 		goto err;
- 
--	tmp = tracefs_create_file("stop_tracing_total_us", 0640, top_dir,
-+	tmp = tracefs_create_file("stop_tracing_total_us", TRACE_MODE_WRITE, top_dir,
- 				  &osnoise_stop_tracing_total, &trace_min_max_fops);
- 	if (!tmp)
- 		goto err;
- 
--	tmp = trace_create_file("cpus", 0644, top_dir, NULL, &cpus_fops);
-+	tmp = trace_create_file("cpus", TRACE_MODE_WRITE, top_dir, NULL, &cpus_fops);
- 	if (!tmp)
- 		goto err;
- #ifdef CONFIG_TIMERLAT_TRACER
- #ifdef CONFIG_STACKTRACE
--	tmp = tracefs_create_file("print_stack", 0640, top_dir,
-+	tmp = tracefs_create_file("print_stack", TRACE_MODE_WRITE, top_dir,
- 				  &osnoise_print_stack, &trace_min_max_fops);
- 	if (!tmp)
- 		goto err;
- #endif
- 
--	tmp = tracefs_create_file("timerlat_period_us", 0640, top_dir,
-+	tmp = tracefs_create_file("timerlat_period_us", TRACE_MODE_WRITE, top_dir,
- 				  &timerlat_period, &trace_min_max_fops);
- 	if (!tmp)
- 		goto err;
-diff --git a/kernel/trace/trace_printk.c b/kernel/trace/trace_printk.c
-index 4b320fe7df70..29f6e95439b6 100644
---- a/kernel/trace/trace_printk.c
-+++ b/kernel/trace/trace_printk.c
-@@ -384,7 +384,7 @@ static __init int init_trace_printk_function_export(void)
- 	if (ret)
- 		return 0;
- 
--	trace_create_file("printk_formats", 0444, NULL,
-+	trace_create_file("printk_formats", TRACE_MODE_READ, NULL,
- 				    NULL, &ftrace_formats_fops);
- 
- 	return 0;
-diff --git a/kernel/trace/trace_recursion_record.c b/kernel/trace/trace_recursion_record.c
-index b2edac1fe156..4d4b78c8ca25 100644
---- a/kernel/trace/trace_recursion_record.c
-+++ b/kernel/trace/trace_recursion_record.c
-@@ -226,8 +226,8 @@ __init static int create_recursed_functions(void)
- {
- 	struct dentry *dentry;
- 
--	dentry = trace_create_file("recursed_functions", 0644, NULL, NULL,
--				   &recursed_functions_fops);
-+	dentry = trace_create_file("recursed_functions", TRACE_MODE_WRITE,
-+				   NULL, NULL, &recursed_functions_fops);
- 	if (!dentry)
- 		pr_warn("WARNING: Failed to create recursed_functions\n");
- 	return 0;
-diff --git a/kernel/trace/trace_stack.c b/kernel/trace/trace_stack.c
-index 63c285042051..5a48dba912ea 100644
---- a/kernel/trace/trace_stack.c
-+++ b/kernel/trace/trace_stack.c
-@@ -559,14 +559,14 @@ static __init int stack_trace_init(void)
- 	if (ret)
- 		return 0;
- 
--	trace_create_file("stack_max_size", 0644, NULL,
-+	trace_create_file("stack_max_size", TRACE_MODE_WRITE, NULL,
- 			&stack_trace_max_size, &stack_max_size_fops);
- 
--	trace_create_file("stack_trace", 0444, NULL,
-+	trace_create_file("stack_trace", TRACE_MODE_READ, NULL,
- 			NULL, &stack_trace_fops);
- 
- #ifdef CONFIG_DYNAMIC_FTRACE
--	trace_create_file("stack_trace_filter", 0644, NULL,
-+	trace_create_file("stack_trace_filter", TRACE_MODE_WRITE, NULL,
- 			  &trace_ops, &stack_trace_filter_fops);
- #endif
- 
-diff --git a/kernel/trace/trace_stat.c b/kernel/trace/trace_stat.c
-index 8d141c3825a9..bb247beec447 100644
---- a/kernel/trace/trace_stat.c
-+++ b/kernel/trace/trace_stat.c
-@@ -297,9 +297,9 @@ static int init_stat_file(struct stat_session *session)
- 	if (!stat_dir && (ret = tracing_stat_init()))
- 		return ret;
- 
--	session->file = tracefs_create_file(session->ts->name, 0644,
--					    stat_dir,
--					    session, &tracing_stat_fops);
-+	session->file = tracefs_create_file(session->ts->name, TRACE_MODE_WRITE,
-+					    stat_dir, session,
-+					    &tracing_stat_fops);
- 	if (!session->file)
- 		return -ENOMEM;
- 	return 0;
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index 9b50869a5ddb..d60b858038db 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -1653,10 +1653,10 @@ static __init int init_uprobe_trace(void)
- 	if (ret)
- 		return 0;
- 
--	trace_create_file("uprobe_events", 0644, NULL,
-+	trace_create_file("uprobe_events", TRACE_MODE_WRITE, NULL,
- 				    NULL, &uprobe_events_ops);
- 	/* Profile interface */
--	trace_create_file("uprobe_profile", 0444, NULL,
-+	trace_create_file("uprobe_profile", TRACE_MODE_READ, NULL,
- 				    NULL, &uprobe_profile_ops);
- 	return 0;
- }
 -- 
-2.30.2
+2.32.0
+
