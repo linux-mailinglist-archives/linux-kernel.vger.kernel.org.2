@@ -2,305 +2,833 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 556F63F0C29
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 21:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3873F0C2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 21:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233260AbhHRT5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 15:57:09 -0400
-Received: from sibelius.xs4all.nl ([83.163.83.176]:56752 "EHLO
-        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232969AbhHRT4y (ORCPT
+        id S233475AbhHRT5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 15:57:40 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:42388 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229965AbhHRT5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 15:56:54 -0400
-Received: from localhost (bloch.sibelius.xs4all.nl [local])
-        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id e0d5b866;
-        Wed, 18 Aug 2021 21:56:10 +0200 (CEST)
-Date:   Wed, 18 Aug 2021 21:56:10 +0200 (CEST)
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     Rob Herring <robh@kernel.org>
-Cc:     maz@kernel.org, devicetree@vger.kernel.org, robin.murphy@arm.com,
-        sven@svenpeter.dev, kettenis@openbsd.org, marcan@marcan.st,
-        bhelgaas@google.com, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <CAL_JsqJ5M3soMT30ntSTbqqdrQP8TT26mHL-0xExsn10MWPofA@mail.gmail.com>
-        (message from Rob Herring on Sun, 15 Aug 2021 14:19:57 -0500)
-Subject: Re: [PATCH v3 1/2] dt-bindings: pci: Add DT bindings for apple,pcie
-References: <20210726083204.93196-1-mark.kettenis@xs4all.nl>
- <20210726083204.93196-2-mark.kettenis@xs4all.nl> <20210726231848.GA1025245@robh.at.kernel.org>
- <87sfzt1pg9.wl-maz@kernel.org> <CAL_JsqLvqWiuib9s4PzX8pOQYJQ0eR7Gxz==J849eVJ5MDq4SA@mail.gmail.com>
- <8735ra1x8t.wl-maz@kernel.org> <CAL_JsqJ5M3soMT30ntSTbqqdrQP8TT26mHL-0xExsn10MWPofA@mail.gmail.com>
-Message-ID: <56140331bd735d61@bloch.sibelius.xs4all.nl>
+        Wed, 18 Aug 2021 15:57:35 -0400
+Date:   Wed, 18 Aug 2021 19:56:58 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629316619;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9S61xY/j1GGOSmHYRYBk1u2vLToLANLw8nQpmplSgSA=;
+        b=dq5xCeLcTyP2jgcICTg70NkXp80Cja8d/ooJ1vdfnOvN03pOOk6Emt7hoJCSI7JhvjrJGj
+        dBrRSKg0XBHSsGTsYPKQxAu/anXvZMvfUQvXI3btyV6511AexuzT7f2IQ2rjckdAodQcAC
+        BJfiyhPc1moaYKX53lLaDyRObho18Foz5hWMKbTcxhKqfk/gq6JcYTVxZM9xm3dnSodnZV
+        DQ1Ekzs6SdMycxYHlarLKHMuc1u9conkoq2RKWXUq6zPbIr/6hYbC8vgntlbeobfTZ+RoQ
+        +INvgtX4kUk//dZsEbPFld4BdMUpDKlWLOT3x2euumcRezrQdIzx/xcYEmw/qg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629316619;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9S61xY/j1GGOSmHYRYBk1u2vLToLANLw8nQpmplSgSA=;
+        b=K62ctXSWWh7eka4GJXlARXStcy44TSRAYehiZb4uPFL/c/PvL3phfqGoJ5+D7nFJN5eQid
+        Biul9kgmIKKwUSDg==
+From:   "irqchip-bot for Jianqun Xu" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
+Subject: [irqchip: irq/irqchip-next] pinctrl/rockchip: drop the gpio related codes
+Cc:     Jianqun Xu <jay.xu@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>, maz@kernel.org,
+        tglx@linutronix.de
+In-Reply-To: <20210816012146.1119289-1-jay.xu@rock-chips.com>
+References: <20210816012146.1119289-1-jay.xu@rock-chips.com>
+MIME-Version: 1.0
+Message-ID: <162931661835.25758.2205614006642163559.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Rob Herring <robh@kernel.org>
-> Date: Sun, 15 Aug 2021 14:19:57 -0500
-> 
-> On Sun, Aug 15, 2021 at 11:36 AM Marc Zyngier <maz@kernel.org> wrote:
-> >
-> > Hi Rob,
-> >
-> > Apologies for the delay, I somehow misplaced this email...
-> >
-> > On Mon, 02 Aug 2021 17:10:39 +0100,
-> > Rob Herring <robh@kernel.org> wrote:
-> > >
-> > > On Sun, Aug 1, 2021 at 3:31 AM Marc Zyngier <maz@kernel.org> wrote:
-> > > >
-> > > > On Tue, 27 Jul 2021 00:18:48 +0100,
-> > > > Rob Herring <robh@kernel.org> wrote:
-> > > > >
-> > > > > On Mon, Jul 26, 2021 at 10:32:00AM +0200, Mark Kettenis wrote:
-> > > > > > From: Mark Kettenis <kettenis@openbsd.org>
-> > > > > >
-> > > > > > The Apple PCIe host controller is a PCIe host controller with
-> > > > > > multiple root ports present in Apple ARM SoC platforms, including
-> > > > > > various iPhone and iPad devices and the "Apple Silicon" Macs.
-> > > > > >
-> > > > > > Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
-> > > > > > ---
-> > > > > >  .../devicetree/bindings/pci/apple,pcie.yaml   | 166 ++++++++++++++++++
-> > > > > >  MAINTAINERS                                   |   1 +
-> > > > > >  2 files changed, 167 insertions(+)
-> > > > > >  create mode 100644 Documentation/devicetree/bindings/pci/apple,pcie.yaml
-> > > > > >
-> > > > > > diff --git a/Documentation/devicetree/bindings/pci/apple,pcie.yaml b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
-> > > > > > new file mode 100644
-> > > > > > index 000000000000..bfcbdee79c64
-> > > > > > --- /dev/null
-> > > > > > +++ b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
-> > > > > > @@ -0,0 +1,166 @@
-> > > > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > > > +%YAML 1.2
-> > > > > > +---
-> > > > > > +$id: http://devicetree.org/schemas/pci/apple,pcie.yaml#
-> > > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > > > +
-> > > > > > +title: Apple PCIe host controller
-> > > > > > +
-> > > > > > +maintainers:
-> > > > > > +  - Mark Kettenis <kettenis@openbsd.org>
-> > > > > > +
-> > > > > > +description: |
-> > > > > > +  The Apple PCIe host controller is a PCIe host controller with
-> > > > > > +  multiple root ports present in Apple ARM SoC platforms, including
-> > > > > > +  various iPhone and iPad devices and the "Apple Silicon" Macs.
-> > > > > > +  The controller incorporates Synopsys DesigWare PCIe logic to
-> > > > > > +  implements its root ports.  But the ATU found on most DesignWare
-> > > > > > +  PCIe host bridges is absent.
-> > > > >
-> > > > > blank line
-> > > > >
-> > > > > > +  All root ports share a single ECAM space, but separate GPIOs are
-> > > > > > +  used to take the PCI devices on those ports out of reset.  Therefore
-> > > > > > +  the standard "reset-gpio" and "max-link-speed" properties appear on
-> > > > >
-> > > > > reset-gpios
-> > > > >
-> > > > > > +  the child nodes that represent the PCI bridges that correspond to
-> > > > > > +  the individual root ports.
-> > > > >
-> > > > > blank line
-> > > > >
-> > > > > > +  MSIs are handled by the PCIe controller and translated into regular
-> > > > > > +  interrupts.  A range of 32 MSIs is provided.  These 32 MSIs can be
-> > > > > > +  distributed over the root ports as the OS sees fit by programming
-> > > > > > +  the PCIe controller's port registers.
-> > > > > > +
-> > > > > > +allOf:
-> > > > > > +  - $ref: /schemas/pci/pci-bus.yaml#
-> > > > > > +
-> > > > > > +properties:
-> > > > > > +  compatible:
-> > > > > > +    items:
-> > > > > > +      - const: apple,t8103-pcie
-> > > > > > +      - const: apple,pcie
-> > > > > > +
-> > > > > > +  reg:
-> > > > > > +    minItems: 3
-> > > > > > +    maxItems: 5
-> > > > > > +
-> > > > > > +  reg-names:
-> > > > > > +    minItems: 3
-> > > > > > +    maxItems: 5
-> > > > > > +    items:
-> > > > > > +      - const: config
-> > > > > > +      - const: rc
-> > > > > > +      - const: port0
-> > > > > > +      - const: port1
-> > > > > > +      - const: port2
-> > > > > > +
-> > > > > > +  ranges:
-> > > > > > +    minItems: 2
-> > > > > > +    maxItems: 2
-> > > > > > +
-> > > > > > +  interrupts:
-> > > > > > +    description:
-> > > > > > +      Interrupt specifiers, one for each root port.
-> > > > > > +    minItems: 1
-> > > > > > +    maxItems: 3
-> > > > > > +
-> > > > > > +  msi-controller: true
-> > > > > > +  msi-parent: true
-> > > > > > +
-> > > > > > +  msi-ranges:
-> > > > > > +    description:
-> > > > > > +      A list of pairs <intid span>, where "intid" is the first
-> > > > > > +      interrupt number that can be used as an MSI, and "span" the size
-> > > > > > +      of that range.
-> > > > > > +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
-> > > > > > +    items:
-> > > > > > +      minItems: 2
-> > > > > > +      maxItems: 2
-> > > > >
-> > > > > I still have issues I raised on v1 with this property. It's genericish
-> > > > > looking, but not generic. 'intid' as a single cell can't specify any
-> > > > > parent interrupt such as a GIC which uses 3 cells. You could put in all
-> > > > > the cells, but you'd still be assuming which cell you can increment.
-> > > >
-> > > > The GIC bindings already use similar abstractions, see what we do for
-> > > > both GICv2m and GICv3 MBIs. Other MSI controllers use similar
-> > > > properties (alpine and loongson, for example).
-> > >
-> > > That's the problem. Everyone making up their own crap.
-> >
-> > And that crap gets approved:
-> >
-> > https://lore.kernel.org/lkml/20200512205704.GA10412@bogus/
-> >
-> > I'm not trying to be antagonistic here, but it seems that your
-> > position on this very subject has changed recently.
-> 
-> Not really, I think it's not the first time we've discussed this. But
-> as I see things over and over, my tolerance for another instance
-> without solving the problem for everyone diminishes. And what other
-> leverage do I have?
-> 
-> Additionally, how long we have to support something comes into play. I
-> have no idea for a Loongson MSI controller. I have a better idea on an
-> Apple product...
-> 
-> > > > > I think you should just list all these under 'interrupts' using
-> > > > > interrupt-names to make your life easier:
-> > > > >
-> > > > > interrupt-names:
-> > > > >   items:
-> > > > >     - const: port0
-> > > > >     - const: port1
-> > > > >     - const: port2
-> > > > >     - const: msi0
-> > > > >     - const: msi1
-> > > > >     - const: msi2
-> > > > >     - const: msi3
-> > > > >     ...
-> > > > >
-> > > > > Yeah, it's kind of verbose, but if the h/w block handles N interrupts,
-> > > > > you should list N interrupts. The worst case for the above is N entries
-> > > > > too if not contiguous.
-> > > >
-> > > > And that's where I beg to differ, again.
-> > > >
-> > > > Specifying interrupts like this gives the false impression that these
-> > > > interrupts are generated by the device that owns them (the RC). Which
-> > > > for MSIs is not the case.
-> > >
-> > > It's no different than an interrupt controller node having an
-> > > interrupts property. The source is downstream and the interrupt
-> > > controller is combining/translating the interrupts.
-> > >
-> > > The physical interrupt signals are connected to and originating in
-> > > this block.
-> >
-> > Oh, I also object to this, for the same reasons. The only case where
-> > it makes sense IMHO is when the interrupt controller is a multiplexer.
-> 
-> So we've had the same kind of property for interrupt multiplexers. I'm
-> fine if you think an 'MSI to interrupts mapping property' should be
-> named something else.
-> 
-> > > That sounds like perfectly 'describing the h/w' to me.
-> >
-> > I guess we have a different view of about these things. At the end of
-> > the day, I don't care enough as long as we can expose a range of
-> > interrupts one way or another.
-> 
-> I don't really either. I just don't want 10 ways AND another...
-> 
-> > > > This is not only verbose, this is
-> > > > semantically dubious. And what should we do when the number of
-> > > > possible interrupt is ridiculously large, as it is for the GICv3 ITS?
-> > >
-> > > I don't disagree with the verbose part. But that's not really an issue
-> > > in this case.
-> > >
-> > > > I wish we had a standard way to express these constraints. Until we
-> > > > do, I don't think enumerating individual interrupts is a practical
-> > > > thing to do, nor that it actually represents the topology of the
-> > > > system.
-> > >
-> > > The only way a standard way will happen is to stop accepting the
-> > > custom properties.
-> > >
-> > > All the custom properties suffer from knowledge of what the parent
-> > > interrupt controller is. To fix that, I think we need something like
-> > > this:
-> > >
-> > > msi-ranges = <intspec base>, <intspec step>, <intspec end>;
-> > >
-> > > 'intspec' is defined by the parent interrupt-controller cells. step is
-> > > the value to add. And end is what to match on to stop aka the last
-> > > interrupt in the range. For example, if the GIC is the parent, we'd
-> > > have something like this:
-> > >
-> > > <GIC_SPI 123 0>, <0 1 0>, <GIC_SPI 124 0>
-> > >
-> > > Does this apply to cases other than MSI? I think so as don't we have
-> > > the same type of properties with the low power mode shadow interrupt
-> > > controllers?  So 'interrupt-ranges'?
-> >
-> > This would work, though the increment seems a bit over-engineered. You
-> > also may need this property to accept multiple ranges.
-> 
-> Yes, certainly. Worst case is a map.
-> 
-> > > It looks to me like there's an assumption in the kernel that an MSI
-> > > controller has a linear range of parent interrupts? Is that correct
-> > > and something that's guaranteed? That assumption leaks into the
-> > > existing bindings.
-> >
-> > Depends on how the controller works. In general, the range maps to the
-> > MultiMSI requirements where the message is an offset from the base of
-> > the interrupt range. So you generally end-up with ranges of at least
-> > 32 contiguous MSIs. Anything under that is sub-par and probably not
-> > worth supporting.
-> 
-> Maybe just this is enough:
-> msi-ranges = <intspec base>, <length>, <intspec base>, <length>, ...
-> 
-> While I say 'length' here, that's really up to the interrupt parent to
-> interpret the intspec cells.
+The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-So for the Apple PCIe controller we'd have:
+Commit-ID:     9ce9a02039de72ec8af1bd4bff14f1780337ffcc
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/9ce9a02039de72ec8af1bd4bff14f1780337ffcc
+Author:        Jianqun Xu <jay.xu@rock-chips.com>
+AuthorDate:    Mon, 16 Aug 2021 09:21:46 +08:00
+Committer:     Linus Walleij <linus.walleij@linaro.org>
+CommitterDate: Tue, 17 Aug 2021 01:01:50 +02:00
 
-   msi-ranges = <AIC_IRQ 704 IRQ_TYPE_EDGE_RISING 32>;
+pinctrl/rockchip: drop the gpio related codes
 
-That would work just fine.
+With the patch to separate the gpio driver from the pinctrl driver, now
+the pinctrl-rockchip can drop the gpio related codes now.
 
-Should this be documented in the apple,pcie binding, or somewhere more
-generic?
+Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+Link: https://lore.kernel.org/r/20210816012146.1119289-1-jay.xu@rock-chips.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ drivers/pinctrl/pinctrl-rockchip.c | 645 +----------------------------
+ 1 file changed, 17 insertions(+), 628 deletions(-)
 
-> > Of course, the controller may have some mapping facilities, which
-> > makes things more... interesting.
-> >
-> > > It's fine for the kernel to assume that until there's a case that's
-> > > not linear, but a common binding needs to be able handle a
-> > > non-linear case.
-> >
-> > Fair enough. I can probably work with Mark to upgrade the binding and
-> > the M1 PCIe code. Could you come up with a more formalised proposal?
-> 
-> Not my itch.
-> 
-> Rob
-> 
+diff --git a/drivers/pinctrl/pinctrl-rockchip.c b/drivers/pinctrl/pinctrl-rockchip.c
+index b998133..ae33e37 100644
+--- a/drivers/pinctrl/pinctrl-rockchip.c
++++ b/drivers/pinctrl/pinctrl-rockchip.c
+@@ -21,8 +21,8 @@
+ #include <linux/io.h>
+ #include <linux/bitops.h>
+ #include <linux/gpio/driver.h>
+-#include <linux/of_device.h>
+ #include <linux/of_address.h>
++#include <linux/of_device.h>
+ #include <linux/of_irq.h>
+ #include <linux/pinctrl/machine.h>
+ #include <linux/pinctrl/pinconf.h>
+@@ -39,20 +39,6 @@
+ #include "pinconf.h"
+ #include "pinctrl-rockchip.h"
+ 
+-/* GPIO control registers */
+-#define GPIO_SWPORT_DR		0x00
+-#define GPIO_SWPORT_DDR		0x04
+-#define GPIO_INTEN		0x30
+-#define GPIO_INTMASK		0x34
+-#define GPIO_INTTYPE_LEVEL	0x38
+-#define GPIO_INT_POLARITY	0x3c
+-#define GPIO_INT_STATUS		0x40
+-#define GPIO_INT_RAWSTATUS	0x44
+-#define GPIO_DEBOUNCE		0x48
+-#define GPIO_PORTS_EOI		0x4c
+-#define GPIO_EXT_PORT		0x50
+-#define GPIO_LS_SYNC		0x60
+-
+ /**
+  * Generate a bitmask for setting a value (v) with a write mask bit in hiword
+  * register 31:16 area.
+@@ -2071,75 +2057,11 @@ static int rockchip_pmx_set(struct pinctrl_dev *pctldev, unsigned selector,
+ 	return 0;
+ }
+ 
+-static int rockchip_gpio_get_direction(struct gpio_chip *chip, unsigned offset)
+-{
+-	struct rockchip_pin_bank *bank = gpiochip_get_data(chip);
+-	u32 data;
+-
+-	data = readl_relaxed(bank->reg_base + GPIO_SWPORT_DDR);
+-	if (data & BIT(offset))
+-		return GPIO_LINE_DIRECTION_OUT;
+-
+-	return GPIO_LINE_DIRECTION_IN;
+-}
+-
+-/*
+- * The calls to gpio_direction_output() and gpio_direction_input()
+- * leads to this function call (via the pinctrl_gpio_direction_{input|output}()
+- * function called from the gpiolib interface).
+- */
+-static int _rockchip_pmx_gpio_set_direction(struct gpio_chip *chip,
+-					    int pin, bool input)
+-{
+-	struct rockchip_pin_bank *bank;
+-	int ret;
+-	unsigned long flags;
+-	u32 data;
+-
+-	bank = gpiochip_get_data(chip);
+-
+-	ret = rockchip_set_mux(bank, pin, RK_FUNC_GPIO);
+-	if (ret < 0)
+-		return ret;
+-
+-	raw_spin_lock_irqsave(&bank->slock, flags);
+-
+-	data = readl_relaxed(bank->reg_base + GPIO_SWPORT_DDR);
+-	/* set bit to 1 for output, 0 for input */
+-	if (!input)
+-		data |= BIT(pin);
+-	else
+-		data &= ~BIT(pin);
+-	writel_relaxed(data, bank->reg_base + GPIO_SWPORT_DDR);
+-
+-	raw_spin_unlock_irqrestore(&bank->slock, flags);
+-
+-	return 0;
+-}
+-
+-static int rockchip_pmx_gpio_set_direction(struct pinctrl_dev *pctldev,
+-					      struct pinctrl_gpio_range *range,
+-					      unsigned offset, bool input)
+-{
+-	struct rockchip_pinctrl *info = pinctrl_dev_get_drvdata(pctldev);
+-	struct gpio_chip *chip;
+-	int pin;
+-
+-	chip = range->gc;
+-	pin = offset - chip->base;
+-	dev_dbg(info->dev, "gpio_direction for pin %u as %s-%d to %s\n",
+-		 offset, range->name, pin, input ? "input" : "output");
+-
+-	return _rockchip_pmx_gpio_set_direction(chip, offset - chip->base,
+-						input);
+-}
+-
+ static const struct pinmux_ops rockchip_pmx_ops = {
+ 	.get_functions_count	= rockchip_pmx_get_funcs_count,
+ 	.get_function_name	= rockchip_pmx_get_func_name,
+ 	.get_function_groups	= rockchip_pmx_get_groups,
+ 	.set_mux		= rockchip_pmx_set,
+-	.gpio_set_direction	= rockchip_pmx_gpio_set_direction,
+ };
+ 
+ /*
+@@ -2170,15 +2092,13 @@ static bool rockchip_pinconf_pull_valid(struct rockchip_pin_ctrl *ctrl,
+ 	return false;
+ }
+ 
+-static void rockchip_gpio_set(struct gpio_chip *gc, unsigned offset, int value);
+-static int rockchip_gpio_get(struct gpio_chip *gc, unsigned offset);
+-
+ /* set the pin config settings for a specified pin */
+ static int rockchip_pinconf_set(struct pinctrl_dev *pctldev, unsigned int pin,
+ 				unsigned long *configs, unsigned num_configs)
+ {
+ 	struct rockchip_pinctrl *info = pinctrl_dev_get_drvdata(pctldev);
+ 	struct rockchip_pin_bank *bank = pin_to_bank(info, pin);
++	struct gpio_chip *gpio = &bank->gpio_chip;
+ 	enum pin_config_param param;
+ 	u32 arg;
+ 	int i;
+@@ -2211,10 +2131,13 @@ static int rockchip_pinconf_set(struct pinctrl_dev *pctldev, unsigned int pin,
+ 				return rc;
+ 			break;
+ 		case PIN_CONFIG_OUTPUT:
+-			rockchip_gpio_set(&bank->gpio_chip,
+-					  pin - bank->pin_base, arg);
+-			rc = _rockchip_pmx_gpio_set_direction(&bank->gpio_chip,
+-					  pin - bank->pin_base, false);
++			rc = rockchip_set_mux(bank, pin - bank->pin_base,
++					      RK_FUNC_GPIO);
++			if (rc != RK_FUNC_GPIO)
++				return -EINVAL;
++
++			rc = gpio->direction_output(gpio, pin - bank->pin_base,
++						    arg);
+ 			if (rc)
+ 				return rc;
+ 			break;
+@@ -2252,6 +2175,7 @@ static int rockchip_pinconf_get(struct pinctrl_dev *pctldev, unsigned int pin,
+ {
+ 	struct rockchip_pinctrl *info = pinctrl_dev_get_drvdata(pctldev);
+ 	struct rockchip_pin_bank *bank = pin_to_bank(info, pin);
++	struct gpio_chip *gpio = &bank->gpio_chip;
+ 	enum pin_config_param param = pinconf_to_config_param(*config);
+ 	u16 arg;
+ 	int rc;
+@@ -2280,7 +2204,7 @@ static int rockchip_pinconf_get(struct pinctrl_dev *pctldev, unsigned int pin,
+ 		if (rc != RK_FUNC_GPIO)
+ 			return -EINVAL;
+ 
+-		rc = rockchip_gpio_get(&bank->gpio_chip, pin - bank->pin_base);
++		rc = gpio->get(gpio, pin - bank->pin_base);
+ 		if (rc < 0)
+ 			return rc;
+ 
+@@ -2518,7 +2442,7 @@ static int rockchip_pinctrl_register(struct platform_device *pdev,
+ 	ctrldesc->npins = info->ctrl->nr_pins;
+ 
+ 	pdesc = pindesc;
+-	for (bank = 0 , k = 0; bank < info->ctrl->nr_banks; bank++) {
++	for (bank = 0, k = 0; bank < info->ctrl->nr_banks; bank++) {
+ 		pin_bank = &info->ctrl->pin_banks[bank];
+ 		for (pin = 0; pin < pin_bank->nr_pins; pin++, k++) {
+ 			pdesc->number = k;
+@@ -2538,526 +2462,9 @@ static int rockchip_pinctrl_register(struct platform_device *pdev,
+ 		return PTR_ERR(info->pctl_dev);
+ 	}
+ 
+-	for (bank = 0; bank < info->ctrl->nr_banks; ++bank) {
+-		pin_bank = &info->ctrl->pin_banks[bank];
+-		pin_bank->grange.name = pin_bank->name;
+-		pin_bank->grange.id = bank;
+-		pin_bank->grange.pin_base = pin_bank->pin_base;
+-		pin_bank->grange.base = pin_bank->gpio_chip.base;
+-		pin_bank->grange.npins = pin_bank->gpio_chip.ngpio;
+-		pin_bank->grange.gc = &pin_bank->gpio_chip;
+-		pinctrl_add_gpio_range(info->pctl_dev, &pin_bank->grange);
+-	}
+-
+ 	return 0;
+ }
+ 
+-/*
+- * GPIO handling
+- */
+-
+-static void rockchip_gpio_set(struct gpio_chip *gc, unsigned offset, int value)
+-{
+-	struct rockchip_pin_bank *bank = gpiochip_get_data(gc);
+-	void __iomem *reg = bank->reg_base + GPIO_SWPORT_DR;
+-	unsigned long flags;
+-	u32 data;
+-
+-	raw_spin_lock_irqsave(&bank->slock, flags);
+-
+-	data = readl(reg);
+-	data &= ~BIT(offset);
+-	if (value)
+-		data |= BIT(offset);
+-	writel(data, reg);
+-
+-	raw_spin_unlock_irqrestore(&bank->slock, flags);
+-}
+-
+-/*
+- * Returns the level of the pin for input direction and setting of the DR
+- * register for output gpios.
+- */
+-static int rockchip_gpio_get(struct gpio_chip *gc, unsigned offset)
+-{
+-	struct rockchip_pin_bank *bank = gpiochip_get_data(gc);
+-	u32 data;
+-
+-	data = readl(bank->reg_base + GPIO_EXT_PORT);
+-	data >>= offset;
+-	data &= 1;
+-	return data;
+-}
+-
+-/*
+- * gpiolib gpio_direction_input callback function. The setting of the pin
+- * mux function as 'gpio input' will be handled by the pinctrl subsystem
+- * interface.
+- */
+-static int rockchip_gpio_direction_input(struct gpio_chip *gc, unsigned offset)
+-{
+-	return pinctrl_gpio_direction_input(gc->base + offset);
+-}
+-
+-/*
+- * gpiolib gpio_direction_output callback function. The setting of the pin
+- * mux function as 'gpio output' will be handled by the pinctrl subsystem
+- * interface.
+- */
+-static int rockchip_gpio_direction_output(struct gpio_chip *gc,
+-					  unsigned offset, int value)
+-{
+-	rockchip_gpio_set(gc, offset, value);
+-	return pinctrl_gpio_direction_output(gc->base + offset);
+-}
+-
+-static void rockchip_gpio_set_debounce(struct gpio_chip *gc,
+-				       unsigned int offset, bool enable)
+-{
+-	struct rockchip_pin_bank *bank = gpiochip_get_data(gc);
+-	void __iomem *reg = bank->reg_base + GPIO_DEBOUNCE;
+-	unsigned long flags;
+-	u32 data;
+-
+-	raw_spin_lock_irqsave(&bank->slock, flags);
+-
+-	data = readl(reg);
+-	if (enable)
+-		data |= BIT(offset);
+-	else
+-		data &= ~BIT(offset);
+-	writel(data, reg);
+-
+-	raw_spin_unlock_irqrestore(&bank->slock, flags);
+-}
+-
+-/*
+- * gpiolib set_config callback function. The setting of the pin
+- * mux function as 'gpio output' will be handled by the pinctrl subsystem
+- * interface.
+- */
+-static int rockchip_gpio_set_config(struct gpio_chip *gc, unsigned int offset,
+-				  unsigned long config)
+-{
+-	enum pin_config_param param = pinconf_to_config_param(config);
+-
+-	switch (param) {
+-	case PIN_CONFIG_INPUT_DEBOUNCE:
+-		rockchip_gpio_set_debounce(gc, offset, true);
+-		/*
+-		 * Rockchip's gpio could only support up to one period
+-		 * of the debounce clock(pclk), which is far away from
+-		 * satisftying the requirement, as pclk is usually near
+-		 * 100MHz shared by all peripherals. So the fact is it
+-		 * has crippled debounce capability could only be useful
+-		 * to prevent any spurious glitches from waking up the system
+-		 * if the gpio is conguired as wakeup interrupt source. Let's
+-		 * still return -ENOTSUPP as before, to make sure the caller
+-		 * of gpiod_set_debounce won't change its behaviour.
+-		 */
+-		return -ENOTSUPP;
+-	default:
+-		return -ENOTSUPP;
+-	}
+-}
+-
+-/*
+- * gpiolib gpio_to_irq callback function. Creates a mapping between a GPIO pin
+- * and a virtual IRQ, if not already present.
+- */
+-static int rockchip_gpio_to_irq(struct gpio_chip *gc, unsigned offset)
+-{
+-	struct rockchip_pin_bank *bank = gpiochip_get_data(gc);
+-	unsigned int virq;
+-
+-	if (!bank->domain)
+-		return -ENXIO;
+-
+-	virq = irq_create_mapping(bank->domain, offset);
+-
+-	return (virq) ? : -ENXIO;
+-}
+-
+-static const struct gpio_chip rockchip_gpiolib_chip = {
+-	.request = gpiochip_generic_request,
+-	.free = gpiochip_generic_free,
+-	.set = rockchip_gpio_set,
+-	.get = rockchip_gpio_get,
+-	.get_direction	= rockchip_gpio_get_direction,
+-	.direction_input = rockchip_gpio_direction_input,
+-	.direction_output = rockchip_gpio_direction_output,
+-	.set_config = rockchip_gpio_set_config,
+-	.to_irq = rockchip_gpio_to_irq,
+-	.owner = THIS_MODULE,
+-};
+-
+-/*
+- * Interrupt handling
+- */
+-
+-static void rockchip_irq_demux(struct irq_desc *desc)
+-{
+-	struct irq_chip *chip = irq_desc_get_chip(desc);
+-	struct rockchip_pin_bank *bank = irq_desc_get_handler_data(desc);
+-	u32 pend;
+-
+-	dev_dbg(bank->drvdata->dev, "got irq for bank %s\n", bank->name);
+-
+-	chained_irq_enter(chip, desc);
+-
+-	pend = readl_relaxed(bank->reg_base + GPIO_INT_STATUS);
+-
+-	while (pend) {
+-		unsigned int irq, virq;
+-
+-		irq = __ffs(pend);
+-		pend &= ~BIT(irq);
+-		virq = irq_find_mapping(bank->domain, irq);
+-
+-		if (!virq) {
+-			dev_err(bank->drvdata->dev, "unmapped irq %d\n", irq);
+-			continue;
+-		}
+-
+-		dev_dbg(bank->drvdata->dev, "handling irq %d\n", irq);
+-
+-		/*
+-		 * Triggering IRQ on both rising and falling edge
+-		 * needs manual intervention.
+-		 */
+-		if (bank->toggle_edge_mode & BIT(irq)) {
+-			u32 data, data_old, polarity;
+-			unsigned long flags;
+-
+-			data = readl_relaxed(bank->reg_base + GPIO_EXT_PORT);
+-			do {
+-				raw_spin_lock_irqsave(&bank->slock, flags);
+-
+-				polarity = readl_relaxed(bank->reg_base +
+-							 GPIO_INT_POLARITY);
+-				if (data & BIT(irq))
+-					polarity &= ~BIT(irq);
+-				else
+-					polarity |= BIT(irq);
+-				writel(polarity,
+-				       bank->reg_base + GPIO_INT_POLARITY);
+-
+-				raw_spin_unlock_irqrestore(&bank->slock, flags);
+-
+-				data_old = data;
+-				data = readl_relaxed(bank->reg_base +
+-						     GPIO_EXT_PORT);
+-			} while ((data & BIT(irq)) != (data_old & BIT(irq)));
+-		}
+-
+-		generic_handle_irq(virq);
+-	}
+-
+-	chained_irq_exit(chip, desc);
+-}
+-
+-static int rockchip_irq_set_type(struct irq_data *d, unsigned int type)
+-{
+-	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(d);
+-	struct rockchip_pin_bank *bank = gc->private;
+-	u32 mask = BIT(d->hwirq);
+-	u32 polarity;
+-	u32 level;
+-	u32 data;
+-	unsigned long flags;
+-	int ret;
+-
+-	/* make sure the pin is configured as gpio input */
+-	ret = rockchip_set_mux(bank, d->hwirq, RK_FUNC_GPIO);
+-	if (ret < 0)
+-		return ret;
+-
+-	raw_spin_lock_irqsave(&bank->slock, flags);
+-
+-	data = readl_relaxed(bank->reg_base + GPIO_SWPORT_DDR);
+-	data &= ~mask;
+-	writel_relaxed(data, bank->reg_base + GPIO_SWPORT_DDR);
+-
+-	raw_spin_unlock_irqrestore(&bank->slock, flags);
+-
+-	if (type & IRQ_TYPE_EDGE_BOTH)
+-		irq_set_handler_locked(d, handle_edge_irq);
+-	else
+-		irq_set_handler_locked(d, handle_level_irq);
+-
+-	raw_spin_lock_irqsave(&bank->slock, flags);
+-	irq_gc_lock(gc);
+-
+-	level = readl_relaxed(gc->reg_base + GPIO_INTTYPE_LEVEL);
+-	polarity = readl_relaxed(gc->reg_base + GPIO_INT_POLARITY);
+-
+-	switch (type) {
+-	case IRQ_TYPE_EDGE_BOTH:
+-		bank->toggle_edge_mode |= mask;
+-		level |= mask;
+-
+-		/*
+-		 * Determine gpio state. If 1 next interrupt should be falling
+-		 * otherwise rising.
+-		 */
+-		data = readl(bank->reg_base + GPIO_EXT_PORT);
+-		if (data & mask)
+-			polarity &= ~mask;
+-		else
+-			polarity |= mask;
+-		break;
+-	case IRQ_TYPE_EDGE_RISING:
+-		bank->toggle_edge_mode &= ~mask;
+-		level |= mask;
+-		polarity |= mask;
+-		break;
+-	case IRQ_TYPE_EDGE_FALLING:
+-		bank->toggle_edge_mode &= ~mask;
+-		level |= mask;
+-		polarity &= ~mask;
+-		break;
+-	case IRQ_TYPE_LEVEL_HIGH:
+-		bank->toggle_edge_mode &= ~mask;
+-		level &= ~mask;
+-		polarity |= mask;
+-		break;
+-	case IRQ_TYPE_LEVEL_LOW:
+-		bank->toggle_edge_mode &= ~mask;
+-		level &= ~mask;
+-		polarity &= ~mask;
+-		break;
+-	default:
+-		irq_gc_unlock(gc);
+-		raw_spin_unlock_irqrestore(&bank->slock, flags);
+-		return -EINVAL;
+-	}
+-
+-	writel_relaxed(level, gc->reg_base + GPIO_INTTYPE_LEVEL);
+-	writel_relaxed(polarity, gc->reg_base + GPIO_INT_POLARITY);
+-
+-	irq_gc_unlock(gc);
+-	raw_spin_unlock_irqrestore(&bank->slock, flags);
+-
+-	return 0;
+-}
+-
+-static void rockchip_irq_suspend(struct irq_data *d)
+-{
+-	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(d);
+-	struct rockchip_pin_bank *bank = gc->private;
+-
+-	bank->saved_masks = irq_reg_readl(gc, GPIO_INTMASK);
+-	irq_reg_writel(gc, ~gc->wake_active, GPIO_INTMASK);
+-}
+-
+-static void rockchip_irq_resume(struct irq_data *d)
+-{
+-	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(d);
+-	struct rockchip_pin_bank *bank = gc->private;
+-
+-	irq_reg_writel(gc, bank->saved_masks, GPIO_INTMASK);
+-}
+-
+-static void rockchip_irq_enable(struct irq_data *d)
+-{
+-	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(d);
+-	struct rockchip_pin_bank *bank = gc->private;
+-
+-	irq_gc_mask_clr_bit(d);
+-}
+-
+-static void rockchip_irq_disable(struct irq_data *d)
+-{
+-	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(d);
+-	struct rockchip_pin_bank *bank = gc->private;
+-
+-	irq_gc_mask_set_bit(d);
+-}
+-
+-static int rockchip_interrupts_register(struct platform_device *pdev,
+-						struct rockchip_pinctrl *info)
+-{
+-	struct rockchip_pin_ctrl *ctrl = info->ctrl;
+-	struct rockchip_pin_bank *bank = ctrl->pin_banks;
+-	unsigned int clr = IRQ_NOREQUEST | IRQ_NOPROBE | IRQ_NOAUTOEN;
+-	struct irq_chip_generic *gc;
+-	int ret;
+-	int i;
+-
+-	for (i = 0; i < ctrl->nr_banks; ++i, ++bank) {
+-		if (!bank->valid) {
+-			dev_warn(&pdev->dev, "bank %s is not valid\n",
+-				 bank->name);
+-			continue;
+-		}
+-
+-		bank->domain = irq_domain_add_linear(bank->of_node, 32,
+-						&irq_generic_chip_ops, NULL);
+-		if (!bank->domain) {
+-			dev_warn(&pdev->dev, "could not initialize irq domain for bank %s\n",
+-				 bank->name);
+-			continue;
+-		}
+-
+-		ret = irq_alloc_domain_generic_chips(bank->domain, 32, 1,
+-					 "rockchip_gpio_irq", handle_level_irq,
+-					 clr, 0, 0);
+-		if (ret) {
+-			dev_err(&pdev->dev, "could not alloc generic chips for bank %s\n",
+-				bank->name);
+-			irq_domain_remove(bank->domain);
+-			continue;
+-		}
+-
+-		gc = irq_get_domain_generic_chip(bank->domain, 0);
+-		gc->reg_base = bank->reg_base;
+-		gc->private = bank;
+-		gc->chip_types[0].regs.mask = GPIO_INTMASK;
+-		gc->chip_types[0].regs.ack = GPIO_PORTS_EOI;
+-		gc->chip_types[0].chip.irq_ack = irq_gc_ack_set_bit;
+-		gc->chip_types[0].chip.irq_mask = irq_gc_mask_set_bit;
+-		gc->chip_types[0].chip.irq_unmask = irq_gc_mask_clr_bit;
+-		gc->chip_types[0].chip.irq_enable = rockchip_irq_enable;
+-		gc->chip_types[0].chip.irq_disable = rockchip_irq_disable;
+-		gc->chip_types[0].chip.irq_set_wake = irq_gc_set_wake;
+-		gc->chip_types[0].chip.irq_suspend = rockchip_irq_suspend;
+-		gc->chip_types[0].chip.irq_resume = rockchip_irq_resume;
+-		gc->chip_types[0].chip.irq_set_type = rockchip_irq_set_type;
+-		gc->wake_enabled = IRQ_MSK(bank->nr_pins);
+-
+-		/*
+-		 * Linux assumes that all interrupts start out disabled/masked.
+-		 * Our driver only uses the concept of masked and always keeps
+-		 * things enabled, so for us that's all masked and all enabled.
+-		 */
+-		writel_relaxed(0xffffffff, bank->reg_base + GPIO_INTMASK);
+-		writel_relaxed(0xffffffff, bank->reg_base + GPIO_PORTS_EOI);
+-		writel_relaxed(0xffffffff, bank->reg_base + GPIO_INTEN);
+-		gc->mask_cache = 0xffffffff;
+-
+-		irq_set_chained_handler_and_data(bank->irq,
+-						 rockchip_irq_demux, bank);
+-	}
+-
+-	return 0;
+-}
+-
+-static int rockchip_gpiolib_register(struct platform_device *pdev,
+-						struct rockchip_pinctrl *info)
+-{
+-	struct rockchip_pin_ctrl *ctrl = info->ctrl;
+-	struct rockchip_pin_bank *bank = ctrl->pin_banks;
+-	struct gpio_chip *gc;
+-	int ret;
+-	int i;
+-
+-	for (i = 0; i < ctrl->nr_banks; ++i, ++bank) {
+-		if (!bank->valid) {
+-			dev_warn(&pdev->dev, "bank %s is not valid\n",
+-				 bank->name);
+-			continue;
+-		}
+-
+-		bank->gpio_chip = rockchip_gpiolib_chip;
+-
+-		gc = &bank->gpio_chip;
+-		gc->base = bank->pin_base;
+-		gc->ngpio = bank->nr_pins;
+-		gc->parent = &pdev->dev;
+-		gc->of_node = bank->of_node;
+-		gc->label = bank->name;
+-
+-		ret = gpiochip_add_data(gc, bank);
+-		if (ret) {
+-			dev_err(&pdev->dev, "failed to register gpio_chip %s, error code: %d\n",
+-							gc->label, ret);
+-			goto fail;
+-		}
+-	}
+-
+-	rockchip_interrupts_register(pdev, info);
+-
+-	return 0;
+-
+-fail:
+-	for (--i, --bank; i >= 0; --i, --bank) {
+-		if (!bank->valid)
+-			continue;
+-		gpiochip_remove(&bank->gpio_chip);
+-	}
+-	return ret;
+-}
+-
+-static int rockchip_gpiolib_unregister(struct platform_device *pdev,
+-						struct rockchip_pinctrl *info)
+-{
+-	struct rockchip_pin_ctrl *ctrl = info->ctrl;
+-	struct rockchip_pin_bank *bank = ctrl->pin_banks;
+-	int i;
+-
+-	for (i = 0; i < ctrl->nr_banks; ++i, ++bank) {
+-		if (!bank->valid)
+-			continue;
+-		gpiochip_remove(&bank->gpio_chip);
+-	}
+-
+-	return 0;
+-}
+-
+-static int rockchip_get_bank_data(struct rockchip_pin_bank *bank,
+-				  struct rockchip_pinctrl *info)
+-{
+-	struct resource res;
+-	void __iomem *base;
+-
+-	if (of_address_to_resource(bank->of_node, 0, &res)) {
+-		dev_err(info->dev, "cannot find IO resource for bank\n");
+-		return -ENOENT;
+-	}
+-
+-	bank->reg_base = devm_ioremap_resource(info->dev, &res);
+-	if (IS_ERR(bank->reg_base))
+-		return PTR_ERR(bank->reg_base);
+-
+-	/*
+-	 * special case, where parts of the pull setting-registers are
+-	 * part of the PMU register space
+-	 */
+-	if (of_device_is_compatible(bank->of_node,
+-				    "rockchip,rk3188-gpio-bank0")) {
+-		struct device_node *node;
+-
+-		node = of_parse_phandle(bank->of_node->parent,
+-					"rockchip,pmu", 0);
+-		if (!node) {
+-			if (of_address_to_resource(bank->of_node, 1, &res)) {
+-				dev_err(info->dev, "cannot find IO resource for bank\n");
+-				return -ENOENT;
+-			}
+-
+-			base = devm_ioremap_resource(info->dev, &res);
+-			if (IS_ERR(base))
+-				return PTR_ERR(base);
+-			rockchip_regmap_config.max_register =
+-						    resource_size(&res) - 4;
+-			rockchip_regmap_config.name =
+-					    "rockchip,rk3188-gpio-bank0-pull";
+-			bank->regmap_pull = devm_regmap_init_mmio(info->dev,
+-						    base,
+-						    &rockchip_regmap_config);
+-		}
+-		of_node_put(node);
+-	}
+-
+-	bank->irq = irq_of_parse_and_map(bank->of_node, 0);
+-
+-	bank->clk = of_clk_get(bank->of_node, 0);
+-	if (IS_ERR(bank->clk))
+-		return PTR_ERR(bank->clk);
+-
+-	return clk_prepare_enable(bank->clk);
+-}
+-
+ static const struct of_device_id rockchip_pinctrl_dt_match[];
+ 
+ /* retrieve the soc specific data */
+@@ -3067,7 +2474,6 @@ static struct rockchip_pin_ctrl *rockchip_pinctrl_get_soc_data(
+ {
+ 	const struct of_device_id *match;
+ 	struct device_node *node = pdev->dev.of_node;
+-	struct device_node *np;
+ 	struct rockchip_pin_ctrl *ctrl;
+ 	struct rockchip_pin_bank *bank;
+ 	int grf_offs, pmu_offs, drv_grf_offs, drv_pmu_offs, i, j;
+@@ -3075,23 +2481,6 @@ static struct rockchip_pin_ctrl *rockchip_pinctrl_get_soc_data(
+ 	match = of_match_node(rockchip_pinctrl_dt_match, node);
+ 	ctrl = (struct rockchip_pin_ctrl *)match->data;
+ 
+-	for_each_child_of_node(node, np) {
+-		if (!of_find_property(np, "gpio-controller", NULL))
+-			continue;
+-
+-		bank = ctrl->pin_banks;
+-		for (i = 0; i < ctrl->nr_banks; ++i, ++bank) {
+-			if (!strcmp(bank->name, np->name)) {
+-				bank->of_node = np;
+-
+-				if (!rockchip_get_bank_data(bank, d))
+-					bank->valid = true;
+-
+-				break;
+-			}
+-		}
+-	}
+-
+ 	grf_offs = ctrl->grf_mux_offset;
+ 	pmu_offs = ctrl->pmu_mux_offset;
+ 	drv_pmu_offs = ctrl->pmu_drv_offset;
+@@ -3312,18 +2701,18 @@ static int rockchip_pinctrl_probe(struct platform_device *pdev)
+ 			return PTR_ERR(info->regmap_pmu);
+ 	}
+ 
+-	ret = rockchip_gpiolib_register(pdev, info);
++	ret = rockchip_pinctrl_register(pdev, info);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = rockchip_pinctrl_register(pdev, info);
++	platform_set_drvdata(pdev, info);
++
++	ret = of_platform_populate(np, rockchip_bank_match, NULL, NULL);
+ 	if (ret) {
+-		rockchip_gpiolib_unregister(pdev, info);
++		dev_err(&pdev->dev, "failed to register gpio device\n");
+ 		return ret;
+ 	}
+ 
+-	platform_set_drvdata(pdev, info);
+-
+ 	return 0;
+ }
+ 
