@@ -2,201 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A663A3EFF00
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BADF3EFF02
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239424AbhHRIUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 04:20:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47742 "EHLO
+        id S240245AbhHRIUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 04:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239549AbhHRIUO (ORCPT
+        with ESMTP id S239522AbhHRIUP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 04:20:14 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEAF4C061796
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:19:39 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mGGnR-0005XT-8O; Wed, 18 Aug 2021 10:19:37 +0200
-Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:ed04:8488:5061:54d4])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 9AD836698D4;
-        Wed, 18 Aug 2021 08:19:35 +0000 (UTC)
-Date:   Wed, 18 Aug 2021 10:19:34 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     linux-can <linux-can@vger.kernel.org>,
-        Stefan =?utf-8?B?TcOkdGpl?= <Stefan.Maetje@esd.eu>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 5/7] can: netlink: add interface for CAN-FD
- Transmitter Delay Compensation (TDC)
-Message-ID: <20210818081934.6f23ghoom2dkv53m@pengutronix.de>
-References: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
- <20210815033248.98111-6-mailhol.vincent@wanadoo.fr>
- <20210817195551.wwgu7dnhb6qyvo7n@pengutronix.de>
- <CAMZ6RqLj94UU_b8dDAzinVsLaV6pBR-cWbHmjwGhx3vfWiKt_g@mail.gmail.com>
+        Wed, 18 Aug 2021 04:20:15 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4030CC0613D9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:19:41 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id t13so1358066pfl.6
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:19:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yWCs2vRunxYw/2LTzrenXx3FyLmYWTHbkmxW6S9lQ6o=;
+        b=Xbs1PlLLSpgp12XsSXiO9dHPBqg046u+axGYHh61zauRi4wHisoKZ7piU+aThX5HKw
+         S7Y0f8OZzYpNGPMlJr6OxgJYf+e1PUiUInGPJuunDc0zaX77q7DSeYJvr8QW262gPZ6l
+         wmMwpGYF4yFre3/oBCHlAprBCkbfUzTwbpJ8U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yWCs2vRunxYw/2LTzrenXx3FyLmYWTHbkmxW6S9lQ6o=;
+        b=jgwWj9TqdsXxgWGLjFVEhARFKcLcbsTbFGgBI2KAXjjRWA55+595XpU0LaNZ/pFC2P
+         KZpziAmAUh24v7PfhJ64oc0HKHSDkDwiBO9GytSgycjdTzqbtgi3V5IsoFGB5+OzEO5g
+         fUoF14PjWD/uwX171XNLqAtA3eRm6edvjsBcWqJJ0xYmSdz7nHEm3do/f7KNnZApK+0a
+         H1Cmn7xPkOQ6eVBODHnmG5caEdr2WRj555vgRkgyigghThBmiaMnQNx1fBFwAc+WHrl1
+         QLO+KTRrkRnm8G33jQDzZFDXZdbZbVMw2ANmUAJxRtkhdPY94eSxXguMpiGI4gL0AR79
+         VeOQ==
+X-Gm-Message-State: AOAM5337jblV40pE77sBPtL/DOxEHmc6aFsl/dhXnH1D/rPX3NAkvdqV
+        CHhH/ueduigmQCejf4RAJGrOUQ==
+X-Google-Smtp-Source: ABdhPJyHMomXUUSsim9BNDKSfgWuXipYZG3PXU/QZcHRhPnPUWPnIYtsppjWSiGU4XA2AOeUZekwhg==
+X-Received: by 2002:a05:6a00:230e:b029:3c4:24ff:969d with SMTP id h14-20020a056a00230eb02903c424ff969dmr8103456pfh.44.1629274780870;
+        Wed, 18 Aug 2021 01:19:40 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id r78sm5425224pfc.206.2021.08.18.01.19.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 01:19:40 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] staging: wlan-ng: Disable buggy MIB ioctl
+Date:   Wed, 18 Aug 2021 01:19:37 -0700
+Message-Id: <20210818081937.1668775-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3e3jncuyjzgfz6lc"
-Content-Disposition: inline
-In-Reply-To: <CAMZ6RqLj94UU_b8dDAzinVsLaV6pBR-cWbHmjwGhx3vfWiKt_g@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1567; h=from:subject; bh=Sgwjp53Pz70aIh4b/DDRu0OZ/4XXSmncmaDMLY4cqIw=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhHMKY2ZE8JgxxJFeCq1C/wwUCKAJPO2ye+nyaVoJF tdhC7VeJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYRzCmAAKCRCJcvTf3G3AJjprD/ kBbBNMPslIY0OVULW5j/PMahglxJ5BZqHi3SutRyz4d20V/aFKmPQdgacFaghGdiyQRWXeGP13uAuw vXEt8OjGNW8fFgpZglspaLB0ZLiXyZJV06AwQycNuo6nTv0cAtR9aqTiz/QNabg1u/X16l1fuu6ORw pr8Cp4CQ55HnUInyKG/wEC1Fg0u76cAl/dM/eYBcOppW2DGf2Z1zYe8R1frBgg+FJExpD4C1462W5b gGPrBOSuUG+1YA/3S5frN5BzLvbom/0jKzKh04ROSFKygNvPyX4n4wMpwzDK78xEyRHl7nr3lah4u7 oEjvEwEj0jZgkpwejrRof67vD6pldQjYfgKynzFlHVvndWajkfIcEvqmTcc2yUaAiZcID557G+EhlM nvMpLxhHBk0k34mIg77w7islWTrtAblsHJFjXCBp9LDJMkyzvYH3p73dDyYCiCloY/noIFn8HceyVR 8CNPEmLZY1NaOgedSQx7v4dBeFrY6XPY6Ov1sD+6F8oUwt6XUoPUgWK5FOA7VdPBZuW9shxai5fm1X +GmcSB++9XWXnyHJgNoSit0m9Fd9Q5le1I+cowp218iEVtBHqNa4ysn74BFwaK94RFnIh3cQTFMH2R U/5nn3X2DZ4GLxYjV8flPH1NBF7FXRRC7G8K5jI/NFPQrEXzs6OTULkn0lhw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+struct hfa384x_wpa_data ends with a flexible array, but it is allocated
+on the stack. This means it can never hold any data. Disable the
+memcpy() calls in and out of the structure, since it must always be
+zero. This could never have worked.
 
---3e3jncuyjzgfz6lc
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+Cc: linux-staging@lists.linux.dev
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/staging/wlan-ng/prism2mib.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-On 18.08.2021 17:08:51, Vincent MAILHOL wrote:
-> On Wed 18 Aug 2021 at 04:55, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> > On 15.08.2021 12:32:46, Vincent Mailhol wrote:
-> > > +static int can_tdc_changelink(struct net_device *dev, const struct n=
-lattr *nla,
-> > > +                           struct netlink_ext_ack *extack)
-> > > +{
-> > > +     struct nlattr *tb_tdc[IFLA_CAN_TDC_MAX + 1];
-> > > +     struct can_priv *priv =3D netdev_priv(dev);
-> > > +     struct can_tdc *tdc =3D &priv->tdc;
-> > > +     const struct can_tdc_const *tdc_const =3D priv->tdc_const;
-> > > +     int err;
-> > > +
-> > > +     if (!tdc_const || !can_tdc_is_enabled(priv))
-> > > +             return -EOPNOTSUPP;
-> > > +
-> > > +     if (dev->flags & IFF_UP)
-> > > +             return -EBUSY;
-> > > +
-> > > +     err =3D nla_parse_nested(tb_tdc, IFLA_CAN_TDC_MAX, nla,
-> > > +                            can_tdc_policy, extack);
-> > > +     if (err)
-> > > +             return err;
-> > > +
-> > > +     if (tb_tdc[IFLA_CAN_TDC_TDCV]) {
-> > > +             u32 tdcv =3D nla_get_u32(tb_tdc[IFLA_CAN_TDC_TDCV]);
-> > > +
-> > > +             if (tdcv < tdc_const->tdcv_min || tdcv > tdc_const->tdc=
-v_max)
-> > > +                     return -EINVAL;
-> > > +
-> > > +             tdc->tdcv =3D tdcv;
-> >
-> > You have to assign to a temporary struct first, and set the priv->tdc
-> > after complete validation, otherwise you end up with inconsistent
-> > values.
->=20
-> Actually, copying the temporary structure to priv->tdc is not an
-> atomic operation. Here, you are only reducing the window, not
-> closing it.
+diff --git a/drivers/staging/wlan-ng/prism2mib.c b/drivers/staging/wlan-ng/prism2mib.c
+index 875812a391c9..d14f032a7ed6 100644
+--- a/drivers/staging/wlan-ng/prism2mib.c
++++ b/drivers/staging/wlan-ng/prism2mib.c
+@@ -668,6 +668,10 @@ static int prism2mib_priv(struct mibrec *mib,
+ 
+ 	switch (mib->did) {
+ 	case DIDMIB_LNX_CONFIGTABLE_RSNAIE: {
++		/*
++		 * This can never work: wpa is on the stack
++		 * and has no bytes allocated in wpa.data.
++		 */
+ 		struct hfa384x_wpa_data wpa;
+ 
+ 		if (isget) {
+@@ -675,11 +679,17 @@ static int prism2mib_priv(struct mibrec *mib,
+ 					       HFA384x_RID_CNFWPADATA,
+ 					       (u8 *)&wpa,
+ 					       sizeof(wpa));
++			/*
+ 			pstr->len = le16_to_cpu(wpa.datalen);
+ 			memcpy(pstr->data, wpa.data, pstr->len);
++			*/
++			pstr->len = 0;
+ 		} else {
++			/*
+ 			wpa.datalen = cpu_to_le16(pstr->len);
+ 			memcpy(wpa.data, pstr->data, pstr->len);
++			*/
++			wpa.datalen = 0;
+ 
+ 			hfa384x_drvr_setconfig(hw,
+ 					       HFA384x_RID_CNFWPADATA,
+-- 
+2.30.2
 
-It's not a race I'm fixing.
-
->=20
-> > > +     }
-> > > +
-> > > +     if (tb_tdc[IFLA_CAN_TDC_TDCO]) {
-> > > +             u32 tdco =3D nla_get_u32(tb_tdc[IFLA_CAN_TDC_TDCO]);
-> > > +
-> > > +             if (tdco < tdc_const->tdco_min || tdco > tdc_const->tdc=
-o_max)
-> > > +                     return -EINVAL;
-> > > +
-> > > +             tdc->tdco =3D tdco;
-> > > +     }
-> > > +
-> > > +     if (tb_tdc[IFLA_CAN_TDC_TDCF]) {
-> > > +             u32 tdcf =3D nla_get_u32(tb_tdc[IFLA_CAN_TDC_TDCF]);
-> > > +
-> > > +             if (tdcf < tdc_const->tdcf_min || tdcf > tdc_const->tdc=
-f_max)
-> > > +                     return -EINVAL;
-> > > +
-> > > +             tdc->tdcf =3D tdcf;
-> > > +     }
-> > > +
-> > > +     return 0;
-> > > +}
-> >
-> > To reproduce (ip pseudo-code only :D ):
-> >
-> > ip down
-> > ip up tdc-mode manual tdco 111 tdcv 33  # 111 is out of range, 33 is va=
-lid
-> > ip down
-> > ip up                                   # results in tdco=3D0 tdcv=3D33=
- mode=3Dmanual
->=20
-> I do not think that this PoC would work because, thankfully, the
-> netlink interface uses a mutex to prevent this issue from
-> occurring.
-
-It works, I've tested it :)
-
-> That mutex is defined in:
-> https://elixir.bootlin.com/linux/latest/source/net/core/rtnetlink.c#L68
->=20
-> Each time a netlink message is sent to the kernel, it would be
-> dispatched by rtnetlink_rcv_msg() which will make sure to lock
-> the mutex before doing so:
-> https://elixir.bootlin.com/linux/latest/source/net/core/rtnetlink.c#L5551
->=20
-> A funny note is that because the mutex is global, if you run two
-> ip command in a row:
->=20
-> | ip link set can0 type can bitrate 500000
-> | ip link set can1 up
->=20
-> the second one will wait for the first one to finish even if it
-> is on a different network device.
->=20
-> To conclude, I do not think this needs to be fixed.
-
-It's not a race. Consider this command:
-
-| ip up tdc-mode manual tdco 111 tdcv 33  # 111 is out of range, 33 is valid
-
-tdcv is checked first and valid, then it's assigned to the priv->tdc.
-tdco is checked second and invalid, then can_tdc_changelink() returns -EINV=
-AL.
-
-tdc ends up being half set :(
-
-So the setting of tdc is inconsistent and when you do a "ip down" "ip
-up" then it results in a tdco=3D0 tdcv=3D33 mode=3Dmanual.
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---3e3jncuyjzgfz6lc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEcwpMACgkQqclaivrt
-76mN8QgAqxSO4LyB4IjE16rxksejvFXamtoLW60WQkF+ssrYVu59sO0JnKxrrATU
-izMnj78NfQPmm5JtzE6n+Yr0TwUKeyfBanMFcn6kjT3hVw5ZevdISOqHe7gScI5n
-zbFjofkunuJDo8znOo2E4TNA7W1DR09XE4tLfCLUn3XN+5WcyZVJlHEmfHOeQkzG
-Cnx6U/zS92DZNYvcx6a2+ftYaE+IuYuh/DOLXR2StwufDpKKFe9DCuDHvJscl8f4
-PxD4kzMF3UJF7NuoLP6nC7eOzJ99eyDGZVfuWJwhXmXqtD2I/IFrqlCpOn+XPwbS
-EmOl7nFj06vxn1CYw0ZB5XbxS5e2mw==
-=kO5l
------END PGP SIGNATURE-----
-
---3e3jncuyjzgfz6lc--
