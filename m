@@ -2,114 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7721A3F0ECB
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 01:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D62A3F0ECF
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 01:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235402AbhHRXt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 19:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38638 "EHLO
+        id S235253AbhHRXvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 19:51:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235068AbhHRXth (ORCPT
+        with ESMTP id S235065AbhHRXvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 19:49:37 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2419C061796
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 16:49:01 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id x12so6018437wrr.11
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 16:49:01 -0700 (PDT)
+        Wed, 18 Aug 2021 19:51:16 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B07C0613D9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 16:50:40 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id l11so6098009wrx.4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 16:50:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wBmejVnNQ9LA1AHQBUO8SQSm/1xKof11ZR6O9YBXzKg=;
-        b=yF1iA0BsSLO1LnObtYMB5UCQUrVuQh/ChFKqFbZGBPA3T5te+q1WtVx9kSg9IJsf76
-         7y6dfMyvsTIr9U+7lONzw54a+WEKFNS8MvfSLLCMVKkG9z8VB+sbGesPr/sToCJSE7Sm
-         +osTU8tGEGwUgGmrhAUhsi0Oj84DpW+P6tIUKtCSNb3HCcr/CAqIz+KsY7wJEZXo8/oj
-         QTTKn/HSZeH5LR2ym9jyI9qCBKIdZCDlxG/I45Hmqh+YLnVYxVymUfyHJN4q7L5wqLfZ
-         3xcAlGgOT/flfOLKFojvPw9WjsZFJemLAr1W9IjmVAxhi01Y7exVmxWuCtGRkkq3gYAw
-         Tvxw==
+        d=rtst-co-kr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=aXGFpAohtr7Jx3FLUO9XNw93R4ybsxQzzRSO0NrNsL4=;
+        b=RzwBkqL4Aaa9c0o6we2TKa77sYbMlzvqogc5hl+NMNqb+soLI8krvfRNCn82il6TeC
+         QLvch9gAdb6IGFNXY2uie54SPaJg86aHiUPpZdm/mKzofSugkNxJdY3M0+XDRTOXRp+R
+         NRVDx7UwvUHRLevAkbZwyhvMhxmKi0vyIHTO+Z0vkPdgX0Qt5qMF29RIV4GWhxolzWBG
+         k1cZD/OsaEzuclkRm3lE8deno2Jxj9jH/nkWhv8O3rUGbeI+uYVnyEeZF5iBru8eK8UT
+         j/z2FXtcEGK+KcLzoR9ZvnKqMfkEXHep1mdCZXYWd6W1lCMvgdXwUkr641Dv+Z++qmt7
+         PB8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wBmejVnNQ9LA1AHQBUO8SQSm/1xKof11ZR6O9YBXzKg=;
-        b=QvNswtD6CSb0ziHU7zmn9VoWuZmMlVWitHi6vWsfo8xOhuFrfqqA4IiAkdLjUKYrt5
-         3s5kV0aFCpPM1p1k+y5VjQfwooj9l5dBKDhYJDwfEizp3pq4bGvnBP6/vu0G35rXuILv
-         KVIxYldt2Gz9T0WvkC2AT3lo/9SH5PNoQB0uzpKaYSSgrk5LqZRRgIlxtkS9fT32oj+i
-         70KhYXmApIRtbO0tTFGiikcOLVGKIbgds/adhmysBbszcpKrx1++4G3rKwbOAT9BQwno
-         txbZlkHJneZs4SvRQ6MQeu4/sjcLt8Ty42llB78ZhJ1L+3/BBbbVOePeDHzmmKsH2Ni0
-         Qzfg==
-X-Gm-Message-State: AOAM531ioONtypAWAGHQY4UX/vscNA/5pf9AvVg2xM/xzYgIq/6FJ8gl
-        BF2IWmyuW38iiGMIM14cVCI39g==
-X-Google-Smtp-Source: ABdhPJw6tXMtjnvCLGhpWayAUKWnwPL2GTHtPUXMkRxhiC0DP4Fu8TDBNN7sY07KV76MsJtWdKE6vg==
-X-Received: by 2002:adf:ffcb:: with SMTP id x11mr74220wrs.158.1629330540530;
-        Wed, 18 Aug 2021 16:49:00 -0700 (PDT)
-Received: from localhost.localdomain (3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16::3])
-        by smtp.gmail.com with ESMTPSA id z8sm1205916wrt.77.2021.08.18.16.48.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 16:49:00 -0700 (PDT)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        martin@kaiser.cx, straube.linux@gmail.com,
-        Larry.Finger@lwfinger.net
-Subject: [PATCH 7/7] staging: r8188eu: remove rtw_update_mem_stat macro and associated flags
-Date:   Thu, 19 Aug 2021 00:48:53 +0100
-Message-Id: <20210818234853.208448-8-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210818234853.208448-1-phil@philpotter.co.uk>
-References: <20210818234853.208448-1-phil@philpotter.co.uk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=aXGFpAohtr7Jx3FLUO9XNw93R4ybsxQzzRSO0NrNsL4=;
+        b=oFsBAyFHfVWhgOWKtxAA5OIlJC+E2K2jSTL/HvzwRxukTUExR/7OFsdGFPT5u15Uru
+         1/1bGpQ8crDqAz7cK8/+6G4ygFYp4R+fUR43q/PxC3gjCXR0dz3Yq9EMxiqunj1WRfZy
+         eBHBEpTs2D/n2IPzd3DRDiJI9A71prjbcNS31OO3CCm8dK/qvjxxmsP5GEw8YwNXgC8P
+         hafiO6q1v3fmaGsjjf6rlQgqMT06ftEL5vbcgQWL0NQiJ3kLTLGKjp1z/Rvju3rRraTX
+         YmCh9Jezs5Cg+tr4zD+Z8vV7gCfXthqb8yKOFCmhPaiNYzRFCFoPntapo5ep2IB0fR75
+         ltyQ==
+X-Gm-Message-State: AOAM533Ugy8KmGaSdctxg6TenMJ3zVGMBu+v4C1KN8Woy7TC0TV083UL
+        Dz2oqCsu5NMzYkvc+9BqbLZF+AzxFWk33Vc4smKRPQ==
+X-Google-Smtp-Source: ABdhPJzFi1PkfY/p1GvMB2zywZafXUhpSEBjWSAFeziGlmfo1nhcaTaz+BcDj0ASEwb09pJgixMGWbnRCjt9Rmw/0rY=
+X-Received: by 2002:adf:9d92:: with SMTP id p18mr78529wre.20.1629330638667;
+ Wed, 18 Aug 2021 16:50:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210817095313.GA671484@ubuntu> <20210818161752.vu6abfv3e6bfqz23@linutronix.de>
+In-Reply-To: <20210818161752.vu6abfv3e6bfqz23@linutronix.de>
+From:   Jeaho Hwang <jhhwang@rtst.co.kr>
+Date:   Thu, 19 Aug 2021 08:50:27 +0900
+Message-ID: <CAJk_X9h_GqUyir7oG33pFrLgknj7DZfd6esiKb07w7QWjZqX0g@mail.gmail.com>
+Subject: Re: [PATCH v2] usb: chipidea: local_irq_save/restore added for hw_ep_prime
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Peter Chen <peter.chen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rt-users@vger.kernel.org, Linux team <team-linux@rtst.co.kr>,
+        =?UTF-8?B?67OA66y06rSRKEJ5ZW9uIE1vbyBLd2FuZykv7J6Q64+Z7ZmU7JewKUF1dG9tYXRpb24gUGxhdGZvcm0=?=
+         =?UTF-8?B?7Jew6rWs7YyA?= <mkbyeon@lselectric.co.kr>,
+        =?UTF-8?B?7LWc6riw7ZmNKENob2kgS2kgSG9uZykv7J6Q64+Z7ZmU7JewKUF1dG9tYXRpb24gUGxhdGZvcm3sl7A=?=
+         =?UTF-8?B?6rWs7YyA?= <khchoib@lselectric.co.kr>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the unused rtw_update_mem_stat macro and the associated flags
-from include/osdep_service.h as this is all dead code.
+2021=EB=85=84 8=EC=9B=94 19=EC=9D=BC (=EB=AA=A9) =EC=98=A4=EC=A0=84 1:17, S=
+ebastian Andrzej Siewior
+<bigeasy@linutronix.de>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On 2021-08-17 18:53:13 [+0900], Jeaho Hwang wrote:
+> > hw_ep_prime sometimes fails if irq occurs while it rus on RT kernel.
+>
+> How/ why does it fail? Which IRQ occurs? Does it also occur without RT
+> and with threadirqs enabled?
+>
 
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
----
- .../staging/r8188eu/include/osdep_service.h   | 20 -------------------
- 1 file changed, 20 deletions(-)
+We experienced priming failure while trying cable connection to a
+Windows RNDIS host.
+And we found that a twd interrupt occurs during execution of
+hw_ep_prime for failure cases.
+According to the manual, checking ENDPTSETUPSTAT before/after priming
+should be done immediately since the host could send a setup packet
+which makes the priming invalidated. So we think that the twd (or any)
+interrupt could make a timing issue between udc_irq and the RNDIS
+host.
+Without RT, udc_irq runs as a forced threaded irq handler, so it runs
+without any interruption or preemption. NO similar case is found on
+non-RT.
 
-diff --git a/drivers/staging/r8188eu/include/osdep_service.h b/drivers/staging/r8188eu/include/osdep_service.h
-index bda435ca9d08..029aa4e92c9b 100644
---- a/drivers/staging/r8188eu/include/osdep_service.h
-+++ b/drivers/staging/r8188eu/include/osdep_service.h
-@@ -146,32 +146,12 @@ static inline void rtw_netif_stop_queue(struct net_device *pnetdev)
- 
- extern int RTW_STATUS_CODE(int error_code);
- 
--/* flags used for rtw_update_mem_stat() */
--enum {
--	MEM_STAT_VIR_ALLOC_SUCCESS,
--	MEM_STAT_VIR_ALLOC_FAIL,
--	MEM_STAT_VIR_FREE,
--	MEM_STAT_PHY_ALLOC_SUCCESS,
--	MEM_STAT_PHY_ALLOC_FAIL,
--	MEM_STAT_PHY_FREE,
--	MEM_STAT_TX, /* used to distinguish TX/RX, asigned from caller */
--	MEM_STAT_TX_ALLOC_SUCCESS,
--	MEM_STAT_TX_ALLOC_FAIL,
--	MEM_STAT_TX_FREE,
--	MEM_STAT_RX, /* used to distinguish TX/RX, asigned from caller */
--	MEM_STAT_RX_ALLOC_SUCCESS,
--	MEM_STAT_RX_ALLOC_FAIL,
--	MEM_STAT_RX_FREE
--};
--
- extern unsigned char MCS_rate_2R[16];
- extern unsigned char MCS_rate_1R[16];
- extern unsigned char RTW_WPA_OUI[];
- extern unsigned char WPA_TKIP_CIPHER[4];
- extern unsigned char RSN_TKIP_CIPHER[4];
- 
--#define rtw_update_mem_stat(flag, sz) do {} while (0)
--
- void *rtw_malloc2d(int h, int w, int size);
- 
- u32  _rtw_down_sema(struct semaphore *sema);
--- 
-2.31.1
+> > local_irq_save/restore is added inside the function to gurantee atomici=
+ty.
+> > only effective for preempt_rt since hw_ep_prime is called inside top ha=
+lf
+> > or spin_lock_irqsave. No effect is expected for standard linux.
+>
+> How is that helping?
+> #1
+>   udc_irq() -> isr_tr_complete_handler() -> isr_tr_complete_low ->
+>    _hardware_dequeue() -> reprime_dtd() -> hw_ep_prime()
+>
+> udc_irq() acquires ci->lock.
+>
+> #2
+>   ep_queue -> _ep_queue() ->_hardware_enqueue() -> hw_ep_prime()
+>
+> ep_queue acquires hwep->lock. Which is actually ci->lock.
+>
+> So if I read this right then hw_ep_prime() may not be interrupted in the
+> middle of its operation (but preempted) because each path is protected
+> by the lock.
+>
+> isr_tr_complete_low() drops hwep->lock and acquires it again so it that
+> phase another thread may acquire it.
+>
+> > Signed-off-by: Jeaho Hwang <jhhwang@rtst.co.kr>
+> >
+> > diff --git a/drivers/usb/chipidea/udc.c b/drivers/usb/chipidea/udc.c
+> > index 8834ca613721..a624eddb3e22 100644
+> > --- a/drivers/usb/chipidea/udc.c
+> > +++ b/drivers/usb/chipidea/udc.c
+> > @@ -191,22 +191,31 @@ static int hw_ep_get_halt(struct ci_hdrc *ci, int=
+ num, int dir)
+> >  static int hw_ep_prime(struct ci_hdrc *ci, int num, int dir, int is_ct=
+rl)
+> >  {
+> >       int n =3D hw_ep_bit(num, dir);
+> > +     unsigned long flags;
+> > +     int ret =3D 0;
+> >
+> >       /* Synchronize before ep prime */
+> >       wmb();
+> >
+> > -     if (is_ctrl && dir =3D=3D RX && hw_read(ci, OP_ENDPTSETUPSTAT, BI=
+T(num)))
+> > +     /* irq affects this routine so irq should be disabled on RT.
+> > +      * on standard kernel, irq is already disabled by callers.
+>
+> The important part is _how_ it is affected. If locking works then
+> nothing should read/ write the HW register. If the lock is briefly
+> dropped then another thread _may_ read/ write the registers but not
+> within this function.
+>
+> If this function here is sensitive to timing (say the cpu_relax() loop
+> gets interrupt for 1ms) then it has to be documented as such.
 
+The controller sets ENDPTSETUPSTAT register if the host sent a setup packet=
+.
+yes it is a timing problem. I will document that and resubmit again if
+you agree that local_irq_save could help from the timing problem.
+
+Thanks for the advice.
+
+>
+> > +      */
+> > +     local_irq_save(flags);
+> > +     if (is_ctrl && dir =3D=3D RX && hw_read(ci, OP_ENDPTSETUPSTAT, BI=
+T(num))) {
+> > +             local_irq_restore(flags);
+> >               return -EAGAIN;
+> > +     }
+> >
+> >       hw_write(ci, OP_ENDPTPRIME, ~0, BIT(n));
+> >
+> >       while (hw_read(ci, OP_ENDPTPRIME, BIT(n)))
+> >               cpu_relax();
+> >       if (is_ctrl && dir =3D=3D RX && hw_read(ci, OP_ENDPTSETUPSTAT, BI=
+T(num)))
+> > -             return -EAGAIN;
+> > +             ret =3D -EAGAIN;
+> >
+> > +     local_irq_restore(flags);
+> >       /* status shoult be tested according with manual but it doesn't w=
+ork */
+> > -     return 0;
+> > +     return ret;
+> >  }
+> >
+> >  /**
+>
+> Sebastian
+
+
+
+--=20
+=ED=99=A9=EC=9E=AC=ED=98=B8, Jay Hwang, linux team manager of RTst
+010-7242-1593
