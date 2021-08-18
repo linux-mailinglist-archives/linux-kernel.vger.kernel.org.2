@@ -2,71 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC3023EF730
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 03:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2CB23EF732
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 03:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237499AbhHRBKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 21:10:12 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:39592 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237398AbhHRBKG (ORCPT
+        id S237505AbhHRBK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 21:10:56 -0400
+Received: from lucky1.263xmail.com ([211.157.147.130]:58228 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232294AbhHRBKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 21:10:06 -0400
-Received: by mail-ot1-f44.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so766992otf.6;
-        Tue, 17 Aug 2021 18:09:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Zvw/vAQfPzTTp9MzAeT4kJRGycD2utM7CVLI0E2idN8=;
-        b=tRMoTfLRHntcqNjCLlEPplE+8om3v1iUWQNBloXhZVJduvyyJnebbYW/2J6IjDi7gb
-         9nhktBhoB4OEGbH/kT2nr+x63jxRJ0KckT+4rI3+pV6Ey9ZfIkG3YDWYG+VOIiZgTrse
-         qS0b8iekWgrLRF5Jnsl46+oaqQwBBOEv/sdP8qAuc6yEUDnkkHEL4aqP9gbjPI2X2bXp
-         RzQdC1sqskiVFAyksoBpF38JK8kl0jvJz8+J+/R/No8+47MQn7LDgkmn+CzCUlCNByhr
-         YUAdgbuKndp0Yq6v42vWQoQjgwJE4VQ2xr+hVM34rq29qxhOP51ODnfUiILk4eqlX2ZR
-         88CQ==
-X-Gm-Message-State: AOAM5320mGXMlrJpbt/SG0z+Pv/nmwpujlaPr0wEc9qoEi1aq4pZe7Sv
-        ey2IW6dyKFCIAHd1ElYF2Q==
-X-Google-Smtp-Source: ABdhPJwpcWyEWeNaxhti5cvSd8sQTDRRhruQV2NQzNyEE7UKaJhgpllax41G0mhyoHm0/oAIcQ4uQQ==
-X-Received: by 2002:a05:6830:b8b:: with SMTP id a11mr4885093otv.179.1629248972380;
-        Tue, 17 Aug 2021 18:09:32 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id o24sm870860oie.17.2021.08.17.18.09.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 18:09:31 -0700 (PDT)
-Received: (nullmailer pid 1167246 invoked by uid 1000);
-        Wed, 18 Aug 2021 01:09:30 -0000
-Date:   Tue, 17 Aug 2021 20:09:30 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Bruno Meneguele <bruno.meneguele@smartgreen.net>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        robh+dt@kernel.org, sre@kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] dt-bindings: power: supply: bq24735: document the
- watchdog timer delay feature
-Message-ID: <YRxdym1lAWyivSkH@robh.at.kernel.org>
-References: <20210816165245.40416-1-bruno.meneguele@smartgreen.net>
- <20210816165245.40416-3-bruno.meneguele@smartgreen.net>
+        Tue, 17 Aug 2021 21:10:55 -0400
+Received: from localhost (unknown [192.168.167.70])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 6CDABD7844;
+        Wed, 18 Aug 2021 09:09:59 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P4989T139771053602560S1629248997664310_;
+        Wed, 18 Aug 2021 09:09:58 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <1202da6092116cff8f89b39414f39eb5>
+X-RL-SENDER: jay.xu@rock-chips.com
+X-SENDER: xjq@rock-chips.com
+X-LOGIN-NAME: jay.xu@rock-chips.com
+X-FST-TO: lgirdwood@gmail.com
+X-RCPT-COUNT: 9
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jianqun Xu <jay.xu@rock-chips.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, ulf.hansson@linaro.org,
+        lee.jones@linaro.org, zhangchangzhong@huawei.com, heiko@sntech.de
+Cc:     linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jianqun Xu <jay.xu@rock-chips.com>
+Subject: [PATCH v3] soc: rockchip: io-domain: set 3.3V before regulator disable
+Date:   Wed, 18 Aug 2021 09:09:56 +0800
+Message-Id: <20210818010956.1446770-1-jay.xu@rock-chips.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210816165245.40416-3-bruno.meneguele@smartgreen.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Aug 2021 13:52:45 -0300, Bruno Meneguele wrote:
-> The new watchdog timer delay support in BQ24735 allow the user to set four
-> different options, ranging from 0 to 3. With that, add this new property and
-> its values and description to the BQ24735 DT binding documentation.
-> 
-> Signed-off-by: Bruno Meneguele <bruno.meneguele@smartgreen.net>
-> ---
-> Changelog:
->   v3 - create specific patch for dt bindings changes
->      - add minimum and maximum values
-> 
->  .../devicetree/bindings/power/supply/bq24735.yaml | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-> 
+Do a fix to rockchip io-domain, follow this orders:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+* system running state
+  -> io-domain vsel to 3.3V (actually is done by pre-disable)
+    -> regulator_enable
+      -> vsel change according to regulator voltage
+
+* system running state
+  -> io-domain vsel to 3.3V
+    -> regulator_disable
+
+Found on some Rockchip SoCs, the regulator enable or disable without
+care about the io-domain maybe caused soc damaged.
+
+Tested on RV1126 EVB.
+
+Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+---
+v3:
+ - abandon PRE-ENABLE patch
+ - delete the EVENT_PRE_ENABLE case
+v2: none
+v1: first version
+
+ drivers/soc/rockchip/io-domain.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/soc/rockchip/io-domain.c b/drivers/soc/rockchip/io-domain.c
+index cf8182fc3642..3c59077fafb1 100644
+--- a/drivers/soc/rockchip/io-domain.c
++++ b/drivers/soc/rockchip/io-domain.c
+@@ -123,6 +123,12 @@ static int rockchip_iodomain_notify(struct notifier_block *nb,
+ 	} else if (event & (REGULATOR_EVENT_VOLTAGE_CHANGE |
+ 			    REGULATOR_EVENT_ABORT_VOLTAGE_CHANGE)) {
+ 		uV = (unsigned long)data;
++	} else if (event & REGULATOR_EVENT_PRE_ENABLE) {
++		uV = MAX_VOLTAGE_3_3;
++	} else if (event & REGULATOR_EVENT_PRE_DISABLE) {
++		uV = MAX_VOLTAGE_3_3;
++	} else if (event & REGULATOR_EVENT_ENABLE) {
++		uV = regulator_get_voltage(supply->reg);
+ 	} else {
+ 		return NOTIFY_OK;
+ 	}
+-- 
+2.25.1
+
+
+
