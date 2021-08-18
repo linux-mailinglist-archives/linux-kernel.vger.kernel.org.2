@@ -2,610 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF243F022A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 13:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CDBB3F022D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 13:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235069AbhHRLBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 07:01:37 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39702 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234748AbhHRLBf (ORCPT
+        id S233798AbhHRLDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 07:03:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234489AbhHRLDf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 07:01:35 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629284458;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=P0jkaBF9ICggO+H1xa0h+M8KCLUt8o7vM3H3sSYR5nc=;
-        b=Fy1NoJ7cMlsftXYIcUcUqkShv5P/Qzj/wR/BSer0KbG1UxSKQ0B4PfSP7d4rIbyVI5vvpQ
-        Ll9Q02IQ7HXOsc0ElcBBDz1bgZGqBfBoqnKJQPWuaOvco/+F2tgU0IU8nXbBr9NR3USYsv
-        DYa7/RVdhaMz/rAHNopnVBixzlre8zYDnCCTHL4He1wZCI6rYn5RDA75fz6oXob1UddeGM
-        h8KpAgPFuY/Ao6fCOqm4i1DmN/QuQ5kP6IO19OBWBgzqim2xlgT1ijIUwP2sqX666hVteE
-        8YDFxtVZ6gYxRlVGwsxKlqVRvvin+sX8K0oV3wCF/McxN4ns8gs2wzaDjoUpFw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629284458;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=P0jkaBF9ICggO+H1xa0h+M8KCLUt8o7vM3H3sSYR5nc=;
-        b=vjVdPnwPmYB32i+OMdUw596cYvFQCAIdiDs9Vd7hyXt9INkiU/I+pBcJtuoznYYjh0aem6
-        4R+a/EdeTU4VjxDQ==
-To:     =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@collabora.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     kernel@collabora.com, krisman@collabora.com,
-        linux-api@vger.kernel.org, libc-alpha@sourceware.org,
-        mtk.manpages@gmail.com, Davidlohr Bueso <dave@stgolabs.net>,
-        =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@collabora.com>
-Subject: Re: [PATCH 2/4] futex2: Implement vectorized wait
-In-Reply-To: <20210805190405.59110-3-andrealmeid@collabora.com>
-References: <20210805190405.59110-1-andrealmeid@collabora.com>
- <20210805190405.59110-3-andrealmeid@collabora.com>
-Date:   Wed, 18 Aug 2021 13:00:57 +0200
-Message-ID: <87v94310gm.ffs@tglx>
+        Wed, 18 Aug 2021 07:03:35 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A81C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 04:03:00 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id h24-20020a1ccc180000b029022e0571d1a0so1495669wmb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 04:03:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2sjTfuPxGbsqLbV8NLCOrMJD+qvx/G/qupD2ZV7R++Y=;
+        b=D4gif8pNfkd0c3JiVPFheGhFrjTjleQ4BRUjS7UzQctM4aGHAgTWfvFORX9CQsvxxu
+         piI5RMnIwDPSuhng5bpW8CBhxxyWK3fEkHYPWEqRQwTK020UukKCib0XmgR1IljJjJmP
+         BcgV1QychM+PmwyuEdnXyn19LVkXZGzyPIeco=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=2sjTfuPxGbsqLbV8NLCOrMJD+qvx/G/qupD2ZV7R++Y=;
+        b=O1BGEiw7IaiJ2h+uYTrrIZS1u6kTk1BD24EanrEYCtEZX5CeWMm1wWj3SiSxUpCu32
+         9NnRPyrfxs6gqRX04PJWLsO+TkF+P8pApiSez0jWSbiaRLlOcNsnYfa7GGCoG0pLKT2P
+         RCaSpc/lIjvsz0d5CTI6lUOf7G4BxVPh5isphYT3ggRRVznsKluNc418vHBsqf79L16h
+         CJm7cskladqzuxlqrGCjpR67XcmVg05IkV4XyNAxJCn43FFC+wEtQZAekmjVf66/o/I2
+         RnNm+zKHELvT0UE3cul/hkNCB7n8BcIC56arB6mxYcXDPMYWYC30Y1414jxSd4L7gG7R
+         YJpQ==
+X-Gm-Message-State: AOAM532fAgSPQohb3PI4gdLQLww8sg9qiKuXy+WUTQWarDiE7ahd7FhO
+        3UPYMRwPYGAr3KHTUOaiAIZHIA==
+X-Google-Smtp-Source: ABdhPJxCUFJJBYxikJCdrpc++2bZ2hE1XRCHoLl2LTWOHVG2OKNw0xOmqQIhIhGEEeMQeuvhn9jyQg==
+X-Received: by 2002:a1c:a401:: with SMTP id n1mr7943318wme.74.1629284578938;
+        Wed, 18 Aug 2021 04:02:58 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id w11sm5569380wrr.48.2021.08.18.04.02.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 04:02:58 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 13:02:56 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, christian.koenig@amd.com, axboe@kernel.dk,
+        oleg@redhat.com, tglx@linutronix.de, dvyukov@google.com,
+        walter-zh.wu@mediatek.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v3 7/9] drm: update global mutex lock in the ioctl handler
+Message-ID: <YRzo4PJ/XRS3O199@phenom.ffwll.local>
+Mail-Followup-To: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, sumit.semwal@linaro.org,
+        christian.koenig@amd.com, axboe@kernel.dk, oleg@redhat.com,
+        tglx@linutronix.de, dvyukov@google.com, walter-zh.wu@mediatek.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20210818073824.1560124-1-desmondcheongzx@gmail.com>
+ <20210818073824.1560124-8-desmondcheongzx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210818073824.1560124-8-desmondcheongzx@gmail.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andre,
+On Wed, Aug 18, 2021 at 03:38:22PM +0800, Desmond Cheong Zhi Xi wrote:
+> In a future patch, a read lock on drm_device.master_rwsem is
+> held in the ioctl handler before the check for ioctl
+> permissions. However, this produces the following lockdep splat:
+> 
+> ======================================================
+> WARNING: possible circular locking dependency detected
+> 5.14.0-rc6-CI-Patchwork_20831+ #1 Tainted: G     U
+> ------------------------------------------------------
+> kms_lease/1752 is trying to acquire lock:
+> ffffffff827bad88 (drm_global_mutex){+.+.}-{3:3}, at: drm_open+0x64/0x280
+> 
+> but task is already holding lock:
+> ffff88812e350108 (&dev->master_rwsem){++++}-{3:3}, at:
+> drm_ioctl_kernel+0xfb/0x1a0
+> 
+> which lock already depends on the new lock.
+> 
+> the existing dependency chain (in reverse order) is:
+> 
+> -> #2 (&dev->master_rwsem){++++}-{3:3}:
+>        lock_acquire+0xd3/0x310
+>        down_read+0x3b/0x140
+>        drm_master_internal_acquire+0x1d/0x60
+>        drm_client_modeset_commit+0x10/0x40
+>        __drm_fb_helper_restore_fbdev_mode_unlocked+0x88/0xb0
+>        drm_fb_helper_set_par+0x34/0x40
+>        intel_fbdev_set_par+0x11/0x40 [i915]
+>        fbcon_init+0x270/0x4f0
+>        visual_init+0xc6/0x130
+>        do_bind_con_driver+0x1de/0x2c0
+>        do_take_over_console+0x10e/0x180
+>        do_fbcon_takeover+0x53/0xb0
+>        register_framebuffer+0x22d/0x310
+>        __drm_fb_helper_initial_config_and_unlock+0x36c/0x540
+>        intel_fbdev_initial_config+0xf/0x20 [i915]
+>        async_run_entry_fn+0x28/0x130
+>        process_one_work+0x26d/0x5c0
+>        worker_thread+0x37/0x390
+>        kthread+0x13b/0x170
+>        ret_from_fork+0x1f/0x30
+> 
+> -> #1 (&helper->lock){+.+.}-{3:3}:
+>        lock_acquire+0xd3/0x310
+>        __mutex_lock+0xa8/0x930
+>        __drm_fb_helper_restore_fbdev_mode_unlocked+0x44/0xb0
+>        intel_fbdev_restore_mode+0x2b/0x50 [i915]
+>        drm_lastclose+0x27/0x50
+>        drm_release_noglobal+0x42/0x60
+>        __fput+0x9e/0x250
+>        task_work_run+0x6b/0xb0
+>        exit_to_user_mode_prepare+0x1c5/0x1d0
+>        syscall_exit_to_user_mode+0x19/0x50
+>        do_syscall_64+0x46/0xb0
+>        entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> -> #0 (drm_global_mutex){+.+.}-{3:3}:
+>        validate_chain+0xb39/0x1e70
+>        __lock_acquire+0x5a1/0xb70
+>        lock_acquire+0xd3/0x310
+>        __mutex_lock+0xa8/0x930
+>        drm_open+0x64/0x280
+>        drm_stub_open+0x9f/0x100
+>        chrdev_open+0x9f/0x1d0
+>        do_dentry_open+0x14a/0x3a0
+>        dentry_open+0x53/0x70
+>        drm_mode_create_lease_ioctl+0x3cb/0x970
+>        drm_ioctl_kernel+0xc9/0x1a0
+>        drm_ioctl+0x201/0x3d0
+>        __x64_sys_ioctl+0x6a/0xa0
+>        do_syscall_64+0x37/0xb0
+>        entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> other info that might help us debug this:
+> Chain exists of:
+>   drm_global_mutex --> &helper->lock --> &dev->master_rwsem
+>  Possible unsafe locking scenario:
+>        CPU0                    CPU1
+>        ----                    ----
+>   lock(&dev->master_rwsem);
+>                                lock(&helper->lock);
+>                                lock(&dev->master_rwsem);
+>   lock(drm_global_mutex);
+> 
+>  *** DEADLOCK ***
+> 
+> The lock hierarchy inversion happens because we grab the
+> drm_global_mutex while already holding on to master_rwsem. To avoid
+> this, we do some prep work to grab the drm_global_mutex before
+> checking for ioctl permissions.
+> 
+> At the same time, we update the check for the global mutex to use the
+> drm_dev_needs_global_mutex helper function.
 
-On Thu, Aug 05 2021 at 16:04, Andr=C3=A9 Almeida wrote:
->  arch/x86/entry/syscalls/syscall_32.tbl |   1 +
->  arch/x86/entry/syscalls/syscall_64.tbl |   1 +
->  include/linux/compat.h                 |   9 ++
->  include/linux/futex.h                  |  15 ++
->  include/uapi/asm-generic/unistd.h      |   5 +-
->  include/uapi/linux/futex.h             |  17 +++
->  init/Kconfig                           |   7 +
->  kernel/Makefile                        |   1 +
->  kernel/futex.c                         | 182 +++++++++++++++++++++++
->  kernel/futex2.c                        | 192 +++++++++++++++++++++++++
->  kernel/sys_ni.c                        |   4 +
+This is intentional, essentially we force all non-legacy drivers to have
+unlocked ioctl (otherwise everyone forgets to set that flag).
 
-please split this in implementation and enabling on x86.=20
+For non-legacy drivers the global lock only ensures ordering between
+drm_open and lastclose (I think at least), and between
+drm_dev_register/unregister and the backwards ->load/unload callbacks
+(which are called in the wrong place, but we cannot fix that for legacy
+drivers).
 
-> index c270124e4402..0c38adfc40a2 100644
-> --- a/include/linux/compat.h
-> +++ b/include/linux/compat.h
-> @@ -368,6 +368,12 @@ struct compat_robust_list_head {
->  	compat_uptr_t			list_op_pending;
->  };
->=20=20
-> +struct compat_futex_waitv {
-> +	compat_u64 val;
+->load/unload should be completely unused (maybe radeon still uses it),
+and ->lastclose is also on the decline.
 
-Why do we need a u64 here? u32 is what futexes are based on.
+Maybe we should update the comment of drm_global_mutex to explain what it
+protects and why.
 
-> +/**
-> + * struct futex_vector - Auxiliary struct for futex_waitv()
-> + * @w: Userspace provided data
-> + * @q: Kernel side data
-> + *
-> + * Struct used to build an array with all data need for futex_waitv()
-> + */
-> +struct futex_vector {
-> +	struct futex_waitv w;
-> +	struct futex_q q;
-> +};
+I'm also confused how this patch connects to the splat, since for i915 we
+shouldn't be taking the drm_global_lock here at all. The problem seems to
+be the drm_open_helper when we create a new lease, which is an entirely
+different can of worms.
 
-No point in exposing this globaly.
+I'm honestly not sure how to best do that, but we should be able to create
+a file and then call drm_open_helper directly, or well a version of that
+which never takes the drm_global_mutex. Because that is not needed for
+nested drm_file opening:
+- legacy drivers never go down this path because leases are only supported
+  with modesetting, and modesetting is only supported for non-legacy
+  drivers
+- the races against dev->open_count due to last_close or ->load callbacks
+  don't matter, because for the entire ioctl we already have an open
+  drm_file and that wont disappear.
 
-> diff --git a/include/uapi/linux/futex.h b/include/uapi/linux/futex.h
-> index 235e5b2facaa..daa135bdedda 100644
-> --- a/include/uapi/linux/futex.h
-> +++ b/include/uapi/linux/futex.h
-> @@ -42,6 +42,23 @@
->  					 FUTEX_PRIVATE_FLAG)
->  #define FUTEX_CMP_REQUEUE_PI_PRIVATE	(FUTEX_CMP_REQUEUE_PI | \
->  					 FUTEX_PRIVATE_FLAG)
-> +#define FUTEX_32	2
-> +#define FUTEX_SHARED_FLAG 8
-> +#define FUTEX_SIZE_MASK	0x3
-> +
-> +#define FUTEX_WAITV_MAX 128
+So this should work, but I'm not entirely sure how to make it work.
+-Daniel
 
-Style nitpick. All the defines above this are layed out tabular. Please
-keep that.
+> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> ---
+>  drivers/gpu/drm/drm_ioctl.c | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_ioctl.c b/drivers/gpu/drm/drm_ioctl.c
+> index 880fc565d599..2cb57378a787 100644
+> --- a/drivers/gpu/drm/drm_ioctl.c
+> +++ b/drivers/gpu/drm/drm_ioctl.c
+> @@ -779,19 +779,19 @@ long drm_ioctl_kernel(struct file *file, drm_ioctl_t *func, void *kdata,
+>  	if (drm_dev_is_unplugged(dev))
+>  		return -ENODEV;
+>  
+> +	/* Enforce sane locking for modern driver ioctls. */
+> +	if (unlikely(drm_dev_needs_global_mutex(dev)) && !(flags & DRM_UNLOCKED))
+> +		mutex_lock(&drm_global_mutex);
+> +
+>  	retcode = drm_ioctl_permit(flags, file_priv);
+>  	if (unlikely(retcode))
+> -		return retcode;
+> +		goto out;
+>  
+> -	/* Enforce sane locking for modern driver ioctls. */
+> -	if (likely(!drm_core_check_feature(dev, DRIVER_LEGACY)) ||
+> -	    (flags & DRM_UNLOCKED))
+> -		retcode = func(dev, kdata, file_priv);
+> -	else {
+> -		mutex_lock(&drm_global_mutex);
+> -		retcode = func(dev, kdata, file_priv);
+> +	retcode = func(dev, kdata, file_priv);
+> +
+> +out:
+> +	if (unlikely(drm_dev_needs_global_mutex(dev)) && !(flags & DRM_UNLOCKED))
+>  		mutex_unlock(&drm_global_mutex);
+> -	}
+>  	return retcode;
+>  }
+>  EXPORT_SYMBOL(drm_ioctl_kernel);
+> -- 
+> 2.25.1
+> 
 
-Aside of that these constants look like random numbers and lack any form
-of explanation.
-
-Plus I don't see a reason why this new stuff wants FUTEX_SHARED_FLAG
-which is the opposite of the FUTEX_PRIVATE_FLAG for the existing futex
-interface. Can we please make this stuff consistent instead of creating
-more confusion?
-
-> +
-> +/**
-> + * struct futex_waitv - A waiter for vectorized wait
-> + * @val:   Expected value at uaddr
-> + * @uaddr: User address to wait on
-> + * @flags: Flags for this waiter
-> + */
-> +struct futex_waitv {
-> +	__u64 val;
-
-Again. Why u64?
-
-> +	void __user *uaddr;
-> +	unsigned int flags;
-> +};
->=20=20
-> +/**
-> + * unqueue_multiple() - Remove various futexes from their futex_hash_buc=
-ket
-
-s/()// and what are the underscores in futex_hash_bucket for?
-
-> +/**
-> + * futex_wait_multiple_setup() - Prepare to wait and enqueue multiple fu=
-texes
-> + * @vs:		The corresponding futex list
-
-To what is this corresponding?
-
-> + * @count:	The size of the list
-> + * @awaken:	Index of the last awoken futex (return parameter)
-
-What's the purpose of this?
-
-> +static int futex_wait_multiple_setup(struct futex_vector *vs, int count,=
- int *awaken)
-> +{
-> +	struct futex_hash_bucket *hb;
-> +	int ret, i;
-> +	u32 uval;
-> +
-> +	/*
-> +	 * Enqueuing multiple futexes is tricky, because we need to
-> +	 * enqueue each futex in the list before dealing with the next
-> +	 * one to avoid deadlocking on the hash bucket.  But, before
-> +	 * enqueuing, we need to make sure that current->state is
-> +	 * TASK_INTERRUPTIBLE, so we don't absorb any awake events, which
-> +	 * cannot be done before the get_futex_key of the next key,
-> +	 * because it calls get_user_pages, which can sleep.  Thus, we
-> +	 * fetch the list of futexes keys in two steps, by first pinning
-> +	 * all the memory keys in the futex key, and only then we read
-> +	 * each key and queue the corresponding futex.
-> +	 */
-> +retry:
-> +	for (i =3D 0; i < count; i++) {
-> +		ret =3D get_futex_key(vs[i].w.uaddr,
-> +				    vs[i].w.flags & FUTEX_SHARED_FLAG,
-> +				    &vs[i].q.key, FUTEX_READ);
-> +		if (unlikely(ret))
-> +			return ret;
-> +	}
-> +
-> +	set_current_state(TASK_INTERRUPTIBLE);
-> +
-> +	for (i =3D 0; i < count; i++) {
-> +		struct futex_q *q =3D &vs[i].q;
-> +		struct futex_waitv *waitv =3D &vs[i].w;
-
-Please order them reverse.
-
-> +
-> +		hb =3D queue_lock(q);
-> +		ret =3D get_futex_value_locked(&uval, waitv->uaddr);
-> +		if (ret) {
-> +			/*
-> +			 * We need to try to handle the fault, which
-> +			 * cannot be done without sleep, so we need to
-> +			 * undo all the work already done, to make sure
-> +			 * we don't miss any wake ups.  Therefore, clean
-> +			 * up, handle the fault and retry from the
-> +			 * beginning.
-> +			 */
-> +			queue_unlock(hb);
-> +			__set_current_state(TASK_RUNNING);
-> +
-> +			*awaken =3D unqueue_multiple(vs, i);
-> +			if (*awaken >=3D 0)
-> +				return 1;
-> +
-> +			if (get_user(uval, (u32 __user *)waitv->uaddr))
-
-This type cast is horrible.
-
-> +				return -EINVAL;
-
--EFAULT
-
-> +
-> +			goto retry;
-
-Why a full retry if the futexes are private?
-
-> +		}
-> +
-> +		if (uval !=3D waitv->val) {
-
-Comparison between u32 and u64 ...
-
-> +			queue_unlock(hb);
-> +			__set_current_state(TASK_RUNNING);
-> +
-> +			/*
-> +			 * If something was already awaken, we can
-> +			 * safely ignore the error and succeed.
-> +			 */
-> +			*awaken =3D unqueue_multiple(vs, i);
-> +			if (*awaken >=3D 0)
-> +				return 1;
-> +
-> +			return -EWOULDBLOCK;
-> +		}
-> +
-> +		/*
-> +		 * The bucket lock can't be held while dealing with the
-> +		 * next futex. Queue each futex at this moment so hb can
-> +		 * be unlocked.
-> +		 */
-> +		queue_me(&vs[i].q, hb);
-
-So the two error pathes are doing both
-
-> +			queue_unlock(hb);
-> +			__set_current_state(TASK_RUNNING);
-> +
-> +			*awaken =3D unqueue_multiple(vs, i);
-> +			if (*awaken >=3D 0)
-> +				return 1;
-
-This can be consolidated into:
-
-	if (!ret && uval =3D=3D waitv->val) {
-        	queue_me();
-                continue;
-        }
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
-	queue_unlock(hb);
-	__set_current_state(TASK_RUNNING);
-	*awaken =3D unqueue_multiple(vs, i);
-	if (*awaken >=3D 0)
-		return 1;
-
-        if (uval !=3D waitv->val)
-        	return -EWOULDBLOCK;
-        ....
-
-> +	}
-> +	return 0;
-> +}
-> +
-> +/**
-> + * futex_wait_multiple() - Prepare to wait on and enqueue several futexes
-> + * @vs:		The list of futexes to wait on
-> + * @count:	The number of objects
-> + * @to:		Timeout before giving up and returning to userspace
-> + *
-> + * Entry point for the FUTEX_WAIT_MULTIPLE futex operation, this function
-> + * sleeps on a group of futexes and returns on the first futex that
-> + * triggered, or after the timeout has elapsed.
-
-futexes can't trigger.
-
-> + * Return:
-> + *  - >=3D0 - Hint to the futex that was awoken
-> + *  - <0  - On error
-> + */
-> +int futex_wait_multiple(struct futex_vector *vs, unsigned int count,
-> +			struct hrtimer_sleeper *to)
-> +{
-> +	int ret, hint =3D 0;
-> +	unsigned int i;
-> +
-> +	while (1) {
-> +		ret =3D futex_wait_multiple_setup(vs, count, &hint);
-> +		if (ret) {
-> +			if (ret > 0) {
-> +				/* A futex was awaken during setup */
-> +				ret =3D hint;
-> +			}
-> +			return ret;
-> +		}
-> +
-> +		if (to)
-> +			hrtimer_start_expires(&to->timer, HRTIMER_MODE_ABS);
-
-hrtimer_sleeper_start_expires() and also why is this inside of the loop?
-
-> +
-> +		/*
-> +		 * Avoid sleeping if another thread already tried to
-> +		 * wake us.
-> +		 */
-> +		for (i =3D 0; i < count; i++) {
-> +			if (plist_node_empty(&vs[i].q.list))
-> +				break;
-> +		}
-> +
-> +		if (i =3D=3D count && (!to || to->task))
-> +			freezable_schedule();
-
-TBH, this sleeping condition along with the loop above is
-unreadable. It can be nicely split out:
-
-static void futex_sleep_multiple(struct futex_vector *vs, unsigned int coun=
-t,
-				 struct hrtimer_sleeper *to)
-{
-	if (to && !to->task)
-        	return;
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
-	for (; count; count--, vs++) {
-		if (!READ_ONCE(vs->q.lock_ptr))
-			return;
-	}
-
-	freezable_schedule();
-}
-
-> +
-> +		__set_current_state(TASK_RUNNING);
-> +
-> +		ret =3D unqueue_multiple(vs, count);
-> +		if (ret >=3D 0)
-> +			return ret;
-> +		if (to && !to->task)
-> +			return -ETIMEDOUT;
-> +		else if (signal_pending(current))
-> +			return -ERESTARTSYS;
-> +		/*
-> +		 * The final case is a spurious wakeup, for
-> +		 * which just retry.
-> +		 */
-> +	}
-> +}
-> +
-
->  /**
->   * futex_wait_setup() - Prepare to wait on a futex
->   * @uaddr:	the futex userspace address
-> diff --git a/kernel/futex2.c b/kernel/futex2.c
-> new file mode 100644
-> index 000000000000..19bbd4bf7187
-> --- /dev/null
-> +++ b/kernel/futex2.c
-> @@ -0,0 +1,192 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * futex2 system call interface by Andr=C3=A9 Almeida <andrealmeid@colla=
-bora.com>
-
-I don't see a futex2 system call anywhere
-
-> + * Copyright 2021 Collabora Ltd.
-> + */
-> +
-> +#include <asm/futex.h>
-> +
-> +#include <linux/freezer.h>
-> +#include <linux/syscalls.h>
-> +
-> +/* Mask for each futex in futex_waitv list */
-> +#define FUTEXV_WAITER_MASK (FUTEX_SIZE_MASK | FUTEX_SHARED_FLAG)
-
-This piggy packs on the existing futex code, so what is this size thing
-going to help?
-
-> +/* Mask for sys_futex_waitv flag */
-> +#define FUTEXV_MASK (FUTEX_CLOCK_REALTIME)
-> +
-> +#ifdef CONFIG_COMPAT
-> +/**
-> + * compat_futex_parse_waitv - Parse a waitv array from userspace
-> + * @futexv:	Kernel side list of waiters to be filled
-> + * @uwaitv:     Userspace list to be parsed
-> + * @nr_futexes: Length of futexv
-> + *
-> + * Return: Error code on failure, pointer to a prepared futexv otherwise
-
-The int return value becomes magically a pointer ?
-
-> + */
-> +static int compat_futex_parse_waitv(struct futex_vector *futexv,
-> +				    struct compat_futex_waitv __user *uwaitv,
-> +				    unsigned int nr_futexes)
-> +{
-> +	struct compat_futex_waitv aux;
-> +	unsigned int i;
-> +
-> +	for (i =3D 0; i < nr_futexes; i++) {
-> +		if (copy_from_user(&aux, &uwaitv[i], sizeof(aux)))
-> +			return -EFAULT;
-> +
-> +		if ((aux.flags & ~FUTEXV_WAITER_MASK) ||
-> +		    (aux.flags & FUTEX_SIZE_MASK) !=3D FUTEX_32)
-> +			return -EINVAL;
-> +
-> +		futexv[i].w.flags =3D aux.flags;
-> +		futexv[i].w.val =3D aux.val;
-> +		futexv[i].w.uaddr =3D compat_ptr(aux.uaddr);
-> +		futexv[i].q =3D futex_q_init;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +COMPAT_SYSCALL_DEFINE4(futex_waitv, struct compat_futex_waitv __user *, =
-waiters,
-> +		       unsigned int, nr_futexes, unsigned int, flags,
-> +		       struct __kernel_timespec __user *, timo)
-> +{
-> +	struct hrtimer_sleeper to;
-> +	struct futex_vector *futexv;
-> +	struct timespec64 ts;
-> +	ktime_t time;
-> +	int ret;
-> +
-> +	if (flags & ~FUTEXV_MASK)
-> +		return -EINVAL;
-> +
-> +	if (!nr_futexes || nr_futexes > FUTEX_WAITV_MAX || !waiters)
-> +		return -EINVAL;
-> +
-> +	if (timo) {
-> +		int flag_clkid =3D 0;
-> +
-> +		if (get_timespec64(&ts, timo))
-> +			return -EFAULT;
-> +
-> +		if (!timespec64_valid(&ts))
-> +			return -EINVAL;
-> +
-> +		if (flags & FUTEX_CLOCK_REALTIME)
-> +			flag_clkid =3D FLAGS_CLOCKRT;
-> +
-> +		time =3D timespec64_to_ktime(ts);
-
-What's the point of open coding futex_init_timeout() and thereby failing to
-do the namespace adjustment for CLOCK_MONOTONIC?
-
-> +		futex_setup_timer(&time, &to, flag_clkid, 0);
-> +	}
-> +
-> +	futexv =3D kcalloc(nr_futexes, sizeof(*futexv), GFP_KERNEL);
-> +	if (!futexv)
-> +		return -ENOMEM;
-> +
-> +	ret =3D compat_futex_parse_waitv(futexv, waiters, nr_futexes);
-> +	if (!ret)
-> +		ret =3D futex_wait_multiple(futexv, nr_futexes, timo ? &to : NULL);
-> +
-> +	if (timo) {
-> +		hrtimer_cancel(&to.timer);
-> +		destroy_hrtimer_on_stack(&to.timer);
-> +	}
-> +
-> +	kfree(futexv);
-> +	return ret;
-> +}
-> +#endif
-> +
-> +static int futex_parse_waitv(struct futex_vector *futexv,
-> +			     struct futex_waitv __user *uwaitv,
-> +			     unsigned int nr_futexes)
-> +{
-> +	struct futex_waitv aux;
-> +	unsigned int i;
-> +
-> +	for (i =3D 0; i < nr_futexes; i++) {
-> +		if (copy_from_user(&aux, &uwaitv[i], sizeof(aux)))
-> +			return -EFAULT;
-> +
-> +		if ((aux.flags & ~FUTEXV_WAITER_MASK) ||
-> +		    (aux.flags & FUTEX_SIZE_MASK) !=3D FUTEX_32)
-> +			return -EINVAL;
-> +
-> +		futexv[i].w.flags =3D aux.flags;
-> +		futexv[i].w.val =3D aux.val;
-> +		futexv[i].w.uaddr =3D aux.uaddr;
-> +		futexv[i].q =3D futex_q_init;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * sys_futex_waitv - Wait on a list of futexes
-> + * @waiters:    List of futexes to wait on
-> + * @nr_futexes: Length of futexv
-> + * @flags:      Flag for timeout (monotonic/realtime)
-> + * @timo:	Optional absolute timeout.
-> + *
-> + * Given an array of `struct futex_waitv`, wait on each uaddr. The threa=
-d wakes
-> + * if a futex_wake() is performed at any uaddr. The syscall returns imme=
-diately
-> + * if any waiter has *uaddr !=3D val. *timo is an optional timeout value=
- for the
-> + * operation. Each waiter has individual flags. The `flags` argument for=
- the
-> + * syscall should be used solely for specifying the timeout as realtime,=
- if
-> + * needed. Flags for shared futexes, sizes, etc. should be used on the
-> + * individual flags of each waiter.
-> + *
-> + * Returns the array index of one of the awaken futexes. There's no given
-> + * information of how many were awakened, or any particular attribute of=
- it (if
-> + * it's the first awakened, if it is of the smaller index...).
-> + */
-> +SYSCALL_DEFINE4(futex_waitv, struct futex_waitv __user *, waiters,
-> +		unsigned int, nr_futexes, unsigned int, flags,
-> +		struct __kernel_timespec __user *, timo)
-> +{
-> +	struct hrtimer_sleeper to;
-> +	struct futex_vector *futexv;
-> +	struct timespec64 ts;
-> +	ktime_t time;
-> +	int ret;
-> +
-> +	if (flags & ~FUTEXV_MASK)
-> +		return -EINVAL;
-> +
-> +	if (!nr_futexes || nr_futexes > FUTEX_WAITV_MAX || !waiters)
-> +		return -EINVAL;
-> +
-> +	if (timo) {
-> +		int flag_clkid =3D 0;
-> +
-> +		if (get_timespec64(&ts, timo))
-> +			return -EFAULT;
-> +
-> +		if (!timespec64_valid(&ts))
-> +			return -EINVAL;
-> +
-> +		if (flags & FUTEX_CLOCK_REALTIME)
-> +			flag_clkid =3D FLAGS_CLOCKRT;
-> +
-> +		time =3D timespec64_to_ktime(ts);
-> +		futex_setup_timer(&time, &to, flag_clkid, 0);
-
-And of course we need a copy of the same here again.
-
-> +	}
-> +
-> +	futexv =3D kcalloc(nr_futexes, sizeof(*futexv), GFP_KERNEL);
-> +	if (!futexv)
-> +		return -ENOMEM;
-> +
-> +	ret =3D futex_parse_waitv(futexv, waiters, nr_futexes);
-> +	if (!ret)
-> +		ret =3D futex_wait_multiple(futexv, nr_futexes, timo ? &to : NULL);
-> +
-> +	if (timo) {
-> +		hrtimer_cancel(&to.timer);
-> +		destroy_hrtimer_on_stack(&to.timer);
-> +	}
-> +
-> +	kfree(futexv);
-> +	return ret;
-
-So the only difference of the compat code and the non compat version is
-the pointer size in struct futex_waitv.
-
-struct futex_waitv {
-       __u32	val;
-       __u32	flags;
-       __u64	uaddr;
-};
-
-which gets rid of all the code duplication and special casing of compat.
-
-Thanks,
-
-        tglx
-=20=20=20=20
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
