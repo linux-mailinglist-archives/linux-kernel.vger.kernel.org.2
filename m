@@ -2,159 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD9B3F0082
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D2E3F0064
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbhHRJcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:32:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24660 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232769AbhHRJaH (ORCPT
+        id S231759AbhHRJ2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 05:28:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230118AbhHRJ2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:30:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629278952;
+        Wed, 18 Aug 2021 05:28:25 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4BD5C0613D9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:27:50 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0cc300d1eeff563b8fec45.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:c300:d1ee:ff56:3b8f:ec45])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C76BE1EC0545;
+        Wed, 18 Aug 2021 11:27:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1629278864;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jEAum1p+Sq90qsNOW7FriDcJ9zjYOTdm8PupmSbR43g=;
-        b=BSqGSj+Mktc04IuFzrm6RdPvZuWCR7hcFZ8KtgJ6Q9lbewPoxwUtx6L/p8XDAsjOcfC5xx
-        inlDtBO+mHrN13DMf6lM5mf29eyEWCR44WrbjdISNlnOJ1zre5JwbS7Dvaky3b0j9VmDJJ
-        0AUMZSOtY0PRaGxBYbGXxpx7eJXGX3E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-220-2yZnqJbiOvmmht-C1BXRvg-1; Wed, 18 Aug 2021 05:29:11 -0400
-X-MC-Unique: 2yZnqJbiOvmmht-C1BXRvg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3F36E1009600;
-        Wed, 18 Aug 2021 09:29:10 +0000 (UTC)
-Received: from localhost (ovpn-8-40.pek2.redhat.com [10.72.8.40])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 981CF5C1D1;
-        Wed, 18 Aug 2021 09:29:05 +0000 (UTC)
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>, Jens Axboe <axboe@kernel.dk>
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>, Ming Lei <ming.lei@redhat.com>
-Subject: [PATCH V2 7/7] blk-mq: build default queue map via group_cpus_evenly()
-Date:   Wed, 18 Aug 2021 17:28:12 +0800
-Message-Id: <20210818092812.787558-8-ming.lei@redhat.com>
-In-Reply-To: <20210818092812.787558-1-ming.lei@redhat.com>
-References: <20210818092812.787558-1-ming.lei@redhat.com>
+        bh=ITISNFiaflXSHrJa/kIubFFqquMC1witXfkRpKNhqyM=;
+        b=dAk6m8driOq7XAdWCfMp+tInAQR6kEGRR8NQQqc/+48OcxNVX9VkpRRX+NeZodWSMXRqBk
+        FBwsoG/JJ+WAW7xn/J3qrVQqzSRP25u3hpKZdtcsd3zmRpo+YdbFBtZywij/A/D3TZNX03
+        AhJqm74DO1SD+jnvMUuyqi0GexvzcDQ=
+Date:   Wed, 18 Aug 2021 11:28:24 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
+Cc:     "Lutomirski, Andy" <luto@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Macieira, Thiago" <thiago.macieira@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v9 08/26] x86/fpu/xstate: Introduce helpers to manage the
+ XSTATE buffer dynamically
+Message-ID: <YRzSuC25eHEOgj6h@zn.tnic>
+References: <20210730145957.7927-1-chang.seok.bae@intel.com>
+ <20210730145957.7927-9-chang.seok.bae@intel.com>
+ <YRV6M1I/GMXwuJqW@zn.tnic>
+ <2BF12EDA-89F0-40F7-B63E-50ADD0262164@intel.com>
+ <YRZDu2Rk+KdRhh1U@zn.tnic>
+ <2B279B5F-ACF2-46F2-9259-684419A57BDF@intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <2B279B5F-ACF2-46F2-9259-684419A57BDF@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The default queue mapping builder of blk_mq_map_queues doesn't take NUMA
-topo into account, so the built mapping is pretty bad, since CPUs
-belonging to different NUMA node are assigned to same queue. It is
-observed that IOPS drops by ~30% when running two jobs on same hctx
-of null_blk from two CPUs belonging to two NUMA nodes compared with
-from same NUMA node.
+On Fri, Aug 13, 2021 at 07:43:53PM +0000, Bae, Chang Seok wrote:
+> Without the “compacted” notion in the function name, one might
+> call this even with !XSAVES. But chances are very low in practice.
 
-Address the issue by reusing group_cpus_evenly() for addressing the
-issue since group_cpus_evenly() does group cpus according to CPU/NUMA
-locality.
+So leave only the first two which are obvious and are more likely to
+happen - the first one is going to be the most likely on non-dynamic
+setups and the second one is on dynamic systems.
 
-Lots of drivers may benefit from the change, such as nvme pci poll,
-nvme tcp, ...
+For all the other configurations, just do the loop and that's it.
 
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
----
- block/blk-mq-cpumap.c | 65 ++++++++++---------------------------------
- 1 file changed, 14 insertions(+), 51 deletions(-)
+*IF* an optimization needs to happen there, then it can happen latter,
+supplied with perf numbers to justify it.
 
-diff --git a/block/blk-mq-cpumap.c b/block/blk-mq-cpumap.c
-index 3db84d3197f1..b610a55eea66 100644
---- a/block/blk-mq-cpumap.c
-+++ b/block/blk-mq-cpumap.c
-@@ -10,67 +10,30 @@
- #include <linux/mm.h>
- #include <linux/smp.h>
- #include <linux/cpu.h>
-+#include <linux/group_cpus.h>
- 
- #include <linux/blk-mq.h>
- #include "blk.h"
- #include "blk-mq.h"
- 
--static int queue_index(struct blk_mq_queue_map *qmap,
--		       unsigned int nr_queues, const int q)
--{
--	return qmap->queue_offset + (q % nr_queues);
--}
--
--static int get_first_sibling(unsigned int cpu)
--{
--	unsigned int ret;
--
--	ret = cpumask_first(topology_sibling_cpumask(cpu));
--	if (ret < nr_cpu_ids)
--		return ret;
--
--	return cpu;
--}
--
- int blk_mq_map_queues(struct blk_mq_queue_map *qmap)
- {
--	unsigned int *map = qmap->mq_map;
--	unsigned int nr_queues = qmap->nr_queues;
--	unsigned int cpu, first_sibling, q = 0;
--
--	for_each_possible_cpu(cpu)
--		map[cpu] = -1;
-+	const struct cpumask *masks;
-+	unsigned int queue, cpu;
- 
--	/*
--	 * Spread queues among present CPUs first for minimizing
--	 * count of dead queues which are mapped by all un-present CPUs
--	 */
--	for_each_present_cpu(cpu) {
--		if (q >= nr_queues)
--			break;
--		map[cpu] = queue_index(qmap, nr_queues, q++);
--	}
-+	masks = group_cpus_evenly(qmap->nr_queues);
-+	if (!masks)
-+		goto fallback;
- 
--	for_each_possible_cpu(cpu) {
--		if (map[cpu] != -1)
--			continue;
--		/*
--		 * First do sequential mapping between CPUs and queues.
--		 * In case we still have CPUs to map, and we have some number of
--		 * threads per cores then map sibling threads to the same queue
--		 * for performance optimizations.
--		 */
--		if (q < nr_queues) {
--			map[cpu] = queue_index(qmap, nr_queues, q++);
--		} else {
--			first_sibling = get_first_sibling(cpu);
--			if (first_sibling == cpu)
--				map[cpu] = queue_index(qmap, nr_queues, q++);
--			else
--				map[cpu] = map[first_sibling];
--		}
-+	for (queue = 0; queue < qmap->nr_queues; queue++) {
-+		for_each_cpu(cpu, &masks[queue])
-+			qmap->mq_map[cpu] = qmap->queue_offset + queue;
- 	}
--
-+	kfree(masks);
-+	return 0;
-+ fallback:
-+	for_each_possible_cpu(cpu)
-+		qmap->mq_map[cpu] = qmap->queue_offset;
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(blk_mq_map_queues);
+> Perhaps, the call site in the ptrace path becomes like this, I think:
+> 
+> +	if (xfeatures_mask_user_dynamic) {
+> +		u64 state_mask;
+> +
+> +		/* Retrieve XSTATE_BV. */
+> +		memcpy(&state_mask, (kbuf ?: tmpbuf) + offsetof(struct xregs_state, header),
+> +		       sizeof(u64));
+> +
+> +		/* Expand the xstate buffer based on the XSTATE_BV. */
+> +		ret = realloc_xstate_buffer(fpu, state_mask & xfeatures_mask_user_dynamic);
+> +		if (ret)
+> +			goto out;
+> +	}
+> 
+> Maybe retrieve XSTATE_BV is inevitable here. Then, it is not that ugly.
+
+Lemme see if I can follow: here, a task is being ptraced and the tracer
+process does PTRACE_SETREGS to set the xregs and you want to go and read
+out the XSTATE_BV vector from the supplied xstate buffer to see how much
+to enlarge the buffer.
+
+Which makes me go, whut?
+
+Why doesn't the task already have a large enough buffer?
+
+IOW and IIUC, you should not have to ever resize the xstate buffer of a
+task in ptrace.
+
+> In this case, the ptracer just failed to inject some context. But the
+> ptracee’s context in the (old) buffer is intact. It will resume and eventually
+> exit. I think arch_release_task_struct()->free_xstate_buffer() will take care
+> of the old buffer.
+
+You think or you know?
+
+How about verifying it.
+
+Thx.
+
 -- 
-2.31.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
