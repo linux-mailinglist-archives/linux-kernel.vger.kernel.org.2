@@ -2,134 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 638B53F08E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D403F08E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231569AbhHRQSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 12:18:31 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41390 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231285AbhHRQSa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 12:18:30 -0400
-Date:   Wed, 18 Aug 2021 18:17:52 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629303473;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=COIZjFE+QpiqW1vgmef7bfSA5uIv7ItVkGPh67WOnuI=;
-        b=0tq0RyJndnU205fpXjnwy/AajvpF8L/7ellXA2SGrYReE5E8yIxdLYsh5gmH1NJVrIjzaZ
-        vYG6Zm2qcqLWlZ87qzTDl/Jy9CCjDIOiLhQcFt6VZWmpVhT9ABxwBI6VuH1nwQ9ibU92y0
-        AZuCvEdn9iO4rqQ3jQ9fECg3G2N2ao4Dq325Z04vcZ2pRd6e/GO7oa19k5ALTRYzFavoAQ
-        xrihDtMeby4S1F7Bc78N9DfuqV/pLKJuTCHmNmQPeMYF0xz8J+zl34XvbNraVuSWX4ZZJn
-        LUHPFSE8lhN062LltrixFTXN2lcvC8CQIAPfbwGqqHMLcwe7Rv/28qBaLi6f6Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629303473;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=COIZjFE+QpiqW1vgmef7bfSA5uIv7ItVkGPh67WOnuI=;
-        b=UM8gwUAtzbvGGD8ByCKwJDdMCltoMKTzKUqQX2QMTEL9GuXRt1sKhCCeMeesnRHT6txoLO
-        zmJ+s1Xd+W6U3EAA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Jeaho Hwang <jhhwang@rtst.co.kr>
-Cc:     Peter Chen <peter.chen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, linux-rt-users@vger.kernel.org,
-        team-linux@rtst.co.kr, mkbyeon@lselectric.co.kr,
-        khchoib@lselectric.co.kr
-Subject: Re: [PATCH v2] usb: chipidea: local_irq_save/restore added for
- hw_ep_prime
-Message-ID: <20210818161752.vu6abfv3e6bfqz23@linutronix.de>
-References: <20210817095313.GA671484@ubuntu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210817095313.GA671484@ubuntu>
+        id S230340AbhHRQTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 12:19:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44024 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229768AbhHRQTo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 12:19:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F19560231;
+        Wed, 18 Aug 2021 16:19:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629303549;
+        bh=nFGWEatyoVZm5BKItv+MghOP+U8KyOP5AVAhWaVeD6Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kOYu8JYt809KMUzm6aT8DMWtud7QpRc5QVHhAgkXQT1rQbHPjMrPLhnh2D9Q5z0WC
+         9/8lTB9Xv0liOOF4OTXPRAdFYEOFauHDzLPk3t6BouHiszoeNFr08/W6/avIOEoXOO
+         oxbpMzfLOJ8rfd4k5OG5W6J1KqDzswH6xuCCEFgwzJJ2wVhHRqHF3xnldDSaBImX0W
+         22TeUVPd4UuWPZucmgtjqQhayAaWyhJtIfcDQMsfZqm1K/AFiNhGv8sVrv0z0sQ2we
+         ypDp+NGZWkm9UsVcVKHwl6mCzs32lxeGWg/SQ6mOK0RxKOB9C5vw2tgPM0m5cL0cd9
+         mke1IrY7VmVnw==
+Date:   Thu, 19 Aug 2021 01:19:07 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v6 6/7] tracing/probe: Change traceprobe_set_print_fmt()
+ to take a type
+Message-Id: <20210819011907.83294c9d97657bb9c483282a@kernel.org>
+In-Reply-To: <20210817035027.987567364@goodmis.org>
+References: <20210817034255.421910614@goodmis.org>
+        <20210817035027.987567364@goodmis.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-17 18:53:13 [+0900], Jeaho Hwang wrote:
-> hw_ep_prime sometimes fails if irq occurs while it rus on RT kernel.
+On Mon, 16 Aug 2021 23:43:01 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-How/ why does it fail? Which IRQ occurs? Does it also occur without RT
-and with threadirqs enabled?
-
-> local_irq_save/restore is added inside the function to gurantee atomicity.
-> only effective for preempt_rt since hw_ep_prime is called inside top half
-> or spin_lock_irqsave. No effect is expected for standard linux.
-
-How is that helping?
-#1 
-  udc_irq() -> isr_tr_complete_handler() -> isr_tr_complete_low ->
-   _hardware_dequeue() -> reprime_dtd() -> hw_ep_prime()
-
-udc_irq() acquires ci->lock.
-
-#2 
-  ep_queue -> _ep_queue() ->_hardware_enqueue() -> hw_ep_prime()
-
-ep_queue acquires hwep->lock. Which is actually ci->lock.
-
-So if I read this right then hw_ep_prime() may not be interrupted in the
-middle of its operation (but preempted) because each path is protected
-by the lock.
-
-isr_tr_complete_low() drops hwep->lock and acquires it again so it that
-phase another thread may acquire it.
-
-> Signed-off-by: Jeaho Hwang <jhhwang@rtst.co.kr>
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 > 
-> diff --git a/drivers/usb/chipidea/udc.c b/drivers/usb/chipidea/udc.c
-> index 8834ca613721..a624eddb3e22 100644
-> --- a/drivers/usb/chipidea/udc.c
-> +++ b/drivers/usb/chipidea/udc.c
-> @@ -191,22 +191,31 @@ static int hw_ep_get_halt(struct ci_hdrc *ci, int num, int dir)
->  static int hw_ep_prime(struct ci_hdrc *ci, int num, int dir, int is_ctrl)
+> Instead of a boolean "is_return" have traceprobe_set_print_fmt() take a
+> type (currently just PROBE_PRINT_NORMAL and PROBE_PRINT_RETURN). This will
+> simplify adding different types. For example, the development of the
+> event_probe, will need its own type as it prints an event, and not an IP.
+
+This looks good and reasonable to me.
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you!
+
+> 
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+>  kernel/trace/trace_kprobe.c | 9 +++++++--
+>  kernel/trace/trace_probe.c  | 3 ++-
+>  kernel/trace/trace_probe.h  | 7 ++++++-
+>  kernel/trace/trace_uprobe.c | 8 ++++++--
+>  4 files changed, 21 insertions(+), 6 deletions(-)
+> 
+> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+> index ca726c9d0859..c6fe7a6e3f35 100644
+> --- a/kernel/trace/trace_kprobe.c
+> +++ b/kernel/trace/trace_kprobe.c
+> @@ -742,6 +742,7 @@ static int __trace_kprobe_create(int argc, const char *argv[])
+>  	bool is_return = false;
+>  	char *symbol = NULL, *tmp = NULL;
+>  	const char *event = NULL, *group = KPROBE_EVENT_SYSTEM;
+> +	enum probe_print_type ptype;
+>  	int maxactive = 0;
+>  	long offset = 0;
+>  	void *addr = NULL;
+> @@ -875,7 +876,8 @@ static int __trace_kprobe_create(int argc, const char *argv[])
+>  			goto error;	/* This can be -ENOMEM */
+>  	}
+>  
+> -	ret = traceprobe_set_print_fmt(&tk->tp, is_return);
+> +	ptype = is_return ? PROBE_PRINT_RETURN : PROBE_PRINT_NORMAL;
+> +	ret = traceprobe_set_print_fmt(&tk->tp, ptype);
+>  	if (ret < 0)
+>  		goto error;
+>  
+> @@ -1799,6 +1801,7 @@ struct trace_event_call *
+>  create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
+>  			  bool is_return)
 >  {
->  	int n = hw_ep_bit(num, dir);
-> +	unsigned long flags;
-> +	int ret = 0;
+> +	enum probe_print_type ptype;
+>  	struct trace_kprobe *tk;
+>  	int ret;
+>  	char *event;
+> @@ -1822,7 +1825,9 @@ create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
 >  
->  	/* Synchronize before ep prime */
->  	wmb();
+>  	init_trace_event_call(tk);
 >  
-> -	if (is_ctrl && dir == RX && hw_read(ci, OP_ENDPTSETUPSTAT, BIT(num)))
-> +	/* irq affects this routine so irq should be disabled on RT.
-> +	 * on standard kernel, irq is already disabled by callers.
-
-The important part is _how_ it is affected. If locking works then
-nothing should read/ write the HW register. If the lock is briefly
-dropped then another thread _may_ read/ write the registers but not
-within this function.
-
-If this function here is sensitive to timing (say the cpu_relax() loop
-gets interrupt for 1ms) then it has to be documented as such.
-
-> +	 */
-> +	local_irq_save(flags);
-> +	if (is_ctrl && dir == RX && hw_read(ci, OP_ENDPTSETUPSTAT, BIT(num))) {
-> +		local_irq_restore(flags);
->  		return -EAGAIN;
-> +	}
->  
->  	hw_write(ci, OP_ENDPTPRIME, ~0, BIT(n));
->  
->  	while (hw_read(ci, OP_ENDPTPRIME, BIT(n)))
->  		cpu_relax();
->  	if (is_ctrl && dir == RX && hw_read(ci, OP_ENDPTSETUPSTAT, BIT(num)))
-> -		return -EAGAIN;
-> +		ret = -EAGAIN;
->  
-> +	local_irq_restore(flags);
->  	/* status shoult be tested according with manual but it doesn't work */
-> -	return 0;
-> +	return ret;
+> -	if (traceprobe_set_print_fmt(&tk->tp, trace_kprobe_is_return(tk)) < 0) {
+> +	ptype = trace_kprobe_is_return(tk) ?
+> +		PROBE_PRINT_RETURN : PROBE_PRINT_NORMAL;
+> +	if (traceprobe_set_print_fmt(&tk->tp, ptype) < 0) {
+>  		ret = -ENOMEM;
+>  		goto error;
+>  	}
+> diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+> index 0916a9964719..a8dcadeaae95 100644
+> --- a/kernel/trace/trace_probe.c
+> +++ b/kernel/trace/trace_probe.c
+> @@ -912,9 +912,10 @@ static int __set_print_fmt(struct trace_probe *tp, char *buf, int len,
 >  }
+>  #undef LEN_OR_ZERO
 >  
->  /**
+> -int traceprobe_set_print_fmt(struct trace_probe *tp, bool is_return)
+> +int traceprobe_set_print_fmt(struct trace_probe *tp, enum probe_print_type ptype)
+>  {
+>  	struct trace_event_call *call = trace_probe_event_call(tp);
+> +	bool is_return = ptype == PROBE_PRINT_RETURN;
+>  	int len;
+>  	char *print_fmt;
+>  
+> diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
+> index 42aa084902fa..8adf5f3542a6 100644
+> --- a/kernel/trace/trace_probe.h
+> +++ b/kernel/trace/trace_probe.h
+> @@ -363,7 +363,12 @@ extern int traceprobe_split_symbol_offset(char *symbol, long *offset);
+>  int traceprobe_parse_event_name(const char **pevent, const char **pgroup,
+>  				char *buf, int offset);
+>  
+> -extern int traceprobe_set_print_fmt(struct trace_probe *tp, bool is_return);
+> +enum probe_print_type {
+> +	PROBE_PRINT_NORMAL,
+> +	PROBE_PRINT_RETURN,
+> +};
+> +
+> +extern int traceprobe_set_print_fmt(struct trace_probe *tp, enum probe_print_type ptype);
+>  
+>  #ifdef CONFIG_PERF_EVENTS
+>  extern struct trace_event_call *
+> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+> index 590bb9a02f8d..09f8ca7f7ba0 100644
+> --- a/kernel/trace/trace_uprobe.c
+> +++ b/kernel/trace/trace_uprobe.c
+> @@ -536,6 +536,7 @@ static int __trace_uprobe_create(int argc, const char **argv)
+>  	const char *event = NULL, *group = UPROBE_EVENT_SYSTEM;
+>  	char *arg, *filename, *rctr, *rctr_end, *tmp;
+>  	char buf[MAX_EVENT_NAME_LEN];
+> +	enum probe_print_type ptype;
+>  	struct path path;
+>  	unsigned long offset, ref_ctr_offset;
+>  	bool is_return = false;
+> @@ -687,7 +688,8 @@ static int __trace_uprobe_create(int argc, const char **argv)
+>  			goto error;
+>  	}
+>  
+> -	ret = traceprobe_set_print_fmt(&tu->tp, is_ret_probe(tu));
+> +	ptype = is_ret_probe(tu) ? PROBE_PRINT_RETURN : PROBE_PRINT_NORMAL;
+> +	ret = traceprobe_set_print_fmt(&tu->tp, ptype);
+>  	if (ret < 0)
+>  		goto error;
+>  
+> @@ -1578,6 +1580,7 @@ struct trace_event_call *
+>  create_local_trace_uprobe(char *name, unsigned long offs,
+>  			  unsigned long ref_ctr_offset, bool is_return)
+>  {
+> +	enum probe_print_type ptype;
+>  	struct trace_uprobe *tu;
+>  	struct path path;
+>  	int ret;
+> @@ -1612,7 +1615,8 @@ create_local_trace_uprobe(char *name, unsigned long offs,
+>  	tu->filename = kstrdup(name, GFP_KERNEL);
+>  	init_trace_event_call(tu);
+>  
+> -	if (traceprobe_set_print_fmt(&tu->tp, is_ret_probe(tu)) < 0) {
+> +	ptype = is_ret_probe(tu) ? PROBE_PRINT_RETURN : PROBE_PRINT_NORMAL;
+> +	if (traceprobe_set_print_fmt(&tu->tp, ptype) < 0) {
+>  		ret = -ENOMEM;
+>  		goto error;
+>  	}
+> -- 
+> 2.30.2
 
-Sebastian
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
