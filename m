@@ -2,151 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF0563F0B1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 20:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C9F3F0B1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 20:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231743AbhHRSf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 14:35:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229965AbhHRSfZ (ORCPT
+        id S232584AbhHRSgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 14:36:24 -0400
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:33729 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229558AbhHRSgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 14:35:25 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1066CC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 11:34:50 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id c12so6806579ljr.5
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 11:34:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9FPUr4CdEhH6rDlKsFJKVG6weGYB4goKDrrriPqlf4c=;
-        b=UsJzOywq2ROkYLqA5CcdCp3s5r6bZjUJracBOkcBXm8YR8CmgShinAl0dyjPNTwbbT
-         pLDb2UCOiSdPY/cvSTX1YknA8EFSxroQjJnPWKbt2h+fImZ4nOwlqkbqm72M2M6EuU9i
-         yzeg9mXqlr6a1MUg4Os42/IodELJ+RDIOnnH8=
+        Wed, 18 Aug 2021 14:36:20 -0400
+Received: by mail-oi1-f171.google.com with SMTP id n27so4778314oij.0;
+        Wed, 18 Aug 2021 11:35:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9FPUr4CdEhH6rDlKsFJKVG6weGYB4goKDrrriPqlf4c=;
-        b=B9imQ6M5rDdEy7rzZq87hsk/kQCBC9lLyhTFvGKuj5ueuwd8v4ECRGzW3ydo1LdTqD
-         kzERBKZD4kSbda8Xh/DVqxfhuC/nm9auCRY10rAIs80x/Fjm0Jj90wlAdim7uRg7B5Eu
-         zPuB/iqkBwtfICPm0gDbv3I0sVemhB4qasY/UbplQb4K2v46zIVkrJcjrHZQMDzUJDPk
-         1h80Mf3SkRoBgSGYdLKzKKLSDQDPtlW3m/0HxvFgoT+GAKygO4oncrDZNe10u8C1HYlU
-         DUf7h9Oyh1hzOMST6mCeVnldDIJyCSTyleGQVoDcTJNOAnE/MlHgUGJ1v39+PrAP9b9p
-         IC9w==
-X-Gm-Message-State: AOAM533OJQFCbG99MMQYJteVmkp0Jod96aEFQIddBZjNHrEjHUu+PBNg
-        Ye7F4h5n+ikkG2gNtBUPhL2Qd19Jll3drXPr
-X-Google-Smtp-Source: ABdhPJyxlLriVPYMAc5/99GUXBbpyD7ij7z0dkXBoi2ipfXrprUk9HG0z71QxcMFuz++2pea0gyriw==
-X-Received: by 2002:a2e:870f:: with SMTP id m15mr9055634lji.169.1629311688144;
-        Wed, 18 Aug 2021 11:34:48 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id y10sm67940ljj.10.2021.08.18.11.34.47
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 11:34:47 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id n7so6893296ljq.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 11:34:47 -0700 (PDT)
-X-Received: by 2002:a2e:944c:: with SMTP id o12mr8897833ljh.411.1629311686896;
- Wed, 18 Aug 2021 11:34:46 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=G6OJpccSRXfwKCZCc3v21OUpyBNmgZToXNskmRIyk7I=;
+        b=DU7D2/zjL71jyLspabULUhCyk+NgBAfaPbH2FcPZgMyJRX6uipNhdAfsQt/FCm7v1k
+         YUOBIiq0vaK9UvQ3dsMVx3t1iY0P8oclF2pshaCQZqnFm2lZ/TXkCM/m4p3wl2BKBNj0
+         nAHywyroMqb+omVMRfEZ9TTr/CDVr3R0rBFhgC14zGEnMHnsrrrUriRCOzkrVg66Yf+V
+         hBrFiICIHsrQ4oEr8BPKGpdV67T/Kb9lqAtjOEP26iaJfUbSPfrvE+l8B1qAFEUOEh9M
+         di4qtL+QkvZkG3e24TBquIVwbZSdsTyDMUbPHBx+3ZG4v+0Rmwgp7Wa66UFgC7ujx7c9
+         oWNA==
+X-Gm-Message-State: AOAM532XqZHrgeOe50kjbgVCgB+/LD/TBS/MSLJYaWShtzNddWcqXEH6
+        oog4cxYoZkUyvu+Ll/JscA==
+X-Google-Smtp-Source: ABdhPJzDmcf9pWIusWZYcIOPJehR9AWfMAQtPdaXvaovn8dyE8l2BM61R1bHHaOJCkoCYlGGuc4Tyg==
+X-Received: by 2002:aca:dd0a:: with SMTP id u10mr8087681oig.41.1629311744758;
+        Wed, 18 Aug 2021 11:35:44 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i188sm193215oih.7.2021.08.18.11.35.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 11:35:44 -0700 (PDT)
+Received: (nullmailer pid 2883079 invoked by uid 1000);
+        Wed, 18 Aug 2021 18:35:43 -0000
+Date:   Wed, 18 Aug 2021 13:35:43 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
+        linux-kernel@vger.kernel.org, Lokesh Vutla <lokeshvutla@ti.com>,
+        devicetree@vger.kernel.org,
+        Cory Tusar <cory.tusar@pid1solutions.com>
+Subject: Re: [PATCH v2] dt-bindings: eeprom-93xx46: Convert to json schema
+Message-ID: <YR1S/3dQBHBygnOL@robh.at.kernel.org>
+References: <20210818105626.31800-1-a-govindraju@ti.com>
 MIME-Version: 1.0
-References: <20210818133400.830078-1-mszeredi@redhat.com> <20210818133400.830078-3-mszeredi@redhat.com>
-In-Reply-To: <20210818133400.830078-3-mszeredi@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 18 Aug 2021 11:34:31 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wga+3G+mR-UyQ=pwqN2iS04k-O61bssvzyVk+vkdZkd1Q@mail.gmail.com>
-Message-ID: <CAHk-=wga+3G+mR-UyQ=pwqN2iS04k-O61bssvzyVk+vkdZkd1Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] ovl: enable RCU'd ->get_acl()
-To:     Miklos Szeredi <mszeredi@redhat.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-unionfs@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        garyhuang <zjh.20052005@163.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210818105626.31800-1-a-govindraju@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 6:34 AM Miklos Szeredi <mszeredi@redhat.com> wrote:
->
->  struct posix_acl *get_cached_acl_rcu(struct inode *inode, int type)
->  {
-> -       return rcu_dereference(*acl_by_type(inode, type));
-> +       struct posix_acl *acl = rcu_dereference(*acl_by_type(inode, type));
-> +
-> +       if (acl == ACL_DONT_CACHE)
-> +               acl = inode->i_op->get_acl(inode, type, LOOKUP_RCU);
-> +
-> +       return acl;
->  }
+On Wed, 18 Aug 2021 16:26:21 +0530, Aswath Govindraju wrote:
+> Convert eeprom-93xx46 binding documentation from txt to yaml format
+> 
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
+> 
+> Changes since v1:
+> - removed unnecessary '\' from the subject line
+> - removed nodename property
+> - added type as boolean for read-only property
+> - corrected the node name of spi in example
+> 
+>  .../bindings/misc/eeprom-93xx46.txt           | 29 --------
+>  .../bindings/misc/eeprom-93xx46.yaml          | 70 +++++++++++++++++++
+>  2 files changed, 70 insertions(+), 29 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/misc/eeprom-93xx46.txt
+>  create mode 100644 Documentation/devicetree/bindings/misc/eeprom-93xx46.yaml
+> 
 
-What? No.
-
-You just made get_cached_acl_rcu() return ERR_PTR(-EINVAL) for most filesystems.
-
-So now you've changed the behavior of get_cached_acl_rcu() ENTIRELY.
-
-It used to return either
- (a) the ACL
- (b) NULL
- (c) ACL_DONT_CACHE/ACL_NOT_CACHED
-
-but now you've changed that (c) case to "ACL_NOT_CACHED or random error value".
-
-You can't just mix these kinds of entirely different return values like that.
-
-So no, this is not at all acceptable.
-
-I would suggest:
-
- (a) make the first patch actually test explicitly for LOOKUP_RCU, so
-that it's clear to the filesystems what is going on.
-
-     So instead of that pattern of
-
-        if (flags)
-                return ERR_PTR(-EINVAL);
-
-     I'd suggest using
-
-        if (flags & LOOKUP_RCU)
-                return ERR_PTR(-ECHILD);
-
-   so that it actually matches what lookup does for the "I can't do
-this under RCU", and so that any reader of the code understands what
-"flags" is all about.
-
-And then
-
- (b) make the get_cached_acl_rcu() case handle errors _properly_
-instead of mixing the special ACL cache markers with error returns.
-
-     So instead of
-
-        if (acl == ACL_DONT_CACHE)
-                acl = inode->i_op->get_acl(inode, type, LOOKUP_RCU);
-
-     maybe something more along the lines of
-
-        if (acl == ACL_DONT_CACHE) {
-                struct posix_acl *lookup_acl;
-                lookup_acl = inode->i_op->get_acl(inode, type, LOOKUP_RCU);
-                if (!IS_ERR(lookup_acl))
-                        acl = lookup_acl;
-        }
-
-     or whatever.
-
-I disagree with Al that a "bool" would be better. I think LOOKUP_RCU
-is good documentation, and consistent with lookup, but it really needs
-to be *consistent*.  Thus that
-
-        if (flags & LOOKUP_RCU)
-                return ERR_PTR(-ECHILD);
-
-pattern, not some "test underscibed flags, return -EINVAL" pattern
-that looks entirely nonsensical.
-
-               Linus
+Applied, thanks!
