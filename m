@@ -2,117 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6DF3F0A2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91AE43F0A37
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:24:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbhHRRWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 13:22:22 -0400
-Received: from mga18.intel.com ([134.134.136.126]:55431 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229661AbhHRRWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 13:22:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="203529559"
-X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
-   d="scan'208";a="203529559"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 10:21:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
-   d="scan'208";a="531775841"
-Received: from irsmsx605.ger.corp.intel.com ([163.33.146.138])
-  by fmsmga002.fm.intel.com with ESMTP; 18 Aug 2021 10:21:05 -0700
-Received: from tjmaciei-mobl5.localnet (10.209.60.224) by
- IRSMSX605.ger.corp.intel.com (163.33.146.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Wed, 18 Aug 2021 18:21:02 +0100
-From:   Thiago Macieira <thiago.macieira@intel.com>
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Borislav Petkov <bp@alien8.de>
-CC:     <luto@kernel.org>, <tglx@linutronix.de>, <mingo@kernel.org>,
-        <x86@kernel.org>, <len.brown@intel.com>, <dave.hansen@intel.com>,
-        <jing2.liu@intel.com>, <ravi.v.shankar@intel.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to protect dynamic user state
-Date:   Wed, 18 Aug 2021 10:20:58 -0700
-Message-ID: <3181031.RqgVF4sTRC@tjmaciei-mobl5>
-Organization: Intel Corporation
-In-Reply-To: <YR00U19168BGoRB9@zn.tnic>
-References: <20210730145957.7927-1-chang.seok.bae@intel.com> <20210730145957.7927-13-chang.seok.bae@intel.com> <YR00U19168BGoRB9@zn.tnic>
+        id S231422AbhHRRYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 13:24:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229661AbhHRRYk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 13:24:40 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE1EC061764;
+        Wed, 18 Aug 2021 10:24:05 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id y34so6154737lfa.8;
+        Wed, 18 Aug 2021 10:24:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GAv6SuF4eSj8Jq3W6VuB4wY+Y7DhAYK2C8cvnt48BwA=;
+        b=OfKnmZ3T9Qb8HI5W7GPWXDlieZS0O8KzL+vFnG3wV003wkNIM7zLIcbMPaZV9yYF1Y
+         cMOjm0MheLL2CRrIs8DC2K9N1eVCWCaDsVSSikNKN2DkxTSyD7OhYYBAImKT9/HMCkap
+         Gr9Y+wK7NSOmC8NjxIznaaozosxtoumPvLwtjwYFV2WhONfGechAcboi0jMsRkdmWexs
+         dJkGtU3UNsZlMMt0vkVQBATO80wkY01UPa7V13WGnrzYHtoeNT3GK6eR7oqd5xSSYvpt
+         UbvMRFNwmdAjvxcYwYj5Bn415TPmyl/Gw0zEoqGhTt7a1uBUd5w/QJWfR+p+qExVRY3y
+         fwYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GAv6SuF4eSj8Jq3W6VuB4wY+Y7DhAYK2C8cvnt48BwA=;
+        b=EQnigRajDLSJu7faMMPZCLt6fD4Tl6/k0yPKZ6Vh0HBFc49XrCTTVHRdppWZZyxBz0
+         ojk2IHKAQUe0Rt2aMQ09/po6MKUZVXiCYm1O2zQSCTbjXJ/0LUx4hNRLoRrMfuAERC8v
+         2v92bIwmufPjbC9ps3FdFC7cvb1yHg2EhqmZvjFmpkgfefXHhy/IjCixbPSUI4gmkAeU
+         G0ap3/D1XMo+UYTf11FXHTydWs5fTJOUc+7+7+9SE93Q36qR1SU81ioFufRAMfGvwrYW
+         cK0MZuYmOKsx0kEIefulTd40ONkpcvc0JyVAXVbReXxaUSaHKXNAqmxAfzYpCcLeeMOG
+         jyag==
+X-Gm-Message-State: AOAM532MsgNXqOevSVwYEfi0KoLu+BC8wxkY2czvtFI101SVLLadbTy5
+        inbvDFi8JSf0pOL6T6n3hkQKK6BWJJI=
+X-Google-Smtp-Source: ABdhPJz2totLY2glZaQrN56jcVR6UJ865rvHiBaSqRD7LPq8+CU52UR+LaQb1/rmqGyWq/hbRnECbg==
+X-Received: by 2002:a05:6512:21d1:: with SMTP id d17mr7501000lft.588.1629307443410;
+        Wed, 18 Aug 2021 10:24:03 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-85-91.dynamic.spd-mgts.ru. [46.138.85.91])
+        by smtp.googlemail.com with ESMTPSA id 3sm47300ljq.136.2021.08.18.10.24.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Aug 2021 10:24:03 -0700 (PDT)
+Subject: Re: [PATCH v8 11/34] gpu: host1x: Add runtime PM and OPP support
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+References: <20210817012754.8710-1-digetx@gmail.com>
+ <20210817012754.8710-12-digetx@gmail.com>
+ <CAPDyKFrax-EYtO03W5QWM2tcWLWeMM8hHZCRYFcsenuiP2zObQ@mail.gmail.com>
+ <YRvBkyfFCqthBIBV@orome.fritz.box>
+ <CAPDyKFp+9Bv3EVSnV683ixNXzukJtmG_QrS5C1ZQqLxv9QJ-bQ@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <e2ab73d3-c543-5c5d-5b51-6ff42446907c@gmail.com>
+Date:   Wed, 18 Aug 2021 20:24:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [10.209.60.224]
-X-ClientProxiedBy: orsmsx605.amr.corp.intel.com (10.22.229.18) To
- IRSMSX605.ger.corp.intel.com (163.33.146.138)
+In-Reply-To: <CAPDyKFp+9Bv3EVSnV683ixNXzukJtmG_QrS5C1ZQqLxv9QJ-bQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, 18 August 2021 09:24:51 PDT Borislav Petkov wrote:
-> > +#define X86_FEATURE_XFD                        (10*32+ 4) /* eXtended
-> > Feature Disabling */
+18.08.2021 11:35, Ulf Hansson пишет:
+> Thanks for clarifying! As I said, feel free to ignore my comments then.
 > 
-> Add "" at the marker above - it doesn't look like we wanna show "xfd" in
-> /proc/cpuinfo.
+> For this and the other patches in the series, I assume you only need
+> to care about whether the driver is a cross SoC driver and used on
+> other platforms than Tegra then.
 
-Why not?
-
-It could help diagnosing why this code has a failure if XFD is somehow 
-missing. That can happen with hypervisors or future CPUs.
-
-> > +                               /* Raise a signal when it failed to
-> > handle. */ +                               if (err)
-> > +                                       force_sig_fault(SIGILL,
-> > ILL_ILLOPC,
-> > +                                                      
-> > error_get_trap_addr(regs));> 
-> Where is it documented that that configuration of SIG* types means,
-> failure to allocate the dynamic buffer?
-
-This wasn't part of the memory failure, but now that you've pointed out, yes, 
-we are getting a SIGILL in case the kernel failed to allocate memory too. 
-
-This is the same code path we get if the task executes an AMX instruction 
-without first requesting support for it via the system call. At my request, 
-Chang changed it from SIGSEGV to SIGILL, because that's the behaviour one 
-would see if the kernel did not support AMX at all, hadn't enabled it in XCR0 
-or the CPU didn't support the instructions.
-
-I don't know how to best handle killing the application if the kernel is OOM 
-(see below, though). Maybe it should SIGKILL instead. The problem with sending 
-a SIGSEGV is debuggability: if I get a core dump of this crash, which is 
-likely going to happen in a load instruction, I'll spend a lot time trying to 
-understand why the pointer in that instruction wasn't correct. Very few people 
-will ever consider it may have another reason.
-
-> To the general picture: why is this thing even allocating a buffer in #NM?
-> 
-> Why isn't the buffer pre-allocated for the process after latter having
-> done prctl() so that when an #NM happens, no allocation happens at all?
-
-That's a good question, but I thought it had been discussed and agreed that we 
-didn't want to extend the buffers at the moment the application requested the 
-bits, because it may never need them. This was probably a defence against 
-applications requesting all bits without knowing whether they'll need them at 
-all.
-
-The way the API to userspace is implemented, the only way to find out if the 
-kernel supports a given state is to enable it. It's not currently possible to 
-ask "do you support AMX tile data?" and then go about the application's merry 
-way until it determines it really wants to do matrix multiplications. In the 
-case of applications with plugins, they need to have that answer before the 
-load the plugin, which usually happens at application start.
-
-I was going to suggest a new API to return the supported bits, but hadn't yet 
-because it wasn't required for this patchset to work. So long as that API 
-landed at or before the time a new bit was added, userspace would be able to 
-cope. But if the kernel is going to allocate the bits at the moment of the 
-system call *and* we wish for userspace not to request more than it really 
-needs, then we'll need this extra API right now.
-
--- 
-Thiago Macieira - thiago.macieira (AT) intel.com
-  Software Architect - Intel DPG Cloud Engineering
-
-
-
+Yes, and all drivers touched by this series are Tegra-only drivers.
