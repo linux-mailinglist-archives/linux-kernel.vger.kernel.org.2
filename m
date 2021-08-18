@@ -2,120 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393CC3F050F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC723F050D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238610AbhHRNlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 09:41:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238044AbhHRNlC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 09:41:02 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9B8C0612A5
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 06:40:17 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso3486255ott.13
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 06:40:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=92kjzJHPbu8CdHkXkohUqea/s0XZxMJWcWOY/L8K0Q0=;
-        b=eqlv99p38UbOHhb+iaqlx8R7pajxw88f0tDyRo/zUVE14LEO4nwE2X3XKvBkTLTGo9
-         fvZ1OU5V9As8yW7DKQiDEIcigagyaC8S/UD1sEutBruhxBh268wCIylG2YzXXgG3Z7AT
-         bSKuRtM+aMBRCld1BcmNLRbNFDaH5uXdhOs2UyOOCAjv8KdUznngHKeegRULI8Dzwhgw
-         83/pzM0Hy3rY6gc9LoeNVduSmNCBEvcklG+qOxxJbJXVD0fp5sIDxOdfVTx0mvdN16A5
-         3M7ncvOWOapHbHzd6Cxc7trD4qzvbv6XgEZdYKhUgI+M9hg/mGxjGUC+YoFplWTrRaHs
-         qvsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=92kjzJHPbu8CdHkXkohUqea/s0XZxMJWcWOY/L8K0Q0=;
-        b=FwHHcLbPHgMRkVAz/z/LDCvF3+IUXYSF4HyK2YJvXZNtaRFCD9PsMdn8LYFAmIizvG
-         PvRrVRK8bpkwc3sfJkX9XVpEVAuJgD0VQesVEvIZnRrzBX9kalpZ3aHe3a9Uv1t3ssAQ
-         nT3W2uXy3QQjVQTrV6TGPtOtQ9FT6ZbIUhC/x8wW+b+PowDzRRt3DJgGA3e/azsGKBuX
-         iJ+Z0iwugoUoW/KlBmuY4XXFcBAPLDSmzV23Thu3QBpyZffndv04TM321IfWPahQs0FW
-         kTpfr8+NmJYUG28qEOti83rEahRvnOdSCR+lwMeIz5+CcI/dqj+Dqc0rvp6TXQ79EF4p
-         G4FA==
-X-Gm-Message-State: AOAM532u64rDtb0DvR6Fmo4LRfsmaqRaGlpvFHcGFh5S6/y+d/Gf0wgD
-        WPdGg7W5OVWsorg3zgTkWmf3UkXr2q0s9zEPq11/rA==
-X-Google-Smtp-Source: ABdhPJypTijaCEpAT80SQ6v46jAeX/zU9T+cs9V7Lj3fV7JwJH8rlSesYnznhG565RDZRzgFMQJ7ljRZ5rCVraf86LQ=
-X-Received: by 2002:a05:6830:3114:: with SMTP id b20mr3849263ots.17.1629294016304;
- Wed, 18 Aug 2021 06:40:16 -0700 (PDT)
+        id S239185AbhHRNlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 09:41:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238611AbhHRNlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 09:41:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF83D60238;
+        Wed, 18 Aug 2021 13:40:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629294029;
+        bh=80IaIFDHGWp7QnPlslmoBONoY+Zu3mlFuG4CYvGNkRI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j9bfDo033NsQwUiEzHOU9Px4wj9HNOad/7sRDzXkX1HcRJQtiBwM/PZ47Bxwihbtu
+         J/l6NvO92buF2SRsR/itWFowe3/geUXGTHkPwAJLmff4e2l6XcgrTj0ZKS3rJuSXv5
+         6uDKVLvqvIrkvIqoIb3vvHH2V2VR/zddJ1QlyIJx+0+OaHf6SuW2hdLJFYsH3HuS+f
+         z+71YvHeJSWJq5p686UecVrug5ZP+X1CHFkrW0Lm3rcCMKlxJvzKG13w+w0TyR2cHI
+         2NwRHkyWiDmB6UQ7ESrkxvuCY9DuVzIhrJW9U3DYzGVw9M7x3P2Op8mBDTdjhYrt9V
+         kUfW4hbmhMHNQ==
+Date:   Wed, 18 Aug 2021 16:40:26 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Jethro Beekman <jethro@fortanix.com>
+Cc:     linux-sgx@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Saravanan D <saravanand@fb.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH] x86/sgx: Add SGX_MemTotal to /proc/meminfo
+Message-ID: <20210818134026.GA7967@iki.fi>
+References: <20210818132509.545997-1-jarkko@kernel.org>
+ <acd5a925-ce86-9934-5e1c-d0bcee3f606b@fortanix.com>
 MIME-Version: 1.0
-References: <20210818130300.2482437-1-elver@google.com>
-In-Reply-To: <20210818130300.2482437-1-elver@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 18 Aug 2021 15:40:04 +0200
-Message-ID: <CANpmjNPX0SANJ6oDoxDecMfvbZXFhk4qCuaYPyWT1M8FNpy_vw@mail.gmail.com>
-Subject: Re: [PATCH] kfence: fix is_kfence_address() for addresses below KFENCE_POOL_SIZE
-To:     elver@google.com, akpm@linux-foundation.org
-Cc:     glider@google.com, dvyukov@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kasan-dev@googlegroups.com,
-        Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>,
-        stable@vger.kernel.org, Jann Horn <jannh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <acd5a925-ce86-9934-5e1c-d0bcee3f606b@fortanix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc Jann
+On Wed, Aug 18, 2021 at 03:29:59PM +0200, Jethro Beekman wrote:
+> On 2021-08-18 15:25, Jarkko Sakkinen wrote:
+> > The amount of SGX memory on the system is determined by the BIOS and it
+> > varies wildly between systems.  It can be from dozens of MB's on desktops
+> > or VM's, up to many GB's on servers.  Just like for regular memory, it is
+> > sometimes useful to know the amount of usable SGX memory in the system.
+> > 
+> > Add SGX_MemTotal field to /proc/meminfo, which shows the total amount of
+> > usable SGX memory in the system.  E.g. with 32 MB reserved for SGX from
+> > BIOS, the printout would be:
+> > 
+> > SGX_MemTotal:      22528 kB
+> > 
+> > It is less than 32 MB because some of the space is reserved for Enclave
+> > Page Cache Metadata (EPCM), which contains state variables for all the
+> > pages in the Enclave Page Cache (EPC).  The latter contains the pages,
+> > which applications can use to create enclaves.
+> > 
+> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > ---
+> >  Documentation/x86/sgx.rst      |  6 ++++++
+> >  arch/x86/include/asm/sgx.h     | 10 +++++++---
+> >  arch/x86/kernel/cpu/sgx/main.c |  7 ++++++-
+> >  arch/x86/mm/pat/set_memory.c   |  5 +++++
+> >  4 files changed, 24 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
+> > index dd0ac96ff9ef..68ee171e1d8f 100644
+> > --- a/Documentation/x86/sgx.rst
+> > +++ b/Documentation/x86/sgx.rst
+> > @@ -250,3 +250,9 @@ user wants to deploy SGX applications both on the host and in guests
+> >  on the same machine, the user should reserve enough EPC (by taking out
+> >  total virtual EPC size of all SGX VMs from the physical EPC size) for
+> >  host SGX applications so they can run with acceptable performance.
+> > +
+> > +Supplemental fields for /proc/meminfo
+> > +=====================================
+> > +
+> > +SGX_MemTotal
+> > +	The total usable SGX protected memory in kilobytes.
+> > diff --git a/arch/x86/include/asm/sgx.h b/arch/x86/include/asm/sgx.h
+> > index 05f3e21f01a7..2ae9dc8c9411 100644
+> > --- a/arch/x86/include/asm/sgx.h
+> > +++ b/arch/x86/include/asm/sgx.h
+> > @@ -365,6 +365,13 @@ struct sgx_sigstruct {
+> >   * comment!
+> >   */
+> >  
+> > +#if defined(CONFIG_X86_SGX) || defined(CONFIG_X86_SGX_KVM)
+> > +extern unsigned long sgx_nr_all_pages;
+> > +
+> > +int sgx_set_attribute(unsigned long *allowed_attributes,
+> > +		      unsigned int attribute_fd);
+> > +#endif
+> > +
+> >  #ifdef CONFIG_X86_SGX_KVM
+> >  int sgx_virt_ecreate(struct sgx_pageinfo *pageinfo, void __user *secs,
+> >  		     int *trapnr);
+> > @@ -372,7 +379,4 @@ int sgx_virt_einit(void __user *sigstruct, void __user *token,
+> >  		   void __user *secs, u64 *lepubkeyhash, int *trapnr);
+> >  #endif
+> >  
+> > -int sgx_set_attribute(unsigned long *allowed_attributes,
+> > -		      unsigned int attribute_fd);
+> > -
+> 
+> This change seems unrelated?
 
-On Wed, 18 Aug 2021 at 15:03, Marco Elver <elver@google.com> wrote:
->
-> Originally the addr != NULL check was meant to take care of the case
-> where __kfence_pool == NULL (KFENCE is disabled). However, this does not
-> work for addresses where addr > 0 && addr < KFENCE_POOL_SIZE.
->
-> This can be the case on NULL-deref where addr > 0 && addr < PAGE_SIZE or
-> any other faulting access with addr < KFENCE_POOL_SIZE. While the kernel
-> would likely crash, the stack traces and report might be confusing due
-> to double faults upon KFENCE's attempt to unprotect such an address.
->
-> Fix it by just checking that __kfence_pool != NULL instead.
->
-> Fixes: 0ce20dd84089 ("mm: add Kernel Electric-Fence infrastructure")
-> Reported-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-> Signed-off-by: Marco Elver <elver@google.com>
-> Cc: <stable@vger.kernel.org>    [5.12+]
-> ---
->  include/linux/kfence.h | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/include/linux/kfence.h b/include/linux/kfence.h
-> index a70d1ea03532..3fe6dd8a18c1 100644
-> --- a/include/linux/kfence.h
-> +++ b/include/linux/kfence.h
-> @@ -51,10 +51,11 @@ extern atomic_t kfence_allocation_gate;
->  static __always_inline bool is_kfence_address(const void *addr)
->  {
->         /*
-> -        * The non-NULL check is required in case the __kfence_pool pointer was
-> -        * never initialized; keep it in the slow-path after the range-check.
-> +        * The __kfence_pool != NULL check is required to deal with the case
-> +        * where __kfence_pool == NULL && addr < KFENCE_POOL_SIZE. Keep it in
-> +        * the slow-path after the range-check!
->          */
-> -       return unlikely((unsigned long)((char *)addr - __kfence_pool) < KFENCE_POOL_SIZE && addr);
-> +       return unlikely((unsigned long)((char *)addr - __kfence_pool) < KFENCE_POOL_SIZE && __kfence_pool);
->  }
+It's just a good practice not to define symbols that do not exist, so that
+if the symbol is ever used, we get a compilation error, not linking error.
 
-Jann, I recall discussing this check somewhere around:
-https://lore.kernel.org/linux-doc/CAG48ez0D1+hStZaDOigwbqNqFHJAJtXK+8Nadeuiu1Byv+xp5A@mail.gmail.com/
+Since this is included to set_memory.c, based on this conclusion, I added
+the check.
 
-I think you pointed out initially that we need another check, but
-somehow that turned into '&& addr' -- I think that's what we ended up
-with because of worry about another memory load, which is clearly
-wrong as that only works if addr==NULL. Simply checking
-__kfence_pool!=NULL is enough. I also checked codegen, and the
-compiler is smart enough to not reload the global __kfence_pool.
-
-Wanted to call it out, just in case you see something even more
-efficient (probably the only way to do better is to get rid of the 2nd
-branch, which I don't think is possible). :-)
-
-Thanks,
--- Marco
+/Jarkko
