@@ -2,541 +2,633 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C479C3F0918
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA293F091A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbhHRQ2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 12:28:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48722 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229780AbhHRQ2g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 12:28:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 973DA610A3;
-        Wed, 18 Aug 2021 16:27:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629304082;
-        bh=RF3L8YD4OYNwwqtgTYnKJK056xj3wKi2xHkY8zncXbQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CBa9IZcnee900lXfnI9JbwsihYPK2ump9p3SXN4ELM7qwFVCvRbvjK7XdO6waEj2z
-         QrJhdrxEkem+O+PKIS+7fTfYHg1ZOB4A9i9WO5MMHVvq32zZH+1gbPZqm1smeU1WDF
-         GI7IQTPTOQCm6/+cRXJ+JVIom4LBRBkZwYC9MXRfAfyZf0oIa1MrnOnje5Mj9otsKK
-         t/UAZdZ08xem58MyLpNrcqB4yhcHvTfwTr89Twaf9AA9KX1S4cpZ75SiCWHkHaNKP4
-         4xkUhfSayUOFGvsMP7XwzvplPlmVZZzyr/OVDnt6rzUF5UX/SxkP7HS0b9XYQL1Gax
-         d1bRBY3QO8CVw==
-Date:   Thu, 19 Aug 2021 01:27:57 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Qi Liu <liuqi115@huawei.com>
-Cc:     <catalin.marinas@arm.com>, <will@kernel.org>,
-        <naveen.n.rao@linux.ibm.com>, <anil.s.keshavamurthy@intel.com>,
-        <davem@davemloft.net>, <linux-arm-kernel@lists.infradead.org>,
-        <song.bao.hua@hisilicon.com>, <prime.zeng@hisilicon.com>,
-        <robin.murphy@arm.com>, <f.fangjian@huawei.com>,
-        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 2/2] arm64: kprobe: Enable OPTPROBE for arm64
-Message-Id: <20210819012757.bf08d4c601cca4d401d5803f@kernel.org>
-In-Reply-To: <20210818073336.59678-3-liuqi115@huawei.com>
-References: <20210818073336.59678-1-liuqi115@huawei.com>
-        <20210818073336.59678-3-liuqi115@huawei.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232301AbhHRQ2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 12:28:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52846 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232030AbhHRQ2p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 12:28:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629304088;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fnWGYapsD7gUycSZMkfmLnWJlpswWGqBtRcI/+SZDI0=;
+        b=e6Bd9SzyVoykyqMskGetzOQDfGIdBftdYWCOHHx/UhnIVNCYyM6xMhXVocYiGg0BdPkN5V
+        T2LDNiBbuQEDdIJnd970Ivt0J0f/G4njBYULspPSOQFeCTmVadN2sAav8iaiS/XUZPrUeB
+        V2eqC7qPuO/qSqWj+FnHVDEJoy8jw9U=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-99-zFFKlf3kMZqRLN2GlH5rxA-1; Wed, 18 Aug 2021 12:28:07 -0400
+X-MC-Unique: zFFKlf3kMZqRLN2GlH5rxA-1
+Received: by mail-wm1-f72.google.com with SMTP id u14-20020a7bcb0e0000b0290248831d46e4so852051wmj.6
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 09:28:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=fnWGYapsD7gUycSZMkfmLnWJlpswWGqBtRcI/+SZDI0=;
+        b=Ib3JV0M5p5ymus7BcdTBTT0qENF9KJIpxy+ZZFsURrTrNd3wVuO0CXGc0W0BwAjpwz
+         sTkF8RJSmPLfeNqYxh7tTxc99jjjv2+uSMCD+3LKV0hwmwj1Ec04/g5dCbf0yPOeWlXO
+         smjoXgSHan1F9w3+wZT63QQLilztKKULnj4fRfs9mPQ0xqSERueePD1VaZaufn/j0XtY
+         h9aPufY4kEobjRhN9ZdCUmSEgds0ab+njqFVRulQR9UMZFsVBgTWVjiRVABcNcdUb+aw
+         HtbMS3DKpViqfzW9LuV+AJE52MiFmY3u+usNCEEatS3hQWRn5kwWO76ygC47bLo+fOc6
+         TPtQ==
+X-Gm-Message-State: AOAM5339hmGKbsKgVKiY7Dao0AXB/nu8ThvWGrvgvkOH9FHnwAjHeAMp
+        DsLH2ydJSWokQcWfpiT4EGrGK5rv9Jt2OkkYZKGkcfg7BxEkmxUzXrbT32E3RDI6GfwqQB8MO/w
+        ZakVVhekxaottwHjj79LNgHch
+X-Received: by 2002:a5d:6287:: with SMTP id k7mr11354308wru.321.1629304086202;
+        Wed, 18 Aug 2021 09:28:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzlAGcOR/py6EPyred0Uc4URBh6Y5QyAhnCS64imjw0F5XkO/q3FmYz/Q/Kjn6+MPFNW+z13g==
+X-Received: by 2002:a5d:6287:: with SMTP id k7mr11354277wru.321.1629304085844;
+        Wed, 18 Aug 2021 09:28:05 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id x19sm261734wmi.30.2021.08.18.09.28.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 09:28:04 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Tianqiang Xu <skyele@sjtu.edu.cn>
+Cc:     pbonzini@redhat.com, seanjc@google.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, kvm@vger.kernel.org, hpa@zytor.com,
+        jarkko@kernel.org, dave.hansen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        Tianqiang Xu <skyele@sjtu.edu.cn>, x86@kernel.org
+Subject: Re: [PATCH] KVM: x86: add a new field 'is_idle' to kvm_steal_time
+In-Reply-To: <20210813161413.17255-1-skyele@sjtu.edu.cn>
+References: <20210813161413.17255-1-skyele@sjtu.edu.cn>
+Date:   Wed, 18 Aug 2021 18:28:03 +0200
+Message-ID: <87lf4ylnu4.fsf@vitty.brq.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Aug 2021 15:33:36 +0800
-Qi Liu <liuqi115@huawei.com> wrote:
+Tianqiang Xu <skyele@sjtu.edu.cn> writes:
 
-> This patch introduce optprobe for ARM64. In optprobe, probed
-> instruction is replaced by a branch instruction to detour
-> buffer. Detour buffer contains trampoline code and a call to
-> optimized_callback(). optimized_callback() calls opt_pre_handler()
-> to execute kprobe handler.
-> 
-> Performance of optprobe on Hip08 platform is test using kprobe
-> example module[1] to analyze the latency of a kernel function,
-> and here is the result:
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/samples/kprobes/kretprobe_example.c
-> 
-> kprobe before optimized:
-> [280709.846380] do_empty returned 0 and took 1530 ns to execute
-> [280709.852057] do_empty returned 0 and took 550 ns to execute
-> [280709.857631] do_empty returned 0 and took 440 ns to execute
-> [280709.863215] do_empty returned 0 and took 380 ns to execute
-> [280709.868787] do_empty returned 0 and took 360 ns to execute
-> [280709.874362] do_empty returned 0 and took 340 ns to execute
-> [280709.879936] do_empty returned 0 and took 320 ns to execute
-> [280709.885505] do_empty returned 0 and took 300 ns to execute
-> [280709.891075] do_empty returned 0 and took 280 ns to execute
-> [280709.896646] do_empty returned 0 and took 290 ns to execute
-> [280709.902220] do_empty returned 0 and took 290 ns to execute
-> [280709.907807] do_empty returned 0 and took 290 ns to execute
-> 
-> optprobe:
-> [ 2965.964572] do_empty returned 0 and took 90 ns to execute
-> [ 2965.969952] do_empty returned 0 and took 80 ns to execute
-> [ 2965.975332] do_empty returned 0 and took 70 ns to execute
-> [ 2965.980714] do_empty returned 0 and took 60 ns to execute
-> [ 2965.986128] do_empty returned 0 and took 80 ns to execute
-> [ 2965.991507] do_empty returned 0 and took 70 ns to execute
-> [ 2965.996884] do_empty returned 0 and took 70 ns to execute
-> [ 2966.002262] do_empty returned 0 and took 80 ns to execute
-> [ 2966.007642] do_empty returned 0 and took 70 ns to execute
-> [ 2966.013020] do_empty returned 0 and took 70 ns to execute
-> [ 2966.018400] do_empty returned 0 and took 70 ns to execute
-> [ 2966.023779] do_empty returned 0 and took 70 ns to execute
-> [ 2966.029158] do_empty returned 0 and took 70 ns to execute
-> 
-> Signed-off-by: Qi Liu <liuqi115@huawei.com>
-
-Thanks for updating. This looks good to me. :D
-
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thank you!
-
-> 
-> Note:
-> To guarantee the offset between probe point and kprobe pre_handler
-> is smaller than 128MiB, users should set
-> CONFIG_RANDOMIZE_MODULE_REGION_FULL=N or set nokaslr in command line, or
-> optprobe will not work and fall back to normal kprobe.
+> This patch aims to fix performance issue caused by current
+> para-virtualized scheduling design.
+>
+> The current para-virtualized scheduling design uses 'preempted' field of
+> kvm_steal_time to avoid scheduling task on the preempted vCPU.
+> However, when the pCPU where the preempted vCPU most recently run is idle,
+> it will result in low cpu utilization, and consequently poor performance.
+>
+> The new field: 'is_idle' of kvm_steal_time can precisely reveal the status of
+> pCPU where preempted vCPU most recently run, and then improve cpu utilization.
+>
+> Host OS sets this field to 1 if cpu_rq(this_cpu)->nr_running is 1 before
+> a vCPU being scheduled out. On this condition, there is no other task on
+> this pCPU to run. Thus, is_idle == 1 means the pCPU where the preempted
+> vCPU most recently run is idle.
+>
+> Guest OS uses this field to know if a pCPU is idle and decides whether
+> to schedule a task to a preempted vCPU or not. If the pCPU is idle,
+> scheduling a task to this pCPU will improve cpu utilization. If not,
+> avoiding scheduling a task to this preempted vCPU can avoid host/guest
+> switch, hence improving performance.
+>
+> Experiments on a VM with 16 vCPUs show that the patch can reduce around
+> 50% to 80% execution time for most PARSEC benchmarks. 
+> This also holds true for a VM with 112 vCPUs.
+>
+> Experiments on 2 VMs with 112 vCPUs show that the patch can reduce around
+> 20% to 80% execution time for most PARSEC benchmarks. 
+>
+> Test environment:
+> -- PowerEdge R740
+> -- 56C-112T CPU Intel(R) Xeon(R) Gold 6238R CPU
+> -- Host 190G DRAM
+> -- QEMU 5.0.0
+> -- PARSEC 3.0 Native Inputs
+> -- Host is idle during the test
+> -- Host and Guest kernel are both kernel-5.14.0
+>
+> Results:
+> 1. 1 VM, 16 VCPU, 16 THREAD.
+>    Host Topology: sockets=2 cores=28 threads=2
+>    VM Topology:   sockets=1 cores=16 threads=1
+>    Command: <path to parsec>/bin/parsecmgmt -a run -p <benchmark> -i native -n 16
+>    Statistics below are the real time of running each benchmark.(lower is better)
+>
+>                     before patch    after patch     improvements
+> bodytrack           52.866s         22.619s         57.21%
+> fluidanimate        84.009s         38.148s         54.59%
+> streamcluster       270.17s         42.726s         84.19%
+> splash2x.ocean_cp   31.932s         9.539s          70.13%
+> splash2x.ocean_ncp  36.063s         14.189s         60.65%
+> splash2x.volrend    134.587s        21.79s          83.81%
+>
+> 2. 1VM, 112 VCPU. Some benchmarks require the number of threads to be the power of 2,
+> so we run them with 64 threads and 128 threads.
+>    Host Topology: sockets=2 cores=28 threads=2
+>    VM Topology:   sockets=1 cores=112 threads=1
+>    Command: <path to parsec>/bin/parsecmgmt -a run -p <benchmark> -i native -n <64,112,128>
+>    Statistics below are the real time of running each benchmark.(lower is better)
+>
+>    
+>
+>                                 before patch    after patch     improvements
+> fluidanimate(64 thread)         124.235s        27.924s         77.52%
+> fluidanimate(128 thread)        169.127s        64.541s         61.84%
+> streamcluster(112 thread)       861.879s        496.66s         42.37%
+> splash2x.ocean_cp(64 thread)    46.415s         18.527s         60.08%
+> splash2x.ocean_cp(128 thread)   53.647s         28.929s         46.08%
+> splash2x.ocean_ncp(64 thread)   47.613s         19.576s         58.89%
+> splash2x.ocean_ncp(128 thread)  54.94s          29.199s         46.85%
+> splash2x.volrend(112 thread)    801.384s        144.824s        81.93%
+>
+> 3. 2VM, each VM: 112 VCPU. Some benchmarks require the number of threads to
+> be the power of 2, so we run them with 64 threads and 128 threads.
+>    Host Topology: sockets=2 cores=28 threads=2
+>    VM Topology:   sockets=1 cores=112 threads=1
+>    Command: <path to parsec>/bin/parsecmgmt -a run -p <benchmark> -i native -n <64,112,128>
+>    Statistics below are the average real time of running each benchmark in 2 VMs.(lower is better)
+>                                 before patch    after patch     improvements
+> fluidanimate(64 thread)         135.2125s       49.827s         63.15%
+> fluidanimate(128 thread)        178.309s        86.964s         51.23%
+> splash2x.ocean_cp(64 thread)    47.4505s        20.314s         57.19%
+> splash2x.ocean_cp(128 thread)   55.5645s        30.6515s        44.84%
+> splash2x.ocean_ncp(64 thread)   49.9775s        23.489s         53.00%
+> splash2x.ocean_ncp(128 thread)  56.847s         28.545s         49.79%
+> splash2x.volrend(112 thread)    838.939s        239.632s        71.44%
+>
+> For space limit, we list representative statistics here.
+>
+> --
+> Authors: Tianqiang Xu, Dingji Li, Zeyu Mi
+>          Shanghai Jiao Tong University
+>
+> Signed-off-by: Tianqiang Xu <skyele@sjtu.edu.cn>
 > ---
->  arch/arm64/Kconfig                            |   1 +
->  arch/arm64/include/asm/kprobes.h              |  24 ++
->  arch/arm64/kernel/probes/Makefile             |   2 +
->  arch/arm64/kernel/probes/kprobes.c            |  19 +-
->  arch/arm64/kernel/probes/opt_arm64.c          | 276 ++++++++++++++++++
->  .../arm64/kernel/probes/optprobe_trampoline.S |  37 +++
->  6 files changed, 356 insertions(+), 3 deletions(-)
->  create mode 100644 arch/arm64/kernel/probes/opt_arm64.c
->  create mode 100644 arch/arm64/kernel/probes/optprobe_trampoline.S
-> 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index b5b13a932561..b05d1d275d87 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -200,6 +200,7 @@ config ARM64
->  	select HAVE_STACKPROTECTOR
->  	select HAVE_SYSCALL_TRACEPOINTS
->  	select HAVE_KPROBES
-> +	select HAVE_OPTPROBES
->  	select HAVE_KRETPROBES
->  	select HAVE_GENERIC_VDSO
->  	select IOMMU_DMA if IOMMU_SUPPORT
-> diff --git a/arch/arm64/include/asm/kprobes.h b/arch/arm64/include/asm/kprobes.h
-> index 5d38ff4a4806..6b2fdd2ad7d8 100644
-> --- a/arch/arm64/include/asm/kprobes.h
-> +++ b/arch/arm64/include/asm/kprobes.h
-> @@ -39,6 +39,30 @@ void arch_remove_kprobe(struct kprobe *);
->  int kprobe_fault_handler(struct pt_regs *regs, unsigned int fsr);
->  int kprobe_exceptions_notify(struct notifier_block *self,
->  			     unsigned long val, void *data);
-> +
-> +#define RELATIVEJUMP_SIZE (4)
-> +#define MAX_COPIED_INSN	DIV_ROUND_UP(RELATIVEJUMP_SIZE, sizeof(kprobe_opcode_t))
-> +struct arch_optimized_insn {
-> +	kprobe_opcode_t copied_insn[MAX_COPIED_INSN];
-> +	/* detour code buffer */
-> +	kprobe_opcode_t *insn;
-> +};
-> +
-> +/* optinsn template addresses */
-> +extern __visible kprobe_opcode_t optprobe_template_entry[];
-> +extern __visible kprobe_opcode_t optprobe_template_val[];
-> +extern __visible kprobe_opcode_t optprobe_template_call[];
-> +extern __visible kprobe_opcode_t optprobe_template_end[];
-> +extern __visible kprobe_opcode_t optprobe_template_restore_begin[];
-> +extern __visible kprobe_opcode_t optprobe_template_restore_orig_insn[];
-> +extern __visible kprobe_opcode_t optprobe_template_restore_end[];
-> +extern __visible kprobe_opcode_t optprobe_template_max_length[];
-> +
-> +#define MAX_OPTIMIZED_LENGTH	4
-> +#define MAX_OPTINSN_SIZE				\
-> +	((unsigned long)optprobe_template_end -	\
-> +	 (unsigned long)optprobe_template_entry)
-> +
->  void kretprobe_trampoline(void);
->  void __kprobes *trampoline_probe_handler(struct pt_regs *regs);
+>  arch/x86/hyperv/hv_spinlock.c         |  7 +++
+>  arch/x86/include/asm/cpufeatures.h    |  1 +
+>  arch/x86/include/asm/kvm_host.h       |  1 +
+>  arch/x86/include/asm/paravirt.h       |  8 +++
+>  arch/x86/include/asm/paravirt_types.h |  1 +
+>  arch/x86/include/asm/qspinlock.h      |  6 ++
+>  arch/x86/include/uapi/asm/kvm_para.h  |  4 +-
+>  arch/x86/kernel/asm-offsets_64.c      |  1 +
+>  arch/x86/kernel/kvm.c                 | 23 +++++++
+>  arch/x86/kernel/paravirt-spinlocks.c  | 15 +++++
+>  arch/x86/kernel/paravirt.c            |  2 +
+>  arch/x86/kvm/x86.c                    | 90 ++++++++++++++++++++++++++-
+>  include/linux/sched.h                 |  1 +
+>  kernel/sched/core.c                   | 17 +++++
+>  kernel/sched/sched.h                  |  1 +
+>  15 files changed, 176 insertions(+), 2 deletions(-)
+
+Thank you for the patch! Please split this patch into a series, e.g.:
+
+- Introduce .pcpu_is_idle() stub infrastructure
+- Scheduler changes
+- Preparatory patch[es] for KVM creating 'is_idle'
+- KVM host implementation
+- KVM guest implementation
+- ...
+
+so it can be reviewed and ACKed. Just a couple of nitpicks below
+
+>
+> diff --git a/arch/x86/hyperv/hv_spinlock.c b/arch/x86/hyperv/hv_spinlock.c
+> index 91cfe698bde0..b8c32b719cab 100644
+> --- a/arch/x86/hyperv/hv_spinlock.c
+> +++ b/arch/x86/hyperv/hv_spinlock.c
+> @@ -66,6 +66,12 @@ __visible bool hv_vcpu_is_preempted(int vcpu)
+>  }
+>  PV_CALLEE_SAVE_REGS_THUNK(hv_vcpu_is_preempted);
 >  
-> diff --git a/arch/arm64/kernel/probes/Makefile b/arch/arm64/kernel/probes/Makefile
-> index 8e4be92e25b1..07105fd3261d 100644
-> --- a/arch/arm64/kernel/probes/Makefile
-> +++ b/arch/arm64/kernel/probes/Makefile
-> @@ -4,3 +4,5 @@ obj-$(CONFIG_KPROBES)		+= kprobes.o decode-insn.o	\
->  				   simulate-insn.o
->  obj-$(CONFIG_UPROBES)		+= uprobes.o decode-insn.o	\
->  				   simulate-insn.o
-> +obj-$(CONFIG_OPTPROBES)		+= opt_arm64.o			\
-> +				   optprobe_trampoline.o
-> diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
-> index 6dbcc89f6662..83755ad62abe 100644
-> --- a/arch/arm64/kernel/probes/kprobes.c
-> +++ b/arch/arm64/kernel/probes/kprobes.c
-> @@ -11,6 +11,7 @@
->  #include <linux/kasan.h>
->  #include <linux/kernel.h>
->  #include <linux/kprobes.h>
-> +#include <linux/moduleloader.h>
->  #include <linux/sched/debug.h>
->  #include <linux/set_memory.h>
->  #include <linux/slab.h>
-> @@ -113,9 +114,21 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
->  
->  void *alloc_insn_page(void)
+> +__visible bool hv_pcpu_is_idle(int vcpu)
+> +{
+> +	return false;
+> +}
+> +PV_CALLEE_SAVE_REGS_THUNK(hv_pcpu_is_idle);
+> +
+>  void __init hv_init_spinlocks(void)
 >  {
-> -	return __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,
-> -			GFP_KERNEL, PAGE_KERNEL_ROX, VM_FLUSH_RESET_PERMS,
-> -			NUMA_NO_NODE, __builtin_return_address(0));
-> +	void *page;
-> +
-> +	page = module_alloc(PAGE_SIZE);
-> +	if (!page)
-> +		return NULL;
-> +
-> +	set_vm_flush_reset_perms(page);
-> +	/*
-> +	 * First make the page read-only, and only then make it executable to
-> +	 * prevent it from being W+X in between.
-> +	 */
-> +	set_memory_ro((unsigned long)page, 1);
-> +	set_memory_x((unsigned long)page, 1);
-> +
-> +	return page;
+>  	if (!hv_pvspin || !apic ||
+> @@ -82,6 +88,7 @@ void __init hv_init_spinlocks(void)
+>  	pv_ops.lock.wait = hv_qlock_wait;
+>  	pv_ops.lock.kick = hv_qlock_kick;
+>  	pv_ops.lock.vcpu_is_preempted = PV_CALLEE_SAVE(hv_vcpu_is_preempted);
+> +	pv_ops.lock.pcpu_is_idle = PV_CALLEE_SAVE(hv_pcpu_is_idle);
 >  }
 >  
->  /* arm kprobe: install breakpoint in text */
-> diff --git a/arch/arm64/kernel/probes/opt_arm64.c b/arch/arm64/kernel/probes/opt_arm64.c
-> new file mode 100644
-> index 000000000000..4de535bee534
-> --- /dev/null
-> +++ b/arch/arm64/kernel/probes/opt_arm64.c
-> @@ -0,0 +1,276 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Code for Kernel probes Jump optimization.
-> + *
-> + * Copyright (C) 2021 Hisilicon Limited
-> + */
-> +
-> +#include <linux/jump_label.h>
-> +#include <linux/kprobes.h>
-> +
-> +#include <asm/cacheflush.h>
-> +#include <asm/insn.h>
-> +#include <asm/kprobes.h>
-> +#include <asm/patching.h>
-> +
-> +#define TMPL_VAL_IDX \
-> +	(optprobe_template_val - optprobe_template_entry)
-> +#define TMPL_CALL_BACK \
-> +	(optprobe_template_call - optprobe_template_entry)
-> +#define TMPL_END_IDX \
-> +	(optprobe_template_end - optprobe_template_entry)
-> +#define TMPL_RESTORE_ORIGN_INSN \
-> +	(optprobe_template_restore_orig_insn - optprobe_template_entry)
-> +#define TMPL_RESTORE_END \
-> +	(optprobe_template_restore_end - optprobe_template_entry)
-> +#define TMPL_MAX_LENGTH \
-> +	(optprobe_template_max_length - optprobe_template_entry)
-> +#define OPTPROBE_BATCH_SIZE 64
-> +
-> +int arch_check_optimized_kprobe(struct optimized_kprobe *op)
+>  static __init int hv_parse_nopvspin(char *arg)
+> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> index d0ce5cfd3ac1..8a078619c9de 100644
+> --- a/arch/x86/include/asm/cpufeatures.h
+> +++ b/arch/x86/include/asm/cpufeatures.h
+> @@ -238,6 +238,7 @@
+>  #define X86_FEATURE_VMW_VMMCALL		( 8*32+19) /* "" VMware prefers VMMCALL hypercall instruction */
+>  #define X86_FEATURE_PVUNLOCK		( 8*32+20) /* "" PV unlock function */
+>  #define X86_FEATURE_VCPUPREEMPT		( 8*32+21) /* "" PV vcpu_is_preempted function */
+> +#define X86_FEATURE_PCPUISIDLE		( 8*32+22) /* "" PV pcpu_is_idle function */
+>  
+>  /* Intel-defined CPU features, CPUID level 0x00000007:0 (EBX), word 9 */
+>  #define X86_FEATURE_FSGSBASE		( 9*32+ 0) /* RDFSBASE, WRFSBASE, RDGSBASE, WRGSBASE instructions*/
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 974cbfb1eefe..bed0ab7233be 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -742,6 +742,7 @@ struct kvm_vcpu_arch {
+>  
+>  	struct {
+>  		u8 preempted;
+> +		u8 is_idle;
+>  		u64 msr_val;
+>  		u64 last_steal;
+>  		struct gfn_to_pfn_cache cache;
+> diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
+> index da3a1ac82be5..f34dec6eb515 100644
+> --- a/arch/x86/include/asm/paravirt.h
+> +++ b/arch/x86/include/asm/paravirt.h
+> @@ -609,8 +609,16 @@ static __always_inline bool pv_vcpu_is_preempted(long cpu)
+>  				ALT_NOT(X86_FEATURE_VCPUPREEMPT));
+>  }
+>  
+> +static __always_inline bool pv_pcpu_is_idle(long cpu)
 > +{
-> +	return 0;
+> +	return PVOP_ALT_CALLEE1(bool, lock.pcpu_is_idle, cpu,
+> +				"xor %%" _ASM_AX ", %%" _ASM_AX ";",
+> +				ALT_NOT(X86_FEATURE_PCPUISIDLE));
 > +}
 > +
-> +int arch_prepared_optinsn(struct arch_optimized_insn *optinsn)
+>  void __raw_callee_save___native_queued_spin_unlock(struct qspinlock *lock);
+>  bool __raw_callee_save___native_vcpu_is_preempted(long cpu);
+> +bool __raw_callee_save___native_pcpu_is_idle(long cpu);
+>  
+>  #endif /* SMP && PARAVIRT_SPINLOCKS */
+>  
+> diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
+> index d9d6b0203ec4..7d9b5906580c 100644
+> --- a/arch/x86/include/asm/paravirt_types.h
+> +++ b/arch/x86/include/asm/paravirt_types.h
+> @@ -257,6 +257,7 @@ struct pv_lock_ops {
+>  	void (*kick)(int cpu);
+>  
+>  	struct paravirt_callee_save vcpu_is_preempted;
+> +	struct paravirt_callee_save pcpu_is_idle;
+>  } __no_randomize_layout;
+>  
+>  /* This contains all the paravirt structures: we get a convenient
+> diff --git a/arch/x86/include/asm/qspinlock.h b/arch/x86/include/asm/qspinlock.h
+> index d86ab942219c..1832dd8308ca 100644
+> --- a/arch/x86/include/asm/qspinlock.h
+> +++ b/arch/x86/include/asm/qspinlock.h
+> @@ -61,6 +61,12 @@ static inline bool vcpu_is_preempted(long cpu)
+>  {
+>  	return pv_vcpu_is_preempted(cpu);
+>  }
+> +
+> +#define pcpu_is_idle pcpu_is_idle
+> +static inline bool pcpu_is_idle(long cpu)
 > +{
-> +	return optinsn->insn != NULL;
+> +	return pv_pcpu_is_idle(cpu);
 > +}
-> +
-> +int arch_within_optimized_kprobe(struct optimized_kprobe *op,
-> +				unsigned long addr)
+>  #endif
+>  
+>  #ifdef CONFIG_PARAVIRT
+> diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
+> index 5146bbab84d4..2af305ba030a 100644
+> --- a/arch/x86/include/uapi/asm/kvm_para.h
+> +++ b/arch/x86/include/uapi/asm/kvm_para.h
+> @@ -63,12 +63,14 @@ struct kvm_steal_time {
+>  	__u32 version;
+>  	__u32 flags;
+>  	__u8  preempted;
+> -	__u8  u8_pad[3];
+> +	__u8  is_idle;
+> +	__u8  u8_pad[2];
+>  	__u32 pad[11];
+>  };
+>  
+>  #define KVM_VCPU_PREEMPTED          (1 << 0)
+>  #define KVM_VCPU_FLUSH_TLB          (1 << 1)
+> +#define KVM_PCPU_IS_IDLE          (1 << 0)
+>  
+>  #define KVM_CLOCK_PAIRING_WALLCLOCK 0
+>  struct kvm_clock_pairing {
+> diff --git a/arch/x86/kernel/asm-offsets_64.c b/arch/x86/kernel/asm-offsets_64.c
+> index b14533af7676..b587bbe44470 100644
+> --- a/arch/x86/kernel/asm-offsets_64.c
+> +++ b/arch/x86/kernel/asm-offsets_64.c
+> @@ -22,6 +22,7 @@ int main(void)
+>  
+>  #if defined(CONFIG_KVM_GUEST) && defined(CONFIG_PARAVIRT_SPINLOCKS)
+>  	OFFSET(KVM_STEAL_TIME_preempted, kvm_steal_time, preempted);
+> +	OFFSET(KVM_STEAL_TIME_is_idle, kvm_steal_time, is_idle);
+>  	BLANK();
+>  #endif
+>  
+> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+> index a26643dc6bd6..274d205b744c 100644
+> --- a/arch/x86/kernel/kvm.c
+> +++ b/arch/x86/kernel/kvm.c
+> @@ -900,11 +900,20 @@ __visible bool __kvm_vcpu_is_preempted(long cpu)
+>  }
+>  PV_CALLEE_SAVE_REGS_THUNK(__kvm_vcpu_is_preempted);
+>  
+> +__visible bool __kvm_pcpu_is_idle(long cpu)
 > +{
-> +	return ((unsigned long)op->kp.addr <= addr &&
-> +		(unsigned long)op->kp.addr + RELATIVEJUMP_SIZE > addr);
-> +}
+> +	struct kvm_steal_time *src = &per_cpu(steal_time, cpu);
 > +
-> +static void
-> +optimized_callback(struct optimized_kprobe *op, struct pt_regs *regs)
+> +	return !!(src->is_idle & KVM_PCPU_IS_IDLE);
+> +}
+> +PV_CALLEE_SAVE_REGS_THUNK(__kvm_pcpu_is_idle);
+> +
+>  #else
+>  
+>  #include <asm/asm-offsets.h>
+>  
+>  extern bool __raw_callee_save___kvm_vcpu_is_preempted(long);
+> +extern bool __raw_callee_save___kvm_pcpu_is_idle(long);
+>  
+>  /*
+>   * Hand-optimize version for x86-64 to avoid 8 64-bit register saving and
+> @@ -922,6 +931,18 @@ asm(
+>  ".size __raw_callee_save___kvm_vcpu_is_preempted, .-__raw_callee_save___kvm_vcpu_is_preempted;"
+>  ".popsection");
+>  
+> +asm(
+> +".pushsection .text;"
+> +".global __raw_callee_save___kvm_pcpu_is_idle;"
+> +".type __raw_callee_save___kvm_pcpu_is_idle, @function;"
+> +"__raw_callee_save___kvm_pcpu_is_idle:"
+> +"movq	__per_cpu_offset(,%rdi,8), %rax;"
+> +"cmpb	$0, " __stringify(KVM_STEAL_TIME_is_idle) "+steal_time(%rax);"
+> +"setne	%al;"
+> +"ret;"
+> +".size __raw_callee_save___kvm_pcpu_is_idle, .-__raw_callee_save___kvm_pcpu_is_idle;"
+> +".popsection");
+> +
+>  #endif
+>  
+>  /*
+> @@ -970,6 +991,8 @@ void __init kvm_spinlock_init(void)
+>  	if (kvm_para_has_feature(KVM_FEATURE_STEAL_TIME)) {
+>  		pv_ops.lock.vcpu_is_preempted =
+>  			PV_CALLEE_SAVE(__kvm_vcpu_is_preempted);
+> +		pv_ops.lock.pcpu_is_idle =
+> +			PV_CALLEE_SAVE(__kvm_pcpu_is_idle);
+>  	}
+>  	/*
+>  	 * When PV spinlock is enabled which is preferred over
+> diff --git a/arch/x86/kernel/paravirt-spinlocks.c b/arch/x86/kernel/paravirt-spinlocks.c
+> index 9e1ea99ad9df..d7f6a461d0a5 100644
+> --- a/arch/x86/kernel/paravirt-spinlocks.c
+> +++ b/arch/x86/kernel/paravirt-spinlocks.c
+> @@ -27,12 +27,24 @@ __visible bool __native_vcpu_is_preempted(long cpu)
+>  }
+>  PV_CALLEE_SAVE_REGS_THUNK(__native_vcpu_is_preempted);
+>  
+> +__visible bool __native_pcpu_is_idle(long cpu)
 > +{
-> +	/* This is possible if op is under delayed unoptimizing */
-> +	if (kprobe_disabled(&op->kp))
-> +		return;
-> +
-> +	preempt_disable();
-> +
-> +	if (kprobe_running()) {
-> +		kprobes_inc_nmissed_count(&op->kp);
-> +	} else {
-> +		__this_cpu_write(current_kprobe, &op->kp);
-> +		regs->pc = (unsigned long)op->kp.addr;
-> +		get_kprobe_ctlblk()->kprobe_status = KPROBE_HIT_ACTIVE;
-> +		opt_pre_handler(&op->kp, regs);
-> +		__this_cpu_write(current_kprobe, NULL);
-> +	}
-> +
-> +	preempt_enable_no_resched();
+> +	return false;
 > +}
-> +NOKPROBE_SYMBOL(optimized_callback)
+> +PV_CALLEE_SAVE_REGS_THUNK(__native_pcpu_is_idle);
 > +
-> +static bool is_offset_in_range(unsigned long start, unsigned long end)
-> +{
-> +	long offset = end - start;
-> +
-> +	/*
-> +	 * Verify if the address gap is in 128MiB range, because this uses
-> +	 * a relative jump.
-> +	 *
-> +	 * kprobe opt use a 'b' instruction to branch to optinsn.insn.
-> +	 * According to ARM manual, branch instruction is:
-> +	 *
-> +	 *   31  30                  25              0
-> +	 *  +----+---+---+---+---+---+---------------+
-> +	 *  |cond| 0 | 0 | 1 | 0 | 1 |     imm26     |
-> +	 *  +----+---+---+---+---+---+---------------+
-> +	 *
-> +	 * imm26 is a signed 26 bits integer. The real branch offset is computed
-> +	 * by: imm64 = SignExtend(imm26:'00', 64);
-> +	 *
-> +	 * So the maximum forward branch should be:
-> +	 *   (0x01ffffff << 2) = 0x07fffffc
-> +	 * The maximum backward branch should be:
-> +	 *   (0xfe000000 << 2) = 0xFFFFFFFFF8000000 = -0x08000000
-> +	 *
-> +	 * We can simply check (rel & 0xf8000003):
-> +	 *  if rel is positive, (rel & 0xf8000003) should be 0
-> +	 *  if rel is negitive, (rel & 0xf8000003) should be 0xf8000000
-> +	 *  the last '3' is used for alignment checking.
-> +	 */
-> +	return (offset >= -0x8000000 && offset <= 0x7fffffc && !(offset & 0x3));
-> +}
-> +
-> +int arch_prepare_optimized_kprobe(struct optimized_kprobe *op,
-> +				  struct kprobe *orig)
-> +{
-> +	kprobe_opcode_t *code, *buf;
-> +	void **addrs;
-> +	u32 insn;
-> +	int ret, i;
-> +
-> +	addrs = kcalloc(TMPL_MAX_LENGTH, sizeof(void *), GFP_KERNEL);
-> +	if (!addrs)
-> +		return -ENOMEM;
-> +
-> +	buf = kcalloc(TMPL_MAX_LENGTH, sizeof(kprobe_opcode_t), GFP_KERNEL);
-> +	if (!buf) {
-> +		kfree(addrs);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	code = get_optinsn_slot();
-> +	if (!code) {
-> +		kfree(addrs);
-> +		kfree(buf);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	if (!is_offset_in_range((unsigned long)code,
-> +				(unsigned long)orig->addr + 8)) {
-> +		ret = -ERANGE;
-> +		goto error;
-> +	}
-> +
-> +	if (!is_offset_in_range((unsigned long)code + TMPL_CALL_BACK,
-> +				(unsigned long)optimized_callback)) {
-> +		ret = -ERANGE;
-> +		goto error;
-> +	}
-> +
-> +	if (!is_offset_in_range((unsigned long)&code[TMPL_RESTORE_END],
-> +				(unsigned long)op->kp.addr + 4)) {
-> +		ret = -ERANGE;
-> +		goto error;
-> +	}
-> +
-> +	memcpy(buf, optprobe_template_entry,
-> +	       TMPL_END_IDX * sizeof(kprobe_opcode_t));
-> +
-> +	buf[TMPL_VAL_IDX] = FIELD_GET(GENMASK(31, 0), (unsigned long long)op);
-> +	buf[TMPL_VAL_IDX + 1] =
-> +		FIELD_GET(GENMASK(63, 32), (unsigned long long)op);
-> +	buf[TMPL_RESTORE_ORIGN_INSN] = orig->opcode;
-> +
-> +	insn = aarch64_insn_gen_branch_imm(
-> +		(unsigned long)(&code[TMPL_CALL_BACK]),
-> +		(unsigned long)optimized_callback, AARCH64_INSN_BRANCH_LINK);
-> +	buf[TMPL_CALL_BACK] = insn;
-> +
-> +	insn = aarch64_insn_gen_branch_imm(
-> +		(unsigned long)(&code[TMPL_RESTORE_END]),
-> +		(unsigned long)(op->kp.addr) + 4, AARCH64_INSN_BRANCH_NOLINK);
-> +	buf[TMPL_RESTORE_END] = insn;
-> +
-> +	/* Setup template */
-> +	for (i = 0; i < TMPL_MAX_LENGTH; i++)
-> +		addrs[i] = code + i;
-> +
-> +	ret = aarch64_insn_patch_text(addrs, buf, TMPL_MAX_LENGTH);
-> +	if (ret < 0)
-> +		goto error;
-> +
-> +	flush_icache_range((unsigned long)code,
-> +			   (unsigned long)(&code[TMPL_END_IDX]));
-> +
-> +	/* Set op->optinsn.insn means prepared. */
-> +	op->optinsn.insn = code;
-> +
-> +out:
-> +	kfree(addrs);
-> +	kfree(buf);
-> +	return ret;
-> +
-> +error:
-> +	free_optinsn_slot(code, 0);
-> +	goto out;
-> +}
-> +
-> +void arch_optimize_kprobes(struct list_head *oplist)
-> +{
-> +	struct optimized_kprobe *op, *tmp;
-> +	kprobe_opcode_t *insns;
-> +	void **addrs;
-> +	int i = 0;
-> +
-> +	addrs = kcalloc(OPTPROBE_BATCH_SIZE, sizeof(void *), GFP_KERNEL);
-> +	if (!addrs)
-> +		return;
-> +
-> +	insns = kcalloc(OPTPROBE_BATCH_SIZE, sizeof(kprobe_opcode_t), GFP_KERNEL);
-> +	if (!insns) {
-> +		kfree(addrs);
-> +		return;
-> +	}
-> +
-> +	list_for_each_entry_safe(op, tmp, oplist, list) {
-> +		WARN_ON(kprobe_disabled(&op->kp));
-> +
-> +		/*
-> +		 * Backup instructions which will be replaced
-> +		 * by jump address
-> +		 */
-> +		memcpy(op->optinsn.copied_insn, op->kp.addr,
-> +			RELATIVEJUMP_SIZE);
-> +
-> +		addrs[i] = (void *)op->kp.addr;
-> +		insns[i] = aarch64_insn_gen_branch_imm((unsigned long)op->kp.addr,
-> +				(unsigned long)op->optinsn.insn,
-> +				AARCH64_INSN_BRANCH_NOLINK);
-> +
-> +		list_del_init(&op->list);
-> +		if (++i == OPTPROBE_BATCH_SIZE)
-> +			break;
-> +	}
-> +
-> +	aarch64_insn_patch_text(addrs, insns, i);
-> +	kfree(addrs);
-> +	kfree(insns);
-> +}
-> +
-> +void arch_unoptimize_kprobe(struct optimized_kprobe *op)
-> +{
-> +	arch_arm_kprobe(&op->kp);
-> +}
-> +
-> +/*
-> + * Recover original instructions and breakpoints from relative jumps.
-> + * Caller must call with locking kprobe_mutex.
-> + */
-> +void arch_unoptimize_kprobes(struct list_head *oplist,
-> +			    struct list_head *done_list)
-> +{
-> +	struct optimized_kprobe *op, *tmp;
-> +	kprobe_opcode_t *insns;
-> +	void **addrs;
-> +	int i = 0;
-> +
-> +	addrs = kcalloc(OPTPROBE_BATCH_SIZE, sizeof(void *), GFP_KERNEL);
-> +	if (!addrs)
-> +		return;
-> +
-> +	insns = kcalloc(OPTPROBE_BATCH_SIZE, sizeof(kprobe_opcode_t), GFP_KERNEL);
-> +	if (!insns) {
-> +		kfree(addrs);
-> +		return;
-> +	}
-> +
-> +	list_for_each_entry_safe(op, tmp, oplist, list) {
-> +		addrs[i] = (void *)op->kp.addr;
-> +		insns[i] = BRK64_OPCODE_KPROBES;
-> +		list_move(&op->list, done_list);
-> +
-> +		if (++i == OPTPROBE_BATCH_SIZE)
-> +			break;
-> +	}
-> +
-> +	aarch64_insn_patch_text(addrs, insns, i);
-> +	kfree(addrs);
-> +	kfree(insns);
-> +}
-> +
-> +void arch_remove_optimized_kprobe(struct optimized_kprobe *op)
-> +{
-> +	if (op->optinsn.insn) {
-> +		free_optinsn_slot(op->optinsn.insn, 1);
-> +		op->optinsn.insn = NULL;
-> +	}
-> +}
-> diff --git a/arch/arm64/kernel/probes/optprobe_trampoline.S b/arch/arm64/kernel/probes/optprobe_trampoline.S
-> new file mode 100644
-> index 000000000000..24d713d400cd
-> --- /dev/null
-> +++ b/arch/arm64/kernel/probes/optprobe_trampoline.S
-> @@ -0,0 +1,37 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * trampoline entry and return code for optprobes.
-> + */
-> +
-> +#include <linux/linkage.h>
-> +#include <asm/asm-offsets.h>
-> +#include <asm/assembler.h>
-> +
-> +	.global optprobe_template_entry
-> +optprobe_template_entry:
-> +	sub sp, sp, #PT_REGS_SIZE
-> +	save_all_base_regs
-> +	/* Get parameters to optimized_callback() */
-> +	ldr	x0, 1f
-> +	mov	x1, sp
-> +	/* Branch to optimized_callback() */
-> +	.global optprobe_template_call
-> +optprobe_template_call:
-> +	nop
-> +	restore_all_base_regs
-> +	ldr lr, [sp, #S_LR]
-> +        add sp, sp, #PT_REGS_SIZE
-> +	.global optprobe_template_restore_orig_insn
-> +optprobe_template_restore_orig_insn:
-> +	nop
-> +	.global optprobe_template_restore_end
-> +optprobe_template_restore_end:
-> +	nop
-> +	.global optprobe_template_end
-> +optprobe_template_end:
-> +	.global optprobe_template_val
-> +optprobe_template_val:
-> +	1:	.long 0
-> +		.long 0
-> +	.global optprobe_template_max_length
-> +optprobe_template_max_length:
-> -- 
-> 2.17.1
-> 
+>  bool pv_is_native_vcpu_is_preempted(void)
+>  {
+>  	return pv_ops.lock.vcpu_is_preempted.func ==
+>  		__raw_callee_save___native_vcpu_is_preempted;
+>  }
+>  
+> +bool pv_is_native_pcpu_is_idle(void)
 
+Just 'pv_native_pcpu_is_idle' or 'pv_is_native_pcpu_idle' maybe?
+
+> +{
+> +	return pv_ops.lock.pcpu_is_idle.func ==
+> +		__raw_callee_save___native_pcpu_is_idle;
+> +}
+> +
+>  void __init paravirt_set_cap(void)
+>  {
+>  	if (!pv_is_native_spin_unlock())
+> @@ -40,4 +52,7 @@ void __init paravirt_set_cap(void)
+>  
+>  	if (!pv_is_native_vcpu_is_preempted())
+>  		setup_force_cpu_cap(X86_FEATURE_VCPUPREEMPT);
+> +
+> +	if (!pv_is_native_pcpu_is_idle())
+> +		setup_force_cpu_cap(X86_FEATURE_PCPUISIDLE);
+>  }
+> diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
+> index 04cafc057bed..4489ca6d28c3 100644
+> --- a/arch/x86/kernel/paravirt.c
+> +++ b/arch/x86/kernel/paravirt.c
+> @@ -366,6 +366,8 @@ struct paravirt_patch_template pv_ops = {
+>  	.lock.kick			= paravirt_nop,
+>  	.lock.vcpu_is_preempted		=
+>  				PV_CALLEE_SAVE(__native_vcpu_is_preempted),
+> +	.lock.pcpu_is_idle              =
+> +				PV_CALLEE_SAVE(__native_pcpu_is_idle),
+>  #endif /* SMP */
+>  #endif
+>  };
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index e5d5c5ed7dd4..61bd01f82cdb 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -3181,6 +3181,72 @@ static void kvm_vcpu_flush_tlb_guest(struct kvm_vcpu *vcpu)
+>  	static_call(kvm_x86_tlb_flush_guest)(vcpu);
+>  }
+>  
+> +static void kvm_steal_time_set_is_idle(struct kvm_vcpu *vcpu)
+> +{
+> +	struct kvm_host_map map;
+> +	struct kvm_steal_time *st;
+> +
+> +	if (!(vcpu->arch.st.msr_val & KVM_MSR_ENABLED))
+> +		return;
+> +
+> +	if (vcpu->arch.st.is_idle)
+> +		return;
+> +
+> +	if (kvm_map_gfn(vcpu, vcpu->arch.st.msr_val >> PAGE_SHIFT, &map,
+> +			&vcpu->arch.st.cache, true))
+> +		return;
+> +
+> +	st = map.hva +
+> +		offset_in_page(vcpu->arch.st.msr_val & KVM_STEAL_VALID_BITS);
+> +
+> +	st->is_idle = vcpu->arch.st.is_idle = KVM_PCPU_IS_IDLE;
+> +
+> +	kvm_unmap_gfn(vcpu, &map, &vcpu->arch.st.cache, true, true);
+> +}
+> +
+> +static void kvm_steal_time_clear_is_idle(struct kvm_vcpu *vcpu)
+> +{
+> +	struct kvm_host_map map;
+> +	struct kvm_steal_time *st;
+> +
+> +	if (!(vcpu->arch.st.msr_val & KVM_MSR_ENABLED))
+> +		return;
+> +
+> +	if (!vcpu->arch.st.is_idle)
+> +		return;
+> +
+> +	if (kvm_map_gfn(vcpu, vcpu->arch.st.msr_val >> PAGE_SHIFT, &map,
+> +			&vcpu->arch.st.cache, false))
+> +		return;
+> +
+> +	st = map.hva +
+> +		offset_in_page(vcpu->arch.st.msr_val & KVM_STEAL_VALID_BITS);
+> +
+> +	if (guest_pv_has(vcpu, KVM_FEATURE_PV_TLB_FLUSH))
+> +		xchg(&st->is_idle, 0);
+> +	else
+> +		st->is_idle = 0;
+> +
+> +	vcpu->arch.st.is_idle = 0;
+> +
+> +	kvm_unmap_gfn(vcpu, &map, &vcpu->arch.st.cache, true, false);
+> +}
+> +
+> +
+> +static DEFINE_PER_CPU(struct kvm_vcpu *, this_cpu_pre_run_vcpu);
+> +
+> +static void vcpu_load_update_pre_vcpu_callback(struct kvm_vcpu *new_vcpu, struct kvm_steal_time *st)
+> +{
+> +	struct kvm_vcpu *old_vcpu = __this_cpu_read(this_cpu_pre_run_vcpu);
+> +
+> +	if (!old_vcpu)
+> +		return;
+> +	if (old_vcpu != new_vcpu)
+> +		kvm_steal_time_clear_is_idle(old_vcpu);
+> +	else
+> +		st->is_idle = new_vcpu->arch.st.is_idle = KVM_PCPU_IS_IDLE;
+> +}
+> +
+>  static void record_steal_time(struct kvm_vcpu *vcpu)
+>  {
+>  	struct kvm_host_map map;
+> @@ -3219,6 +3285,8 @@ static void record_steal_time(struct kvm_vcpu *vcpu)
+>  
+>  	vcpu->arch.st.preempted = 0;
+>  
+> +	vcpu_load_update_pre_vcpu_callback(vcpu, st);
+> +
+>  	if (st->version & 1)
+>  		st->version += 1;  /* first time write, random junk */
+>  
+> @@ -4290,6 +4358,8 @@ static void kvm_steal_time_set_preempted(struct kvm_vcpu *vcpu)
+>  	kvm_unmap_gfn(vcpu, &map, &vcpu->arch.st.cache, true, true);
+>  }
+>  
+> +extern int get_cpu_nr_running(int cpu);
+> +
+>  void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
+>  {
+>  	int idx;
+> @@ -4304,8 +4374,15 @@ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
+>  	idx = srcu_read_lock(&vcpu->kvm->srcu);
+>  	if (kvm_xen_msr_enabled(vcpu->kvm))
+>  		kvm_xen_runstate_set_preempted(vcpu);
+> -	else
+> +	else {
+>  		kvm_steal_time_set_preempted(vcpu);
+> +
+> +		if (get_cpu_nr_running(smp_processor_id()) <= 1)
+> +			kvm_steal_time_set_is_idle(vcpu);
+> +		else
+> +			kvm_steal_time_clear_is_idle(vcpu);
+> +	}
+> +
+>  	srcu_read_unlock(&vcpu->kvm->srcu, idx);
+>  
+>  	static_call(kvm_x86_vcpu_put)(vcpu);
+> @@ -9693,6 +9770,8 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>  	local_irq_enable();
+>  	preempt_enable();
+>  
+> +	__this_cpu_write(this_cpu_pre_run_vcpu, vcpu);
+> +
+>  	vcpu->srcu_idx = srcu_read_lock(&vcpu->kvm->srcu);
+>  
+>  	/*
+> @@ -11253,6 +11332,15 @@ void kvm_arch_pre_destroy_vm(struct kvm *kvm)
+>  
+>  void kvm_arch_destroy_vm(struct kvm *kvm)
+>  {
+> +	int cpu;
+> +	struct kvm_vcpu *vcpu;
+> +
+> +	for_each_possible_cpu(cpu) {
+> +		vcpu = per_cpu(this_cpu_pre_run_vcpu, cpu);
+> +		if (vcpu && vcpu->kvm == kvm)
+> +			per_cpu(this_cpu_pre_run_vcpu, cpu) = NULL;
+> +	}
+> +
+>  	if (current->mm == kvm->mm) {
+>  		/*
+>  		 * Free memory regions allocated on behalf of userspace,
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index ec8d07d88641..dd4c41d2d8d3 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -1736,6 +1736,7 @@ extern int can_nice(const struct task_struct *p, const int nice);
+>  extern int task_curr(const struct task_struct *p);
+>  extern int idle_cpu(int cpu);
+>  extern int available_idle_cpu(int cpu);
+> +extern int available_idle_cpu_sched(int cpu);
+>  extern int sched_setscheduler(struct task_struct *, int, const struct sched_param *);
+>  extern int sched_setscheduler_nocheck(struct task_struct *, int, const struct sched_param *);
+>  extern void sched_set_fifo(struct task_struct *p);
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 20ffcc044134..1bcc023ce581 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -6664,6 +6664,17 @@ int available_idle_cpu(int cpu)
+>  	return 1;
+>  }
+>  
+> +int available_idle_cpu_sched(int cpu)
+> +{
+> +	if (!idle_cpu(cpu))
+> +		return 0;
+> +
+> +	if (!pcpu_is_idle(cpu))
+> +		return 0;
+> +
+> +	return 1;
+> +}
+> +
+>  /**
+>   * idle_task - return the idle task for a given CPU.
+>   * @cpu: the processor in question.
+> @@ -10413,3 +10424,9 @@ void call_trace_sched_update_nr_running(struct rq *rq, int count)
+>  {
+>          trace_sched_update_nr_running_tp(rq, count);
+>  }
+> +
+> +int get_cpu_nr_running(int cpu)
+> +{
+> +	return cpu_rq(cpu)->nr_running;
+> +}
+> +EXPORT_SYMBOL_GPL(get_cpu_nr_running);
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index 14a41a243f7b..49daefa91470 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -101,6 +101,7 @@ extern void calc_global_load_tick(struct rq *this_rq);
+>  extern long calc_load_fold_active(struct rq *this_rq, long adjust);
+>  
+>  extern void call_trace_sched_update_nr_running(struct rq *rq, int count);
+> +
+
+Stray change?
+
+>  /*
+>   * Helpers for converting nanosecond timing to jiffy resolution
+>   */
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Vitaly
+
