@@ -2,96 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE4363EF830
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 04:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 948AE3EF832
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 04:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235556AbhHRCr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 22:47:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55504 "EHLO
+        id S235707AbhHRCr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 22:47:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231449AbhHRCrZ (ORCPT
+        with ESMTP id S231449AbhHRCrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 22:47:25 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E252EC061764;
-        Tue, 17 Aug 2021 19:46:50 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id d16so2284621ljq.4;
-        Tue, 17 Aug 2021 19:46:50 -0700 (PDT)
+        Tue, 17 Aug 2021 22:47:55 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92071C061764;
+        Tue, 17 Aug 2021 19:47:21 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id qk33so1735138ejc.12;
+        Tue, 17 Aug 2021 19:47:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=RWmXHWwVFrhlQDHC2rVDGYKlpIeA9JdQ6DniyzAK9as=;
-        b=qh1RLH0Gd1nVywJwS084M5nIdCuU3fLrE9me78hJx6YJWUywAhES+Rv22p+/SPc1fL
-         9o4aeQ5FiuDpY9zA9fe7S7dVA4fZUyI0E4Ck5FCqY8OVxp4fGUDqm72VfRFfCvL7da0s
-         4gfx8Sp6sXTCSvkI+kKDtqnennbd/VEodL+hFPm8gJTXqV7kaQYtgFavrFzglcF1/0lP
-         6wjk56Z64KV378ezVD85SjvFX3TL1C1oxgjDzi6C/yhxLPewDD/qTijgJGHcgkvlRVOg
-         J8Aqjwzc0qVGN8vltM4wiET4xJtYKs6RgUEE+GaZ8Dgkuw0j2UafSoX7quwlrC18yH/I
-         qF4A==
+        bh=JV9CkkXQherlLd92QHiaKdeY0xjPOTwuWMHEmwKi7Ik=;
+        b=gH1o7HXUHZ9yBstJRfMaB5RBp6WJl/jOcZOajXqQbt1ZDgzlCLKHH1DppvQQqtuPWS
+         rejnTSTM2WEpJVbaSWxMaha7MjFV14asN7I4thA4spu9fN9Jw7cg+ntHLicmmGp6oYu4
+         Cn7sPAt+/IeeyE282KiQclwhcA9hMWvIJfUZMKRhGLxVwGcHhH/INVJVjC1VnoMChRIB
+         7eDziLWZMJLyomKg5tRpAqTo24bN+rw1mc+WHgHz/RJNOEK0XPiy15ehVJ+gFbKELe0W
+         kpYv/SzePNoKg6Xo5+fBszHkfkUbzw5w9sG3s7L/dK4P4DV6+geMCugHzoz66uxNzVj7
+         dalA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=RWmXHWwVFrhlQDHC2rVDGYKlpIeA9JdQ6DniyzAK9as=;
-        b=ofk6dNko7gOv6EH1BcsFR7e5KlqhA7zX/gQlmirei1sa+PNZAKlwb6ToBc7Aqrbjac
-         8DeFEdPaaAQ8KMuThXF7Qgj5Ndt9+RGTuAjby3b32JCQ6UBgo9uIEvNPzHbJ32eomJO9
-         ijZ/MwHhxSaJzKsWOJrF6Z5BaZ/TZq2qTtFXMVwIL8mAMKIs0fDoR4rO8x7SSOFjrKEL
-         Qof9obgB0SXVaIJe6ngQQcyiDm1kUdyYFbV+9A1xHup5zk5dHsnnab1U5/s3k6INvQF6
-         uyHvQwW5tKEbW7eTYj8bfTQyorKze6ABRVZojkOKkq6y6zdwc8U23SuIvSN+WgnkI3d4
-         tV/A==
-X-Gm-Message-State: AOAM531S6D1+zdBeNjTkXwmmkPX8uNmG2OtAuZoyAdgNVzQ/Kq4nr3cK
-        isNM7/XQ7AtJHqWAPoQ9vSRUBfIxF4dCNRkkvGI=
-X-Google-Smtp-Source: ABdhPJwslGU/+xPwEkW6sdIpppodrm2AblhgBsp9WtZcWZkLIovt/JPSv6Jr/pVskQeBDBGbAgTovI27ptCXrwwcQdc=
-X-Received: by 2002:a2e:a884:: with SMTP id m4mr5841362ljq.406.1629254809157;
- Tue, 17 Aug 2021 19:46:49 -0700 (PDT)
+        bh=JV9CkkXQherlLd92QHiaKdeY0xjPOTwuWMHEmwKi7Ik=;
+        b=BynuFHYI6VlVvQa0VetYs/1IVOxRbUckbiFfDXig21yuTHoPWPVl34PoCNhueryAkE
+         AxdNUfzUP2sQEQ0OM6JdLN/S00+36LFFLJynuBltyqcHtxxcTOH9rWm33n607f+vFynV
+         Tfm8FPCy5Q++h40uShGhI79dn3BvitpSgbitsF6aqCA146OvcU/aOjMG+muSSuU8wbM8
+         BFKmwg91ZB2xqqeHECQUcVOJWIOhb8RAnxqzonqgMll90dLw8rnLEKuRbywj8D8iLcuP
+         Y/sFNVH0JuNT8SHQ/PcwyDE3nBELa52ynq0bqkbt+Iix0dxyzrJlEO1gMMITKRleERK8
+         o9ng==
+X-Gm-Message-State: AOAM532+EZeWTKT3sBpct+kyIO1gKG6nIlTyQcOQkVilHM7pf3f9WqW8
+        aWyrQfwZrzjQk3iCKLgC/2+1LwtkJwX0XuMnYd+zx40+
+X-Google-Smtp-Source: ABdhPJzyDwm867lRUBPgAuAt04i4wPYwP0vaBVc+xjcq3tBlg2NRFh8g7VfCuQKbfDIVPKNHV8amMyUG3AQVCqOH/2o=
+X-Received: by 2002:a17:907:2b09:: with SMTP id gc9mr7477125ejc.49.1629254840066;
+ Tue, 17 Aug 2021 19:47:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210817102709.15046-1-len.baker@gmx.com> <87im03h9zb.fsf@cjr.nz>
-In-Reply-To: <87im03h9zb.fsf@cjr.nz>
-From:   Steve French <smfrench@gmail.com>
-Date:   Tue, 17 Aug 2021 21:46:38 -0500
-Message-ID: <CAH2r5mtKsjPesR6yBTO8RB=BFYc5Cb23OA_gEQyWMNrORXdavg@mail.gmail.com>
-Subject: Re: [PATCH] CIFS: Fix a potencially linear read overflow
-To:     Paulo Alcantara <pc@cjr.nz>
-Cc:     Len Baker <len.baker@gmx.com>, Steve French <sfrench@samba.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Suresh Jayaraman <sjayaraman@suse.de>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org
+References: <1628836842-82107-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1628836842-82107-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Moritz Fischer <moritz.fischer.private@gmail.com>
+Date:   Tue, 17 Aug 2021 19:47:08 -0700
+Message-ID: <CAJYdmeN5WHYx+mczUfkYbeWpRNwevDR5njxttW+4PuBw2Muf6w@mail.gmail.com>
+Subject: Re: [PATCH] fpga: machxo2-spi: Fix missing error code in machxo2_write_complete()
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     Tom Rix <trix@redhat.com>, linux-fpga@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tentatively merged into cifs-2.6.git for-next pending testing
-
-On Tue, Aug 17, 2021 at 7:29 PM Paulo Alcantara <pc@cjr.nz> wrote:
+On Thu, Aug 12, 2021 at 11:41 PM Jiapeng Chong
+<jiapeng.chong@linux.alibaba.com> wrote:
 >
-> Len Baker <len.baker@gmx.com> writes:
+> The error code is missing in this code scenario, add the error code
+> '-EINVAL' to the return value 'ret'.
 >
-> > strlcpy() reads the entire source buffer first. This read may exceed the
-> > destination size limit. This is both inefficient and can lead to linear
-> > read overflows if a source string is not NUL-terminated.
-> >
-> > Also, the strnlen() call does not avoid the read overflow in the strlcpy
-> > function when a not NUL-terminated string is passed.
-> >
-> > So, replace this block by a call to kstrndup() that avoids this type of
-> > overflow and does the same.
-> >
-> > Fixes: 066ce6899484d ("cifs: rename cifs_strlcpy_to_host and make it use new functions")
-> > Signed-off-by: Len Baker <len.baker@gmx.com>
-> > ---
-> >  fs/cifs/cifs_unicode.c | 9 ++-------
-> >  1 file changed, 2 insertions(+), 7 deletions(-)
+> Eliminate the follow smatch warning:
 >
-> Reviewed-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
+> drivers/fpga/machxo2-spi.c:341 machxo2_write_complete() warn: missing
+> error code 'ret'.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Fixes: 88fb3a002330 ("fpga: lattice machxo2: Add Lattice MachXO2
+> support")
+This shouldn't line-break.
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/fpga/machxo2-spi.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/fpga/machxo2-spi.c b/drivers/fpga/machxo2-spi.c
+> index b4a530a..ea2ec3c 100644
+> --- a/drivers/fpga/machxo2-spi.c
+> +++ b/drivers/fpga/machxo2-spi.c
+> @@ -338,6 +338,7 @@ static int machxo2_write_complete(struct fpga_manager *mgr,
+>                         break;
+>                 if (++refreshloop == MACHXO2_MAX_REFRESH_LOOP) {
+>                         machxo2_cleanup(mgr);
+> +                       ret = -EINVAL;
+>                         goto fail;
+>                 }
+>         } while (1);
+> --
+> 1.8.3.1
+>
 
+Applied to 'fixes' with modifications to commit message,
 
-
--- 
-Thanks,
-
-Steve
+Moritz
