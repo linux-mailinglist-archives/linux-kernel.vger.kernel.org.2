@@ -2,171 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B59863EF828
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 04:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ACF93EF82D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 04:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234414AbhHRCqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 22:46:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52286 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234435AbhHRCqL (ORCPT
+        id S235124AbhHRCrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 22:47:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231449AbhHRCq7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 22:46:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629254737;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Ly4hMgmcduWmjk7R138XN1c7rishTtsrNhm8UdX1fs=;
-        b=RV43urOQo8sisR/Uf6Dh5Gi8kAFD0qUKWkdKt9I3WB9guU/uBLQG/ACqeD1hiWG9SUe3Vt
-        XSiiIAtV2ythBZJcpp5g5pa7nqnUPCxoorMluBuByZjuBLBGcfP0VFAQ/a/xmGvQ1ELQU5
-        oASA7FMTCOK7qw9KKYKNVjTVbMaN7R4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-394-ErqW5xKFOrGx03r8uvmf8Q-1; Tue, 17 Aug 2021 22:45:36 -0400
-X-MC-Unique: ErqW5xKFOrGx03r8uvmf8Q-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 090EA801AC5;
-        Wed, 18 Aug 2021 02:45:35 +0000 (UTC)
-Received: from T590 (ovpn-8-28.pek2.redhat.com [10.72.8.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A317D5D9CA;
-        Wed, 18 Aug 2021 02:45:25 +0000 (UTC)
-Date:   Wed, 18 Aug 2021 10:45:20 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     "yukuai (C)" <yukuai3@huawei.com>
-Cc:     axboe@kernel.dk, bvanassche@acm.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        Keith Busch <kbusch@kernel.org>
-Subject: Re: [PATCH RFC] blk_mq: clear rq mapping in driver tags before
- freeing rqs in sched tags
-Message-ID: <YRx0QE8T4RJONlA8@T590>
-References: <20210817022306.1622027-1-yukuai3@huawei.com>
- <YRxZ44tu8o1MPruT@T590>
- <11ef6a06-4b6f-44d0-af79-f96e16456b55@huawei.com>
+        Tue, 17 Aug 2021 22:46:59 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 851DCC061764;
+        Tue, 17 Aug 2021 19:46:25 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id k5so1377151lfu.4;
+        Tue, 17 Aug 2021 19:46:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c2nGkp2pO28MJRzTFh6Ka89xAPD7DAQakuOyZH1yyPs=;
+        b=qh1y8agNpNkt0u3hDMltHMeuOa1zDwc+PSEgyXPU+Kl4+YEYxysyyaRbYLwsSVzvD6
+         4UJXUV/6j+BSFgX1Mi+F2jKYzlcJz6UzsTKMXydi4VddeHagJ3+IogQti/X8VyCmlx5z
+         2gPI0Ov204md7HGwzEvGeO+EE9Po7QWfrkmwp6EjC7U9KMBN0kcDeaVGyC+9tKUFAdAq
+         fcl06nfzceZiyCwT1GM1GtS7mnAoGi/Hxyh8hTI0jbzZYeMZcenFDASN5bj332Zn/mPR
+         RGh3GzBQ6ZVmeD8HPMJaGW0OkPcGfLzsXkydSb2ffhWQw9dQ8y8ldRrtyQJUTfIBnr4k
+         2mlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c2nGkp2pO28MJRzTFh6Ka89xAPD7DAQakuOyZH1yyPs=;
+        b=XJgv1WNT9H4Lz97dxgR3CX6YBw83Buppgd3fhIKRCvTTop1AvkSzO77WZsu1umUmZ8
+         7HpwrI5C1s6nPIQEzc62p2Z/U8HUk/vABDCHa0+PCJOcReXW7q3Vse+y323KigfctV+H
+         dkhVud0k0ioqclecLT9nXGsiNZEe9nKBX+tdzV5LZu+44/h4FeFVa0/bn71yv3onMQ5U
+         HTZZd3LdubtRhn2zjnRnfWZdYgE8odEe++ncm/OL8diatfDV/CB/wrpv8JubyTVifa68
+         JC3FxF2MwWVDRgZh5qApe361Pr3Nj+q2Agwgtu6weuhAxhca+RhulFgHN2AJBdKAnNa+
+         cljw==
+X-Gm-Message-State: AOAM530YfjnYfvHDGnTStr+lSgovxCsIfosWaR7Yt8xWa7YEet88Gk7k
+        pDl/KgU+PNvkRR5qzFw8orF5/Zytf64bq4OF2Bt4nrkZsYs=
+X-Google-Smtp-Source: ABdhPJyqX4PNnFM3uy8n4gtEWd/ECyFT14HG7SXlJ/4l9ydlIL43HQMtidgxK+h3pV9p1isZ0JV7+pgS6fpI5l0te7o=
+X-Received: by 2002:ac2:4350:: with SMTP id o16mr4888984lfl.184.1629254783804;
+ Tue, 17 Aug 2021 19:46:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <11ef6a06-4b6f-44d0-af79-f96e16456b55@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210817145510.639-1-dinghui@sangfor.com.cn> <87fsv7h9wm.fsf@cjr.nz>
+In-Reply-To: <87fsv7h9wm.fsf@cjr.nz>
+From:   Steve French <smfrench@gmail.com>
+Date:   Tue, 17 Aug 2021 21:46:12 -0500
+Message-ID: <CAH2r5mvT115ikGHAtpoLmHSn9yJ16iJDexgdUCv32ZAL4+HNKA@mail.gmail.com>
+Subject: Re: [PATCH] cifs: fix wrong release in sess_alloc_buffer() failed path
+To:     Paulo Alcantara <pc@cjr.nz>
+Cc:     Ding Hui <dinghui@sangfor.com.cn>,
+        Steve French <sfrench@samba.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 10:02:09AM +0800, yukuai (C) wrote:
-> On 2021/08/18 8:52, Ming Lei wrote:
-> > On Tue, Aug 17, 2021 at 10:23:06AM +0800, Yu Kuai wrote:
-> > > If ioscheduler is not none, hctx->tags->rq[tag] will point to
-> > > hctx->sched_tags->static_rq[internel_tag] in blk_mq_get_driver_tag().
-> > > However, static_rq of sched_tags might be freed through switching
-> > > elevator or increasing nr_requests. Thus leave a window for some drivers
-> > > to get the freed request through blk_mq_tag_to_rq(tags, tag).
-> > 
-> > I believe I have explained that it is bug of driver which has knowledge
-> > if the passed tag is valid or not. We are clear that driver need to cover
-> > race between normal completion and timeout/error handling.
-> > 
-> > > 
-> > > It's difficult to fix this uaf from driver side, I'm thinking about
-> > 
-> > So far not see any analysis on why the uaf is triggered, care to
-> > investigate the reason?
-> 
-> Hi, Ming
-> 
-> I'm sorry if I didn't explian the uaf clearly.
-> 
-> 1) At first, a normal io is submitted and completed with scheduler:
-> 
-> internel_tag = blk_mq_get_tag -> get tag from sched_tags
->  blk_mq_rq_ctx_init
->   sched_tags->rq[internel_tag] = sched_tag->static_rq[internel_tag]
-> ...
-> blk_mq_get_driver_tag
->  __blk_mq_get_driver_tag -> get tag from tags
->  tags->rq[tag] = sched_tag->static_rq[internel_tag]
-> 
-> So, both tags->rq[tag] and sched_tags->rq[internel_tag] are pointing
-> to the request: sched_tags->static_rq[internal_tag].
-> 
-> 2) Then, if the sched_tags->static_rq is freed:
-> 
-> blk_mq_sched_free_requests
->  blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i)
->   blk_mq_clear_rq_mapping(set, tags, hctx_idx);
->    -> sched_tags->rq[internel_tag] is set to null here
+tentatively merged into cifs-2.6.git for-next pending more testing
 
-Please take a look at blk_mq_clear_rq_mapping():
-
-	//drv_tags points to set->tags[] which is shared in host wide
-	struct blk_mq_tags *drv_tags = set->tags[hctx_idx];
-	...
-
-	//tags points to sched_tags
-	list_for_each_entry(page, &tags->page_list, lru) {
-		unsigned long start = (unsigned long)page_address(page);
-		unsigned long end = start + order_to_size(page->private);
-		int i;
-
-		/* clear drv_tags->rq[i] in case it is from this sched tags*/
-		for (i = 0; i < set->queue_depth; i++) {
-			struct request *rq = drv_tags->rqs[i];
-			unsigned long rq_addr = (unsigned long)rq;
-
-			if (rq_addr >= start && rq_addr < end) {
-				WARN_ON_ONCE(refcount_read(&rq->ref) != 0);
-				cmpxchg(&drv_tags->rqs[i], rq, NULL);
-			}
-		}
-	}
-
-So we do clear tags->rq[] instead of sched_tag->rq[].
-
-> 
-> After switching elevator, tags->rq[tag] still point to the request
-> that is just freed.
-
-No.
-
-> 
-> 3) nbd server send a reply with random tag directly:
-> 
-> recv_work
->  nbd_read_stat
->   blk_mq_tag_to_rq(tags, tag)
->    rq = tags->rq[tag] -> rq is freed
-> 
-> Usually, nbd will get tag and send a request to server first, and then
-> handle the reply. However, if the request is skipped, such uaf problem
-> can be triggered.
-
-When or how is such reply with random tag replied to nbd client? Is it
-possible for nbd client to detect such un-expected/bad situation?
-What if blk_mq_tag_to_rq() is just called before/when we clear tags->rq[]?
-
-> 
-> > 
-> > The request reference has been cleared too in blk_mq_tag_update_depth():
-> > 
-> > 	blk_mq_tag_update_depth
-> > 		blk_mq_free_rqs
-> > 			blk_mq_clear_rq_mapping
-> > 
-> 
-> What I'm trying to do is to clear rq mapping in both
-> hctx->sched_tags->rq and hctx->tags->rq when sched_tags->static_rq
-> is freed. However, I forgot about the case when tags is shared in
-> multiple device. Thus what this patch does is clearly wrong...
-> 
-> So, what do you think about adding a new interface to iterate the
-> request in tags->rq[], find what is pointing to the
-> sched_tags->static_rq[], and use cmpxchg() to clear them?
-
-See above, we already clear tags->rq[] if the rq is from to-be-freed
-sched_tags.
+On Tue, Aug 17, 2021 at 7:33 PM Paulo Alcantara <pc@cjr.nz> wrote:
+>
+> Ding Hui <dinghui@sangfor.com.cn> writes:
+>
+> > smb_buf is allocated by small_smb_init_no_tc(), and buf type is
+> > CIFS_SMALL_BUFFER, so we should use cifs_small_buf_release() to
+> > release it in failed path.
+> >
+> > Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
+> > ---
+> >  fs/cifs/sess.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> Reviewed-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
 
 
+
+-- 
 Thanks,
-Ming
 
+Steve
