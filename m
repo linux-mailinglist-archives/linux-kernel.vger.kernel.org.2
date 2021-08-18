@@ -2,109 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2633F0496
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDF823F0466
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236731AbhHRN06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 09:26:58 -0400
-Received: from mail-m973.mail.163.com ([123.126.97.3]:38652 "EHLO
-        mail-m973.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236852AbhHRN0u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 09:26:50 -0400
-X-Greylist: delayed 969 seconds by postgrey-1.27 at vger.kernel.org; Wed, 18 Aug 2021 09:26:48 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=taKp/
-        E45SaXAh+5bkQyLWRHD7gStayUwqqa2jx5aMK4=; b=bQ/Np4ppHpl8uLTtq0cQf
-        nIc3piQYh6NaOE7avZayLPDEJL8e6vq2Ym826TfyqCiwgI6DQCt3afmUdzGPYsi4
-        o4TFfxI+3hbrUKqNWgjyZ3O8xabw6yLbnMdzyADL+m9mWHJ2F6bwRcY2b1yeANv1
-        Thv04zrG/+VqH4nYAF/Ih8=
-Received: from localhost.localdomain (unknown [111.201.47.26])
-        by smtp3 (Coremail) with SMTP id G9xpCgCnADmgBh1hOahZDA--.137S4;
-        Wed, 18 Aug 2021 21:10:01 +0800 (CST)
-From:   Wentao_Liang <Wentao_Liang_g@163.com>
-To:     robh+dt@kernel.org
-Cc:     frowand.list@gmail.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Wentao_Liang <Wentao_Liang_g@163.com>
-Subject: [PATCH] drivers:of:property.c: fix a potential double put (release) bug
-Date:   Wed, 18 Aug 2021 21:09:50 +0800
-Message-Id: <20210818130950.3715-1-Wentao_Liang_g@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S236682AbhHRNOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 09:14:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233634AbhHRNOW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 09:14:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E6FB61053;
+        Wed, 18 Aug 2021 13:13:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629292427;
+        bh=8IJq03RMdqeG/eCNav7p0tdBwUpOJakfrHP5oq/kqZA=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
+        b=EhJPN9uUxzFB727ikx0q/V0ZPA17Lodxq83IaXNr5HzZTYKp2V7fCnbKMZsW/5/qQ
+         HoFSYQPlfkzQil2CzN0T+kqbBkXgGb3pWgMHWm+SXtJ1z2WU0AipoAYw1Ki9NcEjss
+         hVZdKi8m5tU/rP8aWlD87FfV70pr0loUbWZCB2vpHdDq+/hX8R5b+3AiC6RJW9OmGR
+         0994smDLpgUwOzc7gipILdX3XMT2W5h6syHRLq0ZLABkQyetgNU24ZrNZrBU7Tgr8D
+         m0SVBJ3p+5jkktAGGBEcOGNEAJMF3OmzW7cuhAThn1Um14s6xZYcKVmQmygSACizYh
+         LFSJoLwHoZXQA==
+References: <20210818130135.575-1-lutovinova@ispras.ru>
+User-agent: mu4e 1.6.3; emacs 27.2
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Nadezda Lutovinova <lutovinova@ispras.ru>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johan Hovold <johan@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
+Subject: Re: [PATCH] usb: gadget: mv_u3d: Change functon call in mv_u3d_probe()
+Date:   Wed, 18 Aug 2021 16:10:55 +0300
+In-reply-to: <20210818130135.575-1-lutovinova@ispras.ru>
+Message-ID: <87mtpegak8.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: G9xpCgCnADmgBh1hOahZDA--.137S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW7WryxCFWUuFyDAw1UKF1fXrb_yoW8Aw15pF
-        W5GayYkFykWw12gFW8AF48ZrWa9F4UG398trWqka9Fvws8X34fXF18Xw1Ivwn5Ar95uFWf
-        JFy0qrZrJF1UAw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07juhFsUUUUU=
-X-Originating-IP: [111.201.47.26]
-X-CM-SenderInfo: xzhq3t5rboxtpqjbwqqrwthudrp/1tbiQwnyL1c7VIDfaQAAsZ
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In line 1423 (#1), of_link_to_phandle() is called. In the function
-(line 1140, #2), "of_node_put(sup_np);" drops the reference to phandle
-and may cause phandle to be released. However, after the function
-returns, the phandle is subsequently dropped again (line 1424, #3) by
-the same put function. Double putting the phandle can lead to an
-incorrect reference count.
 
-We believe that the first put of the phandle is unnecessary (#3). We
-can fix the above bug by removing the redundant "of_node_put()" in line
-1423.
+Hi,
 
-1401 static int of_link_property(struct device_node *con_np,
-				const char *prop_name)
-1402 {
-...
-1409     while (!matched && s->parse_prop) {
-...
-1414
-1415         while ((phandle = s->parse_prop(con_np, prop_name, i))) {
-...
-                 //#1 phandle is dropped in this function
-1423             of_link_to_phandle(con_dev_np, phandle);
+(first of all, your subject could be a little more descriptive,
+something like:
 
-1424             //#3 the second drop to phandle
-		 of_node_put(phandle);
+	usb: gadget: mv_u3d: request_irq() after initializing UDC
 
-1425             of_node_put(con_dev_np);
-1426         }
-...
-1428     }
-1429     return 0;
-1430 }
+as that would better detail what you're doing)
 
-1095 static int of_link_to_phandle(struct device_node *con_np,
-1096                   struct device_node *sup_np)
-1097 {
-1098     struct device *sup_dev;
-1099     struct device_node *tmp_np = sup_np;
-...
-1140     of_node_put(sup_np);  //#2 the first drop to phandle
-			       //   (unnecessary)
-1141
-1142     return 0;
-1143 }
+Nadezda Lutovinova <lutovinova@ispras.ru> writes:
 
-Signed-off-by: Wentao_Liang <Wentao_Liang_g@163.com>
----
- drivers/of/property.c | 1 -
- 1 file changed, 1 deletion(-)
+> If IRQ occurs between calling  request_irq() and  mv_u3d_eps_init(),
+> then null pointer dereference occurs since u3d->eps[] wasn't
+> initialized yet but used in mv_u3d_nuke().
+>
+> The patch puts registration of the interrupt handler after
+> initializing of neccesery data.
+>
+> Found by Linux Driver Verification project (linuxtesting.org).
 
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index 6c028632f425..408fdde1a20c 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1137,7 +1137,6 @@ static int of_link_to_phandle(struct device_node *con_np,
- 	put_device(sup_dev);
- 
- 	fwnode_link_add(of_fwnode_handle(con_np), of_fwnode_handle(sup_np));
--	of_node_put(sup_np);
- 
- 	return 0;
- }
+this looks like an important bug fix, it probably deserves a stable tag
+here. Which commit introduce this problem? Otherr than that, commits
+looks good.
+
 -- 
-2.25.1
-
+balbi
