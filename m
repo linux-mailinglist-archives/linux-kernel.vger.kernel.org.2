@@ -2,162 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F763EF973
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 06:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A61213EF942
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 06:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237108AbhHREdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 00:33:45 -0400
-Received: from mga03.intel.com ([134.134.136.65]:5812 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229449AbhHREdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 00:33:44 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10079"; a="216284583"
-X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
-   d="scan'208";a="216284583"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 21:33:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
-   d="scan'208";a="488288748"
-Received: from pl-dbox.sh.intel.com (HELO pl-dbox) ([10.239.159.39])
-  by fmsmga008.fm.intel.com with ESMTP; 17 Aug 2021 21:33:06 -0700
-Date:   Wed, 18 Aug 2021 12:27:20 +0800
-From:   Philip Li <philip.li@intel.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] kbuild: Enable -Wimplicit-fallthrough for clang 14.0.0+
-Message-ID: <20210818042720.GA1645557@pl-dbox>
-References: <20210817005624.1455428-1-nathan@kernel.org>
- <80fa539a-b767-76ed-dafa-4d8d1a6b063e@kernel.org>
- <CAHk-=wgFXOf9OUh3+vmWjhp1PC47RVsUkL0NszBxSWhbGzx4tw@mail.gmail.com>
- <5c856f36-69a7-e274-f72a-c3aef195adeb@kernel.org>
- <202108171056.EDCE562@keescook>
- <3f28b45e-e725-8b75-042a-d34d90c56361@kernel.org>
- <CAK7LNAQFgYgavTP2ZG9Y16XBVdPuJ98J_Ty1OrQy1GXHq6JjQQ@mail.gmail.com>
- <71d76c41-7f9b-6d60-ba4f-0cd84596b457@embeddedor.com>
- <202108171602.159EB2C7EA@keescook>
- <72ae69b4-6069-ade5-a12b-8ee0435f803a@kernel.org>
+        id S232450AbhHRE3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 00:29:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229448AbhHRE3P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 00:29:15 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106B9C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 21:28:41 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id x4so930681pgh.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 21:28:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M4OMUrZpxJEGBppNP6I6AWvsCoN2WAaAil0LMMI5r7w=;
+        b=YGtvo4t4xs4zqvtZ50FJJp/fthSkuSt28mL+68Mg+C6c/viofJiHvmRcp0QO3rdzof
+         1/4droGy6AFsOeCm6LjfKInmaKmO7NCUzWuuAjKbuKqhKBBLmf3f2xRinXEp7GnSqEZs
+         TqNHxqK8YnzTBGYxzn9imexx5V9BncTlx1ettwwtFd4mu+ji3j4QCC/CNLNG5A4ppnsW
+         nvRMCrbGZWdoqH+bweKmgW0+G6GZrX30zfNZY6wabsy2SrdUppH5p/L9mgg49/MY2nER
+         5awbSp50/gfxfQKlhJMvNa4RE9IPiQVYMdz5Vaqn4lY3usCmoKW8edO4QhMPT9I7kgYV
+         hH6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M4OMUrZpxJEGBppNP6I6AWvsCoN2WAaAil0LMMI5r7w=;
+        b=JMkgJK5j3qeBingPSXuTum5tBmDmEbnpLgCQNDiZHX0JEY2WaJdqfGng+nMo+E1+C1
+         bxt+NR5Sl3O9Ps5NQDtzeoXYSs8CkXrKd6oIHORKHQATwtoCIXaGaeMnzBlAONiVMICA
+         a3UFZ7aA4LK7jFMS4msr3Rk7nYobeOXU+U3wxRthjvNNNCzLbLTK+b0FaxOYh6yXmb9l
+         zHr3TCean1XZdZ/wsFQ8dl8FTQqNxf4yKcuNDsbm4BeXm/BnMugv9PCWa5qd4jjOPdbZ
+         G+npE9ODvjJcwMzGJuzMi5KNTTSWVXPh0L65lNqOgfNqV5NjvweR3nZ/1sTdOE0ZfV3V
+         Y/Jg==
+X-Gm-Message-State: AOAM5334WbQHc3wOw+jVA3LvVrcpEGsiTxDmj2hbDccZf+bf9PqEj++X
+        mMCcQihO59gQW3rHedrXHBjQlLjA1wL1RfJggjtbOg==
+X-Google-Smtp-Source: ABdhPJzS7aro7xemGhZ/swsjZFolSNdOJiyUhcWH5G61FbbOY6yFGtv4AhGW+idHpc5sL2zDwUsyjMcQx3UtMw/sRsM=
+X-Received: by 2002:a63:f804:: with SMTP id n4mr6884502pgh.341.1629260920403;
+ Tue, 17 Aug 2021 21:28:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <72ae69b4-6069-ade5-a12b-8ee0435f803a@kernel.org>
+References: <20210814052519.86679-1-songmuchun@bytedance.com>
+ <20210814052519.86679-4-songmuchun@bytedance.com> <YRx76SlTkTT8a1BI@carbon.dhcp.thefacebook.com>
+In-Reply-To: <YRx76SlTkTT8a1BI@carbon.dhcp.thefacebook.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 18 Aug 2021 12:28:02 +0800
+Message-ID: <CAMZfGtWhQcfFwkTq59ZboHe5iaLqeGhb9M8GzjEMWZwwYxB43w@mail.gmail.com>
+Subject: Re: [PATCH v1 03/12] mm: memcontrol: make lruvec lock safe when LRU
+ pages are reparented
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        fam.zheng@bytedance.com, "Singh, Balbir" <bsingharora@gmail.com>,
+        Yang Shi <shy828301@gmail.com>, Alex Shi <alexs@kernel.org>,
+        Muchun Song <smuchun@gmail.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 04:23:41PM -0700, Nathan Chancellor wrote:
-> On 8/17/2021 4:06 PM, Kees Cook wrote:
-> > On Tue, Aug 17, 2021 at 04:33:25PM -0500, Gustavo A. R. Silva wrote:
-> > > 
-> > > 
-> > > On 8/17/21 16:17, Masahiro Yamada wrote:
-> > > > On Wed, Aug 18, 2021 at 3:25 AM Nathan Chancellor <nathan@kernel.org> wrote:
-> > > > > 
-> > > > > On 8/17/2021 11:03 AM, Kees Cook wrote:
-> > > > > > On Mon, Aug 16, 2021 at 09:55:28PM -0700, Nathan Chancellor wrote:
-> > > > > > > If you/Gustavo would prefer, I can upgrade that check to
-> > > > > > > 
-> > > > > > > ifneq ($(call cc-option, -Wunreachable-code-fallthrough),)
-> > > > > > > 
-> > > > > > > I was just trying to save a call to the compiler, as that is more expensive
-> > > > > > > than a shell test call.
-> > > > > > 
-> > > > > > I prefer the option test -- this means no changes are needed on the
-> > > > > > kernel build side if it ever finds itself backported to earlier versions
-> > > > > > (and it handles the current case of "14" not meaning "absolute latest").
-> > > > > > 
-> > > > > > More specifically, I think you want this (untested):
-> > > > > 
-> > > > > That should work but since -Wunreachable-code-fallthrough is off by
-> > > > > default, I did not really see a reason to include it in KBUILD_CFLAGS. I
-> > > > > do not have a strong opinion though, your version is smaller than mine
-> > > > > is so we can just go with that. I'll defer to Gustavo on it since he has
-> > > > > put in all of the work cleaning up the warnings.
-> > > > 
-> > > > 
-> > > > 
-> > > > https://github.com/llvm/llvm-project/commit/9ed4a94d6451046a51ef393cd62f00710820a7e8
-> > > > 
-> > > >     did two things:
-> > > > 
-> > > >   (1) Change the -Wimplicit-fallthrough behavior so that it fits
-> > > >        to our use in the kernel
-> > > > 
-> > > >   (2) Add a new option -Wunreachable-code-fallthrough
-> > > >        that works like the previous -Wimplicit-fallthrough of
-> > > >        Clang <= 13.0.0
-> > > > 
-> > > > 
-> > > > They are separate things.
-> > > > 
-> > > > Checking the presence of -Wunreachable-code-fallthrough
-> > > > does not make sense since we are only interested in (1) here.
-> > > > 
-> > > > So, checking the Clang version is sensible and matches
-> > > > the explanation in the comment block.
-> > 
-> > I thought one of the problems (which is quickly draining away) that
-> > needed to be solved here is that some Clang trunk builds (that report
-> > as version 14) don't yet have support for -Wunreachable-code-fallthrough
-> > since they aren't new enough.
-> 
-> Philip, how often is the kernel test robot's clang version rebuilt? Would it
-> be possible to bump it to latest ToT or at least
-> 9ed4a94d6451046a51ef393cd62f00710820a7e8 so that we do not get bit by this
-> warning when we go to enable this flag?
-Got it, currently we do upgrade in weekly cadence (but it may fall behind sometimes),
-and the one we use now is clang version 14.0.0 (https://github.com/llvm/llvm-project 
-2c6448cdc2f68f8c28fd0bd9404182b81306e6e6)
+On Wed, Aug 18, 2021 at 11:18 AM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Sat, Aug 14, 2021 at 01:25:10PM +0800, Muchun Song wrote:
+> > The diagram below shows how to make the folio lruvec lock safe when LRU
+> > pages are reparented.
+> >
+> > folio_lruvec_lock(folio)
+> >     retry:
+> >       lruvec = folio_lruvec(folio);
+> >
+> >         // The folio is reparented at this time.
+> >         spin_lock(&lruvec->lru_lock);
+> >
+> >         if (unlikely(lruvec_memcg(lruvec) != folio_memcg(folio)))
+> >             // Acquired the wrong lruvec lock and need to retry.
+> >             // Because this folio is on the parent memcg lruvec list.
+> >             goto retry;
+> >
+> >         // If we reach here, it means that folio_memcg(folio) is stable.
+> >
+> > memcg_reparent_objcgs(memcg)
+> >     // lruvec belongs to memcg and lruvec_parent belongs to parent memcg.
+> >     spin_lock(&lruvec->lru_lock);
+> >     spin_lock(&lruvec_parent->lru_lock);
+> >
+> >     // Move all the pages from the lruvec list to the parent lruvec list.
+> >
+> >     spin_unlock(&lruvec_parent->lru_lock);
+> >     spin_unlock(&lruvec->lru_lock);
+> >
+> > After we acquire the lruvec lock, we need to check whether the folio is
+> > reparented. If so, we need to reacquire the new lruvec lock. On the
+> > routine of the LRU pages reparenting, we will also acquire the lruvec
+> > lock (will be implemented in the later patch). So folio_memcg() cannot
+> > be changed when we hold the lruvec lock.
+> >
+> > Since lruvec_memcg(lruvec) is always equal to folio_memcg(folio) after
+> > we hold the lruvec lock, lruvec_memcg_debug() check is pointless. So
+> > remove it.
+> >
+> > This is a preparation for reparenting the LRU pages.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > Acked-by: Roman Gushchin <guro@fb.com>
+>
+> Maybe it's mostly s/page/folio, but the patch looks quite differently
+> in comparison to the version I did ack. In general, please, drop acks
+> when there are significant changes between versions.
 
-We will ugrade to the head of llvm-project master today.
+Got it. I'll drop all acks in the next version. Thanks.
 
-Thanks
-
-> 
-> I do not know of any other CI aside from ours that is testing with tip of
-> tree clang and ours should already have a clang that includes my patch since
-> it comes from apt.llvm.org.
-> 
-> > > > # Warn about unmarked fall-throughs in switch statement.
-> > > > # Clang prior to 14.0.0 warned on unreachable fallthroughs with
-> > > > # -Wimplicit-fallthrough, which is unacceptable due to IS_ENABLED().
-> > > > # https://bugs.llvm.org/show_bug.cgi?id=51094
-> > > > ifeq ($(firstword $(sort $(CONFIG_CLANG_VERSION) 140000)),140000)
-> > > > KBUILD_CFLAGS += -Wimplicit-fallthrough
-> > > > endif
-> 
-> Very clever and nifty trick! I have verified that it works for clang 13 and
-> 14 along with a theoretical clang 15. Gustavo, feel free to stick a
-> 
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-> Tested-by: Nathan Chancellor <nathan@kernel.org>
-> 
-> if you so desire.
-> 
-> > > > 
-> > > > The $(sort ...) is alphabetical sort, not numeric sort.
-> > > > It works for us because the minimum Clang version is 10.0.1
-> > > > (that is CONFIG_CLANG_VERSION is always 6-digit)
-> > > > 
-> > > > It will break when Clang version 100.0.0 is released.
-> > > > 
-> > > > But, before that, we will raise the minimum supported clang version,
-> > > > and this conditional will go away.
-> > 
-> > If a version test is preferred, cool; this is a nice trick. :)
-> > 
-> > > I like this. :)
-> > > 
-> > > I'm going to make the 0-day robot test it in my tree, first.
-> > 
-> > Sounds good to me!
-> > 
+>
+> Thanks!
