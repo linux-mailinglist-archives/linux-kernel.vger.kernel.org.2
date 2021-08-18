@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C3EC3EF6B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 02:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D533EF6BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 02:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237339AbhHRANQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 20:13:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49296 "EHLO
+        id S237424AbhHRANU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 20:13:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237243AbhHRANI (ORCPT
+        with ESMTP id S237279AbhHRANJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 20:13:08 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D69C0612A4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 17:12:33 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id x5-20020a0569020505b0290592c25b8c59so930697ybs.18
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 17:12:33 -0700 (PDT)
+        Tue, 17 Aug 2021 20:13:09 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83340C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 17:12:35 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id iw1-20020a0562140f2100b0035f58985cecso840472qvb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 17:12:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=HGsy1AYzAaNzOmCNqthC1tCvP/rp7O5tcVnL7Zz8tBI=;
-        b=sh+QVsG0ol48I0ldcdsbPdihtJRoNYZPe0D2QiktQlpO0cKb5nXByr86R+F1H8DvLa
-         betvTNViADCpa2luSEIvXPH5Tm/3E/6pbWXlndcN5d2jGZuAgR9zTROn/eA+cgT/+AJq
-         mUFR/B4LKLSlB7Pd9Px3yOreOSwSXzVr7/o1BEs7xvewKCyRqqCyuksorGhU6Nuc9cBN
-         V/nM7cq6QqTmJEM+a/L8JscwoAxz6CA4MUNwpv1pJkJSU9IFycWQDD1jE95g5EcZOY6z
-         phLtJF9xi4TR7XKdoU09nlD54YfMfylCa9FlWIHeq58yCT/f9K1eaok/zfAbCBch1u+n
-         7bEg==
+        bh=b+D2wYBAlQke3x9JmkHfnRLEolzYl7vtoLkPYastC9U=;
+        b=SPf96yhVitla9fan3IPn+20/DnpTxFcV2rJEUslNb4wU2oCEHWEr0TqYuejQIpJC6o
+         jNSlYG+qBG8JbfyX7VG4m902MAYzTMIKxE+J/MrcopqG+WhchVZGJ22ACD9otOp/g1MJ
+         y8nklKpCoREBa48CLrIfCPmMdB2GYVCrgtlvmB4GKsIMsEqBcxosOyXpoGKbtYzFUxZP
+         Mm1I083bv5z0TQY7dAZh75UyzcpU/oojg63UuFCwEtyUQLcR51nv2dL3CjfuKg5iKWol
+         K+EQ3dmDwhxcBXzNf+59Mx+svVE9z+9may7ss8OC49FzSgAQttlvHK9DI1ILn8qo818b
+         bPkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=HGsy1AYzAaNzOmCNqthC1tCvP/rp7O5tcVnL7Zz8tBI=;
-        b=JY8ImvYjMwdPADbrM2eCeuYyCqBsll5lJr73NTpOqdfmJ7qY9KjGqa13Hka2w1P14f
-         33KJI2cGkBya0mdN0kzudX2FgqErFFabP/kZYSxNd7rUesDkR2AYjg4LdgVhg0nT0/ZU
-         Gc9X9Pal1WfnUzDw/wCGS3swKHG/EBdjptonS7jAIG0FwBeSlYc11TXvdT+diDE++AFL
-         4z6k7IIdBfJI98rGB9vR30ObTy2VC49VKjx9CZBnI2gyja6WHnC5oNpOmNtjRAGuYaNK
-         Ra7vLZU/2w8zUjlIbNVW5u/9BNNXLhBcvDssk6s3wzUW3suXpjc3s3NX2NzAm1niBWOV
-         HW0w==
-X-Gm-Message-State: AOAM532DFo9Z1w1EJ5g6wVS83KvPiwM3VLr/zVPMTyzlgC3k51PYqF80
-        43ZDb3D4e18Co9Elf8CiwUi/sOimfgQ=
-X-Google-Smtp-Source: ABdhPJxKuNoi8BurtLgbuppXh+jBMCzbufP37yZkuLi1u+HzA7x/QRXt4AsLOGUGibA7aBEUElEO9ttIYL8=
+        bh=b+D2wYBAlQke3x9JmkHfnRLEolzYl7vtoLkPYastC9U=;
+        b=QlJAXhrPb/BJVqQnT1wx2qLwv8d83har1g2Fvs8gTkQymzvqN6EFzyqckQs3CgOLHo
+         9DZVEObxF4lr58pFCH50GIlz6OjTZenRnayKOl9z6xCacOzTA6U3XK5YN6bMJdmyoAn8
+         zZmFRAeBnmnL6PRsYuBijsz2NXv8Y760Z7yfroO8Zz8I1cb5n8T0UY8hisXGcj1gINCq
+         oVHyjlvG1KVqoyitXvYC7zD/RGrZW83+0VTEIKY77/Gv0McOAhmrWrMn9OXpq5u5a4Om
+         nAoJuYPYHjZ9xGXRuvq6WohRtxAMokcA0Q+849RUIcCchhoUy/zE+CSlhUUZXbl9QlDz
+         3j5w==
+X-Gm-Message-State: AOAM533QSnydVyPtUAm59BchsCbU2/l0FjKCkLazm6wcwK2Eqz3FAAYr
+        1FMRi9es+Be8PF7pdmTaBxNLoOWFCBg=
+X-Google-Smtp-Source: ABdhPJwjcybq5SY8/j4KCEcr/HLmkC+uHYVjqMZ/h+nMujuHcP7O+f1gmxV0bp94O0yeV50pIPXQ8l0qs8Q=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:158e:55a:74dd:5197])
- (user=seanjc job=sendgmr) by 2002:a25:db82:: with SMTP id g124mr7742228ybf.46.1629245552432;
- Tue, 17 Aug 2021 17:12:32 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:ad4:46cb:: with SMTP id g11mr6107577qvw.45.1629245554714;
+ Tue, 17 Aug 2021 17:12:34 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 17 Aug 2021 17:12:09 -0700
+Date:   Tue, 17 Aug 2021 17:12:10 -0700
 In-Reply-To: <20210818001210.4073390-1-seanjc@google.com>
-Message-Id: <20210818001210.4073390-5-seanjc@google.com>
+Message-Id: <20210818001210.4073390-6-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210818001210.4073390-1-seanjc@google.com>
 X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
-Subject: [PATCH 4/5] KVM: selftests: Add a test for KVM_RUN+rseq to detect
- task migration bugs
+Subject: [PATCH 5/5] KVM: selftests: Remove __NR_userfaultfd syscall fallback
 From:   Sean Christopherson <seanjc@google.com>
 To:     Russell King <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -89,197 +88,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a test to verify an rseq's CPU ID is updated correctly if the task is
-migrated while the kernel is handling KVM_RUN.  This is a regression test
-for a bug introduced by commit 72c3c0fe54a3 ("x86/kvm: Use generic xfer
-to guest work function"), where TIF_NOTIFY_RESUME would be cleared by KVM
-without updating rseq, leading to a stale CPU ID and other badness.
+Revert the __NR_userfaultfd syscall fallback added for KVM selftests now
+that x86's unistd_{32,63}.h overrides are under uapi/ and thus not in
+KVM sefltests' search path, i.e. now that KVM gets x86 syscall numbers
+from the installed kernel headers.
 
+No functional change intended.
+
+Cc: Ben Gardon <bgardon@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- tools/testing/selftests/kvm/.gitignore  |   1 +
- tools/testing/selftests/kvm/Makefile    |   3 +
- tools/testing/selftests/kvm/rseq_test.c | 131 ++++++++++++++++++++++++
- 3 files changed, 135 insertions(+)
- create mode 100644 tools/testing/selftests/kvm/rseq_test.c
+ tools/arch/x86/include/uapi/asm/unistd_64.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
-index 0709af0144c8..6d031ff6b68e 100644
---- a/tools/testing/selftests/kvm/.gitignore
-+++ b/tools/testing/selftests/kvm/.gitignore
-@@ -47,6 +47,7 @@
- /kvm_page_table_test
- /memslot_modification_stress_test
- /memslot_perf_test
-+/rseq_test
- /set_memory_region_test
- /steal_time
- /kvm_binary_stats_test
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index 5832f510a16c..0756e79cb513 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -80,6 +80,7 @@ TEST_GEN_PROGS_x86_64 += kvm_create_max_vcpus
- TEST_GEN_PROGS_x86_64 += kvm_page_table_test
- TEST_GEN_PROGS_x86_64 += memslot_modification_stress_test
- TEST_GEN_PROGS_x86_64 += memslot_perf_test
-+TEST_GEN_PROGS_x86_64 += rseq_test
- TEST_GEN_PROGS_x86_64 += set_memory_region_test
- TEST_GEN_PROGS_x86_64 += steal_time
- TEST_GEN_PROGS_x86_64 += kvm_binary_stats_test
-@@ -92,6 +93,7 @@ TEST_GEN_PROGS_aarch64 += dirty_log_test
- TEST_GEN_PROGS_aarch64 += dirty_log_perf_test
- TEST_GEN_PROGS_aarch64 += kvm_create_max_vcpus
- TEST_GEN_PROGS_aarch64 += kvm_page_table_test
-+TEST_GEN_PROGS_aarch64 += rseq_test
- TEST_GEN_PROGS_aarch64 += set_memory_region_test
- TEST_GEN_PROGS_aarch64 += steal_time
- TEST_GEN_PROGS_aarch64 += kvm_binary_stats_test
-@@ -103,6 +105,7 @@ TEST_GEN_PROGS_s390x += demand_paging_test
- TEST_GEN_PROGS_s390x += dirty_log_test
- TEST_GEN_PROGS_s390x += kvm_create_max_vcpus
- TEST_GEN_PROGS_s390x += kvm_page_table_test
-+TEST_GEN_PROGS_s390x += rseq_test
- TEST_GEN_PROGS_s390x += set_memory_region_test
- TEST_GEN_PROGS_s390x += kvm_binary_stats_test
- 
-diff --git a/tools/testing/selftests/kvm/rseq_test.c b/tools/testing/selftests/kvm/rseq_test.c
-new file mode 100644
-index 000000000000..90ed535eded7
---- /dev/null
-+++ b/tools/testing/selftests/kvm/rseq_test.c
-@@ -0,0 +1,131 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#define _GNU_SOURCE /* for program_invocation_short_name */
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <pthread.h>
-+#include <sched.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <signal.h>
-+#include <syscall.h>
-+#include <sys/ioctl.h>
-+#include <linux/rseq.h>
-+#include <linux/unistd.h>
-+
-+#include "kvm_util.h"
-+#include "processor.h"
-+#include "test_util.h"
-+
-+#define VCPU_ID 0
-+
-+static __thread volatile struct rseq __rseq = {
-+	.cpu_id = RSEQ_CPU_ID_UNINITIALIZED,
-+};
-+
-+#define RSEQ_SIG 0xdeadbeef
-+
-+static pthread_t migration_thread;
-+static cpu_set_t possible_mask;
-+static bool done;
-+
-+static void guest_code(void)
-+{
-+	for (;;)
-+		GUEST_SYNC(0);
-+}
-+
-+static void sys_rseq(int flags)
-+{
-+	int r;
-+
-+	r = syscall(__NR_rseq, &__rseq, sizeof(__rseq), flags, RSEQ_SIG);
-+	TEST_ASSERT(!r, "rseq failed, errno = %d (%s)", errno, strerror(errno));
-+}
-+
-+static void *migration_worker(void *ign)
-+{
-+	cpu_set_t allowed_mask;
-+	int r, i, nr_cpus, cpu;
-+
-+	CPU_ZERO(&allowed_mask);
-+
-+	nr_cpus = CPU_COUNT(&possible_mask);
-+
-+	for (i = 0; i < 20000; i++) {
-+		cpu = i % nr_cpus;
-+		if (!CPU_ISSET(cpu, &possible_mask))
-+			continue;
-+
-+		CPU_SET(cpu, &allowed_mask);
-+
-+		r = sched_setaffinity(0, sizeof(allowed_mask), &allowed_mask);
-+		TEST_ASSERT(!r, "sched_setaffinity failed, errno = %d (%s)", errno,
-+			    strerror(errno));
-+
-+		CPU_CLR(cpu, &allowed_mask);
-+
-+		usleep(10);
-+	}
-+	done = true;
-+	return NULL;
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	struct kvm_vm *vm;
-+	u32 cpu, rseq_cpu;
-+	int r;
-+
-+	/* Tell stdout not to buffer its content */
-+	setbuf(stdout, NULL);
-+
-+	r = sched_getaffinity(0, sizeof(possible_mask), &possible_mask);
-+	TEST_ASSERT(!r, "sched_getaffinity failed, errno = %d (%s)", errno,
-+		    strerror(errno));
-+
-+	if (CPU_COUNT(&possible_mask) < 2) {
-+		print_skip("Only one CPU, task migration not possible\n");
-+		exit(KSFT_SKIP);
-+	}
-+
-+	sys_rseq(0);
-+
-+	/*
-+	 * Create and run a dummy VM that immediately exits to userspace via
-+	 * GUEST_SYNC, while concurrently migrating the process by setting its
-+	 * CPU affinity.
-+	 */
-+	vm = vm_create_default(VCPU_ID, 0, guest_code);
-+
-+	pthread_create(&migration_thread, NULL, migration_worker, 0);
-+
-+	while (!done) {
-+		vcpu_run(vm, VCPU_ID);
-+		TEST_ASSERT(get_ucall(vm, VCPU_ID, NULL) == UCALL_SYNC,
-+			    "Guest failed?");
-+
-+		cpu = sched_getcpu();
-+		rseq_cpu = READ_ONCE(__rseq.cpu_id);
-+
-+		/*
-+		 * Verify rseq's CPU matches sched's CPU, and that sched's CPU
-+		 * is stable.  This doesn't handle the case where the task is
-+		 * migrated between sched_getcpu() and reading rseq, and again
-+		 * between reading rseq and sched_getcpu(), but in practice no
-+		 * false positives have been observed, while on the other hand
-+		 * blocking migration while this thread reads CPUs messes with
-+		 * the timing and prevents hitting failures on a buggy kernel.
-+		 */
-+		TEST_ASSERT(rseq_cpu == cpu || cpu != sched_getcpu(),
-+			    "rseq CPU = %d, sched CPU = %d\n", rseq_cpu, cpu);
-+	}
-+
-+	pthread_join(migration_thread, NULL);
-+
-+	kvm_vm_free(vm);
-+
-+	sys_rseq(RSEQ_FLAG_UNREGISTER);
-+
-+	return 0;
-+}
+diff --git a/tools/arch/x86/include/uapi/asm/unistd_64.h b/tools/arch/x86/include/uapi/asm/unistd_64.h
+index 4205ed4158bf..cb52a3a8b8fc 100644
+--- a/tools/arch/x86/include/uapi/asm/unistd_64.h
++++ b/tools/arch/x86/include/uapi/asm/unistd_64.h
+@@ -1,7 +1,4 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef __NR_userfaultfd
+-#define __NR_userfaultfd 282
+-#endif
+ #ifndef __NR_perf_event_open
+ # define __NR_perf_event_open 298
+ #endif
 -- 
 2.33.0.rc1.237.g0d66db33f3-goog
 
