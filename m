@@ -2,97 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C52AF3EF7FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 04:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8629C3EF80B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 04:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236814AbhHRCR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 22:17:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233380AbhHRCR5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 22:17:57 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B5DC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 19:17:24 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id o3-20020a2541030000b0290557cf3415f8so1344907yba.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 19:17:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=aU2NnwObR3/vWQ4u0/POg45Aj6bfAktvg+f1Ed8jh+w=;
-        b=bxi5ittgZ9mh6tcLPQQ7b9xUAIQ5/sLpcM02KaNvoCL4gJIPPX3Z3AueLjCuJNtlYX
-         bBdQspNsklXJydkvS4K7yps7zltGdUPqKdfcSdBwedGg4hgNLxIIug+jkDhHt3h29nQ6
-         2FAPCUnIhg47FOaRL349BwJd7jZegB9zvyTykjmnjBXLQcpxfvWFKqUt6x5USFkllvH4
-         W76Nr+B9pptPsBcmKdBb7wjjT1z4lCcvvMVsy7InCcVxXt8YxMzcfRRzFRN6YKRUYuNl
-         oMsE+25A/M4yW1TvA02Xfz543hK+cLNgNOyg38dopSRGMJdX0OPFpF5YqnRBbaAYhT9v
-         J2VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=aU2NnwObR3/vWQ4u0/POg45Aj6bfAktvg+f1Ed8jh+w=;
-        b=S5bEedkEfROAE+dUEVc0l01Ox8Q46XsW1lwMntUNBgqPFinVlpSVtJWd7qZYqBOO4R
-         tnZQtahKKc+RRoQUvegbW3dIVnxNRPzqBF94KFaEhvRHtdVo4iFMTMgoLK7heX3oJDAp
-         JQtWBy2x0TAPZaE03DTgtspq5pv0JbaCOLM7HbaJff7qPSFSBgzZxWL93JVSk/tgTo/L
-         Hq1ubbGMAMOVi8sKtGW4I+Tm7yqtUut1jXbf1DwvGP3YSI5Px6dhXi4wSpfcxxhaD6rn
-         PsCHRlXOfISUU+9AjdLs/lkdjrKJRTDCU8mTH5yUpDtkBzppBSs0Th/nCKByzFQPTdSV
-         5luA==
-X-Gm-Message-State: AOAM533vj2YZ9OvrN8FFRQwWYOTYaNP+Lrj7TvfXPV/9R+sDMpGVXr/f
-        j8AtSkeTEoFTio+Qj7eizPhCCIwjl66OebE=
-X-Google-Smtp-Source: ABdhPJyNfDSXQfFmt2nxKDc75KDdbk6WVOvx/5kOmOksyJitPli2Kb36pRWtwSBAy3X8HxRS4q7pOAJUl1iexME=
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7750:a56d:5272:72cb])
- (user=saravanak job=sendgmr) by 2002:a25:c712:: with SMTP id
- w18mr8231275ybe.390.1629253043246; Tue, 17 Aug 2021 19:17:23 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 19:17:16 -0700
-Message-Id: <20210818021717.3268255-1-saravanak@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
-Subject: [PATCH v2] of: property: fw_devlink: Add support for "phy-handle" property
-From:   Saravana Kannan <saravanak@google.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
-        kernel-team@android.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S236616AbhHRCYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 22:24:22 -0400
+Received: from mx21.baidu.com ([220.181.3.85]:41580 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233380AbhHRCYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 22:24:20 -0400
+Received: from BC-Mail-Ex30.internal.baidu.com (unknown [172.31.51.24])
+        by Forcepoint Email with ESMTPS id 52F56337AEB4FC5E2F52;
+        Wed, 18 Aug 2021 10:23:29 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex30.internal.baidu.com (172.31.51.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Wed, 18 Aug 2021 10:23:28 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Wed, 18 Aug 2021 10:23:28 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <straube.linux@gmail.com>, <dan.carpenter@oracle.com>,
+        <greg@kroah.com>, <yangyingliang@huawei.com>
+CC:     <linux-staging@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        "Cai Huoqing" <caihuoqing@baidu.com>
+Subject: [PATCH] staging: r8188eu: Remove unused including <linux/version.h>
+Date:   Wed, 18 Aug 2021 10:23:21 +0800
+Message-ID: <20210818022321.2395-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex10.internal.baidu.com (172.31.51.50) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allows tracking dependencies between Ethernet PHYs and their consumers.
+Remove including <linux/version.h> that don't need it
+based on staging-next
 
-Cc: Andrew Lunn <andrew@lunn.ch>
-Cc: netdev@vger.kernel.org
-Signed-off-by: Saravana Kannan <saravanak@google.com>
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 ---
-v1 -> v2:
-- Fixed patch to address my misunderstanding of how PHYs get
-  initialized.
+ drivers/staging/r8188eu/core/rtw_mlme.c      | 1 -
+ drivers/staging/r8188eu/os_dep/os_intfs.c    | 1 -
+ drivers/staging/r8188eu/os_dep/rtw_android.c | 1 -
+ drivers/staging/r8188eu/os_dep/xmit_linux.c  | 1 -
+ 4 files changed, 4 deletions(-)
 
- drivers/of/property.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index 931340329414..0c0dc2e369c0 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1291,6 +1291,7 @@ DEFINE_SIMPLE_PROP(pwms, "pwms", "#pwm-cells")
- DEFINE_SIMPLE_PROP(resets, "resets", "#reset-cells")
- DEFINE_SIMPLE_PROP(leds, "leds", NULL)
- DEFINE_SIMPLE_PROP(backlight, "backlight", NULL)
-+DEFINE_SIMPLE_PROP(phy_handle, "phy-handle", NULL)
- DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
- DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
+diff --git a/drivers/staging/r8188eu/core/rtw_mlme.c b/drivers/staging/r8188eu/core/rtw_mlme.c
+index d5ef5783f4ad..82b74ebdaabd 100644
+--- a/drivers/staging/r8188eu/core/rtw_mlme.c
++++ b/drivers/staging/r8188eu/core/rtw_mlme.c
+@@ -3,7 +3,6 @@
  
-@@ -1379,6 +1380,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
- 	{ .parse_prop = parse_resets, },
- 	{ .parse_prop = parse_leds, },
- 	{ .parse_prop = parse_backlight, },
-+	{ .parse_prop = parse_phy_handle, },
- 	{ .parse_prop = parse_gpio_compat, },
- 	{ .parse_prop = parse_interrupts, },
- 	{ .parse_prop = parse_regulators, },
+ #define _RTW_MLME_C_
+ 
+-#include <linux/version.h>
+ #include "../include/osdep_service.h"
+ #include "../include/drv_types.h"
+ #include "../include/recv_osdep.h"
+diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
+index f4bf4732578a..aef978eef4d7 100644
+--- a/drivers/staging/r8188eu/os_dep/os_intfs.c
++++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
+@@ -12,7 +12,6 @@
+ 
+ #include "../include/usb_osintf.h"
+ #include "../include/rtw_br_ext.h"
+-#include <linux/version.h>
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Realtek Wireless Lan Driver");
+diff --git a/drivers/staging/r8188eu/os_dep/rtw_android.c b/drivers/staging/r8188eu/os_dep/rtw_android.c
+index bdd381606ba6..af0072e2cb5f 100644
+--- a/drivers/staging/r8188eu/os_dep/rtw_android.c
++++ b/drivers/staging/r8188eu/os_dep/rtw_android.c
+@@ -3,7 +3,6 @@
+ 
+ #include <linux/module.h>
+ #include <linux/netdevice.h>
+-#include <linux/version.h>
+ #include "../include/rtw_android.h"
+ #include "../include/osdep_service.h"
+ #include "../include/rtw_debug.h"
+diff --git a/drivers/staging/r8188eu/os_dep/xmit_linux.c b/drivers/staging/r8188eu/os_dep/xmit_linux.c
+index 4f1ce346b3a5..69966c696130 100644
+--- a/drivers/staging/r8188eu/os_dep/xmit_linux.c
++++ b/drivers/staging/r8188eu/os_dep/xmit_linux.c
+@@ -3,7 +3,6 @@
+ 
+ #define _XMIT_OSDEP_C_
+ 
+-#include <linux/version.h>
+ #include "../include/osdep_service.h"
+ #include "../include/drv_types.h"
+ #include "../include/if_ether.h"
 -- 
-2.33.0.rc1.237.g0d66db33f3-goog
+2.22.0
 
