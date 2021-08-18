@@ -2,172 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE853F0A22
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC49E3F0A25
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbhHRRRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 13:17:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33426 "EHLO
+        id S230147AbhHRRT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 13:19:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232785AbhHRRRh (ORCPT
+        with ESMTP id S229547AbhHRRTz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 13:17:37 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95624C0613D9
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 10:17:02 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id l11so2218562plk.6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 10:17:02 -0700 (PDT)
+        Wed, 18 Aug 2021 13:19:55 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC56CC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 10:19:19 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id gt38so6445909ejc.13
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 10:19:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dAlPQPwsjsFMXjoJMw0xWHhPDndQQBQFzdTDmejXvi4=;
-        b=Yh9Iis5vwRSOQX95WV49w8MtJwWHZCS7qS26vo4RK4iZOvp6vCGq8L5X968TWIIl0R
-         UKRUNo93/xcU6d/x2jFLhW9vll3U4EKuMEL4AUMbqGvCUhlWTIidr5JdGyVRywmLW8yn
-         pofzmmYu1zzqw5ShU8qSqTIXUDgcZ46USnARo=
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=lfIld6KktdG6ygRj5PayLJShMaK9SwgoTaMox5h6Ix0=;
+        b=itFg3/xP+wNRJhubosvd/kWlSnhRaQ6tX4tf3B/NQ63RK2bSU1D089DfqxfN0FhO8H
+         dtKDHoog6BB9vJyzwgdySBe5zScKtMuIV7ZPAefYX8H3dTpuaQC1D2zPjNAbbkGKcq9D
+         3G7up1FPPdyJ3fKckRm84rKJCpm/cpBmMZLVGrMFrGACejroVDr7YJBmJsKs1CUZzIQW
+         tS/C+KmSEeqUF3xDvhS2Kdp47pbCfkf0rUt4HJFMNwYNwKMEwN+XNZPuMvFAZNbeH2iy
+         ClGQCbITSyiY7FldM2Sw+b8il5KVMJmMHtTBD3H8pmWYYXqFOlu9jLmHhmJXxw3f1xfy
+         CTwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dAlPQPwsjsFMXjoJMw0xWHhPDndQQBQFzdTDmejXvi4=;
-        b=iRnlvhteeMjkTE7CsHPke5A9qnZenF+daO6pJO3FGTqLLdGe1x870sM5gcBFUQeREQ
-         k8+NUErdhM9R3/FwrX+taiErLTl0lYTA1j4C87b91nsIWbTTi1Fomi+VAAhPZkTuIAVq
-         5RwBE0iL7S2rWW4/ROyItHIm68krfyeMUONQxYESY6rA/nNJf0UuDsTmc9cyM68rDpcU
-         Xo80oIpdEa3o2OJStIx+JCHgGNFEDgvzuVeHLG6Ht6jcuK8SUFvThbPNMZFBiXkD1yBq
-         CquwP+NX1dej4PCGGjlSweupRF2wEmCArEsTMiRSdpe6OaVKWWZWxUDANbneXAOPNZJP
-         2RGA==
-X-Gm-Message-State: AOAM530SpZ+1xiSb5YAkog+y8rzoksOZAEatmmxrxNz40Zv1bV/kKT+m
-        5F+llZ7upE7I5WgTHhIqZn5g9g==
-X-Google-Smtp-Source: ABdhPJwuXKbNAMjgpogkJyF1CgBFf2+9GIVULMoMoz5BFx9xliiMhHwX7ia2SIMVLyMakPNYH90txg==
-X-Received: by 2002:a17:902:e20c:b0:12f:6b45:7765 with SMTP id u12-20020a170902e20c00b0012f6b457765mr1132440plb.50.1629307022176;
-        Wed, 18 Aug 2021 10:17:02 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z8sm338058pfa.113.2021.08.18.10.17.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 10:17:01 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 10:17:00 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Al Cooper <alcooperx@gmail.com>,
-        linux-usb@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 1/2] USB: EHCI: Add register array bounds to HCS ports
-Message-ID: <202108181016.114D7B2888@keescook>
-References: <20210818043035.1308062-1-keescook@chromium.org>
- <20210818043035.1308062-2-keescook@chromium.org>
- <20210818144442.GC193695@rowland.harvard.edu>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=lfIld6KktdG6ygRj5PayLJShMaK9SwgoTaMox5h6Ix0=;
+        b=SDi9myGpxAVPqUg7pt60VO99nue1X8BiT2jUzxI00XLH80rNH82at5eIqv5dgqsOE7
+         QenV2jkIo1XH6XCgyymtN3WlBNR3uXEUwMppLgmzReO06H+BDHnJz+h/TDcyup66nPmh
+         ss8D/zjKpv9MBZFpKlatNamMzDBIbvB27bwMxG0yq/bv58lEcJ4HEXH8LqRJQFa+4yu9
+         Qdm61lVqNwx9+1KLoUeEuj3PWfNpE8wdRADkXkksl5+SFUgyuI9ieqXK18Cf3t8gLWVk
+         CjIzu1vx6gH0Jv1mBF+i6klQSwmJK67ndxKa1qWmN4Ox53zBF93Auii885LJDTwwwWxq
+         LNaw==
+X-Gm-Message-State: AOAM533DXQZZmvjL4UpFp/EAfAVGsqn/8BPh6/u3Q7kTE1RLEJJrC2Tg
+        h339vbzp5WIuv3y6FfZIRj8QgVwZrFLrysIPjxI=
+X-Google-Smtp-Source: ABdhPJzFW0qszLZbHXaRqXctN3U/nOBDca85EzWsFiOksmTuYxrIok0IQ8p33Pm07m5nF37AZg+UCX9UIBfpwMqrsx0=
+X-Received: by 2002:a17:906:8a79:: with SMTP id hy25mr10675314ejc.427.1629307157480;
+ Wed, 18 Aug 2021 10:19:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818144442.GC193695@rowland.harvard.edu>
+Received: by 2002:a17:907:765c:0:0:0:0 with HTTP; Wed, 18 Aug 2021 10:19:16
+ -0700 (PDT)
+Reply-To: m.mariam.deng@fastservice.com
+From:   Miss Mariam Dim Deng <missmadimdeng@gmail.com>
+Date:   Wed, 18 Aug 2021 19:19:16 +0200
+Message-ID: <CAMUhcvz2Yx=hAGZPDCQW_pSkM7x0TMHEWDfaWt3VV+P1zwZw4g@mail.gmail.com>
+Subject: Please help, save my life and become my investiment partner
+To:     missmadimdeng@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 10:44:42AM -0400, Alan Stern wrote:
-> On Tue, Aug 17, 2021 at 09:30:33PM -0700, Kees Cook wrote:
-> > The original EHCI register struct used a trailing 0-element array for
-> > addressing the N_PORTS-many available registers. However, after
-> > commit a46af4ebf9ff ("USB: EHCI: define extension registers like normal ones")
-> > the 0-element array started to overlap the USBMODE extension register.
-> > 
-> > To avoid future compile-time warnings about accessing indexes within a
-> > 0-element array, rearrange the struct to actually describe the expected
-> > layout (max 15 registers) with a union. All offsets remain the same, and
-> > bounds checking becomes possible on accesses to port_status and hostpc.
-> > 
-> > There are no binary differences, and struct offsets continue to match.
-> 
-> Two comments...
-> 
-> > ---
-> >  include/linux/usb/ehci_def.h | 24 +++++++++++++-----------
-> >  1 file changed, 13 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/include/linux/usb/ehci_def.h b/include/linux/usb/ehci_def.h
-> > index 78e006355557..5398f571113b 100644
-> > --- a/include/linux/usb/ehci_def.h
-> > +++ b/include/linux/usb/ehci_def.h
-> > @@ -45,6 +45,7 @@ struct ehci_caps {
-> >  #define HCS_PORTROUTED(p)	((p)&(1 << 7))	/* true: port routing */
-> >  #define HCS_PPC(p)		((p)&(1 << 4))	/* true: port power control */
-> >  #define HCS_N_PORTS(p)		(((p)>>0)&0xf)	/* bits 3:0, ports on HC */
-> > +#define HCS_N_PORTS_MAX		0xf		/* N_PORTS valid 0x1-0xF */
-> 
-> I would prefer to see this value in decimal.  It seems very odd to say 
-> something like "The maximum number of ports is 0xf".
+Please help me and save my life.
 
-Okay, done.
+How you are today and your family, I am a citizen of Sudan but
+currently staying in Burkina Faso. My name is Miss Mariam Dim Deng, 24
+years old and I'm from Sudan.
+My late father Dr. Dominic Dim Deng was the former Minister for SPLA
+Affair and Special Adviser to President Salva Kiir of South Sudan for
+Decentralization. You can read more about the crash through the below
+site: http://news.bbc.co.uk/2/hi/africa/7380412.stm
 
-> 
-> >  
-> >  	u32		hcc_params;      /* HCCPARAMS - offset 0x8 */
-> >  /* EHCI 1.1 addendum */
-> > @@ -126,8 +127,9 @@ struct ehci_regs {
-> >  	u32		configured_flag;
-> >  #define FLAG_CF		(1<<0)		/* true: we'll support "high speed" */
-> >  
-> > -	/* PORTSC: offset 0x44 */
-> > -	u32		port_status[0];	/* up to N_PORTS */
-> > +	union {
-> > +		/* PORTSC: offset 0x44 */
-> > +		u32	port_status[HCS_N_PORTS_MAX];
-> 
-> Please don't lose the second comment.
+I am the only surviving daughter of my late father, I was taken to a
+refugee camp in another country after the death of my father, now I am
+of age and have been liberated from the refugee camp. I have claimed
+my father=E2=80=99s funds and remaining,   I want to establish an industry =
+in
+your country, so you will help me to relocate to your country with my
+fathers fund for investment in your country. Or provide an account to
+receive the fund for joint business.
+Please can you be my partner and to assist me on how to establish an
+industry, out of the fund I will give you some percentage for helping me, p=
+lease
+.
+Please if you are interested include the below information in your reply
+1. Your full name:
+2. Your residence address:
+3. Your age: and sex:
+4. Your passport or identity card:
+5. Your private (mobile) phone:
+6. Your Occupation:
+7 .Your House / Office Address:
+Please reply as soon as possible for the next step.
 
-I've put it back. It seemed redundant in the face of HCS_N_PORTS_MAX
-being there now.
-
-> 
-> >  /* EHCI 1.1 addendum */
-> >  #define PORTSC_SUSPEND_STS_ACK 0
-> >  #define PORTSC_SUSPEND_STS_NYET 1
-> > @@ -164,28 +166,28 @@ struct ehci_regs {
-> >  #define PORT_CSC	(1<<1)		/* connect status change */
-> >  #define PORT_CONNECT	(1<<0)		/* device connected */
-> >  #define PORT_RWC_BITS   (PORT_CSC | PORT_PEC | PORT_OCC)
-> > -
-> > -	u32		reserved3[9];
-> > -
-> > -	/* USBMODE: offset 0x68 */
-> > -	u32		usbmode;	/* USB Device mode */
-> > +		struct {
-> > +			u32	reserved3[9];
-> > +			/* USBMODE: offset 0x68 */
-> > +			u32	usbmode;	/* USB Device mode */
-> > +		};
-> >  #define USBMODE_SDIS	(1<<3)		/* Stream disable */
-> >  #define USBMODE_BE	(1<<2)		/* BE/LE endianness select */
-> >  #define USBMODE_CM_HC	(3<<0)		/* host controller mode */
-> >  #define USBMODE_CM_IDLE	(0<<0)		/* idle state */
-> > -
-> > -	u32		reserved4[6];
-> > +	};
-> > +	u32		reserved4;
-> >  
-> >  /* Moorestown has some non-standard registers, partially due to the fact that
-> >   * its EHCI controller has both TT and LPM support. HOSTPCx are extensions to
-> >   * PORTSCx
-> >   */
-> >  	/* HOSTPC: offset 0x84 */
-> > -	u32		hostpc[0];	/* HOSTPC extension */
-> > +	u32		hostpc[HCS_N_PORTS_MAX];
-> >  #define HOSTPC_PHCD	(1<<22)		/* Phy clock disable */
-> >  #define HOSTPC_PSPD	(3<<25)		/* Port speed detection */
-> >  
-> > -	u32		reserved5[17];
-> > +	u32		reserved5[2];
-> >  
-> >  	/* USBMODE_EX: offset 0xc8 */
-> >  	u32		usbmode_ex;	/* USB Device mode extension */
-> 
-> Otherwise okay.
-
-Thanks!
-
--- 
-Kees Cook
+Sincerely,
+Your beloved Mariam Dim Deng
