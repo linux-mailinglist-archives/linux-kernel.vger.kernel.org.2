@@ -2,107 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E0A3EF994
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 06:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5363EF99A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 06:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237618AbhHREju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 00:39:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52638 "EHLO
+        id S237354AbhHREla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 00:41:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237525AbhHREjt (ORCPT
+        with ESMTP id S229541AbhHREl2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 00:39:49 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24C40C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 21:39:15 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id m24-20020a17090a7f98b0290178b1a81700so1488167pjl.4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 21:39:15 -0700 (PDT)
+        Wed, 18 Aug 2021 00:41:28 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08CAEC061764;
+        Tue, 17 Aug 2021 21:40:54 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id 7so889205pfl.10;
+        Tue, 17 Aug 2021 21:40:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RdYh0KzVSM6GfEPOUNKGwmds8J/gMHl6yf/nm5EaGwo=;
-        b=X/cmbieBqLTKIxbCHnmkgunhjwaIKPorKnk1/6Wwque4TYwFu3uY4W4ZbidEJM25fk
-         rAoEl49BCTVuCri5jNEnwPyphEu3F8Utqmen8mugWkqwt9bgvmdN4AhqRyAlnnTtWHm5
-         TThuObe62UlTKrCZlSHdLGZ/Ziace7M1m85BE=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oXJ1UwoUafGWdyEPFBgwcthg6Cmm76oIXE3FODH1PR8=;
+        b=tPsthpXVM6QKeMgDyvMcF9qdJ7A3Rz2cabPuvMqN94Z8Pg4oMB++3f1MOb/Asc9hjZ
+         HdMYZ2OfhnL8ZJfDmTNlblPt6p86y9rhtVOCAKHRQQt/PBT0+MXH+NnAlrklwJxjbO1K
+         MY//odu90EoA3NgptF2DNH1j3SWkvyod5YYHn+9CWCQ7ZwsNtw1jAzNEc1+Dt4VIpWXw
+         rUdHnyvYfnGTwZrP/K7vBQveD5gosX0ZEVQD7/AD+vtYNy5CCmNwbROq/dQKc+4Lu9Hd
+         YFSuOX+wUYv3dc9IpLtoqJ6DPBz8GW9r8ZZXXSAIGqy/ykWvbuyp4vHjEZqEQDQZGPjd
+         3NCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RdYh0KzVSM6GfEPOUNKGwmds8J/gMHl6yf/nm5EaGwo=;
-        b=qSoFxOw+T0xTfFHJxsXgzNfK0UHk4oye+yIerAeYMdTvOnDdxj6LEN3zuQ4vhe0X56
-         qomhLAxHRBqQZ0E1j6VkszNkUUY1nyouClztcHkHD+ujHBWbNKU0IgohxmxS+73XPHRk
-         U66f2WemUcI4+MQ8S88RFVHr7zAvMcQWNHVuWX4vIqqwGp+8vjwviftkRyOACSUeXgmp
-         cRZegU1XLfXcwrsYrQZPPwHbMoqp5dcM8bWYuo9vh5jYifc21olAZtCuAWP2XnlWuS/k
-         JCfsDZboeg331ZldhH/x7Luf0yIrtRmCg2xqegHfshxNyMOIKeavIG/XCypICOQZNufN
-         vCKw==
-X-Gm-Message-State: AOAM532YH3+7J4o0J7C4h6OVfB/VtK2qxyQzoqY7wqeHINvXH/laCVB7
-        y9ino54D7ErHmA6H7dIJ5oEmhw==
-X-Google-Smtp-Source: ABdhPJxFPT7wVpzSlvT8DPbADw2xJozXJw6p/wgABDmTcU0Wr38l7tW8zwD75zO5rpG9oxsfn5DFzQ==
-X-Received: by 2002:a17:90b:d94:: with SMTP id bg20mr7153787pjb.61.1629261554669;
-        Tue, 17 Aug 2021 21:39:14 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id p30sm4389467pfh.116.2021.08.17.21.39.13
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oXJ1UwoUafGWdyEPFBgwcthg6Cmm76oIXE3FODH1PR8=;
+        b=jAC7TWV/eEDFY+isBq71FmwXKbgjImJxajFYuCRgKmdKUkY3z69m1jqGRh8b6l7of5
+         uRFyHlNNRKU/BDdaNgs6Rvyk/EhC5QC1moP0IjuWItnH6JfF/UPUQKwq1lyyNDjrV8uc
+         E5RO9v1OT4Xsj5IgktUOJHyk1cXC5SuwQ4jlxmJXtIuFMOTPvdQ/zFnGkHETy1KxThx6
+         YIIE6qzlxrvVw6xXIFXg0uAmnYhCMutLiJipM0GRJ+2t//iF49nsxVR0kNRGk6yEU/Oa
+         hTI7X9doicgSizWxpnfFuKlf5t6e8y5lDwzayS/fsrJbI+LIuRacbVn6CR9tuoQkEBbd
+         Og5w==
+X-Gm-Message-State: AOAM5300ogtTHW9Gs7neDWz8mi6x+Jpw1su6NjDn3+P6qOVDl2fPmoGP
+        WORDSEbViOokcJoJO+ipwtedrfSkRthaOw==
+X-Google-Smtp-Source: ABdhPJxAHuJ7ZjRkJKN/NQrwe/QTixF7o3XfUIQ5ckUVvVA1ZnGUjUcwKfSKSNBVUJAHcyR3Y+npuw==
+X-Received: by 2002:aa7:8246:0:b029:39a:1e0a:cd48 with SMTP id e6-20020aa782460000b029039a1e0acd48mr7305561pfn.14.1629261653438;
+        Tue, 17 Aug 2021 21:40:53 -0700 (PDT)
+Received: from localhost ([49.207.137.16])
+        by smtp.gmail.com with ESMTPSA id k4sm4280950pff.12.2021.08.17.21.40.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 21:39:13 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] Bluetooth: mgmt: Pessimize compile-time bounds-check
-Date:   Tue, 17 Aug 2021 21:39:12 -0700
-Message-Id: <20210818043912.1466447-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        Tue, 17 Aug 2021 21:40:52 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 10:10:49 +0530
+From:   Aakash Hemadri <aakashhemadri123@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        linux-staging@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] staging: rtl8732bs: Fix sparse warnings
+Message-ID: <20210818044049.yd7tnjvj3j4j3ddb@xps.yggdrasil>
+References: <cover.1629134725.git.aakashhemadri123@gmail.com>
+ <YRv3w4y3r84mBjrU@kroah.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1435; h=from:subject; bh=E0l6g+Q1UhnSMK4lDN7R/eQd0SuD7Heg/eD8YzK5Lic=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhHI7vo8PzMk5HF85TGPbfFBW7iT4mrKvH5KZU5yn/ EkWlbBmJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYRyO7wAKCRCJcvTf3G3AJny4D/ 9kWDf6kh3N+iOlTVivvviWpmxld7NQMSysukicQNgR4Dx8+v5gkpBVF24L+b/IjWlz1Q0bYoNeHz8Q 05okcO2+H3Z2d0C9lqy4dUvYk4v+lNQOuT1oQoc00+Ki7iMO5hIEEw0NcNALnAwNaWAZQyL316p1K0 BwBuVRms/OPZmrNjA7tNB4kTQYn8NKMEw4XmXd3bZGyPtOXHFdznKXPCHKLc7xfp9S5CWWMi74+3S7 XSRxLGCJJNwdqiSP5chMEwUzGdyMkLDloeWyknX4Qk3Mr28EyZXXkrILdpTlAPPCQ2194vXCy7tOEF b54oNbJI8g7HPCqh4oJsLC0R+OMbE/VEr/cobvPT9w6h53xo14s9rTsB7A9ppZr0xZDScpGNK/fj/H qbDej5cRTSDwG9VztYg6h+XLk3u9Sk/H23r0ASa5yszCJLho3tJLICpJhqUJXGxuH6pj17xAFZuh/S DqBArkMNxHyt2q2UmoqpGTR5Fpg4MeOxbzCNo087bCvFkXOembW+nbP7i51jiBaJf3dvtTIc7dl1df pn7CQGa5gcz+dUNskx58QRhJiyGNWpD+8BCP6Co/56dunORoba5Gnpso3ZQCi6Hf3iw/KgNd9/Ob60 YaURx0KP4qAqdhiOzeTVYgPZq+mM6wIV2p0zK/EVOB6DyUOr/U52eyoQBAiQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YRv3w4y3r84mBjrU@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After gaining __alloc_size hints, GCC thinks it can reach a memcpy()
-with eir_len == 0 (since it can't see into the rewrite of status).
-Instead, check eir_len == 0, avoiding this future warning:
+On 21/08/17 07:54PM, Greg Kroah-Hartman wrote:
+> This series does not apply to my tree at all.  Please fix up and rebase
+> and resubmit, after reading the mailing list archives for others that
+> have attempted do do this type of work in the past for this issue.
+> 
+> It is not a trivial change that is needed...
 
-In function 'eir_append_data',
-    inlined from 'read_local_oob_ext_data_complete' at net/bluetooth/mgmt.c:7210:12:
-./include/linux/fortify-string.h:54:29: warning: '__builtin_memcpy' offset 5 is out of the bounds [0, 3] [-Warray-bounds]
-...
-net/bluetooth/hci_request.h:133:2: note: in expansion of macro 'memcpy'
-  133 |  memcpy(&eir[eir_len], data, data_len);
-      |  ^~~~~~
+Will check what went wrong, and see what I can do.
 
-Cc: Marcel Holtmann <marcel@holtmann.org>
-Cc: Johan Hedberg <johan.hedberg@gmail.com>
-Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: linux-bluetooth@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- net/bluetooth/mgmt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
-index 1e21e014efd2..cea01e275f1e 100644
---- a/net/bluetooth/mgmt.c
-+++ b/net/bluetooth/mgmt.c
-@@ -7204,7 +7204,7 @@ static void read_local_oob_ext_data_complete(struct hci_dev *hdev, u8 status,
- 	if (!mgmt_rp)
- 		goto done;
- 
--	if (status)
-+	if (eir_len == 0)
- 		goto send_rsp;
- 
- 	eir_len = eir_append_data(mgmt_rp->eir, 0, EIR_CLASS_OF_DEV,
--- 
-2.30.2
-
+Thanks,
+Aakash Hemadri
