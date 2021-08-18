@@ -2,184 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2680E3F0E1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 00:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8D13F0E1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 00:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234600AbhHRWYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 18:24:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232456AbhHRWYd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 18:24:33 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E470BC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 15:23:57 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id x1so191251plg.10
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 15:23:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=63gVPEj1noUQl8SV7kXsZsczRwjyhAO39ZV+DC8YyRw=;
-        b=pVOi6N+ypgp22caV5JNSMiXFyj+4Go0ociFoiwmYF1UKaigF81J/i++Qt6xgDm0fVZ
-         0WOPkNXk72ny+7vUL5QIXYb4hH6U9Rst0RCj4UR6otmrtTG38yNbW30kXJ9bUQ1le8VJ
-         bvergKmKhgpagDEnu/bataPp70vuy9xuZkXRbPbSfG6HAKosD4LRLt1TGZwQx8yGP5TA
-         nBsRJyHkGbvCusf9+BK+HG6K6zdrCnOHoheePcgX7wUHJf9DdAQAku+kxAZmZd1B7roD
-         WYksjgb5U+78tZo7OYG2QwTd2rfTY+LLll7qR6wrIerXFcxIyN6ZwgMCMRK3eSHthwPb
-         d1Dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=63gVPEj1noUQl8SV7kXsZsczRwjyhAO39ZV+DC8YyRw=;
-        b=oFV1AajBnAy8oh/g3sdV12hhfci8GB8MZb6bYaXoS+Iyq/uxH1/7aZwdFNktSH1oQr
-         uNGNh9VMe9PhehutTHFImQq7leDWUslZWUFoROjTXCnbJrr3gDfJjHoKr8NWdlis/X4i
-         wF/x5HQ29xnJhdAjIFeVTcJFOAWYC8iYjh1exClwFcyzPYpyPKEAqF6YNlbENISrP/85
-         Gb0Br4paZjsDUEr83SBNXngYUM7LiwztutNAgagJXuMZbVnyegwdOPhCd1+bZVMh3YRF
-         nIAEAdQeiZ/w1fIdN+p9LM/pWZPFwz2nV3cvdjnMR8SDZqKSzvHNVNYDNefH20dPWPty
-         DRdg==
-X-Gm-Message-State: AOAM5327rqp/G4ExWdupEqvRtFjgZuzGZbw17PYyvOJYVlW8N58S8yzK
-        CFVXpaKwA5BzTIi/bQJSmpkulw==
-X-Google-Smtp-Source: ABdhPJxCx+/RS6MF5ihyo37JULjM2KZTV3oIxzdBgz6zLB/KlSw3We5F9hzFt40Bc0hsA8OKsBp1og==
-X-Received: by 2002:a17:90b:3144:: with SMTP id ip4mr11327705pjb.42.1629325437205;
-        Wed, 18 Aug 2021 15:23:57 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id q3sm934192pgl.23.2021.08.18.15.23.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 15:23:56 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 22:23:51 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Paul Menzel <pmenzel@molgen.mpg.de>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH] x86: kvm: Demote level of already loaded message from
- error to info
-Message-ID: <YR2Id14e9kagM6u0@google.com>
-References: <20210818114956.7171-1-pmenzel@molgen.mpg.de>
- <f9ba6fec-f764-dae7-e4f9-c532f4672359@maciej.szmigiero.name>
+        id S234426AbhHRW2U convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 18 Aug 2021 18:28:20 -0400
+Received: from mga07.intel.com ([134.134.136.100]:52412 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232456AbhHRW2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 18:28:19 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="280178010"
+X-IronPort-AV: E=Sophos;i="5.84,332,1620716400"; 
+   d="scan'208";a="280178010"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 15:27:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,332,1620716400"; 
+   d="scan'208";a="531873941"
+Received: from irsmsx605.ger.corp.intel.com ([163.33.146.138])
+  by fmsmga002.fm.intel.com with ESMTP; 18 Aug 2021 15:27:42 -0700
+Received: from tjmaciei-mobl5.localnet (10.209.60.224) by
+ IRSMSX605.ger.corp.intel.com (163.33.146.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Wed, 18 Aug 2021 23:27:38 +0100
+From:   Thiago Macieira <thiago.macieira@intel.com>
+To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
+CC:     Borislav Petkov <bp@alien8.de>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to protect dynamic user state
+Date:   Wed, 18 Aug 2021 15:27:35 -0700
+Message-ID: <2658618.gP76fVu5Ab@tjmaciei-mobl5>
+Organization: Intel Corporation
+In-Reply-To: <C3EBA85C-8708-4BAD-BB78-C975250BEFFF@intel.com>
+References: <20210730145957.7927-1-chang.seok.bae@intel.com> <3399412.qF98CnctbS@tjmaciei-mobl5> <C3EBA85C-8708-4BAD-BB78-C975250BEFFF@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f9ba6fec-f764-dae7-e4f9-c532f4672359@maciej.szmigiero.name>
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
+X-Originating-IP: [10.209.60.224]
+X-ClientProxiedBy: orsmsx605.amr.corp.intel.com (10.22.229.18) To
+ IRSMSX605.ger.corp.intel.com (163.33.146.138)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021, Maciej S. Szmigiero wrote:
-> On 18.08.2021 13:49, Paul Menzel wrote:
-> > In scripts, running
-> > 
-> >      modprobe kvm_amd     2>/dev/null
-> >      modprobe kvm_intel   2>/dev/null
-> > 
-> > to ensure the modules are loaded causes Linux to log errors.
-> > 
-> >      $ dmesg --level=err
-> >      [    0.641747] [Firmware Bug]: TSC_DEADLINE disabled due to Errata; please update microcode to version: 0x3a (or later)
-> >      [   40.196868] kvm: already loaded the other module
-> >      [   40.219857] kvm: already loaded the other module
-> >      [   55.501362] kvm [1177]: vcpu0, guest rIP: 0xffffffff96e5b644 disabled perfctr wrmsr: 0xc2 data 0xffff
-> >      [   56.397974] kvm [1418]: vcpu0, guest rIP: 0xffffffff81046158 disabled perfctr wrmsr: 0xc1 data 0xabcd
-> >      [1007981.827781] kvm: already loaded the other module
-> >      [1008000.394089] kvm: already loaded the other module
-> >      [1008030.706999] kvm: already loaded the other module
-> >      [1020396.054470] kvm: already loaded the other module
-> >      [1020405.614774] kvm: already loaded the other module
-> >      [1020410.140069] kvm: already loaded the other module
-> >      [1020704.049231] kvm: already loaded the other module
-> > 
-> > As one of the two KVM modules is already loaded, KVM is functioning, and
-> > their is no error condition. Therefore, demote the log message level to
-> > informational.
+On Wednesday, 18 August 2021 14:12:06 PDT Bae, Chang Seok wrote:
+> On Aug 18, 2021, at 14:04, Thiago Macieira <thiago.macieira@intel.com>
+> wrote:
+> > But it's not the only possible solution. A future kernel could decide to
+> > leave some bits off and only enable upon request. That's how
+> > macOS/Darwin does its AVX512 support.
+> 
+> 
+> Even if XCR0 is ever switched, doesn’t XGETBV(0) return it for the
+> *current*  task?
 
-Hrm, but there is an error condition.  Userspace explicitly requested something
-and KVM couldn't satisfy the request.
+That's the point. If the kernel decides that feature bit 19 will be left off 
+in XCR0, how shall userspace know the kernel supports the feature through the 
+arch_prctl syscall you added?
 
-KVM is also going to complain at level=err one way or another, e.g. if a script
-probes kvm_amd before kvm_intel on an Intel CPU it's going to get "kvm: no hardware
-support", so this isn't truly fixing the problem.  Is the issue perhaps that this
-particular message isn't ratelimited?
+Not that I am advising we adopt this strategy. We don't need more 
+fragmentation on how we enable the features. But having this syscall gives us 
+flexibility in case we do need it in the future.
 
-It's also easy for the script to grep /proc/cpuinfo, so it's hard to feel too
-bad about the kludgy message, e.g. look for a specific vendor, 'vmx' or 'svm', etc...
+-- 
+Thiago Macieira - thiago.macieira (AT) intel.com
+  Software Architect - Intel DPG Cloud Engineering
 
-if [[ -z $kvm ]]; then
-    grep vendor_id "/proc/cpuinfo" | grep -q AuthenticAMD
-    if [[ $? -eq 0 ]]; then
-        kvm=kvm_amd
-    else
-        kvm=kvm_intel
-    fi
-fi
-
-
-> Shouldn't this return ENODEV when loading one of these modules instead
-> as there is no hardware that supports both VMX and SVM?
-
-Probably not, as KVM would effectively be speculating, e.g. someone could load an
-out-of-tree variant of kvm_{intel,amd}.  Maybe instead of switching to ENODEV,
-reword the comment, make it ratelimited, and shove it down?  That way the message
-and -EEXIST fires iff the vendor module actually has some chance of being loaded.
-
-From 3528e66bd5107d5ac4f6a6ae50503cf64446866a Mon Sep 17 00:00:00 2001
-From: Sean Christopherson <seanjc@google.com>
-Date: Wed, 18 Aug 2021 15:17:43 -0700
-Subject: [PATCH] KVM: x86: Tweak handling and message when vendor module is
- already loaded
-
-Reword KVM's error message if a vendor module is already loaded to state
-exactly that instead of assuming "the other" module is loaded, ratelimit
-said message to match the other errors, and move the check down below the
-basic functionality checks so that attempting to load an unsupported
-module provides the same result regardless of whether or not a supported
-vendor module is already loaded.
-
-Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/x86.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index fdc0c18339fb..15bd4bd3c81d 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -8357,12 +8357,6 @@ int kvm_arch_init(void *opaque)
- 	struct kvm_x86_init_ops *ops = opaque;
- 	int r;
-
--	if (kvm_x86_ops.hardware_enable) {
--		printk(KERN_ERR "kvm: already loaded the other module\n");
--		r = -EEXIST;
--		goto out;
--	}
--
- 	if (!ops->cpu_has_kvm_support()) {
- 		pr_err_ratelimited("kvm: no hardware support\n");
- 		r = -EOPNOTSUPP;
-@@ -8374,6 +8368,12 @@ int kvm_arch_init(void *opaque)
- 		goto out;
- 	}
-
-+	if (kvm_x86_ops.hardware_enable) {
-+		pr_err_ratelimited("kvm: already loaded a vendor module\n");
-+		r = -EEXIST;
-+		goto out;
-+	}
-+
- 	/*
- 	 * KVM explicitly assumes that the guest has an FPU and
- 	 * FXSAVE/FXRSTOR. For example, the KVM_GET_FPU explicitly casts the
---
-2.33.0.rc2.250.ged5fa647cd-goog
 
 
