@@ -2,127 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8347E3F0318
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 13:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7D43F031B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 13:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233833AbhHRL6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 07:58:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231476AbhHRL6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 07:58:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A4FD60F35;
-        Wed, 18 Aug 2021 11:57:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629287879;
-        bh=zDdIEBXge4nz0nnU4dADmgnRlRa8EXpkrmPjAb2TLGY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=is+3SKOxJmzcnOtFScFhV4MIyK5peo6X99sk7V3/q/hLKtn8cUmsLsMrJWv7SxYKg
-         r6EDlZJ4nS4G1LhKOUFE+pgOX9q1ufy1RmDiTAC9if3j9rcRCd4LnYlbfIbcPd/VXe
-         eLui6X9ld6D7TCrAwPti41uXTSzpnlltAO8ZVEVbxeJGs/++FR95FgMV6BUjHBewP7
-         1p53QfnanSr2jdQrlEYF/qZ8vYqyD+w+Q47L9NNtOz+FI4ehvEuieDdex1dm0EgQiC
-         7ATJ8obp9FxX/R2dMLDE+7l9kkt/MijPqxQB4WB99dbAHg2OB4Z7v7+DDXarnB/sMy
-         HW2JxkJOwXecg==
-Date:   Wed, 18 Aug 2021 12:57:36 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org, tiwai@suse.de, vkoul@kernel.org,
-        liam.r.girdwood@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [RFC PATCH 1/2] driver core: export
- driver_deferred_probe_trigger()
-Message-ID: <20210818115736.GA4177@sirena.org.uk>
-References: <20210817190057.255264-1-pierre-louis.bossart@linux.intel.com>
- <20210817190057.255264-2-pierre-louis.bossart@linux.intel.com>
- <YRyeR6imvSwOOasQ@kroah.com>
+        id S235095AbhHRL7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 07:59:03 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:49273 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231500AbhHRL7A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 07:59:00 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id B7C425C00BD;
+        Wed, 18 Aug 2021 07:58:25 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 18 Aug 2021 07:58:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=v2JFN1
+        DSkjegBrCPzVOFqy6vNBDTyF74NPfYbQKl8VY=; b=WoGtXsb/tGGM7lsYaoNrTu
+        yd4c6g/VafZ1PHspTeku62MGkMVDlSREXbDnGwO2mzIgIe7GgWwIJ1dhoj5jNGAj
+        9Zanm42OAMMO98w/unDkeQo3ej7tjpMWI0fHEhrCFN3HpypE6d8s0wMaNqYCnDJj
+        eyhrkCs0z7H1XzR+tXHzEmIB1EOR7fdftR+FFvmY7IbKp9rPzNCm39LiZuaClxEF
+        fP2VbPn4JLZJICLtvxNdK+MEk8ULIBz8kbm693VSPh5yk53VZya6jVbTaHJ5fXTZ
+        GgGpwJ+XA3eR/7gb8VXDVBHthdXcXOxpUyRz4Im5pJdq4ZPPvi4/4850NeIYhAmA
+        ==
+X-ME-Sender: <xms:4fUcYZDrKRxbFHseIQLgNapptiRONL2wwrCDlbIk0yxskCFliWLctA>
+    <xme:4fUcYXjIMvhN-iGo25qlWidLJFhH5JJDDr3YPAK53ZlY5PQFeIbN5mDHqIrgTZ5SN
+    SQ9ZiGw47qz6fM>
+X-ME-Received: <xmr:4fUcYUmDuyMtRhkcWr8Zv2NZIb9ogm1Q5-xSbVz2DWcHTNTgT-clYvFDpoIPsfbf4dhjWKfndGp6pRP6ptUXOxAQ3ylS9A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleehgdegiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttdertd
+    dttddvnecuhfhrohhmpefkughoucfutghhihhmmhgvlhcuoehiughoshgthhesihguohhs
+    tghhrdhorhhgqeenucggtffrrghtthgvrhhnpedtffekkeefudffveegueejffejhfetgf
+    euuefgvedtieehudeuueekhfduheelteenucevlhhushhtvghrufhiiigvpedtnecurfgr
+    rhgrmhepmhgrihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhg
+X-ME-Proxy: <xmx:4fUcYTzo-UgiW7eEuoKX_NcK_pI55gRkpCqnn6rOf9ISkWPvcJvWMQ>
+    <xmx:4fUcYeSNofQLY5sxWkpGVaYC5jNFJ7xxZWJpjlRxxdtvyuX9IHi7rA>
+    <xmx:4fUcYWbeWlUMDF5UknMZT4YwJxuzuuaZ2xbZofL2stELneLq35wGvQ>
+    <xmx:4fUcYcdqPtVKJLVWsWWVEQ6H6CbXGcihU9dg8DgPHvUVSuNUzrSrwg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 18 Aug 2021 07:58:24 -0400 (EDT)
+Date:   Wed, 18 Aug 2021 14:58:19 +0300
+From:   Ido Schimmel <idosch@idosch.org>
+To:     13145886936@163.com
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
+Subject: Re: [PATCH] flow_offload: action should not be NULL when it is
+ referenced
+Message-ID: <YRz1297sFSjG7/Cc@shredder>
+References: <20210626115606.1243151-1-13145886936@163.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="AhhlLboLdkugWU4S"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YRyeR6imvSwOOasQ@kroah.com>
-X-Cookie: She sells cshs by the cshore.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210626115606.1243151-1-13145886936@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Jun 26, 2021 at 04:56:06AM -0700, 13145886936@163.com wrote:
+> From: gushengxian <gushengxian@yulong.com>
+> 
+> "action" should not be NULL when it is referenced.
+> 
+> Signed-off-by: gushengxian <13145886936@163.com>
+> Signed-off-by: gushengxian <gushengxian@yulong.com>
+> ---
+>  include/net/flow_offload.h | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/net/flow_offload.h b/include/net/flow_offload.h
+> index dc5c1e69cd9f..69c9eabf8325 100644
+> --- a/include/net/flow_offload.h
+> +++ b/include/net/flow_offload.h
+> @@ -319,12 +319,14 @@ flow_action_mixed_hw_stats_check(const struct flow_action *action,
+>  	if (flow_offload_has_one_action(action))
+>  		return true;
+>  
+> -	flow_action_for_each(i, action_entry, action) {
+> -		if (i && action_entry->hw_stats != last_hw_stats) {
+> -			NL_SET_ERR_MSG_MOD(extack, "Mixing HW stats types for actions is not supported");
+> -			return false;
+> +	if (action) {
 
---AhhlLboLdkugWU4S
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This patch generates a smatch warning:
 
-On Wed, Aug 18, 2021 at 07:44:39AM +0200, Greg Kroah-Hartman wrote:
-> On Tue, Aug 17, 2021 at 02:00:56PM -0500, Pierre-Louis Bossart wrote:
+include/net/flow_offload.h:322 flow_action_mixed_hw_stats_check() warn: variable dereferenced before check 'action' (see line 319)
 
-> > In these cases, there is no way to notify the deferred probe
-> > infrastructure of the enablement of resources after the driver
-> > binding.
+Why the patch is needed? 'action' is already dereferenced in
+flow_offload_has_one_action()
 
-> Then just wait for it to happen naturally?
-
-Through what mechanism will it happen naturally?  Deferred probe
-currently only does things if things are being registered or if probes
-complete.
-
-> > The driver_deferred_probe_trigger() function is currently used
-> > 'anytime a driver is successfully bound to a device', this patch
-> > suggest exporing by exporting it so that drivers can kick-off
-> > re-probing of deferred devices at the end of a deferred processing.
-
-> I really do not want to export this as it will get really messy very
-> quickly with different drivers/busses attempting to call this.
-
-I'm not sure I see the mess here - it's just queueing some work, one of
-the things that the workqueue stuff does well is handle things getting
-scheduled while they're already queued.  Honestly having understood
-their problem I think we need to be adding these calls into all the
-resource provider APIs.
-
-> Either handle it in your driver (why do you have to defer probe at all,
-> just succeed and move on to register the needed stuff after you are
-> initialized) or rely on the driver core here.
-
-That's exactly what they're doing currently and the driver core isn't
-delivering.
-
-Driver A is slow to start up and providing a resource to driver B, this
-gets handled in driver A by succeeding immediately and then registering
-the resource once the startup has completed.  Unfortunately while that
-was happening not only has driver B registered and deferred but the rest
-of the probes/defers in the system have completed so the deferred probe
-mechanism is idle.  Nothing currently tells the deferred probe mechanism
-that a new resource is now available so it never retries the probe of
-driver B.  The only way I can see to fix this without modifying the
-driver core is to make driver A block during probe but that would at
-best slow down boot.
-
-The issue is that the driver core is using drivers completing probe as a
-proxy for resources becoming available.  That works most of the time
-because most probes are fully synchronous but it breaks down if a
-resource provider registers resources outside of probe, we might still
-be fine if system boot is still happening and something else probes but
-only through luck.
-
---AhhlLboLdkugWU4S
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEc9a8ACgkQJNaLcl1U
-h9BeUgf/bxaKOZOoIjNrTdjgfaEekt/IY0d7bcnHylKh/CMn3PK4hhYyUa2i3cIr
-SMe2P9NrdsU/EpaqvHGE1QL6v09OsT5n0TzHJ75cHzcC6qkjasu7ble9AubIQKcy
-Fw1VYQa7GzzvR7WPZtyEKN/XHCluIc9/LBQ5Wuze5cwONg2EQRMsY9f0rMOD3h+9
-2VFtykn+/BK/42dDs9Oese4TRAifzF2P8/jN3oFIk1/oSBldu6+eod38HDIK5HNc
-IY1MKq26TIdUjtnK1aa8X0dMPE4+p6scHbqilxi2ILutzuRpW5D4OPouptCghSkq
-YJgZEEba8o28TT8sJCorZorZf34EwQ==
-=FeUe
------END PGP SIGNATURE-----
-
---AhhlLboLdkugWU4S--
+> +		flow_action_for_each(i, action_entry, action) {
+> +			if (i && action_entry->hw_stats != last_hw_stats) {
+> +				NL_SET_ERR_MSG_MOD(extack, "Mixing HW stats types for actions is not supported");
+> +				return false;
+> +			}
+> +			last_hw_stats = action_entry->hw_stats;
+>  		}
+> -		last_hw_stats = action_entry->hw_stats;
+>  	}
+>  	return true;
+>  }
+> -- 
+> 2.25.1
+> 
+> 
