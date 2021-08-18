@@ -2,129 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBB23F06F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49BE93F0701
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239658AbhHROph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 10:45:37 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:55283 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S239422AbhHROpR (ORCPT
+        id S239663AbhHROrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 10:47:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239503AbhHROrH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 10:45:17 -0400
-Received: (qmail 195955 invoked by uid 1000); 18 Aug 2021 10:44:42 -0400
-Date:   Wed, 18 Aug 2021 10:44:42 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Al Cooper <alcooperx@gmail.com>,
-        linux-usb@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 1/2] USB: EHCI: Add register array bounds to HCS ports
-Message-ID: <20210818144442.GC193695@rowland.harvard.edu>
-References: <20210818043035.1308062-1-keescook@chromium.org>
- <20210818043035.1308062-2-keescook@chromium.org>
+        Wed, 18 Aug 2021 10:47:07 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBEAC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:46:33 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id m24-20020a17090a7f98b0290178b1a81700so2461577pjl.4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:46:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qXzjfbGAZVCj6QW9wqbn9inaUOG8fQZNbV0kpPuNxx0=;
+        b=Lu2O8omEZVQDTWjESwBuZ+lf1zjRjIByR6Cs9riuDZ3w+cgt769dUF7Zevnrfaeh3V
+         6SvlWSJTbDeoyOGtPIPJKSZhfYhv0qGij0lqO7H+5W9GOo6r4u9lSnOnIzaoS9NU/LDb
+         x0RT1MxNKqjfJvtnKE6W3OptjH5RWYzwW6N1uO+4OqDc5P57P/e127DmlKop3dOQR6Hl
+         Em5CkDOMsII/1VtxyY+6lUxKNXcFpI5WQsMuWYdREgL8/7TniSAYig45A3qGQMeVxgZu
+         eYuh749M7iSpA6UBMZZkXpCEuF14BDq+NbURHFVaEGjxLMqR7ugt63k8KfXkIxi8l7z6
+         o3kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qXzjfbGAZVCj6QW9wqbn9inaUOG8fQZNbV0kpPuNxx0=;
+        b=hST03Hlp31die1L59w0BR8CpkPnvRbKTVGSZYsZKW0u9b4NLweZKqZ9jsvaMZQrp6D
+         fAUuvo4L3tqOhO2Bs11xsi3UOAJ9amAwCFcKppfMCzvaNDBM6PsRn49HccO/wpYoPxIE
+         IJJpCc9vnXqjGGw7IHRp9xVtWyVCfm2UMIZLtPw+WQ64I0VzSPKrXWhqB5bcb4n25rCp
+         J+49IUfPlSXO5hgxNLuo9xR49XE4Ga4EtgMlySxZBNg3mAAvEYdPvXEzwlGb/XGbBw5r
+         atJS9wtt9Ks9hCM70dr7Xw1Zd9RJNWnlfZkLb6u/8O0VRhHz/L+UhhFXKhJvMWzQacTn
+         vpDw==
+X-Gm-Message-State: AOAM532KQeM8x7lTMCr33w4YtQOQeOpPl0mtEpSxjHL2KYHsM2ALGjaB
+        LpN21ew97kjtE/Wlc2Mdzzsafw==
+X-Google-Smtp-Source: ABdhPJylCghWDfRMk3LEy2Q0liijBW1FCSA7PeHn+t5IVu5O8IgcIWLjOrUuIVZ7233b08IzPXyPqg==
+X-Received: by 2002:a17:902:7282:b029:12c:75a0:faa5 with SMTP id d2-20020a1709027282b029012c75a0faa5mr7646785pll.35.1629297992628;
+        Wed, 18 Aug 2021 07:46:32 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id y2sm130003pjl.6.2021.08.18.07.46.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Aug 2021 07:46:32 -0700 (PDT)
+Subject: Re: [PATCH] coredump: Limit what can interrupt coredumps
+To:     Tony Battersby <tonyb@cybernetics.com>,
+        Olivier Langlois <olivier@trillion01.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Pavel Begunkov>" <asml.silence@gmail.com>
+References: <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
+ <CAHk-=wiax83WoS0p5nWvPhU_O+hcjXwv6q3DXV8Ejb62BfynhQ@mail.gmail.com>
+ <87y2bh4jg5.fsf@disp2133>
+ <CAHk-=wjPiEaXjUp6PTcLZFjT8RrYX+ExtD-RY3NjFWDN7mKLbw@mail.gmail.com>
+ <87sg1p4h0g.fsf_-_@disp2133> <20210614141032.GA13677@redhat.com>
+ <87pmwmn5m0.fsf@disp2133>
+ <4d93d0600e4a9590a48d320c5a7dd4c54d66f095.camel@trillion01.com>
+ <8af373ec-9609-35a4-f185-f9bdc63d39b7@cybernetics.com>
+ <9d194813-ecb1-2fe4-70aa-75faf4e144ad@kernel.dk>
+ <b36eb4a26b6aff564c6ef850a3508c5b40141d46.camel@trillion01.com>
+ <0bc38b13-5a7e-8620-6dce-18731f15467e@kernel.dk>
+ <24c795c6-4ec4-518e-bf9b-860207eee8c7@kernel.dk>
+ <05c0cadc-029e-78af-795d-e09cf3e80087@cybernetics.com>
+ <b5ab8ca0-cef5-c9b7-e47f-21c0d395f82e@kernel.dk>
+ <84640f18-79ee-d8e4-5204-41a2c2330ed8@kernel.dk>
+ <3168284a-0b52-7845-07b1-a72bdfed915c@cybernetics.com>
+ <a56b633c-b88b-dfe8-11da-fcb3853a2edf@kernel.dk>
+ <16ded7e5-1f44-1c51-5759-35f835115665@cybernetics.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <90c35bf6-bf65-c997-1823-36c509cf72b1@kernel.dk>
+Date:   Wed, 18 Aug 2021 08:46:30 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818043035.1308062-2-keescook@chromium.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <16ded7e5-1f44-1c51-5759-35f835115665@cybernetics.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 09:30:33PM -0700, Kees Cook wrote:
-> The original EHCI register struct used a trailing 0-element array for
-> addressing the N_PORTS-many available registers. However, after
-> commit a46af4ebf9ff ("USB: EHCI: define extension registers like normal ones")
-> the 0-element array started to overlap the USBMODE extension register.
+On 8/18/21 8:37 AM, Tony Battersby wrote:
+> On 8/17/21 6:05 PM, Jens Axboe wrote:
+>> On 8/17/21 3:39 PM, Tony Battersby wrote:
+>>> On 8/17/21 5:28 PM, Jens Axboe wrote:
+>>>> Another approach - don't allow TWA_SIGNAL task_work to get queued if
+>>>> PF_SIGNALED has been set on the task. This is similar to how we reject
+>>>> task_work_add() on process exit, and the callers must be able to handle
+>>>> that already.
+>>>>
+>>>> Can you test this one on top of your 5.10-stable?
+>>>>
+>>>>
+>>>> diff --git a/fs/coredump.c b/fs/coredump.c
+>>>> index 07afb5ddb1c4..ca7c1ee44ada 100644
+>>>> --- a/fs/coredump.c
+>>>> +++ b/fs/coredump.c
+>>>> @@ -602,6 +602,14 @@ void do_coredump(const kernel_siginfo_t *siginfo)
+>>>>  		.mm_flags = mm->flags,
+>>>>  	};
+>>>>  
+>>>> +	/*
+>>>> +	 * task_work_add() will refuse to add work after PF_SIGNALED has
+>>>> +	 * been set, ensure that we flush any pending TIF_NOTIFY_SIGNAL work
+>>>> +	 * if any was queued before that.
+>>>> +	 */
+>>>> +	if (test_thread_flag(TIF_NOTIFY_SIGNAL))
+>>>> +		tracehook_notify_signal();
+>>>> +
+>>>>  	audit_core_dumps(siginfo->si_signo);
+>>>>  
+>>>>  	binfmt = mm->binfmt;
+>>>> diff --git a/kernel/task_work.c b/kernel/task_work.c
+>>>> index 1698fbe6f0e1..1ab28904adc4 100644
+>>>> --- a/kernel/task_work.c
+>>>> +++ b/kernel/task_work.c
+>>>> @@ -41,6 +41,12 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
+>>>>  		head = READ_ONCE(task->task_works);
+>>>>  		if (unlikely(head == &work_exited))
+>>>>  			return -ESRCH;
+>>>> +		/*
+>>>> +		 * TIF_NOTIFY_SIGNAL notifications will interfere with
+>>>> +		 * a core dump in progress, reject them.
+>>>> +		 */
+>>>> +		if ((task->flags & PF_SIGNALED) && notify == TWA_SIGNAL)
+>>>> +			return -ESRCH;
+>>>>  		work->next = head;
+>>>>  	} while (cmpxchg(&task->task_works, head, work) != head);
+>>>>  
+>>>>
+>>> Doesn't compile.  5.10 doesn't have TIF_NOTIFY_SIGNAL.
+>> Oh right... Here's one hacked up for the 5.10 TWA_SIGNAL setup. Totally
+>> untested...
+>>
+>> diff --git a/fs/coredump.c b/fs/coredump.c
+>> index c6acfc694f65..9e899ce67589 100644
+>> --- a/fs/coredump.c
+>> +++ b/fs/coredump.c
+>> @@ -603,6 +603,19 @@ void do_coredump(const kernel_siginfo_t *siginfo)
+>>  		.mm_flags = mm->flags,
+>>  	};
+>>  
+>> +	/*
+>> +	 * task_work_add() will refuse to add work after PF_SIGNALED has
+>> +	 * been set, ensure that we flush any pending TWA_SIGNAL work
+>> +	 * if any was queued before that.
+>> +	 */
+>> +	if (signal_pending(current) && (current->jobctl & JOBCTL_TASK_WORK)) {
+>> +		task_work_run();
+>> +		spin_lock_irq(&current->sighand->siglock);
+>> +		current->jobctl &= ~JOBCTL_TASK_WORK;
+>> +		recalc_sigpending();
+>> +		spin_unlock_irq(&current->sighand->siglock);
+>> +	}
+>> +
+>>  	audit_core_dumps(siginfo->si_signo);
+>>  
+>>  	binfmt = mm->binfmt;
+>> diff --git a/kernel/task_work.c b/kernel/task_work.c
+>> index 8d6e1217c451..93b3f262eb4a 100644
+>> --- a/kernel/task_work.c
+>> +++ b/kernel/task_work.c
+>> @@ -39,6 +39,12 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
+>>  		head = READ_ONCE(task->task_works);
+>>  		if (unlikely(head == &work_exited))
+>>  			return -ESRCH;
+>> +		/*
+>> +		 * TWA_SIGNAL notifications will interfere with
+>> +		 * a core dump in progress, reject them.
+>> +		 */
+>> +		if ((task->flags & PF_SIGNALED) && notify == TWA_SIGNAL)
+>> +			return -ESRCH;
+>>  		work->next = head;
+>>  	} while (cmpxchg(&task->task_works, head, work) != head);
+>>  
+>>
+> Tested with 5.10.59 + backport 06af8679449d + the patch above.  That
+> fixes it for me.  I tested a couple of variations to make sure.
 > 
-> To avoid future compile-time warnings about accessing indexes within a
-> 0-element array, rearrange the struct to actually describe the expected
-> layout (max 15 registers) with a union. All offsets remain the same, and
-> bounds checking becomes possible on accesses to port_status and hostpc.
+> Thanks!
 > 
-> There are no binary differences, and struct offsets continue to match.
+> Tested-by: Tony Battersby <tonyb@cybernetics.com>
 
-Two comments...
+Great, thanks for testing! The 5.10 version is a bit uglier due to how
+TWA_SIGNAL used to work, but it's the most straight forward backport of
+the other version I sent.
 
-> ---
->  include/linux/usb/ehci_def.h | 24 +++++++++++++-----------
->  1 file changed, 13 insertions(+), 11 deletions(-)
-> 
-> diff --git a/include/linux/usb/ehci_def.h b/include/linux/usb/ehci_def.h
-> index 78e006355557..5398f571113b 100644
-> --- a/include/linux/usb/ehci_def.h
-> +++ b/include/linux/usb/ehci_def.h
-> @@ -45,6 +45,7 @@ struct ehci_caps {
->  #define HCS_PORTROUTED(p)	((p)&(1 << 7))	/* true: port routing */
->  #define HCS_PPC(p)		((p)&(1 << 4))	/* true: port power control */
->  #define HCS_N_PORTS(p)		(((p)>>0)&0xf)	/* bits 3:0, ports on HC */
-> +#define HCS_N_PORTS_MAX		0xf		/* N_PORTS valid 0x1-0xF */
+-- 
+Jens Axboe
 
-I would prefer to see this value in decimal.  It seems very odd to say 
-something like "The maximum number of ports is 0xf".
-
->  
->  	u32		hcc_params;      /* HCCPARAMS - offset 0x8 */
->  /* EHCI 1.1 addendum */
-> @@ -126,8 +127,9 @@ struct ehci_regs {
->  	u32		configured_flag;
->  #define FLAG_CF		(1<<0)		/* true: we'll support "high speed" */
->  
-> -	/* PORTSC: offset 0x44 */
-> -	u32		port_status[0];	/* up to N_PORTS */
-> +	union {
-> +		/* PORTSC: offset 0x44 */
-> +		u32	port_status[HCS_N_PORTS_MAX];
-
-Please don't lose the second comment.
-
->  /* EHCI 1.1 addendum */
->  #define PORTSC_SUSPEND_STS_ACK 0
->  #define PORTSC_SUSPEND_STS_NYET 1
-> @@ -164,28 +166,28 @@ struct ehci_regs {
->  #define PORT_CSC	(1<<1)		/* connect status change */
->  #define PORT_CONNECT	(1<<0)		/* device connected */
->  #define PORT_RWC_BITS   (PORT_CSC | PORT_PEC | PORT_OCC)
-> -
-> -	u32		reserved3[9];
-> -
-> -	/* USBMODE: offset 0x68 */
-> -	u32		usbmode;	/* USB Device mode */
-> +		struct {
-> +			u32	reserved3[9];
-> +			/* USBMODE: offset 0x68 */
-> +			u32	usbmode;	/* USB Device mode */
-> +		};
->  #define USBMODE_SDIS	(1<<3)		/* Stream disable */
->  #define USBMODE_BE	(1<<2)		/* BE/LE endianness select */
->  #define USBMODE_CM_HC	(3<<0)		/* host controller mode */
->  #define USBMODE_CM_IDLE	(0<<0)		/* idle state */
-> -
-> -	u32		reserved4[6];
-> +	};
-> +	u32		reserved4;
->  
->  /* Moorestown has some non-standard registers, partially due to the fact that
->   * its EHCI controller has both TT and LPM support. HOSTPCx are extensions to
->   * PORTSCx
->   */
->  	/* HOSTPC: offset 0x84 */
-> -	u32		hostpc[0];	/* HOSTPC extension */
-> +	u32		hostpc[HCS_N_PORTS_MAX];
->  #define HOSTPC_PHCD	(1<<22)		/* Phy clock disable */
->  #define HOSTPC_PSPD	(3<<25)		/* Port speed detection */
->  
-> -	u32		reserved5[17];
-> +	u32		reserved5[2];
->  
->  	/* USBMODE_EX: offset 0xc8 */
->  	u32		usbmode_ex;	/* USB Device mode extension */
-
-Otherwise okay.
-
-Alan Stern
