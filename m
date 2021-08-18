@@ -2,75 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10CF3F02F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 13:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B00493F02FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 13:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235854AbhHRLnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 07:43:46 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:33520 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233798AbhHRLnp (ORCPT
+        id S236028AbhHRLoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 07:44:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235738AbhHRLo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 07:43:45 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        Wed, 18 Aug 2021 07:44:29 -0400
+X-Greylist: delayed 523 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 18 Aug 2021 04:43:55 PDT
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0651BC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 04:43:54 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id F0F3721FE5;
-        Wed, 18 Aug 2021 11:43:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1629286989; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LDES0WgtFkq46xcCB56We13uRLgKpFMl/f/27zVfgWw=;
-        b=NcZMCCuMYPjzQT1BFbim4flVCxORBu/2y/H2fYEoGs5IAgNr+xi91PHnKodoeILmkaoS12
-        grs7WFQOUFg2uRjZMyB9P9aCih4CmJbwgl9Q9cqbug2QGTbZuDqQU0rkNizO5fpEHhuhWL
-        gVzvvZHKVREa3Egcpg77JkSdRLkqFe0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1629286989;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LDES0WgtFkq46xcCB56We13uRLgKpFMl/f/27zVfgWw=;
-        b=gC5wJcY7Y4JrJB8KXRt5htJGyS07xl/EoLBQ2r/BmV1hJky119bKwyWxXC08aRnf2dbmFd
-        hFjP0n/YjZscNVAA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id DD941136DE;
-        Wed, 18 Aug 2021 11:43:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id T5kvNk3yHGHgPQAAGKfGzw
-        (envelope-from <dwagner@suse.de>); Wed, 18 Aug 2021 11:43:09 +0000
-Date:   Wed, 18 Aug 2021 13:43:09 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     James Smart <jsmart2021@gmail.com>
-Cc:     Hannes Reinecke <hare@suse.de>, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Wen Xiong <wenxiong@us.ibm.com>
-Subject: Re: [PATCH v4 6/8] nvme-fc: fix controller reset hang during traffic
-Message-ID: <20210818114309.ovkutmwvmrgugv4i@carbon.lan>
-References: <20210802112658.75875-1-dwagner@suse.de>
- <20210802112658.75875-7-dwagner@suse.de>
- <79c89923-f586-79e7-6dfd-c15ceb21f569@suse.de>
- <3d4edf17-2be6-b7c3-a6fd-b439e5e52eab@gmail.com>
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 5889A41F72;
+        Wed, 18 Aug 2021 11:43:50 +0000 (UTC)
+Subject: Re: [RFC PATCH 2/2] PCI: apple: Add driver for the Apple M1
+To:     Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <kettenis@openbsd.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210815042525.36878-1-alyssa@rosenzweig.io>
+ <20210815042525.36878-3-alyssa@rosenzweig.io> <87a6lj17d1.wl-maz@kernel.org>
+ <8650c850-2642-4582-ae97-a95134bda3e2@www.fastmail.com>
+From:   Hector Martin <marcan@marcan.st>
+Message-ID: <092a2de3-6760-6398-e4de-2b24d30ac856@marcan.st>
+Date:   Wed, 18 Aug 2021 20:43:48 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3d4edf17-2be6-b7c3-a6fd-b439e5e52eab@gmail.com>
+In-Reply-To: <8650c850-2642-4582-ae97-a95134bda3e2@www.fastmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 01:03:07PM -0700, James Smart wrote:
-> try this. Moves the location of the freeze and will always pair with the
-> unfreeze.
+On 15/08/2021 21.33, Sven Peter wrote:
+> The magic comes from the original Corellium driver. It first masks everything
+> except for the interrupts in the next line, then acks the interrupts it keeps
+> enabled and then probably wants to wait for PORT_INT_LINK_UP (or any of the
+> other interrupts which seem to indicate various error conditions) to fire but
+> instead polls for PORT_LINKSTS_UP.
 
-Yes, this works. Do you send a proper patch out or should I just pick up
-this patch and add a commit message?
+Let's not take any magic numbers from their drivers (or what macOS does, 
+for that matter) without making an attempt to understand what they do, 
+unless it becomes clear it's incomprehensible. This has already bit us 
+in the past (the SError disable thing).
+
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
