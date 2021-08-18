@@ -2,106 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C14D3EFEEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 136413EFEED
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240502AbhHRINK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 04:13:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33226 "EHLO mail.kernel.org"
+        id S239410AbhHRIP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 04:15:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240622AbhHRIMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 04:12:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA99060F58;
-        Wed, 18 Aug 2021 08:12:18 +0000 (UTC)
+        id S238229AbhHRIPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 04:15:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D4A860F58;
+        Wed, 18 Aug 2021 08:15:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629274339;
-        bh=zxrOxb1Q7G3y9Z3wfx9YmJefmG6HeicBAF0ENCXgsdA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kTOoDBY7gaKQ9QauedmZo6c8JZZbrhC7WVmBtnuxePFbSXT+9ZvcgOwmoxY4NR3OX
-         7q4hpKIC2Z9U0cbIncWT/xGmstdJTODWpmMz0nQ6BbAhP4Ca0P4ZqJ9GDmxFdrCDqA
-         OSwiLmAcxs8sXMZNoWxPXxGHvMGgm41UTVHPbyWPdfTuhrXlX3UBCS0MFJH64DPKmO
-         uxXy/APpXuSAMe6/nHpSoPCFnvR4gZfWSXBf0jmdj1M4HlqIYHKk2QQh6OgTJhGyxg
-         JEkr8jBWaGq80u4E881Lk+PI//SWai8qFhFaGrGQ03oOqJhsGEgmm2bjyFc4WrGhRr
-         Yg70ESYrwvqng==
-Date:   Wed, 18 Aug 2021 11:12:15 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "Keller, Jacob E" <jacob.e.keller@intel.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Yufeng Mo <moyufeng@huawei.com>
-Subject: Re: [PATCH net-next 3/6] devlink: Count struct devlink consumers
-Message-ID: <YRzA3zCKCgAtprwc@unreal>
-References: <cover.1628933864.git.leonro@nvidia.com>
- <d4d59d801f4521e562c9ecf2d8767077aaefb456.1628933864.git.leonro@nvidia.com>
- <20210816084741.1dd1c415@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YRqKCVbjTZaSrSy+@unreal>
- <20210816090700.313a54ba@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CO1PR11MB50895F0BA3FE20CD92D79CB6D6FD9@CO1PR11MB5089.namprd11.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CO1PR11MB50895F0BA3FE20CD92D79CB6D6FD9@CO1PR11MB5089.namprd11.prod.outlook.com>
+        s=k20201202; t=1629274520;
+        bh=Kb7VKV2QVXsoOlVjjCgX7QXaFeDKF3TnMe14n0uniGo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QeiZlgpGJLKskpfuq6e7dx9L1EjrW6S93dcIOwDWSIs/iq21FvJmoht6wz/US6NeV
+         W2xz+8DKLpb+PIj68xaWA08vOaP/qvBycGY8pruin4eP4a+8IPGS76d7EpCK0VtlIp
+         Goa/0XeAaCEAN8OSaBZI60sCN2Y3iPA/xqgLsx0XJVO2RZvt7++IohofjtqFNnwlpY
+         czCMdcUuyh6nAPEYW1e2N7c3DUFMDtpSfitLuaoYg/BKwGlI8MmG8NMF+3c/WCkwuj
+         mnMDsulpHeBww02nYdusT76lBJplZSC4EFCv5he+VEqU/pSwLZz2ojh9K1Z2RhTyJy
+         baClyElyWMglg==
+Date:   Wed, 18 Aug 2021 17:15:17 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v6 1/7] tracing: Add DYNAMIC flag for dynamic events
+Message-Id: <20210818171517.4800773de332f4c10f9ceb75@kernel.org>
+In-Reply-To: <20210817035026.936958254@goodmis.org>
+References: <20210817034255.421910614@goodmis.org>
+        <20210817035026.936958254@goodmis.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 09:32:17PM +0000, Keller, Jacob E wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Jakub Kicinski <kuba@kernel.org>
-> > Sent: Monday, August 16, 2021 9:07 AM
-> > To: Leon Romanovsky <leon@kernel.org>
-> > Cc: David S . Miller <davem@davemloft.net>; Guangbin Huang
-> > <huangguangbin2@huawei.com>; Keller, Jacob E <jacob.e.keller@intel.com>; Jiri
-> > Pirko <jiri@nvidia.com>; linux-kernel@vger.kernel.org; netdev@vger.kernel.org;
-> > Salil Mehta <salil.mehta@huawei.com>; Shannon Nelson
-> > <snelson@pensando.io>; Yisen Zhuang <yisen.zhuang@huawei.com>; Yufeng
-> > Mo <moyufeng@huawei.com>
-> > Subject: Re: [PATCH net-next 3/6] devlink: Count struct devlink consumers
-> > 
-> > On Mon, 16 Aug 2021 18:53:45 +0300 Leon Romanovsky wrote:
-> > > On Mon, Aug 16, 2021 at 08:47:41AM -0700, Jakub Kicinski wrote:
-> > > > On Sat, 14 Aug 2021 12:57:28 +0300 Leon Romanovsky wrote:
-> > > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > > >
-> > > > > The struct devlink itself is protected by internal lock and doesn't
-> > > > > need global lock during operation. That global lock is used to protect
-> > > > > addition/removal new devlink instances from the global list in use by
-> > > > > all devlink consumers in the system.
-> > > > >
-> > > > > The future conversion of linked list to be xarray will allow us to
-> > > > > actually delete that lock, but first we need to count all struct devlink
-> > > > > users.
-> > > >
-> > > > Not a problem with this set but to state the obvious the global devlink
-> > > > lock also protects from concurrent execution of all the ops which don't
-> > > > take the instance lock (DEVLINK_NL_FLAG_NO_LOCK). You most likely know
-> > > > this but I thought I'd comment on an off chance it helps.
-> > >
-> > > The end goal will be something like that:
-> > > 1. Delete devlink lock
-> > > 2. Rely on xa_lock() while grabbing devlink instance (past devlink_try_get)
-> > > 3. Convert devlink->lock to be read/write lock to make sure that we can run
-> > > get query in parallel.
-> > > 4. Open devlink netlink to parallel ops, ".parallel_ops = true".
-> > 
-> > IIUC that'd mean setting eswitch mode would hold write lock on
-> > the dl instance. What locks does e.g. registering a dl port take
-> > then?
-> 
-> Also that I think we have some cases where we want to allow the driver to allocate new devlink objects in response to adding a port, but still want to block other global operations from running?
+On Mon, 16 Aug 2021 23:42:56 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-I don't see the flow where operations on devlink_A should block devlink_B.
-Only in such flows we will need global lock like we have now - devlink->lock.
-In all other flows, write lock of devlink instance will protect from
-parallel execution.
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> 
+> To differentiate between static and dynamic events, add a new flag
+> DYNAMIC to the event flags that all dynamic events have set. This will
+> allow to differentiate when attaching to a dynamic event from a static
+> event.
+> 
+> Static events have a mod pointer that references the module they were
+> created in (or NULL for core kernel). This can be incremented when the
+> event has something attached to it. But there exists no such mechanism for
+> dynamic events. This is dangerous as the dynamic events may now disappear
+> without the "attachment" knowing that it no longer exists.
+> 
+> To enforce the dynamic flag, change dyn_event_add() to pass the event that
+> is being created such that it can set the DYNAMIC flag of the event. This
+> helps make sure that no location that creates a dynamic event misses
+> setting this flag.
+> 
+> Link: https://lore.kernel.org/linux-trace-devel/20210813004448.51c7de69ce432d338f4d226b@kernel.org/
+> 
 
-Thanks
+This looks good to me.
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you,
+
+> Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+>  include/linux/trace_events.h      | 3 +++
+>  kernel/trace/trace_dynevent.h     | 4 +++-
+>  kernel/trace/trace_events_synth.c | 2 +-
+>  kernel/trace/trace_kprobe.c       | 4 ++--
+>  kernel/trace/trace_uprobe.c       | 4 ++--
+>  5 files changed, 11 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+> index ad413b382a3c..53c9dffd87fd 100644
+> --- a/include/linux/trace_events.h
+> +++ b/include/linux/trace_events.h
+> @@ -310,6 +310,7 @@ enum {
+>  	TRACE_EVENT_FL_NO_SET_FILTER_BIT,
+>  	TRACE_EVENT_FL_IGNORE_ENABLE_BIT,
+>  	TRACE_EVENT_FL_TRACEPOINT_BIT,
+> +	TRACE_EVENT_FL_DYNAMIC_BIT,
+>  	TRACE_EVENT_FL_KPROBE_BIT,
+>  	TRACE_EVENT_FL_UPROBE_BIT,
+>  };
+> @@ -321,6 +322,7 @@ enum {
+>   *  NO_SET_FILTER - Set when filter has error and is to be ignored
+>   *  IGNORE_ENABLE - For trace internal events, do not enable with debugfs file
+>   *  TRACEPOINT    - Event is a tracepoint
+> + *  DYNAMIC       - Event is a dynamic event (created at run time)
+>   *  KPROBE        - Event is a kprobe
+>   *  UPROBE        - Event is a uprobe
+>   */
+> @@ -330,6 +332,7 @@ enum {
+>  	TRACE_EVENT_FL_NO_SET_FILTER	= (1 << TRACE_EVENT_FL_NO_SET_FILTER_BIT),
+>  	TRACE_EVENT_FL_IGNORE_ENABLE	= (1 << TRACE_EVENT_FL_IGNORE_ENABLE_BIT),
+>  	TRACE_EVENT_FL_TRACEPOINT	= (1 << TRACE_EVENT_FL_TRACEPOINT_BIT),
+> +	TRACE_EVENT_FL_DYNAMIC		= (1 << TRACE_EVENT_FL_DYNAMIC_BIT),
+>  	TRACE_EVENT_FL_KPROBE		= (1 << TRACE_EVENT_FL_KPROBE_BIT),
+>  	TRACE_EVENT_FL_UPROBE		= (1 << TRACE_EVENT_FL_UPROBE_BIT),
+>  };
+> diff --git a/kernel/trace/trace_dynevent.h b/kernel/trace/trace_dynevent.h
+> index 7754936b57ee..936477a111d3 100644
+> --- a/kernel/trace/trace_dynevent.h
+> +++ b/kernel/trace/trace_dynevent.h
+> @@ -76,13 +76,15 @@ int dyn_event_init(struct dyn_event *ev, struct dyn_event_operations *ops)
+>  	return 0;
+>  }
+>  
+> -static inline int dyn_event_add(struct dyn_event *ev)
+> +static inline int dyn_event_add(struct dyn_event *ev,
+> +				struct trace_event_call *call)
+>  {
+>  	lockdep_assert_held(&event_mutex);
+>  
+>  	if (!ev || !ev->ops)
+>  		return -EINVAL;
+>  
+> +	call->flags |= TRACE_EVENT_FL_DYNAMIC;
+>  	list_add_tail(&ev->list, &dyn_event_list);
+>  	return 0;
+>  }
+> diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+> index 9315fc03e303..f4f5489e1e28 100644
+> --- a/kernel/trace/trace_events_synth.c
+> +++ b/kernel/trace/trace_events_synth.c
+> @@ -1298,7 +1298,7 @@ static int __create_synth_event(const char *name, const char *raw_fields)
+>  	}
+>  	ret = register_synth_event(event);
+>  	if (!ret)
+> -		dyn_event_add(&event->devent);
+> +		dyn_event_add(&event->devent, &event->call);
+>  	else
+>  		free_synth_event(event);
+>   out:
+> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+> index ea6178cb5e33..bfef43bfce37 100644
+> --- a/kernel/trace/trace_kprobe.c
+> +++ b/kernel/trace/trace_kprobe.c
+> @@ -618,7 +618,7 @@ static int append_trace_kprobe(struct trace_kprobe *tk, struct trace_kprobe *to)
+>  	if (ret)
+>  		trace_probe_unlink(&tk->tp);
+>  	else
+> -		dyn_event_add(&tk->devent);
+> +		dyn_event_add(&tk->devent, trace_probe_event_call(&tk->tp));
+>  
+>  	return ret;
+>  }
+> @@ -661,7 +661,7 @@ static int register_trace_kprobe(struct trace_kprobe *tk)
+>  	if (ret < 0)
+>  		unregister_kprobe_event(tk);
+>  	else
+> -		dyn_event_add(&tk->devent);
+> +		dyn_event_add(&tk->devent, trace_probe_event_call(&tk->tp));
+>  
+>  end:
+>  	mutex_unlock(&event_mutex);
+> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+> index 9b50869a5ddb..50eca53b8d22 100644
+> --- a/kernel/trace/trace_uprobe.c
+> +++ b/kernel/trace/trace_uprobe.c
+> @@ -455,7 +455,7 @@ static int append_trace_uprobe(struct trace_uprobe *tu, struct trace_uprobe *to)
+>  	/* Append to existing event */
+>  	ret = trace_probe_append(&tu->tp, &to->tp);
+>  	if (!ret)
+> -		dyn_event_add(&tu->devent);
+> +		dyn_event_add(&tu->devent, trace_probe_event_call(&tu->tp));
+>  
+>  	return ret;
+>  }
+> @@ -518,7 +518,7 @@ static int register_trace_uprobe(struct trace_uprobe *tu)
+>  		goto end;
+>  	}
+>  
+> -	dyn_event_add(&tu->devent);
+> +	dyn_event_add(&tu->devent, trace_probe_event_call(&tu->tp));
+>  
+>  end:
+>  	mutex_unlock(&event_mutex);
+> -- 
+> 2.30.2
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
