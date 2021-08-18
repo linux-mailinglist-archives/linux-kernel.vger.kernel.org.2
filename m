@@ -2,134 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C51003EF675
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 02:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 986913EF680
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 02:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235496AbhHRAEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 20:04:22 -0400
-Received: from gateway32.websitewelcome.com ([192.185.145.102]:49213 "EHLO
-        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232706AbhHRAEU (ORCPT
+        id S236774AbhHRAJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 20:09:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232706AbhHRAJC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 20:04:20 -0400
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway32.websitewelcome.com (Postfix) with ESMTP id C6A0FDE61
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 19:03:45 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id G93ZmTosr7sOiG93Zmwoaj; Tue, 17 Aug 2021 19:03:45 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=iQ7/KUtVSBl2ZF7aCwEPA/oEGhWJX+G5Tor9oPp//b0=; b=GwgyHLFKKMQck5mJqwxNWY4vTU
-        8A56XSwt+v7gd9lwTqN52riXiYtedRislJly+VXRTZMYvA+onvCiZSqcBqMeF5KE7ZMwGYWtNIpBf
-        I07jy0bXlnOdQAvYjLyFSpg+SyU3JTsvjBT/4e36pu38VhuUbADV9cTN2Bp5qrR8liRgvXx4uc1L6
-        VhYUBp0anm0FLW6Wk6JD0wruvctUCBniH1FeDiE8XTnUS4F7oZx5D1IX67Ryt7VXrMQKc+b2qoFVq
-        wWStR6lomgHCrYWoKQf3qf95+agwxENEsp0C+zqPoXRFfPhuGmuoeqEi0qEb3dfe9ypQ3jbiTJzGd
-        6FL2M9aw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:44728 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1mG93Z-002CVZ-7Y; Tue, 17 Aug 2021 19:03:45 -0500
-Subject: Re: [PATCH] scsi: st: Add missing break in switch statement in
- st_ioctl()
-To:     Nathan Chancellor <nathan@kernel.org>,
-        =?UTF-8?Q?Kai_M=c3=a4kisara?= <Kai.Makisara@kolumbus.fi>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-References: <20210817235531.172995-1-nathan@kernel.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <5c2dd751-ba1d-efc1-54b8-2aa9968990c1@embeddedor.com>
-Date:   Tue, 17 Aug 2021 19:06:49 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 17 Aug 2021 20:09:02 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F0B4C061764;
+        Tue, 17 Aug 2021 17:08:28 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gq7XP2H37z9sW8;
+        Wed, 18 Aug 2021 10:08:21 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629245304;
+        bh=XVMQS6JAFV88LeSd1MLQZxVAyfJ2wKxPaOhSvniaduA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=KifRnmE/ZE618ppmFgz3zitzg4kvgfLRzZFOaKBc40bSUcffJvcQYBhUxxwnBtA29
+         FpoQX7p6u7KcMGfUn9kraZPn1IVfQP08yoXDy4o5UYF57uAedW2WGsFCnEs+IsA6iO
+         1U0pdJKU+Zvuo/jsIMaewVXwrvVvaepm7ASWO29d+CEscPShXe8X1dvR/fEphsnBog
+         QzhpXbyNxi9E7uty8L36yWV5xd7+ap5ZKrk90uHlAcgcetN36vzfbwVcjaamt3+beR
+         LRUzq+hh9b12C+U7M5jQ0EzrHbQRXyH/OOwCFKXt2WqFPsAFe2tmALOH8GWAXzNem9
+         eqnKzn+jOsG2g==
+Date:   Wed, 18 Aug 2021 10:08:19 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Wolfram Sang <wsa@the-dreams.de>, Olof Johansson <olof@lixom.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Conghui Chen <conghui.chen@intel.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Igor Skalkin <igor.skalkin@opensynergy.com>,
+        Jie Deng <jie.deng@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Peter Hilber <peter.hilber@opensynergy.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: linux-next: manual merge of the i2c tree with the arm-soc tree
+Message-ID: <20210818100819.10927d37@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210817235531.172995-1-nathan@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1mG93Z-002CVZ-7Y
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:44728
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 8
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: multipart/signed; boundary="Sig_/yTH4nvW=w+RqhVLI2pd=Jau";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/yTH4nvW=w+RqhVLI2pd=Jau
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 8/17/21 18:55, Nathan Chancellor wrote:
-> Clang + -Wimplicit-fallthrough warns:
-> 
-> drivers/scsi/st.c:3831:2: warning: unannotated fall-through between
-> switch labels [-Wimplicit-fallthrough]
->         default:
->         ^
-> drivers/scsi/st.c:3831:2: note: insert 'break;' to avoid fall-through
->         default:
->         ^
->         break;
-> 1 warning generated.
-> 
-> Clang's -Wimplicit-fallthrough is a little bit more pedantic than GCC's,
-> requiring every case block to end in break, return, or fallthrough,
-> rather than allowing implicit fallthroughs to cases that just contain
-> break or return. Add a break so that there is no more warning, as has
-> been done all over the tree already.
-> 
-> Fixes: 2e27f576abc6 ("scsi: scsi_ioctl: Call scsi_cmd_ioctl() from scsi_ioctl()")
+Today's linux-next merge of the i2c tree got a conflict in:
 
-I don't think this tag is needed for these patches.
+  include/uapi/linux/virtio_ids.h
 
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+between commit:
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+  46abe13b5e3d ("firmware: arm_scmi: Add virtio transport")
 
-I also got the warnings in staging and ntfs3, I have the fixes for those in my
-local tree and I will commit them to my tree, soon.
+from the arm-soc tree and commit:
 
-Thanks
---
-Gustavo
+  8fb12751ac78 ("i2c: virtio: add a virtio i2c frontend driver")
 
-> ---
->  drivers/scsi/st.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/scsi/st.c b/drivers/scsi/st.c
-> index 2d1b0594af69..0e36a36ed24d 100644
-> --- a/drivers/scsi/st.c
-> +++ b/drivers/scsi/st.c
-> @@ -3828,6 +3828,7 @@ static long st_ioctl(struct file *file, unsigned int cmd_in, unsigned long arg)
->  	case CDROM_SEND_PACKET:
->  		if (!capable(CAP_SYS_RAWIO))
->  			return -EPERM;
-> +		break;
->  	default:
->  		break;
->  	}
-> 
-> base-commit: 58dd8f6e1cf8c47e81fbec9f47099772ab75278b
-> 
+from the i2c tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/uapi/linux/virtio_ids.h
+index f74155f6882d,99aa27b100bc..000000000000
+--- a/include/uapi/linux/virtio_ids.h
++++ b/include/uapi/linux/virtio_ids.h
+@@@ -55,7 -55,7 +55,8 @@@
+  #define VIRTIO_ID_FS			26 /* virtio filesystem */
+  #define VIRTIO_ID_PMEM			27 /* virtio pmem */
+  #define VIRTIO_ID_MAC80211_HWSIM	29 /* virtio mac80211-hwsim */
+ +#define VIRTIO_ID_SCMI			32 /* virtio SCMI */
++ #define VIRTIO_ID_I2C_ADAPTER		34 /* virtio i2c adapter */
+  #define VIRTIO_ID_BT			40 /* virtio bluetooth */
+ =20
+  /*
+
+--Sig_/yTH4nvW=w+RqhVLI2pd=Jau
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEcT3MACgkQAVBC80lX
+0GwUKAf+MBB5fUWJ7Flin1TBWPmnGv/8XJrs9Gol31FpqrL0pbKn7bg/wDXx9tL4
+48VotGA/YqdX/x7yWK5BNbtDeA3Jt4g/UKpp4AMFUKJA50HZCvK86jCfnWBfv1LR
+uoN2PKadgYvddhQSHpcfG5XTA41qWV2ykLh5CLQLqyzsa/Df8jY72FdJCjLoZdM3
+MMUPlXKJPvCBf0lwsWLyijUpO+nzoMC16fyxbfby/e31XCq3MOoZZFygDvbSvbd+
+zm4MTC/0IHMelm6IU3tXntmGoJVIvMerjmc2FEE1Z2wfWgiTm5tGnYMIN3hJpPaD
+6ndpcOf2VfW2WTWMCEF8qn9oi+7jqA==
+=OGik
+-----END PGP SIGNATURE-----
+
+--Sig_/yTH4nvW=w+RqhVLI2pd=Jau--
