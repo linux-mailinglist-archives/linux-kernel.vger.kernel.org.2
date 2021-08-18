@@ -2,97 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B40C3F0C82
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 22:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 924E83F0C8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 22:18:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233436AbhHRUQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 16:16:32 -0400
-Received: from meesny.iki.fi ([195.140.195.201]:42156 "EHLO meesny.iki.fi"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232713AbhHRUQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 16:16:28 -0400
-Received: from hillosipuli.retiisi.eu (dbd1vftgng281pd4yskly-3.rev.dnainternet.fi [IPv6:2001:14ba:8eb:1240:ab2d:b956:f00:7a12])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sailus)
-        by meesny.iki.fi (Postfix) with ESMTPSA id 5F579200CE;
-        Wed, 18 Aug 2021 23:15:47 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
-        t=1629317747;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZQ/waZgJwLCEzD0vKdhEjQNqAq65vN1RjzSS2C3sGcY=;
-        b=C+UGn3YtMdsAxR4A9zeUGrESIsr9H/Cnt9sWDzG5Qx7bqNzzML/YBICIZ6mq75XqAiNlZF
-        x2GXswnMrdsZofJOl0u8oPfw1IAoI4hjsv8ctGGgMYticnXc/9Jkug64xkDFlUBpAFnJPt
-        vzAmIx1w6Lbb75tMwFDl4+ifUBAupAA=
-Received: from valkosipuli.retiisi.eu (unknown [192.168.4.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 2685B634C3A;
-        Wed, 18 Aug 2021 23:13:31 +0300 (EEST)
-Date:   Wed, 18 Aug 2021 23:15:46 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] Driver for ON Semi AR0521 camera sensor
-Message-ID: <YR1qckqUpUwnm3IT@valkosipuli.retiisi.eu>
-References: <m3im0s9rks.fsf@t19.piap.pl>
- <YR01VfIM5o1PmcWY@valkosipuli.retiisi.eu>
- <YR053s0EoYrz/RcP@pendragon.ideasonboard.com>
+        id S233690AbhHRUS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 16:18:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233509AbhHRUSt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 16:18:49 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C04B8C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 13:18:14 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id a201-20020a1c7fd2000000b002e6d33447f9so4157988wmd.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 13:18:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=nHfCCbHIXfL8S0LAJ+5b/okpSRYN0l8zL9APPGHUHjM=;
+        b=JNxUjQJfF8Rfgw0pIVdmau+KQ+tvGbR5jwxsNL+C4ZDxsjgE+iui13LWXrzEM2oi4e
+         JExJW4m3jOmYpeYqh5Jm5a8nfWjtKnJpIJqhmxMEVzERO+5UnEh+APgQwU6jjDW2aU50
+         dWaLO+Kt1o238ME+il7oVvZb/cGa/r219D06M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=nHfCCbHIXfL8S0LAJ+5b/okpSRYN0l8zL9APPGHUHjM=;
+        b=b/KjcCz2uODvl34/Cjdmc3ivrNNwz/NmJI13APUKwNu/oxg8xJLUDkPf/QT42Og+i8
+         rHSWLapF/7BcdtrxYgIbmQmB01RhBTLteNq5vZN6sw343r8HpzMVkTcwhj2uPc4kwYMP
+         MxSWP1pfkfn82yQw5TlZPGGzTp8XoponPbbfhHdk0XsV6bNJeKR3jU0pKL3+O+RS8qWW
+         AqZKgReY4RvOazE81Jom/bvOd1eDyYEQaDmeiFM2T83Wg8X+bd2uWsrV8s9Cc9mgxRN2
+         E+Mnj0VTrlZDIGx2cY/L3Wwh1AhXC4kTy5Vqfs3dbTpzi8wYm8Zc9cpNxum+HgSylnbc
+         DwVA==
+X-Gm-Message-State: AOAM532Af2kM1ZPn8JLD0DATjcWWS0RMYyYEIhQMudjHooFI/+fHEzfa
+        TS4m7PrcT9VHnpM6gRqx7m54ig==
+X-Google-Smtp-Source: ABdhPJzYHZ/Yv7qcLsqA2BQ79yMvS71B29G7UVMNEpzfrAnk3wq8PLoDzLhcnwZ7fYeUBBem9GqVjA==
+X-Received: by 2002:a05:600c:290:: with SMTP id 16mr10314299wmk.187.1629317893281;
+        Wed, 18 Aug 2021 13:18:13 -0700 (PDT)
+Received: from localhost (82-69-42-66.dsl.in-addr.zen.co.uk. [82.69.42.66])
+        by smtp.gmail.com with ESMTPSA id a18sm5639913wmg.43.2021.08.18.13.18.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 13:18:12 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 21:18:10 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Leon Yang <lnyng@fb.com>, Roman Gushchin <guro@fb.com>,
+        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: memcontrol: fix occasional OOMs due to proportional
+ memory.low reclaim
+Message-ID: <YR1rAoFNegl6CrPz@chrisdown.name>
+References: <20210817180506.220056-1-hannes@cmpxchg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <YR053s0EoYrz/RcP@pendragon.ideasonboard.com>
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=meesny; t=1629317747;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZQ/waZgJwLCEzD0vKdhEjQNqAq65vN1RjzSS2C3sGcY=;
-        b=KmHu+q13MsxDoH5Kb+yOL93O9VJpwawNyQDuG5Dd5VHXu4MjLq0FewQhQ3qruLrDuFpNvH
-        F5JArj2eB4MbABujiCG4eEvxIjkpu1EqNHse2YDM4bL3YFUsIRBn0U3FfRQN4ZePAajL0H
-        81rQmnlXOxd8niJckiSikJwcMkQzX4M=
-ARC-Seal: i=1; s=meesny; d=iki.fi; t=1629317747; a=rsa-sha256; cv=none;
-        b=uWFWJ2c3zluOAW5WF6iGWC05gWKr1y2ARuLiDG89Lttarv1PEzl1pIfmYR+NLzzOeA+ys+
-        PmBAG18+gzjgMRSX3QuqvFE9BilWtpjvZw72U+CV3/pCgmvKKOJIGX2rZDRxVK5BQJi9HV
-        XAJNVU2soQjtwmLmVm+fWjOp0KMBqb0=
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
+In-Reply-To: <20210817180506.220056-1-hannes@cmpxchg.org>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 07:48:30PM +0300, Laurent Pinchart wrote:
-> > > +static const char *mhz(u32 value)
-> > > +{
-> > > +	static char buff[32];
-> > > +
-> > > +	if (value % 1000)
-> > > +		sprintf(buff, "%u.%06u", value / (1000 * 1000), value % (1000 * 1000));
-> > > +	else if (value % (1000 * 1000))
-> > > +		sprintf(buff, "%u.%03u", value / (1000 * 1000), (value / 1000) % 1000);
-> > > +	else
-> > > +		sprintf(buff, "%u", value / (1000 * 1000));
-> > > +	return buff;
-> > 
-> > Sorry, you can't do that. buff is allocated in the stack and the memory is
-> > no longer available once the function returns.
-> 
-> It's a static char array, so it won't be allocated on the stack, but
-> it's still bad practice as it's not thread-safe. Given that it's used in
+Johannes Weiner writes:
+>We've noticed occasional OOM killing when memory.low settings are in
+>effect for cgroups. This is unexpected and undesirable as memory.low
+>is supposed to express non-OOMing memory priorities between cgroups.
+>
+>The reason for this is proportional memory.low reclaim. When cgroups
+>are below their memory.low threshold, reclaim passes them over in the
+>first round, and then retries if it couldn't find pages anywhere else.
+>But when cgroups are slighly above their memory.low setting, page scan
+>force is scaled down and diminished in proportion to the overage, to
+>the point where it can cause reclaim to fail as well - only in that
+>case we currently don't retry, and instead trigger OOM.
+>
+>To fix this, hook proportional reclaim into the same retry logic we
+>have in place for when cgroups are skipped entirely. This way if
+>reclaim fails and some cgroups were scanned with dimished pressure,
+>we'll try another full-force cycle before giving up and OOMing.
+>
+>Reported-by: Leon Yang <lnyng@fb.com>
+>Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Ah, yeah. I missed the static there.
+Thanks for tracking this down! Agreed that this looks like a good stable 
+candidate.
 
-> two debugging messages only, I'd hardcode the %u.06%u format in the
-> callers.
+Acked-by: Chris Down <chris@chrisdown.name>
 
-Or just plain number in Hz. Both are fine though.
-
--- 
-Sakari Ailus
+>---
+> include/linux/memcontrol.h | 29 +++++++++++++++--------------
+> mm/vmscan.c                | 27 +++++++++++++++++++--------
+> 2 files changed, 34 insertions(+), 22 deletions(-)
+>
+>diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+>index bfe5c486f4ad..24797929d8a1 100644
+>--- a/include/linux/memcontrol.h
+>+++ b/include/linux/memcontrol.h
+>@@ -612,12 +612,15 @@ static inline bool mem_cgroup_disabled(void)
+> 	return !cgroup_subsys_enabled(memory_cgrp_subsys);
+> }
+>
+>-static inline unsigned long mem_cgroup_protection(struct mem_cgroup *root,
+>-						  struct mem_cgroup *memcg,
+>-						  bool in_low_reclaim)
+>+static inline void mem_cgroup_protection(struct mem_cgroup *root,
+>+					 struct mem_cgroup *memcg,
+>+					 unsigned long *min,
+>+					 unsigned long *low)
+> {
+>+	*min = *low = 0;
+>+
+> 	if (mem_cgroup_disabled())
+>-		return 0;
+>+		return;
+>
+> 	/*
+> 	 * There is no reclaim protection applied to a targeted reclaim.
+>@@ -653,13 +656,10 @@ static inline unsigned long mem_cgroup_protection(struct mem_cgroup *root,
+> 	 *
+> 	 */
+> 	if (root == memcg)
+>-		return 0;
+>-
+>-	if (in_low_reclaim)
+>-		return READ_ONCE(memcg->memory.emin);
+>+		return;
+>
+>-	return max(READ_ONCE(memcg->memory.emin),
+>-		   READ_ONCE(memcg->memory.elow));
+>+	*min = READ_ONCE(memcg->memory.emin);
+>+	*low = READ_ONCE(memcg->memory.elow);
+> }
+>
+> void mem_cgroup_calculate_protection(struct mem_cgroup *root,
+>@@ -1147,11 +1147,12 @@ static inline void memcg_memory_event_mm(struct mm_struct *mm,
+> {
+> }
+>
+>-static inline unsigned long mem_cgroup_protection(struct mem_cgroup *root,
+>-						  struct mem_cgroup *memcg,
+>-						  bool in_low_reclaim)
+>+static inline void mem_cgroup_protection(struct mem_cgroup *root,
+>+					 struct mem_cgroup *memcg,
+>+					 unsigned long *min,
+>+					 unsigned long *low)
+> {
+>-	return 0;
+>+	*min = *low = 0;
+> }
+>
+> static inline void mem_cgroup_calculate_protection(struct mem_cgroup *root,
+>diff --git a/mm/vmscan.c b/mm/vmscan.c
+>index 4620df62f0ff..701106e1829c 100644
+>--- a/mm/vmscan.c
+>+++ b/mm/vmscan.c
+>@@ -100,9 +100,12 @@ struct scan_control {
+> 	unsigned int may_swap:1;
+>
+> 	/*
+>-	 * Cgroups are not reclaimed below their configured memory.low,
+>-	 * unless we threaten to OOM. If any cgroups are skipped due to
+>-	 * memory.low and nothing was reclaimed, go back for memory.low.
+>+	 * Cgroup memory below memory.low is protected as long as we
+>+	 * don't threaten to OOM. If any cgroup is reclaimed at
+>+	 * reduced force or passed over entirely due to its memory.low
+>+	 * setting (memcg_low_skipped), and nothing is reclaimed as a
+>+	 * result, then go back back for one more cycle that reclaims
+>+	 * the protected memory (memcg_low_reclaim) to avert OOM.
+> 	 */
+> 	unsigned int memcg_low_reclaim:1;
+> 	unsigned int memcg_low_skipped:1;
+>@@ -2537,15 +2540,14 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+> 	for_each_evictable_lru(lru) {
+> 		int file = is_file_lru(lru);
+> 		unsigned long lruvec_size;
+>+		unsigned long low, min;
+> 		unsigned long scan;
+>-		unsigned long protection;
+>
+> 		lruvec_size = lruvec_lru_size(lruvec, lru, sc->reclaim_idx);
+>-		protection = mem_cgroup_protection(sc->target_mem_cgroup,
+>-						   memcg,
+>-						   sc->memcg_low_reclaim);
+>+		mem_cgroup_protection(sc->target_mem_cgroup, memcg,
+>+				      &min, &low);
+>
+>-		if (protection) {
+>+		if (min || low) {
+> 			/*
+> 			 * Scale a cgroup's reclaim pressure by proportioning
+> 			 * its current usage to its memory.low or memory.min
+>@@ -2576,6 +2578,15 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+> 			 * hard protection.
+> 			 */
+> 			unsigned long cgroup_size = mem_cgroup_size(memcg);
+>+			unsigned long protection;
+>+
+>+			/* memory.low scaling, make sure we retry before OOM */
+>+			if (!sc->memcg_low_reclaim && low > min) {
+>+				protection = low;
+>+				sc->memcg_low_skipped = 1;
+>+			} else {
+>+				protection = min;
+>+			}
+>
+> 			/* Avoid TOCTOU with earlier protection check */
+> 			cgroup_size = max(cgroup_size, protection);
+>-- 
+>2.32.0
+>
