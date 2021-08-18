@@ -2,115 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4018D3F0B62
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 21:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D1A3F0BAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 21:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233036AbhHRTDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 15:03:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57926 "EHLO
+        id S233214AbhHRTT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 15:19:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229965AbhHRTDJ (ORCPT
+        with ESMTP id S231743AbhHRTTW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 15:03:09 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDCA7C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 12:02:34 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id u21-20020a17090a8915b02901782c36f543so9521446pjn.4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 12:02:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OMXez8qENPUCcqh2E+tbnIxsJfldRTnwEZLMxK7eXc8=;
-        b=c8xDb3VhAM2UIAdOt9z9b/Wbob+uRx0FmaK+KR+eQy6dysj8cv+U6AjDt0EdkZ2361
-         8DH+d1rDWQGumbm1weW6y+49EvJQugDSRI7FdsLoB8IhE3fOs/ypXDjAzSXstWItFQdS
-         Sg+JSf7LGfFIMpKFsioTnB+5Yd9zSeFnL1wt/K5eceIQNpdkIH1EwOcrvgwzJyOXWWos
-         QSlDAw8lC+neFkWd5lG+dmQHIDS+azCTkRHmEuO7o0CkxwEafJmVug5clZwaVVfvyqLN
-         IEsJWXSwIhbpmD0ncTiF0WMs5m4PZRisu2xjDEptAD4ngx3oT3b+je2MjsjkUjBHQWE6
-         iJsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OMXez8qENPUCcqh2E+tbnIxsJfldRTnwEZLMxK7eXc8=;
-        b=YdXbwLlh2yjPL9GvWqUDhr8f5TAGDS93Vdaf78Qp9yS3brkXe398/80Jiimm8OG/DO
-         5ZLuL/4fd1+0XrpEav/haFHmUMrec09M0F1s7ofkyy6nhro8Ke14TmR/Ftl/JiFcu77b
-         4mnhYHs16F7oQD/um0xgU5LBnaBe7Tm1/hkqME+QstJs13NTHS9HGcd7i+AjzxZf5Rp1
-         y5Jp6Gmsw3vYLZLaVuK99fXE4hcmXK96WhT+PDP1om4c+f7rGPdizYUPC5WkUy/N7glE
-         ft4fGp8YkwLDdCWel9XsSfOLkRCSOMySHPtEtx4dAjITIZgyKauB0P982ROrktw/QSRg
-         tKcg==
-X-Gm-Message-State: AOAM533koXsJ9LGbLxzrN5XoV3HOiv15VjvAQhog4f6i+SszbPFlfUtm
-        ctev93r1xJtUAOdeKikqWXwu7OYsNzGj+m2+CZQswQ==
-X-Google-Smtp-Source: ABdhPJxSsH7+R4Vr35DJYqsUv8sBHjgia/aPY5AUcIG0AzDMU05I02y0VsRjaBMcpir9IGiJRfjyg9KfwdJpkojrIWE=
-X-Received: by 2002:a17:90a:c003:: with SMTP id p3mr10623395pjt.14.1629313354417;
- Wed, 18 Aug 2021 12:02:34 -0700 (PDT)
+        Wed, 18 Aug 2021 15:19:22 -0400
+X-Greylist: delayed 567 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 18 Aug 2021 12:18:44 PDT
+Received: from confino.investici.org (confino.investici.org [IPv6:2a00:c38:11e:ffff::a020])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC70C061764;
+        Wed, 18 Aug 2021 12:18:44 -0700 (PDT)
+Received: from mx1.investici.org (unknown [127.0.0.1])
+        by confino.investici.org (Postfix) with ESMTP id 4Gqcrh08nxz10yG;
+        Wed, 18 Aug 2021 19:09:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=privacyrequired.com;
+        s=stigmate; t=1629313748;
+        bh=zZRv+nXoCrBil3F5oNtg2nOIZFdUyNScEfpQhHkWs20=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=XuNyCGrF4TFImYa8YkqQMbYM79KtRR5mjYpqhKJM6XXrw3sAON1jt+Y/v45iEN+cy
+         Nbzj3fNcPYxB8NOjFzB0xdXNDXJvqNY6iamhJ9vb6u8qWPeDiUAbgsciFPC3g7lCn0
+         bKt0uIxCi4lHr8vwhgUg7zZ7PXj3VH8B7+AkRuxE=
+Received: from [212.103.72.250] (mx1.investici.org [212.103.72.250]) (Authenticated sender: laniel_francis@privacyrequired.com) by localhost (Postfix) with ESMTPSA id 4Gqcrf3wsYz10y6;
+        Wed, 18 Aug 2021 19:09:06 +0000 (UTC)
+From:   Francis Laniel <laniel_francis@privacyrequired.com>
+To:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
+        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 27/63] fortify: Move remaining fortify helpers into fortify-string.h
+Date:   Wed, 18 Aug 2021 21:05:58 +0200
+Message-ID: <77588349.MC4sUV1sfq@machine>
+In-Reply-To: <20210818060533.3569517-28-keescook@chromium.org>
+References: <20210818060533.3569517-1-keescook@chromium.org> <20210818060533.3569517-28-keescook@chromium.org>
 MIME-Version: 1.0
-References: <20210818171318.1848272-1-robert.foss@linaro.org>
- <20210818171318.1848272-2-robert.foss@linaro.org> <YR1F+I4/JbBAgpwZ@ravnborg.org>
-In-Reply-To: <YR1F+I4/JbBAgpwZ@ravnborg.org>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Wed, 18 Aug 2021 21:02:23 +0200
-Message-ID: <CAG3jFysiY-w1wXcA=qpjbTKF=2N3tjOND+SvwcLr7b_UZhepGA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] drm/bridge: anx7625: Propagate errors from sp_tx_edid_read()
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Xin Ji <xji@analogixsemi.com>,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Sam!
+Hi.
 
-On Wed, 18 Aug 2021 at 19:40, Sam Ravnborg <sam@ravnborg.org> wrote:
->
-> Hi Robert,
->
-> On Wed, Aug 18, 2021 at 07:13:18PM +0200, Robert Foss wrote:
-> > During the sp_tx_edid_read() call the return value of sp_tx_edid_read()
-> > is ignored, which could cause potential errors to go unhandled.
-> >
-> > All errors which are returned by sp_tx_edid_read() are handled in
-> > anx7625_get_edid().
-> >
-> > Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> > ---
-> >  drivers/gpu/drm/bridge/analogix/anx7625.c | 14 ++++++++++----
-> >  1 file changed, 10 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-> > index ea414cd349b5c..abc8db77bfd36 100644
-> > --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-> > +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-> > @@ -845,8 +845,11 @@ static int sp_tx_edid_read(struct anx7625_data *ctx,
-> >                               if (g_edid_break == 1)
-> >                                       break;
-> >
-> > -                             segments_edid_read(ctx, count / 2,
-> > -                                                pblock_buf, offset);
-> > +                             ret = segments_edid_read(ctx, count / 2,
-> > +                                                      pblock_buf, offset);
-> > +                             if (ret < 0)
-> > +                                     return ret;
-> > +
->
-> This could be just "if (ret)".
-> Same goes for the next case.
->
-> With or without this simplification:
-> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
->
-> I assume you will apply the patches.
 
-Applied to drm-misc-next
+Le mercredi 18 ao=FBt 2021, 08:04:57 CEST Kees Cook a =E9crit :
+> When commit a28a6e860c6c ("string.h: move fortified functions definitions
+> in a dedicated header.") moved the fortify-specific code, some helpers
+> were left behind. Moves the remaining fortify-specific helpers into
+> fortify-string.h so they're together where they're used. This requires
+> that any FORTIFY helper function prototypes be conditionally built to
+> avoid "no prototype" warnings. Additionally removes unused helpers.
+>=20
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Francis Laniel <laniel_francis@privacyrequired.com>
+> Cc: Daniel Axtens <dja@axtens.net>
+> Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Cc: Andrey Konovalov <andreyknvl@google.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  include/linux/fortify-string.h | 7 +++++++
+>  include/linux/string.h         | 9 ---------
+>  lib/string_helpers.c           | 2 ++
+>  3 files changed, 9 insertions(+), 9 deletions(-)
+>=20
+> diff --git a/include/linux/fortify-string.h b/include/linux/fortify-strin=
+g.h
+> index c1be37437e77..7e67d02764db 100644
+> --- a/include/linux/fortify-string.h
+> +++ b/include/linux/fortify-string.h
+> @@ -2,6 +2,13 @@
+>  #ifndef _LINUX_FORTIFY_STRING_H_
+>  #define _LINUX_FORTIFY_STRING_H_
+>=20
+> +#define __FORTIFY_INLINE extern __always_inline __attribute__((gnu_inlin=
+e))
+> +#define __RENAME(x) __asm__(#x)
+> +
+> +void fortify_panic(const char *name) __noreturn __cold;
+> +void __read_overflow(void) __compiletime_error("detected read beyond size
+> of object (1st parameter)"); +void __read_overflow2(void)
+> __compiletime_error("detected read beyond size of object (2nd parameter)"=
+);
+> +void __write_overflow(void) __compiletime_error("detected write beyond
+> size of object (1st parameter)");
+>=20
+>  #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+>  extern void *__underlying_memchr(const void *p, int c, __kernel_size_t
+> size) __RENAME(memchr); diff --git a/include/linux/string.h
+> b/include/linux/string.h
+> index b48d2d28e0b1..9473f81b9db2 100644
+> --- a/include/linux/string.h
+> +++ b/include/linux/string.h
+> @@ -249,15 +249,6 @@ static inline const char *kbasename(const char *path)
+>  	return tail ? tail + 1 : path;
+>  }
+>=20
+> -#define __FORTIFY_INLINE extern __always_inline __attribute__((gnu_inlin=
+e))
+> -#define __RENAME(x) __asm__(#x)
+> -
+> -void fortify_panic(const char *name) __noreturn __cold;
+> -void __read_overflow(void) __compiletime_error("detected read beyond size
+> of object passed as 1st parameter"); -void __read_overflow2(void)
+> __compiletime_error("detected read beyond size of object passed as 2nd
+> parameter"); -void __read_overflow3(void) __compiletime_error("detected
+> read beyond size of object passed as 3rd parameter"); -void
+> __write_overflow(void) __compiletime_error("detected write beyond size of
+> object passed as 1st parameter"); -
+>  #if !defined(__NO_FORTIFY) && defined(__OPTIMIZE__) &&
+> defined(CONFIG_FORTIFY_SOURCE) #include <linux/fortify-string.h>
+>  #endif
+> diff --git a/lib/string_helpers.c b/lib/string_helpers.c
+> index bde13612c25d..faa9d8e4e2c5 100644
+> --- a/lib/string_helpers.c
+> +++ b/lib/string_helpers.c
+> @@ -883,9 +883,11 @@ char *strreplace(char *s, char old, char new)
+>  }
+>  EXPORT_SYMBOL(strreplace);
+>=20
+> +#ifdef CONFIG_FORTIFY_SOURCE
+>  void fortify_panic(const char *name)
+>  {
+>  	pr_emerg("detected buffer overflow in %s\n", name);
+>  	BUG();
+>  }
+>  EXPORT_SYMBOL(fortify_panic);
+> +#endif /* CONFIG_FORTIFY_SOURCE */
+
+If I remember correctly, I let these helpers in string.h because I thought=
+=20
+they could be used by code not related to fortify-string.h.
+
+But you are right and I think it is better to have all the code related to =
+one=20
+feature in the same place.
+I am happy to see the kernel is fortifying, and this contribution is good, =
+so=20
+here is what I can give:
+Acked-by: Francis Laniel <laniel_francis@privacyrequired.com>
+
+
+Best regards.
+
+
