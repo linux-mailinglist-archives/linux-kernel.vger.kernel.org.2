@@ -2,89 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86FF3EF8C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 05:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131713EF8C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 05:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236705AbhHRDib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 23:38:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38806 "EHLO
+        id S236496AbhHRDin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 23:38:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236111AbhHRDi2 (ORCPT
+        with ESMTP id S236340AbhHRDim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 23:38:28 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD58C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 20:37:54 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id x16so772299pfh.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 20:37:54 -0700 (PDT)
+        Tue, 17 Aug 2021 23:38:42 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79915C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 20:38:08 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id n20-20020a2540140000b0290593b8e64cd5so1474709yba.3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 20:38:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=CIqXxZQMTfYf4KMWVdTMecbn2bp1Cy3dF+snZnUCor0=;
-        b=M4aL//HWus/ItMfUDjKFkNtL6bXZ+RaJqIQS2scGji60+vB4vhgzGtpnPTCO8fvrTr
-         bRLJwf0SDFdMZh0b/z/T/Og7loudWl/gY4/scDaiXq1N26UH19zvEEaYg7MUJPpqlZ3a
-         XIjQdgc3G77Tm5K/f/fwD4RNjzVcbQuyCAA1yeavivJz/6xpvhUO1/iN/tvjYjCm6zcF
-         XUdaKe/Ty30DX5wiDKtJ2KAg45mm3+ec7gc7O8Yofn+L/rATdz0E4/I4j0pPKqYf7cVx
-         q0BUYgmvmVqdgwBgSalrYNsB0z/TU8At6SFePmn/lJPAGBhCujBgA3Gd6b917AqUxklw
-         M5Sw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ug2zcdMCaeHh0XAdi8LdoXsjv0peD2Al0CHXVkIyFY8=;
+        b=IuWtNEvbDa2kpwWZYNZufkDH3pFlfMBnmV2plEsPX+lVFttpkpGqKCyO/xZB2wnrds
+         6wEc1MPmXYPK3s4rRR6KlAL9DiCQFCUb3x8xBsQmdoRDlQARWdB1ByrLFE67wb2xt6VP
+         WSiB2iDjxxBOZ3kUnzweyTO7jeQV5oq4BZyrsGGY3RJneu0bNyf1VlhtD79puiBt029H
+         g/PGEpSsTfka2jQ3l1aQC8L4ovpccysQglCUHEAusTuLJ6ziMuLtLnKSHbV9U8vGouzK
+         paEKrl1apxdiScM3OZSe56Koc7gpQP1CslR710iZzLGRJ4pVBsliAGK6ieIIsSb0ZIyT
+         0NlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CIqXxZQMTfYf4KMWVdTMecbn2bp1Cy3dF+snZnUCor0=;
-        b=jnNNJQC7eewNc1Sw5ab9JBJJTRzU1jre7KlK8LICjpNVWVB4rR8QaeSpIuqfaqgRWO
-         lChFq1EGhs4vhyqIPGkR4UckVAgvRhtki+ODnQrExK7VD3U/oLpCcI2kMlUMNDnMHrdX
-         myxCZmRgSpk5XhX8ciX4VPqq+gt4n7Hkqtc+83B6FGrhJuHuctXaMJlwY+EPp1Sjr8AR
-         NlAHD9/ma7e9Vf3s2zX6+G6pQy1cg67i3uaRZhvgquQCvGckZjn7KiZMIs/kbyUbK0ES
-         qwWTS3l2XsbVRz4sdr3pDCCUKFO4WobLGyXf9iRe8mTpBdpaOD6m+ZzwioFT/44INXTP
-         1tXg==
-X-Gm-Message-State: AOAM533ZqBh+phTQSohMXzRUTKBcSbI6X7jbOQLs2Z1k7U8PBIu0g3Xy
-        J8AyADMp+y4KILixVVFLKZOtoQ==
-X-Google-Smtp-Source: ABdhPJzOGxsw50WI5481yu1W8E5V0EvRZ+mP8uNqjTo8rrInZA/Ke2EUBvabuKvfYMAk2yI2gnDwsQ==
-X-Received: by 2002:a65:64d1:: with SMTP id t17mr6676899pgv.291.1629257874429;
-        Tue, 17 Aug 2021 20:37:54 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id h22sm4018298pfv.76.2021.08.17.20.37.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 20:37:53 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 09:07:51 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, rjw@rjwysocki.net, robh+dt@kernel.org,
-        steev@kali.org, tdas@codeaurora.org, mka@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [Patch v5 3/6] cpufreq: qcom-cpufreq-hw: Add dcvs interrupt
- support
-Message-ID: <20210818033751.uulg5tgwfddmwp47@vireshk-i7>
-References: <20210809191605.3742979-1-thara.gopinath@linaro.org>
- <20210809191605.3742979-4-thara.gopinath@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210809191605.3742979-4-thara.gopinath@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ug2zcdMCaeHh0XAdi8LdoXsjv0peD2Al0CHXVkIyFY8=;
+        b=klsEX1HW1lECaC1ndkg16yECS56nYLxRf+QhcqBaWVYpRye/uaiUmrdqtHljV7Gg7F
+         XpzenMW8L8I9MSudDt76zSEzxTK++VKw4+h4hFVME556lrNDyZUPkJYOtE7y0TJTgdCx
+         iIa+fBzh/QGEm02+c0W5mk5dV0bhENeb20Nxpv2FpKTTtOFBw32CI7k+MiEQraYoEsDS
+         3In5mUeHuhKhGxE1zV3mAjkNpa+1lNBS3crwbRAEUreDGRlmsfQXyfceEAQthb+8Wyxo
+         ks2TsUS1TgEnV4LGYXgA31RN5M+0vtKcspRLvpwbhziWiY9bJcTa3JEU2umwUnOsMdne
+         qp1g==
+X-Gm-Message-State: AOAM533tJPJ1qxymeEd+olQZa2+k1RY1sieWpW1ZU+5meXXZ9ExJ2vQs
+        ctsTil5deYqX/4TynKkzWYWOvJF7GdKfQuQ=
+X-Google-Smtp-Source: ABdhPJwlv55rDjktIeu+22XottH9UI4zxlHdsPFmVybWBm49omkRuuXWyfT9pG7F4w0AsUzbyOEeNNSnYdbnAlc=
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7750:a56d:5272:72cb])
+ (user=saravanak job=sendgmr) by 2002:a25:d1c2:: with SMTP id
+ i185mr8917811ybg.466.1629257887738; Tue, 17 Aug 2021 20:38:07 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 20:38:00 -0700
+Message-Id: <20210818033804.3281057-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
+Subject: [PATCH net v3 0/3] Clean up and fix error handling in mdio_mux_init()
+From:   Saravana Kannan <saravanak@google.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jon Mason <jon.mason@broadcom.com>,
+        David Daney <david.daney@cavium.com>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>, kernel-team@android.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09-08-21, 15:16, Thara Gopinath wrote:
-> Add interrupt support to notify the kernel of h/w initiated frequency
-> throttling by LMh. Convey this to scheduler via thermal presssure
-> interface.
-> 
-> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-> ---
-> 
-> v4->v5:
-> 	- Changed throttle_lock from a spinlock to mutex to take potential
-> 	  race between LMh de-init sequence and reenabling of
-> 	  interrupts/polling after a thermal throttle event.
-> 	- Other cosmetic fixes as pointed out by Viresh.
+This patch series was started due to -EPROBE_DEFER not being handled
+correctly in mdio_mux_init() and causing issues [1]. While at it, I also
+did some more error handling fixes and clean ups. The -EPROBE_DEFER fix is
+the last patch.
 
-Applied. Thanks.
+Ideally, in the last patch we'd treat any error similar to -EPROBE_DEFER
+but I'm not sure if it'll break any board/platforms where some child
+mdiobus never successfully registers. If we treated all errors similar to
+-EPROBE_DEFER, then none of the child mdiobus will work and that might be a
+regression. If people are sure this is not a real case, then I can fix up
+the last patch to always fail the entire mdio-mux init if any of the child
+mdiobus registration fails.
+
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Neil Armstrong <narmstrong@baylibre.com>
+Cc: Kevin Hilman <khilman@baylibre.com>
+[1] - https://lore.kernel.org/lkml/CAGETcx95kHrv8wA-O+-JtfH7H9biJEGJtijuPVN0V5dUKUAB3A@mail.gmail.com/#t
+
+v1 -> v2:
+- Added Acked-by, Tested-by and Reviewed-by
+- Fixing the subject so it goes to "net" tree
+v2 -> v3:
+- Added Fixes tag to all the patches
+
+Saravana Kannan (3):
+  net: mdio-mux: Delete unnecessary devm_kfree
+  net: mdio-mux: Don't ignore memory allocation errors
+  net: mdio-mux: Handle -EPROBE_DEFER correctly
+
+ drivers/net/mdio/mdio-mux.c | 37 ++++++++++++++++++++++++-------------
+ 1 file changed, 24 insertions(+), 13 deletions(-)
 
 -- 
-viresh
+2.33.0.rc1.237.g0d66db33f3-goog
+
