@@ -2,72 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654653EFD42
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA1B3EFD44
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238440AbhHRHAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 03:00:43 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:47120 "EHLO
+        id S238501AbhHRHCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 03:02:36 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:47634 "EHLO
         jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237636AbhHRHAh (ORCPT
+        with ESMTP id S237636AbhHRHCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 03:00:37 -0400
+        Wed, 18 Aug 2021 03:02:34 -0400
 Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 0950C1C0B77; Wed, 18 Aug 2021 09:00:02 +0200 (CEST)
-Date:   Wed, 18 Aug 2021 09:00:01 +0200
+        id CEDD01C0B7A; Wed, 18 Aug 2021 09:01:59 +0200 (CEST)
+Date:   Wed, 18 Aug 2021 09:01:59 +0200
 From:   Pavel Machek <pavel@ucw.cz>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 1/2] leds: trigger: remove reference to obsolete
- CONFIG_IDE_GD_ATA
-Message-ID: <20210818070001.GD22282@amd>
-References: <20210804123426.16947-1-lukas.bulwahn@gmail.com>
- <20210804123426.16947-2-lukas.bulwahn@gmail.com>
+To:     Hermes Zhang <Hermes.Zhang@axis.com>
+Cc:     Dan Murphy <dmurphy@ti.com>, kernel <kernel@axis.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>
+Subject: Re: [PATCH v3] leds: leds-multi-gpio: Add multiple GPIOs LED driver
+Message-ID: <20210818070159.GE22282@amd>
+References: <20210329055847.13293-1-chenhui.zhang@axis.com>
+ <20210804155221.GB25072@amd>
+ <69ae0b3fd44c4a5796d125a5b97b9d78@XBOX01.axis.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="gE7i1rD7pdK0Ng3j"
+        protocol="application/pgp-signature"; boundary="PPYy/fEw/8QCHSq3"
 Content-Disposition: inline
-In-Reply-To: <20210804123426.16947-2-lukas.bulwahn@gmail.com>
+In-Reply-To: <69ae0b3fd44c4a5796d125a5b97b9d78@XBOX01.axis.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---gE7i1rD7pdK0Ng3j
+--PPYy/fEw/8QCHSq3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed 2021-08-04 14:34:25, Lukas Bulwahn wrote:
-> Commit b7fb14d3ac63 ("ide: remove the legacy ide driver") removes the
-> definition of the config IDE_GD_ATA.
->=20
-> So, remove the obsolete reference in ./drivers/leds/trigger/Kconfig.
->=20
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Hi!
 
-Thanks, applied.
-								Pavel
-							=09
+> > > From: Hermes Zhang <chenhuiz@axis.com>
+> > >
+> > > Introduce a new multiple GPIOs LED driver. This LED will made of
+> > > multiple GPIOs (up to 8) and will map different brightness to
+> > > different GPIOs states which defined in dts file.
+> > >
+> > > Signed-off-by: Hermes Zhang <chenhuiz@axis.com>
+> >=20
+> > Thank you, it looks simple and mostly ok.
+> >=20
+> > Acked-by: Pavel Machek <pavel@ucw.cz>
+> >=20
+> > But it really needs to go in with devicetree documentation changes, and=
+ they
+> > need to be acked by devicetree maintainers. If you have that, please se=
+nd it
+> > in series.
+> >=20
+>=20
+> Do you mean this one: https://lore.kernel.org/patchwork/patch/1402471/, i=
+t's already in series.=20
+
+I don't see Rob Herring's ack there.
+
+Best regards,
+						Pavel
 --=20
 http://www.livejournal.com/~pavelmachek
 
---gE7i1rD7pdK0Ng3j
+--PPYy/fEw/8QCHSq3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iEYEARECAAYFAmEcr/EACgkQMOfwapXb+vLMBQCfdCzU/lz/6A94DTCvwmlxTCuq
-DBMAnjyLKaVaJOMw0tLpHn5I835/BdZH
-=NVt6
+iEYEARECAAYFAmEcsGcACgkQMOfwapXb+vLbgwCghkKagE1YQyWqaVfKcHCt/YG9
+voQAoJtFadjtZAffGpuIvAI4vClNJHm6
+=16pI
 -----END PGP SIGNATURE-----
 
---gE7i1rD7pdK0Ng3j--
+--PPYy/fEw/8QCHSq3--
