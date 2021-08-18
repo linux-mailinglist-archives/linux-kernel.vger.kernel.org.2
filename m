@@ -2,112 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B09C33F0748
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD823F074C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239629AbhHRPAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 11:00:10 -0400
-Received: from mga11.intel.com ([192.55.52.93]:7965 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238483AbhHRPAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 11:00:08 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="213215367"
-X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
-   d="scan'208";a="213215367"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 07:59:33 -0700
-X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
-   d="scan'208";a="511225709"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 07:59:31 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mGN2L-00B8xL-L5; Wed, 18 Aug 2021 17:59:25 +0300
-Date:   Wed, 18 Aug 2021 17:59:25 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        christophe.jaillet@wanadoo.fr, kaixuxia@tencent.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] net: mii: make mii_ethtool_gset() return void
-Message-ID: <YR0gTWn4G0xkekxF@smile.fi.intel.com>
-References: <7e8946ac52de91a963beb7fa0354a19a21c5cf73.1629296113.git.paskripkin@gmail.com>
- <94ec6d98ab2d9a937da8fba8d7b99805f72809aa.1629296113.git.paskripkin@gmail.com>
+        id S239703AbhHRPAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 11:00:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239592AbhHRPAV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 11:00:21 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6340C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:59:46 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id o2so2521429pgr.9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:59:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EBgoBWZ1Nj5av7VhKX9E+2duoDv+qmChdEi2w6LtlvU=;
+        b=r3lXDwsqVpzCbwrLVj0t1BPGIqrau9mGcpVCpLgjbbnJIpyqRObCCTeHdmP4xkc65q
+         zKNkkkEGCGppUmAM64SksrZt4ccxCakfQCuRSUMwHEg0b4Bk9w4vcE314SeoYKOXmsK4
+         lJojPQYIVwkKvrUVfMST0N9ZfsxnYKemqhNa2CTLvgwTx3teygWBXYu71KdDf7fLq0zP
+         kEIqrY41bNHC6x+iWGwbgcUSqUiWw77KI+GQXv40wqOvKzzL0++dq+VGOxiE4awGtKQV
+         HfoAxyM5LKVN9Ghw3geZ4uH7FyEQYC8fCm+qByxioCZ+aU6JIT7GuETzcNwYfShplY8b
+         xGaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EBgoBWZ1Nj5av7VhKX9E+2duoDv+qmChdEi2w6LtlvU=;
+        b=DLo4iF9+OtzhfqkXiRvhAhOZH5aiL4iesuaDjCtBVX/KJtiFCjd3GJZEii3NbbPxZp
+         QFvAVHC93MMN50A33AnCLfyY1WMgXWgd52bWmORvQI2Cyc+hHLAt7IuUD9/ytEnZAizE
+         j2pQkPMIz1V1NLYOEDQWSYgDZokxXNqT0cdZTDn8sUpFZYvziwBHvTmMcIBdtvnLUBE5
+         Xz7VLZklBOwPeN5suu9e+o5c4Qrle+yUmCMnur+y5GxEXdQDKjKeMBeph6X28k1xSjLe
+         s6kE/bN0OzTb+L/jkgdZ2IuY/m+k7LCmGMA46AXsjTYCgGDBLaCn/xeRaUs67Rm7P06s
+         GamQ==
+X-Gm-Message-State: AOAM531yjRbbmuxo1Myis19D1nA/dkVRazo5V4Qpnqq2soE9QaQNdKtk
+        Q4dkQ7UX5MQLNiIiCO2fryRYS17EIzZXwEfFM23gdJDEcDgTwg==
+X-Google-Smtp-Source: ABdhPJwXDA/RU3SgFGIGZf73vkhszMMBN089VDmiusykFqaL07LtRIpSGnrZKMdg45ppW2cbOPZwLYzE/SLt70DkATM=
+X-Received: by 2002:a63:3c7:: with SMTP id 190mr9167314pgd.240.1629298786167;
+ Wed, 18 Aug 2021 07:59:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <94ec6d98ab2d9a937da8fba8d7b99805f72809aa.1629296113.git.paskripkin@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210817190057.255264-1-pierre-louis.bossart@linux.intel.com>
+ <20210817190057.255264-2-pierre-louis.bossart@linux.intel.com>
+ <YRyeR6imvSwOOasQ@kroah.com> <20210818115736.GA4177@sirena.org.uk>
+ <YR0Ji7DQXoo0z4vP@kroah.com> <20210818134814.GF4177@sirena.org.uk> <14235b8d-d375-6e2d-cae9-33adf9c48120@linux.intel.com>
+In-Reply-To: <14235b8d-d375-6e2d-cae9-33adf9c48120@linux.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 18 Aug 2021 07:59:35 -0700
+Message-ID: <CAPcyv4hWNk-avNOPdWBNND9Bd9nebzs2A4Weveqy289gM+A1Bw@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/2] driver core: export driver_deferred_probe_trigger()
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        alsa-devel@alsa-project.org,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Takashi Iwai <tiwai@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 05:18:55PM +0300, Pavel Skripkin wrote:
-> mii_ethtool_gset() does not return any errors. Since there is no users
+On Wed, Aug 18, 2021 at 7:52 AM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+>
+>
+>
+> >>> The issue is that the driver core is using drivers completing probe as a
+> >>> proxy for resources becoming available.  That works most of the time
+> >>> because most probes are fully synchronous but it breaks down if a
+> >>> resource provider registers resources outside of probe, we might still
+> >>> be fine if system boot is still happening and something else probes but
+> >>> only through luck.
+> >
+> >> The driver core is not using that as a proxy, that is up to the driver
+> >> itself or not.  All probe means is "yes, this driver binds to this
+> >> device, thank you!" for that specific bus/class type.  That's all, if
+> >> the driver needs to go off and do real work before it can properly
+> >> control the device, wonderful, have it go and do that async.
+> >
+> > Right, which is what is happening here - but the deferred probe
+> > machinery in the core is reading more into the probe succeeding than it
+> > should.
+>
+> I think Greg was referring to the use of the PROBE_PREFER_ASYNCHRONOUS
+> probe type. We tried just that and got a nice WARN_ON because we are
+> using request_module() to deal with HDaudio codecs. The details are in
+> [1] but the kernel code is unambiguous...
+>
+>         /*
+>          * We don't allow synchronous module loading from async.  Module
+>          * init may invoke async_synchronize_full() which will end up
+>          * waiting for this task which already is waiting for the module
+>          * loading to complete, leading to a deadlock.
+>          */
+>         WARN_ON_ONCE(wait && current_is_async());
+>
+>
+> The reason why we use a workqueue is because we are otherwise painted in
+> a corner by conflicting requirements.
+>
+> a) we have to use request_module()
+> b) we cannot use the async probe because of the request_module()
+> c) we have to avoid blocking on boot
+>
+> I understand the resistance to exporting this function, no one in our
+> team was really happy about it, but no one could find an alternate
+> solution. If there is something better, I am all ears.
 
-there are
-
-> of this function that rely on its return value, it can be
-> made void.
-> 
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> ---
-> 
-> Changes in v2:
-> 	inverted the order of patches
-> 
-> ---
->  drivers/net/mii.c   | 5 +----
->  include/linux/mii.h | 2 +-
->  2 files changed, 2 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/net/mii.c b/drivers/net/mii.c
-> index 779c3a96dba7..3e7823267a3b 100644
-> --- a/drivers/net/mii.c
-> +++ b/drivers/net/mii.c
-> @@ -50,9 +50,8 @@ static u32 mii_get_an(struct mii_if_info *mii, u16 addr)
->   * The @ecmd parameter is expected to have been cleared before calling
->   * mii_ethtool_gset().
-
->   *
-
-This line should gone as well.
-
-> - * Returns 0 for success, negative on error.
->   */
-> -int mii_ethtool_gset(struct mii_if_info *mii, struct ethtool_cmd *ecmd)
-> +void mii_ethtool_gset(struct mii_if_info *mii, struct ethtool_cmd *ecmd)
->  {
->  	struct net_device *dev = mii->dev;
->  	u16 bmcr, bmsr, ctrl1000 = 0, stat1000 = 0;
-> @@ -131,8 +130,6 @@ int mii_ethtool_gset(struct mii_if_info *mii, struct ethtool_cmd *ecmd)
->  	mii->full_duplex = ecmd->duplex;
->  
->  	/* ignore maxtxpkt, maxrxpkt for now */
-> -
-> -	return 0;
->  }
->  
->  /**
-> diff --git a/include/linux/mii.h b/include/linux/mii.h
-> index 219b93cad1dd..12ea29e04293 100644
-> --- a/include/linux/mii.h
-> +++ b/include/linux/mii.h
-> @@ -32,7 +32,7 @@ struct mii_if_info {
->  
->  extern int mii_link_ok (struct mii_if_info *mii);
->  extern int mii_nway_restart (struct mii_if_info *mii);
-> -extern int mii_ethtool_gset(struct mii_if_info *mii, struct ethtool_cmd *ecmd);
-> +extern void mii_ethtool_gset(struct mii_if_info *mii, struct ethtool_cmd *ecmd);
->  extern void mii_ethtool_get_link_ksettings(
->  	struct mii_if_info *mii, struct ethtool_link_ksettings *cmd);
->  extern int mii_ethtool_sset(struct mii_if_info *mii, struct ethtool_cmd *ecmd);
-> -- 
-> 2.32.0
-> 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Additionally you mentioned that the consumer is unknown to the
+producer, so you are not able, for example, to use the newly exported
+device_driver_attach() to directly trigger the unblocked dependency.
