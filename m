@@ -2,82 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA093EF6DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 02:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1093EF6E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 02:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234302AbhHRAab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 20:30:31 -0400
-Received: from mga12.intel.com ([192.55.52.136]:60945 "EHLO mga12.intel.com"
+        id S237281AbhHRAbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 20:31:00 -0400
+Received: from mx.cjr.nz ([51.158.111.142]:21628 "EHLO mx.cjr.nz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234818AbhHRAa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 20:30:26 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10079"; a="195807460"
-X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
-   d="scan'208";a="195807460"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 17:29:52 -0700
-X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
-   d="scan'208";a="520687348"
-Received: from agluck-desk2.sc.intel.com ([10.3.52.146])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 17:29:52 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Jue Wang <juew@google.com>, Ding Hui <dinghui@sangfor.com.cn>,
-        naoya.horiguchi@nec.com, osalvador@suse.de,
-        Youquan Song <youquan.song@intel.com>, huangcun@sangfor.com.cn,
-        x86@kernel.org, linux-edac@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v2 3/3] x86/mce: Drop copyin special case for #MC
-Date:   Tue, 17 Aug 2021 17:29:42 -0700
-Message-Id: <20210818002942.1607544-4-tony.luck@intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210818002942.1607544-1-tony.luck@intel.com>
-References: <20210706190620.1290391-1-tony.luck@intel.com>
- <20210818002942.1607544-1-tony.luck@intel.com>
+        id S234870AbhHRAa7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 20:30:59 -0400
+Received: from authenticated-user (mx.cjr.nz [51.158.111.142])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pc)
+        by mx.cjr.nz (Postfix) with ESMTPSA id 3D024818D6;
+        Wed, 18 Aug 2021 00:30:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjr.nz; s=dkim;
+        t=1629246623;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OwKoMpKsJfYGuAd5+UrIcHs7Dv7p+8pKzbl1xu55fyE=;
+        b=nbJ9B3FXUUeED1pR2AuA+whx4RTm4MTvkBkk3TZRcgqwiSWtTlq5FuettUxXJN2b01es56
+        2PPUYEJ6pZtdSdA9dWjpKm6nvrMcYmZfH8LXq1X+OiPeoTfbilWfKyMsb8WhbFqPFJJ9f/
+        YJ/GBiVrJ8abARaqd5IAtuT0+zkDwK+Z2Jv8OOBM6l3GJA++rNNaxBseyGiCou9m5sBu1o
+        MTq/vgJfDT1h8uAX67xwLvMBSyN6LSyQzUE1xqbUKzndceHAQe60CZYRYGHKRINFN7y/GP
+        VNJpSB7Ryg+87uup72keukwqsQD7ENhF5GQFAoifNJzCFV+mKkqEaYVR5YY2UA==
+From:   Paulo Alcantara <pc@cjr.nz>
+To:     Ding Hui <dinghui@sangfor.com.cn>, sfrench@samba.org
+Cc:     linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-kernel@vger.kernel.org, Ding Hui <dinghui@sangfor.com.cn>
+Subject: Re: [PATCH] cifs: fix wrong release in sess_alloc_buffer() failed path
+In-Reply-To: <20210817145510.639-1-dinghui@sangfor.com.cn>
+References: <20210817145510.639-1-dinghui@sangfor.com.cn>
+Date:   Tue, 17 Aug 2021 21:30:17 -0300
+Message-ID: <87fsv7h9wm.fsf@cjr.nz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes to the iterator code to handle faults that are not on
-page boundaries mean that the special case for machine check
-during copy from user is no longer needed.
+Ding Hui <dinghui@sangfor.com.cn> writes:
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- arch/x86/lib/copy_user_64.S | 13 -------------
- 1 file changed, 13 deletions(-)
+> smb_buf is allocated by small_smb_init_no_tc(), and buf type is
+> CIFS_SMALL_BUFFER, so we should use cifs_small_buf_release() to
+> release it in failed path.
+>
+> Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
+> ---
+>  fs/cifs/sess.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/lib/copy_user_64.S b/arch/x86/lib/copy_user_64.S
-index 57b79c577496..2797e630b9b1 100644
---- a/arch/x86/lib/copy_user_64.S
-+++ b/arch/x86/lib/copy_user_64.S
-@@ -234,24 +234,11 @@ EXPORT_SYMBOL(copy_user_enhanced_fast_string)
-  */
- SYM_CODE_START_LOCAL(.Lcopy_user_handle_tail)
- 	movl %edx,%ecx
--	cmp $X86_TRAP_MC,%eax		/* check if X86_TRAP_MC */
--	je 3f
- 1:	rep movsb
- 2:	mov %ecx,%eax
- 	ASM_CLAC
- 	ret
- 
--	/*
--	 * Return zero to pretend that this copy succeeded. This
--	 * is counter-intuitive, but needed to prevent the code
--	 * in lib/iov_iter.c from retrying and running back into
--	 * the poison cache line again. The machine check handler
--	 * will ensure that a SIGBUS is sent to the task.
--	 */
--3:	xorl %eax,%eax
--	ASM_CLAC
--	ret
--
- 	_ASM_EXTABLE_CPY(1b, 2b)
- SYM_CODE_END(.Lcopy_user_handle_tail)
- 
--- 
-2.29.2
-
+Reviewed-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
