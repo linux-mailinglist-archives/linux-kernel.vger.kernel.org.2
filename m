@@ -2,115 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D523F0807
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB4C3F0802
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238951AbhHRP3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 11:29:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238837AbhHRP3H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 11:29:07 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 876B7C061764;
-        Wed, 18 Aug 2021 08:28:32 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id l11so2022989plk.6;
-        Wed, 18 Aug 2021 08:28:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dT+pL+9YhtUImpcGN/cKN8jzBfuzVCiFl8hmF6VGry0=;
-        b=hD3mxBhnDdODBl5zrCmekRuyAN49XWYkOcgChl79sRL1WCPUAuS5sDnhh8IeB80ab9
-         RhOqTw8wduv5KWLenIcV0a0/dMAHR+ewwJYm6xaZpKNA0rHrO7I9GxxJgBl9VgpeTqqT
-         pw0eQQ+s2z4wz11RAu+nyA4UCDz4ooPceIeLdoVYki8A56TaRrjcsNVYt1EVoLLesx/9
-         u6erXipMKMQkZa1UF3Ik568mL57hskgp8b4OMc/fkl5pT+C9wcE4kohy5Dtp/+hxFNr7
-         EIHPWWjl8EUmlN3dUD5RLsV6BCSwrmy9vRhhEx7+SgLTfkwFHqwd1OujaiSGaK91V8Hb
-         rn+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dT+pL+9YhtUImpcGN/cKN8jzBfuzVCiFl8hmF6VGry0=;
-        b=AtySR+V5gvPlj3XyXIXFgAUOyk51VvBWDymQdrvF8gAaVq2SuqzmU7fIKa8BXzOfCd
-         B5X1+cs1nEM6/icKPG2zLGFKSuNSyajaixkfy5B1gBk2dvJukccVbX2cfenzM6+2HO9c
-         n31dVhLewIwW4QM3vlXJn7fojEtToz07hPXN8h0bFfGMZbmtp+navo6EO7aV4oOGFZX+
-         1I2zCUhsPd9C7dFI32+oRVLtAk+auD4eM+IPzafackJXtfjAlsN5lfsDL7K4LA2r83MC
-         mp6ZTZXlq8BdYKCq7KiBV4yxMToxsRQCFJp5TAknU2DHPd8boAY29NjNov7Kvp1KMvS0
-         KEPQ==
-X-Gm-Message-State: AOAM532CYwBuiw1xLtI4D/Ff5wC9CtD+iZdIrJmFqoNG4Da5BSA+E4Mq
-        HwH8u/56Nr14TTFGxfXIlLCDrl27MxqPNQidfY8=
-X-Google-Smtp-Source: ABdhPJz37Yoh/AQvwctMhVs2WQyFUTaJPKB6tkwCcsPDUiRztdii+LOHXMP3q4VbsAXM9iNGkqkeUajI37fr6Cquw2E=
-X-Received: by 2002:a17:902:bb81:b0:12d:a7ec:3d85 with SMTP id
- m1-20020a170902bb8100b0012da7ec3d85mr7739762pls.17.1629300511960; Wed, 18 Aug
- 2021 08:28:31 -0700 (PDT)
+        id S239752AbhHRP2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 11:28:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53288 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239509AbhHRP2j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 11:28:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4C6F61056;
+        Wed, 18 Aug 2021 15:28:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629300484;
+        bh=6qIatRlyPwGZZZJdwRlRttF/BEGVNA0QhKepy/wJI3o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KjqNcnimhe4hoip2pxAOu60xIen1V94R7Z2FRA9FWPIk902tv9fET+pTABVivnF8a
+         Sb3JStdG0/DJFqPd30DrjlUxeDfV8df/0Y5Ui1iqH5Hrb8+OJPjlUyijP1yPJBlEkR
+         HYt3oWDC6ysehNDmBU96COWGwk20SFg2JGSv9JhI=
+Date:   Wed, 18 Aug 2021 17:28:01 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
+        "Rafael J . Wysocki" <rafael@kernel.org>, tiwai@suse.de,
+        linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com,
+        vkoul@kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [RFC PATCH 1/2] driver core: export
+ driver_deferred_probe_trigger()
+Message-ID: <YR0nAcC3wJd3b4Vu@kroah.com>
+References: <20210817190057.255264-1-pierre-louis.bossart@linux.intel.com>
+ <20210817190057.255264-2-pierre-louis.bossart@linux.intel.com>
+ <YRyeR6imvSwOOasQ@kroah.com>
+ <20210818115736.GA4177@sirena.org.uk>
+ <YR0Ji7DQXoo0z4vP@kroah.com>
+ <20210818134814.GF4177@sirena.org.uk>
+ <14235b8d-d375-6e2d-cae9-33adf9c48120@linux.intel.com>
 MIME-Version: 1.0
-References: <20210818151315.9505-1-daniel.thompson@linaro.org> <20210818151315.9505-2-daniel.thompson@linaro.org>
-In-Reply-To: <20210818151315.9505-2-daniel.thompson@linaro.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 18 Aug 2021 18:27:52 +0300
-Message-ID: <CAHp75VdDZJ+aUtx-A3y62WQ5+OtrS47Ts6PDe1bGQ0OcRRV+7Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2] Documentation: dmaengine: Add a description of what
- dmatest does
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Vinod Koul <vkoul@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        dmaengine <dmaengine@vger.kernel.org>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        patches@linaro.org, Haavard Skinnemoen <hskinnemoen@atmel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <14235b8d-d375-6e2d-cae9-33adf9c48120@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 6:15 PM Daniel Thompson
-<daniel.thompson@linaro.org> wrote:
->
-> Currently it can difficult to determine what dmatest does without
-> reading the source code. Let's add a description.
->
-> The description is taken mostly from the patch header of
-> commit 4a776f0aa922 ("dmatest: Simple DMA memcpy test client")
-> although it has been edited and updated slightly.
+On Wed, Aug 18, 2021 at 09:51:51AM -0500, Pierre-Louis Bossart wrote:
+> 
+> 
+> >>> The issue is that the driver core is using drivers completing probe as a
+> >>> proxy for resources becoming available.  That works most of the time
+> >>> because most probes are fully synchronous but it breaks down if a
+> >>> resource provider registers resources outside of probe, we might still
+> >>> be fine if system boot is still happening and something else probes but
+> >>> only through luck.
+> > 
+> >> The driver core is not using that as a proxy, that is up to the driver
+> >> itself or not.  All probe means is "yes, this driver binds to this
+> >> device, thank you!" for that specific bus/class type.  That's all, if
+> >> the driver needs to go off and do real work before it can properly
+> >> control the device, wonderful, have it go and do that async.
+> > 
+> > Right, which is what is happening here - but the deferred probe
+> > machinery in the core is reading more into the probe succeeding than it
+> > should.
+> 
+> I think Greg was referring to the use of the PROBE_PREFER_ASYNCHRONOUS
+> probe type. We tried just that and got a nice WARN_ON because we are
+> using request_module() to deal with HDaudio codecs. The details are in
+> [1] but the kernel code is unambiguous...
+> 
+>         /*
+> 	 * We don't allow synchronous module loading from async.  Module
+> 	 * init may invoke async_synchronize_full() which will end up
+> 	 * waiting for this task which already is waiting for the module
+> 	 * loading to complete, leading to a deadlock.
+> 	 */
+> 	WARN_ON_ONCE(wait && current_is_async());
+> 
+> 
+> The reason why we use a workqueue is because we are otherwise painted in
+> a corner by conflicting requirements.
+> 
+> a) we have to use request_module()
 
-> Signed-off-by: Haavard Skinnemoen <hskinnemoen@atmel.com>
+Wait, why?
 
-Not sure if you can use it like this (I mean the above SoB)
-Otherwise it's a good idea, thanks!
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+module loading is async, use auto-loading when the hardware/device is
+found and reported to userspace.  Forcing a module to load by the kernel
+is not always wise as the module is not always present in the filesystem
+at that point in time at boot (think modules on the filesystem, not in
+the initramfs).
 
-> Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
-> ---
->  Documentation/driver-api/dmaengine/dmatest.rst | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->
-> diff --git a/Documentation/driver-api/dmaengine/dmatest.rst b/Documentation/driver-api/dmaengine/dmatest.rst
-> index ee268d445d38..529cc2cbbb1b 100644
-> --- a/Documentation/driver-api/dmaengine/dmatest.rst
-> +++ b/Documentation/driver-api/dmaengine/dmatest.rst
-> @@ -6,6 +6,16 @@ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->
->  This small document introduces how to test DMA drivers using dmatest module.
->
-> +The dmatest module tests DMA memcpy, memset, XOR and RAID6 P+Q operations using
-> +various lengths and various offsets into the source and destination buffers. It
-> +will initialize both buffers with a repeatable pattern and verify that the DMA
-> +engine copies the requested region and nothing more. It will also verify that
-> +the bytes aren't swapped around, and that the source buffer isn't modified.
-> +
-> +The dmatest module can be configured to test a specific channel. It can also
-> +test multiple channels at the same time, and it can start multiple threads
-> +competing for the same channel.
-> +
->  .. note::
->    The test suite works only on the channels that have at least one
->    capability of the following: DMA_MEMCPY (memory-to-memory), DMA_MEMSET
-> --
-> 2.30.2
->
+Try fixing this issue and maybe it will resolve itself as you should be
+working async.
 
+thanks,
 
--- 
-With Best Regards,
-Andy Shevchenko
+greg k-h
