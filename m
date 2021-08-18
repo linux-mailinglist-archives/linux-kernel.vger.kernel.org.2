@@ -2,73 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A51F73F0B19
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 20:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0563F0B1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 20:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbhHRSex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 14:34:53 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:41852 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhHRSep (ORCPT
+        id S231743AbhHRSf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 14:35:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229965AbhHRSfZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 14:34:45 -0400
-Received: by mail-ot1-f47.google.com with SMTP id w22-20020a056830411600b0048bcf4c6bd9so5221354ott.8;
-        Wed, 18 Aug 2021 11:34:10 -0700 (PDT)
+        Wed, 18 Aug 2021 14:35:25 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1066CC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 11:34:50 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id c12so6806579ljr.5
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 11:34:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9FPUr4CdEhH6rDlKsFJKVG6weGYB4goKDrrriPqlf4c=;
+        b=UsJzOywq2ROkYLqA5CcdCp3s5r6bZjUJracBOkcBXm8YR8CmgShinAl0dyjPNTwbbT
+         pLDb2UCOiSdPY/cvSTX1YknA8EFSxroQjJnPWKbt2h+fImZ4nOwlqkbqm72M2M6EuU9i
+         yzeg9mXqlr6a1MUg4Os42/IodELJ+RDIOnnH8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Y6xxQgaQG8j61EQ4yuUC3VS5wpVpA7eoTa8n1oYpFBA=;
-        b=HmQ47sapG8g0tzfI3SO7k+bwBPl+dDizFrNsoygN4L7JaxnBA8aFpq+GkHAY5y9bOg
-         b1rI/eSeiLRACol/9Vd51vYLL9YaIU2ni4F9hjOK1J2FNkcshQV3VfLUD3xwowT77jvQ
-         e/KbApsnLbP3JJy9VDtX6lQ1WY+rr7gEgOCPR7FtTs9nmnk3WzwVFYXN3dtVmCtV7zcU
-         XeI7eY9J0IkA+kydOfV28gp6D0/dBIuGKkPlcu27sviUCe/N6rdu5trdVkKP//iNRyfn
-         7kNRmaFU7ttknXaZYTnlfPlNAKBFIcfo3t8LuxpaKzzEW5hv99i2PDuhDOhMmvilWQ27
-         /NKQ==
-X-Gm-Message-State: AOAM533hhk8BHw8bDgNDKEakpjMRd9xuNk9Vnl1yME7n4NTVTyZRvA0U
-        MDFLk726l3ARjD+H+Tb8sg==
-X-Google-Smtp-Source: ABdhPJyl9zeX3iSD4HzkmMLjuIXAFKX1KCG7J77Vc/AsRWwUSlykYRkWdOi1XrZCcuzZ4YSd/mm5lw==
-X-Received: by 2002:a05:6830:411a:: with SMTP id w26mr8095722ott.127.1629311650017;
-        Wed, 18 Aug 2021 11:34:10 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j70sm169666otj.38.2021.08.18.11.34.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 11:34:09 -0700 (PDT)
-Received: (nullmailer pid 2880609 invoked by uid 1000);
-        Wed, 18 Aug 2021 18:34:08 -0000
-Date:   Wed, 18 Aug 2021 13:34:08 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        op-tee@lists.trustedfirmware.org,
-        Etienne Carriere <etienne.carriere@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        devicetree@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Jerome Forissier <jerome@forissier.org>,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 2/6] dt-bindings: arm: optee: add interrupt property
-Message-ID: <YR1SoO/GRao00Ugg@robh.at.kernel.org>
-References: <20210818101849.602257-1-jens.wiklander@linaro.org>
- <20210818101849.602257-3-jens.wiklander@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9FPUr4CdEhH6rDlKsFJKVG6weGYB4goKDrrriPqlf4c=;
+        b=B9imQ6M5rDdEy7rzZq87hsk/kQCBC9lLyhTFvGKuj5ueuwd8v4ECRGzW3ydo1LdTqD
+         kzERBKZD4kSbda8Xh/DVqxfhuC/nm9auCRY10rAIs80x/Fjm0Jj90wlAdim7uRg7B5Eu
+         zPuB/iqkBwtfICPm0gDbv3I0sVemhB4qasY/UbplQb4K2v46zIVkrJcjrHZQMDzUJDPk
+         1h80Mf3SkRoBgSGYdLKzKKLSDQDPtlW3m/0HxvFgoT+GAKygO4oncrDZNe10u8C1HYlU
+         DUf7h9Oyh1hzOMST6mCeVnldDIJyCSTyleGQVoDcTJNOAnE/MlHgUGJ1v39+PrAP9b9p
+         IC9w==
+X-Gm-Message-State: AOAM533OJQFCbG99MMQYJteVmkp0Jod96aEFQIddBZjNHrEjHUu+PBNg
+        Ye7F4h5n+ikkG2gNtBUPhL2Qd19Jll3drXPr
+X-Google-Smtp-Source: ABdhPJyxlLriVPYMAc5/99GUXBbpyD7ij7z0dkXBoi2ipfXrprUk9HG0z71QxcMFuz++2pea0gyriw==
+X-Received: by 2002:a2e:870f:: with SMTP id m15mr9055634lji.169.1629311688144;
+        Wed, 18 Aug 2021 11:34:48 -0700 (PDT)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
+        by smtp.gmail.com with ESMTPSA id y10sm67940ljj.10.2021.08.18.11.34.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Aug 2021 11:34:47 -0700 (PDT)
+Received: by mail-lj1-f179.google.com with SMTP id n7so6893296ljq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 11:34:47 -0700 (PDT)
+X-Received: by 2002:a2e:944c:: with SMTP id o12mr8897833ljh.411.1629311686896;
+ Wed, 18 Aug 2021 11:34:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818101849.602257-3-jens.wiklander@linaro.org>
+References: <20210818133400.830078-1-mszeredi@redhat.com> <20210818133400.830078-3-mszeredi@redhat.com>
+In-Reply-To: <20210818133400.830078-3-mszeredi@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 18 Aug 2021 11:34:31 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wga+3G+mR-UyQ=pwqN2iS04k-O61bssvzyVk+vkdZkd1Q@mail.gmail.com>
+Message-ID: <CAHk-=wga+3G+mR-UyQ=pwqN2iS04k-O61bssvzyVk+vkdZkd1Q@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] ovl: enable RCU'd ->get_acl()
+To:     Miklos Szeredi <mszeredi@redhat.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-unionfs@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        garyhuang <zjh.20052005@163.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Aug 2021 12:18:45 +0200, Jens Wiklander wrote:
-> Adds an optional interrupt property to the optee binding.
-> 
-> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-> ---
->  .../devicetree/bindings/arm/firmware/linaro,optee-tz.yaml  | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
+On Wed, Aug 18, 2021 at 6:34 AM Miklos Szeredi <mszeredi@redhat.com> wrote:
+>
+>  struct posix_acl *get_cached_acl_rcu(struct inode *inode, int type)
+>  {
+> -       return rcu_dereference(*acl_by_type(inode, type));
+> +       struct posix_acl *acl = rcu_dereference(*acl_by_type(inode, type));
+> +
+> +       if (acl == ACL_DONT_CACHE)
+> +               acl = inode->i_op->get_acl(inode, type, LOOKUP_RCU);
+> +
+> +       return acl;
+>  }
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+What? No.
+
+You just made get_cached_acl_rcu() return ERR_PTR(-EINVAL) for most filesystems.
+
+So now you've changed the behavior of get_cached_acl_rcu() ENTIRELY.
+
+It used to return either
+ (a) the ACL
+ (b) NULL
+ (c) ACL_DONT_CACHE/ACL_NOT_CACHED
+
+but now you've changed that (c) case to "ACL_NOT_CACHED or random error value".
+
+You can't just mix these kinds of entirely different return values like that.
+
+So no, this is not at all acceptable.
+
+I would suggest:
+
+ (a) make the first patch actually test explicitly for LOOKUP_RCU, so
+that it's clear to the filesystems what is going on.
+
+     So instead of that pattern of
+
+        if (flags)
+                return ERR_PTR(-EINVAL);
+
+     I'd suggest using
+
+        if (flags & LOOKUP_RCU)
+                return ERR_PTR(-ECHILD);
+
+   so that it actually matches what lookup does for the "I can't do
+this under RCU", and so that any reader of the code understands what
+"flags" is all about.
+
+And then
+
+ (b) make the get_cached_acl_rcu() case handle errors _properly_
+instead of mixing the special ACL cache markers with error returns.
+
+     So instead of
+
+        if (acl == ACL_DONT_CACHE)
+                acl = inode->i_op->get_acl(inode, type, LOOKUP_RCU);
+
+     maybe something more along the lines of
+
+        if (acl == ACL_DONT_CACHE) {
+                struct posix_acl *lookup_acl;
+                lookup_acl = inode->i_op->get_acl(inode, type, LOOKUP_RCU);
+                if (!IS_ERR(lookup_acl))
+                        acl = lookup_acl;
+        }
+
+     or whatever.
+
+I disagree with Al that a "bool" would be better. I think LOOKUP_RCU
+is good documentation, and consistent with lookup, but it really needs
+to be *consistent*.  Thus that
+
+        if (flags & LOOKUP_RCU)
+                return ERR_PTR(-ECHILD);
+
+pattern, not some "test underscibed flags, return -EINVAL" pattern
+that looks entirely nonsensical.
+
+               Linus
