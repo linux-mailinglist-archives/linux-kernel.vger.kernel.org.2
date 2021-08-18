@@ -2,131 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6193E3EFC44
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F18DC3EFCA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238324AbhHRGX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 02:23:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48138 "EHLO
+        id S238493AbhHRG13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 02:27:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237947AbhHRGX4 (ORCPT
+        with ESMTP id S240245AbhHRG1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 02:23:56 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B2EC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:23:21 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id b15so2670966ejg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:23:21 -0700 (PDT)
+        Wed, 18 Aug 2021 02:27:15 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4029BC061224
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:26:07 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id c12so3080360ljr.5
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:26:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OtuTHgk1vpqukCNNGvb6/1jnVEMLRfbzK5iP4DPgChc=;
-        b=USJwsT0QGrIMRQazK6too1bYjc1/Jr6MZpIJhiprZhMs9JWgurShMOdabEiA68Lp2N
-         MPWIHF6t9cOMkm9A/e+p9Xlslq+EJcFSCiO45bK5aX5+E5LcclT1ymONdwm93OMPT3Tc
-         0OgV0CLW2VIQ7gvdVdfLPTzXTc2vJAck3jCRHOxbRS7FaekfGd0j2fqAmDqk8lYFP5Xv
-         MIsdkA3YtTNVFBkRVsB+zc5NxKEl7TREkRLYk2loK45b2r0dzFv0l1zEBaRvmq+GQgIP
-         YkvqkZ7Zi3chTbay3j3YuMaTXZlFPUdci50JXGhg3ZPLFvv4q59boXGSuD8uYg4Ov3tA
-         Jndw==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0niOOKpLOqJWr+G2N4qsyCfMLmKR4C8+b8TBbZbKaU8=;
+        b=Et8efFBgzM1OWhTpqkovSGInq7BYnqTenDPJF5Sfp/8L2BDfO3pcqtdv6gK9Xf6rVi
+         bPlFqq3u2Mlnv1Oxq7zttZXNhuIFaIoCKH5Il61HHre6WKqQXBgZ2rtyo6Ql01WiAgAf
+         iqwYaadnd/cBDGdzYU20uWob0rjtS561A0+w4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OtuTHgk1vpqukCNNGvb6/1jnVEMLRfbzK5iP4DPgChc=;
-        b=fq1aiTN7vsISW+K/xuOJskzuxhpQklE+nvPGkADNsMQe83Z2fIJMmZwOS2VlxodknC
-         D/eL79cldlDr6W6UeUU9SEFyPRVN3683VY8yZ5T+UFMPTO/LL4dw28doTGeWkDLx60Kp
-         oKGzTbkc/EpE82fKpG6qqbau+k6B4z4ZE4nv4vX+EOW/Sa0M2gxFgcBqudzn42/V1ogj
-         Uo9ncjlg6uabFSdNbwypDndQu7uEaQQ8NofUIgpcf82ic9jgQmz2xtK2CyalM1m0/iWp
-         lIVxlE6t+7LwqZxWdk6VTYV8+G8/RTSmobO3Q3K4mq+OM/nYMGWpTL1SUOXdRuFXO7OC
-         txYQ==
-X-Gm-Message-State: AOAM531HQgm5Qm/IVXBk74zuRnykcyyQ0pqMZENMycK3qFYXYdpZWghO
-        XaptKQi9HleQ+aL8bE53eIs=
-X-Google-Smtp-Source: ABdhPJxjfwat/n+QRrqqUm5kAjo8tQ+A40RJTEcBVq/E0MOXa9s+GDtTlSt9MEmg/WQhabWfhIGTgQ==
-X-Received: by 2002:a17:907:2cf1:: with SMTP id hz17mr2892026ejc.438.1629267800444;
-        Tue, 17 Aug 2021 23:23:20 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
-        by smtp.gmail.com with ESMTPSA id e22sm2054955eds.45.2021.08.17.23.23.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 23:23:19 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Joe Perches <joe@perches.com>, Greg KH <gregkh@linuxfoundation.org>
-Cc:     Michael Straube <straube.linux@gmail.com>,
-        Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: refactor rtw_is_cckrates{only}_included()
-Date:   Wed, 18 Aug 2021 08:23:18 +0200
-Message-ID: <2509261.CYLKgzzBkz@localhost.localdomain>
-In-Reply-To: <YRwEyrSLTPl/KY9t@kroah.com>
-References: <20210816193125.15700-1-straube.linux@gmail.com> <11a09af791c5453175a6bdac1c51bd9fcb0685bd.camel@perches.com> <YRwEyrSLTPl/KY9t@kroah.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0niOOKpLOqJWr+G2N4qsyCfMLmKR4C8+b8TBbZbKaU8=;
+        b=cTajntYZmX6vZU+etHOUqIRr/l0eiFsxj3VAEYQSf8aGpG3pkHXMrSKa/uvHRdviwl
+         W/8R5XSw2OnrLr9jcIxmsgnXnXweIu3K15ksarSEn6shEIPNQt4BENOcTCa5WF+uE0Xt
+         uasSxcP4GWbK0qL5cd5roG4s7Pm4q5BxiA2ZFv9iRRC4vdmVQ4BI7qw6y3AXdXkal6o5
+         FA5kQjCTgEYyrKi+nopVG3ZGaeLvMfKMYqMSXEomCtsc10lknubKEWl4sP+WUJih8OJ7
+         Se6J/QHsBEkzpXWSXyUEhaXFU2IN8JzUtVRiGlO6lfPFF5bGdFJj5A4SFsc2jfNHvtky
+         c0Qw==
+X-Gm-Message-State: AOAM530d3YZ0NkYtgqK0lEVXC0DayS7gATSwWmKTK8A+eLWyZjb8WohG
+        yZjZRO49jL/Bwyh80Od5tuhVq01uww5wbt7pgVOWtA==
+X-Google-Smtp-Source: ABdhPJycOOwNmb0zD73kqTDlXcUFSNdJdOw1Y3p1pB/PjGtP3t4iluned8prH8xjVYxNIs08EqJIS54IEOaxSu1nOPY=
+X-Received: by 2002:a2e:7d0e:: with SMTP id y14mr6438392ljc.251.1629267965676;
+ Tue, 17 Aug 2021 23:26:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="iso-8859-1"
+References: <20210710081722.1828-1-zhiyong.tao@mediatek.com>
+ <20210710081722.1828-2-zhiyong.tao@mediatek.com> <CAGXv+5GXg0RuOQkh4vaRmcLpehZiXnEUXBvEaObiatAa1sXvaA@mail.gmail.com>
+ <1626940470.29611.9.camel@mhfsdcap03> <CAGXv+5F_-W4aNt0WVSDBGLo_t8orNUq59GMKk_4xVr+hMb9Ctg@mail.gmail.com>
+ <07388dac4e25e0f260725e8f80ba099d5aa80949.camel@mediatek.com>
+ <CAGXv+5EagmhYYpri+nzo6WgGz8A=oiU3Vy+2AVjho=eo6Z+DLw@mail.gmail.com>
+ <CACRpkdZ4k9Km3vBtdN6AnBM89c4355GtPMzCQ0_YHaTb4V5cKA@mail.gmail.com>
+ <CAGXv+5HohMwU8jow5QXO5MK1tO+u=5YsfhArBWCP4Dgm1Q8igg@mail.gmail.com>
+ <4fd12d5c53f6492e5fa3ba94a78b9a149f5b6ed9.camel@mediatek.com>
+ <CAGXv+5GCuNK=-z9VAOjkpJdZLUSZFPfUsQ09m1FhfTsbCYLLRw@mail.gmail.com>
+ <CACRpkdbZKh8cqqiDRUik6Ooo33e+feGwYsLjcLRvBQnT3x5M3A@mail.gmail.com>
+ <a7c8ab68ac3513865698cde27e665bdd554f459e.camel@mediatek.com>
+ <CAGXv+5FtL2zaSWx4tUymx6mpCSb5dXG4XNWM9AJL+b6Ok3dxMg@mail.gmail.com>
+ <d40f6d5fd26aedb13e7a393202e5794b1893ecf8.camel@mediatek.com> <CACRpkdYkwXr76Kq5WYdz=1KkLTpaByAL1vJFo8V+2mncqs8-3Q@mail.gmail.com>
+In-Reply-To: <CACRpkdYkwXr76Kq5WYdz=1KkLTpaByAL1vJFo8V+2mncqs8-3Q@mail.gmail.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Wed, 18 Aug 2021 14:25:54 +0800
+Message-ID: <CAGXv+5EUAVFJd7VZsDgpOK_6fhs12ztwKHioghq5ZQHzFKY89w@mail.gmail.com>
+Subject: Re: [PATCH v10 1/2] dt-bindings: pinctrl: mt8195: add rsel define
+To:     "zhiyong.tao" <zhiyong.tao@mediatek.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        hui.liu@mediatek.com, Eddie Huang <eddie.huang@mediatek.com>,
+        Light Hsieh <light.hsieh@mediatek.com>,
+        Biao Huang <biao.huang@mediatek.com>,
+        Hongzhou Yang <hongzhou.yang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, August 17, 2021 8:49:46 PM CEST Greg KH wrote:
-> On Tue, Aug 17, 2021 at 11:36:09AM -0700, Joe Perches wrote:
-> > On Tue, 2021-08-17 at 19:57 +0200, Greg KH wrote:
-> > > On Mon, Aug 16, 2021 at 09:31:25PM +0200, Michael Straube wrote:
-> > > > Refactor functions rtw_is_cckrates_included() and
-> > > > rtw_is_cckratesonly_included(). Add new helper function rtw_is_cckrate()
-> > > > that allows to make the code more compact. Improves readability and
-> > > > slightly reduces object file size. Change the return type to bool to
-> > > > reflect that the functions return boolean values.
-> > []
-> > > > diff --git a/drivers/staging/r8188eu/core/rtw_ieee80211.c b/drivers/staging/r8188eu/core/rtw_ieee80211.c
-> > []
-> > > > +bool rtw_is_cckratesonly_included(u8 *rate)
-> > > >  {
-> > > > -	u32 i = 0;
-> > > > +	u8 r;
-> > > >  
-> > > > 
-> > > > -	while (rate[i] != 0) {
-> > > > -		if  ((((rate[i]) & 0x7f) != 2) && (((rate[i]) & 0x7f) != 4) &&
-> > > > -		     (((rate[i]) & 0x7f) != 11)  && (((rate[i]) & 0x7f) != 22))
-> > > > +	while ((r = *rate++)) {
-> > > 
-> > > Ick, no.
-> > > 
-> > > While it might be fun to play with pointers like this, trying to
-> > > determine the precedence issues involved with reading from, and then
-> > > incrementing the pointer like this is crazy.
-> > > 
-> > > The original was obvious as to how it was walking through the array.
-> > 
-> > It's sad to believe *ptr++ is not obvious to you as it's very commonly
-> > used in the kernel sources (over 10,000 instances).
-> 
-> There's lots of sad things in life :(
-> 
-Dear Greg,
+On Wed, Aug 18, 2021 at 4:09 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Tue, Aug 17, 2021 at 9:51 AM zhiyong.tao <zhiyong.tao@mediatek.com> wrote:
+>
+> > In one chip, If GPIO is different, the MTXXXX_PULL_UP_RSEL_001 may
+> > means different actual bias resistance setting.
+> >
+> > For example,
+> >
+> > KPROW IO
+> > Paramters       Descriptions                   Min      Typ     Max
+> >  UNIT
+> > Rpd     Input pull-down resistance      40      75      190     Kohm
+> > Rpu     Input pull-up resistance        40      75      190     Kohm
+> > Rpd     Input pull-down resistance      0.8     1.6     2       Kohm
+> > Rpu     Input pull-up resistance        0.8     1.6     2       Kohm
+>
+> This is exactly why we should try to use SI units in the device tree.
+> I assume that the software can eventually configure which resistance
+> it gets?
+>
+> The electronics people will say make sure it is pulled down by around
+> 80 kOhm, they can put that on the device tree and your code can
+> say, "hm 40 < 80 < 190 this is OK" and let the value pass.
+>
+> We do not define these exact semantics, it is up to the driver code
+> to decide what to do with the Ohm value 80000 in this case, but
+> it makes perfect sent for me to let it pass and fail if someone
+> for example requests 20 kOhm, or at least print a helpful warning:
+>
+> dev_warn(dev, "the requested resistance %d is out of range, supported
+> range %d to %d kOhm\n",
+>                  val, low, high);
+>
+> This is what makes the SI units really helpful for people writing device
+> trees: solve real integration tasks and make it easy to do the right thing.
 
-Please reconsider this issue, I mean it. Let me explain why...
+I think this makes a lot of sense. The driver could select the closest
+setting. And from what Zhiyong mentioned offline, the resistor values
+aren't exact as specified in the datasheet. I suppose this is expected
+with any electronics. So the hardware integration will say to pull up
+or down by some value, and the driver will do its best to fulfill that
+request. That precludes DT schema checking for the values used, but I
+think that is a good compromise.
 
-Obviously neither Joe or all the people who knows how much you've given to
-Linux during these latest two decades (or is it more?) believes that you have 
-any problem with operator precedence :-)
-
-Said that, since operator precedence is one of the first topic that every developer
-learn in a course on C and that expressions like *ptr++ are used everywhere in
-the kernel you are sending a dangerous message...
-
-It looks like you don't trust people here to be able to do anything more than 
-trivial clean-ups. If someone here at linux-staging is not able to understand 
-the precedence of operators, please stand up and speak!
-
-We here at linux-staging are not class B developers (compared to A class 
-developers of other subsystems). For sure, most of us are newcomers with
-less experience than other developers who don't choose to work with
-drivers/staging, but you should not prevent us from getting experience and 
-using common techniques that are perfectly fine in other areas of Linux.
-
-Thanks for your attention and your precious time,
-
-Fabio
- 
+Zhiyong also mentioned that some of their downstream integrators might
+not be able to deal with actual values, and would prefer symbols tied
+to specific RSEL values. I think that would be doable together using
+some _magic_ values, but I would prefer not to if it were avoidable.
 
 
-
+Regards
+ChenYu
