@@ -2,81 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2683F0DFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 00:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1DE3F0E1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 00:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234436AbhHRWTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 18:19:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48186 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234537AbhHRWTR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 18:19:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9B766103A;
-        Wed, 18 Aug 2021 22:18:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629325122;
-        bh=KOCNCGojM0O4SwxHOYxviS4ZUt0Y0JF+AQd++GCqAlI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=SFp6eQ+6hDi/yXdwmyXgKyDYTQ9ioFLmFf+oqJ9DITCzQey1WzJm72NBrJ7U1RyW3
-         E+ZUY+m10ivFV+wzX0LtnY5YrlQlP+HdTUFRhuS2AflluOog4FQmGxZ24AYZjtXU3g
-         sab8Xd/qC5/C8fTgOHLzSGbev52KgVON6AE9oxJV+vaOuRmtlMkf7OBMCud/TIDbLK
-         JJj5SPKneo0Q57QnXbBjj+ZojpSbke4PvXGdaFL551kwNyOqtTbcmKVou01k+9raPQ
-         wW4tcAPxDCtd5/dFT23V4jjn1ETRSpD13NzijwGjriLpBCESnq0VlbFty3a/rDFo3m
-         6Wg4lbsSeqtWw==
-Date:   Wed, 18 Aug 2021 17:21:46 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] fs/ntfs3: Fix fall-through warnings for Clang
-Message-ID: <20210818222146.GA312859@embeddedor>
+        id S234527AbhHRWXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 18:23:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232456AbhHRWXc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 18:23:32 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F2D0C061764;
+        Wed, 18 Aug 2021 15:22:57 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CA93D2A8;
+        Thu, 19 Aug 2021 00:22:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1629325374;
+        bh=iglJOCDJskdnnATm9m1oJieHqRlccWM7jKQUDh9x17c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R/9HwdTBDj3/4PyAXUw9w+Zk3CxuQc6r4fQcycUvpdcXX/BmOjYF4q+FVxz/gmQUu
+         VUVmjforztb5UhQc0dhjc3iRXlt6otxNJeCin+LoGRBlm6nK7kBuyxbYvV/GhqP+zq
+         F/vkqxC/f6djlwaYleF7sfQAcAU8AN0sD+wo8hWI=
+Date:   Thu, 19 Aug 2021 01:22:45 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] media: uvcvideo: Quirk for hardware with invalid sof
+Message-ID: <YR2INUYJSZCnBiC0@pendragon.ideasonboard.com>
+References: <20210818203502.269889-1-ribalda@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+In-Reply-To: <20210818203502.269889-1-ribalda@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following fallthrough warnings:
+Hi Ricardo,
 
-fs/ntfs3/inode.c:1792:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-fs/ntfs3/index.c:178:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+Thank you for the patch.
 
-This helps with the ongoing efforts to globally enable
--Wimplicit-fallthrough for Clang.
+On Wed, Aug 18, 2021 at 10:35:02PM +0200, Ricardo Ribalda wrote:
+> The hardware timestamping code has the assumption than the device_sof
+> and the host_sof run at the same frequency (1 KHz).
+> 
+> Unfortunately, this is not the case for all the hardware. Add a quirk to
+> support such hardware.
+> 
+> Note on how to identify such hardware:
+> When running with "yavta -c /dev/videoX" Look for periodic jumps of the
+> fps. Eg:
+> 
+> 30 (6) [-] none 30 614400 B 21.245557 21.395214 34.133 fps ts mono/SoE
+> 31 (7) [-] none 31 614400 B 21.275327 21.427246 33.591 fps ts mono/SoE
+> 32 (0) [-] none 32 614400 B 21.304739 21.459256 34.000 fps ts mono/SoE
+> 33 (1) [-] none 33 614400 B 21.334324 21.495274 33.801 fps ts mono/SoE
+> 34 (2) [-] none 34 614400 B 21.529237 21.527297 5.130 fps ts mono/SoE
+> 35 (3) [-] none 35 614400 B 21.649416 21.559306 8.321 fps ts mono/SoE
+> 36 (4) [-] none 36 614400 B 21.678789 21.595320 34.045 fps ts mono/SoE
+> ...
+> 99 (3) [-] none 99 614400 B 23.542226 23.696352 33.541 fps ts mono/SoE
+> 100 (4) [-] none 100 614400 B 23.571578 23.728404 34.069 fps ts mono/SoE
+> 101 (5) [-] none 101 614400 B 23.601425 23.760420 33.504 fps ts mono/SoE
+> 102 (6) [-] none 102 614400 B 23.798324 23.796428 5.079 fps ts mono/SoE
+> 103 (7) [-] none 103 614400 B 23.916271 23.828450 8.478 fps ts mono/SoE
+> 104 (0) [-] none 104 614400 B 23.945720 23.860479 33.957 fps ts mono/SoE
+> 
+> They happen because the delta_sof calculated at
+> uvc_video_clock_host_sof(), wraps periodically, as both clocks drift.
 
-Link: https://github.com/KSPP/linux/issues/115
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- fs/ntfs3/index.c | 1 +
- fs/ntfs3/inode.c | 1 +
- 2 files changed, 2 insertions(+)
+That looks plain wrong. First of all, the whole purpose of the SOF clock
+is to have a shared clock between the host and the device. It makes no
+sense for a device to have a free-running "SOF" clock. Given the log
+above, the issue occurs so quickly that it doesn't seem to be a mere
+drift of a free running clock. Could you investigate this more carefully
+?
 
-diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
-index 6aa9540ece47..76eae60b7fce 100644
---- a/fs/ntfs3/index.c
-+++ b/fs/ntfs3/index.c
-@@ -175,6 +175,7 @@ static inline NTFS_CMP_FUNC get_cmp_func(const struct INDEX_ROOT *root)
- 		default:
- 			break;
- 		}
-+		break;
- 	default:
- 		break;
- 	}
-diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
-index bf51e294432e..a573c6e98cb8 100644
---- a/fs/ntfs3/inode.c
-+++ b/fs/ntfs3/inode.c
-@@ -1789,6 +1789,7 @@ int ntfs_unlink_inode(struct inode *dir, const struct dentry *dentry)
- 	switch (err) {
- 	case 0:
- 		drop_nlink(inode);
-+		break;
- 	case -ENOTEMPTY:
- 	case -ENOSPC:
- 	case -EROFS:
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> ---
+> v2: Fix typo in frequency
+> 
+>  drivers/media/usb/uvc/uvc_driver.c |  9 +++++++++
+>  drivers/media/usb/uvc/uvc_video.c  | 11 +++++++++--
+>  drivers/media/usb/uvc/uvcvideo.h   |  2 ++
+>  3 files changed, 20 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+> index 9a791d8ef200..d1e6cba10b15 100644
+> --- a/drivers/media/usb/uvc/uvc_driver.c
+> +++ b/drivers/media/usb/uvc/uvc_driver.c
+> @@ -2771,6 +2771,15 @@ static const struct usb_device_id uvc_ids[] = {
+>  	  .bInterfaceSubClass	= 1,
+>  	  .bInterfaceProtocol	= 0,
+>  	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRLS_ON_INIT) },
+> +	/* Logitech HD Pro Webcam C922 */
+> +	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
+> +				| USB_DEVICE_ID_MATCH_INT_INFO,
+> +	  .idVendor		= 0x046d,
+> +	  .idProduct		= 0x085c,
+> +	  .bInterfaceClass	= USB_CLASS_VIDEO,
+> +	  .bInterfaceSubClass	= 1,
+> +	  .bInterfaceProtocol	= 0,
+> +	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_INVALID_DEVICE_SOF) },
+>  	/* Chicony CNF7129 (Asus EEE 100HE) */
+>  	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
+>  				| USB_DEVICE_ID_MATCH_INT_INFO,
+> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+> index 6d0e474671a2..760ab015cf9c 100644
+> --- a/drivers/media/usb/uvc/uvc_video.c
+> +++ b/drivers/media/usb/uvc/uvc_video.c
+> @@ -518,13 +518,20 @@ uvc_video_clock_decode(struct uvc_streaming *stream, struct uvc_buffer *buf,
+>  	/* To limit the amount of data, drop SCRs with an SOF identical to the
+>  	 * previous one.
+>  	 */
+> -	dev_sof = get_unaligned_le16(&data[header_size - 2]);
+> +	if (stream->dev->quirks & UVC_QUIRK_INVALID_DEVICE_SOF)
+> +		dev_sof = usb_get_current_frame_number(stream->dev->udev);
+> +	else
+> +		dev_sof = get_unaligned_le16(&data[header_size - 2]);
+> +
+>  	if (dev_sof == stream->clock.last_sof)
+>  		return;
+>  
+>  	stream->clock.last_sof = dev_sof;
+>  
+> -	host_sof = usb_get_current_frame_number(stream->dev->udev);
+> +	if (stream->dev->quirks & UVC_QUIRK_INVALID_DEVICE_SOF)
+> +		host_sof = dev_sof;
+> +	else
+> +		host_sof = usb_get_current_frame_number(stream->dev->udev);
+>  	time = uvc_video_get_time();
+>  
+>  	/* The UVC specification allows device implementations that can't obtain
+> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> index cce5e38133cd..89d909661915 100644
+> --- a/drivers/media/usb/uvc/uvcvideo.h
+> +++ b/drivers/media/usb/uvc/uvcvideo.h
+> @@ -209,6 +209,8 @@
+>  #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT	0x00000400
+>  #define UVC_QUIRK_FORCE_Y8		0x00000800
+>  #define UVC_QUIRK_FORCE_BPP		0x00001000
+> +#define UVC_QUIRK_INVALID_DEVICE_SOF	0x00002000
+> +
+>  
+>  /* Format flags */
+>  #define UVC_FMT_FLAG_COMPRESSED		0x00000001
+
 -- 
-2.27.0
+Regards,
 
+Laurent Pinchart
