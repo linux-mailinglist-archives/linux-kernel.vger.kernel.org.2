@@ -2,274 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6EE3F0C0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 21:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC29F3F0C26
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 21:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233400AbhHRTsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 15:48:35 -0400
-Received: from mga06.intel.com ([134.134.136.31]:56145 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232969AbhHRTse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 15:48:34 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="277434683"
-X-IronPort-AV: E=Sophos;i="5.84,332,1620716400"; 
-   d="scan'208";a="277434683"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 12:47:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,332,1620716400"; 
-   d="scan'208";a="488858711"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga008.fm.intel.com with ESMTP; 18 Aug 2021 12:47:58 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Wed, 18 Aug 2021 12:47:58 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10 via Frontend Transport; Wed, 18 Aug 2021 12:47:58 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.177)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.10; Wed, 18 Aug 2021 12:47:57 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WlCZ8OCR/oOzPUvemBBNQR1M293M8l7SgABKKV9RvHYYoj1h0/ChkiF/jxmzIoH2WtCWrqCfF8+I7EAocP3CoF8UkSlc1NlzwHftMg0pEgBv0xkzO/vsNwxs0s4KXP7fxVeSU6qFoRX18/AxQsI8GI7bk9WNI0M6vXW3WikUWcA3s+T9q1HnDC/IRU8+rvdiL0l+FhylBH9t0y5S6h1IynHXuJZ8q1dnn8xNV8AKRTXiC9frm05RPNsuoOIQDPcqgqsq9WaN2WlBYK0zMrzgjlyxMIHiCMR9bKpZp0NdtRp9MrMBuPDvOT/JiX7pVuGy9sS4O9PcBx06dsOnmP8uUQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z8vwUxatHvebG/FEP1RbcPTiBSRJvjOf3feOYOXvNUI=;
- b=NcM8+CrisaEB9WS9vCz0SjfXmG1wjVXnMigbuyCgEZjbfL6J+wCnMjnZhVRIa+2BOJVTyClu7+BC2uWKujv2s3/pQ/tsUHCu/bO702VEjcxtN80GjXBLpUwAdVMhcf7y333CkqzKApOH2JFX9HwZ7rM5VvMFJ/hSpBxZAbQujFdKFmJntKRyKUAxBeMerJ/Io34dof097YTUtxPNVDL4emK/1nNcNHag3ujb+eTlJz5yELPJZZPAM4IgHpRtJ1IIjdJapdcfreWEnAmXwzJ2ndYhdl3ew6rozXVKxV/eer9Y4V8Yhh7kJCy1YinD+kLUIHtvDkgc476etoShbRh1lQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z8vwUxatHvebG/FEP1RbcPTiBSRJvjOf3feOYOXvNUI=;
- b=W6DgCv8O9ZfnYmRZIljTeHsxF30/dN9qAGwfp62xymO44zv2E4uNbtq1+0wOcszcbpxhc8j/EYWKZzGC68SxTmOM4W/SrPXeKDMr4vSyt6BQotFhENw6GlEiishzUrqk62trn1FXT7VXy69IGusZ5Jh64J0iJEMvuakyfcBVOvQ=
-Received: from PH0PR11MB4855.namprd11.prod.outlook.com (2603:10b6:510:41::12)
- by PH0PR11MB5109.namprd11.prod.outlook.com (2603:10b6:510:3e::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Wed, 18 Aug
- 2021 19:47:49 +0000
-Received: from PH0PR11MB4855.namprd11.prod.outlook.com
- ([fe80::6c9b:b5e4:1fda:78b8]) by PH0PR11MB4855.namprd11.prod.outlook.com
- ([fe80::6c9b:b5e4:1fda:78b8%5]) with mapi id 15.20.4415.024; Wed, 18 Aug 2021
- 19:47:49 +0000
-From:   "Bae, Chang Seok" <chang.seok.bae@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-CC:     "Lutomirski, Andy" <luto@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Macieira, Thiago" <thiago.macieira@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to
- protect dynamic user state
-Thread-Topic: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to
- protect dynamic user state
-Thread-Index: AQHXhVRyjpE4OXS+e0aKA8ZshCCgeqt5kHqAgAA4tAA=
-Date:   Wed, 18 Aug 2021 19:47:49 +0000
-Message-ID: <7012BF86-4D1E-41C9-BDB7-70E8F4952144@intel.com>
-References: <20210730145957.7927-1-chang.seok.bae@intel.com>
- <20210730145957.7927-13-chang.seok.bae@intel.com> <YR00U19168BGoRB9@zn.tnic>
-In-Reply-To: <YR00U19168BGoRB9@zn.tnic>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.7)
-authentication-results: alien8.de; dkim=none (message not signed)
- header.d=none;alien8.de; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c0630855-9b57-49cd-8ddc-08d962810f5c
-x-ms-traffictypediagnostic: PH0PR11MB5109:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PH0PR11MB5109C50F78BA5DF085A37226D8FF9@PH0PR11MB5109.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2276;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +0nm6Uylfeh9YlaMOEZdwzBgeYNtG76jVHeNddgBrDscP7/SLqiJky3kAwWtWkMFG9TjfB7uWZ55/bPu5jA9vtLPktzG9OUDbBRlMfBn2sUd6ZKEfnFAFNsuOKnzhCnc1bkaeVjuYcaM/hpiG+fuKFUjVuYLiLa+CoRQjUF11FzyAAKCYijvM7KVJS4/SrSkw5H7LTVZzK59NOuGOiOoUj+nEIbfRKb92h8BvTQjRj0LvDe0t1jN7S3mzwwEUb6s9zr1x4QthZPgxfJM8tqUkUabAIzKve71cNFUt7xIyaHEsCdpUMDBuxMk/MsHdQW+/F7doOcF2k1vk95v0ZeLpNTelWcMVfsRVZvmHGiBgYYs1az5VngwpZMr9viAlE/IB4bJs175e/TZVJ/7HNN1Wvx/UFYrUdZ3BBqrljNVx+0KmwV/rpFzJBCXIH5t8eKFLmFzo420OpTwbxYniMr/HhdA3Yr7eU8+7GmzmMSTP4QDc0Wq2pN6F2+1oF8disqyodOxcG+ZcyGd8Q92nB6GC9Tdu2C00EQNz2RZgmLkOTe2DSRMFKC8dXp6NZRKckoKLYG8P0iqHo2tS31Y7oSmKrZ7KcHxUnSX8pBQLgucbVSqbvvbDoyuRE05v2jD7NzLp8xwf4+vD+yS7EqTOIwjsE8q2hxpLr/MZWz8c7+6pikT56s9eldvkhibKDoQS5BcVGWEGAB6vaLHMjB2t7lQ63pPeaHecIns48vk+LEWSLslfI/cNKUMwc5Fts+/Vu5K
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4855.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(136003)(346002)(366004)(39860400002)(8676002)(8936002)(6916009)(316002)(6512007)(2906002)(83380400001)(2616005)(33656002)(86362001)(38100700002)(122000001)(54906003)(6506007)(71200400001)(5660300002)(53546011)(4326008)(66946007)(6486002)(478600001)(36756003)(76116006)(186003)(64756008)(66446008)(66476007)(66556008)(38070700005)(26005)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?gnUBn1eVHA3E2h85sS3ONxD36t7feNrVLe1aLqyxiGu3UK2VTe8QqnX0v7Dz?=
- =?us-ascii?Q?7jWYGnbwoxnDuOnH3SnW++kKjJeTK/erQbP6Knr6iWjgiq8KanrCLTsumiaZ?=
- =?us-ascii?Q?lv5HvP/nj4ff1OZoUyE5w+oC2kG1NrgkJqj5bDOLfNz5qr6eOCbNTfSChjOW?=
- =?us-ascii?Q?JlOMUuaq16ohELayDpHrf5wSQeIMIUL9QLT5gL0dQ3DJcjHa/HJhet+9Ju8e?=
- =?us-ascii?Q?I2SnyAo1H/pwtcs321x/PO6jppO6BkJ0j5cigmgVyOETeOID8R/985NarmA0?=
- =?us-ascii?Q?MV6+Ja58UdCRXLlWktWZ37fos3KOmSSSZcvwL42zYTkifg5O9jIkntBjN/6t?=
- =?us-ascii?Q?7fd5pRB8KlO/fTFKQjg9BbDuldUvTXO+akyORuuJqkKqyDGDAcOlgHTlxL/C?=
- =?us-ascii?Q?2ZY1L4nz4dUbrC9cBxKNBTxSeSoAhG1hXsNu4NHzFQ9kfM2KWGX984EDxoOg?=
- =?us-ascii?Q?Z6yLymYL7Z7zlYL1fKU4ncx0N298glSqiCZhCN1V3ACM9kHfaLQjXUuBh2Qo?=
- =?us-ascii?Q?LxqmHl25zzDJ/EqefSH36HZvxc5hLVKf0ztMfOoEfm/CgWh7dDt9o6XEZeKu?=
- =?us-ascii?Q?wYUh8lZzrYAzVQRXljrvOUkNcicnfg6It6LLE3tEV7JtSdK5069o0tPVVwzT?=
- =?us-ascii?Q?G2/2kpwJ7LSl8cwg9sNGAazDaib2rH3hyJYukJ9bVPbl+zN4hLfXdSWF0B6J?=
- =?us-ascii?Q?zFZGKVvvkt3NNeUQVWT/WDIX2yP2IgB2avfUcIHtJ8Pkdb/oJR1AjiJa2csR?=
- =?us-ascii?Q?BiqfImWFX6ZAJXFTwjEGXCAJ1GBzzmC1kKtLEfzWJBlYr0eptIRh1cUqmhAZ?=
- =?us-ascii?Q?P5Yxbf6agsEa2dMBo+rEhB5bkppZHuzMLe+8d51xO9neLOWg8IPSwIubxJ9D?=
- =?us-ascii?Q?dUgbOgv3m9wU7mobTtueeuU/mMCdH6N9Cz6PW9bmS+6Nah3aE1kq66ZusW+G?=
- =?us-ascii?Q?qXwvAWLpvBcodB/LRKbGstPmCYHBT7Bmd8QC37d5yK9KjSZ3amKCeXLMfBvE?=
- =?us-ascii?Q?m2Y8ok5XRm8PZAF4HBFirTwJ0X9z4Uime0obeEWfJj6YRr8xk+clwW8nIYdc?=
- =?us-ascii?Q?23R4owGWdSN3GdJSTKfN6iKkdVVae9fzzTccGlNga66br1HDfIwwOaUMJC1c?=
- =?us-ascii?Q?AJ7yxhuTGT7aaXCpQ4MysnWXF32F5jFFxU0VlalwulpNnz1xRK5U7m2OlQd0?=
- =?us-ascii?Q?IjYHRqBaXEkqV9GaRe4Oeco6GY4mh8naS/VcC1E9mNwLi3gT2t//wwa95Mi5?=
- =?us-ascii?Q?US/vwM+IKKbU2CaVU2qBVgu1WxMLoOlVMfUUdVFyFh98PqYOgnDRTgK7aINs?=
- =?us-ascii?Q?NnC2JsRTfbXBat+Lm+2mY/eU?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <E22C133022165043B962ECB2624EF851@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S233302AbhHRT4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 15:56:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229965AbhHRT4o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 15:56:44 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2FB9C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 12:56:08 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id r5so5036819oiw.7
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 12:56:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=lnkk/T/aSVI4Ump22xAFuwRx7dWfYC9RRa9zf5h/Kgg=;
+        b=IX/JYcTzfF7BoKHZ+2ft1Yhwky6jC9DYooFKt3ldlMpHdw9ltSCrS4F1caWdWQ9g+/
+         hyGA0mF+j5Rn+AlccOcroHSGkJ1bKtdu+wc6T9nZbh9g6DV8dv8g7LgKQYCh2UiEreIl
+         JpjTt0rJFKTIQMDC0cWhkutUS4taiN7XLuPQo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=lnkk/T/aSVI4Ump22xAFuwRx7dWfYC9RRa9zf5h/Kgg=;
+        b=SG+yw+PkVOhE5AavGxNTJz3rcVVrQdI2H3nY41GkbmJsNENwPSLp452nlQIvTmCQ5C
+         TYb0og9bzZMjkygKwyoWHsWvkSJze1Di3tRNZ1cfDT4a9UqQMft1ZIpElSQu2hyO+XO5
+         lEiQSzltgpu27R8bkDesPmHIbrwjAhZa/5edUzZprPjET+wi0EDp4Tt1KYfAmiJU7AGa
+         sdGDBSvUR+LlY1kctQFuqTXm6+VepdTE1hZ5IS3g7IEjkaaSHsoSdYSYr38ioJD3QJs6
+         xhuN4f2bWFjeoUnP32v/uC2JB9+ZDUPSqEx5kG5vimXlK9vyQe9GE3hSfFqVANKXnCd2
+         ioOw==
+X-Gm-Message-State: AOAM531DpImTRuFJo5bR16u7VuJYPagp+DTgrk+ymMx5cd+HNr1TZxoC
+        pGNQEVD92r1DBYbkN8P4Gi6jikcS3k4emC3+YCLwAg==
+X-Google-Smtp-Source: ABdhPJwWaSEh0l4rfS6AnLEn+5Nky79nrd23VWAk2Jz9D3cE+s4pVEATJomMUMIfl0VwJmICzX0QUe2NO2sWJ/kd0nc=
+X-Received: by 2002:a05:6808:114a:: with SMTP id u10mr8633175oiu.19.1629316568179;
+ Wed, 18 Aug 2021 12:56:08 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 18 Aug 2021 12:56:07 -0700
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4855.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0630855-9b57-49cd-8ddc-08d962810f5c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Aug 2021 19:47:49.6298
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: aRaA62YK9CAI2oIBthVKNedkSjiJMiEZ6uN3bwjvtCYcSomlWerNuX9LIouaEU5eLnUQ5UY4p50E99G9TAfgDlI8is30xOrJThiPh0I9mzY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5109
-X-OriginatorOrg: intel.com
+In-Reply-To: <1629282424-4070-1-git-send-email-mkrishn@codeaurora.org>
+References: <1629282424-4070-1-git-send-email-mkrishn@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Wed, 18 Aug 2021 12:56:07 -0700
+Message-ID: <CAE-0n51EY9_D26um_YjOEzcCzMvBu5m6e5jTRwsSsi_cj3mE-w@mail.gmail.com>
+Subject: Re: [PATCH v1 1/4] dt-bindings: msm: add DT bindings for sc7280
+To:     Krishna Manikandan <mkrishn@codeaurora.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kalyan_t@codeaurora.org, sbillaka@codeaurora.org,
+        abhinavk@codeaurora.org, robdclark@gmail.com,
+        bjorn.andersson@linaro.org, khsieh@codeaurora.org,
+        rajeevny@codeaurora.org, freedreno@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, robh+dt@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Cut out the API comments and other obvious ones here. ]
+Quoting Krishna Manikandan (2021-08-18 03:27:01)
+> diff --git a/Documentation/devicetree/bindings/display/msm/dpu-sc7280.yaml b/Documentation/devicetree/bindings/display/msm/dpu-sc7280.yaml
+> new file mode 100644
+> index 0000000..3d256c0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/msm/dpu-sc7280.yaml
+> @@ -0,0 +1,228 @@
+> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/msm/dpu-sc7280.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Display DPU dt properties for SC7280 target
 
-On Aug 18, 2021, at 09:24, Borislav Petkov <bp@alien8.de> wrote:
-> On Fri, Jul 30, 2021 at 07:59:43AM -0700, Chang S. Bae wrote:
->=20
->> +/**
->> + * xfd_switch - Switches the MSR IA32_XFD context if needed.
->> + * @prev:	The previous task's struct fpu pointer
->> + * @next:	The next task's struct fpu pointer
->> + */
->> +static inline void xfd_switch(struct fpu *prev, struct fpu *next)
->> +{
->> +	u64 prev_xfd_mask, next_xfd_mask;
->> +
->> +	if (!static_cpu_has(X86_FEATURE_XFD) || !xfd_capable())
->=20
-> cpu_feature_enabled(). Use that everywhere in your patchset. But you
-> know already...
+Drop "target"?
 
-Yes, I did on my local.
+> +
+> +maintainers:
+> +  - Krishna Manikandan <mkrishn@codeaurora.org>
+> +
+> +description: |
+> +  Device tree bindings for MSM Mobile Display Subsystem(MDSS) that encapsulates
 
->> +		return;
->> +
->> +	prev_xfd_mask =3D prev->state_mask & xfd_capable();
->> +	next_xfd_mask =3D next->state_mask & xfd_capable();
->=20
-> This is just plain misleading:
->=20
-> You're *AND*ing a mask with xfd_capable?!?
->=20
-> Just use xfeatures_mask_user_dynamic directly instead, as already
-> mentioned.
+Space after Subsystem please.
 
-Okay.
+> +  sub-blocks like DPU display controller, DSI and DP interfaces etc. Device tree
+> +  bindings of MDSS and DPU are mentioned for SC7280 target.
 
->> +	if (unlikely(prev_xfd_mask !=3D next_xfd_mask))
->> +		xfd_write(xfd_capable() ^ next_xfd_mask);
->> +}
->=20
-> Here too.
->=20
-> Also, I must be missing something. Let's play with some imaginary masks:
->=20
-> prev->state_mask =3D 110b
-> next->state_mask =3D 111b
-> dyn		 =3D 101b
->=20
-> ("dyn" is short for xfeatures_mask_user_dynamic)
->=20
-> prev_xfd_mask =3D 100b
-> next_xfd_mask =3D 101b
->=20
-> if (unlikely(100b !=3D 101b))
-> 	xfd_write(101b ^ 101b) =3D=3D xfd_write(0)
->=20
-> so next has bits 2 and 0 set but the xfd write zaps them so next won't
-> get any more #NMs for those states.
->=20
-> Why?
+Drop "target"?
 
-Because the next has already fully expanded the buffer -- its state_mask
-equals to feature_mask_user_dynamic.
+> +
+> +properties:
+> +  compatible:
+> +    items:
 
-No more XFD event is needed for the task.
+Will there be anymore? If not, drop items and only have const.
 
->>=20
->> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
->> index a58800973aed..dd66d528afd8 100644
->> --- a/arch/x86/kernel/traps.c
->> +++ b/arch/x86/kernel/traps.c
->> @@ -1112,6 +1112,45 @@ DEFINE_IDTENTRY(exc_device_not_available)
->> {
->> 	unsigned long cr0 =3D read_cr0();
->>=20
->> +	if (boot_cpu_has(X86_FEATURE_XFD)) {
->=20
-> This whole thing wants to be in a separate function. Even the
-> indentation level is begging for it.
+> +      - const: qcom,sc7280-mdss
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  reg-names:
+> +    const: mdss
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: Display AHB clock from gcc
+> +      - description: Display AHB clock from dispcc
+> +      - description: Display core clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: iface
+> +      - const: ahb
+> +      - const: core
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  interrupt-controller: true
+> +
+> +  "#address-cells": true
+> +
+> +  "#size-cells": true
+> +
+> +  "#interrupt-cells":
+> +    const: 1
+> +
+> +  iommus:
+> +    items:
+> +      - description: Phandle to apps_smmu node with SID mask for Hard-Fail port0
+> +
+> +  ranges: true
+> +
+> +  interconnects:
+> +    items:
+> +      - description: Interconnect path specifying the port ids for data bus
+> +
+> +  interconnect-names:
+> +    const: mdp0-mem
+> +
+> +patternProperties:
+> +  "^display-controller@[0-9a-f]+$":
+> +    type: object
+> +    description: Node containing the properties of DPU.
+> +
+> +    properties:
+> +      compatible:
+> +        items:
+> +          - const: qcom,sc7280-dpu
 
-Ah, it was once in a separate function until V4. Since trimmed down quite a
-bit in V5, it has grown from there.
+Will there be anymore? If not, drop items and only have const.
 
-Let me fix this.
+> +
+> +      reg:
+> +        items:
+> +          - description: Address offset and size for mdp register set
+> +          - description: Address offset and size for vbif register set
+> +
+> +      reg-names:
+> +        items:
+> +          - const: mdp
+> +          - const: vbif
+> +
+> +      clocks:
+> +        items:
+> +          - description: Display hf axi clock
+> +          - description: Display sf axi clock
+> +          - description: Display ahb clock
+> +          - description: Display lut clock
+> +          - description: Display core clock
+> +          - description: Display vsync clock
+> +
+> +      clock-names:
+> +        items:
+> +          - const: bus
+> +          - const: nrt_bus
+> +          - const: iface
+> +          - const: lut
+> +          - const: core
+> +          - const: vsync
+> +
+> +      interrupts:
+> +        maxItems: 1
+> +
+> +      power-domains:
+> +        maxItems: 1
+> +
+> +      operating-points-v2: true
+> +
+> +      ports:
+> +        $ref: /schemas/graph.yaml#/properties/ports
+> +        description: |
+> +          Contains the list of output ports from DPU device. These ports
+> +          connect to interfaces that are external to the DPU hardware,
+> +          such as DSI, DP etc. Each output port contains an endpoint that
+> +          describes how it is connected to an external interface.
+> +
+> +        properties:
+> +          port@0:
+> +            $ref: /schemas/graph.yaml#/properties/port
+> +            description: DPU_INTF1 (DSI)
+> +
+> +          port@1:
+> +            $ref: /schemas/graph.yaml#/properties/port
+> +            description: DPU_INTF5 (EDP)
+> +
+> +        required:
+> +          - port@0
+> +
+> +    required:
+> +      - compatible
+> +      - reg
+> +      - reg-names
+> +      - clocks
+> +      - interrupts
+> +      - power-domains
+> +      - operating-points-v2
+> +      - ports
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - power-domains
+> +  - clocks
+> +  - interrupts
+> +  - interrupt-controller
+> +  - iommus
+> +  - ranges
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/qcom,dispcc-sc7280.h>
+> +    #include <dt-bindings/clock/qcom,gcc-sc7280.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/interconnect/qcom,sc7280.h>
+> +    #include <dt-bindings/power/qcom-rpmpd.h>
+> +
+> +    display-subsystem@ae00000 {
 
->> +		u64 xfd_err;
->> +
->> +		rdmsrl_safe(MSR_IA32_XFD_ERR, &xfd_err);
->> +		wrmsrl_safe(MSR_IA32_XFD_ERR, 0);
->> +
->> +		if (xfd_err) {
->> +			u64 xfd_event =3D xfd_err & xfd_capable();
->> +
->> +			if (WARN_ON(!xfd_event)) {
->> +				/*
->> +				 * Unexpected event is raised. But update XFD state to
->> +				 * unblock the task.
->> +				 */
->> +				xfd_write(xfd_read() & ~xfd_err);
->=20
-> So AFAIU, xfd_err points to some other feature which caused this
-> exception.
->=20
-> So if that feature bit is set in XFD, you're clearing it here. Why?
->=20
-> So that it doesn't raise that #NM for it anymore?
->=20
-> This looks weird.
+Maybe just 'subsystem' as that is generic enough.
 
-If this ever happens, something might be wrong with the hardware.
+> +         #address-cells = <1>;
+> +         #size-cells = <1>;
+> +         compatible = "qcom,sc7280-mdss";
+> +         reg = <0xae00000 0x1000>;
+> +         reg-names = "mdss";
+> +         power-domains = <&dispcc DISP_CC_MDSS_CORE_GDSC>;
+> +         clocks = <&gcc GCC_DISP_AHB_CLK>,
+> +                  <&dispcc DISP_CC_MDSS_AHB_CLK>,
+> +                  <&dispcc DISP_CC_MDSS_MDP_CLK>;
+> +         clock-names = "iface", "ahb", "core";
 
-If the bit is not reset, it will get stuck with repeatedly unhandled #NMs,
-which I think is even more terrible.
+Can these names be one per line? It makes it easier to match to the
+clocks property above.
 
->> +			} else {
->> +				struct fpu *fpu =3D &current->thread.fpu;
->> +				int err =3D -1;
->> +
->> +				/*
->> +				 * Make sure not in interrupt context as handling a
->> +				 * trap from userspace.
->> +				 */
->> +				if (!WARN_ON(in_interrupt())) {
->=20
-> I'm guessing that's supposed to stop people from using AMX and other
-> dynamic states in the kernel?
+> +
+> +         interrupts = <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
+> +         interrupt-controller;
+> +         #interrupt-cells = <1>;
+> +
+> +         interconnects = <&mmss_noc MASTER_MDP0 &mc_virt SLAVE_EBI1>;
+> +         interconnect-names = "mdp0-mem";
+> +
+> +         iommus = <&apps_smmu 0x900 0x402>;
+> +         ranges;
+> +
+> +         display-controller@ae01000 {
+> +                   compatible = "qcom,sc7280-dpu";
+> +                   reg = <0x0ae01000 0x8f000>,
+> +                         <0x0aeb0000 0x2008>;
+> +
+> +                   reg-names = "mdp", "vbif";
+> +
+> +                   clocks = <&gcc GCC_DISP_HF_AXI_CLK>,
+> +                            <&gcc GCC_DISP_SF_AXI_CLK>,
+> +                            <&dispcc DISP_CC_MDSS_AHB_CLK>,
+> +                            <&dispcc DISP_CC_MDSS_MDP_LUT_CLK>,
+> +                            <&dispcc DISP_CC_MDSS_MDP_CLK>,
+> +                            <&dispcc DISP_CC_MDSS_VSYNC_CLK>;
+> +                   clock-names = "bus", "nrt_bus", "iface", "lut", "core",
+> +                                 "vsync";
 
-But the kernel can handle this without XFD?
+Can these names be one per line? It makes it easier to match to the
+clocks property above.
 
-Thanks,
-Chang
+> +
+> +                   interrupt-parent = <&mdss>;
+> +                   interrupts = <0>;
+> +                   power-domains = <&rpmhpd SC7280_CX>;
+> +                   operating-points-v2 = <&mdp_opp_table>;
+> +
+> +                   ports {
+> +                           #address-cells = <1>;
+> +                           #size-cells = <0>;
+> +
+> +                           port@0 {
+> +                                   reg = <0>;
+> +                                   dpu_intf1_out: endpoint {
+> +                                                  remote-endpoint = <&dsi0_in>;
 
+Tabbed one too many times.
 
+> +                                   };
+> +                           };
+> +
+> +                           port@1 {
+> +                                   reg = <1>;
+> +                                   dpu_intf5_out: endpoint {
+> +                                                  remote-endpoint = <&edp_in>;
+
+Tabbed one too many times.
+
+> +                                   };
+> +                           };
+> +                   };
+> +         };
+> +    };
