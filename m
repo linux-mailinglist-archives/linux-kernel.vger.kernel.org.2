@@ -2,85 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3573EFD6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5C63EFD68
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238875AbhHRHJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 03:09:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238745AbhHRHJj (ORCPT
+        id S238880AbhHRHJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 03:09:40 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:48592 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238898AbhHRHJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 03:09:39 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD82C061764;
-        Wed, 18 Aug 2021 00:09:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=ym1uD8O5zOub+cpikC9nk8w/uDg8kA95v0fuB8biuWo=;
-        t=1629270544; x=1630480144; b=p1Ld4iQXUw+HDTOMXfbZh8MdkvWZs01KD6dhfc0MHu3ANOJ
-        kjikpASrlMR5ErUwflDXgeN/ePfPdk6uHK5YkYndKFme44SGe7PFapUGhCkd4wr+hgDtuxxi1Rkpn
-        WvMjnMdJMhWMkyETqbRbmGHaQg7QVhzW15MAkXgIMhgfH6px5KEsTbRnJlHYePY3dmbZwub+3EJFn
-        VoTMq7pLiGeW5+Ytg3N/GchGICPxmp+mn2SzwyDGShHa3UdD/h5wGj+yNYTQRsh2X/isgBAOfRWYa
-        QpDGlH4bQR6Vtjrozmt0lhENfx+Evj2JqLHbf2Idbo/xkNnblGpg3bdy8ycEpkKg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94.2)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1mGFgz-00CbW0-CL; Wed, 18 Aug 2021 09:08:53 +0200
-Message-ID: <11db2cdc5316b51f3fa2f34e813a458e455c763d.camel@sipsolutions.net>
-Subject: Re: [PATCH v2 44/63] mac80211: Use memset_after() to clear tx status
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
-        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-hardening@vger.kernel.org
-Date:   Wed, 18 Aug 2021 09:08:52 +0200
-In-Reply-To: <20210818060533.3569517-45-keescook@chromium.org>
-References: <20210818060533.3569517-1-keescook@chromium.org>
-         <20210818060533.3569517-45-keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Wed, 18 Aug 2021 03:09:37 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id BFAAE1C0B7A; Wed, 18 Aug 2021 09:09:02 +0200 (CEST)
+Date:   Wed, 18 Aug 2021 09:09:02 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Michal =?utf-8?B?Vm9rw6HEjQ==?= <michal.vokac@ysoft.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] ARM: dts: imx6dl-yapp4: Remove the unused white LED
+ channel
+Message-ID: <20210818070902.GH22282@amd>
+References: <20210818070209.1540451-1-michal.vokac@ysoft.com>
+ <20210818070209.1540451-2-michal.vokac@ysoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-malware-bazaar: not-scanned
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="Uu2n37VG4rOBDVuR"
+Content-Disposition: inline
+In-Reply-To: <20210818070209.1540451-2-michal.vokac@ysoft.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-08-17 at 23:05 -0700, Kees Cook wrote:
-> 
-> @@ -275,12 +275,11 @@ static void carl9170_tx_release(struct kref *ref)
->  	if (WARN_ON_ONCE(!ar))
->  		return;
->  
-> 
-> 
-> 
-> -	BUILD_BUG_ON(
-> -	    offsetof(struct ieee80211_tx_info, status.ack_signal) != 20);
-> -
-> -	memset(&txinfo->status.ack_signal, 0,
-> -	       sizeof(struct ieee80211_tx_info) -
-> -	       offsetof(struct ieee80211_tx_info, status.ack_signal));
-> +	/*
-> +	 * Should this call ieee80211_tx_info_clear_status() instead of clearing
-> +	 * manually? txinfo->status.rates do not seem to be used here.
-> +	 */
 
-Since you insist, I went digging :)
+--Uu2n37VG4rOBDVuR
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It should not, carl9170_tx_fill_rateinfo() has filled the rate
-information before we get to this point.
+On Wed 2021-08-18 09:02:09, Michal Vok=C3=A1=C4=8D wrote:
+> Since the reg property was added to each channel node in commit
+> b86d3d21cd4c ("ARM: dts: imx6dl-yapp4: Add reg property to the lp5562
+> channel node") it is possible to skip unused channels.
+>=20
+> Remove the actually unused white LED channel.
+>=20
+> Signed-off-by: Michal Vok=C3=A1=C4=8D <michal.vokac@ysoft.com>
 
-johannes
+Acked-by: Pavel Machek <pavel@ucw.cz>
 
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--Uu2n37VG4rOBDVuR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmEcsg4ACgkQMOfwapXb+vItPgCfS45AP+0FhJC8K4AVj9j3Aj8+
+T/YAnR7DJpwgkhHZycBroWk//I05RFn3
+=+qTp
+-----END PGP SIGNATURE-----
+
+--Uu2n37VG4rOBDVuR--
