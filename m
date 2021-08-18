@@ -2,76 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810703EF85E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 05:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D41EF3EF869
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 05:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235959AbhHRDHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 23:07:46 -0400
-Received: from mail-pf1-f175.google.com ([209.85.210.175]:44791 "EHLO
-        mail-pf1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234435AbhHRDHo (ORCPT
+        id S235800AbhHRDOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 23:14:30 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:17034 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231449AbhHRDO3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 23:07:44 -0400
-Received: by mail-pf1-f175.google.com with SMTP id k19so716562pfc.11;
-        Tue, 17 Aug 2021 20:07:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nsTSyR9juQiQWSPeB70442fXZVLJAuiODqtYkB2eTKA=;
-        b=QfOmTIwBLsOzgHhaty9AjFsUEhsjiM/28bZOJkLYWnIzEt/DHucUUP5ek0mUnP2ftS
-         KmNVmAqmUCLhQHQANjU84c1aqIZe/dJsQDWrHs83ZnQR+m5hkCPUcEta1UbCI+UjD+IK
-         j0HKnPXWfwYaF/+n4gDd3r6nJkG1bvTMgyEFJnOSWAIlekBD67vifJID48tudlNteevm
-         6l0isO8O7i+fX+uYbWhw4v8Rzr5iupubjDaovD4g6uWzB84qSztd/cMk4seM6tPl7ZHj
-         F4F/lUrI3UQLqoXzM5pmB2B3NziLXzulOJxCm6IU3ndQsXoqHVeNFjcy2eAS/yM1hcXd
-         5oMA==
-X-Gm-Message-State: AOAM5316kn5pWXMJs2yqt9uymkA5iw58f2Pqdrg4CG0+wLSxqhwLcx20
-        VEkQ5LzhHp6knTFRLh/RUZP5SF9Z2KE=
-X-Google-Smtp-Source: ABdhPJxsYiy2gFssugohJAyH4OQTsP+X103w0bL1Kz/q30MxFTb0VTKhDyu9YHzx2IFs2lfXZ5OHow==
-X-Received: by 2002:a05:6a00:24c2:b0:3e2:878d:7e44 with SMTP id d2-20020a056a0024c200b003e2878d7e44mr6086139pfv.22.1629256029468;
-        Tue, 17 Aug 2021 20:07:09 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:a2e:bdc6:d31c:3f87? ([2601:647:4000:d7:a2e:bdc6:d31c:3f87])
-        by smtp.gmail.com with ESMTPSA id b7sm3702229pfl.195.2021.08.17.20.07.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Aug 2021 20:07:08 -0700 (PDT)
-Subject: Re: linux-next: build failure after merge of the scsi-mkp tree
-To:     John Garry <john.garry@huawei.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
-References: <20210817194710.1cb707ba@canb.auug.org.au>
- <c27c2909-1701-b972-dd7c-98bdc53ab8f9@huawei.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <41d95ecd-5657-8f32-cf1a-a6d249f91cd6@acm.org>
-Date:   Tue, 17 Aug 2021 20:07:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Tue, 17 Aug 2021 23:14:29 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GqCZ91cxjzbfN0;
+        Wed, 18 Aug 2021 11:10:09 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 18 Aug 2021 11:13:47 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 18 Aug 2021 11:13:47 +0800
+Subject: Re: [PATCH RFC] blk_mq: clear rq mapping in driver tags before
+ freeing rqs in sched tags
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     <axboe@kernel.dk>, <bvanassche@acm.org>,
+        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>, Keith Busch <kbusch@kernel.org>
+References: <20210817022306.1622027-1-yukuai3@huawei.com>
+ <YRxZ44tu8o1MPruT@T590> <11ef6a06-4b6f-44d0-af79-f96e16456b55@huawei.com>
+ <YRx0QE8T4RJONlA8@T590>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <abddd629-fe96-ae95-2ac3-da1b431db37e@huawei.com>
+Date:   Wed, 18 Aug 2021 11:13:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <c27c2909-1701-b972-dd7c-98bdc53ab8f9@huawei.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
+In-Reply-To: <YRx0QE8T4RJONlA8@T590>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/17/21 2:51 AM, John Garry wrote:
-> sorry... I only built x86 and arm64 allmodconfig. Let me check this.
+On 2021/08/18 10:45, Ming Lei wrote:
 
-Build testing for tree-wide changes is tricky. You may want to use a
-build bot for such testing. From
-https://01.org/lkp/documentation/0-day-test-service:
+> Please take a look at blk_mq_clear_rq_mapping():
+> 
+> 	//drv_tags points to set->tags[] which is shared in host wide
+> 	struct blk_mq_tags *drv_tags = set->tags[hctx_idx];
+> 	...
+> 
+> 	//tags points to sched_tags
+> 	list_for_each_entry(page, &tags->page_list, lru) {
+> 		unsigned long start = (unsigned long)page_address(page);
+> 		unsigned long end = start + order_to_size(page->private);
+> 		int i;
+> 
+> 		/* clear drv_tags->rq[i] in case it is from this sched tags*/
+> 		for (i = 0; i < set->queue_depth; i++) {
+> 			struct request *rq = drv_tags->rqs[i];
+> 			unsigned long rq_addr = (unsigned long)rq;
+> 
+> 			if (rq_addr >= start && rq_addr < end) {
+> 				WARN_ON_ONCE(refcount_read(&rq->ref) != 0);
+> 				cmpxchg(&drv_tags->rqs[i], rq, NULL);
+> 			}
+> 		}
+> 	}
+> 
+> So we do clear tags->rq[] instead of sched_tag->rq[].
 
-Q: Which git tree and which mailing list will be tested? How can I
-opt-in or opt-out from it?
+Thanks for the correction, I misunderstand the code, my bad...
 
-A: 0-Day monitors hundreds of git trees and tens of mailing lists. You
-can obtain detailed tree and mailing list information from the source
-code under the lkp-tests/repo directory. If you want to add or remove
-your tree from the 0-Day test system, send an email to the LKML,
-specifying your git tree URL.
+> 
+>>
+>> After switching elevator, tags->rq[tag] still point to the request
+>> that is just freed.
+> 
+> No.
+> 
+>>
+>> 3) nbd server send a reply with random tag directly:
+>>
+>> recv_work
+>>   nbd_read_stat
+>>    blk_mq_tag_to_rq(tags, tag)
+>>     rq = tags->rq[tag] -> rq is freed
+>>
+>> Usually, nbd will get tag and send a request to server first, and then
+>> handle the reply. However, if the request is skipped, such uaf problem
+>> can be triggered.
+> 
+> When or how is such reply with random tag replied to nbd client? Is it
+> possible for nbd client to detect such un-expected/bad situation?
 
-Bart.
+We see that the random tag replied to nbd client in our syzkaller test,
+I guess it will not happen in the common case.
+
+nbd_read_stat() is trying to get a valid request from the tag and
+complete the request since the server send such reply to client.
+
+There is a way that I can think of to detect the situation that server
+reply to client without client's request:
+
+1) get tag from the reply message
+
+2) check that the tag is really set in bitmap of nbd->tag_set.tags[]
+If the client didn't send the request message, the driver_tag is not
+accquired yet, thus this check can detect this situation.
+
+3) call blk_mq_tag_to_dile to get the request
+
+> What if blk_mq_tag_to_rq() is just called before/when we clear tags->rq[]?
+
+The concurrent scenario is still possible currently.
+
+Thanks
+Kuai
