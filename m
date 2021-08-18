@@ -2,78 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4897B3F0EE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 01:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8EB73F0EE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 01:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235246AbhHRX6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 19:58:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40696 "EHLO
+        id S235270AbhHSAAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 20:00:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234949AbhHRX6N (ORCPT
+        with ESMTP id S234949AbhHRX76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 19:58:13 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E87C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 16:57:38 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id u25so5994023oiv.5
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 16:57:38 -0700 (PDT)
+        Wed, 18 Aug 2021 19:59:58 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0014C061764;
+        Wed, 18 Aug 2021 16:59:22 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id w6so2854983plg.9;
+        Wed, 18 Aug 2021 16:59:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=z9/ir4kG5DGbUoClzGjcJHyuuKDLfkXunjWUuDr0TFw=;
-        b=DQL46Mz7PcoNkt64PZsOpg81G4xjzjJYT8KO68YqoxZMVTKMwsSIn5JkDoyotdEo9F
-         q+N0Jrm85LsqVz4RaJmJ6qKkXRzNfoSkRR9vciir35KXbW4dzCO2juLPC+xrOyhhSChf
-         4/yc8LleeBMvBww212Iud2A75NftzK3gDSpMVo/iwCFndlG0ok1BCsLvh8POD4ibNhgO
-         DUI5nubH4ci2E5AsxST0QwuDj9XCOZaV8DvAd85olmZy+J/gsWYN8ogtiujGE6rCGaLK
-         QsAu9HNXOf//GAlJm/D1fXmrPpY/hE/O7j5n70bl0fTuDDRW16lePaC3MCG22gh48700
-         vtFQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IeP832SJzqeVnjZ0PVnLToyHfJsIkOgVQujTdfwewaQ=;
+        b=HLvCFvJRIjjfuLDY2SGy0zjxO1rqlnS5OZVluJmJva8WUFGPnr1EArc6LykYJOVHK7
+         y3Hs14pTxjX3RqjaxWI1ZD7Dq6p0uYUjKNYgoJjmhVy4dXmanVOVeo+pA4mZgYoU3tLG
+         Gt1NzLtKzwa8yM/xW3zTSvq5f322qSXxX8IkSYFnklyhfP7GDs4kRPyn26ahyR4eYnKt
+         XxH1FP9J8ZwySSmXr4/FkuF6PeLumbkkCixFT3OKjXUYwWl8AcbTV1uEAlGlNwNowyHL
+         rc8lt6do5MV5CBcYsYG2H5awZo6oTwpGiL3pWmzvFMW9B5+DcRpgbL1ImaUmW5aSuBq9
+         JPXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=z9/ir4kG5DGbUoClzGjcJHyuuKDLfkXunjWUuDr0TFw=;
-        b=GHeg3gYlGQpMeTZIELU+BZreUy39gyypeMPd4XBLg3Nr1v1ILSWWbmA8BfQs4WD8Us
-         nBSMUgHSRaNi/9L7soTL3AIQXnv71+9Vga+wbwNDblQmn6qmX1GyUKJty2+SANV7S+WE
-         TRyXsXVDtNMHbO9fdPsRh9wpDRh/R+gYcMIfzDobxusGs+PJQolg6LYIUpYpkEZfXHT3
-         /i6qfoXSLpwrO3FBbIdh4aiXUP4Xvg6d3YjQswj1sI4JOxcFciqfYYWw1jMlpBk8KAuh
-         bhH97LQ+6k7ZPUszvLbFbSbn8mN/Ti2M8YUe0pS6aMeU7U/96j1RIstjo8LO3LSV639R
-         1W0Q==
-X-Gm-Message-State: AOAM530V7Xu6phx6vq7vQ0slwHD3sQMrIaj888ZXg1gJOoosDUxKhCw3
-        Ym9VG9pe5pds8Y1ob87cBGbrHd52a0UTw8WEtms=
-X-Google-Smtp-Source: ABdhPJz2n2Bt0IX6vHgaz4ZbAVzVEQbzaACI4HRiEbhUS254FqOl8sQ2xBaozrndHl8xwU3Hy71v1P8VXj6Oe9KBsms=
-X-Received: by 2002:a05:6808:286:: with SMTP id z6mr562655oic.48.1629331057932;
- Wed, 18 Aug 2021 16:57:37 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IeP832SJzqeVnjZ0PVnLToyHfJsIkOgVQujTdfwewaQ=;
+        b=DGmnU3NZP6yWRrLCO0KoUkDjBv48q4mGVbbzUQ9Nt2in+X2cjOCOhfL4F0zj4Nznf7
+         7C52ty9U33TACLsPQRLoKVDBT7t1L9RcKMFoef1cBOX8myBNxy0Mj5597b+6sKCTVxXa
+         5bg5igtuW0SydtcO1hjMSpRcHylHy3QsGg5N10UYSRp+OHzehtXoxNBufRfKUQf9awKE
+         thX/Dft/sMynUTGLAmC86Z3RMh3OON3iJnggjDtLfzNojaYY5H/1owIa9+KYEPTzxc3q
+         iUpKYYbiRPltD1r8OSgompzA2LL17NF9DW9lb8CVyKCviW04hodisOSuO7TjF6mzbd6w
+         DX2g==
+X-Gm-Message-State: AOAM531tOzBl0bA4s7h5nRAXhJne0GxCKNSwlGYVysgHQE0txqljL4Kh
+        ADUON9CpDhtdBGILEpgkqdA=
+X-Google-Smtp-Source: ABdhPJxHhgQmZvA13GqpT391mhTAohwHcoo5bDGNyhSgVMeZm7R7WZ66RBmasYP+9jnUaRyaCJvYBA==
+X-Received: by 2002:a17:90a:2f88:: with SMTP id t8mr11919550pjd.2.1629331162314;
+        Wed, 18 Aug 2021 16:59:22 -0700 (PDT)
+Received: from mail.google.com ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id k25sm894131pfa.213.2021.08.18.16.59.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 16:59:21 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 07:59:16 +0800
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Changbin Du <changbin.du@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH] preempt: add in_serving_irq() and apply to rcutiny and
+ vsprintf
+Message-ID: <20210818235916.l3zbdt5nli5j65xi@mail.google.com>
+References: <20210814014234.51395-1-changbin.du@gmail.com>
+ <YRqMRFPDL0U9Orec@boqun-archlinux>
 MIME-Version: 1.0
-Received: by 2002:a4a:88ca:0:0:0:0:0 with HTTP; Wed, 18 Aug 2021 16:57:37
- -0700 (PDT)
-Reply-To: mrs.nicole111@gmail.com
-From:   Mrs Nicole Benoite Marois <brightotabor1@gmail.com>
-Date:   Wed, 18 Aug 2021 16:57:37 -0700
-Message-ID: <CALNwcOGFBBv0y_abBoXWYN_CuSZoUY8L3TYWGgtDK4GOs9CM=g@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YRqMRFPDL0U9Orec@boqun-archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Beloved
+On Tue, Aug 17, 2021 at 12:03:16AM +0800, Boqun Feng wrote:
+> On Sat, Aug 14, 2021 at 09:42:34AM +0800, Changbin Du wrote:
+> > At some places we need to determine whether we're in nmi, hardirq or
+> > softirq context. This adds a macro in_serving_irq() as a shortcut for
+> > that.
+> > 
+> > Meanwhile, apply this new macro to existing code in rcutiny and vsprintf.
+> > 
+> > Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> > ---
+> >  include/linux/preempt.h | 4 +++-
+> >  include/linux/rcutiny.h | 3 +--
+> >  lib/vsprintf.c          | 2 +-
+> >  3 files changed, 5 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/include/linux/preempt.h b/include/linux/preempt.h
+> > index 9881eac0698f..9a1c924e2c6c 100644
+> > --- a/include/linux/preempt.h
+> > +++ b/include/linux/preempt.h
+> > @@ -92,12 +92,14 @@
+> >   * in_nmi()		- We're in NMI context
+> >   * in_hardirq()		- We're in hard IRQ context
+> >   * in_serving_softirq()	- We're in softirq context
+> > + * in_serving_irq()	- We're in nmi, hardirq or softirq context
+> >   * in_task()		- We're in task context
+> >   */
+> >  #define in_nmi()		(nmi_count())
+> >  #define in_hardirq()		(hardirq_count())
+> >  #define in_serving_softirq()	(softirq_count() & SOFTIRQ_OFFSET)
+> > -#define in_task()		(!(in_nmi() | in_hardirq() | in_serving_softirq()))
+> > +#define in_serving_irq()	(in_nmi() | in_hardirq() | in_serving_softirq())
+> > +#define in_task()		(!in_serving_irq())
+> >  
+> 
+> So in_serving_irq() is !in_task(), right? If so, why not...
+> 
+Adding in_serving_irq() is to reflect the real purpose so improve readability.
+And can we preserve that !in_task() means in serving irq context in future? I don't know.
 
-I am Mrs Nicole Benoite Marois and i have been suffering from ovarian
-cancer disease and the doctor says that i have just few days to leave.
-I am from (Paris) France but based in Africa Burkina Faso since eight
-years ago as a business woman dealing with gold exportation
-
-Now that i am about to end the race like this, without any family
-members and no child. I have $3 Million US DOLLARS in Africa
-Development Bank (ADB) Burkina Faso.
-
-I also have $4.5 Million US Dollars at Eco-Bank here in Burkina Faso
-and i instructed the bank to transfer the fund to you as foreigner
-that will apply to the bank after i have gone, that they should
-release the fund to him/her,but you will assure me that you will take
-50% of the fund and give 50% to the orphanages home in your country
-for my heart to rest.
-
-Yours fairly friend,
-Mrs Nicole Benoite Marois.
+-- 
+Cheers,
+Changbin Du
