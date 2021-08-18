@@ -2,98 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEB9F3EFFAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 659C03EFFB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230216AbhHRI5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 04:57:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56618 "EHLO
+        id S230324AbhHRI5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 04:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhHRI5C (ORCPT
+        with ESMTP id S229549AbhHRI5x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 04:57:02 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35BECC061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:56:28 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id d4so3076118lfk.9
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:56:28 -0700 (PDT)
+        Wed, 18 Aug 2021 04:57:53 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E2B1C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:57:19 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id a9so400987ybr.5
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:57:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RpVCA+HiLct3rjHe6ucM4AvKd8lS1LzE0nTcYyla1JY=;
-        b=cPiyNL+7q1dClbwJ+Le6I8CEPAnTMT4V3BmBnqGPpj7r8UjlBX5iV0YSRvzjp+dg4M
-         C7JuggpeEuLPrTwBN76kAyR0NoMFn4ZKsnjHlonHyk1v1BjG1wnQQHlm0SteFgZ9bySS
-         nGC3qOFWt3Q4NuwEbiPao4pdi4qBJNEwphTs+pnhCr28p6vD5BGkj/dUCCY4isvkf+rj
-         01OJv/dtcyCUniQ8QTj4kjrylGOyV4iaXqaLouVJ3/l38uTFAmlTh1VOTIcXaEdMpJcd
-         OwqJEB7+ZRsOFlbrT7yMHE8vMdUZthz/+PCUoLsWH3vqio88k1AdC+zBDr07eikcyBYS
-         XAQg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YTLMiHhkiL4q3jiK9pt4YDrvktzE393XGs6AJ7TzC8Q=;
+        b=I6kyAYLAi/5ZODW7wt6QJbXbDvsHP7w+wgDYfsI9r0WrXnLIOL6x9SX+oTGZt2MtHL
+         1c7P6go5VFqsUuq53wUjUoUKTprlG1Th4tey6QyS0hU6YC1q8xQWAuuACjr/b8aHL8Od
+         ygWUVKvp3pmjMLay2722OExM1GZtyq9rU7kS3IptT7DOB6b1U/JCLU/elvfNkt0dUgDW
+         D68MoMMMhGyarXKuBDTRYHEEk/BT2LdVTObaZxoP8QXZjnRnb1DBaZTUw1U0djh7mGxy
+         ANvzU50AEt9CCJsTBZMXFibsDsapAXORN2rA+9Gs1o7YNz1j6YW3n0RIdySVgY8TkyHo
+         D/1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RpVCA+HiLct3rjHe6ucM4AvKd8lS1LzE0nTcYyla1JY=;
-        b=HAwmEGz2pRcBZd7CW/Lq6NL0qnHFPhz1BP6qWbGJ2kEwzJ9MtQh8J09Ryv2qyv3hyc
-         g2rFYDOEwITbkfO+3h5BUAE3rqj/MEa1ZwDvaRG+szAzNX4EKLcjBobFBpoBxpWyn2WT
-         Ju56nownAMmgY40QmOXZF3XS7c4mO1GPgBNV/U4pwBTTnX+p4OUFWIEa2+FOoI07FIsi
-         K+I1xTfjwNGZjWt1Bwk28bkp8M4vb5+Fs6UiKkyX1vGc83GyKXItsm7JQ8tUr4hV9/rc
-         QAm34emvAlsUYzckCKj/mbwTY/w96Dqlve0ShuzFXCy51E+NtgfeqHGN/P+dH5pXesXL
-         XqFg==
-X-Gm-Message-State: AOAM533iAPY7EM2rAqJzUTN/htRkszCahvn2/wPhtjFOOXw+RlRspe4U
-        OJ/NZgiTsUTNvEbyU49vV3E2+smLA4xgFd5K
-X-Google-Smtp-Source: ABdhPJwtLrN+Z+wJe7Xq9ADe9v6hoMKOnuILVBbTokrcKt8v3ogCQvfLWzfSBS/4RK91P983kWaCsw==
-X-Received: by 2002:a05:6512:3f08:: with SMTP id y8mr5264543lfa.221.1629276986567;
-        Wed, 18 Aug 2021 01:56:26 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id u20sm200857ljl.76.2021.08.18.01.56.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 01:56:26 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 11:56:23 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Joe Perches <joe@perches.com>
-Subject: Re: [PATCH v3 1/3] fs/ntfs3: Fix one none utf8 char in source file
-Message-ID: <20210818085623.quzdiekdg2y2vj7n@kari-VirtualBox>
-References: <20210818010649.412912-1-kari.argillander@gmail.com>
- <20210818010649.412912-2-kari.argillander@gmail.com>
- <20210818053300.GA9165@lst.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YTLMiHhkiL4q3jiK9pt4YDrvktzE393XGs6AJ7TzC8Q=;
+        b=mFFkjpUCCjcAfkjHrasV73tR9NM9LSMiHFWN0+1RCy3oXa/ezj4WErdiku1MAsrHlf
+         wZbMPKqc196zH/L+kOC+hsXECrH6fRu82lTBEVXZu5wWGUp0HUW9pogo5BhxOLunAsjA
+         /gcPKowoFOVwz2X772fhfDGk3cRDfcIFZZJ2iZf7EyZG2Utq7AOXi+Hsm5dJoppZOFF9
+         B4uQZHpKrujnt3/kDnFjRZvJGjz8mrGhxJFK+LGTIAiKP41ySWNKlYfYjHSZxrJpmswG
+         JqI4oqOXr4D9OZ6ovQw7pUYzAvhDPGVzrchTEu36w9mgDa8DX/wC6utWAmvd9ZbcCDCs
+         bRdA==
+X-Gm-Message-State: AOAM532SxMcfVUQtrMqYG02toa9wIq/96HUIk8DEuDL6+5YdmLnF1hRZ
+        vTPrItqgZ5G3DLFUUwDJVk2/sLDSBzNL8J1qTT1KLQ==
+X-Google-Smtp-Source: ABdhPJyr//c5nET8Z+mQvISb2NuJCd3AYTwGtAcJ75E4Y1uMidK+37ZjnYYMRwdrb7U9vOsDNUCsMMdMc8v5xECDm0Q=
+X-Received: by 2002:a25:7806:: with SMTP id t6mr10195954ybc.132.1629277037785;
+ Wed, 18 Aug 2021 01:57:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818053300.GA9165@lst.de>
+References: <1629257542-36145-1-git-send-email-linyunsheng@huawei.com>
+In-Reply-To: <1629257542-36145-1-git-send-email-linyunsheng@huawei.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 18 Aug 2021 10:57:06 +0200
+Message-ID: <CANn89iJDf9uzSdqLEBeTeGB1uAxvmruKfK5HbeZWp+Cdc+qggQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/7] add socket to netdev page frag recycling support
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Peter Xu <peterx@redhat.com>,
+        "Tang, Feng" <feng.tang@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        mcroce@microsoft.com, Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>,
+        wenxu <wenxu@ucloud.cn>, Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
+        kpsingh@kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        chenhao288@hisilicon.com,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>, memxor@gmail.com,
+        linux@rempel-privat.de, Antoine Tenart <atenart@kernel.org>,
+        Wei Wang <weiwan@google.com>, Taehee Yoo <ap420073@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        aahringo@redhat.com, ceggers@arri.de, yangbo.lu@nxp.com,
+        Florian Westphal <fw@strlen.de>, xiangxia.m.yue@gmail.com,
+        linmiaohe <linmiaohe@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 07:33:00AM +0200, Christoph Hellwig wrote:
-> On Wed, Aug 18, 2021 at 04:06:47AM +0300, Kari Argillander wrote:
-> > In one source file there is for some reason non utf8 char. But hey this
-> > is fs development so this kind of thing might happen.
-> 
-> Pleaese also refomat these comments while you're at it.  While going
-> over 80 characters is ok in exceptions for readability that is per
-> definition never the case for a block comment.
+On Wed, Aug 18, 2021 at 5:33 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>
+> This patchset adds the socket to netdev page frag recycling
+> support based on the busy polling and page pool infrastructure.
 
-Yeah. Totally good option. I already did it and looks lot better.
+I really do not see how this can scale to thousands of sockets.
 
-On Wed, Aug 18, 2021 at 07:23:40AM +0200, Christoph Hellwig wrote:
-> On Wed, Aug 18, 2021 at 04:06:46AM +0300, Kari Argillander wrote:
-> > In ntfs3 driver there is allocation made like this ntfs_malloc().
-> > Patch 2/3 will converter these to kernel ones like kmalloc(). After I
-> > did this then checkpatch raise warnings about array allocations so I
-> > fix these in patch 3/3.
-> > 
-> > I also notice when I made patch that there is broken utf8 char so I
-> > wanted first fix that because it raised some warning in my editor and
-> > did not want to "break" patch 2/3. So patch 1/3 address that. I did
-> > try to apply this and it seem to work without issues.
-> 
-> So this mostly looks sensible, but I still haven't actually seen
-> the codebase this applies to posted anywhere as far as I can tell.
+tcp_mem[] defaults to ~ 9 % of physical memory.
 
-Yeah that's true. Only place for mention this is here (link). I have
-asked that Konstantin will send patch series v28 to mailing lists. I
-will resist resending v4 before Konstantin has sended.
-https://lore.kernel.org/ntfs3/a9114805f777461eac6fbb0e8e5c46f6@paragon-software.com/
+If you now run tests with thousands of sockets, their skbs will
+consume Gigabytes
+of memory on typical servers, now backed by order-0 pages (instead of
+current order-3 pages)
+So IOMMU costs will actually be much bigger.
+
+Are we planning to use Gigabyte sized page pools for NIC ?
+
+Have you tried instead to make TCP frags twice bigger ?
+This would require less IOMMU mappings.
+(Note: This could require some mm help, since PAGE_ALLOC_COSTLY_ORDER
+is currently 3, not 4)
+
+diff --git a/net/core/sock.c b/net/core/sock.c
+index a3eea6e0b30a7d43793f567ffa526092c03e3546..6b66b51b61be9f198f6f1c4a3d81b57fa327986a
+100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -2560,7 +2560,7 @@ static void sk_leave_memory_pressure(struct sock *sk)
+        }
+ }
+
+-#define SKB_FRAG_PAGE_ORDER    get_order(32768)
++#define SKB_FRAG_PAGE_ORDER    get_order(65536)
+ DEFINE_STATIC_KEY_FALSE(net_high_order_alloc_disable_key);
+
+ /**
+
+
+
+>
+> The profermance improve from 30Gbit to 41Gbit for one thread iperf
+> tcp flow, and the CPU usages decreases about 20% for four threads
+> iperf flow with 100Gb line speed in IOMMU strict mode.
+>
+> The profermance improve about 2.5% for one thread iperf tcp flow
+> in IOMMU passthrough mode.
+>
+> Yunsheng Lin (7):
+>   page_pool: refactor the page pool to support multi alloc context
+>   skbuff: add interface to manipulate frag count for tx recycling
+>   net: add NAPI api to register and retrieve the page pool ptr
+>   net: pfrag_pool: add pfrag pool support based on page pool
+>   sock: support refilling pfrag from pfrag_pool
+>   net: hns3: support tx recycling in the hns3 driver
+>   sysctl_tcp_use_pfrag_pool
+>
+>  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 32 +++++----
+>  include/linux/netdevice.h                       |  9 +++
+>  include/linux/skbuff.h                          | 43 +++++++++++-
+>  include/net/netns/ipv4.h                        |  1 +
+>  include/net/page_pool.h                         | 15 ++++
+>  include/net/pfrag_pool.h                        | 24 +++++++
+>  include/net/sock.h                              |  1 +
+>  net/core/Makefile                               |  1 +
+>  net/core/dev.c                                  | 34 ++++++++-
+>  net/core/page_pool.c                            | 86 ++++++++++++-----------
+>  net/core/pfrag_pool.c                           | 92 +++++++++++++++++++++++++
+>  net/core/sock.c                                 | 12 ++++
+>  net/ipv4/sysctl_net_ipv4.c                      |  7 ++
+>  net/ipv4/tcp.c                                  | 34 ++++++---
+>  14 files changed, 325 insertions(+), 66 deletions(-)
+>  create mode 100644 include/net/pfrag_pool.h
+>  create mode 100644 net/core/pfrag_pool.c
+>
+> --
+> 2.7.4
+>
