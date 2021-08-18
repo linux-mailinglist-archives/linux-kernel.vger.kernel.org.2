@@ -2,60 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8931A3F068D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 137003F06A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239533AbhHROXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 10:23:23 -0400
-Received: from sibelius.xs4all.nl ([83.163.83.176]:60681 "EHLO
-        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238544AbhHROXQ (ORCPT
+        id S238701AbhHRO0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 10:26:34 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:51626 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233868AbhHRO0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 10:23:16 -0400
-Received: from localhost (bloch.sibelius.xs4all.nl [local])
-        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 3d105b57;
-        Wed, 18 Aug 2021 16:22:37 +0200 (CEST)
-Date:   Wed, 18 Aug 2021 16:22:37 +0200 (CEST)
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     sven@svenpeter.dev, maz@kernel.org, alyssa@rosenzweig.io,
-        linux-pci@vger.kernel.org, bhelgaas@google.com, robh+dt@kernel.org,
-        lorenzo.pieralisi@arm.com, kw@linux.com, stan@corellium.com,
-        kettenis@openbsd.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <092a2de3-6760-6398-e4de-2b24d30ac856@marcan.st> (message from
-        Hector Martin on Wed, 18 Aug 2021 20:43:48 +0900)
-Subject: Re: [RFC PATCH 2/2] PCI: apple: Add driver for the Apple M1
-References: <20210815042525.36878-1-alyssa@rosenzweig.io>
- <20210815042525.36878-3-alyssa@rosenzweig.io> <87a6lj17d1.wl-maz@kernel.org>
- <8650c850-2642-4582-ae97-a95134bda3e2@www.fastmail.com> <092a2de3-6760-6398-e4de-2b24d30ac856@marcan.st>
-Message-ID: <56140239180269fd@bloch.sibelius.xs4all.nl>
+        Wed, 18 Aug 2021 10:26:32 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17IEPm8b040529;
+        Wed, 18 Aug 2021 09:25:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1629296748;
+        bh=8N1EpZZqBz/COqdF/VtwF0s5dhZjZS1YH9WJZTrwiys=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=J0IjhelrNAFLlWEErMS54G4vyyBY5qy0qKWcQgIsQRCrdIlB/8kZfpE9WUD+AOuMA
+         O8oahCUVdty8BD3+SqkadOO9flHW5Cu0SLWTz+zbSZ8RMusvS4gv+qDfJbd1i3+OtI
+         s92ueX3t45C9GTZE7rdbMbbvwN3dH9TYEaON9XoU=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17IEPmWs015964
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 18 Aug 2021 09:25:48 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 18
+ Aug 2021 09:25:48 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 18 Aug 2021 09:25:48 -0500
+Received: from [10.247.25.23] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17IEPmHB029124;
+        Wed, 18 Aug 2021 09:25:48 -0500
+Subject: Re: [PATCH 30/30] ARM64: ti_sdk_arm64_release_defconfig: Enable d5520
+ video decoder driver
+To:     <sidraya.bj@pathpartnertech.com>, <gregkh@linuxfoundation.org>,
+        <linux-staging@lists.linux.dev>, <linux-kernel@vger.kernel.org>
+CC:     <prashanth.ka@pathpartnertech.com>, <mchehab@kernel.org>,
+        <linux-media@vger.kernel.org>, <praveen.ap@pathpartnertech.com>
+References: <20210818141037.19990-1-sidraya.bj@pathpartnertech.com>
+ <20210818141037.19990-31-sidraya.bj@pathpartnertech.com>
+From:   "Bajjuri, Praneeth" <praneeth@ti.com>
+Message-ID: <064e296f-878a-c16f-3734-c124db392886@ti.com>
+Date:   Wed, 18 Aug 2021 09:25:48 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20210818141037.19990-31-sidraya.bj@pathpartnertech.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Hector Martin <marcan@marcan.st>
-> Date: Wed, 18 Aug 2021 20:43:48 +0900
-> 
-> On 15/08/2021 21.33, Sven Peter wrote:
-> > The magic comes from the original Corellium driver. It first masks
-> > everything except for the interrupts in the next line, then acks
-> > the interrupts it keeps enabled and then probably wants to wait
-> > for PORT_INT_LINK_UP (or any of the other interrupts which seem to
-> > indicate various error conditions) to fire but instead polls for
-> > PORT_LINKSTS_UP.
-> 
-> Let's not take any magic numbers from their drivers (or what macOS does, 
-> for that matter) without making an attempt to understand what they do, 
-> unless it becomes clear it's incomprehensible. This has already bit us 
-> in the past (the SError disable thing).
 
-The driver should really only unmask the interrupts it handles in its
-interrupt handler.  We should know the meaning of those bits so using
-the appropriate symbolic names shouldn't be too difficult.
 
-Didn't delve into this yet since U-Boot doesn't do interrupts (so I
-don't touch the port interrupt registers there) and on OpenBSD I only
-implemented MSIs for now as all the integrated devices support MSIs
-just fine.  I'll need to revisit this at some point to support the
-Thunderbolt ports.
+On 8/18/2021 9:10 AM, sidraya.bj@pathpartnertech.com wrote:
+> From: Sidraya<sidraya.bj@pathpartnertech.com>
+> 
+> This patch enables d5520 video decoder driver as module
+> on J721e board.
+
+Nack
+
+> 
+> Signed-off-by: Sidraya<sidraya.bj@pathpartnertech.com>
+> ---
+>   MAINTAINERS                                   |    1 +
+>   .../configs/ti_sdk_arm64_release_defconfig    | 7407 +++++++++++++++++
+
+This defconfig doesnt belong in mainline.
+
+>   2 files changed, 7408 insertions(+)
+>   create mode 100644 arch/arm64/configs/ti_sdk_arm64_release_defconfig
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index c7b4c860f8a7..db47fcafbcfc 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -19537,6 +19537,7 @@ M:	Sidraya Jayagond<sidraya.bj@pathpartnertech.com>
+>   L:	linux-media@vger.kernel.org
+>   S:	Maintained
+>   F:	Documentation/devicetree/bindings/media/img,d5520-vxd.yaml
+> +F:	arch/arm64/configs/tisdk_j7-evm_defconfig
+
+This is wrong.
+
+>   F:	drivers/staging/media/vxd/common/addr_alloc.c
+>   F:	drivers/staging/media/vxd/common/addr_alloc.h
+>   F:	drivers/staging/media/vxd/common/dq.c
+> diff --git a/arch/arm64/configs/ti_sdk_arm64_release_defconfig b/arch/arm64/configs/ti_sdk_arm64_release_defconfig
+> new file mode 100644
