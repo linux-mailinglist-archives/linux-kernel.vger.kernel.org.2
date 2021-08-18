@@ -2,74 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32F83F05D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216EA3F05D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238113AbhHROLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 10:11:20 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:40460 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235675AbhHROLT (ORCPT
+        id S238658AbhHROLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 10:11:37 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:49676
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237685AbhHROLf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 10:11:19 -0400
-Received: by mail-ot1-f48.google.com with SMTP id h63-20020a9d14450000b02904ce97efee36so3788554oth.7;
-        Wed, 18 Aug 2021 07:10:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tqED2XFSCgXLMT9RVvhfNyDjVv93a0+pc2IUiiIQXGw=;
-        b=MHx8VqjOo52hRmx6toESBB5RtdrJfq+NuWriyW3htt5lykyriv8jD18GkYFIEeQSJ/
-         nQPFEvshu8q+H1fZeaSqnlaLWhhmNSP9UR5XZ7wCsSZFhqzaOyk1Rbz6z9NOqzcipVIH
-         Fd8HiMxBWk0x6Mut9ARaPVdFCHCuM3BbrWojKntVK7KdTsmvzhQ10tlFAqAczvvToF8Y
-         CXvNBfdoTsg+dMDIh7/a5AbyLnkj4lI9l7JKXME3HGCH37zpcz6qGhuXr3Jl3dQxG9zn
-         FfM5zfKnKvN0jpgxAye+yTk0QGkxAciUGm5RRZT6PSavIFY8tGHlALA4lRab/ml+Zazl
-         Gsog==
-X-Gm-Message-State: AOAM532J8HcVqMfnF/XzY1nFeY4mRmxBVM53AoLYEZ+7xHWue3E7TWBE
-        QNIhbRGpozeiFTJMW6+/9w==
-X-Google-Smtp-Source: ABdhPJydLRhTyxC612CzNagoCp20Xdt7VcCSkeTxxqNVNohU7xCnXV+ABAwS/hFimq1cZBHDMGFuGQ==
-X-Received: by 2002:aca:171a:: with SMTP id j26mr7075944oii.69.1629295844074;
-        Wed, 18 Aug 2021 07:10:44 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l8sm1070165oom.19.2021.08.18.07.10.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 07:10:43 -0700 (PDT)
-Received: (nullmailer pid 2532627 invoked by uid 1000);
-        Wed, 18 Aug 2021 14:10:42 -0000
-Date:   Wed, 18 Aug 2021 09:10:42 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        Eddie Hung <eddie.hung@mediatek.com>,
-        linux-usb@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
+        Wed, 18 Aug 2021 10:11:35 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id A8DCE40CCD;
+        Wed, 18 Aug 2021 14:10:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629295851;
+        bh=G/MIHNvD6MdN21TmI/GGdS5FVLKTw1VFGnxzch1O72o=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=hS5KjdpwPEmHj9ge/Yxw8bSV9FJs4NIIHk3VGgwrMATFRFM/xpT/bZEVvEPhUoWmt
+         JBeKekHTZy/XajcJckInkK8FwpJDL6k7Qi+dFLAv0VQbiM65XDhhTkiGtpkDUXqfwy
+         /fpni7Q7J/UBCnCdL9sBGMIYUleC4ioG7CxDOOUxrN9Jav+nU37bShHtQeRxI4v1H8
+         MIcaeMniTPTBJjVA+r82SGGDSizfoJlm8YF99eVmVLuswWXaXg6T9XkAVe7ZNy/8on
+         uUHnlBHSU96rndoYoFsSyNPfngxkvvXxvpVV7xG35TJvkIS2FkJidCRvuPEseZJXU6
+         v2zFXU6OfyJfQ==
+From:   Colin King <colin.king@canonical.com>
+To:     Mark Brown <broonie@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jon Lin <jon.lin@rock-chips.com>, linux-spi@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH RESEND 1/9] dt-bindings: usb: mtk-xhci: add optional
- property to disable usb2 ports
-Message-ID: <YR0U4irxNbITU2R5@robh.at.kernel.org>
-References: <1629189389-18779-1-git-send-email-chunfeng.yun@mediatek.com>
+        linux-rockchip@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] spi: rockchip-sfc: Fix assigned but never used return error codes
+Date:   Wed, 18 Aug 2021 15:10:51 +0100
+Message-Id: <20210818141051.36320-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1629189389-18779-1-git-send-email-chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Aug 2021 16:36:21 +0800, Chunfeng Yun wrote:
-> Add support to disable specific usb2 host ports, it's useful when
-> a usb2 port is disabled on some platforms, but enabled on others for
-> the same SoC, another case is that the different package may support
-> different number of ports.
-> 
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> ---
->  Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
+From: Colin Ian King <colin.king@canonical.com>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Currently there are two places where the error return variable ret is
+being assigned -ETIMEDOUT on timeout errors and this value is not
+being returned. Fix this by returning -ETIMEDOUT rather than redundantly
+assiging it to ret.
+
+Addresses-Coverity: ("Unused value")
+Fixes: 0b89fc0a367e ("spi: rockchip-sfc: add rockchip serial flash controller")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/spi/spi-rockchip-sfc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/spi/spi-rockchip-sfc.c b/drivers/spi/spi-rockchip-sfc.c
+index 7c4d47fe80c2..827e205c5340 100644
+--- a/drivers/spi/spi-rockchip-sfc.c
++++ b/drivers/spi/spi-rockchip-sfc.c
+@@ -257,7 +257,7 @@ static int rockchip_sfc_wait_txfifo_ready(struct rockchip_sfc *sfc, u32 timeout_
+ 	if (ret) {
+ 		dev_dbg(sfc->dev, "sfc wait tx fifo timeout\n");
+ 
+-		ret = -ETIMEDOUT;
++		return -ETIMEDOUT;
+ 	}
+ 
+ 	return (status & SFC_FSR_TXLV_MASK) >> SFC_FSR_TXLV_SHIFT;
+@@ -274,7 +274,7 @@ static int rockchip_sfc_wait_rxfifo_ready(struct rockchip_sfc *sfc, u32 timeout_
+ 	if (ret) {
+ 		dev_dbg(sfc->dev, "sfc wait rx fifo timeout\n");
+ 
+-		ret = -ETIMEDOUT;
++		return -ETIMEDOUT;
+ 	}
+ 
+ 	return (status & SFC_FSR_RXLV_MASK) >> SFC_FSR_RXLV_SHIFT;
+-- 
+2.32.0
+
