@@ -2,108 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DA23F0BFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 21:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 417DA3F0BFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 21:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233798AbhHRTmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 15:42:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232713AbhHRTlS (ORCPT
+        id S234025AbhHRTmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 15:42:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34708 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233886AbhHRTlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 15:41:18 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222E7C061796
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 12:40:43 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id 18so3237798pfh.9
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 12:40:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cmK65pjDZ5qVva3XgHDw9o42yw29z316T7tmW/1Nv3w=;
-        b=CBQFS/CzM+VLJ7KH3den7IQN+mjUpqRxz1yp5Z0iSkaB7Z2oiisIToaj+Ceb88d0qD
-         pJQvEHjY/laBj7w96Z9tKCmmPS+ymHrQQN+rLzZcqm9McHz4HLHFC8qOEkpr2ZKuRYF7
-         6fFe5kIMAG46U/prB5iMwp7JyRBOHlH63GmEUDS+jFQNNkQQ9/dfGbYf44RDfZUNVvPU
-         aoBHzNo+KdxtrYgBdEeqG2sXp8R86zmH0MXA82oL9c4B6x7lSdL7s+nMtXR3yqtA5Lcz
-         NsQpn7OeUruJa/qTk2LR0IPWcSJQSedGLvsRSG7R1Hwkoj3FV4ZIzPun+9pdvCK6AfKs
-         tyGA==
+        Wed, 18 Aug 2021 15:41:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629315679;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Av+9gVDsC8feOzeiSKKB3XcVER5b9PzyTvqPasKEZ1c=;
+        b=KruGyY6gpRMQTlfCLC8V7jaUa2dG0NQijTRPyfsxcXr5PQvvqEqYTVyC8sH2y/ILPlwYaH
+        P8sxmBEuE+AMgMUzb1EdNSKC8LFC5zz3QMHj98ir8fF5Flp6elrvHYGY4ZXLLLoIqjeOAT
+        yW4UHmAjIiu0edz9V+vrru8brV0ONJQ=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-358-Tk3x34-kP8SgkmePYGoSgg-1; Wed, 18 Aug 2021 15:41:16 -0400
+X-MC-Unique: Tk3x34-kP8SgkmePYGoSgg-1
+Received: by mail-qv1-f72.google.com with SMTP id dl8-20020ad44e08000000b0035f1f1b9cefso2892308qvb.19
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 12:41:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cmK65pjDZ5qVva3XgHDw9o42yw29z316T7tmW/1Nv3w=;
-        b=fCxSOHTE9YPxakupVf1K/hWwiUFWXijzGezjqVSPGLcuH6BJSrWSgBkkPyL4IqpWjI
-         Zd7pIBP60hKG2GyljT+cJOk6wQDiBAlYh+uFNmNOYaiz28nxApa9if4l1qvjvEmfJgbi
-         2lngeRtF/d0h1Ckm8OK9i4p1lHtcGrx/Rkd3aUTIIhthph6hP/M3TTVzjjoRIPYyqno2
-         XHKgVBbrrEEEpnN/d5YCHZ6Yr9Okip4TplR4HowT0wXZ7uvwh5EC6/zxkf+i1ep55+H+
-         R/LZwM3vkS0kkvqpd4Iph5+QyrUawzs9h/sLeFYW3+wqyfSH3sumt0nhsTN+DKgAfhiJ
-         47gw==
-X-Gm-Message-State: AOAM532mvdaNBrVzIqnGkfodoocBnBZlohmC8Cx38AoR34W8T3bYLiDs
-        Wq3/gWTNjEtVt23TW/jNXCv9Bw==
-X-Google-Smtp-Source: ABdhPJyuphotIJTx3zPxZtcqORfr/6ytao/jspVrVoIuvWpMuoTn/WCdN7FYtCks3g2Bf1T0NqOnHQ==
-X-Received: by 2002:a65:641a:: with SMTP id a26mr10470079pgv.340.1629315642726;
-        Wed, 18 Aug 2021 12:40:42 -0700 (PDT)
-Received: from p14s.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id k12sm2960137pjg.6.2021.08.18.12.40.41
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Av+9gVDsC8feOzeiSKKB3XcVER5b9PzyTvqPasKEZ1c=;
+        b=e0PS3igg/jSdWCSceX9mf8wQ8HfossXJDsZ1gym+BNWQYcDeIQIwOeZP9nqTDvrnvm
+         hWeUszKfw08j0O38q0UUV+kPVYdQzfoComylocTvRmCxxkMHh1jwd32Fq6HnetlTnaCK
+         E8rZ2xrXYcOEmDkgZ3bk1zaGZ0pzixYy9PkbOZAiikpS1xvsNUMERbzsPR6A2td1y8wq
+         XEHtf9aG4pZLeChL9ZW+4WK8y/pS/GFe2y1F5Nw6RBHXmZXtG765v40XF453lLkfxvtU
+         catpGUw8+V1Arh6KqNMiakw76fWxNq3IhxC5tba76KCSZiV6NTGhf5tSFMqICDfn+tP6
+         uh4A==
+X-Gm-Message-State: AOAM531gLf8PJQNlRFE0QoWlUbWvZqWxGB7bbwWiqQOYjCJRO3FF6hFi
+        1y0C7e9u1iBqrx5IHIbabLXrmgDhhkoGBbecTCI1ReB9VtUnhl2EyPbPGs1rlg3dK8jADsPs5X/
+        FDK7RDB0GLFTNhEwHS5MdZe1v
+X-Received: by 2002:a05:6214:410e:: with SMTP id kc14mr10860633qvb.33.1629315676478;
+        Wed, 18 Aug 2021 12:41:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxDmwwleE4mo9gtz4ou48ZiVOQow5nBGgo7nnWHJ8fu8DeAGOQ3wUS3pNkWwB2skk/pSMmGBA==
+X-Received: by 2002:a05:6214:410e:: with SMTP id kc14mr10860611qvb.33.1629315676223;
+        Wed, 18 Aug 2021 12:41:16 -0700 (PDT)
+Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id c11sm387398qtx.27.2021.08.18.12.41.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 12:40:42 -0700 (PDT)
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 11/11] coresight: Replace deprecated CPU-hotplug functions.
-Date:   Wed, 18 Aug 2021 13:40:22 -0600
-Message-Id: <20210818194022.379573-12-mathieu.poirier@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210818194022.379573-1-mathieu.poirier@linaro.org>
-References: <20210818194022.379573-1-mathieu.poirier@linaro.org>
+        Wed, 18 Aug 2021 12:41:15 -0700 (PDT)
+From:   trix@redhat.com
+To:     robert.foss@linaro.org, todor.too@gmail.com, agross@kernel.org,
+        bjorn.andersson@linaro.org, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] media: camss: vfe: simplify vfe_get_wm_sizes()
+Date:   Wed, 18 Aug 2021 12:41:05 -0700
+Message-Id: <20210818194105.1400766-1-trix@redhat.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+From: Tom Rix <trix@redhat.com>
 
-The functions get_online_cpus() and put_online_cpus() have been
-deprecated during the CPU hotplug rework. They map directly to
-cpus_read_lock() and cpus_read_unlock().
+Static analysis reports this representative problem
+camss-vfe-4-1.c:333: The result of the left shift is undefined because
+  the left operand is negative
+  reg |= (height - 1) << 4;
+~~~~~~~~~ ^
 
-Replace deprecated CPU-hotplug functions with the official version.
-The behavior remains unchanged.
+The is a false positive.  height is set in vfe_get_wm_sizes() which
+has a switch statement without a default.
 
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: coresight@lists.linaro.org
-Cc: linux-arm-kernel@lists.infradead.org
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Link: https://lore.kernel.org/r/20210803141621.780504-15-bigeasy@linutronix.de
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Reviewing the switch, the cases contain redundant assignments.
+So simplify to assignments.
+
+Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- drivers/hwtracing/coresight/coresight-cpu-debug.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../media/platform/qcom/camss/camss-vfe-4-1.c | 20 ++++++-------------
+ .../media/platform/qcom/camss/camss-vfe-4-7.c | 10 +++-------
+ .../media/platform/qcom/camss/camss-vfe-4-8.c |  9 +++------
+ 3 files changed, 12 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-cpu-debug.c b/drivers/hwtracing/coresight/coresight-cpu-debug.c
-index 9731d3a96073..00de46565bc4 100644
---- a/drivers/hwtracing/coresight/coresight-cpu-debug.c
-+++ b/drivers/hwtracing/coresight/coresight-cpu-debug.c
-@@ -588,11 +588,11 @@ static int debug_probe(struct amba_device *adev, const struct amba_id *id)
+diff --git a/drivers/media/platform/qcom/camss/camss-vfe-4-1.c b/drivers/media/platform/qcom/camss/camss-vfe-4-1.c
+index 7b7c9a0aaab282..42047b11ba529e 100644
+--- a/drivers/media/platform/qcom/camss/camss-vfe-4-1.c
++++ b/drivers/media/platform/qcom/camss/camss-vfe-4-1.c
+@@ -290,22 +290,14 @@ static void vfe_wm_frame_based(struct vfe_device *vfe, u8 wm, u8 enable)
+ static void vfe_get_wm_sizes(struct v4l2_pix_format_mplane *pix, u8 plane,
+ 			     u16 *width, u16 *height, u16 *bytesperline)
+ {
+-	switch (pix->pixelformat) {
+-	case V4L2_PIX_FMT_NV12:
+-	case V4L2_PIX_FMT_NV21:
+-		*width = pix->width;
+-		*height = pix->height;
+-		*bytesperline = pix->plane_fmt[0].bytesperline;
++	*width = pix->width;
++	*height = pix->height;
++	*bytesperline = pix->plane_fmt[0].bytesperline;
++
++	if (pix->pixelformat == V4L2_PIX_FMT_NV12 ||
++	    pix->pixelformat == V4L2_PIX_FMT_NV21)
+ 		if (plane == 1)
+ 			*height /= 2;
+-		break;
+-	case V4L2_PIX_FMT_NV16:
+-	case V4L2_PIX_FMT_NV61:
+-		*width = pix->width;
+-		*height = pix->height;
+-		*bytesperline = pix->plane_fmt[0].bytesperline;
+-		break;
+-	}
+ }
  
- 	drvdata->base = base;
+ static void vfe_wm_line_based(struct vfe_device *vfe, u32 wm,
+diff --git a/drivers/media/platform/qcom/camss/camss-vfe-4-7.c b/drivers/media/platform/qcom/camss/camss-vfe-4-7.c
+index 2836b12ec98915..ab2d57bdf5e71c 100644
+--- a/drivers/media/platform/qcom/camss/camss-vfe-4-7.c
++++ b/drivers/media/platform/qcom/camss/camss-vfe-4-7.c
+@@ -370,30 +370,26 @@ static int vfe_word_per_line_by_bytes(u32 bytes_per_line)
+ static void vfe_get_wm_sizes(struct v4l2_pix_format_mplane *pix, u8 plane,
+ 			     u16 *width, u16 *height, u16 *bytesperline)
+ {
++	*width = pix->width;
++	*height = pix->height;
++
+ 	switch (pix->pixelformat) {
+ 	case V4L2_PIX_FMT_NV12:
+ 	case V4L2_PIX_FMT_NV21:
+-		*width = pix->width;
+-		*height = pix->height;
+ 		*bytesperline = pix->plane_fmt[0].bytesperline;
+ 		if (plane == 1)
+ 			*height /= 2;
+ 		break;
+ 	case V4L2_PIX_FMT_NV16:
+ 	case V4L2_PIX_FMT_NV61:
+-		*width = pix->width;
+-		*height = pix->height;
+ 		*bytesperline = pix->plane_fmt[0].bytesperline;
+ 		break;
+ 	case V4L2_PIX_FMT_YUYV:
+ 	case V4L2_PIX_FMT_YVYU:
+ 	case V4L2_PIX_FMT_VYUY:
+ 	case V4L2_PIX_FMT_UYVY:
+-		*width = pix->width;
+-		*height = pix->height;
+ 		*bytesperline = pix->plane_fmt[plane].bytesperline;
+ 		break;
+-
+ 	}
+ }
  
--	get_online_cpus();
-+	cpus_read_lock();
- 	per_cpu(debug_drvdata, drvdata->cpu) = drvdata;
- 	ret = smp_call_function_single(drvdata->cpu, debug_init_arch_data,
- 				       drvdata, 1);
--	put_online_cpus();
-+	cpus_read_unlock();
- 
- 	if (ret) {
- 		dev_err(dev, "CPU%d debug arch init failed\n", drvdata->cpu);
+diff --git a/drivers/media/platform/qcom/camss/camss-vfe-4-8.c b/drivers/media/platform/qcom/camss/camss-vfe-4-8.c
+index 19519234f727c1..7e6b62c930ac8a 100644
+--- a/drivers/media/platform/qcom/camss/camss-vfe-4-8.c
++++ b/drivers/media/platform/qcom/camss/camss-vfe-4-8.c
+@@ -343,27 +343,24 @@ static int vfe_word_per_line_by_bytes(u32 bytes_per_line)
+ static void vfe_get_wm_sizes(struct v4l2_pix_format_mplane *pix, u8 plane,
+ 			     u16 *width, u16 *height, u16 *bytesperline)
+ {
++	*width = pix->width;
++	*height = pix->height;
++
+ 	switch (pix->pixelformat) {
+ 	case V4L2_PIX_FMT_NV12:
+ 	case V4L2_PIX_FMT_NV21:
+-		*width = pix->width;
+-		*height = pix->height;
+ 		*bytesperline = pix->plane_fmt[0].bytesperline;
+ 		if (plane == 1)
+ 			*height /= 2;
+ 		break;
+ 	case V4L2_PIX_FMT_NV16:
+ 	case V4L2_PIX_FMT_NV61:
+-		*width = pix->width;
+-		*height = pix->height;
+ 		*bytesperline = pix->plane_fmt[0].bytesperline;
+ 		break;
+ 	case V4L2_PIX_FMT_YUYV:
+ 	case V4L2_PIX_FMT_YVYU:
+ 	case V4L2_PIX_FMT_VYUY:
+ 	case V4L2_PIX_FMT_UYVY:
+-		*width = pix->width;
+-		*height = pix->height;
+ 		*bytesperline = pix->plane_fmt[plane].bytesperline;
+ 		break;
+ 	}
 -- 
-2.25.1
+2.26.3
 
