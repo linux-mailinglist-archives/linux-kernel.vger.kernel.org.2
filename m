@@ -2,96 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8AE3EF946
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 06:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1313EF94A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 06:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236518AbhHREaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 00:30:15 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:30755 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhHREaO (ORCPT
+        id S237227AbhHREaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 00:30:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236690AbhHREaP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 00:30:14 -0400
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 17I4TQ5Y018802;
-        Wed, 18 Aug 2021 13:29:26 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 17I4TQ5Y018802
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1629260966;
-        bh=kHlrdkqxRjQoDvpiz9nmAOi6Y1fmh6t3QYrglYwpvXE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=E/fkK5/G5wLfUgJDgegk+M6oj/h8/Pp50c7dUdqd5Rn7R+trOegyaZXvKRaeWc0RF
-         Sf/TxoA2/9DEz9250sBuogw8R45LNsJ44quLXSUApkjiLTMBPEoTA08tyru1p170z7
-         R5z+5IXkqX/YMwgW96OzcUWYMNWLC+WKtvdAJ10on3F6en68QEBeh52daDGlndjumF
-         6UOTJQeY8qYQOGZpToSi4WjccHHdTAfFs+t0c6JvC6i67BkNu75Y6N+YXeeu10/UJK
-         +5ti5hryG2oUsAba4MZFOpuy7U8eg03eRtJH7QqyJ7c72UDittXGQcnjfrtoLZxFXI
-         WpFZxgtYwc+ow==
-X-Nifty-SrcIP: [209.85.214.175]
-Received: by mail-pl1-f175.google.com with SMTP id n12so1030580plf.4;
-        Tue, 17 Aug 2021 21:29:26 -0700 (PDT)
-X-Gm-Message-State: AOAM532n03LuCR5u46jY6eA/snS/ijKEMCtH7tgN6/kZqsFBYABflrnY
-        hLgj2m/KQgvzzwkPU2hIqJmDPsX8H06fIpNljCw=
-X-Google-Smtp-Source: ABdhPJxihjnNOhP1CbhvEkTNiabMGkxoLg+ZCJFf0bt2AZXGYeWTSbAlMePPwWgTXeBSrL3JnLQUZUYk61eVBWCvHvk=
-X-Received: by 2002:a17:90a:7384:: with SMTP id j4mr7017433pjg.153.1629260965965;
- Tue, 17 Aug 2021 21:29:25 -0700 (PDT)
+        Wed, 18 Aug 2021 00:30:15 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4307BC061764;
+        Tue, 17 Aug 2021 21:29:41 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id n7so2722165ljq.0;
+        Tue, 17 Aug 2021 21:29:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1oGPCZKuN7//6YRIhZx0/l4kulZ4IgOOJnUbYEMOH6I=;
+        b=V5kVQiJtWOCCp57EmiLvG7lU7Eb4Pzk32zmECjGfUZe6WpjBhCOxyJxa3BJEPwWMQL
+         YODIIG0AfBa0AUaKsgX9TTGS98k2By1GeZoFn38hvGsENacTswgcd9UWoRbXdcopoBne
+         sb3uVBZSitgvH5I2PuygucyxoSig5hBa9YfcBzRQREAP0Q0aEozhok3Fzl9Jnhf7BYKe
+         8Szm/avAy2CyuGWJgmVVdv21+M3huLPr7UTBxs1Esv1JV71R127gQOsjyI3lC+8wggh2
+         1bdKBcLFz2RhSs2A6jFav8nPUJAxIitDUeBO7TFOJsdfbDPbbNOZfFUBrMVBZLlNqfnp
+         ov8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1oGPCZKuN7//6YRIhZx0/l4kulZ4IgOOJnUbYEMOH6I=;
+        b=p4aOWwZfHB4Uk7m+lyCSixwFETeYOUTYsWYjPsVaR4C5E7bg+VwYQaVQuM6bFjC6Nd
+         HWe+TAzjgnORUSOf+fN4RI/cjNMNajCc80fkUlSFbQFRSQqDFSt+O6X7/xzyuLATqL2u
+         FBbvLVZwoTugFs4dHj/XmklQPD1XwcmtsKcanDv/6Kjuo6/WG8uciZE1i7QtwLDBA8ui
+         A+XbNDiUCY9C6hL4y0nEvfkehXqZ2wkQdP8w5bxanPvefcsUVfMFQTe+TxdELENC6Nmk
+         8Nce62ZZhjU7szxUuVPX5gKLuY4SBKIXFWrmhxnmgq102neSuygnPdur4lwx/PXJyVAr
+         TzNg==
+X-Gm-Message-State: AOAM532MexhPucXexJcw1yEp9Dt/xHCTlKcWfloiHKFIhRpalVHrWHLM
+        0+PGFZ/jlJitLViJIi6L0Y9Nr8R/sjI=
+X-Google-Smtp-Source: ABdhPJxjWHu+1mhjN7xsUMJQm6f2OEtCQsnZGvTaLckFV9kcxoy2/qKkU641V0QwrRxZ9lvcjAC7rA==
+X-Received: by 2002:a05:651c:390:: with SMTP id e16mr6391418ljp.344.1629260979533;
+        Tue, 17 Aug 2021 21:29:39 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-85-91.dynamic.spd-mgts.ru. [46.138.85.91])
+        by smtp.googlemail.com with ESMTPSA id f1sm381628lfs.44.2021.08.17.21.29.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Aug 2021 21:29:39 -0700 (PDT)
+Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20210817012754.8710-1-digetx@gmail.com>
+ <20210817012754.8710-2-digetx@gmail.com>
+ <20210817075515.vyyv7z37e6jcrhsl@vireshk-i7>
+ <710261d9-7ae3-5155-c0a2-f8aed2408d0b@gmail.com>
+ <20210818035533.ieqkexltfvvf2p4n@vireshk-i7>
+ <5b2a80c1-9743-e633-6257-ede94c8a274c@gmail.com>
+Message-ID: <6df0ed60-e497-0af2-09b6-a9d82f502f17@gmail.com>
+Date:   Wed, 18 Aug 2021 07:29:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210814234102.2315551-1-masahiroy@kernel.org> <r3rr2q2-1o70-o012-4ns1-or1qrs665753@syhkavp.arg>
-In-Reply-To: <r3rr2q2-1o70-o012-4ns1-or1qrs665753@syhkavp.arg>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 18 Aug 2021 13:28:49 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATbyotYzVDc3b8jPk7nC1dLXjc3oMeytwA5WqzsMBPjgA@mail.gmail.com>
-Message-ID: <CAK7LNATbyotYzVDc3b8jPk7nC1dLXjc3oMeytwA5WqzsMBPjgA@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: Fix 'no symbols' warning when CONFIG_TRIM_UNUSD_KSYMS=y
-To:     Nicolas Pitre <nico@fluxnic.net>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <5b2a80c1-9743-e633-6257-ede94c8a274c@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 15, 2021 at 12:37 PM Nicolas Pitre <nico@fluxnic.net> wrote:
->
-> On Sun, 15 Aug 2021, Masahiro Yamada wrote:
->
-> > When CONFIG_TRIM_UNUSED_KSYMS is enabled, I see some warnings like this:
-> >
-> >   nm: arch/x86/entry/vdso/vdso32/note.o: no symbols
-> >
-> > $NM (both GNU nm and llvm-nm) warns when no symbol is found in the
-> > object. Suppress the stderr.
-> >
-> > Fixes: bbda5ec671d3 ("kbuild: simplify dependency generation for CONFIG_TRIM_UNUSED_KSYMS")
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> >  scripts/gen_ksymdeps.sh | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/scripts/gen_ksymdeps.sh b/scripts/gen_ksymdeps.sh
-> > index 1324986e1362..5493124e8ee6 100755
-> > --- a/scripts/gen_ksymdeps.sh
-> > +++ b/scripts/gen_ksymdeps.sh
-> > @@ -4,7 +4,10 @@
-> >  set -e
-> >
-> >  # List of exported symbols
-> > -ksyms=$($NM $1 | sed -n 's/.*__ksym_marker_\(.*\)/\1/p' | tr A-Z a-z)
-> > +#
-> > +# If the object has no symbol, $NM warns 'no symbols'.
-> > +# Suppress the stdout.
-> > +ksyms=$($NM $1 2>/dev/null | sed -n 's/.*__ksym_marker_\(.*\)/\1/p' | tr A-Z a-z)
->
-> You mean stderr.
+18.08.2021 07:12, Dmitry Osipenko пишет:
+> 18.08.2021 06:55, Viresh Kumar пишет:
+>> On 17-08-21, 18:49, Dmitry Osipenko wrote:
+>>> 17.08.2021 10:55, Viresh Kumar пишет:
+>>> ...
+>>>>> +int dev_pm_opp_sync(struct device *dev)
+>>>>> +{
+>>>>> +	struct opp_table *opp_table;
+>>>>> +	struct dev_pm_opp *opp;
+>>>>> +	int ret = 0;
+>>>>> +
+>>>>> +	/* Device may not have OPP table */
+>>>>> +	opp_table = _find_opp_table(dev);
+>>>>> +	if (IS_ERR(opp_table))
+>>>>> +		return 0;
+>>>>> +
+>>>>> +	if (!_get_opp_count(opp_table))
+>>>>> +		goto put_table;
+>>>>> +
+>>>>> +	opp = _find_current_opp(dev, opp_table);
+>>>>> +	ret = _set_opp(dev, opp_table, opp, opp->rate);
+>>>>
+>>>> And I am not sure how this will end up working, since new OPP will be
+>>>> equal to old one. Since I see you call this from resume() at many
+>>>> places.
+>>>
+>>> Initially OPP table is "uninitialized" and opp_table->enabled=false,
+>>> hence the first sync always works even if OPP is equal to old one. Once
+>>> OPP has been synced, all further syncs are NO-OPs, hence it doesn't
+>>> matter how many times syncing is called.
+>>>
+>>> https://elixir.bootlin.com/linux/v5.14-rc6/source/drivers/opp/core.c#L1012
+>>
+>> Right, but how will this work from Resume ? Won't that be a no-op ?
+> 
+> The first resume initializes the OPP state on sync, all further syncs on
+> resume are no-ops.
+> 
 
-
-My bad - I will fix it in v2.
-Thanks.
-
-
--- 
-Best Regards
-Masahiro Yamada
+Notice that we use GENPD here. GENPD core takes care of storing PD's
+performance state (voltage in case of Tegra) and dropping it to 0 after
+rpm-suspend, GENPD core also restores the state before rpm-resume.
