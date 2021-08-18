@@ -2,141 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1313EF94A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 06:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4E83EF959
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 06:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237227AbhHREaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 00:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50322 "EHLO
+        id S237556AbhHREbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 00:31:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236690AbhHREaP (ORCPT
+        with ESMTP id S237354AbhHREbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 00:30:15 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4307BC061764;
-        Tue, 17 Aug 2021 21:29:41 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id n7so2722165ljq.0;
-        Tue, 17 Aug 2021 21:29:41 -0700 (PDT)
+        Wed, 18 Aug 2021 00:31:13 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63204C061796
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 21:30:39 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id qe12-20020a17090b4f8c00b00179321cbae7so1510551pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 21:30:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1oGPCZKuN7//6YRIhZx0/l4kulZ4IgOOJnUbYEMOH6I=;
-        b=V5kVQiJtWOCCp57EmiLvG7lU7Eb4Pzk32zmECjGfUZe6WpjBhCOxyJxa3BJEPwWMQL
-         YODIIG0AfBa0AUaKsgX9TTGS98k2By1GeZoFn38hvGsENacTswgcd9UWoRbXdcopoBne
-         sb3uVBZSitgvH5I2PuygucyxoSig5hBa9YfcBzRQREAP0Q0aEozhok3Fzl9Jnhf7BYKe
-         8Szm/avAy2CyuGWJgmVVdv21+M3huLPr7UTBxs1Esv1JV71R127gQOsjyI3lC+8wggh2
-         1bdKBcLFz2RhSs2A6jFav8nPUJAxIitDUeBO7TFOJsdfbDPbbNOZfFUBrMVBZLlNqfnp
-         ov8Q==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=a0LOe5TP/MBO2wNeDbghMruuMrb9dKCIPmMRCLEki+o=;
+        b=eDN/L6WuO3TyTi0qDmqtH9D45GKtl3b2ANmz/AMyOyEVKFYG/4Yuyy0Gh7FDbN5bWe
+         WBNYwmuDJ+LaXEImCFGYICnkvJLJFiWev+0DLPABDkQXJptxMHh8soPhf4P4IpwnQnV4
+         X0ypgxMF7PN/NHuYeGGKeNdYkajLrqlMYFBRU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=1oGPCZKuN7//6YRIhZx0/l4kulZ4IgOOJnUbYEMOH6I=;
-        b=p4aOWwZfHB4Uk7m+lyCSixwFETeYOUTYsWYjPsVaR4C5E7bg+VwYQaVQuM6bFjC6Nd
-         HWe+TAzjgnORUSOf+fN4RI/cjNMNajCc80fkUlSFbQFRSQqDFSt+O6X7/xzyuLATqL2u
-         FBbvLVZwoTugFs4dHj/XmklQPD1XwcmtsKcanDv/6Kjuo6/WG8uciZE1i7QtwLDBA8ui
-         A+XbNDiUCY9C6hL4y0nEvfkehXqZ2wkQdP8w5bxanPvefcsUVfMFQTe+TxdELENC6Nmk
-         8Nce62ZZhjU7szxUuVPX5gKLuY4SBKIXFWrmhxnmgq102neSuygnPdur4lwx/PXJyVAr
-         TzNg==
-X-Gm-Message-State: AOAM532MexhPucXexJcw1yEp9Dt/xHCTlKcWfloiHKFIhRpalVHrWHLM
-        0+PGFZ/jlJitLViJIi6L0Y9Nr8R/sjI=
-X-Google-Smtp-Source: ABdhPJxjWHu+1mhjN7xsUMJQm6f2OEtCQsnZGvTaLckFV9kcxoy2/qKkU641V0QwrRxZ9lvcjAC7rA==
-X-Received: by 2002:a05:651c:390:: with SMTP id e16mr6391418ljp.344.1629260979533;
-        Tue, 17 Aug 2021 21:29:39 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-85-91.dynamic.spd-mgts.ru. [46.138.85.91])
-        by smtp.googlemail.com with ESMTPSA id f1sm381628lfs.44.2021.08.17.21.29.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Aug 2021 21:29:39 -0700 (PDT)
-Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20210817012754.8710-1-digetx@gmail.com>
- <20210817012754.8710-2-digetx@gmail.com>
- <20210817075515.vyyv7z37e6jcrhsl@vireshk-i7>
- <710261d9-7ae3-5155-c0a2-f8aed2408d0b@gmail.com>
- <20210818035533.ieqkexltfvvf2p4n@vireshk-i7>
- <5b2a80c1-9743-e633-6257-ede94c8a274c@gmail.com>
-Message-ID: <6df0ed60-e497-0af2-09b6-a9d82f502f17@gmail.com>
-Date:   Wed, 18 Aug 2021 07:29:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=a0LOe5TP/MBO2wNeDbghMruuMrb9dKCIPmMRCLEki+o=;
+        b=qCn2ZT/Nl2GsyjQQ/VumYkjeHQlmy8M+I7WYPVVF28gY2D/DO1r4h/4cwUV806NUzK
+         m90NUVxQmHiinH2B9G2tY4h1Ls4NVfTh0jmWEGkp+ganeaDqEbl+e9YO1nOjm+hK4IlZ
+         +omtG360etxXZcLmXpgiqI4I+r5Ol7Y9/mJcTbNsyttBbQCBeIn6KGG3R6DlRrIKHsKo
+         VSTuqBPxmr9Ir7EtEPY64sKTdhkvxGSIEyytbGOPkPGLcsNFUx1PpIavjYVTHkXEcJH9
+         qBNwAuc/Hj2C0iQo6TrsIWwyq1+KoRstWhAQf48MyIcqv/sw/7bQI13nYY2iWba4RhxS
+         Q8vw==
+X-Gm-Message-State: AOAM532WTClV/wDFKTfek2C+mRAsvfpG9Udm6b6WxTLgz9qxmZvM29h9
+        LYcASmjQhwG3vna1/Ay6S7DqVw==
+X-Google-Smtp-Source: ABdhPJwsaTtZYXKiN4quxJ4tzCQha7i8BPchElKOd3en3ff3OSk7pG/77Ovg0c9R34pvM4YsriVjhA==
+X-Received: by 2002:a17:903:4101:b029:12d:6318:6226 with SMTP id r1-20020a1709034101b029012d63186226mr5601156pld.8.1629261038930;
+        Tue, 17 Aug 2021 21:30:38 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id y5sm4998163pgs.27.2021.08.17.21.30.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 21:30:38 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Kees Cook <keescook@chromium.org>, Al Cooper <alcooperx@gmail.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH 0/2] USB: EHCI: Add register array bounds to HCS ports
+Date:   Tue, 17 Aug 2021 21:30:32 -0700
+Message-Id: <20210818043035.1308062-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <5b2a80c1-9743-e633-6257-ede94c8a274c@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+X-Developer-Signature: v=1; a=openpgp-sha256; l=714; h=from:subject; bh=gAZBA/dZMYNBvc+aJ1p1+ilMGGcRI9fgz97TIxYfSJw=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhHIzp9ZEAsN6oHOIuutYwg2OQxH7kmBw4WprGR96W TR5ELHSJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYRyM6QAKCRCJcvTf3G3AJlWDD/ 0ZnrXjglcHMcCrFnazmWm3XRbajDPcRWtyCYemldv5kCEDC7Yhxrz8ouoLpM1TIUPfGk9S1kKqNwZU ttqIU9//EVeda2hrcDCV6RuuuOFhdMDU9SRpjwNYbuC46Qr1HoLlhBf5CGEwodNZ2nmCbkzpUXGAU0 ru10H2fLTIYtj3LWG71+bqhbPpu+R6MiTS1mw+G4z6aR+FFBgN3XAJFhML+nIst54zd/ilkhIJMDBN jJPDUXUvlVSiduNap3Wu5oCs/4WcLcj/a6BZ+QaiJTzB0S8NBPdI/RALe6QUscMjda6PCN0HBQ76tD Jjz2ZErujVzW60ugo5EXVsLRNrPE4NfcPS0oIlFjuBsIky9jXTFwEosm16e9u/RI907TYK+5UsEbx/ AGwsZ9aRF6Sd+hdWyaq3o6813KedX4tfhq0JPMVHF16VzNqEDP3MFwDaOkN2AhBPcbknlLvlrZTGCd XIrbW3IVJLYIUp7WKV4HOgXpQKRjWjSDgs4Z5l01G/+67Vk+q3DWZQd1ngBSN9h+YODdiKhXc9CHwT evJo1DkjGAxp9X+MfbeWzt1msdEnQBSulZpce5UN5U7buH+YLftsxHN/x3omJw7sBw+B4eagLsNxOh eBB1nwNxR1MfQn9rezy3pzi8lTunkDWeckdxixa5rmq5rf0TunEMXaJdEttA==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-18.08.2021 07:12, Dmitry Osipenko пишет:
-> 18.08.2021 06:55, Viresh Kumar пишет:
->> On 17-08-21, 18:49, Dmitry Osipenko wrote:
->>> 17.08.2021 10:55, Viresh Kumar пишет:
->>> ...
->>>>> +int dev_pm_opp_sync(struct device *dev)
->>>>> +{
->>>>> +	struct opp_table *opp_table;
->>>>> +	struct dev_pm_opp *opp;
->>>>> +	int ret = 0;
->>>>> +
->>>>> +	/* Device may not have OPP table */
->>>>> +	opp_table = _find_opp_table(dev);
->>>>> +	if (IS_ERR(opp_table))
->>>>> +		return 0;
->>>>> +
->>>>> +	if (!_get_opp_count(opp_table))
->>>>> +		goto put_table;
->>>>> +
->>>>> +	opp = _find_current_opp(dev, opp_table);
->>>>> +	ret = _set_opp(dev, opp_table, opp, opp->rate);
->>>>
->>>> And I am not sure how this will end up working, since new OPP will be
->>>> equal to old one. Since I see you call this from resume() at many
->>>> places.
->>>
->>> Initially OPP table is "uninitialized" and opp_table->enabled=false,
->>> hence the first sync always works even if OPP is equal to old one. Once
->>> OPP has been synced, all further syncs are NO-OPs, hence it doesn't
->>> matter how many times syncing is called.
->>>
->>> https://elixir.bootlin.com/linux/v5.14-rc6/source/drivers/opp/core.c#L1012
->>
->> Right, but how will this work from Resume ? Won't that be a no-op ?
-> 
-> The first resume initializes the OPP state on sync, all further syncs on
-> resume are no-ops.
-> 
+Hi,
 
-Notice that we use GENPD here. GENPD core takes care of storing PD's
-performance state (voltage in case of Tegra) and dropping it to 0 after
-rpm-suspend, GENPD core also restores the state before rpm-resume.
+This is cleaning up some of the remaining things to be able to apply
+-Warray-bounds and -Wzero-length-bounds globally. Only after doing my
+own version of the port_status patch did I find Arnd's earlier
+patches, including for the weird Broadcom stuff[1].
+
+Anyway, here's what I got. :) No binary differences.
+
+-Kees
+
+[1] https://lore.kernel.org/lkml/20200527134320.869042-1-arnd@arndb.de/#t
+
+Kees Cook (2):
+  USB: EHCI: Add register array bounds to HCS ports
+  USB: EHCI: Add alias for Broadcom INSNREG
+
+ drivers/usb/host/ehci-brcm.c | 11 +++++------
+ include/linux/usb/ehci_def.h | 38 ++++++++++++++++++++++++------------
+ 2 files changed, 31 insertions(+), 18 deletions(-)
+
+-- 
+2.30.2
+
