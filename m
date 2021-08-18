@@ -2,80 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 665693F00EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5301E3F00F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232844AbhHRJum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:50:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36556 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231960AbhHRJuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:50:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 24C8760EBD;
-        Wed, 18 Aug 2021 09:50:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629280206;
-        bh=nPk6m8gVc4yQgj1atF2k+8YATLZH+Boe21wz3rbQ36w=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=BkjWZxWsdedRuVW1EQbTs8GYVNf5T6awS8SChUpoOVWJWN9qJrCOndmmSOyshpXxT
-         5An+GwkCE6L9PCpPvii831IGV6ngDy7y2VsI4vNnTWS8QF6Anoq6mxwyQ56OeclCoM
-         AjGnmktAc5vFiwyH6WSSQJFKvjeN+NDIU2cfQ4jz958IIjAYDqwGvYkJzPRCjZm9sV
-         H+J462EU1cSNn9gJNqojEydJqV0h9VmUWNL9s+QwmzVzyT05jwa304qppsBkhZhGs1
-         6tHIqNba9/Ofh2kHe7GWN/GeDLLE9Hf3mIBggplVakCJKRkw2rvL10e2H6CYZp9jKf
-         UxYW6Y7QUYq7Q==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 196EA60A2E;
-        Wed, 18 Aug 2021 09:50:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233252AbhHRJv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 05:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233042AbhHRJvW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 05:51:22 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455A6C0613A3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:50:48 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id x16so1574888pfh.2
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:50:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HyhZskvnkMHQUsBUgjlwBTJK659CA+CwU8djwVBZ2sM=;
+        b=WeXABN/OK1Wr8lx7yIzjEQc22keli5/mPbqOsII32BzwbNTl5ULMEk37J2dJ8WBIc8
+         ZnFr2sJXSoQcvyE/NTKrdgFlaJaQ5o8OxVWXD6PUNqbIuMj7u3RPYczNpQRUfi51aU4K
+         IMg9JXqfomBw0MGOEn5iaKId1Us1CN3Pm6n193v6mGKDxjCswxDgh1VAt9J14Z2xnhK9
+         TjVyhjtcpvAwdRJrWEVMHqX2US4YAz29pKFNe9gxQYZqLn/NPPMrB0GL1Cn9pdhRH215
+         rF0aZ83JvYygnG0uw5U83BQhbi3YsDjTjk/h7pS55RDpk7eJ2g4J4R4IDq7w+OQTfMd1
+         Zzzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HyhZskvnkMHQUsBUgjlwBTJK659CA+CwU8djwVBZ2sM=;
+        b=EpTM33nG8pEEoSKT62xRcIQD6vL2/r2mowpY/3gx6Uyb3G+U6kg0bqGSwPfsaoYgfk
+         9wlSr/ENMjAtb7RafiX7hvdS072y9SyWIZ0M14Ec96IKHk1ZqyV7HqqNcunC+6aZobxL
+         4nU8N34VJbP69dWmFMidB6cw6StJBSSwj5Ac7H/UfeQJw6Gao5kg0r+YAYlxMA80QBIJ
+         bPaP89Ck2owJcB0kosverAd9Xd/0sMv6tQPbnGHyoyVmJIjE98lIS+9N8t3Gap9hMkIL
+         JUUQJEuFvFNURJMklJS9vgzMQxfp51Mj4OB/y2zRsjbtEDSJCdy+x4rJAs1v+CfRWjr5
+         5EKg==
+X-Gm-Message-State: AOAM533RfCcby0uaxaFClSshDyh35T6etL3gKflAHa5gO/pEQb7dG6xp
+        9l1IHw7+Znxn55ZhRtjLLc2TJw==
+X-Google-Smtp-Source: ABdhPJzNgodhRJ4P04IWzIYvulf9/hQQBrDCKLc4ZA4G1N3jYvdGFtkpsn+640r5oaGBQ5g20Y+t7Q==
+X-Received: by 2002:a63:3c5d:: with SMTP id i29mr8049824pgn.147.1629280247471;
+        Wed, 18 Aug 2021 02:50:47 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id i11sm6720260pgo.25.2021.08.18.02.50.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 02:50:47 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 15:20:44 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
+Message-ID: <20210818095044.e2ntsm45h5cddk7s@vireshk-i7>
+References: <20210818043131.7klajx6drvvkftoc@vireshk-i7>
+ <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
+ <20210818045307.4brb6cafkh3adjth@vireshk-i7>
+ <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
+ <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
+ <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
+ <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
+ <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
+ <20210818091417.dvlnsxlgybdsn76x@vireshk-i7>
+ <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v3 0/3] Clean up and fix error handling in mdio_mux_init()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162928020609.23266.3797943730217405111.git-patchwork-notify@kernel.org>
-Date:   Wed, 18 Aug 2021 09:50:06 +0000
-References: <20210818033804.3281057-1-saravanak@google.com>
-In-Reply-To: <20210818033804.3281057-1-saravanak@google.com>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, kuba@kernel.org, jon.mason@broadcom.com,
-        david.daney@cavium.com, maz@kernel.org, narmstrong@baylibre.com,
-        khilman@baylibre.com, kernel-team@android.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net.git (refs/heads/master):
-
-On Tue, 17 Aug 2021 20:38:00 -0700 you wrote:
-> This patch series was started due to -EPROBE_DEFER not being handled
-> correctly in mdio_mux_init() and causing issues [1]. While at it, I also
-> did some more error handling fixes and clean ups. The -EPROBE_DEFER fix is
-> the last patch.
+On 18-08-21, 11:41, Ulf Hansson wrote:
+> On Wed, 18 Aug 2021 at 11:14, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > What we need here is just configure. So something like this then:
+> >
+> > - genpd->get_performance_state()
+> >   -> dev_pm_opp_get_current_opp() //New API
+> >   -> dev_pm_genpd_set_performance_state(dev, current_opp->pstate);
+> >
+> > This can be done just once from probe() then.
 > 
-> Ideally, in the last patch we'd treat any error similar to -EPROBE_DEFER
-> but I'm not sure if it'll break any board/platforms where some child
-> mdiobus never successfully registers. If we treated all errors similar to
-> -EPROBE_DEFER, then none of the child mdiobus will work and that might be a
-> regression. If people are sure this is not a real case, then I can fix up
-> the last patch to always fail the entire mdio-mux init if any of the child
-> mdiobus registration fails.
-> 
-> [...]
+> How would dev_pm_opp_get_current_opp() work? Do you have a suggestion?
 
-Here is the summary with links:
-  - [net,v3,1/3] net: mdio-mux: Delete unnecessary devm_kfree
-    https://git.kernel.org/netdev/net/c/663d946af5fb
-  - [net,v3,2/3] net: mdio-mux: Don't ignore memory allocation errors
-    https://git.kernel.org/netdev/net/c/99d81e942474
-  - [net,v3,3/3] net: mdio-mux: Handle -EPROBE_DEFER correctly
-    https://git.kernel.org/netdev/net/c/7bd0cef5dac6
+The opp core already has a way of finding current OPP, that's what
+Dmitry is trying to use here. It finds it using clk_get_rate(), if
+that is zero, it picks the lowest freq possible.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> I am sure I understand the problem. When a device is getting probed,
+> it needs to consume power, how else can the corresponding driver
+> successfully probe it?
 
+Dmitry can answer that better, but a device doesn't necessarily need
+to consume energy in probe. It can consume bus clock, like APB we
+have, but the more energy consuming stuff can be left disabled until
+the time a user comes up. Probe will just end up registering the
+driver and initializing it.
 
+-- 
+viresh
