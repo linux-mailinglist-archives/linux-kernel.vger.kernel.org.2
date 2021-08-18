@@ -2,378 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AC783F0B7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 21:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7803F0B81
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 21:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233338AbhHRTIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 15:08:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233370AbhHRTIG (ORCPT
+        id S233277AbhHRTIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 15:08:37 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:39991 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233345AbhHRTIU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 15:08:06 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3108C0612E7;
-        Wed, 18 Aug 2021 12:07:30 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id by4so4817800edb.0;
-        Wed, 18 Aug 2021 12:07:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=rN85VThnn64iN3UAA17TtZLzJAMJIE2GOz3i0vOt72E=;
-        b=e3KOVC3f/zMDiDDYZWx8VrkzVGkaiA/YDrtMDB4Jt130XO7bo0MD5gxAFHsrE3PaEJ
-         XcwA82d643XJti4I3zE07Qfv/VM92CGnWYMRNycNx4W2OUWR79Aw1fWYOSpTFoNaCPX0
-         Vely65YzOdxrZg5e9+RhwnspeaEqGrczqh6OhO5Ei1OMT/maWw6KyjSIdXHPIUur0Jkv
-         SWVczPUUcpPuyMG84vUtxYo0eXJN8thkifCmZabv0wqZcHBpQp6p69tEfNFt1KaWX6Lf
-         Z0Z7TRx/SfMXVxMlf2/5QPXqOvcYLCcwjiyDY//76PPdI+HIOq7Olpxl2d7xIL+u075c
-         lPvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=rN85VThnn64iN3UAA17TtZLzJAMJIE2GOz3i0vOt72E=;
-        b=E49RgRlpdpa4HYeM3EautT/Ox0XpkDlXAXfdJV6UouCSau/0ze2tJOxUX/KsSHc5qS
-         LaVJBM8D/rGBZ44KqvypwOEqVoA1ec/+N6XuQHGaiH5O+p230XkW5+PjG0umGiRVM8gx
-         1S8982KIOPeerzris38hu5uLTjY6zbuoPApIfUVAX4fCVMvZsWDSKO47yrp44BsqMyha
-         wSQFS/kc4lWJS+cD1sVKtTQrbq6xKoNaZ/C+xfph+SO7jYEeFkfpdY8D62S78NQqN4a0
-         z7VrST2DmTv8LZ2UHUtQvmRFuro1wdtaCiscfAbwLTJ0QUdPEW5leBueSW9Xi9W4nsTF
-         e0+A==
-X-Gm-Message-State: AOAM533N8QMu6ZQj4vUcA6GNA6FDLaj9Y9dOuROXNkjnC02gqc6Qm4Pw
-        Oe++26RhF5YhwhXdC4adgqQECNdQafm7iA==
-X-Google-Smtp-Source: ABdhPJzGgQFABC52Bf+M68p6/Td2b/CPFEYku5U50k6VYsG+SmUhL98Ppjr7ypQSQvVP06cVBahKoQ==
-X-Received: by 2002:a05:6402:1c03:: with SMTP id ck3mr11911305edb.312.1629313648865;
-        Wed, 18 Aug 2021 12:07:28 -0700 (PDT)
-Received: from ?IPv6:2001:981:6fec:1:ee14:4fd1:fa5a:b7f6? ([2001:981:6fec:1:ee14:4fd1:fa5a:b7f6])
-        by smtp.gmail.com with ESMTPSA id h10sm480996edb.74.2021.08.18.12.07.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 12:07:27 -0700 (PDT)
-Subject: Re: [PATCH v10 0/6] Re-introduce TX FIFO resize for larger EP
- bursting
-From:   Ferry Toth <fntoth@gmail.com>
-To:     Felipe Balbi <balbi@kernel.org>
-Cc:     Wesley Cheng <wcheng@codeaurora.org>, gregkh@linuxfoundation.org,
-        robh+dt@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
-        frowand.list@gmail.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, jackp@codeaurora.org,
-        heikki.krogerus@linux.intel.com, andy.shevchenko@gmail.com,
-        Ruslan Bilovol <ruslan.bilovol@gmail.com>
-References: <1623923899-16759-1-git-send-email-wcheng@codeaurora.org>
- <cfb83fe4-369c-ec72-7887-3bcb0f20fe15@gmail.com>
- <ec8050c5-c013-4af6-b39e-69779c009a9c@codeaurora.org>
- <f5ed0ee7-e333-681f-0f1a-d0227562204b@gmail.com>
- <2e01c435-9ecc-4e3b-f55c-612a86667020@codeaurora.org>
- <2ae9fa6a-3bb1-3742-0dd3-59678bdd8643@gmail.com>
- <ebea75fe-5334-197b-f67a-cb6e1e30b39e@codeaurora.org>
- <bafa93bb-11e3-c8a5-e14a-b0a6d5695055@gmail.com> <87v951ldlt.fsf@kernel.org>
- <d9aef50c-4bd1-4957-13d8-0b6a14b9fcd0@gmail.com> <87pmv9l1dv.fsf@kernel.org>
- <9dc6cd83-17b9-7075-0934-6b9d41b6875d@gmail.com> <87a6mbudvc.fsf@kernel.org>
- <6e8bb4ad-fe68-ad36-7416-2b8e10b6ae96@gmail.com> <877dhev68a.fsf@kernel.org>
- <cca69e90-b0ef-00b8-75d3-3bf959a93b45@gmail.com> <874kchvcq0.fsf@kernel.org>
- <e59f1201-2aa2-9075-1f94-a6ae7a046dc1@gmail.com> <8735raj766.fsf@kernel.org>
- <b3417c2c-613b-8ef6-2e2d-6e2cf9a5d5fd@gmail.com>
-Message-ID: <b3e820f0-9c94-7cba-a248-3b2ec5378ab0@gmail.com>
-Date:   Wed, 18 Aug 2021 21:07:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 18 Aug 2021 15:08:20 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 8B60C5C00A8;
+        Wed, 18 Aug 2021 15:07:42 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 18 Aug 2021 15:07:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=eEgrABKc0YaPQCAPJ
+        dueUZRUNAq3v/sTJPZXnT1m/8A=; b=rDrfqOtn2Spg4afPEjlWbPnTAadS+9wUI
+        mAW1I/xMMUoMif7lG3kadvdKf5jabnjQf/m3ERijq0XCXJDk9pgAzZmr4ceoexvk
+        EC5KthnIio1P1QutnDZC6oT+JOTmarJLyt+7qF02m9GJSjzELl8TCuQ/toFvZ4BV
+        itHDuntJENPQLHl8Z6eWfwazHMetfzjEr95fP/zGEBwF8J1D+c4e6M6mg3POrDQS
+        lMYjMwhKbge3D/dDZ9NHYXY7zIXkaLGSjj3VhzXs+R11BH0FOo65e+chvGwLVInj
+        FXGjW5rccld+l4UHKH2CkcJZB7YKYQNRhM4WAe6Yzivm5iMESr7Zw==
+X-ME-Sender: <xms:fVodYTsJ3AMhD6v5dUnkV6M9_NQCKXcv5jwWW60STmdDBpgH4ryi7Q>
+    <xme:fVodYUcMVUl9w3AFBmEQqKB9Yzpz4g2f28Ry6jDEUpfOcCZ6J7mQ5Eh6bCriyCevb
+    BFNSh8asuhvbKKSTwA>
+X-ME-Received: <xmr:fVodYWxcEn3U5MU67Y-9j3_p2FZ2uGOjgSCAJTxUFAKfC64cp7iuCGC3J8Go>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleehgddufedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomhepfdfnuhhkvgcuffdrucflohhnvghsfdcuoehluhhkvgeslhhjohhn
+    vghsrdguvghvqeenucggtffrrghtthgvrhhnpeelffelhfeltdfhtdevuefgveeuueekge
+    etiefgiefhgfejvdetvdeuvedthfdvkeenucevlhhushhtvghrufhiiigvpedtnecurfgr
+    rhgrmhepmhgrihhlfhhrohhmpehluhhkvgeslhhjohhnvghsrdguvghv
+X-ME-Proxy: <xmx:fVodYSPOTeAfhpPdqbGIk8NVx7aEnw2q4bWnT-jj74ivgYwNfMLxlA>
+    <xmx:fVodYT_72wYr5qd1Bq9O2wPTeZVQ-WrUDtEcssEUYeXsPa5wr6fSRw>
+    <xmx:fVodYSUwX1DVLNw-61Fx_SQP_Z49Yj8nhhBaIXlurhdBrIAdZXcGew>
+    <xmx:flodYVKRTbHZobAMZt5PkahhefCF7ExTm9UNM8O64UkwHKiYg9batQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 18 Aug 2021 15:07:38 -0400 (EDT)
+From:   "Luke D. Jones" <luke@ljones.dev>
+To:     linux-kernel@vger.kernel.org
+Cc:     hdegoede@redhat.com, hadess@hadess.net,
+        platform-driver-x86@vger.kernel.org,
+        "Luke D. Jones" <luke@ljones.dev>
+Subject: [PATCH v5 0/1] asus-wmi: add platform_profile support
+Date:   Thu, 19 Aug 2021 07:07:30 +1200
+Message-Id: <20210818190731.19170-1-luke@ljones.dev>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <b3417c2c-613b-8ef6-2e2d-6e2cf9a5d5fd@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Changelog:
+- V2
+  + Correctly unregister from platform_profile if
+    throttle_thermal_policy fails
+  + Do platform_profile_notify() in both throttle_thermal_policy_store()
+    and in throttle_thermal_policy_switch_next()
+  + Remove unnecessary prep for possible fan-boost modes as this
+    doesn't match expected platform_profile behaviour
+- V3
+  + Add missing declaration for err in
+    throttle_thermal_policy_switch_next
+- V4
+  + Update some return codes to use -ENODATA
+  + Switch pr_info() to dev_info()
+  + Restructure some if/else blocks
+  + Add "select ACPI_PLATFORM_PROFILE" to ASUS_WMI kconfig
+- V5
+  + Remove unrequired include asm-generic/errno.h
+  + Collapse if blocks with only one line (remove parens)
+  + Remove unrequired throttle_thermal_policy checks
+  + Remove leftover comment from previous versions
 
-Op 18-08-2021 om 00:00 schreef Ferry Toth:
-> Hi,
->
-> Op 16-08-2021 om 07:18 schreef Felipe Balbi:
->> Hi,
->>
->> Ferry Toth <fntoth@gmail.com> writes:
->>>> Ferry Toth <fntoth@gmail.com> writes:
->>>>>>>> Ferry Toth <fntoth@gmail.com> writes:
->>>>>>>>>>>>> Hardware name: Intel Corporation Merrifield/BODEGA BAY, 
->>>>>>>>>>>>> BIOS 542
->>>>>>>>>>>>> 2015.01.21:18.19.48
->>>>>>>>>>>>> RIP: 0010:0x500000000
->>>>>>>>>>>>> Code: Unable to access opcode bytes at RIP 0x4ffffffd6.
->>>>>>>>>>>>> RSP: 0018:ffffa4d00045fc28 EFLAGS: 00010046
->>>>>>>>>>>>> RAX: 0000000500000000 RBX: ffff8cd546aed200 RCX: 
->>>>>>>>>>>>> 0000000000000000
->>>>>>>>>>>>> RDX: 0000000000000000 RSI: ffff8cd547bfcae0 RDI: 
->>>>>>>>>>>>> ffff8cd546aed200
->>>>>>>>>>>>> RBP: ffff8cd547bfcae0 R08: 0000000000000000 R09: 
->>>>>>>>>>>>> 0000000000000001
->>>>>>>>>>>>> R10: ffff8cd541fd28c0 R11: 0000000000000000 R12: 
->>>>>>>>>>>>> ffff8cd547342828
->>>>>>>>>>>>> R13: ffff8cd546aed248 R14: 0000000000000000 R15: 
->>>>>>>>>>>>> ffff8cd548b1d000
->>>>>>>>>>>>> FS:  0000000000000000(0000) GS:ffff8cd57e200000(0000) 
->>>>>>>>>>>>> knlGS:0000000000000000
->>>>>>>>>>>>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>>>>>>>>>>>> CR2: 0000000500000000 CR3: 000000000311e000 CR4: 
->>>>>>>>>>>>> 00000000001006f0
->>>>>>>>>>>>> Call Trace:
->>>>>>>>>>>>>         ? dwc3_remove_requests.constprop.0+0x14d/0x170
->>>>>>>>>>>>>         ? __dwc3_gadget_ep_disable+0x7a/0x160
->>>>>>>>>>>>>         ? dwc3_gadget_ep_disable+0x3d/0xd0
->>>>>>>>>>>>>         ? usb_ep_disable+0x1c/0x
->>>>>>>>>>>>>         ? u_audio_stop_capture+0x79/0x120 [u_audio]
->>>>>>>>>>>>>         ? afunc_set_alt+0x73/0x80 [usb_f_uac2]
->>>>>> So this is triggered by a SetInterface request...
->>>>>>
->>>>>>>>>>>>>         ? composite_setup+0x224/0x1b90 [libcomposite]
->>>>>>>>>>>>>         ? __dwc3_gadget_kick_transfer+0x160/0x400
->>>>>>>>>>>>>         ? dwc3_gadget_ep_queue+0xf3/0x1a0
->>>>>>>>>>>>>         ? configfs_composite_setup+0x6b/0x90 [libcomposite]
->>>>>>>>>>>>>         ? configfs_composite_setup+0x6b/0x90 [libcomposite]
->>>>>>>>>>>>>         ? dwc3_ep0_interrupt+0x459/0xa40
->>>>>>>>>>>>>         ? dwc3_thread_interrupt+0x8ee/0xf40
->>>>>>>>>>>>>         ? __schedule+0x235/0x6c0
->>>>>>>>>>>>>         ? disable_irq_nosync+0x10/0x10
->>>>>>>>>>>>>         ? irq_thread_fn+0x1b/0x60
->>>>>>>>>>>>>         ? irq_thread+0xc0/0x160
->>>>>>>>>>>>>         ? irq_thread_check_affinity+0x70/0x70
->>>>>>>>>>>>>         ? irq_forced_thread_fn+0x70/0x70
->>>>>>>>>>>>>         ? kthread+0x122/0x140
->>>>>>>>>>>>>         ? set_kthread_struct+0x40/0x40
->>>>>>>>>>>>>         ? ret_from_fork+0x22/0x30
->>>>>>>>>>>> Do you mind enabling dwc3 traces and collecting them? 
->>>>>>>>>>>> Trying to figure
->>>>>>>>>>>> out how we got here.
->>>>>>>>>>>>
->>>>>>>>>>> I'll try if I can get the same error by booting with USB in 
->>>>>>>>>>> host mode
->>>>>>>>>>> and then switch to device mode. If so I can enable traces 
->>>>>>>>>>> and collect as
->>>>>>>>>>> you explained me before.
->>>>>>>>>>>
->>>>>>>>>>> I'll try before monday, as then I fly for a holiday and will 
->>>>>>>>>>> not be
->>>>>>>>>>> available before rc5.
->>>>>>>>>> you can enable all of those with kernel cmdline :-)
->>>>>>>>>>
->>>>>>>>>> https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html 
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>> you need ftrace_dump_on_oops=1 and also need the correct 
->>>>>>>>>> options on
->>>>>>>>>> trace_buf_size and trace_event.
->>>>>>>>>>
->>>>>>>>> On Edison-Arduino I have a switch to go to device mode, after 
->>>>>>>>> which
->>>>>>>>> udev triggers a script configure gadgets through configfs.
->>>>>>>>>
->>>>>>>>> I tried to log following these instructions:
->>>>>>>>>
->>>>>>>>> https://www.kernel.org/doc/html/latest/driver-api/usb/dwc3.html#reporting-bugs 
->>>>>>>>> <https://www.kernel.org/doc/html/latest/driver-api/usb/dwc3.html#reporting-bugs> 
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> Unfortunately the kernel crashes so badly I can not get to the 
->>>>>>>>> ` cp
->>>>>>>>> /t/trace /root/trace.txt` line (after a while the watchdog 
->>>>>>>>> kicks).
->>>>>>>>>
->>>>>>>>> What to do next?
->>>>>>>> Pass ftrace_dump_on_oops to kernel cmdline.
->>>>>>>>
->>>>>>> No sure if I did this right, on oops everything is pushed to 
->>>>>>> console
->>>>>>> (115k2 serial), I hope nothing essential is lost.
->>>>>>>
->>>>>>> I copied the screen buffer to file see attached.
->>>>>> Thank you, I bet it took quite a some time :-) Anyway, looking at
->>>>>> the logs around Set Interface requests, we can track every endpoint
->>>>>> that's disabled. I'll take a guess and assume we're failing at 
->>>>>> the last
->>>>>> Set Interface, that means we should have something odd with 
->>>>>> ep6in, but
->>>>>> everything looks fine in the trace output:
->>>>>>
->>>>>> [   75.823107] irq/14-d-596       0d... 42789194us : 
->>>>>> dwc3_gadget_ep_enable: ep6in: mps 192/346 streams 16 burst 0 ring 
->>>>>> 0/0 flags E:swbp:<
->>>>>> [   75.835472] irq/14-d-596       0d... 42789198us : 
->>>>>> dwc3_alloc_request: ep6in: req 0000000002c71409 length 0/0 zsI ==> 0
->>>>>> [   75.846416] irq/14-d-596       0d... 42789202us : 
->>>>>> dwc3_ep_queue: ep6in: req 0000000002c71409 length 0/192 zsI ==> -115
->>>>>> [   75.857360] irq/14-d-596       0d... 42789204us : 
->>>>>> dwc3_alloc_request: ep6in: req 00000000a324f5d0 length 0/0 zsI ==> 0
->>>>>> [   75.868301] irq/14-d-596       0d... 42789206us : 
->>>>>> dwc3_ep_queue: ep6in: req 00000000a324f5d0 length 0/192 zsI ==> -115
->>>>>> [   75.879244] irq/14-d-596       0d... 42789209us : dwc3_event: 
->>>>>> event (000020c2): ep0in: Transfer Not Ready [0] (Not Active) 
->>>>>> [Status Phase]
->>>>>> [   75.891880] irq/14-d-596       0d... 42789211us : 
->>>>>> dwc3_prepare_trb: ep0in: trb 000000004c0ae319 (E0:D0) buf 
->>>>>> 000000001bded000 size 0 ctrl 00000c33 (HLcs:SC:status2)
->>>>>> [   75.989131] irq/14-d-596       0d... 42789224us : 
->>>>>> dwc3_gadget_ep_cmd: ep0in: cmd 'Start Transfer' [406] params 
->>>>>> 00000000 1bded000 00000000 --> status: Successful
->>>>>> [   76.096261] irq/14-d-596       0d... 42789272us : dwc3_event: 
->>>>>> event (0000c042): ep0in: Transfer Complete (sIL) [Status Phase]
->>>>>> [   76.107834] irq/14-d-596       0d... 42789275us : 
->>>>>> dwc3_complete_trb: ep0out: trb 000000004c0ae319 (E0:D0) buf 
->>>>>> 000000001bded000 size 0 ctrl 00000c32 (hLcs:SC:status2)
->>>>>> [   76.122944] irq/14-d-596       0d... 42789277us : 
->>>>>> dwc3_gadget_giveback: ep0out: req 00000000cb1bd3cd length 0/0 zsI 
->>>>>> ==> 0
->>>>>> [   76.134160] irq/14-d-596       0d... 42789280us : 
->>>>>> dwc3_prepare_trb: ep0out: trb 000000004c0ae319 (E0:D0) buf 
->>>>>> 000000001bded000 size 8 ctrl 00000c23 (HLcs:SC:setup)
->>>>>> [   76.231322] irq/14-d-596       0d... 42789292us : 
->>>>>> dwc3_gadget_ep_cmd: ep0out: cmd 'Start Transfer' [406] params 
->>>>>> 00000000 1bded000 00000000 --> status: Successful
->>>>>> [   76.297418] kworker/-23        0d... 42789670us : 
->>>>>> dwc3_ep_queue: ep3in: req 0000000029586135 length 0/96 ZsI ==> -115
->>>>>> [   76.308278] kworker/-23        0d... 42789695us : 
->>>>>> dwc3_prepare_trb: ep3in: trb 00000000b81213d6 (E1:D0) buf 
->>>>>> 0000000003b7a800 size 96 ctrl 00000811 (Hlcs:sC:normal)
->>>>>> [   76.395294] kworker/-23        0d... 42789707us : 
->>>>>> dwc3_gadget_ep_cmd: ep3in: cmd 'Update Transfer' [60007] params 
->>>>>> 00000000 00000000 00000000 --> status: Successful
->>>>>> [   76.471900] irq/14-d-596       0d... 42789842us : dwc3_event: 
->>>>>> event (0000c040): ep0out: Transfer Complete (sIL) [Setup Phase]
->>>>>> [   76.489308] irq/14-d-596       0d... 42789845us : 
->>>>>> dwc3_ctrl_req: Set Interface(Intf = 5, Alt.Setting = 0)
->>>>>> [   76.505650] irq/14-d-596       0d... 42789851us : 
->>>>>> dwc3_ep_dequeue: ep6in: req 0000000002c71409 length 0/192 zsI ==> 
->>>>>> -115
->>>>>> [   76.523315] irq/14-d-596       0d... 42789854us : 
->>>>>> dwc3_gadget_giveback: ep6in: req 0000000002c71409 length 0/192 
->>>>>> zsI ==> -104
->>>>>> [   76.541427] irq/14-d-596       0d... 42789857us : 
->>>>>> dwc3_free_request: ep6in: req 0000000002c71409 length 0/192 zsI 
->>>>>> ==> -104
->>>>>> [   76.559267] irq/14-d-596       0d... 42789859us : 
->>>>>> dwc3_ep_dequeue: ep6in: req 00000000a324f5d0 length 0/192 zsI ==> 
->>>>>> -115
->>>>>> [   76.576937] irq/14-d-596       0d... 42789861us : 
->>>>>> dwc3_gadget_giveback: ep6in: req 00000000a324f5d0 length 0/192 
->>>>>> zsI ==> -104
->>>>>> [   76.595046] irq/14-d-596       0d... 42789862us : 
->>>>>> dwc3_free_request: ep6in: req 00000000a324f5d0 length 0/192 zsI 
->>>>>> ==> -104
->>>>>> [   76.612892] irq/14-d-596       0d... 42789865us : 
->>>>>> dwc3_gadget_ep_disable: ep6in: mps 192/346 streams 16 burst 0 
->>>>>> ring 0/0 flags E:swbp:<
->>>>>> [   76.665535] irq/14-d-596       0d... 42789873us : dwc3_event: 
->>>>>> event (000020c2): ep0in: Transfer Not Ready [0] (Not Active) 
->>>>>> [Status Phase]
->>>>>> [   76.684716] irq/14-d-596       0d... 42789875us : 
->>>>>> dwc3_prepare_trb: ep0in: trb 000000004c0ae319 (E0:D0) buf 
->>>>>> 000000001bded000 size 0 ctrl 00000c33 (HLcs:SC:status2)
->>>>>> [   76.819195] irq/14-d-596       0d... 42789886us : 
->>>>>> dwc3_gadget_ep_cmd: ep0in: cmd 'Start Transfer' [406] params 
->>>>>> 00000000 1bded000 00000000 --> status: Successful
->>>>>> [   76.926324] irq/14-d-596       0d... 42789930us : dwc3_event: 
->>>>>> event (0000c042): ep0in: Transfer Complete (sIL) [Status Phase]
->>>>>> [   76.937892] irq/14-d-596       0d... 42789933us : 
->>>>>> dwc3_complete_trb: ep0out: trb 000000004c0ae319 (E0:D0) buf 
->>>>>> 000000001bded000 size 0 ctrl 00000c32 (hLcs:SC:status2)
->>>>>> [   76.953003] irq/14-d-596       0d... 42789935us : 
->>>>>> dwc3_gadget_giveback: ep0out: req 00000000cb1bd3cd length 0/0 zsI 
->>>>>> ==> 0
->>>>>> [   76.964217] irq/14-d-596       0d... 42789938us : 
->>>>>> dwc3_prepare_trb: ep0out: trb 000000004c0ae319 (E0:D0) buf 
->>>>>> 000000001bded000 size 8 ctrl 00000c23 (HLcs:SC:setup)
->>>>>> [   77.061379] irq/14-d-596       0d... 42789950us : 
->>>>>> dwc3_gadget_ep_cmd: ep0out: cmd 'Start Transfer' [406] params 
->>>>>> 00000000 1bded000 00000000 --> status: Successful
->>>>>> [   77.168595] irq/14-d-596       0d... 42790509us : dwc3_event: 
->>>>>> event (0000c040): ep0out: Transfer Complete (sIL) [Setup Phase]
->>>>>> [   77.180159] irq/14-d-596       0d... 42790512us : 
->>>>>> dwc3_ctrl_req: Get String Descriptor(Index = 18, Length = 255)
->>>>>> [   77.190578] irq/14-d-596       0d... 42790537us : 
->>>>>> dwc3_prepare_trb: ep0in: trb 000000004c0ae319 (E0:D0) buf 
->>>>>> 0000000003b68000 size 36 ctrl 00000c53 (HLcs:SC:data)
->>>>>> [   77.287648] irq/14-d-596       0d... 42790550us : 
->>>>>> dwc3_gadget_ep_cmd: ep0in: cmd 'Start Transfer' [406] params 
->>>>>> 00000000 1bded000 00000000 --> status: Successful
->>>>>> [   77.333107] irq/14-d-596       0d... 42790557us : dwc3_event: 
->>>>>> event (000010c2): ep0in: Transfer Not Ready [0] (Not Active) 
->>>>>> [Data Phase]
->>>>>> [   77.407223] irq/14-d-596       0d... 42790575us : dwc3_event: 
->>>>>> event (000090c2): ep0in: Transfer Not Ready [0] (Active) [Data 
->>>>>> Phase]
->>>>>> [   77.480985] irq/14-d-596       0d... 42790588us : dwc3_event: 
->>>>>> event (0000c042): ep0in: Transfer Complete (sIL) [Data Phase]
->>>>>> [   77.492376] irq/14-d-596       0d... 42790590us : 
->>>>>> dwc3_complete_trb: ep0out: trb 000000004c0ae319 (E0:D0) buf 
->>>>>> 0000000003b68000 size 0 ctrl 00000c52 (hLcs:SC:data)
->>>>>> [   77.507221] irq/14-d-596       0d... 42790595us : 
->>>>>> dwc3_gadget_giveback: ep0out: req 00000000cb1bd3cd length 36/36 
->>>>>> ZsI ==> 0
->>>>>> [   77.518609] irq/14-d-596       0d... 42790597us : dwc3_event: 
->>>>>> event (000020c0): ep0out: Transfer Not Ready [0] (Not Active) 
->>>>>> [Status Phase]
->>>>>> [   77.531332] irq/14-d-596       0d... 42790598us : 
->>>>>> dwc3_prepare_trb: ep0out: trb 000000004c0ae319 (E0:D0) buf 
->>>>>> 000000001bded000 size 0 ctrl 00000c43 (HLcs:SC:status3)
->>>>>> [   77.628669] irq/14-d-596       0d... 42790609us : 
->>>>>> dwc3_gadget_ep_cmd: ep0out: cmd 'Start Transfer' [406] params 
->>>>>> 00000000 1bded000 00000000 --> status: Successful
->>>>>>
->>>>>> Do you mind adding a few prints in dwc3_remove_requests to tell 
->>>>>> us which
->>>>>> endpoint is being processed? Then we'll know for sure which one 
->>>>>> caused
->>>>>> the crash.
->>>>>>
->>>>> I wouldn't mind but am leaving on a holiday, won't have time until 
->>>>> 6 aug.
->>>> not a problem, we'll still be here when you're back :-)
->>> Well, let's go then :-)
->>>
->>> To get back in the mood I have retested 5.13.0, 5.14.0-rc1, 5.14.0-rc2
->>> and 5.14.0-rc5.
->>>
->>> I find that 5.13.0 works fine, and the issue starts from 5.14.0-rc1.
->> That's great finding. We have a bisection point. There are a total of
->> 13764 commits between v5.13 and v5.14-rc1
->>
->>     $ git rev-list  --count v5.13..v5.14-rc1
->>     13764
->>
->> git bisect should find the offending commit in at most 14 tries. That's
->> not too bad.
-> I correctly guesstimated that the problem got introduced by the usb 
-> merge 79160a60
->
-> "Merge tag 'usb-5.14-rc1' of 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb"
->
-> 116 commits(7 bisects).
->
-> 24f779dac8f3efb9629adc0e486914d93dc45517 is the first bad commit
->
-> "usb: gadget: f_uac2/u_audio: add feedback endpoint support"
->
-> Ruslan's 3 patches are related to each other so I reverted all three 
-> 24f779da...e89bb428 and applied the reverts to rc1.
->
-> I can confirm this indeed resolves the problem in rc1.
->
-> Is late now, tomorrow evening I will apply the reverts to rc6.
+Luke D. Jones (1):
+  asus-wmi: Add support for platform_profile
 
-With these reverts rc6 works fine as well.
+ drivers/platform/x86/Kconfig    |   1 +
+ drivers/platform/x86/asus-wmi.c | 130 +++++++++++++++++++++++++++++++-
+ 2 files changed, 127 insertions(+), 4 deletions(-)
 
-So, where do we go from here?
+-- 
+2.31.1
 
->
->>> With 5.14.0-rc5 the problem seems worse (or different?), and just
->>> disabling uac2 gadget does not prevent the crash. Even disabling gser
->>> and mass_storage.usb0 as well there is still a crash.
->>>
->>> Now I'm not sure how to proceed. Bisect rc1? Or focus on rc5 (rc6?)?
->> I'd first bisect between 5.13 and v5.14-rc1. Once you find the offending
->> commit, verify if reverting that on -rc1 works, then verify if reverting
->> on -rc5 also works :-)
->>
