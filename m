@@ -2,118 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C563EFF68
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F8E3EFF6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239065AbhHRInx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 04:43:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238621AbhHRInv (ORCPT
+        id S239340AbhHRIpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 04:45:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29311 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238500AbhHRIpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 04:43:51 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42910C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:43:17 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mGHAI-0008Ur-Vx; Wed, 18 Aug 2021 10:43:15 +0200
-Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:ed04:8488:5061:54d4])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 98574669912;
-        Wed, 18 Aug 2021 08:43:13 +0000 (UTC)
-Date:   Wed, 18 Aug 2021 10:43:12 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     linux-can <linux-can@vger.kernel.org>,
-        Stefan =?utf-8?B?TcOkdGpl?= <Stefan.Maetje@esd.eu>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 5/7] can: netlink: add interface for CAN-FD
- Transmitter Delay Compensation (TDC)
-Message-ID: <20210818084312.6i5buvdp7hsu4kmy@pengutronix.de>
-References: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
- <20210815033248.98111-6-mailhol.vincent@wanadoo.fr>
- <20210817195551.wwgu7dnhb6qyvo7n@pengutronix.de>
- <CAMZ6RqLj94UU_b8dDAzinVsLaV6pBR-cWbHmjwGhx3vfWiKt_g@mail.gmail.com>
- <20210818081934.6f23ghoom2dkv53m@pengutronix.de>
- <CAMZ6Rq+PPH8mCayZg1ghftfoU8_y8rzAtO=Of2F5VZxcBKn4KA@mail.gmail.com>
+        Wed, 18 Aug 2021 04:45:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629276277;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9LtWbaLwq6kJjM9ZOZwycFMBsFtGptd3p5wovzjNweE=;
+        b=ZJu2BdqGbedwRHvFmmE18mwqLjNTJtjiMXwo0V4E5cYRAA1qOIsDS+oyvGTQriGjrNUmuv
+        G2kPzAa5GSeHJsiFaSbnJzoBvT7kMErpAvn89ewvtKqD4ZqHTMNkkUWE2cA1yZIy3IWZJp
+        EWmaVuP+NSp9Sy2yYiVbMR9p8cJvoR8=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460-6bWBhUjCO_qi0-klC_6Zlg-1; Wed, 18 Aug 2021 04:44:36 -0400
+X-MC-Unique: 6bWBhUjCO_qi0-klC_6Zlg-1
+Received: by mail-wm1-f72.google.com with SMTP id z186-20020a1c7ec30000b02902e6a27a9962so1992668wmc.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:44:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=9LtWbaLwq6kJjM9ZOZwycFMBsFtGptd3p5wovzjNweE=;
+        b=CijGgKBnM0FRog4nMXkkDdZ24FffErg0jtjOvkyGU8AVQRm2jndHc66uKbpQHageoH
+         9k1Ivku7Vf0ocsrGV65V+rPfQL/SHQ51ZGRGRUCzfQ5L/u6oZQF3MCTvAQP720K3mnZJ
+         UkJ+/7PlLbARy9JoErCHrHdIpcc0Y9daCx033D14RUkMKMrNTMWYPGHl5NuPpCYfQzFO
+         9OfgIAIpSPud5TL2CfRqVP13JYp16gjo85j85BNaAoIpcw+nr3GW4hWh4kI3FZnwM0k2
+         8+riNaqsH/d1EpdxSBJP5CtCDK22L4wvmNuJdlvHH5TfyH0VOdG11QN+kgyBJ1QrXjfb
+         7goA==
+X-Gm-Message-State: AOAM5301wDtRGi2Z0/9Ng/eSEatB1rrPn9HbRYjIkcJbfNsEl9zKxy0+
+        qtvG0iddMa9kh1iQ9SbfHyXMy9U+rCF69Lb1Dd9Y0XbvVFgejQsEuhIeYuxYvtYPEWdMMiHffzN
+        WO3z07z8LQkHk5tcfpokmsPteiGiAk9rFaXE41Ax01wYZTdobnGqbOVAcTSyZApSh6tvgc8nq
+X-Received: by 2002:a5d:4447:: with SMTP id x7mr9712626wrr.198.1629276275517;
+        Wed, 18 Aug 2021 01:44:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw/D+WUy8PsPz3S65vrEk1dvRI5wYhxcrZuVh6VwHswDCxOH96ASRcWtuHLW1Yfs9Ecc7X0nA==
+X-Received: by 2002:a5d:4447:: with SMTP id x7mr9712609wrr.198.1629276275340;
+        Wed, 18 Aug 2021 01:44:35 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6417.dip0.t-ipconnect.de. [91.12.100.23])
+        by smtp.gmail.com with ESMTPSA id n188sm3452655wmn.48.2021.08.18.01.44.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Aug 2021 01:44:34 -0700 (PDT)
+Subject: Re: [PATCH 1/2] KVM: s390: gaccess: Cleanup access to guest frames
+To:     Janosch Frank <frankja@linux.ibm.com>,
+        Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
+        kvm@vger.kernel.org, borntraeger@de.ibm.com,
+        imbrenda@linux.ibm.com, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Cc:     cohuck@redhat.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210816150718.3063877-1-scgl@linux.ibm.com>
+ <20210816150718.3063877-2-scgl@linux.ibm.com>
+ <d11128bb-18f6-5210-6f42-74a89d8edcf7@redhat.com>
+ <584ca757-4eb4-491e-a4cd-7bc60fb04b61@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <0c800ed3-cc60-9c13-c0a7-8ba302365ccb@redhat.com>
+Date:   Wed, 18 Aug 2021 10:44:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3r4tcmh4k4j2lcbt"
-Content-Disposition: inline
-In-Reply-To: <CAMZ6Rq+PPH8mCayZg1ghftfoU8_y8rzAtO=Of2F5VZxcBKn4KA@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <584ca757-4eb4-491e-a4cd-7bc60fb04b61@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 18.08.21 10:06, Janosch Frank wrote:
+> On 8/18/21 9:54 AM, David Hildenbrand wrote:
+>> On 16.08.21 17:07, Janis Schoetterl-Glausch wrote:
+>>> Introduce a helper function for guest frame access.
+>>> Rewrite the calculation of the gpa and the length of the segment
+>>> to be more readable.
+>>>
+>>> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
+> [...]
+>>> -	unsigned long _len, gpa;
+>>> +	unsigned long gpa;
+>>> +	unsigned int seg;
+>>>    	int rc = 0;
+>>>    
+>>>    	while (len && !rc) {
+>>>    		gpa = kvm_s390_real_to_abs(vcpu, gra);
+>>> -		_len = min(PAGE_SIZE - (gpa & ~PAGE_MASK), len);
+>>> -		if (mode)
+>>> -			rc = write_guest_abs(vcpu, gpa, data, _len);
+>>> -		else
+>>> -			rc = read_guest_abs(vcpu, gpa, data, _len);
+>>> -		len -= _len;
+>>> -		gra += _len;
+>>> -		data += _len;
+>>> +		seg = min(PAGE_SIZE - offset_in_page(gpa), len);
+>>
+>> What does "seg" mean? I certainly know when "len" means -- which is also
+>> what the function eats.
+> 
+> What does "_len" mean especially in contrast to "len"?
+> 
+> "seg" is used in the common kvm guest access functions so it's at least
+> consistent although I share the sentiment that it's not a great name for
+> the length we access inside the page.
+> 
+> Originally I suggested "len_in_page" if you have a better name I'd
+> expect we'll both be happy to discuss it :-)
 
---3r4tcmh4k4j2lcbt
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Similar code I encountered in other places uses "len" vs "cur_len" or 
+"total_len" vs. "cur_len". I agree that everything is better than "len" 
+vs. "_len".
 
-On 18.08.2021 17:37:17, Vincent MAILHOL wrote:
-> > It's not a race. Consider this command:
-> >
-> > | ip up tdc-mode manual tdco 111 tdcv 33  # 111 is out of range, 33 is =
-valid
-> >
-> > tdcv is checked first and valid, then it's assigned to the priv->tdc.
-> > tdco is checked second and invalid, then can_tdc_changelink() returns -=
-EINVAL.
-> >
-> > tdc ends up being half set :(
-> >
-> > So the setting of tdc is inconsistent and when you do a "ip down" "ip
-> > up" then it results in a tdco=3D0 tdcv=3D33 mode=3Dmanual.
->=20
-> My bad. Now I understand the issue.
-> I was confused because tdco=3D111 is in the valid range of my driver...
+I just cannot come up with a proper word for "seg" that would make 
+sense. "Segment" ? Maybe my uneducated mind is missing some important 
+English words that just fit perfectly here.
 
-:D
+Anyhow, just my 2 cents, you maintain this code :)
 
-> I will squash your patch.
->=20
-> Actually, I think that there is one more thing which needs to be
-> fixed: If can_tdc_changelink() fails (e.g. value out of range),
-> the CAN_CTRLMODE_TDC_AUTO or CAN_CTRLMODE_TDC_MANUAL would still
-> be set, meaning that can_tdc_is_enabled() would return true. So I
-> will add a "fail" branch to clear the flags.
+-- 
+Thanks,
 
-Ok.
+David / dhildenb
 
-regard,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---3r4tcmh4k4j2lcbt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEcyB0ACgkQqclaivrt
-76kHAwgAm3PmoaSEpiGOXV7SOe2m3Km3x1QNacwkyJQNM15E7ciWzSbAzVwzS/bJ
-YRVEp4iEF1Ez3mqt9YbtIA+YxhEoFihyVLeUtRLaEkdei0b/kOWq+fLkOM96K5Ne
-g2LG5jhCBiVsbIOUOq992DI1bvfYsQmQK7k8hqoDwsQNPJ80lGz25vtCNBfbPA+y
-GJH+waf5Y1QoX32rejo9oCFhObhn9nZxedwbRKCMR2Q/huShoLNFTtz7f0ItOIIk
-Yjcsqca/CXMr8Sf/LZ+IjKa8jTZNOv/S76ZxiR9aMy3lx1XrMOUmAIWECeUHjayL
-K0pFwH2G04ORKlTEa4NwrJdfvCWp9Q==
-=SLOE
------END PGP SIGNATURE-----
-
---3r4tcmh4k4j2lcbt--
