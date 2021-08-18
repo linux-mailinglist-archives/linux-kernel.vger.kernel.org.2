@@ -2,213 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38AA63EF83D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 04:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE323EF849
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 04:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236111AbhHRCvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 22:51:02 -0400
-Received: from mga14.intel.com ([192.55.52.115]:5298 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235958AbhHRCvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 22:51:01 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10079"; a="215969442"
-X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
-   d="scan'208";a="215969442"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 19:50:26 -0700
-X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
-   d="scan'208";a="520723316"
-Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 19:50:23 -0700
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, pierre-louis.bossart@linux.intel.com,
-        sanyog.r.kale@intel.com, bard.liao@intel.com
-Subject: [PATCH v2 3/3] soundwire: intel: conditionally exit clock stop mode on system suspend
-Date:   Wed, 18 Aug 2021 10:49:54 +0800
-Message-Id: <20210818024954.16873-4-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210818024954.16873-1-yung-chuan.liao@linux.intel.com>
-References: <20210818024954.16873-1-yung-chuan.liao@linux.intel.com>
+        id S235486AbhHRC5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 22:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234261AbhHRC5x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 22:57:53 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9BDC0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 19:57:19 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id g26so2484980ybe.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 19:57:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E8J1M8TLojn9lNRFCWALG+xqr0khqK2ghlCL+ZC08FY=;
+        b=MabUach2AGIkoGUn1LDVwxrSHsqBJSDF/BKO0y7/EcAkJ9sCwtzJbIwJdTHbx3GN7p
+         8kIG/jVLcxrsWOXJlwXRmuCn3I41YUAjzBndeTLst7n+SKYrv4KmTosi8OVRgFVQIKSr
+         aPUPFoqw50AH0kDfWlxiAz9mfQkvmL2uRr1qNsIo38a09+dLbqQCofKYqG9LFEKFMOWr
+         94+dJ8H/ujR1vnip5z38VTVdVIuMI63l9Gscml9Oth2gr+tMnx8K9Au7x7YrgKVcEU34
+         +sdTQkTDLimsebm9Z6BzIdNx8sE51k+1JCpGC1a3Rwv4NYybgOSyqpSjpunh5KUgz8bz
+         +rpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E8J1M8TLojn9lNRFCWALG+xqr0khqK2ghlCL+ZC08FY=;
+        b=dLlIxfZt5AaWORYDjxGH83yPwhqTYOqALjeqfER8FRoMLl7uKMcbjDC/xtp0LCIgpu
+         9piwxGfCu8yWQcydliu3PK0YKlIwkohPq3DmTWKgfkDuUDugFKGJ6CWF662pg4Wxvfeq
+         2b3CPVCRqTymiZrz+J6ImAwPb62k7qP1413ivEvvJIbEi6d/Ldv9rlf7IcAKI2R5XX4t
+         BlweUO3Q1mIJNxCUiaBIiT0LSOKNY4imn81MQe+RWRQt/q7KdF60svEUT+ioMa1tF39+
+         CNXuzDjOjhzFJ08merCGko2/FmUHBVhrrlzYKXnKEG/fl1qostxCl/hS4SR8EWVrpa0j
+         kkSw==
+X-Gm-Message-State: AOAM532dNolTkdOBmctgNd5mgI+g7rqma2LMB4etmEGhbaF0gIZEPFO0
+        smW+SO/wG8GX7jxFIwPTgSXR24BXSBrAjQh6bv0qDw==
+X-Google-Smtp-Source: ABdhPJxI6FTcE3c47Wn0i+htLO57WaK/N9r5UacnETGWbX71+m63BkfRB2kVMW33iIPN/Rimw1sywjsUf/wkZujNgKk=
+X-Received: by 2002:a25:81ce:: with SMTP id n14mr8943857ybm.32.1629255438297;
+ Tue, 17 Aug 2021 19:57:18 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210817180841.3210484-1-saravanak@google.com>
+ <20210817180841.3210484-2-saravanak@google.com> <YRwlyH0cjazjsSwe@lunn.ch>
+In-Reply-To: <YRwlyH0cjazjsSwe@lunn.ch>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 17 Aug 2021 19:56:42 -0700
+Message-ID: <CAGETcx-B=oxqGP-iz4qf2YrLVw3_Q-oTc_3m+dgP1P17FmLs=g@mail.gmail.com>
+Subject: Re: [PATCH net v2 1/3] net: mdio-mux: Delete unnecessary devm_kfree
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>, kernel-team@android.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On Tue, Aug 17, 2021 at 2:10 PM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> On Tue, Aug 17, 2021 at 11:08:39AM -0700, Saravana Kannan wrote:
+> > The whole point of devm_* APIs is that you don't have to undo them if you
+> > are returning an error that's going to get propagated out of a probe()
+> > function. So delete unnecessary devm_kfree() call in the error return path.
+> >
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> > Acked-by: Marc Zyngier <maz@kernel.org>
+> > Tested-by: Marc Zyngier <maz@kernel.org>
+> > Acked-by: Kevin Hilman <khilman@baylibre.com>
+> > Tested-by: Kevin Hilman <khilman@baylibre.com>
+>
+> Please add a Fixes: tag, since you want this in stable.
+>
+> All three patches need fixes tags, possibly different for each patch?
 
-Intel stress tests reported issues with the clock stop mode,
-specifically when trying to do a system suspend while the link is
-already pm_runtime suspended.
+I generally ask for patches to be picked up by stable only if it fixes
+a bug that puts the kernel in a bad state or if it fixes an issue
+someone actually reported on the stable kernel. In this case, it's
+just failing device probes in some cases and I didn't think that met
+the bar for stable. But if you think they should, then that's fine by
+me.
 
-In this case, we need to disable the shim wake, but when the PCI
-parent device is also pm_runtime suspended the SHIM registers are not
-accessible.
+I'll send out v3 patches with Fixes. I'm fairly sure these issues were
+present since the time mdio-mux was added. Hopefully v3 will be the
+last version I have to send out :)
 
-Since this is an invalid corner case, this patch suggests a pm_runtime
-resume of the entire bus to full power (parent+child devices) before
-the system suspend so that the shim wake can be disabled.
-
-Unlike the suspend operation, the .prepare callbacks are propagated
-from root device to leaf devices. By adding a .prepare callback at the
-SoundWire link level, we can double-check the pm_runtime status of the
-device as well as its parent PCI device. When the problematic
-configuration is detected, the device is pm_runtime resumed - which by
-construction also resume its parent.
-
-An additional loop is added to resume all child devices. In theory we
-only need to restart the link, but doing so will also cause the
-physical devices to synchronize and re-initialize, while their Linux
-devices remain pm_runtime suspended. It's simpler to make sure the
-codec devices are fully resumed so that we don't have to deal with
-zombie states.
-
-This additional loop could have been avoided by adding a .prepare
-callback in SoundWire codec drivers. Functionally this would have been
-equivalent. The rationale for implementing a loop at the link level is
-only to reduce the amount of code required to deal at the codec level
-with an Intel corner case - in other words keep codec drivers
-independent from Intel platform-specific programming sequences.
-
-BugLink: https://github.com/thesofproject/linux/issues/2606
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/intel.c | 105 +++++++++++++++++++++++++++++++++-----
- 1 file changed, 93 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 8b42053b171f..f66fcbc33a2f 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -1596,6 +1596,87 @@ int intel_link_process_wakeen_event(struct auxiliary_device *auxdev)
-  * PM calls
-  */
- 
-+static int intel_resume_child_device(struct device *dev, void *data)
-+{
-+	int ret;
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-+
-+	if (!slave->probed) {
-+		dev_dbg(dev, "%s: skipping device, no probed driver\n", __func__);
-+		return 0;
-+	}
-+	if (!slave->dev_num_sticky) {
-+		dev_dbg(dev, "%s: skipping device, never detected on bus\n", __func__);
-+		return 0;
-+	}
-+
-+	ret = pm_request_resume(dev);
-+	if (ret < 0)
-+		dev_err(dev, "%s: pm_request_resume failed: %d\n", __func__, ret);
-+
-+	return ret;
-+}
-+
-+static int __maybe_unused intel_pm_prepare(struct device *dev)
-+{
-+	struct sdw_cdns *cdns = dev_get_drvdata(dev);
-+	struct sdw_intel *sdw = cdns_to_intel(cdns);
-+	struct sdw_bus *bus = &cdns->bus;
-+	u32 clock_stop_quirks;
-+	int ret = 0;
-+
-+	if (bus->prop.hw_disabled || !sdw->startup_done) {
-+		dev_dbg(dev, "SoundWire master %d is disabled or not-started, ignoring\n",
-+			bus->link_id);
-+		return 0;
-+	}
-+
-+	clock_stop_quirks = sdw->link_res->clock_stop_quirks;
-+
-+	if (pm_runtime_suspended(dev) &&
-+	    pm_runtime_suspended(dev->parent) &&
-+	    ((clock_stop_quirks & SDW_INTEL_CLK_STOP_BUS_RESET) ||
-+	     !clock_stop_quirks)) {
-+		/*
-+		 * if we've enabled clock stop, and the parent is suspended, the SHIM registers
-+		 * are not accessible and the shim wake cannot be disabled.
-+		 * The only solution is to resume the entire bus to full power
-+		 */
-+
-+		/*
-+		 * If any operation in this block fails, we keep going since we don't want
-+		 * to prevent system suspend from happening and errors should be recoverable
-+		 * on resume.
-+		 */
-+
-+		/*
-+		 * first resume the device for this link. This will also by construction
-+		 * resume the PCI parent device.
-+		 */
-+		ret = pm_request_resume(dev);
-+		if (ret < 0) {
-+			dev_err(dev, "%s: pm_request_resume failed: %d\n", __func__, ret);
-+			return 0;
-+		}
-+
-+		/*
-+		 * Continue resuming the entire bus (parent + child devices) to exit
-+		 * the clock stop mode. If there are no devices connected on this link
-+		 * this is a no-op.
-+		 * The resume to full power could have been implemented with a .prepare
-+		 * step in SoundWire codec drivers. This would however require a lot
-+		 * of code to handle an Intel-specific corner case. It is simpler in
-+		 * practice to add a loop at the link level.
-+		 */
-+		ret = device_for_each_child(bus->dev, NULL, intel_resume_child_device);
-+
-+		if (ret < 0)
-+			dev_err(dev, "%s: intel_resume_child_device failed: %d\n", __func__, ret);
-+	}
-+
-+	return 0;
-+}
-+
- static int __maybe_unused intel_suspend(struct device *dev)
- {
- 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
-@@ -1615,19 +1696,18 @@ static int __maybe_unused intel_suspend(struct device *dev)
- 
- 		clock_stop_quirks = sdw->link_res->clock_stop_quirks;
- 
--		if ((clock_stop_quirks & SDW_INTEL_CLK_STOP_BUS_RESET ||
--		     !clock_stop_quirks) &&
--		    !pm_runtime_suspended(dev->parent)) {
-+		if ((clock_stop_quirks & SDW_INTEL_CLK_STOP_BUS_RESET) ||
-+		    !clock_stop_quirks) {
- 
--			/*
--			 * if we've enabled clock stop, and the parent
--			 * is still active, disable shim wake. The
--			 * SHIM registers are not accessible if the
--			 * parent is already pm_runtime suspended so
--			 * it's too late to change that configuration
--			 */
--
--			intel_shim_wake(sdw, false);
-+			if (pm_runtime_suspended(dev->parent)) {
-+				/*
-+				 * paranoia check: this should not happen with the .prepare
-+				 * resume to full power
-+				 */
-+				dev_err(dev, "%s: invalid config: parent is suspended\n", __func__);
-+			} else {
-+				intel_shim_wake(sdw, false);
-+			}
- 		}
- 
- 		return 0;
-@@ -1992,6 +2072,7 @@ static int __maybe_unused intel_resume_runtime(struct device *dev)
- }
- 
- static const struct dev_pm_ops intel_pm = {
-+	.prepare = intel_pm_prepare,
- 	SET_SYSTEM_SLEEP_PM_OPS(intel_suspend, intel_resume)
- 	SET_RUNTIME_PM_OPS(intel_suspend_runtime, intel_resume_runtime, NULL)
- };
--- 
-2.17.1
-
+-Saravana
