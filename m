@@ -2,190 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC3A3EFD1C
+	by mail.lfdr.de (Postfix) with ESMTP id 6EBFD3EFD1E
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238597AbhHRGuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 02:50:03 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:50258
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238080AbhHRGuA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 02:50:00 -0400
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 8490240CC6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 06:49:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629269365;
-        bh=koyaZ5FIZxDdS33SITxLj7wHGHh/MSdOiD6GS5fpHeg=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=LxH8xivxknKbu4PGoNssjfpIhFmTTJS13p40vXmGzRWBM8fZhw6sjJJ3oQsC3RUOq
-         xQ5m3MjNoHlNhJAdVnea8HHideSZIFVb4Mgwjjc1uOoHuQeIAKLor5aqiZ5u7surzl
-         MSG0eQR9xo6hBnlKXLo3x07cAGB4DZqTLinqtwjLLqa0Xv+HGtmDnRG0SIa8Ln7UA+
-         6ITkLPfu+K6zc9F2O8ajLai2sVydqLk4SNqnYeK++s8/ARpuioYq/zVPC1M7SdYVcf
-         bfI91/PpBabdySBu6YuShmiUOyM0BpLCcLZEUHdwY8S99Iss0SEkLp8br90B2/XTlH
-         Zq7vAM6m8K7ag==
-Received: by mail-ed1-f69.google.com with SMTP id eg56-20020a05640228b8b02903be79801f9aso514078edb.21
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:49:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=koyaZ5FIZxDdS33SITxLj7wHGHh/MSdOiD6GS5fpHeg=;
-        b=Bq1l+TBYMu31NJWjzDoP1h2aLBh6jpwaiBTUJ/Q5qLSvPUrB/pN5ZvV6hPOLJr6nDr
-         9o2N++cQqqZ1gMOairzYYdc3OWDQ3zRmT25/7yeOauc09Yvj7QR4Lm92LO4fE+gV8rti
-         vpnJkqGXpxkO6OdTT2kNXY3lDEs4Kwukyhykb4+zvvPnMuNuaV4FWZGX1BvgOAhqMRJR
-         N5/2GoTHop3+oJLQQjZ59EW1Zit9kPzuNU0z87pt09D26Wc4ssUy1j68514pXhFTFcJ2
-         DHUPpBF+6jdfuLshy+1CjoEIYmnqo0cPJg5BAmba3ESBW6MHz5iiqCdJNGWKDgIvBg9k
-         QoEA==
-X-Gm-Message-State: AOAM531kIkY3BXUzmONnYsYHBCAgm3/KgvBebQNSJ90WNxKz+5bZtU21
-        Dbj7T4fhuVPhiUqwwcCFKroq9urEJ+GF70J1TQIW+u9Y79dRJMt3pnG2jUYm/75eZ5q72sOAR8s
-        sXjOfUgtJHgcczgplAnIzr9Ikvg5JuS4JUGTBhwdukw==
-X-Received: by 2002:a17:906:1f8e:: with SMTP id t14mr8154723ejr.313.1629269365306;
-        Tue, 17 Aug 2021 23:49:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzWhQFCV598TtTdTr1EoTmYGq5dI5oFgzC45QcBRmM+oIeH6pPwo+Is9DtzMEBVJyV2Y08tYw==
-X-Received: by 2002:a17:906:1f8e:: with SMTP id t14mr8154708ejr.313.1629269365121;
-        Tue, 17 Aug 2021 23:49:25 -0700 (PDT)
-Received: from [192.168.8.102] ([86.32.42.198])
-        by smtp.gmail.com with ESMTPSA id f20sm1580873ejz.30.2021.08.17.23.49.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Aug 2021 23:49:24 -0700 (PDT)
-Subject: Re: [PATCH v2 1/8] dt-bindings: clock: samsung: convert Exynos5250 to
- dtschema
-To:     Rob Herring <robh@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sam Protsenko <semen.protsenko@linaro.org>
-References: <20210810093145.26153-1-krzysztof.kozlowski@canonical.com>
- <20210810093145.26153-2-krzysztof.kozlowski@canonical.com>
- <YRwZG1uerWt+NAQH@robh.at.kernel.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <c7311cd1-7e62-91d9-bbbd-cfc3c027da35@canonical.com>
-Date:   Wed, 18 Aug 2021 08:49:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <YRwZG1uerWt+NAQH@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S238829AbhHRGuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 02:50:08 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:35169 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238745AbhHRGuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 02:50:05 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4GqJRF6Fn2z9sVm;
+        Wed, 18 Aug 2021 08:49:29 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id MpehLtEVfbmu; Wed, 18 Aug 2021 08:49:29 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4GqJRF5CjMz9sVQ;
+        Wed, 18 Aug 2021 08:49:29 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 947648B7D5;
+        Wed, 18 Aug 2021 08:49:29 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id NPPUq-W1JVRY; Wed, 18 Aug 2021 08:49:29 +0200 (CEST)
+Received: from po9473vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4A3468B7D3;
+        Wed, 18 Aug 2021 08:49:29 +0200 (CEST)
+Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 1FA456693C; Wed, 18 Aug 2021 06:49:29 +0000 (UTC)
+Message-Id: <4856f5574906e2aec0522be17bf3848a22b2cd0b.1629269345.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v2] powerpc/32s: Fix random crashes by adding isync() after
+ locking/unlocking KUEP
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, userm57@yahoo.com,
+        fthain@linux-m68k.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Wed, 18 Aug 2021 06:49:29 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/08/2021 22:16, Rob Herring wrote:
-> On Tue, Aug 10, 2021 at 11:31:38AM +0200, Krzysztof Kozlowski wrote:
->> Convert Samsung Exynos5250 clock controller bindings to DT schema format
->> using json-schema.
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->> ---
->>  .../bindings/clock/exynos5250-clock.txt       | 41 ----------------
->>  .../bindings/clock/samsung,exynos-clock.yaml  | 48 +++++++++++++++++++
->>  MAINTAINERS                                   |  1 +
->>  3 files changed, 49 insertions(+), 41 deletions(-)
->>  delete mode 100644 Documentation/devicetree/bindings/clock/exynos5250-clock.txt
->>  create mode 100644 Documentation/devicetree/bindings/clock/samsung,exynos-clock.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/clock/exynos5250-clock.txt b/Documentation/devicetree/bindings/clock/exynos5250-clock.txt
->> deleted file mode 100644
->> index aff266a12eeb..000000000000
->> --- a/Documentation/devicetree/bindings/clock/exynos5250-clock.txt
->> +++ /dev/null
->> @@ -1,41 +0,0 @@
->> -* Samsung Exynos5250 Clock Controller
->> -
->> -The Exynos5250 clock controller generates and supplies clock to various
->> -controllers within the Exynos5250 SoC.
->> -
->> -Required Properties:
->> -
->> -- compatible: should be one of the following.
->> -  - "samsung,exynos5250-clock" - controller compatible with Exynos5250 SoC.
->> -
->> -- reg: physical base address of the controller and length of memory mapped
->> -  region.
->> -
->> -- #clock-cells: should be 1.
->> -
->> -Each clock is assigned an identifier and client nodes can use this identifier
->> -to specify the clock which they consume.
->> -
->> -All available clocks are defined as preprocessor macros in
->> -dt-bindings/clock/exynos5250.h header and can be used in device
->> -tree sources.
->> -
->> -Example 1: An example of a clock controller node is listed below.
->> -
->> -	clock: clock-controller@10010000 {
->> -		compatible = "samsung,exynos5250-clock";
->> -		reg = <0x10010000 0x30000>;
->> -		#clock-cells = <1>;
->> -	};
->> -
->> -Example 2: UART controller node that consumes the clock generated by the clock
->> -	   controller. Refer to the standard clock bindings for information
->> -	   about 'clocks' and 'clock-names' property.
->> -
->> -	serial@13820000 {
->> -		compatible = "samsung,exynos4210-uart";
->> -		reg = <0x13820000 0x100>;
->> -		interrupts = <0 54 0>;
->> -		clocks = <&clock CLK_UART2>, <&clock CLK_SCLK_UART2>;
->> -		clock-names = "uart", "clk_uart_baud0";
->> -	};
->> diff --git a/Documentation/devicetree/bindings/clock/samsung,exynos-clock.yaml b/Documentation/devicetree/bindings/clock/samsung,exynos-clock.yaml
->> new file mode 100644
->> index 000000000000..cd6567bd8cc7
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/clock/samsung,exynos-clock.yaml
->> @@ -0,0 +1,48 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/clock/samsung,exynos-clock.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Samsung Exynos SoC clock controller
->> +
->> +maintainers:
->> +  - Chanwoo Choi <cw00.choi@samsung.com>
->> +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->> +  - Sylwester Nawrocki <s.nawrocki@samsung.com>
->> +  - Tomasz Figa <tomasz.figa@gmail.com>
->> +
->> +description: |
->> +  All available clocks are defined as preprocessor macros in
->> +  dt-bindings/clock/ headers.
->> +
->> +properties:
->> +  compatible:
->> +    const: samsung,exynos5250-clock
->> +
->> +  assigned-clocks: true
->> +  assigned-clock-parents: true
->> +  assigned-clock-rates: true
-> 
-> These can be dropped. They are always allowed if 'clocks' is present.
-> 
->> +  clocks: true
-> 
-> This needs to define how many.
-> 
+Commit b5efec00b671 ("powerpc/32s: Move KUEP locking/unlocking in C")
+removed the 'isync' instruction after adding/removing NX bit in user
+segments. The reasoning behind this change was that when setting the
+NX bit we don't mind it taking effect with delay as the kernel never
+executes text from userspace, and when clearing the NX bit this is
+to return to userspace and then the 'rfi' should synchronise the
+context.
 
-Right, thanks.
+However, it looks like on book3s/32 having a hash page table, at least
+on the G3 processor, we get an unexpected fault from userspace, then
+this is followed by something wrong in the verification of MSR_PR
+at end of another interrupt.
 
+This is fixed by adding back the removed isync() following update
+of NX bit in user segment registers. Only do it for cores with an
+hash table, as 603 cores don't exhibit that problem and the two isync
+increase ./null_syscall selftest by 6 cycles on an MPC 832x.
 
-Best regards,
-Krzysztof
+First problem: unexpected WARN_ON() for mysterious PROTFAULT
+
+	[   62.896426] WARNING: CPU: 0 PID: 1660 at arch/powerpc/mm/fault.c:354 do_page_fault+0x6c/0x5b0
+	[   62.918111] Modules linked in:
+	[   62.923350] CPU: 0 PID: 1660 Comm: Xorg Not tainted 5.13.0-pmac-00028-gb3c15b60339a #40
+	[   62.943476] NIP:  c001b5c8 LR: c001b6f8 CTR: 00000000
+	[   62.954714] REGS: e2d09e40 TRAP: 0700   Not tainted  (5.13.0-pmac-00028-gb3c15b60339a)
+	[   62.974581] MSR:  00021032 <ME,IR,DR,RI>  CR: 42d04f30  XER: 20000000
+	[   62.990009]
+        	       GPR00: c000424c e2d09f00 c301b680 e2d09f40 0000001e 42000000 00cba028 00000000
+        	       GPR08: 08000000 48000010 c301b680 e2d09f30 22d09f30 00c1fff0 00cba000 a7b7ba4c
+        	       GPR16: 00000031 00000000 00000000 00000000 00000000 00000000 a7b7b0d0 00c5c010
+        	       GPR24: a7b7b64c a7b7d2f0 00000004 00000000 c1efa6c0 00cba02c 00000300 e2d09f40
+	[   63.075238] NIP [c001b5c8] do_page_fault+0x6c/0x5b0
+	[   63.085952] LR [c001b6f8] do_page_fault+0x19c/0x5b0
+	[   63.096678] Call Trace:
+	[   63.100075] [e2d09f00] [e2d09f04] 0xe2d09f04 (unreliable)
+	[   63.112359] [e2d09f30] [c000424c] DataAccess_virt+0xd4/0xe4
+	[   63.125168] --- interrupt: 300 at 0xa7a261dc
+	[   63.134060] NIP:  a7a261dc LR: a7a253bc CTR: 00000000
+	[   63.145302] REGS: e2d09f40 TRAP: 0300   Not tainted  (5.13.0-pmac-00028-gb3c15b60339a)
+	[   63.165167] MSR:  0000d032 <EE,PR,ME,IR,DR,RI>  CR: 228428e2  XER: 20000000
+	[   63.182162] DAR: 00cba02c DSISR: 42000000
+        	       GPR00: a7a27448 afa6b0e0 a74c35c0 a7b7b614 0000001e a7b7b614 00cba028 00000000
+        	       GPR08: 00020fd9 00000031 00cb9ff8 a7a273b0 220028e2 00c1fff0 00cba000 a7b7ba4c
+        	       GPR16: 00000031 00000000 00000000 00000000 00000000 00000000 a7b7b0d0 00c5c010
+        	       GPR24: a7b7b64c a7b7d2f0 00000004 00000002 0000001e a7b7b614 a7b7aff4 00000030
+	[   63.275233] NIP [a7a261dc] 0xa7a261dc
+	[   63.282291] LR [a7a253bc] 0xa7a253bc
+	[   63.289087] --- interrupt: 300
+	[   63.294322] Instruction dump:
+	[   63.299291] 7c4a1378 810300a0 75278410 83820298 83a300a4 553b018c 551e0036 4082038c
+	[   63.318630] 2e1b0000 40920228 75280800 41820220 <0fe00000> 3b600000 41920214 81420594
+	[   63.338503] ---[ end trace f642a84639cba377 ]---
+
+Second problem: MSR PR is seen unset allthough the interrupt frame shows it set
+
+	[   63.666846] kernel BUG at arch/powerpc/kernel/interrupt.c:458!
+	[   63.680633] Oops: Exception in kernel mode, sig: 5 [#1]
+	[   63.692201] BE PAGE_SIZE=4K MMU=Hash SMP NR_CPUS=2 PowerMac
+	[   63.705011] Modules linked in:
+	[   63.710247] CPU: 0 PID: 1660 Comm: Xorg Tainted: G        W         5.13.0-pmac-00028-gb3c15b60339a #40
+	[   63.734553] NIP:  c0011434 LR: c001629c CTR: 00000000
+	[   63.745796] REGS: e2d09e70 TRAP: 0700   Tainted: G        W          (5.13.0-pmac-00028-gb3c15b60339a)
+	[   63.769844] MSR:  00029032 <EE,ME,IR,DR,RI>  CR: 42d09f30  XER: 00000000
+	[   63.786052]
+        	       GPR00: 00000000 e2d09f30 c301b680 e2d09f40 83440000 c44d0e68 e2d09e8c 00000000
+        	       GPR08: 00000002 00dc228a 00004000 e2d09f30 22d09f30 00c1fff0 afa6ceb4 00c26144
+        	       GPR16: 00c25fb8 00c26140 afa6ceb8 90000000 00c944d8 0000001c 00000000 00200000
+        	       GPR24: 00000000 000001fb afa6d1b4 00000001 00000000 a539a2a0 a530fd80 00000089
+	[   63.871284] NIP [c0011434] interrupt_exit_kernel_prepare+0x10/0x70
+	[   63.885922] LR [c001629c] interrupt_return+0x9c/0x144
+	[   63.897168] Call Trace:
+	[   63.900562] [e2d09f30] [c000424c] DataAccess_virt+0xd4/0xe4 (unreliable)
+	[   63.916773] --- interrupt: 300 at 0xa09be008
+	[   63.925659] NIP:  a09be008 LR: a09bdfe8 CTR: a09bdfc0
+	[   63.936903] REGS: e2d09f40 TRAP: 0300   Tainted: G        W          (5.13.0-pmac-00028-gb3c15b60339a)
+	[   63.960953] MSR:  0000d032 <EE,PR,ME,IR,DR,RI>  CR: 420028e2  XER: 20000000
+	[   63.977948] DAR: a539a308 DSISR: 0a000000
+        	       GPR00: a7b90d50 afa6b2d0 a74c35c0 a0a8b690 a0a8b698 a5365d70 a4fa82a8 00000004
+        	       GPR08: 00000000 a09bdfc0 00000000 a5360000 a09bde7c 00c1fff0 afa6ceb4 00c26144
+        	       GPR16: 00c25fb8 00c26140 afa6ceb8 90000000 00c944d8 0000001c 00000000 00200000
+        	       GPR24: 00000000 000001fb afa6d1b4 00000001 00000000 a539a2a0 a530fd80 00000089
+	[   64.071020] NIP [a09be008] 0xa09be008
+	[   64.078079] LR [a09bdfe8] 0xa09bdfe8
+	[   64.084874] --- interrupt: 300
+	[   64.090108] Instruction dump:
+	[   64.095074] 80010024 83e1001c 7c0803a6 4bffff80 3bc00800 4bffffd0 486b42fd 4bffffcc
+	[   64.114419] 81430084 71480002 41820038 554a0462 <0f0a0000> 80620060 74630001 40820034
+	[   64.134298] ---[ end trace f642a84639cba378 ]---
+
+Reported-by: Stan Johnson <userm57@yahoo.com>
+Fixes: b5efec00b671 ("powerpc/32s: Move KUEP locking/unlocking in C")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+v2: Added comments to explain why we have a 'isync' for 604+ cores only.
+---
+ arch/powerpc/include/asm/book3s/32/kup.h | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/arch/powerpc/include/asm/book3s/32/kup.h b/arch/powerpc/include/asm/book3s/32/kup.h
+index 64201125a287..d4b145b279f6 100644
+--- a/arch/powerpc/include/asm/book3s/32/kup.h
++++ b/arch/powerpc/include/asm/book3s/32/kup.h
+@@ -4,6 +4,8 @@
+ 
+ #include <asm/bug.h>
+ #include <asm/book3s/32/mmu-hash.h>
++#include <asm/mmu.h>
++#include <asm/synch.h>
+ 
+ #ifndef __ASSEMBLY__
+ 
+@@ -28,6 +30,15 @@ static inline void kuep_lock(void)
+ 		return;
+ 
+ 	update_user_segments(mfsr(0) | SR_NX);
++	/*
++	 * This isync() shouldn't be necessary as the kernel is not excepted to
++	 * run any instruction in userspace soon after the update of segments,
++	 * but hash based cores (at least G3) seem to exhibit a random
++	 * behaviour when the 'isync' is not there. 603 cores don't have this
++	 * behaviour so don't do the 'isync' as it saves several CPU cycles.
++	 */
++	if (mmu_has_feature(MMU_FTR_HPTE_TABLE))
++		isync();	/* Context sync required after mtsr() */
+ }
+ 
+ static inline void kuep_unlock(void)
+@@ -36,6 +47,15 @@ static inline void kuep_unlock(void)
+ 		return;
+ 
+ 	update_user_segments(mfsr(0) & ~SR_NX);
++	/*
++	 * This isync() shouldn't be necessary as a 'rfi' will soon be executed
++	 * to return to userspace, but hash based cores (at least G3) seem to
++	 * exhibit a random behaviour when the 'isync' is not there. 603 cores
++	 * don't have this behaviour so don't do the 'isync' as it saves several
++	 * CPU cycles.
++	 */
++	if (mmu_has_feature(MMU_FTR_HPTE_TABLE))
++		isync();	/* Context sync required after mtsr() */
+ }
+ 
+ #ifdef CONFIG_PPC_KUAP
+-- 
+2.25.0
+
