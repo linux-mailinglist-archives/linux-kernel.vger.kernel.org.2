@@ -2,114 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 143813F0212
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 12:57:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A2F3F0215
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 12:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234953AbhHRK5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 06:57:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50750 "EHLO mail.kernel.org"
+        id S235143AbhHRK6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 06:58:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234748AbhHRK5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 06:57:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B6E960FBF;
-        Wed, 18 Aug 2021 10:57:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629284233;
-        bh=PNfci8wqXXfyvt5HEVXeoi84eP/5uRnbl3BCEVOedCQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AG+3mdgzAWdBNZk3Lh2+8lQMgsajrP5NGbpDT46Y1xgu6DLxG4s0WX68TnFcvZL8d
-         TV6LkuB6wYwUXxGxFw/bCPkYWmz7mSbOPe99zalmMpdaAFyvjyNEpJGoBy8uDIqpHZ
-         ulEN1JgP+9tCYGI6EzGR/C7TYt63IdJ8KACoP/ITuH9nZnFn+/owPs8y1CW6nrXmFU
-         zPOiFJrXzCx1ks50bG5qs9y+PDxll+qudQACgljhTMGw/O/f+tyOJ1E9XNWCVMMq7c
-         2eNnf2ieckMZV1gPK9GGVI1uftE1g6BQ03QUijUh0yuG+tVtLWDMqok6HKJIQKXkxp
-         wQMcTP8peQdsQ==
-Date:   Wed, 18 Aug 2021 19:57:09 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v6 4/7] tracing/probes: Allow for dot delimiter as well
- as slash for system names
-Message-Id: <20210818195709.0536722822090f737664d1d6@kernel.org>
-In-Reply-To: <20210817035027.580493202@goodmis.org>
-References: <20210817034255.421910614@goodmis.org>
-        <20210817035027.580493202@goodmis.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S235120AbhHRK6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 06:58:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1631761029;
+        Wed, 18 Aug 2021 10:57:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629284250;
+        bh=IP9QZ9R4vDScwCucpKYL7KBQIzj0wzHNmIYig9vv5+U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ly3thsFBZKmxkkxQ1Zq6Zom/3c1Ek9+Mh6NMdv1sbehEQl6YCv2n8ipVFHuQwWXkt
+         oLrrWjt5QIBqfMNdbzMzL35Sn6cIomKi4lTnm7ygctQSRoUiRDntlwGueT5k/Kk16t
+         wBuZQrKfOANAR/lZxIha8pEiztnroRetNzjWEfdc=
+Date:   Wed, 18 Aug 2021 12:57:28 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND 1/2] ARM: tegra: paz00: Handle device properties
+ with software node API
+Message-ID: <YRznmKAnIoM5/Is/@kroah.com>
+References: <20210817102449.39994-1-heikki.krogerus@linux.intel.com>
+ <20210817102449.39994-2-heikki.krogerus@linux.intel.com>
+ <YRvIFJKmFlB6ntI5@orome.fritz.box>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YRvIFJKmFlB6ntI5@orome.fritz.box>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Aug 2021 23:42:59 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Tue, Aug 17, 2021 at 04:30:44PM +0200, Thierry Reding wrote:
+> On Tue, Aug 17, 2021 at 01:24:48PM +0300, Heikki Krogerus wrote:
+> > The old device property API is going to be removed.
+> > Replacing the device_add_properties() call with the software
+> > node API equivalent, device_create_managed_software_node().
+> > 
+> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > ---
+> >  arch/arm/mach-tegra/board-paz00.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm/mach-tegra/board-paz00.c b/arch/arm/mach-tegra/board-paz00.c
+> > index b5c990a7a5af5..18d37f90cdfe3 100644
+> > --- a/arch/arm/mach-tegra/board-paz00.c
+> > +++ b/arch/arm/mach-tegra/board-paz00.c
+> > @@ -36,7 +36,7 @@ static struct gpiod_lookup_table wifi_gpio_lookup = {
+> >  
+> >  void __init tegra_paz00_wifikill_init(void)
+> >  {
+> > -	platform_device_add_properties(&wifi_rfkill_device, wifi_rfkill_prop);
+> > +	device_create_managed_software_node(&wifi_rfkill_device.dev, wifi_rfkill_prop, NULL);
+> >  	gpiod_add_lookup_table(&wifi_gpio_lookup);
+> >  	platform_device_register(&wifi_rfkill_device);
+> >  }
+> 
+> Seems alright. Looks to be doing mostly the same thing as the original
+> platform_device_add_properties() was doing, except for the node now
+> being managed, which is irrelevant in this context.
+> 
+> I'm fine with Greg picking this up. I'm not aware of any other changes
+> to this file that might cause a conflict for v5.15.
+> 
+> Acked-by: Thierry Reding <treding@nvidia.com>
 
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> 
-> Kprobe and uprobe events can add a "system" to the events that are created
-> via the kprobe_events and uprobe_events files respectively. If they do not
-> include a "system" in the name, then the default "kprobes" or "uprobes" is
-> used. The current notation to specify a system for one of these probe
-> events is to add a '/' delimiter in the name, where the content before the
-> '/' will be the system to use, and the content after will be the event
-> name.
-> 
->  echo 'p:my_system/my_event' > kprobe_events
-> 
-> But this is inconsistent with the way histogram triggers separate their
-> system / event names. The histogram triggers use a '.' delimiter, which
-> can be confusing.
-> 
-> To allow this to be more consistent, as well as keep backward
-> compatibility, allow the kprobe and uprobe events to denote a system name
-> with either a '/' or a '.'.
-> 
-> That is:
-> 
->   echo 'p:my_system/my_event' > kprobe_events
-> 
-> is equivalent to:
-> 
->   echo 'p:my_system.my_event' > kprobe_events
-> 
-> Link: https://lore.kernel.org/linux-trace-devel/20210813004448.51c7de69ce432d338f4d226b@kernel.org/
-> 
+I'll pick it up, thanks!
 
-Yes, this is what I suggested :)
-
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thanks!
-
-
-> Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  kernel/trace/trace_probe.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-> index ef717b373443..0916a9964719 100644
-> --- a/kernel/trace/trace_probe.c
-> +++ b/kernel/trace/trace_probe.c
-> @@ -233,6 +233,9 @@ int traceprobe_parse_event_name(const char **pevent, const char **pgroup,
->  	int len;
->  
->  	slash = strchr(event, '/');
-> +	if (!slash)
-> +		slash = strchr(event, '.');
-> +
->  	if (slash) {
->  		if (slash == event) {
->  			trace_probe_log_err(offset, NO_GROUP_NAME);
-> -- 
-> 2.30.2
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+greg k-h
