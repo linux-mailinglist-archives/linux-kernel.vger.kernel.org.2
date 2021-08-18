@@ -2,125 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C856E3F0E82
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 01:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1443F0E8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 01:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234885AbhHRXHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 19:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234796AbhHRXHR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 19:07:17 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E17C061796
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 16:06:41 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id k24so3963547pgh.8
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 16:06:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6LXlTnktuLXOSEatHkAd9iidtx/DlqNXw6t+P+U3BQc=;
-        b=QDNt5PHgo+7rFQ5/N15pMYx2nigmnDuCuJ+bOuvXfS72zqVl8vZRlj8bX+wFTjLeE1
-         +cWdQw4DYXF54Bu3mpVNecT17rymK4/4HID0NO8YPAsOH71eiDyu8sN6XAFVcXLqPAMH
-         GiSiCnGqiMI57DyQ0LAdNhljzGxXXxsfxTLco=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6LXlTnktuLXOSEatHkAd9iidtx/DlqNXw6t+P+U3BQc=;
-        b=FdV+Nt/blVZDhzNIyD3F/4KB9Ace9UIgYOgxwNSLX58J3JwbCKDgyr4y4DVERHFPXs
-         mzWPP7um2YPBnoa3Ad8BR8j8QwasXGjwqL43woGRFAxxDqwUiYvHMLHRGIRESTXW+ah2
-         wwy1ChO4DZsY3HErHepKhSNLZCbCbaQjWuEDFxx4fS05MkJarR6PjNDt0fq12FfJQ69I
-         Sc5rg/1I+IWTGhuK9MGldqAjZJdLk1bQzsPFqpSIvihf41T1PC9Z3c2ztPYc/906VSnw
-         ObYiW3RsPmLzHwhwW1lOzEFpNbx6sWAmhAsCMjVdWdBPxYVwwkx7t07ExXn4vWEtp2Tt
-         OUsA==
-X-Gm-Message-State: AOAM532UETvz3cj9e7WGHpz27gqpM0lowp/UMHrbIoVJe/cLhQ/twblX
-        Am90HSCfjGLPrJDmtIe5B7lUCA==
-X-Google-Smtp-Source: ABdhPJyUYId4jZehTEC5dWKrbyuUEowd9b0WCT527H1rHej12/Bkc/D16VHqxCGKKKhtIhB0IMVa/w==
-X-Received: by 2002:aa7:8242:0:b0:3e2:97eb:d6e8 with SMTP id e2-20020aa78242000000b003e297ebd6e8mr9677080pfn.66.1629328001407;
-        Wed, 18 Aug 2021 16:06:41 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 143sm916287pfz.13.2021.08.18.16.06.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 16:06:40 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 16:06:39 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
-        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 53/63] KVM: x86: Use struct_group() to zero decode
- cache
-Message-ID: <202108181605.44C504C@keescook>
-References: <20210818060533.3569517-1-keescook@chromium.org>
- <20210818060533.3569517-54-keescook@chromium.org>
- <YR0jIEzEcUom/7rd@google.com>
- <202108180922.6C9E385A1@keescook>
- <YR2PhlO3njPcFOkg@google.com>
+        id S234642AbhHRXSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 19:18:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35192 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229478AbhHRXSb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 19:18:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B0C156109F;
+        Wed, 18 Aug 2021 23:17:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629328675;
+        bh=XKBZINRyW/UrTDUSlaarFzlfun8zrJZ24Pltkjo4uN4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=IhJFKk/9ugg3wqGXkhmjxxhShefQv6x4KyDDJrmm2+5Kzx5IX8RJDHqf+BanSIA20
+         Qy5EZtk3cHSTl77fcdKG+xEoJgAm+CHTJ44Ie0VDDbMp2UEI5GVmKK6iR9asqpdQnu
+         EK6eIa+VwwFEiVx2N0xjPRavM5QPyFfK+LhvP+ViAGUDHpeN3FHnSq/5FHV5o70Aee
+         y5zKdLFZVgC6GdCCGgkoRxPRVqYb3MJ0Cj3saxdz5OXCLIUgI1AyVTRcoiZMK2Z19K
+         Abjo1DRnkdGULlmvDu1w3BNCA6I/GDwLYUuUXwKwwQhDs3s9jdh8jFrL/u3sr0fgq0
+         4arVYXYtJYTQA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 73EBE5C04B1; Wed, 18 Aug 2021 16:17:55 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 16:17:55 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Marco Elver <elver@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: LKMM: Read dependencies of writes ordered by dma_wmb()?
+Message-ID: <20210818231755.GZ4126399@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <YRo58c+JGOvec7tc@elver.google.com>
+ <20210816145945.GB121345@rowland.harvard.edu>
+ <YRqfJz/lpUaZpxq7@elver.google.com>
+ <20210816192109.GC121345@rowland.harvard.edu>
+ <20210816205057.GN4126399@paulmck-ThinkPad-P17-Gen-1>
+ <20210817122816.GA12746@willie-the-truck>
+ <20210817135308.GO4126399@paulmck-ThinkPad-P17-Gen-1>
+ <20210818113935.GA14107@willie-the-truck>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YR2PhlO3njPcFOkg@google.com>
+In-Reply-To: <20210818113935.GA14107@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 10:53:58PM +0000, Sean Christopherson wrote:
-> On Wed, Aug 18, 2021, Kees Cook wrote:
-> > On Wed, Aug 18, 2021 at 03:11:28PM +0000, Sean Christopherson wrote:
-> > > From dbdca1f4cd01fee418c252e54c360d518b2b1ad6 Mon Sep 17 00:00:00 2001
-> > > From: Sean Christopherson <seanjc@google.com>
-> > > Date: Wed, 18 Aug 2021 08:03:08 -0700
-> > > Subject: [PATCH] KVM: x86: Replace memset() "optimization" with normal
-> > >  per-field writes
-> > > 
-> > > Explicitly zero select fields in the emulator's decode cache instead of
-> > > zeroing the fields via a gross memset() that spans six fields.  gcc and
-> > > clang are both clever enough to batch the first five fields into a single
-> > > quadword MOV, i.e. memset() and individually zeroing generate identical
-> > > code.
-> > > 
-> > > Removing the wart also prepares KVM for FORTIFY_SOURCE performing
-> > > compile-time and run-time field bounds checking for memset().
-> > > 
-> > > No functional change intended.
-> > > 
-> > > Reported-by: Kees Cook <keescook@chromium.org>
-> > > Signed-off-by: Sean Christopherson <seanjc@google.com>
+On Wed, Aug 18, 2021 at 12:39:36PM +0100, Will Deacon wrote:
+> Hi Paul.
+
+Hello, Will,
+
+> On Tue, Aug 17, 2021 at 06:53:08AM -0700, Paul E. McKenney wrote:
+> > On Tue, Aug 17, 2021 at 01:28:16PM +0100, Will Deacon wrote:
+
+[ . . . ]
+
+> > > Ignore the bits about mmiowb() as we got rid of that.
 > > 
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > 
-> > Do you want me to take this patch into my tree, or do you want to carry
-> > it for KVM directly?
+> > Should the leftovers in current mainline be replaced by wmb()?  Or are
+> > patches to that effect on their way in somewhere?
 > 
-> That's a Paolo question :-)
+> I already got rid of the non-arch usage of mmiowb(), but I wasn't bravei
+> enough to change the arch code as it may well be that they're relying on
+> some specific instruction semantics.
 > 
-> What's the expected timeframe for landing stricter bounds checking?  If it's
-> 5.16 or later, the easiest thing would be to squeak this into 5.15.
+> Despite my earlier comment, mmiowb() still exists, but only as a part of
+> ARCH_HAS_MMIOWB where it is used to add additional spinlock ordering so
+> that the rest of the kernel doesn't need to use mmiowb() at all.
+> 
+> So I suppose for these:
+> 
+> > arch/mips/kernel/gpio_txx9.c:	mmiowb();
+> > arch/mips/kernel/gpio_txx9.c:	mmiowb();
+> > arch/mips/kernel/gpio_txx9.c:	mmiowb();
+> > arch/mips/kernel/irq_txx9.c:	mmiowb();
+> > arch/mips/loongson2ef/common/bonito-irq.c:	mmiowb();
+> > arch/mips/loongson2ef/common/bonito-irq.c:	mmiowb();
+> > arch/mips/loongson2ef/common/mem.c:		mmiowb();
+> > arch/mips/loongson2ef/common/pm.c:	mmiowb();
+> > arch/mips/loongson2ef/lemote-2f/reset.c:	mmiowb();
+> > arch/mips/loongson2ef/lemote-2f/reset.c:	mmiowb();
+> > arch/mips/loongson2ef/lemote-2f/reset.c:	mmiowb();
+> > arch/mips/loongson2ef/lemote-2f/reset.c:	mmiowb();
+> > arch/mips/loongson2ef/lemote-2f/reset.c:	mmiowb();
+> > arch/mips/pci/ops-bonito64.c:	mmiowb();
+> > arch/mips/pci/ops-loongson2.c:	mmiowb();
+> > arch/mips/txx9/generic/irq_tx4939.c:	mmiowb();
+> > arch/mips/txx9/generic/setup.c:	mmiowb();
+> > arch/mips/txx9/rbtx4927/irq.c:	mmiowb();
+> > arch/mips/txx9/rbtx4938/irq.c:	mmiowb();
+> > arch/mips/txx9/rbtx4938/irq.c:	mmiowb();
+> > arch/mips/txx9/rbtx4938/setup.c:	mmiowb();
+> > arch/mips/txx9/rbtx4939/irq.c:	mmiowb();
+> 
+> we could replace mmiowb() with iobarrier_w().
 
-I'm hoping to land all the "compile time" stuff for 5.15, but
-realistically, some portions may not get there. I'll just carry this
-patch for now and if we need to swap trees we can do that. :)
+Not having MIPS hardware at my disposal, I will leave these to those
+who do.  I would suggest adding iobarrier_*() to memory-barriers.txt,
+but they appear to be specific to MIPS and PowerPC.
 
-Thanks!
-
--Kees
-
--- 
-Kees Cook
+							Thanx, Paul
