@@ -2,72 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33B2D3F040C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 14:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15283F0413
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 14:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236124AbhHRM5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 08:57:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233634AbhHRM5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 08:57:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F33B661053;
-        Wed, 18 Aug 2021 12:56:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629291416;
-        bh=oUNMZ3N3BnzZiuVDegJM0Y3OIg2AOXjLtpwnoWnPOcA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IGPmsKA0z6tyfzG8q5As0YJjUf/y6AFPeJtlhlXeg8477075l4+6AP/DThInqBqyl
-         20JGpTLPBW34foVHKMvkf0IqeD0o0GCBlFKkkITtddJlw/AVTSuvqJrLjaZ2KPSN8E
-         32iEXxalcAGPGIB7ecFGB39Fu+cj8NmBz9B0b8EGYmeENi/+fxkzmkW9RbmGjcUdBs
-         WbeFslXQodgSA2kNzST2Oo/8+/YK6ETq3SCjRlIRDZckW0g5VEXHnbLcT1W257Vnru
-         H1iyCe6ReS+xtSQwHyEhQ3+jgbVP6wgNYD854MWZ1VFo5/FeycTkMsWU0+3+IJ3vbv
-         p8N30s61nLvSA==
-Date:   Wed, 18 Aug 2021 13:56:31 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jianqun Xu <jay.xu@rock-chips.com>
-Cc:     lgirdwood@gmail.com, ulf.hansson@linaro.org, lee.jones@linaro.org,
-        zhangchangzhong@huawei.com, heiko@sntech.de,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] regulator: add PRE_ENABLE event define
-Message-ID: <20210818125631.GA17664@sirena.org.uk>
-References: <20210817033848.1396749-1-jay.xu@rock-chips.com>
- <20210817033848.1396749-2-jay.xu@rock-chips.com>
+        id S233634AbhHRM7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 08:59:17 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:49257 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236124AbhHRM7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 08:59:16 -0400
+Received: from [141.14.13.3] (g258.RadioFreeInternet.molgen.mpg.de [141.14.13.3])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 7CFD561E5FE33;
+        Wed, 18 Aug 2021 14:58:40 +0200 (CEST)
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-ide@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Subject: Failed disk initialization logged as warning `ata3.00: disabled`
+ instead with more severe log level
+Message-ID: <e5cc55d4-ef08-cd57-f1b0-cd15df43dc8b@molgen.mpg.de>
+Date:   Wed, 18 Aug 2021 14:58:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="8t9RHnE3ZwKMSgU+"
-Content-Disposition: inline
-In-Reply-To: <20210817033848.1396749-2-jay.xu@rock-chips.com>
-X-Cookie: Save the Whales -- Harpoon a Honda.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Dear Linux folks,
 
---8t9RHnE3ZwKMSgU+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Aug 17, 2021 at 11:38:46AM +0800, Jianqun Xu wrote:
-> Add REGULATOR_EVENT_PRE_ENABLE to allow to notify driver that the
-> regulator is about to enabled.
+A disk died on an old system, and is not displayed by `lsblk` anymore 
+after a reboot. I would have expected such an event be logged with a 
+severe level.
 
-This doesn't apply against current code, please check and resend.
+     @moppel:~$ dmesg --level=emerg
+     @moppel:~$ dmesg --level=alert
+     @moppel:~$ dmesg --level=crit
+     @moppel:~$ dmesg --level=err
+     [   24.450604] ata3.00: failed to set xfermode (err_mask=0x4)
+     [   39.810617] ata3.00: failed to set xfermode (err_mask=0x4)
+     @moppel:~$ dmesg --level=warn
+     [    1.039497] ENERGY_PERF_BIAS: Set to 'normal', was 'performance'
+     [    2.539408] pci 0000:03:00.0: can't disable ASPM; OS doesn't 
+have ASPM control
+     [    3.088540] ACPI Warning: SystemIO range 
+0x0000000000000428-0x000000000000042F conflicts with OpRegion 
+0x0000000000000400-0x000000000000047F (\PMIO) (20200925/utaddress-213)
+     [    3.114469] ACPI Warning: SystemIO range 
+0x0000000000000540-0x000000000000054F conflicts with OpRegion 
+0x0000000000000500-0x0000000000000563 (\GPIO) (20200925/utaddress-213)
+     [    3.140390] ACPI Warning: SystemIO range 
+0x0000000000000530-0x000000000000053F conflicts with OpRegion 
+0x0000000000000500-0x0000000000000563 (\GPIO) (20200925/utaddress-213)
+     [    3.166311] ACPI Warning: SystemIO range 
+0x0000000000000500-0x000000000000052F conflicts with OpRegion 
+0x0000000000000500-0x0000000000000563 (\GPIO) (20200925/utaddress-213)
+     [    3.192226] lpc_ich: Resource conflict(s) found affecting gpio_ich
+     [    3.900324] i8042: PNP: PS/2 controller doesn't have KBD irq; 
+using default 1
+     [    9.086414] ata3.00: qc timeout (cmd 0x27)
+     [    9.090618] ata3.00: failed to read native max address 
+(err_mask=0x4)
+     [    9.097155] ata3.00: HPA support seems broken, skipping HPA handling
+     [   24.446401] ata3.00: qc timeout (cmd 0xef)
+     [   24.456189] ata3: limiting SATA link speed to 1.5 Gbps
+     [   24.461423] ata3.00: limiting speed to UDMA/133:PIO3
+     [   39.806416] ata3.00: qc timeout (cmd 0xef)
+     [   39.816203] ata3.00: disabled
 
---8t9RHnE3ZwKMSgU+
-Content-Type: application/pgp-signature; name="signature.asc"
+The xfermode message is logged as an error, but I have system, where the 
+device is still functional. The actual disabled message is “only” logged 
+as a warning.
 
------BEGIN PGP SIGNATURE-----
+Is there a way to improve the logging, and log a failed initialization 
+of a disk with a higher level? Maybe even critical or alert?
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEdA34ACgkQJNaLcl1U
-h9AnWAf/U/DuYbgl0iPGbSpeyY8l4hRw+vanENiMTm2Q1gbrFsFWVh6ldSMuDHT4
-0NB0J/k+zBhMthcnjR3C38hBMXZZY3ruYzeTtAK33RJDBQv5gF7x1RWGmDwxnMQI
-mEo8pOimdDhCSqpcomIuv05W+Fplq0zowOXbhjmQRHwZOyTgyLUX89b0cOeDV+Cb
-6UQC2R/C8LSrURUtLyFFqvb37Q7MfIT4MTD+8BaO+fGOrvPJXKICsbpjZ4ow7UPV
-C6S+4fAoMZGimeXxWLHsvtE7ErDdyPUR4aTBJL9vNwwWERswEOntlL0e0+YpYUCt
-C+cuyIbh0V6AfIypW7Gv8uFXnWrwmw==
-=5oQy
------END PGP SIGNATURE-----
 
---8t9RHnE3ZwKMSgU+--
+Kind regards,
+
+Paul
