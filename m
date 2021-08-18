@@ -2,103 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB4C3F0802
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D785D3F080A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239752AbhHRP2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 11:28:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53288 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239509AbhHRP2j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 11:28:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4C6F61056;
-        Wed, 18 Aug 2021 15:28:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629300484;
-        bh=6qIatRlyPwGZZZJdwRlRttF/BEGVNA0QhKepy/wJI3o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KjqNcnimhe4hoip2pxAOu60xIen1V94R7Z2FRA9FWPIk902tv9fET+pTABVivnF8a
-         Sb3JStdG0/DJFqPd30DrjlUxeDfV8df/0Y5Ui1iqH5Hrb8+OJPjlUyijP1yPJBlEkR
-         HYt3oWDC6ysehNDmBU96COWGwk20SFg2JGSv9JhI=
-Date:   Wed, 18 Aug 2021 17:28:01 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        "Rafael J . Wysocki" <rafael@kernel.org>, tiwai@suse.de,
-        linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com,
-        vkoul@kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [RFC PATCH 1/2] driver core: export
- driver_deferred_probe_trigger()
-Message-ID: <YR0nAcC3wJd3b4Vu@kroah.com>
-References: <20210817190057.255264-1-pierre-louis.bossart@linux.intel.com>
- <20210817190057.255264-2-pierre-louis.bossart@linux.intel.com>
- <YRyeR6imvSwOOasQ@kroah.com>
- <20210818115736.GA4177@sirena.org.uk>
- <YR0Ji7DQXoo0z4vP@kroah.com>
- <20210818134814.GF4177@sirena.org.uk>
- <14235b8d-d375-6e2d-cae9-33adf9c48120@linux.intel.com>
+        id S238689AbhHRP3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 11:29:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238837AbhHRP3T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 11:29:19 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC0CC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 08:28:45 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1mGNUh-0004Wz-Dq; Wed, 18 Aug 2021 17:28:43 +0200
+Subject: Re: [PATCH] clk: imx8m: fix clock tree update of TF-A managed clocks
+To:     Abel Vesa <abel.vesa@nxp.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20210810151432.9228-1-a.fatoum@pengutronix.de>
+ <YR0j21KspR618YLK@ryzen>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <93de171b-a4d3-e1da-a5e0-4c50e7a97c5d@pengutronix.de>
+Date:   Wed, 18 Aug 2021 17:28:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <14235b8d-d375-6e2d-cae9-33adf9c48120@linux.intel.com>
+In-Reply-To: <YR0j21KspR618YLK@ryzen>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 09:51:51AM -0500, Pierre-Louis Bossart wrote:
-> 
-> 
-> >>> The issue is that the driver core is using drivers completing probe as a
-> >>> proxy for resources becoming available.  That works most of the time
-> >>> because most probes are fully synchronous but it breaks down if a
-> >>> resource provider registers resources outside of probe, we might still
-> >>> be fine if system boot is still happening and something else probes but
-> >>> only through luck.
-> > 
-> >> The driver core is not using that as a proxy, that is up to the driver
-> >> itself or not.  All probe means is "yes, this driver binds to this
-> >> device, thank you!" for that specific bus/class type.  That's all, if
-> >> the driver needs to go off and do real work before it can properly
-> >> control the device, wonderful, have it go and do that async.
-> > 
-> > Right, which is what is happening here - but the deferred probe
-> > machinery in the core is reading more into the probe succeeding than it
-> > should.
-> 
-> I think Greg was referring to the use of the PROBE_PREFER_ASYNCHRONOUS
-> probe type. We tried just that and got a nice WARN_ON because we are
-> using request_module() to deal with HDaudio codecs. The details are in
-> [1] but the kernel code is unambiguous...
-> 
->         /*
-> 	 * We don't allow synchronous module loading from async.  Module
-> 	 * init may invoke async_synchronize_full() which will end up
-> 	 * waiting for this task which already is waiting for the module
-> 	 * loading to complete, leading to a deadlock.
-> 	 */
-> 	WARN_ON_ONCE(wait && current_is_async());
-> 
-> 
-> The reason why we use a workqueue is because we are otherwise painted in
-> a corner by conflicting requirements.
-> 
-> a) we have to use request_module()
+Hello Abel,
 
-Wait, why?
+On 18.08.21 17:14, Abel Vesa wrote:
+> On 21-08-10 17:14:33, Ahmad Fatoum wrote:
+>> On the i.MX8M*, the TF-A exposes a SiP (Silicon Provider) service
+>> for DDR frequency scaling. The imx8m-ddrc-devfreq driver calls the
+>> SiP and then does clk_set_parent on the DDR muxes to synchronize
+>> the clock tree.
+>>
+>> Since 936c383673b9 ("clk: imx: fix composite peripheral flags"),
+>> these TF-A managed muxes have SET_PARENT_GATE set, which results
+>> in imx8m-ddrc-devfreq's clk_set_parent after SiP failing with -EBUSY:
+>>
+>> 	echo 25000000 > userspace/set_freq
+>> 	imx8m-ddrc-devfreq 3d400000.memory-controller: failed to set
+>> 		dram_apb parent: -16
+>>
+>> Fix this by adding a new i.MX composite flag for firmware managed
+>> clocks, which clears SET_PARENT_GATE.
+>>
+>> This is safe to do, because updating the Linux clock tree to reflect
+>> reality will always be glitch-free.
+>>
+>> Fixes: 936c383673b9 ("clk: imx: fix composite peripheral flags")
+>> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+> 
+> I'm OK with this.
+> 
+> Reviewed-by: Abel Vesa <abel.vesa@nxp.com>
 
-module loading is async, use auto-loading when the hardware/device is
-found and reported to userspace.  Forcing a module to load by the kernel
-is not always wise as the module is not always present in the filesystem
-at that point in time at boot (think modules on the filesystem, not in
-the initramfs).
+Thanks for the review.
 
-Try fixing this issue and maybe it will resolve itself as you should be
-working async.
+> BTW, let me know if you are interested in the interconnect+devfreq
+> (the replacement for NXP's internal busfreq). I have a new version of
+> that patchset which I intend to send soon for review.
 
-thanks,
+Ye, add me to CC and I'll give it at least a test. It sounds like you
+recently worked with devfreq? I am wondering why you didn't run into this issue.
 
-greg k-h
+Cheers,
+Ahmad
+
+> 
+>> ---
+>> To: Abel Vesa <abel.vesa@nxp.com>
+>> To: Michael Turquette <mturquette@baylibre.com>
+>> To: Stephen Boyd <sboyd@kernel.org>
+>> To: Shawn Guo <shawnguo@kernel.org>
+>> To: Sascha Hauer <s.hauer@pengutronix.de>
+>> To: Pengutronix Kernel Team <kernel@pengutronix.de>
+>> To: Fabio Estevam <festevam@gmail.com>
+>> To: NXP Linux Team <linux-imx@nxp.com>
+>> To: Peng Fan <peng.fan@nxp.com>
+>> To: Leonard Crestez <leonard.crestez@nxp.com>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Cc: linux-clk@vger.kernel.org
+>> ---
+>>  drivers/clk/imx/clk-composite-8m.c |  3 ++-
+>>  drivers/clk/imx/clk-imx8mm.c       |  7 ++++---
+>>  drivers/clk/imx/clk-imx8mn.c       |  7 ++++---
+>>  drivers/clk/imx/clk-imx8mq.c       |  7 ++++---
+>>  drivers/clk/imx/clk.h              | 16 ++++++++++++++--
+>>  5 files changed, 28 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/drivers/clk/imx/clk-composite-8m.c b/drivers/clk/imx/clk-composite-8m.c
+>> index 2c309e3dc8e3..04e728538cef 100644
+>> --- a/drivers/clk/imx/clk-composite-8m.c
+>> +++ b/drivers/clk/imx/clk-composite-8m.c
+>> @@ -216,7 +216,8 @@ struct clk_hw *imx8m_clk_hw_composite_flags(const char *name,
+>>  		div->width = PCG_PREDIV_WIDTH;
+>>  		divider_ops = &imx8m_clk_composite_divider_ops;
+>>  		mux_ops = &clk_mux_ops;
+>> -		flags |= CLK_SET_PARENT_GATE;
+>> +		if (!(composite_flags & IMX_COMPOSITE_FW_MANAGED))
+>> +			flags |= CLK_SET_PARENT_GATE;
+>>  	}
+>>  
+>>  	div->lock = &imx_ccm_lock;
+>> diff --git a/drivers/clk/imx/clk-imx8mm.c b/drivers/clk/imx/clk-imx8mm.c
+>> index f1919fafb124..73cc9805ec59 100644
+>> --- a/drivers/clk/imx/clk-imx8mm.c
+>> +++ b/drivers/clk/imx/clk-imx8mm.c
+>> @@ -470,10 +470,11 @@ static int imx8mm_clocks_probe(struct platform_device *pdev)
+>>  
+>>  	/*
+>>  	 * DRAM clocks are manipulated from TF-A outside clock framework.
+>> -	 * Mark with GET_RATE_NOCACHE to always read div value from hardware
+>> +	 * The fw_managed helper sets GET_RATE_NOCACHE and clears SET_PARENT_GATE
+>> +	 * as div value should always be read from hardware
+>>  	 */
+>> -	hws[IMX8MM_CLK_DRAM_ALT] = __imx8m_clk_hw_composite("dram_alt", imx8mm_dram_alt_sels, base + 0xa000, CLK_GET_RATE_NOCACHE);
+>> -	hws[IMX8MM_CLK_DRAM_APB] = __imx8m_clk_hw_composite("dram_apb", imx8mm_dram_apb_sels, base + 0xa080, CLK_IS_CRITICAL | CLK_GET_RATE_NOCACHE);
+>> +	hws[IMX8MM_CLK_DRAM_ALT] = imx8m_clk_hw_fw_managed_composite("dram_alt", imx8mm_dram_alt_sels, base + 0xa000);
+>> +	hws[IMX8MM_CLK_DRAM_APB] = imx8m_clk_hw_fw_managed_composite_critical("dram_apb", imx8mm_dram_apb_sels, base + 0xa080);
+>>  
+>>  	/* IP */
+>>  	hws[IMX8MM_CLK_VPU_G1] = imx8m_clk_hw_composite("vpu_g1", imx8mm_vpu_g1_sels, base + 0xa100);
+>> diff --git a/drivers/clk/imx/clk-imx8mn.c b/drivers/clk/imx/clk-imx8mn.c
+>> index 88f6630cd472..0a76f969b28b 100644
+>> --- a/drivers/clk/imx/clk-imx8mn.c
+>> +++ b/drivers/clk/imx/clk-imx8mn.c
+>> @@ -453,10 +453,11 @@ static int imx8mn_clocks_probe(struct platform_device *pdev)
+>>  
+>>  	/*
+>>  	 * DRAM clocks are manipulated from TF-A outside clock framework.
+>> -	 * Mark with GET_RATE_NOCACHE to always read div value from hardware
+>> +	 * The fw_managed helper sets GET_RATE_NOCACHE and clears SET_PARENT_GATE
+>> +	 * as div value should always be read from hardware
+>>  	 */
+>> -	hws[IMX8MN_CLK_DRAM_ALT] = __imx8m_clk_hw_composite("dram_alt", imx8mn_dram_alt_sels, base + 0xa000, CLK_GET_RATE_NOCACHE);
+>> -	hws[IMX8MN_CLK_DRAM_APB] = __imx8m_clk_hw_composite("dram_apb", imx8mn_dram_apb_sels, base + 0xa080, CLK_IS_CRITICAL | CLK_GET_RATE_NOCACHE);
+>> +	hws[IMX8MN_CLK_DRAM_ALT] = imx8m_clk_hw_fw_managed_composite("dram_alt", imx8mn_dram_alt_sels, base + 0xa000);
+>> +	hws[IMX8MN_CLK_DRAM_APB] = imx8m_clk_hw_fw_managed_composite_critical("dram_apb", imx8mn_dram_apb_sels, base + 0xa080);
+>>  
+>>  	hws[IMX8MN_CLK_DISP_PIXEL] = imx8m_clk_hw_composite("disp_pixel", imx8mn_disp_pixel_sels, base + 0xa500);
+>>  	hws[IMX8MN_CLK_SAI2] = imx8m_clk_hw_composite("sai2", imx8mn_sai2_sels, base + 0xa600);
+>> diff --git a/drivers/clk/imx/clk-imx8mq.c b/drivers/clk/imx/clk-imx8mq.c
+>> index c491bc9c61ce..83cc2b1c3294 100644
+>> --- a/drivers/clk/imx/clk-imx8mq.c
+>> +++ b/drivers/clk/imx/clk-imx8mq.c
+>> @@ -449,11 +449,12 @@ static int imx8mq_clocks_probe(struct platform_device *pdev)
+>>  
+>>  	/*
+>>  	 * DRAM clocks are manipulated from TF-A outside clock framework.
+>> -	 * Mark with GET_RATE_NOCACHE to always read div value from hardware
+>> +	 * The fw_managed helper sets GET_RATE_NOCACHE and clears SET_PARENT_GATE
+>> +	 * as div value should always be read from hardware
+>>  	 */
+>>  	hws[IMX8MQ_CLK_DRAM_CORE] = imx_clk_hw_mux2_flags("dram_core_clk", base + 0x9800, 24, 1, imx8mq_dram_core_sels, ARRAY_SIZE(imx8mq_dram_core_sels), CLK_IS_CRITICAL);
+>> -	hws[IMX8MQ_CLK_DRAM_ALT] = __imx8m_clk_hw_composite("dram_alt", imx8mq_dram_alt_sels, base + 0xa000, CLK_GET_RATE_NOCACHE);
+>> -	hws[IMX8MQ_CLK_DRAM_APB] = __imx8m_clk_hw_composite("dram_apb", imx8mq_dram_apb_sels, base + 0xa080, CLK_IS_CRITICAL | CLK_GET_RATE_NOCACHE);
+>> +	hws[IMX8MQ_CLK_DRAM_ALT] = imx8m_clk_hw_fw_managed_composite("dram_alt", imx8mq_dram_alt_sels, base + 0xa000);
+>> +	hws[IMX8MQ_CLK_DRAM_APB] = imx8m_clk_hw_fw_managed_composite_critical("dram_apb", imx8mq_dram_apb_sels, base + 0xa080);
+>>  
+>>  	/* IP */
+>>  	hws[IMX8MQ_CLK_VPU_G1] = imx8m_clk_hw_composite("vpu_g1", imx8mq_vpu_g1_sels, base + 0xa100);
+>> diff --git a/drivers/clk/imx/clk.h b/drivers/clk/imx/clk.h
+>> index 7571603bee23..e144f983fd8c 100644
+>> --- a/drivers/clk/imx/clk.h
+>> +++ b/drivers/clk/imx/clk.h
+>> @@ -530,8 +530,9 @@ struct clk_hw *imx_clk_hw_cpu(const char *name, const char *parent_name,
+>>  		struct clk *div, struct clk *mux, struct clk *pll,
+>>  		struct clk *step);
+>>  
+>> -#define IMX_COMPOSITE_CORE	BIT(0)
+>> -#define IMX_COMPOSITE_BUS	BIT(1)
+>> +#define IMX_COMPOSITE_CORE		BIT(0)
+>> +#define IMX_COMPOSITE_BUS		BIT(1)
+>> +#define IMX_COMPOSITE_FW_MANAGED	BIT(2)
+>>  
+>>  struct clk_hw *imx8m_clk_hw_composite_flags(const char *name,
+>>  					    const char * const *parent_names,
+>> @@ -567,6 +568,17 @@ struct clk_hw *imx8m_clk_hw_composite_flags(const char *name,
+>>  		ARRAY_SIZE(parent_names), reg, 0, \
+>>  		flags | CLK_SET_RATE_NO_REPARENT | CLK_OPS_PARENT_ENABLE)
+>>  
+>> +#define __imx8m_clk_hw_fw_managed_composite(name, parent_names, reg, flags) \
+>> +	imx8m_clk_hw_composite_flags(name, parent_names, \
+>> +		ARRAY_SIZE(parent_names), reg, IMX_COMPOSITE_FW_MANAGED, \
+>> +		flags | CLK_GET_RATE_NOCACHE | CLK_SET_RATE_NO_REPARENT | CLK_OPS_PARENT_ENABLE)
+>> +
+>> +#define imx8m_clk_hw_fw_managed_composite(name, parent_names, reg) \
+>> +	__imx8m_clk_hw_fw_managed_composite(name, parent_names, reg, 0)
+>> +
+>> +#define imx8m_clk_hw_fw_managed_composite_critical(name, parent_names, reg) \
+>> +	__imx8m_clk_hw_fw_managed_composite(name, parent_names, reg, CLK_IS_CRITICAL)
+>> +
+>>  #define __imx8m_clk_composite(name, parent_names, reg, flags) \
+>>  	to_clk(__imx8m_clk_hw_composite(name, parent_names, reg, flags))
+>>  
+>> -- 
+>> 2.30.2
+>>
+> 
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
