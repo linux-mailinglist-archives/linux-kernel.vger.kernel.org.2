@@ -2,120 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3633F0489
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8543F0490
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236899AbhHRNW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 09:22:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35734 "EHLO mail.kernel.org"
+        id S236672AbhHRNZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 09:25:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236892AbhHRNW4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 09:22:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0D7160232;
-        Wed, 18 Aug 2021 13:22:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629292942;
-        bh=mUS2XHoBNSYTIuTRFqsUU57sxADOx3BgsDP98f3EzMY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D/jrowO11usaVNWUNbge+kprse4L+XNseJefutlHU6ZDzNuidRBevYMPNo/9Scubx
-         W7zY9wGu29+Wfb+b2voB6OMjqKXLQfMtNJj2oqiQhxnyOkRIVF2/fCxoxuvNdvB5/t
-         LqtqTz1iIBHfptgtYoXwhTo/5uyyCjwpQEZFFMFk=
-Date:   Wed, 18 Aug 2021 15:22:19 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org, tiwai@suse.de, vkoul@kernel.org,
-        liam.r.girdwood@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [RFC PATCH 1/2] driver core: export
- driver_deferred_probe_trigger()
-Message-ID: <YR0Ji7DQXoo0z4vP@kroah.com>
-References: <20210817190057.255264-1-pierre-louis.bossart@linux.intel.com>
- <20210817190057.255264-2-pierre-louis.bossart@linux.intel.com>
- <YRyeR6imvSwOOasQ@kroah.com>
- <20210818115736.GA4177@sirena.org.uk>
+        id S233722AbhHRNZt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 09:25:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CE7960232;
+        Wed, 18 Aug 2021 13:25:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629293114;
+        bh=EIgtZqd7EE46TdiAte/iRevKQQMOSJMFo/Qjgbovf+s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=E90PsYncoa3RDYNupJkHXoyp4NFgH/TKLcdSfZFQubFlFW6FS8X+bo92d8kHTaa1j
+         HFSSAyoWyJpPksoqrQt5v7z/UBsi2DHVA/FRO8sp8tm9UKno8/5e0KGMGP/7zBJsCm
+         7NmXScyUOCVdBRZRWu8PnzpSTQ67HV1WNjfF/UP+z6hBxWbOhjXWoJTqCyiKxSyKft
+         2pWczjhANfo5emuHOEKGL2Wa02A0POSnRBRMYRDh50+YDvGlhJC3SjYNOPqveYY5XG
+         MeBoI7l4Topi1iXIF73LXnJUi3eb25WEc4P94zf1rsI1Vo4XgG3jhhvseEd+0+HqCm
+         OqgxD03sQQXYA==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     linux-sgx@vger.kernel.org
+Cc:     Shuah Khan <shuah@kernel.org>, Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Saravanan D <saravanand@fb.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH] x86/sgx: Add SGX_MemTotal to /proc/meminfo
+Date:   Wed, 18 Aug 2021 16:25:07 +0300
+Message-Id: <20210818132509.545997-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818115736.GA4177@sirena.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 12:57:36PM +0100, Mark Brown wrote:
-> On Wed, Aug 18, 2021 at 07:44:39AM +0200, Greg Kroah-Hartman wrote:
-> > On Tue, Aug 17, 2021 at 02:00:56PM -0500, Pierre-Louis Bossart wrote:
-> 
-> > > In these cases, there is no way to notify the deferred probe
-> > > infrastructure of the enablement of resources after the driver
-> > > binding.
-> 
-> > Then just wait for it to happen naturally?
-> 
-> Through what mechanism will it happen naturally?  Deferred probe
-> currently only does things if things are being registered or if probes
-> complete.
-> 
-> > > The driver_deferred_probe_trigger() function is currently used
-> > > 'anytime a driver is successfully bound to a device', this patch
-> > > suggest exporing by exporting it so that drivers can kick-off
-> > > re-probing of deferred devices at the end of a deferred processing.
-> 
-> > I really do not want to export this as it will get really messy very
-> > quickly with different drivers/busses attempting to call this.
-> 
-> I'm not sure I see the mess here - it's just queueing some work, one of
-> the things that the workqueue stuff does well is handle things getting
-> scheduled while they're already queued.  Honestly having understood
-> their problem I think we need to be adding these calls into all the
-> resource provider APIs.
-> 
-> > Either handle it in your driver (why do you have to defer probe at all,
-> > just succeed and move on to register the needed stuff after you are
-> > initialized) or rely on the driver core here.
-> 
-> That's exactly what they're doing currently and the driver core isn't
-> delivering.
-> 
-> Driver A is slow to start up and providing a resource to driver B, this
-> gets handled in driver A by succeeding immediately and then registering
-> the resource once the startup has completed.  Unfortunately while that
-> was happening not only has driver B registered and deferred but the rest
-> of the probes/defers in the system have completed so the deferred probe
-> mechanism is idle.  Nothing currently tells the deferred probe mechanism
-> that a new resource is now available so it never retries the probe of
-> driver B.  The only way I can see to fix this without modifying the
-> driver core is to make driver A block during probe but that would at
-> best slow down boot.
-> 
-> The issue is that the driver core is using drivers completing probe as a
-> proxy for resources becoming available.  That works most of the time
-> because most probes are fully synchronous but it breaks down if a
-> resource provider registers resources outside of probe, we might still
-> be fine if system boot is still happening and something else probes but
-> only through luck.
+The amount of SGX memory on the system is determined by the BIOS and it
+varies wildly between systems.  It can be from dozens of MB's on desktops
+or VM's, up to many GB's on servers.  Just like for regular memory, it is
+sometimes useful to know the amount of usable SGX memory in the system.
 
-The driver core is not using that as a proxy, that is up to the driver
-itself or not.  All probe means is "yes, this driver binds to this
-device, thank you!" for that specific bus/class type.  That's all, if
-the driver needs to go off and do real work before it can properly
-control the device, wonderful, have it go and do that async.
+Add SGX_MemTotal field to /proc/meminfo, which shows the total amount of
+usable SGX memory in the system.  E.g. with 32 MB reserved for SGX from
+BIOS, the printout would be:
 
-So if you know you should be binding to the device, great, kick off some
-other work and return success from probe.  There's no reason you have to
-delay or defer for no good reason, right?
+SGX_MemTotal:      22528 kB
 
-But yes, if you do get new resources, the probe should be called again,
-that's what the deferred logic is for (or is that the link logic, I
-can't recall)  This shouldn't be a new thing, no needing to call the
-driver core directly like this at all, it should "just happen", right?
+It is less than 32 MB because some of the space is reserved for Enclave
+Page Cache Metadata (EPCM), which contains state variables for all the
+pages in the Enclave Page Cache (EPC).  The latter contains the pages,
+which applications can use to create enclaves.
 
-thanks,
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+---
+ Documentation/x86/sgx.rst      |  6 ++++++
+ arch/x86/include/asm/sgx.h     | 10 +++++++---
+ arch/x86/kernel/cpu/sgx/main.c |  7 ++++++-
+ arch/x86/mm/pat/set_memory.c   |  5 +++++
+ 4 files changed, 24 insertions(+), 4 deletions(-)
 
-greg k-h
+diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
+index dd0ac96ff9ef..68ee171e1d8f 100644
+--- a/Documentation/x86/sgx.rst
++++ b/Documentation/x86/sgx.rst
+@@ -250,3 +250,9 @@ user wants to deploy SGX applications both on the host and in guests
+ on the same machine, the user should reserve enough EPC (by taking out
+ total virtual EPC size of all SGX VMs from the physical EPC size) for
+ host SGX applications so they can run with acceptable performance.
++
++Supplemental fields for /proc/meminfo
++=====================================
++
++SGX_MemTotal
++	The total usable SGX protected memory in kilobytes.
+diff --git a/arch/x86/include/asm/sgx.h b/arch/x86/include/asm/sgx.h
+index 05f3e21f01a7..2ae9dc8c9411 100644
+--- a/arch/x86/include/asm/sgx.h
++++ b/arch/x86/include/asm/sgx.h
+@@ -365,6 +365,13 @@ struct sgx_sigstruct {
+  * comment!
+  */
+ 
++#if defined(CONFIG_X86_SGX) || defined(CONFIG_X86_SGX_KVM)
++extern unsigned long sgx_nr_all_pages;
++
++int sgx_set_attribute(unsigned long *allowed_attributes,
++		      unsigned int attribute_fd);
++#endif
++
+ #ifdef CONFIG_X86_SGX_KVM
+ int sgx_virt_ecreate(struct sgx_pageinfo *pageinfo, void __user *secs,
+ 		     int *trapnr);
+@@ -372,7 +379,4 @@ int sgx_virt_einit(void __user *sigstruct, void __user *token,
+ 		   void __user *secs, u64 *lepubkeyhash, int *trapnr);
+ #endif
+ 
+-int sgx_set_attribute(unsigned long *allowed_attributes,
+-		      unsigned int attribute_fd);
+-
+ #endif /* _ASM_X86_SGX_H */
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index 63d3de02bbcc..1fe26a8e80dc 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -28,7 +28,10 @@ static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
+ static LIST_HEAD(sgx_active_page_list);
+ static DEFINE_SPINLOCK(sgx_reclaimer_lock);
+ 
+-/* The free page list lock protected variables prepend the lock. */
++/* The number of usable EPC pages in the system. */
++unsigned long sgx_nr_all_pages;
++
++/* The number of free EPC pages in all nodes. */
+ static unsigned long sgx_nr_free_pages;
+ 
+ /* Nodes with one or more EPC sections. */
+@@ -656,6 +659,8 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
+ 		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
+ 	}
+ 
++	sgx_nr_all_pages += nr_pages;
++
+ 	return true;
+ }
+ 
+diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
+index ad8a5c586a35..82bb09c298de 100644
+--- a/arch/x86/mm/pat/set_memory.c
++++ b/arch/x86/mm/pat/set_memory.c
+@@ -29,6 +29,7 @@
+ #include <asm/proto.h>
+ #include <asm/memtype.h>
+ #include <asm/set_memory.h>
++#include <asm/sgx.h>
+ 
+ #include "../mm_internal.h"
+ 
+@@ -116,6 +117,10 @@ void arch_report_meminfo(struct seq_file *m)
+ 	if (direct_gbpages)
+ 		seq_printf(m, "DirectMap1G:    %8lu kB\n",
+ 			direct_pages_count[PG_LEVEL_1G] << 20);
++
++#if defined(CONFIG_X86_SGX) || defined(CONFIG_X86_SGX_KVM)
++	seq_printf(m, "SGX_MemTotal:   %8lu kB\n", sgx_nr_all_pages << 2);
++#endif
+ }
+ #else
+ static inline void split_page_count(int level) { }
+-- 
+2.25.1
+
