@@ -2,127 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A2A3F0784
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDF963F0786
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239808AbhHRPHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 11:07:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59348 "EHLO
+        id S239592AbhHRPIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 11:08:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235131AbhHRPHr (ORCPT
+        with ESMTP id S235131AbhHRPIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 11:07:47 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8288C061764;
-        Wed, 18 Aug 2021 08:07:12 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id x7so5650691ljn.10;
-        Wed, 18 Aug 2021 08:07:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Uq7jOLhIzmeqdxixhYyKft2oiqKCnNb7TcSQh4dCmmU=;
-        b=IZhIe7wkQo6rWVFNpLkLjbd4rWhBuJVTk1KQn9uc5JhLOTMs5dKuWlBDZU7XFsLxhl
-         XcO7151yxMctmP9N008kq3O+gK7eDtg/KH//wn3mikEY+pTL22wLvCRA97QrjilnI1w6
-         Ld4KlEYWV3qTWHZBvlCRFNn7GvuUB4pYQqu43/ykPDzHFPAdOyLF7/nbX3RBI+uu5tmi
-         3pUWaRaxy4PHHtn73lIfSdmznbyxG7oeu3mpC1ms/n5T3vr3A283oggPwc5XjGr0MhSD
-         oQOkq9DDJv5dIre/M6HLvZymcfRImW2HCt7kfqQuNnxjKktxwRHoEaxKYlBu/IjuvdJS
-         P+EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Uq7jOLhIzmeqdxixhYyKft2oiqKCnNb7TcSQh4dCmmU=;
-        b=lBqPNNJ6QkQKK3h9pLCK6IAgjakM/lnE06CBFj5JT/aJNY1o6wyWXM9TaFX0iQhYFk
-         8f/a64cj8gh72En7lXBfOYx1ctjgdbJ2r+uRO6cdr/AKjkN7ortQBnaISBx2vP6nRtvp
-         bbWR2S3VRGnEVZkkBVpGclLDdW1FqVzIF8lB6RHVhLDsLipFiSKwgv0e04YYKVZeQqbY
-         wSlFG6jqAQE61djAAziO8SYMWM+SIVrijcmXmeqyuzrQzwfFllPjxeMb3VRuTPS8s1tv
-         KSkoEjiNu96HIek1qF6WjmZVi11hK4Jte/8ixcZZUMpHfthiq4Kenxg6yi8PPewsTUCt
-         b/kg==
-X-Gm-Message-State: AOAM533Sy6blgryqas8qhtJaAazAlMcUc3/4ahlCt0u7oYsCH6i5fieY
-        wqJEFqo25SrgosIaEoHEws8=
-X-Google-Smtp-Source: ABdhPJz2qLRT1pY8IVngUaTPpNPePT6GeD9ixYTs5scUybiQs90CkMkkPA/QHzJcTYiZUkU9rODxWw==
-X-Received: by 2002:a2e:9594:: with SMTP id w20mr8456492ljh.361.1629299231061;
-        Wed, 18 Aug 2021 08:07:11 -0700 (PDT)
-Received: from localhost.localdomain ([46.235.66.127])
-        by smtp.gmail.com with ESMTPSA id c10sm11811ljr.134.2021.08.18.08.07.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 08:07:10 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org,
-        andriy.shevchenko@linux.intel.com, christophe.jaillet@wanadoo.fr,
-        kaixuxia@tencent.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH v3 2/2] net: mii: make mii_ethtool_gset() return void
-Date:   Wed, 18 Aug 2021 18:07:09 +0300
-Message-Id: <0e388dcbe5bbf002b15ba760191e1a862723bc07.1629298981.git.paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <7e8946ac52de91a963beb7fa0354a19a21c5cf73.1629298981.git.paskripkin@gmail.com>
-References: <7e8946ac52de91a963beb7fa0354a19a21c5cf73.1629298981.git.paskripkin@gmail.com>
+        Wed, 18 Aug 2021 11:08:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04869C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 08:08:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=a3+aWwZ8A2mBrlkKyurg8rkEDu4ERvvcEAkDI68YCTY=; b=ilXjIsZjeoTJmRb5cFbzJQzGEk
+        BCxWY+LTPYRz6hRYdtZApF7gNBWJ2D0f3edub72EOEvUw2iAPyQbQl32m00/LDNYpfikIt/+5RQql
+        kpgXT1HBmadVdkCpb8xbNempBVtMbKtv/Z+Lfy0LtiXwxBT+gf7smajPAj+U7y0xy9tKFTBQqCwPy
+        xb36a0cHRt4/1ccucnatUepY/kqM1Enove9Vu/TOqi/MbptsRjo3XG/rX9XOt5oZhytUkVl4RvZEX
+        +5KWwYIeVkWGr/ZO+PnE1qHHnTgb8UF6ZwCdLkBaCSLGJQHZOkiv7vS4Y8tXOm4aDSNwPvGx+rJZp
+        M10y2D3w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mGN9r-003xpe-Ii; Wed, 18 Aug 2021 15:07:17 +0000
+Date:   Wed, 18 Aug 2021 16:07:11 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        yanghui <yanghui.def@bytedance.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] mm/mempolicy: fix a race between offset_il_node and
+ mpol_rebind_task
+Message-ID: <YR0iHyBHuYufepWV@casper.infradead.org>
+References: <20210815061034.84309-1-yanghui.def@bytedance.com>
+ <20210816175952.3c0d1eee821cd2d9ed7c3879@linux-foundation.org>
+ <YRsULowKJtUKJhJ+@casper.infradead.org>
+ <CAMZfGtVNJxTw-TPXHGF0kCwYMQK8hVG6=Z+hE3yuQRZh6ak-mw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtVNJxTw-TPXHGF0kCwYMQK8hVG6=Z+hE3yuQRZh6ak-mw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mii_ethtool_gset() does not return any errors. Since there are no users
-of this function that rely on its return value, it can be
-made void.
+On Wed, Aug 18, 2021 at 10:02:46PM +0800, Muchun Song wrote:
+> On Tue, Aug 17, 2021 at 9:43 AM Matthew Wilcox <willy@infradead.org> wrote:
+> > > > +   unsigned int target, nnodes;
+> > > >     int i;
+> > > >     int nid;
+> > > > +   /*
+> > > > +    * The barrier will stabilize the nodemask in a register or on
+> > > > +    * the stack so that it will stop changing under the code.
+> > > > +    *
+> > > > +    * Between first_node() and next_node(), pol->nodes could be changed
+> > > > +    * by other threads. So we put pol->nodes in a local stack.
+> > > > +    */
+> > > > +   barrier();
+> >
+> > I think this could be an smp_rmb()?
+> 
+> Hi Matthew,
+> 
+> I have a question. Why is barrier() not enough?
 
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
-
-Changes in v3:
-	1. removed empty comment line
-	2. there is -> there are
-
-Changes in v2:
-	inverted the order of patches
-
----
- drivers/net/mii.c   | 6 +-----
- include/linux/mii.h | 2 +-
- 2 files changed, 2 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/mii.c b/drivers/net/mii.c
-index 779c3a96dba7..22680f47385d 100644
---- a/drivers/net/mii.c
-+++ b/drivers/net/mii.c
-@@ -49,10 +49,8 @@ static u32 mii_get_an(struct mii_if_info *mii, u16 addr)
-  *
-  * The @ecmd parameter is expected to have been cleared before calling
-  * mii_ethtool_gset().
-- *
-- * Returns 0 for success, negative on error.
-  */
--int mii_ethtool_gset(struct mii_if_info *mii, struct ethtool_cmd *ecmd)
-+void mii_ethtool_gset(struct mii_if_info *mii, struct ethtool_cmd *ecmd)
- {
- 	struct net_device *dev = mii->dev;
- 	u16 bmcr, bmsr, ctrl1000 = 0, stat1000 = 0;
-@@ -131,8 +129,6 @@ int mii_ethtool_gset(struct mii_if_info *mii, struct ethtool_cmd *ecmd)
- 	mii->full_duplex = ecmd->duplex;
- 
- 	/* ignore maxtxpkt, maxrxpkt for now */
--
--	return 0;
- }
- 
- /**
-diff --git a/include/linux/mii.h b/include/linux/mii.h
-index 219b93cad1dd..12ea29e04293 100644
---- a/include/linux/mii.h
-+++ b/include/linux/mii.h
-@@ -32,7 +32,7 @@ struct mii_if_info {
- 
- extern int mii_link_ok (struct mii_if_info *mii);
- extern int mii_nway_restart (struct mii_if_info *mii);
--extern int mii_ethtool_gset(struct mii_if_info *mii, struct ethtool_cmd *ecmd);
-+extern void mii_ethtool_gset(struct mii_if_info *mii, struct ethtool_cmd *ecmd);
- extern void mii_ethtool_get_link_ksettings(
- 	struct mii_if_info *mii, struct ethtool_link_ksettings *cmd);
- extern int mii_ethtool_sset(struct mii_if_info *mii, struct ethtool_cmd *ecmd);
--- 
-2.32.0
-
+I think barrier() may be more than is necessary.  We don't need a
+barrier on non-SMP systems (or do we?)  And we only need to order reads,
+not writes.
