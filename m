@@ -2,101 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B803EF850
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 04:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A9383EF852
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 05:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235879AbhHRC7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 22:59:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235447AbhHRC7E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 22:59:04 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4100AC0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 19:58:30 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id e15so903855plh.8
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 19:58:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YdmIuyF92LGiV6+vakUJJZRgq/yRSpMjmpEbsFkYVp0=;
-        b=EKqkwTTEMNNBAFF+3R0Qo936G9BTekrWtCEpqQLICHJ2cQuyZp0QKf9/pF8tEYK5/1
-         OtpZObMcTQyTgswjnHashw91VbnSamMwr5ATlkQcRhSHIPgiLx4+qPXLqg1zq0m3BwXh
-         cbyqkmpocLct+z1g+fs9FdMEqiM3uMFgxoznEvvWOYDtt6v2BdoiGCwCRdfwfJRrHW2L
-         eR6HUzYqFYOArD2wxHZexnY/2DwuSca7mij+hloGKsLijV+YW54Do35hmSjF5XKpC3zr
-         wKtNRMxx902AzeDelruMYoyEaH2SQTls4zmcrsNpyf0CCr2WqIlvCnEAIk02OGuQ409B
-         veSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YdmIuyF92LGiV6+vakUJJZRgq/yRSpMjmpEbsFkYVp0=;
-        b=evJJfnA8nDS3NtlI212alPiJ43Mvy2dIUsl/lhpTwZUHGH30BcG8nwbaO+Uc+k5od6
-         aKbARPocfjJd5hmhbsXIkBcYQNxNayBWCgNYn0zmKeihfhBLkO5eqgJ9VQN0x0s2K41W
-         FOXPeqzfKafmr0/Sg9hky5tChaMrGCrcBzknT0USEm1RH089qrgFKfIvkQXIWVD9LrVc
-         fPU/R83YyFDS+JHkGw7mbIzqHhjiT3U4Mf5hqwxg2D6XhCPP2A+vlJ6TVWJv6Ilu9sUI
-         dOGL5vrGtEkaT38L2JpM3vRrLsyiKEC8drdI3blQ12gX2rBDeGVzet6LOfFnl4YbJpCY
-         grFw==
-X-Gm-Message-State: AOAM531x8cApf1JQU3vlxmp0TxgzUNY4syLqSVHFltyfMJgRArjNMAG7
-        w3GEX8m8Y0HW4DeEYAK4tR/pbA==
-X-Google-Smtp-Source: ABdhPJyy9CJWGbwRitw2QgxNzSiCer2iVaqihxz8Cfeb1xWDFJoq7aO3SRaoVyD94PhspH28aWD6mQ==
-X-Received: by 2002:a17:90a:6782:: with SMTP id o2mr6838904pjj.165.1629255509787;
-        Tue, 17 Aug 2021 19:58:29 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id 10sm3806486pjc.41.2021.08.17.19.58.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Aug 2021 19:58:29 -0700 (PDT)
-Subject: Re: [PATCH] coredump: Limit what can interrupt coredumps
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Tony Battersby <tonyb@cybernetics.com>,
-        Olivier Langlois <olivier@trillion01.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Pavel Begunkov>" <asml.silence@gmail.com>
-References: <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
- <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
- <87pmwt6biw.fsf@disp2133> <87czst5yxh.fsf_-_@disp2133>
- <CAHk-=wiax83WoS0p5nWvPhU_O+hcjXwv6q3DXV8Ejb62BfynhQ@mail.gmail.com>
- <87y2bh4jg5.fsf@disp2133>
- <CAHk-=wjPiEaXjUp6PTcLZFjT8RrYX+ExtD-RY3NjFWDN7mKLbw@mail.gmail.com>
- <87sg1p4h0g.fsf_-_@disp2133> <20210614141032.GA13677@redhat.com>
- <87pmwmn5m0.fsf@disp2133>
- <4d93d0600e4a9590a48d320c5a7dd4c54d66f095.camel@trillion01.com>
- <8af373ec-9609-35a4-f185-f9bdc63d39b7@cybernetics.com>
- <9d194813-ecb1-2fe4-70aa-75faf4e144ad@kernel.dk>
- <b36eb4a26b6aff564c6ef850a3508c5b40141d46.camel@trillion01.com>
- <0bc38b13-5a7e-8620-6dce-18731f15467e@kernel.dk>
- <24c795c6-4ec4-518e-bf9b-860207eee8c7@kernel.dk>
- <05c0cadc-029e-78af-795d-e09cf3e80087@cybernetics.com>
- <b5ab8ca0-cef5-c9b7-e47f-21c0d395f82e@kernel.dk>
- <84640f18-79ee-d8e4-5204-41a2c2330ed8@kernel.dk>
- <c4578bef-a21a-2435-e75a-d11d13d42923@kernel.dk>
-Message-ID: <212724bd-9aa7-c619-711c-c156236c7d1a@kernel.dk>
-Date:   Tue, 17 Aug 2021 20:58:28 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <c4578bef-a21a-2435-e75a-d11d13d42923@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S235119AbhHRDC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 23:02:29 -0400
+Received: from mga18.intel.com ([134.134.136.126]:40601 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231449AbhHRDC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 23:02:28 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10079"; a="203392044"
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
+   d="scan'208";a="203392044"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 20:01:45 -0700
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
+   d="scan'208";a="462602171"
+Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 20:01:38 -0700
+From:   Bard Liao <yung-chuan.liao@linux.intel.com>
+To:     alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        bard.liao@intel.com
+Subject: [PATCH] soundwire: cadence: do not extend reset delay
+Date:   Wed, 18 Aug 2021 11:01:30 +0800
+Message-Id: <20210818030130.17113-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Olivier, I sent a 5.10 version for Nathan, any chance you can test this
-                                     ^^^^^^
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Tony of course, my apologies.
+The duration of the hw_reset is defined as 4096 cycles. The Cadence IP
+allows for an additional delay which doesn't seem necessary in
+practice: the actual reset sequence duration is defined by the sync_go
+mechanism, not by the IP itself.
 
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ drivers/soundwire/cadence_master.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+index 0b7f037e6cd0..4fcc3ba93004 100644
+--- a/drivers/soundwire/cadence_master.c
++++ b/drivers/soundwire/cadence_master.c
+@@ -1032,10 +1032,7 @@ EXPORT_SYMBOL(sdw_cdns_check_self_clearing_bits);
+  */
+ int sdw_cdns_exit_reset(struct sdw_cdns *cdns)
+ {
+-	/* program maximum length reset to be safe */
+-	cdns_updatel(cdns, CDNS_MCP_CONTROL,
+-		     CDNS_MCP_CONTROL_RST_DELAY,
+-		     CDNS_MCP_CONTROL_RST_DELAY);
++	/* keep reset delay unchanged to 4096 cycles */
+ 
+ 	/* use hardware generated reset */
+ 	cdns_updatel(cdns, CDNS_MCP_CONTROL,
 -- 
-Jens Axboe
+2.17.1
 
