@@ -2,56 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42DE03F0043
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E77233F0049
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:20:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232147AbhHRJUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:20:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57390 "EHLO mail.kernel.org"
+        id S232558AbhHRJUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 05:20:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232029AbhHRJUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:20:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86DE661053;
-        Wed, 18 Aug 2021 09:20:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629278401;
-        bh=xWoO8qZGOnYVc8A/wcF8Ybze9Rsmnj8Tf+OG5tASQZM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m/mhII8RVGFMLqgPLRcYborhHvJdiVCuOlYrNrsgWDHM1AATvZNoTb2OsAEylC/3g
-         itYWk/q890dTd3g8bAkqEV00X+vD8p+8F16czdVtIeZJ0M3SzHGEsAXN4oFwBokhqH
-         WwbMwYd7sqXtUHPuJpWpL6cbK1gReU8pPHQ7VPHU=
-Date:   Wed, 18 Aug 2021 11:19:58 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>, Ashok Raj <ashok.raj@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH 5.4 49/62] PCI/MSI: Enable and mask MSI-X early
-Message-ID: <YRzQvhDRyBWdEs5G@kroah.com>
-References: <20210816125428.198692661@linuxfoundation.org>
- <20210816125429.897761686@linuxfoundation.org>
- <20210817073655.GA15132@amd>
- <YRyuefFT4N/y0plX@kroah.com>
+        id S232065AbhHRJUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 05:20:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 713296109F;
+        Wed, 18 Aug 2021 09:20:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629278406;
+        bh=SVwsSla8QBWC+Vuw2hQ3Cs90NAIfZqEmtvXWQEFhzB0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=PMbOQr5pQX7aCTUVH3wD4xkR2MPeG1MkN2aXcs/YfUF2bapJXuBJZvtdXEcVw0Qhc
+         LVoMe2kjeOpmXfw+XmAz0DbYDHpGW9ztyl38u5VbNT8xm9a9tEPSKCrBQ0X3keX6Gz
+         bb7AZINmMWNZdzfx3awVuAXMjdIA50L/UAf5MimhGSFe8pAQ62OXJssv7hDQalWBue
+         Y+WaQE3YkIu3YTb1vAQyPptXHRLh1rvfY0oCGf/LTn4yU1ijKmEwws9fI2XsI3OhJr
+         bSMbmIZN4y4MeGlVBGFFwiegiaTRChUfMk79nHgkf33K06xs+pHqXMgjBbLQsuV5Jh
+         4XOpYm900TiLQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5DF1C60A25;
+        Wed, 18 Aug 2021 09:20:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRyuefFT4N/y0plX@kroah.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] net: procfs: add seq_puts() statement for dev_mcast
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162927840637.7428.6834799134600240229.git-patchwork-notify@kernel.org>
+Date:   Wed, 18 Aug 2021 09:20:06 +0000
+References: <20210816085757.28166-1-yajun.deng@linux.dev>
+In-Reply-To: <20210816085757.28166-1-yajun.deng@linux.dev>
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 08:53:45AM +0200, Greg Kroah-Hartman wrote:
-> On Tue, Aug 17, 2021 at 09:36:55AM +0200, Pavel Machek wrote:
-> > Hi!
-> > 
-> > I'm sorry to report here, but 4.4 patches were not yet sent to the
-> > lists (and it may be worth correcting before release).
+Hello:
+
+This patch was applied to netdev/net-next.git (refs/heads/master):
+
+On Mon, 16 Aug 2021 16:57:57 +0800 you wrote:
+> Add seq_puts() statement for dev_mcast, make it more readable.
+> As also, keep vertical alignment for {dev, ptype, dev_mcast} that
+> under /proc/net.
 > 
-> Yes, they are known to not be complete and incorrect at the moment,
-> others have reported this to me.  I will be working on these later
-> today, thanks.
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> ---
+>  net/core/net-procfs.c | 24 +++++++++++++-----------
+>  1 file changed, 13 insertions(+), 11 deletions(-)
 
-Now should be all fixed up thanks to some patches sent by Thomas.
+Here is the summary with links:
+  - [net-next] net: procfs: add seq_puts() statement for dev_mcast
+    https://git.kernel.org/netdev/net-next/c/ec18e8455484
 
-greg k-h
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
