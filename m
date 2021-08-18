@@ -2,183 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55EFC3EFDD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 231A73EFDE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238952AbhHRHin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 03:38:43 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:43840 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238924AbhHRHim (ORCPT
+        id S239148AbhHRHkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 03:40:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239108AbhHRHkB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 03:38:42 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629272288; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=d0yXr/T2VW4S7hBEk5V/ACcxbZ3MzyH062yZu9AHnlE=;
- b=LwJvtFyybNgtV/fa325OdaJSdCrerjOjaIs1pbLIohVAEmq8wUqVCpjOVoyCyURruyGbeRna
- aEuZUeaA2cGumubh4BSk5k//mLoMxG3q0vHlMvBACZY9Xy7ucqWu2bXjQAuajDYKeM855gOW
- t2KtSp08WJtY4LLQExTtfIdAV3g=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 611cb8d2454b7a558fc7fa5d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 18 Aug 2021 07:37:54
- GMT
-Sender: tjiang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D9588C43616; Wed, 18 Aug 2021 07:37:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: tjiang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A7317C43460;
-        Wed, 18 Aug 2021 07:37:51 +0000 (UTC)
+        Wed, 18 Aug 2021 03:40:01 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E8F7C061764;
+        Wed, 18 Aug 2021 00:39:27 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id oa17so2093619pjb.1;
+        Wed, 18 Aug 2021 00:39:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e6vxkGEC/5cBQ7RDSXvwNkc+jNWhSIL2gt3cyXjlMy0=;
+        b=i4L99wf64dEZ9LMIjZCdq5HBsL7YO+w6mPeYaGb3CXwuW15cjMopamJ7i+UtFSaN25
+         z4rZKcLO5w15cg7+P4rlboKjkGbHm2INjwHBCSyIBdvOIIHKMs8iq36Uc2t2HpR4U6DS
+         PeVX7wc1SgqOfwrOtaOMAAAbWfhKZOxgQEPpTAD2DwGmKJuxv9SRbs1jI4DjEfvYP16W
+         GdHdUTB0UPtvFtAUhhcXY6s7AuE8PdIXUBbgVw/jQ8o6Dek7vaaLJH/PPPw6v2VcG07L
+         knSCx6Bi7AAG29YttwsWCAtn2JIenaQ0ncOp7C6cEebcrLUcHzclF2lQeLIn61qhRq9F
+         j7Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e6vxkGEC/5cBQ7RDSXvwNkc+jNWhSIL2gt3cyXjlMy0=;
+        b=XEFbpYZqKLsKctf0GGMdpYyY38N4vMy8cI3xP+oytzfYSylx03Id8OW+Gxr7AozvMs
+         fcuhd8gSSMGq1bEzuSSTDIAw49BiVmOn48Al8NCMFDpkxBXSCIl+5u+3cyVxijvoskbd
+         8rvqSRjMf1cw49/qXUDAjALKFKVyHSo215mUmtgJNnuCsNL0Dt2XikKpSmdnBhjB8I+V
+         NtsWjv90yVBT41ss3A7S3D9Pg6jWfIMYRN3b/4biWhmGV8zHAsTuZzzukCFSCMLD0Tez
+         EUzGcez5u9POl+jlIqlfGsDvzY2VJY2oTtBPkTBX1Xo8EoVBCQHMVSJnXk0bDFNp8JmG
+         96BQ==
+X-Gm-Message-State: AOAM532zqBUQCvoqkZnfcXVvGRyBwCeaCfC5TnSGjz3FBU/5fr6FqtP1
+        xKIFkDqGOHERn54qR/P7y8g=
+X-Google-Smtp-Source: ABdhPJwsjLetmmkwthytXHRAjBgzfi7amhs4Th7JIiNaKTNGuKsh8scjwN6S/Fd61RcIgh641geZBg==
+X-Received: by 2002:a17:90a:8b12:: with SMTP id y18mr8016646pjn.72.1629272366618;
+        Wed, 18 Aug 2021 00:39:26 -0700 (PDT)
+Received: from localhost.localdomain ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id u3sm3886729pjr.2.2021.08.18.00.39.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 00:39:26 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, christian.koenig@amd.com, axboe@kernel.dk,
+        oleg@redhat.com, tglx@linutronix.de, dvyukov@google.com,
+        walter-zh.wu@mediatek.com
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH v3 0/9] drm, kernel: update locking for DRM
+Date:   Wed, 18 Aug 2021 15:38:15 +0800
+Message-Id: <20210818073824.1560124-1-desmondcheongzx@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 18 Aug 2021 15:37:51 +0800
-From:   tjiang@codeaurora.org
-To:     Zijun Hu <zijuhu@codeaurora.org>
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
-        rjliao@codeaurora.org
-Subject: Re: [PATCH v3] Bluetooth: btusb: Add support different nvm to
- distinguish different factory for WCN6855 controller
-In-Reply-To: <1628758216-3201-1-git-send-email-zijuhu@codeaurora.org>
-References: <1628758216-3201-1-git-send-email-zijuhu@codeaurora.org>
-Message-ID: <fcd7e83c3cd39ea89c94345ec00b5c6c@codeaurora.org>
-X-Sender: tjiang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-marcel:
-   could you help review this patch ? thank you.
-tjiang
+The patches in this series are largely fixes and prepwork leading up to
+the final patch which plugs races with modesetting rights. Most of the
+fixes don't have bug reports, so comments would be very appreciated.
 
-On 2021-08-12 16:50, Zijun Hu wrote:
-> From: Tim Jiang <tjiang@codeaurora.org>
-> 
-> we have different factory to produce wcn6855 soc chip, so we should
-> use different nvm file with suffix to distinguish them.
-> 
-> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
-> ---
->  drivers/bluetooth/btusb.c | 60 
-> ++++++++++++++++++++++++++++++++++++++++-------
->  1 file changed, 51 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-> index b1a05bb9f4bf..d7b4e0f1c3e3 100644
-> --- a/drivers/bluetooth/btusb.c
-> +++ b/drivers/bluetooth/btusb.c
-> @@ -4013,6 +4013,9 @@ static int btusb_set_bdaddr_wcn6855(struct 
-> hci_dev *hdev,
->  #define QCA_DFU_TIMEOUT		3000
->  #define QCA_FLAG_MULTI_NVM      0x80
-> 
-> +#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
-> +#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
-> +
->  struct qca_version {
->  	__le32	rom_version;
->  	__le32	patch_version;
-> @@ -4044,6 +4047,7 @@ static const struct qca_device_info
-> qca_devices_table[] = {
->  	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
->  	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
->  	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
-> +	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
->  };
-> 
->  static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 
-> request,
-> @@ -4198,6 +4202,39 @@ static int btusb_setup_qca_load_rampatch(struct
-> hci_dev *hdev,
->  	return err;
->  }
-> 
-> +static int btusb_setup_qca_form_nvm_name(char **fwname,
-> +					int max_size,
-> +					struct qca_version *ver,
-> +					char *factory)
-> +{
-> +	/* if boardid equal 0, use default nvm without suffix */
-> +	switch (le16_to_cpu(ver->board_id)) {
-> +	case 0x0:
-> +		/* we add suffix factory to distinguish with different factory. */
-> +		if (factory != NULL) {
-> +			snprintf(*fwname, max_size, "qca/nvm_usb_%08x_%s.bin",
-> +				 le32_to_cpu(ver->rom_version),
-> +				 factory);
-> +		} else {
-> +			snprintf(*fwname, max_size, "qca/nvm_usb_%08x.bin",
-> +				 le32_to_cpu(ver->rom_version));
-> +		}
-> +		break;
-> +	default:
-> +		if (factory != NULL) {
-> +			snprintf(*fwname, max_size, "qca/nvm_usb_%08x_%s_%04x.bin",
-> +				le32_to_cpu(ver->rom_version),
-> +				factory,
-> +				le16_to_cpu(ver->board_id));
-> +		} else {
-> +			snprintf(*fwname, max_size, "qca/nvm_usb_%08x_%04x.bin",
-> +				le32_to_cpu(ver->rom_version),
-> +				le16_to_cpu(ver->board_id));
-> +		}
-> +		break;
-> +	}
-> +}
-> +
->  static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
->  				    struct qca_version *ver,
->  				    const struct qca_device_info *info)
-> @@ -4206,19 +4243,24 @@ static int btusb_setup_qca_load_nvm(struct
-> hci_dev *hdev,
->  	char fwname[64];
->  	int err;
-> 
-> -	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
-> -		/* if boardid equal 0, use default nvm without surfix */
-> -		if (le16_to_cpu(ver->board_id) == 0x0) {
-> +	switch (ver->ram_version) {
-> +	case WCN6855_2_0_RAM_VERSION_GF:
-> +	case WCN6855_2_1_RAM_VERSION_GF:
-> +		if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
-> +			btusb_setup_qca_form_nvm_name(&fwname, sizeof(fwname), ver, "gf");
-> +		} else {
->  			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
->  				 le32_to_cpu(ver->rom_version));
-> +		}
-> +		break;
-> +	default:
-> +		if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
-> +			btusb_setup_qca_form_nvm_name(&fwname, sizeof(fwname), ver, NULL);
->  		} else {
-> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
-> -				le32_to_cpu(ver->rom_version),
-> -				le16_to_cpu(ver->board_id));
-> +			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
-> +				 le32_to_cpu(ver->rom_version));
->  		}
-> -	} else {
-> -		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
-> -			 le32_to_cpu(ver->rom_version));
-> +		break;
->  	}
-> 
->  	err = request_firmware(&fw, fwname, &hdev->dev);
+The biggest change from the previous version is that we convert
+drm_device.master_mutex into master_rwsem, instead of introducing
+master_rwsem as a third lock.
+
+Overall, this series makes the following changes:
+
+- Patch 1: Move master_lookup_lock into struct drm_device (enables us to
+use it to protect attributes accessed by different drm_files)
+
+- Patch 2: Add a missing master_lookup_lock in drm_master_release
+
+- Patch 3: Fix a potential race in drm_is_current_master_locked
+
+- Patch 4: Fix potential null ptr dereferences in drm_{auth, ioctl}
+
+- Patch 5: Move magic_map,unique{_len} out from master_mutex's
+protection into master_lookup_lock's protection (allows us to avoid
+read_lock -> write_lock deadlocks)
+
+- Patch 6: Convert master_mutex into rwsem (avoids creating a new lock)
+
+- Patch 7: Update global mutex locking in the ioctl handler (avoids
+deadlock when grabbing read lock on master_rwsem in drm_ioctl_kernel)
+
+- Patch 8: Export task_work_add (enables us to write drm_master_flush)
+
+- Patch 9: Plug races with drm modesetting rights
+
+v2 -> v3:
+- Unexport drm_master_flush, as suggested by Daniel Vetter.
+- Merge master_mutex and master_rwsem, as suggested by Daniel Vetter.
+- Export task_work_add, reported by kernel test robot.
+- Make master_flush static, reported by kernel test robot.
+- Move master_lookup_lock into struct drm_device.
+- Add a missing lock on master_lookup_lock in drm_master_release.
+- Fix a potential race in drm_is_current_master_locked.
+- Fix potential null ptr dereferences in drm_{auth, ioctl}.
+- Protect magic_map,unique{_len} with  master_lookup_lock.
+- Convert master_mutex into a rwsem.
+- Update global mutex locking in the ioctl handler.
+
+v1 -> v2 (suggested by Daniel Vetter):
+- Address an additional race when drm_open runs.
+- Switch from SRCU to rwsem to synchronise readers and writers.
+- Implement drm_master_flush with task_work so that flushes can be
+queued to run before returning to userspace without creating a new
+DRM_MASTER_FLUSH ioctl flag.
+
+Best wishes,
+Desmond
+
+Desmond Cheong Zhi Xi (9):
+  drm: move master_lookup_lock into drm_device
+  drm: hold master_lookup_lock when releasing a drm_file's master
+  drm: check for null master in drm_is_current_master_locked
+  drm: fix potential null ptr dereferences in drm_{auth,ioctl}
+  drm: protect magic_map,unique{_len} with master_lookup_lock
+  drm: convert drm_device.master_mutex into a rwsem
+  drm: update global mutex lock in the ioctl handler
+  kernel: export task_work_add
+  drm: avoid races with modesetting rights
+
+ drivers/gpu/drm/drm_auth.c     | 108 ++++++++++++++++++++++++---------
+ drivers/gpu/drm/drm_debugfs.c  |   4 +-
+ drivers/gpu/drm/drm_drv.c      |   4 +-
+ drivers/gpu/drm/drm_file.c     |   1 -
+ drivers/gpu/drm/drm_internal.h |   1 +
+ drivers/gpu/drm/drm_ioctl.c    |  39 +++++++-----
+ drivers/gpu/drm/drm_lease.c    |   1 +
+ include/drm/drm_auth.h         |   6 +-
+ include/drm/drm_device.h       |  27 +++++++--
+ include/drm/drm_file.h         |  20 +++---
+ kernel/task_work.c             |   1 +
+ 11 files changed, 145 insertions(+), 67 deletions(-)
+
+-- 
+2.25.1
+
