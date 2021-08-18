@@ -2,198 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136413EFEED
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B823EFEF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239410AbhHRIP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 04:15:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34552 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238229AbhHRIPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 04:15:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D4A860F58;
-        Wed, 18 Aug 2021 08:15:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629274520;
-        bh=Kb7VKV2QVXsoOlVjjCgX7QXaFeDKF3TnMe14n0uniGo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QeiZlgpGJLKskpfuq6e7dx9L1EjrW6S93dcIOwDWSIs/iq21FvJmoht6wz/US6NeV
-         W2xz+8DKLpb+PIj68xaWA08vOaP/qvBycGY8pruin4eP4a+8IPGS76d7EpCK0VtlIp
-         Goa/0XeAaCEAN8OSaBZI60sCN2Y3iPA/xqgLsx0XJVO2RZvt7++IohofjtqFNnwlpY
-         czCMdcUuyh6nAPEYW1e2N7c3DUFMDtpSfitLuaoYg/BKwGlI8MmG8NMF+3c/WCkwuj
-         mnMDsulpHeBww02nYdusT76lBJplZSC4EFCv5he+VEqU/pSwLZz2ojh9K1Z2RhTyJy
-         baClyElyWMglg==
-Date:   Wed, 18 Aug 2021 17:15:17 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v6 1/7] tracing: Add DYNAMIC flag for dynamic events
-Message-Id: <20210818171517.4800773de332f4c10f9ceb75@kernel.org>
-In-Reply-To: <20210817035026.936958254@goodmis.org>
-References: <20210817034255.421910614@goodmis.org>
-        <20210817035026.936958254@goodmis.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S239630AbhHRIQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 04:16:07 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:59685 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239424AbhHRIQG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 04:16:06 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id A7B09580AE8;
+        Wed, 18 Aug 2021 04:15:31 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Wed, 18 Aug 2021 04:15:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=yYt+4EJ3cWamqkGEsAvOSuOlm+F
+        MX0V4UjsXtAe6pK8=; b=ml3gnKHE4PYqlaOtY/4d/1MAfJkN6cf+Yn2CTAqz8bq
+        T5IbbMJyI8smWzB4TGQ2Tvko0wp7cdDxP1Pyfcc5FCpeNDgsu4QHJhOvMhJbYw3Y
+        Zu6vMKs76Un2vGA8UMm8nzp3vOZwIrIb6B7MtQVoPQqp84WaOilmAS+AwFHUuBi7
+        OQcV8ulV1C2DkJHcR599F0jfwb5QO67j7zVqS1D1t0wYLDb6cGZ+S3BWs6xioIek
+        moCtHMZJEN0vp095N8WJbBnHuEMxQWc2eImW6Te8zRpSwQfRfv9NxB3ey4sxFild
+        u/gDY7gR0e7IkTCUD/ACU4HnIdji3Ya/ZDfXzTgGIYA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=yYt+4E
+        J3cWamqkGEsAvOSuOlm+FMX0V4UjsXtAe6pK8=; b=iE6TghD30HnYXnkPqyg9Gz
+        Lyjw1Rmts6xoSN8/UyVdGi7dgMl8d3wIR3u6e/LBFv7XEYO9Wc3+YVvn4uI3OyUu
+        7TJqR5bri2SDJAOJSVnM5Z1fbpNjOGG6AP5M+oxMGNZEWkGwI7Hsb4sKNGxGmvhI
+        AUKPtfP6VSq9jUoZFyBPfnw3u8+U6+bNl/A5vG7WvW1LyTUBfBRD7r7oCXSBpQCx
+        TOphU837MkLxS8j1OsFEDtPYldlGdiZl1vvRHOTQmZ/70Hef+F0K6TjEVnLeQO/3
+        rwcWkMBzetthgrrKPFwJR31E5RkafFKLiixh1XU9lU8ft0Nm0Pp9DLLsGCRNd9bg
+        ==
+X-ME-Sender: <xms:oMEcYel3r6tW14ohxboieOvua6Q5_ag6QSdyjwU5rW7Rg8t1RgKKXw>
+    <xme:oMEcYV2AM6C5yNHUBzSX6suoda96Kx5pKinKTOcbxkcjnYYMvPRSHAJS3iuyfzf4y
+    9pmbXxd-mayDVkVLlo>
+X-ME-Received: <xmr:oMEcYcqNXW4cg_-7g3txMxRiiZ-q4_8ZTLXjrOeRrYyQ74NVbXE-zBPxqlBbbD-K7i0P-kvgNgfrR1CeHuMlSIGLpxxENkf9APpq>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleehgddtvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
+    igihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:oMEcYSlHVDKX5Xk1YEpyJOTIb9SfsDtZv1bZgw5e9pLBAVYpu9KK8A>
+    <xmx:oMEcYc3m4IlzrOwBIwSox9d8dCS_1lGCI278o_w_3Z5d5ChxVqL6hQ>
+    <xmx:oMEcYZsPAdDvsd5td1UVPfbWEZLBCTifd6eCiq_k-JwCt-IOl_XjnA>
+    <xmx:o8EcYX3Q52OikCWntV5thyGm7TtP1McnSk0X6b8iba9pipF5ZrKsfw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 18 Aug 2021 04:15:28 -0400 (EDT)
+Date:   Wed, 18 Aug 2021 10:15:26 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
+        Samuel Holland <samuel@sholland.org>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org
+Subject: Re: [PATCH v9 02/11] dt-bindings: rtc: sun6i: Add H616 compatible
+ string
+Message-ID: <20210818081526.ejzqyz4tqvf2mmdj@gilmour>
+References: <20210802003952.19942-1-andre.przywara@arm.com>
+ <20210802003952.19942-3-andre.przywara@arm.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jw4w7fdrdj57gaky"
+Content-Disposition: inline
+In-Reply-To: <20210802003952.19942-3-andre.przywara@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Aug 2021 23:42:56 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> 
-> To differentiate between static and dynamic events, add a new flag
-> DYNAMIC to the event flags that all dynamic events have set. This will
-> allow to differentiate when attaching to a dynamic event from a static
-> event.
-> 
-> Static events have a mod pointer that references the module they were
-> created in (or NULL for core kernel). This can be incremented when the
-> event has something attached to it. But there exists no such mechanism for
-> dynamic events. This is dangerous as the dynamic events may now disappear
-> without the "attachment" knowing that it no longer exists.
-> 
-> To enforce the dynamic flag, change dyn_event_add() to pass the event that
-> is being created such that it can set the DYNAMIC flag of the event. This
-> helps make sure that no location that creates a dynamic event misses
-> setting this flag.
-> 
-> Link: https://lore.kernel.org/linux-trace-devel/20210813004448.51c7de69ce432d338f4d226b@kernel.org/
-> 
+--jw4w7fdrdj57gaky
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This looks good to me.
-
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thank you,
-
-> Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+On Mon, Aug 02, 2021 at 01:39:43AM +0100, Andre Przywara wrote:
+> Add the obvious compatible name to the existing RTC binding.
+> The actual RTC part of the device uses a different day/month/year
+> storage scheme, so it's not compatible with the previous devices.
+> Also the clock part is quite different, as there is no external 32K LOSC
+> oscillator input.
+>=20
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 > ---
->  include/linux/trace_events.h      | 3 +++
->  kernel/trace/trace_dynevent.h     | 4 +++-
->  kernel/trace/trace_events_synth.c | 2 +-
->  kernel/trace/trace_kprobe.c       | 4 ++--
->  kernel/trace/trace_uprobe.c       | 4 ++--
->  5 files changed, 11 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-> index ad413b382a3c..53c9dffd87fd 100644
-> --- a/include/linux/trace_events.h
-> +++ b/include/linux/trace_events.h
-> @@ -310,6 +310,7 @@ enum {
->  	TRACE_EVENT_FL_NO_SET_FILTER_BIT,
->  	TRACE_EVENT_FL_IGNORE_ENABLE_BIT,
->  	TRACE_EVENT_FL_TRACEPOINT_BIT,
-> +	TRACE_EVENT_FL_DYNAMIC_BIT,
->  	TRACE_EVENT_FL_KPROBE_BIT,
->  	TRACE_EVENT_FL_UPROBE_BIT,
->  };
-> @@ -321,6 +322,7 @@ enum {
->   *  NO_SET_FILTER - Set when filter has error and is to be ignored
->   *  IGNORE_ENABLE - For trace internal events, do not enable with debugfs file
->   *  TRACEPOINT    - Event is a tracepoint
-> + *  DYNAMIC       - Event is a dynamic event (created at run time)
->   *  KPROBE        - Event is a kprobe
->   *  UPROBE        - Event is a uprobe
->   */
-> @@ -330,6 +332,7 @@ enum {
->  	TRACE_EVENT_FL_NO_SET_FILTER	= (1 << TRACE_EVENT_FL_NO_SET_FILTER_BIT),
->  	TRACE_EVENT_FL_IGNORE_ENABLE	= (1 << TRACE_EVENT_FL_IGNORE_ENABLE_BIT),
->  	TRACE_EVENT_FL_TRACEPOINT	= (1 << TRACE_EVENT_FL_TRACEPOINT_BIT),
-> +	TRACE_EVENT_FL_DYNAMIC		= (1 << TRACE_EVENT_FL_DYNAMIC_BIT),
->  	TRACE_EVENT_FL_KPROBE		= (1 << TRACE_EVENT_FL_KPROBE_BIT),
->  	TRACE_EVENT_FL_UPROBE		= (1 << TRACE_EVENT_FL_UPROBE_BIT),
->  };
-> diff --git a/kernel/trace/trace_dynevent.h b/kernel/trace/trace_dynevent.h
-> index 7754936b57ee..936477a111d3 100644
-> --- a/kernel/trace/trace_dynevent.h
-> +++ b/kernel/trace/trace_dynevent.h
-> @@ -76,13 +76,15 @@ int dyn_event_init(struct dyn_event *ev, struct dyn_event_operations *ops)
->  	return 0;
->  }
->  
-> -static inline int dyn_event_add(struct dyn_event *ev)
-> +static inline int dyn_event_add(struct dyn_event *ev,
-> +				struct trace_event_call *call)
->  {
->  	lockdep_assert_held(&event_mutex);
->  
->  	if (!ev || !ev->ops)
->  		return -EINVAL;
->  
-> +	call->flags |= TRACE_EVENT_FL_DYNAMIC;
->  	list_add_tail(&ev->list, &dyn_event_list);
->  	return 0;
->  }
-> diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-> index 9315fc03e303..f4f5489e1e28 100644
-> --- a/kernel/trace/trace_events_synth.c
-> +++ b/kernel/trace/trace_events_synth.c
-> @@ -1298,7 +1298,7 @@ static int __create_synth_event(const char *name, const char *raw_fields)
->  	}
->  	ret = register_synth_event(event);
->  	if (!ret)
-> -		dyn_event_add(&event->devent);
-> +		dyn_event_add(&event->devent, &event->call);
->  	else
->  		free_synth_event(event);
->   out:
-> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> index ea6178cb5e33..bfef43bfce37 100644
-> --- a/kernel/trace/trace_kprobe.c
-> +++ b/kernel/trace/trace_kprobe.c
-> @@ -618,7 +618,7 @@ static int append_trace_kprobe(struct trace_kprobe *tk, struct trace_kprobe *to)
->  	if (ret)
->  		trace_probe_unlink(&tk->tp);
->  	else
-> -		dyn_event_add(&tk->devent);
-> +		dyn_event_add(&tk->devent, trace_probe_event_call(&tk->tp));
->  
->  	return ret;
->  }
-> @@ -661,7 +661,7 @@ static int register_trace_kprobe(struct trace_kprobe *tk)
->  	if (ret < 0)
->  		unregister_kprobe_event(tk);
->  	else
-> -		dyn_event_add(&tk->devent);
-> +		dyn_event_add(&tk->devent, trace_probe_event_call(&tk->tp));
->  
->  end:
->  	mutex_unlock(&event_mutex);
-> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-> index 9b50869a5ddb..50eca53b8d22 100644
-> --- a/kernel/trace/trace_uprobe.c
-> +++ b/kernel/trace/trace_uprobe.c
-> @@ -455,7 +455,7 @@ static int append_trace_uprobe(struct trace_uprobe *tu, struct trace_uprobe *to)
->  	/* Append to existing event */
->  	ret = trace_probe_append(&tu->tp, &to->tp);
->  	if (!ret)
-> -		dyn_event_add(&tu->devent);
-> +		dyn_event_add(&tu->devent, trace_probe_event_call(&tu->tp));
->  
->  	return ret;
->  }
-> @@ -518,7 +518,7 @@ static int register_trace_uprobe(struct trace_uprobe *tu)
->  		goto end;
->  	}
->  
-> -	dyn_event_add(&tu->devent);
-> +	dyn_event_add(&tu->devent, trace_probe_event_call(&tu->tp));
->  
->  end:
->  	mutex_unlock(&event_mutex);
-> -- 
-> 2.30.2
+>  .../bindings/rtc/allwinner,sun6i-a31-rtc.yaml      | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rt=
+c.yaml b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> index beeb90e55727..d8a6500e5840 100644
+> --- a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> +++ b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> @@ -26,6 +26,7 @@ properties:
+>            - const: allwinner,sun50i-a64-rtc
+>            - const: allwinner,sun8i-h3-rtc
+>        - const: allwinner,sun50i-h6-rtc
+> +      - const: allwinner,sun50i-h616-rtc
+> =20
+>    reg:
+>      maxItems: 1
+> @@ -104,6 +105,19 @@ allOf:
+>            minItems: 3
+>            maxItems: 3
+> =20
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: allwinner,sun50i-h616-rtc
+> +
+> +    then:
+> +      properties:
+> +        clock-output-names:
+> +          minItems: 3
+> +          maxItems: 3
 
+The comments I made here on the v7 are still relevant: you only need one
+of these two, and the list of clocks should be documented.
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Maxime
+
+--jw4w7fdrdj57gaky
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYRzBngAKCRDj7w1vZxhR
+xdHnAQCthhOj0Myap+OgRtaGj1JPwv/wVtAEsOsf0ajXVyutfwD9FIh6MpNJ/GC7
+POzUJR3WJY93IHn9sXevpJMSQ3XLxAQ=
+=HwrA
+-----END PGP SIGNATURE-----
+
+--jw4w7fdrdj57gaky--
