@@ -2,123 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA793F0396
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 14:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1603F0399
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 14:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236548AbhHRMMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 08:12:50 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:54246 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236104AbhHRMM0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 08:12:26 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 84D611FFB9;
-        Wed, 18 Aug 2021 12:11:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629288706; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oauaeid5kS8iNTdftSWve3mbzui9gaYKkQjJR8xXV+M=;
-        b=emX8Scy806YkPO6OgPhs+s1Hg88Ap1y3FrF0J5tgfPJeDGS4z6Yz2BytlbTGAfWepiYSeH
-        OCFt8Qbk4e1IGF3VzudM+o6L7SNtaXkxX9wMSR4ip0pnYftEvzXx0Yw+Wg7cZuigyEB5xv
-        pi41uqhHsrA0mRGxmWsW7w++dHlvknE=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 329EA1371C;
-        Wed, 18 Aug 2021 12:11:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id j7O2CQL5HGExRgAAGKfGzw
-        (envelope-from <nborisov@suse.com>); Wed, 18 Aug 2021 12:11:46 +0000
-Subject: Re: [PATCH] btrfs: fix a potential double put bug and some related
- use-after-free bugs
-To:     Wentao_Liang <Wentao_Liang_g@163.com>, clm@fb.com
-Cc:     josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210818091518.4825-1-Wentao_Liang_g@163.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <1dea8c28-8ca6-83d4-8eb0-84fe1ebb7cc9@suse.com>
-Date:   Wed, 18 Aug 2021 15:11:45 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234949AbhHRMNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 08:13:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46356 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235943AbhHRMNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 08:13:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E701360EBC;
+        Wed, 18 Aug 2021 12:12:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629288762;
+        bh=v2fKI+bPzybQVJkFbPZ7QLGe6RoSceJs21/Hl1k0DgQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hUhyMLBeZgfsQBRpW04OKFKEt+cZFiRIyyaP96405hbYdXZDgydwe+gmGuNdGXpwZ
+         XG34sa/K0ZcCn84t/r6pZj6XD51siUdKWBH3NhzVatKTnIoTSvCdpy0y9tR8lTOIEC
+         XY5WSxtSYx/UfqR41V3VDbiriOLiR0Q5K9iJpOwlY2c2DuDeJJPKBQX8SutKaN9VDF
+         XWR2v2WNUAVEcJmMU/y6SBMFTdeiBEHi6RHX2OaHevO8QrPVgDAVpSGINu4cRJYQGY
+         hCPPhhQiuZ2t/pPTBjW8d20EdjsUpYFnocPmZ+xKZhusJ3R7ZDrvUypikTmTu9maV5
+         hYmBUU6Qs6m9g==
+Date:   Wed, 18 Aug 2021 13:12:18 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Philip Li <philip.li@intel.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] kbuild: Enable -Wimplicit-fallthrough for clang 14.0.0+
+Message-ID: <20210818121218.GC4177@sirena.org.uk>
+References: <20210817005624.1455428-1-nathan@kernel.org>
+ <80fa539a-b767-76ed-dafa-4d8d1a6b063e@kernel.org>
+ <CAHk-=wgFXOf9OUh3+vmWjhp1PC47RVsUkL0NszBxSWhbGzx4tw@mail.gmail.com>
+ <5c856f36-69a7-e274-f72a-c3aef195adeb@kernel.org>
+ <202108171056.EDCE562@keescook>
+ <3f28b45e-e725-8b75-042a-d34d90c56361@kernel.org>
+ <CAK7LNAQFgYgavTP2ZG9Y16XBVdPuJ98J_Ty1OrQy1GXHq6JjQQ@mail.gmail.com>
+ <71d76c41-7f9b-6d60-ba4f-0cd84596b457@embeddedor.com>
+ <202108171602.159EB2C7EA@keescook>
+ <72ae69b4-6069-ade5-a12b-8ee0435f803a@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210818091518.4825-1-Wentao_Liang_g@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="OBd5C1Lgu00Gd/Tn"
+Content-Disposition: inline
+In-Reply-To: <72ae69b4-6069-ade5-a12b-8ee0435f803a@kernel.org>
+X-Cookie: She sells cshs by the cshore.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--OBd5C1Lgu00Gd/Tn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 18.08.21 г. 12:15, Wentao_Liang wrote:
-> In line 2955 (#1), "btrfs_put_block_group(cache);" drops the reference to
-> cache and may cause the cache to be released. However, in line 3014, the
-> cache is dropped again by the same put function (#4). Double putting the
-> cache can lead to an incorrect reference count.
-> 
-> Furthermore, according to the definition of btrfs_put_block_group() in fs/
-> btrfs/block-group.c, if the reference count of the cache is one at the
-> first put, it will be freed by kfree(). Using it again may result in the
-> use-after-free flaw. In fact, after the first put (line 2955), the cache
-> is also accessed in a few places (#2, #3), e.g., lines 2967, 2973, 2974,
-> ….
-> 
-> We believe that the first put of the cache is unnecessary (#1).
-> We can fix the above bugs by removing the redundant
-> "btrfs_put_block_group(cache);" in line 2955 (#1).
-> 
-> 2951         if (!list_empty(&cache->io_list)) {
-> ...
-> 2955             btrfs_put_block_group(cache);
-> 				 //#1 the first drop to cache (unnecessary)
-> ...
-> 2957         }
-> ...
-> 2967         cache_save_setup(cache, trans, path); //#2 use the cache
-> ...
-> 2972          //#3 use the cache several times
-> 
-> 2973         if (!ret && cache->disk_cache_state == BTRFS_DC_SETUP) {
-> 2974             cache->io_ctl.inode = NULL;
-> 2975             ret = btrfs_write_out_cache(trans, cache, path);
-> 2976             if (ret == 0 && cache->io_ctl.inode) {
-> 2977                 num_started++;
-> 2978                 should_put = 0;
-> 2979                 list_add_tail(&cache->io_list, io);
-> 2980             } else {
-> ...
-> 2985                 ret = 0;
-> 2986             }
-> 2987         }
-> 2988         if (!ret) {
-> 2989             ret = update_block_group_item(trans, path, cache);
-> ...
-> 3003             if (ret == -ENOENT) {
-> ...
-> 3006                 ret = update_block_group_item(trans, path, cache);
-> 3007             }
-> ...
-> 3010         }
-> 3011
-> ...
-> 3013         if (should_put)
-> 3014             btrfs_put_block_group(cache);
-> 				//#4 the second drop to cache
-> 
-> Signed-off-by: Wentao_Liang <Wentao_Liang_g@163.com>
+On Tue, Aug 17, 2021 at 04:23:41PM -0700, Nathan Chancellor wrote:
 
+> I do not know of any other CI aside from ours that is testing with tip of
+> tree clang and ours should already have a clang that includes my patch since
+> it comes from apt.llvm.org.
 
-Apart form the patch being buggy you have not demonstrated why doing 2
-put block groups is actually given that there are invariant that
-guarantee bg will have at least 2 refs held. So it seems you have
-produced the patch without considering the big picture of how btrfs'
-block group state machine works.
+FWIW we have some testing internally at Arm but that's building from
+source so it's not an issue for us.
+
+--OBd5C1Lgu00Gd/Tn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEc+SEACgkQJNaLcl1U
+h9CuEgf6AhImdwxnsV8aEvTuQR82slmZtz5rVQrdZSyHW8JWRYTeS4xoYienTEv3
+HpFEgAPb0ZVs8fCWfRKg9Lxcdm8h1cOFUgqibjYgS2zWcBhOqGkaAhGNe0tCpvHP
+ZZ4uvs82kwjDIHJ0/JFDugThZsfQDpcPnw0UZUTGKX6YZvXwEl+1AMI/eE/cGQPS
+EJ+ADZZo9LAyS1iCP/yiNvzE3Oqkv5jS3KxGlG79ezz3oErYklKeD+MjNnimmR2c
+SFU2BkiYEGVg5nC70EeqSs+LL2dEg0iFtbfd3/zK26qcEDNCBDHjAMGgO5WmkG7Q
+0u18wJuI4eZ2ggkq+/GAVX9IfDvrCQ==
+=annl
+-----END PGP SIGNATURE-----
+
+--OBd5C1Lgu00Gd/Tn--
