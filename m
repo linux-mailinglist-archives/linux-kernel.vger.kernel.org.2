@@ -2,46 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B36693EFA01
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 07:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 617813EFA08
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 07:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237475AbhHRFYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 01:24:18 -0400
-Received: from verein.lst.de ([213.95.11.211]:60631 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229768AbhHRFYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 01:24:17 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 819C267357; Wed, 18 Aug 2021 07:23:40 +0200 (CEST)
-Date:   Wed, 18 Aug 2021 07:23:40 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Kari Argillander <kari.argillander@gmail.com>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev, Christoph Hellwig <hch@lst.de>,
-        linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>
-Subject: Re: [PATCH v3 0/3] fs/ntfs3: Use kernel alloc wrappers and fix
- warnings
-Message-ID: <20210818052340.GA9053@lst.de>
-References: <20210818010649.412912-1-kari.argillander@gmail.com>
+        id S237577AbhHRF1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 01:27:14 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:20077 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229768AbhHRF1M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 01:27:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629264398; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=OD3bhfIfOCgRHQjgqA6MewvJUinJk6gIaknhjrubRj0=;
+ b=sbXFCsnD/v2T0uapANuEdBtiZYVkYYDRc3CXId3vZGG+is5gI1kd3iLW9ZiBELBWzEieygqH
+ lqNvk2j3aKPCeaST36iSxOmtbjtLmtYKwUNRkf8JHi/6p/wKmTQzm8+WV5olPVfPR/LWA4qB
+ dKxt/yDUmVeohI2RmIVkb+VOEIQ=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 611c99fc66ff1079049e47e5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 18 Aug 2021 05:26:20
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5E9C1C4360D; Wed, 18 Aug 2021 05:26:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B7948C4338F;
+        Wed, 18 Aug 2021 05:26:18 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818010649.412912-1-kari.argillander@gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 18 Aug 2021 10:56:18 +0530
+From:   skakit@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Collins <collinsd@codeaurora.org>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        linux-gpio@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 1/2] pinctrl: qcom: spmi-gpio: correct parent irqspec
+ translation
+In-Reply-To: <CAE-0n52Ki2tA6qy6ADym3r4UQ0tkvgz3bpif_Mm2q3Y+N=huGg@mail.gmail.com>
+References: <1628830531-14648-1-git-send-email-skakit@codeaurora.org>
+ <1628830531-14648-2-git-send-email-skakit@codeaurora.org>
+ <CACRpkdZteWY6X+prHeAF0rtPVbCk+X9=ZYgpjgAMH24LhOjhaQ@mail.gmail.com>
+ <4af8171aefd6f0387438225666ec1ccc@codeaurora.org>
+ <CAE-0n53sR12fEa_cNPeT5eGcQVzzL57pd-tYnJbpP0NXkHMTsw@mail.gmail.com>
+ <6801879ddd0edf9a8d0e3605f3868e79@codeaurora.org>
+ <CAE-0n52Ki2tA6qy6ADym3r4UQ0tkvgz3bpif_Mm2q3Y+N=huGg@mail.gmail.com>
+Message-ID: <5be25c9710b7706cff91f1db71f9e25e@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 04:06:46AM +0300, Kari Argillander wrote:
-> In ntfs3 driver there is allocation made like this ntfs_malloc().
-> Patch 2/3 will converter these to kernel ones like kmalloc(). After I
-> did this then checkpatch raise warnings about array allocations so I
-> fix these in patch 3/3.
+On 2021-08-18 00:45, Stephen Boyd wrote:
+> Quoting skakit@codeaurora.org (2021-08-17 02:06:42)
+>> On 2021-08-17 02:38, Stephen Boyd wrote:
+>> >
+>> > Are there any boards supported upstream that have a gpio block that
+>> > isn't at 0xc000?
+>> 
+>> yes, all the pmics used in sm8350-mtp.dts board have gpio block at
+>> addresses different than 0xc000.
+>> 
 > 
-> I also notice when I made patch that there is broken utf8 char so I
-> wanted first fix that because it raised some warning in my editor and
-> did not want to "break" patch 2/3. So patch 1/3 address that. I did
-> try to apply this and it seem to work without issues.
+> So maybe
+> 
+> Fixes: f67cc6a91d88 ("arm64: dts: qcom: sm8350-mtp: Add PMICs")
+> 
+> is appropriate then?
 
-So this mostly looks sensible, but I still haven't actually seen
-the codebase this applies to posted anywhere as far as I can tell.
+This patch is actually fixing the pinctrl-spmi-gpio.c driver.
+So, I think we should add
+
+Fixes: ca69e2d165eb ("qcom: spmi-gpio: add support for hierarchical IRQ 
+chip")
