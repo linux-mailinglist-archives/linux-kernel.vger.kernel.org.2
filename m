@@ -2,153 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7A33EFF27
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0C9F3EFF2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239324AbhHRIa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 04:30:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50248 "EHLO
+        id S239666AbhHRIbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 04:31:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238939AbhHRIay (ORCPT
+        with ESMTP id S239511AbhHRIa7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 04:30:54 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D7D1C0613A3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:30:18 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id f13so1247196vsl.13
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:30:18 -0700 (PDT)
+        Wed, 18 Aug 2021 04:30:59 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6743CC0617AD
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:30:25 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id gz13-20020a17090b0ecdb0290178c0e0ce8bso4789463pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:30:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=IKqcflYMaSUyzwd/eHbHpOkvH7hAYsOOplnEzRxLbhU=;
-        b=R/YglmSTFalwgblF0J7z+xo4QD/viWueOMjtEA3qajPeKluQA8KyZlPIazxZCmQcOV
-         ypXroUN/dz8G8KIy2PndGeFR9trr2TXk1MLEpZYZHSdEPDIvmCIDK5BOf+7ryOnDMlAz
-         KKZOIcOvNnsfQADPruS78lcAX/NT/qxMC6OewVDoFYGt5hY5K9huXDQ6tsxV07Sxs/Du
-         uf/zCLpMusk1iMjpoom1MA3j5kIRz40ZYONDbw9Bk+/YXVmdr5o2bmiJpfJC1CERXXmo
-         E0BgAf1avWcJ6cYGmW6zCxZHRihbaxeLgDmifTSo359uCk7uScIh0CC8oShYygGDo0u/
-         CxTQ==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=jL/DkoxZCdzlNexUG7tJ6IG5zbZczoSvIVash/JCFrw=;
+        b=mjex+yt3nPZrktov1+DZ6Bq446vp3EnZsY5Rp2Z4n5iBYWDavjtfqeXt7QZMyuGeQx
+         dmQdu6z3qA1rLvrmaBhTr9RPti/HhOVCjaTV6tvJ/yTjU+xPSVxAQpRZvQwYAgUYofeO
+         mmH2cRgxyDimzxfU4p2xlVikV5Eqxe3uztSntLF0ehtUzbOzCC1Otex7gfri/ddagDJv
+         9dp7MYgwkA567XF/7ghDiEEu0ngZj6uWW6MzAqVr9yQGP+u2DQ2SwhCcZxAd6Jrq2EIp
+         +VMMflY5XYtq41M4/KXWx2ofrDQxrH8xbTuuekFqJwiPORh37Tltgjju+vkismI+2vhj
+         7XKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=IKqcflYMaSUyzwd/eHbHpOkvH7hAYsOOplnEzRxLbhU=;
-        b=s89xdzWzUrOLecIznOJ+NMUm54nSILP/S3TS3ODoyAbsCoXV1g/0oFNnmufCIJlqcb
-         kfsdFnPA6EMpOjrJlpBHOzHv0tx8qY354sdLyiC6FNsg1RnYa6OjY4nNoI8bw0IwtwPb
-         QNZ1+bCkWT/z+I67EROwsLERA9st9N7DD5Bgrhq3hEQx0QlEkK8lRm5wRiMB9rDjxyw8
-         vgeM/FyMe1uyOBD2yaJtntEW6C+c/6KEGMaHW+DKzgMHUT2fSSJnZLPADOJI5juz1uVq
-         Cri3qE6UkbePtPf16Md+pkMXGOktfVySng5z4wqs18d6ophcUWj/WkNhlUZ3KITcOHiw
-         +zCw==
-X-Gm-Message-State: AOAM532VSgAACXGsPB2h+CXmZaOHmxV37MdkF8MBcXhYaTHHo4FKNWae
-        doaUZJU07xqSb9G/UkJCWJcyztzYkB1CmBeGsMNfQw==
-X-Google-Smtp-Source: ABdhPJwKrtdwLrtqnGeoY6XyZUUGVixFdE7Mg0poY1hljrcpole6+hd3NjZWSpGJ4mjLJUHBolVYDumnC7t4U+ynnmc=
-X-Received: by 2002:a67:3212:: with SMTP id y18mr6323760vsy.19.1629275417181;
- Wed, 18 Aug 2021 01:30:17 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=jL/DkoxZCdzlNexUG7tJ6IG5zbZczoSvIVash/JCFrw=;
+        b=bLfUknivWTeJ7Zfos2pjU5jTRRlwHG76Tj49TxYhXVCVcS5uqY5NXN94ZnbCym0amt
+         3FQysTgKjtqEpLl/wxKWBbupH2VFIaFbijM/T340TKffT14clNgl3pGx1KQiHY22Pwck
+         ZQfurSxCB4LdkQTLuYMRa1G6cCxJl88nAKD4EWyAy+uIdF1DEJ9u6j2azPSpM78wMRJn
+         OZ5GD/C6XLSNQJQsDu4XGKsg6CXZ/0ZNDyrT4Y7rRboZH1Ld/Q9kUGfPPFye7TN/TXou
+         ROths3KeBMpRf5oe05snvZwhRC+xtX43DZfXhJWXKVJJyHhoV4qk1LNUKb5OWr+QWqEl
+         tyAA==
+X-Gm-Message-State: AOAM532HxJYL5ZsP6ogFltbMPI5lE5SkFxX48KdhkUXp1oSzyrEuLnti
+        TLO7tTFOQFnXyS/LglG2Uc2rww==
+X-Google-Smtp-Source: ABdhPJxad1KK36PAE+4ALDJhHQYzMsdq97PArLHgXYjcLRlD/AHutLCPOJ3acpkjSavyCEuDCIetRA==
+X-Received: by 2002:a17:90b:3007:: with SMTP id hg7mr8245674pjb.66.1629275424835;
+        Wed, 18 Aug 2021 01:30:24 -0700 (PDT)
+Received: from [10.254.37.14] ([139.177.225.244])
+        by smtp.gmail.com with ESMTPSA id 11sm5003086pfl.41.2021.08.18.01.30.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Aug 2021 01:30:24 -0700 (PDT)
+Subject: Re: [External] Re: [PATCH] ixgbe: Fix NULL pointer dereference in
+ ixgbe_xdp_setup
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, jeffrey.t.kirsher@intel.com,
+        magnus.karlsson@intel.com, intel-wired-lan@lists.osuosl.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, duanxiongchun@bytedance.com,
+        songmuchun@bytedance.com, zhouchengming@bytedance.com,
+        chenying.kernel@bytedance.com, zhengqi.arch@bytedance.com,
+        wangdongdong.6@bytedance.com
+References: <20210817075407.11961-1-zhoufeng.zf@bytedance.com>
+ <20210817111047.GA8143@ranger.igk.intel.com>
+From:   zhoufeng <zhoufeng.zf@bytedance.com>
+Message-ID: <5bddff53-9b78-99db-1d8e-23b3d38167a1@bytedance.com>
+Date:   Wed, 18 Aug 2021 16:30:15 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210817075515.vyyv7z37e6jcrhsl@vireshk-i7> <710261d9-7ae3-5155-c0a2-f8aed2408d0b@gmail.com>
- <20210818035533.ieqkexltfvvf2p4n@vireshk-i7> <5b2a80c1-9743-e633-6257-ede94c8a274c@gmail.com>
- <20210818043131.7klajx6drvvkftoc@vireshk-i7> <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
- <20210818045307.4brb6cafkh3adjth@vireshk-i7> <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
- <20210818055849.ybfajzu75ecpdrbn@vireshk-i7> <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
- <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
-In-Reply-To: <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 18 Aug 2021 10:29:40 +0200
-Message-ID: <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
-Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210817111047.GA8143@ranger.igk.intel.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Aug 2021 at 08:27, Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 18-08-21, 09:22, Dmitry Osipenko wrote:
-> > 18.08.2021 08:58, Viresh Kumar =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > > What about calling dev_pm_opp_set_rate(dev, clk_get_rate(dev)) here
-> > > instead ? That will work, right ? The advantage is it works without
-> > > any special routine to do so.
-> >
-> > It will work, but a dedicated helper is nicer.
-> >
-> > > I also wonder looking at your gr3d.c changes, you set a set-opp
-> > > helper, but the driver doesn't call set_opp_rate at all. Who calls it
-> > > ?
-> >
-> > dev_pm_opp_sync() calls it from _set_opp().
->
-> Okay, please use dev_pm_opp_set_rate() instead then. New helper just
-> adds to the confusion and isn't doing anything special apart from
-> doing clk_get_rate() for you.
->
-> > > And if it is all about just syncing the genpd core, then can the genp=
-d
-> > > core do something like what clk framework does? i.e. allow a new
-> > > optional genpd callback, get_performance_state() (just like
-> > > set_performance_state()), which can be called initially by the core t=
-o
-> > > get the performance to something other than zero. opp-set-rate is
-> > > there to set the performance state and enable the stuff as well.
-> > > That's why it looks incorrect in your case, where the function was
-> > > only required to be called once, and you are ending up calling it on
-> > > each resume. Limiting that with another local variable is bad as well=
-.
-> >
-> > We discussed variant with get_performance_state() previously and Ulf
-> > didn't like it either since it still requires to touch 'internals' of G=
-ENPD.
->
-> Hmm, I wonder if that would be a problem since only genpd core is
-> going to call that routine anyway.
 
-Me and Dmitry discussed adding a new genpd callback for this. I agreed
-that it seems like a reasonable thing to add, if he insists.
 
-The intent was to invoke the new callback from __genpd_dev_pm_attach()
-when the device has been attached to its genpd. This allows the
-callback, to invoke clk_get_rate() and then dev_pm_opp_set_rate(), to
-update the vote according to the current state of the HW.
+ÔÚ 2021/8/17 ÏÂÎç7:10, Maciej Fijalkowski Ð´µÀ:
+> On Tue, Aug 17, 2021 at 03:54:07PM +0800, Feng zhou wrote:
+>> From: Feng Zhou <zhoufeng.zf@bytedance.com>
+>>
+>> The ixgbe driver currently generates a NULL pointer dereference with
+>> some machine (online cpus < 63). This is due to the fact that the
+>> maximum value of num_xdp_queues is nr_cpu_ids. Code is in
+>> "ixgbe_set_rss_queues"".
+> 
+> That's a good catch, but we should fix set channels callback so that it
+> will not allow a setting of queues to be higher than the
+> num_online_cpus().
+> 
+> Please also include the tree in the patch subject that you're directing
+> the patch to.
+> 
 
-I am not sure if/why that approach seemed insufficient?
+Ok, Besides it, I will add more code in "ixgbe_set_channels":
+/* verify the number of channels does not exceed num_online_cpus */
+if (count > num_online_cpus())
+	return -EINVAL;
+If user want set queues num to be higher than the num_online_cpus(),
+return error(-EINVAL).
 
-Another option to solve the problem, I think, is simply to patch
-drivers to let them call dev_pm_opp_set_rate() during ->probe(), this
-should synchronize the HW state too.
+What do you think?
 
-Dmitry, can you please elaborate on this?
+> I'd be also thankful if you Cc me on Intel XDP related patches.
+> Thanks!
+> 
 
-Kind regards
-Uffe
+Ok, of course.
+
+
+>>
+>> Here's how the problem repeats itself:
+>> Some machine (online cpus < 63), And user set num_queues to 63 through
+>> ethtool. Code is in the "ixgbe_set_channels",
+>> adapter->ring_feature[RING_F_FDIR].limit = count;
+>> It becames 63.
+>> When user use xdp, "ixgbe_set_rss_queues" will set queues num.
+>> adapter->num_rx_queues = rss_i;
+>> adapter->num_tx_queues = rss_i;
+>> adapter->num_xdp_queues = ixgbe_xdp_queues(adapter);
+>> And rss_i's value is from
+>> f = &adapter->ring_feature[RING_F_FDIR];
+>> rss_i = f->indices = f->limit;
+>> So "num_rx_queues" > "num_xdp_queues", when run to "ixgbe_xdp_setup",
+>> for (i = 0; i < adapter->num_rx_queues; i++)
+>> 	if (adapter->xdp_ring[i]->xsk_umem)
+>> lead to panic.
+>> Call trace:
+>> [exception RIP: ixgbe_xdp+368]
+>> RIP: ffffffffc02a76a0  RSP: ffff9fe16202f8d0  RFLAGS: 00010297
+>> RAX: 0000000000000000  RBX: 0000000000000020  RCX: 0000000000000000
+>> RDX: 0000000000000000  RSI: 000000000000001c  RDI: ffffffffa94ead90
+>> RBP: ffff92f8f24c0c18   R8: 0000000000000000   R9: 0000000000000000
+>> R10: ffff9fe16202f830  R11: 0000000000000000  R12: ffff92f8f24c0000
+>> R13: ffff9fe16202fc01  R14: 000000000000000a  R15: ffffffffc02a7530
+>> ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+>>   7 [ffff9fe16202f8f0] dev_xdp_install at ffffffffa89fbbcc
+>>   8 [ffff9fe16202f920] dev_change_xdp_fd at ffffffffa8a08808
+>>   9 [ffff9fe16202f960] do_setlink at ffffffffa8a20235
+>> 10 [ffff9fe16202fa88] rtnl_setlink at ffffffffa8a20384
+>> 11 [ffff9fe16202fc78] rtnetlink_rcv_msg at ffffffffa8a1a8dd
+>> 12 [ffff9fe16202fcf0] netlink_rcv_skb at ffffffffa8a717eb
+>> 13 [ffff9fe16202fd40] netlink_unicast at ffffffffa8a70f88
+>> 14 [ffff9fe16202fd80] netlink_sendmsg at ffffffffa8a71319
+>> 15 [ffff9fe16202fdf0] sock_sendmsg at ffffffffa89df290
+>> 16 [ffff9fe16202fe08] __sys_sendto at ffffffffa89e19c8
+>> 17 [ffff9fe16202ff30] __x64_sys_sendto at ffffffffa89e1a64
+>> 18 [ffff9fe16202ff38] do_syscall_64 at ffffffffa84042b9
+>> 19 [ffff9fe16202ff50] entry_SYSCALL_64_after_hwframe at ffffffffa8c0008c
+>>
+>> Fixes: 4a9b32f30f80 ("ixgbe: fix potential RX buffer starvation for
+>> AF_XDP")
+>> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
+>> ---
+>>   drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 8 ++++++--
+>>   1 file changed, 6 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+>> index 14aea40da50f..5db496cc5070 100644
+>> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+>> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+>> @@ -10112,6 +10112,7 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
+>>   	struct ixgbe_adapter *adapter = netdev_priv(dev);
+>>   	struct bpf_prog *old_prog;
+>>   	bool need_reset;
+>> +	int num_queues;
+>>   
+>>   	if (adapter->flags & IXGBE_FLAG_SRIOV_ENABLED)
+>>   		return -EINVAL;
+>> @@ -10161,11 +10162,14 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
+>>   	/* Kick start the NAPI context if there is an AF_XDP socket open
+>>   	 * on that queue id. This so that receiving will start.
+>>   	 */
+>> -	if (need_reset && prog)
+>> -		for (i = 0; i < adapter->num_rx_queues; i++)
+>> +	if (need_reset && prog) {
+>> +		num_queues = min_t(int, adapter->num_rx_queues,
+>> +			adapter->num_xdp_queues);
+>> +		for (i = 0; i < num_queues; i++)
+>>   			if (adapter->xdp_ring[i]->xsk_pool)
+>>   				(void)ixgbe_xsk_wakeup(adapter->netdev, i,
+>>   						       XDP_WAKEUP_RX);
+>> +	}
+>>   
+>>   	return 0;
+>>   }
+>> -- 
+>> 2.11.0
+>>
