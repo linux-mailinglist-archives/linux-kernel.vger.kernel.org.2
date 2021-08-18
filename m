@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A15C3EFE7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 177123EFE7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239679AbhHRH75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 03:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42478 "EHLO
+        id S240271AbhHRIAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 04:00:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238650AbhHRH7V (ORCPT
+        with ESMTP id S239262AbhHRH7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 03:59:21 -0400
+        Wed, 18 Aug 2021 03:59:22 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C2D6C0613CF;
-        Wed, 18 Aug 2021 00:58:47 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 07:58:45 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AD04C061764;
+        Wed, 18 Aug 2021 00:58:48 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 07:58:46 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629273526;
+        s=2020; t=1629273527;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=eGoVw0Ybvi4GjfzrkEV/IPERfl3L9l4lN8LXB4O4jvo=;
-        b=3c5NlLNBrMnL4mBXUZ7gAytQoxfkPU6rW/yfLdw4dNDXTdiDqzZhY+r1UBIGEjto4vy9DQ
-        wsWY2ByURprHfanbKiIzSMDxFnUFoRc0Yp9bm07t5U2Ua18tmNrhDLNZ0OgvAvJ1wIehAv
-        qrNOSnlO0666qChS1mXpa+x0KzE98UWdXooLFMdb3JXtat7nGKwnHLwD7Zby4aDz3JOKRB
-        cN/qfXPJXyE8LdTldSLis3nd2hWq4F8v/e/WLcKw3O1gg+pW9PZ/crA080UqxbCUYIpGVo
-        5e0SmrUNK2Qa4ahrWoL//eHKqJuCzlBKUn2c8qSxwlDj5qpieRycyY4gQ3oDIg==
+        bh=yw/qYZZlNNUn5lMyuoB1F5fRAiySaNBgR0THX/gkSQ0=;
+        b=Rw2aKADXebDKAFRXf2UAGvsmsiMOWB7IQni+lyqP5Poz2zp2+PxBhhpDQ5zH+jNSlPrSRO
+        kYbuOxRMjf6jloA2IJx5QDajN6ZdU6SV9vd4gM9+1q70x+mVyQeq1LoM1+cy9X26iOVmj+
+        wsRP9i9lmV3HP9Co/nEHytuW56EfEmEvv/e0A/73vWGqilKZ/06KsftS60bI7hT3gWvDKl
+        eYA2GkDPlgUtcrWJ6xbUpwjNzifGrnoFVwxcKqyxO4pRyfR77yydZLO2+wJ21x75XCDpIz
+        mzTMFVvzVYTYx7yA8e9iIX5K271jR+AwAfM7+UUKx2+0jqLRwKZuXP1U07Onsw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629273526;
+        s=2020e; t=1629273527;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=eGoVw0Ybvi4GjfzrkEV/IPERfl3L9l4lN8LXB4O4jvo=;
-        b=mR+yzyW6/3Q7RCAMNmfOE7IzWwY6XRNwuFEArsug/AvuCTgvMDXp3snSJ5QmluQ7UchkCc
-        0vkWIHf5UBGBYODg==
+        bh=yw/qYZZlNNUn5lMyuoB1F5fRAiySaNBgR0THX/gkSQ0=;
+        b=6y5WtDt04fQ2/OP5kHgnxkMJCPhhdc1n1exFpD0Yaj27jIGv6XQxhuxRD3EDDbIk3bypgr
+        8eB0qcRP6LPOHpDg==
 From:   "tip-bot2 for Marco Elver" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/debug] kcsan: Introduce CONFIG_KCSAN_STRICT
-Cc:     Marco Elver <elver@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
+Subject: [tip: locking/debug] kcsan: Improve some Kconfig comments
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Marco Elver <elver@google.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <162927352528.25758.9839549022962931479.tip-bot2@tip-bot2>
+Message-ID: <162927352636.25758.992475127071222181.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -56,78 +56,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/debug branch of tip:
 
-Commit-ID:     e675d2533a74acfa95c62e7bb088335866f44fd2
-Gitweb:        https://git.kernel.org/tip/e675d2533a74acfa95c62e7bb088335866f44fd2
+Commit-ID:     eb32f9f990d974a7878a8792cee9bb821720c24b
+Gitweb:        https://git.kernel.org/tip/eb32f9f990d974a7878a8792cee9bb821720c24b
 Author:        Marco Elver <elver@google.com>
-AuthorDate:    Mon, 07 Jun 2021 14:56:49 +02:00
+AuthorDate:    Mon, 07 Jun 2021 14:56:47 +02:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Tue, 20 Jul 2021 13:49:43 -07:00
 
-kcsan: Introduce CONFIG_KCSAN_STRICT
+kcsan: Improve some Kconfig comments
 
-Add a simpler Kconfig variable to configure KCSAN's "strict" mode. This
-makes it simpler in documentation or messages to suggest just a single
-configuration option to select the strictest checking mode (vs.
-currently having to list several options).
+Improve comment for CC_HAS_TSAN_COMPOUND_READ_BEFORE_WRITE. Also shorten
+the comment above the "strictness" configuration options.
 
-Signed-off-by: Marco Elver <elver@google.com>
 Acked-by: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Marco Elver <elver@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/dev-tools/kcsan.rst |  4 ++++
- lib/Kconfig.kcsan                 | 10 ++++++++++
- 2 files changed, 14 insertions(+)
+ lib/Kconfig.kcsan | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/dev-tools/kcsan.rst b/Documentation/dev-tools/kcsan.rst
-index 6a600cf..69dc9c5 100644
---- a/Documentation/dev-tools/kcsan.rst
-+++ b/Documentation/dev-tools/kcsan.rst
-@@ -127,6 +127,10 @@ Kconfig options:
-   causes KCSAN to not report data races due to conflicts where the only plain
-   accesses are aligned writes up to word size.
- 
-+To use the strictest possible rules, select ``CONFIG_KCSAN_STRICT=y``, which
-+configures KCSAN to follow the Linux-kernel memory consistency model (LKMM) as
-+closely as possible.
-+
- DebugFS interface
- ~~~~~~~~~~~~~~~~~
- 
 diff --git a/lib/Kconfig.kcsan b/lib/Kconfig.kcsan
-index 5304f21..c76fbb3 100644
+index 0440f37..6152fbd 100644
 --- a/lib/Kconfig.kcsan
 +++ b/lib/Kconfig.kcsan
-@@ -183,9 +183,17 @@ config KCSAN_REPORT_RACE_UNKNOWN_ORIGIN
- 	  reported if it was only possible to infer a race due to a data value
- 	  change while an access is being delayed on a watchpoint.
+@@ -40,10 +40,14 @@ menuconfig KCSAN
  
-+config KCSAN_STRICT
-+	bool "Strict data-race checking"
+ if KCSAN
+ 
+-# Compiler capabilities that should not fail the test if they are unavailable.
+ config CC_HAS_TSAN_COMPOUND_READ_BEFORE_WRITE
+ 	def_bool (CC_IS_CLANG && $(cc-option,-fsanitize=thread -mllvm -tsan-compound-read-before-write=1)) || \
+ 		 (CC_IS_GCC && $(cc-option,-fsanitize=thread --param tsan-compound-read-before-write=1))
 +	help
-+	  KCSAN will report data races with the strictest possible rules, which
-+	  closely aligns with the rules defined by the Linux-kernel memory
-+	  consistency model (LKMM).
-+
- config KCSAN_REPORT_VALUE_CHANGE_ONLY
- 	bool "Only report races where watcher observed a data value change"
- 	default y
-+	depends on !KCSAN_STRICT
- 	help
- 	  If enabled and a conflicting write is observed via a watchpoint, but
- 	  the data value of the memory location was observed to remain
-@@ -194,6 +202,7 @@ config KCSAN_REPORT_VALUE_CHANGE_ONLY
- config KCSAN_ASSUME_PLAIN_WRITES_ATOMIC
- 	bool "Assume that plain aligned writes up to word size are atomic"
- 	default y
-+	depends on !KCSAN_STRICT
- 	help
- 	  Assume that plain aligned writes up to word size are atomic by
- 	  default, and also not subject to other unsafe compiler optimizations
-@@ -206,6 +215,7 @@ config KCSAN_ASSUME_PLAIN_WRITES_ATOMIC
++	  The compiler instruments plain compound read-write operations
++	  differently (++, --, +=, -=, |=, &=, etc.), which allows KCSAN to
++	  distinguish them from other plain accesses. This is currently
++	  supported by Clang 12 or later.
  
- config KCSAN_IGNORE_ATOMICS
- 	bool "Do not instrument marked atomic accesses"
-+	depends on !KCSAN_STRICT
- 	help
- 	  Never instrument marked atomic accesses. This option can be used for
- 	  additional filtering. Conflicting marked atomic reads and plain
+ config KCSAN_VERBOSE
+ 	bool "Show verbose reports with more information about system state"
+@@ -169,13 +173,9 @@ config KCSAN_REPORT_ONCE_IN_MS
+ 	  reporting to avoid flooding the console with reports.  Setting this
+ 	  to 0 disables rate limiting.
+ 
+-# The main purpose of the below options is to control reported data races (e.g.
+-# in fuzzer configs), and are not expected to be switched frequently by other
+-# users. We could turn some of them into boot parameters, but given they should
+-# not be switched normally, let's keep them here to simplify configuration.
+-#
+-# The defaults below are chosen to be very conservative, and may miss certain
+-# bugs.
++# The main purpose of the below options is to control reported data races, and
++# are not expected to be switched frequently by non-testers or at runtime.
++# The defaults are chosen to be conservative, and can miss certain bugs.
+ 
+ config KCSAN_REPORT_RACE_UNKNOWN_ORIGIN
+ 	bool "Report races of unknown origin"
