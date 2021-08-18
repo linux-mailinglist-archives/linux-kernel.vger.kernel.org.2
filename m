@@ -2,116 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 314D43EF882
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 05:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 732CC3EF88B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 05:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236113AbhHRD0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 23:26:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231207AbhHRD0y (ORCPT
+        id S235974AbhHRDbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 23:31:55 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:50494 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233901AbhHRDby (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 23:26:54 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D64C061764;
-        Tue, 17 Aug 2021 20:26:20 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id n12so958245plf.4;
-        Tue, 17 Aug 2021 20:26:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jmiPhOCESicdvfFuj6THhsiLBc+/I7VEPM1Ey/NV9KE=;
-        b=Mqzf2GWQaakc9VYcQ9iKSR9/71BwrOPczyjxedQ7LX2mLq83LfPWA0NSnmx3vz61TO
-         hyZ5/rySTNhVQQqO+1W+kpT03vJDPnqq7FS8RR3/uKbcPLg3nZAE8QCtMZY7aoXWmrbe
-         8VhVPehHwqs1wCwDTdrpm1ZTAXmpeJ4fzR91gjEFcNx6dBnHjt2D4SChhxc2+FuHZ4vD
-         H5ZWe2o0Y+AAMJ35by/ojAEusVJIt3fm4HDOH6Jq/v1qZ4BxVAa4fbpPtFeVsX5Hwysq
-         HZMoEY3QrhoWuBlAxi09zmXhyTPxJ8jmmmCJkA7n/ZpIqFEVODFEBVC6ybw5EWCOg0TS
-         m73g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jmiPhOCESicdvfFuj6THhsiLBc+/I7VEPM1Ey/NV9KE=;
-        b=hE3c3tGes/YVEA4gVcBNDHR9b5WEFlglMWrwf6xgSPDx1hBUDmb4o6oN4vse94C2mp
-         R6LrvOMMsb5/A+4VFlKYF6TESEF2oIPmJ43z4vx6ednbma2UNjKZW3AkmjPb2XDors6I
-         m+9UzSsXu5uxXB7CzPS8ERxJT4740CCP+cFN4WBBjeJ7kzIaErbzIgiqtTJQrEbuyncj
-         tFsJEsKAObGUGom3Jkmu1oUExgM40meV4OT39Z2naa83iqTBrtIMKSg6PhI1fv9zlemj
-         vwaVxS4+QHxGsM786ArSaJEBX4wivq9/0ofOa3ecnERhadxdRLI3PvgpkVSjg9l7wH62
-         R3qA==
-X-Gm-Message-State: AOAM530VmJCEseKVhJYBdtZdZIHQwyJEVHuh1JwKar+j7ktdhKq7RJgJ
-        YcaeeEEgrCQf25UUMm6W6oA=
-X-Google-Smtp-Source: ABdhPJyk1sMK+ZXuDr8Bk5yw3mMIUAJlzJQFAD426qUqiky382ouaAG+iEY3s492xW/hYe/2FbjzLg==
-X-Received: by 2002:a17:90a:9285:: with SMTP id n5mr6797809pjo.29.1629257179526;
-        Tue, 17 Aug 2021 20:26:19 -0700 (PDT)
-Received: from localhost.localdomain ([154.16.166.182])
-        by smtp.gmail.com with ESMTPSA id f23sm4125899pfd.61.2021.08.17.20.26.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 20:26:19 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        Tue, 17 Aug 2021 23:31:54 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R391e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0UjbK988_1629257477;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UjbK988_1629257477)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 18 Aug 2021 11:31:17 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     dan.carpenter@oracle.com, Dongliang Mu <mudongliangabcd@gmail.com>,
-        syzbot+b9cfd1cc5d57ee0a09ab@syzkaller.appspotmail.com,
-        stable@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net: xfrm: assign the per_cpu_ptr pointer before return
-Date:   Wed, 18 Aug 2021 11:25:53 +0800
-Message-Id: <20210818032554.283428-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Vitaly Chikunov <vt@altlinux.org>,
+        Eric Biggers <ebiggers@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Markku-Juhani O . Saarinen" <mjos@iki.fi>,
+        Jussi Kivilinna <jussi.kivilinna@iki.fi>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>,
+        "YiLin . Li" <YiLin.Li@linux.alibaba.com>
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH 0/2] add AES-NI/AVX2/x86_64 implementation
+Date:   Wed, 18 Aug 2021 11:31:15 +0800
+Message-Id: <20210818033117.91717-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.3.ge56e4f7
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In ipcomp_alloc_scratches, if the vmalloc fails, there leaves an oudated
-pointer in *per_cpu_ptr(scratches, i). However, in the error handling of
-ipcomp_init_state, if ipcomp_alloc_scratches fails, it will invoke
-ipcomp_free_scratches directly. This functio will vfree the per_cpu_ptr
-pointer. If the pointer points to an invalid memory, the kernel crashes.
+This patchsets exported some of the common functions implemented by
+the SM4 AESNI/AVX algorithm, and reused these functions to achieve
+the acceleration of AESNI/AVX2 implementation.
 
-Fix this by moving the assignment of per_cpu_ptr point before return.
+The main algorithm implementation comes from SM4 AES-NI work by
+libgcrypt and Markku-Juhani O. Saarinen at:
+https://github.com/mjosaarinen/sm4ni
 
-Call Trace:
- ipcomp_free_scratches+0xbc/0x160 net/xfrm/xfrm_ipcomp.c:203
- ipcomp_free_data net/xfrm/xfrm_ipcomp.c:312 [inline]
- ipcomp_init_state+0x77c/0xa40 net/xfrm/xfrm_ipcomp.c:364
- ipcomp6_init_state+0xc2/0x700 net/ipv6/ipcomp6.c:154
- __xfrm_init_state+0x995/0x15c0 net/xfrm/xfrm_state.c:2648
- xfrm_init_state+0x1a/0x70 net/xfrm/xfrm_state.c:2675
- pfkey_msg2xfrm_state net/key/af_key.c:1287 [inline]
- pfkey_add+0x1a64/0x2cd0 net/key/af_key.c:1504
- pfkey_process+0x685/0x7e0 net/key/af_key.c:2837
- pfkey_sendmsg+0x43a/0x820 net/key/af_key.c:3676
- sock_sendmsg_nosec net/socket.c:703 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:723
+Benchmark on Intel i5-6200U 2.30GHz, performance data of three
+implementation methods, pure software sm4-generic, aesni/avx
+acceleration, and aesni/avx2 acceleration, the data comes from
+the 218 mode and 518 mode of tcrypt. The abscissas are blocks of
+different lengths. The data is tabulated and the unit is Mb/s:
 
-Reported-by: syzbot+b9cfd1cc5d57ee0a09ab@syzkaller.appspotmail.com
-Cc: stable@vger.kernel.org
-Fixes: 6fccab671f2f ("ipsec: ipcomp - Merge IPComp impl")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
----
- net/xfrm/xfrm_ipcomp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+block-size  |    16      64     128     256    1024    1420    4096
+sm4-generic
+    ECB enc | 60.94   70.41   72.27   73.02   73.87   73.58   73.59
+    ECB dec | 61.87   70.53   72.15   73.09   73.89   73.92   73.86
+    CBC enc | 56.71   66.31   68.05   69.84   70.02   70.12   70.24
+    CBC dec | 54.54   65.91   68.22   69.51   70.63   70.79   70.82
+    CFB enc | 57.21   67.24   69.10   70.25   70.73   70.52   71.42
+    CFB dec | 57.22   64.74   66.31   67.24   67.40   67.64   67.58
+    CTR enc | 59.47   68.64   69.91   71.02   71.86   71.61   71.95
+    CTR dec | 59.94   68.77   69.95   71.00   71.84   71.55   71.95
+sm4-aesni-avx
+    ECB enc | 44.95  177.35  292.06  316.98  339.48  322.27  330.59
+    ECB dec | 45.28  178.66  292.31  317.52  339.59  322.52  331.16
+    CBC enc | 57.75   67.68   69.72   70.60   71.48   71.63   71.74
+    CBC dec | 44.32  176.83  284.32  307.24  328.61  312.61  325.82
+    CFB enc | 57.81   67.64   69.63   70.55   71.40   71.35   71.70
+    CFB dec | 43.14  167.78  282.03  307.20  328.35  318.24  325.95
+    CTR enc | 42.35  163.32  279.11  302.93  320.86  310.56  317.93
+    CTR dec | 42.39  162.81  278.49  302.37  321.11  310.33  318.37
+sm4-aesni-avx2
+    ECB enc | 45.19  177.41  292.42  316.12  339.90  322.53  330.54
+    ECB dec | 44.83  178.90  291.45  317.31  339.85  322.55  331.07
+    CBC enc | 57.66   67.62   69.73   70.55   71.58   71.66   71.77
+    CBC dec | 44.34  176.86  286.10  501.68  559.58  483.87  527.46
+    CFB enc | 57.43   67.60   69.61   70.52   71.43   71.28   71.65
+    CFB dec | 43.12  167.75  268.09  499.33  558.35  490.36  524.73
+    CTR enc | 42.42  163.39  256.17  493.95  552.45  481.58  517.19
+    CTR dec | 42.49  163.11  256.36  493.34  552.62  481.49  516.83
 
-diff --git a/net/xfrm/xfrm_ipcomp.c b/net/xfrm/xfrm_ipcomp.c
-index cb40ff0ff28d..01dbec70dfba 100644
---- a/net/xfrm/xfrm_ipcomp.c
-+++ b/net/xfrm/xfrm_ipcomp.c
-@@ -223,9 +223,9 @@ static void * __percpu *ipcomp_alloc_scratches(void)
- 		void *scratch;
- 
- 		scratch = vmalloc_node(IPCOMP_SCRATCH_SIZE, cpu_to_node(i));
-+		*per_cpu_ptr(scratches, i) = scratch;
- 		if (!scratch)
- 			return NULL;
--		*per_cpu_ptr(scratches, i) = scratch;
- 	}
- 
- 	return scratches;
+From the benchmark data, it can be seen that when the block size is
+1024, compared to AVX acceleration, the performance achieved by AVX2
+has increased by about 70%, it is also 7.7 times of the pure software
+implementation of sm4-generic.
+
+Tianjia Zhang (2):
+  crypto: x86/sm4 - export reusable AESNI/AVX functions
+  crypto: x86/sm4 - add AES-NI/AVX2/x86_64 implementation
+
+ arch/x86/crypto/Makefile                |   3 +
+ arch/x86/crypto/sm4-aesni-avx2-asm_64.S | 497 ++++++++++++++++++++++++
+ arch/x86/crypto/sm4-avx.h               |  24 ++
+ arch/x86/crypto/sm4_aesni_avx2_glue.c   | 169 ++++++++
+ arch/x86/crypto/sm4_aesni_avx_glue.c    |  92 +++--
+ crypto/Kconfig                          |  22 ++
+ 6 files changed, 775 insertions(+), 32 deletions(-)
+ create mode 100644 arch/x86/crypto/sm4-aesni-avx2-asm_64.S
+ create mode 100644 arch/x86/crypto/sm4-avx.h
+ create mode 100644 arch/x86/crypto/sm4_aesni_avx2_glue.c
+
 -- 
-2.25.1
+2.19.1.3.ge56e4f7
 
