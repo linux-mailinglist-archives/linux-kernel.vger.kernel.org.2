@@ -2,117 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 986913EF680
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 02:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0AD3EF683
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 02:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236774AbhHRAJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 20:09:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232706AbhHRAJC (ORCPT
+        id S236904AbhHRAJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 20:09:40 -0400
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:44632 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232706AbhHRAJj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 20:09:02 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F0B4C061764;
-        Tue, 17 Aug 2021 17:08:28 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gq7XP2H37z9sW8;
-        Wed, 18 Aug 2021 10:08:21 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629245304;
-        bh=XVMQS6JAFV88LeSd1MLQZxVAyfJ2wKxPaOhSvniaduA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=KifRnmE/ZE618ppmFgz3zitzg4kvgfLRzZFOaKBc40bSUcffJvcQYBhUxxwnBtA29
-         FpoQX7p6u7KcMGfUn9kraZPn1IVfQP08yoXDy4o5UYF57uAedW2WGsFCnEs+IsA6iO
-         1U0pdJKU+Zvuo/jsIMaewVXwrvVvaepm7ASWO29d+CEscPShXe8X1dvR/fEphsnBog
-         QzhpXbyNxi9E7uty8L36yWV5xd7+ap5ZKrk90uHlAcgcetN36vzfbwVcjaamt3+beR
-         LRUzq+hh9b12C+U7M5jQ0EzrHbQRXyH/OOwCFKXt2WqFPsAFe2tmALOH8GWAXzNem9
-         eqnKzn+jOsG2g==
-Date:   Wed, 18 Aug 2021 10:08:19 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Wolfram Sang <wsa@the-dreams.de>, Olof Johansson <olof@lixom.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     Conghui Chen <conghui.chen@intel.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Igor Skalkin <igor.skalkin@opensynergy.com>,
-        Jie Deng <jie.deng@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Peter Hilber <peter.hilber@opensynergy.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: linux-next: manual merge of the i2c tree with the arm-soc tree
-Message-ID: <20210818100819.10927d37@canb.auug.org.au>
+        Tue, 17 Aug 2021 20:09:39 -0400
+Received: by mail-oi1-f169.google.com with SMTP id w6so1828579oiv.11;
+        Tue, 17 Aug 2021 17:09:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eDBf4HzWzpVkE1SU7HXUHyb2HdTJRgC3GqHbYNcFo5I=;
+        b=HYxSxEwtPHtrzr+CHwV4sCoLlHWex9TlUeK1WZtb865ixIqJIEFc9W6w9JGGMHVssl
+         ia8BT9Y7nYeTTo2z5qCbpX7/GNO0OriAa1LAbwHOtFTvyHnXRHJ0wvdCGzy4J6xxcaSS
+         5UUnVakE+SOic+tlOQqsiM348UdXqjROfpWCZUS0FXlzaySBFCdtBS+x+TqMlYoPzAp8
+         l5JyjdS/2NzKy2sj8/XCNNKmB3Wlg1hJRSuRKUaU//v6agy3UrOS0OYqze1pSXhxWAO2
+         Uj0mGZqae87gMHUGZDdZiPlUxbuA20FoI+nwGc3W1MU9v5qVyCkra5EEQL8TYhlhaTF7
+         4q7g==
+X-Gm-Message-State: AOAM531mA3ZBPCoQkcoVfS4fTYoVDmvOFSmiWOZxlP3brBWFEcxlNwyz
+        5gZlZDgrypXd28zS/DnGBA==
+X-Google-Smtp-Source: ABdhPJzCNktKjCUlnDUCdBAcVfHU3+pFvJ9azk9tr2qfnql+0DXml7WDoPY0HuD1CexzuSC5qgwnfw==
+X-Received: by 2002:a05:6808:5c7:: with SMTP id d7mr3066905oij.147.1629245345168;
+        Tue, 17 Aug 2021 17:09:05 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id u127sm878209oib.16.2021.08.17.17.09.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 17:09:04 -0700 (PDT)
+Received: (nullmailer pid 1088706 invoked by uid 1000);
+        Wed, 18 Aug 2021 00:09:03 -0000
+Date:   Tue, 17 Aug 2021 19:09:03 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Irui Wang <irui.wang@mediatek.com>
+Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        srv_heupstream@mediatek.com, linux-arm-kernel@lists.infradead.org,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Yong Wu <yong.wu@mediatek.com>,
+        Maoguang Meng <maoguang.meng@mediatek.com>,
+        devicetree@vger.kernel.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Longfei Wang <longfei.wang@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-mediatek@lists.infradead.org, Tomasz Figa <tfiga@google.com>,
+        linux-media@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Alexandre Courbot <acourbot@chromium.org>
+Subject: Re: [PATCH 1/9] dt-bindings: media: mtk-vcodec: Add binding for
+ MT8195 two venc cores
+Message-ID: <YRxPn1agQMdJtcpI@robh.at.kernel.org>
+References: <20210816105934.28265-1-irui.wang@mediatek.com>
+ <20210816105934.28265-2-irui.wang@mediatek.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/yTH4nvW=w+RqhVLI2pd=Jau";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210816105934.28265-2-irui.wang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/yTH4nvW=w+RqhVLI2pd=Jau
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, 16 Aug 2021 18:59:26 +0800, Irui Wang wrote:
+> Enable MT8195 two H.264 venc cores, updates vcodec binding document.
+> 
+> Signed-off-by: Irui Wang <irui.wang@mediatek.com>
+> ---
+>  Documentation/devicetree/bindings/media/mediatek-vcodec.txt | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-Hi all,
-
-Today's linux-next merge of the i2c tree got a conflict in:
-
-  include/uapi/linux/virtio_ids.h
-
-between commit:
-
-  46abe13b5e3d ("firmware: arm_scmi: Add virtio transport")
-
-from the arm-soc tree and commit:
-
-  8fb12751ac78 ("i2c: virtio: add a virtio i2c frontend driver")
-
-from the i2c tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/uapi/linux/virtio_ids.h
-index f74155f6882d,99aa27b100bc..000000000000
---- a/include/uapi/linux/virtio_ids.h
-+++ b/include/uapi/linux/virtio_ids.h
-@@@ -55,7 -55,7 +55,8 @@@
-  #define VIRTIO_ID_FS			26 /* virtio filesystem */
-  #define VIRTIO_ID_PMEM			27 /* virtio pmem */
-  #define VIRTIO_ID_MAC80211_HWSIM	29 /* virtio mac80211-hwsim */
- +#define VIRTIO_ID_SCMI			32 /* virtio SCMI */
-+ #define VIRTIO_ID_I2C_ADAPTER		34 /* virtio i2c adapter */
-  #define VIRTIO_ID_BT			40 /* virtio bluetooth */
- =20
-  /*
-
---Sig_/yTH4nvW=w+RqhVLI2pd=Jau
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEcT3MACgkQAVBC80lX
-0GwUKAf+MBB5fUWJ7Flin1TBWPmnGv/8XJrs9Gol31FpqrL0pbKn7bg/wDXx9tL4
-48VotGA/YqdX/x7yWK5BNbtDeA3Jt4g/UKpp4AMFUKJA50HZCvK86jCfnWBfv1LR
-uoN2PKadgYvddhQSHpcfG5XTA41qWV2ykLh5CLQLqyzsa/Df8jY72FdJCjLoZdM3
-MMUPlXKJPvCBf0lwsWLyijUpO+nzoMC16fyxbfby/e31XCq3MOoZZFygDvbSvbd+
-zm4MTC/0IHMelm6IU3tXntmGoJVIvMerjmc2FEE1Z2wfWgiTm5tGnYMIN3hJpPaD
-6ndpcOf2VfW2WTWMCEF8qn9oi+7jqA==
-=OGik
------END PGP SIGNATURE-----
-
---Sig_/yTH4nvW=w+RqhVLI2pd=Jau--
+Acked-by: Rob Herring <robh@kernel.org>
