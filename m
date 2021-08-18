@@ -2,156 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D87E3EF8A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 05:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8DAC3EF899
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 05:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237254AbhHRDeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 23:34:24 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:8872 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237103AbhHRDeU (ORCPT
+        id S236854AbhHRDdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 23:33:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235554AbhHRDdW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 23:34:20 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GqD0h54PCz8sZR;
-        Wed, 18 Aug 2021 11:29:40 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 18 Aug 2021 11:33:29 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 18 Aug 2021 11:33:29 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <alexander.duyck@gmail.com>, <linux@armlinux.org.uk>,
-        <mw@semihalf.com>, <linuxarm@openeuler.org>,
-        <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
-        <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
-        <akpm@linux-foundation.org>, <peterz@infradead.org>,
-        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
-        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
-        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
-        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
-        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
-        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
-        <yhs@fb.com>, <kpsingh@kernel.org>, <andrii@kernel.org>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <chenhao288@hisilicon.com>, <edumazet@google.com>,
-        <yoshfuji@linux-ipv6.org>, <dsahern@kernel.org>,
-        <memxor@gmail.com>, <linux@rempel-privat.de>, <atenart@kernel.org>,
-        <weiwan@google.com>, <ap420073@gmail.com>, <arnd@arndb.de>,
-        <mathew.j.martineau@linux.intel.com>, <aahringo@redhat.com>,
-        <ceggers@arri.de>, <yangbo.lu@nxp.com>, <fw@strlen.de>,
-        <xiangxia.m.yue@gmail.com>, <linmiaohe@huawei.com>
-Subject: [PATCH RFC 6/7] net: hns3: support tx recycling in the hns3 driver
-Date:   Wed, 18 Aug 2021 11:32:22 +0800
-Message-ID: <1629257542-36145-7-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1629257542-36145-1-git-send-email-linyunsheng@huawei.com>
-References: <1629257542-36145-1-git-send-email-linyunsheng@huawei.com>
+        Tue, 17 Aug 2021 23:33:22 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03883C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 20:32:48 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id a21so764821pfh.5
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 20:32:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=JVWM1e48keuxJEZyPP2QSd2itI/kmHuk3JHjusMRB3Y=;
+        b=f5QVtgRN/qQ8FRYVFoZwMFtXsA3QJioXXHGLyaapm7AYSJeP/YIXdzI3BHSxU/y/gY
+         ASRo/SBMqVA2BNWF95fRBWuyREnofh6y/OLunUB6gsUXUSCxJAXtnxHFqyQ0dd/mVO7L
+         I886hJpCoAm9B7UaWYBoyG+H6ISSNuZCchDIw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=JVWM1e48keuxJEZyPP2QSd2itI/kmHuk3JHjusMRB3Y=;
+        b=JI5Jd/lafqoVJsDa8rdtbp8iY9mQAuBStNk03eJOgBA+2SQohpWLVSBXyFPE3RYP6K
+         SU6NgA1IPDiI2D3y/UT+XwYh+ff8zfr3cOxrYAk+xMqMYGocc957XhSvILWRtwJU4s0r
+         GyCgxaSxPm6pHP8/f+JkGHkThzNfSUb6EfOVPRZ3jr06j9yC2CUZ8sxqxvsIPBO9aond
+         wl6vFikzgcVRXnNXBsZBBGF/KcxH8ESlRkEgL5ZOH4J6zLuJWs5o0TLmg3jQo+y7PjQJ
+         zXs+U/UJmdGB/MFVb+t1xqA3oDVWPY01sA31Ok1zbbxVvFBUuptKHJJQ6LDpGbszPbLg
+         FWig==
+X-Gm-Message-State: AOAM531rfjvLGhFomn9VIzLa4gkG/tqyzjGB+SMmqIn3wR4UNoji8TPX
+        ReECfqgJRsGhES46yvB1DaUZaw==
+X-Google-Smtp-Source: ABdhPJwWhyoAOgoayOIjXjOosORW76E6dR6lxM5gqxM+kdBP2Aigtgkr96w1mxbR3nPsawKqh7JNYg==
+X-Received: by 2002:aa7:8bdd:0:b0:3e2:13fc:dd2f with SMTP id s29-20020aa78bdd000000b003e213fcdd2fmr7077243pfd.53.1629257567442;
+        Tue, 17 Aug 2021 20:32:47 -0700 (PDT)
+Received: from localhost ([2001:4479:e000:e400:bb2:9104:6a48:5aa6])
+        by smtp.gmail.com with ESMTPSA id r16sm3499715pje.10.2021.08.17.20.32.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 20:32:46 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Jan Stancek <jstancek@redhat.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        christophe.leroy@csgroup.eu, linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, jstancek@redhat.com
+Subject: Re: [PATCH/RFC] powerpc/module_64: allow .init_array constructors
+ to run
+In-Reply-To: <920acea9aa18e4f2956581a8e158bdaa376fdf63.1629203945.git.jstancek@redhat.com>
+References: <920acea9aa18e4f2956581a8e158bdaa376fdf63.1629203945.git.jstancek@redhat.com>
+Date:   Wed, 18 Aug 2021 13:32:43 +1000
+Message-ID: <877dgjbf6s.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use netif_recyclable_napi_add() to register page pool to
-the NAPI instance, and avoid doing the DMA mapping/unmapping
-when the page is from page pool.
+Jan Stancek <jstancek@redhat.com> writes:
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 32 +++++++++++++++----------
- 1 file changed, 19 insertions(+), 13 deletions(-)
+> gcov and kasan rely on compiler generated constructor code.
+> For modules, gcc-8 with gcov enabled generates .init_array section,
+> but on ppc64le it doesn't get executed. find_module_sections() never
+> finds .init_array section, because module_frob_arch_sections() renames
+> it to _init_array.
+>
+> Avoid renaming .init_array section, so do_mod_ctors() can use it.
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index fcbeb1f..ab86566 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -1689,12 +1689,18 @@ static int hns3_map_and_fill_desc(struct hns3_enet_ring *ring, void *priv,
- 		return 0;
- 	} else {
- 		skb_frag_t *frag = (skb_frag_t *)priv;
-+		struct page *page = skb_frag_page(frag);
- 
- 		size = skb_frag_size(frag);
- 		if (!size)
- 			return 0;
- 
--		dma = skb_frag_dma_map(dev, frag, 0, size, DMA_TO_DEVICE);
-+		if (skb_frag_is_pp(frag) && page->pp->p.dev == dev) {
-+			dma = page_pool_get_dma_addr(page) + skb_frag_off(frag);
-+			type = DESC_TYPE_PP_FRAG;
-+		} else {
-+			dma = skb_frag_dma_map(dev, frag, 0, size, DMA_TO_DEVICE);
-+		}
- 	}
- 
- 	if (unlikely(dma_mapping_error(dev, dma))) {
-@@ -4525,7 +4531,7 @@ static int hns3_nic_init_vector_data(struct hns3_nic_priv *priv)
- 		ret = hns3_get_vector_ring_chain(tqp_vector,
- 						 &vector_ring_chain);
- 		if (ret)
--			goto map_ring_fail;
-+			return ret;
- 
- 		ret = h->ae_algo->ops->map_ring_to_vector(h,
- 			tqp_vector->vector_irq, &vector_ring_chain);
-@@ -4533,19 +4539,10 @@ static int hns3_nic_init_vector_data(struct hns3_nic_priv *priv)
- 		hns3_free_vector_ring_chain(tqp_vector, &vector_ring_chain);
- 
- 		if (ret)
--			goto map_ring_fail;
--
--		netif_napi_add(priv->netdev, &tqp_vector->napi,
--			       hns3_nic_common_poll, NAPI_POLL_WEIGHT);
-+			return ret;
- 	}
- 
- 	return 0;
--
--map_ring_fail:
--	while (i--)
--		netif_napi_del(&priv->tqp_vector[i].napi);
--
--	return ret;
- }
- 
- static void hns3_nic_init_coal_cfg(struct hns3_nic_priv *priv)
-@@ -4754,7 +4751,7 @@ static void hns3_alloc_page_pool(struct hns3_enet_ring *ring)
- 				(PAGE_SIZE << hns3_page_order(ring)),
- 		.nid = dev_to_node(ring_to_dev(ring)),
- 		.dev = ring_to_dev(ring),
--		.dma_dir = DMA_FROM_DEVICE,
-+		.dma_dir = DMA_BIDIRECTIONAL,
- 		.offset = 0,
- 		.max_len = PAGE_SIZE << hns3_page_order(ring),
- 	};
-@@ -4923,6 +4920,15 @@ int hns3_init_all_ring(struct hns3_nic_priv *priv)
- 		u64_stats_init(&priv->ring[i].syncp);
- 	}
- 
-+	for (i = 0; i < priv->vector_num; i++) {
-+		struct hns3_enet_tqp_vector *tqp_vector;
-+
-+		tqp_vector = &priv->tqp_vector[i];
-+		netif_recyclable_napi_add(priv->netdev, &tqp_vector->napi,
-+					  hns3_nic_common_poll, NAPI_POLL_WEIGHT,
-+					  tqp_vector->rx_group.ring->page_pool);
-+	}
-+
- 	return 0;
- 
- out_when_alloc_ring_memory:
--- 
-2.7.4
+This (the existing renaming) breaks a KASAN test too, so I'd love to see
+this fixed.
 
+However, I don't know that renaming the section is a complete fix: from
+memory it is still be possible to get relocations that are too far away
+and require separate trampolines. But I wasn't able to construct a
+module that exhibited this behaviour and test a fix before I got pulled
+away to other things.
+
+Kind regards,
+Daniel
+
+>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+> I wasn't able to trace the comment:
+>   "We don't handle .init for the moment: rename to _init"
+> to original patch (it pre-dates .git). I'm not sure if it
+> still applies today, so I limited patch to .init_array. This
+> fixes gcov for modules for me on ppc64le 5.14.0-rc6.
+>
+> Renaming issue is also mentioned in kasan patches here:
+>   https://patchwork.ozlabs.org/project/linuxppc-dev/cover/20210319144058.772525-1-dja@axtens
+>
+>  arch/powerpc/kernel/module_64.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/powerpc/kernel/module_64.c b/arch/powerpc/kernel/module_64.c
+> index 6baa676e7cb6..c604b13ea6bf 100644
+> --- a/arch/powerpc/kernel/module_64.c
+> +++ b/arch/powerpc/kernel/module_64.c
+> @@ -299,8 +299,16 @@ int module_frob_arch_sections(Elf64_Ehdr *hdr,
+>  					  sechdrs[i].sh_size);
+>  
+>  		/* We don't handle .init for the moment: rename to _init */
+> -		while ((p = strstr(secstrings + sechdrs[i].sh_name, ".init")))
+> +		while ((p = strstr(secstrings + sechdrs[i].sh_name, ".init"))) {
+> +#ifdef CONFIG_CONSTRUCTORS
+> +			/* find_module_sections() needs .init_array intact */
+> +			if (strstr(secstrings + sechdrs[i].sh_name,
+> +				".init_array")) {
+> +				break;
+> +			}
+> +#endif
+>  			p[0] = '_';
+> +		}
+>  
+>  		if (sechdrs[i].sh_type == SHT_SYMTAB)
+>  			dedotify((void *)hdr + sechdrs[i].sh_offset,
+> -- 
+> 2.27.0
