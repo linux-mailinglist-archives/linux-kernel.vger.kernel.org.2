@@ -2,120 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A1133F0098
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B313F002B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232260AbhHRJeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:34:07 -0400
-Received: from mail-m972.mail.163.com ([123.126.97.2]:49314 "EHLO
-        mail-m972.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233655AbhHRJcU (ORCPT
+        id S231454AbhHRJRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 05:17:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229780AbhHRJRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:32:20 -0400
-X-Greylist: delayed 930 seconds by postgrey-1.27 at vger.kernel.org; Wed, 18 Aug 2021 05:32:16 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=qijfI
-        FoL/35EH+Z6y3n8GDDoiZ8v1xXSaNfWOq3SWIY=; b=Y49H+YW2dMTSqyE2c2cJQ
-        sFpeiHlIgnW5yCf0JMlyqYiajub+Wkou7shBGsLgvg51vvQTOPllurXkXFxGvCNU
-        WvUIKkQz9+OEU3lW2/6Elm9SFA+fSv1iKIhuH6eoKxvQMq6jBYdcZIrRcN0GnhlR
-        ++I8Isee7ruHWlv7VUTjL8=
-Received: from localhost.localdomain (unknown [218.106.182.47])
-        by smtp2 (Coremail) with SMTP id GtxpCgDHxvWozxxhjERKOw--.2267S4;
-        Wed, 18 Aug 2021 17:15:32 +0800 (CST)
-From:   Wentao_Liang <Wentao_Liang_g@163.com>
-To:     clm@fb.com
-Cc:     josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wentao_Liang <Wentao_Liang_g@163.com>
-Subject: [PATCH] btrfs: fix a potential double put bug and some related use-after-free bugs
-Date:   Wed, 18 Aug 2021 17:15:18 +0800
-Message-Id: <20210818091518.4825-1-Wentao_Liang_g@163.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 18 Aug 2021 05:17:10 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39B9C061764;
+        Wed, 18 Aug 2021 02:16:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BA4/xVLnaIPuATSnRGf49DCaYMo1+WItwkXiR/2kQnw=; b=IErH/qBGGW6WOy8h0UdsdyzTJ/
+        KeDPtm007TIrgcS+9evjB+U+bYrdszrYhYll4O5sved0cQK6uQy8yiL8IP6VbF4jODyXcouUCW981
+        hzBsNCf8Z7DJ1v46Nc1Mb2wdqYTNgv3QBALB7RYr9VKkyoLonvi1RM8zHMrgCbo6kwRtTCoVZCjlG
+        /OAq9mktI6iecU7qVQbKZP3lEccE5DzM1In160sbEsYa1BnEm/vnJfNWcYfD7m0epk7NIA3uzIWK/
+        EEaqoVfQTL8LuTRQd3EINpHSP5A99QGVGY+zZmZwzqtUUbzNb48tGRz4CPKxutg00/ibXEq9KqmFn
+        N+mMK2MA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mGHfm-003dFm-E3; Wed, 18 Aug 2021 09:15:50 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2169D30009A;
+        Wed, 18 Aug 2021 11:15:45 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 030E52027CE08; Wed, 18 Aug 2021 11:15:44 +0200 (CEST)
+Date:   Wed, 18 Aug 2021 11:15:44 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
+        mingo@redhat.com, kernel-team@fb.com,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Like Xu <like.xu@linux.intel.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>
+Subject: Re: [RFC] bpf: lbr: enable reading LBR from tracing bpf programs
+Message-ID: <YRzPwClswwxHXVHe@hirez.programming.kicks-ass.net>
+References: <20210818012937.2522409-1-songliubraving@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GtxpCgDHxvWozxxhjERKOw--.2267S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW7uw15ZFy3Ww4fJry7GryxAFb_yoW8Kr13p3
-        y3uF4DKa4kZFnrZw4xGrWUW34fKa4kCa4j9rn8Crsru3W3X34Iya4kKw1qvF1qqF95JFZr
-        ZryYvry5Crs8A3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j6dgXUUUUU=
-X-Originating-IP: [218.106.182.47]
-X-CM-SenderInfo: xzhq3t5rboxtpqjbwqqrwthudrp/1tbiWxTyL1SIrOr8DQAAs5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210818012937.2522409-1-songliubraving@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In line 2955 (#1), "btrfs_put_block_group(cache);" drops the reference to
-cache and may cause the cache to be released. However, in line 3014, the
-cache is dropped again by the same put function (#4). Double putting the
-cache can lead to an incorrect reference count.
+On Tue, Aug 17, 2021 at 06:29:37PM -0700, Song Liu wrote:
+> The typical way to access LBR is via hardware perf_event. For CPUs with
+> FREEZE_LBRS_ON_PMI support, PMI could capture reliable LBR. On the other
+> hand, LBR could also be useful in non-PMI scenario. For example, in
+> kretprobe or bpf fexit program, LBR could provide a lot of information
+> on what happened with the function.
+> 
+> In this RFC, we try to enable LBR for BPF program. This works like:
+>   1. Create a hardware perf_event with PERF_SAMPLE_BRANCH_* on each CPU;
+>   2. Call a new bpf helper (bpf_get_branch_trace) from the BPF program;
+>   3. Before calling this bpf program, the kernel stops LBR on local CPU,
+>      make a copy of LBR, and resumes LBR;
+>   4. In the bpf program, the helper access the copy from #3.
+> 
+> Please see tools/testing/selftests/bpf/[progs|prog_tests]/get_call_trace.c
+> for a detailed example. Not that, this process is far from ideal, but it
+> allows quick prototype of this feature.
+> 
+> AFAICT, the biggest challenge here is that we are now sharing LBR in PMI
+> and out of PMI, which could trigger some interesting race conditions.
+> However, if we allow some level of missed/corrupted samples, this should
+> still be very useful.
+> 
+> Please share your thoughts and comments on this. Thanks in advance!
 
-Furthermore, according to the definition of btrfs_put_block_group() in fs/
-btrfs/block-group.c, if the reference count of the cache is one at the
-first put, it will be freed by kfree(). Using it again may result in the
-use-after-free flaw. In fact, after the first put (line 2955), the cache
-is also accessed in a few places (#2, #3), e.g., lines 2967, 2973, 2974,
-….
+> +int bpf_branch_record_read(void)
+> +{
+> +	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+> +
+> +	intel_pmu_lbr_disable_all();
+> +	intel_pmu_lbr_read();
+> +	memcpy(this_cpu_ptr(&bpf_lbr_entries), cpuc->lbr_entries,
+> +	       sizeof(struct perf_branch_entry) * x86_pmu.lbr_nr);
+> +	*this_cpu_ptr(&bpf_lbr_cnt) = x86_pmu.lbr_nr;
+> +	intel_pmu_lbr_enable_all(false);
+> +	return 0;
+> +}
 
-We believe that the first put of the cache is unnecessary (#1).
-We can fix the above bugs by removing the redundant
-"btrfs_put_block_group(cache);" in line 2955 (#1).
+Urgghhh.. I so really hate BPF specials like this. Also, the PMI race
+you describe is because you're doing abysmal layer violations. If you'd
+have used perf_pmu_disable() that wouldn't have been a problem.
 
-2951         if (!list_empty(&cache->io_list)) {
-...
-2955             btrfs_put_block_group(cache);
-				 //#1 the first drop to cache (unnecessary)
-...
-2957         }
-...
-2967         cache_save_setup(cache, trans, path); //#2 use the cache
-...
-2972          //#3 use the cache several times
-
-2973         if (!ret && cache->disk_cache_state == BTRFS_DC_SETUP) {
-2974             cache->io_ctl.inode = NULL;
-2975             ret = btrfs_write_out_cache(trans, cache, path);
-2976             if (ret == 0 && cache->io_ctl.inode) {
-2977                 num_started++;
-2978                 should_put = 0;
-2979                 list_add_tail(&cache->io_list, io);
-2980             } else {
-...
-2985                 ret = 0;
-2986             }
-2987         }
-2988         if (!ret) {
-2989             ret = update_block_group_item(trans, path, cache);
-...
-3003             if (ret == -ENOENT) {
-...
-3006                 ret = update_block_group_item(trans, path, cache);
-3007             }
-...
-3010         }
-3011
-...
-3013         if (should_put)
-3014             btrfs_put_block_group(cache);
-				//#4 the second drop to cache
-
-Signed-off-by: Wentao_Liang <Wentao_Liang_g@163.com>
----
- fs/btrfs/block-group.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 9e7d9d0c763d..c510c821b1be 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -2953,7 +2953,6 @@ int btrfs_write_dirty_block_groups(struct btrfs_trans_handle *trans)
- 			spin_unlock(&cur_trans->dirty_bgs_lock);
- 			list_del_init(&cache->io_list);
- 			btrfs_wait_cache_io(trans, cache, path);
--			btrfs_put_block_group(cache);
- 			spin_lock(&cur_trans->dirty_bgs_lock);
- 		}
- 
--- 
-2.25.1
-
+I'd much rather see a generic 'fake/inject' PMI facility, something that
+works across the board and isn't tied to x86/intel.
