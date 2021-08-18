@@ -2,112 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8813EF8E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 05:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E883EF8EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 05:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237108AbhHRDzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 23:55:12 -0400
-Received: from ZXSHCAS1.zhaoxin.com ([203.148.12.81]:17416 "EHLO
-        ZXSHCAS1.zhaoxin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236105AbhHRDzE (ORCPT
+        id S237254AbhHRD4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 23:56:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237210AbhHRD4L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 23:55:04 -0400
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS1.zhaoxin.com
- (10.28.252.161) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Wed, 18 Aug
- 2021 11:54:27 +0800
-Received: from [10.122.79.217] (221.11.61.182) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Wed, 18 Aug
- 2021 11:54:25 +0800
-Date:   Wed, 18 Aug 2021 11:54:20 +0800
-From:   <tonywwang-oc@zhaoxin.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-CC:     <a.zummo@towertech.it>, <linux-rtc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <TimGuo-oc@zhaoxin.com>,
-        <CooperYan@zhaoxin.com>, <QiyuanWang@zhaoxin.com>,
-        <HerryYang@zhaoxin.com>, <CobeChen@zhaoxin.com>,
-        <YanchenSun@zhaoxin.com>
-Subject: Re: [PATCH] rtc: Fix set RTC time delay 500ms on some Zhaoxin SOCs
-User-Agent: K-9 Mail for Android
-In-Reply-To: <YRu3v0pb/Z54XxWJ@piout.net>
-References: <1629121638-3246-1-git-send-email-TonyWWang-oc@zhaoxin.com> <YRogod0HB4d7Og4E@piout.net> <a4b6b0b4-9aa5-9a75-e523-0fd7656b82cf@zhaoxin.com> <YRpb4Fey2lM3aOAw@piout.net> <7EA395FF-EB66-4274-9EDE-EC28450A0259@zhaoxin.com> <YRu3v0pb/Z54XxWJ@piout.net>
-Message-ID: <F4869089-9792-4C4F-B984-553662B03E91@zhaoxin.com>
+        Tue, 17 Aug 2021 23:56:11 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74385C0617AE
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 20:55:36 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id k24so861674pgh.8
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 20:55:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=VGIhwyovjc9cLTorbY5F7s7VUrCyo5ROsIE6mKdF2i8=;
+        b=rsLZ+5+cs34CeKm8FdeypOasGszO5Z+LGg/gURNdpo/BaltaeBSvKidQFxg+U/P7vq
+         S/zusxLUtdDoCDzHAq+gTq22WAB40n4Qkk0Ku4cXOc+uTEyaQRKWv/b52rLV4JZHB+rE
+         GpTGxz7vZkIm7Ms92t/jEfqzxajkgCcDGx/hfYVqqHH+Ja2QK6EJtgOjTFD7Mons7/7z
+         jRQRosrCR9tYeU2COXGJUOTnQsHGWC5eYAYHYZf+lDoWMOvzM0YqaRI8vzA1Q6qR94h5
+         JdL36SX2xj7RIzuN9CFefrR3429SFDWAFHYvDz+a1OiNH/4h5wRF/0Uqw9a4yTL9NaQb
+         DX8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=VGIhwyovjc9cLTorbY5F7s7VUrCyo5ROsIE6mKdF2i8=;
+        b=PCFhsH3ofP9L9CAmsS+duy+Tf38Wi+eQGGLeXu/xbG8gLbOD+A5Ud3gyONHM+qK2V3
+         p8cLxxdYvvzKRSV0P5IWCl1RpchHHvSzyk2W99/aA5IWPSWcSz3fHTR87GonoToeIeQH
+         Y08WHGYm0ads7pnPrhDJe8nK2k78lZ+9t2lmCUxi31GWHMSo7rXj53vs0B/u19d/Ozm7
+         GTK3PMX3cLqcLAlSL23X7XajtEwmrRHvQC+Fuzx9ijjNfbc+KIEgj+BGvT1f9O8gLMAh
+         xx+dxMYX7vQesIK2G2Frwy7k8M5+ZfgTJqgEekSNta6LIC2u28w1mvWwMHC/tgYMeJtP
+         Dzig==
+X-Gm-Message-State: AOAM533KIjrbhhSjHQAHrNv2CMOnUmWQ4UP3vZHBH48WctjS/yEjqHt0
+        86dlmzHbkk8HsOrFG/ouBENwwg==
+X-Google-Smtp-Source: ABdhPJxZ0gvNmqzlYvzU9rK9OQ8NNCMq9wCIZZhKFhU5FN4x6UJRSgCEgSUhRZIdfilYavV9v+XkrA==
+X-Received: by 2002:a62:a20d:0:b029:35b:73da:dc8d with SMTP id m13-20020a62a20d0000b029035b73dadc8dmr7200457pff.54.1629258935761;
+        Tue, 17 Aug 2021 20:55:35 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id u21sm4880194pgk.57.2021.08.17.20.55.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 20:55:35 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 09:25:33 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
+Message-ID: <20210818035533.ieqkexltfvvf2p4n@vireshk-i7>
+References: <20210817012754.8710-1-digetx@gmail.com>
+ <20210817012754.8710-2-digetx@gmail.com>
+ <20210817075515.vyyv7z37e6jcrhsl@vireshk-i7>
+ <710261d9-7ae3-5155-c0a2-f8aed2408d0b@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [221.11.61.182]
-X-ClientProxiedBy: ZXSHCAS2.zhaoxin.com (10.28.252.162) To
- zxbjmbx1.zhaoxin.com (10.29.252.163)
+In-Reply-To: <710261d9-7ae3-5155-c0a2-f8aed2408d0b@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 17-08-21, 18:49, Dmitry Osipenko wrote:
+> 17.08.2021 10:55, Viresh Kumar пишет:
+> ...
+> >> +int dev_pm_opp_sync(struct device *dev)
+> >> +{
+> >> +	struct opp_table *opp_table;
+> >> +	struct dev_pm_opp *opp;
+> >> +	int ret = 0;
+> >> +
+> >> +	/* Device may not have OPP table */
+> >> +	opp_table = _find_opp_table(dev);
+> >> +	if (IS_ERR(opp_table))
+> >> +		return 0;
+> >> +
+> >> +	if (!_get_opp_count(opp_table))
+> >> +		goto put_table;
+> >> +
+> >> +	opp = _find_current_opp(dev, opp_table);
+> >> +	ret = _set_opp(dev, opp_table, opp, opp->rate);
+> > 
+> > And I am not sure how this will end up working, since new OPP will be
+> > equal to old one. Since I see you call this from resume() at many
+> > places.
+> 
+> Initially OPP table is "uninitialized" and opp_table->enabled=false,
+> hence the first sync always works even if OPP is equal to old one. Once
+> OPP has been synced, all further syncs are NO-OPs, hence it doesn't
+> matter how many times syncing is called.
+> 
+> https://elixir.bootlin.com/linux/v5.14-rc6/source/drivers/opp/core.c#L1012
 
+Right, but how will this work from Resume ? Won't that be a no-op ?
 
-On August 17, 2021 9:21:03 PM GMT+08:00, Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
->On 17/08/2021 19:09:28+0800, tonywwang-oc@zhaoxin.com wrote:
->> 
->> 
->> On August 16, 2021 8:36:48 PM GMT+08:00, Alexandre Belloni
-><alexandre.belloni@bootlin.com> wrote:
->> >On 16/08/2021 18:03:13+0800, Tony W Wang-oc wrote:
->> >> 
->> >> On 16/08/2021 16:24, Alexandre Belloni wrote:
->> >> > Hello,
->> >> > 
->> >> > On 16/08/2021 21:47:18+0800, Tony W Wang-oc wrote:
->> >> >> When the RTC divider is changed from reset to an operating time
->> >base,
->> >> >> the first update cycle should be 500ms later. But on some
->Zhaoxin
->> >SOCs,
->> >> >> this first update cycle is one second later.
->> >> >>
->> >> >> So set RTC time on these Zhaoxin SOCs will causing 500ms delay.
->> >> >>
->> >> > 
->> >> > Can you explain what is the relationship between writing the
->> >divider and
->> >> > the 500ms delay?
->> >> >> Isn't the issue that you are using systohc and set_offset_nsec
->is
->> >set to
->> >> > NSEC_PER_SEC / 2 ?
->> >> > 
->> >> No.
->> >> When using #hwclock -s to set RTC time and set_offset_nsec is
->> >> NSEC_PER_SEC / 2, the function mc146818_set_time() requires the
->first
->> >> update cycle after RTC divider be changed from reset to an
->operating
->> >> mode is 500ms as the MC146818A spec specified. But on some Zhaoxin
->> >SOCs,
->> >> the first update cycle of RTC is one second later after RTC
->divider
->> >be
->> >> changed from reset to an operating mode. So the first update cycle
->> >after
->> >> RTC divider be changed from reset to an operation mode on These
->SOCs
->> >> will causing 500ms delay with current mc146818_set_time()
->> >implementation.
->> >> 
->> >
->> >What happens with hwclock --delay=0 -s ?
->> 
->> With "hwclock --delay=0 -s" still have this problem. Actually, this
->500ms delay caused by writing the RTC time on these Zhaoxin SOCs.
->> As I've tested, with hwclock --delay=0 -w can fix it too. 
->> 
->
->Both -s and -w end up calling set_hardware_clock_exact() so both should
->end up with the correct time. If this is not the case, then hwclock
->needs to be fixed.
-
-I checked Util-linux-2.37.2, hwclock -w will call
-set_hardware_clock_exact() and hwclock -s will not.
-Please correct me if I'm wrong.
-
-Sincerely
-TonyWWang-oc
+-- 
+viresh
