@@ -2,109 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D7763EFFFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B9C3EFFFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231665AbhHRJI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:08:58 -0400
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:38955 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231719AbhHRJI4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:08:56 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id C6E882B0094B;
-        Wed, 18 Aug 2021 05:08:13 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 18 Aug 2021 05:08:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=u9bG+4wNqQW8Q6ftF5wHQm+W0Hy
-        eApI0kU8bT7jSU/c=; b=m1Adjwfyy82QgScHp5ILIDVbEAsjmFORFv9pNabBwPJ
-        F1/P+tk4/cU8T3soyPdWUKm4JQ/iq21hmkUwP1pAlKaA7P3cVrAgATLPi0hczis8
-        UKs86hdgn7GnPslnnFqoJdLgQ96c02uDzPcsiaeeH8oocsH8Pj90PfDEtkrVj5pH
-        Ndn6xSVUIjVeKIYNc84kt7Nqdx7Dg/f1fg8kRTvfKe7+60PUzkZTO6BneE7fsRSd
-        sKoqPANqKN+mp5D1SJn+qbOoczQHr/MLq/RytpzIRceLjfRHCzpHvFrqm6EqV1kw
-        1BDpZ5dchtjnRZ1Rs6Xs+eQCDOy6Sx7uehvJAWuCeEQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=u9bG+4
-        wNqQW8Q6ftF5wHQm+W0HyeApI0kU8bT7jSU/c=; b=YDs2dIaOKPv/sslas828D5
-        kvFzgLVrgGzXTYZ5oXjIaLf4ddCH+L756U2tcFu5WTXMRniVIQV8ERt405RfMbMc
-        lXc/gi9xKEIkGuKA8RtvvG5AlIoXdsUIRpr5Sh4rdvoL/dJxMZ6jIUBOYoMR8yei
-        Go5smI8B0r7DzmUzMoQosTplEZOO7rT++WDiheThaJmAVpZs3WEfVbnhUiBIfmMh
-        9SxO1O6nXlrTfKKJ7hYnV8yzd8Vd7w84Igx6o6Hq0aa12XhhO78+BDFHcDO8Oocf
-        2+ICa5PtP8G2Oa1i+Gj2JAZQqm0VTe2bIoK/kdRKRQXBZmzlR1wMyFyHKPiiACFQ
-        ==
-X-ME-Sender: <xms:_c0cYSHxGm-VlMJWwlGdTr-GFhemQ58ALHOkOWMbUsy-J_lmxTnjPg>
-    <xme:_c0cYTVtfrOzspPvJdEwYd2FVZeogHDuBd8q4xFJAXvVVogmkIavMeKymDpimpHuu
-    bEYrsIvk3pOmHy9hh4>
-X-ME-Received: <xmr:_c0cYcJ1Lp3BFCzz4vqD9nNhDsODUSF9mH2xK27OVGTgKVc2UNiLMQpLvwNkY_ek-w1tvezUFwIYxpxGgxicT_T600giK53InMIv>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleehgdduvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
-    igihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:_c0cYcHbT7oAWrqrbf9Jsk4UtW4NCvgs98uoyEhJzKeOF1BipxJscA>
-    <xmx:_c0cYYW7n0Oz6Jrs4CLzSFOW2pU7cA_tt1rjLipTLoheDEDuOdgE5A>
-    <xmx:_c0cYfPx_gIG2QwWSChIAjdX8zT9KrPH_fYScK_a6T8JxYtuGcEGbQ>
-    <xmx:_c0cYcRuh_4RYZNrCOx82xJUDI2MPJa54_SfA2IgHD01gCZlOf1pZ-MeHMU>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 18 Aug 2021 05:08:12 -0400 (EDT)
-Date:   Wed, 18 Aug 2021 11:08:11 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] watchdog: sunxi_wdt: Add support for D1
-Message-ID: <20210818090811.fl7u4jtxh4ko7j3c@gilmour>
-References: <20210805045716.46141-1-samuel@sholland.org>
- <20210805045716.46141-3-samuel@sholland.org>
+        id S231679AbhHRJJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 05:09:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54426 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231285AbhHRJJE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 05:09:04 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 439D561053;
+        Wed, 18 Aug 2021 09:08:27 +0000 (UTC)
+Date:   Wed, 18 Aug 2021 10:11:28 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Puranjay Mohan <puranjay12@gmail.com>
+Cc:     "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
+        "Berghe, Darius" <Darius.Berghe@analog.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandru Ardelean <ardeleanalex@gmail.com>
+Subject: Re: [PATCH v12 2/2] iio: accel: Add driver support for ADXL355
+Message-ID: <20210818101128.7c1f40ee@jic23-huawei>
+In-Reply-To: <CANk7y0gY7HHdfwPYq3KFSTbaZM+sT4XSxv2yDvx2_io=9hLX0A@mail.gmail.com>
+References: <20210811073027.124619-1-puranjay12@gmail.com>
+        <20210811073027.124619-3-puranjay12@gmail.com>
+        <20210815164654.3c51a8e3@jic23-huawei>
+        <CANk7y0gY7HHdfwPYq3KFSTbaZM+sT4XSxv2yDvx2_io=9hLX0A@mail.gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="4cs6fzq5kbpskuj3"
-Content-Disposition: inline
-In-Reply-To: <20210805045716.46141-3-samuel@sholland.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 15 Aug 2021 21:59:42 +0530
+Puranjay Mohan <puranjay12@gmail.com> wrote:
 
---4cs6fzq5kbpskuj3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Sun, Aug 15, 2021 at 9:14 PM Jonathan Cameron <jic23@kernel.org> wrote:
+> >
+> > On Wed, 11 Aug 2021 13:00:27 +0530
+> > Puranjay Mohan <puranjay12@gmail.com> wrote:
+> >  
+> > > ADXL355 is a 3-axis MEMS Accelerometer. It offers low noise density,
+> > > low 0g offset drift, low power with selectable measurement ranges.
+> > > It also features programmable high-pass and low-pass filters.
+> > >
+> > > Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/adxl354_adxl355.pdf
+> > > Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+> > > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>  
+> > Hi Puranjay,
+> >
+> > I took one last look at this so I can apply it without looking again assuming
+> > the dt review is fine.  Noticed one issue with error handling, but I can tidy
+> > that up whilst applying assuming you aren't doing a v13 for some other reason.
+> > If you are please incorporate these changes as well.
+> >  
+> 
+> Hi Jonathan, It would be great if you could make these changes while
+> applying. I am not doing a v13 as all comments have been covered
+> earlier.
+> I shall be thankful to you.
+I ended up tweaking those 3 functions a little more than I was originally planning
+so please check it all looks good to you.
 
-On Wed, Aug 04, 2021 at 11:57:16PM -0500, Samuel Holland wrote:
-> D1 adds a key field to the "CFG" and "MODE" registers, that must be set
-> to change the other bits. Add logic to set the key when updating those
-> registers.
->=20
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+Series applied to the togreg branch of iio.git and pushed out as testing
+for 0-day to poke at.  Note these won't hit mainline until 5.16 now.
 
-Acked-by: Maxime Ripard <maxime@cerno.tech>
+Thanks,
 
-Maxime
+Jonathan
 
---4cs6fzq5kbpskuj3
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+> > Thanks,
+> >
+> > Jonathan
+> >
+> >
+> > ...
+> >  
+> > > +
+> > > +static int adxl355_set_odr(struct adxl355_data *data,
+> > > +                        enum adxl355_odr odr)
+> > > +{
+> > > +     int ret = 0;
+> > > +
+> > > +     mutex_lock(&data->lock);
+> > > +
+> > > +     if (data->odr == odr)
+> > > +             goto out_unlock;
+> > > +
+> > > +     ret = adxl355_set_op_mode(data, ADXL355_STANDBY);
+> > > +     if (ret < 0)
+> > > +             goto out_unlock;
+> > > +
+> > > +     ret = regmap_update_bits(data->regmap, ADXL355_FILTER_REG,
+> > > +                              ADXL355_FILTER_ODR_MSK,
+> > > +                              FIELD_PREP(ADXL355_FILTER_ODR_MSK, odr));
+> > > +     if (ret < 0)
+> > > +             goto out_unlock;
+> > > +
+> > > +     data->odr = odr;
+> > > +     adxl355_fill_3db_frequency_table(data);
+> > > +
+> > > +out_unlock:
+> > > +     ret = adxl355_set_op_mode(data, ADXL355_MEASUREMENT);  
+> >
+> > As below, we should do this because it risks returning success when a failure
+> > actually occured.  Again, unless you are respinning for some other reason I'll
+> > add the logic whilst applying.
+> >  
+> > > +     mutex_unlock(&data->lock);
+> > > +     return ret;
+> > > +}
+> > > +
+> > > +static int adxl355_set_hpf_3db(struct adxl355_data *data,
+> > > +                            enum adxl355_hpf_3db hpf)
+> > > +{
+> > > +     int ret = 0;
+> > > +
+> > > +     mutex_lock(&data->lock);
+> > > +
+> > > +     if (data->hpf_3db == hpf)
+> > > +             goto unlock;
+> > > +
+> > > +     ret = adxl355_set_op_mode(data, ADXL355_STANDBY);
+> > > +     if (ret < 0)
+> > > +             goto set_opmode_unlock;
+> > > +
+> > > +     ret = regmap_update_bits(data->regmap, ADXL355_FILTER_REG,
+> > > +                              ADXL355_FILTER_HPF_MSK,
+> > > +                              FIELD_PREP(ADXL355_FILTER_HPF_MSK, hpf));
+> > > +     if (!ret)
+> > > +             data->hpf_3db = hpf;
+> > > +
+> > > +set_opmode_unlock:
+> > > +     ret = adxl355_set_op_mode(data, ADXL355_MEASUREMENT);  
+> >
+> > We can't do this as it might potentially eat an error that meant the regmap
+> > update didn't occur.  To avoid that a little dance is needed using a second
+> > return value and we only set ret = ret2 if ret == 0
+> >
+> > Alternatively we just have a separate error handling path which doesn't set
+> > ret for the adxl355_set_op_mode(). I'll probably go with that as it's more
+> > code but easier to read.
+> >
+> >
+> >  
+> > > +unlock:
+> > > +     mutex_unlock(&data->lock);
+> > > +     return ret;
+> > > +}
+> > > +  
+> >
+> > ...
+> >  
+> > > +static int adxl355_write_raw(struct iio_dev *indio_dev,
+> > > +                          struct iio_chan_spec const *chan,
+> > > +                          int val, int val2, long mask)
+> > > +{
+> > > +     struct adxl355_data *data = iio_priv(indio_dev);
+> > > +     int odr_idx, hpf_idx, calibbias;
+> > > +
+> > > +     switch (mask) {
+> > > +     case IIO_CHAN_INFO_SAMP_FREQ:
+> > > +             odr_idx = adxl355_find_match(adxl355_odr_table,
+> > > +                                          ARRAY_SIZE(adxl355_odr_table),
+> > > +                                          val, val2);
+> > > +             if (odr_idx < 0)
+> > > +                     return odr_idx;
+> > > +
+> > > +             return adxl355_set_odr(data, odr_idx);
+> > > +     case IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY:
+> > > +             hpf_idx = adxl355_find_match(data->adxl355_hpf_3db_table,
+> > > +                                     ARRAY_SIZE(data->adxl355_hpf_3db_table),  
+> >
+> > Mixing different indentation styles isn't very nice for readability.
+> > I'll tweak this whilst applying.
+> >  
+> > > +                                          val, val2);
+> > > +             if (hpf_idx < 0)
+> > > +                     return hpf_idx;
+> > > +
+> > > +             return adxl355_set_hpf_3db(data, hpf_idx);
+> > > +     case IIO_CHAN_INFO_CALIBBIAS:
+> > > +             calibbias = clamp_t(int, val, S16_MIN, S16_MAX);
+> > > +
+> > > +             return adxl355_set_calibbias(data, chan->address, calibbias);
+> > > +     default:
+> > > +             return -EINVAL;
+> > > +     }
+> > > +}  
+> > ...  
+> 
+> 
+> 
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYRzN+wAKCRDj7w1vZxhR
-xYLRAPoC8/IXiSXIcg2lYUl8qma4+EbErj5NI79KPiJaHThQRQD/Xiy5hmEcNhit
-wILOH0oJ88MjIB57FIGoZGAHDBETIQg=
-=999a
------END PGP SIGNATURE-----
-
---4cs6fzq5kbpskuj3--
