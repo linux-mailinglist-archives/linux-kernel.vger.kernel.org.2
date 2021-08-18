@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC193F0340
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 14:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77F1E3F0343
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 14:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236326AbhHRMGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 08:06:18 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:53510 "EHLO
+        id S236817AbhHRMGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 08:06:31 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:53540 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235598AbhHRMGI (ORCPT
+        with ESMTP id S235622AbhHRMGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 18 Aug 2021 08:06:08 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 3038F20071;
+        by smtp-out2.suse.de (Postfix) with ESMTP id 3196920074;
         Wed, 18 Aug 2021 12:05:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
         t=1629288333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=zgdwr7t3mBJoUNt/iXm4y9kn1wTY4VfgPeXgvi1oBxY=;
-        b=pd5ZkACQrIFnWuJSHc5GfrA0E/dWMuYQ6Ipt7okzRC6iUtBuEjpR/it5KIBPO5AUu8Jj/x
-        YntyA+fy6hfo5RVUfNgYQ0Lpl3p6YEheJs9/Nvgz2skMhyvwT2+DIe9FX/vH4vPwMw4OHQ
-        BO18ARVDiwgNdQcHx1FymGKW+qBWj8g=
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gJfb3xtaQFR5r/ftAJql45a44xJsCJfy582wo5ZaI48=;
+        b=Wubv7qKWhxAXiZwU8pG3XpF/SsXqyRuNxZy2kxjLqCtYMZPW1n6mWnTY7KW0g6fubApyRd
+        8I941Zfj1LBEFYXtSXmJ4OHUbO8XSpNqXAFJ2aF/NyixdtOokRQUfRmDRYYW0FgY7QvMAb
+        okXN4YbLR0LDqIAWKxBY3kpHfG4W20o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
         s=susede2_ed25519; t=1629288333;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=zgdwr7t3mBJoUNt/iXm4y9kn1wTY4VfgPeXgvi1oBxY=;
-        b=3DOVF2Iyxy/Pl2qrxbO4G2k9JcUBrZcMyKMq0BilNXKYWqFDRAoaKsw7oUaSxkHQNDuRKg
-        UpGHdIyYgF978XAw==
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gJfb3xtaQFR5r/ftAJql45a44xJsCJfy582wo5ZaI48=;
+        b=0TZkzUP+ZV3mDd1wWMl22tSnrlft4g9eXOyb/jBSdTqEnUyA7t0ghgze/IT1qEeQHxfRz5
+        PdXNQdhaotpsgvDw==
 Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
-        by relay2.suse.de (Postfix) with ESMTP id 554A5A3B98;
+        by relay2.suse.de (Postfix) with ESMTP id 553A0A3B93;
         Wed, 18 Aug 2021 12:05:31 +0000 (UTC)
 Received: by adalid.arch.suse.de (Postfix, from userid 17828)
-        id 763EE518CF79; Wed, 18 Aug 2021 14:05:31 +0200 (CEST)
+        id 79A88518CF7B; Wed, 18 Aug 2021 14:05:31 +0200 (CEST)
 From:   Daniel Wagner <dwagner@suse.de>
 To:     linux-nvme@lists.infradead.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -44,54 +48,50 @@ Cc:     linux-kernel@vger.kernel.org,
         Hannes Reinecke <hare@suse.de>,
         Wen Xiong <wenxiong@us.ibm.com>,
         Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH v5 0/3] Handle update hardware queues and queue freeze more carefully
-Date:   Wed, 18 Aug 2021 14:05:27 +0200
-Message-Id: <20210818120530.130501-1-dwagner@suse.de>
+        Daniel Wagner <dwagner@suse.de>,
+        James Smart <jsmart2021@gmail.com>
+Subject: [PATCH v5 1/3] nvme-fc: Wait with a timeout for queue to freeze
+Date:   Wed, 18 Aug 2021 14:05:28 +0200
+Message-Id: <20210818120530.130501-2-dwagner@suse.de>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210818120530.130501-1-dwagner@suse.de>
+References: <20210818120530.130501-1-dwagner@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Do not wait indifinitly for all queues to freeze. Instead use a
+timeout and abort the operation if we get stuck.
 
-I've dropped all non FC patches as they were bogus. I've retested this
-version with all combinations and all looks good now. Also I gave
-nvme-tcp a spin and again all is good.
+Reviewed-by: James Smart <jsmart2021@gmail.com>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+---
+ drivers/nvme/host/fc.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-Daniel
-
-v1:
- - https://lore.kernel.org/linux-nvme/20210625101649.49296-1-dwagner@suse.de/
-v2:
- - https://lore.kernel.org/linux-nvme/20210708092755.15660-1-dwagner@suse.de/
- - reviewed tags collected
- - added 'update hardware queues' for all transport
- - added fix for fc hanger in nvme_wait_freeze_timeout
-v3:
- - https://lore.kernel.org/linux-nvme/20210720124353.127959-1-dwagner@suse.de/
- - dropped 'nvme-fc: Freeze queues before destroying them'
- - added James' two patches
-v4:
- - https://lore.kernel.org/linux-nvme/20210802112658.75875-1-dwagner@suse.de/
- - added 'nvme-*: Unfreeze queues on reconnect'
- - added Hannes' reviewed tags
-v5:
- - dropped non nvme-fc patches
- - updated 'nvme-fc: fix controller reset hang during traffic'
-
-Daniel Wagner (1):
-  nvme-fc: Wait with a timeout for queue to freeze
-
-James Smart (2):
-  nvme-fc: avoid race between time out and tear down
-  nvme-fc: fix controller reset hang during traffic
-
- drivers/nvme/host/fc.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
-
+diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
+index 7f462af1b02a..8e59e6d142c1 100644
+--- a/drivers/nvme/host/fc.c
++++ b/drivers/nvme/host/fc.c
+@@ -2963,7 +2963,14 @@ nvme_fc_recreate_io_queues(struct nvme_fc_ctrl *ctrl)
+ 		dev_info(ctrl->ctrl.device,
+ 			"reconnect: revising io queue count from %d to %d\n",
+ 			prior_ioq_cnt, nr_io_queues);
+-		nvme_wait_freeze(&ctrl->ctrl);
++		if (!nvme_wait_freeze_timeout(&ctrl->ctrl, NVME_IO_TIMEOUT)) {
++			/*
++			 * If we timed out waiting for freeze we are likely to
++			 * be stuck.  Fail the controller initialization just
++			 * to be safe.
++			 */
++			return -ENODEV;
++		}
+ 		blk_mq_update_nr_hw_queues(&ctrl->tag_set, nr_io_queues);
+ 		nvme_unfreeze(&ctrl->ctrl);
+ 	}
 -- 
 2.29.2
 
