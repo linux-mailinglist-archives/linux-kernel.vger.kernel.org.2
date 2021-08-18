@@ -2,49 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CFF3F059E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB333F059F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238487AbhHROFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 10:05:00 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:43369 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S235675AbhHROE7 (ORCPT
+        id S238584AbhHROFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 10:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238542AbhHROFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 10:04:59 -0400
-Received: (qmail 194239 invoked by uid 1000); 18 Aug 2021 10:04:23 -0400
-Date:   Wed, 18 Aug 2021 10:04:23 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] usb: host: remove dead EHCI support for on-chip PMC
- MSP71xx USB controller
-Message-ID: <20210818140423.GA193695@rowland.harvard.edu>
-References: <20210818071137.22711-1-lukas.bulwahn@gmail.com>
- <20210818071137.22711-2-lukas.bulwahn@gmail.com>
+        Wed, 18 Aug 2021 10:05:08 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AF64C061764;
+        Wed, 18 Aug 2021 07:04:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=mQ9SSlzHtfuq8JpnmX8ZdV0e+tMR7XQKTsDldhH1vrg=; b=ZUt1o/DXbYnZPEajfsxv37RVBj
+        eM0s0gI0REORwKgtY4VYaZYYdwASU4K+e1eh++UVMVKCxFhHdNxx7kvcN114qznvqiWiCaWoNs4Q5
+        xr3fbN4wi1QVbW3NPLvRggoSDpGxBQQj/cmwS977yEans0krCTCtLsJKkhEE/H/UO+fs8ORVWPwoQ
+        wU1v4uJ0mZM5vRPHx0wmp0wMdx1S1+U0OW8Z7C/j8JvIiKzgj65iVHtGq2zUnTprs13uOnHelFU/f
+        g+56fl4p34ZmjA2Me0Keqtn7g5Hu5A5u0KM9reQsDUnjz8eHl05RJQ68rGajo4XhEUuKJVbDM1W+a
+        fUVQ/4sg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mGMBF-005oCY-5E; Wed, 18 Aug 2021 14:04:33 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     fstests@vger.kernel.org
+Cc:     hare@suse.de, dgilbert@interlog.com, jeyu@kernel.org,
+        lucas.demarchi@intel.com, linux-kernel@vger.kernel.org,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH v3 0/2] fstests: add patient module remover
+Date:   Wed, 18 Aug 2021 07:04:30 -0700
+Message-Id: <20210818140432.1384562-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818071137.22711-2-lukas.bulwahn@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 09:11:35AM +0200, Lukas Bulwahn wrote:
-> Commit 1b00767fd8e1 ("MIPS: Remove PMC MSP71xx platform") deletes
-> ./arch/mips/pmcs-msp71xx/Kconfig, including its config  MSP_HAS_USB.
-> 
-> Hence, since then, the corresponding EHCI support for on-chip PMC MSP71xx
-> USB controller is dead code. Remove this dead driver.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
+This v3 addresses the issues noted by Eryu, it also drops
+the patches already merged.
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Luis Chamberlain (2):
+  common/module: add patient module rmmod support
+  common/scsi_debug: use the patient module remover
+
+ README            |   3 ++
+ common/config     |  31 ++++++++++++++
+ common/module     | 105 ++++++++++++++++++++++++++++++++++++++++++++++
+ common/scsi_debug |   6 ++-
+ 4 files changed, 143 insertions(+), 2 deletions(-)
+
+-- 
+2.30.2
+
