@@ -2,119 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965173EF8F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 06:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C053EF900
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 06:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229664AbhHREDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 00:03:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38324 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229436AbhHREDr (ORCPT
+        id S229647AbhHRELr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 00:11:47 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:56023 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229449AbhHRELq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 00:03:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629259392;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Sios1zxrz+ysJAaUdrtGvf8+wMpJlFQZ/+MolKSHj+c=;
-        b=SgHLWGJnyw3XreZWd0RYOPY1pDxs36kZONKA0NGhSVOZZc+vLwV7UKZxkEDJPqSWFMQUvo
-        alo0NnM/5d81VZ9Hb+QkCf8Zcq4bKKojxG8ctv7C48fgCLiAQZiDygMqnf6fXdQ9f4cslo
-        q8rc4YCMbRnky+8z0p7KkUUvxFSqzEY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-144-ljmlEhNZO5-5a5PyRCXvkQ-1; Wed, 18 Aug 2021 00:03:09 -0400
-X-MC-Unique: ljmlEhNZO5-5a5PyRCXvkQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 267041853027;
-        Wed, 18 Aug 2021 04:03:08 +0000 (UTC)
-Received: from T590 (ovpn-8-28.pek2.redhat.com [10.72.8.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BFFC21036D3F;
-        Wed, 18 Aug 2021 04:02:59 +0000 (UTC)
-Date:   Wed, 18 Aug 2021 12:02:55 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     axboe@kernel.dk, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, kashyap.desai@broadcom.com,
-        hare@suse.de
-Subject: Re: [PATCH v2 06/11] blk-mq: Pass driver tags to
- blk_mq_clear_rq_mapping()
-Message-ID: <YRyGb/Ay3lvUZs/V@T590>
-References: <1628519378-211232-1-git-send-email-john.garry@huawei.com>
- <1628519378-211232-7-git-send-email-john.garry@huawei.com>
+        Wed, 18 Aug 2021 00:11:46 -0400
+Received: by mail-io1-f71.google.com with SMTP id f10-20020a6b620a0000b02904e5ab8bdc6cso454406iog.22
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 21:11:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=ySJqMrhH8WPO+7kpnz2+D8+5zReHEFdpSlSOpxpjwLI=;
+        b=kP4f303EevzSm80tuE7NUEHOYgK3EghiCVd4j+j2RgZLPoDbYQwohPTpN6BU+ZSXTr
+         RLkLwuIDr3J9chITGepgDykKUq/uhl6W407DE1Z+9MaPp4YDFnGG7/nShXzzBCKCiQh1
+         ecrvPWybghcgxm1QLpQvpsKstHmK8ztYTa/Ri/tmHQ5xkIZ1wyFGO5N6LOtA9iyejh+h
+         jzmMklu1tfoTJL2OyY8g4+IGxaFFyAsafFdLgxrGz32a9LpilEx8xbKmmgChPN4YExXc
+         ksJl1qirhIM7QV6X5AdeH78avMbVVmj0xwZEwVSWnFXRdXp530dq/FI4/SwGYSiZIHCF
+         YObg==
+X-Gm-Message-State: AOAM530YVsjOKn2fQrQCVu57glyJnAMEv7BOxHv53ZA0Z12zkYRLwH0z
+        3vR5jw68nBzJdj3ddoq3M/VerHBZIbn0Lko1j75X3IzacDol
+X-Google-Smtp-Source: ABdhPJzuickf+KcG1kqjEnfk4xWVEeB0bkhdr3Ysu06HFtfgCcFs40ciAD/SBJy6tfWWU1KAEh1yUv9qi7YPDDTLKHD8CZCE59lg
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1628519378-211232-7-git-send-email-john.garry@huawei.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Received: by 2002:a05:6e02:12b3:: with SMTP id f19mr4919379ilr.234.1629259872253;
+ Tue, 17 Aug 2021 21:11:12 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 21:11:12 -0700
+In-Reply-To: <1ced323a-6d83-3d2e-c974-71ee3b425519@oracle.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000eec05805c9cd9f6f@google.com>
+Subject: Re: [syzbot] kernel BUG in remove_inode_hugepages
+From:   syzbot <syzbot+67654e51e54455f1c585@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        mike.kravetz@oracle.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 10:29:33PM +0800, John Garry wrote:
-> Function blk_mq_clear_rq_mapping() will be used for shared sbitmap tags
-> in future, so pass a driver tags pointer instead of the tagset container
-> and HW queue index.
-> 
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> ---
->  block/blk-mq.c | 12 +++++++-----
->  1 file changed, 7 insertions(+), 5 deletions(-)
-> 
-> diff --git a/block/blk-mq.c b/block/blk-mq.c
-> index 42c4b8d1a570..0bb596f4d061 100644
-> --- a/block/blk-mq.c
-> +++ b/block/blk-mq.c
-> @@ -2310,10 +2310,9 @@ static size_t order_to_size(unsigned int order)
->  }
->  
->  /* called before freeing request pool in @tags */
-> -static void blk_mq_clear_rq_mapping(struct blk_mq_tag_set *set,
-> -		struct blk_mq_tags *tags, unsigned int hctx_idx)
-> +void blk_mq_clear_rq_mapping(struct blk_mq_tags *drv_tags,
-> +			     struct blk_mq_tags *tags)
->  {
-> -	struct blk_mq_tags *drv_tags = set->tags[hctx_idx];
->  	struct page *page;
->  	unsigned long flags;
->  
-> @@ -2322,7 +2321,7 @@ static void blk_mq_clear_rq_mapping(struct blk_mq_tag_set *set,
->  		unsigned long end = start + order_to_size(page->private);
->  		int i;
->  
-> -		for (i = 0; i < set->queue_depth; i++) {
-> +		for (i = 0; i < drv_tags->nr_tags; i++) {
->  			struct request *rq = drv_tags->rqs[i];
->  			unsigned long rq_addr = (unsigned long)rq;
->  
-> @@ -2346,8 +2345,11 @@ static void blk_mq_clear_rq_mapping(struct blk_mq_tag_set *set,
->  void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
->  		     unsigned int hctx_idx)
->  {
-> +	struct blk_mq_tags *drv_tags;
->  	struct page *page;
->  
-> +		drv_tags = set->tags[hctx_idx];
+Hello,
 
-Indent.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-> +
->  	if (tags->static_rqs && set->ops->exit_request) {
->  		int i;
->  
-> @@ -2361,7 +2363,7 @@ void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
->  		}
->  	}
->  
-> -	blk_mq_clear_rq_mapping(set, tags, hctx_idx);
-> +	blk_mq_clear_rq_mapping(drv_tags, tags);
+Reported-and-tested-by: syzbot+67654e51e54455f1c585@syzkaller.appspotmail.com
 
-Maybe you can pass set->tags[hctx_idx] directly since there is only one
-reference on it.
+Tested on:
 
--- 
-Ming
+commit:         a2824f19 Merge tag 'mtd/fixes-for-5.14-rc7' of git://g..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=96f0602203250753
+dashboard link: https://syzkaller.appspot.com/bug?extid=67654e51e54455f1c585
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=128e12c5300000
 
+Note: testing is done by a robot and is best-effort only.
