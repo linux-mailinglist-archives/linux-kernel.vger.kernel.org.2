@@ -2,153 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B74603F005E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B30A3F0063
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231814AbhHRJZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:25:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232627AbhHRJY6 (ORCPT
+        id S231660AbhHRJ2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 05:28:19 -0400
+Received: from relay3.mymailcheap.com ([217.182.119.155]:45917 "EHLO
+        relay3.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230118AbhHRJ2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:24:58 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E23C0613D9
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:24:20 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id l22so1369488vsi.1
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:24:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=weNjlOUbvSlo89FtdXjgcNcKFVLhuC/eHiN9+JYNY0U=;
-        b=LNXJWbh1XQCj/MGANLfVcrq+UOEBnoG926gHtbuUO+Aywjv+VlRRGCZ0Xdww6yJEsV
-         mKylLOqlarFw9InKWaJiDY397rRZ+7jVsx69nT29dnyjgykMXEozM/DuZq7v0Yp8qiQJ
-         5/1tqEB5tN1ofaSyIDMX3+rfmu1yOFAHl1ERU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=weNjlOUbvSlo89FtdXjgcNcKFVLhuC/eHiN9+JYNY0U=;
-        b=HJqaNqc0iQD4/ONSyFSR+YjtsNMYV5Qc82cKMqL83TG9YmHm7f0uLA4E+I9qXYcoPh
-         kqwWjhSNL85ZUOuWGOptn5lhvjURS9gqu36vs1ArkCOUOi4zuE/zIizVOnsCII4C9iv/
-         uNxSfnaY7YgRwroxARJhM8XYrbM7AA4/pskoGS+KIiyBdQ0mbS1QeSeksticPj31VPXh
-         Vl745sxEYJ1OhK4sbH2HaVNoQ4BG6E1lFKiQLJK9TNdeVCE2v2nEB/72IAul8QeZcAz2
-         BHW3C99BwuYW5FMI9MMrrTnjTi+q7shVoPOJUKktszkZbRj7M3bbbRMb+DtQ8NlTd6as
-         Onsg==
-X-Gm-Message-State: AOAM533bCE0FkKhyIswyncxM2/vxtlrJbRckJCJvzNqb7FSseOZAJ8m8
-        djEKU2ceH8eXTyYfpxSHZ4sBziGwGE8LUBohx+RoAQ==
-X-Google-Smtp-Source: ABdhPJwv5ASNxk94fnGY92MrfCrWS+Si3iK25ndQ5vWLwvAI/nJJiS2qjRY4mlnRsJKWi3QhoX0h09ZgdoO2vbLPwQw=
-X-Received: by 2002:a67:7c42:: with SMTP id x63mr6333147vsc.21.1629278659951;
- Wed, 18 Aug 2021 02:24:19 -0700 (PDT)
+        Wed, 18 Aug 2021 05:28:17 -0400
+X-Greylist: delayed 85485 seconds by postgrey-1.27 at vger.kernel.org; Wed, 18 Aug 2021 05:28:16 EDT
+Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
+        by relay3.mymailcheap.com (Postfix) with ESMTPS id DE4B53F1CC;
+        Wed, 18 Aug 2021 11:27:31 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by filter2.mymailcheap.com (Postfix) with ESMTP id BB4B02A7CF;
+        Wed, 18 Aug 2021 11:27:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1629278851;
+        bh=0PcHm4YprP6V+iJf1uAGxQxu9AKSJfM+PGBtwsU2+QQ=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=NaU7SIK0LYGmBUDrYJPVYmf6So8cP1OJKqd5NfSCwSB1M7R9sKdfbo+e8xhIfuzxG
+         5jc+m3uB+4A4vpZERJSWkKpeC0F2ooClO9XOSrt3rKlaV+EDB8SP2pLZdXOwJxTLuH
+         XecaJDeSrEb9u87lExLv/C8qZNzU93KeSaRmW4nU=
+X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
+Received: from filter2.mymailcheap.com ([127.0.0.1])
+        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id hYIYVzPIirGU; Wed, 18 Aug 2021 11:27:27 +0200 (CEST)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter2.mymailcheap.com (Postfix) with ESMTPS;
+        Wed, 18 Aug 2021 11:27:27 +0200 (CEST)
+Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id F2C4941ADD;
+        Wed, 18 Aug 2021 09:27:26 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="LC+RF7CM";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [127.0.0.1] (unknown [112.96.109.179])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 36D0241ADD;
+        Wed, 18 Aug 2021 09:27:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1629278833; bh=0PcHm4YprP6V+iJf1uAGxQxu9AKSJfM+PGBtwsU2+QQ=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=LC+RF7CMt1agT5QJTJtjklohYotgeOE0Zs+oghYLoabRb2PB4M7vbah98p+wGNr+A
+         lhNyekub6xjtnSOT9sU+sVhaXTtsOBWj3Lf0u0RMuS2YnatUrNA+Bvd3jvootnczYG
+         mKOpOLF81oyzj37ff+4ZFsiacexwyIkvwJKoltkY=
+Date:   Wed, 18 Aug 2021 17:27:04 +0800
+From:   Icenowy Zheng <icenowy@aosc.io>
+To:     Kyle Tso <kyletso@google.com>, Guenter Roeck <linux@roeck-us.net>
+CC:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Badhri Jagan Sridharan <badhri@google.com>
+Subject: Re: [PATCH] usb: typec: tcpm: always rediscover when swapping DR
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CAGZ6i=1s9X58tOwoiGAxMkMVBTyGTjysOSe9bP8Q4WosmCtymw@mail.gmail.com>
+References: <20210813043131.833006-1-icenowy@aosc.io> <YRuDG78N2mB5w37p@kuha.fi.intel.com> <58034df4-f18c-ab3e-1fcc-dc85fc35320f@roeck-us.net> <CAGZ6i=1s9X58tOwoiGAxMkMVBTyGTjysOSe9bP8Q4WosmCtymw@mail.gmail.com>
+Message-ID: <ADFCCA37-D216-407A-BDC6-01DB7F14548B@aosc.io>
 MIME-Version: 1.0
-References: <20210603125242.31699-1-chenguanyou@xiaomi.com>
- <CAJfpegsEkRnU26Vvo4BTQUmx89Hahp6=RTuyEcPm=rqz8icwUQ@mail.gmail.com> <1fabb91167a86990f4723e9036a0e006293518f4.camel@mediatek.com>
-In-Reply-To: <1fabb91167a86990f4723e9036a0e006293518f4.camel@mediatek.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 18 Aug 2021 11:24:09 +0200
-Message-ID: <CAJfpegsOSWZpKHqDNE_B489dGCzLr-RVAhimVOsFkxJwMYmj9A@mail.gmail.com>
-Subject: Re: [PATCH] [fuse] alloc_page nofs avoid deadlock
-To:     Ed Tsai <ed.tsai@mediatek.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        chenguanyou <chenguanyou@xiaomi.com>,
-        chenguanyou <chenguanyou9338@gmail.com>, stanley.chu@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: F2C4941ADD
+X-Rspamd-Server: mail20.mymailcheap.com
+X-Spamd-Result: default: False [-0.10 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         RECEIVED_SPAMHAUS_PBL(0.00)[112.96.109.179:received];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(0.00)[aosc.io];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         ML_SERVERS(-3.10)[213.133.102.83];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Jul 2021 at 04:42, Ed Tsai <ed.tsai@mediatek.com> wrote:
->
-> On Tue, 2021-06-08 at 17:30 +0200, Miklos Szeredi wrote:
-> > On Thu, 3 Jun 2021 at 14:52, chenguanyou <chenguanyou9338@gmail.com>
-> > wrote:
-> > >
-> > > ABA deadlock
-> > >
-> > > PID: 17172 TASK: ffffffc0c162c000 CPU: 6 COMMAND: "Thread-21"
-> > > 0 [ffffff802d16b400] __switch_to at ffffff8008086a4c
-> > > 1 [ffffff802d16b470] __schedule at ffffff80091ffe58
-> > > 2 [ffffff802d16b4d0] schedule at ffffff8009200348
-> > > 3 [ffffff802d16b4f0] bit_wait at ffffff8009201098
-> > > 4 [ffffff802d16b510] __wait_on_bit at ffffff8009200a34
-> > > 5 [ffffff802d16b5b0] inode_wait_for_writeback at ffffff800830e1e8
-> > > 6 [ffffff802d16b5e0] evict at ffffff80082fb15c
-> > > 7 [ffffff802d16b620] iput at ffffff80082f9270
-> > > 8 [ffffff802d16b680] dentry_unlink_inode at ffffff80082f4c90
-> > > 9 [ffffff802d16b6a0] __dentry_kill at ffffff80082f1710
-> > > 10 [ffffff802d16b6d0] shrink_dentry_list at ffffff80082f1c34
-> > > 11 [ffffff802d16b750] prune_dcache_sb at ffffff80082f18a8
-> > > 12 [ffffff802d16b770] super_cache_scan at ffffff80082d55ac
-> > > 13 [ffffff802d16b860] shrink_slab at ffffff8008266170
-> > > 14 [ffffff802d16b900] shrink_node at ffffff800826b420
-> > > 15 [ffffff802d16b980] do_try_to_free_pages at ffffff8008268460
-> > > 16 [ffffff802d16ba60] try_to_free_pages at ffffff80082680d0
-> > > 17 [ffffff802d16bbe0] __alloc_pages_nodemask at ffffff8008256514
-> > > 18 [ffffff802d16bc60] fuse_copy_fill at ffffff8008438268
-> > > 19 [ffffff802d16bd00] fuse_dev_do_read at ffffff8008437654
-> > > 20 [ffffff802d16bdc0] fuse_dev_splice_read at ffffff8008436f40
-> > > 21 [ffffff802d16be60] sys_splice at ffffff8008315d18
-> > > 22 [ffffff802d16bff0] __sys_trace at ffffff8008084014
-> > >
-> > > PID: 9652 TASK: ffffffc0c9ce0000 CPU: 4 COMMAND: "kworker/u16:8"
-> > > 0 [ffffff802e793650] __switch_to at ffffff8008086a4c
-> > > 1 [ffffff802e7936c0] __schedule at ffffff80091ffe58
-> > > 2 [ffffff802e793720] schedule at ffffff8009200348
-> > > 3 [ffffff802e793770] __fuse_request_send at ffffff8008435760
-> > > 4 [ffffff802e7937b0] fuse_simple_request at ffffff8008435b14
-> > > 5 [ffffff802e793930] fuse_flush_times at ffffff800843a7a0
-> > > 6 [ffffff802e793950] fuse_write_inode at ffffff800843e4dc
-> > > 7 [ffffff802e793980] __writeback_single_inode at ffffff8008312740
-> > > 8 [ffffff802e793aa0] writeback_sb_inodes at ffffff80083117e4
-> > > 9 [ffffff802e793b00] __writeback_inodes_wb at ffffff8008311d98
-> > > 10 [ffffff802e793c00] wb_writeback at ffffff8008310cfc
-> > > 11 [ffffff802e793d00] wb_workfn at ffffff800830e4a8
-> > > 12 [ffffff802e793d90] process_one_work at ffffff80080e4fac
-> > > 13 [ffffff802e793e00] worker_thread at ffffff80080e5670
-> > > 14 [ffffff802e793e60] kthread at ffffff80080eb650
-> >
-> > The issue is real.
-> >
-> > The fix, however, is not the right one.  The fundamental problem is
-> > that fuse_write_inode() blocks on a request to userspace.
-> >
-> > This is the same issue that fuse_writepage/fuse_writepages face.  In
-> > that case the solution was to copy the page contents to a temporary
-> > buffer and return immediately as if the writeback already completed.
-> >
-> > Something similar needs to be done here: send the FUSE_SETATTR
-> > request
-> > asynchronously and return immediately from fuse_write_inode().  The
-> > tricky part is to make sure that multiple time updates for the same
-> > inode aren't mixed up...
-> >
-> > Thanks,
-> > Miklos
->
-> Dear Szeredi,
->
-> Writeback thread calls fuse_write_inode() and wait for user Daemon to
-> complete this write inode request. The user daemon will alloc_page()
-> after taking this request, and a deadlock could happen when we try to
-> shrink dentry list under memory pressure.
->
-> We (Mediatek) glad to work on this issue for mainline and also LTS. So
-> another problem is that we should not change the protocol or feature
-> for stable kernel.
->
-> Use GFP_NOFS | __GFP_HIGHMEM can really avoid this by skip the dentry
-> shirnker. It works but degrade the alloc_page success rate. In a more
-> fundamental way, we could cache the contents and return immediately.
-> But how to ensure the request will be done successfully, e.g., always
-> retry if it fails from daemon.
 
-Key is where the the dirty metadata is flushed.  To prevent deadlock
-it must not be flushed from memory reclaim, so must make sure that it
-is flushed on close(2) and munmap(2) and not dirtied after that.
 
-I'm working on this currently and hope to get it ready for the next
-merge window.
+=E4=BA=8E 2021=E5=B9=B48=E6=9C=8818=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=884=
+:02:24, Kyle Tso <kyletso@google=2Ecom> =E5=86=99=E5=88=B0:
+>On Tue, Aug 17, 2021 at 11:13 PM Guenter Roeck <linux@roeck-us=2Enet> wro=
+te:
+>>
+>> On 8/17/21 2:36 AM, Heikki Krogerus wrote:
+>> > On Fri, Aug 13, 2021 at 12:31:31PM +0800, Icenowy Zheng wrote:
+>> >> Currently, TCPM code omits discover when swapping to gadget, and ass=
+ume
+>> >> that no altmodes are available when swapping from gadget=2E However,=
+ we do
+>> >> send discover when we get attached as gadget -- this leads to modes =
+to be
+>> >> discovered twice when attached as gadget and then swap to host=2E
+>> >>
+>> >> Always re-send discover when swapping DR, regardless of what change =
+is
+>> >> being made; and because of this, the assumption that no altmodes are
+>> >> registered with gadget role is broken, and altmodes de-registeration=
+ is
+>> >> always needed now=2E
+>> >>
+>> >> Signed-off-by: Icenowy Zheng <icenowy@aosc=2Eio>
+>> >> ---
+>> >>   drivers/usb/typec/tcpm/tcpm=2Ec | 9 ++++-----
+>> >>   1 file changed, 4 insertions(+), 5 deletions(-)
+>> >>
+>> >> diff --git a/drivers/usb/typec/tcpm/tcpm=2Ec b/drivers/usb/typec/tcp=
+m/tcpm=2Ec
+>> >> index b9bb63d749ec=2E=2Eab6d0d51ee1c 100644
+>> >> --- a/drivers/usb/typec/tcpm/tcpm=2Ec
+>> >> +++ b/drivers/usb/typec/tcpm/tcpm=2Ec
+>> >> @@ -4495,15 +4495,14 @@ static void run_state_machine(struct tcpm_po=
+rt *port)
+>> >>              tcpm_set_state(port, ready_state(port), 0);
+>> >>              break;
+>> >>      case DR_SWAP_CHANGE_DR:
+>> >> -            if (port->data_role =3D=3D TYPEC_HOST) {
+>> >> -                    tcpm_unregister_altmodes(port);
+>> >> +            tcpm_unregister_altmodes(port);
+>> >> +            if (port->data_role =3D=3D TYPEC_HOST)
+>> >>                      tcpm_set_roles(port, true, port->pwr_role,
+>> >>                                     TYPEC_DEVICE);
+>> >> -            } else {
+>> >> +            else
+>> >>                      tcpm_set_roles(port, true, port->pwr_role,
+>> >>                                     TYPEC_HOST);
+>> >> -                    port->send_discover =3D true;
+>> >> -            }
+>> >> +            port->send_discover =3D true;
+>> >>              tcpm_ams_finish(port);
+>> >>              tcpm_set_state(port, ready_state(port), 0);
+>> >>              break;
+>> >
+>> > Why is it necessary to do discovery with data role swap in general?
+>> >
+>> > thanks,
+>> >
+>>
+>> Additional question: There are two patches pending related to DR_SWAP
+>> and discovery=2E Are they both needed, or do they both solve the same
+>> problem ?
+>>
+>> Thanks,
+>> Guenter
+>
+>Hi, I just noticed this patch=2E
+>
+>Part of this patch and part of my patch
+>https://lore=2Ekernel=2Eorg/r/20210816075449=2E2236547-1-kyletso@google=
+=2Ecom
+>are to solve the same problem that Discover_Identity is not sent in a
+>case where the port becomes UFP after DR_SWAP while in PD3=2E
+>
+>The difference (for the DR_SWAP part) is that my patch does not set
+>the flag "send_discover" if the port becomes UFP after PD2 DR_SWAP=2E
+>That is because in PD2 Spec, UFP is not allowed to be the SVDM
+>Initiator=2E
+>
+>This patch indeed solves another problem where
+>tcpm_unregister_altmodes should be called during PD3 DR_SWAP because
+>the port partner may return mode data in the latest Discover_Mode=2E For
+>the PD2 case, I don't think it needs to be called because PD2 DFP will
+>always return NAK for Discover_Mode=2E However it is fine because it is
 
-Thanks,
-Miklos
+It sounds like my dock is doing something against the specification=2E=2E=
+=2E
+
+It sends altmodes rather than NAK when my board gets attached as
+UFP and send bogus discovers (because of bugs of current TCPM
+code)=2E These altmodes are then registered in TCPM and never get
+cleaned up within it, which leads to conflict when the dock is
+removed and then re-inserted=2E
+
+(BTW is it neceesary for data role and power role to be the same
+when attaching? My board now gets attached as UFP to drain
+power, and then do DR_SWAP to become USB host=2E)
+
+>safe to call tcpm_unregister_altmodes even if there is no mode data=2E
+>
+>In fact, when I was tracing the code I found another bug=2E PD2 UFP is
+>not allowed to send Discover_Identity and Discover_Mode=2E I can send
+>another patch to address this problem=2E
+>
+>thanks,
+>Kyle
