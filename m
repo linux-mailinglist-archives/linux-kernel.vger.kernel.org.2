@@ -2,71 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E443F03A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 14:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A0F3F039F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 14:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235854AbhHRMSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 08:18:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47642 "EHLO mail.kernel.org"
+        id S235641AbhHRMSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 08:18:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234855AbhHRMSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234896AbhHRMSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 18 Aug 2021 08:18:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DFF96103A;
-        Wed, 18 Aug 2021 12:17:33 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B800D60EBC;
+        Wed, 18 Aug 2021 12:17:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1629289053;
-        bh=FdBy4Wt7esUCoHUjBtVIgdOfY7Ijw2ITk0tl+4PPhGc=;
+        bh=CZPSQOPLHFuQ1gMyYK8CP6eURya3PWKd1E/lhAdfdUc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YrKHThY1W0kQJjhdeWHiWJZRcuUeON49/qC/J57z3DHvFBrz4GsTy2USwf3bV9gbS
-         a6qQOQdNRjvR0VcC3HUY8KaKjW9SQR/YTSKLEYXz/GSH1tV8pVeEfQEJkiUIaUpmyy
-         PDlQlN30bf4wiGdD8M7svKDPGVJ1m4dDRS18PpHbkHkpeVG+HsBCmxdcIBh5i8gIdl
-         2wfJHUCMZj2y1hpIO/Cfo3xsoGnbndHI4LDjOghrMB6Q6DVNUIlQC89giDh4mqjjCT
-         q9otBQEHgGT7wQ/flnSr4ircNYuzjijbsRjOfqqbJRxiBxNzNnKDO+t1fVjtHsA/4O
-         AWZEiZEv6y7cg==
-Date:   Wed, 18 Aug 2021 13:17:09 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regulator: Minor regulator documentation fixes.
-Message-ID: <20210818121709.GD4177@sirena.org.uk>
-References: <20210818041513.GA2408290@dc7vkhyh15000m40t6jht-3.rev.dnainternet.fi>
+        b=imjXuahxGZGSd/+xlu3297dl/h+/JuqnCVridoGkm/iUxNBwTpRv2By2C9Scpc+w8
+         ockFFJmNp0ZTbhEWZSIl6zTF9HksMcYuPJT3UJz6A3fshm/2C31JIGi/rdSMkwaGjn
+         NaLzTmSTaV/YHludpmGM17IE6tslvMIthjKcINmJx9CQEk8yjGMGPDE7LstQ0zAHIi
+         v8zP3HYKbdKM2XP8cPphkYiFiL5UKsswWuNL1iNBLbfGo7M7iSQZWqVa7joch9IqG/
+         2GBKKr4HZTa85iaiRChC45KQpU+cy1UtMz3mYlkVKzzXq2XzEkn7IFyII7NghVQG2z
+         RfWkInsOvQV9w==
+Date:   Wed, 18 Aug 2021 13:17:29 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        robin.murphy@arm.com, kernel-team@android.com
+Subject: Re: [GIT PULL] iommu/arm-smmu: Updates for 5.15
+Message-ID: <20210818121728.GB14107@willie-the-truck>
+References: <20210813164735.GA8765@willie-the-truck>
+ <YRz4OemrkIcDxCC5@8bytes.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NklN7DEeGtkPCoo3"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210818041513.GA2408290@dc7vkhyh15000m40t6jht-3.rev.dnainternet.fi>
-X-Cookie: She sells cshs by the cshore.
+In-Reply-To: <YRz4OemrkIcDxCC5@8bytes.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 18, 2021 at 02:08:25PM +0200, Joerg Roedel wrote:
+> On Fri, Aug 13, 2021 at 05:47:35PM +0100, Will Deacon wrote:
+> > This applies cleanly against iommu/next, but I suspect it will conflict
+> > with Robin's series on the list. Please shout if you need anything from
+> > me to help with that (e.g. rebase, checking a merge conflict).
+> 
+> For now there were at least no conflicts which git couldn't resolve
+> automatically, but the compile tests are still running :)
 
---NklN7DEeGtkPCoo3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Ok, I won't hold my breath!
 
-On Wed, Aug 18, 2021 at 07:18:19AM +0300, Matti Vaittinen wrote:
-> The newly added regulator ramp-delay specifiers in regulator desc
-> lacked the documentation. Add some. Also fix a typo.
+> > The following changes since commit ff1176468d368232b684f75e82563369208bc371:
+> > 
+> >   Linux 5.14-rc3 (2021-07-25 15:35:14 -0700)
+> > 
+> > are available in the Git repository at:
+> > 
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git tags/arm-smmu-updates
+> 
+> So this is pulled now, thanks.
 
-This should've been two patches.
+Cheers,
 
---NklN7DEeGtkPCoo3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEc+kQACgkQJNaLcl1U
-h9D/QAf/W6mFU6uxp1Hbmp5J1YyzwU3r22o+/IUif2phnVZNusUhZLRD8QU6xmMj
-0b/r6F0+MP6rlHdAKLUmz1cuMAFgCfp1yfSBdi1/YUFFpIH+SsR9QlhXeSu4Tt2I
-ZdEKTEIz1aIshngE3PHVelOlL/riLeinj/YlKczj8n7KKzQuwBC6KEqf/seNEynj
-r52VmpDnHJaUkXHH6NW0hn/LZaSjVXLW7ejz8FCQByd33Fqcb5C1V6Es3lmyOItO
-T3uh1o39T27ptK5xff2fQ7X/EYAPHj5goNtsec4Ndmu8/AeduGF4beQkJg+bN9wr
-Tyd+wh5IbuMPslmm65eWLMG+fvcEyA==
-=+XYd
------END PGP SIGNATURE-----
-
---NklN7DEeGtkPCoo3--
+Will
