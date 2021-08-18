@@ -2,105 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 338C43F09BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1753F09BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232697AbhHRQ6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 12:58:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbhHRQ6n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 12:58:43 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E23F8C061764;
-        Wed, 18 Aug 2021 09:58:07 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id o20so4187769oiw.12;
-        Wed, 18 Aug 2021 09:58:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YHiyP8NzEy58+Z+7tVFCTiv5LvRgvaNEfl1HIoWAXzI=;
-        b=iybBwr9w8ORfy+BMxsYXntANhHHp/2t21+w/pjnA6EDy6w/MYgwh6hB9Gd2VvKasi0
-         dGPCxnJFSpP1emoj9huuqKJSy/bYRpQPJrF7W+mm6wxBrCdWDYJToX+Bm4luzvpiaOga
-         RKlJIFTwlgUmcr9pjPGZCw/xoVEcShEts9aYXmljxV2RBZwX1bGxxIC+w/J7eFuvKeSZ
-         giHP/DjHJLhV2+PENrAlb+xFkvx2XoDr6DGy2KCZRojHrBPA1z/kjlbWCF8xURYMS8d1
-         L1inF5Wm3cFthy2ICmRD/dr53bPMgPhYdlsgphVhdrpld6pYcPnuOL29dIk/0SMkaSZb
-         5H7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YHiyP8NzEy58+Z+7tVFCTiv5LvRgvaNEfl1HIoWAXzI=;
-        b=CRID/7esOi5CVW/ai4xIQW+VBEK22yvwQuaSOtIV7QwOqW5QDLV8Vo/gQCbx7hsBYV
-         HcLvhoVD0xafiabcZkhXSwrRNyxAUVOamX8wO7CPGfda02K48nQDAdP+9UUkpLapAeA9
-         flxHeLKEuM1ArihKTo7WgdvWMUnlvkACagv5V/aTrPwZZs76DJMMxT3etNF/t8rVLJKT
-         DaKpftbLmLVSao2Uv1AVcYliQpfaffWUs01PX+h8HVZyJj+Ew9FUiNQs2x0WvUdehqqK
-         Y1t1Z6MJdkkSAKRTYxzmpOAZsecf0rgXru8VUhwdz6zXCsy2XzJiX0DoAF0C6GadTXiL
-         uHwA==
-X-Gm-Message-State: AOAM5302mVQQNQatvqbq3QalsGxIkzIti9qPRc3w+eE4qhu2qMO0k+94
-        zKDQaGk7zu3yggE/OSSGEX8=
-X-Google-Smtp-Source: ABdhPJwVTPIB5dzrFLoB5c4YXf4XuZqseUZg/4t+a1d6poikxsJfPA0AXaVZMY8YMAynvScGckidBw==
-X-Received: by 2002:aca:4b03:: with SMTP id y3mr8156528oia.72.1629305887188;
-        Wed, 18 Aug 2021 09:58:07 -0700 (PDT)
-Received: from vaslot-XPS-8930 (2603-8081-2340-02f5-dc15-49e0-e88f-845f.res6.spectrum.com. [2603:8081:2340:2f5:dc15:49e0:e88f:845f])
-        by smtp.gmail.com with ESMTPSA id v11sm129505oto.22.2021.08.18.09.58.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 09:58:06 -0700 (PDT)
-From:   Vishal Aslot <os.vaslot@gmail.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vishal Aslot <os.vaslot@gmail.com>
-Subject: [PATCH] PCI: ibmphp: Fix double unmap of io_mem
-Date:   Wed, 18 Aug 2021 11:57:51 -0500
-Message-Id: <20210818165751.591185-1-os.vaslot@gmail.com>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S232708AbhHRQ67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 12:58:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231402AbhHRQ66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 12:58:58 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BF0F60E09;
+        Wed, 18 Aug 2021 16:58:23 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mGOtR-005ntG-EA; Wed, 18 Aug 2021 17:58:21 +0100
+Date:   Wed, 18 Aug 2021 17:58:21 +0100
+Message-ID: <87czqasn9u.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] irqchip/gic: Convert to handle_strict_flow_irq()
+In-Reply-To: <87k0kk7w0c.mognet@arm.com>
+References: <20210814194737.GA3951530@roeck-us.net>
+        <87sfzb7jeo.mognet@arm.com>
+        <87eeav19mc.wl-maz@kernel.org>
+        <87k0kk7w0c.mognet@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: valentin.schneider@arm.com, linux@roeck-us.net, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ebda_rsrc_controller() calls iounmap(io_mem) on the error path. It's
-caller, ibmphp_access_ebda() also calls iounmap(io_mem) on good and
-error paths. Removing the iounmap(io_mem) invocation inside
-ebda_rsrc_controller().
+On Tue, 17 Aug 2021 01:30:43 +0100,
+Valentin Schneider <valentin.schneider@arm.com> wrote:
+> 
+> On 15/08/21 07:54, Marc Zyngier wrote:
+> > This is going and-up in a wack-a-mole game. There is probably a bunch
+> > of these all over the place. I'd rather squash it at the root,
+> > i.e. with something like this (untested):
+> >
+> > diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
+> > index 099bc7e13d1b..601ad3fc47cd 100644
+> > --- a/kernel/irq/chip.c
+> > +++ b/kernel/irq/chip.c
+> > @@ -410,7 +410,12 @@ void irq_percpu_disable(struct irq_desc *desc, unsigned int cpu)
+> >
+> >  void ack_irq(struct irq_desc *desc)
+> >  {
+> > -	desc->irq_data.chip->irq_ack(&desc->irq_data);
+> > +	struct irq_data *data = &desc->irq_data;
+> > +
+> > +	while (!data->chip->irq_ack)
+> > +		data = data->parent_data;
+> > +
+> > +	data->chip->irq_ack(&desc->irq_data);
+> >
+> >       if (desc->irq_data.chip->flags & IRQCHIP_AUTOMASKS_FLOW)
+> >               irq_state_set_flow_masked(desc);
+> >
+> > We probably need something similar for irq_eoi().
+> >
+> > This however shows a more fundamental problem, I'm afraid. We set
+> > IRQCHIP_AUTOMASKS_FLOW in the GIC drivers (i.e. at the root), but test
+> > for it at the top of the hierarchy. As soon as we have more than a
+> > single layer of irqchip, this will do the wrong thing (or at least
+> > miss the masking optimisation).
+> >
+> 
+> Yup.
+> 
+> > This probably advocates for moving the flag into the descriptor. This
+> > really makes sense, as the flow is global to the whole stack, not just
+> > to the localised irqchip.
+> >
+> 
+> Are we guaranteed to have
+> 
+>   .irq_ack \in {NULL, irq_chip_ack_parent}
+> 
+> for all intermediate (!root) irqchips? I don't see why that wouldn't
+> be the case, and with that in mind what you described makes sense to
+> me.
 
-Signed-off-by: Vishal Aslot <os.vaslot@gmail.com>
----
+An intermediate layer is allowed to implement its own irq_ack that is
+not irq_chip_ack_parent, but it then has to call irq_chip_ack_parent
+itself.
 
-Why am I fixing this?
-I found this clean up item in drivers/pci/hotplug/TODO [lines 43-44]
-and decided to fix it. This is my 2nd patch ever in linux so my
-apologies for any style issues. I am very teachable. :)
+There is the bizarre case of drivers/gpio/gpio-thunderx.c that changes
+the irqchip flow to use either handle_fasteoi_ack_irq or
+handle_fasteoi_mask_irq, which won't play very nicely with this.
+Someone said Cavium?
 
- drivers/pci/hotplug/ibmphp_ebda.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> > In order to restore -next into a working state, I'm temporarily
+> > dropping this series. Hopefully, we can sort this out before the merge
+> > window and reinstate it.
+> >
+> 
+> I'm away from any keyboard for most of this week, but I'll get to it by the
+> weekend.
 
-diff --git a/drivers/pci/hotplug/ibmphp_ebda.c b/drivers/pci/hotplug/ibmphp_ebda.c
-index 11a2661dc062..7fb75401ad8a 100644
---- a/drivers/pci/hotplug/ibmphp_ebda.c
-+++ b/drivers/pci/hotplug/ibmphp_ebda.c
-@@ -714,8 +714,7 @@ static int __init ebda_rsrc_controller(void)
- 		/* init hpc structure */
- 		hpc_ptr = alloc_ebda_hpc(slot_num, bus_num);
- 		if (!hpc_ptr) {
--			rc = -ENOMEM;
--			goto error_no_hpc;
-+			return -ENOMEM;
- 		}
- 		hpc_ptr->ctlr_id = ctlr_id;
- 		hpc_ptr->ctlr_relative_id = ctlr;
-@@ -910,8 +909,6 @@ static int __init ebda_rsrc_controller(void)
- 	kfree(tmp_slot);
- error_no_slot:
- 	free_ebda_hpc(hpc_ptr);
--error_no_hpc:
--	iounmap(io_mem);
- 	return rc;
- }
- 
+No worries, enjoy your break!
+
+	M.
+
 -- 
-2.27.0
-
+Without deviation from the norm, progress is not possible.
