@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0D43F0BFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 21:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82DA23F0BFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 21:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233833AbhHRTmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 15:42:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38386 "EHLO
+        id S233798AbhHRTmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 15:42:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233384AbhHRTlR (ORCPT
+        with ESMTP id S232713AbhHRTlS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 15:41:17 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA629C061292
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 12:40:41 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id o2so3377734pgr.9
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 12:40:41 -0700 (PDT)
+        Wed, 18 Aug 2021 15:41:18 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222E7C061796
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 12:40:43 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id 18so3237798pfh.9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 12:40:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CeDh9+h66IlmGCzm9QH+Z6bCFV/MM4axnNKbbUhIEms=;
-        b=XKYs6KGtOjfI1EROpKFmJt8m6Lz56pqMon+mNeuBPPaieKQoA5Yt5JUJ5vreeCdMCw
-         yjIC+Ra7nngKfFU2LrshlglybRigShjreFeyxornzUlZGCAAeii7I/auNGjk9nl13Y7p
-         nOPF8fcgicLSDG4A45p40yF/tTMVtLX8AWmYmnKT4dVfNpQEfYw/86aZAXcmqpR9DTg+
-         ML/e4uBhUVcHjZ16Q1lOzq1HU84u5BxE6lhmrC0EMvE604ob1CLUlaW3F/y9n0i7CJ2W
-         Sg8x3vV7iXPlsD0ZLgbmNoMnSr2bYQ4PS67RB/JO/xQzjJ46TYoe/Le52T6nEZIzhmOH
-         3WEQ==
+        bh=cmK65pjDZ5qVva3XgHDw9o42yw29z316T7tmW/1Nv3w=;
+        b=CBQFS/CzM+VLJ7KH3den7IQN+mjUpqRxz1yp5Z0iSkaB7Z2oiisIToaj+Ceb88d0qD
+         pJQvEHjY/laBj7w96Z9tKCmmPS+ymHrQQN+rLzZcqm9McHz4HLHFC8qOEkpr2ZKuRYF7
+         6fFe5kIMAG46U/prB5iMwp7JyRBOHlH63GmEUDS+jFQNNkQQ9/dfGbYf44RDfZUNVvPU
+         aoBHzNo+KdxtrYgBdEeqG2sXp8R86zmH0MXA82oL9c4B6x7lSdL7s+nMtXR3yqtA5Lcz
+         NsQpn7OeUruJa/qTk2LR0IPWcSJQSedGLvsRSG7R1Hwkoj3FV4ZIzPun+9pdvCK6AfKs
+         tyGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CeDh9+h66IlmGCzm9QH+Z6bCFV/MM4axnNKbbUhIEms=;
-        b=k+WFoSyzH+zCdW7oKMWA+AZnT6wilf3MoZP6PektZ2XJUfe2VXRciDcbU22++rIyFC
-         a8XtJf7fMmHzQD+OUDqCqxJPQUuTJhvA0Xk6NQPBCdT2SMQd4K5yiJhzz4wpuRQu3zBo
-         7+71fO2FTTnDIKQhFxz1YhjebZNqSa3ZwBSbZSUW7MUVOL9QktdmKFIpi7il0GDOUIJc
-         LX3KnxomF8TGdrWEcYGpmrGSsLhOwgxI8wEAY0ukE0Uh5ctdSGmu/hBWGTlTa6O3UZ4M
-         2PyfshC9jWGbhk9guT5oI3VJgFAVehVVUhLTm1tfXjDK5idZsyLEKzxEjQBckjqMzYA9
-         vZfg==
-X-Gm-Message-State: AOAM531aF8Tqo6+joV2O9ekprueyRnECOjwUXwolllnWWWsL/6/y5/le
-        5Fzk1AJDrDXDvhO0jyj7xU1jSA==
-X-Google-Smtp-Source: ABdhPJwyS444/Vua7WBzVUTz80GBgoYbN/O3H040QO39Y81xOaEBSHfDA/VrYBb0rkou+PUfvhncWQ==
-X-Received: by 2002:a63:cf58:: with SMTP id b24mr10446687pgj.97.1629315641239;
-        Wed, 18 Aug 2021 12:40:41 -0700 (PDT)
+        bh=cmK65pjDZ5qVva3XgHDw9o42yw29z316T7tmW/1Nv3w=;
+        b=fCxSOHTE9YPxakupVf1K/hWwiUFWXijzGezjqVSPGLcuH6BJSrWSgBkkPyL4IqpWjI
+         Zd7pIBP60hKG2GyljT+cJOk6wQDiBAlYh+uFNmNOYaiz28nxApa9if4l1qvjvEmfJgbi
+         2lngeRtF/d0h1Ckm8OK9i4p1lHtcGrx/Rkd3aUTIIhthph6hP/M3TTVzjjoRIPYyqno2
+         XHKgVBbrrEEEpnN/d5YCHZ6Yr9Okip4TplR4HowT0wXZ7uvwh5EC6/zxkf+i1ep55+H+
+         R/LZwM3vkS0kkvqpd4Iph5+QyrUawzs9h/sLeFYW3+wqyfSH3sumt0nhsTN+DKgAfhiJ
+         47gw==
+X-Gm-Message-State: AOAM532mvdaNBrVzIqnGkfodoocBnBZlohmC8Cx38AoR34W8T3bYLiDs
+        Wq3/gWTNjEtVt23TW/jNXCv9Bw==
+X-Google-Smtp-Source: ABdhPJyuphotIJTx3zPxZtcqORfr/6ytao/jspVrVoIuvWpMuoTn/WCdN7FYtCks3g2Bf1T0NqOnHQ==
+X-Received: by 2002:a65:641a:: with SMTP id a26mr10470079pgv.340.1629315642726;
+        Wed, 18 Aug 2021 12:40:42 -0700 (PDT)
 Received: from p14s.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id k12sm2960137pjg.6.2021.08.18.12.40.39
+        by smtp.gmail.com with ESMTPSA id k12sm2960137pjg.6.2021.08.18.12.40.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 12:40:40 -0700 (PDT)
+        Wed, 18 Aug 2021 12:40:42 -0700 (PDT)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 10/11] Documentation: coresight: Add documentation for CoreSight config
-Date:   Wed, 18 Aug 2021 13:40:21 -0600
-Message-Id: <20210818194022.379573-11-mathieu.poirier@linaro.org>
+Subject: [PATCH 11/11] coresight: Replace deprecated CPU-hotplug functions.
+Date:   Wed, 18 Aug 2021 13:40:22 -0600
+Message-Id: <20210818194022.379573-12-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210818194022.379573-1-mathieu.poirier@linaro.org>
 References: <20210818194022.379573-1-mathieu.poirier@linaro.org>
@@ -63,302 +63,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Leach <mike.leach@linaro.org>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-Adds documentation for the CoreSight System configuration manager.
+The functions get_online_cpus() and put_online_cpus() have been
+deprecated during the CPU hotplug rework. They map directly to
+cpus_read_lock() and cpus_read_unlock().
 
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
-Signed-off-by: Mike Leach <mike.leach@linaro.org>
-Link: https://lore.kernel.org/r/20210723165444.1048-11-mike.leach@linaro.org
-[Fixed coresight-config.rst documentation link]
+Replace deprecated CPU-hotplug functions with the official version.
+The behavior remains unchanged.
+
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Mike Leach <mike.leach@linaro.org>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: coresight@lists.linaro.org
+Cc: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Link: https://lore.kernel.org/r/20210803141621.780504-15-bigeasy@linutronix.de
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- .../trace/coresight/coresight-config.rst      | 244 ++++++++++++++++++
- Documentation/trace/coresight/coresight.rst   |  15 ++
- 2 files changed, 259 insertions(+)
- create mode 100644 Documentation/trace/coresight/coresight-config.rst
+ drivers/hwtracing/coresight/coresight-cpu-debug.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/trace/coresight/coresight-config.rst b/Documentation/trace/coresight/coresight-config.rst
-new file mode 100644
-index 000000000000..a4e3ef295240
---- /dev/null
-+++ b/Documentation/trace/coresight/coresight-config.rst
-@@ -0,0 +1,244 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+======================================
-+CoreSight System Configuration Manager
-+======================================
-+
-+    :Author:   Mike Leach <mike.leach@linaro.org>
-+    :Date:     October 2020
-+
-+Introduction
-+============
-+
-+The CoreSight System Configuration manager is an API that allows the
-+programming of the CoreSight system with pre-defined configurations that
-+can then be easily enabled from sysfs or perf.
-+
-+Many CoreSight components can be programmed in complex ways - especially ETMs.
-+In addition, components can interact across the CoreSight system, often via
-+the cross trigger components such as CTI and CTM. These system settings can
-+be defined and enabled as named configurations.
-+
-+
-+Basic Concepts
-+==============
-+
-+This section introduces the basic concepts of a CoreSight system configuration.
-+
-+
-+Features
-+--------
-+
-+A feature is a named set of programming for a CoreSight device. The programming
-+is device dependent, and can be defined in terms of absolute register values,
-+resource usage and parameter values.
-+
-+The feature is defined using a descriptor. This descriptor is used to load onto
-+a matching device, either when the feature is loaded into the system, or when the
-+CoreSight device is registered with the configuration manager.
-+
-+The load process involves interpreting the descriptor into a set of register
-+accesses in the driver - the resource usage and parameter descriptions
-+translated into appropriate register accesses. This interpretation makes it easy
-+and efficient for the feature to be programmed onto the device when required.
-+
-+The feature will not be active on the device until the feature is enabled, and
-+the device itself is enabled. When the device is enabled then enabled features
-+will be programmed into the device hardware.
-+
-+A feature is enabled as part of a configuration being enabled on the system.
-+
-+
-+Parameter Value
-+~~~~~~~~~~~~~~~
-+
-+A parameter value is a named value that may be set by the user prior to the
-+feature being enabled that can adjust the behaviour of the operation programmed
-+by the feature.
-+
-+For example, this could be a count value in a programmed operation that repeats
-+at a given rate. When the feature is enabled then the current value of the
-+parameter is used in programming the device.
-+
-+The feature descriptor defines a default value for a parameter, which is used
-+if the user does not supply a new value.
-+
-+Users can update parameter values using the configfs API for the CoreSight
-+system - which is described below.
-+
-+The current value of the parameter is loaded into the device when the feature
-+is enabled on that device.
-+
-+
-+Configurations
-+--------------
-+
-+A configuration defines a set of features that are to be used in a trace
-+session where the configuration is selected. For any trace session only one
-+configuration may be selected.
-+
-+The features defined may be on any type of device that is registered
-+to support system configuration. A configuration may select features to be
-+enabled on a class of devices - i.e. any ETMv4, or specific devices, e.g. a
-+specific CTI on the system.
-+
-+As with the feature, a descriptor is used to define the configuration.
-+This will define the features that must be enabled as part of the configuration
-+as well as any preset values that can be used to override default parameter
-+values.
-+
-+
-+Preset Values
-+~~~~~~~~~~~~~
-+
-+Preset values are easily selectable sets of parameter values for the features
-+that the configuration uses. The number of values in a single preset set, equals
-+the sum of parameter values in the features used by the configuration.
-+
-+e.g. a configuration consists of 3 features, one has 2 parameters, one has
-+a single parameter, and another has no parameters. A single preset set will
-+therefore have 3 values.
-+
-+Presets are optionally defined by the configuration, up to 15 can be defined.
-+If no preset is selected, then the parameter values defined in the feature
-+are used as normal.
-+
-+
-+Operation
-+~~~~~~~~~
-+
-+The following steps take place in the operation of a configuration.
-+
-+1) In this example, the configuration is 'autofdo', which has an
-+   associated feature 'strobing' that works on ETMv4 CoreSight Devices.
-+
-+2) The configuration is enabled. For example 'perf' may select the
-+   configuration as part of its command line::
-+
-+    perf record -e cs_etm/autofdo/ myapp
-+
-+   which will enable the 'autofdo' configuration.
-+
-+3) perf starts tracing on the system. As each ETMv4 that perf uses for
-+   trace is enabled,  the configuration manager will check if the ETMv4
-+   has a feature that relates to the currently active configuration.
-+   In this case 'strobing' is enabled & programmed into the ETMv4.
-+
-+4) When the ETMv4 is disabled, any registers marked as needing to be
-+   saved will be read back.
-+
-+5) At the end of the perf session, the configuration will be disabled.
-+
-+
-+Viewing Configurations and Features
-+===================================
-+
-+The set of configurations and features that are currently loaded into the
-+system can be viewed using the configfs API.
-+
-+Mount configfs as normal and the 'cs-syscfg' subsystem will appear::
-+
-+    $ ls /config
-+    cs-syscfg  stp-policy
-+
-+This has two sub-directories::
-+
-+    $ cd cs-syscfg/
-+    $ ls
-+    configurations  features
-+
-+The system has the configuration 'autofdo' built in. It may be examined as
-+follows::
-+
-+    $ cd configurations/
-+    $ ls
-+    autofdo
-+    $ cd autofdo/
-+    $ ls
-+    description   preset1  preset3  preset5  preset7  preset9
-+    feature_refs  preset2  preset4  preset6  preset8
-+    $ cat description
-+    Setup ETMs with strobing for autofdo
-+    $ cat feature_refs
-+    strobing
-+
-+Each preset declared has a preset<n> subdirectory declared. The values for
-+the preset can be examined::
-+
-+    $ cat preset1/values
-+    strobing.window = 0x1388 strobing.period = 0x2
-+    $ cat preset2/values
-+    strobing.window = 0x1388 strobing.period = 0x4
-+
-+The features referenced by the configuration can be examined in the features
-+directory::
-+
-+    $ cd ../../features/strobing/
-+    $ ls
-+    description  matches  nr_params  params
-+    $ cat description
-+    Generate periodic trace capture windows.
-+    parameter 'window': a number of CPU cycles (W)
-+    parameter 'period': trace enabled for W cycles every period x W cycles
-+    $ cat matches
-+    SRC_ETMV4
-+    $ cat nr_params
-+    2
-+
-+Move to the params directory to examine and adjust parameters::
-+
-+    cd params
-+    $ ls
-+    period  window
-+    $ cd period
-+    $ ls
-+    value
-+    $ cat value
-+    0x2710
-+    # echo 15000 > value
-+    # cat value
-+    0x3a98
-+
-+Parameters adjusted in this way are reflected in all device instances that have
-+loaded the feature.
-+
-+
-+Using Configurations in perf
-+============================
-+
-+The configurations loaded into the CoreSight configuration management are
-+also declared in the perf 'cs_etm' event infrastructure so that they can
-+be selected when running trace under perf::
-+
-+    $ ls /sys/devices/cs_etm
-+    configurations  format  perf_event_mux_interval_ms  sinks  type
-+    events  nr_addr_filters  power
-+
-+Key directories here are 'configurations' - which lists the loaded
-+configurations, and 'events' - a generic perf directory which allows
-+selection on the perf command line.::
-+
-+    $ ls configurations/
-+    autofdo
-+    $ cat configurations/autofdo
-+    0xa7c3dddd
-+
-+As with the sinks entries, this provides a hash of the configuration name.
-+The entry in the 'events' directory uses perfs built in syntax generator
-+to substitute the syntax for the name when evaluating the command::
-+
-+    $ ls events/
-+    autofdo
-+    $ cat events/autofdo
-+    configid=0xa7c3dddd
-+
-+The 'autofdo' configuration may be selected on the perf command line::
-+
-+    $ perf record -e cs_etm/autofdo/u --per-thread <application>
-+
-+A preset to override the current parameter values can also be selected::
-+
-+    $ perf record -e cs_etm/autofdo,preset=1/u --per-thread <application>
-+
-+When configurations are selected in this way, then the trace sink used is
-+automatically selected.
-diff --git a/Documentation/trace/coresight/coresight.rst b/Documentation/trace/coresight/coresight.rst
-index 1ec8dc35b1d8..a15571d96cc8 100644
---- a/Documentation/trace/coresight/coresight.rst
-+++ b/Documentation/trace/coresight/coresight.rst
-@@ -620,6 +620,19 @@ channels on the CTM (Cross Trigger Matrix).
- A separate documentation file is provided to explain the use of these devices.
- (Documentation/trace/coresight/coresight-ect.rst) [#fourth]_.
+diff --git a/drivers/hwtracing/coresight/coresight-cpu-debug.c b/drivers/hwtracing/coresight/coresight-cpu-debug.c
+index 9731d3a96073..00de46565bc4 100644
+--- a/drivers/hwtracing/coresight/coresight-cpu-debug.c
++++ b/drivers/hwtracing/coresight/coresight-cpu-debug.c
+@@ -588,11 +588,11 @@ static int debug_probe(struct amba_device *adev, const struct amba_id *id)
  
-+CoreSight System Configuration
-+------------------------------
-+
-+CoreSight components can be complex devices with many programming options.
-+Furthermore, components can be programmed to interact with each other across the
-+complete system.
-+
-+A CoreSight System Configuration manager is provided to allow these complex programming
-+configurations to be selected and used easily from perf and sysfs.
-+
-+See the separate document for further information.
-+(Documentation/trace/coresight/coresight-config.rst) [#fifth]_.
-+
+ 	drvdata->base = base;
  
- .. [#first] Documentation/ABI/testing/sysfs-bus-coresight-devices-stm
+-	get_online_cpus();
++	cpus_read_lock();
+ 	per_cpu(debug_drvdata, drvdata->cpu) = drvdata;
+ 	ret = smp_call_function_single(drvdata->cpu, debug_init_arch_data,
+ 				       drvdata, 1);
+-	put_online_cpus();
++	cpus_read_unlock();
  
-@@ -628,3 +641,5 @@ A separate documentation file is provided to explain the use of these devices.
- .. [#third] https://github.com/Linaro/perf-opencsd
- 
- .. [#fourth] Documentation/trace/coresight/coresight-ect.rst
-+
-+.. [#fifth] Documentation/trace/coresight/coresight-config.rst
+ 	if (ret) {
+ 		dev_err(dev, "CPU%d debug arch init failed\n", drvdata->cpu);
 -- 
 2.25.1
 
