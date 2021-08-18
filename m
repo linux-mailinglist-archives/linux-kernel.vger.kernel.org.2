@@ -2,125 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C563EF8CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 05:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1673B3EF8D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 05:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236854AbhHRDlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 23:41:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39554 "EHLO
+        id S236730AbhHRDpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 23:45:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236297AbhHRDlW (ORCPT
+        with ESMTP id S234435AbhHRDpA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 23:41:22 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A25C061796
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 20:40:48 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id oa17so1779523pjb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 20:40:48 -0700 (PDT)
+        Tue, 17 Aug 2021 23:45:00 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B503C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 20:44:26 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id f16-20020a056830205000b00519b99d3dcbso1145609otp.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 20:44:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BsdVXbhtWjUQaskCMlUgEBNS4pC3NCkpK2fi3WMsLKs=;
-        b=Ljf+4KWeVggSI4Lf6tc0A3nHEXXDjCM1/9HKrlbPRAGljqsAxLc2XrTWzSUlDcrMPh
-         P6DnuN3vSN0v5bJ/HdgOf94oR/ORI+tgmH6XRTm2wnfkm5667m2RKbNnJ77J82+Nx5pX
-         bpu+zhJrfZSTkVjY8NK3lNiH6W5lAUhuFMu7g=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dOY/Y+m8CtGs2t22YoW318N2LcUpxV+MpuaJ5LhTgsc=;
+        b=aLy58NDwB5iWg0GHfBe12kmdCiuAYo9opAjTnoggWlFAx23pcpHyAXkeBjVJdVAcI+
+         y2hLvIe7bGl3c7IbxKwD2jADhSpX2mh7rFTGtMUwEp9fTkcRI17RG7mRzcOB5wZVNk3c
+         Hgy9R3VSP2qotmwK+iPSpLpRRmWWeHRIO/jHIvzIQ9B09uT4Yk+IW/qstqhpAEEc6jBD
+         0DCz4QZuGFNiPHeyaceIo4Ipn0WxaQ3XnAADSyHNe0ybSxadh2+foMXNVSdp136YJJ/R
+         9KbpdIMTejZMUN407CjyuCUKCeVJvuG0uA4Xr5l8Mp6VdbGXjqC5gZWFBn48D3EI4rXA
+         6ekQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BsdVXbhtWjUQaskCMlUgEBNS4pC3NCkpK2fi3WMsLKs=;
-        b=VIWXVTjfYVlgm/q0M5PP37YxvoPpqTkUaY9wcskg0qYi7KsjZiAsYCTZhhiX/Z8HW+
-         2B0xY9zOP61JpwHGNrW6xWSWvuIsgUybc064aLuyUQ1b0J4CZIomSuQolIN3erv+lu5I
-         KbB5CoDWufd2G1a0AavbPhZzYDcFovxPi6Tc5P9eNH3Jqs6vszRNytPEjqkuVRoDbi9k
-         9+VBYo8dhvemUMLUKqG6+xjuctVq8uSgYOWi4Le6QquinuSmAS/Qp5C0FvhlKawHOplD
-         x3TFjKZRqYWGBRIBh1KgLfepdjHlkQW5AsqnscUlVc+LJPDLzrraKWn0ydPyGuVSoom5
-         y+nQ==
-X-Gm-Message-State: AOAM531BBygBFhwS5T8mrMFiDtkOfqkOXTszxq65EtceA2u+vJuSKnWY
-        S/OBMYCN6yRzUnTNaX6RPxTRqQ==
-X-Google-Smtp-Source: ABdhPJw24WGCJrWQghLliT0HNHXvdWx3O8W8rtadIm9NJXzk0hbgrpwKdgVNf6ToS1Ukehs1HtNQaw==
-X-Received: by 2002:a17:90a:6888:: with SMTP id a8mr7162828pjd.91.1629258047889;
-        Tue, 17 Aug 2021 20:40:47 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y5sm3790937pfa.5.2021.08.17.20.40.47
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dOY/Y+m8CtGs2t22YoW318N2LcUpxV+MpuaJ5LhTgsc=;
+        b=PL0ccY45V7kE6bCPjUCU8jIwqItkD6rtKn94jcNFXI99dvkR7eqyh5kdYZWR9RNDPU
+         pFFyO0d3cixbQE3cK4wM1QD8t8yBAkqWfH3l8VjIBcj/2ZLH3RpZtbtUfBY6l0IDZE9s
+         sYhdWm3a8kbY2fXEcJe9fynwgWm+3mxh1hrW20s6BdQkHE4fatJdFVmmfz6C2q8W6rcQ
+         0UdTuA9jMTw4IHgh6TRKXCfDBwTERwyy02rDLPZqr3udKmiM/zpQEQrRTAashHnDE32V
+         pqOlVhE3wr727mnEw5nOaY+GZPxe/Rf563izU4yacbCh+LVxEAjAV4Nc+/oip3gD2XOw
+         t/FA==
+X-Gm-Message-State: AOAM531fx7DkFUSMmtCpEAYN5ZlwPx9viEMpFVWPvKz0povEk3iksDFj
+        P5bI9AqX1THfjD5HDOrcOi7+pg==
+X-Google-Smtp-Source: ABdhPJwnVYK5fYr39j7qhmd0jRrOO7rMEezuFGQlLvSOJkLU4zHxBqJ5DgiwAELpKicRaga+Gs1gCg==
+X-Received: by 2002:a9d:649a:: with SMTP id g26mr5174265otl.92.1629258265750;
+        Tue, 17 Aug 2021 20:44:25 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id u126sm835593ooa.23.2021.08.17.20.44.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 20:40:47 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Wolfgang Grandegger <wg@grandegger.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] can: etas_es58x: Replace 0-element raw_msg array
-Date:   Tue, 17 Aug 2021 20:40:10 -0700
-Message-Id: <20210818034010.800652-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        Tue, 17 Aug 2021 20:44:25 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 22:44:23 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Amit Pundir <amit.pundir@linaro.org>
+Subject: Re: [PATCH 29/29] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
+Message-ID: <YRyCFx0ZOYTMhinf@builder.lan>
+References: <YPf+shNM6cXb3mfe@kroah.com>
+ <d853df77-8d36-30b0-dd26-da1bfcb068e0@kernel.org>
+ <20210721112531.xvu6ni5ksaehsrjh@mobilestation>
+ <CALAqxLViEqSO17P3JGRGYJh-wDoHaJiQQV48zeoRgnar4Xd5Bg@mail.gmail.com>
+ <20210722181221.xh3r5kyu7zlcojjx@mobilestation>
+ <YPnEO6NVFZDS1s//@yoga>
+ <CALAqxLUT0e+mHMVo685oVTxR8y76733cN0yciQ7ePS6GRE+_dg@mail.gmail.com>
+ <20210722220918.l7j6zw3aaa27qato@mobilestation>
+ <CALAqxLXrs0_Xs0JV5H-wS1q2CJ7XhW5Dj90eu=uazkRXXEMUxQ@mail.gmail.com>
+ <20210815194617.sbrkutxzldqbxfat@mobilestation>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2405; h=from:subject; bh=2pghWRFPuQ+zVAOzO5gfNiPmiJDuiTH+Yfm+Ryq/M0I=; b=owEBbAKT/ZANAwAKAYly9N/cbcAmAcsmYgBhHIEaiZ+lXRC4QwUOqC71mOhS6HSGOj3Caw1KKYLF 7L2JZyaJAjIEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYRyBGgAKCRCJcvTf3G3AJsVpD/ j7xXbwKjJwKT2/GO+ODaujdBGdL6Osu0WV1eU4XmqS5JfJkc+l2PFtKNfj6weSU0gXlOjRX8zQo9Vk RGTXtjXdt7Cw6atuK6aFxzGJuFRek6LadYkYs7hUunrsAuHTyoV++Q/ltnSzptbX6zTZtKkzjT4Mnb 1sbL6mA+MGtTnYFO6cqc5IPv9qZZFZr7lOyYkpiztuUQjj1Lb8Zqj+/IP6sh7ePDPksNRFqHcIeEx4 u+cDgj0hCPPHdE4WRYbK2CSXjL5m9stprftBB5AfmdxXblnZIPW9w26iSWTVSKoyej3pB/f1upjQxs YUs4j6qklJb8pe1DGwrudFdZtGtFImGSL7ap+9UXyYhkU2txwLCOMZbwHhrSKTGw7C2c/GLTO+rceS qa/qXMGgpT1cMAkKX2yL1XK/wg4yCEbT00q4oj7XPLEcadol2gXH3dafW+/ydbcaY4kgxvYvBSewsP rXPTtLeoN4RpHB+kHdSXET3oed3KzRg6hS2x1078wD2iCE/RKQtbEyGHXPlpq8HOkHjCazT9CMbR9L cpAmLTqZeddlhGnvs0rlgQ8LxHHeEPEPCzyK+2blJZjg7aYahRjZlUm05YoPSQUN0XhInmO7oJIutG lbwOtuCNS2QSeh6mvvNab0mm/3Ibe3VZ8Kq/+P1m+l1sisDz595D+GbIOg
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210815194617.sbrkutxzldqbxfat@mobilestation>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While raw_msg isn't a fixed size, it does have a maximum size. Adjust the
-struct to represent this and avoid the following warning when building
-with -Wzero-length-bounds:
+On Sun 15 Aug 14:46 CDT 2021, Serge Semin wrote:
 
-drivers/net/can/usb/etas_es58x/es58x_fd.c: In function 'es58x_fd_tx_can_msg':
-drivers/net/can/usb/etas_es58x/es58x_fd.c:360:35: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[]'} [-Wzero-length-bounds]
-  360 |  tx_can_msg = (typeof(tx_can_msg))&es58x_fd_urb_cmd->raw_msg[msg_len];
-      |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from drivers/net/can/usb/etas_es58x/es58x_core.h:22,
-                 from drivers/net/can/usb/etas_es58x/es58x_fd.c:17:
-drivers/net/can/usb/etas_es58x/es58x_fd.h:231:6: note: while referencing 'raw_msg'
-  231 |   u8 raw_msg[0];
-      |      ^~~~~~~
+> Hello John
+> 
+> On Fri, Aug 13, 2021 at 06:06:24PM -0700, John Stultz wrote:
+> > On Thu, Jul 22, 2021 at 3:09 PM Serge Semin <fancer.lancer@gmail.com> wrote:
+> > > On Thu, Jul 22, 2021 at 01:09:05PM -0700, John Stultz wrote:
+> > > > On Thu, Jul 22, 2021 at 12:17 PM Bjorn Andersson
+> > > > <bjorn.andersson@linaro.org> wrote:
+> > > > > > On Jul 21, 2021, 1:45 PM +0200, Krzysztof Kozlowski wrote:
+> > > > > > > I had impression that kernel defines interfaces which should be used and
+> > > > > > > are stable (e.g. syscalls, sysfs and so on). This case is example of
+> > > > > > > user-space relying on something not being marked as part of ABI. Instead
+> > > > > > > they found something working for them and now it is being used in "we
+> > > > > > > cannot break existing systems". Basically, AOSP unilaterally created a
+> > > > > > > stable ABI and now kernel has to stick to it.
+> > > > > > >
+> > > > > > > Really, all normal systems depend on aliases or names and here we have
+> > > > > > > dependency on device address. I proposed way how AOSP should be fixed.
+> > > > > > > Anything happened? Nope.
+> > > > > >
+> > > > > > First time he sent a possible solution for the problem:
+> > > > > > https://lore.kernel.org/lkml/20201221210423.GA2504@kozik-lap/
+> > > > > >
+> > > > > > To sum up you could have used one of the more portable approaches
+> > > > > > 1. add an udc alias to the controller and use it then to refer to the
+> > > > > > corresponding USB controller
+> > > > >
+> > > > > Is there such a thing as "UDC alias"? Or are you suggesting that we
+> > > > > should add such feature?
+> > > > >
+> > > > > I think it would be wonderful if we could identify the UDCs on our
+> > > > > boards as "USB1" and "USB2", or "the one and only USB-C connector". But
+> > > > > unless that will fall back to the existing naming it would break John's
+> > > > > _existing_ userspace.
+> > > >
+> > >
+> > > > Well, I'd not hold up the existing userspace I'm using as sacrosanct
+> > > > (AOSP devices still usually don't have to work cross-kernel versions -
+> > > > devboards being the main exception). I'm fine if we can rework
+> > > > userland as proposed, so that the issues can be avoided, but I
+> > > > honestly don't have enough context to really understand what that
+> > > > looks like (no idea what udc aliases are).
+> > > >
+> > > > And whatever we do, the main constraint is that userland has to be
+> > > > able to work with existing LTS kernels and newer kernels.
+> > >
+> > > As I said in my response to Bjorn even if it is added to the kernel it
+> > > won't get to the official LTSes as it would be a new kernel feature.
+> > > New features aren't normally backported to the older kernels.
+> > >
+> > > >
+> > > > > > 2. search through DT-nodes looking for a specific compatible/reg
+> > > > > > DT-properties.
+> > > > > >
+> > > > >
+> > > > > We could define that this is the way, but again we didn't yesterday so
+> > > > > your proposal is not backwards compatible.
+> > > >
+> > >
+> > > > It may be backwards compatible, but I'm still not clear exactly how it
+> > > > would work.
+> > > >
+> > > > I guess if we look through all
+> > > > sys/bus/platform/devices/*/of_node/compatbile strings for the desired
+> > > > "snps,dwc3", then find which of the directories have the desired
+> > > > address in the string? (The suggestion for looking at reg seems
+> > > > better, but I don't get a char value out of the dwc3 of_node/reg
+> > > > file).
+> > >
+> > > The algorithm is simple:
+> > > 1) You know what USB controllers you have on your platform. They are
+> > > supposed to be compatible with snps,dwc3 string and have some pre-defined
+> > > base address.
+> > > 2) Find all the files in the directory /sys/class/udc/.
+> > > 3) Walk through all the directories in /sys/bus/platform/devices/ with
+> > > names found in 2) and stop on the device with matching compatible/base
+> > > address defined in 1).
+> > >
+> > > In my case the strings could be retrieved like this:
+> > > USB_NAME_COMPAT=$(/sys/bus/platform/devices/1f100000.usb/of_node/compatible | tr '\0' '\t' | cut -f1)
+> > > USB_DEVICE_ADDR="$(head -c 4 /sys/bus/platform/devices/1f100000.usb/of_node/reg | hexdump -ve '/1 "%02x"' | sed -e 's/^0*//g')"
+> > 
+> > 
+> 
+> > Hey Serge,
+> >    I just wanted to follow up here.  Amit has reworked the db845c AOSP
+> > userland so that it no longer uses the fixed node name, but instead
+> > probes for it:
+> >   https://android-review.googlesource.com/c/device/linaro/dragonboard/+/1774872
+> > 
+> > Admittedly, it does take a short-cut.  As your algorithm above,
+> > digging up the devices and finding the sys/bus path to read the reg
+> > value and pipe through hexdump (which android doesn't have) seemed
+> > overly obtuse when the address is in the node name itself (while the
+> > only way to be sure, one normally doesn't use spectroscopy to
+> > determine the value of a coin when you can read what's printed on it
+> > :).  But, should the node naming be further changed at least the
+> > infrastructure we have can be reworked fairly easily to adapt now.
+> > 
+> > In any case, as we can handle the name change now, if you want to
+> > resubmit your patch, we would no longer object (but can't promise no
+> > one else might be bitten).  Sorry for the delay this caused, and we
+> > appreciate you working with us to find a solution.
+> 
+> Great! Thanks for sending the notification. I'll resend the patch with a
+> reference to your report and to the update made to AOSP, as soon as I
+> am done with my current task.
+> 
 
-Cc: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>
-Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc: linux-can@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/net/can/usb/etas_es58x/es581_4.h  | 2 +-
- drivers/net/can/usb/etas_es58x/es58x_fd.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Amit's change makes future versions of AOSP able to cope with changes in
+the UDC name, unfortunately it doesn't change the fact that renaming the
+node breaks compatibility in non-Android user space (or any existing
+branches/tags of AOSP).
 
-diff --git a/drivers/net/can/usb/etas_es58x/es581_4.h b/drivers/net/can/usb/etas_es58x/es581_4.h
-index 4bc60a6df697..af38c4938859 100644
---- a/drivers/net/can/usb/etas_es58x/es581_4.h
-+++ b/drivers/net/can/usb/etas_es58x/es581_4.h
-@@ -192,7 +192,7 @@ struct es581_4_urb_cmd {
- 		struct es581_4_rx_cmd_ret rx_cmd_ret;
- 		__le64 timestamp;
- 		u8 rx_cmd_ret_u8;
--		u8 raw_msg[0];
-+		u8 raw_msg[USHRT_MAX];
- 	} __packed;
- 
- 	__le16 reserved_for_crc16_do_not_use;
-diff --git a/drivers/net/can/usb/etas_es58x/es58x_fd.h b/drivers/net/can/usb/etas_es58x/es58x_fd.h
-index ee18a87e40c0..e0319b8358ef 100644
---- a/drivers/net/can/usb/etas_es58x/es58x_fd.h
-+++ b/drivers/net/can/usb/etas_es58x/es58x_fd.h
-@@ -228,7 +228,7 @@ struct es58x_fd_urb_cmd {
- 		struct es58x_fd_tx_ack_msg tx_ack_msg;
- 		__le64 timestamp;
- 		__le32 rx_cmd_ret_le32;
--		u8 raw_msg[0];
-+		u8 raw_msg[USHRT_MAX];
- 	} __packed;
- 
- 	__le16 reserved_for_crc16_do_not_use;
--- 
-2.30.2
-
+Regards,
+Bjorn
