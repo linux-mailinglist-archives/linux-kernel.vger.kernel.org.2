@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1093EF6E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 02:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DED03EF6E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 02:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237281AbhHRAbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 20:31:00 -0400
-Received: from mx.cjr.nz ([51.158.111.142]:21628 "EHLO mx.cjr.nz"
+        id S237350AbhHRAdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 20:33:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234870AbhHRAa7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 20:30:59 -0400
-Received: from authenticated-user (mx.cjr.nz [51.158.111.142])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pc)
-        by mx.cjr.nz (Postfix) with ESMTPSA id 3D024818D6;
-        Wed, 18 Aug 2021 00:30:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjr.nz; s=dkim;
-        t=1629246623;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OwKoMpKsJfYGuAd5+UrIcHs7Dv7p+8pKzbl1xu55fyE=;
-        b=nbJ9B3FXUUeED1pR2AuA+whx4RTm4MTvkBkk3TZRcgqwiSWtTlq5FuettUxXJN2b01es56
-        2PPUYEJ6pZtdSdA9dWjpKm6nvrMcYmZfH8LXq1X+OiPeoTfbilWfKyMsb8WhbFqPFJJ9f/
-        YJ/GBiVrJ8abARaqd5IAtuT0+zkDwK+Z2Jv8OOBM6l3GJA++rNNaxBseyGiCou9m5sBu1o
-        MTq/vgJfDT1h8uAX67xwLvMBSyN6LSyQzUE1xqbUKzndceHAQe60CZYRYGHKRINFN7y/GP
-        VNJpSB7Ryg+87uup72keukwqsQD7ENhF5GQFAoifNJzCFV+mKkqEaYVR5YY2UA==
-From:   Paulo Alcantara <pc@cjr.nz>
-To:     Ding Hui <dinghui@sangfor.com.cn>, sfrench@samba.org
-Cc:     linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-kernel@vger.kernel.org, Ding Hui <dinghui@sangfor.com.cn>
-Subject: Re: [PATCH] cifs: fix wrong release in sess_alloc_buffer() failed path
-In-Reply-To: <20210817145510.639-1-dinghui@sangfor.com.cn>
-References: <20210817145510.639-1-dinghui@sangfor.com.cn>
-Date:   Tue, 17 Aug 2021 21:30:17 -0300
-Message-ID: <87fsv7h9wm.fsf@cjr.nz>
+        id S232410AbhHRAdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 20:33:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2B4460551;
+        Wed, 18 Aug 2021 00:32:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629246747;
+        bh=G40XdFtl+lVsj8R2HHLRnmoxhF0m8ERwjEALnqmXa0c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Xy7tZWB+G4RX8WFtkwlFfWVCANDQMe7IqcIRqb32XgQFUPFGl2x0iYy3jJs/83kzl
+         KZP2T5aky2JIWVV7GOr2i/LGSUcwUDGjwMNznGqkCX3WmGhu7V+A6HTCL6RoaT9EJM
+         4HWJ26mUdsAuwsz8uLLjC0MLP/jRYxHrzRGMVK6uxmAwNdRHt5k7ewZHeGm9EPyS7Q
+         LwPWzB4sOBRdtuaOCG2vex358FAunxGr7hB7dnfmuATYAv1Doe4O2H4bXoWoXcVPSe
+         1rVc9RemYtr2SMuFn8dVyNe4Df8zlOQnXGwLfLYf+11iAglVPB87EI1iy0B8kfpES8
+         vzJCI5F9TB9bw==
+Date:   Tue, 17 Aug 2021 17:32:26 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Nicholas Richardson <richardsonnick@google.com>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, nrrichar@ncsu.edu,
+        promanov@google.com, arunkaly@google.com,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Di Zhu <zhudi21@huawei.com>,
+        Yejune Deng <yejune.deng@gmail.com>,
+        Leesoo Ahn <dev@ooseel.net>, Ye Bin <yebin10@huawei.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] pktgen: Add IMIX mode
+Message-ID: <20210817173226.1f77dd54@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210817235141.1136355-1-richardsonnick@google.com>
+References: <20210817235141.1136355-1-richardsonnick@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ding Hui <dinghui@sangfor.com.cn> writes:
+On Tue, 17 Aug 2021 23:51:35 +0000 Nicholas Richardson wrote:
+> From: Nick Richardson <richardsonnick@google.com>
+> 
+> Adds internet mix (IMIX) mode to pktgen. Internet mix is
+> included in many user-space network perf testing tools. It allows
+> for the user to specify a distribution of discrete packet sizes to be
+> generated. This type of test is common among vendors when perf testing 
+> their devices.
+> [RFC link: https://datatracker.ietf.org/doc/html/rfc2544#section-9.1]
 
-> smb_buf is allocated by small_smb_init_no_tc(), and buf type is
-> CIFS_SMALL_BUFFER, so we should use cifs_small_buf_release() to
-> release it in failed path.
->
-> Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
-> ---
->  fs/cifs/sess.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-Reviewed-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
+The previous version was already applied and can't be dropped.
+Please send a incremental fix.
