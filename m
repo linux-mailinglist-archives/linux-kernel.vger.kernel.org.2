@@ -2,771 +2,751 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F74B3F053A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 606393F053E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237887AbhHRNuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 09:50:18 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3662 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237703AbhHRNuI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 09:50:08 -0400
-Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GqTks6LJ6z6BG81;
-        Wed, 18 Aug 2021 21:48:37 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 18 Aug 2021 15:49:30 +0200
-Received: from [10.202.227.179] (10.202.227.179) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 18 Aug 2021 14:49:29 +0100
-Subject: Re: [PATCH v2 2/4] perf/marvell: CN10k DDR performance monitor
- support
-To:     Bharat Bhushan <bbhushan2@marvell.com>, <will@kernel.org>,
-        <mark.rutland@arm.com>, <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210810094307.29595-1-bbhushan2@marvell.com>
- <20210810094307.29595-3-bbhushan2@marvell.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <c4e9c893-9130-7024-e24e-c63e232be4be@huawei.com>
-Date:   Wed, 18 Aug 2021 14:49:28 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S238171AbhHRNud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 09:50:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237104AbhHRNuc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 09:50:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2796A6109E;
+        Wed, 18 Aug 2021 13:49:54 +0000 (UTC)
+Date:   Wed, 18 Aug 2021 15:49:52 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Miklos Szeredi <mszeredi@redhat.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: Re: [PATCH v2 1/2] vfs: add flags argument to ->get_acl() callback
+Message-ID: <20210818134952.4km5uvuaakhr6ezt@wittgenstein>
+References: <20210818133400.830078-1-mszeredi@redhat.com>
+ <20210818133400.830078-2-mszeredi@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210810094307.29595-3-bbhushan2@marvell.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.179]
-X-ClientProxiedBy: lhreml748-chm.china.huawei.com (10.201.108.198) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210818133400.830078-2-mszeredi@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/08/2021 10:43, Bharat Bhushan wrote:
-> Marvell CN10k DRAM Subsystem (DSS) supports eight
-> event counters for monitoring performance and software
-> can program each counter to monitor any of the defined
-> performance event. Performance events are for interface
-> between the DDR controller and the PHY, interface between
-> the DDR Controller and the CHI interconnect, or within
-> the DDR Controller. Additionally DSS also supports two
-> fixed performance event counters, one for number of
-> ddr reads and other for ddr writes.
+On Wed, Aug 18, 2021 at 03:33:59PM +0200, Miklos Szeredi wrote:
+> Add a flags argument to the ->get_acl() callback, to allow
+> get_cached_acl_rcu() to call the ->get_acl() method with LOOKUP_RCU.
 > 
-> This patch add basic support for these performance
-> monitoring events on CN10k.
-
-please use full 75 char width
-
-> 
-> Signed-off-by: Bharat Bhushan <bbhushan2@marvell.com>
+> Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 > ---
-> v1->v2:
->   - writeq/readq changed to respective relaxed version
->   - Using PMU_EVENT_ATTR_ID
+>  Documentation/filesystems/locking.rst | 2 +-
+>  Documentation/filesystems/vfs.rst     | 2 +-
+>  fs/9p/acl.c                           | 5 ++++-
+>  fs/9p/acl.h                           | 2 +-
+>  fs/bad_inode.c                        | 2 +-
+>  fs/btrfs/acl.c                        | 5 ++++-
+>  fs/btrfs/ctree.h                      | 2 +-
+>  fs/ceph/acl.c                         | 5 ++++-
+>  fs/ceph/super.h                       | 2 +-
+>  fs/erofs/xattr.c                      | 5 ++++-
+>  fs/erofs/xattr.h                      | 2 +-
+>  fs/ext2/acl.c                         | 5 ++++-
+>  fs/ext2/acl.h                         | 2 +-
+>  fs/ext4/acl.c                         | 5 ++++-
+>  fs/ext4/acl.h                         | 2 +-
+>  fs/f2fs/acl.c                         | 5 ++++-
+>  fs/f2fs/acl.h                         | 2 +-
+>  fs/fuse/acl.c                         | 5 ++++-
+>  fs/fuse/fuse_i.h                      | 2 +-
+>  fs/gfs2/acl.c                         | 5 ++++-
+>  fs/gfs2/acl.h                         | 2 +-
+>  fs/jffs2/acl.c                        | 5 ++++-
+>  fs/jffs2/acl.h                        | 2 +-
+>  fs/jfs/acl.c                          | 5 ++++-
+>  fs/jfs/jfs_acl.h                      | 2 +-
+>  fs/nfs/nfs3_fs.h                      | 2 +-
+>  fs/nfs/nfs3acl.c                      | 5 ++++-
+>  fs/ocfs2/acl.c                        | 5 ++++-
+>  fs/ocfs2/acl.h                        | 2 +-
+>  fs/orangefs/acl.c                     | 5 ++++-
+>  fs/orangefs/orangefs-kernel.h         | 2 +-
+>  fs/overlayfs/inode.c                  | 5 ++++-
+>  fs/overlayfs/overlayfs.h              | 2 +-
+>  fs/posix_acl.c                        | 2 +-
+>  fs/reiserfs/acl.h                     | 2 +-
+>  fs/reiserfs/xattr_acl.c               | 5 ++++-
+>  fs/xfs/xfs_acl.c                      | 5 ++++-
+>  fs/xfs/xfs_acl.h                      | 4 ++--
+>  include/linux/fs.h                    | 2 +-
+>  39 files changed, 91 insertions(+), 40 deletions(-)
 > 
->   drivers/perf/Kconfig                 |   7 +
->   drivers/perf/Makefile                |   1 +
->   drivers/perf/marvell_cn10k_ddr_pmu.c | 606 +++++++++++++++++++++++++++
->   3 files changed, 614 insertions(+)
->   create mode 100644 drivers/perf/marvell_cn10k_ddr_pmu.c
+> diff --git a/Documentation/filesystems/locking.rst b/Documentation/filesystems/locking.rst
+> index 2183fd8cc350..a6a8f2b34331 100644
+> --- a/Documentation/filesystems/locking.rst
+> +++ b/Documentation/filesystems/locking.rst
+> @@ -70,7 +70,7 @@ prototypes::
+>  	const char *(*get_link) (struct dentry *, struct inode *, struct delayed_call *);
+>  	void (*truncate) (struct inode *);
+>  	int (*permission) (struct inode *, int, unsigned int);
+> -	int (*get_acl)(struct inode *, int);
+> +	struct posix_acl * (*get_acl)(struct inode *, int, int);
+>  	int (*setattr) (struct dentry *, struct iattr *);
+>  	int (*getattr) (const struct path *, struct kstat *, u32, unsigned int);
+>  	ssize_t (*listxattr) (struct dentry *, char *, size_t);
+> diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
+> index 14c31eced416..dc9339acb66f 100644
+> --- a/Documentation/filesystems/vfs.rst
+> +++ b/Documentation/filesystems/vfs.rst
+> @@ -432,7 +432,7 @@ As of kernel 2.6.22, the following members are defined:
+>  		const char *(*get_link) (struct dentry *, struct inode *,
+>  					 struct delayed_call *);
+>  		int (*permission) (struct user_namespace *, struct inode *, int);
+> -		int (*get_acl)(struct inode *, int);
+> +		struct posix_acl * (*get_acl)(struct inode *, int, int);
+
+Fwiw, I think this series is sane. The only thing I'd like to see change
+is that the flag argument should really be "unsigned int" not "int".
+Other than that:
+
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+
+>  		int (*setattr) (struct user_namespace *, struct dentry *, struct iattr *);
+>  		int (*getattr) (struct user_namespace *, const struct path *, struct kstat *, u32, unsigned int);
+>  		ssize_t (*listxattr) (struct dentry *, char *, size_t);
+> diff --git a/fs/9p/acl.c b/fs/9p/acl.c
+> index bb1b286c49ae..3ef7db80fe29 100644
+> --- a/fs/9p/acl.c
+> +++ b/fs/9p/acl.c
+> @@ -97,10 +97,13 @@ static struct posix_acl *v9fs_get_cached_acl(struct inode *inode, int type)
+>  	return acl;
+>  }
+>  
+> -struct posix_acl *v9fs_iop_get_acl(struct inode *inode, int type)
+> +struct posix_acl *v9fs_iop_get_acl(struct inode *inode, int type, int flags)
+>  {
+>  	struct v9fs_session_info *v9ses;
+>  
+> +	if (flags)
+> +		return ERR_PTR(-EINVAL);
+> +
+>  	v9ses = v9fs_inode2v9ses(inode);
+>  	if (((v9ses->flags & V9FS_ACCESS_MASK) != V9FS_ACCESS_CLIENT) ||
+>  			((v9ses->flags & V9FS_ACL_MASK) != V9FS_POSIX_ACL)) {
+> diff --git a/fs/9p/acl.h b/fs/9p/acl.h
+> index e4f7e882272b..7b31cef9ef5a 100644
+> --- a/fs/9p/acl.h
+> +++ b/fs/9p/acl.h
+> @@ -16,7 +16,7 @@
+>  
+>  #ifdef CONFIG_9P_FS_POSIX_ACL
+>  extern int v9fs_get_acl(struct inode *, struct p9_fid *);
+> -extern struct posix_acl *v9fs_iop_get_acl(struct inode *inode, int type);
+> +extern struct posix_acl *v9fs_iop_get_acl(struct inode *inode, int type, int flags);
+>  extern int v9fs_acl_chmod(struct inode *, struct p9_fid *);
+>  extern int v9fs_set_create_acl(struct inode *, struct p9_fid *,
+>  			       struct posix_acl *, struct posix_acl *);
+> diff --git a/fs/bad_inode.c b/fs/bad_inode.c
+> index 48e16144c1f7..dd34decddaa6 100644
+> --- a/fs/bad_inode.c
+> +++ b/fs/bad_inode.c
+> @@ -121,7 +121,7 @@ static const char *bad_inode_get_link(struct dentry *dentry,
+>  	return ERR_PTR(-EIO);
+>  }
+>  
+> -static struct posix_acl *bad_inode_get_acl(struct inode *inode, int type)
+> +static struct posix_acl *bad_inode_get_acl(struct inode *inode, int type, int flags)
+>  {
+>  	return ERR_PTR(-EIO);
+>  }
+> diff --git a/fs/btrfs/acl.c b/fs/btrfs/acl.c
+> index d95eb5c8cb37..b53d55186e4a 100644
+> --- a/fs/btrfs/acl.c
+> +++ b/fs/btrfs/acl.c
+> @@ -16,13 +16,16 @@
+>  #include "btrfs_inode.h"
+>  #include "xattr.h"
+>  
+> -struct posix_acl *btrfs_get_acl(struct inode *inode, int type)
+> +struct posix_acl *btrfs_get_acl(struct inode *inode, int type, int flags)
+>  {
+>  	int size;
+>  	const char *name;
+>  	char *value = NULL;
+>  	struct posix_acl *acl;
+>  
+> +	if (flags)
+> +		return ERR_PTR(-EINVAL);
+> +
+>  	switch (type) {
+>  	case ACL_TYPE_ACCESS:
+>  		name = XATTR_NAME_POSIX_ACL_ACCESS;
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index e5e53e592d4f..460a64266066 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -3686,7 +3686,7 @@ static inline int __btrfs_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag)
+>  
+>  /* acl.c */
+>  #ifdef CONFIG_BTRFS_FS_POSIX_ACL
+> -struct posix_acl *btrfs_get_acl(struct inode *inode, int type);
+> +struct posix_acl *btrfs_get_acl(struct inode *inode, int type, int flags);
+>  int btrfs_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+>  		  struct posix_acl *acl, int type);
+>  int btrfs_init_acl(struct btrfs_trans_handle *trans,
+> diff --git a/fs/ceph/acl.c b/fs/ceph/acl.c
+> index 529af59d9fd3..61e4f866d162 100644
+> --- a/fs/ceph/acl.c
+> +++ b/fs/ceph/acl.c
+> @@ -29,7 +29,7 @@ static inline void ceph_set_cached_acl(struct inode *inode,
+>  	spin_unlock(&ci->i_ceph_lock);
+>  }
+>  
+> -struct posix_acl *ceph_get_acl(struct inode *inode, int type)
+> +struct posix_acl *ceph_get_acl(struct inode *inode, int type, int flags)
+>  {
+>  	int size;
+>  	unsigned int retry_cnt = 0;
+> @@ -37,6 +37,9 @@ struct posix_acl *ceph_get_acl(struct inode *inode, int type)
+>  	char *value = NULL;
+>  	struct posix_acl *acl;
+>  
+> +	if (flags)
+> +		return ERR_PTR(-EINVAL);
+> +
+>  	switch (type) {
+>  	case ACL_TYPE_ACCESS:
+>  		name = XATTR_NAME_POSIX_ACL_ACCESS;
+> diff --git a/fs/ceph/super.h b/fs/ceph/super.h
+> index 6b6332a5c113..528975f199eb 100644
+> --- a/fs/ceph/super.h
+> +++ b/fs/ceph/super.h
+> @@ -1087,7 +1087,7 @@ void ceph_release_acl_sec_ctx(struct ceph_acl_sec_ctx *as_ctx);
+>  /* acl.c */
+>  #ifdef CONFIG_CEPH_FS_POSIX_ACL
+>  
+> -struct posix_acl *ceph_get_acl(struct inode *, int);
+> +struct posix_acl *ceph_get_acl(struct inode *, int, int);
+>  int ceph_set_acl(struct user_namespace *mnt_userns,
+>  		 struct inode *inode, struct posix_acl *acl, int type);
+>  int ceph_pre_init_acls(struct inode *dir, umode_t *mode,
+> diff --git a/fs/erofs/xattr.c b/fs/erofs/xattr.c
+> index 8dd54b420a1d..10c0d639d794 100644
+> --- a/fs/erofs/xattr.c
+> +++ b/fs/erofs/xattr.c
+> @@ -673,12 +673,15 @@ ssize_t erofs_listxattr(struct dentry *dentry,
+>  }
+>  
+>  #ifdef CONFIG_EROFS_FS_POSIX_ACL
+> -struct posix_acl *erofs_get_acl(struct inode *inode, int type)
+> +struct posix_acl *erofs_get_acl(struct inode *inode, int type, int flags)
+>  {
+>  	struct posix_acl *acl;
+>  	int prefix, rc;
+>  	char *value = NULL;
+>  
+> +	if (flags)
+> +		return ERR_PTR(-EINVAL);
+> +
+>  	switch (type) {
+>  	case ACL_TYPE_ACCESS:
+>  		prefix = EROFS_XATTR_INDEX_POSIX_ACL_ACCESS;
+> diff --git a/fs/erofs/xattr.h b/fs/erofs/xattr.h
+> index 366dcb400525..ac35b5886eff 100644
+> --- a/fs/erofs/xattr.h
+> +++ b/fs/erofs/xattr.h
+> @@ -80,7 +80,7 @@ static inline int erofs_getxattr(struct inode *inode, int index,
+>  #endif	/* !CONFIG_EROFS_FS_XATTR */
+>  
+>  #ifdef CONFIG_EROFS_FS_POSIX_ACL
+> -struct posix_acl *erofs_get_acl(struct inode *inode, int type);
+> +struct posix_acl *erofs_get_acl(struct inode *inode, int type, int flags);
+>  #else
+>  #define erofs_get_acl	(NULL)
+>  #endif
+> diff --git a/fs/ext2/acl.c b/fs/ext2/acl.c
+> index b9a9db98e94b..e203ebd224c4 100644
+> --- a/fs/ext2/acl.c
+> +++ b/fs/ext2/acl.c
+> @@ -141,13 +141,16 @@ ext2_acl_to_disk(const struct posix_acl *acl, size_t *size)
+>   * inode->i_mutex: don't care
+>   */
+>  struct posix_acl *
+> -ext2_get_acl(struct inode *inode, int type)
+> +ext2_get_acl(struct inode *inode, int type, int flags)
+>  {
+>  	int name_index;
+>  	char *value = NULL;
+>  	struct posix_acl *acl;
+>  	int retval;
+>  
+> +	if (flags)
+> +		return ERR_PTR(-EINVAL);
+> +
+>  	switch (type) {
+>  	case ACL_TYPE_ACCESS:
+>  		name_index = EXT2_XATTR_INDEX_POSIX_ACL_ACCESS;
+> diff --git a/fs/ext2/acl.h b/fs/ext2/acl.h
+> index 917db5f6630a..0bd53a953831 100644
+> --- a/fs/ext2/acl.h
+> +++ b/fs/ext2/acl.h
+> @@ -55,7 +55,7 @@ static inline int ext2_acl_count(size_t size)
+>  #ifdef CONFIG_EXT2_FS_POSIX_ACL
+>  
+>  /* acl.c */
+> -extern struct posix_acl *ext2_get_acl(struct inode *inode, int type);
+> +extern struct posix_acl *ext2_get_acl(struct inode *inode, int type, int flags);
+>  extern int ext2_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+>  			struct posix_acl *acl, int type);
+>  extern int ext2_init_acl (struct inode *, struct inode *);
+> diff --git a/fs/ext4/acl.c b/fs/ext4/acl.c
+> index c5eaffccecc3..e4e27e34a221 100644
+> --- a/fs/ext4/acl.c
+> +++ b/fs/ext4/acl.c
+> @@ -142,13 +142,16 @@ ext4_acl_to_disk(const struct posix_acl *acl, size_t *size)
+>   * inode->i_mutex: don't care
+>   */
+>  struct posix_acl *
+> -ext4_get_acl(struct inode *inode, int type)
+> +ext4_get_acl(struct inode *inode, int type, int flags)
+>  {
+>  	int name_index;
+>  	char *value = NULL;
+>  	struct posix_acl *acl;
+>  	int retval;
+>  
+> +	if (flags)
+> +		return ERR_PTR(-EINVAL);
+> +
+>  	switch (type) {
+>  	case ACL_TYPE_ACCESS:
+>  		name_index = EXT4_XATTR_INDEX_POSIX_ACL_ACCESS;
+> diff --git a/fs/ext4/acl.h b/fs/ext4/acl.h
+> index 84b8942a57f2..b349365c7b33 100644
+> --- a/fs/ext4/acl.h
+> +++ b/fs/ext4/acl.h
+> @@ -55,7 +55,7 @@ static inline int ext4_acl_count(size_t size)
+>  #ifdef CONFIG_EXT4_FS_POSIX_ACL
+>  
+>  /* acl.c */
+> -struct posix_acl *ext4_get_acl(struct inode *inode, int type);
+> +struct posix_acl *ext4_get_acl(struct inode *inode, int type, int flags);
+>  int ext4_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+>  		 struct posix_acl *acl, int type);
+>  extern int ext4_init_acl(handle_t *, struct inode *, struct inode *);
+> diff --git a/fs/f2fs/acl.c b/fs/f2fs/acl.c
+> index 239ad9453b99..4d1b348a0ab7 100644
+> --- a/fs/f2fs/acl.c
+> +++ b/fs/f2fs/acl.c
+> @@ -196,8 +196,11 @@ static struct posix_acl *__f2fs_get_acl(struct inode *inode, int type,
+>  	return acl;
+>  }
+>  
+> -struct posix_acl *f2fs_get_acl(struct inode *inode, int type)
+> +struct posix_acl *f2fs_get_acl(struct inode *inode, int type, int flags)
+>  {
+> +	if (flags)
+> +		return ERR_PTR(-EINVAL);
+> +
+>  	return __f2fs_get_acl(inode, type, NULL);
+>  }
+>  
+> diff --git a/fs/f2fs/acl.h b/fs/f2fs/acl.h
+> index 986fd1bc780b..3b7b0deb2845 100644
+> --- a/fs/f2fs/acl.h
+> +++ b/fs/f2fs/acl.h
+> @@ -33,7 +33,7 @@ struct f2fs_acl_header {
+>  
+>  #ifdef CONFIG_F2FS_FS_POSIX_ACL
+>  
+> -extern struct posix_acl *f2fs_get_acl(struct inode *, int);
+> +extern struct posix_acl *f2fs_get_acl(struct inode *, int, int);
+>  extern int f2fs_set_acl(struct user_namespace *, struct inode *,
+>  			struct posix_acl *, int);
+>  extern int f2fs_init_acl(struct inode *, struct inode *, struct page *,
+> diff --git a/fs/fuse/acl.c b/fs/fuse/acl.c
+> index 52b165319be1..194cb81634f9 100644
+> --- a/fs/fuse/acl.c
+> +++ b/fs/fuse/acl.c
+> @@ -11,7 +11,7 @@
+>  #include <linux/posix_acl.h>
+>  #include <linux/posix_acl_xattr.h>
+>  
+> -struct posix_acl *fuse_get_acl(struct inode *inode, int type)
+> +struct posix_acl *fuse_get_acl(struct inode *inode, int type, int flags)
+>  {
+>  	struct fuse_conn *fc = get_fuse_conn(inode);
+>  	int size;
+> @@ -19,6 +19,9 @@ struct posix_acl *fuse_get_acl(struct inode *inode, int type)
+>  	void *value = NULL;
+>  	struct posix_acl *acl;
+>  
+> +	if (flags)
+> +		return ERR_PTR(-EINVAL);
+> +
+>  	if (fuse_is_bad(inode))
+>  		return ERR_PTR(-EIO);
+>  
+> diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
+> index 07829ce78695..ba3a419c6766 100644
+> --- a/fs/fuse/fuse_i.h
+> +++ b/fs/fuse/fuse_i.h
+> @@ -1216,7 +1216,7 @@ extern const struct xattr_handler *fuse_acl_xattr_handlers[];
+>  extern const struct xattr_handler *fuse_no_acl_xattr_handlers[];
+>  
+>  struct posix_acl;
+> -struct posix_acl *fuse_get_acl(struct inode *inode, int type);
+> +struct posix_acl *fuse_get_acl(struct inode *inode, int type, int flags);
+>  int fuse_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+>  		 struct posix_acl *acl, int type);
+>  
+> diff --git a/fs/gfs2/acl.c b/fs/gfs2/acl.c
+> index 9165d70ead07..956132de223c 100644
+> --- a/fs/gfs2/acl.c
+> +++ b/fs/gfs2/acl.c
+> @@ -57,13 +57,16 @@ static struct posix_acl *__gfs2_get_acl(struct inode *inode, int type)
+>  	return acl;
+>  }
+>  
+> -struct posix_acl *gfs2_get_acl(struct inode *inode, int type)
+> +struct posix_acl *gfs2_get_acl(struct inode *inode, int type, int flags)
+>  {
+>  	struct gfs2_inode *ip = GFS2_I(inode);
+>  	struct gfs2_holder gh;
+>  	bool need_unlock = false;
+>  	struct posix_acl *acl;
+>  
+> +	if (flags)
+> +		return ERR_PTR(-EINVAL);
+> +
+>  	if (!gfs2_glock_is_locked_by_me(ip->i_gl)) {
+>  		int ret = gfs2_glock_nq_init(ip->i_gl, LM_ST_SHARED,
+>  					     LM_FLAG_ANY, &gh);
+> diff --git a/fs/gfs2/acl.h b/fs/gfs2/acl.h
+> index eccc6a43326c..cdf8f12089de 100644
+> --- a/fs/gfs2/acl.h
+> +++ b/fs/gfs2/acl.h
+> @@ -11,7 +11,7 @@
+>  
+>  #define GFS2_ACL_MAX_ENTRIES(sdp) ((300 << (sdp)->sd_sb.sb_bsize_shift) >> 12)
+>  
+> -extern struct posix_acl *gfs2_get_acl(struct inode *inode, int type);
+> +extern struct posix_acl *gfs2_get_acl(struct inode *inode, int type, int flags);
+>  extern int __gfs2_set_acl(struct inode *inode, struct posix_acl *acl, int type);
+>  extern int gfs2_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+>  			struct posix_acl *acl, int type);
+> diff --git a/fs/jffs2/acl.c b/fs/jffs2/acl.c
+> index 55a79df70d24..35f4a0dcbd71 100644
+> --- a/fs/jffs2/acl.c
+> +++ b/fs/jffs2/acl.c
+> @@ -173,12 +173,15 @@ static void *jffs2_acl_to_medium(const struct posix_acl *acl, size_t *size)
+>  	return ERR_PTR(-EINVAL);
+>  }
+>  
+> -struct posix_acl *jffs2_get_acl(struct inode *inode, int type)
+> +struct posix_acl *jffs2_get_acl(struct inode *inode, int type, int flags)
+>  {
+>  	struct posix_acl *acl;
+>  	char *value = NULL;
+>  	int rc, xprefix;
+>  
+> +	if (flags)
+> +		return ERR_PTR(-EINVAL);
+> +
+>  	switch (type) {
+>  	case ACL_TYPE_ACCESS:
+>  		xprefix = JFFS2_XPREFIX_ACL_ACCESS;
+> diff --git a/fs/jffs2/acl.h b/fs/jffs2/acl.h
+> index 62c50da9d493..afd6f924aacb 100644
+> --- a/fs/jffs2/acl.h
+> +++ b/fs/jffs2/acl.h
+> @@ -27,7 +27,7 @@ struct jffs2_acl_header {
+>  
+>  #ifdef CONFIG_JFFS2_FS_POSIX_ACL
+>  
+> -struct posix_acl *jffs2_get_acl(struct inode *inode, int type);
+> +struct posix_acl *jffs2_get_acl(struct inode *inode, int type, int flags);
+>  int jffs2_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+>  		  struct posix_acl *acl, int type);
+>  extern int jffs2_init_acl_pre(struct inode *, struct inode *, umode_t *);
+> diff --git a/fs/jfs/acl.c b/fs/jfs/acl.c
+> index 43c285c3d2a7..344d047bcb97 100644
+> --- a/fs/jfs/acl.c
+> +++ b/fs/jfs/acl.c
+> @@ -14,13 +14,16 @@
+>  #include "jfs_xattr.h"
+>  #include "jfs_acl.h"
+>  
+> -struct posix_acl *jfs_get_acl(struct inode *inode, int type)
+> +struct posix_acl *jfs_get_acl(struct inode *inode, int type, int flags)
+>  {
+>  	struct posix_acl *acl;
+>  	char *ea_name;
+>  	int size;
+>  	char *value = NULL;
+>  
+> +	if (flags)
+> +		return ERR_PTR(-EINVAL);
+> +
+>  	switch(type) {
+>  		case ACL_TYPE_ACCESS:
+>  			ea_name = XATTR_NAME_POSIX_ACL_ACCESS;
+> diff --git a/fs/jfs/jfs_acl.h b/fs/jfs/jfs_acl.h
+> index 7ae389a7a366..e86997d1f123 100644
+> --- a/fs/jfs/jfs_acl.h
+> +++ b/fs/jfs/jfs_acl.h
+> @@ -7,7 +7,7 @@
+>  
+>  #ifdef CONFIG_JFS_POSIX_ACL
+>  
+> -struct posix_acl *jfs_get_acl(struct inode *inode, int type);
+> +struct posix_acl *jfs_get_acl(struct inode *inode, int type, int flags);
+>  int jfs_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+>  		struct posix_acl *acl, int type);
+>  int jfs_init_acl(tid_t, struct inode *, struct inode *);
+> diff --git a/fs/nfs/nfs3_fs.h b/fs/nfs/nfs3_fs.h
+> index c8a192802dda..0f3ba2f3b8da 100644
+> --- a/fs/nfs/nfs3_fs.h
+> +++ b/fs/nfs/nfs3_fs.h
+> @@ -11,7 +11,7 @@
+>   * nfs3acl.c
+>   */
+>  #ifdef CONFIG_NFS_V3_ACL
+> -extern struct posix_acl *nfs3_get_acl(struct inode *inode, int type);
+> +extern struct posix_acl *nfs3_get_acl(struct inode *inode, int type, int flags);
+>  extern int nfs3_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+>  			struct posix_acl *acl, int type);
+>  extern int nfs3_proc_setacls(struct inode *inode, struct posix_acl *acl,
+> diff --git a/fs/nfs/nfs3acl.c b/fs/nfs/nfs3acl.c
+> index 9ec560aa4a50..f94def1342c6 100644
+> --- a/fs/nfs/nfs3acl.c
+> +++ b/fs/nfs/nfs3acl.c
+> @@ -44,7 +44,7 @@ static void nfs3_abort_get_acl(struct posix_acl **p)
+>  	cmpxchg(p, sentinel, ACL_NOT_CACHED);
+>  }
+>  
+> -struct posix_acl *nfs3_get_acl(struct inode *inode, int type)
+> +struct posix_acl *nfs3_get_acl(struct inode *inode, int type, int flags)
+>  {
+>  	struct nfs_server *server = NFS_SERVER(inode);
+>  	struct page *pages[NFSACL_MAXPAGES] = { };
+> @@ -62,6 +62,9 @@ struct posix_acl *nfs3_get_acl(struct inode *inode, int type)
+>  	};
+>  	int status, count;
+>  
+> +	if (flags)
+> +		return ERR_PTR(-EINVAL);
+> +
+>  	if (!nfs_server_capable(inode, NFS_CAP_ACLS))
+>  		return ERR_PTR(-EOPNOTSUPP);
+>  
+> diff --git a/fs/ocfs2/acl.c b/fs/ocfs2/acl.c
+> index 5c72a7e6d6c5..a4df6e30c017 100644
+> --- a/fs/ocfs2/acl.c
+> +++ b/fs/ocfs2/acl.c
+> @@ -289,7 +289,7 @@ int ocfs2_iop_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+>  	return status;
+>  }
+>  
+> -struct posix_acl *ocfs2_iop_get_acl(struct inode *inode, int type)
+> +struct posix_acl *ocfs2_iop_get_acl(struct inode *inode, int type, int flags)
+>  {
+>  	struct ocfs2_super *osb;
+>  	struct buffer_head *di_bh = NULL;
+> @@ -297,6 +297,9 @@ struct posix_acl *ocfs2_iop_get_acl(struct inode *inode, int type)
+>  	int had_lock;
+>  	struct ocfs2_lock_holder oh;
+>  
+> +	if (flags)
+> +		return ERR_PTR(-EINVAL);
+> +
+>  	osb = OCFS2_SB(inode->i_sb);
+>  	if (!(osb->s_mount_opt & OCFS2_MOUNT_POSIX_ACL))
+>  		return NULL;
+> diff --git a/fs/ocfs2/acl.h b/fs/ocfs2/acl.h
+> index f59d8d0a61fa..e005c93b9153 100644
+> --- a/fs/ocfs2/acl.h
+> +++ b/fs/ocfs2/acl.h
+> @@ -16,7 +16,7 @@ struct ocfs2_acl_entry {
+>  	__le32 e_id;
+>  };
+>  
+> -struct posix_acl *ocfs2_iop_get_acl(struct inode *inode, int type);
+> +struct posix_acl *ocfs2_iop_get_acl(struct inode *inode, int type, int flags);
+>  int ocfs2_iop_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+>  		      struct posix_acl *acl, int type);
+>  extern int ocfs2_acl_chmod(struct inode *, struct buffer_head *);
+> diff --git a/fs/orangefs/acl.c b/fs/orangefs/acl.c
+> index 18852b9ed82b..d93841d478ed 100644
+> --- a/fs/orangefs/acl.c
+> +++ b/fs/orangefs/acl.c
+> @@ -10,12 +10,15 @@
+>  #include "orangefs-bufmap.h"
+>  #include <linux/posix_acl_xattr.h>
+>  
+> -struct posix_acl *orangefs_get_acl(struct inode *inode, int type)
+> +struct posix_acl *orangefs_get_acl(struct inode *inode, int type, int flags)
+>  {
+>  	struct posix_acl *acl;
+>  	int ret;
+>  	char *key = NULL, *value = NULL;
+>  
+> +	if (flags)
+> +		return ERR_PTR(-EINVAL);
+> +
+>  	switch (type) {
+>  	case ACL_TYPE_ACCESS:
+>  		key = XATTR_NAME_POSIX_ACL_ACCESS;
+> diff --git a/fs/orangefs/orangefs-kernel.h b/fs/orangefs/orangefs-kernel.h
+> index 0e6b97682e41..370bd89c670f 100644
+> --- a/fs/orangefs/orangefs-kernel.h
+> +++ b/fs/orangefs/orangefs-kernel.h
+> @@ -106,7 +106,7 @@ enum orangefs_vfs_op_states {
+>  extern int orangefs_init_acl(struct inode *inode, struct inode *dir);
+>  extern const struct xattr_handler *orangefs_xattr_handlers[];
+>  
+> -extern struct posix_acl *orangefs_get_acl(struct inode *inode, int type);
+> +extern struct posix_acl *orangefs_get_acl(struct inode *inode, int type, int flags);
+>  extern int orangefs_set_acl(struct user_namespace *mnt_userns,
+>  			    struct inode *inode, struct posix_acl *acl,
+>  			    int type);
+> diff --git a/fs/overlayfs/inode.c b/fs/overlayfs/inode.c
+> index 5e828a1c98a8..727154a1d3ce 100644
+> --- a/fs/overlayfs/inode.c
+> +++ b/fs/overlayfs/inode.c
+> @@ -448,12 +448,15 @@ ssize_t ovl_listxattr(struct dentry *dentry, char *list, size_t size)
+>  	return res;
+>  }
+>  
+> -struct posix_acl *ovl_get_acl(struct inode *inode, int type)
+> +struct posix_acl *ovl_get_acl(struct inode *inode, int type, int flags)
+>  {
+>  	struct inode *realinode = ovl_inode_real(inode);
+>  	const struct cred *old_cred;
+>  	struct posix_acl *acl;
+>  
+> +	if (flags)
+> +		return ERR_PTR(-EINVAL);
+> +
+>  	if (!IS_ENABLED(CONFIG_FS_POSIX_ACL) || !IS_POSIXACL(realinode))
+>  		return NULL;
+>  
+> diff --git a/fs/overlayfs/overlayfs.h b/fs/overlayfs/overlayfs.h
+> index 6ec73db4bf9e..daf6b75b9a54 100644
+> --- a/fs/overlayfs/overlayfs.h
+> +++ b/fs/overlayfs/overlayfs.h
+> @@ -485,7 +485,7 @@ int ovl_xattr_set(struct dentry *dentry, struct inode *inode, const char *name,
+>  int ovl_xattr_get(struct dentry *dentry, struct inode *inode, const char *name,
+>  		  void *value, size_t size);
+>  ssize_t ovl_listxattr(struct dentry *dentry, char *list, size_t size);
+> -struct posix_acl *ovl_get_acl(struct inode *inode, int type);
+> +struct posix_acl *ovl_get_acl(struct inode *inode, int type, int flags);
+>  int ovl_update_time(struct inode *inode, struct timespec64 *ts, int flags);
+>  bool ovl_is_private_xattr(struct super_block *sb, const char *name);
+>  
+> diff --git a/fs/posix_acl.c b/fs/posix_acl.c
+> index f3309a7edb49..6b7f793e2b6f 100644
+> --- a/fs/posix_acl.c
+> +++ b/fs/posix_acl.c
+> @@ -138,7 +138,7 @@ struct posix_acl *get_acl(struct inode *inode, int type)
+>  		set_cached_acl(inode, type, NULL);
+>  		return NULL;
+>  	}
+> -	acl = inode->i_op->get_acl(inode, type);
+> +	acl = inode->i_op->get_acl(inode, type, 0);
+>  
+>  	if (IS_ERR(acl)) {
+>  		/*
+> diff --git a/fs/reiserfs/acl.h b/fs/reiserfs/acl.h
+> index fd58618da360..bf10841b892d 100644
+> --- a/fs/reiserfs/acl.h
+> +++ b/fs/reiserfs/acl.h
+> @@ -48,7 +48,7 @@ static inline int reiserfs_acl_count(size_t size)
+>  }
+>  
+>  #ifdef CONFIG_REISERFS_FS_POSIX_ACL
+> -struct posix_acl *reiserfs_get_acl(struct inode *inode, int type);
+> +struct posix_acl *reiserfs_get_acl(struct inode *inode, int type, int flags);
+>  int reiserfs_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+>  		     struct posix_acl *acl, int type);
+>  int reiserfs_acl_chmod(struct inode *inode);
+> diff --git a/fs/reiserfs/xattr_acl.c b/fs/reiserfs/xattr_acl.c
+> index a9547144a099..0fdb4f531098 100644
+> --- a/fs/reiserfs/xattr_acl.c
+> +++ b/fs/reiserfs/xattr_acl.c
+> @@ -190,13 +190,16 @@ static void *reiserfs_posix_acl_to_disk(const struct posix_acl *acl, size_t * si
+>   * inode->i_mutex: down
+>   * BKL held [before 2.5.x]
+>   */
+> -struct posix_acl *reiserfs_get_acl(struct inode *inode, int type)
+> +struct posix_acl *reiserfs_get_acl(struct inode *inode, int type, int flags)
+>  {
+>  	char *name, *value;
+>  	struct posix_acl *acl;
+>  	int size;
+>  	int retval;
+>  
+> +	if (flags)
+> +		return ERR_PTR(-EINVAL);
+> +
+>  	switch (type) {
+>  	case ACL_TYPE_ACCESS:
+>  		name = XATTR_NAME_POSIX_ACL_ACCESS;
+> diff --git a/fs/xfs/xfs_acl.c b/fs/xfs/xfs_acl.c
+> index d02bef24b32b..5f9b541e029d 100644
+> --- a/fs/xfs/xfs_acl.c
+> +++ b/fs/xfs/xfs_acl.c
+> @@ -125,7 +125,7 @@ xfs_acl_to_disk(struct xfs_acl *aclp, const struct posix_acl *acl)
+>  }
+>  
+>  struct posix_acl *
+> -xfs_get_acl(struct inode *inode, int type)
+> +xfs_get_acl(struct inode *inode, int type, int flags)
+>  {
+>  	struct xfs_inode	*ip = XFS_I(inode);
+>  	struct xfs_mount	*mp = ip->i_mount;
+> @@ -137,6 +137,9 @@ xfs_get_acl(struct inode *inode, int type)
+>  	};
+>  	int			error;
+>  
+> +	if (flags)
+> +		return ERR_PTR(-EINVAL);
+> +
+>  	trace_xfs_get_acl(ip);
+>  
+>  	switch (type) {
+> diff --git a/fs/xfs/xfs_acl.h b/fs/xfs/xfs_acl.h
+> index 7bdb3a4ed798..38f933f2e281 100644
+> --- a/fs/xfs/xfs_acl.h
+> +++ b/fs/xfs/xfs_acl.h
+> @@ -10,13 +10,13 @@ struct inode;
+>  struct posix_acl;
+>  
+>  #ifdef CONFIG_XFS_POSIX_ACL
+> -extern struct posix_acl *xfs_get_acl(struct inode *inode, int type);
+> +extern struct posix_acl *xfs_get_acl(struct inode *inode, int type, int flags);
+>  extern int xfs_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+>  		       struct posix_acl *acl, int type);
+>  extern int __xfs_set_acl(struct inode *inode, struct posix_acl *acl, int type);
+>  void xfs_forget_acl(struct inode *inode, const char *name);
+>  #else
+> -static inline struct posix_acl *xfs_get_acl(struct inode *inode, int type)
+> +static inline struct posix_acl *xfs_get_acl(struct inode *inode, int type, int flags)
+>  {
+>  	return NULL;
+>  }
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 640574294216..1c56d4fc4efe 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -2065,7 +2065,7 @@ struct inode_operations {
+>  	struct dentry * (*lookup) (struct inode *,struct dentry *, unsigned int);
+>  	const char * (*get_link) (struct dentry *, struct inode *, struct delayed_call *);
+>  	int (*permission) (struct user_namespace *, struct inode *, int);
+> -	struct posix_acl * (*get_acl)(struct inode *, int);
+> +	struct posix_acl * (*get_acl)(struct inode *, int, int);
+>  
+>  	int (*readlink) (struct dentry *, char __user *,int);
+>  
+> -- 
+> 2.31.1
 > 
-> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
-> index 77522e5efe11..41a80a4b8d29 100644
-> --- a/drivers/perf/Kconfig
-> +++ b/drivers/perf/Kconfig
-> @@ -139,4 +139,11 @@ config ARM_DMC620_PMU
->   
->   source "drivers/perf/hisilicon/Kconfig"
->   
-> +config MARVELL_CN10K_DDR_PMU
-> +	tristate "Enable MARVELL CN10K DRAM Subsystem(DSS) PMU Support"
-> +	depends on ARM64
-
-Is there anything to stop using adding COMPILE_TEST as a dependency? 
-This really helps build coverage testing for other archs
-
-> +	help
-> +	  Enable perf support for Marvell DDR Performance monitoring
-> +	  event on CN10K platform.
-> +
->   endmenu
-> diff --git a/drivers/perf/Makefile b/drivers/perf/Makefile
-> index 5260b116c7da..ee1126219d8d 100644
-> --- a/drivers/perf/Makefile
-> +++ b/drivers/perf/Makefile
-> @@ -14,3 +14,4 @@ obj-$(CONFIG_THUNDERX2_PMU) += thunderx2_pmu.o
->   obj-$(CONFIG_XGENE_PMU) += xgene_pmu.o
->   obj-$(CONFIG_ARM_SPE_PMU) += arm_spe_pmu.o
->   obj-$(CONFIG_ARM_DMC620_PMU) += arm_dmc620_pmu.o
-> +obj-$(CONFIG_MARVELL_CN10K_DDR_PMU) += marvell_cn10k_ddr_pmu.o
-> diff --git a/drivers/perf/marvell_cn10k_ddr_pmu.c b/drivers/perf/marvell_cn10k_ddr_pmu.c
-> new file mode 100644
-> index 000000000000..8f9e3d1fcd8d
-> --- /dev/null
-> +++ b/drivers/perf/marvell_cn10k_ddr_pmu.c
-> @@ -0,0 +1,606 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Marvell CN10K DRAM Subsystem (DSS) Performance Monitor Driver
-> + *
-> + * Copyright (C) 2021 Marvell.
-> + */
-> +
-> +#include <linux/init.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_address.h>
-> +#include <linux/of_device.h>
-> +#include <linux/perf_event.h>
-> +
-> +/* Performance Counters Operating Mode Control Registers */
-> +#define DDRC_PERF_CNT_OP_MODE_CTRL	0x8020
-> +#define OP_MODE_CTRL_VAL_MANNUAL	0x1
-> +
-> +/* Performance Counters Start Operation Control Registers */
-> +#define DDRC_PERF_CNT_START_OP_CTRL	0x8028
-> +#define START_OP_CTRL_VAL_START		0x1ULL
-> +#define START_OP_CTRL_VAL_ACTIVE	0x2
-> +
-> +/* Performance Counters End Operation Control Registers */
-> +#define DDRC_PERF_CNT_END_OP_CTRL	0x8030
-> +#define END_OP_CTRL_VAL_END		0x1ULL
-> +
-> +/* Performance Counters End Status Registers */
-> +#define DDRC_PERF_CNT_END_STATUS		0x8038
-> +#define END_STATUS_VAL_END_TIMER_MODE_END	0x1
-> +
-> +/* Performance Counters Configuration Registers */
-> +#define DDRC_PERF_CFG_BASE		0x8040
-> +
-> +/* 8 Generic event counter + 2 fixed event counters */
-> +#define DDRC_PERF_NUM_GEN_COUNTERS	8
-> +#define DDRC_PERF_NUM_FIX_COUNTERS	2
-> +#define DDRC_PERF_READ_COUNTER_IDX	DDRC_PERF_NUM_GEN_COUNTERS
-> +#define DDRC_PERF_WRITE_COUNTER_IDX	(DDRC_PERF_NUM_GEN_COUNTERS + 1)
-> +#define DDRC_PERF_NUM_COUNTERS		(DDRC_PERF_NUM_GEN_COUNTERS + \
-> +					 DDRC_PERF_NUM_FIX_COUNTERS)
-> +
-> +/* Generic event counter registers */
-> +#define DDRC_PERF_CFG(n)		(DDRC_PERF_CFG_BASE + 8 * (n))
-> +#define EVENT_ENABLE			BIT_ULL(63)
-> +
-> +/* Two dedicated event counters for DDR reads and writes */
-> +#define EVENT_DDR_READS			101
-> +#define EVENT_DDR_WRITES		100
-> +
-> +/*
-> + * programmable events IDs in programmable event counters.
-> + * DO NOT change these event-id numbers, they are used to
-> + * program event bitmap in h/w.
-> + */
-> +#define EVENT_OP_IS_ZQLATCH			55
-> +#define EVENT_OP_IS_ZQSTART			54
-> +#define EVENT_OP_IS_TCR_MRR			53
-> +#define EVENT_OP_IS_DQSOSC_MRR			52
-> +#define EVENT_OP_IS_DQSOSC_MPC			51
-> +#define EVENT_VISIBLE_WIN_LIMIT_REACHED_WR	50
-> +#define EVENT_VISIBLE_WIN_LIMIT_REACHED_RD	49
-> +#define EVENT_BSM_STARVATION			48
-> +#define EVENT_BSM_ALLOC				47
-> +#define EVENT_LPR_REQ_WITH_NOCREDIT		46
-> +#define EVENT_HPR_REQ_WITH_NOCREDIT		45
-> +#define EVENT_OP_IS_ZQCS			44
-> +#define EVENT_OP_IS_ZQCL			43
-> +#define EVENT_OP_IS_LOAD_MODE			42
-> +#define EVENT_OP_IS_SPEC_REF			41
-> +#define EVENT_OP_IS_CRIT_REF			40
-> +#define EVENT_OP_IS_REFRESH			39
-> +#define EVENT_OP_IS_ENTER_MPSM			35
-> +#define EVENT_OP_IS_ENTER_POWERDOWN		31
-> +#define EVENT_OP_IS_ENTER_SELFREF		27
-> +#define EVENT_WAW_HAZARD			26
-> +#define EVENT_RAW_HAZARD			25
-> +#define EVENT_WAR_HAZARD			24
-> +#define EVENT_WRITE_COMBINE			23
-> +#define EVENT_RDWR_TRANSITIONS			22
-> +#define EVENT_PRECHARGE_FOR_OTHER		21
-> +#define EVENT_PRECHARGE_FOR_RDWR		20
-> +#define EVENT_OP_IS_PRECHARGE			19
-> +#define EVENT_OP_IS_MWR				18
-> +#define EVENT_OP_IS_WR				17
-> +#define EVENT_OP_IS_RD				16
-> +#define EVENT_OP_IS_RD_ACTIVATE			15
-> +#define EVENT_OP_IS_RD_OR_WR			14
-> +#define EVENT_OP_IS_ACTIVATE			13
-> +#define EVENT_WR_XACT_WHEN_CRITICAL		12
-> +#define EVENT_LPR_XACT_WHEN_CRITICAL		11
-> +#define EVENT_HPR_XACT_WHEN_CRITICAL		10
-> +#define EVENT_DFI_RD_DATA_CYCLES		9
-> +#define EVENT_DFI_WR_DATA_CYCLES		8
-> +#define EVENT_ACT_BYPASS			7
-> +#define EVENT_READ_BYPASS			6
-> +#define EVENT_HIF_HI_PRI_RD			5
-> +#define EVENT_HIF_RMW				4
-> +#define EVENT_HIF_RD				3
-> +#define EVENT_HIF_WR				2
-> +#define EVENT_HIF_RD_OR_WR			1
-> +
-> +/* Event counter value registers */
-> +#define DDRC_PERF_CNT_VALUE_BASE		0x8080
-> +#define DDRC_PERF_CNT_VALUE(n)	(DDRC_PERF_CNT_VALUE_BASE + 8 * (n))
-> +
-> +/* Fixed event counter enable/disable register */
-> +#define DDRC_PERF_CNT_FREERUN_EN	0x80C0
-> +#define DDRC_PERF_FREERUN_WRITE_EN	0x1
-> +#define DDRC_PERF_FREERUN_READ_EN	0x2
-> +
-> +/* Fixed event counter control register */
-> +#define DDRC_PERF_CNT_FREERUN_CTRL	0x80C8
-> +#define DDRC_FREERUN_WRITE_CNT_CLR	0x1
-> +#define DDRC_FREERUN_READ_CNT_CLR	0x2
-> +
-> +/* Fixed event counter value register */
-> +#define DDRC_PERF_CNT_VALUE_WR_OP	0x80D0
-> +#define DDRC_PERF_CNT_VALUE_RD_OP	0x80D8
-> +#define DDRC_PERF_CNT_VALUE_OVERFLOW	BIT_ULL(48)
-> +#define DDRC_PERF_CNT_MAX_VALUE		GENMASK_ULL(48, 0)
-
-I assume all these macros are used...
-
-> +
-> +struct cn10k_ddr_pmu {
-> +	struct pmu pmu;
-> +	int id;
-> +	void __iomem *base;
-> +	unsigned int cpu;
-> +	struct	device *dev;
-> +	int active_events;
-> +	struct perf_event *events[DDRC_PERF_NUM_COUNTERS];
-> +};
-> +
-> +#define to_cn10k_ddr_pmu(p)	container_of(p, struct cn10k_ddr_pmu, pmu)
-> +
-> +static ssize_t cn10k_ddr_pmu_event_show(struct device *dev,
-> +					struct device_attribute *attr,
-> +					char *page)
-> +{
-> +	struct perf_pmu_events_attr *pmu_attr;
-> +
-> +	pmu_attr = container_of(attr, struct perf_pmu_events_attr, attr);
-> +	return sprintf(page, "event=0x%02llx\n", pmu_attr->id);
-
-isn't sysfs_emit() preferred now? Need to check.
-
-> +}
-> +
-> +#define CN10K_DDR_PMU_EVENT_ATTR(_name, _id)				     \
-> +	PMU_EVENT_ATTR_ID(_name, cn10k_ddr_pmu_event_show, _id)
-> +
-> +static struct attribute *cn10k_ddr_perf_events_attrs[] = {
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_hif_rd_or_wr_access, EVENT_HIF_RD_OR_WR),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_hif_wr_access, EVENT_HIF_WR),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_hif_rd_access, EVENT_HIF_RD),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_hif_rmw_access, EVENT_HIF_RMW),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_hif_pri_rdaccess, EVENT_HIF_HI_PRI_RD),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_rd_bypass_access, EVENT_READ_BYPASS),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_act_bypass_access, EVENT_ACT_BYPASS),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_dif_wr_data_access, EVENT_DFI_WR_DATA_CYCLES),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_dif_rd_data_access, EVENT_DFI_RD_DATA_CYCLES),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_hpri_sched_rd_crit_access,
-> +					EVENT_HPR_XACT_WHEN_CRITICAL),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_lpri_sched_rd_crit_access,
-> +					EVENT_LPR_XACT_WHEN_CRITICAL),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_wr_trxn_crit_access,
-> +					EVENT_WR_XACT_WHEN_CRITICAL),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_cam_active_access, EVENT_OP_IS_ACTIVATE),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_cam_rd_or_wr_access, EVENT_OP_IS_RD_OR_WR),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_cam_rd_active_access, EVENT_OP_IS_RD_ACTIVATE),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_cam_read, EVENT_OP_IS_RD),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_cam_write, EVENT_OP_IS_WR),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_cam_mwr, EVENT_OP_IS_MWR),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_precharge, EVENT_OP_IS_PRECHARGE),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_precharge_for_rdwr, EVENT_PRECHARGE_FOR_RDWR),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_precharge_for_other,
-> +					EVENT_PRECHARGE_FOR_OTHER),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_rdwr_transitions, EVENT_RDWR_TRANSITIONS),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_write_combine, EVENT_WRITE_COMBINE),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_war_hazard, EVENT_WAR_HAZARD),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_raw_hazard, EVENT_RAW_HAZARD),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_waw_hazard, EVENT_WAW_HAZARD),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_enter_selfref, EVENT_OP_IS_ENTER_SELFREF),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_enter_powerdown, EVENT_OP_IS_ENTER_POWERDOWN),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_enter_mpsm, EVENT_OP_IS_ENTER_MPSM),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_refresh, EVENT_OP_IS_REFRESH),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_crit_ref, EVENT_OP_IS_CRIT_REF),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_spec_ref, EVENT_OP_IS_SPEC_REF),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_load_mode, EVENT_OP_IS_LOAD_MODE),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_zqcl, EVENT_OP_IS_ZQCL),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_cam_wr_access, EVENT_OP_IS_ZQCS),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_hpr_req_with_nocredit,
-> +					EVENT_HPR_REQ_WITH_NOCREDIT),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_lpr_req_with_nocredit,
-> +					EVENT_LPR_REQ_WITH_NOCREDIT),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_bsm_alloc, EVENT_BSM_ALLOC),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_bsm_starvation, EVENT_BSM_STARVATION),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_win_limit_reached_rd,
-> +					EVENT_VISIBLE_WIN_LIMIT_REACHED_RD),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_win_limit_reached_wr,
-> +					EVENT_VISIBLE_WIN_LIMIT_REACHED_WR),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_dqsosc_mpc, EVENT_OP_IS_DQSOSC_MPC),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_dqsosc_mrr, EVENT_OP_IS_DQSOSC_MRR),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_tcr_mrr, EVENT_OP_IS_TCR_MRR),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_zqstart, EVENT_OP_IS_ZQSTART),
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_zqlatch, EVENT_OP_IS_ZQLATCH),
-> +	/* Free run event counters */
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_ddr_reads, EVENT_DDR_READS),
-
-if you want perf tool to support aliases / metrics for these then a hw 
-identifer sysfs file is required, like the freescale imx8 ddr pmu driver 
-has, as I assume that this PMU is not tightly coupled always to a 
-specific CPU
-
-> +	CN10K_DDR_PMU_EVENT_ATTR(ddr_ddr_writes, EVENT_DDR_WRITES),
-> +	NULL,
-
-no need for ',' when the array is not going to be expanded
-
-> +};
-> +
-> +static struct attribute_group cn10k_ddr_perf_events_attr_group = {
-> +	.name = "events",
-> +	.attrs = cn10k_ddr_perf_events_attrs,
-> +};
-> +
-> +PMU_FORMAT_ATTR(event, "config:0-8");
-> +
-> +static struct attribute *cn10k_ddr_perf_format_attrs[] = {
-> +	&format_attr_event.attr,
-> +	NULL,
-> +};
-> +
-> +static struct attribute_group cn10k_ddr_perf_format_attr_group = {
-> +	.name = "format",
-> +	.attrs = cn10k_ddr_perf_format_attrs,
-> +};
-> +
-> +static ssize_t cn10k_ddr_perf_cpumask_show(struct device *dev,
-> +					   struct device_attribute *attr,
-> +					   char *buf)
-> +{
-> +	struct cn10k_ddr_pmu *pmu = dev_get_drvdata(dev);
-> +
-> +	return cpumap_print_to_pagebuf(true, buf, cpumask_of(pmu->cpu));
-> +}
-> +
-> +static struct device_attribute cn10k_ddr_perf_cpumask_attr =
-> +	__ATTR(cpumask, 0444, cn10k_ddr_perf_cpumask_show, NULL);
-> +
-> +static struct attribute *cn10k_ddr_perf_cpumask_attrs[] = {
-> +	&cn10k_ddr_perf_cpumask_attr.attr,
-> +	NULL,
-> +};
-> +
-> +static struct attribute_group cn10k_ddr_perf_cpumask_attr_group = {
-> +	.attrs = cn10k_ddr_perf_cpumask_attrs,
-> +};
-> +
-> +static const struct attribute_group *cn10k_attr_groups[] = {
-> +	&cn10k_ddr_perf_events_attr_group,
-> +	&cn10k_ddr_perf_format_attr_group,
-> +	&cn10k_ddr_perf_cpumask_attr_group,
-> +	NULL,
-> +};
-> +
-> +static uint64_t ddr_perf_get_event_bitmap(int eventid)
-
-Don't we use u64 in kernel land as preference?
-
-> +{
-> +	uint64_t event_bitmap = 0;
-> +
-> +	switch (eventid) {
-> +	case EVENT_HIF_RD_OR_WR ... EVENT_WAW_HAZARD:
-> +	case EVENT_OP_IS_REFRESH ... EVENT_OP_IS_ZQLATCH:
-> +		event_bitmap = (1ULL << (eventid - 1));
-> +		break;
-> +
-> +	case EVENT_OP_IS_ENTER_SELFREF:
-> +	case EVENT_OP_IS_ENTER_POWERDOWN:
-> +	case EVENT_OP_IS_ENTER_MPSM:
-> +		event_bitmap = (0xFULL << (eventid - 1));
-> +		break;
-> +	default:
-> +		pr_err("%s Invalid eventid %d\n", __func__, eventid);
-
-shouldn't this generate a proper error to its only caller (which can 
-actually error)?
-
-> +		break;
-> +	}
-> +
-> +	return event_bitmap;
-> +}
-> +
-> +static int cn10k_ddr_perf_alloc_counter(struct cn10k_ddr_pmu *pmu,
-> +					struct perf_event *event)
-> +{
-> +	uint8_t config = event->attr.config;
-> +	int i;
-> +
-> +	/* DDR read free-run counter index */
-> +	if (config == EVENT_DDR_READS) {
-> +		pmu->events[DDRC_PERF_READ_COUNTER_IDX] = event;
-> +		return DDRC_PERF_READ_COUNTER_IDX;
-> +	}
-> +
-> +	/* DDR write free-run counter index */
-> +	if (config == EVENT_DDR_WRITES) {
-> +		pmu->events[DDRC_PERF_WRITE_COUNTER_IDX] = event;
-> +		return DDRC_PERF_WRITE_COUNTER_IDX;
-> +	}
-> +
-> +	/* Allocate DDR generic counters */
-> +	for (i = 0; i < DDRC_PERF_NUM_GEN_COUNTERS; i++) {
-> +		if (pmu->events[i] == NULL) {
-> +			pmu->events[i] = event;
-> +			return i;
-> +		}
-> +	}
-> +
-> +	return -ENOENT;
-> +}
-> +
-> +static void cn10k_ddr_perf_free_counter(struct cn10k_ddr_pmu *pmu, int counter)
-> +{
-> +	pmu->events[counter] = NULL;
-> +}
-> +
-> +static int cn10k_ddr_perf_event_init(struct perf_event *event)
-> +{
-> +	struct cn10k_ddr_pmu *pmu = to_cn10k_ddr_pmu(event->pmu);
-> +	struct hw_perf_event *hwc = &event->hw;
-> +
-> +	if (event->attr.type != event->pmu->type)
-> +		return -ENOENT;
-> +
-> +	if (is_sampling_event(event)) {
-> +		dev_info(pmu->dev, "Sampling not supported!\n");
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	if (event->cpu < 0) {
-> +		dev_warn(pmu->dev, "Can't provide per-task data!\n");
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	/*  We must NOT create groups containing mixed PMUs */
-> +	if (event->group_leader->pmu != event->pmu &&
-> +			!is_software_event(event->group_leader))
-
-pay attention to indentation
-
-> +		return -EINVAL;
-> +
-> +	/* Set ownership of event to one CPU, same event can not be observed
-> +	 * on multiple cpus at same time.
-> +	 */
-> +	event->cpu = pmu->cpu;
-> +	hwc->idx = -1;
-> +	return 0;
-> +}
-> +
-> +static void cn10k_ddr_perf_counter_enable(struct cn10k_ddr_pmu *pmu,
-> +					  int counter, bool enable)
-> +{
-> +	uint32_t reg;
-> +	uint64_t val;
-> +
-> +	if (counter > DDRC_PERF_NUM_COUNTERS) {
-
-is this paranoia?
-
-> +		pr_err("Error: unsupported counter %d\n", counter);
-> +		return;
-> +	}
-> +
-> +	if (counter < DDRC_PERF_NUM_GEN_COUNTERS) {
-> +		reg = DDRC_PERF_CFG(counter);
-> +		val = readq_relaxed(pmu->base + reg);
-> +
-> +		if (enable)
-> +			val |= EVENT_ENABLE;
-> +		else
-> +			val &= ~EVENT_ENABLE;
-> +
-> +		writeq_relaxed(val, pmu->base + reg);
-> +	} else {
-> +		val = readq_relaxed(pmu->base + DDRC_PERF_CNT_FREERUN_EN);
-> +		if (enable) {
-> +			if (counter == DDRC_PERF_READ_COUNTER_IDX)
-> +				val |= DDRC_PERF_FREERUN_READ_EN;
-> +			else
-> +				val |= DDRC_PERF_FREERUN_WRITE_EN;
-> +		} else {
-> +			if (counter == DDRC_PERF_READ_COUNTER_IDX)
-> +				val &= ~DDRC_PERF_FREERUN_READ_EN;
-> +			else
-> +				val &= ~DDRC_PERF_FREERUN_WRITE_EN;
-> +		}
-> +		writeq_relaxed(val, pmu->base + DDRC_PERF_CNT_FREERUN_EN);
-> +	}
-> +}
-> +
-> +static uint64_t cn10k_ddr_perf_read_counter(struct cn10k_ddr_pmu *pmu,
-> +					    int counter)
-> +{
-> +	uint64_t val;
-> +
-> +	if (counter == DDRC_PERF_READ_COUNTER_IDX)
-> +		return readq_relaxed(pmu->base + DDRC_PERF_CNT_VALUE_RD_OP);
-> +
-> +	if (counter == DDRC_PERF_WRITE_COUNTER_IDX)
-> +		return readq_relaxed(pmu->base + DDRC_PERF_CNT_VALUE_WR_OP);
-> +
-> +	val = readq_relaxed(pmu->base + DDRC_PERF_CNT_VALUE(counter));
-> +	return val;
-> +}
-> +
-> +static void cn10k_ddr_perf_event_update(struct perf_event *event)
-> +{
-> +	struct cn10k_ddr_pmu *pmu = to_cn10k_ddr_pmu(event->pmu);
-> +	struct hw_perf_event *hwc = &event->hw;
-> +	uint64_t prev_count, new_count, mask;
-> +
-> +	do {
-> +		prev_count = local64_read(&hwc->prev_count);
-> +		new_count = cn10k_ddr_perf_read_counter(pmu, hwc->idx);
-> +	} while (local64_xchg(&hwc->prev_count, new_count) != prev_count);
-> +
-> +	mask = DDRC_PERF_CNT_MAX_VALUE;
-> +
-> +	local64_add((new_count - prev_count) & mask, &event->count);
-> +}
-> +
-> +static void cn10k_ddr_perf_event_start(struct perf_event *event, int flags)
-> +{
-> +	struct cn10k_ddr_pmu *pmu = to_cn10k_ddr_pmu(event->pmu);
-> +	struct hw_perf_event *hwc = &event->hw;
-> +	int counter = hwc->idx;
-> +
-> +	local64_set(&hwc->prev_count, 0);
-> +
-> +	cn10k_ddr_perf_counter_enable(pmu, counter, true);
-> +
-> +	hwc->state = 0;
-> +}
-> +
-> +static int cn10k_ddr_perf_event_add(struct perf_event *event, int flags)
-> +{
-> +	struct cn10k_ddr_pmu *pmu = to_cn10k_ddr_pmu(event->pmu);
-> +	struct hw_perf_event *hwc = &event->hw;
-> +	uint8_t config = event->attr.config;
-> +	uint32_t reg_offset;
-> +	uint64_t val;
-> +	int counter;
-> +
-> +	counter = cn10k_ddr_perf_alloc_counter(pmu, event);
-> +	if (counter < 0) {
-> +		dev_dbg(pmu->dev, "There are not enough counters\n");
-
-hmmm .. I'd be inclined to say that there are not enough available. And 
-is dev_dbg() really any use?
-
-> +		return -EOPNOTSUPP;
-
-is that the best error code?
-
-> +	}
-> +
-> +	pmu->active_events++;
-> +	hwc->idx = counter;
-> +
-> +	if (counter < DDRC_PERF_NUM_GEN_COUNTERS) {
-> +		/* Generic counters, configure event id */
-> +		reg_offset = DDRC_PERF_CFG(counter);
-> +		val = ddr_perf_get_event_bitmap(config);
-> +		writeq_relaxed(val, pmu->base + reg_offset);
-> +	} else {
-> +		/* fixed event counter, clear counter value */
-> +		if (counter == DDRC_PERF_READ_COUNTER_IDX)
-> +			val = DDRC_FREERUN_READ_CNT_CLR;
-> +		else
-> +			val = DDRC_FREERUN_WRITE_CNT_CLR;
-> +
-> +		writeq_relaxed(val, pmu->base + DDRC_PERF_CNT_FREERUN_CTRL);
-> +	}
-> +
-> +	hwc->state |= PERF_HES_STOPPED;
-> +
-> +	if (flags & PERF_EF_START)
-> +		cn10k_ddr_perf_event_start(event, flags);
-> +
-> +	return 0;
-> +}
-> +
-> +static void cn10k_ddr_perf_event_stop(struct perf_event *event, int flags)
-> +{
-> +	struct cn10k_ddr_pmu *pmu = to_cn10k_ddr_pmu(event->pmu);
-> +	struct hw_perf_event *hwc = &event->hw;
-> +	int counter = hwc->idx;
-> +
-> +	cn10k_ddr_perf_counter_enable(pmu, counter, false);
-> +
-> +	if (flags & PERF_EF_UPDATE)
-> +		cn10k_ddr_perf_event_update(event);
-> +
-> +	hwc->state |= PERF_HES_STOPPED;
-> +}
-> +
-> +static void cn10k_ddr_perf_event_del(struct perf_event *event, int flags)
-> +{
-> +	struct cn10k_ddr_pmu *pmu = to_cn10k_ddr_pmu(event->pmu);
-> +	struct hw_perf_event *hwc = &event->hw;
-> +	int counter = hwc->idx;
-> +
-> +	cn10k_ddr_perf_event_stop(event, PERF_EF_UPDATE);
-> +
-> +	cn10k_ddr_perf_free_counter(pmu, counter);
-> +	pmu->active_events--;
-> +	hwc->idx = -1;
-> +}
-> +
-> +static void cn10k_ddr_perf_pmu_enable(struct pmu *pmu)
-> +{
-> +	struct cn10k_ddr_pmu *ddr_pmu = to_cn10k_ddr_pmu(pmu);
-> +
-> +	writeq_relaxed(START_OP_CTRL_VAL_START, ddr_pmu->base +
-> +		       DDRC_PERF_CNT_START_OP_CTRL);
-> +}
-> +
-> +static void cn10k_ddr_perf_pmu_disable(struct pmu *pmu)
-> +{
-> +	struct cn10k_ddr_pmu *ddr_pmu = to_cn10k_ddr_pmu(pmu);
-> +
-> +	writeq_relaxed(END_OP_CTRL_VAL_END, ddr_pmu->base +
-> +		       DDRC_PERF_CNT_END_OP_CTRL);
-> +}
-> +
-> +static int cn10k_ddr_perf_probe(struct platform_device *pdev)
-> +{
-> +	struct cn10k_ddr_pmu *ddr_pmu;
-> +	struct resource *res;
-> +	void __iomem *base;
-> +	static int index;
-> +	char *name;
-> +	int ret;
-> +
-> +	ddr_pmu = devm_kzalloc(&pdev->dev, sizeof(*ddr_pmu), GFP_KERNEL);
-> +	if (!ddr_pmu)
-> +		return -ENOMEM;
-> +
-> +	ddr_pmu->dev = &pdev->dev;
-> +	platform_set_drvdata(pdev, ddr_pmu);
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	base = devm_ioremap_resource(&pdev->dev, res);
-> +	if (IS_ERR(base))
-> +		return PTR_ERR(base);
-
-can you use devm_platform_get_and_ioremap_resource()? I think that there 
-is some helper that does both these steps
-
-> +
-> +	ddr_pmu->base = base;
-> +
-> +	/* Setup the PMU counter to work in mannual mode */
-
-manual
-
-> +	writeq_relaxed(OP_MODE_CTRL_VAL_MANNUAL, ddr_pmu->base +
-> +		       DDRC_PERF_CNT_OP_MODE_CTRL);
-> +
-> +	ddr_pmu->pmu = (struct pmu) {
-> +		.module	      = THIS_MODULE,
-> +		.capabilities = PERF_PMU_CAP_NO_EXCLUDE,
-> +		.task_ctx_nr = perf_invalid_context,
-> +		.attr_groups = cn10k_attr_groups,
-> +		.event_init  = cn10k_ddr_perf_event_init,
-> +		.add	     = cn10k_ddr_perf_event_add,
-> +		.del	     = cn10k_ddr_perf_event_del,
-> +		.start	     = cn10k_ddr_perf_event_start,
-> +		.stop	     = cn10k_ddr_perf_event_stop,
-> +		.read	     = cn10k_ddr_perf_event_update,
-> +		.pmu_enable  = cn10k_ddr_perf_pmu_enable,
-> +		.pmu_disable = cn10k_ddr_perf_pmu_disable,
-> +	};
-> +
-> +	/* Choose this cpu to collect perf data */
-> +	ddr_pmu->cpu = raw_smp_processor_id();
-> +
-> +	name = devm_kasprintf(ddr_pmu->dev, GFP_KERNEL, "mrvl_ddr_pmu@%llx",
-
-mostly _%llx would be used elsewhere, and I am not sure how perf tool 
-likes @ at all
-
-> +			      res->start);
-> +	if (!name)
-> +		return -ENOMEM;
-> +
-> +	ret = perf_pmu_register(&ddr_pmu->pmu, name, -1);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ddr_pmu->id = index++;
-
-where is this used?
-
-> +	pr_info("CN10K DDR PMU Driver for ddrc@%llx - id-%d\n",
-> +		res->start, ddr_pmu->id);
-> +	return 0;
-> +}
-> +
-> +static int cn10k_ddr_perf_remove(struct platform_device *pdev)
-> +{
-> +	struct cn10k_ddr_pmu *ddr_pmu = platform_get_drvdata(pdev);
-> +
-> +	perf_pmu_unregister(&ddr_pmu->pmu);
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id cn10k_ddr_pmu_of_match[] = {
-> +	{ .compatible = "marvell,cn10k-ddr-pmu", },
-> +	{ },
-> +};
-> +MODULE_DEVICE_TABLE(of, cn10k_ddr_pmu_of_match);
-> +
-> +static struct platform_driver cn10k_ddr_pmu_driver = {
-> +	.driver	= {
-> +		.name   = "cn10k-ddr-pmu",
-> +		.of_match_table = cn10k_ddr_pmu_of_match,
-> +		.suppress_bind_attrs = true,
-> +	},
-> +	.probe		= cn10k_ddr_perf_probe,
-> +	.remove		= cn10k_ddr_perf_remove,
-> +};
-> +
-> +static int __init cn10k_ddr_pmu_init(void)
-> +{
-> +	return platform_driver_register(&cn10k_ddr_pmu_driver);
-> +}
-> +
-> +static void __exit cn10k_ddr_pmu_exit(void)
-> +{
-> +	platform_driver_unregister(&cn10k_ddr_pmu_driver);
-> +}
-> +
-> +module_init(cn10k_ddr_pmu_init);
-> +module_exit(cn10k_ddr_pmu_exit);
-> +
-> +MODULE_AUTHOR("Bharat Bhushan <bbhushan2@marvell.com>");
-> +MODULE_LICENSE("GPL v2");
-> 
-
