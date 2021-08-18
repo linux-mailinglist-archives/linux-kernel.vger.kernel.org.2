@@ -2,122 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8253F0A1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE853F0A22
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232621AbhHRRRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 13:17:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33370 "EHLO
+        id S230321AbhHRRRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 13:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhHRRR1 (ORCPT
+        with ESMTP id S232785AbhHRRRh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 13:17:27 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47B95C061764;
-        Wed, 18 Aug 2021 10:16:52 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id i9so6086734lfg.10;
-        Wed, 18 Aug 2021 10:16:52 -0700 (PDT)
+        Wed, 18 Aug 2021 13:17:37 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95624C0613D9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 10:17:02 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id l11so2218562plk.6
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 10:17:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vgNL/YukxMg7bm55oBtvyONH8Uy1dCmXD+rKl0KJZ+4=;
-        b=aWNGgcB8z2InDXr6LAdvdaoW2x8CYeUuWHd3AgCWJbOwgyDZbX1SSdtkZCd9LRZU1v
-         IfB7jsJ5WNoNiPAd71m4tqa31eFIV1XWJVkfosfkA2c8iOpOAgHnxOP+Umk6tnLPaeuD
-         zFTYiqQcf3UIWIFj2bsQWT3aHs/7ok0x1oWwrXbsCuJZ6+Dey8Y6WST/bdI/u6vAMVWp
-         htf6YIaZFo8BnuwLljU/vOB2BDRZawuqyS/nEBvAZbttcyYj5o5xKI9Dqb+FfMPcy4Q4
-         olMMp0EmD83m0Qh7UjqjOn1UF1IMJlXK3kbyDPrL8jwSvvrERW8PV9J+29gQn2e5QIgO
-         hO2g==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dAlPQPwsjsFMXjoJMw0xWHhPDndQQBQFzdTDmejXvi4=;
+        b=Yh9Iis5vwRSOQX95WV49w8MtJwWHZCS7qS26vo4RK4iZOvp6vCGq8L5X968TWIIl0R
+         UKRUNo93/xcU6d/x2jFLhW9vll3U4EKuMEL4AUMbqGvCUhlWTIidr5JdGyVRywmLW8yn
+         pofzmmYu1zzqw5ShU8qSqTIXUDgcZ46USnARo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vgNL/YukxMg7bm55oBtvyONH8Uy1dCmXD+rKl0KJZ+4=;
-        b=hwzznwZhPThSzmSn5dqPR4Ri1XwF3zOwUAzYe9KSP48nmTbOaOanrnWWCL9r/OdHO7
-         bo699JH7Sdgb2kJ8VptxKn+k7MutgjD8yfufJIw78Q5sWx0oS10sJ2ojAflVvG030E+4
-         xRXHx+PgpBfW6EbfTWSDVSW7BJAcsOmuMljZ1MITHIUD/OfUaI3QG1e2UjGmHNH4pjZb
-         PQqfsF2qxIkjCNooQonf7VfDCk3Bu00HUgH/ElKnfPZt7O5/oaEx3QL6jZooHKE5ZIBk
-         LNZI6DLgwqgV2dod5eAUMmMcYQXEiS9YyTygyDF1OPnx/4yl+lc/phpKaqIBEMaCLTay
-         CHMA==
-X-Gm-Message-State: AOAM530sny4Ywp6As+gnG/GzSXvf/jkqEeO5HC0V3M/9kmRlNRQs7gYO
-        95ChHxq5tR8gWPfx2EkmbmCCFhVJvM0=
-X-Google-Smtp-Source: ABdhPJwSW+uafqBwt0YKcEZ0LBXy3yeuH6y6xXlHWB8hnmrEnK92Pi4r+On9LLiAT6Vq9yxNJiR3Yg==
-X-Received: by 2002:ac2:5105:: with SMTP id q5mr305235lfb.102.1629307010475;
-        Wed, 18 Aug 2021 10:16:50 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-85-91.dynamic.spd-mgts.ru. [46.138.85.91])
-        by smtp.googlemail.com with ESMTPSA id d7sm46016ljq.112.2021.08.18.10.16.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 10:16:49 -0700 (PDT)
-Subject: Re: [PATCH v8 06/34] dt-bindings: clock: tegra-car: Document new
- tegra-clocks sub-node
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20210817012754.8710-1-digetx@gmail.com>
- <20210817012754.8710-7-digetx@gmail.com> <YR0SSz7KMh7TwaFW@orome.fritz.box>
- <eff5ef47-e6e0-3e03-cf1a-d931b0f2dc2a@gmail.com>
- <YR033zuYWWLCeYpM@orome.fritz.box>
- <a5b942cb-1611-9ae1-6e89-4b68fdaf03e3@gmail.com>
-Message-ID: <a0222ddc-e83f-98d9-c9f1-8edb0ee47c03@gmail.com>
-Date:   Wed, 18 Aug 2021 20:16:48 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dAlPQPwsjsFMXjoJMw0xWHhPDndQQBQFzdTDmejXvi4=;
+        b=iRnlvhteeMjkTE7CsHPke5A9qnZenF+daO6pJO3FGTqLLdGe1x870sM5gcBFUQeREQ
+         k8+NUErdhM9R3/FwrX+taiErLTl0lYTA1j4C87b91nsIWbTTi1Fomi+VAAhPZkTuIAVq
+         5RwBE0iL7S2rWW4/ROyItHIm68krfyeMUONQxYESY6rA/nNJf0UuDsTmc9cyM68rDpcU
+         Xo80oIpdEa3o2OJStIx+JCHgGNFEDgvzuVeHLG6Ht6jcuK8SUFvThbPNMZFBiXkD1yBq
+         CquwP+NX1dej4PCGGjlSweupRF2wEmCArEsTMiRSdpe6OaVKWWZWxUDANbneXAOPNZJP
+         2RGA==
+X-Gm-Message-State: AOAM530SpZ+1xiSb5YAkog+y8rzoksOZAEatmmxrxNz40Zv1bV/kKT+m
+        5F+llZ7upE7I5WgTHhIqZn5g9g==
+X-Google-Smtp-Source: ABdhPJwuXKbNAMjgpogkJyF1CgBFf2+9GIVULMoMoz5BFx9xliiMhHwX7ia2SIMVLyMakPNYH90txg==
+X-Received: by 2002:a17:902:e20c:b0:12f:6b45:7765 with SMTP id u12-20020a170902e20c00b0012f6b457765mr1132440plb.50.1629307022176;
+        Wed, 18 Aug 2021 10:17:02 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id z8sm338058pfa.113.2021.08.18.10.17.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 10:17:01 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 10:17:00 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Al Cooper <alcooperx@gmail.com>,
+        linux-usb@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 1/2] USB: EHCI: Add register array bounds to HCS ports
+Message-ID: <202108181016.114D7B2888@keescook>
+References: <20210818043035.1308062-1-keescook@chromium.org>
+ <20210818043035.1308062-2-keescook@chromium.org>
+ <20210818144442.GC193695@rowland.harvard.edu>
 MIME-Version: 1.0
-In-Reply-To: <a5b942cb-1611-9ae1-6e89-4b68fdaf03e3@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210818144442.GC193695@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-18.08.2021 19:57, Dmitry Osipenko пишет:
->>>> Also, I don't think the tegra- prefix is necessary here. The parent node
->>>> is already identified as Tegra via the compatible string.
->>>>
->>>> In the case of CAR, I'd imagine something like:
->>>>
->>>> 	clocks {
->>>> 		sclk {
->>>> 			operating-points-v2 = <&opp_table>;
->>>> 			power-domains = <&domain>;
->>>> 		};
->>>> 	};
->>>>
->>>> Now you've only got the bare minimum in here that you actually add. All
->>>> the other data that you used to have is simply derived from the parent.
->>> 'clocks' is already a generic keyword in DT. It's probably not okay to
->>> redefine it.
->> "clocks" is not a generic keyword. It's the name of a property and given
->> that we're talking about the clock provider here, it doesn't need a
->> clocks property of its own, so it should be fine to use that for the
->> node.
-> I'm curious what Rob thinks about it. Rob, does this sound okay to you?
+On Wed, Aug 18, 2021 at 10:44:42AM -0400, Alan Stern wrote:
+> On Tue, Aug 17, 2021 at 09:30:33PM -0700, Kees Cook wrote:
+> > The original EHCI register struct used a trailing 0-element array for
+> > addressing the N_PORTS-many available registers. However, after
+> > commit a46af4ebf9ff ("USB: EHCI: define extension registers like normal ones")
+> > the 0-element array started to overlap the USBMODE extension register.
+> > 
+> > To avoid future compile-time warnings about accessing indexes within a
+> > 0-element array, rearrange the struct to actually describe the expected
+> > layout (max 15 registers) with a union. All offsets remain the same, and
+> > bounds checking becomes possible on accesses to port_status and hostpc.
+> > 
+> > There are no binary differences, and struct offsets continue to match.
+> 
+> Two comments...
+> 
+> > ---
+> >  include/linux/usb/ehci_def.h | 24 +++++++++++++-----------
+> >  1 file changed, 13 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/include/linux/usb/ehci_def.h b/include/linux/usb/ehci_def.h
+> > index 78e006355557..5398f571113b 100644
+> > --- a/include/linux/usb/ehci_def.h
+> > +++ b/include/linux/usb/ehci_def.h
+> > @@ -45,6 +45,7 @@ struct ehci_caps {
+> >  #define HCS_PORTROUTED(p)	((p)&(1 << 7))	/* true: port routing */
+> >  #define HCS_PPC(p)		((p)&(1 << 4))	/* true: port power control */
+> >  #define HCS_N_PORTS(p)		(((p)>>0)&0xf)	/* bits 3:0, ports on HC */
+> > +#define HCS_N_PORTS_MAX		0xf		/* N_PORTS valid 0x1-0xF */
+> 
+> I would prefer to see this value in decimal.  It seems very odd to say 
+> something like "The maximum number of ports is 0xf".
 
-I assume dt-schema won't be happy with a different meaning for the 'clocks'.
+Okay, done.
+
+> 
+> >  
+> >  	u32		hcc_params;      /* HCCPARAMS - offset 0x8 */
+> >  /* EHCI 1.1 addendum */
+> > @@ -126,8 +127,9 @@ struct ehci_regs {
+> >  	u32		configured_flag;
+> >  #define FLAG_CF		(1<<0)		/* true: we'll support "high speed" */
+> >  
+> > -	/* PORTSC: offset 0x44 */
+> > -	u32		port_status[0];	/* up to N_PORTS */
+> > +	union {
+> > +		/* PORTSC: offset 0x44 */
+> > +		u32	port_status[HCS_N_PORTS_MAX];
+> 
+> Please don't lose the second comment.
+
+I've put it back. It seemed redundant in the face of HCS_N_PORTS_MAX
+being there now.
+
+> 
+> >  /* EHCI 1.1 addendum */
+> >  #define PORTSC_SUSPEND_STS_ACK 0
+> >  #define PORTSC_SUSPEND_STS_NYET 1
+> > @@ -164,28 +166,28 @@ struct ehci_regs {
+> >  #define PORT_CSC	(1<<1)		/* connect status change */
+> >  #define PORT_CONNECT	(1<<0)		/* device connected */
+> >  #define PORT_RWC_BITS   (PORT_CSC | PORT_PEC | PORT_OCC)
+> > -
+> > -	u32		reserved3[9];
+> > -
+> > -	/* USBMODE: offset 0x68 */
+> > -	u32		usbmode;	/* USB Device mode */
+> > +		struct {
+> > +			u32	reserved3[9];
+> > +			/* USBMODE: offset 0x68 */
+> > +			u32	usbmode;	/* USB Device mode */
+> > +		};
+> >  #define USBMODE_SDIS	(1<<3)		/* Stream disable */
+> >  #define USBMODE_BE	(1<<2)		/* BE/LE endianness select */
+> >  #define USBMODE_CM_HC	(3<<0)		/* host controller mode */
+> >  #define USBMODE_CM_IDLE	(0<<0)		/* idle state */
+> > -
+> > -	u32		reserved4[6];
+> > +	};
+> > +	u32		reserved4;
+> >  
+> >  /* Moorestown has some non-standard registers, partially due to the fact that
+> >   * its EHCI controller has both TT and LPM support. HOSTPCx are extensions to
+> >   * PORTSCx
+> >   */
+> >  	/* HOSTPC: offset 0x84 */
+> > -	u32		hostpc[0];	/* HOSTPC extension */
+> > +	u32		hostpc[HCS_N_PORTS_MAX];
+> >  #define HOSTPC_PHCD	(1<<22)		/* Phy clock disable */
+> >  #define HOSTPC_PSPD	(3<<25)		/* Port speed detection */
+> >  
+> > -	u32		reserved5[17];
+> > +	u32		reserved5[2];
+> >  
+> >  	/* USBMODE_EX: offset 0xc8 */
+> >  	u32		usbmode_ex;	/* USB Device mode extension */
+> 
+> Otherwise okay.
+
+Thanks!
+
+-- 
+Kees Cook
