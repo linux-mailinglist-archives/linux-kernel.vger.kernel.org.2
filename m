@@ -2,132 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5301E3F00F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7218A3F00FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233252AbhHRJv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:51:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233042AbhHRJvW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:51:22 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455A6C0613A3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:50:48 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id x16so1574888pfh.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:50:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HyhZskvnkMHQUsBUgjlwBTJK659CA+CwU8djwVBZ2sM=;
-        b=WeXABN/OK1Wr8lx7yIzjEQc22keli5/mPbqOsII32BzwbNTl5ULMEk37J2dJ8WBIc8
-         ZnFr2sJXSoQcvyE/NTKrdgFlaJaQ5o8OxVWXD6PUNqbIuMj7u3RPYczNpQRUfi51aU4K
-         IMg9JXqfomBw0MGOEn5iaKId1Us1CN3Pm6n193v6mGKDxjCswxDgh1VAt9J14Z2xnhK9
-         TjVyhjtcpvAwdRJrWEVMHqX2US4YAz29pKFNe9gxQYZqLn/NPPMrB0GL1Cn9pdhRH215
-         rF0aZ83JvYygnG0uw5U83BQhbi3YsDjTjk/h7pS55RDpk7eJ2g4J4R4IDq7w+OQTfMd1
-         Zzzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HyhZskvnkMHQUsBUgjlwBTJK659CA+CwU8djwVBZ2sM=;
-        b=EpTM33nG8pEEoSKT62xRcIQD6vL2/r2mowpY/3gx6Uyb3G+U6kg0bqGSwPfsaoYgfk
-         9wlSr/ENMjAtb7RafiX7hvdS072y9SyWIZ0M14Ec96IKHk1ZqyV7HqqNcunC+6aZobxL
-         4nU8N34VJbP69dWmFMidB6cw6StJBSSwj5Ac7H/UfeQJw6Gao5kg0r+YAYlxMA80QBIJ
-         bPaP89Ck2owJcB0kosverAd9Xd/0sMv6tQPbnGHyoyVmJIjE98lIS+9N8t3Gap9hMkIL
-         JUUQJEuFvFNURJMklJS9vgzMQxfp51Mj4OB/y2zRsjbtEDSJCdy+x4rJAs1v+CfRWjr5
-         5EKg==
-X-Gm-Message-State: AOAM533RfCcby0uaxaFClSshDyh35T6etL3gKflAHa5gO/pEQb7dG6xp
-        9l1IHw7+Znxn55ZhRtjLLc2TJw==
-X-Google-Smtp-Source: ABdhPJzNgodhRJ4P04IWzIYvulf9/hQQBrDCKLc4ZA4G1N3jYvdGFtkpsn+640r5oaGBQ5g20Y+t7Q==
-X-Received: by 2002:a63:3c5d:: with SMTP id i29mr8049824pgn.147.1629280247471;
-        Wed, 18 Aug 2021 02:50:47 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id i11sm6720260pgo.25.2021.08.18.02.50.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 02:50:47 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 15:20:44 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-Message-ID: <20210818095044.e2ntsm45h5cddk7s@vireshk-i7>
-References: <20210818043131.7klajx6drvvkftoc@vireshk-i7>
- <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
- <20210818045307.4brb6cafkh3adjth@vireshk-i7>
- <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
- <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
- <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
- <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
- <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
- <20210818091417.dvlnsxlgybdsn76x@vireshk-i7>
- <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
+        id S232519AbhHRJyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 05:54:16 -0400
+Received: from mx20.baidu.com ([111.202.115.85]:48174 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231218AbhHRJyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 05:54:15 -0400
+Received: from BC-Mail-Ex29.internal.baidu.com (unknown [172.31.51.23])
+        by Forcepoint Email with ESMTPS id 035EBB6A346A40095000;
+        Wed, 18 Aug 2021 17:53:38 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex29.internal.baidu.com (172.31.51.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Wed, 18 Aug 2021 17:53:37 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Wed, 18 Aug 2021 17:53:37 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <straube.linux@gmail.com>, <dan.carpenter@oracle.com>,
+        <greg@kroah.com>, <yangyingliang@huawei.com>
+CC:     <linux-staging@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        "Cai Huoqing" <caihuoqing@baidu.com>
+Subject: [PATCH v4] staging: r8188eu: Remove unused including <linux/version.h>
+Date:   Wed, 18 Aug 2021 17:53:31 +0800
+Message-ID: <20210818095331.3422-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BJHW-Mail-Ex01.internal.baidu.com (10.127.64.11) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-08-21, 11:41, Ulf Hansson wrote:
-> On Wed, 18 Aug 2021 at 11:14, Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > What we need here is just configure. So something like this then:
-> >
-> > - genpd->get_performance_state()
-> >   -> dev_pm_opp_get_current_opp() //New API
-> >   -> dev_pm_genpd_set_performance_state(dev, current_opp->pstate);
-> >
-> > This can be done just once from probe() then.
-> 
-> How would dev_pm_opp_get_current_opp() work? Do you have a suggestion?
+Remove including <linux/version.h> that don't need it
 
-The opp core already has a way of finding current OPP, that's what
-Dmitry is trying to use here. It finds it using clk_get_rate(), if
-that is zero, it picks the lowest freq possible.
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+v1->v2: remove "based on staging-next" from commit message
+v2->v3: add changelog to commit message
+v3->v4: move the modified change under the --- line
 
-> I am sure I understand the problem. When a device is getting probed,
-> it needs to consume power, how else can the corresponding driver
-> successfully probe it?
+ drivers/staging/r8188eu/core/rtw_mlme.c      | 1 -
+ drivers/staging/r8188eu/os_dep/os_intfs.c    | 1 -
+ drivers/staging/r8188eu/os_dep/rtw_android.c | 1 -
+ drivers/staging/r8188eu/os_dep/xmit_linux.c  | 1 -
+ 4 files changed, 4 deletions(-)
 
-Dmitry can answer that better, but a device doesn't necessarily need
-to consume energy in probe. It can consume bus clock, like APB we
-have, but the more energy consuming stuff can be left disabled until
-the time a user comes up. Probe will just end up registering the
-driver and initializing it.
-
+diff --git a/drivers/staging/r8188eu/core/rtw_mlme.c b/drivers/staging/r8188eu/core/rtw_mlme.c
+index d5ef5783f4ad..82b74ebdaabd 100644
+--- a/drivers/staging/r8188eu/core/rtw_mlme.c
++++ b/drivers/staging/r8188eu/core/rtw_mlme.c
+@@ -3,7 +3,6 @@
+ 
+ #define _RTW_MLME_C_
+ 
+-#include <linux/version.h>
+ #include "../include/osdep_service.h"
+ #include "../include/drv_types.h"
+ #include "../include/recv_osdep.h"
+diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
+index f4bf4732578a..aef978eef4d7 100644
+--- a/drivers/staging/r8188eu/os_dep/os_intfs.c
++++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
+@@ -12,7 +12,6 @@
+ 
+ #include "../include/usb_osintf.h"
+ #include "../include/rtw_br_ext.h"
+-#include <linux/version.h>
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Realtek Wireless Lan Driver");
+diff --git a/drivers/staging/r8188eu/os_dep/rtw_android.c b/drivers/staging/r8188eu/os_dep/rtw_android.c
+index bdd381606ba6..af0072e2cb5f 100644
+--- a/drivers/staging/r8188eu/os_dep/rtw_android.c
++++ b/drivers/staging/r8188eu/os_dep/rtw_android.c
+@@ -3,7 +3,6 @@
+ 
+ #include <linux/module.h>
+ #include <linux/netdevice.h>
+-#include <linux/version.h>
+ #include "../include/rtw_android.h"
+ #include "../include/osdep_service.h"
+ #include "../include/rtw_debug.h"
+diff --git a/drivers/staging/r8188eu/os_dep/xmit_linux.c b/drivers/staging/r8188eu/os_dep/xmit_linux.c
+index 4f1ce346b3a5..69966c696130 100644
+--- a/drivers/staging/r8188eu/os_dep/xmit_linux.c
++++ b/drivers/staging/r8188eu/os_dep/xmit_linux.c
+@@ -3,7 +3,6 @@
+ 
+ #define _XMIT_OSDEP_C_
+ 
+-#include <linux/version.h>
+ #include "../include/osdep_service.h"
+ #include "../include/drv_types.h"
+ #include "../include/if_ether.h"
 -- 
-viresh
+2.22.0
+
