@@ -2,80 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6048C3F0718
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E976C3F0711
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239487AbhHROwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 10:52:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55572 "EHLO
+        id S239436AbhHROup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 10:50:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238483AbhHROv6 (ORCPT
+        with ESMTP id S239019AbhHROun (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 10:51:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A2CC0613CF;
-        Wed, 18 Aug 2021 07:51:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=HOaj1CFejRIbwr2VFBMVbAvfMNsHrt4NdWstS9REF68=; b=Aj5fAFbydfz0/Deokqjb2WKKvL
-        9YgEpwirvN4vz+VVeLVYe23oHc+w3OD+50HYqyyWjBSf7iouxmuWbvFtQUOksyAQbRf3GQsYwI0fD
-        Gkdb6EqLK4tUW9Y9qXZ8nsqQ+kROmbMRd4BF376wW0tNKUY/v1AdzGV+xAATONOavvXaMQBEhSpWU
-        q+5Q6YYli5SYBbRf/c0gIVn9dWbV55vUuNmbYXe7DLur5a6YxvEuqdFaQXdZE5N19L8jwrR/c+TCr
-        t6WzqdpE8IAwNdlfGycTco8Ks+2Dtg3lfWzR+NhqRbN89vKz3cZyHF6MZpI92hAhurJ0WfN2oq03Q
-        a/khoIrA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mGMst-003wkf-Th; Wed, 18 Aug 2021 14:49:51 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] mm: Remove bogus VM_BUG_ON
-Date:   Wed, 18 Aug 2021 15:49:32 +0100
-Message-Id: <20210818144932.940640-1-willy@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Wed, 18 Aug 2021 10:50:43 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42904C061764;
+        Wed, 18 Aug 2021 07:50:09 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id u1so1981169plr.1;
+        Wed, 18 Aug 2021 07:50:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=6Uh8FBGFVJ1JdTCeddx1mUTf33ZOu2+YFROQAiC4wXw=;
+        b=FvxDgvbsWlWgiHHfo1cKELhnM2uSeTuVKkYL2a8NcwGFJLwbeRWzgzRHZ8LWuG5NXb
+         VBDbxFm+4D48ZsM+JzqFGDXsR8/MRg7RcLNCTLAb/qRBj0LrTjF+EoGTNZ/5UDl0VIDs
+         yi4RDyhBIfbtt4V0QSVU8m8PekoGAmb/y6FaL5QMxUynMoAF/3DGPMkYnvRX6SgglbFZ
+         mawgbJD1NySe74n5M2h+iekGuME65Y14JCyXEVYJd5jWsZfD64RfyzT5lmyWIQiHuHpx
+         6qgGkSn19WksDxegdxPDTs/Iv798MUgIt59ehxFNZZl8bO57ZUqixbljydZbbWhvJK47
+         ZaSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6Uh8FBGFVJ1JdTCeddx1mUTf33ZOu2+YFROQAiC4wXw=;
+        b=LmVKhYuw9xSJWpUQgC/8mumtYGtfOFQlkrShH9+iZG7u73DDawAe8U5lhFCeeLVter
+         mHfB0v5pYsgM80+0tfOv0YTbGJu3xQ0U8Jm07mzrZH0NICCVxcIRnac8/12d/LCW0mTQ
+         oetPHAMGM7YVIt9KwnX7xFl/gD2aWKjhSH58eAWA0JNWHYrmJvdX5UZ9EERxQMs7WsQR
+         dpT6f27CZyIFKBM08x8rjDaDMyaRQo58llP0n2QWsr6BJYPWe5uvPU4W/mtXiB6KTJR/
+         /azLhOxiFGelmkvcoI/Fru6/ZgzTpdpZmcqvCysLnfJvK9Mh7pu0HNE+gqDoRQjrjy8J
+         FTSA==
+X-Gm-Message-State: AOAM531PNLpwqCQ1+ewaFJntYf6e98FRmOjzdADvEzj/sOM9E271mME0
+        PTT537Usl6antXQsh3mDWSU=
+X-Google-Smtp-Source: ABdhPJwK6zZDS5MxiSPQQly8zibq21bpqwtpHyPoIGe12pbxG6FIcKasukxZTM8/HiLQS9uS1RYPEQ==
+X-Received: by 2002:a17:90b:3784:: with SMTP id mz4mr9897189pjb.127.1629298208817;
+        Wed, 18 Aug 2021 07:50:08 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id 64sm6780126pfy.114.2021.08.18.07.50.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Aug 2021 07:50:08 -0700 (PDT)
+Subject: Re: [PATCH v3 2/9] drm: hold master_lookup_lock when releasing a
+ drm_file's master
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, sumit.semwal@linaro.org,
+        christian.koenig@amd.com, axboe@kernel.dk, oleg@redhat.com,
+        tglx@linutronix.de, dvyukov@google.com, walter-zh.wu@mediatek.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20210818073824.1560124-1-desmondcheongzx@gmail.com>
+ <20210818073824.1560124-3-desmondcheongzx@gmail.com>
+ <YRzbTUM8ggXlIEyr@phenom.ffwll.local>
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <a69a6870-18fe-5bbc-074e-871753a8f593@gmail.com>
+Date:   Wed, 18 Aug 2021 22:50:00 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YRzbTUM8ggXlIEyr@phenom.ffwll.local>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is not safe to check page->index without holding the page lock.
-It can be changed if the page is moved between the swap cache and the
-page cache for a shmem file, for example.  There is a VM_BUG_ON below
-which checks page->index is correct after taking the page lock.
+On 18/8/21 6:05 pm, Daniel Vetter wrote:
+> On Wed, Aug 18, 2021 at 03:38:17PM +0800, Desmond Cheong Zhi Xi wrote:
+>> When drm_file.master changes value, the corresponding
+>> drm_device.master_lookup_lock should be held.
+>>
+>> In drm_master_release, a call to drm_master_put sets the
+>> file_priv->master to NULL, so we protect this section with
+>> drm_device.master_lookup_lock.
+>>
+>> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> 
+> At this points all refcounts to drm_file have disappeared, so yeah this is
+> a lockless access, but also no one can observe it anymore. See also next
+> patch.
+> 
+> Hence I think the current code is fine.
+> -Daniel
+> 
 
-Cc: stable@vger.kernel.org
-Fixes: 5c211ba29deb ("mm: add and use find_lock_entries")
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- mm/filemap.c | 1 -
- 1 file changed, 1 deletion(-)
+Ah ok got it, I didn't realize that. I'll drop patch 2 and 3 from the 
+series then.
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index d1458ecf2f51..34de0b14aaa9 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2033,17 +2033,16 @@ unsigned find_lock_entries(struct address_space *mapping, pgoff_t start,
- 	XA_STATE(xas, &mapping->i_pages, start);
- 	struct page *page;
- 
- 	rcu_read_lock();
- 	while ((page = find_get_entry(&xas, end, XA_PRESENT))) {
- 		if (!xa_is_value(page)) {
- 			if (page->index < start)
- 				goto put;
--			VM_BUG_ON_PAGE(page->index != xas.xa_index, page);
- 			if (page->index + thp_nr_pages(page) - 1 > end)
- 				goto put;
- 			if (!trylock_page(page))
- 				goto put;
- 			if (page->mapping != mapping || PageWriteback(page))
- 				goto unlock;
- 			VM_BUG_ON_PAGE(!thp_contains(page, xas.xa_index),
- 					page);
--- 
-2.30.2
+>> ---
+>>   drivers/gpu/drm/drm_auth.c | 5 ++++-
+>>   1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
+>> index 8efb58aa7d95..8c0e0dba1611 100644
+>> --- a/drivers/gpu/drm/drm_auth.c
+>> +++ b/drivers/gpu/drm/drm_auth.c
+>> @@ -373,8 +373,11 @@ void drm_master_release(struct drm_file *file_priv)
+>>   	}
+>>   
+>>   	/* drop the master reference held by the file priv */
+>> -	if (file_priv->master)
+>> +	if (file_priv->master) {
+>> +		spin_lock(&dev->master_lookup_lock);
+>>   		drm_master_put(&file_priv->master);
+>> +		spin_unlock(&dev->master_lookup_lock);
+>> +	}
+>>   	mutex_unlock(&dev->master_mutex);
+>>   }
+>>   
+>> -- 
+>> 2.25.1
+>>
+> 
 
