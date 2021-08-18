@@ -2,99 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D7AE3F071D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3723F0720
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239526AbhHROwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 10:52:31 -0400
-Received: from mga17.intel.com ([192.55.52.151]:1553 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239503AbhHROwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 10:52:30 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="196596161"
-X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
-   d="scan'208";a="196596161"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 07:51:55 -0700
-X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
-   d="scan'208";a="449785281"
-Received: from ksawchu-mobl.amr.corp.intel.com (HELO [10.212.83.236]) ([10.212.83.236])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 07:51:53 -0700
-Subject: Re: [RFC PATCH 1/2] driver core: export
- driver_deferred_probe_trigger()
-To:     Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     alsa-devel@alsa-project.org,
-        "Rafael J . Wysocki" <rafael@kernel.org>, tiwai@suse.de,
-        linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com,
-        vkoul@kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Christoph Hellwig <hch@lst.de>
-References: <20210817190057.255264-1-pierre-louis.bossart@linux.intel.com>
- <20210817190057.255264-2-pierre-louis.bossart@linux.intel.com>
- <YRyeR6imvSwOOasQ@kroah.com> <20210818115736.GA4177@sirena.org.uk>
- <YR0Ji7DQXoo0z4vP@kroah.com> <20210818134814.GF4177@sirena.org.uk>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <14235b8d-d375-6e2d-cae9-33adf9c48120@linux.intel.com>
-Date:   Wed, 18 Aug 2021 09:51:51 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S239568AbhHROw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 10:52:57 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:54082
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238872AbhHROw4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 10:52:56 -0400
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com [209.85.210.200])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id EC9DE412F9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 14:52:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629298340;
+        bh=C63KvaJ+cWhAEINSiaxTGMz7FLf9euvtefJ5UKJKvuw=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=aU/M0lDC3lnWmWPUa2sIxOGmfjLAmCGdzn+Vlb+3oTTNJ6w0y28PZer6Zhk5AiNO7
+         i/VvFqLWkFnm94H9rDL3ufDFmmVgec3CZO5avjNGL+ZrqGyyqdHGTcciRN5r1MtMlj
+         JR+T7BCG627JjzgjPg1MOVLVVX/jmDJuCDX0CFt9ZnpSwuUbrpnsmrxDIJM6YPVvIi
+         77VkWbypUnmgTk92Cpt4gwFB10MeASo0EiA/94jHvy1pk1bIu4VTaDaw8SUlbFSEV3
+         jHTO8KhS27s4qD8snT96XdUr2DX4GEURih5bm/6EZ7Dtvbq0daRLyLfXeuvPsfhl+L
+         QoXsKRZVZerWA==
+Received: by mail-pf1-f200.google.com with SMTP id z127-20020a6265850000b029039e815e04d6so1412683pfb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:52:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C63KvaJ+cWhAEINSiaxTGMz7FLf9euvtefJ5UKJKvuw=;
+        b=b8uLdI3ZPbtlWVv+v7tcYawbo2H/VZltb1VFbE0aRsFcafCmLn7cY4b+L3ydYKDJ/y
+         cjQHgOvB2GjXpP6bf6YHjxTZ7P/LjwmbZ4ftRy/xZ2BGmnSAg27LU0Dgd+PHgmnSo5oK
+         Zq+lH61O3AyA4VMH81/t2fa4q6Ay3CDMJVMCTv4zb73kStLqMeDEIfssDWBakyB5X/fk
+         lN5oYY7CaywNlsRp5P/PnYzxfiwITKlUFQiNbSIEZav30VbePiZW8mYy97ljQQoFaHAQ
+         bx0jTO5ZLZnff1SvVJLjBhGqtDjkPeCHAbh8J4uFj5mvVC93HnJ78waz7a1JeQuLQAoI
+         CoTA==
+X-Gm-Message-State: AOAM531YkFtVtPCixaGpZD5s8k5ZzRtGVSXDMHzGiE9g4A4Tea+/p76T
+        lrANfmPuTDUlAws20ysnqprB05v3IywCczB3jVHg2Z2OfCgAC7b7yX6HDou+N+nOO4ArOvi2Jze
+        gpb8VpnLueZfsT4s3i2bJ2ps0UT2RnMedlym2jVdbDg==
+X-Received: by 2002:a17:90a:f314:: with SMTP id ca20mr10053549pjb.210.1629298339357;
+        Wed, 18 Aug 2021 07:52:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzIX0xUNdP8jrpWXr9FRIo/5CxYkCcC18au0WkZhrfprpv1h8lb2dEHNI4DzTUBH3RtKFQesg==
+X-Received: by 2002:a17:90a:f314:: with SMTP id ca20mr10053525pjb.210.1629298339084;
+        Wed, 18 Aug 2021 07:52:19 -0700 (PDT)
+Received: from localhost.localdomain ([69.163.84.166])
+        by smtp.gmail.com with ESMTPSA id 73sm7331pfz.73.2021.08.18.07.52.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 07:52:18 -0700 (PDT)
+From:   Tim Gardner <tim.gardner@canonical.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     tim.gardner@canonical.com, stable@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Subject: [PATCH] drm/i915/gem: Avoid NULL dereference in __i915_gem_object_lock()
+Date:   Wed, 18 Aug 2021 08:51:59 -0600
+Message-Id: <20210818145159.12402-1-tim.gardner@canonical.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20210818134814.GF4177@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Coverity warns of a possible NULL dereference:
 
+Both dma_resv_lock_interruptible() and dma_resv_lock() can return -EDEADLK. Protect
+against a NULL dereference by checking for NULL before saving the object pointer. This
+is consistent with previous checks for ww==NULL.
 
->>> The issue is that the driver core is using drivers completing probe as a
->>> proxy for resources becoming available.  That works most of the time
->>> because most probes are fully synchronous but it breaks down if a
->>> resource provider registers resources outside of probe, we might still
->>> be fine if system boot is still happening and something else probes but
->>> only through luck.
-> 
->> The driver core is not using that as a proxy, that is up to the driver
->> itself or not.  All probe means is "yes, this driver binds to this
->> device, thank you!" for that specific bus/class type.  That's all, if
->> the driver needs to go off and do real work before it can properly
->> control the device, wonderful, have it go and do that async.
-> 
-> Right, which is what is happening here - but the deferred probe
-> machinery in the core is reading more into the probe succeeding than it
-> should.
+Addresses-Coverity: ("Dereference after null check")
 
-I think Greg was referring to the use of the PROBE_PREFER_ASYNCHRONOUS
-probe type. We tried just that and got a nice WARN_ON because we are
-using request_module() to deal with HDaudio codecs. The details are in
-[1] but the kernel code is unambiguous...
+Cc: stable@vger.kernel.org
+Fixes: 80f0b679d6f0683f23cf98a511af3e44dd509472 ("drm/i915: Add an implementation for i915_gem_ww_ctx locking, v2.")
+Cc: kernel-janitors@vger.kernel.org
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: intel-gfx@lists.freedesktop.org
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-media@vger.kernel.org
+Cc: linaro-mm-sig@lists.linaro.org
+Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+---
+ drivers/gpu/drm/i915/gem/i915_gem_object.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-        /*
-	 * We don't allow synchronous module loading from async.  Module
-	 * init may invoke async_synchronize_full() which will end up
-	 * waiting for this task which already is waiting for the module
-	 * loading to complete, leading to a deadlock.
-	 */
-	WARN_ON_ONCE(wait && current_is_async());
+diff --git a/drivers/gpu/drm/i915/gem/i915_gem_object.h b/drivers/gpu/drm/i915/gem/i915_gem_object.h
+index 48112b9d76df..3391ca4f662a 100644
+--- a/drivers/gpu/drm/i915/gem/i915_gem_object.h
++++ b/drivers/gpu/drm/i915/gem/i915_gem_object.h
+@@ -187,7 +187,7 @@ static inline int __i915_gem_object_lock(struct drm_i915_gem_object *obj,
+ 	if (ret == -EALREADY)
+ 		ret = 0;
+ 
+-	if (ret == -EDEADLK) {
++	if (ret == -EDEADLK && ww) {
+ 		i915_gem_object_get(obj);
+ 		ww->contended = obj;
+ 	}
+-- 
+2.33.0
 
-
-The reason why we use a workqueue is because we are otherwise painted in
-a corner by conflicting requirements.
-
-a) we have to use request_module()
-b) we cannot use the async probe because of the request_module()
-c) we have to avoid blocking on boot
-
-I understand the resistance to exporting this function, no one in our
-team was really happy about it, but no one could find an alternate
-solution. If there is something better, I am all ears.
-
-Thanks
--Pierre
-
-[1] https://github.com/thesofproject/linux/pull/3079
