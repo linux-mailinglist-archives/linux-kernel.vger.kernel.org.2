@@ -2,99 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 948AE3EF832
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 04:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F023EF839
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 04:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235707AbhHRCr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 22:47:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231449AbhHRCrz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 22:47:55 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92071C061764;
-        Tue, 17 Aug 2021 19:47:21 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id qk33so1735138ejc.12;
-        Tue, 17 Aug 2021 19:47:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JV9CkkXQherlLd92QHiaKdeY0xjPOTwuWMHEmwKi7Ik=;
-        b=gH1o7HXUHZ9yBstJRfMaB5RBp6WJl/jOcZOajXqQbt1ZDgzlCLKHH1DppvQQqtuPWS
-         rejnTSTM2WEpJVbaSWxMaha7MjFV14asN7I4thA4spu9fN9Jw7cg+ntHLicmmGp6oYu4
-         Cn7sPAt+/IeeyE282KiQclwhcA9hMWvIJfUZMKRhGLxVwGcHhH/INVJVjC1VnoMChRIB
-         7eDziLWZMJLyomKg5tRpAqTo24bN+rw1mc+WHgHz/RJNOEK0XPiy15ehVJ+gFbKELe0W
-         kpYv/SzePNoKg6Xo5+fBszHkfkUbzw5w9sG3s7L/dK4P4DV6+geMCugHzoz66uxNzVj7
-         dalA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JV9CkkXQherlLd92QHiaKdeY0xjPOTwuWMHEmwKi7Ik=;
-        b=BynuFHYI6VlVvQa0VetYs/1IVOxRbUckbiFfDXig21yuTHoPWPVl34PoCNhueryAkE
-         AxdNUfzUP2sQEQ0OM6JdLN/S00+36LFFLJynuBltyqcHtxxcTOH9rWm33n607f+vFynV
-         Tfm8FPCy5Q++h40uShGhI79dn3BvitpSgbitsF6aqCA146OvcU/aOjMG+muSSuU8wbM8
-         BFKmwg91ZB2xqqeHECQUcVOJWIOhb8RAnxqzonqgMll90dLw8rnLEKuRbywj8D8iLcuP
-         Y/sFNVH0JuNT8SHQ/PcwyDE3nBELa52ynq0bqkbt+Iix0dxyzrJlEO1gMMITKRleERK8
-         o9ng==
-X-Gm-Message-State: AOAM532+EZeWTKT3sBpct+kyIO1gKG6nIlTyQcOQkVilHM7pf3f9WqW8
-        aWyrQfwZrzjQk3iCKLgC/2+1LwtkJwX0XuMnYd+zx40+
-X-Google-Smtp-Source: ABdhPJzyDwm867lRUBPgAuAt04i4wPYwP0vaBVc+xjcq3tBlg2NRFh8g7VfCuQKbfDIVPKNHV8amMyUG3AQVCqOH/2o=
-X-Received: by 2002:a17:907:2b09:: with SMTP id gc9mr7477125ejc.49.1629254840066;
- Tue, 17 Aug 2021 19:47:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <1628836842-82107-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1628836842-82107-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Moritz Fischer <moritz.fischer.private@gmail.com>
-Date:   Tue, 17 Aug 2021 19:47:08 -0700
-Message-ID: <CAJYdmeN5WHYx+mczUfkYbeWpRNwevDR5njxttW+4PuBw2Muf6w@mail.gmail.com>
-Subject: Re: [PATCH] fpga: machxo2-spi: Fix missing error code in machxo2_write_complete()
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     Tom Rix <trix@redhat.com>, linux-fpga@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S234261AbhHRCuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 22:50:50 -0400
+Received: from mga14.intel.com ([192.55.52.115]:5298 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231449AbhHRCut (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 22:50:49 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10079"; a="215969425"
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
+   d="scan'208";a="215969425"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 19:50:15 -0700
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
+   d="scan'208";a="520723283"
+Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 19:50:12 -0700
+From:   Bard Liao <yung-chuan.liao@linux.intel.com>
+To:     alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
+        rander.wang@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+        sanyog.r.kale@intel.com, bard.liao@intel.com
+Subject: [PATCH v2 0/3] soundwire: intel: exit clock-stop mode before system suspend
+Date:   Wed, 18 Aug 2021 10:49:51 +0800
+Message-Id: <20210818024954.16873-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 11:41 PM Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
->
-> The error code is missing in this code scenario, add the error code
-> '-EINVAL' to the return value 'ret'.
->
-> Eliminate the follow smatch warning:
->
-> drivers/fpga/machxo2-spi.c:341 machxo2_write_complete() warn: missing
-> error code 'ret'.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Fixes: 88fb3a002330 ("fpga: lattice machxo2: Add Lattice MachXO2
-> support")
-This shouldn't line-break.
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  drivers/fpga/machxo2-spi.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/fpga/machxo2-spi.c b/drivers/fpga/machxo2-spi.c
-> index b4a530a..ea2ec3c 100644
-> --- a/drivers/fpga/machxo2-spi.c
-> +++ b/drivers/fpga/machxo2-spi.c
-> @@ -338,6 +338,7 @@ static int machxo2_write_complete(struct fpga_manager *mgr,
->                         break;
->                 if (++refreshloop == MACHXO2_MAX_REFRESH_LOOP) {
->                         machxo2_cleanup(mgr);
-> +                       ret = -EINVAL;
->                         goto fail;
->                 }
->         } while (1);
-> --
-> 1.8.3.1
->
+Intel validation reported an issue where the HW_RST self-clearing bit
+is not cleared in hardware, which as a ripple effect creates issues
+with the clock stop mode.
 
-Applied to 'fixes' with modifications to commit message,
+This happens is a specific sequence where the Intel manager is
+pm_runtime suspended with the clock-stop mode enabled. During the
+system suspend, we currently do nothing, which can lead to potential
+issues on system resume and the following pm_runtime suspend,
+depending on the hardware state.
 
-Moritz
+This patch suggests a full resume if the clock-stop mode is used. This
+may require extra time but will make the suspend/resume flows
+completely symmetric. This also removes a race condition where we
+could not access SHIM registers if the parent was suspended as
+well. Resuming the link also resumes the parent by construction.
+
+BugLink: https://github.com/thesofproject/linux/issues/2606
+
+v2:
+ - Better comments and commit messages.
+ - Modified the .prepare callback to only deal with the corner case that is
+   NOT covered today instead of systematically doing a full resume.
+
+Pierre-Louis Bossart (3):
+  soundwire: intel: fix potential race condition during power down
+  soundwire: intel: skip suspend/resume/wake when link was not started
+  soundwire: intel: conditionally exit clock stop mode on system suspend
+
+ drivers/soundwire/intel.c | 150 ++++++++++++++++++++++++++++++--------
+ drivers/soundwire/intel.h |   1 +
+ 2 files changed, 119 insertions(+), 32 deletions(-)
+
+-- 
+2.17.1
+
