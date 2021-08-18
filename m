@@ -2,68 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46BC33F0DED
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 00:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C1F3F0DEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 00:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234365AbhHRWLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 18:11:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234286AbhHRWLV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 18:11:21 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F7FC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 15:10:46 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id z20so8218206ejf.5
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 15:10:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=d3t/0aB1Hb6b8x3cPGobwFTgI937lYUWcHaLVtAx3vY=;
-        b=mEQ8RWxlCGHxDYcu1w8gyV6J5v1glBEBGgcyr4pvJrqBUVqU17vqJMbhOgyef1jOLC
-         Q2/mkYsYRvO07nUX5/jjwGhvQ6uj8eaC7EUILB0x6g8Y6xp0x87uFZte+SBIB7ZpH3F7
-         9DWhOuReTNLMhY8Qlsx7JJkDZL9YQDdzRnlaLUOSzjxzj1i77M8fCZKg98iIQuFXae5J
-         VSEgrCiNUahXboCNp4x0z5qVZ2sgPRk0cR11a7ewxV7oshd+eeHyR34ELisvkdudXRVJ
-         85+LHiD0t245MJdlrz9EPph4rdlwXkdWBQuaiJ5eGJb5hhlNKATMQeuALs05dYwLOU64
-         wQdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=d3t/0aB1Hb6b8x3cPGobwFTgI937lYUWcHaLVtAx3vY=;
-        b=muttxyswJRVH0DsaJUOm+K3PaIdo96Isy47gZwnJXmcfiBxBohUYmKw7oOx5lfjztN
-         yCPX/SdqP930L49GMdR4KaIfHDk5XsUEQ1u+pc+ZveBgbGvymYP/7ia/eojD8kEFjjBU
-         uYSB8oPuF7fQpQ5VV5KLtB0bpZU3YLyn3NDtQ40mUAalN50NrBtv2HWRAjibSfDEEDX9
-         mY+NLnoW5fBoDbXllcHRsb6duQsTB6/7yxtDDYXwT131r+xw7A9HqAJ++3HigTmRb/Xy
-         tipaDrT7mCwALdivuka6N1M3q29uEeWGBGTEgxjFR2icKGPL6n4iU/2h9G1r/AiHijnL
-         sBCQ==
-X-Gm-Message-State: AOAM533z47BdEZzh6sP3sSU26RZlwBithJvxHSVi6L+GQylFrOv9P/im
-        Xv6M21TdR/40d7xaXdcjdQBzuKdrZ33GnDv5gCQ=
-X-Google-Smtp-Source: ABdhPJycibDfQH8LCxX4rSCF5Yob960Z6dCsE5InyydFoQqgEnZCnJFvlRVnrQVSf77imDvv8WYaRu/7zVokY7tJFe8=
-X-Received: by 2002:a17:906:11c7:: with SMTP id o7mr12047551eja.480.1629324644938;
- Wed, 18 Aug 2021 15:10:44 -0700 (PDT)
+        id S234504AbhHRWLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 18:11:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47452 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234362AbhHRWLt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 18:11:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A61F2610D2;
+        Wed, 18 Aug 2021 22:11:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629324674;
+        bh=5o0UqbvakauILVn4+9hHpTa5fsfopsPUcCG31EYkD2o=;
+        h=Date:From:To:Cc:Subject:From;
+        b=cmQsFyNWBn9CiXT/g6KTF8i37CvcvN3+XbdWjGJZTnV6I+n6p6ykj/gk0cbLT9Tu8
+         EeRTiQXNsC8vgmCSQKfVoJSo6qXjURKMlBVk2k9F93FTnKQ1mc3hEWPopK0ZXG20sr
+         bGZ6bUfJ2tbsvfCcZZqtAioJingRYXjFQQpuJDiDzBLuBkTj499lfTwrzRLK4oPY1+
+         7zE+K/prm/FdAJ1v4mPyYvC4+mn0TVx+NtqoUrL5X/wrN0WqRJcpduU663tq5xquVR
+         SkK2KZf4IG3zF/tnJIYOiNz7NWbpa/XwCm7RUAY0d5fFTe42c6iQB4g9zu882QXV/K
+         YTVRJEDgrWmxA==
+Date:   Wed, 18 Aug 2021 17:14:18 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] staging: r8188eu: Fix fall-through warnings for Clang
+Message-ID: <20210818221418.GA311735@embeddedor>
 MIME-Version: 1.0
-Received: by 2002:ab4:a42e:0:0:0:0:0 with HTTP; Wed, 18 Aug 2021 15:10:44
- -0700 (PDT)
-Reply-To: samuelakin244@gmail.com
-From:   Mr Samuel Akin <amorsomda@gmail.com>
-Date:   Wed, 18 Aug 2021 22:10:44 +0000
-Message-ID: <CAAj8QhgyPCHheu=fwmT3gwPOewS26t6JNi_FQgED1AhxCxi3UQ@mail.gmail.com>
-Subject: Dear friend, Greetings!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix the following fallthrough warnings:
+
+drivers/staging/r8188eu/core/rtw_mlme_ext.c:1498:3: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+drivers/staging/r8188eu/core/rtw_wlan_util.c:1113:4: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+drivers/staging/r8188eu/core/rtw_wlan_util.c:1147:4: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+drivers/staging/r8188eu/core/rtw_wlan_util.c:1405:3: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+
+This helps with the ongoing efforts to globally enable
+-Wimplicit-fallthrough for Clang.
+
+Link: https://github.com/KSPP/linux/issues/115 
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/staging/r8188eu/core/rtw_mlme_ext.c  | 1 +
+ drivers/staging/r8188eu/core/rtw_wlan_util.c | 3 +++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+index 61b239651e1a..590a4572c23f 100644
+--- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
++++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+@@ -1495,6 +1495,7 @@ unsigned int OnAssocRsp(struct adapter *padapter, struct recv_frame *precv_frame
+ 			break;
+ 		case _ERPINFO_IE_:
+ 			ERP_IE_handler(padapter, pIE);
++			break;
+ 		default:
+ 			break;
+ 		}
+diff --git a/drivers/staging/r8188eu/core/rtw_wlan_util.c b/drivers/staging/r8188eu/core/rtw_wlan_util.c
+index cddacf023fa6..e0ce2b796abe 100644
+--- a/drivers/staging/r8188eu/core/rtw_wlan_util.c
++++ b/drivers/staging/r8188eu/core/rtw_wlan_util.c
+@@ -1110,6 +1110,7 @@ unsigned int is_ap_in_tkip(struct adapter *padapter)
+ 			case _RSN_IE_2_:
+ 				if (!memcmp((pIE->data + 8), RSN_TKIP_CIPHER, 4))
+ 					return true;
++				break;
+ 			default:
+ 				break;
+ 			}
+@@ -1144,6 +1145,7 @@ unsigned int should_forbid_n_rate(struct adapter *padapter)
+ 				if  ((!memcmp((pIE->data + 8), RSN_CIPHER_SUITE_CCMP, 4))  ||
+ 				     (!memcmp((pIE->data + 12), RSN_CIPHER_SUITE_CCMP, 4)))
+ 					return false;
++				break;
+ 			default:
+ 				break;
+ 			}
+@@ -1401,6 +1403,7 @@ unsigned char check_assoc_AP(u8 *pframe, uint len)
+ 			} else {
+ 				break;
+ 			}
++			break;
+ 
+ 		default:
+ 			break;
 -- 
-Dear friend, Greetings!
+2.27.0
 
-I apologize if this email comes as a surprise to you. I have a
-business proposal that will be of great benefit to both of us. If you
-are willing to discuss further on this matter, I expect you reply.
-promptly so that I will give you further details.
-
-Best Regards,
-Mr.Samuel Akin
