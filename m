@@ -2,114 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE66C3F0873
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A0493F0876
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240070AbhHRPxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 11:53:06 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:33956
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239980AbhHRPxB (ORCPT
+        id S240172AbhHRPxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 11:53:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240111AbhHRPxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 11:53:01 -0400
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com [209.85.210.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 88D9540CDD
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 15:52:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629301944;
-        bh=a4yimsaD54f0w0M2iKmjYx0RkapSJobec2lRCuhnCeI=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=cFmBtr8aGX3B+qeCIFJ8oDi7Q57vqslSzCyV2Ht/CGhplf0AFG54eNvD2eHzgauef
-         L/CcROa/X4R/2MxnVdM9v4iMG7G7PiqeQG/H6ptu1uWlQu2XdawSsyMIelYfZiBM/c
-         Pwmdm7saqErzVZiWIbofGoIxESsJBXynqL3MJswUxW9neYgS+Bhw0wAGMn1CcPabK+
-         t3pmrEn+a9BnryD/Scv5JDZXosQF1e7Ty3juO8uceB4T/rGNWh3+IJMPgc4yUvfm3T
-         Biilji5znRWi5d0anOWO4Y1jmCq17qOKfAOAjQLK1zRG4uapGK7LQ2qqc8DPGpX2UP
-         2RA5pC5cF5irw==
-Received: by mail-pf1-f197.google.com with SMTP id q16-20020a056a000890b029034691245625so1515878pfj.10
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 08:52:24 -0700 (PDT)
+        Wed, 18 Aug 2021 11:53:17 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F947C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 08:52:42 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id y23so2673705pgi.7
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 08:52:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7joQz/hOZYHbWQ9qAx5++37t6jQRt6wCbSFQEQk4D+4=;
+        b=U4JNeZa2IJQ3lNZ25s0B9ssli4sJSz30z/iSzkApoIxvb0Ne3wwBiGh2rpE/QKtReZ
+         ByOzgP6uMZDSkO5k6TwR1IodurtURiC1IiYiC9zswcpBuxY4WxVqrYrNTYoRDpeXDZnX
+         KT76J6AXxrUaROmR8MUhVUvIWRSUOqSSXX4UBlCzkPYWyKHXP6TCC5cSvnuOA01nORNW
+         qPHExQTNoKYicBYK3ehzKnSLjrsqfPLzlcO8m7phKEmuLGB60nDhBPngSTMEO6bN8/nq
+         NcbKf1EmlsC3UdRP8D3JdXCTVydF9HZn0/zsybXf7fNLYgJWxl8dY4MI7YwQX2penW99
+         pwTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=a4yimsaD54f0w0M2iKmjYx0RkapSJobec2lRCuhnCeI=;
-        b=eJigUILQdpuPm3YC9UHASGFMzKFvzQWFCZex+BfLmymSjNsc7o29+7nEzmIZnIOf3w
-         GVdHfDEg7O9q1P1oKh1bUQFN345Cq+VWsfyjdIfO+YFLa4nHzk1KOifwm0RXmfgUwGdW
-         fHfluvWttAiafgTM56Fg6gGmlZ7kby9L/f9gehaxDLtar3BlhvPfxXRmOfdVKGl7YXfr
-         pGwOTainaz2PZYRDQ/TZSoT+7qUy8IoKcIn6Zi0G/HQFcO5jz/B30jguO6vNkqlVJGTr
-         teURHPj47auaEwKbjedfVSKWqtzbkv53TzNWRatGBWRSMaTt4Ce3qjTECtJZX/bADRGV
-         TOBw==
-X-Gm-Message-State: AOAM530YPwSw4OK9ACyTWsqT9Ly8FYvvup6jCT+LxbjOivzdEcDmE1sc
-        OcbOkEZbQ6x2qpr9eaez5+NBCpZAsOBUkz2nMzMZwt8KYB86SjWkf2M1A7HinmBy4gkyxuuD62G
-        L24tEXVjkVZBtEvH4QNbYMw7pUvysA2xIs88q2uYWsg==
-X-Received: by 2002:a05:6a00:10cf:b0:3e2:139b:6d6c with SMTP id d15-20020a056a0010cf00b003e2139b6d6cmr10152666pfu.3.1629301942798;
-        Wed, 18 Aug 2021 08:52:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyr41UVZeTDSI360h/gDC1oF4ZXumjqyY+ZQgymCzpmdw7UeXfWqDIYa7yOfQqyWYoB6UZSOw==
-X-Received: by 2002:a05:6a00:10cf:b0:3e2:139b:6d6c with SMTP id d15-20020a056a0010cf00b003e2139b6d6cmr10152635pfu.3.1629301942520;
-        Wed, 18 Aug 2021 08:52:22 -0700 (PDT)
-Received: from localhost.localdomain ([69.163.84.166])
-        by smtp.gmail.com with ESMTPSA id g10sm145654pfh.120.2021.08.18.08.52.21
+        bh=7joQz/hOZYHbWQ9qAx5++37t6jQRt6wCbSFQEQk4D+4=;
+        b=hYOjvoDyNklKnw2MwzgU2hNnyErJBARGEozUnXc0QOBAKX1Ssf/Q9IbTMIHhMYeK1W
+         bo0PIV35YZJcmylqt98KeEb9vtfmCIuUToTCbd3WhrF/aqeJtJkbZMRo36TfxOhM0WDH
+         SORHNiBaUG0f1oLpjyAYnC6AXJUd5B1n3wjKjC5TSzkbRO2M/ez1kHX8qf/iMW9n/HI7
+         A3JYAJmm9xCg3QltXXorsC0OK7JYAMAvsWlTFF20vpqPl4vywKWLtgIKFnYDh9UljjL4
+         Awu+A6YIBlD/vrHLHMOHHltveMM7ghdQBsKQYafjVff7lj2rsaZfib4/iymCmE57Ogzl
+         tD9A==
+X-Gm-Message-State: AOAM531i2NvyhHBKV5vK4B6vcb8iIklnM0WLDZpZtVi34p3tteV4002F
+        vU7mfUGRFc0/dBZnRupYyYEkZcwMy9v2bA==
+X-Google-Smtp-Source: ABdhPJzZ4nccoyG4Ic1nRVbpyrH2juSNM44U7HNyj4JeHDQfXwFXgte8i4EmtUTRRmozJVBYpsQj4Q==
+X-Received: by 2002:a63:100e:: with SMTP id f14mr9671256pgl.188.1629301961761;
+        Wed, 18 Aug 2021 08:52:41 -0700 (PDT)
+Received: from xps.yggdrasil ([49.207.137.16])
+        by smtp.gmail.com with ESMTPSA id e26sm159272pfj.46.2021.08.18.08.52.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 08:52:22 -0700 (PDT)
-From:   Tim Gardner <tim.gardner@canonical.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     tim.gardner@canonical.com, Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vlad Buslov <vladbu@nvidia.com>,
-        Jianbo Liu <jianbol@nvidia.com>,
-        Mark Bloch <mbloch@nvidia.com>, Roi Dayan <roid@nvidia.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [PATCH][linux-next] net/mlx5: Bridge, fix uninitialized variable in mlx5_esw_bridge_port_changeupper()
-Date:   Wed, 18 Aug 2021 09:52:10 -0600
-Message-Id: <20210818155210.14522-1-tim.gardner@canonical.com>
-X-Mailer: git-send-email 2.33.0
+        Wed, 18 Aug 2021 08:52:41 -0700 (PDT)
+From:   Aakash Hemadri <aakashhemadri123@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH] staging: r8188eu: clean up endianness issues
+Date:   Wed, 18 Aug 2021 21:22:36 +0530
+Message-Id: <8a3fca82d9ec5dde9e42d40f0268a324cc87ebc6.1629301854.git.aakashhemadri123@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A recent change removed code that initialized the return code variable 'err'. It
-is now possible for mlx5_esw_bridge_port_changeupper() to return an error code
-using this uninitialized variable. Fix it by initializing to 0.
+Fix these sparse warnings:
 
-Addresses-Coverity: ("Uninitialized scalar variable (UNINIT)")
+> rtw_br_ext.c:73:23: warning: restricted __be16 degrades to integer
 
-Cc: Saeed Mahameed <saeedm@nvidia.com>
-Cc: Leon Romanovsky <leon@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Vlad Buslov <vladbu@nvidia.com>
-Cc: Jianbo Liu <jianbol@nvidia.com>
-Cc: Mark Bloch <mbloch@nvidia.com>
-Cc: Roi Dayan <roid@nvidia.com>
-Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc: netdev@vger.kernel.org
-Cc: linux-rdma@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+Here tag->tag_len is be16, use ntohs()
+
+> rtw_br_ext.c:601:57: warning: incorrect type in assignment (different base types)
+> rtw_br_ext.c:601:57:    expected unsigned short
+> rtw_br_ext.c:601:57:    got restricted __be16 [usertype]
+
+> rtw_br_ext.c:664:45: warning: cast to restricted __be16
+> rtw_br_ext.c:771:84: warning: incorrect type in argument 3 (different base types)
+> rtw_br_ext.c:771:84:    expected unsigned int [usertype] len
+
+Cast MAGIC_CODE as unsigned short
+
+> rtw_br_ext.c:771:84:    got restricted __be16 [usertype] payload_len
+> rtw_br_ext.c:773:110: warning: incorrect type in argument 2 (different base types)
+> rtw_br_ext.c:773:110:    expected int len
+> rtw_br_ext.c:773:110:    got restricted __be16 [usertype] payload_len
+
+> rtw_br_ext.c:836:54: warning: cast to restricted __be32
+
+Unnecessary double cast?
+
+> rtw_br_ext.c:839:70: warning: restricted __be16 degrades to integer
+> rtw_br_ext.c:845:70: warning: invalid assignment: |=
+> rtw_br_ext.c:845:70:    left side has type unsigned short
+> rtw_br_ext.c:845:70:    right side has type restricted __be16
+
+dhcp->flag is u16
+
+Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/r8188eu/core/rtw_br_ext.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c b/drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c
-index 0c38c2e319be..c6435c69b7c4 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c
-@@ -137,7 +137,7 @@ static int mlx5_esw_bridge_port_changeupper(struct notifier_block *nb, void *ptr
- 	u16 vport_num, esw_owner_vhca_id;
- 	struct netlink_ext_ack *extack;
- 	int ifindex = upper->ifindex;
--	int err;
-+	int err = 0;
+diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
+index e8eea95a52e3..8eb7475726e1 100644
+--- a/drivers/staging/r8188eu/core/rtw_br_ext.c
++++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
+@@ -70,7 +70,7 @@ static int __nat25_add_pppoe_tag(struct sk_buff *skb, struct pppoe_tag *tag)
+ 	struct pppoe_hdr *ph = (struct pppoe_hdr *)(skb->data + ETH_HLEN);
+ 	int data_len;
  
- 	if (!netif_is_bridge_master(upper))
- 		return 0;
+-	data_len = tag->tag_len + TAG_HDR_LEN;
++	data_len = ntohs(tag->tag_len) + TAG_HDR_LEN;
+ 	if (skb_tailroom(skb) < data_len) {
+ 		_DEBUG_ERR("skb_tailroom() failed in add SID tag!\n");
+ 		return -1;
+@@ -598,7 +598,7 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
+ 
+ 						/*  insert the magic_code+client mac in relay tag */
+ 						pMagic = (unsigned short *)tag->tag_data;
+-						*pMagic = htons(MAGIC_CODE);
++						*pMagic = (unsigned short)MAGIC_CODE;
+ 						memcpy(tag->tag_data+MAGIC_CODE_LEN, skb->data+ETH_ALEN, ETH_ALEN);
+ 
+ 						/* Add relay tag */
+@@ -661,7 +661,7 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
+ 					}
+ 
+ 					pMagic = (unsigned short *)tag->tag_data;
+-					if (ntohs(*pMagic) != MAGIC_CODE) {
++					if (*pMagic != (unsigned short)MAGIC_CODE) {
+ 						DEBUG_ERR("Can't find MAGIC_CODE in %s packet!\n",
+ 							(ph->code == PADO_CODE ? "PADO" : "PADS"));
+ 						return -1;
+@@ -768,9 +768,9 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
+ 						struct icmp6hdr  *hdr = (struct icmp6hdr *)(skb->data + ETH_HLEN + sizeof(*iph));
+ 						hdr->icmp6_cksum = 0;
+ 						hdr->icmp6_cksum = csum_ipv6_magic(&iph->saddr, &iph->daddr,
+-										iph->payload_len,
++										ntohs(iph->payload_len),
+ 										IPPROTO_ICMPV6,
+-										csum_partial((__u8 *)hdr, iph->payload_len, 0));
++										csum_partial((__u8 *)hdr, ntohs(iph->payload_len), 0));
+ 					}
+ 				}
+ 			}
+@@ -833,16 +833,16 @@ void dhcp_flag_bcast(struct adapter *priv, struct sk_buff *skb)
+ 				    (udph->dest == __constant_htons(SERVER_PORT))) { /*  DHCP request */
+ 					struct dhcpMessage *dhcph =
+ 						(struct dhcpMessage *)((size_t)udph + sizeof(struct udphdr));
+-					u32 cookie = be32_to_cpu((__be32)dhcph->cookie);
++					u32 cookie = dhcph->cookie;
+ 
+ 					if (cookie == DHCP_MAGIC) { /*  match magic word */
+-						if (!(dhcph->flags & htons(BROADCAST_FLAG))) {
++						if (!(dhcph->flags & BROADCAST_FLAG)) {
+ 							/*  if not broadcast */
+ 							register int sum = 0;
+ 
+ 							DEBUG_INFO("DHCP: change flag of DHCP request to broadcast.\n");
+ 							/*  or BROADCAST flag */
+-							dhcph->flags |= htons(BROADCAST_FLAG);
++							dhcph->flags |= BROADCAST_FLAG;
+ 							/*  recalculate checksum */
+ 							sum = ~(udph->check) & 0xffff;
+ 							sum += be16_to_cpu(dhcph->flags);
+
+base-commit: cbfa6f33e3a685c329d78e06b0cf1dcb23c9d849
 -- 
-2.33.0
+2.32.0
 
