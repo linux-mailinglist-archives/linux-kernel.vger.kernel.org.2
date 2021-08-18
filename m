@@ -2,293 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607433EFA3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 07:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E14243EFA3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 07:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238041AbhHRFkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 01:40:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237945AbhHRFj4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 01:39:56 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA0FC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 22:39:22 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id d202-20020a3768d3000000b003d30722c98fso1027043qkc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 22:39:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=Ly2mUbxWquJWXZ0n6mTgg8xCjEBs0jIcnS3CpYGgC5c=;
-        b=vPynDVXk6ehrhHgxl1+QUtZVgsSVAdooemO288d0Th3g9VuiMFd0vBEfRJ5sZl+oIh
-         Equoj8czaMRmDg30celH+1WeSMqy/eeC228Y4vAoxCR8UHLlcAXc9jiM4Aoncw+Ob3tC
-         GVSAOYRy9Rbz//XzvA+cGNHoJs7eRXfvSU0uln0Q1RM+OAGa1ivo0osSRWhmZkuklxwE
-         DyXXlA3shXC1MV8e0DCrne/rrfc0haRaM8gmRigsLZxgcu5inkI8wiDAaMNBLY0dW6I8
-         q6NMrCZiOLetroHAZ3WGqOCkFz1RL5iEQNL9jNMWM3Py4MLdcd/SyoKDfGoQhdEFjJ1f
-         Twlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=Ly2mUbxWquJWXZ0n6mTgg8xCjEBs0jIcnS3CpYGgC5c=;
-        b=tCh5qcTplHK4ohd7+CosKjrONn3gCMWEgZmU8UyoLYOpMyECTnC5OsklsS8006+GbF
-         XkgZbEyOHpysRvJhC5zxbnzNFDpJZ/qwUQIQIhHzT1VH6sKB5DK7da+J1pqrtkJZq5Gd
-         RKDztp7OywMzBjo3V0T5gIDNtXiJrAYdjBReVOHb8kpTuAQDvGvytIMUiQLpRFfH7JpD
-         ttSlwGGV3cNihwWgv2Z5NPdXeqIG+Sd5xN0QcyPSUyJkW1C8OhDpQaHTZhRdaujXO8e1
-         dw5ORs6R8qvnluFiXcEi6vJgq8MgSEmcDxIfB5JCpyvvLelv59DbYkG3V+hWi+i9shNh
-         jnzA==
-X-Gm-Message-State: AOAM531MVb8TsUrF3NETXVqUo1twttDiczdU79dF4ldGBKAAry/VeWvn
-        40696mievHO3tt/jdE2+NOJe3b6ggfqU
-X-Google-Smtp-Source: ABdhPJzzp5zo1v7+tkTWIY0BI2yhSNUQ8K2xJDgnqbCm1fHs6P2WetL/0J1YhbNXLy5m2t0dl7vwoLSI1OBG
-X-Received: from mizhang-super.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1071])
- (user=mizhang job=sendgmr) by 2002:a05:6214:f0c:: with SMTP id
- gw12mr7442298qvb.2.1629265161426; Tue, 17 Aug 2021 22:39:21 -0700 (PDT)
-Reply-To: Mingwei Zhang <mizhang@google.com>
-Date:   Wed, 18 Aug 2021 05:39:08 +0000
-In-Reply-To: <20210818053908.1907051-1-mizhang@google.com>
-Message-Id: <20210818053908.1907051-5-mizhang@google.com>
-Mime-Version: 1.0
-References: <20210818053908.1907051-1-mizhang@google.com>
-X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
-Subject: [PATCH v2 4/4] KVM: SVM: move sev_unbind_asid and DF_FLUSH logic into psp
-From:   Mingwei Zhang <mizhang@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        John Allen <john.allen@amd.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alper Gun <alpergun@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        David Rienjes <rientjes@google.com>,
-        Marc Orr <marcorr@google.com>, Peter Gonda <pgonda@google.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        Mingwei Zhang <mizhang@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S238100AbhHRFkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 01:40:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238103AbhHRFkP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 01:40:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13E0161029;
+        Wed, 18 Aug 2021 05:39:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629265181;
+        bh=EtIBL4nck6yS3y+rq79pT9mCLC3bvjYO+hQnPLk5ThE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S60Z4BDzLUbMnBdGBVbSnwufET+iJ+kHOPHNmlS04Qy7kLoYhoYJETBuvVh454+rm
+         s59j4s8IFK7gcIoexdKrq8Qj0jtRu+T2ZB7nt1OH+Iy7JbU2h7ubByiYYFZ/krBbQs
+         djRx51fhdmXLeZ1/fYVa5PfoawGeuoIFEpaYB9N4=
+Date:   Wed, 18 Aug 2021 07:39:37 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Anirudh Rayabharam <mail@anirudhrb.com>,
+        valentina.manea.m@gmail.com, shuah@kernel.org,
+        syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] usbip: give back URBs for unsent unlink requests
+ during cleanup
+Message-ID: <YRydGRdPmOaiMWaY@kroah.com>
+References: <20210813182508.28127-1-mail@anirudhrb.com>
+ <20210813182508.28127-2-mail@anirudhrb.com>
+ <13450a85-bbfe-09c5-d614-1a944c2600c2@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <13450a85-bbfe-09c5-d614-1a944c2600c2@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In KVM SEV code, sev_unbind_asid and sev_guest_df_flush needs to be
-serialized because DEACTIVATE command in PSP may clear the WBINVD indicator
-and cause DF_FLUSH to fail.
+On Tue, Aug 17, 2021 at 05:16:51PM -0600, Shuah Khan wrote:
+> On 8/13/21 12:25 PM, Anirudh Rayabharam wrote:
+> > In vhci_device_unlink_cleanup(), the URBs for unsent unlink requests are
+> > not given back. This sometimes causes usb_kill_urb to wait indefinitely
+> > for that urb to be given back. syzbot has reported a hung task issue [1]
+> > for this.
+> > 
+> > To fix this, give back the urbs corresponding to unsent unlink requests
+> > (unlink_tx list) similar to how urbs corresponding to unanswered unlink
+> > requests (unlink_rx list) are given back.
+> > 
+> > [1]: https://syzkaller.appspot.com/bug?id=08f12df95ae7da69814e64eb5515d5a85ed06b76
+> > 
+> > Reported-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
+> > Tested-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
+> > Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+> > ---
+> >   drivers/usb/usbip/vhci_hcd.c | 26 ++++++++++++++++++++++++++
+> >   1 file changed, 26 insertions(+)
+> > 
+> > diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
+> > index 4ba6bcdaa8e9..6f3f374d4bbc 100644
+> > --- a/drivers/usb/usbip/vhci_hcd.c
+> > +++ b/drivers/usb/usbip/vhci_hcd.c
+> > @@ -957,8 +957,34 @@ static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
+> >   	spin_lock(&vdev->priv_lock);
+> >   	list_for_each_entry_safe(unlink, tmp, &vdev->unlink_tx, list) {
+> > +		struct urb *urb;
+> > +
+> > +		/* give back URB of unsent unlink request */
+> >   		pr_info("unlink cleanup tx %lu\n", unlink->unlink_seqnum);
+> 
+> I know this is an exiting one.
+> Let's make this pr_debug or remove it all together.
+> 
+> > +
+> > +		urb = pickup_urb_and_free_priv(vdev, unlink->unlink_seqnum);
+> > +		if (!urb) {
+> > +			pr_info("the urb (seqnum %lu) was already given back\n",
+> > +				unlink->unlink_seqnum);
+> 
+> Let's make this pr_debug or remove it all together.
 
-This is a PSP level detail that is not necessary to expose to KVM. So put
-both functions as well as the RWSEM into the sev-dev.c.
+As you have a struct device for all of these, please use dev_dbg() and
+friends, not pr_*(), for all of these.
 
-No functional change intended.
+thanks,
 
-Cc: Alper Gun <alpergun@google.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: David Rienjes <rientjes@google.com>
-Cc: Marc Orr <marcorr@google.com>
-Cc: John Allen <john.allen@amd.com>
-Cc: Peter Gonda <pgonda@google.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Vipin Sharma <vipinsh@google.com>
-
-Acked-by: Brijesh Singh <brijesh.singh@amd.com>
-Signed-off-by: Mingwei Zhang <mizhang@google.com>
----
- arch/x86/kvm/svm/sev.c       | 35 +++-------------------------------
- drivers/crypto/ccp/sev-dev.c | 37 +++++++++++++++++++++++++++++++++++-
- include/linux/psp-sev.h      | 19 +++++++++++++++++-
- 3 files changed, 57 insertions(+), 34 deletions(-)
-
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 157962aa4aff..ab5f14adc591 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -57,7 +57,6 @@ module_param_named(sev_es, sev_es_enabled, bool, 0444);
- #endif /* CONFIG_KVM_AMD_SEV */
- 
- static u8 sev_enc_bit;
--static DECLARE_RWSEM(sev_deactivate_lock);
- static DEFINE_MUTEX(sev_bitmap_lock);
- unsigned int max_sev_asid;
- static unsigned int min_sev_asid;
-@@ -84,20 +83,9 @@ static int sev_flush_asids(int min_asid, int max_asid)
- 	if (asid > max_asid)
- 		return -EBUSY;
- 
--	/*
--	 * DEACTIVATE will clear the WBINVD indicator causing DF_FLUSH to fail,
--	 * so it must be guarded.
--	 */
--	down_write(&sev_deactivate_lock);
--
--	wbinvd_on_all_cpus();
- 	ret = sev_guest_df_flush(&error);
--
--	up_write(&sev_deactivate_lock);
--
- 	if (ret)
- 		pr_err("SEV: DF_FLUSH failed, ret=%d, error=%#x\n", ret, error);
--
- 	return ret;
- }
- 
-@@ -198,23 +186,6 @@ static void sev_asid_free(struct kvm_sev_info *sev)
- 	sev->misc_cg = NULL;
- }
- 
--static void sev_unbind_asid(struct kvm *kvm, unsigned int handle)
--{
--	struct sev_data_deactivate deactivate;
--
--	if (!handle)
--		return;
--
--	deactivate.handle = handle;
--
--	/* Guard DEACTIVATE against WBINVD/DF_FLUSH used in ASID recycling */
--	down_read(&sev_deactivate_lock);
--	sev_guest_deactivate(&deactivate, NULL);
--	up_read(&sev_deactivate_lock);
--
--	sev_guest_decommission(handle, NULL);
--}
--
- static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
- {
- 	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-@@ -329,7 +300,7 @@ static int sev_launch_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
- 	/* return handle to userspace */
- 	params.handle = start.handle;
- 	if (copy_to_user((void __user *)(uintptr_t)argp->data, &params, sizeof(params))) {
--		sev_unbind_asid(kvm, start.handle);
-+		sev_guest_unbind_asid(start.handle);
- 		ret = -EFAULT;
- 		goto e_free_session;
- 	}
-@@ -1377,7 +1348,7 @@ static int sev_receive_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
- 	if (copy_to_user((void __user *)(uintptr_t)argp->data,
- 			 &params, sizeof(struct kvm_sev_receive_start))) {
- 		ret = -EFAULT;
--		sev_unbind_asid(kvm, start.handle);
-+		sev_guest_unbind_asid(start.handle);
- 		goto e_free_session;
- 	}
- 
-@@ -1788,7 +1759,7 @@ void sev_vm_destroy(struct kvm *kvm)
- 
- 	mutex_unlock(&kvm->lock);
- 
--	sev_unbind_asid(kvm, sev->handle);
-+	sev_guest_unbind_asid(sev->handle);
- 	sev_asid_free(sev);
- }
- 
-diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-index 325e79360d9e..e318a1a222f9 100644
---- a/drivers/crypto/ccp/sev-dev.c
-+++ b/drivers/crypto/ccp/sev-dev.c
-@@ -33,6 +33,7 @@
- #define SEV_FW_NAME_SIZE	64
- 
- static DEFINE_MUTEX(sev_cmd_mutex);
-+static DECLARE_RWSEM(sev_deactivate_lock);
- static struct sev_misc_dev *misc_dev;
- 
- static int psp_cmd_timeout = 100;
-@@ -932,10 +933,44 @@ EXPORT_SYMBOL_GPL(sev_guest_decommission);
- 
- int sev_guest_df_flush(int *error)
- {
--	return sev_do_cmd(SEV_CMD_DF_FLUSH, NULL, error);
-+	int ret;
-+	/*
-+	 * DEACTIVATE will clear the WBINVD indicator causing DF_FLUSH to fail,
-+	 * so it must be guarded.
-+	 */
-+	down_write(&sev_deactivate_lock);
-+
-+	wbinvd_on_all_cpus();
-+
-+	ret = sev_do_cmd(SEV_CMD_DF_FLUSH, NULL, error);
-+
-+	up_write(&sev_deactivate_lock);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(sev_guest_df_flush);
- 
-+int sev_guest_unbind_asid(unsigned int handle)
-+{
-+	struct sev_data_deactivate deactivate;
-+	int ret;
-+
-+	if (!handle)
-+		return -EINVAL;
-+
-+	deactivate.handle = handle;
-+
-+	/* Guard DEACTIVATE against WBINVD/DF_FLUSH used in ASID recycling */
-+	down_read(&sev_deactivate_lock);
-+	ret = sev_guest_deactivate(&deactivate, NULL);
-+	up_read(&sev_deactivate_lock);
-+
-+	sev_guest_decommission(handle, NULL);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(sev_guest_unbind_asid);
-+
- static void sev_exit(struct kref *ref)
- {
- 	misc_deregister(&misc_dev->misc);
-diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
-index be50446ff3f1..09447bce9665 100644
---- a/include/linux/psp-sev.h
-+++ b/include/linux/psp-sev.h
-@@ -580,6 +580,20 @@ int sev_issue_cmd_external_user(struct file *filep, unsigned int id,
-  */
- int sev_guest_deactivate(struct sev_data_deactivate *data, int *error);
- 
-+/**
-+ * sev_guest_unbind_asid - perform SEV DEACTIVATE command with lock held
-+ *
-+ * @handle: handle of the VM to deactivate
-+ *
-+ * Returns:
-+ * 0 if the sev successfully processed the command
-+ * -%ENODEV    if the sev device is not available
-+ * -%ENOTSUPP  if the sev does not support SEV
-+ * -%ETIMEDOUT if the sev command timed out
-+ * -%EIO       if the sev returned a non-zero return code
-+ */
-+int sev_guest_unbind_asid(unsigned int handle);
-+
- /**
-  * sev_guest_activate - perform SEV ACTIVATE command
-  *
-@@ -612,7 +626,7 @@ int sev_guest_activate(struct sev_data_activate *data, int *error);
- int sev_guest_bind_asid(int asid, unsigned int handle, int *error);
- 
- /**
-- * sev_guest_df_flush - perform SEV DF_FLUSH command
-+ * sev_guest_df_flush - perform SEV DF_FLUSH command with lock held
-  *
-  * @sev_ret: sev command return code
-  *
-@@ -656,6 +670,9 @@ sev_guest_deactivate(struct sev_data_deactivate *data, int *error) { return -ENO
- static inline int
- sev_guest_decommission(unsigned int handle, int *error) { return -ENODEV; }
- 
-+static inline int
-+sev_guest_unbind_asid(unsigned int handle) { return -ENODEV; }
-+
- static inline int
- sev_guest_activate(struct sev_data_activate *data, int *error) { return -ENODEV; }
- 
--- 
-2.33.0.rc1.237.g0d66db33f3-goog
-
+greg k-h
