@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0EC53EFCCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8343EFCCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238594AbhHRGbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 02:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50080 "EHLO
+        id S239251AbhHRGbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 02:31:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238341AbhHRGbp (ORCPT
+        with ESMTP id S238781AbhHRGbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 02:31:45 -0400
+        Wed, 18 Aug 2021 02:31:47 -0400
 Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC115C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:31:11 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id x5-20020a0569020505b0290592c25b8c59so1774042ybs.18
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:31:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA60C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:31:13 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id n20-20020a2540140000b0290593b8e64cd5so1836730yba.3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:31:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=jtTrh/UFwWabV4XfsSZ0FACu0kGSYP9nGWGkTFTHlsw=;
-        b=rYMUo64dR6ahM+BcSE0/y1k3cjhl/5uCjAdrngLJav3ieUZRIPNvjzEC/JPbQJsVdx
-         isCKE1M5/TKt/ijSDwZaFzySv9g5EECHN0FYdjVMAOc6Q1qKZtvZlDFISn5MeJK880ov
-         w6szD7HnCkM1GmFce2xq+1I02A0NBcXDMbTuGfB2WR9IuUXIXpsVwGuog9ZNVu80funt
-         FD3shkUAfI1VdDhaXh2nDa8NRzPk4GOkk5pmKbXIyIYvl0/RHnIRLXo8iDfr03SCfNgQ
-         l2IYUfrgs4OwKbq5vqlHqK8nXpUFO4VO//4X0fBklHNDVJNSOCIA/kKRJK1BHM5jr/j6
-         UNMw==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=axDz8FmbUkmwoP5Po1n0WrbURWOp6eK+Sy9KgBfPnX8=;
+        b=tMJdGo0VdmwhtsmfaZ+8rkd4E9lkxdQ44NTW3d4/TNpCinw/fAFDzywEKib15cClPi
+         W29Wg6lpdN+bZgNq9Vd3h4q/1uzr+5hqEfenQ6HyCLa6QbL33fZSCMLzbTULgjUGwpI+
+         BXmZg8SRzvZbXVtkQBlaLzEKm8WV77UfxsQ8EG6tQhxw6/Eh23ojg4fHfZC7QgWEo1ji
+         DDtk9ZcuKvr1BNn+esg0iIEsM4XejbvsJ+161wy6H40w1DQU0zhTeR6Qc0qXfc3jhHfB
+         OSV1hDsLPUfb0gbAc/64uz9OCgvP0IMwvygx6lIZRwZoCsDlkU53OLv5tpYI+ITQhfO/
+         zGEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=jtTrh/UFwWabV4XfsSZ0FACu0kGSYP9nGWGkTFTHlsw=;
-        b=NvOQKl757BA/LNJS4By70mErUhSBm/qGMHZcv+M0fmIiwW0eTsS+zdnpkNWYHCGTaM
-         WmF+VghWYGGi5kGtrH6viSxtEtgeYAHxhv87zCJXrdbWER/w1wnqL7pWAH292tYintJG
-         etDLKvmgepKI9ecXzW6v8j/acCRcEZmP6zK2aMjOsizyIh0GbU9zuKEeScQQpciT7dCv
-         kpnQ9jcNWbf8fShSrEwL3dda2r2FHSNCcL1GxRgz8AbWEJ8Bm7N+TTpJkZzpEWSEXJMz
-         tavJUUENL/0C5hBnLwOwzWYN9LhjlnaUJqhzJEKhrgu8zSM+ME3zWc90s1wNg/oLclcK
-         FrYA==
-X-Gm-Message-State: AOAM530ftR9ZDZ+DhxNSHnGjQxD5tBlBI1OAWUz6QfWSiiasq2wLbwnC
-        t3ZvSUTRYhTGEo53KOfEcs4L9wpF4a4=
-X-Google-Smtp-Source: ABdhPJyxCeX40u4a2F0inY4Yj1kn9U/GlGZUnkBuaHkcHk0ZzESRu/sq8kWmfTp0nQueYC9cliFCb4vXIYI=
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=axDz8FmbUkmwoP5Po1n0WrbURWOp6eK+Sy9KgBfPnX8=;
+        b=dD4/za178fz7QMAJcBMJdkoFTCVqvkL1zGzHBLrhrHdGhSzjFo6X14bIzrzY9ILXWt
+         iXSD2K869B9X54uGWS9rIRDe9Tax9ysqxo+oeaLy/v4YsjP7ayd75dCBPT+iS2JST3LA
+         NCSxH6Jl0tfMD2XYX4m3BFOF9+6ksovNpB7L8MxOI63kOPyz9vKIh0aHpneZw0k88dMz
+         AeGz7bPyjIH2+AVBnw0YVow0lU1WA81JZ7vH3AXcrCCGz/loivXb44gG9MIpNQfLVXCt
+         H2laoR2BmRkext6EZ9salpVvlh/BXwdyyeELnAu900JX9XQ0YEVfxLcWt0OCNufp6CyY
+         4cZg==
+X-Gm-Message-State: AOAM5320KM5XXdoDMi3sp3Xv5mK1urtm1rU3r20xIV3l20U0GlPH66cD
+        3EL7SZTJM0ok4PMn58sEr36u75Bt6AI=
+X-Google-Smtp-Source: ABdhPJz9k/2W2LmgADoTsZbfpB5d6btee0nxlX6DF/x7Ki85TCn69a1MVMx/WICufFas9KT4dBOAj2dLDVU=
 X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:41f0:f89:87cd:8bd0])
- (user=yuzhao job=sendgmr) by 2002:a25:7cc3:: with SMTP id x186mr9070752ybc.227.1629268270995;
- Tue, 17 Aug 2021 23:31:10 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 00:30:56 -0600
-Message-Id: <20210818063107.2696454-1-yuzhao@google.com>
+ (user=yuzhao job=sendgmr) by 2002:a25:cf8a:: with SMTP id f132mr9779192ybg.387.1629268272384;
+ Tue, 17 Aug 2021 23:31:12 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 00:30:57 -0600
+In-Reply-To: <20210818063107.2696454-1-yuzhao@google.com>
+Message-Id: <20210818063107.2696454-2-yuzhao@google.com>
 Mime-Version: 1.0
+References: <20210818063107.2696454-1-yuzhao@google.com>
 X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
-Subject: [PATCH v4 00/11] Multigenerational LRU Framework
+Subject: [PATCH v4 01/11] mm: x86, arm64: add arch_has_hw_pte_young()
 From:   Yu Zhao <yuzhao@google.com>
 To:     linux-mm@kvack.org
 Cc:     linux-kernel@vger.kernel.org, Hillf Danton <hdanton@sina.com>,
@@ -57,216 +61,239 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TLDR
-====
-The current page reclaim is too expensive in terms of CPU usage and it
-often makes poor choices about what to evict. This patchset offers an
-alternative solution that is performant, versatile and
-straightforward.
+Some architectures set the accessed bit in PTEs automatically, e.g.,
+x86, and arm64 v8.2 and later. On architectures that do not have this
+capability, clearing the accessed bit in a PTE triggers a page fault
+following the TLB miss.
 
-Repo
-====
-git fetch https://linux-mm.googlesource.com/page-reclaim refs/changes/81/1281/1
+Being aware of this capability can help make better decisions, i.e.,
+whether to limit the size of each batch of PTEs and the burst of
+batches when clearing the accessed bit.
 
-Problems
-========
-Active/inactive
----------------
-Data centers need to predict whether a job can successfully land on a
-machine without actually impacting the existing jobs. The granularity
-of the active/inactive is too coarse to be useful for job schedulers
-to make such decisions. In addition, data centers need to monitor
-their memory utilization for horizontal scaling. The active/inactive
-are relative terms and therefore cannot give any insight into a pool
-of machines, e.g., aggregating the active/inactive across multiple
-machines without a common frame of reference yields no meaningful
-results.
+Signed-off-by: Yu Zhao <yuzhao@google.com>
+---
+ arch/arm64/include/asm/cpufeature.h | 19 ++++++-------------
+ arch/arm64/include/asm/pgtable.h    | 10 ++++------
+ arch/arm64/kernel/cpufeature.c      | 19 +++++++++++++++++++
+ arch/arm64/mm/proc.S                | 12 ------------
+ arch/arm64/tools/cpucaps            |  1 +
+ arch/x86/include/asm/pgtable.h      |  6 +++---
+ include/linux/pgtable.h             | 12 ++++++++++++
+ mm/memory.c                         | 14 +-------------
+ 8 files changed, 46 insertions(+), 47 deletions(-)
 
-Phones and laptops need to make good choices about what to evict
-because they are more sensitive to major faults and power consumption.
-Major faults can cause janks, i.e., slow UI renderings, and negatively
-impact user experience. The selection between anon and file types has
-been suboptimal because it is difficult to compare the access patterns
-of the two types. On phones and laptops, executable pages are
-frequently evicted despite the fact that there are many less
-frequently used anon pages. Conversely, on workstations building large
-projects, anon pages are sometimes swapped out while there are many
-less recently used file pages.
-
-Fundamentally, the notion of active/inactive has very limited ability
-to measure temporal locality.
-
-Rmap walk
----------
-Traversing a list of pages and searching the rmap for PTEs mapping
-each page can be very expensive because those pages are likely to be
-unrelated. For workloads using a high percentage of anon memory, the
-rmap becomes a bottleneck in page reclaim. For example, kswapd can
-easily spend more CPU time in the rmap than in anything else on
-laptops running Chrome. And the kernel can spend more CPU time in the
-rmap than in any other functions on servers that heavily overcommit
-anon memory.
-
-Simply put, it does not take advantage of spatial locality when using
-the rmap to test the accessed bit over a large number of pages.
-
-Solutions
-=========
-Generations
------------
-This solution introduces a temporal dimension. Each generation is a
-dot on the timeline and its population includes all mapped pages that
-have been accessed since the birth of this generation.
-
-All eviction choices are made based on generation numbers, which are
-simple and yet effective. A large number of pages can be spread out
-across many generations. Since each generation is timestamped at
-birth, its population is aggregatable across different machines. This
-is especially useful for data centers that require working set
-estimation and proactive reclaim.
-
-Page table walk
----------------
-Each walk traverses an mm_struct list to scan PTEs for accessed pages
-only. Processes that have been sleeping since the last walk are
-skipped. The cost of this solution is roughly proportional to the
-number of accessed pages. Since page tables usually have good spatial
-locality for workloads using a high percentage of anon memory, the end
-result is generally a significant reduction in kswapd CPU usage.
-
-Note that page table walks are conditional and therefore do not
-replace the rmap. For workloads that have sparse mappings, this
-solution falls back to the rmap.
-
-Use cases
-=========
-Page cache overcommit
----------------------
-Tiers within each generation are specifically designed to improve the
-performance of page cache under memory pressure. The fio/io_uring
-benchmark shows 14% increase in IOPS for buffered I/O.
-
-Without this patchset, the profile of fio/io_uring looks like:
-  12.03%  __page_cache_alloc
-   6.53%  shrink_active_list
-   2.53%  mark_page_accessed
-
-With this patchset, it looks like:
-   9.45%  __page_cache_alloc
-   0.52%  mark_page_accessed
-
-Essentially, the idea of tiers is a feedback loop based on trial and
-error. Instead of unconditionally moving file pages to the active list
-upon the second access, this solution monitors refaults and
-conditionally protects file pages with outlying refaults.
-
-Anon memory overcommit
-----------------------
-Our real-world benchmark that browses popular websites in multiple
-Chrome tabs demonstrates 51% less CPU usage from kswapd and 52% (full)
-less PSI.
-
-Without this patchset, the profile of kswapd looks like:
-  31.03%  page_vma_mapped_walk
-  25.59%  lzo1x_1_do_compress
-   4.63%  do_raw_spin_lock
-   3.89%  vma_interval_tree_iter_next
-   3.33%  vma_interval_tree_subtree_search
-
-With this patchset, it looks like:
-  49.36%  lzo1x_1_do_compress
-   4.54%  page_vma_mapped_walk
-   4.45%  memset_erms
-   3.47%  walk_pte_range
-   2.88%  zram_bvec_rw
-
-In addition, direct reclaim latency is reduced by 22% at 99th
-percentile and the number of refaults is reduced by 7%. Both metrics
-are important to phones and laptops as they are highly correlated to
-user experience.
-
-Working set estimation
-----------------------
-Userspace can invoke the aging by writing "+ memcg_id node_id max_gen
-[swappiness]" to /sys/kernel/debug/lru_gen. Reading this debugfs
-interface returns the birth time and the population of each
-generation.
-
-Given a pool of machines, by periodically invoking the aging, a job
-scheduler is able to rank these machines based on the sizes of their
-working sets and in turn selects the most ideal ones to land new jobs.
-
-Proactive reclaim
------------------
-Userspace can invoke the eviction by writing "- memcg_id node_id
-min_gen [swappiness] [nr_to_reclaim]" to /sys/kernel/debug/lru_gen.
-Multiple command lines are supported, as is concatenation with
-delimiters "," and ";".
-
-A typical use case is that a job scheduler invokes the eviction in
-anticipation of new jobs. The savings from proactive reclaim can
-provide certain SLA to landing these new jobs.
-
-Yu Zhao (11):
-  mm: x86, arm64: add arch_has_hw_pte_young()
-  mm: x86: add CONFIG_ARCH_HAS_NONLEAF_PMD_YOUNG
-  mm/vmscan.c: refactor shrink_node()
-  mm: multigenerational lru: groundwork
-  mm: multigenerational lru: protection
-  mm: multigenerational lru: mm_struct list
-  mm: multigenerational lru: aging
-  mm: multigenerational lru: eviction
-  mm: multigenerational lru: user interface
-  mm: multigenerational lru: Kconfig
-  mm: multigenerational lru: documentation
-
- Documentation/vm/index.rst          |    1 +
- Documentation/vm/multigen_lru.rst   |  134 ++
- arch/Kconfig                        |    9 +
- arch/arm64/include/asm/cpufeature.h |   19 +-
- arch/arm64/include/asm/pgtable.h    |   10 +-
- arch/arm64/kernel/cpufeature.c      |   19 +
- arch/arm64/mm/proc.S                |   12 -
- arch/arm64/tools/cpucaps            |    1 +
- arch/x86/Kconfig                    |    1 +
- arch/x86/include/asm/pgtable.h      |    9 +-
- arch/x86/mm/pgtable.c               |    5 +-
- fs/exec.c                           |    2 +
- fs/fuse/dev.c                       |    3 +-
- include/linux/cgroup.h              |   15 +-
- include/linux/memcontrol.h          |    9 +
- include/linux/mm.h                  |   34 +
- include/linux/mm_inline.h           |  201 ++
- include/linux/mm_types.h            |  107 ++
- include/linux/mmzone.h              |  103 ++
- include/linux/nodemask.h            |    1 +
- include/linux/oom.h                 |   16 +
- include/linux/page-flags-layout.h   |   19 +-
- include/linux/page-flags.h          |    4 +-
- include/linux/pgtable.h             |   16 +-
- include/linux/sched.h               |    3 +
- include/linux/swap.h                |    1 +
- kernel/bounds.c                     |    3 +
- kernel/cgroup/cgroup-internal.h     |    1 -
- kernel/exit.c                       |    1 +
- kernel/fork.c                       |   10 +
- kernel/kthread.c                    |    1 +
- kernel/sched/core.c                 |    2 +
- mm/Kconfig                          |   59 +
- mm/huge_memory.c                    |    3 +-
- mm/memcontrol.c                     |   28 +
- mm/memory.c                         |   21 +-
- mm/mm_init.c                        |    6 +-
- mm/mmzone.c                         |    2 +
- mm/oom_kill.c                       |    4 +-
- mm/rmap.c                           |    7 +
- mm/swap.c                           |   55 +-
- mm/swapfile.c                       |    2 +
- mm/vmscan.c                         | 2674 ++++++++++++++++++++++++++-
- mm/workingset.c                     |  119 +-
- 44 files changed, 3591 insertions(+), 161 deletions(-)
- create mode 100644 Documentation/vm/multigen_lru.rst
-
+diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
+index 9bb9d11750d7..2020b9e818c8 100644
+--- a/arch/arm64/include/asm/cpufeature.h
++++ b/arch/arm64/include/asm/cpufeature.h
+@@ -776,6 +776,12 @@ static inline bool system_supports_tlb_range(void)
+ 		cpus_have_const_cap(ARM64_HAS_TLB_RANGE);
+ }
+ 
++/* Check whether hardware update of the Access flag is supported. */
++static inline bool system_has_hw_af(void)
++{
++	return IS_ENABLED(CONFIG_ARM64_HW_AFDBM) && cpus_have_const_cap(ARM64_HW_AF);
++}
++
+ extern int do_emulate_mrs(struct pt_regs *regs, u32 sys_reg, u32 rt);
+ 
+ static inline u32 id_aa64mmfr0_parange_to_phys_shift(int parange)
+@@ -799,19 +805,6 @@ static inline u32 id_aa64mmfr0_parange_to_phys_shift(int parange)
+ 	}
+ }
+ 
+-/* Check whether hardware update of the Access flag is supported */
+-static inline bool cpu_has_hw_af(void)
+-{
+-	u64 mmfr1;
+-
+-	if (!IS_ENABLED(CONFIG_ARM64_HW_AFDBM))
+-		return false;
+-
+-	mmfr1 = read_cpuid(ID_AA64MMFR1_EL1);
+-	return cpuid_feature_extract_unsigned_field(mmfr1,
+-						ID_AA64MMFR1_HADBS_SHIFT);
+-}
+-
+ static inline bool cpu_has_pan(void)
+ {
+ 	u64 mmfr1 = read_cpuid(ID_AA64MMFR1_EL1);
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+index f09bf5c02891..b63a6a7b62ee 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -993,13 +993,11 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
+  * page after fork() + CoW for pfn mappings. We don't always have a
+  * hardware-managed access flag on arm64.
+  */
+-static inline bool arch_faults_on_old_pte(void)
++static inline bool arch_has_hw_pte_young(void)
+ {
+-	WARN_ON(preemptible());
+-
+-	return !cpu_has_hw_af();
++	return system_has_hw_af();
+ }
+-#define arch_faults_on_old_pte		arch_faults_on_old_pte
++#define arch_has_hw_pte_young		arch_has_hw_pte_young
+ 
+ /*
+  * Experimentally, it's cheap to set the access flag in hardware and we
+@@ -1007,7 +1005,7 @@ static inline bool arch_faults_on_old_pte(void)
+  */
+ static inline bool arch_wants_old_prefaulted_pte(void)
+ {
+-	return !arch_faults_on_old_pte();
++	return arch_has_hw_pte_young();
+ }
+ #define arch_wants_old_prefaulted_pte	arch_wants_old_prefaulted_pte
+ 
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index 0ead8bfedf20..d05de77626f5 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -1650,6 +1650,14 @@ static bool has_hw_dbm(const struct arm64_cpu_capabilities *cap,
+ 	return true;
+ }
+ 
++static void cpu_enable_hw_af(struct arm64_cpu_capabilities const *cap)
++{
++	u64 val = read_sysreg(tcr_el1);
++
++	write_sysreg(val | TCR_HA, tcr_el1);
++	isb();
++	local_flush_tlb_all();
++}
+ #endif
+ 
+ #ifdef CONFIG_ARM64_AMU_EXTN
+@@ -2126,6 +2134,17 @@ static const struct arm64_cpu_capabilities arm64_features[] = {
+ 		.matches = has_hw_dbm,
+ 		.cpu_enable = cpu_enable_hw_dbm,
+ 	},
++	{
++		.desc = "Hardware update of the Access flag",
++		.type = ARM64_CPUCAP_SYSTEM_FEATURE,
++		.capability = ARM64_HW_AF,
++		.sys_reg = SYS_ID_AA64MMFR1_EL1,
++		.sign = FTR_UNSIGNED,
++		.field_pos = ID_AA64MMFR1_HADBS_SHIFT,
++		.min_field_value = 1,
++		.matches = has_cpuid_feature,
++		.cpu_enable = cpu_enable_hw_af,
++	},
+ #endif
+ 	{
+ 		.desc = "CRC32 instructions",
+diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
+index 35936c5ae1ce..b066d5712e3d 100644
+--- a/arch/arm64/mm/proc.S
++++ b/arch/arm64/mm/proc.S
+@@ -478,18 +478,6 @@ SYM_FUNC_START(__cpu_setup)
+ 	 * Set the IPS bits in TCR_EL1.
+ 	 */
+ 	tcr_compute_pa_size tcr, #TCR_IPS_SHIFT, x5, x6
+-#ifdef CONFIG_ARM64_HW_AFDBM
+-	/*
+-	 * Enable hardware update of the Access Flags bit.
+-	 * Hardware dirty bit management is enabled later,
+-	 * via capabilities.
+-	 */
+-	mrs	x9, ID_AA64MMFR1_EL1
+-	and	x9, x9, #0xf
+-	cbz	x9, 1f
+-	orr	tcr, tcr, #TCR_HA		// hardware Access flag update
+-1:
+-#endif	/* CONFIG_ARM64_HW_AFDBM */
+ 	msr	mair_el1, mair
+ 	msr	tcr_el1, tcr
+ 	/*
+diff --git a/arch/arm64/tools/cpucaps b/arch/arm64/tools/cpucaps
+index 49305c2e6dfd..d52f50671e60 100644
+--- a/arch/arm64/tools/cpucaps
++++ b/arch/arm64/tools/cpucaps
+@@ -35,6 +35,7 @@ HAS_STAGE2_FWB
+ HAS_SYSREG_GIC_CPUIF
+ HAS_TLB_RANGE
+ HAS_VIRT_HOST_EXTN
++HW_AF
+ HW_DBM
+ KVM_PROTECTED_MODE
+ MISMATCHED_CACHE_TYPE
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index 448cd01eb3ec..3908780fc408 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -1397,10 +1397,10 @@ static inline bool arch_has_pfn_modify_check(void)
+ 	return boot_cpu_has_bug(X86_BUG_L1TF);
+ }
+ 
+-#define arch_faults_on_old_pte arch_faults_on_old_pte
+-static inline bool arch_faults_on_old_pte(void)
++#define arch_has_hw_pte_young arch_has_hw_pte_young
++static inline bool arch_has_hw_pte_young(void)
+ {
+-	return false;
++	return true;
+ }
+ 
+ #endif	/* __ASSEMBLY__ */
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index e24d2c992b11..3a8221fa2c76 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -258,6 +258,18 @@ static inline int pmdp_clear_flush_young(struct vm_area_struct *vma,
+ #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+ #endif
+ 
++#ifndef arch_has_hw_pte_young
++static inline bool arch_has_hw_pte_young(void)
++{
++	/*
++	 * Those arches which have hw access flag feature need to implement
++	 * their own helper. By default, "false" means pagefault will be hit
++	 * on old pte.
++	 */
++	return false;
++}
++#endif
++
+ #ifndef __HAVE_ARCH_PTEP_GET_AND_CLEAR
+ static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
+ 				       unsigned long address,
+diff --git a/mm/memory.c b/mm/memory.c
+index 25fc46e87214..2f96179db219 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -121,18 +121,6 @@ int randomize_va_space __read_mostly =
+ 					2;
+ #endif
+ 
+-#ifndef arch_faults_on_old_pte
+-static inline bool arch_faults_on_old_pte(void)
+-{
+-	/*
+-	 * Those arches which don't have hw access flag feature need to
+-	 * implement their own helper. By default, "true" means pagefault
+-	 * will be hit on old pte.
+-	 */
+-	return true;
+-}
+-#endif
+-
+ #ifndef arch_wants_old_prefaulted_pte
+ static inline bool arch_wants_old_prefaulted_pte(void)
+ {
+@@ -2769,7 +2757,7 @@ static inline bool cow_user_page(struct page *dst, struct page *src,
+ 	 * On architectures with software "accessed" bits, we would
+ 	 * take a double page fault, so mark it accessed here.
+ 	 */
+-	if (arch_faults_on_old_pte() && !pte_young(vmf->orig_pte)) {
++	if (!arch_has_hw_pte_young() && !pte_young(vmf->orig_pte)) {
+ 		pte_t entry;
+ 
+ 		vmf->pte = pte_offset_map_lock(mm, vmf->pmd, addr, &vmf->ptl);
 -- 
 2.33.0.rc1.237.g0d66db33f3-goog
 
