@@ -2,151 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B663F09AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9ED3F09B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232519AbhHRQ5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 12:57:14 -0400
-Received: from mail-co1nam11on2054.outbound.protection.outlook.com ([40.107.220.54]:7872
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232664AbhHRQ5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 12:57:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JgFpUiVlRRXGsqZcZfyJyC3b3N6+MS+jQ3Dzgj7uOHo+GHGbx2hdF42XbobKajmcNjw3O/JyWyCiMa08gBJOCdpxXs6yyDcMkozRtZxooqpLweou8PIrGssXOWAemWp24TO5OMIjG6Uh/H7oovrybK1UYAalu4dBsmNYeU0jcyt7xwXOX9iZPUnxQmG+wTyvJRX9i5hjW+gvNwKDKRZl5jeCtO15UCK1YojEkJ/tPzSAafXcITGI8QFB/UchXqhcSZmICQk8axIn4kKXeRBf5Ju/XtW+I/J3jbsaAiBgXKYSp/xi8jT1cNznOByaRh8InCNgq8wlXSC/HCJzINbLNg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eV15EehFu6GU+KiNcR8ttKkX40eVc9//eWCc4Lfm1B4=;
- b=bXoB2KaXY4KFrWUsLtnA8FgpkpBlxGfRaeT7PmC5CEF/lOVDsHhOa7rKaFFaRR65+JgOs6IX/jTPpu2Z1QUDx8uEMfGc27OFYQaCJtoGKLLbyYU3CTZDoQ4ul7pNkkNw+CR5R3zgVaNPk3PvN9G7PjETb4TFbT/VvQsu0PTvHy7gVri73cGV2fFDxZ0plH5KRYuHtg7cc+ydrJdMds79ObR5/y+kjryJIdBPWA3rFR59cWrYR86gf1VNXgx6CGMjpPJCd3Zt9MBfVmfJFbYSyDiHQmZxZoJvKRZhl+XiZyrumRZA0qgSezxPG/65vEtTCQFoZ7VfiBD07aPVnzdDcg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eV15EehFu6GU+KiNcR8ttKkX40eVc9//eWCc4Lfm1B4=;
- b=WK9h2BrpNuuCeHKDg2k4IJx9qJxxngNJ5roYrTazokoEaltlbp79DESRD9xzpBto9auIOL+qICG7CEjvkQUzLHqrFGdPnFqhnyo6cqoC28BAc5YMsRj3NShYq3Apjhmb5puUMIiakoLXCngdPmm/UjmVn8WaRShdYK85E/UAk7E=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR1201MB0201.namprd12.prod.outlook.com (2603:10b6:4:5b::21)
- by DM5PR12MB2487.namprd12.prod.outlook.com (2603:10b6:4:af::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.22; Wed, 18 Aug
- 2021 16:56:32 +0000
-Received: from DM5PR1201MB0201.namprd12.prod.outlook.com
- ([fe80::7410:8a22:1bdb:d24d]) by DM5PR1201MB0201.namprd12.prod.outlook.com
- ([fe80::7410:8a22:1bdb:d24d%6]) with mapi id 15.20.4415.024; Wed, 18 Aug 2021
- 16:56:32 +0000
-From:   Wei Huang <wei.huang2@amd.com>
-To:     kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        vkuznets@redhat.com, seanjc@google.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        wei.huang2@amd.com
-Subject: [PATCH v3 3/3] KVM: SVM: Add 5-level page table support for SVM
-Date:   Wed, 18 Aug 2021 11:55:49 -0500
-Message-Id: <20210818165549.3771014-4-wei.huang2@amd.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210818165549.3771014-1-wei.huang2@amd.com>
-References: <20210818165549.3771014-1-wei.huang2@amd.com>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain
-X-ClientProxiedBy: SA0PR12CA0002.namprd12.prod.outlook.com
- (2603:10b6:806:6f::7) To DM5PR1201MB0201.namprd12.prod.outlook.com
- (2603:10b6:4:5b::21)
+        id S229791AbhHRQ5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 12:57:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232577AbhHRQ5n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 12:57:43 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CE7C061764;
+        Wed, 18 Aug 2021 09:57:08 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id p38so6111546lfa.0;
+        Wed, 18 Aug 2021 09:57:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9afXLHEiBRvQw+FqKQqGWY2brD9XGx9hPAmFRANM6E0=;
+        b=SkFjeie1BejmJMUfsJJa7cdKxHWnbIqV6yEx50leCh45/lOA2mtYHIhF2YuT+/qxMT
+         Kz4yDrQ39Ns52bpJRJ1nvYNdeOrbzSvGNVDSFXOIEZy/5g8lF1kLMJksTgXPJ8QmjHcg
+         iB+julVaTc7z/7axFMQXOnE7a569YrihqMFwkdkfwrYA1Olh6EVmg/hGR1JfF7Bo+IzT
+         5pn2hximEzVhmBcizH/3kj9vKvVTct62o0rKSGlLwd0/7BGb0XQ+by7ZLMa2P8L4PJg+
+         efMjguZzhJdMSLcJQv1Pv0yiP3TQGVx4otwdNVArVuo1hHYq6zxbh/irwSRReTHHDhIg
+         HoAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9afXLHEiBRvQw+FqKQqGWY2brD9XGx9hPAmFRANM6E0=;
+        b=tD/Umr9dTSkop2zTtRdV7TcHbWWlaXs4KlMb7g8Vib1GLiIjZ7INO8VFnRT9o3oill
+         mMteg4ycFSzW1AhgTx+gXlTbtYmiQhDN4B1EUSqaVkhuCiNpId2g20uyxiJm93ZU7Js6
+         pUlSjaPzKFc49zNHsrt5DJ2ZE9+EvGGyuRG+8N+H3ixJdnAwEV3SFc7REMQ8RmMrHs4d
+         tVMnRrcquIPCtHf64kp+Zs/OZfm7IiOl6tC1d6iTpxpovkKOYFLWvT9euT/gimBsGJfk
+         upyP1ndZi/0flC2Rs7Sqv+RilIVJkS8rbZWRmcN/WHZ0BNSSfovgdApxlnYZqNaY089e
+         oenw==
+X-Gm-Message-State: AOAM5326V9bgmzHehg2E+0mByYDSFx807PjfcEJ8OgywcYtObjZKFhwk
+        LxWfC1g3wq816+FUIWRU02x4qPwQ6bA=
+X-Google-Smtp-Source: ABdhPJwoN3TrpzatYdR/vf/doNTOb6j8sY8QLs5kbR7gHEbbr6h18EW7bx2EM9tVNh0BF01dlvfX6g==
+X-Received: by 2002:a19:701a:: with SMTP id h26mr6902287lfc.443.1629305825693;
+        Wed, 18 Aug 2021 09:57:05 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-85-91.dynamic.spd-mgts.ru. [46.138.85.91])
+        by smtp.googlemail.com with ESMTPSA id f19sm24809lfu.100.2021.08.18.09.57.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Aug 2021 09:57:05 -0700 (PDT)
+Subject: Re: [PATCH v8 06/34] dt-bindings: clock: tegra-car: Document new
+ tegra-clocks sub-node
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20210817012754.8710-1-digetx@gmail.com>
+ <20210817012754.8710-7-digetx@gmail.com> <YR0SSz7KMh7TwaFW@orome.fritz.box>
+ <eff5ef47-e6e0-3e03-cf1a-d931b0f2dc2a@gmail.com>
+ <YR033zuYWWLCeYpM@orome.fritz.box>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <a5b942cb-1611-9ae1-6e89-4b68fdaf03e3@gmail.com>
+Date:   Wed, 18 Aug 2021 19:57:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from weiserver.amd.com (165.204.77.1) by SA0PR12CA0002.namprd12.prod.outlook.com (2603:10b6:806:6f::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Wed, 18 Aug 2021 16:56:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d919a1c6-b6d0-4e66-bce1-08d962692182
-X-MS-TrafficTypeDiagnostic: DM5PR12MB2487:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR12MB2487C354410DD7264A83FB53CFFF9@DM5PR12MB2487.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9RywPpRySR+l6dogadRdIA3TYkph3ukuc1UgBF5LTQ+lepGvaXWQfRrvWxJ9n8jxumcvYBzx4o2JW0LAp6k+v9HHXrp+7KkN7hKAcEj7pe3e4NtqSmmYpi/Notje59tx87JJP1sk9l7wJ5VB/njFEkzDWVjMei2eBAIodPKp/L8x6QOObVhir3hvnKOLgIC1DQIW4E+HFGC0tzbIXn/XZ391dmvHC8LHK6wVqY5o1sV3u8bQ3wQc8R6iTj2rYyikCxB5s6vcgglnM0Uk7z6/zoWK2f2IEdJE7nYmDt7d+87nokzQpewHf5RziOYARfVVDaIgOswJ/wsOGRCHHTk9f/9YqEMoNL7T9E8bSW3B/WHX3doV+ztTG48Qrs8X5iMUEkSk7jFDjDMK1vJY4gB497VpMz9OnnQCHF2NCpTvptCVJdliEG81qJbUKJgX999D8UfYZ4IV5ZtG9PyW47rqE7gfARN74/ETwbuR3Tl0T3Y0H85VeXWx3UHXhXD4809y9gcyQqSufNKiy+XHGKJornwaZZMejn4yMv3Hno+6Lhl6Iyj/9A0Ifdcf/APFds3Sg2jLOqSoogvoElU1ByoXlWwtrKvXGtH0k6dC/rc4nV8MmnUQ2h5HiKzu37idOyQwHj8aewK9LY+o5uTrGeyJ1+f0Ta1JrJTKvd9lE+8Oe1EwLdvYKVNe05trBqThsKJ9ctHv2dAoXfpulDkGyPJddg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1201MB0201.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(396003)(39860400002)(136003)(376002)(478600001)(26005)(38350700002)(52116002)(66946007)(66556008)(66476007)(7696005)(4326008)(6486002)(38100700002)(2906002)(6916009)(6666004)(36756003)(83380400001)(2616005)(1076003)(956004)(8676002)(8936002)(7416002)(86362001)(316002)(186003)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?HN4pJ6vhSDqIraNuQwzpRHyEuGHvZHANgE0SUUXQS4T/Wpt/imZvylWTUTEE?=
- =?us-ascii?Q?m1BNffAT0uq+fS2jSDxONYT8gxj4gKK7xIAyRRLJQuZnhTLl47chtCVKD87k?=
- =?us-ascii?Q?aNVJxymV3OykrGA7nbSbO1Bfb6HVH3eqePjyYGaOnF4Fx5Q6o7MrTi+cI35G?=
- =?us-ascii?Q?tKOGGOTFVP1YoqNYfZrT9EK1HDJ4jYUZQwoSJemO+JlmN2wH0LHAJczRH3A+?=
- =?us-ascii?Q?ajIlH3nZ9wLYQIBT5KfzjDwaVdW4sheo1kv6Ari2jfMrJY3tOepgFmOuw9o/?=
- =?us-ascii?Q?EHFcOqexKBmVbcY5eqJP+bgjEjga8miKfgIawWy5pGbXzMs6u7fOuovN8EF6?=
- =?us-ascii?Q?m6+t6GZV0p2kZLbfycvZuk+E55kIW+NhrVdHFElpdjjmnpJWn59lbci9ghI0?=
- =?us-ascii?Q?TGn+U3bPSSxeRKZndJakJ5eUOwkkpkpH13Hc3f4qcDrrpkD+bj8Ng6iVNWNT?=
- =?us-ascii?Q?PiFqiR1IQ8VG42QTfr4Q1w/MS1CNmdfHuPueDWsQudxJnkePEZtHy7OXPra8?=
- =?us-ascii?Q?72Js9ZDWxl2hfvdiFiaa0G+zeeYHTYtrK+UcXflQnY/gbrDW/dYrMhKcqtcn?=
- =?us-ascii?Q?U6pJoA94fYInqopsBzFlc8+dcLzy/0xPd6cMj4CXej7gekgWnPNWWTmiuMcQ?=
- =?us-ascii?Q?KjZFnOS6R/7x7xU63angBoUBJcHf6XN+FYXZhZeTopxX21IPy7kvJ3ufwbuw?=
- =?us-ascii?Q?6LzCnXDiHusQ06s0wjp7uYn8hfUwojAAEJNZ9C+hzB6dEHhY817MZ3EBqyXn?=
- =?us-ascii?Q?o51cRpV0gZuX3yUl7FHP1mVgDcGcwWxuLPP21KpzfLHuaFoxaCSitCKATnU6?=
- =?us-ascii?Q?HMeBoqAU4euh1BxK3qKCKB2JgISk8D9+qTpXf0Vqq55bP9E7tPF/0Ln1NdM8?=
- =?us-ascii?Q?u7o8csy1vHfP8wfhFKFb+/wGr25QLw47D97DprQNBp01PfDXUb/hlxe7/pri?=
- =?us-ascii?Q?bnsTCzwV7aDKnhpVvWlaCpdb1Feyk82gl5QpvhjtnOzjNovrT6+HfZ9qPPI0?=
- =?us-ascii?Q?Ce60bYWjUorTIA8SQD6VplFSrblvHeGFpHWMPoKVrtvIWFqlTA8Si7ROg6Il?=
- =?us-ascii?Q?VMt0QB8d5eQM+HP8GQ96nskRl6QdwwHU48gQ8gV8Cj+KfspaRlFsvWyjSzX9?=
- =?us-ascii?Q?ptH+NxOLFvdeC+JST2rBxo3cQ+574Atxla6a1iMiPODiAfQX1R+OnETsm2re?=
- =?us-ascii?Q?Xq78/i7fVw+KBededwjkWI3AzzMHyLOl9bDs+MGkdYQHGvNxa/P5YGCLfXcg?=
- =?us-ascii?Q?cuAFAJwuGl2RN+fOcnpf6+qKaxaH8Ud74r7JB6OLml5dnfLIM3m/0nqtRsni?=
- =?us-ascii?Q?ZMyA1ae86uzTAJ990O39HaC0?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d919a1c6-b6d0-4e66-bce1-08d962692182
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR1201MB0201.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2021 16:56:32.4739
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Rq/U3JetW78lvJnjwWqwUCweD2L+w2z1/53fiUJJWTFK20St9nCzBhqkGQoSB61W
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2487
+In-Reply-To: <YR033zuYWWLCeYpM@orome.fritz.box>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the 5-level page table is enabled on host OS, the nested page table
-for guest VMs must use 5-level as well. Update get_npt_level() function
-to reflect this requirement. In the meanwhile, remove the code that
-prevents kvm-amd driver from being loaded when 5-level page table is
-detected.
+18.08.2021 19:39, Thierry Reding пишет:
+>> We don't have a platform device for CaR. I don't see how it's going to
+>> work. We need to create a platform device for each RPM-capable clock
+>> because that's how RPM works. The compatible string is required for
+>> instantiating OF-devices from a node, otherwise we will have to
+>> re-invent the OF core.
+> I think we do have a platform device for CAR. It's just not bound
+> against by the driver because these clock drivers are "special". But
+> from other parts of the series you're already trying to fix that, at
+> least partially.
+> 
+> But it doesn't seem right to create a platform device for each RPM-
+> capable clock. Why do they need to be devices? They aren't, so why
+> pretend? Is it that some API that we want to use here requires the
+> struct device?
 
-Signed-off-by: Wei Huang <wei.huang2@amd.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/svm/svm.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+The "device" representation is internal to the kernel. It's okay to me
+to have PLLs represented by a device, it's a distinct h/w by itself.
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index b34840a2ffa7..ecc4bb8e4ea0 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -261,7 +261,9 @@ u32 svm_msrpm_offset(u32 msr)
- static int get_max_npt_level(void)
- {
- #ifdef CONFIG_X86_64
--	return PT64_ROOT_4LEVEL;
-+	bool la57 = (cr4_read_shadow() & X86_CR4_LA57) != 0;
-+
-+	return la57 ? PT64_ROOT_5LEVEL : PT64_ROOT_4LEVEL;
- #else
- 	return PT32E_ROOT_LEVEL;
- #endif
-@@ -462,11 +464,6 @@ static int has_svm(void)
- 		return 0;
- 	}
- 
--	if (pgtable_l5_enabled()) {
--		pr_info("KVM doesn't yet support 5-level paging on AMD SVM\n");
--		return 0;
--	}
--
- 	return 1;
- }
- 
--- 
-2.31.1
+CCF supports managing of clock's RPM and it requires to have clock to be
+backed by a device. That's what we are using here.
 
+Please see
+https://elixir.bootlin.com/linux/v5.14-rc6/source/drivers/clk/clk.c#L109
+
+>>> Also, I don't think the tegra- prefix is necessary here. The parent node
+>>> is already identified as Tegra via the compatible string.
+>>>
+>>> In the case of CAR, I'd imagine something like:
+>>>
+>>> 	clocks {
+>>> 		sclk {
+>>> 			operating-points-v2 = <&opp_table>;
+>>> 			power-domains = <&domain>;
+>>> 		};
+>>> 	};
+>>>
+>>> Now you've only got the bare minimum in here that you actually add. All
+>>> the other data that you used to have is simply derived from the parent.
+>> 'clocks' is already a generic keyword in DT. It's probably not okay to
+>> redefine it.
+> "clocks" is not a generic keyword. It's the name of a property and given
+> that we're talking about the clock provider here, it doesn't need a
+> clocks property of its own, so it should be fine to use that for the
+> node.
+
+I'm curious what Rob thinks about it. Rob, does this sound okay to you?
