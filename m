@@ -2,69 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02BF3F16EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944B53F17CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 13:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238081AbhHSKCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 06:02:18 -0400
-Received: from mx.socionext.com ([202.248.49.38]:13490 "EHLO mx.socionext.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232750AbhHSKCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 06:02:16 -0400
-Received: from unknown (HELO kinkan2-ex.css.socionext.com) ([172.31.9.52])
-  by mx.socionext.com with ESMTP; 19 Aug 2021 19:01:40 +0900
-Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
-        by kinkan2-ex.css.socionext.com (Postfix) with ESMTP id 32D9D208AE17;
-        Thu, 19 Aug 2021 19:01:40 +0900 (JST)
-Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Thu, 19 Aug 2021 19:01:40 +0900
-Received: from yuzu2.css.socionext.com (yuzu2 [172.31.9.57])
-        by kinkan2.css.socionext.com (Postfix) with ESMTP id 9CB70B631E;
-        Thu, 19 Aug 2021 19:01:39 +0900 (JST)
-Received: from [10.212.29.66] (unknown [10.212.29.66])
-        by yuzu2.css.socionext.com (Postfix) with ESMTP id 4A402A911B;
-        Thu, 19 Aug 2021 19:01:39 +0900 (JST)
-Subject: Re: pcie-uniphier: race condition in masking/unmasking interrupts
-To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
-Cc:     Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210818113820.fzjeouy6tohbzuad@pali>
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Message-ID: <1328d293-7c42-b29b-9cce-507cf25de97a@socionext.com>
-Date:   Thu, 19 Aug 2021 19:01:39 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S238449AbhHSLQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 07:16:25 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:48955 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230089AbhHSLQY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 07:16:24 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 8423F5C0183;
+        Thu, 19 Aug 2021 07:15:47 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Thu, 19 Aug 2021 07:15:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=gzG3udI3AdEvoCdC3yMHecAclK
+        S/dCHsHIRkDLel0UY=; b=gGg044R+ymHy/nCZT0I2sFKTyVXApDsK8jozpwddXv
+        dMwzfp5e2d6AShgcqMwciH6Rhou/Bg5dhfR1UWm+A3SVefmSBQuWPKT3SVt2kclZ
+        4HN3LglTIru/HWEQ93YRaV2lpf2iFLPsc5eTCmI6GDiYFAepCnXPiCVMGH2AMQ5F
+        q5IMO6kkV+e+PXMxokMaVNFKccmw2EKlS3Xjp1SwczHTJyOwJzauKHF/EFydkhEW
+        yU0p/ATH3s70Yy1Ul656SKVzX1LQaSDuEoTVla4E2oh6ORERpUzfMB7fJnqX0Tw3
+        gHU67ihsvBLcSxASvIvDhYX9KYn49xIojqWtx1eRtn3w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=gzG3udI3AdEvoCdC3
+        yMHecAclKS/dCHsHIRkDLel0UY=; b=TumMCQgH+o6K2I4xn0J85r2ZLtFF6zSCE
+        oBoi29c28ooGPU2xks8RxURct0LzBIe7yLH2abdzSu/YH4FNDubTZEUgL3FOXVc+
+        CWsDeudfgw1G+Mnum1D2K2Sh0lZO5nYhRhKEEpnN2rjTJSuiz0HsbFYuxjmQ9Ob2
+        FJUdO98QnQQw4ZWqmUm/T/LLE4Hgx2DZahq3xiXIyYV8EKR/aLhP3WimWnSy5/Tt
+        9PcH6cZExSxuc/tD0+LLIlFgdCDa+YNuxbz7FCSvQIk5GbA/Ba+/LUdd0xfbOgzU
+        iG0OyjqQ7rZBtjZfDggrHzl4oTkD/UGw7G3R7kqhGK3a5lLfy2DTg==
+X-ME-Sender: <xms:Yj0eYcKiUvJcnzZ7cpGyU5N-BPCC68VhZS8o2bV0bCDh9aorvgn92g>
+    <xme:Yj0eYcK0N_p0fxsTzQJWu6Azqy7yA5wSV_uQrQSHEmefcZQg4Vg2w3N01g0eNELdI
+    iJ1CGIVaFPggCFow5s>
+X-ME-Received: <xmr:Yj0eYcuaVmx_SDAVhMXZvfM_IJFCQyyQoYmLAFnvSPvOLwaCoW9FEes80xNrWlAWFvyroyPTyl_12EICYmBClG7RyqH4o_y5hat5wROeMTVKGwM0Wg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleejgdefiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+    dtnecuhfhrohhmpeetlhhishhtrghirhcuhfhrrghntghishcuoegrlhhishhtrghirhes
+    rghlihhsthgrihhrvdefrdhmvgeqnecuggftrfgrthhtvghrnhepjeeliefhvdetgfdtte
+    fhtdegffdtiefffeejiefffeevueeljeehjeevhfffueeknecuvehluhhsthgvrhfuihii
+    vgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghlihhsthgrihhrsegrlhhishhtrg
+    hirhdvfedrmhgv
+X-ME-Proxy: <xmx:Yj0eYZa2-fHfXYNR54fbPFueCiieq5tHeANw0NHmiQJMgUWNZHjF4g>
+    <xmx:Yj0eYTZG6QO2wPuPC2Ia0aV8Ku34enwhjFbvHQavAmvl0RtsQurohQ>
+    <xmx:Yj0eYVAFFk6GAOxv7UP0R6Aj6G7W9BV-O2wrvkD49uUuXrMV6Cr7bQ>
+    <xmx:Yz0eYX7z35FIAD5dHZv8IPX7Hg5rb1MqLnND4yw0JOVb6HiudLTpcA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 19 Aug 2021 07:15:43 -0400 (EDT)
+From:   Alistair Francis <alistair@alistair23.me>
+To:     lee.jones@linaro.org, robh+dt@kernel.org, lgirdwood@gmail.com,
+        broonie@kernel.org, linux-imx@nxp.com, kernel@pengutronix.de
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alistair23@gmail.com, Alistair Francis <alistair@alistair23.me>
+Subject: [PATCH v11 00/10] Add support for the silergy,sy7636a
+Date:   Thu, 19 Aug 2021 01:44:39 +1000
+Message-Id: <20210818154449.1037-1-alistair@alistair23.me>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210818113820.fzjeouy6tohbzuad@pali>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pali,
+This series applied on top of the "mfd: simple-mfd-i2c: Add support for
+registering devices via MFD cells" patch. Once "mfd: simple-mfd-i2c: Add
+support for registering devices via MFD cells" is merged this series is
+ready to go.
 
-On 2021/08/18 20:38, Pali Rohár wrote:
-> Hello!
-> 
-> Marc pointed during review of pci-aardvark patches one issue which I see
-> that is available also in the current pcie-uniphier.c driver.
-> 
-> When masking or unmasking interrupts there is read-modify-write sequence
-> for PCL_RCV_INTX_MASK_SHIFT register without any locking:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/controller/dwc/pcie-uniphier.c?h=v5.13#n171
-> 
-> So when trying to mask/unmask two interrupts at the same time there is
-> race condition as updating that PCL_RCV_INTX_MASK_SHIFT register is not
-> atomic.
-> 
-> Could you look at it?
-Thank you for pointing out.
-I'll update the mask/unmask/ack operations to avoid race condition.
+v11:
+ - Address comments on hwmon
+ - Improve "mfd: simple-mfd-i2c: Add a Kconfig name" commit message
+v10:
+ - Use dev_get_regmap() instead of dev_get_drvdata()
+v9:
+ - Convert to use the simple-mfd-i2c instead
 
-Thank you,
+Alistair Francis (10):
+  dt-bindings: mfd: Initial commit of silergy,sy7636a.yaml
+  mfd: simple-mfd-i2c: Add a Kconfig name
+  mfd: simple-mfd-i2c: Enable support for the silergy,sy7636a
+  regulator: sy7636a: Remove requirement on sy7636a mfd
+  thermal: sy7636a: Add thermal driver for sy7636a
+  hwmon: sy7636a: Add temperature driver for sy7636a
+  ARM: imx_v6_v7_defconfig: Enable silergy,sy7636a
+  ARM: dts: imx7d: remarkable2: Enable silergy,sy7636a
+  ARM: imx_v6_v7_defconfig: Enable backlight class devices
+  ARM: dts: imx7d: remarkable2: Enable lcdif
 
----
-Best Regards
-Kunihiko Hayashi
+ .../bindings/mfd/silergy,sy7636a.yaml         |  79 ++++++++++++
+ arch/arm/boot/dts/imx7d-remarkable2.dts       | 115 ++++++++++++++++++
+ arch/arm/configs/imx_v6_v7_defconfig          |   5 +
+ drivers/hwmon/Kconfig                         |  10 ++
+ drivers/hwmon/Makefile                        |   1 +
+ drivers/hwmon/sy7636a-hwmon.c                 |  77 ++++++++++++
+ drivers/mfd/Kconfig                           |   2 +-
+ drivers/mfd/simple-mfd-i2c.c                  |  12 ++
+ drivers/regulator/Kconfig                     |   1 -
+ drivers/regulator/sy7636a-regulator.c         |   2 +-
+ drivers/thermal/Kconfig                       |   6 +
+ drivers/thermal/Makefile                      |   1 +
+ drivers/thermal/sy7636a_thermal.c             |  94 ++++++++++++++
+ include/linux/mfd/sy7636a.h                   |  41 +++++++
+ 14 files changed, 443 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
+ create mode 100644 drivers/hwmon/sy7636a-hwmon.c
+ create mode 100644 drivers/thermal/sy7636a_thermal.c
+ create mode 100644 include/linux/mfd/sy7636a.h
+
+-- 
+2.31.1
+
