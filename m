@@ -2,268 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD3803EFFD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 116CE3EFFDA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231342AbhHRJCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:02:19 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:45993 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231218AbhHRJCS (ORCPT
+        id S231484AbhHRJD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 05:03:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229780AbhHRJDx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:02:18 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 68BC5580B7E;
-        Wed, 18 Aug 2021 05:01:43 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 18 Aug 2021 05:01:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=jhTIW1a1kmlpxAu4bV1fbcgHtmq
-        GkW/kzMFN8LO4whw=; b=1gd+tK3X+jenGDI3ZJio617KA1L7b2t/i2S2E3tuRbj
-        5oD8HzL/CiD2DHRnIiBorduvFjDDGB0mo6fjNB6A2QG8xbfNXEUbOsmuAyJIolFw
-        yDZ3QkKjkOdvP5Lafj3p5LGxOSeyxskJ7i3JvcbFWaG2FYem7IMKibksv2tBxreU
-        2Hjly85XBwDOoEFld1tkNP9XIFaVcgNXdqjY7RP/woDMCPnYoGJLpE+QcfEYEpKk
-        /oNImmme8HyKi/ZCrm/yG1Lr9uNq+2iXayUs9X9YTZl1i6TgeL2yWsp5rG50HKin
-        5vvIjREeQsxcEt1TA02nKN+51TRSEPHo8L9ZXOf9c8A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=jhTIW1
-        a1kmlpxAu4bV1fbcgHtmqGkW/kzMFN8LO4whw=; b=qIUla/DgaeUBRJYUjD7HAO
-        FB2TnV+lbb0ln0WpyzFXleV9ZCHpNVfeH2CZpWvIAn71347O2vPRS9kxpkIFUkmK
-        KKeYgvaxifCN/mW2Z2bxD5k+sFflc9HV1yUmYe6EzIWKFvKK/rLVl8encF14AuI3
-        KaohVvbMugJvLTcHreb/sHsp9s5ZObbu7qMCPXhfCgu2/2wb8776oL9W3Y8eLPzm
-        YFUaZwk5JqKp+H21AtEi2W127SoNbo7rpPYYo+l0aROG7DMzcxOS/gk9JkVRAJ96
-        00+AEbVsJhQr0ewNL/67m/0wrOb4i4QnwCg1r2L2QH6hcGigK4BaQYVu+94OwWRw
-        ==
-X-ME-Sender: <xms:dcwcYZo1iFzO5QYJyBsuSDlNppE-8nxqow45fdY0OTyH3t7cMQF7yQ>
-    <xme:dcwcYbpKFQQ-rSX-7MGyQq3l_hpvzkL_Ggqb2zweqPZWfXr_oREBLMu4-_Gl3PuGz
-    V8UUY4DSMg86flrHMc>
-X-ME-Received: <xmr:dcwcYWNFDAUZbIgWGo2frGJz13COcEE3BVEuDoZK58zPpHdCXBk4B-c_rZid7RxKDTDTZUSF054RDI6ROoEBCMjJm4pWJPbEouer>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleehgdduudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
-    igihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:dcwcYU7pt0LVw_zs7imzfF9XuuaRxl5QHPdz9kOGezspexN2UdoMuw>
-    <xmx:dcwcYY4uFpgZk-U8hiFYJ0Pw1h3dzE_3GGnV2Mso0tjqiqHI-Dg-8w>
-    <xmx:dcwcYcgCFD-WXMae35pbE4Hx8Mzrm1EfHwwYEnFbBUoUZ01E7l5ZNw>
-    <xmx:d8wcYYhXUK0jHYbpU5fXNqU3lL116o8o2KN8RURyT4H24UEptgPTZA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 18 Aug 2021 05:01:40 -0400 (EDT)
-Date:   Wed, 18 Aug 2021 11:01:39 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Icenowy Zheng <icenowy@sipeed.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Samuel Holland <samuel@sholland.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 15/17] arm64: allwinner: dts: add DTSI file for R329 SoC
-Message-ID: <20210818090139.rllz4fvvq3pzdkls@gilmour>
-References: <20210802062212.73220-1-icenowy@sipeed.com>
- <20210802062212.73220-16-icenowy@sipeed.com>
+        Wed, 18 Aug 2021 05:03:53 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE75C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:03:18 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id w6so1369851plg.9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:03:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Wi6GiW3siAeArZqvWLcz46sruMCMOkQL9Tx1MHP2F9M=;
+        b=O6b9QEJX2A+BMP2t/Jopnb3uLzfw7MkxdgYGDPd8kXg7lj6i5rW4b1KQUD7duBp0NW
+         ARZb6rSvwK8yUjjDtTmZ/No5b/N6TJNMpFMfjHQcB66xfWC5jxVfZdmVgg/rw4tb9D9m
+         KTQ5SvRW25g7NfqelO4dYcMxQcfvJG7CIhrVQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Wi6GiW3siAeArZqvWLcz46sruMCMOkQL9Tx1MHP2F9M=;
+        b=cyycmAbUyP+MEhea6Q0qbMU1HkQu4kFkZr05PJMO75XyP5FwEaxoaGmB4/QbS5Yj4/
+         kQ2IQdr6BYm/8yGLMpLODAfyUr2UI0hja/01HEwIu891oVVh21ONeVC9bW7iMZtZ8Jlz
+         2usvP9AtGK5Kpx7CckQiWVQ7CRi0H4DKE20xq+dukLWcvCTN2clVFwXDoGvUpRM2qryY
+         1s6A/x/w+dv8cB8QzVa73/JchrSsnOFnU1/+3FJcASSUpOsABoPBclzycG9InxzaGnJi
+         CUKyxN5RfhbK4IDM4YP1VYILDggKdEMuHC8yzSLRMUk+fOdEqGA56kpOMOSBA5GIs/PT
+         4JCQ==
+X-Gm-Message-State: AOAM530IErtFd6qR0SIEBaoJteHLOP/45YX8h/j1SiWxKp8KoUUyaTrF
+        Vy4C5peRufnpGlAxWd1DCJk6yg==
+X-Google-Smtp-Source: ABdhPJwBy4P3b9ZHL/uuEc5QK3+QU7JmWq9RZXhEv09uSY9Rwkh8duMfsoih0ejFVq5RU4iOGkX0cA==
+X-Received: by 2002:a17:903:22cd:b0:12d:8876:eea7 with SMTP id y13-20020a17090322cd00b0012d8876eea7mr6462580plg.75.1629277398247;
+        Wed, 18 Aug 2021 02:03:18 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id y13sm5730422pfq.147.2021.08.18.02.03.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 02:03:17 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 02:03:16 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        linux-can <linux-can@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] can: etas_es58x: Replace 0-element raw_msg array
+Message-ID: <202108180159.5C1CEE70F@keescook>
+References: <20210818034010.800652-1-keescook@chromium.org>
+ <CAMZ6RqK4Rn4d-1CZsg9vJiAMHhxN6fgcqukdHpGwXoGTyNVr_Q@mail.gmail.com>
+ <202108172320.1540EC10C@keescook>
+ <CAMZ6RqLecbytJFQDC35n7YiqBbrB3--POofnXFeH77Zi2xzqWA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="dgafk337ems2a2tp"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210802062212.73220-16-icenowy@sipeed.com>
+In-Reply-To: <CAMZ6RqLecbytJFQDC35n7YiqBbrB3--POofnXFeH77Zi2xzqWA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 18, 2021 at 04:55:20PM +0900, Vincent MAILHOL wrote:
+> At the end, the only goal of raw_msg[] is to have a tag pointing
+> to the beginning of the union. It would be virtually identical to
+> something like:
+> |    u8 raw_msg[];
+> |    union {
+> |        /* ... */
+> |    } __packed ;
+> 
+> I had a look at your work and especially at your struct_group() macro.
+> Do you think it would make sense to introduce a union_group()?
+> 
+> Result would look like:
+> 
+> |    union_group_attr(urb_msg, __packed, /* raw_msg renamed to urb_msg */
+> |        struct es58x_fd_tx_conf_msg tx_conf_msg;
+> |        u8 tx_can_msg_buf[ES58X_FD_TX_BULK_MAX * ES58X_FD_CANFD_TX_LEN];
+> |        u8 rx_can_msg_buf[ES58X_FD_RX_BULK_MAX * ES58X_FD_CANFD_RX_LEN];
+> |        struct es58x_fd_echo_msg echo_msg[ES58X_FD_ECHO_BULK_MAX];
+> |        struct es58x_fd_rx_event_msg rx_event_msg;
+> |        struct es58x_fd_tx_ack_msg tx_ack_msg;
+> |        __le64 timestamp;
+> |        __le32 rx_cmd_ret_le32;
+> |    );
+> 
+> And I can then use urb_msg in place of the old raw_msg (might
+> need a bit of rework here and there but I can take care of it).
+> 
+> This is the most pretty way I can think of to remove this zero length array.
+> Keeping the raw_msg[] but with another size seems odd to me.
+> 
+> Or maybe I would be the only one using this feature in the full
+> tree? In that case, maybe it would make sense to keep the
+> union_group_attr() macro local to the etas_es58x driver?
 
---dgafk337ems2a2tp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I actually ended up with something close to this idea, but more
+generalized for other cases in the kernel. There was a sane way to
+include a "real" flexible array in a union (or alone in a struct), so
+I've proposed this flex_array() helper:
+https://lore.kernel.org/lkml/20210818081118.1667663-2-keescook@chromium.org/
 
-On Mon, Aug 02, 2021 at 02:22:10PM +0800, Icenowy Zheng wrote:
-> Allwinner R329 is a new SoC focused on smart audio devices.
->=20
-> Add a DTSI file for it.
->=20
-> Signed-off-by: Icenowy Zheng <icenowy@sipeed.com>
-> ---
->  .../arm64/boot/dts/allwinner/sun50i-r329.dtsi | 244 ++++++++++++++++++
->  1 file changed, 244 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-r329.dtsi
->=20
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-r329.dtsi b/arch/arm64/=
-boot/dts/allwinner/sun50i-r329.dtsi
-> new file mode 100644
-> index 000000000000..bfefa2b734b0
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-r329.dtsi
-> @@ -0,0 +1,244 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +// Copyright (c) 2021 Sipeed
-> +
-> +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> +#include <dt-bindings/clock/sun50i-r329-ccu.h>
-> +#include <dt-bindings/reset/sun50i-r329-ccu.h>
-> +#include <dt-bindings/clock/sun50i-r329-r-ccu.h>
-> +#include <dt-bindings/reset/sun50i-r329-r-ccu.h>
-> +
-> +/ {
-> +	interrupt-parent =3D <&gic>;
-> +	#address-cells =3D <1>;
-> +	#size-cells =3D <1>;
-> +
-> +	cpus {
-> +		#address-cells =3D <1>;
-> +		#size-cells =3D <0>;
-> +
-> +		cpu0: cpu@0 {
-> +			compatible =3D "arm,cortex-a53";
-> +			device_type =3D "cpu";
-> +			reg =3D <0>;
-> +			enable-method =3D "psci";
-> +		};
-> +
-> +		cpu1: cpu@1 {
-> +			compatible =3D "arm,cortex-a53";
-> +			device_type =3D "cpu";
-> +			reg =3D <1>;
-> +			enable-method =3D "psci";
-> +		};
-> +	};
-> +
-> +	osc24M: osc24M_clk {
-> +		#clock-cells =3D <0>;
-> +		compatible =3D "fixed-clock";
-> +		clock-frequency =3D <24000000>;
-> +		clock-output-names =3D "osc24M";
-> +	};
-> +
-> +	psci {
-> +		compatible =3D "arm,psci-0.2";
-> +		method =3D "smc";
-> +	};
-> +
-> +	timer {
-> +		compatible =3D "arm,armv8-timer";
-> +		arm,no-tick-in-suspend;
-> +		interrupts =3D <GIC_PPI 13
-> +			(GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_HIGH)>,
-> +			     <GIC_PPI 14
-> +			(GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_HIGH)>,
-> +			     <GIC_PPI 11
-> +			(GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_HIGH)>,
-> +			     <GIC_PPI 10
-> +			(GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_HIGH)>;
-> +	};
-> +
-> +	soc {
-> +		compatible =3D "simple-bus";
-> +		#address-cells =3D <1>;
-> +		#size-cells =3D <1>;
-> +		ranges;
-> +
-> +		pio: pinctrl@2000400 {
-> +			compatible =3D "allwinner,sun50i-r329-pinctrl";
-> +			reg =3D <0x02000400 0x400>;
-> +			interrupts =3D <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks =3D <&ccu CLK_APB1>, <&osc24M>, <&rtc 0>;
-> +			clock-names =3D "apb", "hosc", "losc";
-> +			gpio-controller;
-> +			#gpio-cells =3D <3>;
-> +			interrupt-controller;
-> +			#interrupt-cells =3D <3>;
-> +
-> +			uart0_pb_pins: uart0-pb-pins {
-> +				pins =3D "PB4", "PB5";
-> +				function =3D "uart0";
-> +			};
-> +
-> +			mmc0_pf_pins: mmc0-pf-pins {
-> +				pins =3D "PF0", "PF1", "PF2",
-> +				       "PF3", "PF4", "PF5";
-> +				function =3D "mmc0";
-> +			};
-> +
-> +			mmc1_clk_pg0: mmc1-clk-pg0 {
-> +				pins =3D "PG0";
-> +				function =3D "mmc1_clk";
-> +			};
+and then it's just a drop-in replacement for all the places that need
+this fixed, including etas_es58x:
+https://lore.kernel.org/lkml/20210818081118.1667663-3-keescook@chromium.org/#Z30drivers:net:can:usb:etas_es58x:es581_4.h
 
-Argh, of course it was bound to happen :)
+Hopefully this will work out; I think it's as clean as we can get for
+now. :)
 
-Make sure your DT pass validation though, all your mmc1 node names will rep=
-ort errors.
-
-> +
-> +			mmc1_cmd_pg1: mmc1-clk-pg1 {
-
-s/clk/cmd/ ?
-
-> +				pins =3D "PG1";
-> +				function =3D "mmc1_cmd";
-> +			};
-> +
-> +			mmc1_d0_pg2: mmc1-clk-pg2 {
-
-s/clk/d0/
-
-> +				pins =3D "PG2";
-> +				function =3D "mmc1_d0";
-> +			};
-> +
-> +			mmc1_d1_pg3: mmc1-clk-pg3 {
-
-s/clk/d1/
-
-> +				pins =3D "PG3";
-> +				function =3D "mmc1_d1";
-> +			};
-> +
-> +			mmc1_d2_pg4: mmc1-clk-pg4 {
-
-s/clk/d2/
-
-> +				pins =3D "PG4";
-> +				function =3D "mmc1_d2";
-> +			};
-> +
-> +			mmc1_d3_pg5: mmc1-clk-pg5 {
-
-s/clk/d3/
-
-> +				pins =3D "PG5";
-> +				function =3D "mmc1_d3";
-> +			};
-> +		};
-> +
-> +		ccu: clock@2001000 {
-> +			compatible =3D "allwinner,sun50i-r329-ccu";
-> +			reg =3D <0x02001000 0x1000>;
-> +			clocks =3D <&osc24M>, <&rtc 0>, <&rtc 2>;
-> +			clock-names =3D "hosc", "losc", "iosc";
-
-Do we have a clock tree for the RTC? Is it the same than the H616?
-
-Maxime
-
---dgafk337ems2a2tp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYRzMcwAKCRDj7w1vZxhR
-xXubAQCzgwOn/xozaa+B1nNA1mS27othgAAj+ZYv8+zptsTnSgEAluhr8NOdrZ2p
-DpeJvbfAD8szA+MAucqVaH3TPgKtaAE=
-=bY26
------END PGP SIGNATURE-----
-
---dgafk337ems2a2tp--
+-- 
+Kees Cook
