@@ -2,115 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFB33EFCFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 889893EFD01
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238093AbhHRGmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 02:42:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236730AbhHRGmS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 02:42:18 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4659FC061764;
-        Tue, 17 Aug 2021 23:41:44 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id h24-20020a1ccc180000b029022e0571d1a0so1057680wmb.5;
-        Tue, 17 Aug 2021 23:41:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AcoE87R52VyKOHG28xukneuIANPukP0XGTGJ2UbaRWQ=;
-        b=fSJEiK8mzY/9sHx+lIix/vXIsZux5UcOrmqHIKFFn6AFzXA16kA8wY8tXgEWjSJ8Lm
-         JVZbcK9v67RTRrO4H9ViCz8+tTJnDGbpPGwTjvmjYIYQ5oP6vkCOaXp73cPYglu5RFXi
-         cCJNXfPk/HN74TLzICueAgB/uVmNjv1ccTM1UHfd2bGqhWWiDT+HgJjCbB0Vj7d2m3zP
-         p3ruTGxFqReyEQi4dE9EH38Q46UbBJWyqhlkN2QcPB+EVpg0e8SpDfTYUgjzWizmNb+b
-         GuT8n3Cxl9k9vpcX3Z5HKgj5QmptwBrNPVvzbJJRDAMDWLtd4I6Xsh8f38O+QtMwYlbs
-         vuGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=AcoE87R52VyKOHG28xukneuIANPukP0XGTGJ2UbaRWQ=;
-        b=GmogE87SlYz/AmxtomQfD8v76fG/zu1ta7nC0GAEiyT8I+1VggmNM5Oz8AKWSP+bZk
-         ZNoa4E4mtSAyEG0+aejdWkubkDf7BfF0AxF+EojDirCXji9Z6bnCT+RG060Q8YNK/gAb
-         MaId6+GCrxPvjNhc4aYzzk9m2TCnYEmPw7PLofoVlJ6vV9r5NHR5K9vUVr/wKHxId7Eq
-         FMlOqKh/lrgp8R+1lVswMCntzbSX5jJzH3N8cjUS/Az8DP6Ac+VUzK8DEgPrjJoRDJfL
-         0mIjN257IBTEHrx5RQe0D4DYyrMnHIW+oRnTEmdaceYE8y/L9gDqNSSWAor3DQBvEZUg
-         D2Aw==
-X-Gm-Message-State: AOAM531XC2+zWNCewOGlJk2Ef/DzOxmESQlc1Utc9EMKOqFa5OCV6wp/
-        22GpM4auXGqHYmN7U01qEVvXTECOBLM=
-X-Google-Smtp-Source: ABdhPJwEOHOCBm92kSOopobU33IB1fbEqL6eDL2ttMM07p39cfeSqG8JM1ie1mhI+cnHppoMpGKV9w==
-X-Received: by 2002:a05:600c:2c4a:: with SMTP id r10mr6992863wmg.68.1629268902891;
-        Tue, 17 Aug 2021 23:41:42 -0700 (PDT)
-Received: from gmail.com (77-234-64-129.pool.digikabel.hu. [77.234.64.129])
-        by smtp.gmail.com with ESMTPSA id r8sm4927717wrj.11.2021.08.17.23.41.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 23:41:42 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 18 Aug 2021 08:41:40 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     manfred@colorfullife.com, stern@rowland.harvard.edu,
-        parri.andrea@gmail.com, will@kernel.org, peterz@infradead.org,
-        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
-        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
-        dlustig@nvidia.com, joel@joelfernandes.org, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [GIT PULL lkmm] LKMM commits for v5.15
-Message-ID: <YRyrpPhEdRCnRmlq@gmail.com>
-References: <20210812002535.GA405507@paulmck-ThinkPad-P17-Gen-1>
+        id S238093AbhHRGnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 02:43:04 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:57463 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238034AbhHRGnD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 02:43:03 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4GqJH06ckGz9sVX;
+        Wed, 18 Aug 2021 08:42:20 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id BlboCUcmPLhC; Wed, 18 Aug 2021 08:42:20 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4GqJH05SCXz9sVD;
+        Wed, 18 Aug 2021 08:42:20 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9988E8B7D3;
+        Wed, 18 Aug 2021 08:42:20 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id KISUn5YdRZul; Wed, 18 Aug 2021 08:42:20 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B20628B766;
+        Wed, 18 Aug 2021 08:42:19 +0200 (CEST)
+Subject: Re: [PATCH v2 61/63] powerpc: Split memset() to avoid multi-field
+ overflow
+To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wang Wensheng <wangwensheng4@huawei.com>,
+        linux-staging@lists.linux.dev, linux-wireless@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        linux-block@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        clang-built-linux@googlegroups.com, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kbuild@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20210818060533.3569517-1-keescook@chromium.org>
+ <20210818060533.3569517-62-keescook@chromium.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <7630b0bc-4389-6283-d8b9-c532df916d60@csgroup.eu>
+Date:   Wed, 18 Aug 2021 08:42:18 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210812002535.GA405507@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20210818060533.3569517-62-keescook@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-* Paul E. McKenney <paulmck@kernel.org> wrote:
 
-> Hello, Ingo!
+Le 18/08/2021 à 08:05, Kees Cook a écrit :
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field bounds checking for memset(), avoid intentionally writing across
+> neighboring fields.
 > 
-> This pull request contains changes for the Linux-kernel memory model
-> (LKMM).  These changes focus on documentation, providing additional
-> examples and use cases.  These have been posted to LKML:
+> Instead of writing across a field boundary with memset(), move the call
+> to just the array, and an explicit zeroing of the prior field.
 > 
-> https://lore.kernel.org/lkml/20210721211003.869892-1-paulmck@kernel.org/
-> https://lore.kernel.org/lkml/20210721211003.869892-2-paulmck@kernel.org/
-> https://lore.kernel.org/lkml/20210721211003.869892-3-paulmck@kernel.org/
-> https://lore.kernel.org/lkml/20210721211003.869892-4-paulmck@kernel.org/
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Qinglang Miao <miaoqinglang@huawei.com>
+> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+> Cc: Hulk Robot <hulkci@huawei.com>
+> Cc: Wang Wensheng <wangwensheng4@huawei.com>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Reviewed-by: Michael Ellerman <mpe@ellerman.id.au>
+> Link: https://lore.kernel.org/lkml/87czqsnmw9.fsf@mpe.ellerman.id.au
+> ---
+>   drivers/macintosh/smu.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> They have been exposed to -next and the kernel test robot, not that these
-> services do all that much for documentation changes.
-> 
-> The following changes since commit 2734d6c1b1a089fb593ef6a23d4b70903526fe0c:
-> 
->   Linux 5.14-rc2 (2021-07-18 14:13:49 -0700)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git lkmm
-> 
-> for you to fetch changes up to 87859a8e3f083bd57b34e6a962544d775a76b15f:
-> 
->   tools/memory-model: Document data_race(READ_ONCE()) (2021-07-27 11:48:55 -0700)
-> 
-> ----------------------------------------------------------------
-> Manfred Spraul (1):
->       tools/memory-model: Heuristics using data_race() must handle all values
-> 
-> Paul E. McKenney (3):
->       tools/memory-model: Make read_foo_diagnostic() more clearly diagnostic
->       tools/memory-model: Add example for heuristic lockless reads
->       tools/memory-model: Document data_race(READ_ONCE())
-> 
->  .../memory-model/Documentation/access-marking.txt  | 151 ++++++++++++++++++---
->  1 file changed, 135 insertions(+), 16 deletions(-)
+> diff --git a/drivers/macintosh/smu.c b/drivers/macintosh/smu.c
+> index 94fb63a7b357..59ce431da7ef 100644
+> --- a/drivers/macintosh/smu.c
+> +++ b/drivers/macintosh/smu.c
+> @@ -848,7 +848,8 @@ int smu_queue_i2c(struct smu_i2c_cmd *cmd)
+>   	cmd->read = cmd->info.devaddr & 0x01;
+>   	switch(cmd->info.type) {
+>   	case SMU_I2C_TRANSFER_SIMPLE:
+> -		memset(&cmd->info.sublen, 0, 4);
+> +		cmd->info.sublen = 0;
+> +		memset(&cmd->info.subaddr, 0, 3);
 
-Pulled into tip:locking/debug, thanks a lot Paul!
+subaddr[] is a table, should the & be avoided ?
+And while at it, why not use sizeof(subaddr) instead of 3 ?
 
-	Ingo
+
+>   		break;
+>   	case SMU_I2C_TRANSFER_COMBINED:
+>   		cmd->info.devaddr &= 0xfe;
+> 
