@@ -2,65 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B803F06CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D2E13F06CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239412AbhHROeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 10:34:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40406 "EHLO mail.kernel.org"
+        id S239271AbhHROfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 10:35:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239431AbhHROeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 10:34:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6319610A7;
-        Wed, 18 Aug 2021 14:33:39 +0000 (UTC)
+        id S238662AbhHROfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 10:35:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57BB560FBF;
+        Wed, 18 Aug 2021 14:34:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629297221;
-        bh=OF1J2wHd4VzDXAmG26skt+r/Iv8T+sRv9vvuG57iN6E=;
-        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
-        b=B6pwO5as/P1Nq+fBBC9DeW/1j44+QFTpGF3CkY5HVnb6ZxvhNwR4/cqBNeztwcEQN
-         Glkt3Bq5uvxZZYA4Y9MvJ0vL7KeR74sTwNzKSwhfOgVtcQgSm97EcJ7J7ths+LnyV1
-         TusydswoqB0/Dmv4zeieOHXwpRUY5kHQYKuwzMh4MlWGe3DNYZLA2ttZbv5RjK8aqV
-         9k8BeMyKoRe2OLaHNfTuZkcVe31+myaCKmcz2l4K4w0x+9SFFtBqfai0fLSojDRH8y
-         qaPZpqeJzqeQ6CH+Ba+XmS3+Qgvjv9HN8p11m7wH53JWKuXiVd7bP1Vo/qp7L/DYyw
-         fnZzILs80TIVQ==
-References: <87mtpegak8.fsf@kernel.org>
- <20210818141247.4794-1-lutovinova@ispras.ru>
-User-agent: mu4e 1.6.3; emacs 27.2
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Nadezda Lutovinova <lutovinova@ispras.ru>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johan Hovold <johan@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] usb: gadget: mv_u3d: request_irq() after
- initializing UDC
-Date:   Wed, 18 Aug 2021 17:33:16 +0300
-In-reply-to: <20210818141247.4794-1-lutovinova@ispras.ru>
-Message-ID: <87k0kig6v2.fsf@kernel.org>
+        s=k20201202; t=1629297270;
+        bh=ZLF6wNvdkCa5d9Gqk0Qj8C0bCJjSoFD3PF1+6ShotK0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QWb30O1CU2Qay10/k5WA08Gw5tyQlF68vJTR33AVZGv/RK5HLGUarrr9LwHE0S22x
+         J+Svsu9hkb+qIvd5aXLYJwHgEYjUxXJQFFVQHTTQVjZD4dkResObSw8xj4m90wde7W
+         ZiZeGOoQ/BnqCfIHa95XzxqiFsK5z6qFiNq0hiTavH/U9ED8f6JEzzXqguR0JD3UK+
+         dFeTXcmzXMh87CPL1Z5lGKcdwroddkomj6EYxecjUcvv6ODoes9W+8264hpJK8RRGV
+         jir5fAeODW+rJ3jl8i/qxQ9IKfxDdvM0gm0TXNXbUMdeZnI0aQo9BAArwhjV8x96gF
+         naLfGR5Ui4FZA==
+Received: by mail-ed1-f43.google.com with SMTP id i22so3446604edq.11;
+        Wed, 18 Aug 2021 07:34:30 -0700 (PDT)
+X-Gm-Message-State: AOAM530TagKRA+Npl8UcgA+iPrTNQrnU3xhZZXWGhYnhyH4BSKSnuXBi
+        NKPfsnkqT+qM8NzMXUZ1t0GqgSOPWNLN0PT65w==
+X-Google-Smtp-Source: ABdhPJw1tY+8wtuouFMDe+vJET3QMM0PEOSW1q4Jr4fufTp9S1lV5i6YV8pohcZgiLtsC9+DyBDhTnWpoWNbN+/6iiQ=
+X-Received: by 2002:a50:9b52:: with SMTP id a18mr10533087edj.165.1629297268956;
+ Wed, 18 Aug 2021 07:34:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210813143537.130310-1-krzysztof.kozlowski@canonical.com> <YRwx1Blpqq0+JK3m@robh.at.kernel.org>
+In-Reply-To: <YRwx1Blpqq0+JK3m@robh.at.kernel.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 18 Aug 2021 09:34:17 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJ_6pvRy2K_msX5wr6TcLUNjV2AwK1_RHB9puGXJTJ6Xw@mail.gmail.com>
+Message-ID: <CAL_JsqJ_6pvRy2K_msX5wr6TcLUNjV2AwK1_RHB9puGXJTJ6Xw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: memory: convert Qualcomm Atheros DDR to dtschema
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Alban Bedel <albeu@free.fr>, Paul Burton <paul.burton@mips.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Nadezda Lutovinova <lutovinova@ispras.ru> writes:
-
-> If IRQ occurs between calling  request_irq() and  mv_u3d_eps_init(),
-> then null pointer dereference occurs since u3d->eps[] wasn't
-> initialized yet but used in mv_u3d_nuke().
+On Tue, Aug 17, 2021 at 5:01 PM Rob Herring <robh@kernel.org> wrote:
 >
-> The patch puts registration of the interrupt handler after
-> initializing of neccesery data.
+> On Fri, 13 Aug 2021 16:35:37 +0200, Krzysztof Kozlowski wrote:
+> > Convert Qualcomm Atheros AR7xxx/AR9xxx DDR controller to DT schema
+> > format using json-schema.
+> >
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> > ---
+> >  .../ath79-ddr-controller.txt                  | 35 -----------
+> >  .../qca,ath79-ddr-controller.yaml             | 61 +++++++++++++++++++
+> >  2 files changed, 61 insertions(+), 35 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/ath79-ddr-controller.txt
+> >  create mode 100644 Documentation/devicetree/bindings/memory-controllers/qca,ath79-ddr-controller.yaml
+> >
 >
-> Found by Linux Driver Verification project (linuxtesting.org).
->
-> Fixes: 90fccb529d24 ("usb: gadget: Gadget directory cleanup - group UDC drivers")
-> Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
+> Applied, thanks!
 
-Thanks for updating so quickly:
+I applied forgetting you are maintaining the memory-controller
+bindings. I can drop if you prefer. I see you've got a few more too.
 
-Acked-by: Felipe Balbi <balbi@kernel.org>
-
--- 
-balbi
+Rob
