@@ -2,152 +2,1149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650253EF6C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 02:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50BAC3EF6CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 02:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237071AbhHRANq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 20:13:46 -0400
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:35835 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237191AbhHRANo (ORCPT
+        id S236746AbhHRAQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 20:16:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234870AbhHRAQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 20:13:44 -0400
-Received: by mail-oi1-f170.google.com with SMTP id r26so1923905oij.2;
-        Tue, 17 Aug 2021 17:13:10 -0700 (PDT)
+        Tue, 17 Aug 2021 20:16:52 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E70C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 17:16:18 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id gz13-20020a17090b0ecdb0290178c0e0ce8bso4160389pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 17:16:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x0TjXWx/W0RGjLI1x6hoyEzjKIrhcXZ/Fl6AcjHXVE4=;
+        b=j1my46y7GhtL4Sy0Cvq9ZP7gbvYL2pQSgvYaQ0EB01FNrh/xUuIzFwddmRc8pw1TWr
+         /4ef/1CFPowKSBmcD2tZZ5TrnPyUmIuAVm1KcyOFlzzcVBepwyL2T0WL0W8OsVksWxf6
+         FUNzQn/IQSh7I6Txl/2UgZlvVRboKyu0JzgdlAXq2PfjUoQ4RKCuE6xuivq8Um4WnFnR
+         Zj3M3fjgB9c27H+lIKyHt/iAsUyUWD0pX1r9d625xxVGV0uMNvuAb/DukdvKfbEJY854
+         +PIElPDZ88vaj2H7AK1JtV+xhBN8YvoHXW73woxdXX4XBSP/9KuOJ85P19ys7WOC4zbC
+         AsIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=++h8bUGhJWF7B6yyYyoh0nKkVdcF8eCL74y7f9GeZ4Y=;
-        b=Esyhn++GGRyGardw9fIXTWifL8fvOZt6fykSP9iSa0raEb9BbTcKdmv5NsNQI0lPns
-         Xv9Y8RWR01erZS5dHw2MV+fJAfgyK91xNoZ7z9icBh+9bwO24I0gw3e2i7oWbKmPh3Ex
-         OveBjXnLV8ori/ReyC2YhPw9wGycyenqXmmbt+hGPnqc4w5jghaNQKtJP47LXDE5uGvm
-         pay1S1s07OJXsTvbhoO6mlvRzI9mPj7bEhjDWN+FLx60W9j9zJXYQ+P+tJdR2vRYkZq0
-         o5UMMROtPLkIYLdGGPSCugb8eF8hSQedA2312ZBByNie0RJODz9mo6YrlbDcMhrf+Vq5
-         sYEA==
-X-Gm-Message-State: AOAM533xuwd9jKOgJeP+qPl5jqhGHTHyjyDQPofJQLij14BtWkWXK3KO
-        VmZLCfCo6IJy2cmt7TYO3g==
-X-Google-Smtp-Source: ABdhPJyJOifM/j6dYvgpX8URevK/gXq/UxE91n+1ytfa41bf6TcZ7UPHLnQ6y0p94fi4QGOLVqhW9w==
-X-Received: by 2002:aca:b984:: with SMTP id j126mr4666629oif.32.1629245590250;
-        Tue, 17 Aug 2021 17:13:10 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k16sm738270oor.16.2021.08.17.17.13.08
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x0TjXWx/W0RGjLI1x6hoyEzjKIrhcXZ/Fl6AcjHXVE4=;
+        b=tjXJpDhOLopyGDQR4XnQwWqzQivpsnnceHl1qCKfJFdR+mYXzJeuJZcYHoeZYU7bN1
+         GzE0r+prDRZ5/d6lwgZwj9XgwpDtFKreylqyPkAcsiOLSJgAE2EK0ow9ad71/G3sbmcB
+         lHdMyM4JHHCW8l52pSAFsQQ7B66cX5roiWjQDGdWUvNSlxq1E6XIgNDXrGsjGwbjrUPB
+         tyXb0kt7aA9nJoXJ0KCW802IodMeYiyNeJ3wOY8z2J1d7dJ+R7oJiXHz7H9rWlagg5hG
+         5l/5LSnFtoeUeN0lPOZtTPExrzXqz0BD+3Jsin7QX90ZLXqqCFksABeADWW8RdywZXmW
+         Zwzg==
+X-Gm-Message-State: AOAM532rZ1jIuUug5ucxZb80eGimP5edAvefZepu5bh6EqoF8DahAhMx
+        OYhCwmvElSKjhh90fSXtDMrkeXho9cQ=
+X-Google-Smtp-Source: ABdhPJzz3afthnHZjaGX+f/cRGYbjpjbsFpAXzkdl2vBpat24SQmQiHv322mdMzP01eA3nmwQ1O9fA==
+X-Received: by 2002:a17:902:ec92:b029:12d:5b18:dd39 with SMTP id x18-20020a170902ec92b029012d5b18dd39mr4934360plg.73.1629245777596;
+        Tue, 17 Aug 2021 17:16:17 -0700 (PDT)
+Received: from daehojeong-desktop.mtv.corp.google.com ([2620:15c:211:201:6594:52a8:a6c3:3d3e])
+        by smtp.gmail.com with ESMTPSA id u9sm969764pgp.83.2021.08.17.17.16.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 17:13:09 -0700 (PDT)
-Received: (nullmailer pid 1094241 invoked by uid 1000);
-        Wed, 18 Aug 2021 00:13:07 -0000
-Date:   Tue, 17 Aug 2021 19:13:07 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>, linux-mm@kvack.org,
-        linux-mips@vger.kernel.org,
-        "Kirill A . Shutemov" <kirill.shtuemov@linux.intel.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Will Deacon <will@kernel.org>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Russell King <linux@armlinux.org.uk>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Len Brown <lenb@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-s390@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v5] memblock: make memblock_find_in_range method private
-Message-ID: <YRxQk0Cjj5yzmvBA@robh.at.kernel.org>
-References: <20210816122622.30279-1-rppt@kernel.org>
+        Tue, 17 Aug 2021 17:16:16 -0700 (PDT)
+From:   Daeho Jeong <daeho43@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH v3] f2fs: introduce periodic iostat io latency traces
+Date:   Tue, 17 Aug 2021 17:16:13 -0700
+Message-Id: <20210818001613.1708637-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210816122622.30279-1-rppt@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Aug 2021 15:26:22 +0300, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> There are a lot of uses of memblock_find_in_range() along with
-> memblock_reserve() from the times memblock allocation APIs did not exist.
-> 
-> memblock_find_in_range() is the very core of memblock allocations, so any
-> future changes to its internal behaviour would mandate updates of all the
-> users outside memblock.
-> 
-> Replace the calls to memblock_find_in_range() with an equivalent calls to
-> memblock_phys_alloc() and memblock_phys_alloc_range() and make
-> memblock_find_in_range() private method of memblock.
-> 
-> This simplifies the callers, ensures that (unlikely) errors in
-> memblock_reserve() are handled and improves maintainability of
-> memblock_find_in_range().
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> Acked-by: Kirill A. Shutemov <kirill.shtuemov@linux.intel.com>
-> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>	# ACPI
-> Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> Acked-by: Nick Kossifidis <mick@ics.forth.gr>			# riscv
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>		# arm64
-> ---
-> v5:
-> * restore the original behaviour on x86 with addition of more elaborate
->   comment; I will address the issue in memory_map_top_down() in a separate
->   series.
-> 
-> v4: https://lore.kernel.org/lkml/20210812065907.20046-1-rppt@kernel.org
-> * Add patch that prevents the crashes reported by Guenter Roeck on x86/i386
->   on QEMU with 256M or 512M of memory and EFI boot enabled.
-> * Add Acked-by and Reviewed-by, thanks everybidy!
-> 
-> v3: https://lore.kernel.org/lkml/20210803064218.6611-1-rppt@kernel.org
-> * simplify check for exact crash kerenl allocation on arm, per Rob
-> * make crash_max unsigned long long on arm64, per Rob
-> 
-> v2: https://lore.kernel.org/lkml/20210802063737.22733-1-rppt@kernel.org
-> * don't change error message in arm::reserve_crashkernel(), per Russell
-> 
-> v1: https://lore.kernel.org/lkml/20210730104039.7047-1-rppt@kernel.org
-> 
-> 
->  arch/arm/kernel/setup.c           | 20 +++++---------
->  arch/arm64/kvm/hyp/reserved_mem.c |  9 +++----
->  arch/arm64/mm/init.c              | 36 ++++++++-----------------
->  arch/mips/kernel/setup.c          | 14 +++++-----
->  arch/riscv/mm/init.c              | 44 ++++++++++---------------------
->  arch/s390/kernel/setup.c          | 10 ++++---
->  arch/x86/kernel/aperture_64.c     |  5 ++--
->  arch/x86/mm/init.c                | 23 ++++++++++------
->  arch/x86/mm/numa.c                |  5 ++--
->  arch/x86/mm/numa_emulation.c      |  5 ++--
->  arch/x86/realmode/init.c          |  2 +-
->  drivers/acpi/tables.c             |  5 ++--
->  drivers/base/arch_numa.c          |  5 +---
->  drivers/of/of_reserved_mem.c      | 12 ++++++---
->  include/linux/memblock.h          |  2 --
->  mm/memblock.c                     |  2 +-
->  16 files changed, 81 insertions(+), 118 deletions(-)
-> 
+From: Daeho Jeong <daehojeong@google.com>
 
-Acked-by: Rob Herring <robh@kernel.org>
+Whenever we notice some sluggish issues on our machines, we are always
+curious about how well all types of I/O in the f2fs filesystem are
+handled. But, it's hard to get this kind of real data. First of all,
+we need to reproduce the issue while turning on the profiling tool like
+blktrace, but the issue doesn't happen again easily. Second, with the
+intervention of any tools, the overall timing of the issue will be
+slightly changed and it sometimes makes us hard to figure it out.
+
+So, I added F2FS_IOSTAT config option to support printing out
+IO latency statistics tracepoint events which are minimal things to
+understand filesystem's I/O related behaviors. With "iostat_enable" sysfs
+node on, we can get this statistics info in a periodic way and it
+would cause the least overhead. Plus, I've moved other I/O statistics
+related features into a separate file with the same kernel config option
+for better maintenance.
+
+[samples]
+ f2fs_ckpt-254:1-507     [003] ....  2842.439683: f2fs_iostat_latency:
+dev = (254,11), iotype [peak lat.(ms)/avg lat.(ms)/count],
+rd_data [136/1/801], rd_node [136/1/1704], rd_meta [4/2/4],
+wr_sync_data [164/16/3331], wr_sync_node [152/3/648],
+wr_sync_meta [160/2/4243], wr_async_data [24/13/15],
+wr_async_node [0/0/0], wr_async_meta [0/0/0]
+
+ f2fs_ckpt-254:1-507     [002] ....  2845.450514: f2fs_iostat_latency:
+dev = (254,11), iotype [peak lat.(ms)/avg lat.(ms)/count],
+rd_data [60/3/456], rd_node [60/3/1258], rd_meta [0/0/1],
+wr_sync_data [120/12/2285], wr_sync_node [88/5/428],
+wr_sync_meta [52/6/2990], wr_async_data [4/1/3],
+wr_async_node [0/0/0], wr_async_meta [0/0/0]
+
+---
+v3: moved other I/O statistics related features into a separate file
+    with the same kernel config option for better maintenance.
+v2: clean up with wrappers and fix a build breakage reported by
+    kernel test robot <lkp@intel.com>
+
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
+---
+ fs/f2fs/Kconfig             |   9 ++
+ fs/f2fs/Makefile            |   1 +
+ fs/f2fs/checkpoint.c        |   1 +
+ fs/f2fs/data.c              |  21 ++-
+ fs/f2fs/f2fs.h              |  63 ++------
+ fs/f2fs/file.c              |   1 +
+ fs/f2fs/gc.c                |   1 +
+ fs/f2fs/iostat.c            | 294 ++++++++++++++++++++++++++++++++++++
+ fs/f2fs/iostat.h            |  84 +++++++++++
+ fs/f2fs/node.c              |   1 +
+ fs/f2fs/segment.c           |   1 +
+ fs/f2fs/super.c             |  23 ++-
+ fs/f2fs/sysfs.c             | 106 ++-----------
+ include/trace/events/f2fs.h |  97 ++++++++++++
+ 14 files changed, 548 insertions(+), 155 deletions(-)
+ create mode 100644 fs/f2fs/iostat.c
+ create mode 100644 fs/f2fs/iostat.h
+
+diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
+index 2ac026fc3564..63c28e9e153b 100644
+--- a/fs/f2fs/Kconfig
++++ b/fs/f2fs/Kconfig
+@@ -133,3 +133,12 @@ config F2FS_FS_ZSTD
+ 	default y
+ 	help
+ 	  Support ZSTD compress algorithm, if unsure, say Y.
++
++config F2FS_IOSTAT
++	bool "F2FS IO statistics information"
++	depends on F2FS_FS
++	default n
++	help
++	  Support printing out IO statistics through sysfs and periodic IO type
++	  and latency statistics tracepoint events. For periodic traces, you have
++	  to turn on "iostat_enable" sysfs node to print these traces out.
+diff --git a/fs/f2fs/Makefile b/fs/f2fs/Makefile
+index e5295746208b..8a7322d229e4 100644
+--- a/fs/f2fs/Makefile
++++ b/fs/f2fs/Makefile
+@@ -9,3 +9,4 @@ f2fs-$(CONFIG_F2FS_FS_XATTR) += xattr.o
+ f2fs-$(CONFIG_F2FS_FS_POSIX_ACL) += acl.o
+ f2fs-$(CONFIG_FS_VERITY) += verity.o
+ f2fs-$(CONFIG_F2FS_FS_COMPRESSION) += compress.o
++f2fs-$(CONFIG_F2FS_IOSTAT) += iostat.o
+diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+index 7f6745f4630e..cd4f6b34eef9 100644
+--- a/fs/f2fs/checkpoint.c
++++ b/fs/f2fs/checkpoint.c
+@@ -18,6 +18,7 @@
+ #include "f2fs.h"
+ #include "node.h"
+ #include "segment.h"
++#include "iostat.h"
+ #include <trace/events/f2fs.h>
+ 
+ #define DEFAULT_CHECKPOINT_IOPRIO (IOPRIO_PRIO_VALUE(IOPRIO_CLASS_BE, 3))
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index df5e8d8c654e..57abcbd4a1cc 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -25,6 +25,7 @@
+ #include "f2fs.h"
+ #include "node.h"
+ #include "segment.h"
++#include "iostat.h"
+ #include <trace/events/f2fs.h>
+ 
+ #define NUM_PREALLOC_POST_READ_CTXS	128
+@@ -270,7 +271,10 @@ static void f2fs_post_read_work(struct work_struct *work)
+ static void f2fs_read_end_io(struct bio *bio)
+ {
+ 	struct f2fs_sb_info *sbi = F2FS_P_SB(bio_first_page_all(bio));
+-	struct bio_post_read_ctx *ctx = bio->bi_private;
++	struct bio_post_read_ctx *ctx;
++
++	iostat_update_and_unbind_ctx(bio, 0);
++	ctx = bio->bi_private;
+ 
+ 	if (time_to_inject(sbi, FAULT_READ_IO)) {
+ 		f2fs_show_injection_info(sbi, FAULT_READ_IO);
+@@ -292,10 +296,13 @@ static void f2fs_read_end_io(struct bio *bio)
+ 
+ static void f2fs_write_end_io(struct bio *bio)
+ {
+-	struct f2fs_sb_info *sbi = bio->bi_private;
++	struct f2fs_sb_info *sbi;
+ 	struct bio_vec *bvec;
+ 	struct bvec_iter_all iter_all;
+ 
++	iostat_update_and_unbind_ctx(bio, 1);
++	sbi = bio->bi_private;
++
+ 	if (time_to_inject(sbi, FAULT_WRITE_IO)) {
+ 		f2fs_show_injection_info(sbi, FAULT_WRITE_IO);
+ 		bio->bi_status = BLK_STS_IOERR;
+@@ -399,6 +406,8 @@ static struct bio *__bio_alloc(struct f2fs_io_info *fio, int npages)
+ 		bio->bi_write_hint = f2fs_io_type_to_rw_hint(sbi,
+ 						fio->type, fio->temp);
+ 	}
++	iostat_alloc_and_bind_ctx(sbi, bio, NULL);
++
+ 	if (fio->io_wbc)
+ 		wbc_init_bio(fio->io_wbc, bio);
+ 
+@@ -480,6 +489,9 @@ static inline void __submit_bio(struct f2fs_sb_info *sbi,
+ 		trace_f2fs_submit_read_bio(sbi->sb, type, bio);
+ 	else
+ 		trace_f2fs_submit_write_bio(sbi->sb, type, bio);
++
++	iostat_update_submit_ctx(bio, type);
++
+ 	submit_bio(bio);
+ }
+ 
+@@ -971,7 +983,7 @@ static struct bio *f2fs_grab_read_bio(struct inode *inode, block_t blkaddr,
+ {
+ 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+ 	struct bio *bio;
+-	struct bio_post_read_ctx *ctx;
++	struct bio_post_read_ctx *ctx = NULL;
+ 	unsigned int post_read_steps = 0;
+ 
+ 	bio = bio_alloc_bioset(for_write ? GFP_NOIO : GFP_KERNEL,
+@@ -1007,6 +1019,7 @@ static struct bio *f2fs_grab_read_bio(struct inode *inode, block_t blkaddr,
+ 		ctx->fs_blkaddr = blkaddr;
+ 		bio->bi_private = ctx;
+ 	}
++	iostat_alloc_and_bind_ctx(sbi, bio, ctx);
+ 
+ 	return bio;
+ }
+@@ -2245,7 +2258,7 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+ 		if (bio_add_page(bio, page, blocksize, 0) < blocksize)
+ 			goto submit_and_realloc;
+ 
+-		ctx = bio->bi_private;
++		ctx = get_post_read_ctx(bio);
+ 		ctx->enabled_steps |= STEP_DECOMPRESS;
+ 		refcount_inc(&dic->refcnt);
+ 
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index e97b4d8c5efc..843450538aca 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -1711,14 +1711,6 @@ struct f2fs_sb_info {
+ #endif
+ 	spinlock_t stat_lock;			/* lock for stat operations */
+ 
+-	/* For app/fs IO statistics */
+-	spinlock_t iostat_lock;
+-	unsigned long long rw_iostat[NR_IO_TYPE];
+-	unsigned long long prev_rw_iostat[NR_IO_TYPE];
+-	bool iostat_enable;
+-	unsigned long iostat_next_period;
+-	unsigned int iostat_period_ms;
+-
+ 	/* to attach REQ_META|REQ_FUA flags */
+ 	unsigned int data_io_flag;
+ 	unsigned int node_io_flag;
+@@ -1778,6 +1770,20 @@ struct f2fs_sb_info {
+ 	unsigned int compress_watermark;	/* cache page watermark */
+ 	atomic_t compress_page_hit;		/* cache hit count */
+ #endif
++
++#ifdef CONFIG_F2FS_IOSTAT
++	/* For app/fs IO statistics */
++	spinlock_t iostat_lock;
++	unsigned long long rw_iostat[NR_IO_TYPE];
++	unsigned long long prev_rw_iostat[NR_IO_TYPE];
++	bool iostat_enable;
++	unsigned long iostat_next_period;
++	unsigned int iostat_period_ms;
++
++	/* For io latency related statistics info in one iostat period */
++	spinlock_t iostat_lat_lock;
++	struct iostat_lat_info *iostat_io_lat;
++#endif
+ };
+ 
+ struct f2fs_private_dio {
+@@ -3241,47 +3247,6 @@ static inline int get_inline_xattr_addrs(struct inode *inode)
+ 		sizeof((f2fs_inode)->field))			\
+ 		<= (F2FS_OLD_ATTRIBUTE_SIZE + (extra_isize)))	\
+ 
+-#define DEFAULT_IOSTAT_PERIOD_MS	3000
+-#define MIN_IOSTAT_PERIOD_MS		100
+-/* maximum period of iostat tracing is 1 day */
+-#define MAX_IOSTAT_PERIOD_MS		8640000
+-
+-static inline void f2fs_reset_iostat(struct f2fs_sb_info *sbi)
+-{
+-	int i;
+-
+-	spin_lock(&sbi->iostat_lock);
+-	for (i = 0; i < NR_IO_TYPE; i++) {
+-		sbi->rw_iostat[i] = 0;
+-		sbi->prev_rw_iostat[i] = 0;
+-	}
+-	spin_unlock(&sbi->iostat_lock);
+-}
+-
+-extern void f2fs_record_iostat(struct f2fs_sb_info *sbi);
+-
+-static inline void f2fs_update_iostat(struct f2fs_sb_info *sbi,
+-			enum iostat_type type, unsigned long long io_bytes)
+-{
+-	if (!sbi->iostat_enable)
+-		return;
+-	spin_lock(&sbi->iostat_lock);
+-	sbi->rw_iostat[type] += io_bytes;
+-
+-	if (type == APP_WRITE_IO || type == APP_DIRECT_IO)
+-		sbi->rw_iostat[APP_BUFFERED_IO] =
+-			sbi->rw_iostat[APP_WRITE_IO] -
+-			sbi->rw_iostat[APP_DIRECT_IO];
+-
+-	if (type == APP_READ_IO || type == APP_DIRECT_READ_IO)
+-		sbi->rw_iostat[APP_BUFFERED_READ_IO] =
+-			sbi->rw_iostat[APP_READ_IO] -
+-			sbi->rw_iostat[APP_DIRECT_READ_IO];
+-	spin_unlock(&sbi->iostat_lock);
+-
+-	f2fs_record_iostat(sbi);
+-}
+-
+ #define __is_large_section(sbi)		((sbi)->segs_per_sec > 1)
+ 
+ #define __is_meta_io(fio) (PAGE_TYPE_OF_BIO((fio)->type) == META)
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 7d8ee60f6c1f..ba06ee94afa9 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -31,6 +31,7 @@
+ #include "xattr.h"
+ #include "acl.h"
+ #include "gc.h"
++#include "iostat.h"
+ #include <trace/events/f2fs.h>
+ #include <uapi/linux/f2fs.h>
+ 
+diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+index 9dce44619069..c88267929c8c 100644
+--- a/fs/f2fs/gc.c
++++ b/fs/f2fs/gc.c
+@@ -19,6 +19,7 @@
+ #include "node.h"
+ #include "segment.h"
+ #include "gc.h"
++#include "iostat.h"
+ #include <trace/events/f2fs.h>
+ 
+ static struct kmem_cache *victim_entry_slab;
+diff --git a/fs/f2fs/iostat.c b/fs/f2fs/iostat.c
+new file mode 100644
+index 000000000000..1b647f027729
+--- /dev/null
++++ b/fs/f2fs/iostat.c
+@@ -0,0 +1,294 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * f2fs io latency iostat support
++ *
++ * Copyright 2021 Google LLC
++ * Author: Daeho Jeong <daehojeong@google.com>
++ */
++
++#include <linux/fs.h>
++#include <linux/f2fs_fs.h>
++#include <linux/seq_file.h>
++
++#include "f2fs.h"
++#include "iostat.h"
++#include <trace/events/f2fs.h>
++
++#define NUM_PREALLOC_IOSTAT_CTXS	128
++static struct kmem_cache *bio_iostat_ctx_cache;
++static mempool_t *bio_iostat_ctx_pool;
++
++int __maybe_unused iostat_info_seq_show(struct seq_file *seq, void *offset)
++{
++	struct super_block *sb = seq->private;
++	struct f2fs_sb_info *sbi = F2FS_SB(sb);
++	time64_t now = ktime_get_real_seconds();
++
++	if (!sbi->iostat_enable)
++		return 0;
++
++	seq_printf(seq, "time:		%-16llu\n", now);
++
++	/* print app write IOs */
++	seq_puts(seq, "[WRITE]\n");
++	seq_printf(seq, "app buffered:	%-16llu\n",
++				sbi->rw_iostat[APP_BUFFERED_IO]);
++	seq_printf(seq, "app direct:	%-16llu\n",
++				sbi->rw_iostat[APP_DIRECT_IO]);
++	seq_printf(seq, "app mapped:	%-16llu\n",
++				sbi->rw_iostat[APP_MAPPED_IO]);
++
++	/* print fs write IOs */
++	seq_printf(seq, "fs data:	%-16llu\n",
++				sbi->rw_iostat[FS_DATA_IO]);
++	seq_printf(seq, "fs node:	%-16llu\n",
++				sbi->rw_iostat[FS_NODE_IO]);
++	seq_printf(seq, "fs meta:	%-16llu\n",
++				sbi->rw_iostat[FS_META_IO]);
++	seq_printf(seq, "fs gc data:	%-16llu\n",
++				sbi->rw_iostat[FS_GC_DATA_IO]);
++	seq_printf(seq, "fs gc node:	%-16llu\n",
++				sbi->rw_iostat[FS_GC_NODE_IO]);
++	seq_printf(seq, "fs cp data:	%-16llu\n",
++				sbi->rw_iostat[FS_CP_DATA_IO]);
++	seq_printf(seq, "fs cp node:	%-16llu\n",
++				sbi->rw_iostat[FS_CP_NODE_IO]);
++	seq_printf(seq, "fs cp meta:	%-16llu\n",
++				sbi->rw_iostat[FS_CP_META_IO]);
++
++	/* print app read IOs */
++	seq_puts(seq, "[READ]\n");
++	seq_printf(seq, "app buffered:	%-16llu\n",
++				sbi->rw_iostat[APP_BUFFERED_READ_IO]);
++	seq_printf(seq, "app direct:	%-16llu\n",
++				sbi->rw_iostat[APP_DIRECT_READ_IO]);
++	seq_printf(seq, "app mapped:	%-16llu\n",
++				sbi->rw_iostat[APP_MAPPED_READ_IO]);
++
++	/* print fs read IOs */
++	seq_printf(seq, "fs data:	%-16llu\n",
++				sbi->rw_iostat[FS_DATA_READ_IO]);
++	seq_printf(seq, "fs gc data:	%-16llu\n",
++				sbi->rw_iostat[FS_GDATA_READ_IO]);
++	seq_printf(seq, "fs compr_data:	%-16llu\n",
++				sbi->rw_iostat[FS_CDATA_READ_IO]);
++	seq_printf(seq, "fs node:	%-16llu\n",
++				sbi->rw_iostat[FS_NODE_READ_IO]);
++	seq_printf(seq, "fs meta:	%-16llu\n",
++				sbi->rw_iostat[FS_META_READ_IO]);
++
++	/* print other IOs */
++	seq_puts(seq, "[OTHER]\n");
++	seq_printf(seq, "fs discard:	%-16llu\n",
++				sbi->rw_iostat[FS_DISCARD]);
++
++	return 0;
++}
++
++static inline void __record_iostat_latency(struct f2fs_sb_info *sbi)
++{
++	int io, idx = 0;
++	unsigned int cnt;
++	struct f2fs_iostat_latency iostat_lat[MAX_IO_TYPE][NR_PAGE_TYPE];
++	struct iostat_lat_info *io_lat = sbi->iostat_io_lat;
++
++	spin_lock_irq(&sbi->iostat_lat_lock);
++	for (idx = 0; idx < MAX_IO_TYPE; idx++) {
++		for (io = 0; io < NR_PAGE_TYPE; io++) {
++			cnt = io_lat->bio_cnt[idx][io];
++			iostat_lat[idx][io].peak_lat =
++			   jiffies_to_msecs(io_lat->peak_lat[idx][io]);
++			iostat_lat[idx][io].cnt = cnt;
++			iostat_lat[idx][io].avg_lat = cnt ?
++			   jiffies_to_msecs(io_lat->sum_lat[idx][io]) / cnt : 0;
++			io_lat->sum_lat[idx][io] = 0;
++			io_lat->peak_lat[idx][io] = 0;
++			io_lat->bio_cnt[idx][io] = 0;
++		}
++	}
++	spin_unlock_irq(&sbi->iostat_lat_lock);
++
++	trace_f2fs_iostat_latency(sbi, iostat_lat);
++}
++
++static inline void f2fs_record_iostat(struct f2fs_sb_info *sbi)
++{
++	unsigned long long iostat_diff[NR_IO_TYPE];
++	int i;
++
++	if (time_is_after_jiffies(sbi->iostat_next_period))
++		return;
++
++	/* Need double check under the lock */
++	spin_lock(&sbi->iostat_lock);
++	if (time_is_after_jiffies(sbi->iostat_next_period)) {
++		spin_unlock(&sbi->iostat_lock);
++		return;
++	}
++	sbi->iostat_next_period = jiffies +
++				msecs_to_jiffies(sbi->iostat_period_ms);
++
++	for (i = 0; i < NR_IO_TYPE; i++) {
++		iostat_diff[i] = sbi->rw_iostat[i] -
++				sbi->prev_rw_iostat[i];
++		sbi->prev_rw_iostat[i] = sbi->rw_iostat[i];
++	}
++	spin_unlock(&sbi->iostat_lock);
++
++	trace_f2fs_iostat(sbi, iostat_diff);
++
++	__record_iostat_latency(sbi);
++}
++
++void f2fs_reset_iostat(struct f2fs_sb_info *sbi)
++{
++	struct iostat_lat_info *io_lat = sbi->iostat_io_lat;
++	int i;
++
++	spin_lock(&sbi->iostat_lock);
++	for (i = 0; i < NR_IO_TYPE; i++) {
++		sbi->rw_iostat[i] = 0;
++		sbi->prev_rw_iostat[i] = 0;
++	}
++	spin_unlock(&sbi->iostat_lock);
++
++	spin_lock_irq(&sbi->iostat_lat_lock);
++	for (i = 0; i < MAX_IO_TYPE; i++) {
++		int iotype;
++
++		for (iotype = 0; iotype < NR_PAGE_TYPE; iotype++) {
++			io_lat->sum_lat[i][iotype] = 0;
++			io_lat->peak_lat[i][iotype] = 0;
++			io_lat->bio_cnt[i][iotype] = 0;
++		}
++	}
++	spin_unlock_irq(&sbi->iostat_lat_lock);
++}
++
++void f2fs_update_iostat(struct f2fs_sb_info *sbi,
++			enum iostat_type type, unsigned long long io_bytes)
++{
++	if (!sbi->iostat_enable)
++		return;
++	spin_lock(&sbi->iostat_lock);
++	sbi->rw_iostat[type] += io_bytes;
++
++	if (type == APP_WRITE_IO || type == APP_DIRECT_IO)
++		sbi->rw_iostat[APP_BUFFERED_IO] =
++			sbi->rw_iostat[APP_WRITE_IO] -
++			sbi->rw_iostat[APP_DIRECT_IO];
++
++	if (type == APP_READ_IO || type == APP_DIRECT_READ_IO)
++		sbi->rw_iostat[APP_BUFFERED_READ_IO] =
++			sbi->rw_iostat[APP_READ_IO] -
++			sbi->rw_iostat[APP_DIRECT_READ_IO];
++	spin_unlock(&sbi->iostat_lock);
++
++	f2fs_record_iostat(sbi);
++}
++
++static inline void __update_iostat_latency(struct bio_iostat_ctx *iostat_ctx,
++				int rw, int sync_type)
++{
++	unsigned long ts_diff;
++	unsigned int iotype = iostat_ctx->type;
++	unsigned long flags;
++	struct f2fs_sb_info *sbi = iostat_ctx->sbi;
++	struct iostat_lat_info *io_lat = sbi->iostat_io_lat;
++	int idx;
++
++	if (!sbi->iostat_enable)
++		return;
++
++	ts_diff = jiffies - iostat_ctx->submit_ts;
++	if (iotype >= META_FLUSH)
++		iotype = META;
++
++	if (rw == 0) {
++		idx = READ_IO;
++	} else {
++		if (sync_type == 0)
++			idx = WRITE_SYNC_IO;
++		else
++			idx = WRITE_ASYNC_IO;
++	}
++
++	spin_lock_irqsave(&sbi->iostat_lat_lock, flags);
++	io_lat->sum_lat[idx][iotype] += ts_diff;
++	io_lat->bio_cnt[idx][iotype]++;
++	if (ts_diff > io_lat->peak_lat[idx][iotype])
++		io_lat->peak_lat[idx][iotype] = ts_diff;
++	spin_unlock_irqrestore(&sbi->iostat_lat_lock, flags);
++}
++
++void iostat_update_and_unbind_ctx(struct bio *bio, int rw)
++{
++	struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
++	int sync_type = bio->bi_opf & REQ_SYNC ? 0 : 1;
++
++	if (rw == 0)
++		bio->bi_private = iostat_ctx->post_read_ctx;
++	else
++		bio->bi_private = iostat_ctx->sbi;
++	__update_iostat_latency(iostat_ctx, rw, sync_type);
++	mempool_free(iostat_ctx, bio_iostat_ctx_pool);
++}
++
++void iostat_alloc_and_bind_ctx(struct f2fs_sb_info *sbi,
++		struct bio *bio, struct bio_post_read_ctx *ctx)
++{
++	struct bio_iostat_ctx *iostat_ctx;
++	/* Due to the mempool, this never fails. */
++	iostat_ctx = mempool_alloc(bio_iostat_ctx_pool, GFP_NOFS);
++	iostat_ctx->sbi = sbi;
++	iostat_ctx->submit_ts = 0;
++	iostat_ctx->type = 0;
++	iostat_ctx->post_read_ctx = ctx;
++	bio->bi_private = iostat_ctx;
++}
++
++int __init f2fs_init_iostat_processing(void)
++{
++	bio_iostat_ctx_cache =
++		kmem_cache_create("f2fs_bio_iostat_ctx",
++				  sizeof(struct bio_iostat_ctx), 0, 0, NULL);
++	if (!bio_iostat_ctx_cache)
++		goto fail;
++	bio_iostat_ctx_pool =
++		mempool_create_slab_pool(NUM_PREALLOC_IOSTAT_CTXS,
++					 bio_iostat_ctx_cache);
++	if (!bio_iostat_ctx_pool)
++		goto fail_free_cache;
++	return 0;
++
++fail_free_cache:
++	kmem_cache_destroy(bio_iostat_ctx_cache);
++fail:
++	return -ENOMEM;
++}
++
++void f2fs_destroy_iostat_processing(void)
++{
++	mempool_destroy(bio_iostat_ctx_pool);
++	kmem_cache_destroy(bio_iostat_ctx_cache);
++}
++
++int f2fs_init_iostat(struct f2fs_sb_info *sbi)
++{
++	/* init iostat info */
++	spin_lock_init(&sbi->iostat_lock);
++	spin_lock_init(&sbi->iostat_lat_lock);
++	sbi->iostat_enable = false;
++	sbi->iostat_period_ms = DEFAULT_IOSTAT_PERIOD_MS;
++	sbi->iostat_io_lat = f2fs_kzalloc(sbi, sizeof(struct iostat_lat_info),
++					GFP_KERNEL);
++	if (!sbi->iostat_io_lat)
++		return -ENOMEM;
++
++	return 0;
++}
++
++void f2fs_destroy_iostat(struct f2fs_sb_info *sbi)
++{
++	kfree(sbi->iostat_io_lat);
++}
+diff --git a/fs/f2fs/iostat.h b/fs/f2fs/iostat.h
+new file mode 100644
+index 000000000000..22a2d01f57ef
+--- /dev/null
++++ b/fs/f2fs/iostat.h
+@@ -0,0 +1,84 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright 2021 Google LLC
++ * Author: Daeho Jeong <daehojeong@google.com>
++ */
++#ifndef __F2FS_IOSTAT_H__
++#define __F2FS_IOSTAT_H__
++
++struct bio_post_read_ctx;
++
++#ifdef CONFIG_F2FS_IOSTAT
++
++#define DEFAULT_IOSTAT_PERIOD_MS	3000
++#define MIN_IOSTAT_PERIOD_MS		100
++/* maximum period of iostat tracing is 1 day */
++#define MAX_IOSTAT_PERIOD_MS		8640000
++
++enum {
++	READ_IO,
++	WRITE_SYNC_IO,
++	WRITE_ASYNC_IO,
++	MAX_IO_TYPE,
++};
++
++struct iostat_lat_info {
++	unsigned long sum_lat[MAX_IO_TYPE][NR_PAGE_TYPE];	/* sum of io latencies */
++	unsigned long peak_lat[MAX_IO_TYPE][NR_PAGE_TYPE];	/* peak io latency */
++	unsigned int bio_cnt[MAX_IO_TYPE][NR_PAGE_TYPE];	/* bio count */
++};
++
++extern int __maybe_unused iostat_info_seq_show(struct seq_file *seq,
++			void *offset);
++extern void f2fs_reset_iostat(struct f2fs_sb_info *sbi);
++extern void f2fs_update_iostat(struct f2fs_sb_info *sbi,
++			enum iostat_type type, unsigned long long io_bytes);
++
++struct bio_iostat_ctx {
++	struct f2fs_sb_info *sbi;
++	unsigned long submit_ts;
++	enum page_type type;
++	struct bio_post_read_ctx *post_read_ctx;
++};
++
++static inline void iostat_update_submit_ctx(struct bio *bio,
++			enum page_type type)
++{
++	struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
++
++	iostat_ctx->submit_ts = jiffies;
++	iostat_ctx->type = type;
++}
++
++static inline struct bio_post_read_ctx *get_post_read_ctx(struct bio *bio)
++{
++	struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
++
++	return iostat_ctx->post_read_ctx;
++}
++
++extern void iostat_update_and_unbind_ctx(struct bio *bio, int rw);
++extern void iostat_alloc_and_bind_ctx(struct f2fs_sb_info *sbi,
++		struct bio *bio, struct bio_post_read_ctx *ctx);
++extern int f2fs_init_iostat_processing(void);
++extern void f2fs_destroy_iostat_processing(void);
++extern int f2fs_init_iostat(struct f2fs_sb_info *sbi);
++extern void f2fs_destroy_iostat(struct f2fs_sb_info *sbi);
++#else
++static inline void f2fs_update_iostat(struct f2fs_sb_info *sbi,
++		enum iostat_type type, unsigned long long io_bytes) {}
++static inline void iostat_update_and_unbind_ctx(struct bio *bio, int rw) {}
++static inline void iostat_alloc_and_bind_ctx(struct f2fs_sb_info *sbi,
++		struct bio *bio, struct bio_post_read_ctx *ctx) {}
++static inline void iostat_update_submit_ctx(struct bio *bio,
++		enum page_type type) {}
++static inline struct bio_post_read_ctx *get_post_read_ctx(struct bio *bio)
++{
++	return bio->bi_private;
++}
++static inline int f2fs_init_iostat_processing(void) { return 0; }
++static inline void f2fs_destroy_iostat_processing(void) {}
++static inline int f2fs_init_iostat(struct f2fs_sb_info *sbi) { return 0; }
++static inline void f2fs_destroy_iostat(struct f2fs_sb_info *sbi) {}
++#endif
++#endif /* __F2FS_IOSTAT_H__ */
+diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+index 9d838a7929fb..a5731838f41a 100644
+--- a/fs/f2fs/node.c
++++ b/fs/f2fs/node.c
+@@ -17,6 +17,7 @@
+ #include "node.h"
+ #include "segment.h"
+ #include "xattr.h"
++#include "iostat.h"
+ #include <trace/events/f2fs.h>
+ 
+ #define on_f2fs_build_free_nids(nmi) mutex_is_locked(&(nm_i)->build_lock)
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index ca9876a6d396..e03d1c1d9644 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -20,6 +20,7 @@
+ #include "segment.h"
+ #include "node.h"
+ #include "gc.h"
++#include "iostat.h"
+ #include <trace/events/f2fs.h>
+ 
+ #define __reverse_ffz(x) __reverse_ffs(~(x))
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 84cd085020cd..8cb187bf877e 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -33,6 +33,7 @@
+ #include "segment.h"
+ #include "xattr.h"
+ #include "gc.h"
++#include "iostat.h"
+ 
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/f2fs.h>
+@@ -1571,6 +1572,7 @@ static void f2fs_put_super(struct super_block *sb)
+ #endif
+ 	fscrypt_free_dummy_policy(&F2FS_OPTION(sbi).dummy_enc_policy);
+ 	destroy_percpu_info(sbi);
++	f2fs_destroy_iostat(sbi);
+ 	for (i = 0; i < NR_PAGE_TYPE; i++)
+ 		kvfree(sbi->write_io[i]);
+ #ifdef CONFIG_UNICODE
+@@ -3948,11 +3950,6 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+ 	set_sbi_flag(sbi, SBI_POR_DOING);
+ 	spin_lock_init(&sbi->stat_lock);
+ 
+-	/* init iostat info */
+-	spin_lock_init(&sbi->iostat_lock);
+-	sbi->iostat_enable = false;
+-	sbi->iostat_period_ms = DEFAULT_IOSTAT_PERIOD_MS;
+-
+ 	for (i = 0; i < NR_PAGE_TYPE; i++) {
+ 		int n = (i == META) ? 1 : NR_TEMP_TYPE;
+ 		int j;
+@@ -3983,10 +3980,14 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+ 	init_waitqueue_head(&sbi->cp_wait);
+ 	init_sb_info(sbi);
+ 
+-	err = init_percpu_info(sbi);
++	err = f2fs_init_iostat(sbi);
+ 	if (err)
+ 		goto free_bio_info;
+ 
++	err = init_percpu_info(sbi);
++	if (err)
++		goto free_iostat;
++
+ 	if (F2FS_IO_ALIGNED(sbi)) {
+ 		sbi->write_io_dummy =
+ 			mempool_create_page_pool(2 * (F2FS_IO_SIZE(sbi) - 1), 0);
+@@ -4318,6 +4319,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+ 	mempool_destroy(sbi->write_io_dummy);
+ free_percpu:
+ 	destroy_percpu_info(sbi);
++free_iostat:
++	f2fs_destroy_iostat(sbi);
+ free_bio_info:
+ 	for (i = 0; i < NR_PAGE_TYPE; i++)
+ 		kvfree(sbi->write_io[i]);
+@@ -4460,9 +4463,12 @@ static int __init init_f2fs_fs(void)
+ 	err = f2fs_init_post_read_processing();
+ 	if (err)
+ 		goto free_root_stats;
+-	err = f2fs_init_bio_entry_cache();
++	err = f2fs_init_iostat_processing();
+ 	if (err)
+ 		goto free_post_read;
++	err = f2fs_init_bio_entry_cache();
++	if (err)
++		goto free_iostat;
+ 	err = f2fs_init_bioset();
+ 	if (err)
+ 		goto free_bio_enrty_cache;
+@@ -4484,6 +4490,8 @@ static int __init init_f2fs_fs(void)
+ 	f2fs_destroy_bioset();
+ free_bio_enrty_cache:
+ 	f2fs_destroy_bio_entry_cache();
++free_iostat:
++	f2fs_destroy_iostat_processing();
+ free_post_read:
+ 	f2fs_destroy_post_read_processing();
+ free_root_stats:
+@@ -4518,6 +4526,7 @@ static void __exit exit_f2fs_fs(void)
+ 	f2fs_destroy_compress_mempool();
+ 	f2fs_destroy_bioset();
+ 	f2fs_destroy_bio_entry_cache();
++	f2fs_destroy_iostat_processing();
+ 	f2fs_destroy_post_read_processing();
+ 	f2fs_destroy_root_stats();
+ 	unregister_filesystem(&f2fs_fs_type);
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index 0954761341d7..90abe9443300 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -17,6 +17,7 @@
+ #include "f2fs.h"
+ #include "segment.h"
+ #include "gc.h"
++#include "iostat.h"
+ #include <trace/events/f2fs.h>
+ 
+ static struct proc_dir_entry *f2fs_proc_root;
+@@ -477,6 +478,7 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+ 		return count;
+ 	}
+ 
++#ifdef CONFIG_F2FS_IOSTAT
+ 	if (!strcmp(a->attr.name, "iostat_enable")) {
+ 		sbi->iostat_enable = !!t;
+ 		if (!sbi->iostat_enable)
+@@ -492,6 +494,7 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+ 		spin_unlock(&sbi->iostat_lock);
+ 		return count;
+ 	}
++#endif
+ 
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+ 	if (!strcmp(a->attr.name, "compr_written_block") ||
+@@ -700,8 +703,10 @@ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, discard_idle_interval,
+ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, gc_idle_interval, interval_time[GC_TIME]);
+ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info,
+ 		umount_discard_timeout, interval_time[UMOUNT_DISCARD_TIMEOUT]);
++#ifdef CONFIG_F2FS_IOSTAT
+ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, iostat_enable, iostat_enable);
+ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, iostat_period_ms, iostat_period_ms);
++#endif
+ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, readdir_ra, readdir_ra);
+ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, max_io_bytes, max_io_bytes);
+ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, gc_pin_file_thresh, gc_pin_file_threshold);
+@@ -807,8 +812,10 @@ static struct attribute *f2fs_attrs[] = {
+ 	ATTR_LIST(discard_idle_interval),
+ 	ATTR_LIST(gc_idle_interval),
+ 	ATTR_LIST(umount_discard_timeout),
++#ifdef CONFIG_F2FS_IOSTAT
+ 	ATTR_LIST(iostat_enable),
+ 	ATTR_LIST(iostat_period_ms),
++#endif
+ 	ATTR_LIST(readdir_ra),
+ 	ATTR_LIST(max_io_bytes),
+ 	ATTR_LIST(gc_pin_file_thresh),
+@@ -1076,101 +1083,6 @@ static int __maybe_unused segment_bits_seq_show(struct seq_file *seq,
+ 	return 0;
+ }
+ 
+-void f2fs_record_iostat(struct f2fs_sb_info *sbi)
+-{
+-	unsigned long long iostat_diff[NR_IO_TYPE];
+-	int i;
+-
+-	if (time_is_after_jiffies(sbi->iostat_next_period))
+-		return;
+-
+-	/* Need double check under the lock */
+-	spin_lock(&sbi->iostat_lock);
+-	if (time_is_after_jiffies(sbi->iostat_next_period)) {
+-		spin_unlock(&sbi->iostat_lock);
+-		return;
+-	}
+-	sbi->iostat_next_period = jiffies +
+-				msecs_to_jiffies(sbi->iostat_period_ms);
+-
+-	for (i = 0; i < NR_IO_TYPE; i++) {
+-		iostat_diff[i] = sbi->rw_iostat[i] -
+-				sbi->prev_rw_iostat[i];
+-		sbi->prev_rw_iostat[i] = sbi->rw_iostat[i];
+-	}
+-	spin_unlock(&sbi->iostat_lock);
+-
+-	trace_f2fs_iostat(sbi, iostat_diff);
+-}
+-
+-static int __maybe_unused iostat_info_seq_show(struct seq_file *seq,
+-					       void *offset)
+-{
+-	struct super_block *sb = seq->private;
+-	struct f2fs_sb_info *sbi = F2FS_SB(sb);
+-	time64_t now = ktime_get_real_seconds();
+-
+-	if (!sbi->iostat_enable)
+-		return 0;
+-
+-	seq_printf(seq, "time:		%-16llu\n", now);
+-
+-	/* print app write IOs */
+-	seq_puts(seq, "[WRITE]\n");
+-	seq_printf(seq, "app buffered:	%-16llu\n",
+-				sbi->rw_iostat[APP_BUFFERED_IO]);
+-	seq_printf(seq, "app direct:	%-16llu\n",
+-				sbi->rw_iostat[APP_DIRECT_IO]);
+-	seq_printf(seq, "app mapped:	%-16llu\n",
+-				sbi->rw_iostat[APP_MAPPED_IO]);
+-
+-	/* print fs write IOs */
+-	seq_printf(seq, "fs data:	%-16llu\n",
+-				sbi->rw_iostat[FS_DATA_IO]);
+-	seq_printf(seq, "fs node:	%-16llu\n",
+-				sbi->rw_iostat[FS_NODE_IO]);
+-	seq_printf(seq, "fs meta:	%-16llu\n",
+-				sbi->rw_iostat[FS_META_IO]);
+-	seq_printf(seq, "fs gc data:	%-16llu\n",
+-				sbi->rw_iostat[FS_GC_DATA_IO]);
+-	seq_printf(seq, "fs gc node:	%-16llu\n",
+-				sbi->rw_iostat[FS_GC_NODE_IO]);
+-	seq_printf(seq, "fs cp data:	%-16llu\n",
+-				sbi->rw_iostat[FS_CP_DATA_IO]);
+-	seq_printf(seq, "fs cp node:	%-16llu\n",
+-				sbi->rw_iostat[FS_CP_NODE_IO]);
+-	seq_printf(seq, "fs cp meta:	%-16llu\n",
+-				sbi->rw_iostat[FS_CP_META_IO]);
+-
+-	/* print app read IOs */
+-	seq_puts(seq, "[READ]\n");
+-	seq_printf(seq, "app buffered:	%-16llu\n",
+-				sbi->rw_iostat[APP_BUFFERED_READ_IO]);
+-	seq_printf(seq, "app direct:	%-16llu\n",
+-				sbi->rw_iostat[APP_DIRECT_READ_IO]);
+-	seq_printf(seq, "app mapped:	%-16llu\n",
+-				sbi->rw_iostat[APP_MAPPED_READ_IO]);
+-
+-	/* print fs read IOs */
+-	seq_printf(seq, "fs data:	%-16llu\n",
+-				sbi->rw_iostat[FS_DATA_READ_IO]);
+-	seq_printf(seq, "fs gc data:	%-16llu\n",
+-				sbi->rw_iostat[FS_GDATA_READ_IO]);
+-	seq_printf(seq, "fs compr_data:	%-16llu\n",
+-				sbi->rw_iostat[FS_CDATA_READ_IO]);
+-	seq_printf(seq, "fs node:	%-16llu\n",
+-				sbi->rw_iostat[FS_NODE_READ_IO]);
+-	seq_printf(seq, "fs meta:	%-16llu\n",
+-				sbi->rw_iostat[FS_META_READ_IO]);
+-
+-	/* print other IOs */
+-	seq_puts(seq, "[OTHER]\n");
+-	seq_printf(seq, "fs discard:	%-16llu\n",
+-				sbi->rw_iostat[FS_DISCARD]);
+-
+-	return 0;
+-}
+-
+ static int __maybe_unused victim_bits_seq_show(struct seq_file *seq,
+ 						void *offset)
+ {
+@@ -1257,8 +1169,10 @@ int f2fs_register_sysfs(struct f2fs_sb_info *sbi)
+ 				segment_info_seq_show, sb);
+ 		proc_create_single_data("segment_bits", S_IRUGO, sbi->s_proc,
+ 				segment_bits_seq_show, sb);
++#ifdef CONFIG_F2FS_IOSTAT
+ 		proc_create_single_data("iostat_info", S_IRUGO, sbi->s_proc,
+ 				iostat_info_seq_show, sb);
++#endif
+ 		proc_create_single_data("victim_bits", S_IRUGO, sbi->s_proc,
+ 				victim_bits_seq_show, sb);
+ 	}
+@@ -1278,7 +1192,9 @@ int f2fs_register_sysfs(struct f2fs_sb_info *sbi)
+ void f2fs_unregister_sysfs(struct f2fs_sb_info *sbi)
+ {
+ 	if (sbi->s_proc) {
++#ifdef CONFIG_F2FS_IOSTAT
+ 		remove_proc_entry("iostat_info", sbi->s_proc);
++#endif
+ 		remove_proc_entry("segment_info", sbi->s_proc);
+ 		remove_proc_entry("segment_bits", sbi->s_proc);
+ 		remove_proc_entry("victim_bits", sbi->s_proc);
+diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
+index 56b113e3cd6a..4e881d91c874 100644
+--- a/include/trace/events/f2fs.h
++++ b/include/trace/events/f2fs.h
+@@ -1818,6 +1818,7 @@ DEFINE_EVENT(f2fs_zip_end, f2fs_decompress_pages_end,
+ 	TP_ARGS(inode, cluster_idx, compressed_size, ret)
+ );
+ 
++#ifdef CONFIG_F2FS_IOSTAT
+ TRACE_EVENT(f2fs_iostat,
+ 
+ 	TP_PROTO(struct f2fs_sb_info *sbi, unsigned long long *iostat),
+@@ -1894,6 +1895,102 @@ TRACE_EVENT(f2fs_iostat,
+ 		__entry->fs_cdrio, __entry->fs_nrio, __entry->fs_mrio)
+ );
+ 
++#ifndef __F2FS_IOSTAT_LATENCY_TYPE
++#define __F2FS_IOSTAT_LATENCY_TYPE
++struct f2fs_iostat_latency {
++	unsigned int peak_lat;
++	unsigned int avg_lat;
++	unsigned int cnt;
++};
++#endif /* __F2FS_IOSTAT_LATENCY_TYPE */
++
++TRACE_EVENT(f2fs_iostat_latency,
++
++	TP_PROTO(struct f2fs_sb_info *sbi, struct f2fs_iostat_latency (*iostat_lat)[NR_PAGE_TYPE]),
++
++	TP_ARGS(sbi, iostat_lat),
++
++	TP_STRUCT__entry(
++		__field(dev_t,	dev)
++		__field(unsigned int,	d_rd_peak)
++		__field(unsigned int,	d_rd_avg)
++		__field(unsigned int,	d_rd_cnt)
++		__field(unsigned int,	n_rd_peak)
++		__field(unsigned int,	n_rd_avg)
++		__field(unsigned int,	n_rd_cnt)
++		__field(unsigned int,	m_rd_peak)
++		__field(unsigned int,	m_rd_avg)
++		__field(unsigned int,	m_rd_cnt)
++		__field(unsigned int,	d_wr_s_peak)
++		__field(unsigned int,	d_wr_s_avg)
++		__field(unsigned int,	d_wr_s_cnt)
++		__field(unsigned int,	n_wr_s_peak)
++		__field(unsigned int,	n_wr_s_avg)
++		__field(unsigned int,	n_wr_s_cnt)
++		__field(unsigned int,	m_wr_s_peak)
++		__field(unsigned int,	m_wr_s_avg)
++		__field(unsigned int,	m_wr_s_cnt)
++		__field(unsigned int,	d_wr_as_peak)
++		__field(unsigned int,	d_wr_as_avg)
++		__field(unsigned int,	d_wr_as_cnt)
++		__field(unsigned int,	n_wr_as_peak)
++		__field(unsigned int,	n_wr_as_avg)
++		__field(unsigned int,	n_wr_as_cnt)
++		__field(unsigned int,	m_wr_as_peak)
++		__field(unsigned int,	m_wr_as_avg)
++		__field(unsigned int,	m_wr_as_cnt)
++	),
++
++	TP_fast_assign(
++		__entry->dev		= sbi->sb->s_dev;
++		__entry->d_rd_peak	= iostat_lat[0][DATA].peak_lat;
++		__entry->d_rd_avg	= iostat_lat[0][DATA].avg_lat;
++		__entry->d_rd_cnt	= iostat_lat[0][DATA].cnt;
++		__entry->n_rd_peak	= iostat_lat[0][NODE].peak_lat;
++		__entry->n_rd_avg	= iostat_lat[0][NODE].avg_lat;
++		__entry->n_rd_cnt	= iostat_lat[0][NODE].cnt;
++		__entry->m_rd_peak	= iostat_lat[0][META].peak_lat;
++		__entry->m_rd_avg	= iostat_lat[0][META].avg_lat;
++		__entry->m_rd_cnt	= iostat_lat[0][META].cnt;
++		__entry->d_wr_s_peak	= iostat_lat[1][DATA].peak_lat;
++		__entry->d_wr_s_avg	= iostat_lat[1][DATA].avg_lat;
++		__entry->d_wr_s_cnt	= iostat_lat[1][DATA].cnt;
++		__entry->n_wr_s_peak	= iostat_lat[1][NODE].peak_lat;
++		__entry->n_wr_s_avg	= iostat_lat[1][NODE].avg_lat;
++		__entry->n_wr_s_cnt	= iostat_lat[1][NODE].cnt;
++		__entry->m_wr_s_peak	= iostat_lat[1][META].peak_lat;
++		__entry->m_wr_s_avg	= iostat_lat[1][META].avg_lat;
++		__entry->m_wr_s_cnt	= iostat_lat[1][META].cnt;
++		__entry->d_wr_as_peak	= iostat_lat[2][DATA].peak_lat;
++		__entry->d_wr_as_avg	= iostat_lat[2][DATA].avg_lat;
++		__entry->d_wr_as_cnt	= iostat_lat[2][DATA].cnt;
++		__entry->n_wr_as_peak	= iostat_lat[2][NODE].peak_lat;
++		__entry->n_wr_as_avg	= iostat_lat[2][NODE].avg_lat;
++		__entry->n_wr_as_cnt	= iostat_lat[2][NODE].cnt;
++		__entry->m_wr_as_peak	= iostat_lat[2][META].peak_lat;
++		__entry->m_wr_as_avg	= iostat_lat[2][META].avg_lat;
++		__entry->m_wr_as_cnt	= iostat_lat[2][META].cnt;
++	),
++
++	TP_printk("dev = (%d,%d), "
++		"iotype [peak lat.(ms)/avg lat.(ms)/count], "
++		"rd_data [%u/%u/%u], rd_node [%u/%u/%u], rd_meta [%u/%u/%u], "
++		"wr_sync_data [%u/%u/%u], wr_sync_node [%u/%u/%u], "
++		"wr_sync_meta [%u/%u/%u], wr_async_data [%u/%u/%u], "
++		"wr_async_node [%u/%u/%u], wr_async_meta [%u/%u/%u]",
++		show_dev(__entry->dev),
++		__entry->d_rd_peak, __entry->d_rd_avg, __entry->d_rd_cnt,
++		__entry->n_rd_peak, __entry->n_rd_avg, __entry->n_rd_cnt,
++		__entry->m_rd_peak, __entry->m_rd_avg, __entry->m_rd_cnt,
++		__entry->d_wr_s_peak, __entry->d_wr_s_avg, __entry->d_wr_s_cnt,
++		__entry->n_wr_s_peak, __entry->n_wr_s_avg, __entry->n_wr_s_cnt,
++		__entry->m_wr_s_peak, __entry->m_wr_s_avg, __entry->m_wr_s_cnt,
++		__entry->d_wr_as_peak, __entry->d_wr_as_avg, __entry->d_wr_as_cnt,
++		__entry->n_wr_as_peak, __entry->n_wr_as_avg, __entry->n_wr_as_cnt,
++		__entry->m_wr_as_peak, __entry->m_wr_as_avg, __entry->m_wr_as_cnt)
++);
++#endif
++
+ TRACE_EVENT(f2fs_bmap,
+ 
+ 	TP_PROTO(struct inode *inode, sector_t lblock, sector_t pblock),
+-- 
+2.33.0.rc1.237.g0d66db33f3-goog
+
