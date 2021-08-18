@@ -2,104 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A603F030B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 13:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C783F0316
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 13:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233134AbhHRLx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 07:53:26 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:52128 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232459AbhHRLxQ (ORCPT
+        id S234949AbhHRL4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 07:56:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232574AbhHRL4U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 07:53:16 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Wed, 18 Aug 2021 07:56:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F40C061764;
+        Wed, 18 Aug 2021 04:55:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=D6iemufMr2b/qeAUmVa3U7ugTs+hnH9TTpLcRzXpGLw=; b=HNIGBYXuOLuf/lXvjO9O83UPQ7
+        om2IyVQGCUigapiedkWriTOLxcCJ4qmBMuKWxY25raV2fYL2Bs6Crurp/aO02dc2oCrNvZ0ChNqGF
+        a5n4TFrYp+8x+DWYzLn9UZNJosybpHXFOLIx9jCr4lpLZv3/Wc9+sAM+VO8/xEs7EIG7uBkJpxwBz
+        BJs36qSbWjGrvl5gRZQ4zNeN4dDOAD2aB34KRCKmyYe7nXiGoZIkzi33NUNdZXXxQM3g/yuRyNCRq
+        byD34aUA30Ac8t071fMzM7uD/y0YLKxlMdIi8FZPPusHizzK0pxg5EtjdKVYtqB5w/UXKZj9kmcJ5
+        LPlLDiWw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mGK8P-003mac-LY; Wed, 18 Aug 2021 11:53:44 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 9EBA820065;
-        Wed, 18 Aug 2021 11:52:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629287560; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=n0Gg3Eo6nVGmkuIaYIfQZsHopS7vuS6RydrWjr2SAZ0=;
-        b=H4f1SAxCFweJo0o0dZ9vf0GPA/zwFq6pL1EOU93hG7mUkomxOLfEJpKmikaT1AP3m9Tfob
-        PTnrULDLAoi/Q6738r25PYXKq9e9XeS3KSaJI1aUZqpOojlA68mRv4wNJi35Ab1RGWfIHr
-        bMkYrNE+XMiIFByhTBKXldrzBb98k9o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629287560;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=n0Gg3Eo6nVGmkuIaYIfQZsHopS7vuS6RydrWjr2SAZ0=;
-        b=gcY7h83YaBWF4GPhis9FHMFXOwL+3Ec1SofRfvse0YKAXsfJqpnT7h0LpwLECu/v+fMDFl
-        am0RDgOp4ag/34DA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C47F6144F1;
-        Wed, 18 Aug 2021 11:52:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id MEfXLIf0HGFcHAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Wed, 18 Aug 2021 11:52:39 +0000
-Subject: Re: [PATCH v4 35/35] mm, slub: convert kmem_cpu_slab protection to
- local_lock
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Mike Galbraith <efault@gmx.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Jann Horn <jannh@google.com>, Mike Galbraith <efault@gmx.de>
-References: <20210805152000.12817-1-vbabka@suse.cz>
- <20210805152000.12817-36-vbabka@suse.cz>
- <e907c2b6-6df1-8038-8c6c-aa9c1fd11259@suse.cz>
- <20210817125325.d0ed45d664596d1e80a591d7@linux-foundation.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <d37d2de9-b5b2-dbdd-5228-065b475f913a@suse.cz>
-Date:   Wed, 18 Aug 2021 13:52:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 900E6300233;
+        Wed, 18 Aug 2021 13:53:28 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7303F2027DC71; Wed, 18 Aug 2021 13:53:28 +0200 (CEST)
+Date:   Wed, 18 Aug 2021 13:53:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>, kernel-team@android.com
+Subject: Re: [PATCH v11 08/16] sched: Allow task CPU affinity to be
+ restricted on asymmetric systems
+Message-ID: <YRz0uI6V58eGNL1C@hirez.programming.kicks-ass.net>
+References: <20210730112443.23245-1-will@kernel.org>
+ <20210730112443.23245-9-will@kernel.org>
+ <YRvRfZ/NnuNyIu3s@hirez.programming.kicks-ass.net>
+ <20210818104227.GA13828@willie-the-truck>
+ <YRznaZBHXYEzCPt1@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20210817125325.d0ed45d664596d1e80a591d7@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YRznaZBHXYEzCPt1@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/17/21 9:53 PM, Andrew Morton wrote:
-> On Tue, 17 Aug 2021 12:14:58 +0200 Vlastimil Babka <vbabka@suse.cz> wrote:
+On Wed, Aug 18, 2021 at 12:56:41PM +0200, Peter Zijlstra wrote:
+> On Wed, Aug 18, 2021 at 11:42:28AM +0100, Will Deacon wrote:
+
+> > I think the idea looks good, but perhaps we could wrap things up a bit:
+> > 
+> > /* Comment about why this is useful with RT */
+> > static cpumask_t *clear_user_cpus_ptr(struct task_struct *p)
+> > {
+> > 	struct cpumask *user_mask = NULL;
+> > 
+> > 	swap(user_mask, p->user_cpus_ptr);
+> > 	return user_mask;
+> > }
+> > 
+> > void release_user_cpus_ptr(struct task_struct *p)
+> > {
+> > 	kfree(clear_user_cpus_ptr(p));
+> > }
+> > 
+> > Then just use clear_user_cpus_ptr() in sched/core.c where we know what
+> > we're doing (well, at least one of us does!).
 > 
->> Another fixup. Is it too many and should we replace it all with a v5?
-> 
-> Maybe do a full resend when things have settled down and I can at least
-> check that we match.
+> OK, I'll go make it like that.
 
-OK.
+Something like so then?
 
-> What's your confidence level for a 5.15-rc1 merge?
-
-I'd say pretty good. It's part of RT patchset for a while (since early
-July IIRC?) and there has been lot of testing there. Mike and Mel also
-tested under !RT configs, and the bug report from Sven means the mmotm
-in -next also gets testing. The fixups were all thanks to the testing
-and recently shifted to smaller unusual-config-specific issues that
-could be dealt with even during rcX stabilization in case there's more.
-
-> It isn't terribly
-> well reviewed?
-
-Yeah that could be better, the pool of people deeply familiar with SLUB
-is not large, unfortunately. I hope folks will still step up!
-
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2497,10 +2497,18 @@ int dup_user_cpus_ptr(struct task_struct
+ 	return 0;
+ }
+ 
++static inline struct cpumask *clear_user_cpus_ptr(struct task_struct *p)
++{
++	struct cpumask *user_mask = NULL;
++
++	swap(p->user_cpus_ptr, user_mask);
++
++	return user_mask;
++}
++
+ void release_user_cpus_ptr(struct task_struct *p)
+ {
+-	kfree(p->user_cpus_ptr);
+-	p->user_cpus_ptr = NULL;
++	kfree(clear_user_cpus_ptr(p));
+ }
+ 
+ /*
+@@ -2733,6 +2741,7 @@ static int __set_cpus_allowed_ptr_locked
+ 	const struct cpumask *cpu_allowed_mask = task_cpu_possible_mask(p);
+ 	const struct cpumask *cpu_valid_mask = cpu_active_mask;
+ 	bool kthread = p->flags & PF_KTHREAD;
++	struct cpumask *user_mask = NULL;
+ 	unsigned int dest_cpu;
+ 	int ret = 0;
+ 
+@@ -2792,9 +2801,13 @@ static int __set_cpus_allowed_ptr_locked
+ 	__do_set_cpus_allowed(p, new_mask, flags);
+ 
+ 	if (flags & SCA_USER)
+-		release_user_cpus_ptr(p);
++		user_mask = clear_user_cpus_ptr(p);
+ 
+-	return affine_move_task(rq, p, rf, dest_cpu, flags);
++	ret = affine_move_task(rq, p, rf, dest_cpu, flags);
++
++	kfree(user_mask);
++
++	return ret;
+ 
+ out:
+ 	task_rq_unlock(rq, p, rf);
+@@ -2941,20 +2954,22 @@ __sched_setaffinity(struct task_struct *
+  */
+ void relax_compatible_cpus_allowed_ptr(struct task_struct *p)
+ {
++	struct cpumask *user_mask = p->user_cpus_ptr;
+ 	unsigned long flags;
+-	struct cpumask *mask = p->user_cpus_ptr;
+ 
+ 	/*
+ 	 * Try to restore the old affinity mask. If this fails, then
+ 	 * we free the mask explicitly to avoid it being inherited across
+ 	 * a subsequent fork().
+ 	 */
+-	if (!mask || !__sched_setaffinity(p, mask))
++	if (!user_mask || !__sched_setaffinity(p, user_mask))
+ 		return;
+ 
+ 	raw_spin_lock_irqsave(&p->pi_lock, flags);
+-	release_user_cpus_ptr(p);
++	user_mask = clear_user_cpus_ptr(p);
+ 	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
++
++	kfree(user_mask);
+ }
+ 
+ void set_task_cpu(struct task_struct *p, unsigned int new_cpu)
 
