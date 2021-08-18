@@ -2,77 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF933F0E4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 00:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44FB63F0E54
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 00:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234686AbhHRWkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 18:40:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55292 "EHLO mail.kernel.org"
+        id S234799AbhHRWlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 18:41:04 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:57370 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232456AbhHRWkl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 18:40:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 33D0A6108B;
-        Wed, 18 Aug 2021 22:40:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629326406;
-        bh=rpH07toMkyUa4SU29qgQ5rbYk0DjTSEbT1X0U1mDRts=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=OHGUzGE+sxlmXXSLaAXwOxb2wkIbkJQ2z/+CaZIEsIlTQdy+UJzWM57jutW8qml76
-         aHmHJVnelqICzA3oNQhTRzC88YDd5IdQLhcC8xC1csQdquKKvSnyUu+BY8w0T7jLGf
-         ZYULqcvzwcQI2wqXllEvoaszLgas8TckLsXqgZZ2V2nvv17/WPei2Guv5nwgd4Uj4X
-         zxZs/jPTGm5hPMSrNWAPdMeY81IrguyKs0kMd1dP+7r12u7igISFwdAzb2+x6e7Zsw
-         93usWvfFnsxhXQHIfMw8tmINLEUszmlGTCr6RF+VKcxagD+Uhk20VWbkoO+WcwjxOO
-         LH8TZZSs/dMmA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 26E6060A2E;
-        Wed, 18 Aug 2021 22:40:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S234624AbhHRWlC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 18:41:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=BHFLjbPCLCF1K1tPIACjXdBhCncOYyQo371Fy8IXvtg=; b=Fbn0t2acIk7bR7DR7/L5OCuExR
+        OCdkGwfBUkianTpnsEMDrU69r24nZ84+Q4Xy5xFve1y5ME+ZAzwU1K7NHoXSS85pseA7kFCCbt4rG
+        ar8lgBDGuFuO0TiEJ1ir4lN4/0Q4R2kYIlZtKNQtb/FPWnSumNa04mKkZ5F7l6xzSPsw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mGUER-000rcy-DR; Thu, 19 Aug 2021 00:40:23 +0200
+Date:   Thu, 19 Aug 2021 00:40:23 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Asmaa Mnebhi <asmaa@nvidia.com>,
+        David Thompson <davthompson@nvidia.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Liming Sun <limings@nvidia.com>
+Subject: Re: [PATCH v1 5/6] TODO: gpio: mlxbf2: Introduce IRQ support
+Message-ID: <YR2MV6+uQjjhueoS@lunn.ch>
+References: <20210816115953.72533-1-andriy.shevchenko@linux.intel.com>
+ <20210816115953.72533-6-andriy.shevchenko@linux.intel.com>
+ <CH2PR12MB3895ACF821C8242AA55A1DCDD7FD9@CH2PR12MB3895.namprd12.prod.outlook.com>
+ <YR0UPG2451aGt9Xg@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 0/2] bpf: Allow bpf_get_netns_cookie in
- BPF_PROG_TYPE_SOCK_OPS
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162932640615.7744.7394691791287169298.git-patchwork-notify@kernel.org>
-Date:   Wed, 18 Aug 2021 22:40:06 +0000
-References: <20210818105820.91894-1-liuxu623@gmail.com>
-In-Reply-To: <20210818105820.91894-1-liuxu623@gmail.com>
-To:     Xu Liu <liuxu623@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YR0UPG2451aGt9Xg@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi Asmaa
 
-This series was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Wed, 18 Aug 2021 18:58:18 +0800 you wrote:
-> v2: Added selftests
+> > And I will need to add GpioInt to the GPI0 ACPI table as follows:
 > 
-> Xu Liu (2):
->   bpf: Allow bpf_get_netns_cookie in BPF_PROG_TYPE_SOCK_OPS
->   selftests/bpf: Test for get_netns_cookie
+> But you told me that it's already on the market, how are you suppose to change
+> existing tables?
+
+BIOSes have as many bugs a the kernel. So your product should be
+designed so you can upgrade the kernel and upgrade the BIOS.
+
+phylib itself does not care if there is an interrupt or not. It will
+fall back to polling. So if your driver finds itself running with old
+tables, it does not matter. Just print a warning to the kernel logs
+suggesting the user upgrades their BIOS firmware.
+
+> > // GPIO Controller
+> >       Device(GPI0) {
+> >        Name(_HID, "MLNXBF22")
+> >         Name(_UID, Zero)
+> >         Name(_CCA, 1)
+> >         Name(_CRS, ResourceTemplate() {
+> >           // for gpio[0] yu block
+> >          Memory32Fixed(ReadWrite, 0x0280c000, 0x00000100)
+> >          GpioInt (Level, ActiveLow, Exclusive, PullDefault, , " \\_SB.GPI0") {9}
+> >         })
+> >         Name(_DSD, Package() {
+> >           ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+> >           Package() {
+> >             Package () { "phy-gpios", Package() {^GPI0, 0, 0, 0 }},
+> >             Package () { "rst-pin", 32 }, // GPIO pin triggering soft reset on BlueSphere and PRIS
+> >           }
+> >         })
+> >       }
 > 
->  net/core/filter.c                             | 14 +++++
->  .../selftests/bpf/prog_tests/netns_cookie.c   | 61 +++++++++++++++++++
->  .../selftests/bpf/progs/netns_cookie_prog.c   | 39 ++++++++++++
->  3 files changed, 114 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/netns_cookie.c
->  create mode 100644 tools/testing/selftests/bpf/progs/netns_cookie_prog.c
+> No, it's completely wrong. The resources are provided by GPIO controller and
+> consumed by devices.
 
-Here is the summary with links:
-  - [bpf-next,v2,1/2] bpf: Allow bpf_get_netns_cookie in BPF_PROG_TYPE_SOCK_OPS
-    https://git.kernel.org/bpf/bpf-next/c/6cf1770d63dd
-  - [bpf-next,v2,2/2] selftests/bpf: Test for get_netns_cookie
-    https://git.kernel.org/bpf/bpf-next/c/374e74de9631
+In the device tree world, you list the interrupt in the PHY node.
+Documentation/devicetree/bindings/net/ethernet-phy.yaml gives an
+example:
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+    ethernet {
+        #address-cells = <1>;
+        #size-cells = <0>;
 
+        ethernet-phy@0 {
+            compatible = "ethernet-phy-id0141.0e90", "ethernet-phy-ieee802.3-c45";
+            interrupt-parent = <&PIC>;
+            interrupts = <35 1>;
+            reg = <0>;
 
+            resets = <&rst 8>;
+            reset-names = "phy";
+            reset-gpios = <&gpio1 4 1>;
+            reset-assert-us = <1000>;
+            reset-deassert-us = <2000>;
+        };
+    };
+
+You need to do something similar in the ACPI world. There was a very
+long discussion in this area recently, and some patches merged. You
+probably need to build on that. See:
+
+firmware-guide/acpi/dsd/phy.rst
+
+	Andrew
