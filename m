@@ -2,163 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4F03F0575
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E273F056B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238125AbhHRN6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 09:58:55 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3665 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238027AbhHRN6v (ORCPT
+        id S237705AbhHRN4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 09:56:38 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:52820 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236970AbhHRN4i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 09:58:51 -0400
-Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GqTws1vP1z6D9Px;
-        Wed, 18 Aug 2021 21:57:17 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 18 Aug 2021 15:58:15 +0200
-Received: from localhost.localdomain (10.69.192.58) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 18 Aug 2021 14:58:13 +0100
-From:   John Garry <john.garry@huawei.com>
-To:     <mdr@sgi.com>, <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bvanassche@acm.org>, John Garry <john.garry@huawei.com>
-Subject: [PATCH 2/2] scsi: qla1280: Fix DEBUG_QLA1280 compilation issues
-Date:   Wed, 18 Aug 2021 21:53:21 +0800
-Message-ID: <1629294801-32102-3-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1629294801-32102-1-git-send-email-john.garry@huawei.com>
-References: <1629294801-32102-1-git-send-email-john.garry@huawei.com>
+        Wed, 18 Aug 2021 09:56:38 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17IDtUbX104904;
+        Wed, 18 Aug 2021 08:55:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1629294930;
+        bh=/SM7hS5s/+pWFzi30GOYLIjoFM9YcVwy3bRzaQGqTvo=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=ghTl1mD69mVfxcDyDXbA11WBlA0PvG3TwRD4Lj544RjjKOkst9FqCPvdpP2lpf4uz
+         K5+8MwEElG/B4NPLRfTzovEBVKee7w0+G5wrG3f6BVaFxzwovH4JD9ak6DG0ryVDrY
+         SwOBE1LDTWYJrJX2PMbbTx2o6OP15YhLcpvUd6kM=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17IDtUGN116309
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 18 Aug 2021 08:55:30 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 18
+ Aug 2021 08:55:30 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 18 Aug 2021 08:55:30 -0500
+Received: from [10.250.232.133] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17IDtK7Q105937;
+        Wed, 18 Aug 2021 08:55:22 -0500
+Subject: Re: [PATCH v8 6/8] PCI: cadence: Add support to configure virtual
+ functions
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-pci@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-renesas-soc@vger.kernel.org>,
+        <linux-rockchip@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+References: <20210817153852.GA3016660@bjorn-Precision-5520>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <ce380e6f-d10a-4db2-9bde-82615cfbe4db@ti.com>
+Date:   Wed, 18 Aug 2021 19:25:09 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210817153852.GA3016660@bjorn-Precision-5520>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver does not compile under DEBUG_QLA1280 flag, so fix up with as
-little fuss as possible some debug statements.
+Hi Bjorn,
 
-Also delete ql1280_dump_device(), which looks to have never been
-referenced.
+On 17/08/21 9:08 pm, Bjorn Helgaas wrote:
+> On Wed, Aug 11, 2021 at 12:16:54PM +0530, Kishon Vijay Abraham I wrote:
+>> Now that support for SR-IOV is added in PCIe endpoint core, add support
+>> to configure virtual functions in the Cadence PCIe EP driver.
+>>
+>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>> ---
+>>  .../pci/controller/cadence/pcie-cadence-ep.c  | 136 +++++++++++++++---
+>>  drivers/pci/controller/cadence/pcie-cadence.h |   9 ++
+>>  2 files changed, 125 insertions(+), 20 deletions(-)
+> 
+>> @@ -92,21 +118,29 @@ static int cdns_pcie_ep_set_bar(struct pci_epc *epc, u8 fn, u8 vfn,
+>>  
+>>  	addr0 = lower_32_bits(bar_phys);
+>>  	addr1 = upper_32_bits(bar_phys);
+>> -	cdns_pcie_writel(pcie, CDNS_PCIE_AT_IB_EP_FUNC_BAR_ADDR0(fn, bar),
+>> -			 addr0);
+>> -	cdns_pcie_writel(pcie, CDNS_PCIE_AT_IB_EP_FUNC_BAR_ADDR1(fn, bar),
+>> -			 addr1);
+>>  
+>>  	reg = CDNS_PCIE_LM_EP_FUNC_BAR_CFG(bar, fn);
+>> +	if (vfn == 1)
+>> +		reg = CDNS_PCIE_LM_EP_VFUNC_BAR_CFG(bar, fn);
+> 
+> Seems sort of weird to compute "reg", then sometimes overwrite it, as
+> opposed to:
+> 
+>   if (vfn == 1)
+>     reg = CDNS_PCIE_LM_EP_VFUNC_BAR_CFG(bar, fn);
+>   else
+>     reg = CDNS_PCIE_LM_EP_FUNC_BAR_CFG(bar, fn);
 
-Signed-off-by: John Garry <john.garry@huawei.com>
----
- drivers/scsi/qla1280.c | 39 ++++++++-------------------------------
- 1 file changed, 8 insertions(+), 31 deletions(-)
+I tried to write it without "else". But I can change it back.
+> 
+> Also slightly weird that "vfn" is basically used as a boolean, but
+> it's actually a u8 virtual function number.  I guess VF 1 is special
+> and not like the other VFs?
 
-diff --git a/drivers/scsi/qla1280.c b/drivers/scsi/qla1280.c
-index b4f7d8d7a01c..27b16ec399cd 100644
---- a/drivers/scsi/qla1280.c
-+++ b/drivers/scsi/qla1280.c
-@@ -2807,7 +2807,7 @@ qla1280_64bit_start_scsi(struct scsi_qla_host *ha, struct srb * sp)
- 
- 	dprintk(2, "start: cmd=%p sp=%p CDB=%xm, handle %lx\n", cmd, sp,
- 		cmd->cmnd[0], (long)CMD_HANDLE(sp->cmd));
--	dprintk(2, "             bus %i, target %i, lun %i\n",
-+	dprintk(2, "             bus %i, target %i, lun %lld\n",
- 		SCSI_BUS_32(cmd), SCSI_TCN_32(cmd), SCSI_LUN_32(cmd));
- 	qla1280_dump_buffer(2, cmd->cmnd, MAX_COMMAND_SIZE);
- 
-@@ -2879,7 +2879,7 @@ qla1280_64bit_start_scsi(struct scsi_qla_host *ha, struct srb * sp)
- 			remseg--;
- 		}
- 		dprintk(5, "qla1280_64bit_start_scsi: Scatter/gather "
--			"command packet data - b %i, t %i, l %i \n",
-+			"command packet data - b %i, t %i, l %lld \n",
- 			SCSI_BUS_32(cmd), SCSI_TCN_32(cmd),
- 			SCSI_LUN_32(cmd));
- 		qla1280_dump_buffer(5, (char *)pkt,
-@@ -2937,14 +2937,14 @@ qla1280_64bit_start_scsi(struct scsi_qla_host *ha, struct srb * sp)
- 			remseg -= cnt;
- 			dprintk(5, "qla1280_64bit_start_scsi: "
- 				"continuation packet data - b %i, t "
--				"%i, l %i \n", SCSI_BUS_32(cmd),
-+				"%i, l %lld \n", SCSI_BUS_32(cmd),
- 				SCSI_TCN_32(cmd), SCSI_LUN_32(cmd));
- 			qla1280_dump_buffer(5, (char *)pkt,
- 					    REQUEST_ENTRY_SIZE);
- 		}
- 	} else {	/* No data transfer */
- 		dprintk(5, "qla1280_64bit_start_scsi: No data, command "
--			"packet data - b %i, t %i, l %i \n",
-+			"packet data - b %i, t %i, l %lld \n",
- 			SCSI_BUS_32(cmd), SCSI_TCN_32(cmd), SCSI_LUN_32(cmd));
- 		qla1280_dump_buffer(5, (char *)pkt, REQUEST_ENTRY_SIZE);
- 	}
-@@ -3126,7 +3126,7 @@ qla1280_32bit_start_scsi(struct scsi_qla_host *ha, struct srb * sp)
- 			*dword_ptr++ =
- 				cpu_to_le32(lower_32_bits(sg_dma_address(s)));
- 			*dword_ptr++ = cpu_to_le32(sg_dma_len(s));
--			dprintk(3, "S/G Segment phys_addr=0x%lx, len=0x%x\n",
-+			dprintk(3, "S/G Segment phys_addr=0x%x, len=0x%x\n",
- 				(lower_32_bits(sg_dma_address(s))),
- 				(sg_dma_len(s)));
- 			remseg--;
-@@ -3182,7 +3182,7 @@ qla1280_32bit_start_scsi(struct scsi_qla_host *ha, struct srb * sp)
- 			remseg -= cnt;
- 			dprintk(5, "qla1280_32bit_start_scsi: "
- 				"continuation packet data - "
--				"scsi(%i:%i:%i)\n", SCSI_BUS_32(cmd),
-+				"scsi(%i:%i:%lld)\n", SCSI_BUS_32(cmd),
- 				SCSI_TCN_32(cmd), SCSI_LUN_32(cmd));
- 			qla1280_dump_buffer(5, (char *)pkt,
- 					    REQUEST_ENTRY_SIZE);
-@@ -3663,7 +3663,7 @@ qla1280_status_entry(struct scsi_qla_host *ha, struct response *pkt,
- 
- 			dprintk(2, "qla1280_status_entry: Check "
- 				"condition Sense data, b %i, t %i, "
--				"l %i\n", SCSI_BUS_32(cmd), SCSI_TCN_32(cmd),
-+				"l %lld\n", SCSI_BUS_32(cmd), SCSI_TCN_32(cmd),
- 				SCSI_LUN_32(cmd));
- 			if (sense_sz)
- 				qla1280_dump_buffer(2,
-@@ -3963,7 +3963,7 @@ __qla1280_print_scsi_cmd(struct scsi_cmnd *cmd)
- 
- 	sp = (struct srb *)CMD_SP(cmd);
- 	printk("SCSI Command @= 0x%p, Handle=0x%p\n", cmd, CMD_HANDLE(cmd));
--	printk("  chan=%d, target = 0x%02x, lun = 0x%02x, cmd_len = 0x%02x\n",
-+	printk("  chan=%d, target = 0x%02x, lun = 0x%02llx, cmd_len = 0x%02x\n",
- 	       SCSI_BUS_32(cmd), SCSI_TCN_32(cmd), SCSI_LUN_32(cmd),
- 	       CMD_CDBLEN(cmd));
- 	printk(" CDB = ");
-@@ -3985,29 +3985,6 @@ __qla1280_print_scsi_cmd(struct scsi_cmnd *cmd)
- 	printk(" underflow size = 0x%x, direction=0x%x\n",
- 	       cmd->underflow, cmd->sc_data_direction);
- }
--
--/**************************************************************************
-- *   ql1280_dump_device
-- *
-- **************************************************************************/
--static void
--ql1280_dump_device(struct scsi_qla_host *ha)
--{
--
--	struct scsi_cmnd *cp;
--	struct srb *sp;
--	int i;
--
--	printk(KERN_DEBUG "Outstanding Commands on controller:\n");
--
--	for (i = 0; i < MAX_OUTSTANDING_COMMANDS; i++) {
--		if ((sp = ha->outstanding_cmds[i]) == NULL)
--			continue;
--		if ((cp = sp->cmd) == NULL)
--			continue;
--		qla1280_print_scsi_cmd(1, cp);
--	}
--}
- #endif
- 
- 
--- 
-2.17.1
+VF1 is special in that it's enough for configuring the SR-IOV capability
+but below the "vfn" is used for configuring inbound window.
 
+Thanks
+Kishon
+> 
+>>  	b = (bar < BAR_4) ? bar : bar - BAR_4;
+>>  
+>> -	cfg = cdns_pcie_readl(pcie, reg);
+>> -	cfg &= ~(CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_APERTURE_MASK(b) |
+>> -		 CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_CTRL_MASK(b));
+>> -	cfg |= (CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_APERTURE(b, aperture) |
+>> -		CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_CTRL(b, ctrl));
+>> -	cdns_pcie_writel(pcie, reg, cfg);
+>> +	if (vfn == 0 || vfn == 1) {
+>> +		cfg = cdns_pcie_readl(pcie, reg);
+>> +		cfg &= ~(CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_APERTURE_MASK(b) |
+>> +			 CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_CTRL_MASK(b));
+>> +		cfg |= (CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_APERTURE(b, aperture) |
+>> +			CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_CTRL(b, ctrl));
+>> +		cdns_pcie_writel(pcie, reg, cfg);
+>> +	}
+>>  
+>> +	fn = cdns_pcie_get_fn_from_vfn(pcie, fn, vfn);
+>> +	cdns_pcie_writel(pcie, CDNS_PCIE_AT_IB_EP_FUNC_BAR_ADDR0(fn, bar),
+>> +			 addr0);
+>> +	cdns_pcie_writel(pcie, CDNS_PCIE_AT_IB_EP_FUNC_BAR_ADDR1(fn, bar),
+>> +			 addr1);
+>> +
+>> +	if (vfn > 0)
+>> +		epf = &epf->epf[vfn - 1];
+>>  	epf->epf_bar[bar] = epf_bar;
+>>  
+>>  	return 0;
+>> @@ -122,18 +156,25 @@ static void cdns_pcie_ep_clear_bar(struct pci_epc *epc, u8 fn, u8 vfn,
+>>  	u32 reg, cfg, b, ctrl;
+>>  
+>>  	reg = CDNS_PCIE_LM_EP_FUNC_BAR_CFG(bar, fn);
+>> +	if (vfn == 1)
+>> +		reg = CDNS_PCIE_LM_EP_VFUNC_BAR_CFG(bar, fn);
+> 
+> Similar recomputation of "reg".
+> 
+>>  	b = (bar < BAR_4) ? bar : bar - BAR_4;
+>>  
+>> -	ctrl = CDNS_PCIE_LM_BAR_CFG_CTRL_DISABLED;
+>> -	cfg = cdns_pcie_readl(pcie, reg);
+>> -	cfg &= ~(CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_APERTURE_MASK(b) |
+>> -		 CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_CTRL_MASK(b));
+>> -	cfg |= CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_CTRL(b, ctrl);
+>> -	cdns_pcie_writel(pcie, reg, cfg);
+>> +	if (vfn == 0 || vfn == 1) {
+>> +		ctrl = CDNS_PCIE_LM_BAR_CFG_CTRL_DISABLED;
+>> +		cfg = cdns_pcie_readl(pcie, reg);
+>> +		cfg &= ~(CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_APERTURE_MASK(b) |
+>> +			 CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_CTRL_MASK(b));
+>> +		cfg |= CDNS_PCIE_LM_EP_FUNC_BAR_CFG_BAR_CTRL(b, ctrl);
+>> +		cdns_pcie_writel(pcie, reg, cfg);
+>> +	}
