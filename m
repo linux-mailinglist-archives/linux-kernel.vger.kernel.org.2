@@ -2,80 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FDCF3EFCD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 330613EFCDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238565AbhHRGe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 02:34:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240341AbhHRGeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 02:34:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A39EA60720;
-        Wed, 18 Aug 2021 06:33:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629268428;
-        bh=WDjreO9KjgVxhBZPJa6vuaWjorAkBuh+Zu8+NT8TZas=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E11axgplfzmQ/N8EMvsAXDcK82JReE8/vQCZqCZy90xy0cf2yGcus8ntkrofeTomg
-         WIaLLDnfrdlPNHLqrYXDZOoZmQWjqmMWcQjSeHZFAxFnbeW3Tu1tJa+othFznbZ92i
-         PAJEuvbwOW8YbS1ltZYrlWJIA++3+KblZIv4vMJc=
-Date:   Wed, 18 Aug 2021 08:33:45 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Joe Perches <joe@perches.com>,
-        Michael Straube <straube.linux@gmail.com>,
-        Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: refactor
- rtw_is_cckrates{only}_included()
-Message-ID: <YRypyev4Ku3eI9w8@kroah.com>
-References: <20210816193125.15700-1-straube.linux@gmail.com>
- <11a09af791c5453175a6bdac1c51bd9fcb0685bd.camel@perches.com>
- <YRwEyrSLTPl/KY9t@kroah.com>
- <2509261.CYLKgzzBkz@localhost.localdomain>
+        id S238791AbhHRGer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 02:34:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238724AbhHRGep (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 02:34:45 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77408C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:34:11 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id u1so915873wmm.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:34:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=qOf5Jw9NRa4SnulC1GyAvxwxYZYUNjqANJtiqJ12E6k=;
+        b=znseoqEQvCvDTiITGYGWtCHD5uYGQQVRv+bSBqQqXJOJ1F+g1QUmAE4jNIZITVJG6N
+         S57i9sxX//DJuIv/HBLrtpp+SgS02xQhymyol7i+CNQBFzjL79ylGT9LxbKUnP8NdPTH
+         +A90CDwX4v6onk2k4gAHMRTOoqrQXjlXqjLk4Wg5zIBacgPNotibcTD3f8F/iBY2B155
+         LJjexGZq9d4vzeTVuHPPan7U29D0ILqDD/BKehxq9E3gDgOmZdTzeQRev7MqjeYvd9WR
+         6ix1rNEtdYVlWQl7NuR8Xa8u9DQtJGasxfmcJjpxsXqMr99cBEef8PTivGs+CBQ4UHAe
+         dKmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=qOf5Jw9NRa4SnulC1GyAvxwxYZYUNjqANJtiqJ12E6k=;
+        b=adReqR0igR1YnFa7EgyPQ6wfrO8qRaSa5K4llkiR/hBlXZ7fTPnLKSs9WnXPx+9daC
+         7dCHouOVb/SXQrfP8/g54CdhsJfV9mYEmcZGrT8DZclvwTUqGgSMSBP92v7zG7QxY5zq
+         643x9b5EdmeyyHOAz/DGz5EWpX9nrAxN245uFOEJo+zlEwLd9T9e+L5s28OKtazCtfTg
+         f9PQPcau7mASJmbysuOGJxB82CTg7C5EMBEfVjy6zyP1IV5GGJHgsf+4g32LpRgw0lhS
+         deZSuCsQBTHgV6UxnMv7PMYoeYICfmLNsi4Tazmy2SZACca7tviHQ/ZbKmYlDHP7RDec
+         v/SA==
+X-Gm-Message-State: AOAM530d6Q4x2b1QnOWGRgCT9WFOJw9j3oy7TiMeaGnGl0HKBSbBFfqX
+        TyJ96Z0YbpYINxg4M06gjzcTqAzt8Is9nA==
+X-Google-Smtp-Source: ABdhPJyqwVqtJb4NtNNkAw8GfCWH/ZiuHGihKlf6jY83moLG3xgjEG5JYotG3JsX4/XRz6Mcqr3pAg==
+X-Received: by 2002:a1c:f002:: with SMTP id a2mr7074623wmb.79.1629268450034;
+        Tue, 17 Aug 2021 23:34:10 -0700 (PDT)
+Received: from google.com ([2.31.167.59])
+        by smtp.gmail.com with ESMTPSA id a11sm4837580wrw.67.2021.08.17.23.34.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 23:34:09 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 07:34:07 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v1 3/4] mfd: intel_quark_i2c_gpio: Convert GPIO to use
+ software nodes
+Message-ID: <YRyp3x14ziGYlOAx@google.com>
+References: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com>
+ <20210726125436.58685-3-andriy.shevchenko@linux.intel.com>
+ <YRpihHP3kDz5nYV9@google.com>
+ <CAHp75VdcWsNFervoU7e4_m7qVKAnWXzF2z2mUgKg06-qmwn-2A@mail.gmail.com>
+ <YRppKOxp4Jya5iEI@google.com>
+ <YRpva4gS1LfncPUj@smile.fi.intel.com>
+ <YRpz5UEDQbpewq5o@google.com>
+ <CAHp75VczCKwNQE8k6_e9Trk0qkD2EumFVxxG5w2BTYhiOTDUzA@mail.gmail.com>
+ <YRtkt8e25ZSeOICx@google.com>
+ <CAHp75Ve-24wno-z8rQSCtgBdf6_a70TFf3aCJPP7JSFPG8sfhg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2509261.CYLKgzzBkz@localhost.localdomain>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75Ve-24wno-z8rQSCtgBdf6_a70TFf3aCJPP7JSFPG8sfhg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 08:23:18AM +0200, Fabio M. De Francesco wrote:
-> Said that, since operator precedence is one of the first topic that every developer
-> learn in a course on C and that expressions like *ptr++ are used everywhere in
-> the kernel you are sending a dangerous message...
+On Tue, 17 Aug 2021, Andy Shevchenko wrote:
 
-Operator precedence is something that no one should have to memorize or
-remember.  Expressions like *ptr++ on it's own is fine, but combine it
-with an assignment and then you need to think about stuff like "did it
-increment before or after assigning" and the like.
+> On Tue, Aug 17, 2021 at 10:26 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > On Mon, 16 Aug 2021, Andy Shevchenko wrote:
+> > > On Mon, Aug 16, 2021 at 5:19 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > > > On Mon, 16 Aug 2021, Andy Shevchenko wrote:
+> 
+> ...
+> 
+> > > > > > > Would it be okay for you to pull the immutable tag?
+> > > > > >
+> > > > > > What immutable tag?
+> > > > >
+> > > > > It's here:
+> > > > > https://git.kernel.org/pub/scm/linux/kernel/git/andy/linux-gpio-intel.git/tag/?h=intel-gpio-v5.15-1
+> > > >
+> > > > My Ack can't be merged like that.
+> > >
+> > > Which one? There are two on different patches.
+> >
+> > The one that I specifically said was "for my own reference".
+> >
+> > > Do you have any documentation on the rules you imply by MFD?
+> >
+> > No, the documentation is provided with the tag.
+> 
+> I see.
+> 
+> So, what is the recommended solution?
 
-And really, why?  You are doing nothing to make the code easier to
-maintain by doing this.  The compiler isn't going to magically make
-better code because of this.  Be explicit and obvious about what you
-want the code to do, because in 10+ years when you have to look at it
-again to find where to fix a problem, you want it to be really obvious
-what is happening.
+I planned to take the patch.
 
-> It looks like you don't trust people here to be able to do anything more than 
-> trivial clean-ups. If someone here at linux-staging is not able to understand 
-> the precedence of operators, please stand up and speak!
+I'm also happy to take the set, if they are interdependent.
 
-I want kernel code to be simple and obvious and easy to maintain.
+What is the reason the MFD patch doesn't apply to my tree?
 
-And yes, I do NOT remember the precedence of all C operators, and no one
-should be forced to either.  And I am someone who has read or written C
-code for almost every day for the past 30 years.
-
-So keep the code simple and obvious for everyone to read and understand.
-The original use of the array and then moving to the next one was just
-that, simple and obvious.
-
-Do not do unneeded optimizations just because you can, it will always
-come back to hurt you, or someone else, in the end.
-
-thanks,
-
-greg k-h
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
