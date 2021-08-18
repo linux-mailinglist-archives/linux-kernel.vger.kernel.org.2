@@ -2,106 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD503F0507
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393CC3F050F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238421AbhHRNlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 09:41:24 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:35199 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237666AbhHRNkS (ORCPT
+        id S238610AbhHRNlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 09:41:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238044AbhHRNlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 09:40:18 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id E44545C0185;
-        Wed, 18 Aug 2021 09:39:41 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Wed, 18 Aug 2021 09:39:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=H5V+/6
-        w875g2KsTJT9wfp6tsPpldI1cv4Bg3QhTd+vw=; b=qfSA10ZBj+LsrJq9CyGEOu
-        rN3Qu0jnCnN3Mxl0SXQGxLuBJR6v/4bB2xqw93KxRT6IArk4eDdKL3OouiYGaXUJ
-        5d7J4zsFA5OnJucZYMRNdwouaNvVptBe7ARbZsGwVdq6UlHuDzsw0yrq+1kHHFp5
-        UN/F9T+VFty9pUo/RNZR/MmriDIVnwEOXlfsG0IxU1omItGI9cy9e3sGLPtPWaUm
-        Ig55d4fDfPgYjT6xVV6vi5qJQ8re4qq0xq9jEFopejlk/uKciojrmxFTB/gXBKTl
-        JjLY9QwvptopBXtGDe9OFx2Vjho2WSsfC0plYbcOpFeXJzWdhN0DjhaLzAe3gMzw
-        ==
-X-ME-Sender: <xms:nA0dYa1TIiAT1uvVNPiHhJUZICIzhlVARLZ2sPUfBiirJlBxBcw-Kw>
-    <xme:nA0dYdEqPfetP8L6sbV5G6uI3ibtoseBOspT_6j3GpRQpFgpDwB0B-seoPkXReuM-
-    geGU5A-lPu0Xc0>
-X-ME-Received: <xmr:nA0dYS5Zj-c6NxePONMlUW2QrAcxcX_VjBhOSU2vKm7SreCRJZas9Kw6YJ4RDy8u6_WmBcxcvgJEyThg4RVOvNSiCEFEdA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleehgdeiiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcuufgt
-    hhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrthhtvg
-    hrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudehleet
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepihguoh
-    hstghhsehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:nA0dYb24c8EmqDlNQ54SugErYNe4P9nmG94pwR6uqVZ5YOw3HvtoXQ>
-    <xmx:nA0dYdE6v8YsDhgAJcD_wvfanZ3zKYrdTnTeeuMpFxvS5v4CtLGdRw>
-    <xmx:nA0dYU9t1mWor1zi_ktaP_9oCgrdYkyZ6ABzlCa6RlxuvhtHI7UKZQ>
-    <xmx:nQ0dYS7-L-OJiVNBCwfbVS-93tRPlVTBJXz-LQ1hoPzifooVoOgnlA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 18 Aug 2021 09:39:39 -0400 (EDT)
-Date:   Wed, 18 Aug 2021 16:39:36 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Jamal Hadi Salim <jhs@mojatatu.com>
-Cc:     13145886936@163.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gushengxian <gushengxian@yulong.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>
-Subject: Re: [PATCH] flow_offload: action should not be NULL when it is
- referenced
-Message-ID: <YR0NmNZe05yRn3Vs@shredder>
-References: <20210626115606.1243151-1-13145886936@163.com>
- <YRz1297sFSjG7/Cc@shredder>
- <d20577c8-e5df-a31d-8435-619994dd5855@mojatatu.com>
+        Wed, 18 Aug 2021 09:41:02 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9B8C0612A5
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 06:40:17 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso3486255ott.13
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 06:40:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=92kjzJHPbu8CdHkXkohUqea/s0XZxMJWcWOY/L8K0Q0=;
+        b=eqlv99p38UbOHhb+iaqlx8R7pajxw88f0tDyRo/zUVE14LEO4nwE2X3XKvBkTLTGo9
+         fvZ1OU5V9As8yW7DKQiDEIcigagyaC8S/UD1sEutBruhxBh268wCIylG2YzXXgG3Z7AT
+         bSKuRtM+aMBRCld1BcmNLRbNFDaH5uXdhOs2UyOOCAjv8KdUznngHKeegRULI8Dzwhgw
+         83/pzM0Hy3rY6gc9LoeNVduSmNCBEvcklG+qOxxJbJXVD0fp5sIDxOdfVTx0mvdN16A5
+         3M7ncvOWOapHbHzd6Cxc7trD4qzvbv6XgEZdYKhUgI+M9hg/mGxjGUC+YoFplWTrRaHs
+         qvsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=92kjzJHPbu8CdHkXkohUqea/s0XZxMJWcWOY/L8K0Q0=;
+        b=FwHHcLbPHgMRkVAz/z/LDCvF3+IUXYSF4HyK2YJvXZNtaRFCD9PsMdn8LYFAmIizvG
+         PvRrVRK8bpkwc3sfJkX9XVpEVAuJgD0VQesVEvIZnRrzBX9kalpZ3aHe3a9Uv1t3ssAQ
+         nT3W2uXy3QQjVQTrV6TGPtOtQ9FT6ZbIUhC/x8wW+b+PowDzRRt3DJgGA3e/azsGKBuX
+         iJ+Z0iwugoUoW/KlBmuY4XXFcBAPLDSmzV23Thu3QBpyZffndv04TM321IfWPahQs0FW
+         kTpfr8+NmJYUG28qEOti83rEahRvnOdSCR+lwMeIz5+CcI/dqj+Dqc0rvp6TXQ79EF4p
+         G4FA==
+X-Gm-Message-State: AOAM532u64rDtb0DvR6Fmo4LRfsmaqRaGlpvFHcGFh5S6/y+d/Gf0wgD
+        WPdGg7W5OVWsorg3zgTkWmf3UkXr2q0s9zEPq11/rA==
+X-Google-Smtp-Source: ABdhPJypTijaCEpAT80SQ6v46jAeX/zU9T+cs9V7Lj3fV7JwJH8rlSesYnznhG565RDZRzgFMQJ7ljRZ5rCVraf86LQ=
+X-Received: by 2002:a05:6830:3114:: with SMTP id b20mr3849263ots.17.1629294016304;
+ Wed, 18 Aug 2021 06:40:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d20577c8-e5df-a31d-8435-619994dd5855@mojatatu.com>
+References: <20210818130300.2482437-1-elver@google.com>
+In-Reply-To: <20210818130300.2482437-1-elver@google.com>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 18 Aug 2021 15:40:04 +0200
+Message-ID: <CANpmjNPX0SANJ6oDoxDecMfvbZXFhk4qCuaYPyWT1M8FNpy_vw@mail.gmail.com>
+Subject: Re: [PATCH] kfence: fix is_kfence_address() for addresses below KFENCE_POOL_SIZE
+To:     elver@google.com, akpm@linux-foundation.org
+Cc:     glider@google.com, dvyukov@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kasan-dev@googlegroups.com,
+        Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>,
+        stable@vger.kernel.org, Jann Horn <jannh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 08:36:55AM -0400, Jamal Hadi Salim wrote:
-> On 2021-08-18 7:58 a.m., Ido Schimmel wrote:
-> > On Sat, Jun 26, 2021 at 04:56:06AM -0700, 13145886936@163.com wrote:
-> > > From: gushengxian <gushengxian@yulong.com>
-> > > 
-> > > "action" should not be NULL when it is referenced.
-> > > 
-> > > Signed-off-by: gushengxian <13145886936@163.com>
-> > > Signed-off-by: gushengxian <gushengxian@yulong.com>
-> > > ---
-> > >   include/net/flow_offload.h | 12 +++++++-----
-> > >   1 file changed, 7 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/include/net/flow_offload.h b/include/net/flow_offload.h
-> > > index dc5c1e69cd9f..69c9eabf8325 100644
-> > > --- a/include/net/flow_offload.h
-> > > +++ b/include/net/flow_offload.h
-> > > @@ -319,12 +319,14 @@ flow_action_mixed_hw_stats_check(const struct flow_action *action,
-> > >   	if (flow_offload_has_one_action(action))
-> > >   		return true;
-> > > -	flow_action_for_each(i, action_entry, action) {
-> > > -		if (i && action_entry->hw_stats != last_hw_stats) {
-> > > -			NL_SET_ERR_MSG_MOD(extack, "Mixing HW stats types for actions is not supported");
-> > > -			return false;
-> > > +	if (action) {
-> > 
-> > This patch generates a smatch warning:
-> > 
-> > include/net/flow_offload.h:322 flow_action_mixed_hw_stats_check() warn: variable dereferenced before check 'action' (see line 319)
-> > 
-> > Why the patch is needed? 'action' is already dereferenced in
-> > flow_offload_has_one_action()
-> > 
-> 
-> Yep, doesnt make sense at all.
++Cc Jann
 
-Will send a revert
+On Wed, 18 Aug 2021 at 15:03, Marco Elver <elver@google.com> wrote:
+>
+> Originally the addr != NULL check was meant to take care of the case
+> where __kfence_pool == NULL (KFENCE is disabled). However, this does not
+> work for addresses where addr > 0 && addr < KFENCE_POOL_SIZE.
+>
+> This can be the case on NULL-deref where addr > 0 && addr < PAGE_SIZE or
+> any other faulting access with addr < KFENCE_POOL_SIZE. While the kernel
+> would likely crash, the stack traces and report might be confusing due
+> to double faults upon KFENCE's attempt to unprotect such an address.
+>
+> Fix it by just checking that __kfence_pool != NULL instead.
+>
+> Fixes: 0ce20dd84089 ("mm: add Kernel Electric-Fence infrastructure")
+> Reported-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+> Signed-off-by: Marco Elver <elver@google.com>
+> Cc: <stable@vger.kernel.org>    [5.12+]
+> ---
+>  include/linux/kfence.h | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/linux/kfence.h b/include/linux/kfence.h
+> index a70d1ea03532..3fe6dd8a18c1 100644
+> --- a/include/linux/kfence.h
+> +++ b/include/linux/kfence.h
+> @@ -51,10 +51,11 @@ extern atomic_t kfence_allocation_gate;
+>  static __always_inline bool is_kfence_address(const void *addr)
+>  {
+>         /*
+> -        * The non-NULL check is required in case the __kfence_pool pointer was
+> -        * never initialized; keep it in the slow-path after the range-check.
+> +        * The __kfence_pool != NULL check is required to deal with the case
+> +        * where __kfence_pool == NULL && addr < KFENCE_POOL_SIZE. Keep it in
+> +        * the slow-path after the range-check!
+>          */
+> -       return unlikely((unsigned long)((char *)addr - __kfence_pool) < KFENCE_POOL_SIZE && addr);
+> +       return unlikely((unsigned long)((char *)addr - __kfence_pool) < KFENCE_POOL_SIZE && __kfence_pool);
+>  }
+
+Jann, I recall discussing this check somewhere around:
+https://lore.kernel.org/linux-doc/CAG48ez0D1+hStZaDOigwbqNqFHJAJtXK+8Nadeuiu1Byv+xp5A@mail.gmail.com/
+
+I think you pointed out initially that we need another check, but
+somehow that turned into '&& addr' -- I think that's what we ended up
+with because of worry about another memory load, which is clearly
+wrong as that only works if addr==NULL. Simply checking
+__kfence_pool!=NULL is enough. I also checked codegen, and the
+compiler is smart enough to not reload the global __kfence_pool.
+
+Wanted to call it out, just in case you see something even more
+efficient (probably the only way to do better is to get rid of the 2nd
+branch, which I don't think is possible). :-)
+
+Thanks,
+-- Marco
