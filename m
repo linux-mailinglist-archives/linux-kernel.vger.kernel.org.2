@@ -2,124 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48BB03F0245
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 13:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2683F024E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 13:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235483AbhHRLJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 07:09:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54246 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234953AbhHRLJb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 07:09:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E94D961056;
-        Wed, 18 Aug 2021 11:08:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629284936;
-        bh=B1HlmalKG2Nd9HzfSJD1nnTG2Q2FTlnYnSy2mKI/utI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NtUWHA2L8sACPk/s0huyECUpMgbCvbq7rLllzkeFUZRoB/8TomlU0dSDCh7pQnSx9
-         H9IzPgUlEP9vQByEOVxXZFVe3VGRyjah1hNFIaKiIhsdQaNFo0jkA8A3pV4vSbivMT
-         UjXda3mbE+a33kfmr70KbbTD/Rd9/Mfq3VOZFpe+fwC9FFJLqe8aHG3yRnmFSm+8Wk
-         aD6Tp3HLX8rQBGEkTliDj975qayJ6RQMGJw4/4Gu4Q58PKVIpZRT1gJMtnpdd20ru/
-         0ZvGjFMwkme7yINu0DTvhq+vXW+x2rVI2KXzF0uAK+J7eV86433+1mahmyAtIqlftS
-         /Q1HixPePRAsw==
-Date:   Wed, 18 Aug 2021 20:08:51 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v6 5/7] tracing/probes: Use struct_size() instead of
- defining custom macros
-Message-Id: <20210818200851.954e5030a64eb11ee156fa78@kernel.org>
-In-Reply-To: <20210817035027.795000217@goodmis.org>
-References: <20210817034255.421910614@goodmis.org>
-        <20210817035027.795000217@goodmis.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S235428AbhHRLMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 07:12:19 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:36347 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235166AbhHRLMQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 07:12:16 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id A23EF60002;
+        Wed, 18 Aug 2021 11:11:39 +0000 (UTC)
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        linux-iio@vger.kernel.org, <linux-kernel@vger.kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 00/16] Bring software triggers support to MAX1027-like ADCs
+Date:   Wed, 18 Aug 2021 13:11:23 +0200
+Message-Id: <20210818111139.330636-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Aug 2021 23:43:00 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Until now the max1027.c driver, which handles 10-bit devices (max10xx)
+and 12-bit devices (max12xx), only supported hardware triggers. When a
+hardware trigger is not wired it is very convenient to trigger periodic
+conversions with timers or on userspace demand with a sysfs
+trigger. Overall, when several values are needed at the same time using
+triggers and buffers improves quite a lot the performances.
 
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> 
-> Remove SIZEOF_TRACE_KPROBE() and SIZEOF_TRACE_UPROBE() and use
-> struct_size() as that's what it is made for. No need to have custom
-> macros. Especially since struct_size() has some extra memory checks for
-> correctness.
-> 
+This series starts with two small fixes, then does a bit of
+cleaning/code reorganization before actually adding support for software
+triggers.
 
-Good catch!
+This series has been developed and tested on a custom board with a 4.14
+kernel. I then rebased the series on top of a mainline kernel
+(v5.14-rc1) but unfortunately after quite some time debugging it I was
+unable to get all the necessary blocks running in order to properly test
+it. Anyway, there was very little changes in that series when rebasing
+it from v4.14 to v5.14-rc1 so I am pretty confident it will smoothly
+work with a more recent kernel.
 
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+How to test sysfs triggers:
+    echo 0 > /sys/bus/iio/devices/iio_sysfs_trigger/add_trigger
+    cat /sys/bus/iio/devices/iio_sysfs_trigger/trigger0/name > \
+        /sys/bus/iio/devices/iio:device0/trigger/current_trigger
+    echo 1 > /sys/bus/iio/devices/iio:device0/scan_elements/in_voltageX_en
+    echo 1 > /sys/bus/iio/devices/iio:device0/scan_elements/in_voltageY_en
+    echo 1 > /sys/bus/iio/devices/iio:device0/buffer/enable
+    cat /dev/iio\:device0 > /tmp/data &
+    echo 1 > /sys/bus/iio/devices/trigger0/trigger_now
+    od -t x1 /tmp/data
 
-Thank you!
+Cheers,
+Miquèl
 
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  kernel/trace/trace_kprobe.c | 6 +-----
->  kernel/trace/trace_uprobe.c | 6 +-----
->  2 files changed, 2 insertions(+), 10 deletions(-)
-> 
-> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> index ed1e3c2087ab..ca726c9d0859 100644
-> --- a/kernel/trace/trace_kprobe.c
-> +++ b/kernel/trace/trace_kprobe.c
-> @@ -80,10 +80,6 @@ static struct trace_kprobe *to_trace_kprobe(struct dyn_event *ev)
->  	for_each_dyn_event(dpos)		\
->  		if (is_trace_kprobe(dpos) && (pos = to_trace_kprobe(dpos)))
->  
-> -#define SIZEOF_TRACE_KPROBE(n)				\
-> -	(offsetof(struct trace_kprobe, tp.args) +	\
-> -	(sizeof(struct probe_arg) * (n)))
-> -
->  static nokprobe_inline bool trace_kprobe_is_return(struct trace_kprobe *tk)
->  {
->  	return tk->rp.handler != NULL;
-> @@ -265,7 +261,7 @@ static struct trace_kprobe *alloc_trace_kprobe(const char *group,
->  	struct trace_kprobe *tk;
->  	int ret = -ENOMEM;
->  
-> -	tk = kzalloc(SIZEOF_TRACE_KPROBE(nargs), GFP_KERNEL);
-> +	tk = kzalloc(struct_size(tk, tp.args, nargs), GFP_KERNEL);
->  	if (!tk)
->  		return ERR_PTR(ret);
->  
-> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-> index 93ff96541971..590bb9a02f8d 100644
-> --- a/kernel/trace/trace_uprobe.c
-> +++ b/kernel/trace/trace_uprobe.c
-> @@ -83,10 +83,6 @@ static struct trace_uprobe *to_trace_uprobe(struct dyn_event *ev)
->  	for_each_dyn_event(dpos)		\
->  		if (is_trace_uprobe(dpos) && (pos = to_trace_uprobe(dpos)))
->  
-> -#define SIZEOF_TRACE_UPROBE(n)				\
-> -	(offsetof(struct trace_uprobe, tp.args) +	\
-> -	(sizeof(struct probe_arg) * (n)))
-> -
->  static int register_uprobe_event(struct trace_uprobe *tu);
->  static int unregister_uprobe_event(struct trace_uprobe *tu);
->  
-> @@ -340,7 +336,7 @@ alloc_trace_uprobe(const char *group, const char *event, int nargs, bool is_ret)
->  	struct trace_uprobe *tu;
->  	int ret;
->  
-> -	tu = kzalloc(SIZEOF_TRACE_UPROBE(nargs), GFP_KERNEL);
-> +	tu = kzalloc(struct_size(tu, tp.args, nargs), GFP_KERNEL);
->  	if (!tu)
->  		return ERR_PTR(-ENOMEM);
->  
-> -- 
-> 2.30.2
+Miquel Raynal (16):
+  iio: adc: max1027: Fix wrong shift with 12-bit devices
+  iio: adc: max1027: Fix the number of max1X31 channels
+  iio: adc: max1027: Push only the requested samples
+  iio: adc: max1027: Lower conversion time
+  iio: adc: max1027: Drop extra warning message
+  iio: adc: max1027: Rename a helper
+  iio: adc: max1027: Create a helper to configure the trigger
+  iio: adc: max1027: Explain better how the trigger state gets changed
+  iio: adc: max1027: Create a helper to configure the channels to scan
+  iio: adc: max1027: Prevent single channel accesses during buffer reads
+  iio: adc: max1027: Separate the IRQ handler from the read logic
+  iio: adc: max1027: Introduce an end of conversion helper
+  iio: adc: max1027: Prepare re-using the EOC interrupt
+  iio: adc: max1027: Consolidate the end of conversion helper
+  iio: adc: max1027: Support software triggers
+  iio: adc: max1027: Enable software triggers to be used without IRQ
 
+ drivers/iio/adc/max1027.c | 236 ++++++++++++++++++++++++++++----------
+ 1 file changed, 177 insertions(+), 59 deletions(-)
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.27.0
+
