@@ -2,192 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B413A3EFD15
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC3A3EFD1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238854AbhHRGtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 02:49:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238103AbhHRGtQ (ORCPT
+        id S238597AbhHRGuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 02:50:03 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:50258
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238080AbhHRGuA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 02:49:16 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE93C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:48:42 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id k24so1240163pgh.8
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:48:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ydwImPka+33pK3zFh/3ZRhWUJUFUKLKTzYRKuwQUsxw=;
-        b=cGjVLJJdziTcmvJ27JU5rTQ8yCeDMcn5cVnyGLyKhLTIfFt1+UogEWL2TR600L0YNa
-         2ooQ2QARhAFf0vpH9wd2/xNtxYtH/TARe4IIayGOo1ZKruM4m488v+jeFjPTdR1DQCVO
-         +vukV7cOhOLhxKJWKPtV2YOFJB/OfXWuW9pwQ=
+        Wed, 18 Aug 2021 02:50:00 -0400
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 8490240CC6
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 06:49:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629269365;
+        bh=koyaZ5FIZxDdS33SITxLj7wHGHh/MSdOiD6GS5fpHeg=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=LxH8xivxknKbu4PGoNssjfpIhFmTTJS13p40vXmGzRWBM8fZhw6sjJJ3oQsC3RUOq
+         xQ5m3MjNoHlNhJAdVnea8HHideSZIFVb4Mgwjjc1uOoHuQeIAKLor5aqiZ5u7surzl
+         MSG0eQR9xo6hBnlKXLo3x07cAGB4DZqTLinqtwjLLqa0Xv+HGtmDnRG0SIa8Ln7UA+
+         6ITkLPfu+K6zc9F2O8ajLai2sVydqLk4SNqnYeK++s8/ARpuioYq/zVPC1M7SdYVcf
+         bfI91/PpBabdySBu6YuShmiUOyM0BpLCcLZEUHdwY8S99Iss0SEkLp8br90B2/XTlH
+         Zq7vAM6m8K7ag==
+Received: by mail-ed1-f69.google.com with SMTP id eg56-20020a05640228b8b02903be79801f9aso514078edb.21
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:49:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ydwImPka+33pK3zFh/3ZRhWUJUFUKLKTzYRKuwQUsxw=;
-        b=ps7UcMWabRuzbrFPt8LnClVmcf+hwucyU3y4s0N4w4wMYvWSHujEq+b4Bkec9Aef4M
-         /azTs6V2/AystdAfafctn22QbEDF1dhEimBJNxpHjuhKO3i1vE2rvyKit0KLceLfLFNj
-         A5Y1kU+Q+UkCu73dIOB4hWPamiZ2g1fGS5eVeqj7ELQipd5f3n+wruL4BcZCzHAbDXks
-         7VZp5a9gqr0pWIpH8HWhw74N+QXp68td9QsdfAN3O/gGo04cdr14gYqBqR/hdRbC4OH7
-         TntD7V3LL39E1/7UGNnqAc5ej/kgwgIj2mapy7N9luVyU7eXgN+Oc9Z0/86jpf9wzhp/
-         wP4w==
-X-Gm-Message-State: AOAM532s/rieeIkd5XTeWBN9MBYKcTZ2PFlcJjr/rHB4AxSaCHl1qzBl
-        Hd5jP8+1FqzK168lgVEt48+jeA==
-X-Google-Smtp-Source: ABdhPJzRpcjoH3bs6liJdFrWxeTvcoqJK6VQgSUO0sZF2MvCC+Ej5U0n0/HIJjlFa325ZCnA9guB0w==
-X-Received: by 2002:a62:878a:0:b029:3e0:7810:ec36 with SMTP id i132-20020a62878a0000b02903e07810ec36mr7701759pfe.4.1629269321704;
-        Tue, 17 Aug 2021 23:48:41 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d5sm4039400pju.28.2021.08.17.23.48.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 23:48:41 -0700 (PDT)
-Date:   Tue, 17 Aug 2021 23:48:40 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
-        linux-can <linux-can@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] can: etas_es58x: Replace 0-element raw_msg array
-Message-ID: <202108172320.1540EC10C@keescook>
-References: <20210818034010.800652-1-keescook@chromium.org>
- <CAMZ6RqK4Rn4d-1CZsg9vJiAMHhxN6fgcqukdHpGwXoGTyNVr_Q@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=koyaZ5FIZxDdS33SITxLj7wHGHh/MSdOiD6GS5fpHeg=;
+        b=Bq1l+TBYMu31NJWjzDoP1h2aLBh6jpwaiBTUJ/Q5qLSvPUrB/pN5ZvV6hPOLJr6nDr
+         9o2N++cQqqZ1gMOairzYYdc3OWDQ3zRmT25/7yeOauc09Yvj7QR4Lm92LO4fE+gV8rti
+         vpnJkqGXpxkO6OdTT2kNXY3lDEs4Kwukyhykb4+zvvPnMuNuaV4FWZGX1BvgOAhqMRJR
+         N5/2GoTHop3+oJLQQjZ59EW1Zit9kPzuNU0z87pt09D26Wc4ssUy1j68514pXhFTFcJ2
+         DHUPpBF+6jdfuLshy+1CjoEIYmnqo0cPJg5BAmba3ESBW6MHz5iiqCdJNGWKDgIvBg9k
+         QoEA==
+X-Gm-Message-State: AOAM531kIkY3BXUzmONnYsYHBCAgm3/KgvBebQNSJ90WNxKz+5bZtU21
+        Dbj7T4fhuVPhiUqwwcCFKroq9urEJ+GF70J1TQIW+u9Y79dRJMt3pnG2jUYm/75eZ5q72sOAR8s
+        sXjOfUgtJHgcczgplAnIzr9Ikvg5JuS4JUGTBhwdukw==
+X-Received: by 2002:a17:906:1f8e:: with SMTP id t14mr8154723ejr.313.1629269365306;
+        Tue, 17 Aug 2021 23:49:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzWhQFCV598TtTdTr1EoTmYGq5dI5oFgzC45QcBRmM+oIeH6pPwo+Is9DtzMEBVJyV2Y08tYw==
+X-Received: by 2002:a17:906:1f8e:: with SMTP id t14mr8154708ejr.313.1629269365121;
+        Tue, 17 Aug 2021 23:49:25 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.42.198])
+        by smtp.gmail.com with ESMTPSA id f20sm1580873ejz.30.2021.08.17.23.49.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Aug 2021 23:49:24 -0700 (PDT)
+Subject: Re: [PATCH v2 1/8] dt-bindings: clock: samsung: convert Exynos5250 to
+ dtschema
+To:     Rob Herring <robh@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sam Protsenko <semen.protsenko@linaro.org>
+References: <20210810093145.26153-1-krzysztof.kozlowski@canonical.com>
+ <20210810093145.26153-2-krzysztof.kozlowski@canonical.com>
+ <YRwZG1uerWt+NAQH@robh.at.kernel.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <c7311cd1-7e62-91d9-bbbd-cfc3c027da35@canonical.com>
+Date:   Wed, 18 Aug 2021 08:49:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZ6RqK4Rn4d-1CZsg9vJiAMHhxN6fgcqukdHpGwXoGTyNVr_Q@mail.gmail.com>
+In-Reply-To: <YRwZG1uerWt+NAQH@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 02:13:51PM +0900, Vincent MAILHOL wrote:
-> On Wed. 18 Aug 2021 at 12:40, Kees Cook <keescook@chromium.org> wrote:
-> > While raw_msg isn't a fixed size, it does have a maximum size. Adjust the
-> > struct to represent this and avoid the following warning when building
-> > with -Wzero-length-bounds:
-> >
-> > drivers/net/can/usb/etas_es58x/es58x_fd.c: In function 'es58x_fd_tx_can_msg':
-> > drivers/net/can/usb/etas_es58x/es58x_fd.c:360:35: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[]'} [-Wzero-length-bounds]
-> >   360 |  tx_can_msg = (typeof(tx_can_msg))&es58x_fd_urb_cmd->raw_msg[msg_len];
-> >       |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > In file included from drivers/net/can/usb/etas_es58x/es58x_core.h:22,
-> >                  from drivers/net/can/usb/etas_es58x/es58x_fd.c:17:
-> > drivers/net/can/usb/etas_es58x/es58x_fd.h:231:6: note: while referencing 'raw_msg'
-> >   231 |   u8 raw_msg[0];
-> >       |      ^~~~~~~
-> >
-> > Cc: Wolfgang Grandegger <wg@grandegger.com>
-> > Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> > Cc: "David S. Miller" <davem@davemloft.net>
-> > Cc: Jakub Kicinski <kuba@kernel.org>
-> > Cc: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>
-> > Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-> > Cc: linux-can@vger.kernel.org
-> > Cc: netdev@vger.kernel.org
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  drivers/net/can/usb/etas_es58x/es581_4.h  | 2 +-
-> >  drivers/net/can/usb/etas_es58x/es58x_fd.h | 2 +-
-> >  2 files changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/net/can/usb/etas_es58x/es581_4.h b/drivers/net/can/usb/etas_es58x/es581_4.h
-> > index 4bc60a6df697..af38c4938859 100644
-> > --- a/drivers/net/can/usb/etas_es58x/es581_4.h
-> > +++ b/drivers/net/can/usb/etas_es58x/es581_4.h
-> > @@ -192,7 +192,7 @@ struct es581_4_urb_cmd {
-> >                 struct es581_4_rx_cmd_ret rx_cmd_ret;
-> >                 __le64 timestamp;
-> >                 u8 rx_cmd_ret_u8;
-> > -               u8 raw_msg[0];
-> > +               u8 raw_msg[USHRT_MAX];
-> >         } __packed;
-> >
-> >         __le16 reserved_for_crc16_do_not_use;
-> > diff --git a/drivers/net/can/usb/etas_es58x/es58x_fd.h b/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> > index ee18a87e40c0..e0319b8358ef 100644
-> > --- a/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> > +++ b/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> > @@ -228,7 +228,7 @@ struct es58x_fd_urb_cmd {
-> >                 struct es58x_fd_tx_ack_msg tx_ack_msg;
-> >                 __le64 timestamp;
-> >                 __le32 rx_cmd_ret_le32;
-> > -               u8 raw_msg[0];
-> > +               u8 raw_msg[USHRT_MAX];
-> >         } __packed;
-> >
-> >         __le16 reserved_for_crc16_do_not_use;
-> > --
-> > 2.30.2
+On 17/08/2021 22:16, Rob Herring wrote:
+> On Tue, Aug 10, 2021 at 11:31:38AM +0200, Krzysztof Kozlowski wrote:
+>> Convert Samsung Exynos5250 clock controller bindings to DT schema format
+>> using json-schema.
+>>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>> ---
+>>  .../bindings/clock/exynos5250-clock.txt       | 41 ----------------
+>>  .../bindings/clock/samsung,exynos-clock.yaml  | 48 +++++++++++++++++++
+>>  MAINTAINERS                                   |  1 +
+>>  3 files changed, 49 insertions(+), 41 deletions(-)
+>>  delete mode 100644 Documentation/devicetree/bindings/clock/exynos5250-clock.txt
+>>  create mode 100644 Documentation/devicetree/bindings/clock/samsung,exynos-clock.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/clock/exynos5250-clock.txt b/Documentation/devicetree/bindings/clock/exynos5250-clock.txt
+>> deleted file mode 100644
+>> index aff266a12eeb..000000000000
+>> --- a/Documentation/devicetree/bindings/clock/exynos5250-clock.txt
+>> +++ /dev/null
+>> @@ -1,41 +0,0 @@
+>> -* Samsung Exynos5250 Clock Controller
+>> -
+>> -The Exynos5250 clock controller generates and supplies clock to various
+>> -controllers within the Exynos5250 SoC.
+>> -
+>> -Required Properties:
+>> -
+>> -- compatible: should be one of the following.
+>> -  - "samsung,exynos5250-clock" - controller compatible with Exynos5250 SoC.
+>> -
+>> -- reg: physical base address of the controller and length of memory mapped
+>> -  region.
+>> -
+>> -- #clock-cells: should be 1.
+>> -
+>> -Each clock is assigned an identifier and client nodes can use this identifier
+>> -to specify the clock which they consume.
+>> -
+>> -All available clocks are defined as preprocessor macros in
+>> -dt-bindings/clock/exynos5250.h header and can be used in device
+>> -tree sources.
+>> -
+>> -Example 1: An example of a clock controller node is listed below.
+>> -
+>> -	clock: clock-controller@10010000 {
+>> -		compatible = "samsung,exynos5250-clock";
+>> -		reg = <0x10010000 0x30000>;
+>> -		#clock-cells = <1>;
+>> -	};
+>> -
+>> -Example 2: UART controller node that consumes the clock generated by the clock
+>> -	   controller. Refer to the standard clock bindings for information
+>> -	   about 'clocks' and 'clock-names' property.
+>> -
+>> -	serial@13820000 {
+>> -		compatible = "samsung,exynos4210-uart";
+>> -		reg = <0x13820000 0x100>;
+>> -		interrupts = <0 54 0>;
+>> -		clocks = <&clock CLK_UART2>, <&clock CLK_SCLK_UART2>;
+>> -		clock-names = "uart", "clk_uart_baud0";
+>> -	};
+>> diff --git a/Documentation/devicetree/bindings/clock/samsung,exynos-clock.yaml b/Documentation/devicetree/bindings/clock/samsung,exynos-clock.yaml
+>> new file mode 100644
+>> index 000000000000..cd6567bd8cc7
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/clock/samsung,exynos-clock.yaml
+>> @@ -0,0 +1,48 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/clock/samsung,exynos-clock.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Samsung Exynos SoC clock controller
+>> +
+>> +maintainers:
+>> +  - Chanwoo Choi <cw00.choi@samsung.com>
+>> +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>> +  - Sylwester Nawrocki <s.nawrocki@samsung.com>
+>> +  - Tomasz Figa <tomasz.figa@gmail.com>
+>> +
+>> +description: |
+>> +  All available clocks are defined as preprocessor macros in
+>> +  dt-bindings/clock/ headers.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: samsung,exynos5250-clock
+>> +
+>> +  assigned-clocks: true
+>> +  assigned-clock-parents: true
+>> +  assigned-clock-rates: true
 > 
-> raw_msg is part of a union so its maximum size is implicitly the
-> biggest size of the other member of that union:
-
-Yup, understood. See below...
-
+> These can be dropped. They are always allowed if 'clocks' is present.
 > 
-> | struct es58x_fd_urb_cmd {
-> |     __le16 SOF;
-> |    u8 cmd_type;
-> |    u8 cmd_id;
-> |    u8 channel_idx;
-> |    __le16 msg_len;
-> |
-> |    union {
-> |        struct es58x_fd_tx_conf_msg tx_conf_msg;
-> |        u8 tx_can_msg_buf[ES58X_FD_TX_BULK_MAX * ES58X_FD_CANFD_TX_LEN];
-> |        u8 rx_can_msg_buf[ES58X_FD_RX_BULK_MAX * ES58X_FD_CANFD_RX_LEN];
-> |        struct es58x_fd_echo_msg echo_msg[ES58X_FD_ECHO_BULK_MAX];
-> |        struct es58x_fd_rx_event_msg rx_event_msg;
-> |        struct es58x_fd_tx_ack_msg tx_ack_msg;
-> |        __le64 timestamp;
-> |        __le32 rx_cmd_ret_le32;
-> |        u8 raw_msg[0];
-> |    } __packed;
-> |
-> |    __le16 reserved_for_crc16_do_not_use;
-> | } __packed;
+>> +  clocks: true
 > 
-> ram_msg can then be used to manipulate the other fields at the byte level.
-> I am sorry but I fail to understand why this is an issue.
+> This needs to define how many.
+> 
 
-The issue is with using a 0-element array (these are being removed from
-the kernel[1] so we can add -Warray-bounds). Normally in this situation I
-would replace the 0-element array with a flexible array, but this
-case is unusual in several ways:
+Right, thanks.
 
-- There is a trailing struct member (reserved_for_crc16_do_not_use),
-  which is never accessed (good), and documented as "please never access
-  this".
 
-- struct es58x_fd_urb_cmd is statically allocated (it is written into
-  from the URB handler).
-
-- The message lengths coming from the USB device are stored in a u16,
-  which looked like it was possible to overflow the buffer.
-
-In taking a closer look, I see that the URB command length is checked,
-and the in-data length is checked as well, so the overflow concern
-appears to be addressed.
-
-> Also, the proposed fix drastically increases the size of the structure.
-
-Indeed. I will send a v2, now that I see that the overflow concern isn't
-an issue.
-
-Thanks!
-
--Kees
-
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays
-
--- 
-Kees Cook
+Best regards,
+Krzysztof
