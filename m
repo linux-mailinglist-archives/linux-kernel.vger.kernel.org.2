@@ -2,141 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9726F3F05A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 090803F05B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238766AbhHROF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 10:05:56 -0400
-Received: from mail-eopbgr80043.outbound.protection.outlook.com ([40.107.8.43]:12423
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238531AbhHROFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 10:05:55 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SgLifeZR65KUhviHhq3mu5gWCVc47IKR/tRCHBSd6dGhDQDrevkxO+i3fEj5uAc1vYliaqwLWm+Ksugev0EvCYJf8nY5dWCezj8KtX98DH0QmXox24FE1pI+xqky+O14n9me2QEjCtnWf0ME07B6KW+ySUF/MhAtFRx6ZdzcKj2W9Znh96OtWsrsQzglAQ3+japGF3Ftgq8KDVeRvAXCpq6tdyDzmuWmTCF4y3Xd8+P+WO8qrXWikffdb20kYsg/JNvxYuAKUT9AMX0Xt6LJOrNctLq24imahu5BzzmASbm8fr+4XtKctHhrwuDD/XcXO51bRtjjpFTVf99K/Bcs+A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x4z/bBMeXhXClhp+wEjc6gike6SmLFByTx/dad+ZMRA=;
- b=MCONoBWvXPpj8iJG77lRNpE8gp0OyDT5mFHs2R5ILbFtJEHEs9sguGk9xkjM/2IEuv2huj38m0+59hiowZmgQAbtoVZ7FEWroF7meUzu2Cw21xzv7lumBI8gbTzg3mO1ayhsbJevb6Nbhuuai3zi1zp1DzETS6s0v/OD/YrGdoXhwe0EBEo8JVvha2eZKnn/ef9uzky/FnxJun0MjEnPt5b8k0q3knGE8l5wyj2FdNI1E5JhI6C1NQTRyS3FQztvo+76QYTTiawqA4yIK8hAF7Jc7RRKBzU3QLnptPpid1G2WrAcaDaHAsDMuZREqIfsu9gX9oqa1ZRI5vKstnHn0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x4z/bBMeXhXClhp+wEjc6gike6SmLFByTx/dad+ZMRA=;
- b=epNMP8ajoMMRTPy2oqdaL2urpMKFYmv6DhXQgpJdM7Kh1TaVF37UsoA/3W+Fh89q3c2MNYM9DcmwQ1Qj44D8qWRhMM/qr0DbG00EtjRDFB6/8BksROpwpxi8d6Li7ryr4tGJc8015Ro9UGDOqgnMXamBrK6sSwPt7556lXPNSVQ=
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
- by VE1PR04MB7470.eurprd04.prod.outlook.com (2603:10a6:800:1a3::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17; Wed, 18 Aug
- 2021 14:05:19 +0000
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::109:1995:3e6b:5bd0]) by VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::109:1995:3e6b:5bd0%2]) with mapi id 15.20.4415.024; Wed, 18 Aug 2021
- 14:05:19 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>,
-        "joergen.andreasen@microchip.com" <joergen.andreasen@microchip.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
-        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
-        "vishal@chelsio.com" <vishal@chelsio.com>,
-        "saeedm@mellanox.com" <saeedm@mellanox.com>,
-        "jiri@mellanox.com" <jiri@mellanox.com>,
-        "idosch@mellanox.com" <idosch@mellanox.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "kuba@kernel.org" <kuba@kernel.org>, Po Liu <po.liu@nxp.com>,
-        Leo Li <leoyang.li@nxp.com>
-Subject: Re: [RFC v2 net-next 1/8] net: mscc: ocelot: add MAC table write and
- lookup operations
-Thread-Topic: [RFC v2 net-next 1/8] net: mscc: ocelot: add MAC table write and
- lookup operations
-Thread-Index: AQHXk/d6/YQinAuyVUGo8AzjgjyFvKt5TDcA
-Date:   Wed, 18 Aug 2021 14:05:19 +0000
-Message-ID: <20210818140518.5y3pbpy342oeyxac@skbuf>
-References: <20210818061922.12625-1-xiaoliang.yang_1@nxp.com>
- <20210818061922.12625-2-xiaoliang.yang_1@nxp.com>
-In-Reply-To: <20210818061922.12625-2-xiaoliang.yang_1@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 72393115-a217-4268-9b92-08d962513648
-x-ms-traffictypediagnostic: VE1PR04MB7470:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VE1PR04MB7470D9460B35248D92585A25E0FF9@VE1PR04MB7470.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9Ptn3iVHKZ3XAVwylbiqwCij0zTlWac3DTMtXWvPpQ7l87jRJHNF5vgnyEBcab57g0n7bTX7r3SKy/Ww5lvoFHHU1V/WnTqsxCItsrSdVpOJkTr70kbnXMuimTadAQLs4mhzH/NY7SY8ICp+hi48kglYcUxSzIMpqwf5cxU/vKkWkcwTB76PqnWkBPNrh4LYDspd8ddE01BM6nBYQVeTxTmN3Ydf4rlW257HYk0rKF7NCf6DljAxcodClth+XfUb8e4u8zBHehQh1UNmSzzkkbGUxytll+lQCmJh1cOLP7XlL7s42N0MoU6kkRkUGMWwgq6mvHht4dJ+fOTcPopYBIruuY4u++N31ubjD4qt0xrKdUZWTuovfuQRpAlPnWUv5JM+Vvc0Yp98iXEOqZL5QpXLNHcQce9QkdSjywJ8uTM1dfxOmKvDqNZd5aQgCYOtDr5mCfRosx3GH2eTQ7eOfKYXCYi9lGNQ6OFuGHL9kNe81Rv7P9nzuepUZO+xJSVJw10UVRKd1TcfHxTQzaWdQeJiY0Hi/Wyu00xv688cqrIl7b5PCfp5MU94yCTOUlLxDo5bVXkDpbPIJsLQBn0c8JeEyK31ynmkt+52PvVoUO+11kRmpFRC94PhcvxZaAR6yhkTvgCLyj/jEmbEGVPDplOPizsrL6sLHywcDfSyZYeQcnB+hsXUqA0vXSYjUujzpRgF8Z9n4yYJ2q7D9VYE0g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(44832011)(2906002)(508600001)(6512007)(6506007)(4744005)(54906003)(26005)(38070700005)(33716001)(86362001)(9686003)(6486002)(5660300002)(66446008)(66476007)(64756008)(66556008)(6636002)(316002)(66946007)(122000001)(4326008)(38100700002)(8936002)(7416002)(6862004)(1076003)(8676002)(71200400001)(186003)(76116006);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?uXolSSHSmfpup0LT/y9PeCDQGTJBnfrtGmO99RE3FjeAnPMgCJG0R5+ADYcZ?=
- =?us-ascii?Q?HYKxAhl7WkM/fgBtAHl3HBrCegycIZXQ+wTUmQYrCWFIuFjl7cGBT6z2Lee7?=
- =?us-ascii?Q?vIZp8D/avHLAde8ESwgkrdeWOVcEkvggpj/O0PjJMP/QBq/FnSrx8IarYtWx?=
- =?us-ascii?Q?HBS4KO9nT/fmxmiQc2F6nc6WX5QYdFZ0mIIp0NvrKMKQ6yq9pHNrSzTmUMgi?=
- =?us-ascii?Q?e202lQcHtl6i3WnGu7yKssjEgPS3O2WE2hO8lPailJPy4TCjUktXbZAaN42f?=
- =?us-ascii?Q?IAohUU8ciX4KvI3fMUFDBHC8auMl7YrUckwgCWUAA2ODtX7Df2NGNd4z3z8T?=
- =?us-ascii?Q?xVELEN4sf/6BPuN5jXAGc/vwtVaw9R5OudBMWHFlw+6hkUkWIA18zbX9eFo5?=
- =?us-ascii?Q?kFb9uN3fgLC5NT3Kg9yS2sviVwG0fOkLOoYEl4Ourh9C/dzFDCNJ/cNwmXSY?=
- =?us-ascii?Q?S9tDPSSOA6FYcqHWmkYP6lf3JSJFr9/IbqiwxHLcYl0H4n4Mvxv1PY1lPTT1?=
- =?us-ascii?Q?JLWxQxrwVb4evJw+qnr/q0DsOOXfHivGPBJCCtqiBUufr98ySqc/CL/brDiB?=
- =?us-ascii?Q?yWzpT8RrgXmEO/Wpb0mNujsrJIfOcPAf/Y/wDIoNfIQOG/2pO91/cV6e+NSV?=
- =?us-ascii?Q?o/w7yRQ+4ZahsHgJjV1UzSKi+/Vcf9nHl8w3hCpFnfoez1eIRPdGRU4cAhz3?=
- =?us-ascii?Q?cAgIDA7+OYpeJtwlX1bbYAFpTciixlGZkOAE/lOi08R9DAC+mNImfStK7oLL?=
- =?us-ascii?Q?mjtbN+2auIc/eh8Io+eE5jRL1KWMcLxnTf0t4A/lh8zK6HKobzRtm8Rh2uMZ?=
- =?us-ascii?Q?gnJiQCvGx1+XL3hzBlwJPOJwrzFvdcU0bl9I+59Qq7CRe/Tvf92NO3o/qhKn?=
- =?us-ascii?Q?Ec4r6JSlIdH/rzr6YYaV+WbrhSUsCPaZ8KDZB+6sexm51o1jRFOrqLckglnp?=
- =?us-ascii?Q?MW5/n+JagwFKCufi4ju6ZNlrJNtBEzt9pRIEA/DxRrHSY+blQcXuFwDndbiD?=
- =?us-ascii?Q?V/oS9lSIukiu/IRWXiET93bXTbZ3rHLQFfjHPBdovvFsUYJI3vVl8creRQzO?=
- =?us-ascii?Q?0rdPUYGCkXultMSRRtILiSuoK1/fMA3UR9KdSPnNDw3TrPDnHYn43IQfUTri?=
- =?us-ascii?Q?tVHl0WsaTk/XL5hD33Z9lOugJHYT19I1F7wr1EhQWOVDAxDqFW0xro/d/a/E?=
- =?us-ascii?Q?bcch81oD2HJC2T/dO0zM1FvCeNScbt8Kr+K6R1q0D1ILaQEd6gqQBhU1hJX9?=
- =?us-ascii?Q?TxRrySYpQPZ+m9sYvEgzRiMT1UUrBIaaGS69qOUsXqvCacwPZW8wS1u4dI8/?=
- =?us-ascii?Q?c+4quAlcCRv9MJbQ79KdIRc6?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <E2DF6FE6CECFCA4AB29049C24EC8C8AE@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S238637AbhHROHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 10:07:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235121AbhHROHl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 10:07:41 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23442C061764;
+        Wed, 18 Aug 2021 07:07:06 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id x12so3693126wrr.11;
+        Wed, 18 Aug 2021 07:07:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=i6nHV4Vzm5Umu6SJhmhoU8e3Ow8sOCfq6m4vf5vpOCg=;
+        b=ZJdtuwUuQvNaAbdr9Fz2fAvktw5J/+5+vjt8im/pkRZqyKjHlmqluk+dpJgPv/GFEk
+         rs7jlCk5NOlSnehipLU0nyzn/A/7FZS7QQCaIl7MSF6vAha+BX6LZBrQQREaflmjEitO
+         dlEahiAy8zC6MjFccmUrLBYvfs88a8jl/uHALh0tSc5Nn+N5OqlxOYEPLAvMwQAyowns
+         Ndkxrox4afb9mQcpEWWL0GiCRmTwzTOHCYxL6M4H8oWTYs7RmlUoqU0WistPX7vqT8pO
+         6Su4Nkctsrk6dlh0F8i2tqudBygnvEpqj+ChJ3xGjixCFrJ6bgmI3P/HGSPs7QQyovGr
+         4V5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=i6nHV4Vzm5Umu6SJhmhoU8e3Ow8sOCfq6m4vf5vpOCg=;
+        b=ppTKTa/703CeAEI59hNnPTP/m+Te09QvsyLaeQh0wbfGD3ANAmhKMOlfhQXmALYSWs
+         DlxWkHbk1MN+JvtWh6lDqeUG7D+zicVKtvEX1pCIwk1UPaSTijlDGylYiZs+97zGeaHP
+         GCjLexRwAm6GmTygFxVYwAA11t6uWcWH2IJIhfgF1P6z35GqpeVkbJbJBtQPb8V8hsjl
+         eY7uj0ZgwV6BTFl3ObiJ+uUIQHDaGIICQBqNhZ1fPmAvqeR8gD3ar5rM4WdhRARzjA+u
+         HLroI4XkcBeKM3auSgk/dAaQlHG78hntBNSiuk+w+p+AWXJ1Ktcq0UKeoHR77GZdYob3
+         zv5Q==
+X-Gm-Message-State: AOAM531/qHmw0w9EyI5oh5UVYX8+7+9wnrwn4tterqWOKh2FChP7EGci
+        ixA7Jxc1TL0TXzc4XHUZtZQ=
+X-Google-Smtp-Source: ABdhPJyXq9/0R+WfXjdNLNbDmiuZklvSlQEBjFaDDAdAwgPSc6Y2VNRCrYkje8+AywzsdZxW8DAWow==
+X-Received: by 2002:a5d:500a:: with SMTP id e10mr11157882wrt.332.1629295624742;
+        Wed, 18 Aug 2021 07:07:04 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id e2sm6158851wrq.56.2021.08.18.07.07.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 07:07:03 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 16:07:02 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH v8 07/34] clk: tegra: Support runtime PM and power domain
+Message-ID: <YR0UBi/ejy+oF4Hm@orome.fritz.box>
+References: <20210817012754.8710-1-digetx@gmail.com>
+ <20210817012754.8710-8-digetx@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 72393115-a217-4268-9b92-08d962513648
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Aug 2021 14:05:19.1447
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jHn3w2zWuC9eocdAuMim94pfzsy1nlQmhkPFmjejcj4OSs+CU47f396A8xhouc1oIXnjWnWpsfh6/ldSakTtmA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7470
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="GjgnhAguwPYREA1d"
+Content-Disposition: inline
+In-Reply-To: <20210817012754.8710-8-digetx@gmail.com>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 02:19:15PM +0800, Xiaoliang Yang wrote:
-> From: Vladimir Oltean <vladimir.oltean@nxp.com>
->=20
-> ocelot_mact_write() can be used for directly modifying an FDB entry
-> situated at a given row and column, as opposed to the current
-> ocelot_mact_learn() which calculates the row and column indices
-> automatically (based on a 11-bit hash derived from the {DMAC, VID} key).
->=20
-> ocelot_mact_lookup() can be used to retrieve the row and column at which
-> an FDB entry with the given {DMAC, VID} key is found.
->=20
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> ---
 
-This patch needs your Signed-off-by tag too.
-And I think the functions need their prototype defined in a header too,
-otherwise the compiler will complain that they are unused and that they
-are non-static but also no previous prototype.=
+--GjgnhAguwPYREA1d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Aug 17, 2021 at 04:27:27AM +0300, Dmitry Osipenko wrote:
+[...]
+> +struct clk *tegra_clk_register(struct clk_hw *hw)
+> +{
+> +	struct platform_device *pdev;
+> +	struct device *dev = NULL;
+> +	struct device_node *np;
+> +	const char *dev_name;
+> +
+> +	np = tegra_clk_get_of_node(hw);
+> +
+> +	if (!of_device_is_available(np))
+> +		goto put_node;
+> +
+> +	dev_name = kasprintf(GFP_KERNEL, "tegra_clk_%s", hw->init->name);
+> +	if (!dev_name)
+> +		goto put_node;
+> +
+> +	pdev = of_platform_device_create(np, dev_name, NULL);
+> +	if (!pdev) {
+> +		pr_err("%s: failed to create device for %pOF\n", __func__, np);
+> +		kfree(dev_name);
+> +		goto put_node;
+> +	}
+> +
+> +	dev = &pdev->dev;
+> +	pm_runtime_enable(dev);
+> +put_node:
+> +	of_node_put(np);
+> +
+> +	return clk_register(dev, hw);
+> +}
+
+This looks wrong. Why do we need struct platform_device objects for each
+of these clocks? That's going to be a massive amount of platform devices
+and they will completely mess up sysfs.
+
+Thierry
+
+--GjgnhAguwPYREA1d
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEdFAYACgkQ3SOs138+
+s6HeRQ/+On1vzXNiDk0hs4KISsGV+2p4XxyJVq/mvJWq4nwbzB0fnbltpnQGekNK
+rv9LKvLwpMpikV4RHOysHn4hnusz+I3P/SOJVq8nB5ctz7QEcklxJNgaKIyY3Nri
+JD8EiV936HB8R2Ecg5fEynk0MHmJ4+Pe1pFjfK/3i6l1Xx5Xy+jt/AwHXkTAJG6B
+LilpaYxjeYK0xLVY0uy/3TWmSNj7zmA9NLYadLedHWKAIrmfdhL4qEn0keHZPjeN
+wTRUkexp/mHpfwaNRpUvHM2sF6WuetFM6FrIIAEyVB4SSq3usTLtWtFWl3qca2Vi
+f/LKNT+GlKsS7vs6/bokHE5CtOc1bbILItuJCunjCSnOgElWzJ+WV2oAdBodcDr9
+AaDHCtN1kTr/1f0KYw3zKQHErq1Z9sRrTeETjAkYSE6agOOHm+eBIkPF38mdl7ZN
+eI5syiX8NwgIHv4jp1YR6lbvplx9XhD9Se4EcrgNSytiYYWfZMDEyH3dFTzCjzyT
+E5pNO8BuA8JHJWCUYtqjl+OccK0XhnR99XyHvsb1HM+jT0EqRjLc59PJlOwQeX2f
+KwOX9DhOQf+ZyRegAHSh4uNpR2fySasbnBT7RwyG17MKbeoTEqTOTJ5QZmMXSqDa
+kNchGN8JwMPpyDcw6adERGyrLYh0tFLdrM+1JjImnnDrLx9SuRo=
+=yj83
+-----END PGP SIGNATURE-----
+
+--GjgnhAguwPYREA1d--
