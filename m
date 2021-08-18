@@ -2,93 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD0283F065A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7252A3F0656
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240328AbhHROSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 10:18:33 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:48940 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239687AbhHROOQ (ORCPT
+        id S238721AbhHROSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 10:18:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240049AbhHROOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 10:14:16 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17IEDXwh035846;
-        Wed, 18 Aug 2021 09:13:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1629296013;
-        bh=efyRrMWGDBVWH4S8x4oL6voAOGjdIuqN12/Mqqc5CcE=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=WqOB3ZKojmwfMnjVkSh2ytySlGc/G//oq5wr3yGh4AAguJ9u/ImUHUZfSb7bnlPj+
-         M5rXA4toG8vzOHh3dwixuIq5PPdwrG2YTSQnZHKr+nqQpRwRFTcIbRTpSInTZroiIB
-         XuYlvMVYH+3cbI95rDHSFDz0GDjB4NzSc8pAgJIs=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17IEDXfD091019
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 18 Aug 2021 09:13:33 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 18
- Aug 2021 09:13:32 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 18 Aug 2021 09:13:32 -0500
-Received: from [128.247.81.242] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17IEDWFh069572;
-        Wed, 18 Aug 2021 09:13:32 -0500
-Subject: Re: [PATCH] arm64: dts: ti: k3-am64-mcu: Add pinctrl
-To:     Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210818111747.88569-1-christian.gmeiner@gmail.com>
-From:   Dave Gerlach <d-gerlach@ti.com>
-Message-ID: <13974a27-a90d-639d-d050-c97570fdf369@ti.com>
-Date:   Wed, 18 Aug 2021 09:13:32 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 18 Aug 2021 10:14:52 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC31C061796
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:13:47 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id c14so1711142qvs.9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:13:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rg02+w1DlkJobhoJY9bM97YQwIjcX3dhjCH/vsEFgP0=;
+        b=IJM3/57oMfrwBGTxX1IHTSufxeq6P3Ds6XRZvE9DZaQYu6SrVcwDRerEYF25qu7X1B
+         P60N9RrgrRNag8tqLyPwd2wzaLi9O55qN9diwm9sZAtemcAodh0vkx7GORHTW9R5W2LY
+         rV/W0SNTLdFLW8cLcW0Qu/6ySAJpxaO6I9bAxGJSjR5kQXqiY7nMpO/wVGbIlV0HDfjw
+         dYuz+g7ZxYVhUxmQisLCpNH+9kMNrqw8fYLGpqtTiUzPzHScZLMpGUR7odgvREoOGyvq
+         uG3PAzekn0lUz/hG2/KBgIhbNa18vFUOGqnNMOmaodYK+aTh4+ylfiWpcrP7Zlm5Pd0x
+         G6kA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rg02+w1DlkJobhoJY9bM97YQwIjcX3dhjCH/vsEFgP0=;
+        b=o1silUbXGaurKLEfsp4OOfHQScZsRL5W1oyYjRjpjDrpWa4nYaIm6i7CjP6H3/MDoK
+         O49GuHJVe3ph4Yzl1zc5ftc5yMWrO5kO0ZD9ygXOPTg2m23FoPckYV1HJ6UZSaDowE33
+         J5TFIyYj8wP47gOiOSgHnVGs+1R91asa4KZQvkRwIJjK3CNpF0Y1GaaLiuNqR8eWHw86
+         pM7kiI9460hx0ivtKO2ExvXKBjh5StAX2r0FPwBFmIsqoOv8i2BmR/94K0r349rwolk2
+         8O93x4UPvJcpc22gc+WEuoPovRvkCT4uvkgUgJZdYoxxHRpHrCB+5sTII2oCvhQaetld
+         LiwQ==
+X-Gm-Message-State: AOAM531HpLWo69dP4QExvfRm4B2erWb5rRU55g+BlN7UFQQNnUaJG4+G
+        3xXOwebejxNUtU2bwvraTmD+lA==
+X-Google-Smtp-Source: ABdhPJz/+BjLkxJrAxTTKQlm/p7qbbRBNIQAU4NUKJL55u3lLL5nfMNPDLp17j/ZoFTBbZcRaBPgGw==
+X-Received: by 2002:a0c:fd21:: with SMTP id i1mr9140058qvs.29.1629296026700;
+        Wed, 18 Aug 2021 07:13:46 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id o10sm59259qtv.31.2021.08.18.07.13.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 07:13:45 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 10:15:24 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Leon Yang <lnyng@fb.com>, Chris Down <chris@chrisdown.name>,
+        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: memcontrol: fix occasional OOMs due to proportional
+ memory.low reclaim
+Message-ID: <YR0V/KhKSYZs+ksn@cmpxchg.org>
+References: <20210817180506.220056-1-hannes@cmpxchg.org>
+ <YRwRzjOexeXbkirV@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <20210818111747.88569-1-christian.gmeiner@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YRwRzjOexeXbkirV@carbon.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 8/18/21 6:17 AM, Christian Gmeiner wrote:
-> Add the definition of the pinctrl for the MCU domain.
+On Tue, Aug 17, 2021 at 12:45:18PM -0700, Roman Gushchin wrote:
+> On Tue, Aug 17, 2021 at 02:05:06PM -0400, Johannes Weiner wrote:
+> > We've noticed occasional OOM killing when memory.low settings are in
+> > effect for cgroups. This is unexpected and undesirable as memory.low
+> > is supposed to express non-OOMing memory priorities between cgroups.
+> > 
+> > The reason for this is proportional memory.low reclaim. When cgroups
+> > are below their memory.low threshold, reclaim passes them over in the
+> > first round, and then retries if it couldn't find pages anywhere else.
+> > But when cgroups are slighly above their memory.low setting, page scan
+> > force is scaled down and diminished in proportion to the overage, to
+> > the point where it can cause reclaim to fail as well - only in that
+> > case we currently don't retry, and instead trigger OOM.
+> > 
+> > To fix this, hook proportional reclaim into the same retry logic we
+> > have in place for when cgroups are skipped entirely. This way if
+> > reclaim fails and some cgroups were scanned with dimished pressure,
+> > we'll try another full-force cycle before giving up and OOMing.
+> > 
+> > Reported-by: Leon Yang <lnyng@fb.com>
+> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 > 
-> Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi
-> index 59cc58f7d0c8..2bb5c9ff172c 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi
-> @@ -97,4 +97,12 @@ mcu_gpio0: gpio@4201000 {
->  		clocks = <&k3_clks 79 0>;
->  		clock-names = "gpio";
->  	};
-> +
-> +	mcu_pmx0: pinctrl@4084000 {
-> +		compatible = "pinctrl-single";
-> +		reg = <0x00 0x4084000 0x00 0x84>;
-> +		#pinctrl-cells = <1>;
-> +		pinctrl-single,register-width = <32>;
-> +		pinctrl-single,function-mask = <0xffffffff>;
-> +	};
->  };
-> 
+> Acked-by: Roman Gushchin <guro@fb.com>
 
-Reviewed-by: Dave Gerlach <d-gerlach@ti.com>
+Thank you.
 
-Regards,
-Dave
+> I guess it's a stable material, so maybe adding:
+> Fixes: 9783aa9917f8 ("mm, memcg: proportional memory.{low,min} reclaim")
+
+Yes, that Fixes makes sense. Plus:
+
+Cc: <stable@vger.kernel.org> # 5.4+
+
+I initially didn't tag it because the issue is over two years old and
+we've had no other reports of this. But thinking about it, it's
+probably more a lack of users rather than severity. At FB we only
+noticed with a recent rollout of memory_recursiveprot
+(8a931f801340c2be10552c7b5622d5f4852f3a36) because we didn't have
+working memory.low configurations before that. But now that we do
+notice, it's a problem worth fixing. So yes, stable makes sense.
+
+Thanks.
