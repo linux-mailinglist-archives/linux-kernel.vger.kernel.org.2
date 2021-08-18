@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA40A3F0851
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC8B3F0858
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239943AbhHRPrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 11:47:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239876AbhHRPrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 11:47:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10C1D60EFF;
-        Wed, 18 Aug 2021 15:46:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629301603;
-        bh=KvPFbxpLANhdfXELUEi/DYBhPv2uvmITI5p7+B2ba80=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=J3nz9NvLm1ql8aXTx9C9tAF8FsbJxZiBaZ/RON6k+UhOnaKdIipWPh1+y9MYfgcjU
-         oVbatkf0L+xQs+BVvsaXk5NvesDn7D7pkWqkQfJ/HzhKs/4Wkh/v6T/WQIcqwv8r6k
-         ZZ++0DGU3XLvhgwJARR+VeXG/G8LZ6nXK9Att9TKk6MxIj4bEBUVtSCW8LfuZNm9ru
-         /jfpz/yTToGC4DuUni5/Oh6aYLghdtkFj/XPm3MjPQm4Sf0fca5Wxb5ee7lWvsAGmN
-         rviUPs+0Kjhd9tRo0WNmhwb0WYVnX5h4r4CFPrRey9eIJdwA9/hAuSysnBW+5zieHF
-         VNalxFhGfUVVg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D58095C04B1; Wed, 18 Aug 2021 08:46:42 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 08:46:42 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, urezki@gmail.com,
-        frederic@kernel.org, boqun.feng@gmail.com
-Subject: Re: [PATCH 4/5] rcu-tasks: Fix read-side primitives comment for
- call_rcu_tasks_trace
-Message-ID: <20210818154642.GT4126399@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <1629271723-3816-1-git-send-email-neeraju@codeaurora.org>
- <1629271723-3816-5-git-send-email-neeraju@codeaurora.org>
+        id S240019AbhHRPsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 11:48:05 -0400
+Received: from mail-lf1-f46.google.com ([209.85.167.46]:46828 "EHLO
+        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240052AbhHRPry (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 11:47:54 -0400
+Received: by mail-lf1-f46.google.com with SMTP id u22so5519459lfq.13;
+        Wed, 18 Aug 2021 08:47:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Ly8XYYipoD2ui1uOI6rBTuBqM3/79CjvaDtgsH2un6s=;
+        b=XW3u26JgYxM1wF0meHea8JFbo6/nBp8Tbq8k/8JqspU60V3D0cWPitDsQNVpzGucGi
+         e5idfJPecmpzQxuLu3YYTg+6/pIjMRj/wljhkLs3CiLRoc8tcGNsy3zx2fJPJu23vWFp
+         qQ73j/UO8BhCvQfwblYcQExEZNk+nhshrwyq/U7N/m5uzkOuuG+/eC7WBHJ9Xmh+aR3k
+         8C1AO1GG/Lwy/w7LpcLdxkpg9mwpmH6WIYQG+OD+x5bfZjKVwp9bg1/eXzyKcKSWjdW6
+         ko0xT73YYqpjcY1GITCy5/ZMOhLqObx28zK+39Gd8uudmY+N/Q0e6QF4fW5XvmoBui+V
+         hUaw==
+X-Gm-Message-State: AOAM532l9FtUfIYm3uu5EcrGsjaX0QqmPDP+NklBVgj8eD8RZTJvUYRb
+        +8d3SiV4Fuam9jy+SAeLzc1rJUH25uTOUXt+
+X-Google-Smtp-Source: ABdhPJxSW5NiBVI2AeSdHNUlHFh2wl5ZhVlKxtXub5Ms8sBmwEilPwk668+BiEqh3eJrzR2ehxSh9A==
+X-Received: by 2002:ac2:4185:: with SMTP id z5mr6821837lfh.391.1629301637805;
+        Wed, 18 Aug 2021 08:47:17 -0700 (PDT)
+Received: from localhost.localdomain (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
+        by smtp.googlemail.com with ESMTPSA id j4sm23808ljh.120.2021.08.18.08.47.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 08:47:17 -0700 (PDT)
+From:   Denis Efremov <efremov@linux.com>
+To:     linux-kselftest@vger.kernel.org
+Cc:     Denis Efremov <efremov@linux.com>, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Jiri Kosina <jkosina@suse.cz>, Willy Tarreau <w@1wt.eu>,
+        Joe Perches <joe@perches.com>
+Subject: [RFC PATCH 1/5] checkpatch: improve handling of revert commits
+Date:   Wed, 18 Aug 2021 18:46:42 +0300
+Message-Id: <20210818154646.925351-2-efremov@linux.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210818154646.925351-1-efremov@linux.com>
+References: <20210818154646.925351-1-efremov@linux.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1629271723-3816-5-git-send-email-neeraju@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 12:58:42PM +0530, Neeraj Upadhyay wrote:
-> call_rcu_tasks_trace() does have read-side primitives - rcu_read_lock_trace()
-> and rcu_read_unlock_trace(). Fix this information in the comments.
-> 
-> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-> ---
->  kernel/rcu/tasks.h | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
-> 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index 244e06a..5f9c14c 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -1214,13 +1214,9 @@ static void exit_tasks_rcu_finish_trace(struct task_struct *t)
->   *
->   * The callback function will be invoked some time after a full grace
->   * period elapses, in other words after all currently executing RCU
-> - * read-side critical sections have completed. call_rcu_tasks_trace()
-> - * assumes that the read-side critical sections end at context switch,
-> - * cond_resched_rcu_qs(), or transition to usermode execution.  As such,
-> - * there are no read-side primitives analogous to rcu_read_lock() and
-> - * rcu_read_unlock() because this primitive is intended to determine
-> - * that all tasks have passed through a safe state, not so much for
-> - * data-structure synchronization.
-> + * read-side critical sections have completed. These read-side
+Properly handle commits like:
+commit f2791e7eadf4 ("Revert "floppy: refactor open() flags handling"")
 
-The above line should start "Tasks Trace read-side critical..." for
-the benefit of people who stop reading before the next sentence.  :-/
+Cc: Joe Perches <joe@perches.com>
+Signed-off-by: Denis Efremov <efremov@linux.com>
+---
+ scripts/checkpatch.pl | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-							Thanx, Paul
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 461d4221e4a4..cf31e8c994d3 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3200,20 +3200,20 @@ sub process {
+ 			$long = 1 if ($line =~ /\bcommit\s+[0-9a-f]{41,}/i);
+ 			$space = 0 if ($line =~ /\bcommit [0-9a-f]/i);
+ 			$case = 0 if ($line =~ /\b[Cc]ommit\s+[0-9a-f]{5,40}[^A-F]/);
+-			if ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("([^"]+)"\)/i) {
++			if ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("(.+)"\)/i) {
+ 				$orig_desc = $1;
+ 				$hasparens = 1;
+ 			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s*$/i &&
+ 				 defined $rawlines[$linenr] &&
+-				 $rawlines[$linenr] =~ /^\s*\("([^"]+)"\)/) {
++				 $rawlines[$linenr] =~ /^\s*\("(.+)"\)/) {
+ 				$orig_desc = $1;
+ 				$hasparens = 1;
+-			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("[^"]+$/i &&
++			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\(".+$/i &&
+ 				 defined $rawlines[$linenr] &&
+-				 $rawlines[$linenr] =~ /^\s*[^"]+"\)/) {
+-				$line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("([^"]+)$/i;
++				 $rawlines[$linenr] =~ /^\s*.+"\)/) {
++				$line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("(.+)$/i;
+ 				$orig_desc = $1;
+-				$rawlines[$linenr] =~ /^\s*([^"]+)"\)/;
++				$rawlines[$linenr] =~ /^\s*(.+)"\)/;
+ 				$orig_desc .= " " . $1;
+ 				$hasparens = 1;
+ 			}
+-- 
+2.31.1
 
-> + * critical sections are delimited by calls to rcu_read_lock_trace()
-> + * and rcu_read_unlock_trace().
->   *
->   * See the description of call_rcu() for more detailed information on
->   * memory ordering guarantees.
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
-> hosted by The Linux Foundation
-> 
