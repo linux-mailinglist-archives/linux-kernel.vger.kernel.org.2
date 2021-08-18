@@ -2,74 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64B43F0929
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62BE63F092F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230424AbhHRQeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 12:34:04 -0400
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:36698 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbhHRQeD (ORCPT
+        id S231217AbhHRQev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 12:34:51 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:42476 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232979AbhHRQen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 12:34:03 -0400
-Received: by mail-oi1-f170.google.com with SMTP id bd1so4165434oib.3;
-        Wed, 18 Aug 2021 09:33:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=rVvsI0Xv1d0KYUJHwLCP2+hlZA1OJu/pLbegVr3lseM=;
-        b=puYhaY5SearGQuUdNvkRV/hydoV2eoCL25Bli8QAWzN6fzwEiRlpUBGIe2CxtkXPDt
-         ueSSzlE+JpyiyDVcRutdND3ASLVFSsk6Gv7ij4RztAvmUzp1SXPfx5caAfrJ0iAMxyWn
-         YkyZ2qW+N6yQCPVd+2dMzgCReSZYVuZ3WQgy9/RGAQYQWUwwSbGs6x3n7ad1oc3OaYmD
-         +UbJ0TrUd+slFPGlaGvKp5A1H0WUCV4wV/1B29M4UE6ab74yLDQLm5zs6RwQAl7kGRcx
-         qRBwYqtIymJ6NrTYT6yrKH2tFCtESa6W9AKiQl1x8kdCDaHnJwGAHVs/eyjUu72suO0g
-         8T0Q==
-X-Gm-Message-State: AOAM532qCLIcFziJwpAL6EFD85u2tmaRfG+iauCZ4j9qW/ScISCLD6Um
-        kXCFWiTNKIxltpKdWHfR0Q==
-X-Google-Smtp-Source: ABdhPJxNY4w/KPNUjuR1sW0fQOhWU9TBObGNk6n0bEPJ6RdxCp2Vg5AgNS8Cq1Qc/ZRFZhp0tuxv8Q==
-X-Received: by 2002:a54:4614:: with SMTP id p20mr7812388oip.136.1629304407995;
-        Wed, 18 Aug 2021 09:33:27 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id n17sm99998otl.32.2021.08.18.09.33.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 09:33:27 -0700 (PDT)
-Received: (nullmailer pid 2723574 invoked by uid 1000);
-        Wed, 18 Aug 2021 16:33:26 -0000
-Date:   Wed, 18 Aug 2021 11:33:26 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Jan =?iso-8859-1?Q?L=FCbbe?= <jlu@pengutronix.de>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 2/2] MAINTAINERS: EDAC/armada_xp: include dt-bindings
-Message-ID: <YR02VkXGgsF7W7OU@robh.at.kernel.org>
-References: <20210817093807.59531-1-krzysztof.kozlowski@canonical.com>
- <20210817093807.59531-2-krzysztof.kozlowski@canonical.com>
- <0f5ae210aab8ef5e00172928c341c0e6c88790a2.camel@pengutronix.de>
+        Wed, 18 Aug 2021 12:34:43 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id 744841F433CA
+Subject: Re: [PATCH 2/4] futex2: Implement vectorized wait
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ingo Molnar <mingo@redhat.com>, Darren Hart <dvhart@infradead.org>,
+        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        kernel@collabora.com, krisman@collabora.com,
+        linux-api@vger.kernel.org, libc-alpha@sourceware.org,
+        mtk.manpages@gmail.com, Davidlohr Bueso <dave@stgolabs.net>
+References: <20210805190405.59110-1-andrealmeid@collabora.com>
+ <20210805190405.59110-3-andrealmeid@collabora.com> <87v94310gm.ffs@tglx>
+ <20210818162034.GA26408@worktop.programming.kicks-ass.net>
+From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+Message-ID: <42c6c37d-dd35-e797-9194-4619c1456f85@collabora.com>
+Date:   Wed, 18 Aug 2021 13:34:00 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <20210818162034.GA26408@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <0f5ae210aab8ef5e00172928c341c0e6c88790a2.camel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 12:50:22PM +0200, Jan Lübbe wrote:
-> On Tue, 2021-08-17 at 11:38 +0200, Krzysztof Kozlowski wrote:
-> > Include dt-bindings for Marvell Armada XP SDRAM and L2 cache ECC in the
-> > EDAC-ARMADA entry.
+Ã€s 13:20 de 18/08/21, Peter Zijlstra escreveu:
+> On Wed, Aug 18, 2021 at 01:00:57PM +0200, Thomas Gleixner wrote:
+>>> +/**
+>>> + * struct futex_waitv - A waiter for vectorized wait
+>>> + * @val:   Expected value at uaddr
+>>> + * @uaddr: User address to wait on
+>>> + * @flags: Flags for this waiter
+>>> + */
+>>> +struct futex_waitv {
+>>> +	__u64 val;
+>>
+>> Again. Why u64?
 > 
-> The L2 cache binding is already described in
-> Documentation/devicetree/bindings/arm/l2c2x0.yaml, so this is only for the
-> SDRAM.
+> So I think the idea was that if we're going to do new syscalls, we
+> should cater for future extentions, one of which was 64bit futexes (for
+> 64bit archs) (along with u{8,16,32})
+> 
+> The previous set of patches implemented a more complete replacement ABI
+> -- which I rather liked, however the implementation was completely
+> disjoint from the existing futexes, which was a non-starter for me.
+> 
+> Anyway, yes, current futexes are u32, but if we want to ever do u64
+> futexes, we should either do this syscall with a u64, or already plan to
+> retire the whole syscall.
+> 
+> Obiously this would've made good Changelog material, but alas it wasn't
+> there.
+> 
 
-Fixed up and applied.
+Ops, I forgot to add the reasoning behind the 64 futexes. The idea is
+that futex users want to be able to properly do 64bit atomic operations
+on top of futex values:
 
-Rob
+[0]
+https://lore.kernel.org/lkml/CAFTs51XAr2b3DmcSM4=qeU5cNuh0mTxUbhG66U6bc63YYzkzYA@mail.gmail.com/
+
+[1]
+https://lore.kernel.org/lkml/20210603195924.361327-1-andrealmeid@collabora.com/T/#m37bfbbd6ac76c121941defd1daea774389552674
+
+[2] https://lists.boost.org/Archives/boost/2021/05/251508.php
