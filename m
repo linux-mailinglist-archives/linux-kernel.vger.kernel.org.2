@@ -2,61 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 097DA3EF787
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 03:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 984D13EF78D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 03:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235707AbhHRBaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 21:30:16 -0400
-Received: from mga18.intel.com ([134.134.136.126]:35266 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233027AbhHRBaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 21:30:16 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10079"; a="203382777"
-X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
-   d="scan'208";a="203382777"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 18:29:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
-   d="scan'208";a="531300286"
-Received: from dengjie-mobl1.ccr.corp.intel.com (HELO [10.239.154.58]) ([10.239.154.58])
-  by fmsmga002.fm.intel.com with ESMTP; 17 Aug 2021 18:29:38 -0700
-Subject: Re: [PATCH v15] i2c: virtio: add a virtio i2c frontend driver
-To:     Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, arnd@arndb.de,
-        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
-        yu1.wang@intel.com, conghui.chen@intel.com,
-        viresh.kumar@linaro.org, stefanha@redhat.com,
-        gregkh@linuxfoundation.org, vincent.guittot@linaro.org,
-        alex.bennee@linaro.org, jiedeng@alumni.sjtu.edu.cn
-References: <bcf2fb9bbe965862213f27e05f87ffc91283c0c5.1627018061.git.jie.deng@intel.com>
- <YRwagcZ8SUCsncEA@kunai>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <b15f5586-4ffa-e794-aca3-5125dc7378bf@intel.com>
-Date:   Wed, 18 Aug 2021 09:29:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <YRwagcZ8SUCsncEA@kunai>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S235707AbhHRBdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 21:33:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234828AbhHRBd3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 21:33:29 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7681C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 18:32:55 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id k18-20020a05620a1432b02903d293480ee4so672612qkj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 18:32:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=L5moxT2jLL1QoSiZ11RqMC3wpmZIVwXe69nsWU69g+w=;
+        b=DEJLI4Nej2HbG/RrjQzEYC6ehvq9nqUASq/uIN+gk2Q32HREUxa6ZgSQF5Q9Givt+p
+         8jdLmDUhVwxhSLUQmjIyTqbamZYg3kFklHx9weptXptHnJkaCVRER7kaflsI/fONDMrQ
+         0A30YXwRXVz5HxdmG5v3YY+N9cSSgDVoL+ZcYKjUBcfifxJqZ2zaMibUHoZYrQh6MKXF
+         dDps22Lqbdptg807hKOqB1SrWYcGB2emVm537yX7vczzfGOiZjaQZVGEZJueF2cZna07
+         kG4JOCXEKuA72qCfutilAPD94g70xADzwC9bKdO4tQBJzYalSkb+Mg44l5LkphVKwh3g
+         1fkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=L5moxT2jLL1QoSiZ11RqMC3wpmZIVwXe69nsWU69g+w=;
+        b=Q2pWOmfCqbruzYg9H7Tbi3sdUBHK1f+XgX5LcZ3zRw+h9ksP55c3mya9WY8+/uvYsb
+         4/JlI4SKFHxE4yUngywcxtyH9oaYt0qpZA9cpW8LGe0Zy5kZuppAm5igxONBdG7kQ20g
+         a/t0ctTE5CzXrI+quwB+N7/Wzg/MQoJpc9kcHpoES781YyNryYZXm6mqzu3xROgumw0J
+         apNU/tcvUwg65KEP1lCcFvOmYM5hDI8iWvQ+e3roXUBhsOXir/x4zzZtFNBi9ORGzEb9
+         HMcjnT8qS5fylxmPAjosMo2oNj1AtPbKmlCw8xqdUd0w/14bH1Te0pADDqdBSM9ivMGT
+         XYrw==
+X-Gm-Message-State: AOAM530QMceGCgjfNWMqt//1f9OPlC5VhDzvsy7U+QH1a6eU6RJedgDK
+        qRdSh1AU4htOkUO50qtUbTS7NsXP5hbS4Rt7a1uSTw==
+X-Google-Smtp-Source: ABdhPJytIaSaLZfB5oh6aVtn64Gw3GQ/SLbacTPCPjwrqofp9Cbpc3Nrje1IVJ+7gLPmaNM3c4ZdYMhX2GLe5z2AszQHDQ==
+X-Received: from mustash.c.googlers.com ([fda3:e722:ac3:cc00:14:4d90:c0a8:337b])
+ (user=richardsonnick job=sendgmr) by 2002:ad4:50ce:: with SMTP id
+ e14mr6436544qvq.9.1629250375156; Tue, 17 Aug 2021 18:32:55 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 01:31:26 +0000
+Message-Id: <20210818013129.1147350-1-richardsonnick@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
+Subject: [PATCH] pktgen: Remove fill_imix_distribution() CONFIG_XFRM dependency
+From:   Nicholas Richardson <richardsonnick@google.com>
+To:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org
+Cc:     nrrichar@ncsu.edu, promanov@google.com, arunkaly@google.com,
+        Nick Richardson <richardsonnick@google.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Yejune Deng <yejune.deng@gmail.com>,
+        Leesoo Ahn <dev@ooseel.net>, Ye Bin <yebin10@huawei.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Nick Richardson <richardsonnick@google.com>
 
-On 2021/8/18 4:22, Wolfram Sang wrote:
->
->   Michael S. Tsirkin <mst@redhat.com>
-> Okay, with rc6 being released, I won't wait for an immutable branch
-> anymore. I applied this now and we will see if there will be a merge
-> conflict. If so, it will be trivial to handle, I'd think. So:
->
-> Applied to for-next, thanks!
+Currently, the declaration of fill_imix_distribution() is dependent
+on CONFIG_XFRM. This is incorrect.
 
+Move fill_imix_distribution() declaration out of #ifndef CONFIG_XFRM
+block.
 
-Thanks Wolfram!
+Signed-off-by: Nick Richardson <richardsonnick@google.com>
+---
+ net/core/pktgen.c | 53 +++++++++++++++++++++++------------------------
+ 1 file changed, 26 insertions(+), 27 deletions(-)
 
+diff --git a/net/core/pktgen.c b/net/core/pktgen.c
+index 94008536a9d6..9e5a3249373c 100644
+--- a/net/core/pktgen.c
++++ b/net/core/pktgen.c
+@@ -2601,6 +2601,32 @@ static void mod_cur_headers(struct pktgen_dev *pkt_dev)
+ 	pkt_dev->flows[flow].count++;
+ }
+ 
++static void fill_imix_distribution(struct pktgen_dev *pkt_dev)
++{
++	int cumulative_probabilites[MAX_IMIX_ENTRIES];
++	int j = 0;
++	__u64 cumulative_prob = 0;
++	__u64 total_weight = 0;
++	int i = 0;
++
++	for (i = 0; i < pkt_dev->n_imix_entries; i++)
++		total_weight += pkt_dev->imix_entries[i].weight;
++
++	/* Fill cumulative_probabilites with sum of normalized probabilities */
++	for (i = 0; i < pkt_dev->n_imix_entries - 1; i++) {
++		cumulative_prob += div64_u64(pkt_dev->imix_entries[i].weight *
++						     IMIX_PRECISION,
++					     total_weight);
++		cumulative_probabilites[i] = cumulative_prob;
++	}
++	cumulative_probabilites[pkt_dev->n_imix_entries - 1] = 100;
++
++	for (i = 0; i < IMIX_PRECISION; i++) {
++		if (i == cumulative_probabilites[j])
++			j++;
++		pkt_dev->imix_distribution[i] = j;
++	}
++}
+ 
+ #ifdef CONFIG_XFRM
+ static u32 pktgen_dst_metrics[RTAX_MAX + 1] = {
+@@ -2662,33 +2688,6 @@ static void free_SAs(struct pktgen_dev *pkt_dev)
+ 	}
+ }
+ 
+-static void fill_imix_distribution(struct pktgen_dev *pkt_dev)
+-{
+-	int cumulative_probabilites[MAX_IMIX_ENTRIES];
+-	int j = 0;
+-	__u64 cumulative_prob = 0;
+-	__u64 total_weight = 0;
+-	int i = 0;
+-
+-	for (i = 0; i < pkt_dev->n_imix_entries; i++)
+-		total_weight += pkt_dev->imix_entries[i].weight;
+-
+-	/* Fill cumulative_probabilites with sum of normalized probabilities */
+-	for (i = 0; i < pkt_dev->n_imix_entries - 1; i++) {
+-		cumulative_prob += div64_u64(pkt_dev->imix_entries[i].weight *
+-						     IMIX_PRECISION,
+-					     total_weight);
+-		cumulative_probabilites[i] = cumulative_prob;
+-	}
+-	cumulative_probabilites[pkt_dev->n_imix_entries - 1] = 100;
+-
+-	for (i = 0; i < IMIX_PRECISION; i++) {
+-		if (i == cumulative_probabilites[j])
+-			j++;
+-		pkt_dev->imix_distribution[i] = j;
+-	}
+-}
+-
+ static int process_ipsec(struct pktgen_dev *pkt_dev,
+ 			      struct sk_buff *skb, __be16 protocol)
+ {
+-- 
+2.33.0.rc1.237.g0d66db33f3-goog
 
