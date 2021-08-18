@@ -2,115 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6053F0A07
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 674663F0A0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbhHRROI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 13:14:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229883AbhHRROD (ORCPT
+        id S230147AbhHRRPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 13:15:48 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:39732
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229784AbhHRRPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 13:14:03 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFCF0C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 10:13:27 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id q11so4612091wrr.9
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 10:13:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=37MLSH9lYPS34IVx5EfZVMr+hGfCcZBIMSeL1QJmzSc=;
-        b=PIOS5lfVqZQr2EIMeZA5ubQx6UB/nEqDdg+/fw3aomNSZcT13tMnYoz+UIqXBDb6hq
-         LbjTjXYx9ei9CZ8QrgFcEPWwOCqQ3XtbtRBUdQippNZGFaTaiaKYECYt17KNOPsa68+S
-         gxHxVI4lvJ95gY382yCB32K4aidQiVFAiYsbXsMajVYG23sN7gBFlTqgd8jhGyOUdLOr
-         hi2R8zoeWiTFrxtNgMcs6x9eatE2RgySYXH58fGdKep1g1vJ00d6l9dXimjCNfFD2uWz
-         h0CUUdmtIUsahSWQhSAUJmuB/Wq7GsujSUEYNvkCLzJgCTvTQgOxVrfxPQTx4RUvmMim
-         kM9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=37MLSH9lYPS34IVx5EfZVMr+hGfCcZBIMSeL1QJmzSc=;
-        b=RrZYwzrrI26/Mliq1yIufsnesFW/MKbiakQq2cQipVSM+Ei3Auw5cwzZH/VIzqOLvM
-         CgYi0nGD7vd2qXVFGvHkAKGxhMSDqXQRhEWfATYLaxaElu2F8HqHj+av5kZ/LU/RU0Gp
-         Y7VszJyyr0k3jehFg6VJNTCRntJbx+9Wh53gYEpKD3kHuMe1uRUhZKWYk16K1X77/loh
-         JpG81HQ3gNc7kwT1tuxxsSTqIgFxind51+1+1/IFQzsScavvJ5nV52bFCEz92xi+3479
-         bmElQZy5JghBkdRTy1sCRnVRi0ffGvm2hKdB7yyhl0aKxxcymQu0HyAcWpyDYFQaFk4H
-         u/1g==
-X-Gm-Message-State: AOAM5308GAjR3nkFK8PT9NDLkjeqyLrtR7aLvTwzrEQ+C+gH9fHw8B5z
-        ATjL3hc0cpbqyLteDdkfSIR9RQ==
-X-Google-Smtp-Source: ABdhPJzsxd2Ntx4OU+VAYF773vl3++r8bqpD7vwRrNjiKzzNW5kM0njmz+jfbvPKwMDL77r0yEXqYg==
-X-Received: by 2002:a5d:620d:: with SMTP id y13mr11854422wru.45.1629306806404;
-        Wed, 18 Aug 2021 10:13:26 -0700 (PDT)
-Received: from xps7590.fritz.box ([2a02:2454:3e5:b700:a470:eb9f:53a5:20f8])
-        by smtp.gmail.com with ESMTPSA id p3sm414825wrr.21.2021.08.18.10.13.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 10:13:25 -0700 (PDT)
-From:   Robert Foss <robert.foss@linaro.org>
-To:     a.hajda@samsung.com, narmstrong@baylibre.com,
-        robert.foss@linaro.org, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@linux.ie,
-        daniel@ffwll.ch, xji@analogixsemi.com, pihsun@chromium.org,
-        tzungbi@google.com, sam@ravnborg.org, hsinyi@chromium.org,
-        drinkcat@chromium.org, dri-devel@lists.freedesktop.org,
+        Wed, 18 Aug 2021 13:15:47 -0400
+Received: from localhost.localdomain (1-171-94-217.dynamic-ip.hinet.net [1.171.94.217])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 6944F412AE;
+        Wed, 18 Aug 2021 17:15:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629306911;
+        bh=iRuFjsARmqnJPsilk5plyw8IeGSZnpqAZVyvL098pEk=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=jiYdyVSPQAebYzKXrA/NqUaZV1sUHDSbxQGXsxlfqNO9uybD9g3qxSuiW4cTMDysl
+         xs/D5ia+LiIEXLnylbYYb9t/9fIojFas9I71n1ft78fbbcW2XxDq/QEJJLLYqhfoYB
+         eXMGKrszNZ72RxBPVW5fMSqLfL9Y3f6Db4hPZY3BBglf36Br2ixp+GZ2jmzK0+37re
+         slS1T5UeyBbbWsRwwa8B9eznbAbC40JXbyK8if+fz4AyR19c2LpYUuH43x+D4epSez
+         Cl3I78opnMUdRdbw9XAE70VDbF98JnCs5bkZ1z8JU+9mEl6H/emeyPAc8FViLf1TEw
+         77AxTaNLGTBPA==
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Imre Deak <imre.deak@intel.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        Manasi Navare <manasi.d.navare@intel.com>,
+        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
+        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] drm/bridge: anx7625: Propagate errors from sp_tx_edid_read()
-Date:   Wed, 18 Aug 2021 19:13:18 +0200
-Message-Id: <20210818171318.1848272-2-robert.foss@linaro.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210818171318.1848272-1-robert.foss@linaro.org>
-References: <20210818171318.1848272-1-robert.foss@linaro.org>
+Subject: [PATCH v2] drm/i915/dp: Use max params for panels < eDP 1.4
+Date:   Thu, 19 Aug 2021 01:14:55 +0800
+Message-Id: <20210818171457.536107-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During the sp_tx_edid_read() call the return value of sp_tx_edid_read()
-is ignored, which could cause potential errors to go unhandled.
+Users reported that after commit 2bbd6dba84d4 ("drm/i915: Try to use
+fast+narrow link on eDP again and fall back to the old max strategy on
+failure"), the screen starts to have wobbly effect.
 
-All errors which are returned by sp_tx_edid_read() are handled in
-anx7625_get_edid().
+Commit a5c936add6a2 ("drm/i915/dp: Use slow and wide link training for
+everything") doesn't help either, that means the affected eDP 1.2 panels
+only work with max params.
 
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
+So use max params for panels < eDP 1.4 as Windows does to solve the
+issue.
+
+v2:
+ - Check eDP 1.4 instead of DPCD 1.1 to apply max params
+
+Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3714
+Fixes: 2bbd6dba84d4 ("drm/i915: Try to use fast+narrow link on eDP again and fall back to the old max strategy on failure")
+Fixes: a5c936add6a2 ("drm/i915/dp: Use slow and wide link training for everything")
+Suggested-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 ---
- drivers/gpu/drm/bridge/analogix/anx7625.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/i915/display/intel_dp.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-index ea414cd349b5c..abc8db77bfd36 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-@@ -845,8 +845,11 @@ static int sp_tx_edid_read(struct anx7625_data *ctx,
- 				if (g_edid_break == 1)
- 					break;
+diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+index 75d4ebc669411..f87fad78f1a9f 100644
+--- a/drivers/gpu/drm/i915/display/intel_dp.c
++++ b/drivers/gpu/drm/i915/display/intel_dp.c
+@@ -1330,14 +1330,16 @@ intel_dp_compute_link_config(struct intel_encoder *encoder,
+ 	limits.min_bpp = intel_dp_min_bpp(pipe_config->output_format);
+ 	limits.max_bpp = intel_dp_max_bpp(intel_dp, pipe_config);
  
--				segments_edid_read(ctx, count / 2,
--						   pblock_buf, offset);
-+				ret = segments_edid_read(ctx, count / 2,
-+							 pblock_buf, offset);
-+				if (ret < 0)
-+					return ret;
-+
- 				memcpy(&pedid_blocks_buf[edid_pos],
- 				       pblock_buf,
- 				       MAX_DPCD_BUFFER_SIZE);
-@@ -863,8 +866,11 @@ static int sp_tx_edid_read(struct anx7625_data *ctx,
- 				if (g_edid_break == 1)
- 					break;
- 
--				segments_edid_read(ctx, count / 2,
--						   pblock_buf, offset);
-+				ret = segments_edid_read(ctx, count / 2,
-+							 pblock_buf, offset);
-+				if (ret < 0)
-+					return ret;
-+
- 				memcpy(&pedid_blocks_buf[edid_pos],
- 				       pblock_buf,
- 				       MAX_DPCD_BUFFER_SIZE);
+-	if (intel_dp->use_max_params) {
++	if (intel_dp->use_max_params ||
++	    intel_dp->edp_dpcd[0] < DP_EDP_14) {
+ 		/*
+ 		 * Use the maximum clock and number of lanes the eDP panel
+ 		 * advertizes being capable of in case the initial fast
+-		 * optimal params failed us. The panels are generally
+-		 * designed to support only a single clock and lane
+-		 * configuration, and typically on older panels these
+-		 * values correspond to the native resolution of the panel.
++		 * optimal params failed us or the EDP rev is earlier than 1.4.
++		 * The panels are generally designed to support only a single
++		 * clock and lane configuration, and typically on older panels
++		 * these values correspond to the native resolution of the
++		 * panel.
+ 		 */
+ 		limits.min_lane_count = limits.max_lane_count;
+ 		limits.min_clock = limits.max_clock;
 -- 
-2.30.2
+2.32.0
 
