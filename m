@@ -2,96 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A273EFEDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C74D3EFEE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240322AbhHRIMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 04:12:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45694 "EHLO
+        id S240432AbhHRINI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 04:13:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240342AbhHRIMC (ORCPT
+        with ESMTP id S240623AbhHRIMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 04:12:02 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C82C0612AF
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:11:25 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id j1so2104160pjv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 01:11:25 -0700 (PDT)
+        Wed, 18 Aug 2021 04:12:53 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23DB2C0613A3;
+        Wed, 18 Aug 2021 01:12:18 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id u22so2811720lfq.13;
+        Wed, 18 Aug 2021 01:12:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WSxasQLMQ7BBR7TdcGRSlk0G4XKWZX+xPade0LLrxhk=;
-        b=CbD0utKdxlAbg80iaRSS0Xb6pLNEjcmYbBaAJJiDGVcJsKm/Z+RsreJpCj9b6d6Ir8
-         6w6a/erDZZcGrYPtyhF+5wsjm8XMPdN3FpCXfgDRBBGOWi4cpK64IqKIPGveb/bv9yDF
-         5vfq0f1lnRE4ok6eQsJvms0oFN5mUKMxpGzz8=
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=PTS7SWHnSmVv8p2NQxDXlrhf0E7nyl4f8snQpT8Hk1c=;
+        b=LhwAKdjewrNZyym18Y20xB2PlyK+1HBxUWDL7a+euwXTx6n7lo1jEUaX7sEgID88Vt
+         7WgYYtDLBLvaCmJBlNjVBjl8Af8YnXKAEJ3docnMdVC+aSv/T0IXtLXYtt2+xJvkXswh
+         X613y9Cm+QRK5fjZNF/c0ReA1UFxCq39Yh+0NEKbLYxCtG/t0wCtpzgdM/FcI3sB8iKG
+         PGxAvLPtbIkvzNUGu1GiUPx50rAPWQ0HP0w3xOg7ap12sLNqMcycmWxYS0LUTDsfally
+         R/dBPmgWSGtqjRW+3+LL52krI9DRsVURNM6DnfVtBdinRklkCD126jHs+CwlGChCIYuY
+         UUOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WSxasQLMQ7BBR7TdcGRSlk0G4XKWZX+xPade0LLrxhk=;
-        b=qrGE+AyWHGLoP8/WfP06gFV1qtf4hVuiT+chShoTKs7dqp0WMBSp4OnaZirgFbvpmQ
-         +kPYFby+gnBKyJOzsKe73PHXi6/wDQ/zUjionIFMC424nJ7jEG0APYTOSUW0P6O0MWiv
-         5TOZeqj8h6TX4tKNrHFMlxT+1AOpZmhZfrN5xTC5P6bBgEudIp6y4qpLVwNVPb6juG2h
-         Ngoxxxm4ffoPxUESVFFLYdVkMjOUOv4m4zESG+94iRrCWfgKY8thIcmI61C1+7Dz2yiw
-         uYWYifgQbaO6AZ6YMgPmK8YT0B/J6voZR6ZgQTE3CaaC3vgIElAk09B1gPbn7OVxKLA5
-         fBnw==
-X-Gm-Message-State: AOAM531bf/J9W/1HwVAkla/BmQ3lSpD9SxD4EI1Lx/3Ps16w4B6sgld/
-        EGvrRmd4HOUUpWenMV9miiHAKw==
-X-Google-Smtp-Source: ABdhPJwf27RIHYSHTUVepdi/G5OFsbeIeSVlAlxNNQ9SzL4IkTFIp9ShdwMf3Yl+vyH2kf80Ho/7TA==
-X-Received: by 2002:a17:90b:1493:: with SMTP id js19mr8213217pjb.53.1629274284900;
-        Wed, 18 Aug 2021 01:11:24 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q3sm6254086pgl.23.2021.08.18.01.11.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 01:11:23 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH 5/5] Makefile: Enable -Wzero-length-bounds
-Date:   Wed, 18 Aug 2021 01:11:18 -0700
-Message-Id: <20210818081118.1667663-6-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210818081118.1667663-1-keescook@chromium.org>
-References: <20210818081118.1667663-1-keescook@chromium.org>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PTS7SWHnSmVv8p2NQxDXlrhf0E7nyl4f8snQpT8Hk1c=;
+        b=jU2s5ta3QOHDylhI7bdEUusNBfbuDLbwJQitHgQ0Rq8wzp9EcCMrEFU9h8HwZxYqpn
+         VIEh5QHdYrws85AZ4eCI4gaI5syCViWoFZc8BEXtz9Oz4BbGE6oildaNEuFSwlkISbts
+         vTYMyeIu4m3JCx1feBm0IrCRfUpBSbAj/FLvpaAc2Ql+0G6i7QnKOzMUV6jwzIWxiFQA
+         VKuQiUiBlbKoU0l5/dqtWUsF5PQF1FvAA98Q7unA25G8YxdqvnihaJObycNwMETOcWtd
+         p7SQncAic6TqK5GIpDIBKyiUKJC4StbM8K3+z6BRsw+5Gg9dlHBvyClgZv4rG0ehcLDO
+         1krA==
+X-Gm-Message-State: AOAM531Aklc/LKOIrLIkMbA9E/poVJlaX35ttWA1ye97TzMq/LN17fOR
+        gD8b3ncfCnq3RFtgrhZQwmM=
+X-Google-Smtp-Source: ABdhPJx7KSNTMK3kkYNGgAIPyPysjnZ6xRm3jCX93PeQoj3olBx+9dtiB4E7wvg0Cc+UlZwYR7+Dow==
+X-Received: by 2002:ac2:5e8f:: with SMTP id b15mr2992334lfq.656.1629274336450;
+        Wed, 18 Aug 2021 01:12:16 -0700 (PDT)
+Received: from localhost.localdomain ([46.61.204.60])
+        by smtp.gmail.com with ESMTPSA id b4sm386693lfo.94.2021.08.18.01.12.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Aug 2021 01:12:15 -0700 (PDT)
+Subject: Re: [syzbot] KFENCE: use-after-free in kvm_fastop_exception
+To:     Matthieu Baerts <matthieu.baerts@tessares.net>,
+        syzbot <syzbot+7b938780d5deeaaf938f@syzkaller.appspotmail.com>,
+        davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
+        marcel@holtmann.org, mathew.j.martineau@linux.intel.com,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <00000000000012030e05c9c8bc85@google.com>
+ <58cef9e0-69de-efdb-4035-7c1ed3d23132@tessares.net>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+Message-ID: <6736a510-20a1-9fb5-caf4-86334cabbbb6@gmail.com>
+Date:   Wed, 18 Aug 2021 11:12:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=998; h=from:subject; bh=VMkL66yeOij4K1iaHsjPblzabYjjgbbejH3VnhYGySY=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhHMClHULohfwlYl/hV7Z7Tw6ENdG87mPM0BxkmZ03 6QqKgdWJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYRzApQAKCRCJcvTf3G3AJv3FD/ 44FfP1SqqRlWkqqnJ3WgF1Uq38Ay4cWhio8wr4PJxqluecJNm245E9vOGSWxS1NPyM/1K9e2Lnt5lX UzX9QSCQSQeklVqfDkGhDayYKmK5gHcDUXimko7elgaYN9OK75FunT5OZiSPResOHFK1MqzX0cfSno e3BJ+NSDveGnxWgWsHV5pHof55dXEB8KYcG2dw5pw00PGIN0jcQEoKMT/xrPDTzGhTVoFCiSxkz3SB tv5zcDPaBoQ5p2R41J+wmH7Vwbv3MAcb6frYqpZNg1NcWqyIvcK+xUJ5YGV+8WBwdPH8UkOGTDsoq2 uodAFvs/3zjZ/wScjZYb5UuWSGIhsE+e2WYnW3VTkYHzcHbFbCMTcWMdVRl/DQTvYQkWmUa4ruhpCU dh1BKMgOUhOpdHeHIbUb4/aQJouuUWUm/TVZCOEcIteBGmts1sXS7y+JFYYscebKa4qaiBGstkvq9u 1BSSawi2FQdm3tUyDc824Eqt1fQbv6w/ohNmVyUQCuBfjRKpUyC7EXVpm/YOKTYfL7bJkivNuXSqzE 279DBq7DcuRW4x71TRLrb6SFcKoP6YsT+hFyjflGTHsbzfIuyM/8hqsPQ7xYvd+ZoVPcf3FY6Ckij9 ATm1nXyJhHf9YqQRBcP1Yu8BSi8UkrVo+8rcX2SVGlOO5oC+wg6yqEhAU/wg==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <58cef9e0-69de-efdb-4035-7c1ed3d23132@tessares.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With all known internal zero-length accesses fixed, it is possible to
-enable -Wzero-length-bounds globally. Since this is included by default
-in -Warray-bounds, we just need to stop disabling it.
+On 8/18/21 11:02 AM, Matthieu Baerts wrote:
+> Hello,
+> 
+> On 18/08/2021 00:21, syzbot wrote:
+>> syzbot has bisected this issue to:
+>> 
+>> commit c4512c63b1193c73b3f09c598a6d0a7f88da1dd8
+>> Author: Matthieu Baerts <matthieu.baerts@tessares.net>
+>> Date:   Fri Jun 25 21:25:22 2021 +0000
+>> 
+>>     mptcp: fix 'masking a bool' warning
+>> 
+>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=122b0655300000
+>> start commit:   b9011c7e671d Add linux-next specific files for 20210816
+>> git tree:       linux-next
+>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=112b0655300000
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=162b0655300000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=a245d1aa4f055cc1
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=7b938780d5deeaaf938f
+>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=157a41ee300000
+>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14f78ff9300000
+> 
+> I'm pretty sure the commit c4512c63b119 ("mptcp: fix 'masking a bool'
+> warning") doesn't introduce the reported bug. This minor fix is specific
+> to MPTCP which doesn't seem to be used here.
+> 
+> I'm not sure how I can tell syzbot this is a false positive.
+> 
 
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- Makefile | 1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/Makefile b/Makefile
-index af22b83cede7..3b6fb740584e 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1071,7 +1071,6 @@ KBUILD_CFLAGS += -Wno-pointer-sign
- KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
- 
- # We'll want to enable this eventually, but it's not going away for 5.7 at least
--KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
- KBUILD_CFLAGS += $(call cc-disable-warning, stringop-overflow)
- 
- # Another good warning that we'll want to enable eventually
--- 
-2.30.2
+looks like it's fs/namei bug. Similar reports:
 
+https://syzkaller.appspot.com/bug?id=517fa734b92b7db404c409b924cf5c997640e324
+
+https://syzkaller.appspot.com/bug?id=484483daf3652b40dae18531923aa9175d392a4d
+
+
+It's not false positive. I've suggested the fix here:
+https://groups.google.com/g/syzkaller-bugs/c/HE3c2fP5nic/m/1Yk17GBeAwAJ
+I am waiting for author comments about the fix :)
+
+But, yes, syzbot bisection is often wrong, so don't rely on it much :)
+
+
+With regards,
+Pavel Skripkin
