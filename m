@@ -2,109 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C5D3EFA1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 07:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098563EFA22
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 07:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237797AbhHRFdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 01:33:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36626 "EHLO
+        id S237868AbhHRFen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 01:34:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236055AbhHRFdO (ORCPT
+        with ESMTP id S237812AbhHRFeC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 01:33:14 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55FB3C061764;
-        Tue, 17 Aug 2021 22:32:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=2zC73NgneGv8r0rNy+11rurbEC45FiruzWf40phAS6Y=; b=oIATTtM3ADQ3QTDvs0iGJBj4VU
-        j+ZymCDfVMRqOX0Bs6AApeQ7EgI53hzm7ByuFJlTTKgHFpP2I2gkQ0pUfNJDiTRFCPADbYVeSkksH
-        6MHbcOwDdQ1OZQ/EZ547mY1ihBLVAp3Tl91GXPKCBF0g95fNE6koik9sFJ11HN10uxIeuWGx7bYls
-        laq3Lgk7MI9HmzvrTZYGidU0JEqevxWCqg5wEXvdm9ZQGW5ZlikVdAofrvVj9nlAwLCdF3UmlhZMS
-        TRLmD9NrdkomJ/fpCa3A+J7LvC0pljdb4vj5EM4WqjaWOCzHndTQwZVDZUfH5vfnYjGj+QI4FhqAv
-        6QPncMcg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mGEBp-004Fdw-Np; Wed, 18 Aug 2021 05:32:37 +0000
-Subject: Re: [PATCH] clk/at91: remove kernel-doc warnings in sama7g5.c
-To:     Claudiu.Beznea@microchip.com, linux-kernel@vger.kernel.org
-Cc:     lkp@intel.com, mturquette@baylibre.com, sboyd@kernel.org,
-        Eugen.Hristev@microchip.com, linux-clk@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        corbet@lwn.net
-References: <20210810005431.22007-1-rdunlap@infradead.org>
- <1670a11e-98d8-1b55-34c0-3369aaa8a615@microchip.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <29f0b5d0-d9ab-6ef3-b280-ba3d64c8d828@infradead.org>
-Date:   Tue, 17 Aug 2021 22:32:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 18 Aug 2021 01:34:02 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB60C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 22:33:28 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id k24so1063830pgh.8
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 22:33:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tMoQn8GgqE22a95kT2T9MUT0duyCn/8LEmCKNCJyZFo=;
+        b=J+sLV+tiPa32qkx1/OsnH4ufX2n2jfiG0a1/C5JyPfYE9Y5KwJ51+CD+aJRQHylCeW
+         WaEiLSFc1Bg1pbEly34GABw0BLorhvxoIG7M960wEooFSSbe0aw3FRufek2ogtSyn6hy
+         6yU6RiNozSR9hqREf8B0Mqw7zJfgsThFInbU++Vkuwof/Vhc2n8cWvebfGPxQCOvjIMa
+         4citbn0/bosovxhelsZuUOijupOkZUgPPFcg0b7SpFFYvbORN0BA1j/JSBojGjsqUqHt
+         PQ8gV/rLaOnjOOgIV7y235JsizKMi9GGWI69xuzxruvaMRxz+S3WHujuoD89N+Wt65Fb
+         aB1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tMoQn8GgqE22a95kT2T9MUT0duyCn/8LEmCKNCJyZFo=;
+        b=ZTBs4Z+DldBSJ2B6kJrFlLY/io0CJqZjLd2OkroUlD+EfE3oqz53KFk80bHS1wZAwY
+         VoYWGnxZp8zEv8j0jRk9FW6EIJxl77duIsGMVsSiFdabx9Vm855d9Omps7v895J3kXiW
+         rB7bnucXNgLBbIOmtj18V050en0uOiPs2CRyaqHPtZil0br3eqBvbOVZprB7tlgl6vTW
+         V+692ReqTKmj0QRXmWqK4Gf7kK7gvLmThzpQFfs96SNiKJ28KtRbjRRf4lHkL4mJHHGh
+         mA59UZCiAu6CERCB+n54v3w9B0D9T0Sz9OU9zEVNCK674UGjMb3iwOhdK83ASz6rWYaT
+         Vn0w==
+X-Gm-Message-State: AOAM533P8MjlNpM0hP/kiYfu8+UgAY/gms5mmW0RSvzafRAyk7IbnAJv
+        UxJBuGqOIvarmiKyuQdwegE+lgX93e+Hyhj4Y8pRuw==
+X-Google-Smtp-Source: ABdhPJwcl2oZptZbY58B9GgwmQKrzfimZ0zykOVdtmAqRZxvRzAfp/NOW/WGmwWAyLpXb4VlZSWtYhN0GUltRfjoTvI=
+X-Received: by 2002:a05:6a00:228d:b0:3e1:aba4:8e3 with SMTP id
+ f13-20020a056a00228d00b003e1aba408e3mr7485738pfe.49.1629264807603; Tue, 17
+ Aug 2021 22:33:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1670a11e-98d8-1b55-34c0-3369aaa8a615@microchip.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210817033032.76089-1-songmuchun@bytedance.com>
+ <YRxtZ3X8QGv/bui5@carbon.dhcp.thefacebook.com> <CAMZfGtV4LXDmv=Gyd5bKPy-V-3a4y3R62XGXnvZyeQ_xqCabJg@mail.gmail.com>
+ <YRyQNEc79Km6M9xc@carbon.dhcp.thefacebook.com>
+In-Reply-To: <YRyQNEc79Km6M9xc@carbon.dhcp.thefacebook.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 18 Aug 2021 13:32:48 +0800
+Message-ID: <CAMZfGtXFPD+P=ByLH=ZMc5858fpqhP5JY+LYUu6hYmhQ1E0NVw@mail.gmail.com>
+Subject: Re: [PATCH] mm: introduce PAGEFLAGS_MASK to replace ((1UL <<
+ NR_PAGEFLAGS) - 1)
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/17/21 10:12 PM, Claudiu.Beznea@microchip.com wrote:
-> Hi Randy,
-> 
-> On 10.08.2021 03:54, Randy Dunlap wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> Fix multiple kernel-doc warnings in sama7g5.c. There are several
->> enums and structs that were not identified as such.
->> There are also several anonymous structs (that scripts/kernel-doc
->> has problems with), so add struct names to them.
->>
->> Fixes the following warnings:
->>
->> drivers/clk/at91/sama7g5.c:39: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->>   * PLL clocks identifiers
->> drivers/clk/at91/sama7g5.c:60: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->>   * PLL type identifiers
->> drivers/clk/at91/sama7g5.c:122: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->>   * PLL clocks description
->> drivers/clk/at91/sama7g5.c:289: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->>   * Master clock (MCK[1..4]) description
->> drivers/clk/at91/sama7g5.c:341: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->>   * System clock description
->> drivers/clk/at91/sama7g5.c:365: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->>   * Peripheral clock description
->> drivers/clk/at91/sama7g5.c:453: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->>   * Generic clock description
->> drivers/clk/at91/sama7g5.c:339: warning: Function parameter or member 'ep_chg_id' not described in 'master_clock'
->>
->> Some kernel-doc warnings are still printed, but they are all due to
->> problems in the kernel-doc script (if anyone is interested in playing
->> with some Perl :). These warnings are:
->>
->> sama7g5.c:287: warning: Function parameter or member '{' not described in 'sama7g5_plls'
->> sama7g5.c:287: warning: Function parameter or member '' not described in 'sama7g5_plls'
->> sama7g5.c:287: warning: Function parameter or member '}' not described in 'sama7g5_plls'
->> sama7g5.c:339: warning: Function parameter or member 'sama7g5_mckx' not described in 'master_clock'
->> sama7g5.c:339: warning: Function parameter or member '}' not described in 'master_clock'
->> sama7g5.c:360: warning: Function parameter or member 'sama7g5_systemck' not described in 'system_clock'
->> sama7g5.c:451: warning: Function parameter or member 'sama7g5_periphck' not described in 'periph_clock'
->> sama7g5.c:451: warning: Function parameter or member '' not described in 'periph_clock'
->> sama7g5.c:451: warning: Function parameter or member '}' not described in 'periph_clock'
->> sama7g5.c:841: warning: Function parameter or member 'sama7g5_gck' not described in 'generic_clock'
->> sama7g5.c:841: warning: Function parameter or member '}' not described in 'generic_clock'
-> 
-> What about keeping only one '*' instead of '**' where necessary as these
-> data structures are only local to sama7g5.c file (according to
-> Documentation/doc-guide/kernel-doc.rst "Functions and data structures in
-> header files which are intended to be used by modules should also have
-> kernel-doc comments."). This way all the warnings will be gone.
+On Wed, Aug 18, 2021 at 12:44 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Wed, Aug 18, 2021 at 12:35:08PM +0800, Muchun Song wrote:
+> > On Wed, Aug 18, 2021 at 10:16 AM Roman Gushchin <guro@fb.com> wrote:
+> > >
+> > > On Tue, Aug 17, 2021 at 11:30:32AM +0800, Muchun Song wrote:
+> > > > Instead of hard-coding ((1UL << NR_PAGEFLAGS) - 1) everywhere, introducing
+> > > > PAGEFLAGS_MASK to make the code clear to get the page flags.
+> > > >
+> > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > > ---
+> > > >  include/linux/page-flags.h      | 4 +++-
+> > > >  include/trace/events/page_ref.h | 4 ++--
+> > > >  lib/test_printf.c               | 2 +-
+> > > >  lib/vsprintf.c                  | 2 +-
+> > > >  4 files changed, 7 insertions(+), 5 deletions(-)
+> > > >
+> > > > diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> > > > index 54c4af35c628..1f951ac24a5e 100644
+> > > > --- a/include/linux/page-flags.h
+> > > > +++ b/include/linux/page-flags.h
+> > > > @@ -180,6 +180,8 @@ enum pageflags {
+> > > >       PG_reported = PG_uptodate,
+> > > >  };
+> > > >
+> > > > +#define PAGEFLAGS_MASK               (~((1UL << NR_PAGEFLAGS) - 1))
+> > >
+> > > Hm, isn't it better to invert it? Like
+> > > #define PAGEFLAGS_MASK          ((1UL << NR_PAGEFLAGS) - 1)
+> > >
+> > > It feels more usual and will simplify the rest of the patch.
+> >
+> > Actually, I learned from PAGE_MASK. So I thought the macro
+> > like xxx_MASK should be the format of 0xff...ff00...00. I don't
+> > know if it is an unwritten rule. I can invert PAGEFLAGS_MASK
+> > if it's not a rule.
+>
+> There are many examples of both approached in the kernel tree,
+> however I'd say the more common is without "~" (out of my head).
+>
+> It's definitely OK to define it like
+> #define PAGEFLAGS_MASK          ((1UL << NR_PAGEFLAGS) - 1)
 
-Sure, that works too.
-I'll send an updated patch.
+Got it. Thanks Roman.
 
-thanks.
--- 
-~Randy
-
+>
+> Thanks!
