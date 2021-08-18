@@ -2,102 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD7A3F0428
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5593F0446
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236716AbhHRNDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 09:03:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58074 "EHLO
+        id S236473AbhHRNGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 09:06:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236629AbhHRNDm (ORCPT
+        with ESMTP id S235423AbhHRNGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 09:03:42 -0400
-Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 596BEC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 06:03:07 -0700 (PDT)
-Received: by mail-wm1-x349.google.com with SMTP id 5-20020a1c00050000b02902e67111d9f0so619417wma.4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 06:03:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=RrG3CyO9Gjt37gk9O8igCLRvqsHUd/YOk6xR8PM41xQ=;
-        b=mUuxo16hVJ+iZgyLxC/SaVrM1114EX1QQ8bF2KypKKGX1JQEyAfvoujkSpT0sGjXTh
-         MmG7VHJVTVnSrFHhgY0E8Xr0I7tz+ZAMbyqFV312p3CuLzmNv/iH1Rjv/ge2Oe426hqh
-         pup5K/Ou0j9iqKQLgX+OxbxI8iAoZyYbSleEejVKg5aDm+a0zwEyEkD6QzV7IEUCMxs8
-         jaydHwdr9D2u1R3P9aAmXFZ/SavvdP9B7wfMP3mRTX1DjzGLo5XGcaZD6GGDueu7ehZe
-         nqpdtyOxPLHHmPgYQUVC1EMuERPjPRKxHlidRCzvKDJKXzywaY5qkAhb2zSu0pifJh3g
-         1C8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=RrG3CyO9Gjt37gk9O8igCLRvqsHUd/YOk6xR8PM41xQ=;
-        b=O5otmZm/BjrawoFjCObWHhMSxsjp1adpz9sDhXbiBPI5LGJEvENlKcOn6K+mAlkkxt
-         aQgXIYpoS/PXxcvE/LvGJivMdI36iloHjw4YD9myjCMXcmKD2PxeqBA4ZILYldj4DJMM
-         VGGk6gz7ehs8aP4XiGlrM4sYgj/8gTzl9cc+0Zfrf2aVt5UMwFP8b1fMs4G81Uyu1Fny
-         R+KBBP7VgwQF+wsAesD0weqZW5yUk/w9GpdeuEHgVbNgVuFkwJSKqQEJpM7t07t+J99A
-         OtlViI8NSIVOjjHp3+XoL4GHSBpQuQpAfIbO70ufRiN5ugl1n9E0gdOCR5L8mwSQfgOS
-         UnSQ==
-X-Gm-Message-State: AOAM531aTpEon2peTL+E8eY0ZS81RKIAlt0vA3EWnQo5+e9NfTWINbXD
-        WLVy9FygLNcjBvXwVRilZ8iYzzen7Q==
-X-Google-Smtp-Source: ABdhPJzbSbjgQk5lmEa3hM+PK3vcJ+Jbea7iM+3mGTQTNzNWuNnofg3TzKJCoftHPaHYa4/ctrMFY6/l4Q==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:52dc:2f6d:34df:96a5])
- (user=elver job=sendgmr) by 2002:a05:600c:35d3:: with SMTP id
- r19mr574288wmq.1.1629291785265; Wed, 18 Aug 2021 06:03:05 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 15:03:00 +0200
-Message-Id: <20210818130300.2482437-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
-Subject: [PATCH] kfence: fix is_kfence_address() for addresses below KFENCE_POOL_SIZE
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, akpm@linux-foundation.org
-Cc:     glider@google.com, dvyukov@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kasan-dev@googlegroups.com,
-        Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 18 Aug 2021 09:06:10 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E50C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 06:05:35 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1mGLG6-0002LF-3u; Wed, 18 Aug 2021 15:05:30 +0200
+Subject: Re: [PATCH V3 3/3] gpio: modepin: Add driver support for modepin GPIO
+ controller
+To:     Piyush Mehta <piyushm@xilinx.com>, "arnd@arndb.de" <arnd@arndb.de>,
+        "zou_wei@huawei.com" <zou_wei@huawei.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        Michal Simek <michals@xilinx.com>,
+        Jiaying Liang <jliang@xilinx.com>,
+        "iwamatsu@nigauri.org" <iwamatsu@nigauri.org>,
+        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Rajan Vaja <RAJANV@xilinx.com>
+Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Srinivas Goud <sgoud@xilinx.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        git <git@xilinx.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210818081018.2620544-1-piyush.mehta@xilinx.com>
+ <20210818081018.2620544-4-piyush.mehta@xilinx.com>
+ <b3d718af-6eb7-a212-f599-d0d91273afdc@pengutronix.de>
+ <SJ0PR02MB86443029095BF5949E51808AD4FF9@SJ0PR02MB8644.namprd02.prod.outlook.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <a1bd7d9f-5746-2d4c-8658-beb804468846@pengutronix.de>
+Date:   Wed, 18 Aug 2021 15:05:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <SJ0PR02MB86443029095BF5949E51808AD4FF9@SJ0PR02MB8644.namprd02.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Originally the addr != NULL check was meant to take care of the case
-where __kfence_pool == NULL (KFENCE is disabled). However, this does not
-work for addresses where addr > 0 && addr < KFENCE_POOL_SIZE.
+Hello Piyush,
 
-This can be the case on NULL-deref where addr > 0 && addr < PAGE_SIZE or
-any other faulting access with addr < KFENCE_POOL_SIZE. While the kernel
-would likely crash, the stack traces and report might be confusing due
-to double faults upon KFENCE's attempt to unprotect such an address.
+On 18.08.21 12:09, Piyush Mehta wrote:
+> Hi Ahmad,
+> 
+> -----Original Message-----
+> From: Ahmad Fatoum <a.fatoum@pengutronix.de> 
+> Sent: Wednesday, August 18, 2021 2:22 PM
+> To: Piyush Mehta <piyushm@xilinx.com>; arnd@arndb.de; zou_wei@huawei.com; gregkh@linuxfoundation.org; linus.walleij@linaro.org; Michal Simek <michals@xilinx.com>; Jiaying Liang <jliang@xilinx.com>; iwamatsu@nigauri.org; bgolaszewski@baylibre.com; robh+dt@kernel.org; Rajan Vaja <RAJANV@xilinx.com>
+> Cc: linux-gpio@vger.kernel.org; devicetree@vger.kernel.org; git <git@xilinx.com>; Srinivas Goud <sgoud@xilinx.com>; linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; Pengutronix Kernel Team <kernel@pengutronix.de>
+> Subject: Re: [PATCH V3 3/3] gpio: modepin: Add driver support for modepin GPIO controller
+> 
+> On 18.08.21 10:10, Piyush Mehta wrote:
+>> This patch adds driver support for the zynqmp modepin GPIO controller.
+>> GPIO modepin driver set and get the value and status of the PS_MODE 
+>> pin, based on device-tree pin configuration. These four mode pins are 
+>> configurable as input/output. The mode pin has a control register, 
+>> which have lower four-bits [0:3] are configurable as input/output, 
+>> next four-bits can be used for reading the data  as input[4:7], and 
+>> next setting the output pin state output[8:11].
+>>
+>> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
+>> Acked-by: Michal Simek <michal.simek@xilinx.com>
+>> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>> ---
+> 
+>> +/**
+>> + * modepin_gpio_dir_in - Set the direction of the specified GPIO pin as input
+>> + * @chip:	gpio_chip instance to be worked on
+>> + * @pin:	gpio pin number within the device
+>> + *
+>> + * Return: 0 always
+>> + */
+>> +static int modepin_gpio_dir_in(struct gpio_chip *chip, unsigned int 
+>> +pin) {
+>> +	return 0;
+>> +}
+> 
+> You say the gpio controller can configure pins as inputs or outputs.
+> These pins are controller via firmware driver. We are updating BOOT_PIN_CTRL 	0xFF5E0250 register.
+> [0:3]  = When 0, the pins will be inputs from the board to the PS. When 1, the PS will drive these pins
 
-Fix it by just checking that __kfence_pool != NULL instead.
+Ok. So if you want to configure the pin as input, you should call zynqmp_pm_bootmode_write
+to write a zero into that bit.
 
-Fixes: 0ce20dd84089 ("mm: add Kernel Electric-Fence infrastructure")
-Reported-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-Signed-off-by: Marco Elver <elver@google.com>
-Cc: <stable@vger.kernel.org>    [5.12+]
----
- include/linux/kfence.h | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/kfence.h b/include/linux/kfence.h
-index a70d1ea03532..3fe6dd8a18c1 100644
---- a/include/linux/kfence.h
-+++ b/include/linux/kfence.h
-@@ -51,10 +51,11 @@ extern atomic_t kfence_allocation_gate;
- static __always_inline bool is_kfence_address(const void *addr)
- {
- 	/*
--	 * The non-NULL check is required in case the __kfence_pool pointer was
--	 * never initialized; keep it in the slow-path after the range-check.
-+	 * The __kfence_pool != NULL check is required to deal with the case
-+	 * where __kfence_pool == NULL && addr < KFENCE_POOL_SIZE. Keep it in
-+	 * the slow-path after the range-check!
- 	 */
--	return unlikely((unsigned long)((char *)addr - __kfence_pool) < KFENCE_POOL_SIZE && addr);
-+	return unlikely((unsigned long)((char *)addr - __kfence_pool) < KFENCE_POOL_SIZE && __kfence_pool);
- }
+But there's only one zynqmp_pm_bootmode_write in the GPIO driver and it's in modepin_gpio_set_value,
+which does output, not input. If I understand you right, there should be a modepin_gpio_set_value in
+modepin_gpio_dir_in as well?
  
- /**
--- 
-2.33.0.rc1.237.g0d66db33f3-goog
+> Yet, .direction_input is doing nothing. So, it's not clear to me, how this sequence could work:
+> 
+>  - set gpio output high (writes bootmode)
+>  - set gpio to input (no-op, pin will remain high, not high impedance)
 
+This is a valid sequence for a GPIO consumer and I don't see how this GPIO driver could
+honor it. Could you clarify?
+
+Cheers,
+Ahmad
+
+> 
+> 
+> 
+> 
+> 
+> 
+> I didn't check the previous discussions, but if this indeed works as intended, the how should be written here into the driver. That is a more useful comment than kernel doc for a stub function.
+> 
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
