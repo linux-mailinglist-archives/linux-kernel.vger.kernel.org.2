@@ -2,111 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA7E3F01BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 12:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5583F01DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 12:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234990AbhHRKd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 06:33:59 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:49836 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234485AbhHRKdD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 06:33:03 -0400
-X-UUID: 281cbf1802e140d5a12856a8ae63eaf2-20210818
-X-UUID: 281cbf1802e140d5a12856a8ae63eaf2-20210818
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <trevor.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1794425469; Wed, 18 Aug 2021 18:32:24 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 18 Aug 2021 18:32:23 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 18 Aug 2021 18:32:23 +0800
-From:   Trevor Wu <trevor.wu@mediatek.com>
-To:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
-        <robh+dt@kernel.org>, <matthias.bgg@gmail.com>
-CC:     <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <bicycle.tsai@mediatek.com>, <jiaxin.yu@mediatek.com>,
-        <cychiang@google.com>, <aaronyu@google.com>, <wenst@chromium.org>
-Subject: [PATCH v4 11/11] dt-bindings: mediatek: mt8195: add mt8195-mt6359-rt1019-rt5682 document
-Date:   Wed, 18 Aug 2021 18:32:15 +0800
-Message-ID: <20210818103215.9186-12-trevor.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210818103215.9186-1-trevor.wu@mediatek.com>
-References: <20210818103215.9186-1-trevor.wu@mediatek.com>
+        id S234535AbhHRKip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 06:38:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47888 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230072AbhHRKig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 06:38:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D337060EB5;
+        Wed, 18 Aug 2021 10:38:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629283081;
+        bh=c82u97ew4Crm1pKl6m89vOH9xM0DBu4AvuwoDSaTMtA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I6nOA7Sal3sT3pfQiX+r63/k9sY5wKVY8rL2fejingbEPdAhn0kVdtJqn9qDBmyrU
+         JLLKYdF23tycwwAcOhDxFvsoMZGfF6Y6zvIGhJgK45axQB2bdtnG8s4Wvd+Bi+b5Rw
+         TrmoKiCJB3kgKfHNmpY1WzUNVjK4dznUsXIAk+MpeyNuQ1/8r2go3r9NBfoFojIClp
+         tE+VFpVb9n6bjaMsq8nAwLzUN9VAJuwBA1Yc4Y81opAnnd0wzcsNK5rsGr9PzkMRST
+         YuGwaxJMo6DVj0UZS2tj8fMtHI4w9otrkOe00402wkr0q2Icq4yfNOIhdLyBw8hkMo
+         +pHuGvmP5fTJg==
+Date:   Wed, 18 Aug 2021 16:07:56 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org
+Subject: Re: [PATCH v11 01/11] phy: HiSilicon: Add driver for Kirin 970 PCIe
+ PHY
+Message-ID: <YRzjBOGsehbHAGJv@matsya>
+References: <cover.1628755058.git.mchehab+huawei@kernel.org>
+ <7788c5ead6d6f5a6f9e5faaee4460eb2149967c4.1628755058.git.mchehab+huawei@kernel.org>
+ <YRuSnXHSZHhBC40r@matsya>
+ <20210818110123.33eba838@coco.lan>
+ <YRzck9WqerFtu846@matsya>
+ <20210818123037.2adef2de@coco.lan>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210818123037.2adef2de@coco.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds document for mt8195 board with mt6359, rt1019 and rt5682
+On 18-08-21, 12:30, Mauro Carvalho Chehab wrote:
+> Em Wed, 18 Aug 2021 15:40:27 +0530
+> Vinod Koul <vkoul@kernel.org> escreveu:
 
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
----
- .../sound/mt8195-mt6359-rt1019-rt5682.yaml    | 47 +++++++++++++++++++
- 1 file changed, 47 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
+> > Okay sounds fair to me, I think fixme should be left but the c99 style
+> > code commented out can be removed
+> 
+> Agreed. I'll replace it with:
+> 
+> +       /*
+> +        * FIXME: The enabled clocks should be disabled here by calling
+> +        * kirin_pcie_clk_ctrl(phy, false);
+> +        * However, some clocks used at Kirin 970 should be marked as
+> +        * CLK_IS_CRITICAL at clk-hi3670 driver, as powering such clocks off
+> +        * cause an Asynchronous SError interrupt, which produces panic().
+> +        * While clk-hi3670 is not fixed, we cannot risk disabling clocks here.
+> +        */
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
-new file mode 100644
-index 000000000000..20bc0ffd0e34
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
-@@ -0,0 +1,47 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/mt8195-mt6359-rt1019-rt5682.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Mediatek MT8195 with MT6359, RT1019 and RT5682 ASoC sound card driver
-+
-+maintainers:
-+  - Trevor Wu <trevor.wu@mediatek.com>
-+
-+description:
-+  This binding describes the MT8195 sound card.
-+
-+properties:
-+  compatible:
-+    const: mediatek,mt8195_mt6359_rt1019_rt5682
-+
-+  mediatek,platform:
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+    description: The phandle of MT8195 ASoC platform.
-+
-+  mediatek,dptx-codec:
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+    description: The phandle of MT8195 Display Port Tx codec node.
-+
-+  mediatek,hdmi-codec:
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+    description: The phandle of MT8195 HDMI codec node.
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+  - mediatek,platform
-+
-+examples:
-+  - |
-+
-+    sound: mt8195-sound {
-+        compatible = "mediatek,mt8195_mt6359_rt1019_rt5682";
-+        mediatek,platform = <&afe>;
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&aud_pins_default>;
-+    };
-+
-+...
+sounds good!
+
 -- 
-2.18.0
-
+~Vinod
