@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7FC3F0D9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 23:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 648FE3F0DAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 23:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234298AbhHRVoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 17:44:10 -0400
-Received: from vps-vb.mhejs.net ([37.28.154.113]:34654 "EHLO vps-vb.mhejs.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234140AbhHRVoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 17:44:09 -0400
-Received: from MUA
-        by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <mail@maciej.szmigiero.name>)
-        id 1mGTLL-000665-Kq; Wed, 18 Aug 2021 23:43:27 +0200
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-References: <cover.1628871411.git.maciej.szmigiero@oracle.com>
- <8db0f1d1901768b5de1417caa425e62d1118e5e8.1628871413.git.maciej.szmigiero@oracle.com>
- <957c6b3d-9621-a5a5-418c-f61f87a32ee0@redhat.com>
-From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH v4 06/13] KVM: Move WARN on invalid memslot index to
- update_memslots()
-Message-ID: <fa71d652-8b7f-e0d7-5617-8958e3e78f6e@maciej.szmigiero.name>
-Date:   Wed, 18 Aug 2021 23:43:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234207AbhHRVtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 17:49:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234115AbhHRVtO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 17:49:14 -0400
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2BDEC061764;
+        Wed, 18 Aug 2021 14:48:38 -0700 (PDT)
+Received: by mail-oo1-xc32.google.com with SMTP id b25-20020a4ac2990000b0290263aab95660so1151075ooq.13;
+        Wed, 18 Aug 2021 14:48:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UXeOhhO90b9jYJjZOPuzE519VVKTcSq6o+2ecDsjYcE=;
+        b=n+ddOVtvlahmA+z+YjAlWc7gsVK4AGKExw+Aa93odbyAy6h8helwF1oozZqqN8ReP8
+         il29Kf/7KEoBbgKAyzp3Y+OWlHHU3oD/kae28lHa+rC3EoZMEf0BRLKPXJFKd7n4Ogyv
+         HxxFIZoHOPAsCpFO5UIzFTZKCkWa0aJmMX+91H5mf9GU2foWVnHhMCBqZn/q8nLND59G
+         9Uu2cdLCc7OvbD/5D3+TuboxSafBd6NmRBNsvRGJzJvzUArIVP8iyiJ6s8wlvaVMvMyj
+         DfSeJN1bbq1RwF/eNhKlNkJ9UIvm1m8tNCjwju32S0jQB9pTeNAaaa62oCkOkuFPluE5
+         ZF5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UXeOhhO90b9jYJjZOPuzE519VVKTcSq6o+2ecDsjYcE=;
+        b=Rhm+RNmEV6di+5o/lDFctpkkbu6yVMuryaI5Ec7QWnsCF8NsWxZVRh5QdxryySmoK7
+         TLSJTtGCHu4SurmGXzPJhekAK18AaUG6G6VO48SgMn0F5BJxp1iNMBqOnYAI7kPZlXvh
+         jThXqdcAkq/R8Hfykwmsn2QA7kJ7fdDZ+oaYFxZEbhP4EbXmNAvfFzwq5exkn6C+YtWQ
+         KFmiIQwzQWSmxwcnsLOEABsQ3VdHpA8Uhozm3qTcKfmSwM+n97B/1mKMN/B4lNUVxtZ9
+         gC7WVEr7Ji91rhdJMvSmerEyAMcHKUr8x1teRD8Njqyh8saBadoh3V55cNVQf8aSsbqN
+         +UDA==
+X-Gm-Message-State: AOAM532WL9XxTKUf36TR8DaIx+OCWsmTEnF1Sz7MStE/MrclqdDuP0rz
+        cFl9G195iPfLRbY69n55Zxo=
+X-Google-Smtp-Source: ABdhPJy1/Nm092PBE7+VydqgQjbvZxuCynfS5TBKwv4ZKKY7YhxDCPACF6ADGJ3afM7FLtgvEpcZ3g==
+X-Received: by 2002:a4a:3651:: with SMTP id p17mr8533256ooe.92.1629323318438;
+        Wed, 18 Aug 2021 14:48:38 -0700 (PDT)
+Received: from SBox.SBox.org.net ([24.144.34.93])
+        by smtp.gmail.com with ESMTPSA id 45sm277580otm.43.2021.08.18.14.48.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 14:48:38 -0700 (PDT)
+From:   Falla Coulibaly <fallacoulibalyz@gmail.com>
+To:     rjw@rjwysocki.net, len.brown@intel.com, pavel@ucw.cz
+Cc:     Falla Coulibaly <fallacoulibalyz@gmail.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] kernel/power: Remove blk_status_to_errno in hib_wait_io
+Date:   Wed, 18 Aug 2021 16:47:40 -0500
+Message-Id: <20210818214740.3743-1-fallacoulibalyz@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <957c6b3d-9621-a5a5-418c-f61f87a32ee0@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.08.2021 16:35, David Hildenbrand wrote:
-> On 13.08.21 21:33, Maciej S. Szmigiero wrote:
->> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
->>
->> Since kvm_memslot_move_forward() can theoretically return a negative
->> memslot index even when kvm_memslot_move_backward() returned a positive one
->> (and so did not WARN) let's just move the warning to the common code.
->>
->> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
->> ---
->>   virt/kvm/kvm_main.c | 6 ++++--
->>   1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
->> index 03ef42d2e421..7000efff1425 100644
->> --- a/virt/kvm/kvm_main.c
->> +++ b/virt/kvm/kvm_main.c
->> @@ -1293,8 +1293,7 @@ static inline int kvm_memslot_move_backward(struct kvm_memslots *slots,
->>       struct kvm_memory_slot *mslots = slots->memslots;
->>       int i;
->> -    if (WARN_ON_ONCE(slots->id_to_index[memslot->id] == -1) ||
->> -        WARN_ON_ONCE(!slots->used_slots))
->> +    if (slots->id_to_index[memslot->id] == -1 || !slots->used_slots)
->>           return -1;
->>       /*
->> @@ -1398,6 +1397,9 @@ static void update_memslots(struct kvm_memslots *slots,
->>               i = kvm_memslot_move_backward(slots, memslot);
->>           i = kvm_memslot_move_forward(slots, memslot, i);
->> +        if (WARN_ON_ONCE(i < 0))
->> +            return;
->> +
->>           /*
->>            * Copy the memslot to its new position in memslots and update
->>            * its index accordingly.
->>
-> 
-> 
-> Note that WARN_ON_* is frowned upon, because it can result in crashes with panic_on_warn enabled, which is what some distributions do enable.
-> 
-> We tend to work around that by using pr_warn()/pr_warn_once(), avoiding eventually crashing the system when there is a way to continue.
-> 
+blk_status_to_errno doesn't appear to perform extra work besides
+converting blk_status_t to integer. This patch removes that unnecessary
+conversion as the return type of the function is blk_status_t.
 
-This patch uses WARN_ON_ONCE because:
-1) It was used in the old code and the patch merely moves the check
-from kvm_memslot_move_backward() to its caller,
+Signed-off-by: Falla Coulibaly <fallacoulibalyz@gmail.com>
+---
+ kernel/power/swap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-2) This chunk of code is wholly replaced by patch 11 from this series
-anyway ("Keep memslots in tree-based structures instead of array-based ones").
+diff --git a/kernel/power/swap.c b/kernel/power/swap.c
+index 3cb89baebc79..9ec418955556 100644
+--- a/kernel/power/swap.c
++++ b/kernel/power/swap.c
+@@ -306,7 +306,7 @@ static blk_status_t hib_wait_io(struct hib_bio_batch *hb)
+ 	 * a plug will flush the plug list before sleeping.
+ 	 */
+ 	wait_event(hb->wait, atomic_read(&hb->count) == 0);
+-	return blk_status_to_errno(hb->error);
++	return hb->error;
+ }
+ 
+ /*
+-- 
+2.32.0
 
-Thanks,
-Maciej
