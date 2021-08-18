@@ -2,71 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968313EFF5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7043EFF6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239180AbhHRIjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 04:39:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37049 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238050AbhHRIi4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 04:38:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629275902;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b+amw47qxCoKw4icq6FPPyv77CAwQdV1ZQlpMJar6JI=;
-        b=S0OQGdtOOvx2VP4z2vbnQYFgWTZmabF5C9m7cDFAavPPGwPTfusd5hF6ZlD1mZN/LzxnBy
-        F9/SFk7Gqzd5+b/dVfawtWpDACzceUCMJiIxSuqKyPgZ48bN8UdsC82+pCzxPgrZX8jvQX
-        6AiQLrDawhvNfrUj9CdtU6zrB8SFrOA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-160-1o05g6u4O7SX6qdbTA33lA-1; Wed, 18 Aug 2021 04:38:20 -0400
-X-MC-Unique: 1o05g6u4O7SX6qdbTA33lA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1A61344B3;
-        Wed, 18 Aug 2021 08:38:19 +0000 (UTC)
-Received: from T590 (ovpn-8-40.pek2.redhat.com [10.72.8.40])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6791510013D6;
-        Wed, 18 Aug 2021 08:38:12 +0000 (UTC)
-Date:   Wed, 18 Aug 2021 16:38:06 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Jens Axboe <axboe@kernel.dk>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH 4/7] genirq/affinity: rename irq_build_affinity_masks as
- group_cpus_evenly
-Message-ID: <YRzG7mMFI+n/QJyG@T590>
-References: <20210814123532.229494-1-ming.lei@redhat.com>
- <20210814123532.229494-5-ming.lei@redhat.com>
- <20210817045027.GD3874@lst.de>
+        id S238858AbhHRIoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 04:44:19 -0400
+Received: from mail-dm6nam08on2075.outbound.protection.outlook.com ([40.107.102.75]:10908
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239745AbhHRIoL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 04:44:11 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PDuJ1m4RSIV1EdfRPJYTFCM7dtsdSkDooGPzRaFTxrfUCq0E+exOVZHVPwCgdeug+Hizuri12e0fAMfhCux51424DLQKAyXsDplFgJE1bdDAS10a7bfCLJ2Z63m9RauQ7P6IDm+cg3/ZAZueAwYhtlYWc/OKQHbaosYOV7KZ5htfwODwn2a0xbJTLcn5s1DP1Vasp7MfKvD9Ds2HXTJukmWJqHn0HFQ+xS2SQPuK10E+aJL0Fx+Do8qkBxHWOTCZHlBpu21qRc9R9OZCSjoVVOJBnwGUae16mEB6tpctQoqFqKrGXWVeX3OZ5jUGmfuWEsGCP4V6NG/kb6PbEC1akg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6rqpoCVu7vTEVVyKTmDOXpEkAhsZHB96jwiimFKe/Ns=;
+ b=LpX7RR7cawADWVpMZX/SbLk8dZNVgQAAjknueokIjR189MOkbfLcQaGGAN2ZUTsSYTqYYG20N1Ru4BU+WGRWTk1j6Y208UUzAtq3mqh5/AhJueEnUmEk2H44OsqtpHbtqjVro9q5pTFXkNL3PXeYWgedS18V2RHuwrJQ3ZSKHRQRfCxB7bxICLWvXh2bklPkqSTLgFT2J153gFlXspMeVs7HWaM9VRQQcNSIHQHj9NTG8VuKSdeNu5mykhnPgBc6esYoYTH6IRFKZ5GPzscjstaD4fWwffQi3yOWeDwzbZu92seeQBu5tO3XvbSa81pb+7qgimTeI0mHAYc59Ex6Fg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=ideasonboard.com smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6rqpoCVu7vTEVVyKTmDOXpEkAhsZHB96jwiimFKe/Ns=;
+ b=rGB5R379nnk7m42EuH9jWCByWpc2MzfvVfvV/JT/CnsUgc5eVxzEbS3NBCRiqNaLhK2Yc3bi+nr0ga/5fTZgNdQQRKmN+nFO7auB7r1qOUcbvEE6/ZFfdopO/t9fkQugFlZbTbd7YTGMKioDmCHmXI5TgcHMD6gawNZgb3IbAXk=
+Received: from SA9P221CA0026.NAMP221.PROD.OUTLOOK.COM (2603:10b6:806:25::31)
+ by DM6PR02MB4873.namprd02.prod.outlook.com (2603:10b6:5:fb::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17; Wed, 18 Aug
+ 2021 08:43:35 +0000
+Received: from SN1NAM02FT0035.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:806:25:cafe::55) by SA9P221CA0026.outlook.office365.com
+ (2603:10b6:806:25::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend
+ Transport; Wed, 18 Aug 2021 08:43:33 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; ideasonboard.com; dkim=none (message not signed)
+ header.d=none;ideasonboard.com; dmarc=pass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT0035.mail.protection.outlook.com (10.97.4.137) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4436.19 via Frontend Transport; Wed, 18 Aug 2021 08:43:33 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Wed, 18 Aug 2021 01:43:31 -0700
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Wed, 18 Aug 2021 01:43:31 -0700
+Envelope-to: git@xilinx.com,
+ laurent.pinchart@ideasonboard.com,
+ kishon@ti.com,
+ vkoul@kernel.org,
+ linux-phy@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+Received: from [10.140.6.35] (port=57526 helo=xhdsaipava40.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <piyush.mehta@xilinx.com>)
+        id 1mGHAX-0006Sn-Cs; Wed, 18 Aug 2021 01:43:29 -0700
+From:   Piyush Mehta <piyush.mehta@xilinx.com>
+To:     <laurent.pinchart@ideasonboard.com>, <kishon@ti.com>,
+        <vkoul@kernel.org>, <michal.simek@xilinx.com>,
+        <linux-phy@lists.infradead.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <git@xilinx.com>,
+        <sgoud@xilinx.com>, Piyush Mehta <piyush.mehta@xilinx.com>
+Subject: [PATCH] phy: xilinx: zynqmp: skip PHY initialization and PLL lock for USB
+Date:   Wed, 18 Aug 2021 14:13:11 +0530
+Message-ID: <20210818084311.2643986-1-piyush.mehta@xilinx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210817045027.GD3874@lst.de>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 73be2b6f-6071-424d-8313-08d9622442f2
+X-MS-TrafficTypeDiagnostic: DM6PR02MB4873:
+X-Microsoft-Antispam-PRVS: <DM6PR02MB48733FB998CE18F18097F634D4FF9@DM6PR02MB4873.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: p/gof0wvTC67L4wcYliyh1j4LwlfhnEJtt0PZlU7OS8vwQLCzwke/WZyy1CvNhnQvY+mBnme9BiAMllvf/iX1gNxmS+MR/Ba1fRh/AAgeU8VWAlmr168un8NNqTIJM2I3PBzdTsr16F012z2iblnainh6fSCx3HhU7O1x2msiaCSkvk9wOsfBSkcIWKYS+7RQX9OdS6EzYM/AK/fYuiyxekv5ya72VsqqGsfMp9XREtDuXYR/WuWJ6mghk4xl41+oXR3eBVs5WKocSdgiL1rU0oXeKgTDAcNeNzf6f1sRL2qVMK47SK2ThUyYIpfwgxOpeZXu3iuN7edpG28OqtnCwkq6iaxeZA2Ey6/F7D2B80oFUCnM4bEPukabf2ubaaUrSHA7udwEVkmJIP2zoriwn+EGhBg8qlp8gJm0fM1863JknvYU9o1/264SmsYpD+m4FycS/bijlufZpqaZ1dSkh2ztz433P0FJDMPxJtVTbRb6sr+fbEiEMhi6TbhmZf0CxMB7Se6XaPyIayJxaze1MMT9RTRGqsFOsT0mJsh2XQKVrJW8SzRkot7hv+GsJQdlNz/rY99q3rq4upjfUrEcCbWwOPQ3PKPYiS7aAXccjUEu+QhkhVUkqIw22+kiLzUcy1Q01YengcA6qnaXsJqZ+5wDDZufzuSCLrm9vrnY4fEoBb5SLf/Cj3ACg4LkJAfsy4MdKCko9J84JX980wgOgO4XKaUMxQR8iMAvHC7Glw=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(346002)(376002)(36840700001)(46966006)(82310400003)(44832011)(83380400001)(82740400003)(110136005)(356005)(9786002)(2616005)(70206006)(1076003)(2906002)(6666004)(8936002)(4744005)(5660300002)(7636003)(70586007)(8676002)(478600001)(426003)(107886003)(4326008)(336012)(316002)(26005)(36756003)(36906005)(186003)(54906003)(7696005)(47076005)(36860700001)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2021 08:43:33.0360
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 73be2b6f-6071-424d-8313-08d9622442f2
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0035.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB4873
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 06:50:27AM +0200, Christoph Hellwig wrote:
-> s/as/to/ in the subjects.
-> 
-> On Sat, Aug 14, 2021 at 08:35:29PM +0800, Ming Lei wrote:
-> > Map irq vector into group, so we can abstract the algorithm for generic
-> > use case.
-> 
-> s/vector/vectors/
+PHY initialization for USB is required on linux boot or when
+gt lane is changed from the current one and it is applicable
+on PLL lock too.
 
-One group actually is abstracted from one irq vector, and it can represent
-vector, blk-mq hw queue and others. Currently genirq/affinity spreads
-vectors across all possible cpus, since this patch we spread groups
-among all possible cpus evenly.
+Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
+---
+ drivers/phy/xilinx/phy-zynqmp.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Thanks,
-Ming
+diff --git a/drivers/phy/xilinx/phy-zynqmp.c b/drivers/phy/xilinx/phy-zynqmp.c
+index 35652152ce5d..f478d8a17115 100644
+--- a/drivers/phy/xilinx/phy-zynqmp.c
++++ b/drivers/phy/xilinx/phy-zynqmp.c
+@@ -626,6 +626,9 @@ static int xpsgtr_phy_power_on(struct phy *phy)
+ 	struct xpsgtr_phy *gtr_phy = phy_get_drvdata(phy);
+ 	int ret = 0;
+ 
++	/* Skip initialization if not required. */
++	if (!xpsgtr_phy_init_required(gtr_phy))
++		return ret;
+ 	/*
+ 	 * Wait for the PLL to lock. For DP, only wait on DP0 to avoid
+ 	 * cumulating waits for both lanes. The user is expected to initialize
+-- 
+2.25.1
 
