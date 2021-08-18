@@ -2,121 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CE23EFFF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B44413EFFF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbhHRJHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:07:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25513 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229780AbhHRJHl (ORCPT
+        id S231484AbhHRJIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 05:08:18 -0400
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:59265 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230412AbhHRJIN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:07:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629277626;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z7/mvtfcZ2rmcrwIghqjzyz+StJTihtx+ZfjdJRUNWc=;
-        b=I6QnOkyumNY2DCp7/IdZXka14sgShZtu0X+GbXqv3DZA+zmvac0MDzzdHHmlZhHJwCX9xo
-        HlztsZQv7h6+RmYVt4coOCXqCscLhSh7lya7CcqifFpmsHY8aLX7MoJvyLxeSHqlq75pzN
-        m9TcMfq0f4txeKTPH00yXlPWNtgOb/o=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-558-Ui5rt8egMwWcUYmgq3RXfw-1; Wed, 18 Aug 2021 05:07:05 -0400
-X-MC-Unique: Ui5rt8egMwWcUYmgq3RXfw-1
-Received: by mail-wr1-f70.google.com with SMTP id a13-20020adfed0d000000b00156fd70137aso251000wro.8
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:07:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Z7/mvtfcZ2rmcrwIghqjzyz+StJTihtx+ZfjdJRUNWc=;
-        b=ApsVFJFTSIjuRm38Pd47y+M4MqMdKItxzxvaAmxVQmMS0kSuRuI/9hr2pQsQsYPVzT
-         HCczCqPTpJNI3L8zSGIM4bvc8hVVhKzFsk5UBXbhFk9gmOhMTFJOa4aPdZL5dJhOqlTl
-         fzKpo27/CxF9+6gt/1wnw6vjOL7lPbFwGtZmXj9IckZNZMhshxMr+QrdpTBXOzu8CPu1
-         pZWdzUbek2y4M8EZrv5SkEL2oE6nd4++WIetjphU6oOAGrmMXuCJvAlfnggQ9Ql+bxV8
-         6lL3vb5vYqnHLHOKig4vnVsQT9KAepZs4+BmBIwRnrkQRdRWY2dCoeJu+SBFk40LTA1U
-         gswQ==
-X-Gm-Message-State: AOAM530ov6bB1eM4hxtCv14Yfd8zH/d9y7bl8X8XFRRHcpy/OLZLtBhj
-        6yPKV74zIOBNCF2+HSwfVHZe76ySpqVtHQB7ZlvYJX8Hlwi7DDwruwb2IbVs9N7tw04bHvpLbyJ
-        fTbr390ekioJRVR5WNWy17LHq79JthiyZHMnSdLGYWkQLNGjEkMtLZPqpAevHsLSXspXX4z3i
-X-Received: by 2002:adf:f7c5:: with SMTP id a5mr9102304wrq.355.1629277624520;
-        Wed, 18 Aug 2021 02:07:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz62/eBRg0M/ow0o61HeyVcOy1CMFYUzzF2BEZfaW89NwDVS4uw9M9X6LH4Gi1AE6ONCbAl3Q==
-X-Received: by 2002:adf:f7c5:: with SMTP id a5mr9102269wrq.355.1629277624326;
-        Wed, 18 Aug 2021 02:07:04 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6417.dip0.t-ipconnect.de. [91.12.100.23])
-        by smtp.gmail.com with ESMTPSA id o207sm2386351wme.16.2021.08.18.02.07.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 02:07:03 -0700 (PDT)
-Subject: Re: [PATCH] mm: Changed leading spaces to tabs
-To:     Vishal Aslot <os.vaslot@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210817203827.54586-1-os.vaslot@gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <35c12536-46a2-7ef4-beb8-cd35e51d8361@redhat.com>
-Date:   Wed, 18 Aug 2021 11:07:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 18 Aug 2021 05:08:13 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id 7458E2B0094B;
+        Wed, 18 Aug 2021 05:07:36 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 18 Aug 2021 05:07:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=z7ZxsuepG3y8/7tCBq9V+CXM2sV
+        9UAdzMVufzaRE13k=; b=Edlj8+3EALgXlGDt/c0FFAzN16mWjgVHIVPBd6D7AZb
+        FQLnqcYIirILU73d7SerLVWsiVNHE8vPs9mHJUJOEcFzfAYtQtxA1GZRgrnMjHKV
+        /xB4yhl8/vL4PCC/8+cCqjnjmjbSaGayS0cVlkJVBNlz7xk7aSmI3ynf7vhz60LB
+        U22K3+8bmlSl8lEggpjf617/dLwt7X6hCAHz6lueGluIU/LQmNSpr+uo94bqGHak
+        9klMALhepCdOccROUin0a+4MKHWY8ECUBN7zLmTYJ1JyZePePDnnsveM6cZL3O8x
+        kLU903noWfVl7B7wDJPuYHiC2N78s/w7BTBNS4layNg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=z7Zxsu
+        epG3y8/7tCBq9V+CXM2sV9UAdzMVufzaRE13k=; b=iIDqJv8vFvUmdMHfHICawC
+        T9+GMiZ7jmgZnQez3LVGbSJHMRX5oCSbwndYpOPjFOptH5evus3eJHTLMKiWkPxN
+        TXpsW2g72GOY5CGgg+NCr3YRCVIVUwy2c1hebCI4/Hvt/iKYeVLlrCIF+d9ViMqC
+        1rXO6J5Y+NXu5OJhhxTtooPgXjHkMj/E/mio7DdY2ivq0/MHKrzU5QRhmAkmzRql
+        gjF9fFrV8cUF3YBzZEkPAbYWQJGooSyBeWl2CLOzlNRyb4DB4TlekSXHyL6GpV9r
+        xOx/tiM6Qp6123DK7M/uNv6oP+LeoKbtE8H19fdWvD5NYIErfHKSiqWDEpnEi8Ww
+        ==
+X-ME-Sender: <xms:1s0cYeSY1VoDbvj8v1hwYiTkSN_bdm-p6ejhsshfocOJWHAPSNgYaQ>
+    <xme:1s0cYTwNdYap25FigqYS6YAmK-H88VV8XHGod-hplOPmEl50w8pXMhctRH1UKftZR
+    Ugz2UtlgNaAB7GJX1w>
+X-ME-Received: <xmr:1s0cYb3iapy_85xh0Q6EAruoublXzVjY3xVzA2Rnoh7sKZMi7Wy5h52SzCEv8iyGJYhONrk0-T0j0BNHzWGoY-0oO3JNWfL3brm->
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleehgdduvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
+    igihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:1s0cYaDEV9KA2JuQWiv-DnuUBNLx_3dMYTFWXQndvDWcyG7j2IJlpQ>
+    <xmx:1s0cYXg8yqki-J9Y-brp5tjEz8uJAyBvzliiiXyvAbqP6nOlORVtcQ>
+    <xmx:1s0cYWor9kybvC5ygdOBtG-EHz3u-he516QYVleA3XNXFnJVww0cwA>
+    <xmx:2M0cYWNNZ029ZIW4uQRJX-a2BmU823_XEkUHg0r9Waf1MWx42zzvDjmoUc4>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 18 Aug 2021 05:07:34 -0400 (EDT)
+Date:   Wed, 18 Aug 2021 11:07:32 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] dt-bindings: watchdog: sunxi: Add compatible for
+ R329
+Message-ID: <20210818090732.wdickyw67oc4zqpt@gilmour>
+References: <20210805045716.46141-1-samuel@sholland.org>
 MIME-Version: 1.0
-In-Reply-To: <20210817203827.54586-1-os.vaslot@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="eamo24t6pkxxpznb"
+Content-Disposition: inline
+In-Reply-To: <20210805045716.46141-1-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.08.21 22:38, Vishal Aslot wrote:
-> This patch cleans up two ERRORs produced by checkpatch.pl in internal.h.
 
-s/produced/reported/ :)
+--eamo24t6pkxxpznb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> Signed-off-by: Vishal Aslot <os.vaslot@gmail.com>
+Hi,
+
+On Wed, Aug 04, 2021 at 11:57:14PM -0500, Samuel Holland wrote:
+> On existing SoCs, the watchdog has a single clock input: HOSC (OSC24M)
+> divided by 750.  However, starting with R329, LOSC (OSC32k) is added as
+> an alternative clock source, with a bit to switch between them.
+>=20
+> Since 24 MHz / 750 =3D=3D 32 kHz, not 32.768 kHz, the hardware adjusts the
+> cycle counts to keep the timeouts independent of the clock source. This
+> keeps the programming interface backward-compatible.
+>=20
+> R329 also adds two new registers, to allow software to immediately drive
+> the SoC reset signal.
+>=20
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
 > ---
->   mm/internal.h | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/internal.h b/mm/internal.h
-> index 31ff935b2547..c97fe964ab15 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -557,8 +557,8 @@ extern u64 hwpoison_filter_memcg;
->   extern u32 hwpoison_filter_enable;
->   
->   extern unsigned long  __must_check vm_mmap_pgoff(struct file *, unsigned long,
-> -        unsigned long, unsigned long,
-> -        unsigned long, unsigned long);
-> +	unsigned long, unsigned long,
-> +	unsigned long, unsigned long);
->   
->   extern void set_pageblock_order(void);
->   unsigned int reclaim_clean_pages_from_list(struct zone *zone,
-> @@ -647,11 +647,11 @@ struct migration_target_control {
->    */
->   #ifdef CONFIG_MMU
->   int vmap_pages_range_noflush(unsigned long addr, unsigned long end,
-> -                pgprot_t prot, struct page **pages, unsigned int page_shift);
-> +		pgprot_t prot, struct page **pages, unsigned int page_shift);
->   #else
->   static inline
->   int vmap_pages_range_noflush(unsigned long addr, unsigned long end,
-> -                pgprot_t prot, struct page **pages, unsigned int page_shift)
-> +		pgprot_t prot, struct page **pages, unsigned int page_shift)
->   {
->   	return -EINVAL;
->   }
-> 
+> Changes v1 to v2:
+>  - Switch from enum to const
+>  - Add descriptions to "clocks" items
+>=20
+>  .../watchdog/allwinner,sun4i-a10-wdt.yaml     | 32 ++++++++++++++++++-
+>  1 file changed, 31 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a=
+10-wdt.yaml b/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a1=
+0-wdt.yaml
+> index 9aa3c313c49f..8fa5b0d32381 100644
+> --- a/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.=
+yaml
+> +++ b/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.=
+yaml
+> @@ -24,6 +24,7 @@ properties:
+>                - allwinner,sun50i-a100-wdt
+>                - allwinner,sun50i-h6-wdt
+>                - allwinner,sun50i-h616-wdt
+> +              - allwinner,sun50i-r329-wdt
+>            - const: allwinner,sun6i-a31-wdt
+>        - items:
+>            - const: allwinner,suniv-f1c100s-wdt
+> @@ -33,7 +34,18 @@ properties:
+>      maxItems: 1
+> =20
+>    clocks:
+> -    maxItems: 1
+> +    minItems: 1
+> +    maxItems: 2
+> +    items:
+> +      - description: High-frequency oscillator input, divided internally
+> +      - description: Low-frequency oscillator input, only found on some =
+variants
+> +
+> +  clock-names:
+> +    minItems: 1
+> +    maxItems: 2
+> +    items:
+> +      - const: hosc
+> +      - const: losc
+> =20
+>    interrupts:
+>      maxItems: 1
+> @@ -44,6 +56,24 @@ required:
+>    - clocks
+>    - interrupts
+> =20
+> +if:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        enum:
+> +          - allwinner,sun50i-r329-wdt
+> +
+> +then:
+> +  properties:
+> +    clocks:
+> +      minItems: 2
+> +
+> +    clock-names:
+> +      minItems: 2
+> +
+> +  required:
+> +    - clock-names
+> +
 
+We should also make sure through an else clause that all the other SoCs
+have a length of one for both clocks and clock-names
 
--- 
-Thanks,
+Also, it looks like you forgot the patch to enable the compatible in the
+driver?
 
-David / dhildenb
+Maxime
 
+--eamo24t6pkxxpznb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYRzN1AAKCRDj7w1vZxhR
+xYXsAQDr5ekVM8uJrcHoLhj+ppOK2mKe5bJpApZXEwpgvVkFyQEA9cQNKQuAw8iE
+ndCLVdSf+DZW+tJkbTU4D1eAS22W5wA=
+=tBH9
+-----END PGP SIGNATURE-----
+
+--eamo24t6pkxxpznb--
