@@ -2,124 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2C13F0159
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 12:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 043E73F015C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 12:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232983AbhHRKLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 06:11:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41750 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231218AbhHRKLG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 06:11:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3357660524;
-        Wed, 18 Aug 2021 10:10:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629281432;
-        bh=wtzJaNgezxfs0TQnqSoSUw27h/DL/OT0MGIc9e+X4pI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q6UvBf55t8CPKajq0+X6SO+xnWGNl4TcIWSz0YSf03rMO1S0eIUaJXE1qjH3IE0+Z
-         5t/YhHVZCGysC8PnT0YNX1mmSKzV8YbAf3xfBT6wET0IGSWA1hQAtUOoX/bIvkmgPJ
-         29PIYLB9IVGyelebgAVPUpHWN16SS9ZXMmMG3oLP6GMz95GGz1+7cYwoDvbR9qQtE4
-         jQkY9lUUNVWdqw79/si7mVWkPsPD2Q5VbaaH8wAYMdHbVtwz8PCv69rBLIoymswL1f
-         xcsXLgIuBFmaqjnwDuR4wxKP8uzbsQZn4kF7Cc0Yp2XWmexxJuGe7jc72yLCaoZ439
-         N7/UpvLD+SNYw==
-Date:   Wed, 18 Aug 2021 15:40:27 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org
-Subject: Re: [PATCH v11 01/11] phy: HiSilicon: Add driver for Kirin 970 PCIe
- PHY
-Message-ID: <YRzck9WqerFtu846@matsya>
-References: <cover.1628755058.git.mchehab+huawei@kernel.org>
- <7788c5ead6d6f5a6f9e5faaee4460eb2149967c4.1628755058.git.mchehab+huawei@kernel.org>
- <YRuSnXHSZHhBC40r@matsya>
- <20210818110123.33eba838@coco.lan>
+        id S232459AbhHRKLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 06:11:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231218AbhHRKLp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 06:11:45 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1A4C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 03:11:10 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id v2so2267142edq.10
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 03:11:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=H6PUEJyT8yWFOs/eHUeXPFvL6SwbW/T0LWe0T2e8WmE=;
+        b=GKjpI8oonPri08s2r40yIS07xBV5kd2Qcb0M+wEuCc48wKNdDQIcz1gsIg0w4AFPZH
+         fTpmm7yg9dJmucZ4YwxqzV+MpHC7nNcfaQkUUDSl0ws5L1i10t9UlUGKJQLYp2Mrjnr1
+         vXTDxTOZGh7Zh9xS2H8s1TXo6uM0qU+/eBKhc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=H6PUEJyT8yWFOs/eHUeXPFvL6SwbW/T0LWe0T2e8WmE=;
+        b=D1I//EXouhbQm4nzoAx2zSlkKuJ9qoqYCvOjWazhm+XJtNa+7y6oW11+fF7qeqdQCT
+         6zxMiUXuDVnKU65GcseK9cOQCq5aSF5rY1IPMJ35tiPVa5+S9qAD6hCUkvh0ZBfWxtRM
+         aRpdlyFSeAWmYtQdFEA2/+lX7NjqHqvvPOKITjA2usZRsrH7VNcVGGWj56/PEsHLeQN4
+         k9VECpMIkl7IwGHT3b4an1GE7IqTPwGJ6UznzChQmlcquGc+K0WgaVngjucCtkTGteTn
+         kyFSl0/HfN/XwkJmXbQeE09PAaZEWqPlNbujwBgJFZVstep+V7MtJoiCcwzs3rehQtdn
+         5p9A==
+X-Gm-Message-State: AOAM530XJrYZcxwilG8emzMe9JR5d8MV7Xd9Rry8lKmYrj5aPJ0og/8N
+        0XtTSoBnvqSORf+nzoZ+dTJkNg==
+X-Google-Smtp-Source: ABdhPJxpWiWQ18UJm+hCSjJLPLxbcWNd9HkyUYKyAPssMAGCuTk1/N1o8a5V6hH6cJCPXAjYQUffNg==
+X-Received: by 2002:a05:6402:b88:: with SMTP id cf8mr9311655edb.281.1629281469070;
+        Wed, 18 Aug 2021 03:11:09 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id j22sm1805495ejt.11.2021.08.18.03.11.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 03:11:08 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 12:11:06 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, christian.koenig@amd.com, axboe@kernel.dk,
+        oleg@redhat.com, tglx@linutronix.de, dvyukov@google.com,
+        walter-zh.wu@mediatek.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v3 4/9] drm: fix potential null ptr dereferences in
+ drm_{auth,ioctl}
+Message-ID: <YRzcuiQrLFsWowas@phenom.ffwll.local>
+Mail-Followup-To: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, sumit.semwal@linaro.org,
+        christian.koenig@amd.com, axboe@kernel.dk, oleg@redhat.com,
+        tglx@linutronix.de, dvyukov@google.com, walter-zh.wu@mediatek.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20210818073824.1560124-1-desmondcheongzx@gmail.com>
+ <20210818073824.1560124-5-desmondcheongzx@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210818110123.33eba838@coco.lan>
+In-Reply-To: <20210818073824.1560124-5-desmondcheongzx@gmail.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-08-21, 11:01, Mauro Carvalho Chehab wrote:
-> Hi Vinod,
+On Wed, Aug 18, 2021 at 03:38:19PM +0800, Desmond Cheong Zhi Xi wrote:
+> There are three areas where we dereference struct drm_master without
+> checking if the pointer is non-NULL.
 > 
-> Em Tue, 17 Aug 2021 16:12:37 +0530
-> Vinod Koul <vkoul@kernel.org> escreveu:
+> 1. drm_getmagic is called from the ioctl_handler. Since
+> DRM_IOCTL_GET_MAGIC has no ioctl flags, drm_getmagic is run without
+> any check that drm_file.master has been set.
 > 
-> > > +	/* FIXME: calling it causes an Asynchronous SError interrupt */
-> > > +//	kirin_pcie_clk_ctrl(phy, false);  
-> > 
-> > when will you fix the fixme and pls remove the deadcode
-> 
-> Working with clocks on this SoC is very tricky: there are lots of clock
-> lines (~70) that are critical for this device to work. Such lines are
-> enabled via the Device's firmware, and are supposed to be always
-> powered. Powering off such clock lines cause a SError.
-> 
-> Most clocks on this device are managed by the clk-hikey3670 driver.
-> At the current state of clk-hi3670, the only way for HiKey 970
-> to even boot is to add:
-> 
-> 	clk_ignore_unused=true
-> 
-> as a Kernel boot parameter. That is the solution given by the downstream
-> official distributions for HiKey970 at 96boards.
-> 
-> The fix is to flag the critical clocks with CLK_IS_CRITICAL at the
-> clk-hi3670 driver, but finding the right clock set has been a challenge.
-> 
-> I spent the last couple of weeks trying to identify the critical ones,
-> as I'm aiming to be able to use a Kernel built with a default arm64
-> one of my goals is to have this device working fine with a
-> "make defconfig" Kernel.
-> 
-> So, I added this patch:
-> 
-> 	https://lore.kernel.org/lkml/2d2de5e902ced072bcfd5e5311d6b10326b9245b.1627041240.git.mchehab+huawei@kernel.org/
-> 
-> to my tree (which reduces the set of clocks using CLK_IGNORE_UNUSED
-> from 308 to 163 clocks). Than I ran script that was dropping the
-> flag one by one, boots the new Kernel and do a sanity check. When it 
-> fails to boot, I manually dropped the patch, and re-run the script
-> to test the remaining clocks. After a couple of weeks, I reached a patch
-> with 78 clock lines that seemed critical, but the resulting patch was
-> not stable, as, depending on the day I boot the Kernel with such patch,
-> it crashes with SError in a couple of seconds after booting, or 
-> cause the Ethernet firmware to not load.
-> 
-> I intend to keep trying to find the clock lines that can't be disabled,
-> but this is very time consuming, as I couldn't find any documentation
-> about that. So, it has to be done empirically.
-> 
-> -
-> 
-> In any case, fixing it doesn't sound a critical issue for the PHY
-> driver. I mean, right now, this patchset allows removing and 
-> re-inseting the PCIe driver, which is already an improvement over the
-> original upstream driver, which was missing the power-off logic for
-> Kirin 960.
-> 
-> With this patchset, both power-off/power-on logic for both HiKey960
-> (where the PHY is inside the pcie-kirin driver) and for HiKey970,
-> which uses this PHY driver. On both devices, I tested an endless loop 
-> with rmmod/modprobe for the PCIe.
-> 
-> Besides that, in practice, removing PCIe in runtime is something that
-> people usually don't do.
-> 
-> So, while it would be cool to balance the clock disable logic,
-> I don't think this is a critical issue in this particular case.
+> 2. Similarly, drm_getunique is called from the ioctl_handler, but
+> DRM_IOCTL_GET_UNIQUE has no ioctl flags. So there is no guarantee that
+> drm_file.master has been set.
 
-Okay sounds fair to me, I think fixme should be left but the c99 style
-code commented out can be removed
+I think the above two are impossible, due to the refcounting rules for
+struct file.
+
+> 3. drm_master_release can also be called without having a
+> drm_file.master set. Here is one error path:
+>   drm_open():
+>     drm_open_helper():
+>       drm_master_open():
+>         drm_new_set_master(); <--- returns -ENOMEM,
+>                                    drm_file.master not set
+>       drm_file_free():
+>         drm_master_release(); <--- NULL ptr dereference
+>                                    (file_priv->master->magic_map)
+> 
+> Fix these by checking if the master pointers are NULL before use.
+> 
+> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> ---
+>  drivers/gpu/drm/drm_auth.c  | 16 ++++++++++++++--
+>  drivers/gpu/drm/drm_ioctl.c |  5 +++++
+>  2 files changed, 19 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
+> index f9267b21556e..b7230604496b 100644
+> --- a/drivers/gpu/drm/drm_auth.c
+> +++ b/drivers/gpu/drm/drm_auth.c
+> @@ -95,11 +95,18 @@ EXPORT_SYMBOL(drm_is_current_master);
+>  int drm_getmagic(struct drm_device *dev, void *data, struct drm_file *file_priv)
+>  {
+>  	struct drm_auth *auth = data;
+> +	struct drm_master *master;
+>  	int ret = 0;
+>  
+>  	mutex_lock(&dev->master_mutex);
+> +	master = file_priv->master;
+> +	if (!master) {
+> +		mutex_unlock(&dev->master_mutex);
+> +		return -EINVAL;
+> +	}
+> +
+>  	if (!file_priv->magic) {
+> -		ret = idr_alloc(&file_priv->master->magic_map, file_priv,
+> +		ret = idr_alloc(&master->magic_map, file_priv,
+>  				1, 0, GFP_KERNEL);
+>  		if (ret >= 0)
+>  			file_priv->magic = ret;
+> @@ -355,8 +362,12 @@ void drm_master_release(struct drm_file *file_priv)
+>  
+>  	mutex_lock(&dev->master_mutex);
+>  	master = file_priv->master;
+> +
+> +	if (!master)
+> +		goto unlock;
+
+This is a bit convoluted, since we're in the single-threaded release path
+we don't need any locking for file_priv related things. Therefore we can
+pull the master check out and just directly return.
+
+But since it's a bit surprising maybe a comment that this can happen when
+drm_master_open in drm_open_helper fails?
+
+Another option, and maybe cleaner, would be to move the drm_master_release
+from drm_file_free into drm_close_helper. That would be fully symmetrical
+and should also fix the bug here?
+-Daniel
+
+
+> +
+>  	if (file_priv->magic)
+> -		idr_remove(&file_priv->master->magic_map, file_priv->magic);
+> +		idr_remove(&master->magic_map, file_priv->magic);
+>  
+>  	if (!drm_is_current_master_locked(file_priv))
+>  		goto out;
+> @@ -379,6 +390,7 @@ void drm_master_release(struct drm_file *file_priv)
+>  		drm_master_put(&file_priv->master);
+>  		spin_unlock(&dev->master_lookup_lock);
+>  	}
+> +unlock:
+>  	mutex_unlock(&dev->master_mutex);
+>  }
+>  
+> diff --git a/drivers/gpu/drm/drm_ioctl.c b/drivers/gpu/drm/drm_ioctl.c
+> index 26f3a9ede8fe..4d029d3061d9 100644
+> --- a/drivers/gpu/drm/drm_ioctl.c
+> +++ b/drivers/gpu/drm/drm_ioctl.c
+> @@ -121,6 +121,11 @@ int drm_getunique(struct drm_device *dev, void *data,
+>  
+>  	mutex_lock(&dev->master_mutex);
+>  	master = file_priv->master;
+> +	if (!master) {
+> +		mutex_unlock(&dev->master_mutex);
+> +		return -EINVAL;
+> +	}
+> +
+>  	if (u->unique_len >= master->unique_len) {
+>  		if (copy_to_user(u->unique, master->unique, master->unique_len)) {
+>  			mutex_unlock(&dev->master_mutex);
+> -- 
+> 2.25.1
+> 
 
 -- 
-~Vinod
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
