@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB473F04FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82EE33F0501
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237926AbhHRNkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 09:40:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40776 "EHLO mail.kernel.org"
+        id S238359AbhHRNkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 09:40:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237269AbhHRNkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 09:40:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C3D9610A6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 13:39:33 +0000 (UTC)
+        id S237517AbhHRNkM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 09:40:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60B91610A7
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 13:39:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629293973;
-        bh=jcsNfLgfyHoCJ2MrZDn1SZHM9fpLAQwJ2KE3As4gQGY=;
+        s=k20201202; t=1629293975;
+        bh=2c/rNwI8XCexnhF5mC2zHZ9EM3vaTUzpyAV4/Dx6Ado=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=kgdV7iMoQ+8M8n5wX0GEy/+QA3JOKWrNa0h+9m5hjemGHx193EgCSTjuRD3NZNbik
-         QmliZQcpaAa4SQDkWtafS6TWodX4ruV25hTlA58UJgP9eQqCm4TURdO2qDbPTYuDF1
-         8kXY9KNNG2m3kBpJg+Ffah8aGfZrOnbDN1ZvtSMK5UM2dUBCJXfFtlYy3LGxvmFUPF
-         asdAH40yRkb01V1eDGKVmOBE0sMr9nkAdp/YODe8tEN9/hMZEgI9Ywwr0r2igNA4B1
-         3alFRNi+HYn09SW3e1IqRXirKWWI+7Fl4kxwWwTHikgmZF1IT7jcJPAX0EbNVeCcp0
-         4SpbufMMWC5+Q==
+        b=q+k6K/YPJhu7GQODX/vtkabVJ9QXHKlKXgLP6NmWPpoStWNjhcbrGO3CbK/p3miWt
+         yUOL3K51RRz/BKAyknj0o0lfKKelWNfGuKFPFAh8EL2qqB6988tcb4lYxLU6n8Mb29
+         oUL5hBKZHVDbGcXSH//4g8PCLf5SlqL7aCrHvdpWsahr5adLMv9JYIhiMH4fcdASVS
+         CE4kRHhAJ9EeLhoedrXrLkI2WsmlBYvbvL2G3504HM2ZFMadSa1VPh735ehp2MOCQn
+         beN1tpO1yRx7BwRcNBYDZQaH4ZSYnW/LlnztmQd0Jd+47K6z7/olqb+yRxRwal+w7e
+         y1IeQ3+ovAmUA==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Subject: [PATCH 07/16] habanalabs/gaudi: increase boot fit timeout
-Date:   Wed, 18 Aug 2021 16:39:13 +0300
-Message-Id: <20210818133922.63637-7-ogabbay@kernel.org>
+Subject: [PATCH 08/16] habanalabs/gaudi: restore user registers when context opens
+Date:   Wed, 18 Aug 2021 16:39:14 +0300
+Message-Id: <20210818133922.63637-8-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210818133922.63637-1-ogabbay@kernel.org>
 References: <20210818133922.63637-1-ogabbay@kernel.org>
@@ -35,43 +35,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Various f/w versions have different timeouts, so increase the default
-timeout to accommodate all the options.
+Because we don't have multiple contexts in GAUDI, and to minimize
+calls to is_idle function (which uses many register reads), move
+the call to clear the user registers to the opening of the single
+user context.
 
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/misc/habanalabs/common/firmware_if.c | 4 ++++
- drivers/misc/habanalabs/gaudi/gaudi.c        | 2 +-
- 2 files changed, 5 insertions(+), 1 deletion(-)
+ drivers/misc/habanalabs/gaudi/gaudi.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/firmware_if.c b/drivers/misc/habanalabs/common/firmware_if.c
-index c232d197b57a..8d2568c63f19 100644
---- a/drivers/misc/habanalabs/common/firmware_if.c
-+++ b/drivers/misc/habanalabs/common/firmware_if.c
-@@ -1062,6 +1062,10 @@ static void detect_cpu_boot_status(struct hl_device *hdev, u32 status)
- 		dev_err(hdev->dev,
- 			"Device boot progress - Thermal Sensor initialization failed\n");
- 		break;
-+	case CPU_BOOT_STATUS_SECURITY_READY:
-+		dev_err(hdev->dev,
-+			"Device boot progress - Stuck in preboot after security initialization\n");
-+		break;
- 	default:
- 		dev_err(hdev->dev,
- 			"Device boot progress - Invalid status code %d\n",
 diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 1b98233ffc4b..3fbcdb013a7e 100644
+index 3fbcdb013a7e..e9a8ed96fe65 100644
 --- a/drivers/misc/habanalabs/gaudi/gaudi.c
 +++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -76,7 +76,7 @@
- #define GAUDI_PLDM_MMU_TIMEOUT_USEC	(MMU_CONFIG_TIMEOUT_USEC * 100)
- #define GAUDI_PLDM_QMAN0_TIMEOUT_USEC	(HL_DEVICE_TIMEOUT_USEC * 30)
- #define GAUDI_PLDM_TPC_KERNEL_WAIT_USEC	(HL_DEVICE_TIMEOUT_USEC * 30)
--#define GAUDI_BOOT_FIT_REQ_TIMEOUT_USEC	1000000		/* 1s */
-+#define GAUDI_BOOT_FIT_REQ_TIMEOUT_USEC	4000000		/* 4s */
- #define GAUDI_MSG_TO_CPU_TIMEOUT_USEC	4000000		/* 4s */
- #define GAUDI_WAIT_FOR_BL_TIMEOUT_USEC	15000000	/* 15s */
+@@ -6088,7 +6088,7 @@ static int gaudi_restore_user_registers(struct hl_device *hdev)
  
+ static int gaudi_context_switch(struct hl_device *hdev, u32 asid)
+ {
+-	return gaudi_restore_user_registers(hdev);
++	return 0;
+ }
+ 
+ static int gaudi_mmu_clear_pgt_range(struct hl_device *hdev)
+@@ -8658,10 +8658,20 @@ static void gaudi_internal_cb_pool_fini(struct hl_device *hdev,
+ 
+ static int gaudi_ctx_init(struct hl_ctx *ctx)
+ {
++	int rc;
++
+ 	if (ctx->asid == HL_KERNEL_ASID_ID)
+ 		return 0;
+ 
+-	return gaudi_internal_cb_pool_init(ctx->hdev, ctx);
++	rc = gaudi_internal_cb_pool_init(ctx->hdev, ctx);
++	if (rc)
++		return rc;
++
++	rc = gaudi_restore_user_registers(ctx->hdev);
++	if (rc)
++		gaudi_internal_cb_pool_fini(ctx->hdev, ctx);
++
++	return rc;
+ }
+ 
+ static void gaudi_ctx_fini(struct hl_ctx *ctx)
 -- 
 2.17.1
 
