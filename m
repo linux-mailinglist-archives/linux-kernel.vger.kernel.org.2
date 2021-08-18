@@ -2,159 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9943F0CAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 22:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E41D73F0CC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 22:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233731AbhHRUYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 16:24:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230440AbhHRUYH (ORCPT
+        id S233215AbhHRUah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 16:30:37 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:50402
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230440AbhHRUaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 16:24:07 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3652AC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 13:23:32 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id n12so5043472edx.8
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 13:23:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yE1jUBvTlSKiQfOB3L5au2tliUnWZLNpdRP8a1r8bhE=;
-        b=UzSiYoVDYsdDr1U1Z7itOTxq4ovOxzLmTdQ4YCxF5BTfmv1hqXqq0cLfLcZGC7jHRJ
-         61+VSyqb5ow2iTyKIovbUQCgSB/nQv6OC73tBqsEQZG74sy9Jhd8ivyDpDEef3Kmh+Gg
-         /Y88ZJTuIw0BaH0gBTbSUMWxXJ8kNvBaImkvY=
+        Wed, 18 Aug 2021 16:30:35 -0400
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com [209.85.218.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 17DFA41281
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 20:30:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629318600;
+        bh=afNSlBvYu02DicXjmlIdMONOuSvA1ml27PmqTZLXujg=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=gvosiqpASmpHWtMNTBMqs2x21azdEdZlOpTGDPVk3clDgvfTvJn41f4q2xJ795A6D
+         56KQTinhUBvBOz7ACdlCiB75c0astNr1gL4w/4u+KKJ6BqSw+u4QUa61We+TA9bw9p
+         l4JxfJD1+pRfINUiTRzo/jYXRKsD54P8QvomK5OTDV7hYT3beYtU0+LITZrClpLN5H
+         MFLk5mxyUh9od89uuGGg5MF3figueQUUjXiEGyuz5CeZE92aGbHzZH2bHZEb9zfbvX
+         KBY1r4mtgeZQ0JBVAwF5w72u+QEFmdNLCmy4IoF2LVqbj7d5RA+oVy4FvCfnDj4yq3
+         xxfiUBqc8NjcQ==
+Received: by mail-ej1-f69.google.com with SMTP id q19-20020a1709064cd3b02904c5f93c0124so1310272ejt.14
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 13:30:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=yE1jUBvTlSKiQfOB3L5au2tliUnWZLNpdRP8a1r8bhE=;
-        b=SkVKH6gDKdvyxIMR72f8PRAHWTglVvlz2J5yQa9qBHV7loMtshLmFaZlgaf5qfi7X5
-         rJp/QwTrffAh1IOUqdrP0L9CT99cxrtj5goJpsxO5Ko5pAps3te2IgYL4hy3d8hnesdZ
-         K5HmgmMpue1FqZXnyKDjE56P6ukq0N2dMW4CifAEjmHtC8UoVQ2FlcznbULuxbAmayZM
-         o6jAHt7udRvtKuLa3lyn46MEqU11ZVdejq9FNt9M10Y8vPmrjlpoGfFamI2eJ7/Hy48N
-         41YfFJDeQWD5pFU8yf3nQMjO9LqPEoqN+qNmQfvJ8zXz7AOIvlX3FPghKhDyCtmSvfEL
-         Yebw==
-X-Gm-Message-State: AOAM531EGGd0wsfCZfZlDhty6w952zOVigZbbTZxmFly8D9rEwwbfQTX
-        /l2ytlZZb0WbuHYVMI82mM2pgQ==
-X-Google-Smtp-Source: ABdhPJw2JwD3yZsePo2kPcmh/lzqRQwV65XVPEW32tN1mP+HlXLaaE4Ba9tQN9u5/krdIW12SwkIaA==
-X-Received: by 2002:a05:6402:3128:: with SMTP id dd8mr12263271edb.40.1629318210766;
-        Wed, 18 Aug 2021 13:23:30 -0700 (PDT)
-Received: from alco.lan (80.71.134.83.ipv4.parknet.dk. [80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id m6sm597920edq.22.2021.08.18.13.23.30
+        bh=afNSlBvYu02DicXjmlIdMONOuSvA1ml27PmqTZLXujg=;
+        b=cG7XZdNZc+/oAvC5A0Jxgb8beoz0yc35bAI7Mli7/ww4b3JyhPQ90GBpMw3wMH8EkL
+         vUdMQ5s+/o48xsdBSsooNlNcdQoVdIgGcaGvpXCf9t8RKsFM6sd3LKrZLaTzWpHjCHOQ
+         9HIn+398voR8202mJcH3MbgW5r3xa21LO2xx3haB5WfBtsEBk+39YN351zXZ33FE/ySR
+         BgYAincqX5fegLYBb3iu/vUXsq6cRhACzaQ+u1WODabAqqFXqVyK4WbUaN4+r0inkNki
+         Wav/pRgMTHiN9bHzltntkN6ao7sxC9lyx6xiw0Eis57IxhQh+LlpcS52d6a+PFCTztET
+         5NGg==
+X-Gm-Message-State: AOAM531t9cxez38gP1JD8TeBkE9l2SMSd6YbVPJT98SLziV8cuOHAruX
+        s6SZgJeVncuh+d349SFfVmqBMvcRmdJkgALuKZSZYHKNDgfWpMJ9cnbJDKj32YaUHprDtkZ//cT
+        LmosrU659OJFGjY2LmAy+AiGSg/8DAfsNsoGWUaOf3w==
+X-Received: by 2002:a17:906:b09:: with SMTP id u9mr11332283ejg.496.1629318599349;
+        Wed, 18 Aug 2021 13:29:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxlUwyt6DegBZjxkBvS1uKXPBCiQbCpt2q/GzSfMQsrwy3+z3k3UkYEhAMP6kPHoNFybCXXjQ==
+X-Received: by 2002:a17:906:b09:: with SMTP id u9mr11332256ejg.496.1629318598975;
+        Wed, 18 Aug 2021 13:29:58 -0700 (PDT)
+Received: from localhost.localdomain ([86.32.42.198])
+        by smtp.gmail.com with ESMTPSA id d3sm589073edv.48.2021.08.18.13.29.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 13:23:30 -0700 (PDT)
-From:   Ricardo Ribalda <ribalda@chromium.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH] media: uvcvideo: Quirk for hardware with invalid sof
-Date:   Wed, 18 Aug 2021 22:23:28 +0200
-Message-Id: <20210818202328.267644-1-ribalda@chromium.org>
-X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
+        Wed, 18 Aug 2021 13:29:58 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH v2] dt-bindings: memory: convert H8/300 bus controller to dtschema
+Date:   Wed, 18 Aug 2021 22:29:53 +0200
+Message-Id: <20210818202953.16862-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hardware timestamping code has the assumption than the device_sof
-and the host_sof run at the same frequency (2048 Hz).
+Convert H8/300 bus controller bindings to DT schema format using
+json-schema.
 
-Unfortunately, this is not the case for all the hardware. Add a quirk to
-support such hardware.
+The conversion also extends the bindings to match what is really used in
+existing devicetree sources (the original file mentions only
+"renesas,h8300-bsc" but "renesas,h8300h-bsc" and "renesas,h8s-bsc" are
+used with it).
 
-Note on how to identify such hardware:
-When running with "yavta -c /dev/videoX" Look for periodic jumps of the
-fps. Eg:
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-30 (6) [-] none 30 614400 B 21.245557 21.395214 34.133 fps ts mono/SoE
-31 (7) [-] none 31 614400 B 21.275327 21.427246 33.591 fps ts mono/SoE
-32 (0) [-] none 32 614400 B 21.304739 21.459256 34.000 fps ts mono/SoE
-33 (1) [-] none 33 614400 B 21.334324 21.495274 33.801 fps ts mono/SoE
-34 (2) [-] none 34 614400 B 21.529237 21.527297 5.130 fps ts mono/SoE
-35 (3) [-] none 35 614400 B 21.649416 21.559306 8.321 fps ts mono/SoE
-36 (4) [-] none 36 614400 B 21.678789 21.595320 34.045 fps ts mono/SoE
-...
-99 (3) [-] none 99 614400 B 23.542226 23.696352 33.541 fps ts mono/SoE
-100 (4) [-] none 100 614400 B 23.571578 23.728404 34.069 fps ts mono/SoE
-101 (5) [-] none 101 614400 B 23.601425 23.760420 33.504 fps ts mono/SoE
-102 (6) [-] none 102 614400 B 23.798324 23.796428 5.079 fps ts mono/SoE
-103 (7) [-] none 103 614400 B 23.916271 23.828450 8.478 fps ts mono/SoE
-104 (0) [-] none 104 614400 B 23.945720 23.860479 33.957 fps ts mono/SoE
-
-They happen because the delta_sof calculated at
-uvc_video_clock_host_sof(), wraps periodically, as both clocks drift.
-
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/usb/uvc/uvc_driver.c |  9 +++++++++
- drivers/media/usb/uvc/uvc_video.c  | 11 +++++++++--
- drivers/media/usb/uvc/uvcvideo.h   |  2 ++
- 3 files changed, 20 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 9a791d8ef200..d1e6cba10b15 100644
---- a/drivers/media/usb/uvc/uvc_driver.c
-+++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -2771,6 +2771,15 @@ static const struct usb_device_id uvc_ids[] = {
- 	  .bInterfaceSubClass	= 1,
- 	  .bInterfaceProtocol	= 0,
- 	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRLS_ON_INIT) },
-+	/* Logitech HD Pro Webcam C922 */
-+	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
-+				| USB_DEVICE_ID_MATCH_INT_INFO,
-+	  .idVendor		= 0x046d,
-+	  .idProduct		= 0x085c,
-+	  .bInterfaceClass	= USB_CLASS_VIDEO,
-+	  .bInterfaceSubClass	= 1,
-+	  .bInterfaceProtocol	= 0,
-+	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_INVALID_DEVICE_SOF) },
- 	/* Chicony CNF7129 (Asus EEE 100HE) */
- 	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
- 				| USB_DEVICE_ID_MATCH_INT_INFO,
-diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-index 6d0e474671a2..760ab015cf9c 100644
---- a/drivers/media/usb/uvc/uvc_video.c
-+++ b/drivers/media/usb/uvc/uvc_video.c
-@@ -518,13 +518,20 @@ uvc_video_clock_decode(struct uvc_streaming *stream, struct uvc_buffer *buf,
- 	/* To limit the amount of data, drop SCRs with an SOF identical to the
- 	 * previous one.
- 	 */
--	dev_sof = get_unaligned_le16(&data[header_size - 2]);
-+	if (stream->dev->quirks & UVC_QUIRK_INVALID_DEVICE_SOF)
-+		dev_sof = usb_get_current_frame_number(stream->dev->udev);
-+	else
-+		dev_sof = get_unaligned_le16(&data[header_size - 2]);
+Changes since v1:
+1. Add renesas,h8s-bsc pointed by Rob.
+2. Extend commit log.
+---
+ .../memory-controllers/renesas,h8300-bsc.txt  | 12 -------
+ .../memory-controllers/renesas,h8300-bsc.yaml | 35 +++++++++++++++++++
+ 2 files changed, 35 insertions(+), 12 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/memory-controllers/renesas,h8300-bsc.txt
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/renesas,h8300-bsc.yaml
+
+diff --git a/Documentation/devicetree/bindings/memory-controllers/renesas,h8300-bsc.txt b/Documentation/devicetree/bindings/memory-controllers/renesas,h8300-bsc.txt
+deleted file mode 100644
+index cdf406c902e2..000000000000
+--- a/Documentation/devicetree/bindings/memory-controllers/renesas,h8300-bsc.txt
++++ /dev/null
+@@ -1,12 +0,0 @@
+-* H8/300 bus controller
+-
+-Required properties:
+-  - compatible: Must be "renesas,h8300-bsc".
+-  - reg: Base address and length of BSC registers.
+-
+-Example.
+-	bsc: memory-controller@fee01e {
+-		compatible = "renesas,h8300h-bsc", "renesas,h8300-bsc";
+-		reg = <0xfee01e 8>;
+-	};
+-
+diff --git a/Documentation/devicetree/bindings/memory-controllers/renesas,h8300-bsc.yaml b/Documentation/devicetree/bindings/memory-controllers/renesas,h8300-bsc.yaml
+new file mode 100644
+index 000000000000..2b18cef99511
+--- /dev/null
++++ b/Documentation/devicetree/bindings/memory-controllers/renesas,h8300-bsc.yaml
+@@ -0,0 +1,35 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/memory-controllers/renesas,h8300-bsc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 	if (dev_sof == stream->clock.last_sof)
- 		return;
- 
- 	stream->clock.last_sof = dev_sof;
- 
--	host_sof = usb_get_current_frame_number(stream->dev->udev);
-+	if (stream->dev->quirks & UVC_QUIRK_INVALID_DEVICE_SOF)
-+		host_sof = dev_sof;
-+	else
-+		host_sof = usb_get_current_frame_number(stream->dev->udev);
- 	time = uvc_video_get_time();
- 
- 	/* The UVC specification allows device implementations that can't obtain
-diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-index cce5e38133cd..89d909661915 100644
---- a/drivers/media/usb/uvc/uvcvideo.h
-+++ b/drivers/media/usb/uvc/uvcvideo.h
-@@ -209,6 +209,8 @@
- #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT	0x00000400
- #define UVC_QUIRK_FORCE_Y8		0x00000800
- #define UVC_QUIRK_FORCE_BPP		0x00001000
-+#define UVC_QUIRK_INVALID_DEVICE_SOF	0x00002000
++title: H8/300 bus controller
 +
- 
- /* Format flags */
- #define UVC_FMT_FLAG_COMPRESSED		0x00000001
++maintainers:
++  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
++  - Yoshinori Sato <ysato@users.sourceforge.jp>
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - renesas,h8300h-bsc
++          - renesas,h8s-bsc
++      - const: renesas,h8300-bsc
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    memory-controller@fee01e {
++        compatible = "renesas,h8300h-bsc", "renesas,h8300-bsc";
++        reg = <0xfee01e 8>;
++    };
 -- 
-2.33.0.rc2.250.ged5fa647cd-goog
+2.30.2
 
