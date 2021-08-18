@@ -2,224 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79FEC3F0905
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC333F0908
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232029AbhHRQY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 12:24:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232558AbhHRQYT (ORCPT
+        id S231652AbhHRQZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 12:25:40 -0400
+Received: from relay5.mymailcheap.com ([159.100.241.64]:49189 "EHLO
+        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230391AbhHRQZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 12:24:19 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289AAC061796
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 09:23:45 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id e7so2778426pgk.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 09:23:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lzxrYwRed6/SHUIlGR9aHlXsbeq7ptb+9qbS8mhHK50=;
-        b=fura/iwYKWm9fOvME7hDJZpdSUriPdavtTAkVSOa2xX2KIJSCfPM5f5hHBRLOMJNVT
-         C8TmP9pJ5g75mnmQqILjYelAMhhcB8O1+9CANIGbBKb70hbHj+BTAlOIr9GgVz3exTF9
-         TFhO4TYp+OCnRkeKSARpNajf1uSPwfn4T3qQ0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lzxrYwRed6/SHUIlGR9aHlXsbeq7ptb+9qbS8mhHK50=;
-        b=lBlptRHzeF0zVgqCwkBSijY7kQz0aYjl/h06e3O1U3Cv0MH9Oc1rlxIUQ2VB3xZr6Z
-         M9kAG9blG8/JVw9JLQjYJpIOsoiKN9jhu0JpS+a+8kVKEdwGAs3f14bUSKf8zJ/ggV6M
-         Uzt5Sxmf4XQGNI3qoRD3cRAG+JEr3o1a/z13+/lDscUiKY9iVhFpUGdLx0+vmYbT1shE
-         AuzvNJfuDX0fMSWrGGxgpe9tV9bYDFs3mxbZHc4Kvt98xDZqGlAYzd300MLZCCce8w8B
-         f7w6DtIxoHQVD1qYYpLBhdHj8FdrCYr7cYpZ3FwSbN9/9IooIAIeW4Y5uLZumidSAUFb
-         C6fQ==
-X-Gm-Message-State: AOAM530lJT2EGu7n4r02mJ5yBszWPl+/jVeDnYwxFIDYvX+xmSr54o1d
-        GWBWHNEx5mhjwEkqs1RLMIvJ9A==
-X-Google-Smtp-Source: ABdhPJzGCFU36ZNXujVZMcFiVgKIOCzcVTQ3pkemk0SBlaxknrWVUml2zyNulYLYNdDFzcgK5LoaRw==
-X-Received: by 2002:aa7:80d9:0:b029:2ed:49fa:6dc5 with SMTP id a25-20020aa780d90000b02902ed49fa6dc5mr10058545pfn.3.1629303824757;
-        Wed, 18 Aug 2021 09:23:44 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 21sm228958pfh.103.2021.08.18.09.23.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 09:23:44 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 09:23:43 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
-        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 53/63] KVM: x86: Use struct_group() to zero decode
- cache
-Message-ID: <202108180922.6C9E385A1@keescook>
-References: <20210818060533.3569517-1-keescook@chromium.org>
- <20210818060533.3569517-54-keescook@chromium.org>
- <YR0jIEzEcUom/7rd@google.com>
+        Wed, 18 Aug 2021 12:25:37 -0400
+X-Greylist: delayed 8306 seconds by postgrey-1.27 at vger.kernel.org; Wed, 18 Aug 2021 12:25:36 EDT
+Received: from relay2.mymailcheap.com (relay2.mymailcheap.com [151.80.165.199])
+        by relay5.mymailcheap.com (Postfix) with ESMTPS id 9DAF9200FD;
+        Wed, 18 Aug 2021 16:25:00 +0000 (UTC)
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay2.mymailcheap.com (Postfix) with ESMTPS id DDFE93ECDA;
+        Wed, 18 Aug 2021 18:24:58 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id 2DA222A0C8;
+        Wed, 18 Aug 2021 12:24:58 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1629303898;
+        bh=Xj3ffOIhzV6P++lm20v3TPfWMR7pg4+1nIiD5/2tzLQ=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=G/lIEzIierlLLLAjYhLytITPmd3pvuhdcOfOdOTj3cO2Vxl575hnN33PghePcB2Oe
+         Kaf7U3zW9S2w5VohX4wVNwa1O3qDyjULL48j3pVw8Bw80ViyR4Yts2e3GYzt31WeVB
+         yuTDAj72J15bQJqy6OpHZq2NHM6vbgIgoQuYah8A=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id HA0IYBIZ6BpN; Wed, 18 Aug 2021 12:24:53 -0400 (EDT)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Wed, 18 Aug 2021 12:24:53 -0400 (EDT)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id AE79F4118B;
+        Wed, 18 Aug 2021 16:24:52 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="Nax/mXoP";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from ice-e5v2.lan (unknown [59.41.161.108])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 582FA4118B;
+        Wed, 18 Aug 2021 16:24:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1629303886; bh=Xj3ffOIhzV6P++lm20v3TPfWMR7pg4+1nIiD5/2tzLQ=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Nax/mXoPIddvcE6NKEtDDkKf0tC9zR1I1iu6na1xQFrD439zocZeZ7+2XvN8mMdPa
+         ym0c/X8LpxRSh2dpI8eCrBKs1rTZ+541hbU2tUX5On5gpR7CQvK7S0mDGnCMfERr1s
+         Qc5eo1UqKnaS4px6njiAKcVHJq+E6+NXj/XQihHE=
+Message-ID: <29ac3b3b11fa022c6411fe3d334cceb6146b2978.camel@aosc.io>
+Subject: Re: [PATCH] usb: typec: tcpm: always rediscover when swapping DR
+From:   Icenowy Zheng <icenowy@aosc.io>
+To:     Kyle Tso <kyletso@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Guenter Roeck <linux@roeck-us.net>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 19 Aug 2021 00:24:41 +0800
+In-Reply-To: <CAGZ6i=2a6ueLghhDTPCP_gumZ=HUYWRLCKkveyVnNQLgP+zyow@mail.gmail.com>
+References: <20210813043131.833006-1-icenowy@aosc.io>
+         <YRuDG78N2mB5w37p@kuha.fi.intel.com>
+         <E91C97D0-7DB9-4455-AED2-4C25B7D2D22D@aosc.io>
+         <YRuW0fENBEcIVkZb@kuha.fi.intel.com> <YR0Rlj+jk9dnoG6N@kroah.com>
+         <E1804EE0-CBA1-4BE8-875B-57E82EDECDBE@aosc.io> <YR0bw+k0S94cmeDS@kroah.com>
+         <CAGZ6i=2a6ueLghhDTPCP_gumZ=HUYWRLCKkveyVnNQLgP+zyow@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YR0jIEzEcUom/7rd@google.com>
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: AE79F4118B
+X-Rspamd-Server: mail20.mymailcheap.com
+X-Spamd-Result: default: False [-0.10 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.161.108:received];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(0.00)[aosc.io];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         RCPT_COUNT_FIVE(0.00)[6];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 03:11:28PM +0000, Sean Christopherson wrote:
-> On Tue, Aug 17, 2021, Kees Cook wrote:
-> >  arch/x86/kvm/emulate.c     |  3 +--
-> >  arch/x86/kvm/kvm_emulate.h | 19 +++++++++++--------
-> >  2 files changed, 12 insertions(+), 10 deletions(-)
+在 2021-08-19星期四的 00:13 +0800，Kyle Tso写道：
+> On Wed, Aug 18, 2021 at 10:40 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
 > > 
-> > diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-> > index 2837110e66ed..2608a047e769 100644
-> > --- a/arch/x86/kvm/emulate.c
-> > +++ b/arch/x86/kvm/emulate.c
-> > @@ -5377,8 +5377,7 @@ static int fastop(struct x86_emulate_ctxt *ctxt, fastop_t fop)
-> >  
-> >  void init_decode_cache(struct x86_emulate_ctxt *ctxt)
-> >  {
-> > -	memset(&ctxt->rip_relative, 0,
-> > -	       (void *)&ctxt->modrm - (void *)&ctxt->rip_relative);
-> > +	memset(&ctxt->decode_cache, 0, sizeof(ctxt->decode_cache));
-> >  
-> >  	ctxt->io_read.pos = 0;
-> >  	ctxt->io_read.end = 0;
-> > diff --git a/arch/x86/kvm/kvm_emulate.h b/arch/x86/kvm/kvm_emulate.h
-> > index 68b420289d7e..9b8afcb8ad39 100644
-> > --- a/arch/x86/kvm/kvm_emulate.h
-> > +++ b/arch/x86/kvm/kvm_emulate.h
-> > @@ -341,14 +341,17 @@ struct x86_emulate_ctxt {
-> >  	 * the rest are initialized unconditionally in x86_decode_insn
-> >  	 * or elsewhere
-> >  	 */
-> > -	bool rip_relative;
-> > -	u8 rex_prefix;
-> > -	u8 lock_prefix;
-> > -	u8 rep_prefix;
-> > -	/* bitmaps of registers in _regs[] that can be read */
-> > -	u32 regs_valid;
-> > -	/* bitmaps of registers in _regs[] that have been written */
-> > -	u32 regs_dirty;
-> > +	struct_group(decode_cache,
-> 
-> This is somewhat misleading because half of this struct is the so called "decode
-> cache", not just these six fields.
-> 
-> KVM's "optimization" is quite ridiculous as this has never been such a hot path
-> that saving a few mov instructions would be noticeable.  And hilariously, the
-> "optimization" is completely unnecessary because both gcc and clang are clever
-> enough to batch the first five into a movq even when zeroing the fields individually.
-> 
-> So, I would much prefer to go with the following:
-
-Sounds good to me!
-
-> 
-> From dbdca1f4cd01fee418c252e54c360d518b2b1ad6 Mon Sep 17 00:00:00 2001
-> From: Sean Christopherson <seanjc@google.com>
-> Date: Wed, 18 Aug 2021 08:03:08 -0700
-> Subject: [PATCH] KVM: x86: Replace memset() "optimization" with normal
->  per-field writes
-> 
-> Explicitly zero select fields in the emulator's decode cache instead of
-> zeroing the fields via a gross memset() that spans six fields.  gcc and
-> clang are both clever enough to batch the first five fields into a single
-> quadword MOV, i.e. memset() and individually zeroing generate identical
-> code.
-> 
-> Removing the wart also prepares KVM for FORTIFY_SOURCE performing
-> compile-time and run-time field bounds checking for memset().
-> 
-> No functional change intended.
-> 
-> Reported-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
-Do you want me to take this patch into my tree, or do you want to carry
-it for KVM directly?
-
-Thanks!
-
--Kees
-
-> ---
->  arch/x86/kvm/emulate.c     | 9 +++++++--
->  arch/x86/kvm/kvm_emulate.h | 6 +-----
->  2 files changed, 8 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-> index 2837110e66ed..bf81fd017e7f 100644
-> --- a/arch/x86/kvm/emulate.c
-> +++ b/arch/x86/kvm/emulate.c
-> @@ -5377,8 +5377,13 @@ static int fastop(struct x86_emulate_ctxt *ctxt, fastop_t fop)
-> 
->  void init_decode_cache(struct x86_emulate_ctxt *ctxt)
->  {
-> -	memset(&ctxt->rip_relative, 0,
-> -	       (void *)&ctxt->modrm - (void *)&ctxt->rip_relative);
-> +	/* Clear fields that are set conditionally but read without a guard. */
-> +	ctxt->rip_relative = false;
-> +	ctxt->rex_prefix = 0;
-> +	ctxt->lock_prefix = 0;
-> +	ctxt->rep_prefix = 0;
-> +	ctxt->regs_valid = 0;
-> +	ctxt->regs_dirty = 0;
-> 
->  	ctxt->io_read.pos = 0;
->  	ctxt->io_read.end = 0;
-> diff --git a/arch/x86/kvm/kvm_emulate.h b/arch/x86/kvm/kvm_emulate.h
-> index 68b420289d7e..bc1fecacccd4 100644
-> --- a/arch/x86/kvm/kvm_emulate.h
-> +++ b/arch/x86/kvm/kvm_emulate.h
-> @@ -336,11 +336,7 @@ struct x86_emulate_ctxt {
->  		fastop_t fop;
->  	};
->  	int (*check_perm)(struct x86_emulate_ctxt *ctxt);
-> -	/*
-> -	 * The following six fields are cleared together,
-> -	 * the rest are initialized unconditionally in x86_decode_insn
-> -	 * or elsewhere
-> -	 */
-> +
->  	bool rip_relative;
->  	u8 rex_prefix;
->  	u8 lock_prefix;
-> --
-> 2.33.0.rc1.237.g0d66db33f3-goog
-> 
-> > +		bool rip_relative;
-> > +		u8 rex_prefix;
-> > +		u8 lock_prefix;
-> > +		u8 rep_prefix;
-> > +		/* bitmaps of registers in _regs[] that can be read */
-> > +		u32 regs_valid;
-> > +		/* bitmaps of registers in _regs[] that have been written */
-> > +		u32 regs_dirty;
-> > +	);
-> > +
-> >  	/* modrm */
-> >  	u8 modrm;
-> >  	u8 modrm_mod;
-> > -- 
-> > 2.30.2
+> > On Wed, Aug 18, 2021 at 10:02:24PM +0800, Icenowy Zheng wrote:
+> > > 
+> > > 
+> > > 于 2021年8月18日 GMT+08:00 下午9:56:38, Greg Kroah-Hartman < 
+> > > gregkh@linuxfoundation.org> 写到:
+> > > > On Tue, Aug 17, 2021 at 02:00:33PM +0300, Heikki Krogerus
+> > > > wrote:
+> > > > > > > Why is it necessary to do discovery with data role swap
+> > > > > > > in general?
+> > > > > > 
+> > > > > > I think it could be possible for devices to expose
+> > > > > > different altmode
+> > > > > > with different role.
+> > > > > 
+> > > > > OK. FWIW:
+> > > > > 
+> > > > > Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > > > 
+> > > > Is this conflicting with  
+> > > > https://lore.kernel.org/r/20210816075449.2236547-1-kyletso@google.com
+> > > >  ?
+> > > > 
+> > > > Which of these two should I take, both?  Neither?
+> > > 
+> > > Don't take this, it's against spec.
 > > 
+> > Ok, now dropped.  What about the linked patch above?  Does that
+> > work for
+> > you instead?
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> Hi Icenowy,
+> 
+> Could you revisit the patch for the tcpm_unregister_altmodes part?
+> I think that is still a problem.
 
--- 
-Kees Cook
+Well, I must admit that only doing a tcpm_unregister_altmodes() should
+be harmless.
+
+> 
+> thanks,
+> Kyle
+
