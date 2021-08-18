@@ -2,113 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2507A3F0DDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 00:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE6243F0DF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 00:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234462AbhHRWGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 18:06:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234106AbhHRWGd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 18:06:33 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70786C061764;
-        Wed, 18 Aug 2021 15:05:58 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id 61-20020a9d0d430000b02903eabfc221a9so6091484oti.0;
-        Wed, 18 Aug 2021 15:05:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0rNS2PoZrMPVMBxbsnOQrGtXMRMxqJ7zXicAn/pdXAY=;
-        b=hb4q7IuwbzqucH4vCCuT4NXU/3RGVRqzzhzpL7Ml56j1/GHt5mt3pRLpI81HJqU3gk
-         ZqmVsIBjJOfZXU+COfY+u7JGtTKJeEgQ47IK4309a8py/4yM0GqZ6NKgxfHzHW5SXcPB
-         cOUJ2neC2YYD8/5Kr1QZvDagbyYvU/Tig+Td4ZHl5oTcoXQLtoYnQvB0ET/O97hir6+S
-         +enJyA5aOPZPEM1T8E2qF6h+9a1NX60H+B2BLFnWHCs0lgPl8oA2kteIlLAACw/YZ7MT
-         7Sglbe3WadDs6pb51U/S9VX7CK6KPA23B6dg9G1AWiPLiatfH7WIhKL7Ezp6Fu4n3kjX
-         FpVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0rNS2PoZrMPVMBxbsnOQrGtXMRMxqJ7zXicAn/pdXAY=;
-        b=j9yaR0v6XKLRnRdZME/9DsEU5N5JvlHA3rmq2g9/1fxZEDXGhawX0kywUg6M1rP1iW
-         z7QphwqwRVW2VUtHVoKLzTqqPcGJW/a0hQYT5uhICNqSbIBcREYUqeTQVdBWInpUf9fE
-         Mt/qMi+fSUrvZeiiqlOAfX9VkgSFKZz8ESSLRa6Ji6m4H/j0xyFImeytA8fWvXmucz57
-         Lqhjtxu/m3HIbk09QxqrRCe96ASJJQEdSWvM5WWk6Z7HvxZB2PVYoqeK56uQQkUqPJqj
-         9+83NtPVIDYtEsyiP0WupdK0/0dIkRr8JXohE8KKQhjdBIidLT1JuegzV6DIxlVVj2W1
-         PdUQ==
-X-Gm-Message-State: AOAM531i98/xuPv05IM68JjLsFyJk4bS6pzRw+0u8F8VryjS0EKrirES
-        7+Ik2m5xLp6yCPNKW6oTXeI=
-X-Google-Smtp-Source: ABdhPJw4rSeTRjxg3dAfoQ8EWVv+CMGy1hX5lWIs9KORSQ4E7XcLcttTcKqXjG0lSImPiuh9fa7F7Q==
-X-Received: by 2002:a9d:3e16:: with SMTP id a22mr9122960otd.101.1629324357778;
-        Wed, 18 Aug 2021 15:05:57 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.45])
-        by smtp.googlemail.com with ESMTPSA id d26sm212266oos.41.2021.08.18.15.05.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 15:05:57 -0700 (PDT)
-Subject: Re: [PATCH RFC 0/7] add socket to netdev page frag recycling support
-To:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     alexander.duyck@gmail.com, linux@armlinux.org.uk, mw@semihalf.com,
-        linuxarm@openeuler.org, yisen.zhuang@huawei.com,
-        salil.mehta@huawei.com, thomas.petazzoni@bootlin.com,
-        hawk@kernel.org, ilias.apalodimas@linaro.org, ast@kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com,
-        akpm@linux-foundation.org, peterz@infradead.org, will@kernel.org,
-        willy@infradead.org, vbabka@suse.cz, fenghua.yu@intel.com,
-        guro@fb.com, peterx@redhat.com, feng.tang@intel.com, jgg@ziepe.ca,
-        mcroce@microsoft.com, hughd@google.com, jonathan.lemon@gmail.com,
-        alobakin@pm.me, willemb@google.com, wenxu@ucloud.cn,
-        cong.wang@bytedance.com, haokexin@gmail.com, nogikh@google.com,
-        elver@google.com, yhs@fb.com, kpsingh@kernel.org,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, chenhao288@hisilicon.com, edumazet@google.com,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, memxor@gmail.com,
-        linux@rempel-privat.de, atenart@kernel.org, weiwan@google.com,
-        ap420073@gmail.com, arnd@arndb.de,
-        mathew.j.martineau@linux.intel.com, aahringo@redhat.com,
-        ceggers@arri.de, yangbo.lu@nxp.com, fw@strlen.de,
-        xiangxia.m.yue@gmail.com, linmiaohe@huawei.com
-References: <1629257542-36145-1-git-send-email-linyunsheng@huawei.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <83b8bae8-d524-36a1-302e-59198410d9a9@gmail.com>
-Date:   Wed, 18 Aug 2021 16:05:52 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <1629257542-36145-1-git-send-email-linyunsheng@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S234449AbhHRWNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 18:13:05 -0400
+Received: from mga11.intel.com ([192.55.52.93]:44025 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234106AbhHRWND (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 18:13:03 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="213318029"
+X-IronPort-AV: E=Sophos;i="5.84,332,1620716400"; 
+   d="scan'208";a="213318029"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 15:12:28 -0700
+X-IronPort-AV: E=Sophos;i="5.84,332,1620716400"; 
+   d="scan'208";a="531870684"
+Received: from dballa1x-mobl1.amr.corp.intel.com (HELO rpedgeco-desk.amr.corp.intel.com) ([10.212.156.71])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 15:12:28 -0700
+From:   Rick Edgecombe <rick.p.edgecombe@intel.com>
+To:     x86@kernel.org, bp@alien8.de, mingo@redhat.com, tglx@linutronix.de,
+        hpa@zytor.com, peterz@infradead.org, luto@kernel.org,
+        dave.hansen@linux.intel.com
+Cc:     rick.p.edgecombe@intel.com, linux-kernel@vger.kernel.org,
+        wency@cn.fujitsu.com
+Subject: [PATCH] x86/mm: Flush before free in remove_pagetable()
+Date:   Wed, 18 Aug 2021 15:10:26 -0700
+Message-Id: <20210818221026.10794-1-rick.p.edgecombe@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/17/21 9:32 PM, Yunsheng Lin wrote:
-> This patchset adds the socket to netdev page frag recycling
-> support based on the busy polling and page pool infrastructure.
-> 
-> The profermance improve from 30Gbit to 41Gbit for one thread iperf
-> tcp flow, and the CPU usages decreases about 20% for four threads
-> iperf flow with 100Gb line speed in IOMMU strict mode.
-> 
-> The profermance improve about 2.5% for one thread iperf tcp flow
-> in IOMMU passthrough mode.
-> 
 
-Details about the test setup? cpu model, mtu, any other relevant changes
-/ settings.
+In remove_pagetable(), page tables may be freed before the TLB is
+flushed. The upper page tables are zapped before freeing the lower
+levels. However, without the flush the lower tables can still remain in
+paging-structure caches and so data that is written to the re-allocated
+page can control these mappings. For some reason there is only a flush
+lower down in remove_pte_table(), however, this will not be hit in the
+case of large pages on the direct map which is common.
 
-How does that performance improvement compare with using the Tx ZC API?
-At 1500 MTU I see a CPU drop on the Tx side from 80% to 20% with the ZC
-API and ~10% increase in throughput. Bumping the MTU to 3300 and
-performance with the ZC API is 2x the current model with 1/2 the cpu.
+Currently remove_pagetable() is called from a few places in the
+hot unplug codepath and memremap unmapping operations.
 
-Epyc 7502, ConnectX-6, IOMMU off.
+To properly tear down these mappings, gather the page tables using a
+simple linked list based in the table's struct page. Then flush the TLB
+before actually freeing the pages.
 
-In short, it seems like improving the Tx ZC API is the better path
-forward than per-socket page pools.
+Cc: stable@vger.kernel.org
+Fixes: ae9aae9eda2d ("memory-hotplug: common APIs to support page tables hot-remove")
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+---
+
+This wasn't observed causing any functional problem in normal runtime. AFAICT it
+can't be triggered from unprivileged userspace.
+
+ arch/x86/mm/init_64.c | 60 ++++++++++++++++++++++++++++---------------
+ 1 file changed, 39 insertions(+), 21 deletions(-)
+
+diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+index ddeaba947eb3..3c0323ad99da 100644
+--- a/arch/x86/mm/init_64.c
++++ b/arch/x86/mm/init_64.c
+@@ -992,6 +992,23 @@ static void __meminit free_pagetable(struct page *page, int order)
+ 		free_pages((unsigned long)page_address(page), order);
+ }
+ 
++static void __meminit gather_table(struct page *page, struct list_head *tables)
++{
++	list_add(&page->lru, tables);
++}
++
++static void __meminit gather_table_finish(struct list_head *tables)
++{
++	struct page *page, *next;
++
++	flush_tlb_all();
++
++	list_for_each_entry_safe(page, next, tables, lru) {
++		list_del(&page->lru);
++		free_pagetable(page, 0);
++	}
++}
++
+ static void __meminit free_hugepage_table(struct page *page,
+ 		struct vmem_altmap *altmap)
+ {
+@@ -1001,7 +1018,7 @@ static void __meminit free_hugepage_table(struct page *page,
+ 		free_pagetable(page, get_order(PMD_SIZE));
+ }
+ 
+-static void __meminit free_pte_table(pte_t *pte_start, pmd_t *pmd)
++static void __meminit free_pte_table(pte_t *pte_start, pmd_t *pmd, struct list_head *tables)
+ {
+ 	pte_t *pte;
+ 	int i;
+@@ -1012,14 +1029,14 @@ static void __meminit free_pte_table(pte_t *pte_start, pmd_t *pmd)
+ 			return;
+ 	}
+ 
+-	/* free a pte talbe */
+-	free_pagetable(pmd_page(*pmd), 0);
++	/* gather a pte table */
++	gather_table(pmd_page(*pmd), tables);
+ 	spin_lock(&init_mm.page_table_lock);
+ 	pmd_clear(pmd);
+ 	spin_unlock(&init_mm.page_table_lock);
+ }
+ 
+-static void __meminit free_pmd_table(pmd_t *pmd_start, pud_t *pud)
++static void __meminit free_pmd_table(pmd_t *pmd_start, pud_t *pud, struct list_head *tables)
+ {
+ 	pmd_t *pmd;
+ 	int i;
+@@ -1030,14 +1047,14 @@ static void __meminit free_pmd_table(pmd_t *pmd_start, pud_t *pud)
+ 			return;
+ 	}
+ 
+-	/* free a pmd talbe */
+-	free_pagetable(pud_page(*pud), 0);
++	/* gather a pmd table */
++	gather_table(pud_page(*pud), tables);
+ 	spin_lock(&init_mm.page_table_lock);
+ 	pud_clear(pud);
+ 	spin_unlock(&init_mm.page_table_lock);
+ }
+ 
+-static void __meminit free_pud_table(pud_t *pud_start, p4d_t *p4d)
++static void __meminit free_pud_table(pud_t *pud_start, p4d_t *p4d, struct list_head *tables)
+ {
+ 	pud_t *pud;
+ 	int i;
+@@ -1048,8 +1065,8 @@ static void __meminit free_pud_table(pud_t *pud_start, p4d_t *p4d)
+ 			return;
+ 	}
+ 
+-	/* free a pud talbe */
+-	free_pagetable(p4d_page(*p4d), 0);
++	/* gather a pud table */
++	gather_table(p4d_page(*p4d), tables);
+ 	spin_lock(&init_mm.page_table_lock);
+ 	p4d_clear(p4d);
+ 	spin_unlock(&init_mm.page_table_lock);
+@@ -1057,7 +1074,7 @@ static void __meminit free_pud_table(pud_t *pud_start, p4d_t *p4d)
+ 
+ static void __meminit
+ remove_pte_table(pte_t *pte_start, unsigned long addr, unsigned long end,
+-		 bool direct)
++		 bool direct, struct list_head *tables)
+ {
+ 	unsigned long next, pages = 0;
+ 	pte_t *pte;
+@@ -1100,7 +1117,7 @@ remove_pte_table(pte_t *pte_start, unsigned long addr, unsigned long end,
+ 
+ static void __meminit
+ remove_pmd_table(pmd_t *pmd_start, unsigned long addr, unsigned long end,
+-		 bool direct, struct vmem_altmap *altmap)
++		 bool direct, struct vmem_altmap *altmap, struct list_head *tables)
+ {
+ 	unsigned long next, pages = 0;
+ 	pte_t *pte_base;
+@@ -1138,8 +1155,8 @@ remove_pmd_table(pmd_t *pmd_start, unsigned long addr, unsigned long end,
+ 		}
+ 
+ 		pte_base = (pte_t *)pmd_page_vaddr(*pmd);
+-		remove_pte_table(pte_base, addr, next, direct);
+-		free_pte_table(pte_base, pmd);
++		remove_pte_table(pte_base, addr, next, direct, tables);
++		free_pte_table(pte_base, pmd, tables);
+ 	}
+ 
+ 	/* Call free_pmd_table() in remove_pud_table(). */
+@@ -1149,7 +1166,7 @@ remove_pmd_table(pmd_t *pmd_start, unsigned long addr, unsigned long end,
+ 
+ static void __meminit
+ remove_pud_table(pud_t *pud_start, unsigned long addr, unsigned long end,
+-		 struct vmem_altmap *altmap, bool direct)
++		 struct vmem_altmap *altmap, bool direct, struct list_head *tables)
+ {
+ 	unsigned long next, pages = 0;
+ 	pmd_t *pmd_base;
+@@ -1173,8 +1190,8 @@ remove_pud_table(pud_t *pud_start, unsigned long addr, unsigned long end,
+ 		}
+ 
+ 		pmd_base = pmd_offset(pud, 0);
+-		remove_pmd_table(pmd_base, addr, next, direct, altmap);
+-		free_pmd_table(pmd_base, pud);
++		remove_pmd_table(pmd_base, addr, next, direct, altmap, tables);
++		free_pmd_table(pmd_base, pud, tables);
+ 	}
+ 
+ 	if (direct)
+@@ -1183,7 +1200,7 @@ remove_pud_table(pud_t *pud_start, unsigned long addr, unsigned long end,
+ 
+ static void __meminit
+ remove_p4d_table(p4d_t *p4d_start, unsigned long addr, unsigned long end,
+-		 struct vmem_altmap *altmap, bool direct)
++		 struct vmem_altmap *altmap, bool direct, struct list_head *tables)
+ {
+ 	unsigned long next, pages = 0;
+ 	pud_t *pud_base;
+@@ -1199,14 +1216,14 @@ remove_p4d_table(p4d_t *p4d_start, unsigned long addr, unsigned long end,
+ 		BUILD_BUG_ON(p4d_large(*p4d));
+ 
+ 		pud_base = pud_offset(p4d, 0);
+-		remove_pud_table(pud_base, addr, next, altmap, direct);
++		remove_pud_table(pud_base, addr, next, altmap, direct, tables);
+ 		/*
+ 		 * For 4-level page tables we do not want to free PUDs, but in the
+ 		 * 5-level case we should free them. This code will have to change
+ 		 * to adapt for boot-time switching between 4 and 5 level page tables.
+ 		 */
+ 		if (pgtable_l5_enabled())
+-			free_pud_table(pud_base, p4d);
++			free_pud_table(pud_base, p4d, tables);
+ 	}
+ 
+ 	if (direct)
+@@ -1220,6 +1237,7 @@ remove_pagetable(unsigned long start, unsigned long end, bool direct,
+ {
+ 	unsigned long next;
+ 	unsigned long addr;
++	LIST_HEAD(tables);
+ 	pgd_t *pgd;
+ 	p4d_t *p4d;
+ 
+@@ -1231,10 +1249,10 @@ remove_pagetable(unsigned long start, unsigned long end, bool direct,
+ 			continue;
+ 
+ 		p4d = p4d_offset(pgd, 0);
+-		remove_p4d_table(p4d, addr, next, altmap, direct);
++		remove_p4d_table(p4d, addr, next, altmap, direct, &tables);
+ 	}
+ 
+-	flush_tlb_all();
++	gather_table_finish(&tables);
+ }
+ 
+ void __ref vmemmap_free(unsigned long start, unsigned long end,
+-- 
+2.17.1
+
