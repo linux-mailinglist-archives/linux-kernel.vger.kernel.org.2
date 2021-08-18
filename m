@@ -2,56 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355273EFBE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 442F03EFC2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239670AbhHRGQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 02:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45500 "EHLO
+        id S239632AbhHRGUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 02:20:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239903AbhHRGQE (ORCPT
+        with ESMTP id S238724AbhHRGPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 02:16:04 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C6BC08E834
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:14:21 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id om1-20020a17090b3a8100b0017941c44ce4so8203690pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:14:20 -0700 (PDT)
+        Wed, 18 Aug 2021 02:15:53 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B1CC0363E1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:14:15 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id o10so1207575plg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:14:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=HZ2pMteOO7qWfOmOYtxvBybCH7dbrKV5AXIyHH8PDAo=;
-        b=I/ZOMRfdW0A1G/DcQVMDbVZ27xrUyPneZm3d4+Q2S2o/EDHaj6F19/FFLV/TwoMpwu
-         skf+ZMMooatac88oo9CLvuJrGQA7BIMv1RkJv118S5WXUAW4DfMl92HZuy1jSJK9Q8/C
-         xkWRC88V3Fuj6arr6OaRAS1UJvHk6WO+znvdE=
+        bh=U8hLOmyndrZpbH3W//YQN6YJRgGYlYr4YiBW+Lc3AF4=;
+        b=ClJUrT6ApBH0phA65aDisj5+kyHerJF2/GgwYf6sYImzafPzHckhYzZodOxI7uhCpI
+         vpe004kdrf64A0lB+HxzctUtSU11uTF4QZRwPZLG5yLy/UjnyJdf52u/HU6dj4zxkdJI
+         26TEVOy51sB8cue9oxYDxzhyCi71TMoiQfP2w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HZ2pMteOO7qWfOmOYtxvBybCH7dbrKV5AXIyHH8PDAo=;
-        b=jXewtTzRV0LyfTvOON+wZwIu4Tq+JWXv6uMkV8sDQxfo+3CXdcwGvEFBTUklaB2Xut
-         P10SsegZU8tDpNb8Iw5W+RgKNKYo/utSED9vq0PHABVulkg8/R1qdQNpa5o2q+hvwUTk
-         IktcuRmnkwPLx7Xrs7PpLjEygXXOkuSu/DhLsINbz1V/GhC6wSFnTdcng01UrJuoa8nu
-         VxdccqnNCL6Z+EJfcOfBjFRNNXAXvKP76b1jifqrglC6X+VGnHFNKAqRZSozNJKD2U8g
-         YahwY7Wx7OXjBll2iQdgmXnK9/xzdTTbwGNKCUJYVm6MGLNub4Uh+nwnDNfu7VsZnFRt
-         UXEw==
-X-Gm-Message-State: AOAM533Aw5pNXWdTKfcE0cAH72oMU3fv5yxRfN96G6mcCBP7UWnl557l
-        AubqQH8rsEYV5EW8iK67YRYhiw==
-X-Google-Smtp-Source: ABdhPJzGVRGNWEMl+xJPHR3RME0k4vYoAMz1qrXylbh8zmM1aqx1ZRRou6EJ/L2qyq4WBdsar+4NhA==
-X-Received: by 2002:a17:90b:1bc5:: with SMTP id oa5mr7694940pjb.170.1629267260592;
-        Tue, 17 Aug 2021 23:14:20 -0700 (PDT)
+        bh=U8hLOmyndrZpbH3W//YQN6YJRgGYlYr4YiBW+Lc3AF4=;
+        b=SjtbxmuB/kcCFldePs+4+gJv9Kir0LdUHO8VAEed8ohozje6Ey4GeOFhiZY3Oo0ENh
+         Dj118sEYCR0MyE+9zTFCj6UwLvwBJQZ69mLGHOmgWh231Pt9u1+AqlWrLZzCfj7nj9Q7
+         aNGAUsKivDTBDrzptG+jritk20QjT0WLv3Eh2PryrQH5aD9KcLIWy69XqIcl9He1LMDi
+         xgGN4Fymj3eVyhY/JdYWMTfLd6byLWQExAyIrqT0svhsJgzPoydS6QuFUtPgLs1uX618
+         p9OLe46jSoPlxfAeLA809S19VbOoxqY7oj5snpApfmK8R3P1B3LHVpr1l2ztU3kZ76VD
+         IKiw==
+X-Gm-Message-State: AOAM532KyWBqeX+pFy4V7yanQGSrUWvhi7ra8es0/dWfHSOB5l/Ax0/U
+        jv83nzLyfOl2jB1nwgwy+VqHiQ==
+X-Google-Smtp-Source: ABdhPJwRPPIhR63YQCS3nZeOodK84yxk6DTCJU5/GeqbIYAqZWORFkCkpfMsUc8DkqkxWPqp6Ivd9w==
+X-Received: by 2002:a17:90a:3d4d:: with SMTP id o13mr7935552pjf.34.1629267255044;
+        Tue, 17 Aug 2021 23:14:15 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v20sm5270585pgi.39.2021.08.17.23.14.15
+        by smtp.gmail.com with ESMTPSA id f5sm4570524pfn.134.2021.08.17.23.14.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 23:14:19 -0700 (PDT)
+        Tue, 17 Aug 2021 23:14:12 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Kees Cook <keescook@chromium.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
         "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org,
         "Gustavo A. R. Silva" <gustavoars@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -60,14 +63,14 @@ Cc:     Kees Cook <keescook@chromium.org>,
         linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         linux-hardening@vger.kernel.org
-Subject: [PATCH v2 39/63] ipv6: Use memset_after() to zero rt6_info
-Date:   Tue, 17 Aug 2021 23:05:09 -0700
-Message-Id: <20210818060533.3569517-40-keescook@chromium.org>
+Subject: [PATCH v2 40/63] netfilter: conntrack: Use memset_startat() to zero struct nf_conn
+Date:   Tue, 17 Aug 2021 23:05:10 -0700
+Message-Id: <20210818060533.3569517-41-keescook@chromium.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210818060533.3569517-1-keescook@chromium.org>
 References: <20210818060533.3569517-1-keescook@chromium.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1045; h=from:subject; bh=Xphf8KZ59311q+SS41lPdZSHzYQuR48YTVr6kaXwlq8=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhHKMmSJWz3eXi3vB6HuJ8ZVOxVmfPJDOfgTngkXFJ Y1HtemeJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYRyjJgAKCRCJcvTf3G3AJlNxD/ 9sppezWOBqAWwsgfxRdXp14+IggzlcV6Cmuy+3yoHyda/CdCTve1snqU/mJj9ikiLYc+kAugfad4F0 cTsFl+ID962FFCkUfX+wrf2rcqUBBFlgJb2t38JcXrnDO88rm3r76AL2Wma0ueNPmaH5WllhHC2rCK fXKPe24PYrG5OSOBDVj0fD/osVthtrCfm/J2MtX+UxWh2FPgLGPm8bIuPN1IO4o/bkmRAPRJf3kWdx OKIoFSgRnAQCFZAkoDmto4fssngysQ/8xlWWYJ9nL7hXj3ybM7i4Riea2vc7uMtQ/LdrD24dqEDmKe f3+J4WogRasAKWDsVi1LKZLojHKBb+ZlIs6kkWujZ6bqPTPjVxgKPF1SyrDNzFRofsvKIdmiaocbM8 7Mbap+xZuyeBTwmrqENziN5DQQZC7J8joprP3D5XEgjPSSfo10I0ZhuYGFkZImfW3drIF9MNa/UFwb K/jR9NhcwjBeArtPiUgjZ/eTrdZygthG5tuDwEvP65vF/0qwPA/rmr7iPNZkf43crxfhCRZxUf8LGs suQoBCZbvMkCKKlTKgtbFTehnkPqB2dleq9pZC86P1KKoE7a9I7zAFa0vwJ32McHUjN4QjWLWEnIo1 ySO6vVD3cBOQ7RlV165HYCseHGnNSRZD6wdVzFjMgZMzsSBDx6RZHTkAU6fQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1292; h=from:subject; bh=fE+HPCTs14JsaXA0VZ1+azTXm9sRPSgAjXFdw5wZMQo=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhHKMn9jUxUjmhnSM6V4Tc0qU7XODXJhF3t5WIJd3Y koV1FpKJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYRyjJwAKCRCJcvTf3G3AJhk3D/ 9Y7TD9jWlZ06v+vvdPdc8QlSMediOUFC1q3DoYi7bvc4YyEqXGUCbEBONwNQLvsK3hI4ED3PL+2IhD hz/Dbx5DT2T40OMCMycZbUmvAgn6pOBBpw2q5g7L1MPBPiZjTMXq8E4ovppbe62BM08pHEnfAugWsL Vg8PPE0Mpa5a+QOsrBwIXi58FdhL+TgFoZSeBzbJm+KmZX4h++dF5E6mfecc7iWTRI8x9S8/YHdEh9 ZIb37NLdJeVivXFEuz3DfGGLCuGfbSDNomkElBmWe2yPoHWjEkJTWn6RNq+MEAjA9TJ5TJ3HDso1/K sKW9g8e4L1L/rtxaFXF9BV/xpTwz0kRs0XsBqZ+kJVDfducMf0ve5e9o39+ZRvnlGz1cBPnku+/z+w 0bwBKb/ZheH0vYU+K8EWpKneqiHfpTz4StFzfiQRwhbiGP3RgP5fcXs0kJTQd7Pb2ELVtqLcT+gjk9 6GhJhWeDD/p/qHw7tNmVAq61F9fgKxmA+c7cUPkuWqkaozXqUnyya2WLhQ5LvSbSIIu7/NC2yfZ+vB 5nw/neLBHyCcwQZyeBRVjmkcwXCcmWSOAeUgya9iGsWYJAEHUAkIzm1Hk4kcF6HSJmjPw9ayH8RBkV zBGERJvvVpyPFtl03OuHfjGRW4wn6Zs+wzWO0oB8CiPowPcXXUv7O9y+3+xA==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -78,33 +81,36 @@ In preparation for FORTIFY_SOURCE performing compile-time and run-time
 field bounds checking for memset(), avoid intentionally writing across
 neighboring fields.
 
-Use memset_after() to clear everything after the dst_entry member of
-struct rt6_info.
+Use memset_startat() to avoid confusing memset() about writing beyond
+the target struct member.
 
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
+Cc: Florian Westphal <fw@strlen.de>
 Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
-Cc: David Ahern <dsahern@kernel.org>
 Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: netfilter-devel@vger.kernel.org
+Cc: coreteam@netfilter.org
 Cc: netdev@vger.kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- net/ipv6/route.c | 4 +---
+ net/netfilter/nf_conntrack_core.c | 4 +---
  1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index 6cf4bb89ca69..bd0ab3e436e7 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -327,9 +327,7 @@ static const struct rt6_info ip6_blk_hole_entry_template = {
+diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
+index d31dbccbe7bd..060503230519 100644
+--- a/net/netfilter/nf_conntrack_core.c
++++ b/net/netfilter/nf_conntrack_core.c
+@@ -1500,9 +1500,7 @@ __nf_conntrack_alloc(struct net *net,
+ 	ct->status = 0;
+ 	ct->timeout = 0;
+ 	write_pnet(&ct->ct_net, net);
+-	memset(&ct->__nfct_init_offset, 0,
+-	       offsetof(struct nf_conn, proto) -
+-	       offsetof(struct nf_conn, __nfct_init_offset));
++	memset_after(ct, 0, __nfct_init_offset);
  
- static void rt6_info_init(struct rt6_info *rt)
- {
--	struct dst_entry *dst = &rt->dst;
--
--	memset(dst + 1, 0, sizeof(*rt) - sizeof(*dst));
-+	memset_after(rt, 0, dst);
- 	INIT_LIST_HEAD(&rt->rt6i_uncached);
- }
+ 	nf_ct_zone_add(ct, zone);
  
 -- 
 2.30.2
