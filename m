@@ -2,95 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA533F0450
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4653F0453
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236417AbhHRNIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 09:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234949AbhHRNIe (ORCPT
+        id S236497AbhHRNKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 09:10:05 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:45552
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233634AbhHRNKD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 09:08:34 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4535C061764;
-        Wed, 18 Aug 2021 06:07:59 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id j18so2663248ioj.8;
-        Wed, 18 Aug 2021 06:07:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+tNPb1/FPZA9eF7X+TOOmGLZvE3KZSt2M0L0KXp9Ah8=;
-        b=SZR+b95l8v5SjC4+pZiDHCcUX+iSblqmeJVM/s+LIVGE0d9M2XKc2eZf83W/VLtwau
-         YV/K9Pr2J8jSXAxTCvF5wwLMSc8jy1rwlr0TiM5c7lmyNSdybD34PCPJXGRbWfhZMG40
-         /C6GhCo91LCITlZissWVpybP/AUB/Vxecy/5aPbNqmmtACa6T3ivbL83rlLU3G5A+LHf
-         rF5ztA12/gyeoarYk+PXsv3UmoYrmUnCp2ROMX5zee5xAr6Nuyif0vq/u6LOeT5ZwcFQ
-         9nDpp76bChkZFsI29y0uFkDoajLUMgEmcBWrOeUi7mBItCPNEDeNoZVodoxXcFWFPjjQ
-         +5ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+tNPb1/FPZA9eF7X+TOOmGLZvE3KZSt2M0L0KXp9Ah8=;
-        b=esHKS4zOKWUtbvnXepqXXupcI78LuYQzUmph82znxiddHHyjgbilmw88o7LjHteUY6
-         58D1RHrUOCxdmBfUs3Uk67y2ABSJb30LxabPFV97K9AZi6dIn2GSyYcyNc3t11cWwY2+
-         UPjFndSx2KqnwzaN8Gjzx6TjYtLMKwKgSsiny0VmjLmIIy3Bek3cdZjJsS9qtF4qikcX
-         s0GZrJt32q5SrdikBbk2hM4RTzIRXJFKtdWXLasUij33wimK6YwAMny/+IVa6Xoy3UIw
-         lBHAbH4g0cF6jSyX1RxSohmbDspW4y4xoD0eFOenVkM1bhRrkK+Gktyec7N+e0Il+4Fb
-         ihGw==
-X-Gm-Message-State: AOAM532nJ9DGjAVKErKHMbbzG71W0VrtVnhAn9sykFP3DBGn2vBBWOlZ
-        irC0fM+Xxwhr+qghcwYhFZQcZGd2yaP1DyjE9cE=
-X-Google-Smtp-Source: ABdhPJwNu2W+2PWsc1G3Nxzpq/lkQoh4zDm3Fav5536uGTKbeL3hSVC+lNuNBiMw408aS96WJUW43MyH/xRVFiXPkoM=
-X-Received: by 2002:a05:6602:2c05:: with SMTP id w5mr6948405iov.91.1629292079292;
- Wed, 18 Aug 2021 06:07:59 -0700 (PDT)
+        Wed, 18 Aug 2021 09:10:03 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 90FE93F365;
+        Wed, 18 Aug 2021 13:09:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629292167;
+        bh=QMhCbedXXvfVQwxEGtSlSAh2lNaKHZKflzfnmOrUTkQ=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=AtOBMCfNpcjamwO08GaAI2nojeY8t/OJFmBe62bTltjc1FkRysUYWru+2I+p8oMlB
+         qqQOJ7Vd9ZC61vPL4Vj6BRldg8eaR1TBzdLncA7212RK7gm8KIj7wRE8PUWkyRex8X
+         qam7rQT4YmpjBfm0bW4NOUjiyfaKWSKpH6agwQRlk5lATZ9Jm/1j3FPsyvTUWEM52C
+         a09Jqoey7XUjXilqWZTaC19GBeGsjj3J+Cepqvu03S5JofsyGejxvLoRDvoxsNHL9m
+         xNw2FW5vtDMdCUjYQLO8+yoJxD1JmXF/azzLC8uBZJLg4cTDFv1M/fNm/fBGWrgsXI
+         o/Wm/VsEEB00g==
+From:   Colin King <colin.king@canonical.com>
+To:     Sunil Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] octeontx2-af: remove redudant second error check on variable err
+Date:   Wed, 18 Aug 2021 14:09:27 +0100
+Message-Id: <20210818130927.33895-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210818050841.2226600-1-keescook@chromium.org> <20210818050841.2226600-2-keescook@chromium.org>
-In-Reply-To: <20210818050841.2226600-2-keescook@chromium.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 18 Aug 2021 15:07:48 +0200
-Message-ID: <CANiq72=ym5ubiXgwt=xyyOSxnPFqgfArJsPyV9juOuwWN+PqCQ@mail.gmail.com>
-Subject: Re: [PATCH 1/5] Compiler Attributes: Add __alloc_size() for better
- bounds checking
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 7:08 AM Kees Cook <keescook@chromium.org> wrote:
->
-> Clang can additionally use alloc_size to informt the results of
+From: Colin Ian King <colin.king@canonical.com>
 
-Typo.
+A recent change added error checking messages and failed to remove one
+of the previous error checks. There are now two checks on variable err
+so the second one is redundant dead code and can be removed.
 
-> Additionally disables -Wno-alloc-size-larger-than since the allocators
+Addresses-Coverity: ("Logically dead code")
+Fixes: a83bdada06bf ("octeontx2-af: Add debug messages for failures")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/ethernet/marvell/octeontx2/af/rvu.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Disables -Walloc-size-larger-than?
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
+index fb50df93b54e..c2438ba5e2ec 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
+@@ -1031,8 +1031,6 @@ static int rvu_setup_hw_resources(struct rvu *rvu)
+ 			"%s: Failed to allocate CPT1 LF bitmap\n", __func__);
+ 		return err;
+ 	}
+-	if (err)
+-		return err;
+ 
+ 	/* Allocate memory for PFVF data */
+ 	rvu->pf = devm_kcalloc(rvu->dev, hw->total_pfs,
+-- 
+2.32.0
 
-> already reject SIZE_MAX, and the compile-time warnings aren't helpful.
-
-Perhaps a bit more context here (and/or in the comment in the
-Makefile) would be nice: i.e. why are they not helpful (even if
-rejected by the allocators).
-
-Cheers,
-Miguel
