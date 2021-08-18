@@ -2,65 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F97E3F0C0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 21:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6EE3F0C0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 21:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233378AbhHRTrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 15:47:55 -0400
-Received: from mga12.intel.com ([192.55.52.136]:64369 "EHLO mga12.intel.com"
+        id S233400AbhHRTsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 15:48:35 -0400
+Received: from mga06.intel.com ([134.134.136.31]:56145 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233314AbhHRTrv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 15:47:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="195992298"
+        id S232969AbhHRTse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 15:48:34 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="277434683"
 X-IronPort-AV: E=Sophos;i="5.84,332,1620716400"; 
-   d="scan'208";a="195992298"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 12:47:16 -0700
+   d="scan'208";a="277434683"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 12:47:58 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,332,1620716400"; 
-   d="scan'208";a="471648109"
-Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
-  by orsmga008.jf.intel.com with ESMTP; 18 Aug 2021 12:47:16 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
+   d="scan'208";a="488858711"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga008.fm.intel.com with ESMTP; 18 Aug 2021 12:47:58 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Wed, 18 Aug 2021 12:47:15 -0700
-Received: from orsmsx609.amr.corp.intel.com (10.22.229.22) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ 15.1.2242.10; Wed, 18 Aug 2021 12:47:58 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Wed, 18 Aug 2021 12:47:15 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx609.amr.corp.intel.com (10.22.229.22) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10 via Frontend Transport; Wed, 18 Aug 2021 12:47:15 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.104)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ 15.1.2242.10 via Frontend Transport; Wed, 18 Aug 2021 12:47:58 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.177)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.10; Wed, 18 Aug 2021 12:47:15 -0700
+ 15.1.2242.10; Wed, 18 Aug 2021 12:47:57 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Tr3fxldW3xOOu7dOggdrqkfzQpCk8YqHuSGC5Sw57VzIBxLV90bm1qwdnLt9gaacQ1gnIbJbHSjmgfM6Pz5mcwfSD/EfpkNv0KVNJENzTgRBh2aM7OFXkL5ajmSwEnGwGsVxdOqr9coov7tmiADnjsellGIDuyjhtjgmOJK+bGb3kxGaXO1t9KKd7T5Lyps2dEj3JyTGf4aVXTrHWpBkd9RnSskangnSTMqNEp8i20R/vCfmd/WOHmHrNEm0qJmcbZgZL5khRoh0hojtAn/oYPVkOFTVpmsLHqDk+kVbsCjVZAxfq/5WAD56AovAgDpfp/8ceB6/YnEXbk50Hbq8EA==
+ b=WlCZ8OCR/oOzPUvemBBNQR1M293M8l7SgABKKV9RvHYYoj1h0/ChkiF/jxmzIoH2WtCWrqCfF8+I7EAocP3CoF8UkSlc1NlzwHftMg0pEgBv0xkzO/vsNwxs0s4KXP7fxVeSU6qFoRX18/AxQsI8GI7bk9WNI0M6vXW3WikUWcA3s+T9q1HnDC/IRU8+rvdiL0l+FhylBH9t0y5S6h1IynHXuJZ8q1dnn8xNV8AKRTXiC9frm05RPNsuoOIQDPcqgqsq9WaN2WlBYK0zMrzgjlyxMIHiCMR9bKpZp0NdtRp9MrMBuPDvOT/JiX7pVuGy9sS4O9PcBx06dsOnmP8uUQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hJ+rm6nZY4s6Z5Pm+xKVB1LHo801jDnBlHNbPGwxQX0=;
- b=jCXzld7WSs0abnIq/g4Xyeq6FQ9Zq7Ao0Txp2I618qiSFAvDC7fhmedOG/Z8km1nOYzpQ6YAUTwDI2DqNZlRi9YfLVgYCaaP8iNBewcIlut5TIBZznSsyPQdsAL2SJ5WIiOWhwWRRFiNo1MlTigH0oqdhG/afCEXf2jow6w2+j07JvxGNUuevCvjqRLDEQx4rJB6McWvcrPiIAI3MtocoZQeG43n5jabPle7HAiAFJDKUiGHOGD3M0VTgTGPhpDZCCR5Se8tzTT39TVAEfSqK6cO90JqAfr1rO+6ol9FQtXS6zHdIVVhUmGAXMDpyKC+ihtJr+FvRYNzOAeNGmaP/w==
+ bh=Z8vwUxatHvebG/FEP1RbcPTiBSRJvjOf3feOYOXvNUI=;
+ b=NcM8+CrisaEB9WS9vCz0SjfXmG1wjVXnMigbuyCgEZjbfL6J+wCnMjnZhVRIa+2BOJVTyClu7+BC2uWKujv2s3/pQ/tsUHCu/bO702VEjcxtN80GjXBLpUwAdVMhcf7y333CkqzKApOH2JFX9HwZ7rM5VvMFJ/hSpBxZAbQujFdKFmJntKRyKUAxBeMerJ/Io34dof097YTUtxPNVDL4emK/1nNcNHag3ujb+eTlJz5yELPJZZPAM4IgHpRtJ1IIjdJapdcfreWEnAmXwzJ2ndYhdl3ew6rozXVKxV/eer9Y4V8Yhh7kJCy1YinD+kLUIHtvDkgc476etoShbRh1lQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
  s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hJ+rm6nZY4s6Z5Pm+xKVB1LHo801jDnBlHNbPGwxQX0=;
- b=JzFumrGk+idlOlefajqK9a7Ng3CuV5uCpssbBsd/INH6JZJlBN/nRE11XWtKdkDZOGAId+wO/tZfbmps+N/OFkqPYSGVeFYrq2Jk/k7BlFtK2fiWEBOcSiSg+YSQi0Lo1xDYIrJprDp0ALlTVyIOYSBxcdDNDRkVsi4i8q0fvSo=
+ bh=Z8vwUxatHvebG/FEP1RbcPTiBSRJvjOf3feOYOXvNUI=;
+ b=W6DgCv8O9ZfnYmRZIljTeHsxF30/dN9qAGwfp62xymO44zv2E4uNbtq1+0wOcszcbpxhc8j/EYWKZzGC68SxTmOM4W/SrPXeKDMr4vSyt6BQotFhENw6GlEiishzUrqk62trn1FXT7VXy69IGusZ5Jh64J0iJEMvuakyfcBVOvQ=
 Received: from PH0PR11MB4855.namprd11.prod.outlook.com (2603:10b6:510:41::12)
- by PH0PR11MB5208.namprd11.prod.outlook.com (2603:10b6:510:3b::16) with
+ by PH0PR11MB5109.namprd11.prod.outlook.com (2603:10b6:510:3e::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17; Wed, 18 Aug
- 2021 19:47:11 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Wed, 18 Aug
+ 2021 19:47:49 +0000
 Received: from PH0PR11MB4855.namprd11.prod.outlook.com
  ([fe80::6c9b:b5e4:1fda:78b8]) by PH0PR11MB4855.namprd11.prod.outlook.com
  ([fe80::6c9b:b5e4:1fda:78b8%5]) with mapi id 15.20.4415.024; Wed, 18 Aug 2021
- 19:47:11 +0000
+ 19:47:49 +0000
 From:   "Bae, Chang Seok" <chang.seok.bae@intel.com>
 To:     Borislav Petkov <bp@alien8.de>
 CC:     "Lutomirski, Andy" <luto@kernel.org>,
@@ -73,16 +69,16 @@ CC:     "Lutomirski, Andy" <luto@kernel.org>,
         "Liu, Jing2" <jing2.liu@intel.com>,
         "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v9 11/26] x86/fpu/xstate: Update the XSTATE context copy
- function to support dynamic states
-Thread-Topic: [PATCH v9 11/26] x86/fpu/xstate: Update the XSTATE context copy
- function to support dynamic states
-Thread-Index: AQHXhVR1hy0/NshlikyQUh2fxjRrn6t5R3SAgACBjQA=
-Date:   Wed, 18 Aug 2021 19:47:11 +0000
-Message-ID: <EBB61776-1C55-4C2E-9BA8-4F5D890A589F@intel.com>
+Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to
+ protect dynamic user state
+Thread-Topic: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to
+ protect dynamic user state
+Thread-Index: AQHXhVRyjpE4OXS+e0aKA8ZshCCgeqt5kHqAgAA4tAA=
+Date:   Wed, 18 Aug 2021 19:47:49 +0000
+Message-ID: <7012BF86-4D1E-41C9-BDB7-70E8F4952144@intel.com>
 References: <20210730145957.7927-1-chang.seok.bae@intel.com>
- <20210730145957.7927-12-chang.seok.bae@intel.com> <YRz3EWQl7pHEahdF@zn.tnic>
-In-Reply-To: <YRz3EWQl7pHEahdF@zn.tnic>
+ <20210730145957.7927-13-chang.seok.bae@intel.com> <YR00U19168BGoRB9@zn.tnic>
+In-Reply-To: <YR00U19168BGoRB9@zn.tnic>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -91,93 +87,189 @@ x-mailer: Apple Mail (2.3608.120.23.2.7)
 authentication-results: alien8.de; dkim=none (message not signed)
  header.d=none;alien8.de; dmarc=none action=none header.from=intel.com;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c89305ca-f6c6-43b5-808c-08d96280f8b2
-x-ms-traffictypediagnostic: PH0PR11MB5208:
+x-ms-office365-filtering-correlation-id: c0630855-9b57-49cd-8ddc-08d962810f5c
+x-ms-traffictypediagnostic: PH0PR11MB5109:
 x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PH0PR11MB5208201BF2CBC2F7B232382CD8FF9@PH0PR11MB5208.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-microsoft-antispam-prvs: <PH0PR11MB5109C50F78BA5DF085A37226D8FF9@PH0PR11MB5109.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2276;
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: LJTR89jNb7+yq9AGX+SBz5OkYmBmTHNaGOuD/+NndoZztLJ1md24Jt1Z3o0EcQWtk3H3As8qdAPsHrapInv+j5871qxiWyPTniMisb83vU+c8Equt25SfokXcduDypBAblLHx9u6BzDs+6yPE7xYp7JJWkJokPWEh8MAPfrGW28FLMz7Zf9eIVqFbIq8oLGpPCzoDXtQvC6V0HQDD9OtDhmAcL1IeShdHs/mZohT1mg21GsE8axT5WAsPwdLJbRpAjLAQOIHSq5+xYrAtpXqJjI2plLQH+tR5KGec3ZQJjSPBF8KSuLYalvJlHZYK6lFHRLj3s2pl1rVaAzOV4FvgX5wPWZbicPote9MN974oMdMkvfnjovhwv6koRPBA1odXvarD4yXyNvw3jORhMskFvV0n1beq4Y56Y5eo8qOOIZLraM4f7CZnk5OAibySUV3I21yYYKYmAXlFmz9JaNrVmXrBg++HBsexKLVxS5Np7C8yeHlNZ8H1/+h6uEwEAEjodwCWiRR0Bq0+gk3Nh9Aj+vZBUU4G4LG1zJ0iXBngQvyO2AEgDq2BWN15BHIy2B590CA2X7VIm+AeuRzPQmD0GoXfJUJNyiFyfen6EIXe6ZO+EkaIKzR8FY18kBrzv7TZT0vYueufs53EKMwCRNP59ysh3C1+7r8gqOXGRbdIVo27WRhfrMXkt/H+xSk4vtkAqbhljXAsdxFYNoeK1PI/3hZXBPrTRPos6FRjbbI6KeZJjEUGS8C8a9f84NZ8mpU89OSO2WS2p07ppApf6lEDYYLmaYjw/csfrEXTL20e7wjv2cIliGC0xpzli2hjgBFaM1LGP1Lmff88PS5cbH4xg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4855.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(39860400002)(376002)(396003)(53546011)(38100700002)(186003)(122000001)(71200400001)(36756003)(4326008)(8676002)(8936002)(33656002)(6512007)(6486002)(76116006)(38070700005)(5660300002)(86362001)(66946007)(966005)(2906002)(66476007)(66556008)(64756008)(66446008)(6916009)(2616005)(478600001)(316002)(26005)(6506007)(54906003)(45980500001);DIR:OUT;SFP:1102;
+x-microsoft-antispam-message-info: +0nm6Uylfeh9YlaMOEZdwzBgeYNtG76jVHeNddgBrDscP7/SLqiJky3kAwWtWkMFG9TjfB7uWZ55/bPu5jA9vtLPktzG9OUDbBRlMfBn2sUd6ZKEfnFAFNsuOKnzhCnc1bkaeVjuYcaM/hpiG+fuKFUjVuYLiLa+CoRQjUF11FzyAAKCYijvM7KVJS4/SrSkw5H7LTVZzK59NOuGOiOoUj+nEIbfRKb92h8BvTQjRj0LvDe0t1jN7S3mzwwEUb6s9zr1x4QthZPgxfJM8tqUkUabAIzKve71cNFUt7xIyaHEsCdpUMDBuxMk/MsHdQW+/F7doOcF2k1vk95v0ZeLpNTelWcMVfsRVZvmHGiBgYYs1az5VngwpZMr9viAlE/IB4bJs175e/TZVJ/7HNN1Wvx/UFYrUdZ3BBqrljNVx+0KmwV/rpFzJBCXIH5t8eKFLmFzo420OpTwbxYniMr/HhdA3Yr7eU8+7GmzmMSTP4QDc0Wq2pN6F2+1oF8disqyodOxcG+ZcyGd8Q92nB6GC9Tdu2C00EQNz2RZgmLkOTe2DSRMFKC8dXp6NZRKckoKLYG8P0iqHo2tS31Y7oSmKrZ7KcHxUnSX8pBQLgucbVSqbvvbDoyuRE05v2jD7NzLp8xwf4+vD+yS7EqTOIwjsE8q2hxpLr/MZWz8c7+6pikT56s9eldvkhibKDoQS5BcVGWEGAB6vaLHMjB2t7lQ63pPeaHecIns48vk+LEWSLslfI/cNKUMwc5Fts+/Vu5K
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4855.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(136003)(346002)(366004)(39860400002)(8676002)(8936002)(6916009)(316002)(6512007)(2906002)(83380400001)(2616005)(33656002)(86362001)(38100700002)(122000001)(54906003)(6506007)(71200400001)(5660300002)(53546011)(4326008)(66946007)(6486002)(478600001)(36756003)(76116006)(186003)(64756008)(66446008)(66476007)(66556008)(38070700005)(26005)(45980500001);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?fSpLOEmRcKsr6vQKRXSzmqCEYnQXzsIqHZs1gEWct3wRDBVMCDx8bDda0lIm?=
- =?us-ascii?Q?z9E3tOeY597DgASE/Cb6hmDYxnsUD4RWatFsTJBsiYmgTRw6wtN++sdhvRqG?=
- =?us-ascii?Q?B5ZuBk4zxHCjuiYZeiP5iyhZc6uuiwIhO2LNw5QFaDWJQ6PP2g7Wa2Evpxnx?=
- =?us-ascii?Q?kMEuAIofcRNzSOiOou+DPUPc48Rl0ytnz597kE+YVgW0sU8kBCms9jJYMkB/?=
- =?us-ascii?Q?ZunAzJpePnMV89T94dNYmUyoP9hCq1c5VvQwGlN48pHxydnl+hgAlGfE7zVQ?=
- =?us-ascii?Q?TJfKMdt2+gwxTQT4U+UOZRqEXhv37miRzjmr+EzjQEi3ZmA/plPLTjLftD+8?=
- =?us-ascii?Q?3p1vI+S9xll/1Eric0h6QluSYkkDWhgK2D04yyhl1orZJC2B2fGa7IFQdIXP?=
- =?us-ascii?Q?LcXckczZQrOviVIdzQAAcNjes4upK/pdivJb+jP58GgYNYkJwbNqebtJwbTe?=
- =?us-ascii?Q?B433GAq+zaNxAiKtvID5sCAdlwdvmvGvkHqQAEArQC82mWWKD0vJEb7lQuLO?=
- =?us-ascii?Q?ho6V0M5bCs9+D9FFzzWcMrDv0SOlkUbGPI7948023J72E4hxIIn2C/Pqt7Gm?=
- =?us-ascii?Q?pQWq9ARJJb39z32E/ZMypYHw/hbWDs+N9lRQSwge39ILpTPVURr3o0ip0U9X?=
- =?us-ascii?Q?x1G65MhkuJwN6WaZkxX7e3aHUDHOAnmA6bx2l71wWR7zYy8OO+sksVnRf86e?=
- =?us-ascii?Q?0o/54yC+jXTqwTueKk27kz4omDpBS/smSPpwjdcI1R9Z9QftfPrXatx/7Eiz?=
- =?us-ascii?Q?ZBSk1FvL/Enj8FyiFjQGN0CaPOE4tuSQwUr6ZXM4ytnO3pmUrZuKy5UY1VzV?=
- =?us-ascii?Q?ARc943vcTOtjTXG4t1wnCb8dr/tk8SgnnuOVutljVk1TQTXvDK3HO9nKmInq?=
- =?us-ascii?Q?5KznV8j67LkE/8qHm5nEK6UmFxh/ceZ9MVzX91DkE/uMFoURI72NShmI51Y9?=
- =?us-ascii?Q?+edI6/T4lDqQgM5XOz2Mn/QYOjiE/LCQDxxusezhLeImhsU9bPRdEHFjb5kt?=
- =?us-ascii?Q?p/8lKNB4Ruanh7Rb5A2w2idGP/fERF/ZTYqNm4Efx4VxvsCVCUGDit8tqA8L?=
- =?us-ascii?Q?uzSnIa5mM3Hlq4GBMePGmdKL6lbUgSJnzZDDU++x63tzAgx2072jttmMT0cY?=
- =?us-ascii?Q?87LKGU5P+5C7dw/ulya6olLWK78eyaldO/WM9ieq/AdKCyubAih0cJYEnFlZ?=
- =?us-ascii?Q?sDYmZTXZh4ni9AZHouHZ8HWIivBEyque6hSunlwcuAB+q8HltaRSmSItH21F?=
- =?us-ascii?Q?Q5M2ZgX3D9zq+zf0zZzIx9hDxcNZFL+Qeg7G2muXDqVeNQS5POQT+5IzQFW0?=
- =?us-ascii?Q?9wh7EaIHYjEpf2tIbbFr19RL?=
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?gnUBn1eVHA3E2h85sS3ONxD36t7feNrVLe1aLqyxiGu3UK2VTe8QqnX0v7Dz?=
+ =?us-ascii?Q?7jWYGnbwoxnDuOnH3SnW++kKjJeTK/erQbP6Knr6iWjgiq8KanrCLTsumiaZ?=
+ =?us-ascii?Q?lv5HvP/nj4ff1OZoUyE5w+oC2kG1NrgkJqj5bDOLfNz5qr6eOCbNTfSChjOW?=
+ =?us-ascii?Q?JlOMUuaq16ohELayDpHrf5wSQeIMIUL9QLT5gL0dQ3DJcjHa/HJhet+9Ju8e?=
+ =?us-ascii?Q?I2SnyAo1H/pwtcs321x/PO6jppO6BkJ0j5cigmgVyOETeOID8R/985NarmA0?=
+ =?us-ascii?Q?MV6+Ja58UdCRXLlWktWZ37fos3KOmSSSZcvwL42zYTkifg5O9jIkntBjN/6t?=
+ =?us-ascii?Q?7fd5pRB8KlO/fTFKQjg9BbDuldUvTXO+akyORuuJqkKqyDGDAcOlgHTlxL/C?=
+ =?us-ascii?Q?2ZY1L4nz4dUbrC9cBxKNBTxSeSoAhG1hXsNu4NHzFQ9kfM2KWGX984EDxoOg?=
+ =?us-ascii?Q?Z6yLymYL7Z7zlYL1fKU4ncx0N298glSqiCZhCN1V3ACM9kHfaLQjXUuBh2Qo?=
+ =?us-ascii?Q?LxqmHl25zzDJ/EqefSH36HZvxc5hLVKf0ztMfOoEfm/CgWh7dDt9o6XEZeKu?=
+ =?us-ascii?Q?wYUh8lZzrYAzVQRXljrvOUkNcicnfg6It6LLE3tEV7JtSdK5069o0tPVVwzT?=
+ =?us-ascii?Q?G2/2kpwJ7LSl8cwg9sNGAazDaib2rH3hyJYukJ9bVPbl+zN4hLfXdSWF0B6J?=
+ =?us-ascii?Q?zFZGKVvvkt3NNeUQVWT/WDIX2yP2IgB2avfUcIHtJ8Pkdb/oJR1AjiJa2csR?=
+ =?us-ascii?Q?BiqfImWFX6ZAJXFTwjEGXCAJ1GBzzmC1kKtLEfzWJBlYr0eptIRh1cUqmhAZ?=
+ =?us-ascii?Q?P5Yxbf6agsEa2dMBo+rEhB5bkppZHuzMLe+8d51xO9neLOWg8IPSwIubxJ9D?=
+ =?us-ascii?Q?dUgbOgv3m9wU7mobTtueeuU/mMCdH6N9Cz6PW9bmS+6Nah3aE1kq66ZusW+G?=
+ =?us-ascii?Q?qXwvAWLpvBcodB/LRKbGstPmCYHBT7Bmd8QC37d5yK9KjSZ3amKCeXLMfBvE?=
+ =?us-ascii?Q?m2Y8ok5XRm8PZAF4HBFirTwJ0X9z4Uime0obeEWfJj6YRr8xk+clwW8nIYdc?=
+ =?us-ascii?Q?23R4owGWdSN3GdJSTKfN6iKkdVVae9fzzTccGlNga66br1HDfIwwOaUMJC1c?=
+ =?us-ascii?Q?AJ7yxhuTGT7aaXCpQ4MysnWXF32F5jFFxU0VlalwulpNnz1xRK5U7m2OlQd0?=
+ =?us-ascii?Q?IjYHRqBaXEkqV9GaRe4Oeco6GY4mh8naS/VcC1E9mNwLi3gT2t//wwa95Mi5?=
+ =?us-ascii?Q?US/vwM+IKKbU2CaVU2qBVgu1WxMLoOlVMfUUdVFyFh98PqYOgnDRTgK7aINs?=
+ =?us-ascii?Q?NnC2JsRTfbXBat+Lm+2mY/eU?=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <A0B7E892F0334942A9293A2C3C3E6FFB@namprd11.prod.outlook.com>
+Content-ID: <E22C133022165043B962ECB2624EF851@namprd11.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4855.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c89305ca-f6c6-43b5-808c-08d96280f8b2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Aug 2021 19:47:11.5328
+X-MS-Exchange-CrossTenant-Network-Message-Id: c0630855-9b57-49cd-8ddc-08d962810f5c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Aug 2021 19:47:49.6298
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: elkKKIkcCXVB+KazB0/c1f8rx+ULP229bLjgYQZpPOr733GSQfpW3WGlx3ga/If9fduA80GcFLEJbpIJD36G2gZsfZj86YS0PGc27Sb6rpE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5208
+X-MS-Exchange-CrossTenant-userprincipalname: aRaA62YK9CAI2oIBthVKNedkSjiJMiEZ6uN3bwjvtCYcSomlWerNuX9LIouaEU5eLnUQ5UY4p50E99G9TAfgDlI8is30xOrJThiPh0I9mzY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5109
 X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Aug 18, 2021, at 05:03, Borislav Petkov <bp@alien8.de> wrote:
-> On Fri, Jul 30, 2021 at 07:59:42AM -0700, Chang S. Bae wrote:
->>=20
->> -			copy_feature(header.xfeatures & BIT_ULL(i), &to,
->> -				     __raw_xsave_addr(&tsk->thread.fpu, i),
->> -				     __raw_xsave_addr(NULL, i),
->> -				     xstate_sizes[i]);
->> +			unsigned int size =3D xstate_sizes[i];
->> +			void *from =3D NULL;
->> +
->> +			/*
->> +			 * Copy the xstate if available. Otherwise, copy the
->> +			 * non-zero init states for legacy states (FP and
->> +			 * SSE) or fill zeros.
->> +			 */
->> +
->> +			if (header.xfeatures & mask)
->> +				from =3D __raw_xsave_addr(&tsk->thread.fpu, i);
->> +			else if (XFEATURE_MASK_FPSSE & mask)
+[ Cut out the API comments and other obvious ones here. ]
+
+On Aug 18, 2021, at 09:24, Borislav Petkov <bp@alien8.de> wrote:
+> On Fri, Jul 30, 2021 at 07:59:43AM -0700, Chang S. Bae wrote:
 >=20
-> The i loop variable above starts from FIRST_EXTENDED_XFEATURE - why is
-> this XFEATURE_MASK_FPSSE check even here?
+>> +/**
+>> + * xfd_switch - Switches the MSR IA32_XFD context if needed.
+>> + * @prev:	The previous task's struct fpu pointer
+>> + * @next:	The next task's struct fpu pointer
+>> + */
+>> +static inline void xfd_switch(struct fpu *prev, struct fpu *next)
+>> +{
+>> +	u64 prev_xfd_mask, next_xfd_mask;
+>> +
+>> +	if (!static_cpu_has(X86_FEATURE_XFD) || !xfd_capable())
+>=20
+> cpu_feature_enabled(). Use that everywhere in your patchset. But you
+> know already...
 
-!(header.xfeatures & mask) means init-state should be copied. Except for
-these, the init value is zero (as also noted here [1]). So, check this to c=
-opy
-correct init data if the current iteration is for the legacy states.
+Yes, I did on my local.
 
-At least, I may need to improve the readability here.
+>> +		return;
+>> +
+>> +	prev_xfd_mask =3D prev->state_mask & xfd_capable();
+>> +	next_xfd_mask =3D next->state_mask & xfd_capable();
+>=20
+> This is just plain misleading:
+>=20
+> You're *AND*ing a mask with xfd_capable?!?
+>=20
+> Just use xfeatures_mask_user_dynamic directly instead, as already
+> mentioned.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/arch/x86/kernel/fpu/xstate.c#n416
+Okay.
+
+>> +	if (unlikely(prev_xfd_mask !=3D next_xfd_mask))
+>> +		xfd_write(xfd_capable() ^ next_xfd_mask);
+>> +}
+>=20
+> Here too.
+>=20
+> Also, I must be missing something. Let's play with some imaginary masks:
+>=20
+> prev->state_mask =3D 110b
+> next->state_mask =3D 111b
+> dyn		 =3D 101b
+>=20
+> ("dyn" is short for xfeatures_mask_user_dynamic)
+>=20
+> prev_xfd_mask =3D 100b
+> next_xfd_mask =3D 101b
+>=20
+> if (unlikely(100b !=3D 101b))
+> 	xfd_write(101b ^ 101b) =3D=3D xfd_write(0)
+>=20
+> so next has bits 2 and 0 set but the xfd write zaps them so next won't
+> get any more #NMs for those states.
+>=20
+> Why?
+
+Because the next has already fully expanded the buffer -- its state_mask
+equals to feature_mask_user_dynamic.
+
+No more XFD event is needed for the task.
+
+>>=20
+>> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+>> index a58800973aed..dd66d528afd8 100644
+>> --- a/arch/x86/kernel/traps.c
+>> +++ b/arch/x86/kernel/traps.c
+>> @@ -1112,6 +1112,45 @@ DEFINE_IDTENTRY(exc_device_not_available)
+>> {
+>> 	unsigned long cr0 =3D read_cr0();
+>>=20
+>> +	if (boot_cpu_has(X86_FEATURE_XFD)) {
+>=20
+> This whole thing wants to be in a separate function. Even the
+> indentation level is begging for it.
+
+Ah, it was once in a separate function until V4. Since trimmed down quite a
+bit in V5, it has grown from there.
+
+Let me fix this.
+
+>> +		u64 xfd_err;
+>> +
+>> +		rdmsrl_safe(MSR_IA32_XFD_ERR, &xfd_err);
+>> +		wrmsrl_safe(MSR_IA32_XFD_ERR, 0);
+>> +
+>> +		if (xfd_err) {
+>> +			u64 xfd_event =3D xfd_err & xfd_capable();
+>> +
+>> +			if (WARN_ON(!xfd_event)) {
+>> +				/*
+>> +				 * Unexpected event is raised. But update XFD state to
+>> +				 * unblock the task.
+>> +				 */
+>> +				xfd_write(xfd_read() & ~xfd_err);
+>=20
+> So AFAIU, xfd_err points to some other feature which caused this
+> exception.
+>=20
+> So if that feature bit is set in XFD, you're clearing it here. Why?
+>=20
+> So that it doesn't raise that #NM for it anymore?
+>=20
+> This looks weird.
+
+If this ever happens, something might be wrong with the hardware.
+
+If the bit is not reset, it will get stuck with repeatedly unhandled #NMs,
+which I think is even more terrible.
+
+>> +			} else {
+>> +				struct fpu *fpu =3D &current->thread.fpu;
+>> +				int err =3D -1;
+>> +
+>> +				/*
+>> +				 * Make sure not in interrupt context as handling a
+>> +				 * trap from userspace.
+>> +				 */
+>> +				if (!WARN_ON(in_interrupt())) {
+>=20
+> I'm guessing that's supposed to stop people from using AMX and other
+> dynamic states in the kernel?
+
+But the kernel can handle this without XFD?
 
 Thanks,
 Chang
+
 
