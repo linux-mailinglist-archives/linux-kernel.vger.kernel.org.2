@@ -2,96 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D74093EF9A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 06:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C7E3EF9A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 06:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237672AbhHREqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 00:46:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbhHREqS (ORCPT
+        id S237689AbhHREnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 00:43:20 -0400
+Received: from gateway32.websitewelcome.com ([192.185.145.1]:15700 "EHLO
+        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229449AbhHREnT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 00:46:18 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D50FC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 21:45:44 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so4525847pje.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 21:45:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=d9/DksIpIs6eeSb59VhNgqVboYbLOLwWLPZ+ciNIZIg=;
-        b=PV/qqiQgGxjo7nMT7lRvkdKlSW/DEF7UqjsnHuz+aAZZG9j6+yPAiw8ieIE70Z+Z98
-         PKUktMDBrsZtmYtRWEbmz8SujoA/UZoeuDMyCxBUwg98IeajHLuTwk+an3fKLpdux5Mm
-         zQGr6S7Qj781WqBMWQlUFyCqs8C8+z4HEbhMs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=d9/DksIpIs6eeSb59VhNgqVboYbLOLwWLPZ+ciNIZIg=;
-        b=qH6iQqRVNVY2eMMbaI9aSeqynvXQCP08zA0DNbfhl+VY2dXd4HalIb7/HMUDJ+4XtB
-         kavtRZIpMc9BU6+afQrXfWe4Wc0wOF5gL6AY7oVHbDzhztxj9pJBbiIMn58kGdhToc1x
-         ScujmXd3iufDx+hWkKrIprJqyc6few8MikS9vsctq+5qZZ31KY479LEcP5jz4cuyLufT
-         mp4GpwpvpNg/sGFos9VEs5wsrZu9YEDHQuEiKn8DbXxZTXi6e00XYjjV1P85uWPrAZU5
-         8EaxIdp9gKPNzuTET+ykQtJvAJO8KtfBzl5WAUQ4+4xn6fhwUS1xXQu9GAIqAurJgbVi
-         5FaQ==
-X-Gm-Message-State: AOAM530KRCMKBqiC8i20AQKhTywn1t1aEchamPgcue1r/A2OHh5IOoP5
-        rZCOCEltrRC7qhF9+gWB5ZI1Og==
-X-Google-Smtp-Source: ABdhPJy/XoxWVOZ2UsCcNas/NWhjgh6P8UutKplGf8x5Azcw1w0XTjxJKYaESs1MRWejDlfGVNOzEQ==
-X-Received: by 2002:a17:902:9b87:b029:12c:c3ed:8a1d with SMTP id y7-20020a1709029b87b029012cc3ed8a1dmr5660298plp.7.1629261943752;
-        Tue, 17 Aug 2021 21:45:43 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id r11sm3453850pjd.26.2021.08.17.21.45.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 21:45:43 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        Wed, 18 Aug 2021 00:43:19 -0400
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway32.websitewelcome.com (Postfix) with ESMTP id E3D0F924DD
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:42:44 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id GDPYmY93t7sOiGDPYm1EbI; Tue, 17 Aug 2021 23:42:44 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=fqWho5z6HDj4E/uC18IyWmSmTMfo9JPqAgS3dawEvWk=; b=be9hlQMJu3Ujj1NTF548ywxCeb
+        Cdh3EeFeibFikH+Pyt4qRrY2hsmcU9q5mv0J4whSv06j3VboWiOUR7Ig1dwy+SLDhj0ORSNzgoikp
+        mOjCvl9AKoj+snKJQ3B7JHIP0XSuj7vXUD3RDsGwhJWYRRXdegf4d0wVeoRdCTMMQ4nY7BIAglxbh
+        Px17n9e22kpZp3eUpwwy8UKxZ8e0MXHHjsZNiwyLVO2ZCP2jXhVeUOd1gUbuzyJbiZMMTh1PuNKrx
+        LVvwpTxiFeCKOIQdAxaCgQh2j3Lulj845WoZ4FYCHVl5AFALi+MQxer4P0Ue4xFhmpu/xbVDdmo6o
+        CPfYNuuw==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:45490 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1mGDPY-002STB-9X; Tue, 17 Aug 2021 23:42:44 -0500
+Subject: Re: [PATCH] kbuild: Enable -Wimplicit-fallthrough for clang 14.0.0+
+To:     Philip Li <philip.li@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
         linux-hardening@vger.kernel.org
-Subject: [PATCH] lkdtm/heap: Avoid __alloc_size hint warning
-Date:   Tue, 17 Aug 2021 21:45:40 -0700
-Message-Id: <20210818044540.1601664-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+References: <20210817005624.1455428-1-nathan@kernel.org>
+ <80fa539a-b767-76ed-dafa-4d8d1a6b063e@kernel.org>
+ <CAHk-=wgFXOf9OUh3+vmWjhp1PC47RVsUkL0NszBxSWhbGzx4tw@mail.gmail.com>
+ <5c856f36-69a7-e274-f72a-c3aef195adeb@kernel.org>
+ <202108171056.EDCE562@keescook>
+ <3f28b45e-e725-8b75-042a-d34d90c56361@kernel.org>
+ <CAK7LNAQFgYgavTP2ZG9Y16XBVdPuJ98J_Ty1OrQy1GXHq6JjQQ@mail.gmail.com>
+ <71d76c41-7f9b-6d60-ba4f-0cd84596b457@embeddedor.com>
+ <202108171602.159EB2C7EA@keescook>
+ <72ae69b4-6069-ade5-a12b-8ee0435f803a@kernel.org>
+ <20210818042720.GA1645557@pl-dbox>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <d19dd1f7-3898-227a-3d7d-25cddb0434d0@embeddedor.com>
+Date:   Tue, 17 Aug 2021 23:45:48 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1136; h=from:subject; bh=DDgzTBXYoMrM8vXwihYDk8DwYREB5xfDvDUf2PPGNps=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhHJB0pkodVpAzd0nyN16uoly1WRFapAVyer9x5KK+ juNFZ4CJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYRyQdAAKCRCJcvTf3G3AJqJND/ 9ChnuYNoWillTscUU0T21tkDrddDuyj5UgPQbz1sk06wv60e98M6w9vLFOwN91KdSjpZvJa7sexKob PYVefnFMAoldAF3UujbKZoqUIhjm0aGVeHNO88L2KfLoZwDAJs6jafzziJkrurnIcyAQAn+Q1k+vAj C7LLAajvyOlLkvP/qshbJP19Hikma47IZWgJS/rvW+nvnMeeemVInlM0jTNg+sNwiO+Gp4GdXALswO XGQLT1Oaz4FXpw2kBzZJzPfgPlCB5H0SFILnfuangtSVUXauFPdjvEkN1XQU/m8TfbtQoNzZnZLfYg WLToMw6PaXjZbaQi0rWhAoouQu2jBtqJWt80bEccgLuft2b1g4rzrse5d5QCeWf/QaB/YKUEpBAWzk NildF2+vSzkxv0+6T2mrEfMrL7wh6AtqjVcL6gqfDKzCWQJ5MPrBxHZXUwth5VXff//6mlaJcTT8yO wo2ekVqk7zgF5L+WnS8YJRd9SR41ecE5SCkFRyl2J+ur91qPCOWXh5v8M1KdrZnpNEkkztmWDkgeUl 0d/oXThqjlaPYnrbXjHl4hD593ucEEpccUFV3Ip8sSvHinZNsa84/Q/vZQ1UsTjrmSzKh8RXBL8mVR QLofjNpvtf0J4x8qGeAczzXAnwgU+wYeCGpX3VGj536RV1j2J5dxkWXmKGSg==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210818042720.GA1645557@pl-dbox>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1mGDPY-002STB-9X
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:45490
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 9
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Once __alloc_size hints have been added, the compiler will
-(correctly!) see this as an overflow. We are, however, trying to test
-for this condition, so work around it with a volatile int.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/misc/lkdtm/heap.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/misc/lkdtm/heap.c b/drivers/misc/lkdtm/heap.c
-index 3d9aae5821a0..e59fcbe00ae0 100644
---- a/drivers/misc/lkdtm/heap.c
-+++ b/drivers/misc/lkdtm/heap.c
-@@ -12,6 +12,8 @@ static struct kmem_cache *double_free_cache;
- static struct kmem_cache *a_cache;
- static struct kmem_cache *b_cache;
- 
-+static volatile int __offset = 1;
-+
- /*
-  * If there aren't guard pages, it's likely that a consecutive allocation will
-  * let us overflow into the second allocation without overwriting something real.
-@@ -24,7 +26,7 @@ void lkdtm_VMALLOC_LINEAR_OVERFLOW(void)
- 	two = vzalloc(PAGE_SIZE);
- 
- 	pr_info("Attempting vmalloc linear overflow ...\n");
--	memset(one, 0xAA, PAGE_SIZE + 1);
-+	memset(one, 0xAA, PAGE_SIZE + __offset);
- 
- 	vfree(two);
- 	vfree(one);
--- 
-2.30.2
+On 8/17/21 23:27, Philip Li wrote:
 
+>> Philip, how often is the kernel test robot's clang version rebuilt? Would it
+>> be possible to bump it to latest ToT or at least
+>> 9ed4a94d6451046a51ef393cd62f00710820a7e8 so that we do not get bit by this
+>> warning when we go to enable this flag?
+> Got it, currently we do upgrade in weekly cadence (but it may fall behind sometimes),
+> and the one we use now is clang version 14.0.0 (https://github.com/llvm/llvm-project 
+> 2c6448cdc2f68f8c28fd0bd9404182b81306e6e6)
+> 
+> We will ugrade to the head of llvm-project master today.
+
+Thanks, Philip. We really appreciate it.
+--
+Gustavo
