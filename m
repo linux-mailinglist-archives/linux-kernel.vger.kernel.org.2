@@ -2,55 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 193823EF7B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 03:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF4E13EF7CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 03:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235913AbhHRBuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 21:50:04 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:57230 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234723AbhHRBuD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 21:50:03 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UjaFm7B_1629251367;
-Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UjaFm7B_1629251367)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 18 Aug 2021 09:49:27 +0800
-Subject: Re: [PATCH v7 1/2] tty: hvc: pass DMA capable memory to put_chars()
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     jirislaby@kernel.org, amit@kernel.org, arnd@arndb.de,
-        osandov@fb.com, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210817132300.165014-1-xianting.tian@linux.alibaba.com>
- <20210817132300.165014-2-xianting.tian@linux.alibaba.com>
- <YRvaN0RwW03kkO1O@kroah.com>
-From:   Xianting TIan <xianting.tian@linux.alibaba.com>
-Message-ID: <1a0587cc-97e0-62b7-026e-2ee74ed5089c@linux.alibaba.com>
-Date:   Wed, 18 Aug 2021 09:49:26 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        id S236454AbhHRCA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 22:00:27 -0400
+Received: from mga06.intel.com ([134.134.136.31]:56100 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234723AbhHRCA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Aug 2021 22:00:27 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10079"; a="277262502"
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
+   d="scan'208";a="277262502"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 18:59:53 -0700
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
+   d="scan'208";a="531307668"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.239.13.122]) ([10.239.13.122])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 18:59:51 -0700
+Subject: Re: [tip: x86/splitlock] Documentation/x86: Add buslock.rst
+To:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Luck <tony.luck@intel.com>, x86@kernel.org
+References: <20210419214958.4035512-2-fenghua.yu@intel.com>
+ <162134906278.29796.13820849234959966822.tip-bot2@tip-bot2>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <f1a30c67-2c05-5c8f-df8f-ca82f9bf89af@intel.com>
+Date:   Wed, 18 Aug 2021 09:59:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YRvaN0RwW03kkO1O@kroah.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <162134906278.29796.13820849234959966822.tip-bot2@tip-bot2>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 5/18/2021 10:44 PM, tip-bot2 for Fenghua Yu wrote:
+...
+> +
+> +Software handling
+> +=================
+> +
+> +The kernel #AC and #DB handlers handle bus lock based on the kernel
+> +parameter "split_lock_detect". Here is a summary of different options:
+> +
+> ++------------------+----------------------------+-----------------------+
+> +|split_lock_detect=|#AC for split lock		|#DB for bus lock	|
+> ++------------------+----------------------------+-----------------------+
+> +|off	  	   |Do nothing			|Do nothing		|
+> ++------------------+----------------------------+-----------------------+
+> +|warn		   |Kernel OOPs			|Warn once per task and |
+> +|(default)	   |Warn once per task and	|and continues to run.  |
+> +|		   |disable future checking	|			|
+> +|		   |When both features are	|			|
+> +|		   |supported, warn in #AC	|			|
+> ++------------------+----------------------------+-----------------------+
+> +|fatal		   |Kernel OOPs			|Send SIGBUS to user.	|
+> +|		   |Send SIGBUS to user		|			|
+> +|		   |When both features are	|			|
+> +|		   |supported, fatal in #AC	|			|
+> ++------------------+----------------------------+-----------------------+
+> +
 
-ÔÚ 2021/8/17 ÏÂÎç11:48, Greg KH Ð´µÀ:
-> On Tue, Aug 17, 2021 at 09:22:59PM +0800, Xianting Tian wrote:
->> We tested the patch, it worked normally.
-> Who is "we"?
->
->> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
-> Like I said before, I need another developer from your company to review
-> and sign-off on this patch (and the other one), before I am willing to
-> look at it, based on the previous mistakes that have happened here.
-thanks, I will add the developer in v8 and also with fix a build 
-warning, which I don't meet in my build process.
->
-> thanks,
->
-> greg k-h
+Hi all,
+
+I'm wonder if using only one "split_lock_detect" parameter for those two 
+features is good/correct.
+
+In fact, split lock is just one type of bus lock. There are two types 
+bus lock:
+1) split lock, lock on WB memory across multiple cache lines;
+2) lock on non-WB memory;
+
+As current design, if both features are available, it only enables #AC 
+for split lock either for "warn" or "fatal". Thus we cannot capture any 
+bus lock due to 2) lock on non-WB memory.
+
+Why not provide separate parameter for them? e.g., split_lock_detect and 
+bus_lock_detect. Then they can be configured and enabled independently.
