@@ -2,142 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D993F0ACD
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 20:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82FD3F0ACC
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 20:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231823AbhHRSKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 14:10:30 -0400
-Received: from mga18.intel.com ([134.134.136.126]:59554 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229533AbhHRSK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 14:10:28 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="203539660"
-X-IronPort-AV: E=Sophos;i="5.84,332,1620716400"; 
-   d="scan'208";a="203539660"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 11:09:50 -0700
-X-IronPort-AV: E=Sophos;i="5.84,332,1620716400"; 
-   d="scan'208";a="449858802"
-Received: from smendon-mobl.amr.corp.intel.com (HELO [10.212.121.30]) ([10.212.121.30])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 11:09:46 -0700
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RFC PATCH 1/2] driver core: export
- driver_deferred_probe_trigger()
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     alsa-devel@alsa-project.org,
-        "Rafael J . Wysocki" <rafael@kernel.org>, tiwai@suse.de,
-        linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com,
-        vkoul@kernel.org, Mark Brown <broonie@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Christoph Hellwig <hch@lst.de>
-References: <20210817190057.255264-1-pierre-louis.bossart@linux.intel.com>
- <20210817190057.255264-2-pierre-louis.bossart@linux.intel.com>
- <YRyeR6imvSwOOasQ@kroah.com> <20210818115736.GA4177@sirena.org.uk>
- <YR0Ji7DQXoo0z4vP@kroah.com> <20210818134814.GF4177@sirena.org.uk>
- <14235b8d-d375-6e2d-cae9-33adf9c48120@linux.intel.com>
- <YR0nAcC3wJd3b4Vu@kroah.com>
- <be1ea414-b2ad-162d-192a-7b55e40b3754@linux.intel.com>
- <YR06L+gTzyiYY/rG@kroah.com>
-Message-ID: <244b3030-0d24-300f-354d-46878b708056@linux.intel.com>
-Date:   Wed, 18 Aug 2021 13:09:44 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S231661AbhHRSKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 14:10:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229533AbhHRSKL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 14:10:11 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EDD3C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 11:09:36 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0cc30025743e574fa309df.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:c300:2574:3e57:4fa3:9df])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 00FE41EC0541;
+        Wed, 18 Aug 2021 20:09:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1629310171;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=K4GK/gSkcU3s6BhJqhvsXq6XiGfFkNPqxOUSWUeTU+Y=;
+        b=HHeO2hei73zSSUU3tUUG07OOciBKumbQebHZn1QZREG4FbOoPa6VPDbTNR6TsA6vvrhFsn
+        UkI6P4q2BT6QtTnEpf4ZJrpSaE5/20S+7LM3u4a1BryvF8HizMtzVYGsEqr5o8TdaU9xa0
+        fb4lgFRg6TEuzDEzzTkEGQXZAUb1tfE=
+Date:   Wed, 18 Aug 2021 20:10:10 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Thiago Macieira <thiago.macieira@intel.com>
+Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>, luto@kernel.org,
+        tglx@linutronix.de, mingo@kernel.org, x86@kernel.org,
+        len.brown@intel.com, dave.hansen@intel.com, jing2.liu@intel.com,
+        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to
+ protect dynamic user state
+Message-ID: <YR1NAvJW4w8bhEEu@zn.tnic>
+References: <20210730145957.7927-1-chang.seok.bae@intel.com>
+ <3181031.RqgVF4sTRC@tjmaciei-mobl5>
+ <YR1HYRRN0HMTxXrw@zn.tnic>
+ <4493449.UzBjrsCbmA@tjmaciei-mobl5>
 MIME-Version: 1.0
-In-Reply-To: <YR06L+gTzyiYY/rG@kroah.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <4493449.UzBjrsCbmA@tjmaciei-mobl5>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 18, 2021 at 10:58:42AM -0700, Thiago Macieira wrote:
+> That tells me what the CPU supports, not what the kernel does. By
+> omitting the "xfd" entry in /proc/cpuinfo, we are assuming that all
+> kernels with "amxtile" also implicitly support xfd. That is a valid
+> assumption.
 
->>>> a) we have to use request_module()
->>>
->>> Wait, why?
->>>
->>> module loading is async, use auto-loading when the hardware/device is
->>> found and reported to userspace.  Forcing a module to load by the kernel
->>> is not always wise as the module is not always present in the filesystem
->>> at that point in time at boot (think modules on the filesystem, not in
->>> the initramfs).
->>>
->>> Try fixing this issue and maybe it will resolve itself as you should be
->>> working async.
->>
->> It's been that way for a very long time (2015?) for HDAudio support, see
->> sound/pci/hda/hda_bind.c. It's my understanding that it was a conscious
->> design decision to use vendor-specific modules, if available, and
->> fallback to generic modules if the first pass failed.
-> 
-> If it has been this way for so long, what has caused the sudden change
-> to need to export this and call this function?
+What relevance does the fact have for userspace whether the kernel
+supports XFD or not?
 
-Fair question, I did not provide all the context with a cover letter
-that was already quite long. Here are more details:
+IOW, userspace cares about AMX and the other features which are supposed
+to use XFD - not how those features are implemented: whether with
+faulting or with pre-allocation or whatever.
 
-In the existing Intel audio drivers, we have a PCI device that first get
-probed. The PCI driver initializes the DSP and exposes what the audio
-DSP can do, but the platform-specific configuration for a given board is
-handled by a child device [1]. We have all kinds of hard-coded lookup
-tables to figure out what the board is and what machine driver should be
-used based on the presence of other ACPI devices and/or DMI quirks
-[2][3]. We must have used this solution since 2010, mainly because 'the
-other OS' does not rely on platform firmware for a description of the
-audio capabilities.
+> Many applications need to determine which plugins and code paths to
+> enable before getting the data that will tell them what to do. It's
+> entirely possible for them to never need to run the AMX instructions,
+> so they may wish to defer the request to allocate the XSAVE state
+> until they have read their input data.
+>
+> It's indeed possible that the allocation then fails and the
+> application be unable to continue. But OOM conditions are unlikely, so
+> it may be an acceptable price to pay. In fact, by *not* allocating the
+> extra state for every thread in the current process, it may avoid the
+> OOM.
 
-In the 'soon' future, that machine driver will probed with its own ACPI
-ID and become generic, with all the information related to the board
-described in platform firmware and parsed by the driver. This is how the
-'simple card' works today in Device Tree environments, platform firmware
-describes how host-provided components are connected to 3rd-party
-components. I cannot provide more details at this time since this is a
-not yet a publicly-available specification (this specification work does
-take place in a standardization body).
+And?
 
-That change in how the machine driver gets probed creates a new problem
-we didn't have before: this generic machine driver will probe in the
-early stages of the boot, long before the DSP and audio codecs are
-initialized/available.
+That doesn't conflict with my suggestion. It goes and asks the kernel
+what it supports and then requests the buffers.
 
-I initially looked at the component framework to try to express
-dependencies. It's really not clear to me if this is the 'right'
-direction, for ASoC-based solutions we already have components that
-register with a core.
+> Sorry, that's not what I meant. I was going to request an extra API, a third 
+> call. We'd have:
+>  - get current state
+>  - set new state
+>  - get available bits to set
 
-I also started looking at other proposals that were made over the years,
-this problem of expressing dependencies is not new. No real luck.
+Yes, this should have been the API from the very beginning. Of course
+you need to be able to query what bits can be set at all.
 
-In the end, since the DeviceTree-based solutions based on deferred
-probes work fine for the same type of usages, I tried to reuse the same
-deferred probe mechanism. The only reason why I needed to export this
-function is to work-around the request_module() use.
+> ...
+> Now, if we are going to have this API any way, it might be a good
+> idea to combine the two getters in one by adding a second pointer
+> parameter.
 
-I am not claiming any award for architecture, this is clearly a
-domain-specific corner case. I did try the async probe, I consulted with
-Marc Brown, had an internal review with Dan Williams and Andy
-Shevchenko. While nobody cheered, it seemed like this export was
-'reasonable' compared to a re-architecture of the HDaudio/HDMI support -
-which is a really scary proposition.
+Yeah, I'll get to that patch in the coming days and have a look. So far,
+it only makes sense to have a querying API too so that we can provide
+support for more "fat" features.
 
-There is no immediate rush to make this change in this kernel cycle or
-the next, I am open to alternatives, but I wanted to make sure we don't
-have any Linux plumbing issues by the time the specification becomes
-public and is used by 'the other OS'.
+Unless Intel folks decide to stop using XSAVE for that - it was a bad
+idea in the first place anyway, TBH - but it's not like hw people listen
+to sw folk so...
 
-Does this help get more context?
+-- 
+Regards/Gruss,
+    Boris.
 
-[1] https://elixir.bootlin.com/linux/latest/source/sound/soc/sof/core.c#L234
-
-[2]
-https://elixir.bootlin.com/linux/latest/source/sound/soc/intel/common/soc-acpi-intel-tgl-match.c#L323
-
-[3]
-https://elixir.bootlin.com/linux/latest/source/sound/soc/intel/boards/sof_sdw.c#L50
-
-
-
-
+https://people.kernel.org/tglx/notes-about-netiquette
