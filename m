@@ -2,161 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C217F3EF704
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 02:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1F83EF707
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 02:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236481AbhHRAxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 20:53:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58579 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234919AbhHRAxm (ORCPT
+        id S237204AbhHRAyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 20:54:46 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:45833 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235604AbhHRAyp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 20:53:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629247988;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OlpWao7vU3JW787/tdi8ZHrj116Lw/4JmcqJlEJe7xY=;
-        b=AiSX+O3x0kw/34uzreHMH3u4PqDgLNZg6rycUFManXN7j9VQqUyg235hYN02ru81vH94nO
-        feBzzBslVDkDqGFfQYXiUFlAjili09c3NfvvP5IHc+uS/BPfKmlP5X8gW8JDCux95HZxYz
-        z0gLSMdkwmoXC7i1ZnS9BAqXcx8bjvk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-267-OQKfPFW7OvaMR3DEyJhmbg-1; Tue, 17 Aug 2021 20:53:06 -0400
-X-MC-Unique: OQKfPFW7OvaMR3DEyJhmbg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F4CD18C8C00;
-        Wed, 18 Aug 2021 00:53:05 +0000 (UTC)
-Received: from T590 (ovpn-8-28.pek2.redhat.com [10.72.8.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DA3BC19D9D;
-        Wed, 18 Aug 2021 00:52:56 +0000 (UTC)
-Date:   Wed, 18 Aug 2021 08:52:51 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     axboe@kernel.dk, bvanassche@acm.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        Keith Busch <kbusch@kernel.org>
-Subject: Re: [PATCH RFC] blk_mq: clear rq mapping in driver tags before
- freeing rqs in sched tags
-Message-ID: <YRxZ44tu8o1MPruT@T590>
-References: <20210817022306.1622027-1-yukuai3@huawei.com>
+        Tue, 17 Aug 2021 20:54:45 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id AA9665C0178;
+        Tue, 17 Aug 2021 20:54:11 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 17 Aug 2021 20:54:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Zz+2Cl
+        8Uy7Fh+ejBShZ+UblbJYguC8B5HiE28CeGbhs=; b=Ov5ucLyuSWx9/V7SgvPj2S
+        teM9PIItYKVZFzRtMVZ4TqJRDKVSJAm/7oCzvcLV8nhtybayC6WGm+fHWzvdw4aK
+        +66i7T1Aq8gGLtCf3szmh1qK3zHW2vJ5R0oSs92w1vQ2Jk5/pn9QqwYWrclkERvY
+        NXhdJUnn9XWq0EOh+YZ+FpDiDVHKsOEO9CuhrBJOqaaDwQQHbAeTpvBr4s/ncHkl
+        wx/rCW2E7Ilx+N5z03jWLslhX+r+/9UO4S7vS709C85O61vfPv7k5eHSFZuX31gB
+        gT3k6CEVs/UXHz9aqTTDKo/T3pyCPD6HhoIOouwYZqR5qul7P/b5XRL+gba1SAbg
+        ==
+X-ME-Sender: <xms:MlocYfKaaAUsMCNVFDRBtoRVPsWJ8Xaasf_96byai6Vb41MHindPiQ>
+    <xme:MlocYTKBzUNcf_NMrBBH_kxjZaQklzLcFd2tntZ9kRWsNNTem3gbLfKn41qccmWzz
+    TzrIL8FFWEcFbv7sUQ>
+X-ME-Received: <xmr:MlocYXtGC-6uxQvovZpaqmL8Gklzs3faBzI7OEsjI0OUthfUhFRKJWZg1srzI0wt4EtkOfyIzm033DSiERqZw-xGeeaJOnY4dPGyHA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleeggdefkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
+    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeffudfhgeefvdeitedugfelueegheekkeefveffhfeiveetledvhfdtveffteeu
+    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
+    hhrghinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:MlocYYbwZmSZDWItsWow3fqV22Az3B3y8kII2odtPcP43eyIFO9ucA>
+    <xmx:MlocYWaRuGdaMt-YF2sdWsgei4GuQzvg3uBOOzD7l9j7RLsWp6zmBA>
+    <xmx:MlocYcAoJvvZMzDNQ9CyCuexFloG5cQjegdXY7VIF0_xbN4R04gLYQ>
+    <xmx:M1ocYbOg2tGoOQXd03i6EM3LvTdiwltL4pJt6RvVkm--oyEnpnBvAw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 17 Aug 2021 20:54:08 -0400 (EDT)
+Date:   Wed, 18 Aug 2021 10:54:06 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+cc:     =?UTF-8?Q?Kai_M=C3=A4kisara?= <Kai.Makisara@kolumbus.fi>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] scsi: st: Add missing break in switch statement in
+ st_ioctl()
+In-Reply-To: <20210817235531.172995-1-nathan@kernel.org>
+Message-ID: <7843ce6b-92ae-7b6c-1fc-acb0ffe2bbc0@linux-m68k.org>
+References: <20210817235531.172995-1-nathan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210817022306.1622027-1-yukuai3@huawei.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 10:23:06AM +0800, Yu Kuai wrote:
-> If ioscheduler is not none, hctx->tags->rq[tag] will point to
-> hctx->sched_tags->static_rq[internel_tag] in blk_mq_get_driver_tag().
-> However, static_rq of sched_tags might be freed through switching
-> elevator or increasing nr_requests. Thus leave a window for some drivers
-> to get the freed request through blk_mq_tag_to_rq(tags, tag).
+On Tue, 17 Aug 2021, Nathan Chancellor wrote:
 
-I believe I have explained that it is bug of driver which has knowledge
-if the passed tag is valid or not. We are clear that driver need to cover
-race between normal completion and timeout/error handling.
-
+> Clang + -Wimplicit-fallthrough warns:
 > 
-> It's difficult to fix this uaf from driver side, I'm thinking about
-
-So far not see any analysis on why the uaf is triggered, care to
-investigate the reason?
-
-> following solution:
+> drivers/scsi/st.c:3831:2: warning: unannotated fall-through between
+> switch labels [-Wimplicit-fallthrough]
+>         default:
+>         ^
+> drivers/scsi/st.c:3831:2: note: insert 'break;' to avoid fall-through
+>         default:
+>         ^
+>         break;
+> 1 warning generated.
 > 
-> a. clear rq mapping in driver tags before freeing rqs in sched tags
-
-We have done that already, see blk_mq_free_rqs().
-
-> b. provide a new interface to replace blk_mq_tag_to_rq(), the new
-> interface will make sure it won't return freed rq.
-
-b) in your previous patch can't avoid uaf:
-
-https://lore.kernel.org/linux-block/YRHa%2FkeJ4pHP3hnL@T590/
-
+> Clang's -Wimplicit-fallthrough is a little bit more pedantic than GCC's,
+> requiring every case block to end in break, return, or fallthrough,
+> rather than allowing implicit fallthroughs to cases that just contain
+> break or return. Add a break so that there is no more warning, as has
+> been done all over the tree already.
 > 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> Fixes: 2e27f576abc6 ("scsi: scsi_ioctl: Call scsi_cmd_ioctl() from scsi_ioctl()")
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 > ---
->  block/blk-mq-sched.c | 10 +++++++++-
->  block/blk-mq.c       | 13 +++++++++++--
->  block/blk-mq.h       |  2 ++
->  3 files changed, 22 insertions(+), 3 deletions(-)
+>  drivers/scsi/st.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
-> index 0f006cabfd91..9f11f17b8380 100644
-> --- a/block/blk-mq-sched.c
-> +++ b/block/blk-mq-sched.c
-> @@ -662,8 +662,16 @@ void blk_mq_sched_free_requests(struct request_queue *q)
->  	int i;
->  
->  	queue_for_each_hw_ctx(q, hctx, i) {
-> -		if (hctx->sched_tags)
-> +		if (hctx->sched_tags) {
-> +			/*
-> +			 * We are about to free requests in 'sched_tags[]',
-> +			 * however, 'tags[]' may still point to these requests.
-> +			 * Thus we need to clear rq mapping in 'tags[]' before
-> +			 * freeing requests in sched_tags[].
-> +			 */
-> +			blk_mq_clear_rq_mapping(q->tag_set, hctx->tags, i);
->  			blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i);
-
-blk_mq_clear_rq_mapping() has been called in blk_mq_free_rqs()
-for clearing the request reference.
-
-In theory, we only need to clear it in case of real io sched, but
-so far we do it for both io sched and none.
-
-> +		}
+> diff --git a/drivers/scsi/st.c b/drivers/scsi/st.c
+> index 2d1b0594af69..0e36a36ed24d 100644
+> --- a/drivers/scsi/st.c
+> +++ b/drivers/scsi/st.c
+> @@ -3828,6 +3828,7 @@ static long st_ioctl(struct file *file, unsigned int cmd_in, unsigned long arg)
+>  	case CDROM_SEND_PACKET:
+>  		if (!capable(CAP_SYS_RAWIO))
+>  			return -EPERM;
+> +		break;
+>  	default:
+>  		break;
 >  	}
->  }
->  
-> diff --git a/block/blk-mq.c b/block/blk-mq.c
-> index d185be64c85f..b1e30464f87f 100644
-> --- a/block/blk-mq.c
-> +++ b/block/blk-mq.c
-> @@ -2314,8 +2314,8 @@ static size_t order_to_size(unsigned int order)
->  }
->  
->  /* called before freeing request pool in @tags */
-> -static void blk_mq_clear_rq_mapping(struct blk_mq_tag_set *set,
-> -		struct blk_mq_tags *tags, unsigned int hctx_idx)
-> +void blk_mq_clear_rq_mapping(struct blk_mq_tag_set *set,
-> +			     struct blk_mq_tags *tags, unsigned int hctx_idx)
->  {
->  	struct blk_mq_tags *drv_tags = set->tags[hctx_idx];
->  	struct page *page;
-> @@ -3632,6 +3632,15 @@ int blk_mq_update_nr_requests(struct request_queue *q, unsigned int nr)
->  			if (!ret && blk_mq_is_sbitmap_shared(set->flags))
->  				blk_mq_tag_resize_shared_sbitmap(set, nr);
->  		} else {
-> +			/*
-> +			 * We are about to free requests in 'sched_tags[]',
-> +			 * however, 'tags[]' may still point to these requests.
-> +			 * Thus we need to clear rq mapping in 'tags[]' before
-> +			 * freeing requests in sched_tags[].
-> +			 */
-> +			if (nr > hctx->sched_tags->nr_tags)
-> +				blk_mq_clear_rq_mapping(set, hctx->tags, i);
-> +
->  			ret = blk_mq_tag_update_depth(hctx, &hctx->sched_tags,
->  							nr, true);
+> 
+> base-commit: 58dd8f6e1cf8c47e81fbec9f47099772ab75278b
+> 
 
-The request reference has been cleared too in blk_mq_tag_update_depth():
+Well, that sure is ugly.
 
-	blk_mq_tag_update_depth
-		blk_mq_free_rqs
-			blk_mq_clear_rq_mapping
+Do you think the following change would cause any static checkers to spit 
+their dummys and throw their toys out of the pram?
 
-
-Thanks, 
-Ming
-
+@@ -3828,6 +3828,7 @@ static long st_ioctl(struct file *file, unsigned int cmd_in, unsigned long arg)
+ 	case CDROM_SEND_PACKET:
+ 		if (!capable(CAP_SYS_RAWIO))
+ 			return -EPERM;
++		break;
+-	default:
+-		break;
+ 	}
+ 	
