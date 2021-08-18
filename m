@@ -2,71 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2ADC3F0BE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 21:39:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03BB23F0BED
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 21:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233153AbhHRTjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 15:39:45 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:38541 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231743AbhHRTjl (ORCPT
+        id S233305AbhHRTlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 15:41:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229965AbhHRTk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 15:39:41 -0400
-Received: by mail-il1-f198.google.com with SMTP id j6-20020a056e02014600b00224bde51e20so490121ilr.5
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 12:39:06 -0700 (PDT)
+        Wed, 18 Aug 2021 15:40:59 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8806EC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 12:40:24 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id o10so2540420plg.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 12:40:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2XDPdkS72q7g8ReYvjeOrhrnuXjnS1ku+31GCbptnt8=;
+        b=SOymdPAP5OoMlFfo4euAZVqSmqiu4CbFbYj1lc1YOcmxxBKsqop+sYapdsYO2hRiUc
+         Z+Yw5ZcRablFlYRGSKbEniZ2HPLhIw1m3d+RHFaATGciRaVpMKeH5nRXSMrOj5pp7oVF
+         xydwE7q0d8434SqK45mb9d+Lsb7whgqNZbM/yNvx5jpsfwnvsQYEQRCnFJ0qJoz5gcEp
+         C4NPJu/hOyNbrCOpbpRgchp5uI+mRNFy3zPncsas8NhIdnV9emPuZy1Egl0koqBs70+A
+         /aUYihnWBsALMTdng95ItvPP1kAmKs58AQcE/VD6zO/UZpHWu1Gp7ti1jbvMYQHBgwaN
+         ek2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=hi/nmEZIRsCU9682LSqAQCuI4L5ah/9l7ujImEmLeeI=;
-        b=Ou8HcwGc3hlpxqQj2F5LuXLVCF5C2yUmDNcnokUUBFb0W5aDvjqn5XkUHomRZ8gf6M
-         GOPQFPDhowAyAcDdvTKqTOh4OFVsIMbeJzFMRl4Vf1Y3K3lvLi/A/Za5Z7EKwei/nwDB
-         1Mq/M0eoI+sjHBTjZQ09zimhJmtB3l1HNrkOVnnBOh9E/P0ZeLAmeT8umpwtfVtG/yPP
-         zAaKpsZsCAfgw2x6PIYi+lqWEN0pet9+OxdWcInUleE+r2CwSu2cvWrh3utO0KE9/WN5
-         QrHFgCNzfricGdH6Nwt3T3PuvwLl1eDgb2Et/N/fTWPa4hJCU2xaqGpipr318qLE5GiP
-         x97g==
-X-Gm-Message-State: AOAM531bzARAU8UTos3iQi55rig0cpnfiqU4j4ciYzfQ9/AAg83hZ8x5
-        O9etTNeLstsV4Mc+FAIneCoR0mf490PnORFuDh0M4ULVML/3
-X-Google-Smtp-Source: ABdhPJx+1qXNY2DPc9vzm8b2fF7TnTSG/qFJQOgpQNBixAmFmzc3OdBX05rj5B1j31EsG5oYRsk82a3qx1lW1+loaoGhr+7Ii+oA
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2XDPdkS72q7g8ReYvjeOrhrnuXjnS1ku+31GCbptnt8=;
+        b=EiEBu1UFPkU0eqZ+zhZ5kIcf50i+89R2ZLwyQe9Mnv9NLLPB0FDvYVbXi+91V4m0Na
+         Addq4mEGR+RGOu+8L5n8boVkBlnKW9uLoYaP3qAiiCRfZeyPY/6Ajat7kAb/Pug++TpE
+         vVEKJDhO/Woi3o0Qr04bC4q8Y2we/nZP01l09jNIerEPzSniCsYz3U9UFWBs9tSqAb2w
+         xQoM4HNdfPyIHhGXmsnkB17/Zk+cIFrK5Onp1BzIZPr9Y/WH/3t//6rR1JPfODythsPs
+         aiZEkZTc3mpQWmYBbaw7OMJ1kkTzTJxDodrgfzO4ia6U9XnLtrnU4XptL1F2qvj5Ri6O
+         XsJw==
+X-Gm-Message-State: AOAM533Y5b20FuyahxNYqi2L7xTRW5kn8o6t9IfNUfarcwdk0uOTEUWx
+        zsKFut5YjYMS81gxOEva/tf3lw==
+X-Google-Smtp-Source: ABdhPJz5wtTx550guMrue4J60DkIvATsVj3homfaU3lidX5OUttOCBP3o2V7wJmFWT8NSQNov9e+Lg==
+X-Received: by 2002:a17:90b:46cd:: with SMTP id jx13mr11073801pjb.181.1629315624115;
+        Wed, 18 Aug 2021 12:40:24 -0700 (PDT)
+Received: from p14s.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id k12sm2960137pjg.6.2021.08.18.12.40.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 12:40:23 -0700 (PDT)
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 00/11] coresight: Patches for v5.15
+Date:   Wed, 18 Aug 2021 13:40:11 -0600
+Message-Id: <20210818194022.379573-1-mathieu.poirier@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a92:da11:: with SMTP id z17mr7248141ilm.176.1629315546323;
- Wed, 18 Aug 2021 12:39:06 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 12:39:06 -0700
-In-Reply-To: <000000000000d77b6505c767b8f8@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005da16905c9da9643@google.com>
-Subject: Re: [syzbot] WARNING in hid_submit_ctrl/usb_submit_urb
-From:   syzbot <syzbot+9b57a46bf1801ce2a2ca@syzkaller.appspotmail.com>
-To:     benjamin.tissoires@redhat.com, dvyukov@google.com,
-        gregkh@linuxfoundation.org, jikos@kernel.org, johan@kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, mkubecek@suse.cz,
-        stern@rowland.harvard.edu, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+Hi Greg,
 
-commit 5cc59c418fde9d02859996707b9d5dfd2941c50b
-Author: Alan Stern <stern@rowland.harvard.edu>
-Date:   Sat May 22 02:16:23 2021 +0000
+This is what I picked up for the next merge window (v5.15).  Please have
+a look when time permits.
 
-    USB: core: WARN if pipe direction != setup packet direction
+Applies cleanly on your char-misc-next branch (9e1b28b77388).  
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=126f1731300000
-start commit:   794c7931a242 Merge branch 'linus' of git://git.kernel.org/..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=116f1731300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=166f1731300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=96f0602203250753
-dashboard link: https://syzkaller.appspot.com/bug?extid=9b57a46bf1801ce2a2ca
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11ae58ce300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11d71731300000
+Thanks,
+Mathieu
 
-Reported-by: syzbot+9b57a46bf1801ce2a2ca@syzkaller.appspotmail.com
-Fixes: 5cc59c418fde ("USB: core: WARN if pipe direction != setup packet direction")
+Mike Leach (10):
+  coresight: syscfg: Initial coresight system configuration
+  coresight: syscfg: Add registration and feature loading for cs devices
+  coresight: config: Add configuration and feature generic functions
+  coresight: etm-perf: Update to handle configuration selection
+  coresight: syscfg: Add API to activate and enable configurations
+  coresight: etm-perf: Update to activate selected configuration
+  coresight: etm4x: Add complex configuration handlers to etmv4
+  coresight: config: Add preloaded configurations
+  coresight: syscfg: Add initial configfs support
+  Documentation: coresight: Add documentation for CoreSight config
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Sebastian Andrzej Siewior (1):
+  coresight: Replace deprecated CPU-hotplug functions.
+
+ .../trace/coresight/coresight-config.rst      | 244 +++++
+ Documentation/trace/coresight/coresight.rst   |  15 +
+ drivers/hwtracing/coresight/Kconfig           |   1 +
+ drivers/hwtracing/coresight/Makefile          |   7 +-
+ .../hwtracing/coresight/coresight-cfg-afdo.c  | 153 ++++
+ .../coresight/coresight-cfg-preload.c         |  31 +
+ .../coresight/coresight-cfg-preload.h         |  13 +
+ .../hwtracing/coresight/coresight-config.c    | 272 ++++++
+ .../hwtracing/coresight/coresight-config.h    | 253 ++++++
+ drivers/hwtracing/coresight/coresight-core.c  |  12 +-
+ .../hwtracing/coresight/coresight-cpu-debug.c |   4 +-
+ .../hwtracing/coresight/coresight-etm-perf.c  | 150 +++-
+ .../hwtracing/coresight/coresight-etm-perf.h  |  12 +-
+ .../hwtracing/coresight/coresight-etm4x-cfg.c | 182 ++++
+ .../hwtracing/coresight/coresight-etm4x-cfg.h |  30 +
+ .../coresight/coresight-etm4x-core.c          |  38 +-
+ .../coresight/coresight-etm4x-sysfs.c         |   3 +
+ .../coresight/coresight-syscfg-configfs.c     | 396 ++++++++
+ .../coresight/coresight-syscfg-configfs.h     |  45 +
+ .../hwtracing/coresight/coresight-syscfg.c    | 847 ++++++++++++++++++
+ .../hwtracing/coresight/coresight-syscfg.h    |  81 ++
+ include/linux/coresight.h                     |   9 +
+ 22 files changed, 2760 insertions(+), 38 deletions(-)
+ create mode 100644 Documentation/trace/coresight/coresight-config.rst
+ create mode 100644 drivers/hwtracing/coresight/coresight-cfg-afdo.c
+ create mode 100644 drivers/hwtracing/coresight/coresight-cfg-preload.c
+ create mode 100644 drivers/hwtracing/coresight/coresight-cfg-preload.h
+ create mode 100644 drivers/hwtracing/coresight/coresight-config.c
+ create mode 100644 drivers/hwtracing/coresight/coresight-config.h
+ create mode 100644 drivers/hwtracing/coresight/coresight-etm4x-cfg.c
+ create mode 100644 drivers/hwtracing/coresight/coresight-etm4x-cfg.h
+ create mode 100644 drivers/hwtracing/coresight/coresight-syscfg-configfs.c
+ create mode 100644 drivers/hwtracing/coresight/coresight-syscfg-configfs.h
+ create mode 100644 drivers/hwtracing/coresight/coresight-syscfg.c
+ create mode 100644 drivers/hwtracing/coresight/coresight-syscfg.h
+
+-- 
+2.25.1
+
