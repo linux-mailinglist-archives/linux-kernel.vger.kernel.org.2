@@ -2,79 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA293F0B3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 20:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E1C3F0B44
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 20:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232859AbhHRSrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 14:47:19 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:57042 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229952AbhHRSrS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 14:47:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=LslqnICK2K9Z5nZFOWZxRkc5IKeWWca/EEMOYqP7v/I=; b=lyinVlL4NDDv+cfNkZorZRKcat
-        fQQkhAVP6rk6yRdCOEfirqNfGepBukIALi3lSeJdBL3J2Wx/8N/daZS1kiTuvSXOYUQHNQffzFUmb
-        LpSdtDYm6pv4+zceGWbbFGAlu+ZvIP4GPJVN9ZxW18mGWz0ya0cD1waKifXcIAHq2N80=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mGQa6-000pTB-53; Wed, 18 Aug 2021 20:46:30 +0200
-Date:   Wed, 18 Aug 2021 20:46:30 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>, kernel-team@android.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v2 1/3] net: mdio-mux: Delete unnecessary devm_kfree
-Message-ID: <YR1VhqiwIe85GpHE@lunn.ch>
-References: <20210817180841.3210484-1-saravanak@google.com>
- <20210817180841.3210484-2-saravanak@google.com>
- <YRwlyH0cjazjsSwe@lunn.ch>
- <CAGETcx-B=oxqGP-iz4qf2YrLVw3_Q-oTc_3m+dgP1P17FmLs=g@mail.gmail.com>
+        id S232760AbhHRSuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 14:50:08 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:49413 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S229468AbhHRSuD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 14:50:03 -0400
+Received: (qmail 204834 invoked by uid 1000); 18 Aug 2021 14:49:27 -0400
+Date:   Wed, 18 Aug 2021 14:49:27 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     syzbot <syzbot+9b57a46bf1801ce2a2ca@syzkaller.appspotmail.com>
+Cc:     Michal Kubecek <mkubecek@suse.cz>, benjamin.tissoires@redhat.com,
+        jikos@kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] WARNING in hid_submit_ctrl/usb_submit_urb
+Message-ID: <20210818184927.GD197200@rowland.harvard.edu>
+References: <000000000000d77b6505c767b8f8@google.com>
+ <00000000000038c55d05c9d1dc3b@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGETcx-B=oxqGP-iz4qf2YrLVw3_Q-oTc_3m+dgP1P17FmLs=g@mail.gmail.com>
+In-Reply-To: <00000000000038c55d05c9d1dc3b@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 07:56:42PM -0700, Saravana Kannan wrote:
-> On Tue, Aug 17, 2021 at 2:10 PM Andrew Lunn <andrew@lunn.ch> wrote:
-> >
-> > On Tue, Aug 17, 2021 at 11:08:39AM -0700, Saravana Kannan wrote:
-> > > The whole point of devm_* APIs is that you don't have to undo them if you
-> > > are returning an error that's going to get propagated out of a probe()
-> > > function. So delete unnecessary devm_kfree() call in the error return path.
-> > >
-> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> > > Acked-by: Marc Zyngier <maz@kernel.org>
-> > > Tested-by: Marc Zyngier <maz@kernel.org>
-> > > Acked-by: Kevin Hilman <khilman@baylibre.com>
-> > > Tested-by: Kevin Hilman <khilman@baylibre.com>
-> >
-> > Please add a Fixes: tag, since you want this in stable.
-> >
-> > All three patches need fixes tags, possibly different for each patch?
+On Wed, Aug 18, 2021 at 02:14:23AM -0700, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
 > 
-> I generally ask for patches to be picked up by stable only if it fixes
-> a bug that puts the kernel in a bad state
+> HEAD commit:    794c7931a242 Merge branch 'linus' of git://git.kernel.org/..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=13af2205300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=96f0602203250753
+> dashboard link: https://syzkaller.appspot.com/bug?extid=9b57a46bf1801ce2a2ca
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11ae58ce300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11d71731300000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+9b57a46bf1801ce2a2ca@syzkaller.appspotmail.com
+> 
+> ------------[ cut here ]------------
+> usb 1-1: BOGUS control dir, pipe 80000280 doesn't match bRequestType a1
+> WARNING: CPU: 0 PID: 8434 at drivers/usb/core/urb.c:410 usb_submit_urb+0x149d/0x18a0 drivers/usb/core/urb.c:410
+> Modules linked in:
+> CPU: 0 PID: 8434 Comm: syz-executor752 Not tainted 5.14.0-rc6-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:usb_submit_urb+0x149d/0x18a0 drivers/usb/core/urb.c:410
+> Code: 7c 24 40 e8 45 64 1f fc 48 8b 7c 24 40 e8 4b fc 0b ff 45 89 e8 44 89 f1 4c 89 e2 48 89 c6 48 c7 c7 e0 b2 27 8a e8 01 fc 91 03 <0f> 0b e9 a5 ee ff ff e8 17 64 1f fc 0f b6 1d 19 ca 01 08 31 ff 41
+> RSP: 0018:ffffc90000effbd0 EFLAGS: 00010082
+> RAX: 0000000000000000 RBX: ffff888027944058 RCX: 0000000000000000
+> RDX: ffff8880235db880 RSI: ffffffff815d85c5 RDI: fffff520001dff6c
+> RBP: ffff888021618140 R08: 0000000000000000 R09: 0000000000000000
+> R10: ffffffff815d23fe R11: 0000000000000000 R12: ffff888018aff118
+> R13: 00000000000000a1 R14: 0000000080000280 R15: ffff888021900400
+> FS:  000000000223d300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00005614a6c2a160 CR3: 00000000222ca000 CR4: 0000000000350ef0
+> Call Trace:
+>  hid_submit_ctrl+0x6ec/0xd80 drivers/hid/usbhid/hid-core.c:416
+>  usbhid_restart_ctrl_queue.isra.0+0x244/0x3a0 drivers/hid/usbhid/hid-core.c:258
 
-Actually, you asked for stable. You set the subject to
+The problem is that syzbot has created a device with a report length of 
+zero.  If we use the padded length instead of the actual length, the 
+error should vanish.
 
-[PATCH net v3 0/3] Clean up and fix error
+I believe this is fixed by Michal's patch, below.
 
-where [PATCH net ] means stable. If you think this is just ongoing
-development work, use [PATCH net-next ]. Then the Fixes tags are
-optional.
+Alan Stern
 
-	Andrew
+#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 794c7931a242
+
+--- a/drivers/hid/usbhid/hid-core.c
++++ b/drivers/hid/usbhid/hid-core.c
+@@ -377,27 +377,26 @@ static int hid_submit_ctrl(struct hid_device *hid)
+ 	len = hid_report_len(report);
+ 	if (dir == USB_DIR_OUT) {
+ 		usbhid->urbctrl->pipe = usb_sndctrlpipe(hid_to_usb_dev(hid), 0);
+-		usbhid->urbctrl->transfer_buffer_length = len;
+ 		if (raw_report) {
+ 			memcpy(usbhid->ctrlbuf, raw_report, len);
+ 			kfree(raw_report);
+ 			usbhid->ctrl[usbhid->ctrltail].raw_report = NULL;
+ 		}
+ 	} else {
+-		int maxpacket, padlen;
++		int maxpacket;
+ 
+ 		usbhid->urbctrl->pipe = usb_rcvctrlpipe(hid_to_usb_dev(hid), 0);
+ 		maxpacket = usb_maxpacket(hid_to_usb_dev(hid),
+ 					  usbhid->urbctrl->pipe, 0);
+ 		if (maxpacket > 0) {
+-			padlen = DIV_ROUND_UP(len, maxpacket);
+-			padlen *= maxpacket;
+-			if (padlen > usbhid->bufsize)
+-				padlen = usbhid->bufsize;
++			len = DIV_ROUND_UP(len, maxpacket);
++			len *= maxpacket;
++			if (len > usbhid->bufsize)
++				len = usbhid->bufsize;
+ 		} else
+-			padlen = 0;
+-		usbhid->urbctrl->transfer_buffer_length = padlen;
++			len = 0;
+ 	}
++	usbhid->urbctrl->transfer_buffer_length = len;
+ 	usbhid->urbctrl->dev = hid_to_usb_dev(hid);
+ 
+ 	usbhid->cr->bRequestType = USB_TYPE_CLASS | USB_RECIP_INTERFACE | dir;
