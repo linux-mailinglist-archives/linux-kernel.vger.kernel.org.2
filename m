@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127663F0910
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3393F0911
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbhHRQ1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 12:27:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48276 "EHLO mail.kernel.org"
+        id S231898AbhHRQ1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 12:27:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229465AbhHRQ1a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 12:27:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96F5060EFE;
-        Wed, 18 Aug 2021 16:26:55 +0000 (UTC)
+        id S229768AbhHRQ1d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 12:27:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EC07610A3;
+        Wed, 18 Aug 2021 16:26:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629304016;
-        bh=Zc28l2D3Fup6mmSxzhQY/pdcEWXV3MA2UhBv7/tJRC8=;
+        s=k20201202; t=1629304018;
+        bh=t2YQMIO3pl9qf7snTp8+NtyRRuFjHQldlBMT/DHdfNg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S923qVXloQ1LosSG8b9U5jG8Io9ZjO91C7GCds6+Onc2dtRjc8EO8hGR0dX9fyheb
-         22fBpfrSyFeZmvCbIEWBJ4NMjsQg64YniDaFGavGR4kjiWQVLu/jdpYWVFXqVu47/Z
-         MljkszJ22f5LGdFbwecUMWmu2OxLhE7EkTGAuc3nXmpc8J+CFaz8iS/g6xM385DFK7
-         3ZcpoYGrNqJWxfqFHU88jVwyIqWbA9I7uGbQ7O+ka+ONKkNQexzO4ya+DHOrVRWmkJ
-         rdnMn9LYRqH7Ww+o74q4dfkAoxpeaSmiih7H3ubS98Lik/wOFWkmyAURCXDb/zCuzF
-         30TeSzUxQgftw==
+        b=HZ8q6RYUJxPsrFhG7Emkq7SRKkm4IbmlIiS+QNGywCNrGqCyqbaYB1Rg4pObcKvyb
+         fxp6csxcg1ogAiQyRi8Kb4b72R94hYXy4X1y8C+wyylZTUAfFJomtAOLddfoX/+eLO
+         rgmVjZY8trDsVKRzs0bXTUaQo0SDF05R9BeBS+KkMlENmGQltGZo5aDbuD3gIKzMPS
+         dFQ7Hqv1Rq8uc7HrQ7nxeo20mD3w12lqLCj48/ipW4igdcd38RNbCOi/UKQMdVcL7v
+         uX6JQanTJ4aqypA124GCGdLEDlKhIRpcwUYjE9U5KOZcgHcuDK1350F+aAVoLzaqAu
+         QZxmTgKoZneyQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>, ldewangan@nvidia.com
-Subject: Re: [PATCH -next] spi: tegra20-slink: remove spi_master_put() in tegra_slink_remove()
-Date:   Wed, 18 Aug 2021 17:26:30 +0100
-Message-Id: <162930380184.11247.17073107281539539270.b4-ty@kernel.org>
+To:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] regulator: Minor regulator documentation fixes.
+Date:   Wed, 18 Aug 2021 17:26:31 +0100
+Message-Id: <162930370018.11155.6461724137784637883.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210810142230.2220453-1-yangyingliang@huawei.com>
-References: <20210810142230.2220453-1-yangyingliang@huawei.com>
+In-Reply-To: <20210818041513.GA2408290@dc7vkhyh15000m40t6jht-3.rev.dnainternet.fi>
+References: <20210818041513.GA2408290@dc7vkhyh15000m40t6jht-3.rev.dnainternet.fi>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,9 +42,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Aug 2021 22:22:30 +0800, Yang Yingliang wrote:
-> spi_master_put() is already called in spi_unregister_master(), or it
-> will lead a double decrement refcount.
+On Wed, 18 Aug 2021 07:18:19 +0300, Matti Vaittinen wrote:
+> The newly added regulator ramp-delay specifiers in regulator desc
+> lacked the documentation. Add some. Also fix a typo.
 > 
 > 
 > 
@@ -50,12 +52,12 @@ On Tue, 10 Aug 2021 22:22:30 +0800, Yang Yingliang wrote:
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/1] spi: tegra20-slink: remove spi_master_put() in tegra_slink_remove()
-      commit: 02cea7039ad52593ee05824c19233366914df9b2
+[1/1] regulator: Minor regulator documentation fixes.
+      commit: c049742fbc71129c481a6d5e52392b9aa482cc9e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
