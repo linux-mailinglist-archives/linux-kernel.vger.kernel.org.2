@@ -2,111 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6F83F07FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 533543F0801
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 17:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239703AbhHRPYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 11:24:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239494AbhHRPXz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 11:23:55 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3211C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 08:23:20 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id t66so3488761qkb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 08:23:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Sh1SraHVKaCYA/y70zjirB3iehLFCX2xZsdhvuOQh88=;
-        b=XkMCbtl+eZtb55uTMetMU9KUOhB+qRnNM3uZXlAmeZpddXY/wZoe7XofhB7B4YBokQ
-         hhEjjVEdsH6mx04H5ujrwzMJ6HIj6pulZY6nEFceFaV0Br4kFhSfbqsltefjakyHov3F
-         Pk2kGoGug/UenLupgEIV4BQuovuILRp8Tb5UNkgnx0b4hEMTetWtjgIHk4GSYZLmTvHR
-         O8NW9kh6mj+qkJDHIGGK97Z+pYsHIZRLXcrzNpKtTwCYYSMTGBn1jeYWevdsk9E4duGS
-         s1bjLw3cdagRos9fVdXF2EEyOhGFEGshTbqGvTxK//NRnHhUytk+U1EywV252QHDpdbK
-         Pt2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Sh1SraHVKaCYA/y70zjirB3iehLFCX2xZsdhvuOQh88=;
-        b=cYshuDG0uIqOGk7asqCdj83UDv5OyATZkPskNSDGYzUm4JgS2ht8AvsWLgTuF07G34
-         SR4al2mC7aY17v5EAj3kmw22ZDus9B6Cr39gacShj0BoTWKwEqOAMzvftUw3S/XPeUn5
-         JLLlikE6hOTwYoc1xh+nd8uiaPzbmC1JeNaHEIDXqghHbXrlusMT8b514ZkraijGkv3l
-         rf5oXdSQV0daohoHVHIY7l3FxrHVlEckJRsmyCQsubSNiR+HbaPWjZxqUwUYqnBJ0ioe
-         sIBlbUzNuEG8xVm1hHEzhVgY/gS4g8rQg4x2AUCsKT8CWOi4SdlNSB/m0k7YRkzixW7X
-         wjtA==
-X-Gm-Message-State: AOAM530TFXpDCLn0m2r3hjkqJV9ftS87rZkw5MOPlVRuQ44EQs4ODpBs
-        5ZQiXtqXT/BzElIc0RE1sPInoqT8lsgN0A==
-X-Google-Smtp-Source: ABdhPJxVogDZb0BxpUKcYfpDQa7/1wYIvo2KElxVcSRIGrKNLK7arzO2wONNyCE3QM/KXusnIvwWEw==
-X-Received: by 2002:a37:b4d:: with SMTP id 74mr8195759qkl.92.1629300199808;
-        Wed, 18 Aug 2021 08:23:19 -0700 (PDT)
-Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id v27sm42407qkj.129.2021.08.18.08.23.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 08:23:19 -0700 (PDT)
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Rik van Riel <riel@surriel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] mm: vmscan: fix missing psi annotation for node_reclaim()
-Date:   Wed, 18 Aug 2021 11:24:57 -0400
-Message-Id: <20210818152457.35846-1-hannes@cmpxchg.org>
-X-Mailer: git-send-email 2.32.0
+        id S233849AbhHRP2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 11:28:35 -0400
+Received: from mga14.intel.com ([192.55.52.115]:58543 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230360AbhHRP2e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 11:28:34 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="216076477"
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
+   d="scan'208";a="216076477"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 08:25:28 -0700
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
+   d="scan'208";a="449796910"
+Received: from ksawchu-mobl.amr.corp.intel.com (HELO [10.212.83.236]) ([10.212.83.236])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 08:25:26 -0700
+Subject: Re: [RFC PATCH 2/2] ASoC: SOF: trigger re-probing of deferred devices
+ from workqueue
+To:     Mark Brown <broonie@kernel.org>
+Cc:     alsa-devel@alsa-project.org,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>, tiwai@suse.de,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        liam.r.girdwood@linux.intel.com, vkoul@kernel.org,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "moderated list:SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS" 
+        <sound-open-firmware@alsa-project.org>
+References: <20210817190057.255264-1-pierre-louis.bossart@linux.intel.com>
+ <20210817190057.255264-3-pierre-louis.bossart@linux.intel.com>
+ <20210818120700.GB4177@sirena.org.uk>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <3985f754-a0a2-92f7-1585-3b177c172664@linux.intel.com>
+Date:   Wed, 18 Aug 2021 10:25:19 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210818120700.GB4177@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In a debugging session the other day, Rik noticed that node_reclaim()
-was missing memstall annotations. This means we'll miss pressure and
-lost productivity resulting from reclaim on an overloaded local NUMA
-node when vm.zone_reclaim_mode is enabled.
 
-There haven't been any reports, but that's likely because
-vm.zone_reclaim_mode hasn't been a commonly used feature recently, and
-the intersection between such setups and psi users is probably
-nil. Although, secondary memory such as CXL-connected DIMMS,
-persistent memory etc. and the page demotion patches that handle them
-(https://lore.kernel.org/lkml/20210401183216.443C4443@viggo.jf.intel.com/)
-could soon make this a more common codepath again.
 
-Reported-by: Rik van Riel <riel@surriel.com>
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
----
- mm/vmscan.c | 3 +++
- 1 file changed, 3 insertions(+)
+On 8/18/21 7:07 AM, Mark Brown wrote:
+> On Tue, Aug 17, 2021 at 02:00:57PM -0500, Pierre-Louis Bossart wrote:
+> 
+>> +++ b/sound/soc/sof/core.c
+>> @@ -251,6 +251,9 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
+>>  
+>>  	sdev->probe_completed = true;
+>>  
+>> +	/* kick-off re-probing of deferred devices */
+>> +	driver_deferred_probe_trigger();
+>> +
+> 
+> I think we should move this into snd_soc_register_component() - the same
+> issue could occur with any other component, the only other thing I can
+> see kicking in here is the machine driver registration but that ought to
+> kick probe itself anyway.  Or is there some other case here?
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 701106e1829c..8ec4412c6116 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -4424,11 +4424,13 @@ static int __node_reclaim(struct pglist_data *pgdat, gfp_t gfp_mask, unsigned in
- 		.may_swap = 1,
- 		.reclaim_idx = gfp_zone(gfp_mask),
- 	};
-+	unsigned long pflags;
- 
- 	trace_mm_vmscan_node_reclaim_begin(pgdat->node_id, order,
- 					   sc.gfp_mask);
- 
- 	cond_resched();
-+	psi_memstall_enter(&pflags);
- 	fs_reclaim_acquire(sc.gfp_mask);
- 	/*
- 	 * We need to be able to allocate from the reserves for RECLAIM_UNMAP
-@@ -4453,6 +4455,7 @@ static int __node_reclaim(struct pglist_data *pgdat, gfp_t gfp_mask, unsigned in
- 	current->flags &= ~PF_SWAPWRITE;
- 	memalloc_noreclaim_restore(noreclaim_flag);
- 	fs_reclaim_release(sc.gfp_mask);
-+	psi_memstall_leave(&pflags);
- 
- 	trace_mm_vmscan_node_reclaim_end(sc.nr_reclaimed);
- 
--- 
-2.32.0
+Thanks for the suggestion Mark, it would be more consistent indeed to
+kick a re-evaluation of the deferred probe list when ASoC components are
+successfully registered with something like this:
 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index c830e96afba2..9d6feea7719c 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2677,7 +2677,14 @@ int snd_soc_register_component(struct device *dev,
+        if (ret < 0)
+                return ret;
+
+-       return snd_soc_add_component(component, dai_drv, num_dai);
++       ret = snd_soc_add_component(component, dai_drv, num_dai);
++       if (ret < 0)
++               return ret;
++
++       /* kick-off re-probing of deferred devices */
++       driver_deferred_probe_trigger();
++
++       return 0;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_register_component);
+
+In the case of this SOF driver, it'd be completely equivalent to what
+this patch suggested, the snd_soc_register_component() is what we do
+last in the workqueue.
+
+In the case of 'regular' drivers, the component registration is
+typically done last as well before the end of the probe. This would
+result in 2 evaluations (one on successful ASoC component registration
+and one on successful probe), and maybe on the second evaluation there's
+nothing to do.
+
+I can't think of any negative side-effects.
