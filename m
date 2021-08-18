@@ -2,49 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B156E3F0CDD
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 22:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 039353F0CE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 22:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233941AbhHRUg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 16:36:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60750 "EHLO mail.kernel.org"
+        id S233425AbhHRUl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 16:41:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233909AbhHRUg1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 16:36:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 250AB610FE;
-        Wed, 18 Aug 2021 20:35:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1629318952;
-        bh=E2N2vkn8ZuMRsnKtrBJU26YTePJodaJsogEViSx6S9o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aK/JdHcFa4lxdYOnjBBMw+MCoMnSWQ6y9GnbUkETXTFBEDjERJK7Htrx18mE3/i6p
-         kUCvZOnIc5rvYdPgZeiNg4ka57oE4uitbvig/0DepfvOKqzWGW9Zp/+T9ZwtXbOfCA
-         MLQxizShN7BkvBRrtUa0+CMEZiR8gdyhDk96q72w=
-Date:   Wed, 18 Aug 2021 13:35:51 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Denis Efremov <efremov@linux.com>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, Jiri Kosina <jkosina@suse.cz>,
-        Willy Tarreau <w@1wt.eu>
-Subject: Re: [RFC PATCH 1/5] checkpatch: improve handling of revert commits
-Message-Id: <20210818133551.3287f097f4c70742ab6b762f@linux-foundation.org>
-In-Reply-To: <71535d629266751273c15cc05dd7c987cb9c43b6.camel@perches.com>
-References: <20210818154646.925351-1-efremov@linux.com>
-        <20210818154646.925351-2-efremov@linux.com>
-        <cc5801790fea258e20fa6b7e26de7806ae8e0dda.camel@perches.com>
-        <3d347d4b-1576-754f-8633-ba6084cc0661@linux.com>
-        <71535d629266751273c15cc05dd7c987cb9c43b6.camel@perches.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233153AbhHRUlZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 16:41:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F849610FE;
+        Wed, 18 Aug 2021 20:40:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629319249;
+        bh=5tva/r9Oj0UN/sp05F4nzM/MGgwTGTX7IE9UMourYXU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VdcITPKrE0bBE3TiHA/Q3+5HDAfoqXbDQWtuid/rwPLd1IKqT+WWma5fdxulLtuJZ
+         BM3LlBiCapRxMv2a01i2ll4V7JcuqC9KiK6ci4WTeigum3IyQdxQ0N+swNxxX06BgA
+         obnZ9tDmC72NXvvcHvX6mvNg2rthYw7l5TthRoF8=
+Date:   Wed, 18 Aug 2021 22:40:47 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Aakash Hemadri <aakashhemadri123@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH] staging: r8188eu: clean up endianness issues
+Message-ID: <YR1wT0cLoiuXsIEM@kroah.com>
+References: <8a3fca82d9ec5dde9e42d40f0268a324cc87ebc6.1629301854.git.aakashhemadri123@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8a3fca82d9ec5dde9e42d40f0268a324cc87ebc6.1629301854.git.aakashhemadri123@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Aug 2021 13:21:16 -0700 Joe Perches <joe@perches.com> wrote:
+On Wed, Aug 18, 2021 at 09:22:36PM +0530, Aakash Hemadri wrote:
+> Fix these sparse warnings:
+> 
+> > rtw_br_ext.c:73:23: warning: restricted __be16 degrades to integer
+> 
+> Here tag->tag_len is be16, use ntohs()
+> 
+> > rtw_br_ext.c:601:57: warning: incorrect type in assignment (different base types)
+> > rtw_br_ext.c:601:57:    expected unsigned short
+> > rtw_br_ext.c:601:57:    got restricted __be16 [usertype]
+> 
+> > rtw_br_ext.c:664:45: warning: cast to restricted __be16
+> > rtw_br_ext.c:771:84: warning: incorrect type in argument 3 (different base types)
+> > rtw_br_ext.c:771:84:    expected unsigned int [usertype] len
+> 
+> Cast MAGIC_CODE as unsigned short
+> 
+> > rtw_br_ext.c:771:84:    got restricted __be16 [usertype] payload_len
+> > rtw_br_ext.c:773:110: warning: incorrect type in argument 2 (different base types)
+> > rtw_br_ext.c:773:110:    expected int len
+> > rtw_br_ext.c:773:110:    got restricted __be16 [usertype] payload_len
+> 
+> > rtw_br_ext.c:836:54: warning: cast to restricted __be32
+> 
+> Unnecessary double cast?
+> 
+> > rtw_br_ext.c:839:70: warning: restricted __be16 degrades to integer
+> > rtw_br_ext.c:845:70: warning: invalid assignment: |=
+> > rtw_br_ext.c:845:70:    left side has type unsigned short
+> > rtw_br_ext.c:845:70:    right side has type restricted __be16
+> 
+> dhcp->flag is u16
 
-> Andrew?  Do you still use perl 5.8?  It's almost 20 years old now.
+That is a lot of different things all at once.  Please break this up
+into one-logical-change at a time and send a patch series.
 
-5.26 is the oldest I appear to be using.
+thanks,
+
+greg k-h
