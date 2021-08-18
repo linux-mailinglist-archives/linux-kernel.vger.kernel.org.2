@@ -2,183 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2283EF825
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 04:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B59863EF828
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 04:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237108AbhHRCoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 22:44:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234435AbhHRCoS (ORCPT
+        id S234414AbhHRCqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 22:46:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52286 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234435AbhHRCqL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 22:44:18 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A952C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 19:43:37 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id c4so891796plh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 19:43:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=IdX62Qy1ac9xod4fIunCnDc2laglCBN/1fg/fcapW7I=;
-        b=G6tJIDNDlZydQbdTY2UVKCARnR0cLR1jeU/0tSmRwID/hjR9YhYy5LOmm5/F9bq1uW
-         qfPDBB3+IufGPZoTw7UhHEeYTi7OMB7dSK9c5x7RHgdS71Ij/33jgOe1S/lda7Z6O8pQ
-         L7LYM4eS0atmpRtU/sYu/tWSgx3FYDiNIA6X4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=IdX62Qy1ac9xod4fIunCnDc2laglCBN/1fg/fcapW7I=;
-        b=DAO0bEcHt+3ZK+RZrsS3qNrtjOTSq+0H9pArSALdcoWWLplqbpS0MSnL9GoELEIu8O
-         uxQUo2c8RKzZQHX0JrC4h4txuFK3MNzzuN9s/iYwI8IJEYHoqKTH6GI2iBx1H+XRJILd
-         fCmj8q2nuUye16ZHDkiXAe8NaWG43hRncQa2FELV5oeygDpqTjjvVFPSa7SONIIlhqON
-         WAlH3zvV1x6q8bLlhsnnmwIuzvbzkNt+3GFJD9qPeCexaJ/mNja0yqMxWEH4DiYOUSkh
-         aBqEC0BZnj+3GVed8WKV/YCC9mWN5l2Art/FEBNQs1xweqDIOxirTWAp+w8neTeYDwrm
-         W7ww==
-X-Gm-Message-State: AOAM533o9FCgFhsH0XEBRAgjVoktTfZfRWxOugn6ZAmaAaLD0vVigPeb
-        mTyEqtRnFLcRrLvut3K48rCHhiF2/igMvRxUROoYtg==
-X-Google-Smtp-Source: ABdhPJwgboGY7D2y/Zi68e8tvtNReZvQqvGbrT7qKSNk+cE6BASGnMkYk2/EYNENuEnG5CXBjupeV5V6s5a3ZKXxDgU=
-X-Received: by 2002:a17:90b:4905:: with SMTP id kr5mr6634228pjb.112.1629254616776;
- Tue, 17 Aug 2021 19:43:36 -0700 (PDT)
+        Tue, 17 Aug 2021 22:46:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629254737;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7Ly4hMgmcduWmjk7R138XN1c7rishTtsrNhm8UdX1fs=;
+        b=RV43urOQo8sisR/Uf6Dh5Gi8kAFD0qUKWkdKt9I3WB9guU/uBLQG/ACqeD1hiWG9SUe3Vt
+        XSiiIAtV2ythBZJcpp5g5pa7nqnUPCxoorMluBuByZjuBLBGcfP0VFAQ/a/xmGvQ1ELQU5
+        oASA7FMTCOK7qw9KKYKNVjTVbMaN7R4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-394-ErqW5xKFOrGx03r8uvmf8Q-1; Tue, 17 Aug 2021 22:45:36 -0400
+X-MC-Unique: ErqW5xKFOrGx03r8uvmf8Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 090EA801AC5;
+        Wed, 18 Aug 2021 02:45:35 +0000 (UTC)
+Received: from T590 (ovpn-8-28.pek2.redhat.com [10.72.8.28])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A317D5D9CA;
+        Wed, 18 Aug 2021 02:45:25 +0000 (UTC)
+Date:   Wed, 18 Aug 2021 10:45:20 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, bvanassche@acm.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        Keith Busch <kbusch@kernel.org>
+Subject: Re: [PATCH RFC] blk_mq: clear rq mapping in driver tags before
+ freeing rqs in sched tags
+Message-ID: <YRx0QE8T4RJONlA8@T590>
+References: <20210817022306.1622027-1-yukuai3@huawei.com>
+ <YRxZ44tu8o1MPruT@T590>
+ <11ef6a06-4b6f-44d0-af79-f96e16456b55@huawei.com>
 MIME-Version: 1.0
-References: <20210809165904.RFC.1.I5165a4a8da5cac23c9928b1ec3c3a1a7383b7c23@changeid>
- <YRDxTodNNqtnpPpn@kroah.com> <CAATdQgDSCzZtiDSQk94CYHfSb9Mq28OH7-RdaTZNv3oPrW3nkQ@mail.gmail.com>
- <7b48f4c132a8b4b3819282e961fbe8b3ed753069.camel@mediatek.com>
- <CAATdQgD1paUUmWhiLVq-+zq0V6=RTJw89ggk=R6cBUZO+5dB-Q@mail.gmail.com> <efcd999aaf83cf73ed2f4f4b9efa1bb93efd2523.camel@mediatek.com>
-In-Reply-To: <efcd999aaf83cf73ed2f4f4b9efa1bb93efd2523.camel@mediatek.com>
-From:   Ikjoon Jang <ikjn@chromium.org>
-Date:   Wed, 18 Aug 2021 10:43:25 +0800
-Message-ID: <CAATdQgC_aukAA3-=cuiOAQGzu_Ztvo4BsMbRv2hCGZpUeOAJVg@mail.gmail.com>
-Subject: Re: [RFC PATCH] usb: xhci-mtk: handle bandwidth table rollover
-To:     =?UTF-8?B?Q2h1bmZlbmcgWXVuICjkupHmmKXls7Ap?= 
-        <Chunfeng.Yun@mediatek.com>
-Cc:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "mathias.nyman@intel.com" <mathias.nyman@intel.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <11ef6a06-4b6f-44d0-af79-f96e16456b55@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chunfeng,
+On Wed, Aug 18, 2021 at 10:02:09AM +0800, yukuai (C) wrote:
+> On 2021/08/18 8:52, Ming Lei wrote:
+> > On Tue, Aug 17, 2021 at 10:23:06AM +0800, Yu Kuai wrote:
+> > > If ioscheduler is not none, hctx->tags->rq[tag] will point to
+> > > hctx->sched_tags->static_rq[internel_tag] in blk_mq_get_driver_tag().
+> > > However, static_rq of sched_tags might be freed through switching
+> > > elevator or increasing nr_requests. Thus leave a window for some drivers
+> > > to get the freed request through blk_mq_tag_to_rq(tags, tag).
+> > 
+> > I believe I have explained that it is bug of driver which has knowledge
+> > if the passed tag is valid or not. We are clear that driver need to cover
+> > race between normal completion and timeout/error handling.
+> > 
+> > > 
+> > > It's difficult to fix this uaf from driver side, I'm thinking about
+> > 
+> > So far not see any analysis on why the uaf is triggered, care to
+> > investigate the reason?
+> 
+> Hi, Ming
+> 
+> I'm sorry if I didn't explian the uaf clearly.
+> 
+> 1) At first, a normal io is submitted and completed with scheduler:
+> 
+> internel_tag = blk_mq_get_tag -> get tag from sched_tags
+>  blk_mq_rq_ctx_init
+>   sched_tags->rq[internel_tag] = sched_tag->static_rq[internel_tag]
+> ...
+> blk_mq_get_driver_tag
+>  __blk_mq_get_driver_tag -> get tag from tags
+>  tags->rq[tag] = sched_tag->static_rq[internel_tag]
+> 
+> So, both tags->rq[tag] and sched_tags->rq[internel_tag] are pointing
+> to the request: sched_tags->static_rq[internal_tag].
+> 
+> 2) Then, if the sched_tags->static_rq is freed:
+> 
+> blk_mq_sched_free_requests
+>  blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i)
+>   blk_mq_clear_rq_mapping(set, tags, hctx_idx);
+>    -> sched_tags->rq[internel_tag] is set to null here
 
-On Thu, Aug 12, 2021 at 7:49 PM Chunfeng Yun (=E4=BA=91=E6=98=A5=E5=B3=B0)
-<Chunfeng.Yun@mediatek.com> wrote:
->
-> On Thu, 2021-08-12 at 17:31 +0800, Ikjoon Jang wrote:
-> > HI,
-> >
-> > On Wed, Aug 11, 2021 at 5:02 PM Chunfeng Yun (=E4=BA=91=E6=98=A5=E5=B3=
-=B0)
-> > <Chunfeng.Yun@mediatek.com> wrote:
-> > >
-> > > On Mon, 2021-08-09 at 17:42 +0800, Ikjoon Jang wrote:
-> > > > On Mon, Aug 9, 2021 at 5:11 PM Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > On Mon, Aug 09, 2021 at 04:59:29PM +0800, Ikjoon Jang wrote:
-> > > > > > xhci-mtk has 64 slots for periodic bandwidth calculations and
-> > > > > > each
-> > > > > > slot represents byte budgets on a microframe. When an
-> > > > > > endpoint's
-> > > > > > allocation sits on the boundary of the table, byte budgets'
-> > > > > > slot
-> > > > > > should be rolled over but the current implementation doesn't.
-> > > > > >
-> > > > > > This patch applies a 6 bits mask to the microframe index to
-> > > > > > handle
-> > > > > > its rollover 64 slots and prevent out-of-bounds array access.
-> > > > > >
-> > > > > > Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
-> > > > > > ---
-> > > > > >
-> > > > > >  drivers/usb/host/xhci-mtk-sch.c | 79 +++++++++------------
-> > > > > > ----
-> > > > > > --------
-> > > > > >  drivers/usb/host/xhci-mtk.h     |  1 +
-> > > > > >  2 files changed, 23 insertions(+), 57 deletions(-)
-> > > > >
-> > > > > Why is this "RFC"?  What needs to be addressed in this change
-> > > > > before it
-> > > > > can be accepted?
-> > > >
-> > > > sorry, I had to mention why this is RFC:
-> > > >
-> > > > I simply don't know about the details of the xhci-mtk internals.
-> > > > It was okay from my tests with mt8173 and I think this will be
-> > > > harmless
-> > > > as this is "better than before".
-> > > >
-> > > > But when I removed get_esit_boundary(), I really have no idea why
-> > > > it was there. I'm wondering if there was another reason of that
-> > > > function
-> > > > other than just preventing out-of-bounds. Maybe chunfeng can
-> > > > answer
-> > > > this?
-> > >
-> > > We use @esit to prevent out-of-bounds array access. it's not a
-> > > ring,
-> > > can't insert out-of-bounds value into head slot.
-> >
-> > Thanks, so that function was only for out-of-bounds array access.
-> > then I think we just can remove that function and use it as a ring.
-> > Can you tell me _why_ it can't be used as a ring?
-> Treat it as a period, roll over slot equals to put it into the next
-> period.
->
-> >
-> > I think a transaction (e.g. esit_boundary =3D 7) can start its first
-> > SSPLIT
-> > from Y_7 (offset =3D 7). But will that allocation be matched with this?
-> >
-> > -               if ((offset + sch_ep->num_budget_microframes) >
-> > esit_boundary)
-> > -                       break;
-> >
-> > I mean I'm not sure why this is needed.
-> Prevent out-of-bounds.
+Please take a look at blk_mq_clear_rq_mapping():
 
-If it was for preventing drivers from out-of-bound array access,
-I couldn't find any reasons why we cannot remove the above lines.
-So can I know if it was just for preventing xhci-mtk drivers from
-out-of-bounds array access?
+	//drv_tags points to set->tags[] which is shared in host wide
+	struct blk_mq_tags *drv_tags = set->tags[hctx_idx];
+	...
 
-If xhci-mtk HC itself can continue the transaction from Y_7 to (Y+1)_n;
-including the case of Y=3D=3D63, I think it's just okay to rollover to (Y+1=
-).
+	//tags points to sched_tags
+	list_for_each_entry(page, &tags->page_list, lru) {
+		unsigned long start = (unsigned long)page_address(page);
+		unsigned long end = start + order_to_size(page->private);
+		int i;
 
-If it's prohibited by xhci-mtk hw, or if you think this patch is not
-allowed by any other reasons, can you please  tell me what
-kinds of problems can happen with this patch?
+		/* clear drv_tags->rq[i] in case it is from this sched tags*/
+		for (i = 0; i < set->queue_depth; i++) {
+			struct request *rq = drv_tags->rqs[i];
+			unsigned long rq_addr = (unsigned long)rq;
 
-Otherwise, please consider minimizing the bw constraints from
-xhci-mtk-sch on your side. Note that we're still having other usb
-audio headsets which cannot be configured with xhci-mtk
-even with this patch.
+			if (rq_addr >= start && rq_addr < end) {
+				WARN_ON_ONCE(refcount_read(&rq->ref) != 0);
+				cmpxchg(&drv_tags->rqs[i], rq, NULL);
+			}
+		}
+	}
 
-Thanks.
+So we do clear tags->rq[] instead of sched_tag->rq[].
 
->
-> >
-> > Until now, I couldn't find a way to accept the USB audio headset
-> > with a configuration of { INT-IN 64 + ISOC-OUT 384 + ISOC-IN 192 }
-> > without this patch.
-> what is the interval value of each endpoint?
->
-> >
-> > >
-> > > >
-> > > > Thanks!
-> > > >
-> > > > >
-> > > > > thanks,
-> > > > >
-> > > > > greg k-h
+> 
+> After switching elevator, tags->rq[tag] still point to the request
+> that is just freed.
+
+No.
+
+> 
+> 3) nbd server send a reply with random tag directly:
+> 
+> recv_work
+>  nbd_read_stat
+>   blk_mq_tag_to_rq(tags, tag)
+>    rq = tags->rq[tag] -> rq is freed
+> 
+> Usually, nbd will get tag and send a request to server first, and then
+> handle the reply. However, if the request is skipped, such uaf problem
+> can be triggered.
+
+When or how is such reply with random tag replied to nbd client? Is it
+possible for nbd client to detect such un-expected/bad situation?
+What if blk_mq_tag_to_rq() is just called before/when we clear tags->rq[]?
+
+> 
+> > 
+> > The request reference has been cleared too in blk_mq_tag_update_depth():
+> > 
+> > 	blk_mq_tag_update_depth
+> > 		blk_mq_free_rqs
+> > 			blk_mq_clear_rq_mapping
+> > 
+> 
+> What I'm trying to do is to clear rq mapping in both
+> hctx->sched_tags->rq and hctx->tags->rq when sched_tags->static_rq
+> is freed. However, I forgot about the case when tags is shared in
+> multiple device. Thus what this patch does is clearly wrong...
+> 
+> So, what do you think about adding a new interface to iterate the
+> request in tags->rq[], find what is pointing to the
+> sched_tags->static_rq[], and use cmpxchg() to clear them?
+
+See above, we already clear tags->rq[] if the rq is from to-be-freed
+sched_tags.
+
+
+Thanks,
+Ming
+
