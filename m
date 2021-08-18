@@ -2,139 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669573F0595
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 247F43F0597
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238349AbhHRODe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 10:03:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235675AbhHRODc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 10:03:32 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2132AC061764;
-        Wed, 18 Aug 2021 07:02:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5T2T8ugjMyi9ROUTbkrrKKiIT/5w9z7NpTWBJd1+ZR4=; b=YIctBOdYHy8zvOrMPIex53C85o
-        uWDxKrKhH4ghn6j/CBgIJEr3adVzg8OmXIiVpj+/Bho5SfPD2+mvzSScmpjZwiJjloKJttgfnDi1N
-        UNhdqqB+0pohfyvaHUMdHjKIZB0QA7ZLVZMO8RYLXUVHpIBI4KVV4TDbUrmzlwWQrHZCd7CfZ/0Zx
-        ASQC3e/iD/HHpN62ItNiY8s3NTWHdEL0Y3eaAWTVDED32wTlADRghkbCHcDDrf97yij5pxiDsY7q2
-        q6veYQmPUvl1OcJW+tHUo5jgmdvnDaISEZliPjZ7MT927UIi3sJqciuZ6dbJzs5jt4UsFg2lzapbs
-        snWPuHIQ==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mGM9g-005nva-58; Wed, 18 Aug 2021 14:02:56 +0000
-Date:   Wed, 18 Aug 2021 07:02:56 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Eryu Guan <guan@eryu.me>
-Cc:     fstests@vger.kernel.org, hare@suse.de, dgilbert@interlog.com,
-        jeyu@kernel.org, lucas.demarchi@intel.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] common/module: add patient module rmmod support
-Message-ID: <YR0TEE8lUwo6QlHw@bombadil.infradead.org>
-References: <20210811154512.1813622-1-mcgrof@kernel.org>
- <20210811154512.1813622-3-mcgrof@kernel.org>
- <YRkIttM75q3gLxpN@desktop>
+        id S238786AbhHROEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 10:04:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51418 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238668AbhHROE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 10:04:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3590B61051;
+        Wed, 18 Aug 2021 14:03:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629295431;
+        bh=OtHThCXmHDiPy0w6lt1fEL2vmZQbCKRBjm4W84idpsI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Rx5TKLHCisM/jt55skOkrCVNfntYjFdCbIbtDzpTNmpkAOX3ImgebHL812XZe9ulp
+         H3rzMUDDOc7Hn90T6JvADqe0HfCHjXI1gELcST56HOlqVKFtco9drONZmebFDHtXrC
+         LLoRvnCDGEj6p6Z8VRpRN06sCWJhksk9xWclybp8=
+Date:   Wed, 18 Aug 2021 16:03:49 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Phi Nguyen <phind.uet@gmail.com>
+Cc:     jirislaby@kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com
+Subject: Re: [PATCH] tty: Fix data race between tiocsti() and flush_to_ldisc()
+Message-ID: <YR0TRf+283ujBxbv@kroah.com>
+References: <20210807190513.3810821-1-phind.uet@gmail.com>
+ <YRYgSZwivcPPMhrS@kroah.com>
+ <7323d825-f596-223b-a063-7539a6a57107@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YRkIttM75q3gLxpN@desktop>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <7323d825-f596-223b-a063-7539a6a57107@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 15, 2021 at 08:29:42PM +0800, Eryu Guan wrote:
-> On Wed, Aug 11, 2021 at 08:45:11AM -0700, Luis Chamberlain wrote:
-> >  common/config |  31 +++++++++++++++
-> >  common/module | 107 ++++++++++++++++++++++++++++++++++++++++++++++++++
-> 
-> Please also update README to document the new configurable variables.
-
-Got it.
-
-> >  2 files changed, 138 insertions(+)
+On Sat, Aug 14, 2021 at 02:35:53AM +0800, Phi Nguyen wrote:
+> On 8/13/2021 3:33 PM, Greg KH wrote:
+> > > 
+> > > Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+> > > Reported-by: syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com
+> > > ---
+> > >   drivers/tty/tty_io.c | 2 ++
+> > >   1 file changed, 2 insertions(+)
+> > > 
+> > > diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+> > > index e8532006e960..746fe13a2054 100644
+> > > --- a/drivers/tty/tty_io.c
+> > > +++ b/drivers/tty/tty_io.c
+> > > @@ -2307,8 +2307,10 @@ static int tiocsti(struct tty_struct *tty, char __user *p)
+> > >   	ld = tty_ldisc_ref_wait(tty);
+> > >   	if (!ld)
+> > >   		return -EIO;
+> > > +	tty_buffer_lock_exclusive(tty->port);
+> > >   	if (ld->ops->receive_buf)
+> > >   		ld->ops->receive_buf(tty, &ch, &mbz, 1);
+> > > +	tty_buffer_unlock_exclusive(tty->port);
 > > 
-> > diff --git a/common/config b/common/config
-> > index 005fd50a..9b8a2bc4 100644
-> > --- a/common/config
-> > +++ b/common/config
+> > Did this fix the syzbot reported issue?
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> > Yes, this fixed the syzbot reported issue.
 > 
-> 100s as default seems a bit long to me, use 10s as in v1 patch?
-
-In practice I tried using 10s and from my observations we *still* ran
-into false positives. So from my own testing peace of mind I'd prefer at
-least something higher, and if its going to be higher might as well go
-with something which at least makes painfully safe. I'll go with 50s
-for my next submission.
-
-> > +	fi
-> > +else
-> > +	MODPROBE_RM_PATIENT_TIMEOUT_ARGS=""
-> > +	if [[ ! -z "$MODPROBE_PATIENT_RM_TIMEOUT_SECONDS" ]]; then
-> > +		if [[ "$MODPROBE_PATIENT_RM_TIMEOUT_MS" != "forever" ]]; then
+> The lock is grabbed in flush_to_ldisc() and paste_selection().
+> Actually, I follow the document in tty_buffer.c, where it say the callers to
+> receive_buff() other than flush_to_ldisc() need to exclude the kworker from
+> concurrent use of the line discipline.
 > 
-> Should check MODPROBE_PATIENT_RM_TIMEOUT_SECONDS instead?
+> And function tiocsti() has the following comment:
+> /* FIXME: may race normal receive processing */
+> that why I add lock in this function.
 
-Indeed will fix.
+As you are fixing this FIXME, please remove it in this patch, otherwise
+we will not know it is resolved :)
 
-> > diff --git a/common/module b/common/module
-> > index 39e4e793..03953fa1 100644
-> > --- a/common/module
-> > +++ b/common/module
-> > @@ -4,6 +4,8 @@
-> >  #
-> >  # Routines for messing around with loadable kernel modules
-> >  
-> > +source common/config
-> > +
-> 
-> Seems there's no need to source common/config here, as it's sourced in
-> common/rc, which is sourced by every test.
+Can you add that to the change and submit a new version?
 
-OK.
+Also, this should go to stable kernels, right?  Any idea how far back?
 
-> > +	local max_tries_max=$MODPROBE_PATIENT_RM_TIMEOUT_SECONDS
-<-- snip -->
+thanks,
 
-> > +	local max_tries=0
-<-- snip -->
-
-> > +	max_tries=$max_tries_max
-> > +
-> > +	while [[ "$max_tries" != "0" ]]; do
-> 
-> Use "$max_tries -ne 0" to check inters seems better.
-
-max_tries can be "forever", in which case this is -eq 0:
-
-$ foo="forever"; if [[ $foo -eq 0 ]]; then echo buggy; else echo ok; fi
-buggy
-
-> > +			refcnt_is_zero=1
-> > +			break
-> > +		fi
-> > +		sleep 1
-> > +		if [[ "$max_tries" == "forever" ]]; then
-> > +			continue
-> > +		fi
-> > +		let max_tries=$max_tries-1
-> > +	done
-> > +
-> > +	if [[ $refcnt_is_zero -ne 1 ]]; then
-> > +		echo "custom patient module removal for $module timed out waiting for refcnt to become 0 using timeout of $max_tries_max"
-> > +		return -1
-> > +	fi
-> > +
-> > +	# If we ran out of time but our refcnt check confirms we had
-> > +	# a refcnt of 0, just try to remove the module once.
-> > +	if [[ "$max_tries" == "0" ]]; then
-> 
-> $max_tries -eq 0
-
-Same issue.
-
-  Luis
+greg k-h
