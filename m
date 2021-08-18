@@ -2,90 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0787F3EFD0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4B23EFD12
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238280AbhHRGrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 02:47:45 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:45772 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238046AbhHRGro (ORCPT
+        id S238515AbhHRGsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 02:48:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238050AbhHRGsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 02:47:44 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 210661C0B77; Wed, 18 Aug 2021 08:47:09 +0200 (CEST)
-Date:   Wed, 18 Aug 2021 08:47:08 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc:     intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
-        kernel list <linux-kernel@vger.kernel.org>,
-        rodrigo.vivi@intel.com
-Subject: Re: 5.13-rc6 on thinkpad X220: graphics hangs with recent mainline
-Message-ID: <20210818064708.GB22282@amd>
-References: <20210624095359.GA29649@duo.ucw.cz>
- <162487567602.6944.6736788493261786550@jlahtine-mobl.ger.corp.intel.com>
+        Wed, 18 Aug 2021 02:48:18 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0E9C061764;
+        Tue, 17 Aug 2021 23:47:44 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id k65so3185763yba.13;
+        Tue, 17 Aug 2021 23:47:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=fIobYlmAUEQ+cWu8Nt94YkzjAjD9Udp6o8+WboS98Ek=;
+        b=ZyzLAxocL4Wr+34i2qh3FN/60ikyQuGOT7sFgQjZKDyQ656FelU2odUTRCicp+fYid
+         KrcHbezFt+lFUlmTafPQLStvV5nskdzxeX00pX0eexZMf9iGfSpyoHQq/xKV8KMZtnky
+         ASLhFYja4iE0ew61bcK6hwVncq7vRTbQWpRTinNta0RRoYDmX+puNbQjilXVpIQ6mEZU
+         RX0qbodkWFQ37hlQkE2IOkJ1js3JxyHW3ZyzgJ9JjFHBRXRX5s2VUNLWGQHlasv2GcDP
+         6Vg9dNxSzz6Kt4sB/eYt8iufUP6kUIMxt7dlh8qsGn3qA7RmEZ2WQ6uJdaVC0/Pu9/0H
+         CvUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=fIobYlmAUEQ+cWu8Nt94YkzjAjD9Udp6o8+WboS98Ek=;
+        b=sEuD7NUkXqfE78bSffUIhxvI53zD3lCNpYAJVu7XDzKiZtQG5OSa5762e/Cx2keh3x
+         rVdl8/yensYbZnuQd82iXCQwV7SIW1/+tBUCbdNgpHzkcBpklYn2CAf1/1AzLnBvUi4M
+         fkhDo+cBMVt2fRuRp0Oy2McdONdRzR9iARv3oA3cqw8c+soDktXrxzXFWW5CWxsWnktW
+         R9x/oAat+9+nRSMX1NVDMban03o5twE2mVejuL2q5Xt4mjgMKz1oWm4CpHxRmbGvcYju
+         RrjMuHqv1zL4Kt6IX4Q90IZ/11vuDAdA2jDkxd2CfiaSb8V4uNo9LHpTj8XHyad1bVKT
+         SuMw==
+X-Gm-Message-State: AOAM5327G7E/wb1xJ5e2q4XphaZjkQ2F0AHR4wlfUSEOFsD/M3afW7u4
+        y6B1fVpELaTa0PSBpYTdYhFA2OwyXfENIv82R4u3v1duEEk=
+X-Google-Smtp-Source: ABdhPJzfLXhoqdw/1DW6cYiBYZj8gtpZVYOnlIySCNHNTHt6bdBg0idowOTnsmEWaxsIUvauDRq+/orIguf++cC6Xa8=
+X-Received: by 2002:a25:b948:: with SMTP id s8mr9276071ybm.281.1629269263114;
+ Tue, 17 Aug 2021 23:47:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="IiVenqGWf+H9Y6IX"
-Content-Disposition: inline
-In-Reply-To: <162487567602.6944.6736788493261786550@jlahtine-mobl.ger.corp.intel.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Wed, 18 Aug 2021 08:47:37 +0200
+Message-ID: <CAKXUXMwgWfX8+OvY0aCwRNukencwJERAZzU7p4eOLXQ2zv6rAg@mail.gmail.com>
+Subject: Dependency of USB_DWC3_XILINX on ARCH_VERSAL
+To:     Manish Narani <manish.narani@xilinx.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Dear Manish,
 
---IiVenqGWf+H9Y6IX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit 84770f028fab ("usb: dwc3: Add driver for Xilinx platforms")
+adds the config USB_DWC3_XILINX, which depends on the config
+ARCH_VERSAL. However, the config ARCH_VERSAL is not defined in the
+current mainline kernel repository.
 
-Hi!
-> > I'm getting graphics problems with 5.13-rc:
-> >=20
-> > Debian 10.9, X, chromium and flightgear is in use. Things were more
-> > stable than this with previous kernels.
-> >=20
-> > Any ideas?
->=20
-> The error you are seeing:
->=20
-> > [185300.784992] i915 0000:00:02.0: [drm] Resetting chip for stopped hea=
-rtbeat on rcs0
-> > [185300.888694] i915 0000:00:02.0: [drm] fgfs[27370] context reset due =
-to GPU hang
->=20
-> That just indicates that the rendering took too long. It could be caused
-> by a change in how the application renders, userspace driver or i915. So
-> a previously on-the-edge-of-timeout operation may have got pushed beyond
-> the timeout, or the rendering genuinely got completely stuck.
->=20
-> If you only updated the kernel, not the application or userspace, could
-> you bisect the commit that introduced the behavior and report:
->=20
-> https://gitlab.freedesktop.org/drm/intel/-/wikis/How-to-file-i915-bugs
->=20
-> We have changes around this area, so would be helpful if you can bisect
-> the commit that started the behavior.
-
-So with more recent kernels, problem went away. Is it possible it was
-one of those "aborted fence aborts both application and X" problems?
+Will a definition of ARCH_VERSAL follow eventually (soon?) for
+mainline, is there just a further out-of-tree development for which
+the dependency is useful or is this just a mistake and can be
+corrected?
 
 Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
 
---IiVenqGWf+H9Y6IX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmEcrOwACgkQMOfwapXb+vIC3QCeJirTC9Cf5I7TcizH8NrCvzRG
-W34AnR3UwIkupopApaBERV9hTCObwWH6
-=3y6B
------END PGP SIGNATURE-----
-
---IiVenqGWf+H9Y6IX--
+Lukas
