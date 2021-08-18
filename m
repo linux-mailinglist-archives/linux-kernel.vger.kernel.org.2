@@ -2,52 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4043EFD2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09C483EFD30
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238511AbhHRGyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 02:54:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60484 "EHLO mail.kernel.org"
+        id S238629AbhHRGzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 02:55:09 -0400
+Received: from mga11.intel.com ([192.55.52.93]:36742 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238081AbhHRGyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 02:54:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B6F46102A;
-        Wed, 18 Aug 2021 06:53:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629269627;
-        bh=CxMKsxDYqwUnqNCXrRnyuVGO9hHFKOKXba74zUHX6VI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LT3d14VlL5m3/xFFEcyhWkHzF3xOsPsvMgs5mQQrLYQOWEMWIig3VKYHVRy/4RhdN
-         W6KKMNg7WVHknSjV7swx7uEpQVlOgWKR/5b6Ja20QTdecUpZIMMC9fXjehNjS7tIp6
-         CVEPPCmi/l92tXKhUe843iZamht9pQDfD+AOYCEI=
-Date:   Wed, 18 Aug 2021 08:53:45 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>, Ashok Raj <ashok.raj@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH 5.4 49/62] PCI/MSI: Enable and mask MSI-X early
-Message-ID: <YRyuefFT4N/y0plX@kroah.com>
-References: <20210816125428.198692661@linuxfoundation.org>
- <20210816125429.897761686@linuxfoundation.org>
- <20210817073655.GA15132@amd>
+        id S238550AbhHRGzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 02:55:06 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10079"; a="213143853"
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
+   d="scan'208";a="213143853"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 23:54:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
+   d="scan'208";a="531376788"
+Received: from dengjie-mobl1.ccr.corp.intel.com (HELO [10.239.154.58]) ([10.239.154.58])
+  by fmsmga002.fm.intel.com with ESMTP; 17 Aug 2021 23:54:13 -0700
+Subject: Re: linux-next: build warning after merge of the i2c tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wolfram Sang <wsa@the-dreams.de>
+Cc:     Conghui Chen <conghui.chen@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210818162959.4dfe60a0@canb.auug.org.au>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <1d80c5e6-5d5e-1714-78d8-8d2b9c6f8389@intel.com>
+Date:   Wed, 18 Aug 2021 14:54:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210817073655.GA15132@amd>
+In-Reply-To: <20210818162959.4dfe60a0@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 09:36:55AM +0200, Pavel Machek wrote:
-> Hi!
-> 
-> I'm sorry to report here, but 4.4 patches were not yet sent to the
-> lists (and it may be worth correcting before release).
 
-Yes, they are known to not be complete and incorrect at the moment,
-others have reported this to me.  I will be working on these later
-today, thanks.
+On 2021/8/18 14:29, Stephen Rothwell wrote:
+> Hi all,
+>
+> After merging the i2c tree, today's linux-next build (powerpc
+> allyesconfig) produced this warning:
+>
+> drivers/i2c/busses/i2c-virtio.c: In function 'virtio_i2c_probe':
+> drivers/i2c/busses/i2c-virtio.c:208:17: warning: unused variable 'pdev' [-Wunused-variable]
+>    208 |  struct device *pdev = vdev->dev.parent;
+>        |                 ^~~~
+>
+> Introduced by commit
+>
+>    8fb12751ac78 ("i2c: virtio: add a virtio i2c frontend driver")
 
-greg k-h
+
+Why we have this warning ? In commit 8fb12751ac78, the variable 'pdev' 
+was used in line 237.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git/commit/?h=i2c/for-next&id=8fb12751ac78d0a4ba3c604496ffc8dcd1bd6c31
+
