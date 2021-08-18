@@ -2,99 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A24E3EF76B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 03:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C893EF772
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 03:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237585AbhHRBTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 21:19:33 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:45733 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234975AbhHRBTa (ORCPT
+        id S237591AbhHRBUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 21:20:43 -0400
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:40618 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234828AbhHRBUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 21:19:30 -0400
-Received: by mail-ot1-f54.google.com with SMTP id r17-20020a0568302371b0290504f3f418fbso747664oth.12;
-        Tue, 17 Aug 2021 18:18:56 -0700 (PDT)
+        Tue, 17 Aug 2021 21:20:42 -0400
+Received: by mail-oi1-f176.google.com with SMTP id r5so2103218oiw.7;
+        Tue, 17 Aug 2021 18:20:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=YZdOGsqD+urHDCjHCdjJOrriltdQIdlSRawPeo4UfKY=;
-        b=oOPUOI5d1xOz3IELLdsI/vcM8sClRqqmZ2nLdHYchaO9nvzFaF1jNEzxpmnAT7YC4m
-         DfFfY2MXncbqxExI4qqSqOOBoaJj63pJPCtTfwxgRhDBpr0SzH8/evUlDkedXQeQI301
-         xYkakZJw17psrRt67tIl3RI6MATTiKPri3Il/8Z36ld0vvyfzzTzc1nav5Zrr7Hh9fD3
-         fSBBWP8nQROINjlG++nsQXUhawfhPwT/3cFGuy/3ZQLLEO9+JJCDaWoW18AFwDoeyLbr
-         evqSWQHucS8P6iIpJs0E0ju9JX0ik3AN9AqyY6/q7GizIV9PLI7txxGdIj7iTfqeSGyx
-         Y1GA==
-X-Gm-Message-State: AOAM530icb1rA7cZkCUBWEZBL2QVMqTVdnqjdfKLSJGUFZgTjrOtAFMs
-        9ym4tCLfKyPR7FVqsm0EWg==
-X-Google-Smtp-Source: ABdhPJxCGAdPpbh79Ogzr6eYEZ2NJhmJScyvJnK9cm/Gv67ucaQYIk6J4BFKmjXeg3omKzi1oTrPBQ==
-X-Received: by 2002:a9d:6490:: with SMTP id g16mr4882866otl.184.1629249536153;
-        Tue, 17 Aug 2021 18:18:56 -0700 (PDT)
+        bh=+z3ILV1fVhurBfPQC3iXBEQ2csZiT8sJKpTVvArWqCg=;
+        b=dCT2B6uD0xRv59J/Bhamr4Bf30ixKL85hJFnjcCr8r3MpApieeKtMBar0itEWdMQfR
+         gHYJcxTRozmkIiRBxHf2kyKEchGiHUQgXDVNO6++lvaf9Dz3zqrTcMqS2lu+l23/alzN
+         Ie8BsHJRIg7IcG1g8JpW7tSO+Zx4gvOVCPyZh3NEDNtgdzf5C1J7DcPiTVSicTDuFt0H
+         cw9aUrbeuW07EYGYZg1MVcxVptagP6Cq5zeH07n7DXzo/TKco75xtBnSgIU3WrHRIL6S
+         3yKV2rBtEt+3w3kNZf+izqy9YYLsCyIoGiFt4XoZw+AKPI/YeEwutHsbFz5Ql/aLsKan
+         8U7A==
+X-Gm-Message-State: AOAM533Goho6oyANbJ/H91TQ/VZVoJQeUY2cHgj/TeUpDlHT72+FZ3HX
+        h+iEnWKbgcUGa+gTNnshug==
+X-Google-Smtp-Source: ABdhPJxQxcNn3z/Tx3n1n06qxWShd5xmbfoiTFU7Ma9Drddtx9IGPWVaSH8gdzWvG7uNbFGtcCC5rg==
+X-Received: by 2002:a54:4714:: with SMTP id k20mr4720831oik.103.1629249607974;
+        Tue, 17 Aug 2021 18:20:07 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v11sm466308oto.22.2021.08.17.18.18.54
+        by smtp.gmail.com with ESMTPSA id o68sm735648ota.33.2021.08.17.18.20.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 18:18:55 -0700 (PDT)
-Received: (nullmailer pid 1180157 invoked by uid 1000);
-        Wed, 18 Aug 2021 01:18:54 -0000
-Date:   Tue, 17 Aug 2021 20:18:54 -0500
+        Tue, 17 Aug 2021 18:20:07 -0700 (PDT)
+Received: (nullmailer pid 1182094 invoked by uid 1000);
+        Wed, 18 Aug 2021 01:20:05 -0000
+Date:   Tue, 17 Aug 2021 20:20:05 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        David Jander <david@protonic.nl>
-Subject: Re: [PATCH v2 1/3] dt-bindings: can-controller: add support for
- termination-gpios
-Message-ID: <YRxf/gKvS3o+hq1/@robh.at.kernel.org>
-References: <20210817041306.25185-1-o.rempel@pengutronix.de>
- <20210817041306.25185-2-o.rempel@pengutronix.de>
+To:     Sam Shih <sam.shih@mediatek.com>
+Cc:     John Crispin <john@phrozen.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        devicetree@vger.kernel.org, Sean Wang <sean.wang@kernel.org>,
+        linux-watchdog@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-gpio@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Ryder Lee <Ryder.Lee@mediatek.com>,
+        Matt Mackall <mpm@selenic.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-serial@vger.kernel.org, Seiya Wang <seiya.wang@mediatek.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Fabien Parent <fparent@baylibre.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-mediatek@lists.infradead.org,
+        Hsin-Yi Wang <hsinyi@chromium.org>, linux-clk@vger.kernel.org
+Subject: Re: [v2,01/12] dt-bindings: clock: mediatek: document clk bindings
+ for mediatek mt7986 SoC
+Message-ID: <YRxgRZ5VyXSPqY42@robh.at.kernel.org>
+References: <20210817074557.30953-1-sam.shih@mediatek.com>
+ <20210817074557.30953-2-sam.shih@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210817041306.25185-2-o.rempel@pengutronix.de>
+In-Reply-To: <20210817074557.30953-2-sam.shih@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 06:13:04AM +0200, Oleksij Rempel wrote:
-> Some boards provide GPIO controllable termination resistor. Provide
-> binding to make use of it.
+On Tue, 17 Aug 2021 15:45:46 +0800, Sam Shih wrote:
+> This patch adds the binding documentation for topckgen, apmixedsys,
+> infracfg, and ethernet subsystem clocks.
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Signed-off-by: Sam Shih <sam.shih@mediatek.com>
 > ---
->  .../devicetree/bindings/net/can/can-controller.yaml      | 9 +++++++++
->  1 file changed, 9 insertions(+)
+> v2: remove compatiable string 'mt7986-sgmiisys'
 > 
-> diff --git a/Documentation/devicetree/bindings/net/can/can-controller.yaml b/Documentation/devicetree/bindings/net/can/can-controller.yaml
-> index 9cf2ae097156..298ce69a8208 100644
-> --- a/Documentation/devicetree/bindings/net/can/can-controller.yaml
-> +++ b/Documentation/devicetree/bindings/net/can/can-controller.yaml
-> @@ -13,6 +13,15 @@ properties:
->    $nodename:
->      pattern: "^can(@.*)?$"
->  
-> +  termination-gpios:
-> +    description: GPIO pin to enable CAN bus termination.
-
-maxItems: 1
-
-> +
-> +  termination-ohms:
-> +    description: The resistance value of the CAN bus termination resistor.
-> +    $ref: /schemas/types.yaml#/definitions/uint16-array
-
-Standard unit properties already have a type and are uint32.
-
-> +    minimum: 1
-> +    maximum: 65535
-> +
->  additionalProperties: true
->  
->  ...
-> -- 
-> 2.30.2
+> ---
+>  .../devicetree/bindings/arm/mediatek/mediatek,apmixedsys.txt    | 1 +
+>  .../devicetree/bindings/arm/mediatek/mediatek,ethsys.txt        | 1 +
+>  .../devicetree/bindings/arm/mediatek/mediatek,infracfg.txt      | 1 +
+>  .../devicetree/bindings/arm/mediatek/mediatek,sgmiisys.txt      | 2 ++
+>  .../devicetree/bindings/arm/mediatek/mediatek,topckgen.txt      | 1 +
+>  5 files changed, 6 insertions(+)
 > 
-> 
+
+Acked-by: Rob Herring <robh@kernel.org>
