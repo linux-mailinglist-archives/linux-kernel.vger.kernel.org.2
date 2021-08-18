@@ -2,110 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1443F0E8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 01:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2997B3F0E92
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 01:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234642AbhHRXSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 19:18:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35192 "EHLO mail.kernel.org"
+        id S234867AbhHRXTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 19:19:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229478AbhHRXSb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 19:18:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0C156109F;
-        Wed, 18 Aug 2021 23:17:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629328675;
-        bh=XKBZINRyW/UrTDUSlaarFzlfun8zrJZ24Pltkjo4uN4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=IhJFKk/9ugg3wqGXkhmjxxhShefQv6x4KyDDJrmm2+5Kzx5IX8RJDHqf+BanSIA20
-         Qy5EZtk3cHSTl77fcdKG+xEoJgAm+CHTJ44Ie0VDDbMp2UEI5GVmKK6iR9asqpdQnu
-         EK6eIa+VwwFEiVx2N0xjPRavM5QPyFfK+LhvP+ViAGUDHpeN3FHnSq/5FHV5o70Aee
-         y5zKdLFZVgC6GdCCGgkoRxPRVqYb3MJ0Cj3saxdz5OXCLIUgI1AyVTRcoiZMK2Z19K
-         Abjo1DRnkdGULlmvDu1w3BNCA6I/GDwLYUuUXwKwwQhDs3s9jdh8jFrL/u3sr0fgq0
-         4arVYXYtJYTQA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 73EBE5C04B1; Wed, 18 Aug 2021 16:17:55 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 16:17:55 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Marco Elver <elver@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: LKMM: Read dependencies of writes ordered by dma_wmb()?
-Message-ID: <20210818231755.GZ4126399@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <YRo58c+JGOvec7tc@elver.google.com>
- <20210816145945.GB121345@rowland.harvard.edu>
- <YRqfJz/lpUaZpxq7@elver.google.com>
- <20210816192109.GC121345@rowland.harvard.edu>
- <20210816205057.GN4126399@paulmck-ThinkPad-P17-Gen-1>
- <20210817122816.GA12746@willie-the-truck>
- <20210817135308.GO4126399@paulmck-ThinkPad-P17-Gen-1>
- <20210818113935.GA14107@willie-the-truck>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818113935.GA14107@willie-the-truck>
+        id S234791AbhHRXTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 19:19:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80EE36109F;
+        Wed, 18 Aug 2021 23:19:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1629328753;
+        bh=yTnTdUc2FJ+hnloFknl4xzYCBGT0SKFtOXGmR2H+Gcc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=g5WQ5XEKuqNkZvg501/hNDfCi1BlX7V+Oxm7YQsoC9u8SKDmi2hIfJkyZ7Dw5bByJ
+         aRsxrH+mToBBVxnAGWKoYrAU/Vb6aVRdYbk6Em/zj3tKecYvijnejNzbMKVLIWeX3A
+         6Ddg2jhv+0FOyxn8lVSeWg3SHzSJsJIIdT+d8NkI=
+Date:   Wed, 18 Aug 2021 16:19:12 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, Joe Perches <joe@perches.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>, linux-mm@kvack.org,
+        linux-kbuild@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 1/7] Compiler Attributes: Add __alloc_size() for
+ better bounds checking
+Message-Id: <20210818161912.f14722707e06de1f046e948d@linux-foundation.org>
+In-Reply-To: <20210818214021.2476230-2-keescook@chromium.org>
+References: <20210818214021.2476230-1-keescook@chromium.org>
+        <20210818214021.2476230-2-keescook@chromium.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 12:39:36PM +0100, Will Deacon wrote:
-> Hi Paul.
+On Wed, 18 Aug 2021 14:40:15 -0700 Kees Cook <keescook@chromium.org> wrote:
 
-Hello, Will,
-
-> On Tue, Aug 17, 2021 at 06:53:08AM -0700, Paul E. McKenney wrote:
-> > On Tue, Aug 17, 2021 at 01:28:16PM +0100, Will Deacon wrote:
-
-[ . . . ]
-
-> > > Ignore the bits about mmiowb() as we got rid of that.
-> > 
-> > Should the leftovers in current mainline be replaced by wmb()?  Or are
-> > patches to that effect on their way in somewhere?
+> GCC and Clang can use the "alloc_size" attribute to better inform the
+> results of __builtin_object_size() (for compile-time constant values).
+> Clang can additionally use alloc_size to inform the results of
+> __builtin_dynamic_object_size() (for run-time values).
 > 
-> I already got rid of the non-arch usage of mmiowb(), but I wasn't bravei
-> enough to change the arch code as it may well be that they're relying on
-> some specific instruction semantics.
+> Because GCC sees the frequent use of struct_size() as an allocator size
+> argument, and notices it can return SIZE_MAX (the overflow indication),
+> it complains about these call sites may overflow (since SIZE_MAX is
+> greater than the default -Walloc-size-larger-than=PTRDIFF_MAX). This
+> isn't helpful since we already know a SIZE_MAX will be caught at run-time
+> (this was an intentional design). Instead, just disable this check as
+> it is both a false positive and redundant. (Clang does not have this
+> warning option.)
 > 
-> Despite my earlier comment, mmiowb() still exists, but only as a part of
-> ARCH_HAS_MMIOWB where it is used to add additional spinlock ordering so
-> that the rest of the kernel doesn't need to use mmiowb() at all.
-> 
-> So I suppose for these:
-> 
-> > arch/mips/kernel/gpio_txx9.c:	mmiowb();
-> > arch/mips/kernel/gpio_txx9.c:	mmiowb();
-> > arch/mips/kernel/gpio_txx9.c:	mmiowb();
-> > arch/mips/kernel/irq_txx9.c:	mmiowb();
-> > arch/mips/loongson2ef/common/bonito-irq.c:	mmiowb();
-> > arch/mips/loongson2ef/common/bonito-irq.c:	mmiowb();
-> > arch/mips/loongson2ef/common/mem.c:		mmiowb();
-> > arch/mips/loongson2ef/common/pm.c:	mmiowb();
-> > arch/mips/loongson2ef/lemote-2f/reset.c:	mmiowb();
-> > arch/mips/loongson2ef/lemote-2f/reset.c:	mmiowb();
-> > arch/mips/loongson2ef/lemote-2f/reset.c:	mmiowb();
-> > arch/mips/loongson2ef/lemote-2f/reset.c:	mmiowb();
-> > arch/mips/loongson2ef/lemote-2f/reset.c:	mmiowb();
-> > arch/mips/pci/ops-bonito64.c:	mmiowb();
-> > arch/mips/pci/ops-loongson2.c:	mmiowb();
-> > arch/mips/txx9/generic/irq_tx4939.c:	mmiowb();
-> > arch/mips/txx9/generic/setup.c:	mmiowb();
-> > arch/mips/txx9/rbtx4927/irq.c:	mmiowb();
-> > arch/mips/txx9/rbtx4938/irq.c:	mmiowb();
-> > arch/mips/txx9/rbtx4938/irq.c:	mmiowb();
-> > arch/mips/txx9/rbtx4938/setup.c:	mmiowb();
-> > arch/mips/txx9/rbtx4939/irq.c:	mmiowb();
-> 
-> we could replace mmiowb() with iobarrier_w().
+> ...
+>
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1078,9 +1078,13 @@ KBUILD_CFLAGS += $(call cc-disable-warning, stringop-overflow)
+>  # Another good warning that we'll want to enable eventually
+>  KBUILD_CFLAGS += $(call cc-disable-warning, restrict)
+>  
+> -# Enabled with W=2, disabled by default as noisy
+>  ifdef CONFIG_CC_IS_GCC
+> +# Enabled with W=2, disabled by default as noisy
+>  KBUILD_CFLAGS += -Wno-maybe-uninitialized
+> +
+> +# The allocators already balk at large sizes, so silence the compiler
+> +# warnings for bounds checks involving those possible values.
+> +KBUILD_CFLAGS += -Wno-alloc-size-larger-than
+>  endif
+>  
+>  # disable invalid "can't wrap" optimizations for signed / pointers
 
-Not having MIPS hardware at my disposal, I will leave these to those
-who do.  I would suggest adding iobarrier_*() to memory-barriers.txt,
-but they appear to be specific to MIPS and PowerPC.
+Makefile has changed.  I did this:
 
-							Thanx, Paul
+--- a/Makefile~compiler-attributes-add-__alloc_size-for-better-bounds-checking
++++ a/Makefile
+@@ -1003,6 +1003,12 @@ KBUILD_CFLAGS += $(call cc-disable-warni
+ # Enabled with W=2, disabled by default as noisy
+ KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
+ 
++ifdef CONFIG_CC_IS_GCC
++# The allocators already balk at large sizes, so silence the compiler
++# warnings for bounds checks involving those possible values.
++KBUILD_CFLAGS += -Wno-alloc-size-larger-than
++endif
++
+ # disable invalid "can't wrap" optimizations for signed / pointers
+ KBUILD_CFLAGS	+= -fno-strict-overflow
+ 
+_
+
