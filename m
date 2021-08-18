@@ -2,70 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A86F3F0DF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 00:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D83693F0E10
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 00:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234498AbhHRWPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 18:15:34 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:44644 "EHLO gloria.sntech.de"
+        id S234644AbhHRWUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 18:20:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234106AbhHRWPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 18:15:33 -0400
-Received: from [212.185.68.41] (helo=phil.client.m3-hotspots.de)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mGTpj-0001gc-9s; Thu, 19 Aug 2021 00:14:51 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Jon Lin <jon.lin@rock-chips.com>, linux-spi@vger.kernel.org
-Cc:     Heiko Stuebner <heiko@sntech.de>, hjc@rock-chips.com,
-        linux-rockchip@lists.infradead.org, p.yadav@ti.com,
-        sboyd@kernel.org, macroalpha82@gmail.com,
-        linux-arm-kernel@lists.infradead.org, yifeng.zhao@rock-chips.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        broonie@kernel.org, linux-mtd@lists.infradead.org,
-        sugar.zhang@rock-chips.com, jbx6244@gmail.com, robh+dt@kernel.org,
-        linux-clk@vger.kernel.org, mturquette@baylibre.com
-Subject: Re: (subset) [PATCH v13 0/6] Add Rockchip SFC(serial flash controller) support
-Date:   Thu, 19 Aug 2021 00:14:48 +0200
-Message-Id: <162932487840.2867187.12225818198624183651.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210812134546.31340-1-jon.lin@rock-chips.com>
-References: <20210812134546.31340-1-jon.lin@rock-chips.com>
-MIME-Version: 1.0
+        id S234106AbhHRWUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 18:20:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 976826103A;
+        Wed, 18 Aug 2021 22:20:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629325205;
+        bh=bqPkbAeTMqgeqxawU9F02qdmd7fXTAn8RsMvsk4nVng=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=YDFrl/kA78wWRsT/USYoTIzatOADCn8Te2TSCb3wTIPS1M+s4zL8TUytpMysB3svg
+         uwvDqdlWt1nbf0Z3N5xirv+DBFnZacxD6J93k/jMSf6ZI+y2AQOsMhP8oyDH3IVRS4
+         MOLXEwSCkd8L0HU++50VQhTzDGxpG3aksZVbCDlk0ZdWz1MKeqRMpub1c7YOFNlSJD
+         LkYwjVJuVIqBqnCpQwljUbXSzDm173yB6ZJiq1MthG3aMdZhpnDJdqUf+agrH21BNj
+         Z2FR5qoi0UsSpPLIMDGCzVl5i3Xr0oVaX+wufYBHnjVbJvYBEzd1L5Rz4HgImvZRYN
+         YPu39E07qTqQA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8A688609EB;
+        Wed, 18 Aug 2021 22:20:05 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net/mlx4: Use ARRAY_SIZE to get an array's size
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162932520556.31273.6111065884005742758.git-patchwork-notify@kernel.org>
+Date:   Wed, 18 Aug 2021 22:20:05 +0000
+References: <20210817121106.44189-1-wangborong@cdjrlc.com>
+In-Reply-To: <20210817121106.44189-1-wangborong@cdjrlc.com>
+To:     Jason Wang <wangborong@cdjrlc.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, tariqt@nvidia.com,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Aug 2021 21:45:40 +0800, Jon Lin wrote:
-> Changes in v13:
-> - Provide independent interfaces to obtain RX TX FIFO status respectively
-> - Add more debug information
-> - Depress DMA limitation
+Hello:
+
+This patch was applied to netdev/net-next.git (refs/heads/master):
+
+On Tue, 17 Aug 2021 20:11:06 +0800 you wrote:
+> The ARRAY_SIZE macro is defined to get an array's size which is
+> more compact and more formal in linux source. Thus, we can replace
+> the long sizeof(arr)/sizeof(arr[0]) with the compact ARRAY_SIZE.
 > 
-> Changes in v12:
-> - Remove useless oneOf lable
-> - Add sfc controller discription
-> - Remove the limitation of SFC_MIN_SPEED_HZ
-> - Add IRQ_NONE method for irq handler
-> - Add SPI_MASTER_HALF_DUPLEX flags
-> - Add sfc interrupt mask bits and status register initial progress
-> 
-> [...]
+> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx4/qp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied, thanks!
+Here is the summary with links:
+  - net/mlx4: Use ARRAY_SIZE to get an array's size
+    https://git.kernel.org/netdev/net-next/c/19b8ece42c56
 
-[3/6] arm64: dts: rockchip: Add SFC to PX30
-      commit: c68defec1585819af54f011fa4d47892b38fb74a
-[4/6] arm: dts: rockchip: Add SFC to RV1108
-      commit: 9d508827c7939242e8ed6b06f66aa87d9f7ea832
-[5/6] arm64: dts: rockchip: Add SFC to RK3308
-      commit: ab438ba2dc6b7bd3dce8e3c8b0f131905cd133d9
-[6/6] arm64: dts: rockchip: Enable SFC for Odroid Go Advance
-      commit: f9576999b0aef399e7cb1065787032d42198c362
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Best regards,
--- 
-Heiko Stuebner <heiko@sntech.de>
+
