@@ -2,146 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A7423F0118
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6A43F0129
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 12:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233384AbhHRJ61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:58:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233093AbhHRJ6R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:58:17 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD54C0613D9
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:57:43 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mGIJV-0003Ak-CF; Wed, 18 Aug 2021 11:56:49 +0200
-Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:ed04:8488:5061:54d4])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 08E5E669A16;
-        Wed, 18 Aug 2021 09:56:36 +0000 (UTC)
-Date:   Wed, 18 Aug 2021 11:56:35 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislaw Gruszka <stf_xl@wp.pl>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Mordechay Goodstein <mordechay.goodstein@intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-        linux-crypto@vger.kernel.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-can@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 2/5] treewide: Replace open-coded flex arrays in unions
-Message-ID: <20210818095635.tm42ctkm6aydjr6g@pengutronix.de>
-References: <20210818081118.1667663-1-keescook@chromium.org>
- <20210818081118.1667663-3-keescook@chromium.org>
+        id S233399AbhHRKCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 06:02:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39250 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232918AbhHRKCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 06:02:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70B266108F;
+        Wed, 18 Aug 2021 10:01:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629280893;
+        bh=oQMoWQKsPLRFy5ol6QwXhl5CVUB3KvroKJooUJmMJRA=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
+        b=PrsCkjXgRAtvtzF/5dqvIXqpTnKxnAi5YO8CWkU91eJY0rt0VQTE6YNvxR2YWhGY/
+         uIt3M9h7wBEpfOBk/Jz1oNuHJXy7nZ6KARIEURwFIfbyuPcbV9chX2jUP6L+y1yR4k
+         BqzSUkwOJjcxnj7Uj9SA1HjIVU3uaM61lawJ0dcWthCqedqJkt6D8PwOxr7F/2qwCV
+         T1eoFDLUTWe6K4nWl8yc6GQifiW+r/XE3Ww9jL4oiVjevcvykzH20rDiEre6b+agfl
+         73vqkZYa0HPnLwFSbmNZzPPTzOTkgo5Va1PM3D+LVG7gb7dn2sYJnjPzJiFo1ogJIF
+         SZA4MzaTNvr2A==
+References: <1624882097-23265-1-git-send-email-sanm@codeaurora.org>
+ <1624882097-23265-7-git-send-email-sanm@codeaurora.org>
+ <YNo97HQXmYjUNz/C@google.com> <87fswjzx52.fsf@kernel.org>
+ <5ecee092-dba9-071c-940b-55e16f4d7a90@codeaurora.org>
+User-agent: mu4e 1.6.3; emacs 27.2
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Sandeep Maheswaram <sanm@codeaurora.org>
+Cc:     Matthias Kaehlcke <mka@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pratham Pratap <prathampratap@codeaurora.org>
+Subject: Re: [PATCH v8 6/6] usb: dwc3: qcom: Keep power domain on to support
+ wakeup
+Date:   Wed, 18 Aug 2021 12:56:56 +0300
+In-reply-to: <5ecee092-dba9-071c-940b-55e16f4d7a90@codeaurora.org>
+Message-ID: <87sfz7f4w6.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="h4irlmrxob7c5btq"
-Content-Disposition: inline
-In-Reply-To: <20210818081118.1667663-3-keescook@chromium.org>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---h4irlmrxob7c5btq
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-On 18.08.2021 01:11:15, Kees Cook wrote:
-> diff --git a/drivers/net/can/usb/etas_es58x/es581_4.h b/drivers/net/can/u=
-sb/etas_es58x/es581_4.h
-> index 4bc60a6df697..8657145dc2a9 100644
-> --- a/drivers/net/can/usb/etas_es58x/es581_4.h
-> +++ b/drivers/net/can/usb/etas_es58x/es581_4.h
-> @@ -192,7 +192,7 @@ struct es581_4_urb_cmd {
->  		struct es581_4_rx_cmd_ret rx_cmd_ret;
->  		__le64 timestamp;
->  		u8 rx_cmd_ret_u8;
-> -		u8 raw_msg[0];
-> +		flex_array(u8 raw_msg);
->  	} __packed;
-> =20
->  	__le16 reserved_for_crc16_do_not_use;
-> diff --git a/drivers/net/can/usb/etas_es58x/es58x_fd.h b/drivers/net/can/=
-usb/etas_es58x/es58x_fd.h
-> index ee18a87e40c0..3053e0958132 100644
-> --- a/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> +++ b/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> @@ -228,7 +228,7 @@ struct es58x_fd_urb_cmd {
->  		struct es58x_fd_tx_ack_msg tx_ack_msg;
->  		__le64 timestamp;
->  		__le32 rx_cmd_ret_le32;
-> -		u8 raw_msg[0];
-> +		flex_array(u8 raw_msg[]);
->  	} __packed;
+Sandeep Maheswaram <sanm@codeaurora.org> writes:
+>> This means that in order for glue_suspend() to run, dwc3 has to suspend
+>> first and xhci has to suspend before dwc3.
+>>
+>> For example, in the suspend call above, qcom (the glue) is directly
+>> accessing dwc3 core data, which is incorrect. It looks like we want to
+>> know if the PHY is not powered off and if it isn't, then we want to
+>> change the power domain ACTIVE_WAKEUP flag. Now, phy_power_off is false
+>> whenever any of xHCI's children enable USB wakeup.
+>>
+>> It seems like we need to way to generically propagate that knowledge up
+>> the parent tree. I.e., a parent needs to know if its child is wakeup
+>> capable, then dwc3 could, in its suspend routine:
+>>
+>> static int dwc3_suspend(struct device *dev)
+>> {
+>> 	/* ... */
+>>
+>> 	if (device_children_wakeup_capable(dev))
+>>          	device_enable_wakeup(dev);
+>>
+>> 	/* ... */
+>> }
+>
+> Can we use like=C2=A0 this device_may_wakeup(&dwc->xhci->dev) to check if
+> children is wakeup capable like below ?
 
-This doesn't look consistent, what's preferred?
+that really doesn't sound like a good idea, IMHO. We're still passing
+through layers of abstraction without anyone's knowledge :-)
 
-u8 raw_msg[0];  -> flex_array(u8 raw_msg);
- - or-
-                -> flex_array(u8 raw_msg[]);
+It looks to me like we're missing some infrastructure in the wakeup code
+so parents can make decisions based on the state of their children.
 
-regards,
-Marc
+>> and similarly for qcom glue:
+>>
+>> static int dwc3_qcom_suspend(struct device *dev)
+>> {
+>> 	/* ... */
+>>
+>>
+>> 	if (device_children_wakeup_capable(dev)) {
+>>          	device_enable_wakeup(dev);
+>> 		genpd->flags |=3D GENPD_FLAG_ACTIVE_WAKEUP;
+>>          }
+>>
+>> 	/* ... */
+>> }
+>>
+>> It also seems plausible that this could be done at driver core and
+>> completely hidden away from drivers.
+>
+> And in qcom glue like this
+>
+> static int dwc3_qcom_suspend(struct dwc3_qcom *qcom)
+> {
+>
+> /* ... */
+>
+> =C2=A0=C2=A0=C2=A0 struct dwc3 *dwc =3D platform_get_drvdata(qcom->dwc3);
+
+you see, here there's an assumption that the platform data is still
+valid and not some bogus dangling pointer. There's also an assumption
+that the type is struct dwc3 (which is unlikely to change, but still).
 
 --=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---h4irlmrxob7c5btq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEc2VEACgkQqclaivrt
-76kXUQf/cn+R4mRgon+iBBoNOjSG6Xpa5C1kWsnyfyJAQq9geHgAtcyoTTot+9QH
-bjo6l3vIxXSY85B6NbV+TQFuedtSpFYkRQJgWzMG/eIuwHZ7Buuf8uK5C5MESqwm
-PJDEl2lZpKA7MtM2gMtvmhElNsv1Nr4FqMEOmCHs5LeQQ8ddsbJ0Ab7X7ffQ4SRu
-UgMoqqUUFxReCmF+pmoxDC5uHBbovnw/hYPulDH6AN7jj8ml9/lPLuJKfBnyYGI5
-jYTHTlc4+VnN6a7NJ7V9DhTCncLaFjXVFFxoQBWYgpetIV/eWwu2WwrrYhyrvEK0
-cORmz7LG97TWWd3NSNNy9j7XKs0y+Q==
-=UYoj
------END PGP SIGNATURE-----
-
---h4irlmrxob7c5btq--
+balbi
