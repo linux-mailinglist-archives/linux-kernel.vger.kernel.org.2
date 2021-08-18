@@ -2,97 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 683933F09E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E9283F09DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 19:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231926AbhHRREl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 13:04:41 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:33539 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbhHRREP (ORCPT
+        id S231402AbhHRRFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 13:05:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229784AbhHRRFb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 13:04:15 -0400
-Received: by mail-ot1-f48.google.com with SMTP id 61-20020a9d0d430000b02903eabfc221a9so4975546oti.0;
-        Wed, 18 Aug 2021 10:03:40 -0700 (PDT)
+        Wed, 18 Aug 2021 13:05:31 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC42C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 10:04:56 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id b10so6397509eju.9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 10:04:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Si7U6HwgT/s1/0DUykgf8Mxxnbx+qV+oZXkcnS5dKHQ=;
+        b=AChYjDKZR7xEN/R81QQ9I2hRsbNGAI7NqftHe4v8mPniSSGnl/OrNvA5bEeVQApm+O
+         ibB1uQgvIRSxkzQx4SECL93cgAfhppiDnrNRpIl1zsFnwkqprUOkuVE5Z0bsNwqKy1DK
+         AQpCFTY1JVxMWMxVOUFVrPpc/+axmg4D1Mp12sDjducva8Umbc439ZhN5lsokrQEfN+V
+         wCjzQ268htspW9T9IGu5U9JiHo+mrVh/6a43zfQdeG2u+2zlni0wJ81QYsD/oM5TJ0tx
+         LCAn5PA/Rl5fV175bfdLlDt3KCgvLpCyvpNcj5pFtAsB1cTNaA5If82yuAZE8eBRavgZ
+         wdug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Eo6vbBN+sMIqmgFNP0NRrf/cRm9sBhxTH+Nv1PO+yrI=;
-        b=CUpaNWD1/SDH6PT71mAISVzjRvb7RsVh0ru9k4l57Y1oJIEQccN6sn+veS49ECRj5M
-         pxqr0Ec1/c2KJ4n+qHKRg7IgIhFCQHpzrSHyjeG7079COzDcUbKBYKrlV4GXnWmedB6d
-         GxjoyTfah2zDrxdgO5CrwcFHQHNrkP6ojPNvElF8+ooSs/yDH+lSKaTnWKyK74AuxHPX
-         yt0ndQlxRQxhbFXtVHMcuoY2FyCkvgR86iAnmSK5Wr6FWaoBe8zoNQueMoA0RNvY/J3l
-         h9/q4eZy/VW8YqoYMIe8WQ0rVwI7eGI0GOjw/KOBHsFlKi378O+WIkNzMG05/yjxwWkQ
-         L1QQ==
-X-Gm-Message-State: AOAM530BhmPW9bVUM9IIyo90KfPkRtVIqWEq5XFoqt3XHEgWNv0wmnuW
-        xZmJd1zC3vrlQlHtc4OqQA==
-X-Google-Smtp-Source: ABdhPJzwGHBEWhUDKwV/R8H1tRothaXrBmNH+xzvQTSnuAeylgwBkyZG7YvOlOS2AOuUkSiraaN5bA==
-X-Received: by 2002:a9d:6c4c:: with SMTP id g12mr7671344otq.298.1629306220319;
-        Wed, 18 Aug 2021 10:03:40 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id w14sm117365otl.58.2021.08.18.10.03.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 10:03:39 -0700 (PDT)
-Received: (nullmailer pid 2762303 invoked by uid 1000);
-        Wed, 18 Aug 2021 17:03:38 -0000
-Date:   Wed, 18 Aug 2021 12:03:38 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sinthu Raja <sinthu.raja@mistralsolutions.com>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>, Suman Anna <s-anna@ti.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nishanth Menon <nm@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Sinthu Raja <sinthu.raja@ti.com>
-Subject: Re: [PATCH V1] dt-bindings: remoteproc: k3-dsp: Update example to
- remove board specific
-Message-ID: <YR09antwlqven6fD@robh.at.kernel.org>
-References: <20210818074030.1877-1-sinthu.raja@ti.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Si7U6HwgT/s1/0DUykgf8Mxxnbx+qV+oZXkcnS5dKHQ=;
+        b=g+Yiolw4Zmmn3/uS9R0urnIPJYuVR8V98xcBrakRRLw5SindvTNh3d4qVlUI/ifNdG
+         zM3zLq0P3jY5vNuMWmLY9zzCvcPlyzM3af3xjwk5WO+T/NhBdaScyZOwVjbY0Wbg3Jwo
+         qgbEEadZJ/dgRIB/TSObVbCj8b04+bQwhaj/AcLoZrVM83KoSLa7ZQ9P33oEvidzxTeS
+         gxTYoRCi/2TgpAu8xOWyyIH6Yi2I41mDjARrB8ozwr20yqG2S+qLZE/XB99wJl2Rhrzr
+         fQ5FUFQNCS86v0PF5DbHBB+GZdqgDw915FOMqLsIxNc+rBBpJB310dSY9gNk82/9C9+e
+         rJWw==
+X-Gm-Message-State: AOAM532oAL7wvMD70HJi6hnoBu808nNnSnyMLRo8K9kF/Akue+DZ6T06
+        GNLMdjb1yKdqwgz/JB5NZCGxZgAjU97InIAeeF0=
+X-Google-Smtp-Source: ABdhPJwsmFeTJicZf4gc/8UKoIhnK1UkHukA04WmnpY7zZI030kGbN9o3u27fYTEth+eye5/qhxeuEakJIo/vBLukbg=
+X-Received: by 2002:a17:906:b890:: with SMTP id hb16mr10503469ejb.383.1629306294582;
+ Wed, 18 Aug 2021 10:04:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818074030.1877-1-sinthu.raja@ti.com>
+References: <20210816180909.3603-1-shy828301@gmail.com> <20210818063042.GA2310427@u2004>
+ <dd225992-ec89-a911-b318-f4a91c70ed42@redhat.com> <20210818075316.GB501393@hori.linux.bs1.fc.nec.co.jp>
+ <c0082d37-dd36-5d83-f759-cf05a9e00b77@redhat.com>
+In-Reply-To: <c0082d37-dd36-5d83-f759-cf05a9e00b77@redhat.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 18 Aug 2021 10:04:42 -0700
+Message-ID: <CAHbLzkq7M5aDOxmgHGkoh95bC6DfZqQgdMSKS_m-REM4WbYEGw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm: hwpoison: don't drop slab caches for offlining
+ non-LRU page
+To:     David Hildenbrand <david@redhat.com>
+Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        "osalvador@suse.de" <osalvador@suse.de>,
+        "tdmackey@twitter.com" <tdmackey@twitter.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 01:10:30PM +0530, Sinthu Raja wrote:
-> The example includes a board-specific compatible property, but developers
-> need to add the board name each time when a new board is added to the K3
-> J721E SoC list. This grows the compatible string-list. So, drop the
-> board-specific compatible string and add cbass_main as a parent node to
-> avoid parent node and child node address-cells mismatch error.
-> 
-> Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
+On Wed, Aug 18, 2021 at 12:55 AM David Hildenbrand <david@redhat.com> wrote=
+:
+>
+> On 18.08.21 09:53, HORIGUCHI NAOYA(=E5=A0=80=E5=8F=A3 =E7=9B=B4=E4=B9=9F)=
+ wrote:
+> > On Wed, Aug 18, 2021 at 09:24:01AM +0200, David Hildenbrand wrote:
+> > ...
+> >>
+> >> Might we want to add a TODO in the code? We have a similar one in
+> >> mm/page_isolation.c:set_migratetype_isolate() and it's certainly a rem=
+inder
+> >> that something of value is missing.
+> >
+> > Yes, that will be helpful.  The below's what's in my mind, but if someo=
+ne
+> > has better idea, that's fine.
+> >
+> > @@ -296,11 +296,9 @@ void shake_page(struct page *p, int access)
+> >       }
+> >
+> >       /*
+> > -      * Only call shrink_node_slabs here (which would also shrink
+> > -      * other caches) if access is not potentially fatal.
+> > +      * TODO: Could shrink slab caches here if a lightweight range-bas=
+ed
+> > +      * shrinker will be available.
+> >        */
+> > -     if (access)
+> > -             drop_slab_node(page_to_nid(p));
+> >   }
+> >   EXPORT_SYMBOL_GPL(shake_page);
+>
+> Just what I had in mind, thanks!
 
-The author and S-o-b emails don't match.
+Fine to me, will add this in v2.
 
-> ---
-> Changes in V1:
-> Fixed alignment issue which caused the yaml parse error.
-> 
->  .../devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml     | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
-> index 6070456a7b67..e44a9397b8db 100644
-> --- a/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
-> +++ b/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
-> @@ -132,10 +132,8 @@ required:
->  unevaluatedProperties: false
->  
->  examples:
-> -  - |
-> -    / {
-> -        model = "Texas Instruments K3 J721E SoC";
-> -        compatible = "ti,j721e";
-> +  - |+
-> +    cbass_main {
->          #address-cells = <2>;
->          #size-cells = <2>;
->  
-> -- 
-> 2.31.1
-> 
-> 
+>
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
+>
