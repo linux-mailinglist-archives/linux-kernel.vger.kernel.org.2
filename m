@@ -2,278 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 123C33EFD58
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2633B3EFD5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238116AbhHRHHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 03:07:24 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:53754
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238144AbhHRHHV (ORCPT
+        id S238103AbhHRHIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 03:08:00 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:39364 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238116AbhHRHHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 03:07:21 -0400
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 029C54066C
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 07:06:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629270407;
-        bh=LPqSr7VKhV+o4G9luIWN38BQmsj4SRz8d1JgeXqOLWg=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=iA5Ll1wJnqxC8P/olYm8SF7KjC0sq2tEEkb8Qqs38O9a+WnOOMBHvnT+P1ZQzaZrm
-         sAL0DJxnwn21vt/pD3Qa7qOMO+YtkaLMifUlzXUPP59mUBeC/pV0kc2na8fgkM6j3q
-         xxs9sNT/RG7ClvwmFzefCRR/ehKeck8ppwfmPUvEOiQ1j65athwqGUoaT568SYv4v1
-         F4OMVyKYXmaXzqx0WyqE7Tis1Uftt9vordcvUzGOTDMcDgjzRjsJkiH2LtwfHPDVSR
-         JEg7ItAzzDe54SUaonBTbc1Qv7wPYmJ8GY25LlVUvJPomWwAj3Fw1Qqu+6+ayhQAqp
-         B5Wkhhc+e+FMA==
-Received: by mail-ed1-f72.google.com with SMTP id b25-20020a05640202d9b02903be7281a80cso562448edx.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 00:06:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LPqSr7VKhV+o4G9luIWN38BQmsj4SRz8d1JgeXqOLWg=;
-        b=SLnlSpHul75dijmctfutLszr2becQt0Qx6i9vD4IuPLwsPxybFoMEg6QA4rV8Ju3Uf
-         joWF7oZ9IzKHusohCU1dxdqZvGCYE6nAVKDwJ0SRUixzrBX3e40T/y7q1ehp501o3XEj
-         R6q95I1akL/3SSlIznptkfpKaOvh5ICr2uJahpZ/UzjAx8kok2GDBpYVS5ZNz9nny5I6
-         dcJBMBveVWwRidARd9YQY1T6BaciNoxeENb45ZyYi8bZIiWzHh2oXcs6mqmurC2EeonQ
-         Cl5xZQGyS+flwdUGaCFy2jDd9FjohnWS0AmLZgYveZP8wFq8yGlTKwcygfzx8AHvLOkv
-         Cpcw==
-X-Gm-Message-State: AOAM532msCRQFKtIanic5anM8ZyJVK1dHMK76oXOb7Mi5xBIMgB94gKd
-        Gg2go8AN46XkImLFcqUpVdOQnEt1ur+v4L5kf9vqLCwVz18AFNmho9urJEMBC3RDfyyYB+XKhev
-        833cWvb2+Z2cR5LBfZLPGmDeEIcMMj4gcm3j+BdfJYQ==
-X-Received: by 2002:aa7:c6c3:: with SMTP id b3mr8412484eds.217.1629270406740;
-        Wed, 18 Aug 2021 00:06:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxIP8ALrIFQFr2qkCed/zA2EZjc0JpdVnSMuAfmtHQRX4kmakYEL2mTSFFn+d/rQWB/nqdT/w==
-X-Received: by 2002:aa7:c6c3:: with SMTP id b3mr8412450eds.217.1629270406515;
-        Wed, 18 Aug 2021 00:06:46 -0700 (PDT)
-Received: from [192.168.8.102] ([86.32.42.198])
-        by smtp.gmail.com with ESMTPSA id r27sm2059367edb.66.2021.08.18.00.06.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 00:06:46 -0700 (PDT)
-Subject: Re: [PATCH v2 6/8] dt-bindings: clock: samsung: convert Exynos AudSS
- to dtschema
-To:     Rob Herring <robh@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sam Protsenko <semen.protsenko@linaro.org>
-References: <20210810093145.26153-1-krzysztof.kozlowski@canonical.com>
- <20210810093145.26153-7-krzysztof.kozlowski@canonical.com>
- <YRwbYiS7VTd/NdS5@robh.at.kernel.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <098578c6-ca2c-2c4b-d5c6-657abba35c4f@canonical.com>
-Date:   Wed, 18 Aug 2021 09:06:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 18 Aug 2021 03:07:50 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R991e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UjfS-t9_1629270434;
+Received: from e18g09479.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UjfS-t9_1629270434)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 18 Aug 2021 15:07:14 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     linux-erofs@lists.ozlabs.org, Chao Yu <chao@kernel.org>,
+        Liu Bo <bo.liu@linux.alibaba.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peng Tao <tao.peng@linux.alibaba.com>,
+        Eryu Guan <eguan@linux.alibaba.com>,
+        Liu Jiang <gerry@linux.alibaba.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: [PATCH 1/2] erofs: introduce chunk-based file on-disk format
+Date:   Wed, 18 Aug 2021 15:07:12 +0800
+Message-Id: <20210818070713.4437-1-hsiangkao@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.4
 MIME-Version: 1.0
-In-Reply-To: <YRwbYiS7VTd/NdS5@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/08/2021 22:26, Rob Herring wrote:
-> On Tue, Aug 10, 2021 at 11:31:43AM +0200, Krzysztof Kozlowski wrote:
->> Convert Samsung Exynos Audio SubSystem clock controller bindings to DT
->> schema format using json-schema.
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->> ---
->>  .../bindings/clock/clk-exynos-audss.txt       | 103 ------------------
->>  .../clock/samsung,exynos-audss-clock.yaml     |  79 ++++++++++++++
->>  2 files changed, 79 insertions(+), 103 deletions(-)
->>  delete mode 100644 Documentation/devicetree/bindings/clock/clk-exynos-audss.txt
->>  create mode 100644 Documentation/devicetree/bindings/clock/samsung,exynos-audss-clock.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/clock/clk-exynos-audss.txt b/Documentation/devicetree/bindings/clock/clk-exynos-audss.txt
->> deleted file mode 100644
->> index 6030afb10b5c..000000000000
->> --- a/Documentation/devicetree/bindings/clock/clk-exynos-audss.txt
->> +++ /dev/null
->> @@ -1,103 +0,0 @@
->> -* Samsung Audio Subsystem Clock Controller
->> -
->> -The Samsung Audio Subsystem clock controller generates and supplies clocks
->> -to Audio Subsystem block available in the S5PV210 and Exynos SoCs. The clock
->> -binding described here is applicable to all SoCs in Exynos family.
->> -
->> -Required Properties:
->> -
->> -- compatible: should be one of the following:
->> -  - "samsung,exynos4210-audss-clock" - controller compatible with all Exynos4 SoCs.
->> -  - "samsung,exynos5250-audss-clock" - controller compatible with Exynos5250
->> -    SoCs.
->> -  - "samsung,exynos5410-audss-clock" - controller compatible with Exynos5410
->> -    SoCs.
->> -  - "samsung,exynos5420-audss-clock" - controller compatible with Exynos5420
->> -    SoCs.
->> -- reg: physical base address and length of the controller's register set.
->> -
->> -- #clock-cells: should be 1.
->> -
->> -- clocks:
->> -  - pll_ref: Fixed rate PLL reference clock, parent of mout_audss. "fin_pll"
->> -    is used if not specified.
->> -  - pll_in: Input PLL to the AudioSS block, parent of mout_audss. "fout_epll"
->> -    is used if not specified.
->> -  - cdclk: External i2s clock, parent of mout_i2s. "cdclk0" is used if not
->> -    specified.
->> -  - sclk_audio: Audio bus clock, parent of mout_i2s. "sclk_audio0" is used if
->> -    not specified.
->> -  - sclk_pcm_in: PCM clock, parent of sclk_pcm.  "sclk_pcm0" is used if not
->> -    specified.
->> -
->> -- clock-names: Aliases for the above clocks. They should be "pll_ref",
->> -  "pll_in", "cdclk", "sclk_audio", and "sclk_pcm_in" respectively.
->> -
->> -Optional Properties:
->> -
->> -  - power-domains: a phandle to respective power domain node as described by
->> -    generic PM domain bindings (see power/power_domain.txt for more
->> -    information).
->> -
->> -The following is the list of clocks generated by the controller. Each clock is
->> -assigned an identifier and client nodes use this identifier to specify the
->> -clock which they consume. Some of the clocks are available only on a particular
->> -Exynos4 SoC and this is specified where applicable.
->> -
->> -Provided clocks:
->> -
->> -Clock           ID      SoC (if specific)
->> ------------------------------------------------
->> -
->> -mout_audss      0
->> -mout_i2s        1
->> -dout_srp        2
->> -dout_aud_bus    3
->> -dout_i2s        4
->> -srp_clk         5
->> -i2s_bus         6
->> -sclk_i2s        7
->> -pcm_bus         8
->> -sclk_pcm        9
->> -adma            10      Exynos5420
->> -
->> -Example 1: An example of a clock controller node using the default input
->> -	   clock names is listed below.
->> -
->> -clock_audss: audss-clock-controller@3810000 {
->> -	compatible = "samsung,exynos5250-audss-clock";
->> -	reg = <0x03810000 0x0C>;
->> -	#clock-cells = <1>;
->> -};
->> -
->> -Example 2: An example of a clock controller node with the input clocks
->> -           specified.
->> -
->> -clock_audss: audss-clock-controller@3810000 {
->> -	compatible = "samsung,exynos5250-audss-clock";
->> -	reg = <0x03810000 0x0C>;
->> -	#clock-cells = <1>;
->> -	clocks = <&clock 1>, <&clock 7>, <&clock 138>, <&clock 160>,
->> -		<&ext_i2s_clk>;
->> -	clock-names = "pll_ref", "pll_in", "sclk_audio", "sclk_pcm_in", "cdclk";
->> -};
->> -
->> -Example 3: I2S controller node that consumes the clock generated by the clock
->> -           controller. Refer to the standard clock bindings for information
->> -           about 'clocks' and 'clock-names' property.
->> -
->> -i2s0: i2s@3830000 {
->> -	compatible = "samsung,i2s-v5";
->> -	reg = <0x03830000 0x100>;
->> -	dmas = <&pdma0 10
->> -		&pdma0 9
->> -		&pdma0 8>;
->> -	dma-names = "tx", "rx", "tx-sec";
->> -	clocks = <&clock_audss EXYNOS_I2S_BUS>,
->> -		<&clock_audss EXYNOS_I2S_BUS>,
->> -		<&clock_audss EXYNOS_SCLK_I2S>,
->> -		<&clock_audss EXYNOS_MOUT_AUDSS>,
->> -		<&clock_audss EXYNOS_MOUT_I2S>;
->> -	clock-names = "iis", "i2s_opclk0", "i2s_opclk1",
->> -		      "mout_audss", "mout_i2s";
->> -};
->> diff --git a/Documentation/devicetree/bindings/clock/samsung,exynos-audss-clock.yaml b/Documentation/devicetree/bindings/clock/samsung,exynos-audss-clock.yaml
->> new file mode 100644
->> index 000000000000..d60b29fa22e7
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/clock/samsung,exynos-audss-clock.yaml
->> @@ -0,0 +1,79 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/clock/samsung,exynos-audss-clock.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Samsung Exynos SoC Audio SubSystem clock controller
->> +
->> +maintainers:
->> +  - Chanwoo Choi <cw00.choi@samsung.com>
->> +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->> +  - Sylwester Nawrocki <s.nawrocki@samsung.com>
->> +  - Tomasz Figa <tomasz.figa@gmail.com>
->> +
->> +description: |
->> +  All available clocks are defined as preprocessor macros in
->> +  include/dt-bindings/clock/exynos-audss-clk.h header.
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - samsung,exynos4210-audss-clock
->> +      - samsung,exynos5250-audss-clock
->> +      - samsung,exynos5410-audss-clock
->> +      - samsung,exynos5420-audss-clock
->> +
->> +  clocks:
->> +    minItems: 2
->> +    items:
->> +      - description:
->> +          Fixed rate PLL reference clock, parent of mout_audss. "fin_pll" is
->> +          used if not specified.
->> +      - description:
->> +          Input PLL to the AudioSS block, parent of mout_audss. "fout_epll" is
->> +          used if not specified.
->> +      - description:
->> +          Audio bus clock, parent of mout_i2s. "sclk_audio0" is used if not
->> +          specified.
->> +      - description:
->> +          PCM clock, parent of sclk_pcm.  "sclk_pcm0" is used if not specified.
->> +      - description:
->> +          External i2s clock, parent of mout_i2s. "cdclk0" is used if not
->> +          specified.
->> +
->> +  clock-names:
->> +    minItems: 2
->> +    items:
->> +      - const: pll_ref
->> +      - const: pll_in
->> +      - const: sclk_audio
->> +      - const: sclk_pcm_in
->> +      - const: cdclk
->> +
->> +  "#clock-cells":
->> +    const: 1
->> +
->> +  power-domains: true
-> 
-> How many?
-> 
+Currently, uncompressed data except for tail-packing inline is
+consecutive on disk.
 
-I'll fix it, thanks for review.
+In order to support chunk-based data deduplication, add a new
+corresponding inode data layout.
 
-Best regards,
-Krzysztof
+In the future, the data source of chunks can be either (un)compressed.
+
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+---
+ Documentation/filesystems/erofs.rst | 16 ++++++++++--
+ fs/erofs/erofs_fs.h                 | 40 +++++++++++++++++++++++++++--
+ 2 files changed, 52 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/filesystems/erofs.rst b/Documentation/filesystems/erofs.rst
+index 868e3972227f..b46d0fc46eb6 100644
+--- a/Documentation/filesystems/erofs.rst
++++ b/Documentation/filesystems/erofs.rst
+@@ -156,13 +156,14 @@ may not. All metadatas can be now observed in two different spaces (views):
+ 
+     Xattrs, extents, data inline are followed by the corresponding inode with
+     proper alignment, and they could be optional for different data mappings.
+-    _currently_ total 4 valid data mappings are supported:
++    _currently_ total 5 data layouts are supported:
+ 
+     ==  ====================================================================
+      0  flat file data without data inline (no extent);
+      1  fixed-sized output data compression (with non-compacted indexes);
+      2  flat file data with tail packing data inline (no extent);
+-     3  fixed-sized output data compression (with compacted indexes, v5.3+).
++     3  fixed-sized output data compression (with compacted indexes, v5.3+);
++     4  chunk-based file (v5.15+).
+     ==  ====================================================================
+ 
+     The size of the optional xattrs is indicated by i_xattr_count in inode
+@@ -213,6 +214,17 @@ Note that apart from the offset of the first filename, nameoff0 also indicates
+ the total number of directory entries in this block since it is no need to
+ introduce another on-disk field at all.
+ 
++Chunk-based file
++----------------
++In order to support chunk-based file deduplication, a new inode data layout has
++been supported since Linux v5.15: Files are split in equal-sized data chunks
++with ``extents`` area of the inode metadata indicating how to get the chunk
++data: these can be simply as a 4-byte block address array or in the 8-byte
++chunk index form (see struct erofs_inode_chunk_index in erofs_fs.h for more
++details.)
++
++By the way, chunk-based files are all uncompressed for now.
++
+ Data compression
+ ----------------
+ EROFS implements LZ4 fixed-sized output compression which generates fixed-sized
+diff --git a/fs/erofs/erofs_fs.h b/fs/erofs/erofs_fs.h
+index 0f8da74570b4..6210fe434930 100644
+--- a/fs/erofs/erofs_fs.h
++++ b/fs/erofs/erofs_fs.h
+@@ -4,6 +4,7 @@
+  *
+  * Copyright (C) 2017-2018 HUAWEI, Inc.
+  *             https://www.huawei.com/
++ * Copyright (C) 2021, Alibaba Cloud
+  */
+ #ifndef __EROFS_FS_H
+ #define __EROFS_FS_H
+@@ -19,10 +20,12 @@
+ #define EROFS_FEATURE_INCOMPAT_LZ4_0PADDING	0x00000001
+ #define EROFS_FEATURE_INCOMPAT_COMPR_CFGS	0x00000002
+ #define EROFS_FEATURE_INCOMPAT_BIG_PCLUSTER	0x00000002
++#define EROFS_FEATURE_INCOMPAT_CHUNKED_FILE	0x00000004
+ #define EROFS_ALL_FEATURE_INCOMPAT		\
+ 	(EROFS_FEATURE_INCOMPAT_LZ4_0PADDING | \
+ 	 EROFS_FEATURE_INCOMPAT_COMPR_CFGS | \
+-	 EROFS_FEATURE_INCOMPAT_BIG_PCLUSTER)
++	 EROFS_FEATURE_INCOMPAT_BIG_PCLUSTER | \
++	 EROFS_FEATURE_INCOMPAT_CHUNKED_FILE)
+ 
+ #define EROFS_SB_EXTSLOT_SIZE	16
+ 
+@@ -64,13 +67,16 @@ struct erofs_super_block {
+  * inode, [xattrs], last_inline_data, ... | ... | no-holed data
+  * 3 - inode compression D:
+  * inode, [xattrs], map_header, extents ... | ...
+- * 4~7 - reserved
++ * 4 - inode chunk-based E:
++ * inode, [xattrs], chunk indexes ... | ...
++ * 5~7 - reserved
+  */
+ enum {
+ 	EROFS_INODE_FLAT_PLAIN			= 0,
+ 	EROFS_INODE_FLAT_COMPRESSION_LEGACY	= 1,
+ 	EROFS_INODE_FLAT_INLINE			= 2,
+ 	EROFS_INODE_FLAT_COMPRESSION		= 3,
++	EROFS_INODE_CHUNK_BASED			= 4,
+ 	EROFS_INODE_DATALAYOUT_MAX
+ };
+ 
+@@ -90,6 +96,19 @@ static inline bool erofs_inode_is_data_compressed(unsigned int datamode)
+ #define EROFS_I_ALL	\
+ 	((1 << (EROFS_I_DATALAYOUT_BIT + EROFS_I_DATALAYOUT_BITS)) - 1)
+ 
++/* indicate chunk blkbits, thus `chunksize = blocksize << chunk blkbits' */
++#define EROFS_CHUNK_FORMAT_BLKBITS_MASK		0x001F
++/* with chunk indexes or just a 4-byte blkaddr array */
++#define EROFS_CHUNK_FORMAT_INDEXES		0x0020
++
++#define EROFS_CHUNK_FORMAT_ALL	\
++	(EROFS_CHUNK_FORMAT_BLKBITS_MASK | EROFS_CHUNK_FORMAT_INDEXES)
++
++struct erofs_inode_chunk_info {
++	__le16 format;		/* chunk blkbits */
++	__le16 reserved;
++};
++
+ /* 32-byte reduced form of an ondisk inode */
+ struct erofs_inode_compact {
+ 	__le16 i_format;	/* inode format hints */
+@@ -107,6 +126,9 @@ struct erofs_inode_compact {
+ 
+ 		/* for device files, used to indicate old/new device # */
+ 		__le32 rdev;
++
++		/* for chunk-based files, it contains the summary info */
++		struct erofs_inode_chunk_info c;
+ 	} i_u;
+ 	__le32 i_ino;           /* only used for 32-bit stat compatibility */
+ 	__le16 i_uid;
+@@ -135,6 +157,9 @@ struct erofs_inode_extended {
+ 
+ 		/* for device files, used to indicate old/new device # */
+ 		__le32 rdev;
++
++		/* for chunk-based files, it contains the summary info */
++		struct erofs_inode_chunk_info c;
+ 	} i_u;
+ 
+ 	/* only used for 32-bit stat compatibility */
+@@ -204,6 +229,15 @@ static inline unsigned int erofs_xattr_entry_size(struct erofs_xattr_entry *e)
+ 				 e->e_name_len + le16_to_cpu(e->e_value_size));
+ }
+ 
++/* represent a zeroed chunk (hole) */
++#define EROFS_NULL_ADDR			-1
++
++struct erofs_inode_chunk_index {
++	__le32 blkaddr;
++	__le16 device_id;	/* back-end storage id, always 0 for now */
++	__le16 reserved;	/* reserved, don't care */
++};
++
+ /* maximum supported size of a physical compression cluster */
+ #define Z_EROFS_PCLUSTER_MAX_SIZE	(1024 * 1024)
+ 
+@@ -338,6 +372,8 @@ static inline void erofs_check_ondisk_layout_definitions(void)
+ 	BUILD_BUG_ON(sizeof(struct erofs_inode_extended) != 64);
+ 	BUILD_BUG_ON(sizeof(struct erofs_xattr_ibody_header) != 12);
+ 	BUILD_BUG_ON(sizeof(struct erofs_xattr_entry) != 4);
++	BUILD_BUG_ON(sizeof(struct erofs_inode_chunk_info) != 4);
++	BUILD_BUG_ON(sizeof(struct erofs_inode_chunk_index) != 8);
+ 	BUILD_BUG_ON(sizeof(struct z_erofs_map_header) != 8);
+ 	BUILD_BUG_ON(sizeof(struct z_erofs_vle_decompressed_index) != 8);
+ 	BUILD_BUG_ON(sizeof(struct erofs_dirent) != 12);
+-- 
+2.24.4
+
