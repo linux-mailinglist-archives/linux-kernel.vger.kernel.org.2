@@ -2,68 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F723F0ACA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 20:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D993F0ACD
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 20:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231502AbhHRSJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 14:09:29 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3668 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230009AbhHRSJ0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 14:09:26 -0400
-Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GqbTz1TQFz6D9Rq;
-        Thu, 19 Aug 2021 02:07:51 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 18 Aug 2021 20:08:50 +0200
-Received: from [10.47.81.140] (10.47.81.140) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Wed, 18 Aug
- 2021 19:08:49 +0100
-Subject: Re: [PATCH 0/3] Remove scsi_cmnd.tag
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     <satishkh@cisco.com>, <sebaddel@cisco.com>, <kartilak@cisco.com>,
-        <jejb@linux.ibm.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <hare@suse.de>, <hch@lst.de>,
-        <bvanassche@acm.org>
-References: <1628862553-179450-1-git-send-email-john.garry@huawei.com>
- <yq14kbppa42.fsf@ca-mkp.ca.oracle.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <176ce4f2-42c9-bba6-c8f9-70a08faa21b8@huawei.com>
-Date:   Wed, 18 Aug 2021 19:08:48 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S231823AbhHRSKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 14:10:30 -0400
+Received: from mga18.intel.com ([134.134.136.126]:59554 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229533AbhHRSK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 14:10:28 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="203539660"
+X-IronPort-AV: E=Sophos;i="5.84,332,1620716400"; 
+   d="scan'208";a="203539660"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 11:09:50 -0700
+X-IronPort-AV: E=Sophos;i="5.84,332,1620716400"; 
+   d="scan'208";a="449858802"
+Received: from smendon-mobl.amr.corp.intel.com (HELO [10.212.121.30]) ([10.212.121.30])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 11:09:46 -0700
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH 1/2] driver core: export
+ driver_deferred_probe_trigger()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     alsa-devel@alsa-project.org,
+        "Rafael J . Wysocki" <rafael@kernel.org>, tiwai@suse.de,
+        linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com,
+        vkoul@kernel.org, Mark Brown <broonie@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Christoph Hellwig <hch@lst.de>
+References: <20210817190057.255264-1-pierre-louis.bossart@linux.intel.com>
+ <20210817190057.255264-2-pierre-louis.bossart@linux.intel.com>
+ <YRyeR6imvSwOOasQ@kroah.com> <20210818115736.GA4177@sirena.org.uk>
+ <YR0Ji7DQXoo0z4vP@kroah.com> <20210818134814.GF4177@sirena.org.uk>
+ <14235b8d-d375-6e2d-cae9-33adf9c48120@linux.intel.com>
+ <YR0nAcC3wJd3b4Vu@kroah.com>
+ <be1ea414-b2ad-162d-192a-7b55e40b3754@linux.intel.com>
+ <YR06L+gTzyiYY/rG@kroah.com>
+Message-ID: <244b3030-0d24-300f-354d-46878b708056@linux.intel.com>
+Date:   Wed, 18 Aug 2021 13:09:44 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <yq14kbppa42.fsf@ca-mkp.ca.oracle.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <YR06L+gTzyiYY/rG@kroah.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.81.140]
-X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/08/2021 18:34, Martin K. Petersen wrote:
-> 
-> John,
-> 
->> There is no need for scsi_cmnd.tag, so remove it.
-> 
-> Applied to 5.15/scsi-staging, thanks!
-> 
 
-Hi Martin,
+>>>> a) we have to use request_module()
+>>>
+>>> Wait, why?
+>>>
+>>> module loading is async, use auto-loading when the hardware/device is
+>>> found and reported to userspace.  Forcing a module to load by the kernel
+>>> is not always wise as the module is not always present in the filesystem
+>>> at that point in time at boot (think modules on the filesystem, not in
+>>> the initramfs).
+>>>
+>>> Try fixing this issue and maybe it will resolve itself as you should be
+>>> working async.
+>>
+>> It's been that way for a very long time (2015?) for HDAudio support, see
+>> sound/pci/hda/hda_bind.c. It's my understanding that it was a conscious
+>> design decision to use vendor-specific modules, if available, and
+>> fallback to generic modules if the first pass failed.
+> 
+> If it has been this way for so long, what has caused the sudden change
+> to need to export this and call this function?
 
-As you may have seen, some arm32 build has also broken. My build 
-coverage was not good enough, and I don't see a point in me playing 
-whack-a-mole with the kernel test robot. So how about revert the final 
-patch or even all of them, and I can try get better build coverage and 
-then re-post? Or maybe you or Bart have a better idea?
+Fair question, I did not provide all the context with a cover letter
+that was already quite long. Here are more details:
 
-Thanks!
+In the existing Intel audio drivers, we have a PCI device that first get
+probed. The PCI driver initializes the DSP and exposes what the audio
+DSP can do, but the platform-specific configuration for a given board is
+handled by a child device [1]. We have all kinds of hard-coded lookup
+tables to figure out what the board is and what machine driver should be
+used based on the presence of other ACPI devices and/or DMI quirks
+[2][3]. We must have used this solution since 2010, mainly because 'the
+other OS' does not rely on platform firmware for a description of the
+audio capabilities.
+
+In the 'soon' future, that machine driver will probed with its own ACPI
+ID and become generic, with all the information related to the board
+described in platform firmware and parsed by the driver. This is how the
+'simple card' works today in Device Tree environments, platform firmware
+describes how host-provided components are connected to 3rd-party
+components. I cannot provide more details at this time since this is a
+not yet a publicly-available specification (this specification work does
+take place in a standardization body).
+
+That change in how the machine driver gets probed creates a new problem
+we didn't have before: this generic machine driver will probe in the
+early stages of the boot, long before the DSP and audio codecs are
+initialized/available.
+
+I initially looked at the component framework to try to express
+dependencies. It's really not clear to me if this is the 'right'
+direction, for ASoC-based solutions we already have components that
+register with a core.
+
+I also started looking at other proposals that were made over the years,
+this problem of expressing dependencies is not new. No real luck.
+
+In the end, since the DeviceTree-based solutions based on deferred
+probes work fine for the same type of usages, I tried to reuse the same
+deferred probe mechanism. The only reason why I needed to export this
+function is to work-around the request_module() use.
+
+I am not claiming any award for architecture, this is clearly a
+domain-specific corner case. I did try the async probe, I consulted with
+Marc Brown, had an internal review with Dan Williams and Andy
+Shevchenko. While nobody cheered, it seemed like this export was
+'reasonable' compared to a re-architecture of the HDaudio/HDMI support -
+which is a really scary proposition.
+
+There is no immediate rush to make this change in this kernel cycle or
+the next, I am open to alternatives, but I wanted to make sure we don't
+have any Linux plumbing issues by the time the specification becomes
+public and is used by 'the other OS'.
+
+Does this help get more context?
+
+[1] https://elixir.bootlin.com/linux/latest/source/sound/soc/sof/core.c#L234
+
+[2]
+https://elixir.bootlin.com/linux/latest/source/sound/soc/intel/common/soc-acpi-intel-tgl-match.c#L323
+
+[3]
+https://elixir.bootlin.com/linux/latest/source/sound/soc/intel/boards/sof_sdw.c#L50
+
+
+
+
