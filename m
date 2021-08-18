@@ -2,140 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 497573EFEAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 411383EFEB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238939AbhHRIHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 04:07:17 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57628 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238384AbhHRIHO (ORCPT
+        id S239611AbhHRIHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 04:07:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239328AbhHRIHi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 04:07:14 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17I83LWN060729;
-        Wed, 18 Aug 2021 04:06:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=FcCMSq8pf3W5Iqg4XsxKSFffs2r5dDoQXwS4CTXM598=;
- b=jYw7n/Wyri/ttkgJvCXmKX48pk7g8xqfMHCKXpD3Wk/W2wkgBzpOnptaij3TJhDL869T
- VirSHYvdw/tW805m9Cpfvalm2o7QA0D4GcthEV8cdhWHB3owrGd2cZadQCkjWNoQ8Xqj
- M/TBT/uFQwwPTYKb3pxWCTQrRzzw66zpnDEpOPBzA/EXfkeTvKRH+AuEnMG4whZvAxA4
- AoUEEGrWTyQLG/WhmBisIgI+fEfyWYzKXxZKvjGqUPWkkT/s1uO0vkGYy071R6o0UlhU
- cJrdkc14oL31YNqwmqxQyJFTYIEenT198Bb36/QxA7wI+sl6noMEHlnfzza9O+X7ehxX gQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3agcvrw875-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Aug 2021 04:06:39 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17I83fNG061868;
-        Wed, 18 Aug 2021 04:06:39 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3agcvrw86a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Aug 2021 04:06:39 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17I7rJce002528;
-        Wed, 18 Aug 2021 08:06:36 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 3ae5f8e5vq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Aug 2021 08:06:36 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17I832Fg26411516
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Aug 2021 08:03:02 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 62DEBA4054;
-        Wed, 18 Aug 2021 08:06:32 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CC9C4A4067;
-        Wed, 18 Aug 2021 08:06:31 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.174.181])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 18 Aug 2021 08:06:31 +0000 (GMT)
-Subject: Re: [PATCH 1/2] KVM: s390: gaccess: Cleanup access to guest frames
-To:     David Hildenbrand <david@redhat.com>,
-        Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
-        kvm@vger.kernel.org, borntraeger@de.ibm.com,
-        imbrenda@linux.ibm.com, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Cc:     cohuck@redhat.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210816150718.3063877-1-scgl@linux.ibm.com>
- <20210816150718.3063877-2-scgl@linux.ibm.com>
- <d11128bb-18f6-5210-6f42-74a89d8edcf7@redhat.com>
-From:   Janosch Frank <frankja@linux.ibm.com>
-Message-ID: <584ca757-4eb4-491e-a4cd-7bc60fb04b61@linux.ibm.com>
-Date:   Wed, 18 Aug 2021 10:06:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 18 Aug 2021 04:07:38 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF55C061764;
+        Wed, 18 Aug 2021 01:07:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=6OzbSXXafKMA7YgF8k8Tjy+aXQW8YBJ4OWUwbnu8sQw=;
+        t=1629274024; x=1630483624; b=kJyjXbrF4QQPa7P0m74IZPrJWoLrDTxa4wVNaIbHD1uWT4j
+        94WcxbQAV4TBftGHgR329zxhDjZNz7es6pyN/wpL5DykoZrLKDy+5V50AnCaJX+RB0rwLYWUMlzhA
+        igPDdKjMIr2nyFrQ/XoBar1CpS8wdVIZOEG3ybj9NN/FCmGOfNXMtAgc+85M3I2EdA+rtCjkjk0jY
+        bgOjGKzxaGuhAJAIqL2SVyK7V0LZy1FtoJm/RkCU3WpNw+IDtKAOWRcO1CbbgT0YU5ML//+xvQCsR
+        zbdz7SZvj2MgHC4iyZ63vwVgx9FT/wPYMeK12sHtb41zcjTDVR5DvWPiHPKT0nZQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94.2)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1mGGb6-00CcdG-FE; Wed, 18 Aug 2021 10:06:52 +0200
+Message-ID: <8b48dac4c40127366e91855306d24e07eb0b81d9.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 44/63] mac80211: Use memset_after() to clear tx status
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
+        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-hardening@vger.kernel.org
+Date:   Wed, 18 Aug 2021 10:06:51 +0200
+In-Reply-To: <11db2cdc5316b51f3fa2f34e813a458e455c763d.camel@sipsolutions.net>
+References: <20210818060533.3569517-1-keescook@chromium.org>
+         <20210818060533.3569517-45-keescook@chromium.org>
+         <11db2cdc5316b51f3fa2f34e813a458e455c763d.camel@sipsolutions.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <d11128bb-18f6-5210-6f42-74a89d8edcf7@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Hv3ckAHdGy3Z7Y40Q2ixDUvM2cijvzE5
-X-Proofpoint-GUID: Xxns9i2yQbfQJz6qvJyXk6eOpY9nKto4
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-18_02:2021-08-17,2021-08-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
- suspectscore=0 mlxscore=0 mlxlogscore=999 phishscore=0 priorityscore=1501
- malwarescore=0 impostorscore=0 bulkscore=0 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108180050
+Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/18/21 9:54 AM, David Hildenbrand wrote:
-> On 16.08.21 17:07, Janis Schoetterl-Glausch wrote:
->> Introduce a helper function for guest frame access.
->> Rewrite the calculation of the gpa and the length of the segment
->> to be more readable.
->>
->> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
-[...]
->> -	unsigned long _len, gpa;
->> +	unsigned long gpa;
->> +	unsigned int seg;
->>   	int rc = 0;
->>   
->>   	while (len && !rc) {
->>   		gpa = kvm_s390_real_to_abs(vcpu, gra);
->> -		_len = min(PAGE_SIZE - (gpa & ~PAGE_MASK), len);
->> -		if (mode)
->> -			rc = write_guest_abs(vcpu, gpa, data, _len);
->> -		else
->> -			rc = read_guest_abs(vcpu, gpa, data, _len);
->> -		len -= _len;
->> -		gra += _len;
->> -		data += _len;
->> +		seg = min(PAGE_SIZE - offset_in_page(gpa), len);
+On Wed, 2021-08-18 at 09:08 +0200, Johannes Berg wrote:
+> On Tue, 2021-08-17 at 23:05 -0700, Kees Cook wrote:
+> > 
+> > @@ -275,12 +275,11 @@ static void carl9170_tx_release(struct kref *ref)
+> >  	if (WARN_ON_ONCE(!ar))
+> >  		return;
+> >  
+> > 
+> > 
+> > 
+> > -	BUILD_BUG_ON(
+> > -	    offsetof(struct ieee80211_tx_info, status.ack_signal) != 20);
+> > -
+> > -	memset(&txinfo->status.ack_signal, 0,
+> > -	       sizeof(struct ieee80211_tx_info) -
+> > -	       offsetof(struct ieee80211_tx_info, status.ack_signal));
+> > +	/*
+> > +	 * Should this call ieee80211_tx_info_clear_status() instead of clearing
+> > +	 * manually? txinfo->status.rates do not seem to be used here.
+> > +	 */
 > 
-> What does "seg" mean? I certainly know when "len" means -- which is also 
-> what the function eats.
-
-What does "_len" mean especially in contrast to "len"?
-
-"seg" is used in the common kvm guest access functions so it's at least
-consistent although I share the sentiment that it's not a great name for
-the length we access inside the page.
-
-Originally I suggested "len_in_page" if you have a better name I'd
-expect we'll both be happy to discuss it :-)
-
+> Since you insist, I went digging :)
 > 
->> +		rc = access_guest_frame(vcpu->kvm, mode, gpa, data, seg);
->> +		len -= seg;
->> +		gra += seg;
->> +		data += seg;
->>   	}
->>   	return rc;
->>   }
->>
-> 
-> 
+> It should not, carl9170_tx_fill_rateinfo() has filled the rate
+> information before we get to this point.
+
+Otherwise, looks fine, FWIW.
+
+Are you going to apply all of these together somewhere? I (we) can't,
+since memset_after() doesn't exist yet.
+
+johannes
 
