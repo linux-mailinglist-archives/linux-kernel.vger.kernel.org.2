@@ -2,81 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A2F3F0215
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 12:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3C03F0219
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 12:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235143AbhHRK6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 06:58:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50976 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235120AbhHRK6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 06:58:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1631761029;
-        Wed, 18 Aug 2021 10:57:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629284250;
-        bh=IP9QZ9R4vDScwCucpKYL7KBQIzj0wzHNmIYig9vv5+U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ly3thsFBZKmxkkxQ1Zq6Zom/3c1Ek9+Mh6NMdv1sbehEQl6YCv2n8ipVFHuQwWXkt
-         oLrrWjt5QIBqfMNdbzMzL35Sn6cIomKi4lTnm7ygctQSRoUiRDntlwGueT5k/Kk16t
-         wBuZQrKfOANAR/lZxIha8pEiztnroRetNzjWEfdc=
-Date:   Wed, 18 Aug 2021 12:57:28 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND 1/2] ARM: tegra: paz00: Handle device properties
- with software node API
-Message-ID: <YRznmKAnIoM5/Is/@kroah.com>
-References: <20210817102449.39994-1-heikki.krogerus@linux.intel.com>
- <20210817102449.39994-2-heikki.krogerus@linux.intel.com>
- <YRvIFJKmFlB6ntI5@orome.fritz.box>
+        id S235207AbhHRK7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 06:59:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234824AbhHRK7C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 06:59:02 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C7CC061764;
+        Wed, 18 Aug 2021 03:58:28 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id qe12-20020a17090b4f8c00b00179321cbae7so2082003pjb.2;
+        Wed, 18 Aug 2021 03:58:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6ngK5o3Hm/CpUkzhL3Cyg+OZKC3Si1CRqzv7qINSgho=;
+        b=PiI9i5ZYroCC69aFh91sgtINbzIk21xXLbRfiYx+oN2vINQgXhehdpC7o5mW5HwNP+
+         54TAvaVs7QucAR6LJ74UBzt5oiHi+PzqMi4HRNealzu0jEr3Ro0O69onqCi1ulP2VY9r
+         7Ddrhh1x7uUBClXdzERg9alS1lqKq6dXCVRgAVlmTRK7ZwVT3cnMe29m69Z5xk9dQGS9
+         /Ug3NBJXl0NICSjqSusQfyJMrI3AGy3lW4V4S2esjGvieKbrUvFlaIsG2leQ1NsgRn/N
+         r5D1yKEpHJHibv1ldTNpkyQuEOauSUe+K/BXhxWdGdfggyKuCRd0h6N/dBBPTNJm3Ywo
+         2M7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6ngK5o3Hm/CpUkzhL3Cyg+OZKC3Si1CRqzv7qINSgho=;
+        b=uLdOQKX2PDm7CMJAP1yziB1bBs5xk8szG8AulCquq7PIErE4whvkH9stbPGITl571a
+         Qv3ccN/uKUGitTAgkbd5KIPae/97ir9wmOHiLc91aQQoxvs+rSav5z+90yZ5kyQMCDrx
+         IfIEpeLwY4/DvqiDEvNtV6iX98Y4bFAsqH1pF6n8e3jfKqA9th+NW/QUlg48rK+0CZvb
+         zC3/4M9OXsEiGGeNNJacEN4Q5ztoBGO7/pkdKUoDPkiY+dpHgCQL3n90Ze/Wt6w3luji
+         SusolY2guWpc23Jxl8lEopF/oXARSGEK/f+6nS9bU4HYPof/55le08+YI4HDT8bhy6Ix
+         kHXA==
+X-Gm-Message-State: AOAM532SRmSFlqVv9I2VbFZE9f/x7Gt5XucDfrTs1xOkIJl6EUKdrvc9
+        cNr7FIIdFX326VkqtE8bxOU=
+X-Google-Smtp-Source: ABdhPJy1i3wSsQA/+NBCDkc5WkPVGMtAoKpeW6gJCWCQDfB0jSEzx8/O4GU7Rq/dm33pgBap9E1gtQ==
+X-Received: by 2002:a17:90a:116:: with SMTP id b22mr8525019pjb.97.1629284307907;
+        Wed, 18 Aug 2021 03:58:27 -0700 (PDT)
+Received: from IRVINGLIU-MB0.tencent.com ([203.205.141.117])
+        by smtp.gmail.com with ESMTPSA id b190sm7099440pgc.91.2021.08.18.03.58.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 18 Aug 2021 03:58:27 -0700 (PDT)
+From:   Xu Liu <liuxu623@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xu Liu <liuxu623@gmail.com>
+Subject: [PATCH bpf-next v2 0/2] bpf: Allow bpf_get_netns_cookie in BPF_PROG_TYPE_SOCK_OPS
+Date:   Wed, 18 Aug 2021 18:58:18 +0800
+Message-Id: <20210818105820.91894-1-liuxu623@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRvIFJKmFlB6ntI5@orome.fritz.box>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 04:30:44PM +0200, Thierry Reding wrote:
-> On Tue, Aug 17, 2021 at 01:24:48PM +0300, Heikki Krogerus wrote:
-> > The old device property API is going to be removed.
-> > Replacing the device_add_properties() call with the software
-> > node API equivalent, device_create_managed_software_node().
-> > 
-> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> > ---
-> >  arch/arm/mach-tegra/board-paz00.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/arm/mach-tegra/board-paz00.c b/arch/arm/mach-tegra/board-paz00.c
-> > index b5c990a7a5af5..18d37f90cdfe3 100644
-> > --- a/arch/arm/mach-tegra/board-paz00.c
-> > +++ b/arch/arm/mach-tegra/board-paz00.c
-> > @@ -36,7 +36,7 @@ static struct gpiod_lookup_table wifi_gpio_lookup = {
-> >  
-> >  void __init tegra_paz00_wifikill_init(void)
-> >  {
-> > -	platform_device_add_properties(&wifi_rfkill_device, wifi_rfkill_prop);
-> > +	device_create_managed_software_node(&wifi_rfkill_device.dev, wifi_rfkill_prop, NULL);
-> >  	gpiod_add_lookup_table(&wifi_gpio_lookup);
-> >  	platform_device_register(&wifi_rfkill_device);
-> >  }
-> 
-> Seems alright. Looks to be doing mostly the same thing as the original
-> platform_device_add_properties() was doing, except for the node now
-> being managed, which is irrelevant in this context.
-> 
-> I'm fine with Greg picking this up. I'm not aware of any other changes
-> to this file that might cause a conflict for v5.15.
-> 
-> Acked-by: Thierry Reding <treding@nvidia.com>
+v2: Added selftests
 
-I'll pick it up, thanks!
+Xu Liu (2):
+  bpf: Allow bpf_get_netns_cookie in BPF_PROG_TYPE_SOCK_OPS
+  selftests/bpf: Test for get_netns_cookie
 
-greg k-h
+ net/core/filter.c                             | 14 +++++
+ .../selftests/bpf/prog_tests/netns_cookie.c   | 61 +++++++++++++++++++
+ .../selftests/bpf/progs/netns_cookie_prog.c   | 39 ++++++++++++
+ 3 files changed, 114 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/netns_cookie.c
+ create mode 100644 tools/testing/selftests/bpf/progs/netns_cookie_prog.c
+
+-- 
+2.28.0
+
