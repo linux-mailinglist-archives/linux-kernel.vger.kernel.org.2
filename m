@@ -2,123 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8123EF8B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 05:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 220933EF8B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 05:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236392AbhHRDft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Aug 2021 23:35:49 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:52297 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236235AbhHRDfs (ORCPT
+        id S236105AbhHRDgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Aug 2021 23:36:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234435AbhHRDgc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Aug 2021 23:35:48 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Ujd4SCS_1629257711;
-Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0Ujd4SCS_1629257711)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 18 Aug 2021 11:35:11 +0800
-Subject: Re: [PATCH v7 1/2] tty: hvc: pass DMA capable memory to put_chars()
-To:     Jiri Slaby <jirislaby@kernel.org>, gregkh@linuxfoundation.org,
-        amit@kernel.org, arnd@arndb.de, osandov@fb.com
-Cc:     linuxppc-dev@lists.ozlabs.org,
+        Tue, 17 Aug 2021 23:36:32 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85086C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 20:35:58 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id u15so916950plg.13
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 20:35:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EoTD+9gdzWVQQgsWt1rt2oOyKjIz9skCn5yxqOmC3zo=;
+        b=pVeg7w7P875hbyg3bTn84brdJTkJ8iFc7UK5zIrFpTJ8irRojNeSsVZKELAr1Myctn
+         EqII4735e2rObDRI3Yd56bHjnL9ZWIB60ctbOgg09/wHWMN2bB/HcLyQlOVGJZYWCM5h
+         482t0+BrLDhliLZR/jRD466g0KeMFwG+QO8RhauTw0lMnZ5rSgoEUZGKJDpFW9AAxJjn
+         m3I6R8zzO5gATxEiD2CYqmL/wzrIlkMzDrtUheaLlSNB5UK8I06zIDvtncy+QFfxuwUv
+         Q5sqUZOcIrwpQPCtWuoGZOSghergP2bJRY+na3GilNXjzWmDeYxuwywrh0NQv+1ndK9k
+         NphQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EoTD+9gdzWVQQgsWt1rt2oOyKjIz9skCn5yxqOmC3zo=;
+        b=jRChiJ2yhLNhi0MPP9nWM9SIjPc5XdhdLaYIjwlt57mBoI5IBcntM5DvqHDRwfIGDe
+         fPqn9T37RsoCYDqPmPdW3xXjn6wqTwzNBL/iQ9+4B09Yah2RiXMwmp67J8MnHVWXrMET
+         gr7J8E6gUN9Hmv/pt/n9gmaiLuya5Id39F0KKXpxtqrJA85HG6E0bQMzsIIPJnkAtaTI
+         u/xqhcomnBiNmz10k08AtOe2Mkmc0/Y6VdkcP3Q40c+qBj2XppsZoatKn0mo0+GWjQuk
+         t5OdvM2wOLl5Ay2lLdMkQQXD8EO5jirFsLQkb5S5a8Qe++s9fhynUJTftHq1UgG+PdXl
+         wUyg==
+X-Gm-Message-State: AOAM530kiwEKveN8sm7t4q+NV9XleaMdJf3D7danGk7FTd0415nMWZ62
+        LMZ1pCAgeBKMtx3ceGZZ3J4DWw==
+X-Google-Smtp-Source: ABdhPJy7/RHf3X+g1zoSTwUZ+x+dwqR2Mme5lAt2zkS8vxqJXUy6l+yqqb3nxmP7N//YmDMbzSNIfQ==
+X-Received: by 2002:a17:90b:1950:: with SMTP id nk16mr7099560pjb.11.1629257757974;
+        Tue, 17 Aug 2021 20:35:57 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id j5sm3431254pjv.56.2021.08.17.20.35.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 20:35:57 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Wolfram Sang <wsa@kernel.org>, Jie Deng <jie.deng@intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>, arnd@kernel.org,
+        linux-i2c@vger.kernel.org,
         virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-References: <20210817132300.165014-1-xianting.tian@linux.alibaba.com>
- <20210817132300.165014-2-xianting.tian@linux.alibaba.com>
- <5b728c71-a754-b3ef-4ad3-6e33db1b7647@kernel.org>
-From:   Xianting TIan <xianting.tian@linux.alibaba.com>
-Message-ID: <a0e671da-e2e9-3696-950d-16b931e1fe9a@linux.alibaba.com>
-Date:   Wed, 18 Aug 2021 11:35:11 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+Subject: [PATCH] i2c: virtio: Update i2c-adapter's of_node
+Date:   Wed, 18 Aug 2021 09:05:50 +0530
+Message-Id: <376bd0a3a34e8f0de297103dd2f711bb236a8615.1629257677.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 MIME-Version: 1.0
-In-Reply-To: <5b728c71-a754-b3ef-4ad3-6e33db1b7647@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Set of-node of the adapter to the virtio device's of-node to enable
+automatic parsing the of the I2C devices, if present in the DT.
 
-在 2021/8/18 上午11:17, Jiri Slaby 写道:
-> Hi,
->
-> On 17. 08. 21, 15:22, Xianting Tian wrote:
->> As well known, hvc backend can register its opertions to hvc backend.
->> the opertions contain put_chars(), get_chars() and so on.
->
-> "operations". And there too:
->
->> Some hvc backend may do dma in its opertions. eg, put_chars() of
->> virtio-console. But in the code of hvc framework, it may pass DMA
->> incapable memory to put_chars() under a specific configuration, which
->> is explained in commit c4baad5029(virtio-console: avoid DMA from stack):
->> 1, c[] is on stack,
->>     hvc_console_print():
->>     char c[N_OUTBUF] __ALIGNED__;
->>     cons_ops[index]->put_chars(vtermnos[index], c, i);
->> 2, ch is on stack,
->>     static void hvc_poll_put_char(,,char ch)
->>     {
->>     struct tty_struct *tty = driver->ttys[0];
->>     struct hvc_struct *hp = tty->driver_data;
->>     int n;
->>
->>     do {
->>         n = hp->ops->put_chars(hp->vtermno, &ch, 1);
->>     } while (n <= 0);
->>     }
->>
->> Commit c4baad5029 is just the fix to avoid DMA from stack memory, which
->> is passed to virtio-console by hvc framework in above code. But I think
->> the fix is aggressive, it directly uses kmemdup() to alloc new buffer
->> from kmalloc area and do memcpy no matter the memory is in kmalloc area
->> or not. But most importantly, it should better be fixed in the hvc
->> framework, by changing it to never pass stack memory to the put_chars()
->> function in the first place. Otherwise, we still face the same issue if
->> a new hvc backend using dma added in the furture.
->>
->> We make 'char c[N_OUTBUF]' part of 'struct hvc_struct', so hp->c is no
->> longer the stack memory. we can use it in above two cases.
->
-> In fact, you need only a single char for the poll case 
-> (hvc_poll_put_char), so hvc_struct needs to contain only c, not an array.
->
-> OTOH, you need c[N_OUTBUF] in the console case (hvc_console_print), 
-> but not whole hvc_struct. So cons_hvcs should be an array of structs 
-> composed of only the lock and the buffer.
->
-> Hum.
->
-> Or maybe rethink and take care of the console case by kmemdup and be 
-> done with that case? What problem do you have with allocating 16 
-> bytes? It should be quite easy and really fast (lockless) in most 
-> cases. On the contrary, your solution has to take a spinlock to access 
-> the global buffer.
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ drivers/i2c/busses/i2c-virtio.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-May be we can change hvc_struct as below,
+diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
+index d3e60d9cde10..2dde69cfb9aa 100644
+--- a/drivers/i2c/busses/i2c-virtio.c
++++ b/drivers/i2c/busses/i2c-virtio.c
+@@ -228,6 +228,7 @@ static int virtio_i2c_probe(struct virtio_device *vdev)
+ 	vi->adap.algo = &virtio_algorithm;
+ 	vi->adap.quirks = &virtio_i2c_quirks;
+ 	vi->adap.dev.parent = &vdev->dev;
++	vi->adap.dev.of_node = vdev->dev.of_node;
+ 	i2c_set_adapdata(&vi->adap, vi);
+ 
+ 	/*
+-- 
+2.31.1.272.g89b43f80a514
 
-struct hvc_struct {
-
-         ...
-         char out_ch;
-         char c[N_OUTBUF] __ALIGNED__;
-         int outbuf_size;
-         char outbuf[0] __ALIGNED__;
-};
-
-c[N_OUTBUF]  is only used for hvc_console_print(); out_ch is only used 
-for hvc_poll_put_char(). Thus no competition exits, the spinlock can be 
-removed.
-
-Then cons_hvcs array can only contains the buffer.
-
-Is it OK for you?  thanks
->
->> Other fix is use L1_CACHE_BYTES as the alignment, use 'sizeof(long)' as
->> dma alignment is wrong. And use struct_size() to calculate size of
->> hvc_struct.
->
-> This ought to be in separate patches.
-OK, thanks
->
-> thanks,
