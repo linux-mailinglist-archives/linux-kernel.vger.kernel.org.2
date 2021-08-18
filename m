@@ -2,68 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF823F0466
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D103F045F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 15:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236682AbhHRNOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 09:14:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33860 "EHLO mail.kernel.org"
+        id S236500AbhHRNL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 09:11:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233634AbhHRNOW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 09:14:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E6FB61053;
-        Wed, 18 Aug 2021 13:13:46 +0000 (UTC)
+        id S233722AbhHRNL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 09:11:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE0AB60232;
+        Wed, 18 Aug 2021 13:11:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629292427;
-        bh=8IJq03RMdqeG/eCNav7p0tdBwUpOJakfrHP5oq/kqZA=;
-        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
-        b=EhJPN9uUxzFB727ikx0q/V0ZPA17Lodxq83IaXNr5HzZTYKp2V7fCnbKMZsW/5/qQ
-         HoFSYQPlfkzQil2CzN0T+kqbBkXgGb3pWgMHWm+SXtJ1z2WU0AipoAYw1Ki9NcEjss
-         hVZdKi8m5tU/rP8aWlD87FfV70pr0loUbWZCB2vpHdDq+/hX8R5b+3AiC6RJW9OmGR
-         0994smDLpgUwOzc7gipILdX3XMT2W5h6syHRLq0ZLABkQyetgNU24ZrNZrBU7Tgr8D
-         m0SVBJ3p+5jkktAGGBEcOGNEAJMF3OmzW7cuhAThn1Um14s6xZYcKVmQmygSACizYh
-         LFSJoLwHoZXQA==
-References: <20210818130135.575-1-lutovinova@ispras.ru>
-User-agent: mu4e 1.6.3; emacs 27.2
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Nadezda Lutovinova <lutovinova@ispras.ru>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johan Hovold <johan@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
-Subject: Re: [PATCH] usb: gadget: mv_u3d: Change functon call in mv_u3d_probe()
-Date:   Wed, 18 Aug 2021 16:10:55 +0300
-In-reply-to: <20210818130135.575-1-lutovinova@ispras.ru>
-Message-ID: <87mtpegak8.fsf@kernel.org>
+        s=k20201202; t=1629292282;
+        bh=ARE/Rk5keQAVcABEXYM4kZItEQ5ez+wONw4AP1rt1t8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uJjiNHO6VTs2nYfLIe+ooWLNFQrHXNSoC9M5jZ1S+GlgXwnCeVNNbyWMqPPNyWjh0
+         G07H4IG9vne+ahMyDDY4DGIqnXT2WGwiqeZP6cIPDXIAaXoo0M+5H87qrCIupEe1RR
+         W8EWtuncctE16zUTgEjk7pD3HafRR2rFsMSMNl8oCLOVpseKpYQ9Cxbl7TS94Vs0aV
+         7drJoz6meBstLcvxYuF4akaxIEpx9VLkudXu1W+023VF6xOTuH/uUwXsOJ0kZ9nAMl
+         +pIHgKF6l1C7HQpICRIOxpRIaaRIJG/7n2EJJYaRLkeF5EaJEQoh773yloB/Wi1hYw
+         C03g/go8TbUrw==
+Date:   Wed, 18 Aug 2021 15:11:17 +0200
+From:   Alexey Gladkov <legion@kernel.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     "Ma, XinjianX" <xinjianx.ma@intel.com>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        lkp <lkp@intel.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "christian.brauner@ubuntu.com" <christian.brauner@ubuntu.com>,
+        "containers@lists.linux-foundation.org" 
+        <containers@lists.linux-foundation.org>,
+        "jannh@google.com" <jannh@google.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "kernel-hardening@lists.openwall.com" 
+        <kernel-hardening@lists.openwall.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "oleg@redhat.com" <oleg@redhat.com>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v11 5/9] Reimplement RLIMIT_MSGQUEUE on top of ucounts
+Message-ID: <20210818131117.x7omzb2wkjq7le3s@example.org>
+References: <d650b7794e264d5f8aa107644cc9784f@intel.com>
+ <87a6lgysxp.fsf@disp2133>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87a6lgysxp.fsf@disp2133>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 17, 2021 at 10:47:14AM -0500, Eric W. Biederman wrote:
+> "Ma, XinjianX" <xinjianx.ma@intel.com> writes:
+> 
+> > Hi Alexey,
+> >
+> > When lkp team run kernel selftests, we found after these series of patches, testcase mqueue: mq_perf_tests
+> > in kselftest failed with following message.
+> 
+> Which kernel was this run against?
+> 
+> Where can the mq_perf_tests that you ran and had problems with be found?
+> 
+> During your run were you using user namespaces as part of your test
+> environment?
+> 
+> The error message too many files corresponds to the error code EMFILES
+> which is the error code that is returned when the rlimit is reached.
+> 
+> One possibility is that your test environment was run in a user
+> namespace and so you wound up limited by rlimit of the user who created
+> the user namespace at the point of user namespace creation. 
+> 
+> At this point if you can give us enough information to look into this
+> and attempt to reproduce it that would be appreciated.
 
-Hi,
+I was able to reproduce it on master without using user namespace.
+I suspect that the maximum value is not assigned here [1]:
 
-(first of all, your subject could be a little more descriptive,
-something like:
+set_rlimit_ucount_max(&init_user_ns, UCOUNT_RLIMIT_MSGQUEUE, task_rlimit(&init_task, RLIMIT_MSGQUEUE));
 
-	usb: gadget: mv_u3d: request_irq() after initializing UDC
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/fork.c#n832
 
-as that would better detail what you're doing)
-
-Nadezda Lutovinova <lutovinova@ispras.ru> writes:
-
-> If IRQ occurs between calling  request_irq() and  mv_u3d_eps_init(),
-> then null pointer dereference occurs since u3d->eps[] wasn't
-> initialized yet but used in mv_u3d_nuke().
->
-> The patch puts registration of the interrupt handler after
-> initializing of neccesery data.
->
-> Found by Linux Driver Verification project (linuxtesting.org).
-
-this looks like an important bug fix, it probably deserves a stable tag
-here. Which commit introduce this problem? Otherr than that, commits
-looks good.
+> > If you confirm and fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot lkp@intel.com
+> >
+> > ```
+> > # selftests: mqueue: mq_perf_tests
+> > #
+> > # Initial system state:
+> > #       Using queue path:                       /mq_perf_tests
+> > #       RLIMIT_MSGQUEUE(soft):                  819200
+> > #       RLIMIT_MSGQUEUE(hard):                  819200
+> > #       Maximum Message Size:                   8192
+> > #       Maximum Queue Size:                     10
+> > #       Nice value:                             0
+> > #
+> > # Adjusted system state for testing:
+> > #       RLIMIT_MSGQUEUE(soft):                  (unlimited)
+> > #       RLIMIT_MSGQUEUE(hard):                  (unlimited)
+> > #       Maximum Message Size:                   16777216
+> > #       Maximum Queue Size:                     65530
+> > #       Nice value:                             -20
+> > #       Continuous mode:                        (disabled)
+> > #       CPUs to pin:                            3
+> > # ./mq_perf_tests: mq_open() at 296: Too many open files
+> > not ok 2 selftests: mqueue: mq_perf_tests # exit=1
+> > ```    
+> >
+> > Test env:
+> > rootfs: debian-10
+> > gcc version: 9
+> >
+> > ------
+> > Thanks 
+> > Ma Xinjian
+> 
+> Eric
+> 
 
 -- 
-balbi
+Rgrds, legion
+
