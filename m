@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5543EFE91
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5593F3EFE95
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 10:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238939AbhHRIFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 04:05:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56728 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239112AbhHRIDt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 04:03:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4438D60EB5;
-        Wed, 18 Aug 2021 08:03:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629273792;
-        bh=5FpJoSsWAijWF1s+2IOmDRgN6RifYoWI9x/j4oSsSuo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eCjsWayN9W0nDaLKUgwVjLP37cSR+eyzVa0lW+E3UgnWM8Ed+d2Ht97prOHtEab2/
-         X/x71YQb858la7JnAqUYjETDTaVoI228RR2bOvzi2OgjMVIlBlbZ/8S+YfbPlvuRmA
-         qDyrCBWHP1jugX/jb0oNaBEO+69SPhZPEsL2XnfzI82tOaQvvxwQWf2JUtBdrTIfce
-         C/L6LJmsBpGkFD6E+64WmOyCKq09uOEPezgI9Hl0j2zREAGQdwlgdGVajFmuLq70Dg
-         dLof8zrC4r3wJKXv/W4ZxGmO8mrOtxCLU11Mxet2Amkm8KUuNk49BpAAlV2VYx+8An
-         Dgwl0rIg9ooWw==
-Date:   Wed, 18 Aug 2021 11:03:09 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Yufeng Mo <moyufeng@huawei.com>
-Subject: Re: [PATCH net-next 3/6] devlink: Count struct devlink consumers
-Message-ID: <YRy+vc6nAZadagxT@unreal>
-References: <cover.1628933864.git.leonro@nvidia.com>
- <d4d59d801f4521e562c9ecf2d8767077aaefb456.1628933864.git.leonro@nvidia.com>
- <20210816084741.1dd1c415@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YRqKCVbjTZaSrSy+@unreal>
- <20210816090700.313a54ba@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210816090700.313a54ba@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S239611AbhHRIFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 04:05:42 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:58337 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239410AbhHRIEw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 04:04:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629273858; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=GEfvAY1wCaI/JfDZv+ZAirCByjz3+BoAhqBViHwLftw=; b=E9nDPhSX1NuqqRldARdb6feEV0nU7rLIRjRNb9maVqlxFk20yO/bAZhShHiw8AbtiHwUiwmv
+ Ggk5n80IB4jIu/KlJpznaDVVF1SP1O7OuoJIkNr1HBW1O7FIKsBpZxDmZPpAH+BnY4HXea26
+ YCrqP+S5zPxwdtybMkQfMgWvzAo=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 611cbef82892f803bc357027 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 18 Aug 2021 08:04:08
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7235CC43618; Wed, 18 Aug 2021 08:04:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from localhost (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 78F16C4338F;
+        Wed, 18 Aug 2021 08:04:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 78F16C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        urezki@gmail.com, frederic@kernel.org, boqun.feng@gmail.com,
+        Neeraj Upadhyay <neeraju@codeaurora.org>
+Subject: [PATCH] rcu: Fix existing exp request check in sync_sched_exp_online_cleanup()
+Date:   Wed, 18 Aug 2021 13:34:00 +0530
+Message-Id: <1629273840-729-1-git-send-email-neeraju@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 09:07:00AM -0700, Jakub Kicinski wrote:
-> On Mon, 16 Aug 2021 18:53:45 +0300 Leon Romanovsky wrote:
-> > On Mon, Aug 16, 2021 at 08:47:41AM -0700, Jakub Kicinski wrote:
-> > > On Sat, 14 Aug 2021 12:57:28 +0300 Leon Romanovsky wrote:  
-> > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > > 
-> > > > The struct devlink itself is protected by internal lock and doesn't
-> > > > need global lock during operation. That global lock is used to protect
-> > > > addition/removal new devlink instances from the global list in use by
-> > > > all devlink consumers in the system.
-> > > > 
-> > > > The future conversion of linked list to be xarray will allow us to
-> > > > actually delete that lock, but first we need to count all struct devlink
-> > > > users.  
-> > > 
-> > > Not a problem with this set but to state the obvious the global devlink
-> > > lock also protects from concurrent execution of all the ops which don't
-> > > take the instance lock (DEVLINK_NL_FLAG_NO_LOCK). You most likely know
-> > > this but I thought I'd comment on an off chance it helps.  
-> > 
-> > The end goal will be something like that:
-> > 1. Delete devlink lock
-> > 2. Rely on xa_lock() while grabbing devlink instance (past devlink_try_get)
-> > 3. Convert devlink->lock to be read/write lock to make sure that we can run
-> > get query in parallel.
-> > 4. Open devlink netlink to parallel ops, ".parallel_ops = true".
-> 
-> IIUC that'd mean setting eswitch mode would hold write lock on 
-> the dl instance. What locks does e.g. registering a dl port take 
-> then?
+The sync_sched_exp_online_cleanup() checks to see if RCU needs
+an expedited quiescent state from the incoming CPU, sending it
+an IPI if so. Before sending IPI, it checks whether expedited
+qs need has been already requested for the incoming CPU, by
+checking rcu_data.cpu_no_qs.b.exp for the current cpu, on which
+sync_sched_exp_online_cleanup() is running. This works for the
+case where incoming CPU is same as self. However, for the case
+where incoming CPU is different from self, expedited request
+won't get marked, which can potentially delay reporting of
+expedited quiescent state for the incoming CPU.
 
-write lock, because we are adding port to devlink->port_list.
-   9099 int devlink_port_register(struct devlink *devlink,
-   9100                           struct devlink_port *devlink_port,
-   9101                           unsigned int port_index)
-   9102 {
-   ...
-   9115         list_add_tail(&devlink_port->list, &devlink->port_list);
+Fixes: e015a3411220 ("rcu: Avoid self-IPI in sync_sched_exp_online_cleanup()")
+Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+---
+ kernel/rcu/tree_exp.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index d9e4f8e..f3947c4 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -759,7 +759,7 @@ static void sync_sched_exp_online_cleanup(int cpu)
+ 	my_cpu = get_cpu();
+ 	/* Quiescent state either not needed or already requested, leave. */
+ 	if (!(READ_ONCE(rnp->expmask) & rdp->grpmask) ||
+-	    __this_cpu_read(rcu_data.cpu_no_qs.b.exp)) {
++	    rdp->cpu_no_qs.b.exp) {
+ 		put_cpu();
+ 		return;
+ 	}
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
+hosted by The Linux Foundation
+
