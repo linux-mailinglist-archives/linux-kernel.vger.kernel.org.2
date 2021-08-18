@@ -2,138 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF2E3EFFC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61AE33EFFC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 11:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbhHRJAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 05:00:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhHRJAm (ORCPT
+        id S231143AbhHRJAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 05:00:51 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1098 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230344AbhHRJAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:00:42 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D56C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 02:00:08 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1mGHQc-0002M3-OJ; Wed, 18 Aug 2021 11:00:06 +0200
-Subject: Re: [PATCH V3 2/3] dt-bindings: gpio: zynqmp: Add binding
- documentation for modepin
-To:     Piyush Mehta <piyush.mehta@xilinx.com>, arnd@arndb.de,
-        zou_wei@huawei.com, gregkh@linuxfoundation.org,
-        linus.walleij@linaro.org, michal.simek@xilinx.com,
-        wendy.liang@xilinx.com, iwamatsu@nigauri.org,
-        bgolaszewski@baylibre.com, robh+dt@kernel.org,
-        rajan.vaja@xilinx.com
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        git@xilinx.com, sgoud@xilinx.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-References: <20210818081018.2620544-1-piyush.mehta@xilinx.com>
- <20210818081018.2620544-3-piyush.mehta@xilinx.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <5e44ee87-f727-99fd-9860-d3d58a035dc4@pengutronix.de>
-Date:   Wed, 18 Aug 2021 11:00:05 +0200
+        Wed, 18 Aug 2021 05:00:49 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17I8Zf1n077928;
+        Wed, 18 Aug 2021 05:00:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=koZyDJ5M5B8mJGjjUNX6ImXe8elhxJEcIzpkDgjwuBI=;
+ b=sF4VTXbbEVuJCun4EYhS6vp/thcQg4eogzm0qc0BEDoGHKrEFXG5IS64lPU0nE0JC8xl
+ 2ep35x6j8p5Pm8WqmREeIQhq9FM/kf4NHqmoaJXEMomnkj+OoHeefcGP5/8tMKcx9F6v
+ IbOac10qaDOEcSCUo63icVRxIKHIheVH+NJYgaANfwqzJFZHjR4fVlaEuJDZ1LIwN4el
+ 3kiC7b9ijW3EQdofbJ+PAX0m6uy3nT+w6NxwABq8wjodcA+UTIHEX0K3uqN9/pgnd2hK
+ Zo3f9Iops05iRBuh7dVmsdjL3K26m3hlGM0l0zIB3jUMoMFwJ45v8PmddqqnPQQcctUm Gw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3agcf67fbp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Aug 2021 05:00:14 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17I8ccXo085286;
+        Wed, 18 Aug 2021 05:00:14 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3agcf67fa3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Aug 2021 05:00:14 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17I8wQIp027686;
+        Wed, 18 Aug 2021 09:00:11 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06fra.de.ibm.com with ESMTP id 3ae53hded1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Aug 2021 09:00:11 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17I907Rk50463196
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Aug 2021 09:00:07 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7D5E411C058;
+        Wed, 18 Aug 2021 09:00:07 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9021E11C073;
+        Wed, 18 Aug 2021 09:00:06 +0000 (GMT)
+Received: from li-7e0de7cc-2d9d-11b2-a85c-de26c016e5ad.ibm.com (unknown [9.171.50.49])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 18 Aug 2021 09:00:06 +0000 (GMT)
+Subject: Re: [PATCH 1/2] KVM: s390: gaccess: Cleanup access to guest frames
+To:     David Hildenbrand <david@redhat.com>,
+        Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
+        kvm@vger.kernel.org, borntraeger@de.ibm.com, frankja@linux.ibm.com,
+        imbrenda@linux.ibm.com, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Cc:     cohuck@redhat.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210816150718.3063877-1-scgl@linux.ibm.com>
+ <20210816150718.3063877-2-scgl@linux.ibm.com>
+ <d11128bb-18f6-5210-6f42-74a89d8edcf7@redhat.com>
+From:   Janis Schoetterl-Glausch <scgl@linux.vnet.ibm.com>
+Message-ID: <3326a23b-be19-4461-6268-809d4ed194e8@linux.vnet.ibm.com>
+Date:   Wed, 18 Aug 2021 11:00:06 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210818081018.2620544-3-piyush.mehta@xilinx.com>
+In-Reply-To: <d11128bb-18f6-5210-6f42-74a89d8edcf7@redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: wmzpbC0jIajJkIWG-rhofcUhKMMC6FRQ
+X-Proofpoint-GUID: nLpErGr8BYpo90rsZOXxLoVSZthVwYJw
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-18_03:2021-08-17,2021-08-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ mlxscore=0 suspectscore=0 phishscore=0 adultscore=0 priorityscore=1501
+ bulkscore=0 clxscore=1015 mlxlogscore=999 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108180052
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.08.21 10:10, Piyush Mehta wrote:
-> This patch adds DT binding document for zynqmp modepin GPIO controller.
-> Modepin GPIO controller has four GPIO pins which can be configurable
-> as input or output.
+On 8/18/21 9:54 AM, David Hildenbrand wrote:
+> On 16.08.21 17:07, Janis Schoetterl-Glausch wrote:
+>> Introduce a helper function for guest frame access.
+>> Rewrite the calculation of the gpa and the length of the segment
+>> to be more readable.
+>>
+>> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
+>> ---
+>>   arch/s390/kvm/gaccess.c | 48 +++++++++++++++++++++++++----------------
+>>   1 file changed, 29 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/arch/s390/kvm/gaccess.c b/arch/s390/kvm/gaccess.c
+>> index b9f85b2dc053..df83de0843de 100644
+>> --- a/arch/s390/kvm/gaccess.c
+>> +++ b/arch/s390/kvm/gaccess.c
+>> @@ -827,11 +827,26 @@ static int guest_page_range(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar,
+>>       return 0;
+>>   }
+>>   +static int access_guest_frame(struct kvm *kvm, enum gacc_mode mode, gpa_t gpa,
+>> +                  void *data, unsigned int len)
 > 
-> Modepin driver is a bridge between the peripheral driver and GPIO pins.
-> It has set and get APIs for accessing GPIO pins, based on the device-tree
-> entry of reset-gpio property in the peripheral driver, every pin can be
-> configured as input/output and trigger GPIO pin.
+> I know, "frame" is a beautiful term for "page" -- can we just avoid using it because we're not using it anywhere else here? :)
 > 
-> For more information please refer zynqMp TRM link:
-> Link: https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf
-> Chapter 2: Signals, Interfaces, and Pins
-> Table 2-2: Clock, Reset, and Configuration Pins - PS_MODE
+> What's wrong with "access_guest_page()" ?
+
+Ok, I'll use page for consistency's sake.
 > 
-> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
-> Acked-by: Michal Simek <michal.simek@xilinx.com>
-> ---
-> Changes in v2:
-> - Addressed review comments: Update commit message
 > 
-> Review Comments:
-> https://lore.kernel.org/linux-arm-kernel/20210615080553.2021061-2-piyush.mehta@xilinx.com/T/#mbd1fbda813e33b19397b350bde75747c92a0d7e1
-> https://lore.kernel.org/linux-arm-kernel/20210615080553.2021061-2-piyush.mehta@xilinx.com/T/#me82b1444ab3776162cdb0077dfc9256365c7e736
+>> +{
+>> +    gfn_t gfn = gpa_to_gfn(gpa);
+>> +    unsigned int offset = offset_in_page(gpa);
+>> +    int rc;
 > 
-> Changes in v3:
-> - Addressed Rob and Michal review comments:
->   - Update DT example. 
+> You could turn both const. You might want to consider reverse-christmas-treeing this.
+
+Ok
 > 
-> Review Comments:
-> https://lore.kernel.org/linux-arm-kernel/YRbBnRS0VosXcZWz@robh.at.kernel.org/
-> https://lore.kernel.org/linux-arm-kernel/d71ad7f9-6972-8cc0-6dfb-b5306c9900d0@xilinx.com/
-> ---
->  .../bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml    | 41 ++++++++++++++++++++++
->  .../bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml    | 43 ++++++++++++++++++++++
->  1 file changed, 43 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml
+>> +
+>> +    if (mode == GACC_STORE)
+>> +        rc = kvm_write_guest_page(kvm, gfn, data, offset, len);
+>> +    else
+>> +        rc = kvm_read_guest_page(kvm, gfn, data, offset, len);
 > 
-> diff --git a/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml b/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml
-> new file mode 100644
-> index 0000000..1442815
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml
-> @@ -0,0 +1,43 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/gpio/xlnx,zynqmp-gpio-modepin.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: ZynqMP Mode Pin GPIO controller
-> +
-> +description:
-> +  PS_MODE is 4-bits boot mode pins sampled on POR deassertion. Mode Pin
-> +  GPIO controller with configurable from numbers of pins (from 0 to 3 per
-> +  PS_MODE). Every pin can be configured as input/output.
-So, at Linux runtime, someone decides to boot the system into e.g. a USB
-recovery mode and then toggles the appropriate GPIOs and does a system
-reset?
+> Personally, I prefer passing in pfn + offset instead of a gpa. Also avoids having to convert back and forth.
 
-If so, are you aware of the reboot mode[1] infrastructure?
+In access_guest_real we get back the gpa directly from the translation function.
+After the next patch the same is true for access_guest.
+So using gpas everywhere is nicer.
+And if we were to introduce a len_in_page function the offset would not even show up as an intermediary.
+> 
+>> +    return rc;
+>> +}
+>> +
+>>   int access_guest(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar, void *data,
+>>            unsigned long len, enum gacc_mode mode)
+>>   {
+>>       psw_t *psw = &vcpu->arch.sie_block->gpsw;
+>> -    unsigned long _len, nr_pages, gpa, idx;
+>> +    unsigned long nr_pages, gpa, idx;
+>> +    unsigned int seg;
+> 
+> Dito, reverse christmas tree might be worth keeping.
+> 
+>>       unsigned long pages_array[2];
+>>       unsigned long *pages;
+>>       int need_ipte_lock;
+>> @@ -855,15 +870,12 @@ int access_guest(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar, void *data,
+>>           ipte_lock(vcpu);
+>>       rc = guest_page_range(vcpu, ga, ar, pages, nr_pages, asce, mode);
+>>       for (idx = 0; idx < nr_pages && !rc; idx++) {
+>> -        gpa = *(pages + idx) + (ga & ~PAGE_MASK);
+>> -        _len = min(PAGE_SIZE - (gpa & ~PAGE_MASK), len);
+>> -        if (mode == GACC_STORE)
+>> -            rc = kvm_write_guest(vcpu->kvm, gpa, data, _len);
+>> -        else
+>> -            rc = kvm_read_guest(vcpu->kvm, gpa, data, _len);
+>> -        len -= _len;
+>> -        ga += _len;
+>> -        data += _len;
+>> +        gpa = pages[idx] + offset_in_page(ga);
+>> +        seg = min(PAGE_SIZE - offset_in_page(gpa), len);
+>> +        rc = access_guest_frame(vcpu->kvm, mode, gpa, data, seg);
+>> +        len -= seg;
+>> +        ga += seg;
+>> +        data += seg;
+>>       }
+>>       if (need_ipte_lock)
+>>           ipte_unlock(vcpu);
+>> @@ -875,19 +887,17 @@ int access_guest(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar, void *data,
+>>   int access_guest_real(struct kvm_vcpu *vcpu, unsigned long gra,
+>>                 void *data, unsigned long len, enum gacc_mode mode)
+>>   {
+>> -    unsigned long _len, gpa;
+>> +    unsigned long gpa;
+>> +    unsigned int seg;
+>>       int rc = 0;
+>>         while (len && !rc) {
+>>           gpa = kvm_s390_real_to_abs(vcpu, gra);
+>> -        _len = min(PAGE_SIZE - (gpa & ~PAGE_MASK), len);
+>> -        if (mode)
+>> -            rc = write_guest_abs(vcpu, gpa, data, _len);
+>> -        else
+>> -            rc = read_guest_abs(vcpu, gpa, data, _len);
+>> -        len -= _len;
+>> -        gra += _len;
+>> -        data += _len;
+>> +        seg = min(PAGE_SIZE - offset_in_page(gpa), len);
+> 
+> What does "seg" mean? I certainly know when "len" means -- which is also what the function eats.
+> 
+>> +        rc = access_guest_frame(vcpu->kvm, mode, gpa, data, seg);
+>> +        len -= seg;
+>> +        gra += seg;
+>> +        data += seg;
+>>       }
+>>       return rc;
+>>   }
+>>
+> 
+> 
 
-A reboot-mode-gpio driver on top of this GPIO controller would allow you
-to describe the supported reboot modes in the device tree and instead of
-exporting GPIOs to userspace, users can then just do
-
-	systemctl restart recovery
-
-to toggle the appropriate bits.
-
-Also to be sure: PS_MODE are actual GPIO pins that you could toggle
-board level components with, right? i.e. it's not just a register that
-overrides the values read from the boot mode pins? (In the latter case
-a syscon-reboot-mode without GPIO controller would be the correct
-abstraction).
-
-[1]: drivers/power/reset/reboot-mode.c
-
-Cheers,
-Ahmad
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
