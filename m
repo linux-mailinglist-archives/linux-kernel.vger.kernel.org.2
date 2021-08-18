@@ -2,69 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 063C23EFDC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E436E3EFDD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 09:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239122AbhHRHaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 03:30:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28961 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239020AbhHRH3y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 03:29:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629271757;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wHdlhPVb5zDB2T7TPY+IaDHYh45fMOraPn2aUPWXsOA=;
-        b=ZZfdCTlIsbta2lKS3lWm9Xi1mpDHAQj4e7rR1Ha4yszE63LcwvWBihP37uBDjVUhKSl8M9
-        PyH9C5L1U+I//WMV5HWLAiDs9TooIyA0GZiiWHLDGqJuzi1JrT8aiAoPYBW4goMBr4LpJT
-        K3Ymr80C3ujW1ArNLc4R6YmpH8i06QI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-514-E_jdO8OqN_qkGlNMT1-Q0g-1; Wed, 18 Aug 2021 03:29:16 -0400
-X-MC-Unique: E_jdO8OqN_qkGlNMT1-Q0g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 03277C73A0;
-        Wed, 18 Aug 2021 07:29:15 +0000 (UTC)
-Received: from T590 (ovpn-8-40.pek2.redhat.com [10.72.8.40])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 18A871AC7E;
-        Wed, 18 Aug 2021 07:29:02 +0000 (UTC)
-Date:   Wed, 18 Aug 2021 15:28:56 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     axboe@kernel.dk, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, kashyap.desai@broadcom.com,
-        hare@suse.de
-Subject: Re: [PATCH v2 07/11] blk-mq: Add
- blk_mq_tag_update_sched_shared_sbitmap()
-Message-ID: <YRy2uAXiIwgfeK2u@T590>
-References: <1628519378-211232-1-git-send-email-john.garry@huawei.com>
- <1628519378-211232-8-git-send-email-john.garry@huawei.com>
+        id S238878AbhHRHhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 03:37:54 -0400
+Received: from mga07.intel.com ([134.134.136.100]:49516 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238231AbhHRHhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 03:37:52 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10079"; a="280011578"
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
+   d="scan'208";a="280011578"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 00:37:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
+   d="scan'208";a="462650649"
+Received: from pl-dbox.sh.intel.com (HELO pl-dbox) ([10.239.159.39])
+  by orsmga007.jf.intel.com with ESMTP; 18 Aug 2021 00:37:12 -0700
+Date:   Wed, 18 Aug 2021 15:31:26 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] kbuild: Enable -Wimplicit-fallthrough for clang 14.0.0+
+Message-ID: <20210818073126.GA1648816@pl-dbox>
+References: <CAHk-=wgFXOf9OUh3+vmWjhp1PC47RVsUkL0NszBxSWhbGzx4tw@mail.gmail.com>
+ <5c856f36-69a7-e274-f72a-c3aef195adeb@kernel.org>
+ <202108171056.EDCE562@keescook>
+ <3f28b45e-e725-8b75-042a-d34d90c56361@kernel.org>
+ <CAK7LNAQFgYgavTP2ZG9Y16XBVdPuJ98J_Ty1OrQy1GXHq6JjQQ@mail.gmail.com>
+ <71d76c41-7f9b-6d60-ba4f-0cd84596b457@embeddedor.com>
+ <202108171602.159EB2C7EA@keescook>
+ <72ae69b4-6069-ade5-a12b-8ee0435f803a@kernel.org>
+ <20210818042720.GA1645557@pl-dbox>
+ <d19dd1f7-3898-227a-3d7d-25cddb0434d0@embeddedor.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1628519378-211232-8-git-send-email-john.garry@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <d19dd1f7-3898-227a-3d7d-25cddb0434d0@embeddedor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 10:29:34PM +0800, John Garry wrote:
-> Put the functionality to update the sched shared sbitmap size in a common
-> function.
+On Tue, Aug 17, 2021 at 11:45:48PM -0500, Gustavo A. R. Silva wrote:
 > 
-> Since the same formula is always used to resize, and it can be got from
-> the request queue argument, so just pass the request queue pointer.
 > 
-> Signed-off-by: John Garry <john.garry@huawei.com>
+> On 8/17/21 23:27, Philip Li wrote:
+> 
+> >> Philip, how often is the kernel test robot's clang version rebuilt? Would it
+> >> be possible to bump it to latest ToT or at least
+> >> 9ed4a94d6451046a51ef393cd62f00710820a7e8 so that we do not get bit by this
+> >> warning when we go to enable this flag?
+> > Got it, currently we do upgrade in weekly cadence (but it may fall behind sometimes),
+> > and the one we use now is clang version 14.0.0 (https://github.com/llvm/llvm-project 
+> > 2c6448cdc2f68f8c28fd0bd9404182b81306e6e6)
+> > 
+> > We will ugrade to the head of llvm-project master today.
+> 
+> Thanks, Philip. We really appreciate it.
+you are welcome. Per the upgrade in this noon. Now we start to use below commit to
+do further clang build test (which is after the required 9ed4a94d6451)
 
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
+commit d2b574a4dea5b718e4386bf2e26af0126e5978ce
+Author: Marco Elver <elver@google.com>
+Date:   Tue Aug 17 16:54:07 2021 +0200
 
--- 
-Ming
+    tsan: test: Initialize all fields of Params struct
 
+Thanks
+
+> --
+> Gustavo
