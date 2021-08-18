@@ -2,193 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D403F08E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:19:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6351F3F08EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 18:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230340AbhHRQTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 12:19:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44024 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229768AbhHRQTo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 12:19:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F19560231;
-        Wed, 18 Aug 2021 16:19:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629303549;
-        bh=nFGWEatyoVZm5BKItv+MghOP+U8KyOP5AVAhWaVeD6Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kOYu8JYt809KMUzm6aT8DMWtud7QpRc5QVHhAgkXQT1rQbHPjMrPLhnh2D9Q5z0WC
-         9/8lTB9Xv0liOOF4OTXPRAdFYEOFauHDzLPk3t6BouHiszoeNFr08/W6/avIOEoXOO
-         oxbpMzfLOJ8rfd4k5OG5W6J1KqDzswH6xuCCEFgwzJJ2wVhHRqHF3xnldDSaBImX0W
-         22TeUVPd4UuWPZucmgtjqQhayAaWyhJtIfcDQMsfZqm1K/AFiNhGv8sVrv0z0sQ2we
-         ypDp+NGZWkm9UsVcVKHwl6mCzs32lxeGWg/SQ6mOK0RxKOB9C5vw2tgPM0m5cL0cd9
-         mke1IrY7VmVnw==
-Date:   Thu, 19 Aug 2021 01:19:07 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v6 6/7] tracing/probe: Change traceprobe_set_print_fmt()
- to take a type
-Message-Id: <20210819011907.83294c9d97657bb9c483282a@kernel.org>
-In-Reply-To: <20210817035027.987567364@goodmis.org>
-References: <20210817034255.421910614@goodmis.org>
-        <20210817035027.987567364@goodmis.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229889AbhHRQVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 12:21:06 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:42338 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229558AbhHRQVE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 12:21:04 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id 97D4A1F427CD
+Subject: Re: [PATCH v5 02/11] futex2: Implement vectorized wait
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Collabora kernel ML <kernel@collabora.com>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        pgriffais@valvesoftware.com, z.figura12@gmail.com,
+        Joel Fernandes <joel@joelfernandes.org>,
+        malteskarupke@fastmail.fm, Linux API <linux-api@vger.kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        GNU C Library <libc-alpha@sourceware.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter Oskolkov <posk@posk.io>,
+        Andrey Semashev <andrey.semashev@gmail.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Adhemerval Zanella <adhemerval.zanella@linaro.org>
+References: <20210709001328.329716-1-andrealmeid@collabora.com>
+ <20210709001328.329716-3-andrealmeid@collabora.com>
+ <CAK8P3a0MO1qJLRkCH8KrZ3+=L66KOsMRmcbrUvYdMoKykdKoyQ@mail.gmail.com>
+From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+Message-ID: <d2bfc20e-6ea8-8422-7dee-6687e50f3709@collabora.com>
+Date:   Wed, 18 Aug 2021 13:20:16 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <CAK8P3a0MO1qJLRkCH8KrZ3+=L66KOsMRmcbrUvYdMoKykdKoyQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Aug 2021 23:43:01 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Hi Arnd,
 
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Thank you for your feedback.
+
+Às 05:50 de 17/08/21, Arnd Bergmann escreveu:
+> On Fri, Jul 9, 2021 at 2:13 AM André Almeida <andrealmeid@collabora.com> wrote:
+>>
+>> Add support to wait on multiple futexes. This is the interface
+>> implemented by this syscall:
+>>
+>> futex_waitv(struct futex_waitv *waiters, unsigned int nr_futexes,
+>>             unsigned int flags, struct timespec *timo)
+>>
+>> struct futex_waitv {
+>>         __u64 val;
+>>         void *uaddr;
+>>         unsigned int flags;
+>> };
 > 
-> Instead of a boolean "is_return" have traceprobe_set_print_fmt() take a
-> type (currently just PROBE_PRINT_NORMAL and PROBE_PRINT_RETURN). This will
-> simplify adding different types. For example, the development of the
-> event_probe, will need its own type as it prints an event, and not an IP.
-
-This looks good and reasonable to me.
-
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thank you!
-
+> You should generally try to avoid structures with implicit padding
+> like this one.
 > 
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  kernel/trace/trace_kprobe.c | 9 +++++++--
->  kernel/trace/trace_probe.c  | 3 ++-
->  kernel/trace/trace_probe.h  | 7 ++++++-
->  kernel/trace/trace_uprobe.c | 8 ++++++--
->  4 files changed, 21 insertions(+), 6 deletions(-)
+>>  arch/x86/entry/syscalls/syscall_32.tbl |   1 +
+>>  arch/x86/entry/syscalls/syscall_64.tbl |   1 +
+>>  include/linux/compat.h                 |   9 +
+>>  include/linux/futex.h                  | 108 ++++++--
+>>  include/uapi/asm-generic/unistd.h      |   4 +-
 > 
-> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> index ca726c9d0859..c6fe7a6e3f35 100644
-> --- a/kernel/trace/trace_kprobe.c
-> +++ b/kernel/trace/trace_kprobe.c
-> @@ -742,6 +742,7 @@ static int __trace_kprobe_create(int argc, const char *argv[])
->  	bool is_return = false;
->  	char *symbol = NULL, *tmp = NULL;
->  	const char *event = NULL, *group = KPROBE_EVENT_SYSTEM;
-> +	enum probe_print_type ptype;
->  	int maxactive = 0;
->  	long offset = 0;
->  	void *addr = NULL;
-> @@ -875,7 +876,8 @@ static int __trace_kprobe_create(int argc, const char *argv[])
->  			goto error;	/* This can be -ENOMEM */
->  	}
->  
-> -	ret = traceprobe_set_print_fmt(&tk->tp, is_return);
-> +	ptype = is_return ? PROBE_PRINT_RETURN : PROBE_PRINT_NORMAL;
-> +	ret = traceprobe_set_print_fmt(&tk->tp, ptype);
->  	if (ret < 0)
->  		goto error;
->  
-> @@ -1799,6 +1801,7 @@ struct trace_event_call *
->  create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
->  			  bool is_return)
->  {
-> +	enum probe_print_type ptype;
->  	struct trace_kprobe *tk;
->  	int ret;
->  	char *event;
-> @@ -1822,7 +1825,9 @@ create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
->  
->  	init_trace_event_call(tk);
->  
-> -	if (traceprobe_set_print_fmt(&tk->tp, trace_kprobe_is_return(tk)) < 0) {
-> +	ptype = trace_kprobe_is_return(tk) ?
-> +		PROBE_PRINT_RETURN : PROBE_PRINT_NORMAL;
-> +	if (traceprobe_set_print_fmt(&tk->tp, ptype) < 0) {
->  		ret = -ENOMEM;
->  		goto error;
->  	}
-> diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-> index 0916a9964719..a8dcadeaae95 100644
-> --- a/kernel/trace/trace_probe.c
-> +++ b/kernel/trace/trace_probe.c
-> @@ -912,9 +912,10 @@ static int __set_print_fmt(struct trace_probe *tp, char *buf, int len,
->  }
->  #undef LEN_OR_ZERO
->  
-> -int traceprobe_set_print_fmt(struct trace_probe *tp, bool is_return)
-> +int traceprobe_set_print_fmt(struct trace_probe *tp, enum probe_print_type ptype)
->  {
->  	struct trace_event_call *call = trace_probe_event_call(tp);
-> +	bool is_return = ptype == PROBE_PRINT_RETURN;
->  	int len;
->  	char *print_fmt;
->  
-> diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
-> index 42aa084902fa..8adf5f3542a6 100644
-> --- a/kernel/trace/trace_probe.h
-> +++ b/kernel/trace/trace_probe.h
-> @@ -363,7 +363,12 @@ extern int traceprobe_split_symbol_offset(char *symbol, long *offset);
->  int traceprobe_parse_event_name(const char **pevent, const char **pgroup,
->  				char *buf, int offset);
->  
-> -extern int traceprobe_set_print_fmt(struct trace_probe *tp, bool is_return);
-> +enum probe_print_type {
-> +	PROBE_PRINT_NORMAL,
-> +	PROBE_PRINT_RETURN,
-> +};
-> +
-> +extern int traceprobe_set_print_fmt(struct trace_probe *tp, enum probe_print_type ptype);
->  
->  #ifdef CONFIG_PERF_EVENTS
->  extern struct trace_event_call *
-> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-> index 590bb9a02f8d..09f8ca7f7ba0 100644
-> --- a/kernel/trace/trace_uprobe.c
-> +++ b/kernel/trace/trace_uprobe.c
-> @@ -536,6 +536,7 @@ static int __trace_uprobe_create(int argc, const char **argv)
->  	const char *event = NULL, *group = UPROBE_EVENT_SYSTEM;
->  	char *arg, *filename, *rctr, *rctr_end, *tmp;
->  	char buf[MAX_EVENT_NAME_LEN];
-> +	enum probe_print_type ptype;
->  	struct path path;
->  	unsigned long offset, ref_ctr_offset;
->  	bool is_return = false;
-> @@ -687,7 +688,8 @@ static int __trace_uprobe_create(int argc, const char **argv)
->  			goto error;
->  	}
->  
-> -	ret = traceprobe_set_print_fmt(&tu->tp, is_ret_probe(tu));
-> +	ptype = is_ret_probe(tu) ? PROBE_PRINT_RETURN : PROBE_PRINT_NORMAL;
-> +	ret = traceprobe_set_print_fmt(&tu->tp, ptype);
->  	if (ret < 0)
->  		goto error;
->  
-> @@ -1578,6 +1580,7 @@ struct trace_event_call *
->  create_local_trace_uprobe(char *name, unsigned long offs,
->  			  unsigned long ref_ctr_offset, bool is_return)
->  {
-> +	enum probe_print_type ptype;
->  	struct trace_uprobe *tu;
->  	struct path path;
->  	int ret;
-> @@ -1612,7 +1615,8 @@ create_local_trace_uprobe(char *name, unsigned long offs,
->  	tu->filename = kstrdup(name, GFP_KERNEL);
->  	init_trace_event_call(tu);
->  
-> -	if (traceprobe_set_print_fmt(&tu->tp, is_ret_probe(tu)) < 0) {
-> +	ptype = is_ret_probe(tu) ? PROBE_PRINT_RETURN : PROBE_PRINT_NORMAL;
-> +	if (traceprobe_set_print_fmt(&tu->tp, ptype) < 0) {
->  		ret = -ENOMEM;
->  		goto error;
->  	}
-> -- 
-> 2.30.2
+> I would split out the syscall table changes from the implementation, but then
+> do the table changes for all architectures, at least when you get to a version
+> that gets close to being accepted.
+> 
 
+Ok, I'll make sure to do that.
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+>> +#ifdef CONFIG_COMPAT
+>> +/**
+>> + * compat_futex_parse_waitv - Parse a waitv array from userspace
+>> + * @futexv:    Kernel side list of waiters to be filled
+>> + * @uwaitv:     Userspace list to be parsed
+>> + * @nr_futexes: Length of futexv
+>> + *
+>> + * Return: Error code on failure, pointer to a prepared futexv otherwise
+>> + */
+>> +static int compat_futex_parse_waitv(struct futex_vector *futexv,
+>> +                                   struct compat_futex_waitv __user *uwaitv,
+>> +                                   unsigned int nr_futexes)
+>> +{
+>> +       struct compat_futex_waitv aux;
+>> +       unsigned int i;
+>> +
+>> +       for (i = 0; i < nr_futexes; i++) {
+>> +               if (copy_from_user(&aux, &uwaitv[i], sizeof(aux)))
+>> +                       return -EFAULT;
+>> +
+>> +               if ((aux.flags & ~FUTEXV_WAITER_MASK) ||
+>> +                   (aux.flags & FUTEX_SIZE_MASK) != FUTEX_32)
+>> +                       return -EINVAL;
+>> +
+>> +               futexv[i].w.flags = aux.flags;
+>> +               futexv[i].w.val = aux.val;
+>> +               futexv[i].w.uaddr = compat_ptr(aux.uaddr);
+>> +               futexv[i].q = futex_q_init;
+>> +       }
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +COMPAT_SYSCALL_DEFINE4(futex_waitv, struct compat_futex_waitv __user *, waiters,
+>> +                      unsigned int, nr_futexes, unsigned int, flags,
+>> +                      struct __kernel_timespec __user *, timo)
+>> +{
+>> +       struct hrtimer_sleeper to;
+>> +       struct futex_vector *futexv;
+>> +       struct timespec64 ts;
+>> +       ktime_t time;
+>> +       int ret;
+> 
+> It would be nice to reduce the duplication a little. compat_sys_futex_waitv()
+> and sys_futex_waitv() only differ by a single line, in which they call
+> a different
+> parse function, and the two parse functions only differ in the layout of the
+> user space structure. The get_timespec64() call already has an
+> in_compat_syscall() check in it, so I would suggest having a single entry
+> point for native and compat mode, but either having the parse function
+> add another such check or making the structure layout compatible.
+> 
+> The normal way of doing this is to have a __u64 value instead of the pointer,
+> and then using u64_to_uptr() for the conversion. It might be nice to
+> add a global
+> 
+> typedef __u64 __kernel_uptr_t;
+> 
+> for this purpose.
+> 
+
+You're right, I could save a lot of lines doing that. I wasn't aware
+that get_timespec64() was "compat-aware". I'll apply those changes for
+my next version.
+
+>        Arnd
+> 
