@@ -2,79 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 039353F0CE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 22:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7813F0CE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 22:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233425AbhHRUl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 16:41:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33012 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233153AbhHRUlZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 16:41:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F849610FE;
-        Wed, 18 Aug 2021 20:40:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629319249;
-        bh=5tva/r9Oj0UN/sp05F4nzM/MGgwTGTX7IE9UMourYXU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VdcITPKrE0bBE3TiHA/Q3+5HDAfoqXbDQWtuid/rwPLd1IKqT+WWma5fdxulLtuJZ
-         BM3LlBiCapRxMv2a01i2ll4V7JcuqC9KiK6ci4WTeigum3IyQdxQ0N+swNxxX06BgA
-         obnZ9tDmC72NXvvcHvX6mvNg2rthYw7l5TthRoF8=
-Date:   Wed, 18 Aug 2021 22:40:47 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Aakash Hemadri <aakashhemadri123@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH] staging: r8188eu: clean up endianness issues
-Message-ID: <YR1wT0cLoiuXsIEM@kroah.com>
-References: <8a3fca82d9ec5dde9e42d40f0268a324cc87ebc6.1629301854.git.aakashhemadri123@gmail.com>
+        id S233690AbhHRUmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 16:42:20 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:52068
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230440AbhHRUmT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 16:42:19 -0400
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 52E6E3F044
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 20:41:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629319303;
+        bh=UOE20OlnZGDBI1w8hzaIpuPN6xfmK8WguChjFrKnZuU=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=AMPMxxlzH93EbqKkvvLs1/DuQFC7yPashajwqCWDTb5Z9STiD2KQD41p3+feaJbPp
+         /cavtIUhM2VD1MxPW7G9Pv9TOz0eUjj1uCFo4t/f6c0z0V4e7J1eWINFZGX4DmGZwg
+         /V9g9bFGwUVunKivZPtwf+GOK3tvuP0OLH7ybfssKcqx9c51xRFTvCHxFn73IFxyHJ
+         xCOGkA/NksndsMW8fZQ6Abiu+eVTqGyJJ3lttmpJQ6IDjMTDMSWp5pOczdmsfKLXsn
+         elTPpgn1cjxoz4n6IVIyL+lyUFHLky2PUsVs/GC/3m11yuONC2thZ7mTLXMiewr1Vx
+         WFBrpiBsD0KsA==
+Received: by mail-ed1-f71.google.com with SMTP id b25-20020a05640202d9b02903be7281a80cso1674146edx.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 13:41:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UOE20OlnZGDBI1w8hzaIpuPN6xfmK8WguChjFrKnZuU=;
+        b=InOUtfxyyHQjwrd6fUFLRJL5N/y4BzbEhPs5KqEP7zUnca0N4tLsITnFMxncNSz/ou
+         AHV0FUmTJkNN5H/5hkmPGbGy99OpTGAe9MilWe3QiIplkxuPiURmwolUXEZJPcdOhvdk
+         g/+6683Gdj/8YY6xWLpuqoZs2LjKVTDZRqyosZSMaqmh9kLuSMJtpQFX7c2VJKrQREPG
+         fpw3ALDKDHTD2iV+SJmeGx7wFo+KAUtKnfYdiz72CE66Jtoaqj2ouIo4ToO9ViD1id+U
+         TQ7zs0L32LLUjYUrerJQOv/jc+Dq6T+niYSB0BmLujazm0fl1evX9lA/mBQ13BvgZp1l
+         LSHg==
+X-Gm-Message-State: AOAM53146KRbSIFpd06EUa9sz+9EUTp59t+f7u7qocF1D2vGXWZigXml
+        Ooa2l7hesEUtDdgyy7wzDdY8F0bWX3qpe5divMpVlvBqT2gTsixrdvaQX4EfYISr1vOVouESY8Y
+        o8FEohpB6qz3qpAe4wuwH55bZuNPTxMF18x97eWVt6g==
+X-Received: by 2002:a17:906:bc81:: with SMTP id lv1mr11590280ejb.393.1629319303109;
+        Wed, 18 Aug 2021 13:41:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzuYU3uP7y//yQFosQFGT8VE96LJF4E5eKGo52ons6ugHXq2GC+IHUQY+3g7aV0U22I95MmCg==
+X-Received: by 2002:a17:906:bc81:: with SMTP id lv1mr11590254ejb.393.1629319302920;
+        Wed, 18 Aug 2021 13:41:42 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.42.198])
+        by smtp.gmail.com with ESMTPSA id kv4sm360228ejc.35.2021.08.18.13.41.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Aug 2021 13:41:42 -0700 (PDT)
+Subject: Re: [PATCH v3 00/13] MT8195 SMI support
+To:     Yong Wu <yong.wu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        anan.sun@mediatek.com, ming-fan.chen@mediatek.com,
+        yi.kuo@mediatek.com, anthony.huang@mediatek.com,
+        Ikjoon Jang <ikjn@chromium.org>
+References: <20210810080859.29511-1-yong.wu@mediatek.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <1a160afd-ceeb-04a3-8213-fe781ec18e30@canonical.com>
+Date:   Wed, 18 Aug 2021 22:41:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8a3fca82d9ec5dde9e42d40f0268a324cc87ebc6.1629301854.git.aakashhemadri123@gmail.com>
+In-Reply-To: <20210810080859.29511-1-yong.wu@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 09:22:36PM +0530, Aakash Hemadri wrote:
-> Fix these sparse warnings:
+On 10/08/2021 10:08, Yong Wu wrote:
+> This patchset mainly adds SMI support for mt8195.
 > 
-> > rtw_br_ext.c:73:23: warning: restricted __be16 degrades to integer
+> Comparing with the previous version, add two new functions:
+> a) add smi sub common
+> b) add initial setting for smi-common and smi-larb.
 > 
-> Here tag->tag_len is be16, use ntohs()
-> 
-> > rtw_br_ext.c:601:57: warning: incorrect type in assignment (different base types)
-> > rtw_br_ext.c:601:57:    expected unsigned short
-> > rtw_br_ext.c:601:57:    got restricted __be16 [usertype]
-> 
-> > rtw_br_ext.c:664:45: warning: cast to restricted __be16
-> > rtw_br_ext.c:771:84: warning: incorrect type in argument 3 (different base types)
-> > rtw_br_ext.c:771:84:    expected unsigned int [usertype] len
-> 
-> Cast MAGIC_CODE as unsigned short
-> 
-> > rtw_br_ext.c:771:84:    got restricted __be16 [usertype] payload_len
-> > rtw_br_ext.c:773:110: warning: incorrect type in argument 2 (different base types)
-> > rtw_br_ext.c:773:110:    expected int len
-> > rtw_br_ext.c:773:110:    got restricted __be16 [usertype] payload_len
-> 
-> > rtw_br_ext.c:836:54: warning: cast to restricted __be32
-> 
-> Unnecessary double cast?
-> 
-> > rtw_br_ext.c:839:70: warning: restricted __be16 degrades to integer
-> > rtw_br_ext.c:845:70: warning: invalid assignment: |=
-> > rtw_br_ext.c:845:70:    left side has type unsigned short
-> > rtw_br_ext.c:845:70:    right side has type restricted __be16
-> 
-> dhcp->flag is u16
+> Change note:
+> v3:1) In the dt-binding:
+>        a. Change mediatek,smi type from phandle-array to phandle from Rob.
+>        b. Add a new bool property (mediatek,smi_sub_common)
+>           to indicate if this is smi-sub-common.
+>    2) Change the clock using bulk parting.
+>       keep the smi-common's has_gals flag. more strict.
+>    3) More comment about larb initial setting.
+>    4) Add a maintain patch
 
-That is a lot of different things all at once.  Please break this up
-into one-logical-change at a time and send a patch series.
+The patchset looks good to me but I saw now comments from Rob, so I
+expect a resend. Therefore there is also time for additional review -
+maybe continued by Ikjoon Jang?
 
-thanks,
+If you sent a v4 with fixes rather soon and get ack from Rob, I could
+still try to get it into next merge window. After this weekend I won't
+be taking patches for this cycle and it will wait for the merge window
+to finish.
 
-greg k-h
+
+Best regards,
+Krzysztof
