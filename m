@@ -2,368 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0F13F0689
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD463F0668
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 16:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239803AbhHROXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 10:23:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239637AbhHROWt (ORCPT
+        id S239542AbhHROUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 10:20:11 -0400
+Received: from mail-lj1-f172.google.com ([209.85.208.172]:44901 "EHLO
+        mail-lj1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240282AbhHROSE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 10:22:49 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAED6C061D73;
-        Wed, 18 Aug 2021 07:17:04 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so3855951otf.6;
-        Wed, 18 Aug 2021 07:17:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MTrq4MWiD0jHz6dQsXwiM7un+x87SnGMy8PpS4ND41s=;
-        b=e6oCACt8II/QhoyQTozoa8tX8Pe+dAkO+JriZGdWPMa8w73Zw2059Pq7uaZdmedMxP
-         KFO5wjs5mxhl2rkUqGCHS3SA1XBUB6w2drABIkJUNCEGpr8IuJTLd5QHW91ZSu3nLJjH
-         +VFblj84ZCZKDu6yih1neYbSUgdE1W6h3Wco25LM90ANtpZnOdHe5EhQN87e8fcUr0OA
-         mZJSACqNUiifj+NTdEmBXD/bCoIi58eLFRhloKyY/55O87P5gAOr3TUi/ljAan9n96Sy
-         D2RQlKpFTnHSWDKY6aUk97r83C4awjmK1F1AklcVzUGdgeemyuvvr5CuQY4DjCXGx71U
-         j5pA==
+        Wed, 18 Aug 2021 10:18:04 -0400
+Received: by mail-lj1-f172.google.com with SMTP id s3so5368473ljp.11;
+        Wed, 18 Aug 2021 07:17:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MTrq4MWiD0jHz6dQsXwiM7un+x87SnGMy8PpS4ND41s=;
-        b=mvXv3p6GRqLJ8hSetnhnjXK8q2j6Zknb0swFB/h2mvv3Vcte1eEEZRJoVVgT7EP2PJ
-         hHu75uk9DQGvxt7otk5vOV+XLGDT6bLoqsm9VCiGhQe31e9gNYEeQKNyjFVLVgu+l2xh
-         1JiRlRz3R1WFWPPyXpUWeZM9wSJYIfjFwEpfLQ/zCc1fSJ6wxECrI855Q2iMF/BewkK3
-         fDCh1DRQSRIJ164IrHm8aLuqjWCXWrXB5w6FNe/aU8lYKdlazdBpnojiXu7P74g1vrp3
-         oa5UglvGbO9w+kMwOTOHIz/pWCInG7+bgYXa1m9OaLmwH0rV3tCE1prOIG8VA8VugEU3
-         Bukg==
-X-Gm-Message-State: AOAM530bYQVkofHAp6LuUizXUQQxB+RfthgybOGFnLE+Wy+6WM0RWscG
-        Y4nAEjmmiofD3Z2AoRLpoHwDhRf5hwY=
-X-Google-Smtp-Source: ABdhPJxkSJ/GcidqlNKvML3rYsbVl9V0j0W8nFjcWBb+pMZoUXi7fqKNEm63bjvvfUnf8wXJ8yad3g==
-X-Received: by 2002:a05:6830:4102:: with SMTP id w2mr7349771ott.166.1629296223977;
-        Wed, 18 Aug 2021 07:17:03 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w16sm32218oih.19.2021.08.18.07.17.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 07:17:03 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] usb: typec: tcpm: Raise vdm_sm_running flag only when VDM
- SM is running
-To:     Kyle Tso <kyletso@google.com>, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org
-Cc:     badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210816075449.2236547-1-kyletso@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <05b01a2e-b1ee-4111-2e3c-897990544c0a@roeck-us.net>
-Date:   Wed, 18 Aug 2021 07:17:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K/KWYvHcqVpUzLr8JbrCL76Se9urIzWUVDVPiL6TmZU=;
+        b=T4h2HS29ofcRhFYFz9lWN8S7SGDxXgA48eFeLFDwlYn+URbfdb86TxxX4ClkBPWKEe
+         XOWvb3kuLbelH5+qsxjYAjY64mDUdTONjugfTLgpXxfHRKn+++AktYCXktKe6NgM0j1/
+         8GVDx4D4BVyAHahlUkuZcCf/1mUtAGPhaCVQFo9hmBG+/K3G1ikFJ1WmlqXv0davYvGO
+         VrjguedWAriZioyiWBv8zIN7g1Nje6w9w9D20+BkgIWgaKqN5oNbkrT2vQQgHlSwf1wu
+         SHWooNpWCXbYBuC41AXj67Ud1myst58CEadIJIch501uWWmJpoj4RGeHjYVrXDznXTai
+         paTQ==
+X-Gm-Message-State: AOAM531WtUgg6Bjx9y5SJnpIj4hspE+IUYLctsOIXxbaQGi8Ssh8tm/D
+        nxUi9/eINH87rZAyDKE5katWN+AI080MgfEQnIZl/MS2hqKcrA==
+X-Google-Smtp-Source: ABdhPJzc+nvVVOhtjHxwe1PrcIjGkMwaa/M1M9roeDmN+ouHKjmxltdcg9RPbykdyYNDPvj5B8jP0HzRaM4NUJrY/g8=
+X-Received: by 2002:a2e:9999:: with SMTP id w25mr8116060lji.359.1629296248311;
+ Wed, 18 Aug 2021 07:17:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210816075449.2236547-1-kyletso@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
+ <20210815033248.98111-3-mailhol.vincent@wanadoo.fr> <20210816084235.fr7fzau2ce7zl4d4@pengutronix.de>
+ <CAMZ6RqK5t62UppiMe9k5jG8EYvnSbFW3doydhCvp72W_X2rXAw@mail.gmail.com>
+ <20210816122519.mme272z6tqrkyc6x@pengutronix.de> <20210816123309.pfa57tke5hrycqae@pengutronix.de>
+ <20210816134342.w3bc5zjczwowcjr4@pengutronix.de> <CAMZ6RqJFxKSZahAMz9Y8hpPJPh858jxDEXsRm1YkTwf4NFAFwg@mail.gmail.com>
+ <20210817200123.4wcdwsdfsdjr3ovk@pengutronix.de> <CAMZ6RqKsjPF2gBbzsKatFG7S4qcOahSX9vSU=dj_e9R-Kqq0CA@mail.gmail.com>
+ <20210818122923.hvxmffoi5rf7rbe6@pengutronix.de>
+In-Reply-To: <20210818122923.hvxmffoi5rf7rbe6@pengutronix.de>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Wed, 18 Aug 2021 23:17:16 +0900
+Message-ID: <CAMZ6Rq+H4u9D41Fdx+J-kj35g3GVRqoYvDiHtR3LGMXfRjcsiA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/7] can: bittiming: allow TDC{V,O} to be zero and add can_tdc_const::tdc{v,o,f}_min
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-can <linux-can@vger.kernel.org>,
+        =?UTF-8?Q?Stefan_M=C3=A4tje?= <Stefan.Maetje@esd.eu>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/16/21 12:54 AM, Kyle Tso wrote:
-> If the port is going to send Discover_Identity Message, vdm_sm_running
-> flag was intentionally set before entering Ready States in order to
-> avoid the conflict because the port and the port partner might start
-> AMS at almost the same time after entering Ready States.
-> 
-> However, the original design has a problem. When the port is doing
-> DR_SWAP from Device to Host, it raises the flag. Later in the
-> tcpm_send_discover_work, the flag blocks the procedure of sending the
-> Discover_Identity and it might never be cleared until disconnection.
-> 
-> Since there exists another flag send_discover representing that the port
-> is going to send Discover_Identity or not, it is enough to use that flag
-> to prevent the conflict. Also change the timing of the set/clear of
-> vdm_sm_running to indicate whether the VDM SM is actually running or
-> not.
-> 
-> Fixes: c34e85fa69b9 ("usb: typec: tcpm: Send DISCOVER_IDENTITY from dedicated work")
-> Cc: Badhri Jagan Sridharan <badhri@google.com>
-> Signed-off-by: Kyle Tso <kyletso@google.com>
+On Wed. 18 Aug 2021 at 21:29, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> On 18.08.2021 18:22:33, Vincent MAILHOL wrote:
+> > > Backwards compatibility using an old ip tool on a new kernel/driver must
+> > > work.
+> >
+> > I am not trying to argue against backward compatibility :)
+> > My comment was just to point out that I had other intents as well.
+> >
+> > > In case of the mcp251xfd the tdc mode must be activated and tdcv
+> > > set to the automatic calculated value and tdco automatically measured.
+> >
+> > Sorry but I am not sure if I will follow you. Here, do you mean
+> > that "nothing" should do the "fully automated" calculation?
+>
+> Sort of.
+> The use case is the old ip tool with a driver that supports tdc, for
+> CAN-FD to work it must be configured in fully automated mode.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+The current patch does that: "nothing" means that both TDC_AUTO
+and TDC_MANUAL are not set, same as what an old ip tool would
+do. And that triggers the default (fully automated) mode (call
+can_calc_tdco()).
 
-> ---
->   drivers/usb/typec/tcpm/tcpm.c | 81 ++++++++++++++++-------------------
->   1 file changed, 38 insertions(+), 43 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 5b22a1c931a9..c05ddfbaff08 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -341,6 +341,7 @@ struct tcpm_port {
->   	bool vbus_source;
->   	bool vbus_charge;
->   
-> +	/* Set to true when Discover_Identity Command is expected to be sent in Ready states. */
->   	bool send_discover;
->   	bool op_vsafe5v;
->   
-> @@ -370,6 +371,7 @@ struct tcpm_port {
->   	struct hrtimer send_discover_timer;
->   	struct kthread_work send_discover_work;
->   	bool state_machine_running;
-> +	/* Set to true when VDM State Machine has following actions. */
->   	bool vdm_sm_running;
->   
->   	struct completion tx_complete;
-> @@ -1431,6 +1433,7 @@ static void tcpm_queue_vdm(struct tcpm_port *port, const u32 header,
->   	/* Set ready, vdm state machine will actually send */
->   	port->vdm_retries = 0;
->   	port->vdm_state = VDM_STATE_READY;
-> +	port->vdm_sm_running = true;
->   
->   	mod_vdm_delayed_work(port, 0);
->   }
-> @@ -1673,7 +1676,6 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
->   				rlen = 1;
->   			} else {
->   				tcpm_register_partner_altmodes(port);
-> -				port->vdm_sm_running = false;
->   			}
->   			break;
->   		case CMD_ENTER_MODE:
-> @@ -1721,14 +1723,12 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
->   				      (VDO_SVDM_VERS(svdm_version));
->   			break;
->   		}
-> -		port->vdm_sm_running = false;
->   		break;
->   	default:
->   		response[0] = p[0] | VDO_CMDT(CMDT_RSP_NAK);
->   		rlen = 1;
->   		response[0] = (response[0] & ~VDO_SVDM_VERS_MASK) |
->   			      (VDO_SVDM_VERS(svdm_version));
-> -		port->vdm_sm_running = false;
->   		break;
->   	}
->   
-> @@ -1765,6 +1765,20 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
->   	}
->   
->   	if (PD_VDO_SVDM(p[0])) {
-> +		/*
-> +		 * Here a SVDM is received (INIT or RSP or unknown). Set the vdm_sm_running in
-> +		 * advance because we are dropping the lock but may send VDMs soon.
-> +		 * For the cases of INIT received:
-> +		 *  - If no response to send, it will be cleared later in this function.
-> +		 *  - If there are responses to send, it will be cleared in the state machine.
-> +		 * For the cases of RSP received:
-> +		 *  - If no further INIT to send, it will be cleared later in this function.
-> +		 *  - Otherwise, it will be cleared in the state machine if timeout or it will go
-> +		 *    back here until no further INIT to send.
-> +		 * For the cases of unknown type received:
-> +		 *  - We will send NAK and the flag will be cleared in the state machine.
-> +		 */
-> +		port->vdm_sm_running = true;
->   		rlen = tcpm_pd_svdm(port, adev, p, cnt, response, &adev_action);
->   	} else {
->   		if (port->negotiated_rev >= PD_REV30)
-> @@ -1833,6 +1847,8 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
->   
->   	if (rlen > 0)
->   		tcpm_queue_vdm(port, response[0], &response[1], rlen - 1);
-> +	else
-> +		port->vdm_sm_running = false;
->   }
->   
->   static void tcpm_send_vdm(struct tcpm_port *port, u32 vid, int cmd,
-> @@ -1898,8 +1914,10 @@ static void vdm_run_state_machine(struct tcpm_port *port)
->   		 * if there's traffic or we're not in PDO ready state don't send
->   		 * a VDM.
->   		 */
-> -		if (port->state != SRC_READY && port->state != SNK_READY)
-> +		if (port->state != SRC_READY && port->state != SNK_READY) {
-> +			port->vdm_sm_running = false;
->   			break;
-> +		}
->   
->   		/* TODO: AMS operation for Unstructured VDM */
->   		if (PD_VDO_SVDM(vdo_hdr) && PD_VDO_CMDT(vdo_hdr) == CMDT_INIT) {
-> @@ -2555,10 +2573,6 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->   								       TYPEC_PWR_MODE_PD,
->   								       port->pps_data.active,
->   								       port->supply_voltage);
-> -				/* Set VDM running flag ASAP */
-> -				if (port->data_role == TYPEC_HOST &&
-> -				    port->send_discover)
-> -					port->vdm_sm_running = true;
->   				tcpm_set_state(port, SNK_READY, 0);
->   			} else {
->   				/*
-> @@ -2596,14 +2610,10 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->   		switch (port->state) {
->   		case SNK_NEGOTIATE_CAPABILITIES:
->   			/* USB PD specification, Figure 8-43 */
-> -			if (port->explicit_contract) {
-> +			if (port->explicit_contract)
->   				next_state = SNK_READY;
-> -				if (port->data_role == TYPEC_HOST &&
-> -				    port->send_discover)
-> -					port->vdm_sm_running = true;
-> -			} else {
-> +			else
->   				next_state = SNK_WAIT_CAPABILITIES;
-> -			}
->   
->   			/* Threshold was relaxed before sending Request. Restore it back. */
->   			tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_PD,
-> @@ -2618,10 +2628,6 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->   			port->pps_status = (type == PD_CTRL_WAIT ?
->   					    -EAGAIN : -EOPNOTSUPP);
->   
-> -			if (port->data_role == TYPEC_HOST &&
-> -			    port->send_discover)
-> -				port->vdm_sm_running = true;
-> -
->   			/* Threshold was relaxed before sending Request. Restore it back. */
->   			tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_PD,
->   							       port->pps_data.active,
-> @@ -2697,10 +2703,6 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->   			}
->   			break;
->   		case DR_SWAP_SEND:
-> -			if (port->data_role == TYPEC_DEVICE &&
-> -			    port->send_discover)
-> -				port->vdm_sm_running = true;
-> -
->   			tcpm_set_state(port, DR_SWAP_CHANGE_DR, 0);
->   			break;
->   		case PR_SWAP_SEND:
-> @@ -2738,7 +2740,7 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->   					   PD_MSG_CTRL_NOT_SUPP,
->   					   NONE_AMS);
->   		} else {
-> -			if (port->vdm_sm_running) {
-> +			if (port->send_discover) {
->   				tcpm_queue_message(port, PD_MSG_CTRL_WAIT);
->   				break;
->   			}
-> @@ -2754,7 +2756,7 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->   					   PD_MSG_CTRL_NOT_SUPP,
->   					   NONE_AMS);
->   		} else {
-> -			if (port->vdm_sm_running) {
-> +			if (port->send_discover) {
->   				tcpm_queue_message(port, PD_MSG_CTRL_WAIT);
->   				break;
->   			}
-> @@ -2763,7 +2765,7 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->   		}
->   		break;
->   	case PD_CTRL_VCONN_SWAP:
-> -		if (port->vdm_sm_running) {
-> +		if (port->send_discover) {
->   			tcpm_queue_message(port, PD_MSG_CTRL_WAIT);
->   			break;
->   		}
-> @@ -4479,18 +4481,20 @@ static void run_state_machine(struct tcpm_port *port)
->   	/* DR_Swap states */
->   	case DR_SWAP_SEND:
->   		tcpm_pd_send_control(port, PD_CTRL_DR_SWAP);
-> +		if (port->data_role == TYPEC_DEVICE || port->negotiated_rev > PD_REV20)
-> +			port->send_discover = true;
->   		tcpm_set_state_cond(port, DR_SWAP_SEND_TIMEOUT,
->   				    PD_T_SENDER_RESPONSE);
->   		break;
->   	case DR_SWAP_ACCEPT:
->   		tcpm_pd_send_control(port, PD_CTRL_ACCEPT);
-> -		/* Set VDM state machine running flag ASAP */
-> -		if (port->data_role == TYPEC_DEVICE && port->send_discover)
-> -			port->vdm_sm_running = true;
-> +		if (port->data_role == TYPEC_DEVICE || port->negotiated_rev > PD_REV20)
-> +			port->send_discover = true;
->   		tcpm_set_state_cond(port, DR_SWAP_CHANGE_DR, 0);
->   		break;
->   	case DR_SWAP_SEND_TIMEOUT:
->   		tcpm_swap_complete(port, -ETIMEDOUT);
-> +		port->send_discover = false;
->   		tcpm_ams_finish(port);
->   		tcpm_set_state(port, ready_state(port), 0);
->   		break;
-> @@ -4502,7 +4506,6 @@ static void run_state_machine(struct tcpm_port *port)
->   		} else {
->   			tcpm_set_roles(port, true, port->pwr_role,
->   				       TYPEC_HOST);
-> -			port->send_discover = true;
->   		}
->   		tcpm_ams_finish(port);
->   		tcpm_set_state(port, ready_state(port), 0);
-> @@ -4645,8 +4648,6 @@ static void run_state_machine(struct tcpm_port *port)
->   		break;
->   	case VCONN_SWAP_SEND_TIMEOUT:
->   		tcpm_swap_complete(port, -ETIMEDOUT);
-> -		if (port->data_role == TYPEC_HOST && port->send_discover)
-> -			port->vdm_sm_running = true;
->   		tcpm_set_state(port, ready_state(port), 0);
->   		break;
->   	case VCONN_SWAP_START:
-> @@ -4662,14 +4663,10 @@ static void run_state_machine(struct tcpm_port *port)
->   	case VCONN_SWAP_TURN_ON_VCONN:
->   		tcpm_set_vconn(port, true);
->   		tcpm_pd_send_control(port, PD_CTRL_PS_RDY);
-> -		if (port->data_role == TYPEC_HOST && port->send_discover)
-> -			port->vdm_sm_running = true;
->   		tcpm_set_state(port, ready_state(port), 0);
->   		break;
->   	case VCONN_SWAP_TURN_OFF_VCONN:
->   		tcpm_set_vconn(port, false);
-> -		if (port->data_role == TYPEC_HOST && port->send_discover)
-> -			port->vdm_sm_running = true;
->   		tcpm_set_state(port, ready_state(port), 0);
->   		break;
->   
-> @@ -4677,8 +4674,6 @@ static void run_state_machine(struct tcpm_port *port)
->   	case PR_SWAP_CANCEL:
->   	case VCONN_SWAP_CANCEL:
->   		tcpm_swap_complete(port, port->swap_status);
-> -		if (port->data_role == TYPEC_HOST && port->send_discover)
-> -			port->vdm_sm_running = true;
->   		if (port->pwr_role == TYPEC_SOURCE)
->   			tcpm_set_state(port, SRC_READY, 0);
->   		else
-> @@ -5028,9 +5023,6 @@ static void _tcpm_pd_vbus_on(struct tcpm_port *port)
->   	switch (port->state) {
->   	case SNK_TRANSITION_SINK_VBUS:
->   		port->explicit_contract = true;
-> -		/* Set the VDM flag ASAP */
-> -		if (port->data_role == TYPEC_HOST && port->send_discover)
-> -			port->vdm_sm_running = true;
->   		tcpm_set_state(port, SNK_READY, 0);
->   		break;
->   	case SNK_DISCOVERY:
-> @@ -5425,15 +5417,18 @@ static void tcpm_send_discover_work(struct kthread_work *work)
->   	if (!port->send_discover)
->   		goto unlock;
->   
-> +	if (port->data_role == TYPEC_DEVICE && port->negotiated_rev < PD_REV30) {
-> +		port->send_discover = false;
-> +		goto unlock;
-> +	}
-> +
->   	/* Retry if the port is not idle */
->   	if ((port->state != SRC_READY && port->state != SNK_READY) || port->vdm_sm_running) {
->   		mod_send_discover_delayed_work(port, SEND_DISCOVER_RETRY_MS);
->   		goto unlock;
->   	}
->   
-> -	/* Only send the Message if the port is host for PD rev2.0 */
-> -	if (port->data_role == TYPEC_HOST || port->negotiated_rev > PD_REV20)
-> -		tcpm_send_vdm(port, USB_SID_PD, CMD_DISCOVER_IDENT, NULL, 0);
-> +	tcpm_send_vdm(port, USB_SID_PD, CMD_DISCOVER_IDENT, NULL, 0);
->   
->   unlock:
->   	mutex_unlock(&port->lock);
-> 
+> > In your previous message, you said:
+> >
+> > > Does it make sense to let "mode auto" without a tdco value switch the
+> > > controller into full automatic mode and /* nothing */ not tough the tdc
+> > > config at all?
+> >
+> > So, you would like this behavior:
+> >
+> > | mode auto, no tdco provided -> kernel decides between TDC_AUTO and TDC off.
+>
+> NACK - mode auto, no tdco -> TDC_AUTO with tdco calculated by the kernel
 
+Currently, the tdco calculation is paired with the decision to
+enable or not TDC. If dbrp is one or two, then do the tdco
+calculation, else, TDC is off (c.f. can_calc_tdco()). This
+behaviour is to follow ISO 11898-1 which states that TDC is only
+applicable if data BRP is one or two. In the current patch I
+allow to have TDC enabled with a dbrp greater than 2 only if the
+tdco is provided by the user (i.e. I allow the user to forcefully
+go against ISO but the automatic calculation guarantees
+compliance).
+
+So what do you suggest to do when drbp is greater than 2? Still
+enable TDC (and violate ISO standard) or return an error
+code (e.g. -ENOTSUPP)?
+
+> > | mode auto, tdco provided -> TDC_AUTO
+>
+> ACK - TDC_AUTO with user supplied tdco
+>
+> > | mode manual, tdcv and tdco provided -> TDC_MANUAL
+>
+> ACK - TDC_MANUAL with tdco and tdcv user provided
+>
+> > | mode off is not needed anymore (redundant with "nothing")
+> > (TDCF left out of the picture intentionally)
+>
+> NACK - TDC is switched off
+
+Same as the current patch then :)
+
+> > | "nothing" -> TDC is off (not touch the tdc config at all)
+>
+> NACK - do not touch TDC setting, use previous setting
+
+Sorry but I still fail to understand your definition of "do not
+touch".
+
+The first time you start a device, all the structures are zeroed
+out meaning that TDC is off to begin with.  So the first time the
+user do something like:
+
+| ip link set can0 type can bitrate 1000000 dbitrate 8000000 fd on
+
+If you "do not touch" TDC it means that all TDC values stays at
+zero, i.e. TDC stays off. This would contradict point 1/.
+
+> > Correct?
+>
+> See above. Plus a change that addresses your issue 1/ from below.
+>
+> If driver supports TDC it should be initially brought into TDC auto
+> mode, if no TDC mode is given. Maybe we need an explizit TDC off to make
+> that work.
+>
+> > If you do so, I see three issues:
+> >
+> > 1/ Some of the drivers already implement TDC. Those will
+> > automatically do a calculation as long as FD is on. If "nothing"
+> > now brings TDC off, some users will find themselves with some
+> > error on the bus after the iproute2 update if they continue using
+> > the same command.
+>
+> Nothing would mean "do not touch" and as TDC auto is default a new ip
+> would work out of the box. Old ip will work, too. Just failing to decode
+> TDC_AUTO...
+
+See above: if you "do not touch", my understanding is that the
+old ip tool will indefinitely keep TDC to its initial value:
+everything zeroed out.
+
+To turn TDC auto, you will eventually call can_calc_tdco() and
+that will touch something.
+
+> > 2/ Users will need to read and understand how to use the TDC
+> > parameters of iproute2. And by experience, too many people just
+> > don't read the doc. If I can make the interface transparent and
+> > do the correct thing by default ("nothing"), I prefer to do so.
+>
+> ACK, see above
+>
+> > 3/ Final one is more of a nitpick. The mode auto might result in
+> > TDC being off. If we have a TDC_AUTO flag, I would expect the
+> > auto mode to always set that flag (unless error occurs). I see
+> > this to be slightly counter intuitive (I recognize that my
+> > solution also has some aspects which are not intuitive, I just
+> > want to point here that none are perfect).
+>
+> What are the corner cases where TDC_AUTO results in TDC off?
+
+dbrp greater than 2 (see above).
+
+> > To be honest, I really preferred the v1 of this series where
+> > there were no tdc-mode {auto,manual,off} and where the "off"
+> > behavior was controlled by setting TDCO to zero. However, as we
+> > realized, zero is a valid value and thus, I had to add all this
+> > complexity just to allow that damn zero value.
+>
+> Maybe we should not put the TDC mode _not_ into ctrl-mode, but info a
+> dedicated tdc-mode (which is not bit-field) inside the struct tdc?
+
+If you do so, then you would need both a tdcmode and a
+tdcmode_supported in order for the device to announce which modes
+it supports (same as the ctrlmode and ctrlmode_supported in
+can_priv). I seriously thought about this option but it seemed
+like reinventing the wheel for me.
+
+Also, it needs to be bit field to differentiate between a device
+which would only support manual mode, one device which would only
+support auto mode and one device which would support both.
+
+
+Yours sincerely,
+Vincent
