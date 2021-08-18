@@ -2,152 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFFA93EFC3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6193E3EFC44
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Aug 2021 08:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238176AbhHRGXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 02:23:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48040 "EHLO
+        id S238324AbhHRGX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 02:23:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237947AbhHRGXe (ORCPT
+        with ESMTP id S237947AbhHRGX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 02:23:34 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BECFC061764;
-        Tue, 17 Aug 2021 23:23:00 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id i28so3039419ljm.7;
-        Tue, 17 Aug 2021 23:23:00 -0700 (PDT)
+        Wed, 18 Aug 2021 02:23:56 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B2EC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:23:21 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id b15so2670966ejg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Aug 2021 23:23:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HRbW8G1xwSB2ls1NijjktR4beuv1neTM9+sNIEIh1SY=;
-        b=QhekG6HEhPh05G6EVGmH5gG1vsu7rLtXHoMmf8TooWyY48CtokKXpp3Ao28M9gzDIL
-         bOVJgsJpVuu4U6ZWhqbn/zzSzP/fh3SXlt9kSPpa9GZDTZZhDmzkZCL094g6b3/xpTlq
-         nR0VqcsEMuT8DrZzKg9OpHD9vAWhvLMA9THzTn2p/fALoh3IOyqRWsGfYkKKKn80LTpF
-         0ONjMpwOjktQ6neNrcoQ/FCq6G1LpKBpZ2d3r2xDohXQf3R33Yqsm7PvyRSmOAMdrmX2
-         8g7Na8C+8jCc1UJQu7St/hkelmGm9SnYblY2IzzA+hu0M9oU3v9y97qHAydPZ+UblpGW
-         RUgg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=OtuTHgk1vpqukCNNGvb6/1jnVEMLRfbzK5iP4DPgChc=;
+        b=USJwsT0QGrIMRQazK6too1bYjc1/Jr6MZpIJhiprZhMs9JWgurShMOdabEiA68Lp2N
+         MPWIHF6t9cOMkm9A/e+p9Xlslq+EJcFSCiO45bK5aX5+E5LcclT1ymONdwm93OMPT3Tc
+         0OgV0CLW2VIQ7gvdVdfLPTzXTc2vJAck3jCRHOxbRS7FaekfGd0j2fqAmDqk8lYFP5Xv
+         MIsdkA3YtTNVFBkRVsB+zc5NxKEl7TREkRLYk2loK45b2r0dzFv0l1zEBaRvmq+GQgIP
+         YkvqkZ7Zi3chTbay3j3YuMaTXZlFPUdci50JXGhg3ZPLFvv4q59boXGSuD8uYg4Ov3tA
+         Jndw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HRbW8G1xwSB2ls1NijjktR4beuv1neTM9+sNIEIh1SY=;
-        b=ena2CNacUns3FV3/aQkd2xATzx7JekVKL5+A/9nVDDeA+CacHLtkC6bkkARPmbOctJ
-         JP3i8O/B6y92K4tmG+Vx02Sgqx9avieFVu1N9DmjqgCKa4iE7SJKy2bJd745uzb6fCng
-         otHvp6VWBqARfnP38rK5HPjf5FZpNEkVPCNIzwc3gklTv5dd1KsVcGH95aWrnhKB51/v
-         BL389qyFVo41t8k2VSNDT8ctI3EKHr3X3TSubpOs8ytIEZ34RAQEnTUdlW0+R7zuj/sV
-         GJtQYWT6R2ddJ3hZWa2gfiOPl+KEhRL8yLaFI2ZrRDZ1LD5y+dl8piu+U8Gt45n8AYQ4
-         FXnQ==
-X-Gm-Message-State: AOAM530gJNojWuaDn5fB3w4rB2rJZYqAItjm3lVsC9jaopXK1Oz6jK7I
-        QT1v3hcWkTlQtExD9i5wFfLdmbhb9X0=
-X-Google-Smtp-Source: ABdhPJyL01ZM7X19Ri9kaNq915zcz165uE238H3LdTxs+q0TxSrtrvPc1BOJdsnl0Akd4i2Y2iKECw==
-X-Received: by 2002:a2e:a785:: with SMTP id c5mr6383685ljf.434.1629267778216;
-        Tue, 17 Aug 2021 23:22:58 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-85-91.dynamic.spd-mgts.ru. [46.138.85.91])
-        by smtp.googlemail.com with ESMTPSA id w4sm503212ljg.99.2021.08.17.23.22.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Aug 2021 23:22:57 -0700 (PDT)
-Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20210817012754.8710-1-digetx@gmail.com>
- <20210817012754.8710-2-digetx@gmail.com>
- <20210817075515.vyyv7z37e6jcrhsl@vireshk-i7>
- <710261d9-7ae3-5155-c0a2-f8aed2408d0b@gmail.com>
- <20210818035533.ieqkexltfvvf2p4n@vireshk-i7>
- <5b2a80c1-9743-e633-6257-ede94c8a274c@gmail.com>
- <20210818043131.7klajx6drvvkftoc@vireshk-i7>
- <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
- <20210818045307.4brb6cafkh3adjth@vireshk-i7>
- <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
- <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
-Date:   Wed, 18 Aug 2021 09:22:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=OtuTHgk1vpqukCNNGvb6/1jnVEMLRfbzK5iP4DPgChc=;
+        b=fq1aiTN7vsISW+K/xuOJskzuxhpQklE+nvPGkADNsMQe83Z2fIJMmZwOS2VlxodknC
+         D/eL79cldlDr6W6UeUU9SEFyPRVN3683VY8yZ5T+UFMPTO/LL4dw28doTGeWkDLx60Kp
+         oKGzTbkc/EpE82fKpG6qqbau+k6B4z4ZE4nv4vX+EOW/Sa0M2gxFgcBqudzn42/V1ogj
+         Uo9ncjlg6uabFSdNbwypDndQu7uEaQQ8NofUIgpcf82ic9jgQmz2xtK2CyalM1m0/iWp
+         lIVxlE6t+7LwqZxWdk6VTYV8+G8/RTSmobO3Q3K4mq+OM/nYMGWpTL1SUOXdRuFXO7OC
+         txYQ==
+X-Gm-Message-State: AOAM531HQgm5Qm/IVXBk74zuRnykcyyQ0pqMZENMycK3qFYXYdpZWghO
+        XaptKQi9HleQ+aL8bE53eIs=
+X-Google-Smtp-Source: ABdhPJxjfwat/n+QRrqqUm5kAjo8tQ+A40RJTEcBVq/E0MOXa9s+GDtTlSt9MEmg/WQhabWfhIGTgQ==
+X-Received: by 2002:a17:907:2cf1:: with SMTP id hz17mr2892026ejc.438.1629267800444;
+        Tue, 17 Aug 2021 23:23:20 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
+        by smtp.gmail.com with ESMTPSA id e22sm2054955eds.45.2021.08.17.23.23.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 23:23:19 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Joe Perches <joe@perches.com>, Greg KH <gregkh@linuxfoundation.org>
+Cc:     Michael Straube <straube.linux@gmail.com>,
+        Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: r8188eu: refactor rtw_is_cckrates{only}_included()
+Date:   Wed, 18 Aug 2021 08:23:18 +0200
+Message-ID: <2509261.CYLKgzzBkz@localhost.localdomain>
+In-Reply-To: <YRwEyrSLTPl/KY9t@kroah.com>
+References: <20210816193125.15700-1-straube.linux@gmail.com> <11a09af791c5453175a6bdac1c51bd9fcb0685bd.camel@perches.com> <YRwEyrSLTPl/KY9t@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-18.08.2021 08:58, Viresh Kumar пишет:
-> On 18-08-21, 08:21, Dmitry Osipenko wrote:
->> Yes, GENPD will cache the perf state across suspend/resume and initially
->> cached value is out of sync with h/w.
->>
->> Nothing else. But let me clarify it all again.
+On Tuesday, August 17, 2021 8:49:46 PM CEST Greg KH wrote:
+> On Tue, Aug 17, 2021 at 11:36:09AM -0700, Joe Perches wrote:
+> > On Tue, 2021-08-17 at 19:57 +0200, Greg KH wrote:
+> > > On Mon, Aug 16, 2021 at 09:31:25PM +0200, Michael Straube wrote:
+> > > > Refactor functions rtw_is_cckrates_included() and
+> > > > rtw_is_cckratesonly_included(). Add new helper function rtw_is_cckrate()
+> > > > that allows to make the code more compact. Improves readability and
+> > > > slightly reduces object file size. Change the return type to bool to
+> > > > reflect that the functions return boolean values.
+> > []
+> > > > diff --git a/drivers/staging/r8188eu/core/rtw_ieee80211.c b/drivers/staging/r8188eu/core/rtw_ieee80211.c
+> > []
+> > > > +bool rtw_is_cckratesonly_included(u8 *rate)
+> > > >  {
+> > > > -	u32 i = 0;
+> > > > +	u8 r;
+> > > >  
+> > > > 
+> > > > -	while (rate[i] != 0) {
+> > > > -		if  ((((rate[i]) & 0x7f) != 2) && (((rate[i]) & 0x7f) != 4) &&
+> > > > -		     (((rate[i]) & 0x7f) != 11)  && (((rate[i]) & 0x7f) != 22))
+> > > > +	while ((r = *rate++)) {
+> > > 
+> > > Ick, no.
+> > > 
+> > > While it might be fun to play with pointers like this, trying to
+> > > determine the precedence issues involved with reading from, and then
+> > > incrementing the pointer like this is crazy.
+> > > 
+> > > The original was obvious as to how it was walking through the array.
+> > 
+> > It's sad to believe *ptr++ is not obvious to you as it's very commonly
+> > used in the kernel sources (over 10,000 instances).
 > 
-> Thanks for your explanation.
+> There's lots of sad things in life :(
 > 
->> Initially the performance state of all GENPDs is 0 for all devices.
->>
->> The clock rate is preinitialized for all devices to a some default rate
->> by clk driver, or by bootloader or by assigned-clocks in DT.
->>
->> When device is rpm-resumed, the resume callback of a device driver
->> enables the clock.
->>
->> Before clock is enabled, the voltage needs to be configured in
->> accordance to the clk rate.
->>
->> So now we have a GENPD with pstate=0 on a first rpm-resume, which
->> doesn't match the h/w configuration. Calling dev_pm_opp_sync() sets the
->> pstate in accordance to the h/w config.
-> 
-> What about calling dev_pm_opp_set_rate(dev, clk_get_rate(dev)) here
-> instead ? That will work, right ? The advantage is it works without
-> any special routine to do so.
+Dear Greg,
 
-It will work, but a dedicated helper is nicer.
+Please reconsider this issue, I mean it. Let me explain why...
 
-> I also wonder looking at your gr3d.c changes, you set a set-opp
-> helper, but the driver doesn't call set_opp_rate at all. Who calls it
-> ?
+Obviously neither Joe or all the people who knows how much you've given to
+Linux during these latest two decades (or is it more?) believes that you have 
+any problem with operator precedence :-)
 
-dev_pm_opp_sync() calls it from _set_opp().
+Said that, since operator precedence is one of the first topic that every developer
+learn in a course on C and that expressions like *ptr++ are used everywhere in
+the kernel you are sending a dangerous message...
 
-> And if it is all about just syncing the genpd core, then can the genpd
-> core do something like what clk framework does? i.e. allow a new
-> optional genpd callback, get_performance_state() (just like
-> set_performance_state()), which can be called initially by the core to
-> get the performance to something other than zero. opp-set-rate is
-> there to set the performance state and enable the stuff as well.
-> That's why it looks incorrect in your case, where the function was
-> only required to be called once, and you are ending up calling it on
-> each resume. Limiting that with another local variable is bad as well.
+It looks like you don't trust people here to be able to do anything more than 
+trivial clean-ups. If someone here at linux-staging is not able to understand 
+the precedence of operators, please stand up and speak!
 
-We discussed variant with get_performance_state() previously and Ulf
-didn't like it either since it still requires to touch 'internals' of GENPD.
+We here at linux-staging are not class B developers (compared to A class 
+developers of other subsystems). For sure, most of us are newcomers with
+less experience than other developers who don't choose to work with
+drivers/staging, but you should not prevent us from getting experience and 
+using common techniques that are perfectly fine in other areas of Linux.
+
+Thanks for your attention and your precious time,
+
+Fabio
+ 
+
+
+
