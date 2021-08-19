@@ -2,96 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A273F1855
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 13:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B5E3F1859
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 13:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239029AbhHSLio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 07:38:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238276AbhHSLim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 07:38:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B14A61152;
-        Thu, 19 Aug 2021 11:38:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629373085;
-        bh=ztpTlKzDLnuXMkA6oqHi+0cvd0vo10eKEycotaJ9HBo=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=HUowvtbQtFmr68GYqsmFe38XS4JsbnrsAO+F4q2I/tDtZxtgQILgLJgEGc8+f/Cz0
-         uF8Ubu3FSMm8ezSeqFodFen4pHy/m4q7VrYbBct6Y4SEymSKzj6Ufc0u6kb/BloHFa
-         MNKWa+cD49KUeXPOK2WvNvhKTeS4nY7kv459yxcJCmdrIjGQNsbN6JQW9LXGzt7e5x
-         DCqe9yLWhvphgQGYiAXRUF2OM+ATZbvmlXeBM0j6DsYeRI1WNrXDDynv6Y36TLEC73
-         djxJnjdAtPzSGGtrluo65CZd6rhR/zah6L6wG7Bi9S4MCc3W8RtGmGe3gc9AFPs+6B
-         w2BNLl0YwdGqw==
-Message-ID: <fcb30226f378ef12cd8bd15938f0af0e1a3977a2.camel@kernel.org>
-Subject: Re: [PATCH v4 00/12] Enroll kernel keys thru MOK
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
-        linux-integrity@vger.kernel.org, zohar@linux.ibm.com,
-        dhowells@redhat.com, dwmw2@infradead.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        jmorris@namei.org, serge@hallyn.com
-Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
-        torvalds@linux-foundation.org, scott.branden@broadcom.com,
-        weiyongjun1@huawei.com, nayna@linux.ibm.com, ebiggers@google.com,
-        ardb@kernel.org, nramas@linux.microsoft.com, lszubowi@redhat.com,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
-        konrad.wilk@oracle.com
-Date:   Thu, 19 Aug 2021 14:38:03 +0300
-In-Reply-To: <20210819002109.534600-1-eric.snowberg@oracle.com>
-References: <20210819002109.534600-1-eric.snowberg@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S238697AbhHSLkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 07:40:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238208AbhHSLkl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 07:40:41 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95554C061575;
+        Thu, 19 Aug 2021 04:40:05 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id g138so3644056wmg.4;
+        Thu, 19 Aug 2021 04:40:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EtgvXhAGt19qhroUE6m6P7pb+TNdJ1fCcsUGPxSLauI=;
+        b=qgdelYbbaIFqrbFwfaA5EXeG+i70bRf7BubylNOL2c8rnvz4kBrWAJX2G7Fnb1u2OQ
+         lO9a6X6BJ1gV/GGO+OZU5bA/vpXb9fC3c0o7WhIKJrLDmSXJ8cjyLHcsqChCEx9BrIY4
+         LiupfmrUAVFAfTpZyO/g4+tJUg9AmPU2f3gvxZU4vGjgDOq9SJbrQ+qkJAq0D2ryAzzC
+         UtQR5u+oINJ0DfoyRdke5/USJTG8egMCz5D4Oa8U9H6n66YLjSPR5o6cc4kfkbVW8UP6
+         3M+0DxeXQVYPHyykhXqn+w+Cf89SXMzTSWtmwkd0Y3yAQWtYn4F6cQusgXDLJoFYCO2/
+         nlfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EtgvXhAGt19qhroUE6m6P7pb+TNdJ1fCcsUGPxSLauI=;
+        b=cu+Qwo4XVw5LEL+3XjWEiCs9AENMXSzBD30vC3za7aPZFSuz9vQN4Fjbi435gc+V7m
+         I4N6gwcuAAcTdpJfXqhO24xJz25ONPEjH15ubeoqGHHScx/Txa63A+52e/T1lWOz7PpS
+         WC+qUiHcyaKGR/KrO8Xb8d2HlNwktPeOkxGCZAsk+6emfBUbWZrjotrxaFOpRlxqjUGR
+         Aziog/UKJTF8+V5l2XMZYiYlFmnkC/24vcZwcsO02PdWz8fMzYVPcOCjNTiG+TZqBGnP
+         FpnhOkhDX9ez8Jgwmj5utkk2/muyMBUsnko3zaRmOnacWAC5PECIZO6AUO5bS/lYIfNk
+         Y/nw==
+X-Gm-Message-State: AOAM532FhVQdNDQebffdvVasT6ahT2pJmKa+9MELC+iVd369S2eXglvo
+        7V7EQKbZdaeLTJ9RV4jr7Hk=
+X-Google-Smtp-Source: ABdhPJysGEtO7h5HDEHbCC6sb2xHTov/gXqitGsEWyloYIsqxzFsQa4iMVyAfZ4X38bnwpxBw9mMMQ==
+X-Received: by 2002:a05:600c:3554:: with SMTP id i20mr2089272wmq.70.1629373204136;
+        Thu, 19 Aug 2021 04:40:04 -0700 (PDT)
+Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
+        by smtp.gmail.com with ESMTPSA id b13sm2650891wrf.86.2021.08.19.04.40.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 04:40:03 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Neuling <mikey@neuling.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        stable@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH v2 0/2] Kconfig symbol fixes on powerpc
+Date:   Thu, 19 Aug 2021 13:39:52 +0200
+Message-Id: <20210819113954.17515-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-08-18 at 20:20 -0400, Eric Snowberg wrote:
-> Many UEFI Linux distributions boot using shim.  The UEFI shim provides
-> what is called Machine Owner Keys (MOK).  Shim uses both the UEFI Secure
-> Boot DB and MOK keys to validate the next step in the boot chain.  The
-> MOK facility can be used to import user generated keys.  These keys can
-> be used to sign an end-user development kernel build.  When Linux boots,
-> pre-boot keys (both UEFI Secure Boot DB and MOK keys) get loaded in the
-> Linux .platform keyring. =20
->=20
-> Currently, pre-boot keys are not trusted within the Linux trust boundary
-> [1]. These platform keys can only be used for kexec. If an end-user
-> wants to use their own key within the Linux trust boundary, they must
-> either compile it into the kernel themselves or use the insert-sys-cert
-> script. Both options present a problem. Many end-users do not want to
-> compile their own kernels. With the insert-sys-cert option, there are
-> missing upstream changes [2].  Also, with the insert-sys-cert option,
-> the end-user must re-sign their kernel again with their own key, and
-> then insert that key into the MOK db. Another problem with
-> insert-sys-cert is that only a single key can be inserted into a
-> compressed kernel.
->=20
-> Having the ability to insert a key into the Linux trust boundary opens
-> up various possibilities.  The end-user can use a pre-built kernel and
-> sign their own kernel modules.  It also opens up the ability for an
-> end-user to more easily use digital signature based IMA-appraisal.  To
-> get a key into the ima keyring, it must be signed by a key within the
-> Linux trust boundary.
+Dear powerpc maintainers,
 
-As of today, I can use a prebuilt kernel, crate my own MOK key and sign
-modules. What will be different?
+The script ./scripts/checkkconfigsymbols.py warns on invalid references to
+Kconfig symbols (often, minor typos, name confusions or outdated references).
 
-> Downstream Linux distros try to have a single signed kernel for each
-> architecture.  Each end-user may use this kernel in entirely different
-> ways.  Some downstream kernels have chosen to always trust platform keys
-> within the Linux trust boundary for kernel module signing.  These
-> kernels have no way of using digital signature base IMA appraisal.
->=20
-> This series introduces a new Linux kernel keyring containing the Machine
-> Owner Keys (MOK) called .mok. It also adds a new MOK variable to shim.
+This patch series addresses all issues reported by
+./scripts/checkkconfigsymbols.py in ./drivers/usb/ for Kconfig and Makefile
+files. Issues in the Kconfig and Makefile files indicate some shortcomings in
+the overall build definitions, and often are true actionable issues to address.
 
-I would name it as ".machine" because it is more "re-usable" name, e.g.
-could be used for similar things as MOK. ".mok" is a bad name because
-it binds directly to a single piece of user space software.
+These issues can be identified and filtered by:
 
-/Jarkko
+  ./scripts/checkkconfigsymbols.py | grep -E "arch/powerpc/.*(Kconfig|Makefile)" -B 1 -A 1
+
+After applying this patch series on linux-next (next-20210817), the command
+above yields just two false positives (SHELL, r13) due to tool shortcomings.
+
+As these two patches are fixes, please consider if they are suitable for
+backporting to stable.
+
+v1 -> v2:
+  Followed Christophe Leroy's comment and drop the obsolete select.
+
+
+Lukas
+
+Lukas Bulwahn (2):
+  powerpc: kvm: remove obsolete and unneeded select
+  powerpc: rectify selection to ARCH_ENABLE_SPLIT_PMD_PTLOCK
+
+ arch/powerpc/kvm/Kconfig               | 1 -
+ arch/powerpc/platforms/Kconfig.cputype | 2 +-
+ 2 files changed, 1 insertion(+), 2 deletions(-)
+
+-- 
+2.26.2
+
