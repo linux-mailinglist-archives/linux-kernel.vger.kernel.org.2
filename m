@@ -2,96 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BEE93F1F03
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8243F1F01
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233416AbhHSRZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 13:25:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230058AbhHSRZ1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 13:25:27 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E754C061575;
-        Thu, 19 Aug 2021 10:24:51 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id e7so6519240pgk.2;
-        Thu, 19 Aug 2021 10:24:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UYd2dapw2LMwvOwjrvllB89XLpc87giCIS2NMpFO4KE=;
-        b=c60+UAjN01E/MyS6qz7JtawFf1HTe4XNk03E930VEgOBPRVjBDqBVsklwYJuniYGs1
-         LGe9Fo/Kv+y7utUO1bkuePODvr28k5c0B7ThjmTWITZ0yjKvazUzVvjc63g8y7PO0KJX
-         z2Q6s9b91XIlSkvT4TFBoV4hCfk7XQNOyCyDoOjMeOgJFoSXToxHGl2zf3ZglwXNHILA
-         5nBX9cKXyOadqOmLtqSJwqYV05VbMa04EIULWevIDHDlifn5mbnvs1dWl40gadZ4xbM2
-         6a7eoSJwbBNdl0qdG8FUhC1/pAIuyY1GF34qEcVjx1qmi6IJ7IuG+LTd+ftkXYv/zakr
-         fe6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UYd2dapw2LMwvOwjrvllB89XLpc87giCIS2NMpFO4KE=;
-        b=OERfVJjzZbz7nEwDyGnUWjpWPCL6hAl3GPYewqBfQh9gpXwXOyXQdrdz7w4Awq9GaF
-         dWdvzyiT+8rswZ7WQ5LtaiS01eRGIAOTtHopiZ5pWLKNgdkXsApjWmF8t5/VmRrO3/df
-         qIymz+FdC5QsZPpzFuPtsUkXbdjqXLIuRloXXwsmHFeV5G1pmLbAEXZrXsxqIVV+jLKy
-         vbpWftyeilQqQs82WuNm0Sjw3+xNFBVLYCHz6TZNgVutHEOoDkyi0VE9tmWphMXGtSEL
-         GvLGPsHXzpZyXKAWlaX9TzLaM62lqLZtUXBO0WB+lvnaOgVNcHXy87+FQxxmxTf2m0vT
-         tNVg==
-X-Gm-Message-State: AOAM530jbqSrI1E7ZfOw82GXoZ03p/HURuY+PcHoz7sClVe+MS9B7pzH
-        Hqk1zVd5E99rBxE+q8Lp4UCJa7jHlf/0iojyCY8=
-X-Google-Smtp-Source: ABdhPJysYPrZmoa4UFLdVe+0TKMVAoZZGvmIcU6EffmYwkLJhVyd3WbKXreA9JSgPXu/YBIo/JraQJfnWgEJoSnO5CY=
-X-Received: by 2002:aa7:9618:0:b0:3e2:1bc3:aa93 with SMTP id
- q24-20020aa79618000000b003e21bc3aa93mr15746883pfg.73.1629393890934; Thu, 19
- Aug 2021 10:24:50 -0700 (PDT)
+        id S232827AbhHSRZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 13:25:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44310 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232969AbhHSRZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 13:25:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB38261075;
+        Thu, 19 Aug 2021 17:24:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629393869;
+        bh=KbzYgF4Sy53ZuirB0lvneIh/3iisHVfmHDhYsyK4XIU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oyiyF6X3LCqd5jewhmU+5HfJ9QivtiexrD6RIeRsIvfvPR0Xz4ZBSjSuAuDv5PRau
+         jCPFlgMHda3n9k580KXa8o8Mi2y7by8OLvmgdUtbQv6H9HsSrF75kAdU1vM5wu+ZVL
+         u/EevEv7StSaB3MED4smjVUBDCmhhdRIrDQzy5v2ai6K0mc0fjPVOD8gNVxANfI2O1
+         5fcoUHyZbJfgLHPOtLu0zliS01rcoCy8ensuJ6VTND9+By/HopqC0/EVhAgIkGlFrV
+         kYA/SvVBfHq7o4nAMRAg66+8TUlyUJtkAbFghdCWXFmOdjXIkJJedJScVwMMDij9bU
+         MFyD6s8K8FMFw==
+Date:   Thu, 19 Aug 2021 19:24:26 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, viresh.kumar@linaro.org,
+        sfr@canb.auug.org.au, conghui.chen@intel.com
+Subject: Re: [PATCH] i2c: virtio: Fix the compiler warning when CONFIG_ACPI
+ is not set
+Message-ID: <YR6Tysn548x+2Szz@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, viresh.kumar@linaro.org,
+        sfr@canb.auug.org.au, conghui.chen@intel.com
+References: <4309f869890e70810f2c40a8d60495240e318303.1629333590.git.jie.deng@intel.com>
 MIME-Version: 1.0
-References: <20210802143820.1150099-1-arnd@kernel.org> <202108130937.7848F6B318@keescook>
-In-Reply-To: <202108130937.7848F6B318@keescook>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 19 Aug 2021 20:24:11 +0300
-Message-ID: <CAHp75VdkAO+fiiCVs=dyc2C83mZuLCQCvqs9C+6PF6JnhKDxCA@mail.gmail.com>
-Subject: Re: [PATCH] media: atomisp: restore missing 'return' statement
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="flWGK3gheJDnxcoG"
+Content-Disposition: inline
+In-Reply-To: <4309f869890e70810f2c40a8d60495240e318303.1629333590.git.jie.deng@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 7:39 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Mon, Aug 02, 2021 at 04:38:14PM +0200, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > The input_system_configure_channel_sensor() function lost its final
-> > return code in a previous patch:
-> >
-> > drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c: In function 'input_system_configure_channel_sensor':
-> > drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c:1649:1: error: control reaches end of non-void function [-Werror=return-type]
-> >
-> > Restore what was there originally.
-> >
-> > Fixes: 728a5c64ae5f ("media: atomisp: remove dublicate code")
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->
-> I hit this too. Thanks!
->
-> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Me too,
-Tested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+--flWGK3gheJDnxcoG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Pavel, how have you tested it?
+On Thu, Aug 19, 2021 at 08:48:41AM +0800, Jie Deng wrote:
+> Fix the compiler warning "drivers/i2c/busses/i2c-virtio.c:208:17:
+> warning: unused variable 'pdev' [-Wunused-variable]" when CONFIG_ACPI
+> is not set.
+>=20
+> Fixes: 8fb12751ac78 ("i2c: virtio: add a virtio i2c frontend driver")
+> Signed-off-by: Jie Deng <jie.deng@intel.com>
 
--- 
-With Best Regards,
-Andy Shevchenko
+Applied to for-next, thanks! Since I need to rebase for-mergewindow
+anyhow, I might just squash it into the main patch.
+
+--flWGK3gheJDnxcoG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmEek8oACgkQFA3kzBSg
+KbY07hAAgITMkKNwCFQbuyyywSxWgjPihrseu1b5U5SxyHR071H3L0Ec0qwz3YpW
+inPAANbk0RtPEQaDfY2euP42A1HPA8BA2P2QG1wrG7j+mkE+e5E/pPJ6Fm5Gvmrw
+WXPtVuGv3FePr4Adc3PTGeE3R3/t9Xdm/Lsgl3Gm80FsEYolQWpinpiiyu6/r6Lr
+ZLtR/yi8h+diXx/qB59k8nKNP3S1g/ywF4TTwKkncitahj6N0/Ii1AzI7qme3rbX
+0arhenE8vqq23rpcYIZoCXT9nYMa1q36oS1peO4U789gTH4EsjyTykUhk/ZmgLxo
+t7Y7od8C18NWv7iqsMmxiKOmPIXxH+I3cQYrC/BcsU6C4OVk6dAeHnO34ZY1gccC
+Dt6CEKp9S690RWR7J+sYEg/F6eXUOnZhX5LGCR7jQpf+9vctmKaeIUH3FHSmz/VF
+LyxbrC4Sg0STRfXu7gYv6R+DFRJXYbas90ylvJn+zc+FLE6lPDxS5DWK3mXbxger
+/Rl33o0NHKJlP3nWNuB/Wb8DcQBeoKXQi/QzkceTFSDdG00MYhsmxtcmO5kpVGZm
+wzw7hGGpbPOjKIDsjEfoZdNfobtCYCBoNSwjndfFhaalkLz5jFX3iGE+vyVKyrNh
+Eqc40XmBlY5SbG/sXrfEd5duskq+moJyBKCaywzKPE/alTjmmt0=
+=WFAy
+-----END PGP SIGNATURE-----
+
+--flWGK3gheJDnxcoG--
