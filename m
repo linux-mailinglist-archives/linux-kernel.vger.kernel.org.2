@@ -2,103 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 578C43F1DF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 18:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 275113F1E03
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 18:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbhHSQg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 12:36:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37009 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229451AbhHSQgz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 12:36:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629390979;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QRADmVpMk7gxIeSjI8AF9ZEWtYphhMQoIru5hz5pwfU=;
-        b=gyM9QT3U327wWHCSFeJSwdapvsctVdcbyh501nx3r8JSjWZMBLitWkFnMB4P4Pra8UQTUE
-        qkdI5il4yguCJ1MLixhrBAetVcJ60mPYggUm7r69QKOe7X2mOpSFBQaOsr4D95avTTUKj6
-        n8OhVqY/uNponBPzPQpSgqb8IexjOyw=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-265-eRdO9_-CNDmX14vTeV4-SA-1; Thu, 19 Aug 2021 12:36:17 -0400
-X-MC-Unique: eRdO9_-CNDmX14vTeV4-SA-1
-Received: by mail-ed1-f72.google.com with SMTP id bx23-20020a0564020b5700b003bf2eb11718so3080880edb.20
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 09:36:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QRADmVpMk7gxIeSjI8AF9ZEWtYphhMQoIru5hz5pwfU=;
-        b=mum4Oa1SY3NUa2efvTu6eNsPU8GTM6aiKLWOrzpXAtefeTj6WnwC2G8q9NFA37PfNx
-         CtDcC9JQgHBDBg5tI1TdccA6aCl4Y+wVxeT6E2BWe5lKSjpkMZWaYdeVe7KkY6LCDFW1
-         hY+GsZtb44WtxpO+kdh5tXozj1GxIbx89Nq/wtpRMoMdJgzzMZuXbO9RvYC/H2x3oxMI
-         EIcEDLBatS/lUq23JXSL4AqTYM3L8sOswNFAap/IzegIIVzszvrQpzZ6xvBFMHSBp2o5
-         +PvFBA60m2VXEby3nDD1UKtNcS6bm1jErLNd780qTolHxfh+yB7xMrcp+/RdZ4eUkXq9
-         c7KA==
-X-Gm-Message-State: AOAM532yAVOpfwrVyIFQoYVJi+RZbtQibYgsm0CpakusAEC16xEDC+Fa
-        7YwVs6nzTrULCzYuoJ1CuRgkKoDgVkwARHXARwAegZdQR4+6cXOeoaPg7Nom5giq0WMuhe8NbmB
-        6IJUPMNgAyhlaPZeJTDbbzZU5
-X-Received: by 2002:a17:907:3e05:: with SMTP id hp5mr16637761ejc.527.1629390976583;
-        Thu, 19 Aug 2021 09:36:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx0W8aPaJHnF8/QyCKfWtDdR25ynmh6DTCOlr4xDkLluAyuNdzXBZ4A8UisJ6o4jgu4LgqqyA==
-X-Received: by 2002:a17:907:3e05:: with SMTP id hp5mr16637743ejc.527.1629390976415;
-        Thu, 19 Aug 2021 09:36:16 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id r20sm1522212ejz.120.2021.08.19.09.36.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 09:36:14 -0700 (PDT)
-Subject: Re: [PATCH v3 2/3] KVM: x86: Handle the case of 5-level shadow page
- table
-To:     Sean Christopherson <seanjc@google.com>,
-        Wei Huang <wei.huang2@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com
-References: <20210818165549.3771014-1-wei.huang2@amd.com>
- <20210818165549.3771014-3-wei.huang2@amd.com> <YR1AHVwUM8AS5JvQ@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <a73558eb-01d0-31e3-d066-8da1c05495d4@redhat.com>
-Date:   Thu, 19 Aug 2021 18:36:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230211AbhHSQim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 12:38:42 -0400
+Received: from mga03.intel.com ([134.134.136.65]:38684 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229759AbhHSQie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 12:38:34 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10081"; a="216630803"
+X-IronPort-AV: E=Sophos;i="5.84,335,1620716400"; 
+   d="scan'208";a="216630803"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 09:37:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,335,1620716400"; 
+   d="scan'208";a="512158764"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga004.fm.intel.com with ESMTP; 19 Aug 2021 09:37:52 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 7BDBFE7; Thu, 19 Aug 2021 19:37:52 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Dell.Client.Kernel@dell.com
+Cc:     Mark Gross <mgross@linux.intel.com>,
+        Alex Hung <alex.hung@canonical.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        David E Box <david.e.box@intel.com>,
+        Zha Qipeng <qipeng.zha@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "David E. Box" <david.e.box@linux.intel.com>,
+        AceLan Kao <acelan.kao@canonical.com>,
+        Jithu Joseph <jithu.joseph@intel.com>,
+        Maurice Ma <maurice.ma@intel.com>
+Subject: [PATCH v4 00/21] platform/x86: Intel platform driver code movement
+Date:   Thu, 19 Aug 2021 19:37:14 +0300
+Message-Id: <20210819163735.81803-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <YR1AHVwUM8AS5JvQ@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/08/21 19:15, Sean Christopherson wrote:
->> When the 5-level page table CPU flag is exposed, KVM code needs to handle
->> this case by pointing mmu->root_hpa to a properly-constructed 5-level page
->> table.
-> Similarly, this is wrong, or maybe just poorly worded.  This has nothing to do
-> with LA57 being exposed to the guest, it's purely the host using 5-level paging
-> and NPT being enabled and exposed to L1.
+This is v4 of the Intel drivers move on in the source tree.
+v3 has been done by Kate:
+https://lore.kernel.org/platform-driver-x86/20210819033001.20136-1-hpa@redhat.com/
 
-Like this:
+I have taken the initial set from review-hans branch and removed Hans' SoB
+along with Link, while leaving others' tags.
 
----
-KVM: x86/mmu: Support shadowing NPT when 5-level paging is enabled in host
+Changelog v4:
+- spelled fully the driver names in the commit messages
+- fixed SCU *.ko module names
+- dropped extra prefix in PMC files
+- dropped stray changes within the series
+- removed confusing comments in Makefile and Kconfig files
+- embedded a few of Kconfig improvements here and there (ordering, spelling)
+- split miscellaneous group
+- added a patch to fix kernel doc issue in SCU IPC code
 
-When the 5-level page table CPU flag is set in the host, but the guest
-has CR4.LA57=0 (including the case of a 32-bit guest), the top level of
-the shadow NPT page tables will be fixed, consisting of one pointer to
-a lower-level table and 511 non-present entries.  Extend the existing
-code that creates the fixed PML4 or PDP table, to provide a fixed PML5
-table if needed.
+Andy Shevchenko (1):
+  platform/x86/intel: scu: Fix doc of
+    intel_scu_ipc_dev_command_with_size()
 
-This is not needed on EPT because the number of layers in the tables
-is specified in the EPTP instead of depending on the host CR4.
----
+Kate Hsuan (20):
+  platform/x86: intel_bxtwc_tmu: Move to intel sub-directory
+  platform/x86: intel_chtdc_ti_pwrbtn: Move to intel sub-directory
+  platform/x86: intel_mrfld_pwrbtn: Move to intel sub-directory
+  platform/x86: intel_punit_ipc: Move to intel sub-directory
+  platform/x86: intel_pmc_core: Move to intel sub-directory
+  platform/x86: intel_scu: Move to intel sub-directory
+  platform/x86: intel_telemetry: Move to intel sub-directory
+  platform/x86: intel_ips: Move to intel sub-directory
+  platform/x86: intel-rst: Move to intel sub-directory
+  platform/x86: intel-smartconnect: Move to intel sub-directory
+  platform/x86: intel_turbo_max_3: Move to intel sub-directory
+  platform/x86: intel-uncore-frequency: Move to intel sub-directory
+  platform/x86: intel_speed_select_if: Move to intel sub-directory
+  platform/x86: intel_atomisp2: Move to intel sub-directory
+  platform/x86: intel-hid: Move to intel sub-directory
+  platform/x86: intel_int0002_vgpio: Move to intel sub-directory
+  platform/x86: intel_oaktrail: Move to intel sub-directory
+  platform/x86: intel-vbtn: Move to intel sub-directory
+  platform/x86: intel-wmi-sbl-fw-update: Move to intel sub-directory
+  platform/x86: intel-wmi-thunderbolt: Move to intel sub-directory
 
-Paolo
+ MAINTAINERS                                   |  24 +-
+ drivers/platform/x86/Kconfig                  | 288 ------------------
+ drivers/platform/x86/Makefile                 |  31 --
+ drivers/platform/x86/intel/Kconfig            | 158 ++++++++++
+ drivers/platform/x86/intel/Makefile           |  40 +++
+ drivers/platform/x86/intel/atomisp2/Kconfig   |  43 +++
+ drivers/platform/x86/intel/atomisp2/Makefile  |   9 +
+ .../atomisp2/led.c}                           |   0
+ .../atomisp2/pm.c}                            |   0
+ .../{intel_bxtwc_tmu.c => intel/bxtwc_tmu.c}  |   0
+ .../chtdc_ti_pwrbtn.c}                        |   0
+ .../platform/x86/{intel-hid.c => intel/hid.c} |   2 +-
+ .../int0002_vgpio.c}                          |   0
+ .../platform/x86/{intel_ips.c => intel/ips.c} |   3 +-
+ .../mrfld_pwrbtn.c}                           |   0
+ .../{intel_oaktrail.c => intel/oaktrail.c}    |   0
+ drivers/platform/x86/intel/pmc/Kconfig        |  25 ++
+ drivers/platform/x86/intel/pmc/Makefile       |   9 +
+ .../{intel_pmc_core.c => intel/pmc/core.c}    |   2 +-
+ .../{intel_pmc_core.h => intel/pmc/core.h}    |   0
+ .../pmc/pltdrv.c}                             |   0
+ .../{intel_punit_ipc.c => intel/punit_ipc.c}  |   0
+ .../platform/x86/{intel-rst.c => intel/rst.c} |   0
+ drivers/platform/x86/intel/scu/Kconfig        |  51 ++++
+ drivers/platform/x86/intel/scu/Makefile       |  15 +
+ .../x86/{intel_scu_ipc.c => intel/scu/ipc.c}  |   2 +-
+ .../scu/ipcutil.c}                            |   0
+ .../scu/pcidrv.c}                             |   0
+ .../scu/pltdrv.c}                             |   0
+ .../x86/{intel_scu_wdt.c => intel/scu/wdt.c}  |   0
+ .../smartconnect.c}                           |   0
+ .../speed_select_if}/Kconfig                  |   0
+ .../speed_select_if}/Makefile                 |   0
+ .../speed_select_if}/isst_if_common.c         |   0
+ .../speed_select_if}/isst_if_common.h         |   0
+ .../speed_select_if}/isst_if_mbox_msr.c       |   0
+ .../speed_select_if}/isst_if_mbox_pci.c       |   0
+ .../speed_select_if}/isst_if_mmio.c           |   0
+ drivers/platform/x86/intel/telemetry/Kconfig  |  16 +
+ drivers/platform/x86/intel/telemetry/Makefile |  11 +
+ .../telemetry/core.c}                         |   0
+ .../telemetry/debugfs.c}                      |   0
+ .../telemetry/pltdrv.c}                       |   0
+ .../turbo_max_3.c}                            |   0
+ .../uncore-frequency.c}                       |   0
+ .../x86/{intel-vbtn.c => intel/vbtn.c}        |   2 +-
+ drivers/platform/x86/intel/wmi/Kconfig        |  31 ++
+ drivers/platform/x86/intel/wmi/Makefile       |   9 +
+ .../wmi/sbl-fw-update.c}                      |   0
+ .../wmi/thunderbolt.c}                        |   0
+ 50 files changed, 435 insertions(+), 336 deletions(-)
+ create mode 100644 drivers/platform/x86/intel/atomisp2/Kconfig
+ create mode 100644 drivers/platform/x86/intel/atomisp2/Makefile
+ rename drivers/platform/x86/{intel_atomisp2_led.c => intel/atomisp2/led.c} (100%)
+ rename drivers/platform/x86/{intel_atomisp2_pm.c => intel/atomisp2/pm.c} (100%)
+ rename drivers/platform/x86/{intel_bxtwc_tmu.c => intel/bxtwc_tmu.c} (100%)
+ rename drivers/platform/x86/{intel_chtdc_ti_pwrbtn.c => intel/chtdc_ti_pwrbtn.c} (100%)
+ rename drivers/platform/x86/{intel-hid.c => intel/hid.c} (99%)
+ rename drivers/platform/x86/{intel_int0002_vgpio.c => intel/int0002_vgpio.c} (100%)
+ rename drivers/platform/x86/{intel_ips.c => intel/ips.c} (99%)
+ rename drivers/platform/x86/{intel_mrfld_pwrbtn.c => intel/mrfld_pwrbtn.c} (100%)
+ rename drivers/platform/x86/{intel_oaktrail.c => intel/oaktrail.c} (100%)
+ create mode 100644 drivers/platform/x86/intel/pmc/Kconfig
+ create mode 100644 drivers/platform/x86/intel/pmc/Makefile
+ rename drivers/platform/x86/{intel_pmc_core.c => intel/pmc/core.c} (99%)
+ rename drivers/platform/x86/{intel_pmc_core.h => intel/pmc/core.h} (100%)
+ rename drivers/platform/x86/{intel_pmc_core_pltdrv.c => intel/pmc/pltdrv.c} (100%)
+ rename drivers/platform/x86/{intel_punit_ipc.c => intel/punit_ipc.c} (100%)
+ rename drivers/platform/x86/{intel-rst.c => intel/rst.c} (100%)
+ create mode 100644 drivers/platform/x86/intel/scu/Kconfig
+ create mode 100644 drivers/platform/x86/intel/scu/Makefile
+ rename drivers/platform/x86/{intel_scu_ipc.c => intel/scu/ipc.c} (99%)
+ rename drivers/platform/x86/{intel_scu_ipcutil.c => intel/scu/ipcutil.c} (100%)
+ rename drivers/platform/x86/{intel_scu_pcidrv.c => intel/scu/pcidrv.c} (100%)
+ rename drivers/platform/x86/{intel_scu_pltdrv.c => intel/scu/pltdrv.c} (100%)
+ rename drivers/platform/x86/{intel_scu_wdt.c => intel/scu/wdt.c} (100%)
+ rename drivers/platform/x86/{intel-smartconnect.c => intel/smartconnect.c} (100%)
+ rename drivers/platform/x86/{intel_speed_select_if => intel/speed_select_if}/Kconfig (100%)
+ rename drivers/platform/x86/{intel_speed_select_if => intel/speed_select_if}/Makefile (100%)
+ rename drivers/platform/x86/{intel_speed_select_if => intel/speed_select_if}/isst_if_common.c (100%)
+ rename drivers/platform/x86/{intel_speed_select_if => intel/speed_select_if}/isst_if_common.h (100%)
+ rename drivers/platform/x86/{intel_speed_select_if => intel/speed_select_if}/isst_if_mbox_msr.c (100%)
+ rename drivers/platform/x86/{intel_speed_select_if => intel/speed_select_if}/isst_if_mbox_pci.c (100%)
+ rename drivers/platform/x86/{intel_speed_select_if => intel/speed_select_if}/isst_if_mmio.c (100%)
+ create mode 100644 drivers/platform/x86/intel/telemetry/Kconfig
+ create mode 100644 drivers/platform/x86/intel/telemetry/Makefile
+ rename drivers/platform/x86/{intel_telemetry_core.c => intel/telemetry/core.c} (100%)
+ rename drivers/platform/x86/{intel_telemetry_debugfs.c => intel/telemetry/debugfs.c} (100%)
+ rename drivers/platform/x86/{intel_telemetry_pltdrv.c => intel/telemetry/pltdrv.c} (100%)
+ rename drivers/platform/x86/{intel_turbo_max_3.c => intel/turbo_max_3.c} (100%)
+ rename drivers/platform/x86/{intel-uncore-frequency.c => intel/uncore-frequency.c} (100%)
+ rename drivers/platform/x86/{intel-vbtn.c => intel/vbtn.c} (99%)
+ create mode 100644 drivers/platform/x86/intel/wmi/Kconfig
+ create mode 100644 drivers/platform/x86/intel/wmi/Makefile
+ rename drivers/platform/x86/{intel-wmi-sbl-fw-update.c => intel/wmi/sbl-fw-update.c} (100%)
+ rename drivers/platform/x86/{intel-wmi-thunderbolt.c => intel/wmi/thunderbolt.c} (100%)
+
+-- 
+2.32.0
 
