@@ -2,160 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 208133F226E
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 23:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80BEC3F2271
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 23:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234881AbhHSVn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 17:43:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhHSVny (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 17:43:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B86860EB5;
-        Thu, 19 Aug 2021 21:43:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629409397;
-        bh=Qis+W6zkQTZYe1xg6ZIKtAmEgvOKVtPfN5JHB97wMwQ=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=YTUn0yw6nUpw51PPvGczp49OOM+H1/c0m9xuwthLJuMkJqgdjYyHhxg8yOVhLoMhp
-         VQ+kOA2nK3nhlvsSZkMrnAmapLGmZO5D9b5U+9pjr0wEXPLMr89NHRfDOeTICElwOR
-         UDLw9ONtcKXd+UOZ+28FEdQmSXsWLjD6eQtInZHGtle5q5vbJScMkDjxRegKOnVTsA
-         DzTXn6ZIpdre07HZcF0GF/Cg/1+MxL9XJ4erYKgPyBE7EJV0zvxUGYBus1fbx8iV+b
-         29BaTatgVsRYZK0KFkT7pKy3feYPjYRPQBD3IfHS/hePE0iNlBCAfro/UuzVtKP44L
-         vA+TnCI/ui3iA==
-Message-ID: <639d90212662cf5cdf80c71bbfec95907c70114a.camel@kernel.org>
-Subject: Re: Removing Mandatory Locks
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        David Hildenbrand <david@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        Christian =?ISO-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>,
-        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Date:   Thu, 19 Aug 2021 17:43:12 -0400
-In-Reply-To: <CAHk-=wgD-SNxB=2iCurEoP=RjrciRgLtXZ7R_DejK+mXF2etfg@mail.gmail.com>
-References: <20210812084348.6521-1-david@redhat.com>
-         <87o8a2d0wf.fsf@disp2133>
-         <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com>
-         <87lf56bllc.fsf@disp2133>
-         <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
-         <87eeay8pqx.fsf@disp2133>
-         <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
-         <87h7ft2j68.fsf@disp2133>
-         <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
-         <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
-         <YRcyqbpVqwwq3P6n@casper.infradead.org> <87k0kkxbjn.fsf_-_@disp2133>
-         <0c2af732e4e9f74c9d20b09fc4b6cbae40351085.camel@kernel.org>
-         <CAHk-=wgewmbABDC3_ZNn11C+sm4Uz0L9HZ5Kvx0Joho4vsV4DQ@mail.gmail.com>
-         <a1385746582a675c410aca4eb4947320faec4821.camel@kernel.org>
-         <CAHk-=wgD-SNxB=2iCurEoP=RjrciRgLtXZ7R_DejK+mXF2etfg@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+        id S235486AbhHSVo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 17:44:59 -0400
+Received: from smtprelay0095.hostedemail.com ([216.40.44.95]:36108 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232769AbhHSVo5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 17:44:57 -0400
+Received: from omf10.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 1D1DA182B0301;
+        Thu, 19 Aug 2021 21:44:20 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf10.hostedemail.com (Postfix) with ESMTPA id EAFD52351F6;
+        Thu, 19 Aug 2021 21:44:18 +0000 (UTC)
+Message-ID: <8db9a7d938b2b1a1bdbd0224246e047c83581334.camel@perches.com>
+Subject: Re: [RFC PATCH 1/5] checkpatch: improve handling of revert commits
+From:   Joe Perches <joe@perches.com>
+To:     Denis Efremov <efremov@linux.com>, linux-kselftest@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, Jiri Kosina <jkosina@suse.cz>,
+        Willy Tarreau <w@1wt.eu>
+Date:   Thu, 19 Aug 2021 14:44:17 -0700
+In-Reply-To: <c31b2007-26a9-34e0-8c9a-8e11a00ce69f@linux.com>
+References: <20210818154646.925351-1-efremov@linux.com>
+         <20210818154646.925351-2-efremov@linux.com>
+         <cc5801790fea258e20fa6b7e26de7806ae8e0dda.camel@perches.com>
+         <3d347d4b-1576-754f-8633-ba6084cc0661@linux.com>
+         <23c8ebaa0921d5597df9fc1d6cbbcc4f354f80c5.camel@perches.com>
+         <c31b2007-26a9-34e0-8c9a-8e11a00ce69f@linux.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: EAFD52351F6
+X-Stat-Signature: t1zx9hhwubbw8oxjsooka7fycowycjj3
+X-Spam-Status: No, score=5.20
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX189U7Bie0w4hCCQnlgtLr596sKKfNprumI=
+X-HE-Tag: 1629409458-37529
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-08-19 at 13:31 -0700, Linus Torvalds wrote:
-> On Thu, Aug 19, 2021 at 1:18 PM Jeff Layton <jlayton@kernel.org> wrote:
+On Thu, 2021-08-19 at 22:52 +0300, Denis Efremov wrote:
+> Hi,
+> 
+> On 8/19/21 12:22 AM, Joe Perches wrote:
+> > Hey Denis:
 > > 
-> > Now that I think about it a little more, I actually did get one
-> > complaint a few years ago:
-> > 
-> > Someone had upgraded from an earlier distro that supported the -o mand
-> > mount option to a later one that had disabled it, and they had an (old)
-> > fstab entry that specified it.
+> > Try this one please and let me know what you think...
 > 
-> Hmm. We might be able to turn the "return -EINVAL" into just a warning.
-> 
-> Yes, yes, currently if you turn off CONFIG_MANDATORY_FILE_LOCKING, we
-> already do that
-> 
->         VFS: "mand" mount option not supported
-> 
-> warning print, but then we fail the mount.
-> 
-> If CONFIG_MANDATORY_FILE_LOCKING goes away entirely, it might make
-> sense to turn that warning into something bigger, but then let the
-> mount continue - since now that "mand" flag would be purely a legacy
-> thing.
-> 
-> And yes, if we do that, we'd want the warning to be a big ugly thing,
-> just to make people very aware of it happening. Right now it's a
-> one-liner that is easy to miss, and the "oh, the mount failed" is the
-> thing that hopefully informs people about the fact that they need to
-> enable CONFIG_MANDATORY_FILE_LOCKING.
-> 
-> The logic being that if you can no longer enable mandatory locking in
-> the kernel, the current hard failure seems overly aggressive (and
-> might cause boot failures and inability to fix/report things when it
-> possibly keeps you from using the system at all).
-> 
+> Looks good to me. Couple of nitpicks below
 
-What sort of big, ugly warning did you have in mind?
+yeah, thanks.
 
-I'm fine with that general approach though and will plan to roll that
-change into the patch I'm testing.
+How about this one:
+---
+ scripts/checkpatch.pl | 72 ++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 43 insertions(+), 29 deletions(-)
 
-Thanks,
--- 
-Jeff Layton <jlayton@kernel.org>
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 161ce7fe5d1e5..4988515a0dfb3 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -1181,7 +1181,8 @@ sub git_commit_info {
+ #		    git log --format='%H %s' -1 $line |
+ #		    echo "commit $(cut -c 1-12,41-)"
+ #		done
+-	} elsif ($lines[0] =~ /^fatal: ambiguous argument '$commit': unknown revision or path not in the working tree\./) {
++	} elsif ($lines[0] =~ /^fatal: ambiguous argument '$commit': unknown revision or path not in the working tree\./ ||
++		 $lines[0] =~ /^fatal: bad object $commit/) {
+ 		$id = undef;
+ 	} else {
+ 		$id = substr($lines[0], 0, 12);
+@@ -2587,6 +2588,8 @@ sub process {
+ 	my $reported_maintainer_file = 0;
+ 	my $non_utf8_charset = 0;
+ 
++	my $last_git_commit_id_linenr = -1;
++
+ 	my $last_blank_line = 0;
+ 	my $last_coalesced_string_linenr = -1;
+ 
+@@ -3173,7 +3176,8 @@ sub process {
+ 		if ($in_commit_log && !$commit_log_possible_stack_dump &&
+ 		    $line !~ /^\s*(?:Link|Patchwork|http|https|BugLink|base-commit):/i &&
+ 		    $line !~ /^This reverts commit [0-9a-f]{7,40}/ &&
+-		    ($line =~ /\bcommit\s+[0-9a-f]{5,}\b/i ||
++		    (($line =~ /\bcommit\s+[0-9a-f]{5,}\b/i ||
++		      ($line =~ /\bcommit\s*$/i && defined($rawlines[$linenr]) && $rawlines[$linenr] =~ /^\s*[0-9a-f]{5,}\b/i)) ||
+ 		     ($line =~ /(?:\s|^)[0-9a-f]{12,40}(?:[\s"'\(\[]|$)/i &&
+ 		      $line !~ /[\<\[][0-9a-f]{12,40}[\>\]]/i &&
+ 		      $line !~ /\bfixes:\s*[0-9a-f]{12,40}/i))) {
+@@ -3183,49 +3187,59 @@ sub process {
+ 			my $long = 0;
+ 			my $case = 1;
+ 			my $space = 1;
+-			my $hasdesc = 0;
+ 			my $hasparens = 0;
+ 			my $id = '0123456789ab';
+ 			my $orig_desc = "commit description";
+ 			my $description = "";
++			my $herectx = $herecurr;
++			my $has_parens = 0;
++
++			my $input = $line;
++			if ($line =~ /(?:\bcommit\s+[0-9a-f]{5,}|\bcommit\s*$)/i) {
++				for (my $n = 0; $n < 2; $n++) {
++					if ($input =~ /\bcommit\s+[0-9a-f]{5,}\s*$balanced_parens/i) {
++						$has_parens = 1;
++						last;
++					}
++					last if ($#lines < $linenr + $n);
++					$input .= " " . trim($rawlines[$linenr + $n]);
++					$herectx .= "$rawlines[$linenr + $n]\n";
++				}
++				$herectx = $herecurr if (!$has_parens);
++			}
+ 
+-			if ($line =~ /\b(c)ommit\s+([0-9a-f]{5,})\b/i) {
++			if ($input =~ /\b(c)ommit\s+([0-9a-f]{5,})\b/i) {
+ 				$init_char = $1;
+ 				$orig_commit = lc($2);
+-			} elsif ($line =~ /\b([0-9a-f]{12,40})\b/i) {
++				$short = 0 if ($input =~ /\bcommit\s+[0-9a-f]{12,40}/i);
++				$long = 1 if ($input =~ /\bcommit\s+[0-9a-f]{41,}/i);
++				$space = 0 if ($input =~ /\bcommit [0-9a-f]/i);
++				$case = 0 if ($input =~ /\b[Cc]ommit\s+[0-9a-f]{5,40}[^A-F]/);
++
++				if ($input =~ /\bcommit\s+[0-9a-f]{5,}\s+($balanced_parens)/i) {
++					$orig_desc = $1;
++					# Always strip leading/trailing parens then double quotes if existing
++					$orig_desc = substr($orig_desc, 1, -1);
++					if ($orig_desc =~ /^".*"$/) {
++						$orig_desc = substr($orig_desc, 1, -1);
++						$hasparens = 1;
++					}
++				}
++			} elsif ($input =~ /\b([0-9a-f]{12,40})\b/i) {
+ 				$orig_commit = lc($1);
+ 			}
+ 
+-			$short = 0 if ($line =~ /\bcommit\s+[0-9a-f]{12,40}/i);
+-			$long = 1 if ($line =~ /\bcommit\s+[0-9a-f]{41,}/i);
+-			$space = 0 if ($line =~ /\bcommit [0-9a-f]/i);
+-			$case = 0 if ($line =~ /\b[Cc]ommit\s+[0-9a-f]{5,40}[^A-F]/);
+-			if ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("([^"]+)"\)/i) {
+-				$orig_desc = $1;
+-				$hasparens = 1;
+-			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s*$/i &&
+-				 defined $rawlines[$linenr] &&
+-				 $rawlines[$linenr] =~ /^\s*\("([^"]+)"\)/) {
+-				$orig_desc = $1;
+-				$hasparens = 1;
+-			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("[^"]+$/i &&
+-				 defined $rawlines[$linenr] &&
+-				 $rawlines[$linenr] =~ /^\s*[^"]+"\)/) {
+-				$line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("([^"]+)$/i;
+-				$orig_desc = $1;
+-				$rawlines[$linenr] =~ /^\s*([^"]+)"\)/;
+-				$orig_desc .= " " . $1;
+-				$hasparens = 1;
+-			}
+-
+ 			($id, $description) = git_commit_info($orig_commit,
+ 							      $id, $orig_desc);
+ 
+ 			if (defined($id) &&
+-			   ($short || $long || $space || $case || ($orig_desc ne $description) || !$hasparens)) {
++			    ($short || $long || $space || $case || ($orig_desc ne $description) || !$hasparens) &&
++			    $last_git_commit_id_linenr != $linenr - 1) {
+ 				ERROR("GIT_COMMIT_ID",
+-				      "Please use git commit description style 'commit <12+ chars of sha1> (\"<title line>\")' - ie: '${init_char}ommit $id (\"$description\")'\n" . $herecurr);
++				      "Please use git commit description style 'commit <12+ chars of sha1> (\"<title line>\")' - ie: '${init_char}ommit $id (\"$description\")'\n" . $herectx);
+ 			}
++			#don't report the next line if this line ends in commit and the sha1 hash is the next line
++			$last_git_commit_id_linenr = $linenr if ($line =~ /\bcommit\s*$/i);
+ 		}
+ 
+ # Check for added, moved or deleted files
+
 
