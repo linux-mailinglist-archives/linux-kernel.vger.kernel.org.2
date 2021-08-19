@@ -2,146 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B30153F102B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 04:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6722F3F102E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 04:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235613AbhHSCDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 22:03:34 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:40273 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235433AbhHSCDd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 22:03:33 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R481e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UjtBWdz_1629338576;
-Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0UjtBWdz_1629338576)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 19 Aug 2021 10:02:56 +0800
-Subject: Re: [PATCH] ocfs2: reflink deadlock when clone file to the same
- directory simultaneously
-To:     Gang He <ghe@suse.com>, mark@fasheh.com, jlbec@evilplan.org,
-        Wengang Wang <wen.gang.wang@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        akpm@linux-foundation.org
-References: <20210729110230.18983-1-ghe@suse.com>
- <5821fd0f-2018-dc1b-a5c0-f948a7debff4@linux.alibaba.com>
- <c7e1f0a7-e75c-d1e0-870d-dc480d070079@suse.com>
- <71608a14-58f4-dba0-d695-fee65de89192@linux.alibaba.com>
- <801438f5-655a-c708-aa25-343d54a2f11e@suse.com>
- <86e3d724-3147-ccaa-998f-0f857c575f7e@linux.alibaba.com>
- <a0a9710f-461a-99c8-92f6-a99bb11b3a4e@suse.com>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <4ba3b404-824b-90a3-ef43-9ab6510ee073@linux.alibaba.com>
-Date:   Thu, 19 Aug 2021 10:02:55 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <a0a9710f-461a-99c8-92f6-a99bb11b3a4e@suse.com>
-Content-Type: text/plain; charset=utf-8
+        id S235644AbhHSCDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 22:03:53 -0400
+Received: from mail-eopbgr40081.outbound.protection.outlook.com ([40.107.4.81]:63150
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235579AbhHSCDw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 22:03:52 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ivPfBROToeqZ7brIO3E8i+bKQs6OOSCtJZujaigaK7Y99N2hIHf8c6VtcPdlEdWEtMZCETej+RgxxpAtv4tb4jmoiS++SQoXKgnQMe4W1LPrMEzdfO7iwx/HCmufLqE2f6xGQh7JPFjzpspiDBoTiSunAtuvulYf2yQNn6aoabilMVbpfgEAHhbXBt7Xru+x8/ZyfJpv6DjpfwxzRaYlnb3Cv545SWRG/5Eh48B5eQDaWXNsspdxOzv7dcECbnSuGlUhJEF2v3PXAg0Z1JDCmuru7WQq/eprHCoBqEHNrtOY5anO8c9dsChKGS8hxKW6zjJXZesBA+rtKqBR7yuZ+Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PWuU78CH6mRGBxQ28/mjjTkjj7PLNTQINSsbnAn+1ko=;
+ b=KnEcmpfOgBlG9E0yyQkmeMJiG46iveFfZ3WrQcFCcGUG0YggLiJGBkIuTE4MNKJNFFI3PWh7GTW8J2zmgykHn251mMNc2VY+HIHhF2nGn3vu2JMdTUqAgHNDfKVqr8mtbJgPKMfksq9BvhHpXQS+X/Mmhm6RDFsRHWgnXVHz/xXgC3W7q1uM2H9v/Vk1cPj43Nfq4TMN0lsCs3Lv2XegIRkw+cdoPIKz+2Te6UYwAZiPIgwuxs8Vl+ZtoxyB1VlDTfsHBQf5Q42lmYXkBizVHt65EiwhuQM+SXpx7UqSFR3yR+ql6fC1Y9rbOkVmCUNYdvhTX/MIJq/utRPygS8xWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PWuU78CH6mRGBxQ28/mjjTkjj7PLNTQINSsbnAn+1ko=;
+ b=r5arLhZWgd0QsfficvUj3phzaW4WYs7kZjKnxukQW1ebkYXQuEzH6ETCdekdof+kdneBrTiU8Pa4SRKgc6xVEqN83ZPjvg5MFOk6kUz+ZiviH3X21/hh+pMal0whw18S/fyw9XXz2ppd73b02a33ytQ7e6BDv8dlU8pdWceSuPI=
+Received: from AS8PR04MB8404.eurprd04.prod.outlook.com (2603:10a6:20b:3f8::7)
+ by AM6PR04MB4629.eurprd04.prod.outlook.com (2603:10a6:20b:24::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.21; Thu, 19 Aug
+ 2021 02:03:15 +0000
+Received: from AS8PR04MB8404.eurprd04.prod.outlook.com
+ ([fe80::91c1:5ce4:cc:ddcd]) by AS8PR04MB8404.eurprd04.prod.outlook.com
+ ([fe80::91c1:5ce4:cc:ddcd%8]) with mapi id 15.20.4436.019; Thu, 19 Aug 2021
+ 02:03:15 +0000
+From:   Sherry Sun <sherry.sun@nxp.com>
+To:     Fabio Estevam <festevam@gmail.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: RE: [PATCH] tty: serial: fsl_lpuart: fix the wrong mapbase value
+Thread-Topic: [PATCH] tty: serial: fsl_lpuart: fix the wrong mapbase value
+Thread-Index: AQHXkzGZ2pnho/XCxk+AK2PI+8qIXqt6E/aAgAACINA=
+Date:   Thu, 19 Aug 2021 02:03:15 +0000
+Message-ID: <AS8PR04MB84040DFFBFD83B6E382A4E4E92C09@AS8PR04MB8404.eurprd04.prod.outlook.com>
+References: <20210817063058.4718-1-sherry.sun@nxp.com>
+ <CAOMZO5Dq153EYBFYdNZ-fWNkWkqJ3o+oP4y9K9cpcBu+dFChkA@mail.gmail.com>
+In-Reply-To: <CAOMZO5Dq153EYBFYdNZ-fWNkWkqJ3o+oP4y9K9cpcBu+dFChkA@mail.gmail.com>
+Accept-Language: zh-CN, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2a2f4b3a-11db-4ab1-5be8-08d962b581e3
+x-ms-traffictypediagnostic: AM6PR04MB4629:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM6PR04MB462975611F7375802793E6B092C09@AM6PR04MB4629.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4714;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: mas59llQlYa1egm+pzww0fav4SYghmqJvS1sojMahe9uqIzH8ayexKo7JD0DJmTcNgNXPMwBOFDJDOQQ5lmtn7B6Rz3sJCe9jIJzuHtNfl5xp1mMXYRQOkQBCFbzHYq7HS6cgTZLWSClqhbXHMP9nX6igVZYUc5qT2LBkWbUWdeD8nn7f/qB3wtiF88WHsIrylec0e/q99PGCiwp/vqtZkiV36jg2JouxtAt5v3+RQVZ0xP7Cew+bsMiKi0irlUygbY0+H+74Te+ZV8hLq2XG3KIRjSMZrfcnih89Ldzl+/TmE5y1+/DTUy476tWuFt8Po6pboyafaTDeCwRZ/LTPlT4UESnXT0w/XL/7rCR9D7/Bxpl5xU/F9Q0BNQOxxsRUMqemudQAGqxo6+JWSUIl7oomIZNu0XXEGxaD7P0JOJZjc4HFqmW7m3xeUrbaJWkTIAJ3yLNHQGOdzt2NnW15phqLTkSVzz6fr/3ZDABoA886szwiNQzIZ1qCGGWoF/myBOzBx4BSXaaUTpBJNhAh27CEurE98A4rHFjMcJpbcAphUjmuFsB5GhTHyTENqxCmwy9Jp8JdUYnrGed9cv+PcPiOftMjuiutS2efLlgFDQdgRu8YtYkBPfU498MHZ5DhTTnLTs1UppelPEOfMN8iP68CLv9vgnNcv4ZFXCS4TUPOAakxFSBmZRXMXmZ3XqfTxvinb59ZsagTDaRlpv6jA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8404.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(346002)(396003)(376002)(5660300002)(122000001)(316002)(53546011)(7696005)(64756008)(66556008)(26005)(6506007)(38100700002)(54906003)(66946007)(76116006)(66476007)(4326008)(44832011)(66446008)(52536014)(478600001)(83380400001)(71200400001)(186003)(4744005)(6916009)(55016002)(2906002)(9686003)(86362001)(8676002)(8936002)(33656002)(38070700005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?aVV6OGY0aG5mWThoSWJuc0J4RG10UndCUWVSWWd1T0k3NmFkSVBQVk9pQVNx?=
+ =?utf-8?B?Q0ZWbHlIVWdVV2N0UzdvblRvQlU4eHZkR05wekpGL0Z6c0d2cVFTay93emZh?=
+ =?utf-8?B?R01aeTl2RWNhd0cybFRiUjNHYlU4QVNndHRaT2poUVVmZHJ3NWJwUzBZRkcr?=
+ =?utf-8?B?emdyWEVLNXd6dGZwVTBNZzBka1NyZW9NbFE5ZXZDbkdzWTRyYUNiT1JQUUZY?=
+ =?utf-8?B?Z0MzUEN1enpZblpYQ3lEcUtTYnpFZzErbE1VOEQxR1BsMHBlV3FQQlBFV05x?=
+ =?utf-8?B?ZTB5L0JvU2lGN05ZQWRoTGd6YjVaTXBpcGJLRzdzWUswR0ExZ29zcU5BSkFM?=
+ =?utf-8?B?V2c5Lzh1bGsvVjNUdGxTYnFDdE1FamNTenI3TEFTU081L0hneXhEVzVjcERs?=
+ =?utf-8?B?V0FCdjdjOFRiTElpSkc4ZFAvVW9TdkZkWHVWMEpCc2NSSjZzYmxuR1BmTFdk?=
+ =?utf-8?B?UlVRMkwzbk4rdG9kM1hRVGtxUkpPdWRyNFB2bUJVc2dVUkw0eGNPUERWemh3?=
+ =?utf-8?B?cUQ5ZUhLQW42QVZmVlFuSGo5WUkxeG1FeFBid3crRmJEczdQc0xFeElFVHEx?=
+ =?utf-8?B?U214NFhGVUFXL0lOamxoZ1BlT21Gb0VkOTFYWWRUT3k3anNIUTEwcXlINm1v?=
+ =?utf-8?B?endVNjRmc1VlVzN5b2owSHRhc3Rtdnc2WmZhMGxWYmRGT05hKzRIT2YyZ0sz?=
+ =?utf-8?B?SkxvOFNrQitOV011S2hTMlppY0ZEVjhCaFZ3OEYwTG1NQVpFdWhXQU9VOUNK?=
+ =?utf-8?B?Um1GOXJicS93d2srKzFrUE1rQVpiamNRN3IxUWJSZElGSmtGR1lvWWJjZktM?=
+ =?utf-8?B?NjRWUE5nZ1QvUjhRNVdEQWZ4MmVJRVMwbi9vb2xUeWo0NTJpaXBucklFTlB3?=
+ =?utf-8?B?dTNGLysvYlhxRjNIMmZWSVhpM2NOOGZXSWYxMk03K1lCMHRKMmpiKzBwdUZa?=
+ =?utf-8?B?R0FsQmJiZ1h6TU9WZ1lhOFdoWG9wNURrZkJ6c3J3RHFqUmVlS2JoUlVYR0VP?=
+ =?utf-8?B?cE1HMU02aXE4cUt6OC85UEIvdWw5c25vZTg0K0RmRk1iaDVtcWdtZndOT0Fa?=
+ =?utf-8?B?Nk1MNWdVOXJhV25CQ1ZacGgvQ3d1OVBCVTRxQzQ5a0ZNNHZ2OVBBM2ljNUNh?=
+ =?utf-8?B?NW1URkgrK3FPT212b0NMK3NFSUxWNmZKeDhFNnVDcit6VEZLRktJcG5QS1Ux?=
+ =?utf-8?B?SVRDbGFkSGhzQVVGaFRuS0VpM2JqSXg1YUQzTHJzMW9iMDEyS3psdkNuZzcx?=
+ =?utf-8?B?ZWYyR1Z2N3dzRnJtdy9IWHl5S1NxdTU3Q2R0VXdIWGZPdUdjWkl5WXkwYjlh?=
+ =?utf-8?B?aVo5UUcwYTN4YSsvOS9aVWh0MVY2bHdJMWUydUc0aU45a2JLd1BSWXkzM0Zz?=
+ =?utf-8?B?bWpZUnh5NXZkSWZjMmpaR2thME5YejdlK0NYWEIvQmxHQ2xOakd5RlJSQ1ZK?=
+ =?utf-8?B?eUpTSUtadC9Uc3hYc3I2OE5NRUh0K1J6MGlleEpMMjM2QkpWSEZTaTRaaUhm?=
+ =?utf-8?B?M0ovSHIwMjZBT1pzMHB3R2QwWDJ3c0luclB0cUNGd0pReTVsWkl4R1JweTFx?=
+ =?utf-8?B?VjdESC9za21vY1MrZFd1clhpR1V4b3hacmJKR0loMmtFdDF4Sy9FWHZFeWlx?=
+ =?utf-8?B?blJVNXlIT3pYWWVtVzBDK2phTEJmRmRNc2FxRENGc0s2cU55MmxvaDExT0V5?=
+ =?utf-8?B?TCtrRU4ySk8vMitqK2x0NmlUcVBtL1RGZlhjQmpFUjRlNGIzbDE1WTFHQ3JS?=
+ =?utf-8?Q?3+aaqor7sNA+1hxbSjKZuUb0qP2TsNsTrDTAAEo?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8404.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2a2f4b3a-11db-4ab1-5be8-08d962b581e3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Aug 2021 02:03:15.6871
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: WGtyCSn5j+xvPWmbZP2Ts0IrEZb4Caadepl2NB4id5w86FkpEGPiZ22NI6gSAjl/FfGkETgiRD/SQdAZ4p4v+w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4629
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/19/21 9:51 AM, Gang He wrote:
-> 
-> 
-> On 2021/8/18 19:20, Joseph Qi wrote:
->>
->>
->> On 8/18/21 5:20 PM, Gang He wrote:
->>>
->>>
->>> On 2021/8/13 17:54, Joseph Qi wrote:
->>>>
->>>>
->>>> On 8/9/21 6:08 PM, Gang He wrote:
->>>>> Hi Joseph and All,
->>>>>
->>>>> The deadlock is caused by self-locking on one node.
->>>>> There is three node cluster (mounted to /mnt/shared), the user run reflink command to clone the file to the same directory repeatedly,
->>>>> e.g.
->>>>>    reflink "/mnt/shared/test" \
->>>>>    "/mnt/shared/.snapshots/test.`date +%m%d%H%M%S`.`hostname`"
->>>>>
->>>>> After a while, the reflink process on each node is hung, the file system cannot be listed.
->>>>> The problematic reflink command process is blocked by itself, e.g. the reflink process is hung at ghe-sle15sp2-nd2,
->>>>> kernel: task:reflink         state:D stack:    0 pid:16992 ppid:  4530
->>>>> kernel: Call Trace:
->>>>> kernel:  __schedule+0x2fd/0x750
->>>>> kernel:  ? try_to_wake_up+0x17b/0x4e0
->>>>> kernel:  schedule+0x2f/0xa0
->>>>> kernel:  schedule_timeout+0x1cc/0x310
->>>>> kernel:  ? __wake_up_common+0x74/0x120
->>>>> kernel:  wait_for_completion+0xba/0x140
->>>>> kernel:  ? wake_up_q+0xa0/0xa0
->>>>> kernel:  __ocfs2_cluster_lock.isra.41+0x3b5/0x820 [ocfs2]
->>>>> kernel:  ? ocfs2_inode_lock_full_nested+0x1fc/0x960 [ocfs2]
->>>>> kernel:  ocfs2_inode_lock_full_nested+0x1fc/0x960 [ocfs2]
->>>>> kernel:  ocfs2_init_security_and_acl+0xbe/0x1d0 [ocfs2]
->>>>> kernel:  ocfs2_reflink+0x436/0x4c0 [ocfs2]
->>>>> kernel:  ? ocfs2_reflink_ioctl+0x2ca/0x360 [ocfs2]
->>>>> kernel:  ocfs2_reflink_ioctl+0x2ca/0x360 [ocfs2]
->>>>> kernel:  ocfs2_ioctl+0x25e/0x670 [ocfs2]
->>>>> kernel:  do_vfs_ioctl+0xa0/0x680
->>>>> kernel:  ksys_ioctl+0x70/0x80
->>>>>
->>>>> In fact, the destination directory(.snapshots) inode dlm lock was acquired by ghe-sle15sp2-nd2, next there is bast message from other nodes to ask ghe-sle15sp2-nd2 downconvert lock, but the operation failed, the kernel message is printed like,
->>>>> kernel: (ocfs2dc-AA35DD9,2560,3):ocfs2_downconvert_lock:3660 ERROR: DLM error -16 while calling ocfs2_dlm_lock on resource M0000000000000000046e0200000000
->>>>> kernel: (ocfs2dc-AA35DD9,2560,3):ocfs2_unblock_lock:3904 ERROR: status = -16
->>>>> kernel: (ocfs2dc-AA35DD9,2560,3):ocfs2_process_blocked_lock:4303 ERROR: status = -16
->>>>>
->>>>> Then, the reflink process tries to acquire this directory inode dlm lock, the process is blocked, the dlm lock resource in memory looks like
->>>>>
->>>>>       l_name = "M0000000000000000046e0200000000",
->>>>>       l_ro_holders = 0,
->>>>>       l_ex_holders = 0,
->>>>>       l_level = 5 '\005',
->>>>>       l_requested = 0 '\000',
->>>>>       l_blocking = 5 '\005',
->>>>>       l_type = 0 '\000',
->>>>>       l_action = 0 '\000',
->>>>>       l_unlock_action = 0 '\000',
->>>>>       l_pending_gen = 645948,
->>>>>
->>>>>
->>>>> So far, I do not know what makes dlm lock function failed, it also looks we do not handle this failure case in dlmglue layer, but I always reproduce this hang with my test script, e.g.
->>>>>
->>>>>     loop=1
->>>>>     while ((loop++)) ; do
->>>>>           for i in `seq 1 100`; do
->>>>>             reflink "/mnt/shared/test" "/mnt/shared/.snapshots /test.${loop}.${i}.`date +%m%d%H%M%S`.`hostname`"
->>>>>           done
->>>>>           usleep 500000
->>>>>           rm -f /mnt/shared/.snapshots/testnode1.qcow2.*.`hostname`
->>>>>     done
->>>>>
->>>>> My patch changes multiple acquiring dest directory inode dlm lock during in ocfs2_reflink function, it avoids the hang issue happen again.The code change also can improve reflink performance in this case.
->>>>>
->>>>> Thanks
->>>>> Gang
->>>>
->>>> 'status = -16' implies DLM_CANCELGRANT.
->>>> Do you use stack user instead of o2cb? If yes, can you try o2cb with
->>>> your reproducer?
->>>
->>> I setup o2cb based ocfs2 clusters with sle15sp2 and oracleLinux8u4.
->>> After two day testing with the same script, I did not encounter dlm_lock downconvert failure, the hang issue did not happen.
->>> After my patch was applied, there was not any side effect, the reflink performance was doubled in the case.
->>>
->>
->> Do you mean the hang only happens on stack user?
-> Yes.
-> Why? since o2cb based dlm_lock did not return error -16 when downcovert dlm lock during the whole testing.
-> But pmck based dlm_lock retuned error -16 during the testing, then we did not handle this error further in dlmglue layer, next encounter the hang issue when dlm_lock acquire the lock. Maybe there is a race condition when using dlm_lock/dlm_unlock(cancel) in dlmglue layer.
-> Anyway, the problem belongs to ocfs2 own parts.
-> 
-I meant if DLM_CANCELGRANT is not the expected return code, we'd
-better fix the issue in stack_user.c but not dlmglue, e.g. some specific
-wrapper.
-
-Thanks,
-Joseph
-
+SGkgRmFiaW8sDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRmFiaW8g
+RXN0ZXZhbSA8ZmVzdGV2YW1AZ21haWwuY29tPg0KPiBTZW50OiAyMDIx5bm0OOaciDE55pelIDk6
+NTUNCj4gVG86IFNoZXJyeSBTdW4gPHNoZXJyeS5zdW5AbnhwLmNvbT4NCj4gQ2M6IEdyZWcgS3Jv
+YWgtSGFydG1hbiA8Z3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmc+OyBKaXJpIFNsYWJ5DQo+IDxq
+aXJpc2xhYnlAa2VybmVsLm9yZz47IGxpbnV4LXNlcmlhbEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4
+LWtlcm5lbCA8bGludXgtDQo+IGtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+OyBkbC1saW51eC1pbXgg
+PGxpbnV4LWlteEBueHAuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIXSB0dHk6IHNlcmlhbDog
+ZnNsX2xwdWFydDogZml4IHRoZSB3cm9uZyBtYXBiYXNlIHZhbHVlDQo+IA0KPiBIaSBTaGVycnks
+DQo+IA0KPiBPbiBUdWUsIEF1ZyAxNywgMjAyMSBhdCAzOjMyIEFNIFNoZXJyeSBTdW4gPHNoZXJy
+eS5zdW5AbnhwLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBGcm9tOiBBbmR5IER1YW4gPGZ1Z2FuZy5k
+dWFuQG54cC5jb20+DQo+ID4NCj4gPiBSZWdpc3RlciBvZmZzZXQgbmVlZHMgdG8gYmUgYXBwbGll
+ZCBvbiBtYXBiYXNlIGFsc28uDQo+ID4gZG1hX3R4L3J4X3JlcXVlc3QgdXNlIHRoZSBwaHlzaWNh
+bCBhZGRyZXNzIG9mIFVBUlREQVRBLg0KPiA+IFJlZ2lzdGVyIG9mZnNldCBpcyBjdXJyZW50bHkg
+b25seSBhcHBsaWVkIHRvIG1lbWJhc2UgKHRoZQ0KPiA+IGNvcnJlc3BvbmRpbmcgdmlydHVhbCBh
+ZGRyKSBidXQgbm90IG9uIG1hcGJhc2UuDQo+ID4NCj4gPiBSZXZpZXdlZC1ieTogTGVvbmFyZCBD
+cmVzdGV6IDxsZW9uYXJkLmNyZXN0ZXpAbnhwLmNvbT4NCj4gPiBBY2tlZC1ieTogRnVnYW5nIER1
+YW4gPGZ1Z2FuZy5kdWFuQG54cC5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogQWRyaWFuYSBSZXVz
+IDxhZHJpYW5hLnJldXNAbnhwLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBTaGVycnkgU3VuIDxz
+aGVycnkuc3VuQG54cC5jb20+DQo+IA0KPiBZb3UgcHJvYmFibHkgc2hvdWxkIGFkZCBhIEZpeGVz
+IHRhZy4NCg0KVGhhdCdzIHJlYXNvbmFibGUsIEkgd2lsbCBhZGQgaXQuIFRoYW5rcyENCg0KQmVz
+dCByZWdhcmRzDQpTaGVycnkNCg==
