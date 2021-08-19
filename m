@@ -2,188 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7FDF3F1A37
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 15:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF1313F1A42
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 15:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239922AbhHSNVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 09:21:12 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4360 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S239300AbhHSNVL (ORCPT
+        id S239972AbhHSNWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 09:22:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239300AbhHSNV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 09:21:11 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17JD4BSr162653;
-        Thu, 19 Aug 2021 09:20:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=VlwW+a51ub2iWUfyBK8/YBny3TS9/ko8KkFDRDd38QE=;
- b=QSwzW36/xXHhdhCNIWGFQQffRhkmpBLX+BxGuKiyJtXRgJADv/LcjB1svoTaItaxIfcJ
- 45aCBg/y8epxyqv8B827UqEvrNuCb4eHhVBUAVWeGFwE9gTwn4MJvg6S7avXoQsefgDo
- /95Ei3eZIfc0DQqtxzeFTKoobtio8x168p/VkxtLen+nar71Eb6CMGtSuoGUQKheY8mt
- R4vZzQYToTT+wlmJMnCIVD7h0GXoDr/huoTnInNKxZ5ZAtYbb1LPfUIFRBKfDfjsOQIj
- 6J51WwDxnnsI05ieasjDNo9ODIrSf8bqjkK3Mg0UlwSXgQSJKEQPaYzxDTupoZI6fRjQ uw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3agp20nuu8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Aug 2021 09:20:32 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17JD4hog165385;
-        Thu, 19 Aug 2021 09:20:32 -0400
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3agp20nutv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Aug 2021 09:20:32 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17JDD35g014471;
-        Thu, 19 Aug 2021 13:20:31 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma03wdc.us.ibm.com with ESMTP id 3ae5few5fj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Aug 2021 13:20:31 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17JDKTis36831678
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Aug 2021 13:20:30 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D321C136051;
-        Thu, 19 Aug 2021 13:20:29 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C6C5F13605D;
-        Thu, 19 Aug 2021 13:20:28 +0000 (GMT)
-Received: from cpe-172-100-181-211.stny.res.rr.com (unknown [9.160.182.229])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 19 Aug 2021 13:20:28 +0000 (GMT)
-Subject: Re: [PATCH 1/2] s390/vfio-ap: r/w lock for PQAP interception handler
- function pointer
-To:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        jgg@nvidia.com, alex.williamson@redhat.com, kwankhede@nvidia.com,
-        david@redhat.com
-References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
- <20210719193503.793910-2-akrowiak@linux.ibm.com>
- <1a9f15d7-0f4d-00a0-0a8b-f1c08aa52eeb@de.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <358b1052-c751-7417-1263-308b133325b6@linux.ibm.com>
-Date:   Thu, 19 Aug 2021 09:20:28 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 19 Aug 2021 09:21:56 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC434C061575;
+        Thu, 19 Aug 2021 06:21:19 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id q11so9100891wrr.9;
+        Thu, 19 Aug 2021 06:21:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xtcA0Q51Ab2gDUHvKWadMAS32FJIwcbf7uqdag4aFgw=;
+        b=lz3AxdkSOdaxsff8Al6AfTWQciSBbKeqxN29m/KMRbWKXw4/fgyKk+WmJ3QyUOixzN
+         4y+KG309qv8rkghhhHNRjVwzQahlcuEF8Doq0LiHQSzU/UrguSZVcFsLMmJayxgm0ij7
+         DqTbzqfCmAxDcIkhQyStvyWV+ku8uSeeX7dE8YJzyIVUpP80wgthC25SMYweNXtTQxd2
+         jUYpv3DiHYgCuk8SxMaErfJkgf/6GXvet2x/3DRJNApy/VuzLhZHOeod4kvyeZkQA9ku
+         C/I1gCo8fSlZRTkrqgpt1DYoLIzTdJHzUmyJQGy3YGKvzsZRU31V8uTvRHxX3uAQWw49
+         Yagw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xtcA0Q51Ab2gDUHvKWadMAS32FJIwcbf7uqdag4aFgw=;
+        b=ec2arA6UGQuuK+E19eRhCy1Gac+xrs2HZApSdTwzjhj5MUGqZGL1Ni6E11AcdmcfCJ
+         TYYkrsV1isYBUjtgV4OE14tqPCioNuFTfGa3KcZvHlQHEWI2JX9EqRpRSNKchsGUN8uX
+         RlUPmc5/Sb6A2GUa7GcYOWOuxU+XHFAegk/JHArWWatg9q1Nd9V7y1B4heLzBrjrlKgY
+         aH3RzaTmGhbRrvS57IvC3nZaUK9q1vZcQvMe3qSKnp6ArVS4pjUJO3tQuBi6yO8ZmJWo
+         Lpkj3H6xvmrE2cNJFVx53CWxroXdzLIsnwyavfM38jQ2eocqcRZbtypI6CGFfRMe8hrr
+         Ogjg==
+X-Gm-Message-State: AOAM533/8TZ0OcyLCuY4Xv+tYkmPZyqKlK3LH/phdjxpMYYbE4NRVvu/
+        s4E9pz+c1c4cPJ4W2/otOqE=
+X-Google-Smtp-Source: ABdhPJz39Bt2kVM50Mk8FByewEg3lcDVqz/jK/N/qbprIAZwm7opqauve4ARpLRYoIa5SH1Y+OoKXw==
+X-Received: by 2002:a5d:4c87:: with SMTP id z7mr3961844wrs.284.1629379278262;
+        Thu, 19 Aug 2021 06:21:18 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id l17sm7319377wmq.44.2021.08.19.06.21.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 06:21:16 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 15:21:15 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH v8 19/34] pwm: tegra: Add runtime PM and OPP support
+Message-ID: <YR5ay6+r0hJsUbhy@orome.fritz.box>
+References: <20210817012754.8710-1-digetx@gmail.com>
+ <20210817012754.8710-20-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1a9f15d7-0f4d-00a0-0a8b-f1c08aa52eeb@de.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: xTmhhGfkG7U8zthCjgEiQ-CNfrXXCDRO
-X-Proofpoint-GUID: 7A2t7QY2dNm3kSq70Z-s2T4UM_DMVPtr
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-19_04:2021-08-17,2021-08-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1015
- priorityscore=1501 lowpriorityscore=0 phishscore=0 malwarescore=0
- mlxscore=0 bulkscore=0 impostorscore=0 suspectscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108190076
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="vMbaQMXyoWqaG8Xh"
+Content-Disposition: inline
+In-Reply-To: <20210817012754.8710-20-digetx@gmail.com>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--vMbaQMXyoWqaG8Xh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 8/18/21 1:03 PM, Christian Borntraeger wrote:
-> On 19.07.21 21:35, Tony Krowiak wrote:
->> The function pointer to the interception handler for the PQAP 
->> instruction
->> can get changed during the interception process. Let's add a
->> semaphore to struct kvm_s390_crypto to control read/write access to the
->> function pointer contained therein.
->>
->> The semaphore must be locked for write access by the vfio_ap device 
->> driver
->> when notified that the KVM pointer has been set or cleared. It must be
->> locked for read access by the interception framework when the PQAP
->> instruction is intercepted.
->>
->> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
->> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
->> ---
->>   arch/s390/include/asm/kvm_host.h      |  8 +++-----
->>   arch/s390/kvm/kvm-s390.c              |  1 +
->>   arch/s390/kvm/priv.c                  | 10 ++++++----
->>   drivers/s390/crypto/vfio_ap_ops.c     | 23 +++++++++++++++++------
->>   drivers/s390/crypto/vfio_ap_private.h |  2 +-
->>   5 files changed, 28 insertions(+), 16 deletions(-)
->>
->> diff --git a/arch/s390/include/asm/kvm_host.h 
->> b/arch/s390/include/asm/kvm_host.h
->> index 9b4473f76e56..f18849d259e6 100644
->> --- a/arch/s390/include/asm/kvm_host.h
->> +++ b/arch/s390/include/asm/kvm_host.h
->> @@ -798,14 +798,12 @@ struct kvm_s390_cpu_model {
->>       unsigned short ibc;
->>   };
->>   -struct kvm_s390_module_hook {
->> -    int (*hook)(struct kvm_vcpu *vcpu);
->> -    struct module *owner;
->> -};
->> +typedef int (*crypto_hook)(struct kvm_vcpu *vcpu);
->>     struct kvm_s390_crypto {
->>       struct kvm_s390_crypto_cb *crycb;
->> -    struct kvm_s390_module_hook *pqap_hook;
->> +    struct rw_semaphore pqap_hook_rwsem;
->> +    crypto_hook *pqap_hook;
->>       __u32 crycbd;
->>       __u8 aes_kw;
->>       __u8 dea_kw;
->> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
->> index b655a7d82bf0..a08f242a9f27 100644
->> --- a/arch/s390/kvm/kvm-s390.c
->> +++ b/arch/s390/kvm/kvm-s390.c
->> @@ -2630,6 +2630,7 @@ static void kvm_s390_crypto_init(struct kvm *kvm)
->>   {
->>       kvm->arch.crypto.crycb = &kvm->arch.sie_page2->crycb;
->>       kvm_s390_set_crycb_format(kvm);
->> +    init_rwsem(&kvm->arch.crypto.pqap_hook_rwsem);
->>         if (!test_kvm_facility(kvm, 76))
->>           return;
->> diff --git a/arch/s390/kvm/priv.c b/arch/s390/kvm/priv.c
->> index 9928f785c677..6bed9406c1f3 100644
->> --- a/arch/s390/kvm/priv.c
->> +++ b/arch/s390/kvm/priv.c
->> @@ -610,6 +610,7 @@ static int handle_io_inst(struct kvm_vcpu *vcpu)
->>   static int handle_pqap(struct kvm_vcpu *vcpu)
->>   {
->>       struct ap_queue_status status = {};
->> +    crypto_hook pqap_hook;
->>       unsigned long reg0;
->>       int ret;
->>       uint8_t fc;
->> @@ -657,15 +658,16 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
->>        * Verify that the hook callback is registered, lock the owner
->>        * and call the hook.
->>        */
->> + down_read(&vcpu->kvm->arch.crypto.pqap_hook_rwsem);
->>       if (vcpu->kvm->arch.crypto.pqap_hook) {
->> -        if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
->> -            return -EOPNOTSUPP;
->> -        ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
->> - module_put(vcpu->kvm->arch.crypto.pqap_hook->owner);
->> +        pqap_hook = *vcpu->kvm->arch.crypto.pqap_hook;
->
-> Dont we have to check for NULL here? If not can you add a comment why?
+On Tue, Aug 17, 2021 at 04:27:39AM +0300, Dmitry Osipenko wrote:
+> The PWM on Tegra belongs to the core power domain and we're going to
+> enable GENPD support for the core domain. Now PWM must be resumed using
+> runtime PM API in order to initialize the PWM power state. The PWM clock
+> rate must be changed using OPP API that will reconfigure the power domain
+> performance state in accordance to the rate. Add runtime PM and OPP
+> support to the PWM driver.
+>=20
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/pwm/pwm-tegra.c | 104 ++++++++++++++++++++++++++++++++--------
+>  1 file changed, 85 insertions(+), 19 deletions(-)
 
-Take a look above the removed lines: if (vcpu->kvm->arch.crypto.pqap_hook)
+Can this be safely applied independently of the rest of the series, or
+are there any dependencies on earlier patches?
 
->
-> Otherwise this looks good.
+Thierry
 
-Also, in the cover letter I said this patch was already queued and was
-included here because it pre-reqs the second patch. Is this patch not
-already in Alex's tree?
+--vMbaQMXyoWqaG8Xh
+Content-Type: application/pgp-signature; name="signature.asc"
 
->
->
->> +        ret = pqap_hook(vcpu);
-> [...]
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEeWskACgkQ3SOs138+
+s6GqkA//VEToPW4lCrJibs4kkno3t/HJrCc3QIgrT3KY7KgdOtg6fmvLz/8Bjja0
+ut1YS/ozbt7FAgaf8YTyKMFOo8dv21DBdpit0bIWZWYvwh6P2SKB3p+1cFVN9jHZ
+lXkRdCUVYqPSGJ2tEHZ6WZBA8KGc198UL3n5PzUQZhh4jRWgfXNLsI2Trp3uwr+T
+9/v/xWmil3wiFAgf8H6GLwZ/M3+O9Q32eq6QI0SZOiE/Lj9mwPdZQXixXgDDk2td
+dU/CQgmygPCYlcpVcwC1gmvzWcQp6Bffa/3xaRR2vIjSSZtjshQ08B01OOM3Wr/G
+qcghnLX0Q3QooNx6alRRv+P1SZXW8u7xcL0HysovbD8IDpOgLBJYXo8IaCHfSlyF
+EVVRXB8gMIQip8taMkL6jRVExNuNFDuIs6i2b/KaP2cd2p1mePZw1kS4vf8NJHX6
+mJFe0u8P5aik2tEnXP4/M9J9+ZtMLxnRTqB3aK+chmG/KUA66hyMjM3DeEnxfIBL
+6YcKjFjKUXVviacmnu+9PDPO4g43XS0M5um6eTtGYkV76kF/KlPYtLuLJG80QIgv
+njHN5UN2AgTwaeSZYbDjZ/ldsO9H0aedYvFSyXUQio9GvHSws9WeJD+FVdXKmODO
+mS+oMleXMvwiTrWNXKoEG5mTYd2GjUZ7mHsN36quci2pc+ZmYSE=
+=0tJv
+-----END PGP SIGNATURE-----
+
+--vMbaQMXyoWqaG8Xh--
