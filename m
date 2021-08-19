@@ -2,115 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C8F3F15A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 10:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4DB3F15AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 10:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234211AbhHSI7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 04:59:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:33232 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229990AbhHSI7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 04:59:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B1DF01FB;
-        Thu, 19 Aug 2021 01:59:17 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 68EFE3F40C;
-        Thu, 19 Aug 2021 01:59:16 -0700 (PDT)
-Subject: Re: [PATCH v6 2/7] dma-iommu: fix arch_sync_dma for map
-To:     David Stevens <stevensd@chromium.org>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Tom Murphy <murphyt7@tcd.ie>, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210817013852.3222824-1-stevensd@google.com>
- <20210817013852.3222824-3-stevensd@google.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <0725585f-525b-d689-4b63-8ffeedfe87d9@arm.com>
-Date:   Thu, 19 Aug 2021 09:59:09 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S235475AbhHSJAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 05:00:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229990AbhHSJAR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 05:00:17 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636A3C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 01:59:40 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id v4so7842235wro.12
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 01:59:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uVCUyG2NuSIGcMkq0WuvNZ15TJ1vZGR///Ye476yofU=;
+        b=KI0EaoIHCCtmAfSlWmcLr/ObZuekZhkwWEKURpSz4ItXaOXjyCdLXn9KWaWRBcmCgB
+         qSfR57ZurpkJJY0m9Lg1RmcXVNZbQUUAMZadH/Ooz3pSTGVwHqbftl5+QBpMsw02cZ8i
+         yjR2hjJbyC3KRbq9JQEAeUqkhPCiXgWTL85jOIt2KJUxsIY0QnZAUK55BHdezuyS7D8u
+         DoOD/CvZ2nldKe/6xuQ/bLigBrMtEgDKbNKG5FjO3OHcIHiLi2A9utHfWOmnVAOBe8Pb
+         zJJtjn7kgX25+GrQ04vKCt7KtyIPAGQp6Na+wRwZGk9Rxkce9Ml5ZWy2lEJ8TiRGdQ0a
+         +i7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uVCUyG2NuSIGcMkq0WuvNZ15TJ1vZGR///Ye476yofU=;
+        b=PM3MBPSLw1VPQq/JnaPeCeFOLkL7n+uCzS4d5DQUzy/IfJXKZFC9227kiz9B5Qv34A
+         vda+Cbfp+mz3pGB9LuPc1JM6GC122GurDqG8S5esMlge0RRkmYgOaJm3TxvcMfZIBRkq
+         KhX+L0Il92wwr3rmeQsGbyN+RoFkiqStMHHuXEKHPRCkCb/s5/VyYp2dZww/iRcaqBfy
+         0d4Nm6hYcIrSFlGdKz5iskzuga0mIlTPzo02tkPAYj01afocjKHRWFl9am+LJqnf5vnG
+         oRhI6v9KOOtT8SJqWaFmcZ9ILzaIb98GVl6tcPbkS92Y+EvC7zP9I0tyYQ9sJBBRtR4I
+         vVIw==
+X-Gm-Message-State: AOAM531eytz+uEYI6ZZxPRfw/6ROQHRTYR8C5qIfB15TSdFztSn7scgn
+        oAFF8b27ki14MyOtp/M4ALlHvAm9/MU=
+X-Google-Smtp-Source: ABdhPJz5HqPdhNwnLJ2lHu65HFgwpMni8O/WP9YdzyTXUBy1TcyTAjtHhYOipMS4VPFtw9ftfH28Uw==
+X-Received: by 2002:a5d:494d:: with SMTP id r13mr2416465wrs.12.1629363578975;
+        Thu, 19 Aug 2021 01:59:38 -0700 (PDT)
+Received: from saturne.home ([2a01:cb1d:16b:7e00:d8a9:a24:4997:14eb])
+        by smtp.gmail.com with ESMTPSA id v5sm1336520wru.37.2021.08.19.01.59.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 01:59:37 -0700 (PDT)
+From:   Laurent Stacul <captain.stac@gmail.com>
+X-Google-Original-From: Laurent Stacul <laurent.stacul@gmail.com>
+Date:   Thu, 19 Aug 2021 10:59:34 +0200
+To:     Vito Caputo <vcaputo@pengaru.com>, linux-kernel@vger.kernel.org
+Subject: Re: XFS/mmap reflink file question
+Message-ID: <YR4ddt89f6DVYa/O@saturne.home>
+References: <YRupQKbg6uN8INCn@saturne.home>
+ <20210817221258.jb4pg77bdle7t2oj@shells.gnugeneration.com>
 MIME-Version: 1.0
-In-Reply-To: <20210817013852.3222824-3-stevensd@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210817221258.jb4pg77bdle7t2oj@shells.gnugeneration.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-17 02:38, David Stevens wrote:
-> From: David Stevens <stevensd@chromium.org>
-> 
-> When calling arch_sync_dma, we need to pass it the memory that's
-> actually being used for dma. When using swiotlb bounce buffers, this is
-> the bounce buffer. Move arch_sync_dma into the __iommu_dma_map_swiotlb
-> helper, so it can use the bounce buffer address if necessary.
-> 
-> Now that iommu_dma_map_sg delegates to a function which takes care of
-> architectural syncing in the untrusted device case, the call to
-> iommu_dma_sync_sg_for_device can be moved so it only occurs for trusted
-> devices. Doing the sync for untrusted devices before mapping never
-> really worked, since it needs to be able to target swiotlb buffers.
-> 
-> This also moves the architectural sync to before the call to
-> __iommu_dma_map, to guarantee that untrusted devices can't see stale
-> data they shouldn't see.
+On Tue, Aug 17, 2021 at 03:12:58PM -0700, Vito Caputo wrote:
+>On Tue, Aug 17, 2021 at 02:19:12PM +0200, Laurent Stacul wrote:
+>> Hello,
+>>
+>> I spent much time digging into the mmap mechanism and I don't have a clear view
+>> on mmap'ing a file and a reflink to this file would be mapped twice in memory
+>> (this only applies in case the filesystem supports reflink feature like XFS).
+>>
+>> To describe my tests, I generate a file stored on an XFS partition and create a
+>> reflink of it:
+>>
+>>     % dd if=/dev/zero of=./output.dat bs=1M count=24
+>>     % cp --reflink -v output.dat output2.dat
+>>     % xfs_bmap -v output.dat
+>>     output.dat:
+>>      EXT: FILE-OFFSET      BLOCK-RANGE      AG AG-OFFSET          TOTAL
+>>        0: [0..49151]:      3756776..3805927  0 (3756776..3805927) 49152 100000
+>>     % xfs_bmap -v output2.dat
+>>     output2.dat:
+>>      EXT: FILE-OFFSET      BLOCK-RANGE      AG AG-OFFSET          TOTAL
+>>        0: [0..49151]:      3756776..3805927  0 (3756776..3805927) 49152 100000
+>>
+>> Then I mmap the first file twice using vmtouch tool:
+>>
+>>     % vmtouch -l output.dat&
+>>     [1] 15870
+>>     LOCKED 6144 pages (24M)
+>>     % vmtouch -l output.dat&
+>>     [2] 15872
+>>     LOCKED 6144 pages (24M)
+>>     % pmap -X 15872 | grep -e 'Pss' -e 'output' | awk '{if(NR>1)printf("%16s %4s %6s %10s %10s %10s\n", $1, $2, $4, $5, $7, $8)}'
+>>          Address Perm Device      Inode        Rss        Pss
+>>     7fcbb9eb9000 r--s  fc:10    3755268      24576      12288
+>>
+>> As we can see the Proportional Set Size is as expected the half of the Resident
+>> Set Size because the memory is shared by the two processes. Now, I mmap the
+>> reflink `output2.dat' of 'output.dat':
+>>
+>>     % vmtouch -l output2.dat&
+>>     [3] 15892
+>>     LOCKED 6144 pages (24M)
+>>     % pmap -X 15872 | grep -e 'Pss' -e 'output' | awk '{if(NR>1)printf("%16s %4s %6s %10s %10s %10s\n", $1, $2, $4, $5, $7, $8)}'
+>>          Address Perm Device      Inode        Rss        Pss
+>>     7fcbb9eb9000 r--s  fc:10    3755268      24576      12288
+>>
+>> The Pss of mmap'ed file by the first process has not decreased (I expected a
+>> value of Rss / 3 because I hoped the memory would have been shared by the 3
+>> processes). If I look at the process map of the last process, we can interpret
+>> a new memory area was allocated and locked.
+>>
+>>     % pmap -X 15892 | grep -e 'Pss' -e 'output' | awk '{if(NR>1)printf("%16s %4s %6s %10s %10s %10s\n", $1, $2, $4, $5, $7, $8)}'
+>>           Address Perm Device      Inode        Rss        Pss
+>>      7f5adc53f000 r--s  fc:10    3755269      24576      24576
+>>
+>> So my questions:
+>> - Why can't we benefit from the memory sharing when reflinked files are mmap'ed
+>>   ? It would be great because one application would be, in the context of
+>>   containers, the possibility to share some read only areas between container
+>>   that are built from the layer diff that are reproducible between images. We
+>>   can imagine a layer that brings some shared libraries in an image from a
+>>   reproducible FS diff so that containers would not load several times a
+>>   library.
+>> - I can think of many tricky cases with the behavior I was expecting (especially
+>>   if a process has write access to the mapped area), but if you know a way, an
+>>   option something to achieve what I am trying to do, I would be glad to hear
+>>   it.
+>> - Conversely, don't hesitate to tell me my expectation is just crazy.
+>>
+>> Anyway, I am always looking forward to listening to valuable specialist insights.
+>> Thanks in advance,
+>>
+>> stac
+>>
+>> PS: Please, add me is CC if this message deserves an answer.
+>>
+>
+>This is one of the major features overlayfs brings to the table over
+>reflink's current implementation.
+>
+>With reflink copies you get distinct inodes and the data sharing
+>occurs further down in the fs at the extent level, below the struct
+>address_space instances.
+>
+>If memory serves Dave Chinner has given the issue some thought, but I
+>haven't noticed/heard anything in terms of progress there.  Maybe
+>he'll see this and chime in...
+>
+>Regards,
+>Vito Caputo
 
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+Thanks for your answer. If I understand correctly, reflink feature
+cannot be used in the scenario I propose because reflinks are
+optimization occuring under the VFS. This makes sense to me and I was
+not really confident this had a chance to work.
 
-> Fixes: 82612d66d51d ("iommu: Allow the dma-iommu api to use bounce buffers")
-> Signed-off-by: David Stevens <stevensd@chromium.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> ---
->   drivers/iommu/dma-iommu.c | 16 +++++++---------
->   1 file changed, 7 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> index 968e0150c95e..8098ce593640 100644
-> --- a/drivers/iommu/dma-iommu.c
-> +++ b/drivers/iommu/dma-iommu.c
-> @@ -576,6 +576,9 @@ static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
->   		memset(padding_start, 0, padding_size);
->   	}
->   
-> +	if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
-> +		arch_sync_dma_for_device(phys, org_size, dir);
-> +
->   	iova = __iommu_dma_map(dev, phys, aligned_size, prot, dma_mask);
->   	if (iova == DMA_MAPPING_ERROR && is_swiotlb_buffer(phys))
->   		swiotlb_tbl_unmap_single(dev, phys, org_size, dir, attrs);
-> @@ -842,14 +845,9 @@ static dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
->   {
->   	phys_addr_t phys = page_to_phys(page) + offset;
->   	bool coherent = dev_is_dma_coherent(dev);
-> -	dma_addr_t dma_handle;
->   
-> -	dma_handle = __iommu_dma_map_swiotlb(dev, phys, size, dma_get_mask(dev),
-> +	return __iommu_dma_map_swiotlb(dev, phys, size, dma_get_mask(dev),
->   			coherent, dir, attrs);
-> -	if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
-> -	    dma_handle != DMA_MAPPING_ERROR)
-> -		arch_sync_dma_for_device(phys, size, dir);
-> -	return dma_handle;
->   }
->   
->   static void iommu_dma_unmap_page(struct device *dev, dma_addr_t dma_handle,
-> @@ -992,12 +990,12 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
->   	    iommu_deferred_attach(dev, domain))
->   		return 0;
->   
-> -	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
-> -		iommu_dma_sync_sg_for_device(dev, sg, nents, dir);
-> -
->   	if (dev_is_untrusted(dev))
->   		return iommu_dma_map_sg_swiotlb(dev, sg, nents, dir, attrs);
->   
-> +	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
-> +		iommu_dma_sync_sg_for_device(dev, sg, nents, dir);
-> +
->   	/*
->   	 * Work out how much IOVA space we need, and align the segments to
->   	 * IOVA granules for the IOMMU driver to handle. With some clever
-> 
+As you suggest, I will turn my effort on overlay.
+
+Regards,
+stac
