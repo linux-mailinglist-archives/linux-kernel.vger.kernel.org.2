@@ -2,182 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E78173F1E93
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B193F1E95
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230393AbhHSRCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 13:02:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:42696 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229491AbhHSRCp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 13:02:45 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 684C51042;
-        Thu, 19 Aug 2021 10:02:08 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7017E3F70D;
-        Thu, 19 Aug 2021 10:02:06 -0700 (PDT)
-Subject: Re: [PATCH 2/4] dt-bindings: sound: add rockchip i2s-tdm binding
-To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>
-Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210817101119.423853-1-frattaroli.nicolas@gmail.com>
- <20210817101119.423853-3-frattaroli.nicolas@gmail.com>
- <deb50900-fcfd-23d0-ab8a-0e64b2abb063@arm.com> <2412250.zZEsDtmPgG@archbook>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <70cb1e4b-ecb7-2a4b-ee35-02f5a6b8a986@arm.com>
-Date:   Thu, 19 Aug 2021 18:02:01 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230459AbhHSRDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 13:03:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229804AbhHSRDU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 13:03:20 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A3E6C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 10:02:44 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id y23so6478060pgi.7
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 10:02:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KqBAIDNf4KI+7R9PW3HCAEUqOqaD6fR6+WQBrUCULKY=;
+        b=z1B8bUNPLeGGpwQpF0qQWSkYBEjy0CQu68bzOIHjPVxkyyhZ8q91NunSN6OqH54L+3
+         jrRFZbIT0CveXy4/JBRSqFmySzUMqn7YVNV7UnZm92eEEkMUXJjrXoTlp2aKneS5PoIK
+         74DH2fX200D4IKk+4W2/xPqDbstUr/pnt1/DbxnzUaZxY0MXcQD9GlbVnimTC9+SKcyL
+         yVrX134NL0Dxtqz+yN0PR3poo8Dgu4z9tubmaL4RHZNSIKBRWeWrxPoJbUX9IO9IQvCd
+         N5fUIRIbkKXFGIpNEjt0McT6b1nmJ6r6tsbfAe+xt3rpmuMtNYxvIrtxc8Hqp7Ayy80b
+         KyTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KqBAIDNf4KI+7R9PW3HCAEUqOqaD6fR6+WQBrUCULKY=;
+        b=q1y0MT2cptSa4vgVN5kkvTnWqE0vnG1T3/ULy2ASiqO2lALnEXS22h8mW4Mb86nBsF
+         0jxl9K/gGJ4yhQmpyI2ShuvqvhrBn9yoXNg9X/0AZ445+zBg6Hkt3v78Gn2KlTKwtfuS
+         IdcuSYJRYy+KotnohLc8fDOmO6mxtY2lOpMZ9KcRdxnnEogqt8LcsDz96lQ3cKBWRuIn
+         kreFC89K++fG6uHP7l+dNbuG2w7ypndJrC2PHH2jmjNqvjZUV3VdHXjNwz435UQ5w3Ul
+         sOOU96XpJdUY++FLn36ki7ZX/GuTfd0gcelXEnVSlXLgYA4jQoznU7RU3/P9bylWF7Kl
+         5gIQ==
+X-Gm-Message-State: AOAM533PDqI+OHPZqfiSo8rG+lFBiUFuR57hsH1Hvkv8GAxFprZuwZPu
+        jA1sGgGi/vVUm9VXw4bHWT+3
+X-Google-Smtp-Source: ABdhPJwJ0L62mAbDbkIzAyBcjzYAZ+o/n2ZdJ9jL6vK35ZR2dH+I8t0dSIGs3m6OZuA+Z6yLmEXbVA==
+X-Received: by 2002:a05:6a00:9a4:b0:3e2:f6d0:c926 with SMTP id u36-20020a056a0009a400b003e2f6d0c926mr8275781pfg.31.1629392563724;
+        Thu, 19 Aug 2021 10:02:43 -0700 (PDT)
+Received: from thinkpad ([2409:4072:6d9a:7958:19b:f47b:7b55:abc8])
+        by smtp.gmail.com with ESMTPSA id d20sm3919702pfu.36.2021.08.19.10.02.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 10:02:43 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 22:32:37 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
+        quic_jhugo@quicinc.com
+Subject: Re: [PATCH v1 1/2] bus: mhi: core: Bail on writing register fields
+ if read fails
+Message-ID: <20210819170237.GE200135@thinkpad>
+References: <1629330634-36465-1-git-send-email-bbhatt@codeaurora.org>
+ <1629330634-36465-2-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <2412250.zZEsDtmPgG@archbook>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1629330634-36465-2-git-send-email-bbhatt@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-19 14:52, Nicolas Frattaroli wrote:
-> On Donnerstag, 19. August 2021 14:08:36 CEST Robin Murphy wrote:
->> On 2021-08-17 11:11, Nicolas Frattaroli wrote:
->>> +  rockchip,trcm-sync:
->>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>> +    description:
->>> +      Which lrck/bclk clocks each direction will sync to. You should use
->>> the +      constants in <dt-bindings/sound/rockchip,i2s-tdm.h>
->>> +    oneOf:
->>> +      - const: 0
->>> +        description:
->>> +          RK_TRCM_TXRX. Use both the TX and the RX clock for TX and RX.
->>> +      - const: 1
->>> +        description:
->>> +          RK_TRCM_TX. Use only the TX clock for TX and RX.
->>> +      - const: 2
->>> +        description:
->>> +          RK_TRCM_RX. Use only the RX clock for TX and RX.
->>
->> I wonder if that might make sense to have boolean properties to describe
->> the latter two cases (which would effectively be mutually-exclusive),
->> rather than a magic number? Or possibly even just make the respective
->> clocks optional, if this is something which would be done per-SoC rather
->> than per-board?
->>
+On Wed, Aug 18, 2021 at 04:50:33PM -0700, Bhaumik Bhatt wrote:
+> Helper API to write register fields relies on successful reads
+> of the register/address prior to the write. Bail out if a failure
+> is seen when reading the register before the actual write is
+> performed.
 > 
->  From what I know from downstream vendor device trees, these are per
-> board, not for the SoC as a whole. There are I2S/TDM controllers on the
-> SoC which I think are hardwired to certain other IP blocks, such as I2S0
-> being connected to HDMI, but I2S1 can be routed outside of the SoC where
-> these come into play I believe.
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
-That's fair enough. I know a lot more about DT bindings than I do about 
-I2S, but I did guess it might be related to clocking requirements of the 
-connected codec rather than a constraint of the I2S block itself.
+As spotted by the test bot, can you please update pm.c as well?
 
-> As for making them boolean properties, I'd rather not. If I were to make it
-> two mutually exclusive booleans, this would result in 4 possible states
-> rather than 3, and require complexity to check it both in the schema and
-> in the probe function. Like this, I can get away with a switch case that
-> has a fallthrough, and a list of consts in the schema.
+Thanks,
+Mani
 
-Complexity?
-
-
-	if (of_property_read_bool(node, "rockchip,trcm-sync-tx-only"))
-		i2s_tdm->clk_trcm = RK_TRCM_TX;
-	if (of_property_read_bool(node, "rockchip,trcm-sync-rx-only")) {
-		if (i2s_td->clk_trcm) {
-			dev_err(i2s_tdm->dev, "invalid trcm-sync configuration\n");
-			return -EINVAL;
-		}
-		i2s_tdm->clk_trcm = RK_TRCM_RX;
-	}
-	if (i2s_td->clk_trcm)
-		i2s_tdm_dai.symmetric_rate = 1;
-
-
-If I'm counting correctly, that off-the-top-of-my-head example is a mere 
-58% of the size of your switch statement ;)
-
-The usual aim in designing bindings to robustly abstract the underlying 
-features, not to be easy to implement. That's why the "put this magic 
-value in this register" style of property is generally frowned upon.
-
-As for the schema, it doesn't necessarily have to try to exhaustively 
-catch every possible usage error - if a combination of properties is so 
-obviously nonsensical that a driver shouldn't accept it anyway, I'd 
-imagine it's unlikely to slip through testing.
-
->>> +
->>> +  "#sound-dai-cells":
->>> +    const: 0
->>> +
->>> +  rockchip,no-dmaengine:
->>> +    description:
->>> +      If present, driver will not register a pcm dmaengine, only the dai.
->>> +      If the dai is part of multi-dais, the property should be present.
->>> +    type: boolean
->>
->> That sounds a lot more like a policy decision specific to the Linux
->> driver implementation, than something which really belongs in DT as a
->> description of the platform.
+> ---
+>  drivers/bus/mhi/core/boot.c     | 25 +++++++++++++++++--------
+>  drivers/bus/mhi/core/init.c     | 24 ++++++++++++++++++------
+>  drivers/bus/mhi/core/internal.h |  7 ++++---
+>  drivers/bus/mhi/core/main.c     |  9 ++++++---
+>  4 files changed, 45 insertions(+), 20 deletions(-)
 > 
-> I agree. Should I be refactoring this into a module parameter or
-> something along those lines? I'm unsure of where this goes.
-
-Depends on what it actually means, and whether that's something the 
-driver can figure out for itself. I just see a DT property based around 
-a particular Linux API call as a big red flag :)
-
->>> +
->>> +  rockchip,playback-only:
->>> +    description: Specify that the controller only has playback
->>> capability.
->>> +    type: boolean
->>> +
->>> +  rockchip,capture-only:
->>> +    description: Specify that the controller only has capture capability.
->>> +    type: boolean
->>
->> Could those be inferred from the compatible string, or are there cases
->> where you have multiple instances of the IP block in different
->> configurations within the same SoC? (Or if it's merely reflecting
->> whether the respective interface is actually wired up externally, could
->> that be inferred from the attached codec?)
->>
->> Robin.
->>
+> diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
+> index 0a97262..13eacda 100644
+> --- a/drivers/bus/mhi/core/boot.c
+> +++ b/drivers/bus/mhi/core/boot.c
+> @@ -19,8 +19,8 @@
+>  #include "internal.h"
+>  
+>  /* Setup RDDM vector table for RDDM transfer and program RXVEC */
+> -void mhi_rddm_prepare(struct mhi_controller *mhi_cntrl,
+> -		      struct image_info *img_info)
+> +int mhi_rddm_prepare(struct mhi_controller *mhi_cntrl,
+> +		     struct image_info *img_info)
+>  {
+>  	struct mhi_buf *mhi_buf = img_info->mhi_buf;
+>  	struct bhi_vec_entry *bhi_vec = img_info->bhi_vec;
+> @@ -28,6 +28,7 @@ void mhi_rddm_prepare(struct mhi_controller *mhi_cntrl,
+>  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+>  	u32 sequence_id;
+>  	unsigned int i;
+> +	int ret;
+>  
+>  	for (i = 0; i < img_info->entries - 1; i++, mhi_buf++, bhi_vec++) {
+>  		bhi_vec->dma_addr = mhi_buf->dma_addr;
+> @@ -45,12 +46,17 @@ void mhi_rddm_prepare(struct mhi_controller *mhi_cntrl,
+>  	mhi_write_reg(mhi_cntrl, base, BHIE_RXVECSIZE_OFFS, mhi_buf->len);
+>  	sequence_id = MHI_RANDOM_U32_NONZERO(BHIE_RXVECSTATUS_SEQNUM_BMSK);
+>  
+> -	mhi_write_reg_field(mhi_cntrl, base, BHIE_RXVECDB_OFFS,
+> -			    BHIE_RXVECDB_SEQNUM_BMSK, BHIE_RXVECDB_SEQNUM_SHFT,
+> -			    sequence_id);
+> +	ret = mhi_write_reg_field(mhi_cntrl, base, BHIE_RXVECDB_OFFS,
+> +				  BHIE_RXVECDB_SEQNUM_BMSK,
+> +				  BHIE_RXVECDB_SEQNUM_SHFT, sequence_id);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to write sequence ID for BHIE_RXVECDB\n");
+> +		return ret;
+> +	}
+>  
+>  	dev_dbg(dev, "Address: %p and len: 0x%zx sequence: %u\n",
+>  		&mhi_buf->dma_addr, mhi_buf->len, sequence_id);
+> +	return 0;
+>  }
+>  
+>  /* Collect RDDM buffer during kernel panic */
+> @@ -202,11 +208,14 @@ static int mhi_fw_load_bhie(struct mhi_controller *mhi_cntrl,
+>  
+>  	mhi_write_reg(mhi_cntrl, base, BHIE_TXVECSIZE_OFFS, mhi_buf->len);
+>  
+> -	mhi_write_reg_field(mhi_cntrl, base, BHIE_TXVECDB_OFFS,
+> -			    BHIE_TXVECDB_SEQNUM_BMSK, BHIE_TXVECDB_SEQNUM_SHFT,
+> -			    sequence_id);
+> +	ret = mhi_write_reg_field(mhi_cntrl, base, BHIE_TXVECDB_OFFS,
+> +				  BHIE_TXVECDB_SEQNUM_BMSK,
+> +				  BHIE_TXVECDB_SEQNUM_SHFT, sequence_id);
+>  	read_unlock_bh(pm_lock);
+>  
+> +	if (ret)
+> +		return ret;
+> +
+>  	/* Wait for the image download to complete */
+>  	ret = wait_event_timeout(mhi_cntrl->state_event,
+>  				 MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state) ||
+> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+> index 5aaca6d..0917465 100644
+> --- a/drivers/bus/mhi/core/init.c
+> +++ b/drivers/bus/mhi/core/init.c
+> @@ -544,10 +544,15 @@ int mhi_init_mmio(struct mhi_controller *mhi_cntrl)
+>  	mhi_cntrl->mhi_cmd[PRIMARY_CMD_RING].ring.db_addr = base + CRDB_LOWER;
+>  
+>  	/* Write to MMIO registers */
+> -	for (i = 0; reg_info[i].offset; i++)
+> -		mhi_write_reg_field(mhi_cntrl, base, reg_info[i].offset,
+> -				    reg_info[i].mask, reg_info[i].shift,
+> -				    reg_info[i].val);
+> +	for (i = 0; reg_info[i].offset; i++) {
+> +		ret = mhi_write_reg_field(mhi_cntrl, base, reg_info[i].offset,
+> +					  reg_info[i].mask, reg_info[i].shift,
+> +					  reg_info[i].val);
+> +		if (ret) {
+> +			dev_err(dev, "Unable to write to MMIO registers");
+> +			return ret;
+> +		}
+> +	}
+>  
+>  	return 0;
+>  }
+> @@ -1118,8 +1123,15 @@ int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl)
+>  		 */
+>  		mhi_alloc_bhie_table(mhi_cntrl, &mhi_cntrl->rddm_image,
+>  				     mhi_cntrl->rddm_size);
+> -		if (mhi_cntrl->rddm_image)
+> -			mhi_rddm_prepare(mhi_cntrl, mhi_cntrl->rddm_image);
+> +		if (mhi_cntrl->rddm_image) {
+> +			ret = mhi_rddm_prepare(mhi_cntrl,
+> +					       mhi_cntrl->rddm_image);
+> +			if (ret) {
+> +				mhi_free_bhie_table(mhi_cntrl,
+> +						    mhi_cntrl->rddm_image);
+> +				goto error_reg_offset;
+> +			}
+> +		}
+>  	}
+>  
+>  	mutex_unlock(&mhi_cntrl->pm_mutex);
+> diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
+> index 721739c..3d17ec3 100644
+> --- a/drivers/bus/mhi/core/internal.h
+> +++ b/drivers/bus/mhi/core/internal.h
+> @@ -663,8 +663,9 @@ int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
+>  				    u32 shift, u32 val, u32 delayus);
+>  void mhi_write_reg(struct mhi_controller *mhi_cntrl, void __iomem *base,
+>  		   u32 offset, u32 val);
+> -void mhi_write_reg_field(struct mhi_controller *mhi_cntrl, void __iomem *base,
+> -			 u32 offset, u32 mask, u32 shift, u32 val);
+> +int __must_check mhi_write_reg_field(struct mhi_controller *mhi_cntrl,
+> +				     void __iomem *base, u32 offset,
+> +				     u32 mask, u32 shift, u32 val);
+>  void mhi_ring_er_db(struct mhi_event *mhi_event);
+>  void mhi_write_db(struct mhi_controller *mhi_cntrl, void __iomem *db_addr,
+>  		  dma_addr_t db_val);
+> @@ -678,7 +679,7 @@ int mhi_init_dev_ctxt(struct mhi_controller *mhi_cntrl);
+>  void mhi_deinit_dev_ctxt(struct mhi_controller *mhi_cntrl);
+>  int mhi_init_irq_setup(struct mhi_controller *mhi_cntrl);
+>  void mhi_deinit_free_irq(struct mhi_controller *mhi_cntrl);
+> -void mhi_rddm_prepare(struct mhi_controller *mhi_cntrl,
+> +int mhi_rddm_prepare(struct mhi_controller *mhi_cntrl,
+>  		      struct image_info *img_info);
+>  void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl);
+>  int mhi_prepare_channel(struct mhi_controller *mhi_cntrl,
+> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+> index c01ec2f..902d854 100644
+> --- a/drivers/bus/mhi/core/main.c
+> +++ b/drivers/bus/mhi/core/main.c
+> @@ -66,19 +66,22 @@ void mhi_write_reg(struct mhi_controller *mhi_cntrl, void __iomem *base,
+>  	mhi_cntrl->write_reg(mhi_cntrl, base + offset, val);
+>  }
+>  
+> -void mhi_write_reg_field(struct mhi_controller *mhi_cntrl, void __iomem *base,
+> -			 u32 offset, u32 mask, u32 shift, u32 val)
+> +int __must_check mhi_write_reg_field(struct mhi_controller *mhi_cntrl,
+> +				     void __iomem *base, u32 offset,
+> +				     u32 mask, u32 shift, u32 val)
+>  {
+>  	int ret;
+>  	u32 tmp;
+>  
+>  	ret = mhi_read_reg(mhi_cntrl, base, offset, &tmp);
+>  	if (ret)
+> -		return;
+> +		return ret;
+>  
+>  	tmp &= ~mask;
+>  	tmp |= (val << shift);
+>  	mhi_write_reg(mhi_cntrl, base, offset, tmp);
+> +
+> +	return 0;
+>  }
+>  
+>  void mhi_write_db(struct mhi_controller *mhi_cntrl, void __iomem *db_addr,
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
 > 
-> They can't be inferred from the SoC because there are indeed multiple
-> instances of this IP block in different configurations on the same SoC.
-> The RK3566 and RK3568 have four in total, of two different categories,
-> each being able to be configured for a different format (though the
-> number of channels and available formats vary for the two categories,
-> one group only supports I2S and PCM with two channels)
-> 
-> The particular configuration may even vary per-board; an I2S/TDM
-> controller may be connected to an external codec which does not
-> support capture, whereas on another board it may be connected to
-> one that does.
-
-Fair enough again, but surely if the codec doesn't support capture then 
-in the end no capture interface is going to be exposed anyway - does the 
-low-level transport need to care?
-
-> As an example, if I understand it correctly, I2S3 on the RK3566 and
-> RK3568 can do 2 channels RX and TX in I2S mode, but only 2 channels
-> either RX or TX in PCM mode, but I'm unsure of the language in the
-> (still not public) documentation I have.
-
-And that starts to sound like something the driver should probably be 
-aware of anyway, but at very least only casts more doubt on these 
-particular properties - even if an interface to a stereo PCM codec 
-couldn't support simultaneous playback and recording, couldn't it still 
-support doing either, separately?
-
-Robin.
