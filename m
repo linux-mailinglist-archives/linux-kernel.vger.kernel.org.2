@@ -2,167 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2570D3F1BA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6293F1BAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240416AbhHSOe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 10:34:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44386 "EHLO
+        id S240472AbhHSOff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 10:35:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238547AbhHSOeZ (ORCPT
+        with ESMTP id S238547AbhHSOfb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 10:34:25 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24918C061575;
-        Thu, 19 Aug 2021 07:33:49 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 0EA147C77; Thu, 19 Aug 2021 10:33:48 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 0EA147C77
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1629383628;
-        bh=jzbjzvXyQlf+H2UBIwSlz7fpA+3D5JHeP2MlM5sXDjI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LdI6RHpG6vWkbMJHx+T8sGp2HTIBMl8C6Y3I9MxMQf3OieaHH+54hTCP7w7HTcJYZ
-         XoYA2s2NbzkXfX+sO+YgAEfITt5y2E/zJ58O83BiSUVh63ChGJvf5V2NsNQRmjXRkG
-         SFh7CeCUmCNKPRCezs2FufWRHgsvgV65tLcV4278=
-Date:   Thu, 19 Aug 2021 10:33:48 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        David Laight <David.Laight@aculab.com>,
-        David Hildenbrand <david@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
-        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Subject: Re: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
-Message-ID: <20210819143348.GA21090@fieldses.org>
-References: <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com>
- <87lf56bllc.fsf@disp2133>
- <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
- <87eeay8pqx.fsf@disp2133>
- <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
- <87h7ft2j68.fsf@disp2133>
- <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
- <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
- <20210818154217.GB24115@fieldses.org>
- <87bl5tv8pn.fsf@disp2133>
+        Thu, 19 Aug 2021 10:35:31 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F428C061575;
+        Thu, 19 Aug 2021 07:34:55 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id mq2-20020a17090b3802b0290178911d298bso4932357pjb.1;
+        Thu, 19 Aug 2021 07:34:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iIZPqJjZjKDPhOPHiCG06zMlA2AMWMzeg+mvcemafrg=;
+        b=jrW35CUdbNF1lRcJDNtkkP4ZhPd7/6lWV7dSTvSt1/qkSFLT5bhxTaPQPKaQnGvMtk
+         za1s7Z23Npmwfg4PjUStgnlw4yah96uwvu/mMimp8TqnsrJ172kyAs6bxskyQ7gUHRyi
+         2I5QTkHYTG/5SSIm1Zwyktz/bIymUcnmB40pIHYpAfQAhVW30MeTjbJxD/UfCcnFDUIT
+         /UF/KMrRQOa55JmSmxsuCgYlTZWKgFY7ark4ZyV+yeuAk2JX+4LXQTSW5Izf/wnY+pjV
+         1MulBwDG+N+Hm5fas5vVtsmZaF/xxcwox8JeC8QPaMhLqntvTArpCnGY+aqkvqvJ4GSZ
+         bHPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iIZPqJjZjKDPhOPHiCG06zMlA2AMWMzeg+mvcemafrg=;
+        b=fWQLEY2PnxbUpnqXUV2FY3PIJGs3+LOY3lIsnnemoqD+o34mX36jgs/bQJs5+TLE0m
+         ztCxWcPL/qyRdk7SusypQ2bz3RzLQ1JAl7pY0XBLJo0foFehAEuU+WtUTSgOMuKpy1mX
+         RgypGGnR+Uyqyaji5JX8anunKdWpGP5ULSYxVIc0W5sxGQDwvq9gclVKyOOnPHn6zDB9
+         lxXs9iazbCbr4k80xtryn66UG6jrmd73c2BJk/na7Tc1gcvbe8bl43TbgSE4pVeaKLI0
+         AuZLZvoDx64av6uuVpmJWC8RqN9mvHFMzSpwDRlscU4ZBlOEs6zLOUmE/fR4RRMZYTPe
+         u8zQ==
+X-Gm-Message-State: AOAM5329c1oLAGWka9MeB9jfgfFhFSCcuGn05o3Hm5uIhAqrw8Gu5Yi8
+        LMEzZWESyBHecrjIe4oHj1JWZAP0xHRfdmZo
+X-Google-Smtp-Source: ABdhPJzLbYI2vth8zZTIG4VuTWiEYHMcVXdqqGYSM9YpUq4iM+lWiSA5vOg5Xlo9zch6VQpAyzw7UQ==
+X-Received: by 2002:a17:90a:d149:: with SMTP id t9mr15153317pjw.0.1629383694761;
+        Thu, 19 Aug 2021 07:34:54 -0700 (PDT)
+Received: from fedora.. ([2405:201:6008:6ce2:9fb0:9db:90a4:39e2])
+        by smtp.googlemail.com with ESMTPSA id t5sm3843080pfd.133.2021.08.19.07.34.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 07:34:54 -0700 (PDT)
+From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+To:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, willemdebruijn.kernel@gmail.com
+Cc:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+ff8e1b9f2f36481e2efc@syzkaller.appspotmail.com
+Subject: [PATCH] ip_gre/ip6_gre: add check for invalid csum_start
+Date:   Thu, 19 Aug 2021 20:04:47 +0530
+Message-Id: <20210819143447.314539-1-chouhan.shreyansh630@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87bl5tv8pn.fsf@disp2133>
-User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 08:56:52AM -0500, Eric W. Biederman wrote:
-> bfields@fieldses.org (J. Bruce Fields) writes:
-> 
-> > On Fri, Aug 13, 2021 at 05:49:19PM -0700, Andy Lutomirski wrote:
-> >> I’ll bite.  How about we attack this in the opposite direction: remove
-> >> the deny write mechanism entirely.
-> >
-> > For what it's worth, Windows has open flags that allow denying read or
-> > write opens.  They also made their way into the NFSv4 protocol, but
-> > knfsd enforces them only against other NFSv4 clients.  Last I checked,
-> > Samba attempted to emulate them using flock (and there's a comment to
-> > that effect on the flock syscall in fs/locks.c).  I don't know what Wine
-> > does.
-> >
-> > Pavel Shilovsky posted flags adding O_DENY* flags years ago:
-> >
-> > 	https://lwn.net/Articles/581005/
-> >
-> > I keep thinking I should look back at those some day but will probably
-> > never get to it.
-> >
-> > I've no idea how Windows applications use them, though I'm told it's
-> > common.
-> 
-> I don't know in any detail.  I just have this memory of not being able
-> to open or do anything with a file on windows while any application has
-> it open.
-> 
-> We limit mandatory locks to filesystems that have the proper mount flag
-> and files that are sgid but are not executable.  Reusing that limit we
-> could probably allow such a behavior in Linux without causing chaos.
+If we get a ip gre packet with TUNNEL_CSUM set, an invalid csum_start
+value causes skb->csum_start offset to be less than the offset for
+skb->data after we pull the ip header from the packet during the
+ipgre_xmit call.
 
-I'm pretty confused about how we're using the term "mandatory locking".
+This patch adds a sanity check to gre_handle_offloads, which checks the
+validity of skb->csum_start after we have pulled the ip header from the
+packet in the ipgre_xmit call.
 
-The locks you're thinking of are basically ordinary posix byte-range
-locks which we attempt to enforce as mandatory under certain conditions
-(e.g. in fs/read_write.c:rw_verify_area).  That means we have to check
-them on ordinary reads and writes, which is a pain in the butt.  (And we
-don't manage to do it correctly--the code just checks for the existence
-of a conflicting lock before performing IO, ignoring the obvious
-time-of-check/time-of-use race.)
+Reported-by: syzbot+ff8e1b9f2f36481e2efc@syzkaller.appspotmail.com
+Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+---
+ net/ipv4/ip_gre.c  | 2 ++
+ net/ipv6/ip6_gre.c | 2 ++
+ 2 files changed, 4 insertions(+)
 
-This has nothing to do with Windows share locks which from what I
-understand are whole-file locks that are only enforced against opens.
+diff --git a/net/ipv4/ip_gre.c b/net/ipv4/ip_gre.c
+index 12dca0c85f3c..95419b7adf5c 100644
+--- a/net/ipv4/ip_gre.c
++++ b/net/ipv4/ip_gre.c
+@@ -473,6 +473,8 @@ static void __gre_xmit(struct sk_buff *skb, struct net_device *dev,
+ 
+ static int gre_handle_offloads(struct sk_buff *skb, bool csum)
+ {
++	if (csum && skb_checksum_start(skb) < skb->data)
++		return -EINVAL;
+ 	return iptunnel_handle_offloads(skb, csum ? SKB_GSO_GRE_CSUM : SKB_GSO_GRE);
+ }
+ 
+diff --git a/net/ipv6/ip6_gre.c b/net/ipv6/ip6_gre.c
+index bc224f917bbd..7a5e90e09363 100644
+--- a/net/ipv6/ip6_gre.c
++++ b/net/ipv6/ip6_gre.c
+@@ -629,6 +629,8 @@ static int gre_rcv(struct sk_buff *skb)
+ 
+ static int gre_handle_offloads(struct sk_buff *skb, bool csum)
+ {
++	if (csum && skb_checksum_start(skb) < skb->data)
++		return -EINVAL;
+ 	return iptunnel_handle_offloads(skb,
+ 					csum ? SKB_GSO_GRE_CSUM : SKB_GSO_GRE);
+ }
+-- 
+2.31.1
 
---b.
-
-> Without being very strict about which files can participate I can just
-> imagine someone hiding their presence by not allowing other applications
-> the ability to write to utmp or a log file.
-> 
-> In the windows world where everything evolved with those kinds of
-> restrictions it is probably fine (although super annoying).
-> 
-> Eric
