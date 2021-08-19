@@ -2,118 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC7D3F1C35
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00AD93F1C36
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239528AbhHSPHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 11:07:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50114 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239492AbhHSPHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 11:07:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F19360EFE;
-        Thu, 19 Aug 2021 15:07:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629385624;
-        bh=uhjeJBvoPP2I+RVs+SoGGKsC/Dn1zb4WfhRW47bY984=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=j317V0SqW9Mg/CaN2/8iQOjT6xni1VRsFam0vx4gbktvO1xO/hU3F5XegTUCkEZOm
-         KYVcgIKWGDsokLcL8jJYijATiS7Xn7NGCAGjTOK7GHGSyofnuPVQKa2B1lND6PGF9S
-         sOOHE52g9tDKkUmDJVGpRqXzC1Bjn3fuJhgLpieuNb+/uy2iF+Nnsbrqw4ZlHzQgrW
-         KQKrN9vkrtZ7kOz6hnCOhEDxU3NSDxOybKbghcIHg9wiDkZknSjho7s54zwVhW/Zrj
-         3tStUBo5QtLVngXfk+3bYNDuEK1Oq5Bo3x7fYGLyl1jhfaBc7mbHGS35aPON8CfuRb
-         Dq9wmQWd9qNKA==
-Date:   Thu, 19 Aug 2021 10:07:03 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Tomas Winkler <tomas.winkler@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        Ionel-Catalin Mititelu <ionel-catalin.mititelu@intel.com>,
-        Jiri Kosina <jikos@kernel.org>, linux-kernel@vger.kernel.org,
-        Alex Williamson <alex.williamson@redhat.com>
-Subject: Re: [PATCH] mei: improve Denverton HSM & IFSI support
-Message-ID: <20210819150703.GA3204796@bjorn-Precision-5520>
+        id S239549AbhHSPIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 11:08:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239492AbhHSPIE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 11:08:04 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EEFDC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 08:07:27 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id x4so6182745pgh.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 08:07:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jYuk+DEGwmqpa17SuWp9uKR9u9Vjn438MMp/iFqe6x8=;
+        b=eTys5198HwvfjTo7k2gq3jBj0e0iiULC/gJ9XjDFKq16sZPVAETyCpQcbrkPFrbRUw
+         IkgzfV/6xy5dS8f8NcT9fyP/VfvnGgO2+oZY71TKcIc2lTOJXdH7qPT5woOPGkUxczbO
+         I1m8IehPcrcyjpA9NMLr5+W8wLBg8BboskU100z+Y9a8k7jByblPAPLsiD1vjHJoi6hU
+         0Y8R56Vrfn3LSvhiVqBbXE3iro2jb4n36m8J4xGlwBJKfJ1iWUY98Y+SMZcPklOQpLSN
+         pjAqxuLFrI+LTra6HLnCOUAIiUXekuGn5/n1ls97WaFjbdf22AbaPq3fOhd6wg14okzp
+         Bl6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jYuk+DEGwmqpa17SuWp9uKR9u9Vjn438MMp/iFqe6x8=;
+        b=drMBDinic/5/OVtMSnAlBgqbljPKr8tGJhjbygcqDuUXkqThUpuqUGL9LVw0sQHGZx
+         aCpTZrkqZcInIhPdNV3bNzRZLn98dsitYjB+HBRREbvG9hA0/mREr11UIeAcIEcwuLwY
+         bLha2LMsJEClU1Je1HZl1H3NLkAoo0iQ27YLYasYMIaQMIcS0ndMcjYn/RBv2Ke4wNwd
+         wPUSgBQqJRYX3fRt7uPc6Myj1u6MjhgRlzQLDLezPnQmexmQ37x9FPMHtuHZUYcriWOK
+         r01a+oZCaoYQ9eymMmL9A4QEsIcnPaT8mAFClAcoGAAMRz2ixghoa2o7PKhCH/QmaNwL
+         PmPg==
+X-Gm-Message-State: AOAM5339q70wB5jZQmIWmj77vl4+L6yHS2L3SLrcuLkdoMrcGfseNJFC
+        1NAF+oxtu2DLklumG9y5CRVsBTkN7U/msw==
+X-Google-Smtp-Source: ABdhPJz0wxv/g3GbA0t1zv8J4Ui8EtOs//AFwfyVwvmqugO3/NcDMGWLZlbhQyxXb91CP6DEcd7JFA==
+X-Received: by 2002:a63:ba5c:: with SMTP id l28mr14288818pgu.311.1629385646996;
+        Thu, 19 Aug 2021 08:07:26 -0700 (PDT)
+Received: from Smcdef-MBP.lan.org ([139.177.225.234])
+        by smtp.gmail.com with ESMTPSA id y7sm3342081pfi.204.2021.08.19.08.07.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 19 Aug 2021 08:07:26 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     guro@fb.com, hannes@cmpxchg.org, mhocko@kernel.org,
+        akpm@linux-foundation.org, shakeelb@google.com,
+        vdavydov.dev@gmail.com, willy@infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v2] mm: introduce PAGEFLAGS_MASK to replace ((1UL << NR_PAGEFLAGS) - 1)
+Date:   Thu, 19 Aug 2021 23:07:12 +0800
+Message-Id: <20210819150712.59948-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210819145114.21074-1-lukas.bulwahn@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Alex]
+Instead of hard-coding ((1UL << NR_PAGEFLAGS) - 1) everywhere, introducing
+PAGEFLAGS_MASK to make the code clear to get the page flags.
 
-On Thu, Aug 19, 2021 at 04:51:14PM +0200, Lukas Bulwahn wrote:
-> The Intel Denverton chip provides HSM & IFSI. In order to access
-> HSM & IFSI at the same time, provide two HECI hardware IDs for accessing.
-> 
-> Suggested-by: Ionel-Catalin Mititelu <ionel-catalin.mititelu@intel.com>
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> Tomas, please pick this quick helpful extension for the hardware.
-> 
->  drivers/misc/mei/hw-me-regs.h | 3 ++-
->  drivers/misc/mei/pci-me.c     | 1 +
->  drivers/pci/quirks.c          | 3 +++
->  3 files changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/misc/mei/hw-me-regs.h b/drivers/misc/mei/hw-me-regs.h
-> index cb34925e10f1..c1c41912bb72 100644
-> --- a/drivers/misc/mei/hw-me-regs.h
-> +++ b/drivers/misc/mei/hw-me-regs.h
-> @@ -68,7 +68,8 @@
->  #define MEI_DEV_ID_BXT_M      0x1A9A  /* Broxton M */
->  #define MEI_DEV_ID_APL_I      0x5A9A  /* Apollo Lake I */
->  
-> -#define MEI_DEV_ID_DNV_IE     0x19E5  /* Denverton IE */
-> +#define MEI_DEV_ID_DNV_IE	0x19E5  /* Denverton for HECI1 - IFSI */
-> +#define MEI_DEV_ID_DNV_IE_2	0x19E6  /* Denverton 2 for HECI2 - HSM */
->  
->  #define MEI_DEV_ID_GLK        0x319A  /* Gemini Lake */
->  
-> diff --git a/drivers/misc/mei/pci-me.c b/drivers/misc/mei/pci-me.c
-> index c3393b383e59..30827cd2a1c2 100644
-> --- a/drivers/misc/mei/pci-me.c
-> +++ b/drivers/misc/mei/pci-me.c
-> @@ -77,6 +77,7 @@ static const struct pci_device_id mei_me_pci_tbl[] = {
->  	{MEI_PCI_DEVICE(MEI_DEV_ID_APL_I, MEI_ME_PCH8_CFG)},
->  
->  	{MEI_PCI_DEVICE(MEI_DEV_ID_DNV_IE, MEI_ME_PCH8_CFG)},
-> +	{MEI_PCI_DEVICE(MEI_DEV_ID_DNV_IE_2, MEI_ME_PCH8_SPS_CFG)},
->  
->  	{MEI_PCI_DEVICE(MEI_DEV_ID_GLK, MEI_ME_PCH8_CFG)},
->  
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index 6899d6b198af..2ab767ef8469 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -4842,6 +4842,9 @@ static const struct pci_dev_acs_enabled {
->  	{ PCI_VENDOR_ID_INTEL, 0x15b7, pci_quirk_mf_endpoint_acs },
->  	{ PCI_VENDOR_ID_INTEL, 0x15b8, pci_quirk_mf_endpoint_acs },
->  	{ PCI_VENDOR_ID_INTEL, PCI_ANY_ID, pci_quirk_rciep_acs },
-> +	/* Denverton */
-> +	{ PCI_VENDOR_ID_INTEL, 0x19e5, pci_quirk_mf_endpoint_acs },
-> +	{ PCI_VENDOR_ID_INTEL, 0x19e6, pci_quirk_mf_endpoint_acs },
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+Change log in v2:
+ 1. Revert PAGEFLAGS_MASK
 
-This looks like it should be a separate patch with a commit log that
-explains it.  For example, see these:
+ include/linux/page-flags.h      | 4 +++-
+ include/trace/events/page_ref.h | 4 ++--
+ lib/test_printf.c               | 2 +-
+ lib/vsprintf.c                  | 2 +-
+ 4 files changed, 7 insertions(+), 5 deletions(-)
 
-  db2f77e2bd99 ("PCI: Add ACS quirk for Broadcom BCM57414 NIC")
-  3247bd10a450 ("PCI: Add ACS quirk for Intel Root Complex Integrated Endpoints")
-  299bd044a6f3 ("PCI: Add ACS quirk for Zhaoxin Root/Downstream Ports")
-  0325837c51cb ("PCI: Add ACS quirk for Zhaoxin multi-function devices")
-  76e67e9e0f0f ("PCI: Add ACS quirk for Amazon Annapurna Labs root ports")
-  46b2c32df7a4 ("PCI: Add ACS quirk for iProc PAXB")
-  01926f6b321b ("PCI: Add ACS quirk for HXT SD4800")
+diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+index 54c4af35c628..8e1d97d8f3bd 100644
+--- a/include/linux/page-flags.h
++++ b/include/linux/page-flags.h
+@@ -180,6 +180,8 @@ enum pageflags {
+ 	PG_reported = PG_uptodate,
+ };
+ 
++#define PAGEFLAGS_MASK		((1UL << NR_PAGEFLAGS) - 1)
++
+ #ifndef __GENERATING_BOUNDS_H
+ 
+ static inline unsigned long _compound_head(const struct page *page)
+@@ -975,7 +977,7 @@ static inline void ClearPageSlabPfmemalloc(struct page *page)
+  * alloc-free cycle to prevent from reusing the page.
+  */
+ #define PAGE_FLAGS_CHECK_AT_PREP	\
+-	(((1UL << NR_PAGEFLAGS) - 1) & ~__PG_HWPOISON)
++	(PAGEFLAGS_MASK & ~__PG_HWPOISON)
+ 
+ #define PAGE_FLAGS_PRIVATE				\
+ 	(1UL << PG_private | 1UL << PG_private_2)
+diff --git a/include/trace/events/page_ref.h b/include/trace/events/page_ref.h
+index 5d2ea93956ce..8a99c1cd417b 100644
+--- a/include/trace/events/page_ref.h
++++ b/include/trace/events/page_ref.h
+@@ -38,7 +38,7 @@ DECLARE_EVENT_CLASS(page_ref_mod_template,
+ 
+ 	TP_printk("pfn=0x%lx flags=%s count=%d mapcount=%d mapping=%p mt=%d val=%d",
+ 		__entry->pfn,
+-		show_page_flags(__entry->flags & ((1UL << NR_PAGEFLAGS) - 1)),
++		show_page_flags(__entry->flags & PAGEFLAGS_MASK),
+ 		__entry->count,
+ 		__entry->mapcount, __entry->mapping, __entry->mt,
+ 		__entry->val)
+@@ -88,7 +88,7 @@ DECLARE_EVENT_CLASS(page_ref_mod_and_test_template,
+ 
+ 	TP_printk("pfn=0x%lx flags=%s count=%d mapcount=%d mapping=%p mt=%d val=%d ret=%d",
+ 		__entry->pfn,
+-		show_page_flags(__entry->flags & ((1UL << NR_PAGEFLAGS) - 1)),
++		show_page_flags(__entry->flags & PAGEFLAGS_MASK),
+ 		__entry->count,
+ 		__entry->mapcount, __entry->mapping, __entry->mt,
+ 		__entry->val, __entry->ret)
+diff --git a/lib/test_printf.c b/lib/test_printf.c
+index 8ac71aee46af..ec69953cf80c 100644
+--- a/lib/test_printf.c
++++ b/lib/test_printf.c
+@@ -614,7 +614,7 @@ page_flags_test(int section, int node, int zone, int last_cpupid,
+ 	bool append = false;
+ 	int i;
+ 
+-	flags &= BIT(NR_PAGEFLAGS) - 1;
++	flags &= PAGEFLAGS_MASK;
+ 	if (flags) {
+ 		page_flags |= flags;
+ 		snprintf(cmp_buf + size, BUF_SIZE - size, "%s", name);
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index dd006adfe853..42ad16327c75 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -2019,7 +2019,7 @@ static const struct page_flags_fields pff[] = {
+ static
+ char *format_page_flags(char *buf, char *end, unsigned long flags)
+ {
+-	unsigned long main_flags = flags & (BIT(NR_PAGEFLAGS) - 1);
++	unsigned long main_flags = flags & PAGEFLAGS_MASK;
+ 	bool append = false;
+ 	int i;
+ 
+-- 
+2.11.0
 
-It should be acked by somebody at Intel since this quirk relies on
-behavior of the device for VM security.
-
->  	/* QCOM QDF2xxx root ports */
->  	{ PCI_VENDOR_ID_QCOM, 0x0400, pci_quirk_qcom_rp_acs },
->  	{ PCI_VENDOR_ID_QCOM, 0x0401, pci_quirk_qcom_rp_acs },
-> -- 
-> 2.26.2
-> 
