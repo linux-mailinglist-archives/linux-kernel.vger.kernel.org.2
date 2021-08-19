@@ -2,129 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1850F3F1147
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 05:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9AC3F1148
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 05:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236132AbhHSDLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 23:11:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56016 "EHLO
+        id S236077AbhHSDLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 23:11:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236077AbhHSDLE (ORCPT
+        with ESMTP id S235743AbhHSDLT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 23:11:04 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A681C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 20:10:29 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id n12so3103919plf.4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 20:10:29 -0700 (PDT)
+        Wed, 18 Aug 2021 23:11:19 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D4EC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 20:10:43 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id a93so9548731ybi.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 20:10:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=44tEnZFPFnBMsICDtIDsLD4D1O3OeCUDGBmdVAHfoDE=;
-        b=EEM9oA9fPM97nMDhCOZjD5M8wpHvZO1+W3YsUtdCzMsJdwqORrENCbGJWLlPX1vbIY
-         MqHWurAFPzr+SNHLyx3+w7pVpso1SS7CxHwSh2e0f74VmsWG38Vo6z7+io2TxfjDAqSh
-         kydrkFmMssM7qZhPX1T8VIrntvSkHVjvxymcI=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oPimCmfapHOlzWNF2PPhKvm04+9IOZnhcwkF9fEYFus=;
+        b=XFPy4x2LjgGqBSSCHaaq0795IL9VWSfPQxX12vQ9hAPjHrkLmlkZhQTj8Y9pDsN+gg
+         hPmt+wkZzj/lJ49kzCsVrTlLv5eVcyyiRZjH4SpMDays56FkWoQJFoRcljDIQmOlQh28
+         sbWEGBRZePrhK7Gi1jT/nQVt//246rImKbAhtLgjgyJHQvRppJm9WFKxLxwp4m5ELEQe
+         /zCLJSL83Bda1dn5a1vu/qOe7jnlJOtzelEI0fwaDIXgnaGaGOY2dFqBnMh/NwhIgPHf
+         Ngwcm1DJU8MsKiDqHee96sHaWdwgknD4HmI3eSXEHcaMU/kAO3PcoTs4bgxHvXjvtSfE
+         VFUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=44tEnZFPFnBMsICDtIDsLD4D1O3OeCUDGBmdVAHfoDE=;
-        b=IX8bBUUdNVRGwp7uyJrkLtGa6/kekrzlQf0I2KwrqQm47Xrio4nDc5wYgfZG/LYdm9
-         EwldawxWO32qeGZ+E6hrmAsMETCj+ECsVjfC7Y7XcyRJgfUXiNN/rWA2GIjfVgZubpzn
-         bMzocXi7ZNgD9yK5ruAIFSfPcJAJC2PaWdVud69f3mF9R0rXtyTVQMcnTOqdINEbq7C1
-         PTR2M/TDDLkCUdwO1HGd32IfiVLX0Gd5Z4nuj1NCr598N8f3JhWrR91Sx2P0i13NvUgG
-         pBYuPOZNzBlkibpJVbP8c31qB/+j1SmSMhUnooQvExvvVXXLGTeZE3uw06alHvulpM+A
-         6fZQ==
-X-Gm-Message-State: AOAM533G2OnOgs5POtOowGVBpk2e8YbH7ADlYU00oEqW43VgNMMTIhlX
-        bPdocQrKQCf4rkgbAMPEmFGBCw==
-X-Google-Smtp-Source: ABdhPJyq5B8Qpp8tC4kDn23OtU+6Gmeo14EFvstV64HOICyjAYh7sKstIPlJToWfUwawegf6cVB0Yw==
-X-Received: by 2002:a17:90a:e88:: with SMTP id 8mr12706324pjx.108.1629342628598;
-        Wed, 18 Aug 2021 20:10:28 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id ge6sm6499248pjb.52.2021.08.18.20.10.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 20:10:28 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 20:10:27 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Kevin Mitchell <kevmitch@arista.com>
-Cc:     linux-scsi@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hannes Reinecke <hare@suse.de>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] lkdtm: replace SCSI_DISPATCH_CMD with
- SCSI_QUEUE_RQ
-Message-ID: <202108182010.BB18020B8@keescook>
-References: <20210819022940.561875-1-kevmitch@arista.com>
- <20210819022940.561875-2-kevmitch@arista.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oPimCmfapHOlzWNF2PPhKvm04+9IOZnhcwkF9fEYFus=;
+        b=C2s/+5H2glkvrRlDYpb2OHm7vVYBVSmf9yDwK4+KG34sSZ1gWw3z+Eiv+jxJS+f8t7
+         WGkrYqbREcCTfuCLGeT/29RBMJhrSIbLUjiGIl3Pr/+t/nxyzzMpIqOg/1GlMT0BNBz+
+         QgJJS8eg9+tXPHkiHfAJ9g+G1KKMcNffAMNdUJQotVl4hh0rrivVEZVnSf6dDC3BDNVn
+         szcfnzTTOrrZLDKfOr7IsTPgWqV+UFjz7rKP9eGfe7zsFTNt2xnGd6QMBtapKXFwQxq6
+         Cg2Ea4ZHfx8rj1HhKAZDOdpwa4JnVZjFNaN2u7/YuuiLK3e2uqgdp2thJK43jvtA2BsH
+         5bkA==
+X-Gm-Message-State: AOAM5309Bx+XrTEMu6IgvY6ulnhWE/y586Q8e8KFKKfQf4SM5NKOxEtk
+        8RZx5DdNQdW13ZdXFHKKYuxIRj/Ddm3Q1sF54zM=
+X-Google-Smtp-Source: ABdhPJxmgzMx9Yye/aziYhTeoHw2LnJ80f4jTojPyOeB6B4p5MmonChI49jjg+NoCs2o5oD9aLZie2nLVCxBma9jIis=
+X-Received: by 2002:a25:e70c:: with SMTP id e12mr15959000ybh.220.1629342642961;
+ Wed, 18 Aug 2021 20:10:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210819022940.561875-2-kevmitch@arista.com>
+References: <20210804123015.807929-1-bmeng.cn@gmail.com>
+In-Reply-To: <20210804123015.807929-1-bmeng.cn@gmail.com>
+From:   Bin Meng <bmeng.cn@gmail.com>
+Date:   Thu, 19 Aug 2021 11:10:31 +0800
+Message-ID: <CAEUhbmXxGJMoS-qDncjx5uPqTz7h-aE+h=gLd==tpgLt=uy7Yg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] riscv: dts: microchip: Use 'local-mac-address' for emac1
+To:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Conor Dooley <Conor.Dooley@microchip.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Bin Meng <bin.meng@windriver.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 07:29:39PM -0700, Kevin Mitchell wrote:
-> When scsi_dispatch_cmd was moved to scsi_lib.c and made static, some
-> compilers (i.e., at least gcc 8.4.0) decided to compile this
-> inline. This is a problem for lkdtm.ko, which inserted a kprobe
-> on this function for the SCSI_DISPATCH_CMD crashpoint.
-> 
-> Move this crashpoint one function up the call chain to
-> scsi_queue_rq. Though this is also a static function, it should never be
-> inlined because it is assigned as a structure entry. Therefore,
-> kprobe_register should always be able to find it.
-> 
-> Fixes: 82042a2cdb55 ("scsi: move scsi_dispatch_cmd to scsi_lib.c")
-> Signed-off-by: Kevin Mitchell <kevmitch@arista.com>
-
-Thanks!
-
-Acked-by: Kees Cook <keescook@chromium.org>
-
--Kees
-
+On Wed, Aug 4, 2021 at 8:30 PM Bin Meng <bmeng.cn@gmail.com> wrote:
+>
+> From: Bin Meng <bin.meng@windriver.com>
+>
+> Per the DT spec, 'local-mac-address' is used to specify MAC address
+> that was assigned to the network device, while 'mac-address' is used
+> to specify the MAC address that was last used by the boot program,
+> and shall be used only if the value differs from 'local-mac-address'
+> property value.
+>
+> Signed-off-by: Bin Meng <bin.meng@windriver.com>
+> Reviewed-by: conor dooley <conor.dooley@microchip.com>
 > ---
->  Documentation/fault-injection/provoke-crashes.rst | 2 +-
->  drivers/misc/lkdtm/core.c                         | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/fault-injection/provoke-crashes.rst b/Documentation/fault-injection/provoke-crashes.rst
-> index a20ba5d93932..18de17354206 100644
-> --- a/Documentation/fault-injection/provoke-crashes.rst
-> +++ b/Documentation/fault-injection/provoke-crashes.rst
-> @@ -29,7 +29,7 @@ recur_count
->  cpoint_name
->  	Where in the kernel to trigger the action. It can be
->  	one of INT_HARDWARE_ENTRY, INT_HW_IRQ_EN, INT_TASKLET_ENTRY,
-> -	FS_DEVRW, MEM_SWAPOUT, TIMERADD, SCSI_DISPATCH_CMD,
-> +	FS_DEVRW, MEM_SWAPOUT, TIMERADD, SCSI_QUEUE_RQ,
->  	IDE_CORE_CP, or DIRECT
->  
->  cpoint_type
-> diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
-> index 9dda87c6b54a..016cb0b150fc 100644
-> --- a/drivers/misc/lkdtm/core.c
-> +++ b/drivers/misc/lkdtm/core.c
-> @@ -82,7 +82,7 @@ static struct crashpoint crashpoints[] = {
->  	CRASHPOINT("FS_DEVRW",		 "ll_rw_block"),
->  	CRASHPOINT("MEM_SWAPOUT",	 "shrink_inactive_list"),
->  	CRASHPOINT("TIMERADD",		 "hrtimer_start"),
-> -	CRASHPOINT("SCSI_DISPATCH_CMD",	 "scsi_dispatch_cmd"),
-> +	CRASHPOINT("SCSI_QUEUE_RQ",	 "scsi_queue_rq"),
->  	CRASHPOINT("IDE_CORE_CP",	 "generic_ide_ioctl"),
->  #endif
->  };
-> -- 
-> 2.32.0
-> 
+>
+> (no changes since v1)
+>
+>  arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
 
--- 
-Kees Cook
+Ping?
+
+It looks like these dts patches are still not applied...
+
+Regards,
+Bin
