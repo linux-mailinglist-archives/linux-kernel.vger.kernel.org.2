@@ -2,109 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68CE43F1319
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 08:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63E503F131B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 08:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbhHSGJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 02:09:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39402 "EHLO
+        id S231234AbhHSGJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 02:09:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbhHSGI5 (ORCPT
+        with ESMTP id S229782AbhHSGJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 02:08:57 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C03D5C061756;
-        Wed, 18 Aug 2021 23:08:21 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id f5so7123773wrm.13;
-        Wed, 18 Aug 2021 23:08:21 -0700 (PDT)
+        Thu, 19 Aug 2021 02:09:18 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4F28C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 23:08:42 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id d11so10348036eja.8
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 23:08:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ld5tr++fLXKmqW5dNJQnNT90Jc4o9lum57+BvwZR4Ag=;
-        b=j9R85SHuFn/5xPt0/yzoTUjoW2EKjmYwyqhHIcmuH41YNhS7uLDjJjBxh2nvZcybUg
-         4ThNFqKYd7y16lYFdqlGGjoRDWsdBM6RNnP1IYlFlYjwWrOXYPObZiDOBcwjRo57ajpl
-         PyLLL21ySV3fRxyqGnL6rLznLxRijO5jqDKxlIAZO4Gr3Bpuq8MEkLyeffVka3I4oZb6
-         3p+pAmvdliSZt4zG9rVFft3pFnHjECI3q/40IBZ01cVwejZwht6lDNdTIorsD3pkDiBc
-         JYLEVOaVH4e1M1B4udZxp+ESIG9PvS5oawfVcGa/0bw5mmNpML7138HLSxxpA2unusEb
-         GiAQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dg8tJtA/mpAsn1Z5f0hfRAUxeWjHIlYjDakwDIUZfgw=;
+        b=u2vpZhuPa0bk3gdpVB0eiZye4ynDqANT1dRqy4ZOTuxjj9vyqYql0QtIN8V3Dug6RF
+         ov1xGDQMDrugzSENn49CLLTuk0x0Qey2TaoqYltbUm6N1S9Bnmr2qYfMSn0pVZEW9Jno
+         JDBWCcffyRgMvntVVQWhe2KFeAMz3V1F9Oh24CEWS6JwK3SevoeqxUe8UVcJf6nKVwDB
+         xW8PN2N715dC8vsHaef3aIbqr8rpFEjbI90nv98/aFDYtUsyRx9fapSgaLKzFs/ckW38
+         DHIUYPDw6Um4i0VHyvSrkAGuFc73bmAc8dausbC31mw8EaPt+VKL3HV/1rrg1ND6Cg7d
+         1ijA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ld5tr++fLXKmqW5dNJQnNT90Jc4o9lum57+BvwZR4Ag=;
-        b=Iys03hEEptPt8pxb3OkLb8ZBaec7KHpRIuN3NwaT7JwGGjC1C/Xct9wMAPWawpL1op
-         ysOsYzm4KSdJ7Hdis925r5jnEiPlUMwFfB+ko9Tk185X9jvHzcpcc/G6Z4jBrNXZ0UX/
-         F8b7ILNkRsOG5DyQBJ51ZZsrZQ7ahpftuFyt8cYVjvfOWQco7jkF4GQMoxUiKWziyO+w
-         07koOOjCknSKRzpDDTV1JlY6RKCEWAtdhTwiFm7KkrEk9zpPDLjQ+HB+ex6gWjlGKHa1
-         rnIZg/pUxC8lYl1Q8tnyFM7tjn0p5gJZB2vMJkB4giY+x6vZAbF5El2AKm6FwghIzOt4
-         2HOw==
-X-Gm-Message-State: AOAM531WcLW6dxxbIIPXkKsBA6R1uK4UWGK91wd16sXqVyo7HaoaYMAk
-        ob1sekwUyYztSZ1Fp3OGivCWtKkopfrWyA==
-X-Google-Smtp-Source: ABdhPJzXAt1+lkVfv3LRAZgLBgCOGiS0Aq4hbOvNt97GmwRkaEIzGKuzY54QMi85skmQB39FIBvKxg==
-X-Received: by 2002:adf:e3c7:: with SMTP id k7mr1522719wrm.327.1629353300137;
-        Wed, 18 Aug 2021 23:08:20 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f08:4500:9978:7b72:32e9:8917? (p200300ea8f08450099787b7232e98917.dip0.t-ipconnect.de. [2003:ea:8f08:4500:9978:7b72:32e9:8917])
-        by smtp.googlemail.com with ESMTPSA id l9sm1813731wrt.95.2021.08.18.23.08.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 23:08:19 -0700 (PDT)
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, nic_swsd@realtek.com,
-        bhelgaas@google.com
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210819054542.608745-1-kai.heng.feng@canonical.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH net-next v3 0/3] r8169: Implement dynamic ASPM mechanism
- for recent 1.0/2.5Gbps Realtek NICs
-Message-ID: <b14bc147-d39c-6f55-cc0e-7b2de92d23b1@gmail.com>
-Date:   Thu, 19 Aug 2021 08:08:10 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        bh=dg8tJtA/mpAsn1Z5f0hfRAUxeWjHIlYjDakwDIUZfgw=;
+        b=h3RmW8GOXgomczBAfs37c+QpJewJHADCRTsz59WgyyFJTpfzGNvCKjNLptvpSf3cUS
+         zfrJZ83Exb0XXgATzkCRstEs2HSQwrEATTngpHuAKlX+z/7HSSiQsZBt0Yxwz0pY0Wjk
+         AaFJyQCuoGBliDRQUBEf0A7cxZ4uK3VmbQFUE9bAg0q7KWi1zEZ3vIl7pVNCXpLaBbIE
+         Z9QBDzzi11T9gseEnqP7zZP2SIkkr//EOAp8xOmPkYsh9qA0QpRFb7EkK5xzrp9f3KlQ
+         bL1PJKfoszaaBAA0VljeIlDzmm99CENmNUEqWbHmuDGaKKjH8J7nqzNtGqdzJV2g3rPP
+         BDDA==
+X-Gm-Message-State: AOAM5325zUdQDIPrFr1R5R5vxmqortxLT+FHnkEbKkSqjpodGPGQ2eyP
+        maNltHdwhqOfvwPFqovxxow=
+X-Google-Smtp-Source: ABdhPJwvrvXtCMyC6m0oETTT/WyRaRS0cLIlYd5blZmuLKVVRpoHVI/4r05loVqnLr7ZOA18Ju242w==
+X-Received: by 2002:a17:906:1416:: with SMTP id p22mr13672241ejc.364.1629353321546;
+        Wed, 18 Aug 2021 23:08:41 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
+        by smtp.gmail.com with ESMTPSA id d22sm782862ejk.5.2021.08.18.23.08.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 23:08:41 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH] staging: r8188eu: Remove _enter/_exit_critical_mutex()
+Date:   Thu, 19 Aug 2021 08:08:37 +0200
+Message-Id: <20210819060837.23983-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210819054542.608745-1-kai.heng.feng@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.08.2021 07:45, Kai-Heng Feng wrote:
-> The latest Realtek vendor driver and its Windows driver implements a
-> feature called "dynamic ASPM" which can improve performance on it's
-> ethernet NICs.
-> 
-This statement would need a proof. Which performance improvement
-did you measure? And why should performance improve?
-On mainline ASPM is disabled, therefore I don't think we can see
-a performance improvement. More the opposite in the scenario
-I described: If traffic starts and there's a congestion in the chip,
-then it may take a second until ASPM gets disabled. This may hit
-performance.
+Remove _enter_critical_mutex() and _exit_critical_mutex(). They are
+unnecessary wrappers, respectively to mutex_lock_interruptible and to
+mutex_unlock(). They also have an odd interface that takes an unused
+second parameter "unsigned long *pirqL".
 
-> Heiner Kallweit pointed out the potential root cause can be that the
-> buffer is to small for its ASPM exit latency.
-> 
-> So bring the dynamic ASPM to r8169 so we can have both nice performance
-> and powersaving at the same time.
-> 
-> v2:
-> https://lore.kernel.org/netdev/20210812155341.817031-1-kai.heng.feng@canonical.com/
-> 
-> v1:
-> https://lore.kernel.org/netdev/20210803152823.515849-1-kai.heng.feng@canonical.com/
-> 
-> Kai-Heng Feng (3):
->   r8169: Implement dynamic ASPM mechanism
->   PCI/ASPM: Introduce a new helper to report ASPM support status
->   r8169: Enable ASPM for selected NICs
-> 
->  drivers/net/ethernet/realtek/r8169_main.c | 69 ++++++++++++++++++++---
->  drivers/pci/pcie/aspm.c                   | 11 ++++
->  include/linux/pci.h                       |  2 +
->  3 files changed, 74 insertions(+), 8 deletions(-)
-> 
-This series is meant for your downstream kernel only, and posted here to
-get feedback. Therefore it should be annotated as RFC, not that it gets
-applied accidentally.
+Use directly the in-kernel API; check and manage the return value of
+mutex_lock_interruptible().
+
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
+ drivers/staging/r8188eu/core/rtw_mlme_ext.c     |  5 +++--
+ drivers/staging/r8188eu/hal/usb_ops_linux.c     |  7 +++++--
+ drivers/staging/r8188eu/include/osdep_service.h | 13 -------------
+ drivers/staging/r8188eu/os_dep/os_intfs.c       |  5 +++--
+ 4 files changed, 11 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+index f6ee72d5af09..484083468ebb 100644
+--- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
++++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+@@ -4358,7 +4358,8 @@ s32 dump_mgntframe_and_wait_ack(struct adapter *padapter, struct xmit_frame *pmg
+ 	if (padapter->bSurpriseRemoved || padapter->bDriverStopped)
+ 		return -1;
+ 
+-	_enter_critical_mutex(&pxmitpriv->ack_tx_mutex, NULL);
++	if (mutex_lock_interruptible(&pxmitpriv->ack_tx_mutex))
++		return -EINTR;
+ 	pxmitpriv->ack_tx = true;
+ 
+ 	pmgntframe->ack_report = 1;
+@@ -4367,7 +4368,7 @@ s32 dump_mgntframe_and_wait_ack(struct adapter *padapter, struct xmit_frame *pmg
+ 	}
+ 
+ 	pxmitpriv->ack_tx = false;
+-	_exit_critical_mutex(&pxmitpriv->ack_tx_mutex, NULL);
++	mutex_unlock(&pxmitpriv->ack_tx_mutex);
+ 
+ 	return ret;
+ }
+diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+index 953fa05dc30c..52cb32f898e0 100644
+--- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
++++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+@@ -32,7 +32,10 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+ 		goto exit;
+ 	}
+ 
+-	_enter_critical_mutex(&dvobjpriv->usb_vendor_req_mutex, NULL);
++	if (mutex_lock_interruptible(&dvobjpriv->usb_vendor_req_mutex)) {
++		status = -EINTR;
++		goto exit;
++	}
+ 
+ 	/*  Acquire IO memory for vendorreq */
+ 	pIo_buf = dvobjpriv->usb_vendor_req_buf;
+@@ -96,7 +99,7 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+ 			break;
+ 	}
+ release_mutex:
+-	_exit_critical_mutex(&dvobjpriv->usb_vendor_req_mutex, NULL);
++	mutex_unlock(&dvobjpriv->usb_vendor_req_mutex);
+ exit:
+ 	return status;
+ }
+diff --git a/drivers/staging/r8188eu/include/osdep_service.h b/drivers/staging/r8188eu/include/osdep_service.h
+index 029aa4e92c9b..bb92b9d74bd7 100644
+--- a/drivers/staging/r8188eu/include/osdep_service.h
++++ b/drivers/staging/r8188eu/include/osdep_service.h
+@@ -56,19 +56,6 @@ static inline struct list_head *get_list_head(struct __queue *queue)
+ 	return (&(queue->queue));
+ }
+ 
+-static inline int _enter_critical_mutex(struct mutex *pmutex, unsigned long *pirqL)
+-{
+-	int ret;
+-
+-	ret = mutex_lock_interruptible(pmutex);
+-	return ret;
+-}
+-
+-static inline void _exit_critical_mutex(struct mutex *pmutex, unsigned long *pirqL)
+-{
+-		mutex_unlock(pmutex);
+-}
+-
+ static inline void rtw_list_delete(struct list_head *plist)
+ {
+ 	list_del_init(plist);
+diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
+index 1aa65925e1da..4768e3a507f6 100644
+--- a/drivers/staging/r8188eu/os_dep/os_intfs.c
++++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
+@@ -1065,9 +1065,10 @@ int netdev_open(struct net_device *pnetdev)
+ 	int ret;
+ 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(pnetdev);
+ 
+-	_enter_critical_mutex(padapter->hw_init_mutex, NULL);
++	if (mutex_lock_interruptible(padapter->hw_init_mutex))
++		return -EINTR;
+ 	ret = _netdev_open(pnetdev);
+-	_exit_critical_mutex(padapter->hw_init_mutex, NULL);
++	mutex_unlock(padapter->hw_init_mutex);
+ 	return ret;
+ }
+ 
+-- 
+2.32.0
+
