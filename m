@@ -2,168 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D5C3F13C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 08:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D063F13D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 08:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231915AbhHSGvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 02:51:35 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:59650
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230483AbhHSGve (ORCPT
+        id S231831AbhHSGxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 02:53:45 -0400
+Received: from out28-194.mail.aliyun.com ([115.124.28.194]:39806 "EHLO
+        out28-194.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231234AbhHSGxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 02:51:34 -0400
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id F40B6411DE
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 06:50:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629355858;
-        bh=0jvhx6f4zq/7XnfZg+ORPB90W+qrIJ0dzkFCj+LBYPM=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=JmvaRVVVr85gJt5iNFE2MYOUGSInPNg2UUStmfTqshAoLssBcWodK/nISnJP+d2bb
-         btk8ewTG01kRwpQPXMDhJxRzPV0ED9IQozOCC3iy9UovnblhteARtfeE2TCoMArLNR
-         9XEtaCL3+FLVBilQg9lFqyq0nO2QUJNAK0+b4bUd8fQ4ieVZ8vcvLRLp0McyEra1gL
-         cHbHmIzfNy/1vQcHjK0RpIkWFrO4uExYBh7N/az54/7/4EHHDys82etY2mDYDR72hG
-         NJXAXafNIAqvLutWdoeeRFdSkFlJ5lqpBN5rhjJIBuQgqPgP2iS8h3/3jb5qpO7j8w
-         0fn0n2igC/GPg==
-Received: by mail-ed1-f71.google.com with SMTP id di3-20020a056402318300b003bebf0828a2so2338366edb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 23:50:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0jvhx6f4zq/7XnfZg+ORPB90W+qrIJ0dzkFCj+LBYPM=;
-        b=Etv8XHh5hQTkRWeCniFYVszgmWIEv1dCS6ulfulDQIHm6b8Vf1TG6tpT9w7u6Uh+x+
-         icn3LKKOxDGxIyAhoHd1BVAJhW9Ns2b/5WSqsxbRi9L+CoksL/Fa9XQGvcCQ/DSdGSAj
-         NATfpIHeU30t4FnzTpBtPSEdaIo1zqxkNyGq+ZxjtyYCBLDF5QCQvS/9XSGl5nFVfkbV
-         bZsDOWYgCCRL7vJ2upjFt14S1b74DXjF1zl6RdeL0OuByNKMPFb6DTZuyJnSKe09LT7m
-         ceJg5DIlUMPqBzDspoAfRiUEEIq0jT6vpPRWqgBpaqJCkYu08zaoQneYR/gLon0UUwht
-         UVAQ==
-X-Gm-Message-State: AOAM533emV+ONnoPYhLUL8WjtRMbLhxYkd8KBuRgsb9l05Lv22CTY+Ed
-        oly/2J4R/IDTZ9SCWxIV7No3fSE5sB7y4BaQEo+0rtF5ev2YpzICbutA4rxzCSszmXEmNFANUpj
-        f78bQMJ82N5x618Cn/lNZfzj4ixWlWTj+KIjggR+XR1g8S0nL9o2AW5nCrg==
-X-Received: by 2002:a17:906:f8c4:: with SMTP id lh4mr14052774ejb.542.1629355857652;
-        Wed, 18 Aug 2021 23:50:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy7XQhtjEFl5wsBgomaAboB0rmAqmgcek25DRCCx7AdlA7HAMg46JkTr7MA3PiPZ8CWLKTxjQcDb0l3DC8Hxm0=
-X-Received: by 2002:a17:906:f8c4:: with SMTP id lh4mr14052749ejb.542.1629355857324;
- Wed, 18 Aug 2021 23:50:57 -0700 (PDT)
+        Thu, 19 Aug 2021 02:53:44 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.3475978|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_enroll_verification|0.00612132-0.000575849-0.993303;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=10;RT=10;SR=0;TI=SMTPD_---.L2nsPIr_1629355984;
+Received: from 192.168.88.131(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.L2nsPIr_1629355984)
+          by smtp.aliyun-inc.com(10.147.42.197);
+          Thu, 19 Aug 2021 14:53:05 +0800
+Subject: Re: [PATCH] dt-bindings: timer: Add ABIs for new Ingenic SoCs.
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+To:     robh+dt@kernel.org, daniel.lezcano@linaro.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sihui.liu@ingenic.com,
+        jun.jiang@ingenic.com, sernia.zhou@foxmail.com
+References: <1626370605-120775-1-git-send-email-zhouyanjie@wanyeetech.com>
+Message-ID: <fbc02405-67be-3256-2b3e-51c052cb06e2@wanyeetech.com>
+Date:   Thu, 19 Aug 2021 14:53:04 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20210819054542.608745-1-kai.heng.feng@canonical.com>
- <20210819054542.608745-4-kai.heng.feng@canonical.com> <084b8ea3-99d8-3393-4b74-0779c92fde64@gmail.com>
-In-Reply-To: <084b8ea3-99d8-3393-4b74-0779c92fde64@gmail.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Thu, 19 Aug 2021 14:50:44 +0800
-Message-ID: <CAAd53p4CYOOXjyNdTnBtsQ+2MW-Jar8fgEfPFZHSPrJde=HqVA@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 3/3] r8169: Enable ASPM for selected NICs
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     nic_swsd <nic_swsd@realtek.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1626370605-120775-1-git-send-email-zhouyanjie@wanyeetech.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 2:08 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+Hi,
+
+
+A gentle ping :)
+
+
+On 2021/7/16 上午1:36, 周琰杰 (Zhou Yanjie) wrote:
+> 1.Add OST_CLK_EVENT_TIMER for new XBurst®1 SoCs.
+> 2.Add OST_CLK_EVENT_TIMER0 to OST_CLK_EVENT_TIMER15 for new XBurst®2 SoCs.
 >
-> On 19.08.2021 07:45, Kai-Heng Feng wrote:
-> > The latest vendor driver enables ASPM for more recent r8168 NICs, so
-> > disable ASPM on older chips and enable ASPM for the rest.
-> >
-> > Rename aspm_manageable to pcie_aspm_manageable to indicate it's ASPM
-> > from PCIe, and use rtl_aspm_supported for Realtek NIC's internal ASPM
-> > function.
-> >
-> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > ---
-> > v3:
-> >  - Use pcie_aspm_supported() to retrieve ASPM support status
-> >  - Use whitelist for r8169 internal ASPM status
-> >
-> > v2:
-> >  - No change
-> >
-> >  drivers/net/ethernet/realtek/r8169_main.c | 27 ++++++++++++++++-------
-> >  1 file changed, 19 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-> > index 3359509c1c351..88e015d93e490 100644
-> > --- a/drivers/net/ethernet/realtek/r8169_main.c
-> > +++ b/drivers/net/ethernet/realtek/r8169_main.c
-> > @@ -623,7 +623,8 @@ struct rtl8169_private {
-> >       } wk;
-> >
-> >       unsigned supports_gmii:1;
-> > -     unsigned aspm_manageable:1;
-> > +     unsigned pcie_aspm_manageable:1;
-> > +     unsigned rtl_aspm_supported:1;
-> >       unsigned rtl_aspm_enabled:1;
-> >       struct delayed_work aspm_toggle;
-> >       atomic_t aspm_packet_count;
-> > @@ -702,6 +703,20 @@ static bool rtl_is_8168evl_up(struct rtl8169_private *tp)
-> >              tp->mac_version <= RTL_GIGA_MAC_VER_53;
-> >  }
-> >
-> > +static int rtl_supports_aspm(struct rtl8169_private *tp)
-> > +{
-> > +     switch (tp->mac_version) {
-> > +     case RTL_GIGA_MAC_VER_02 ... RTL_GIGA_MAC_VER_31:
-> > +     case RTL_GIGA_MAC_VER_37:
-> > +     case RTL_GIGA_MAC_VER_39:
-> > +     case RTL_GIGA_MAC_VER_43:
-> > +     case RTL_GIGA_MAC_VER_47:
-> > +             return 0;
-> > +     default:
-> > +             return 1;
-> > +     }
-> > +}
-> > +
-> >  static bool rtl_supports_eee(struct rtl8169_private *tp)
-> >  {
-> >       return tp->mac_version >= RTL_GIGA_MAC_VER_34 &&
-> > @@ -2669,7 +2684,7 @@ static void rtl_pcie_state_l2l3_disable(struct rtl8169_private *tp)
-> >
-> >  static void rtl_hw_aspm_clkreq_enable(struct rtl8169_private *tp, bool enable)
-> >  {
-> > -     if (!tp->aspm_manageable && enable)
-> > +     if (!(tp->pcie_aspm_manageable && tp->rtl_aspm_supported) && enable)
-> >               return;
-> >
-> >       tp->rtl_aspm_enabled = enable;
-> > @@ -5319,12 +5334,8 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
-> >       if (rc)
-> >               return rc;
-> >
-> > -     /* Disable ASPM completely as that cause random device stop working
-> > -      * problems as well as full system hangs for some PCIe devices users.
-> > -      */
-> > -     rc = pci_disable_link_state(pdev, PCIE_LINK_STATE_L0S |
-> > -                                       PCIE_LINK_STATE_L1);
-> > -     tp->aspm_manageable = !rc;
-> > +     tp->pcie_aspm_manageable = pcie_aspm_supported(pdev);
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> ---
+>   include/dt-bindings/clock/ingenic,sysost.h | 19 +++++++++++++++++++
+>   1 file changed, 19 insertions(+)
 >
-> That's not what I meant, and it's also not correct.
-
-In case I make another mistake in next series, let me ask it more clearly...
-What you meant was to check both link->aspm_enabled and link->aspm_support?
-
->
-> > +     tp->rtl_aspm_supported = rtl_supports_aspm(tp);
-
-Is rtl_supports_aspm() what you expect for the whitelist?
-And what else am I missing?
-
-Kai-Heng
-
-> >
-> >       /* enable device (incl. PCI PM wakeup and hotplug setup) */
-> >       rc = pcim_enable_device(pdev);
-> >
->
+> diff --git a/include/dt-bindings/clock/ingenic,sysost.h b/include/dt-bindings/clock/ingenic,sysost.h
+> index 063791b..d7aa42c 100644
+> --- a/include/dt-bindings/clock/ingenic,sysost.h
+> +++ b/include/dt-bindings/clock/ingenic,sysost.h
+> @@ -13,4 +13,23 @@
+>   #define OST_CLK_PERCPU_TIMER2	3
+>   #define OST_CLK_PERCPU_TIMER3	4
+>   
+> +#define OST_CLK_EVENT_TIMER		1
+> +
+> +#define OST_CLK_EVENT_TIMER0	0
+> +#define OST_CLK_EVENT_TIMER1	1
+> +#define OST_CLK_EVENT_TIMER2	2
+> +#define OST_CLK_EVENT_TIMER3	3
+> +#define OST_CLK_EVENT_TIMER4	4
+> +#define OST_CLK_EVENT_TIMER5	5
+> +#define OST_CLK_EVENT_TIMER6	6
+> +#define OST_CLK_EVENT_TIMER7	7
+> +#define OST_CLK_EVENT_TIMER8	8
+> +#define OST_CLK_EVENT_TIMER9	9
+> +#define OST_CLK_EVENT_TIMER10	10
+> +#define OST_CLK_EVENT_TIMER11	11
+> +#define OST_CLK_EVENT_TIMER12	12
+> +#define OST_CLK_EVENT_TIMER13	13
+> +#define OST_CLK_EVENT_TIMER14	14
+> +#define OST_CLK_EVENT_TIMER15	15
+> +
+>   #endif /* __DT_BINDINGS_CLOCK_INGENIC_OST_H__ */
