@@ -2,89 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A39973F123D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 06:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C052A3F124D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 06:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbhHSEMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 00:12:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhHSEMJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 00:12:09 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4553FC061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 21:11:32 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id oc2-20020a17090b1c0200b00179e56772d6so533692pjb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 21:11:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l9V52lFXnbzIWhvicXmSUoCiNa+k48jmUozZvt1wwMA=;
-        b=JeDWLhWYL5wrSLivNoZl63hO5tzIxwhTMBYGb4KkCaIPoo8GYi0ZSflOROX3slGOg7
-         E/hW3L4YHevt5OSBpLYNFeGE3DapiQz0gf1u+T0hajTgwuVoQZLzgcLrb+1GtqdP6/I4
-         hG3BZ2SMViADd80+l41SzSiDTq6UPXPWo0HprOoosWR0ICdwkX6LafzICjxtRaI699DO
-         xzbyRJ8vt6VKIchufCuYauLIBg7WLX8ezAmmOt3UerFAewVD3GDcIf1NO0c3LR9/S6iD
-         NgGO9/H6fJ9UsL0JK/WLLxQf/r7SRAUl9SFmkWK+evolcvhvTTLq4wQhZPPwr3aHanQj
-         GrFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l9V52lFXnbzIWhvicXmSUoCiNa+k48jmUozZvt1wwMA=;
-        b=uknEQixu1e3XKmxjjPzuUHUaM7zPqNQQYWvhseUnunJPjnBRkDC4LVMKzoCTSAOS2H
-         3u1LmThq9M7ByDEkgCu0t4PcCKqf6E2JNjRVyLQyaLtgCKID/SxM6TAEoBmvKjcMYmxv
-         57J1zakBA5vvTcAcT507bnpPzDwaCfFC/tA46lr+Boxa7qnLRlyoXkRZjeDJLqzn/EO4
-         Qn3f+q6JuhohDp3Uv4y7i4yjOluJIsIivLv6g1paXW1ga6QtyuUUqLQIBgS+V4u9iK02
-         y39pdu0keeaxqhBOwxmUoM2CjDjBdpgXbNCEM/w3jnK0NPvRB3TdoWOgyShgP6LVIAkN
-         atWQ==
-X-Gm-Message-State: AOAM530Dq96ZGXMyyvc8mKMJQBTwbt1VA4tKDP3KqLR3KbFORtEpKmQp
-        oVhuIOYtNj+qVvf42CzulVlNKpK/Tyfv0pT6
-X-Google-Smtp-Source: ABdhPJyVc7alcNLAZaxiTjphOI675WFj9OYd1quw6wkhMgVFJvvcLF/cqq/2Fh3YvqOoujxNHkNvBg==
-X-Received: by 2002:a17:90a:2fc2:: with SMTP id n2mr12330350pjm.112.1629346291807;
-        Wed, 18 Aug 2021 21:11:31 -0700 (PDT)
-Received: from localhost.localdomain ([139.177.225.228])
-        by smtp.gmail.com with ESMTPSA id z19sm1408338pfn.94.2021.08.18.21.11.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 18 Aug 2021 21:11:31 -0700 (PDT)
-From:   yanghui <yanghui.def@bytedance.com>
-To:     john.stultz@linaro.org
-Cc:     tglx@linutronix.de, sboyd@kernel.org, linux-kernel@vger.kernel.org,
-        songmuchun@bytedance.com, duanxiongchun@bytedance.com,
-        yanghui <yanghui.def@bytedance.com>
-Subject: [RFC] Time/clocksource:The clock source was misjudged as unstable
-Date:   Thu, 19 Aug 2021 12:10:08 +0800
-Message-Id: <20210819041008.14693-1-yanghui.def@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S229804AbhHSETT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 00:19:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229451AbhHSETS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 00:19:18 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6214C610E6;
+        Thu, 19 Aug 2021 04:18:42 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1mGZVp-004duh-4J; Thu, 19 Aug 2021 00:18:41 -0400
+Message-ID: <20210819041321.105110033@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Thu, 19 Aug 2021 00:13:21 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
+        Tom Zanussi <zanussi@kernel.org>
+Subject: [PATCH v7 00/10] tracing: Creation of event probe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We use clocksource_watchdog() to monitor whether the current clocksource is
-stable every WATCHDOG_INTERVAL. But clocksource_watchdog() can't be schedule
-in time when current CPU occurs Softlockup. This will bring following 
-clocksource misjudgment problem:
+The first 5 patches of this series has had Masami's updates as well as his
+acks, and will no longer be in future series, as I'll be pushing them into
+my linux-next queue.
 
-if the clocksource_watchdog() schedule time longer then WATCHDOG_INTERVAL,
-the value of abs(cs_nsec - wd_nsec) will be enlarged a lot, but both of
-the clocksource is normal at this time. And if the value is bigger than
-md, system will misjudge that current clocksource is unstable then to select
-another clocksource.
+Patch 6 received an ack from Masami, but I updated it, by pulling more out
+of the old patch 7 and into that patch, adding more of the enum logic into
+the internal processing of the set_print_fmt() code. This way, it adds the
+switch statement, such that the addition of the eprobe only needs to add a
+new case.
 
-So we think this is a situation that Softlockup causes the clocksource
-to be misjudged. We want to know is there have some good idea to solve
-this problem ? Actually we want to use hrtimer to replace normal timer.
-But hrtimer is difficult to execute in turn on each CPU when the system 
-is just boot up. Is there a better way to solve this problem ?
+I pulled out the code from the old patch 7 that converts the parameter for
+process_fetch_insn() regs into a void pointer called rec. I figured that
+should be a separate patch as it's more set up for the eprobe code, then
+having to do with the eprobe code itself.
 
-Thanks
+For the eprobe code, I incorporated more of Masami's comments as well as
+found some minor bugs. Those updates were:
 
-Signed-off-by: yanghui <yanghui.def@bytedance.com>
----
- 
--- 
-2.20.1
+Masami's suggestions:
 
+ - Remove "return" for void function calls in trace_event_put_ref()
+ - Used bit mask over checking separate bits of flags one at a time.
+ - Check for duplicate eprobes.
+
+Fixes:
+
+ - Check for NULL pointer for probe_cleanup as there was an error path that
+   could call it with a NULL pointer.
+ - Check on create that it's for an eprobe (check for 'e'). Was breaking
+   updates to kprobes and uprobes that were added by dynamic_events.
+ - Add paranoid check of by enum to print_fmt call.
+ - Fixed error_log ^ index handling
+
+Other updates:
+
+ - Updated the README to include eprobes
+ - Added clear_dynamic_events() to selftests, to remove them even when
+   there's a dependency between them.
+ - Added a selftest to test the eprobes.
+
+
+Steven Rostedt (VMware) (9):
+      tracing: Add DYNAMIC flag for dynamic events
+      tracing: Have dynamic events have a ref counter
+      tracing/probe: Have traceprobe_parse_probe_arg() take a const arg
+      tracing/probes: Allow for dot delimiter as well as slash for system names
+      tracing/probes: Use struct_size() instead of defining custom macros
+      tracing/probe: Change traceprobe_set_print_fmt() to take a type
+      tracing/probes: Have process_fetch_insn() take a void * instead of pt_regs
+      selftests/ftrace: Add clear_dynamic_events() to test cases
+      selftests/ftrace: Add selftest for testing eprobe events
+
+Tzvetomir Stoyanov (VMware) (1):
+      tracing: Add a probe that attaches to trace events
+
+----
+ include/linux/trace_events.h                       |  52 +-
+ kernel/trace/Makefile                              |   1 +
+ kernel/trace/trace.c                               |   9 +-
+ kernel/trace/trace.h                               |  18 +
+ kernel/trace/trace_dynevent.c                      |  38 +
+ kernel/trace/trace_dynevent.h                      |   4 +-
+ kernel/trace/trace_eprobe.c                        | 932 +++++++++++++++++++++
+ kernel/trace/trace_event_perf.c                    |   6 +-
+ kernel/trace/trace_events.c                        |  22 +-
+ kernel/trace/trace_events_synth.c                  |  21 +-
+ kernel/trace/trace_events_trigger.c                |  20 +-
+ kernel/trace/trace_kprobe.c                        |  43 +-
+ kernel/trace/trace_probe.c                         |  84 +-
+ kernel/trace/trace_probe.h                         |  15 +-
+ kernel/trace/trace_probe_tmpl.h                    |   6 +-
+ kernel/trace/trace_uprobe.c                        |  34 +-
+ .../ftrace/test.d/dynevent/add_remove_eprobe.tc    |  53 ++
+ tools/testing/selftests/ftrace/test.d/functions    |  22 +
+ 18 files changed, 1275 insertions(+), 105 deletions(-)
+ create mode 100644 kernel/trace/trace_eprobe.c
+ create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_eprobe.tc
