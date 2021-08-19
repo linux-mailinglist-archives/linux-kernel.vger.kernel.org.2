@@ -2,184 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC7AE3F1EB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA05A3F1EB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233172AbhHSREb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 13:04:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230312AbhHSRE2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 13:04:28 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB65C061575;
-        Thu, 19 Aug 2021 10:03:52 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id o15so4236381wmr.3;
-        Thu, 19 Aug 2021 10:03:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=oJSyVi1Ti8Nnw90fU6cpGrkDUh7d4poA+u+RmE9yClc=;
-        b=WjO9vG1rxjOXSea0lggzneOK1T6brU84ws+V+SOshWtWLDtP8dw4z3PqYpbiYfKli1
-         rXcVeuPjT7MJg7Hy5j8m3cd8kdbRkCEcM1Y80y8aKWqMDBpsEeU4BdtyUa/ON6dEIpuI
-         ZH83YfvUPLz7N8Eucoioijep/MF/3w0IGFv19+kQ9bZgPKOHNPjpkkiiG7frHJKiLmhR
-         PSWLWci5igVYTxBtqkvlj5fV5Gwf9+1XGIFKjnJNTLfzWugJ7siIAcnkXrphSw12V8Us
-         vFqkDjmlPCNix0bh4GlaOKtAD+MVeEwQ6e6JDKcS6m84MivgDrAwN5keeZsMvCUxJPh5
-         owbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=oJSyVi1Ti8Nnw90fU6cpGrkDUh7d4poA+u+RmE9yClc=;
-        b=BKL2Kh85MqMVjQCipT10Y8VzeWNi78UB2drISzPw9s+FSouxUA2kPrxo6R5NTnOqTi
-         4UQqoWRUqpVP7APKwz3fFvh0yEpNC8eOgocw0KrmTRDmJrdRxnNm5wqEpFtQTjqWqYao
-         CQFDRmXKnIEaJuTPmV3/1B1Lv3ne5KDKUd0SdE0BN6L2FlFw1TjStYBsTfA+UN/ri6XE
-         mfgCtQA0aAbDusJyY3rw4quMlXaBhKtj9/FK68OEah0gW9rIcmwslMPDrEsGZ4PeNGBr
-         g42gu99ur0LpDa/Rzpy3oE8ac0cbgkHERwglwdZotl2ZKeYWAqgRSyyMv+0p2TGxzk8e
-         99mQ==
-X-Gm-Message-State: AOAM531rlR15nlkjMAuGGIxGX3f1VzLppjg0Kx83lFKgVUH7t3GRI5cg
-        C8KhcY4JCMHJjSV5R2gSmQI=
-X-Google-Smtp-Source: ABdhPJzLX7hjX9RRU2YIQz+WOkf7C4KD77ZHazVOwLC50X1dVFEX0qYgndjCiaQPFM42jC66tRB3Yw==
-X-Received: by 2002:a05:600c:3641:: with SMTP id y1mr14362707wmq.43.1629392630595;
-        Thu, 19 Aug 2021 10:03:50 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id e3sm3493730wrv.65.2021.08.19.10.03.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 10:03:49 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 19:03:48 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        id S233336AbhHSRFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 13:05:11 -0400
+Received: from mail-eopbgr30089.outbound.protection.outlook.com ([40.107.3.89]:40864
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230058AbhHSRFI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 13:05:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BHG7eRXx3WjKVthDhrUDVCejvubnMSl4ofemag4SL4ikyN3cKlXxk6Hmsg9RgE15szn0+2VqxIPvS0rNUHFqPydXNpPB95GRsMDGlWG5Ygnx6aOvq8Wk5HJf2yC5WVsKZBkaJTUrqftGwJD8kZTvzqYEBXeaLthUxCPcHw7N0Dj6fvJst4y5ztExm/KJ5ihQSn4CHBY+Lgbo2QnuFQNmPprMN1whHxtYiwwI7nCbYfzBBoClPYPSVNt2eesLtXWrUKMz1WUXMMD1xIHEM7Fu5+bJTLiDxnsA3RhLr6hc8GOisArKDjvT/Yof/Q47USd45DymQtC5qHJCAbXRyeNAJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PuaJzwwi3o3FXFb88r0g3r9V8ZRrgpZ8vPR4X93Xesg=;
+ b=Z7W78NxsAjSLbibVZymJ6jpHRsQdb/JdHvVGS42BIiOkOsnQSlkUQFna5BbeBMLRcJsZZxCS/ZqefqdUsh+lXGmagHW3IuE65VpJTx3pHu/rbsidp6Rrs7xFzLTXUZ8kOihkjVF6vBMZQaVYT7tAiLeUWYqS9ySmKjGDgvnzOfPYY0Nt2jxfJ43dhR/hLJWk6NwCQ9kLYNLLwEUAcdKOrtMXuE/BFV3kgh/NM3/3N3JmQHOPzRnP5hyfyX5a9EDLxvDdj6a9aILu4HOAPk84xzoNLVWMnyRRaQXcg+dEAgTYSR79WtJNSJgUJ9ym+W02hj1n9qvX7VT2o51FvqtO3A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PuaJzwwi3o3FXFb88r0g3r9V8ZRrgpZ8vPR4X93Xesg=;
+ b=KnbCByJ7LwCGXV+jJ1H35TFeKAYcst6tgz4GjIqUA2DdLf1MLefYwuRmDFL/r6eHQkr4Cp/Md9x9rFIJpIO7qNXnhWh4T4A2TwFAIuQfXZ32215zur7kphgLSVKx6w6GaQooJhYM6JUGZtCva1h6u9LE1y33o21afkYJF/EanU0=
+Authentication-Results: bootlin.com; dkim=none (message not signed)
+ header.d=none;bootlin.com; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VI1PR0401MB2303.eurprd04.prod.outlook.com (2603:10a6:800:28::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Thu, 19 Aug
+ 2021 17:04:26 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::109:1995:3e6b:5bd0]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::109:1995:3e6b:5bd0%2]) with mapi id 15.20.4436.019; Thu, 19 Aug 2021
+ 17:04:26 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        devicetree@vger.kernel.org
+Cc:     UNGLinuxDriver@microchip.com,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH v8 20/34] mmc: sdhci-tegra: Add runtime PM and OPP support
-Message-ID: <YR6O9Om+HzMMG8AR@orome.fritz.box>
-References: <20210817012754.8710-1-digetx@gmail.com>
- <20210817012754.8710-21-digetx@gmail.com>
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH devicetree 1/2] MIPS: mscc: ocelot: disable all switch ports by default
+Date:   Thu, 19 Aug 2021 20:04:15 +0300
+Message-Id: <20210819170416.2252210-1-vladimir.oltean@nxp.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR04CA0085.eurprd04.prod.outlook.com
+ (2603:10a6:208:be::26) To VI1PR04MB5136.eurprd04.prod.outlook.com
+ (2603:10a6:803:55::19)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Zkl/ZGRNLhkdNGO0"
-Content-Disposition: inline
-In-Reply-To: <20210817012754.8710-21-digetx@gmail.com>
-User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (188.25.144.60) by AM0PR04CA0085.eurprd04.prod.outlook.com (2603:10a6:208:be::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Thu, 19 Aug 2021 17:04:25 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cb25da0c-d0b0-42e3-727b-08d96333668d
+X-MS-TrafficTypeDiagnostic: VI1PR0401MB2303:
+X-Microsoft-Antispam-PRVS: <VI1PR0401MB2303CE3E0D87E100196B958CE0C09@VI1PR0401MB2303.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4xKCfKjFu1mfBd37tdybrBuT+MwVym0G1FUrpWDPfB+3mEg0J4COuvJVZ2/iKvXh7HHuhJCh9+fWAFD4LT5ZfUP8Pol5eOFHGgok5zDevN8k0lefDDbMVbywC8Y+JnQmKo7G4Zd/r7WViy6JKtbGu4JPktAPyVqFZj3pg43M0xaal3gskswVDHo9Nhlv9zJSJYxNMZP4nZrVQpmlGtH9iQu4duyKifso114aRJzkf4oIUZ2hd5yhu7GDvbD5ITJ+cM/V7Hr9vAdMMvDu8u3jOUYmCuKWNkmytH7qbidSmKSctxdG9cNJCdWE4WN4VG5D9mW7eFvl/pF+BHdc45cZhZmcFilfZ7hOdXnk8GytGwWa8CvnLoz6HvbICYwod/yOqorpumMGft2W12FNIofZmfNB6aNFN0MYrFNGftvtb3+SlreTl9VbyWDnJKaOM28VSNA7cIB5XanErp48Zf7wccaNkTVG+O4N08veGgWgGbMqoIxoeYYydwASmvcjFG9btUCjEv74duAwqqD9ptYkJ4mW2CcSqkbNevUe1IImWc8ebWNyi3hZdNsRRCADDcQEO70dzteDskguHhjG9DBQdVFjAg7hxaq+1cDwde9fxocL4LUlJ+KnCY1w7+t323SbQhUjaNlbkjX5Kio1BzO353WiJMZmWR3y2qZRd4m00gfD2c1XdeQmgKqE7lLBm7gSRBBFBlM4X04P2/y7oVbQ7Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39850400004)(136003)(396003)(346002)(366004)(4326008)(956004)(44832011)(2616005)(52116002)(478600001)(8936002)(6512007)(26005)(8676002)(6506007)(186003)(6486002)(66476007)(66556008)(2906002)(83380400001)(36756003)(66946007)(316002)(5660300002)(86362001)(38100700002)(6666004)(54906003)(1076003)(38350700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/cKvT266xLocf37IXXtowGfxc02hr5awpmB3ZzKpM4cLqIKTmbagtWk/NVvk?=
+ =?us-ascii?Q?6Hbx5ZpqzLM9Lp7gwFV1YTDOKO3eCT4sW+oUwUxA+Uld99WgpTvFe3Z5QEBN?=
+ =?us-ascii?Q?A4AN3p+Ucm+SG1FCjaGFHKANJtU21YwCxlBa46hnJ5Xh+TEDbnk8OzPgm4m3?=
+ =?us-ascii?Q?C1J49tA1jTXMzUq6YW+3m+EWwHT5QkvuTTUBUDw7NSPoQjBHn1fsJ62zrf7F?=
+ =?us-ascii?Q?UcpSg/pNaRDaP32e3A/BX767qEjLA66L33k1yiSXUcBIPjEf+Un2UOaDKUBr?=
+ =?us-ascii?Q?xBZp1gYCmU06EoDZwG3GIokzW5RpeV2N4qegsoeraLvwBzRLUPke6NWT2w3p?=
+ =?us-ascii?Q?t8xN76RkqDYriNTMSv4tatHnZrUmOd9OhN4FBN7ZC45AocEl4eMTuL3Q9qtv?=
+ =?us-ascii?Q?Mx8IaC9XWUv7R6EOrwUmmsCnOs/8uhksEHFUlCtUmJpHOqHhlCMQ9JNctgem?=
+ =?us-ascii?Q?Kac+AxdOfaXhdhnjEVzKU8ffR8UqqbA9SsiU1YrRjq2/7x8Ds8Lq2K4EaS3y?=
+ =?us-ascii?Q?gbKaZtK+3gogRJxLwE90dskFAi2Qf8yuQ9euJGkwkxNO7v1DuKCJWQl3tdhu?=
+ =?us-ascii?Q?STzGhwkYeXxmHty/Dy1sIVEODjLJM+x+ZSpuE0/zrhTSeE/hgyQi5OSMp6pd?=
+ =?us-ascii?Q?p9E+6RJM1FN72WumADAHQeZPDhTFNZ9dmBrXZUL9JZWU5EBF7CTIaURqINAd?=
+ =?us-ascii?Q?C4rKllml7OxzOT3J6F5C1dokW+q5LyI6JgB8Sy0CjihzLZBU+aG7FuqT2EeU?=
+ =?us-ascii?Q?zoMJIapoudI9AKbHvJlibayjmDPqrb63190I1NaZhuQo7fR3gFxpxi3NkeRJ?=
+ =?us-ascii?Q?CHEoif2x/GQXqLAfTsftp3Z0PA72HU5K+2c/xxBP6h+9KLKSGzHcmRBLqvvE?=
+ =?us-ascii?Q?6ju+pJ/TmAMUGUGuNI6trTWTv6OVw9u4y/qjNCUlnp/J7iHbFlBRnmjkqgfW?=
+ =?us-ascii?Q?lxV20MIGgw/l/llYppuGE4oZ8nD8EODwsyKoJkGwZq0iXeryRw0qp9dzt+nN?=
+ =?us-ascii?Q?FMA+/q+NaXmwJhJEGax+C5leXtS+W4zfg8q8nr7R6rwHo+wwH9Q00yG4c36x?=
+ =?us-ascii?Q?wwM5z5e/8OtNHvbLTsLjj2BhFyqaOGv1IyDSDgeHV9WKxSEOKStMh8HfU3PR?=
+ =?us-ascii?Q?vkb+DIPUsrlmO4nvZeTB+IRfeK4WBbov4UK/5a8tD6PX0QgeuArwCWXcAj+f?=
+ =?us-ascii?Q?gohksSUQzfK7Q1Ch3RLPqEWWnmq/w0gxQGH6KlG4YQZlX9D1AkT09J7EV1h8?=
+ =?us-ascii?Q?a++9ZtxRlm5IDsCHQiScx7MwvFVO7b6IIHLrFj/HETU/5TpZcsLZrk1Pamtj?=
+ =?us-ascii?Q?g/qItqsCRkr0a7qyMdOapyy4?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cb25da0c-d0b0-42e3-727b-08d96333668d
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Aug 2021 17:04:26.5932
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KtXz7AjzDRByCCzMIKawotInT6Si3ZlWaeEvFs2H86wy1lgkrN5pA6Z4p3xwt7r0nHTleaCGIMQYINv6IrG+eQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2303
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The ocelot switch driver used to ignore ports which do not have a
+phy-handle property and not probe those, but this is not quite ok since
+it is valid to not have a phy-handle property if there is a fixed-link.
 
---Zkl/ZGRNLhkdNGO0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It seems that checking for a phy-handle was a proxy for the proper check
+which is for the status, but that doesn't make a lot of sense, since the
+ocelot driver already iterates using for_each_available_child_of_node
+which skips the disabled ports, so I have no idea.
 
-On Tue, Aug 17, 2021 at 04:27:40AM +0300, Dmitry Osipenko wrote:
-> The SDHCI on Tegra belongs to the core power domain and we're going to
-> enable GENPD support for the core domain. Now SDHCI must be resumed using
-> runtime PM API in order to initialize the SDHCI power state. The SDHCI
-> clock rate must be changed using OPP API that will reconfigure the power
-> domain performance state in accordance to the rate. Add runtime PM and OPP
-> support to the SDHCI driver.
->=20
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/mmc/host/sdhci-tegra.c | 146 ++++++++++++++++++++++++---------
->  1 file changed, 105 insertions(+), 41 deletions(-)
->=20
-> diff --git a/drivers/mmc/host/sdhci-tegra.c b/drivers/mmc/host/sdhci-tegr=
-a.c
-> index 387ce9cdbd7c..a3583359c972 100644
-> --- a/drivers/mmc/host/sdhci-tegra.c
-> +++ b/drivers/mmc/host/sdhci-tegra.c
-> @@ -15,6 +15,8 @@
->  #include <linux/of.h>
->  #include <linux/of_device.h>
->  #include <linux/pinctrl/consumer.h>
-> +#include <linux/pm_opp.h>
-> +#include <linux/pm_runtime.h>
->  #include <linux/regulator/consumer.h>
->  #include <linux/reset.h>
->  #include <linux/mmc/card.h>
-> @@ -24,6 +26,8 @@
->  #include <linux/gpio/consumer.h>
->  #include <linux/ktime.h>
-> =20
-> +#include <soc/tegra/common.h>
-> +
->  #include "sdhci-pltfm.h"
->  #include "cqhci.h"
-> =20
-> @@ -123,6 +127,12 @@
->  					 SDHCI_TRNS_BLK_CNT_EN | \
->  					 SDHCI_TRNS_DMA)
-> =20
-> +enum {
-> +	TEGRA_CLK_BULK_SDHCI,
-> +	TEGRA_CLK_BULK_TMCLK,
-> +	TEGRA_CLK_BULK_NUM,
-> +};
-> +
->  struct sdhci_tegra_soc_data {
->  	const struct sdhci_pltfm_data *pdata;
->  	u64 dma_mask;
-> @@ -171,6 +181,8 @@ struct sdhci_tegra {
->  	bool enable_hwcq;
->  	unsigned long curr_clk_rate;
->  	u8 tuned_tap_delay;
-> +
-> +	struct clk_bulk_data clocks[TEGRA_CLK_BULK_NUM];
+Anyway, a widespread pattern in device trees is for a SoC dtsi to
+disable by default all hardware, and let board dts files enable what is
+used. So let's do that and enable only the ports with a phy-handle in
+the pcb120 and pcb123 device tree files.
 
-This doesn't seem worth it to me. There's a lot of churn in this driver
-that's only needed to convert this to the clk_bulk API and it makes the
-code a lot more difficult to read, in my opinion.
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+---
+ arch/mips/boot/dts/mscc/ocelot.dtsi       | 11 +++++++++++
+ arch/mips/boot/dts/mscc/ocelot_pcb120.dts |  8 ++++++++
+ arch/mips/boot/dts/mscc/ocelot_pcb123.dts |  4 ++++
+ 3 files changed, 23 insertions(+)
 
-It looks like the only benefit that this gives us is that runtime
-suspend and resume become a few lines shorter.
+diff --git a/arch/mips/boot/dts/mscc/ocelot.dtsi b/arch/mips/boot/dts/mscc/ocelot.dtsi
+index 535a98284dcb..e51db651af13 100644
+--- a/arch/mips/boot/dts/mscc/ocelot.dtsi
++++ b/arch/mips/boot/dts/mscc/ocelot.dtsi
+@@ -150,36 +150,47 @@ ethernet-ports {
+ 
+ 				port0: port@0 {
+ 					reg = <0>;
++					status = "disabled";
+ 				};
+ 				port1: port@1 {
+ 					reg = <1>;
++					status = "disabled";
+ 				};
+ 				port2: port@2 {
+ 					reg = <2>;
++					status = "disabled";
+ 				};
+ 				port3: port@3 {
+ 					reg = <3>;
++					status = "disabled";
+ 				};
+ 				port4: port@4 {
+ 					reg = <4>;
++					status = "disabled";
+ 				};
+ 				port5: port@5 {
+ 					reg = <5>;
++					status = "disabled";
+ 				};
+ 				port6: port@6 {
+ 					reg = <6>;
++					status = "disabled";
+ 				};
+ 				port7: port@7 {
+ 					reg = <7>;
++					status = "disabled";
+ 				};
+ 				port8: port@8 {
+ 					reg = <8>;
++					status = "disabled";
+ 				};
+ 				port9: port@9 {
+ 					reg = <9>;
++					status = "disabled";
+ 				};
+ 				port10: port@10 {
+ 					reg = <10>;
++					status = "disabled";
+ 				};
+ 			};
+ 		};
+diff --git a/arch/mips/boot/dts/mscc/ocelot_pcb120.dts b/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
+index 897de5025d7f..d2dc6b3d923c 100644
+--- a/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
++++ b/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
+@@ -69,40 +69,48 @@ phy4: ethernet-phy@3 {
+ };
+ 
+ &port0 {
++	status = "okay";
+ 	phy-handle = <&phy0>;
+ };
+ 
+ &port1 {
++	status = "okay";
+ 	phy-handle = <&phy1>;
+ };
+ 
+ &port2 {
++	status = "okay";
+ 	phy-handle = <&phy2>;
+ };
+ 
+ &port3 {
++	status = "okay";
+ 	phy-handle = <&phy3>;
+ };
+ 
+ &port4 {
++	status = "okay";
+ 	phy-handle = <&phy7>;
+ 	phy-mode = "sgmii";
+ 	phys = <&serdes 4 SERDES1G(2)>;
+ };
+ 
+ &port5 {
++	status = "okay";
+ 	phy-handle = <&phy4>;
+ 	phy-mode = "sgmii";
+ 	phys = <&serdes 5 SERDES1G(5)>;
+ };
+ 
+ &port6 {
++	status = "okay";
+ 	phy-handle = <&phy6>;
+ 	phy-mode = "sgmii";
+ 	phys = <&serdes 6 SERDES1G(3)>;
+ };
+ 
+ &port9 {
++	status = "okay";
+ 	phy-handle = <&phy5>;
+ 	phy-mode = "sgmii";
+ 	phys = <&serdes 9 SERDES1G(4)>;
+diff --git a/arch/mips/boot/dts/mscc/ocelot_pcb123.dts b/arch/mips/boot/dts/mscc/ocelot_pcb123.dts
+index ef852f382da8..7d7e638791dd 100644
+--- a/arch/mips/boot/dts/mscc/ocelot_pcb123.dts
++++ b/arch/mips/boot/dts/mscc/ocelot_pcb123.dts
+@@ -47,17 +47,21 @@ &mdio0 {
+ };
+ 
+ &port0 {
++	status = "okay";
+ 	phy-handle = <&phy0>;
+ };
+ 
+ &port1 {
++	status = "okay";
+ 	phy-handle = <&phy1>;
+ };
+ 
+ &port2 {
++	status = "okay";
+ 	phy-handle = <&phy2>;
+ };
+ 
+ &port3 {
++	status = "okay";
+ 	phy-handle = <&phy3>;
+ };
+-- 
+2.25.1
 
-Thierry
-
---Zkl/ZGRNLhkdNGO0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEejvQACgkQ3SOs138+
-s6GP7Q//aRZFqje0kEFRTOZPc/3kSiWj3ZUdkPxBKI8ZmISgrBH2orJG4ZW3OaNl
-CdiK1hqqEgEsJHuHndJqfCjxgwTwO/0zcGEwU6XcpaP0Zdh/IsIE1Qc4pHPWN7oQ
-Mcu5gLnbaDh+ej6Xpw09BpTDoZtuD20vxOf7g97ZmKlWpKS2sFL4HuKcaYWMxoM0
-43Qh7BuDv4iyY4BFdiNhEsh/Yx/2fFMjU8DQRbggqmePZYAyNDRDqOZ8vBpjmcIe
-Ub0niDGP+iEcPtw2F14RVjhAkVnnw1/v4G1PAZ62bzJ7ZosDM3CuVWs3kf189rXq
-i4xS1NBcSyntT2PBB8aaH6pyu0zCqEHyV8Q2PsCl1B88KdWmvraBlzWSu4cRZeMR
-eIGVeA2YXUhzPfwGUch8dprkivWN2OhHc7V+NFZJcHV16+WEgObbQV6j9MYVBbfO
-ZAuKtQshaQyjY0WcVTEog97Jrb7SYMLlILYwaHey6bGra1sQGK3jl+CEetSjsM6G
-Y3bk4uoBl0s0lsMSh0j1TSrKUOvbOk8xduyNrwloqaiAQRhX2idPvikM3f3OsVRL
-ejSpVy00UNbkUR4xl4v8U2MAJBCGID7q84IqDTwso3xZZ1pgH/H6YMzn2Tw2tTd4
-kDLfxr2aUamBe71mE2uLiEoEuiBCUvQXgl3/Uqkg1+ke17HCIMI=
-=AV2X
------END PGP SIGNATURE-----
-
---Zkl/ZGRNLhkdNGO0--
