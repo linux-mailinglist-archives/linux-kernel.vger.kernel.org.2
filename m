@@ -2,132 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DBF03F1529
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 10:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 764EE3F152D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 10:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237350AbhHSI2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 04:28:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43162 "EHLO
+        id S237081AbhHSI3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 04:29:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237176AbhHSI2N (ORCPT
+        with ESMTP id S237002AbhHSI3a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 04:28:13 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD28C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 01:27:37 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id d4so11044308lfk.9
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 01:27:37 -0700 (PDT)
+        Thu, 19 Aug 2021 04:29:30 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ACAAC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 01:28:54 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id om1-20020a17090b3a8100b0017941c44ce4so10769414pjb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 01:28:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fnux9c4rs4QAwYzHEIhmWyQkib9slllVEKuUIkxZE4U=;
-        b=hOYdmFoKoEgNHqgucA6LMg9vfQKBXNg9AF8pFlq42o1xRgIW3yE+LurXE3ntggZBTH
-         b7UmQz756HBNv7YCtADHrbPG1UFWZ4SkfysIRSgPbVM2DhcjX0peKKJ7ojvvZjcWFNYA
-         dZg/1y9o+kgZmwmu7JL8BuLC1vLmhEZXdESTI=
+        d=huaqin-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mlxsOtjk3EQe8tY0Dl2bnQT6hDTIci57yhrirNK4WM4=;
+        b=DcTYaUhCIADfef5Gy3rock98MnXIqSctEqt74Z19ydTwBKKAObgfXU+VqkbJWSexUj
+         UTyvK+IMz8cRzzM3uwazbz16bvKD7n32ApUrudfD1RSJgDl2D1mZqTXO3DkgrelKOQpi
+         Q7p7fo0Gocr6RMjIRWBGHxH7n5X3GGD/oRgnQokQLV5vdeElSZOAXAwAejS+yZV1Wuu6
+         jzuXl2nNACEW3vAvEv3zPucoMA7RbOAXm8H3Q6h6T/TZr7h19yaQYXiq2EdS3X2KbKDe
+         T6OB6Aamb3+KKsCylj0MKNVNxv56AeVRr7bu0Gtm8ztGNmBdiX3lPUfzVZE0qSm2jDhK
+         kd0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=fnux9c4rs4QAwYzHEIhmWyQkib9slllVEKuUIkxZE4U=;
-        b=dZEscI111/LBGDlFP/AeMeBtUz/8/GtoNriMj6bnYtmdrVnaT+IYh7JcOBJGshlzu8
-         Bm8HTvQgAHt9J4O3wgbfzZY8VvS43nfOKoj1HcVJZNH8y4q+njewyLlwUbpGvBl6OFrE
-         wlxSdkDgGqqPFd45A33HnqZlRhWMmqFnhdrumYJYsFk9tCTDJP0H2o2KtNi7cdOEaQBI
-         Ul/wtVATo1PW+NMtcFIpbDWJFZ8lZUgOOVDINnBwTsv6j83BwxHmhkUz6xk3CMI9MuBz
-         /duFBxWSTF9Nqn/rA6xb9gU10zHUF8TIhQpnRYGYx+AWHC1KDUe/qMG1ooeFhnoF5b3T
-         li0w==
-X-Gm-Message-State: AOAM5316UGkZqAiQctBcMoKBJdcX1Xw2i6wlpxZ7UFbzaVbxPbSq5VLz
-        jDHuY1OwSpePQTHiT4gIG+3K3g==
-X-Google-Smtp-Source: ABdhPJyouvHEQUt0g1C4b6sjpes/07r3gE6nWd5YO8P/tYJueCo9kkvIivms2bRFv5I/d17VlOiGTQ==
-X-Received: by 2002:ac2:5f0f:: with SMTP id 15mr9840865lfq.25.1629361655585;
-        Thu, 19 Aug 2021 01:27:35 -0700 (PDT)
-Received: from [172.16.11.1] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id r7sm256655lfr.60.2021.08.19.01.27.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 01:27:35 -0700 (PDT)
-Subject: Re: [PATCH v2 4/7] slab: Add __alloc_size attributes for better
- bounds checking
-To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
-Cc:     Daniel Micay <danielmicay@gmail.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        Joe Perches <joe@perches.com>, Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20210818214021.2476230-1-keescook@chromium.org>
- <20210818214021.2476230-5-keescook@chromium.org>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <a54715b4-3d95-293c-6b18-6d84299bd58f@rasmusvillemoes.dk>
-Date:   Thu, 19 Aug 2021 10:27:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=mlxsOtjk3EQe8tY0Dl2bnQT6hDTIci57yhrirNK4WM4=;
+        b=qs3TpxcRBJ974wmP1cUEO/6Te8UakQzfyy6WX9ZwRsNFsm9zAH5Zl90L3JXyn/TeAM
+         LEK4gZ0XtrF6qebg5630YKAfteFgfuZ4YRSjZwQC36+vlzBkwfg1RmDdIdr/6tvwacc5
+         v9T47IuO0gEsVsE7fk0Jmag6ez9I+SkyX+ekvMUswIBb7cjQI+9zHAk3ZfeliuBCSoox
+         Mox7f9bwm+Dhd1nt9vOPtSdwufU/+fN4GDw8eJBf/5Syjg5JSX1Pq+WDdRBAgqo9h9Tz
+         gDcREajElFMDOzjwcYD+PTO4PMNwRVbEVRi4WvzahZmsWGEdaqwSgFmsBGQLRL9lprSo
+         BGIA==
+X-Gm-Message-State: AOAM533Z3IwoPBgHKGcaiwgc0YgeXszMQTFM5K7YcEg/Rwy/lObIVBdG
+        Yjzosqy+2i7rpMBmmjEX27/XKQ==
+X-Google-Smtp-Source: ABdhPJywwufy1GedVPd73KbtcOOg8bcUAjKXTcyH+M8kmTO5+afM/R29vL3jzxw22vHrFl14nf8SLQ==
+X-Received: by 2002:a17:902:9008:b0:12d:8258:e07c with SMTP id a8-20020a170902900800b0012d8258e07cmr11128687plp.42.1629361733810;
+        Thu, 19 Aug 2021 01:28:53 -0700 (PDT)
+Received: from yc.huaqin.com ([101.78.151.214])
+        by smtp.gmail.com with ESMTPSA id i11sm2347220pfo.29.2021.08.19.01.28.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 01:28:53 -0700 (PDT)
+From:   yangcong <yangcong5@huaqin.corp-partner.google.com>
+To:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
+        daniel@ffwll.ch, robh+dt@kernel.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@google.com
+Cc:     yangcong <yangcong5@huaqin.corp-partner.google.com>
+Subject: [v1 0/2] drm/panel: boe-tv101wum-nl6: Support enabling a 3.3V rail
+Date:   Thu, 19 Aug 2021 16:28:41 +0800
+Message-Id: <20210819082843.716986-1-yangcong5@huaqin.corp-partner.google.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210818214021.2476230-5-keescook@chromium.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/08/2021 23.40, Kees Cook wrote:
-> As already done in GrapheneOS, add the __alloc_size attribute for
-> regular kmalloc interfaces, to provide additional hinting for better
-> bounds checking, assisting CONFIG_FORTIFY_SOURCE and other compiler
-> optimizations.
-> 
+The auo,b101uan08.3 panel (already supported by this driver) has
+a 3.3V rail that needs to be turned on. For previous users of
+this panel this voltage was directly output by pmic. On a new 
+user (the not-yet-upstream sc7180-trogdor-mrbland board) we need
+to turn the 3.3V rail on. Add support in the driver for this.
 
->  #ifdef CONFIG_NUMA
-> +__alloc_size(1)
->  void *__kmalloc_node(size_t size, gfp_t flags, int node) __assume_slab_alignment __malloc;
+yangcong (2):
+  drm/panel: boe-tv101wum-nl6: Support enabling a 3.3V rail
+  dt-bindings: drm/panel: boe-tv101wum-nl6: Support enabling a 3.3V rail
 
-Eh, can we keep all the attributes together instead of having some
-before, some after?
+ .../bindings/display/panel/boe,tv101wum-nl6.yaml      |  4 ++++
+ drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c        | 11 +++++++++++
+ 2 files changed, 15 insertions(+)
 
-I don't necessarily think this is a good idea, but just throwing it out
-there: __alloc_size almost always goes along with __malloc, so one could
-define __alloc_size in such a way that it implies __malloc, then just
-have a "raw" ____alloc_size version to use for krealloc() and similar.
-But I guess it's cleaner to keep it this way.
+-- 
+2.25.1
 
-While declared in string.h, kmemdup() is also eligible for alloc_size(2).
-
-Which brings me to an old wishlist item of mine [it's almost christmas]:
-that alloc_size could understand more general expressions for the size
-of the returned memory, not just the primitive one based on
-malloc()/calloc() prototypes. So e.g. kmemdup_nul() returns something of
-size $2+1, while it is also very common to have a alloc_foo(void) helper
-which returns something of size sizeof(struct foo). Unfortunately I
-don't think gcc's attribute parsing machinery can easily be tweaked into
-accepting
-
-struct bar *alloc_bars(unsigned count) __new_a_s(count * sizeof(struct bar))
-
-but maybe clang could. If a compiler could understand that kind of
-attribute, it would also pave the way for implementing
-__attribute__((__buffer_size__(param, size, access)))
-
-e.g.
-
-memchr(src, c, size) __buffer_size(src, size, "r")
-
-clk_bulk_get(struct device *dev, int num_clks, struct clk_bulk_data
-*clks) __buffer_size(clks, num_clks * sizeof(*clks), "rw")
-
-which could be used for both static analysis and optional run-time
-instrumentation.
-
-Rasmus
