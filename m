@@ -2,88 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEFD03F1BEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE983F1BF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240624AbhHSOvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 10:51:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240137AbhHSOvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 10:51:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B02CF60231;
-        Thu, 19 Aug 2021 14:51:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629384669;
-        bh=mqlbbTGtIEi8G/JgjYJA5lBveLz8RQwPhrw58wj1KfM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MOE1dFTbUkDXVtxREFoFQplxUWsy9QqHcOYdzARpxHfIqAFuKOtzbqOVa4Rld4Bub
-         EasZv/1aI14qf+vZFo+wCrKJZmaG6MDwzy0vkAOBhvmpiqnxjr4T2GqkRY5R7y+OTM
-         8OiMR5L6nW+JJ8590CnBm4FtTfIPJKqijBcvnBnA=
-Date:   Thu, 19 Aug 2021 16:51:05 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: Remove _enter/_exit_critical_mutex()
-Message-ID: <YR5v2aMyr/Aa26Mm@kroah.com>
-References: <20210819060837.23983-1-fmdefrancesco@gmail.com>
- <YR36fT6bpiVoo2lM@kroah.com>
- <4394431.3q0Da8apZE@localhost.localdomain>
- <2072985.qfodHclbUl@localhost.localdomain>
+        id S240636AbhHSOwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 10:52:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240633AbhHSOvz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 10:51:55 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF36EC061756;
+        Thu, 19 Aug 2021 07:51:18 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id f5so9481889wrm.13;
+        Thu, 19 Aug 2021 07:51:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=n01mXawYd9GTWQOxDU1mYfKl1cowyI/OnBiVepqTeqs=;
+        b=oPPbee0GqE4ewK/FAEWTkdj5TUSEICN8k101RajknLDdMv2CBPrqqSm3a+O2lk3dEo
+         VCcVFr5mI5R233Ruse6tIx8d/OVIQQyjywMUEwy4qN8JJXibvpi/M6A+tXgnZ8w9UVj+
+         HMr5zq+jBTtmdn+YjFdqYzT3lJw14hxmO7wu82fRWD6vx4mPHqvdsgrtY3jR3v8w8l7T
+         Sp3tuzVDOL5Pxk3AqAdY7IuphY4hzBZkH8/q7fZ4wZftAZZoYUnn5hu2YTtISmWmY/CS
+         UEu2D3+i+3bF+jHcKf2VDG0lsUku4UFyijD4JfAFclAVzh30YVSk3AlcXH60VQn2CLGT
+         m25g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=n01mXawYd9GTWQOxDU1mYfKl1cowyI/OnBiVepqTeqs=;
+        b=bKDMdfaJnXd0xLR6oQMzSVs1EX09KTzFmNLPpluHn+Mcg5ZqFpuXn1h4nr1Ynn2zVW
+         5w5YF/owJSGb+TtjRmZGk4JamPs/CQkC7Okra9u3/qSnJnWLRMfHWsrQ4mvlvFDAl3BB
+         FtqlilP5MRQLufFV+UJdTU2/P61bTM0d5OqvKFPjEvqoPqufrfJ//s+w4uPP2ElO9t3B
+         sr31GoIzn+/wiIkK9a5zTr5aq7vuAe/lAlqUv3B6u1IMDhuJigeWTH8IXOCMNpl7mtNM
+         EkLKAX5FvLBZT5SLFeZV+/vLzAiVTzCAE8WhmwJ9BKroLXb7BjwlJKEvOy5unsM2yW0T
+         OJ1Q==
+X-Gm-Message-State: AOAM5338aVN+yWJqyz3RqyaihoahnK2Ap5d5s8b7+5rp/aV/CbmKD68d
+        4qeYq/s0iaN14ElbmxeIkyI=
+X-Google-Smtp-Source: ABdhPJzB7iw8BxrewWuO3O3F01Pq3pYPwGDE5tVt/ni0S9YkiGGiJoccvP1kM8YIO8+9sKVhcx02sA==
+X-Received: by 2002:a5d:4fc9:: with SMTP id h9mr4461685wrw.2.1629384677424;
+        Thu, 19 Aug 2021 07:51:17 -0700 (PDT)
+Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
+        by smtp.gmail.com with ESMTPSA id o14sm3150409wrw.17.2021.08.19.07.51.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 07:51:16 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Tomas Winkler <tomas.winkler@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        Ionel-Catalin Mititelu <ionel-catalin.mititelu@intel.com>,
+        Jiri Kosina <jikos@kernel.org>, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] mei: improve Denverton HSM & IFSI support
+Date:   Thu, 19 Aug 2021 16:51:14 +0200
+Message-Id: <20210819145114.21074-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2072985.qfodHclbUl@localhost.localdomain>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 12:16:03PM +0200, Fabio M. De Francesco wrote:
-> On Thursday, August 19, 2021 9:07:20 AM CEST Fabio M. De Francesco wrote:
-> > On Thursday, August 19, 2021 8:30:21 AM CEST Greg Kroah-Hartman wrote:
-> > > On Thu, Aug 19, 2021 at 08:08:37AM +0200, Fabio M. De Francesco wrote:
-> > > > Remove _enter_critical_mutex() and _exit_critical_mutex(). They are
-> > > > unnecessary wrappers, respectively to mutex_lock_interruptible and to
-> > > > mutex_unlock(). They also have an odd interface that takes an unused
-> > > > second parameter "unsigned long *pirqL".
-> > > > 
-> > > > Use directly the in-kernel API; check and manage the return value of
-> > > > mutex_lock_interruptible().
-> > > > 
-> > > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > > > ---
-> > > >  drivers/staging/r8188eu/core/rtw_mlme_ext.c     |  5 +++--
-> > > >  drivers/staging/r8188eu/hal/usb_ops_linux.c     |  7 +++++--
-> > > >  drivers/staging/r8188eu/include/osdep_service.h | 13 -------------
-> > > >  drivers/staging/r8188eu/os_dep/os_intfs.c       |  5 +++--
-> > > >  4 files changed, 11 insertions(+), 19 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-> > > > index f6ee72d5af09..484083468ebb 100644
-> > > > --- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-> > > > +++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-> > > > @@ -4358,7 +4358,8 @@ s32 dump_mgntframe_and_wait_ack(struct adapter *padapter, struct xmit_frame *pmg
-> > > >  	if (padapter->bSurpriseRemoved || padapter->bDriverStopped)
-> > > >  		return -1;
-> > > >  
-> > > > -	_enter_critical_mutex(&pxmitpriv->ack_tx_mutex, NULL);
-> > > > +	if (mutex_lock_interruptible(&pxmitpriv->ack_tx_mutex))
-> > > > +		return -EINTR;
-> > > 
-> > > But the code never would return this value if the lock function returned
-> > > an error.  Why do that here now?
-> 
-> Ah, now I think I understand what you asked me ... sorry for not having 
-> immediately grasped the meaning of your objection. :(
-> 
-> I guess you wanted to know why I decided to check and handle the 
-> return values of mutex_lock_interruptible (), as the original code didn't. 
-> Did I understand the correct meaning of your question?
+The Intel Denverton chip provides HSM & IFSI. In order to access
+HSM & IFSI at the same time, provide two HECI hardware IDs for accessing.
 
-Yes, that is correct.
+Suggested-by: Ionel-Catalin Mititelu <ionel-catalin.mititelu@intel.com>
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+Tomas, please pick this quick helpful extension for the hardware.
 
+ drivers/misc/mei/hw-me-regs.h | 3 ++-
+ drivers/misc/mei/pci-me.c     | 1 +
+ drivers/pci/quirks.c          | 3 +++
+ 3 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/misc/mei/hw-me-regs.h b/drivers/misc/mei/hw-me-regs.h
+index cb34925e10f1..c1c41912bb72 100644
+--- a/drivers/misc/mei/hw-me-regs.h
++++ b/drivers/misc/mei/hw-me-regs.h
+@@ -68,7 +68,8 @@
+ #define MEI_DEV_ID_BXT_M      0x1A9A  /* Broxton M */
+ #define MEI_DEV_ID_APL_I      0x5A9A  /* Apollo Lake I */
+ 
+-#define MEI_DEV_ID_DNV_IE     0x19E5  /* Denverton IE */
++#define MEI_DEV_ID_DNV_IE	0x19E5  /* Denverton for HECI1 - IFSI */
++#define MEI_DEV_ID_DNV_IE_2	0x19E6  /* Denverton 2 for HECI2 - HSM */
+ 
+ #define MEI_DEV_ID_GLK        0x319A  /* Gemini Lake */
+ 
+diff --git a/drivers/misc/mei/pci-me.c b/drivers/misc/mei/pci-me.c
+index c3393b383e59..30827cd2a1c2 100644
+--- a/drivers/misc/mei/pci-me.c
++++ b/drivers/misc/mei/pci-me.c
+@@ -77,6 +77,7 @@ static const struct pci_device_id mei_me_pci_tbl[] = {
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_APL_I, MEI_ME_PCH8_CFG)},
+ 
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_DNV_IE, MEI_ME_PCH8_CFG)},
++	{MEI_PCI_DEVICE(MEI_DEV_ID_DNV_IE_2, MEI_ME_PCH8_SPS_CFG)},
+ 
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_GLK, MEI_ME_PCH8_CFG)},
+ 
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 6899d6b198af..2ab767ef8469 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -4842,6 +4842,9 @@ static const struct pci_dev_acs_enabled {
+ 	{ PCI_VENDOR_ID_INTEL, 0x15b7, pci_quirk_mf_endpoint_acs },
+ 	{ PCI_VENDOR_ID_INTEL, 0x15b8, pci_quirk_mf_endpoint_acs },
+ 	{ PCI_VENDOR_ID_INTEL, PCI_ANY_ID, pci_quirk_rciep_acs },
++	/* Denverton */
++	{ PCI_VENDOR_ID_INTEL, 0x19e5, pci_quirk_mf_endpoint_acs },
++	{ PCI_VENDOR_ID_INTEL, 0x19e6, pci_quirk_mf_endpoint_acs },
+ 	/* QCOM QDF2xxx root ports */
+ 	{ PCI_VENDOR_ID_QCOM, 0x0400, pci_quirk_qcom_rp_acs },
+ 	{ PCI_VENDOR_ID_QCOM, 0x0401, pci_quirk_qcom_rp_acs },
+-- 
+2.26.2
 
