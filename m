@@ -2,94 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1DD93F229D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 23:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45ACF3F22A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235922AbhHSV6o convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Aug 2021 17:58:44 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:37977 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235771AbhHSV6n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 17:58:43 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-222-K8o7LF4xO6exf4bKEugwaw-1; Thu, 19 Aug 2021 22:58:04 +0100
-X-MC-Unique: K8o7LF4xO6exf4bKEugwaw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Thu, 19 Aug 2021 22:58:03 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Thu, 19 Aug 2021 22:58:03 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Christoph Hellwig' <hch@infradead.org>,
-        "torvic9@mailbox.org" <torvic9@mailbox.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "graysky@archlinux.us" <graysky@archlinux.us>
-Subject: RE: [PATCH 2/2] x86, Makefile: Add new generic x86-64 settings
- v2/v3/v4
-Thread-Topic: [PATCH 2/2] x86, Makefile: Add new generic x86-64 settings
- v2/v3/v4
-Thread-Index: AQHXlAD0agS+R5TrUku3Pq8hTf8Ltqt7Yd3A
-Date:   Thu, 19 Aug 2021 21:58:03 +0000
-Message-ID: <b09a7be32cef407cb6b6361554411bda@AcuMS.aculab.com>
-References: <269701460.117528.1629210189833@office.mailbox.org>
- <796036867.117557.1629210288168@office.mailbox.org>
- <YRyzhWJrqcRZkYRM@infradead.org>
-In-Reply-To: <YRyzhWJrqcRZkYRM@infradead.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S235519AbhHSWEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 18:04:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43380 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229605AbhHSWEw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 18:04:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADFEF6108F;
+        Thu, 19 Aug 2021 22:04:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629410655;
+        bh=aUhzsHm+fJwhMTC1YGSa8jGlBGg6DmC3CFu7zMxr+VE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TGeMjKTr1FVwA7pQUArJRW8E2BtTQ4aNAs+1OXpfMatsVwerUR/jDq723KcxJp78v
+         1/YHKbhkhVekIBOmBFpZC/YdUAyc1XUbsx+3VlKF9EXx1kLpt+JZESe09e045PuUFS
+         U8UcsRiQdKyWmrybcNP14Rra09zGYSsBdWBhXi6PHOXyd6xGHMLG2xwNkfGSQqqFHN
+         zp7rg/cdnhEIseJprZ8V8SxTr1MEKgUFJ0HEpYpR6Ijb4Q80mBUPYVhtEVtO1aAe84
+         9NUYX1G9N0anTevfQtT/zyLLTkPUZNiQ+76QH+D9dDEAFE00/eerI7VtPKEfs3fPZq
+         B6WgpO3azmYyQ==
+Received: by pali.im (Postfix)
+        id 632537EA; Fri, 20 Aug 2021 00:04:12 +0200 (CEST)
+Date:   Fri, 20 Aug 2021 00:04:12 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Kari Argillander <kari.argillander@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, linux-cifs@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jan Kara <jack@suse.cz>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Luis de Bethencourt <luisbg@kernel.org>,
+        Salah Triki <salah.triki@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [RFC PATCH 05/20] ntfs: Undeprecate iocharset= mount option
+Message-ID: <20210819220412.jicwnrevzi6s25ee@pali>
+References: <20210808162453.1653-1-pali@kernel.org>
+ <20210808162453.1653-6-pali@kernel.org>
+ <20210819012108.3isqi4t6rmd5fd5x@kari-VirtualBox>
+ <20210819081222.vnvxfrtqctfev6xu@pali>
+ <20210819102342.6ps7lowpuomyqcdk@kari-VirtualBox>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210819102342.6ps7lowpuomyqcdk@kari-VirtualBox>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig
-> Sent: 18 August 2021 08:15
+On Thursday 19 August 2021 13:23:42 Kari Argillander wrote:
+> On Thu, Aug 19, 2021 at 10:12:22AM +0200, Pali Rohár wrote:
+> > On Thursday 19 August 2021 04:21:08 Kari Argillander wrote:
+> > > On Sun, Aug 08, 2021 at 06:24:38PM +0200, Pali Rohár wrote:
+> > > > Other fs drivers are using iocharset= mount option for specifying charset.
+> > > > So mark iocharset= mount option as preferred and deprecate nls= mount
+> > > > option.
+> > >  
+> > > One idea is also make this change to fs/fc_parser.c and then when we
+> > > want we can drop support from all filesystem same time. This way we
+> > > can get more deprecated code off the fs drivers. Draw back is that
+> > > then every filesstem has this deprecated nls= option if it support
+> > > iocharsets option. But that should imo be ok.
+> > 
+> > Beware that iocharset= is required only for fs which store filenames in
+> > some specific encoding (in this case extension to UTF-16). For fs which
+> > store filenames in raw bytes this option should not be parsed at all.
 > 
-> On Tue, Aug 17, 2021 at 04:24:48PM +0200, torvic9@mailbox.org wrote:
-> > +	  Generic x86-64 CPU.
-> > +	  Run equally well on all x86-64 CPUs with min support of x86-64-v2.
+> Yeah of course. I was thinking that what we do is that if key is nls=
+> we change key to iocharset, print deprecated and then send it to driver
+> parser as usual. This way driver parser will never know that user
+> specifie nls= because it just get iocharset. But this is probebly too
+> fancy way to think simple problem. Just idea. 
+
+This has an issue that when you use nls= option for e.g. ext4 fs then
+kernel starts reporting that nls= for ext4 is deprecated. But there is
+no nls= option and neither iocharset= option for ext4. So kernel should
+not start reporting such warnings for ext4.
+
+> > Therefore I'm not sure if this parsing should be in global
+> > fs/fc_parser.c file...
 > 
-> > +	help
-> > +	  Generic x86-64-v3 CPU with v3 instructions.
-> > +	  Run equally well on all x86-64 CPUs with min support of x86-64-v3.
-> > +
-> 
-> > +	help
-> > +	  Generic x86-64 CPU with v4 instructions.
-> > +	  Run equally well on all x86-64 CPUs with min support of x86-64-v4.
-> 
-> How the f&%$% is a user supposed to know what these garbage descriptions
-> are supposed to mean?
-
-My thoughts.
-I then looked up the link.
-Most of the extra instructions are the AVX related ones.
-They better not get enabled for a kernel build at all.
-
-I wish I knew whether 'no-avx' actually implied 'no-avx2' and
-all later avx options?
-Or do kernel builds have to spot each new option and disable
-in in turn?
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
