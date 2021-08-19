@@ -2,225 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFBFB3F216B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 22:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 032CB3F2170
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 22:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234904AbhHSUPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 16:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39936 "EHLO
+        id S235039AbhHSUQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 16:16:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234626AbhHSUPY (ORCPT
+        with ESMTP id S231856AbhHSUQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 16:15:24 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80888C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 13:14:47 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id w8so6956350pgf.5
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 13:14:47 -0700 (PDT)
+        Thu, 19 Aug 2021 16:16:27 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E91EFC061756;
+        Thu, 19 Aug 2021 13:15:50 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id d4so15428298lfk.9;
+        Thu, 19 Aug 2021 13:15:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SWonK40nfLuKYWvrqlegwHOX79F+iH7r7S8ceDKJ73w=;
-        b=IJptv6+ED2SgpSRkeJi/2ho6iTHaXtYfyLiySxQuoNMdF1AasxvuCUFZHXoetmVfVl
-         0evldTvTyMXXeS4wZD1+qp7lEf29/Dq+N9wdcm+G9qpFgGqlvMKRRlkipdTCLOQiHMXO
-         YdqtUQrJqZysCWHTXjCxeVcMUcIAJh8qGptiM=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hrWz4NAakvkbXED+TiflwM6YH+DFROJfdHAiNsIJBK0=;
+        b=nBFk1XsgHsVry9Qc6yaHDy+PvJLnZ6Zu5cdlqGO+4+12ZvLSfr5ETy6twZb2l0SSs/
+         nSUlQAlL4AkAgQVU6+mS+9OBCWI+SGCtn2c8UEmABWG+9gGP2IO4spo7JHqaC5qIUO3v
+         Pjn0PDCnFZmTsHnYMR0XxTrxhLBClpjoXOZU05PhKd9KR53SnVhe5OVUIXJaTg4lheDv
+         ORogd8/sAqoeago8IklvD8qO9yXq54U1af5ujQWAcL1AMz/vIl7xwQ8pjsQwSg4XQ1ok
+         umOgxsjmhaNMPdmMMbVpHpGAv5WGLLMdihIXfWl5YlnFjZqeBZk2ZMQ4CUms0WE8TS5t
+         EvKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SWonK40nfLuKYWvrqlegwHOX79F+iH7r7S8ceDKJ73w=;
-        b=l6OJtkbWmmsNqUUr8URoqVX+080W0ABc/OzZK2OHhH1neGIUNBRQHkiKDa6hDm/71m
-         0lmjvxCzURE0rg5+XjsWZlbnp6wWguyibCon0Q9wsKwyeve0oCmkSE8So8JJiPEyxfVJ
-         fJ79YS8BWrTmrSTxEs1e7S/mIMCEw60vOYMHCu/3SWXcvaY0oT8923pbILIuPEmnrfLC
-         IOFiMPrgaKs1zxo5qZ1F3UbaMeJvWA/4nkSCGSKrSpdfDN+mGrU3ZUPFShJjlILgZJGE
-         cvc2Tk8t57EycXTh/UMbcU/W9kus/JFI5TxffVqP/CwuEwlFnmIBB2wJSu2r4wxQtaMG
-         DOnw==
-X-Gm-Message-State: AOAM5303yVutEH2rlfLgWVPM17WOEjvUBSldrbEyXoX3xtof8G4EGjlr
-        5uvPFpcvHjP/ayC3BgpJgqp5aw==
-X-Google-Smtp-Source: ABdhPJwOnooA//ZI2yY2w3HhhA71tc7MYj5UAHPJaeMdESG6/Mo5ArqPp78/8chRXBFrSXp80yNy4g==
-X-Received: by 2002:aa7:850c:0:b0:3e2:edf3:3d09 with SMTP id v12-20020aa7850c000000b003e2edf33d09mr9540100pfn.42.1629404087013;
-        Thu, 19 Aug 2021 13:14:47 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j4sm5109612pgi.6.2021.08.19.13.14.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 13:14:46 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Lijo Lazar <lijo.lazar@amd.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Feifei Xu <Feifei.Xu@amd.com>, Likun Gao <Likun.Gao@amd.com>,
-        Jiawei Gu <Jiawei.Gu@amd.com>, Evan Quan <evan.quan@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        Dennis Li <Dennis.Li@amd.com>,
-        Sathishkumar S <sathishkumar.sundararaju@amd.com>,
-        Jonathan Kim <jonathan.kim@amd.com>,
-        Kevin Wang <kevin1.wang@amd.com>,
-        David M Nieto <David.Nieto@amd.com>,
-        Kenneth Feng <kenneth.feng@amd.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        John Clements <John.Clements@amd.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] drm/amd/pm: And destination bounds checking to struct copy
-Date:   Thu, 19 Aug 2021 13:14:41 -0700
-Message-Id: <20210819201441.3545027-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hrWz4NAakvkbXED+TiflwM6YH+DFROJfdHAiNsIJBK0=;
+        b=NdilHCr0WnEoePAuOn9TAiHLrrhiIn5+i6iMjtAGkZMC7MOP1ijRIApEsu5gs0kU0d
+         l91IhpxpvEKuDRhvZoWspBtrMH4wDb0L/peie07QJA4D3ZbdZDkU3/kWY1E1m7cyOaZs
+         0EF5aLl6uf7Nn4NkGZyk2DMY4CDz3KVbUFtDfrkzE9Z73dqSiH0yWNrj6V5AKdjnGLsP
+         4Hrp+6KeIW8IjOWT3PIMHhIiHPMfVX2b7s51Cik1yN425XzPNOtdAfGynSzHDsROZjVs
+         0vSnv8qVGZIALdFu9yYD4QMLWl4wsF8Bu2KGJytoRg0qdZyA3rdNN+cPycB6ZCNPdSRS
+         zj1A==
+X-Gm-Message-State: AOAM532YExvfJuZHx/LvusYL5EHH1OU/4dWV1cMjNccLQcU3/J/5MfZ1
+        qFHhWKHcInHUdLXV4RxPYiGenYrnUx78E1d+jrw=
+X-Google-Smtp-Source: ABdhPJwEED8rs03dN1hA20txFirdZi1ehzNxv5jEG4C5upbTpW5JD3zizQuaG+1RowsjPUj0ecXOUW+DtWK9JxSCHLc=
+X-Received: by 2002:ac2:4143:: with SMTP id c3mr9598186lfi.295.1629404149335;
+ Thu, 19 Aug 2021 13:15:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6384; h=from:subject; bh=cvRZIn3RJBaQNBAJjwgDTl32BXjr/3MDNasdqtotH60=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhHruwFDFDjn9GfKm+ZpkXhmC4GSPPLnOXnRs08yoS 3gaj152JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYR67sAAKCRCJcvTf3G3AJsiZD/ 463O5ZlWD/33hUv4/iLJRdRrEpVzMn1Znf6F0qdUkO9B3eGv+E0ybaUS6z9Z4PMWmO2DucTecwo9TR VC3sh27JAPDo9hR1O9Wsz80Yhhqu8QCrcGSEnMYqf3KD1q/SswU4w2qOB346yhWGA5FqqHSIyZiVZz MbmFs+nxIG9PoQrqq7Sul683ADQkTAt7X0avOZ8LTna2XDizljUnY6dJ2gpOR/NKa3Eme9xXYVshvm BOj8QKhMS09oJ94jq5n1UJuEod5emDIu2G7PmdsSUOXyIv3Cq9+kEJNejeZh2RbDL0nS5q/TXhwXNu 7tUYH8xuLZu+LE9CQH6Xn+XnBmgfTMTASx4aoaSu85Ys0kt1moUmpPuKvfz1L0L5kd1DrNfmUj70Cx qOcT3NvuR5tUUF7b9D736pwe/dNrFi2hYHTZ5P1nz3Oh+7bhzDOGUXg+IVZMqbUagp8Req9iSxoL29 FRE2hrE/MOM3Mm9V25yZTo35nf4friJHDQbMy9I5dZa7JhEYd+TzUzKSX/p4Dzi2F0I9bvc1RZ3S0S Qg1CA3pbZ6kQo23yrHotBS/oPiKY292DX02PtOMNxUwWtyS9uIFmv99+kAwpsa/zKB+IGhLxaTx26Q +kYyapDKFaIWlDpFgeZWq93rbRY5dv/DZ8+2PIY1nJuDhKtsarlRZnjifJFQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+References: <20210819154818.18334-1-lutovinova@ispras.ru>
+In-Reply-To: <20210819154818.18334-1-lutovinova@ispras.ru>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Thu, 19 Aug 2021 17:15:38 -0300
+Message-ID: <CAOMZO5DiaNnxc6X77jyPp9PxAUmc2-HdgE0nh4uBda_eLaBimQ@mail.gmail.com>
+Subject: Re: [PATCH] usb: dwc3: imx8mp: request irq after initializing dwc3
+To:     Nadezda Lutovinova <lutovinova@ispras.ru>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        USB list <linux-usb@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        ldv-project@linuxtesting.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memcpy(), memmove(), and memset(), avoid
-intentionally writing across neighboring fields.
+Hi Nadezda,
 
-The "Board Parameters" members of the structs:
-	struct atom_smc_dpm_info_v4_5
-	struct atom_smc_dpm_info_v4_6
-	struct atom_smc_dpm_info_v4_7
-	struct atom_smc_dpm_info_v4_10
-are written to the corresponding members of the corresponding PPTable_t
-variables, but they lack destination size bounds checking, which means
-the compiler cannot verify at compile time that this is an intended and
-safe memcpy().
+On Thu, Aug 19, 2021 at 12:48 PM Nadezda Lutovinova
+<lutovinova@ispras.ru> wrote:
+>
+> If IRQ occurs between calling  devm_request_threaded_irq() and
+> initializing dwc3_imx->dwc3, then null pointer dereference occurs
+> since dwc3_imx->dwc3 is used in dwc3_imx8mp_interrupt().
+>
+> The patch puts registration of the interrupt handler after
+> initializing of neccesery data.
 
-Since the header files are effectively immutable[1] and a struct_group()
-cannot be used, nor a common struct referenced by both sides of the
-memcpy() arguments, add a new helper, memcpy_trailing(), to perform the
-bounds checking at compile time. Replace the open-coded memcpy()s with
-memcpy_trailing() which includes enough context for the bounds checking.
+"necessary"
 
-"objdump -d" shows no object code changes.
+> Found by Linux Driver Verification project (linuxtesting.org).
+>
+> Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
 
-[1] https://lore.kernel.org/lkml/e56aad3c-a06f-da07-f491-a894a570d78f@amd.com
-
-Cc: Lijo Lazar <lijo.lazar@amd.com>
-Cc: "Christian König" <christian.koenig@amd.com>
-Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Hawking Zhang <Hawking.Zhang@amd.com>
-Cc: Feifei Xu <Feifei.Xu@amd.com>
-Cc: Likun Gao <Likun.Gao@amd.com>
-Cc: Jiawei Gu <Jiawei.Gu@amd.com>
-Cc: Evan Quan <evan.quan@amd.com>
-Cc: amd-gfx@lists.freedesktop.org
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/lkml/CADnq5_Npb8uYvd+R4UHgf-w8-cQj3JoODjviJR_Y9w9wqJ71mQ@mail.gmail.com
----
-Alex, I dropped your prior Acked-by, since the implementation is very
-different. If you're still happy with it, I can add it back. :)
----
- drivers/gpu/drm/amd/amdgpu/amdgpu.h           | 25 +++++++++++++++++++
- .../gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c |  6 ++---
- .../gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c   |  8 +++---
- .../drm/amd/pm/swsmu/smu13/aldebaran_ppt.c    |  5 ++--
- 4 files changed, 33 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-index 96e895d6be35..4605934a4fb7 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-@@ -1446,4 +1446,29 @@ static inline int amdgpu_in_reset(struct amdgpu_device *adev)
- {
- 	return atomic_read(&adev->in_gpu_reset);
- }
-+
-+/**
-+ * memcpy_trailing - Copy the end of one structure into the middle of another
-+ *
-+ * @dst: Pointer to destination struct
-+ * @first_dst_member: The member name in @dst where the overwrite begins
-+ * @last_dst_member: The member name in @dst where the overwrite ends after
-+ * @src: Pointer to the source struct
-+ * @first_src_member: The member name in @src where the copy begins
-+ *
-+ */
-+#define memcpy_trailing(dst, first_dst_member, last_dst_member,		   \
-+		        src, first_src_member)				   \
-+({									   \
-+	size_t __src_offset = offsetof(typeof(*(src)), first_src_member);  \
-+	size_t __src_size = sizeof(*(src)) - __src_offset;		   \
-+	size_t __dst_offset = offsetof(typeof(*(dst)), first_dst_member);  \
-+	size_t __dst_size = offsetofend(typeof(*(dst)), last_dst_member) - \
-+			    __dst_offset;				   \
-+	BUILD_BUG_ON(__src_size != __dst_size);				   \
-+	__builtin_memcpy((u8 *)(dst) + __dst_offset,			   \
-+			 (u8 *)(src) + __src_offset,			   \
-+			 __dst_size);					   \
-+})
-+
- #endif
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c
-index 8ab58781ae13..1918e6232319 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c
-@@ -465,10 +465,8 @@ static int arcturus_append_powerplay_table(struct smu_context *smu)
- 
- 	if ((smc_dpm_table->table_header.format_revision == 4) &&
- 	    (smc_dpm_table->table_header.content_revision == 6))
--		memcpy(&smc_pptable->MaxVoltageStepGfx,
--		       &smc_dpm_table->maxvoltagestepgfx,
--		       sizeof(*smc_dpm_table) - offsetof(struct atom_smc_dpm_info_v4_6, maxvoltagestepgfx));
--
-+		memcpy_trailing(smc_pptable, MaxVoltageStepGfx, BoardReserved,
-+				smc_dpm_table, maxvoltagestepgfx);
- 	return 0;
- }
- 
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
-index 2e5d3669652b..b738042e064d 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
-@@ -431,16 +431,16 @@ static int navi10_append_powerplay_table(struct smu_context *smu)
- 
- 	switch (smc_dpm_table->table_header.content_revision) {
- 	case 5: /* nv10 and nv14 */
--		memcpy(smc_pptable->I2cControllers, smc_dpm_table->I2cControllers,
--			sizeof(*smc_dpm_table) - sizeof(smc_dpm_table->table_header));
-+		memcpy_trailing(smc_pptable, I2cControllers, BoardReserved,
-+				smc_dpm_table, I2cControllers);
- 		break;
- 	case 7: /* nv12 */
- 		ret = amdgpu_atombios_get_data_table(adev, index, NULL, NULL, NULL,
- 					      (uint8_t **)&smc_dpm_table_v4_7);
- 		if (ret)
- 			return ret;
--		memcpy(smc_pptable->I2cControllers, smc_dpm_table_v4_7->I2cControllers,
--			sizeof(*smc_dpm_table_v4_7) - sizeof(smc_dpm_table_v4_7->table_header));
-+		memcpy_trailing(smc_pptable, I2cControllers, BoardReserved,
-+				smc_dpm_table_v4_7, I2cControllers);
- 		break;
- 	default:
- 		dev_err(smu->adev->dev, "smc_dpm_info with unsupported content revision %d!\n",
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
-index c8eefacfdd37..a6fd7ee314a9 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
-@@ -409,9 +409,8 @@ static int aldebaran_append_powerplay_table(struct smu_context *smu)
- 
- 	if ((smc_dpm_table->table_header.format_revision == 4) &&
- 	    (smc_dpm_table->table_header.content_revision == 10))
--		memcpy(&smc_pptable->GfxMaxCurrent,
--		       &smc_dpm_table->GfxMaxCurrent,
--		       sizeof(*smc_dpm_table) - offsetof(struct atom_smc_dpm_info_v4_10, GfxMaxCurrent));
-+		memcpy_trailing(smc_pptable, GfxMaxCurrent, reserved,
-+				smc_dpm_table, GfxMaxCurrent);
- 	return 0;
- }
- 
--- 
-2.30.2
-
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
