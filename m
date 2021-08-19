@@ -2,72 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7061C3F1BF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7B223F1BF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240643AbhHSOxK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Aug 2021 10:53:10 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:45577 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238590AbhHSOxJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 10:53:09 -0400
-Received: from smtpclient.apple (p5b3d23f8.dip0.t-ipconnect.de [91.61.35.248])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 04737CED16;
-        Thu, 19 Aug 2021 16:52:30 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH] Bluetooth: mgmt: Pessimize compile-time bounds-check
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210818043912.1466447-1-keescook@chromium.org>
-Date:   Thu, 19 Aug 2021 16:52:30 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <73F86183-989F-439F-9A92-B186C4E3306E@holtmann.org>
-References: <20210818043912.1466447-1-keescook@chromium.org>
-To:     Kees Cook <keescook@chromium.org>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        id S240617AbhHSOyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 10:54:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45864 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238590AbhHSOyk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 10:54:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FAC9610A1;
+        Thu, 19 Aug 2021 14:54:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629384844;
+        bh=NVt73+uhyzycuJMSmssj+lxbw6moSbp+k7jA2dLxJX8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0Xb0fhDgt4ezDWxhSKMQAZ7YukIXUtqenZ3/6mMryM+rU8t4Srzqbyz/Vui42QO7N
+         wk2i7ObTpXk6hZnt3J/sRKvURV261jclrUus853dwcSZdjb+WUaBYnApaKTgw1gu7h
+         E3Yo87xlWNx7PGMQ99Cpc+3CLYcWfHlahIPGVoSs=
+Date:   Thu, 19 Aug 2021 16:54:00 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] staging: r8188eu: Remove _enter/_exit_critical_mutex()
+Message-ID: <YR5wiOgWXXFqVDH+@kroah.com>
+References: <20210819124955.25540-1-fmdefrancesco@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210819124955.25540-1-fmdefrancesco@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kees,
-
-> After gaining __alloc_size hints, GCC thinks it can reach a memcpy()
-> with eir_len == 0 (since it can't see into the rewrite of status).
-> Instead, check eir_len == 0, avoiding this future warning:
+On Thu, Aug 19, 2021 at 02:49:55PM +0200, Fabio M. De Francesco wrote:
+> Remove _enter_critical_mutex() and _exit_critical_mutex(). They are
+> unnecessary wrappers, respectively to mutex_lock_interruptible() and
+> to mutex_unlock(). They also have an odd interface that takes an
+> unused argument named pirqL of type unsigned long.
+> Replace them with the in-kernel API. Ignore return values as it was
+> in the old code.
 > 
-> In function 'eir_append_data',
->    inlined from 'read_local_oob_ext_data_complete' at net/bluetooth/mgmt.c:7210:12:
-> ./include/linux/fortify-string.h:54:29: warning: '__builtin_memcpy' offset 5 is out of the bounds [0, 3] [-Warray-bounds]
-> ...
-> net/bluetooth/hci_request.h:133:2: note: in expansion of macro 'memcpy'
->  133 |  memcpy(&eir[eir_len], data, data_len);
->      |  ^~~~~~
-> 
-> Cc: Marcel Holtmann <marcel@holtmann.org>
-> Cc: Johan Hedberg <johan.hedberg@gmail.com>
-> Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: linux-bluetooth@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 > ---
-> net/bluetooth/mgmt.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> v2: Ignore return values from Mutexes API.
+> 
+>  drivers/staging/r8188eu/core/rtw_mlme_ext.c     |  5 +++--
+>  drivers/staging/r8188eu/hal/usb_ops_linux.c     |  5 +++--
+>  drivers/staging/r8188eu/include/osdep_service.h | 13 -------------
+>  drivers/staging/r8188eu/os_dep/os_intfs.c       |  5 +++--
+>  4 files changed, 9 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+> index 5325fe41fbee..9f53cab33333 100644
+> --- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+> +++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+> @@ -4359,7 +4359,8 @@ s32 dump_mgntframe_and_wait_ack(struct adapter *padapter, struct xmit_frame *pmg
+>  	if (padapter->bSurpriseRemoved || padapter->bDriverStopped)
+>  		return -1;
+>  
+> -	_enter_critical_mutex(&pxmitpriv->ack_tx_mutex, NULL);
+> +	if (mutex_lock_interruptible(&pxmitpriv->ack_tx_mutex))
+> +		;	/*ignore return value */
 
-patch has been applied to bluetooth-next tree.
+Ick, no.  (not to mention the wrong comment style...)
 
-Regards
+If this really is "criticial", why can it be interrupted?
 
-Marcel
+The existing code is such that the code can be interrupted, but if it
+fails, the lock is not gotten, and the CODE CONTINUES AS IF IT IS OK!
 
+So either this is never interruptable (my guess, one almost never needs
+interruptable locks in a driver) and should just do a normal mutex lock,
+or the code is totally broken and the locking should be revisited
+entirely.
+
+But a "blind" change like this is not good, let's get it right...
+
+thanks,
+
+greg k-h
