@@ -2,144 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF1D3F23B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5491F3F23BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234182AbhHSXef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 19:34:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56936 "EHLO
+        id S236869AbhHSXhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 19:37:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233964AbhHSXee (ORCPT
+        with ESMTP id S234182AbhHSXg7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 19:34:34 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D5EC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:33:57 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id cp15-20020a17090afb8fb029017891959dcbso12560375pjb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:33:57 -0700 (PDT)
+        Thu, 19 Aug 2021 19:36:59 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C51C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:36:21 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id p2so7913925oif.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:36:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=FSqOrapu64fBYafjbU5tjcyWOc2DrNI0dbheqGMVOMc=;
-        b=qPf6yOnP+Rcz9FT3tKuWykTPcKe82BX3Np45gaPnFPSg6PdUJnLygVgfX+kzI3cJ9H
-         jtESUvUqN1Ez+DTuoTUzsGouHIoQxocdabjlXnhhXdwEIL3SL3EPMESdP1tUYWRrWW5X
-         56WH9AV8Z8I1+Dv+ob4dltRCZxxppIzcXuZZbDajZOYY+UHcUj8zqAQ2N2zC8ir+rqzQ
-         7xRIzOV9hhvssqy3laN9jfhD8920m0bpiZR1ld4i0qnlmpXy3nqZRp+SXiFRJw3tk0Cb
-         jAkYC7GX39D/8+SHQHrfwZ3zlTN2RbLaSSUFeut9erJLOEf2TnrtjesxTQV5Xd8hTAQL
-         GItQ==
+        bh=HTR1NAMnxq8tF5WhlJMpotqIGROeP6GqPvumdcju0fo=;
+        b=MOe0Xa5k++pyt5Bm2ing/pbqT0IawY7nGsBZmbMlHPjnYPM1WrHVKWCMIr7HQhtCJq
+         OX6dGUUq9zlTj1tO7r6hyQu1oNrmJvT3/RqeDXmJf0wZi9neVohctcYj/z0nVCuDyLU5
+         uVWz/XpZjWrcHsAiHuoAMTq4xh1+ub6Wjho6DQcXQGNSmlicUeR8CJMuV7CUdx+pTq3n
+         zdR/EJevxLLwqj50b/QBw7u8mvDdc3xb9j4oizi0ZuRDj3ZkMgvj4beZCQar+zO6fU7G
+         qIeFzfLtvOy9UghbjQmaIPjHB0N7bza7buN5JPqmyCFnpkvW0ZTvIQZqp2IWcNPitIx5
+         CotA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=FSqOrapu64fBYafjbU5tjcyWOc2DrNI0dbheqGMVOMc=;
-        b=SfYnprRezOuB3icB4DAl43NhialPKqqyGmtp6bAEaHJH9I4H5InRcx1K+mjSR+LI86
-         7AKiEuTY6P8wRVqqxeH8O1RIoU0rhZywdP2qq+hEZBxu5fAKH0owOj3vQDkBbytA1sCd
-         OL655/Ox1YK1leu6CP88M+GisHuhvKXwEFpj2jgrPvk2q20NS4GGslB+TIQ9mCREJGBn
-         GBLOY3JVcEzu74jsGfGor6B+Y+SUqF98LTvSYLlhnq1QXxmWGtpGC45oQoaLBKENg9pv
-         l6rWndG9PLY+oRGPVI2bUuBSYxnOfvVvs1Oq7jyqgbABwoq2EjM+bWnZ9Xt74ugyeGSp
-         DT7A==
-X-Gm-Message-State: AOAM5301EzwZiefIGYHXI2QQLxF4lfHTd05PRhr0vm+tHK1BPiDQjpxw
-        DjADTYBvGr37Kl3VMvQdT6h5IQ==
-X-Google-Smtp-Source: ABdhPJyN4VYmA4QdN+DQJ6bFcB8JQlcPHEw8dvqiqzL/oaDUmvZhZqDC612NpYT8Mg6IsLybHUWCkQ==
-X-Received: by 2002:a17:90a:d686:: with SMTP id x6mr1336693pju.227.1629416036922;
-        Thu, 19 Aug 2021 16:33:56 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id j185sm4649122pfb.86.2021.08.19.16.33.56
+        bh=HTR1NAMnxq8tF5WhlJMpotqIGROeP6GqPvumdcju0fo=;
+        b=dGua85S1Rk+ODqAvUgi5K8o0AYp/v0qdE6XIDlEHvP8xeNwaMrKXVyBMGXdV7nUTKO
+         YHac3Nb8TyjbR/AXuSEHy/VbPGeGwh84jfbjufWQwQrCowSVMtiULV74rVqvHpXesJvj
+         jSyuAQHakyfnpmkz23hrDk+Uuqd9gaEZNQvUkMWZLOhUu5NybXnQ9WlTYFaQ0PINHcXL
+         IuSKMfG8uwCcbggW/lgBnQ6Yi3NrB2Dp5jNacaLG4ZYNkoHDzSomqA9QKgeBTWkTPUsU
+         taCescYmPWDCc/6aeFiMTV76gg1o91bccFLr0aJddY8jRe0sultFqZdA6GwF3m3L8QFI
+         gGaQ==
+X-Gm-Message-State: AOAM533qViyp4zwietIcrFdBKPg9zKG6XZqwNZHjVHdI26ggoil25A//
+        C1a7GUDiDYOEGRadfqhZ3oYrhA==
+X-Google-Smtp-Source: ABdhPJwkI1cWOTvjEK/I228vAx5ccb8Ct2GItdTUAVPg5QglnTuNyRrVow9whuDHmMaZY1eXTyR9Lg==
+X-Received: by 2002:aca:3e45:: with SMTP id l66mr897856oia.79.1629416181184;
+        Thu, 19 Aug 2021 16:36:21 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id v19sm948301oic.31.2021.08.19.16.36.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 16:33:56 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 23:33:50 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     "Russell King, ARM Linux" <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Heiko Carstens <hca@linux.ibm.com>, gor <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Oleg Nesterov <oleg@redhat.com>, rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, shuah <shuah@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-csky <linux-csky@vger.kernel.org>,
-        linux-mips@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390@vger.kernel.org, KVM list <kvm@vger.kernel.org>,
-        linux-kselftest <linux-kselftest@vger.kernel.org>,
-        Peter Foley <pefoley@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Ben Gardon <bgardon@google.com>
-Subject: Re: [PATCH 4/5] KVM: selftests: Add a test for KVM_RUN+rseq to
- detect task migration bugs
-Message-ID: <YR7qXvnI/AQM10gU@google.com>
-References: <20210818001210.4073390-1-seanjc@google.com>
- <20210818001210.4073390-5-seanjc@google.com>
- <1540548616.19739.1629409956315.JavaMail.zimbra@efficios.com>
+        Thu, 19 Aug 2021 16:36:20 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 16:37:43 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [RFC PATCH 01/15] power: add power sequencer subsystem
+Message-ID: <YR7rR6d4nSRea1oX@ripper>
+References: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
+ <20210817005507.1507580-2-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1540548616.19739.1629409956315.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210817005507.1507580-2-dmitry.baryshkov@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021, Mathieu Desnoyers wrote:
-> ----- On Aug 17, 2021, at 8:12 PM, Sean Christopherson seanjc@google.com wrote:
-> 
-> > Add a test to verify an rseq's CPU ID is updated correctly if the task is
-> > migrated while the kernel is handling KVM_RUN.  This is a regression test
-> > for a bug introduced by commit 72c3c0fe54a3 ("x86/kvm: Use generic xfer
-> > to guest work function"), where TIF_NOTIFY_RESUME would be cleared by KVM
-> > without updating rseq, leading to a stale CPU ID and other badness.
-> > 
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> 
-> [...]
-> 
-> > +	while (!done) {
-> > +		vcpu_run(vm, VCPU_ID);
-> > +		TEST_ASSERT(get_ucall(vm, VCPU_ID, NULL) == UCALL_SYNC,
-> > +			    "Guest failed?");
-> > +
-> > +		cpu = sched_getcpu();
-> > +		rseq_cpu = READ_ONCE(__rseq.cpu_id);
-> > +
-> > +		/*
-> > +		 * Verify rseq's CPU matches sched's CPU, and that sched's CPU
-> > +		 * is stable.  This doesn't handle the case where the task is
-> > +		 * migrated between sched_getcpu() and reading rseq, and again
-> > +		 * between reading rseq and sched_getcpu(), but in practice no
-> > +		 * false positives have been observed, while on the other hand
-> > +		 * blocking migration while this thread reads CPUs messes with
-> > +		 * the timing and prevents hitting failures on a buggy kernel.
-> > +		 */
-> 
-> I think you could get a stable cpu id between sched_getcpu and __rseq_abi.cpu_id
-> if you add a pthread mutex to protect:
-> 
-> sched_getcpu and __rseq_abi.cpu_id  reads
-> 
-> vs
-> 
-> sched_setaffinity calls within the migration thread.
-> 
-> Thoughts ?
+On Mon 16 Aug 17:54 PDT 2021, Dmitry Baryshkov wrote:
 
-I tried that and couldn't reproduce the bug.  That's what I attempted to call out
-in the blurb "blocking migration while this thread reads CPUs ... prevents hitting
-failures on a buggy kernel".
+> Basing on MMC's pwrseq support code, add separate power sequencer
+> subsystem. It will be used by other drivers to handle device power up
+> requirements.
+> 
 
-I considered adding arbitrary delays around the mutex to try and hit the bug, but
-I was worried that even if I got it "working" for this bug, the test would be too
-tailored to this bug and potentially miss future regression.  Letting the two
-threads run wild seemed like it would provide the best coverage, at the cost of
-potentially causing to false failures.
+Some more background to why we need a pwrseq framework wouldn't hurt.
+
+[..]
+> diff --git a/drivers/power/pwrseq/core.c b/drivers/power/pwrseq/core.c
+> new file mode 100644
+> index 000000000000..20485cae29aa
+> --- /dev/null
+> +++ b/drivers/power/pwrseq/core.c
+> @@ -0,0 +1,411 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +//
+> +// Copyright 2021 (c) Linaro Ltd.
+> +// Author: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> +//
+> +// Based on phy-core.c:
+> +// Copyright (C) 2013 Texas Instruments Incorporated - http://www.ti.com
+
+The typical format is:
+
+// SPDX using C++ style comment
+/*
+ * Copyright stuff using C style comment
+ */
+
+> +
+> +#include <linux/device.h>
+> +#include <linux/idr.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/pwrseq/consumer.h>
+> +#include <linux/pwrseq/driver.h>
+> +#include <linux/slab.h>
+> +
+> +#define	to_pwrseq(a)	(container_of((a), struct pwrseq, dev))
+
+No need for the extra parenthesis around container_of()
+
+> +
+> +static DEFINE_IDA(pwrseq_ida);
+> +static DEFINE_MUTEX(pwrseq_provider_mutex);
+> +static LIST_HEAD(pwrseq_provider_list);
+> +
+> +struct pwrseq_provider {
+> +	struct device		*dev;
+> +	struct module		*owner;
+> +	struct list_head	list;
+> +	void			*data;
+> +	struct pwrseq * (*of_xlate)(void *data, struct of_phandle_args *args);
+> +};
+> +
+> +void pwrseq_put(struct device *dev, struct pwrseq *pwrseq)
+> +{
+> +	device_link_remove(dev, &pwrseq->dev);
+> +
+> +	module_put(pwrseq->owner);
+> +	put_device(&pwrseq->dev);
+> +}
+> +EXPORT_SYMBOL_GPL(pwrseq_put);
+> +
+> +static struct pwrseq_provider *of_pwrseq_provider_lookup(struct device_node *node)
+> +{
+> +	struct pwrseq_provider *pwrseq_provider;
+> +
+> +	list_for_each_entry(pwrseq_provider, &pwrseq_provider_list, list) {
+> +		if (pwrseq_provider->dev->of_node == node)
+> +			return pwrseq_provider;
+> +	}
+> +
+> +	return ERR_PTR(-EPROBE_DEFER);
+> +}
+> +
+> +static struct pwrseq *_of_pwrseq_get(struct device *dev, const char *id)
+> +{
+> +	struct pwrseq_provider *pwrseq_provider;
+> +	struct pwrseq *pwrseq;
+> +	struct of_phandle_args args;
+> +	char prop_name[64]; /* 64 is max size of property name */
+> +	int ret;
+> +
+> +	snprintf(prop_name, 64, "%s-pwrseq", id);
+
+sizeof(prop_name), to avoid giving others a chance to "fix" it later?
+
+> +	ret = of_parse_phandle_with_args(dev->of_node, prop_name, "#pwrseq-cells", 0, &args);
+> +	if (ret) {
+> +		struct device_node *dn;
+> +
+> +		/*
+> +		 * Parsing failed. Try locating old bindings for mmc-pwrseq,
+> +		 * which did not use #pwrseq-cells.
+> +		 */
+> +		if (strcmp(id, "mmc"))
+> +			return ERR_PTR(-ENODEV);
+> +
+> +		dn = of_parse_phandle(dev->of_node, prop_name, 0);
+> +		if (!dn)
+> +			return ERR_PTR(-ENODEV);
+> +
+> +		args.np = dn;
+> +		args.args_count = 0;
+> +	}
+> +
+> +	mutex_lock(&pwrseq_provider_mutex);
+> +	pwrseq_provider = of_pwrseq_provider_lookup(args.np);
+> +	if (IS_ERR(pwrseq_provider) || !try_module_get(pwrseq_provider->owner)) {
+> +		pwrseq = ERR_PTR(-EPROBE_DEFER);
+> +		goto out_unlock;
+> +	}
+> +
+> +	if (!of_device_is_available(args.np)) {
+> +		dev_warn(pwrseq_provider->dev, "Requested pwrseq is disabled\n");
+> +		pwrseq = ERR_PTR(-ENODEV);
+> +		goto out_put_module;
+> +	}
+> +
+> +	pwrseq = pwrseq_provider->of_xlate(pwrseq_provider->data, &args);
+> +
+> +out_put_module:
+> +	module_put(pwrseq_provider->owner);
+> +
+> +out_unlock:
+> +	mutex_unlock(&pwrseq_provider_mutex);
+> +	of_node_put(args.np);
+> +
+> +	return pwrseq;
+> +}
+> +
+[..]
+> +int pwrseq_pre_power_on(struct pwrseq *pwrseq)
+> +{
+> +	if (pwrseq && pwrseq->ops->pre_power_on)
+> +		return pwrseq->ops->pre_power_on(pwrseq);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(pwrseq_pre_power_on);
+> +
+> +int pwrseq_power_on(struct pwrseq *pwrseq)
+
+Wouldn't it make sense to refcount the power on/off operations and at
+least warn about unbalanced disables?
+
+My concern is related to the qca-driver's reliance on the regulator
+framework to refcount the on/off of the shared resources and additional
+power_off from either the WiFi or BT client would result in the other
+client getting its power disabled unexpectedly - which might be
+annoying to debug.
+
+> +{
+> +	if (pwrseq && pwrseq->ops->power_on)
+> +		return pwrseq->ops->power_on(pwrseq);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(pwrseq_power_on);
+> +
+> +void pwrseq_power_off(struct pwrseq *pwrseq)
+> +{
+> +	if (pwrseq && pwrseq->ops->power_off)
+> +		pwrseq->ops->power_off(pwrseq);
+> +}
+> +EXPORT_SYMBOL_GPL(pwrseq_power_off);
+> +
+> +void pwrseq_reset(struct pwrseq *pwrseq)
+> +{
+> +	if (pwrseq && pwrseq->ops->reset)
+> +		pwrseq->ops->reset(pwrseq);
+> +}
+> +EXPORT_SYMBOL_GPL(pwrseq_reset);
+> +
+
+Regards,
+Bjorn
