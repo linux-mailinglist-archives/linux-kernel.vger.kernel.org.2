@@ -2,76 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70EA93F1597
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 10:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 999563F159E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 10:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237318AbhHSIuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 04:50:39 -0400
-Received: from verein.lst.de ([213.95.11.211]:36611 "EHLO verein.lst.de"
+        id S233928AbhHSIxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 04:53:02 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:36367 "EHLO 1wt.eu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229649AbhHSIud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 04:50:33 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 9B4F767357; Thu, 19 Aug 2021 10:49:51 +0200 (CEST)
-Date:   Thu, 19 Aug 2021 10:49:51 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Tianyu Lan <ltykernel@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
-        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
-        Tianyu.Lan@microsoft.com, pgonda@google.com,
-        martin.b.radev@gmail.com, akpm@linux-foundation.org,
-        kirill.shutemov@linux.intel.com, rppt@kernel.org,
-        sfr@canb.auug.org.au, saravanand@fb.com,
-        krish.sadhukhan@oracle.com, aneesh.kumar@linux.ibm.com,
-        xen-devel@lists.xenproject.org, rientjes@google.com,
-        hannes@cmpxchg.org, tj@kernel.org, michael.h.kelley@microsoft.com,
-        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, parri.andrea@gmail.com, dave.hansen@intel.com
-Subject: Re: [PATCH V3 10/13] x86/Swiotlb: Add Swiotlb bounce buffer remap
- function for HV IVM
-Message-ID: <20210819084951.GA10461@lst.de>
-References: <20210809175620.720923-1-ltykernel@gmail.com> <20210809175620.720923-11-ltykernel@gmail.com> <20210812122741.GC19050@lst.de> <d18ae061-6fc2-e69e-fc2c-2e1a1114c4b4@gmail.com> <890e5e21-714a-2db6-f68a-6211a69bebb9@gmail.com>
+        id S229954AbhHSIxB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 04:53:01 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 17J8qETA009339;
+        Thu, 19 Aug 2021 10:52:14 +0200
+Date:   Thu, 19 Aug 2021 10:52:14 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, jason@jlekstrand.net,
+        Jonathan Gray <jsg@jsg.id.au>
+Subject: Re: Determining corresponding mainline patch for stable patches Re:
+ [PATCH 5.10 125/135] drm/i915: avoid uninitialised var in eb_parse()
+Message-ID: <20210819085214.GC8538@1wt.eu>
+References: <20210811122702.GA8045@duo.ucw.cz>
+ <YRPLbV+Dq2xTnv2e@kroah.com>
+ <20210813093104.GA20799@duo.ucw.cz>
+ <20210813095429.GA21912@1wt.eu>
+ <20210813102429.GA28610@duo.ucw.cz>
+ <YRZRU4JIh5LQjDfE@kroah.com>
+ <20210813111953.GB21912@1wt.eu>
+ <YRaT3u4Qes8UY3x6@mit.edu>
+ <YRdnANmNvp+Hkcg5@kroah.com>
+ <20210819082242.GA13181@duo.ucw.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <890e5e21-714a-2db6-f68a-6211a69bebb9@gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210819082242.GA13181@duo.ucw.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 10:50:26PM +0800, Tianyu Lan wrote:
-> Hi Christoph:
->       Sorry to bother you.Please double check with these two patches
-> " [PATCH V3 10/13] x86/Swiotlb: Add Swiotlb bounce buffer remap function 
-> for HV IVM" and "[PATCH V3 09/13] DMA: Add dma_map_decrypted/dma_
-> unmap_encrypted() function".
+Hi Pavel,
 
-Do you have a git tree somewhere to look at the whole tree?
+On Thu, Aug 19, 2021 at 10:22:42AM +0200, Pavel Machek wrote:
+> I agree that submitters would need to know about the tag; OTOH I
+> believe that if it looked like a tag, people would be more likely to
+> get it right. We moved from "mention what this fixes in body" to
+> "Fixes: " and I believe that was an improvement.
+> 
+> Anyway, three new entries in stable queues have format I have not seen
+> before:
+> 
+> |ec547f971 None .: 4.19| KVM: nSVM: always intercept VMLOAD/VMSAVE when nested (CVE-2021-3656)
+> |dbfcc0f75 None o: 4.19| KVM: nSVM: avoid picking up unsupported bits from L2 in int_ctl (CVE-2021-3653)
+> |b79b08940 None o: 4.4| KVM: nSVM: avoid picking up unsupported bits from L2 in int_ctl (CVE-2021-3653)
 
->       The swiotlb bounce buffer in the isolation VM are allocated in the
-> low end memory and these memory has struct page backing. All dma address
-> returned by swiotlb/DMA API are low end memory and this is as same as what 
-> happen in the traditional VM.
+I can't find these commits.
 
-Indeed.
+> [ upstream commit 0f923e07124df069ba68d8bb12324398f4b6b709 ]
 
->       The API dma_map_decrypted() introduced in the patch 9 is to map the 
-> bounce buffer in the extra space and these memory in the low end space are 
-> used as DMA memory in the driver. Do you prefer these APIs
-> still in the set_memory.c? I move the API to dma/mapping.c due to the
-> suggested name arch_dma_map_decrypted() in the previous mail
-> (https://lore.kernel.org/netdev/20210720135437.GA13554@lst.de/).
+I've seen them a few times, mostly in the bpf subsystem or in net
+components whose backports were provided later by the original
+patch authors (or users) trying to use the same format and using
+a different case on "upstream".
 
-Well, what would help is a clear description of the semantics.
+> I guess I'll simply update the script.
+
+That's clearly how it ought to be done. Again, I don't remember having
+faced issues during 2.6.32/3.10 in the past using the trivial script I
+shared and which used to ignore the case, so I don't see any particular
+difficulty there :-/
+
+Cheers,
+Willy
