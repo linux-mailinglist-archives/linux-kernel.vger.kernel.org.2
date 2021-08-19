@@ -2,168 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA0463F21B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 22:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F36C23F21A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 22:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235236AbhHSUiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 16:38:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234436AbhHSUiI (ORCPT
+        id S234904AbhHSUdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 16:33:00 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:47987 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229563AbhHSUc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 16:38:08 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92FEEC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 13:37:31 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id lo4so15395379ejb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 13:37:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JSRl6XnmOGLdmR851bn1ceo0KMOXukfn1cvOdweS6EE=;
-        b=YxSNY3tcB7ZEMZu0Z0uGdi8ar5s5xZlqAXYmvuLSL5Espa/B5SBqCqsJ9cmkN+bmLP
-         rOw4J3P4KUQ5iMNyYm1z9LDNJp2brMQ3m6OAtitK1DaqnVDYf13di4+NSRR4Wkr/ONNL
-         +zWGKJJrYWx1bmFzoHq6hrhbUfPi4rkOHip8U=
+        Thu, 19 Aug 2021 16:32:59 -0400
+Received: by mail-io1-f72.google.com with SMTP id f1-20020a5edf01000000b005b85593f933so4007114ioq.14
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 13:32:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JSRl6XnmOGLdmR851bn1ceo0KMOXukfn1cvOdweS6EE=;
-        b=e2Xa6JdmLbTPaPvZfLrQ7DP4nVJt1NOv+fBZdJ5PGJxc30TmxR85vpPxWg/aAHKWwD
-         llXQWcL5bNXrOPoH8ZKszsV/g5FnzyDOe6cbt15Vwvm2+h24N8JlogCmj7nWUS8s0gC0
-         kvvUEfqvbPavniaSjSkfWs5p6CwgVY+TMe9fXi5ZDSZEBcqFDVhoWtUesA4KxnHx7WWm
-         NJk50FSt0ulMMN5b9YSBjhic/y5nxo250lxd6KrKsSYnLiNyhoJH0SIsDQ3cejSKaOCQ
-         T2HTVsHLjFafoNFUq6pvomqTPb011yPhj40SV0qpLsx74PtrUxquNub5G0mYktL2w88D
-         NOkQ==
-X-Gm-Message-State: AOAM532SEvdO+u+V/omXqmSICJMkMBqAGLF5ZfrrQ+xGXrSahrV+I0zE
-        m/elOJbDeAgUgnCccc2MN2CcR7tBm/0Af/zZtPA=
-X-Google-Smtp-Source: ABdhPJwXwJ2ivWU+yC6sir6lD4H6x3WWOFHNflZb2QMQDYBo6cnkrhodXADmcCrVbObzKUaaZni6Hg==
-X-Received: by 2002:a17:906:585a:: with SMTP id h26mr17858049ejs.31.1629405450110;
-        Thu, 19 Aug 2021 13:37:30 -0700 (PDT)
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com. [209.85.218.51])
-        by smtp.gmail.com with ESMTPSA id s7sm2357114edu.23.2021.08.19.13.37.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 13:37:29 -0700 (PDT)
-Received: by mail-ej1-f51.google.com with SMTP id d11so15384827eja.8
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 13:37:29 -0700 (PDT)
-X-Received: by 2002:a2e:3004:: with SMTP id w4mr11952338ljw.465.1629405111331;
- Thu, 19 Aug 2021 13:31:51 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=g6Jd0okKFV5Z/MXa8QLYus180Wp8O0CdqIOuN6AS8Oo=;
+        b=YnJvcl/OzBFquq+I+FzfpZx/bHkTUnwktWq5xPSpqo9FbFjwNb4Ua8235dOw9UTjo1
+         o4hD1YTv731VN2fiT15gh69qu8MvJ86XTqgvW3kN8ZsjdmJ+vMEWKBhj5TiJhyiyn1GW
+         XnhEFIPzW3J1CG/BUKygusMpSgT+L3j9mCWFDRnCiJEl3SNEI2i78c8nMMSJmTwh6gSC
+         RW5RPOmuANmiRhPE/2oFGUf8dROhPeFmsFAxOI//4BHjzg0HSw9u+mqw9UtBqD38Uoeb
+         7Bpf6AQnddHkeYEcUgXarUnhCtqvtkzHEGwOF50u61POU6gh4mZfL/JLwC1ogT/jvQqY
+         9VVw==
+X-Gm-Message-State: AOAM53236rkPgz/nN3PIxA2GCghQ/B2xLTCNZR0MfzrfaeRUSSvvpSuN
+        UKBqRV45TDz6/pUMCQAZYZDQkpUwhBv+u6WMI2JBQgcNpRD8
+X-Google-Smtp-Source: ABdhPJzcUSh0qMegUnbMC0Gk7iuOtLd31+Bh/uCkLBiJ/LHj5SkWPvsLdBAqUXZHW/g9YdVcI7z+29Ptkf+cas6CJZ+E6psd4Fpy
 MIME-Version: 1.0
-References: <20210812084348.6521-1-david@redhat.com> <87o8a2d0wf.fsf@disp2133>
- <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com> <87lf56bllc.fsf@disp2133>
- <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
- <87eeay8pqx.fsf@disp2133> <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
- <87h7ft2j68.fsf@disp2133> <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
- <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com> <YRcyqbpVqwwq3P6n@casper.infradead.org>
- <87k0kkxbjn.fsf_-_@disp2133> <0c2af732e4e9f74c9d20b09fc4b6cbae40351085.camel@kernel.org>
- <CAHk-=wgewmbABDC3_ZNn11C+sm4Uz0L9HZ5Kvx0Joho4vsV4DQ@mail.gmail.com> <a1385746582a675c410aca4eb4947320faec4821.camel@kernel.org>
-In-Reply-To: <a1385746582a675c410aca4eb4947320faec4821.camel@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 19 Aug 2021 13:31:35 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgD-SNxB=2iCurEoP=RjrciRgLtXZ7R_DejK+mXF2etfg@mail.gmail.com>
-Message-ID: <CAHk-=wgD-SNxB=2iCurEoP=RjrciRgLtXZ7R_DejK+mXF2etfg@mail.gmail.com>
-Subject: Re: Removing Mandatory Locks
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        David Hildenbrand <david@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
+X-Received: by 2002:a92:c242:: with SMTP id k2mr10489482ilo.33.1629405142183;
+ Thu, 19 Aug 2021 13:32:22 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 13:32:22 -0700
+In-Reply-To: <000000000000f2d84305c74bb986@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b1f4d305c9ef72ad@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Write in dec_rlimit_ucounts
+From:   syzbot <syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com>
+To:     ebiederm@xmission.com, hdanton@sina.com, legion@kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 1:18 PM Jeff Layton <jlayton@kernel.org> wrote:
->
-> Now that I think about it a little more, I actually did get one
-> complaint a few years ago:
->
-> Someone had upgraded from an earlier distro that supported the -o mand
-> mount option to a later one that had disabled it, and they had an (old)
-> fstab entry that specified it.
+syzbot has found a reproducer for the following issue on:
 
-Hmm. We might be able to turn the "return -EINVAL" into just a warning.
+HEAD commit:    d6d09a694205 Merge tag 'for-5.14-rc6-tag' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16c8081e300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f61012d0b1cd846f
+dashboard link: https://syzkaller.appspot.com/bug?extid=01985d7909f9468f013c
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d0ec1e300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1516c341300000
 
-Yes, yes, currently if you turn off CONFIG_MANDATORY_FILE_LOCKING, we
-already do that
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com
 
-        VFS: "mand" mount option not supported
+RDX: 00000000000f4240 RSI: 0000000000000081 RDI: 00000000004ca4cc
+RBP: 00000000004ca4c0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000246 R12: 00000000004ca4cc
+R13: 00007fffffe0b62f R14: 00007f1054173400 R15: 0000000000022000
+==================================================================
+BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+BUG: KASAN: use-after-free in atomic64_add_return include/asm-generic/atomic-instrumented.h:640 [inline]
+BUG: KASAN: use-after-free in atomic_long_add_return include/asm-generic/atomic-long.h:59 [inline]
+BUG: KASAN: use-after-free in dec_rlimit_ucounts+0x88/0x170 kernel/ucount.c:279
+Write of size 8 at addr ffff888025b8ef80 by task syz-executor668/8707
 
-warning print, but then we fail the mount.
+CPU: 1 PID: 8707 Comm: syz-executor668 Not tainted 5.14.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1ae/0x29f lib/dump_stack.c:105
+ print_address_description+0x66/0x3b0 mm/kasan/report.c:233
+ __kasan_report mm/kasan/report.c:419 [inline]
+ kasan_report+0x163/0x210 mm/kasan/report.c:436
+ check_region_inline mm/kasan/generic.c:135 [inline]
+ kasan_check_range+0x2b5/0x2f0 mm/kasan/generic.c:189
+ instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+ atomic64_add_return include/asm-generic/atomic-instrumented.h:640 [inline]
+ atomic_long_add_return include/asm-generic/atomic-long.h:59 [inline]
+ dec_rlimit_ucounts+0x88/0x170 kernel/ucount.c:279
+ release_task+0x2d3/0x1590 kernel/exit.c:191
+ exit_notify kernel/exit.c:699 [inline]
+ do_exit+0x1aa2/0x2510 kernel/exit.c:845
+ do_group_exit+0x168/0x2d0 kernel/exit.c:922
+ get_signal+0x16b0/0x2080 kernel/signal.c:2808
+ arch_do_signal_or_restart+0x8e/0x6d0 arch/x86/kernel/signal.c:865
+ handle_signal_work kernel/entry/common.c:148 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+ exit_to_user_mode_prepare+0x191/0x220 kernel/entry/common.c:209
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x26/0x60 kernel/entry/common.c:302
+ do_syscall_64+0x4c/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x445a69
+Code: Unable to access opcode bytes at RIP 0x445a3f.
+RSP: 002b:00007f1054173318 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffff2 RBX: 00000000004ca4c8 RCX: 0000000000445a69
+RDX: 00000000000f4240 RSI: 0000000000000081 RDI: 00000000004ca4cc
+RBP: 00000000004ca4c0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000246 R12: 00000000004ca4cc
+R13: 00007fffffe0b62f R14: 00007f1054173400 R15: 0000000000022000
 
-If CONFIG_MANDATORY_FILE_LOCKING goes away entirely, it might make
-sense to turn that warning into something bigger, but then let the
-mount continue - since now that "mand" flag would be purely a legacy
-thing.
+Allocated by task 8441:
+ kasan_save_stack mm/kasan/common.c:38 [inline]
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:434 [inline]
+ ____kasan_kmalloc+0xc4/0xf0 mm/kasan/common.c:513
+ kasan_kmalloc include/linux/kasan.h:264 [inline]
+ kmem_cache_alloc_trace+0x96/0x340 mm/slub.c:2986
+ kmalloc include/linux/slab.h:591 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ alloc_ucounts+0x1b1/0x5d0 kernel/ucount.c:173
+ set_cred_ucounts+0x220/0x2d0 kernel/cred.c:684
+ __sys_setresuid+0x6d5/0x920 kernel/sys.c:702
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-And yes, if we do that, we'd want the warning to be a big ugly thing,
-just to make people very aware of it happening. Right now it's a
-one-liner that is easy to miss, and the "oh, the mount failed" is the
-thing that hopefully informs people about the fact that they need to
-enable CONFIG_MANDATORY_FILE_LOCKING.
+Freed by task 13:
+ kasan_save_stack mm/kasan/common.c:38 [inline]
+ kasan_set_track+0x3d/0x70 mm/kasan/common.c:46
+ kasan_set_free_info+0x1f/0x40 mm/kasan/generic.c:360
+ ____kasan_slab_free+0x109/0x150 mm/kasan/common.c:366
+ kasan_slab_free include/linux/kasan.h:230 [inline]
+ slab_free_hook mm/slub.c:1628 [inline]
+ slab_free_freelist_hook+0x1d8/0x290 mm/slub.c:1653
+ slab_free mm/slub.c:3213 [inline]
+ kfree+0xcf/0x2e0 mm/slub.c:4267
+ put_ucounts+0x15c/0x1a0 kernel/ucount.c:207
+ put_cred_rcu+0x221/0x400 kernel/cred.c:124
+ rcu_do_batch kernel/rcu/tree.c:2550 [inline]
+ rcu_core+0x906/0x14b0 kernel/rcu/tree.c:2785
+ __do_softirq+0x372/0x783 kernel/softirq.c:558
 
-The logic being that if you can no longer enable mandatory locking in
-the kernel, the current hard failure seems overly aggressive (and
-might cause boot failures and inability to fix/report things when it
-possibly keeps you from using the system at all).
+Last potentially related work creation:
+ kasan_save_stack+0x27/0x50 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xee/0x120 mm/kasan/generic.c:348
+ insert_work+0x54/0x400 kernel/workqueue.c:1332
+ __queue_work+0x928/0xc60 kernel/workqueue.c:1498
+ queue_work_on+0x111/0x200 kernel/workqueue.c:1525
+ queue_work include/linux/workqueue.h:507 [inline]
+ call_usermodehelper_exec+0x283/0x470 kernel/umh.c:435
+ kobject_uevent_env+0x1337/0x1700 lib/kobject_uevent.c:618
+ device_add+0x1073/0x1790 drivers/base/core.c:3336
+ device_create_groups_vargs drivers/base/core.c:4014 [inline]
+ device_create+0x241/0x2d0 drivers/base/core.c:4056
+ vc_allocate+0x66a/0x780 drivers/tty/vt/vt.c:1157
+ con_install+0x9f/0x880 drivers/tty/vt/vt.c:3342
+ tty_driver_install_tty drivers/tty/tty_io.c:1315 [inline]
+ tty_init_dev+0xc6/0x4c0 drivers/tty/tty_io.c:1429
+ tty_open_by_driver drivers/tty/tty_io.c:2098 [inline]
+ tty_open+0x89a/0xdd0 drivers/tty/tty_io.c:2146
+ chrdev_open+0x53b/0x5f0 fs/char_dev.c:414
+ do_dentry_open+0x7cb/0x1020 fs/open.c:826
+ do_open fs/namei.c:3374 [inline]
+ path_openat+0x27e7/0x36b0 fs/namei.c:3507
+ do_filp_open+0x253/0x4d0 fs/namei.c:3534
+ do_sys_openat2+0x124/0x460 fs/open.c:1204
+ do_sys_open fs/open.c:1220 [inline]
+ __do_sys_open fs/open.c:1228 [inline]
+ __se_sys_open fs/open.c:1224 [inline]
+ __x64_sys_open+0x221/0x270 fs/open.c:1224
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-              Linus
+Second to last potentially related work creation:
+ kasan_save_stack+0x27/0x50 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xee/0x120 mm/kasan/generic.c:348
+ insert_work+0x54/0x400 kernel/workqueue.c:1332
+ __queue_work+0x928/0xc60 kernel/workqueue.c:1498
+ queue_work_on+0x111/0x200 kernel/workqueue.c:1525
+ queue_work include/linux/workqueue.h:507 [inline]
+ call_usermodehelper_exec+0x283/0x470 kernel/umh.c:435
+ kobject_uevent_env+0x1337/0x1700 lib/kobject_uevent.c:618
+ kobject_synth_uevent+0x3bf/0x900 lib/kobject_uevent.c:208
+ uevent_store+0x20/0x60 drivers/base/core.c:2372
+ kernfs_fop_write_iter+0x3b6/0x510 fs/kernfs/file.c:296
+ call_write_iter include/linux/fs.h:2114 [inline]
+ new_sync_write fs/read_write.c:518 [inline]
+ vfs_write+0xa39/0xc90 fs/read_write.c:605
+ ksys_write+0x171/0x2a0 fs/read_write.c:658
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff888025b8ef00
+ which belongs to the cache kmalloc-192 of size 192
+The buggy address is located 128 bytes inside of
+ 192-byte region [ffff888025b8ef00, ffff888025b8efc0)
+The buggy address belongs to the page:
+page:ffffea000096e380 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x25b8e
+flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000000200 ffffea00005dac80 0000000c0000000c ffff888011041a00
+raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 1, ts 9979944008, free_ts 0
+ prep_new_page mm/page_alloc.c:2436 [inline]
+ get_page_from_freelist+0x779/0xa30 mm/page_alloc.c:4169
+ __alloc_pages+0x26c/0x5f0 mm/page_alloc.c:5391
+ alloc_page_interleave+0x22/0x1c0 mm/mempolicy.c:2119
+ alloc_slab_page mm/slub.c:1691 [inline]
+ allocate_slab+0xf1/0x540 mm/slub.c:1831
+ new_slab mm/slub.c:1894 [inline]
+ new_slab_objects mm/slub.c:2640 [inline]
+ ___slab_alloc+0x1cf/0x350 mm/slub.c:2803
+ __slab_alloc mm/slub.c:2843 [inline]
+ slab_alloc_node mm/slub.c:2925 [inline]
+ slab_alloc mm/slub.c:2967 [inline]
+ kmem_cache_alloc_trace+0x29d/0x340 mm/slub.c:2984
+ kmalloc include/linux/slab.h:591 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ call_usermodehelper_setup+0x8a/0x260 kernel/umh.c:365
+ kobject_uevent_env+0x1311/0x1700 lib/kobject_uevent.c:614
+ device_add+0x1073/0x1790 drivers/base/core.c:3336
+ __video_register_device+0x37fc/0x4580 drivers/media/v4l2-core/v4l2-dev.c:1036
+ video_register_device include/media/v4l2-dev.h:384 [inline]
+ vivid_create_devnodes drivers/media/test-drivers/vivid/vivid-core.c:1585 [inline]
+ vivid_create_instance+0x85df/0xac90 drivers/media/test-drivers/vivid/vivid-core.c:1946
+ vivid_probe+0x9a/0x140 drivers/media/test-drivers/vivid/vivid-core.c:2001
+ platform_probe+0x130/0x1b0 drivers/base/platform.c:1427
+ call_driver_probe+0x96/0x250 drivers/base/dd.c:517
+ really_probe+0x223/0x9b0 drivers/base/dd.c:595
+ __driver_probe_device+0x1f8/0x3e0 drivers/base/dd.c:747
+page_owner free stack trace missing
+
+Memory state around the buggy address:
+ ffff888025b8ee80: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+ ffff888025b8ef00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888025b8ef80: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+                   ^
+ ffff888025b8f000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888025b8f080: 00 00 00 00 00 fc fc fc fc fc fc fc fc 00 00 00
+==================================================================
+
