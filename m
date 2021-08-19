@@ -2,128 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1BD3F12E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 07:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E53DA3F12EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 07:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbhHSFrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 01:47:00 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:39452
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230416AbhHSFqy (ORCPT
+        id S230310AbhHSFr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 01:47:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229981AbhHSFrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 01:46:54 -0400
-Received: from localhost.localdomain (1-171-223-154.dynamic-ip.hinet.net [1.171.223.154])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id C0EFC40C9D;
-        Thu, 19 Aug 2021 05:46:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629351976;
-        bh=6GWWIzDjc4L/ju2yv/2mn2NZsjtrX1blIUII0KdOUHk=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=NtTBMkjwyfC9vlN74FGQtPNy6t9Y/dC4HSx2gRgzQfuZV6OnE85fLn5CiFeKmXb3Y
-         RftilwgFybmWLvXBR/nZFEhl8f5EPEKOzrdkURBWDruOATKRctRvXrILDtD4JzggLE
-         FfUwob32NFd+EuKv+pz7jtSrs685ijIoAS4pTeWR3rxk/BwhHvMHbdypzzbT1gVrBS
-         3//E98xG0vdbxTRkLXIWnh8V7BfuzgruCNTOZ3BXiMmI6OsJNUuGjAXSQv0xDs2t0G
-         /CCIi0Q/HbxuBwIlrbPwoEYl7XF9cQTbC4QbmBa0a81RwTPcsWmqvOvRrG2XA0LrQq
-         tyO6M71igyfMQ==
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     hkallweit1@gmail.com, nic_swsd@realtek.com, bhelgaas@google.com
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: [PATCH net-next v3 3/3] r8169: Enable ASPM for selected NICs
-Date:   Thu, 19 Aug 2021 13:45:42 +0800
-Message-Id: <20210819054542.608745-4-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210819054542.608745-1-kai.heng.feng@canonical.com>
-References: <20210819054542.608745-1-kai.heng.feng@canonical.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 19 Aug 2021 01:47:55 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E980C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 22:47:20 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id o3-20020a2541030000b0290557cf3415f8so5566676yba.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 22:47:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=kIKr3PeWHCp5o9v0IskWyjHjX7CDaGRAwx7+ngR9Fgw=;
+        b=P9y93GFlc1h9b+cQ3SVlR5ojMjGV8R7uGtGXWPQvdgOp6FUvzz2uTOizuvve1zfKFd
+         XCYi6YgIzQvfzozrtQlWYWDqQddmobUD2l15UhqDc3+gpnBrfRzg3rjaseI2tMkeeGEC
+         mpguSXYtoJDcZOtj2M06/hbLLVRRhI3dQjprvagASxPXdOcw4thbWlswFK6MXcnX2Lfw
+         UUsBky0w8YggKSIz1HMBArnREjfxPPv3PEEnc1LegqCR1JD3njoWQ51ZISMyNG1c/l62
+         d02fOtOSyyiQwpruC+BX06nZ1Pgk+YDWeNkAOvdt1ZVzuSZUYlLGa3Te0GSASjMFh/yM
+         2c8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=kIKr3PeWHCp5o9v0IskWyjHjX7CDaGRAwx7+ngR9Fgw=;
+        b=sBRhQvmwfRAV7/wqBGA2s4ThQffI9nLXJbMHsWku65h4agKtxJB2vvPRi36qzD1Fl0
+         iXiRsboWnY0HK1A56VlNmu80hFaRHh2SXW0512cUMb/zk/g4fMb/ABTWorZn2/ZLIYmX
+         Lg5yZJLZ6zLwe49eRO7pVILlQuWYaOf4huWgH/wErYKziLDzJuaQjBx+vRfFsOEpiGIT
+         OQZjewqUG18tYrj7lYsgSKF12uu8oMp3Z608XWn2ABByZ/lVZju1/p03adqbpknggwhg
+         ak6cX9pHKUyvaMQRyfKegAyfHPMnNohyee7vg36ODfWTXG/Cqk+v4TXdN8se86StyNmS
+         yoxQ==
+X-Gm-Message-State: AOAM53072N0D93a/etbyo7+8QC47wV3fL/1AvMTF96F3a/Oo3D1lJ9hp
+        7dAMak+kUDYOSzrk6KwC5rhWA+f0sTYo
+X-Google-Smtp-Source: ABdhPJyTDqmb8WaX4ByTVhw1hyNrAVYwzY5Hnkuwd3N+Ha3kbuHUd821Bb5P8KhU7eBPhAlNWs29kbEaUOE+
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:303a:65e9:2a16:99b2])
+ (user=irogers job=sendgmr) by 2002:a05:6902:1144:: with SMTP id
+ p4mr16625582ybu.418.1629352039406; Wed, 18 Aug 2021 22:47:19 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 22:47:07 -0700
+Message-Id: <20210819054707.1057819-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
+Subject: [PATCH] libperf evsel: Make use of FD robust.
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     eranian@google.com, Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The latest vendor driver enables ASPM for more recent r8168 NICs, so
-disable ASPM on older chips and enable ASPM for the rest.
+FD uses xyarray__entry that may return NULL if an index is out of
+bounds. If NULL is returned then a segv happens as FD unconditionally
+dereferences the pointer. This was happening in a case of with perf
+iostat as shown below. The fix is to make FD an "int*" rather than an
+int and handle the NULL case as either invalid input or a closed fd.
 
-Rename aspm_manageable to pcie_aspm_manageable to indicate it's ASPM
-from PCIe, and use rtl_aspm_supported for Realtek NIC's internal ASPM
-function.
+$ sudo gdb --args perf stat --iostat  list
+...
+Breakpoint 1, perf_evsel__alloc_fd (evsel=0x5555560951a0, ncpus=1, nthreads=1) at evsel.c:50
+50      {
+(gdb) bt
+ #0  perf_evsel__alloc_fd (evsel=0x5555560951a0, ncpus=1, nthreads=1) at evsel.c:50
+ #1  0x000055555585c188 in evsel__open_cpu (evsel=0x5555560951a0, cpus=0x555556093410,
+    threads=0x555556086fb0, start_cpu=0, end_cpu=1) at util/evsel.c:1792
+ #2  0x000055555585cfb2 in evsel__open (evsel=0x5555560951a0, cpus=0x0, threads=0x555556086fb0)
+    at util/evsel.c:2045
+ #3  0x000055555585d0db in evsel__open_per_thread (evsel=0x5555560951a0, threads=0x555556086fb0)
+    at util/evsel.c:2065
+ #4  0x00005555558ece64 in create_perf_stat_counter (evsel=0x5555560951a0,
+    config=0x555555c34700 <stat_config>, target=0x555555c2f1c0 <target>, cpu=0) at util/stat.c:590
+ #5  0x000055555578e927 in __run_perf_stat (argc=1, argv=0x7fffffffe4a0, run_idx=0)
+    at builtin-stat.c:833
+ #6  0x000055555578f3c6 in run_perf_stat (argc=1, argv=0x7fffffffe4a0, run_idx=0)
+    at builtin-stat.c:1048
+ #7  0x0000555555792ee5 in cmd_stat (argc=1, argv=0x7fffffffe4a0) at builtin-stat.c:2534
+ #8  0x0000555555835ed3 in run_builtin (p=0x555555c3f540 <commands+288>, argc=3,
+    argv=0x7fffffffe4a0) at perf.c:313
+ #9  0x0000555555836154 in handle_internal_command (argc=3, argv=0x7fffffffe4a0) at perf.c:365
+ #10 0x000055555583629f in run_argv (argcp=0x7fffffffe2ec, argv=0x7fffffffe2e0) at perf.c:409
+ #11 0x0000555555836692 in main (argc=3, argv=0x7fffffffe4a0) at perf.c:539
+...
+(gdb) c
+Continuing.
+Error:
+The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (uncore_iio_0/event=0x83,umask=0x04,ch_mask=0xF,fc_mask=0x07/).
+/bin/dmesg | grep -i perf may provide additional information.
 
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Program received signal SIGSEGV, Segmentation fault.
+0x00005555559b03ea in perf_evsel__close_fd_cpu (evsel=0x5555560951a0, cpu=1) at evsel.c:166
+166                     if (FD(evsel, cpu, thread) >= 0)
+
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
-v3:
- - Use pcie_aspm_supported() to retrieve ASPM support status
- - Use whitelist for r8169 internal ASPM status
+ tools/lib/perf/evsel.c | 64 +++++++++++++++++++++++++++---------------
+ 1 file changed, 41 insertions(+), 23 deletions(-)
 
-v2:
- - No change
-
- drivers/net/ethernet/realtek/r8169_main.c | 27 ++++++++++++++++-------
- 1 file changed, 19 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-index 3359509c1c351..88e015d93e490 100644
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -623,7 +623,8 @@ struct rtl8169_private {
- 	} wk;
- 
- 	unsigned supports_gmii:1;
--	unsigned aspm_manageable:1;
-+	unsigned pcie_aspm_manageable:1;
-+	unsigned rtl_aspm_supported:1;
- 	unsigned rtl_aspm_enabled:1;
- 	struct delayed_work aspm_toggle;
- 	atomic_t aspm_packet_count;
-@@ -702,6 +703,20 @@ static bool rtl_is_8168evl_up(struct rtl8169_private *tp)
- 	       tp->mac_version <= RTL_GIGA_MAC_VER_53;
+diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
+index d8886720e83d..ede7af4d183c 100644
+--- a/tools/lib/perf/evsel.c
++++ b/tools/lib/perf/evsel.c
+@@ -43,7 +43,7 @@ void perf_evsel__delete(struct perf_evsel *evsel)
+ 	free(evsel);
  }
  
-+static int rtl_supports_aspm(struct rtl8169_private *tp)
-+{
-+	switch (tp->mac_version) {
-+	case RTL_GIGA_MAC_VER_02 ... RTL_GIGA_MAC_VER_31:
-+	case RTL_GIGA_MAC_VER_37:
-+	case RTL_GIGA_MAC_VER_39:
-+	case RTL_GIGA_MAC_VER_43:
-+	case RTL_GIGA_MAC_VER_47:
-+		return 0;
-+	default:
-+		return 1;
-+	}
-+}
+-#define FD(e, x, y) (*(int *) xyarray__entry(e->fd, x, y))
++#define FD(e, x, y) (int *) xyarray__entry(e->fd, x, y)
+ #define MMAP(e, x, y) (e->mmap ? ((struct perf_mmap *) xyarray__entry(e->mmap, x, y)) : NULL)
+ 
+ int perf_evsel__alloc_fd(struct perf_evsel *evsel, int ncpus, int nthreads)
+@@ -54,7 +54,10 @@ int perf_evsel__alloc_fd(struct perf_evsel *evsel, int ncpus, int nthreads)
+ 		int cpu, thread;
+ 		for (cpu = 0; cpu < ncpus; cpu++) {
+ 			for (thread = 0; thread < nthreads; thread++) {
+-				FD(evsel, cpu, thread) = -1;
++				int *fd = FD(evsel, cpu, thread);
 +
- static bool rtl_supports_eee(struct rtl8169_private *tp)
++				if (fd)
++					 *fd = -1;
+ 			}
+ 		}
+ 	}
+@@ -80,7 +83,7 @@ sys_perf_event_open(struct perf_event_attr *attr,
+ static int get_group_fd(struct perf_evsel *evsel, int cpu, int thread, int *group_fd)
  {
- 	return tp->mac_version >= RTL_GIGA_MAC_VER_34 &&
-@@ -2669,7 +2684,7 @@ static void rtl_pcie_state_l2l3_disable(struct rtl8169_private *tp)
+ 	struct perf_evsel *leader = evsel->leader;
+-	int fd;
++	int *fd;
  
- static void rtl_hw_aspm_clkreq_enable(struct rtl8169_private *tp, bool enable)
+ 	if (evsel == leader) {
+ 		*group_fd = -1;
+@@ -95,10 +98,10 @@ static int get_group_fd(struct perf_evsel *evsel, int cpu, int thread, int *grou
+ 		return -ENOTCONN;
+ 
+ 	fd = FD(leader, cpu, thread);
+-	if (fd == -1)
++	if (fd == NULL || *fd == -1)
+ 		return -EBADF;
+ 
+-	*group_fd = fd;
++	*group_fd = *fd;
+ 
+ 	return 0;
+ }
+@@ -138,7 +141,11 @@ int perf_evsel__open(struct perf_evsel *evsel, struct perf_cpu_map *cpus,
+ 
+ 	for (cpu = 0; cpu < cpus->nr; cpu++) {
+ 		for (thread = 0; thread < threads->nr; thread++) {
+-			int fd, group_fd;
++			int fd, group_fd, *evsel_fd;
++
++			evsel_fd = FD(evsel, cpu, thread);
++			if (evsel_fd == NULL)
++				return -EINVAL;
+ 
+ 			err = get_group_fd(evsel, cpu, thread, &group_fd);
+ 			if (err < 0)
+@@ -151,7 +158,7 @@ int perf_evsel__open(struct perf_evsel *evsel, struct perf_cpu_map *cpus,
+ 			if (fd < 0)
+ 				return -errno;
+ 
+-			FD(evsel, cpu, thread) = fd;
++			*evsel_fd = fd;
+ 		}
+ 	}
+ 
+@@ -163,9 +170,12 @@ static void perf_evsel__close_fd_cpu(struct perf_evsel *evsel, int cpu)
+ 	int thread;
+ 
+ 	for (thread = 0; thread < xyarray__max_y(evsel->fd); ++thread) {
+-		if (FD(evsel, cpu, thread) >= 0)
+-			close(FD(evsel, cpu, thread));
+-		FD(evsel, cpu, thread) = -1;
++		int *fd = FD(evsel, cpu, thread);
++
++		if (fd && *fd >= 0) {
++			close(*fd);
++			*fd = -1;
++		}
+ 	}
+ }
+ 
+@@ -209,13 +219,12 @@ void perf_evsel__munmap(struct perf_evsel *evsel)
+ 
+ 	for (cpu = 0; cpu < xyarray__max_x(evsel->fd); cpu++) {
+ 		for (thread = 0; thread < xyarray__max_y(evsel->fd); thread++) {
+-			int fd = FD(evsel, cpu, thread);
+-			struct perf_mmap *map = MMAP(evsel, cpu, thread);
++			int *fd = FD(evsel, cpu, thread);
+ 
+-			if (fd < 0)
++			if (fd == NULL || *fd < 0)
+ 				continue;
+ 
+-			perf_mmap__munmap(map);
++			perf_mmap__munmap(MMAP(evsel, cpu, thread));
+ 		}
+ 	}
+ 
+@@ -239,15 +248,16 @@ int perf_evsel__mmap(struct perf_evsel *evsel, int pages)
+ 
+ 	for (cpu = 0; cpu < xyarray__max_x(evsel->fd); cpu++) {
+ 		for (thread = 0; thread < xyarray__max_y(evsel->fd); thread++) {
+-			int fd = FD(evsel, cpu, thread);
+-			struct perf_mmap *map = MMAP(evsel, cpu, thread);
++			int *fd = FD(evsel, cpu, thread);
++			struct perf_mmap *map;
+ 
+-			if (fd < 0)
++			if (fd == NULL || *fd < 0)
+ 				continue;
+ 
++			map = MMAP(evsel, cpu, thread);
+ 			perf_mmap__init(map, NULL, false, NULL);
+ 
+-			ret = perf_mmap__mmap(map, &mp, fd, cpu);
++			ret = perf_mmap__mmap(map, &mp, *fd, cpu);
+ 			if (ret) {
+ 				perf_evsel__munmap(evsel);
+ 				return ret;
+@@ -260,7 +270,9 @@ int perf_evsel__mmap(struct perf_evsel *evsel, int pages)
+ 
+ void *perf_evsel__mmap_base(struct perf_evsel *evsel, int cpu, int thread)
  {
--	if (!tp->aspm_manageable && enable)
-+	if (!(tp->pcie_aspm_manageable && tp->rtl_aspm_supported) && enable)
- 		return;
+-	if (FD(evsel, cpu, thread) < 0 || MMAP(evsel, cpu, thread) == NULL)
++	int *fd = FD(evsel, cpu, thread);
++
++	if (fd == NULL || *fd < 0 || MMAP(evsel, cpu, thread) == NULL)
+ 		return NULL;
  
- 	tp->rtl_aspm_enabled = enable;
-@@ -5319,12 +5334,8 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (rc)
- 		return rc;
+ 	return MMAP(evsel, cpu, thread)->base;
+@@ -295,17 +307,18 @@ int perf_evsel__read(struct perf_evsel *evsel, int cpu, int thread,
+ 		     struct perf_counts_values *count)
+ {
+ 	size_t size = perf_evsel__read_size(evsel);
++	int *fd = FD(evsel, cpu, thread);
  
--	/* Disable ASPM completely as that cause random device stop working
--	 * problems as well as full system hangs for some PCIe devices users.
--	 */
--	rc = pci_disable_link_state(pdev, PCIE_LINK_STATE_L0S |
--					  PCIE_LINK_STATE_L1);
--	tp->aspm_manageable = !rc;
-+	tp->pcie_aspm_manageable = pcie_aspm_supported(pdev);
-+	tp->rtl_aspm_supported = rtl_supports_aspm(tp);
+ 	memset(count, 0, sizeof(*count));
  
- 	/* enable device (incl. PCI PM wakeup and hotplug setup) */
- 	rc = pcim_enable_device(pdev);
+-	if (FD(evsel, cpu, thread) < 0)
++	if (fd == NULL || *fd < 0)
+ 		return -EINVAL;
+ 
+ 	if (MMAP(evsel, cpu, thread) &&
+ 	    !perf_mmap__read_self(MMAP(evsel, cpu, thread), count))
+ 		return 0;
+ 
+-	if (readn(FD(evsel, cpu, thread), count->values, size) <= 0)
++	if (readn(*fd, count->values, size) <= 0)
+ 		return -errno;
+ 
+ 	return 0;
+@@ -318,8 +331,13 @@ static int perf_evsel__run_ioctl(struct perf_evsel *evsel,
+ 	int thread;
+ 
+ 	for (thread = 0; thread < xyarray__max_y(evsel->fd); thread++) {
+-		int fd = FD(evsel, cpu, thread),
+-		    err = ioctl(fd, ioc, arg);
++		int err;
++		int *fd = FD(evsel, cpu, thread);
++
++		if (fd || *fd < 0)
++			return -1;
++
++		err = ioctl(*fd, ioc, arg);
+ 
+ 		if (err)
+ 			return err;
 -- 
-2.32.0
+2.33.0.rc1.237.g0d66db33f3-goog
 
