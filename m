@@ -2,188 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F343F1C0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32B813F1C71
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240679AbhHSO4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 10:56:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240641AbhHSO4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 10:56:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BED261028;
-        Thu, 19 Aug 2021 14:55:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629384959;
-        bh=LARd4k2MReliz9vaMMGkKXJD2DNGGz43oLf5i6UBNUg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bVL95grYD2tZsHEz1wPafpnuQLX3MWkvSQ6jNbQCqi+wn3xjQXtddLwqrq0D+WZuO
-         0MdUcz15qnbselB/FUUkxiUob92CLmF1KucAIrKYEFPzDu8fXgRjvaxDoa6za0J3ES
-         hCgcSau4DaV18ymI89vBb/DLDLsmp+idEZg+cbMk=
-Date:   Thu, 19 Aug 2021 16:55:55 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Chen Huang <chenhuang5@huawei.com>
-Cc:     Roman Gushchin <guro@fb.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Wang Hai <wanghai38@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH 5.10.y 01/11] mm: memcontrol: Use helpers to read page's
- memcg data
-Message-ID: <YR5w+8u5wuFCEagm@kroah.com>
-References: <20210816072147.3481782-1-chenhuang5@huawei.com>
- <20210816072147.3481782-2-chenhuang5@huawei.com>
- <YRojDsTAjSnw0jIh@kroah.com>
- <a4c545a8-fff0-38bb-4749-3483c9334daa@huawei.com>
- <YRppmvYOftjAAl/R@kroah.com>
- <0d3c6aa4-be05-3c93-bdcd-ac30788d82bd@huawei.com>
- <YRtT4obiu86hp6z3@kroah.com>
- <9e946879-8a6e-6b86-9d8b-54a17976c6be@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S239687AbhHSPQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 11:16:15 -0400
+Received: from mail-bn8nam08on2047.outbound.protection.outlook.com ([40.107.100.47]:41184
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239535AbhHSPQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 11:16:12 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QRxLz9E93HDVO/a/bQJ+OoJ9Im78ugF1QGJTJ0t8+Gf6Q41WXaNFN66/sTOGn70rSjC4ffYfvj5NTcAYNgcZggMEml1IlOK2/dv7IZDgGtxbmQKYWzFyz7rruNi5q2UDSRGW7Z87XzZnI3Pp229ozC4qGaw8RzSZ1bM20OuQlMLDbTZ6PKQ7wjqU3D4NSiFD14vUidx37hZE339qjWI+jfkLZU8e0F9H7Mr3n+V7g4mjv9PPhKUdG9H/o8cr2VpyYVZZdUqvJ76k04IQXahQMRbZ9ZInkMwkc6dA6IKvCi6pWSemPDiyfR5K4DiFJINSVIi4NdoBUyv5oHcXWr9Gdg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=q6Q4aZpTrTrSxMi8jm6gjI8LpAwyQhSTcVk0h0ryq+w=;
+ b=IqyxNcOsjC+9VIkCFhUs/FAseWcd4nSlBEwCyBkQzHgSNPqDoyq+O9PIyyOhgcWcLJYEiBHMOgmMJuSsH1H2NWi4LCTMBOKRTzPuFIPgQYgYYzBC30Re8whJvYbICgTKmnEkG3+TGo7L4xtS6fNff1SZStUhOgpvk2JLF3EFMZC/uCk9MsLMvJZPOTALTSumB9FGGifkEiI6hq67zjpLtn97P5TPsCX7KaBVKy0rJsVYtywHK/eWVwtb5csr+b5RkbTSpcdv3eHjzsSxlDhLvMok2FHOk9gdXvCoV5yJ6rt3llRBm5+RWe3NKESPUJ6FvE6As0CII52ZAEzj6PnGOA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=q6Q4aZpTrTrSxMi8jm6gjI8LpAwyQhSTcVk0h0ryq+w=;
+ b=3PxQvRcWD4C1tH/y3H8KMzByXVqvwvcVwazfU2Q778aIdvpZ5eoxLMaP93Fn6g1w9dsJH+3eIbDNAzQHgTfAGSsbxy0/yup00UM7yCjAalpDzmUqG9k+ycayhCDcKAuGuip48TT1b+pv5ZXNt6KXP4bm5JlRRkPoXEtkBl+bD34=
+Authentication-Results: alien8.de; dkim=none (message not signed)
+ header.d=none;alien8.de; dmarc=none action=none header.from=amd.com;
+Received: from CH2PR12MB4133.namprd12.prod.outlook.com (2603:10b6:610:7a::13)
+ by CH2PR12MB4859.namprd12.prod.outlook.com (2603:10b6:610:62::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.16; Thu, 19 Aug
+ 2021 15:15:32 +0000
+Received: from CH2PR12MB4133.namprd12.prod.outlook.com
+ ([fe80::d19e:b657:5259:24d0]) by CH2PR12MB4133.namprd12.prod.outlook.com
+ ([fe80::d19e:b657:5259:24d0%8]) with mapi id 15.20.4436.019; Thu, 19 Aug 2021
+ 15:15:32 +0000
+Date:   Thu, 19 Aug 2021 09:58:31 -0500
+From:   Michael Roth <michael.roth@amd.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part1 RFC v4 24/36] x86/compressed/acpi: move EFI config
+ table access to common code
+Message-ID: <20210819145831.42uszc4lcsffebzu@amd.com>
+References: <20210707181506.30489-1-brijesh.singh@amd.com>
+ <20210707181506.30489-25-brijesh.singh@amd.com>
+ <YR42323cUxsbQo5h@zn.tnic>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9e946879-8a6e-6b86-9d8b-54a17976c6be@huawei.com>
+In-Reply-To: <YR42323cUxsbQo5h@zn.tnic>
+X-ClientProxiedBy: SA9P223CA0012.NAMP223.PROD.OUTLOOK.COM
+ (2603:10b6:806:26::17) To CH2PR12MB4133.namprd12.prod.outlook.com
+ (2603:10b6:610:7a::13)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (165.204.77.11) by SA9P223CA0012.NAMP223.PROD.OUTLOOK.COM (2603:10b6:806:26::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Thu, 19 Aug 2021 15:15:32 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fc90c317-a1c6-4eb4-abcc-08d963242ff0
+X-MS-TrafficTypeDiagnostic: CH2PR12MB4859:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CH2PR12MB485977827F7A1280C5635C5995C09@CH2PR12MB4859.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BQM1is44vhxsAs0KpkyeyIBuOVMsVP5fl8mxDHCayIf32/kIlfoFBr8++uU+HE2Z1A1qZr0VbTKsOVa4aEwXtzt5rVZgIV5Ufchq6CwXyxMtaHxorBzwgPSQBnN0GZ89TJKkuzWrn1JukUone4Iq/ifj3DLnDuxtS5RK5W6Ipjki8Gz3VMsk0F2G5CCjRMtHiMrkHQ1KJKS6J1Fww5X3eL9Kpu22dW2H3u/gUgB+8x9AzTMt9oYYp/1tL2PsEdONMWLW4CevIa++c65yWVxLq+Qik+SR6qiT35CP1CJHYRGmpQ1PsuaU7A/33E5//zInZNY5bY0COsUEqNtIktVkOhGblkuOPQl/h/tlCkRh4UnWyaLYSgpNSk/Vjt/iQUEo6ZadUppjaTIsIfeSMADuyeMVyJnC82niZlu2FM23HwIeV670TowLOnUAO1SKOOl4EQZwgXh8wQntTtVEj5MPELtnVVRaQn1rBOhBxJuiWDb2b8NyL3UTVSBUqEap+n/HHCSmNQuNfQDw4+DByp71rhqTbTpHj/lZatYTwbgpKB5xIfwe2siYPZimR998zbnVOKXuDqLW6pNhJB3rFhEFC5d/FiOWaM4ELdQpT0QXCWA1mIySDy4KKufl13uQqz6vXwxZvPGQDN2f8uLCRDkAYpugk7XH8kUDeluy24f3WoOLWOJy4lH7uNuItMaqfydmxiaX3PAig9lGOLGVoyKSSVjvCpeFvTFIvmcHsXIFLFwUHxyul/DxZEI8JEPh1AA+t2yUNt9yeAmhcu0JltzUrw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR12MB4133.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(66946007)(52116002)(186003)(6496006)(66556008)(45080400002)(54906003)(2616005)(66476007)(38350700002)(316002)(4326008)(1076003)(5660300002)(8676002)(8936002)(83380400001)(38100700002)(966005)(6916009)(86362001)(6486002)(2906002)(36756003)(44832011)(7406005)(7416002)(26005)(956004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?j4FR+zn1y4kYy+pxvFi5MseihUj8C6wgQo9FDe4CtOOAcpkRwHo3X9km9bJq?=
+ =?us-ascii?Q?9GyMjKsjqIhOXPwhJoY2+Fncf/f62ifdDPxK8qArZALDxAlcjtz1iWP/34yV?=
+ =?us-ascii?Q?mjyu7NwczYXt0yKEmsv+J+ik+CWoXSGjDkIeHqY3BFgWZuwQrF20FGFUQp2T?=
+ =?us-ascii?Q?ppXViZ8mFB4AHETh2t/jNfJkKLaWDu0yPBryCrz1RLx/qUs+wJsXIzPh5uuj?=
+ =?us-ascii?Q?CDTcfpfktEISlwvCCyYFSEWgmvR24creNHx+/h9S4AdpGVHuBD5UYlz93DX0?=
+ =?us-ascii?Q?TdDknzLRgJfwUUTGfow3j/HbqVs8ArzywaDOmRhn6oOQ6C+/TwJd5LpVITcY?=
+ =?us-ascii?Q?bjtm1c4gSo/7epiLo/lVQvA4Rq5Lnku1ZTNij12XwUpZ6TyNyjy1hYHxH1hL?=
+ =?us-ascii?Q?8z/+IT3+LXhgx02EC2nvq7P/DA+cduCGCne4mAtiQYhgFRIhI114fKx57oxj?=
+ =?us-ascii?Q?1x4uoJSVtQk27+tXjdQFRl39NWYun7Drlsc2mzdBzt0kDaaBWNvPn3Gs92+a?=
+ =?us-ascii?Q?sHXKtJQt/z8hmNfygTDx4DU1zYs1ZB2PARhGFB6jAiyDLFF8ulGywGM3OhdF?=
+ =?us-ascii?Q?WNzhTIbt6gn9QSCy5EbGoxAn9kTB733y73hDnhfUCXm0YxbmS5qA13IvqN4m?=
+ =?us-ascii?Q?tHm/QAQvN5kPppJe2ofUviNP1tZus8/iVMsMHtrgAFkSxBW754ovmyC0zAhB?=
+ =?us-ascii?Q?9FQ6x17rLppWWhwfo1/U8VDCuqBtW/kETRGiv+0b4SiKeksqh5aBqsQ2BokB?=
+ =?us-ascii?Q?6Mdt7JwUdLbDRQkwwwVT5n9KQr0AXndvhq/hY9FJAUVmiw661PBlBsX13sRf?=
+ =?us-ascii?Q?lKWy04P11n3QGq36sBlpQNJV+4PASiP0iPS4ZrvL8dm0XqzvMPt3Uzx+GznS?=
+ =?us-ascii?Q?w0TXZ2PK7cV+8GQ/SWb0705XTDHPvIZND/Dh4sI8jUvLoSeNLu4O0CNy/XVg?=
+ =?us-ascii?Q?HQDaIB3TI/ez4ES1QyBhkoV95OOavO5qw9Xb+yDruzJtZ6jUx6CfB7k/nzJa?=
+ =?us-ascii?Q?NNj/JTgyfIvMgVa8YaL6or00CvDJK/mGzxTblHSCWX6FG/DNBHt5dsH+VhwS?=
+ =?us-ascii?Q?QLuZGpqB/k5keEyXpdMW2jYX7NXizuqchGTUOicTk0y3sqB2DAi0S2EN+jAj?=
+ =?us-ascii?Q?il+2fW6jsuKHwLtR+vxm9lV8jRf2ZmpwNvr4NXDua9Lm+CKuLM3q5j0GovW3?=
+ =?us-ascii?Q?WDwCa8ssfA0DgIEwTkCUdkNCNo3yGwe9ql0doJS+7Z1Yr4g+xSbokXDcqvtw?=
+ =?us-ascii?Q?s7AfcX3h/4CODhuyWhfLAyDac36QQFZ2ao8C0hzg/lSi1Vyi2aW4bo0MvM2E?=
+ =?us-ascii?Q?e+j9klhawesqnbH2Lm321ddD?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc90c317-a1c6-4eb4-abcc-08d963242ff0
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR12MB4133.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Aug 2021 15:15:32.6777
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kIgTykC8Nf6W5bCgtpiHquY1iWnEq000Vlf9HJjcuiePzYAnATYqrtspcl9fYdNOgP+NYT1/MYureReyC0V77A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4859
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 07:43:37PM +0800, Chen Huang wrote:
+On Thu, Aug 19, 2021 at 12:47:59PM +0200, Borislav Petkov wrote:
+> On Wed, Jul 07, 2021 at 01:14:54PM -0500, Brijesh Singh wrote:
+> > From: Michael Roth <michael.roth@amd.com>
+> > 
+> > Future patches for SEV-SNP-validated CPUID will also require early
+> > parsing of the EFI configuration. Move the related code into a set of
+> > helpers that can be re-used for that purpose.
+> > 
+> > Signed-off-by: Michael Roth <michael.roth@amd.com>
+> > Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> > ---
+> >  arch/x86/boot/compressed/Makefile           |   1 +
+> >  arch/x86/boot/compressed/acpi.c             | 124 +++++---------
+> >  arch/x86/boot/compressed/efi-config-table.c | 180 ++++++++++++++++++++
+> >  arch/x86/boot/compressed/misc.h             |  50 ++++++
+> >  4 files changed, 272 insertions(+), 83 deletions(-)
+> >  create mode 100644 arch/x86/boot/compressed/efi-config-table.c
+> 
+
+Hi Boris,
+
+Thanks for reviewing. Just FYI, Brijesh is prepping v5 to post soon, and I
+will work to get all your comments addressed as part of that, but there has
+also been a change to the CPUID handling in the #VC handlers in case you
+wanted to wait for that to land.
+
+> arch/x86/boot/compressed/efi.c
+> 
+> should be good enough.
+> 
+> And in general, this patch is hard to review because it does a bunch of
+> things at the same time. You should split it:
+> 
+> - the first patch sould carve out only the functionality into helpers
+> without adding or changing the existing functionality.
+> 
+> - later ones should add the new functionality, in single logical steps.
+
+Not sure what you mean here. All the interfaces introduced here are used
+by acpi.c. There is another helper added later (efi_bp_find_vendor_table())
+in "enable SEV-SNP-validated CPUID in #VC handler", since it's not used
+here by acpi.c.
+
+> 
+> Some preliminary comments below as far as I can:
+> 
+> > diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
+> > index 431bf7f846c3..b41aecfda49c 100644
+> > --- a/arch/x86/boot/compressed/Makefile
+> > +++ b/arch/x86/boot/compressed/Makefile
+> > @@ -100,6 +100,7 @@ endif
+> >  vmlinux-objs-$(CONFIG_ACPI) += $(obj)/acpi.o
+> >  
+> >  vmlinux-objs-$(CONFIG_EFI_MIXED) += $(obj)/efi_thunk_$(BITS).o
+> > +vmlinux-objs-$(CONFIG_EFI) += $(obj)/efi-config-table.o
+> >  efi-obj-$(CONFIG_EFI_STUB) = $(objtree)/drivers/firmware/efi/libstub/lib.a
+> >  
+> >  $(obj)/vmlinux: $(vmlinux-objs-y) $(efi-obj-y) FORCE
+> > diff --git a/arch/x86/boot/compressed/acpi.c b/arch/x86/boot/compressed/acpi.c
+> > index 8bcbcee54aa1..e087dcaf43b3 100644
+> > --- a/arch/x86/boot/compressed/acpi.c
+> > +++ b/arch/x86/boot/compressed/acpi.c
+> > @@ -24,42 +24,36 @@ struct mem_vector immovable_mem[MAX_NUMNODES*2];
+> >   * Search EFI system tables for RSDP.  If both ACPI_20_TABLE_GUID and
+> >   * ACPI_TABLE_GUID are found, take the former, which has more features.
+> >   */
+> > +#ifdef CONFIG_EFI
+> > +static bool
+> > +rsdp_find_fn(efi_guid_t guid, unsigned long vendor_table, bool efi_64,
+> > +	     void *opaque)
+> > +{
+> > +	acpi_physical_address *rsdp_addr = opaque;
+> > +
+> > +	if (!(efi_guidcmp(guid, ACPI_TABLE_GUID))) {
+> > +		*rsdp_addr = vendor_table;
+> > +	} else if (!(efi_guidcmp(guid, ACPI_20_TABLE_GUID))) {
+> > +		*rsdp_addr = vendor_table;
+> > +		return false;
+> 
+> No "return false" in the ACPI_TABLE_GUID branch above? Maybe this has to
+> do with the preference to ACPI_20_TABLE_GUID.
+
+Right, current acpi.c keeps searching in case the preferred
+ACPI_20_TABLE_GUID is found.
+
+> 
+> In any case, this looks silly. Please do the iteration simple
+> and stupid without the function pointer and get rid of that
+> efi_foreach_conf_entry() thing - this is not firmware.
+
+There is the aforementioned efi_bp_find_vendor_table() that does the
+simple iteration, but I wasn't sure how to build the "find one of these,
+but this one is preferred" logic into it in a reasonable way.
+
+I could just call it once for each of these GUIDs though. I was hesitant
+to do so since it's less efficient than existing code, but if it's worth
+it for the simplification then I'm all for it.
+
+So I'll pull efi_bp_find_vendor_table() into this patch, rename to
+efi_find_vendor_table(), and drop efi_foreach_conf_entry() in favor
+of it.
+
+> 
+> > diff --git a/arch/x86/boot/compressed/efi-config-table.c b/arch/x86/boot/compressed/efi-config-table.c
+> > new file mode 100644
+> > index 000000000000..d1a34aa7cefd
+> > --- /dev/null
+> > +++ b/arch/x86/boot/compressed/efi-config-table.c
+> 
+> ...
+> 
+> > +/*
+> 
+> If you're going to add proper comments, make them kernel-doc. I.e., it
+> should start with
+> 
+> /**
+> 
+> and then use
+> 
+> ./scripts/kernel-doc -none arch/x86/boot/compressed/efi-config-table.c
+> 
+> to check them all they're proper.
+
+Nice, thanks for the tip.
+
 > 
 > 
-> 在 2021/8/17 14:14, Greg Kroah-Hartman 写道:
-> > On Tue, Aug 17, 2021 at 09:45:00AM +0800, Chen Huang wrote:
-> >>
-> >>
-> >> 在 2021/8/16 21:35, Greg Kroah-Hartman 写道:
-> >>> On Mon, Aug 16, 2021 at 09:21:11PM +0800, Chen Huang wrote:
-> >>>>
-> >>>>
-> >>>> 在 2021/8/16 16:34, Greg Kroah-Hartman 写道:
-> >>>>> On Mon, Aug 16, 2021 at 07:21:37AM +0000, Chen Huang wrote:
-> >>>>>> From: Roman Gushchin <guro@fb.com>
-> >>>>>
-> >>>>> What is the git commit id of this patch in Linus's tree?
-> >>>>>
-> >>>>>>
-> >>>>>> Patch series "mm: allow mapping accounted kernel pages to userspace", v6.
-> >>>>>>
-> >>>>>> Currently a non-slab kernel page which has been charged to a memory cgroup
-> >>>>>> can't be mapped to userspace.  The underlying reason is simple: PageKmemcg
-> >>>>>> flag is defined as a page type (like buddy, offline, etc), so it takes a
-> >>>>>> bit from a page->mapped counter.  Pages with a type set can't be mapped to
-> >>>>>> userspace.
-> >>>>>>
-> >>>>>> But in general the kmemcg flag has nothing to do with mapping to
-> >>>>>> userspace.  It only means that the page has been accounted by the page
-> >>>>>> allocator, so it has to be properly uncharged on release.
-> >>>>>>
-> >>>>>> Some bpf maps are mapping the vmalloc-based memory to userspace, and their
-> >>>>>> memory can't be accounted because of this implementation detail.
-> >>>>>>
-> >>>>>> This patchset removes this limitation by moving the PageKmemcg flag into
-> >>>>>> one of the free bits of the page->mem_cgroup pointer.  Also it formalizes
-> >>>>>> accesses to the page->mem_cgroup and page->obj_cgroups using new helpers,
-> >>>>>> adds several checks and removes a couple of obsolete functions.  As the
-> >>>>>> result the code became more robust with fewer open-coded bit tricks.
-> >>>>>>
-> >>>>>> This patch (of 4):
-> >>>>>>
-> >>>>>> Currently there are many open-coded reads of the page->mem_cgroup pointer,
-> >>>>>> as well as a couple of read helpers, which are barely used.
-> >>>>>>
-> >>>>>> It creates an obstacle on a way to reuse some bits of the pointer for
-> >>>>>> storing additional bits of information.  In fact, we already do this for
-> >>>>>> slab pages, where the last bit indicates that a pointer has an attached
-> >>>>>> vector of objcg pointers instead of a regular memcg pointer.
-> >>>>>>
-> >>>>>> This commits uses 2 existing helpers and introduces a new helper to
-> >>>>>> converts all read sides to calls of these helpers:
-> >>>>>>   struct mem_cgroup *page_memcg(struct page *page);
-> >>>>>>   struct mem_cgroup *page_memcg_rcu(struct page *page);
-> >>>>>>   struct mem_cgroup *page_memcg_check(struct page *page);
-> >>>>>>
-> >>>>>> page_memcg_check() is intended to be used in cases when the page can be a
-> >>>>>> slab page and have a memcg pointer pointing at objcg vector.  It does
-> >>>>>> check the lowest bit, and if set, returns NULL.  page_memcg() contains a
-> >>>>>> VM_BUG_ON_PAGE() check for the page not being a slab page.
-> >>>>>>
-> >>>>>> To make sure nobody uses a direct access, struct page's
-> >>>>>> mem_cgroup/obj_cgroups is converted to unsigned long memcg_data.
-> >>>>>>
-> >>>>>> Signed-off-by: Roman Gushchin <guro@fb.com>
-> >>>>>> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> >>>>>> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> >>>>>> Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> >>>>>> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> >>>>>> Acked-by: Michal Hocko <mhocko@suse.com>
-> >>>>>> Link: https://lkml.kernel.org/r/20201027001657.3398190-1-guro@fb.com
-> >>>>>> Link: https://lkml.kernel.org/r/20201027001657.3398190-2-guro@fb.com
-> >>>>>> Link: https://lore.kernel.org/bpf/20201201215900.3569844-2-guro@fb.com
-> >>>>>>
-> >>>>>> Conflicts:
-> >>>>>> 	mm/memcontrol.c
-> >>>>>
-> >>>>> The "Conflicts:" lines should be removed.
-> >>>>>
-> >>>>> Please fix up the patch series and resubmit.  But note, this seems
-> >>>>> really intrusive, are you sure these are all needed?
-> >>>>>
-> >>>>
-> >>>> OK，I will resend the patchset.
-> >>>> Roman Gushchin's patchset formalize accesses to the page->mem_cgroup and
-> >>>> page->obj_cgroups. But for LRU pages and most other raw memcg, they may
-> >>>> pin to a memcg cgroup pointer, which should always point to an object cgroup
-> >>>> pointer. That's the problem I met. And Muchun Song's patchset fix this.
-> >>>> So I think these are all needed.
-> >>>
-> >>> What in-tree driver causes this to happen and under what workload?
-> >>>
-> >>>>> What UIO driver are you using that is showing problems like this?
-> >>>>>
-> >>>>
-> >>>> The UIO driver is my own driver, and it's creation likes this:
-> >>>> First, we register a device
-> >>>> 	pdev = platform_device_register_simple("uio_driver,0, NULL, 0);
-> >>>> and use uio_info to describe the UIO driver, the page is alloced and used
-> >>>> for uio_vma_fault
-> >>>> 	info->mem[0].addr = (phys_addr_t) kzalloc(PAGE_SIZE, GFP_ATOMIC);
-> >>>
-> >>> That is not a physical address, and is not what the uio api is for at
-> >>> all.  Please do not abuse it that way.
-> >>>
-> >>>> then we register the UIO driver.
-> >>>> 	uio_register_device(&pdev->dev, info)
-> >>>
-> >>> So no in-tree drivers are having problems with the existing code, only
-> >>> fake ones?
-> >>
-> >> Yes, but the nullptr porblem may not just about uio driver. For now, page struct
-> >> has a union
-> >> union {
-> >> 	struct mem_cgroup *mem_cgroup;
-> >> 	struct obj_cgroup **obj_cgroups;
-> >> };
-> >> For the slab pages, the union info should belong to obj_cgroups. And for user
-> >> pages, it should belong to mem_cgroup. When a slab page changes its obj_cgroups,
-> >> then another user page which is in the same compound page of that slab page will
-> >> gets the wrong mem_cgroup in __mod_lruvec_page_state(), and will trigger nullptr
-> >> in mem_cgroup_lruvec(). Correct me if I'm wrong. Thanks!
-> > 
-> > And how can that be triggered by a user in the 5.10.y kernel tree at the
-> > moment?
-> > 
-> > I'm all for fixing problems, but this one does not seem like it is an
-> > actual issue for the 5.10 tree right now.  Am I missing something?
-> > 
-> > thanks,
-> > 
-> Sorry, it maybe just the problem of my own driver.
+> > + * Given boot_params, retrieve the physical address of EFI system table.
+> > + *
+> > + * @boot_params:        pointer to boot_params
+> > + * @sys_table_pa:       location to store physical address of system table
+> > + * @is_efi_64:          location to store whether using 64-bit EFI or not
+> > + *
+> > + * Returns 0 on success. On error, return params are left unchanged.
+> > + */
+> > +int
+> > +efi_bp_get_system_table(struct boot_params *boot_params,
+> 
+> There's no need for the "_bp_" - just efi_get_system_table(). Ditto for
+> the other naming.
 
-What driver is it?  Please submit it to be included in the tree so it
-can be reviewed properly and bugs like this can be fixed :)
+There used to also be an efi_get_conf_table() that did the lookup given
+a direct pointer to systab rather than going through bootparams, so I
+needed some way to differentiate, but looks like I dropped that at some
+point, so I'll rename these as suggested.
 
-thanks,
-
-greg k-h
+> 
+> I'll review the rest properly after you've split it.
+> 
+> Thx.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpeople.kernel.org%2Ftglx%2Fnotes-about-netiquette&amp;data=04%7C01%7Cmichael.roth%40amd.com%7C5a35d1d920024a99451608d962febc38%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637649668538296788%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=ED6tez8A1ktSULe%2FhJTxeqPlp4LVb0Yt4i44P9gytAw%3D&amp;reserved=0
