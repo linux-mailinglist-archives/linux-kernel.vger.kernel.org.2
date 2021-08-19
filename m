@@ -2,101 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 057B53F147B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D85A43F148D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236796AbhHSHqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 03:46:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234882AbhHSHqB (ORCPT
+        id S236873AbhHSHvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 03:51:32 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:36932 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229927AbhHSHv3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 03:46:01 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18017C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 00:45:25 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mGcjn-0003uQ-O5; Thu, 19 Aug 2021 09:45:19 +0200
-Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:5b60:c5f4:67f4:2e1e])
+        Thu, 19 Aug 2021 03:51:29 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 7A5A066A438;
-        Thu, 19 Aug 2021 07:45:17 +0000 (UTC)
-Date:   Thu, 19 Aug 2021 09:45:14 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc:     linux-can@vger.kernel.org,
-        Stefan =?utf-8?B?TcOkdGpl?= <Stefan.Maetje@esd.eu>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/7] can: netlink: allow user to turn off unsupported
- features
-Message-ID: <20210819074514.jkg7fwztzpxecrwb@pengutronix.de>
-References: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
- <20210815033248.98111-2-mailhol.vincent@wanadoo.fr>
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 6EE14200A8;
+        Thu, 19 Aug 2021 07:50:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629359452; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zIA9A/zxCVMHASlEh9mYGogdumKuTccj78EbfSVp160=;
+        b=HIdPU4FqwzI7bTu26eBgTc0hLAMRR81pIbXdPKBoniCP5NTE+u1yONCqo+PKygYm9PDQRM
+        +aFdIn1IqvH1ZcqA/39RAmMurfVtX/wBjyNrFtCchf0kgpzOgrfmPbpVqGVwLkfgxQ0xe9
+        01arOehRtOUDWZKrvXx1X7uNHZLChIs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629359452;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zIA9A/zxCVMHASlEh9mYGogdumKuTccj78EbfSVp160=;
+        b=IFT+/4lW0oM8Ch4LVuY8QhuzUdiZA8mwsZUoyl7MayIbNE8apMjIPav64zxK1RpcTXwL5U
+        +896sEjGGblNifBQ==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 3ED2413756;
+        Thu, 19 Aug 2021 07:50:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id ixKGDlwNHmEGDgAAGKfGzw
+        (envelope-from <hare@suse.de>); Thu, 19 Aug 2021 07:50:52 +0000
+Subject: Re: [PATCH 0/3] Remove scsi_cmnd.tag
+To:     John Garry <john.garry@huawei.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     satishkh@cisco.com, sebaddel@cisco.com, kartilak@cisco.com,
+        jejb@linux.ibm.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hch@lst.de
+References: <1628862553-179450-1-git-send-email-john.garry@huawei.com>
+ <yq14kbppa42.fsf@ca-mkp.ca.oracle.com>
+ <176ce4f2-42c9-bba6-c8f9-70a08faa21b8@huawei.com>
+ <e0d7ba32-2999-794e-2ccb-fdba2c847eb1@acm.org>
+ <038ec0c6-92c9-0f2a-7d81-afb91b8343af@suse.de>
+ <c9d9891b-780b-4641-2b60-6319d525e17c@huawei.com>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <6090371d-9688-11ae-8219-ba9929a96526@suse.de>
+Date:   Thu, 19 Aug 2021 09:50:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dk2dvfwdioe3ydli"
-Content-Disposition: inline
-In-Reply-To: <20210815033248.98111-2-mailhol.vincent@wanadoo.fr>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <c9d9891b-780b-4641-2b60-6319d525e17c@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/19/21 9:27 AM, John Garry wrote:
+> On 19/08/2021 08:15, Hannes Reinecke wrote:
+>> Hey Bart,
+>>
+>> Thanks for this!
+>> Really helpful.
+>>
+>> Just a tiny wee snag:
+>>
+>> On 8/19/21 4:41 AM, Bart Van Assche wrote:
+>>> On 8/18/21 11:08 AM, John Garry wrote:
+>>>> Or maybe you or Bart have a better idea?
+>>>
+>>> This is how I test compilation of SCSI drivers on a SUSE system (only
+>>> the cross-compilation prefix is distro specific):
+>>>
+>>>      # Acorn RiscPC
+>>>      make ARCH=arm xconfig
+>>>      # Select the RiscPC architecture (ARCH_RPC)
+>>>      make -j9 ARCH=arm CROSS_COMPILE=arm-suse-linux-gnueabi- </dev/null
+>>>
+>>
+>> Acorn RiscPC is ARMv3, which sadly isn't supported anymore with gcc9.
+>> So for compilation I had to modify Kconfig to select ARMv4:
+>>
+> 
+> Yeah, that is what I was tackling this very moment.
+> 
+>> diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
+>> index 8355c3895894..22ec9e275335 100644
+>> --- a/arch/arm/mm/Kconfig
+>> +++ b/arch/arm/mm/Kconfig
+>> @@ -278,7 +278,7 @@ config CPU_ARM1026
+>>   # SA110
+>>   config CPU_SA110
+>>          bool
+>> -       select CPU_32v3 if ARCH_RPC
+>> +       select CPU_32v4 if ARCH_RPC
+> 
+> Does that build fully for xconfig or any others which you tried?
+> 
 
---dk2dvfwdioe3ydli
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yep, xconfig and full build works.
 
-On 15.08.2021 12:32:42, Vincent Mailhol wrote:
-> The sanity checks on the control modes will reject any request related
-> to an unsupported features, even turning it off.
->=20
-> Example on an interface which does not support CAN-FD:
->=20
-> $ ip link set can0 type can bitrate 500000 fd off
-> RTNETLINK answers: Operation not supported
->=20
-> This patch lets such command go through (but requests to turn on an
-> unsupported feature are, of course, still denied).
->=20
-> Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Well.
 
-I'm planing to send a pull request to net-next today. I want to do some
-more tests with this series, but this patch is more or less unrelated,
-so I can take it in this PR, should I?
+Would've worked if you hadn't messed up tag handling for acornscsi :-)
 
-regards,
-Marc
+Besides: tag handling in acornscsi (and fas216, for that matter) seems 
+to be completely broken.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+Consider this beauty:
 
---dk2dvfwdioe3ydli
-Content-Type: application/pgp-signature; name="signature.asc"
+#ifdef CONFIG_SCSI_ACORNSCSI_TAGGED_QUEUE
+        /*
+         * tagged queueing - allocate a new tag to this command
+         */
+        if (SCpnt->device->simple_tags) {
+            SCpnt->device->current_tag += 1;
+            if (SCpnt->device->current_tag == 0)
+                SCpnt->device->current_tag = 1;
+            SCpnt->tag = SCpnt->device->current_tag;
+        } else
+#endif
 
------BEGIN PGP SIGNATURE-----
+which is broken on _soo many_ counts.
+Not only does it try to allocate its own tags, the code also assumes 
+that a tag value of '0' indicates that tagged queueing is not active:
 
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEeDAgACgkQqclaivrt
-76lFpQf/ZOCz9dnWOYqnnfcFlW2/u9QPd0YYYCk41MM/OBScEJKVVhPzZ22GE8ws
-uy0m/Af79ojMB/Cqj2JVVSoVjnt+EKap3r7acadIBAVnYfiK6nh+dC0jgU2OzJxx
-xP6DKt/Iiqg7h6WWuOBCho2rHI3RCoxVOi7AFtKsHeO+ygin8pHc7RKT4Qrflcwl
-sRWlpbxum2AW7SW69mOdBrzmzwhDojw9jdxsFb/+9ERB9tKZ5EZXJlscUttfHAUx
-7hVrbciKQlmMdtYBGCMBPpbpFFDr6SZYIK8dqryi3KQ28iIRH/Qe+f+bRGMJMcqi
-IlooJTdPp0esm0w8Inv94JbF9FvnVQ==
-=NRjs
------END PGP SIGNATURE-----
+static
+void acornscsi_abortcmd(AS_Host *host, unsigned char tag)
+{
+     host->scsi.phase = PHASE_ABORTED;
+     sbic_arm_write(host, SBIC_CMND, CMND_ASSERTATN);
 
---dk2dvfwdioe3ydli--
+     msgqueue_flush(&host->scsi.msgs);
+#ifdef CONFIG_SCSI_ACORNSCSI_TAGGED_QUEUE
+     if (tag)
+         msgqueue_addmsg(&host->scsi.msgs, 2, ABORT_TAG, tag);
+     else
+#endif
+         msgqueue_addmsg(&host->scsi.msgs, 1, ABORT);
+}
+
+And, of course, there's the usual confusion about when to check for
+sdev->tagged_supported and sdev->simple_tags.
+
+Drop me a note if I can give a hand.
+
+Cheers,
+
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
