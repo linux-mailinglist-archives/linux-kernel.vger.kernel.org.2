@@ -2,134 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A93503F144B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E203D3F1452
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232117AbhHSHWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 03:22:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbhHSHWa (ORCPT
+        id S235859AbhHSH1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 03:27:44 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:12272 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230331AbhHSH1n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 03:22:30 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 679A9C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 00:21:54 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id az7so6146841qkb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 00:21:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ngHcFDqQ1j+n3F31ocLMtlBEmQPg6UzMIi3K1sWBYPM=;
-        b=Hxz3wXp4xkukyYcRN75ic33Wy9j/OeoWUyhYHcD8T8PrjwTQYhZSUffjx4b5UScAbj
-         45blejav29JbC8dMiLpw31qu5nC3Bcrv2JdWaswgL04BS2bWlzrnNIfCnNYhvk0HRgKc
-         Y+855ca8divtpuXN03KT98GvduX9L3yKeCoOZKAoh/m9UV+b1HFayFa2OlP5NUKxdh6y
-         PGXRVHYOi17DYsz5UhUALl9sg+uu2/qRpLKrCqN5vgLZBtvOoG51hXCHxg1LLrJe62Dd
-         pgSVYIsdNg7/drjVWpOkFsBF39Yug7YoovhgotiHU3mv5zUPuFBOUTdUqJlMgoRbTi19
-         rVqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ngHcFDqQ1j+n3F31ocLMtlBEmQPg6UzMIi3K1sWBYPM=;
-        b=eymMgfqhxkuO8mvFd6zxHcw2d9MLnw3Zdh1w+4Le0wUe53Ni/8PWlq7JG7o38Jqp2X
-         urIzraAy35vIqdL+OWYA9IWWHPQWmb//LAGdrbw/OGaBrznz7b5of9jxEk43ifSbyAEE
-         c1a6eH9Q3/DJkyUJX0ig5PST7Vq8r07jm6Rh/08rSEbpGr2ImswnQ1mfvpkdn7i8/meM
-         Hs1E/vhT5Wo+J6/gQ1GmsshsYJOe0qKVMTZR5oOk/klnOw1RrcgV5aHk1UtdpROQsxbu
-         b/Imoi6L/PhImINh72TOH+tWRczYP8C2m/c8+778OIpZCas9uUTrwiJiuAfORdQEcK2P
-         g3fQ==
-X-Gm-Message-State: AOAM530IRuP1Pqb6Ss6qGlMNJRUMRlxVGMuKrGPZJ4eoZd6BU8QHSZF/
-        iQQnJl6g7Edhp3/k3qJpyO5ZoNXnMEzBEqb2Awk=
-X-Google-Smtp-Source: ABdhPJx0+Gd0tKYQIWj8E5Nl4J1+5LzmOfbJHPwLl1ec1YRNUfof+WFfR6rQwvwAaKe/78NTgvz7TreEfWm4Ssl0MxY=
-X-Received: by 2002:a05:620a:2205:: with SMTP id m5mr2410153qkh.126.1629357713544;
- Thu, 19 Aug 2021 00:21:53 -0700 (PDT)
+        Thu, 19 Aug 2021 03:27:43 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A+rdK4a5Rqbco3ge68QPXwPTXdLJyesId70hD?=
+ =?us-ascii?q?6qkRc20wTiX8ra2TdZsguyMc9wx6ZJhNo7G90cq7MBbhHPxOkOos1N6ZNWGIhI?=
+ =?us-ascii?q?LCFvAB0WKN+V3dMhy73utc+IMlSKJmFeD3ZGIQse/KpCW+DPYsqePqzJyV?=
+X-IronPort-AV: E=Sophos;i="5.84,334,1620662400"; 
+   d="scan'208";a="113116165"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 19 Aug 2021 15:27:05 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id D70084D0D4BB;
+        Thu, 19 Aug 2021 15:27:00 +0800 (CST)
+Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Thu, 19 Aug 2021 15:26:50 +0800
+Received: from FNSTPC.g08.fujitsu.local (10.167.226.45) by
+ G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Thu, 19 Aug 2021 15:26:29 +0800
+From:   Li Zhijian <lizhijian@cn.fujitsu.com>
+To:     <shuah@kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <kpsingh@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <philip.li@intel.com>, <yifeix.zhu@intel.com>,
+        Li Zhijian <lizhijian@cn.fujitsu.com>,
+        "kernel test robot" <lkp@intel.com>
+Subject: [PATCH 1/3] selftests/bpf: make test_doc_build.sh work from script directory
+Date:   Thu, 19 Aug 2021 15:24:29 +0800
+Message-ID: <20210819072431.21966-1-lizhijian@cn.fujitsu.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210808072643.GA5084@ubuntu> <20210816093126.442f74a1@xps13>
-In-Reply-To: <20210816093126.442f74a1@xps13>
-From:   Kestrel seventyfour <kestrelseventyfour@gmail.com>
-Date:   Thu, 19 Aug 2021 09:21:42 +0200
-Message-ID: <CAE9cyGQ+Bb3rQxiF4My9zXwg_+QYifaCckE=C6spAtN9_4dBFQ@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: rawnand: xway: No hardcoded ECC engine, use
- device tree setting
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: D70084D0D4BB.AE888
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: lizhijian@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miqu=C3=A8l
+Previously, it fails as below:
+-------------
+root@lkp-skl-d01 /opt/rootfs/v5.14-rc4/tools/testing/selftests/bpf# ./test_doc_build.sh
+++ realpath --relative-to=/opt/rootfs/v5.14-rc4/tools/testing/selftests/bpf ./test_doc_build.sh
++ SCRIPT_REL_PATH=test_doc_build.sh
+++ dirname test_doc_build.sh
++ SCRIPT_REL_DIR=.
+++ realpath /opt/rootfs/v5.14-rc4/tools/testing/selftests/bpf/./../../../../
++ KDIR_ROOT_DIR=/opt/rootfs/v5.14-rc4
++ cd /opt/rootfs/v5.14-rc4
++ for tgt in docs docs-clean
++ make -s -C /opt/rootfs/v5.14-rc4/. docs
+make: *** No rule to make target 'docs'.  Stop.
++ for tgt in docs docs-clean
++ make -s -C /opt/rootfs/v5.14-rc4/. docs-clean
+make: *** No rule to make target 'docs-clean'.  Stop.
+-----------
 
-Am Mo., 16. Aug. 2021 um 09:31 Uhr schrieb Miquel Raynal
-<miquel.raynal@bootlin.com>:
->
-> Hi Daniel,
->
-> Daniel Kestrel <kestrelseventyfour@gmail.com> wrote on Sun, 8 Aug 2021
-> 09:26:43 +0200:
->
-> > Some devices use Micron NAND chips, which use on-die ECC. The hardcoded
-> > setting of NAND_ECC_ENGINE_TYPE_SOFT makes them unusable, because the
-> > software ECC on top of the hardware ECC produces errors for every read
-> > and write access, not to mention that booting does not work, because
-> > the boot loader uses the correct ECC when trying to load the kernel
-> > and stops loading on severe ECC errors.
-> > This patch requires the devices that currently work with the hard coded
-> > setting to set the nand-ecc-mode property to soft in their device
-> > tree.
-> >
->
-> Please add a Fixes: and Cc: stable tags, you will also need to send to
-> stable@vger.kernel.org a different version of the patch for the kernel
-> 5.4 IIUC.
->
-> > Signed-off-by: Daniel Kestrel <kestrelseventyfour@gmail.com>
-> > Tested-by: Aleksander Jan Bajkowski <olek2@wp.pl> # tested on BT Home H=
-ub 5A
-> > ---
-> >  drivers/mtd/nand/raw/xway_nand.c | 2 --
-> >  1 file changed, 2 deletions(-)
-> >
-> > diff --git a/drivers/mtd/nand/raw/xway_nand.c b/drivers/mtd/nand/raw/xw=
-ay_nand.c
-> > index 26751976e502..0a4b0aa7dd4c 100644
-> > --- a/drivers/mtd/nand/raw/xway_nand.c
-> > +++ b/drivers/mtd/nand/raw/xway_nand.c
-> > @@ -148,8 +148,6 @@ static void xway_write_buf(struct nand_chip *chip, =
-const u_char *buf, int len)
-> >
-> >  static int xway_attach_chip(struct nand_chip *chip)
-> >  {
-> > -     chip->ecc.engine_type =3D NAND_ECC_ENGINE_TYPE_SOFT;
-> > -
-> >       if (chip->ecc.algo =3D=3D NAND_ECC_ALGO_UNKNOWN)
-> >               chip->ecc.algo =3D NAND_ECC_ALGO_HAMMING;
->
-> You also need to only set the Hamming algorithm when engine_type is
-> TYPE_SOFT.
->
-> Thanks,
-> Miqu=C3=A8l
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+---
+ tools/testing/selftests/bpf/test_doc_build.sh | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-I am really struggling with what to do. For one of the affected
-devices, they created two device
-trees, one for Micron and one for all others. Which obviously had no
-effect due to the
-hardcoded settings, which led me to Patch 2 and I thought, so be it.
-But the process to figure
-out if ones device has Micron Chips is essentially flashing an image
-and if it does not work,
-use the stock OEM recovery and try the other image.
-However, since Micron is the only chip that is treated differently, I wonde=
-r
-if your first proposal, even though it is hacky, is the better
-approach to solve the issue
-for the Micron devices not booting and throwing ECC errors. What do you thi=
-nk?
-Follow up first patch or this one?
+diff --git a/tools/testing/selftests/bpf/test_doc_build.sh b/tools/testing/selftests/bpf/test_doc_build.sh
+index ed12111cd2f0..d67ced95a6cf 100755
+--- a/tools/testing/selftests/bpf/test_doc_build.sh
++++ b/tools/testing/selftests/bpf/test_doc_build.sh
+@@ -4,9 +4,10 @@ set -e
+ 
+ # Assume script is located under tools/testing/selftests/bpf/. We want to start
+ # build attempts from the top of kernel repository.
+-SCRIPT_REL_PATH=$(realpath --relative-to=$PWD $0)
++SCRIPT_REL_PATH=$(realpath $0)
+ SCRIPT_REL_DIR=$(dirname $SCRIPT_REL_PATH)
+-KDIR_ROOT_DIR=$(realpath $PWD/$SCRIPT_REL_DIR/../../../../)
++KDIR_ROOT_DIR=$(realpath $SCRIPT_REL_DIR/../../../../)
++SCRIPT_REL_DIR=$(dirname $(realpath --relative-to=$KDIR_ROOT_DIR $SCRIPT_REL_PATH))
+ cd $KDIR_ROOT_DIR
+ 
+ for tgt in docs docs-clean; do
+-- 
+2.32.0
 
-Thanks, Daniel.
+
+
