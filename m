@@ -2,94 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0989E3F1472
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 459FD3F1477
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236878AbhHSHkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 03:40:36 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:23400 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236756AbhHSHkb (ORCPT
+        id S234249AbhHSHom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 03:44:42 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:57039 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231351AbhHSHok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 03:40:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1629358795; x=1660894795;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=DPvk51r+tNaQIX17IGj6lTpfR9i78AJ8Ij1ANlimbSQ=;
-  b=ChNZXFKswj/X3XCFhHaFsBXls92YnnoLDbT+TodaouowMaOAhWiGhN6F
-   1ZDpQmrekuUcvAPxdK+xmbVqc+Q/UdSsGLcnoqqlklIcoTzk6UjQ8ml+Q
-   WnIx5Iu0SfdHAkVqUnvLG+/HOOZmdakd7Awbz5m7+rqSQKw2LlpGLJ+yr
-   ViniU9bY/NGq8Sw/ofJBBRE34skYDsJ0iAP7IX3V2l2UPWzFdMXQjlk4Q
-   afZ28XNbvQb/7XLgzpy06ei+CtXoQ4SGtrvx183ewRXrCSFIjBPjAcDSi
-   ESBwHjJxbLvqOg366c0JJiS0akt05R+/xSE2Qw2/imSq5hfYQv8vf+/BP
-   w==;
-IronPort-SDR: ces0+IBP6z7YS69uhClnp1kN6Z23+ZJsBHrp1A9qOH/nXBDcjJ3FdP2gpKDRR07fUUMsAXvGZ6
- aVldLOslLgZpzWlXqT8LnaAAySC63PsAUhB09Nzm2HyL6qVLboz6arXfu84s7Bq3r6hG9YobwP
- k6v3pQlmE0x186Q7R0JfPiCV2RfgJWaejRr8X1A2FQ953+VGTAuoqf/OP4Gqb3ubdfqJOFsNh6
- yO6GSO9c2mpugP0OxnrzVj9locjVWGtan/ZWKySJBghyC2Q/1/zD+quqVyl5sBle+jt2QK1T/9
- QrvsrS96ADFK4olOyL46TacM
-X-IronPort-AV: E=Sophos;i="5.84,334,1620716400"; 
-   d="scan'208";a="133396229"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Aug 2021 00:39:54 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 19 Aug 2021 00:39:54 -0700
-Received: from den-dk-m31857.microchip.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Thu, 19 Aug 2021 00:39:52 -0700
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        <UNGLinuxDriver@microchip.com>, <netdev@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, "Rob Herring" <robh+dt@kernel.org>,
-        <devicetree@vger.kernel.org>
-CC:     Steen Hegelund <steen.hegelund@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH net-next v2 2/2] arm64: dts: sparx5: Add the Sparx5 switch frame DMA support
-Date:   Thu, 19 Aug 2021 09:39:40 +0200
-Message-ID: <20210819073940.1589383-3-steen.hegelund@microchip.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210819073940.1589383-1-steen.hegelund@microchip.com>
-References: <20210819073940.1589383-1-steen.hegelund@microchip.com>
+        Thu, 19 Aug 2021 03:44:40 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 7F22C5C01C0;
+        Thu, 19 Aug 2021 03:44:03 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 19 Aug 2021 03:44:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=vqHEFmRLPXy4aW0PbN0wGkXPUzD
+        nDzq+Y4jb3Y6XRvo=; b=il4ZH5R/KimZdVI6bBZabPFI4yvjZqxguE5YEM9DFJc
+        0Dwd3sOqPQyt3HkyNhCEGXgNzQybSoeIxWs/zQQoloooCJMnj32CCAoqivfmpk+L
+        ypwh3tKoA/9QGXDLjZMm35WhuIfwsm+0z738Fwq21uf/8Z5D1RveyYRinehpnp9s
+        WT2tialQb8qOPjrPHW5pFLHUb5rhh0SPrp8EuUSahFSW7xFzrk3JnfKnRY29i8Nf
+        3p7fUTglcLarIy/0UyZJBt2GbMohpkxXopSuE02MAoupu06oM/otDudqahoatfYk
+        0K14PR2+QN4YAhjHBiwg9xbknI8mQGQfAQKRz9IoPaw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=vqHEFm
+        RLPXy4aW0PbN0wGkXPUzDnDzq+Y4jb3Y6XRvo=; b=qZsLQvaHJgUCUWwQCSX3ea
+        T6tSykS393jHhdwvRdwN7B4cGczTSP6lfAWP9AZezCsgOZZIWL2DgPeyL3Ic9IVa
+        FwBHqRG5hQ6l6Z27FTZV9HVpBeLr+LAD5Nb/rDvAiBfpFl5jfj4+nj2LPqCEkUZ4
+        x2BfNR/FRMYbwkeLMLdk8jyZ9PAHgpx1jpJG8xfc+LfAbtzJonutMm4+zsjhNVzv
+        6wImCtLLU+O1n9eMaMKRZ91yVgvV468eC7EBRV7TIQsmtFuwxvzlDmWjnHH5tDRQ
+        ffOsAFmUQ+bZpM5ZpnC3DBexTKnbjRdGKC2hYJPducVgHAi0h753JRhLpCSwEcjA
+        ==
+X-ME-Sender: <xms:wQseYZOiUGQG4Ow-4qJ3j0BCLb07JvP6kMlGtWD6OWuNeIus1V8oJg>
+    <xme:wQseYb9m38mDUjLrZUFgnCXpjVpdQ4kAzgM3s_ZRlS3vF-hajtMnxA-j84hKcEvlY
+    FTKwMRciAz1CJdDUeE>
+X-ME-Received: <xmr:wQseYYSx4vs4eRlmTO27MMXl1XlwSXrHHz_gOeq0tztjCWswpaueX9MXoKsHFmKJsK2uxyKK34aGUAeL068obzXO4_9N2AAnJmMK>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleeigdduvdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:wQseYVuZlU0Xbc54SN-4haPkgBj9DDtALZU2Kky-6KJWUvjdN5FRvQ>
+    <xmx:wQseYRfSofa_bBMo-xNZMKr8J_xfZoQuD0iTbOgwt2KJUK5n6BNAbQ>
+    <xmx:wQseYR26wYWJusRrdtVFfZGqn0H6Je9SQdV6dCG4AgILdeG1dED0Yw>
+    <xmx:wwseYaG7u9ONHZ7XKBdg9sDoVEigbm97pH6T3sxy286eTiUf6Wh8ng>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 19 Aug 2021 03:44:01 -0400 (EDT)
+Date:   Thu, 19 Aug 2021 09:43:58 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Jason Wang <wangborong@cdjrlc.com>
+Cc:     wens@csie.org, linux@armlinux.org.uk, jernej.skrabec@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: sunxi: Add a missing SPDX license header
+Message-ID: <20210819074358.qkvu4ynwk7s7ssuj@gilmour>
+References: <20210810132954.107518-1-wangborong@cdjrlc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="vbqmul2x32a7rofh"
+Content-Disposition: inline
+In-Reply-To: <20210810132954.107518-1-wangborong@cdjrlc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the interrupt for the Sparx5 Frame DMA.
 
-If this configuration is present the Sparx5 SwitchDev driver will use the
-Frame DMA feature, and if not it will use register based injection and
-extraction for sending and receiving frames to the CPU.
+--vbqmul2x32a7rofh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
----
- arch/arm64/boot/dts/microchip/sparx5.dtsi | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+On Tue, Aug 10, 2021 at 09:29:54PM +0800, Jason Wang wrote:
+> Add the missing SPDX license header to arch/arm/mach-sunxi/sunxi.c.
+>=20
+> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
 
-diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-index ad07fff40544..787ebcec121d 100644
---- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-@@ -471,8 +471,9 @@ switch: switch@0x600000000 {
- 				<0x6 0x10004000 0x7fc000>,
- 				<0x6 0x11010000 0xaf0000>;
- 			reg-names = "cpu", "dev", "gcb";
--			interrupt-names = "xtr";
--			interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "xtr", "fdma";
-+			interrupts =	<GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
- 			resets = <&reset 0>;
- 			reset-names = "switch";
- 		};
--- 
-2.32.0
+Queued for 5.16, thanks
+Maxime
 
+--vbqmul2x32a7rofh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYR4LvgAKCRDj7w1vZxhR
+xYU/AQD4g6jwiHmuIFjM33kxqZ9OzeTFf8y/Gr80kcYW+7ZIaAEA35RX0bkLIFYO
+NyGZqgj3aFPd96sZcQrBUI5FpgMbpgE=
+=lOWc
+-----END PGP SIGNATURE-----
+
+--vbqmul2x32a7rofh--
