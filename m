@@ -2,166 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D52AE3F169C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DDF23F169D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237692AbhHSJtJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Aug 2021 05:49:09 -0400
-Received: from aposti.net ([89.234.176.197]:43072 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237739AbhHSJtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 05:49:02 -0400
-Date:   Thu, 19 Aug 2021 11:48:11 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v7 09/11] dt-bindings: clock: Add X2000 clock bindings.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     sboyd@kernel.org, mturquette@baylibre.com, robh+dt@kernel.org,
-        linux-clk@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, sihui.liu@ingenic.com,
-        jun.jiang@ingenic.com, sernia.zhou@foxmail.com
-Message-Id: <B8Z2YQ.ADXN95IYKYYB3@crapouillou.net>
-In-Reply-To: <1627119286-125821-10-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1627119286-125821-1-git-send-email-zhouyanjie@wanyeetech.com>
-        <1627119286-125821-10-git-send-email-zhouyanjie@wanyeetech.com>
+        id S237662AbhHSJuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 05:50:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229745AbhHSJuB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 05:50:01 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55DDEC061575;
+        Thu, 19 Aug 2021 02:49:25 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id a9so7770457ybr.5;
+        Thu, 19 Aug 2021 02:49:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=baqn3nFJ4OCTZu2mfJfEIksHZD7gejF7HwEVWCcEoaQ=;
+        b=X2xgmIDbeZp2Ko+ImEdETlccj2ISP/5yZyWVeEyyC8OZGhekNYG0ut5Vh3rGFyfYQa
+         +vO7O1JJx06Yk9j173yO72pZXd06vbqAPCGzPssRgjTqIMvY5kn45zdttUsWTZjBD5O/
+         kyYzC0Op2LAQ2xwaFeOmvIKD1TRVaohPIcWTJBx73Su8V609yIcxQSr5ktow/HUEeel8
+         hxHKEAyyM3OZvKOIYHuXgFaEO3AUHMzvGEMJQdL7e1LJaVUm51o4L+vFvzUkVmJw9XP/
+         d+VtaPaljEyDiVPyQQNRPdK2A8PFiY5PzvbMTeu0F1gG/4cg7T3dMqHvshTsHcNUAx9G
+         dRkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=baqn3nFJ4OCTZu2mfJfEIksHZD7gejF7HwEVWCcEoaQ=;
+        b=l64MoKVzpjhbp1O8qbzsRfHdxFubkv6WM1DUlHRNJRtXHTyjnFj4GO2bGS0++Mr28Q
+         pfFtNsN4RjslI5EWwcwrL2OPtuOKg9HyY2UZix2nmjReS1o+JkWLM6RFGXg/XC4oHz75
+         uMLpOTjBa+w1KzL0NrUSvLVdsUIaI7DpjKWV6wBXBwWVzJ8YUsCLfuFMdVolMe/p1uZ3
+         PFMZfiZyqaLVhVUTSHv5sP4Ie3tjiCjSlO+KS//bQGfl55K6RFhxnmiLicJJc4AsmbR+
+         x1CW+xS7uHeLNdbjJrCUqf5Aht4HmcxYZQC8Mu5XrJbvCnf0ndI+iCz8UBApeG0lvtXQ
+         3N9Q==
+X-Gm-Message-State: AOAM532ESXNV9Qzp6DRDiuF6QMQ9XA9VIQbPdq9d53VFE4u1+tq8N58d
+        pKoNnjUo5wMnd+0s5f/RllVlWp262xzJh5UKg4Y=
+X-Google-Smtp-Source: ABdhPJyvT3ptpUVFYprs2pXgbIQba2dfM+Mw9N3mgrKFKcuQJ7PSyA/LCEE8nGZkk6PYfyVA1GcRstI/+e3gEonQqvw=
+X-Received: by 2002:a25:3046:: with SMTP id w67mr17605524ybw.134.1629366564492;
+ Thu, 19 Aug 2021 02:49:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+References: <20210819093226.13955-1-lukas.bulwahn@gmail.com>
+ <20210819093226.13955-2-lukas.bulwahn@gmail.com> <475fa73c-5eef-a60c-c70f-9f6ea7a079d8@csgroup.eu>
+In-Reply-To: <475fa73c-5eef-a60c-c70f-9f6ea7a079d8@csgroup.eu>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Thu, 19 Aug 2021 11:49:20 +0200
+Message-ID: <CAKXUXMww0jcqdonHLdajQaPRR2Ru6OVMFd+99r55XUEin6Nv=Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] powerpc: kvm: rectify selection to PPC_DAWR
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Neuling <mikey@neuling.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux- stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhou,
+On Thu, Aug 19, 2021 at 11:45 AM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
+>
+>
+>
+> Le 19/08/2021 =C3=A0 11:32, Lukas Bulwahn a =C3=A9crit :
+> > Commit a278e7ea608b ("powerpc: Fix compile issue with force DAWR")
+> > selects the non-existing config PPC_DAWR_FORCE_ENABLE for config
+> > KVM_BOOK3S_64_HANDLER. As this commit also introduces a config PPC_DAWR=
+,
+> > it probably intends to select PPC_DAWR instead.
+> >
+> > Rectify the selection in config KVM_BOOK3S_64_HANDLER to PPC_DAWR.
+> >
+> > The issue was identified with ./scripts/checkkconfigsymbols.py.
+> >
+> > Fixes: a278e7ea608b ("powerpc: Fix compile issue with force DAWR")
+> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> > ---
+> >   arch/powerpc/kvm/Kconfig | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/arch/powerpc/kvm/Kconfig b/arch/powerpc/kvm/Kconfig
+> > index e45644657d49..aa29ea56c80a 100644
+> > --- a/arch/powerpc/kvm/Kconfig
+> > +++ b/arch/powerpc/kvm/Kconfig
+> > @@ -38,7 +38,7 @@ config KVM_BOOK3S_32_HANDLER
+> >   config KVM_BOOK3S_64_HANDLER
+> >       bool
+> >       select KVM_BOOK3S_HANDLER
+> > -     select PPC_DAWR_FORCE_ENABLE
+> > +     select PPC_DAWR
+>
+> That's useless, see https://elixir.bootlin.com/linux/v5.14-rc6/source/arc=
+h/powerpc/Kconfig#L267
+>
+> In arch/powerpc/Kconfig, you already have:
+>
+>         select PPC_DAWR                         if PPC64
+>
 
-Le sam., juil. 24 2021 at 17:34:44 +0800, 周琰杰 (Zhou Yanjie) 
-<zhouyanjie@wanyeetech.com> a écrit :
-> Add the clock bindings for the X2000 SoC from Ingenic.
-> 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+Ah, I see. Then, it is just a needless and non-effective select here,
+and then select can be deleted completely.
 
-Acked-by: Paul Cercueil <paul@crapouillou.net>
+I will send a patch series v2.
 
-Cheers,
--Paul
-
-> ---
-> 
-> Notes:
->     v5:
->     New patch.
-> 
->     v5->v6:
->     No change.
-> 
->     v6->v7:
->     Change to dual license.
-> 
->  include/dt-bindings/clock/x2000-cgu.h | 89 
-> +++++++++++++++++++++++++++++++++++
->  1 file changed, 89 insertions(+)
->  create mode 100644 include/dt-bindings/clock/x2000-cgu.h
-> 
-> diff --git a/include/dt-bindings/clock/x2000-cgu.h 
-> b/include/dt-bindings/clock/x2000-cgu.h
-> new file mode 100644
-> index 00000000..6d6faa2
-> --- /dev/null
-> +++ b/include/dt-bindings/clock/x2000-cgu.h
-> @@ -0,0 +1,89 @@
-> +/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
-> +/*
-> + * This header provides clock numbers for the ingenic,x2000-cgu DT 
-> binding.
-> + *
-> + * They are roughly ordered as:
-> + *   - external clocks
-> + *   - PLLs
-> + *   - muxes/dividers in the order they appear in the x2000 
-> programmers manual
-> + *   - gates in order of their bit in the CLKGR* registers
-> + */
-> +
-> +#ifndef __DT_BINDINGS_CLOCK_X2000_CGU_H__
-> +#define __DT_BINDINGS_CLOCK_X2000_CGU_H__
-> +
-> +#define X2000_CLK_EXCLK			0
-> +#define X2000_CLK_RTCLK			1
-> +#define X2000_CLK_APLL			2
-> +#define X2000_CLK_MPLL			3
-> +#define X2000_CLK_EPLL			4
-> +#define X2000_CLK_OTGPHY		5
-> +#define X2000_CLK_SCLKA			6
-> +#define X2000_CLK_I2S0			7
-> +#define X2000_CLK_I2S1			8
-> +#define X2000_CLK_I2S2			9
-> +#define X2000_CLK_I2S3			10
-> +#define X2000_CLK_CPUMUX		11
-> +#define X2000_CLK_CPU			12
-> +#define X2000_CLK_L2CACHE		13
-> +#define X2000_CLK_AHB0			14
-> +#define X2000_CLK_AHB2PMUX		15
-> +#define X2000_CLK_AHB2			16
-> +#define X2000_CLK_PCLK			17
-> +#define X2000_CLK_DDR			18
-> +#define X2000_CLK_ISP			19
-> +#define X2000_CLK_MACPTP		20
-> +#define X2000_CLK_MACPHY		21
-> +#define X2000_CLK_MAC0TX		22
-> +#define X2000_CLK_MAC1TX		23
-> +#define X2000_CLK_RSA			24
-> +#define X2000_CLK_SSIPLL		25
-> +#define X2000_CLK_LCD			26
-> +#define X2000_CLK_MSC_EXCLK		27
-> +#define X2000_CLK_MSC0			28
-> +#define X2000_CLK_MSC1			29
-> +#define X2000_CLK_MSC2			30
-> +#define X2000_CLK_PWM			31
-> +#define X2000_CLK_SFC			32
-> +#define X2000_CLK_CIM			33
-> +#define X2000_CLK_DMIC_EXCLK	34
-> +#define X2000_CLK_DMIC			35
-> +#define X2000_CLK_EXCLK_DIV512	36
-> +#define X2000_CLK_RTC			37
-> +#define X2000_CLK_EMC			38
-> +#define X2000_CLK_EFUSE			39
-> +#define X2000_CLK_OTG			40
-> +#define X2000_CLK_SCC			41
-> +#define X2000_CLK_I2C0			42
-> +#define X2000_CLK_I2C1			43
-> +#define X2000_CLK_I2C2			44
-> +#define X2000_CLK_I2C3			45
-> +#define X2000_CLK_SADC			46
-> +#define X2000_CLK_UART0			47
-> +#define X2000_CLK_UART1			48
-> +#define X2000_CLK_UART2			49
-> +#define X2000_CLK_DTRNG			50
-> +#define X2000_CLK_TCU			51
-> +#define X2000_CLK_SSI0			52
-> +#define X2000_CLK_OST			53
-> +#define X2000_CLK_PDMA			54
-> +#define X2000_CLK_SSI1			55
-> +#define X2000_CLK_I2C4			56
-> +#define X2000_CLK_I2C5			57
-> +#define X2000_CLK_ISP0			58
-> +#define X2000_CLK_ISP1			59
-> +#define X2000_CLK_HASH			60
-> +#define X2000_CLK_UART3			61
-> +#define X2000_CLK_UART4			62
-> +#define X2000_CLK_UART5			63
-> +#define X2000_CLK_UART6			64
-> +#define X2000_CLK_UART7			65
-> +#define X2000_CLK_UART8			66
-> +#define X2000_CLK_UART9			67
-> +#define X2000_CLK_MAC0			68
-> +#define X2000_CLK_MAC1			69
-> +#define X2000_CLK_INTC			70
-> +#define X2000_CLK_CSI			71
-> +#define X2000_CLK_DSI			72
-> +
-> +#endif /* __DT_BINDINGS_CLOCK_X2000_CGU_H__ */
-> --
-> 2.7.4
-> 
-
-
+Lukas
