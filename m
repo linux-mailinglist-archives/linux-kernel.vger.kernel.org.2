@@ -2,202 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED183F1EDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C512C3F1EFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231965AbhHSRSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 13:18:14 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:33554 "EHLO m43-7.mailgun.net"
+        id S232558AbhHSRYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 13:24:44 -0400
+Received: from sauhun.de ([88.99.104.3]:54796 "EHLO pokefinder.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230506AbhHSRSM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 13:18:12 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629393456; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=cP/QyqjO+HMhfWokZ2rF1Oc8y76cUNXkZDCLBHD5790=; b=KVQtO7wcMHoL8iUbp1Pzg6klrEf7PEpq+UffZhr2SfrR4LFYgyWPcaTmxauXc44OC+QutavM
- 37jLoVotxAtBhDyiyzNn3aDCgtfLK7ncvJELJZDrmYZN1DnBbAaH3MISg5XobFgUzbS9FcsS
- r3E/mLKU+5VdyH+p/reor3sQZow=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 611e91d69507ca1a34ea1bc6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 19 Aug 2021 17:16:06
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5FA9CC43617; Thu, 19 Aug 2021 17:16:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 032FDC43618;
-        Thu, 19 Aug 2021 17:16:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 032FDC43618
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
-        quic_jhugo@quicinc.com, Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH v2 2/2] bus: mhi: core: Optimize and update MMIO register write method
-Date:   Thu, 19 Aug 2021 10:15:54 -0700
-Message-Id: <1629393354-20769-3-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1629393354-20769-1-git-send-email-bbhatt@codeaurora.org>
-References: <1629393354-20769-1-git-send-email-bbhatt@codeaurora.org>
+        id S229950AbhHSRYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 13:24:41 -0400
+Received: from localhost (p54b334e3.dip0.t-ipconnect.de [84.179.52.227])
+        by pokefinder.org (Postfix) with ESMTPSA id 821A52C01C2;
+        Thu, 19 Aug 2021 19:16:00 +0200 (CEST)
+Date:   Thu, 19 Aug 2021 19:15:59 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Sergey Shtylyov <s.shtylyov@omp.ru>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tag needs some work in the i2c tree
+Message-ID: <YR6Rz/fPPFuDcYmv@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210818075250.08a593f1@canb.auug.org.au>
+ <23d4fdb5-4a20-8d44-b98e-8b334bd2cdae@omp.ru>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="adomm26dE33Y13Ud"
+Content-Disposition: inline
+In-Reply-To: <23d4fdb5-4a20-8d44-b98e-8b334bd2cdae@omp.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As of now, MMIO writes done after ready state transition use the
-mhi_write_reg_field() API even though the whole register is being
-written in most cases. Optimize this process by using mhi_write_reg()
-API instead for those writes and use the mhi_write_reg_field()
-API for MHI config registers only.
 
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
-Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/bus/mhi/core/init.c | 64 ++++++++++++++++++++++-----------------------
- 1 file changed, 31 insertions(+), 33 deletions(-)
+--adomm26dE33Y13Ud
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-index 0917465..e4be171 100644
---- a/drivers/bus/mhi/core/init.c
-+++ b/drivers/bus/mhi/core/init.c
-@@ -433,75 +433,65 @@ int mhi_init_mmio(struct mhi_controller *mhi_cntrl)
- 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
- 	struct {
- 		u32 offset;
--		u32 mask;
--		u32 shift;
- 		u32 val;
- 	} reg_info[] = {
- 		{
--			CCABAP_HIGHER, U32_MAX, 0,
-+			CCABAP_HIGHER,
- 			upper_32_bits(mhi_cntrl->mhi_ctxt->chan_ctxt_addr),
- 		},
- 		{
--			CCABAP_LOWER, U32_MAX, 0,
-+			CCABAP_LOWER,
- 			lower_32_bits(mhi_cntrl->mhi_ctxt->chan_ctxt_addr),
- 		},
- 		{
--			ECABAP_HIGHER, U32_MAX, 0,
-+			ECABAP_HIGHER,
- 			upper_32_bits(mhi_cntrl->mhi_ctxt->er_ctxt_addr),
- 		},
- 		{
--			ECABAP_LOWER, U32_MAX, 0,
-+			ECABAP_LOWER,
- 			lower_32_bits(mhi_cntrl->mhi_ctxt->er_ctxt_addr),
- 		},
- 		{
--			CRCBAP_HIGHER, U32_MAX, 0,
-+			CRCBAP_HIGHER,
- 			upper_32_bits(mhi_cntrl->mhi_ctxt->cmd_ctxt_addr),
- 		},
- 		{
--			CRCBAP_LOWER, U32_MAX, 0,
-+			CRCBAP_LOWER,
- 			lower_32_bits(mhi_cntrl->mhi_ctxt->cmd_ctxt_addr),
- 		},
- 		{
--			MHICFG, MHICFG_NER_MASK, MHICFG_NER_SHIFT,
--			mhi_cntrl->total_ev_rings,
--		},
--		{
--			MHICFG, MHICFG_NHWER_MASK, MHICFG_NHWER_SHIFT,
--			mhi_cntrl->hw_ev_rings,
--		},
--		{
--			MHICTRLBASE_HIGHER, U32_MAX, 0,
-+			MHICTRLBASE_HIGHER,
- 			upper_32_bits(mhi_cntrl->iova_start),
- 		},
- 		{
--			MHICTRLBASE_LOWER, U32_MAX, 0,
-+			MHICTRLBASE_LOWER,
- 			lower_32_bits(mhi_cntrl->iova_start),
- 		},
- 		{
--			MHIDATABASE_HIGHER, U32_MAX, 0,
-+			MHIDATABASE_HIGHER,
- 			upper_32_bits(mhi_cntrl->iova_start),
- 		},
- 		{
--			MHIDATABASE_LOWER, U32_MAX, 0,
-+			MHIDATABASE_LOWER,
- 			lower_32_bits(mhi_cntrl->iova_start),
- 		},
- 		{
--			MHICTRLLIMIT_HIGHER, U32_MAX, 0,
-+			MHICTRLLIMIT_HIGHER,
- 			upper_32_bits(mhi_cntrl->iova_stop),
- 		},
- 		{
--			MHICTRLLIMIT_LOWER, U32_MAX, 0,
-+			MHICTRLLIMIT_LOWER,
- 			lower_32_bits(mhi_cntrl->iova_stop),
- 		},
- 		{
--			MHIDATALIMIT_HIGHER, U32_MAX, 0,
-+			MHIDATALIMIT_HIGHER,
- 			upper_32_bits(mhi_cntrl->iova_stop),
- 		},
- 		{
--			MHIDATALIMIT_LOWER, U32_MAX, 0,
-+			MHIDATALIMIT_LOWER,
- 			lower_32_bits(mhi_cntrl->iova_stop),
- 		},
--		{ 0, 0, 0 }
-+		{0, 0}
- 	};
- 
- 	dev_dbg(dev, "Initializing MHI registers\n");
-@@ -544,14 +534,22 @@ int mhi_init_mmio(struct mhi_controller *mhi_cntrl)
- 	mhi_cntrl->mhi_cmd[PRIMARY_CMD_RING].ring.db_addr = base + CRDB_LOWER;
- 
- 	/* Write to MMIO registers */
--	for (i = 0; reg_info[i].offset; i++) {
--		ret = mhi_write_reg_field(mhi_cntrl, base, reg_info[i].offset,
--					  reg_info[i].mask, reg_info[i].shift,
--					  reg_info[i].val);
--		if (ret) {
--			dev_err(dev, "Unable to write to MMIO registers");
--			return ret;
--		}
-+	for (i = 0; reg_info[i].offset; i++)
-+		mhi_write_reg(mhi_cntrl, base, reg_info[i].offset,
-+			      reg_info[i].val);
-+
-+	ret = mhi_write_reg_field(mhi_cntrl, base, MHICFG, MHICFG_NER_MASK,
-+				  MHICFG_NER_SHIFT, mhi_cntrl->total_ev_rings);
-+	if (ret) {
-+		dev_err(dev, "Unable to read MHICFG register\n");
-+		return ret;
-+	}
-+
-+	ret = mhi_write_reg_field(mhi_cntrl, base, MHICFG, MHICFG_NHWER_MASK,
-+				  MHICFG_NHWER_SHIFT, mhi_cntrl->hw_ev_rings);
-+	if (ret) {
-+		dev_err(dev, "Unable to read MHICFG register\n");
-+		return ret;
- 	}
- 
- 	return 0;
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
 
+> > So:
+> >=20
+> > Fixes: 489447380a29 ("[PATCH] handle errors returned by platform_get_ir=
+q*()")
+>=20
+>    In this case I was innocent, I guess something ate [PATCH] on Wolfram'=
+s side. :-)
+
+Yes, mea culpa. It looked like an oversight to me, will check better
+next time!
+
+
+--adomm26dE33Y13Ud
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmEekc8ACgkQFA3kzBSg
+KbbZ8A/7BorKC6WzSt6C8+n8wNjvSIcgGw5RpfX83zzFthzjllnZeXy1W6ll7WHP
+HVbbpmGmTG3vd4sjENZGrgFHNhxckxbR11qHKOn18TDgADGIggQwKTLxywwnLSi5
+Vs8N8QIQytn09o88HcFgYy4TjAHeQ/AnRuioJtY8ECk6dFBFnPIyRtv5D7Cp63MA
+qyehQV9fJV0XXwRHSiZC+McOxF5OgzcpBCAqpR1u9r1SBTdpN0RLNSgjIRSuVBkT
+blOpS/WBw8QA/lmJiqjk5+UPOzF4s19x0Vj+0v1Xl4z1qpiBIO1LvND6QAMY1caf
+Rt6A0hcuuRhZ7CMfih/YEd2+38Y5Mr7IB0/3mGiS0kQV1dZl5nrWbyX7wZkf0WXf
+FEZ/AsIWbkcWtt2BSz+yE4syRB3SZmutTvBXVzcZllsVjHM9+EstmNu76UQ1vy/w
+zxs+0UHAUrvKRnk2G+j614V2W4cMlbSHprsKjgRgJE+PybuyLRQ8STiMij6qztwt
+cD8zeyLPUwGAjhGmdLpzjD+LIjMknyYf1p+GYmWupOkjxGunnH4tsHkroSnEk9An
+v6U1z01f5pc/kfAFv2CnEGFtJrMZtle1gZ9cbF/bQiVoqQgexckhox1z3fA5Kxod
+4FoVNL9uMboOzrYyAAhMoBkWJ+p6WlgiGCj0340p7JzJtgu50HI=
+=2Evz
+-----END PGP SIGNATURE-----
+
+--adomm26dE33Y13Ud--
