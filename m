@@ -2,117 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D983F13C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 08:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D5C3F13C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 08:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231766AbhHSGsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 02:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231336AbhHSGsi (ORCPT
+        id S231915AbhHSGvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 02:51:35 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:59650
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230483AbhHSGve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 02:48:38 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4097FC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 23:48:03 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id cp15-20020a17090afb8fb029017891959dcbso10658855pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 23:48:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LZbrqbnGVF4s6R8ZE29TSFBtRgWG1aFf5wVvmTN0Kls=;
-        b=LzpwSI+PQ849sv+/d2wxrfSs4Stz85cvghRvs9r62qeewVfZppUpmwfon/gbQBU0LX
-         cCuBbMRsYTuBSGa8L2dOIOhwrfCAdgb7dKrQJu9iJ5l86UXsTJCt0bwwYwUPUmRZqLuo
-         /lpq+/Nz+2q92pnRVoUf2ddPftWpPY5/mlDMc=
+        Thu, 19 Aug 2021 02:51:34 -0400
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id F40B6411DE
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 06:50:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629355858;
+        bh=0jvhx6f4zq/7XnfZg+ORPB90W+qrIJ0dzkFCj+LBYPM=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=JmvaRVVVr85gJt5iNFE2MYOUGSInPNg2UUStmfTqshAoLssBcWodK/nISnJP+d2bb
+         btk8ewTG01kRwpQPXMDhJxRzPV0ED9IQozOCC3iy9UovnblhteARtfeE2TCoMArLNR
+         9XEtaCL3+FLVBilQg9lFqyq0nO2QUJNAK0+b4bUd8fQ4ieVZ8vcvLRLp0McyEra1gL
+         cHbHmIzfNy/1vQcHjK0RpIkWFrO4uExYBh7N/az54/7/4EHHDys82etY2mDYDR72hG
+         NJXAXafNIAqvLutWdoeeRFdSkFlJ5lqpBN5rhjJIBuQgqPgP2iS8h3/3jb5qpO7j8w
+         0fn0n2igC/GPg==
+Received: by mail-ed1-f71.google.com with SMTP id di3-20020a056402318300b003bebf0828a2so2338366edb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 23:50:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LZbrqbnGVF4s6R8ZE29TSFBtRgWG1aFf5wVvmTN0Kls=;
-        b=meuE5JPJYyPsXA7/Y5RLgXOMYSzaWVMkwAqWRT2dP5CuGq2Uksm1pW37mrAQhRC3sb
-         KF7ysqjmOorgcq/39DSFeAhruq03tcZcEQJ16yf4g3mHHwITfKuPyj+HLddQ0OjaVLLm
-         iPugg/LZ7UN0q36XH5+DMGTU2cV4AQxmFBXQE5a8hkXjbR0B/S/vZJz+xnnInSw3OV7W
-         5PYbXvHGiZos2wwvQ7zd2N+xv3HY0Xr9U/U8c2gNjgMSdFzDle2LGgh3Kq1OuinUsl4k
-         i+Sap8PCjF34lCTusPi1XgFMlJ6mxtvYBF4WOU8Ku/HhH8xUlp+GwQ5py5fTv+BWTgQ7
-         DTNQ==
-X-Gm-Message-State: AOAM533kWFgnNx5He7f2guHsZQ05yznatywdKAJ6kpoxJfPS0mwlHGiZ
-        NXFnBZlSlKxNsE9mucStbRBIog==
-X-Google-Smtp-Source: ABdhPJw8G2jVp3T8UDYSrVTUZDASHoPOochThbPOlZLvNxJjGz+1teyquH91ZQLct5RsTmLvrQxSfw==
-X-Received: by 2002:a17:902:6b03:b0:12d:8f77:83d1 with SMTP id o3-20020a1709026b0300b0012d8f7783d1mr10332933plk.11.1629355682754;
-        Wed, 18 Aug 2021 23:48:02 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c26sm2442811pgl.10.2021.08.18.23.48.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 23:48:02 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 23:48:01 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 02/13] gen_compile_commands: extract compiler command
- from a series of commands
-Message-ID: <202108182347.0CDD87706@keescook>
-References: <20210819005744.644908-1-masahiroy@kernel.org>
- <20210819005744.644908-3-masahiroy@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0jvhx6f4zq/7XnfZg+ORPB90W+qrIJ0dzkFCj+LBYPM=;
+        b=Etv8XHh5hQTkRWeCniFYVszgmWIEv1dCS6ulfulDQIHm6b8Vf1TG6tpT9w7u6Uh+x+
+         icn3LKKOxDGxIyAhoHd1BVAJhW9Ns2b/5WSqsxbRi9L+CoksL/Fa9XQGvcCQ/DSdGSAj
+         NATfpIHeU30t4FnzTpBtPSEdaIo1zqxkNyGq+ZxjtyYCBLDF5QCQvS/9XSGl5nFVfkbV
+         bZsDOWYgCCRL7vJ2upjFt14S1b74DXjF1zl6RdeL0OuByNKMPFb6DTZuyJnSKe09LT7m
+         ceJg5DIlUMPqBzDspoAfRiUEEIq0jT6vpPRWqgBpaqJCkYu08zaoQneYR/gLon0UUwht
+         UVAQ==
+X-Gm-Message-State: AOAM533emV+ONnoPYhLUL8WjtRMbLhxYkd8KBuRgsb9l05Lv22CTY+Ed
+        oly/2J4R/IDTZ9SCWxIV7No3fSE5sB7y4BaQEo+0rtF5ev2YpzICbutA4rxzCSszmXEmNFANUpj
+        f78bQMJ82N5x618Cn/lNZfzj4ixWlWTj+KIjggR+XR1g8S0nL9o2AW5nCrg==
+X-Received: by 2002:a17:906:f8c4:: with SMTP id lh4mr14052774ejb.542.1629355857652;
+        Wed, 18 Aug 2021 23:50:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy7XQhtjEFl5wsBgomaAboB0rmAqmgcek25DRCCx7AdlA7HAMg46JkTr7MA3PiPZ8CWLKTxjQcDb0l3DC8Hxm0=
+X-Received: by 2002:a17:906:f8c4:: with SMTP id lh4mr14052749ejb.542.1629355857324;
+ Wed, 18 Aug 2021 23:50:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210819005744.644908-3-masahiroy@kernel.org>
+References: <20210819054542.608745-1-kai.heng.feng@canonical.com>
+ <20210819054542.608745-4-kai.heng.feng@canonical.com> <084b8ea3-99d8-3393-4b74-0779c92fde64@gmail.com>
+In-Reply-To: <084b8ea3-99d8-3393-4b74-0779c92fde64@gmail.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Thu, 19 Aug 2021 14:50:44 +0800
+Message-ID: <CAAd53p4CYOOXjyNdTnBtsQ+2MW-Jar8fgEfPFZHSPrJde=HqVA@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 3/3] r8169: Enable ASPM for selected NICs
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     nic_swsd <nic_swsd@realtek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 09:57:33AM +0900, Masahiro Yamada wrote:
-> The current gen_compile_commands.py assumes that objects are always
-> built by a single command.
-> 
-> It makes sense to support cases where objects are built by a series of
-> commands:
-> 
->   cmd_<object> := <command1> ; <command2>
-> 
-> One use-case is <command1> is a compiler command, and <command2> is
-> an objtool command.
-> 
-> It allows *.cmd files to contain an objtool command so that any change
-> in it triggers object rebuilds.
-> 
-> If ; appears after the C source file, take the first command.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+On Thu, Aug 19, 2021 at 2:08 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+>
+> On 19.08.2021 07:45, Kai-Heng Feng wrote:
+> > The latest vendor driver enables ASPM for more recent r8168 NICs, so
+> > disable ASPM on older chips and enable ASPM for the rest.
+> >
+> > Rename aspm_manageable to pcie_aspm_manageable to indicate it's ASPM
+> > from PCIe, and use rtl_aspm_supported for Realtek NIC's internal ASPM
+> > function.
+> >
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> > v3:
+> >  - Use pcie_aspm_supported() to retrieve ASPM support status
+> >  - Use whitelist for r8169 internal ASPM status
+> >
+> > v2:
+> >  - No change
+> >
+> >  drivers/net/ethernet/realtek/r8169_main.c | 27 ++++++++++++++++-------
+> >  1 file changed, 19 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+> > index 3359509c1c351..88e015d93e490 100644
+> > --- a/drivers/net/ethernet/realtek/r8169_main.c
+> > +++ b/drivers/net/ethernet/realtek/r8169_main.c
+> > @@ -623,7 +623,8 @@ struct rtl8169_private {
+> >       } wk;
+> >
+> >       unsigned supports_gmii:1;
+> > -     unsigned aspm_manageable:1;
+> > +     unsigned pcie_aspm_manageable:1;
+> > +     unsigned rtl_aspm_supported:1;
+> >       unsigned rtl_aspm_enabled:1;
+> >       struct delayed_work aspm_toggle;
+> >       atomic_t aspm_packet_count;
+> > @@ -702,6 +703,20 @@ static bool rtl_is_8168evl_up(struct rtl8169_private *tp)
+> >              tp->mac_version <= RTL_GIGA_MAC_VER_53;
+> >  }
+> >
+> > +static int rtl_supports_aspm(struct rtl8169_private *tp)
+> > +{
+> > +     switch (tp->mac_version) {
+> > +     case RTL_GIGA_MAC_VER_02 ... RTL_GIGA_MAC_VER_31:
+> > +     case RTL_GIGA_MAC_VER_37:
+> > +     case RTL_GIGA_MAC_VER_39:
+> > +     case RTL_GIGA_MAC_VER_43:
+> > +     case RTL_GIGA_MAC_VER_47:
+> > +             return 0;
+> > +     default:
+> > +             return 1;
+> > +     }
+> > +}
+> > +
+> >  static bool rtl_supports_eee(struct rtl8169_private *tp)
+> >  {
+> >       return tp->mac_version >= RTL_GIGA_MAC_VER_34 &&
+> > @@ -2669,7 +2684,7 @@ static void rtl_pcie_state_l2l3_disable(struct rtl8169_private *tp)
+> >
+> >  static void rtl_hw_aspm_clkreq_enable(struct rtl8169_private *tp, bool enable)
+> >  {
+> > -     if (!tp->aspm_manageable && enable)
+> > +     if (!(tp->pcie_aspm_manageable && tp->rtl_aspm_supported) && enable)
+> >               return;
+> >
+> >       tp->rtl_aspm_enabled = enable;
+> > @@ -5319,12 +5334,8 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+> >       if (rc)
+> >               return rc;
+> >
+> > -     /* Disable ASPM completely as that cause random device stop working
+> > -      * problems as well as full system hangs for some PCIe devices users.
+> > -      */
+> > -     rc = pci_disable_link_state(pdev, PCIE_LINK_STATE_L0S |
+> > -                                       PCIE_LINK_STATE_L1);
+> > -     tp->aspm_manageable = !rc;
+> > +     tp->pcie_aspm_manageable = pcie_aspm_supported(pdev);
+>
+> That's not what I meant, and it's also not correct.
 
-Seems reasonable, given patch 3.
+In case I make another mistake in next series, let me ask it more clearly...
+What you meant was to check both link->aspm_enabled and link->aspm_support?
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+>
+> > +     tp->rtl_aspm_supported = rtl_supports_aspm(tp);
 
--Kees
+Is rtl_supports_aspm() what you expect for the whitelist?
+And what else am I missing?
 
-> ---
-> 
->  scripts/clang-tools/gen_compile_commands.py | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
-> index b7e9ecf16e56..0033eedce003 100755
-> --- a/scripts/clang-tools/gen_compile_commands.py
-> +++ b/scripts/clang-tools/gen_compile_commands.py
-> @@ -18,7 +18,7 @@ _DEFAULT_OUTPUT = 'compile_commands.json'
->  _DEFAULT_LOG_LEVEL = 'WARNING'
->  
->  _FILENAME_PATTERN = r'^\..*\.cmd$'
-> -_LINE_PATTERN = r'^cmd_[^ ]*\.o := (.* )([^ ]*\.c)$'
-> +_LINE_PATTERN = r'^cmd_[^ ]*\.o := (.* )([^ ]*\.c) *(;|$)'
->  _VALID_LOG_LEVELS = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
->  # The tools/ directory adopts a different build system, and produces .cmd
->  # files in a different format. Do not support it.
-> -- 
-> 2.30.2
-> 
+Kai-Heng
 
--- 
-Kees Cook
+> >
+> >       /* enable device (incl. PCI PM wakeup and hotplug setup) */
+> >       rc = pcim_enable_device(pdev);
+> >
+>
