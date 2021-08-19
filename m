@@ -2,104 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 228133F1F8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 20:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 679F03F1F92
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 20:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234121AbhHSSJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 14:09:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232909AbhHSSJb (ORCPT
+        id S234225AbhHSSKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 14:10:01 -0400
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21392 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232909AbhHSSJ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 14:09:31 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA26C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 11:08:54 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 20:08:50 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629396532;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Krxko92OcnnxeuGLUpevk+gOLBcctvo45CW7C991Auw=;
-        b=uHocKjBTEd0KsawDnzHKpVTa+fii9+83sCOBYQVj2xs6y9jibN7iQ95jQ2gcVBP2KlWRd5
-        KrSeRwKNgsU63AO8iybti6QgszghX7EURKDOfpKHyxIVytloCP+7d8e9cbyTSk1sUfxwYj
-        iTKHBI15Sh1tX8AcF30KltEZX1Sa9XxnxUa6LfV6d+3vWITdyPGD+WI4a1Wu0nUXfDABIn
-        N6d2BVhXogZtqXQ7ZpqB9c2NoekTNUtBVymQDVlhMlgxP+2TC1JGUAnVoukTxGoX1X66VS
-        hbACs7sLmKhGYZSyPkJa5ITwoGMiYEE4IpYFq0ZmMfMo/GtOM9GlClX0KJwFrg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629396532;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Krxko92OcnnxeuGLUpevk+gOLBcctvo45CW7C991Auw=;
-        b=ALvyDT3lbOi1O/ca6Nj0F7DKAKdhKLISX3xlEQtJKBCL/v02DopO4MX/wRTLC8F2e/t318
-        4HjmzWC3bonjaTAQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Mike Galbraith <efault@gmx.de>
-Subject: [PATCH] locking/ww_mutex: Initialize waiter.ww_ctx properly
-Message-ID: <20210819180850.koqw3ujmxga5wo4n@linutronix.de>
-References: <20210815203225.710392609@linutronix.de>
- <20210815211304.281927514@linutronix.de>
- <20210819165409.GA2335652@roeck-us.net>
+        Thu, 19 Aug 2021 14:09:59 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1629396554; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=n/354dNALqKBgLHfZUCPYLu+VPP8obbVaXI81EDtB21ofHiK7NUAkf5hiXxLjJ1yu19uUmjU3U2+rwjVedYQZHlPty1ofW0CW7YVCPlctTQN9hTp3bhmNvpGI7cpz8jUd0D9ju4ACrH0SOAW7R35OkvEb1gBGhSeQM0Vduw2IiY=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1629396554; h=Content-Type:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=YPLtqXA+DTLt44MP3qr0mCK0st3TStZXq1MMJsg68as=; 
+        b=izvqCoIikdbf8Abz7KYycIAeexglz2tniEPips9ZGN62emqKj9zz95iMMBN6WbAxFX3hdqWVjyxPAsQoCZeHW9vSk4s4JruBvziEiZMS+doOzb4J/00eLlNCkq67QkyWJiyIK9XuXFk+Ae+w3QSp3Y12za+1Q9926No92wrh8DM=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1629396554;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To;
+        bh=YPLtqXA+DTLt44MP3qr0mCK0st3TStZXq1MMJsg68as=;
+        b=xeqLA/0l2wyK/Am2Z9LRD6PHmsOhqGuIe8GLqGEBDx/rae6t/PmAICTaL3XtPNct
+        ntPiXlCSSyyBrU/XI9dFchXkSmlBOl6AqxWxNcRsrLLCVYA067EzL9X6CNmC7vsODcf
+        reGn8zIgBs7uJuN4z5wsT+GO++RTM0hf6OdmuLvo=
+Received: from anirudhrb.com (106.51.110.226 [106.51.110.226]) by mx.zohomail.com
+        with SMTPS id 1629396552779309.10712064166887; Thu, 19 Aug 2021 11:09:12 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 23:39:05 +0530
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, valentina.manea.m@gmail.com,
+        shuah@kernel.org,
+        syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] usbip: give back URBs for unsent unlink requests
+ during cleanup
+Message-ID: <YR6eQUpoe9cORXGu@anirudhrb.com>
+References: <20210813182508.28127-1-mail@anirudhrb.com>
+ <20210813182508.28127-2-mail@anirudhrb.com>
+ <13450a85-bbfe-09c5-d614-1a944c2600c2@linuxfoundation.org>
+ <YRydGRdPmOaiMWaY@kroah.com>
+ <cb36604b-37f1-c12e-3ebb-cdafd7798dc1@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210819165409.GA2335652@roeck-us.net>
+In-Reply-To: <cb36604b-37f1-c12e-3ebb-cdafd7798dc1@linuxfoundation.org>
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The gathering of the debug code for the ww-mutex initialized moved the
-POISON initialiation into one spot and only set waiter.ww_ctx if the
-ww_ctx was non-NULL thus keeping the POISON value in ww-mutex case.
+On Wed, Aug 18, 2021 at 12:36:11PM -0600, Shuah Khan wrote:
+> On 8/17/21 11:39 PM, Greg KH wrote:
+> > On Tue, Aug 17, 2021 at 05:16:51PM -0600, Shuah Khan wrote:
+> > > On 8/13/21 12:25 PM, Anirudh Rayabharam wrote:
+> > > > In vhci_device_unlink_cleanup(), the URBs for unsent unlink requests are
+> > > > not given back. This sometimes causes usb_kill_urb to wait indefinitely
+> > > > for that urb to be given back. syzbot has reported a hung task issue [1]
+> > > > for this.
+> > > > 
+> > > > To fix this, give back the urbs corresponding to unsent unlink requests
+> > > > (unlink_tx list) similar to how urbs corresponding to unanswered unlink
+> > > > requests (unlink_rx list) are given back.
+> > > > 
+> > > > [1]: https://syzkaller.appspot.com/bug?id=08f12df95ae7da69814e64eb5515d5a85ed06b76
+> > > > 
+> > > > Reported-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
+> > > > Tested-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
+> > > > Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+> > > > ---
+> > > >    drivers/usb/usbip/vhci_hcd.c | 26 ++++++++++++++++++++++++++
+> > > >    1 file changed, 26 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
+> > > > index 4ba6bcdaa8e9..6f3f374d4bbc 100644
+> > > > --- a/drivers/usb/usbip/vhci_hcd.c
+> > > > +++ b/drivers/usb/usbip/vhci_hcd.c
+> > > > @@ -957,8 +957,34 @@ static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
+> > > >    	spin_lock(&vdev->priv_lock);
+> > > >    	list_for_each_entry_safe(unlink, tmp, &vdev->unlink_tx, list) {
+> > > > +		struct urb *urb;
+> > > > +
+> > > > +		/* give back URB of unsent unlink request */
+> > > >    		pr_info("unlink cleanup tx %lu\n", unlink->unlink_seqnum);
+> > > 
+> > > I know this is an exiting one.
+> > > Let's make this pr_debug or remove it all together.
+> > > 
+> > > > +
+> > > > +		urb = pickup_urb_and_free_priv(vdev, unlink->unlink_seqnum);
+> > > > +		if (!urb) {
+> > > > +			pr_info("the urb (seqnum %lu) was already given back\n",
+> > > > +				unlink->unlink_seqnum);
+> > > 
+> > > Let's make this pr_debug or remove it all together.
+> > 
+> > As you have a struct device for all of these, please use dev_dbg() and
+> > friends, not pr_*(), for all of these.
+> > 
+> 
+> Yes. Makes perfect sense.
 
-For ww-mutex without a context it is expected to set the context to
-NULL, the poison value was intended only for the regular mutex.
+Perhaps we should use usbip_dbg_vhci_hc() instead of dev_dbg()? It is
+one of the custom macros defined by the usbip driver for printing debug
+logs.
 
-Move the waiter.ww_ctx where it was previously so it is initialized to
-NULL if no ww_ctx was passed.
+Thanks,
 
-Fixes: c0afb0ffc06e6 ("locking/ww_mutex: Gather mutex_waiter initialization")
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- kernel/locking/mutex.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-index 05b68931622d1..d1068b0b163af 100644
---- a/kernel/locking/mutex.c
-+++ b/kernel/locking/mutex.c
-@@ -614,8 +614,6 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
- 
- 	debug_mutex_lock_common(lock, &waiter);
- 	waiter.task = current;
--	if (ww_ctx)
--		waiter.ww_ctx = ww_ctx;
- 
- 	lock_contended(&lock->dep_map, ip);
- 
-@@ -630,6 +628,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
- 		ret = __ww_mutex_add_waiter(&waiter, lock, ww_ctx);
- 		if (ret)
- 			goto err_early_kill;
-+		waiter.ww_ctx = ww_ctx;
- 	}
- 
- 	set_current_state(state);
--- 
-2.33.0
-
+	Anirudh
