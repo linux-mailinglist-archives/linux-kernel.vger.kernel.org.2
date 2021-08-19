@@ -2,138 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80CEA3F1004
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 03:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10E33F100A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 03:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235348AbhHSBjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 21:39:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234194AbhHSBjU (ORCPT
+        id S235504AbhHSBlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 21:41:00 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:12344 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235265AbhHSBk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 21:39:20 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3541C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 18:38:44 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id u3so9214999ejz.1
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 18:38:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Uxvhx5qQEKKi3Un1EErfZdduybbw8VIvWqfruEYV5Xg=;
-        b=lZv7tQlPuYTvi3z3D1uNsFp5PKBGrL1wbF8bwvQBYXsREHAFSa5M0R8f9EZo1AyYcC
-         hvf4bCYipsBQs6l56TzQI2YepEgsNlRDvuctWk9k9K3RvfxM0KUVpb2Iahpj26e2C7T8
-         vlq5SNzSkoH/B4ChIOwCVD9blQtxrZ9cI2fxWb9hWeY9pFH3qVbjastJU1CBwZGSFgFL
-         0/+IuTksjGbiJMAmFOkbPDK+WAlmybO1WFVR97Hll6TOTzbfqaqL8BRJyfPa0fohmnDz
-         +NRYHBSAu/m8LfjkUyY88VAHtDbbkMJ5H2f5nbRrvse5hjKa8V3tCR5I8OLjZ8OQDx4x
-         e/nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Uxvhx5qQEKKi3Un1EErfZdduybbw8VIvWqfruEYV5Xg=;
-        b=EiAWfXTUzRmtb0QqyscwVGCRaqEv2FRmwJeY28qnBv1u48mfNPuySRhVZsjdJbLJBo
-         c4xsrCmypaB/vdmvx9VqmP29AbGmvgNsuZ2fWoJd0iwTDSw+a5IXNRzh/GC3U/QRa98D
-         KOt4zkEnVSmWiSTXIegPFuaHbNOGn20FRu7amou+K7xTAn4ZTYLq9+dLdFZCa5dUm/kt
-         /yBD0oSM1RLXaouEYQhUD0fAfzKmN1QpYmcD6iEYiPTzXY712RSLkvsfRtWyuzeYOQFl
-         r2beNUvhmp3A7i8C9UhjhlxcYzIjmDSrogMmq297OkZ/uuU+MYpZUSE/uUEp62L8nKVs
-         M1Wg==
-X-Gm-Message-State: AOAM532VKmb2yepSkjY0j7/lA8cdSbOcsQH1IfdcVT0JJG0xsxfzJjh3
-        o6ZOKhdxT4WyGZ5/wJHfdO4=
-X-Google-Smtp-Source: ABdhPJzvZCWdzjpF0V3e2EgViiP0yS/G0OeBvs4n4H+vbbbB6xbaThxpmrOspDmDvwIiP5+PweR4Uw==
-X-Received: by 2002:a17:906:410c:: with SMTP id j12mr12857231ejk.553.1629337123290;
-        Wed, 18 Aug 2021 18:38:43 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
-        by smtp.gmail.com with ESMTPSA id w11sm898729edc.5.2021.08.18.18.38.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 18:38:42 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     gregkh@linuxfoundation.org, Phillip Potter <phil@philpotter.co.uk>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        martin@kaiser.cx, straube.linux@gmail.com,
-        Larry.Finger@lwfinger.net
-Subject: Re: [PATCH 2/6] staging: r8188eu: remove unused function dump_txrpt_ccx_88e
-Date:   Thu, 19 Aug 2021 03:38:41 +0200
-Message-ID: <3469308.GW2Jk8YpuN@localhost.localdomain>
-In-Reply-To: <20210818234253.208271-3-phil@philpotter.co.uk>
-References: <20210818234253.208271-1-phil@philpotter.co.uk> <20210818234253.208271-3-phil@philpotter.co.uk>
+        Wed, 18 Aug 2021 21:40:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629337224; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=dN4PPWWThxm3th5mS+yrD7PdQG/wZZJ+UXng9iFiYsk=; b=BLwwTJY/3Vy7TLO/1HO1dgh8g9NEJ+tLX5lpduFokHmAr+r0TQFa00FPGJUnRK55iAzgLBAK
+ DljUA3RqOUsPXOkqNMw6eYRr3UZw2gTjUY0rYc7I30VyVrepez4Ie2XtF4Bj+xa1GXkhQHYi
+ Slc+7Vj444KiHdgnCTEKPY2/AgM=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 611db6861a9008a23e419bc2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 19 Aug 2021 01:40:22
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4C74CC43617; Thu, 19 Aug 2021 01:40:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.110.16.65] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 20960C4338F;
+        Thu, 19 Aug 2021 01:40:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 20960C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v1 1/2] bus: mhi: core: Bail on writing register fields if
+ read fails
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, quic_jhugo@quicinc.com
+References: <1629330634-36465-1-git-send-email-bbhatt@codeaurora.org>
+ <1629330634-36465-2-git-send-email-bbhatt@codeaurora.org>
+From:   Hemant Kumar <hemantk@codeaurora.org>
+Message-ID: <45fbfe24-38eb-82f0-7134-a04854269247@codeaurora.org>
+Date:   Wed, 18 Aug 2021 18:40:20 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <1629330634-36465-2-git-send-email-bbhatt@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, August 19, 2021 1:42:49 AM CEST Phillip Potter wrote:
-> Remove unused function dump_txrpt_ccx_88e from hal/rtl8188e_xmit.c and
-> remove its declaration in include/rtl8188e_xmit.h, as this function is
-> not called from anywhere, and is thus dead code.
+
+
+On 8/18/2021 4:50 PM, Bhaumik Bhatt wrote:
+> Helper API to write register fields relies on successful reads
+> of the register/address prior to the write. Bail out if a failure
+> is seen when reading the register before the actual write is
+> performed.
 > 
-> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-> ---
->  drivers/staging/r8188eu/hal/rtl8188e_xmit.c   | 22 -------------------
->  .../staging/r8188eu/include/rtl8188e_xmit.h   |  1 -
->  2 files changed, 23 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/hal/rtl8188e_xmit.c b/drivers/staging/r8188eu/hal/rtl8188e_xmit.c
-> index d2b55d581f95..46b871f3f631 100644
-> --- a/drivers/staging/r8188eu/hal/rtl8188e_xmit.c
-> +++ b/drivers/staging/r8188eu/hal/rtl8188e_xmit.c
-> @@ -7,28 +7,6 @@
->  #include "../include/drv_types.h"
->  #include "../include/rtl8188e_hal.h"
->  
-> -void dump_txrpt_ccx_88e(void *buf)
-> -{
-> -	struct txrpt_ccx_88e *txrpt_ccx = (struct txrpt_ccx_88e *)buf;
-> -
-> -	DBG_88E("%s:\n"
-> -		"tag1:%u, pkt_num:%u, txdma_underflow:%u, int_bt:%u, int_tri:%u, int_ccx:%u\n"
-> -		"mac_id:%u, pkt_ok:%u, bmc:%u\n"
-> -		"retry_cnt:%u, lifetime_over:%u, retry_over:%u\n"
-> -		"ccx_qtime:%u\n"
-> -		"final_data_rate:0x%02x\n"
-> -		"qsel:%u, sw:0x%03x\n",
-> -		__func__, txrpt_ccx->tag1, txrpt_ccx->pkt_num,
-> -		txrpt_ccx->txdma_underflow, txrpt_ccx->int_bt,
-> -		txrpt_ccx->int_tri, txrpt_ccx->int_ccx,
-> -		txrpt_ccx->mac_id, txrpt_ccx->pkt_ok, txrpt_ccx->bmc,
-> -		txrpt_ccx->retry_cnt, txrpt_ccx->lifetime_over,
-> -		txrpt_ccx->retry_over, txrpt_ccx_qtime_88e(txrpt_ccx),
-> -		txrpt_ccx->final_data_rate, txrpt_ccx->qsel,
-> -		txrpt_ccx_sw_88e(txrpt_ccx)
-> -	);
-> -}
-> -
->  void handle_txrpt_ccx_88e(struct adapter *adapter, u8 *buf)
->  {
->  	struct txrpt_ccx_88e *txrpt_ccx = (struct txrpt_ccx_88e *)buf;
-> diff --git a/drivers/staging/r8188eu/include/rtl8188e_xmit.h b/drivers/staging/r8188eu/include/rtl8188e_xmit.h
-> index d2099da1a41a..20b55e3850ba 100644
-> --- a/drivers/staging/r8188eu/include/rtl8188e_xmit.h
-> +++ b/drivers/staging/r8188eu/include/rtl8188e_xmit.h
-> @@ -150,7 +150,6 @@ s32 rtl8188eu_xmitframe_complete(struct adapter *padapter,
->  				 struct xmit_priv *pxmitpriv,
->  				 struct xmit_buf *pxmitbuf);
->  
-> -void dump_txrpt_ccx_88e(void *buf);
->  void handle_txrpt_ccx_88e(struct adapter *adapter, u8 *buf);
->  
->  #endif /* __RTL8188E_XMIT_H__ */
-> -- 
-> 2.31.1
-> 
-At a quick look it looks good. 
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
 
-Built with "make C=2 -j8 drivers/staging/r8188eu/ W=1"
-on x86-64, it does not introduce any errors or warnings, so...
-
-Acked-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-
-Thanks,
-
-Fabio
-
-
-
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum, a Linux Foundation Collaborative Project
