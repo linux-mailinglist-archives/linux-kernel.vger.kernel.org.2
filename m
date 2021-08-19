@@ -2,118 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F33DF3F2084
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 21:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F843F208D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 21:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234795AbhHSTXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 15:23:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233662AbhHSTXK (ORCPT
+        id S234371AbhHSTZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 15:25:26 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31010 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233919AbhHSTZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 15:23:10 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A69C061575;
-        Thu, 19 Aug 2021 12:22:33 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id x7so13197757ljn.10;
-        Thu, 19 Aug 2021 12:22:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qc9LqY40K8VPn4cy7lXDOl3TOv1El5e3Y/gxS7m5eME=;
-        b=hC3osBVkhAHFY6ijA6tj/ZVEXj4mm8C8qiJBBDxHLLcT8QIpLtIjIOV0ap391G013K
-         Pjvm6isGfE0IwRoha96eBGZuTwmRw4EOxaLITdwGu2CUqodUm/0fMoZX69Su6rXdoPSW
-         KnDAT230jzPPA8v82CDwpuoPIo5oBWYWJzZkYFS/HL0nhlyxsH4zHNuNtoW7kXTbaXpx
-         vmDG0d2QEfSeroRj3esvk6VhJ3en5OZG7TJpillXmaTV1uzg1fxdILl41+2vBhKeGvTN
-         sI9RbhAEyZcsvBl3VGjBYKDs4Xn17+HgZ2dGbyF21vXJQjPXVuh1/A31kB/W87moKGGV
-         /6KQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qc9LqY40K8VPn4cy7lXDOl3TOv1El5e3Y/gxS7m5eME=;
-        b=shelP46CBLKOIUmRGcmI02l5silUdTdyCE5TdsBY+wr00mNNigaV/DZyqWcjqbEHrV
-         FLDxBQWhNRJAbFYTJT9BhZxxRX8SJsVR58O6O+iGU7NTw1/lILZf7t3gL/vrUuRffFbA
-         +Mi9iBD+0IANtRVFpXtZjV8Yccnk9tfsUpLEegxW3XnS2c7Kak/5vyepQdzNq9+z/S6q
-         2bvY/JfXBsD1kO5vR6iu/9kYyL1f/A96MZarNxwS/C0JNsH7b7rCakkUC4zQxXJ4IKi3
-         sEygAzw6AhQFPGxaaYSWp1Y0UjNjirdR0JAKY4AVxwogS1cP0fLahJYCPgnVpjbpfiXr
-         7oZA==
-X-Gm-Message-State: AOAM530qtV1CnneIU+B2tqNcN3iQL3i4RTlF/OUdEOtADMpvzvK3VoSF
-        0DCWklel9NZ2syd2lNcP5pW58cvYBaOOEQ==
-X-Google-Smtp-Source: ABdhPJwGLyngUILRxgRSJY+hMei4hEmtobUYEQW7BIvBHy1De95gmZgtLzSC6rTVlej1TL9zNmWJCQ==
-X-Received: by 2002:a05:651c:11c7:: with SMTP id z7mr8404563ljo.464.1629400951459;
-        Thu, 19 Aug 2021 12:22:31 -0700 (PDT)
-Received: from [192.168.1.11] ([46.235.66.127])
-        by smtp.gmail.com with ESMTPSA id y16sm435130lfl.50.2021.08.19.12.22.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 12:22:31 -0700 (PDT)
-Subject: Re: [PATCH] media: atomisp: restore missing 'return' statement
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20210802143820.1150099-1-arnd@kernel.org>
- <202108130937.7848F6B318@keescook>
- <CAHp75VdkAO+fiiCVs=dyc2C83mZuLCQCvqs9C+6PF6JnhKDxCA@mail.gmail.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-Message-ID: <49b53061-f04a-3ed8-e957-5d40a0413a63@gmail.com>
-Date:   Thu, 19 Aug 2021 22:22:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 19 Aug 2021 15:25:25 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17JJ4ZsS044323;
+        Thu, 19 Aug 2021 15:24:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : reply-to : to : cc : date : in-reply-to : references : content-type
+ : mime-version : content-transfer-encoding; s=pp1;
+ bh=OGAhYv1KSyzhXvai4Q1Eg1XJ3MtmcnjRGGent1VmPOQ=;
+ b=k/ZomyALtN9NIOrNkMuc/fX+TopuSKpD8ayzsGgyZ1uw7GHrZt+oceYhQ8Vk64WeWUMO
+ 2LWit4UOKY085qrl4OlWmvPJFD5/yWXf4V/JNYCNcBORzuurf8+3o7iY7oKZIlKfw/y6
+ wDQ9XCHM+ZoegFbDm6Suj0YZF2b4dpZG5q4dkGSG1dWTQ/H7elz+tpfoKkSDlZ5eujCY
+ 2mlmOdHhRhVO+YxCpaVipJt+sFzR+oCnv8kIrbAxH9DVTQMCkLnQKL1Gl1H6+AUVHXh1
+ LKuOI7SlOeu0OB9z6fmAOkHhHLcufXH7o0vmYtUmMRr+SyjrlPIgrEmIT4h4Vq9qKlj0 UQ== 
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ahkabm5km-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Aug 2021 15:24:36 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17JJ8cvb001783;
+        Thu, 19 Aug 2021 19:24:35 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma04dal.us.ibm.com with ESMTP id 3ae5fgdrrv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Aug 2021 19:24:35 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17JJOYrv50004246
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 19 Aug 2021 19:24:34 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F2D2778069;
+        Thu, 19 Aug 2021 19:24:33 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9151378068;
+        Thu, 19 Aug 2021 19:24:32 +0000 (GMT)
+Received: from jarvis.int.hansenpartnership.com (unknown [9.160.128.138])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 19 Aug 2021 19:24:32 +0000 (GMT)
+Message-ID: <5b66128e04e9a88cb8f67eae1ff4ee49e79441e3.camel@linux.ibm.com>
+Subject: Re: [PATCH v2 2/2] scsi: qla1280: Fix DEBUG_QLA1280 compilation
+ issues
+From:   James Bottomley <jejb@linux.ibm.com>
+Reply-To: jejb@linux.ibm.com
+To:     Bart Van Assche <bvanassche@acm.org>,
+        John Garry <john.garry@huawei.com>, mdr@sgi.com,
+        martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hare@suse.de
+Date:   Thu, 19 Aug 2021 12:24:31 -0700
+In-Reply-To: <7107778e-8e20-22ab-bf94-d26aca09bd93@acm.org>
+References: <1629365549-190391-1-git-send-email-john.garry@huawei.com>
+         <1629365549-190391-3-git-send-email-john.garry@huawei.com>
+         <7107778e-8e20-22ab-bf94-d26aca09bd93@acm.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VdkAO+fiiCVs=dyc2C83mZuLCQCvqs9C+6PF6JnhKDxCA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Dww2G8tmkgtSSYXt-nqAHIxw-xKPeNxU
+X-Proofpoint-ORIG-GUID: Dww2G8tmkgtSSYXt-nqAHIxw-xKPeNxU
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-19_07:2021-08-17,2021-08-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 spamscore=0 clxscore=1011 mlxlogscore=999 suspectscore=0
+ impostorscore=0 priorityscore=1501 bulkscore=0 mlxscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108190112
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/19/21 8:24 PM, Andy Shevchenko wrote:
-> On Fri, Aug 13, 2021 at 7:39 PM Kees Cook <keescook@chromium.org> wrote:
->>
->> On Mon, Aug 02, 2021 at 04:38:14PM +0200, Arnd Bergmann wrote:
->> > From: Arnd Bergmann <arnd@arndb.de>
->> >
->> > The input_system_configure_channel_sensor() function lost its final
->> > return code in a previous patch:
->> >
->> > drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c: In function 'input_system_configure_channel_sensor':
->> > drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c:1649:1: error: control reaches end of non-void function [-Werror=return-type]
->> >
->> > Restore what was there originally.
->> >
->> > Fixes: 728a5c64ae5f ("media: atomisp: remove dublicate code")
->> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->>
->> I hit this too. Thanks!
->>
->> Reviewed-by: Kees Cook <keescook@chromium.org>
+On Thu, 2021-08-19 at 11:07 -0700, Bart Van Assche wrote:
+> On 8/19/21 2:32 AM, John Garry wrote:
+> > The driver does not compile under DEBUG_QLA1280 flag:
+> > - Debug statements expect an integer for printing a SCSI lun value,
+> > but
+> >    its size is 64b. So change SCSI_LUN_32() to cast to an int, as
+> > would be
+> >    expected from a "_32" function.
+> > - lower_32_bits() expects %x, as opposed to %lx, so fix that.
+> > 
+> > Also delete ql1280_dump_device(), which looks to have never been
+> > referenced.
+> > 
+> > Signed-off-by: John Garry <john.garry@huawei.com>
+> > ---
+> >   drivers/scsi/qla1280.c | 27 ++-------------------------
+> >   1 file changed, 2 insertions(+), 25 deletions(-)
+> > 
+> > diff --git a/drivers/scsi/qla1280.c b/drivers/scsi/qla1280.c
+> > index b4f7d8d7a01c..9a7e84b49d41 100644
+> > --- a/drivers/scsi/qla1280.c
+> > +++ b/drivers/scsi/qla1280.c
+> > @@ -494,7 +494,7 @@ __setup("qla1280=", qla1280_setup);
+> >   #define CMD_HOST(Cmnd)		Cmnd->device->host
+> >   #define SCSI_BUS_32(Cmnd)	Cmnd->device->channel
+> >   #define SCSI_TCN_32(Cmnd)	Cmnd->device->id
+> > -#define SCSI_LUN_32(Cmnd)	Cmnd->device->lun
+> > +#define SCSI_LUN_32(Cmnd)	((int)Cmnd->device->lun)
 > 
-> Me too,
-> Tested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> 
-> Pavel, how have you tested it?
-> 
+> How about using 'unsigned int' instead of 'int' since LUN numbers
+> are positive integers?
 
-To he honest, I didn't test it at all. It was part of application 
-processes to LFX mentoship. I really don't like style changes. Anyway, I 
-have to do it to pass the task, so, yeah, I messed up with this one ;(
+All the use points in the driver are ints currently so matching the use
+makes more sense than matching the standard and risking signed to
+unsigned conversion warnings.
 
-Also, I didn't notice when patch was applied, because I was like 2 month 
-after v3 posted. I am so sorry for this situation. Nowadays I always 
-test my patches.
-
-I was young and foolish :)
+James
 
 
-With regards,
-Pavel Skripkin
