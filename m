@@ -2,88 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8753F1909
+	by mail.lfdr.de (Postfix) with ESMTP id D3ADF3F190A
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 14:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238398AbhHSMRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 08:17:32 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:36268
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238357AbhHSMR3 (ORCPT
+        id S239526AbhHSMRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 08:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238357AbhHSMRe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 08:17:29 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 5676440C9E;
-        Thu, 19 Aug 2021 12:16:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629375411;
-        bh=jsGWeGecQ1kWffqrQvCeBJMCWUwwxyDVLr5Pq+OBIQA=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=qP8naA+8cHCYt7YbKmUmxvC6slgIAPThy+wi0iVhtyAfdCqx9ER7XSNn07hEcq/cK
-         vfRm4ryOD58AaJU5bZrlnwXHOFqSsKT3H10wOxYI/I5OEE9B8rNjX6RGJwPVgFYbcw
-         Q5QHbslXwLOWR7v0DzgAZ+izOq5w62VNEaPSWP3H6Hg9RPJvvpXs+FNniIo/iGwfVg
-         KqphZBwMoKpjLR4gRaXdCukhRXULbIcSfzAkSCt3DfyvBslVHN5qklx/WHUYPNDOUs
-         Y4rWP15bLPnpJSWcxlxIoZJrkwAJBxHzu4WQ3KBUdVzqgRs8/bfcSKMVvNgOEiOUlh
-         aBhFM03CDAIdg==
-From:   Colin King <colin.king@canonical.com>
-To:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mwifiex: make arrays static const, makes object smaller
-Date:   Thu, 19 Aug 2021 13:16:51 +0100
-Message-Id: <20210819121651.7566-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 19 Aug 2021 08:17:34 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEFAFC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 05:16:57 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id g138so3711137wmg.4
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 05:16:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=DmbBtI0MX4mV37QEOZBpQz0wZwSuwbEC/Ht/mZompdc=;
+        b=A5gwbJdH3uT5t4EOhCRlMSs/iQIxqrVkJGXSsN3oPtDOIaN5ipSwN9FW3AHLOsWI99
+         wRL03l5LtKAdGOGoOEbQ/SyVR0nm4yUdWA8J5ztcuRFQaIng0FcxSEXYXMfxw07+NFad
+         TPMLC0pla/bOzO8w9FpnaPggSxEHaAJ+l1zxjxV8JPjTw9PJXYIk6fewZKSESKw+KXak
+         coDOvdKWKUyUN6pvMkgGsN9yF9s8J4TEKu2uF/xpk1AyruTSUQOSVGYS4ESAlP2etMEG
+         mn+/0cYp+7pO41sielejmm3vkuPE5zzQBvMfM5Y6InlTn1a1KA2qPZ8LioEmRRJSBlw7
+         4xmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=DmbBtI0MX4mV37QEOZBpQz0wZwSuwbEC/Ht/mZompdc=;
+        b=E61k8AKhZ63nb01JN2N39QtVdDgm+o55iYv+HkDgitKBL6xVHxuX2FPp46VshcX/Yt
+         fHmMvVmwDqHhTRNQ4yCqLpTbbhghdHxgAKuebcvxYaLo1fm9MJBqf3C2m6k2LRJwYq9Q
+         1c9BMue6lvWBO2EkCcARPsiiUZmP0JerbZEjmmIuDKIfm/iZhhSQgH0cZiN8BJn4bwgr
+         bLzqLGYAH9fd9rvcfDQi8xsOX81thOlWGd0sEzxEvSNP1IYl8kmRCItx2ZHRIU71l768
+         iqhxqRd3t4Ecd2no9JDX1uoLGrg0xv/+NSIvMBYjsKCI5y3u7z6Qm8vIXPlzm6mrPGKk
+         2dXw==
+X-Gm-Message-State: AOAM531XyriJCU3PJXbB46F/svbtM9nE/5ua/iZ1AUI1g/Kx6Tnt5tuc
+        cCeZL9mUbbNqSPFYks9hchg=
+X-Google-Smtp-Source: ABdhPJxfHph4gy6MG9PcL15FNXwk18CdQ04DbHJx5QMwlX14aibTZ7Xy/Y66hwBcSPO6hQC5SoKZAw==
+X-Received: by 2002:a1c:1d13:: with SMTP id d19mr11658195wmd.135.1629375416625;
+        Thu, 19 Aug 2021 05:16:56 -0700 (PDT)
+Received: from agape.jhs ([5.171.80.222])
+        by smtp.gmail.com with ESMTPSA id m7sm7284052wmq.29.2021.08.19.05.16.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 05:16:56 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 14:16:53 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Joerg Roedel <jroedel@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Hans de Goede <hdegoede@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: x86/boot/compressed/64: Lenovo Ideapad Miix300 bug report
+Message-ID: <20210819121653.GB28768@agape.jhs>
+References: <20210819100230.GA28768@agape.jhs>
+ <YR4uffjFuqvrz1Tp@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YR4uffjFuqvrz1Tp@zn.tnic>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hello Borislav,
 
-Don't populate the arrays wpa_oui and wps_oui on the stack but
-instead them static const. Makes the object code smaller by 63 bytes:
+On Thu, Aug 19, 2021 at 12:12:13PM +0200, Borislav Petkov wrote:
+> On Thu, Aug 19, 2021 at 12:02:31PM +0200, Fabio Aiuto wrote:
+> > CONFIG_AMD_MEM_ENCRYPT=y
+> 
+> Lemme see if I understand it correctly: you have this enabled on an
+> Intel-based tablet?
 
-Before:
-   text   data  bss     dec    hex filename
-  29453   5451   64   34968   8898 .../wireless/marvell/mwifiex/sta_ioctl.o
+Yes I have, as Hans replied I use for rebuild the configuration
+provided by Fedora 34 distribution.
 
-After:
-   text	  data  bss     dec    hex filename
-  29356	  5611   64   35031   88d7 ../wireless/marvell/mwifiex/sta_ioctl.o
+> 
+> Does it boot plain 5.13.x (without any reverts) fine with that config
+> item disabled?
 
-(gcc version 10.3.0)
+I rebuilt a plain v5.13 kernel (no reverts) with that config
+disabled and everything goes fine.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/wireless/marvell/mwifiex/sta_ioctl.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/sta_ioctl.c b/drivers/net/wireless/marvell/mwifiex/sta_ioctl.c
-index 653f9e094256..fb3b11cf123b 100644
---- a/drivers/net/wireless/marvell/mwifiex/sta_ioctl.c
-+++ b/drivers/net/wireless/marvell/mwifiex/sta_ioctl.c
-@@ -1325,8 +1325,8 @@ mwifiex_set_gen_ie_helper(struct mwifiex_private *priv, u8 *ie_data_ptr,
- 			  u16 ie_len)
- {
- 	struct ieee_types_vendor_header *pvendor_ie;
--	const u8 wpa_oui[] = { 0x00, 0x50, 0xf2, 0x01 };
--	const u8 wps_oui[] = { 0x00, 0x50, 0xf2, 0x04 };
-+	static const u8 wpa_oui[] = { 0x00, 0x50, 0xf2, 0x01 };
-+	static const u8 wps_oui[] = { 0x00, 0x50, 0xf2, 0x04 };
- 	u16 unparsed_len = ie_len, cur_ie_len;
- 
- 	/* If the passed length is zero, reset the buffer */
--- 
-2.32.0
+thank you,
 
+fabio
