@@ -2,152 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934873F1ED9
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C9A3F1EE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbhHSRRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 13:17:44 -0400
-Received: from mail-eopbgr60080.outbound.protection.outlook.com ([40.107.6.80]:12261
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230416AbhHSRRn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 13:17:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WwRoozyLzpqe+pMd9WSdKTWCYe3Fo3wVlMtpVRTV1kg4jcfNtGZj8w5Pe/QxMgJ4va3m1VlgIDQg2ZuYvUby7/9xjPSV1x8rSM2yvDTA2xflhgp7kEu6SvsHmFDovQv2QlzZSY90X3XIDM9iHcEy9l0ZYNKAa0S4euA0CKwDI4vzJvKg/Fcr/SvfqPLZMl89buyFzOyYkvluJ25zNRsqui5KRIxwKMDAbC8amjeInAf0CgIoUNXF8EE2sv5y4z0T2F0fsW9f0oXKKTIWc8dPrGJduOkOuslF05DdjZxLwK3QP0Nne+KzMd3+a70VIixjnlq0+PAir653ydlX5EJOpA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BpZ5ZZvI8Gx65QGDkbSBJtKF20xU7jP47mcnpNrRYdc=;
- b=YAW4gZLtyzXN3qyuMfUkAwOWfn/ZHFDZp4/mJzf+WvzMFTw1xjrvak5Q9RoGq8iSHEYirlAcWKdh1vifIbZIBecHSjDWcUcmhEKZABU/RJ/s2iHfY2UEfirS6uZZWZZF6pgn9jK+fqYRK71Y+ygWBrXrzK8Qini5AdnMPzF+590bw7ABofbVlUiaUxGdVgwzULk454f+5p5uwIgSnOv5W2XDxLmOOb1vQfemB7TJRL/53iVUeOJCgcUOex7A2dvLr+9P7hzYn47mN+dCiGlftdSFNGIlr59NC/0Ybn/riCoa2IqaSc6etmn9WiJljRcVSs8Hv41a9W+XkeeHJl23Pg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BpZ5ZZvI8Gx65QGDkbSBJtKF20xU7jP47mcnpNrRYdc=;
- b=HIEiG6PeT2gDaIYuQmzgL7yjktPxW7KOtA5oNLBWX4GHsrCXBmVeh+rI1F6MCOEQNzAv7GEdayZZCiEKr+TkVmqVR/ofDL2cOkds/mS/3r13ziEayy/EHGPPLEqDUIxbdWX50GjkzvEDtD3O8hny5qGoEOU9fz+ks8Jst46IojA=
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
- by VI1PR0402MB3712.eurprd04.prod.outlook.com (2603:10a6:803:1c::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Thu, 19 Aug
- 2021 17:17:05 +0000
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::109:1995:3e6b:5bd0]) by VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::109:1995:3e6b:5bd0%2]) with mapi id 15.20.4436.019; Thu, 19 Aug 2021
- 17:17:05 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-CC:     "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH devicetree 2/2] MIPS: mscc: ocelot: mark the phy-mode for
- internal PHY ports
-Thread-Topic: [PATCH devicetree 2/2] MIPS: mscc: ocelot: mark the phy-mode for
- internal PHY ports
-Thread-Index: AQHXlRxE6gwTVobZAUmt38ortI/KCKt7EdYA
-Date:   Thu, 19 Aug 2021 17:17:05 +0000
-Message-ID: <20210819171704.z3avr2b5jur6dohl@skbuf>
-References: <20210819170416.2252210-1-vladimir.oltean@nxp.com>
- <20210819170416.2252210-2-vladimir.oltean@nxp.com>
-In-Reply-To: <20210819170416.2252210-2-vladimir.oltean@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: bootlin.com; dkim=none (message not signed)
- header.d=none;bootlin.com; dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d81472de-0f92-4fae-506e-08d963352ac5
-x-ms-traffictypediagnostic: VI1PR0402MB3712:
-x-microsoft-antispam-prvs: <VI1PR0402MB37120E4C80AB7ED53667D51EE0C09@VI1PR0402MB3712.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: YMHHbllTby9kGOq4krqv+lZJdNCIXZJJnMnc3eQY/2iyBNEPTmPX4V2M7zRInXclnBjCubNDBkgDVcA4BPa6nc200QMcljzFEwMglrJHEa6E09z1SwRqdgbl5+mD8h9NR6fp0Mt5jmiWBkxg2FzalgIaJIo0qhf2Ei0y6uszz78GfCWPzLwpnjgX2vmHQ7eeSqbf+mKCWI8X8aSDen7x87dCh8NFslPIx3rU2Bmz5q44W2wFcLMNEfEzjHNhhXXkj8u80wyjuJFoIrg1iFtWAlJOijLrRpwp1Lllms6+YIE5u3g2AKwjvl2NMfFevc21J1txorwbf4fxN9jMyArWJtDQMWup44XjmnZ5F2Wf8BCvyULdxwPw4IUxWHf9MmyggPGljwGTuTmnGwG1/hGmpChEkCHMhBtjh1uDYAV2FCFwWQhVKX+RlzYqWu/4IskrqMM2b3kbbk38jMg3I6+GelEwf/Fq/rWEoJ9dF6jPDxYPmEQNWrWvgxOx8yoEje2XMB51Mq9awUCPmolNAt4qPm9JNjb2S5r6o+YtXqjogq7lCFRCV13HDeBxzsTfLFwpTcTsc/qTCxJar510ocj2iBWzQToCIjC1oPsOqJDo9jouHfJE+Crqe6MOlm0TKg4bZgWDk8UOqXhGQVI9Sa0ZIHQkrUcBgcp8+pawbCOFhIAiVHOUtqbfFMVks/4vQ2EN/7VTl9v8L1/D8oCRaNyQeg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(136003)(396003)(39840400004)(366004)(376002)(346002)(26005)(316002)(76116006)(2906002)(110136005)(4326008)(8936002)(186003)(54906003)(91956017)(8676002)(38100700002)(5660300002)(86362001)(66446008)(66556008)(66476007)(64756008)(478600001)(66946007)(38070700005)(122000001)(33716001)(9686003)(6512007)(1076003)(71200400001)(44832011)(6486002)(6506007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?YAGqc1dPRny5fQ6Plv+AdWE4snfF3o+BJHFXUW1JV35nERLMOHSeZ7Omjwe8?=
- =?us-ascii?Q?yGgscU53QGg7GxuRuKBRmdgUAlt1XXZ6dZh82NtPE/7KeCThFU9u8SxuD692?=
- =?us-ascii?Q?tnSvZdr9T5JIld+AtiuEaBMYRCslftGDk6WpujkBR6yWti8eU7yeULWnPKon?=
- =?us-ascii?Q?cIgh91xt91ZrcfsMhSVJ4qdR82CXYoaG5E/Dw3aT59Oc86lZMAqy23egwtS6?=
- =?us-ascii?Q?xZV0O7UG21gZWa7ewwgZIoLSv6ICfqJll5/flqXGCU6dwXvvoXHpw3l/weDx?=
- =?us-ascii?Q?1kU1MOo2q+nvJZQEquuxtnpYDHar3nSOPHQmSTNPCGS1R5TBO/POZVsRfth1?=
- =?us-ascii?Q?gpqXf3WEz6JaAlVzsiXkWXmE3n4t3dznslzxJxuJBz6iUJSW/8GjmpkthfXf?=
- =?us-ascii?Q?VIpq3X0+W0WrdK4YVRaM8bvIPeYAA3RlsA3n1nZn9yqh+bZ710UZ3zw6NA0D?=
- =?us-ascii?Q?KlciHawCObmYZuS5CUnr6i9zPz/3/SijK8S9w0pkkDeksLEi00mEep/h2Cz4?=
- =?us-ascii?Q?fi+Y2aqlbP0ArTPnsKuwhNLrzDyIlNk/RHem2UYuzGlGLITpu73jFsUs/k+T?=
- =?us-ascii?Q?uxue1ff1kuLzwtdf6teQ55WFOpWfV+kYXpwQiCxSHKiaMb2fMZUCrgvGpJMn?=
- =?us-ascii?Q?SprxKB5UciDCi+P3AM5QNlSiVyfCFErTdIlV+O9489eza9Qf4SEj5diGDKMz?=
- =?us-ascii?Q?w2/bWdRxTlqDqEokILi/qr2961fgpVMLndQbked/UuQjsbb5N0LevJyeliIF?=
- =?us-ascii?Q?8x7iu0Rrwz0CuKqSoeN5NZgk8mDaEYAYOZh/Fe6qiQByt8YppkL47kvIFiAN?=
- =?us-ascii?Q?Rt/HJVdZROOmK9mR3nInWWXajgrwsde9cZ0dJrQ6U02LMM/acZ71GTg3l0F3?=
- =?us-ascii?Q?ARgNpakXI4zjC8ucQmRWCHq+gN4hbhalROxKgPF9mjyu/H1vCsqFMTnAF2g/?=
- =?us-ascii?Q?G13GzQTRtAhMbXb9q8DKVu7lcm/eM+svFsuBioEHsutqY0usec0pYh4QU+hZ?=
- =?us-ascii?Q?srtw5FSBGdKCwc4W8z3GeOeDW2lrT0hbuuNz/V6tXkvwkGxsKoBm2ubuks3v?=
- =?us-ascii?Q?TtdIVlnHTx05egZjceJg7tae4D5VUWaCsndNkwQ/5LBPsXh1chDTOgT4MJuc?=
- =?us-ascii?Q?9BoJ0621kMFVD/hmGMc1lvw4mOdqT+N/H5T0OLbuekgbD2U9QyzR+lBw1x4i?=
- =?us-ascii?Q?i4De/8te8hoULM/WJHln3OECkg+Ksp4LDSY6JLCq8+uyT0hanUkxRBT81z2b?=
- =?us-ascii?Q?mxoKGN8xKQOZoSfEcoPkcum+aaNWrFTSQrZTLz8E/FQ+PJQEVpTlt0YtWbNO?=
- =?us-ascii?Q?Iqh61Io043ZzJEnM0rGgLfhY?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <E8C1A8DC4A85B84A87A525BDF60329EC@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S232328AbhHSRSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 13:18:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230475AbhHSRSk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 13:18:40 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E7B1C061575;
+        Thu, 19 Aug 2021 10:18:03 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id z2so14544014lft.1;
+        Thu, 19 Aug 2021 10:18:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L+CJjNZBvFbAbSirOz4YJmF/GjuhPQCkOEK3Sd4SS78=;
+        b=pax0VTBWQRtew3cj1PCFwJOHzuP8R+XNuG4yXPjf1pZ8g1iFmTbJaulBcCq2nXMFHF
+         7hQIEwG0YE8jFQCLEMZWm1/+UltB8/T9s0PivmHu/cnnS0OclWT0xhP7T4Mehw5o5i+q
+         CI+lVvGw883JLlnG1Jd4CrpdLI/NIvzbABe1lz+6Dy0eZ7pCRJvoMocsCSE0ZS/VyYHi
+         a37xFNiKnee7AAtGzocb2q/N9Bs6BomQFg+N9RAiBOrJ38EeUNu2cGMNrRJLRNStLrR7
+         GysRr7MI6jstNzZbP3sT+/4IPbCi2xAHcGKq07XIHEEVEmj8TYQUtYG5DQzR8M/jEyAA
+         8SRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L+CJjNZBvFbAbSirOz4YJmF/GjuhPQCkOEK3Sd4SS78=;
+        b=bb+KM/iEI0b3R1GkCB0qz4OzqrWOJBlLbpCKxKSCihjOl7nXH5JCMy99Ai3sm4pGz5
+         DsEQEYB5uqNJhgQDdG1h1fUjJ/f6w/1r3ZDOUmp0b9sKzX5cKYgRNiM247KUzEuZ0F3f
+         dEHn53gqvRWydA4V8Br/LMN7UczE2lVJpqkdtVeIEAW0DTO6F4rqwhXEUs+4Bxivew0q
+         MUohvgwNczeqpwRHYis0jRuRWFrZm1gCKCT21p6KVg+Hseyqw4/lwq1i/2z3KCZ8CvAs
+         uIg0x7QCxT3HIuopIK/y9tV0xPMd0HirIwHl6CL2SHlC974wwzRWQQeIwcsQdQJ7gFBQ
+         t2yQ==
+X-Gm-Message-State: AOAM531s+qDksTVrnbLj1r5RNT8Y74MJ50NblmXP6jgkcp4uRbGpVAv9
+        zyAwkA8nQOKOzwgQr+ipAawma+goRkbramQQN80=
+X-Google-Smtp-Source: ABdhPJwtTFNaMIb6AG3hmvIap6xlLZXCVu2oPTObpV+GA/AO7eYan+n3NRr6PD61KpNy7QSUw5XexmcgBpprZekT6WA=
+X-Received: by 2002:ac2:5d49:: with SMTP id w9mr11403550lfd.450.1629393481865;
+ Thu, 19 Aug 2021 10:18:01 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d81472de-0f92-4fae-506e-08d963352ac5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Aug 2021 17:17:05.0956
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: JWqEnqxlYKLMyQ628cdKVGp0Z00YGryCVcLH/c6LgANbFSQZBKkuvxARH4zN5M2Sm4p3fWCXNce4fYEL+pV7eQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3712
+References: <20210811073027.124619-1-puranjay12@gmail.com> <20210811073027.124619-3-puranjay12@gmail.com>
+ <20210815164654.3c51a8e3@jic23-huawei> <CANk7y0gY7HHdfwPYq3KFSTbaZM+sT4XSxv2yDvx2_io=9hLX0A@mail.gmail.com>
+ <20210818101128.7c1f40ee@jic23-huawei>
+In-Reply-To: <20210818101128.7c1f40ee@jic23-huawei>
+From:   Puranjay Mohan <puranjay12@gmail.com>
+Date:   Thu, 19 Aug 2021 22:47:50 +0530
+Message-ID: <CANk7y0iDOCop1j=kL=nwWLf5UjDuy_dc9PjZ3tVgD9b6UimU9A@mail.gmail.com>
+Subject: Re: [PATCH v12 2/2] iio: accel: Add driver support for ADXL355
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
+        "Berghe, Darius" <Darius.Berghe@analog.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandru Ardelean <ardeleanalex@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 08:04:16PM +0300, Vladimir Oltean wrote:
-> The ocelot driver was converted to phylink, and that expects a valid
-> phy_interface_t. Without a phy-mode, of_get_phy_mode returns
-> PHY_INTERFACE_MODE_NA, which is not ideal because phylink rejects that.
->=20
-> The ocelot driver was patched to treat PHY_INTERFACE_MODE_NA as
-> PHY_INTERFACE_MODE_INTERNAL to work with the broken DT blobs, but we
-> should fix the device trees and specify the phy-mode too.
->=20
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> ---
+On Wed, Aug 18, 2021 at 2:38 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Sun, 15 Aug 2021 21:59:42 +0530
+> Puranjay Mohan <puranjay12@gmail.com> wrote:
+>
+> > On Sun, Aug 15, 2021 at 9:14 PM Jonathan Cameron <jic23@kernel.org> wrote:
+> > >
+> > > On Wed, 11 Aug 2021 13:00:27 +0530
+> > > Puranjay Mohan <puranjay12@gmail.com> wrote:
+> > >
+> > > > ADXL355 is a 3-axis MEMS Accelerometer. It offers low noise density,
+> > > > low 0g offset drift, low power with selectable measurement ranges.
+> > > > It also features programmable high-pass and low-pass filters.
+> > > >
+> > > > Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/adxl354_adxl355.pdf
+> > > > Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+> > > > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > > > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> > > Hi Puranjay,
+> > >
+> > > I took one last look at this so I can apply it without looking again assuming
+> > > the dt review is fine.  Noticed one issue with error handling, but I can tidy
+> > > that up whilst applying assuming you aren't doing a v13 for some other reason.
+> > > If you are please incorporate these changes as well.
+> > >
+> >
+> > Hi Jonathan, It would be great if you could make these changes while
+> > applying. I am not doing a v13 as all comments have been covered
+> > earlier.
+> > I shall be thankful to you.
+> I ended up tweaking those 3 functions a little more than I was originally planning
+> so please check it all looks good to you.
+>
+> Series applied to the togreg branch of iio.git and pushed out as testing
+> for 0-day to poke at.  Note these won't hit mainline until 5.16 now.
+>
+> Thanks,
+>
+> Jonathan
+>
 
-Please note that the pre-phylink driver has this check:
+Hi Jonathan,
+the changes you made look good to me.
 
-		switch (ocelot_port->phy_mode) {
-		case PHY_INTERFACE_MODE_NA:
-			(...)
-		case PHY_INTERFACE_MODE_SGMII:
-			(...)
-		case PHY_INTERFACE_MODE_QSGMII:
-			(...)
-		default:
-			dev_err(ocelot->dev,
-				"invalid phy mode for port%d, (Q)SGMII only\n",
-				port);
-			of_node_put(portnp);
-			err =3D -EINVAL;
-			goto out_teardown;
-		}
+Thanks,
 
-So it does not actually expect PHY_INTERFACE_MODE_INTERNAL and will
-error out.
+> >
+> > > Thanks,
+> > >
+> > > Jonathan
+> > >
+> > >
+> > > ...
+> > >
+> > > > +
+> > > > +static int adxl355_set_odr(struct adxl355_data *data,
+> > > > +                        enum adxl355_odr odr)
+> > > > +{
+> > > > +     int ret = 0;
+> > > > +
+> > > > +     mutex_lock(&data->lock);
+> > > > +
+> > > > +     if (data->odr == odr)
+> > > > +             goto out_unlock;
+> > > > +
+> > > > +     ret = adxl355_set_op_mode(data, ADXL355_STANDBY);
+> > > > +     if (ret < 0)
+> > > > +             goto out_unlock;
+> > > > +
+> > > > +     ret = regmap_update_bits(data->regmap, ADXL355_FILTER_REG,
+> > > > +                              ADXL355_FILTER_ODR_MSK,
+> > > > +                              FIELD_PREP(ADXL355_FILTER_ODR_MSK, odr));
+> > > > +     if (ret < 0)
+> > > > +             goto out_unlock;
+> > > > +
+> > > > +     data->odr = odr;
+> > > > +     adxl355_fill_3db_frequency_table(data);
+> > > > +
+> > > > +out_unlock:
+> > > > +     ret = adxl355_set_op_mode(data, ADXL355_MEASUREMENT);
+> > >
+> > > As below, we should do this because it risks returning success when a failure
+> > > actually occured.  Again, unless you are respinning for some other reason I'll
+> > > add the logic whilst applying.
+> > >
+> > > > +     mutex_unlock(&data->lock);
+> > > > +     return ret;
+> > > > +}
+> > > > +
+> > > > +static int adxl355_set_hpf_3db(struct adxl355_data *data,
+> > > > +                            enum adxl355_hpf_3db hpf)
+> > > > +{
+> > > > +     int ret = 0;
+> > > > +
+> > > > +     mutex_lock(&data->lock);
+> > > > +
+> > > > +     if (data->hpf_3db == hpf)
+> > > > +             goto unlock;
+> > > > +
+> > > > +     ret = adxl355_set_op_mode(data, ADXL355_STANDBY);
+> > > > +     if (ret < 0)
+> > > > +             goto set_opmode_unlock;
+> > > > +
+> > > > +     ret = regmap_update_bits(data->regmap, ADXL355_FILTER_REG,
+> > > > +                              ADXL355_FILTER_HPF_MSK,
+> > > > +                              FIELD_PREP(ADXL355_FILTER_HPF_MSK, hpf));
+> > > > +     if (!ret)
+> > > > +             data->hpf_3db = hpf;
+> > > > +
+> > > > +set_opmode_unlock:
+> > > > +     ret = adxl355_set_op_mode(data, ADXL355_MEASUREMENT);
+> > >
+> > > We can't do this as it might potentially eat an error that meant the regmap
+> > > update didn't occur.  To avoid that a little dance is needed using a second
+> > > return value and we only set ret = ret2 if ret == 0
+> > >
+> > > Alternatively we just have a separate error handling path which doesn't set
+> > > ret for the adxl355_set_op_mode(). I'll probably go with that as it's more
+> > > code but easier to read.
+> > >
+> > >
+> > >
+> > > > +unlock:
+> > > > +     mutex_unlock(&data->lock);
+> > > > +     return ret;
+> > > > +}
+> > > > +
+> > >
+> > > ...
+> > >
+> > > > +static int adxl355_write_raw(struct iio_dev *indio_dev,
+> > > > +                          struct iio_chan_spec const *chan,
+> > > > +                          int val, int val2, long mask)
+> > > > +{
+> > > > +     struct adxl355_data *data = iio_priv(indio_dev);
+> > > > +     int odr_idx, hpf_idx, calibbias;
+> > > > +
+> > > > +     switch (mask) {
+> > > > +     case IIO_CHAN_INFO_SAMP_FREQ:
+> > > > +             odr_idx = adxl355_find_match(adxl355_odr_table,
+> > > > +                                          ARRAY_SIZE(adxl355_odr_table),
+> > > > +                                          val, val2);
+> > > > +             if (odr_idx < 0)
+> > > > +                     return odr_idx;
+> > > > +
+> > > > +             return adxl355_set_odr(data, odr_idx);
+> > > > +     case IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY:
+> > > > +             hpf_idx = adxl355_find_match(data->adxl355_hpf_3db_table,
+> > > > +                                     ARRAY_SIZE(data->adxl355_hpf_3db_table),
+> > >
+> > > Mixing different indentation styles isn't very nice for readability.
+> > > I'll tweak this whilst applying.
+> > >
+> > > > +                                          val, val2);
+> > > > +             if (hpf_idx < 0)
+> > > > +                     return hpf_idx;
+> > > > +
+> > > > +             return adxl355_set_hpf_3db(data, hpf_idx);
+> > > > +     case IIO_CHAN_INFO_CALIBBIAS:
+> > > > +             calibbias = clamp_t(int, val, S16_MIN, S16_MAX);
+> > > > +
+> > > > +             return adxl355_set_calibbias(data, chan->address, calibbias);
+> > > > +     default:
+> > > > +             return -EINVAL;
+> > > > +     }
+> > > > +}
+> > > ...
+> >
+> >
+> >
+>
 
-Are we okay with the new device tree blobs breaking the old kernel?
 
-Should we instead wait for a few more kernel release cycles before
-changing the device tree in this regard?=
+-- 
+Thanks and Regards
+
+Yours Truly,
+
+Puranjay Mohan
