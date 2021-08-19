@@ -2,128 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A8A33F1BEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEFD03F1BEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240619AbhHSOvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 10:51:39 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:48986
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240137AbhHSOvi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 10:51:38 -0400
-Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 3DB5C3F0A1;
-        Thu, 19 Aug 2021 14:51:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629384661;
-        bh=g7+5SiZ8+Zdbn9VAz4P1W/9KWe16JYM3cVTVLOgS95s=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=gOLn84vqcd8NU0jf1pXAr0R+vj7wOgDSiUfOL5Ach94xt12f+5RdQNO+C1YjJcmIS
-         8YuWcnDMzooqjd83MjBTbO3neWRahGq9Sr7RNU0mRuwIJ3VZAgfhFeif+24Ko3UB2G
-         zcg84zwqS9aCET8kDoY/DnF9HzgR1jqHHfhLn+0KEIlNluoDP+9s+eh0sF95F60VZq
-         iyWgU3wyQUneCwqvqkjB5nUm7PK3ojTBlQe9TPj82l2wf4JtT5vow2EEXNWh9os5Aj
-         Cqzn401sbJ0hm8doqnIPZfKZ8YXJvfoN06FKxKefJHcOEZQU5scSvbbhAAzb1n/fh/
-         5MdiauE0R5ZZw==
-Subject: Re: [PATCH] drm/bridge/tc358767: make the array ext_div static const,
- makes object smaller
-To:     Joe Perches <joe@perches.com>, Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210819133839.10745-1-colin.king@canonical.com>
- <0a2ea4e54d7bfd61b45cc070eee6b62e8da82190.camel@perches.com>
- <913b96bc-f5c4-1a26-c5f7-70a9d0ab3f53@canonical.com>
- <3da667b1b415b19325c034dcb389a201fa46cfd3.camel@perches.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <c4378876-74b0-4f80-05b7-dcd809bb47a1@canonical.com>
-Date:   Thu, 19 Aug 2021 15:51:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S240624AbhHSOvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 10:51:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240137AbhHSOvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 10:51:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B02CF60231;
+        Thu, 19 Aug 2021 14:51:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629384669;
+        bh=mqlbbTGtIEi8G/JgjYJA5lBveLz8RQwPhrw58wj1KfM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MOE1dFTbUkDXVtxREFoFQplxUWsy9QqHcOYdzARpxHfIqAFuKOtzbqOVa4Rld4Bub
+         EasZv/1aI14qf+vZFo+wCrKJZmaG6MDwzy0vkAOBhvmpiqnxjr4T2GqkRY5R7y+OTM
+         8OiMR5L6nW+JJ8590CnBm4FtTfIPJKqijBcvnBnA=
+Date:   Thu, 19 Aug 2021 16:51:05 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: r8188eu: Remove _enter/_exit_critical_mutex()
+Message-ID: <YR5v2aMyr/Aa26Mm@kroah.com>
+References: <20210819060837.23983-1-fmdefrancesco@gmail.com>
+ <YR36fT6bpiVoo2lM@kroah.com>
+ <4394431.3q0Da8apZE@localhost.localdomain>
+ <2072985.qfodHclbUl@localhost.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <3da667b1b415b19325c034dcb389a201fa46cfd3.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2072985.qfodHclbUl@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/08/2021 15:40, Joe Perches wrote:
-> On Thu, 2021-08-19 at 14:54 +0100, Colin Ian King wrote:
->> On 19/08/2021 14:51, Joe Perches wrote:
->>> On Thu, 2021-08-19 at 14:38 +0100, Colin King wrote:
->>>> From: Colin Ian King <colin.king@canonical.com>
->>>>
->>>> Don't populate the array ext_div on the stack but instead it
->>>> static const. Makes the object code smaller by 118 bytes:
->>>>
->>>> Before:
->>>>    text    data    bss     dec    hex filename
->>>>   39449   17500    128   57077   def5 ./drivers/gpu/drm/bridge/tc358767.o
->>>>
->>>> After:
->>>>    text    data    bss     dec    hex filename
->>>>   39235   17596    128   56959   de7f ./drivers/gpu/drm/bridge/tc358767.o
->>>
->>> Why is text smaller and data larger with this change?
->>
->> There are less instructions being used with the change since it's not
->> shoving the array data onto the stack at run time. Instead the array is
->> being stored in the data section and there is less object code required
->> to access the data.
+On Thu, Aug 19, 2021 at 12:16:03PM +0200, Fabio M. De Francesco wrote:
+> On Thursday, August 19, 2021 9:07:20 AM CEST Fabio M. De Francesco wrote:
+> > On Thursday, August 19, 2021 8:30:21 AM CEST Greg Kroah-Hartman wrote:
+> > > On Thu, Aug 19, 2021 at 08:08:37AM +0200, Fabio M. De Francesco wrote:
+> > > > Remove _enter_critical_mutex() and _exit_critical_mutex(). They are
+> > > > unnecessary wrappers, respectively to mutex_lock_interruptible and to
+> > > > mutex_unlock(). They also have an odd interface that takes an unused
+> > > > second parameter "unsigned long *pirqL".
+> > > > 
+> > > > Use directly the in-kernel API; check and manage the return value of
+> > > > mutex_lock_interruptible().
+> > > > 
+> > > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > > > ---
+> > > >  drivers/staging/r8188eu/core/rtw_mlme_ext.c     |  5 +++--
+> > > >  drivers/staging/r8188eu/hal/usb_ops_linux.c     |  7 +++++--
+> > > >  drivers/staging/r8188eu/include/osdep_service.h | 13 -------------
+> > > >  drivers/staging/r8188eu/os_dep/os_intfs.c       |  5 +++--
+> > > >  4 files changed, 11 insertions(+), 19 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+> > > > index f6ee72d5af09..484083468ebb 100644
+> > > > --- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+> > > > +++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+> > > > @@ -4358,7 +4358,8 @@ s32 dump_mgntframe_and_wait_ack(struct adapter *padapter, struct xmit_frame *pmg
+> > > >  	if (padapter->bSurpriseRemoved || padapter->bDriverStopped)
+> > > >  		return -1;
+> > > >  
+> > > > -	_enter_critical_mutex(&pxmitpriv->ack_tx_mutex, NULL);
+> > > > +	if (mutex_lock_interruptible(&pxmitpriv->ack_tx_mutex))
+> > > > +		return -EINTR;
+> > > 
+> > > But the code never would return this value if the lock function returned
+> > > an error.  Why do that here now?
 > 
-> Ah.  It's really because it's not a minimal compilation ala defconfig >
-> I think you should really stop making these size comparisons with
-> .config uses that are not based on a defconfig as a whole lot of other
-> things are going on.
+> Ah, now I think I understand what you asked me ... sorry for not having 
+> immediately grasped the meaning of your objection. :(
+> 
+> I guess you wanted to know why I decided to check and handle the 
+> return values of mutex_lock_interruptible (), as the original code didn't. 
+> Did I understand the correct meaning of your question?
 
-I'm using allmodconfig, which I believe is a legitimate configuration,
-especially since distros so build kernels with lots of modules.
-I'll double check on this though in case I've made a mistake.
+Yes, that is correct.
 
-> 
-> Please notice that the object sizes are significantly smaller below:
-> 
-> So with an x86-64 defconfig and this compilation unit enabled with
-> CONFIG_OF enabled and CONFIG_DRM_TOSHIBA_TC358767=y, with gcc 10.3
-> and this change the object size actually increases a bit.
-> 
-> $ size drivers/gpu/drm/bridge/tc358767.o*
->    text	   data	    bss	    dec	    hex	filename
->   13554	    268	      1	  13823	   35ff	drivers/gpu/drm/bridge/tc358767.o.new
->   13548	    268	      1	  13817	   35f9	drivers/gpu/drm/bridge/tc358767.o.old>
-> objdump -h shows these differences:
-> 
-> .old:
->   0 .text         00001e1f  0000000000000000  0000000000000000  00000040  2**4
->                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-> [...]
->  14 .rodata       000005ae  0000000000000000  0000000000000000  000046e0  2**5
->                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
-> 
-> .new:
->   0 .text         00001e05  0000000000000000  0000000000000000  00000040  2**4
->                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-> [...]
->  11 .rodata       000005ce  0000000000000000  0000000000000000  00004600  2**5
->                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
-
-ACK. Understood.  Even so, it still makes sense for these kind of
-janitorial changes as it makes sense to constify arrays when they are
-read-only and making them static is sensible for const data.
-
-> 
-> cheers, Joe
-> 
 
