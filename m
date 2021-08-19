@@ -2,163 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 201E33F173D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:26:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E333F1745
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238252AbhHSK0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 06:26:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48668 "EHLO mail.kernel.org"
+        id S238172AbhHSK3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 06:29:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236149AbhHSK0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 06:26:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7ADD60ED3;
-        Thu, 19 Aug 2021 10:26:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629368765;
-        bh=SSMtInlpuewpUuRecz0kePiL21Ixjy/lZSC95ZWxifs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pvnH4zhFNC6TxmNZKTfg651xRAnOCZjBnMdFsOTVowDNDlbfPzlrMx3cW/cMzJ7TR
-         FIL45x85IKoR7EO/DmVi73guVsIySWJ7pfOMqNoL9FQHHvDXzGoh7SvX7d4I5wsKtM
-         wR06MMWJler4dDm0v8y4cgtAbIbfTNLXP1g29Zl5sWAHGTFNUtgM3jekESgiEZpixp
-         U1xk7eCWfffJj8PH5ooDKygQVPH2rEaz43KA/kamcQ11SdRFe+J79QkUFMkAQzxUeJ
-         pr+4tenGg9wHPKvtl110xT3mA8/EWwtCJsuKv+KeodfqQwLxY8RsByLs7D4lho8CRg
-         2P108reX9nPnw==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Tom Zanussi <zanussi@kernel.org>
-Subject: [PATCH] tracing/probes: Reject events which have the same name of existing one
-Date:   Thu, 19 Aug 2021 19:26:02 +0900
-Message-Id: <162936876189.187130.17558311387542061930.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210819192258.7e39bafa8084417d96a8244e@kernel.org>
-References: <20210819192258.7e39bafa8084417d96a8244e@kernel.org>
-User-Agent: StGit/0.19
+        id S237889AbhHSK27 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 06:28:59 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1531B60ED3;
+        Thu, 19 Aug 2021 10:28:23 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mGfHZ-005wq0-4o; Thu, 19 Aug 2021 11:28:21 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     kvmarm@lists.cs.columbia.edu, Oliver Upton <oupton@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Guangyu Shi <guangyus@google.com>, kvm@vger.kernel.org,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>
+Subject: Re: [PATCH v3 0/3] KVM: arm64: Use generic guest entry infrastructure
+Date:   Thu, 19 Aug 2021 11:28:16 +0100
+Message-Id: <162936887458.598180.10185839299725357336.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210802192809.1851010-1-oupton@google.com>
+References: <20210802192809.1851010-1-oupton@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: kvmarm@lists.cs.columbia.edu, oupton@google.com, peterz@infradead.org, luto@kernel.org, catalin.marinas@arm.com, alexandru.elisei@arm.com, shakeelb@google.com, linux-arm-kernel@lists.infradead.org, pbonzini@redhat.com, james.morse@arm.com, guangyus@google.com, kvm@vger.kernel.org, suzuki.poulose@arm.com, linux-kernel@vger.kernel.org, will@kernel.org, tglx@linutronix.de, pshier@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since kprobe_events and uprobe_events only check whether the
-other same-type probe event has the same name or not, if the
-user gives the same name of the existing tracepoint event (or
-the other type of probe events), it silently fails to create
-the tracefs entry (but registered.) as below.
+On Mon, 2 Aug 2021 19:28:06 +0000, Oliver Upton wrote:
+> The arm64 kernel doesn't yet support the full generic entry
+> infrastructure. That being said, KVM/arm64 doesn't properly handle
+> TIF_NOTIFY_RESUME and could pick this up by switching to the generic
+> guest entry infrasturture.
+> 
+> Patch 1 adds a missing vCPU stat to ARM64 to record the number of signal
+> exits to userspace.
+> 
+> [...]
 
+Applied to next, thanks!
 
-/sys/kernel/tracing # ls events/task/task_rename
-enable   filter   format   hist     id       trigger
-/sys/kernel/tracing # echo p:task/task_rename vfs_read >> kprobe_events
-[  113.048508] Could not create tracefs 'task_rename' directory
-/sys/kernel/tracing # cat kprobe_events
-p:task/task_rename vfs_read
+[1/3] KVM: arm64: Record number of signal exits as a vCPU stat
+      commit: fe5161d2c39b8c2801f0e786631460c6e8a1cae4
+[2/3] entry: KVM: Allow use of generic KVM entry w/o full generic support
+      commit: e1c6b9e1669e44fb7f9688e34e460b759e3b9187
+[3/3] KVM: arm64: Use generic KVM xfer to guest work function
+      commit: 6caa5812e2d126a0aa8a17816c1ba6f0a0c2b309
 
+Cheers,
 
-To fix this issue, check whether the existing events have the
-same name or not in trace_probe_register_event_call(). If exists,
-it rejects to register the new event.
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- Steve, I think this is also good to your eprobe series.
----
- kernel/trace/trace_kprobe.c |    6 +++++-
- kernel/trace/trace_probe.c  |   25 +++++++++++++++++++++++++
- kernel/trace/trace_probe.h  |    1 +
- kernel/trace/trace_uprobe.c |    6 +++++-
- 4 files changed, 36 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index ea6178cb5e33..032191977e34 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -647,7 +647,11 @@ static int register_trace_kprobe(struct trace_kprobe *tk)
- 	/* Register new event */
- 	ret = register_kprobe_event(tk);
- 	if (ret) {
--		pr_warn("Failed to register probe event(%d)\n", ret);
-+		if (ret == -EEXIST) {
-+			trace_probe_log_set_index(0);
-+			trace_probe_log_err(0, EVENT_EXIST);
-+		} else
-+			pr_warn("Failed to register probe event(%d)\n", ret);
- 		goto end;
- 	}
- 
-diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-index 15413ad7cef2..0e29bb14fc8b 100644
---- a/kernel/trace/trace_probe.c
-+++ b/kernel/trace/trace_probe.c
-@@ -1029,11 +1029,36 @@ int trace_probe_init(struct trace_probe *tp, const char *event,
- 	return ret;
- }
- 
-+static struct trace_event_call *
-+find_trace_event_call(const char *system, const char *event_name)
-+{
-+	struct trace_event_call *tp_event;
-+	const char *name;
-+
-+	list_for_each_entry(tp_event, &ftrace_events, list) {
-+		if (!tp_event->class->system ||
-+		    strcmp(system, tp_event->class->system))
-+			continue;
-+		name = trace_event_name(tp_event);
-+		if (!name || strcmp(event_name, name))
-+			continue;
-+		return tp_event;
-+	}
-+
-+	return NULL;
-+}
-+
- int trace_probe_register_event_call(struct trace_probe *tp)
- {
- 	struct trace_event_call *call = trace_probe_event_call(tp);
- 	int ret;
- 
-+	lockdep_assert_held(&event_mutex);
-+
-+	if (find_trace_event_call(trace_probe_group_name(tp),
-+				  trace_probe_name(tp)))
-+		return -EEXIST;
-+
- 	ret = register_trace_event(&call->event);
- 	if (!ret)
- 		return -ENODEV;
-diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
-index 227d518e5ba5..9f14186d132e 100644
---- a/kernel/trace/trace_probe.h
-+++ b/kernel/trace/trace_probe.h
-@@ -399,6 +399,7 @@ extern int traceprobe_define_arg_fields(struct trace_event_call *event_call,
- 	C(NO_EVENT_NAME,	"Event name is not specified"),		\
- 	C(EVENT_TOO_LONG,	"Event name is too long"),		\
- 	C(BAD_EVENT_NAME,	"Event name must follow the same rules as C identifiers"), \
-+	C(EVENT_EXIST,		"Given group/event name is already used by another event"), \
- 	C(RETVAL_ON_PROBE,	"$retval is not available on probe"),	\
- 	C(BAD_STACK_NUM,	"Invalid stack number"),		\
- 	C(BAD_ARG_NUM,		"Invalid argument number"),		\
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index 9b50869a5ddb..957244ee07c8 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -514,7 +514,11 @@ static int register_trace_uprobe(struct trace_uprobe *tu)
- 
- 	ret = register_uprobe_event(tu);
- 	if (ret) {
--		pr_warn("Failed to register probe event(%d)\n", ret);
-+		if (ret == -EEXIST) {
-+			trace_probe_log_set_index(0);
-+			trace_probe_log_err(0, EVENT_EXIST);
-+		} else
-+			pr_warn("Failed to register probe event(%d)\n", ret);
- 		goto end;
- 	}
- 
 
