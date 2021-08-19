@@ -2,137 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 819723F1CCC
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7899E3F1CCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240439AbhHSPbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 11:31:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51621 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240321AbhHSPbE (ORCPT
+        id S240442AbhHSPbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 11:31:16 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:44902 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240533AbhHSPbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 11:31:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629387028;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gYOHG6nrXJLL3qFyM+onzFAAsu5lYNgbscRFJOWcw1U=;
-        b=UG3km95+NrNDGcZH5S+l1MvXN77AyQppE54NA/OnuuZ5b5qR1dK4OlYHs6q0UwyMx/022z
-        KBf8cANqDWJZ7Q2PIYFuiKsntSHIuolWpcZq6lrdVr96TsS8nVv09bZ3PZ6uCtajTtC7q4
-        X6RawuFIkwSWgOjDQhgVTJ5kjvc8+Wo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-463-mpSJLYCoPYO9e41_CNr-fA-1; Thu, 19 Aug 2021 11:30:25 -0400
-X-MC-Unique: mpSJLYCoPYO9e41_CNr-fA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 066089250D;
-        Thu, 19 Aug 2021 15:30:23 +0000 (UTC)
-Received: from localhost (unknown [10.39.192.140])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9853B60BF4;
-        Thu, 19 Aug 2021 15:30:22 +0000 (UTC)
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Tony Krowiak <akrowiak@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pasic@linux.vnet.ibm.com,
-        jjherne@linux.ibm.com, jgg@nvidia.com, kwankhede@nvidia.com,
-        david@redhat.com, pbonzini@redhat.com, frankja@linux.ibm.com,
-        imbrenda@linux.ibm.com
-Subject: Re: [PATCH 0/2] s390/vfio-ap: do not open code locks for
- VFIO_GROUP_NOTIFY_SET_KVM notification
-In-Reply-To: <20210818103908.31eb5848.alex.williamson@redhat.com>
-Organization: Red Hat GmbH
-References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
- <3f45fe31-6666-ac87-3a98-dd942b5dfb3c@linux.ibm.com>
- <20210802155355.22b98789.pasic@linux.ibm.com>
- <6f37ef28-3cce-2f4f-3173-2c1e916900cc@linux.ibm.com>
- <6d64bd83-1519-6065-a4cd-9356c6be5d1a@de.ibm.com>
- <20210818103908.31eb5848.alex.williamson@redhat.com>
-User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
-Date:   Thu, 19 Aug 2021 17:30:21 +0200
-Message-ID: <8735r5sb8y.fsf@redhat.com>
+        Thu, 19 Aug 2021 11:31:12 -0400
+Received: by mail-il1-f200.google.com with SMTP id y20-20020a056e020f5400b00224400d1c21so3475691ilj.11
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 08:30:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=v8KWPu9J2asTXHe+aC8rvSPNF9EmTyUi46Hp2F7Yba8=;
+        b=dNSsGG8xFd+cOlo7L/nrQVeaxG22YyQXiTcWW9RdHMkptMS7PsCIZzeXM1oenpd0tq
+         jpjgBC5n8St7PC4Gc16hXRgScYaCAwHEMHQ3BkbRGXaBGeTfsTo/C+OD0EWPbzYxtCbV
+         zVr1fdQotfbL7UJIA9qLYSBePVmpcvRm1SrrxykwAYzoiK9o5+5ZaM7uc56EtfHlQMu+
+         3E5DqgntfBRqvbFJnF/Zs9ATXOq9BFsQGs6kO2ruPEAFs562+c0vOkNZLucR7vUQU1Yj
+         /wWwG2gQjLmrFgnbUfnMD8yROZc6SH0TcUzXBXQxIW8IM+E660EXQWRcl3NsnIK1sALy
+         VDvg==
+X-Gm-Message-State: AOAM531cgBqGpa5NzsQAsYSfY7ZuYGnuLdxGWjU05XB1STc3Uku6dRGX
+        B29sT7PJAH6HiopcliV+vrU26/MnRdsMnejvZeyWlN9LcHiW
+X-Google-Smtp-Source: ABdhPJzMpiJTtK2hkMwV4W3t0VDUXwZkvhifQLeQ9RuhLd47NQmtjAoTo4tz5nkQwRXWd74tDEtjil+MZyFdj22QjXDbzPMBVF9w
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Received: by 2002:a05:6602:2211:: with SMTP id n17mr11878912ion.142.1629387035683;
+ Thu, 19 Aug 2021 08:30:35 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 08:30:35 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000076adac05c9eb3b06@google.com>
+Subject: [syzbot] UBSAN: array-index-out-of-bounds in ima_inode_setxattr
+From:   syzbot <syzbot+e8bafe7b82c739eaf153@syzkaller.appspotmail.com>
+To:     dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, serge@hallyn.com,
+        syzkaller-bugs@googlegroups.com, zohar@linux.ibm.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18 2021, Alex Williamson <alex.williamson@redhat.com> wrote:
+Hello,
 
-> On Wed, 18 Aug 2021 17:59:51 +0200
-> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
->
->> On 02.08.21 18:32, Tony Krowiak wrote:
->> > 
->> > 
->> > On 8/2/21 9:53 AM, Halil Pasic wrote:  
->> >> On Mon, 2 Aug 2021 09:10:26 -0400
->> >> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->> >>  
->> >>> PING!
->> >>>
->> >>> This patch will pre-req version 17 of a patch series I have waiting in
->> >>> the wings,
->> >>> so I'd like to get this one merged ASAP. In particular, if a KVM
->> >>> maintainer can
->> >>> take a look at the comments concerning the taking of the kvm->lock
->> >>> before the
->> >>> matrix_mdev->lock it would be greatly appreciated. Those comments begin with
->> >>> Message ID <20210727004329.3bcc7d4f.pasic@linux.ibm.com> from Halil Pasic.  
->> >> As far as I'm concerned, we can move forward with this. Was this
->> >> supposed to go in via Alex's tree?  
->> > 
->> > I am not certain, Christian queued the previous patches related to
->> > this on:
->> > 
->> > 
->> > https://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git/log/?h=fixes
->> > 
->> > Jason G., since this will need to be integrated with your other patches,
->> > where should this be queued?  
->> 
->> 
->> This previous patch (s390/vfio-ap: clean up mdev resources when remove callback invoked) is
->> already in master.
->> Can you respin the series with all Acks and RBs?
->> 
->> Alex, can you then take these 2 patches via your tree? Thanks
->> 
->> Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
->> for this series.
->
->
-> I see some review feedback that seems to suggest a new version would be
-> posted:
->
-> https://lore.kernel.org/linux-s390/0f03ab0b-2dfd-e1c1-fe43-be2a59030a71@linux.ibm.com/
+syzbot found the following issue on:
 
-Yeah, I thought so as well. But it also looks like something that could
-be a fixup on top.
+HEAD commit:    33e65b1f975c Add linux-next specific files for 20210819
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1546c341300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3022de5bd1dbc8f5
+dashboard link: https://syzkaller.appspot.com/bug?extid=e8bafe7b82c739eaf153
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15767d41300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13582731300000
 
->
-> I also see in this thread:
->
-> https://lore.kernel.org/linux-s390/20210721164550.5402fe1c.pasic@linux.ibm.com/
->
-> that Halil's concern's around open/close races are addressed by Jason's
-> device_open/close series that's already in my next branch and he
-> provided an Ack, but there's still the above question regarding the
-> kvm->lock that was looking for a review from... I'm not sure, maybe
-> Connie or Paolo.  Christian, is this specifically what you're ack'ing?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e8bafe7b82c739eaf153@syzkaller.appspotmail.com
 
-I'm also unsure about the kvm->lock thing. Is taking the lock buried
-somewhere deep in the code that will ultimately trigger the release?
-I would at least like a pointer.
+================================================================================
+UBSAN: array-index-out-of-bounds in security/integrity/ima/ima_appraise.c:621:36
+index 222 is out of range for type 'char *[20]'
+CPU: 1 PID: 6550 Comm: syz-executor680 Not tainted 5.14.0-rc6-next-20210819-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:151
+ __ubsan_handle_out_of_bounds.cold+0x64/0x70 lib/ubsan.c:291
+ validate_hash_algo security/integrity/ima/ima_appraise.c:621 [inline]
+ ima_inode_setxattr+0x536/0x540 security/integrity/ima/ima_appraise.c:656
+ security_inode_setxattr+0x148/0x240 security/security.c:1355
+ __vfs_setxattr_locked+0xa7/0x260 fs/xattr.c:266
+ vfs_setxattr+0x14e/0x350 fs/xattr.c:301
+ setxattr+0x21b/0x2b0 fs/xattr.c:575
+ path_setxattr+0x19d/0x1d0 fs/xattr.c:595
+ __do_sys_lsetxattr fs/xattr.c:618 [inline]
+ __se_sys_lsetxattr fs/xattr.c:614 [inline]
+ __x64_sys_lsetxattr+0xbd/0x150 fs/xattr.c:614
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43ee89
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe96b06768 EFLAGS: 00000246 ORIG_RAX: 00000000000000bd
+RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ee89
+RDX: 0000000020000140 RSI: 00000000200000c0 RDI: 0000000020000000
+RBP: 0000000000402e70 R08: 0000000000000000 R09: 0000000000000000
+R10: 000000000000000a R11: 0000000000000246 R12: 0000000000402f00
+R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
+================================================================================
+----------------
+Code disassembly (best guess):
+   0:	28 c3                	sub    %al,%bl
+   2:	e8 2a 14 00 00       	callq  0x1431
+   7:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
+   e:	00 00 00 
+  11:	48 89 f8             	mov    %rdi,%rax
+  14:	48 89 f7             	mov    %rsi,%rdi
+  17:	48 89 d6             	mov    %rdx,%rsi
+  1a:	48 89 ca             	mov    %rcx,%rdx
+  1d:	4d 89 c2             	mov    %r8,%r10
+  20:	4d 89 c8             	mov    %r9,%r8
+  23:	4c 8b 4c 24 08       	mov    0x8(%rsp),%r9
+  28:	0f 05                	syscall 
+  2a:	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax <-- trapping instruction
+  30:	73 01                	jae    0x33
+  32:	c3                   	retq   
+  33:	48 c7 c1 c0 ff ff ff 	mov    $0xffffffffffffffc0,%rcx
+  3a:	f7 d8                	neg    %eax
+  3c:	64 89 01             	mov    %eax,%fs:(%rcx)
+  3f:	48                   	rex.W
 
->
-> It can ultimately go in through my tree, but not being familiar with
-> this code I'd hope for more closure.  Thanks,
->
-> Alex
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
