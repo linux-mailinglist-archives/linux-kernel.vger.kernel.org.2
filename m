@@ -2,148 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 760D33F2318
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550413F231B
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235999AbhHSWaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 18:30:01 -0400
-Received: from mail-lf1-f51.google.com ([209.85.167.51]:36414 "EHLO
-        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbhHSW36 (ORCPT
+        id S236121AbhHSWaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 18:30:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229532AbhHSWaG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 18:29:58 -0400
-Received: by mail-lf1-f51.google.com with SMTP id r9so16200665lfn.3;
-        Thu, 19 Aug 2021 15:29:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9LcUiMbIvgGkkeAl+Eqsq1dY0jYkDrhF+OapOZ3xHjc=;
-        b=YrNWLHUxJJvHmQCdwos1Ab0Cb1m6J0bPsmmAo24zX0APJ0Ge5UiWmfxZty4r3yBr1q
-         Yn9VoDGJy0grgvrOvGnH5mYXrtr6EqE8nx3ldAsj6yqGlhwT20xskQ/SAPIpcu+daejK
-         VZ9q0NVArSj6pwTb+lZ3Fgp32+Qb/FnQSVBluju33aoGEx0piBi1EgbjUImbRDa9LKmp
-         HU1OJG41lIjQFI7IRoNv3aW2lEVYSsbIO92Leso9qwlNhXOmGZV176kBFA35JPS78W0I
-         OBRS6izKGwqF+/kNfoBRss2PDUcHDGwzO2CH8XFfsFIvLHdT0+/HSow4QGgh6s+CrKn4
-         Gfaw==
-X-Gm-Message-State: AOAM530fVUFALAPBIxjAdwLQyDY7F1bC1VQVpWxpkFH4EO3gLhoS301r
-        5YLIpbnrW5LM5UowwzfJdEtHE8xspE2aDbxDcmU=
-X-Google-Smtp-Source: ABdhPJwEsRB2LoN/B7vpY5DPzHe41r/JwzQhZ/5FOou+VRZA3SFmfePyGJOqR6zKaPyLw5Q+AYU5HXRc82934Hjt7aM=
-X-Received: by 2002:a05:6512:ac9:: with SMTP id n9mr12041252lfu.635.1629412160767;
- Thu, 19 Aug 2021 15:29:20 -0700 (PDT)
+        Thu, 19 Aug 2021 18:30:06 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B605C061575;
+        Thu, 19 Aug 2021 15:29:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
+        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
+        bh=O+s8N+HuBQBiEOl3YX2aQaRweMse82grIvWCocQWrfQ=; b=BlMw8LgPuKcACOUqPXm7IugCUh
+        iOgGH01JP/8OTXTxkFBcbOGhSQSdkyFE1yjFkAlpfMlzvdxtA3dgf4zaIOFrJquhfeVAQUGx7dgFz
+        skXitLH+Sl4Qed0DYdPi/qbTw6uDJTozePKa2PjLVXM+T7dCVZ34dCMDV/SFdspZwfDcCqkqpxErO
+        A7mnFFTGHA2Z4cYN3/J3tHI4thUTpCJ4fydTAYqjtY95TTyE85VnDS9F+WABaY80j9J+uW4FCIOJA
+        IycNAWP9RX9IpFTAgG56gMJaVsiqLkt27gUEq50UQNgZKYlvPLwGyWtjw3j0kgdvZF/DqtmOODqsx
+        NM3s6xZw==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mGqXQ-009eOW-Vy; Thu, 19 Aug 2021 22:29:29 +0000
+Subject: Re: [PATCH v3 1/1] NAX LSM: Add initial support
+To:     Igor Zhbanov <izh1979@gmail.com>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        THOBY Simon <Simon.THOBY@viveris.fr>,
+        linux-kernel@vger.kernel.org
+References: <adc0e031-f02d-775c-1148-e808013c1b97@gmail.com>
+ <3f7db609-6393-163f-287f-2211ed6239a5@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <6def250e-b615-0543-69c8-4dce2ab0fdfe@infradead.org>
+Date:   Thu, 19 Aug 2021 15:29:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210817221048.88063-1-kim.phillips@amd.com> <20210817221048.88063-3-kim.phillips@amd.com>
-In-Reply-To: <20210817221048.88063-3-kim.phillips@amd.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 19 Aug 2021 15:29:09 -0700
-Message-ID: <CAM9d7ciafJnNFF4O_zq92YN_JKwSeAq51uZOvbHbfV7fP2Me6g@mail.gmail.com>
-Subject: Re: [PATCH 2/8] perf/x86/amd/ibs: Add workaround for erratum #1,197
-To:     Kim Phillips <kim.phillips@amd.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>, Borislav Petkov <bp@suse.de>,
-        Ingo Molnar <mingo@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ian Rogers <irogers@google.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Robert Richter <robert.richter@amd.com>,
-        Stephane Eranian <eranian@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3f7db609-6393-163f-287f-2211ed6239a5@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi--
 
-On Tue, Aug 17, 2021 at 3:11 PM Kim Phillips <kim.phillips@amd.com> wrote:
->
-> Erratum #1197 "IBS (Instruction Based Sampling) Register State May be
-> Incorrect After Restore From CC6" is published in a document available
-> at the link tag below:
->
-> "Revision Guide for AMD Family 19h Models 00h-0Fh Processors"
-> 56683 Rev. 1.04 July 2021
->
-> Implement the erratum's suggested workaround and ignore IBS samples
-> if MSRC001_1031 == 0.
->
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
-> Signed-off-by: Kim Phillips <kim.phillips@amd.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Andrew Murray <amurray@thegoodpenguin.co.uk>
-> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Ian Rogers <irogers@google.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: Joao Martins <joao.m.martins@oracle.com>
-> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Michael Petlan <mpetlan@redhat.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Robert Richter <robert.richter@amd.com>
-> Cc: Stephane Eranian <eranian@google.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-perf-users@vger.kernel.org
-> Cc: x86@kernel.org
-> ---
->  arch/x86/events/amd/ibs.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/arch/x86/events/amd/ibs.c b/arch/x86/events/amd/ibs.c
-> index 8c25fbd5142e..222c890527a2 100644
-> --- a/arch/x86/events/amd/ibs.c
-> +++ b/arch/x86/events/amd/ibs.c
-> @@ -90,6 +90,7 @@ struct perf_ibs {
->         unsigned long                   offset_mask[1];
->         int                             offset_max;
->         unsigned int                    fetch_count_reset_broken : 1;
-> +       unsigned int                    fetch_ignore_if_zero_rip : 1;
->         struct cpu_perf_ibs __percpu    *pcpu;
->
->         struct attribute                **format_attrs;
-> @@ -673,6 +674,10 @@ static int perf_ibs_handle_irq(struct perf_ibs *perf_ibs, struct pt_regs *iregs)
->         if (check_rip && (ibs_data.regs[2] & IBS_RIP_INVALID)) {
->                 regs.flags &= ~PERF_EFLAGS_EXACT;
->         } else {
-> +               /* Workaround for erratum #1,197 */
-> +               if (perf_ibs->fetch_ignore_if_zero_rip && !(ibs_data.regs[1]))
-> +                       goto out;
+On 8/19/21 3:13 PM, Igor Zhbanov wrote:
+> diff --git a/security/nax/Kconfig b/security/nax/Kconfig
+> new file mode 100644
+> index 000000000000..f0777cc38e17
+> --- /dev/null
+> +++ b/security/nax/Kconfig
+> @@ -0,0 +1,114 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +config SECURITY_NAX
+> +	bool "NAX support"
+> +	depends on SECURITY
+> +	default n
 
-Can we just use the iregs.ip instead of dropping the sample?
-Users might care about the accurate number of samples..
+'default n' is the default value and hence it is redundant.
+We usually omit it.
 
-Thanks,
-Namhyung
-
-
+> +	help
+> +	  This selects NAX (No Anonymous Execution), which extends DAC
+> +	  support with additional system-wide security settings beyond
+> +	  regular Linux discretionary access controls. Currently, the only
+> +	  available behavior is restricting the execution of anonymous and
+> +	  modified pages.
 > +
->                 set_linear_ip(&regs, ibs_data.regs[1]);
->                 regs.flags |= PERF_EFLAGS_EXACT;
->         }
-> @@ -770,6 +775,9 @@ static __init void perf_event_ibs_init(void)
->         if (boot_cpu_data.x86 >= 0x16 && boot_cpu_data.x86 <= 0x18)
->                 perf_ibs_fetch.fetch_count_reset_broken = 1;
->
-> +       if (boot_cpu_data.x86 == 0x19 && boot_cpu_data.x86_model < 0x10)
-> +               perf_ibs_fetch.fetch_ignore_if_zero_rip = 1;
+> +	  The module can restrict either privileged or all processes,
+> +	  depending on the settings. It is possible to configure action,
+> +	  performed when the violation is detected (log, log + block,
+> +	  log + kill).
 > +
->         perf_ibs_pmu_init(&perf_ibs_fetch, "ibs_fetch");
->
->         if (ibs_caps & IBS_CAPS_OPCNT) {
-> --
-> 2.31.1
->
+> +	  Further information can be found in
+> +	  Documentation/admin-guide/LSM/NAX.rst.
+> +
+> +	  If you are unsure how to answer this question, answer N.
+> +
+> +choice
+> +	prompt "NAX violation action mode"
+> +	default SECURITY_NAX_MODE_LOG
+> +	depends on SECURITY_NAX
+> +	help
+> +	  Select the NAX violation action mode.
+> +
+> +	  In the default permissive mode the violations are only logged
+> +	  (if logging is not suppressed). In the enforcing mode the violations
+> +	  are prohibited. And in the kill mode the process is terminated.
+> +
+> +	  The value can be overridden at boot time with the kernel command-line
+> +	  parameter "nax_mode=" (0, 1, 2) or "kernel.nax.mode=" (0, 1, 2)
+> +	  sysctl parameter (if the settings are not locked).
+> +
+> +	config SECURITY_NAX_MODE_LOG
+> +		bool "Permissive mode"
+> +		help
+> +		  In this mode violations are only logged (if logging is not
+> +		  suppressed by the "kernel.nax.quiet" parameter). The
+> +		  violating system call will not be prohibited.
+> +	config SECURITY_NAX_MODE_ENFORCING
+> +		bool "Enforcing mode"
+> +		help
+> +		  In this mode violations are prohibited and logged (if
+> +		  logging is not suppressed by the "kernel.nax.quiet"
+> +		  parameter). The violating system call will return -EACCES
+> +		  error.
+> +	config SECURITY_NAX_MODE_KILL
+> +		bool "Kill mode"
+> +		help
+> +		  In this mode the violating process is terminated on the
+> +		  first violation system call. The violation event is logged
+> +		  (if logging is not suppressed by the "kernel.nax.quiet"
+> +		  parameter).
+> +endchoice
+> +
+> +config SECURITY_NAX_MODE
+> +        int
+> +        depends on SECURITY_NAX
+> +        default 0 if SECURITY_NAX_MODE_LOG
+> +        default 1 if SECURITY_NAX_MODE_ENFORCING
+> +        default 2 if SECURITY_NAX_MODE_KILL
+> +
+> +config SECURITY_NAX_CHECK_ALL
+> +	bool "Check all processes"
+> +	depends on SECURITY_NAX
+> +	help
+> +	  If selected, NAX will check all processes. If not selected, NAX
+> +	  will check only privileged processes (which is determined either
+> +	  by having zero uid, euid, suid or fsuid; or by possessing
+> +	  capabilities outside of allowed set).
+> +
+> +	  The value can also be overridden at boot time with the kernel
+> +	  command-line parameter "nax_check_all=" (0, 1) or
+> +	  "kernel.nax_check_all=" (0, 1) sysctl parameter (if the settings
+
+	   kernel.nax.check_all ?
+
+> +	  are not locked).
+> +
+> +config SECURITY_NAX_ALLOWED_CAPS
+> +	hex "Process capabilities ignored by NAX"
+> +	default 0x0
+> +        range 0x0 0xffffffffffff
+
+Indent above line with tab + 2 spaces instead of all spaces.
+
+> +	depends on SECURITY_NAX
+> +	help
+> +	  Hexadecimal number representing the set of capabilities
+> +	  a non-root process can possess without being considered
+> +	  "privileged" by NAX LSM.
+> +
+> +	  The value can be overridden at boot time with the command-line
+> +	  parameter "nax_allowed_caps=" or "kernel.nax.allowed_caps=" sysctl
+> +	  parameter (if the settings are not locked).
+> +
+> +config SECURITY_NAX_QUIET
+> +	bool "Silence NAX messages"
+> +	depends on SECURITY_NAX
+> +	help
+> +	  If selected, NAX will not print violations.
+> +
+> +	  The value can be overridden at boot with the command-line
+> +	  parameter "nax_quiet=" (0, 1) or "kernel.nax_quiet=" (0, 1) sysctl
+
+	                                    kernel.nax.quiet
+
+> +	  parameter (if the settings are not locked).
+> +
+> +config SECURITY_NAX_LOCKED
+> +	bool "Lock NAX settings"
+> +	depends on SECURITY_NAX
+> +	help
+> +	  Pevent any update to the settings of the NAX LSM. This applies to
+
+	  Prevent
+
+> +	  both sysctl writes and the kernel command line.
+> +
+> +	  If not selected, it can be enabled at boot time with the kernel
+> +	  command-line parameter "nax_locked=1" or "kernel.nax_locked=1"
+
+	                                            kernel.nax.locked
+
+> +	  sysctl parameter (if the settings are not locked).
+
+
+-- 
+~Randy
+
