@@ -2,121 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E39AD3F15D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DBA23F15ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237031AbhHSJKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 05:10:10 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3671 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbhHSJKI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 05:10:08 -0400
-Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GqzTG6WSDz6BGCj;
-        Thu, 19 Aug 2021 17:08:34 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
+        id S237068AbhHSJN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 05:13:57 -0400
+Received: from mail-bn8nam12on2046.outbound.protection.outlook.com ([40.107.237.46]:18497
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235239AbhHSJNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 05:13:52 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DKxEJS+Bh7eYUTffQYQUXfh24EK0elbFraWi5Ir2IfDCcDhsTxaiYxlQ8yvNG2gYE6vZeMhGYS0q2On7IRXxhXw8ERk0jKFwvjnCnNc18IRfrVRZGPwN+jXkpQqPSDhLIlAt4jKWtZvtM6HN8sjKhorUfoe4pX0ZaLbIHl34hsClGUS9QNilwbnhwcqU6EwjLENycaBs/VFXx/Pqa1gU1VilEKaRjxFSVWFqWTVKazClJZGYvcvIhJcKNVR4BbHdpWzUFsM0Mxf47+HqfHsDFGq/wNQ/piSLay2RZNemKaLlzRk7Xi7fqSkSyi6og7DGEpa36xkHG+qn6ub6Zwtr9Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rPgRCIRAeKYU17bwuGbAgGsF5OKhSvbXPdbe2U/8Yu8=;
+ b=ia1lYuGwEcEzWnp6FW5zmXN0fZOJMUrkLyTjj3XY+3FJtCHzswz20B/GuPNF2bUqup/KaymAvwZANa16zg0RKWIjT4HyKhcaF8ecrqg+29jp5Gvxd6VoWFWGA2Vb5FEiO4IzKhIRtnV+8sTUBJbaz/hdSoqbqcafsSKRLghZ5nekZdprYGV/NAppozi9c81ZwRZVAgmnXXfLUXDiOUmV+WPKXn/f4/QKHKnmch0UQK2TJnYr9cPlwjQgov3ZgCGdgbtatFFvr/OVBgLRHXbn3n9jwkLGF1WpH0kAscIvLjEQZqoZJXNETtFsJTqHyU5YtcolTF94qDwuRzVJLu4nAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rPgRCIRAeKYU17bwuGbAgGsF5OKhSvbXPdbe2U/8Yu8=;
+ b=bmHUoueVByNXHxl3HLIjHHvpNNXaXm4J+47nKDGMqgg1HMUDwdCZzQZsmtsboLlZ21ztf+jJ+iv44SCyKV47e0lzoAL+8xgE861f3E6H7xea3yeh69vcpqrfxluEUZm64MJkeeuSWUzn/ZJHnWT4MS4sMCQEGm16wyBQkekaX+c=
+Received: from SN2PR01CA0070.prod.exchangelabs.com (2603:10b6:800::38) by
+ BN7PR02MB5186.namprd02.prod.outlook.com (2603:10b6:408:21::33) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4436.19; Thu, 19 Aug 2021 09:13:14 +0000
+Received: from SN1NAM02FT0005.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:800:0:cafe::4c) by SN2PR01CA0070.outlook.office365.com
+ (2603:10b6:800::38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.18 via Frontend
+ Transport; Thu, 19 Aug 2021 09:13:14 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT0005.mail.protection.outlook.com (10.97.4.182) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4436.19 via Frontend Transport; Thu, 19 Aug 2021 09:13:13 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 19 Aug 2021 11:09:29 +0200
-Received: from [10.202.227.179] (10.202.227.179) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 19 Aug 2021 10:09:28 +0100
-Subject: Re: [PATCH 0/3] Remove scsi_cmnd.tag
-To:     Hannes Reinecke <hare@suse.de>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     <satishkh@cisco.com>, <sebaddel@cisco.com>, <kartilak@cisco.com>,
-        <jejb@linux.ibm.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <hch@lst.de>
-References: <1628862553-179450-1-git-send-email-john.garry@huawei.com>
- <yq14kbppa42.fsf@ca-mkp.ca.oracle.com>
- <176ce4f2-42c9-bba6-c8f9-70a08faa21b8@huawei.com>
- <e0d7ba32-2999-794e-2ccb-fdba2c847eb1@acm.org>
- <038ec0c6-92c9-0f2a-7d81-afb91b8343af@suse.de>
- <c9d9891b-780b-4641-2b60-6319d525e17c@huawei.com>
- <6090371d-9688-11ae-8219-ba9929a96526@suse.de>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <6c83bd7f-9fd2-1b43-627f-615467fa55d4@huawei.com>
-Date:   Thu, 19 Aug 2021 10:09:27 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+ 15.1.2176.14; Thu, 19 Aug 2021 02:13:12 -0700
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Thu, 19 Aug 2021 02:13:12 -0700
+Envelope-to: git@xilinx.com,
+ vkoul@kernel.org,
+ dmaengine@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Received: from [172.23.64.5] (port=35264 helo=xhdvnc105.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <radhey.shyam.pandey@xilinx.com>)
+        id 1mGe6p-0005cj-Gl; Thu, 19 Aug 2021 02:13:11 -0700
+Received: by xhdvnc105.xilinx.com (Postfix, from userid 13245)
+        id B63F76109A; Thu, 19 Aug 2021 14:43:10 +0530 (IST)
+From:   Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+To:     <vkoul@kernel.org>, <michal.simek@xilinx.com>
+CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <git@xilinx.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+Subject: [PATCH] dmaengine: xilinx_dma: Set DMA mask for coherent APIs
+Date:   Thu, 19 Aug 2021 14:39:33 +0530
+Message-ID: <1629364173-408-1-git-send-email-radhey.shyam.pandey@xilinx.com>
+X-Mailer: git-send-email 2.1.1
 MIME-Version: 1.0
-In-Reply-To: <6090371d-9688-11ae-8219-ba9929a96526@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.202.227.179]
-X-ClientProxiedBy: lhreml710-chm.china.huawei.com (10.201.108.61) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: aeac7645-8879-4c44-c426-08d962f192d3
+X-MS-TrafficTypeDiagnostic: BN7PR02MB5186:
+X-Microsoft-Antispam-PRVS: <BN7PR02MB5186B4609408C3A34032FE46C7C09@BN7PR02MB5186.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PCg1VxqPYr60eIqsR+A502FN8isMSANM11KN2OVM9iML2/xWHCAOKVrXeGD3m2Osh1gaxI8ZaPBgPYJRBHvXHhoAVPRXMJNf6mYrs/ics89xT54NBMEH59xpwl1d14rUgJP8ycpS72APBqtFKli0S4gA1JjoiVV3O85oSjebTbHORvuKh+6Tw392XQoyDrFb2sIpi4PWUD4cLzu0sAkepnrVOjRXHFu0ixzAxLR0XkduIBCASl7YWDEAKs2QmoJR0TrE2vXL9Gpe0CXgxoFPtofBG6kTKpUazduMPLYQKqISff7+rZUK2lWRy2wXJrcsctyrctcFkEM4XBWuR6oR39r1XgT2U1Z6SRQ2eBuZGOISHpsw/UjjSdCtsEgtwOiZFi359soylzrATtly1C9NGuStGJrERfhX1RxweORzkPTjcWDgfVJ3N1Xw6Hocm7iv6Lj3Nz/wGe17lerEB92otu4ymS18rioMpo2nbAtWlcUuaLpwXFJPe3gKZx/GQAnetYetsaFsL7wfcgRuO3Y7uQQ/TfExHMTu5cHYluy/cOHfapIBylUZ5kZx09fAjQYiTPRN5ljaXE4XNFPHCUSiFSYGjeVsmb1KZ6jjsHWeyirfWuPSKbXapX2SCNfuz6iPgL3pQuIyB9ZfaoS6RwhiVd860K3MOXY7s+iBp+044+TAmej0+XOWX1sLoYa1QUYbKCkLv8mY3mideocanDmRObG7OJtfZYWQp0qvpPxXmCQ=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(396003)(136003)(46966006)(36840700001)(6266002)(478600001)(186003)(2616005)(336012)(70586007)(316002)(4326008)(5660300002)(26005)(83380400001)(47076005)(6666004)(82310400003)(426003)(70206006)(36860700001)(2906002)(36756003)(8936002)(356005)(54906003)(36906005)(107886003)(110136005)(8676002)(7636003)(82740400003)(6636002)(42186006)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Aug 2021 09:13:13.8818
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: aeac7645-8879-4c44-c426-08d962f192d3
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0005.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR02MB5186
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/08/2021 08:50, Hannes Reinecke wrote:
->>>    select CPU_32v4 if ARCH_RPC
->>
->> Does that build fully for xconfig or any others which you tried?
->>
->  > Yep, xconfig and full build works.
-> 
-> Well.
-> 
-> Would've worked if you hadn't messed up tag handling for acornscsi :-)
->  > Besides: tag handling in acornscsi (and fas216, for that matter) seems
-> to be completely broken.
-> 
-> Consider this beauty:
-> 
-> #ifdef CONFIG_SCSI_ACORNSCSI_TAGGED_QUEUE
->         /*
->          * tagged queueing - allocate a new tag to this command
->          */
->         if (SCpnt->device->simple_tags) {
->             SCpnt->device->current_tag += 1;
->             if (SCpnt->device->current_tag == 0)
->                 SCpnt->device->current_tag = 1;
->             SCpnt->tag = SCpnt->device->current_tag;
->         } else
-> #endif
+The xilinx dma driver uses the consistent allocations, so for correct
+operation also set the DMA mask for coherent APIs. It fixes the below
+kernel crash with dmatest client when DMA IP is configured with 64-bit
+address width and linux is booted from high (>4GB) memory.
 
-So isn't this just using the scsi_cmnd.tag as it own scribble?
+Call trace:
+[  489.531257]  dma_alloc_from_pool+0x8c/0x1c0
+[  489.535431]  dma_direct_alloc+0x284/0x330
+[  489.539432]  dma_alloc_attrs+0x80/0xf0
+[  489.543174]  dma_pool_alloc+0x160/0x2c0
+[  489.547003]  xilinx_cdma_prep_memcpy+0xa4/0x180
+[  489.551524]  dmatest_func+0x3cc/0x114c
+[  489.555266]  kthread+0x124/0x130
+[  489.558486]  ret_from_fork+0x10/0x3c
+[  489.562051] ---[ end trace 248625b2d596a90a ]---
 
-> 
-> which is broken on _soo many_ counts.
-> Not only does it try to allocate its own tags, the code also assumes 
-> that a tag value of '0' indicates that tagged queueing is not active:
-> 
+Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+Reviewed-by: Harini Katakam <harini.katakam@xilinx.com>
+---
+ drivers/dma/xilinx/xilinx_dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-In case you missed it, Arnd B tried to clear out some old platforms 
-earlier this year. With respect to rpc, Russell King apparently still 
-uses it and has some SCSI patches:
+diff --git a/drivers/dma/xilinx/xilinx_dma.c b/drivers/dma/xilinx/xilinx_dma.c
+index 75c0b8e904e5..ca59e02758c5 100644
+--- a/drivers/dma/xilinx/xilinx_dma.c
++++ b/drivers/dma/xilinx/xilinx_dma.c
+@@ -3065,7 +3065,7 @@ static int xilinx_dma_probe(struct platform_device *pdev)
+ 		xdev->ext_addr = false;
+ 
+ 	/* Set the dma mask bits */
+-	dma_set_mask(xdev->dev, DMA_BIT_MASK(addr_width));
++	dma_set_mask_and_coherent(xdev->dev, DMA_BIT_MASK(addr_width));
+ 
+ 	/* Initialize the DMA engine */
+ 	xdev->common.dev = &pdev->dev;
+-- 
+2.7.4
 
-https://lore.kernel.org/lkml/20210109174357.GB1551@shell.armlinux.org.uk/
-
-I wonder what they are and maybe we can check. Anyway... I'd run any 
-changes by him...
-
-> static
-> void acornscsi_abortcmd(AS_Host *host, unsigned char tag)
-> {
->      host->scsi.phase = PHASE_ABORTED;
->      sbic_arm_write(host, SBIC_CMND, CMND_ASSERTATN);
-> 
->      msgqueue_flush(&host->scsi.msgs);
-> #ifdef CONFIG_SCSI_ACORNSCSI_TAGGED_QUEUE
->      if (tag)
->          msgqueue_addmsg(&host->scsi.msgs, 2, ABORT_TAG, tag);
->      else
-> #endif
->          msgqueue_addmsg(&host->scsi.msgs, 1, ABORT);
-> }
-> 
-> And, of course, there's the usual confusion about when to check for
-> sdev->tagged_supported and sdev->simple_tags.
-> 
-> Drop me a note if I can give a hand.
-
-Thanks! Let's see what happens to the series which you just sent.
