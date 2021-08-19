@@ -2,101 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 478563F1647
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 100DA3F165B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237805AbhHSJd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 05:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237735AbhHSJdX (ORCPT
+        id S237252AbhHSJhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 05:37:54 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3672 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234341AbhHSJhx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 05:33:23 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8668CC061575;
-        Thu, 19 Aug 2021 02:32:47 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id q10so8074991wro.2;
-        Thu, 19 Aug 2021 02:32:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FO+lf3R/yjc9KGpGIWIOuNRXRBvu2rIu+mbHK5sUlLs=;
-        b=BM4IKNhCtQRKZxA0sZ4q1/jIzjHv+b7LZPW+AfBbbBQ0vP4MQlKD2NXPkieTMmquaD
-         kcLfOqxYwR9WnKn/TcY4IhyUUtuBXi0laK22N8HqvBPCS/HGQ7ha4TNeQUThChMpwL2t
-         xv7+CCGEd1IcRlV2AzP2hrh5omnShKYloHOw+uCVsvHLpiaOzNiTxgnzmQmb8z3272N1
-         M0WyPaS4B2PuFpjGPoU8W9Q3qGiKCVeaBlrPjz5sUJPlZbJm0wzxyxYKeExKrUP/G5ki
-         VliwdIAAhjkMCw0xOCmUp1eWu2bG1NPFs6Kf2Q6AmmdOaGl6+/kDVzap1r2qLSaMrTcQ
-         tpMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FO+lf3R/yjc9KGpGIWIOuNRXRBvu2rIu+mbHK5sUlLs=;
-        b=qo1dTgnvQrp/GNj+ScNeD7EpNOczpNnSraA5e/J3IYSdQnhMFyBYgcP748jvSSavQV
-         cNofDrsrZSUY7EJUecHcFO2H4e3KZljAMcHPkm3yhmcUos60jHozRnkd/0f//ZsfC0aF
-         NCxAS+tCFch0u5P/Xnmyl7y9fLzoseYFtz40rJeNYsNASjs6xkr+wGYUkAORl+BaraP+
-         vdlvH7k5zCpaIseSnnWGXIjTHpOGVizqWqw1GZKYJC75KMK+QGnrZGorTcbVALx6YeHL
-         QW+SYsZBDuXVVo4cGnndR5pIKd8tKsCMLPoZNtCtiOfUZWCe0tBrOUaKE7K6iaOy378/
-         yb7w==
-X-Gm-Message-State: AOAM530h0xqOjGwmZ8JLxk7sTsriK/1aDR3IYheZ94JghUzjB8paqC17
-        H4IcooCQIBzMIAtM/ZOsGkE=
-X-Google-Smtp-Source: ABdhPJwu7l1e14z3CvBWCEbrYHKKMJmpt16r4+Dcm6OhP5DvDOyQWjLUEWmRVRqIBmTBER8QJHSQKQ==
-X-Received: by 2002:a5d:4586:: with SMTP id p6mr2620112wrq.55.1629365566140;
-        Thu, 19 Aug 2021 02:32:46 -0700 (PDT)
-Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
-        by smtp.gmail.com with ESMTPSA id h11sm8485061wmc.23.2021.08.19.02.32.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 02:32:45 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Neuling <mikey@neuling.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Cc:     stable@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 2/2] powerpc: rectify selection to ARCH_ENABLE_SPLIT_PMD_PTLOCK
-Date:   Thu, 19 Aug 2021 11:32:26 +0200
-Message-Id: <20210819093226.13955-3-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210819093226.13955-1-lukas.bulwahn@gmail.com>
-References: <20210819093226.13955-1-lukas.bulwahn@gmail.com>
+        Thu, 19 Aug 2021 05:37:53 -0400
+Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gr05B31zTz6D9BK;
+        Thu, 19 Aug 2021 17:36:14 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 19 Aug 2021 11:37:15 +0200
+Received: from localhost.localdomain (10.69.192.58) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 19 Aug 2021 10:37:12 +0100
+From:   John Garry <john.garry@huawei.com>
+To:     <mdr@sgi.com>, <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bvanassche@acm.org>, <hare@suse.de>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH v2 0/2] scsi: qla1280: Resolve some compilation issues
+Date:   Thu, 19 Aug 2021 17:32:27 +0800
+Message-ID: <1629365549-190391-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 66f24fa766e3 ("mm: drop redundant ARCH_ENABLE_SPLIT_PMD_PTLOCK")
-selects the non-existing config ARCH_ENABLE_PMD_SPLIT_PTLOCK in
-./arch/powerpc/platforms/Kconfig.cputype, but clearly it intends to select
-ARCH_ENABLE_SPLIT_PMD_PTLOCK here (notice the word swapping!), as this
-commit does select that for all other architectures.
+As another follow-up to removing scsi_cmnd.tag in [0], remove its usage in
+the qla1280 driver lurking under a local build switch. Also fix
+pre-existing compilation issues under the same switch.
 
-Rectify selection to ARCH_ENABLE_SPLIT_PMD_PTLOCK instead.
+Based on mkp-scsi 5.15 staging at 848ade90ba9c
 
-Fixes: 66f24fa766e3 ("mm: drop redundant ARCH_ENABLE_SPLIT_PMD_PTLOCK")
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- arch/powerpc/platforms/Kconfig.cputype | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[0] https://lore.kernel.org/linux-scsi/yq14kbppa42.fsf@ca-mkp.ca.oracle.com/T/#mb47909f38f35837686734369600051b278d124af
 
-diff --git a/arch/powerpc/platforms/Kconfig.cputype b/arch/powerpc/platforms/Kconfig.cputype
-index 6794145603de..a208997ade88 100644
---- a/arch/powerpc/platforms/Kconfig.cputype
-+++ b/arch/powerpc/platforms/Kconfig.cputype
-@@ -98,7 +98,7 @@ config PPC_BOOK3S_64
- 	select PPC_HAVE_PMU_SUPPORT
- 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE
- 	select ARCH_ENABLE_HUGEPAGE_MIGRATION if HUGETLB_PAGE && MIGRATION
--	select ARCH_ENABLE_PMD_SPLIT_PTLOCK
-+	select ARCH_ENABLE_SPLIT_PMD_PTLOCK
- 	select ARCH_ENABLE_THP_MIGRATION if TRANSPARENT_HUGEPAGE
- 	select ARCH_SUPPORTS_HUGETLBFS
- 	select ARCH_SUPPORTS_NUMA_BALANCING
+Changes to v1:
+- Make SCSI_LUN_32() cast to int
+
+John Garry (2):
+  scsi: qla1280: Stop using scsi_cmnd.tag
+  scsi: qla1280: Fix DEBUG_QLA1280 compilation issues
+
+ drivers/scsi/qla1280.c | 29 +++--------------------------
+ 1 file changed, 3 insertions(+), 26 deletions(-)
+
 -- 
-2.26.2
+2.17.1
 
