@@ -2,132 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 733643F149E
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18EC93F14A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236920AbhHSH5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 03:57:11 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:41309 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229927AbhHSH5K (ORCPT
+        id S236994AbhHSH5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 03:57:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236379AbhHSH5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 03:57:10 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id AFC4D580B35;
-        Thu, 19 Aug 2021 03:56:34 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 19 Aug 2021 03:56:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=0eV2e4Kt4bNdKmcOimi64QwDPOM
-        ArP7lXcHLaxrh8n4=; b=yB3Iee0lCnm04lXOMQEZk+JX2ueSLYcimEiTt4Xrxkk
-        1U+OewzOvufFTmoC4arfSdYIys9U6enZj7Xz/OkcIMUxGlz9GojIkPJTi0mxNH0f
-        z2u14xUK+M47fvnVUkDggFNpyVbuiS8eXxfgBfOaWGuTb3AHnrExDmtV5FyzkiYC
-        strWxxxtSyQBpheFn580ZjdKYmiTojb5TURqh9iKjfbxMQ1gxcLt109y6c5NH48V
-        egiH1NGht9rbjPMFPVayW1IyOGaM5i3akxo/Ln5uR6HNuCP7Jj8d1k2dDl3hfcde
-        Op5Lb3iMLt9+2I6zLf/lJPd5ljl59P4t/K8OzynRu7g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=0eV2e4
-        Kt4bNdKmcOimi64QwDPOMArP7lXcHLaxrh8n4=; b=vHDw1246WMq7l281GJdEU/
-        pssk45Uw94P1LqAelquOrLRrAWaPKElgJOtXGvmFpmE3me3E7my/JDQaGuUIwT/b
-        s8Nr9xiPdumM0Mb+QbR2Blk0L/XdG8SyquDFZcw6WnqyQ1xcc2+tl8DbSakLJiu5
-        XQ9rAtgtZYUvZlzoayu9eMTOGPdaHYltQ3hCvX6alkF5mmTFrtx1gk41vhVCQdJ5
-        gPDcFWvEID1906UtZx2lsnuIkn3A70HQe3MvvkHCCkceiZtJpEkeWEQxXdmu96Lp
-        fwtEZzWSE8PQ9B5Bi/o25cxdeMZknlIf9LoEG8QlGc+rzUqXZXkmg42ccvcQ+Qag
-        ==
-X-ME-Sender: <xms:rw4eYapFGf0AG-I5upgnqvQz6ox5Q-YNluUCTUnb-4dFHsrvdxomYQ>
-    <xme:rw4eYYqBB2Uk6GCFGjIJi-DHSOWhrlUwp1aPONhNf7GthhLgMf140tyM90g49pSlG
-    2_-HUc4TirgLB69sPk>
-X-ME-Received: <xmr:rw4eYfN7LNF_y2CUJKot8gbzqYX4lPfs9IYMjtAXXhYELg0C1qr2tvwnQafeoVBT8u8e6iWI7r685jhbJf1DMKqBjpAp6iLEEZRW>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleeigdduvdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:rw4eYZ6ENEonOeb37AI--SlGM3sA76xCQ_Nh98Qhl4BQ-4MA6be5Ag>
-    <xmx:rw4eYZ4vbklc_TlslhM_pp2nsxcU9fihvSHvtqu_RaHbHgJcsc2acQ>
-    <xmx:rw4eYZjWQK0Nsls5co4ny5HXbO1BxnJ06cHLiHCBlBHLzAicWzaSBA>
-    <xmx:sg4eYYLLmXkFsxwzVUAuB729wkA-ZTF4V4b-yGgfYpC_1v6DE71UHQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 19 Aug 2021 03:56:31 -0400 (EDT)
-Date:   Thu, 19 Aug 2021 09:56:30 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Andre Przywara <andre.przywara@arm.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org
-Subject: Re: [PATCH v8 02/11] dt-bindings: rtc: sun6i: Add H616 compatible
- string
-Message-ID: <20210819075630.upliivqux4dsohzd@gilmour>
-References: <20210723153838.6785-1-andre.przywara@arm.com>
- <20210723153838.6785-3-andre.przywara@arm.com>
- <20210726144137.6dauuxdssu7yszox@gilmour>
- <20210802013938.29fa18ed@slackpad.fritz.box>
- <20210817073810.7stuzrppyjf4spab@gilmour>
- <YRtvl2FWKqAw4b3l@piout.net>
+        Thu, 19 Aug 2021 03:57:39 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E83A9C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 00:57:03 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mGcv1-0005Gs-Hd; Thu, 19 Aug 2021 09:56:55 +0200
+Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:5b60:c5f4:67f4:2e1e])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 68B0D66A457;
+        Thu, 19 Aug 2021 07:56:52 +0000 (UTC)
+Date:   Thu, 19 Aug 2021 09:56:50 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH v2 0/3] can: provide GPIO based termination
+Message-ID: <20210819075650.xc6qkbos6znasyax@pengutronix.de>
+References: <20210818071232.20585-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="3hmvsdooooerg7xw"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pl7hawpdzdrcfg4j"
 Content-Disposition: inline
-In-Reply-To: <YRtvl2FWKqAw4b3l@piout.net>
+In-Reply-To: <20210818071232.20585-1-o.rempel@pengutronix.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---3hmvsdooooerg7xw
-Content-Type: text/plain; charset=us-ascii
+--pl7hawpdzdrcfg4j
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Salut Alex,
-
-On Tue, Aug 17, 2021 at 10:13:11AM +0200, Alexandre Belloni wrote:
-> On 17/08/2021 09:38:10+0200, Maxime Ripard wrote:
-> > > > It's not entirely clear to me what those clocks are about though. I=
-f we
-> > > > look at the clock output in the user manual, it looks like there's =
-only
-> > > > two clocks that are actually being output: the 32k "fanout" clock a=
-nd
-> > > > the losc. What are the 3 you're talking about?]
-> > >=20
-> > > I see three: the raw SYSTEM "CLK32K_LOSC", the RTC input + debounce
-> > > clock (/32), and the multiplexed PAD.
-> >=20
-> > But the input and debounce clock is only for the RTC itself right? So it
-> > should be local to the driver and doesn't need to be made available to
-> > the other drivers
-> >=20
+On 18.08.2021 09:12:29, Oleksij Rempel wrote:
+> changes v3:
+> - use u32 instead of u16 for termination-ohms
+> - extend error handling
 >=20
-> Shouldn't they be exposed to be able to use assigned-clock?
+> changes v2:
+> - add CAN_TERMINATION_GPIO_MAX
+> - remove fsl,scu-index from yaml example. It is not used on imx6q
+>=20
+> Oleksij Rempel (3):
+>   dt-bindings: can-controller: add support for termination-gpios
+>   dt-bindings: can: fsl,flexcan: enable termination-* bindings
+>   can: dev: provide optional GPIO based termination support
 
-I'm not sure we would even need that? If it's an internal clock to the
-RTC, then we probably won't ever need to change it from the device tree?
+Applied to linux-can-next/testing
 
-Maxime
+Thanks,
+Marc
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
---3hmvsdooooerg7xw
+--pl7hawpdzdrcfg4j
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYR4OrgAKCRDj7w1vZxhR
-xcfHAQD57em6KsLSV7qIaoRsDHdIufLm3Kb3PQEB8BalFLnh9wEAriRxL2uxqKaW
-zsgaYApsMZjAkwzrGtWjndk9bGNnfQw=
-=cvW0
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEeDsAACgkQqclaivrt
+76mSfwf/dfvCL7pDwDqDSoM7OVCAM4dONYFMYDBg241hlE0YRCsH2Kgym0rG71EQ
+Z44O3yuvXqzQWNNNdrqOmmrNt3J6H9kpo955cfwElfgFrAI+GkrUC/TLdg1TwZXh
+l9gZqnp6Dq4Kis6FPkiRIsvHWTfwsRUzDCVz5IZiAlOryoKIij7yX7ljXAgvLmxn
+3dbBSku0TFuz7HJ6iX/uWpbtZ2/t9hmUyntPXv7C9XWqKgueyKy3fEOLYzXAd5K9
+FIuT6tfqn3cAUgIyFoO/3eKJFInhfNYBTLF7Dk+5YDuDkjVlcaEa+XntRSo6S842
+GFASKuVSLM2kkSYU7Gy6jjYif1JOQA==
+=PcYP
 -----END PGP SIGNATURE-----
 
---3hmvsdooooerg7xw--
+--pl7hawpdzdrcfg4j--
