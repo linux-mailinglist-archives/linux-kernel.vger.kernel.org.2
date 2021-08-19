@@ -2,82 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D1D3F1324
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 08:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E523F1331
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 08:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbhHSGQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 02:16:00 -0400
-Received: from mga09.intel.com ([134.134.136.24]:6923 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230292AbhHSGP7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 02:15:59 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="216488260"
-X-IronPort-AV: E=Sophos;i="5.84,333,1620716400"; 
-   d="scan'208";a="216488260"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 23:15:20 -0700
-X-IronPort-AV: E=Sophos;i="5.84,333,1620716400"; 
-   d="scan'208";a="522193920"
-Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.249.170.111]) ([10.249.170.111])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 23:15:19 -0700
-Subject: Re: [tip:x86/urgent] BUILD SUCCESS WITH WARNING
- 064855a69003c24bd6b473b367d364e418c57625
-To:     Borislav Petkov <bp@alien8.de>, kernel test robot <lkp@intel.com>
-Cc:     x86-ml <x86@kernel.org>, linux-kernel@vger.kernel.org
-References: <6118d218.4ZZRXYKZCzQSq1Km%lkp@intel.com>
- <YRjTkkpDjaWxEpjb@zn.tnic>
-From:   "Chen, Rong A" <rong.a.chen@intel.com>
-Message-ID: <ced3f2ab-54b6-95d7-7f5b-b6bb6a299330@intel.com>
-Date:   Thu, 19 Aug 2021 14:15:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S231201AbhHSGSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 02:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230475AbhHSGSF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 02:18:05 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A9AC061796
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 23:17:29 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id fa24-20020a17090af0d8b0290178bfa69d97so4110895pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 23:17:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=Z7TQEkkTOfvT3y1VcK9cbeGmLxLBDuWce4oY9e31CIQ=;
+        b=n8Z7pceL3Q1hHrYhRGbE2Ft6ysYoV2T29GwsgsIk5zym7iZcje0CXVg1jI36aNnFP1
+         wEt31EiA2dUBQwlv5rK6Pb4jBRjUZnVnX9lq3yYWlZnsAiqoC84b2+sIg5qRcoOEikt2
+         Bl5OLXFHBLycojOK68FIhPW3b2fskqhF3vr/eyYOYKdL7QspG0UOJAgIVnJ/rUe4LZFr
+         9Mx+8O2v0d2rHrH3yazUPQGMQQQiYdzhDIVBgB1HMOdlKqueyQlS0Pa++oE7KDNseaKY
+         ZqQcskpZ4qIHBPun+Nz8BNcPrFRsCGUIgrdD9AWMNWaoX41LuxEow35zOBfD0rRFPHfn
+         o2nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=Z7TQEkkTOfvT3y1VcK9cbeGmLxLBDuWce4oY9e31CIQ=;
+        b=ojrMiI96+U3yzWFUDdd75K3UoYKHxlm0LBax9CiZfDdglv1TNUSoJuzy2PLS+J5dcA
+         Zdxg/2B5TnO87wg+leM6X6zJ/fZbj9qK3b94hRp4XQ/O8exIlet8T04OpQ59gZwFDqDT
+         5984etVoje+HWGc8gV9kf+3x9cufQLimvPTlgO3U3SLoezUvtbaarsb3cgzdbyr50zdU
+         YqK7p+RGlwQEZS7U3NY5qJicNgCuSIB+PsQt0ebvTee0dRwQmW/t+JDSMwPaVg+yn5Ff
+         GGjPuHpNWZqCCN3rubuQ2YM2O+hpqFVVyJf6I7tU5oN03gJFk6izbfpFyJUO+ekfUnba
+         /eFA==
+X-Gm-Message-State: AOAM533FZXXwFXJAa8J4TDq3ySeMSEoEMbLutor8Dwm4HCQwn5dcFaRE
+        Ej05nxNRiny2bMnJ291V/QWNGg==
+X-Google-Smtp-Source: ABdhPJwi8ECnFjz7ftlBUkQP1U01xvcbaFwYmCvSxRCVadF/ZCBCreA9Xq0KVJGpteNV1tSqbtF8Eg==
+X-Received: by 2002:a17:90a:ce88:: with SMTP id g8mr13456163pju.116.1629353849006;
+        Wed, 18 Aug 2021 23:17:29 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id r18sm2222724pgk.54.2021.08.18.23.16.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 23:16:53 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 11:46:17 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
+Message-ID: <20210819061617.r4kuqxafjstrv3kt@vireshk-i7>
+References: <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
+ <20210818045307.4brb6cafkh3adjth@vireshk-i7>
+ <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
+ <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
+ <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
+ <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
+ <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
+ <20210818091417.dvlnsxlgybdsn76x@vireshk-i7>
+ <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
+ <f1314a47-9e8b-58e1-7c3f-0afb1ec8e70a@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YRjTkkpDjaWxEpjb@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f1314a47-9e8b-58e1-7c3f-0afb1ec8e70a@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/15/2021 4:42 PM, Borislav Petkov wrote:
-> Hi,
+On 18-08-21, 18:55, Dmitry Osipenko wrote:
+> 18.08.2021 12:41, Ulf Hansson пишет:
 > 
-> On Sun, Aug 15, 2021 at 04:36:40PM +0800, kernel test robot wrote:
->> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
->> branch HEAD: 064855a69003c24bd6b473b367d364e418c57625  x86/resctrl: Fix default monitoring groups reporting
->>
->> possible Warning in current branch:
->>
->> arch/x86/kernel/cpu/resctrl/monitor.c:310 __mon_event_count() error: uninitialized symbol 'm'.
->> arch/x86/kernel/cpu/resctrl/monitor.c:315 __mon_event_count() error: potentially dereferencing uninitialized 'm'.
->>
->> Warning ids grouped by kconfigs:
->>
->> gcc_recent_errors
->> `-- i386-randconfig-m021-20210812
->>      |-- arch-x86-kernel-cpu-resctrl-monitor.c-__mon_event_count()-error:potentially-dereferencing-uninitialized-m-.
->>      `-- arch-x86-kernel-cpu-resctrl-monitor.c-__mon_event_count()-error:uninitialized-symbol-m-.
-> 
-> AFAIR, I had already asked you guys to make those reports more useful
-> as, for example, adding a link to that randconfig above or even
-> attaching it so that a person - not a machine - reading it, can
-> *actually* act upon it.
-> 
-> But that hasn't happened.
-> 
-> Until it happens, I'm going to ignore all those reports from you.
-> 
+> Either way gives the equal result. The new callback allows to remove the
+> boilerplate dev_pm_opp_set_rate(clk_get_rate() code from the rpm-resume
+> of consumer devices, that's it.
 
-Hi Borislav,
+It may not be equal, as dev_pm_opp_set_rate() may do additional stuff,
+now or in a later implementation. Currently it only does
+regulator_enable() as a special case, but it can be clk_enable() as
+well. Also, this tries to solve the problem in a tricky/hacky way,
+while all you wanted was to make the genpd aware of what the
+performance state should be.
 
-Sorry about it, the actual link is at 
-https://lists.01.org/hyperkitty/list/kbuild@lists.01.org/thread/PZVMY3VJU4QY4HQXHK3MLPQ2KZ5CNAYH/,
-and it's still an internal report that the robot don't know whether it's 
-a false positive or not, we'll update the mail contents to avoid 
-misunderstanding.
+Your driver can break tomorrow if we started to do more stuff from
+this API at another time.
 
-Best Regards,
-Rong Chen
+> > dev_pm_opp_set_rate() is best called from consumer drivers, as they
+> > need to be in control.
+> >> What we need here is just configure. So something like this then:
+> The intent wasn't to use dev_pm_opp_set_rate() from
+> __genpd_dev_pm_attach(), but to set genpd->rpm_pstate in accordance to
+> the h/w configuration.
+
+Right.
+
+> On Tegra we have a chain of PDs and it's not trivial to convert the
+> device's OPP into pstate because only the parent domain can translate
+> the required OPP.
+
+The driver should just be required to make a call, and OPP/genpd core
+should return it a value. This is already done today while setting the
+pstate for a device. The same frameworks must be able to supply a
+value to be used for the device.
+
+> Viresh, please take a look at what I did in [1]. Maybe it could be done
+> in another way.
+
+I looked into this and looked like too much trouble. The
+implementation needs to be simple. I am not sure I understand all the
+problems you faced while doing that, would be better to start with a
+simpler implementation of get_performance_state() kind of API for
+genpd, after the domain is attached and its OPP table is initialized.
+
+Note, that the OPP table isn't required to be fully initialized for
+the device at this point, we can parse the DT as well if needed be.
+
+-- 
+viresh
