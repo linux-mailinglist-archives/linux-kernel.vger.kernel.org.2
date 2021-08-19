@@ -2,87 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A8243F1F01
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7043F1F05
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232827AbhHSRZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 13:25:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44310 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232969AbhHSRZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 13:25:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB38261075;
-        Thu, 19 Aug 2021 17:24:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629393869;
-        bh=KbzYgF4Sy53ZuirB0lvneIh/3iisHVfmHDhYsyK4XIU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oyiyF6X3LCqd5jewhmU+5HfJ9QivtiexrD6RIeRsIvfvPR0Xz4ZBSjSuAuDv5PRau
-         jCPFlgMHda3n9k580KXa8o8Mi2y7by8OLvmgdUtbQv6H9HsSrF75kAdU1vM5wu+ZVL
-         u/EevEv7StSaB3MED4smjVUBDCmhhdRIrDQzy5v2ai6K0mc0fjPVOD8gNVxANfI2O1
-         5fcoUHyZbJfgLHPOtLu0zliS01rcoCy8ensuJ6VTND9+By/HopqC0/EVhAgIkGlFrV
-         kYA/SvVBfHq7o4nAMRAg66+8TUlyUJtkAbFghdCWXFmOdjXIkJJedJScVwMMDij9bU
-         MFyD6s8K8FMFw==
-Date:   Thu, 19 Aug 2021 19:24:26 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, viresh.kumar@linaro.org,
-        sfr@canb.auug.org.au, conghui.chen@intel.com
-Subject: Re: [PATCH] i2c: virtio: Fix the compiler warning when CONFIG_ACPI
- is not set
-Message-ID: <YR6Tysn548x+2Szz@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, viresh.kumar@linaro.org,
-        sfr@canb.auug.org.au, conghui.chen@intel.com
-References: <4309f869890e70810f2c40a8d60495240e318303.1629333590.git.jie.deng@intel.com>
+        id S233904AbhHSRZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 13:25:46 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:37788 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233802AbhHSRZn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 13:25:43 -0400
+Received: by mail-io1-f72.google.com with SMTP id h3-20020a056602008300b005b7c0e23e11so3725570iob.4
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 10:25:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=IP7asdtdFlXOxOEQ1U/M8uS3b6zpj0naPI5qY7HFuyk=;
+        b=keJkcNOAC4UmaK5IkiS8Hlg/HakXZlr18B7je+zGYPzTVdB85L/cdhNfUWGxKKZSek
+         SE9ymAzFkX82T84WP+eGkV4hO8B2zO1kXKAXUE6jrgwgV0TrISP+cHEgymPLo0u+HqJw
+         IKvFKY3KTmksxv6zjyye/bCBJD4IbhPZGgJvcYJEIQXiE90OUMzhJhKSMakuUWBD1dXl
+         OiUDHxbtQzOGSTORwTR2kTBzPE6O98sLNxSTwQAKaTSTquz79j5ciqxaZLFPV3sjhHJ9
+         RqUSX00A4ZqGTvfv5S3idwV2Uztb8QCaBR1I20/bTOAcvnm0RxKF6PmwykXxk44EdpgE
+         VMng==
+X-Gm-Message-State: AOAM532TVcgrUF0Zcn0RE1o0dU21RWIsbCYJOM6HBD8jTUFZCKvu+Ejr
+        b2KkBibyqYxx7fwQaQ/gMqt2oA2pvFp+8+QwExrvNdlXY5/L
+X-Google-Smtp-Source: ABdhPJz8Eh1WAR5J1R4msOtBq6GuxBX1ajRoAfCtPA8fNLrLBK7DYhscYHz2hkMGcWd3N5eUqC3mwBzGD+WrIO8BgUyaftSYHgNl
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="flWGK3gheJDnxcoG"
-Content-Disposition: inline
-In-Reply-To: <4309f869890e70810f2c40a8d60495240e318303.1629333590.git.jie.deng@intel.com>
+X-Received: by 2002:a6b:fb03:: with SMTP id h3mr12381959iog.198.1629393907150;
+ Thu, 19 Aug 2021 10:25:07 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 10:25:07 -0700
+In-Reply-To: <da19f91c-1257-e6b8-7fc7-7f852a489cd8@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000008f3c605c9ecd545@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in tctx_task_work (2)
+From:   syzbot <syzbot+9c3492b27d10dc49ffa6@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---flWGK3gheJDnxcoG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-On Thu, Aug 19, 2021 at 08:48:41AM +0800, Jie Deng wrote:
-> Fix the compiler warning "drivers/i2c/busses/i2c-virtio.c:208:17:
-> warning: unused variable 'pdev' [-Wunused-variable]" when CONFIG_ACPI
-> is not set.
->=20
-> Fixes: 8fb12751ac78 ("i2c: virtio: add a virtio i2c frontend driver")
-> Signed-off-by: Jie Deng <jie.deng@intel.com>
+Reported-and-tested-by: syzbot+9c3492b27d10dc49ffa6@syzkaller.appspotmail.com
 
-Applied to for-next, thanks! Since I need to rebase for-mergewindow
-anyhow, I might just squash it into the main patch.
+Tested on:
 
---flWGK3gheJDnxcoG
-Content-Type: application/pgp-signature; name="signature.asc"
+commit:         923ffe35 Revert "io_uring: improve tctx_task_work() ct..
+git tree:       https://github.com/isilence/linux.git syztest_ctx_tw
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cb4282936412304f
+dashboard link: https://syzkaller.appspot.com/bug?extid=9c3492b27d10dc49ffa6
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmEek8oACgkQFA3kzBSg
-KbY07hAAgITMkKNwCFQbuyyywSxWgjPihrseu1b5U5SxyHR071H3L0Ec0qwz3YpW
-inPAANbk0RtPEQaDfY2euP42A1HPA8BA2P2QG1wrG7j+mkE+e5E/pPJ6Fm5Gvmrw
-WXPtVuGv3FePr4Adc3PTGeE3R3/t9Xdm/Lsgl3Gm80FsEYolQWpinpiiyu6/r6Lr
-ZLtR/yi8h+diXx/qB59k8nKNP3S1g/ywF4TTwKkncitahj6N0/Ii1AzI7qme3rbX
-0arhenE8vqq23rpcYIZoCXT9nYMa1q36oS1peO4U789gTH4EsjyTykUhk/ZmgLxo
-t7Y7od8C18NWv7iqsMmxiKOmPIXxH+I3cQYrC/BcsU6C4OVk6dAeHnO34ZY1gccC
-Dt6CEKp9S690RWR7J+sYEg/F6eXUOnZhX5LGCR7jQpf+9vctmKaeIUH3FHSmz/VF
-LyxbrC4Sg0STRfXu7gYv6R+DFRJXYbas90ylvJn+zc+FLE6lPDxS5DWK3mXbxger
-/Rl33o0NHKJlP3nWNuB/Wb8DcQBeoKXQi/QzkceTFSDdG00MYhsmxtcmO5kpVGZm
-wzw7hGGpbPOjKIDsjEfoZdNfobtCYCBoNSwjndfFhaalkLz5jFX3iGE+vyVKyrNh
-Eqc40XmBlY5SbG/sXrfEd5duskq+moJyBKCaywzKPE/alTjmmt0=
-=WFAy
------END PGP SIGNATURE-----
-
---flWGK3gheJDnxcoG--
+Note: testing is done by a robot and is best-effort only.
