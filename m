@@ -2,150 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5495E3F1225
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 05:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 598543F1232
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 06:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236658AbhHSD5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 23:57:44 -0400
-Received: from mail-dm6nam10on2088.outbound.protection.outlook.com ([40.107.93.88]:45515
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236523AbhHSD5h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 23:57:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cHwdlLXSR5GIdHdVgOkMnbZyMH2W6+3ScJIJv6R2kFc+dXjNfTcwf3Tr02yFNA2/MPYSSfKbJbnN7uYjgnGGAoSwJJeAfJH2QQwMIgC59sXC4Ot84NwVZAvc3+kgcLYnhnSxHT9QXEu1rFgUrYiwLoVR+qp9Hv/vE8eHVWDHrDFhlrQRbHn/x1soYRpx6QlV5CYQwkD6k0lC/wQhkE5YQvVgI0MH0Tyzi0QA/l+TxJS+m6wkx3gUTv5UrMwWhm1gCwa0F3ZOs9iV/PULDEZiYVOUVF4DwRUBDUonGO0pVGTKSGrgLsns5XZ6gmBVAovuXxK0dD0p2V8YUEmyk6mGAA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TKxJ5I8e1GOWzdi3MvrtUHVkXu50nqZ252Iz2uNFsY8=;
- b=Sx3ed5UWE358aJ/ZKJkODjTpfP/rtEfr7WJZLVXUy7GTxBW0RIvp15NzTYagDTsBJp/7uce1hOCHdRfF04svuvkFUW+toSW5kfLz4YtINjYpEbHMY4OJaWc8uRkd2M+yN38QrdHbZ3/ag10hOBiJ591FUh1+t6ORo7WBzSV4Lsbcr/oTErX7j9bB+TUf1bGfBnVkWps9GKLpwjz7CYZ9Zy+TkOIq7i1h9aftGHMKcUUu1Eb5kr9h2Nj9A2/eKhYjyYpoWi471MHdSYKKQ+7ka3IT+jVlPH3yS8/A+X0/XyFS7ryhtJHFmlgPf80dy08AYY+dTSlCTgq0NyR6d2vzSw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
- dkim=pass header.d=xilinx.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TKxJ5I8e1GOWzdi3MvrtUHVkXu50nqZ252Iz2uNFsY8=;
- b=Mj/xauUGJfOEC2E83Hh8ojzqu3ErMGzPMePLYetMDPqGg7k/1rFamacG2fyBrodUGzRPe/wpdo/IXPAnASH7DyD91kiA3nGGJsfaMdFo2CbK5XZip74i9pnvdEAz659OLKs9bBcRG+nCBLwFiOgKNnzWJTRn1Hv8FRrvu0NfDDc=
-Received: from BYAPR02MB4488.namprd02.prod.outlook.com (2603:10b6:a03:57::28)
- by BY5PR02MB6487.namprd02.prod.outlook.com (2603:10b6:a03:1c5::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Thu, 19 Aug
- 2021 03:57:00 +0000
-Received: from BYAPR02MB4488.namprd02.prod.outlook.com
- ([fe80::99ea:4428:526e:4a82]) by BYAPR02MB4488.namprd02.prod.outlook.com
- ([fe80::99ea:4428:526e:4a82%7]) with mapi id 15.20.4436.019; Thu, 19 Aug 2021
- 03:57:00 +0000
-From:   Ronak Jain <ronakj@xilinx.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     Michal Simek <michals@xilinx.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rajan Vaja <RAJANV@xilinx.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        Sai Krishna Potthuri <lakshmis@xilinx.com>
-Subject: RE: [PATCH 0/3] Add support for runtime features
-Thread-Topic: [PATCH 0/3] Add support for runtime features
-Thread-Index: AQHXk2ixXi8uESa72Ueifep+sQai56t46Z6AgAFLglA=
-Date:   Thu, 19 Aug 2021 03:57:00 +0000
-Message-ID: <BYAPR02MB4488B0685113564403A17158A4C09@BYAPR02MB4488.namprd02.prod.outlook.com>
-References: <20210817130553.20219-1-ronak.jain@xilinx.com>
- <YRy/+epfpiRq2fLr@kroah.com>
-In-Reply-To: <YRy/+epfpiRq2fLr@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=xilinx.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6c3d04f2-d02e-4449-f1fa-08d962c565cc
-x-ms-traffictypediagnostic: BY5PR02MB6487:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR02MB64876466619FB1B5F460207DA4C09@BY5PR02MB6487.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:849;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: m8chqghQ506W69yxwjQz2CgHcQbf+TG516onKaRdJj+gyKW/cxQkGH2+AEMNwRgUEB05GSaDiFZfTo1NeXEW0LhskTqO07Vn/xA0h4zZz3HVfBsww0Ko5g+17sNu+1+a0g+VKjEBK4PXdcVcLX8EokxeWWxszyriy9QZqqgP9d2GFcwQM+bovvPZ9WIxXIsc017xS5RDHiCjZQk/eHZ28AdNnwvGFdE+eQdnPLGitkDifw46crc9bwP1mbhGuE0cOJ4vFGpJdJ20WxCVFRppsNxoju9RLUYnrlb5ZPTQTh/TIsOm5I8OCHYY58RvvEFTQ1aIhmoy9V+wvC+EVet2XwD8vCQPa3zKIaaCEvmkjVaCylgvMElPKtqDxrwweY4Ei0FQUR7OwPdsCdH5ExaEY4KRpXCpIyALgWtcL3c93kkyBYe/v6dOboEFPWrRRBpli9w8vLS6w8Gq6O7nZbl6eqgnt0ys9bkGzdfZFo6xJYZoe0t6PwcFPNZHgEP+y3b6bKwu6i1RBFHgS0tAEN4d1tVanH+24Q/6TfEAMbgDzbkjdf5BaMpIy7WDhm+KUnGE+BEQLxRseFRLGh6Xakw4fLq4JRHAAGUog/UU3n64UonOS+ZopWY/9rKhgEZgSnjcHwPvltCUBsTeFImt/LTOT3GGkUxJUJ6nxa1LdFbvBPiMur+BOs6SgJuZjgo/W8UricaGRzCxIpcFOtKYBYybgQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB4488.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(107886003)(316002)(6916009)(8936002)(2906002)(86362001)(33656002)(122000001)(38100700002)(53546011)(6506007)(83380400001)(71200400001)(5660300002)(4326008)(55016002)(52536014)(4744005)(54906003)(7696005)(66946007)(508600001)(64756008)(66476007)(66446008)(38070700005)(66556008)(9686003)(76116006)(186003)(26005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?DbcH6iHutJp5XkOeRouIlgRfCZfYj+p/cqPrNdlJMPlieyhftsuDGFRVcBhn?=
- =?us-ascii?Q?xaQAaiXjyoSNkw+qJ6zYIfCZyxXtxdFHH1FOeJg7KaDajn91y305zrCkp2zH?=
- =?us-ascii?Q?6OkyyFstaBEKYVeI3OI9nBuQTdjRW6oW/GjBgvhn//NCYFEdaPv2m+BaqGyA?=
- =?us-ascii?Q?yw5QZHrsuuZt4ecvjh31dAbZ8iq6Gv6Nt6dahRdwiUPzgChEq1UQ1ff6ogod?=
- =?us-ascii?Q?56BG/qfGLlmol4Jg9/MGxga8WvRDCjS4VGVBGsqeACgU5IPzbr7tpeBEtR3r?=
- =?us-ascii?Q?0SmHudEAmFrr+TIOGbuONnTbVJh/F1i5+iXBXfld3noI6Pr7Iax+cg7UXPBm?=
- =?us-ascii?Q?n91NIgObyGiNQK1pMmnW39AgFnkIzdbiMbvZAF8D8IxvRZh458opB0dpoxVV?=
- =?us-ascii?Q?10quoMiGDkqpuOu3NLh4HDDMZ7dJzlJOqjb8wRBurZP/krxTVmupKV/6zcB7?=
- =?us-ascii?Q?XyaPZM6h6fpKbfkO0t3pztZ1OJgK/6vNYbc4tEMTnHEzysZTKgVefJDINlI7?=
- =?us-ascii?Q?eQ+amvuj+dXvWqWPV0QXGQwkQ1qthshOUypjCXYZmcMTQqx5u7f1ocyPsYp5?=
- =?us-ascii?Q?hbimEceMg19OoChr8PCIT9RsTr8158OFIgWvUYHcetxM3JNiSl18CXnGNs56?=
- =?us-ascii?Q?0DS7JdPePx3OY3opKpMP5B35HPRiY90j8MmXIZr4hiMAe7+dR/zDThgH/75p?=
- =?us-ascii?Q?+W51Q3l+VV2sXD35grLE/95i2oQ2Sl/HJV9fMUF2r6XqO/RLMO5xbsqL8DMP?=
- =?us-ascii?Q?liMEGakQM/C22/uiNmZ4fxUHfeQ1bFyefF/7frYgWUn/tXqNOAmJg1S3Thcv?=
- =?us-ascii?Q?6jLXJNQACLBezyoStni9xAh1IPuXVjfc4+c2Cra9ycMaE5BCyOkeO+zGOzsG?=
- =?us-ascii?Q?DVrDJBfsVwfIjLmmJHiou5Ei5tWKG9CEIH43s7wPGqeR/jleoyEjSUeP3fWG?=
- =?us-ascii?Q?MbVHIMJekocFW4xmfAZRlr0amO6h+Cvj1WNmOkgfBcekLqlqJ/cfJz2BAqGl?=
- =?us-ascii?Q?nI6ibTaClOLbnAZVaObZXj7WpVNQAdt4N+r/HjAFWZZi0xK8W9vn+R/nVAZi?=
- =?us-ascii?Q?teFqpO6ErCG4OkbfEuVXU8oKYak9fQMZmii40dPqPKAqKMZ3GxeqT8pnT4Zu?=
- =?us-ascii?Q?YoBx9a3alGJ7VC4rIEXBitbhfSIYMv4cvQYr+TmGTBtJJhYpXGic+odtCeHR?=
- =?us-ascii?Q?FrGEQrvALvuUdZr972+aAGCkVuA3xczV4a41sbNSHzwN7lRLFz7Mxim/7MeV?=
- =?us-ascii?Q?cjKc60uKp75q6iygU/VHpccP+Zrlh7jPOA6fGeXEETGY8fSecxX8vgn0nCX+?=
- =?us-ascii?Q?9hdVEkXY9bXCB4dG5Kjkaa7y?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S229548AbhHSEJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 00:09:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229451AbhHSEJm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 00:09:42 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3BF6C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 21:09:06 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id m21so5690961qkm.13
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 21:09:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:resent-from:resent-date:resent-message-id
+         :resent-to:dkim-signature:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=Orh999XT8d2Kln1fT02eFQ3PZPZed2LISzwhjSssmZo=;
+        b=ZXLmWAhgC0rBSgJBLc7SKcSjdsvTHDzrJyA2L01jyQpLC7iLORIqlq4uSjHeg94Ddq
+         bsw4Vx6HJiz+7ppRS/K5dUfGmeilF0LkHT6iyEmASRyQjzFOAQuodu9YLXO4TiytM6Jy
+         SGCRE6wlvlP+4vVqt7/ypLqfye1YJFFbkEseOEKDlBzANjntmIzj7xkOKJ1FiIeKHrcR
+         sH9JyGeMcjd2Uhs73DHBdgTaotiU86j9PktNL/ElSnO1OS4rKOgAZYpW3QnRtJYRJEiR
+         kr6IqMYTP4l1sHJ8oj/gOv2RgrdcglRBNyv66gsAERmd+k1A2qTrpLH6bBTvF5/Uv7vy
+         wMGw==
+X-Gm-Message-State: AOAM533Vt+8eomhffwBdWoWQNr0D4FY5G8aomLuqzPvj1xYleC0a/RYL
+        FECUuobeJYLh+pOt2kBosbRU2jqdPXg=
+X-Google-Smtp-Source: ABdhPJyZDTWnTWoh/oZhk/M0WYcmejRgBqJK4IuBwRC7ZcsqCAYco6pfGoDcaQtmGt3XarFdpL7vMA==
+X-Received: by 2002:ae9:f44c:: with SMTP id z12mr1826768qkl.433.1629346145722;
+        Wed, 18 Aug 2021 21:09:05 -0700 (PDT)
+Received: from vps.qemfd.net ([2600:3c02::f03c:91ff:fe93:b216])
+        by smtp.gmail.com with ESMTPSA id k186sm1075155qkd.47.2021.08.18.21.09.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 21:09:05 -0700 (PDT)
+Received: from schwarzgerat.orthanc (schwarzgerat.danknet [192.168.128.2])
+        by vps.qemfd.net (Postfix) with ESMTP id E49F12B98A
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 00:09:04 -0400 (EDT)
+Received: by schwarzgerat.orthanc (Postfix, from userid 1000)
+        id D97536002B4; Thu, 19 Aug 2021 00:09:04 -0400 (EDT)
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on schwarzgerat.orthanc
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        DKIM_SIGNED,DKIM_VALID,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
+X-Original-To: dank@localhost
+Received: from schwarzgerat.orthanc (localhost [IPv6:::1])
+        by schwarzgerat.orthanc (Postfix) with ESMTP id 8D2B9600244
+        for <dank@localhost>; Wed, 18 Aug 2021 23:49:19 -0400 (EDT)
+X-Original-To: dank@qemfd.net
+Received: from 192.168.128.1 [192.168.128.1]
+        by schwarzgerat.orthanc with IMAP (fetchmail-6.4.21)
+        for <dank@localhost> (single-drop); Wed, 18 Aug 2021 23:49:19 -0400 (EDT)
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+        by vps.qemfd.net (Postfix) with ESMTPS id 031E82B98A
+        for <dank@qemfd.net>; Wed, 18 Aug 2021 23:49:19 -0400 (EDT)
+Received: by mail-ed1-f51.google.com with SMTP id r19so6560031eds.13
+        for <dank@qemfd.net>; Wed, 18 Aug 2021 20:49:18 -0700 (PDT)
+X-Received: by 2002:a05:6402:649:: with SMTP id u9mr13707839edx.224.1629344957596;
+        Wed, 18 Aug 2021 20:49:17 -0700 (PDT)
+X-Forwarded-To: dank@qemfd.net
+X-Forwarded-For: dankamongmen@gmail.com dank@qemfd.net
+Received: by 2002:a54:2747:0:0:0:0:0 with SMTP id t7csp454443ecq;
+        Wed, 18 Aug 2021 20:49:16 -0700 (PDT)
+X-Received: by 2002:a05:6214:88b:: with SMTP id cz11mr12556747qvb.29.1629344956242;
+        Wed, 18 Aug 2021 20:49:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1629344956; cv=none;
+        d=google.com; s=arc-20160816;
+        b=qVWNcWIaXDlEIcsS4UNfLnYRfBZi5+S0e9zGufmlsUhH2sqQtJ8vPY7+K9h6Nwh/vp
+         8b7xBLNHQKVpqMh3f7e27zW8JJnzVNxkDphPk1+U2FJa2X7Fy4uxusxVkyv6k9DIqQrF
+         pkjDB8J7xdrNxTc1gPZUrCrWCxAmmlGzj6t5h9SrBMerYT9qd6KnC/FOEYOaJ2hwDUpH
+         +i9tmcrY1fQjImB1uDVRTUt6XrVDnmDaFsWMpZoXID/829AO9n2kH0WKHViFCpIvep37
+         hKGn3E60L+vHw5aNFoRv0T9z2EF+VMvQdqj917ljsGr11B/TI/VaIZkFsoDz7kPLZx0P
+         tXQw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:dkim-signature;
+        bh=Orh999XT8d2Kln1fT02eFQ3PZPZed2LISzwhjSssmZo=;
+        b=eGfAbqh5TMKBOYx5hxUS6q5jzjb9jd87Qm/xGpmU2tg2OwW2xhKGH7yFbugyiMt/wh
+         oSaljBtCupV/LjYkq0VMeQRqU4YFI7Sjt33HuyaTuaPMqVCGoa2dJH0+ZyWSFlawi/6z
+         nLUKotpIdo86GBC0JHj+Htm8VmMz2YHfYoljcD9eA+v5k/9FI4ZiI0k4JD+hqFbNsfho
+         WjFSWPmK64T88vNBOmIYnTEzfMaFyWB2rM/iFiIWsyfRRSm9eMZksrxd+vFzWt7lB8om
+         LAVe+yUKNTOIcnObuR0DiNU52h7T6VaJYkZtwNa5JiPTI8ysVFatdqIN+Ma1+jUaaPBu
+         POHg==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@linux.com header.s=krs header.b=fHZEHGms;
+       spf=pass (google.com: domain of bounce+7373bc.f44a6-dankamongmen=gmail.com@linux.com designates 166.78.68.68 as permitted sender) smtp.mailfrom="bounce+7373bc.f44a6-dankamongmen=gmail.com@linux.com";
+       dmarc=fail (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com
+Received: from m68-68.mailgun.net (m68-68.mailgun.net. [166.78.68.68])
+        by mx.google.com with UTF8SMTPS id v17si1426622qta.3.2021.08.18.20.49.15
+        for <dankamongmen@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Aug 2021 20:49:16 -0700 (PDT)
+Received-SPF: pass (google.com: domain of bounce+7373bc.f44a6-dankamongmen=gmail.com@linux.com designates 166.78.68.68 as permitted sender) client-ip=166.78.68.68;
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=linux.com; q=dns/txt; s=krs;
+ t=1629344956; h=Content-Transfer-Encoding: MIME-Version: Message-Id:
+ Date: Subject: Cc: To: From;
+ bh=Orh999XT8d2Kln1fT02eFQ3PZPZed2LISzwhjSssmZo=; b=fHZEHGmsZzsMeh6M99QuTRLYPsxkKW1gGFocckw5V+oTPaB0Rs1A2sYVx66kxGzZYKZzZKqI
+ +BqiAQh8KOQ2qk1qETy53bgQDR+vYlCfBoqAaEOwr49mEMKF29x0JsMw1zKI5EXCpaQF9P39
+ VLSkxSJrbwMj++uUe019O8FPlC4=
+X-Mailgun-Sending-Ip: 166.78.68.68
+X-Mailgun-Incoming: Yes
+X-Envelope-From: <dank@schwarzgerat.orthanc>
+Received: from vps.qemfd.net (vps.qemfd.net [173.230.130.29])
+ by mxa.mailgun.org with ESMTP id 611dd4b8.7fad4c4b6340-api-n13;
+ Thu, 19 Aug 2021 03:49:12 -0000 (UTC)
+Received: from schwarzgerat.orthanc (schwarzgerat.danknet [192.168.128.2])
+        by vps.qemfd.net (Postfix) with ESMTP id 4A4FC2B98A;
+        Wed, 18 Aug 2021 23:49:11 -0400 (EDT)
+Received: by schwarzgerat.orthanc (Postfix, from userid 1000)
+        id 4313D6002B4; Wed, 18 Aug 2021 23:49:11 -0400 (EDT)
+From:   nick black <dankamongmen@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     nick black <nickblack@linux.com>
+Subject: [PATCH] console: consume APC, DM, DCS
+Date:   Wed, 18 Aug 2021 23:48:06 -0400
+Message-Id: <20210819034805.33328-1-dankamongmen@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB4488.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6c3d04f2-d02e-4449-f1fa-08d962c565cc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Aug 2021 03:57:00.4695
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /TjAs2rDH2wsIM+SWHIaeSvsJWE8geAq/n9N7KU0ROFBvFua7EX2UImt8Oy+hfRE4bZFv3YoA2acrsEYo4Ts2Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR02MB6487
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg KH,
+From: nick black <nickblack@linux.com>
 
-Thanks for reviewing.
+console: consume APC, DM, DCS
 
-I will fix footer and submit new version.
+The Linux console's VT102 implementation already
+consumes OSC ("Operating System Command") sequences,
+probably because that's how palette changes are
+transmitted. In addition to OSC, there are three other
+major clases of ANSI control strings: APC ("Application
+Program Command"), PM ("Privacy Message", and DCS
+("Device Control String"). They are handled similarly
+to OSC in terms of termination.
 
-Thanks,
-Ronak
+Source: vt100.net
 
-> -----Original Message-----
-> From: Greg KH <gregkh@linuxfoundation.org>
-> Sent: Wednesday, August 18, 2021 1:38 PM
-> To: Ronak Jain <ronakj@xilinx.com>
-> Cc: Michal Simek <michals@xilinx.com>; linux-kernel@vger.kernel.org; Raja=
-n
-> Vaja <RAJANV@xilinx.com>; corbet@lwn.net; linux-arm-
-> kernel@lists.infradead.org; arnd@arndb.de; Sai Krishna Potthuri
-> <lakshmis@xilinx.com>
-> Subject: Re: [PATCH 0/3] Add support for runtime features
->=20
-> On Tue, Aug 17, 2021 at 06:05:50AM -0700, Ronak Jain wrote:
-> > This email and any attachments are intended for the sole use of the nam=
-ed
-> recipient(s) and contain(s) confidential information that may be propriet=
-ary,
-> privileged or copyrighted under applicable law. If you are not the intend=
-ed
-> recipient, do not read, copy, or forward this email message or any attach=
-ments.
-> Delete this email message and any attachments immediately.
->=20
-> This footer means that this has to be ignored and can not be used for ker=
-nel
-> development at all.
+Add three new enumerated states, one for each of these
+types. All three are handled the same way right now--they
+simply consume input until terminated. I hope to expand
+upon this firmament in the future. Add new predicate
+ansi_control_string(), returning true for any of these
+states. Replace explicit checks against ESosc with calls
+to this function. Transition to these states appropriately
+from the escape initiation (ESesc) state.
+
+This was motivated by the following Notcurses bugs:
+
+ https://github.com/dankamongmen/notcurses/issues/2050
+ https://github.com/dankamongmen/notcurses/issues/1828
+ https://github.com/dankamongmen/notcurses/issues/2069
+
+where standard VT sequences are not consumed by the
+Linux console. It's not necessary that the Linux console
+*support* these sequences, but it ought *consume* these
+well-specified classes of sequences.
+
+Tested by sending a variety of escape sequences to the
+console, and verifying that they still worked, or were
+now properly consumed. Verified that the escapes were
+properly terminated at a generic level. Verified that
+the Notcurses tools continued to show expected output on
+the Linux console, except now without escape bleedthrough.
+
+Signed-off-by: Nick Black <nickblack@linux.com>
+---
+ drivers/tty/vt/vt.c | 31 +++++++++++++++++++++++++++----
+ 1 file changed, 27 insertions(+), 4 deletions(-)
+
+diff --git drivers/tty/vt/vt.c drivers/tty/vt/vt.c
+index ef981d3b7bb4..62b77ee3f8d1 100644
+--- drivers/tty/vt/vt.c
++++ drivers/tty/vt/vt.c
+@@ -2059,7 +2059,7 @@ static void restore_cur(struct vc_data *vc)
+ 
+ enum { ESnormal, ESesc, ESsquare, ESgetpars, ESfunckey,
+ 	EShash, ESsetG0, ESsetG1, ESpercent, EScsiignore, ESnonstd,
+-	ESpalette, ESosc };
++	ESpalette, ESosc, ESapc, ESpm, ESdcs };
+ 
+ /* console_lock is held (except via vc_init()) */
+ static void reset_terminal(struct vc_data *vc, int do_clear)
+@@ -2133,20 +2133,28 @@ static void vc_setGx(struct vc_data *vc, unsigned int which, int c)
+ 		vc->vc_translate = set_translate(*charset, vc);
+ }
+ 
++/* is this state an ANSI control string? */
++static bool ansi_control_string(unsigned state)
++{
++	if (state == ESosc || state == ESapc || state == ESpm || state == ESdcs)
++		return true;
++	return false;
++}
++
+ /* console_lock is held */
+ static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
+ {
+ 	/*
+ 	 *  Control characters can be used in the _middle_
+-	 *  of an escape sequence.
++	 *  of an escape sequence, aside from ANSI control strings.
+ 	 */
+-	if (vc->vc_state == ESosc && c>=8 && c<=13) /* ... except for OSC */
++	if (ansi_control_string(vc->vc_state) && c>=8 && c<=13)
+ 		return;
+ 	switch (c) {
+ 	case 0:
+ 		return;
+ 	case 7:
+-		if (vc->vc_state == ESosc)
++		if (ansi_control_string(vc->vc_state))
+ 			vc->vc_state = ESnormal;
+ 		else if (vc->vc_bell_duration)
+ 			kd_mksound(vc->vc_bell_pitch, vc->vc_bell_duration);
+@@ -2207,6 +2215,12 @@ static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
+ 		case ']':
+ 			vc->vc_state = ESnonstd;
+ 			return;
++		case '_':
++			vc->vc_state = ESapc;
++			return;
++		case '^':
++			vc->vc_state = ESpm;
++			return;
+ 		case '%':
+ 			vc->vc_state = ESpercent;
+ 			return;
+@@ -2224,6 +2238,9 @@ static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
+ 			if (vc->state.x < VC_TABSTOPS_COUNT)
+ 				set_bit(vc->state.x, vc->vc_tab_stop);
+ 			return;
++		case 'P':
++			vc->vc_state = ESdcs;
++			return;
+ 		case 'Z':
+ 			respond_ID(tty);
+ 			return;
+@@ -2520,8 +2537,14 @@ static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
+ 		vc_setGx(vc, 1, c);
+ 		vc->vc_state = ESnormal;
+ 		return;
++	case ESapc:
++		return;
+ 	case ESosc:
+ 		return;
++	case ESpm:
++		return;
++	case ESdcs:
++		return;
+ 	default:
+ 		vc->vc_state = ESnormal;
+ 	}
+-- 
+2.33.0
