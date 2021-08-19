@@ -2,148 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCDAD3F21BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 22:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF9F3F21C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 22:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235210AbhHSUni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 16:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46396 "EHLO
+        id S232598AbhHSUqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 16:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbhHSUnh (ORCPT
+        with ESMTP id S230052AbhHSUqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 16:43:37 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E7EDC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 13:43:01 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id r17-20020a0568302371b0290504f3f418fbso10253487oth.12
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 13:43:01 -0700 (PDT)
+        Thu, 19 Aug 2021 16:46:10 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B69CC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 13:45:34 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id g14so6627941pfm.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 13:45:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=6AuFKvgToZ7Ta1FvqLShY8VobvpryykUZKzf0fozJsI=;
-        b=RAPuF9LkPlLDHQGygCJBq+C9FhAfcBI0q9lzvcbq0+vFvjDff2qqs0yqNiUGqgT6pJ
-         +KGVklTDk55wQM2lKKBNAcOGMFcXIJA2F0AhgQgsblw6LNuHoHg5mhuoiNH4UVR1INZ1
-         m3nzz0+xc/Q6FpA1TxXq3F+nTBmf94raaIf0+5ndKXr8ozG8cCXxbY/ZouCaLa5HlCEC
-         khHdrHAv77vpam+HZ4I6Ga00T+/Ij/dSldaKRxTfKDU5xLdMx6jVfQ+DPXnp/S7UQvSg
-         CU8HfbACS1oUbNjAo1+RFheI0KeQsN9mh2Ow6smeMT8M/Bi+zt6GNJYpAZfiFgbcB/hd
-         yaLA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ciANhO2rI2yAVYRk89xhZMU4nhupjSlELscJz8Yo+Qw=;
+        b=Fc7Daih9rnQh6iUId4QRiL4FivuwPAhyAMFNkO2VUAzl9fh8RJcdflKXRtvDtW22Dw
+         62K1Lh5y+Qh18QpKDce59XAwAQFsi2e0hbHHmHWSE+qcn9qT3B9yFSbUFCyvttMdHGw+
+         esZwVHbFPkPORlaIpJ6YSZYBtd2H0+g+bmQpEwGu2xNO8350bSN031MHRkAeb+QqSZRt
+         kxhVmaya5nZ29ErR9EpIiA5i+9h+qYWjLCusY4XlNb4fu/PXgnT5K1yyQYlaSF3U2d/n
+         aHGseXBbhe63iUKx2Jwwe4vKVlFrBXk9fBrak+iasFVoPH/GhT70RVjSleulYwixImdi
+         1C+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=6AuFKvgToZ7Ta1FvqLShY8VobvpryykUZKzf0fozJsI=;
-        b=flK6mIqpFq4U90NhjPmUXQY7ZtFIkgn1Y4B3XlOXfBHeiz3gGnZOVo1ugrsN0s5faQ
-         8sILGsdqdpXlunsTuBABYNXeHEkbwKItmK649v+d24dw6EHLcxH8bPriZNNvLnldKj6o
-         OXL5pSK+OYNJdEIHpsg0iHNJkbVQSe6r/5uKi92DRzhibWwHE5/7W15h2BWhmDwJeGq0
-         jD2/ZC3/0d07xfQtYXhZCaxWgYaenFeGhlnStj1nJv+wQXGMN8FGkqFMjKAIQ5MTvnkS
-         9cPPuG31iW5ew0sjlIM4NhCPYTkBP1Ez0g73pKwnPkIcJDH2NAl38TQSrAR2/xdaZZeR
-         yMkw==
-X-Gm-Message-State: AOAM533gv90+Ux08m2Dgqb2XjLRTm4o8a60Bx/mvqUnrIcWEhKXysyse
-        LN9jFJx0P7lDEEeeVktPVfB5Yw==
-X-Google-Smtp-Source: ABdhPJzVAfKQrGyiYF1L0Skh5bMfGADM2OCaV0cTOg8AtRAK3YmpSa2ooGXsKcRuk4MWrrk7Z3kjDQ==
-X-Received: by 2002:a9d:6192:: with SMTP id g18mr13666032otk.314.1629405780110;
-        Thu, 19 Aug 2021 13:43:00 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id n17sm938960otl.32.2021.08.19.13.42.58
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ciANhO2rI2yAVYRk89xhZMU4nhupjSlELscJz8Yo+Qw=;
+        b=LnM07JUVnQWcrj02gxUe5/78c7b40mDevmF52o69OitJkd4xrxC99W0yhqYg3twqkR
+         4ly9aH5NO17XTE8YkiYoGVmJAW6ZfdtTSJcyt+Qv9e6MN+LGsbDMytfcDOqW5kTuJ4Ey
+         hAG5+A4JyduWFBBVxct7fZmqFfQqcYLhLc9SYEEFzdfdmXEC7dmQj2YWyug94PbxtrQc
+         zg1oDIg4VbqR01/LuE7gqZ0QyoGVeF5ExXUPEZgf1amoaIPaoF2gOBde/L/lQNZgLLIF
+         wxOrf5ay61K7spCBm1XoI1nr9K1hAiV+Yi9cw2vxFzPcOXFHW0O9iRFgtqtoZphdedb7
+         uiFg==
+X-Gm-Message-State: AOAM530fmjezxjdnFLkOv0/s93MW1KQlOqxIXouvWksA63HzNIRiVGsj
+        Qn6uD6uIq2z43ylrjd6r6BW8rg==
+X-Google-Smtp-Source: ABdhPJy/YEvyPot1aTu59VL50ZY1wh0+PMMs7LuvoXrs8FoMJhsEul2LVsCbAJktJ+VCm+UP0FBlng==
+X-Received: by 2002:a62:86c4:0:b0:3e0:f216:81bc with SMTP id x187-20020a6286c4000000b003e0f21681bcmr16271484pfd.27.1629405933408;
+        Thu, 19 Aug 2021 13:45:33 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id pj14sm3625802pjb.35.2021.08.19.13.45.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 13:42:59 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 13:42:43 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Matthew Wilcox <willy@infradead.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: Remove bogus VM_BUG_ON
-In-Reply-To: <YR05JVZwfAlZO9Wh@casper.infradead.org>
-Message-ID: <813d476-b6d4-456e-b5c3-5fe0455edeb3@google.com>
-References: <20210818144932.940640-1-willy@infradead.org> <2197941-297c-f820-aa57-fb5167794fb1@google.com> <YR05JVZwfAlZO9Wh@casper.infradead.org>
+        Thu, 19 Aug 2021 13:45:32 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 20:45:27 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     pbonzini@redhat.com, tglx@linutronix.de, bp@alien8.de,
+        mingo@redhat.com, hpa@zytor.com, joro@8bytes.org,
+        Thomas.Lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, srutherford@google.com,
+        brijesh.singh@amd.com, linux-efi@vger.kernel.org
+Subject: Re: [PATCH v3 2/5] KVM: x86: invert KVM_HYPERCALL to default to
+ VMMCALL
+Message-ID: <YR7C56Yc+Qd256P6@google.com>
+References: <cover.1623174621.git.ashish.kalra@amd.com>
+ <f45c503fad62c899473b5a6fd0f2085208d6dfaf.1623174621.git.ashish.kalra@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f45c503fad62c899473b5a6fd0f2085208d6dfaf.1623174621.git.ashish.kalra@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Aug 2021, Matthew Wilcox wrote:
-> On Wed, Aug 18, 2021 at 09:34:51AM -0700, Hugh Dickins wrote:
-> > On Wed, 18 Aug 2021, Matthew Wilcox (Oracle) wrote:
-> > 
-> > > It is not safe to check page->index without holding the page lock.
-> > > It can be changed if the page is moved between the swap cache and the
-> > > page cache for a shmem file, for example.  There is a VM_BUG_ON below
-> > > which checks page->index is correct after taking the page lock.
-> > > 
-> > > Cc: stable@vger.kernel.org
-> > > Fixes: 5c211ba29deb ("mm: add and use find_lock_entries")
-> > 
-> > I don't mind that VM_BUG_ON_PAGE() being removed, but question whether
-> > this Fixes anything, and needs to go to stable. Or maybe it's just that
-> > the shmem example is wrong - moving shmem from page to swap cache does
-> > not change page->index. Or maybe you have later changes in your tree
-> > which change that and do require this. Otherwise, I'll have to worry
-> > why my testing has missed it for six months.
+Preferred shortlog prefix for KVM guest changes is "x86/kvm".  "KVM: x86" is for
+host changes.
+
+On Tue, Jun 08, 2021, Ashish Kalra wrote:
+> From: Ashish Kalra <ashish.kalra@amd.com>
 > 
-> I'm sorry, I think you're going to have to worry :-(
-
-Indeed, it seems that way; or maybe I can leave this testing to syzbot.
-
-> Syzbot found it initially:
+> KVM hypercall framework relies on alternative framework to patch the
+> VMCALL -> VMMCALL on AMD platform. If a hypercall is made before
+> apply_alternative() is called then it defaults to VMCALL. The approach
+> works fine on non SEV guest. A VMCALL would causes #UD, and hypervisor
+> will be able to decode the instruction and do the right things. But
+> when SEV is active, guest memory is encrypted with guest key and
+> hypervisor will not be able to decode the instruction bytes.
 > 
-> https://lore.kernel.org/linux-mm/0000000000009cfcda05c926b34b@google.com/
+> So invert KVM_HYPERCALL and X86_FEATURE_VMMCALL to default to VMMCALL
+> and opt into VMCALL.
 
-Ah, that's useful info.  Though I can quite see why you didn't mention
-that originally: it looks as if syzbot hit a find_lock_entries() crash
-and an irqstate warning about the same time, and its bisection went off
-and found the commit that introduced those irqstate warnings: neither
-the root cause of the irqstate warning, nor the cause of the
-find_lock_entries() crash which it claims in the Subject.
+The changelog needs to explain why SEV hypercalls need to be made before
+apply_alternative(), why it's ok to make Intel CPUs take #UDs on the unknown
+VMMCALL, and why this is not creating the same conundrum for TDX.
 
-I have briefly tried the C reproducer, but didn't get anything out of it;
-and suspect it may be a reproducer of the irqstate warning rather than
-the crash which interests you and me.  And I can't tell more from the
-dump, no dump_page() info is shown, and the "Code:" just points into a
-function epilog of assorted ud2s.
+Actually, I don't think making Intel CPUs take #UDs is acceptable.  This patch
+breaks Linux on upstream KVM on Intel due a bug in upstream KVM.  KVM attempts
+to patch the "wrong" hypercall to the "right" hypercall, but stupidly does so
+via an emulated write.  I.e. KVM honors the guest page table permissions and
+injects a !WRITABLE #PF on the VMMCALL RIP if the kernel code is mapped RX.
 
+In other words, trusting the VMM to not screw up the #UD is a bad idea.  This also
+makes documenting the "why does SEV need super early hypercalls" extra important.
+
+This patch doesn't work because X86_FEATURE_VMCALL is a synthetic flag and is
+only set by VMware paravirt code, which is why the patching doesn't happen as
+would be expected.  The obvious solution would be to manually set X86_FEATURE_VMCALL
+where appropriate, but given that defaulting to VMCALL has worked for years,
+defaulting to VMMCALL makes me nervous, e.g. even if we splatter X86_FEATURE_VMCALL
+into Intel, Centaur, and Zhaoxin, there's a possibility we'll break existing VMs
+that run on hypervisors that do something weird with the vendor string.
+
+Rather than look for X86_FEATURE_VMCALL, I think it makes sense to have this be
+a "pure" inversion, i.e. patch in VMCALL if VMMCALL is not supported, as opposed
+to patching in VMCALL if VMCALL is supproted.
+
+diff --git a/arch/x86/include/asm/kvm_para.h b/arch/x86/include/asm/kvm_para.h
+index 69299878b200..61641e69cfda 100644
+--- a/arch/x86/include/asm/kvm_para.h
++++ b/arch/x86/include/asm/kvm_para.h
+@@ -17,7 +17,7 @@ static inline bool kvm_check_and_clear_guest_paused(void)
+ #endif /* CONFIG_KVM_GUEST */
+
+ #define KVM_HYPERCALL \
+-        ALTERNATIVE("vmcall", "vmmcall", X86_FEATURE_VMMCALL)
++        ALTERNATIVE("vmmcall", "vmcall", ALT_NOT(X86_FEATURE_VMMCALL))
+
+ /* For KVM hypercalls, a three-byte sequence of either the vmcall or the vmmcall
+  * instruction.  The hypervisor may replace it with something else but only the
+ 
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: x86@kernel.org
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+
+Suggested-by: Sean Christopherson <seanjc@google.com>
+
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+
+Is Brijesh the author?  Co-developed-by for a one-line change would be odd...
+
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> ---
+>  arch/x86/include/asm/kvm_para.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> and then I hit it today during my testing (which is definitely due to
-> further changes in my tree).
-
-Okay, and it's perfectly reasonable for your tree to make changes which
-require that VM_BUG_ON_PAGE to be removed. But I do not yet understand
-why it needs to be removed from the current or stable tree.
-
-I don't believe it has anything to do with swap cache. The reproducer
-is mounting with "huge=within_size", and doing lots of truncation: my
-supposition is that a shmem THP is being collapsed or split,
-concurrently with that find_lock_entries().
-
-I don't actually see how that would lead to this VM_BUG_ON_PAGE:
-I imagine find_get_entry()'s xas_reload check after get_speculative
-should be good enough - but don't know my way around XArray,
-so mention this in case it triggers an Aha from you.
-
-While there's certainly a sense in which removing the VM_BUG_ON_PAGE
-removes the root cause of the crash, I don't think we understand
-what is going on here yet: and therefore I'm reluctant to remove it.
-
-But I have not given this issue much time, busy with other stuff.
-
+> diff --git a/arch/x86/include/asm/kvm_para.h b/arch/x86/include/asm/kvm_para.h
+> index 69299878b200..0267bebb0b0f 100644
+> --- a/arch/x86/include/asm/kvm_para.h
+> +++ b/arch/x86/include/asm/kvm_para.h
+> @@ -17,7 +17,7 @@ static inline bool kvm_check_and_clear_guest_paused(void)
+>  #endif /* CONFIG_KVM_GUEST */
+>  
+>  #define KVM_HYPERCALL \
+> -        ALTERNATIVE("vmcall", "vmmcall", X86_FEATURE_VMMCALL)
+> +	ALTERNATIVE("vmmcall", "vmcall", X86_FEATURE_VMCALL)
+>  
+>  /* For KVM hypercalls, a three-byte sequence of either the vmcall or the vmmcall
+>   * instruction.  The hypervisor may replace it with something else but only the
+> -- 
+> 2.17.1
 > 
-> I should have added:
-> 
-> Reported-by: syzbot+c87be4f669d920c76330@syzkaller.appspotmail.com
-
-That's fair, it did report it, if confusingly.
-
-Hugh
-
-(p.s. in parentheses, to minimize confusion from going slightly
-off-topic, but I think I'd be wrong not to mention a separate
-issue in this area, with mmotm and linux-next since your folios
-went in: doesn't happen easily, but I have twice hit the
-include/linux/pagemap.h:258 VM_BUG_ON_PAGE(PageTail(page), page),
-in page_cache_add_speculative() - both times when serving
-filemap_map_pages(). I have not thought about it at all, but
-expect that when you do, you'll simply decide that one is unsafe
-and has to be deleted.)
