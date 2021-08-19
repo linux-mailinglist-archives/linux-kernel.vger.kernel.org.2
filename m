@@ -2,111 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E973F174D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 168E23F175A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238317AbhHSKbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 06:31:12 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:55807 "EHLO m43-7.mailgun.net"
+        id S237851AbhHSKgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 06:36:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236149AbhHSKbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 06:31:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629369032; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=Hu2wSL9evcSmVbFdigxDinq0Nbyloz4ZFXU0qiw54g0=; b=kFl3UNW+3mr0tIgb3UdPCfe1k+SQ7kirUKaFGd5oCVusPMXudBvJTsTvXpeXUdj84bF8NBCO
- dwEGAHlPJjnd2bZoj2QY9w6mgWw+TqKnRuxlqB7CtNb9BHNcCXpqdb43NpHq7QH4xk7zFtOe
- EjZ3qEPSOj3obV+Yz67gYy4I8LQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 611e32c79507ca1a34a7db24 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 19 Aug 2021 10:30:31
- GMT
-Sender: luoj=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2AE0BC4360D; Thu, 19 Aug 2021 10:30:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.92.1.52] (unknown [180.166.53.36])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: luoj)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F2D2DC4338F;
-        Thu, 19 Aug 2021 10:30:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org F2D2DC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH] net: phy: add qca8081 ethernet phy driver
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Michael Walle <michael@walle.cc>, davem@davemloft.net,
-        hkallweit1@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
-        netdev@vger.kernel.org, sricharan@codeaurora.org
-References: <6856a839-0fa0-1240-47cd-ae8536294bcd@codeaurora.org>
- <20210818074102.78006-1-michael@walle.cc>
- <9aa1543b-e1b8-fba2-1b93-c954dd2e3e50@codeaurora.org>
- <YR0+uXdKoXrFEhpZ@lunn.ch>
-From:   Jie Luo <luoj@codeaurora.org>
-Message-ID: <20957be7-6a7e-4a41-706f-4e4222c11b1c@codeaurora.org>
-Date:   Thu, 19 Aug 2021 18:30:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S236149AbhHSKgb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 06:36:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9B516113C;
+        Thu, 19 Aug 2021 10:35:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629369355;
+        bh=0gYRryj8WcD05dNv3C5iWMMOAQxCqY5AJZQHDbt70CM=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=sU+wf523Fhx9pa4dA9UUzGeQLvn1NmWrexhEeM+W79+r6bFT4h08kDualdcJX/cR/
+         KKdvTP0AE3jyDYU0voFEsFLa1xtF+vulKLMh/r+ider7dC707giPUjGbtQC66Oqo7Q
+         PlKT205Fb99WfNYfiMO15yG7Euc+Vz9Xo5Gq6XPw88UXbx5HPcJ4kvxfNbrn8GY9lx
+         j93Z5yAwclYd4D3mtXXrhdknB3+2wRPJroWDt3U8jQ4S2lmJXcDIpQZ5oRRrtI4nSO
+         up0w/GlPyjErtJW6to2SKVObs6aRzEaPfCPLCg9jwNtK4FVz6Y751YPYCs0/WVyPEA
+         Au4J9yVOa13Zg==
+Message-ID: <6db55147350d81ed205d37031d81b03b80f639cc.camel@kernel.org>
+Subject: Re: Re: PING: [PATCH] crypto: public_key: fix overflow during
+ implicit conversion
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     zhenwei pi <pizhenwei@bytedance.com>, dhowells@redhat.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net
+Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 19 Aug 2021 13:35:52 +0300
+In-Reply-To: <8bf3a04d-f1a7-cd8c-5c5a-ace3de500b2f@bytedance.com>
+References: <20210810063954.628244-1-pizhenwei@bytedance.com>
+         <4dcd4254-030b-4489-d5d3-e320eb2953e7@bytedance.com>
+         <74aef8a2f2331358371a87931e632287dad9af59.camel@iki.fi>
+         <8bf3a04d-f1a7-cd8c-5c5a-ace3de500b2f@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <YR0+uXdKoXrFEhpZ@lunn.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 2021-08-19 at 10:03 +0800, zhenwei pi wrote:
+> On 8/18/21 8:33 PM, Jarkko Sakkinen wrote:
+> > On Wed, 2021-08-18 at 16:33 +0800, zhenwei pi wrote:
+> > > PING
+> >=20
+> > Please, do not top-post.
+> >=20
+> > You are lacking Herbert Xu:
+> >=20
+> > $ scripts/get_maintainer.pl crypto/asymmetric_keys/public_key.c
+> > David Howells <dhowells@redhat.com> (maintainer:ASYMMETRIC KEYS)
+> > Herbert Xu <herbert@gondor.apana.org.au> (maintainer:CRYPTO API)
+> > "David S. Miller" <davem@davemloft.net> (maintainer:CRYPTO API)
+> > keyrings@vger.kernel.org (open list:ASYMMETRIC KEYS)
+> > linux-crypto@vger.kernel.org (open list:CRYPTO API)
+> > linux-kernel@vger.kernel.org (open list)
+> >=20
+> > > On 8/10/21 2:39 PM, zhenwei pi wrote:
+> > > > Hit kernel warning like this, it can be reproduced by verifying
+> > > > 256
+> > > > bytes datafile by keyctl command.
+> > > >=20
+> > > >    WARNING: CPU: 5 PID: 344556 at crypto/rsa-pkcs1pad.c:540
+> > > > pkcs1pad_verify+0x160/0x190
+> > > >    ...
+> > > >    Call Trace:
+> > > >     public_key_verify_signature+0x282/0x380
+> > > >     ? software_key_query+0x12d/0x180
+> > > >     ? keyctl_pkey_params_get+0xd6/0x130
+> > > >     asymmetric_key_verify_signature+0x66/0x80
+> > > >     keyctl_pkey_verify+0xa5/0x100
+> > > >     do_syscall_64+0x35/0xb0
+> > > >     entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > > >=20
+> > > > '.digest_size(u8) =3D params->in_len(u32)' leads overflow of an
+> > > > u8
+> >=20
+> > Where is this statement?
+> >=20
+>=20
+> In function "static int asymmetric_key_verify_signature(struct=20
+> kernel_pkey_params *params, const void *in, const void *in2)"
+>=20
+> > > > value,
+> > > > so use u32 instead of u8 of digest. And reorder struct
+> > > > public_key_signature, it could save 8 bytes on a 64 bit
+> > > > machine.
+> >                                                       ~~~~~
+> >                                                       64-bit
+> >                                                      =20
+> > What do you mean by "could"? Does it, or does it
+> > not?
+> >                                         			=09
+> > =09
+> >=20
+> After reordering struct public_key_signature, sizeof(struct=20
+> public_key_signature) gets smaller than the original version.
 
-On 8/19/2021 1:09 AM, Andrew Lunn wrote:
-> On Wed, Aug 18, 2021 at 09:34:40PM +0800, Jie Luo wrote:
->> On 8/18/2021 3:41 PM, Michael Walle wrote:
->>>> qca8081 supports IEEE1588 feature, the IEEE1588 code may be submitted in
->>>> the near future,
->>>>
->>>> so it may be a good idea to keep it out from at803x code.
->>> The AR8031 also supports PTP. Unfortunately, there is no public datasheet
->>> for the QCA8081, so I can't have a look if both are similar.
->>>
->>> See also,
->>> https://lore.kernel.org/netdev/20200228180226.22986-1-michael@walle.cc/
->>>
->>> -michael
->> Hi Michael,
->>
->> Thanks for this comment. it is true that AR8031 supports basic PTP features.
->>
->> please refer to the following link for the outline features of qca801.
->>
->> https://www.qualcomm.com/products/qca8081
-> Is the PTP hardware in the qca8081 the same as the ar8031? When you
-> add PTP support, will it be for both PHYs?
->
-> What about the cable diagnostics? The at803x already has this
-> implemented. Will the same work for the qca8081?
->
->      Andrew
+OK, then just state is as "it saves" instead of "it could save".
 
-Hi Andrew,
+Not a requirement but have you been able to trigger this for a
+kernel that does not have this fix?
 
-qca8081 enhances the ptp feature from AR8031, the new ptp driver should 
-be for qca8081, which is fully
-
-tested on qca8081, but it is not verified on AR8031 currently.
-
-the cable diagnostics feature of qca8081 is almost same as ar8031 but 
-the register is changed, will correct it
-
-for qca8081 in the next patch correspondingly.
-
-thanks.
-
+/Jarkko
