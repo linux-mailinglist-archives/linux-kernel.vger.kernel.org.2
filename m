@@ -2,190 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3563F2257
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 23:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC8E3F225A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 23:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235322AbhHSVjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 17:39:55 -0400
-Received: from mail.efficios.com ([167.114.26.124]:57280 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbhHSVjy (ORCPT
+        id S230112AbhHSVku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 17:40:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:43471 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229619AbhHSVkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 17:39:54 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 0AFE8378536;
-        Thu, 19 Aug 2021 17:39:17 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id sqgMh8PS9est; Thu, 19 Aug 2021 17:39:12 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 7F9FE3784AD;
-        Thu, 19 Aug 2021 17:39:12 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 7F9FE3784AD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1629409152;
-        bh=5UmwxCORiN5yLIQm2BJu9shxBCOVFj1bc8s4bRqQFQo=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=MF1eZ97b/KNT5hI9VL2d8/bJnxRVnz1puSaP8aXdbA0Yr8sbq1UW1Xnp5ROlOTAxA
-         BrBHYFiVE9fyDS+W6acYJK/dsDcXuZ5FxN6/TGgq81Ge5A7ri3UTyOOmZCNrrwpGaX
-         CaJRQA/6RdzkBds+FVqCWioAvW9dS868z5YzJqUiWVEa1eSWq/ub7V3SdNutNGYaHW
-         /BGNriEzzY77HlrWaGIlJrha5VHDUBgHaX9E9aF4RYwTeW4avIB2YHkFNmb79XRV+u
-         RMSG+xk/uZO1X64FabUncXvFyriO1d5efn0OTQ8xv/HTN1zVXC9OXfvrjvq/mcfJyu
-         98fIeMx5uJpUQ==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id gNagT47KYem3; Thu, 19 Aug 2021 17:39:12 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 5C6F23784AA;
-        Thu, 19 Aug 2021 17:39:12 -0400 (EDT)
-Date:   Thu, 19 Aug 2021 17:39:12 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     "Russell King, ARM Linux" <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Heiko Carstens <hca@linux.ibm.com>, gor <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Oleg Nesterov <oleg@redhat.com>, rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, shuah <shuah@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-csky <linux-csky@vger.kernel.org>,
-        linux-mips@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390@vger.kernel.org, KVM list <kvm@vger.kernel.org>,
-        linux-kselftest <linux-kselftest@vger.kernel.org>,
-        Peter Foley <pefoley@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Ben Gardon <bgardon@google.com>
-Message-ID: <1673583543.19718.1629409152244.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210818001210.4073390-2-seanjc@google.com>
-References: <20210818001210.4073390-1-seanjc@google.com> <20210818001210.4073390-2-seanjc@google.com>
-Subject: Re: [PATCH 1/5] KVM: rseq: Update rseq when processing
- NOTIFY_RESUME on xfer to KVM guest
+        Thu, 19 Aug 2021 17:40:47 -0400
+X-Greylist: delayed 7132 seconds by postgrey-1.27 at vger.kernel.org; Thu, 19 Aug 2021 17:40:47 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629409210;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DvdcXZIwl3tPZt3OBpuE3xqKVNbMTKzJBp4rw8ENU30=;
+        b=FjwSGTPBYVlTqBtCrCdhOcvRbjtKjjXFcTekrCe/GPm+vLdSYs1Y+NQtQHVcsrfe94EPIf
+        lAWwMS3e8s+7jc3kKX25VU8Y5BDNh6YNcjecX5qOApOzvchgCOkZGk9xQvEn6UB374i+A0
+        dfIaOOJctFO8QHMAq82Ewzs+Bj+pUnw=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-13-Vyy1lXZAMlK7no_9jxagzQ-1; Thu, 19 Aug 2021 17:40:09 -0400
+X-MC-Unique: Vyy1lXZAMlK7no_9jxagzQ-1
+Received: by mail-wm1-f69.google.com with SMTP id z18-20020a1c7e120000b02902e69f6fa2e0so1561617wmc.9
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 14:40:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DvdcXZIwl3tPZt3OBpuE3xqKVNbMTKzJBp4rw8ENU30=;
+        b=OTnZ7KJtRddsZssF3Ir3w8fRHCPe23r+MiyRMVYQIyzfMc87hWKm+Q0d/7r9PlRfAN
+         U1QMaaLcAw6Y1T4yPDLrYrHGtoW9jPAnFokZv+GH/Bx8m6/Hft34oqn2wk+tvmQwNOa7
+         f3rNxjRLh3y1ph3cozO6pq5eTcYATGBtkfySeSaXYv14LuTe91gOLUtMKk6Cq9VDDU/c
+         fvMfR3EKxp2S2xFY/0AK5u09zOVGq74hg5BI3+kIZ6PtJeVWkAEC5eZxEmGdu2f4mLml
+         GwLnEWATFXY7YYqEsD5nf/J1PiFxxoHmaanperjhU/MdoGuZoaT39yBUVo1c+sVJamVo
+         V6Bg==
+X-Gm-Message-State: AOAM5312aOF+wSavKDC/XpPrbSL6oV4FdzYOp6E/nWX2dVssfdRdKbkH
+        icRcm3jFI+uk/Yfo5EKoOUNqac3U8DexrquMo8EuYzsaVWycAV65po+dSgZ3xYi1zLNGHlVKenC
+        2dIIiMyPQVjGh3ODF0XmA/kQO9Rk16fgUw0zKVj9M
+X-Received: by 2002:a1c:7916:: with SMTP id l22mr623009wme.27.1629409208119;
+        Thu, 19 Aug 2021 14:40:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxYA97+cGFeqU43YBkPI260mv8aQOOw6JSQmOGyumgFbyOD0nefEq4MgAFBQrx6D74nVITzdNSFMePqB4OBxCo=
+X-Received: by 2002:a1c:7916:: with SMTP id l22mr622994wme.27.1629409207884;
+ Thu, 19 Aug 2021 14:40:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4101 (ZimbraWebClient - FF90 (Linux)/8.8.15_GA_4059)
-Thread-Topic: rseq: Update rseq when processing NOTIFY_RESUME on xfer to KVM guest
-Thread-Index: bvPQyLDSoOg+aSRtrktKYXzxAVZwCA==
+References: <20210803191818.993968-1-agruenba@redhat.com> <CAHk-=wj+_Y7NQ-NhhE0jk52c9ZB0VJbO1AjtMJFB8wP=PO+bdw@mail.gmail.com>
+ <CAHc6FU6H5q20qiQ5FX1726i0FJHyh=Y46huWkCBZTR3sk+3Dhg@mail.gmail.com>
+ <CAHk-=whBCm3G5yibbvQsTn00fA16a688NTU_geQV158DnRy+bQ@mail.gmail.com>
+ <CAHc6FU5HHFwuJBCNuU0e_N0ehaFrzbUrCuTJyaLNC4qxwfazYA@mail.gmail.com> <CAHk-=wgumKBhggjyR7Ff6V8VKxaJK1yA-LpWdzZFSqFyqYq0Dw@mail.gmail.com>
+In-Reply-To: <CAHk-=wgumKBhggjyR7Ff6V8VKxaJK1yA-LpWdzZFSqFyqYq0Dw@mail.gmail.com>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Thu, 19 Aug 2021 23:39:56 +0200
+Message-ID: <CAHc6FU6a8SLmHfMoS7NUDKboWpVEGBKyC46pU_brx3y8crbEXA@mail.gmail.com>
+Subject: Re: [PATCH v5 00/12] gfs2: Fix mmap + page fault deadlocks
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Paul Mackerras <paulus@ozlabs.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Aug 17, 2021, at 8:12 PM, Sean Christopherson seanjc@google.com wrote:
+On Thu, Aug 19, 2021 at 10:14 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Thu, Aug 19, 2021 at 12:41 PM Andreas Gruenbacher
+> <agruenba@redhat.com> wrote:
+> >
+> > Hmm, what if GUP is made to skip VM_IO vmas without adding anything to
+> > the pages array? That would match fault_in_iov_iter_writeable, which
+> > is modeled after __mm_populate and which skips VM_IO and VM_PFNMAP
+> > vmas.
+>
+> I don't understand what you mean.. GUP already skips VM_IO (and
+> VM_PFNMAP) pages. It just returns EFAULT.
+>
+> We could make it return another error. We already have DAX and
+> FOLL_LONGTERM returning -EOPNOTSUPP.
+>
+> Of course, I think some code ends up always just returning "number of
+> pages looked up" and might return 0 for "no pages" rather than the
+> error for the first page.
+>
+> So we may end up having interfaces that then lose that explanation
+> error code, but I didn't check.
+>
+> But we couldn't make it just say "skip them and try later addresses",
+> if that is what you meant. THAT makes no sense - that would just make
+> GUP look up some other address than what was asked for.
 
-> Invoke rseq's NOTIFY_RESUME handler when processing the flag prior to
-> transferring to a KVM guest, which is roughly equivalent to an exit to
-> userspace and processes many of the same pending actions.  While the task
-> cannot be in an rseq critical section as the KVM path is reachable only
-> via ioctl(KVM_RUN), the side effects that apply to rseq outside of a
-> critical section still apply, e.g. the CPU ID needs to be updated if the
-> task is migrated.
-> 
-> Clearing TIF_NOTIFY_RESUME without informing rseq can lead to segfaults
-> and other badness in userspace VMMs that use rseq in combination with KVM,
-> e.g. due to the CPU ID being stale after task migration.
+get_user_pages has a start and a nr_pages argument, which specifies an
+address range from start to start + nr_pages * PAGE_SIZE. If pages !=
+NULL, it adds a pointer to that array for each PAGE_SIZE subpage. I
+was thinking of skipping over VM_IO vmas in that process, so when the
+range starts in a mappable vma, runs into a VM_IO vma, and ends in a
+mappable vma, the pages in the pages array would be discontiguous;
+they would only cover the mappable vmas. But that would make it
+difficult to make sense of what's in the pages array. So scratch that
+idea.
 
-I agree with the problem assessment, but I would recommend a small change
-to this fix.
+> > > I also do still think that even regardless of that, we want to just
+> > > add a FOLL_NOFAULT flag that just disables calling handle_mm_fault(),
+> > > and then you can use the regular get_user_pages().
+> > >
+> > > That at least gives us the full _normal_ page handling stuff.
+> >
+> > And it does fix the generic/208 failure.
+>
+> Good. So I think the approach is usable, even if we might have corner
+> cases left.
+>
+> So I think the remaining issue is exactly things like VM_IO and
+> VM_PFNMAP. Do the fstests have test-cases for things like this? It
+> _is_ quite specialized, it might be a good idea to have that.
+>
+> Of course, doing direct-IO from special memory regions with zerocopy
+> might be something special people actually want to do. But I think
+> we've had that VM_IO flag testing there basically forever, so I don't
+> think it has ever worked (for some definition of "ever").
 
-> 
-> Fixes: 72c3c0fe54a3 ("x86/kvm: Use generic xfer to guest work function")
-> Reported-by: Peter Foley <pefoley@google.com>
-> Bisected-by: Doug Evans <dje@google.com>
-> Cc: Shakeel Butt <shakeelb@google.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
-> kernel/entry/kvm.c | 4 +++-
-> kernel/rseq.c      | 4 ++--
-> 2 files changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/entry/kvm.c b/kernel/entry/kvm.c
-> index 49972ee99aff..049fd06b4c3d 100644
-> --- a/kernel/entry/kvm.c
-> +++ b/kernel/entry/kvm.c
-> @@ -19,8 +19,10 @@ static int xfer_to_guest_mode_work(struct kvm_vcpu *vcpu,
-> unsigned long ti_work)
-> 		if (ti_work & _TIF_NEED_RESCHED)
-> 			schedule();
-> 
-> -		if (ti_work & _TIF_NOTIFY_RESUME)
-> +		if (ti_work & _TIF_NOTIFY_RESUME) {
-> 			tracehook_notify_resume(NULL);
-> +			rseq_handle_notify_resume(NULL, NULL);
-> +		}
-> 
-> 		ret = arch_xfer_to_guest_mode_handle_work(vcpu, ti_work);
-> 		if (ret)
-> diff --git a/kernel/rseq.c b/kernel/rseq.c
-> index 35f7bd0fced0..58c79a7918cd 100644
-> --- a/kernel/rseq.c
-> +++ b/kernel/rseq.c
-> @@ -236,7 +236,7 @@ static bool in_rseq_cs(unsigned long ip, struct rseq_cs
-> *rseq_cs)
-> 
-> static int rseq_ip_fixup(struct pt_regs *regs)
-> {
-> -	unsigned long ip = instruction_pointer(regs);
-> +	unsigned long ip = regs ? instruction_pointer(regs) : 0;
-> 	struct task_struct *t = current;
-> 	struct rseq_cs rseq_cs;
-> 	int ret;
-> @@ -250,7 +250,7 @@ static int rseq_ip_fixup(struct pt_regs *regs)
-> 	 * If not nested over a rseq critical section, restart is useless.
-> 	 * Clear the rseq_cs pointer and return.
-> 	 */
-> -	if (!in_rseq_cs(ip, &rseq_cs))
-> +	if (!regs || !in_rseq_cs(ip, &rseq_cs))
+The v6 patch queue should handle those cases acceptably well for now,
+but I don't think we have tests covering that at all.
 
-I think clearing the thread's rseq_cs unconditionally here when regs is NULL
-is not the behavior we want when this is called from xfer_to_guest_mode_work.
+Thanks,
+Andreas
 
-If we have a scenario where userspace ends up calling this ioctl(KVM_RUN)
-from within a rseq c.s., we really want a CONFIG_DEBUG_RSEQ=y kernel to
-kill this application in the rseq_syscall handler when exiting back to usermode
-when the ioctl eventually returns.
-
-However, clearing the thread's rseq_cs will prevent this from happening.
-
-So I would favor an approach where we simply do:
-
-if (!regs)
-     return 0;
-
-Immediately at the beginning of rseq_ip_fixup, before getting the instruction
-pointer, so effectively skip all side-effects of the ip fixup code. Indeed, it
-is not relevant to do any fixup here, because it is nested in a ioctl system
-call.
-
-Effectively, this would preserve the SIGSEGV behavior when this ioctl is
-erroneously called by user-space from a rseq critical section.
-
-Thanks for looking into this !
-
-Mathieu
-
-> 		return clear_rseq_cs(t);
-> 	ret = rseq_need_restart(t, rseq_cs.flags);
-> 	if (ret <= 0)
-> --
-> 2.33.0.rc1.237.g0d66db33f3-goog
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
