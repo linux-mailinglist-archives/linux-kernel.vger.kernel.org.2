@@ -2,373 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0BFB3F1F58
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70E73F1F5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233802AbhHSRqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 13:46:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33486 "EHLO
+        id S233364AbhHSRsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 13:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232456AbhHSRqS (ORCPT
+        with ESMTP id S229465AbhHSRsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 13:46:18 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6286FC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 10:45:42 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id t13so6180316pfl.6
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 10:45:42 -0700 (PDT)
+        Thu, 19 Aug 2021 13:48:01 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F5FC061575;
+        Thu, 19 Aug 2021 10:47:25 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id x4so6587012pgh.1;
+        Thu, 19 Aug 2021 10:47:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0NckmUibO9vn3ltt4vsw98FaZihCPd3oX5bbeyHYveg=;
-        b=Uvk+eiA6o3T7TheFYKHU3LjwG2a5qLiO1YWV2qD+jLQ3Ul841iFceLssGaiynsNrr8
-         rtlRNQqrx5Ac+sB4a6qTGlwpTFSMp6xbZyknHlgOTAr3tQh6jpHg/yGuI8KO34DgluEt
-         noNfCjP95FywO7hjCcqfF3BuM38U1MMnSKy6g=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MsSykb7a1meDN6Q2YdAV3fzLY/Hr5ssQQNISUwM4JXY=;
+        b=VdIn36A2LBD+Q3OcPD9bqzSDILY6SqkwypqYtkykFkhaPSaeu2fPNKALukkbN8wvpd
+         4r5wPfNuD0vDz9Sbg64WZckb1/FTtVlQmOh3fwEZUPXqRkMX2L+TLkuNq5oZkIWAeErz
+         g4ztdq3275BCZLE1pYV/UEtlwDLneXLiGPIU6N2/jdcqTdVn9OsEPWkR9KJ7zzSwmdei
+         u1i4tU+csd44v+Z6kBjAiQ7CKIWUqrYNbfPbs++GOZ+t/DHj+7xCG+JhOAIGVNQ7YMFk
+         /XoBWOSUcDATaWcRfO9O/Bd5Ymz7rXySmswI0CtzLnVMPyauHT/ZFCSifzgLGn/Yp2mJ
+         KhLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0NckmUibO9vn3ltt4vsw98FaZihCPd3oX5bbeyHYveg=;
-        b=HPOXotpLtcZG51wesGRmgnmVi5ZyJ/CaWT5K0uWDAr26hCamh3QwmpCe0IJbYbferw
-         toAX8/8jVernsb3jcs0GhJAzmYIMnktzL0vV2dxlmi5ckrh7SpvHsfqpahIw9ZB3+a0q
-         4tpQSfo7vKq1EzMZ7YfaHAFR/X+Uy0qij9LInmDI7tDehZZ+9ex/cwgEvsJ4hEeHCCL0
-         8NHK+gasXI+rezYclJ7GgDqghaKoHcVEYuzeIvixzyQp7qyodRlXhmxvzSysYNt33Ql+
-         X6ArrwHboz0NaA455mDENlPN9nMZF7C0qNDWN5qSQkq/9NXgbrGvI1hkDH6Ip5lcXor6
-         d8SA==
-X-Gm-Message-State: AOAM532NPDcutI+lEKmHXrBlQZdOSc9xzqKCEb74dp2A34YI7+fdgpmO
-        07396YyDJyITUfrGItdNzEy8pQ==
-X-Google-Smtp-Source: ABdhPJy9tEYxq8xlexEN9c5rT/4kvBr4g7n4gcNwOTrS6eyylnLXBaGQ1n2M56JbQI6Wyr5E4CVpXw==
-X-Received: by 2002:a65:62d1:: with SMTP id m17mr15057418pgv.370.1629395141897;
-        Thu, 19 Aug 2021 10:45:41 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x19sm4481259pfo.40.2021.08.19.10.45.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 10:45:39 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Romain Perier <romain.perier@gmail.com>,
-        Allen Pais <apais@linux.microsoft.com>,
-        Ivan Safonov <insafonov@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-staging@lists.linux.dev,
-        Chen Lin <chen.lin5@zte.com.cn>,
-        "David S. Miller" <davem@davemloft.net>,
-        Abheek Dhawan <adawesomeguy222@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Ashish Kalra <eashishkalra@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH 2/2] staging: wlan-ng: Avoid duplicate header in tx/rx frames
-Date:   Thu, 19 Aug 2021 10:45:37 -0700
-Message-Id: <20210819174537.3499227-3-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210819174537.3499227-1-keescook@chromium.org>
-References: <20210819174537.3499227-1-keescook@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MsSykb7a1meDN6Q2YdAV3fzLY/Hr5ssQQNISUwM4JXY=;
+        b=kjrd/nSYSB941pibqwuz9d3gkI7tzbtnjdmJWLyfpkFJfGm+YWGhiIbFxI0lVrdC9s
+         Z3j4nFtajB+CYc1Xuw54SwTQGj40Kvr65Emtru2lZzbnNMn+sWmxTuMnD1CqlijecCrH
+         1MZ7n6G5k3vug/W0CMbCYsCKxFq8gmv8WVALFsoWcAaDvJX8uS27eyuRuTSX0EYBNQFi
+         Of36bJdKVAkG7R5vAkjYd2/SzH0/AbqTq/BDqnX0BMICkEo3TtITnSxQj/L+YsUKkXTm
+         yTtsWa0qv8R04V3izhyJw4mbJMTQF40jhCfN+NuBtEc/1Upwa6wU8hLxId2uVwMcJ7h8
+         dGfQ==
+X-Gm-Message-State: AOAM533adEeOVO8I0wVJ2+OzQ8VqJDzaYMdLbehtSX4ZbmHVrhpyuO0C
+        1AjBcAMwmJeOqmdgIcKf6Y1Ovg+jphIAzu/D2Nk=
+X-Google-Smtp-Source: ABdhPJwRhOqz/FztXwWXzrr+goOARPShBRc7ZKiqNOxK+GbUHuldr5GcgrRKB4hHZ1H+tvGKtYW2A5s4B6bwU82Uk10=
+X-Received: by 2002:aa7:800b:0:b029:330:455f:57a8 with SMTP id
+ j11-20020aa7800b0000b0290330455f57a8mr15468309pfi.7.1629395244430; Thu, 19
+ Aug 2021 10:47:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=11376; h=from:subject; bh=r6cUuhifBwqWeDVUNKS4RWmbunWayKkT4A3CSw+yrOs=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhHpjA/24b0TlX+l5tbnXBgKfyVjVmUj8/Jhq/G4BD FAFdS5uJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYR6YwAAKCRCJcvTf3G3AJo2TD/ 4ihSXKuCMTgba2WhWQkWQ7Ug3XDPheDtxA7g/u4iTTULgHGI4fCXb9er5N2qJZriLZO77zCkLyM9Pq B5AzaSYWO7Wj+uY0oTjzMfYS/K6wJoLp6oaj0a3XcFrIs1KnrBjM2c0DXsJ7XtzQiThdFNY9wvWc8S 4g2Ry9rS37Hd9hTMmhirT/XocyCcy99v/eK4J7ASWmUqGRB7oIWDfxGuOlmOoqVJ6njbDLZIcRcJXr xnsovfsgVe56ViRQCqcGKMcdZJEBMN6Gj/HSzSUPf9gKVrLcHPr8LO784R/QqMOLoGdBlVgZeeYIdH EjMUcK52ntOxY31/iqeJFgEsrtpmuYWf+zBu6q7r5+JOD8lKR9yGORyu/ZZ74r+vL0eEYvhfcgt6L2 sjjRR2ZoNKClmYh8Fg9XFa9MSnIpgPXilrcCtsqlZu2ITvxIYqzkYvMaYOzdxspAlFNH52tDXtBWVn 4S8BD6NZmIzM4cK/i3u5PVHqsncLfbpFtjAtgory3MFUn4jmCLEXUz+rzL+uyPhxUBJAzyw+YfbaXO 0Lbcg/+1VOJarHG0adARPKcg7qLeDUYpcnhc7pMm7xBCyhRuSwsQA5HJ+uBpxfWi1O1284UvWtVKZt 6kcT9ZI6j8y4+H8n+RCR7gejb9SR1PTw9I/6ko8s1LHqAyN/KY/U8mqCg6DA==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+References: <20210819163735.81803-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210819163735.81803-1-andriy.shevchenko@linux.intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 19 Aug 2021 20:46:45 +0300
+Message-ID: <CAHp75VemfL0tA+Z_gqu62wPRFADhOmZG=0o+9eFRLfu+1GO1aQ@mail.gmail.com>
+Subject: Re: [PATCH v4 00/21] platform/x86: Intel platform driver code movement
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>, Kate Hsuan <hpa@redhat.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Dell.Client.Kernel@dell.com, Mark Gross <mgross@linux.intel.com>,
+        Alex Hung <alex.hung@canonical.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        David E Box <david.e.box@intel.com>,
+        Zha Qipeng <qipeng.zha@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "David E. Box" <david.e.box@linux.intel.com>,
+        AceLan Kao <acelan.kao@canonical.com>,
+        Jithu Joseph <jithu.joseph@intel.com>,
+        Maurice Ma <maurice.ma@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of open-coding the same header details in the tx/rx frames,
-directly include the actual struct. Rename associated variables to the
-more verbose of the two versions. This also has the benefit of being
-able to replace a field-spanning memcpy() with a direct assignment,
-helping clear the way for coming FORTIFY_SOURCE improvements.
+On Thu, Aug 19, 2021 at 7:38 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> This is v4 of the Intel drivers move on in the source tree.
+> v3 has been done by Kate:
+> https://lore.kernel.org/platform-driver-x86/20210819033001.20136-1-hpa@redhat.com/
+>
+> I have taken the initial set from review-hans branch and removed Hans' SoB
+> along with Link, while leaving others' tags.
 
-"diffoscope" reports no object code differences after this change,
-excepting the selection of different registers when switching from
-memcpy() to direct assignment:
+So, I have noticed the report about SCU and taking into account IPS
+header deferred move, I think those two should be excluded from the
+series and sent after rc1, it will also eliminate trampoline move for
+IPS header, since we may send one patch which includes DRM changes.
 
- --- drivers/staging/wlan-ng/prism2usb.o.before
- +++ drivers/staging/wlan-ng/prism2usb.o.after
-├── objdump --line-numbers --disassemble --demangle --reloc --no-show-raw-insn --section=.text {}
-│ @@ -4887,24 +4887,24 @@
-│       sub    %rdi,%rcx
-│       add    $0x3c,%ecx
-│       shr    $0x3,%ecx
-│       rep stos %rax,%es:(%rdi)
-│       mov    $0x8,%eax
-│       movl   $0x123,0x23e(%rbx)
-│       mov    %ax,0x244(%rbx)
-│ -     mov    (%rdx),%rcx
-│ -     mov    %rcx,0x246(%rbx)
-│ -     mov    0x8(%rdx),%rcx
-│ -     mov    %rcx,0x24e(%rbx)
-│ -     mov    0x10(%rdx),%rcx
-│ -     mov    %rcx,0x256(%rbx)
-│ -     mov    0x18(%rdx),%ecx
-│ -     mov    %ecx,0x25e(%rbx)
-│ -     movzwl 0x1c(%rdx),%edx
-│ -     mov    %dx,0x262(%rbx)
-│ +     mov    (%rdx),%rax
-│ +     mov    %rax,0x246(%rbx)
-│ +     mov    0x8(%rdx),%rax
-│ +     mov    %rax,0x24e(%rbx)
-│ +     mov    0x10(%rdx),%rax
-│ +     mov    %rax,0x256(%rbx)
-│ +     mov    0x18(%rdx),%eax
-│ +     mov    %eax,0x25e(%rbx)
-│ +     movzwl 0x1c(%rdx),%eax
-│ +     mov    %ax,0x262(%rbx)
-│       cmpq   $0x0,0x0(%rbp)
-│       movzwl 0x70(%rsi),%eax
-│       je     477a <hfa384x_drvr_txframe+0xba>
-│       add    $0x8,%eax
-│       mov    $0x44,%r12d
-│       mov    %ax,0x264(%rbx)
-│       mov    0x70(%r13),%edx
+Hans, what do you think?
 
-Cc: Romain Perier <romain.perier@gmail.com>
-Cc: Allen Pais <apais@linux.microsoft.com>
-Cc: Ivan Safonov <insafonov@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-staging@lists.linux.dev
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/staging/wlan-ng/hfa384x.h      | 17 ++---------
- drivers/staging/wlan-ng/hfa384x_usb.c  | 11 +++----
- drivers/staging/wlan-ng/p80211conv.c   | 42 +++++++++++++-------------
- drivers/staging/wlan-ng/p80211hdr.h    | 14 ++++-----
- drivers/staging/wlan-ng/p80211netdev.c |  6 ++--
- drivers/staging/wlan-ng/prism2sta.c    |  2 +-
- 6 files changed, 39 insertions(+), 53 deletions(-)
+> Changelog v4:
+> - spelled fully the driver names in the commit messages
+> - fixed SCU *.ko module names
+> - dropped extra prefix in PMC files
+> - dropped stray changes within the series
+> - removed confusing comments in Makefile and Kconfig files
+> - embedded a few of Kconfig improvements here and there (ordering, spelling)
+> - split miscellaneous group
+> - added a patch to fix kernel doc issue in SCU IPC code
+>
+> Andy Shevchenko (1):
+>   platform/x86/intel: scu: Fix doc of
+>     intel_scu_ipc_dev_command_with_size()
+>
+> Kate Hsuan (20):
+>   platform/x86: intel_bxtwc_tmu: Move to intel sub-directory
+>   platform/x86: intel_chtdc_ti_pwrbtn: Move to intel sub-directory
+>   platform/x86: intel_mrfld_pwrbtn: Move to intel sub-directory
+>   platform/x86: intel_punit_ipc: Move to intel sub-directory
+>   platform/x86: intel_pmc_core: Move to intel sub-directory
+>   platform/x86: intel_scu: Move to intel sub-directory
+>   platform/x86: intel_telemetry: Move to intel sub-directory
+>   platform/x86: intel_ips: Move to intel sub-directory
+>   platform/x86: intel-rst: Move to intel sub-directory
+>   platform/x86: intel-smartconnect: Move to intel sub-directory
+>   platform/x86: intel_turbo_max_3: Move to intel sub-directory
+>   platform/x86: intel-uncore-frequency: Move to intel sub-directory
+>   platform/x86: intel_speed_select_if: Move to intel sub-directory
+>   platform/x86: intel_atomisp2: Move to intel sub-directory
+>   platform/x86: intel-hid: Move to intel sub-directory
+>   platform/x86: intel_int0002_vgpio: Move to intel sub-directory
+>   platform/x86: intel_oaktrail: Move to intel sub-directory
+>   platform/x86: intel-vbtn: Move to intel sub-directory
+>   platform/x86: intel-wmi-sbl-fw-update: Move to intel sub-directory
+>   platform/x86: intel-wmi-thunderbolt: Move to intel sub-directory
+>
+>  MAINTAINERS                                   |  24 +-
+>  drivers/platform/x86/Kconfig                  | 288 ------------------
+>  drivers/platform/x86/Makefile                 |  31 --
+>  drivers/platform/x86/intel/Kconfig            | 158 ++++++++++
+>  drivers/platform/x86/intel/Makefile           |  40 +++
+>  drivers/platform/x86/intel/atomisp2/Kconfig   |  43 +++
+>  drivers/platform/x86/intel/atomisp2/Makefile  |   9 +
+>  .../atomisp2/led.c}                           |   0
+>  .../atomisp2/pm.c}                            |   0
+>  .../{intel_bxtwc_tmu.c => intel/bxtwc_tmu.c}  |   0
+>  .../chtdc_ti_pwrbtn.c}                        |   0
+>  .../platform/x86/{intel-hid.c => intel/hid.c} |   2 +-
+>  .../int0002_vgpio.c}                          |   0
+>  .../platform/x86/{intel_ips.c => intel/ips.c} |   3 +-
+>  .../mrfld_pwrbtn.c}                           |   0
+>  .../{intel_oaktrail.c => intel/oaktrail.c}    |   0
+>  drivers/platform/x86/intel/pmc/Kconfig        |  25 ++
+>  drivers/platform/x86/intel/pmc/Makefile       |   9 +
+>  .../{intel_pmc_core.c => intel/pmc/core.c}    |   2 +-
+>  .../{intel_pmc_core.h => intel/pmc/core.h}    |   0
+>  .../pmc/pltdrv.c}                             |   0
+>  .../{intel_punit_ipc.c => intel/punit_ipc.c}  |   0
+>  .../platform/x86/{intel-rst.c => intel/rst.c} |   0
+>  drivers/platform/x86/intel/scu/Kconfig        |  51 ++++
+>  drivers/platform/x86/intel/scu/Makefile       |  15 +
+>  .../x86/{intel_scu_ipc.c => intel/scu/ipc.c}  |   2 +-
+>  .../scu/ipcutil.c}                            |   0
+>  .../scu/pcidrv.c}                             |   0
+>  .../scu/pltdrv.c}                             |   0
+>  .../x86/{intel_scu_wdt.c => intel/scu/wdt.c}  |   0
+>  .../smartconnect.c}                           |   0
+>  .../speed_select_if}/Kconfig                  |   0
+>  .../speed_select_if}/Makefile                 |   0
+>  .../speed_select_if}/isst_if_common.c         |   0
+>  .../speed_select_if}/isst_if_common.h         |   0
+>  .../speed_select_if}/isst_if_mbox_msr.c       |   0
+>  .../speed_select_if}/isst_if_mbox_pci.c       |   0
+>  .../speed_select_if}/isst_if_mmio.c           |   0
+>  drivers/platform/x86/intel/telemetry/Kconfig  |  16 +
+>  drivers/platform/x86/intel/telemetry/Makefile |  11 +
+>  .../telemetry/core.c}                         |   0
+>  .../telemetry/debugfs.c}                      |   0
+>  .../telemetry/pltdrv.c}                       |   0
+>  .../turbo_max_3.c}                            |   0
+>  .../uncore-frequency.c}                       |   0
+>  .../x86/{intel-vbtn.c => intel/vbtn.c}        |   2 +-
+>  drivers/platform/x86/intel/wmi/Kconfig        |  31 ++
+>  drivers/platform/x86/intel/wmi/Makefile       |   9 +
+>  .../wmi/sbl-fw-update.c}                      |   0
+>  .../wmi/thunderbolt.c}                        |   0
+>  50 files changed, 435 insertions(+), 336 deletions(-)
+>  create mode 100644 drivers/platform/x86/intel/atomisp2/Kconfig
+>  create mode 100644 drivers/platform/x86/intel/atomisp2/Makefile
+>  rename drivers/platform/x86/{intel_atomisp2_led.c => intel/atomisp2/led.c} (100%)
+>  rename drivers/platform/x86/{intel_atomisp2_pm.c => intel/atomisp2/pm.c} (100%)
+>  rename drivers/platform/x86/{intel_bxtwc_tmu.c => intel/bxtwc_tmu.c} (100%)
+>  rename drivers/platform/x86/{intel_chtdc_ti_pwrbtn.c => intel/chtdc_ti_pwrbtn.c} (100%)
+>  rename drivers/platform/x86/{intel-hid.c => intel/hid.c} (99%)
+>  rename drivers/platform/x86/{intel_int0002_vgpio.c => intel/int0002_vgpio.c} (100%)
+>  rename drivers/platform/x86/{intel_ips.c => intel/ips.c} (99%)
+>  rename drivers/platform/x86/{intel_mrfld_pwrbtn.c => intel/mrfld_pwrbtn.c} (100%)
+>  rename drivers/platform/x86/{intel_oaktrail.c => intel/oaktrail.c} (100%)
+>  create mode 100644 drivers/platform/x86/intel/pmc/Kconfig
+>  create mode 100644 drivers/platform/x86/intel/pmc/Makefile
+>  rename drivers/platform/x86/{intel_pmc_core.c => intel/pmc/core.c} (99%)
+>  rename drivers/platform/x86/{intel_pmc_core.h => intel/pmc/core.h} (100%)
+>  rename drivers/platform/x86/{intel_pmc_core_pltdrv.c => intel/pmc/pltdrv.c} (100%)
+>  rename drivers/platform/x86/{intel_punit_ipc.c => intel/punit_ipc.c} (100%)
+>  rename drivers/platform/x86/{intel-rst.c => intel/rst.c} (100%)
+>  create mode 100644 drivers/platform/x86/intel/scu/Kconfig
+>  create mode 100644 drivers/platform/x86/intel/scu/Makefile
+>  rename drivers/platform/x86/{intel_scu_ipc.c => intel/scu/ipc.c} (99%)
+>  rename drivers/platform/x86/{intel_scu_ipcutil.c => intel/scu/ipcutil.c} (100%)
+>  rename drivers/platform/x86/{intel_scu_pcidrv.c => intel/scu/pcidrv.c} (100%)
+>  rename drivers/platform/x86/{intel_scu_pltdrv.c => intel/scu/pltdrv.c} (100%)
+>  rename drivers/platform/x86/{intel_scu_wdt.c => intel/scu/wdt.c} (100%)
+>  rename drivers/platform/x86/{intel-smartconnect.c => intel/smartconnect.c} (100%)
+>  rename drivers/platform/x86/{intel_speed_select_if => intel/speed_select_if}/Kconfig (100%)
+>  rename drivers/platform/x86/{intel_speed_select_if => intel/speed_select_if}/Makefile (100%)
+>  rename drivers/platform/x86/{intel_speed_select_if => intel/speed_select_if}/isst_if_common.c (100%)
+>  rename drivers/platform/x86/{intel_speed_select_if => intel/speed_select_if}/isst_if_common.h (100%)
+>  rename drivers/platform/x86/{intel_speed_select_if => intel/speed_select_if}/isst_if_mbox_msr.c (100%)
+>  rename drivers/platform/x86/{intel_speed_select_if => intel/speed_select_if}/isst_if_mbox_pci.c (100%)
+>  rename drivers/platform/x86/{intel_speed_select_if => intel/speed_select_if}/isst_if_mmio.c (100%)
+>  create mode 100644 drivers/platform/x86/intel/telemetry/Kconfig
+>  create mode 100644 drivers/platform/x86/intel/telemetry/Makefile
+>  rename drivers/platform/x86/{intel_telemetry_core.c => intel/telemetry/core.c} (100%)
+>  rename drivers/platform/x86/{intel_telemetry_debugfs.c => intel/telemetry/debugfs.c} (100%)
+>  rename drivers/platform/x86/{intel_telemetry_pltdrv.c => intel/telemetry/pltdrv.c} (100%)
+>  rename drivers/platform/x86/{intel_turbo_max_3.c => intel/turbo_max_3.c} (100%)
+>  rename drivers/platform/x86/{intel-uncore-frequency.c => intel/uncore-frequency.c} (100%)
+>  rename drivers/platform/x86/{intel-vbtn.c => intel/vbtn.c} (99%)
+>  create mode 100644 drivers/platform/x86/intel/wmi/Kconfig
+>  create mode 100644 drivers/platform/x86/intel/wmi/Makefile
+>  rename drivers/platform/x86/{intel-wmi-sbl-fw-update.c => intel/wmi/sbl-fw-update.c} (100%)
+>  rename drivers/platform/x86/{intel-wmi-thunderbolt.c => intel/wmi/thunderbolt.c} (100%)
+>
+> --
+> 2.32.0
+>
 
-diff --git a/drivers/staging/wlan-ng/hfa384x.h b/drivers/staging/wlan-ng/hfa384x.h
-index f1bc1f2816af..75ed8bc4bbc1 100644
---- a/drivers/staging/wlan-ng/hfa384x.h
-+++ b/drivers/staging/wlan-ng/hfa384x.h
-@@ -475,14 +475,7 @@ struct hfa384x_tx_frame {
- 	u16 tx_control;
- 
- 	/*-- 802.11 Header Information --*/
--
--	u16 frame_control;
--	u16 duration_id;
--	u8 address1[6];
--	u8 address2[6];
--	u8 address3[6];
--	u16 sequence_control;
--	u8 address4[6];
-+	struct p80211_hdr hdr;
- 	__le16 data_len;		/* little endian format */
- 
- 	/*-- 802.3 Header Information --*/
-@@ -541,13 +534,7 @@ struct hfa384x_rx_frame {
- 	u16 reserved2;
- 
- 	/*-- 802.11 Header Information (802.11 byte order) --*/
--	__le16 frame_control;
--	u16 duration_id;
--	u8 address1[6];
--	u8 address2[6];
--	u8 address3[6];
--	u16 sequence_control;
--	u8 address4[6];
-+	struct p80211_hdr hdr;
- 	__le16 data_len;		/* hfa384x (little endian) format */
- 
- 	/*-- 802.3 Header Information --*/
-diff --git a/drivers/staging/wlan-ng/hfa384x_usb.c b/drivers/staging/wlan-ng/hfa384x_usb.c
-index 0bf71f395b37..8c8524679ba3 100644
---- a/drivers/staging/wlan-ng/hfa384x_usb.c
-+++ b/drivers/staging/wlan-ng/hfa384x_usb.c
-@@ -2516,8 +2516,7 @@ int hfa384x_drvr_txframe(struct hfa384x *hw, struct sk_buff *skb,
- 	cpu_to_le16s(&hw->txbuff.txfrm.desc.tx_control);
- 
- 	/* copy the header over to the txdesc */
--	memcpy(&hw->txbuff.txfrm.desc.frame_control, p80211_hdr,
--	       sizeof(struct p80211_hdr));
-+	hw->txbuff.txfrm.desc.hdr = *p80211_hdr;
- 
- 	/* if we're using host WEP, increase size by IV+ICV */
- 	if (p80211_wep->data) {
-@@ -3258,7 +3257,7 @@ static void hfa384x_usbin_rx(struct wlandevice *wlandev, struct sk_buff *skb)
- 
- 	switch (status) {
- 	case 0:
--		fc = le16_to_cpu(usbin->rxfrm.desc.frame_control);
-+		fc = le16_to_cpu(usbin->rxfrm.desc.hdr.frame_control);
- 
- 		/* If exclude and we receive an unencrypted, drop it */
- 		if ((wlandev->hostwep & HOSTWEP_EXCLUDEUNENCRYPTED) &&
-@@ -3278,7 +3277,7 @@ static void hfa384x_usbin_rx(struct wlandevice *wlandev, struct sk_buff *skb)
- 		 * with an "overlapping" copy
- 		 */
- 		memmove(skb_push(skb, hdrlen),
--			&usbin->rxfrm.desc.frame_control, hdrlen);
-+			&usbin->rxfrm.desc.hdr, hdrlen);
- 
- 		skb->dev = wlandev->netdev;
- 
-@@ -3356,7 +3355,7 @@ static void hfa384x_int_rxmonitor(struct wlandevice *wlandev,
- 
- 	/* Remember the status, time, and data_len fields are in host order */
- 	/* Figure out how big the frame is */
--	fc = le16_to_cpu(rxdesc->frame_control);
-+	fc = le16_to_cpu(rxdesc->hdr.frame_control);
- 	hdrlen = p80211_headerlen(fc);
- 	datalen = le16_to_cpu(rxdesc->data_len);
- 
-@@ -3404,7 +3403,7 @@ static void hfa384x_int_rxmonitor(struct wlandevice *wlandev,
- 	/* Copy the 802.11 header to the skb
- 	 * (ctl frames may be less than a full header)
- 	 */
--	skb_put_data(skb, &rxdesc->frame_control, hdrlen);
-+	skb_put_data(skb, &rxdesc->hdr.frame_control, hdrlen);
- 
- 	/* If any, copy the data from the card to the skb */
- 	if (datalen > 0) {
-diff --git a/drivers/staging/wlan-ng/p80211conv.c b/drivers/staging/wlan-ng/p80211conv.c
-index 0b3ba03c1f1f..59b25ca50d15 100644
---- a/drivers/staging/wlan-ng/p80211conv.c
-+++ b/drivers/staging/wlan-ng/p80211conv.c
-@@ -175,21 +175,21 @@ int skb_ether_to_p80211(struct wlandevice *wlandev, u32 ethconv,
- 
- 	switch (wlandev->macmode) {
- 	case WLAN_MACMODE_IBSS_STA:
--		memcpy(p80211_hdr->a1, &e_hdr.daddr, ETH_ALEN);
--		memcpy(p80211_hdr->a2, wlandev->netdev->dev_addr, ETH_ALEN);
--		memcpy(p80211_hdr->a3, wlandev->bssid, ETH_ALEN);
-+		memcpy(p80211_hdr->address1, &e_hdr.daddr, ETH_ALEN);
-+		memcpy(p80211_hdr->address2, wlandev->netdev->dev_addr, ETH_ALEN);
-+		memcpy(p80211_hdr->address3, wlandev->bssid, ETH_ALEN);
- 		break;
- 	case WLAN_MACMODE_ESS_STA:
- 		fc |= cpu_to_le16(WLAN_SET_FC_TODS(1));
--		memcpy(p80211_hdr->a1, wlandev->bssid, ETH_ALEN);
--		memcpy(p80211_hdr->a2, wlandev->netdev->dev_addr, ETH_ALEN);
--		memcpy(p80211_hdr->a3, &e_hdr.daddr, ETH_ALEN);
-+		memcpy(p80211_hdr->address1, wlandev->bssid, ETH_ALEN);
-+		memcpy(p80211_hdr->address2, wlandev->netdev->dev_addr, ETH_ALEN);
-+		memcpy(p80211_hdr->address3, &e_hdr.daddr, ETH_ALEN);
- 		break;
- 	case WLAN_MACMODE_ESS_AP:
- 		fc |= cpu_to_le16(WLAN_SET_FC_FROMDS(1));
--		memcpy(p80211_hdr->a1, &e_hdr.daddr, ETH_ALEN);
--		memcpy(p80211_hdr->a2, wlandev->bssid, ETH_ALEN);
--		memcpy(p80211_hdr->a3, &e_hdr.saddr, ETH_ALEN);
-+		memcpy(p80211_hdr->address1, &e_hdr.daddr, ETH_ALEN);
-+		memcpy(p80211_hdr->address2, wlandev->bssid, ETH_ALEN);
-+		memcpy(p80211_hdr->address3, &e_hdr.saddr, ETH_ALEN);
- 		break;
- 	default:
- 		netdev_err(wlandev->netdev,
-@@ -222,9 +222,9 @@ int skb_ether_to_p80211(struct wlandevice *wlandev, u32 ethconv,
- 
- 	/*      skb->nh.raw = skb->data; */
- 
--	p80211_hdr->fc = fc;
--	p80211_hdr->dur = 0;
--	p80211_hdr->seq = 0;
-+	p80211_hdr->frame_control = fc;
-+	p80211_hdr->duration_id = 0;
-+	p80211_hdr->sequence_control = 0;
- 
- 	return 0;
- }
-@@ -294,18 +294,18 @@ int skb_p80211_to_ether(struct wlandevice *wlandev, u32 ethconv,
- 	w_hdr = (struct p80211_hdr *)skb->data;
- 
- 	/* setup some vars for convenience */
--	fc = le16_to_cpu(w_hdr->fc);
-+	fc = le16_to_cpu(w_hdr->frame_control);
- 	if ((WLAN_GET_FC_TODS(fc) == 0) && (WLAN_GET_FC_FROMDS(fc) == 0)) {
--		ether_addr_copy(daddr, w_hdr->a1);
--		ether_addr_copy(saddr, w_hdr->a2);
-+		ether_addr_copy(daddr, w_hdr->address1);
-+		ether_addr_copy(saddr, w_hdr->address2);
- 	} else if ((WLAN_GET_FC_TODS(fc) == 0) &&
- 		   (WLAN_GET_FC_FROMDS(fc) == 1)) {
--		ether_addr_copy(daddr, w_hdr->a1);
--		ether_addr_copy(saddr, w_hdr->a3);
-+		ether_addr_copy(daddr, w_hdr->address1);
-+		ether_addr_copy(saddr, w_hdr->address3);
- 	} else if ((WLAN_GET_FC_TODS(fc) == 1) &&
- 		   (WLAN_GET_FC_FROMDS(fc) == 0)) {
--		ether_addr_copy(daddr, w_hdr->a3);
--		ether_addr_copy(saddr, w_hdr->a2);
-+		ether_addr_copy(daddr, w_hdr->address3);
-+		ether_addr_copy(saddr, w_hdr->address2);
- 	} else {
- 		payload_offset = WLAN_HDR_A4_LEN;
- 		if (payload_length < WLAN_HDR_A4_LEN - WLAN_HDR_A3_LEN) {
-@@ -313,8 +313,8 @@ int skb_p80211_to_ether(struct wlandevice *wlandev, u32 ethconv,
- 			return 1;
- 		}
- 		payload_length -= (WLAN_HDR_A4_LEN - WLAN_HDR_A3_LEN);
--		ether_addr_copy(daddr, w_hdr->a3);
--		ether_addr_copy(saddr, w_hdr->a4);
-+		ether_addr_copy(daddr, w_hdr->address3);
-+		ether_addr_copy(saddr, w_hdr->address4);
- 	}
- 
- 	/* perform de-wep if necessary.. */
-diff --git a/drivers/staging/wlan-ng/p80211hdr.h b/drivers/staging/wlan-ng/p80211hdr.h
-index 93dd8ff1940c..dd1fb99bf340 100644
---- a/drivers/staging/wlan-ng/p80211hdr.h
-+++ b/drivers/staging/wlan-ng/p80211hdr.h
-@@ -149,13 +149,13 @@
- /* Generic 802.11 Header types */
- 
- struct p80211_hdr {
--	u16 fc;
--	u16 dur;
--	u8 a1[ETH_ALEN];
--	u8 a2[ETH_ALEN];
--	u8 a3[ETH_ALEN];
--	u16 seq;
--	u8 a4[ETH_ALEN];
-+	u16	frame_control;
-+	u16	duration_id;
-+	u8	address1[ETH_ALEN];
-+	u8	address2[ETH_ALEN];
-+	u8	address3[ETH_ALEN];
-+	u16	sequence_control;
-+	u8	address4[ETH_ALEN];
- } __packed;
- 
- /* Frame and header length macros */
-diff --git a/drivers/staging/wlan-ng/p80211netdev.c b/drivers/staging/wlan-ng/p80211netdev.c
-index 53cbac890614..2a3f9385ab3f 100644
---- a/drivers/staging/wlan-ng/p80211netdev.c
-+++ b/drivers/staging/wlan-ng/p80211netdev.c
-@@ -238,7 +238,7 @@ static int p80211_convert_to_ether(struct wlandevice *wlandev,
- 	struct p80211_hdr *hdr;
- 
- 	hdr = (struct p80211_hdr *)skb->data;
--	if (p80211_rx_typedrop(wlandev, le16_to_cpu(hdr->fc)))
-+	if (p80211_rx_typedrop(wlandev, le16_to_cpu(hdr->frame_control)))
- 		return CONV_TO_ETHER_SKIPPED;
- 
- 	/* perform mcast filtering: allow my local address through but reject
-@@ -246,8 +246,8 @@ static int p80211_convert_to_ether(struct wlandevice *wlandev,
- 	 */
- 	if (wlandev->netdev->flags & IFF_ALLMULTI) {
- 		if (!ether_addr_equal_unaligned(wlandev->netdev->dev_addr,
--						hdr->a1)) {
--			if (!is_multicast_ether_addr(hdr->a1))
-+						hdr->address1)) {
-+			if (!is_multicast_ether_addr(hdr->address1))
- 				return CONV_TO_ETHER_SKIPPED;
- 		}
- 	}
-diff --git a/drivers/staging/wlan-ng/prism2sta.c b/drivers/staging/wlan-ng/prism2sta.c
-index 1f9ba26f1f36..f67b7405156a 100644
---- a/drivers/staging/wlan-ng/prism2sta.c
-+++ b/drivers/staging/wlan-ng/prism2sta.c
-@@ -250,7 +250,7 @@ static int prism2sta_txframe(struct wlandevice *wlandev, struct sk_buff *skb,
- 	/* If necessary, set the 802.11 WEP bit */
- 	if ((wlandev->hostwep & (HOSTWEP_PRIVACYINVOKED | HOSTWEP_ENCRYPT)) ==
- 	    HOSTWEP_PRIVACYINVOKED) {
--		p80211_hdr->fc |= cpu_to_le16(WLAN_SET_FC_ISWEP(1));
-+		p80211_hdr->frame_control |= cpu_to_le16(WLAN_SET_FC_ISWEP(1));
- 	}
- 
- 	return hfa384x_drvr_txframe(hw, skb, p80211_hdr, p80211_wep);
+
 -- 
-2.30.2
-
+With Best Regards,
+Andy Shevchenko
