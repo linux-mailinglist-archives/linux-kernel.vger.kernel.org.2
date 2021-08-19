@@ -2,327 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122353F117F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 05:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC013F1186
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 05:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236562AbhHSDVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 23:21:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236555AbhHSDVW (ORCPT
+        id S235806AbhHSDXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 23:23:31 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:56263 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230424AbhHSDX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 23:21:22 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0FCCC0613A4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 20:20:35 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id j12-20020a17090aeb0c00b00179530520b3so10420756pjz.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 20:20:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6WXbcHWNowQAVftzV5Tv2pLkmBnGpqWKBHXjn2bp8kE=;
-        b=o1leQwFsVxR/zVtkR51mW76kcy/9PDUerFFV6wfGKhd3L8MqT9rlNGjLbKzVpbGZT5
-         4yWfecK0uVNjnpnyYXBsYh1X8gy+260xfrgtORlIIaf5UirQo3VeRCm9UybFwU0Er4Jj
-         ZAcVxx0Esho8/oD/iPX+/iz08fBtMClr27wGzT518ouy5slZDhfm3HNhwbqom3rzoUBE
-         ruswg74ZEHpxEGJZog/6Xm/YFTMSqmj09fe25GIzI7rX7wGwG+K5e4ONwnuj9IOfKmRr
-         oE3PhkGHsE9E7NwdGysFfN/IHdk+qT0cU6hq1n4e5h0jyild/+PwJmvkY7xKfSsf2M1q
-         ZwUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6WXbcHWNowQAVftzV5Tv2pLkmBnGpqWKBHXjn2bp8kE=;
-        b=LV86R+zYtOePVih8L+sQMThhIoHbSvT4+4qOHh0zPrdySuadti0HnwL6p76Ol7fNik
-         cnp+wInulv3reJgu01Xq1NCfvBtrrWD84b49vy0PS+bldsqhEOr5VM0Hzi+qXdfUPSCw
-         LU4KwNj5nmUClI0APP7HjbAkRhPmP9WerDGRiFq+do0R5/BAIPWJgCIboHaifXcpeyUp
-         K+YTyrc1GrB35t8qhZvhXUHDhd1LNZUpZetBBB6x962nmpF6FNLnN6PxW8kGw77iXXAn
-         uSJf9aH0InKFm4NfwWAkCNWGxoHIckXHQRLajzvvNlwIpIVOVtG8ASaNxgzE4/tyU4HO
-         cusw==
-X-Gm-Message-State: AOAM532Pqa+ACUb0eK8R0llZTXoP4s7kZc2J+G+NO2N98dWdpX5dyffu
-        77pfeZ7ebl/11aTetrnWeCNZvw==
-X-Google-Smtp-Source: ABdhPJwnx+NtF/ns4F180dZ3R3QOaGtghaOiuVcTab32/0QMuYQEzTd2Kp5RXtBOqx3fudBw9tGBjw==
-X-Received: by 2002:a17:90a:4812:: with SMTP id a18mr12716983pjh.40.1629343235286;
-        Wed, 18 Aug 2021 20:20:35 -0700 (PDT)
-Received: from localhost.localdomain ([139.177.225.255])
-        by smtp.gmail.com with ESMTPSA id k3sm1261276pfc.16.2021.08.18.20.20.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 18 Aug 2021 20:20:34 -0700 (PDT)
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-To:     akpm@linux-foundation.org, tglx@linutronix.de, hannes@cmpxchg.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com,
-        kirill.shutemov@linux.intel.com, mika.penttila@nextfour.com,
-        david@redhat.com
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, songmuchun@bytedance.com,
-        Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v2 9/9] mm: use mmu_gather to free PTE page table
-Date:   Thu, 19 Aug 2021 11:18:58 +0800
-Message-Id: <20210819031858.98043-10-zhengqi.arch@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20210819031858.98043-1-zhengqi.arch@bytedance.com>
-References: <20210819031858.98043-1-zhengqi.arch@bytedance.com>
+        Wed, 18 Aug 2021 23:23:28 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 64445580E09;
+        Wed, 18 Aug 2021 23:22:52 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 18 Aug 2021 23:22:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=J
+        0hKvQPS8dExpxRPdMBJPpKCELXT/DpiSuWLnUrwnKk=; b=XmDbbMMi0IPdHkIga
+        /Dr8Tcd3+4kKG99+hsVFpZ8PWkmKP7DRNGI5dYUHBL7geWxnR5eqtQQCk70p+lcI
+        kYxoJKhIGg4qFXAMqVLpIRfMHpyBO1QGSBaVJEiBensGTSGrF6Lgqsh2sgL7fosk
+        sCT4n5+3donYmJJUbihq5V58gqOXigNjdmwXo9SCH6FuVSs9ganQASdjl8ubk5mq
+        FWm9c3tTNwejfXAryN/vLWsc7FTh3nCbShvd8kzMhaUrCeGCLCcb8yzjLSpmPY9Q
+        xafPqIPPqI+jU2Lp5e0ka4iNH9jBwyT6f7lM5gz33tFY63pxE7N7u+yuoPqS0t/0
+        b3l3g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=J0hKvQPS8dExpxRPdMBJPpKCELXT/DpiSuWLnUrwn
+        Kk=; b=ngovGQUngFRyRuClX8be3K6k1jC+4uCvbnmVt54Wfz/yB+pA/HPNQsYqu
+        2lp+npdjHgOyoy/smMOFrZsyKXw1JEnV1ZnmXelrh6siqyYX6IujJErtRUNcm4zo
+        9di1i9pxHWaZKLdp7cbL+Y0ynvNIzr0oZgOkzVlRx31gtxZ2xtJDti8ZvY7zb8ju
+        SgtaQOIyUw+FoRJftCJWQtVqDVPCFcExVxZWLNfkJ6w1EjxRjt8xRR73w28hgMZ0
+        GT05EC3zUU1S72cLGcMXx1aHMXEt/9ISfET3RCnwr1u0vedcHqI90Kv4B6LpEHCP
+        yDom5UmUlVj35Ru58naO43kz0T7gw==
+X-ME-Sender: <xms:ic4dYctXnVyGbbCuoZnLILjFa_1O61BSBqU3sg-PVTmaAXIMG2kn1g>
+    <xme:ic4dYZff-AwFXcLnXGaNvZY5n_tdOSUrIAH1uf3EORrlyRkaCEqEEicwdrgclM1vF
+    daSp4z9HP1WiMQr_Q>
+X-ME-Received: <xmr:ic4dYXw1bSdCgFIonTgyW2oF58c1yQFSdQ7rXJzvK0CHjleQ_8NDBfL23D5LpgcQ31I2BIRhT9JgkZBjr4Y1GqcKdom903OWNzeWY4ZEU5Cc8SWnTTOIqN68wg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleeigdeilecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefuvfhfhffkffgfgggjtgfgsehtjeertddtfeejnecuhfhrohhmpefurghmuhgv
+    lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
+    frrghtthgvrhhnpefgveffteelheffjeeukedvkedviedtheevgeefkeehueeiieeuteeu
+    gfettdeggeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
+X-ME-Proxy: <xmx:ic4dYfOZwAIZHuHzXbSDJVFZWdzuj9Dv92M-pViBEwG4HW-nW0c5qA>
+    <xmx:ic4dYc-imRgA87x1MS9NpA0kECZNEi0LTntWvJXK-Xkddonkzgq0Cg>
+    <xmx:ic4dYXXoaptD7lpuOOrSE9Ea07w-sS8iJ-E681liFt8Ez0LTPEv2_Q>
+    <xmx:jM4dYXUCkL91RXkzfsOzSzKbtB5HL_UkD2_FuHZ4LJ0Px1ecDEY1Kw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 18 Aug 2021 23:22:49 -0400 (EDT)
+Subject: Re: [PATCH 08/17] pinctrl: sunxi: add support for R329 R-PIO pin
+ controller
+To:     Icenowy Zheng <icenowy@sipeed.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andre Przywara <andre.przywara@arm.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210802062212.73220-1-icenowy@sipeed.com>
+ <20210802062212.73220-9-icenowy@sipeed.com>
+From:   Samuel Holland <samuel@sholland.org>
+Message-ID: <e9937a23-8a8a-ebec-0a44-0d15a06b7e89@sholland.org>
+Date:   Wed, 18 Aug 2021 22:22:48 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210802062212.73220-9-icenowy@sipeed.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In unmap_region() and other paths, we can reuse @tlb to
-free PTE page table, which can reduce the number of tlb
-flush.
+On 8/2/21 1:22 AM, Icenowy Zheng wrote:
+> Allwinner R320 SoC has a pin controller in the CPUS power domain.
+> 
+> Add support for it.
+> 
+> Signed-off-by: Icenowy Zheng <icenowy@sipeed.com>
+> ---
+>  drivers/pinctrl/sunxi/Kconfig                 |   5 +
+>  drivers/pinctrl/sunxi/Makefile                |   1 +
+>  drivers/pinctrl/sunxi/pinctrl-sun50i-r329-r.c | 292 ++++++++++++++++++
+>  3 files changed, 298 insertions(+)
+>  create mode 100644 drivers/pinctrl/sunxi/pinctrl-sun50i-r329-r.c
+> 
+> diff --git a/drivers/pinctrl/sunxi/Kconfig b/drivers/pinctrl/sunxi/Kconfig
+> index c662e8b1b351..abd60ff8daec 100644
+> --- a/drivers/pinctrl/sunxi/Kconfig
+> +++ b/drivers/pinctrl/sunxi/Kconfig
+> @@ -134,4 +134,9 @@ config PINCTRL_SUN50I_R329
+>  	default ARM64 && ARCH_SUNXI
+>  	select PINCTRL_SUNXI
+>  
+> +config PINCTRL_SUN50I_R329_R
+> +	bool "Support for the Allwinner R329 R-PIO"
+> +	default ARM64 && ARCH_SUNXI
+> +	select PINCTRL_SUNXI
+> +
+>  endif
+> diff --git a/drivers/pinctrl/sunxi/Makefile b/drivers/pinctrl/sunxi/Makefile
+> index e33f7c5f1ff9..245840a7959e 100644
+> --- a/drivers/pinctrl/sunxi/Makefile
+> +++ b/drivers/pinctrl/sunxi/Makefile
+> @@ -26,5 +26,6 @@ obj-$(CONFIG_PINCTRL_SUN50I_H6_R)	+= pinctrl-sun50i-h6-r.o
+>  obj-$(CONFIG_PINCTRL_SUN50I_H616)	+= pinctrl-sun50i-h616.o
+>  obj-$(CONFIG_PINCTRL_SUN50I_H616_R)	+= pinctrl-sun50i-h616-r.o
+>  obj-$(CONFIG_PINCTRL_SUN50I_R329)	+= pinctrl-sun50i-r329.o
+> +obj-$(CONFIG_PINCTRL_SUN50I_R329_R)	+= pinctrl-sun50i-r329-r.o
+>  obj-$(CONFIG_PINCTRL_SUN9I_A80)		+= pinctrl-sun9i-a80.o
+>  obj-$(CONFIG_PINCTRL_SUN9I_A80_R)	+= pinctrl-sun9i-a80-r.o
+> diff --git a/drivers/pinctrl/sunxi/pinctrl-sun50i-r329-r.c b/drivers/pinctrl/sunxi/pinctrl-sun50i-r329-r.c
+> new file mode 100644
+> index 000000000000..dc4792c685ba
+> --- /dev/null
+> +++ b/drivers/pinctrl/sunxi/pinctrl-sun50i-r329-r.c
+> @@ -0,0 +1,292 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Allwinner H616 R_PIO pin controller driver
 
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
----
- arch/x86/Kconfig        |  2 +-
- include/linux/pte_ref.h | 32 +++++++++++++++++++++++++++-----
- mm/madvise.c            |  4 ++--
- mm/memory.c             |  4 ++--
- mm/mmu_gather.c         | 40 +++++++++++++++++-----------------------
- mm/pte_ref.c            | 12 +++++++++---
- 6 files changed, 58 insertions(+), 36 deletions(-)
+This needs to be updated.
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 45962aaf2b2c..fc7453826160 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -232,7 +232,7 @@ config X86
- 	select HAVE_PCI
- 	select HAVE_PERF_REGS
- 	select HAVE_PERF_USER_STACK_DUMP
--	select MMU_GATHER_RCU_TABLE_FREE		if PARAVIRT
-+	select MMU_GATHER_RCU_TABLE_FREE		if PARAVIRT || FREE_USER_PTE
- 	select HAVE_POSIX_CPU_TIMERS_TASK_WORK
- 	select HAVE_REGS_AND_STACK_ACCESS_API
- 	select HAVE_RELIABLE_STACKTRACE		if X86_64 && (UNWINDER_FRAME_POINTER || UNWINDER_ORC) && STACK_VALIDATION
-diff --git a/include/linux/pte_ref.h b/include/linux/pte_ref.h
-index 259e5aec048d..4b7ea1fe447f 100644
---- a/include/linux/pte_ref.h
-+++ b/include/linux/pte_ref.h
-@@ -29,7 +29,8 @@ int __pte_alloc_try_get(struct mm_struct *mm, pmd_t *pmd);
- 
- #ifdef CONFIG_FREE_USER_PTE
- 
--void free_pte_table(struct mm_struct *mm, pmd_t *pmdp, unsigned long addr);
-+void free_pte_table(struct mmu_gather *tlb, struct mm_struct *mm, pmd_t *pmdp,
-+		    unsigned long addr);
- 
- static inline void pte_ref_init(pgtable_t pte, pmd_t *pmd, int count)
- {
-@@ -76,7 +77,6 @@ static inline bool pte_get_unless_zero(pmd_t *pmdp)
- {
- 	pgtable_t pte = pmd_pgtable(*pmdp);
- 
--	VM_BUG_ON(!PageTable(pte));
- 	return atomic_inc_not_zero(&pte->pte_refcount);
- }
- 
-@@ -105,14 +105,26 @@ static inline bool pte_try_get(pmd_t *pmdp)
- 	return retval;
- }
- 
--static inline void pte_put_many(struct mm_struct *mm, pmd_t *pmdp,
--				unsigned long addr, unsigned int nr)
-+static inline void pte_put_many_tlb(struct mmu_gather *tlb, struct mm_struct *mm,
-+				    pmd_t *pmdp, unsigned long addr, unsigned int nr)
- {
- 	pgtable_t pte = pmd_pgtable(*pmdp);
- 
- 	VM_BUG_ON(!PageTable(pte));
- 	if (atomic_sub_and_test(nr, &pte->pte_refcount))
--		free_pte_table(mm, pmdp, addr & PMD_MASK);
-+		free_pte_table(tlb, mm, pmdp, addr & PMD_MASK);
-+}
-+
-+static inline void pte_put_tlb(struct mmu_gather *tlb, struct mm_struct *mm,
-+			       pmd_t *pmdp, unsigned long addr)
-+{
-+	pte_put_many_tlb(tlb, mm, pmdp, addr, 1);
-+}
-+
-+static inline void pte_put_many(struct mm_struct *mm, pmd_t *pmdp,
-+				unsigned long addr, unsigned int nr)
-+{
-+	pte_put_many_tlb(NULL, mm, pmdp, addr, nr);
- }
- 
- /*
-@@ -234,6 +246,16 @@ static inline bool pte_try_get(pmd_t *pmdp)
- 	return true;
- }
- 
-+static inline void pte_put_many_tlb(struct mmu_gather *tlb, struct mm_struct *mm,
-+				    pmd_t *pmdp, unsigned long addr, unsigned int nr)
-+{
-+}
-+
-+static inline void pte_put_tlb(struct mmu_gather *tlb, struct mm_struct *mm,
-+			       pmd_t *pmdp, unsigned long addr)
-+{
-+}
-+
- static inline void pte_put_many(struct mm_struct *mm, pmd_t *pmdp,
- 				unsigned long addr, unsigned int value)
- {
-diff --git a/mm/madvise.c b/mm/madvise.c
-index 254811f41850..6616c0567dcb 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -474,7 +474,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
- 
- 	arch_leave_lazy_mmu_mode();
- 	pte_unmap_unlock(orig_pte, ptl);
--	pte_put(vma->vm_mm, pmd, start);
-+	pte_put_tlb(tlb, vma->vm_mm, pmd, start);
- 	if (pageout)
- 		reclaim_pages(&page_list);
- 	cond_resched();
-@@ -705,7 +705,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
- 	arch_leave_lazy_mmu_mode();
- 	pte_unmap_unlock(orig_pte, ptl);
- 	if (nr_put)
--		pte_put_many(mm, pmd, start, nr_put);
-+		pte_put_many_tlb(tlb, mm, pmd, start, nr_put);
- 	cond_resched();
- next:
- 	return 0;
-diff --git a/mm/memory.c b/mm/memory.c
-index 6a7fe29d593b..28639a75ce02 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -1437,7 +1437,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 	}
- 
- 	if (nr_put)
--		pte_put_many(mm, pmd, start, nr_put);
-+		pte_put_many_tlb(tlb, mm, pmd, start, nr_put);
- 
- 	return addr;
- }
-@@ -1481,7 +1481,7 @@ static inline unsigned long zap_pmd_range(struct mmu_gather *tlb,
- 		if (pmd_trans_unstable_or_pte_try_get(pmd))
- 			goto next;
- 		next = zap_pte_range(tlb, vma, pmd, addr, next, details);
--		pte_put(tlb->mm, pmd, addr);
-+		pte_put_tlb(tlb, tlb->mm, pmd, addr);
- next:
- 		cond_resched();
- 	} while (pmd++, addr = next, addr != end);
-diff --git a/mm/mmu_gather.c b/mm/mmu_gather.c
-index 1b9837419bf9..1bd9fa889421 100644
---- a/mm/mmu_gather.c
-+++ b/mm/mmu_gather.c
-@@ -134,42 +134,42 @@ static void __tlb_remove_table_free(struct mmu_table_batch *batch)
-  *
-  */
- 
--static void tlb_remove_table_smp_sync(void *arg)
-+static void tlb_remove_table_rcu(struct rcu_head *head)
- {
--	/* Simply deliver the interrupt */
-+	__tlb_remove_table_free(container_of(head, struct mmu_table_batch, rcu));
- }
- 
--static void tlb_remove_table_sync_one(void)
-+static void tlb_remove_table_free(struct mmu_table_batch *batch)
- {
--	/*
--	 * This isn't an RCU grace period and hence the page-tables cannot be
--	 * assumed to be actually RCU-freed.
--	 *
--	 * It is however sufficient for software page-table walkers that rely on
--	 * IRQ disabling.
--	 */
--	smp_call_function(tlb_remove_table_smp_sync, NULL, 1);
-+	call_rcu(&batch->rcu, tlb_remove_table_rcu);
- }
- 
--static void tlb_remove_table_rcu(struct rcu_head *head)
-+static void tlb_remove_table_one_rcu(struct rcu_head *head)
- {
--	__tlb_remove_table_free(container_of(head, struct mmu_table_batch, rcu));
-+	struct page *page = container_of(head, struct page, rcu_head);
-+
-+	__tlb_remove_table(page);
- }
- 
--static void tlb_remove_table_free(struct mmu_table_batch *batch)
-+static void tlb_remove_table_one(void *table)
- {
--	call_rcu(&batch->rcu, tlb_remove_table_rcu);
-+	pgtable_t page = (pgtable_t)table;
-+
-+	call_rcu(&page->rcu_head, tlb_remove_table_one_rcu);
- }
- 
- #else /* !CONFIG_MMU_GATHER_RCU_TABLE_FREE */
- 
--static void tlb_remove_table_sync_one(void) { }
--
- static void tlb_remove_table_free(struct mmu_table_batch *batch)
- {
- 	__tlb_remove_table_free(batch);
- }
- 
-+static void tlb_remove_table_one(void *table)
-+{
-+	__tlb_remove_table(table);
-+}
-+
- #endif /* CONFIG_MMU_GATHER_RCU_TABLE_FREE */
- 
- /*
-@@ -187,12 +187,6 @@ static inline void tlb_table_invalidate(struct mmu_gather *tlb)
- 	}
- }
- 
--static void tlb_remove_table_one(void *table)
--{
--	tlb_remove_table_sync_one();
--	__tlb_remove_table(table);
--}
--
- static void tlb_table_flush(struct mmu_gather *tlb)
- {
- 	struct mmu_table_batch **batch = &tlb->batch;
-diff --git a/mm/pte_ref.c b/mm/pte_ref.c
-index ea40b1777056..676923f3c7c8 100644
---- a/mm/pte_ref.c
-+++ b/mm/pte_ref.c
-@@ -10,6 +10,7 @@
- #include <linux/pte_ref.h>
- #include <linux/hugetlb.h>
- #include <asm/tlbflush.h>
-+#include <asm/tlb.h>
- 
- #ifdef CONFIG_DEBUG_VM
- static void pte_free_debug(pmd_t pmd)
-@@ -34,7 +35,8 @@ static void pte_free_rcu(struct rcu_head *rcu)
- 	__free_page(page);
- }
- 
--void free_pte_table(struct mm_struct *mm, pmd_t *pmdp, unsigned long addr)
-+void free_pte_table(struct mmu_gather *tlb, struct mm_struct *mm,
-+		    pmd_t *pmdp, unsigned long addr)
- {
- 	struct vm_area_struct vma = TLB_FLUSH_VMA(mm, 0);
- 	spinlock_t *ptl;
-@@ -45,9 +47,13 @@ void free_pte_table(struct mm_struct *mm, pmd_t *pmdp, unsigned long addr)
- 	spin_unlock(ptl);
- 
- 	pte_free_debug(pmd);
--	flush_tlb_range(&vma, addr, addr + PMD_SIZE);
-+	if (!tlb) {
-+		flush_tlb_range(&vma, addr, addr + PMD_SIZE);
-+		call_rcu(&pmd_pgtable(pmd)->rcu_head, pte_free_rcu);
-+	} else {
-+		pte_free_tlb(tlb, pmd_pgtable(pmd), addr);
-+	}
- 	mm_dec_nr_ptes(mm);
--	call_rcu(&pmd_pgtable(pmd)->rcu_head, pte_free_rcu);
- }
- 
- static inline void __pmd_install(struct mm_struct *mm, pmd_t *pmd, pgtable_t *pte)
--- 
-2.11.0
+> + *
+> + * Copyright (C) 2020 Arm Ltd.
+> + * Based on former work, which is:
+> + *   Copyright (C) 2017 Icenowy Zheng <icenowy@aosc.io>
+> + */
+> +
+> +#include <linux/init.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/pinctrl/pinctrl.h>
+> +#include <linux/reset.h>
+> +
+> +#include "pinctrl-sunxi.h"
+> +
+> +static const struct sunxi_desc_pin sun50i_r329_r_pins[] = {
+> +	SUNXI_PIN(SUNXI_PINCTRL_PIN(L, 0),
+> +		  SUNXI_FUNCTION(0x0, "gpio_in"),
+> +		  SUNXI_FUNCTION(0x1, "gpio_out"),
+> +		  SUNXI_FUNCTION(0x2, "s_i2s"),		/* LRCK */
 
+"s_i2s0" for these would match existing drivers (and the manual).
+
+Everything else matches the manual.
+
+Regards,
+Samuel
