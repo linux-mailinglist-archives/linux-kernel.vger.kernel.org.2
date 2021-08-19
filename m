@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B09DD3F1E0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 18:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C51473F1E14
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 18:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231561AbhHSQiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 12:38:46 -0400
-Received: from mga07.intel.com ([134.134.136.100]:1924 "EHLO mga07.intel.com"
+        id S231579AbhHSQi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 12:38:57 -0400
+Received: from mga06.intel.com ([134.134.136.31]:9173 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230136AbhHSQii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230312AbhHSQii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 19 Aug 2021 12:38:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10081"; a="280332699"
+X-IronPort-AV: E=McAfee;i="6200,9189,10081"; a="277617372"
 X-IronPort-AV: E=Sophos;i="5.84,335,1620716400"; 
-   d="scan'208";a="280332699"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 09:38:01 -0700
+   d="scan'208";a="277617372"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 09:38:01 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,335,1620716400"; 
-   d="scan'208";a="681847594"
+   d="scan'208";a="679529652"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga005.fm.intel.com with ESMTP; 19 Aug 2021 09:37:57 -0700
+  by fmsmga006.fm.intel.com with ESMTP; 19 Aug 2021 09:37:57 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id CDD863C5; Thu, 19 Aug 2021 19:37:52 +0300 (EEST)
+        id DA6AB411; Thu, 19 Aug 2021 19:37:52 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Hans de Goede <hdegoede@redhat.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -40,9 +40,9 @@ Cc:     Mark Gross <mgross@linux.intel.com>,
         AceLan Kao <acelan.kao@canonical.com>,
         Jithu Joseph <jithu.joseph@intel.com>,
         Maurice Ma <maurice.ma@intel.com>
-Subject: [PATCH v4 07/21] platform/x86: intel_telemetry: Move to intel sub-directory
-Date:   Thu, 19 Aug 2021 19:37:21 +0300
-Message-Id: <20210819163735.81803-8-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v4 08/21] platform/x86: intel_ips: Move to intel sub-directory
+Date:   Thu, 19 Aug 2021 19:37:22 +0300
+Message-Id: <20210819163735.81803-9-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210819163735.81803-1-andriy.shevchenko@linux.intel.com>
 References: <20210819163735.81803-1-andriy.shevchenko@linux.intel.com>
@@ -54,155 +54,105 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kate Hsuan <hpa@redhat.com>
 
-Move Intel telemetry driver to intel sub-directory to improve readability.
+Move Intel IPS driver to intel sub-directory to improve readability
+and rename it from intel_ips.c to ips.c.
 
-While at it, spell APL fully in the Kconfig.
+The header file is deliberately left untouched and will be moved
+as part of DRM subsystem development.
 
 Signed-off-by: Kate Hsuan <hpa@redhat.com>
 Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- MAINTAINERS                                      |  2 +-
- drivers/platform/x86/Kconfig                     | 12 ------------
- drivers/platform/x86/Makefile                    |  4 ----
- drivers/platform/x86/intel/Kconfig               |  1 +
- drivers/platform/x86/intel/Makefile              |  1 +
- drivers/platform/x86/intel/telemetry/Kconfig     | 16 ++++++++++++++++
- drivers/platform/x86/intel/telemetry/Makefile    | 11 +++++++++++
- .../telemetry/core.c}                            |  0
- .../telemetry/debugfs.c}                         |  0
- .../telemetry/pltdrv.c}                          |  0
- 10 files changed, 30 insertions(+), 17 deletions(-)
- create mode 100644 drivers/platform/x86/intel/telemetry/Kconfig
- create mode 100644 drivers/platform/x86/intel/telemetry/Makefile
- rename drivers/platform/x86/{intel_telemetry_core.c => intel/telemetry/core.c} (100%)
- rename drivers/platform/x86/{intel_telemetry_debugfs.c => intel/telemetry/debugfs.c} (100%)
- rename drivers/platform/x86/{intel_telemetry_pltdrv.c => intel/telemetry/pltdrv.c} (100%)
+ drivers/platform/x86/Kconfig                      | 10 ----------
+ drivers/platform/x86/Makefile                     |  1 -
+ drivers/platform/x86/intel/Kconfig                | 10 ++++++++++
+ drivers/platform/x86/intel/Makefile               |  4 ++++
+ drivers/platform/x86/{intel_ips.c => intel/ips.c} |  3 ++-
+ 5 files changed, 16 insertions(+), 12 deletions(-)
+ rename drivers/platform/x86/{intel_ips.c => intel/ips.c} (99%)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index aa08fdb02ecb..0c73e6216142 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9559,7 +9559,7 @@ M:	"David E. Box" <david.e.box@linux.intel.com>
- L:	platform-driver-x86@vger.kernel.org
- S:	Maintained
- F:	arch/x86/include/asm/intel_telemetry.h
--F:	drivers/platform/x86/intel_telemetry*
-+F:	drivers/platform/x86/intel/telemetry/
- 
- INTEL UNCORE FREQUENCY CONTROL
- M:	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index 1b85a1f6fc5f..b6e32551a8f5 100644
+index b6e32551a8f5..27af97d1407a 100644
 --- a/drivers/platform/x86/Kconfig
 +++ b/drivers/platform/x86/Kconfig
-@@ -1159,18 +1159,6 @@ config INTEL_UNCORE_FREQ_CONTROL
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called intel-uncore-frequency.
+@@ -1100,16 +1100,6 @@ config INTEL_IMR
  
--config INTEL_TELEMETRY
--	tristate "Intel SoC Telemetry Driver"
--	depends on X86_64
--	depends on MFD_INTEL_PMC_BXT
--	depends on INTEL_PUNIT_IPC
+ 	  If you are running on a Galileo/Quark say Y here.
+ 
+-config INTEL_IPS
+-	tristate "Intel Intelligent Power Sharing"
+-	depends on ACPI && PCI
 -	help
--	  This driver provides interfaces to configure and use
--	  telemetry for INTEL SoC from APL onwards. It is also
--	  used to get various SoC events and parameters
--	  directly via debugfs files. Various tools may use
--	  this interface for SoC state monitoring.
+-	  Intel Calpella platforms support dynamic power sharing between the
+-	  CPU and GPU, maximizing performance in a given TDP.  This driver,
+-	  along with the CPU frequency and i915 drivers, provides that
+-	  functionality.  If in doubt, say Y here; it will only load on
+-	  supported platforms.
 -
- endif # X86_PLATFORM_DEVICES
- 
- config PMC_ATOM
+ config INTEL_RST
+         tristate "Intel Rapid Start Technology Driver"
+ 	depends on ACPI
 diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-index 026c97ba68f6..633cc14eba2c 100644
+index 633cc14eba2c..fef347925d81 100644
 --- a/drivers/platform/x86/Makefile
 +++ b/drivers/platform/x86/Makefile
-@@ -126,8 +126,4 @@ obj-$(CONFIG_INTEL_SPEED_SELECT_INTERFACE)	+= intel_speed_select_if/
- obj-$(CONFIG_INTEL_TURBO_MAX_3)			+= intel_turbo_max_3.o
- obj-$(CONFIG_INTEL_UNCORE_FREQ_CONTROL)		+= intel-uncore-frequency.o
+@@ -119,7 +119,6 @@ obj-$(CONFIG_TOUCHSCREEN_DMI)		+= touchscreen_dmi.o
+ obj-$(CONFIG_WIRELESS_HOTKEY)		+= wireless-hotkey.o
  
--# Intel PMIC / PMC / P-Unit devices
--obj-$(CONFIG_INTEL_TELEMETRY)		+= intel_telemetry_core.o \
--					   intel_telemetry_pltdrv.o \
--					   intel_telemetry_debugfs.o
- obj-$(CONFIG_PMC_ATOM)			+= pmc_atom.o
+ # Intel uncore drivers
+-obj-$(CONFIG_INTEL_IPS)				+= intel_ips.o
+ obj-$(CONFIG_INTEL_RST)				+= intel-rst.o
+ obj-$(CONFIG_INTEL_SMARTCONNECT)		+= intel-smartconnect.o
+ obj-$(CONFIG_INTEL_SPEED_SELECT_INTERFACE)	+= intel_speed_select_if/
 diff --git a/drivers/platform/x86/intel/Kconfig b/drivers/platform/x86/intel/Kconfig
-index 72f4a5b79342..bedd3bdb0662 100644
+index bedd3bdb0662..5f1dc8b1a874 100644
 --- a/drivers/platform/x86/intel/Kconfig
 +++ b/drivers/platform/x86/intel/Kconfig
-@@ -22,6 +22,7 @@ source "drivers/platform/x86/intel/int3472/Kconfig"
- source "drivers/platform/x86/intel/pmc/Kconfig"
- source "drivers/platform/x86/intel/pmt/Kconfig"
- source "drivers/platform/x86/intel/scu/Kconfig"
-+source "drivers/platform/x86/intel/telemetry/Kconfig"
+@@ -62,4 +62,14 @@ config INTEL_PUNIT_IPC
+ 	  This driver provides support for Intel P-Unit Mailbox IPC mechanism,
+ 	  which is used to bridge the communications between kernel and P-Unit.
  
- config INTEL_BXTWC_PMIC_TMU
- 	tristate "Intel Broxton Whiskey Cove TMU Driver"
++config INTEL_IPS
++	tristate "Intel Intelligent Power Sharing"
++	depends on ACPI && PCI
++	help
++	  Intel Calpella platforms support dynamic power sharing between
++	  the CPU and GPU, maximizing performance in a given TDP. This driver,
++	  along with the CPU frequency and i915 drivers, provides that
++	  functionality. If in doubt, say Y here; it will only load on
++	  supported platforms.
++
+ endif # X86_PLATFORM_DRIVERS_INTEL
 diff --git a/drivers/platform/x86/intel/Makefile b/drivers/platform/x86/intel/Makefile
-index 15e5124d70ec..d446771dbff2 100644
+index d446771dbff2..77cb50b90e67 100644
 --- a/drivers/platform/x86/intel/Makefile
 +++ b/drivers/platform/x86/intel/Makefile
-@@ -10,6 +10,7 @@ obj-$(CONFIG_INTEL_SKL_INT3472)		+= int3472/
- obj-$(CONFIG_INTEL_PMC_CORE)		+= pmc/
- obj-$(CONFIG_INTEL_PMT_CLASS)		+= pmt/
- obj-$(CONFIG_INTEL_SCU)			+= scu/
-+obj-$(CONFIG_INTEL_TELEMETRY)		+= telemetry/
+@@ -21,3 +21,7 @@ intel_mrfld_pwrbtn-y			:= mrfld_pwrbtn.o
+ obj-$(CONFIG_INTEL_MRFLD_PWRBTN)	+= intel_mrfld_pwrbtn.o
+ intel_punit_ipc-y			:= punit_ipc.o
+ obj-$(CONFIG_INTEL_PUNIT_IPC)		+= intel_punit_ipc.o
++
++# Intel Uncore drivers
++intel_ips-y				:= ips.o
++obj-$(CONFIG_INTEL_IPS)			+= intel_ips.o
+diff --git a/drivers/platform/x86/intel_ips.c b/drivers/platform/x86/intel/ips.c
+similarity index 99%
+rename from drivers/platform/x86/intel_ips.c
+rename to drivers/platform/x86/intel/ips.c
+index 4dfdbfca6841..0c86bdbcc5d5 100644
+--- a/drivers/platform/x86/intel_ips.c
++++ b/drivers/platform/x86/intel/ips.c
+@@ -62,7 +62,8 @@
+ #include <drm/i915_drm.h>
+ #include <asm/msr.h>
+ #include <asm/processor.h>
+-#include "intel_ips.h"
++
++#include "../intel_ips.h"
  
- # Intel PMIC / PMC / P-Unit drivers
- intel_bxtwc_tmu-y			:= bxtwc_tmu.o
-diff --git a/drivers/platform/x86/intel/telemetry/Kconfig b/drivers/platform/x86/intel/telemetry/Kconfig
-new file mode 100644
-index 000000000000..da887bd03731
---- /dev/null
-+++ b/drivers/platform/x86/intel/telemetry/Kconfig
-@@ -0,0 +1,16 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# Intel x86 Platform Specific Drivers
-+#
-+
-+config INTEL_TELEMETRY
-+	tristate "Intel SoC Telemetry driver"
-+	depends on X86_64
-+	depends on MFD_INTEL_PMC_BXT
-+	depends on INTEL_PUNIT_IPC
-+	help
-+	  This driver provides interfaces to configure and use
-+	  telemetry for Intel SoC from Apollo Lake onwards.
-+	  It is also used to get various SoC events and parameters
-+	  directly via debugfs files. Various tools may use
-+	  this interface for SoC state monitoring.
-diff --git a/drivers/platform/x86/intel/telemetry/Makefile b/drivers/platform/x86/intel/telemetry/Makefile
-new file mode 100644
-index 000000000000..bfdba5b6c59a
---- /dev/null
-+++ b/drivers/platform/x86/intel/telemetry/Makefile
-@@ -0,0 +1,11 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# Intel x86 Platform Specific Drivers
-+#
-+
-+intel_telemetry_core-y			:= core.o
-+obj-$(CONFIG_INTEL_TELEMETRY)		+= intel_telemetry_core.o
-+intel_telemetry_pltdrv-y		:= pltdrv.o
-+obj-$(CONFIG_INTEL_TELEMETRY)		+= intel_telemetry_pltdrv.o
-+intel_telemetry_debugfs-y		:= debugfs.o
-+obj-$(CONFIG_INTEL_TELEMETRY)		+= intel_telemetry_debugfs.o
-diff --git a/drivers/platform/x86/intel_telemetry_core.c b/drivers/platform/x86/intel/telemetry/core.c
-similarity index 100%
-rename from drivers/platform/x86/intel_telemetry_core.c
-rename to drivers/platform/x86/intel/telemetry/core.c
-diff --git a/drivers/platform/x86/intel_telemetry_debugfs.c b/drivers/platform/x86/intel/telemetry/debugfs.c
-similarity index 100%
-rename from drivers/platform/x86/intel_telemetry_debugfs.c
-rename to drivers/platform/x86/intel/telemetry/debugfs.c
-diff --git a/drivers/platform/x86/intel_telemetry_pltdrv.c b/drivers/platform/x86/intel/telemetry/pltdrv.c
-similarity index 100%
-rename from drivers/platform/x86/intel_telemetry_pltdrv.c
-rename to drivers/platform/x86/intel/telemetry/pltdrv.c
+ #include <linux/io-64-nonatomic-lo-hi.h>
+ 
 -- 
 2.32.0
 
