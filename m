@@ -2,77 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93C63F14ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 10:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 770DE3F14F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 10:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237181AbhHSINJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 04:13:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44120 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236854AbhHSINA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 04:13:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0D1A61131;
-        Thu, 19 Aug 2021 08:12:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629360745;
-        bh=GOCGkI4khodlS6ZkJJHgdEHRUQUkLqQWLt51fbZhqag=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ImP54DbDs6Ze/pjeJpxZIXIxsHwZxhPCVYEj1FQ58Pk8MQu0YgBPPHVt2QyUrWWOo
-         F+7xVtg+xAy7FRjbe1EDJHizPC/0f/+6YwEFfR5N4NeTc9Emy2+fr9qITRH7x6la1+
-         hCoKeGQqcKtWUd31f3zvr+9Afmvbea3bQHeAPiMQbPMWP2TOn6PTse/9stQ5OEP3SZ
-         JTYkH0+aLr1DP5o6LkC0JuhqRDq62f+H5i2uiAFs3/pjZM9v7Hz9dS2sVFhpuvLxJE
-         HuqJuEhjdyzIEfkvibVqGVld2ul4ViExKk1iPge2+38neIx/AdSziIQW7tMIsNbDhk
-         G+ZkXmRCjJf3Q==
-Received: by pali.im (Postfix)
-        id 571FC7EA; Thu, 19 Aug 2021 10:12:22 +0200 (CEST)
-Date:   Thu, 19 Aug 2021 10:12:22 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Kari Argillander <kari.argillander@gmail.com>
-Cc:     linux-fsdevel@vger.kernel.org,
-        linux-ntfs-dev@lists.sourceforge.net, linux-cifs@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Luis de Bethencourt <luisbg@kernel.org>,
-        Salah Triki <salah.triki@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [RFC PATCH 05/20] ntfs: Undeprecate iocharset= mount option
-Message-ID: <20210819081222.vnvxfrtqctfev6xu@pali>
-References: <20210808162453.1653-1-pali@kernel.org>
- <20210808162453.1653-6-pali@kernel.org>
- <20210819012108.3isqi4t6rmd5fd5x@kari-VirtualBox>
+        id S237151AbhHSINn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 04:13:43 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:8883 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232545AbhHSINm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 04:13:42 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gqy8Y2ktlz8sdd;
+        Thu, 19 Aug 2021 16:09:01 +0800 (CST)
+Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 19 Aug 2021 16:13:04 +0800
+Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 19 Aug 2021 16:13:04 +0800
+From:   Yanan Wang <wangyanan55@huawei.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Mark Brown <broonie@linaro.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        <wanghaibin.wang@huawei.com>
+Subject: [Question] Make the DT cpu-map parser be aware of socket nodes
+Date:   Thu, 19 Aug 2021 16:13:03 +0800
+Message-ID: <20210819081303.188008-1-wangyanan55@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210819012108.3isqi4t6rmd5fd5x@kari-VirtualBox>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain
+X-Originating-IP: [10.174.187.128]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500023.china.huawei.com (7.185.36.83)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 19 August 2021 04:21:08 Kari Argillander wrote:
-> On Sun, Aug 08, 2021 at 06:24:38PM +0200, Pali Rohár wrote:
-> > Other fs drivers are using iocharset= mount option for specifying charset.
-> > So mark iocharset= mount option as preferred and deprecate nls= mount
-> > option.
->  
-> One idea is also make this change to fs/fc_parser.c and then when we
-> want we can drop support from all filesystem same time. This way we
-> can get more deprecated code off the fs drivers. Draw back is that
-> then every filesstem has this deprecated nls= option if it support
-> iocharsets option. But that should imo be ok.
+Hi,
 
-Beware that iocharset= is required only for fs which store filenames in
-some specific encoding (in this case extension to UTF-16). For fs which
-store filenames in raw bytes this option should not be parsed at all.
+It seems that there is some discrepancy between the kernel documentation
+(Documentation/devicetree/bindings/cpu/cpu-topology.txt) and the actual
+implementation of DT topology parser for ARM64 (function parse_dt_topology()
+in drivers/base/arch_topology.c).
 
-Therefore I'm not sure if this parsing should be in global
-fs/fc_parser.c file...
+The Doc implies that we can define a cpu-map for the ARM64 multi-socket
+system like:
+(1) cpu-map
+	socket0
+		cluster0
+			core0
+			core1
+		cluster1
+			core0
+			core1
+	socket1
+		cluster0
+			core0
+			core1
+		cluster1
+			core0
+			core1
+
+or a cpu-map for 32-bit system like:
+(2) cpu-map
+        cluster0
+                cluster0
+                        core0
+                        core1
+                cluster1
+                        core0
+                        core1
+        cluster1
+                cluster0
+                        core0
+                        core1
+                cluster1
+                        core0
+                        core1
+
+But current parser only assumes that there are nested clusters within
+cpu-map and is unaware of socket, the parser also ignore any information
+about the nesting of clusters and present the scheduler with a flat list
+of them. So based on current parser, we will get "4 packages, 2 cores per
+package, 1 threads per core" from (2), but can not generate a valid
+topology from (1).
+
+There are two questions that I'm not sure.
+
+1) Why are we using leaf cluster nodes as packages ? To be more consistent with
+the concept of package (or sockets), maybe we should use the top-level cluster
+nodes as packages, or just make one single socket ?
+
+2) Now it's documented that a cpu-map with socket nodes can be defined for ARM64,
+then do we have any plan to make the parser be aware of sockets too ?
+Like, we will make each socket nodes as a package instead of the leaf clusters
+if there are socket nodes found in the DT. So we will get "2 packages, 4 cores
+per package, 1 thread per core" from cpu-map (1).
+
+In virtualization, I hope to describe the user-defined (from QEMU) topology
+information (e.g. sockets=2,cores=8,threads=2) through DT, so that the guest
+kernel can get the topology. But I'm not sure whether to build the DT in format
+"cpu-map/socket%d/core%d/thread%d" or "cpu-map/cluster%d/core%d/thread%d".
+Honestly, I think the first one is consistent with the Doc.
+
+
+Looking forward to some reply, thanks!
+
+Yanan
+.
