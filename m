@@ -2,234 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A70343F1DD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 18:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23DCD3F1DD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 18:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbhHSQae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 12:30:34 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:41742 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhHSQac (ORCPT
+        id S229870AbhHSQbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 12:31:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229451AbhHSQbf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 12:30:32 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id D435220C33B1;
-        Thu, 19 Aug 2021 09:29:55 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D435220C33B1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1629390596;
-        bh=biRcMqTIEjafBrJdbRZ+VU9C2F2RK1KzP8wAbbe0Vc4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CZ6RbZlEKSmtSOMXYfQVWGeRHgDhnfpJbSwiWb5obHbkZNh0pX0nEMUESQUlsl5F9
-         SkmVBN7bnT/uFrLQLsPWq6FtDs5q/0ZkrkH0avd7Bh9hXC1/5kYlJRB5hKDxNA7MX+
-         LlVOL4/EesR2P9b8URz+ooCM/5p7ANY3B9h7tqRY=
-Date:   Thu, 19 Aug 2021 11:29:53 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pasha.tatashin@soleen.com
-Subject: Re: [PATCH v3 1/2] selftests: vm: add KSM merging time test
-Message-ID: <20210819162953.GN5469@sequoia>
-References: <cover.1629386192.git.zhansayabagdaulet@gmail.com>
- <318b946ac80cc9205c89d0962048378f7ce0705b.1629386192.git.zhansayabagdaulet@gmail.com>
+        Thu, 19 Aug 2021 12:31:35 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6056C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 09:30:59 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id g14so5988864pfm.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 09:30:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=fpkD+6OCoRzfkOeMTubr6LoF+sjAXSBjcDQsaNzJiUQ=;
+        b=GLcx+rGTfAkrzYH9INJLyXKNKRZucLOxvUvYmeInROcKbJbm+K+zI1dqs0skv5CP9x
+         44xiv/Kk3kudHFveMfbhqZXzEoH3fAPjgu0xnDuHtsgKEMt2lW1wpDTkrUTPt192i6nU
+         YEneL0cX16fnC85Eb3UYudifAXi7m+aoGCik5GQgz9E8rcwhhImB2TxA7nkLiJM9N5Ph
+         Dnl16YKBASVVYpwqcwo9ZP4kilBD5Ly2C3aFxnxg6DQE4MGeFF1+hXurlhYR9hSzgvMn
+         Va+0a4Yj8oWWMRIl0nwMyyWuY7R3S4P5l8Ce+6yITrCPD0dsdAvXiU/usNX3K6hnKN5s
+         w8Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=fpkD+6OCoRzfkOeMTubr6LoF+sjAXSBjcDQsaNzJiUQ=;
+        b=j0pZFXNReK8DktRyOPH0aA2OAkAVH8C2RBa7CY+gRgF2+F2rPr+V4HEZ2Ggb7i8AgV
+         jnHVrhUQRhenCN/MI7ij2MSB15ZYcn0omMaMzAG5yNHTFnPhq4FuANQGwdjP6ffn+CHj
+         BAZznSj76FAsUkg/WpjXFRtFI/i56vEiqEcwTWeBSd8f+SY2uQtvppBoDOVLnB3WBK5+
+         Gu0rE493Hf0De8Ac/w13hVRObGX81kd9HosMpAz3ZXI2iHgFy3u3ZG5Ki9T4h6hx8GNW
+         eLqMwl7PQ2uAArOCTYhgXYc/Yvfi5i4xL1TdGWyKBCXACKzcfkcUbLMmY2Y3hWsPyn5e
+         gfEw==
+X-Gm-Message-State: AOAM533aY/pRe00BIGJixKuaJn2Rq3JeyNCa2MyfqU5HBZNn5Bx3OLeQ
+        nlBIM8mvEPqHQlX9rHlaUW8=
+X-Google-Smtp-Source: ABdhPJyZ32hcCoHBVF5/ronUjvjqCmf9FjAS/yuTlL2qRVd2fmTE17GEVg28GZTRPck3LmuoG/HIDw==
+X-Received: by 2002:a05:6a00:1511:b0:3e1:6801:3402 with SMTP id q17-20020a056a00151100b003e168013402mr15475104pfu.23.1629390659284;
+        Thu, 19 Aug 2021 09:30:59 -0700 (PDT)
+Received: from haolee.github.io ([2600:3c01::f03c:91ff:fe02:b162])
+        by smtp.gmail.com with ESMTPSA id v1sm4303751pgj.40.2021.08.19.09.30.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 09:30:58 -0700 (PDT)
+From:   Hao Lee <haolee.swjtu@gmail.com>
+X-Google-Original-From: Hao Lee <haolee@didiglobal.com>
+Date:   Thu, 19 Aug 2021 16:30:56 +0000
+To:     akpm@linux-foundation.org
+Cc:     hannes@cmpxchg.org, shakeelb@google.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, haolee.swjtu@gmail.com
+Subject: [PATCH] mm: vmscan: consistent update to pgdeactivate and pgactivate
+Message-ID: <20210819163056.GA9764@haolee.github.io>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <318b946ac80cc9205c89d0962048378f7ce0705b.1629386192.git.zhansayabagdaulet@gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-19 21:33:41, Zhansaya Bagdauletkyzy wrote:
-> Add ksm_merge_time() function to determine speed and time needed for
-> merging. The total spent time is shown in seconds while speed is
-> in MiB/s. User must specify the size of duplicated memory area (in MiB)
-> before running the test.
-> 
-> The test is run as follows: ./ksm_tests -P -s 100
-> The output:
-> 	Total size:    100 MiB
-> 	Total time:    0.201106786 s
-> 	Average speed:  497.248 MiB/s
-> 
-> Signed-off-by: Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
-> ---
-> v2 -> v3:
->  - no changes
+After the commit 912c05720f00 ("mm: vmscan: consistent update to
+pgrefill"), pgrefill is consistent with pgscan and pgsteal. Only under
+global reclaim, are they updated at system level. Apart from that,
+pgdeactivate is often used together with pgrefill to measure the
+deactivation efficiency and pgactivate is used together with
+pgscan to measure the reclaim efficiency. It's also necessary to
+make pgdeactivate and pgactivate consistent with this rule.
 
-There were no changes to this patch since v2 so my previous review still
-stands:
+Signed-off-by: Hao Lee <haolee@didiglobal.com>
+---
+ mm/vmscan.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
- Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 403a175a720f..9242c01d03ac 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1814,7 +1814,8 @@ static unsigned int shrink_page_list(struct list_head *page_list,
+ 	free_unref_page_list(&free_pages);
+ 
+ 	list_splice(&ret_pages, page_list);
+-	count_vm_events(PGACTIVATE, pgactivate);
++	if (!cgroup_reclaim(sc))
++		count_vm_events(PGACTIVATE, pgactivate);
+ 
+ 	return nr_reclaimed;
+ }
+@@ -2427,7 +2428,8 @@ static void shrink_active_list(unsigned long nr_to_scan,
+ 	/* Keep all free pages in l_active list */
+ 	list_splice(&l_inactive, &l_active);
+ 
+-	__count_vm_events(PGDEACTIVATE, nr_deactivate);
++	if (!cgroup_reclaim(sc))
++		__count_vm_events(PGDEACTIVATE, nr_deactivate);
+ 	__count_memcg_events(lruvec_memcg(lruvec), PGDEACTIVATE, nr_deactivate);
+ 
+ 	__mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, -nr_taken);
+-- 
+2.31.1
 
-Tyler
-
-> 
-> v1 -> v2:
->  As suggested by Pavel,
->  - replace MB with MiB
->  - measure speed more accurately
-> 
-> Pavel's comments: https://lkml.org/lkml/2021/8/3/1362 
-> 
->  tools/testing/selftests/vm/ksm_tests.c | 74 ++++++++++++++++++++++++--
->  1 file changed, 70 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/vm/ksm_tests.c b/tools/testing/selftests/vm/ksm_tests.c
-> index cdeb4a028538..432dfe615e50 100644
-> --- a/tools/testing/selftests/vm/ksm_tests.c
-> +++ b/tools/testing/selftests/vm/ksm_tests.c
-> @@ -7,6 +7,7 @@
->  #include <numa.h>
->  
->  #include "../kselftest.h"
-> +#include "../../../../include/vdso/time64.h"
->  
->  #define KSM_SYSFS_PATH "/sys/kernel/mm/ksm/"
->  #define KSM_FP(s) (KSM_SYSFS_PATH s)
-> @@ -15,6 +16,7 @@
->  #define KSM_PROT_STR_DEFAULT "rw"
->  #define KSM_USE_ZERO_PAGES_DEFAULT false
->  #define KSM_MERGE_ACROSS_NODES_DEFAULT true
-> +#define MB (1ul << 20)
->  
->  struct ksm_sysfs {
->  	unsigned long max_page_sharing;
-> @@ -30,7 +32,8 @@ enum ksm_test_name {
->  	CHECK_KSM_MERGE,
->  	CHECK_KSM_UNMERGE,
->  	CHECK_KSM_ZERO_PAGE_MERGE,
-> -	CHECK_KSM_NUMA_MERGE
-> +	CHECK_KSM_NUMA_MERGE,
-> +	KSM_MERGE_TIME
->  };
->  
->  static int ksm_write_sysfs(const char *file_path, unsigned long val)
-> @@ -86,13 +89,16 @@ static int str_to_prot(char *prot_str)
->  static void print_help(void)
->  {
->  	printf("usage: ksm_tests [-h] <test type> [-a prot] [-p page_count] [-l timeout]\n"
-> -	       "[-z use_zero_pages] [-m merge_across_nodes]\n");
-> +	       "[-z use_zero_pages] [-m merge_across_nodes] [-s size]\n");
->  
->  	printf("Supported <test type>:\n"
->  	       " -M (page merging)\n"
->  	       " -Z (zero pages merging)\n"
->  	       " -N (merging of pages in different NUMA nodes)\n"
-> -	       " -U (page unmerging)\n\n");
-> +	       " -U (page unmerging)\n"
-> +	       " -P evaluate merging time and speed.\n"
-> +	       "    For this test, the size of duplicated memory area (in MiB)\n"
-> +	       "    must be provided using -s option\n\n");
->  
->  	printf(" -a: specify the access protections of pages.\n"
->  	       "     <prot> must be of the form [rwx].\n"
-> @@ -105,6 +111,7 @@ static void print_help(void)
->  	       "     Default: %d\n", KSM_USE_ZERO_PAGES_DEFAULT);
->  	printf(" -m: change merge_across_nodes tunable\n"
->  	       "     Default: %d\n", KSM_MERGE_ACROSS_NODES_DEFAULT);
-> +	printf(" -s: the size of duplicated memory area (in MiB)\n");
->  
->  	exit(0);
->  }
-> @@ -407,6 +414,47 @@ static int check_ksm_numa_merge(int mapping, int prot, int timeout, bool merge_a
->  	return KSFT_FAIL;
->  }
->  
-> +static int ksm_merge_time(int mapping, int prot, int timeout, size_t map_size)
-> +{
-> +	void *map_ptr;
-> +	struct timespec start_time, end_time;
-> +	unsigned long scan_time_ns;
-> +
-> +	map_size *= MB;
-> +
-> +	map_ptr = allocate_memory(NULL, prot, mapping, '*', map_size);
-> +	if (!map_ptr)
-> +		return KSFT_FAIL;
-> +
-> +	if (clock_gettime(CLOCK_MONOTONIC_RAW, &start_time)) {
-> +		perror("clock_gettime");
-> +		goto err_out;
-> +	}
-> +	if (ksm_merge_pages(map_ptr, map_size, start_time, timeout))
-> +		goto err_out;
-> +	if (clock_gettime(CLOCK_MONOTONIC_RAW, &end_time)) {
-> +		perror("clock_gettime");
-> +		goto err_out;
-> +	}
-> +
-> +	scan_time_ns = (end_time.tv_sec - start_time.tv_sec) * NSEC_PER_SEC +
-> +		       (end_time.tv_nsec - start_time.tv_nsec);
-> +
-> +	printf("Total size:    %lu MiB\n", map_size / MB);
-> +	printf("Total time:    %ld.%09ld s\n", scan_time_ns / NSEC_PER_SEC,
-> +	       scan_time_ns % NSEC_PER_SEC);
-> +	printf("Average speed:  %.3f MiB/s\n", (map_size / MB) /
-> +					       ((double)scan_time_ns / NSEC_PER_SEC));
-> +
-> +	munmap(map_ptr, map_size);
-> +	return KSFT_PASS;
-> +
-> +err_out:
-> +	printf("Not OK\n");
-> +	munmap(map_ptr, map_size);
-> +	return KSFT_FAIL;
-> +}
-> +
->  int main(int argc, char *argv[])
->  {
->  	int ret, opt;
-> @@ -418,8 +466,9 @@ int main(int argc, char *argv[])
->  	int test_name = CHECK_KSM_MERGE;
->  	bool use_zero_pages = KSM_USE_ZERO_PAGES_DEFAULT;
->  	bool merge_across_nodes = KSM_MERGE_ACROSS_NODES_DEFAULT;
-> +	long size_MB = 0;
->  
-> -	while ((opt = getopt(argc, argv, "ha:p:l:z:m:MUZN")) != -1) {
-> +	while ((opt = getopt(argc, argv, "ha:p:l:z:m:s:MUZNP")) != -1) {
->  		switch (opt) {
->  		case 'a':
->  			prot = str_to_prot(optarg);
-> @@ -453,6 +502,12 @@ int main(int argc, char *argv[])
->  			else
->  				merge_across_nodes = 1;
->  			break;
-> +		case 's':
-> +			size_MB = atoi(optarg);
-> +			if (size_MB <= 0) {
-> +				printf("Size must be greater than 0\n");
-> +				return KSFT_FAIL;
-> +			}
->  		case 'M':
->  			break;
->  		case 'U':
-> @@ -464,6 +519,9 @@ int main(int argc, char *argv[])
->  		case 'N':
->  			test_name = CHECK_KSM_NUMA_MERGE;
->  			break;
-> +		case 'P':
-> +			test_name = KSM_MERGE_TIME;
-> +			break;
->  		default:
->  			return KSFT_FAIL;
->  		}
-> @@ -505,6 +563,14 @@ int main(int argc, char *argv[])
->  		ret = check_ksm_numa_merge(MAP_PRIVATE | MAP_ANONYMOUS, prot, ksm_scan_limit_sec,
->  					   merge_across_nodes, page_size);
->  		break;
-> +	case KSM_MERGE_TIME:
-> +		if (size_MB == 0) {
-> +			printf("Option '-s' is required.\n");
-> +			return KSFT_FAIL;
-> +		}
-> +		ret = ksm_merge_time(MAP_PRIVATE | MAP_ANONYMOUS, prot, ksm_scan_limit_sec,
-> +				     size_MB);
-> +		break;
->  	}
->  
->  	if (ksm_restore(&ksm_sysfs_old)) {
-> -- 
-> 2.25.1
-> 
