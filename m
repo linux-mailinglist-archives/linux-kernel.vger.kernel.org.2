@@ -2,111 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7183F1571
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 10:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA3B3F1580
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 10:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237767AbhHSIon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 04:44:43 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:38448 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S237477AbhHSInv (ORCPT
+        id S229649AbhHSIr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 04:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232653AbhHSIr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 04:43:51 -0400
-X-UUID: 1a1373e78c8f464e98226b919b422673-20210819
-X-UUID: 1a1373e78c8f464e98226b919b422673-20210819
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <trevor.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1587661433; Thu, 19 Aug 2021 16:43:11 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 19 Aug 2021 16:43:10 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 19 Aug 2021 16:43:10 +0800
-From:   Trevor Wu <trevor.wu@mediatek.com>
-To:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
-        <robh+dt@kernel.org>, <matthias.bgg@gmail.com>
-CC:     <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <bicycle.tsai@mediatek.com>, <jiaxin.yu@mediatek.com>,
-        <cychiang@google.com>, <aaronyu@google.com>, <wenst@chromium.org>
-Subject: [PATCH v5 11/11] dt-bindings: mediatek: mt8195: add mt8195-mt6359-rt1019-rt5682 document
-Date:   Thu, 19 Aug 2021 16:41:44 +0800
-Message-ID: <20210819084144.18483-12-trevor.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210819084144.18483-1-trevor.wu@mediatek.com>
-References: <20210819084144.18483-1-trevor.wu@mediatek.com>
+        Thu, 19 Aug 2021 04:47:27 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3490BC061575;
+        Thu, 19 Aug 2021 01:46:51 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id f10so3365034wml.2;
+        Thu, 19 Aug 2021 01:46:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=X/TEaZzu94ne4ay2syr/T654O+flopjeVsyOYpDjJno=;
+        b=Nwks4G871aYpOheeqTFSc4lWtC4lXLeA53ppjfAQsSxhgAMZqL0mtQGOimf88UlF6h
+         sD37CBA0jj228sCCxrUxpn4EL1Cg43hFq6OzJ/X3iZNS+Mt83DEGBuMgjCWyyQvlPBKH
+         dEJ9YFsk0E3UGeS7ZCWHXO59h7F8rJhc+3XPSBn1BDupy957GAomgKl7tp2UBootElVO
+         wOvHeHPACxIUvNW9EFdc1HzaDfFok707DMCyhfrge/CIBjPz42QZIwYFVZaV4QAyGDS4
+         vXZ/pJiqNGOo4T6dGpycWuYpnji/LojNZtL6a4Nb91kIapWXCG4h3zYopuDPVCLjAu/b
+         HCOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=X/TEaZzu94ne4ay2syr/T654O+flopjeVsyOYpDjJno=;
+        b=a3ZNUGBPw/YoUZolYucoZ+4OicUebgp5xOv45J2MUOUkZjXL/cWdyUsu/8TFmgWBm8
+         ZryvqGBsPdPKEpZi8dLe/m1AuEYDTytuUgEGsN2MhfGs+VVKLQ/p4WQ7vhHvQwn1wD0b
+         Eon+HTGqElP+G1PGeIH9D+qf1QMQnTC0AzPLtRMDpIEIKRz2GVLrp7p6SYM3hGx+0NnV
+         2E8HLxvt1vXJkNMLx3L5gbhtL3VOyzOwEeMyx9hErfPARBYQpkdg9VLXEBhNm5dpxWb2
+         eo6kVG6ZEHb5lx11WJ2vIPlDZQwRHJPEjCIhj6433NqmaC4Nsjo6DSQ/UtVw0Y2yWLxU
+         vZ/g==
+X-Gm-Message-State: AOAM53191X9bdyltoyaYst5UvtD6MNpZkXrRLFBEQofCID/DZzZVENaE
+        RLewWPprvaPWYbnSPN8aeGE=
+X-Google-Smtp-Source: ABdhPJwYxscRIinzqhEtONF6p8gLbq+7oJhoE+fOvLEGr4P9cwE4Koxqa8JqsF28S4rldy4wW/XCcA==
+X-Received: by 2002:a7b:c316:: with SMTP id k22mr7118105wmj.56.1629362809827;
+        Thu, 19 Aug 2021 01:46:49 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:183:dc70:3158:43eb:fcb0:86a6? ([2a01:e0a:183:dc70:3158:43eb:fcb0:86a6])
+        by smtp.gmail.com with ESMTPSA id u10sm2227301wrt.14.2021.08.19.01.46.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Aug 2021 01:46:49 -0700 (PDT)
+Subject: Re: [PATCH v1] MAINTAINERS: new entry for Broadcom STB PCIe driver
+To:     Jim Quinlan <jim2101024@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, f.fainelli@gmail.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
+References: <20210818225031.8502-1-jim2101024@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <79e605cc-519e-94f2-0444-8700256c6458@gmail.com>
+Date:   Thu, 19 Aug 2021 10:46:49 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <20210818225031.8502-1-jim2101024@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds document for mt8195 board with mt6359, rt1019 and rt5682
 
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
----
- .../sound/mt8195-mt6359-rt1019-rt5682.yaml    | 47 +++++++++++++++++++
- 1 file changed, 47 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
-new file mode 100644
-index 000000000000..20bc0ffd0e34
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
-@@ -0,0 +1,47 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/mt8195-mt6359-rt1019-rt5682.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Mediatek MT8195 with MT6359, RT1019 and RT5682 ASoC sound card driver
-+
-+maintainers:
-+  - Trevor Wu <trevor.wu@mediatek.com>
-+
-+description:
-+  This binding describes the MT8195 sound card.
-+
-+properties:
-+  compatible:
-+    const: mediatek,mt8195_mt6359_rt1019_rt5682
-+
-+  mediatek,platform:
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+    description: The phandle of MT8195 ASoC platform.
-+
-+  mediatek,dptx-codec:
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+    description: The phandle of MT8195 Display Port Tx codec node.
-+
-+  mediatek,hdmi-codec:
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+    description: The phandle of MT8195 HDMI codec node.
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+  - mediatek,platform
-+
-+examples:
-+  - |
-+
-+    sound: mt8195-sound {
-+        compatible = "mediatek,mt8195_mt6359_rt1019_rt5682";
-+        mediatek,platform = <&afe>;
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&aud_pins_default>;
-+    };
-+
-+...
+On 8/19/2021 12:50 AM, Jim Quinlan wrote:
+> The two files listed are also covered by
+> 
+> "BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE"
+> 
+> which covers the Raspberry Pi specifics of the PCIe driver.
+> 
+> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+
+Would be good to get this change applied soon so you are copied properly 
+on all pcie-brcmstb.c changes. Thanks!
 -- 
-2.18.0
-
+Florian
