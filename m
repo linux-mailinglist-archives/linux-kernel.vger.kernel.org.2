@@ -2,165 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 051783F23C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5879C3F23CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236854AbhHSXjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 19:39:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236873AbhHSXjV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 19:39:21 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4551EC061764
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:38:44 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id o20so10704810oiw.12
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:38:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Xct87dPQUKJVUu3N8FqHnD1YvrlqEBt4s0ORd5SdpdM=;
-        b=eudFGYTfZ16z1QhF2vBkVkOEGuyji6cJHYfDN+vaWhHK9+rd5vH14VbxAFS+2eC/Oa
-         4Ba8R/88FJ/OPWCZCtBMsieEh/pm7qtYFwo0TirY0lTm7yCkB4ikLG4icFgNZa27zUvD
-         BJBWXenoc7pm9fKQWpviuAKcgL8Df47rbgz6yQURrhmHOtRSecJ10uQ/D9jJoKjchcaT
-         N88vkjjFz7L88TbHiR07A5xpRDrDWzx7jyyWYQNuz4UGLkZj+Y+eCNAqTYc3PrKVQ9mE
-         uxtGqO5cni67yc6BYcRmxcxcBMWHGdqV0DZH4RZws/7uEVXHrYjTkJDfXhbO+YTxMWd0
-         nkfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Xct87dPQUKJVUu3N8FqHnD1YvrlqEBt4s0ORd5SdpdM=;
-        b=cFBTzx1tzB+s/UvBAfByq93yEMPANlwbIVHwBx7J4qRKA5eh1MkCdUFNAcR6Vh19Qk
-         aDX5u7kxuApKto0B/uUUTAHBK58G5Bhpy1WV2K1GujnxJ4Fs7R0iTc23GC7kUp/GObrz
-         ule388lnTe2jFsk+wjucQHVe84az4M7NI8b83tG56tt4aiSjtyT6PmujMtxSHVZT9MLa
-         1BHJaNGEKZjXNovqnBgm9UA8RfrrHt6WzYriqLhyQV/Ig1CTNfGNA6aslG9GPVNH4pJs
-         4vcZT51NWBpfXkB2aEjKCKYXwQ3L1v6gIVNiO3e39sITNIrayTzTgV9mqdIRRvsN+AeL
-         OwBQ==
-X-Gm-Message-State: AOAM533ErZcASM/bQrYohedMxaAyOpK0iybTIUi09t7ZC/C5077HyFm6
-        5/ybh6sdaDW+LvWkov3KW/3jOA==
-X-Google-Smtp-Source: ABdhPJwkOK+fwhCjDa07/ZAhRRmQGSXN+VsHKhGQP49+rc5kMdF59S4PHF0J6u327Ln2bdc4Y0LlgA==
-X-Received: by 2002:a05:6808:1494:: with SMTP id e20mr861952oiw.111.1629416323497;
-        Thu, 19 Aug 2021 16:38:43 -0700 (PDT)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id j2sm999557oia.21.2021.08.19.16.38.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 16:38:43 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 16:40:06 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [RFC PATCH 11/15] arm64: dts: qcom: sdm845-db845c: switch
- bt+wifi to qca power sequencer
-Message-ID: <YR7r1sWrLR18vGzr@ripper>
-References: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
- <20210817005507.1507580-12-dmitry.baryshkov@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210817005507.1507580-12-dmitry.baryshkov@linaro.org>
+        id S236976AbhHSXo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 19:44:26 -0400
+Received: from mga03.intel.com ([134.134.136.65]:7152 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233711AbhHSXoZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 19:44:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10081"; a="216710972"
+X-IronPort-AV: E=Sophos;i="5.84,336,1620716400"; 
+   d="scan'208";a="216710972"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 16:43:47 -0700
+X-IronPort-AV: E=Sophos;i="5.84,336,1620716400"; 
+   d="scan'208";a="522651893"
+Received: from srnarvek-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.254.23.30])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 16:43:43 -0700
+Date:   Fri, 20 Aug 2021 11:43:41 +1200
+From:   Kai Huang <kai.huang@intel.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     linux-sgx@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        Saravanan D <saravanand@fb.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] x86/sgx: Add SGX_MemTotal to /proc/meminfo
+Message-Id: <20210820114341.4b9d1aea68bffd7dedd13ef8@intel.com>
+In-Reply-To: <9ec30322d0d133bfa695da475d4de736994a6c68.camel@kernel.org>
+References: <20210819124824.52169-1-jarkko@kernel.org>
+        <20210819124824.52169-2-jarkko@kernel.org>
+        <9ec30322d0d133bfa695da475d4de736994a6c68.camel@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 16 Aug 17:55 PDT 2021, Dmitry Baryshkov wrote:
-
-> Switch sdm845-db845c device tree to use new power sequencer driver
-> rather than separate regulators.
+On Thu, 19 Aug 2021 15:52:48 +0300 Jarkko Sakkinen wrote:
+> On Thu, 2021-08-19 at 15:48 +0300, Jarkko Sakkinen wrote:
+> > The amount of SGX memory on the system is determined by the BIOS and it
+> > varies wildly between systems.  It can be from dozens of MB's on desktops
+> > or VM's, up to many GB's on servers.  Just like for regular memory, it is
+> > sometimes useful to know the amount of usable SGX memory in the system.
+> > 
+> > Add SGX_MemTotal field to /proc/meminfo, which shows the total amount of
+> > usable SGX memory in the system.  E.g. with 32 MB reserved for SGX from
+> > BIOS, the printout would be:
+> > 
+> > SGX_MemTotal:      22528 kB
+> > 
+> > It is less than 32 MB because some of the space is reserved for Enclave
+> > Page Cache Metadata (EPCM), which contains state variables for all the
+> > pages in the Enclave Page Cache (EPC).  The latter contains the pages,
+> > which applications can use to create enclaves.
+> > 
+> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> 
+> While working on this, I noticed that suddenly my i5-9660k desktop fully
+> supports SGX on Linux. I don't recall that it has worked in the patch.
+> Maybe this is because of some firmware/ucode update, do not really know,
+> but definitely not a bad thing.
+> 
+> Perhaps this casts through other 9th gen Core CPU's.
+> 
+> The motherboard I have in this machine is AORUS Elite z390.
+> 
+> /Jarkko
 > 
 
-LGTM!
+Enabling SGX also requires BIOS support, so perhaps it's BIOS update that makes
+SGX available.
 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 21 ++++++++++++++-------
->  arch/arm64/boot/dts/qcom/sdm845.dtsi       |  6 ++++++
->  2 files changed, 20 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-> index 2d5533dd4ec2..c9b694e934d4 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-> +++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-> @@ -629,6 +629,16 @@ &qupv3_id_1 {
->  	status = "okay";
->  };
->  
-> +&qca_pwrseq {
-> +	status = "okay";
-> +
-> +	vddio-supply = <&vreg_s4a_1p8>;
-> +
-> +	vddxo-supply = <&vreg_l7a_1p8>;
-> +	vddrfa-supply = <&vreg_l17a_1p3>;
-> +	vddch0-supply = <&vreg_l25a_3p3>;
-> +};
-> +
->  &sdhc_2 {
->  	status = "okay";
->  
-> @@ -916,10 +926,8 @@ &uart6 {
->  	bluetooth {
->  		compatible = "qcom,wcn3990-bt";
->  
-> -		vddio-supply = <&vreg_s4a_1p8>;
-> -		vddxo-supply = <&vreg_l7a_1p8>;
-> -		vddrf-supply = <&vreg_l17a_1p3>;
-> -		vddch0-supply = <&vreg_l25a_3p3>;
-> +		bt-pwrseq = <&qca_pwrseq 1>;
-
-I suppose there will be a DT binding and some defines for the WiFi/BT
-argument to &qca_pwrseq?
-
-Regards,
-Bjorn
-
-> +
->  		max-speed = <3200000>;
->  	};
->  };
-> @@ -1036,9 +1044,8 @@ &wifi {
->  	status = "okay";
->  
->  	vdd-0.8-cx-mx-supply = <&vreg_l5a_0p8>;
-> -	vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
-> -	vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
-> -	vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
-> +
-> +	wifi-pwrseq = <&qca_pwrseq 0>;
->  
->  	qcom,snoc-host-cap-8bit-quirk;
->  };
-> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> index 0a86fe71a66d..78e889b2c8dd 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> @@ -1051,6 +1051,12 @@ psci {
->  		method = "smc";
->  	};
->  
-> +	qca_pwrseq: qca-pwrseq {
-> +		compatible = "qcom,wcn3990-pwrseq";
-> +		#pwrseq-cells = <1>;
-> +		status = "disabled";
-> +	};
-> +
->  	soc: soc@0 {
->  		#address-cells = <2>;
->  		#size-cells = <2>;
-> -- 
-> 2.30.2
-> 
+Btw, with SGX KVM, EPC will be discovered regardless FLC is available
+or not. You need to check whether /dev/sgx_enclave is present or not to truly
+know whether SGX driver is usable.
