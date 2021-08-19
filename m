@@ -2,236 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F553F1895
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 13:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DEE53F189E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 13:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239119AbhHSLyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 07:54:20 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:40237 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238287AbhHSLyR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 07:54:17 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629374022; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=i66q2zTCloki0moxZ/u6js2b36dxRdxY0yzFrFjiXLI=; b=RM9uvh6y/8p0RAspDlTqoqagIqhJKEPMP10CTUMmfPh49G+CCp9VwIH9emcqkXiS/7vEMBnI
- +q1TUimGD957tShFzmIsWADx88Rb+mVNoIBj2oZzSd2OWRu7JNapDhOYIy+OmdDlijXzt34S
- eJMiLzc12IsAiCVx7Pz1kZXAEU0=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 611e46412892f803bcd3de28 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 19 Aug 2021 11:53:37
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A9943C4338F; Thu, 19 Aug 2021 11:53:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CFC4CC43619;
-        Thu, 19 Aug 2021 11:53:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org CFC4CC43619
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Maulik Shah <mkshah@codeaurora.org>
-To:     maz@kernel.org, tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-gpio@vger.kernel.org, bjorn.andersson@linaro.org,
-        linus.walleij@linaro.org, tkjos@google.com, lsrao@codeaurora.org,
-        Maulik Shah <mkshah@codeaurora.org>
-Subject: [PATCH v2 3/3] irqchip/qcom-pdc: Start getting rid of the GPIO_NO_WAKE_IRQ
-Date:   Thu, 19 Aug 2021 17:23:13 +0530
-Message-Id: <1629373993-13370-4-git-send-email-mkshah@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1629373993-13370-1-git-send-email-mkshah@codeaurora.org>
-References: <1629373993-13370-1-git-send-email-mkshah@codeaurora.org>
+        id S238656AbhHSL4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 07:56:09 -0400
+Received: from mail-eopbgr30066.outbound.protection.outlook.com ([40.107.3.66]:46724
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238256AbhHSL4G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 07:56:06 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GPuoEJBOsw/LEEXH8+6IffoXCdEXo9X74acMN2+XsTe/TagzK0PWRyojLt7B8Wg57u/1/Z+BI2JvILNBPbaxGnVruYefnyy+YKBlB2Oy6FePNrXhmAjGVAUhzldloiVFyH3U/7YYNDCI3yCo2Yolw2O6g0Bxfhik2ckDKTPJ6XqjZNeOiqoUSLxZiaoUqLlclphp2b5xJO1FKjBYmI+abfZPi0UoD67VZ3MzR0orpq0BgLSVRH2113jtJXrx/ZGMXWFa4iGO1gqwdbYs2U+TNhbTLARsdcVFFAqHHAzrtsPqi2v978ivbK7Z7kJhxveFJN87SOA2nnjEcyhE2DZnLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6xs+oDcwkLu//azCbd3Fh+OQ9p+n/WqOTYXIU0gcCHk=;
+ b=l9Eb95jXl8CRuNeZeHoDQudArro21zaCO5KhzEJ8GoIectrjxHDHo5bseFA4ZJ1srbUo3zelz0doV29YIejWc7rQ5buRcACRLZf6KewREKz1nIpBvDXjYVCrHe7wQHCqF8C43TsN/o/n9hAqmp3ksj8pJuj3PeFs7C/w/jgv1L4Wekzu1++/8HJz8ovAOq1SsRAWYQZXWjFYbvnTm8yy3gBimlg8iDA493uHFchVK8OmmmK0mUxCka37JjxtWUVjrYoosHP6nMoefcYAfCXZmiX0eHf3UQS/8vJMWInH5KK5EkxI/3UCu4EGfE+O0ByeEQbZsQeRDtl5vUfej+LE2Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fi.rohmeurope.com; dmarc=pass action=none
+ header.from=fi.rohmeurope.com; dkim=pass header.d=fi.rohmeurope.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rohmsemiconductoreurope.onmicrosoft.com;
+ s=selector1-rohmsemiconductoreurope-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6xs+oDcwkLu//azCbd3Fh+OQ9p+n/WqOTYXIU0gcCHk=;
+ b=K6ZcrRxRn44qR9ouSB1WsRTVq5kwSHkETuSgUKlCQQHAeW44YDZk1WQCg3l6QA6/JxbtZ1KfERWEC5jONpFTu7iH2ttk2EfwrFuf1VTeZHzTBJGRCWPsd43ai4A/boOCjC4OWLZDNYR5qXzcZ34Bkv7DGoYdg35irhlWUgUF1aI=
+Received: from HE1PR03MB3162.eurprd03.prod.outlook.com (2603:10a6:7:55::20) by
+ HE1PR03MB2986.eurprd03.prod.outlook.com (2603:10a6:7:60::22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4415.18; Thu, 19 Aug 2021 11:55:27 +0000
+Received: from HE1PR03MB3162.eurprd03.prod.outlook.com
+ ([fe80::fc50:7f7a:87b:f38]) by HE1PR03MB3162.eurprd03.prod.outlook.com
+ ([fe80::fc50:7f7a:87b:f38%7]) with mapi id 15.20.4415.024; Thu, 19 Aug 2021
+ 11:55:27 +0000
+From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+To:     "broonie@kernel.org" <broonie@kernel.org>
+CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] regulator: Minor regulator documentation fixes.
+Thread-Topic: [PATCH] regulator: Minor regulator documentation fixes.
+Thread-Index: AQHXk+gZpe2IEEKwekO1MUyub0ubIKt5Lh6AgAGJLTGAAAMXAA==
+Date:   Thu, 19 Aug 2021 11:55:27 +0000
+Message-ID: <6f7e03d21850bd28d7b8195113e25f8c42cc79e6.camel@fi.rohmeurope.com>
+References: <20210818041513.GA2408290@dc7vkhyh15000m40t6jht-3.rev.dnainternet.fi>
+         <20210818121709.GD4177@sirena.org.uk>
+         <67f6596f54fd2ea168d71d0747ea4a521dda5384.camel@fi.rohmeurope.com>
+         <20210819114354.GL4177@sirena.org.uk>
+In-Reply-To: <20210819114354.GL4177@sirena.org.uk>
+Reply-To: "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Accept-Language: fi-FI, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none
+ header.from=fi.rohmeurope.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 22e651da-897e-4707-262b-08d963083c4b
+x-ms-traffictypediagnostic: HE1PR03MB2986:
+x-microsoft-antispam-prvs: <HE1PR03MB2986FA3CF4B960C456DB6B9AADC09@HE1PR03MB2986.eurprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: n1DErtg3Ui/pC8hfwRizBXdCOB5o6mjhESLZJqOW0s05scm08O0pgpZ23ZnfvccPbUFqDlkeGdaMW9HPXvlrcb9FEMK+GEOpiR1pgMZ95QMkx0cJTJxMBp/h0fO1vYsQ9PDUrxemrhLKIUMXC6dV7PMjMLkxaLsaK8NyTO4CZwEZSP53m13sRNLJF+7JaOTkP9jMhRi+mxvt7M/R4Xkmfnbpz6+CLqCgDu3tHmLKrmyDTGPnGVgMiXS+zbj1BdQ4SxAqAEb/Cp6eTy7esYGFT/WTCstMV2CgB4fg8n8Rrij+uM8obsBODYL0bEUXcZJNK6+T9OhgXV5lPjPqmQluh8Wy9P0vlfvkVfhokS+O5t/n7OAZigqaFOrcn7ww6ktMHNll8/gG3OMBEz/uBbneC7EwemvZj3+OxEbFzlN0vtrU7B/xNEgM2W73mHVLuNXaYbCAU6AvcJklW3w+fSEgM9ZdAWyzNBZTgG2YdoDHhSu7GIQORaN3iZYNlAI0HvYbjaYbZh8OOE3YCd522dHZUu4Q+8SWHV8MnBuzr8pALuosQtGhA04nSvDdkaKlHcx2ZpjI6AjnRCG+P0jIasdMmsMYP8kFmXNowj4lmmHb/qs85+Ct3BuGZCsEJXrdqOrwydw5DQC2f6jaU0Mmehld+bs1zlHBY2QS/2ktPC6lcue6VJJVBtjMJPlKT5uk64LkfKN8PYhujJp85Yyxx1r+xQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR03MB3162.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(346002)(396003)(39850400004)(376002)(186003)(38070700005)(5660300002)(316002)(122000001)(54906003)(3450700001)(6512007)(71200400001)(2906002)(2616005)(8936002)(38100700002)(6486002)(66556008)(4326008)(66446008)(6916009)(6506007)(66476007)(76116006)(64756008)(83380400001)(4744005)(478600001)(8676002)(86362001)(66946007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WFBBVkdtb2t4YU91MEdqVkVMQXNBUzlhb2lNUENhUnVvQjFSWldDZ0tCUVZt?=
+ =?utf-8?B?MTFmWnVvbkRaMGhIdXR0a3c2RUlndGgxcVN6V2t0Sks0TndNbWRITm1VdzJL?=
+ =?utf-8?B?c0wvbDM1cDdvZWFQblVuMDVKV3VvT05CQ0FsUFVjWUc5cUVPSW9ScnNwNUE5?=
+ =?utf-8?B?Nmk3MjNLcTZaK3dSSG56VzJhTUQ4cENRVjJjZ1hKUlhNT2pmdm9UUEJzTUtB?=
+ =?utf-8?B?RmQ1YWphajhQWW1FM3dnNTJGWmUvbXBWdmR3Mk0xMzc2QWREdXhyZU51Mk4r?=
+ =?utf-8?B?SDZGcXFGVWoyeHVwV0o3MEk4aEVrNzZqTm9ZT2dveUViUloxbEh5ME45b01s?=
+ =?utf-8?B?WUZWdmFncjVtMGI5cGF6OHpUOTkxTGhyMW05Tk43TTlSOWYvdGIweXl2OUZ3?=
+ =?utf-8?B?cjJhRHNKWDJ4OWVOQ3NMUHJpOXlQOVZNMTdVZDQ4WmNJaExsZW9BUStjTWR0?=
+ =?utf-8?B?UTRkMVdFUzluM01JU0Zqd1ppY29OZmR1c0tZSUZmN0JKS2YxcEhjOUZHR1l2?=
+ =?utf-8?B?NitMUSttV0t3SlhUTHNkQnYyTUE1Ukh2d09IdW9WQ29GR3RMZjQzaW5XOURj?=
+ =?utf-8?B?R3diREVma0E0SFRuMFA4d2NVeGNHTlZNa1hqVTE1dS9QVGRoZ3JpUllva2M5?=
+ =?utf-8?B?RjB3elRYQXBaTHhya0txYWd3Mi85bkJNQjJSYTFMc05LNFdlT1lBRDNZNGVt?=
+ =?utf-8?B?QldsN1pqMnZwWHpmNlljb29FamF1ZFVyZE45SU90SlpuTTQweERXZ25xTXFs?=
+ =?utf-8?B?b2tKL29zcHNyK05RekRFTDRHNEZzU2lXK29BcFlVNERhcHZDcnlHQW5HbGg3?=
+ =?utf-8?B?ZXFhR252VlYxRHJyVitqcWVlQUJESzNXVVpGcDMvNFE4eVFib09KcVVHU3ZL?=
+ =?utf-8?B?WHVscS9WVjUzdzFVNjgwUExOdGlmRE9TTjM4bm5ydjQ5aTdhOTFvZHVkQUlw?=
+ =?utf-8?B?dzFRRnlpWCtJbEE3MHZlTXNHV3M0M3JJb21nT2gvS2R5MHluelBqbno5aXVS?=
+ =?utf-8?B?N0daa0NtZ0JqaDhrdDl0T1JlVDVSQk43UWhLVk5mOTM2NS82Q3hIRkRuR1Yv?=
+ =?utf-8?B?T1VzUHk2eGw2cE5peW0yckpMVFFQZ3QvamFZOS80K2U0bWpFTGhmWGhobFdN?=
+ =?utf-8?B?VEVrOGlmajQ1VzJEWkUwUGdHTE5GdjZUUm5FZEs3Y0lVbC82SDY0bEZoQTBs?=
+ =?utf-8?B?ZU1UcW90MnYrOGxqQ3pPeU5IYzIzZ3d1QzJDTFdQUTJkUlovOXVKTHZNWitT?=
+ =?utf-8?B?Tk53SE4yY1VLdGRjdWNpRzgvV29pUmMxaGF0TVhhOWpIY2RWdzNSNEhnZmFB?=
+ =?utf-8?B?MC9pK3NHeEozYkN1OThCNXVvOFE1UEZSbDNSQ0JORkhMeGdGbVBBSGJFK3pL?=
+ =?utf-8?B?c0FoWkZqT0FtN2UxOExGcnF6eVU3bVZkTWNiRjhsRzg5ZVlsSzVJM0hXQk81?=
+ =?utf-8?B?UnE5ZjBxdW9HeW1QcFYwQ2pZS1M4RERBdFNoeEZCS2JnTDZiNng0aU5halE4?=
+ =?utf-8?B?U2JyUEtWdU10ZVpxdTVTcU05amVuSWVwZFVVWllhU3BwU2RqTUtwUVVEY1Ew?=
+ =?utf-8?B?YW9tOXgxcURvYzRjYXhCNFlOMjNIS2tyRm9aaUlDYzAwTVVSY1JoemsxVUs4?=
+ =?utf-8?B?RVExWU9BMFhiaFdDVExEV3FQL3cvNHlQYVJVb3F1czN5cTNncm9udXFBR2Jk?=
+ =?utf-8?B?MUUyZ2Q4QmRCMi9QWnByV2ZEUjFFVzRBendNdDI5eU1TMEJDOHRqbWx3K3J6?=
+ =?utf-8?B?SndHSm9Vejc1R0d2R04wVGFKMUVZalhVR0tIV1ZYV1BYdVR6QVU3cXRJdmZX?=
+ =?utf-8?Q?74D58x+bsHOWfWVoqzNzKJMViWyBPbQJUCUKQ=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <CBB9EE6A7EE57049B796DC7EA7F4E95F@eurprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: fi.rohmeurope.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR03MB3162.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 22e651da-897e-4707-262b-08d963083c4b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Aug 2021 11:55:27.0722
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 94f2c475-a538-4112-b5dd-63f17273d67a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: xhOx0gmksa4pAI1w9pmH1jWyXM0U8lO+W1iFJ9Xp2pg8TxpkBEXdiM8r0Iz4VK1ftl4+U9+4vTP08DprUtkNLF50Gqz5h9KkfnCSBddJ9Nrk2xxW5kDx413JNSA09M0i
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR03MB2986
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
-
-gpio_to_irq() reports error at irq_domain_trim_hierarchy() for non
-wakeup capable GPIOs that do not have dedicated interrupt at GIC.
-
-Since PDC irqchip do not allocate irq at parent GIC domain for such
-GPIOs indicate same by using irq_domain_disconnect_hierarchy() for
-PDC and parent GIC domains.
-
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-[mkshah: Add loop to disconnect for all parents]
-Tested-by: Maulik Shah <mkshah@codeaurora.org>
----
- drivers/irqchip/qcom-pdc.c | 75 +++++++++++-----------------------------------
- 1 file changed, 18 insertions(+), 57 deletions(-)
-
-diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
-index 32d5920..696afca 100644
---- a/drivers/irqchip/qcom-pdc.c
-+++ b/drivers/irqchip/qcom-pdc.c
-@@ -53,26 +53,6 @@ static u32 pdc_reg_read(int reg, u32 i)
- 	return readl_relaxed(pdc_base + reg + i * sizeof(u32));
- }
- 
--static int qcom_pdc_gic_get_irqchip_state(struct irq_data *d,
--					  enum irqchip_irq_state which,
--					  bool *state)
--{
--	if (d->hwirq == GPIO_NO_WAKE_IRQ)
--		return 0;
--
--	return irq_chip_get_parent_state(d, which, state);
--}
--
--static int qcom_pdc_gic_set_irqchip_state(struct irq_data *d,
--					  enum irqchip_irq_state which,
--					  bool value)
--{
--	if (d->hwirq == GPIO_NO_WAKE_IRQ)
--		return 0;
--
--	return irq_chip_set_parent_state(d, which, value);
--}
--
- static void pdc_enable_intr(struct irq_data *d, bool on)
- {
- 	int pin_out = d->hwirq;
-@@ -91,38 +71,16 @@ static void pdc_enable_intr(struct irq_data *d, bool on)
- 
- static void qcom_pdc_gic_disable(struct irq_data *d)
- {
--	if (d->hwirq == GPIO_NO_WAKE_IRQ)
--		return;
--
- 	pdc_enable_intr(d, false);
- 	irq_chip_disable_parent(d);
- }
- 
- static void qcom_pdc_gic_enable(struct irq_data *d)
- {
--	if (d->hwirq == GPIO_NO_WAKE_IRQ)
--		return;
--
- 	pdc_enable_intr(d, true);
- 	irq_chip_enable_parent(d);
- }
- 
--static void qcom_pdc_gic_mask(struct irq_data *d)
--{
--	if (d->hwirq == GPIO_NO_WAKE_IRQ)
--		return;
--
--	irq_chip_mask_parent(d);
--}
--
--static void qcom_pdc_gic_unmask(struct irq_data *d)
--{
--	if (d->hwirq == GPIO_NO_WAKE_IRQ)
--		return;
--
--	irq_chip_unmask_parent(d);
--}
--
- /*
-  * GIC does not handle falling edge or active low. To allow falling edge and
-  * active low interrupts to be handled at GIC, PDC has an inverter that inverts
-@@ -159,14 +117,10 @@ enum pdc_irq_config_bits {
-  */
- static int qcom_pdc_gic_set_type(struct irq_data *d, unsigned int type)
- {
--	int pin_out = d->hwirq;
- 	enum pdc_irq_config_bits pdc_type;
- 	enum pdc_irq_config_bits old_pdc_type;
- 	int ret;
- 
--	if (pin_out == GPIO_NO_WAKE_IRQ)
--		return 0;
--
- 	switch (type) {
- 	case IRQ_TYPE_EDGE_RISING:
- 		pdc_type = PDC_EDGE_RISING;
-@@ -191,8 +145,8 @@ static int qcom_pdc_gic_set_type(struct irq_data *d, unsigned int type)
- 		return -EINVAL;
- 	}
- 
--	old_pdc_type = pdc_reg_read(IRQ_i_CFG, pin_out);
--	pdc_reg_write(IRQ_i_CFG, pin_out, pdc_type);
-+	old_pdc_type = pdc_reg_read(IRQ_i_CFG, d->hwirq);
-+	pdc_reg_write(IRQ_i_CFG, d->hwirq, pdc_type);
- 
- 	ret = irq_chip_set_type_parent(d, type);
- 	if (ret)
-@@ -216,12 +170,12 @@ static int qcom_pdc_gic_set_type(struct irq_data *d, unsigned int type)
- static struct irq_chip qcom_pdc_gic_chip = {
- 	.name			= "PDC",
- 	.irq_eoi		= irq_chip_eoi_parent,
--	.irq_mask		= qcom_pdc_gic_mask,
--	.irq_unmask		= qcom_pdc_gic_unmask,
-+	.irq_mask		= irq_chip_mask_parent,
-+	.irq_unmask		= irq_chip_unmask_parent,
- 	.irq_disable		= qcom_pdc_gic_disable,
- 	.irq_enable		= qcom_pdc_gic_enable,
--	.irq_get_irqchip_state	= qcom_pdc_gic_get_irqchip_state,
--	.irq_set_irqchip_state	= qcom_pdc_gic_set_irqchip_state,
-+	.irq_get_irqchip_state	= irq_chip_get_parent_state,
-+	.irq_set_irqchip_state	= irq_chip_set_parent_state,
- 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
- 	.irq_set_type		= qcom_pdc_gic_set_type,
- 	.flags			= IRQCHIP_MASK_ON_SUSPEND |
-@@ -282,7 +236,7 @@ static int qcom_pdc_alloc(struct irq_domain *domain, unsigned int virq,
- 
- 	parent_hwirq = get_parent_hwirq(hwirq);
- 	if (parent_hwirq == PDC_NO_PARENT_IRQ)
--		return 0;
-+		return irq_domain_disconnect_hierarchy(domain->parent, virq);
- 
- 	if (type & IRQ_TYPE_EDGE_BOTH)
- 		type = IRQ_TYPE_EDGE_RISING;
-@@ -314,22 +268,29 @@ static int qcom_pdc_gpio_alloc(struct irq_domain *domain, unsigned int virq,
- 	irq_hw_number_t hwirq, parent_hwirq;
- 	unsigned int type;
- 	int ret;
-+	struct irq_domain *parent;
- 
- 	ret = qcom_pdc_translate(domain, fwspec, &hwirq, &type);
- 	if (ret)
- 		return ret;
- 
-+	if (hwirq == GPIO_NO_WAKE_IRQ) {
-+		for (parent = domain; parent; parent = parent->parent) {
-+			ret = irq_domain_disconnect_hierarchy(parent, virq);
-+			if (ret)
-+				return ret;
-+		}
-+		return 0;
-+	}
-+
- 	ret = irq_domain_set_hwirq_and_chip(domain, virq, hwirq,
- 					    &qcom_pdc_gic_chip, NULL);
- 	if (ret)
- 		return ret;
- 
--	if (hwirq == GPIO_NO_WAKE_IRQ)
--		return 0;
--
- 	parent_hwirq = get_parent_hwirq(hwirq);
- 	if (parent_hwirq == PDC_NO_PARENT_IRQ)
--		return 0;
-+		return irq_domain_disconnect_hierarchy(domain->parent, virq);
- 
- 	if (type & IRQ_TYPE_EDGE_BOTH)
- 		type = IRQ_TYPE_EDGE_RISING;
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+DQpPbiBUaHUsIDIwMjEtMDgtMTkgYXQgMTI6NDMgKzAxMDAsIE1hcmsgQnJvd24gd3JvdGU6DQo+
+IE9uIFRodSwgQXVnIDE5LCAyMDIxIGF0IDA4OjA2OjQ4QU0gKzAzMDAsIE1hdHRpIFZhaXR0aW5l
+biB3cm90ZToNCj4gDQo+ID4gSSB3YXMgdGhpbmtpbmcgb2YgdGhhdC4gSSB0aG91Z2h0IHRoYXQg
+aXQgbWFkZSBsZXNzIG9mIGEgaGFzc2xlDQo+ID4gd2l0aA0KPiA+IHNpbmdsZSBwYXRjaC4gQWZ0
+ZXIgYWxsLCBib3RoIGNoYW5nZXMgd2VyZSBkb2MgdXBkYXRlcyAtIGFuZCBJDQo+ID4gZGlkbid0
+DQo+ID4gdGhpbmsgdGhlIHR5cG9maXggd2FycmFudGVkIGJhY2twb3J0IG9yIGEgRml4ZWQgdGFn
+Lg0KPiA+IENvdWxkIHlvdSBwbGVhc2UgZWR1Y2F0ZSBtZSAmIGV4cGxhaW4gd2h5IHdvdWxkIHlv
+dSBoYXZlIHByZWZlcnJlZA0KPiA+IHR3bw0KPiA+IHBhdGNoZXM/IChJIHNlZSB5b3UgYW55IHdh
+eXMgYXBwbGllZCB0aGlzIHNvIEkgZ3Vlc3MgdGhlcmUncyBubw0KPiA+IG5lZWQgdG8NCj4gPiBz
+cGxpdCAmIHJlc2VuZCAtIHRoYW5rcykuDQo+IA0KPiBJdCdzIHR3byBjaGFuZ2VzIHRoYXQgZG9u
+J3Qgb3ZlcmxhcCBpbiBhbnkgd2F5LiAgUGFydCBvZiB0aGUgcmVhc29uDQo+IGZvcg0KPiBzcGxp
+dHRpbmcgcGF0Y2hlcyB1cCBpcyB0aGF0IGl0IHJlZHVjZXMgdGhlIGNvZ2FudGl2ZSBsb2FkIGNo
+ZWNraW5nDQo+IHRoYXQNCj4gdGhlIHBhdGNoIGFjdHVhbGx5IGRvZXMgdGhlIHRoaW5nIGRlc2Ny
+aWJlZCBpbiB0aGUgY2hhbmdlbG9nLCB3aXRoDQo+IHR3bw0KPiBjaGFuZ2VzIGluIG9uZSBwYXRj
+aCB5b3UgbmVlZCB0byBob2xkIHR3byB0aGluZ3MgaW4geW91ciBoZWFkIGF0DQo+IG9uY2UuDQo+
+IFRoZSBtb3JlIHRyaXZpYWwgdGhlIHBhdGNoIHRoZSBiaWdnZXIgdGhlIGV4dHJhIGVmZm9ydCBy
+ZWxhdGl2ZSB0bw0KPiB3aGF0DQo+IHRoZXknZCBoYXZlIHRha2VuIG90aGVyd2lzZS4NCg0KRmFp
+ciBlbm91Z2guIFRoYW5rcyBmb3IgZXhwbGFuYXRpb24uDQoNCi0tTWF0dGkNCg0K
