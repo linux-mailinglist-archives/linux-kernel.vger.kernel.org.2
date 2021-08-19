@@ -2,88 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA763F1670
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3E043F1674
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237578AbhHSJli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 05:41:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbhHSJld (ORCPT
+        id S237668AbhHSJoV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Aug 2021 05:44:21 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:25556 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237583AbhHSJoT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 05:41:33 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 744AFC061575;
-        Thu, 19 Aug 2021 02:40:57 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id q2so5347104pgt.6;
-        Thu, 19 Aug 2021 02:40:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cSp9NwnxyOgzJbrJbt1VGvD7OEziQgHeU2j99tNdlpo=;
-        b=sQSaBnD6DGdXEu4FJn47XGvy9Us77bXl/nsDwl6TW3a5px8jRAmU5BnUTv35j7bPuY
-         3ApUSU1sSc6EbAjTwbK0Pdg0Di3V4k2gIYVQt/l5ftJDfHoRmjl/f6HYf/9xefPrpYcf
-         RvaaxlHcuL6K0AXxLaEjKCR2sHDRQ9ZmMi6gr4Dx58cfT5qWoQdO9ifYvKJjgKC4tHVQ
-         5xHuZPlf3GBgkLrkmlW55FO7UN0AFNo65cCdcvOIuMsOS3FCTM7ASuOZXC/ohR861vKP
-         5uiSuzSapT3AKJ1seorxrgJ8EfSO+dO1GvcAr719X04oAGT5GnR84dv75OOVQyDhAWaI
-         ywbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cSp9NwnxyOgzJbrJbt1VGvD7OEziQgHeU2j99tNdlpo=;
-        b=M9esG04De6EVZqlwPBRzqgNRvSl123RBCIqdkip1qLwVxsXzNJEfflmvsj/CvWJ/33
-         dhQMsdPGcvaFGDayI/FNn46IV8g07JoqHYMYXvA5mqomLXTQMcCzzkWzq5pA0Xa+C8Up
-         aOFPZRQTfFqm6/c/zRAgwGd962AJHfgPvSQTJMeF9vIaTP4tB3nufcsiX0NYB+4k1i7u
-         H613WzU0Lnw0SVwuPeEQdyhhotT1PP6Gm/EelI6y7Q8eQZNfblRMMT7vdL6ym2rxjLLU
-         8Yl1vykAI8YKXmCxxe/3cbeuv1kc7xEWcUoolaPgpVqVXhiRGjPDgXqiwbhmcdcXdXVU
-         J5tw==
-X-Gm-Message-State: AOAM532T1KlA1V5+UiZ/q6HonnxhCuNnyQ8zTqIJSGDaJfvxqegOI8Hf
-        ZjRxTyp2bWGw4hrqR1Er8mg=
-X-Google-Smtp-Source: ABdhPJxq85oVvDdy2A3J4ATn8gQFyT/xNOQ1HXI/IX1f0Jg4ari85I+VOJhHYh8682YWHufRJFmglQ==
-X-Received: by 2002:a63:de01:: with SMTP id f1mr1177149pgg.377.1629366057013;
-        Thu, 19 Aug 2021 02:40:57 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id r14sm2740127pff.106.2021.08.19.02.40.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 02:40:56 -0700 (PDT)
-Subject: Re: [PATCH v3 8/9] kernel: export task_work_add
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        sumit.semwal@linaro.org, christian.koenig@amd.com, axboe@kernel.dk,
-        oleg@redhat.com, tglx@linutronix.de, dvyukov@google.com,
-        walter-zh.wu@mediatek.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        kernel test robot <lkp@intel.com>
-References: <20210818073824.1560124-1-desmondcheongzx@gmail.com>
- <20210818073824.1560124-9-desmondcheongzx@gmail.com>
- <YR4jqvZtu0gbaVmx@infradead.org>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <71c8e827-92f2-f34a-c9a6-9fc6923d315f@gmail.com>
-Date:   Thu, 19 Aug 2021 17:40:49 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 19 Aug 2021 05:44:19 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-25-tzJRfeh1Naq-lFeOcnhxig-1; Thu, 19 Aug 2021 10:43:38 +0100
+X-MC-Unique: tzJRfeh1Naq-lFeOcnhxig-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Thu, 19 Aug 2021 10:43:38 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Thu, 19 Aug 2021 10:43:38 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Aakash Hemadri' <aakashhemadri123@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Shuah Khan <skhan@linuxfoundation.org>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 2/2] staging: rtl8723bs: fix cast to restricted __le32
+Thread-Topic: [PATCH 2/2] staging: rtl8723bs: fix cast to restricted __le32
+Thread-Index: AQHXksUjJhmKROZmZkOAch25AOXZzqt6ltFA
+Date:   Thu, 19 Aug 2021 09:43:37 +0000
+Message-ID: <eb38f6e0ae60489ca396de32d64f0513@AcuMS.aculab.com>
+References: <cover.1629135143.git.aakashhemadri123@gmail.com>
+ <1be80f0196bed681bf55bfe3155f564b4ebf3b76.1629135143.git.aakashhemadri123@gmail.com>
+In-Reply-To: <1be80f0196bed681bf55bfe3155f564b4ebf3b76.1629135143.git.aakashhemadri123@gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <YR4jqvZtu0gbaVmx@infradead.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/8/21 5:26 pm, Christoph Hellwig wrote:
-> On Wed, Aug 18, 2021 at 03:38:23PM +0800, Desmond Cheong Zhi Xi wrote:
->> +EXPORT_SYMBOL(task_work_add);
+From: Aakash Hemadri
+> Sent: 16 August 2021 18:35
 > 
-> EXPORT_SYMBOL_GPL for this kinds of functionality, please.
-> 
+> Fix sparse warning:
+> warning: cast to restricted __le32
 
-Thanks, I wasn't aware of the GPL-only export. I'll update this in a 
-future series if we still need the export.
+How many different copies of this crappy copy are there?
+> 
+...
+> diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c
+> b/drivers/staging/rtl8723bs/core/rtw_security.c
+> index 381deeea99d0..5320b1a46dfb 100644
+> --- a/drivers/staging/rtl8723bs/core/rtw_security.c
+> +++ b/drivers/staging/rtl8723bs/core/rtw_security.c
+> @@ -122,7 +122,7 @@ void rtw_wep_decrypt(struct adapter  *padapter, u8 *precvframe)
+>  		arc4_crypt(ctx, payload, payload,  length);
+> 
+>  		/* calculate icv and compare the icv */
+> -		*((u32 *)crc) = le32_to_cpu(~crc32_le(~0, payload, length - 4));
+> +		*((u32 *)crc) = ~crc32_le(~0, payload, length - 4);
+
+You've removed a byteswap which is needed on BE architectures.
+
+>  	}
+>  }
+> @@ -621,7 +621,7 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
+>  			arc4_setkey(ctx, rc4key, 16);
+>  			arc4_crypt(ctx, payload, payload, length);
+> 
+> -			*((u32 *)crc) = le32_to_cpu(~crc32_le(~0, payload, length - 4));
+> +			*((u32 *)crc) = ~crc32_le(~0, payload, length - 4);
+> 
+>  			if (crc[3] != payload[length - 1] || crc[2] != payload[length - 2] ||
+>  			    crc[1] != payload[length - 3] || crc[0] != payload[length - 4])
+
+As above - crc32_le() does a 'little-endian crc' but returns a host-ordered value.
+The (horrid) array cast means you need to store a LE value.
+
+There are a dozen better ways to do this - I'm bored of quoting them.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
