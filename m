@@ -2,152 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B4F3F1B5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B036D3F1B63
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:12:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240563AbhHSOMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 10:12:35 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:55008 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240264AbhHSOMe (ORCPT
+        id S240577AbhHSONY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 10:13:24 -0400
+Received: from mail-qk1-f182.google.com ([209.85.222.182]:33571 "EHLO
+        mail-qk1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240373AbhHSONX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 10:12:34 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17JE3eeq012849;
-        Thu, 19 Aug 2021 10:11:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=UMnRDRYOJDpDifj1IXkiSVngbPMsSJRp2DIFs9Zi6ak=;
- b=ZTihp2JD7yPZVzjeccaXpjt/tawvxt6janDGJxxoOBcEsLvVZbAWLShx4z/L9Xh2SgIX
- 0gKINjpVFw/og8yx12OFV1J963paqbKlGMaPrHf+Dn69+JDojL70H49VS3Q67YL6thzp
- uCiPc4O2g6zzeeWuwdBUC8xWaGfeknuZBCrG9BIGKeu4od3h0PGbLPlZcjg2ppqahTy8
- tHjFacG6dzay0282yXOKCyvw2hIwwHGGgQ6oKfEetxAds+VgREZg/mGsmvZZ+alFqTtn
- B1N2r9UYQ395c9Xjo47IdQvXAejXMtpA9ebWQEHf9fFbRmwM7uQpjxDJlmJMnI1/yBL/ 7A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ahqjc2qtu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Aug 2021 10:11:57 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17JE3k6N013286;
-        Thu, 19 Aug 2021 10:11:57 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ahqjc2qt0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Aug 2021 10:11:57 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17JE8sTT008623;
-        Thu, 19 Aug 2021 14:11:55 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma02fra.de.ibm.com with ESMTP id 3ae5f8f7yf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Aug 2021 14:11:54 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17JEBpbZ56689046
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Aug 2021 14:11:51 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2B7004C058;
-        Thu, 19 Aug 2021 14:11:51 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A6FC54C046;
-        Thu, 19 Aug 2021 14:11:50 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.148.15])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 19 Aug 2021 14:11:50 +0000 (GMT)
-Subject: Re: [PATCH 1/2] KVM: s390: gaccess: Cleanup access to guest frames
-To:     Janis Schoetterl-Glausch <scgl@linux.vnet.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
-        kvm@vger.kernel.org, borntraeger@de.ibm.com,
-        imbrenda@linux.ibm.com, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Cc:     cohuck@redhat.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210816150718.3063877-1-scgl@linux.ibm.com>
- <20210816150718.3063877-2-scgl@linux.ibm.com>
- <d11128bb-18f6-5210-6f42-74a89d8edcf7@redhat.com>
- <584ca757-4eb4-491e-a4cd-7bc60fb04b61@linux.ibm.com>
- <745fb5fc-175b-5920-5c56-db4ca8bc2488@linux.vnet.ibm.com>
-From:   Janosch Frank <frankja@linux.ibm.com>
-Message-ID: <f98925f4-70f4-156b-0204-a50b2457de34@linux.ibm.com>
-Date:   Thu, 19 Aug 2021 16:11:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 19 Aug 2021 10:13:23 -0400
+Received: by mail-qk1-f182.google.com with SMTP id t66so7346886qkb.0;
+        Thu, 19 Aug 2021 07:12:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EzeHLB2s0wcZiu9diV61Z7RrK3vSIEBc9fmeT4t3UBc=;
+        b=R9p9tZBjPTXp9XZckZZp0gdeRj3GoykEKGdUExpQiH+mEeRXtShYv9iE5DbIXwH+G2
+         BB9Vfa/tneT8aXgrkXNnanw8u24bSfgEF6awuxL5tnLi/ED4+8sXwd3qFJuEpcVfD5ei
+         Rr6VpUxKw7COZkjGg8TYM++dMjI3Sh9K5s0eLRJVtMe1cre+vRhPGN+f08TiIYJTSZzi
+         Zch6/x3AkA9PY2CGE+sqMF/COIsmxmAm13PJGaDuwPytDaIn0LrZeuurHkE3PWYo7Lgp
+         OqeI4En8Bym/ch6Tql1BY3zIm78hVbBySXHL21RIcAvMVI8946R+pnHWP3J0AgzNxV0Z
+         zPEg==
+X-Gm-Message-State: AOAM531zb+Ba63f43dvgaX8aYiKoNSHo1fSWhSdkoEh+dQDcP09HvA0w
+        CssHL5ToUKWkMiSJ0XBeRo0=
+X-Google-Smtp-Source: ABdhPJx03Rfdorqy4YL7QnGDhK6uhe8TF8BGaMVnjZ226XylC+fBlkNt+7F0yaylI5+T/WZxIDUjYQ==
+X-Received: by 2002:a05:620a:4008:: with SMTP id h8mr3863126qko.211.1629382366433;
+        Thu, 19 Aug 2021 07:12:46 -0700 (PDT)
+Received: from fedora (pool-173-68-57-129.nycmny.fios.verizon.net. [173.68.57.129])
+        by smtp.gmail.com with ESMTPSA id q14sm1518663qkl.44.2021.08.19.07.12.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 07:12:45 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 10:12:43 -0400
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Dennis Zhou <dennis@kernel.org>, linux-kernel@vger.kernel.org,
+        Daniel Micay <danielmicay@gmail.com>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        linux-mm@kvack.org, Joe Perches <joe@perches.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 6/7] percpu: Add __alloc_size attributes for better
+ bounds checking
+Message-ID: <YR5m25qD8ul5N+mc@fedora>
+References: <20210818214021.2476230-1-keescook@chromium.org>
+ <20210818214021.2476230-7-keescook@chromium.org>
+ <YR2pE9V1P0xmBWUo@fedora>
+ <202108182018.6DA03EA818@keescook>
 MIME-Version: 1.0
-In-Reply-To: <745fb5fc-175b-5920-5c56-db4ca8bc2488@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: cu3Do8jpXOG6wIJf4g8l8q_ek_gIi0NU
-X-Proofpoint-ORIG-GUID: 4gFBLpVlF_CT03WCJlJzvtaL2zbkFAi9
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-19_04:2021-08-17,2021-08-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- mlxlogscore=999 adultscore=0 phishscore=0 bulkscore=0 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 mlxscore=0 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108190083
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202108182018.6DA03EA818@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/19/21 3:53 PM, Janis Schoetterl-Glausch wrote:
-> On 8/18/21 10:06 AM, Janosch Frank wrote:
->> On 8/18/21 9:54 AM, David Hildenbrand wrote:
->>> On 16.08.21 17:07, Janis Schoetterl-Glausch wrote:
->>>> Introduce a helper function for guest frame access.
->>>> Rewrite the calculation of the gpa and the length of the segment
->>>> to be more readable.
->>>>
->>>> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
->> [...]
->>>> -	unsigned long _len, gpa;
->>>> +	unsigned long gpa;
->>>> +	unsigned int seg;
->>>>   	int rc = 0;
->>>>   
->>>>   	while (len && !rc) {
->>>>   		gpa = kvm_s390_real_to_abs(vcpu, gra);
->>>> -		_len = min(PAGE_SIZE - (gpa & ~PAGE_MASK), len);
->>>> -		if (mode)
->>>> -			rc = write_guest_abs(vcpu, gpa, data, _len);
->>>> -		else
->>>> -			rc = read_guest_abs(vcpu, gpa, data, _len);
->>>> -		len -= _len;
->>>> -		gra += _len;
->>>> -		data += _len;
->>>> +		seg = min(PAGE_SIZE - offset_in_page(gpa), len);
->>>
->>> What does "seg" mean? I certainly know when "len" means -- which is also 
->>> what the function eats.
->>
->> What does "_len" mean especially in contrast to "len"?
->>
->> "seg" is used in the common kvm guest access functions so it's at least
->> consistent although I share the sentiment that it's not a great name for
->> the length we access inside the page.
->>
->> Originally I suggested "len_in_page" if you have a better name I'd
->> expect we'll both be happy to discuss it :-)
+On Wed, Aug 18, 2021 at 08:36:50PM -0700, Kees Cook wrote:
+> On Wed, Aug 18, 2021 at 08:42:59PM -0400, Dennis Zhou wrote:
+> > On Wed, Aug 18, 2021 at 02:40:20PM -0700, Kees Cook wrote:
+> > > As already done in GrapheneOS, add the __alloc_size attribute for
+> > > appropriate percpu allocator interfaces, to provide additional hinting
+> > > for better bounds checking, assisting CONFIG_FORTIFY_SOURCE and other
+> > > compiler optimizations.
+> > 
+> > Can you elaborate a little bit for me how this works for percpu? In any
+> > case that's not uniprocessor, any modification is done through address
+> > accessors and not on the returned percpu pointer. Is the metadata kept
+> > by gcc/clang able to transpire the percpu pointer accessors?
 > 
-> fragment_len ? 
-
-Sounds good to me
-
->>
->>>
->>>> +		rc = access_guest_frame(vcpu->kvm, mode, gpa, data, seg);
->>>> +		len -= seg;
->>>> +		gra += seg;
->>>> +		data += seg;
->>>>   	}
->>>>   	return rc;
->>>>   }
->>>>
->>>
->>>
->>
+> That's an excellent point. :P I haven't tested it through the accessors,
+> but I guess it's possible that this is only useful for UP, and even
+> then, only where the access is very close to the "allocation", maybe
+> like:
 > 
 
+I see that this is already pulled by Andrew, but I think it would be
+good to modify the commit log to add a short bit about this limitation.
+Otherwise, the commit reads as if it's doing way more than it is.
+
+Thanks,
+Dennis
+
+> char __percpu *test_buf;
+> 
+> 	char *buf;
+> 	test_var = __alloc_percpu(16, __alignof__(char));
+> 	buf = per_cpu_ptr(test_buf, get_cpu());
+> 	...
+> 	buf[20] = '!';
+> 
+> -Kees
+> 
+> > 
+> > Thanks,
+> > Dennis
+> > 
+> > > 
+> > > Co-developed-by: Daniel Micay <danielmicay@gmail.com>
+> > > Signed-off-by: Daniel Micay <danielmicay@gmail.com>
+> > > Cc: Dennis Zhou <dennis@kernel.org>
+> > > Cc: Tejun Heo <tj@kernel.org>
+> > > Cc: Christoph Lameter <cl@linux.com>
+> > > Cc: linux-mm@kvack.org
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > ---
+> > >  include/linux/percpu.h | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > > 
+> > > diff --git a/include/linux/percpu.h b/include/linux/percpu.h
+> > > index 5e76af742c80..119f41815b32 100644
+> > > --- a/include/linux/percpu.h
+> > > +++ b/include/linux/percpu.h
+> > > @@ -123,6 +123,7 @@ extern int __init pcpu_page_first_chunk(size_t reserved_size,
+> > >  				pcpu_fc_populate_pte_fn_t populate_pte_fn);
+> > >  #endif
+> > >  
+> > > +__alloc_size(1)
+> > >  extern void __percpu *__alloc_reserved_percpu(size_t size, size_t align);
+> > >  extern bool __is_kernel_percpu_address(unsigned long addr, unsigned long *can_addr);
+> > >  extern bool is_kernel_percpu_address(unsigned long addr);
+> > > @@ -131,7 +132,9 @@ extern bool is_kernel_percpu_address(unsigned long addr);
+> > >  extern void __init setup_per_cpu_areas(void);
+> > >  #endif
+> > >  
+> > > +__alloc_size(1)
+> > >  extern void __percpu *__alloc_percpu_gfp(size_t size, size_t align, gfp_t gfp);
+> > > +__alloc_size(1)
+> > >  extern void __percpu *__alloc_percpu(size_t size, size_t align);
+> > >  extern void free_percpu(void __percpu *__pdata);
+> > >  extern phys_addr_t per_cpu_ptr_to_phys(void *addr);
+> > > -- 
+> > > 2.30.2
+> > > 
+> 
+> -- 
+> Kees Cook
