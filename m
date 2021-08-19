@@ -2,91 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0AE3F23A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 155FB3F23A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236688AbhHSXVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 19:21:01 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:29802 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233512AbhHSXVA (ORCPT
+        id S236282AbhHSXZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 19:25:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24226 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229808AbhHSXZT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 19:21:00 -0400
-X-UUID: 4fe051843262477f8a5670667e4230c6-20210820
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=QfeDJW3m4L57kRx1ekiwSC66ZVnjMitRsEcL77yqUug=;
-        b=h7lLzP6r8j9QVwh0abLzRZYUGWTNl1b5cM4qRCRgD364hb8GohNxIXYOYsk5tdb0Qeja+dyvrJ474JYdVZ0gMMOYTL1/Ownbt6GFuWGBVdl8pDp8874ArEWWFgoTeo7OazhTiqTQV/LTNgqEatWFGiDAQiZi91Wgi65EN64E7qM=;
-X-UUID: 4fe051843262477f8a5670667e4230c6-20210820
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <houlong.wei@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 483222040; Fri, 20 Aug 2021 07:20:21 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
- (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 20 Aug
- 2021 07:20:13 +0800
-Received: from mhfsdcap04 (10.17.3.154) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 20 Aug 2021 07:20:12 +0800
-Message-ID: <6cb09965bce5bffe97fc00faecfffae9d3b38b3d.camel@mediatek.com>
-Subject: Re: [PATCH] media: mtk-vpu: Fix a resource leak in the error
- handling path of 'mtk_vpu_probe()'
-From:   houlong wei <houlong.wei@mediatek.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Minghsiu Tsai =?UTF-8?Q?=28=E8=94=A1=E6=98=8E=E4=BF=AE=29?= 
-        <Minghsiu.Tsai@mediatek.com>,
-        Andrew-CT Chen =?UTF-8?Q?=28=E9=99=B3=E6=99=BA=E8=BF=AA=29?= 
-        <Andrew-CT.Chen@mediatek.com>,
-        Tiffany Lin =?UTF-8?Q?=28=E6=9E=97=E6=85=A7=E7=8F=8A=29?= 
-        <tiffany.lin@mediatek.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "hans.verkuil@cisco.com" <hans.verkuil@cisco.com>
-CC:     "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        <houlong.wei@mediatek.com>
-Date:   Fri, 20 Aug 2021 07:20:13 +0800
-In-Reply-To: <3d4ba5d254044567653a006b18971658ec69560f.1629404378.git.christophe.jaillet@wanadoo.fr>
-References: <3d4ba5d254044567653a006b18971658ec69560f.1629404378.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Thu, 19 Aug 2021 19:25:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629415482;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4O0EEnwBjO9aKA48AzUw1COP4tH/rotYIctT/xZgJEU=;
+        b=bZRJDEnFK0ig2xx19ZNrTu2NB4MElFG4k+7oPM9PqmARvfijub0RckoRRt38Ww2SuIMeWx
+        Hz7kD/WPnk18BayQ8ab0AF0k1VANx9G1SAA0V18KmeVKfXVVPRT+KPZtLitr4rn15xUmnd
+        TquzCx/Ybq/FXgn2Q9gTSB3mGWh2AjU=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-528-9n8IPk2ePKOO4r-Q5vtMQA-1; Thu, 19 Aug 2021 19:24:41 -0400
+X-MC-Unique: 9n8IPk2ePKOO4r-Q5vtMQA-1
+Received: by mail-oi1-f200.google.com with SMTP id t42-20020a05680815aab0290267a116f6b3so2878789oiw.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:24:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4O0EEnwBjO9aKA48AzUw1COP4tH/rotYIctT/xZgJEU=;
+        b=PaFGatC6rNH5s60sFC/3nsvTIn9suSGRiCFglXUQvJql2iMoL+9MArwoA1Si6cLDra
+         UglpwxXW9pTriTAzmSkxzq1PeXcc+Zzf6PACFyhS8855lQ8agpd0FXIO7darLtFIIckE
+         LV911CzIUmPlLecAc9jPyXMbtfJg4PC1dqZ3TTihEu/ok2fK9skCCbszNVAo586gPREt
+         6oEVXSpSxbPvZm3guO0Svt+vghPe9gOZfMlsg/zyJxQR3ieuWwlPv1V7nnF7r9LmJ5tR
+         VZZodc3IMIg9qCKxpE3+ONSdunAN8qFNHLiZjsWwFwdUTtFimD3b/5zNyRSqNJGCOsK9
+         92pg==
+X-Gm-Message-State: AOAM53099y3pepCcFumvKpAOPsMo/oGmBiIqiEWzZeiWvGgm+IbTi0Tn
+        6kBQNCVRARxIfMEkRFvGudnE3c0/8eZecsPwb+rAiTx9w9VtOkmbi9i0ymc/DURRPjVaH7emr59
+        GY+E8QeoqPtld+F3c0K63KXa/
+X-Received: by 2002:a9d:6f10:: with SMTP id n16mr6209380otq.150.1629415480340;
+        Thu, 19 Aug 2021 16:24:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxNbp2DOjnTJ88IXfFOBXuInffzlODXwPiA8ixQM7EUp2hFznIgyiHscVKVBoZeUlXAhmORQw==
+X-Received: by 2002:a9d:6f10:: with SMTP id n16mr6209366otq.150.1629415480140;
+        Thu, 19 Aug 2021 16:24:40 -0700 (PDT)
+Received: from treble ([68.74.140.199])
+        by smtp.gmail.com with ESMTPSA id r2sm1007414oig.1.2021.08.19.16.24.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 16:24:39 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 16:24:37 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Joe Lawrence <joe.lawrence@redhat.com>
+Cc:     x86@kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>
+Subject: Re: [PATCH] objtool: x86: .altinstructions doesn't need section
+ entry size
+Message-ID: <20210819232437.3g6dpalylgn7fgrx@treble>
+References: <20210817014958.1108400-1-joe.lawrence@redhat.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 814C1EEA859FBE07EB023142BB288BF8A660564BFC7F2A04322B36A3694EEE642000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210817014958.1108400-1-joe.lawrence@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIxLTA4LTIwIGF0IDA0OjIxICswODAwLCBDaHJpc3RvcGhlIEpBSUxMRVQgd3Jv
-dGU6DQo+IEEgc3VjY2Vzc2Z1bCAnY2xrX3ByZXBhcmUoKScgY2FsbCBzaG91bGQgYmUgYmFsYW5j
-ZWQgYnkgYQ0KPiBjb3JyZXNwb25kaW5nDQo+ICdjbGtfdW5wcmVwYXJlKCknIGNhbGwgaW4gdGhl
-IGVycm9yIGhhbmRsaW5nIHBhdGggb2YgdGhlIHByb2JlLCBhcw0KPiBhbHJlYWR5DQo+IGRvbmUg
-aW4gdGhlIHJlbW92ZSBmdW5jdGlvbi4NCj4gDQo+IFVwZGF0ZSB0aGUgZXJyb3IgaGFuZGxpbmcg
-cGF0aCBhY2NvcmRpbmdseS4NCj4gDQo+IEZpeGVzOiAzMDAzYTE4MGVmNmIgKCJbbWVkaWFdIFZQ
-VTogbWVkaWF0ZWs6IHN1cHBvcnQgTWVkaWF0ZWsgVlBVIikNCj4gU2lnbmVkLW9mZi1ieTogQ2hy
-aXN0b3BoZSBKQUlMTEVUIDxjaHJpc3RvcGhlLmphaWxsZXRAd2FuYWRvby5mcj4NCj4gLS0tDQo+
-IA0KUmV2aWV3ZWQtYnk6IEhvdWxvbmcgV2VpIDxob3Vsb25nLndlaUBtZWRpYXRlay5jb20+DQoN
-Cj4gIGRyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLXZwdS9tdGtfdnB1LmMgfCA1ICsrKystDQo+
-ICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+IA0KPiBk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9tdGstdnB1L210a192cHUuYw0KPiBi
-L2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLXZwdS9tdGtfdnB1LmMNCj4gaW5kZXggZWMyOTBk
-ZGU1OWNmLi43ZjE2NDdkYTBhZGUgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbWVkaWEvcGxhdGZv
-cm0vbXRrLXZwdS9tdGtfdnB1LmMNCj4gKysrIGIvZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9tdGst
-dnB1L210a192cHUuYw0KPiBAQCAtODQ4LDcgKzg0OCw4IEBAIHN0YXRpYyBpbnQgbXRrX3ZwdV9w
-cm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlDQo+ICpwZGV2KQ0KPiAgCXZwdS0+d2R0LndxID0g
-Y3JlYXRlX3NpbmdsZXRocmVhZF93b3JrcXVldWUoInZwdV93ZHQiKTsNCj4gIAlpZiAoIXZwdS0+
-d2R0LndxKSB7DQo+ICAJCWRldl9lcnIoZGV2LCAiaW5pdGlhbGl6ZSB3ZHQgd29ya3F1ZXVlIGZh
-aWxlZFxuIik7DQo+IC0JCXJldHVybiAtRU5PTUVNOw0KPiArCQlyZXQgPSAtRU5PTUVNOw0KPiAr
-CQlnb3RvIGNsa191bnByZXBhcmU7DQo+ICAJfQ0KPiAgCUlOSVRfV09SSygmdnB1LT53ZHQud3Ms
-IHZwdV93ZHRfcmVzZXRfZnVuYyk7DQo+ICAJbXV0ZXhfaW5pdCgmdnB1LT52cHVfbXV0ZXgpOw0K
-PiBAQCAtOTQyLDYgKzk0Myw4IEBAIHN0YXRpYyBpbnQgbXRrX3ZwdV9wcm9iZShzdHJ1Y3QgcGxh
-dGZvcm1fZGV2aWNlDQo+ICpwZGV2KQ0KPiAgCXZwdV9jbG9ja19kaXNhYmxlKHZwdSk7DQo+ICB3
-b3JrcXVldWVfZGVzdHJveToNCj4gIAlkZXN0cm95X3dvcmtxdWV1ZSh2cHUtPndkdC53cSk7DQo+
-ICtjbGtfdW5wcmVwYXJlOg0KPiArCWNsa191bnByZXBhcmUodnB1LT5jbGspOw0KPiAgDQo+ICAJ
-cmV0dXJuIHJldDsNCj4gIH0NCj4gLS0gDQo+IDIuMzAuMg0KPiANCg==
+On Mon, Aug 16, 2021 at 09:49:58PM -0400, Joe Lawrence wrote:
+> commit e31694e0a7a7 ("objtool: Don't make .altinstructions writable")
+> aligned objtool-created and kernel-created .altinstructions section
+> flags, but there remains a minor discrepency in their use of a section
+> entry size: objtool sets one while the kernel build does not.
+
+I'd recommend more of an "active voice" subject like:
+
+  objtool: Make .altinstructions section entry size consistent
+
+> 
+> While sh_entsize of sizeof(struct alt_instr) seems intuitive, this small
+> deviation can cause failures with external tooling like kpatch-build.
+> 
+> Fix this by creating new .altinstructions sections with sh_entsize of 0
+> and then later updating sec->len as alternatives are added to the
+> section.  An added benefit is avoiding the data descriptor and buffer
+> created by elf_create_section(), but previously unused by
+> elf_add_alternative().
+> 
+> Fixes: 9bc0bb50727c ("objtool/x86: Rewrite retpoline thunk calls")
+> Signed-off-by: Joe Lawrence <joe.lawrence@redhat.com>
+> ---
+> 
+> Hi Josh, this is a follow up for
+> https://github.com/dynup/kpatch/issues/1194 where I'll add some more
+> comments on the kpatch-side of this.  We could probably work around it
+> over there, but this objtool tweak looks small enough to maintain closer
+> kernel-built .altinstructions section properties.
+> 
+>  tools/objtool/arch/x86/decode.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
+> index bc821056aba9..e7087aa473f8 100644
+> --- a/tools/objtool/arch/x86/decode.c
+> +++ b/tools/objtool/arch/x86/decode.c
+> @@ -684,7 +684,7 @@ static int elf_add_alternative(struct elf *elf,
+>  	sec = find_section_by_name(elf, ".altinstructions");
+>  	if (!sec) {
+>  		sec = elf_create_section(elf, ".altinstructions",
+> -					 SHF_ALLOC, size, 0);
+> +					 SHF_ALLOC, 0, 0);
+
+Looks good.
+
+>  
+>  		if (!sec) {
+>  			WARN_ELF("elf_create_section");
+> @@ -692,6 +692,8 @@ static int elf_add_alternative(struct elf *elf,
+>  		}
+>  	}
+>  
+> +	sec->len += size;
+> +
+
+This latter change makes sense, but I'm not sure it belongs in this
+patch.  Wasn't sec->len wrongly set to zero (and never incremented) even
+before this patch?
+
+From what I can tell sec->len isn't ever read for this section, so it
+seems to be more of a previously existing theoretical bug, independent
+of the entsize mismatch bug.  In which case it's still worth fixing,
+just probably in a separate patch.
+
+Also the sec->len update should probably be moved down to the bottom of
+the function alongside the update to sec->sh.sh_size, as sec->len is a
+"convenient" more readable mirror copy of sec->sh.sh_size.
+
+Actually, mirroring sec->sh.sh_size was a bad idea.  It's guaranteed to
+introduce dumb bugs like this.  Maybe we should just kill sec->len
+altogether in favor of using sec->sh.sh_size everywhere.
+
+-- 
+Josh
 
