@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D573F1826
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 13:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C7A3F1828
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 13:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238865AbhHSLYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 07:24:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56024 "EHLO
+        id S239042AbhHSLYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 07:24:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238644AbhHSLXm (ORCPT
+        with ESMTP id S238840AbhHSLXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 07:23:42 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB8AC061757;
-        Thu, 19 Aug 2021 04:23:05 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id f5so8494496wrm.13;
-        Thu, 19 Aug 2021 04:23:05 -0700 (PDT)
+        Thu, 19 Aug 2021 07:23:47 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8CCC061764;
+        Thu, 19 Aug 2021 04:23:07 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id v4so8496339wro.12;
+        Thu, 19 Aug 2021 04:23:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7PolFHl4BCa4E4HG380dOZoCiWwe/gYoL591bvSVGBo=;
-        b=MUGcj75NEruHQKoBHz6y3OzpZz+BnR4yeHn9iw9hVQF+5QKA22Ax4jGzhSCjKWQZmU
-         JCqJWdm0fJ1TpTcsxzq8ODuzKQfBnu4bjP5VmU3wQ0+eY3+s8Kmhl1Fnh/ybmxE9WZv6
-         yRvy5pqgh+gByvZQAlcEpBSmos89dHhWFWuShAAk+8V5QBLUuMfBwhqFVYsRa4V5bKoG
-         eW1bqhoTLvLFhqlUQqaevytmmneBtdL22N380k2YWHP2/zgPp4TefhOOYuSaYS7AM33H
-         4FZ6Q+8xREiYgbE1O6W2ClldA55GyAq+ar2DZDLfmNjrbPFdjPhQiCln5P96FwMxLyKm
-         Q7FA==
+        bh=REhMgVT+6ZjXEXXRs/yP5w88X232Fgpi2cGGVzDaXxE=;
+        b=FCtD7ltyWf3bpyNg5ZfOHC5FxFeGOP5a3gpqgR0ke4i/yDDEUenPouhSHdH9vqfOPN
+         fhMIWL0W1o2h5w6n5EDUmO5hY0UXJiiAzrZK7aX4ZZGoWvWC6w7pW1vbY8KXLWkBwqLu
+         HVE886JOmbB2Nl5cZRu6CP2iH11GrlP4H0UcGUTF0SRG/Xj7rfuLNHG1Q75qdF2iElT/
+         c0+0X3K8YO3lhntVsRzhLiFCw0q/kwD22JneBZYLuO3VeF2UJI5Fm2hKQp6GqgZ1uyHl
+         kQ7bM/IduESIr4fb5Rka8A1YUiOZ70ediQ5Sc3HBUL4DeNygbVWLh80qQMmvXEswoDdk
+         0hEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7PolFHl4BCa4E4HG380dOZoCiWwe/gYoL591bvSVGBo=;
-        b=sRPHxCkVYvvn7HIEm+6bDBhuyatcAuKFMl5q8jUC8evMhu4+MDRQ59y/DuwwkW1z6l
-         FyQiphNEOC/puVWh3GNXwFUksOvloBomre3bCHm3cjzrU8TfRZwxt8weq/L5fqDBtCWf
-         cEzXxABpiSF7uTACutOW2ovaPJBpM4qI6fBA26b/DhDNMoPPdDUdd9IcSdMLJOJ/poMz
-         sKLKdIpbmYPLhnNPyeG3OfkAictCACDBzhtSfuWn6uGpS01unozvBdVgGiqi7/yteCvt
-         nIMUR4PlE12jEgiQC8Kw5ZlBST+33Z6VJt3LKrFJktg1O5EpWSB++VpAun/9t0jjgTtL
-         gTTg==
-X-Gm-Message-State: AOAM533Dnidcz1LegBMmul1PpsuWJRdLmA5UXE/jQ95z+eIvTBlYctI3
-        9XXPSGtvfxBNBdiKLnc4vx0=
-X-Google-Smtp-Source: ABdhPJz8CDAX5l4BP2wfFbZ6AML0Lin/n32NRpAJOPfTlU/1JgLGC2q8ibTlyRKz9oat+Y1Iv8DnGQ==
-X-Received: by 2002:adf:f288:: with SMTP id k8mr3162716wro.350.1629372184426;
-        Thu, 19 Aug 2021 04:23:04 -0700 (PDT)
+        bh=REhMgVT+6ZjXEXXRs/yP5w88X232Fgpi2cGGVzDaXxE=;
+        b=j9360DyBL+FEI46yn6xnqFDcNFcTJwkxvG53FdYoqKwPJ210rXDH9Zl9VyWjwL54Sv
+         FuO5E8+kyt2F2ooLwz8ToapotQs6ubgTiopAo1R1GFaRU0nZd6w6inALSAB2CZ/0QOAV
+         nxYSaVg5VQDQrKNtLAIV6RrvtXX10QxgK6COf0bJB97Bwynh8depQVSdsBTopTyrLn8F
+         T9L9oOEc7fexdsb51MeK8CdTxo0F5D5mYhtEDf5uTFqJt+1bBjPUmC8StrZOZvV9LJY+
+         uJ8Q0aBIBF98xGB++rRZelq+YYO37+6iNWikVa5lysBu7/TZ8uAx1Mx0sIW2IENLfnV+
+         kzJg==
+X-Gm-Message-State: AOAM532OEofZ69wY/riu1sRwPO8mK8ELMJlMJqmlGKHAsAoGZPm81u5M
+        BfiDtidNsL9fn0U7eM61G5c=
+X-Google-Smtp-Source: ABdhPJyaHdxhTqOlTcWI8sTuvcompSykYd56hFn/HeiPFc2a40cOfBUyvMjZRb5YBRBK/Z0BCwYQcg==
+X-Received: by 2002:a5d:6b92:: with SMTP id n18mr3277419wrx.343.1629372186181;
+        Thu, 19 Aug 2021 04:23:06 -0700 (PDT)
 Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
-        by smtp.gmail.com with ESMTPSA id r1sm2700388wrt.24.2021.08.19.04.23.03
+        by smtp.gmail.com with ESMTPSA id r1sm2700388wrt.24.2021.08.19.04.23.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 04:23:04 -0700 (PDT)
+        Thu, 19 Aug 2021 04:23:05 -0700 (PDT)
 From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
 To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
@@ -64,9 +64,9 @@ Cc:     Sandy Huang <hjc@rock-chips.com>,
         linux-rockchip@lists.infradead.org,
         kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH v2 2/5] drm: amdgpu: remove obsolete reference to config CHASH
-Date:   Thu, 19 Aug 2021 13:22:50 +0200
-Message-Id: <20210819112253.16484-3-lukas.bulwahn@gmail.com>
+Subject: [PATCH v2 3/5] drm: v3d: correct reference to config ARCH_BRCMSTB
+Date:   Thu, 19 Aug 2021 13:22:51 +0200
+Message-Id: <20210819112253.16484-4-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210819112253.16484-1-lukas.bulwahn@gmail.com>
 References: <20210819112253.16484-1-lukas.bulwahn@gmail.com>
@@ -76,31 +76,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 04ed8459f334 ("drm/amdgpu: remove chash") removes the chash
-architecture and its corresponding config CHASH.
+Commit 57692c94dcbe ("drm/v3d: Introduce a new DRM driver for Broadcom V3D
+V3.x+") adds the config DRM_V3D, which depends on "ARCH_BCMSTB".
 
-There is still a reference to CHASH in the config DRM_AMDGPU in
-./drivers/gpu/drm/Kconfig.
+Although, a bit confusing: all Broadcom architectures in
+./arch/arm/mach-bcm/Kconfig have the prefix "ARCH_BCM", except for
+ARCH_BRCMSTB, i.e., the config for Broadcom BCM7XXX based boards.
 
-Remove this obsolete reference to config CHASH.
+So, correct the reference ARCH_BCMSTB to the intended ARCH_BRCMSTB.
 
 Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- drivers/gpu/drm/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/gpu/drm/v3d/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-index f3bc90baca61..8fc40317f2b7 100644
---- a/drivers/gpu/drm/Kconfig
-+++ b/drivers/gpu/drm/Kconfig
-@@ -257,7 +257,6 @@ config DRM_AMDGPU
- 	select HWMON
- 	select BACKLIGHT_CLASS_DEVICE
- 	select INTERVAL_TREE
--	select CHASH
- 	help
- 	  Choose this option if you have a recent AMD Radeon graphics card.
- 
+diff --git a/drivers/gpu/drm/v3d/Kconfig b/drivers/gpu/drm/v3d/Kconfig
+index 9a5c44606337..e973ec487484 100644
+--- a/drivers/gpu/drm/v3d/Kconfig
++++ b/drivers/gpu/drm/v3d/Kconfig
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ config DRM_V3D
+ 	tristate "Broadcom V3D 3.x and newer"
+-	depends on ARCH_BCM || ARCH_BCMSTB || COMPILE_TEST
++	depends on ARCH_BCM || ARCH_BRCMSTB || COMPILE_TEST
+ 	depends on DRM
+ 	depends on COMMON_CLK
+ 	depends on MMU
 -- 
 2.26.2
 
