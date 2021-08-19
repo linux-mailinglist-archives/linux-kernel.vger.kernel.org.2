@@ -2,327 +2,371 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 050E63F1494
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F172C3F149B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236904AbhHSHzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 03:55:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51389 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229927AbhHSHy7 (ORCPT
+        id S236908AbhHSH4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 03:56:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229927AbhHSH43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 03:54:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629359663;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h5SDL7OozCqdtwWb+wvgn1RUit4wFHPUx1XT4h9y6C4=;
-        b=ik4SIzlA5FhRIFeUPyZIfE149mO77G+ncSAqxNMT4MISaRcy0JUzVclKB7ezLBt10AYvwP
-        7U3xewBIN+YsdLtUG8Apr42Du2tsngYXXkKNfTsULCfKLDW6HOdqMSKaV6vC/7PVc0HXux
-        rEOjcaq/qLuDKWBqMpLThohXSxtSERM=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-479-_F67-NAQM9OyZ3AYHvVDcQ-1; Thu, 19 Aug 2021 03:54:21 -0400
-X-MC-Unique: _F67-NAQM9OyZ3AYHvVDcQ-1
-Received: by mail-ed1-f71.google.com with SMTP id n4-20020aa7c6840000b02903be94ce771fso2418072edq.11
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 00:54:21 -0700 (PDT)
+        Thu, 19 Aug 2021 03:56:29 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5008C061575;
+        Thu, 19 Aug 2021 00:55:53 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id 18so4732000pfh.9;
+        Thu, 19 Aug 2021 00:55:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Gl8cjYGC9Mxiym6uJfj6Y4I/0CTSO6TB5eTb8LJv74w=;
+        b=bKI1TqDq+boN8zsm1jDSfk4C7PXdOGBgYPa/ZAWwbxRXlkQXxcoLvUqnt/990PMJF4
+         WVxDxDwn2UMtITXuRWDiu0CBdhsQGSCrlaYhyLZJFgP5FRD1KgrB5ZVsqoCEqtN+2d8k
+         6DtixkFHytNJNcPxPA+zrumCNUme9QdeTjAKE5tFKVKRFDz9tAXKROSDJye7LDdIR9V1
+         vphMNDc9iAB12M1837n0yHT6rl35en4sbs7VVazTWW8K5HUbrFb5rJIz5CSZG1TulL5F
+         HZ4X2MMibtqJYNQYq6ezL//D+I97k6Ji4sIWS8XMx5IgdGXDLOWRXfE1RGQvkSI8O99j
+         85cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=h5SDL7OozCqdtwWb+wvgn1RUit4wFHPUx1XT4h9y6C4=;
-        b=RU/J0yKiF55DK3MNRuXNdxCaklTB1i9dK6H2twlXPsC2X92v6wQSqmVvhYlYLL5PKg
-         YGha4dntcPATmBIs4HuwLf+XNKk24N0xKmKG4K3EVMDV2aLS+r2VeBOmsHsUMSHu/D34
-         IuQPJYQugYyBPCrH5fN1Dmj8kEIhLDYvwSIWV9+bFbPZwaQuHMzhurBijHR5r70ASIZk
-         7Eel6zWzqgPdxTxuS6em4TQiDF8cz087YaiYFns4NtbEnsaReXCBvke5JYFDkQv8z29Q
-         3vrmpz3HJtNRhyAUzCUm8vOZ9/Zb2dXzvRNc41xMLTP4T8tdDCnBfUbo7K0WwUqs73ce
-         P5iw==
-X-Gm-Message-State: AOAM532mMCcPCQuAGM1b/gR5gRzs+QOcdLt1TcdjVTOQa5Zwg7drHNfg
-        xIEVi070jPilp15/y3tRKR1mwOMb/ImvPmuWqimBgYaIBo0Xq474Vw8IxCHLeFgmQGH9OqV1SDc
-        B+KF1kDJPehKefEEGg4+SkA15
-X-Received: by 2002:a05:6402:c9:: with SMTP id i9mr14841231edu.76.1629359660868;
-        Thu, 19 Aug 2021 00:54:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw7dmoGW9StS8XnqtbPbYj1yvlAaJFU4rJUk97gIvUfBsIfI5E1x68C3Zjf0ecUv2FNx2nQHg==
-X-Received: by 2002:a05:6402:c9:: with SMTP id i9mr14841225edu.76.1629359660743;
-        Thu, 19 Aug 2021 00:54:20 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id j13sm1283572edr.89.2021.08.19.00.54.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 00:54:20 -0700 (PDT)
-Subject: Re: [PATCH v5 1/1] asus-wmi: Add support for platform_profile
-To:     "Luke D. Jones" <luke@ljones.dev>, linux-kernel@vger.kernel.org
-Cc:     hadess@hadess.net, platform-driver-x86@vger.kernel.org
-References: <20210818190731.19170-1-luke@ljones.dev>
- <20210818190731.19170-2-luke@ljones.dev>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <26907b9a-8ff0-8aa0-c4ac-77b9c2f319b6@redhat.com>
-Date:   Thu, 19 Aug 2021 09:54:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Gl8cjYGC9Mxiym6uJfj6Y4I/0CTSO6TB5eTb8LJv74w=;
+        b=s5IF/8ZadFyy8/xC+GI1DoFuKPP59mrAEP1jSzyVihr1XnYEPDaaYz87K1QTxelF6h
+         UgpCz3LOwMXOUp5rK3+p2DISp+DyeAQzc5+qwu22olEzygmr/5060iIV4Pe/RmIQlE4o
+         NvdtRbomnRcBnK7LuOM9+jsgzKuVvHSOW2r8UWrbmM/Yruyy+LFnX1xF02hxYY5wXmKk
+         K0TTp/kkIWuatyvNOLRlvQ5EKs871irJTixIkyJjksgPEv60jAjgaZGzRwew255i5n+Q
+         2rhmBOYaAro/oOwy9BaOXnmSFbccKrvm4GpSPD/m6J1TCyDzkYrcjSWKPXu7TGoK5lmN
+         Fetg==
+X-Gm-Message-State: AOAM532F29OORSrtl+w6Oda5ehr7nFuoImllAI2wsrv2639as72tr5tu
+        Pm9iThnmyvEU4nVvNPJ0L8/7l6pn9IQ4k1/O3sM=
+X-Google-Smtp-Source: ABdhPJw5M0gdYSfTnSbJ5EqEdVwZ+I2sD/RqXVDsnS+Eb1ijoch99U5P4Pa1cEae4UlFblJ9IBv2N92JoSVmXUSodK0=
+X-Received: by 2002:a63:cf0a:: with SMTP id j10mr12996208pgg.4.1629359752792;
+ Thu, 19 Aug 2021 00:55:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210818190731.19170-2-luke@ljones.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1623923899-16759-1-git-send-email-wcheng@codeaurora.org>
+ <cfb83fe4-369c-ec72-7887-3bcb0f20fe15@gmail.com> <ec8050c5-c013-4af6-b39e-69779c009a9c@codeaurora.org>
+ <f5ed0ee7-e333-681f-0f1a-d0227562204b@gmail.com> <2e01c435-9ecc-4e3b-f55c-612a86667020@codeaurora.org>
+ <2ae9fa6a-3bb1-3742-0dd3-59678bdd8643@gmail.com> <ebea75fe-5334-197b-f67a-cb6e1e30b39e@codeaurora.org>
+ <bafa93bb-11e3-c8a5-e14a-b0a6d5695055@gmail.com> <87v951ldlt.fsf@kernel.org>
+ <d9aef50c-4bd1-4957-13d8-0b6a14b9fcd0@gmail.com> <87pmv9l1dv.fsf@kernel.org>
+ <9dc6cd83-17b9-7075-0934-6b9d41b6875d@gmail.com> <87a6mbudvc.fsf@kernel.org>
+ <6e8bb4ad-fe68-ad36-7416-2b8e10b6ae96@gmail.com> <877dhev68a.fsf@kernel.org>
+ <cca69e90-b0ef-00b8-75d3-3bf959a93b45@gmail.com> <874kchvcq0.fsf@kernel.org>
+ <e59f1201-2aa2-9075-1f94-a6ae7a046dc1@gmail.com> <8735raj766.fsf@kernel.org>
+ <b3417c2c-613b-8ef6-2e2d-6e2cf9a5d5fd@gmail.com> <b3e820f0-9c94-7cba-a248-3b2ec5378ab0@gmail.com>
+In-Reply-To: <b3e820f0-9c94-7cba-a248-3b2ec5378ab0@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 19 Aug 2021 10:55:16 +0300
+Message-ID: <CAHp75VeJBtSwF8_yF88D==0unLgZ-u9H+77+OYFWJ0s1NJn0Vw@mail.gmail.com>
+Subject: Re: [PATCH v10 0/6] Re-introduce TX FIFO resize for larger EP bursting
+To:     Ferry Toth <fntoth@gmail.com>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <wcheng@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        USB <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org, Jack Pham <jackp@codeaurora.org>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
+        Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Aug 18, 2021 at 10:07 PM Ferry Toth <fntoth@gmail.com> wrote:
+> Op 18-08-2021 om 00:00 schreef Ferry Toth:
+> > Op 16-08-2021 om 07:18 schreef Felipe Balbi:
+> >> Ferry Toth <fntoth@gmail.com> writes:
+> >>>> Ferry Toth <fntoth@gmail.com> writes:
+> >>>>>>>> Ferry Toth <fntoth@gmail.com> writes:
+> >>>>>>>>>>>>> Hardware name: Intel Corporation Merrifield/BODEGA BAY,
+> >>>>>>>>>>>>> BIOS 542
+> >>>>>>>>>>>>> 2015.01.21:18.19.48
+> >>>>>>>>>>>>> RIP: 0010:0x500000000
+> >>>>>>>>>>>>> Code: Unable to access opcode bytes at RIP 0x4ffffffd6.
+> >>>>>>>>>>>>> RSP: 0018:ffffa4d00045fc28 EFLAGS: 00010046
+> >>>>>>>>>>>>> RAX: 0000000500000000 RBX: ffff8cd546aed200 RCX:
+> >>>>>>>>>>>>> 0000000000000000
+> >>>>>>>>>>>>> RDX: 0000000000000000 RSI: ffff8cd547bfcae0 RDI:
+> >>>>>>>>>>>>> ffff8cd546aed200
+> >>>>>>>>>>>>> RBP: ffff8cd547bfcae0 R08: 0000000000000000 R09:
+> >>>>>>>>>>>>> 0000000000000001
+> >>>>>>>>>>>>> R10: ffff8cd541fd28c0 R11: 0000000000000000 R12:
+> >>>>>>>>>>>>> ffff8cd547342828
+> >>>>>>>>>>>>> R13: ffff8cd546aed248 R14: 0000000000000000 R15:
+> >>>>>>>>>>>>> ffff8cd548b1d000
+> >>>>>>>>>>>>> FS:  0000000000000000(0000) GS:ffff8cd57e200000(0000)
+> >>>>>>>>>>>>> knlGS:0000000000000000
+> >>>>>>>>>>>>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >>>>>>>>>>>>> CR2: 0000000500000000 CR3: 000000000311e000 CR4:
+> >>>>>>>>>>>>> 00000000001006f0
+> >>>>>>>>>>>>> Call Trace:
+> >>>>>>>>>>>>>         ? dwc3_remove_requests.constprop.0+0x14d/0x170
+> >>>>>>>>>>>>>         ? __dwc3_gadget_ep_disable+0x7a/0x160
+> >>>>>>>>>>>>>         ? dwc3_gadget_ep_disable+0x3d/0xd0
+> >>>>>>>>>>>>>         ? usb_ep_disable+0x1c/0x
+> >>>>>>>>>>>>>         ? u_audio_stop_capture+0x79/0x120 [u_audio]
+> >>>>>>>>>>>>>         ? afunc_set_alt+0x73/0x80 [usb_f_uac2]
+> >>>>>> So this is triggered by a SetInterface request...
+> >>>>>>
+> >>>>>>>>>>>>>         ? composite_setup+0x224/0x1b90 [libcomposite]
+> >>>>>>>>>>>>>         ? __dwc3_gadget_kick_transfer+0x160/0x400
+> >>>>>>>>>>>>>         ? dwc3_gadget_ep_queue+0xf3/0x1a0
+> >>>>>>>>>>>>>         ? configfs_composite_setup+0x6b/0x90 [libcomposite]
+> >>>>>>>>>>>>>         ? configfs_composite_setup+0x6b/0x90 [libcomposite]
+> >>>>>>>>>>>>>         ? dwc3_ep0_interrupt+0x459/0xa40
+> >>>>>>>>>>>>>         ? dwc3_thread_interrupt+0x8ee/0xf40
+> >>>>>>>>>>>>>         ? __schedule+0x235/0x6c0
+> >>>>>>>>>>>>>         ? disable_irq_nosync+0x10/0x10
+> >>>>>>>>>>>>>         ? irq_thread_fn+0x1b/0x60
+> >>>>>>>>>>>>>         ? irq_thread+0xc0/0x160
+> >>>>>>>>>>>>>         ? irq_thread_check_affinity+0x70/0x70
+> >>>>>>>>>>>>>         ? irq_forced_thread_fn+0x70/0x70
+> >>>>>>>>>>>>>         ? kthread+0x122/0x140
+> >>>>>>>>>>>>>         ? set_kthread_struct+0x40/0x40
+> >>>>>>>>>>>>>         ? ret_from_fork+0x22/0x30
+> >>>>>>>>>>>> Do you mind enabling dwc3 traces and collecting them?
+> >>>>>>>>>>>> Trying to figure
+> >>>>>>>>>>>> out how we got here.
+> >>>>>>>>>>>>
+> >>>>>>>>>>> I'll try if I can get the same error by booting with USB in
+> >>>>>>>>>>> host mode
+> >>>>>>>>>>> and then switch to device mode. If so I can enable traces
+> >>>>>>>>>>> and collect as
+> >>>>>>>>>>> you explained me before.
+> >>>>>>>>>>>
+> >>>>>>>>>>> I'll try before monday, as then I fly for a holiday and will
+> >>>>>>>>>>> not be
+> >>>>>>>>>>> available before rc5.
+> >>>>>>>>>> you can enable all of those with kernel cmdline :-)
+> >>>>>>>>>>
+> >>>>>>>>>> https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html
+> >>>>>>>>>>
+> >>>>>>>>>>
+> >>>>>>>>>> you need ftrace_dump_on_oops=1 and also need the correct
+> >>>>>>>>>> options on
+> >>>>>>>>>> trace_buf_size and trace_event.
+> >>>>>>>>>>
+> >>>>>>>>> On Edison-Arduino I have a switch to go to device mode, after
+> >>>>>>>>> which
+> >>>>>>>>> udev triggers a script configure gadgets through configfs.
+> >>>>>>>>>
+> >>>>>>>>> I tried to log following these instructions:
+> >>>>>>>>>
+> >>>>>>>>> https://www.kernel.org/doc/html/latest/driver-api/usb/dwc3.html#reporting-bugs
+> >>>>>>>>> <https://www.kernel.org/doc/html/latest/driver-api/usb/dwc3.html#reporting-bugs>
+> >>>>>>>>>
+> >>>>>>>>>
+> >>>>>>>>> Unfortunately the kernel crashes so badly I can not get to the
+> >>>>>>>>> ` cp
+> >>>>>>>>> /t/trace /root/trace.txt` line (after a while the watchdog
+> >>>>>>>>> kicks).
+> >>>>>>>>>
+> >>>>>>>>> What to do next?
+> >>>>>>>> Pass ftrace_dump_on_oops to kernel cmdline.
+> >>>>>>>>
+> >>>>>>> No sure if I did this right, on oops everything is pushed to
+> >>>>>>> console
+> >>>>>>> (115k2 serial), I hope nothing essential is lost.
+> >>>>>>>
+> >>>>>>> I copied the screen buffer to file see attached.
+> >>>>>> Thank you, I bet it took quite a some time :-) Anyway, looking at
+> >>>>>> the logs around Set Interface requests, we can track every endpoint
+> >>>>>> that's disabled. I'll take a guess and assume we're failing at
+> >>>>>> the last
+> >>>>>> Set Interface, that means we should have something odd with
+> >>>>>> ep6in, but
+> >>>>>> everything looks fine in the trace output:
+> >>>>>>
+> >>>>>> [   75.823107] irq/14-d-596       0d... 42789194us :
+> >>>>>> dwc3_gadget_ep_enable: ep6in: mps 192/346 streams 16 burst 0 ring
+> >>>>>> 0/0 flags E:swbp:<
+> >>>>>> [   75.835472] irq/14-d-596       0d... 42789198us :
+> >>>>>> dwc3_alloc_request: ep6in: req 0000000002c71409 length 0/0 zsI ==> 0
+> >>>>>> [   75.846416] irq/14-d-596       0d... 42789202us :
+> >>>>>> dwc3_ep_queue: ep6in: req 0000000002c71409 length 0/192 zsI ==> -115
+> >>>>>> [   75.857360] irq/14-d-596       0d... 42789204us :
+> >>>>>> dwc3_alloc_request: ep6in: req 00000000a324f5d0 length 0/0 zsI ==> 0
+> >>>>>> [   75.868301] irq/14-d-596       0d... 42789206us :
+> >>>>>> dwc3_ep_queue: ep6in: req 00000000a324f5d0 length 0/192 zsI ==> -115
+> >>>>>> [   75.879244] irq/14-d-596       0d... 42789209us : dwc3_event:
+> >>>>>> event (000020c2): ep0in: Transfer Not Ready [0] (Not Active)
+> >>>>>> [Status Phase]
+> >>>>>> [   75.891880] irq/14-d-596       0d... 42789211us :
+> >>>>>> dwc3_prepare_trb: ep0in: trb 000000004c0ae319 (E0:D0) buf
+> >>>>>> 000000001bded000 size 0 ctrl 00000c33 (HLcs:SC:status2)
+> >>>>>> [   75.989131] irq/14-d-596       0d... 42789224us :
+> >>>>>> dwc3_gadget_ep_cmd: ep0in: cmd 'Start Transfer' [406] params
+> >>>>>> 00000000 1bded000 00000000 --> status: Successful
+> >>>>>> [   76.096261] irq/14-d-596       0d... 42789272us : dwc3_event:
+> >>>>>> event (0000c042): ep0in: Transfer Complete (sIL) [Status Phase]
+> >>>>>> [   76.107834] irq/14-d-596       0d... 42789275us :
+> >>>>>> dwc3_complete_trb: ep0out: trb 000000004c0ae319 (E0:D0) buf
+> >>>>>> 000000001bded000 size 0 ctrl 00000c32 (hLcs:SC:status2)
+> >>>>>> [   76.122944] irq/14-d-596       0d... 42789277us :
+> >>>>>> dwc3_gadget_giveback: ep0out: req 00000000cb1bd3cd length 0/0 zsI
+> >>>>>> ==> 0
+> >>>>>> [   76.134160] irq/14-d-596       0d... 42789280us :
+> >>>>>> dwc3_prepare_trb: ep0out: trb 000000004c0ae319 (E0:D0) buf
+> >>>>>> 000000001bded000 size 8 ctrl 00000c23 (HLcs:SC:setup)
+> >>>>>> [   76.231322] irq/14-d-596       0d... 42789292us :
+> >>>>>> dwc3_gadget_ep_cmd: ep0out: cmd 'Start Transfer' [406] params
+> >>>>>> 00000000 1bded000 00000000 --> status: Successful
+> >>>>>> [   76.297418] kworker/-23        0d... 42789670us :
+> >>>>>> dwc3_ep_queue: ep3in: req 0000000029586135 length 0/96 ZsI ==> -115
+> >>>>>> [   76.308278] kworker/-23        0d... 42789695us :
+> >>>>>> dwc3_prepare_trb: ep3in: trb 00000000b81213d6 (E1:D0) buf
+> >>>>>> 0000000003b7a800 size 96 ctrl 00000811 (Hlcs:sC:normal)
+> >>>>>> [   76.395294] kworker/-23        0d... 42789707us :
+> >>>>>> dwc3_gadget_ep_cmd: ep3in: cmd 'Update Transfer' [60007] params
+> >>>>>> 00000000 00000000 00000000 --> status: Successful
+> >>>>>> [   76.471900] irq/14-d-596       0d... 42789842us : dwc3_event:
+> >>>>>> event (0000c040): ep0out: Transfer Complete (sIL) [Setup Phase]
+> >>>>>> [   76.489308] irq/14-d-596       0d... 42789845us :
+> >>>>>> dwc3_ctrl_req: Set Interface(Intf = 5, Alt.Setting = 0)
+> >>>>>> [   76.505650] irq/14-d-596       0d... 42789851us :
+> >>>>>> dwc3_ep_dequeue: ep6in: req 0000000002c71409 length 0/192 zsI ==>
+> >>>>>> -115
+> >>>>>> [   76.523315] irq/14-d-596       0d... 42789854us :
+> >>>>>> dwc3_gadget_giveback: ep6in: req 0000000002c71409 length 0/192
+> >>>>>> zsI ==> -104
+> >>>>>> [   76.541427] irq/14-d-596       0d... 42789857us :
+> >>>>>> dwc3_free_request: ep6in: req 0000000002c71409 length 0/192 zsI
+> >>>>>> ==> -104
+> >>>>>> [   76.559267] irq/14-d-596       0d... 42789859us :
+> >>>>>> dwc3_ep_dequeue: ep6in: req 00000000a324f5d0 length 0/192 zsI ==>
+> >>>>>> -115
+> >>>>>> [   76.576937] irq/14-d-596       0d... 42789861us :
+> >>>>>> dwc3_gadget_giveback: ep6in: req 00000000a324f5d0 length 0/192
+> >>>>>> zsI ==> -104
+> >>>>>> [   76.595046] irq/14-d-596       0d... 42789862us :
+> >>>>>> dwc3_free_request: ep6in: req 00000000a324f5d0 length 0/192 zsI
+> >>>>>> ==> -104
+> >>>>>> [   76.612892] irq/14-d-596       0d... 42789865us :
+> >>>>>> dwc3_gadget_ep_disable: ep6in: mps 192/346 streams 16 burst 0
+> >>>>>> ring 0/0 flags E:swbp:<
+> >>>>>> [   76.665535] irq/14-d-596       0d... 42789873us : dwc3_event:
+> >>>>>> event (000020c2): ep0in: Transfer Not Ready [0] (Not Active)
+> >>>>>> [Status Phase]
+> >>>>>> [   76.684716] irq/14-d-596       0d... 42789875us :
+> >>>>>> dwc3_prepare_trb: ep0in: trb 000000004c0ae319 (E0:D0) buf
+> >>>>>> 000000001bded000 size 0 ctrl 00000c33 (HLcs:SC:status2)
+> >>>>>> [   76.819195] irq/14-d-596       0d... 42789886us :
+> >>>>>> dwc3_gadget_ep_cmd: ep0in: cmd 'Start Transfer' [406] params
+> >>>>>> 00000000 1bded000 00000000 --> status: Successful
+> >>>>>> [   76.926324] irq/14-d-596       0d... 42789930us : dwc3_event:
+> >>>>>> event (0000c042): ep0in: Transfer Complete (sIL) [Status Phase]
+> >>>>>> [   76.937892] irq/14-d-596       0d... 42789933us :
+> >>>>>> dwc3_complete_trb: ep0out: trb 000000004c0ae319 (E0:D0) buf
+> >>>>>> 000000001bded000 size 0 ctrl 00000c32 (hLcs:SC:status2)
+> >>>>>> [   76.953003] irq/14-d-596       0d... 42789935us :
+> >>>>>> dwc3_gadget_giveback: ep0out: req 00000000cb1bd3cd length 0/0 zsI
+> >>>>>> ==> 0
+> >>>>>> [   76.964217] irq/14-d-596       0d... 42789938us :
+> >>>>>> dwc3_prepare_trb: ep0out: trb 000000004c0ae319 (E0:D0) buf
+> >>>>>> 000000001bded000 size 8 ctrl 00000c23 (HLcs:SC:setup)
+> >>>>>> [   77.061379] irq/14-d-596       0d... 42789950us :
+> >>>>>> dwc3_gadget_ep_cmd: ep0out: cmd 'Start Transfer' [406] params
+> >>>>>> 00000000 1bded000 00000000 --> status: Successful
+> >>>>>> [   77.168595] irq/14-d-596       0d... 42790509us : dwc3_event:
+> >>>>>> event (0000c040): ep0out: Transfer Complete (sIL) [Setup Phase]
+> >>>>>> [   77.180159] irq/14-d-596       0d... 42790512us :
+> >>>>>> dwc3_ctrl_req: Get String Descriptor(Index = 18, Length = 255)
+> >>>>>> [   77.190578] irq/14-d-596       0d... 42790537us :
+> >>>>>> dwc3_prepare_trb: ep0in: trb 000000004c0ae319 (E0:D0) buf
+> >>>>>> 0000000003b68000 size 36 ctrl 00000c53 (HLcs:SC:data)
+> >>>>>> [   77.287648] irq/14-d-596       0d... 42790550us :
+> >>>>>> dwc3_gadget_ep_cmd: ep0in: cmd 'Start Transfer' [406] params
+> >>>>>> 00000000 1bded000 00000000 --> status: Successful
+> >>>>>> [   77.333107] irq/14-d-596       0d... 42790557us : dwc3_event:
+> >>>>>> event (000010c2): ep0in: Transfer Not Ready [0] (Not Active)
+> >>>>>> [Data Phase]
+> >>>>>> [   77.407223] irq/14-d-596       0d... 42790575us : dwc3_event:
+> >>>>>> event (000090c2): ep0in: Transfer Not Ready [0] (Active) [Data
+> >>>>>> Phase]
+> >>>>>> [   77.480985] irq/14-d-596       0d... 42790588us : dwc3_event:
+> >>>>>> event (0000c042): ep0in: Transfer Complete (sIL) [Data Phase]
+> >>>>>> [   77.492376] irq/14-d-596       0d... 42790590us :
+> >>>>>> dwc3_complete_trb: ep0out: trb 000000004c0ae319 (E0:D0) buf
+> >>>>>> 0000000003b68000 size 0 ctrl 00000c52 (hLcs:SC:data)
+> >>>>>> [   77.507221] irq/14-d-596       0d... 42790595us :
+> >>>>>> dwc3_gadget_giveback: ep0out: req 00000000cb1bd3cd length 36/36
+> >>>>>> ZsI ==> 0
+> >>>>>> [   77.518609] irq/14-d-596       0d... 42790597us : dwc3_event:
+> >>>>>> event (000020c0): ep0out: Transfer Not Ready [0] (Not Active)
+> >>>>>> [Status Phase]
+> >>>>>> [   77.531332] irq/14-d-596       0d... 42790598us :
+> >>>>>> dwc3_prepare_trb: ep0out: trb 000000004c0ae319 (E0:D0) buf
+> >>>>>> 000000001bded000 size 0 ctrl 00000c43 (HLcs:SC:status3)
+> >>>>>> [   77.628669] irq/14-d-596       0d... 42790609us :
+> >>>>>> dwc3_gadget_ep_cmd: ep0out: cmd 'Start Transfer' [406] params
+> >>>>>> 00000000 1bded000 00000000 --> status: Successful
+> >>>>>>
+> >>>>>> Do you mind adding a few prints in dwc3_remove_requests to tell
+> >>>>>> us which
+> >>>>>> endpoint is being processed? Then we'll know for sure which one
+> >>>>>> caused
+> >>>>>> the crash.
+> >>>>>>
+> >>>>> I wouldn't mind but am leaving on a holiday, won't have time until
+> >>>>> 6 aug.
+> >>>> not a problem, we'll still be here when you're back :-)
+> >>> Well, let's go then :-)
+> >>>
+> >>> To get back in the mood I have retested 5.13.0, 5.14.0-rc1, 5.14.0-rc2
+> >>> and 5.14.0-rc5.
+> >>>
+> >>> I find that 5.13.0 works fine, and the issue starts from 5.14.0-rc1.
+> >> That's great finding. We have a bisection point. There are a total of
+> >> 13764 commits between v5.13 and v5.14-rc1
+> >>
+> >>     $ git rev-list  --count v5.13..v5.14-rc1
+> >>     13764
+> >>
+> >> git bisect should find the offending commit in at most 14 tries. That's
+> >> not too bad.
+> > I correctly guesstimated that the problem got introduced by the usb
+> > merge 79160a60
+> >
+> > "Merge tag 'usb-5.14-rc1' of
+> > git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb"
+> >
+> > 116 commits(7 bisects).
+> >
+> > 24f779dac8f3efb9629adc0e486914d93dc45517 is the first bad commit
+> >
+> > "usb: gadget: f_uac2/u_audio: add feedback endpoint support"
+> >
+> > Ruslan's 3 patches are related to each other so I reverted all three
+> > 24f779da...e89bb428 and applied the reverts to rc1.
+> >
+> > I can confirm this indeed resolves the problem in rc1.
+> >
+> > Is late now, tomorrow evening I will apply the reverts to rc6.
+>
+> With these reverts rc6 works fine as well.
+>
+> So, where do we go from here?
 
-On 8/18/21 9:07 PM, Luke D. Jones wrote:
-> Add initial support for platform_profile where the support is
-> based on availability of ASUS_THROTTLE_THERMAL_POLICY.
-> 
-> Because throttle_thermal_policy is used by platform_profile and is
-> writeable separately to platform_profile any userspace changes to
-> throttle_thermal_policy need to notify platform_profile.
-> 
-> In future throttle_thermal_policy sysfs should be removed so that
-> only one method controls the laptop power profile.
-> 
-> Signed-off-by: Luke D. Jones <luke@ljones.dev>
+Since it's rc6 to rc7 I think the best is to send a revert series to
+handle the regression.
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+> >>> With 5.14.0-rc5 the problem seems worse (or different?), and just
+> >>> disabling uac2 gadget does not prevent the crash. Even disabling gser
+> >>> and mass_storage.usb0 as well there is still a crash.
+> >>>
+> >>> Now I'm not sure how to proceed. Bisect rc1? Or focus on rc5 (rc6?)?
+> >> I'd first bisect between 5.13 and v5.14-rc1. Once you find the offending
+> >> commit, verify if reverting that on -rc1 works, then verify if reverting
+> >> on -rc5 also works :-)
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-
-
-> ---
->  drivers/platform/x86/Kconfig    |   1 +
->  drivers/platform/x86/asus-wmi.c | 130 +++++++++++++++++++++++++++++++-
->  2 files changed, 127 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-> index d12db6c316ea..46dec48a36c1 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -281,6 +281,7 @@ config ASUS_WMI
->  	select INPUT_SPARSEKMAP
->  	select LEDS_CLASS
->  	select NEW_LEDS
-> +	select ACPI_PLATFORM_PROFILE
->  	help
->  	  Say Y here if you have a WMI aware Asus laptop (like Eee PCs or new
->  	  Asus Notebooks).
-> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-> index 90a6a0d00deb..cc5811844012 100644
-> --- a/drivers/platform/x86/asus-wmi.c
-> +++ b/drivers/platform/x86/asus-wmi.c
-> @@ -26,6 +26,7 @@
->  #include <linux/rfkill.h>
->  #include <linux/pci.h>
->  #include <linux/pci_hotplug.h>
-> +#include <linux/platform_profile.h>
->  #include <linux/power_supply.h>
->  #include <linux/hwmon.h>
->  #include <linux/hwmon-sysfs.h>
-> @@ -219,6 +220,9 @@ struct asus_wmi {
->  	bool throttle_thermal_policy_available;
->  	u8 throttle_thermal_policy_mode;
->  
-> +	struct platform_profile_handler platform_profile_handler;
-> +	bool platform_profile_support;
-> +
->  	// The RSOC controls the maximum charging percentage.
->  	bool battery_rsoc_available;
->  
-> @@ -2103,12 +2107,23 @@ static int throttle_thermal_policy_set_default(struct asus_wmi *asus)
->  static int throttle_thermal_policy_switch_next(struct asus_wmi *asus)
->  {
->  	u8 new_mode = asus->throttle_thermal_policy_mode + 1;
-> +	int err;
->  
->  	if (new_mode > ASUS_THROTTLE_THERMAL_POLICY_SILENT)
->  		new_mode = ASUS_THROTTLE_THERMAL_POLICY_DEFAULT;
->  
->  	asus->throttle_thermal_policy_mode = new_mode;
-> -	return throttle_thermal_policy_write(asus);
-> +	err = throttle_thermal_policy_write(asus);
-> +	if (err)
-> +		return err;
-> +
-> +	/*
-> +	 * Ensure that platform_profile updates userspace with the change to ensure
-> +	 * that platform_profile and throttle_thermal_policy_mode are in sync.
-> +	 */
-> +	platform_profile_notify();
-> +
-> +	return 0;
->  }
->  
->  static ssize_t throttle_thermal_policy_show(struct device *dev,
-> @@ -2124,9 +2139,10 @@ static ssize_t throttle_thermal_policy_store(struct device *dev,
->  				    struct device_attribute *attr,
->  				    const char *buf, size_t count)
->  {
-> -	int result;
-> -	u8 new_mode;
->  	struct asus_wmi *asus = dev_get_drvdata(dev);
-> +	u8 new_mode;
-> +	int result;
-> +	int err;
->  
->  	result = kstrtou8(buf, 10, &new_mode);
->  	if (result < 0)
-> @@ -2136,7 +2152,15 @@ static ssize_t throttle_thermal_policy_store(struct device *dev,
->  		return -EINVAL;
->  
->  	asus->throttle_thermal_policy_mode = new_mode;
-> -	throttle_thermal_policy_write(asus);
-> +	err = throttle_thermal_policy_write(asus);
-> +	if (err)
-> +		return err;
-> +
-> +	/*
-> +	 * Ensure that platform_profile updates userspace with the change to ensure
-> +	 * that platform_profile and throttle_thermal_policy_mode are in sync.
-> +	 */
-> +	platform_profile_notify();
->  
->  	return count;
->  }
-> @@ -2144,6 +2168,94 @@ static ssize_t throttle_thermal_policy_store(struct device *dev,
->  // Throttle thermal policy: 0 - default, 1 - overboost, 2 - silent
->  static DEVICE_ATTR_RW(throttle_thermal_policy);
->  
-> +/* Platform profile ***********************************************************/
-> +static int platform_profile_get(struct platform_profile_handler *pprof,
-> +				enum platform_profile_option *profile)
-> +{
-> +	struct asus_wmi *asus;
-> +	int tp;
-> +
-> +	asus = container_of(pprof, struct asus_wmi, platform_profile_handler);
-> +
-> +	tp = asus->throttle_thermal_policy_mode;
-> +
-> +	if (tp < 0)
-> +		return tp;
-> +
-> +	switch (tp) {
-> +	case ASUS_THROTTLE_THERMAL_POLICY_DEFAULT:
-> +		*profile = PLATFORM_PROFILE_BALANCED;
-> +		break;
-> +	case ASUS_THROTTLE_THERMAL_POLICY_OVERBOOST:
-> +		*profile = PLATFORM_PROFILE_PERFORMANCE;
-> +		break;
-> +	case ASUS_THROTTLE_THERMAL_POLICY_SILENT:
-> +		*profile = PLATFORM_PROFILE_QUIET;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int platform_profile_set(struct platform_profile_handler *pprof,
-> +				enum platform_profile_option profile)
-> +{
-> +	struct asus_wmi *asus;
-> +	int tp;
-> +
-> +	asus = container_of(pprof, struct asus_wmi, platform_profile_handler);
-> +
-> +	switch (profile) {
-> +	case PLATFORM_PROFILE_PERFORMANCE:
-> +		tp = ASUS_THROTTLE_THERMAL_POLICY_OVERBOOST;
-> +		break;
-> +	case PLATFORM_PROFILE_BALANCED:
-> +		tp = ASUS_THROTTLE_THERMAL_POLICY_DEFAULT;
-> +		break;
-> +	case PLATFORM_PROFILE_QUIET:
-> +		tp = ASUS_THROTTLE_THERMAL_POLICY_SILENT;
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	asus->throttle_thermal_policy_mode = tp;
-> +	return throttle_thermal_policy_write(asus);
-> +}
-> +
-> +static int platform_profile_setup(struct asus_wmi *asus)
-> +{
-> +	struct device *dev = &asus->platform_device->dev;
-> +	int err;
-> +
-> +	/*
-> +	 * Not an error if a component platform_profile relies on is unavailable
-> +	 * so early return, skipping the setup of platform_profile.
-> +	 */
-> +	if (!asus->throttle_thermal_policy_available)
-> +		return 0;
-> +
-> +	dev_info(dev, "Using throttle_thermal_policy for platform_profile support\n");
-> +
-> +	asus->platform_profile_handler.profile_get = platform_profile_get;
-> +	asus->platform_profile_handler.profile_set = platform_profile_set;
-> +
-> +	set_bit(PLATFORM_PROFILE_QUIET, asus->platform_profile_handler.choices);
-> +	set_bit(PLATFORM_PROFILE_BALANCED,
-> +		asus->platform_profile_handler.choices);
-> +	set_bit(PLATFORM_PROFILE_PERFORMANCE,
-> +		asus->platform_profile_handler.choices);
-> +
-> +	err = platform_profile_register(&asus->platform_profile_handler);
-> +	if (err)
-> +		return err;
-> +
-> +	asus->platform_profile_support = true;
-> +	return 0;
-> +}
-> +
->  /* Backlight ******************************************************************/
->  
->  static int read_backlight_power(struct asus_wmi *asus)
-> @@ -2904,6 +3016,10 @@ static int asus_wmi_add(struct platform_device *pdev)
->  	else
->  		throttle_thermal_policy_set_default(asus);
->  
-> +	err = platform_profile_setup(asus);
-> +	if (err)
-> +		goto fail_platform_profile_setup;
-> +
->  	err = panel_od_check_present(asus);
->  	if (err)
->  		goto fail_panel_od;
-> @@ -2993,6 +3109,9 @@ static int asus_wmi_add(struct platform_device *pdev)
->  	asus_wmi_sysfs_exit(asus->platform_device);
->  fail_sysfs:
->  fail_throttle_thermal_policy:
-> +fail_platform_profile_setup:
-> +	if (asus->platform_profile_support)
-> +		platform_profile_remove();
->  fail_fan_boost_mode:
->  fail_egpu_enable:
->  fail_dgpu_disable:
-> @@ -3017,6 +3136,9 @@ static int asus_wmi_remove(struct platform_device *device)
->  	asus_fan_set_auto(asus);
->  	asus_wmi_battery_exit(asus);
->  
-> +	if (asus->platform_profile_support)
-> +		platform_profile_remove();
-> +
->  	kfree(asus);
->  	return 0;
->  }
-> 
-
+-- 
+With Best Regards,
+Andy Shevchenko
