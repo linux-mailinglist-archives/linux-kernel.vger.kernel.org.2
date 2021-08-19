@@ -2,184 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C5B3F170B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 952463F170D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238009AbhHSKFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 06:05:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237788AbhHSKFw (ORCPT
+        id S238023AbhHSKHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 06:07:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43425 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237746AbhHSKHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 06:05:52 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0BCC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 03:05:15 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id l24so4103930qtj.4
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 03:05:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X3zlPWDyphvVlbQ5qW3mRYO0Onpjp0vHlmpsTSdQ76U=;
-        b=Qt/ngTdhvfqfEUTB6oXvy1Tg6d89U6mWp/wKxapl/JcsNUitJUvR9DiI/l+/T/95ZW
-         EKkvzDOz4tBamAa3OCDgmTjd5MJAbewUELKSWH1Lyd8S7LDb3T/0AvrxUcFxsjnPLy5K
-         /4T96yV6fiQUHdNuKhQ/VwbgjjTLth6uXACDk=
+        Thu, 19 Aug 2021 06:07:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629367605;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Opv2d9ol21udi4K0v30kbE3GUCegq3iBRM6wdcQpyVk=;
+        b=HXzJmEAWYoOmyYEJhI6WLMBlnyUCgnVnsXrAayE8oDmK4SCc796d7uiYihvmMMLGEBXAv+
+        huIK4TVN7vHaI6Fi/WZFP+fXjDGn7XnuGY3Af2KKcaCt3OUqP9gMbyE+j7D1ICT5zxraP9
+        rbyEyXsQOBNejANgII12W14hLpw5XJo=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-491-FYtCgnA-O_24Z0mnxc5XPg-1; Thu, 19 Aug 2021 06:06:43 -0400
+X-MC-Unique: FYtCgnA-O_24Z0mnxc5XPg-1
+Received: by mail-wr1-f72.google.com with SMTP id p4-20020a5d59a4000000b00156992180dbso1527029wrr.10
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 03:06:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X3zlPWDyphvVlbQ5qW3mRYO0Onpjp0vHlmpsTSdQ76U=;
-        b=Py2crQZrgMk/EZUP3xbHVD5UKw9qsVdhEdlZec0WL+udNFxcsI+OaV1yg5eLsTYguF
-         twgyC6GxKUUKjFe2dlCZOktV/uEOvoH8eDbu6hP8TuXZ/uy1sDC2dLETmIqMe2u2iRh+
-         Rgmuk+OWNwexFfY2sa0ZzLOI3uzyMjaUJhyxZRoxGSBUbum++5CF65jU+1o1qz8pe/iU
-         R4m0O3+yBpIkN6OhMg6jEh0ZqbpZalNMvdRF+EseEb8WZbunIstnLsyGP+ad33RVBCgh
-         MinUOONm++dPJ/YYlZG3muWt0G1LO2rzEF4/eGwjcLWgAVnjqDXevnOUhnfgBCB7eVke
-         Y+UA==
-X-Gm-Message-State: AOAM532XMRgJJh4PfOAz3NMFMBnwKp6ACQqixGxmDg2g2TVSt6hArbPV
-        l9sjNTOIzlNc17DtgluteDFXFQZ+5kbUgwyZKgdMVQ==
-X-Google-Smtp-Source: ABdhPJzCdJjP1MwbH7hH0bJZ9B1Z5mWBm8tscwzL3/O2b/V30LA1px2FIzqx7BzQ1O2BI0NboeA0Mz6aGA4pJydjQ34=
-X-Received: by 2002:ac8:7183:: with SMTP id w3mr8137304qto.116.1629367515209;
- Thu, 19 Aug 2021 03:05:15 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Opv2d9ol21udi4K0v30kbE3GUCegq3iBRM6wdcQpyVk=;
+        b=H4UzCzyv0qNhZ9d0q4VFuynbVYARFwnoK08gwnDAxOgM9Zoi6RGcYhQkrDxTt7bKR8
+         l6GgquOLCXLWiq7t7buPzuelkMseIzuxxAZnC2/Q/B5EGp+5Ox664LXsNP78QvKCQWj3
+         8rYTl39OA624foKx9VKzetom6M0Mw1NO1xhZUY6XAgBJo48PM074ff6oDoq4qYQEznqk
+         ZDbSj74pqE3JBuvGyT7vtvlXswtZv6qMh8P78yXJpiMz5Ev6h8fe0EhJBvCtbAjdZMIk
+         d4pdSYjfVAodEx8znU0w9aJrc0+7poQYF01y70ZfvqY5MSjgF9Suo5vBVdAgx++84tjo
+         u6Sg==
+X-Gm-Message-State: AOAM531DYq2HwKl9OASPI1c+hjRoj5VgqtaRRrdNaDDaWRcxwechuKdw
+        ffbV1dczX6dWD9xsm5hGWXWeVKxLLo8cKboPB28NIO7/y+q8MeB8M9mprC1FjKDrGVo66wbeTTD
+        NS6d0Z2rVhpq9l5Buwfb+S+Ul
+X-Received: by 2002:a5d:6483:: with SMTP id o3mr2757120wri.197.1629367602746;
+        Thu, 19 Aug 2021 03:06:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw+3/0fv0wKXrwU5A+P76meV3y97/X7hVUmMcENBq24d/DLFeQ19OprL9SSc1+K8XhulZ/xWQ==
+X-Received: by 2002:a5d:6483:: with SMTP id o3mr2757086wri.197.1629367602415;
+        Thu, 19 Aug 2021 03:06:42 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6bd1.dip0.t-ipconnect.de. [91.12.107.209])
+        by smtp.gmail.com with ESMTPSA id y1sm2167170wmq.43.2021.08.19.03.06.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Aug 2021 03:06:41 -0700 (PDT)
+Subject: Re: [PATCH 1/5] mm: Add support for unaccepted memory
+To:     Joerg Roedel <jroedel@suse.de>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+References: <d091b333-9ef8-ac32-58c5-c325d29f26d7@intel.com>
+ <9748c07c-4e59-89d0-f425-c57f778d1b42@linux.intel.com>
+ <17b6a3a3-bd7d-f57e-8762-96258b16247a@intel.com>
+ <796a4b20-7fa3-3086-efa0-2f728f35ae06@linux.intel.com>
+ <f445da8b-c044-3765-65f2-f911dbf6a507@intel.com>
+ <3caf5e73-c104-0057-680c-7851476e67ac@linux.intel.com>
+ <YRTZr/Pxyb8fsV58@suse.de> <25312492-5d67-e5b0-1a51-b6880f45a550@intel.com>
+ <YRaGch+D5HPtUk9l@suse.de> <b0228048-d2c2-6081-cfae-147e17acf785@redhat.com>
+ <YR4qexszQ+Wxqe5r@suse.de>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <39d09b80-f79e-0dab-2be7-31d4db43ab77@redhat.com>
+Date:   Thu, 19 Aug 2021 12:06:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210817013852.3222824-1-stevensd@google.com> <20210817013852.3222824-8-stevensd@google.com>
- <f64b1349-d271-7b57-0eea-276dda065a87@arm.com>
-In-Reply-To: <f64b1349-d271-7b57-0eea-276dda065a87@arm.com>
-From:   David Stevens <stevensd@chromium.org>
-Date:   Thu, 19 Aug 2021 19:05:04 +0900
-Message-ID: <CAD=HUj6pRdiprRNc_wH_vLBMaNKZvQG9mhFa29vOD4WfcAo4=g@mail.gmail.com>
-Subject: Re: [PATCH v6 7/7] dma-iommu: account for min_align_mask
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Tom Murphy <murphyt7@tcd.ie>, iommu@lists.linux-foundation.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YR4qexszQ+Wxqe5r@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  On Thu, Aug 19, 2021 at 6:03 PM Robin Murphy <robin.murphy@arm.com> wrote:
->
-> On 2021-08-17 02:38, David Stevens wrote:
-> > From: David Stevens <stevensd@chromium.org>
-> >
-> > For devices which set min_align_mask, swiotlb preserves the offset of
-> > the original physical address within that mask. Since __iommu_dma_map
-> > accounts for non-aligned addresses, passing a non-aligned swiotlb
-> > address with the swiotlb aligned size results in the offset being
-> > accounted for twice in the size passed to iommu_map_atomic. The extra
-> > page exposed to DMA is also not cleaned up by __iommu_dma_unmap, since
-> > that function unmaps with the correct size. This causes mapping failures
-> > if the iova gets reused, due to collisions in the iommu page tables.
-> >
-> > To fix this, pass the original size to __iommu_dma_map, since that
-> > function already handles alignment.
-> >
-> > Additionally, when swiotlb returns non-aligned addresses, there is
-> > padding at the start of the bounce buffer that needs to be cleared.
-> >
-> > Fixes: 1f221a0d0dbf ("swiotlb: respect min_align_mask")
-> > Signed-off-by: David Stevens <stevensd@chromium.org>
-> > ---
-> >   drivers/iommu/dma-iommu.c | 24 +++++++++++++-----------
-> >   1 file changed, 13 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> > index 6738420fc081..f2fb360c2907 100644
-> > --- a/drivers/iommu/dma-iommu.c
-> > +++ b/drivers/iommu/dma-iommu.c
-> > @@ -788,7 +788,6 @@ static dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
-> >       struct iommu_domain *domain = iommu_get_dma_domain(dev);
-> >       struct iommu_dma_cookie *cookie = domain->iova_cookie;
-> >       struct iova_domain *iovad = &cookie->iovad;
-> > -     size_t aligned_size = size;
-> >       dma_addr_t iova, dma_mask = dma_get_mask(dev);
-> >
-> >       /*
-> > @@ -796,8 +795,8 @@ static dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
-> >        * page aligned, we don't need to use a bounce page.
-> >        */
-> >       if (dev_use_swiotlb(dev) && iova_offset(iovad, phys | size)) {
-> > -             void *padding_start;
-> > -             size_t padding_size;
-> > +             void *tlb_start;
-> > +             size_t aligned_size, iova_off, mapping_end_off;
-> >
-> >               aligned_size = iova_align(iovad, size);
-> >               phys = swiotlb_tbl_map_single(dev, phys, size, aligned_size,
-> > @@ -806,23 +805,26 @@ static dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
-> >               if (phys == DMA_MAPPING_ERROR)
-> >                       return DMA_MAPPING_ERROR;
-> >
-> > -             /* Cleanup the padding area. */
-> > -             padding_start = phys_to_virt(phys);
-> > -             padding_size = aligned_size;
-> > +             iova_off = iova_offset(iovad, phys);
-> > +             tlb_start = phys_to_virt(phys - iova_off);
-> >
-> >               if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
-> >                   (dir == DMA_TO_DEVICE || dir == DMA_BIDIRECTIONAL)) {
-> > -                     padding_start += size;
-> > -                     padding_size -= size;
-> > +                     /* Cleanup the padding area. */
-> > +                     mapping_end_off = iova_off + size;
-> > +                     memset(tlb_start, 0, iova_off);
-> > +                     memset(tlb_start + mapping_end_off, 0,
-> > +                            aligned_size - mapping_end_off);
-> > +             } else {
-> > +                     /* Nothing was sync'ed, so clear the whole buffer. */
-> > +                     memset(tlb_start, 0, aligned_size);
-> >               }
-> > -
-> > -             memset(padding_start, 0, padding_size);
-> >       }
-> >
-> >       if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
-> >               arch_sync_dma_for_device(phys, size, dir);
-> >
-> > -     iova = __iommu_dma_map(dev, phys, aligned_size, prot, dma_mask);
-> > +     iova = __iommu_dma_map(dev, phys, size, prot, dma_mask);
->
-> I still don't see how this preserves min_align_mask if it is larger than
-> the IOVA granule
+On 19.08.21 11:55, Joerg Roedel wrote:
+> Hi David,
+> 
+> On Tue, Aug 17, 2021 at 05:00:55PM +0200, David Hildenbrand wrote:
+>> Not sure if already discussed, but what about making sure that free pages
+>> are not a mixture (partially unaccepted, partially accepted).
+>>
+>> You'd have to expose the pages in that granularity to the buddy
+>> (__free_pages_core), indicating the state. You'd have to reject merging
+>> pages of differing acceptance state.
+>>
+>> Accepting a page would then be handled outside of the zone lock, completely
+>> controlled by the state.
+>>
+>> So a page in the buddy would either be completely accepted or completely
+>> unaccepted, signaled e.g., by PageOffline().
+>>
+>> Consequently, when allocating a 4KiB page, you'd split an unaccepted 2MiB
+>> page into separate unaccepted pages. You'd grab one of the unaccepted 4KiB
+>> pages and accept it before initializing it and handing it out.
+> 
+> Yes, that is the alternative to over-accepting memory on allocation. But
+> the problem here is that accepting/validating memory is an expensive
+> operation which also requires a hypercall. The hypercalls on SNP and TDX
+> can accept/validate multiple pages in one call. So the recommendation is
+> to accept memory in bigger chunks, like the 2MB that have been proposed.
+> 
 
-That's a slightly different issue, and not addressed in this series. I
-guess the commit message should be 'dma-iommu: account for
-min_align_mask w/swiotlb'. At least from my understanding of
-min_align_mask, getting min_align_mask larger than the IOVA granule to
-work would require changes to IOVA allocation, not anything to do
-directly with swiotlb bounce buffers. Also, probably changes to
-scatterlist coalescing. That being said, it looks like the only driver
-that sets min_align_mask is the nvme driver, which sets it to 4096.
+The general idea would be to have one thread scanning the free page list 
+and accepting pages in the background. Take a page out, accept it, 
+release it back to the buddy. If we place accepted pages to the front of 
+the free list, allocations would be quite fast.
 
-> (either way this change here does nothing since the
-> first thing __iommu_dma_map() does is iova_align() the size right back
-> anyway).
->
+Sure, you'd have some slow early allocations, but I'd guess it really 
+wouldn't make a big impact overall. We'd have to try.
 
-__iommu_dma_map() doesn't just align the size, it aligns
-size+iova_off. Let's say you're doing a read of size 512 bytes at
-offset 2048 within a page. In this case, aligned_size will be 4096.
-Without min_align_mask, phys will be page aligned, so that's fine. But
-with min_align_mask=4096, phys will also be at offset 2048. This
-causes __iommu_dma_map to align 4096 + 2048, which becomes 8192. That
-results in an extra page being mapped, which then doesn't get cleaned
-up by __iommu_dma_unmap. That causes collisions in the IOMMU driver
-the next time the iova is reused.
+It's quite similar to the free page reporting infrastructure, except 
+that with free page reporting we want to place pages to the tail, not to 
+the front. That would be easy to add.
 
-Passing size to __iommu_dma_map is sufficient. iommu_dma_map_page
-needs to map [phys, phys+size), regardless of whether or not bounce
-buffers are being used. __iommu_dma_map already takes care of cleaning
-up the alignment, there's no need to do any extra alignment specific
-to the bounce buffer case.
 
--David
+> Only accepting memory in allocation size might be too slow, as there is
+> a lot of code doing order-0 allocations. I think this approach will also
+> be more intrusive to the page alloctor, as it needs more changes on the
+> free path to check for acceptance states before pages can be merged.
 
-> Robin.
->
-> >       if (iova == DMA_MAPPING_ERROR && is_swiotlb_buffer(phys))
-> >               swiotlb_tbl_unmap_single(dev, phys, size, dir, attrs);
-> >       return iova;
-> >
+That's already mostly done in this patch IIRC.
+
+-- 
+Thanks,
+
+David / dhildenb
+
