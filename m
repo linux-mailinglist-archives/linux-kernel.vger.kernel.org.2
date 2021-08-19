@@ -2,286 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB3773F1D22
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18BB3F1D26
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240272AbhHSPop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 11:44:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238587AbhHSPon (ORCPT
+        id S240364AbhHSPpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 11:45:54 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:42236
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240272AbhHSPpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 11:44:43 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C85C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 08:44:06 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id p38so14020007lfa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 08:44:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=T9paPDGfTpVw3uYEbqc7Bet1pVGV4S1sipYf2IwXY7I=;
-        b=es6xPb5bhZRQcyASpWCmXBTZMioOx+xMa7MYOWC1BDJeYh0bxLDYvXOD7Q4HTrP53E
-         P1BBM+2sUphiynr8ul6xVhLeuHh5vp0RLU0ZkvEoSwO+Zf4vojCTb9ahY+sF1ukyITBM
-         OerZ+Svg6nC9LX0AFoL/wGNeRulX0qhQhP/G9L1Q/JRhN0Mzd0a3NvJCvcCaZRc+THN7
-         9DEMvQFM4idjNtd1PJn1CcpLLCBJNiQ6EDuEBomuTHMCz/QCvp1bzsURGzoKkEb5yal8
-         xCPpCDac0goreahGl++rpJ3MBn/kz8BfgiPc3fcDIFd445jiakcvfZ7bpZDHfhAUsa/j
-         7cyg==
+        Thu, 19 Aug 2021 11:45:53 -0400
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com [209.85.218.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 358EB411F5
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:45:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629387916;
+        bh=oQMiOvmPhv/1z2rOKVbJqGE7XkhSX2/8Th51kVa/d5I=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=p2KEGHXlBgGTDKU4PKDKi6NhJ/wVB8pY3Ft1ez3BIS/8NaktOpD77S8vxPmJBqx3T
+         TCMSF9W+lAfT/JbrDntPQmyoki/0c65AwDJcVIfVgjcuG+X6GSOmjpgDC7cCyRC+4P
+         0UnjcaV/MqHK3rtFHcqx5mbDD3xsFku3L9Q9+5BZv+OcxGF4pth6Y7EjRCx78ii6Hw
+         12vvwgqllkf15cL6AmsIIy6+dUbIYggAl9icpUZeJKK1XWSBAJyHXjBaS7Q2rvFCd5
+         +c6GqRUZPFxkwjnWqtokOtks/Sn3jkEawRRx9y5D6acL+LN6F4p5od07C4VtwFGSuH
+         M0ngp65Qa4cjg==
+Received: by mail-ej1-f69.google.com with SMTP id k12-20020a170906680cb02905aeccdbd1efso2413660ejr.9
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 08:45:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=T9paPDGfTpVw3uYEbqc7Bet1pVGV4S1sipYf2IwXY7I=;
-        b=N9F25H0O0GfyfRq5/HKNIAVJJ/59ingZyREiixvMoAdeVoxiEA6ZwydnKRNXvfR/Ij
-         RWG7NuJPJJPdzeSg9+iv4LGxwsYyjSwW1hl3d/7VE5j3PF01S1KwtA4Ki+pAqeMB2bMP
-         hbzNxw+2H1DAMfYf9CmaOu8Z0LCMsC2j8vzVOzGcBIv3CeDvEJVgBS1UHmbvA4NUGN6r
-         Agi6y1At+Sy/w73yUKXeFpkqJW87rnHfp89VT/1zEYkeuiC/f0hga9Uk8Nl89+UI93W/
-         abigSSLTHcGA8noRg8nYgtMvCpXOLDEfPm0bLnu2+TEkoJmCzxHI8OtzsSk38ogSO55U
-         cCAg==
-X-Gm-Message-State: AOAM530IFDWPU1lnEH38egWELMyCYZFFz/P+MH+YS23mC4TazDnSH/bl
-        NioHh+lcmx0k/pPdyjk2tbLxYg==
-X-Google-Smtp-Source: ABdhPJzaKNa0RvqrUI0zpdaJzHQbMqTNaO9U2ouMQy6+ClSXy1UDLLXHgRSDexDfTHfvqw4bYm7qqg==
-X-Received: by 2002:a05:6512:e83:: with SMTP id bi3mr1338219lfb.10.1629387844987;
-        Thu, 19 Aug 2021 08:44:04 -0700 (PDT)
-Received: from fedora.ideon.se ([85.235.10.227])
-        by smtp.gmail.com with ESMTPSA id a7sm132946ljd.85.2021.08.19.08.44.04
+        bh=oQMiOvmPhv/1z2rOKVbJqGE7XkhSX2/8Th51kVa/d5I=;
+        b=rISbZlt07hjgBHEHE7WCFvx7LipKja01iEfqVFWCzJcoRrvffzNvOUmqDOl+AcuexT
+         ZleNjKi7DDfT7prRqiaqhh8Vr1SMMG4zu9qbPWGZY8rYJqY1lW/LQkFZFZuaX+YZdMYR
+         Sccy8UFfPSCjhbAPSgWv0JRych/nRxm/fX/GjGBgOzZhvFtUhAjfNurVfcJzeCXCHS09
+         LEoOmhgf25FEG6fEKDkKGnhdQSmoYjrUNAGXicaHbBzpQJOATBhhGp020NLOy6XX8NUP
+         G8Lf4l5kDYOQoM38aVzA0VJ8fpzxKr0eA2GP2DNEekBdVolfi2nmtBS8TsNqGPr6uCoH
+         fH5g==
+X-Gm-Message-State: AOAM532ved2hSmD+J5ZNLay0fUg91dvGvCQYnR1VdPwHxZkSEz5o0hmW
+        niHPjFh5xG1jueInHvYNwSMiJCTk/v0d/SK/Efm+KQmY2YDEDwY6nLnC+2h8topkPhYe6JvkwhC
+        XAFhUboCm7HoZ3vje9WGn4iIBpfpEZ0vz8Mnq43ZaUA==
+X-Received: by 2002:a05:6402:22ab:: with SMTP id cx11mr16901485edb.240.1629387915596;
+        Thu, 19 Aug 2021 08:45:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwAEWiZz1c1r34QEyTMCWKIodNsdb2JaUuRv2nhyWDs0CmReup5t8cL3kDjjf8lf3M4RXzjlw==
+X-Received: by 2002:a05:6402:22ab:: with SMTP id cx11mr16901463edb.240.1629387915485;
+        Thu, 19 Aug 2021 08:45:15 -0700 (PDT)
+Received: from localhost.localdomain ([86.32.42.198])
+        by smtp.gmail.com with ESMTPSA id f16sm1925373edw.79.2021.08.19.08.45.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 08:44:04 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-To:     lee.jones@linaro.org, linux-kernel@vger.kernel.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Heidelberg <david@ixit.cz>, stable@vger.kernel.org
-Subject: [PATCH] mfd: qcom-pm8xxx: Switch to nested IRQ handler
-Date:   Thu, 19 Aug 2021 17:44:00 +0200
-Message-Id: <20210819154400.51932-1-linus.walleij@linaro.org>
-X-Mailer: git-send-email 2.31.1
+        Thu, 19 Aug 2021 08:45:15 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Atish Patra <atish.patra@wdc.com>,
+        Yash Shah <yash.shah@sifive.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Piotr Sroka <piotrs@cadence.com>, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH 1/6] dt-bindings: riscv: correct e51 and u54-mc CPU bindings
+Date:   Thu, 19 Aug 2021 17:44:31 +0200
+Message-Id: <20210819154436.117798-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After facing problems when using the chained interrupt for handling
-the PM8xxx IRQs we solve the issue by simply requesting the IRQ
-from the producer (in this case the TLMM) as any other IRQ, and
-nesting any consumer IRQs.
+All existing boards with sifive,e51 and sifive,u54-mc use it on top of
+sifive,rocket0 compatible:
 
-Recently the driver is hanging during probe:
-[    1.646990] ssbi 500000.qcom,ssbi: SSBI controller type: 'pmic-arbiter'
-[    1.650901] pm8xxx_probe: PMIC revision 1: E3
-[    1.655078] pm8xxx_probe: PMIC revision 2: 00
-(...)
-it just hangs after this.
+  arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: cpu@0: compatible: 'oneOf' conditional failed, one must be fixed:
+    ['sifive,e51', 'sifive,rocket0', 'riscv'] is too long
+    Additional items are not allowed ('riscv' was unexpected)
+    Additional items are not allowed ('sifive,rocket0', 'riscv' were unexpected)
+    'riscv' was expected
 
-I am unable to bisect down to what is causing this hang, but the
-patch fixes the problem.
-
-After this patch the DragonBoard APQ8060 boots to prompt without
-problems.
-
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: David Heidelberg <david@ixit.cz>
-Cc: stable@vger.kernel.org
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/mfd/qcom-pm8xxx.c | 60 ++++++++++++++++++---------------------
- 1 file changed, 28 insertions(+), 32 deletions(-)
+ Documentation/devicetree/bindings/riscv/cpus.yaml | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mfd/qcom-pm8xxx.c b/drivers/mfd/qcom-pm8xxx.c
-index acd172ddcbd6..223aed53aad8 100644
---- a/drivers/mfd/qcom-pm8xxx.c
-+++ b/drivers/mfd/qcom-pm8xxx.c
-@@ -65,7 +65,7 @@
- struct pm_irq_data {
- 	int num_irqs;
- 	struct irq_chip *irq_chip;
--	void (*irq_handler)(struct irq_desc *desc);
-+	irqreturn_t (*irq_handler)(int irq, void *data);
- };
- 
- struct pm_irq_chip {
-@@ -140,7 +140,7 @@ static int pm8xxx_irq_block_handler(struct pm_irq_chip *chip, int block)
- 		if (bits & (1 << i)) {
- 			pmirq = block * 8 + i;
- 			irq = irq_find_mapping(chip->irqdomain, pmirq);
--			generic_handle_irq(irq);
-+			handle_nested_irq(irq);
- 		}
- 	}
- 	return 0;
-@@ -170,19 +170,16 @@ static int pm8xxx_irq_master_handler(struct pm_irq_chip *chip, int master)
- 	return ret;
- }
- 
--static void pm8xxx_irq_handler(struct irq_desc *desc)
-+static irqreturn_t pm8xxx_irq_handler(int irq, void *data)
- {
--	struct pm_irq_chip *chip = irq_desc_get_handler_data(desc);
--	struct irq_chip *irq_chip = irq_desc_get_chip(desc);
-+	struct pm_irq_chip *chip = data;
- 	unsigned int root;
- 	int	i, ret, masters = 0;
- 
--	chained_irq_enter(irq_chip, desc);
--
- 	ret = regmap_read(chip->regmap, SSBI_REG_ADDR_IRQ_ROOT, &root);
- 	if (ret) {
- 		pr_err("Can't read root status ret=%d\n", ret);
--		return;
-+		return IRQ_NONE;
- 	}
- 
- 	/* on pm8xxx series masters start from bit 1 of the root */
-@@ -193,7 +190,7 @@ static void pm8xxx_irq_handler(struct irq_desc *desc)
- 		if (masters & (1 << i))
- 			pm8xxx_irq_master_handler(chip, i);
- 
--	chained_irq_exit(irq_chip, desc);
-+	return IRQ_HANDLED;
- }
- 
- static void pm8821_irq_block_handler(struct pm_irq_chip *chip,
-@@ -217,7 +214,7 @@ static void pm8821_irq_block_handler(struct pm_irq_chip *chip,
- 		if (bits & BIT(i)) {
- 			pmirq = block * 8 + i;
- 			irq = irq_find_mapping(chip->irqdomain, pmirq);
--			generic_handle_irq(irq);
-+			handle_nested_irq(irq);
- 		}
- 	}
- }
-@@ -232,19 +229,17 @@ static inline void pm8821_irq_master_handler(struct pm_irq_chip *chip,
- 			pm8821_irq_block_handler(chip, master, block);
- }
- 
--static void pm8821_irq_handler(struct irq_desc *desc)
-+static irqreturn_t pm8821_irq_handler(int irq, void *data)
- {
--	struct pm_irq_chip *chip = irq_desc_get_handler_data(desc);
--	struct irq_chip *irq_chip = irq_desc_get_chip(desc);
-+	struct pm_irq_chip *chip = data;
- 	unsigned int master;
- 	int ret;
- 
--	chained_irq_enter(irq_chip, desc);
- 	ret = regmap_read(chip->regmap,
- 			  PM8821_SSBI_REG_ADDR_IRQ_MASTER0, &master);
- 	if (ret) {
- 		pr_err("Failed to read master 0 ret=%d\n", ret);
--		goto done;
-+		return IRQ_NONE;
- 	}
- 
- 	/* bits 1 through 7 marks the first 7 blocks in master 0 */
-@@ -253,19 +248,18 @@ static void pm8821_irq_handler(struct irq_desc *desc)
- 
- 	/* bit 0 marks if master 1 contains any bits */
- 	if (!(master & BIT(0)))
--		goto done;
-+		return IRQ_HANDLED;
- 
- 	ret = regmap_read(chip->regmap,
- 			  PM8821_SSBI_REG_ADDR_IRQ_MASTER1, &master);
- 	if (ret) {
- 		pr_err("Failed to read master 1 ret=%d\n", ret);
--		goto done;
-+		return IRQ_NONE;
- 	}
- 
- 	pm8821_irq_master_handler(chip, 1, master);
- 
--done:
--	chained_irq_exit(irq_chip, desc);
-+	return IRQ_HANDLED;
- }
- 
- static void pm8xxx_irq_mask_ack(struct irq_data *d)
-@@ -516,15 +510,16 @@ MODULE_DEVICE_TABLE(of, pm8xxx_id_table);
- static int pm8xxx_probe(struct platform_device *pdev)
- {
- 	const struct pm_irq_data *data;
-+	struct device *dev = &pdev->dev;
- 	struct regmap *regmap;
- 	int irq, rc;
- 	unsigned int val;
- 	u32 rev;
- 	struct pm_irq_chip *chip;
- 
--	data = of_device_get_match_data(&pdev->dev);
-+	data = of_device_get_match_data(dev);
- 	if (!data) {
--		dev_err(&pdev->dev, "No matching driver data found\n");
-+		dev_err(dev, "No matching driver data found\n");
- 		return -EINVAL;
- 	}
- 
-@@ -532,7 +527,7 @@ static int pm8xxx_probe(struct platform_device *pdev)
- 	if (irq < 0)
- 		return irq;
- 
--	regmap = devm_regmap_init(&pdev->dev, NULL, pdev->dev.parent,
-+	regmap = devm_regmap_init(dev, NULL, pdev->dev.parent,
- 				  &ssbi_regmap_config);
- 	if (IS_ERR(regmap))
- 		return PTR_ERR(regmap);
-@@ -556,8 +551,7 @@ static int pm8xxx_probe(struct platform_device *pdev)
- 	pr_info("PMIC revision 2: %02X\n", val);
- 	rev |= val << BITS_PER_BYTE;
- 
--	chip = devm_kzalloc(&pdev->dev,
--			    struct_size(chip, config, data->num_irqs),
-+	chip = devm_kzalloc(dev, struct_size(chip, config, data->num_irqs),
- 			    GFP_KERNEL);
- 	if (!chip)
- 		return -ENOMEM;
-@@ -569,21 +563,25 @@ static int pm8xxx_probe(struct platform_device *pdev)
- 	chip->pm_irq_data = data;
- 	spin_lock_init(&chip->pm_irq_lock);
- 
--	chip->irqdomain = irq_domain_add_linear(pdev->dev.of_node,
-+	chip->irqdomain = irq_domain_add_linear(dev->of_node,
- 						data->num_irqs,
- 						&pm8xxx_irq_domain_ops,
- 						chip);
- 	if (!chip->irqdomain)
- 		return -ENODEV;
- 
--	irq_set_chained_handler_and_data(irq, data->irq_handler, chip);
-+	rc = devm_request_irq(dev, irq, data->irq_handler,
-+			      IRQF_SHARED, KBUILD_MODNAME, chip);
-+	if (rc) {
-+		dev_err(dev, "failed to request IRQ\n");
-+		return rc;
-+	}
-+
- 	irq_set_irq_wake(irq, 1);
- 
--	rc = of_platform_populate(pdev->dev.of_node, NULL, NULL, &pdev->dev);
--	if (rc) {
--		irq_set_chained_handler_and_data(irq, NULL, NULL);
-+	rc = of_platform_populate(pdev->dev.of_node, NULL, NULL, dev);
-+	if (rc)
- 		irq_domain_remove(chip->irqdomain);
--	}
- 
- 	return rc;
- }
-@@ -596,11 +594,9 @@ static int pm8xxx_remove_child(struct device *dev, void *unused)
- 
- static int pm8xxx_remove(struct platform_device *pdev)
- {
--	int irq = platform_get_irq(pdev, 0);
- 	struct pm_irq_chip *chip = platform_get_drvdata(pdev);
- 
- 	device_for_each_child(&pdev->dev, NULL, pm8xxx_remove_child);
--	irq_set_chained_handler_and_data(irq, NULL, NULL);
- 	irq_domain_remove(chip->irqdomain);
- 
- 	return 0;
+diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
+index e534f6a7cfa1..aa5fb64d57eb 100644
+--- a/Documentation/devicetree/bindings/riscv/cpus.yaml
++++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
+@@ -31,9 +31,7 @@ properties:
+               - sifive,bullet0
+               - sifive,e5
+               - sifive,e7
+-              - sifive,e51
+               - sifive,e71
+-              - sifive,u54-mc
+               - sifive,u74-mc
+               - sifive,u54
+               - sifive,u74
+@@ -41,6 +39,12 @@ properties:
+               - sifive,u7
+               - canaan,k210
+           - const: riscv
++      - items:
++          - enum:
++              - sifive,e51
++              - sifive,u54-mc
++          - const: sifive,rocket0
++          - const: riscv
+       - const: riscv    # Simulator only
+     description:
+       Identifies that the hart uses the RISC-V instruction set
 -- 
-2.31.1
+2.30.2
 
