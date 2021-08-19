@@ -2,225 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E3F3F1DDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 18:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E400C3F1DE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 18:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhHSQb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 12:31:57 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:41938 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhHSQb4 (ORCPT
+        id S230504AbhHSQcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 12:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230416AbhHSQcB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 12:31:56 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 9F73120C33AB;
-        Thu, 19 Aug 2021 09:31:19 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9F73120C33AB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1629390680;
-        bh=eFnGA7aTFvV9qos28eC0ycF0DWMWjw0868jCFwuvfyY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pQ+oskSqprZNM1bxRvlrdH/ZXwPkpmM/0FqwBQIFHOOnXZ5MT1NZeyrIHWczzNDCG
-         KgIkZx6hc116S8XuUkWThSry9PkVZRE7VNb92ea46J3aBPwDw6ZNCFtCzx9//F+mOM
-         6BHruu1p7NB22XyzF+jr1leb9WzzCyW2OafkKDAo=
-Date:   Thu, 19 Aug 2021 11:31:17 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pasha.tatashin@soleen.com
-Subject: Re: [PATCH v3 2/2] selftests: vm: add COW time test for KSM pages
-Message-ID: <20210819163117.GO5469@sequoia>
-References: <cover.1629386192.git.zhansayabagdaulet@gmail.com>
- <1d03ee0d1b341959d4b61672c6401d498bff5652.1629386192.git.zhansayabagdaulet@gmail.com>
+        Thu, 19 Aug 2021 12:32:01 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93C2C061575;
+        Thu, 19 Aug 2021 09:31:24 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id k8so10005658wrn.3;
+        Thu, 19 Aug 2021 09:31:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xdfmGh23k0aNDX33xwOdlnspLCgiV2qSptJyQT4CArg=;
+        b=TqvsyYuIzPTFNISEaUDmY0h791HLIf4qH1WXS1GxVOvTPNRDVQWqqcXQlxGoSmEhYq
+         hmHtTmIeKTi83VzFGyYEcVObXx+9sz/n5eRC4i5PoGxDQ5FuJyqmzwZC3DZsTYvcC7lj
+         Pr/Hk6ZGcay72lFauB5YyEIy1wE9tdSBx7LT+U3/P67mkfLEUFIanjAo3tpK1Of8NDws
+         BwdnJJRNFFFrUFU5DylX11cauyAcPLYzFuHfmvb7prU10HBcx3ThlIFERG8TGHBfHyo4
+         yySdwCCzMSuAkV9jh3xYDU+0sLNNdvXISoBFguTvMb8H+aD1MJ35euCxfdXOs3xfCmJt
+         nByA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xdfmGh23k0aNDX33xwOdlnspLCgiV2qSptJyQT4CArg=;
+        b=mOZXduuE9bVwOCymxoqTm0O+CBy9fgiSmr0eIcat6+XSqs6xscM2EgCEQPWDDLlKTr
+         6UKjFFqIQGgpj+BrY5Dy+A+RTCUiZb2AQEseHdsqp7Fq2LKKGliJ8PeKXTBDdn08aUyF
+         K58k8wuSy+aPet8EXNYjlCNBfVRD40DmCLBgbZUoDrE44XCjyGn01nS9OcN5HAH3xcYu
+         sIjzHiSrCVRdZfV6aoT8OIXIsUaWOKXIcIS8fkDrZznpuTT3zoult23JDzQdveOlVT6D
+         yJTNiQMrVI1qVEkB+694QN2pnkYebeCKPUEdkgz2t3Oi2zRkd5df618QXxLnFmD++m5A
+         pqrA==
+X-Gm-Message-State: AOAM531aPwJhRjMZLO66z+Qsfv7BAAVOplA0JVb08FFWhDPyrPay55dR
+        0OolyrbbsiYe2E8q5aWCqpc=
+X-Google-Smtp-Source: ABdhPJw+layCx1zXDlaPhdMiFy7BJcVfdPSGx4BZzhnHtq808ns6k0cMS2cwB3t84/EUctnSBTQSPg==
+X-Received: by 2002:adf:f541:: with SMTP id j1mr4794858wrp.180.1629390683554;
+        Thu, 19 Aug 2021 09:31:23 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id p8sm7766709wme.22.2021.08.19.09.31.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 09:31:21 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 18:31:20 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH v8 06/34] dt-bindings: clock: tegra-car: Document new
+ tegra-clocks sub-node
+Message-ID: <YR6HWMuYcF6NIepi@orome.fritz.box>
+References: <20210817012754.8710-1-digetx@gmail.com>
+ <20210817012754.8710-7-digetx@gmail.com>
+ <YR0SSz7KMh7TwaFW@orome.fritz.box>
+ <eff5ef47-e6e0-3e03-cf1a-d931b0f2dc2a@gmail.com>
+ <YR033zuYWWLCeYpM@orome.fritz.box>
+ <a5b942cb-1611-9ae1-6e89-4b68fdaf03e3@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="rcVyDzt3QNLnQ9/o"
 Content-Disposition: inline
-In-Reply-To: <1d03ee0d1b341959d4b61672c6401d498bff5652.1629386192.git.zhansayabagdaulet@gmail.com>
+In-Reply-To: <a5b942cb-1611-9ae1-6e89-4b68fdaf03e3@gmail.com>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-19 21:33:43, Zhansaya Bagdauletkyzy wrote:
-> Since merged pages are copied every time they need to be modified,
-> the write access time is different between shared and non-shared pages.
-> Add ksm_cow_time() function which evaluates latency of these COW
-> breaks. First, 4000 pages are allocated and the time, required to modify
-> 1 byte in every other page, is measured. After this, the pages are
-> merged into 2000 pairs and in each pair, 1 page is modified (i.e. they
-> are decoupled) to detect COW breaks. The time needed to break COW of
-> merged pages is then compared with performance of non-shared pages.
-> 
-> The test is run as follows: ./ksm_tests -C
-> The output:
-> 	Total size:    15 MiB
-> 
-> 	Not merged pages:
-> 	Total time:     0.002185489 s
-> 	Average speed:  3202.945 MiB/s
-> 
-> 	Merged pages:
-> 	Total time:     0.004386872 s
-> 	Average speed:  1595.670 MiB/s
-> 
-> Signed-off-by: Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
-> ---
-> v2 -> v3:
->  - address Tyler's feedback
 
-Thanks for incorporating my suggestions! I can confirm that my feedback
-was completely addressed.
+--rcVyDzt3QNLnQ9/o
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+On Wed, Aug 18, 2021 at 07:57:04PM +0300, Dmitry Osipenko wrote:
+> 18.08.2021 19:39, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >> We don't have a platform device for CaR. I don't see how it's going to
+> >> work. We need to create a platform device for each RPM-capable clock
+> >> because that's how RPM works. The compatible string is required for
+> >> instantiating OF-devices from a node, otherwise we will have to
+> >> re-invent the OF core.
+> > I think we do have a platform device for CAR. It's just not bound
+> > against by the driver because these clock drivers are "special". But
+> > from other parts of the series you're already trying to fix that, at
+> > least partially.
+> >=20
+> > But it doesn't seem right to create a platform device for each RPM-
+> > capable clock. Why do they need to be devices? They aren't, so why
+> > pretend? Is it that some API that we want to use here requires the
+> > struct device?
+>=20
+> The "device" representation is internal to the kernel. It's okay to me
+> to have PLLs represented by a device, it's a distinct h/w by itself.
+>=20
+> CCF supports managing of clock's RPM and it requires to have clock to be
+> backed by a device. That's what we are using here.
+>=20
+> Please see
+> https://elixir.bootlin.com/linux/v5.14-rc6/source/drivers/clk/clk.c#L109
 
-Tyler
+Looking at the implementation of __clk_register() and where that device
+pointer typically comes from, I don't think the way this is used here is
+what was intended. The way I interpret the code is that a clock is
+registered with a parent device (i.e. its provider) and
+clk_pm_runtime_get() is then used internally as a way to make sure that
+when a clock is prepared, it's parent device is runtime resumed. This is
+presumably to ensure that any registers that the driver might need to
+access in order to prepare and enable the clock are accessible (i.e. the
+CAR is not powered off or in reset).
 
-> 
-> Tyler's comments: https://lkml.org/lkml/2021/8/16/931
-> 
-> v1 -> v2:
->  As suggested by Pavel,
->  - add baseline figures with non-shared pages
->  - instead of having all pages merged together, create pairs of
->    duplicated pages
-> 
-> Pavel's comments: https://lkml.org/lkml/2021/8/3/1363
-> 
->  tools/testing/selftests/vm/ksm_tests.c | 86 +++++++++++++++++++++++++-
->  1 file changed, 83 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/vm/ksm_tests.c b/tools/testing/selftests/vm/ksm_tests.c
-> index 432dfe615e50..c14927417759 100644
-> --- a/tools/testing/selftests/vm/ksm_tests.c
-> +++ b/tools/testing/selftests/vm/ksm_tests.c
-> @@ -33,7 +33,8 @@ enum ksm_test_name {
->  	CHECK_KSM_UNMERGE,
->  	CHECK_KSM_ZERO_PAGE_MERGE,
->  	CHECK_KSM_NUMA_MERGE,
-> -	KSM_MERGE_TIME
-> +	KSM_MERGE_TIME,
-> +	KSM_COW_TIME
->  };
->  
->  static int ksm_write_sysfs(const char *file_path, unsigned long val)
-> @@ -98,7 +99,8 @@ static void print_help(void)
->  	       " -U (page unmerging)\n"
->  	       " -P evaluate merging time and speed.\n"
->  	       "    For this test, the size of duplicated memory area (in MiB)\n"
-> -	       "    must be provided using -s option\n\n");
-> +	       "    must be provided using -s option\n"
-> +	       " -C evaluate the time required to break COW of merged pages.\n\n");
->  
->  	printf(" -a: specify the access protections of pages.\n"
->  	       "     <prot> must be of the form [rwx].\n"
-> @@ -455,6 +457,77 @@ static int ksm_merge_time(int mapping, int prot, int timeout, size_t map_size)
->  	return KSFT_FAIL;
->  }
->  
-> +static int ksm_cow_time(int mapping, int prot, int timeout, size_t page_size)
-> +{
-> +	void *map_ptr;
-> +	struct timespec start_time, end_time;
-> +	unsigned long cow_time_ns;
-> +
-> +	/* page_count must be less than 2*page_size */
-> +	size_t page_count = 4000;
-> +
-> +	map_ptr = allocate_memory(NULL, prot, mapping, '*', page_size * page_count);
-> +	if (!map_ptr)
-> +		return KSFT_FAIL;
-> +
-> +	if (clock_gettime(CLOCK_MONOTONIC_RAW, &start_time)) {
-> +		perror("clock_gettime");
-> +		return KSFT_FAIL;
-> +	}
-> +	for (size_t i = 0; i < page_count - 1; i = i + 2)
-> +		memset(map_ptr + page_size * i, '-', 1);
-> +	if (clock_gettime(CLOCK_MONOTONIC_RAW, &end_time)) {
-> +		perror("clock_gettime");
-> +		return KSFT_FAIL;
-> +	}
-> +
-> +	cow_time_ns = (end_time.tv_sec - start_time.tv_sec) * NSEC_PER_SEC +
-> +		       (end_time.tv_nsec - start_time.tv_nsec);
-> +
-> +	printf("Total size:    %lu MiB\n\n", (page_size * page_count) / MB);
-> +	printf("Not merged pages:\n");
-> +	printf("Total time:     %ld.%09ld s\n", cow_time_ns / NSEC_PER_SEC,
-> +	       cow_time_ns % NSEC_PER_SEC);
-> +	printf("Average speed:  %.3f MiB/s\n\n", ((page_size * (page_count / 2)) / MB) /
-> +					       ((double)cow_time_ns / NSEC_PER_SEC));
-> +
-> +	/* Create 2000 pairs of duplicate pages */
-> +	for (size_t i = 0; i < page_count - 1; i = i + 2) {
-> +		memset(map_ptr + page_size * i, '+', i / 2 + 1);
-> +		memset(map_ptr + page_size * (i + 1), '+', i / 2 + 1);
-> +	}
-> +	if (ksm_merge_pages(map_ptr, page_size * page_count, start_time, timeout))
-> +		goto err_out;
-> +
-> +	if (clock_gettime(CLOCK_MONOTONIC_RAW, &start_time)) {
-> +		perror("clock_gettime");
-> +		goto err_out;
-> +	}
-> +	for (size_t i = 0; i < page_count - 1; i = i + 2)
-> +		memset(map_ptr + page_size * i, '-', 1);
-> +	if (clock_gettime(CLOCK_MONOTONIC_RAW, &end_time)) {
-> +		perror("clock_gettime");
-> +		goto err_out;
-> +	}
-> +
-> +	cow_time_ns = (end_time.tv_sec - start_time.tv_sec) * NSEC_PER_SEC +
-> +		       (end_time.tv_nsec - start_time.tv_nsec);
-> +
-> +	printf("Merged pages:\n");
-> +	printf("Total time:     %ld.%09ld s\n", cow_time_ns / NSEC_PER_SEC,
-> +	       cow_time_ns % NSEC_PER_SEC);
-> +	printf("Average speed:  %.3f MiB/s\n", ((page_size * (page_count / 2)) / MB) /
-> +					       ((double)cow_time_ns / NSEC_PER_SEC));
-> +
-> +	munmap(map_ptr, page_size * page_count);
-> +	return KSFT_PASS;
-> +
-> +err_out:
-> +	printf("Not OK\n");
-> +	munmap(map_ptr, page_size * page_count);
-> +	return KSFT_FAIL;
-> +}
-> +
->  int main(int argc, char *argv[])
->  {
->  	int ret, opt;
-> @@ -468,7 +541,7 @@ int main(int argc, char *argv[])
->  	bool merge_across_nodes = KSM_MERGE_ACROSS_NODES_DEFAULT;
->  	long size_MB = 0;
->  
-> -	while ((opt = getopt(argc, argv, "ha:p:l:z:m:s:MUZNP")) != -1) {
-> +	while ((opt = getopt(argc, argv, "ha:p:l:z:m:s:MUZNPC")) != -1) {
->  		switch (opt) {
->  		case 'a':
->  			prot = str_to_prot(optarg);
-> @@ -522,6 +595,9 @@ int main(int argc, char *argv[])
->  		case 'P':
->  			test_name = KSM_MERGE_TIME;
->  			break;
-> +		case 'C':
-> +			test_name = KSM_COW_TIME;
-> +			break;
->  		default:
->  			return KSFT_FAIL;
->  		}
-> @@ -571,6 +647,10 @@ int main(int argc, char *argv[])
->  		ret = ksm_merge_time(MAP_PRIVATE | MAP_ANONYMOUS, prot, ksm_scan_limit_sec,
->  				     size_MB);
->  		break;
-> +	case KSM_COW_TIME:
-> +		ret = ksm_cow_time(MAP_PRIVATE | MAP_ANONYMOUS, prot, ksm_scan_limit_sec,
-> +				   page_size);
-> +		break;
->  	}
->  
->  	if (ksm_restore(&ksm_sysfs_old)) {
-> -- 
-> 2.25.1
-> 
+So the struct device that is passed to __clk_register() (or its callers)
+should be that of the CAR rather than virtual struct devices created by
+the CAR.
+
+And it's a bit debatable whether or not PLLs represent distinct
+hardware. Ultimately every transistor on a chip could be considered
+distinct hardware. But a platform device is a device on a platform bus,
+which is really just another way of saying it's a hardware block that's
+accessible from the CPU via a memory-mapped address. A PLL (just like
+other clocks) is merely a resource exposed by means of access to these
+registers. So I don't think they should be platform devices. Even making
+them struct device:s seems a bit of a stretch.
+
+Is there any reason why struct clk can't be used for this? I mean, the
+whole purpose of that structure is to represent clocks. Why do we need
+to make them special?
+
+> >>> Also, I don't think the tegra- prefix is necessary here. The parent n=
+ode
+> >>> is already identified as Tegra via the compatible string.
+> >>>
+> >>> In the case of CAR, I'd imagine something like:
+> >>>
+> >>> 	clocks {
+> >>> 		sclk {
+> >>> 			operating-points-v2 =3D <&opp_table>;
+> >>> 			power-domains =3D <&domain>;
+> >>> 		};
+> >>> 	};
+> >>>
+> >>> Now you've only got the bare minimum in here that you actually add. A=
+ll
+> >>> the other data that you used to have is simply derived from the paren=
+t.
+> >> 'clocks' is already a generic keyword in DT. It's probably not okay to
+> >> redefine it.
+> > "clocks" is not a generic keyword. It's the name of a property and given
+> > that we're talking about the clock provider here, it doesn't need a
+> > clocks property of its own, so it should be fine to use that for the
+> > node.
+>=20
+> I'm curious what Rob thinks about it. Rob, does this sound okay to you?
+
+Another alternative would be to omit that level altogether and just make
+sclk and siblings direct children of the CAR node.
+
+Thierry
+
+--rcVyDzt3QNLnQ9/o
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEeh1YACgkQ3SOs138+
+s6H2hw/9FHQE4gIC68lVuteJusivX3to+lSemB8K8zjRkcxT7nURgxWEiaqizxEC
+HdNxAuNdVDpD1v34JC2ZGJgnnYdMSrk9k4BhykGgn1+QhdgEQGSTAEXUhcxfK2Yg
+5Slk4jnHH9HF0GPYfbJ5SP6k3NgkeL8h0fCa2JviaoCOhzyRBJK71IG1cIOlj7Ud
+3nxcd1/NzHcPZnsGivm5Qd8saf1nyLrZghmyUsuaZp5tsH8Ct/x5HWiShOTVB6UT
++uRefYWMbuaJp/mCa+6N0gK2827S84iSRzO5sxI3nYZbRJsgLgD766fzdC/EDZ9G
+Zg5AZgzH67GoEicbdCQMgx6zVV6Y1LQF1+5mrHjpomm2OWRVZELLEfGa1pqVNIGu
+VJjQuIX618IKU5jBYUw18+vr2HiJNDEFCXX0PrBYXp/cc64fiq4I3M30clqQQoxr
+puehYCuiVtD9v6lr8tnEA79qUnn0XsWIpzzHbeLtwclpaqN5lTZUo6eXXFIGid+3
+ZauSDJzqa4qTX1fvwH23kMnkA91nI2A00rPQWtER0uhJGq8TjXFPeJ4JHsvTyXxg
+Xr77eogUzKs15p0Eh3BBBYCu5CLnaePC+kK5pcVnJLDmbmRW/gaS/RvCuw/YfIhE
+Q5nj2KNqZny4RL9VKn0X77bP0ngrfjlFjFsEDt+9MYgNMX3kjj8=
+=ibYp
+-----END PGP SIGNATURE-----
+
+--rcVyDzt3QNLnQ9/o--
