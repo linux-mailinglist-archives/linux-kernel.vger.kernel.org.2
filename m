@@ -2,173 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01BFA3F1D89
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 18:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2923F3F1D9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 18:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229670AbhHSQOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 12:14:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40030 "EHLO
+        id S229915AbhHSQRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 12:17:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhHSQOf (ORCPT
+        with ESMTP id S229497AbhHSQRl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 12:14:35 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D5F5C061575;
-        Thu, 19 Aug 2021 09:13:59 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id d11so8338657ioo.9;
-        Thu, 19 Aug 2021 09:13:59 -0700 (PDT)
+        Thu, 19 Aug 2021 12:17:41 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A644AC061575;
+        Thu, 19 Aug 2021 09:17:04 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id o15so4158257wmr.3;
+        Thu, 19 Aug 2021 09:17:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ySNm5Bk9COcoCTlxBoNx2xtiQU2siDNi9QvD6Fw2LHY=;
-        b=eT3kT21+h9KmKJuMtIfZt2j7b7Gh71x95InJl9NmoGC3d65urtKYQ2ivzWhXTyt3N9
-         cwRgMANy01hRZGHK3WbR3Fofy9qgV1oJJaO2GGLQwruCzjeQlg2p3D9E7XRZjPKWX9Nr
-         Q+MRAcb0Bx21kyY6DOsYhhrioYovi5H3VL3sjSqJn1BnojOIkrpw7Tavm3ivfGlw/lqB
-         CrfgGT4/tgxJh5QMPvilbOYYUk5lDcGVZ2OgkuqHJiq8XI4SAh4ojpnGsowxu5KfqMyw
-         uXKlqn57l3QvRCIFlJ+rowU8hB+XfYMFt/Yp23HLrjzMAqiulI1K/WJBkk+C2lrawz16
-         95zg==
+         :content-disposition:in-reply-to:user-agent;
+        bh=60qINEW/AajNCq1e+l/+W08Fyl6DoGCIURNuZ7bsdck=;
+        b=uTqJWSeNGF+lF+nvNnEIkEavsCZHzmRSicfBPYqjqhCUMol7qkO7p4zdXBxXzeS4vT
+         LUXoyy4jqxt9JRa9GA2emnqvcgjM5m2JH6xpgqUnHRqrvhXJ0ra+UdQrGTHBIigAbPLh
+         VtxYJrYzvVlZAFn9BLoC03dGbU6/D7G3RL7V20nMcs7xOj6F0WluZa6ULpmAHfq5dHWJ
+         HXoLsG3Ntc0X9376FP560pBl7c5j6ef3ByAkw7chpgshwtvTwJMn4sKZPsmEYVKGvuIs
+         umScIh5+iEwTdQ0CShvhEEtGLV53HAS6lzbT7CRVhL1cxI0eKkOyVSJRLsE+nSFs10iz
+         Va5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ySNm5Bk9COcoCTlxBoNx2xtiQU2siDNi9QvD6Fw2LHY=;
-        b=GW+zQORybY7iVMkjop7WcI6+zFBBZWY8m+C+dKSu6xe3qQtxhb6zKSaJNSbuLc3CmI
-         e86Lm6HguBCWyKutrPY2erAmbUGIejFsOO1hBqALDCShd5PRV8ll3u1dBYxNJw5PeX4m
-         NNH2mWeBGrObLCtI6Uj6/zmUjY2qKb+ZdWEHzw5gq0dv9wSJvICx2EVewkDdILUzmoe6
-         03NJkFM6KyjB0NuWycuzPfSFgWerv/MTbJHyp3i/GBH46sNgQuwgmAtkg4EIJcPXM4Z6
-         LwhnKQhqp6W5DJVRAYB0kyLrNth7VNEv3amulM0S1mMwlHdgIr5TKHj0Xl9QcLiOFO5d
-         V1lg==
-X-Gm-Message-State: AOAM5327l3Gd59z493C7mdlVvVRCytVJGpUCjSZzrYz8nk9egBhxkKUp
-        hTN60iBstes62fvpTyZ4yxM=
-X-Google-Smtp-Source: ABdhPJxrl82ZSwavV3V8BmvBTWnuI3ManBU9zK9oiUPO/16jM4jSUXw3hhNmmOgZXhh4QQFB1OWyVA==
-X-Received: by 2002:a5e:df0d:: with SMTP id f13mr12029301ioq.108.1629389638574;
-        Thu, 19 Aug 2021 09:13:58 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id k2sm1733779ior.40.2021.08.19.09.13.57
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=60qINEW/AajNCq1e+l/+W08Fyl6DoGCIURNuZ7bsdck=;
+        b=RI1bYk24P1GtNB/U1ZDFhu4TpcFKXTG7nH3BKLxR39aUxac4+JI31pYozRHoTaGhGC
+         JkZ+QKA5Aj77Xhs6GE/SVpQH1SSWpfjJ0QU/hSdpnWY1BH0ldglo5+zLgMHH+q3ZeZuP
+         NXRmBXsZX4QmJLrbIcsMd1EtMNyuzXXRSXh8ascFLYJ2ODo5bQ0O5ZhlTiAUO4KI/19u
+         zVTQf544ImnakiyZKw2eiDnDKi6fuVOS6A2iU8+w+TT6CbZqpizCOjanoOmIrcLN6M0x
+         Vo8jR0ytTa38YscPHCeWkjllG3WAK8ybli5yhlJx04fQrix9RHFyTZTLZZm3W9Z19rns
+         q9XQ==
+X-Gm-Message-State: AOAM532gSRbN7mZM7W2zlml/fE8EnzpVn0zwMuP9iltBqMVYVhPS19l5
+        1WDvJNWtkQuKuCKhWHcokYw=
+X-Google-Smtp-Source: ABdhPJx2olGrXmJhDc92ifXD/T9C9Dyg3QQIU/AaBjuCkLci0TRvThG/zCRGsYcF6TD012k/6ZhEWA==
+X-Received: by 2002:a1c:26c5:: with SMTP id m188mr14633566wmm.19.1629389823304;
+        Thu, 19 Aug 2021 09:17:03 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id e25sm3956144wra.90.2021.08.19.09.17.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 09:13:58 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 260F027C005A;
-        Thu, 19 Aug 2021 12:13:57 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Thu, 19 Aug 2021 12:13:57 -0400
-X-ME-Sender: <xms:Q4MeYe6GJ5Jqs06KbLQruWwZ2wUczV9D74ovcc8FLpJDrDC241DcKw>
-    <xme:Q4MeYX5jbM2wlxTKGyBcD_gOdyDKCZr5c8bWEzkg4N_fdTLVi0uX5ViVc4ZmJUL16
-    RULq5zH2Ue9-P01Wg>
-X-ME-Received: <xmr:Q4MeYdfoEcygWdYozmbyQonswj1Y9PZN2pz150qjDoVklngxoSzANxDm79DPxA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleejgdeliecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpeevieejtdfhieejfeduheehvdevgedugeethefggfdtvdeutdevgeetvddvfeeg
-    tdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgv
-    rhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfh
-    gvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:Q4MeYbK56FdSUVPfJCoqh2cOHh92tGrQF4B0Meku3YU2xCusj3HB1Q>
-    <xmx:Q4MeYSLBSE2rYAZhzytuzpFAyjv5cGNyTAymGLWFNTM_kPPBn9jacQ>
-    <xmx:Q4MeYcxjvU3ootAoqztkiKkocQM1UvzBRO4k2gBay9n9tU7KKyhL6g>
-    <xmx:RYMeYSLP3cPseTJ7zr74cs9oU51pDQjxgjSQb9vmOrE1-SZwr_vratHjBHs>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 19 Aug 2021 12:13:55 -0400 (EDT)
-Date:   Fri, 20 Aug 2021 00:13:22 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: Re: [PATCH v6 4/8] arm64: PCI: Support root bridge preparation for
- Hyper-V
-Message-ID: <YR6DIkdkblL8NUP2@boqun-archlinux>
-References: <20210726180657.142727-1-boqun.feng@gmail.com>
- <20210726180657.142727-5-boqun.feng@gmail.com>
+        Thu, 19 Aug 2021 09:17:02 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 18:17:01 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Subject: Re: [PATCH v8 19/34] pwm: tegra: Add runtime PM and OPP support
+Message-ID: <YR6D/QMDakjlD5Ve@orome.fritz.box>
+References: <20210817012754.8710-1-digetx@gmail.com>
+ <20210817012754.8710-20-digetx@gmail.com>
+ <YR5ay6+r0hJsUbhy@orome.fritz.box>
+ <CAPDyKFqr6NYO89io+6EfwrtELhTMps-tpGcAVbmuQ1_NnOD7Ew@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="v92KmlAbafaPcAq1"
 Content-Disposition: inline
-In-Reply-To: <20210726180657.142727-5-boqun.feng@gmail.com>
+In-Reply-To: <CAPDyKFqr6NYO89io+6EfwrtELhTMps-tpGcAVbmuQ1_NnOD7Ew@mail.gmail.com>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Catalin and Will,
 
-Appreciate it that you can have a look at this one and patch #4, note
-that there exists an alternative solution at[1].
+--v92KmlAbafaPcAq1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The difference is the way used to pass the corresponding ACPI device
-pointers for PCI host bridges: currently pci_config_window->parent is
-used, and this patch and patch #4 allow the field to be NULL, because
-Hyper-V's PCI host bridges don't have ACPI devices, while [1] changes to
-use pci_host_bridge->private. And I'm OK with either way, I don't have a
-strong opinion here ;-)
+On Thu, Aug 19, 2021 at 04:04:50PM +0200, Ulf Hansson wrote:
+> On Thu, 19 Aug 2021 at 15:21, Thierry Reding <thierry.reding@gmail.com> w=
+rote:
+> >
+> > On Tue, Aug 17, 2021 at 04:27:39AM +0300, Dmitry Osipenko wrote:
+> > > The PWM on Tegra belongs to the core power domain and we're going to
+> > > enable GENPD support for the core domain. Now PWM must be resumed usi=
+ng
+> > > runtime PM API in order to initialize the PWM power state. The PWM cl=
+ock
+> > > rate must be changed using OPP API that will reconfigure the power do=
+main
+> > > performance state in accordance to the rate. Add runtime PM and OPP
+> > > support to the PWM driver.
+> > >
+> > > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> > > ---
+> > >  drivers/pwm/pwm-tegra.c | 104 ++++++++++++++++++++++++++++++++------=
+--
+> > >  1 file changed, 85 insertions(+), 19 deletions(-)
+> >
+> > Can this be safely applied independently of the rest of the series, or
+> > are there any dependencies on earlier patches?
+>=20
+> Just to make sure we don't rush something in, I would rather withhold
+> all runtime PM related patches in the series, until we have agreed on
+> how to fix the in genpd/opp core parts. Simply, because those may very
+> well affect the deployments in the drivers.
 
-Looking forwards to your suggestion, Thanks!
+Okay, understood. I didn't realize this may have an impact on how
+drivers need to cooperate. I'll hold off on applying any of these
+patches until the discussion has settled, then.
 
-Regards,
-Boqun
+Thierry
 
-[1]: https://lore.kernel.org/lkml/20210811153619.88922-1-boqun.feng@gmail.com/
+--v92KmlAbafaPcAq1
+Content-Type: application/pgp-signature; name="signature.asc"
 
-On Tue, Jul 27, 2021 at 02:06:53AM +0800, Boqun Feng wrote:
-> Currently at root bridge preparation, the corresponding ACPI device will
-> be set as the companion, however for a Hyper-V virtual PCI root bridge,
-> there is no corresponding ACPI device, because a Hyper-V virtual PCI
-> root bridge is discovered via VMBus rather than ACPI table. In order to
-> support this, we need to make pcibios_root_bridge_prepare() work with
-> cfg->parent being NULL.
-> 
-> Use a NULL pointer as the ACPI device if there is no corresponding ACPI
-> device, and this is fine because: 1) ACPI_COMPANION_SET() can work with
-> the second parameter being NULL, 2) semantically, if a NULL pointer is
-> set via ACPI_COMPANION_SET(), ACPI_COMPANION() (the read API for this
-> field) will return NULL, and since ACPI_COMPANION() may return NULL, so
-> users must have handled the cases where it returns NULL, and 3) since
-> there is no corresponding ACPI device, it would be wrong to use any
-> other value here.
-> 
-> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> ---
->  arch/arm64/kernel/pci.c | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
-> index 5148ae242780..2276689b5411 100644
-> --- a/arch/arm64/kernel/pci.c
-> +++ b/arch/arm64/kernel/pci.c
-> @@ -90,7 +90,17 @@ int pcibios_root_bridge_prepare(struct pci_host_bridge *bridge)
->  		return 0;
->  
->  	cfg = bridge->bus->sysdata;
-> -	adev = to_acpi_device(cfg->parent);
-> +
-> +	/*
-> +	 * On Hyper-V there is no corresponding ACPI device for a root bridge,
-> +	 * therefore ->parent is set as NULL by the driver. And set 'adev' as
-> +	 * NULL in this case because there is no proper ACPI device.
-> +	 */
-> +	if (!cfg->parent)
-> +		adev = NULL;
-> +	else
-> +		adev = to_acpi_device(cfg->parent);
-> +
->  	bus_dev = &bridge->bus->dev;
->  
->  	ACPI_COMPANION_SET(&bridge->dev, adev);
-> -- 
-> 2.32.0
-> 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEeg/oACgkQ3SOs138+
+s6HxGg//Ql/ilCJ6m24EOkbDMDHwSFLN7MYgmfi1Muvarf/bqQFb1LIOonS0qeTr
+fHvvi587/6LtOdHE0PNwTl0SEz5UpxSojnZdTDjV2/JdSgy7LeJ2RBbeZ7kxVCMP
+3ud/I9kVkE1BaAtRzX0sqNJOIDA2MG00wBq08+PNS9ihOvipqypiweD5JSaB5MSi
+Gof9qhzVOZV/ONjRZ7Ib0kjig/qx0+lpJ2W/15QdU4/OHp9QP/ONoinEIk9WPaXU
+QveXwGDwo27fi1MQQKsQCwoytQZaaFjqyy3gnZNiAjY6fUikfa0TSvjZBXGJduvf
+YXJJIt1dy09Zk589NliTddgaZE4anOdgW7c02KwLSLw4RxsAgFG8xfj1Z8i9DhWs
+GQGNkYNXlia3rj7uiU6dJGLlhtyNblI96fNGXqnlhnIkuDJvYuKm9BRs9e9gGDva
+qvsD03sjGzToLh26dSvTZa6KPqK7pgqkPyOxP4PuqUNECw5IOfVNXd5S4JKQMHat
+QDO1QwVz9eg29cSSX7oziTvc7b1iS0IqVdtfiDa/SzWC7sdCVn+hCVD+SR5vEDHY
+6KcokLAcDqd8YXs71HDqDz4G3L+P17bEoHjcYIz/zJl+c5r+JDmxuhCHL0Ak7KlO
+BxfqqqYVBPahJsnmVcGVnAMavszy2PwqEQXM9PGZYEevCsi83lo=
+=yoaX
+-----END PGP SIGNATURE-----
+
+--v92KmlAbafaPcAq1--
