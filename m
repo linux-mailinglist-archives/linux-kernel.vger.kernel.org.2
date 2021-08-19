@@ -2,126 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002713F239A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 590203F2397
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236939AbhHSXTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 19:19:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53520 "EHLO
+        id S236933AbhHSXSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 19:18:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbhHSXTP (ORCPT
+        with ESMTP id S236809AbhHSXSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 19:19:15 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2395C061575;
-        Thu, 19 Aug 2021 16:18:37 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id w20so16352050lfu.7;
-        Thu, 19 Aug 2021 16:18:37 -0700 (PDT)
+        Thu, 19 Aug 2021 19:18:13 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FFFC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:17:37 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so10760061otk.9
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:17:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Ry+uQ2ze+f23BW9wmso3e2NcNF5MK0mmAGV5/hmmOmo=;
-        b=uJ7HeHQontttqIGqQ2NX/14IN/xSl7wiyEI0b6WFZ9B4Dk2KIpd5De3gqj/D4hSwx0
-         gRNXb/wxBl6wkYTzjm+KZtVK0roxZgPm8z4Pq1aBHFPH6AjN/buNZ107mIV240blAWzH
-         xnfTFqB2fCWp2CG+8vtFP+AeTHM5XXl/CoU91GXHQZ6NWaP7lUV1kIsNh4ck8DBB0o3h
-         /FK+6lBKeWsGqNhpFP5rDtQcdaGZbOsPYjsHL9y50TqOaFd9YT6rv0eLFkf0yRt3VKDP
-         MBLtq/DxFcyYpau9CLyyDhmfF2txevvNvUwOPdmv5/Ml0CqAmPLH3vycy/XY2IjiQFs0
-         MK/A==
+         :content-disposition:in-reply-to;
+        bh=dqgoJAQz3Mv7B0ZEGRvtaCqkcK4kqu5N3VSB9Do7xY4=;
+        b=BMf23iSlOWarU9fDcULweKVfxlosd41Wfztfxi8DOr0ErrJ2WhFuCCJdroa4O3U6Y4
+         Ornh+yHcbZUTjYugKoCBoMvCuzIam6M+JCV2WGHWTCt5Q87DYpGvI7XiogoqjDWvdBJq
+         ndpRW8alwfoz9eRtKWAiyOOYuHxpm070gdIkFjgkcZQRsAYJhwuC10wddFnkpuuDXvId
+         SdgUNgerTBW5jnZEmujJEh18/L85559JS7Mgk3us3PqXvJEoQFq08GdIqS/f1/cl8knE
+         ZpLOcgtVLfQjQa1B0gpCqgHYebtUQqbo4TIy1POmSREhzGqokLYnjGXFMZKWIgQ4FXh5
+         C37Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Ry+uQ2ze+f23BW9wmso3e2NcNF5MK0mmAGV5/hmmOmo=;
-        b=O/0vX5e4jUvP+sC3BwkzPtlDSjyT68P8s8n7zzW+OkQrbwqUFWb7VZa7Pt9dmu9DNC
-         VaNmSWZa8U/171HOlqPYwAJYMaGsSMg/u+PwmiRtMpzN2WXbjNJfYbUP815gRf0h/mrx
-         x5NxemWaGaUHDCTEHJBGefrfXkPh6kv7K2FZW/s4hdrGlvM7jRM/7X4YEo5VhaXLJioB
-         FvPjSpfApf0qzvYlYycLmxICli8Qiju8HgiwsANDTci7UXyG1s5FbYTTn6ua4vipMMaC
-         rPSZOY9BaIHyW6GpX+pRV9M6s2+3cHATDieD0ZKU3gA0KDCd75LrcuchXPkMcl4WDrvF
-         tTSQ==
-X-Gm-Message-State: AOAM531YnK3aomrYHkOxAElUMdmf1hzxl3JUvoNFfW0clGh0avUhC19R
-        +4sB7U+ReKjD26VFnQVR5WY=
-X-Google-Smtp-Source: ABdhPJx87x0dZUPkISoJL4ME1bzX8W9BQeT50/qxq+el9HtXrx76quTuHsUMVVORkAiJcCURiF15WQ==
-X-Received: by 2002:a05:6512:22cd:: with SMTP id g13mr12755777lfu.440.1629415116388;
-        Thu, 19 Aug 2021 16:18:36 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id 3sm381713ljq.136.2021.08.19.16.18.35
+         :mime-version:content-disposition:in-reply-to;
+        bh=dqgoJAQz3Mv7B0ZEGRvtaCqkcK4kqu5N3VSB9Do7xY4=;
+        b=MNZx6LcQyG6aA8v0M57p0XdG3yfBfOoimysXn9YWvYVywOQdjPpTP607sWZhSaZ12E
+         hVLH+/0YTMBDwrnQ2dOzRq/T7M4BpzpbSK1BTzM82EnnKrzi/CdawTGg0CbINKtUC8gJ
+         NscbDa1Lv7JcQ2pjkahDD86V8WYpaszgaUgDJhnkxZwqbIE+9uzDlJdXyx9tgHIRtdtT
+         avKbDbCXRC46n6bIltjKMEmxFur1H1CaIvbSYzpzopgjZeFOf37zoR+KyNypdi+b7BHY
+         HNUPo02TxSQdY4KCR7cRZRwcqchFISxADxjXjKDyYp2CgBQWt+3sYg2q/pqFwnVWlPpR
+         5ysQ==
+X-Gm-Message-State: AOAM532TcdkhGhEUwZZWgd07OUJuWlbMuzawqijaLNUnrTEtaW8vQ7J3
+        uqHBlk+tVjSLDYUngTU9B4Mhjg==
+X-Google-Smtp-Source: ABdhPJyW/PO0aRB2JhV3QSCv+CbV97dGiXbm6pwAyuaGcZ90eIfRAKlNSig9OcjkDtMHhlGDTPhK9g==
+X-Received: by 2002:a9d:bec:: with SMTP id 99mr13825165oth.187.1629415056421;
+        Thu, 19 Aug 2021 16:17:36 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id z26sm971827oih.3.2021.08.19.16.17.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 16:18:35 -0700 (PDT)
-Date:   Fri, 20 Aug 2021 02:18:33 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org,
-        linux-ntfs-dev@lists.sourceforge.net, linux-cifs@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Luis de Bethencourt <luisbg@kernel.org>,
-        Salah Triki <salah.triki@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [RFC PATCH 05/20] ntfs: Undeprecate iocharset= mount option
-Message-ID: <20210819231833.deyfwq73tbslkizc@kari-VirtualBox>
-References: <20210808162453.1653-1-pali@kernel.org>
- <20210808162453.1653-6-pali@kernel.org>
- <20210819012108.3isqi4t6rmd5fd5x@kari-VirtualBox>
- <20210819081222.vnvxfrtqctfev6xu@pali>
- <20210819102342.6ps7lowpuomyqcdk@kari-VirtualBox>
- <20210819220412.jicwnrevzi6s25ee@pali>
+        Thu, 19 Aug 2021 16:17:36 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 16:18:59 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [RFC PATCH 10/15] pwrseq: add support for QCA BT+WiFi power
+ sequencer
+Message-ID: <YR7m43mURVJ8YufC@ripper>
+References: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
+ <20210817005507.1507580-11-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210819220412.jicwnrevzi6s25ee@pali>
+In-Reply-To: <20210817005507.1507580-11-dmitry.baryshkov@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 12:04:12AM +0200, Pali Rohár wrote:
-> On Thursday 19 August 2021 13:23:42 Kari Argillander wrote:
-> > On Thu, Aug 19, 2021 at 10:12:22AM +0200, Pali Rohár wrote:
-> > > On Thursday 19 August 2021 04:21:08 Kari Argillander wrote:
-> > > > On Sun, Aug 08, 2021 at 06:24:38PM +0200, Pali Rohár wrote:
-> > > > > Other fs drivers are using iocharset= mount option for specifying charset.
-> > > > > So mark iocharset= mount option as preferred and deprecate nls= mount
-> > > > > option.
-> > > >  
-> > > > One idea is also make this change to fs/fc_parser.c and then when we
-> > > > want we can drop support from all filesystem same time. This way we
-> > > > can get more deprecated code off the fs drivers. Draw back is that
-> > > > then every filesstem has this deprecated nls= option if it support
-> > > > iocharsets option. But that should imo be ok.
-> > > 
-> > > Beware that iocharset= is required only for fs which store filenames in
-> > > some specific encoding (in this case extension to UTF-16). For fs which
-> > > store filenames in raw bytes this option should not be parsed at all.
-> > 
-> > Yeah of course. I was thinking that what we do is that if key is nls=
-> > we change key to iocharset, print deprecated and then send it to driver
-> > parser as usual. This way driver parser will never know that user
-> > specifie nls= because it just get iocharset. But this is probebly too
-> > fancy way to think simple problem. Just idea. 
-> 
-> This has an issue that when you use nls= option for e.g. ext4 fs then
-> kernel starts reporting that nls= for ext4 is deprecated. But there is
-> no nls= option and neither iocharset= option for ext4. So kernel should
-> not start reporting such warnings for ext4.
+On Mon 16 Aug 17:55 PDT 2021, Dmitry Baryshkov wrote:
+[..]
+> diff --git a/drivers/power/pwrseq/pwrseq_qca.c b/drivers/power/pwrseq/pwrseq_qca.c
+> new file mode 100644
+> index 000000000000..3421a4821126
+> --- /dev/null
+> +++ b/drivers/power/pwrseq/pwrseq_qca.c
+> @@ -0,0 +1,290 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2021, Linaro Ltd.
+> + *
+> + * Author: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> + *
+> + * Power Sequencer for Qualcomm WiFi + BT SoCs
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pwrseq/driver.h>
+> +#include <linux/regulator/consumer.h>
+> +
+> +/*
+> + * Voltage regulator information required for configuring the
+> + * QCA WiFi+Bluetooth chipset
+> + */
+> +struct qca_vreg {
+> +	const char *name;
+> +	unsigned int load_uA;
+> +};
+> +
+> +struct qca_device_data {
+> +	struct qca_vreg vddio;
 
-It gets kinda messy. I was also thinking that but if that was
-implemented then we could first send iocharset to driver and after that
-we print deprecated if it succeeded. If it not succeed then we print
-error messages same as always.
+Any particular reason why this isn't just the first entry in vregs and
+operated as part of the bulk API?
 
-I have not look how easily this is can be done in parser.
+> +	struct qca_vreg *vregs;
+> +	size_t num_vregs;
+> +	bool has_bt_en;
+> +	bool has_wifi_en;
+> +};
+> +
+> +struct pwrseq_qca;
+> +struct pwrseq_qca_one {
+> +	struct pwrseq_qca *common;
+> +	struct gpio_desc *enable;
+> +};
+> +
+> +#define PWRSEQ_QCA_WIFI 0
+> +#define PWRSEQ_QCA_BT 1
+> +
+> +#define PWRSEQ_QCA_MAX 2
+> +
+> +struct pwrseq_qca {
+> +	struct regulator *vddio;
+> +	struct gpio_desc *sw_ctrl;
+> +	struct pwrseq_qca_one pwrseq_qcas[PWRSEQ_QCA_MAX];
+> +	int num_vregs;
+> +	struct regulator_bulk_data vregs[];
+> +};
+> +
+> +static int pwrseq_qca_power_on(struct pwrseq *pwrseq)
+> +{
+> +	struct pwrseq_qca_one *qca_one = pwrseq_get_data(pwrseq);
+> +	int ret;
+> +
+> +	if (qca_one->common->vddio) {
 
-> 
-> > > Therefore I'm not sure if this parsing should be in global
-> > > fs/fc_parser.c file...
-> > 
+devm_regulator_get() doesn't return NULL, so this is always true.
+
+> +		ret = regulator_enable(qca_one->common->vddio);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	ret = regulator_bulk_enable(qca_one->common->num_vregs, qca_one->common->vregs);
+> +	if (ret)
+> +		goto vddio_off;
+> +
+> +	if (qca_one->enable) {
+> +		gpiod_set_value_cansleep(qca_one->enable, 0);
+> +		msleep(50);
+> +		gpiod_set_value_cansleep(qca_one->enable, 1);
+> +		msleep(150);
+> +	}
+> +
+> +	if (qca_one->common->sw_ctrl) {
+> +		bool sw_ctrl_state = gpiod_get_value_cansleep(qca_one->common->sw_ctrl);
+> +		dev_dbg(&pwrseq->dev, "SW_CTRL is %d", sw_ctrl_state);
+> +	}
+> +
+> +	return 0;
+> +
+> +vddio_off:
+> +	regulator_disable(qca_one->common->vddio);
+> +
+> +	return ret;
+> +}
+[..]
+> +static int pwrseq_qca_probe(struct platform_device *pdev)
+> +{
+> +	struct pwrseq_qca *pwrseq_qca;
+> +	struct pwrseq *pwrseq;
+> +	struct pwrseq_provider *provider;
+> +	struct device *dev = &pdev->dev;
+> +	struct pwrseq_onecell_data *onecell;
+> +	const struct qca_device_data *data;
+> +	int ret, i;
+> +
+> +	data = device_get_match_data(dev);
+> +	if (!data)
+> +		return -EINVAL;
+> +
+> +	pwrseq_qca = devm_kzalloc(dev, struct_size(pwrseq_qca, vregs, data->num_vregs), GFP_KERNEL);
+> +	if (!pwrseq_qca)
+> +		return -ENOMEM;
+> +
+> +	onecell = devm_kzalloc(dev, struct_size(onecell, pwrseqs, PWRSEQ_QCA_MAX), GFP_KERNEL);
+> +	if (!onecell)
+> +		return -ENOMEM;
+> +
+> +	ret = pwrseq_qca_regulators_init(dev, pwrseq_qca, data);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (data->has_wifi_en) {
+> +		pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_WIFI].enable = devm_gpiod_get(dev, "wifi-enable", GPIOD_OUT_LOW);
+> +		if (IS_ERR(pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_WIFI].enable)) {
+> +			return dev_err_probe(dev, PTR_ERR(pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_WIFI].enable),
+> +					"failed to acquire WIFI enable GPIO\n");
+> +		}
+> +	}
+> +
+> +	if (data->has_bt_en) {
+> +		pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_BT].enable = devm_gpiod_get(dev, "bt-enable", GPIOD_OUT_LOW);
+> +		if (IS_ERR(pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_BT].enable)) {
+> +			return dev_err_probe(dev, PTR_ERR(pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_BT].enable),
+> +					"failed to acquire BT enable GPIO\n");
+> +		}
+> +	}
+> +
+> +	pwrseq_qca->sw_ctrl = devm_gpiod_get_optional(dev, "swctrl", GPIOD_IN);
+> +	if (IS_ERR(pwrseq_qca->sw_ctrl)) {
+> +		return dev_err_probe(dev, PTR_ERR(pwrseq_qca->sw_ctrl),
+> +				"failed to acquire SW_CTRL gpio\n");
+> +	} else if (!pwrseq_qca->sw_ctrl)
+> +		dev_info(dev, "No SW_CTRL gpio\n");
+
+Some {} around the else as well please.
+
+Regards,
+Bjorn
