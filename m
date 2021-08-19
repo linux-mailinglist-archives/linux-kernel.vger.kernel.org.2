@@ -2,99 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65AAF3F13BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 08:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D983F13C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 08:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231831AbhHSGpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 02:45:11 -0400
-Received: from out28-193.mail.aliyun.com ([115.124.28.193]:48218 "EHLO
-        out28-193.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230483AbhHSGpK (ORCPT
+        id S231766AbhHSGsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 02:48:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231336AbhHSGsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 02:45:10 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.09123356|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0210625-0.000612203-0.978325;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047208;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=14;RT=14;SR=0;TI=SMTPD_---.L2mzdyl_1629355470;
-Received: from 192.168.88.131(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.L2mzdyl_1629355470)
-          by smtp.aliyun-inc.com(10.147.41.121);
-          Thu, 19 Aug 2021 14:44:31 +0800
-Subject: Re: [PATCH v7 00/11] Add new clocks and fix bugs for Ingenic SoCs.
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-To:     sboyd@kernel.org, mturquette@baylibre.com, robh+dt@kernel.org,
-        paul@crapouillou.net
-Cc:     linux-clk@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, sihui.liu@ingenic.com,
-        jun.jiang@ingenic.com, sernia.zhou@foxmail.com
-References: <1627119286-125821-1-git-send-email-zhouyanjie@wanyeetech.com>
-Message-ID: <892b4671-462d-d0da-a2d0-2c140b519b26@wanyeetech.com>
-Date:   Thu, 19 Aug 2021 14:44:30 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Thu, 19 Aug 2021 02:48:38 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4097FC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 23:48:03 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id cp15-20020a17090afb8fb029017891959dcbso10658855pjb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 23:48:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LZbrqbnGVF4s6R8ZE29TSFBtRgWG1aFf5wVvmTN0Kls=;
+        b=LzpwSI+PQ849sv+/d2wxrfSs4Stz85cvghRvs9r62qeewVfZppUpmwfon/gbQBU0LX
+         cCuBbMRsYTuBSGa8L2dOIOhwrfCAdgb7dKrQJu9iJ5l86UXsTJCt0bwwYwUPUmRZqLuo
+         /lpq+/Nz+2q92pnRVoUf2ddPftWpPY5/mlDMc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LZbrqbnGVF4s6R8ZE29TSFBtRgWG1aFf5wVvmTN0Kls=;
+        b=meuE5JPJYyPsXA7/Y5RLgXOMYSzaWVMkwAqWRT2dP5CuGq2Uksm1pW37mrAQhRC3sb
+         KF7ysqjmOorgcq/39DSFeAhruq03tcZcEQJ16yf4g3mHHwITfKuPyj+HLddQ0OjaVLLm
+         iPugg/LZ7UN0q36XH5+DMGTU2cV4AQxmFBXQE5a8hkXjbR0B/S/vZJz+xnnInSw3OV7W
+         5PYbXvHGiZos2wwvQ7zd2N+xv3HY0Xr9U/U8c2gNjgMSdFzDle2LGgh3Kq1OuinUsl4k
+         i+Sap8PCjF34lCTusPi1XgFMlJ6mxtvYBF4WOU8Ku/HhH8xUlp+GwQ5py5fTv+BWTgQ7
+         DTNQ==
+X-Gm-Message-State: AOAM533kWFgnNx5He7f2guHsZQ05yznatywdKAJ6kpoxJfPS0mwlHGiZ
+        NXFnBZlSlKxNsE9mucStbRBIog==
+X-Google-Smtp-Source: ABdhPJw8G2jVp3T8UDYSrVTUZDASHoPOochThbPOlZLvNxJjGz+1teyquH91ZQLct5RsTmLvrQxSfw==
+X-Received: by 2002:a17:902:6b03:b0:12d:8f77:83d1 with SMTP id o3-20020a1709026b0300b0012d8f7783d1mr10332933plk.11.1629355682754;
+        Wed, 18 Aug 2021 23:48:02 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c26sm2442811pgl.10.2021.08.18.23.48.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 23:48:02 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 23:48:01 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>,
+        linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 02/13] gen_compile_commands: extract compiler command
+ from a series of commands
+Message-ID: <202108182347.0CDD87706@keescook>
+References: <20210819005744.644908-1-masahiroy@kernel.org>
+ <20210819005744.644908-3-masahiroy@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <1627119286-125821-1-git-send-email-zhouyanjie@wanyeetech.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210819005744.644908-3-masahiroy@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Aug 19, 2021 at 09:57:33AM +0900, Masahiro Yamada wrote:
+> The current gen_compile_commands.py assumes that objects are always
+> built by a single command.
+> 
+> It makes sense to support cases where objects are built by a series of
+> commands:
+> 
+>   cmd_<object> := <command1> ; <command2>
+> 
+> One use-case is <command1> is a compiler command, and <command2> is
+> an objtool command.
+> 
+> It allows *.cmd files to contain an objtool command so that any change
+> in it triggers object rebuilds.
+> 
+> If ; appears after the C source file, take the first command.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
+Seems reasonable, given patch 3.
 
-A gentle ping :)
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
+-Kees
 
-On 2021/7/24 下午5:34, 周琰杰 (Zhou Yanjie) wrote:
-> v4->v5:
-> 1.modify the CGU PLL correlation code to make it compatible with I2S PLL.
-> 2.Change X1000's I2S clock to CGU_CLK_PLL as Paul Cercueil's suggestion.
-> 3.Add documentation for JZ4775 and X2000 bindings.
-> 4.Add JZ4775 and X2000 clock bindings.
-> 5.Add CGU driver for JZ4775 and X2000.
->
-> v5->v6:
-> Change the type of stable_bit from u8 to s8, because a negative value will
-> appear when the stable_bit bit does not exist.
->
-> v6->v7:
-> 1.Add Rob Herring's Acked-by.
-> 2.Change to dual license.
->
-> 周琰杰 (Zhou Yanjie) (11):
->    clk: JZ4780: Add function for disable the second core.
->    clk: Ingenic: Adjust cgu code to make it compatible with I2S PLL.
->    dt-bindings: clock: Add missing clocks for Ingenic SoCs.
->    clk: Ingenic: Fix problem of MAC clock in Ingenic X1000 and X1830.
->    clk: Ingenic: Add missing clocks for Ingenic SoCs.
->    clk: Ingenic: Clean up and reformat the code.
->    dt-bindings: clock: Add documentation for JZ4775 and X2000 bindings.
->    dt-bindings: clock: Add JZ4775 clock bindings.
->    dt-bindings: clock: Add X2000 clock bindings.
->    clk: Ingenic: Add CGU driver for JZ4775.
->    clk: Ingenic: Add CGU driver for X2000.
->
->   .../devicetree/bindings/clock/ingenic,cgu.yaml     |   4 +
->   drivers/clk/ingenic/Kconfig                        |  20 +
->   drivers/clk/ingenic/Makefile                       |   2 +
->   drivers/clk/ingenic/cgu.c                          | 118 ++-
->   drivers/clk/ingenic/cgu.h                          |  10 +-
->   drivers/clk/ingenic/jz4725b-cgu.c                  |  49 +-
->   drivers/clk/ingenic/jz4740-cgu.c                   |  49 +-
->   drivers/clk/ingenic/jz4760-cgu.c                   | 106 ++-
->   drivers/clk/ingenic/jz4770-cgu.c                   |  83 +--
->   drivers/clk/ingenic/jz4775-cgu.c                   | 572 +++++++++++++++
->   drivers/clk/ingenic/jz4780-cgu.c                   | 149 ++--
->   drivers/clk/ingenic/x1000-cgu.c                    | 210 ++++--
->   drivers/clk/ingenic/x1830-cgu.c                    | 210 ++++--
->   drivers/clk/ingenic/x2000-cgu.c                    | 790 +++++++++++++++++++++
->   include/dt-bindings/clock/jz4775-cgu.h             |  59 ++
->   include/dt-bindings/clock/x1000-cgu.h              |   5 +
->   include/dt-bindings/clock/x1830-cgu.h              |   5 +
->   include/dt-bindings/clock/x2000-cgu.h              |  89 +++
->   18 files changed, 2210 insertions(+), 320 deletions(-)
->   create mode 100644 drivers/clk/ingenic/jz4775-cgu.c
->   create mode 100644 drivers/clk/ingenic/x2000-cgu.c
->   create mode 100644 include/dt-bindings/clock/jz4775-cgu.h
->   create mode 100644 include/dt-bindings/clock/x2000-cgu.h
->
+> ---
+> 
+>  scripts/clang-tools/gen_compile_commands.py | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
+> index b7e9ecf16e56..0033eedce003 100755
+> --- a/scripts/clang-tools/gen_compile_commands.py
+> +++ b/scripts/clang-tools/gen_compile_commands.py
+> @@ -18,7 +18,7 @@ _DEFAULT_OUTPUT = 'compile_commands.json'
+>  _DEFAULT_LOG_LEVEL = 'WARNING'
+>  
+>  _FILENAME_PATTERN = r'^\..*\.cmd$'
+> -_LINE_PATTERN = r'^cmd_[^ ]*\.o := (.* )([^ ]*\.c)$'
+> +_LINE_PATTERN = r'^cmd_[^ ]*\.o := (.* )([^ ]*\.c) *(;|$)'
+>  _VALID_LOG_LEVELS = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
+>  # The tools/ directory adopts a different build system, and produces .cmd
+>  # files in a different format. Do not support it.
+> -- 
+> 2.30.2
+> 
+
+-- 
+Kees Cook
