@@ -2,200 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785103F1C60
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D0C3F1C66
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240291AbhHSPMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 11:12:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240208AbhHSPMp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 11:12:45 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3079C0613A3
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 08:12:08 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id q10so9659023wro.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 08:12:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+6dCR2Sy8mCxrAUvzFLxowXAhP/YWerIYxie+COUDA8=;
-        b=D+qk5dlqFo0jmmTxYR8xlL6FOklZcMqO5iPvRvAlfi5N/HEdno4ZYQBdAVJuXM+B2Z
-         befESi5L9nqCWmXPT2+GfckVRrmOz8Bbs2IEhGvuf7RnfBA9/trCPrWm2ufAJekGfAS+
-         qGaLA7OY3GFofgLlHEIA8uwEN5uPbJ+AEpXa9Tb63g044wljrq4tC5p6UkndlVP2jo4m
-         XigVJmtNRMkNsRG4xx5FUx18cdKI6sNA/VH2oQ+nxQb2eBykWlJZbYUeUAsjag0f20Qn
-         2/HgNE8vZi/S2wROXbBzXKiGbw28ZrHVO1U0QixHX+oXyHMD9z9OiCM2yJyJRVWnp/Ku
-         Frhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+6dCR2Sy8mCxrAUvzFLxowXAhP/YWerIYxie+COUDA8=;
-        b=qC+4wYMTc6hYe09i/RuGAxws3ieI/B6s2HPknSIfahHsNMT5u3+y+RjPDG3e2cHFoV
-         WosDFkHSIM+DueEB7eqPf9WKRk8Qzmog1VLa2bFHw9LPSU7ZGzidicBjOx2AmcQZ97Ub
-         tQqp7Qfslz4JruUIFb1p17g2/w9a4rkmaUeGKv4zLYQx/VRyFLSqWMUBIwth1nE6oGU+
-         t8Lw0wvwP4H6ii9kxZ36qwfv3cvVHv6jBfQLWQ2gvF9Vvglo2tAXwCpG97w2aEAHQrGC
-         b3baPcWvqaUjaY9LJIIWVXdliNOkIzbrP2+4bA74wKIpqCqlWO7MjpeDVFf9vmTYtDKq
-         qjxg==
-X-Gm-Message-State: AOAM5321ItkZbrTaMMhrdedUcVb5fRQcNOS1XxckiCLMk+B8V5TC5gXU
-        G2XYgBiun0QNE36wLCXsVGyg3A==
-X-Google-Smtp-Source: ABdhPJx+KruGbNeoNNy4aHQddQo1BqnAXWQBy1dX6kFWZdVEtQ3tSFx9ReF6fkb5oze+BzJ52AboeA==
-X-Received: by 2002:a5d:6908:: with SMTP id t8mr4484675wru.182.1629385927100;
-        Thu, 19 Aug 2021 08:12:07 -0700 (PDT)
-Received: from alex-xps13.baylibre.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id j37sm1556962wms.39.2021.08.19.08.12.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 08:12:06 -0700 (PDT)
-From:   Alexandre Bailon <abailon@baylibre.com>
-To:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, robh+dt@kernel.org
-Cc:     matthias.bgg@gmail.com, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stephane.leprovost@mediatek.com, gpain@baylibre.com,
-        khilman@baylibre.com, Alexandre Bailon <abailon@baylibre.com>
-Subject: [PATCH v3 4/4] ARM64: mt8183: Add support of APU to mt8183
-Date:   Thu, 19 Aug 2021 17:13:40 +0200
-Message-Id: <20210819151340.741565-5-abailon@baylibre.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210819151340.741565-1-abailon@baylibre.com>
-References: <20210819151340.741565-1-abailon@baylibre.com>
+        id S238607AbhHSPPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 11:15:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54364 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232821AbhHSPPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 11:15:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72327610F9;
+        Thu, 19 Aug 2021 15:14:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629386064;
+        bh=6RbiCLR/J3ApdDbLsZpuHB3TvFLX+SWaJ1+NjJtMJY8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AHyPiVBoomZwv4Xo5tk1EFmp1N/E2HBfNMARLkELCOYJ9dI/EEsPG4CveHebEmUmv
+         zvGhAgXRHaBBmkfo8a1vMdTSuAvstN00YmTIeiWZJ0qgZLWyn1dJ2mBNLq88xZLYaI
+         2616jUShd6FjuLGxuGAcmuiZWR3OtByJ82LOxqWjacg+E2fC1xTUzKuxpkzqifCPP2
+         S36iBh6O2H5PpME3yMtr9quGFHjxB/MYPxCAu1zGZo77fOso8S9lUmkgOGyhloQsge
+         LhkW3QGVkkVQGqdxg2GNLtsvgof3RZ9kAf887waxUrG6aZrISLmIIHyERyuCsMM2oX
+         C5ls+WQ3ef9nQ==
+Received: by mail-ej1-f43.google.com with SMTP id b15so13595645ejg.10;
+        Thu, 19 Aug 2021 08:14:24 -0700 (PDT)
+X-Gm-Message-State: AOAM5337aFc/fHJwwT+Zz3oSbx42eHNTcxNM2HSzbBKtqr2KsEOj+Tr2
+        IhQ9H7/1pBVaVWUOzmYtWOQiWTz5YeT8KLRuFg==
+X-Google-Smtp-Source: ABdhPJxNW1csyeYOicQ3nM6PcDuxFbu6S4tmvu4KMqvNMAFuMYOi/tLANBBPh57govVIbwsYHsNcG7N9//UyPl43KyQ=
+X-Received: by 2002:a17:906:f43:: with SMTP id h3mr16507585ejj.267.1629386062976;
+ Thu, 19 Aug 2021 08:14:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210819022327.13040-1-jason-jh.lin@mediatek.com> <20210819022327.13040-9-jason-jh.lin@mediatek.com>
+In-Reply-To: <20210819022327.13040-9-jason-jh.lin@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 19 Aug 2021 23:14:11 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_9_YwZH4dLyVXmW7irQ8WJaKFzT+72Pgczu1X3u4jvnbg@mail.gmail.com>
+Message-ID: <CAAOTY_9_YwZH4dLyVXmW7irQ8WJaKFzT+72Pgczu1X3u4jvnbg@mail.gmail.com>
+Subject: Re: [PATCH v8 08/13] drm/mediatek: remove unused define in mtk_drm_ddp_comp.c
+To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>, fshao@chromium.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Fabien Parent <fparent@baylibre.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Jitao shi <jitao.shi@mediatek.com>,
+        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the support of APU to mt8183.
+Hi, Jason:
 
-Signed-off-by: Alexandre Bailon <abailon@baylibre.com>
----
- .../boot/dts/mediatek/mt8183-pumpkin.dts      | 48 +++++++++++++++++++
- arch/arm64/boot/dts/mediatek/mt8183.dtsi      | 40 ++++++++++++++++
- 2 files changed, 88 insertions(+)
+jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B48=E6=9C=881=
+9=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8810:23=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> Remove the unsed define in mtk_drm_ddp_comp.c
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts b/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts
-index ee912825cfc60..7fbed2b7bc6f8 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts
-@@ -37,6 +37,42 @@ scp_mem_reserved: scp_mem_region@50000000 {
- 			reg = <0 0x50000000 0 0x2900000>;
- 			no-map;
- 		};
-+
-+		vdev0vring0: vdev0vring0 {
-+			compatible = "shared-dma-pool";
-+			size = <0 0x00008000>;
-+			no-map;
-+		};
-+
-+		vdev0vring1: vdev0vring1 {
-+			compatible = "shared-dma-pool";
-+			size = <0 0x00008000>;
-+			no-map;
-+		};
-+
-+		vdev0buffer: vdev0buffer {
-+			compatible = "shared-dma-pool";
-+			size = <0 0x00100000>;
-+			no-map;
-+		};
-+
-+		vdev1vring0: vdev1vring0 {
-+			compatible = "shared-dma-pool";
-+			size = <0 0x00008000>;
-+			no-map;
-+		};
-+
-+		vdev1vring1: vdev1vring1 {
-+			compatible = "shared-dma-pool";
-+			size = <0 0x00008000>;
-+			no-map;
-+		};
-+
-+		vdev1buffer: vdev1buffer {
-+			compatible = "shared-dma-pool";
-+			size = <0 0x00100000>;
-+			no-map;
-+		};
- 	};
- 
- 	leds {
-@@ -381,3 +417,15 @@ &scp {
- &dsi0 {
- 	status = "disabled";
- };
-+
-+&apu0 {
-+	memory-region = <&vdev0buffer>, <&vdev0vring0>, <&vdev0vring1>;
-+	memory-region-names = "vdev0buffer", "vdev0vring0", "vdev0vring1";
-+	status = "okay";
-+};
-+
-+&apu1 {
-+	memory-region = <&vdev1buffer>, <&vdev1vring0>, <&vdev1vring1>;
-+	memory-region-names = "vdev0buffer", "vdev0vring0", "vdev0vring1";
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-index f90df6439c088..bf3f315ad3b2f 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-@@ -1447,12 +1447,52 @@ ipu_adl: syscon@19010000 {
- 			#clock-cells = <1>;
- 		};
- 
-+		apu0: apu@0x19100000 {
-+			compatible = "mediatek,mt8183-apu";
-+			reg = <0 0x19180000 0 0x14000>;
-+			interrupts = <GIC_SPI 292 IRQ_TYPE_LEVEL_LOW>;
-+
-+			iommus = <&iommu M4U_PORT_IMG_IPUO>,
-+				 <&iommu M4U_PORT_IMG_IPU3O>,
-+				 <&iommu M4U_PORT_IMG_IPUI>;
-+
-+			clocks = <&ipu_core0 CLK_IPU_CORE0_AXI>,
-+				 <&ipu_core0 CLK_IPU_CORE0_IPU>,
-+				 <&ipu_core0 CLK_IPU_CORE0_JTAG>;
-+
-+			clock-names = "axi", "ipu", "jtag";
-+
-+			power-domains = <&spm MT8183_POWER_DOMAIN_VPU_CORE0>;
-+
-+			status = "disabled";
-+		};
-+
- 		ipu_core0: syscon@19180000 {
- 			compatible = "mediatek,mt8183-ipu_core0", "syscon";
- 			reg = <0 0x19180000 0 0x1000>;
- 			#clock-cells = <1>;
- 		};
- 
-+		apu1: apu@19200000 {
-+			compatible = "mediatek,mt8183-apu";
-+			reg = <0 0x19280000 0 0x14000>;
-+			interrupts = <GIC_SPI 293 IRQ_TYPE_LEVEL_LOW>;
-+
-+			iommus = <&iommu M4U_PORT_CAM_IPUO>,
-+				 <&iommu M4U_PORT_CAM_IPU2O>,
-+				 <&iommu M4U_PORT_CAM_IPU3O>;
-+
-+			clocks = <&ipu_core0 CLK_IPU_CORE1_AXI>,
-+				 <&ipu_core0 CLK_IPU_CORE1_IPU>,
-+				 <&ipu_core0 CLK_IPU_CORE1_JTAG>;
-+
-+			clock-names = "axi", "ipu", "jtag";
-+
-+			power-domains = <&spm MT8183_POWER_DOMAIN_VPU_CORE1>;
-+
-+			status = "disabled";
-+		};
-+
- 		ipu_core1: syscon@19280000 {
- 			compatible = "mediatek,mt8183-ipu_core1", "syscon";
- 			reg = <0 0x19280000 0 0x1000>;
--- 
-2.31.1
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 
+>
+> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 10 ----------
+>  1 file changed, 10 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/dr=
+m/mediatek/mtk_drm_ddp_comp.c
+> index 75bc00e17fc4..aaa7450b3e2b 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> @@ -21,8 +21,6 @@
+>  #include "mtk_drm_crtc.h"
+>
+>  #define DISP_OD_EN                             0x0000
+> -#define DISP_OD_INTEN                          0x0008
+> -#define DISP_OD_INTSTA                         0x000c
+>  #define DISP_OD_CFG                            0x0020
+>  #define DISP_OD_SIZE                           0x0030
+>  #define DISP_DITHER_5                          0x0114
+> @@ -42,8 +40,6 @@
+>  #define DITHER_ENGINE_EN                       BIT(1)
+>  #define DISP_DITHER_SIZE                       0x0030
+>
+> -#define LUT_10BIT_MASK                         0x03ff
+> -
+>  #define OD_RELAYMODE                           BIT(0)
+>
+>  #define UFO_BYPASS                             BIT(2)
+> @@ -52,18 +48,12 @@
+>
+>  #define DISP_DITHERING                         BIT(2)
+>  #define DITHER_LSB_ERR_SHIFT_R(x)              (((x) & 0x7) << 28)
+> -#define DITHER_OVFLW_BIT_R(x)                  (((x) & 0x7) << 24)
+>  #define DITHER_ADD_LSHIFT_R(x)                 (((x) & 0x7) << 20)
+> -#define DITHER_ADD_RSHIFT_R(x)                 (((x) & 0x7) << 16)
+>  #define DITHER_NEW_BIT_MODE                    BIT(0)
+>  #define DITHER_LSB_ERR_SHIFT_B(x)              (((x) & 0x7) << 28)
+> -#define DITHER_OVFLW_BIT_B(x)                  (((x) & 0x7) << 24)
+>  #define DITHER_ADD_LSHIFT_B(x)                 (((x) & 0x7) << 20)
+> -#define DITHER_ADD_RSHIFT_B(x)                 (((x) & 0x7) << 16)
+>  #define DITHER_LSB_ERR_SHIFT_G(x)              (((x) & 0x7) << 12)
+> -#define DITHER_OVFLW_BIT_G(x)                  (((x) & 0x7) << 8)
+>  #define DITHER_ADD_LSHIFT_G(x)                 (((x) & 0x7) << 4)
+> -#define DITHER_ADD_RSHIFT_G(x)                 (((x) & 0x7) << 0)
+>
+>  struct mtk_ddp_comp_dev {
+>         struct clk *clk;
+> --
+> 2.18.0
+>
