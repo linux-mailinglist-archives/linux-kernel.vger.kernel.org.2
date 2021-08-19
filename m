@@ -2,124 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3093F18A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 13:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C6D3F18A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 13:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239106AbhHSL7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 07:59:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238105AbhHSL7V (ORCPT
+        id S238994AbhHSL6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 07:58:53 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:51638
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238105AbhHSL6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 07:59:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE752C061575;
-        Thu, 19 Aug 2021 04:58:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pRsyB7CLFbiWCWtNNYvYvOJlpHqB369aROjMV8RfXbw=; b=l1jlu5EZgp4GKpzmGDKmEB0EtK
-        MwnbW+CyIasQrjBGnjBcznPAJxhjt/pXw12scouBOjLv1yoEasR1e1RiPa2iMASkwtlXtPbOMzlCl
-        LcGDSvsFwITjpTG+4Xqb8ITrucsbriI5YVokZRbQ3V55H9je1X8QKriJXSdLaVuuNL8fTmxhEtZSL
-        LUyJvzPJWlFsAbINmlNwQRHQZKhd4mHOVVUj6E3ocPPYQFHSBa0LSWBLoNLtTG3wzmPwL5zyrJQ8X
-        ggnBGqDdNDEAdJivkqlAD/6HnygHMXbCKvr6Cr6NsbNTSxNRtipAWP5YMEntJArpo9/jm0z6AIjN7
-        zrAaq6dA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mGgfo-0052Yn-C2; Thu, 19 Aug 2021 11:57:46 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Thu, 19 Aug 2021 07:58:51 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EDAB830009A;
-        Thu, 19 Aug 2021 13:57:26 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D22C1200B42A0; Thu, 19 Aug 2021 13:57:26 +0200 (CEST)
-Date:   Thu, 19 Aug 2021 13:57:26 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        Kernel Team <Kernel-team@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Like Xu <like.xu@linux.intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>
-Subject: Re: [RFC] bpf: lbr: enable reading LBR from tracing bpf programs
-Message-ID: <YR5HJkPyaM3TWkkl@hirez.programming.kicks-ass.net>
-References: <20210818012937.2522409-1-songliubraving@fb.com>
- <YRzPwClswwxHXVHe@hirez.programming.kicks-ass.net>
- <962EDD5A-1B35-4C7F-A0A1-3EBC32EE63AB@fb.com>
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 3806D3F367;
+        Thu, 19 Aug 2021 11:58:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629374294;
+        bh=8tUdKXborkpkb9B6b8mLjUQl9KMTxCxIx0f8+/7UNMw=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=SDJK6/QhUK5RkJwZcNgFVm5RKHNgwJYNJ4KqpO1ygEl8ImlqjU3jSENI8NwJsIWlO
+         lSzrufbs99yLGvbbHPZsoQit/q3+2wx8xPdj+E7FRJ4jvzZLpiAeqwmzUdlM70RS5X
+         SFJsFw5lokxBAUmRNvANppXjzhtZS4lHWsRw4zGGoXfEQwoM7wIghYbKslQCIlViqs
+         bR2bibyzQJPcSrRBC4EPrtxvpAGaHA/lwcwtFNyqSvuBtAbu/HQYrRfJ9AwfC5Gm0w
+         gpsQynOOv3T/iJA8n/F8k1r2bySHUlBTqXu5V90zbQ00I6C4hfLDBHKz54Sb/nFQi7
+         iC4Y7ZIaOuBYg==
+From:   Colin King <colin.king@canonical.com>
+To:     Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Huazhong Tan <tanhuazhong@huawei.com>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: hns3: make array spec_opcode static const, makes object smaller
+Date:   Thu, 19 Aug 2021 12:58:13 +0100
+Message-Id: <20210819115813.6692-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <962EDD5A-1B35-4C7F-A0A1-3EBC32EE63AB@fb.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 04:46:32PM +0000, Song Liu wrote:
+From: Colin Ian King <colin.king@canonical.com>
 
-> > Urgghhh.. I so really hate BPF specials like this.
-> 
-> I don't really like this design either. But it does show that LBR can be
-> very useful in non-PMI scenario. 
-> 
-> > Also, the PMI race
-> > you describe is because you're doing abysmal layer violations. If you'd
-> > have used perf_pmu_disable() that wouldn't have been a problem.
-> 
-> Do you mean instead of disable/enable lbr, we disable/enable the whole 
-> pmu? 
+Don't populate the array spec_opcode on the stack but instead it
+static const. Makes the object code smaller by 158 bytes:
 
-Yep, that way you're serialized against PMIs. It's what all of the perf
-core does.
+Before:
+   text   data   bss     dec    hex filename
+  12271   3976   128   16375   3ff7 .../hisilicon/hns3/hns3pf/hclge_cmd.o
 
-> > I'd much rather see a generic 'fake/inject' PMI facility, something that
-> > works across the board and isn't tied to x86/intel.
-> 
-> How would that work? Do we have a function to trigger PMI from software, 
-> and then gather the LBR data after the PMI? This does sound like a much
-> cleaner solution. Where can I find code examples that fake/inject PMI?
+After:
+   text   data   bss     dec    hex filename
+  12017   4072   128   16217   3f59 .../hisilicon/hns3/hns3pf/hclge_cmd.o
 
-We don't yet have anything like it; but it would look a little like:
+(gcc version 10.3.0)
 
-void perf_inject_event(struct perf_event *event, struct pt_regs *regs)
-{
-	struct perf_sample_data data;
-	struct pmu *pmu = event->pmu;
-	unsigned long flags;
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ .../hisilicon/hns3/hns3pf/hclge_cmd.c         | 24 ++++++++++---------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-	local_irq_save(flags);
-	perf_pmu_disable(pmu);
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c
+index 887297e37cf3..13042f1cac6f 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c
+@@ -169,17 +169,19 @@ static bool hclge_is_special_opcode(u16 opcode)
+ 	/* these commands have several descriptors,
+ 	 * and use the first one to save opcode and return value
+ 	 */
+-	u16 spec_opcode[] = {HCLGE_OPC_STATS_64_BIT,
+-			     HCLGE_OPC_STATS_32_BIT,
+-			     HCLGE_OPC_STATS_MAC,
+-			     HCLGE_OPC_STATS_MAC_ALL,
+-			     HCLGE_OPC_QUERY_32_BIT_REG,
+-			     HCLGE_OPC_QUERY_64_BIT_REG,
+-			     HCLGE_QUERY_CLEAR_MPF_RAS_INT,
+-			     HCLGE_QUERY_CLEAR_PF_RAS_INT,
+-			     HCLGE_QUERY_CLEAR_ALL_MPF_MSIX_INT,
+-			     HCLGE_QUERY_CLEAR_ALL_PF_MSIX_INT,
+-			     HCLGE_QUERY_ALL_ERR_INFO};
++	static const u16 spec_opcode[] = {
++		HCLGE_OPC_STATS_64_BIT,
++		HCLGE_OPC_STATS_32_BIT,
++		HCLGE_OPC_STATS_MAC,
++		HCLGE_OPC_STATS_MAC_ALL,
++		HCLGE_OPC_QUERY_32_BIT_REG,
++		HCLGE_OPC_QUERY_64_BIT_REG,
++		HCLGE_QUERY_CLEAR_MPF_RAS_INT,
++		HCLGE_QUERY_CLEAR_PF_RAS_INT,
++		HCLGE_QUERY_CLEAR_ALL_MPF_MSIX_INT,
++		HCLGE_QUERY_CLEAR_ALL_PF_MSIX_INT,
++		HCLGE_QUERY_ALL_ERR_INFO
++	};
+ 	int i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(spec_opcode); i++) {
+-- 
+2.32.0
 
-	perf_sample_data_init(&data, 0, 0);
-	/*
-	 * XXX or a variant with more _ that starts at the overflow
-	 * handler...
-	 */
-	__perf_event_overflow(event, 0, &data, regs);
-
-	perf_pmu_enable(pmu);
-	local_irq_restore(flags);
-}
-
-But please consider carefully, I haven't...
-
-> There is another limitation right now: we need to enable LBR with a 
-> hardware perf event (cycles, etc.). However, unless we use the event for 
-> something else, it wastes a hardware counter. So I was thinking to allow
-> software event, i.e. dummy event, to enable LBR. Does this idea sound 
-> sane to you?
-
-We have a VLBR dummy event, but I'm not sure it does exactly as you
-want. However, we should also consider Power, which also has the branch
-stack feature.
-
-You can't really make a software event with LBR on, because then it
-wouldn't be a software event anymore. You'll need some hybrid like
-thing, which will be yuck and I suspect it needs arch support one way or
-the other :/
