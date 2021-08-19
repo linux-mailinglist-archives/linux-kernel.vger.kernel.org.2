@@ -2,201 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1916C3F1DA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 18:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9EFE3F1DA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 18:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229698AbhHSQTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 12:19:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41214 "EHLO
+        id S230191AbhHSQTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 12:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhHSQTo (ORCPT
+        with ESMTP id S230015AbhHSQTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 12:19:44 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F13C061575;
-        Thu, 19 Aug 2021 09:19:08 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id f15so6516574ilk.4;
-        Thu, 19 Aug 2021 09:19:08 -0700 (PDT)
+        Thu, 19 Aug 2021 12:19:46 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B448C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 09:19:10 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id o2so6382913pgr.9
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 09:19:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7sSsnQcwE8jywz/QogD9CtfIDyXBl14A+f2OTMoEAtM=;
-        b=UJaHuem6sRW+uPr6ldear1fXlDeMOa1sg5i8hah63XtiMKWKrsl/xZoQm3Ok+qDV6A
-         6xWZAdyLheW1n0HIbFVsg7MTjeDpP0ynsl8FJkruex6tby2rf1DeEvYJ35mGBSC9wnFC
-         Yc8ABxYqdwL3NgXxNiOMS9aeZeV0oaB4CpeRqsR9jQokAZV5QhqdcR9PJqkFDMmz801+
-         mpOKqEC9WRomW3jOzwKd4yL062jAG5HEFRPrlEv3m3grdk4CH9eyBOyg+yq3fv+TpwwH
-         6vrzFSoGo0itO/G6RtQfCNF1NUV86iQbtaK5TcRbraCaQ8XDHAECswHjZiJFobU4ED0o
-         F/VQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=n2oL4Tx9YBEJZiltx3dyyG7cK1iW2U3lPZG+XFyhvas=;
+        b=XcvTQsHIqAMvz+OHaEsqApoAMj9xFz4KXlaVtsPGT2F+luagoLzdXIebPHS4j6pFee
+         IJW4Vxvn87dQMza107p/hLmHsT8aJn/AJga6hh91EOE0PYesVez/KzjBmcCzRbB43LwI
+         H4TFo9uhc7IGBXaXQosGymgHxkkIqv0Mxbo5E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7sSsnQcwE8jywz/QogD9CtfIDyXBl14A+f2OTMoEAtM=;
-        b=o6x4oMwiSRDM1MkQ74E6eMlMooQ3TeyDodY8kGXtiGJ6T4L1/z1rwdunbDizXQEQIi
-         0brtD12UFYb/XK03HZzyHShPC+/hjavWgnCfxrN24Y+kg3ljy7lNP/hCLzkVlaIgDJHD
-         jT/8Ybul2KWPxzMNccYQm0XI9+x6GtUyWRavdGXGC5nRB000QEjCgkP0pEMXtOd9sZaA
-         dJRiyjUKiN3nrg0/9w5bzk1eNxaPi5pAYRiY89ai+mtGu6FSXZNMR3mQfB3SM1KHVSvN
-         K2zId5F+c6VA9OAiVBuvemjW1WdqwALbB2P3jY2Ip65dUH8N4UI3x/fTQK9rLrapm4ni
-         4pyA==
-X-Gm-Message-State: AOAM533mQVCZRLCNGqowPk2PeMTrM1bDajWcId86DZdJws4PecLKkuLI
-        +ftFkEf3Oe3YJlTsVfAKnZauTwGEfkFv0ZQyef4=
-X-Google-Smtp-Source: ABdhPJzNx+kqJnj8ZO2IlnI5dHnPoW9t1eT/6sqkn6teMO0sd54NgKeH37gOy/eY6XAdCjhY8MRviQEexNOTAtFLE/o=
-X-Received: by 2002:a05:6e02:138a:: with SMTP id d10mr9778731ilo.287.1629389947638;
- Thu, 19 Aug 2021 09:19:07 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=n2oL4Tx9YBEJZiltx3dyyG7cK1iW2U3lPZG+XFyhvas=;
+        b=Z1Y8tT8iryTr9sZ1VQnYYCxukMwTf86/1q5N/OLztRXBvNnLJyYfYN6UbZl2a2jc1+
+         /3R5lx4YbP8QXpTh4YEx+BPLEbD63Tp9qqLp81mTqDvA9QufRPApDmjjSgjZpJwN/HaL
+         wT4i2OSh3LhDgxzhMT5N4ZOMOxFp1SzdIsfx3qTzvvbcS1i1UQcntQFq0ktbFTLPATO7
+         6115wVdtBI7/RgKgkv1g993ScXwKB3L8FSFJlVc6OusnnhCfK9X8+xvycQ8Ju99IJa1Q
+         Ca5NmZdznEmtH68jOjiqADgaLaId/aIyVNbJhtw3Qd5HEYFk78ZUQ//gdGngDVNecTUN
+         VqFg==
+X-Gm-Message-State: AOAM533wuDPN6eT1EHQM982kLqf9QDThSsGR6wuEpk55pAXseFxZ2X3O
+        R9pZCFiX+GKi4VgUr0knqxIBcQ==
+X-Google-Smtp-Source: ABdhPJyZRMTxNLvnP3ZI2pCtW5KRkxw1jg2bC0ZQQ8R3fVO/fGTe1UBVRpNWar80Ru5tv+2px3ZDyw==
+X-Received: by 2002:a62:78d0:0:b029:3dd:8fc1:2797 with SMTP id t199-20020a6278d00000b02903dd8fc12797mr15227415pfc.65.1629389949876;
+        Thu, 19 Aug 2021 09:19:09 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id g26sm4675777pgb.45.2021.08.19.09.19.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 09:19:09 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 09:19:08 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
+        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 56/63] RDMA/mlx5: Use struct_group() to zero struct
+ mlx5_ib_mr
+Message-ID: <202108190916.7CC455DA@keescook>
+References: <20210818060533.3569517-1-keescook@chromium.org>
+ <20210818060533.3569517-57-keescook@chromium.org>
+ <20210819122716.GP543798@ziepe.ca>
 MIME-Version: 1.0
-References: <CGME20210803032734epcas5p2143008ddb212fe53fcd28b813c85c9d8@epcas5p2.samsung.com>
- <20210803032539.15676-1-alim.akhtar@samsung.com> <CAGOxZ53emv4H4UqT2L7tDtTXRgDrtrqti=FtfkNWo2M3rTnZMw@mail.gmail.com>
-In-Reply-To: <CAGOxZ53emv4H4UqT2L7tDtTXRgDrtrqti=FtfkNWo2M3rTnZMw@mail.gmail.com>
-From:   Alim Akhtar <alim.akhtar@gmail.com>
-Date:   Thu, 19 Aug 2021 21:48:31 +0530
-Message-ID: <CAGOxZ51qW52r=BzAc9K_NO3fQcRT3DXG-wVyO9-GvACyYgvQwA@mail.gmail.com>
-Subject: Re: [PATCH v11] dt-bindings: ufs: Add bindings for Samsung ufs host
-To:     Alim Akhtar <alim.akhtar@samsung.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        "robh+dt" <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-samsung-soc@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210819122716.GP543798@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob
-Can you pick up this patch via your tree? or you want Martin to pick it up?
-
-On Sat, Aug 14, 2021 at 10:25 PM Alim Akhtar <alim.akhtar@gmail.com> wrote:
->
-> Ping!!
->
-> On Wed, Aug 4, 2021 at 9:01 AM Alim Akhtar <alim.akhtar@samsung.com> wrote:
-> >
-> > This patch adds DT bindings for Samsung ufs hci
-> >
-> > Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
+On Thu, Aug 19, 2021 at 09:27:16AM -0300, Jason Gunthorpe wrote:
+> On Tue, Aug 17, 2021 at 11:05:26PM -0700, Kees Cook wrote:
+> > In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> > field bounds checking for memset(), avoid intentionally writing across
+> > neighboring fields.
+> > 
+> > Add struct_group() to mark region of struct mlx5_ib_mr that should be
+> > initialized to zero.
+> > 
+> > Cc: Leon Romanovsky <leon@kernel.org>
+> > Cc: Doug Ledford <dledford@redhat.com>
+> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> > Cc: linux-rdma@vger.kernel.org
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
 > > ---
-> > Changes since v10
-> > * Rebased on v5.14-rc2
-> > * removed Rob Herring earlier Reviewed-by tag
-> >
-> > This patch was part of exynos ufs driver series, somehow
-> > this got missed to applied on the tree, sending again as a new
-> > patch v11, removing Rob's earlier Reviewed-by tag.
-> >
-> >  .../bindings/ufs/samsung,exynos-ufs.yaml      | 89 +++++++++++++++++++
-> >  1 file changed, 89 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml b/Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
-> > new file mode 100644
-> > index 000000000000..38193975c9f1
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
-> > @@ -0,0 +1,89 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/ufs/samsung,exynos-ufs.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Samsung SoC series UFS host controller Device Tree Bindings
-> > +
-> > +maintainers:
-> > +  - Alim Akhtar <alim.akhtar@samsung.com>
-> > +
-> > +description: |
-> > +  Each Samsung UFS host controller instance should have its own node.
-> > +  This binding define Samsung specific binding other then what is used
-> > +  in the common ufshcd bindings
-> > +  [1] Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
-> > +
-> > +properties:
-> > +
-> > +  compatible:
-> > +    enum:
-> > +      - samsung,exynos7-ufs
-> > +
-> > +  reg:
-> > +    items:
-> > +     - description: HCI register
-> > +     - description: vendor specific register
-> > +     - description: unipro register
-> > +     - description: UFS protector register
-> > +
-> > +  reg-names:
-> > +    items:
-> > +      - const: hci
-> > +      - const: vs_hci
-> > +      - const: unipro
-> > +      - const: ufsp
-> > +
-> > +  clocks:
-> > +    items:
-> > +      - description: ufs link core clock
-> > +      - description: unipro main clock
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: core_clk
-> > +      - const: sclk_unipro_main
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  phys:
-> > +    maxItems: 1
-> > +
-> > +  phy-names:
-> > +    const: ufs-phy
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - interrupts
-> > +  - phys
-> > +  - phy-names
-> > +  - clocks
-> > +  - clock-names
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > +    #include <dt-bindings/clock/exynos7-clk.h>
-> > +
-> > +    ufs: ufs@15570000 {
-> > +       compatible = "samsung,exynos7-ufs";
-> > +       reg = <0x15570000 0x100>,
-> > +             <0x15570100 0x100>,
-> > +             <0x15571000 0x200>,
-> > +             <0x15572000 0x300>;
-> > +       reg-names = "hci", "vs_hci", "unipro", "ufsp";
-> > +       interrupts = <GIC_SPI 200 IRQ_TYPE_LEVEL_HIGH>;
-> > +       clocks = <&clock_fsys1 ACLK_UFS20_LINK>,
-> > +                <&clock_fsys1 SCLK_UFSUNIPRO20_USER>;
-> > +       clock-names = "core_clk", "sclk_unipro_main";
-> > +       pinctrl-names = "default";
-> > +       pinctrl-0 = <&ufs_rst_n &ufs_refclk_out>;
-> > +       phys = <&ufs_phy>;
-> > +       phy-names = "ufs-phy";
-> > +    };
-> > +...
-> >
-> > base-commit: 2734d6c1b1a089fb593ef6a23d4b70903526fe0c
-> > --
-> > 2.17.1
-> >
->
->
-> --
-> Regards,
-> Alim
+> >  drivers/infiniband/hw/mlx5/mlx5_ib.h | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> > index bf20a388eabe..f63bf204a7a1 100644
+> > --- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> > +++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> > @@ -644,6 +644,7 @@ struct mlx5_ib_mr {
+> >  	struct ib_umem *umem;
+> >  
+> >  	/* This is zero'd when the MR is allocated */
+> > +	struct_group(cleared,
+> >  	union {
+> >  		/* Used only while the MR is in the cache */
+> >  		struct {
+> > @@ -691,12 +692,13 @@ struct mlx5_ib_mr {
+> >  			bool is_odp_implicit;
+> >  		};
+> >  	};
+> > +	);
+> >  };
+> >  
+> >  /* Zero the fields in the mr that are variant depending on usage */
+> >  static inline void mlx5_clear_mr(struct mlx5_ib_mr *mr)
+> >  {
+> > -	memset(mr->out, 0, sizeof(*mr) - offsetof(struct mlx5_ib_mr, out));
+> > +	memset(&mr->cleared, 0, sizeof(mr->cleared));
+> >  }
+> 
+> Why not use the memset_after(mr->umem) here?
 
+I can certainly do that instead. In this series I've tended to opt
+for groupings so the position of future struct member additions are
+explicitly chosen. (i.e. reducing the chance that a zeroing of the new
+member be a surprise.)
 
+-Kees
 
 -- 
-Regards,
-Alim
+Kees Cook
