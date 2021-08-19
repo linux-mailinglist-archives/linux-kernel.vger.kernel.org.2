@@ -2,94 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 072C63F0F04
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 02:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E559C3F0F01
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 02:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235468AbhHSAC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 20:02:56 -0400
-Received: from conuserg-12.nifty.com ([210.131.2.79]:38683 "EHLO
-        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235452AbhHSACz (ORCPT
+        id S235428AbhHSACt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 20:02:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234965AbhHSACr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 20:02:55 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 17J01JAq002135;
-        Thu, 19 Aug 2021 09:01:19 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 17J01JAq002135
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1629331280;
-        bh=dDA48cE2QbNp7aCgzfGh6ePv10lHArBqOHlfXE7pros=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ZauWzjVBRhoLV61SwZfpXF/25uYTu4P5h1GfwgTQD1ft9NCJpLRsY4Hhrg/AMLSeC
-         pan2wOmX/npxC3AB2yUkKquLoeWOgaOyRzqse2JO4ywnRnXLccHLSLQ35vmYvj6Qxh
-         2IqCvuSjX1BtgBQTLS79Qqodx+hUvkrmk5U3QI+RcCyVXiUyzuZhTGyiUBaHxTejPx
-         BdQGE2IqW0WeO088dUL1CqOH2rHyp3f92xVuC64J0B+EkTfvAkx+14CcuXWu56u/JJ
-         k8nUIHzh4n+rX6aFFjVF2JJauVwBGIe2Cvy9VRp2s12skqFgYhSFPJXvkrU+Rnmjd9
-         3DD5f/aT7fqIA==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH v2] kbuild: Fix 'no symbols' warning when CONFIG_TRIM_UNUSD_KSYMS=y
-Date:   Thu, 19 Aug 2021 09:01:14 +0900
-Message-Id: <20210819000114.634042-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        Wed, 18 Aug 2021 20:02:47 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916C8C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 17:02:12 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id i21so3811549pfd.8
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 17:02:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=No/CqcYi/ja+9aQOR285LDlQZpZG4tmFE2Pn19n6my4=;
+        b=GCsLDCnT1IGo2ICI8aIFEl7kCwiCIR1K3yHJzTlpK+e6S2iHvTa9PDNboC80JdoO84
+         7qA4G0tlNAdBMtSHQBeyX6n/AuWMsudOz5uq/iTGlMH10Q9h4POgQqR/tjXC7Id59AgS
+         W54I+QF851939R6t+NKPj0fi0SIIiz3PspBiE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=No/CqcYi/ja+9aQOR285LDlQZpZG4tmFE2Pn19n6my4=;
+        b=S2uBUeUev9D67OLJymxZyZ+FMDsLEzjwVcsceI9yNoJk1CVxBkiJR4sOs7NcmPj2IF
+         ytBJqqEBF62ruyNbzbZC37rMZku38jLKXCri8zEAVdS0v6kVZ5zECXHX7Z8/vCMd/Q2G
+         +z6ZU8CGYBrkOqf0CHfpWO0mIFFCbzZbIXKyYahqper3zdQTrFW4u+bLHB0aS56T+1YP
+         qo/9d3JihKp4ax/qemBHGzCcrZXudrDHteRNJHuQHxpBz8k7ZoiSIytDqHyTKHb0jCOe
+         /Ll6WZJSoy4zyx13teL2KAQxwwJGJg/OdRKJ9duv44O0jzNEfCeRhGv0OoakOEkmgPe1
+         eHQA==
+X-Gm-Message-State: AOAM530+nyy97PaHLwnvvUWQy0xwEsQx9wXdh/6P4rjnULAOEJDqs5yE
+        FWKtqHcHwV8YaR9FUx/XAhfBhg==
+X-Google-Smtp-Source: ABdhPJx7IuiG55H+hxSJMh1slQNmZgtLecHPm4aA6V8X2OmyKoMMc+5FXWn7b7rsYHq/dPyvgsoalg==
+X-Received: by 2002:a62:ea0f:0:b029:319:8eef:5ff1 with SMTP id t15-20020a62ea0f0000b02903198eef5ff1mr11907946pfh.74.1629331332031;
+        Wed, 18 Aug 2021 17:02:12 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id w9sm872502pja.16.2021.08.18.17.02.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 17:02:11 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 17:02:10 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        linux-can <linux-can@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] can: etas_es58x: Replace 0-element raw_msg array
+Message-ID: <202108181659.3DE5E5451@keescook>
+References: <20210818034010.800652-1-keescook@chromium.org>
+ <CAMZ6RqK4Rn4d-1CZsg9vJiAMHhxN6fgcqukdHpGwXoGTyNVr_Q@mail.gmail.com>
+ <202108172320.1540EC10C@keescook>
+ <CAMZ6RqLecbytJFQDC35n7YiqBbrB3--POofnXFeH77Zi2xzqWA@mail.gmail.com>
+ <202108180159.5C1CEE70F@keescook>
+ <CAMZ6RqK=Q3mvV5gyPVhBsFxE+JPANHNrgFqs=bvTgkbXjwT4Eg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZ6RqK=Q3mvV5gyPVhBsFxE+JPANHNrgFqs=bvTgkbXjwT4Eg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_TRIM_UNUSED_KSYMS is enabled, I see some warnings like this:
+On Wed, Aug 18, 2021 at 06:33:39PM +0900, Vincent MAILHOL wrote:
+> On Wed. 18 Aug 2021 at 18:03, Kees Cook <keescook@chromium.org> wrote:
+> > On Wed, Aug 18, 2021 at 04:55:20PM +0900, Vincent MAILHOL wrote:
+> > > At the end, the only goal of raw_msg[] is to have a tag pointing
+> > > to the beginning of the union. It would be virtually identical to
+> > > something like:
+> > > |    u8 raw_msg[];
+> > > |    union {
+> > > |        /* ... */
+> > > |    } __packed ;
+> > >
+> > > I had a look at your work and especially at your struct_group() macro.
+> > > Do you think it would make sense to introduce a union_group()?
+> > >
+> > > Result would look like:
+> > >
+> > > |    union_group_attr(urb_msg, __packed, /* raw_msg renamed to urb_msg */
+> > > |        struct es58x_fd_tx_conf_msg tx_conf_msg;
+> > > |        u8 tx_can_msg_buf[ES58X_FD_TX_BULK_MAX * ES58X_FD_CANFD_TX_LEN];
+> > > |        u8 rx_can_msg_buf[ES58X_FD_RX_BULK_MAX * ES58X_FD_CANFD_RX_LEN];
+> > > |        struct es58x_fd_echo_msg echo_msg[ES58X_FD_ECHO_BULK_MAX];
+> > > |        struct es58x_fd_rx_event_msg rx_event_msg;
+> > > |        struct es58x_fd_tx_ack_msg tx_ack_msg;
+> > > |        __le64 timestamp;
+> > > |        __le32 rx_cmd_ret_le32;
+> > > |    );
+> > >
+> > > And I can then use urb_msg in place of the old raw_msg (might
+> > > need a bit of rework here and there but I can take care of it).
+> > >
+> > > This is the most pretty way I can think of to remove this zero length array.
+> > > Keeping the raw_msg[] but with another size seems odd to me.
+> > >
+> > > Or maybe I would be the only one using this feature in the full
+> > > tree? In that case, maybe it would make sense to keep the
+> > > union_group_attr() macro local to the etas_es58x driver?
+> >
+> > I actually ended up with something close to this idea, but more
+> > generalized for other cases in the kernel. There was a sane way to
+> > include a "real" flexible array in a union (or alone in a struct), so
+> > I've proposed this flex_array() helper:
+> > https://lore.kernel.org/lkml/20210818081118.1667663-2-keescook@chromium.org/
+> >
+> > and then it's just a drop-in replacement for all the places that need
+> > this fixed, including etas_es58x:
+> > https://lore.kernel.org/lkml/20210818081118.1667663-3-keescook@chromium.org/#Z30drivers:net:can:usb:etas_es58x:es581_4.h
+> >
+> > Hopefully this will work out; I think it's as clean as we can get for
+> > now. :)
+> 
+> The __flex_array itself is a nasty hack :D
 
-  nm: arch/x86/entry/vdso/vdso32/note.o: no symbols
+Indeed. ;)
 
-$NM (both GNU nm and llvm-nm) warns when no symbol is found in the
-object. Suppress the stderr.
+> but the rest is clean.
 
-Fangrui Song mentioned binutils>=2.37 `nm -q` can be used to suppress
-"no symbols" [1], and llvm-nm>=13.0.0 supports -q as well.
+Thanks!
 
-We cannot use it for now, but note it as a TODO.
+> Is this compliant to the C standard? Well, I guess that as long
+> as both GCC and LLVM supports it, it is safe to add it to the
+> kernel.
 
-[1]: https://sourceware.org/bugzilla/show_bug.cgi?id=27408
+The kernel already uses a bunch of compiler extensions, none of which
+were legal under the C standard to begin with. :) So, really, this is
+about normalizing what we're already doing and finding a single hack
+that helps the code base for readability and robustness.
 
-Fixes: bbda5ec671d3 ("kbuild: simplify dependency generation for CONFIG_TRIM_UNUSED_KSYMS")
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
----
+> I like the final result. I will do a bit more testing and give my
+> acknowledgement if everything goes well.
 
-Changes in v2:
-  - Add TODO
-  - Fix 'stdout' to 'stderr' in the comment
+Great; thank you!
 
- scripts/gen_ksymdeps.sh | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/scripts/gen_ksymdeps.sh b/scripts/gen_ksymdeps.sh
-index 1324986e1362..725e8c9c1b53 100755
---- a/scripts/gen_ksymdeps.sh
-+++ b/scripts/gen_ksymdeps.sh
-@@ -4,7 +4,13 @@
- set -e
- 
- # List of exported symbols
--ksyms=$($NM $1 | sed -n 's/.*__ksym_marker_\(.*\)/\1/p' | tr A-Z a-z)
-+#
-+# If the object has no symbol, $NM warns 'no symbols'.
-+# Suppress the stderr.
-+# TODO:
-+#   Use -q instead of 2>/dev/null when we upgrade the minimum version of
-+#   binutils to 2.37, llvm to 13.0.0.
-+ksyms=$($NM $1 2>/dev/null | sed -n 's/.*__ksym_marker_\(.*\)/\1/p' | tr A-Z a-z)
- 
- if [ -z "$ksyms" ]; then
- 	exit 0
 -- 
-2.30.2
-
+Kees Cook
