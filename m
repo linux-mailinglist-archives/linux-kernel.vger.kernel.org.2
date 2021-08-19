@@ -2,99 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C95B73F1713
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C665F3F1718
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238109AbhHSKIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 06:08:01 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:39222 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237746AbhHSKH7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 06:07:59 -0400
-Received: from zn.tnic (p200300ec2f0f6a00d82486aa7bad8753.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:6a00:d824:86aa:7bad:8753])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2673C1EC046C;
-        Thu, 19 Aug 2021 12:07:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629367638;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=sk5ZD+uyIjjDf0+aatLf0S7xfivyYV6bPrM1F6VipEk=;
-        b=Y6FVeyAYXMeHPizyC5o6zJzLiuV/IhxAjDLo6FCKzcMLEDjVwawaEoZEfI1d09NV3g86Gb
-        /OHjrCMIO3pHa/Hz0SpocJgGnMVprSJh/GXv8fp4B/pnD1yoxoo989RTjkJxcEffrshvM/
-        o18P6GSHp4ATumKPb7v6v2tacColPgw=
-Date:   Thu, 19 Aug 2021 12:07:56 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part1 RFC v4 23/36] KVM: x86: move lookup of indexed
- CPUID leafs to helper
-Message-ID: <YR4tfIp+wjlaZNI/@zn.tnic>
-References: <20210707181506.30489-1-brijesh.singh@amd.com>
- <20210707181506.30489-24-brijesh.singh@amd.com>
+        id S238221AbhHSKJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 06:09:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237862AbhHSKJI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 06:09:08 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96227C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 03:08:31 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mGeyL-00046Q-5R; Thu, 19 Aug 2021 12:08:29 +0200
+Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:5b60:c5f4:67f4:2e1e])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id D119A66A59E;
+        Thu, 19 Aug 2021 10:08:27 +0000 (UTC)
+Date:   Thu, 19 Aug 2021 12:08:26 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     linux-can@vger.kernel.org,
+        Stefan =?utf-8?B?TcOkdGpl?= <Stefan.Maetje@esd.eu>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 7/7] can: etas_es58x: clean-up documentation of struct
+ es58x_fd_tx_conf_msg
+Message-ID: <20210819100826.hplvfua3il34co5r@pengutronix.de>
+References: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
+ <20210815033248.98111-8-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="hvqy3gn7ubyds7r6"
 Content-Disposition: inline
-In-Reply-To: <20210707181506.30489-24-brijesh.singh@amd.com>
+In-Reply-To: <20210815033248.98111-8-mailhol.vincent@wanadoo.fr>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 01:14:53PM -0500, Brijesh Singh wrote:
-> From: Michael Roth <michael.roth@amd.com>
-> 
-> Determining which CPUID leafs have significant ECX/index values is
-> also needed by guest kernel code when doing SEV-SNP-validated CPUID
-> lookups. Move this to common code to keep future updates in sync.
-> 
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  arch/x86/include/asm/cpuid-indexed.h | 26 ++++++++++++++++++++++++++
->  arch/x86/kvm/cpuid.c                 | 17 ++---------------
->  2 files changed, 28 insertions(+), 15 deletions(-)
->  create mode 100644 arch/x86/include/asm/cpuid-indexed.h
-> 
-> diff --git a/arch/x86/include/asm/cpuid-indexed.h b/arch/x86/include/asm/cpuid-indexed.h
-> new file mode 100644
-> index 000000000000..f5ab746f5712
-> --- /dev/null
-> +++ b/arch/x86/include/asm/cpuid-indexed.h
 
-Just call it arch/x86/include/asm/cpuid.h
+--hvqy3gn7ubyds7r6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-And if you feel bored, you can move the cpuid* primitives from
-asm/processor.h to it, in another patch so that processor.h gets
-slimmer.
+On 15.08.2021 12:32:48, Vincent Mailhol wrote:
+> The documentation of struct es58x_fd_tx_conf_msg explains in details
+> the different TDC parameters. However, those description are redundant
+> with the documentation of struct can_tdc.
+>=20
+> Remove most of the description.
+>=20
+> Also, fixes a typo in the reference to the datasheet (E701 -> E70).
 
-Thx.
+As suggested, applied to linux-can-next/testing.
 
--- 
-Regards/Gruss,
-    Boris.
+regards,
+Marc
 
-https://people.kernel.org/tglx/notes-about-netiquette
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--hvqy3gn7ubyds7r6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEeLZgACgkQqclaivrt
+76mvRAgAiB/sXimDfkDeoDlS3EJsgnT7BBWlC7ax98NJuH4M1tiSbhDjrVnuGqd/
+Ex2wPz5VCKa8yLq/eueLnkMTLF82RpO1xnfBnh5K+VKv6a9lUJLXnJWJ0ZsefkE1
+8vTSD/8O1HdS0okrL54JEOWRXCrlB/c5mEjWPxhUoXMnW6Atrol0d79xgbNrkN5C
+9EHX/0YDyKJqT+eLaPBMAmBTiY3lR77f5x5d7ldcjAVUUZQrJJK69wRYdlpeuLBk
+pXI/O0ERbXECsnXsKfTHcgnXrHIBj0wKkrhtgd/qR3wYw1e4EVh7AR+TK8S0NF50
+2zHid4xfSvfVa4TNAU9ovoaMqIpTRA==
+=GAgJ
+-----END PGP SIGNATURE-----
+
+--hvqy3gn7ubyds7r6--
