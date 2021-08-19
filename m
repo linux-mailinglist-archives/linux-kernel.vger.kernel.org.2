@@ -2,85 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5053F1424
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2254E3F142E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231939AbhHSHND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 03:13:03 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:39008 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229909AbhHSHNC (ORCPT
+        id S233172AbhHSHOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 03:14:32 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:39774 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229909AbhHSHOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 03:13:02 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R541e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UjzCI5U_1629357133;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UjzCI5U_1629357133)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 19 Aug 2021 15:12:14 +0800
-Date:   Thu, 19 Aug 2021 15:12:12 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc:     linux-erofs@lists.ozlabs.org, Chao Yu <chao@kernel.org>,
-        Liu Bo <bo.liu@linux.alibaba.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peng Tao <tao.peng@linux.alibaba.com>,
-        Eryu Guan <eguan@linux.alibaba.com>,
-        Liu Jiang <gerry@linux.alibaba.com>,
-        Tao Ma <boyu.mt@taobao.com>
-Subject: Re: [PATCH v2 2/2] erofs: support reading chunk-based uncompressed
- files
-Message-ID: <YR4ETD4sPl356Ci9@B-P7TQMD6M-0146.local>
-References: <20210818070713.4437-1-hsiangkao@linux.alibaba.com>
- <20210819063310.177035-1-hsiangkao@linux.alibaba.com>
- <20210819063310.177035-2-hsiangkao@linux.alibaba.com>
- <e5daab20-ed0a-70de-1f37-0613454a52c3@linux.alibaba.com>
+        Thu, 19 Aug 2021 03:14:30 -0400
+X-UUID: 251875df620b4216b61ae5eb2c7ea287-20210819
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=/muT9XpC+z47+tIQYbGjPzGaimqcXokZABmz7lDUyYU=;
+        b=FI7aeH3Cpo4SaUIsv/DCpm56YJ1EZ1MiV7vzXoxvH4/dbafhUwRkMN/5ZOW6bVH5D7SviUlo5FOtei90Iy6ISa03q05oyiaLq8OzkYXnH7f3MaJTDvvCqxODhutU4g2ZaIg7OcndKk1ClFHHEl7sn1C7JGTZo9JPRJAAb/2LvmI=;
+X-UUID: 251875df620b4216b61ae5eb2c7ea287-20210819
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <yunfei.dong@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1240516873; Thu, 19 Aug 2021 15:13:50 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 19 Aug 2021 15:13:48 +0800
+Received: from mhfsdcap04 (10.17.3.154) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 19 Aug 2021 15:13:47 +0800
+Message-ID: <1b79a67b703d2c894bc4d9458c760e082fc42958.camel@mediatek.com>
+Subject: Re: [PATCH v5, 00/15] Using component framework to support multi
+ hardware decode
+From:   "yunfei.dong@mediatek.com" <yunfei.dong@mediatek.com>
+To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+CC:     Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        "Tiffany Lin" <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        George Sun <george.sun@mediatek.com>
+Date:   Thu, 19 Aug 2021 15:13:48 +0800
+In-Reply-To: <CAAEAJfDWOzCJxZFNtxeT7Cvr2pWbYrfz-YnA81sVNs-rM=8n4Q@mail.gmail.com>
+References: <20210811025801.21597-1-yunfei.dong@mediatek.com>
+         <CAAEAJfDWOzCJxZFNtxeT7Cvr2pWbYrfz-YnA81sVNs-rM=8n4Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e5daab20-ed0a-70de-1f37-0613454a52c3@linux.alibaba.com>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joseph,
+SGkgRXplcXVpZWwsDQoNClRoYW5rcyBmb3IgeW91ciBzdWdnZXN0aW9uLg0KDQpPbiBXZWQsIDIw
+MjEtMDgtMTggYXQgMTE6MTEgLTAzMDAsIEV6ZXF1aWVsIEdhcmNpYSB3cm90ZToNCj4gK2RhbnZl
+dA0KPiANCj4gSGksDQo+IA0KPiBPbiBUdWUsIDEwIEF1ZyAyMDIxIGF0IDIzOjU4LCBZdW5mZWkg
+RG9uZyA8eXVuZmVpLmRvbmdAbWVkaWF0ZWsuY29tPg0KPiB3cm90ZToNCj4gPiANCj4gPiBUaGlz
+IHNlcmllcyBhZGRzIHN1cHBvcnQgZm9yIG11bHRpIGhhcmR3YXJlIGRlY29kZSBpbnRvIG10ay12
+Y29kZWMsIA0KPiA+IGJ5IGZpcnN0DQo+ID4gYWRkaW5nIGNvbXBvbmVudCBmcmFtZXdvcmsgdG8g
+bWFuYWdlIGVhY2ggaGFyZHdhcmUgaW5mb3JtYXRpb246DQo+ID4gaW50ZXJydXB0LA0KPiA+IGNs
+b2NrLCByZWdpc3RlciBiYXNlcyBhbmQgcG93ZXIuIFNlY29uZGx5IGFkZCBjb3JlIHRocmVhZCB0
+byBkZWFsDQo+ID4gd2l0aCBjb3JlDQo+ID4gaGFyZHdhcmUgbWVzc2FnZSwgYXQgdGhlIHNhbWUg
+dGltZSwgYWRkIG1zZyBxdWV1ZSBmb3IgZGlmZmVyZW50DQo+ID4gaGFyZHdhcmUNCj4gPiBzaGFy
+ZSBtZXNzYWdlcy4gTGFzdGx5LCB0aGUgYXJjaGl0ZWN0dXJlIG9mIGRpZmZlcmVudCBzcGVjcyBh
+cmUgbm90DQo+ID4gdGhlIHNhbWUsDQo+ID4gdXNpbmcgc3BlY3MgdHlwZSB0byBzZXBhcmF0ZSB0
+aGVtLg0KPiA+IA0KPiANCj4gSSBkb24ndCB0aGluayBpdCdzIGEgZ29vZCBpZGVhIHRvIGludHJv
+ZHVjZSB0aGUgY29tcG9uZW50IEFQSSBpbiB0aGUNCj4gbWVkaWEgc3Vic3lzdGVtLiBJdCBkb2Vz
+bid0IHNlZW0gdG8gYmUgbWFpbnRhaW5lZCwgSVJDIHRoZXJlJ3Mgbm90DQo+IGV2ZW4NCj4gYSBt
+YWludGFpbmVyIGZvciBpdCwgYW5kIGl0IGhhcyBzb21lIGlzc3VlcyB0aGF0IHdlcmUgbmV2ZXIN
+Cj4gYWRkcmVzc2VkLg0KPiANCj4gSXQgd291bGQgYmUgcmVhbGx5IGltcG9ydGFudCB0byBhdm9p
+ZCBpdC4gSXMgaXQgcmVhbGx5IG5lZWRlZCBpbiB0aGUNCj4gZmlyc3QgcGxhY2U/DQo+IA0KPiBU
+aGFua3MsDQo+IEV6ZXF1aWVsDQoNCkZvciB0aGVyZSBhcmUgbWFueSBoYXJkd2FyZSBuZWVkIHRv
+IHVzZSwgbXQ4MTkyIGlzIHRocmVlIGFuZCBtdDgxOTUgaXMNCmZpdmUuIE1heWJlIG5lZWQgbW9y
+ZSB0byBiZSB1c2VkIGluIHRoZSBmZWF0dXJlLg0KDQpFYWNoIGhhcmR3YXJlIGhhcyBpbmRlcGVu
+ZGVudCBjbGsvcG93ZXIvaW9tbXUgcG9ydC9pcnEuDQpVc2UgY29tcG9uZW50IGludGVyZmFjZSBp
+biBwcm9iIHRvIGdldCBlYWNoIGNvbXBvbmVudCdzIGluZm9ybWF0aW9uLg0KSnVzdCBlbmFibGUg
+dGhlIGhhcmR3YXJlIHdoZW4gbmVlZCB0byB1c2UgaXQsIHZlcnkgY29udmVuaWVudCBhbmQNCnNp
+bXBsZS4NCg0KSSBmb3VuZCB0aGF0IHRoZXJlIGFyZSBtYW55IG1vZHVsZXMgdXNlIGNvbXBvbmVu
+dCB0byBtYW5hZ2UgaGFyZHdhcmUNCmluZm9ybWF0aW9uLCBzdWNoIGFzIGlvbW11IGFuZCBkcm0g
+ZXRjLg0KDQpEbyB5b3UgaGF2ZSBhbnkgb3RoZXIgc3VnZ2VzdGlvbiBmb3IgdGhpcyBhcmNoaXRl
+Y3R1cmU/DQoNClRoYW5rcw0KWXVuZmVpIERvbmcNCg0K
 
-On Thu, Aug 19, 2021 at 02:37:50PM +0800, Joseph Qi wrote:
-> 
-> 
-> On 8/19/21 2:33 PM, Gao Xiang wrote:
-
-...
-
-> > diff --git a/fs/erofs/inode.c b/fs/erofs/inode.c
-> > index d13e0709599c..4408929bd6f5 100644
-> > --- a/fs/erofs/inode.c
-> > +++ b/fs/erofs/inode.c
-> > @@ -2,6 +2,7 @@
-> >  /*
-> >   * Copyright (C) 2017-2018 HUAWEI, Inc.
-> >   *             https://www.huawei.com/
-> > + * Copyright (C) 2021, Alibaba Cloud
-> >   */
-> >  #include "xattr.h"
-> >  
-> > @@ -122,7 +123,9 @@ static struct page *erofs_read_inode(struct inode *inode,
-> >  		/* total blocks for compressed files */
-> >  		if (erofs_inode_is_data_compressed(vi->datalayout))
-> >  			nblks = le32_to_cpu(die->i_u.compressed_blocks);
-> > -
-> > +		else if (vi->datalayout == EROFS_INODE_CHUNK_BASED)
-> > +			/* fill chunked inode summary info */
-> > +			vi->chunkformat = le16_to_cpu(die->i_u.c.format);
-> 
-> Better to add braces for if/else.
-
-Thanks for the kind suggestion. Here is single statement, I've checked
-coding-style in Documentation. It's no necessary to use brace for this.
-And checkpatch didn't report anything.
-
-Also, I found some reference at
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/mm/vmscan.c?h=v5.13#n3066
-
-But anyway, I could update it when applying, either looks good to me.
-
-Thanks,
-Gao Xiang
