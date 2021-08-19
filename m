@@ -2,105 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FBA33F15D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2519C3F15FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237366AbhHSJK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 05:10:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbhHSJK5 (ORCPT
+        id S230202AbhHSJRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 05:17:17 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27086 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230269AbhHSJRO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 05:10:57 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A7AC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 02:10:21 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id y3so5247352ilm.6
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 02:10:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lZ3CToCG3juWBo4uXSiPR3dQNTGtjH08RmsNnVvcEdM=;
-        b=GlsyqZ60mR4Jb195DNR0iUo8ZVyc+xbfTqPuxCN8jKL0SocJ2mcD3cEczU0+RNSVtp
-         /2POP99Dyqv45MqZLx95Xm8RJm1+kHsIieRWMHgUQip3hTYqMKIeMjHT0+j5OKRwDP5K
-         5RYLzwpIOOWETVntPXHk0mVF+IYSKgVo1u2Z/V9bHzw55Y6MFaAcxSM1Yu7mByszsxyq
-         Z8PRnt2BAMZ7bZtluCP32IK0MihUm8b4GhWUVNaat0EOndartBjt579la/MfngAgrkEt
-         TN/6H1dj2Vfh/BePaSQflMl7fZ3XLbm1fQMyIiYO7XTonjoX7/72D7znc95GWzf08TlC
-         M02w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lZ3CToCG3juWBo4uXSiPR3dQNTGtjH08RmsNnVvcEdM=;
-        b=MZhpOem7OUmEhgwf/P4amwHFyYjRCPm5vM9/Q67L2M4Gh8iY7QczRUuwNywwbSUjri
-         ay+pHGE3dAKNQiMglILkkBSzrxvGO1VT5sKQTYHiKRi1wqs/7iJMrOpbbcR5FozBSyMq
-         UCHw9qNt13RL8wCsPGQhLvnuHE4sVr+JdBIcv8X30ShtcDl3xAnZJ9DcriKGuXk5zYL3
-         a6Wjit19XM6uKNx9Ec9mdUJLcZt5l1v6DkBmpwosGYryUx4nMUrxOICCCxm7GiMrfktr
-         TizKo4RbAmAnZYFKr5xzShFiZp9aYBNbijTWQZ4PMqIxWj47nEgNl2s0nYwdHlbkKnZN
-         Hbvw==
-X-Gm-Message-State: AOAM532lbMg7kSBgrPygSrU2Qrk/MyKG/0C+cE/dAHXP9/v+UEag1mTj
-        5kd6W8/7N3GK0glV3SnmGKv3/Ddq2G7MTQ7KZt4=
-X-Google-Smtp-Source: ABdhPJzWrgxLb164lORkiiVfIZ8tsSObzJ0sWkzhyZvsCUTgz2Qg7BH9GY8iQrX1/DlFXdoSgu6ZeOF45h/oPFgnEsQ=
-X-Received: by 2002:a92:6802:: with SMTP id d2mr8918753ilc.40.1629364220674;
- Thu, 19 Aug 2021 02:10:20 -0700 (PDT)
+        Thu, 19 Aug 2021 05:17:14 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17J9G38n086820;
+        Thu, 19 Aug 2021 05:16:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : references : date : in-reply-to : message-id : content-type :
+ mime-version; s=pp1; bh=8IN6lSWWffCQbrpHcOX4kb02ZR8/WNpDmfk8Tn4xGZQ=;
+ b=qyKusNK/92jM5VxTiGALJwSNCvzCd0YPIiOpli7rMi1HdQZBU+cYTSlEBrkH/7/pUnw8
+ H/duQeSRWFid2X9VDgiGtLwCVUq8gmrxSwy5cKDKeD+K2BHn0xXoIocr3/4cz47rEFDj
+ KWs6+B4UTJpdNa94/jmGQQn3nQJ2utQN202WRkL3TGY0bfruWzl1un971CBE2LrLLbeC
+ YX61U8x88f4ZxgUaWso7lbtDgwT016Gj3GL3Gkw09K6PHNoeuVZXkkQkTm5nWJ2t9mb6
+ 3otOfYjpCe0Njxj3Aharp1HGHX8r5YyfHwYWocSdZVqd+x2t4pZvi4eIifg8LQWaD0jc DQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3agc2hf2sp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Aug 2021 05:16:28 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17J9GSU7088707;
+        Thu, 19 Aug 2021 05:16:28 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3agc2hf1uq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Aug 2021 05:16:28 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17J98nXU017145;
+        Thu, 19 Aug 2021 09:10:24 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma01fra.de.ibm.com with ESMTP id 3ae5f8evc9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Aug 2021 09:10:24 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17J9ALKX49086902
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 19 Aug 2021 09:10:21 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7E90FAE04D;
+        Thu, 19 Aug 2021 09:10:21 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 305B3AE045;
+        Thu, 19 Aug 2021 09:10:21 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu, 19 Aug 2021 09:10:21 +0000 (GMT)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+aa0801b6b32dca9dda82@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] general protection fault in wb_timer_fn
+References: <00000000000072e53a05c983ab22@google.com>
+        <20210816091041.3313-1-hdanton@sina.com>
+        <20210816093336.GA3950@lst.de> <yt9dim01iz69.fsf@linux.ibm.com>
+        <20210819090510.GA12194@lst.de>
+Date:   Thu, 19 Aug 2021 11:10:20 +0200
+In-Reply-To: <20210819090510.GA12194@lst.de> (Christoph Hellwig's message of
+        "Thu, 19 Aug 2021 11:05:10 +0200")
+Message-ID: <yt9deeapiyv7.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: SBsEKb3w6CsLfsGqF7qHxccj8tF7Yty2
+X-Proofpoint-GUID: mgYHgL2t8rGgpNjYINeoPOoPg9i1qTq_
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <CAKmqyKMLyx+CvBQbLz-xQvwLS692tx-4xOgU7b-V2J676D29yg@mail.gmail.com>
- <d983217b-e117-361c-0306-b131695bb93f@denx.de> <CAKmqyKOsUcta1cXxamJZnf01G9beCZrDKia068HR+J0AadgNiA@mail.gmail.com>
- <bff9ba97-bc26-f091-ba71-5e639af524d4@denx.de> <CAKmqyKPF3T_Sx+hL=4OSamLdjy=0fwmrTrVeb-GY0Ja9M=mi+Q@mail.gmail.com>
- <ab2b7f4f-3e36-461c-6a6c-02ee7ed6cb99@denx.de> <CAKmqyKN8devNyDvVL5B_dDASU3se1dSui0bsnf6gQ+CkZ_TaKg@mail.gmail.com>
- <YR1Th65KKRS4D/6+@ravnborg.org>
-In-Reply-To: <YR1Th65KKRS4D/6+@ravnborg.org>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Thu, 19 Aug 2021 19:10:00 +1000
-Message-ID: <CAKmqyKOBYXiWwO4QJBJ9sEO5ay5QyYmO=yzvT31evB7BKeniYw@mail.gmail.com>
-Subject: Re: Revert "video: fbdev: mxsfb: Remove driver"
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Marek Vasut <marex@denx.de>, Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>, b.zolnierkie@samsung.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alistair Francis <alistair@alistair23.me>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-19_03:2021-08-17,2021-08-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
+ suspectscore=0 malwarescore=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=702 clxscore=1015 lowpriorityscore=0 bulkscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108190051
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 4:38 AM Sam Ravnborg <sam@ravnborg.org> wrote:
+Christoph Hellwig <hch@lst.de> writes:
+
+> On Thu, Aug 19, 2021 at 11:03:42AM +0200, Sven Schnelle wrote:
+>> I'm seeing a similar crash in our CI:
 >
-> Hi Alistair,
+> This series:
 >
-> >
-> > These are the EINVAL strace tells me in the not working case:
-> >
-> > prctl(PR_CAPBSET_READ, 0x30 /* CAP_??? */) = -1 EINVAL (Invalid argument)
-> > prctl(PR_CAPBSET_READ, 0x2c /* CAP_??? */) = -1 EINVAL (Invalid argument)
-> > prctl(PR_CAPBSET_READ, 0x2a /* CAP_??? */) = -1 EINVAL (Invalid argument)
-> > prctl(PR_CAPBSET_READ, 0x29 /* CAP_??? */) = -1 EINVAL (Invalid argument)
-> > ioctl(5, FBIOPUT_VSCREENINFO, 0x4ce8e0) = -1 EINVAL (Invalid argument)
-> >
-> > I'm guessing it's related to FBIOPUT_VSCREENINFO then, is that
-> > something that could be added to the DRM emulation?
+> https://lore.kernel.org/linux-block/20210816131910.615153-1-hch@lst.de/T/#t
 >
-> If it turns out FBIOPUT_VSCREENINFO is the culprint it would also be
-> good to know why we see EINVAL.
-> One way is to sprinkle a number of printk's in fb_set_var(),
-> then you can see how far you get before it fails.
+> should fi it.  Can you give it a spin?
 
-Thanks for the help.
-
-I see this line:
-
-ret = info->fbops->fb_check_var(var, info);
-
-in fb_set_var()
-
-returning early.
-
-Alistair
-
->
-> This could hopefully give a clue why this fails with fbdev emulation.
->
->         Sam
+Yes. I'll try to reproduce it outside of CI and test the patch set. Thanks!
