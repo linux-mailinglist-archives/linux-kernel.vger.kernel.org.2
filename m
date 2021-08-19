@@ -2,70 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E9B3F1940
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 14:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F113F1947
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 14:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239494AbhHSMao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 08:30:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47370 "EHLO mail.kernel.org"
+        id S239619AbhHSMbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 08:31:12 -0400
+Received: from mga18.intel.com ([134.134.136.126]:41338 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231179AbhHSMan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 08:30:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4A4CF6113E;
-        Thu, 19 Aug 2021 12:30:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629376207;
-        bh=iqXcFMJvuCaJ4en8Q1z3xwM8yoR3225squLbfZ5v02c=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=OTyRPzSf3mdJdQLXiSUtQQKNexP8WDifaRPiZOJo0/T5IYdkbbfM0MQfucbQPA+nK
-         l6+crepuO8cOJ+fH1t96MIhPrdQfFIohMKURg9mF7NhIvXLDzMjB5cV5HciTvI3M6t
-         lZ29cN+rf4jaH+SZTrhiYi48gv2VJSS27tXO+RQswD7O0ebpIwD1DISkeB9cPA6fIr
-         x+B1sTX9qFXqSlalUGoZEiCUlGUmh0fwkrqU8S1b5jMf0iMC3i028c48Jk7VV4o32l
-         xDYZ/ROaLt4RFtQQdApzPKlTs9ahBW2J+cW4d1K4W/yT8FLmiIdu7pHZ85YCToBOD1
-         hGuvQerpyZvng==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3E44E60A50;
-        Thu, 19 Aug 2021 12:30:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S236605AbhHSMbK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 08:31:10 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="203688705"
+X-IronPort-AV: E=Sophos;i="5.84,334,1620716400"; 
+   d="scan'208";a="203688705"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 05:30:16 -0700
+X-IronPort-AV: E=Sophos;i="5.84,334,1620716400"; 
+   d="scan'208";a="594413782"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 05:30:14 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mGhBQ-00BSma-LZ; Thu, 19 Aug 2021 15:30:08 +0300
+Date:   Thu, 19 Aug 2021 15:30:08 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mihai Carabas <mihai.carabas@oracle.com>
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        christophe.jaillet@wanadoo.fr, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] misc/pvpanic: fix set driver data
+Message-ID: <YR5O0IETmMOgftVv@smile.fi.intel.com>
+References: <1629301110-2714-1-git-send-email-mihai.carabas@oracle.com>
+ <1629301110-2714-2-git-send-email-mihai.carabas@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] hinic: make array speeds static const, makes object smaller
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162937620725.15458.10480464318828001268.git-patchwork-notify@kernel.org>
-Date:   Thu, 19 Aug 2021 12:30:07 +0000
-References: <20210819115253.6324-1-colin.king@canonical.com>
-In-Reply-To: <20210819115253.6324-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     luobin9@huawei.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1629301110-2714-2-git-send-email-mihai.carabas@oracle.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Wed, Aug 18, 2021 at 06:38:30PM +0300, Mihai Carabas wrote:
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Thank you for the report and fix! My comments below.
 
-On Thu, 19 Aug 2021 12:52:53 +0100 you wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+> Add again dev_set_drvdata in order for dev_get_drvdata to not return NULL.
+
+dev_set_drvdata()
+dev_get_drvdata()
+
+> Fixes: 394febc9d0a6 ("misc/pvpanic: Make 'pvpanic_probe()' resource managed")
+
 > 
-> Don't populate the array speeds on the stack but instead it
-> static const. Makes the object code smaller by 17 bytes:
-> 
-> Before:
->    text    data     bss     dec     hex filename
->   39987   14200      64   54251    d3eb .../huawei/hinic/hinic_sriov.o
-> 
-> [...]
 
-Here is the summary with links:
-  - hinic: make array speeds static const, makes object smaller
-    https://git.kernel.org/netdev/net-next/c/36d5825babbc
+Shouldn't be blank line(s) in the tag block.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> Signed-off-by: Mihai Carabas <mihai.carabas@oracle.com>
+
+...
+
+> +	dev_set_drvdata(dev, pi);
+> +
+>  	return devm_pvpanic_probe(dev, pi);
+
+I think it makes sense to have the above line as a part of pvpanic_probe().
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
