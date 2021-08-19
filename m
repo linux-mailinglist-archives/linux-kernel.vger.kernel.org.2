@@ -2,163 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059773F16C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 754253F16D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237934AbhHSJ4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 05:56:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232750AbhHSJ4G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 05:56:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 034C4610FA;
-        Thu, 19 Aug 2021 09:55:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629366930;
-        bh=9nllqIp3YFYIG2iUBvQY9Xv3E71kmWvo0C/6DGN1Cxs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l0QwUiIIYQCpLtLfKk6Ifeh5vya9k/3wkdQ3wKEzljGCaKA30CFsXpi8trnqnZTA1
-         uCv7WBoy6gFCpexTBQZ6UR6vsVdXCunBudE2j41Y4fwhcqVpRFxlxvDVC+agPPtYcf
-         BIEZEApYBVCkrAeNShWdaHzQudL04knqwVIMlpNAutdA+d1lTNNY2wvLwQPnpMbUa3
-         3C6clJyqwmk0j/lrnmSj3U9RKmnwPKpUGRLG5LXWKJBjGTEipYRdotN7bUROvkhQkd
-         H5ncmwGs9mNHVaHH2wb5QF41MfoFbXwgRIKKT/8Ym3oImGeunBrELOJjFL1eicbfaG
-         OS+MKKSPaqGNA==
-Received: by pali.im (Postfix)
-        id A1E0A7EA; Thu, 19 Aug 2021 11:55:27 +0200 (CEST)
-Date:   Thu, 19 Aug 2021 11:55:27 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Kari Argillander <kari.argillander@gmail.com>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Christoph Hellwig <hch@lst.de>, ntfs3@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH v2 5/6] fs/ntfs3: Add iocharset= mount option as alias
- for nls=
-Message-ID: <20210819095527.w4uv6gzuyaotxjpe@pali>
-References: <20210819002633.689831-1-kari.argillander@gmail.com>
- <20210819002633.689831-6-kari.argillander@gmail.com>
- <20210819082658.4xu6zmoro5xxdk5a@pali>
- <20210819094532.7uardf2q2u5w24yt@kari-VirtualBox>
+        id S238150AbhHSJ5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 05:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238109AbhHSJ5A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 05:57:00 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3C1C0613CF;
+        Thu, 19 Aug 2021 02:56:23 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id l11so8182491wrx.4;
+        Thu, 19 Aug 2021 02:56:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZGvg8dfc9wmKRNl+QTgPyRSm2QhtLNfk+83gimM4XNI=;
+        b=hag8HjWkoLnlWff2dlAOAjapUPbMFhns4/RrxwIf+cDegN7pvOFV7IfidwjeW08FXQ
+         Je5DUPNJLtqG/sUQaoBAmHu5UXUQxve7qCtaIKPUOmDLAf6T9UhuCy7bmTfQed2OxHrM
+         aHChMrPIA7tydWGo4dnGXOD0+ZzCHzGFZM8F4oOAJoi5JO2vs2iWYwaWZ+wKS5Lkgsb/
+         WZdhWbue0BccvU9iVXZItQuIhcCvx1tvofwNURqgK5385KBnererOE2iJWfQrNS+eBPk
+         j5ZJRQo5rlxDP6qRR5bQysbTRpyJnnuii4QnhDZ0aXklIyB6vr2vkP7byz9KkKYcz5v8
+         RcjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZGvg8dfc9wmKRNl+QTgPyRSm2QhtLNfk+83gimM4XNI=;
+        b=nzZAs+Xe2ink19GpjDYLZ1Ko4/sEEbMjSNNJ3PYlPNLmo7ohKwVIDgNEg5kFHpD+uI
+         l3AdU0pfV/VoljaF/mamP4l8/YqKbVBZc3F31bta9lY3A4ewZoOk5Ii5WMNT/fGyMT2Y
+         69Kl3va95o2rSdMLx4TublyaFD1eFu3V8MoJL5JKtrAFwQGhlWjCFbmlc9Cq3KX6MSSE
+         XSlKmGyomYS7eJfMsE8Hl1GRlJhRLZS5bZrgPPTCBgEkK2O07/Il7bI6Bvahcs3cyuqI
+         dlT06oS5Rs8nqPlFSGMnKojm+GFzyCE1TrfzSel/N2nIGGtBD9lNLtaD8jRmPzNiY+6A
+         0eig==
+X-Gm-Message-State: AOAM533MX1Orz/MNaCjkm02Uc1izYrcpJmLIosCAxxL4YqdeS41zugti
+        TApjSQNLHy8kDxwCVkNFgsUIiahcZGSieg==
+X-Google-Smtp-Source: ABdhPJxlGYn7yHv27sS4+nkt/PPDWOb1MWMaWjfTDsGFR/1mUORspVeaACo9BHfSH46NWm2h9tIvHA==
+X-Received: by 2002:a5d:4d8e:: with SMTP id b14mr2683537wru.422.1629366982248;
+        Thu, 19 Aug 2021 02:56:22 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f08:4500:c830:756b:68fa:7529? (p200300ea8f084500c830756b68fa7529.dip0.t-ipconnect.de. [2003:ea:8f08:4500:c830:756b:68fa:7529])
+        by smtp.googlemail.com with ESMTPSA id o14sm2005680wms.2.2021.08.19.02.56.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Aug 2021 02:56:21 -0700 (PDT)
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     nic_swsd <nic_swsd@realtek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210819054542.608745-1-kai.heng.feng@canonical.com>
+ <20210819054542.608745-4-kai.heng.feng@canonical.com>
+ <084b8ea3-99d8-3393-4b74-0779c92fde64@gmail.com>
+ <CAAd53p4CYOOXjyNdTnBtsQ+2MW-Jar8fgEfPFZHSPrJde=HqVA@mail.gmail.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [PATCH net-next v3 3/3] r8169: Enable ASPM for selected NICs
+Message-ID: <d3e4ec0b-2681-1b3c-f0ca-828b24b253e7@gmail.com>
+Date:   Thu, 19 Aug 2021 11:56:11 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <CAAd53p4CYOOXjyNdTnBtsQ+2MW-Jar8fgEfPFZHSPrJde=HqVA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210819094532.7uardf2q2u5w24yt@kari-VirtualBox>
-User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 19 August 2021 12:45:32 Kari Argillander wrote:
-> On Thu, Aug 19, 2021 at 10:26:58AM +0200, Pali Rohár wrote:
-> > On Thursday 19 August 2021 03:26:32 Kari Argillander wrote:
-> > > Other fs drivers are using iocharset= mount option for specifying charset.
-> > > So add it also for ntfs3 and mark old nls= mount option as deprecated.
-> > > 
-> > > Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
-> > > ---
-> > >  Documentation/filesystems/ntfs3.rst |  4 ++--
-> > >  fs/ntfs3/super.c                    | 12 ++++++++----
-> > >  2 files changed, 10 insertions(+), 6 deletions(-)
-> > > 
-> > > diff --git a/Documentation/filesystems/ntfs3.rst b/Documentation/filesystems/ntfs3.rst
-> > > index af7158de6fde..ded706474825 100644
-> > > --- a/Documentation/filesystems/ntfs3.rst
-> > > +++ b/Documentation/filesystems/ntfs3.rst
-> > > @@ -32,12 +32,12 @@ generic ones.
-> > >  
-> > >  ===============================================================================
-> > >  
-> > > -nls=name		This option informs the driver how to interpret path
-> > > +iocharset=name		This option informs the driver how to interpret path
-> > >  			strings and translate them to Unicode and back. If
-> > >  			this option is not set, the default codepage will be
-> > >  			used (CONFIG_NLS_DEFAULT).
-> > >  			Examples:
-> > > -				'nls=utf8'
-> > > +				'iocharset=utf8'
-> > >  
-> > >  uid=
-> > >  gid=
-> > > diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-> > > index 8e86e1956486..c3c07c181f15 100644
-> > > --- a/fs/ntfs3/super.c
-> > > +++ b/fs/ntfs3/super.c
-> > > @@ -240,7 +240,7 @@ enum Opt {
-> > >  	Opt_nohidden,
-> > >  	Opt_showmeta,
-> > >  	Opt_acl,
-> > > -	Opt_nls,
-> > > +	Opt_iocharset,
-> > >  	Opt_prealloc,
-> > >  	Opt_no_acs_rules,
-> > >  	Opt_err,
-> > > @@ -259,9 +259,13 @@ static const struct fs_parameter_spec ntfs_fs_parameters[] = {
-> > >  	fsparam_flag_no("hidden",		Opt_nohidden),
-> > >  	fsparam_flag_no("acl",			Opt_acl),
-> > >  	fsparam_flag_no("showmeta",		Opt_showmeta),
-> > > -	fsparam_string("nls",			Opt_nls),
-> > >  	fsparam_flag_no("prealloc",		Opt_prealloc),
-> > >  	fsparam_flag("no_acs_rules",		Opt_no_acs_rules),
-> > > +	fsparam_string("iocharset",		Opt_iocharset),
-> > > +
-> > > +	__fsparam(fs_param_is_string,
-> > > +		  "nls", Opt_iocharset,
-> > > +		  fs_param_deprecated, NULL),
-> > 
-> > Anyway, this is a new filesystem driver. Therefore, do we need to have
-> > for it since beginning deprecated option?
+On 19.08.2021 08:50, Kai-Heng Feng wrote:
+> On Thu, Aug 19, 2021 at 2:08 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+>>
+>> On 19.08.2021 07:45, Kai-Heng Feng wrote:
+>>> The latest vendor driver enables ASPM for more recent r8168 NICs, so
+>>> disable ASPM on older chips and enable ASPM for the rest.
+>>>
+>>> Rename aspm_manageable to pcie_aspm_manageable to indicate it's ASPM
+>>> from PCIe, and use rtl_aspm_supported for Realtek NIC's internal ASPM
+>>> function.
+>>>
+>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>>> ---
+>>> v3:
+>>>  - Use pcie_aspm_supported() to retrieve ASPM support status
+>>>  - Use whitelist for r8169 internal ASPM status
+>>>
+>>> v2:
+>>>  - No change
+>>>
+>>>  drivers/net/ethernet/realtek/r8169_main.c | 27 ++++++++++++++++-------
+>>>  1 file changed, 19 insertions(+), 8 deletions(-)
+>>>
+>>> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+>>> index 3359509c1c351..88e015d93e490 100644
+>>> --- a/drivers/net/ethernet/realtek/r8169_main.c
+>>> +++ b/drivers/net/ethernet/realtek/r8169_main.c
+>>> @@ -623,7 +623,8 @@ struct rtl8169_private {
+>>>       } wk;
+>>>
+>>>       unsigned supports_gmii:1;
+>>> -     unsigned aspm_manageable:1;
+>>> +     unsigned pcie_aspm_manageable:1;
+>>> +     unsigned rtl_aspm_supported:1;
+>>>       unsigned rtl_aspm_enabled:1;
+>>>       struct delayed_work aspm_toggle;
+>>>       atomic_t aspm_packet_count;
+>>> @@ -702,6 +703,20 @@ static bool rtl_is_8168evl_up(struct rtl8169_private *tp)
+>>>              tp->mac_version <= RTL_GIGA_MAC_VER_53;
+>>>  }
+>>>
+>>> +static int rtl_supports_aspm(struct rtl8169_private *tp)
+>>> +{
+>>> +     switch (tp->mac_version) {
+>>> +     case RTL_GIGA_MAC_VER_02 ... RTL_GIGA_MAC_VER_31:
+>>> +     case RTL_GIGA_MAC_VER_37:
+>>> +     case RTL_GIGA_MAC_VER_39:
+>>> +     case RTL_GIGA_MAC_VER_43:
+>>> +     case RTL_GIGA_MAC_VER_47:
+>>> +             return 0;
+>>> +     default:
+>>> +             return 1;
+>>> +     }
+>>> +}
+>>> +
+>>>  static bool rtl_supports_eee(struct rtl8169_private *tp)
+>>>  {
+>>>       return tp->mac_version >= RTL_GIGA_MAC_VER_34 &&
+>>> @@ -2669,7 +2684,7 @@ static void rtl_pcie_state_l2l3_disable(struct rtl8169_private *tp)
+>>>
+>>>  static void rtl_hw_aspm_clkreq_enable(struct rtl8169_private *tp, bool enable)
+>>>  {
+>>> -     if (!tp->aspm_manageable && enable)
+>>> +     if (!(tp->pcie_aspm_manageable && tp->rtl_aspm_supported) && enable)
+>>>               return;
+>>>
+>>>       tp->rtl_aspm_enabled = enable;
+>>> @@ -5319,12 +5334,8 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>       if (rc)
+>>>               return rc;
+>>>
+>>> -     /* Disable ASPM completely as that cause random device stop working
+>>> -      * problems as well as full system hangs for some PCIe devices users.
+>>> -      */
+>>> -     rc = pci_disable_link_state(pdev, PCIE_LINK_STATE_L0S |
+>>> -                                       PCIE_LINK_STATE_L1);
+>>> -     tp->aspm_manageable = !rc;
+>>> +     tp->pcie_aspm_manageable = pcie_aspm_supported(pdev);
+>>
+>> That's not what I meant, and it's also not correct.
 > 
-> I have also thought about this. In my mind this is new driver to our tree.
-> But is been available from Paragon. Their customers may migrate to this
-> so let's give them easy path to it. They also have free version and
-> there is many Linux user who will switch to this when this is available.
+> In case I make another mistake in next series, let me ask it more clearly...
+> What you meant was to check both link->aspm_enabled and link->aspm_support?
 > 
-> Another thing what I been thinking is that how we will switch from
-> ntfs->ntfs3. To give easy path to this driver then we should in some
-> point add ntfs driver mount options to this one. Maybe not totally
-> funtional, but so that mounting is possible. Current ntfs driver had nls
-> option so it makes sense to add it here. We might even like to think
-> ntfs-3g mount options because that is more used.
+aspm_enabled can be changed by the user at any time.
+pci_disable_link_state() also considers whether BIOS forbids that OS
+mess with ASPM. See aspm_disabled.
+
+>>
+>>> +     tp->rtl_aspm_supported = rtl_supports_aspm(tp);
 > 
-> Of course we can just drop this. But I like that user experience is good
-> with kernel. And if we can make that little more pleasent with couple
-> line of trivial code then imo let's do it. We just need to make sure we
-> drop these in one point of time. It is too often these kind of things
-> will live in kernel "internity".
+> Is rtl_supports_aspm() what you expect for the whitelist?
+> And what else am I missing?
+> 
+I meant use rtl_supports_aspm() to check when ASPM is relevant at all,
+and in addition use a blacklist for chip versions where ASPM is
+completely unusable.
 
-Makes sense. Sometimes it is better to introduce legacy/deprecated code
-also to the new one.
+> Kai-Heng
+> 
+>>>
+>>>       /* enable device (incl. PCI PM wakeup and hotplug setup) */
+>>>       rc = pcim_enable_device(pdev);
+>>>
+>>
 
-In case this ntfs3 driver is going to replace ntfs driver then it would
-have to understand all options supported by ntfs, even those which are
-already deprecated and also those which will be deprecated in future.
-(Until there is a decision to drop it)
-
-> > 
-> > >  	{}
-> > >  };
-> > >  
-> > > @@ -332,7 +336,7 @@ static int ntfs_fs_parse_param(struct fs_context *fc,
-> > >  	case Opt_showmeta:
-> > >  		opts->showmeta = result.negated ? 0 : 1;
-> > >  		break;
-> > > -	case Opt_nls:
-> > > +	case Opt_iocharset:
-> > >  		opts->nls_name = param->string;
-> > >  		param->string = NULL;
-> > >  		break;
-> > > @@ -519,7 +523,7 @@ static int ntfs_show_options(struct seq_file *m, struct dentry *root)
-> > >  	if (opts->dmask)
-> > >  		seq_printf(m, ",dmask=%04o", ~opts->fs_dmask_inv);
-> > >  	if (opts->nls_name)
-> > > -		seq_printf(m, ",nls=%s", opts->nls_name);
-> > > +		seq_printf(m, ",iocharset=%s", opts->nls_name);
-> > >  	if (opts->sys_immutable)
-> > >  		seq_puts(m, ",sys_immutable");
-> > >  	if (opts->discard)
-> > > -- 
-> > > 2.25.1
-> > > 
-> > 
