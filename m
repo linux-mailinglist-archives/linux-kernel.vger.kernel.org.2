@@ -2,82 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9463F1C27
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 133083F1C29
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240700AbhHSPFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 11:05:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51552 "EHLO
+        id S234280AbhHSPFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 11:05:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhHSPFJ (ORCPT
+        with ESMTP id S229612AbhHSPFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 11:05:09 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4428EC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 08:04:33 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id d4so13597814lfk.9
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 08:04:33 -0700 (PDT)
+        Thu, 19 Aug 2021 11:05:39 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD24C061575;
+        Thu, 19 Aug 2021 08:05:02 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id q11so9597242wrr.9;
+        Thu, 19 Aug 2021 08:05:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T0b4zMAvEzKfXKZwvIB0eeAlmLIDqdVoJMxNV/NqtBs=;
-        b=qoP53fKMhYzr8DPWTxyX4O4kAbrnZ9Wf7TL9vkMQqok0gG+iZiQ87Rleze/VVQLQ8m
-         GWJlt6/3FpblM6R0i913uDUiEsIhF6FkeNJd/wxB4mAm/udUFiU8eTi/BztM6nWJ/Aw1
-         opjqjd7Rb0avhrUjmwnYT/XIlQtZYCB23D+HlZeKnktJZiMPIG7XCBpGdxiv/Lu/rB40
-         zpf/AVrsB2PgcOo85i3hJ/zeDdZSLETW6DREXRYOH4VdiDOe+PxgdffK/ksc7VYZITz6
-         2cMBGwdFF8uxDl/28zyuSP4KLKZLcnSwYSni4JQvp5CaqzollHNPVSWX3uBNW3DiMnk9
-         lOHA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KNs0XZsqcquyt15ij0j3IP+57uuSZytRU9SIhFpuBmM=;
+        b=UGNu2HwU59wSnOuHp67G1NVODqe3RooN/VXZzBGZzDl1cLYK1Ch2q2HeadXUz/YjLn
+         hF4XD+Pne3OL2s34pYMRQaN8qTfpTmYlxef3TseXCMEXTIlZED+W2TXYdSnK7UT+Rxq9
+         Kfspv950zUgmWQ/qWbxF1cg5HwFPB0EvpflTfOGW1maudY8Sf+hy/nKxJwj6H8n9G2/c
+         mEK3QtZbao1DFAqX3xMEwnQWvIm2fUNiuHs8ML5nbbZZdZJglVhDI8aLmtN75ZF+lm6Z
+         kVHJfr6tOP/DYJo2KzyuJzyo2pJkknvGjkTOaEj5Csy7+1NmZsPFjq8JwDff1JyBTPxO
+         c6Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T0b4zMAvEzKfXKZwvIB0eeAlmLIDqdVoJMxNV/NqtBs=;
-        b=slo5nJC6IEbO3pkfe7/0iAHrzg60kt30sQbJw4PKej3A48gDQi3S3LeSV+cEKsU2GX
-         Flf11FM+uwqVwZFFnHIFt5pUJnnc0E+9GIafSQ/cowi56zw6WhRtcdJvMxp72gXL6F8D
-         dDa/bAJAxAdb6UAkcA+xzG89LqQzOwzLqssDbzaPL2092V+Z4m7G37IfZXnAQxlyDj7e
-         9aSlheuU9y22ORqq0lyDktuMaLrfDCABL2gKFZOIHj6oUwHbrQsQj3INevb9ibEp82sU
-         ewvs4SyhTPIIYCfzvw2DpAVk9EKmuvAPiHQpaQWB0m+igTUMlxJ4CRSbkP2M1SowMqcQ
-         s5RA==
-X-Gm-Message-State: AOAM531t1NFU6Hvi52R8xIr2mV4v8UR9/Z6bW969HHCONQJr5u3dJm3y
-        xX91u4i/wB1uUJfD/E6jwws8d1RGZ7gaFCzmkS9vRQ==
-X-Google-Smtp-Source: ABdhPJzTsjsthfdy+dJ+4wlWH97Y445qIp6Ehyno5agh0QLE3abUhbE9HSyRy+S4tlPERhOOTRJNIm8Qf5RJaWGV4gk=
-X-Received: by 2002:a05:6512:3481:: with SMTP id v1mr7630730lfr.299.1629385470682;
- Thu, 19 Aug 2021 08:04:30 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KNs0XZsqcquyt15ij0j3IP+57uuSZytRU9SIhFpuBmM=;
+        b=AnRrkzyzye6QhOl6zSBKP2H5PmLe1RHPXtpBemVOFGFTS8Onj10OpwLDIIPmSHlQcj
+         GYfeihQd3eV6YPnZ5q9BVmMNtBMbQO3RzdQqu+B1zsXBdEy74wz7XLTM2S60X5kCVjnl
+         QzXY1LBnxU3kv1HP5cs0n3ijH4o8xkTLmlFBn363mEmTqg6NY9f48P0jIVGC9NFM0tv2
+         M2iFfXE+6y3xUoY/d7m84Uxg77b1Sn4axfEsfGdD3PlvhG5XgDOI/Ca7VBD/uB6XlZuZ
+         c2QNd/QZYj/pNv/BlIn8e9bHz/LMVkITukP7V6T8TNPnNcr/OJ/ssLA7IkN48j4AxOah
+         NrWQ==
+X-Gm-Message-State: AOAM53079P6S3IZ+pp2WB/wLXdrAU8Ti5eyvncQkhnw5N+IYh/muupyd
+        IciuryHRUT2lhsAt60uCCOt/x2sKDhc=
+X-Google-Smtp-Source: ABdhPJxKSOc3ZQM5yn5QTGXL+01uzh0smupx/0lNuR2ntoSFnY73l4TL68PSCBcNcRlnfM1z6R0yXw==
+X-Received: by 2002:a5d:4490:: with SMTP id j16mr4358642wrq.272.1629385501287;
+        Thu, 19 Aug 2021 08:05:01 -0700 (PDT)
+Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
+        by smtp.gmail.com with ESMTPSA id z137sm8234022wmc.14.2021.08.19.08.04.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 08:05:00 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Tomas Winkler <tomas.winkler@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        Ionel-Catalin Mititelu <ionel-catalin.mititelu@intel.com>,
+        Jiri Kosina <jikos@kernel.org>, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH v2] mei: improve Denverton HSM & IFSI support
+Date:   Thu, 19 Aug 2021 17:04:59 +0200
+Message-Id: <20210819150459.21545-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210818152457.35846-1-hannes@cmpxchg.org>
-In-Reply-To: <20210818152457.35846-1-hannes@cmpxchg.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 19 Aug 2021 08:04:19 -0700
-Message-ID: <CALvZod5y4WquXhH6BdVAyqMNqxCm=RGkOk-iBkRuW0uQPCz_1g@mail.gmail.com>
-Subject: Re: [PATCH] mm: vmscan: fix missing psi annotation for node_reclaim()
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Rik van Riel <riel@surriel.com>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 8:26 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> In a debugging session the other day, Rik noticed that node_reclaim()
-> was missing memstall annotations. This means we'll miss pressure and
-> lost productivity resulting from reclaim on an overloaded local NUMA
-> node when vm.zone_reclaim_mode is enabled.
->
-> There haven't been any reports, but that's likely because
-> vm.zone_reclaim_mode hasn't been a commonly used feature recently, and
-> the intersection between such setups and psi users is probably
-> nil. Although, secondary memory such as CXL-connected DIMMS,
-> persistent memory etc. and the page demotion patches that handle them
-> (https://lore.kernel.org/lkml/20210401183216.443C4443@viggo.jf.intel.com/)
-> could soon make this a more common codepath again.
->
-> Reported-by: Rik van Riel <riel@surriel.com>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+The Intel Denverton chip provides HSM & IFSI. In order to access
+HSM & IFSI at the same time, provide two HECI hardware IDs for accessing.
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Suggested-by: Ionel-Catalin Mititelu <ionel-catalin.mititelu@intel.com>
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+Tomas, please pick this quick helpful extension for the hardware.
+
+ drivers/misc/mei/hw-me-regs.h | 3 ++-
+ drivers/misc/mei/pci-me.c     | 1 +
+ drivers/pci/quirks.c          | 3 +++
+ 3 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/misc/mei/hw-me-regs.h b/drivers/misc/mei/hw-me-regs.h
+index cb34925e10f1..a436cbde2dd2 100644
+--- a/drivers/misc/mei/hw-me-regs.h
++++ b/drivers/misc/mei/hw-me-regs.h
+@@ -68,7 +68,8 @@
+ #define MEI_DEV_ID_BXT_M      0x1A9A  /* Broxton M */
+ #define MEI_DEV_ID_APL_I      0x5A9A  /* Apollo Lake I */
+ 
+-#define MEI_DEV_ID_DNV_IE     0x19E5  /* Denverton IE */
++#define MEI_DEV_ID_DNV_IE     0x19E5  /* Denverton for HECI1 - IFSI */
++#define MEI_DEV_ID_DNV_IE_2   0x19E6  /* Denverton 2 for HECI2 - HSM */
+ 
+ #define MEI_DEV_ID_GLK        0x319A  /* Gemini Lake */
+ 
+diff --git a/drivers/misc/mei/pci-me.c b/drivers/misc/mei/pci-me.c
+index c3393b383e59..30827cd2a1c2 100644
+--- a/drivers/misc/mei/pci-me.c
++++ b/drivers/misc/mei/pci-me.c
+@@ -77,6 +77,7 @@ static const struct pci_device_id mei_me_pci_tbl[] = {
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_APL_I, MEI_ME_PCH8_CFG)},
+ 
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_DNV_IE, MEI_ME_PCH8_CFG)},
++	{MEI_PCI_DEVICE(MEI_DEV_ID_DNV_IE_2, MEI_ME_PCH8_SPS_CFG)},
+ 
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_GLK, MEI_ME_PCH8_CFG)},
+ 
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 6899d6b198af..2ab767ef8469 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -4842,6 +4842,9 @@ static const struct pci_dev_acs_enabled {
+ 	{ PCI_VENDOR_ID_INTEL, 0x15b7, pci_quirk_mf_endpoint_acs },
+ 	{ PCI_VENDOR_ID_INTEL, 0x15b8, pci_quirk_mf_endpoint_acs },
+ 	{ PCI_VENDOR_ID_INTEL, PCI_ANY_ID, pci_quirk_rciep_acs },
++	/* Denverton */
++	{ PCI_VENDOR_ID_INTEL, 0x19e5, pci_quirk_mf_endpoint_acs },
++	{ PCI_VENDOR_ID_INTEL, 0x19e6, pci_quirk_mf_endpoint_acs },
+ 	/* QCOM QDF2xxx root ports */
+ 	{ PCI_VENDOR_ID_QCOM, 0x0400, pci_quirk_qcom_rp_acs },
+ 	{ PCI_VENDOR_ID_QCOM, 0x0401, pci_quirk_qcom_rp_acs },
+-- 
+2.26.2
+
