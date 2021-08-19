@@ -2,211 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6DA53F105A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 04:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6693F1061
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 04:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235679AbhHSCaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 22:30:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235384AbhHSC36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 22:29:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5AC560551;
-        Thu, 19 Aug 2021 02:29:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629340163;
-        bh=BDGZ2WFCKe92Jxtv5kV8NUHwlrCdhgxIuZmkPNGT+eM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fc9QLuWI3wH4X4zeKvrVpAeaSPvmUYhXezpLNL8Z0MRENcB9iCpWJVmdZ8DxIBRY0
-         Tz3c64T7XyVI7TmOEToyXp4WQOMYr2zEbYO9/5nc+PpoC/s7kf1w00+fwFqp06ZeLv
-         JoQcpU08QgmLvnSRclYkIDuivtChqRMVJNik1GGoc4RLQAifDPG1RiT77xLS+FxjYY
-         11GYZGthF+NjLYuZPNJ9l441AWjTHVb8LJ0//eS6zzmqZGqHCKRfqQTo9rOcK8nDio
-         ogmS9BoEhhn1yozhm5e4w/AC1wedl18cOWk1Xsq5vT7HvPP7buTC571zNbhQsAQ05u
-         8N3aDCMiJUo8w==
-Date:   Thu, 19 Aug 2021 11:29:20 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v6 7/7] tracing: Add a probe that attaches to trace
- events
-Message-Id: <20210819112920.a2fbfdc812967c2743953fd0@kernel.org>
-In-Reply-To: <20210817035028.190000494@goodmis.org>
-References: <20210817034255.421910614@goodmis.org>
-        <20210817035028.190000494@goodmis.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S235709AbhHSCa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 22:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235384AbhHSCa4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 22:30:56 -0400
+Received: from mail-vs1-xe62.google.com (mail-vs1-xe62.google.com [IPv6:2607:f8b0:4864:20::e62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E17AC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 19:30:21 -0700 (PDT)
+Received: by mail-vs1-xe62.google.com with SMTP id j186so3095323vsc.10
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 19:30:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:dkim-signature:from:to:cc:subject:date
+         :message-id:content-transfer-encoding;
+        bh=pqboTJCcAOfo09rbB71PF8zWvy4otzTvc+THnflfZow=;
+        b=EFLoGL5E6BSSZZ88XayX+GtICSauQHYQ+4L7h4LD/SyB3gho3YN+WA2AV9lHMZYQwG
+         l1wDTvPwQZwLNfFe8S94TCQzRDbkOWEYWzhoUpciMSZpAlLIfsxnWhvLZ0RCXlr4uPDz
+         ruHnwwyW19D0KbZIJbD4XvYdIObRCSmwtSVPGsWOEJ1qezNKi4c8SQ1ynV9yrzxCWkRh
+         RsglKyaJtI4/Ve9nsYKm+00tv0sPH3Sz0SqtRlIQz6fKEGcPgvPVQ0r9NGkdYUngGaDO
+         41ha3pU0Hixs5a34DHNOCK/Ax9hATJrtIYkPL53jNfHXc0+BChASNV4WnGD3QbQsoU/8
+         avPw==
+X-Gm-Message-State: AOAM5308vI8sy2QNaYhzdYSIJPOKg0bxjQ0QVCzD9cySog6+tkVZNpWi
+        C8mc9vMTKM0RCn205BfzCyg9Yvz5DyXt9xXGyFHPiyNCixaa
+X-Google-Smtp-Source: ABdhPJzQ6jgObdXjtEO3ZjgEbcgu59O2EIq8CFX2YU++F2dMAZP465I7ZnniqR4it0bPZaFbuyztQzcfldMi
+X-Received: by 2002:a67:6704:: with SMTP id b4mr10727566vsc.6.1629340220051;
+        Wed, 18 Aug 2021 19:30:20 -0700 (PDT)
+Received: from smtp.aristanetworks.com (smtp.aristanetworks.com. [52.0.43.43])
+        by smtp-relay.gmail.com with ESMTPS id g15sm427225uam.2.2021.08.18.19.30.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 18 Aug 2021 19:30:20 -0700 (PDT)
+X-Relaying-Domain: arista.com
+Received: from chmeee (unknown [10.95.69.61])
+        by smtp.aristanetworks.com (Postfix) with ESMTPS id 74B7F30031F7;
+        Wed, 18 Aug 2021 19:30:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arista.com;
+        s=Arista-A; t=1629340218;
+        bh=pqboTJCcAOfo09rbB71PF8zWvy4otzTvc+THnflfZow=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GzmSurSBdHLzTKClk0fzGjZP3Xm3sXzOcxHxp4OzuABBjL/QHClO1jxG+6qhFwOUM
+         FAOS14JfOZCmBOziHJZ6kfmslrn4NeKrL2hOWCXtnObfXT80TW3lk0SRM74p+Idf6+
+         vfKHrPWeSkqJR9CVv1USn0wPcicFny9pm/Wp5zbwsI8A77WZaNB0cr11wyQxFRz5y4
+         Zmy3NqgWYeu0LLWmFEsSHNwqlAejg+03gbNapYxe7LbYuafCIWW6fgh/OnJZ7Y07F+
+         0pdQhG/qZJWvTUJkoZF2x1v9imdBBWZn3osGjiQvCjG5R3Ca6yA36GWTHJerI6br7t
+         bnw/oXFx2GY5A==
+Received: from kevmitch by chmeee with local (Exim 4.94.2)
+        (envelope-from <kevmitch@chmeee>)
+        id 1mGXot-002MCU-Tt; Wed, 18 Aug 2021 19:30:15 -0700
+From:   Kevin Mitchell <kevmitch@arista.com>
+Cc:     linux-scsi@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hannes Reinecke <hare@suse.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] lkdtm: update block layer crashpoints
+Date:   Wed, 18 Aug 2021 19:29:38 -0700
+Message-Id: <20210819022940.561875-1-kevmitch@arista.com>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Aug 2021 23:43:02 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+This is v2 of https://lkml.org/lkml/2021/8/16/1497.
 
-> From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-> 
-> A new dynamic event is introduced: event probe. The event is attached
-> to an existing tracepoint and uses its fields as arguments. The user
-> can specify custom format string of the new event, select what tracepoint
-> arguments will be printed and how to print them.
-> An event probe is created by writing configuration string in
-> 'dynamic_events' ftrace file:
->  e:[SNAME/]ENAME SYSTEM/EVENT [FETCHARGS]	- Set an event probe
+These patches update the lkdtm crashpoints in the block layer that have been
+moved or removed.  In response to feedback, I've renamed the SCSI_DISPATCH_CMD
+crashpoint to SCSI_QUEUE_RQ to correspond to the new function that it hooks
+into. I have also added a commit to remove IDE_CORE_CP.
 
-Just a small comment. This ENAME is actually optional.
 
->  -:SNAME/ENAME					- Delete an event probe
-> 
-> Where:
->  SNAME	- System name, if omitted 'eprobes' is used.
->  ENAME	- Name of the new event in SNAME, mandatory.
-
-Ditto.
-See __trace_eprobe_create(), it generates the event name from
-the "SYSTEM_EVENT". (BTW, what happen if we have 2 different event
-probe on the same event with same name?)
-
->  SYSTEM	- Name of the system, where the tracepoint is defined, mandatory.
->  EVENT	- Name of the tracepoint event in SYSTEM, mandatory.
->  FETCHARGS - Arguments:
->   <name>=$<field>[:TYPE] - Fetch given filed of the tracepoint and print
-> 			   it as given TYPE with given name. Supported
-> 			   types are:
-> 	                    (u8/u16/u32/u64/s8/s16/s32/s64), basic type
->         	            (x8/x16/x32/x64), hexadecimal types
-> 			    "string", "ustring" and bitfield.
-> 
-> Example, attach an event probe on openat system call and print name of the
-> file that will be opened:
->  echo "e:esys/eopen syscalls/sys_enter_openat file=\$filename:string" >> dynamic_events
-> A new dynamic event is created in events/esys/eopen/ directory. It
-> can be deleted with:
->  echo "-:esys/eopen" >> dynamic_events
-> 
-> Filters, triggers and histograms can be attached to the new event, it can
-> be matched in synthetic events. There is one limitation - an event probe
-> can not be attached to kprobe, uprobe or another event probe.
-> 
-> Link: https://lkml.kernel.org/r/20210812145805.2292326-1-tz.stoyanov@gmail.com
-> 
-> Co-developed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
-[...]
-> +static struct trace_event_call *
-> +find_and_get_event(const char *system, const char *event_name)
-> +{
-> +	struct trace_event_call *tp_event;
-> +	const char *name;
-> +
-> +	list_for_each_entry(tp_event, &ftrace_events, list) {
-> +		/* Skip other probes and ftrace events */
-> +		if ((tp_event->flags & TRACE_EVENT_FL_IGNORE_ENABLE) ||
-> +		    (tp_event->flags & TRACE_EVENT_FL_KPROBE) ||
-> +		    (tp_event->flags & TRACE_EVENT_FL_UPROBE) ||
-> +		    (tp_event->flags & TRACE_EVENT_FL_EPROBE))
-
-Maybe it is better to define a bitmask for it instead of testing
-different bit many times.
-
-[...]
-> +static int __trace_eprobe_create(int argc, const char *argv[])
-> +{
-> +	/*
-> +	 * Argument syntax:
-> +	 *      e[:[GRP/]ENAME] SYSTEM.EVENT [FETCHARGS]
-> +	 * Fetch args:
-> +	 *  <name>=$<field>[:TYPE]
-> +	 */
-> +	const char *event = NULL, *group = EPROBE_EVENT_SYSTEM;
-> +	const char *sys_event = NULL, *sys_name = NULL;
-> +	struct trace_event_call *event_call;
-> +	struct trace_eprobe *ep = NULL;
-> +	char buf1[MAX_EVENT_NAME_LEN];
-> +	char buf2[MAX_EVENT_NAME_LEN];
-> +	int ret = 0;
-> +	int i;
-> +
-> +	if (argc < 2)
-> +		return -ECANCELED;
-> +
-> +	trace_probe_log_init("event_probe", argc, argv);
-> +
-> +	event = strchr(&argv[0][1], ':');
-> +	if (event) {
-> +		event++;
-> +		ret = traceprobe_parse_event_name(&event, &group, buf1,
-> +						  event - argv[0]);
-> +		if (ret)
-> +			goto parse_error;
-> +	} else {
-> +		strscpy(buf1, argv[1], MAX_EVENT_NAME_LEN);
-> +		sanitize_event_name(buf1);
-> +		event = buf1;
-> +	}
-> +	if (!is_good_name(event) || !is_good_name(group))
-> +		goto parse_error;
-> +
-> +	sys_event = argv[1];
-> +	ret = traceprobe_parse_event_name(&sys_event, &sys_name, buf2,
-> +					  sys_event - argv[1]);
-> +	if (ret || !sys_name)
-> +		goto parse_error;
-> +	if (!is_good_name(sys_event) || !is_good_name(sys_name))
-> +		goto parse_error;
-> +
-> +	mutex_lock(&event_mutex);
-> +	event_call = find_and_get_event(sys_name, sys_event);
-> +	ep = alloc_event_probe(group, event, event_call, argc - 2);
-> +	mutex_unlock(&event_mutex);
-> +
-> +	if (IS_ERR(ep)) {
-> +		ret = PTR_ERR(ep);
-> +		/* This must return -ENOMEM, else there is a bug */
-> +		WARN_ON_ONCE(ret != -ENOMEM);
-> +		goto error;	/* We know ep is not allocated */
-> +	}
-> +
-> +	argc -= 2; argv += 2;
-> +	/* parse arguments */
-> +	for (i = 0; i < argc && i < MAX_TRACE_ARGS; i++) {
-> +		ret = trace_eprobe_tp_update_arg(ep, argv, i);
-> +		if (ret)
-> +			goto error;
-> +	}
-> +	ret = traceprobe_set_print_fmt(&ep->tp, PROBE_PRINT_EVENT);
-> +	if (ret < 0)
-> +		goto error;
-> +	init_trace_eprobe_call(ep);
-> +	mutex_lock(&event_mutex);
-
-Here, you don't check the event name collision. Since the kprobe event
-supports multiprobe event, it checks the collision by itself.
-See register_trace_kprobe().
-BTW, I found another issue on the name collision. Let me fix it.
-
-> +	ret = trace_probe_register_event_call(&ep->tp);
-> +	if (ret) {
-> +		mutex_unlock(&event_mutex);
-> +		goto error;
-> +	}
-> +	ret = dyn_event_add(&ep->devent, &ep->tp.event->call);
-> +	mutex_unlock(&event_mutex);
-> +	return ret;
-> +parse_error:
-> +	ret = -EINVAL;
-> +error:
-> +	trace_event_probe_cleanup(ep);
-> +	return ret;
-> +}
-
-Thank you,
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
