@@ -2,149 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1AF33F1728
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F803F1750
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238091AbhHSKQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 06:16:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236149AbhHSKQm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 06:16:42 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B98DDC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 03:16:06 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id d11so11751119eja.8
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 03:16:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OObiD9tfxs+s0iJrcszx/14HnrEBww2v71TAAgjIBnY=;
-        b=fbehOLG3kvr6qqkot/u6Oufc9xBr2WwKQBpnfDVd5gxR8ORjn65b1Gqp5D70M2QZzB
-         h9uh8M5WI5+3QrbtBjb1WGeSj0EMKzHNyx4dh4AnvdmKicPclg7wXUXOQrfWmKt5iqva
-         ghmf8o4qzk15CBvOS4mJVGc+g0bcqyH2rd4xL3epMqsZm/CPYbAk9l09ORkJ8NJBdpmy
-         20pd8UJSyxTs12vYtfqAOcfPQKtBhSf9bAiz/E99zqf6FA/qgiLDCvbro4YPhx7IBBiw
-         z2PlwC18ub9u7XUjGR/0iXCqgaPWcRzaeQeeiBMVxCJyZ8WoADYMxSQxj6+1pG+lT9Wo
-         /FMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OObiD9tfxs+s0iJrcszx/14HnrEBww2v71TAAgjIBnY=;
-        b=ib+M92W7rDcfQUGWsXHted+WXT0xvwX+8w5wHoCUSP3MScU8cfs/wd7DhFMHXwfbkZ
-         bw253hgvaVvtQZQmPciqGqlojdeTNa99ImE3Z0nJqWozDydnOWQ6Pv2L/zVRrQKBoUaH
-         Q+de7/J06AjAqw9gExlfTKc/a4jcijYrfE9g3KaI/q6OjU9ahXISIY1RlUMeqYHdVpKT
-         idIMOTm68KNOl9pEUStSjU7aQfyaXmqbjCr1lxWX36jGzUlM8durpDxLwqwfvcZVt5GN
-         sWbo15i68vn4xnybYa5gkTQkU8q4LjBUC6RSKqxnh5QqLSJ2tlJ3lpo/f1FV5wJKbkY0
-         HDwg==
-X-Gm-Message-State: AOAM531IMdni0Q0eUzYHTzW0XnvFE0HG1Tqq1nnD7F/5Iy2nobg5+JZK
-        0gEeolmCcdk1OGhihU6gyUY=
-X-Google-Smtp-Source: ABdhPJwqFE3r/g7wpG5lgxYD34pDQhp9o+vfOXzd8BR7z69QZ8n26RhlItY/M+EBM4ObnLuO4p/2Hw==
-X-Received: by 2002:a17:907:3f14:: with SMTP id hq20mr14847440ejc.370.1629368165250;
-        Thu, 19 Aug 2021 03:16:05 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
-        by smtp.gmail.com with ESMTPSA id br16sm1068789ejb.34.2021.08.19.03.16.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 03:16:04 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: Remove _enter/_exit_critical_mutex()
-Date:   Thu, 19 Aug 2021 12:16:03 +0200
-Message-ID: <2072985.qfodHclbUl@localhost.localdomain>
-In-Reply-To: <4394431.3q0Da8apZE@localhost.localdomain>
-References: <20210819060837.23983-1-fmdefrancesco@gmail.com> <YR36fT6bpiVoo2lM@kroah.com> <4394431.3q0Da8apZE@localhost.localdomain>
+        id S238343AbhHSKcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 06:32:01 -0400
+Received: from mga03.intel.com ([134.134.136.65]:7678 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238091AbhHSKcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 06:32:00 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="216561364"
+X-IronPort-AV: E=Sophos;i="5.84,334,1620716400"; 
+   d="scan'208";a="216561364"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 03:31:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,334,1620716400"; 
+   d="scan'208";a="451344427"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by fmsmga007.fm.intel.com with ESMTP; 19 Aug 2021 03:31:19 -0700
+Date:   Thu, 19 Aug 2021 12:16:19 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     zhoufeng <zhoufeng.zf@bytedance.com>
+Cc:     anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, jeffrey.t.kirsher@intel.com,
+        magnus.karlsson@intel.com, intel-wired-lan@lists.osuosl.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, duanxiongchun@bytedance.com,
+        songmuchun@bytedance.com, zhouchengming@bytedance.com,
+        chenying.kernel@bytedance.com, zhengqi.arch@bytedance.com,
+        wangdongdong.6@bytedance.com
+Subject: Re: [External] Re: [PATCH] ixgbe: Fix NULL pointer dereference in
+ ixgbe_xdp_setup
+Message-ID: <20210819101619.GE32204@ranger.igk.intel.com>
+References: <20210817075407.11961-1-zhoufeng.zf@bytedance.com>
+ <20210817111047.GA8143@ranger.igk.intel.com>
+ <5bddff53-9b78-99db-1d8e-23b3d38167a1@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5bddff53-9b78-99db-1d8e-23b3d38167a1@bytedance.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, August 19, 2021 9:07:20 AM CEST Fabio M. De Francesco wrote:
-> On Thursday, August 19, 2021 8:30:21 AM CEST Greg Kroah-Hartman wrote:
-> > On Thu, Aug 19, 2021 at 08:08:37AM +0200, Fabio M. De Francesco wrote:
-> > > Remove _enter_critical_mutex() and _exit_critical_mutex(). They are
-> > > unnecessary wrappers, respectively to mutex_lock_interruptible and to
-> > > mutex_unlock(). They also have an odd interface that takes an unused
-> > > second parameter "unsigned long *pirqL".
+On Wed, Aug 18, 2021 at 04:30:15PM +0800, zhoufeng wrote:
+> 
+> 
+> 在 2021/8/17 下午7:10, Maciej Fijalkowski 写道:
+> > On Tue, Aug 17, 2021 at 03:54:07PM +0800, Feng zhou wrote:
+> > > From: Feng Zhou <zhoufeng.zf@bytedance.com>
 > > > 
-> > > Use directly the in-kernel API; check and manage the return value of
-> > > mutex_lock_interruptible().
-> > > 
-> > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > > ---
-> > >  drivers/staging/r8188eu/core/rtw_mlme_ext.c     |  5 +++--
-> > >  drivers/staging/r8188eu/hal/usb_ops_linux.c     |  7 +++++--
-> > >  drivers/staging/r8188eu/include/osdep_service.h | 13 -------------
-> > >  drivers/staging/r8188eu/os_dep/os_intfs.c       |  5 +++--
-> > >  4 files changed, 11 insertions(+), 19 deletions(-)
-> > > 
-> > > diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-> > > index f6ee72d5af09..484083468ebb 100644
-> > > --- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-> > > +++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-> > > @@ -4358,7 +4358,8 @@ s32 dump_mgntframe_and_wait_ack(struct adapter *padapter, struct xmit_frame *pmg
-> > >  	if (padapter->bSurpriseRemoved || padapter->bDriverStopped)
-> > >  		return -1;
-> > >  
-> > > -	_enter_critical_mutex(&pxmitpriv->ack_tx_mutex, NULL);
-> > > +	if (mutex_lock_interruptible(&pxmitpriv->ack_tx_mutex))
-> > > +		return -EINTR;
+> > > The ixgbe driver currently generates a NULL pointer dereference with
+> > > some machine (online cpus < 63). This is due to the fact that the
+> > > maximum value of num_xdp_queues is nr_cpu_ids. Code is in
+> > > "ixgbe_set_rss_queues"".
 > > 
-> > But the code never would return this value if the lock function returned
-> > an error.  Why do that here now?
-
-Ah, now I think I understand what you asked me ... sorry for not having 
-immediately grasped the meaning of your objection. :(
-
-I guess you wanted to know why I decided to check and handle the 
-return values of mutex_lock_interruptible (), as the original code didn't. 
-Did I understand the correct meaning of your question?
-
-If so, now I can explain why I did it ...
-
-A few months ago I did the conversion of the visorhba (Unisys) driver from 
-IDR to XArray. Since the old code did not check IDR API return values, I had 
-decided not to check for XArray API return values as well.
-
-Then Dan C. asked me to implement the checks that were missing in the 
-original code. So, today I decided to implement them before I was asked 
-to do it. Now it's clear that in this case they are not needed.
-
-That's all. :-)
-
-I'm about to send a v2 without those unnecessary checks.
-
-Thanks,
-
-Fabio
-
-> I read from the documentation that "[mutex_lock_interruptible()] Return: 0 if 
-> the lock was successfully acquired or -EINTR if a signal arrived.". 
+> > That's a good catch, but we should fix set channels callback so that it
+> > will not allow a setting of queues to be higher than the
+> > num_online_cpus().
+> > 
+> > Please also include the tree in the patch subject that you're directing
+> > the patch to.
+> > 
 > 
-> After reading that, I thought that if I got -EINTR I should return it. Shouldn't I?
+> Ok, Besides it, I will add more code in "ixgbe_set_channels":
+> /* verify the number of channels does not exceed num_online_cpus */
+> if (count > num_online_cpus())
+> 	return -EINVAL;
+> If user want set queues num to be higher than the num_online_cpus(),
+> return error(-EINVAL).
 > 
-> Now I've just checked its usage pattern in another file where we have exactly 12
-> times the same management of the error (the example I'm talking about is in
-> drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c):
-> 
-> "if (mutex_lock_interruptible(&instance->vchiq_mutex))
->                 return -EINTR;".
-> 
-> Unless you mean that I should return the "ret" variable, which is already set to 
-> "_FAIL", I am really confused. Please, can you further elaborate what I'm doing 
-> wrong?
-> 
-> Thanks,
-> 
-> Fabio
+> What do you think?
+
+Yes, in general you can refer to
+drivers/net/ethernet/intel/ice/ice_ethtool.c and in particular:
+
+/**
+ * ice_get_max_rxq - return the maximum number of Rx queues for in a PF
+ * @pf: PF structure
+ */
+static int ice_get_max_rxq(struct ice_pf *pf)
+{
+	return min3(pf->num_lan_msix, (u16)num_online_cpus(),
+		    (u16)pf->hw.func_caps.common_cap.num_rxq);
+}
 
 
-
+> 
+> > I'd be also thankful if you Cc me on Intel XDP related patches.
+> > Thanks!
+> > 
+> 
+> Ok, of course.
+> 
+> 
+> > > 
+> > > Here's how the problem repeats itself:
+> > > Some machine (online cpus < 63), And user set num_queues to 63 through
+> > > ethtool. Code is in the "ixgbe_set_channels",
+> > > adapter->ring_feature[RING_F_FDIR].limit = count;
+> > > It becames 63.
+> > > When user use xdp, "ixgbe_set_rss_queues" will set queues num.
+> > > adapter->num_rx_queues = rss_i;
+> > > adapter->num_tx_queues = rss_i;
+> > > adapter->num_xdp_queues = ixgbe_xdp_queues(adapter);
+> > > And rss_i's value is from
+> > > f = &adapter->ring_feature[RING_F_FDIR];
+> > > rss_i = f->indices = f->limit;
+> > > So "num_rx_queues" > "num_xdp_queues", when run to "ixgbe_xdp_setup",
+> > > for (i = 0; i < adapter->num_rx_queues; i++)
+> > > 	if (adapter->xdp_ring[i]->xsk_umem)
+> > > lead to panic.
+> > > Call trace:
+> > > [exception RIP: ixgbe_xdp+368]
+> > > RIP: ffffffffc02a76a0  RSP: ffff9fe16202f8d0  RFLAGS: 00010297
+> > > RAX: 0000000000000000  RBX: 0000000000000020  RCX: 0000000000000000
+> > > RDX: 0000000000000000  RSI: 000000000000001c  RDI: ffffffffa94ead90
+> > > RBP: ffff92f8f24c0c18   R8: 0000000000000000   R9: 0000000000000000
+> > > R10: ffff9fe16202f830  R11: 0000000000000000  R12: ffff92f8f24c0000
+> > > R13: ffff9fe16202fc01  R14: 000000000000000a  R15: ffffffffc02a7530
+> > > ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+> > >   7 [ffff9fe16202f8f0] dev_xdp_install at ffffffffa89fbbcc
+> > >   8 [ffff9fe16202f920] dev_change_xdp_fd at ffffffffa8a08808
+> > >   9 [ffff9fe16202f960] do_setlink at ffffffffa8a20235
+> > > 10 [ffff9fe16202fa88] rtnl_setlink at ffffffffa8a20384
+> > > 11 [ffff9fe16202fc78] rtnetlink_rcv_msg at ffffffffa8a1a8dd
+> > > 12 [ffff9fe16202fcf0] netlink_rcv_skb at ffffffffa8a717eb
+> > > 13 [ffff9fe16202fd40] netlink_unicast at ffffffffa8a70f88
+> > > 14 [ffff9fe16202fd80] netlink_sendmsg at ffffffffa8a71319
+> > > 15 [ffff9fe16202fdf0] sock_sendmsg at ffffffffa89df290
+> > > 16 [ffff9fe16202fe08] __sys_sendto at ffffffffa89e19c8
+> > > 17 [ffff9fe16202ff30] __x64_sys_sendto at ffffffffa89e1a64
+> > > 18 [ffff9fe16202ff38] do_syscall_64 at ffffffffa84042b9
+> > > 19 [ffff9fe16202ff50] entry_SYSCALL_64_after_hwframe at ffffffffa8c0008c
+> > > 
+> > > Fixes: 4a9b32f30f80 ("ixgbe: fix potential RX buffer starvation for
+> > > AF_XDP")
+> > > Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
+> > > ---
+> > >   drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 8 ++++++--
+> > >   1 file changed, 6 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> > > index 14aea40da50f..5db496cc5070 100644
+> > > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> > > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> > > @@ -10112,6 +10112,7 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
+> > >   	struct ixgbe_adapter *adapter = netdev_priv(dev);
+> > >   	struct bpf_prog *old_prog;
+> > >   	bool need_reset;
+> > > +	int num_queues;
+> > >   	if (adapter->flags & IXGBE_FLAG_SRIOV_ENABLED)
+> > >   		return -EINVAL;
+> > > @@ -10161,11 +10162,14 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
+> > >   	/* Kick start the NAPI context if there is an AF_XDP socket open
+> > >   	 * on that queue id. This so that receiving will start.
+> > >   	 */
+> > > -	if (need_reset && prog)
+> > > -		for (i = 0; i < adapter->num_rx_queues; i++)
+> > > +	if (need_reset && prog) {
+> > > +		num_queues = min_t(int, adapter->num_rx_queues,
+> > > +			adapter->num_xdp_queues);
+> > > +		for (i = 0; i < num_queues; i++)
+> > >   			if (adapter->xdp_ring[i]->xsk_pool)
+> > >   				(void)ixgbe_xsk_wakeup(adapter->netdev, i,
+> > >   						       XDP_WAKEUP_RX);
+> > > +	}
+> > >   	return 0;
+> > >   }
+> > > -- 
+> > > 2.11.0
+> > > 
