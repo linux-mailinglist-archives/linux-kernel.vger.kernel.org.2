@@ -2,127 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9ED3F1C17
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C733F1C19
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240635AbhHSPAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 11:00:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240563AbhHSPAW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 11:00:22 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EAF2C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 07:59:46 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id p2so6057299oif.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 07:59:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=og+zBJlllyGan515OS7/bGP63jFRXlmdtpY4vNLiQ9U=;
-        b=yALVBtrCet2QsHG5aVrXktHtXAVcPQRc84R5uOS9LUVEqCCmihMo4104uG9knxAloT
-         Gp4/lkL74yntmjT8oRkrCC7EwxHGDGANnz79AJ4eOrp9/Rsdc5D7Y4Doio2WmAfJvodQ
-         aYVr5UCMb2FDBwsltFPhoib+ZirkIDUanbk/8Q4neerpNmlVyz788sFtXoeANpSiksb+
-         syTD+fBqxLuOZgUmNGNhhbSY7ASWZlgGdmWYWdZ2stmCOJUHxPmUN+JNV7pQTmkUyxL3
-         2XAR++fkFinJDf8p2ZyXkqh2rXO7T4TojF9NVm62SsLrcLDL/8NA4DWfKo4D2wtXBIGs
-         haOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=og+zBJlllyGan515OS7/bGP63jFRXlmdtpY4vNLiQ9U=;
-        b=DR8CPsG8/XptjWWbpUZjWLkr+2x2FvsOv41DcoeLxKBAVaxV6l9Fts8hbzLVW9Dt/L
-         7tfN45tCo9y5jOzPtZSVfclIZghBv64eptPAbSKcktiQYdgd9uI++DzYIDDgv1sIC95U
-         3VLrEQGdi/eygLIhZ2oHtbtyKFHgCWPsBx9gwfVmwUVc25ZOn7uON5kHyrP6SjckA3Mr
-         2POAZjy3reByGWlJRRMBtWjei9H/ct68WGvNZlifrPoDRHRMc68sf4AKFtwT/veoU1K/
-         /VYTRg9xhEvTFIMVuiTIyOB4zA9PUHbGDGbwHnVO2ls52sp2v1JrRah/2+S/yCTn003I
-         6vrQ==
-X-Gm-Message-State: AOAM530NKn0HehoeQb85yQDt9FBJKxVlhdglf2PzYcDmTwZu9D9tnVth
-        oJPiyetCVxs5HV9KzR0HQFiyyA==
-X-Google-Smtp-Source: ABdhPJxGAvppgm0WdETn6aRwCgzxqRXfL5eggD6c5xzQGCC6sbZJsJ87OXv+GvJguLhaEwDV8I3hBg==
-X-Received: by 2002:a05:6808:17a5:: with SMTP id bg37mr2917345oib.151.1629385185473;
-        Thu, 19 Aug 2021 07:59:45 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id h19sm746652otr.75.2021.08.19.07.59.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 07:59:45 -0700 (PDT)
-Subject: Re: [PATCH] kernel: make TIF_NOTIFY_SIGNAL and core dumps co-exist
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Olivier Langlois <olivier@trillion01.com>,
-        Tony Battersby <tonyb@cybernetics.com>
-References: <76d3418c-e9ba-4392-858a-5da8028e3526@kernel.dk>
- <CAHk-=wgBMNC1ePTgqM6f0iBH94KE5_oHQYD2sqCbjev0KaZ6Kw@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <7fb2d8a6-951c-092c-ccaa-15522ae2ed01@kernel.dk>
-Date:   Thu, 19 Aug 2021 08:59:42 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S240652AbhHSPAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 11:00:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47112 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229612AbhHSPAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 11:00:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 015DC61159;
+        Thu, 19 Aug 2021 15:00:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629385215;
+        bh=aZJbgY0dYPtD/UwLcyqp1tm6QeXuUNB0SoluXhrFRYk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=i+LSnZtTwtysJWxuhDZw3d9mLByOTctc0IRpFBGeMV7AilsjX/uqIzbZrgmQOIx+U
+         gaIWmHFCQlH1MC43SlpZWLb3HkXHKzaaWnXKfQg1N8dShgxkPh7zWGpt8Jejyj+LmA
+         KHSKzowAvj3cCdsGBEh9CTt7dtUpNTLBtB4ZhiuyUQJI0R0K1zHuO1i9/psY/lB3E1
+         dgDVjIiyRro/+mx37cVURd1a/FX1cYAimTn0h1icl42RDTo+dZU9IAMuw9nQ7UkgC8
+         2sX96i2LEGgE7pSlfQUxpdjJWNX7GTNtCgS8LHlIm58w2p5cAwmTJBI7+uN1QdBYkV
+         UHBbHudIoU0cw==
+Received: by mail-ed1-f47.google.com with SMTP id dj8so9338986edb.2;
+        Thu, 19 Aug 2021 08:00:14 -0700 (PDT)
+X-Gm-Message-State: AOAM532P2ZHAGdfDo2T5LXasfs29nqpen6j1DjPvXePPPUrFTXGf3VWo
+        p18WyQRDg76Mgn7eYqcdUqfhnqgaR3m+5/N6oA==
+X-Google-Smtp-Source: ABdhPJywGAFcZyeFfHGvm2H/Zdii8mlwORsTkptePeQu2y+i3nkMQ+zjBa4vUPMxNQYtZNzH4FvakVszXQcwdaXQiUE=
+X-Received: by 2002:a05:6402:b64:: with SMTP id cb4mr16678817edb.49.1629385213446;
+ Thu, 19 Aug 2021 08:00:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wgBMNC1ePTgqM6f0iBH94KE5_oHQYD2sqCbjev0KaZ6Kw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210819022327.13040-1-jason-jh.lin@mediatek.com> <20210819022327.13040-2-jason-jh.lin@mediatek.com>
+In-Reply-To: <20210819022327.13040-2-jason-jh.lin@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 19 Aug 2021 23:00:02 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_9Yug-9S4uBkNLTJH+TU8dHCeOjLuwXdNMJ+R89qJyJ9Q@mail.gmail.com>
+Message-ID: <CAAOTY_9Yug-9S4uBkNLTJH+TU8dHCeOjLuwXdNMJ+R89qJyJ9Q@mail.gmail.com>
+Subject: Re: [PATCH v8 01/13] dt-bindings: arm: mediatek: mmsys: add mt8195
+ SoC binding
+To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>, fshao@chromium.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Fabien Parent <fparent@baylibre.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Jitao shi <jitao.shi@mediatek.com>,
+        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/18/21 8:57 PM, Linus Torvalds wrote:
-> On Tue, Aug 17, 2021 at 8:06 PM Jens Axboe <axboe@kernel.dk> wrote:
->>
->> task_work being added with notify == TWA_SIGNAL will utilize
->> TIF_NOTIFY_SIGNAL for signaling the targeted task that work is available.
->> If this happens while a task is going through a core dump, it'll
->> potentially disturb and truncate the dump as a signal interruption.
-> 
-> This patch seems (a) buggy and (b) hacky.
-> 
->> --- a/kernel/task_work.c
->> +++ b/kernel/task_work.c
->> @@ -41,6 +41,12 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
->>                 head = READ_ONCE(task->task_works);
->>                 if (unlikely(head == &work_exited))
->>                         return -ESRCH;
->> +               /*
->> +                * TIF_NOTIFY_SIGNAL notifications will interfere with
->> +                * a core dump in progress, reject them.
->> +                */
->> +               if (notify == TWA_SIGNAL && (task->flags & PF_SIGNALED))
->> +                       return -ESRCH;
-> 
-> This basically seems to check task->flags with no serialization.
-> 
-> I'm sure it works 99.9% of the time in practice, since you'd be really
-> unlucky to hit any races, but I really don't see what the
-> serialization logic is.
-> 
-> Also, the main user that actually triggered the problem already has
-> 
->         if (unlikely(tsk->flags & PF_EXITING))
->                 goto fail;
-> 
-> just above the call to task_work_add(), so this all seems very hacky indeed.
-> 
-> Of course, I don't see what the serialization for _that_ one is either.
-> 
-> Pls explain. You can't just randomly add tests for random flags that
-> get modified by other random code.
+Hi, Jason:
 
-You're absolutely right. On the io_uring side, in the current tree,
-there's only one check where current != task being checked - and that's
-in the poll rewait arming. That one should likely just go away. It may
-be fine as it is, as it just pertains to ring exit cancelations. We want
-to ensure that we don't rearm poll requests if the process is canceling
-and going away. I'll take a closer look at that one.
+jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B48=E6=9C=881=
+9=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8810:23=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> 1. There are 2 mmsys, namely vdosys0 and vdosys1 in mt8195.
+>    Each of them is bound to a display pipeline, so add their
+>    definition in mtk-mmsys documentation with 2 compatibles.
+>
+> 2. Add description for power-domain property.
+>
+> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
+> ---
+> this patch is base on [1][2]
+>
+> [1] dt-bindings: arm: mediatek: mmsys: convert to YAML format
+> - https://patchwork.kernel.org/project/linux-mediatek/patch/2021051916184=
+7.3747352-1-fparent@baylibre.com/
+> [2] dt-bindings: arm: mediatek: mmsys: add MT8365 SoC binding
+> - https://patchwork.kernel.org/project/linux-mediatek/patch/2021051916184=
+7.3747352-2-fparent@baylibre.com/
+> ---
+>  .../devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml  | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsy=
+s.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
+> index 2d4ff0ce387b..68cb330d7595 100644
+> --- a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
+> +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
+> @@ -30,6 +30,8 @@ properties:
+>                - mediatek,mt8173-mmsys
+>                - mediatek,mt8183-mmsys
+>                - mediatek,mt8365-mmsys
+> +              - mediatek,mt8195-vdosys0
+> +              - mediatek,mt8195-vdosys1
+>            - const: syscon
+>        - items:
+>            - const: mediatek,mt7623-mmsys
+> @@ -39,6 +41,12 @@ properties:
+>    reg:
+>      maxItems: 1
+>
+> +  power-domains:
+> +    description:
+> +      A phandle and PM domain specifier as defined by bindings
+> +      of the power controller specified by phandle. See
+> +      Documentation/devicetree/bindings/power/power-domain.yaml for deta=
+ils.
+> +
 
-For this particular patch, I agree it's racy. I'll see if I can come up
-with something better...
+This patch is about mt8195, but mt8173 mmsys also has power domain. So
+move this part to another patch.
 
--- 
-Jens Axboe
+Regards,
+Chun-Kuang.
 
+
+>    "#clock-cells":
+>      const: 1
+>
+> --
+> 2.18.0
+>
