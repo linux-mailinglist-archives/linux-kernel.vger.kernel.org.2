@@ -2,467 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA153F2140
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 21:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E703F2141
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 21:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234949AbhHST7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 15:59:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234436AbhHST7D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 15:59:03 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 448B0C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 12:58:25 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id c17so6920282pgc.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 12:58:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=LynX178MCRLTZU5nO2CQfUksz3iyT32ZXzH2mGMWDBA=;
-        b=IXP6D8XUx7q38sbKdbR+/AGu2s0ZJLBWooVJkgCUSHWtToTxSgv5DmH5+2jvYOp6Zi
-         HzsBie7+wTjJLrZAtj2grSzQ23RPyHvcRjIk1YBMcTFffxfJWBxG7UDPfDsT7lYLqEXs
-         P59yXQ7sA3PbiyfDMZYBhF0RVfO2fU3LZbyYQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=LynX178MCRLTZU5nO2CQfUksz3iyT32ZXzH2mGMWDBA=;
-        b=QSoefqLkKaeSLtMaL/TukQ5hLn14tIBQBKWIlAfFCuTDmyYGJp2du3YEKh0bk6VtDX
-         Eb9D9fxLKabktX0x/vwSUpLpZCJc0vhWRWR2l0gU/HBw50Yd1W1TZe+XEwnFerE2zIRt
-         4pqJ4Pfj1g1hTLerbud7PR/G/FltONhmLao/lZphVDC//h9UEQut/3E0FhcwMnYbrMiq
-         Yxzo/8nO/DsRD0WbKCCRQr/aqXWwKH+HSfl6b+OkfcF0GsXVudH6TFvYn4A+on56X53D
-         quLFwvy7oTocZPVxoVFUi/6/d7ARTe3bggc/+1XXkYdN1oBV9DzxSfJhGjW5P5DxCSTK
-         zlPg==
-X-Gm-Message-State: AOAM5335sEKftOTVoc26m1+omxZJmWlPNmJUwuIcKp0xGCERBItIhdBF
-        rnrSo1HUeR2Q9XO3379L1DhYjw==
-X-Google-Smtp-Source: ABdhPJwENFrpIU7Xhf4Zl5AymWSqlMMnYKOiArZ+vRAHZd9/qVLc9guwbLoTcMORFGutADg/dAOGOw==
-X-Received: by 2002:aa7:83c6:0:b029:3e0:1f64:6f75 with SMTP id j6-20020aa783c60000b02903e01f646f75mr15962378pfn.69.1629403104650;
-        Thu, 19 Aug 2021 12:58:24 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id r16sm3784554pje.10.2021.08.19.12.58.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 12:58:24 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 12:58:22 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Lazar, Lijo" <lijo.lazar@amd.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Feifei Xu <Feifei.Xu@amd.com>, Likun Gao <Likun.Gao@amd.com>,
-        Jiawei Gu <Jiawei.Gu@amd.com>, Evan Quan <evan.quan@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 18/63] drm/amd/pm: Use struct_group() for memcpy()
- region
-Message-ID: <202108191214.6269AFD@keescook>
-References: <20210818060533.3569517-1-keescook@chromium.org>
- <20210818060533.3569517-19-keescook@chromium.org>
- <753ef2d1-0f7e-c930-c095-ed86e1518395@amd.com>
- <202108181619.B603481527@keescook>
- <e56aad3c-a06f-da07-f491-a894a570d78f@amd.com>
+        id S231135AbhHST7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 15:59:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36304 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229514AbhHST7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 15:59:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B6CA60462;
+        Thu, 19 Aug 2021 19:59:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629403149;
+        bh=wZLWzge5RhCuX8MBK9EyEqHoqZl82FgCkrvSRpzrct0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u+c3ox6C9SXNpsR8XVAKAO7/w/BYOucl4Ak9+BLWqNgW+MnZIuM/RJmQNQwoV5GMF
+         mHyzUgho1gSsK+MC1gFD1BVKTSGVTC0lsJxrQjEpr0IKS6kCh6eO3K6J4if62SwTIf
+         6GoHySCWGKrGQCOAW967Gs6G2COUicG4PhDzEe7mnVO0Nmkam9bj8vgBq8UP0Ej4Gx
+         RwFAQulTz0PAVqmM8HRIauPS0rLYbga6ZwnoGMFGAXIW3zb7TuEm1KZ/p8bJzPCXcq
+         CSqojDtguoBmMiwXoNwXNVDRNvoPvHMWoNCSctuj911ecE0jwPlSzmSXoDIvWNCqrP
+         AzsvS8oy/XvQQ==
+Date:   Thu, 19 Aug 2021 12:59:06 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     kernel test robot <lkp@intel.com>, Philip Li <philip.li@intel.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [dhowells-fs:netfs-folio-regions 11/28]
+ fs/netfs/read_helper.c:979:13: warning: variable 'folio' is uninitialized
+ when used here
+Message-ID: <YR64CsQVrynR4V/y@Ryzen-9-3900X.localdomain>
+References: <202108200354.7eThNmGj-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e56aad3c-a06f-da07-f491-a894a570d78f@amd.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <202108200354.7eThNmGj-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 10:33:43AM +0530, Lazar, Lijo wrote:
-> On 8/19/2021 5:29 AM, Kees Cook wrote:
-> > On Wed, Aug 18, 2021 at 05:12:28PM +0530, Lazar, Lijo wrote:
-> > > 
-> > > On 8/18/2021 11:34 AM, Kees Cook wrote:
-> > > > In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> > > > field bounds checking for memcpy(), memmove(), and memset(), avoid
-> > > > intentionally writing across neighboring fields.
-> > > > 
-> > > > Use struct_group() in structs:
-> > > > 	struct atom_smc_dpm_info_v4_5
-> > > > 	struct atom_smc_dpm_info_v4_6
-> > > > 	struct atom_smc_dpm_info_v4_7
-> > > > 	struct atom_smc_dpm_info_v4_10
-> > > > 	PPTable_t
-> > > > so the grouped members can be referenced together. This will allow
-> > > > memcpy() and sizeof() to more easily reason about sizes, improve
-> > > > readability, and avoid future warnings about writing beyond the end of
-> > > > the first member.
-> > > > 
-> > > > "pahole" shows no size nor member offset changes to any structs.
-> > > > "objdump -d" shows no object code changes.
-> > > > 
-> > > > Cc: "Christian König" <christian.koenig@amd.com>
-> > > > Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
-> > > > Cc: David Airlie <airlied@linux.ie>
-> > > > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > > > Cc: Hawking Zhang <Hawking.Zhang@amd.com>
-> > > > Cc: Feifei Xu <Feifei.Xu@amd.com>
-> > > > Cc: Lijo Lazar <lijo.lazar@amd.com>
-> > > > Cc: Likun Gao <Likun.Gao@amd.com>
-> > > > Cc: Jiawei Gu <Jiawei.Gu@amd.com>
-> > > > Cc: Evan Quan <evan.quan@amd.com>
-> > > > Cc: amd-gfx@lists.freedesktop.org
-> > > > Cc: dri-devel@lists.freedesktop.org
-> > > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > > Acked-by: Alex Deucher <alexander.deucher@amd.com>
-> > > > Link: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Flkml%2FCADnq5_Npb8uYvd%2BR4UHgf-w8-cQj3JoODjviJR_Y9w9wqJ71mQ%40mail.gmail.com&amp;data=04%7C01%7Clijo.lazar%40amd.com%7C3861f20094074bf7328808d962a433f2%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637649279701053991%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=386LcfJJGfQfHsXBuK17LMqxJ2nFtGoj%2FUjoN2ZtJd0%3D&amp;reserved=0
-> > > > ---
-> > > >    drivers/gpu/drm/amd/include/atomfirmware.h           |  9 ++++++++-
-> > > >    .../gpu/drm/amd/pm/inc/smu11_driver_if_arcturus.h    |  3 ++-
-> > > >    drivers/gpu/drm/amd/pm/inc/smu11_driver_if_navi10.h  |  3 ++-
-> > > >    .../gpu/drm/amd/pm/inc/smu13_driver_if_aldebaran.h   |  3 ++-
-> > > 
-> > > Hi Kees,
-> > 
-> > Hi! Thanks for looking into this.
-> > 
-> > > The headers which define these structs are firmware/VBIOS interfaces and are
-> > > picked directly from those components. There are difficulties in grouping
-> > > them to structs at the original source as that involves other component
-> > > changes.
-> > 
-> > So, can you help me understand this a bit more? It sounds like these are
-> > generated headers, yes? I'd like to understand your constraints and
-> > weight them against various benefits that could be achieved here.
-> > 
-> > The groupings I made do appear to be roughly documented already,
-> > for example:
-> > 
-> >     struct   atom_common_table_header  table_header;
-> >       // SECTION: BOARD PARAMETERS
-> > +  struct_group(dpm_info,
-> > 
-> > Something emitted the "BOARD PARAMETERS" section heading as a comment,
-> > so it likely also would know where it ends, yes? The good news here is
-> > that for the dpm_info groups, they all end at the end of the existing
-> > structs, see:
-> > 	struct atom_smc_dpm_info_v4_5
-> > 	struct atom_smc_dpm_info_v4_6
-> > 	struct atom_smc_dpm_info_v4_7
-> > 	struct atom_smc_dpm_info_v4_10
-> > 
-> > The matching regions in the PPTable_t structs are similarly marked with a
-> > "BOARD PARAMETERS" section heading comment:
-> > 
-> > --- a/drivers/gpu/drm/amd/pm/inc/smu11_driver_if_arcturus.h
-> > +++ b/drivers/gpu/drm/amd/pm/inc/smu11_driver_if_arcturus.h
-> > @@ -643,6 +643,7 @@ typedef struct {
-> >     // SECTION: BOARD PARAMETERS
-> >     // SVI2 Board Parameters
-> > +  struct_group(v4_6,
-> >     uint16_t     MaxVoltageStepGfx; // In mV(Q2) Max voltage step that SMU will request. Multiple steps are taken if voltage change exceeds this value.
-> >     uint16_t     MaxVoltageStepSoc; // In mV(Q2) Max voltage step that SMU will request. Multiple steps are taken if voltage change exceeds this value.
-> > @@ -728,10 +729,10 @@ typedef struct {
-> >     uint32_t     BoardVoltageCoeffB;    // decode by /1000
-> >     uint32_t     BoardReserved[7];
-> > +  );
-> >     // Padding for MMHUB - do not modify this
-> >     uint32_t     MmHubPadding[8]; // SMU internal use
-> > -
-> >   } PPTable_t;
-> > 
-> > Where they end seems known as well (the padding switches from a "Board"
-> > to "MmHub" prefix at exactly the matching size).
-> > 
-> > So, given that these regions are already known by the export tool, how
-> > about just updating the export tool to emit a struct there? I imagine
-> > the problem with this would be the identifier churn needed, but that's
-> > entirely mechanical.
-> > 
-> > However, I'm curious about another aspect of these regions: they are,
-> > by definition, the same. Why isn't there a single struct describing
-> > them already, given the existing redundancy? For example, look at the
-> > member names: maxvoltagestepgfx vs MaxVoltageStepGfx. Why aren't these
-> > the same? And then why aren't they described separately?
-> > 
-> > Fixing that would cut down on the redundancy here, and in the renaming,
-> > you can fix the identifiers as well. It should be straight forward to
-> > write a Coccinelle script to do this renaming for you after extracting
-> > the structure.
-> > 
-> > > The driver_if_* files updates are frequent and it is error prone to manually
-> > > group them each time we pick them for any update.
-> > 
-> > Why are these structs updated? It looks like they're specifically
-> > versioned, and aren't expected to change (i.e. v4.5, v4.6, v4.10, etc).
-> > 
-> > > Our usage of memcpy in this way is restricted only to a very few places.
-> > 
-> > True, there's 1 per PPTable_t duplication. With a proper struct, you
-> > wouldn't even need a memcpy().
-> > 
-> > Instead of the existing:
-> >                 memcpy(smc_pptable->I2cControllers, smc_dpm_table_v4_7->I2cControllers,
-> >                         sizeof(*smc_dpm_table_v4_7) - sizeof(smc_dpm_table_v4_7->table_header));
-> > 
-> > or my proposed:
-> >                 memcpy(&smc_pptable->v4, &smc_dpm_table_v4_7->dpm_info,
-> >                        sizeof(smc_dpm_table_v4_7->dpm_info));
-> > 
-> > you could just have:
-> > 		smc_pptable->v4 = smc_dpm_table_v4_7->dpm_info;
-> > 
-> > since they'd be explicitly the same type.
-> > 
-> > That looks like a much cleaner solution to this. It greatly improves
-> > readability, reduces the redundancy in the headers, and should be a
-> > simple mechanical refactoring.
-> > 
-> > Oh my, I just noticed append_vbios_pptable() in
-> > drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_processpptables.c
-> > which does an open-coded assignment of the entire PPTable_t, including
-> > padding, and, apparently, the i2c address twice:
-> > 
-> >          ppsmc_pptable->Vr2_I2C_address = smc_dpm_table.Vr2_I2C_address;
-> > 
-> >          ppsmc_pptable->Vr2_I2C_address = smc_dpm_table.Vr2_I2C_address;
-> > 
-> > > As another option - is it possible to have a helper function/macro like
-> > > memcpy_fortify() which takes the extra arguments and does the extra compile
-> > > time checks? We will use the helper whenever we have such kind of usage.
-> > 
-> > I'd rather avoid special cases just for this, especially when the code
-> > here is already doing a couple things we try to avoid in the rest of
-> > the kernel (i.e. open coded redundant struct contents, etc).
-> > 
-> > If something mechanically produced append_vbios_pptable() above, I bet
-> > we can get rid of the memcpy()s entirely and save a lot of code doing a
-> > member-to-member assignment.
-> > 
-> > What do you think?
-> > 
-> 
-> Hi Kees,
-> 
-> Will give a background on why there are multiple headers and why it's
-> structured this way. That may help to better understand this arrangement.
-> 
-> This code is part of driver for AMD GPUs. These GPUs get to the consumers
-> through multiple channels - AMD designs a few boards with those, there are
-> add-in-board partners like ASRock, Sapphire etc. who take these ASICs and
-> design their own boards, and others like OEM vendors who have their own
-> design for boards in their laptops.
-> 
-> As you have noticed, this particular section in the structure carries
-> information categorized as 'BOARD PARAMETERS'. Since there are multiple
-> vendors designing their own boards, this gives the option to customize the
-> parameters based on their board design.
-> 
-> There are a few components in AMD GPUs which are interested in these board
-> parameters main ones being - Video BIOS (VBIOS) and power management
-> firmware (PMFW). There needs to be a single source where a vendor can input
-> the information and that is decided as VBIOS. VBIOS carries different data
-> tables which carry other information also (some of which are used by
-> driver), so this information is added as a separate data table in VBIOS. A
-> board vendor can customize the VBIOS build with this information.
-> 
-> The data tables (and some other interfaces with driver) carried by VBIOS are
-> published in this header - drivers/gpu/drm/amd/include/atomfirmware.h
+On Fri, Aug 20, 2021 at 03:07:06AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs=
+=2Egit netfs-folio-regions
+> head:   215a4ee495a95cc73256ed76f91cb78bcabd6b8e
+> commit: 90417b52931da8cb4eb670c3cc22bfa12aabe55c [11/28] netfs: Use a buf=
+fer in netfs_read_request and add pages to it
+> config: hexagon-randconfig-r041-20210818 (attached as .config)
+> compiler: clang version 12.0.0
+> reproduce (this is a W=3D1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbi=
+n/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-=
+fs.git/commit/?id=3D90417b52931da8cb4eb670c3cc22bfa12aabe55c
+>         git remote add dhowells-fs https://git.kernel.org/pub/scm/linux/k=
+ernel/git/dhowells/linux-fs.git
+>         git fetch --no-tags dhowells-fs netfs-folio-regions
+>         git checkout 90417b52931da8cb4eb670c3cc22bfa12aabe55c
+>         # save the attached .config to linux build tree
+>         mkdir build_dir
+>         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross O=
+=3Dbuild_dir ARCH=3Dhexagon SHELL=3D/bin/bash fs/netfs/
+>=20
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>=20
+> All warnings (new ones prefixed by >>):
+>=20
+> >> fs/netfs/read_helper.c:979:13: warning: variable 'folio' is uninitiali=
+zed when used here
+>    folio_get(folio);
+>    ^~~~~
+>    fs/netfs/read_helper.c:932:21: note: initialize the variable 'folio' t=
+o silence this warning
+>    struct folio
+>    ^
+>    =3D NULL
+>    fatal error: error in backend: Misaligned constant address: 0x0000001b=
+ has alignment 1, but the memory access requires 4
 
-I understand this to mean that this header is shared by other projects?
+This crash has been fixed in clang-13 [1]. Philip, would it be possible for
+the robot to use the same clang version for Hexagon that you use for all of=
+ the
+other architectures? It should have no issues, as we are using it in our
+CI. If there are, please let me know so I can try to get them triaged
+and fixed upstream,
 
-If that's true, what compilers are processing this header? (i.e. so I
-can scope my suggestions to things that all the compilers will be able
-to deal with.)
+[1] https://bugs.llvm.org/show_bug.cgi?id=3D50838
 
-How are edits of this file managed "upstream" from the Linux kernel?
+Cheers,
+Nathan
 
-Why does it have strange indentations like this:
-
-  uint8_t  ledpin0;
-  uint8_t  ledpin1;
-  uint8_t  ledpin2;
-  uint8_t  padding8_4;
-
-	uint8_t  pllgfxclkspreadenabled;
-	uint8_t  pllgfxclkspreadpercent;
-	uint16_t pllgfxclkspreadfreq;
-
-  uint8_t uclkspreadenabled;
-  uint8_t uclkspreadpercent;
-  uint16_t uclkspreadfreq;
-
-
-> There are multiple families of AMD GPUs like Navi10, Arcturus, Aldebaran
-> etc. and the board specific details change with different families of GPUs.
-> However, VBIOS team publishes a common header file for these GPUs and any
-> difference in data tables (between GPU families) is maintained through a
-> versioning scheme. Thus there are different tables like
-> atom_smc_dpm_info_v4_5, atom_smc_dpm_info_v4_6 etc. which are relevant for a
-> particular family of GPUs.
-> 
-> With newer VBIOS versions and new GPU families, there could be changes in
-> the structs defined in atomfirmware.h and we pick the header accordingly.
-> 
-> As mentioned earlier, one other user of the board specific information is
-> power management firmware (PMFW). PMFW design is isolated from the actual
-> source of board information. In addition to board specific information, PMFW
-> needs some other info as well and driver is the one responsible for passing
-> this info to the firmware. PMFW gives an interface header to driver
-> providing the different struct formats which are used in driver<->PMFW
-> interactions. Unlike VBIOS, these interface headers are defined per family
-> of ASICs and those are smu11_driver_if_arcturus.h, smu11_driver_if_* etc.
-> (in short driver_if_* files). Like VBIOS,  with newer firmware versions,
-> there could be changes in the different structs defined in these headers and
-> we pick them accordingly.
-
-Are these headers also shared between other projects?
-
-What's needed to coordinate making these less redundant? (i.e. replacing
-the "BOARD PARAMETERS" portion of PPTable_t with the associated
-struct *_dpm_info_v* from atomfirmware.h?)
-
-> Driver acts the intermediary between actual source of board information
-> (VBIOS) and PMFW. So what is being done here is driver picks the board
-> information from VBIOS table, strips the VBIOS table header and passes it as
-> part of PPTable_t which defines all the information that is needed by PMFW
-> from driver for enabling dynamic power management.
-> 
-> In summary, these headers are not generated and not owned by driver. They
-> define the interfaces of two different components with driver, and are
-> consumed by those components themselves. A simple change to group the
-> information as a separate structure involves changes in multiple components
-> like VBIOS, PMFW, software used to build VBIOS, Windows driver etc.
-> 
-> In all practical cases, this code is harmless as these structs (in both
-> headers) are well defined for a specific family of GPUs. There is always a
-> reserve field defined with some extra bytes so that the size is not affected
-> if at all new fields need to be added.
-
-It sounds like it's unlikely that the headers will be able to change? If
-that's true, it seems like a good idea to mark those headers very
-clearly at the top with details like you describe here. Maybe something
-like:
-
-/*
- * This header file is shared between VBIOS, Windows drivers, and Linux
- * drivers. Any changes need to be well justified and coordinated with
- * email@address...
- */
-
-And in looking through these, I notice there's a typo in the Description:
-
-    header file of general definitions for OS nd pre-OS video drivers
-
-nd -> and
-
-> The patch now makes us to modify the headers for Linux through
-> script/manually whenever we pick them, and TBH that strips off the coherency
-> with the original source. The other option is field by field copy. Now we
-> use memcpy as a safe bet so that a new field added later taking some reserve
-> space is not missed even if we miss a header update.
-
-How does this look as a work-around for now:
+>    PLEASE submit a bug report to https://bugs.llvm.org/ and include the c=
+rash backtrace, preprocessed source, and associated run script.
+>    Stack dump:
+>    0. Program arguments: clang -Wp,-MMD,fs/netfs/.read_helper.o.d -nostdi=
+nc -isystem /opt/cross/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x=
+86_64-linux-gnu/lib/clang/12.0.0/include -Iarch/hexagon/include -I./arch/he=
+xagon/include/generated -Iinclude -I./include -Iarch/hexagon/include/uapi -=
+I./arch/hexagon/include/generated/uapi -Iinclude/uapi -I./include/generated=
+/uapi -include include/linux/compiler-version.h -include include/linux/kcon=
+fig.h -include include/linux/compiler_types.h -D__KERNEL__ -Qunused-argumen=
+ts -fmacro-prefix-map=3D=3D -DKBUILD_EXTRA_WARN1 -Wall -Wundef -Werror=3Dst=
+rict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wch=
+ar -fno-PIE -Werror=3Dimplicit-function-declaration -Werror=3Dimplicit-int =
+-Werror=3Dreturn-type -Wno-format-security -std=3Dgnu89 --target=3Dhexagon-=
+unknown-linux-musl -integrated-as -Werror=3Dunknown-warning-option -G0 -fno=
+-short-enums -mlong-calls -ffixed-r19 -DTHREADINFO_REG=3Dr19 -D__linux__ -f=
+no-delete-null-pointer-checks -Wno-frame-address -Wno-address-of-packed-mem=
+ber -O2 -Wframe-larger-than=3D1024 -fno-stack-protector -Wno-format-invalid=
+-specifier -Wno-gnu -mno-global-merge -Wno-unused-const-variable -fno-omit-=
+frame-pointer -fno-optimize-sibling-calls -ftrivial-auto-var-init=3Dpattern=
+ -fno-stack-clash-protection -falign-functions=3D64 -Wdeclaration-after-sta=
+tement -Wvla -Wno-pointer-sign -Wno-array-bounds -fno-strict-overflow -fno-=
+stack-check -Werror=3Ddate-time -Werror=3Dincompatible-pointer-types -Wextr=
+a -Wunused -Wno-unused-parameter -Wmissing-declarations -Wmissing-format-at=
+tribute -Wmissing-prototypes -Wold-style-definition -Wmissing-include-dirs =
+-Wunused-const-variable -Wno-missing-field-initializers -Wno-sign-compare -=
+Wno-type-limits -I fs/netfs -I ./fs/netfs -DKBUILD_MODFILE=3D"fs/netfs/netf=
+s" -DKBUILD_BASENAME=3D"read_helper" -DKBUILD_MODNAME=3D"netfs" -D__KBUILD_=
+MODNAME=3Dkmod_netfs -c -o fs/netfs/read_helper.o fs/netfs/read_helper.c
+>    1. <eof> parser at end of file
+>    2. Code generation
+>    3. Running pass 'Function Pass Manager' on module 'fs/netfs/read_helpe=
+r.c'.
+>    4. Running pass 'Hexagon DAG->DAG Pattern Instruction Selection' on fu=
+nction '@netfs_rreq_set_up_buffer'
+>    #0 0x000000000355d1fc llvm::sys::PrintStackTrace(llvm::raw_ostream&, i=
+nt) (/opt/cross/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-l=
+inux-gnu/bin/clang-12+0x355d1fc)
+>    #1 0x000000000355afbe llvm::sys::RunSignalHandlers() (/opt/cross/clang=
++llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/clang-12=
++0x355afbe)
+>    #2 0x000000000355c55d llvm::sys::CleanupOnSignal(unsigned long) (/opt/=
+cross/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/b=
+in/clang-12+0x355c55d)
+>    #3 0x00000000034d5aed (anonymous namespace)::CrashRecoveryContextImpl:=
+:HandleCrash(int, unsigned long) (/opt/cross/clang+llvm-12.0.0-cross-hexago=
+n-unknown-linux-musl/x86_64-linux-gnu/bin/clang-12+0x34d5aed)
+>    #4 0x00000000034d5a79 llvm::CrashRecoveryContext::HandleExit(int) (/op=
+t/cross/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu=
+/bin/clang-12+0x34d5a79)
+>    #5 0x0000000003557e07 llvm::sys::Process::Exit(int, bool) (/opt/cross/=
+clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/cla=
+ng-12+0x3557e07)
+>    #6 0x0000000002107e10 llvm::DenseMapBase<llvm::DenseMap<llvm::AliasSet=
+Tracker::ASTCallbackVH, llvm::AliasSetTracker::ASTCallbackVHDenseMapInfo, l=
+lvm::detail::DenseMapPair<llvm::AliasSetTracker::ASTCallbackVH, >, llvm::Al=
+iasSetTracker::ASTCallbackVH, llvm::AliasSetTracker::ASTCallbackVHDenseMapI=
+nfo, llvm::detail::DenseMapPair<llvm::AliasSetTracker::ASTCallbackVH, >::de=
+stroyAll() (/opt/cross/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x=
+86_64-linux-gnu/bin/clang-12+0x2107e10)
+>    #7 0x00000000034da319 llvm::report_fatal_error(llvm::Twine const&, boo=
+l) (/opt/cross/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-li=
+nux-gnu/bin/clang-12+0x34da319)
+>    #8 0x00000000034da3e7 (/opt/cross/clang+llvm-12.0.0-cross-hexagon-unkn=
+own-linux-musl/x86_64-linux-gnu/bin/clang-12+0x34da3e7)
+>    #9 0x0000000002411b46 (/opt/cross/clang+llvm-12.0.0-cross-hexagon-unkn=
+own-linux-musl/x86_64-linux-gnu/bin/clang-12+0x2411b46)
+>    #10 0x00000000024183c0 llvm::HexagonTargetLowering::LowerLoad(llvm::SD=
+Value, llvm::SelectionDAG&) const (/opt/cross/clang+llvm-12.0.0-cross-hexag=
+on-unknown-linux-musl/x86_64-linux-gnu/bin/clang-12+0x24183c0)
+>    #11 0x0000000002419cbb llvm::HexagonTargetLowering::LowerOperation(llv=
+m::SDValue, llvm::SelectionDAG&) const (/opt/cross/clang+llvm-12.0.0-cross-=
+hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/clang-12+0x2419cbb)
+>    #12 0x00000000042c3b6a (anonymous (/opt/cross/clang+llvm-12.0.0-cross-=
+hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/clang-12+0x42c3b6a)
+>    #13 0x00000000042a61af (anonymous (/opt/cross/clang+llvm-12.0.0-cross-=
+hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/clang-12+0x42a61af)
+>    #14 0x00000000042a5443 llvm::SelectionDAG::Legalize() (/opt/cross/clan=
+g+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/clang-1=
+2+0x42a5443)
+>    #15 0x0000000004375361 llvm::SelectionDAGISel::CodeGenAndEmitDAG() (/o=
+pt/cross/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gn=
+u/bin/clang-12+0x4375361)
+>    #16 0x0000000004373545 llvm::SelectionDAGISel::SelectAllBasicBlocks(ll=
+vm::Function const&) (/opt/cross/clang+llvm-12.0.0-cross-hexagon-unknown-li=
+nux-musl/x86_64-linux-gnu/bin/clang-12+0x4373545)
+>    #17 0x00000000043703b7 llvm::SelectionDAGISel::runOnMachineFunction(ll=
+vm::MachineFunction&) (/opt/cross/clang+llvm-12.0.0-cross-hexagon-unknown-l=
+inux-musl/x86_64-linux-gnu/bin/clang-12+0x43703b7)
+>    #18 0x00000000024690c4 llvm::HexagonDAGToDAGISel::runOnMachineFunction=
+(llvm::MachineFunction&) (/opt/cross/clang+llvm-12.0.0-cross-hexagon-unknow=
+n-linux-musl/x86_64-linux-gnu/bin/clang-12+0x24690c4)
+>    #19 0x000000000290c1bd llvm::MachineFunctionPass::runOnFunction(llvm::=
+Function&) (/opt/cross/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x=
+86_64-linux-gnu/bin/clang-12+0x290c1bd)
+>    #20 0x0000000002d6a745 llvm::FPPassManager::runOnFunction(llvm::Functi=
+on&) (/opt/cross/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-=
+linux-gnu/bin/clang-12+0x2d6a745)
+>    #21 0x0000000002d70c51 llvm::FPPassManager::runOnModule(llvm::Module&)=
+ (/opt/cross/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linu=
+x-gnu/bin/clang-12+0x2d70c51)
+>    #22 0x0000000002d6adaa llvm::legacy::PassManagerImpl::run(llvm::Module=
+&) (/opt/cross/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-li=
+nux-gnu/bin/clang-12+0x2d6adaa)
+>    #23 0x000000000378e9a0 clang::EmitBackendOutput(clang::DiagnosticsEngi=
+ne&, clang::HeaderSearchOptions const&, clang::CodeGenOptions const&, clang=
+::TargetOptions const&, clang::LangOptions const&, llvm::DataLayout const&,=
+ clang::BackendAction, std::__1::unique_ptr<llvm::raw_pwrite_stream, std::_=
+_1::default_delete<llvm::raw_pwrite_stream> >) (/opt/cross/clang+llvm-12.0.=
+0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/clang-12+0x378e9a0)
+>    #24 0x0000000003ebec56 clang::BackendConsumer::HandleTranslationUnit(c=
+lang::ASTContext&) (/opt/cross/clang+llvm-12.0.0-cross-hexagon-unknown-linu=
+x-musl/x86_64-linux-gnu/bin/clang-12+0x3ebec56)
+>    #25 0x0000000004dbbc84 clang::ParseAST(clang::Sema&, bool, bool) (/opt=
+/cross/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/=
+bin/clang-12+0x4dbbc84)
+>    #26 0x0000000003e0d560 clang::FrontendAction::Execute() (/opt/cross/cl=
+ang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/clang=
+-12+0x3e0d560)
+>    #27 0x0000000003d596da clang::CompilerInstance::ExecuteAction(clang::F=
+rontendAction&) (/opt/cross/clang+llvm-12.0.0-cross-hexagon-unknown-linux-m=
+usl/x86_64-linux-gnu/bin/clang-12+0x3d596da)
+>    #28 0x0000000003eb890e (/opt/cross/clang+llvm-12.0.0-cross-hexagon-unk=
+nown-linux-musl/x86_64-linux-gnu/bin/clang-12+0x3eb890e)
+>    #29 0x0000000002107abe cc1_main(llvm::ArrayRef<char char (/opt/cross/c=
+lang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/clan=
+g-12+0x2107abe)
+>    #30 0x00000000021054ee ExecuteCC1Tool(llvm::SmallVectorImpl<char (/opt=
+/cross/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/=
+bin/clang-12+0x21054ee)
+>    #31 0x0000000003c04bd2 void llvm::function_ref<void ()>::callback_fn<c=
+lang::driver::CC1Command::Execute(llvm::ArrayRef<llvm::Optional<llvm::Strin=
+gRef> >, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1=
+::allocator<char> const::$_1>(long) (/opt/cross/clang+llvm-12.0.0-cross-hex=
+agon-unknown-linux-musl/x86_64-linux-gnu/bin/clang-12+0x3c04bd2)
+>    #32 0x00000000034d5a2b llvm::CrashRecoveryContext::RunSafely(llvm::fun=
+ction_ref<void ()>) (/opt/cross/clang+llvm-12.0.0-cross-hexagon-unknown-lin=
+ux-musl/x86_64-linux-gnu/bin/clang-12+0x34d5a2b)
+>    #33 0x0000000003c043c5 clang::driver::CC1Command::Execute(llvm::ArrayR=
+ef<llvm::Optional<llvm::StringRef> >, std::__1::basic_string<char, std::__1=
+::char_traits<char>, std::__1::allocator<char> const (/opt/cross/clang+llvm=
+-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/clang-12+0x3c=
+043c5)
+>    #34 0x0000000003bcc196 clang::driver::Compilation::ExecuteCommand(clan=
+g::driver::Command const&, clang::driver::Command const (/opt/cross/clang+l=
+lvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/clang-12+0=
+x3bcc196)
+>    #35 0x0000000003bcc617 clang::driver::Compilation::ExecuteJobs(clang::=
+driver::JobList const&, llvm::SmallVectorImpl<std::__1::pair<int, clang::dr=
+iver::Command >&) const (/opt/cross/clang+llvm-12.0.0-cross-hexagon-unknown=
+-linux-musl/x86_64-linux-gnu/bin/clang-12+0x3bcc617)
+>    #36 0x0000000003be5a81 clang::driver::Driver::ExecuteCompilation(clang=
+::driver::Compilation&, llvm::SmallVectorImpl<std::__1::pair<int, clang::dr=
+iver::Command >&) (/opt/cross/clang+llvm-12.0.0-cross-hexagon-unknown-linux=
+-musl/x86_64-linux-gnu/bin/clang-12+0x3be5a81)
+>    #37 0x0000000002104e21 main (/opt/cross/clang+llvm-12.0.0-cross-hexago=
+n-unknown-linux-musl/x86_64-linux-gnu/bin/clang-12+0x2104e21)
+>    #38 0x00007f04bb011d0a __libc_start_main (/lib/x86_64-linux-gnu/libc.s=
+o.6+0x26d0a)
+>    #39 0x0000000002102299 _start (/opt/cross/clang+llvm-12.0.0-cross-hexa=
+gon-unknown-linux-musl/x86_64-linux-gnu/bin/clang-12+0x2102299)
+>    clang-12: error: clang frontend command failed with exit code 70 (use =
+-v to see invocation)
+>    clang version 12.0.0
+>    Target: hexagon-unknown-linux-musl
+>    Thread model: posix
+>    InstalledDir: /opt/cross/clang_hexagon/x86_64-linux-gnu/bin
+>    clang-12: note: diagnostic msg:
+>    Makefile arch fs include kernel nr_bisected scripts source usr
+>=20
+>=20
+> vim +/folio +979 fs/netfs/read_helper.c
+>=20
+>    947=09
+>    948		ret =3D netfs_rreq_add_folios_to_buffer(rreq, want_index, have_in=
+dex - 1,
+>    949						      gfp_mask);
+>    950		if (ret < 0)
+>    951			return ret;
+>    952		have_folios +=3D have_index - want_index;
+>    953=09
+>    954		ret =3D netfs_rreq_add_folios_to_buffer(rreq, have_index + have_f=
+olios,
+>    955						      want_index + want_folios - 1,
+>    956						      gfp_mask);
+>    957		if (ret < 0)
+>    958			return ret;
+>    959=09
+>    960		/* Transfer the folios proposed by the VM into the buffer and tak=
+e refs
+>    961		 * on them.  The locks will be dropped in netfs_rreq_unlock().
+>    962		 */
+>    963		if (ractl) {
+>    964			while ((folio =3D readahead_folio(ractl))) {
+>    965				folio_get(folio);
+>    966				if (folio =3D=3D keep)
+>    967					folio_get(folio);
+>    968				ret =3D xa_insert_set_mark(&rreq->buffer,
+>    969							 folio_index(folio), folio,
+>    970							 XA_MARK_0, gfp_mask);
+>    971				if (ret < 0) {
+>    972					if (folio !=3D keep)
+>    973						folio_unlock(folio);
+>    974					folio_put(folio);
+>    975					return ret;
+>    976				}
+>    977			}
+>    978		} else {
+>  > 979			folio_get(folio);
+>    980			ret =3D xa_insert_set_mark(&rreq->buffer, keep->index, keep,
+>    981						 XA_MARK_0, gfp_mask);
+>    982			if (ret < 0) {
+>    983				folio_put(folio);
+>    984				return ret;
+>    985			}
+>    986		}
+>    987		return 0;
+>    988	}
+>    989=09
+>=20
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-index 96e895d6be35..4605934a4fb7 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-@@ -1446,4 +1446,29 @@ static inline int amdgpu_in_reset(struct amdgpu_device *adev)
- {
- 	return atomic_read(&adev->in_gpu_reset);
- }
-+
-+/**
-+ * memcpy_trailing - Copy the end of one structure into the middle of another
-+ *
-+ * @dst: Pointer to destination struct
-+ * @first_dst_member: The member name in @dst where the overwrite begins
-+ * @last_dst_member: The member name in @dst where the overwrite ends after
-+ * @src: Pointer to the source struct
-+ * @first_src_member: The member name in @src where the copy begins
-+ *
-+ */
-+#define memcpy_trailing(dst, first_dst_member, last_dst_member,		   \
-+		        src, first_src_member)				   \
-+({									   \
-+	size_t __src_offset = offsetof(typeof(*(src)), first_src_member);  \
-+	size_t __src_size = sizeof(*(src)) - __src_offset;		   \
-+	size_t __dst_offset = offsetof(typeof(*(dst)), first_dst_member);  \
-+	size_t __dst_size = offsetofend(typeof(*(dst)), last_dst_member) - \
-+			    __dst_offset;				   \
-+	BUILD_BUG_ON(__src_size != __dst_size);				   \
-+	__builtin_memcpy((u8 *)(dst) + __dst_offset,			   \
-+			 (u8 *)(src) + __src_offset,			   \
-+			 __dst_size);					   \
-+})
-+
- #endif
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c
-index 8ab58781ae13..1918e6232319 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c
-@@ -465,10 +465,8 @@ static int arcturus_append_powerplay_table(struct smu_context *smu)
- 
- 	if ((smc_dpm_table->table_header.format_revision == 4) &&
- 	    (smc_dpm_table->table_header.content_revision == 6))
--		memcpy(&smc_pptable->MaxVoltageStepGfx,
--		       &smc_dpm_table->maxvoltagestepgfx,
--		       sizeof(*smc_dpm_table) - offsetof(struct atom_smc_dpm_info_v4_6, maxvoltagestepgfx));
--
-+		memcpy_trailing(smc_pptable, MaxVoltageStepGfx, BoardReserved,
-+				smc_dpm_table, maxvoltagestepgfx);
- 	return 0;
- }
- 
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
-index 2e5d3669652b..b738042e064d 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
-@@ -431,16 +431,16 @@ static int navi10_append_powerplay_table(struct smu_context *smu)
- 
- 	switch (smc_dpm_table->table_header.content_revision) {
- 	case 5: /* nv10 and nv14 */
--		memcpy(smc_pptable->I2cControllers, smc_dpm_table->I2cControllers,
--			sizeof(*smc_dpm_table) - sizeof(smc_dpm_table->table_header));
-+		memcpy_trailing(smc_pptable, I2cControllers, BoardReserved,
-+				smc_dpm_table, I2cControllers);
- 		break;
- 	case 7: /* nv12 */
- 		ret = amdgpu_atombios_get_data_table(adev, index, NULL, NULL, NULL,
- 					      (uint8_t **)&smc_dpm_table_v4_7);
- 		if (ret)
- 			return ret;
--		memcpy(smc_pptable->I2cControllers, smc_dpm_table_v4_7->I2cControllers,
--			sizeof(*smc_dpm_table_v4_7) - sizeof(smc_dpm_table_v4_7->table_header));
-+		memcpy_trailing(smc_pptable, I2cControllers, BoardReserved,
-+				smc_dpm_table_v4_7, I2cControllers);
- 		break;
- 	default:
- 		dev_err(smu->adev->dev, "smc_dpm_info with unsupported content revision %d!\n",
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
-index c8eefacfdd37..a6fd7ee314a9 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
-@@ -409,9 +409,8 @@ static int aldebaran_append_powerplay_table(struct smu_context *smu)
- 
- 	if ((smc_dpm_table->table_header.format_revision == 4) &&
- 	    (smc_dpm_table->table_header.content_revision == 10))
--		memcpy(&smc_pptable->GfxMaxCurrent,
--		       &smc_dpm_table->GfxMaxCurrent,
--		       sizeof(*smc_dpm_table) - offsetof(struct atom_smc_dpm_info_v4_10, GfxMaxCurrent));
-+		memcpy_trailing(smc_pptable, GfxMaxCurrent, reserved,
-+				smc_dpm_table, GfxMaxCurrent);
- 	return 0;
- }
- 
-
--- 
-Kees Cook
