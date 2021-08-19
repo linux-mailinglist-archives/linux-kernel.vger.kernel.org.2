@@ -2,393 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9A53F1EA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5EF63F1EA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbhHSRDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 13:03:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51754 "EHLO
+        id S232039AbhHSRDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 13:03:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230500AbhHSRDq (ORCPT
+        with ESMTP id S230089AbhHSRDo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 13:03:46 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846D5C061760;
-        Thu, 19 Aug 2021 10:03:09 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id k8so10135747wrn.3;
-        Thu, 19 Aug 2021 10:03:09 -0700 (PDT)
+        Thu, 19 Aug 2021 13:03:44 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F31C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 10:03:07 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id m26so6076889pff.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 10:03:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iCwyI7WWuw6QrT1DGxcTellGqIlkMfCH+4D7xxK5lSU=;
-        b=Nrjw6kV0HcDX7OoNJBz/wwzAZAR+qsaHeaC5uKOZecVuDCd9kelJyO12o8EtU6pqEc
-         l2uoQ2LXEOsnQAI7ps6rmF8f8IWZK2x7tUmeYxVKMi0bIYrAso0iB4c9Um8CBmEZbY6q
-         rcJr2lVXu6CmNdztKvYmKzJo0Qc3oagDOCBTNOnd8Dx/cFSQzeMcnqlu/FdKepRDX9hW
-         6mH5kHZgve3qtY3uvIuKT+KV58gyFeTtUKeCoOBvY+iRgHVEkEKPvgY5A+Ag+Wjj13QR
-         WHYVJlgB1AX0pYpu8JGshY7fp9riE0JKXZSVagBwpLQyEQVUzsboBX0HiqR2KvRsN7/x
-         KDOA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=J4TZpk9abAOIRKhcZR3S8JjrqJEXcoiOGPcZGih+iXo=;
+        b=auXwozIFqZIBkGrvjkaA9y+v4Lz6pmtuu0mTnZV4/46y3SWh4xYDQl9te429g52oiK
+         WhLiZyb749FJhFUVlpM+wnjQX2mYvJ2Mh27lZR/bFPCPKlNqnSH3/xgvPVlDkdjB42KK
+         oj0Z0CgSGSzftsBmSvSF1f7FPR0omfht3gs9tjxkaEVLnfJZwb58BwzzoIKnylXNzH4S
+         sntWvT6TExk9rkYzlQaOq03QkFS0RL61T4gC7tmZUbIhjWXQeHPKUovZBU54PYLuLbIe
+         fLlrzCwVDWizDP2XtwxpcFmmM8A53eNSFLD+BImXWB7wSkrOEeSjM2JgiSxlJwnJUeqn
+         zpuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iCwyI7WWuw6QrT1DGxcTellGqIlkMfCH+4D7xxK5lSU=;
-        b=FhGU6Qo4hqwchUYHpF4LtdHFD9mI31TXytqS8BNq+MS/G+wCTn5eOcp5iO2QPcmf8H
-         Jvv8APfKjOaV5BnHAy7qYETDPUGvCXVQfd+1kpe+SRWAEZE4YJtfeHATeWiXSOG+Pt26
-         QnenneUSuxllA/c4hMolD+DfVlGGTnSYDMmFLihcFCEED6jNpGbbZ/0QWBBpCHGZQ9jz
-         dSi54SIHm/jGCiAsatP6ron8K02TRGA/6r7Cyt7tA+wvLTiIC+pkXcDEEeCXFHsCv1lX
-         czvvsgs+HoYEXBtIa+v8O+xq207/OydUAHtkemt/Xn8TuhebVEUts7F+VXlyEcoWF79e
-         HqTg==
-X-Gm-Message-State: AOAM533XrZAr5Z8nr5f1v06B/iRIhatO3dW2jownBdEERdno+UhBkFBy
-        xgm4e45spwWec0XuimYrTVU=
-X-Google-Smtp-Source: ABdhPJyQsykao1vPwIDrC1cQZ2plXDgEkVo2JPFY1qQ9DWbHnP5dfQgylf014aWW+EeYwN7Gwtg8aA==
-X-Received: by 2002:adf:a1ca:: with SMTP id v10mr4989666wrv.177.1629392588077;
-        Thu, 19 Aug 2021 10:03:08 -0700 (PDT)
-Received: from debby ([2a01:cb19:13:7900:ae2b:c45b:3c7c:7e51])
-        by smtp.gmail.com with ESMTPSA id d8sm3368382wrx.12.2021.08.19.10.03.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=J4TZpk9abAOIRKhcZR3S8JjrqJEXcoiOGPcZGih+iXo=;
+        b=NPsH9FwFPYgj0Jeo3GwHWIz7pdfkUGXUyZH/MUrOo0ZycGFbLLjLK49lbzcIaSDg1M
+         e9/rS9iLq9U6bYhJV3zYcVwH2gtNua29JzfaNLEAMeizIWf87wchaQlw5SX8iVjXyHEA
+         VbRxfNt1gOAylQiD8MQeczdCXQzrzTBlcH4qVkrs7WBYbsqsjiS9Kfepr53IGdLJX+es
+         PBR6jlLNw7PG9Nyupd6Hljajgu1jteFjXa3h6HLwtglMHi+ibQroXkmfs83j4C0ZlmuK
+         kfbVSZTy2TpSuRjIXDc0/dXBerhzf9Fc0Ch7p+mnGzu9+/OdfZtv8mwoDCUik/4+8DSa
+         H8Yw==
+X-Gm-Message-State: AOAM532NllNPLNAXAHLDnb7MUp+Crz+B2B+DJqtwu9kIYkN+szj6kZt9
+        QSUoPgKVINwwGR430dbF+3sZ
+X-Google-Smtp-Source: ABdhPJzxByJWQ3Gil5gsikf7ZATLGZajf5JLxBFsaCwWf//owO5gJ5pkkFlcGu7GAK2/rHUv4pAa+w==
+X-Received: by 2002:a63:798f:: with SMTP id u137mr14739508pgc.321.1629392587346;
         Thu, 19 Aug 2021 10:03:07 -0700 (PDT)
-From:   Romain Perier <romain.perier@gmail.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v3 2/3] rtc: Add support for the MSTAR MSC313 RTC
-Date:   Thu, 19 Aug 2021 19:03:00 +0200
-Message-Id: <20210819170301.10520-3-romain.perier@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210819170301.10520-1-romain.perier@gmail.com>
-References: <20210819170301.10520-1-romain.perier@gmail.com>
+Received: from thinkpad ([2409:4072:6d9a:7958:19b:f47b:7b55:abc8])
+        by smtp.gmail.com with ESMTPSA id r8sm4640850pgp.30.2021.08.19.10.03.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 10:03:06 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 22:33:01 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
+        quic_jhugo@quicinc.com
+Subject: Re: [PATCH v1 2/2] bus: mhi: core: Optimize and update MMIO register
+ write method
+Message-ID: <20210819170301.GF200135@thinkpad>
+References: <1629330634-36465-1-git-send-email-bbhatt@codeaurora.org>
+ <1629330634-36465-3-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1629330634-36465-3-git-send-email-bbhatt@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Palmer <daniel@0x0f.com>
+On Wed, Aug 18, 2021 at 04:50:34PM -0700, Bhaumik Bhatt wrote:
+> As of now, MMIO writes done after ready state transition use the
+> mhi_write_reg_field() API even though the whole register is being
+> written in most cases. Optimize this process by using mhi_write_reg()
+> API instead for those writes and use the mhi_write_reg_field()
+> API for MHI config registers only.
+> 
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
-This adds support for the RTC block on the Mstar MSC313e SoCs and newer.
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Signed-off-by: Daniel Palmer <daniel@0x0f.com>
-Co-developed-by: Romain Perier <romain.perier@gmail.com>
-Signed-off-by: Romain Perier <romain.perier@gmail.com>
----
- MAINTAINERS              |   1 +
- drivers/rtc/Kconfig      |  10 ++
- drivers/rtc/Makefile     |   1 +
- drivers/rtc/rtc-msc313.c | 258 +++++++++++++++++++++++++++++++++++++++
- 4 files changed, 270 insertions(+)
- create mode 100644 drivers/rtc/rtc-msc313.c
+Thanks,
+Mani
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index fd25e4ecf0b9..ebacdd5e8878 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2220,6 +2220,7 @@ F:	arch/arm/boot/dts/mstar-*
- F:	arch/arm/mach-mstar/
- F:	drivers/clk/mstar/
- F:	drivers/gpio/gpio-msc313.c
-+F:	drivers/rtc/rtc-msc313.c
- F:	drivers/watchdog/msc313e_wdt.c
- F:	include/dt-bindings/clock/mstar-*
- F:	include/dt-bindings/gpio/msc313-gpio.h
-diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index 12153d5801ce..9ce4baab5fcf 100644
---- a/drivers/rtc/Kconfig
-+++ b/drivers/rtc/Kconfig
-@@ -1925,4 +1925,14 @@ config RTC_DRV_WILCO_EC
- 	  This can also be built as a module. If so, the module will
- 	  be named "rtc_wilco_ec".
- 
-+config RTC_DRV_MSC313
-+	tristate "MStar MSC313 RTC"
-+        depends on ARCH_MSTARV7 || COMPILE_TEST
-+	help
-+	  If you say yes here you get support for the Mstar MSC313e On-Chip
-+	  Real Time Clock.
-+
-+	  This driver can also be built as a module, if so, the module
-+	  will be called "rtc-msc313".
-+
- endif # RTC_CLASS
-diff --git a/drivers/rtc/Makefile b/drivers/rtc/Makefile
-index 2dd0dd956b0e..5efda8a60cee 100644
---- a/drivers/rtc/Makefile
-+++ b/drivers/rtc/Makefile
-@@ -101,6 +101,7 @@ obj-$(CONFIG_RTC_DRV_MCP795)	+= rtc-mcp795.o
- obj-$(CONFIG_RTC_DRV_MESON)	+= rtc-meson.o
- obj-$(CONFIG_RTC_DRV_MOXART)	+= rtc-moxart.o
- obj-$(CONFIG_RTC_DRV_MPC5121)	+= rtc-mpc5121.o
-+obj-$(CONFIG_RTC_DRV_MSC313)	+= rtc-msc313.o
- obj-$(CONFIG_RTC_DRV_MSM6242)	+= rtc-msm6242.o
- obj-$(CONFIG_RTC_DRV_MT2712)	+= rtc-mt2712.o
- obj-$(CONFIG_RTC_DRV_MT6397)	+= rtc-mt6397.o
-diff --git a/drivers/rtc/rtc-msc313.c b/drivers/rtc/rtc-msc313.c
-new file mode 100644
-index 000000000000..8cf5d5fb298f
---- /dev/null
-+++ b/drivers/rtc/rtc-msc313.c
-@@ -0,0 +1,258 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Real time clocks driver for MStar/SigmaStar ARMv7 SoCs.
-+ * Based on "Real Time Clock driver for msb252x." that was contained
-+ * in various MStar kernels.
-+ *
-+ * (C) 2019 Daniel Palmer
-+ * (C) 2021 Romain Perier
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/delay.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/platform_device.h>
-+#include <linux/rtc.h>
-+
-+/* Registers */
-+#define REG_RTC_CTRL		0x00
-+#define REG_RTC_FREQ_CW_L	0x04
-+#define REG_RTC_FREQ_CW_H	0x08
-+#define REG_RTC_LOAD_VAL_L	0x0C
-+#define REG_RTC_LOAD_VAL_H	0x10
-+#define REG_RTC_MATCH_VAL_L	0x14
-+#define REG_RTC_MATCH_VAL_H	0x18
-+#define REG_RTC_STATUS_INT	0x1C
-+#define REG_RTC_CNT_VAL_L	0x20
-+#define REG_RTC_CNT_VAL_H	0x24
-+
-+/* Control bits for REG_RTC_CTRL */
-+#define SOFT_RSTZ_BIT		BIT(0)
-+#define CNT_EN_BIT		BIT(1)
-+#define WRAP_EN_BIT		BIT(2)
-+#define LOAD_EN_BIT		BIT(3)
-+#define READ_EN_BIT		BIT(4)
-+#define INT_MASK_BIT		BIT(5)
-+#define INT_FORCE_BIT		BIT(6)
-+#define INT_CLEAR_BIT		BIT(7)
-+
-+/* Control bits for REG_RTC_STATUS_INT */
-+#define RAW_INT_BIT		BIT(0)
-+#define ALM_INT_BIT		BIT(1)
-+
-+struct msc313_rtc {
-+	struct rtc_device *rtc_dev;
-+	void __iomem *rtc_base;
-+	struct clk *clk;
-+};
-+
-+static int msc313_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
-+{
-+	struct msc313_rtc *priv = dev_get_drvdata(dev);
-+	unsigned long seconds;
-+
-+	seconds = readw(priv->rtc_base + REG_RTC_MATCH_VAL_L)
-+			| (readw(priv->rtc_base + REG_RTC_MATCH_VAL_H) << 16);
-+
-+	rtc_time64_to_tm(seconds, &alarm->time);
-+
-+	if (!(readw(priv->rtc_base + REG_RTC_CTRL) & INT_MASK_BIT))
-+		alarm->enabled = 1;
-+
-+	return 0;
-+}
-+
-+static int msc313_rtc_alarm_irq_enable(struct device *dev, unsigned int enabled)
-+{
-+	struct msc313_rtc *priv = dev_get_drvdata(dev);
-+	u16 reg;
-+
-+	reg = readw(priv->rtc_base + REG_RTC_CTRL);
-+	if (enabled)
-+		reg &= ~INT_MASK_BIT;
-+	else
-+		reg |= INT_MASK_BIT;
-+	writew(reg, priv->rtc_base + REG_RTC_CTRL);
-+	return 0;
-+}
-+
-+static int msc313_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alarm)
-+{
-+	struct msc313_rtc *priv = dev_get_drvdata(dev);
-+	unsigned long seconds;
-+
-+	seconds = rtc_tm_to_time64(&alarm->time);
-+	writew((seconds & 0xFFFF), priv->rtc_base + REG_RTC_MATCH_VAL_L);
-+	writew((seconds >> 16) & 0xFFFF, priv->rtc_base + REG_RTC_MATCH_VAL_H);
-+
-+	msc313_rtc_alarm_irq_enable(dev, alarm->enabled);
-+
-+	return 0;
-+}
-+
-+static bool msc313_rtc_get_enabled(struct msc313_rtc *priv)
-+{
-+	return readw(priv->rtc_base + REG_RTC_CTRL) & CNT_EN_BIT;
-+}
-+
-+static void msc313_rtc_set_enabled(struct msc313_rtc *priv)
-+{
-+	u16 reg;
-+
-+	reg = readw(priv->rtc_base + REG_RTC_CTRL);
-+	reg |= CNT_EN_BIT;
-+	writew(reg, priv->rtc_base + REG_RTC_CTRL);
-+}
-+
-+static int msc313_rtc_read_time(struct device *dev, struct rtc_time *tm)
-+{
-+	struct msc313_rtc *priv = dev_get_drvdata(dev);
-+	u32 seconds;
-+	u16 reg;
-+
-+	if (!msc313_rtc_get_enabled(priv))
-+		return -EINVAL;
-+
-+	reg = readw(priv->rtc_base + REG_RTC_CTRL);
-+	writew(reg | READ_EN_BIT, priv->rtc_base + REG_RTC_CTRL);
-+
-+	/* Wait for HW latch done */
-+	while (readw(priv->rtc_base + REG_RTC_CTRL) & READ_EN_BIT)
-+		udelay(1);
-+
-+	seconds = readw(priv->rtc_base + REG_RTC_CNT_VAL_L)
-+			| (readw(priv->rtc_base + REG_RTC_CNT_VAL_H) << 16);
-+
-+	rtc_time64_to_tm(seconds, tm);
-+
-+	return 0;
-+}
-+
-+static int msc313_rtc_set_time(struct device *dev, struct rtc_time *tm)
-+{
-+	struct msc313_rtc *priv = dev_get_drvdata(dev);
-+	unsigned long seconds;
-+	u16 reg;
-+
-+	seconds = rtc_tm_to_time64(tm);
-+	writew(seconds & 0xFFFF, priv->rtc_base + REG_RTC_LOAD_VAL_L);
-+	writew((seconds >> 16) & 0xFFFF, priv->rtc_base + REG_RTC_LOAD_VAL_H);
-+
-+	/* Enable load for loading value into internal RTC counter */
-+	reg = readw(priv->rtc_base + REG_RTC_CTRL);
-+	writew(reg | LOAD_EN_BIT, priv->rtc_base + REG_RTC_CTRL);
-+
-+	/* Wait for HW latch done */
-+	while (readw(priv->rtc_base + REG_RTC_CTRL) & LOAD_EN_BIT)
-+		udelay(1);
-+	msc313_rtc_set_enabled(priv);
-+	return 0;
-+}
-+
-+static const struct rtc_class_ops msc313_rtc_ops = {
-+	.read_time = msc313_rtc_read_time,
-+	.set_time = msc313_rtc_set_time,
-+	.read_alarm = msc313_rtc_read_alarm,
-+	.set_alarm = msc313_rtc_set_alarm,
-+	.alarm_irq_enable = msc313_rtc_alarm_irq_enable,
-+};
-+
-+static irqreturn_t msc313_rtc_interrupt(s32 irq, void *dev_id)
-+{
-+	struct msc313_rtc *priv = dev_get_drvdata(dev_id);
-+	u16 reg;
-+
-+	reg = readw(priv->rtc_base + REG_RTC_STATUS_INT);
-+	if (!(reg & ALM_INT_BIT))
-+		return IRQ_NONE;
-+
-+	reg = readw(priv->rtc_base + REG_RTC_CTRL);
-+	reg |= INT_CLEAR_BIT;
-+	reg &= ~INT_FORCE_BIT;
-+	writew(reg, priv->rtc_base + REG_RTC_CTRL);
-+
-+	rtc_update_irq(priv->rtc_dev, 1, RTC_IRQF | RTC_AF);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int msc313_rtc_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct msc313_rtc *priv;
-+	int ret;
-+	int irq;
-+	unsigned long rate;
-+
-+	priv = devm_kzalloc(&pdev->dev, sizeof(struct msc313_rtc), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->rtc_base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(priv->rtc_base))
-+		return PTR_ERR(priv->rtc_base);
-+
-+	irq = platform_get_irq(pdev, 0);
-+	if (irq < 0)
-+		return -EINVAL;
-+
-+	priv->rtc_dev = devm_rtc_allocate_device(dev);
-+	if (IS_ERR(priv->rtc_dev))
-+		return PTR_ERR(priv->rtc_dev);
-+
-+	priv->rtc_dev->ops = &msc313_rtc_ops;
-+	priv->rtc_dev->range_max = U32_MAX;
-+
-+	ret = devm_request_irq(dev, irq, msc313_rtc_interrupt, IRQF_SHARED,
-+			       dev_name(&pdev->dev), &pdev->dev);
-+	if (ret) {
-+		dev_err(dev, "Could not request IRQ\n");
-+		return ret;
-+	}
-+
-+	priv->clk = devm_clk_get(dev, NULL);
-+	if (IS_ERR(priv->clk)) {
-+		dev_err(dev, "No input reference clock\n");
-+		return PTR_ERR(priv->clk);
-+	}
-+
-+	ret = clk_prepare_enable(priv->clk);
-+	if (ret) {
-+		dev_err(dev, "Failed to enable the reference clock, %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = devm_add_action_or_reset(dev, (void (*) (void *))clk_disable_unprepare, priv->clk);
-+	if (ret)
-+		return ret;
-+
-+	rate = clk_get_rate(priv->clk);
-+	writew(rate & 0xFFFF, priv->rtc_base + REG_RTC_FREQ_CW_L);
-+	writew((rate >> 16) & 0xFFFF, priv->rtc_base + REG_RTC_FREQ_CW_H);
-+
-+	platform_set_drvdata(pdev, priv);
-+
-+	return devm_rtc_register_device(priv->rtc_dev);
-+}
-+
-+static const struct of_device_id msc313_rtc_of_match_table[] = {
-+	{ .compatible = "mstar,msc313-rtc" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, ms_rtc_of_match_table);
-+
-+static struct platform_driver msc313_rtc_driver = {
-+	.probe = msc313_rtc_probe,
-+	.driver = {
-+		.name = "msc313-rtc",
-+		.of_match_table = msc313_rtc_of_match_table,
-+	},
-+};
-+
-+module_platform_driver(msc313_rtc_driver);
-+
-+MODULE_AUTHOR("Daniel Palmer <daniel@thingy.jp>");
-+MODULE_AUTHOR("Romain Perier <romain.perier@gmail.com>");
-+MODULE_DESCRIPTION("MStar RTC Driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.30.2
-
+> ---
+>  drivers/bus/mhi/core/init.c | 64 ++++++++++++++++++++++-----------------------
+>  1 file changed, 31 insertions(+), 33 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+> index 0917465..e4be171 100644
+> --- a/drivers/bus/mhi/core/init.c
+> +++ b/drivers/bus/mhi/core/init.c
+> @@ -433,75 +433,65 @@ int mhi_init_mmio(struct mhi_controller *mhi_cntrl)
+>  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+>  	struct {
+>  		u32 offset;
+> -		u32 mask;
+> -		u32 shift;
+>  		u32 val;
+>  	} reg_info[] = {
+>  		{
+> -			CCABAP_HIGHER, U32_MAX, 0,
+> +			CCABAP_HIGHER,
+>  			upper_32_bits(mhi_cntrl->mhi_ctxt->chan_ctxt_addr),
+>  		},
+>  		{
+> -			CCABAP_LOWER, U32_MAX, 0,
+> +			CCABAP_LOWER,
+>  			lower_32_bits(mhi_cntrl->mhi_ctxt->chan_ctxt_addr),
+>  		},
+>  		{
+> -			ECABAP_HIGHER, U32_MAX, 0,
+> +			ECABAP_HIGHER,
+>  			upper_32_bits(mhi_cntrl->mhi_ctxt->er_ctxt_addr),
+>  		},
+>  		{
+> -			ECABAP_LOWER, U32_MAX, 0,
+> +			ECABAP_LOWER,
+>  			lower_32_bits(mhi_cntrl->mhi_ctxt->er_ctxt_addr),
+>  		},
+>  		{
+> -			CRCBAP_HIGHER, U32_MAX, 0,
+> +			CRCBAP_HIGHER,
+>  			upper_32_bits(mhi_cntrl->mhi_ctxt->cmd_ctxt_addr),
+>  		},
+>  		{
+> -			CRCBAP_LOWER, U32_MAX, 0,
+> +			CRCBAP_LOWER,
+>  			lower_32_bits(mhi_cntrl->mhi_ctxt->cmd_ctxt_addr),
+>  		},
+>  		{
+> -			MHICFG, MHICFG_NER_MASK, MHICFG_NER_SHIFT,
+> -			mhi_cntrl->total_ev_rings,
+> -		},
+> -		{
+> -			MHICFG, MHICFG_NHWER_MASK, MHICFG_NHWER_SHIFT,
+> -			mhi_cntrl->hw_ev_rings,
+> -		},
+> -		{
+> -			MHICTRLBASE_HIGHER, U32_MAX, 0,
+> +			MHICTRLBASE_HIGHER,
+>  			upper_32_bits(mhi_cntrl->iova_start),
+>  		},
+>  		{
+> -			MHICTRLBASE_LOWER, U32_MAX, 0,
+> +			MHICTRLBASE_LOWER,
+>  			lower_32_bits(mhi_cntrl->iova_start),
+>  		},
+>  		{
+> -			MHIDATABASE_HIGHER, U32_MAX, 0,
+> +			MHIDATABASE_HIGHER,
+>  			upper_32_bits(mhi_cntrl->iova_start),
+>  		},
+>  		{
+> -			MHIDATABASE_LOWER, U32_MAX, 0,
+> +			MHIDATABASE_LOWER,
+>  			lower_32_bits(mhi_cntrl->iova_start),
+>  		},
+>  		{
+> -			MHICTRLLIMIT_HIGHER, U32_MAX, 0,
+> +			MHICTRLLIMIT_HIGHER,
+>  			upper_32_bits(mhi_cntrl->iova_stop),
+>  		},
+>  		{
+> -			MHICTRLLIMIT_LOWER, U32_MAX, 0,
+> +			MHICTRLLIMIT_LOWER,
+>  			lower_32_bits(mhi_cntrl->iova_stop),
+>  		},
+>  		{
+> -			MHIDATALIMIT_HIGHER, U32_MAX, 0,
+> +			MHIDATALIMIT_HIGHER,
+>  			upper_32_bits(mhi_cntrl->iova_stop),
+>  		},
+>  		{
+> -			MHIDATALIMIT_LOWER, U32_MAX, 0,
+> +			MHIDATALIMIT_LOWER,
+>  			lower_32_bits(mhi_cntrl->iova_stop),
+>  		},
+> -		{ 0, 0, 0 }
+> +		{0, 0}
+>  	};
+>  
+>  	dev_dbg(dev, "Initializing MHI registers\n");
+> @@ -544,14 +534,22 @@ int mhi_init_mmio(struct mhi_controller *mhi_cntrl)
+>  	mhi_cntrl->mhi_cmd[PRIMARY_CMD_RING].ring.db_addr = base + CRDB_LOWER;
+>  
+>  	/* Write to MMIO registers */
+> -	for (i = 0; reg_info[i].offset; i++) {
+> -		ret = mhi_write_reg_field(mhi_cntrl, base, reg_info[i].offset,
+> -					  reg_info[i].mask, reg_info[i].shift,
+> -					  reg_info[i].val);
+> -		if (ret) {
+> -			dev_err(dev, "Unable to write to MMIO registers");
+> -			return ret;
+> -		}
+> +	for (i = 0; reg_info[i].offset; i++)
+> +		mhi_write_reg(mhi_cntrl, base, reg_info[i].offset,
+> +			      reg_info[i].val);
+> +
+> +	ret = mhi_write_reg_field(mhi_cntrl, base, MHICFG, MHICFG_NER_MASK,
+> +				  MHICFG_NER_SHIFT, mhi_cntrl->total_ev_rings);
+> +	if (ret) {
+> +		dev_err(dev, "Unable to read MHICFG register\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = mhi_write_reg_field(mhi_cntrl, base, MHICFG, MHICFG_NHWER_MASK,
+> +				  MHICFG_NHWER_SHIFT, mhi_cntrl->hw_ev_rings);
+> +	if (ret) {
+> +		dev_err(dev, "Unable to read MHICFG register\n");
+> +		return ret;
+>  	}
+>  
+>  	return 0;
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
