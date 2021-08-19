@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFCE63F22F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248A03F22F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236809AbhHSWUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 18:20:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39972 "EHLO
+        id S237209AbhHSWU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 18:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236719AbhHSWUK (ORCPT
+        with ESMTP id S236881AbhHSWUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 18:20:10 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB045C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:19:33 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id e186so9665909iof.12
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:19:33 -0700 (PDT)
+        Thu, 19 Aug 2021 18:20:11 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97DD4C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:19:34 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id v2so7495251ilg.12
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:19:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bnBaACXlOYhgGho8VFfK4AyQp6ASY7kxEYVRMApr6Zk=;
-        b=xOhBKq3uSJcSZsnys7NGlYXqOHoFDCFIStrVP/IqwhQ9jglVkwgpJkjqGbRmw/f+2O
-         F1GS4WK3MNX4rL/l0uC+4TuErZvxX1/0EuMSZ23d8NBCbAPssVDcxTmHpHu7lEHLTnCQ
-         7sBWH5EMsTeKcx5YntxoEYWsxH3GpWDUJ7dsZZAkpCKYCLgl3ic2rUKDJNib70EnUFBi
-         uFOb8ynOHM+QBuP3W4JHvnpvKzQRpdW1w+fIG0aPcHXcEvF04S/Wk3mrMDZZ3AFFzXJA
-         B2fYWejBSAb9chxTxJAcasjim75llVDIKK5JV3iiM9NW+BCFOEjSCqlg73YRrfZbuI8U
-         zseA==
+        bh=bOryrdzD3qCC5WFsDKYio83PoI6w7fQiXhMMT5rIdTM=;
+        b=O0YMdz8y55fYcCHLECiTAc5PuhOOg1smSjJ4C/IMgLibk8+DTlgv/qnjwqIMJwEt2U
+         tqk6W5GEigGoJT4CkFhkT5LYSJ+BVf1Tr0BL4rrgm5ifITnVN3fCsBjaFB9sKrC5AoHt
+         q8diyS/jL4RvOUkB8n+UbRQhdOMpkBSqlOCXv1q90S3ZTpNlzuKvJnfDcCT5wpRGi+Kb
+         bvVqXzMiXh3kkrwoNWxRGLhYgt0jWaxJURQrGJcDeoF2teljuElbjRdEdNZ5iq/PL3py
+         FoicmVQMKyepjbg9qcSETcPgUnozLIkayQz9oLNo8Oq74ZjI3DLjFd9E3syL40hgKph4
+         BY0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bnBaACXlOYhgGho8VFfK4AyQp6ASY7kxEYVRMApr6Zk=;
-        b=DELbR3NaLDfCMarENheZhz66jgXNR8LcwpnkfGV4JMnp00DNKMz3TWORb6AAO2aFs+
-         P3iNjwF0lrZnv+FIUUTNHFbsLwxvBWeLLjE1lerGdEOU+RwSheP5mljKjT6lCxzfezc7
-         RBRjbv28r3qIdB/5mFwHUqXw67DsTN/E6GeBGauV7CigaMY0KLHL4ukokkUy398CdwXu
-         8nH4x8mnHZStlEAhgRdZO1m6sBypWcKmCR6re8xJF2d+i+Ryg1vsgmSIo5pdZW4ld6Xp
-         xDfBZb9qBS49GoaDFckk9Andi6q3E4wyfaYczIpQXxUmisTXJYICQKH1C5yWA37ZfNjT
-         MvXA==
-X-Gm-Message-State: AOAM532Tblr0ubSinJNwaxO1XVvT7q7QpEedZvKKV6nW53FKeenoB7i7
-        TIUjLKb2eKKcZ3FtrYuNIiRKsA==
-X-Google-Smtp-Source: ABdhPJyY9OcTcosA8P39ECBpKfk7anRKwMO/WZLb/5bX37T3mEfzzoPkI/RF6o/n9h34W9nK65zsTA==
-X-Received: by 2002:a02:c507:: with SMTP id s7mr14887069jam.36.1629411573208;
+        bh=bOryrdzD3qCC5WFsDKYio83PoI6w7fQiXhMMT5rIdTM=;
+        b=DnpfMtg62YBWRzT5GBeHFDwSpA+QwhJRkqWdgFtVV3fMKPNjtYUitQwpYeZgj3V880
+         w4jw8tAQmf8KrfaSafgvGykXh4KR+LLuwjxcm23jtQ23L9ggY/W9VplOI1SelFKX83KU
+         0PYIXpZQncALC82dOX8qX2y5tLxOlWOwItg/QhPwPcifBf4GUOwNNx6edMAF3poSU0X+
+         UQOia8NuZC2XS9Ei1JzTn6rRJPYl4KY4PKDdJ8QIyI57TR6IG4ZdiWLEPfFAxU3dhpkS
+         g6EvuL1IesKelBfUGVbonwkGj/vVTX30NMnXDuxEwsW20bF5Ppehmf2DAJFip/+u/o2y
+         Xh8g==
+X-Gm-Message-State: AOAM533XanRh0i0J3GzZPKMFZFmBJ2hWlYH3OYR7X9mMcJ/+jyupUHje
+        Dna7lCpriCjj38jl1vvD8jtK6g==
+X-Google-Smtp-Source: ABdhPJzCUT2nFMM9/U4tP1sDyybeRJByki72pPXQJtcSi8ZIzGhKM+oIk2cobdLtv+69NdSRUedHBw==
+X-Received: by 2002:a92:b112:: with SMTP id t18mr11377156ilh.36.1629411573983;
         Thu, 19 Aug 2021 15:19:33 -0700 (PDT)
 Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id o15sm2245188ilo.73.2021.08.19.15.19.32
+        by smtp.gmail.com with ESMTPSA id o15sm2245188ilo.73.2021.08.19.15.19.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 15:19:32 -0700 (PDT)
+        Thu, 19 Aug 2021 15:19:33 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 4/5] net: ipa: don't use ipa_clock_get() in "ipa_modem.c"
-Date:   Thu, 19 Aug 2021 17:19:26 -0500
-Message-Id: <20210819221927.3286267-5-elder@linaro.org>
+Subject: [PATCH net-next 5/5] net: ipa: kill ipa_clock_get()
+Date:   Thu, 19 Aug 2021 17:19:27 -0500
+Message-Id: <20210819221927.3286267-6-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210819221927.3286267-1-elder@linaro.org>
 References: <20210819221927.3286267-1-elder@linaro.org>
@@ -65,122 +65,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we open or close the modem network device we need to ensure the
-hardware is powered.  Replace the callers of ipa_clock_get() found
-in ipa_open() and ipa_stop() with calls to pm_runtime_get_sync().
-If an error is returned, simply return that error to the caller
-(without any error or warning message).  This could conceivably
-occur if the function was called while the system was suspended,
-but that really shouldn't happen.  Replace corresponding calls to
-ipa_clock_put() with pm_runtime_put() also.
+The only remaining user of the ipa_clock_{get,put}() interface is
+ipa_isr_thread().  Replace calls to ipa_clock_get() there calling
+pm_runtime_get_sync() instead.  And call pm_runtime_put() there
+rather than ipa_clock_put().  Warn if we ever get an error.
 
-If the modem crashes we also need to ensure the hardware is powered
-to recover.  If getting power returns an error there's not much we
-can do, but at least report the error.  (Ideally the remoteproc SSR
-code would ensure the AP was not suspended when it sends the
-notification, but that is not (yet) the case.)
+With that, we can get rid of ipa_clock_get() and ipa_clock_put().
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/ipa_modem.c | 40 +++++++++++++++++++++----------------
- 1 file changed, 23 insertions(+), 17 deletions(-)
+ drivers/net/ipa/ipa_clock.c     | 17 -----------------
+ drivers/net/ipa/ipa_clock.h     | 24 ------------------------
+ drivers/net/ipa/ipa_interrupt.c | 14 +++++++-------
+ 3 files changed, 7 insertions(+), 48 deletions(-)
 
-diff --git a/drivers/net/ipa/ipa_modem.c b/drivers/net/ipa/ipa_modem.c
-index c8724af935b85..7e05b22d6e18b 100644
---- a/drivers/net/ipa/ipa_modem.c
-+++ b/drivers/net/ipa/ipa_modem.c
-@@ -49,15 +49,17 @@ static int ipa_open(struct net_device *netdev)
- {
- 	struct ipa_priv *priv = netdev_priv(netdev);
- 	struct ipa *ipa = priv->ipa;
-+	struct device *dev;
- 	int ret;
- 
--	ret = ipa_clock_get(ipa);
--	if (WARN_ON(ret < 0))
--		goto err_clock_put;
-+	dev = &ipa->pdev->dev;
-+	ret = pm_runtime_get_sync(dev);
-+	if (ret < 0)
-+		goto err_power_put;
- 
- 	ret = ipa_endpoint_enable_one(ipa->name_map[IPA_ENDPOINT_AP_MODEM_TX]);
- 	if (ret)
--		goto err_clock_put;
-+		goto err_power_put;
- 
- 	ret = ipa_endpoint_enable_one(ipa->name_map[IPA_ENDPOINT_AP_MODEM_RX]);
- 	if (ret)
-@@ -65,14 +67,14 @@ static int ipa_open(struct net_device *netdev)
- 
- 	netif_start_queue(netdev);
- 
--	(void)ipa_clock_put(ipa);
-+	(void)pm_runtime_put(dev);
- 
- 	return 0;
- 
- err_disable_tx:
- 	ipa_endpoint_disable_one(ipa->name_map[IPA_ENDPOINT_AP_MODEM_TX]);
--err_clock_put:
--	(void)ipa_clock_put(ipa);
-+err_power_put:
-+	(void)pm_runtime_put(dev);
- 
- 	return ret;
+diff --git a/drivers/net/ipa/ipa_clock.c b/drivers/net/ipa/ipa_clock.c
+index 8f25107c1f1e7..357be73a45834 100644
+--- a/drivers/net/ipa/ipa_clock.c
++++ b/drivers/net/ipa/ipa_clock.c
+@@ -266,23 +266,6 @@ static int ipa_runtime_idle(struct device *dev)
+ 	return -EAGAIN;
  }
-@@ -82,18 +84,20 @@ static int ipa_stop(struct net_device *netdev)
+ 
+-/* Get an IPA clock reference.  If the reference count is non-zero, it is
+- * incremented and return is immediate.  Otherwise the IPA clock is
+- * enabled.
+- */
+-int ipa_clock_get(struct ipa *ipa)
+-{
+-	return pm_runtime_get_sync(&ipa->pdev->dev);
+-}
+-
+-/* Attempt to remove an IPA clock reference.  If this represents the
+- * last reference, disable the IPA clock.
+- */
+-int ipa_clock_put(struct ipa *ipa)
+-{
+-	return pm_runtime_put(&ipa->pdev->dev);
+-}
+-
+ static int ipa_suspend(struct device *dev)
  {
- 	struct ipa_priv *priv = netdev_priv(netdev);
- 	struct ipa *ipa = priv->ipa;
+ 	struct ipa *ipa = dev_get_drvdata(dev);
+diff --git a/drivers/net/ipa/ipa_clock.h b/drivers/net/ipa/ipa_clock.h
+index 5c53241336a1a..8c21a007c4375 100644
+--- a/drivers/net/ipa/ipa_clock.h
++++ b/drivers/net/ipa/ipa_clock.h
+@@ -52,28 +52,4 @@ struct ipa_clock *ipa_clock_init(struct device *dev,
+  */
+ void ipa_clock_exit(struct ipa_clock *clock);
+ 
+-/**
+- * ipa_clock_get() - Get an IPA clock reference
+- * @ipa:	IPA pointer
+- *
+- * Return:	0 if clock started, 1 if clock already running, or a negative
+- *		error code
+- *
+- * This call blocks if this is the first reference.  A reference is
+- * taken even if an error occurs starting the IPA clock.
+- */
+-int ipa_clock_get(struct ipa *ipa);
+-
+-/**
+- * ipa_clock_put() - Drop an IPA clock reference
+- * @ipa:	IPA pointer
+- *
+- * Return:	0 if successful, or a negative error code
+- *
+- * This drops a clock reference.  If the last reference is being dropped,
+- * the clock is stopped and RX endpoints are suspended.  This call will
+- * not block unless the last reference is dropped.
+- */
+-int ipa_clock_put(struct ipa *ipa);
+-
+ #endif /* _IPA_CLOCK_H_ */
+diff --git a/drivers/net/ipa/ipa_interrupt.c b/drivers/net/ipa/ipa_interrupt.c
+index 934c14e066a0a..3fecaadb4a37e 100644
+--- a/drivers/net/ipa/ipa_interrupt.c
++++ b/drivers/net/ipa/ipa_interrupt.c
+@@ -21,9 +21,9 @@
+ 
+ #include <linux/types.h>
+ #include <linux/interrupt.h>
++#include <linux/pm_runtime.h>
+ 
+ #include "ipa.h"
+-#include "ipa_clock.h"
+ #include "ipa_reg.h"
+ #include "ipa_endpoint.h"
+ #include "ipa_interrupt.h"
+@@ -80,14 +80,16 @@ static irqreturn_t ipa_isr_thread(int irq, void *dev_id)
+ 	struct ipa_interrupt *interrupt = dev_id;
+ 	struct ipa *ipa = interrupt->ipa;
+ 	u32 enabled = interrupt->enabled;
 +	struct device *dev;
+ 	u32 pending;
+ 	u32 offset;
+ 	u32 mask;
  	int ret;
  
 -	ret = ipa_clock_get(ipa);
--	if (WARN_ON(ret < 0))
--		goto out_clock_put;
 +	dev = &ipa->pdev->dev;
 +	ret = pm_runtime_get_sync(dev);
-+	if (ret < 0)
+ 	if (WARN_ON(ret < 0))
+-		goto out_clock_put;
 +		goto out_power_put;
  
- 	netif_stop_queue(netdev);
+ 	/* The status register indicates which conditions are present,
+ 	 * including conditions whose interrupt is not enabled.  Handle
+@@ -108,15 +110,13 @@ static irqreturn_t ipa_isr_thread(int irq, void *dev_id)
  
- 	ipa_endpoint_disable_one(ipa->name_map[IPA_ENDPOINT_AP_MODEM_RX]);
- 	ipa_endpoint_disable_one(ipa->name_map[IPA_ENDPOINT_AP_MODEM_TX]);
+ 	/* If any disabled interrupts are pending, clear them */
+ 	if (pending) {
+-		struct device *dev = &ipa->pdev->dev;
+-
+ 		dev_dbg(dev, "clearing disabled IPA interrupts 0x%08x\n",
+ 			pending);
+ 		offset = ipa_reg_irq_clr_offset(ipa->version);
+ 		iowrite32(pending, ipa->reg_virt + offset);
+ 	}
 -out_clock_put:
 -	(void)ipa_clock_put(ipa);
 +out_power_put:
 +	(void)pm_runtime_put(dev);
  
- 	return 0;
+ 	return IRQ_HANDLED;
  }
-@@ -359,9 +363,11 @@ static void ipa_modem_crashed(struct ipa *ipa)
- 	struct device *dev = &ipa->pdev->dev;
- 	int ret;
- 
--	ret = ipa_clock_get(ipa);
--	if (WARN_ON(ret < 0))
--		goto out_clock_put;
-+	ret = pm_runtime_get_sync(dev);
-+	if (ret < 0) {
-+		dev_err(dev, "error %d getting power to handle crash\n", ret);
-+		goto out_power_put;
-+	}
- 
- 	ipa_endpoint_modem_pause_all(ipa, true);
- 
-@@ -388,8 +394,8 @@ static void ipa_modem_crashed(struct ipa *ipa)
- 	if (ret)
- 		dev_err(dev, "error %d zeroing modem memory regions\n", ret);
- 
--out_clock_put:
--	(void)ipa_clock_put(ipa);
-+out_power_put:
-+	(void)pm_runtime_put(dev);
- }
- 
- static int ipa_modem_notify(struct notifier_block *nb, unsigned long action,
 -- 
 2.27.0
 
