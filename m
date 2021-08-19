@@ -2,103 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165823F1556
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 10:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BAF83F155C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 10:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237441AbhHSImO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 04:42:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237491AbhHSImI (ORCPT
+        id S237435AbhHSInu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 04:43:50 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:38182 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231494AbhHSInr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 04:42:08 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2BC7C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 01:41:30 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id y190so4830880pfg.7
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 01:41:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=huaqin-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9pbcm30VIAQ9iEVPI1FIF1aW9JXXtwoO9LwunNGqeRE=;
-        b=uQ+TV2dmDfLzGr1GVXfjxEdsSOSUyKADcD9YJ/DldFGx161UmaoatkQNUwJtppzWdE
-         hJFXNJE4hsWMM4SJNU+Df4CeN/NI4Rhm/TOiqtw+d6ZN5zl0laiF+hCSeBHN0Vi+Olnw
-         Zy6eLN3eVzA9s2P8+FT4jpCYa5mHeklX+0RlrYgq2J+UgIJsoZ57jSvAS4uf+Bkh+lyV
-         8o1FFJaAg9qzYDfNIY9FJWJnAe0xEGIl5w/b8ziyoWMKFxFUBYnL4NYHqNb8gWP0dX2u
-         OGWOaS6UCqPv/RHUgUTm1tGu5Cc1lxL6dc/k5gGwWFqIt4Wy1ymo/rDqZ4u1Jj4wLXXx
-         4DYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9pbcm30VIAQ9iEVPI1FIF1aW9JXXtwoO9LwunNGqeRE=;
-        b=YR76DsomTJfGbvQXUYCqFmrqbWeNL3UgMxf8nLIO8RIUa9YFX29pAt3ks+eaQQqdTG
-         E6wKzK444szQ5m63Wz+Vrf0Ca83Al4fcn9aKmkAO+11xc3Jlv+kB6oBJy6+t8IMu8lgw
-         pOr8Vg6kzEuLYZeTyW5kOP8UGg5o2bGHP/001O6/vzMtkoulBOdq8SVaz5kJLaIohQBj
-         xknM0ac4Qo6fFCDDfLu4JbL5D4SS3uO0Vvl8PHiQYYl6D/o+HmDD0xmkrOlqbJ+gZrv3
-         RJcTgu2b8Vq7BY832lp8b0ih0r9z1BBzEV3qoD6werFUT+ZI11nzkz0CrgZ60k6wacKV
-         x9nQ==
-X-Gm-Message-State: AOAM5331VP2TigKhn/33tH7JkZXTvRRrtYhXMeiOGCqUQGa6B8G2AgLR
-        HIRILvNef9yvFmwY3XyvQgPlDg==
-X-Google-Smtp-Source: ABdhPJzR04yhvKJlt13IzOaH4nIHK2sk5Tc60iEvZaCr6+pEZukHAif4mEjTv24VWeEydJ7NwjmMkA==
-X-Received: by 2002:a05:6a00:1484:b0:3e2:51da:7a1c with SMTP id v4-20020a056a00148400b003e251da7a1cmr13353848pfu.56.1629362490548;
-        Thu, 19 Aug 2021 01:41:30 -0700 (PDT)
-Received: from yc.huaqin.com ([101.78.151.214])
-        by smtp.gmail.com with ESMTPSA id c26sm3027492pgl.10.2021.08.19.01.41.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 01:41:30 -0700 (PDT)
-From:   yangcong <yangcong5@huaqin.corp-partner.google.com>
-To:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
-        daniel@ffwll.ch, robh+dt@kernel.org, dianders@google.com
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        yangcong <yangcong5@huaqin.corp-partner.google.com>
-Subject: [v1 2/2] dt-bindings: drm/panel: boe-tv101wum-nl6: Support enabling a 3.3V rail
-Date:   Thu, 19 Aug 2021 16:41:11 +0800
-Message-Id: <20210819084111.717459-3-yangcong5@huaqin.corp-partner.google.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210819084111.717459-1-yangcong5@huaqin.corp-partner.google.com>
-References: <20210819084111.717459-1-yangcong5@huaqin.corp-partner.google.com>
+        Thu, 19 Aug 2021 04:43:47 -0400
+X-UUID: a441367bdd0d426180cbcfe9dab562bf-20210819
+X-UUID: a441367bdd0d426180cbcfe9dab562bf-20210819
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <trevor.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2127302238; Thu, 19 Aug 2021 16:43:08 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 19 Aug 2021 16:43:06 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 19 Aug 2021 16:43:06 +0800
+From:   Trevor Wu <trevor.wu@mediatek.com>
+To:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
+        <robh+dt@kernel.org>, <matthias.bgg@gmail.com>
+CC:     <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <bicycle.tsai@mediatek.com>, <jiaxin.yu@mediatek.com>,
+        <cychiang@google.com>, <aaronyu@google.com>, <wenst@chromium.org>
+Subject: [PATCH v5 00/11] ASoC: mediatek: Add support for MT8195 SoC
+Date:   Thu, 19 Aug 2021 16:41:33 +0800
+Message-ID: <20210819084144.18483-1-trevor.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The auo,b101uan08.3 panel (already supported by this driver) has
-a 3.3V rail that needs to be turned on. For previous users of
-this panel this voltage was directly output by pmic. On a new
-user (the not-yet-upstream sc7180-trogdor-mrbland board) we need
-to turn the 3.3V rail on.
+This series of patches adds support for Mediatek AFE of MT8195 SoC.
+Patches are based on broonie tree "for-next" branch.
 
-Signed-off-by: yangcong <yangcong5@huaqin.corp-partner.google.com>
----
- .../devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml   | 4 ++++
- 1 file changed, 4 insertions(+)
+Changes since v4:
+  - removed sof related code
 
-diff --git a/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml b/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml
-index 38bc1d1b511e..e45de7a4360e 100644
---- a/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml
-@@ -36,6 +36,9 @@ properties:
-   pp1800-supply:
-     description: core voltage supply
- 
-+  pp3300-supply:
-+    description: core voltage supply
-+
-   avdd-supply:
-     description: phandle of the regulator that provides positive voltage
- 
-@@ -52,6 +55,7 @@ required:
-   - reg
-   - enable-gpios
-   - pp1800-supply
-+  - pp3300-supply
-   - avdd-supply
-   - avee-supply
- 
+Changes since v3:
+  - fixed warnings found by kernel test robot
+  - removed unused critical section
+  - corrected the lock protected sections on etdm driver
+  - added DPTX and HDMITX audio support
+
+Changes since v2:
+  - added audio clock gate control
+  - added 'mediatek' prefix to private dts properties
+  - added consumed clocks to dt-bindins and adopted suggestions from Rob
+  - refined clock usage and remove unused clock and control code
+  - fixed typos
+
+Changes since v1:
+  - fixed some problems related to dt-bindings
+  - added some missing properties to dt-bindings
+  - added depency declaration on dt-bindings
+  - fixed some warnings found by kernel test robot
+
+Trevor Wu (11):
+  ASoC: mediatek: mt8195: update mediatek common driver
+  ASoC: mediatek: mt8195: support audsys clock control
+  ASoC: mediatek: mt8195: support etdm in platform driver
+  ASoC: mediatek: mt8195: support adda in platform driver
+  ASoC: mediatek: mt8195: support pcm in platform driver
+  ASoC: mediatek: mt8195: add platform driver
+  dt-bindings: mediatek: mt8195: add audio afe document
+  ASoC: mediatek: mt8195: add machine driver with mt6359, rt1019 and
+    rt5682
+  ASoC: mediatek: mt8195: add DPTX audio support
+  ASoC: mediatek: mt8195: add HDMITX audio support
+  dt-bindings: mediatek: mt8195: add mt8195-mt6359-rt1019-rt5682
+    document
+
+ .../bindings/sound/mt8195-afe-pcm.yaml        |  184 +
+ .../sound/mt8195-mt6359-rt1019-rt5682.yaml    |   47 +
+ sound/soc/mediatek/Kconfig                    |   24 +
+ sound/soc/mediatek/Makefile                   |    1 +
+ sound/soc/mediatek/common/mtk-afe-fe-dai.c    |   22 +-
+ sound/soc/mediatek/common/mtk-base-afe.h      |   10 +-
+ sound/soc/mediatek/mt8195/Makefile            |   15 +
+ sound/soc/mediatek/mt8195/mt8195-afe-clk.c    |  441 +++
+ sound/soc/mediatek/mt8195/mt8195-afe-clk.h    |  109 +
+ sound/soc/mediatek/mt8195/mt8195-afe-common.h |  158 +
+ sound/soc/mediatek/mt8195/mt8195-afe-pcm.c    | 3281 +++++++++++++++++
+ sound/soc/mediatek/mt8195/mt8195-audsys-clk.c |  214 ++
+ sound/soc/mediatek/mt8195/mt8195-audsys-clk.h |   15 +
+ .../soc/mediatek/mt8195/mt8195-audsys-clkid.h |   93 +
+ sound/soc/mediatek/mt8195/mt8195-dai-adda.c   |  830 +++++
+ sound/soc/mediatek/mt8195/mt8195-dai-etdm.c   | 2639 +++++++++++++
+ sound/soc/mediatek/mt8195/mt8195-dai-pcm.c    |  389 ++
+ .../mt8195/mt8195-mt6359-rt1019-rt5682.c      | 1087 ++++++
+ sound/soc/mediatek/mt8195/mt8195-reg.h        | 2796 ++++++++++++++
+ 19 files changed, 12350 insertions(+), 5 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
+ create mode 100644 sound/soc/mediatek/mt8195/Makefile
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-afe-clk.c
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-afe-clk.h
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-afe-common.h
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-audsys-clk.c
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-audsys-clk.h
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-audsys-clkid.h
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-dai-adda.c
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-dai-etdm.c
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-dai-pcm.c
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-reg.h
+
 -- 
-2.25.1
+2.18.0
 
