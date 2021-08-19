@@ -2,124 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04F23F1659
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBED73F1664
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237594AbhHSJhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 05:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237366AbhHSJhM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 05:37:12 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472DCC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 02:36:36 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id q10so8093171wro.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 02:36:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=m+LHyne0kv5mF9vWjh7fD8eOk46K8HFKzEPGFhrnFPM=;
-        b=GvRLgi6eJnrZ1RKBLJvKMsbPyP9D8ACO613KOSlfXAwS/eni21eNpmEOmnJU7BdUq6
-         sozDszho81xo0ejjZywT1pCdbumjvRt+StSteFgApCyAgeZVSE+nrlbcmmQffXD8eZrJ
-         nw327OkI8DDT82RUaWB+sAPpNumoMNfpinT+fgQujT/u1ADNKg+l9S0KVmJfWSGerfb0
-         4fm6fgaHnslyjoqitvvXw89wnWmxq0fn/VQy4xsfnTR4P5m9CteELGeG+VqEh6sNCm20
-         MLKqFg+I4GfWWRo53RBPm8qVqNXX3P/QjbSB0rd02cfFzlXLqEU+nTSKdavbLifSGmGV
-         Dz8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=m+LHyne0kv5mF9vWjh7fD8eOk46K8HFKzEPGFhrnFPM=;
-        b=PnNws18rtACAZRcxzb5aQDQgWiC0nyyucQtiH7KQGQvho4W8ylTlyHQeDk/sw2rjyl
-         gyZ+LlHcRh8xgk7yyvrEB/B5v6dYbdtfEzK3qFKC7WlDCC+4k9cmdRePSCSkiPjxhpdE
-         hFVPdcB15kDHcicJ5ipDOwrIBJoZXL9AnOPMf4SrleUE9cMw9EcRDLHmkeTPPxWnmvt5
-         gBBAmNXDMHF33zSEW07jSZwSzDOtERgorsZ2ur6feu8YkHtULHszjdk1W2ILMojaQGDL
-         iu4kuUWW3TFTBS30h59JhTT+OJajpZ8hl7eNBSMBmWtIw3yR+MBgkCexlIk0cTdgpMK8
-         vdmw==
-X-Gm-Message-State: AOAM531TBpN97wgHpls/wb7T3DhHKVNlrc6vKyZXXASIbRWHsOmgFlh0
-        qM1JDkCuUTBjhywxpYLX6Oi05Q==
-X-Google-Smtp-Source: ABdhPJxkp5oW5Dn0ctdn3JjnnGk8HMnsKNq7mdpuH7P0JWvijzf9A93EMtNVZJgUM9dNSCfCtHfAkQ==
-X-Received: by 2002:a5d:6da4:: with SMTP id u4mr2634271wrs.50.1629365794902;
-        Thu, 19 Aug 2021 02:36:34 -0700 (PDT)
-Received: from google.com ([2.31.167.59])
-        by smtp.gmail.com with ESMTPSA id w18sm2520320wrg.68.2021.08.19.02.36.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 02:36:34 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 10:36:32 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "David E. Box" <david.e.box@linux.intel.com>,
-        mgross@linux.intel.com, bhelgaas@google.com,
-        srinivas.pandruvada@intel.com, andy.shevchenko@gmail.com,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v2 0/5] MFD: intel_pmt: Add general DVSEC/VSEC support
-Message-ID: <YR4mIGeZAqJJCZ9i@google.com>
-References: <20210817224018.1013192-1-david.e.box@linux.intel.com>
- <21f59d91-c9b9-2a7e-e5d9-a7697979b4bf@redhat.com>
+        id S237677AbhHSJin convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Aug 2021 05:38:43 -0400
+Received: from aposti.net ([89.234.176.197]:42596 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233957AbhHSJil (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 05:38:41 -0400
+Date:   Thu, 19 Aug 2021 11:37:53 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v7 02/11] clk: Ingenic: Adjust cgu code to make it
+ compatible with I2S PLL.
+To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
+Cc:     sboyd@kernel.org, mturquette@baylibre.com, robh+dt@kernel.org,
+        linux-clk@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sihui.liu@ingenic.com,
+        jun.jiang@ingenic.com, sernia.zhou@foxmail.com
+Message-Id: <5RY2YQ.VQN2WB38KM14@crapouillou.net>
+In-Reply-To: <1627119286-125821-3-git-send-email-zhouyanjie@wanyeetech.com>
+References: <1627119286-125821-1-git-send-email-zhouyanjie@wanyeetech.com>
+        <1627119286-125821-3-git-send-email-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <21f59d91-c9b9-2a7e-e5d9-a7697979b4bf@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Aug 2021, Hans de Goede wrote:
+Hi Zhou,
 
-> Hi,
+Le sam., juil. 24 2021 at 17:34:37 +0800, 周琰杰 (Zhou Yanjie) 
+<zhouyanjie@wanyeetech.com> a écrit :
+> I2S PLL is different from the APLL/MPLL, which have no OD bits,
+> no stable bit, but have parent clock selection bits, therefore,
+> it is necessary to modify the CGU PLL correlation code to make
+> it compatible with I2S PLL.
 > 
-> On 8/18/21 12:40 AM, David E. Box wrote:
-> > This patch enables general support for Intel defined PCIe VSEC and DVSEC
-> > capabilities in the Intel Platform Monitoring Technology (PMT) driver.
-> > Though the driver was written exclusively for PMT capabilities, newer DVSEC
-> > and VSEC IDs for other capabilities can exist on the same device requiring
-> > that the driver handle them.
-> > 
-> > This 2nd revision drops the creation of a separate OOBMSM driver. Instead,
-> > all cell drivers will have a dependency on CONFIG_MFD_INTEL_PMT, whether or
-> > not they are PMT. Changes in this patchset to the current cell drivers
-> > located in platform/x86 are based on Hans for-next branch where they have
-> > been moved to the intel/pmt subfolder.
-> > 
-> > David E. Box (5):
-> >   PCI: Add #defines for accessing PCIE DVSEC fields
-> >   MFD: intel_pmt: Support non-PMT capabilities
-> >   MFD: intel_pmt: Add support for PCIe VSEC structures
-> >   platform/x86: intel_pmt_telemetry: Ignore zero sized entries
-> 
-> Since this patch is pretty much a stand alone patch I've picked
-> this one (4/5) up now.
-> 
-> The rest of the patches touch both MFD and pdx86 files, so these
-> should be picked up by Lee. But they rely on the patch moving
-> the pdx86 pmt code into the drivers/platform/x86/intel/pmt dir
-> which is currently only available in my for-next branch.
-> 
-> I think it is probably best to wait for 5.15-rc1 and then Lee
-> can merge the rest. Here is my ack for Lee picking up
-> the pdx86 bits:
-> 
-> Acked-by: Hans de Goede <hdegoede@redhat.com>
-> 
-> Lee, alternatively you could also merge commit e184b1e589a7fbb80bfdd0364c11422999a17a26
-> from the pdx86 tree, that is only 1 commit ahead of my latest fixes
-> pull-req to Linus for 5.14, so in essence that is 5.14-rc? (?=5 I think)
-> + just the commit which you need as base, then you could still merge
-> these this cycle. If you wish I can put a signed tag on that
-> for you (I will treat it as immutable either way).
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
 
-I'm happy to wait.
+Could you split this commit into three:
+- one commit to support PLLs with no OD bit,
+- one commit to support PLLs with no stable bit,
+- one commit to support setting the parents of PLLs.
 
-The MFD patches aren't even reviewed yet and it's late in the cycle.
+> ---
+> 
+> Notes:
+>     v5:
+>     New patch.
+> 
+>     v5->v6:
+>     Change the type of stable_bit from u8 to s8, because a negative 
+> value will appear
+>     when the stable_bit bit does not exist.
+>     Reported-by: kernel test robot <lkp@intel.com>
+> 
+>     v6->v7:
+>     No change.
+> 
+>  drivers/clk/ingenic/cgu.c | 118 
+> ++++++++++++++++++++++++++++++++++++++++------
+>  drivers/clk/ingenic/cgu.h |  10 +++-
+>  2 files changed, 111 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/clk/ingenic/cgu.c b/drivers/clk/ingenic/cgu.c
+> index 266c759..391bf50 100644
+> --- a/drivers/clk/ingenic/cgu.c
+> +++ b/drivers/clk/ingenic/cgu.c
+> @@ -76,6 +76,85 @@ ingenic_cgu_gate_set(struct ingenic_cgu *cgu,
+>   * PLL operations
+>   */
+> 
+> +static u8 ingenic_pll_get_parent(struct clk_hw *hw)
+> +{
+> +	struct ingenic_clk *ingenic_clk = to_ingenic_clk(hw);
+> +	const struct ingenic_cgu_clk_info *clk_info = 
+> to_clk_info(ingenic_clk);
+> +	struct ingenic_cgu *cgu = ingenic_clk->cgu;
+> +	const struct ingenic_cgu_pll_info *pll_info;
+> +	u32 reg;
+> +	u8 i, hw_idx, idx = 0;
+> +
+> +	BUG_ON(clk_info->type != CGU_CLK_PLL);
+> +	pll_info = &clk_info->pll;
+> +
+> +	if (pll_info->mux_bits <= 0)
+> +		return 1;
+> +
+> +	reg = readl(cgu->base + pll_info->reg);
+> +	hw_idx = (reg >> pll_info->mux_shift) &
+> +		 GENMASK(pll_info->mux_bits - 1, 0);
+> +
+> +	/*
+> +	 * Convert the hardware index to the parent index by skipping
+> +	 * over any -1's in the parents array.
+> +	 */
+> +	for (i = 0; i < hw_idx; i++) {
+> +		if (clk_info->parents[i] != -1)
+> +			idx++;
+> +	}
+> +
+> +	return idx;
+> +}
+> +
+> +static int ingenic_pll_set_parent(struct clk_hw *hw, u8 idx)
+> +{
+> +	struct ingenic_clk *ingenic_clk = to_ingenic_clk(hw);
+> +	const struct ingenic_cgu_clk_info *clk_info = 
+> to_clk_info(ingenic_clk);
+> +	struct ingenic_cgu *cgu = ingenic_clk->cgu;
+> +	const struct ingenic_cgu_pll_info *pll_info;
+> +	unsigned long flags;
+> +	u32 reg;
+> +	u8 curr_idx, hw_idx, num_poss;
+> +
+> +	BUG_ON(clk_info->type != CGU_CLK_PLL);
+> +	pll_info = &clk_info->pll;
+> +
+> +	if (pll_info->mux_bits <= 0)
+> +		return 0;
+> +
+> +	/*
+> +	 * Convert the parent index to the hardware index by adding
+> +	 * 1 for any -1 in the parents array preceding the given
+> +	 * index. That is, we want the index of idx'th entry in
+> +	 * clk_info->parents which does not equal -1.
+> +	 */
+> +	hw_idx = curr_idx = 0;
+> +	num_poss = 1 << pll_info->mux_bits;
+> +	for (; hw_idx < num_poss; hw_idx++) {
+> +		if (clk_info->parents[hw_idx] == -1)
+> +			continue;
+> +		if (curr_idx == idx)
+> +			break;
+> +		curr_idx++;
+> +	}
+> +
+> +	/* idx should always be a valid parent */
+> +	BUG_ON(curr_idx != idx);
+> +
+> +	spin_lock_irqsave(&cgu->lock, flags);
+> +
+> +	/* write the register */
+> +	reg = readl(cgu->base + pll_info->reg);
+> +	reg &= ~(GENMASK(pll_info->mux_bits - 1, 0) << pll_info->mux_shift);
+> +	reg |= hw_idx << pll_info->mux_shift;
+> +	writel(reg, cgu->base + pll_info->reg);
+> +
+> +	spin_unlock_irqrestore(&cgu->lock, flags);
+> +
+> +	return 0;
+> +}
+> +
+>  static unsigned long
+>  ingenic_pll_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
+>  {
+> @@ -96,8 +175,20 @@ ingenic_pll_recalc_rate(struct clk_hw *hw, 
+> unsigned long parent_rate)
+>  	m += pll_info->m_offset;
+>  	n = (ctl >> pll_info->n_shift) & GENMASK(pll_info->n_bits - 1, 0);
+>  	n += pll_info->n_offset;
+> -	od_enc = ctl >> pll_info->od_shift;
+> -	od_enc &= GENMASK(pll_info->od_bits - 1, 0);
+> +
+> +	if (pll_info->od_encoding) {
+> +		od_enc = ctl >> pll_info->od_shift;
+> +		od_enc &= GENMASK(pll_info->od_bits - 1, 0);
+> +
+> +		for (od = 0; od < pll_info->od_max; od++) {
+> +			if (pll_info->od_encoding[od] == od_enc)
+> +				break;
+> +		}
+> +		BUG_ON(od == pll_info->od_max);
+> +		od++;
+> +	} else {
+> +		od = 1;
+> +	}
+> 
+>  	if (pll_info->bypass_bit >= 0) {
+>  		ctl = readl(cgu->base + pll_info->bypass_reg);
+> @@ -108,15 +199,7 @@ ingenic_pll_recalc_rate(struct clk_hw *hw, 
+> unsigned long parent_rate)
+>  			return parent_rate;
+>  	}
+> 
+> -	for (od = 0; od < pll_info->od_max; od++) {
+> -		if (pll_info->od_encoding[od] == od_enc)
+> -			break;
+> -	}
+> -	BUG_ON(od == pll_info->od_max);
+> -	od++;
+> -
+> -	return div_u64((u64)parent_rate * m * pll_info->rate_multiplier,
+> -		n * od);
+> +	return div_u64((u64)parent_rate * m * pll_info->rate_multiplier, n 
+> * od);
+>  }
+> 
+>  static void
+> @@ -215,13 +298,15 @@ ingenic_pll_set_rate(struct clk_hw *hw, 
+> unsigned long req_rate,
+>  	ctl &= ~(GENMASK(pll_info->n_bits - 1, 0) << pll_info->n_shift);
+>  	ctl |= (n - pll_info->n_offset) << pll_info->n_shift;
+> 
+> -	ctl &= ~(GENMASK(pll_info->od_bits - 1, 0) << pll_info->od_shift);
+> -	ctl |= pll_info->od_encoding[od - 1] << pll_info->od_shift;
+> +	if (pll_info->od_encoding) {
+> +		ctl &= ~(GENMASK(pll_info->od_bits - 1, 0) << pll_info->od_shift);
+> +		ctl |= pll_info->od_encoding[od - 1] << pll_info->od_shift;
+> +	}
+> 
+>  	writel(ctl, cgu->base + pll_info->reg);
+> 
+>  	/* If the PLL is enabled, verify that it's stable */
+> -	if (ctl & BIT(pll_info->enable_bit))
+> +	if ((pll_info->stable_bit >= 0) && (ctl & 
+> BIT(pll_info->enable_bit)))
+>  		ret = ingenic_pll_check_stable(cgu, pll_info);
+> 
+>  	spin_unlock_irqrestore(&cgu->lock, flags);
+> @@ -292,6 +377,9 @@ static int ingenic_pll_is_enabled(struct clk_hw 
+> *hw)
+>  }
+> 
+>  static const struct clk_ops ingenic_pll_ops = {
+> +	.get_parent = ingenic_pll_get_parent,
+> +	.set_parent = ingenic_pll_set_parent,
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+If you move the "pll" field of struct ingenic_cgu_clk_info to the 
+nameless "struct" that follows it, you will then be able to use the 
+other fields as well. That means that you'll be able to use 
+ingenic_clk_get_parent() / ingenic_clk_set_parent() instead of 
+duplicating code.
+
+> +
+>  	.recalc_rate = ingenic_pll_recalc_rate,
+>  	.round_rate = ingenic_pll_round_rate,
+>  	.set_rate = ingenic_pll_set_rate,
+> @@ -672,7 +760,7 @@ static int ingenic_register_clock(struct 
+> ingenic_cgu *cgu, unsigned idx)
+>  		clk_init.flags |= CLK_SET_RATE_PARENT;
+>  	}
+> 
+> -	if (caps & (CGU_CLK_MUX | CGU_CLK_CUSTOM)) {
+> +	if (caps & (CGU_CLK_PLL | CGU_CLK_MUX | CGU_CLK_CUSTOM)) {
+
+I tend to disagree with this - clocks that support parenting should use 
+the CGU_CLK_MUX flag. I know it conflicts with CGU_CLK_PLL right now, 
+but with the change I suggested above, your clock should be able to use 
+.type = CGU_CLK_PLL | CGU_CLK_MUX.
+
+Cheers,
+-Paul
+
+>  		clk_init.num_parents = 0;
+> 
+>  		if (caps & CGU_CLK_MUX)
+> diff --git a/drivers/clk/ingenic/cgu.h b/drivers/clk/ingenic/cgu.h
+> index bfc2b9c..30d575d 100644
+> --- a/drivers/clk/ingenic/cgu.h
+> +++ b/drivers/clk/ingenic/cgu.h
+> @@ -18,6 +18,10 @@
+>   * struct ingenic_cgu_pll_info - information about a PLL
+>   * @reg: the offset of the PLL's control register within the CGU
+>   * @rate_multiplier: the multiplier needed by pll rate calculation
+> + * @mux_shift: the number of bits to shift the mux value by (ie. the
+> + *           index of the lowest bit of the mux value in the I2S 
+> PLL's
+> + *           control register)
+> + * @mux_bits: the size of the mux field in bits
+>   * @m_shift: the number of bits to shift the multiplier value by 
+> (ie. the
+>   *           index of the lowest bit of the multiplier value in the 
+> PLL's
+>   *           control register)
+> @@ -42,19 +46,21 @@
+>   * @bypass_bit: the index of the bypass bit in the PLL control 
+> register, or
+>   *              -1 if there is no bypass bit
+>   * @enable_bit: the index of the enable bit in the PLL control 
+> register
+> - * @stable_bit: the index of the stable bit in the PLL control 
+> register
+> + * @stable_bit: the index of the stable bit in the PLL control 
+> register, or
+> + *              -1 if there is no stable bit
+>   */
+>  struct ingenic_cgu_pll_info {
+>  	unsigned reg;
+>  	unsigned rate_multiplier;
+>  	const s8 *od_encoding;
+> +	u8 mux_shift, mux_bits;
+>  	u8 m_shift, m_bits, m_offset;
+>  	u8 n_shift, n_bits, n_offset;
+>  	u8 od_shift, od_bits, od_max;
+>  	unsigned bypass_reg;
+>  	s8 bypass_bit;
+>  	u8 enable_bit;
+> -	u8 stable_bit;
+> +	s8 stable_bit;
+>  	void (*calc_m_n_od)(const struct ingenic_cgu_pll_info *pll_info,
+>  			    unsigned long rate, unsigned long parent_rate,
+>  			    unsigned int *m, unsigned int *n, unsigned int *od);
+> --
+> 2.7.4
+> 
+
+
