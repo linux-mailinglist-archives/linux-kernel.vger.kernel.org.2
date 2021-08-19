@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7AC3F1B4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8CE3F1B48
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240392AbhHSOLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 10:11:01 -0400
-Received: from mout.perfora.net ([74.208.4.196]:55197 "EHLO mout.perfora.net"
+        id S240406AbhHSOK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 10:10:57 -0400
+Received: from mout.perfora.net ([74.208.4.196]:55299 "EHLO mout.perfora.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240434AbhHSOK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 10:10:58 -0400
+        id S240471AbhHSOK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 10:10:56 -0400
 Received: from toolbox.cardiotech.int ([81.221.236.183]) by mrelay.perfora.net
- (mreueus003 [74.208.5.2]) with ESMTPSA (Nemesis) id 0M7IS8-1n1Y6Y0Kxy-00x57Z;
- Thu, 19 Aug 2021 16:04:00 +0200
+ (mreueus003 [74.208.5.2]) with ESMTPSA (Nemesis) id 0MMksD-1m8llE0zsN-008XyC;
+ Thu, 19 Aug 2021 16:04:03 +0200
 From:   Marcel Ziswiler <marcel@ziswiler.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     Marcel Ziswiler <marcel.ziswiler@toradex.com>,
@@ -22,45 +22,48 @@ Cc:     Marcel Ziswiler <marcel.ziswiler@toradex.com>,
         Fabio Estevam <festevam@gmail.com>,
         Marek Vasut <marex@denx.de>,
         NXP Linux Team <linux-imx@nxp.com>,
-        Otavio Salvador <otavio@ossystems.com.br>,
         Pascal Zimmermann <pzimmermann@dh-electronics.com>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
         Russell King <linux@armlinux.org.uk>,
         Sascha Hauer <s.hauer@pengutronix.de>,
         Shawn Guo <shawnguo@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 1/7] ARM: imx_v6_v7_defconfig: enable mtd physmap
-Date:   Thu, 19 Aug 2021 16:03:39 +0200
-Message-Id: <20210819140345.357167-2-marcel@ziswiler.com>
+Subject: [PATCH v1 2/7] ARM: imx_v6_v7_defconfig: enable fb
+Date:   Thu, 19 Aug 2021 16:03:40 +0200
+Message-Id: <20210819140345.357167-3-marcel@ziswiler.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210819140345.357167-1-marcel@ziswiler.com>
 References: <20210819140345.357167-1-marcel@ziswiler.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:CC9ywXW29C6OdHxwLPF892isLfNEJAO1sXkDalM4HPxySBCDob8
- 9WGuVzdpK20Na1+IrRXQQLN1G+k+P+CrrwFYAPcH6h3vUTSlLnuEk7Hc5qRN3LLtrWu4TZo
- iYedAJq+bnYzN/fBS8LdUDvdzGYzbCxLXwFvbfEMEKMdEw5s4WvAqwKklX5SxT/7oA70XGv
- HE/jDT9YnQkMzoF97J5lQ==
+X-Provags-ID: V03:K1:W4KhQt9MZgq0YOYGEjYcEXsHohJrG9BIMdGsx3Oa2d2+UeezvBe
+ +T2H3NPjayKRuSe0CyCYP1YgOmwXANgQ/dX5cf7GoCyQGGYLIHSfIyYhtmXfxSp2KOlMGdE
+ NlfzsktRk13iPif1IqdABxhOrHU0mE7ontPjh+uzFqJJnzZCAqc//0iKqyalpdYKi9bG9zI
+ 4RRWx2JI6VpB8YC7oSPnQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:jG2VYNc/DW8=:P6D9lfo9O9vny04GaloBoZ
- e2EOr640nW2/NuMMnN4aWRbp2gnZi6nVEeJblkWWOqx52KPVfZPn3t/n/NG2viLGOtTdGCHqX
- o84TrOFR9u1N4oVuo57IwxZqGOGaMwkEKzTT1fg8pVoEyBXOpUGN7Q/LBzJnbrMqnhKEnLEql
- nTDV0raN+5Gu5VinHIWgN4JWVXMIiykP1LfwzijAYLwfbjlRzIihlauwpUNu4y0zCdTWqw6mZ
- 3nApsPIB+LjU/oJVBM1PoQ322XeEaV9lxoirYoz3fCQi5fhCHSrOQdN4zmdJ2UTYzpKpglsYF
- 41YxNODUacpfbtsultQAq/wq/YSIBzUe3OxuWiqqyds/cBDq9qPsBh726gjNkdGuAMN6+R9Yt
- eXlZvjGHe3qHoKB1UyHRQOrN1NnzNM+hWCQU09UpvB4r8HYjzw2BgdxGGQTDh6EwVIplwfSHB
- PahLe0SaOa7cyhkGM+xTlmVve9vvUa7gSLZP217fSsId8LTZZ6AfPyTJEi8EUihTnANAXwWVS
- DPG17UXmQBlvZ+M2CmmFUtXMH57HIdZ1Op0JF9S6jnztZx9dNAnhrXC082YW+CRxSQQOWujXM
- IahpopjNYDauW6iit9nqtLj09WC4d8MPqJMq+YYwnb8nUSInW9j2Y8gUuB6Y12zFbsk66gBfo
- r75JsvAwWbGUwnyYxtCy3+WuOIJ6RWNbGXfS3jLoD8k3BOASsdQ00YsvYRO8owOzC37kZEPKu
- 1bgMQfZegVkVGkxus5pLZwEU/TKqm0kSh9OY32YlXnu3fRW5y8sLCeAVQYQ+Czcf8OchTsjDY
- n/DhRWP/J4PEPmxzWJDXZp5m2eGvtuT3W+jVuj5kYSYtHUVf59NJOzk70AykvceQLT7+Mem
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ecurjJR373I=:TbaOCtKrrQqeB/UYU/mpmd
+ CewnXWlhRstRJsM5SuBGtVgd4douKieNyi8kj+CbA5IHI+PrYoXot5GOrJQb2RXfLBvUeY8Pz
+ FRI9k7er6hBSXZDJVjiS/PR35z3ktq7XF9mZFGxCn/N3jccsCgwn8DljNy4ypfnPnr2zHj4DP
+ 5i+AzX0HneDYZ7bI1EsPBXR9M/OeDMslHEyi6FAeVN0WeBNwFrSXrzE+ho8MKAFIjovKQ4s8S
+ oERIwtaWA6K6P/Lg7k4xpyyUgJDuwu+RhQnZ4/QcxsUHiKlgA8RXk0Ek5/88WrkXuxUUOlAGC
+ eaOaZerH5DLmYQYq+YugZnG7fsCEeudHbmvi3YVDQUqWdiL6x0894SU5XMtGovNIMg5Tdlp2R
+ xJ/Z8pCrjux9MXMQhwaIeOs5PDtCUCMaFUOkXk5ig8iRov10JAiKJsAwOJCKPcXvBMCrh2Uqu
+ TpshZHvGz9+UIGdgDaXlvfmRVvJrVa1ElWTAouZuLNlEYFJaWc6nBvKXP6gzLYOBf+K0ZDbOa
+ pZY+QYXjieYWq0923eBcSAAN5lNMbUBc+MpqVlNW7/0gDBp0EG9Lg1n049/QjNjjkRSZaAfkK
+ amnYT3nlUkUi6zwLXmWubt18ecemwhgVZbU4iAeHfppv7gUVb6pd94t/bDSCKCL+Tzeo1qMsB
+ QMPtZ4qMdBGREij83WV+jXABKxOqtW4GPPSzh7AarkZJUnptKLTsHv/PXpGSN61oiu6ta2nII
+ L6peFJo9e+utaMKKx3ZWNc+355pTkmYIlytDEQUMSEHUrGibdCTnhnYBh/Ho+6Ttck/2mbb9T
+ YUown5NAq/Px6i2KjWyNVWoO59oH2vtxn9QH2UnwkVvQwKP/zOQR7yCZ4SgOzZX2sOUxumV
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 
-Enable CONFIG_MTD_PHYSMAP which is nowadays required for CONFIG_MTD_PHYSMAP_OF.
+Enable CONFIG_FB which is nowadays required for CONFIG_DRM_PANEL_LVDS,
+CONFIG_DRM_PANEL_SIMPLE, CONFIG_DRM_PANEL_SEIKO_43WVF1G,
+CONFIG_FB_MODE_HELPERS, CONFIG_BACKLIGHT_PWM, CONFIG_BACKLIGHT_GPIO,
+CONFIG_FRAMEBUFFER_CONSOLE, CONFIG_LOGO, CONFIG_FONTS, CONFIG_FONT_8x8
+and CONFIG_FONT_8x16.
 
 Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 ---
@@ -69,17 +72,17 @@ Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
-index ccee86d0045dd..70b3c377c4302 100644
+index 70b3c377c4302..6618a009a105e 100644
 --- a/arch/arm/configs/imx_v6_v7_defconfig
 +++ b/arch/arm/configs/imx_v6_v7_defconfig
-@@ -97,6 +97,7 @@ CONFIG_MTD_JEDECPROBE=y
- CONFIG_MTD_CFI_INTELEXT=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_CFI_STAA=y
-+CONFIG_MTD_PHYSMAP=y
- CONFIG_MTD_PHYSMAP_OF=y
- CONFIG_MTD_DATAFLASH=y
- CONFIG_MTD_M25P80=y
+@@ -293,6 +293,7 @@ CONFIG_DRM_IMX_LDB=y
+ CONFIG_DRM_IMX_HDMI=y
+ CONFIG_DRM_ETNAVIV=y
+ CONFIG_DRM_MXSFB=y
++CONFIG_FB=y
+ CONFIG_FB_MODE_HELPERS=y
+ CONFIG_LCD_CLASS_DEVICE=y
+ CONFIG_LCD_L4F00242T03=y
 -- 
 2.26.2
 
