@@ -2,105 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DCD3F1DD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 18:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B12B3F1DD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 18:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbhHSQbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 12:31:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44062 "EHLO
+        id S230396AbhHSQbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 12:31:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhHSQbf (ORCPT
+        with ESMTP id S230015AbhHSQbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 12:31:35 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6056C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 09:30:59 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id g14so5988864pfm.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 09:30:59 -0700 (PDT)
+        Thu, 19 Aug 2021 12:31:37 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87229C061575;
+        Thu, 19 Aug 2021 09:31:00 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id d11so14069085eja.8;
+        Thu, 19 Aug 2021 09:31:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=fpkD+6OCoRzfkOeMTubr6LoF+sjAXSBjcDQsaNzJiUQ=;
-        b=GLcx+rGTfAkrzYH9INJLyXKNKRZucLOxvUvYmeInROcKbJbm+K+zI1dqs0skv5CP9x
-         44xiv/Kk3kudHFveMfbhqZXzEoH3fAPjgu0xnDuHtsgKEMt2lW1wpDTkrUTPt192i6nU
-         YEneL0cX16fnC85Eb3UYudifAXi7m+aoGCik5GQgz9E8rcwhhImB2TxA7nkLiJM9N5Ph
-         Dnl16YKBASVVYpwqcwo9ZP4kilBD5Ly2C3aFxnxg6DQE4MGeFF1+hXurlhYR9hSzgvMn
-         Va+0a4Yj8oWWMRIl0nwMyyWuY7R3S4P5l8Ce+6yITrCPD0dsdAvXiU/usNX3K6hnKN5s
-         w8Ug==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=QemfxSD5xAYzJcfMYMAskCzZR84zFfm2x5hS4t5c4PU=;
+        b=pmjJX64apzH4rjdwC3bAALqKQRjlW7kSOsW7daz4GRNCiTaplXRTf6yZpSf+21vVGR
+         Vq7KrXR0TVo4RSczoIwSMbXjj/20hT7FvivJvnkU5EztWEInr1kTatGLaU/vWgVU9uU8
+         DeRuSUVSgAFSRlRhz4hBxMB+uhRV/AHaGtm4HncKJpnOSCcN8OZp0DIOVVsow56aby3R
+         qwFGZeTxMnjCAaHu8ASnl6P4rYJ7I+lHXns1BLhMKc0twKvQrLUuKZy1cmHMF3fx0bHx
+         1ZEDQFg06ImTYjsgrVANeAtg3jvBoPgoRwtUhcOsijzgSv9VTDtmKe+ngYcU5XfI5rwf
+         DK0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=fpkD+6OCoRzfkOeMTubr6LoF+sjAXSBjcDQsaNzJiUQ=;
-        b=j0pZFXNReK8DktRyOPH0aA2OAkAVH8C2RBa7CY+gRgF2+F2rPr+V4HEZ2Ggb7i8AgV
-         jnHVrhUQRhenCN/MI7ij2MSB15ZYcn0omMaMzAG5yNHTFnPhq4FuANQGwdjP6ffn+CHj
-         BAZznSj76FAsUkg/WpjXFRtFI/i56vEiqEcwTWeBSd8f+SY2uQtvppBoDOVLnB3WBK5+
-         Gu0rE493Hf0De8Ac/w13hVRObGX81kd9HosMpAz3ZXI2iHgFy3u3ZG5Ki9T4h6hx8GNW
-         eLqMwl7PQ2uAArOCTYhgXYc/Yvfi5i4xL1TdGWyKBCXACKzcfkcUbLMmY2Y3hWsPyn5e
-         gfEw==
-X-Gm-Message-State: AOAM533aY/pRe00BIGJixKuaJn2Rq3JeyNCa2MyfqU5HBZNn5Bx3OLeQ
-        nlBIM8mvEPqHQlX9rHlaUW8=
-X-Google-Smtp-Source: ABdhPJyZ32hcCoHBVF5/ronUjvjqCmf9FjAS/yuTlL2qRVd2fmTE17GEVg28GZTRPck3LmuoG/HIDw==
-X-Received: by 2002:a05:6a00:1511:b0:3e1:6801:3402 with SMTP id q17-20020a056a00151100b003e168013402mr15475104pfu.23.1629390659284;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=QemfxSD5xAYzJcfMYMAskCzZR84zFfm2x5hS4t5c4PU=;
+        b=or0tC2zSK9Ac7P8ygNVbMXoNrR0PqNs/L/rckmAzwoNMVPTWY2/TQZo4ELHuqNYmCL
+         6nuzVY26y2FuuCukaKQRUCNZQnSU8y1eYC2Cfpax8OV3Bj4F5txZubVukpZikQE7Da5P
+         SkVUsQ50IuxaKU6Jm1P4KL8djjYdBDntSc2wWwbTXqGb7/+v1xnwYfHg0SRvRfB2Xex5
+         /vktzLMKbouhGI/GbWLghjBwlIBfJSLW+CnYwhD7gvQMYMxoGg0Uxj4/ByNACRPTuU0I
+         a7woCr+X5X/38PeD2NN3O30h5Snne5plnvtFfaWMTqk61ETLwQKJE/E5aSLyXeTpCXHv
+         59Mg==
+X-Gm-Message-State: AOAM533DFcNUGkfhbtxzG0I1w99aHY8GXudy0cGE3TC0EMRuoFTGRS5c
+        C9oIfrXV8G9H8RluGus0pw9SOjf33wg=
+X-Google-Smtp-Source: ABdhPJxqv/Sa9apKQ1EZ/4YgyXMKcgHy+Kg0N02TRtir2W4hUhqDr1AnkDpfNTuReCJJp1m0fJXyBw==
+X-Received: by 2002:a17:907:2452:: with SMTP id yw18mr16910174ejb.191.1629390659141;
         Thu, 19 Aug 2021 09:30:59 -0700 (PDT)
-Received: from haolee.github.io ([2600:3c01::f03c:91ff:fe02:b162])
-        by smtp.gmail.com with ESMTPSA id v1sm4303751pgj.40.2021.08.19.09.30.58
+Received: from jernej-laptop.localnet (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
+        by smtp.gmail.com with ESMTPSA id r6sm2024595edq.20.2021.08.19.09.30.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 19 Aug 2021 09:30:58 -0700 (PDT)
-From:   Hao Lee <haolee.swjtu@gmail.com>
-X-Google-Original-From: Hao Lee <haolee@didiglobal.com>
-Date:   Thu, 19 Aug 2021 16:30:56 +0000
-To:     akpm@linux-foundation.org
-Cc:     hannes@cmpxchg.org, shakeelb@google.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, haolee.swjtu@gmail.com
-Subject: [PATCH] mm: vmscan: consistent update to pgdeactivate and pgactivate
-Message-ID: <20210819163056.GA9764@haolee.github.io>
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     Maxime Ripard <mripard@kernel.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Cc:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Chen-Yu Tsai <wens@csie.org>, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: cedrus: Fix SUNXI tile size calculation
+Date:   Thu, 19 Aug 2021 18:30:56 +0200
+Message-ID: <3519986.qLKfoAsNv3@jernej-laptop>
+In-Reply-To: <20210819140009.158156-1-nicolas.dufresne@collabora.com>
+References: <20210819140009.158156-1-nicolas.dufresne@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the commit 912c05720f00 ("mm: vmscan: consistent update to
-pgrefill"), pgrefill is consistent with pgscan and pgsteal. Only under
-global reclaim, are they updated at system level. Apart from that,
-pgdeactivate is often used together with pgrefill to measure the
-deactivation efficiency and pgactivate is used together with
-pgscan to measure the reclaim efficiency. It's also necessary to
-make pgdeactivate and pgactivate consistent with this rule.
+Hi Nicolas!
 
-Signed-off-by: Hao Lee <haolee@didiglobal.com>
----
- mm/vmscan.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Dne =C4=8Detrtek, 19. avgust 2021 ob 16:00:09 CEST je Nicolas Dufresne napi=
+sal(a):
+> Tiled formats requires full rows being allocated (even for Chroma
+> planes). When the number of Luma tiles is odd, we need to round up
+> to twice the tile width in order to roundup the number of Chroma
+> tiles.
+>=20
+> This was notice with a crash running BA1_FT_C compliance test using
+> sunxi tiles using GStreamer. Cedrus driver would allocate 9 rows for
+> Luma, but only 4.5 rows for Chroma, causing userspace to crash.
+>=20
+> Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 403a175a720f..9242c01d03ac 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1814,7 +1814,8 @@ static unsigned int shrink_page_list(struct list_head *page_list,
- 	free_unref_page_list(&free_pages);
- 
- 	list_splice(&ret_pages, page_list);
--	count_vm_events(PGACTIVATE, pgactivate);
-+	if (!cgroup_reclaim(sc))
-+		count_vm_events(PGACTIVATE, pgactivate);
- 
- 	return nr_reclaimed;
- }
-@@ -2427,7 +2428,8 @@ static void shrink_active_list(unsigned long nr_to_scan,
- 	/* Keep all free pages in l_active list */
- 	list_splice(&l_inactive, &l_active);
- 
--	__count_vm_events(PGDEACTIVATE, nr_deactivate);
-+	if (!cgroup_reclaim(sc))
-+		__count_vm_events(PGDEACTIVATE, nr_deactivate);
- 	__count_memcg_events(lruvec_memcg(lruvec), PGDEACTIVATE, nr_deactivate);
- 
- 	__mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, -nr_taken);
--- 
-2.31.1
+=46ixes tag would be nice so it would be picked up for stable branches.=20
+Otherwise it looks good. It also aligns logic with libvdpau-sunxi.
+
+Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+
+Best regards,
+Jernej
+
 
