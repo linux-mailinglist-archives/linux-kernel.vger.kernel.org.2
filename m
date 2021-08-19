@@ -2,90 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D88743F22FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E16E13F2307
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236978AbhHSWU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 18:20:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40078 "EHLO
+        id S237313AbhHSWVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 18:21:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237447AbhHSWUr (ORCPT
+        with ESMTP id S236194AbhHSWVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 18:20:47 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B71CC06175F;
-        Thu, 19 Aug 2021 15:20:08 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GrK2Y4V2jz9sWq;
-        Fri, 20 Aug 2021 08:20:05 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629411605;
-        bh=G1uxALNrsDthQbLStYQZE882NWSvU8HeHilDVuGLI7Y=;
-        h=Date:From:To:Cc:Subject:From;
-        b=S4bQ726j0cOYxE4icldqJsoeSnq/7OmWSX4FfmU+QAVhNC7kJA+eOglBh6yczNcjz
-         a7kSPl/YKsD5WYqy0qC8+ABUE36VXzgSwrllFSpEh/2vjox/0lC09sqhH/ZtKkYgcF
-         Bp5+p3HV8PNzlUbkU2y+k5jzqI1zTvByO65O+o8xExLkhcawoUfviAKxiwSCBDr1TW
-         Mw9NVW/EhoBPDJPUiJJqelzOw4UmQ47M/42UiyNpmBjyCph3ugRvtrxUl///g9Lulk
-         a58NoFn5qdTIRq97MJI7HQlomtOVwbJMsUtAcYRPgZyFj83P//2gPJar3eCvNm+qTl
-         Q0XLroCzvLOfg==
-Date:   Fri, 20 Aug 2021 08:20:04 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the kvm tree
-Message-ID: <20210820082004.7556d96a@canb.auug.org.au>
+        Thu, 19 Aug 2021 18:21:13 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A57A0C061575;
+        Thu, 19 Aug 2021 15:20:36 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id g13so16062749lfj.12;
+        Thu, 19 Aug 2021 15:20:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cSioMNug0d6kxUexh1FC9hTGrtcP9xpdjQR0XQQ6CYo=;
+        b=J3VpzNeE7GqDLaNcadrCTNd6cyZfYXW7ces/SuDyrw1d/28XcNn6N+DzEWmGnDD/tQ
+         SoLjonmdEv+K67l7YB0f4xQ305y80qihUAThFt01+KBxrDINvGkhPcmCvtlU5sHPBDbx
+         M71O17tNhqPr+OmAN9VOz+4Q7pIBIEyoj6SH0ySrJLRtzsTWwdbnVhskZKjVbRPHRaWm
+         +GaOVUAE0cvv6+nA+ln7XoB+9psFnKu9U3jrYuDGEC/pYeGQBmT2Xm3y538F/wiQgagE
+         srBA+yPJ+iPcl2RL23Y4diEfalcBHPDOPAb4qZl7q12ixhhyPtL63uHAQVl2E6t4EK21
+         t4gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cSioMNug0d6kxUexh1FC9hTGrtcP9xpdjQR0XQQ6CYo=;
+        b=lHxzn9lc2vVlM1OZ8wZi5g1psXJxvpAkA3WBosajap4jFbTwjWXmILHuVmpoAp4vPA
+         Sp3dKZ8eaElmuwyMrlkyFlgDMKx7Gh95Gg1DjiDrdh+o5HV1fEhT7S505eAKg2akZtLs
+         x44HIqhT4QgqhMVNBAoMKVnXwPYxen1IZcdSzrT9MU7D6CqMGX8JNWv9x5vgzS0TL1rY
+         MRX746nL8OO2ThvEoodLXOz5nl7+E4VyBVTaP1xLNcevXXK51ACaJSpFTb7JNGZdQQ86
+         Bx1ZbCKDKRnOvi3Qi0UeAzRd3ir8rUjWizV/dMWUhG2sASEKy7kAzDovv8mdRxEs0Deq
+         FCGQ==
+X-Gm-Message-State: AOAM533bDFERqpl9zvHycMIedaazLrzIwOFoM6T1LvaIYPBNM/CUcXMx
+        bBYnbc7eUeAfQ6XiVzm/b8MIzDSVGM8=
+X-Google-Smtp-Source: ABdhPJxJWs7Kxo/s8N+hb+4RWNHipznlH5BHUAb+HUpiZwCTMet2wXRVLZZrxtwaXHrGmtOIkJjuVA==
+X-Received: by 2002:a05:6512:38a1:: with SMTP id o1mr11689501lft.606.1629411634907;
+        Thu, 19 Aug 2021 15:20:34 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-120-72.dynamic.spd-mgts.ru. [46.138.120.72])
+        by smtp.googlemail.com with ESMTPSA id w14sm433095lfk.161.2021.08.19.15.20.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Aug 2021 15:20:34 -0700 (PDT)
+Subject: Re: [PATCH v8 06/34] dt-bindings: clock: tegra-car: Document new
+ tegra-clocks sub-node
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20210817012754.8710-1-digetx@gmail.com>
+ <20210817012754.8710-7-digetx@gmail.com> <YR0SSz7KMh7TwaFW@orome.fritz.box>
+ <eff5ef47-e6e0-3e03-cf1a-d931b0f2dc2a@gmail.com>
+ <YR033zuYWWLCeYpM@orome.fritz.box>
+ <a5b942cb-1611-9ae1-6e89-4b68fdaf03e3@gmail.com>
+ <YR6HWMuYcF6NIepi@orome.fritz.box>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <43f0c69a-c62d-5d36-ac59-8ce7513e9496@gmail.com>
+Date:   Fri, 20 Aug 2021 01:20:33 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_//Cb20sIlI7P9t9utNT3Zluz";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <YR6HWMuYcF6NIepi@orome.fritz.box>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_//Cb20sIlI7P9t9utNT3Zluz
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+19.08.2021 19:31, Thierry Reding пишет:
+>>>>> Also, I don't think the tegra- prefix is necessary here. The parent node
+>>>>> is already identified as Tegra via the compatible string.
+>>>>>
+>>>>> In the case of CAR, I'd imagine something like:
+>>>>>
+>>>>> 	clocks {
+>>>>> 		sclk {
+>>>>> 			operating-points-v2 = <&opp_table>;
+>>>>> 			power-domains = <&domain>;
+>>>>> 		};
+>>>>> 	};
+>>>>>
+>>>>> Now you've only got the bare minimum in here that you actually add. All
+>>>>> the other data that you used to have is simply derived from the parent.
+>>>> 'clocks' is already a generic keyword in DT. It's probably not okay to
+>>>> redefine it.
+>>> "clocks" is not a generic keyword. It's the name of a property and given
+>>> that we're talking about the clock provider here, it doesn't need a
+>>> clocks property of its own, so it should be fine to use that for the
+>>> node.
+>> I'm curious what Rob thinks about it. Rob, does this sound okay to you?
+> Another alternative would be to omit that level altogether and just make
+> sclk and siblings direct children of the CAR node.
 
-Hi all,
-
-In commit
-
-  f7782bb8d818 ("KVM: nVMX: Unconditionally clear nested.pi_pending on nest=
-ed VM-Enter")
-
-Fixes tag
-
-  Fixes: 47d3530f86c0 ("KVM: x86: Exit to userspace when kvm_check_nested_e=
-vents fails")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-I can't easily find the intended commit.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_//Cb20sIlI7P9t9utNT3Zluz
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEe2RQACgkQAVBC80lX
-0GyUOAf/TBsldQpVzbM6uAs40tBOzQd+I70cPQKGiKSqFP1/2uRlVDA1lo+wp0hw
-h0xIi3yOzYk8LUZt/cb7z0CB1eeKRXHPhrYOclzsX/1qLZVofe5TZoMukNhGNxPh
-aTnrTTofJZr9PgrgjB8TTYUUszxECSxXEsAF85VBx35pWXzQuK9o2YMguFK5ZICb
-M0hDdjQd2lne9qAYCMG92s/KF4VGv1SCuXquz9uICV0fYh2ioM5svgEcBwXQ25hH
-HAlDTMC1zjVTQAv5T2bSDxq17eCbN9JWHryonDYWuPNWqEij5RruIknpiKTL+11q
-pxX7GuC8GAB/nB0ZxuFh7T79hGMTow==
-=487y
------END PGP SIGNATURE-----
-
---Sig_//Cb20sIlI7P9t9utNT3Zluz--
+That can be done.
