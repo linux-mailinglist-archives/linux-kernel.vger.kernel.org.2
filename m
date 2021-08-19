@@ -2,151 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937103F10E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 05:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCD2F3F10EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 05:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235830AbhHSDCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 23:02:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235743AbhHSDCf (ORCPT
+        id S235932AbhHSDD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 23:03:56 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:56147 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235943AbhHSDDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 23:02:35 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54542C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 20:02:00 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id nt11so4007726pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 20:02:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=I0rp13/hYiXexTsoGOfCaUGjNu+cutJP1aayDXzLlXE=;
-        b=LD+ghkSsD+j/Q51OprT2uYFk/muTNfxrQIbiSynt4s5ziuD0p+oNzo8GqfQuuy+Et1
-         MGRGT7QZk4VJugDwzU2hkRcbdYLvOGvJWNAYCh4Xj9xWrdo5cLpYAQq20aUefoQBPcGw
-         Ztb/Q1yZxynPQHphdcD1RnZF/s4H2M/2WVqsI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=I0rp13/hYiXexTsoGOfCaUGjNu+cutJP1aayDXzLlXE=;
-        b=R+KEdE3wzG9+cAWnfkwjy3QlimpiKqPbgNDvTfg33QBtKCCKmqrJbM6CfETN5HSaVb
-         ZIgjK6XYJFAIvrAM/+Ay3R8Zg3P6GC5Vvti4rFg1vOwmpappI/tAIbP3TJeIyTWgu7rj
-         Ud3QkVA5Bvgb9mu2Lw6PJo2jPt+kS+rhWVGfHM0tPBZ2ZZZBkrglJccb9XVFKY4YObsl
-         ejs3pyZROQuA2/2sOo44ExWP4cOVPRWaOQwphUYPgdHGGekmWx/cdv6k/eOlkHE4LWyy
-         s7pmOJumOOY328l3CjDNM1IV2LDAso4Z48/1PjkT5M/WqYjEOrwfk04+uzfQ5mpHbI20
-         FVSg==
-X-Gm-Message-State: AOAM532V/t4eONw9xKcKqHu18T7DcWs43ui+FW6aircXAVxSWg4LnKxJ
-        jGfJ2pjXdF77b0EzFHli+Kgv/A==
-X-Google-Smtp-Source: ABdhPJw/UKSHM6vsnKx1oqY7IAzjyp4gapTMv7MQDUXlA9AFCwVuV8LGQledPxEGKsMebqrPhxlYyg==
-X-Received: by 2002:a17:90a:6906:: with SMTP id r6mr10537566pjj.162.1629342119900;
-        Wed, 18 Aug 2021 20:01:59 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y13sm1224056pfq.147.2021.08.18.20.01.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 20:01:59 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 20:01:58 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-kernel@vger.kernel.org,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH 13/13] kbuild: merge cmd_ar_builtin and cmd_ar_module
-Message-ID: <202108182001.8B2512CC1@keescook>
-References: <20210819005744.644908-1-masahiroy@kernel.org>
- <20210819005744.644908-14-masahiroy@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210819005744.644908-14-masahiroy@kernel.org>
+        Wed, 18 Aug 2021 23:03:50 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629342194; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=X9c47q9KsAKLzObcQi9T06HPNpn6+cA5pyUoKac/UKw=; b=P1cZ55HVNlmfi8arAAQjslA0AH+nNrl78HCmg1ti1JoHunN5fiB/6txrjMB3O13W8uJVPtbt
+ A+90y2nnqRq5ttIdrp13xu2y6CR/d4AyIb3DB1/GHydaMsEwa2nguCXTR0gHXqtQjag9bEai
+ ngUk63EcaWjU/zOMBncSKtU5a50=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 611dc9ec66ff1079042743b0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 19 Aug 2021 03:03:08
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 62906C43617; Thu, 19 Aug 2021 03:03:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E7D0FC4338F;
+        Thu, 19 Aug 2021 03:03:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E7D0FC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     mka@chromium.org, swboyd@chromium.org, bjorn.andersson@linaro.org,
+        robh+dt@kernel.org
+Cc:     ulf.hansson@linaro.org, rjw@rjwysocki.net, agross@kernel.org,
+        ohad@wizery.com, mathieu.poirier@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, rishabhb@codeaurora.org,
+        sidgup@codeaurora.org, Sibi Sankar <sibis@codeaurora.org>
+Subject: [PATCH v5 00/13] Use qmp_send to update co-processor load state
+Date:   Thu, 19 Aug 2021 08:32:03 +0530
+Message-Id: <1629342136-3667-1-git-send-email-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 09:57:44AM +0900, Masahiro Yamada wrote:
-> The difference between cmd_ar_builtin and cmd_ar_module is the
-> '[M]' in the short log.
-> 
-> Merge them into cmd_ar_thin.
-> 
-> $(quiet_modtag) is expanded to '[M]' when it is merging module objects.
+The power domains exposed by the AOSS QMP driver control the load state
+resources linked to modem, adsp, cdsp remoteprocs. These are used to
+notify the Always on Subsystem (AOSS) that a particular co-processor is
+up/down. AOSS uses this information to wait for the co-processors to
+suspend before starting its sleep sequence. These co-processors enter
+low-power modes independent to that of the application processor and
+the load state resources linked to them are expected to remain unaltered
+across system suspend/resume cycles. To achieve this behavior let's stop
+modeling them as power-domains and replace them with generic qmp_send
+interface instead.
 
-Yup, good good!
+https://lore.kernel.org/lkml/20200913034603.GV3715@yoga/
+Previous discussion on dropping power-domain support from AOSS QMP driver
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Depends on:
+qmp_send: https://patchwork.kernel.org/project/linux-arm-msm/cover/1629113954-14084-1-git-send-email-deesin@codeaurora.org/
 
--Kees
+V5:
+ * Fixup power-domain count (patch 2). [Matthias]
+ * Add WARN_ON on truncation, remove redundant initialization
+   code, use dev_err_probe (patch 4). [Stephen]
+ * Use devm_kstrdup, handle kstrdup failure due to
+   no memory and set qmp to NULL when not available
+   (patch 4). [Bjorn]
 
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->  scripts/Makefile.build | 12 +++---------
->  scripts/Makefile.lib   |  5 ++++-
->  2 files changed, 7 insertions(+), 10 deletions(-)
-> 
-> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-> index 97392c26ebd7..17ce37c3eceb 100644
-> --- a/scripts/Makefile.build
-> +++ b/scripts/Makefile.build
-> @@ -370,11 +370,8 @@ $(subdir-modorder): $(obj)/%/modules.order: $(obj)/% ;
->  # Rule to compile a set of .o files into one .a file (without symbol table)
->  #
->  
-> -quiet_cmd_ar_builtin = AR      $@
-> -      cmd_ar_builtin = rm -f $@; $(AR) cDPrST $@ $(real-prereqs)
-> -
->  $(obj)/built-in.a: $(real-obj-y) FORCE
-> -	$(call if_changed,ar_builtin)
-> +	$(call if_changed,ar_thin)
->  
->  #
->  # Rule to create modules.order file
-> @@ -434,14 +431,11 @@ cmd_ld_o_a += ; $(objtool) $(objtool_args) --module $@
->  endif
->  endif
->  
-> -quiet_cmd_ar_module = AR [M]  $@
-> -      cmd_ar_module = rm -f $@; $(AR) cDPrST $@ $(real-prereqs)
-> -
->  $(modules-single): %.a: %.o FORCE
-> -	$(call if_changed,ar_module)
-> +	$(call if_changed,ar_thin)
->  
->  $(modules-multi): FORCE
-> -	$(call if_changed,ar_module)
-> +	$(call if_changed,ar_thin)
->  $(call multi_depend, $(modules-multi), .a, -objs -y -m)
->  
->  targets += $(modules-single) $(modules-multi)
-> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-> index f604d2d01cad..bd71a7d6fbc1 100644
-> --- a/scripts/Makefile.lib
-> +++ b/scripts/Makefile.lib
-> @@ -198,7 +198,7 @@ _cpp_flags += -I $(srctree)/$(src) -I $(objtree)/$(obj)
->  endif
->  endif
->  
-> -part-of-module = $(if $(filter $(basename $@).o, $(real-obj-m)),y)
-> +part-of-module = $(if $(filter $(basename $@).o, $(real-obj-m) $(obj-m)),y)
->  quiet_modtag = $(if $(part-of-module),[M],   )
->  
->  modkern_cflags =                                          \
-> @@ -276,6 +276,9 @@ quiet_cmd_ld = LD      $@
->  quiet_cmd_ar = AR      $@
->        cmd_ar = rm -f $@; $(AR) cDPrsT $@ $(real-prereqs)
->  
-> +quiet_cmd_ar_thin = AR $(quiet_modtag)  $@
-> +      cmd_ar_thin = rm -f $@; $(AR) cDPrST $@ $(real-prereqs)
-> +
->  # Objcopy
->  # ---------------------------------------------------------------------------
->  
-> -- 
-> 2.30.2
-> 
+V4:
+ * Rebase patch 1 due to the aoss-qmp yaml conversion (Dropping Rb).
+ * Commit message change and sc8180x co-processor addition
+   to patch 2. [Rob/Bjorn]
+ * Drop unused pdev and kfree the load state string in q6v5_deinit
+   /probe path for patch 4. [Matthias]
+ * Replaced "binding" with "property" across the series. [Matthias]
+ * Commit message change and drop incorrect cleanup on cooling
+   device probe failures. [Matthias]
+
+V3:
+ * Misc. documentation fixes [patch 2]:
+  - Reduce power-domain maxItems due to load_state pd removal
+  - Combine compatibles where possible with the load_state pd removal
+  - Fixup the qcom,qmp ref to phandle type
+
+V2:
+ * load_state is currently broken on mainline so be safely dropped
+   without side-effects.
+ * Rebased on top of qmp_send v3 series.
+ * Dropped R-b from Stephen and Rob on patch 3 due to the yaml
+   conversion.
+ * New patch [12] to drop unused aoss-qmp header.
+ * Commit message update [patch 1] [Rob]
+ * Reorder the series [Stephen]
+
+Sibi Sankar (13):
+  dt-bindings: soc: qcom: aoss: Drop the load state power-domain
+  dt-bindings: remoteproc: qcom: pas: Add QMP property
+  dt-bindings: remoteproc: qcom: Add QMP property
+  remoteproc: qcom: q6v5: Use qmp_send to update co-processor load state
+  arm64: dts: qcom: sc7180: Use QMP property to control load state
+  arm64: dts: qcom: sc7280: Use QMP property to control load state
+  arm64: dts: qcom: sdm845: Use QMP property to control load state
+  arm64: dts: qcom: sm8150: Use QMP property to control load state
+  arm64: dts: qcom: sm8250: Use QMP property to control load state
+  arm64: dts: qcom: sm8350: Use QMP property to control load state
+  soc: qcom: aoss: Drop power domain support
+  dt-bindings: msm/dp: Remove aoss-qmp header
+  dt-bindings: soc: qcom: aoss: Delete unused power-domain definitions
+
+ .../bindings/display/msm/dp-controller.yaml        |   1 -
+ .../devicetree/bindings/remoteproc/qcom,adsp.yaml  |  61 ++++++------
+ .../devicetree/bindings/remoteproc/qcom,q6v5.txt   |   7 +-
+ .../bindings/soc/qcom/qcom,aoss-qmp.yaml           |  11 +--
+ arch/arm64/boot/dts/qcom/sc7180.dtsi               |   9 +-
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               |   2 -
+ arch/arm64/boot/dts/qcom/sdm845.dtsi               |   8 +-
+ arch/arm64/boot/dts/qcom/sm8150.dtsi               |  28 +++---
+ arch/arm64/boot/dts/qcom/sm8250.dtsi               |  22 ++---
+ arch/arm64/boot/dts/qcom/sm8350.dtsi               |  30 +++---
+ drivers/remoteproc/qcom_q6v5.c                     |  57 ++++++++++-
+ drivers/remoteproc/qcom_q6v5.h                     |   7 +-
+ drivers/remoteproc/qcom_q6v5_adsp.c                |   7 +-
+ drivers/remoteproc/qcom_q6v5_mss.c                 |  44 ++-------
+ drivers/remoteproc/qcom_q6v5_pas.c                 |  85 ++++------------
+ drivers/remoteproc/qcom_q6v5_wcss.c                |   4 +-
+ drivers/soc/qcom/qcom_aoss.c                       | 107 ---------------------
+ include/dt-bindings/power/qcom-aoss-qmp.h          |  14 ---
+ 18 files changed, 183 insertions(+), 321 deletions(-)
+ delete mode 100644 include/dt-bindings/power/qcom-aoss-qmp.h
 
 -- 
-Kees Cook
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
