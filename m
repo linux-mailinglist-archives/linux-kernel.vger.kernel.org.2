@@ -2,210 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826833F22D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2008C3F22D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235957AbhHSWNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 18:13:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38354 "EHLO
+        id S236105AbhHSWNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 18:13:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235845AbhHSWNM (ORCPT
+        with ESMTP id S235805AbhHSWNX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 18:13:12 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00535C061575;
-        Thu, 19 Aug 2021 15:12:34 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id u22so15997038lfq.13;
-        Thu, 19 Aug 2021 15:12:34 -0700 (PDT)
+        Thu, 19 Aug 2021 18:13:23 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E1CC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:12:47 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id x10so11197245wrt.8
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:12:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=0yCjIJExgQQYVjbdaN5b3gOfsGCqzkpLljx8eQh1o1Q=;
-        b=GMsBd3h7f6Z9cS8nn1r9s7ORbPrCo46fFuRHkOLi7SnwfhbG60XloTvOcI97685r6l
-         tEXCB7eupOEwftbsSEQjizi741djKtV9iNceTb+W2rS9XBNObkdYtSVz5LCKatQ6uh/E
-         9jAzeyLyofWqP2MOagMX9Rgf7AEsFnM90ewypEZ/fWzBNRsVFcQKpwbd/wV9Rwa6xHjQ
-         bv/LU9bo+JtCVmRFgEmxG0Plt1fgawBn56lY1vmc9M9fUtTBOxG9imQkVSdpwc4CVVSb
-         loEto9BY/qJCv6TLCsItVqrSsebW5JOTNyoo037l1aVa97nMYbB6hMPU/ONuK+qkBTc9
-         RW8g==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bfM84zXCOdXc1+Lkek74AkG2TwziRP5G2VD2oktI7qs=;
+        b=kQ5tvTivSmwyos+c1R04f8IceSoo5ROepdwGpAf2Aa5vzbh7dR0jKWmII1uZFIoc5P
+         yC/HIBjarmXkvUUwLjHLzkChhmUDClAFhCU7VPEZTW9fLWq0z3aHKUgeGpHDWXijG1w3
+         G/Mq+E+X9tf+iHOZann60QZMUhAhqsOmJI0melV1Jl20h8Atga1Vld07RVWbMW2AAfXC
+         ftpgXdkc98YlPnpzB2Cjzdx7as62wxSXzjC5aXRhTEsclpVVThbVMeSWHHAlY7EZutB4
+         Gy0L+6fqKwZJ3pn078DgkrZvfkOQ9MgAf7iLD+zeKdzvRCY/1QzpsqhWkvjzXpCGX+tm
+         JBGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=0yCjIJExgQQYVjbdaN5b3gOfsGCqzkpLljx8eQh1o1Q=;
-        b=cfjEPEySX16kLWBtBu2o7H2vGtEUAvpZ4tc5Rfo0OVsWpBPjpYtblsOPyVccXxYfKZ
-         WVkMzsux1BYL6NebgMtJIG9q0YPeuqWfyAyWFYZA2rkIvDCEnmYxQAqfLFPGOGJ2Yv4Z
-         bUU7zhqFT8gdDjn/T3pdd2OqAvoSxrSN4ghnVqx83SlDKWizDEsAnJdt4UCYT5BOlD0x
-         gjFjrt+X5yHKF8uLYAJy4hXnVHrVstxmW1V7fNPzGUb+jSse7jsa5f6uTMqDMMPmeWRF
-         aPe2WVwSxeIt+ZShh/euS8mJIS2sX9nGuygwgXrBaix3fGJgLw+1U5YxB5+wmtXqnPji
-         ntCQ==
-X-Gm-Message-State: AOAM5306KvS7oCw1mNvgy88aYAu3ku2w7jsdI7D5z9xrKSPC5fHye+pz
-        s5y9b/g27RVn09nZog4jaHzr4wEb5vALdg==
-X-Google-Smtp-Source: ABdhPJxH5DFEDI1sc/2CWkqUrVIu874nMF1nkxVFFHn9sRxM3MfRcKAW98/vZbYbe0NUPseE2+9goQ==
-X-Received: by 2002:ac2:46e1:: with SMTP id q1mr12566075lfo.250.1629411153257;
-        Thu, 19 Aug 2021 15:12:33 -0700 (PDT)
-Received: from [192.168.8.182] ([109.197.205.90])
-        by smtp.gmail.com with ESMTPSA id j2sm381362ljc.49.2021.08.19.15.12.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 15:12:32 -0700 (PDT)
-To:     linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        THOBY Simon <Simon.THOBY@viveris.fr>,
-        linux-kernel@vger.kernel.org
-From:   Igor Zhbanov <izh1979@gmail.com>
-Subject: [PATCH v3 0/1] NAX (No Anonymous Execution) LSM
-Message-ID: <adc0e031-f02d-775c-1148-e808013c1b97@gmail.com>
-Date:   Fri, 20 Aug 2021 01:12:37 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bfM84zXCOdXc1+Lkek74AkG2TwziRP5G2VD2oktI7qs=;
+        b=VGoafkx3m+HTPjpXLDp/iJvMSEWVZpusgCK3ijyqF16WovBJr6ARvUvjpSHCVwqxmd
+         xP4uCX1dmpbeIU0aNMf01HHSgQz55VwNDxQHTzdKLsJiJ6fbYiZ8aRRkaKH8yV8yyu70
+         Hms1VDYwHccDgMwpK4tjoGPi4GOzoFGivqNhD+qyclZ8dXs6IHRJgppP1tHAcFRMKCEh
+         zY0SV0+4/TdrZJ0hKq/l//JI9Byt/1YMbAvN8UqVsCvFVDr/QRie2TiNtXGJuPkIx3J7
+         41wnOzxpp4pHRLyMwxiqE//uudmxNyN+3n/MsIbvzivZE9csgBE+eFhKoKVqquCUC8LS
+         CtbQ==
+X-Gm-Message-State: AOAM532hYVkNjvAYhdH317aiFVkorAhaVmTZmNkAQLkFnT86iMQ8z1b5
+        56/MUT1RcfZSLQof4ZhSaak=
+X-Google-Smtp-Source: ABdhPJyGQj9TuVNW2MhpgZDELqTataXm/YjC+6uXV9P7uGeZaKXx6VswYkt7Oj7RACtpcW6LuPL4UQ==
+X-Received: by 2002:adf:a309:: with SMTP id c9mr6215218wrb.99.1629411165684;
+        Thu, 19 Aug 2021 15:12:45 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id v12sm4168833wrq.59.2021.08.19.15.12.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 15:12:45 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH v3] staging: r8188eu: Remove _enter/_exit_critical_mutex()
+Date:   Fri, 20 Aug 2021 00:12:41 +0200
+Message-Id: <20210819221241.31987-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Overview]
+Remove _enter_critical_mutex() and _exit_critical_mutex(). They are
+unnecessary wrappers, respectively to mutex_lock_interruptible() and
+to mutex_unlock(). They also have an odd interface that takes an unused
+argument named pirqL of type unsigned long.
+The original code enters the critical section if the mutex API is
+interrupted while waiting to acquire the lock; therefore it could lead
+to a race condition. Use mutex_lock() because it is uninterruptible and
+so avoid that above-mentioned potential race condition.
 
-Fileless malware attacks are becoming more and more popular, and even
-ready-to-use frameworks are available [1], [2], [3]. They are based on
-running of the malware code from anonymous executable memory pages (which
-are not backed by an executable file or a library on a filesystem.) This
-allows effectively hiding malware presence in a system, making filesystem
-integrity checking tools unable to detect the intrusion.
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
 
-Typically, the malware first needs to intercept the execution flow (e.g.,
-by the means of ROP-based exploit). Then it needs to download the main
-part (in the form of normal executable or library) from its server,
-because it is hard to implement the entire exploit in ROP-based form.
-There are a number of security mechanisms that can ensure the integrity
-of the file-system, but we need to ensure the integrity of the code in
-memory too, to be sure, that only authorized code is running in the
-system.
+v3: Assume that the original authors don't expect that
+mutex_lock_interruptible() can be really interrupted and then lead to 
+a potential race condition. Furthermore, Greg Kroah-Hartman makes me
+notice that "[] one almost never needs interruptable locks in a driver".
+Therefore, replace the calls to mutex_lock_interruptible() with calls to
+mutex_lock() since the latter is uninterruptible and avoid race
+conditions without the necessity to handle -EINTR errors.
 
-The proposed LSM is preventing the creation of anonymous executable pages
-for the processes. The LSM intercepts mmap() and mprotect() system calls
-and handles it similarly to SELinux handlers.
+v2: Ignore return values from Mutexes API because the original authors
+don't check and manage return errors from mutex_lock_interruptible(). 
 
-The module allows to block the violating system call or to kill the
-violating process, depending on the settings, along with rate-limited
-logging.
+ drivers/staging/r8188eu/core/rtw_mlme_ext.c     |  4 ++--
+ drivers/staging/r8188eu/hal/usb_ops_linux.c     |  4 ++--
+ drivers/staging/r8188eu/include/osdep_service.h | 13 -------------
+ drivers/staging/r8188eu/os_dep/os_intfs.c       |  4 ++--
+ 4 files changed, 6 insertions(+), 19 deletions(-)
 
-Currently, the module restricts ether all processes or only the
-privileged processes, depending on the settings. The privileged process
-is a process for which any of the following is true:
-+ uid   == 0 && !issecure(SECURE_NOROOT)
-+ euid  == 0 && !issecure(SECURE_NOROOT)
-+ suid  == 0 && !issecure(SECURE_NOROOT)
-+ cap_effective has any capability except of kernel.nax.allowed_caps
-+ cap_permitted has any capability except of kernel.nax.allowed_caps
-
-Checking of uid/euid/suid is important because a process may call
-seteuid(0) to gain privileges (if SECURE_NO_SETUID_FIXUP secure bit
-is not set).
-
-The sysctl parameter kernel.nax.allowed_caps allows to define safe
-capabilities set for the privileged processes.
-
-[JIT]
-
-Because of blocked anonymous code execution, JIT-compiled code, some
-interpreters (which are using JIT) and libffi-based projects can be
-broken.
-
-Our observation shows that such processes are typically running by a
-user, so they will not be privileged, so they will be allowed to use
-anonymous executable pages.
-
-But for small embedded set-ups it could be possible to get rid of such
-processes at all, so the module could be enabled without further
-restrictions to protect both privileged and non-privileged processes.
-
-In addition, libffi can be modified not to use anonymous executable
-pages.
-
-[Similar implementations]
-
-Although SELinux could be used to enable similar functionality, this LSM
-is simpler. It could be used in set-ups, where SELinux would be overkill.
-
-There is also SARA LSM module, which solves similar task, but it is more
-complex.
-
-[Cooperation with other security mechanisms]
-
-NAX LSM is more useful in conjunction with IMA. IMA would be responsible
-for integrity checking of file-based executables and libraries, and
-NAX LSM would be responsible for preventing of anonymous code execution.
-
-Alternatively, NAX LSM can be used with read-only root file system,
-protected by dm-verity/fs-verity.
-
-[TODO]
-- Implement xattrs support for marking privileged binaries on a per-file
-  basis.
-- Store NAX attributes in the per-task LSM blob to implement special
-  launchers for the privileged processes, so all of the children processes
-  of such a launcher would be allowed to have anonymous executable pages
-  (but not to grandchildren).
-
-[Links]
-
-[1] https://blog.fbkcs.ru/elf-in-memory-execution/
-[2] https://magisterquis.github.io/2018/03/31/in-memory-only-elf-execution.html
-[3] https://www.prodefence.org/fireelf-fileless-linux-malware-framework/
-
-[Credits]
-
-Thanks to Mimi Zohar for consulting and to Simon Thoby for thorough review.
-
-[Changelog]
-
-V3
-- Fix memory leak in allowed_caps assigning code.
-- Protect allowed_caps updating with a spinlock.
-- Fix Kconfig options description.
-- Add example for allowed_caps value.
-- Fix typo in documentation.
-
-V2
-- Fixed typo in Kconfig.
-- Fixed "cap_effective" and "cap_permitted" parameters description in NAX.rst.
-- Added "nax_allowed_caps" setup parameter. Factored out capabilities parsing
-  logic.
-- Added parameter for checking all processes (not only privileged).
-- Added Kconfig parameter for setting allowed capabilities.
-- Updated nax_file_mprotect() to avoid calling of nax_mmap_file() to avoid
-  duplicated checks.
-- Protect allowed_caps with RCU.
-- Fixed all errors and most warning found by checkpatch.pl.
-- Updated the module documentation. Added description of the boot parameters to
-  kernel-parameters.
-- Updated commit message.
-
-V1:
-- Initial implementation.
-
-Igor Zhbanov (1):
-  NAX LSM: Add initial support
-
- Documentation/admin-guide/LSM/NAX.rst         |  72 +++
- Documentation/admin-guide/LSM/index.rst       |   1 +
- .../admin-guide/kernel-parameters.rst         |   1 +
- .../admin-guide/kernel-parameters.txt         |  32 ++
- security/Kconfig                              |  11 +-
- security/Makefile                             |   2 +
- security/nax/Kconfig                          | 114 +++++
- security/nax/Makefile                         |   4 +
- security/nax/nax-lsm.c                        | 472 ++++++++++++++++++
- 9 files changed, 704 insertions(+), 5 deletions(-)
- create mode 100644 Documentation/admin-guide/LSM/NAX.rst
- create mode 100644 security/nax/Kconfig
- create mode 100644 security/nax/Makefile
- create mode 100644 security/nax/nax-lsm.c
-
+diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+index 5325fe41fbee..873b54c1715f 100644
+--- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
++++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+@@ -4359,7 +4359,7 @@ s32 dump_mgntframe_and_wait_ack(struct adapter *padapter, struct xmit_frame *pmg
+ 	if (padapter->bSurpriseRemoved || padapter->bDriverStopped)
+ 		return -1;
+ 
+-	_enter_critical_mutex(&pxmitpriv->ack_tx_mutex, NULL);
++	mutex_lock(&pxmitpriv->ack_tx_mutex);
+ 	pxmitpriv->ack_tx = true;
+ 
+ 	pmgntframe->ack_report = 1;
+@@ -4368,7 +4368,7 @@ s32 dump_mgntframe_and_wait_ack(struct adapter *padapter, struct xmit_frame *pmg
+ 	}
+ 
+ 	pxmitpriv->ack_tx = false;
+-	_exit_critical_mutex(&pxmitpriv->ack_tx_mutex, NULL);
++	mutex_unlock(&pxmitpriv->ack_tx_mutex);
+ 
+ 	return ret;
+ }
+diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+index 953fa05dc30c..a93d5cfe4635 100644
+--- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
++++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+@@ -32,7 +32,7 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+ 		goto exit;
+ 	}
+ 
+-	_enter_critical_mutex(&dvobjpriv->usb_vendor_req_mutex, NULL);
++	mutex_lock(&dvobjpriv->usb_vendor_req_mutex);
+ 
+ 	/*  Acquire IO memory for vendorreq */
+ 	pIo_buf = dvobjpriv->usb_vendor_req_buf;
+@@ -96,7 +96,7 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+ 			break;
+ 	}
+ release_mutex:
+-	_exit_critical_mutex(&dvobjpriv->usb_vendor_req_mutex, NULL);
++	mutex_unlock(&dvobjpriv->usb_vendor_req_mutex);
+ exit:
+ 	return status;
+ }
+diff --git a/drivers/staging/r8188eu/include/osdep_service.h b/drivers/staging/r8188eu/include/osdep_service.h
+index 029aa4e92c9b..bb92b9d74bd7 100644
+--- a/drivers/staging/r8188eu/include/osdep_service.h
++++ b/drivers/staging/r8188eu/include/osdep_service.h
+@@ -56,19 +56,6 @@ static inline struct list_head *get_list_head(struct __queue *queue)
+ 	return (&(queue->queue));
+ }
+ 
+-static inline int _enter_critical_mutex(struct mutex *pmutex, unsigned long *pirqL)
+-{
+-	int ret;
+-
+-	ret = mutex_lock_interruptible(pmutex);
+-	return ret;
+-}
+-
+-static inline void _exit_critical_mutex(struct mutex *pmutex, unsigned long *pirqL)
+-{
+-		mutex_unlock(pmutex);
+-}
+-
+ static inline void rtw_list_delete(struct list_head *plist)
+ {
+ 	list_del_init(plist);
+diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
+index 1aa65925e1da..e675e4e9550e 100644
+--- a/drivers/staging/r8188eu/os_dep/os_intfs.c
++++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
+@@ -1065,9 +1065,9 @@ int netdev_open(struct net_device *pnetdev)
+ 	int ret;
+ 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(pnetdev);
+ 
+-	_enter_critical_mutex(padapter->hw_init_mutex, NULL);
++	mutex_lock(padapter->hw_init_mutex);
+ 	ret = _netdev_open(pnetdev);
+-	_exit_critical_mutex(padapter->hw_init_mutex, NULL);
++	mutex_unlock(padapter->hw_init_mutex);
+ 	return ret;
+ }
+ 
 -- 
-2.26.2
+2.32.0
 
