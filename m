@@ -2,300 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AD5E3F20B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 21:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1789B3F20C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 21:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234126AbhHSTgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 15:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbhHSTgh (ORCPT
+        id S234511AbhHSTlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 15:41:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58958 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234085AbhHSTly (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 15:36:37 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFF38C061575;
-        Thu, 19 Aug 2021 12:36:00 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id d4so15213001lfk.9;
-        Thu, 19 Aug 2021 12:36:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DULWQbyXgQID8PNJR65q3ui7SrWpcCN+90FL5qtDGW4=;
-        b=pavH6Or3hHtiPfMvi8hlpl/tg+4iNkFsKU223QQBDdOUdi6iU/UGWUvtDPrwHRvATY
-         T93cP1HXuc5W/zHN7xvpRXKJW7BinJL9sVNA6qZxjeijHdmFtCqxrxnpd+WkEHRtVU0B
-         Iyqua5rSNmWSDpSD3gZsArfjTWgs81iBNdQYXU+kNJ+OumOnoCaZh+LP24EMz52MwP27
-         4AWCJslbtOmcFHBYAOMwZEDrmTB/tzURM30c4z+24S3Lj2lVdIHxSFuPOnhXpzmvotQF
-         wvsrbFpOMxH2mR1ZpXZ7XMAP/i3UFW88iZgByQUfkdB9/YhjC/JuWWWMJqO4edcr+32D
-         1LbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DULWQbyXgQID8PNJR65q3ui7SrWpcCN+90FL5qtDGW4=;
-        b=MKJco/gKyQlbu/ORhfO2U9SK1IXfyN/MhtBN5/QYfhCOiA5aCduDu7NBgULnQUVQSp
-         FPA+/SshhskLooLR+AD3cjkXnoFEQOHCMi6nNAbSDwHYAvqdtnpDpi1kK5f+6ScAHis2
-         6xukc/xX/KPlKPeQvKo73x+r6fQr+4duAoA5dSBPn9+DCcIVS3WEy1SDIO0RshL3Khjc
-         mK9mZrRugMl1plgK+B2/HTfs15yVHNyisbn46c27hLqNfyQniDOjsQ76wsxQBFes1pSa
-         eo5ShN1OXVUdsHDVXgrcZIIb5Nqe6HwF0TWjKuuqwjR0JHEPEPcqanep3oshptvyjwRb
-         4oPg==
-X-Gm-Message-State: AOAM5300DGOdpjrsp9rYN9Kw41x6iJj9XLN8IfrljTRwBE8YAtJUIX7R
-        YT2lH5HBucA4vxxD4yEpMC1g+oEIFI0=
-X-Google-Smtp-Source: ABdhPJz8kaZlUqWZzmjPF+roXrLNhHc7Bu21Y9J69HyMCnrDHOaQ6jNYy2BIrPwa/yg8Go50EqboLQ==
-X-Received: by 2002:a05:6512:23aa:: with SMTP id c42mr11397932lfv.55.1629401759119;
-        Thu, 19 Aug 2021 12:35:59 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-120-72.dynamic.spd-mgts.ru. [46.138.120.72])
-        by smtp.googlemail.com with ESMTPSA id l24sm396141lfe.272.2021.08.19.12.35.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 12:35:58 -0700 (PDT)
-Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-References: <20210818043131.7klajx6drvvkftoc@vireshk-i7>
- <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
- <20210818045307.4brb6cafkh3adjth@vireshk-i7>
- <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
- <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
- <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
- <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
- <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
- <20210818091417.dvlnsxlgybdsn76x@vireshk-i7>
- <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
- <20210818095044.e2ntsm45h5cddk7s@vireshk-i7>
- <CAPDyKFrFF00xGDWPCQnPwF0_QkG4TB2UqggpuBpp8LY_CMKP-A@mail.gmail.com>
- <0354acbe-d856-4040-f453-8e8164102045@gmail.com>
- <CAPDyKFoQdn1rm91iFNJwZwpSYcKJBjDLqtJB4KZAkhgY1Grm-Q@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <87073fc2-d7b3-98f4-0067-29430ea2adef@gmail.com>
-Date:   Thu, 19 Aug 2021 22:35:57 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 19 Aug 2021 15:41:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629402077;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=KbLSMirlq5Y+iVmHzWlYIbw7fbWKCdO5EJW42CUPvac=;
+        b=Noe28ieHQODMcPe9SWMNUUfFyNSgIbNZWnFrgy0SMROwnAJgF926CWBwjownYLeZKufSuv
+        K0xvrahbG4zOZEt6dFm08Q9Mi5EXWYXHs4+2pxVIMojiwSIx9Xty6TNjaEOfhAB00PiRyh
+        grbdx4gqP2phjyMN3R9Oey9oztqWJ8o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-461-FXi0vIJyP16Ci7bMW74UjQ-1; Thu, 19 Aug 2021 15:41:13 -0400
+X-MC-Unique: FXi0vIJyP16Ci7bMW74UjQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E568A801AC5;
+        Thu, 19 Aug 2021 19:41:11 +0000 (UTC)
+Received: from max.com (unknown [10.40.194.206])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 56EED1B46B;
+        Thu, 19 Aug 2021 19:41:05 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Paul Mackerras <paulus@ozlabs.org>
+Cc:     Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+        cluster-devel@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        kvm-ppc@vger.kernel.org
+Subject: [PATCH v6 00/19] gfs2: Fix mmap + page fault deadlocks
+Date:   Thu, 19 Aug 2021 21:40:43 +0200
+Message-Id: <20210819194102.1491495-1-agruenba@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFoQdn1rm91iFNJwZwpSYcKJBjDLqtJB4KZAkhgY1Grm-Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-19.08.2021 16:07, Ulf Hansson пишет:
-> On Wed, 18 Aug 2021 at 17:43, Dmitry Osipenko <digetx@gmail.com> wrote:
->>
->> 18.08.2021 13:08, Ulf Hansson пишет:
->>> On Wed, 18 Aug 2021 at 11:50, Viresh Kumar <viresh.kumar@linaro.org> wrote:
->>>>
->>>> On 18-08-21, 11:41, Ulf Hansson wrote:
->>>>> On Wed, 18 Aug 2021 at 11:14, Viresh Kumar <viresh.kumar@linaro.org> wrote:
->>>>>> What we need here is just configure. So something like this then:
->>>>>>
->>>>>> - genpd->get_performance_state()
->>>>>>   -> dev_pm_opp_get_current_opp() //New API
->>>>>>   -> dev_pm_genpd_set_performance_state(dev, current_opp->pstate);
->>>>>>
->>>>>> This can be done just once from probe() then.
->>>>>
->>>>> How would dev_pm_opp_get_current_opp() work? Do you have a suggestion?
->>>>
->>>> The opp core already has a way of finding current OPP, that's what
->>>> Dmitry is trying to use here. It finds it using clk_get_rate(), if
->>>> that is zero, it picks the lowest freq possible.
->>>>
->>>>> I am sure I understand the problem. When a device is getting probed,
->>>>> it needs to consume power, how else can the corresponding driver
->>>>> successfully probe it?
->>>>
->>>> Dmitry can answer that better, but a device doesn't necessarily need
->>>> to consume energy in probe. It can consume bus clock, like APB we
->>>> have, but the more energy consuming stuff can be left disabled until
->>>> the time a user comes up. Probe will just end up registering the
->>>> driver and initializing it.
->>>
->>> That's perfectly fine, as then it's likely that it won't vote for an
->>> OPP, but can postpone that as well.
->>>
->>> Perhaps the problem is rather that the HW may already carry a non-zero
->>> vote made from a bootloader. If the consumer driver tries to clear
->>> that vote (calling dev_pm_opp_set_rate(dev, 0), for example), it would
->>> still not lead to any updates of the performance state in genpd,
->>> because genpd internally has initialized the performance-state to
->>> zero.
->>
->> We don't need to discover internal SoC devices because we use
->> device-tree on ARM. For most devices power isn't required at a probe
->> time because probe function doesn't touch h/w at all, thus devices are
->> left in suspended state after probe.
->>
->> We have three components comprising PM on Tegra:
->>
->> 1. Power gate
->> 2. Clock state
->> 3. Voltage state
->>
->> GENPD on/off represents the 'power gate'.
->>
->> Clock and reset are controlled by device drivers using clk and rst APIs.
->>
->> Voltage state is represented by GENPD's performance level.
->>
->> GENPD core assumes that at a first rpm-resume of a consumer device, its
->> genpd_performance=0. Not true for Tegra because h/w of the device is
->> preconfigured to a non-zero perf level initially, h/w may not support
->> zero level at all.
-> 
-> I think you may be misunderstanding genpd's behaviour around this, but
-> let me elaborate.
-> 
-> In genpd_runtime_resume(), we try to restore the performance state for
-> the device that genpd_runtime_suspend() *may* have dropped earlier.
-> That means, if genpd_runtime_resume() is called prior
-> genpd_runtime_suspend() for the first time, it means that
-> genpd_runtime_resume() will *not* restore a performance state, but
-> instead just leave the performance state as is for the device (see
-> genpd_restore_performance_state()).
-> 
-> In other words, a consumer driver may use the following sequence to
-> set an initial performance state for the device during ->probe():
-> 
-> ...
-> rate = clk_get_rate()
-> dev_pm_opp_set_rate(rate)
-> 
-> pm_runtime_enable()
-> pm_runtime_resume_and_get()
-> ...
-> 
-> Note that, it's the consumer driver's responsibility to manage device
-> specific resources, in its ->runtime_suspend|resume() callbacks.
-> Typically that means dealing with clock gating/ungating, for example.
-> 
-> In the other scenario where a consumer driver prefers to *not* call
-> pm_runtime_resume_and_get() in its ->probe(), because it doesn't need
-> to power on the device to complete probing, then we don't want to vote
-> for an OPP at all - and we also want the performance state for the
-> device in genpd to be set to zero. Correct?
+Hi all,
 
-Yes
+here's another update on top of v5.14-rc6.  Changes:
 
-> Is this the main problem you are trying to solve, because I think this
-> doesn't work out of the box as of today?
+ * Per request from Linus, change fault_in_{readable,writeable} to
+   return the number of bytes *not* faulted in, like copy_to_user() and
+   copy_from_user() does.  Convert fault_in_iov_iter_readable and
+   fault_in_iov_iter_writeable to those same semantics.
 
-The main problem is that the restored performance state is zero for the
-first genpd_runtime_resume(), while it's not zero from the h/w perspective.
+ * Per suggestion from Linus, introduce a new FOLL_NOFAULT flag to
+   prevent get_user_pages from faulting in pages.  This is similar to
+   FOLL_FAST_ONLY, but less fragile and available on all architectures.
+   Use that for turning off page faults during iov_iter_get_pages() and
+   iov_iter_get_pages_alloc().
 
-> There is another concern though, but perhaps it's not a problem after
-> all. Viresh told us that dev_pm_opp_set_rate() may turn on resources
-> like clock/regulators. That could certainly be problematic, in
-> particular if the device and its genpd have OPP tables associated with
-> it and the consumer driver wants to follow the above sequence in
-> probe.
+ * Introduce a new HIF_MAY_DEMOTE flag that allows a glock to be taken
+   away from a holder when a conflicting locking request comes in.  This
+   allows glock holders to hang on to glocks as long as no conflicting
+   locking requests occur.  This avoids returning short reads and writes
+   when pages need to be faulted in.
 
-dev_pm_opp_set_rate() won't enable clocks and regulators, but it may
-change the clock rate and voltage. This is also platform/driver specific
-because it's up to OPP user how to configure OPP table. On Tegra we only
-assign clock to OPP table, regulators are unused.
+ * Limit the number of pages that are faulted in at once to a more
+   sensible size instead of faulting in all pages at once.  When
+   faulting in pages doesn't lead to success, fault in a single page
+   in the next attempt.  When that still doesn't succeed, give up.
+   This should prevent endless loops when fault_in_iov_iter_*() and
+   bio_iov_iter_get_pages() disagree.
 
-> Viresh, can you please chime in here and elaborate on some of the
-> magic happening behind dev_pm_opp_set_rate() API - is there a problem
-> here or not?
-> 
->>
->> GENPD core assumes that consumer devices can work at any performance
->> level. Not true for Tegra because voltage needs to be set in accordance
->> to the clock rate before clock is enabled, otherwise h/w won't work
->> properly, perhaps clock may be unstable or h/w won't be latching.
-> 
-> Correct. Genpd relies on the callers to use the OPP framework if there
-> are constraints like you describe above.
-> 
-> That said, it's not forbidden for a consumer driver to call
-> dev_pm_genpd_set_performance_state() directly, but then it better
-> knows exactly what it's doing.
-> 
->>
->> Performance level should be set to 0 while device is suspended.
-> 
-> Do you mean system suspend or runtime suspend? Or both?
+ * It turns out that taking the inode glock in gfs2_write_lock and
+   releasing it in gfs2_write_unlock was entirely pointless, so move
+   the locking into gfs2_file_buffered_write instead.  This then also
+   allows to eliminate ip->i_gh.
 
-Runtime suspend.
 
->> Performance level needs to be bumped on rpm-resume of a device in
->> accordance to h/w state before hardware is enabled.
-> 
-> Assuming there was a performance state set for the device when
-> genpd_runtime_suspend() was called, genpd_runtime_resume() will
-> restore that state according to the sequence you described.
+This iteration fixes the issues with fstest generic/208.
 
-What do you think about adding API that will allow drivers to explicitly
-set the restored performance state of a power domain?
 
-Another option could be to change the GENPD core, making it to set the
-rpm_pstate when dev_pm_genpd_set_performance_state(dev) is invoked and
-device is rpm-suspended, instead of calling the
-genpd->set_performance_state callback.
+For immediate consideration by Al Viro:
 
-Then drivers will be able to sync the perf state at a probe time.
+  iov_iter: Fix iov_iter_get_pages{,_alloc} page fault return value
 
-What do you think?
 
-diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-index a934c679e6ce..cc15ab9eacc9 100644
---- a/drivers/base/power/domain.c
-+++ b/drivers/base/power/domain.c
-@@ -435,7 +435,7 @@ static void genpd_restore_performance_state(struct
-device *dev,
- int dev_pm_genpd_set_performance_state(struct device *dev, unsigned int
-state)
- {
- 	struct generic_pm_domain *genpd;
--	int ret;
-+	int ret = 0;
+For immediate consideration by Paul Mackerras:
 
- 	genpd = dev_to_genpd_safe(dev);
- 	if (!genpd)
-@@ -446,7 +446,10 @@ int dev_pm_genpd_set_performance_state(struct
-device *dev, unsigned int state)
- 		return -EINVAL;
+  powerpc/kvm: Fix kvm_use_magic_page
 
- 	genpd_lock(genpd);
--	ret = genpd_set_performance_state(dev, state);
-+	if (pm_runtime_suspended(dev))
-+		dev_gpd_data(dev)->rpm_pstate = state;
-+	else
-+		ret = genpd_set_performance_state(dev, state);
- 	genpd_unlock(genpd);
 
- 	return ret;
+Thanks,
+Andreas
 
+Andreas Gruenbacher (16):
+  iov_iter: Fix iov_iter_get_pages{,_alloc} page fault return value
+  powerpc/kvm: Fix kvm_use_magic_page
+  Turn fault_in_pages_{readable,writeable} into
+    fault_in_{readable,writeable}
+  Turn iov_iter_fault_in_readable into fault_in_iov_iter_readable
+  iov_iter: Introduce fault_in_iov_iter_writeable
+  gfs2: Add wrapper for iomap_file_buffered_write
+  gfs2: Clean up function may_grant
+  gfs2: Move the inode glock locking to gfs2_file_buffered_write
+  gfs2: Fix mmap + page fault deadlocks for buffered I/O
+  iomap: Fix iomap_dio_rw return value for user copies
+  iomap: Support partial direct I/O on user copy failures
+  iomap: Add done_before argument to iomap_dio_rw
+  gup: Introduce FOLL_NOFAULT flag to disable page faults
+  iov_iter: Introduce nofault flag to disable page faults
+  gfs2: Fix mmap + page fault deadlocks for direct I/O
+  gfs2: Eliminate ip->i_gh
+
+Bob Peterson (3):
+  gfs2: Eliminate vestigial HIF_FIRST
+  gfs2: Remove redundant check from gfs2_glock_dq
+  gfs2: Introduce flag for glock holder auto-demotion
+
+ arch/powerpc/kernel/kvm.c           |   3 +-
+ arch/powerpc/kernel/signal_32.c     |   4 +-
+ arch/powerpc/kernel/signal_64.c     |   2 +-
+ arch/x86/kernel/fpu/signal.c        |   7 +-
+ drivers/gpu/drm/armada/armada_gem.c |   7 +-
+ fs/btrfs/file.c                     |   7 +-
+ fs/btrfs/ioctl.c                    |   5 +-
+ fs/ext4/file.c                      |   5 +-
+ fs/f2fs/file.c                      |   2 +-
+ fs/fuse/file.c                      |   2 +-
+ fs/gfs2/bmap.c                      |  60 +----
+ fs/gfs2/file.c                      | 244 ++++++++++++++++++--
+ fs/gfs2/glock.c                     | 340 +++++++++++++++++++++-------
+ fs/gfs2/glock.h                     |  20 ++
+ fs/gfs2/incore.h                    |   5 +-
+ fs/iomap/buffered-io.c              |   2 +-
+ fs/iomap/direct-io.c                |  21 +-
+ fs/ntfs/file.c                      |   2 +-
+ fs/xfs/xfs_file.c                   |   6 +-
+ fs/zonefs/super.c                   |   4 +-
+ include/linux/iomap.h               |  11 +-
+ include/linux/mm.h                  |   3 +-
+ include/linux/pagemap.h             |  58 +----
+ include/linux/uio.h                 |   4 +-
+ lib/iov_iter.c                      | 103 +++++++--
+ mm/filemap.c                        |   4 +-
+ mm/gup.c                            | 139 +++++++++++-
+ 27 files changed, 784 insertions(+), 286 deletions(-)
+
+-- 
+2.26.3
 
