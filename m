@@ -2,141 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C663D3F0FDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 03:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A52A73F0FDD
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 03:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234903AbhHSBNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 21:13:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234322AbhHSBNJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 21:13:09 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E04C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 18:12:34 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id a126so9037349ybg.6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 18:12:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nqKgp+4kxeKkHkpWnGTM9/4lqTjTkLI36sNXKnaG3TE=;
-        b=JBEnpVFqoKYSQA9YnCm98t4kD/T8yn6Snef5hlnqkSyLEfkdROTDgKG3Dh3D5FBxqq
-         buZHhQY54IxSI+aBiyJoEG/BGpiVVRl16/YqGMfN26HbbN9+8p1jAyZf2EozMK+2yuNz
-         3zDm3iSQcEoujVUAxXgADZUKOqXKmdGrl6qW7cGdcUrHUGWFgMtSF1Xe5F7msswgTC4d
-         8NIaNudNZ1miRxmh7FifUu3NQa9GvVA+03rXTiA5HEn8FjZQZjYcgF2DjESpIWoz/IPc
-         VR5HJJF9sOBAPq43t/nXoBum3cQnfOA55lUK5F8sA8QSiGT1K7L+psI41eyAQB+O/Rje
-         e2gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nqKgp+4kxeKkHkpWnGTM9/4lqTjTkLI36sNXKnaG3TE=;
-        b=P9pJygTxbKPEAsSqRVHwEKATmC7V80tZ1IE9F4eOgR+n7nKgMO9eEXnaVOyzHxBM0x
-         0dR/lLx2AhuwtLfFrJBDCa72COBd3L1V/9M1ombbwz7u2KDPNaK9ce3BFMh9qUPBYXQ5
-         8la6yHyEA1EU+oZsUJpkBc/qwno8dfJ/PDRm9r1zNN5lYTAmNTG7ewbplwiiordeVHBV
-         VtcHv9jygrgOJkDmMZr7PSI6nZuvCAaP3tPmOPTbO1EPKl+XMAULs1rGZHTqFaHZKCkf
-         WtKAx7fudyzlnrzFo7ITEbzVLjE/7BeF3V2/PMAVQzpQLziRvXNAApcqxNJwVLv+aqTa
-         ynUg==
-X-Gm-Message-State: AOAM531B2cefR0zBIlP6nIPt3LTIlTG//n6XQtBSubhQwjjXP+pq68TN
-        5Qp0alHlW9zhsVelB5kG37Y8Fb4l+GvZKzXC3m/fJg==
-X-Google-Smtp-Source: ABdhPJyp7jXNQMocIf1VjjPKDk9B2vOcnnDh1bOIyGr6K3siuuocY301BduvWApFIPG1/MRVHSVgetKaX2kPzR4TDDc=
-X-Received: by 2002:a25:c056:: with SMTP id c83mr13242178ybf.228.1629335552976;
- Wed, 18 Aug 2021 18:12:32 -0700 (PDT)
+        id S235055AbhHSBNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 21:13:52 -0400
+Received: from ozlabs.org ([203.11.71.1]:35979 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234194AbhHSBNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 21:13:51 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gqmwp5lvzz9sW8;
+        Thu, 19 Aug 2021 11:13:14 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629335595;
+        bh=7u0wdeh6ACq9jBfGv825le5pDJKccJA0CgcBvvgek88=;
+        h=Date:From:To:Cc:Subject:From;
+        b=sRP8PVYDGoxrDH2BQ48Lk0XAa0un4jljv1UPj40lcg44TZg6ahY/0F2qmLK0u8+nU
+         eI9sYc49udwlrUpw+y0J9kDf3S1gsAm1moTfZwKnAWTxlU1N5YSigJ/WXtyTCM/ieZ
+         S+S0PVHTEe0JXIG0CtQ6Qy9jW/aQy3Rf6Ya/i2ki1JNqk4SVA0xLUoXhaNNuVAUqBP
+         F2EcjDbX+KWij28w1JI76m4kwcZleUOSWYQ174Hxgv8RuvBnkPegKw9eP5bo6MuEUc
+         OFgo5TwXBj67ESR/tSIpuyhPTe7+Gf7q+JH9GjFVbAA1NbADoJsv8qICY5eqRlQqHC
+         FxopVVQBSp6MQ==
+Date:   Thu, 19 Aug 2021 11:13:12 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     Claire Chang <tientzu@chromium.org>,
+        Konrad Rzeszutek Wilk <konrad@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the swiotlb tree with the dma-mapping
+ tree
+Message-ID: <20210819111312.697fc48f@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210818130950.3715-1-Wentao_Liang_g@163.com> <CAL_JsqLfvfi42QGkM_WqKUm0GPZ6z=ybBz9kaR5UakKd0mzGEw@mail.gmail.com>
-In-Reply-To: <CAL_JsqLfvfi42QGkM_WqKUm0GPZ6z=ybBz9kaR5UakKd0mzGEw@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 18 Aug 2021 18:11:57 -0700
-Message-ID: <CAGETcx-C1avGdGLS=X7pc-q3u_BZv7wJwMWEJ6KFbDYYafeP2A@mail.gmail.com>
-Subject: Re: [PATCH] drivers:of:property.c: fix a potential double put
- (release) bug
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Wentao_Liang <Wentao_Liang_g@163.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/0mLg.F44icl/ZW12lEmMpko";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 7:07 AM Rob Herring <robh+dt@kernel.org> wrote:
->
-> +Saravana
->
-> On Wed, Aug 18, 2021 at 8:26 AM Wentao_Liang <Wentao_Liang_g@163.com> wrote:
-> >
-> > In line 1423 (#1), of_link_to_phandle() is called. In the function
-> > (line 1140, #2), "of_node_put(sup_np);" drops the reference to phandle
-> > and may cause phandle to be released. However, after the function
-> > returns, the phandle is subsequently dropped again (line 1424, #3) by
-> > the same put function. Double putting the phandle can lead to an
-> > incorrect reference count.
-> >
-> > We believe that the first put of the phandle is unnecessary (#3). We
-> > can fix the above bug by removing the redundant "of_node_put()" in line
-> > 1423.
-> >
-> > 1401 static int of_link_property(struct device_node *con_np,
-> >                                 const char *prop_name)
-> > 1402 {
-> > ...
-> > 1409     while (!matched && s->parse_prop) {
-> > ...
-> > 1414
-> > 1415         while ((phandle = s->parse_prop(con_np, prop_name, i))) {
-> > ...
-> >                  //#1 phandle is dropped in this function
-> > 1423             of_link_to_phandle(con_dev_np, phandle);
-> >
-> > 1424             //#3 the second drop to phandle
-> >                  of_node_put(phandle);
-> >
-> > 1425             of_node_put(con_dev_np);
-> > 1426         }
-> > ...
-> > 1428     }
-> > 1429     return 0;
-> > 1430 }
-> >
-> > 1095 static int of_link_to_phandle(struct device_node *con_np,
-> > 1096                   struct device_node *sup_np)
-> > 1097 {
-> > 1098     struct device *sup_dev;
-> > 1099     struct device_node *tmp_np = sup_np;
-> > ...
-> > 1140     of_node_put(sup_np);  //#2 the first drop to phandle
-> >                                //   (unnecessary)
-> > 1141
-> > 1142     return 0;
-> > 1143 }
-> >
-> > Signed-off-by: Wentao_Liang <Wentao_Liang_g@163.com>
-> > ---
-> >  drivers/of/property.c | 1 -
-> >  1 file changed, 1 deletion(-)
-> >
-> > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > index 6c028632f425..408fdde1a20c 100644
-> > --- a/drivers/of/property.c
-> > +++ b/drivers/of/property.c
-> > @@ -1137,7 +1137,6 @@ static int of_link_to_phandle(struct device_node *con_np,
-> >         put_device(sup_dev);
-> >
-> >         fwnode_link_add(of_fwnode_handle(con_np), of_fwnode_handle(sup_np));
-> > -       of_node_put(sup_np);
+--Sig_/0mLg.F44icl/ZW12lEmMpko
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hi Wentao,
+Hi all,
 
-Thanks for noticing and reporting the bug! Your analysis is correct,
-but the fix is definitely wrong. For one, the reference to the node
-phandle is pointing to can be dropped in of_link_to_phandle() when it
-calls of_get_compat_node(). It could also be dropped in one of the
-error paths. So, now you'll be incorrectly dropping the reference for
-the wrong node. Let me send out a fix and  mention you as the
-reporter.
+Today's linux-next merge of the swiotlb tree got a conflict in:
 
-Thanks,
-Saravana
+  kernel/dma/direct.c
+
+between commit:
+
+  faf4ef823ac5 ("dma-direct: add support for dma_coherent_default_memory")
+
+from the dma-mapping tree and commit:
+
+  f4111e39a52a ("swiotlb: Add restricted DMA alloc/free support")
+
+from the swiotlb tree.
+
+I fixed it up (see below, though more may be needed) and can carry the
+fix as necessary. This is now fixed as far as linux-next is concerned,
+but any non trivial conflicts should be mentioned to your upstream
+maintainer when your tree is submitted for merging.  You may also want
+to consider cooperating with the maintainer of the conflicting tree to
+minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc kernel/dma/direct.c
+index 8dca4f97d12d,2de33e5d302b..000000000000
+--- a/kernel/dma/direct.c
++++ b/kernel/dma/direct.c
+@@@ -155,15 -174,10 +174,16 @@@ void *dma_direct_alloc(struct device *d
+  	}
+ =20
+  	if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
+ -	    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) && !dev_is_dma_coherent(dev) &&
+ +	    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
+ +	    !IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
+- 	    !dev_is_dma_coherent(dev))
+++	    !dev_is_dma_coherent(dev) &&
++ 	    !is_swiotlb_for_alloc(dev))
+  		return arch_dma_alloc(dev, size, dma_handle, gfp, attrs);
+ =20
+ +	if (IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
+ +	    !dev_is_dma_coherent(dev))
+ +		return dma_alloc_from_global_coherent(dev, size, dma_handle);
+ +
+  	/*
+  	 * Remapping or decrypting memory may block. If either is required and
+  	 * we can't block, allocate the memory from the atomic pools.
+@@@ -259,9 -278,8 +284,10 @@@ void dma_direct_free(struct device *dev
+  	}
+ =20
+  	if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
+ -	    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) && !dev_is_dma_coherent(dev) &&
+ +	    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
+ +	    !IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
+- 	    !dev_is_dma_coherent(dev)) {
+++	    !dev_is_dma_coherent(dev) &&
++ 	    !is_swiotlb_for_alloc(dev)) {
+  		arch_dma_free(dev, size, cpu_addr, dma_addr, attrs);
+  		return;
+  	}
+
+--Sig_/0mLg.F44icl/ZW12lEmMpko
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEdsCkACgkQAVBC80lX
+0GyPwAgAjVBKqHuPcc3QJt51ZEqbtRfX9HRJDpTEv3OPCL9h+8Jw72ApDgQuFK7o
+Yh1GsqeKG0Q9WL1Y+xDbrLDZD12aTIHosJhs8XjOApQqtt7OKelgrLSA8qeeThR7
+9z9upYoBL1wfrYivvgoqex0f0zxskLXjhbmbQnXIaspyp+v59wjkFlSFFPYZU2l3
+Y3/Rk0JKxkEVEWLJf79g6MO7id9mhfnN7NhER9/9UgvBRmRMCFo9jpnE460W2vPP
+MaBZdUZWmuO1nmhEVs0LUr9MHIZAutd+kRuEfDZ0UddlRVb3A/2KJcekEyTP4avC
+D547ETBDmShm3+OzbUHHBFJp7uUhHQ==
+=yHFk
+-----END PGP SIGNATURE-----
+
+--Sig_/0mLg.F44icl/ZW12lEmMpko--
