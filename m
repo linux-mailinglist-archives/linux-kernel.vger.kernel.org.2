@@ -2,94 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C665F3F1718
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A833F171E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238221AbhHSKJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 06:09:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237862AbhHSKJI (ORCPT
+        id S238100AbhHSKMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 06:12:43 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:43666
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238002AbhHSKMm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 06:09:08 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96227C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 03:08:31 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mGeyL-00046Q-5R; Thu, 19 Aug 2021 12:08:29 +0200
-Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:5b60:c5f4:67f4:2e1e])
+        Thu, 19 Aug 2021 06:12:42 -0400
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id D119A66A59E;
-        Thu, 19 Aug 2021 10:08:27 +0000 (UTC)
-Date:   Thu, 19 Aug 2021 12:08:26 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc:     linux-can@vger.kernel.org,
-        Stefan =?utf-8?B?TcOkdGpl?= <Stefan.Maetje@esd.eu>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 7/7] can: etas_es58x: clean-up documentation of struct
- es58x_fd_tx_conf_msg
-Message-ID: <20210819100826.hplvfua3il34co5r@pengutronix.de>
-References: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
- <20210815033248.98111-8-mailhol.vincent@wanadoo.fr>
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 3E699411F8
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 10:12:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629367925;
+        bh=uQVhpvDvpjI0P3FxejG6bkElaqc3lP0DEFRi/YWQ1og=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=pu1QqXgr593FV6knckHIyzylDcUJBA9dYbev9jnRKZ2z89EKex6/rKlwsSwCOsOaN
+         QLYWL3rpL5L5Ce8wI1Yl0YzwVZFQtfRqsQ258Yw0aDp+BPhN8lCvabO/4dXQKIdgBX
+         oGdS/7GDZB0IEkxiMsyVdqTVHaTi57yNOMczcFSTH4P0caHtUNL/zm58nTjRxlHUVe
+         MPsKZCof6R5dBr5W5JgyjJJUFbY+V5xmUUdjslSMwMtzyWrCVafREABC8HzHQ318IC
+         JxCEt125W6DbefrPuqriS4VrFot4usY+cKsDfYxtUF/dOKA8WW3fT+lqsAKoTdLbGC
+         nCcMLWTJ91c+A==
+Received: by mail-ed1-f71.google.com with SMTP id d12-20020a50fe8c0000b02903a4b519b413so2573540edt.9
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 03:12:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uQVhpvDvpjI0P3FxejG6bkElaqc3lP0DEFRi/YWQ1og=;
+        b=EXkoAYwWvZ0zGcMxgt4/YaCqVEokMKnIZ8aobID2vW5+E3OWTPYIi2r/TioYczBN+F
+         AwJQUOYfgp/OiKLZOvB9MC6kAxK+6OYOMobuSu5ch70xAh2XZ8R8EXLI7Dz6ruEUjQYq
+         aVyMUzByTnwYkDN07gyIBhSQHSo6qfAqMijlM3X/Q9aAOYRU6LRFhmeBn1HzNUg/SnV9
+         tL1bHA2cBFSt4NGGKpVsbazkzWCkK+JSizv0eaj3J1yG7qiQUkqGXNTmQDKh16HNe+oK
+         AG/2zVlBIbU0onfB0YDidpPGLH5CKZ3J/cimkKHYK1/zEZZrYY+mcpNEwqaM8xxtt+E/
+         fWZw==
+X-Gm-Message-State: AOAM531M2pVbXon4Zb0tmfhQHB53E78lf2S15MYnU01km67VYug8Y+4w
+        XiCk5PnF5gQjv8jzlC6UdxjyDoCQurOQwIoitD+okB9k2c8zuavXx9Ouqe8a1hpDGO13ADVzpay
+        WFletql49CzC9JnWsDLsbGtP8XB8oEd2tOXZftpDVtg==
+X-Received: by 2002:aa7:de05:: with SMTP id h5mr15692568edv.174.1629367924792;
+        Thu, 19 Aug 2021 03:12:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzbx+5karGwHCd0154GL4o1bMhwTey/MCqUQCq8AL/d5JkQfHYSeV0sYRenyhjeIm/i7JNcfw==
+X-Received: by 2002:aa7:de05:: with SMTP id h5mr15692564edv.174.1629367924684;
+        Thu, 19 Aug 2021 03:12:04 -0700 (PDT)
+Received: from localhost.localdomain ([86.32.42.198])
+        by smtp.gmail.com with ESMTPSA id bs13sm1031774ejb.98.2021.08.19.03.12.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 03:12:04 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Dillon Min <dillon.minfei@gmail.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 1/2] dt-bindings: panel: ili9341: correct indentation
+Date:   Thu, 19 Aug 2021 12:10:19 +0200
+Message-Id: <20210819101020.26368-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hvqy3gn7ubyds7r6"
-Content-Disposition: inline
-In-Reply-To: <20210815033248.98111-8-mailhol.vincent@wanadoo.fr>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Correct indentation warning:
+  ilitek,ili9341.yaml:25:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
 
---hvqy3gn7ubyds7r6
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ .../devicetree/bindings/display/panel/ilitek,ili9341.yaml       | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 15.08.2021 12:32:48, Vincent Mailhol wrote:
-> The documentation of struct es58x_fd_tx_conf_msg explains in details
-> the different TDC parameters. However, those description are redundant
-> with the documentation of struct can_tdc.
->=20
-> Remove most of the description.
->=20
-> Also, fixes a typo in the reference to the datasheet (E701 -> E70).
+diff --git a/Documentation/devicetree/bindings/display/panel/ilitek,ili9341.yaml b/Documentation/devicetree/bindings/display/panel/ilitek,ili9341.yaml
+index 2ed010f91e2d..20ce88ab4b3a 100644
+--- a/Documentation/devicetree/bindings/display/panel/ilitek,ili9341.yaml
++++ b/Documentation/devicetree/bindings/display/panel/ilitek,ili9341.yaml
+@@ -22,7 +22,7 @@ properties:
+     items:
+       - enum:
+           # ili9341 240*320 Color on stm32f429-disco board
+-        - st,sf-tc240t-9370-t
++          - st,sf-tc240t-9370-t
+       - const: ilitek,ili9341
+ 
+   reg: true
+-- 
+2.30.2
 
-As suggested, applied to linux-can-next/testing.
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---hvqy3gn7ubyds7r6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEeLZgACgkQqclaivrt
-76mvRAgAiB/sXimDfkDeoDlS3EJsgnT7BBWlC7ax98NJuH4M1tiSbhDjrVnuGqd/
-Ex2wPz5VCKa8yLq/eueLnkMTLF82RpO1xnfBnh5K+VKv6a9lUJLXnJWJ0ZsefkE1
-8vTSD/8O1HdS0okrL54JEOWRXCrlB/c5mEjWPxhUoXMnW6Atrol0d79xgbNrkN5C
-9EHX/0YDyKJqT+eLaPBMAmBTiY3lR77f5x5d7ldcjAVUUZQrJJK69wRYdlpeuLBk
-pXI/O0ERbXECsnXsKfTHcgnXrHIBj0wKkrhtgd/qR3wYw1e4EVh7AR+TK8S0NF50
-2zHid4xfSvfVa4TNAU9ovoaMqIpTRA==
-=GAgJ
------END PGP SIGNATURE-----
-
---hvqy3gn7ubyds7r6--
