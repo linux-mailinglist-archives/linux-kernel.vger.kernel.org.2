@@ -2,146 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6943F172B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9D33F1734
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238172AbhHSKSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 06:18:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236149AbhHSKSs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 06:18:48 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68018C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 03:18:12 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id o10so3694819plg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 03:18:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=YWzpA6GpiUj9DNafhyNnVYqFrxHaZDDWl5LsHjc0VZo=;
-        b=nJW65GAjl7D58Tk4x3AWNw+vUkgL7jOiuXD2nezoZq/Ch6lRzc0SVRGhIpfViaAXii
-         aKW4Nm497bc9RrWJ4RBDAJPmbwAMsIYXvxDCeLtkPoR5q8Q/4IMsmLhwrejMuPs74DXI
-         dlrboN0usqfK+kgTp/42Ui2QqTYIKpYq+p63m8Kv9qkVlFWHndSOvGwioPcQMkz/A3j7
-         temEF7jTY9AUcS54LQD4NmXq+0swWWloea6N7m6vUlLnqQoVH5Bt6wzXjHtCeO5b9++n
-         ZSJQRR3l5Gjl8DL0bBPLvRNqX9Q8c3iRDJfyxdZS9MUWVoV+I9w7qkNRUaKMDPOddWbV
-         P6Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=YWzpA6GpiUj9DNafhyNnVYqFrxHaZDDWl5LsHjc0VZo=;
-        b=sTXB+gBkFuRaK+cVlyn7uIz7QhF2jho3ARs8w0L37PZDhebviOXIH7nNasiNVaiKrN
-         Z09ekHrzI8lhwBFVbvNjRKX+gSvc+PxUDfTqA6KFQKOGlLnoTDhEcQzi4QUdSXw2r2qo
-         y8yIX3nCvl+tuovWVZ0eZ8KefJMyuebT9I1L/ku8DOF+EDWD8mCT3uV9FoE/C0kvSjLS
-         jRVMbyT6yWcCYjzXk0eBc9g2sEidraeYr+LtC0SzO7oqlXWfKh4Qmaz7LCc49JTPYbvZ
-         ex4lIVnNl5C7MJwyBENEsD8sT8xECXGZBG4ynfaRlNK6jUpCq044pjN8EMNOLE8I4UTB
-         nB/g==
-X-Gm-Message-State: AOAM531vQUp8ma2wkaYBOop9z6R+88OyjUVtQjULC3rYZCUDJ+N1xGzG
-        tNNSmiZtPZ0juTjcuQAFN6z0Sg==
-X-Google-Smtp-Source: ABdhPJxpvI4seUV1ElylKWY6jlwJA1pr0aOdH/FokCyrtOSpqe/37r8Qycw3jq1alEYdVBeEpzD08w==
-X-Received: by 2002:a17:902:76cb:b029:12b:2fb8:7c35 with SMTP id j11-20020a17090276cbb029012b2fb87c35mr11126355plt.16.1629368291977;
-        Thu, 19 Aug 2021 03:18:11 -0700 (PDT)
-Received: from [10.254.207.146] ([139.177.225.231])
-        by smtp.gmail.com with ESMTPSA id i5sm7762302pjk.47.2021.08.19.03.18.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 03:18:11 -0700 (PDT)
-Subject: Re: [External] Re: [PATCH v2 6/9] mm: free user PTE page table pages
-To:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
-        tglx@linutronix.de, hannes@cmpxchg.org, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, kirill.shutemov@linux.intel.com,
-        mika.penttila@nextfour.com
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, songmuchun@bytedance.com
-References: <20210819031858.98043-1-zhengqi.arch@bytedance.com>
- <20210819031858.98043-7-zhengqi.arch@bytedance.com>
- <5aa3020c-fcf2-87bd-31fe-e2b5c2aafcf2@redhat.com>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-Message-ID: <74bfdf9c-f054-906c-f533-9b5e53ba057d@bytedance.com>
-Date:   Thu, 19 Aug 2021 18:18:05 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <5aa3020c-fcf2-87bd-31fe-e2b5c2aafcf2@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S238100AbhHSKXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 06:23:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236149AbhHSKXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 06:23:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8088960BD3;
+        Thu, 19 Aug 2021 10:23:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629368582;
+        bh=AmAkfCOit+pYuHCq8UHPg0KXUc4vSjBndhB1phKq7Zw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=b085dqFRDffjGbx38H8kmp2z8c1tel+D/13GkouxWrsrrAK1ArhvWbPVtof8aJpNC
+         SNDI+sBK11y64kiVc+ZN2IPdbrg/hs/xlQBlGXyfVu2piwp7WixWMTd1zg5j+Ye4am
+         4UAi/Qrfnqwi2BtoQL37d1tTOxGsM5tV7hoRAoEHOjxl1kcsow6kgKtU3D940AGzBB
+         5Sn2t4O8ae8WT+3rsg0RexjXMAc4cPOomuC32pzHlexa6GBwlkVSJZVqYDGfwHtyvw
+         9+PEORIhumAM/kVXizwMlkax6BKy7rgOKRazHsvcTh4BRh2E7kYQdy0vKGYXvxR4I8
+         d+8j0jdpORArw==
+Date:   Thu, 19 Aug 2021 19:22:58 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
+        Tom Zanussi <zanussi@kernel.org>
+Subject: Re: [PATCH v7 08/10] tracing: Add a probe that attaches to trace
+ events
+Message-Id: <20210819192258.7e39bafa8084417d96a8244e@kernel.org>
+In-Reply-To: <20210819041842.485382601@goodmis.org>
+References: <20210819041321.105110033@goodmis.org>
+        <20210819041842.485382601@goodmis.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Steve,
+
+Thanks for updating.
+
+On Thu, 19 Aug 2021 00:13:29 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> +static bool find_event_probe(const char *group, const char *event)
+> +{
+> +	struct trace_eprobe *ep;
+> +	struct dyn_event *ev;
+> +	bool ret = false;
+> +
+> +	/*
+> +	 * Must grab the event_mutex to prevent the list from being modified
+> +	 * by other probes. But the event_probe being only created via the
+> +	 * dynamic_events file, is only added under the dyn_event_ops_mutex,
+> +	 * which is currently held. There is no race between this check and
+> +	 * adding the new probe.
+
+This is not correct, as I said in the previous mail. The dynamic event has
+2 lists, one is for the "kind of" dynamic event (dyn_event_ops), and
+the other one is for the dynamic events itself. The "dyn_event_ops_mutex"
+is protecting only "dyn_event_ops", and the dynamic event list is ptotected
+by the "event_mutex". (This is described in the trace_dynevent.c)
+So holding event_mutex is correct.
+
+> +	 */
+> +	mutex_lock(&event_mutex);
+> +	for_each_dyn_event(ev) {
+> +		if (ev->ops != &eprobe_dyn_event_ops)
+> +			continue;
+> +		ep = to_trace_eprobe(ev);
+> +		if (strcmp(ep->tp.event->class.system, group) == 0 &&
+> +		    strcmp(ep->tp.event->call.name, event) == 0) {
+> +			ret = true;
+> +			break;
+> +		}
+> +	}
+> +	mutex_lock(&event_mutex);
+> +
+> +	return ret;
+> +}
+> +
+> +static int __trace_eprobe_create(int argc, const char *argv[])
+> +{
+> +	/*
+> +	 * Argument syntax:
+> +	 *      e[:[GRP/]ENAME] SYSTEM.EVENT [FETCHARGS]
+> +	 * Fetch args:
+> +	 *  <name>=$<field>[:TYPE]
+> +	 */
+> +	const char *event = NULL, *group = EPROBE_EVENT_SYSTEM;
+> +	const char *sys_event = NULL, *sys_name = NULL;
+> +	struct trace_event_call *event_call;
+> +	struct trace_eprobe *ep = NULL;
+> +	char buf1[MAX_EVENT_NAME_LEN];
+> +	char buf2[MAX_EVENT_NAME_LEN];
+> +	int ret = 0;
+> +	int i;
+> +
+> +	if (argc < 2 || argv[0][0] != 'e')
+> +		return -ECANCELED;
+> +
+> +	trace_probe_log_init("event_probe", argc, argv);
+> +
+> +	event = strchr(&argv[0][1], ':');
+> +	if (event) {
+> +		event++;
+> +		ret = traceprobe_parse_event_name(&event, &group, buf1,
+> +						  event - argv[0]);
+> +		if (ret)
+> +			goto parse_error;
+> +	} else {
+> +		strscpy(buf1, argv[1], MAX_EVENT_NAME_LEN);
+> +		sanitize_event_name(buf1);
+> +		event = buf1;
+> +	}
+> +	if (!is_good_name(event) || !is_good_name(group))
+> +		goto parse_error;
+> +
+> +	/* Check if the name already exists */
+> +	if (find_event_probe(group, event))
+> +		return -EEXIST;
+
+Hmm, there is a window between checking the name confliction here, ...
+
+> +
+> +	sys_event = argv[1];
+> +	ret = traceprobe_parse_event_name(&sys_event, &sys_name, buf2,
+> +					  sys_event - argv[1]);
+> +	if (ret || !sys_name)
+> +		goto parse_error;
+> +	if (!is_good_name(sys_event) || !is_good_name(sys_name))
+> +		goto parse_error;
+> +
+> +	mutex_lock(&event_mutex);
+> +	event_call = find_and_get_event(sys_name, sys_event);
+> +	ep = alloc_event_probe(group, event, event_call, argc - 2);
+> +	mutex_unlock(&event_mutex);
+> +
+> +	if (IS_ERR(ep)) {
+> +		ret = PTR_ERR(ep);
+> +		/* This must return -ENOMEM, else there is a bug */
+> +		WARN_ON_ONCE(ret != -ENOMEM);
+> +		goto error;	/* We know ep is not allocated */
+> +	}
+> +
+> +	argc -= 2; argv += 2;
+> +	/* parse arguments */
+> +	for (i = 0; i < argc && i < MAX_TRACE_ARGS; i++) {
+> +		trace_probe_log_set_index(i + 2);
+> +		ret = trace_eprobe_tp_update_arg(ep, argv, i);
+> +		if (ret)
+> +			goto error;
+> +	}
+> +	ret = traceprobe_set_print_fmt(&ep->tp, PROBE_PRINT_EVENT);
+> +	if (ret < 0)
+> +		goto error;
+> +	init_trace_eprobe_call(ep);
+> +	mutex_lock(&event_mutex);
+> +	ret = trace_probe_register_event_call(&ep->tp);
+> +	if (ret) {
+> +		mutex_unlock(&event_mutex);
+> +		goto error;
+> +	}
+
+... and register it here.
+
+Between the existance check and the registration, someone can register
+same name event probe. So I recommend you to do it as;
+
+static int register_event_probe(ep)
+{
+	init_trace_eprobe_call(ep);
+	mutex_lock(&event_mutex);
+	if (find_event_probe(group, event))
+		ret = -EEXIST;
+		goto out;
+	}
+
+	ret = trace_probe_register_event_call(&ep->tp);
+	if (ret)
+		goto out;
+	ret = dyn_event_add(&ep->devent, &ep->tp.event->call);
+	mutex_unlock(&event_mutex);
+out:
+	return ret;
+}
+
+Anyway, I will send a patch for fixing related issue. If you don't care
+the name collision between eprobes or other events, you can just apply it.
+Then trace_probe_register_event_call() will reject the same name event.
 
 
-On 2021/8/19 PM3:01, David Hildenbrand wrote:
->>
->> In this patch series, we add a pte_refcount field to the
->> struct page of page table to track how many users of PTE page
->> table. Similar to the mechanism of page refcount, the user of
->> PTE page table should hold a refcount to it before accessing.
->> The PTE page table page will be freed when the last refcount
->> is dropped.
->>
->> While we access ->pte_refcount of a PTE page table, any of the
->> following ensures the pmd entry corresponding to the PTE page
->> table stability:
->>
->>     - mmap_lock
->>     - anon_lock
->>     - i_mmap_lock
->>     - parallel threads are excluded by other means which
->>       can make ->pmd stable(e.g. gup case)
->>
->> This patch does not support THP temporarily, it will be
->> supported in the next patch.
-> 
-> Can you clarify (and document here) who exactly takes a reference on the 
-> page table? Do I understand correctly that
-> 
-> a) each !pte_none() entry inside a page table take a reference to the 
-> page it's containted in.
-> b) each page table walker temporarily grabs a page table reference
-> c) The PMD tables the PTE is referenced in (->currently only ever a 
-> single one) does *not* take a reference.
+Thank you,
 
-Yes, both of the !pte_none() entry and the page table walker can be
-regarded as users of the PTE page table, so they need to hold a
-->pte_refcount during their life cycle. And the pte_refcount field
-of struct page is only for PTE page table, so the PMD page tables does
-*not* take a ->pte_refcount.
-
-> 
-> So if there are no PTE entries left and nobody walks the page tables, 
-> you can remove it? You should really extend the 
-
-Yes, if there are no PTE entries left and nobody walks the page tables,
-which means there is no user, then we can remove it when we drop the
-last ->pte_refcount.
-
-> description/documentation to make it clearer how exactly it's supposed 
-> to work
-I'm sorry that there is no clear description of the usage of
-pte_refcount, i will make a documentation to describe it.
-
-> 
-> 
-> It feels kind of strange to not introduce the CONFIG_FREE_USER_PTE 
-> Kconfig option in this patch. At least it took me a while to identify it 
-> in the previous patch.
-
-The introduction of the CONFIG_FREE_USER_PTE and related APIs are all
-place in the previous patch ([PATCH v2 5/9] mm: pte_refcount
-infrastructure). And in this and next patch, we use these
-infrastructures to free user PTE page table pages.
-
-> 
-> Maybe you should introduce the empty stubs and use them in a separate 
-> patch, and then have this patch just introduce CONFIG_FREE_USER_PTE 
-> along with the actual refcounting magic inside the !stub implementation.
-> 
-Hmm, let me think about this suggestion.
-
-Thanks,
-
-Qi
-
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
