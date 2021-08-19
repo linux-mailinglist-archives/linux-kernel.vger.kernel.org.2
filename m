@@ -2,103 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E80053F2356
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F4F53F235D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236794AbhHSWk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 18:40:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236583AbhHSWk0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 18:40:26 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38AF4C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:39:49 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id e7so7280017pgk.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:39:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=WX/qJVOnuFAI2moIv6OF4lqewvc4NdGxWkCdYilIaS4=;
-        b=dIr051qis+9TSdlqlxkVlLOVanqfmbLXpUhEciivJ12h+asK6W8Lb8B1xQ5SOFx0ed
-         hBWa5vXbV5b1XLr52yfjhKR12+utTBNZO8Ms6rSiPQtoDnQJGUQfsRj1N9qnjRpMnSko
-         tbJ3maAALuUqpegMFAmcYb5xUkx8ZNp9IKaEg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=WX/qJVOnuFAI2moIv6OF4lqewvc4NdGxWkCdYilIaS4=;
-        b=Jmga5+Wi08kGU7dmmAtZNEA0TTtTdSDiXRxhzOL2YjO4nwh+MkTgtp45N78LCN0Pi5
-         KjW+h7vqpeY5o+XQwjxf/qzkq0gp/iAeHp5FjEuhmoX2RoOZH/UHWUF370niF/1bJrUl
-         ihhr7VTREBUPLCG8/RoXD4vNA4C46X6NyC8faHr+ZBwM/6q/gOzB8KDzIV8mHED3ViuH
-         QKrj8jemPe7SaHP6ul/0ZVm1l8d7E3qMxkT4Y3zeXwFiI431u+PeKCQlXAq16rEw4JXF
-         eaftxxmeM5JGyxJ9Nq1s6/Hml6HXPMGBxzzsQAbSAKMDaj1WsgnXdepyfIxqfo5LyYF/
-         5pQA==
-X-Gm-Message-State: AOAM531Zt9WvpippCsimidztrxgoWL19O3NCahWSPf/0HM8EEzRvrPwQ
-        wEOlwHcx7kd1SQJdEzRla3jBcg==
-X-Google-Smtp-Source: ABdhPJydtoDgmtfFU7iCvzmfD+6LAiNa/sBr8PkQ4fFuCRed3yo4/Qn+wZAYqYuVMFMYpSUN+dNGhA==
-X-Received: by 2002:aa7:8e56:0:b029:3cd:c2ec:6c1c with SMTP id d22-20020aa78e560000b02903cdc2ec6c1cmr16390211pfr.80.1629412788706;
-        Thu, 19 Aug 2021 15:39:48 -0700 (PDT)
-Received: from localhost ([2001:4479:e000:e400:3a83:f47e:d5a3:378a])
-        by smtp.gmail.com with ESMTPSA id x69sm4639869pfc.59.2021.08.19.15.39.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 15:39:48 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Neuling <mikey@neuling.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        kernel-janitors@vger.kernel.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] powerpc: kvm: remove obsolete and unneeded select
-In-Reply-To: <20210819113954.17515-2-lukas.bulwahn@gmail.com>
-References: <20210819113954.17515-1-lukas.bulwahn@gmail.com>
- <20210819113954.17515-2-lukas.bulwahn@gmail.com>
-Date:   Fri, 20 Aug 2021 08:39:45 +1000
-Message-ID: <87sfz59hzi.fsf@dja-thinkpad.axtens.net>
+        id S236042AbhHSWpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 18:45:40 -0400
+Received: from mga18.intel.com ([134.134.136.126]:31925 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229475AbhHSWpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 18:45:39 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10081"; a="203814491"
+X-IronPort-AV: E=Sophos;i="5.84,335,1620716400"; 
+   d="scan'208";a="203814491"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 15:45:02 -0700
+X-IronPort-AV: E=Sophos;i="5.84,335,1620716400"; 
+   d="scan'208";a="522636079"
+Received: from agluck-desk2.sc.intel.com ([10.3.52.146])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 15:45:01 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
+        Sumanth Kamatala <skamatala@juniper.net>
+Subject: [PATCH] x86/mce/dev-mcelog: Call mce_register_decode_chain() much earlier
+Date:   Thu, 19 Aug 2021 15:44:52 -0700
+Message-Id: <20210819224452.1619400-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukas,
+When a fatal machine check results in a system reset, Linux does
+not clear the error(s) from machine check bank(s).
 
-> diff --git a/arch/powerpc/kvm/Kconfig b/arch/powerpc/kvm/Kconfig
-> index e45644657d49..ff581d70f20c 100644
-> --- a/arch/powerpc/kvm/Kconfig
-> +++ b/arch/powerpc/kvm/Kconfig
-> @@ -38,7 +38,6 @@ config KVM_BOOK3S_32_HANDLER
->  config KVM_BOOK3S_64_HANDLER
->  	bool
->  	select KVM_BOOK3S_HANDLER
-> -	select PPC_DAWR_FORCE_ENABLE
+Hardware preserves the machine check banks across a warm reset.
 
-I looked at some of the history here. It looks like this select was left
-over from an earlier version of the patch series that added PPC_DAWR: v2
-of the series has a new symbol PPC_DAWR_FORCE_ENABLE but by version 4
-that new symbol had disappeared but the select had not.
+During initialization of the kernel after the reboot, Linux reads,
+logs, and clears all machine check banks.
 
-v2: https://lore.kernel.org/linuxppc-dev/20190513071703.25243-1-mikey@neuling.org/
-v5: https://lore.kernel.org/linuxppc-dev/20190604030037.9424-2-mikey@neuling.org/
+But there is a problem. In:
+commit 5de97c9f6d85 ("x86/mce: Factor out and deprecate the /dev/mcelog driver")
+the call to mce_register_decode_chain() moved later in the boot sequence.
+This means that /dev/mcelog doesn't see those early error logs.
 
-The rest of the patch reasoning makes sense to me: DAWR support will be
-selected anyway by virtue of PPC64->PPC_DAWR so there's no need to try
-to select it again anyway.
+This was partially fixed by:
+commit cd9c57cad3fe ("x86/MCE: Dump MCE to dmesg if no consumers")
 
-Reviewed-by: Daniel Axtens <dja@axtens.net>
+which made sure that the logs were not lost completely by printing
+to the console. But parsing console logs is error prone. Users
+of /dev/mcelog should expect to find any early errors logged to
+standard places.
 
-Kind regards,
-Daniel
+Split the initialization code in dev-mcelog.c into:
+1) an "early" part that registers for mce notifications. Call this
+directly from mcheck_init() because early_initcall() is still too late.
+This allocation is too early for kzalloc() so use memblock_alloc().
+2) "late" part that registers the /dev/mcelog character device.
 
->  
->  config KVM_BOOK3S_PR_POSSIBLE
->  	bool
-> -- 
-> 2.26.2
+Fixes: 5de97c9f6d85 ("x86/mce: Factor out and deprecate the /dev/mcelog driver")
+Reported-by: Sumanth Kamatala <skamatala@juniper.net>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+---
+ arch/x86/include/asm/mce.h           |  6 ++++++
+ arch/x86/kernel/cpu/mce/core.c       |  1 +
+ arch/x86/kernel/cpu/mce/dev-mcelog.c | 30 ++++++++++++++++++++++------
+ 3 files changed, 31 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
+index 0607ec4f5091..54841da55357 100644
+--- a/arch/x86/include/asm/mce.h
++++ b/arch/x86/include/asm/mce.h
+@@ -369,4 +369,10 @@ umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr)	{ return
+ #endif
+ 
+ static inline void mce_hygon_feature_init(struct cpuinfo_x86 *c)	{ return mce_amd_feature_init(c); }
++
++#ifdef CONFIG_X86_MCELOG_LEGACY
++void __init dev_mcelog_init_decode_chain(void);
++#else
++static inline void dev_mcelog_init_decode_chain(void) { }
++#endif
+ #endif /* _ASM_X86_MCE_H */
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 22791aadc085..76c04d472e32 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -2202,6 +2202,7 @@ int __init mcheck_init(void)
+ 	mce_register_decode_chain(&early_nb);
+ 	mce_register_decode_chain(&mce_uc_nb);
+ 	mce_register_decode_chain(&mce_default_nb);
++	dev_mcelog_init_decode_chain();
+ 	mcheck_vendor_init_severity();
+ 
+ 	INIT_WORK(&mce_work, mce_gen_pool_process);
+diff --git a/arch/x86/kernel/cpu/mce/dev-mcelog.c b/arch/x86/kernel/cpu/mce/dev-mcelog.c
+index 100fbeebdc72..31b812c17ccc 100644
+--- a/arch/x86/kernel/cpu/mce/dev-mcelog.c
++++ b/arch/x86/kernel/cpu/mce/dev-mcelog.c
+@@ -13,6 +13,7 @@
+ #include <linux/slab.h>
+ #include <linux/kmod.h>
+ #include <linux/poll.h>
++#include <linux/memblock.h>
+ 
+ #include "internal.h"
+ 
+@@ -341,20 +342,36 @@ static struct miscdevice mce_chrdev_device = {
+ 	&mce_chrdev_ops,
+ };
+ 
+-static __init int dev_mcelog_init_device(void)
++/*
++ * Register early to pick up logs when init code
++ * scans machine check banks for errors from previous
++ * kernel instance.
++ */
++__init void dev_mcelog_init_decode_chain(void)
+ {
+-	int mce_log_len;
+-	int err;
++	int mce_log_entries, mce_log_len;
+ 
+-	mce_log_len = max(MCE_LOG_MIN_LEN, num_online_cpus());
+-	mcelog = kzalloc(struct_size(mcelog, entry, mce_log_len), GFP_KERNEL);
++	mce_log_entries = max(MCE_LOG_MIN_LEN, num_online_cpus());
++	mce_log_len = struct_size(mcelog, entry, mce_log_entries);
++	mcelog = memblock_alloc(mce_log_len, SMP_CACHE_BYTES);
+ 	if (!mcelog)
+-		return -ENOMEM;
++		return;
+ 
++	memset(mcelog, 0, mce_log_len);
+ 	memcpy(mcelog->signature, MCE_LOG_SIGNATURE, sizeof(mcelog->signature));
+ 	mcelog->len = mce_log_len;
+ 	mcelog->recordlen = sizeof(struct mce);
+ 
++	mce_register_decode_chain(&dev_mcelog_nb);
++}
++
++static __init int dev_mcelog_init_device(void)
++{
++	int err;
++
++	if (!mcelog)
++		return -ENOMEM;
++
+ 	/* register character device /dev/mcelog */
+ 	err = misc_register(&mce_chrdev_device);
+ 	if (err) {
+@@ -365,6 +382,7 @@ static __init int dev_mcelog_init_device(void)
+ 			pr_err("Unable to init device /dev/mcelog (rc: %d)\n", err);
+ 
+ 		kfree(mcelog);
++		mce_register_decode_chain(&dev_mcelog_nb);
+ 		return err;
+ 	}
+ 
+-- 
+2.29.2
+
