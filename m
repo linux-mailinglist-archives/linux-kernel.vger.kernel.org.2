@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A6693F1061
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 04:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0463F1062
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 04:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235709AbhHSCa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 22:30:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46748 "EHLO
+        id S235793AbhHSCbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 22:31:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235384AbhHSCa4 (ORCPT
+        with ESMTP id S235710AbhHSCa5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 22:30:56 -0400
-Received: from mail-vs1-xe62.google.com (mail-vs1-xe62.google.com [IPv6:2607:f8b0:4864:20::e62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E17AC0613CF
+        Wed, 18 Aug 2021 22:30:57 -0400
+Received: from mail-pg1-x563.google.com (mail-pg1-x563.google.com [IPv6:2607:f8b0:4864:20::563])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CAF1C0613CF
         for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 19:30:21 -0700 (PDT)
-Received: by mail-vs1-xe62.google.com with SMTP id j186so3095323vsc.10
+Received: by mail-pg1-x563.google.com with SMTP id s11so4419761pgr.11
         for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 19:30:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:dkim-signature:from:to:cc:subject:date
-         :message-id:content-transfer-encoding;
-        bh=pqboTJCcAOfo09rbB71PF8zWvy4otzTvc+THnflfZow=;
-        b=EFLoGL5E6BSSZZ88XayX+GtICSauQHYQ+4L7h4LD/SyB3gho3YN+WA2AV9lHMZYQwG
-         l1wDTvPwQZwLNfFe8S94TCQzRDbkOWEYWzhoUpciMSZpAlLIfsxnWhvLZ0RCXlr4uPDz
-         ruHnwwyW19D0KbZIJbD4XvYdIObRCSmwtSVPGsWOEJ1qezNKi4c8SQ1ynV9yrzxCWkRh
-         RsglKyaJtI4/Ve9nsYKm+00tv0sPH3Sz0SqtRlIQz6fKEGcPgvPVQ0r9NGkdYUngGaDO
-         41ha3pU0Hixs5a34DHNOCK/Ax9hATJrtIYkPL53jNfHXc0+BChASNV4WnGD3QbQsoU/8
-         avPw==
-X-Gm-Message-State: AOAM5308vI8sy2QNaYhzdYSIJPOKg0bxjQ0QVCzD9cySog6+tkVZNpWi
-        C8mc9vMTKM0RCn205BfzCyg9Yvz5DyXt9xXGyFHPiyNCixaa
-X-Google-Smtp-Source: ABdhPJzQ6jgObdXjtEO3ZjgEbcgu59O2EIq8CFX2YU++F2dMAZP465I7ZnniqR4it0bPZaFbuyztQzcfldMi
-X-Received: by 2002:a67:6704:: with SMTP id b4mr10727566vsc.6.1629340220051;
-        Wed, 18 Aug 2021 19:30:20 -0700 (PDT)
-Received: from smtp.aristanetworks.com (smtp.aristanetworks.com. [52.0.43.43])
-        by smtp-relay.gmail.com with ESMTPS id g15sm427225uam.2.2021.08.18.19.30.19
+         :message-id:in-reply-to:references:content-transfer-encoding;
+        bh=NSy0VIbEIz5W7JO0jujV3Q6SFnGtXn+KVAFFJZwMXB4=;
+        b=CW3LQ07CjjpyYAK9Yd+dpEEtBh/+gVWcIiBe7OexLvdtTGdz+QyXKfqDJntbuCNCtu
+         faBIlKfgM2T8WqUjsjLVHMUBCb3k2aF9v4ZaY7AeNy4wr6RD2c10kabKLTnfoKU4dg4H
+         T5Ynf37Ujr7Gl/bqr67by+k4k035+32DSN1chZbswnGem20ofCBcAOfPqBFqQCjWgOvn
+         x+jeNxeIU87fmbif58Ls+NBTubUmsJ2Nh1Sn7gIV+szOf84xPGn/jRjX8uGG4zugWAql
+         fX06yX7r3nn00I99jGhqiKP0MD0qErH36BCRnrBGWprbY/ZiqWrzH8ZeMhWL0cWiete4
+         Vyww==
+X-Gm-Message-State: AOAM530HEbm0ZA7LI4T+jeGqoaU0C6Tf4trPuiUE4qco0CJHj2PnA9xZ
+        f25/NjdmcttWcT9R7Vsgq59hryPk9+YINSSw997rHz/I5OQg
+X-Google-Smtp-Source: ABdhPJxXc87b5Lb56aujd5toN5v0pdiQ7cFKUaUK3HFa+AhKIy4PUN5WyR9OHHjVvomiLYLyDdnxAYM2OkvO
+X-Received: by 2002:a63:5f88:: with SMTP id t130mr11884742pgb.6.1629340221059;
+        Wed, 18 Aug 2021 19:30:21 -0700 (PDT)
+Received: from smtp.aristanetworks.com (smtp.aristanetworks.com. [54.193.82.35])
+        by smtp-relay.gmail.com with ESMTPS id b13sm444963pjl.9.2021.08.18.19.30.20
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 18 Aug 2021 19:30:20 -0700 (PDT)
+        Wed, 18 Aug 2021 19:30:21 -0700 (PDT)
 X-Relaying-Domain: arista.com
 Received: from chmeee (unknown [10.95.69.61])
-        by smtp.aristanetworks.com (Postfix) with ESMTPS id 74B7F30031F7;
-        Wed, 18 Aug 2021 19:30:18 -0700 (PDT)
+        by smtp.aristanetworks.com (Postfix) with ESMTPS id 6ED893019831;
+        Wed, 18 Aug 2021 19:30:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arista.com;
-        s=Arista-A; t=1629340218;
-        bh=pqboTJCcAOfo09rbB71PF8zWvy4otzTvc+THnflfZow=;
-        h=From:To:Cc:Subject:Date:From;
-        b=GzmSurSBdHLzTKClk0fzGjZP3Xm3sXzOcxHxp4OzuABBjL/QHClO1jxG+6qhFwOUM
-         FAOS14JfOZCmBOziHJZ6kfmslrn4NeKrL2hOWCXtnObfXT80TW3lk0SRM74p+Idf6+
-         vfKHrPWeSkqJR9CVv1USn0wPcicFny9pm/Wp5zbwsI8A77WZaNB0cr11wyQxFRz5y4
-         Zmy3NqgWYeu0LLWmFEsSHNwqlAejg+03gbNapYxe7LbYuafCIWW6fgh/OnJZ7Y07F+
-         0pdQhG/qZJWvTUJkoZF2x1v9imdBBWZn3osGjiQvCjG5R3Ca6yA36GWTHJerI6br7t
-         bnw/oXFx2GY5A==
+        s=Arista-A; t=1629340220;
+        bh=NSy0VIbEIz5W7JO0jujV3Q6SFnGtXn+KVAFFJZwMXB4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=jGbGjeIq3UuDrnHlp9MOAfM4vGlpBVnZGGZSeCq9dyoLT2oXBZee+y3jqFKknuKXB
+         QQ+pPhQPpwTgxwc4nrydh9S52F8AUw2SmEY80uuAGXAt9sNLBs7kkDvkrsZZbza2Dv
+         ndmyiaSgiH3NGpKnfZze8H2HZF6lAsjvzIf9yKCUuQ71//e4LzABO46J/d5d9R9rbJ
+         eYN9aqBAdH7ubAvyeDvFOYz6DcmJq1MzdjeUh7iOyq54Mu54zGqiwNTyQjBg4KLuEz
+         lLN7YQMKVkMp9mP6p+eqVnMZV3LI01/3qc7S4qEUSWAZqzLZ9K+hukJbSsYVuoKWyu
+         QHlJi+Da/lVtg==
 Received: from kevmitch by chmeee with local (Exim 4.94.2)
         (envelope-from <kevmitch@chmeee>)
-        id 1mGXot-002MCU-Tt; Wed, 18 Aug 2021 19:30:15 -0700
+        id 1mGXow-002MCf-LX; Wed, 18 Aug 2021 19:30:18 -0700
 From:   Kevin Mitchell <kevmitch@arista.com>
 Cc:     linux-scsi@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
         "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Kevin Mitchell <kevmitch@arista.com>,
         Akinobu Mita <akinobu.mita@gmail.com>,
         Jonathan Corbet <corbet@lwn.net>,
         Kees Cook <keescook@chromium.org>,
@@ -66,20 +67,60 @@ Cc:     linux-scsi@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
         Hannes Reinecke <hare@suse.de>,
         Bart Van Assche <bvanassche@acm.org>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/2] lkdtm: update block layer crashpoints
-Date:   Wed, 18 Aug 2021 19:29:38 -0700
-Message-Id: <20210819022940.561875-1-kevmitch@arista.com>
+Subject: [PATCH v2 1/2] lkdtm: replace SCSI_DISPATCH_CMD with SCSI_QUEUE_RQ
+Date:   Wed, 18 Aug 2021 19:29:39 -0700
+Message-Id: <20210819022940.561875-2-kevmitch@arista.com>
+In-Reply-To: <20210819022940.561875-1-kevmitch@arista.com>
+References: <20210819022940.561875-1-kevmitch@arista.com>
 Content-Transfer-Encoding: 8bit
 To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is v2 of https://lkml.org/lkml/2021/8/16/1497.
+When scsi_dispatch_cmd was moved to scsi_lib.c and made static, some
+compilers (i.e., at least gcc 8.4.0) decided to compile this
+inline. This is a problem for lkdtm.ko, which inserted a kprobe
+on this function for the SCSI_DISPATCH_CMD crashpoint.
 
-These patches update the lkdtm crashpoints in the block layer that have been
-moved or removed.  In response to feedback, I've renamed the SCSI_DISPATCH_CMD
-crashpoint to SCSI_QUEUE_RQ to correspond to the new function that it hooks
-into. I have also added a commit to remove IDE_CORE_CP.
+Move this crashpoint one function up the call chain to
+scsi_queue_rq. Though this is also a static function, it should never be
+inlined because it is assigned as a structure entry. Therefore,
+kprobe_register should always be able to find it.
 
+Fixes: 82042a2cdb55 ("scsi: move scsi_dispatch_cmd to scsi_lib.c")
+Signed-off-by: Kevin Mitchell <kevmitch@arista.com>
+---
+ Documentation/fault-injection/provoke-crashes.rst | 2 +-
+ drivers/misc/lkdtm/core.c                         | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/fault-injection/provoke-crashes.rst b/Documentation/fault-injection/provoke-crashes.rst
+index a20ba5d93932..18de17354206 100644
+--- a/Documentation/fault-injection/provoke-crashes.rst
++++ b/Documentation/fault-injection/provoke-crashes.rst
+@@ -29,7 +29,7 @@ recur_count
+ cpoint_name
+ 	Where in the kernel to trigger the action. It can be
+ 	one of INT_HARDWARE_ENTRY, INT_HW_IRQ_EN, INT_TASKLET_ENTRY,
+-	FS_DEVRW, MEM_SWAPOUT, TIMERADD, SCSI_DISPATCH_CMD,
++	FS_DEVRW, MEM_SWAPOUT, TIMERADD, SCSI_QUEUE_RQ,
+ 	IDE_CORE_CP, or DIRECT
+ 
+ cpoint_type
+diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
+index 9dda87c6b54a..016cb0b150fc 100644
+--- a/drivers/misc/lkdtm/core.c
++++ b/drivers/misc/lkdtm/core.c
+@@ -82,7 +82,7 @@ static struct crashpoint crashpoints[] = {
+ 	CRASHPOINT("FS_DEVRW",		 "ll_rw_block"),
+ 	CRASHPOINT("MEM_SWAPOUT",	 "shrink_inactive_list"),
+ 	CRASHPOINT("TIMERADD",		 "hrtimer_start"),
+-	CRASHPOINT("SCSI_DISPATCH_CMD",	 "scsi_dispatch_cmd"),
++	CRASHPOINT("SCSI_QUEUE_RQ",	 "scsi_queue_rq"),
+ 	CRASHPOINT("IDE_CORE_CP",	 "generic_ide_ioctl"),
+ #endif
+ };
+-- 
+2.32.0
 
