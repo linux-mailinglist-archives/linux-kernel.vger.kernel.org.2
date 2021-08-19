@@ -2,118 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 310D73F1FC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 20:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B83903F1FCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 20:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234379AbhHSSTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 14:19:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhHSSTL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 14:19:11 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37C70C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 11:18:35 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id k24so6667702pgh.8
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 11:18:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=5LOdLcnvC+SRsMPPojHQsg4OR8TH3GpUEW54S9ehwTc=;
-        b=Ks6q097BGB14mxGFJ+1T04aF/0zcz1ec/Pp0kvtjmwkEJdIjMR+97oDLvcuRGT8evn
-         C8e8t7ekuTGf4gtD8eBzSYlsXSWOeTDRD8yyXecjUyqrRyLXLVY0sfRSQ+rs5O7PKzC+
-         RuG4vglbxDgFPl4TI7pa9elvXKIL/ZR8co7+pfwin8MuL/Jmvobwa2y1eY7dJoU9wvHS
-         aPfR6l5pncYgFc8PA1l1zHpK4fTEopZdc1u+fl23A7MDGRfT3P02GCX59G1WvJ/Mttxv
-         Hi0XIgqNoQ1M2O6KNvLJ858wJvKVIUO9LKLz0MDE03wLdc3Fl/hODenagpZwf/fJw1Hf
-         UvCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=5LOdLcnvC+SRsMPPojHQsg4OR8TH3GpUEW54S9ehwTc=;
-        b=AuUrJzXNaRJvnuQcZg9d/wnAYUChXkuKfZbiqnqSPTvhjXnbAX9SCEkGl4Zz/Wy/Bf
-         /kIAsDSuzi7hre8t5lIaiCbv4rw+jHV/84XmX0LmP08eHDt1eLD23H7w5oLeljqJIu7k
-         Bw5JZpv9nUWtZDzdGEw90UBAlt5mO37pEKPcFaP6/GFLU1V5SgjiwW6Lf1LJwS1J5j0h
-         7zcWfZgM6fq99umqBOMNbth08FYJhzxAnYyJ6dZ6CIXwpkzFjcPjUnqeqs1f2aKb4R1g
-         kuNzB7cQf6/+zhec34gOCMAAGzXgHdvmAo9AY5Ek+cttm1zEUjCJmD96O0mud5vUmbQV
-         jyQg==
-X-Gm-Message-State: AOAM532UHSBwtB0I/WHZBIpmly/pKabjtx4eXD4V4Ue/IRsB6B/NPdVu
-        /9lt8tXD7k4BmeOLi7RTCNgLZA==
-X-Google-Smtp-Source: ABdhPJyYI9QQqhAJu7H6uM6DOnFbh1AdA7RM5hj2qc40uFgB9DMQ36HOi2eZmEptewNPr7BmI427VA==
-X-Received: by 2002:a05:6a00:ac6:b029:374:a33b:a74 with SMTP id c6-20020a056a000ac6b0290374a33b0a74mr16028120pfl.51.1629397114742;
-        Thu, 19 Aug 2021 11:18:34 -0700 (PDT)
-Received: from [10.255.196.11] ([139.177.225.250])
-        by smtp.gmail.com with ESMTPSA id p10sm4046174pfw.28.2021.08.19.11.18.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 11:18:34 -0700 (PDT)
-Subject: Re: [PATCH 3/3] mm: mmap_lock: add ip to mmap_lock tracepoints
-From:   Gang Li <ligang.bdlg@bytedance.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-References: <20210729092853.38242-1-ligang.bdlg@bytedance.com>
- <CAJHvVcjBH+Vry8v5T0FWyFWWDY6_AqSxZcVQxXRm=LR8v=ML-Q@mail.gmail.com>
- <585f936d-9d27-a481-f590-bd07f98f34de@bytedance.com>
- <20210730160319.6dfeaf7a@oasis.local.home>
- <89c20b62-c0ab-3200-fb33-eb2058b7ba67@bytedance.com>
-Message-ID: <b0b30c3d-0fb8-7d29-2a60-0cce0309986b@bytedance.com>
-Date:   Fri, 20 Aug 2021 02:18:29 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        id S234261AbhHSSVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 14:21:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229549AbhHSSVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 14:21:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7642E60E76;
+        Thu, 19 Aug 2021 18:20:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629397235;
+        bh=g1ARTIB0d4RGCLz8sySq0S2vLKweYzbiWAo8YlbDzL0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=rB5pOGqdeR+P9OGYeVxhbTqpiyc7Kk55Dkl+z/h5l2NNRHkFQNXLMj4hfuVhb2L3B
+         096zDubtOxfqbi64Dc4nt37YGZIaqXsQrnqN5niCYX8Y8wJXmuLStAgTB1Kx4TbyD9
+         dn2iB5TNSgOoE7bQBu977ru/KVg47kKU/n01rUvDElJ+fu3mwZK2xTH7CRkJiMyXiJ
+         x5zpgyQ/kfW6SoxYpDkwkVmydDHzbF+Id22D1FcsB0rzgoP0ruvpdYjasaZ0HWlN8m
+         OW2wzwE1Pqf6Pe1kadRycCChwhGKCJqPmgqNS4jtq0KSjH0OnLQX5VLDuRKQyYgQt0
+         y6TydT/XaqXNA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 4A9135C0692; Thu, 19 Aug 2021 11:20:35 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 11:20:35 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mike Galbraith <efault@gmx.de>, Scott Wood <swood@redhat.com>
+Subject: Re: [PATCH] rcutorture: Avoid problematic critical section nesting
+ on RT
+Message-ID: <20210819182035.GF4126399@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210811201354.1976839-1-valentin.schneider@arm.com>
+ <20210811201354.1976839-2-valentin.schneider@arm.com>
+ <20210817121345.5iyj5epemczn3a52@linutronix.de>
+ <20210817131741.evduh4fw7vyv2dzt@linutronix.de>
+ <20210817144018.nqssoq475vitrqlv@linutronix.de>
+ <20210818224651.GY4126399@paulmck-ThinkPad-P17-Gen-1>
+ <20210819153927.clqxr4f7qegpflbr@linutronix.de>
+ <20210819154708.3efz6jtgwtuhpeds@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <89c20b62-c0ab-3200-fb33-eb2058b7ba67@bytedance.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210819154708.3efz6jtgwtuhpeds@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/21 10:44 AM, Gang Li wrote:
-> On 7/31/21 4:03 AM, Steven Rostedt wrote:
->> Yes, synthetic events are just like normal events, and have triggers,
->> stack traces, and do pretty much anything that another event can do.
->>
->> I'm just finishing up a libtracfs called tracefs_sql() (hopefully
->> posting it today), that allows you to create a synthetic event via an
->> SQL statement. But I don't think this is what you are looking for.
->>
->> What about using function tracing? Because the tracepoint is called
->> from __mmap_lock* helper functions that function tracer can see, you
->> can just do the following:
->>
->>   # trace-cmd start -e mmap_lock -p function -l '__mmap_lock_*'
->>   # trace-cmd show
->> [..]
->>         trace-cmd-1840    [006] ....   194.576801: 
->> __mmap_lock_do_trace_start_locking <-do_user_addr_fault
->>         trace-cmd-1840    [006] ...1   194.576805: 
->> mmap_lock_start_locking: mm=000000006515cb1f 
->> memcg_path=/user.slice/user-0.slice/session-2.scope write=false
->>
-Hi!
+On Thu, Aug 19, 2021 at 05:47:08PM +0200, Sebastian Andrzej Siewior wrote:
+> On 2021-08-19 17:39:29 [+0200], To Paul E. McKenney wrote:
+> > up with following which I can explain:
+> > 
+> > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> > index 40ef5417d9545..5c8b31b7eff03 100644
+> > --- a/kernel/rcu/rcutorture.c
+> > +++ b/kernel/rcu/rcutorture.c
+> > @@ -1432,28 +1432,34 @@ static void rcutorture_one_extend(int *readstate, int newstate,
+> >  	/* First, put new protection in place to avoid critical-section gap. */
+> >  	if (statesnew & RCUTORTURE_RDR_BH)
+> >  		local_bh_disable();
+> > +	if (statesnew & RCUTORTURE_RDR_RBH)
+> > +		rcu_read_lock_bh();
+> >  	if (statesnew & RCUTORTURE_RDR_IRQ)
+> >  		local_irq_disable();
+> >  	if (statesnew & RCUTORTURE_RDR_PREEMPT)
+> >  		preempt_disable();
+> > -	if (statesnew & RCUTORTURE_RDR_RBH)
+> > -		rcu_read_lock_bh();
+> >  	if (statesnew & RCUTORTURE_RDR_SCHED)
+> >  		rcu_read_lock_sched();
+> >  	if (statesnew & RCUTORTURE_RDR_RCU)
+> >  		idxnew = cur_ops->readlock() << RCUTORTURE_RDR_SHIFT;
+> 
+> So the ordering in the enable and disable part regarding BH is
+> important. First BH, then preemption or IRQ.
+> 
+> > -	/* Next, remove old protection, irq first due to bh conflict. */
+> > +	/*
+> > +	 * Next, remove old protection, in decreasing order of strength
+> > +	 * to avoid unlock paths that aren't safe in the stronger
+> > +	 * context. Namely: BH can not be enabled with disabled interrupts.
+> > +	 * Additionally PREEMPT_RT requires that BH is enabled in preemptible
+> > +	 * context.
+> > +	 */
+> >  	if (statesold & RCUTORTURE_RDR_IRQ)
+> >  		local_irq_enable();
+> > -	if (statesold & RCUTORTURE_RDR_BH)
+> > -		local_bh_enable();
+> >  	if (statesold & RCUTORTURE_RDR_PREEMPT)
+> >  		preempt_enable();
+> > -	if (statesold & RCUTORTURE_RDR_RBH)
+> > -		rcu_read_unlock_bh();
+> >  	if (statesold & RCUTORTURE_RDR_SCHED)
+> >  		rcu_read_unlock_sched();
+> > +	if (statesold & RCUTORTURE_RDR_BH)
+> > +		local_bh_enable();
+> > +	if (statesold & RCUTORTURE_RDR_RBH)
+> > +		rcu_read_unlock_bh();
+> >  	if (statesold & RCUTORTURE_RDR_RCU) {
+> >  		bool lockit = !statesnew && !(torture_random(trsp) & 0xffff);
+> 
+> The same in the unlock part so that BH is unlocked in preemptible
+> context.
+> Now if you need bh lock/unlock in atomic context (either with disabled
+> IRQs or preemption) then I would dig out the atomic-bh part again and
+> make !RT only without the preempt_disable() section around about which
+> one you did complain.
+> 
+> > @@ -1496,6 +1502,9 @@ rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
+> >  	int mask = rcutorture_extend_mask_max();
+> >  	unsigned long randmask1 = torture_random(trsp) >> 8;
+> >  	unsigned long randmask2 = randmask1 >> 3;
+> > +	unsigned long preempts = RCUTORTURE_RDR_PREEMPT | RCUTORTURE_RDR_SCHED;
+> > +	unsigned long preempts_irq = preempts | RCUTORTURE_RDR_IRQ;
+> > +	unsigned long bhs = RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH;
+> >  
+> >  	WARN_ON_ONCE(mask >> RCUTORTURE_RDR_SHIFT);
+> >  	/* Mostly only one bit (need preemption!), sometimes lots of bits. */
+> > @@ -1503,11 +1512,37 @@ rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
+> >  		mask = mask & randmask2;
+> >  	else
+> >  		mask = mask & (1 << (randmask2 % RCUTORTURE_RDR_NBITS));
+> > -	/* Can't enable bh w/irq disabled. */
+> > -	if ((mask & RCUTORTURE_RDR_IRQ) &&
+> > -	    ((!(mask & RCUTORTURE_RDR_BH) && (oldmask & RCUTORTURE_RDR_BH)) ||
+> > -	     (!(mask & RCUTORTURE_RDR_RBH) && (oldmask & RCUTORTURE_RDR_RBH))))
+> > -		mask |= RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH;
+> > +
+> > +	/*
+> > +	 * Can't enable bh w/irq disabled.
+> > +	 */
+> > +	if (mask & RCUTORTURE_RDR_IRQ)
+> > +		mask |= oldmask & bhs;
+> > +
+> > +	/*
+> > +	 * Ideally these sequences would be detected in debug builds
+> > +	 * (regardless of RT), but until then don't stop testing
+> > +	 * them on non-RT.
+> > +	 */
+> > +	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
+> > +		/*
+> > +		 * Can't release the outermost rcu lock in an irq disabled
+> > +		 * section without preemption also being disabled, if irqs
+> > +		 * had ever been enabled during this RCU critical section
+> > +		 * (could leak a special flag and delay reporting the qs).
+> > +		 */
+> > +		if ((oldmask & RCUTORTURE_RDR_RCU) &&
+> > +		    (mask & RCUTORTURE_RDR_IRQ) &&
+> > +		    !(mask & preempts))
+> > +			mask |= RCUTORTURE_RDR_RCU;
+> 
+> This piece above, I don't understand. I had it running for a while and
+> it didn't explode. Let me try TREE01 for 30min without that piece.
 
-I find that sometimes the output data is out of order, which leads to 
-inaccurate time stamps and make it hard to analyse.
+This might be historical.  There was a time when interrupts being
+disabled across rcu_read_unlock() meant that preemption had to have
+been disabled across the entire RCU read-side critical section.
 
-             node-953     [001] ....   203.823297: 
-__mmap_lock_do_trace_start_locking <-do_user_addr_fault
-             node-955     [002] ....   203.823297: 
-__mmap_lock_do_trace_start_locking <-do_user_addr_fault
-             node-956     [003] ....   203.823297: 
-__mmap_lock_do_trace_start_locking <-do_user_addr_fault
-             node-953     [001] ....   203.823297: 
-mmap_lock_start_locking: mm=000000004395a005 
-memcg_path=/user.slice/user-0.slice/session-1.scope write=false 
-ip=do_user_addr_fault+0x270/0x4d0
-             node-953     [001] ....   203.823298: 
-__mmap_lock_do_trace_acquire_returned <-do_user_addr_fault
+I am not seeing a purpose for it now, but I could easily be missing
+something, especially given my tenuous grasp of RT.
 
-Is there any other way to collect ip in each event? It seems that adding 
-"ip" fields is the only way to do this accurately and effectively.
+Either way, looking forward to the next version!
+
+							Thanx, Paul
+
+> > +		/* Can't modify bh in atomic context */
+> > +		if (oldmask & preempts_irq)
+> > +			mask &= ~bhs;
+> > +		if ((oldmask | mask) & preempts_irq)
+> > +			mask |= oldmask & bhs;
+> 
+> And this is needed because we can't lock/unlock bh while atomic.
+> 
+> > +	}
+> > +
+> >  	return mask ?: RCUTORTURE_RDR_RCU;
+> >  }
+> >  
+> 
+> Sebastian
