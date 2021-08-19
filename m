@@ -2,75 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0CA3F0F19
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 02:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E63A3F0F1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 02:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234379AbhHSARk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 20:17:40 -0400
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:17859 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233866AbhHSARj (ORCPT
+        id S234546AbhHSAUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 20:20:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233866AbhHSAUp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 20:17:39 -0400
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 17J0GpjU019745;
-        Thu, 19 Aug 2021 09:16:51 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 17J0GpjU019745
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1629332211;
-        bh=WYUUDHvnEQEP0mjtTSmjyCMMUYrJcGv9y/e63tdTC4k=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WuhfFANsaYjoLfufwAMjNBIsj/1VXpnN8zhNuJCEp8PM1undkxvoKveKP7WH7gsz3
-         LP/92tTs0Ykn88rAZnxufjZDk1Bc0TX3BS6OOlIjKw0UiHFXdMMb73s6eM165FpiIY
-         Fs9S/UfXKAsFtMgCfbA8cikzODIu4cR3d+K1LmSMazZA7Lfb688/daWGX3HgvN9Qy2
-         WbqnFdQWHx6o4Vhx2A+LLSSTEgFlsxHITMNwG2cOdjJkHf6v1Js3o0EwDo38XUW4yX
-         FMRKQNXtLXLDq1vbnHZ+STaENdL/1K5eVgiPqhN8T4rfFV7dA4URmA4Gg4hmLf5AtQ
-         LezMbqbsuXE5Q==
-X-Nifty-SrcIP: [209.85.215.181]
-Received: by mail-pg1-f181.google.com with SMTP id n18so4134243pgm.12;
-        Wed, 18 Aug 2021 17:16:51 -0700 (PDT)
-X-Gm-Message-State: AOAM531DZJGvVP9sFZ2FbloWFJtCW0w2GiGavZ9LPjqYcU9w+rt6i+6G
-        RUY93L+iHA4aa22THf+x0ckxoDUfI1z5GNP/OiM=
-X-Google-Smtp-Source: ABdhPJzZ/ARH1PXlxbUMZRCLL5u7xa5hY2/la9kA/ghT2ab558TsIK9Kv4P8E4Tpoj2NgWJgUi+Xb15YgXmOvkHIxu4=
-X-Received: by 2002:a65:6459:: with SMTP id s25mr11432394pgv.7.1629332210619;
- Wed, 18 Aug 2021 17:16:50 -0700 (PDT)
+        Wed, 18 Aug 2021 20:20:45 -0400
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD530C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 17:20:09 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1629332407;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wOqtJLtSuCJGPYEHTKUmHAquuWnKsqoTe4kq+wPqgI8=;
+        b=Z6svOnQF0irOZQA1XtKmwirbHjPffyRPQdMw1Rxk/fd9zYvkzQ8kPiULA/hvUYv56x08pO
+        e8Blto2pMD80wlBfEPXXXUjmBJfAZ5/02UntbE6hi5j2bhaYWy8Mzgxapi+/TMbgMv6XfG
+        r/KeK/snT3J1DcIn0EclzXoUdWsDc+g=
+From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
+To:     linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>, Yang Shi <shy828301@gmail.com>,
+        David Hildenbrand <david@redhat.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] mm/hwpoison: Retry with shake_page() for unhandlable pages
+Date:   Thu, 19 Aug 2021 09:19:58 +0900
+Message-Id: <20210819001958.2365157-1-naoya.horiguchi@linux.dev>
 MIME-Version: 1.0
-References: <20210816202056.4586-1-nathan@kernel.org>
-In-Reply-To: <20210816202056.4586-1-nathan@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 19 Aug 2021 09:16:13 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARrV+KPwcXPd6jaXZ7F4P=vqk55iDbZtOF1vSND0vQKYg@mail.gmail.com>
-Message-ID: <CAK7LNARrV+KPwcXPd6jaXZ7F4P=vqk55iDbZtOF1vSND0vQKYg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] kbuild: Remove -Wno-format-invalid-specifier from
- clang block
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: naoya.horiguchi@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 5:21 AM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> Turning on -Wformat does not reveal any instances of this warning across
-> several different builds so remove this line to keep the number of
-> disabled warnings as slim as possible.
->
-> This has been disabled since commit 61163efae020 ("kbuild: LLVMLinux:
-> Add Kbuild support for building kernel with Clang"), which does not
-> explain exactly why it was turned off but since it was so long ago in
-> terms of both the kernel and LLVM so it is possible that some bug got
-> fixed along the way.
->
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> ---
+From: Naoya Horiguchi <naoya.horiguchi@nec.com>
 
+HWPoisonHandlable() sometimes returns false for typical user pages
+due to races with average memory events like transfers over LRU lists.
+This causes failures in hwpoison handling.
 
-All applied to linux-kbuild. Thanks.
+There's retry code for such a case but does not work because the retry
+loop reaches the retry limit too quickly before the page settles down to
+handlable state. Let get_any_page() call shake_page() to fix it.
 
+Fixes: 25182f05ffed ("mm,hwpoison: fix race with hugetlb page allocation")
+Reported-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: stable@vger.kernel.org # 5.13
+---
+ChangeLog v2:
+- get_any_page() return -EIO when retry limit reached (by Yang Shi)
+---
+ mm/memory-failure.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git v5.14-rc6/mm/memory-failure.c v5.14-rc6_patched/mm/memory-failure.c
+index eefd823deb67..470400cc7513 100644
+--- v5.14-rc6/mm/memory-failure.c
++++ v5.14-rc6_patched/mm/memory-failure.c
+@@ -1146,7 +1146,7 @@ static int __get_hwpoison_page(struct page *page)
+ 	 * unexpected races caused by taking a page refcount.
+ 	 */
+ 	if (!HWPoisonHandlable(head))
+-		return 0;
++		return -EBUSY;
+ 
+ 	if (PageTransHuge(head)) {
+ 		/*
+@@ -1199,9 +1199,15 @@ static int get_any_page(struct page *p, unsigned long flags)
+ 			}
+ 			goto out;
+ 		} else if (ret == -EBUSY) {
+-			/* We raced with freeing huge page to buddy, retry. */
+-			if (pass++ < 3)
++			/*
++			 * We raced with (possibly temporary) unhandlable
++			 * page, retry.
++			 */
++			if (pass++ < 3) {
++				shake_page(p, 1);
+ 				goto try_again;
++			}
++			ret = -EIO;
+ 			goto out;
+ 		}
+ 	}
 -- 
-Best Regards
-Masahiro Yamada
+2.25.1
+
