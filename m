@@ -2,206 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4293F15DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B88A23F15F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237519AbhHSJLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 05:11:19 -0400
-Received: from esa18.fujitsucc.c3s2.iphmx.com ([216.71.158.38]:62976 "EHLO
-        esa18.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234128AbhHSJLR (ORCPT
+        id S237467AbhHSJOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 05:14:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237354AbhHSJOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 05:11:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
-  t=1629364241; x=1660900241;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=TeVNNX52+ahSnjg7J6VtV1YGhrJuf1cy+5B6VfXs6oM=;
-  b=yZ2HDIoyuNJMVDVQ90yG2KBcpwmeNO79uIp5zzmexS8KDxWKfKBJDbrW
-   V5PFJpxxOximFD2Jcf4NjkV8npjd+fHd2+BNbvlKbpCUizFCLUF1LDFqj
-   q8jscgEmSqKpy8goUfytbNGVvUNQ3UMvXIOq60sMxsxw3BvSsGkWYG6sD
-   VB0xWNZiu/qnTuXss5t2EBQQBwHAGv+sCzq/73SkFhHHVVwHQUxPAXCTw
-   PjrayEBzFp++Xh9ccmSM6qmn8tYDITGJmEOziJPZ1LLjfF7i6c9zyv2iA
-   7vSD0ssYhdxJ3kdUdB0YwEg+fN6SDo1t0mg36wv7yWP6w6fC8zue9QkcX
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="37669789"
-X-IronPort-AV: E=Sophos;i="5.84,334,1620658800"; 
-   d="scan'208";a="37669789"
-Received: from mail-os2jpn01lp2053.outbound.protection.outlook.com (HELO JPN01-OS2-obe.outbound.protection.outlook.com) ([104.47.92.53])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 18:10:35 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XgXeKAKPujlJsjNLCZE6qL3hb9g5W0/PABOL7btRRPC5ej0EEHWXYK1XiEXAmjk2PdXQnicG8FPcqXma0V2mMOYwQP5SJOUTmyyLbHnIRdaiu2HNWUY3fbWB+0iabvTV1gOnal0UlD6IY4hpkCGsOYB74ekcTvuX+vKRUp0PaP5VWtcY7Y/tL8gbpzHlXaOU4zCBPu5xn5F/t6v8W43q0wwhlwUhAGgJjKMYKOYGBuHdC+8Pi/sYCDt1uOCuaPVzBSkAiylEdpN52BcDrGIVUCCV2EC1CQNxiJLPFmPSp0pUs7r3jOmzaRZamWUVuZN6IL8xLBDTN+fU62eABcvc3w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TeVNNX52+ahSnjg7J6VtV1YGhrJuf1cy+5B6VfXs6oM=;
- b=FMZRpLa2+pHNJYFW1HIGRun6M8P2EIc/hULamZOBcJz9Y899EwtONZbnWeNzV+HLU4lkbAvUcTKCYIo4Ysh0o1p8tZ3jsPCKt1e8B1PvR9YDvs7D/kvZ5y/Ubd8VX85Ak4brzpDurb2xTkV+ORRQ9ANTHhZhGrgVlmggHk3jaPLjw9TvGzUXfvI9pBjMxJV6IekQGyjJjfuomIOQ2GOHz4hCmDKbf7Lpsk2u9mcD+Xq8PM65OyqnGZxUtERvPgKZKqjd9n8R1+QxurDTeCoU3QBK5WJeW72lplc2TB2KEGM9X33edDvVLmhYwJmUpB4Ua9157z68FqVVFjHQCLaCuA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
+        Thu, 19 Aug 2021 05:14:09 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22FCBC061796
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 02:13:33 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id f5so7901451wrm.13
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 02:13:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TeVNNX52+ahSnjg7J6VtV1YGhrJuf1cy+5B6VfXs6oM=;
- b=BidYb79Qi5uy5t3fA6rtjcL0e4dSW+H8N4vr3tue8e9LIL7uuh6IXxvrVeUaTm6vbgU3eGtuAJ0k4HX97WItXIGFnJQEfH89EnpI9s2kLB97bJAfbwZbgKQOE+sc1v0V8+dPcQma9vQ+YIJQ4dqBIWM3lH6vJWPi5ScElHsEfp4=
-Received: from OSBPR01MB2920.jpnprd01.prod.outlook.com (2603:1096:604:18::16)
- by OS3PR01MB6724.jpnprd01.prod.outlook.com (2603:1096:604:f8::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.24; Thu, 19 Aug
- 2021 09:10:32 +0000
-Received: from OSBPR01MB2920.jpnprd01.prod.outlook.com
- ([fe80::6db8:ebd7:8ee4:62bb]) by OSBPR01MB2920.jpnprd01.prod.outlook.com
- ([fe80::6db8:ebd7:8ee4:62bb%6]) with mapi id 15.20.4415.024; Thu, 19 Aug 2021
- 09:10:32 +0000
-From:   "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>
-To:     Jane Chu <jane.chu@oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>
-CC:     "djwong@kernel.org" <djwong@kernel.org>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "hch@lst.de" <hch@lst.de>, "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>
-Subject: RE: [PATCH RESEND v6 1/9] pagemap: Introduce ->memory_failure()
-Thread-Topic: [PATCH RESEND v6 1/9] pagemap: Introduce ->memory_failure()
-Thread-Index: AQHXhSoSnS/qStIblEyff+FzJU/rBqtlt1aAgBDEPoCAAmInAIAABusAgAGlyQCAAA74AIAAC+cA
-Date:   Thu, 19 Aug 2021 09:10:32 +0000
-Message-ID: <OSBPR01MB29203E90FCF9711D8736C8D4F4C09@OSBPR01MB2920.jpnprd01.prod.outlook.com>
-References: <20210730100158.3117319-1-ruansy.fnst@fujitsu.com>
- <20210730100158.3117319-2-ruansy.fnst@fujitsu.com>
- <1d286104-28f4-d442-efed-4344eb8fa5a1@oracle.com>
- <de19af2a-e9e6-0d43-8b14-c13b9ec38a9d@oracle.com>
- <beee643c-0fd9-b0f7-5330-0d64bde499d3@oracle.com>
- <78c22960-3f6d-8e5d-890a-72915236bedc@oracle.com>
- <d908b630-dbaf-fac5-527b-682ced045643@oracle.com>
- <ab9b42d8-2b81-9977-c60a-3f419e53f7bc@oracle.com>
-In-Reply-To: <ab9b42d8-2b81-9977-c60a-3f419e53f7bc@oracle.com>
-Accept-Language: en-US, zh-CN
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d365d7e3-2fb8-4726-90da-08d962f13287
-x-ms-traffictypediagnostic: OS3PR01MB6724:
-x-microsoft-antispam-prvs: <OS3PR01MB6724C04DCBDD3438DA314BBEF4C09@OS3PR01MB6724.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9olvzgm7caErg4snYe/imrHXAIemqpcEbIHxZNVOifYjOuAtDkPve3fQMc6TEvt7eg8XXlzah3nKy4MIrMyN/H2hGIV0O/ShS60FkqJLPkWXo4S4if76XISP1XQsBS/8p7Zw8BhI6q9S8TCadP0oREvPH+H8YxjYbn4pk8EtgS6NiDZE+zWIAGUsRq6L6VajkgieOmS/UjLvmJeH0S58C9UkMbKs2LEwh7wOu8DFWxAnHWHUcNAQPinFpKgSnj5/F561b07PDvoq7ZGuIh+v9ors0NAIgfEE7NBJO45lWpU+WC9k3feIvaXvJj5MiNFab1UJmemn72hC42cDqGMUlMOwaObZk9CEaKKqfcjLw/utJ2L7BNZLZ0wN/knorzk2+v9ddAXzw0VviSuFhEeCwG03Y2mdf5J7jwAmkdxr0I1+ciO6SCd6qo9BiIpQQK6VgzdYSMcfXi2Dx6Cty8nVqiThfNA4ySJeJUZTfBJ1to6tsNiLeVa8JaAXGXyLWaC6/3jOTjSxbr+YPzZF2MpWrDQEt5hI7rVooljLwdBlBe+1Nzx4NQ9/9f6gYKg7eZOYK7MlJE2aR5wP3EslK6cTA0tgaVf1QA061BOtNICiL3w0YYwh1lEWLRU3qETeg9odPUXQnJrJvBNIMa+FyCnuNzQZQBoNG+RhR27WPf7ymCq5rq9nqGa4BcCMP/ICn/yTiQYlCHQusGY38+5BT0sh7g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB2920.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(39860400002)(396003)(366004)(9686003)(83380400001)(86362001)(316002)(54906003)(66446008)(66476007)(85182001)(110136005)(71200400001)(26005)(2906002)(8676002)(478600001)(4326008)(186003)(7416002)(66946007)(52536014)(64756008)(66556008)(8936002)(33656002)(5660300002)(53546011)(7696005)(38070700005)(38100700002)(55016002)(122000001)(76116006)(6506007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?L09ERWRwZTQyd0k3cHNWaEdtT0NWUWlUdGk3NEtTc1Y0bU53d25qdHpGOCtK?=
- =?utf-8?B?Ni9jSko0M0YxbFByZlRuSGZoTWo3bzFkZFUydWlqQkNGb2NiVWdib3Bzcmxu?=
- =?utf-8?B?RDdUY29hS1RQYlhHZmdLeFNXVnVEU0tZOWQ2M2lEVnBLS0xOU3BhVW9ySjdq?=
- =?utf-8?B?cXhZdlptVzM5WFd0VHdaNHpYU0JpdkNKa1VERkJseTBhUEtkU1ppK3NhMGJH?=
- =?utf-8?B?WU1VTWZvOVBtM1ZQRGk2dUF3VE56dEpnM0JBbEFTZndFaHNaVHJQQlY3aTZB?=
- =?utf-8?B?b2VSTnZ1MURqdHJiaDAzNkxsUENyTDlyL2RGZHQyWHBULzI3VG9Ud0JUMm00?=
- =?utf-8?B?ZXRocUtPbWdQU3UxYVJQOFRyYlFzZGo2ZkFFYjlrYVEybm9MMXJLc1NwRng0?=
- =?utf-8?B?dEJNMU90c3Q1d09wTEIwRXhjdGdxR295cHl5Y3ZySXFtVFh4Q28rZ2Rhc1hw?=
- =?utf-8?B?OXRjaXB5alNUcWoxa3dMMXdzdTJCOEp2UjVvaThzNHNxMkVsL0Z2MHNxc2Nx?=
- =?utf-8?B?MDVQU3dtY3BFOU5oZkNsb0wxZzN2UEowQ1k1czJUajIwUUw1UGdaNXpsbXdU?=
- =?utf-8?B?bmpud1NDemlidlZ2VCt6NHZSMGlFNWE0a0tsNzFEK0JVd042MzZnVHRYelVC?=
- =?utf-8?B?YnBUeGdUd2U5ZGpTbEhyUjQ3WDJPNnRjeklGUVpCWGFqMkc5MmVpcHQ3R2U4?=
- =?utf-8?B?c0p5cVRaZ29nMVBNZXdHandrT21zaytzb2Jtai9LNzVBZ3llZXAyNG95bWpo?=
- =?utf-8?B?QzBpbC9jSnhjQ3J0czZNNSttZHVMREVXcUltT1p4TGJJd2JmZWtOTFFobHRR?=
- =?utf-8?B?TkhrOGdaOEp3T1VNbjZuaGR4di9GSXJYdENtVUd1OGlpRlI2WjREYitIUDhY?=
- =?utf-8?B?bU1ZdVFEMUNLU0crVll6V0FobWdPV2pSTFRHWWFROHk5anJFU1A1RWhYOVMy?=
- =?utf-8?B?dS9RZzdHTHRvNkduRytlaUJHVTl0VklYRjlVbi9oaUJiMitjek4xYVlHcUpQ?=
- =?utf-8?B?dlpwcFFxWFZmZEorSzNGcnhRamwxaGdGeFlLWmNKSnJ4VEdTTmgyRkpudzZz?=
- =?utf-8?B?b29NeHMxWEd1ZTU2ZFBLY2VqbGVGWkxrMWcxVjFVc3BFMGZCVElzOStTL1Vx?=
- =?utf-8?B?QTVjbEQ0UFE0SHZEVHBGUkNjaTQ0elVTbFNYbkFYNERQbjY5blFJM1ZmZExP?=
- =?utf-8?B?UllXQ0h4L1hvbkNvK1NlQVRmWUNTREVzYTdhL1JTUkU0blpHejNFR2VJaDQw?=
- =?utf-8?B?ZkFSV0xBbG54MEkxanlnWW83YVFvUnB1Y1Q4eDlWN2l0ZEt5eklsc1VMV21a?=
- =?utf-8?B?elJ3dGRaWldpY2owWGp5UVVVUW5iN0dvbEhoaDQyVDlkb1BneHhnSk9SQmI5?=
- =?utf-8?B?NjFXU1RrdGlEMjJHc1Erdi9pQnJ5dkVPQyttUlY4ZlNLbS90OUNPcXBnbmI0?=
- =?utf-8?B?ZkNQblc3dDYxOEt4QXZsa3dOME9ML3hNZFVGZEhFdWdhVkFvR2RMcTB1NUNR?=
- =?utf-8?B?aFA4bmpZM3dPU3UzMEJibHJGamwrVHhpOEJ4MFBwT3hybmpiTW9mQ2lTVFd5?=
- =?utf-8?B?S01LdGZoK0daMWlRT1c1ZGRZaFZsZXYwZThwZGhYNWpVRUJTS242SGUreGh4?=
- =?utf-8?B?TmZYenlGb2NiOEpWdmUrUmJKYTF3YzZCRXN3WXdObTJXNHpubEtMblV5elJx?=
- =?utf-8?B?aXJzazErSTVsWlVHMWxGZVlqNm1HaHVRaDVSUndTdmtpcVhaQUE5VUhPMWFo?=
- =?utf-8?Q?snt5O0sa2gKUdCq2IdgDcvg4IPQ9N/n8mHvL/xq?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Mu9b4mblc/ExPlSUnMroTgqBzEI9hLYiUrbLs2ZdCaU=;
+        b=xeqOJFv4Yk292z5h/hTFjEN/0ui5PwnRO2mKenFqm6I4TTp1INPK3NKzStaZMpmI1J
+         Ysa7qwchiDka9i8OTzaigrmYgdyztKhoA64bp532bl3zJzO+gPBRxYZBdbx+CEOpsWMd
+         WKf4Q6BTwSCzp2Q0GhEBO3nka7Ov+fi0E/JVNMGls+iI2OzEOM0DtyKZDwPf2mn1NsEb
+         pEQPsYSLyBstiPeq2gjWgjbYLRzwZfy2rhS8jH+OZ7NA1gL5zIVklP2lJ7CP5xb663sz
+         c1dvWXtFlyQeSMXIE6IYtlL5Xfcp4eAW430w4l6VnPQrMlrla3cg81rGf43mAgdQuXdl
+         06RA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Mu9b4mblc/ExPlSUnMroTgqBzEI9hLYiUrbLs2ZdCaU=;
+        b=DEKS1VEmjoz/j2rgclh4eE2fIApX3hdNlhtjoy1fL7wx/pTNo8teEDdz+HeZe7z30f
+         kZGCfy3/kS1gfBlsfy0hO6t+E/X4K1npcEr2xDrjaAOZvQgvrFjCUG51vqLTEnNis1lD
+         Hki457XgP0dcDFEwWVcN/7yDT3pVXU4km/yPBLh/UlH9ehdipuF4iwX3gB4sjQOtrdVA
+         EvXysRrIQ0QvRG731BzHAnolN+1B2V7MoBKBP5xElAIDcjXOML9f8YBSs6StOLvEMe1s
+         jjEi5QB/mpi0YMPXN/uc+InmlT+toWu39xW6ZJajip6jxdDFF/72KuAHR/hjK1cUU2wc
+         uxEw==
+X-Gm-Message-State: AOAM532MsMKusEl5BtgIDfJGQUNTZMD9xV43S3D21ZJ7JAzXms6XFQLm
+        ni3zLtJLWqnEjqtrw+zjQWrgyA==
+X-Google-Smtp-Source: ABdhPJwu8ApgZURG1smRQNq5OoDX0gahn5gKM2eQ/sizWhYa+rCQGx1dpSOz0CNUkakynGmxjbtGrw==
+X-Received: by 2002:adf:ea09:: with SMTP id q9mr2498131wrm.64.1629364411576;
+        Thu, 19 Aug 2021 02:13:31 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id s10sm2730312wrv.54.2021.08.19.02.13.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 02:13:30 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 10:13:28 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Vinod Koul <vkoul@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        dmaengine <dmaengine@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        patches@linaro.org, Haavard Skinnemoen <hskinnemoen@atmel.com>,
+        =?utf-8?Q?H=C3=A5vard?= Skinnemoen <hskinnemoen@gmail.com>
+Subject: Re: [PATCH 1/2] Documentation: dmaengine: Add a description of what
+ dmatest does
+Message-ID: <20210819091328.6up4oprx4j7u5bjl@maple.lan>
+References: <20210818151315.9505-1-daniel.thompson@linaro.org>
+ <20210818151315.9505-2-daniel.thompson@linaro.org>
+ <CAHp75VdDZJ+aUtx-A3y62WQ5+OtrS47Ts6PDe1bGQ0OcRRV+7Q@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB2920.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d365d7e3-2fb8-4726-90da-08d962f13287
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Aug 2021 09:10:32.2742
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MVsF+UBl2mfXEkw79vHEJffrLv/3Y5SFOIbonAQAYHBrNjsjvB/5fG8k1R8+k80N+A1dd4X4+n6VTMuE1JtB7g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB6724
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VdDZJ+aUtx-A3y62WQ5+OtrS47Ts6PDe1bGQ0OcRRV+7Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBKYW5lIENodSA8amFuZS5jaHVAb3JhY2xlLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQ
-QVRDSCBSRVNFTkQgdjYgMS85XSBwYWdlbWFwOiBJbnRyb2R1Y2UgLT5tZW1vcnlfZmFpbHVyZSgp
-DQo+IA0KPiBTb3JyeSwgY29ycmVjdGlvbiBpbiBsaW5lLg0KPiANCj4gT24gOC8xOS8yMDIxIDEy
-OjE4IEFNLCBKYW5lIENodSB3cm90ZToNCj4gPiBIaSwgU2hpeWFuZywNCj4gPg0KPiA+ICA+wqAg
-PiA+IDEpIFdoYXQgZG9lcyBpdCB0YWtlIGFuZCBjb3N0IHRvIG1ha2UgID7CoCA+ID4NCj4gPiB4
-ZnNfc2JfdmVyc2lvbl9oYXNybWFwYnQoJm1wLT5tX3NiKSB0byByZXR1cm4gdHJ1ZT8NCj4gPiAg
-Pg0KPiA+ICA+IEVuYWJsZSBybXBhYnQgZmVhdHVyZSB3aGVuIG1ha2luZyB4ZnMgZmlsZXN5c3Rl
-bSAgPsKgwqDCoMKgIGBta2ZzLnhmcw0KPiA+IC1tIHJtYXBidD0xIC9wYXRoL3RvL2RldmljZWAg
-ID4gQlRXLCByZWZsaW5rIGlzIGVuYWJsZWQgYnkgZGVmYXVsdC4NCj4gPg0KPiA+IFRoYW5rcyHC
-oCBJIHRyaWVkDQo+ID4gbWtmcy54ZnMgLWQgYWdjb3VudD0yLGV4dHN6aW5oZXJpdD01MTIsc3U9
-Mm0sc3c9MSAtbSByZWZsaW5rPTAgLW0NCj4gPiBybWFwYnQ9MSAtZiAvZGV2L3BtZW0wDQo+ID4N
-Cj4gPiBBZ2FpbiwgaW5qZWN0ZWQgYSBIVyBwb2lzb24gdG8gdGhlIGZpcnN0IHBhZ2UgaW4gYSBk
-YXgtZmlsZSwgaGFkIHRoZQ0KPiA+IHBvaXNvbiBjb25zdW1lZCBhbmQgcmVjZWl2ZWQgYSBTSUdC
-VVMuIFRoZSByZXN1bHQgaXMgYmV0dGVyIC0NCj4gPg0KPiA+ICoqIFNJR0JVUyg3KTogY2Fuam1w
-PTEsIHdoaWNoc3RlcD0wLCAqKg0KPiA+ICoqIHNpX2FkZHIoMHgweDdmZjJkODgwMDAwMCksIHNp
-X2xzYigweDE1KSwgc2lfY29kZSgweDQsDQo+ID4gQlVTX01DRUVSUl9BUikgKioNCj4gPg0KPiA+
-IFRoZSBTSUdCVVMgcGF5bG9hZCBsb29rcyBjb3JyZWN0Lg0KPiA+DQo+ID4gSG93ZXZlciwgImRt
-ZXNnIiBoYXMgMjA0OCBsaW5lcyBvbiBzZW5kaW5nIFNJR0JVUywgb25lIHBlciA1MTJieXRlcyAt
-DQo+IA0KPiBBY3R1YWxseSB0aGF0J3Mgb25lIHBlciAyTUIsIGV2ZW4gdGhvdWdoIHRoZSBwb2lz
-b24gaXMgbG9jYXRlZCBpbiBwZm4gMHgxODUwNjAwDQo+IG9ubHkuDQo+IA0KPiA+DQo+ID4gWyA3
-MDAzLjQ4MjMyNl0gTWVtb3J5IGZhaWx1cmU6IDB4MTg1MDYwMDogU2VuZGluZyBTSUdCVVMgdG8N
-Cj4gPiBmc2RheF9wb2lzb25fdjE6NDEwOSBkdWUgdG8gaGFyZHdhcmUgbWVtb3J5IGNvcnJ1cHRp
-b24gWyA3MDAzLjUwNzk1Nl0NCj4gPiBNZW1vcnkgZmFpbHVyZTogMHgxODUwODAwOiBTZW5kaW5n
-IFNJR0JVUyB0bw0KPiA+IGZzZGF4X3BvaXNvbl92MTo0MTA5IGR1ZSB0byBoYXJkd2FyZSBtZW1v
-cnkgY29ycnVwdGlvbiBbIDcwMDMuNTMxNjgxXQ0KPiA+IE1lbW9yeSBmYWlsdXJlOiAweDE4NTBh
-MDA6IFNlbmRpbmcgU0lHQlVTIHRvDQo+ID4gZnNkYXhfcG9pc29uX3YxOjQxMDkgZHVlIHRvIGhh
-cmR3YXJlIG1lbW9yeSBjb3JydXB0aW9uIFsgNzAwMy41NTQxOTBdDQo+ID4gTWVtb3J5IGZhaWx1
-cmU6IDB4MTg1MGMwMDogU2VuZGluZyBTSUdCVVMgdG8NCj4gPiBmc2RheF9wb2lzb25fdjE6NDEw
-OSBkdWUgdG8gaGFyZHdhcmUgbWVtb3J5IGNvcnJ1cHRpb24gWyA3MDAzLjU3NTgzMV0NCj4gPiBN
-ZW1vcnkgZmFpbHVyZTogMHgxODUwZTAwOiBTZW5kaW5nIFNJR0JVUyB0bw0KPiA+IGZzZGF4X3Bv
-aXNvbl92MTo0MTA5IGR1ZSB0byBoYXJkd2FyZSBtZW1vcnkgY29ycnVwdGlvbiBbIDcwMDMuNTk2
-Nzk2XQ0KPiA+IE1lbW9yeSBmYWlsdXJlOiAweDE4NTEwMDA6IFNlbmRpbmcgU0lHQlVTIHRvDQo+
-ID4gZnNkYXhfcG9pc29uX3YxOjQxMDkgZHVlIHRvIGhhcmR3YXJlIG1lbW9yeSBjb3JydXB0aW9u
-IC4uLi4NCj4gPiBbIDcwNDUuNzM4MjcwXSBNZW1vcnkgZmFpbHVyZTogMHgxOTRmZTAwOiBTZW5k
-aW5nIFNJR0JVUyB0bw0KPiA+IGZzZGF4X3BvaXNvbl92MTo0MTA5IGR1ZSB0byBoYXJkd2FyZSBt
-ZW1vcnkgY29ycnVwdGlvbiBbIDcwNDUuNzU4ODg1XQ0KPiA+IE1lbW9yeSBmYWlsdXJlOiAweDE5
-NTAwMDA6IFNlbmRpbmcgU0lHQlVTIHRvDQo+ID4gZnNkYXhfcG9pc29uX3YxOjQxMDkgZHVlIHRv
-IGhhcmR3YXJlIG1lbW9yeSBjb3JydXB0aW9uIFsgNzA0NS43Nzk0OTVdDQo+ID4gTWVtb3J5IGZh
-aWx1cmU6IDB4MTk1MDIwMDogU2VuZGluZyBTSUdCVVMgdG8NCj4gPiBmc2RheF9wb2lzb25fdjE6
-NDEwOSBkdWUgdG8gaGFyZHdhcmUgbWVtb3J5IGNvcnJ1cHRpb24gWyA3MDQ1LjgwMDEwNl0NCj4g
-PiBNZW1vcnkgZmFpbHVyZTogMHgxOTUwNDAwOiBTZW5kaW5nIFNJR0JVUyB0bw0KPiA+IGZzZGF4
-X3BvaXNvbl92MTo0MTA5IGR1ZSB0byBoYXJkd2FyZSBtZW1vcnkgY29ycnVwdGlvbg0KPiA+DQo+
-ID4gVGhhdCdzIHRvbyBtdWNoIGZvciBhIHNpbmdsZSBwcm9jZXNzIGRlYWxpbmcgd2l0aCBhIHNp
-bmdsZSBwb2lzb24gaW4gYQ0KPiA+IFBNRCBwYWdlLiBJZiBub3RoaW5nIGVsc2UsIGdpdmVuIGFu
-IC5zaV9hZGRyX2xzYiBiZWluZyAweDE1LCBpdA0KPiA+IGRvZXNuJ3QgbWFrZSBzZW5zZSB0byBz
-ZW5kIGEgU0lHQlVTIHBlciA1MTJCIGJsb2NrLg0KPiA+DQo+ID4gQ291bGQgeW91IGRldGVybWlu
-ZSB0aGUgdXNlciBwcm9jZXNzJyBtYXBwaW5nIHNpemUgZnJvbSB0aGUNCj4gPiBmaWxlc3lzdGVt
-LCBhbmQgdGFrZSB0aGF0IGFzIGEgaGludCB0byBkZXRlcm1pbmUgaG93IG1hbnkgaXRlcmF0aW9u
-cw0KPiA+IHRvIGNhbGwNCj4gPiBtZl9kYXhfa2lsbF9wcm9jcygpID8NCj4gDQo+IFNvcnJ5LCBz
-Y3JhdGNoIHRoZSA1MTJieXRlIHN0dWZmLi4uIHRoZSBmaWxlc3lzdGVtIGhhcyBiZWVuIG5vdGlm
-aWVkIHRoZSBsZW5ndGggb2YNCj4gdGhlIHBvaXNvbiBibGFzdCByYWRpdXMsIGNvdWxkIGl0IHRh
-a2UgY2x1ZSBmcm9tIHRoYXQ/DQoNCkkgdGhpbmsgdGhpcyBpcyBjYXVzZWQgYnkgYSBtaXN0YWtl
-IEkgbWFkZSBpbiB0aGUgNnRoIHBhdGNoOiB4ZnMgaGFuZGxlciBpdGVyYXRlcyB0aGUgZmlsZSBy
-YW5nZSBpbiBibG9jayBzaXplKDRrIGhlcmUpIGV2ZW4gdGhvdWdoIGl0IGlzIGEgUE1EIHBhZ2Uu
-IFRoYXQncyB3aHkgc28gbWFueSBtZXNzYWdlIHNob3dzIHdoZW4gcG9pc29uIG9uIGEgUE1EIHBh
-Z2UuICBJJ2xsIGZpeCBpdCBpbiBuZXh0IHZlcnNpb24uDQoNCg0KLS0NClRoYW5rcywNClJ1YW4u
-DQoNCj4gDQo+IHRoYW5rcywNCj4gLWphbmUNCj4gDQo+ID4NCj4gPiB0aGFua3MhDQo+ID4gLWph
-bmUNCj4gPg0KPiA+DQo+ID4NCg==
+On Wed, Aug 18, 2021 at 06:27:52PM +0300, Andy Shevchenko wrote:
+> On Wed, Aug 18, 2021 at 6:15 PM Daniel Thompson
+> <daniel.thompson@linaro.org> wrote:
+> >
+> > Currently it can difficult to determine what dmatest does without
+> > reading the source code. Let's add a description.
+> >
+> > The description is taken mostly from the patch header of
+> > commit 4a776f0aa922 ("dmatest: Simple DMA memcpy test client")
+> > although it has been edited and updated slightly.
+> 
+> > Signed-off-by: Haavard Skinnemoen <hskinnemoen@atmel.com>
+> 
+> Not sure if you can use it like this (I mean the above SoB)
+
+I wondered about that.
+
+In the end I concluded that if I had picked up code from an old patch
+and edited to this degree then I would probably consider it a new
+patch but be clear about credit and preserve the original SoB. I saw no
+real reason to treat the contents of a patch header much different.
+
+However, I'm very happy to make the credit more informal if needed.
+
+> Otherwise it's a good idea, thanks!
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+Thanks!
+
+
+Daniel.
+
+
+> 
+> > Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+> > ---
+> >  Documentation/driver-api/dmaengine/dmatest.rst | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >
+> > diff --git a/Documentation/driver-api/dmaengine/dmatest.rst b/Documentation/driver-api/dmaengine/dmatest.rst
+> > index ee268d445d38..529cc2cbbb1b 100644
+> > --- a/Documentation/driver-api/dmaengine/dmatest.rst
+> > +++ b/Documentation/driver-api/dmaengine/dmatest.rst
+> > @@ -6,6 +6,16 @@ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> >
+> >  This small document introduces how to test DMA drivers using dmatest module.
+> >
+> > +The dmatest module tests DMA memcpy, memset, XOR and RAID6 P+Q operations using
+> > +various lengths and various offsets into the source and destination buffers. It
+> > +will initialize both buffers with a repeatable pattern and verify that the DMA
+> > +engine copies the requested region and nothing more. It will also verify that
+> > +the bytes aren't swapped around, and that the source buffer isn't modified.
+> > +
+> > +The dmatest module can be configured to test a specific channel. It can also
+> > +test multiple channels at the same time, and it can start multiple threads
+> > +competing for the same channel.
+> > +
+> >  .. note::
+> >    The test suite works only on the channels that have at least one
+> >    capability of the following: DMA_MEMCPY (memory-to-memory), DMA_MEMSET
+> > --
+> > 2.30.2
+> >
+> 
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
