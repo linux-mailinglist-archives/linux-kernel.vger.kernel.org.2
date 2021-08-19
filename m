@@ -2,167 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 038A53F170A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C5B3F170B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238170AbhHSKFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 06:05:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37738 "EHLO
+        id S238009AbhHSKFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 06:05:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237795AbhHSKFB (ORCPT
+        with ESMTP id S237788AbhHSKFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 06:05:01 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278EEC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 03:04:25 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id r7so8289290wrs.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 03:04:25 -0700 (PDT)
+        Thu, 19 Aug 2021 06:05:52 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0BCC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 03:05:15 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id l24so4103930qtj.4
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 03:05:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uVCUyG2NuSIGcMkq0WuvNZ15TJ1vZGR///Ye476yofU=;
-        b=nwAomb8B5Z6qOhHACra0bNMOiT/F0ZhG8eVGMPO03+fXHIBmqBFgcL7WAr12sA8Kkt
-         0+dKzgSMlY7DoaRlri+6N/R+VCxb3grrb5tO00owvnSCPC0KJkgmlqKzUtz1HRmjVsew
-         5KoOHKe3MQTFoTotCaCW5zn2J8V13KVs78azbZSXfz9OQdJuM1ZqUca5ZAA/qPNdmcXr
-         dPPPvdXKP6LBaeg94hj5rkj9vXIpaozoNeehz0+sIbkdvNnp+hZNwU/3h6bi75rrg4cV
-         vMMIgLGk0YwXdcbPNHPd23/0RShR479q6zhMjVb+5lg6ESOrJjaoyNnrO2ZVX+1BFAyR
-         rtUA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X3zlPWDyphvVlbQ5qW3mRYO0Onpjp0vHlmpsTSdQ76U=;
+        b=Qt/ngTdhvfqfEUTB6oXvy1Tg6d89U6mWp/wKxapl/JcsNUitJUvR9DiI/l+/T/95ZW
+         EKkvzDOz4tBamAa3OCDgmTjd5MJAbewUELKSWH1Lyd8S7LDb3T/0AvrxUcFxsjnPLy5K
+         /4T96yV6fiQUHdNuKhQ/VwbgjjTLth6uXACDk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uVCUyG2NuSIGcMkq0WuvNZ15TJ1vZGR///Ye476yofU=;
-        b=OxZsDy4ZGYxGQWQuPV7VtygD8kw0bsHhoiQ0sNGQvc4Nduw0QD6VQCW4s9WI5DcWof
-         3jEDWbWYcQ5kTR/qQAKRwHVXWQzvq/d9McC82CxgKgecJxhv3xX2ipT6yU9bMc2GyJsW
-         fbu9ItQKbV43bIw7NmRumTQPBzaNshYSEsYYrNmboGoDwf4Bi+X294QDdFANMi2vWT4W
-         WCILHpS3Kgz4uvszSqUTrSAW0Hui4DGvKDh7DQIZtqwGbHlBCOWH0SvT9DaO7gQbIWi2
-         ezn3A7OxbrjmQQFIjOlocSwjsqUVN5nPc3mTIQqbGQi6boBeNvR7XIc1RYZMdz0E4OEl
-         yDlQ==
-X-Gm-Message-State: AOAM53080NE5DY2NffzXUT4rwMvnvwSeGXGQwzOLWcLQKyx6aj30g0xQ
-        dBO2a7a/yuJZlLwVJI0N476z8GZoXPA=
-X-Google-Smtp-Source: ABdhPJy0RCdpJZSxdWYA4M8BLM8ELYbTs6mzYB/w4z///HaYe6Nn7JRwws0HwPT9xnLZWKV/N4ZcQA==
-X-Received: by 2002:a05:6000:1b8d:: with SMTP id r13mr2743286wru.230.1629367463324;
-        Thu, 19 Aug 2021 03:04:23 -0700 (PDT)
-Received: from saturne.home ([2a01:cb1d:16b:7e00:d8a9:a24:4997:14eb])
-        by smtp.gmail.com with ESMTPSA id x13sm2483778wrq.44.2021.08.19.03.04.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 03:04:22 -0700 (PDT)
-From:   Laurent Stacul <captain.stac@gmail.com>
-X-Google-Original-From: Laurent Stacul <laurent.stacul@gmail.com>
-Date:   Thu, 19 Aug 2021 12:04:17 +0200
-To:     Vito Caputo <vcaputo@pengaru.com>
-Cc:     Laurent Stacul <captain.stac@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: XFS/mmap reflink file question
-Message-ID: <YR4soQ7AV+mxL2ml@saturne.home>
-References: <YRupQKbg6uN8INCn@saturne.home>
- <20210817221258.jb4pg77bdle7t2oj@shells.gnugeneration.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X3zlPWDyphvVlbQ5qW3mRYO0Onpjp0vHlmpsTSdQ76U=;
+        b=Py2crQZrgMk/EZUP3xbHVD5UKw9qsVdhEdlZec0WL+udNFxcsI+OaV1yg5eLsTYguF
+         twgyC6GxKUUKjFe2dlCZOktV/uEOvoH8eDbu6hP8TuXZ/uy1sDC2dLETmIqMe2u2iRh+
+         Rgmuk+OWNwexFfY2sa0ZzLOI3uzyMjaUJhyxZRoxGSBUbum++5CF65jU+1o1qz8pe/iU
+         R4m0O3+yBpIkN6OhMg6jEh0ZqbpZalNMvdRF+EseEb8WZbunIstnLsyGP+ad33RVBCgh
+         MinUOONm++dPJ/YYlZG3muWt0G1LO2rzEF4/eGwjcLWgAVnjqDXevnOUhnfgBCB7eVke
+         Y+UA==
+X-Gm-Message-State: AOAM532XMRgJJh4PfOAz3NMFMBnwKp6ACQqixGxmDg2g2TVSt6hArbPV
+        l9sjNTOIzlNc17DtgluteDFXFQZ+5kbUgwyZKgdMVQ==
+X-Google-Smtp-Source: ABdhPJzCdJjP1MwbH7hH0bJZ9B1Z5mWBm8tscwzL3/O2b/V30LA1px2FIzqx7BzQ1O2BI0NboeA0Mz6aGA4pJydjQ34=
+X-Received: by 2002:ac8:7183:: with SMTP id w3mr8137304qto.116.1629367515209;
+ Thu, 19 Aug 2021 03:05:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210817221258.jb4pg77bdle7t2oj@shells.gnugeneration.com>
+References: <20210817013852.3222824-1-stevensd@google.com> <20210817013852.3222824-8-stevensd@google.com>
+ <f64b1349-d271-7b57-0eea-276dda065a87@arm.com>
+In-Reply-To: <f64b1349-d271-7b57-0eea-276dda065a87@arm.com>
+From:   David Stevens <stevensd@chromium.org>
+Date:   Thu, 19 Aug 2021 19:05:04 +0900
+Message-ID: <CAD=HUj6pRdiprRNc_wH_vLBMaNKZvQG9mhFa29vOD4WfcAo4=g@mail.gmail.com>
+Subject: Re: [PATCH v6 7/7] dma-iommu: account for min_align_mask
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Tom Murphy <murphyt7@tcd.ie>, iommu@lists.linux-foundation.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 03:12:58PM -0700, Vito Caputo wrote:
->On Tue, Aug 17, 2021 at 02:19:12PM +0200, Laurent Stacul wrote:
->> Hello,
->>
->> I spent much time digging into the mmap mechanism and I don't have a clear view
->> on mmap'ing a file and a reflink to this file would be mapped twice in memory
->> (this only applies in case the filesystem supports reflink feature like XFS).
->>
->> To describe my tests, I generate a file stored on an XFS partition and create a
->> reflink of it:
->>
->>     % dd if=/dev/zero of=./output.dat bs=1M count=24
->>     % cp --reflink -v output.dat output2.dat
->>     % xfs_bmap -v output.dat
->>     output.dat:
->>      EXT: FILE-OFFSET      BLOCK-RANGE      AG AG-OFFSET          TOTAL
->>        0: [0..49151]:      3756776..3805927  0 (3756776..3805927) 49152 100000
->>     % xfs_bmap -v output2.dat
->>     output2.dat:
->>      EXT: FILE-OFFSET      BLOCK-RANGE      AG AG-OFFSET          TOTAL
->>        0: [0..49151]:      3756776..3805927  0 (3756776..3805927) 49152 100000
->>
->> Then I mmap the first file twice using vmtouch tool:
->>
->>     % vmtouch -l output.dat&
->>     [1] 15870
->>     LOCKED 6144 pages (24M)
->>     % vmtouch -l output.dat&
->>     [2] 15872
->>     LOCKED 6144 pages (24M)
->>     % pmap -X 15872 | grep -e 'Pss' -e 'output' | awk '{if(NR>1)printf("%16s %4s %6s %10s %10s %10s\n", $1, $2, $4, $5, $7, $8)}'
->>          Address Perm Device      Inode        Rss        Pss
->>     7fcbb9eb9000 r--s  fc:10    3755268      24576      12288
->>
->> As we can see the Proportional Set Size is as expected the half of the Resident
->> Set Size because the memory is shared by the two processes. Now, I mmap the
->> reflink `output2.dat' of 'output.dat':
->>
->>     % vmtouch -l output2.dat&
->>     [3] 15892
->>     LOCKED 6144 pages (24M)
->>     % pmap -X 15872 | grep -e 'Pss' -e 'output' | awk '{if(NR>1)printf("%16s %4s %6s %10s %10s %10s\n", $1, $2, $4, $5, $7, $8)}'
->>          Address Perm Device      Inode        Rss        Pss
->>     7fcbb9eb9000 r--s  fc:10    3755268      24576      12288
->>
->> The Pss of mmap'ed file by the first process has not decreased (I expected a
->> value of Rss / 3 because I hoped the memory would have been shared by the 3
->> processes). If I look at the process map of the last process, we can interpret
->> a new memory area was allocated and locked.
->>
->>     % pmap -X 15892 | grep -e 'Pss' -e 'output' | awk '{if(NR>1)printf("%16s %4s %6s %10s %10s %10s\n", $1, $2, $4, $5, $7, $8)}'
->>           Address Perm Device      Inode        Rss        Pss
->>      7f5adc53f000 r--s  fc:10    3755269      24576      24576
->>
->> So my questions:
->> - Why can't we benefit from the memory sharing when reflinked files are mmap'ed
->>   ? It would be great because one application would be, in the context of
->>   containers, the possibility to share some read only areas between container
->>   that are built from the layer diff that are reproducible between images. We
->>   can imagine a layer that brings some shared libraries in an image from a
->>   reproducible FS diff so that containers would not load several times a
->>   library.
->> - I can think of many tricky cases with the behavior I was expecting (especially
->>   if a process has write access to the mapped area), but if you know a way, an
->>   option something to achieve what I am trying to do, I would be glad to hear
->>   it.
->> - Conversely, don't hesitate to tell me my expectation is just crazy.
->>
->> Anyway, I am always looking forward to listening to valuable specialist insights.
->> Thanks in advance,
->>
->> stac
->>
->> PS: Please, add me is CC if this message deserves an answer.
->>
+  On Thu, Aug 19, 2021 at 6:03 PM Robin Murphy <robin.murphy@arm.com> wrote:
 >
->This is one of the major features overlayfs brings to the table over
->reflink's current implementation.
+> On 2021-08-17 02:38, David Stevens wrote:
+> > From: David Stevens <stevensd@chromium.org>
+> >
+> > For devices which set min_align_mask, swiotlb preserves the offset of
+> > the original physical address within that mask. Since __iommu_dma_map
+> > accounts for non-aligned addresses, passing a non-aligned swiotlb
+> > address with the swiotlb aligned size results in the offset being
+> > accounted for twice in the size passed to iommu_map_atomic. The extra
+> > page exposed to DMA is also not cleaned up by __iommu_dma_unmap, since
+> > that function unmaps with the correct size. This causes mapping failures
+> > if the iova gets reused, due to collisions in the iommu page tables.
+> >
+> > To fix this, pass the original size to __iommu_dma_map, since that
+> > function already handles alignment.
+> >
+> > Additionally, when swiotlb returns non-aligned addresses, there is
+> > padding at the start of the bounce buffer that needs to be cleared.
+> >
+> > Fixes: 1f221a0d0dbf ("swiotlb: respect min_align_mask")
+> > Signed-off-by: David Stevens <stevensd@chromium.org>
+> > ---
+> >   drivers/iommu/dma-iommu.c | 24 +++++++++++++-----------
+> >   1 file changed, 13 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> > index 6738420fc081..f2fb360c2907 100644
+> > --- a/drivers/iommu/dma-iommu.c
+> > +++ b/drivers/iommu/dma-iommu.c
+> > @@ -788,7 +788,6 @@ static dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
+> >       struct iommu_domain *domain = iommu_get_dma_domain(dev);
+> >       struct iommu_dma_cookie *cookie = domain->iova_cookie;
+> >       struct iova_domain *iovad = &cookie->iovad;
+> > -     size_t aligned_size = size;
+> >       dma_addr_t iova, dma_mask = dma_get_mask(dev);
+> >
+> >       /*
+> > @@ -796,8 +795,8 @@ static dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
+> >        * page aligned, we don't need to use a bounce page.
+> >        */
+> >       if (dev_use_swiotlb(dev) && iova_offset(iovad, phys | size)) {
+> > -             void *padding_start;
+> > -             size_t padding_size;
+> > +             void *tlb_start;
+> > +             size_t aligned_size, iova_off, mapping_end_off;
+> >
+> >               aligned_size = iova_align(iovad, size);
+> >               phys = swiotlb_tbl_map_single(dev, phys, size, aligned_size,
+> > @@ -806,23 +805,26 @@ static dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
+> >               if (phys == DMA_MAPPING_ERROR)
+> >                       return DMA_MAPPING_ERROR;
+> >
+> > -             /* Cleanup the padding area. */
+> > -             padding_start = phys_to_virt(phys);
+> > -             padding_size = aligned_size;
+> > +             iova_off = iova_offset(iovad, phys);
+> > +             tlb_start = phys_to_virt(phys - iova_off);
+> >
+> >               if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
+> >                   (dir == DMA_TO_DEVICE || dir == DMA_BIDIRECTIONAL)) {
+> > -                     padding_start += size;
+> > -                     padding_size -= size;
+> > +                     /* Cleanup the padding area. */
+> > +                     mapping_end_off = iova_off + size;
+> > +                     memset(tlb_start, 0, iova_off);
+> > +                     memset(tlb_start + mapping_end_off, 0,
+> > +                            aligned_size - mapping_end_off);
+> > +             } else {
+> > +                     /* Nothing was sync'ed, so clear the whole buffer. */
+> > +                     memset(tlb_start, 0, aligned_size);
+> >               }
+> > -
+> > -             memset(padding_start, 0, padding_size);
+> >       }
+> >
+> >       if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+> >               arch_sync_dma_for_device(phys, size, dir);
+> >
+> > -     iova = __iommu_dma_map(dev, phys, aligned_size, prot, dma_mask);
+> > +     iova = __iommu_dma_map(dev, phys, size, prot, dma_mask);
 >
->With reflink copies you get distinct inodes and the data sharing
->occurs further down in the fs at the extent level, below the struct
->address_space instances.
+> I still don't see how this preserves min_align_mask if it is larger than
+> the IOVA granule
+
+That's a slightly different issue, and not addressed in this series. I
+guess the commit message should be 'dma-iommu: account for
+min_align_mask w/swiotlb'. At least from my understanding of
+min_align_mask, getting min_align_mask larger than the IOVA granule to
+work would require changes to IOVA allocation, not anything to do
+directly with swiotlb bounce buffers. Also, probably changes to
+scatterlist coalescing. That being said, it looks like the only driver
+that sets min_align_mask is the nvme driver, which sets it to 4096.
+
+> (either way this change here does nothing since the
+> first thing __iommu_dma_map() does is iova_align() the size right back
+> anyway).
 >
->If memory serves Dave Chinner has given the issue some thought, but I
->haven't noticed/heard anything in terms of progress there.  Maybe
->he'll see this and chime in...
+
+__iommu_dma_map() doesn't just align the size, it aligns
+size+iova_off. Let's say you're doing a read of size 512 bytes at
+offset 2048 within a page. In this case, aligned_size will be 4096.
+Without min_align_mask, phys will be page aligned, so that's fine. But
+with min_align_mask=4096, phys will also be at offset 2048. This
+causes __iommu_dma_map to align 4096 + 2048, which becomes 8192. That
+results in an extra page being mapped, which then doesn't get cleaned
+up by __iommu_dma_unmap. That causes collisions in the IOMMU driver
+the next time the iova is reused.
+
+Passing size to __iommu_dma_map is sufficient. iommu_dma_map_page
+needs to map [phys, phys+size), regardless of whether or not bounce
+buffers are being used. __iommu_dma_map already takes care of cleaning
+up the alignment, there's no need to do any extra alignment specific
+to the bounce buffer case.
+
+-David
+
+> Robin.
 >
->Regards,
->Vito Caputo
-
-Thanks for your answer. If I understand correctly, reflink feature
-cannot be used in the scenario I propose because reflinks are
-optimization occuring under the VFS. This makes sense to me and I was
-not really confident this had a chance to work.
-
-As you suggest, I will turn my effort on overlay.
-
-Regards,
-stac
-
+> >       if (iova == DMA_MAPPING_ERROR && is_swiotlb_buffer(phys))
+> >               swiotlb_tbl_unmap_single(dev, phys, size, dir, attrs);
+> >       return iova;
+> >
