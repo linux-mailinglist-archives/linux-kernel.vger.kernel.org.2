@@ -2,237 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F8D33F15AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 102E53F15AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237407AbhHSJBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 05:01:03 -0400
-Received: from foss.arm.com ([217.140.110.172]:33290 "EHLO foss.arm.com"
+        id S237350AbhHSJAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 05:00:38 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:57306 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233610AbhHSJBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 05:01:01 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 747081FB;
-        Thu, 19 Aug 2021 02:00:25 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E605A3F40C;
-        Thu, 19 Aug 2021 02:00:23 -0700 (PDT)
-Subject: Re: [PATCH v6 4/7] dma-iommu: fold _swiotlb helpers into callers
-To:     David Stevens <stevensd@chromium.org>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Tom Murphy <murphyt7@tcd.ie>, iommu@lists.linux-foundation.org,
+        id S237165AbhHSJAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 05:00:33 -0400
+Received: from zn.tnic (p200300ec2f0f6a004ea6615b49afdf70.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:6a00:4ea6:615b:49af:df70])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CCFCB1EC0567;
+        Thu, 19 Aug 2021 10:59:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1629363592;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=0+JKF1lwu+PLHRGFSzSGCH1wd6wophpTqRo27x3+Lng=;
+        b=eYtOtmfME6YKxVdklfQbCmFY7F3crNvRBuxHXrz4lv2SOuhgoU3qNK5Gam5/Y0YoC0TFmD
+        fREmtRm7dQ4BZEmOuRkwMRSNGfdmGYh3ln73LpeuZ750c9EjN+ccyYfWGBMIqH9U6B5wO+
+        0G6fPVGrW4cStLex2aBvEyM1Lbgnyr8=
+Date:   Thu, 19 Aug 2021 11:00:31 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Chen, Rong A" <rong.a.chen@intel.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        Reinette Chatre <reinette.chatre@intel.com>
+Cc:     kernel test robot <lkp@intel.com>, x86-ml <x86@kernel.org>,
         linux-kernel@vger.kernel.org
-References: <20210817013852.3222824-1-stevensd@google.com>
- <20210817013852.3222824-5-stevensd@google.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <3cc9eb26-3225-ed2a-8784-cdc2119970e9@arm.com>
-Date:   Thu, 19 Aug 2021 10:00:18 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+Subject: Re: [tip:x86/urgent] BUILD SUCCESS WITH WARNING
+ 064855a69003c24bd6b473b367d364e418c57625
+Message-ID: <YR4dr079URttZRrg@zn.tnic>
+References: <6118d218.4ZZRXYKZCzQSq1Km%lkp@intel.com>
+ <YRjTkkpDjaWxEpjb@zn.tnic>
+ <ced3f2ab-54b6-95d7-7f5b-b6bb6a299330@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210817013852.3222824-5-stevensd@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ced3f2ab-54b6-95d7-7f5b-b6bb6a299330@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-17 02:38, David Stevens wrote:
-> From: David Stevens <stevensd@chromium.org>
+On Thu, Aug 19, 2021 at 02:15:16PM +0800, Chen, Rong A wrote:
 > 
-> Fold the _swiotlb helper functions into the respective _page functions,
-> since recent fixes have moved all logic from the _page functions to the
-> _swiotlb functions.
+> 
+> On 8/15/2021 4:42 PM, Borislav Petkov wrote:
+> > Hi,
+> > 
+> > On Sun, Aug 15, 2021 at 04:36:40PM +0800, kernel test robot wrote:
+> > > tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
+> > > branch HEAD: 064855a69003c24bd6b473b367d364e418c57625  x86/resctrl: Fix default monitoring groups reporting
+> > > 
+> > > possible Warning in current branch:
+> > > 
+> > > arch/x86/kernel/cpu/resctrl/monitor.c:310 __mon_event_count() error: uninitialized symbol 'm'.
+> > > arch/x86/kernel/cpu/resctrl/monitor.c:315 __mon_event_count() error: potentially dereferencing uninitialized 'm'.
+> > > 
+> > > Warning ids grouped by kconfigs:
+> > > 
+> > > gcc_recent_errors
+> > > `-- i386-randconfig-m021-20210812
+> > >      |-- arch-x86-kernel-cpu-resctrl-monitor.c-__mon_event_count()-error:potentially-dereferencing-uninitialized-m-.
+> > >      `-- arch-x86-kernel-cpu-resctrl-monitor.c-__mon_event_count()-error:uninitialized-symbol-m-.
+> > 
+> > AFAIR, I had already asked you guys to make those reports more useful
+> > as, for example, adding a link to that randconfig above or even
+> > attaching it so that a person - not a machine - reading it, can
+> > *actually* act upon it.
+> > 
+> > But that hasn't happened.
+> > 
+> > Until it happens, I'm going to ignore all those reports from you.
+> > 
+> 
+> Hi Borislav,
+> 
+> Sorry about it, the actual link is at https://lists.01.org/hyperkitty/list/kbuild@lists.01.org/thread/PZVMY3VJU4QY4HQXHK3MLPQ2KZ5CNAYH/,
+> and it's still an internal report that the robot don't know whether it's a
+> false positive or not, we'll update the mail contents to avoid
+> misunderstanding.
 
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+Aha, ok, smatch thinks that m might not be initialized because
 
-> Signed-off-by: David Stevens <stevensd@chromium.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> ---
->   drivers/iommu/dma-iommu.c | 135 +++++++++++++++++---------------------
->   1 file changed, 59 insertions(+), 76 deletions(-)
-> 
-> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> index 5dd2c517dbf5..8152efada8b2 100644
-> --- a/drivers/iommu/dma-iommu.c
-> +++ b/drivers/iommu/dma-iommu.c
-> @@ -493,26 +493,6 @@ static void __iommu_dma_unmap(struct device *dev, dma_addr_t dma_addr,
->   	iommu_dma_free_iova(cookie, dma_addr, size, iotlb_gather.freelist);
->   }
->   
-> -static void __iommu_dma_unmap_swiotlb(struct device *dev, dma_addr_t dma_addr,
-> -		size_t size, enum dma_data_direction dir,
-> -		unsigned long attrs)
-> -{
-> -	struct iommu_domain *domain = iommu_get_dma_domain(dev);
-> -	phys_addr_t phys;
-> -
-> -	phys = iommu_iova_to_phys(domain, dma_addr);
-> -	if (WARN_ON(!phys))
-> -		return;
-> -
-> -	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) && !dev_is_dma_coherent(dev))
-> -		arch_sync_dma_for_cpu(phys, size, dir);
-> -
-> -	__iommu_dma_unmap(dev, dma_addr, size);
-> -
-> -	if (unlikely(is_swiotlb_buffer(phys)))
-> -		swiotlb_tbl_unmap_single(dev, phys, size, dir, attrs);
-> -}
-> -
->   static dma_addr_t __iommu_dma_map(struct device *dev, phys_addr_t phys,
->   		size_t size, int prot, u64 dma_mask)
->   {
-> @@ -539,55 +519,6 @@ static dma_addr_t __iommu_dma_map(struct device *dev, phys_addr_t phys,
->   	return iova + iova_off;
->   }
->   
-> -static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
-> -		size_t org_size, dma_addr_t dma_mask, bool coherent,
-> -		enum dma_data_direction dir, unsigned long attrs)
-> -{
-> -	int prot = dma_info_to_prot(dir, coherent, attrs);
-> -	struct iommu_domain *domain = iommu_get_dma_domain(dev);
-> -	struct iommu_dma_cookie *cookie = domain->iova_cookie;
-> -	struct iova_domain *iovad = &cookie->iovad;
-> -	size_t aligned_size = org_size;
-> -	void *padding_start;
-> -	size_t padding_size;
-> -	dma_addr_t iova;
-> -
-> -	/*
-> -	 * If both the physical buffer start address and size are
-> -	 * page aligned, we don't need to use a bounce page.
-> -	 */
-> -	if (IS_ENABLED(CONFIG_SWIOTLB) && dev_is_untrusted(dev) &&
-> -	    iova_offset(iovad, phys | org_size)) {
-> -		aligned_size = iova_align(iovad, org_size);
-> -		phys = swiotlb_tbl_map_single(dev, phys, org_size,
-> -					      aligned_size, dir, attrs);
-> -
-> -		if (phys == DMA_MAPPING_ERROR)
-> -			return DMA_MAPPING_ERROR;
-> -
-> -		/* Cleanup the padding area. */
-> -		padding_start = phys_to_virt(phys);
-> -		padding_size = aligned_size;
-> -
-> -		if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
-> -		    (dir == DMA_TO_DEVICE ||
-> -		     dir == DMA_BIDIRECTIONAL)) {
-> -			padding_start += org_size;
-> -			padding_size -= org_size;
-> -		}
-> -
-> -		memset(padding_start, 0, padding_size);
-> -	}
-> -
-> -	if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
-> -		arch_sync_dma_for_device(phys, org_size, dir);
-> -
-> -	iova = __iommu_dma_map(dev, phys, aligned_size, prot, dma_mask);
-> -	if (iova == DMA_MAPPING_ERROR && is_swiotlb_buffer(phys))
-> -		swiotlb_tbl_unmap_single(dev, phys, org_size, dir, attrs);
-> -	return iova;
-> -}
-> -
->   static void __iommu_dma_free_pages(struct page **pages, int count)
->   {
->   	while (count--)
-> @@ -848,15 +779,68 @@ static dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
->   {
->   	phys_addr_t phys = page_to_phys(page) + offset;
->   	bool coherent = dev_is_dma_coherent(dev);
-> +	int prot = dma_info_to_prot(dir, coherent, attrs);
-> +	struct iommu_domain *domain = iommu_get_dma_domain(dev);
-> +	struct iommu_dma_cookie *cookie = domain->iova_cookie;
-> +	struct iova_domain *iovad = &cookie->iovad;
-> +	size_t aligned_size = size;
-> +	dma_addr_t iova, dma_mask = dma_get_mask(dev);
-> +
-> +	/*
-> +	 * If both the physical buffer start address and size are
-> +	 * page aligned, we don't need to use a bounce page.
-> +	 */
-> +	if (IS_ENABLED(CONFIG_SWIOTLB) && dev_is_untrusted(dev) &&
-> +	    iova_offset(iovad, phys | size)) {
-> +		void *padding_start;
-> +		size_t padding_size;
-> +
-> +		aligned_size = iova_align(iovad, size);
-> +		phys = swiotlb_tbl_map_single(dev, phys, size,
-> +					      aligned_size, dir, attrs);
-> +
-> +		if (phys == DMA_MAPPING_ERROR)
-> +			return DMA_MAPPING_ERROR;
->   
-> -	return __iommu_dma_map_swiotlb(dev, phys, size, dma_get_mask(dev),
-> -			coherent, dir, attrs);
-> +		/* Cleanup the padding area. */
-> +		padding_start = phys_to_virt(phys);
-> +		padding_size = aligned_size;
-> +
-> +		if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
-> +		    (dir == DMA_TO_DEVICE || dir == DMA_BIDIRECTIONAL)) {
-> +			padding_start += size;
-> +			padding_size -= size;
-> +		}
-> +
-> +		memset(padding_start, 0, padding_size);
-> +	}
-> +
-> +	if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
-> +		arch_sync_dma_for_device(phys, size, dir);
-> +
-> +	iova = __iommu_dma_map(dev, phys, aligned_size, prot, dma_mask);
-> +	if (iova == DMA_MAPPING_ERROR && is_swiotlb_buffer(phys))
-> +		swiotlb_tbl_unmap_single(dev, phys, size, dir, attrs);
-> +	return iova;
->   }
->   
->   static void iommu_dma_unmap_page(struct device *dev, dma_addr_t dma_handle,
->   		size_t size, enum dma_data_direction dir, unsigned long attrs)
->   {
-> -	__iommu_dma_unmap_swiotlb(dev, dma_handle, size, dir, attrs);
-> +	struct iommu_domain *domain = iommu_get_dma_domain(dev);
-> +	phys_addr_t phys;
-> +
-> +	phys = iommu_iova_to_phys(domain, dma_handle);
-> +	if (WARN_ON(!phys))
-> +		return;
-> +
-> +	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) && !dev_is_dma_coherent(dev))
-> +		arch_sync_dma_for_cpu(phys, size, dir);
-> +
-> +	__iommu_dma_unmap(dev, dma_handle, size);
-> +
-> +	if (unlikely(is_swiotlb_buffer(phys)))
-> +		swiotlb_tbl_unmap_single(dev, phys, size, dir, attrs);
->   }
->   
->   /*
-> @@ -941,7 +925,7 @@ static void iommu_dma_unmap_sg_swiotlb(struct device *dev, struct scatterlist *s
->   	int i;
->   
->   	for_each_sg(sg, s, nents, i)
-> -		__iommu_dma_unmap_swiotlb(dev, sg_dma_address(s),
-> +		iommu_dma_unmap_page(dev, sg_dma_address(s),
->   				sg_dma_len(s), dir, attrs);
->   }
->   
-> @@ -952,9 +936,8 @@ static int iommu_dma_map_sg_swiotlb(struct device *dev, struct scatterlist *sg,
->   	int i;
->   
->   	for_each_sg(sg, s, nents, i) {
-> -		sg_dma_address(s) = __iommu_dma_map_swiotlb(dev, sg_phys(s),
-> -				s->length, dma_get_mask(dev),
-> -				dev_is_dma_coherent(dev), dir, attrs);
-> +		sg_dma_address(s) = iommu_dma_map_page(dev, sg_page(s),
-> +				s->offset, s->length, dir, attrs);
->   		if (sg_dma_address(s) == DMA_MAPPING_ERROR)
->   			goto out_unmap;
->   		sg_dma_len(s) = s->length;
-> 
+064855a69003 ("x86/resctrl: Fix default monitoring groups reporting")
+
+removed the default case:
+
+-       default:
+-               /*
+-                * Code would never reach here because
+-                * an invalid event id would fail the __rmid_read.
+-                */
+-               return -EINVAL;
+
+I'm guessing that comment which got removed too, explains why that's ok.
+
+Adding folks to Cc.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
