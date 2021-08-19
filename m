@@ -2,73 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7273F2099
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 21:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0DB3F209F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 21:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234642AbhHSTao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 15:30:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234085AbhHSTan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 15:30:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9CA84610D2;
-        Thu, 19 Aug 2021 19:30:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629401406;
-        bh=bEx6LXRrdT/hyT1DNn/TgFlDeBlztpjIpQNw6xGTcwM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=unZQeAXtOhwfvGcyQVhVkZ0n2eoL1s3zwnduB3m4/PR1d7Unb0ryHFnVbLtcK6mMV
-         3QO39IWeiHOtWIV2Lx1xCQZROMmYH0hvjJGLqoTVijsMgdtnAsUrVMs5mxOftyJw2C
-         lSAkKd9TsGdZpJTzzpCDnCEn/f+u38SVGIFjIGJRc2aF+/ryF04+VxjY4Ct4DRy+jP
-         PofpXzo+aUHJGMPKm3ZUUidbhLaY8bTWcRlNd19tjODH2QQ2fsCxy35CYzyahIkaRd
-         ZSPv0sb3gok4bn3/n9ovGSq89XF1tdjgUVdZ0qCfrppcGmLZe2R8HVo1vclQHu+gWG
-         46VEugkfyU4tA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 94E8C60997;
-        Thu, 19 Aug 2021 19:30:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S234725AbhHSTbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 15:31:12 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49206 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229728AbhHSTbJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 15:31:09 -0400
+Date:   Thu, 19 Aug 2021 21:30:30 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629401431;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OUcMYajZ3XxOlpgPob8whWq+KnBsy7RRJI0UjbXqROI=;
+        b=r9am8/e1sz+2r6VbO/tcCiWYPw6pMlA/yGZAH7DY5XaUU5+rIvcczfRUzy3kCOlnt3Vf9Z
+        TVzFZHFKy5W30ffaKUatkjORiwpUZl4qNe7qW9V2KF9Ub6WSqHwmihBfejkMHsJBmREhLj
+        373aDRdVH9+z0M6hLRtBMxviqFI2yTy1SUtSaQShO0XB2omZV5awxGdfbrv/2oPMcwlHmY
+        mn9cm0w9D01tltvHPHOuifVqqyS2jHWpsCFEV7rKerWwy0hbM+C4s7t2sbgrnsmTbwxI4T
+        nD4NSsvoIgRH8tFAVTq8zlK4oyWS+bQh1KcfzNU6esMs8eSDg7uW/KB/9kvEGg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629401431;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OUcMYajZ3XxOlpgPob8whWq+KnBsy7RRJI0UjbXqROI=;
+        b=7PTBCJCfoWujjpGQY3epP+t8QkAzdvEup71G7EYiNqNPyXbExd1Cgohpr+3d6qlcy6O5hl
+        xMrNnFIfh5GatoDQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Mike Galbraith <efault@gmx.de>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH v2] locking/ww_mutex: Initialize waiter.ww_ctx properly
+Message-ID: <20210819193030.zpwrpvvrmy7xxxiy@linutronix.de>
+References: <20210815203225.710392609@linutronix.de>
+ <20210815211304.281927514@linutronix.de>
+ <20210819175110.w7lxq5w3gdj5vhwf@linutronix.de>
+ <YR6gUaz2QMeNkPXp@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH][next] octeontx2-af: remove redudant second error check on
- variable err
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162940140660.416.16309844801419100643.git-patchwork-notify@kernel.org>
-Date:   Thu, 19 Aug 2021 19:30:06 +0000
-References: <20210818130927.33895-1-colin.king@canonical.com>
-In-Reply-To: <20210818130927.33895-1-colin.king@canonical.com>
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
-        jerinj@marvell.com, sbhatta@marvell.com, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YR6gUaz2QMeNkPXp@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+The gathering of the debug code for the ww-mutex initialized moved the
+POISON initialiation into one spot and only set waiter.ww_ctx if the
+ww_ctx was non-NULL thus keeping the POISON value in ww-mutex case.
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+For ww-mutex without a context it is expected to set the context to
+NULL, the poison value was intended only for the regular mutex.
 
-On Wed, 18 Aug 2021 14:09:27 +0100 you wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> A recent change added error checking messages and failed to remove one
-> of the previous error checks. There are now two checks on variable err
-> so the second one is redundant dead code and can be removed.
-> 
-> Addresses-Coverity: ("Logically dead code")
-> Fixes: a83bdada06bf ("octeontx2-af: Add debug messages for failures")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> 
-> [...]
+Always initialized waiter.ww_ctx to ww_ctx in the ww-mutex case.
 
-Here is the summary with links:
-  - [next] octeontx2-af: remove redudant second error check on variable err
-    https://git.kernel.org/netdev/net-next/c/9e5f10fe577b
+Fixes: c0afb0ffc06e6 ("locking/ww_mutex: Gather mutex_waiter initialization=
+")
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+v1=E2=80=A6v2: Use PeterZ' approach.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+ kernel/locking/mutex.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+index 05b68931622d1..2c70213934cd4 100644
+--- a/kernel/locking/mutex.c
++++ b/kernel/locking/mutex.c
+@@ -614,7 +614,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int st=
+ate, unsigned int subclas
+=20
+ 	debug_mutex_lock_common(lock, &waiter);
+ 	waiter.task =3D current;
+-	if (ww_ctx)
++	if (use_ww_ctx)
+ 		waiter.ww_ctx =3D ww_ctx;
+=20
+ 	lock_contended(&lock->dep_map, ip);
+--=20
+2.33.0
 
