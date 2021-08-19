@@ -2,108 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F773F1DB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 18:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF4A3F1DB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 18:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbhHSQVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 12:21:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhHSQVI (ORCPT
+        id S229981AbhHSQW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 12:22:26 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:55188
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229491AbhHSQWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 12:21:08 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0EC7C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 09:20:31 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id w20so14125821lfu.7
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 09:20:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=3asku0pLtHQRy/+xXumiM58BWe9crM57UxtzOfQVQq4=;
-        b=bNYG/IJ/v86SVujewP4QJxLlN/utOyYqjWhe3wbSTEcCLJDtxm3Dr7bqajuumek1FY
-         4Cde2gyL7jmUrv6J3cvLu8H4m8nP2BXCOW53Fckz38BkRNUq62n9GkYUz8ebeJgBO43e
-         Tu7fi+nbJDnDgYk/qu/4KpR5MEi6vHE4CFb0ZSUc4rMwwVbEf0s3cChC7t9w1yMjrUHh
-         0S+JunTw2an+s5pAFUgEV878CM/EmtGtexBRNwOEClD91Jvc0tZKMI9j87vaSEQPkbuz
-         4mO2fBIKj41KlWaXzlxkt5QqSA0nL9x2pGA8zorzIp9NwvIM0TD1mhInDZsYbRfFEO8B
-         L19g==
+        Thu, 19 Aug 2021 12:22:24 -0400
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 884F9411C4
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:21:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629390107;
+        bh=+cZtuR9o2k87pvi0rgBoRi8/bFI7YeJU/qox3v5ZI5U=;
+        h=Subject:To:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=TnGoL60l6+xHV2u2QYgrhlcDga3uUlfW3nSfJY4N0dFtvmlPq0DIy+BdXKWGqr76w
+         sfkXI3ySjRtABEQ4fGDJWXxK2AItk+1i2rnn7jEPhzBevRw15eyPUXMTRytZoTfEg5
+         +Sx3W00FyMkZGEju+29T60AW27x+m2keMkDyQCBsH9KdG6cOr5EEa8yeeCSyKlI3Jw
+         m9Cmra8DxF2aAyZCJdrU7Je+c/eWkjOHYrOgzNrlsWwV63MFmORFGk7MdNhTySqY2A
+         QQc+fj+8U27HuW2wdmwkr2cOVdM0s6NdIhjpUKuVJ/RDo8d+O0SZ4wDzbqNvHO5zMe
+         wav8AzC9TpSRg==
+Received: by mail-ed1-f69.google.com with SMTP id bx23-20020a0564020b5700b003bf2eb11718so3059585edb.20
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 09:21:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=3asku0pLtHQRy/+xXumiM58BWe9crM57UxtzOfQVQq4=;
-        b=Asywf8EIL+WDKVzt1+RVkgf4tMzYa+92/n8Ab7Oa0+/yrRG6Sc6n+GZaznSt2bSqMJ
-         My9pbtFEKQtOV09C8pf5Q84BFsCEFiOYSXrpotKDw51IdisIU7PowAG86HulFUiu/nNJ
-         m+h0xWitsDNhw2IFk+hEm42QjYFcVytuVG60v3lIPoIp+SujpSfAvU0jucKhowiwqVcf
-         oKkilqDOP2M2F4WvML37KI0CFw/tsjPgNPSjgF+7nQKXvDlqnydREcTxeHV3rQFmG5x1
-         5r+jEhPdKgq1rvqfZEK5mLpqdokCmMCIa6NfwQFv9nrDbpmyOgUK2B/1eW2EkzzUsmWh
-         FX/A==
-X-Gm-Message-State: AOAM5335X+21RVWEd6sGfRZ5Ez5U8gJQyHYefnygByu8rR7aZ5VciTBs
-        roe3xg4ft27AmjXjo+8I1fqEwr0WlfmPEA==
-X-Google-Smtp-Source: ABdhPJyXdxWtx1IexvtSBR0aUvfLyPXwSJV4HhYjAENl0Srz4sZjkoHT9yHpNluBqLYsRnLFr2hSKQ==
-X-Received: by 2002:a05:6512:110b:: with SMTP id l11mr11099003lfg.199.1629390029852;
-        Thu, 19 Aug 2021 09:20:29 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id c9sm348734lfb.236.2021.08.19.09.20.28
+        bh=+cZtuR9o2k87pvi0rgBoRi8/bFI7YeJU/qox3v5ZI5U=;
+        b=P9oCDYAQeqYbbVXJ2rnVYYKsFKIROJlDZRKLYkBrbwSlD9jcuF5b+5ErjULQimuvF/
+         fTk/hE5bOC6ndLRGL595jxfJhNHcvuCGa0tiJt0QG0CKuyj6ONApmj8yH7vlhQ2AlVrD
+         mNbJSceHgJ1E22uF5cZE5La/gYKjqA8LaePBSzMuDZ0u1//iCfI4qq/apuqOcR19DJ63
+         e+5MgdOs6rQyWr5iH1glTd2D7u2aceXlSih3xwrb8OqYuqR3uJcZFY8MW6AEXtTUOBsG
+         HCuEuPZF9L1b237CTHHSz7AE9oPWEYyhVe3Kb3JPT8muWW9oorRR0SBO95um3+RKAeKS
+         hWdA==
+X-Gm-Message-State: AOAM530c8hfJGsXBztcXF6tvQtLTngK33VDMira95FC/+DadIvx03pBk
+        FNkAv39A/Wx1LfzO6odZhG+iap9x73le9xlG0GvjrMHtt52HYItEelmLjiOKJUkb0NyQkX3uvl1
+        81n0/C2zlQhd+HlGmLs4VeDAJyoRlFvlWlJuGvqDb/g==
+X-Received: by 2002:a17:906:87c2:: with SMTP id zb2mr16503211ejb.322.1629390106277;
+        Thu, 19 Aug 2021 09:21:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxuaQqSj/y3QMWrvKAdgV8r7CJmiTSZ6zuwkSNkqhhy0AKGNuqM3cQONHkLBZcKm5Sw3vridg==
+X-Received: by 2002:a17:906:87c2:: with SMTP id zb2mr16503202ejb.322.1629390106161;
+        Thu, 19 Aug 2021 09:21:46 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.42.198])
+        by smtp.gmail.com with ESMTPSA id j11sm1478832ejy.112.2021.08.19.09.21.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 09:20:29 -0700 (PDT)
-Subject: Re: [PATCH v1] drm/msm/dpu: Fix address of SM8150 PINGPONG5 IRQ
- register
-To:     Robert Foss <robert.foss@linaro.org>, robdclark@gmail.com,
-        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
-        abhinavk@codeaurora.org, angelogioacchino.delregno@somainline.org,
-        mkrishn@codeaurora.org, kalyan_t@codeaurora.org,
-        lee.jones@linaro.org, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20210819133636.2045766-1-robert.foss@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <acf419d8-724b-4df3-a610-0c8cb7502094@linaro.org>
-Date:   Thu, 19 Aug 2021 19:20:28 +0300
+        Thu, 19 Aug 2021 09:21:45 -0700 (PDT)
+Subject: Re: [PATCH 3/6] riscv: microchip: mpfs: drop duplicated nodes
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Atish Patra <atish.patra@wdc.com>,
+        Yash Shah <yash.shah@sifive.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Piotr Sroka <piotrs@cadence.com>, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+References: <20210819154436.117798-1-krzysztof.kozlowski@canonical.com>
+ <20210819154436.117798-3-krzysztof.kozlowski@canonical.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <4d0d6290-8341-56d8-7902-5a8c36bc7bb5@canonical.com>
+Date:   Thu, 19 Aug 2021 18:21:44 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210819133636.2045766-1-robert.foss@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <20210819154436.117798-3-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/08/2021 16:36, Robert Foss wrote:
-> Both PINGPONG4 and PINGPONG5 IRQ registers are using the
-> same address, which is incorrect. PINGPONG4 should use the
-> register offset 30, and PINGPONG5 should use the register
-> offset 31 according to the downstream driver.
+On 19/08/2021 17:44, Krzysztof Kozlowski wrote:
+> The DTSI file defines soc node and address/size cells, so there is no
+> point in duplicating it in DTS file.
 > 
-> Fixes: 667e9985ee24 ("drm/msm/dpu: replace IRQ lookup with the data in hw catalog")
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
-
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 > ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-> index 2e482cdd7b3c5..420d78cfce8af 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-> @@ -794,7 +794,7 @@ static const struct dpu_pingpong_cfg sm8150_pp[] = {
->   			DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR2, 30),
->   			-1),
->   	PP_BLK("pingpong_5", PINGPONG_5, 0x72800, MERGE_3D_2, sdm845_pp_sblk,
-> -			DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR2, 30),
-> +			DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR2, 31),
->   			-1),
->   };
->   
+>  arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts | 5 -----
+>  1 file changed, 5 deletions(-)
 > 
 
+Now I wonder whether the subject prefix should be "riscv: dts:
+microchip:" instead?
 
--- 
-With best wishes
-Dmitry
+
+Best regards,
+Krzysztof
