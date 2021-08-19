@@ -2,123 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 657F93F1517
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 10:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E16513F1520
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 10:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237313AbhHSIXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 04:23:21 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:60700 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236854AbhHSIXT (ORCPT
+        id S237354AbhHSIYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 04:24:48 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:53568 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237167AbhHSIYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 04:23:19 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id C0CF41C0B77; Thu, 19 Aug 2021 10:22:42 +0200 (CEST)
-Date:   Thu, 19 Aug 2021 10:22:42 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>,
-        Pavel Machek <pavel@denx.de>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, jason@jlekstrand.net,
-        Jonathan Gray <jsg@jsg.id.au>
-Subject: Re: Determining corresponding mainline patch for stable patches Re:
- [PATCH 5.10 125/135] drm/i915: avoid uninitialised var in eb_parse()
-Message-ID: <20210819082242.GA13181@duo.ucw.cz>
-References: <YROARN2fMPzhFMNg@kroah.com>
- <20210811122702.GA8045@duo.ucw.cz>
- <YRPLbV+Dq2xTnv2e@kroah.com>
- <20210813093104.GA20799@duo.ucw.cz>
- <20210813095429.GA21912@1wt.eu>
- <20210813102429.GA28610@duo.ucw.cz>
- <YRZRU4JIh5LQjDfE@kroah.com>
- <20210813111953.GB21912@1wt.eu>
- <YRaT3u4Qes8UY3x6@mit.edu>
- <YRdnANmNvp+Hkcg5@kroah.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="huq684BweRXVnRxX"
-Content-Disposition: inline
-In-Reply-To: <YRdnANmNvp+Hkcg5@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Thu, 19 Aug 2021 04:24:43 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Uk-AU5A_1629361442;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Uk-AU5A_1629361442)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 19 Aug 2021 16:24:05 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     almaz.alexandrovich@paragon-software.com
+Cc:     nathan@kernel.org, ndesaulniers@google.com, ntfs3@lists.linux.dev,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] fs/ntfs3: Remove unused including <linux/version.h>
+Date:   Thu, 19 Aug 2021 16:23:37 +0800
+Message-Id: <1629361417-94657-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Eliminate the follow versioncheck warning:
 
---huq684BweRXVnRxX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+./fs/ntfs3/inode.c: 16 linux/version.h not needed.
 
-Hi!
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Fixes: 82cae269cfa9 ("fs/ntfs3: Add initialization of super block")
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ fs/ntfs3/inode.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> > > Plus this adds some cognitive load on those writing these patches, wh=
-ich
-> > > increases the global effort. It's already difficult enough to figure =
-the
-> > > appropriate Cc list when writing a fix, let's not add more burden in =
-this
-> > > chain.
-> > >=20
-> > > ...
-> > >=20
-> > > I'm also defending this on other projects. I find it important that
-> > > efforts are reasonably shared. If tolerating 1% failures saves 20%
-> > > effort on authors and adds 2% work on recipients, that's a net global
-> > > win. You never completely eliminate mistakes anyway, regardless of the
-> > > cost.
-> >=20
-> > The only way I can see to square the circle would be if there was some
-> > kind of script that added enough value that people naturally use it
-> > because it saves *them* time, and it automatically inserts the right
-> > commit metadata in some kind of standardized way.
-> >=20
-> > I've been starting to use b4, and that's a great example of a workflow
-> > that saves me time, and standardizes things as a very nice side
-> > effect.  So perhaps the question is there some kind of automation that
-> > saves 10-20% effort for authors *and* improves the quality of the
-> > patch metadata for those that choose to use the script?
->=20
-> A script/tool does generate the metadata in the "correct" way, as that
-> is what Sasha and I use.  It is the issue for when people do it on their
-> own for various reasons and do not just point us at an upstream commit
-> that can cause issues.  In those cases, people wouldn't be using any
-> script anyway, so there's nothing really to do here.
+diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
+index bf51e29..bb01f1b 100644
+--- a/fs/ntfs3/inode.c
++++ b/fs/ntfs3/inode.c
+@@ -13,7 +13,6 @@
+ #include <linux/namei.h>
+ #include <linux/nls.h>
+ #include <linux/uio.h>
+-#include <linux/version.h>
+ #include <linux/writeback.h>
+ 
+ #include "debug.h"
+-- 
+1.8.3.1
 
-I agree that submitters would need to know about the tag; OTOH I
-believe that if it looked like a tag, people would be more likely to
-get it right. We moved from "mention what this fixes in body" to
-"Fixes: " and I believe that was an improvement.
-
-Anyway, three new entries in stable queues have format I have not seen
-before:
-
-|ec547f971 None .: 4.19| KVM: nSVM: always intercept VMLOAD/VMSAVE when nes=
-ted (CVE-2021-3656)
-|dbfcc0f75 None o: 4.19| KVM: nSVM: avoid picking up unsupported bits from =
-L2 in int_ctl (CVE-2021-3653)
-|b79b08940 None o: 4.4| KVM: nSVM: avoid picking up unsupported bits from L=
-2 in int_ctl (CVE-2021-3653)
-
-[ upstream commit 0f923e07124df069ba68d8bb12324398f4b6b709 ]
-
-I guess I'll simply update the script.
-
-Best regards,
-								Pavel
-
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---huq684BweRXVnRxX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYR4U0gAKCRAw5/Bqldv6
-8pTNAKCDYzxB3+OILpEEEmtSt0D+14srYACdEdGQZV0MRvaMejh1wWSNC9JpWOs=
-=Hkn1
------END PGP SIGNATURE-----
-
---huq684BweRXVnRxX--
