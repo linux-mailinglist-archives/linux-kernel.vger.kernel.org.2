@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 852F23F1D31
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5463F1D34
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240632AbhHSPqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 11:46:02 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:52820
+        id S240657AbhHSPqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 11:46:04 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:52866
         "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240585AbhHSPp6 (ORCPT
+        by vger.kernel.org with ESMTP id S240639AbhHSPqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 11:45:58 -0400
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com [209.85.218.72])
+        Thu, 19 Aug 2021 11:46:00 -0400
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 66722411D1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:45:21 +0000 (UTC)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 4089440CCC
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:45:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629387921;
-        bh=49SQrS5qR/DGh2JT33Ed3tk6OzvNaJscxeaopNy6uIc=;
+        s=20210705; t=1629387923;
+        bh=njwgOg9JKn80yhYbvXIAT/SFdeE7ctVHz3eviacs2wI=;
         h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version;
-        b=OPTF5lllgss6UEEJ8M6/soyQRuNHwjF6WuDv+1kFo1JnCiiipLe/SDpPjax63uQCa
-         3rtEHyzAOajOazJBX7Y/z/NBY5ppeLkC7cOREy0xm9dKF+IVmmDUqnpCkk8MKIOaBU
-         vrc8DMfL0P0HjnE4qEMZHDLyJTTMmSWXFVdvPVmW+BeJxmd6W8R4pxCAFoHoPsnrTA
-         XDlGEhHM1wHTrDyhTyIMFemcZp99sV2KK5D7nLnf/D3PE4rdABFziPy0a7pyRwmpIg
-         YZUtU90SAddkl+WYiWQ8PeW8SRaHEBzlFocM+fNPEgvLPCU/nY3rU+4GrCw5HwaqFy
-         5dASVwUWiZAMA==
-Received: by mail-ej1-f72.google.com with SMTP id h17-20020a1709070b11b02905b5ced62193so2427073ejl.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 08:45:21 -0700 (PDT)
+        b=vCErhSEhYlrj6wQ2Oktlr5gUQBkcD5poJ4KNcis3Fq3FfqbJgv7JipyOWuZjAiHKX
+         /dMVERRxdodpVoUQzr14Kzz8xByPH0tMjNiNiM9ob5W+b/ah7pF9tS2ZhkHBt7N/37
+         sDPLIae17UE+rVbS5fgWn+l34hJ3+MgqpQHeNYjM/5D6IhFoj7Zv+kXlT3ClBWNW3/
+         IyTzYi7r4bN8o98XcIsZOC3YWdrIE9WKHiQIEJbR0VHPuE6HQZI4pEUPIcw3UHcQ/N
+         QYAKyWbVBDt/1OMcerRLAfDDv4pM/IVVG59sC01INTjL5jkXnRgWGPa5Hs4T4cFsxm
+         LfDXVbslBDaSw==
+Received: by mail-ed1-f70.google.com with SMTP id m16-20020a056402511000b003bead176527so3018269edd.10
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 08:45:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=49SQrS5qR/DGh2JT33Ed3tk6OzvNaJscxeaopNy6uIc=;
-        b=LwmiYhrUnZnFMMySNPTZLcD8cjQB5zyT29wW+HlWg5Pe9tAzseExSr9ur9u2fJUlxa
-         T6bD/XBa9mpx9FJg2TaCBiNA3T9dabnv4LgSDz2iNOr8yQdlKNF6n/smpnfnGksTHz81
-         /XolSMYCe+7Pj4IX3h54t1thiq16ql86LN8BhreUiafoe+aMQhVCbM9QAovJeowYZmvK
-         6soJtZxISpgwAaQulj48Zr1aBM+hN/ld8moKWsUpjUoiCfLvZZKJf2l6ZCaPwW86/ROQ
-         2O6xfy5u3bWBZUvNj/YO0lWWn/JwUzPhL2R9I0352ddPn1oAXoiD+y1X29QmKB4C29nY
-         3SCA==
-X-Gm-Message-State: AOAM532+uRMYXngAbq+6OwSpk4Ht6g4VOiUo9CxKBxpn1dkIzekNi6bX
-        3DnDuFO4XylSWG1MZNJpOYr89LZ3geqnm7BWk3E+oUrm8+EmBTWGzD9AsAmDIeTu81USmPD8A/K
-        MgZ4t0S1si1JXVE2FDsbp0RZVxSFIAqS/Lk+XxauFxw==
-X-Received: by 2002:a17:906:5909:: with SMTP id h9mr16162313ejq.329.1629387920972;
-        Thu, 19 Aug 2021 08:45:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxbVkNbqqPYyJfh7GB4lkzG2WE+LhjQwuFLKnM8+tFCQCy672AdvPh8cIFy52i1DWdjPI27+w==
-X-Received: by 2002:a17:906:5909:: with SMTP id h9mr16162276ejq.329.1629387920830;
-        Thu, 19 Aug 2021 08:45:20 -0700 (PDT)
+        bh=njwgOg9JKn80yhYbvXIAT/SFdeE7ctVHz3eviacs2wI=;
+        b=ilpBMRu2Ve2BvSTRJZLC12AwIHrKT/9Q2240oDXIqZEpvW148ySk/FurE/lXMtbkyg
+         3xnhJOGmHz3i/VcdB42EvqTXhWYQBvGs6nYyxWPCv2T1M+vty6MBk6wzN3lknXjKS7vB
+         aOH0N01ur/PFMYThlyqYesTBJRRw65fs2PzkisWIhCztYItsa3SOULt2d+KyyzlnXiey
+         cAH7cMgs5V79JI9XPdFJBfZ4hUZHWjNlk501q041YHEjT+OJCU9FOYRGs7fSU6GULQ1s
+         3oNINRgeGfII7lrFQCc5kHCPkSNraOLHyWasZSSX6wfff2KX/V8ZoctIxnZJ2gCuFWL2
+         oz/g==
+X-Gm-Message-State: AOAM531nD466NmZdvfxTGTkNDB5FZI1ShQs57uLqvuITDlWHwUYurFS0
+        lHkKEEjf9UiiZyWMm/RqChEjwjfqnwGPY3qI3l5rRNHRYafm1iPowC8xYIEnax4SQv8l6rVmXPz
+        kGqw++8yNuOCLeohVYU67ocq5wjiP+wYs1iz2FnqUyg==
+X-Received: by 2002:aa7:d388:: with SMTP id x8mr17405651edq.254.1629387923010;
+        Thu, 19 Aug 2021 08:45:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxjjgc+MlbW3WgtXD5d1JgTS06sxNFURI2vP+cBd1uncao3bHmqg3HObd04dkwqF/n5zuGX8g==
+X-Received: by 2002:aa7:d388:: with SMTP id x8mr17405630edq.254.1629387922833;
+        Thu, 19 Aug 2021 08:45:22 -0700 (PDT)
 Received: from localhost.localdomain ([86.32.42.198])
-        by smtp.gmail.com with ESMTPSA id f16sm1925373edw.79.2021.08.19.08.45.19
+        by smtp.gmail.com with ESMTPSA id f16sm1925373edw.79.2021.08.19.08.45.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 08:45:20 -0700 (PDT)
+        Thu, 19 Aug 2021 08:45:22 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -68,9 +68,9 @@ To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Piotr Sroka <piotrs@cadence.com>, linux-mmc@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org
-Subject: [PATCH 4/6] riscv: microchip: mpfs: fix board compatible
-Date:   Thu, 19 Aug 2021 17:44:34 +0200
-Message-Id: <20210819154436.117798-4-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 5/6] riscv: microchip: mpfs: drop duplicated MMC/SDHC node
+Date:   Thu, 19 Aug 2021 17:44:35 +0200
+Message-Id: <20210819154436.117798-5-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210819154436.117798-1-krzysztof.kozlowski@canonical.com>
 References: <20210819154436.117798-1-krzysztof.kozlowski@canonical.com>
@@ -80,43 +80,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to bindings, the compatible must include microchip,mpfs.  This
-fixes dtbs_check warning:
+Devicetree source is a description of hardware and hardware has only one
+block @20008000 which can be configured either as eMMC or SDHC.  Having
+two node for different modes is an obscure, unusual and confusing way to
+configure it.  Instead the board file is supposed to customize the block
+to its needs, e.g. to SDHC mode.
 
-  arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: /: compatible: ['microchip,mpfs-icicle-kit'] is too short
+This fixes dtbs_check warning:
+  arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: sdhc@20008000: $nodename:0: 'sdhc@20008000' does not match '^mmc(@.*)?$'
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts | 2 +-
- arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi           | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ .../microchip/microchip-mpfs-icicle-kit.dts   | 10 ++++++-
+ .../boot/dts/microchip/microchip-mpfs.dtsi    | 27 +------------------
+ 2 files changed, 10 insertions(+), 27 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
-index 237830583514..62f7651de538 100644
+index 62f7651de538..ac6083c76083 100644
 --- a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
 +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
-@@ -10,7 +10,7 @@
+@@ -43,8 +43,16 @@ &serial3 {
+ 	status = "okay";
+ };
  
- / {
- 	model = "Microchip PolarFire-SoC Icicle Kit";
--	compatible = "microchip,mpfs-icicle-kit";
-+	compatible = "microchip,mpfs-icicle-kit", "microchip,mpfs";
+-&sdcard {
++&mmc {
+ 	status = "okay";
++
++	disable-wp;
++	cap-sd-highspeed;
++	card-detect-delay = <200>;
++	sd-uhs-sdr12;
++	sd-uhs-sdr25;
++	sd-uhs-sdr50;
++	sd-uhs-sdr104;
+ };
  
- 	chosen {
- 		stdout-path = &serial0;
+ &emac0 {
 diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-index b9819570a7d1..cb54da0cc3c4 100644
+index cb54da0cc3c4..c4ccd7e4d3eb 100644
 --- a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
 +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-@@ -7,7 +7,7 @@ / {
- 	#address-cells = <2>;
- 	#size-cells = <2>;
- 	model = "Microchip MPFS Icicle Kit";
--	compatible = "microchip,mpfs-icicle-kit";
-+	compatible = "microchip,mpfs-icicle-kit", "microchip,mpfs";
+@@ -262,25 +262,7 @@ serial3: serial@20104000 {
+ 			status = "disabled";
+ 		};
  
- 	chosen {
- 	};
+-		emmc: mmc@20008000 {
+-			compatible = "cdns,sd4hc";
+-			reg = <0x0 0x20008000 0x0 0x1000>;
+-			interrupt-parent = <&plic>;
+-			interrupts = <88 89>;
+-			pinctrl-names = "default";
+-			clocks = <&clkcfg 6>;
+-			bus-width = <4>;
+-			cap-mmc-highspeed;
+-			mmc-ddr-3_3v;
+-			max-frequency = <200000000>;
+-			non-removable;
+-			no-sd;
+-			no-sdio;
+-			voltage-ranges = <3300 3300>;
+-			status = "disabled";
+-		};
+-
+-		sdcard: sdhc@20008000 {
++		mmc: mmc@20008000 {
+ 			compatible = "cdns,sd4hc";
+ 			reg = <0x0 0x20008000 0x0 0x1000>;
+ 			interrupt-parent = <&plic>;
+@@ -288,13 +270,6 @@ sdcard: sdhc@20008000 {
+ 			pinctrl-names = "default";
+ 			clocks = <&clkcfg 6>;
+ 			bus-width = <4>;
+-			disable-wp;
+-			cap-sd-highspeed;
+-			card-detect-delay = <200>;
+-			sd-uhs-sdr12;
+-			sd-uhs-sdr25;
+-			sd-uhs-sdr50;
+-			sd-uhs-sdr104;
+ 			max-frequency = <200000000>;
+ 			status = "disabled";
+ 		};
 -- 
 2.30.2
 
