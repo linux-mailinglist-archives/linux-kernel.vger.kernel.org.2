@@ -2,110 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 168E23F175A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6263F1761
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237851AbhHSKgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 06:36:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50220 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236149AbhHSKgb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 06:36:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9B516113C;
-        Thu, 19 Aug 2021 10:35:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629369355;
-        bh=0gYRryj8WcD05dNv3C5iWMMOAQxCqY5AJZQHDbt70CM=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=sU+wf523Fhx9pa4dA9UUzGeQLvn1NmWrexhEeM+W79+r6bFT4h08kDualdcJX/cR/
-         KKdvTP0AE3jyDYU0voFEsFLa1xtF+vulKLMh/r+ider7dC707giPUjGbtQC66Oqo7Q
-         PlKT205Fb99WfNYfiMO15yG7Euc+Vz9Xo5Gq6XPw88UXbx5HPcJ4kvxfNbrn8GY9lx
-         j93Z5yAwclYd4D3mtXXrhdknB3+2wRPJroWDt3U8jQ4S2lmJXcDIpQZ5oRRrtI4nSO
-         up0w/GlPyjErtJW6to2SKVObs6aRzEaPfCPLCg9jwNtK4FVz6Y751YPYCs0/WVyPEA
-         Au4J9yVOa13Zg==
-Message-ID: <6db55147350d81ed205d37031d81b03b80f639cc.camel@kernel.org>
-Subject: Re: Re: PING: [PATCH] crypto: public_key: fix overflow during
- implicit conversion
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     zhenwei pi <pizhenwei@bytedance.com>, dhowells@redhat.com,
-        herbert@gondor.apana.org.au, davem@davemloft.net
-Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 19 Aug 2021 13:35:52 +0300
-In-Reply-To: <8bf3a04d-f1a7-cd8c-5c5a-ace3de500b2f@bytedance.com>
-References: <20210810063954.628244-1-pizhenwei@bytedance.com>
-         <4dcd4254-030b-4489-d5d3-e320eb2953e7@bytedance.com>
-         <74aef8a2f2331358371a87931e632287dad9af59.camel@iki.fi>
-         <8bf3a04d-f1a7-cd8c-5c5a-ace3de500b2f@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S238277AbhHSKjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 06:39:17 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45662 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237863AbhHSKjP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 06:39:15 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id CF4EA1FD85;
+        Thu, 19 Aug 2021 10:38:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629369518; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DQ314Q+QCL12ETPydoLFWdP+05FNyqvEHiwnzBEk8Vw=;
+        b=J1e8XzvNxKOaapM/HajZ5PLkxkYPYFiCPb5mWlTmLUHQj5pdCtcZ8Xfj63xqb3Kob6KlSc
+        WUPDQCL4aO63iY8ltB/0GdRLC42ent99pix8IpDO21VtmBd9ZNZt+kKkUY8bgK6ggnWdPl
+        RjYYKzRiZG1zsr5tUmimRKaUrd1oDww=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629369518;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DQ314Q+QCL12ETPydoLFWdP+05FNyqvEHiwnzBEk8Vw=;
+        b=6rlv+ijVWkV8pTKURhN8KJkgK+i3Fwxc86cR1s6tg6oiGhuamTUPyw7vqXmoTTxXuRVUoI
+        WNnOfKkpRvnU8JAA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id C4623139BA;
+        Thu, 19 Aug 2021 10:38:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id RyOHLqw0HmGgQgAAGKfGzw
+        (envelope-from <hare@suse.de>); Thu, 19 Aug 2021 10:38:36 +0000
+Subject: Re: [PATCH v2 1/2] scsi: qla1280: Stop using scsi_cmnd.tag
+To:     John Garry <john.garry@huawei.com>, mdr@sgi.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bvanassche@acm.org
+References: <1629365549-190391-1-git-send-email-john.garry@huawei.com>
+ <1629365549-190391-2-git-send-email-john.garry@huawei.com>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <c94d7311-f127-d8c0-6f4d-ba1b14f7e0bf@suse.de>
+Date:   Thu, 19 Aug 2021 12:38:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <1629365549-190391-2-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-08-19 at 10:03 +0800, zhenwei pi wrote:
-> On 8/18/21 8:33 PM, Jarkko Sakkinen wrote:
-> > On Wed, 2021-08-18 at 16:33 +0800, zhenwei pi wrote:
-> > > PING
-> >=20
-> > Please, do not top-post.
-> >=20
-> > You are lacking Herbert Xu:
-> >=20
-> > $ scripts/get_maintainer.pl crypto/asymmetric_keys/public_key.c
-> > David Howells <dhowells@redhat.com> (maintainer:ASYMMETRIC KEYS)
-> > Herbert Xu <herbert@gondor.apana.org.au> (maintainer:CRYPTO API)
-> > "David S. Miller" <davem@davemloft.net> (maintainer:CRYPTO API)
-> > keyrings@vger.kernel.org (open list:ASYMMETRIC KEYS)
-> > linux-crypto@vger.kernel.org (open list:CRYPTO API)
-> > linux-kernel@vger.kernel.org (open list)
-> >=20
-> > > On 8/10/21 2:39 PM, zhenwei pi wrote:
-> > > > Hit kernel warning like this, it can be reproduced by verifying
-> > > > 256
-> > > > bytes datafile by keyctl command.
-> > > >=20
-> > > >    WARNING: CPU: 5 PID: 344556 at crypto/rsa-pkcs1pad.c:540
-> > > > pkcs1pad_verify+0x160/0x190
-> > > >    ...
-> > > >    Call Trace:
-> > > >     public_key_verify_signature+0x282/0x380
-> > > >     ? software_key_query+0x12d/0x180
-> > > >     ? keyctl_pkey_params_get+0xd6/0x130
-> > > >     asymmetric_key_verify_signature+0x66/0x80
-> > > >     keyctl_pkey_verify+0xa5/0x100
-> > > >     do_syscall_64+0x35/0xb0
-> > > >     entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > > >=20
-> > > > '.digest_size(u8) =3D params->in_len(u32)' leads overflow of an
-> > > > u8
-> >=20
-> > Where is this statement?
-> >=20
->=20
-> In function "static int asymmetric_key_verify_signature(struct=20
-> kernel_pkey_params *params, const void *in, const void *in2)"
->=20
-> > > > value,
-> > > > so use u32 instead of u8 of digest. And reorder struct
-> > > > public_key_signature, it could save 8 bytes on a 64 bit
-> > > > machine.
-> >                                                       ~~~~~
-> >                                                       64-bit
-> >                                                      =20
-> > What do you mean by "could"? Does it, or does it
-> > not?
-> >                                         			=09
-> > =09
-> >=20
-> After reordering struct public_key_signature, sizeof(struct=20
-> public_key_signature) gets smaller than the original version.
+On 8/19/21 11:32 AM, John Garry wrote:
+> Use scsi_cmd_to_rq(cmd)->tag instead of scsi_cmnd.tag as preference.
+> 
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> ---
+>   drivers/scsi/qla1280.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/qla1280.c b/drivers/scsi/qla1280.c
+> index aec92471c5f2..b4f7d8d7a01c 100644
+> --- a/drivers/scsi/qla1280.c
+> +++ b/drivers/scsi/qla1280.c
+> @@ -3980,7 +3980,7 @@ __qla1280_print_scsi_cmd(struct scsi_cmnd *cmd)
+>   	   qla1280_dump_buffer(1, (char *)sg, (cmd->use_sg*sizeof(struct scatterlist)));
+>   	   } */
+>   	printk("  tag=%d, transfersize=0x%x \n",
+> -	       cmd->tag, cmd->transfersize);
+> +	       scsi_cmd_to_rq(cmd)->tag, cmd->transfersize);
+>   	printk("  SP=0x%p\n", CMD_SP(cmd));
+>   	printk(" underflow size = 0x%x, direction=0x%x\n",
+>   	       cmd->underflow, cmd->sc_data_direction);
+> 
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-OK, then just state is as "it saves" instead of "it could save".
+Cheers,
 
-Not a requirement but have you been able to trigger this for a
-kernel that does not have this fix?
-
-/Jarkko
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
