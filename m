@@ -2,163 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C37D23F1B4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B4F3F1B5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240538AbhHSOLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 10:11:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240501AbhHSOLO (ORCPT
+        id S240563AbhHSOMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 10:12:35 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:55008 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240264AbhHSOMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 10:11:14 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EAF2C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 07:10:38 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id r19so9034049eds.13
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 07:10:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rb9V42rg0n45GVH3GY2bVeX0F+8SMJocuuGI1FyjcmM=;
-        b=iJEPUU5oZEQ+HWwTgTCgLhFsbcZY/sN4h/IMNe1p8EeCOxcgf3JVciTGX87OqGRILz
-         Urxhw5a2EAGgRMcidl2dwJCCCNjUGG+3Aq90qboKf6+1WMDC1oxL1rZspWV1ngDaYwsV
-         SSO5y5R0ILHZz2TBbDnJjnbVGQnmK6+W9FW53lMoxbuOFnxeBiFz1jk3h8V4EIdyBR0y
-         N+u/wHUfjMg9Ibs9phlJMeMO9p/VILY8p8K6VKTmAN7+7nOwCJw4kPu2KNOjA4HOElnP
-         14V9a4ullK9qeLa87hC5WKNqfxQrOQAMCWlXZVYnTUrLieLB0auCQCaenqpPDW1tlikX
-         tE+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rb9V42rg0n45GVH3GY2bVeX0F+8SMJocuuGI1FyjcmM=;
-        b=KtlX+sJ/NjtEn7FJm5xkCl+BEEiRsTn4BM3jv1ioTXTtwi+DYwYABmd+7VVz9KIBgg
-         Obr9Vcpat2roZLlTlnytqsiSXiTXxOvhZAOo/T8do6qhnw91GSufaiWwOcceoHqksFML
-         k+VOdhc+0S1aDD07MX/FMM1d8vtJxS/3CcvUrncqqgiGHMDOUXTJLDsVVijPJnA2sPbd
-         v7Keyfb6ghmX9vD3QSumzzjoRcQCt6HxLtJaTxzK9nd/iG/+yaF7+IxzMx+tcjm4kGCt
-         4tIHmjRr8r8giYC7UhklIMx13xWETBvtI58r5Se9TIG+k7sLdUDlpXfKDIuIw7TIauRk
-         JMYQ==
-X-Gm-Message-State: AOAM5332IhSaxHFXbjBmWUfapLrJzyDLDFnMnq7rjBPS4xtJkQkGeeZP
-        hDlfAWhDnUHnoUAWg1hg7glqhxVtOvAzDWUK1vvEsw==
-X-Google-Smtp-Source: ABdhPJwsG2az69sF2C7NBuTLTqeCC9h1NnsP0/piYeVTCMnzsFbdwVTCtw/GXuxcx6yC4CKvqxzNAm07Sn6//4vK+aU=
-X-Received: by 2002:a05:6402:1514:: with SMTP id f20mr16652377edw.17.1629382236918;
- Thu, 19 Aug 2021 07:10:36 -0700 (PDT)
+        Thu, 19 Aug 2021 10:12:34 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17JE3eeq012849;
+        Thu, 19 Aug 2021 10:11:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=UMnRDRYOJDpDifj1IXkiSVngbPMsSJRp2DIFs9Zi6ak=;
+ b=ZTihp2JD7yPZVzjeccaXpjt/tawvxt6janDGJxxoOBcEsLvVZbAWLShx4z/L9Xh2SgIX
+ 0gKINjpVFw/og8yx12OFV1J963paqbKlGMaPrHf+Dn69+JDojL70H49VS3Q67YL6thzp
+ uCiPc4O2g6zzeeWuwdBUC8xWaGfeknuZBCrG9BIGKeu4od3h0PGbLPlZcjg2ppqahTy8
+ tHjFacG6dzay0282yXOKCyvw2hIwwHGGgQ6oKfEetxAds+VgREZg/mGsmvZZ+alFqTtn
+ B1N2r9UYQ395c9Xjo47IdQvXAejXMtpA9ebWQEHf9fFbRmwM7uQpjxDJlmJMnI1/yBL/ 7A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ahqjc2qtu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Aug 2021 10:11:57 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17JE3k6N013286;
+        Thu, 19 Aug 2021 10:11:57 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ahqjc2qt0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Aug 2021 10:11:57 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17JE8sTT008623;
+        Thu, 19 Aug 2021 14:11:55 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma02fra.de.ibm.com with ESMTP id 3ae5f8f7yf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Aug 2021 14:11:54 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17JEBpbZ56689046
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 19 Aug 2021 14:11:51 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2B7004C058;
+        Thu, 19 Aug 2021 14:11:51 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A6FC54C046;
+        Thu, 19 Aug 2021 14:11:50 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.148.15])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 19 Aug 2021 14:11:50 +0000 (GMT)
+Subject: Re: [PATCH 1/2] KVM: s390: gaccess: Cleanup access to guest frames
+To:     Janis Schoetterl-Glausch <scgl@linux.vnet.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
+        kvm@vger.kernel.org, borntraeger@de.ibm.com,
+        imbrenda@linux.ibm.com, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Cc:     cohuck@redhat.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210816150718.3063877-1-scgl@linux.ibm.com>
+ <20210816150718.3063877-2-scgl@linux.ibm.com>
+ <d11128bb-18f6-5210-6f42-74a89d8edcf7@redhat.com>
+ <584ca757-4eb4-491e-a4cd-7bc60fb04b61@linux.ibm.com>
+ <745fb5fc-175b-5920-5c56-db4ca8bc2488@linux.vnet.ibm.com>
+From:   Janosch Frank <frankja@linux.ibm.com>
+Message-ID: <f98925f4-70f4-156b-0204-a50b2457de34@linux.ibm.com>
+Date:   Thu, 19 Aug 2021 16:11:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210811025801.21597-1-yunfei.dong@mediatek.com>
- <CAAEAJfDWOzCJxZFNtxeT7Cvr2pWbYrfz-YnA81sVNs-rM=8n4Q@mail.gmail.com> <1b79a67b703d2c894bc4d9458c760e082fc42958.camel@mediatek.com>
-In-Reply-To: <1b79a67b703d2c894bc4d9458c760e082fc42958.camel@mediatek.com>
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date:   Thu, 19 Aug 2021 11:10:25 -0300
-Message-ID: <CAAEAJfCTrKj9AFExN-L-TKww4E=us1VVh8LHtZ8Q0j_eaCD4Eg@mail.gmail.com>
-Subject: Re: [PATCH v5, 00/15] Using component framework to support multi
- hardware decode
-To:     "yunfei.dong@mediatek.com" <yunfei.dong@mediatek.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        George Sun <george.sun@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <745fb5fc-175b-5920-5c56-db4ca8bc2488@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: cu3Do8jpXOG6wIJf4g8l8q_ek_gIi0NU
+X-Proofpoint-ORIG-GUID: 4gFBLpVlF_CT03WCJlJzvtaL2zbkFAi9
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-19_04:2021-08-17,2021-08-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ mlxlogscore=999 adultscore=0 phishscore=0 bulkscore=0 impostorscore=0
+ priorityscore=1501 lowpriorityscore=0 mlxscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108190083
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Aug 2021 at 04:13, yunfei.dong@mediatek.com
-<yunfei.dong@mediatek.com> wrote:
->
-> Hi Ezequiel,
->
-> Thanks for your suggestion.
->
-> On Wed, 2021-08-18 at 11:11 -0300, Ezequiel Garcia wrote:
-> > +danvet
-> >
-> > Hi,
-> >
-> > On Tue, 10 Aug 2021 at 23:58, Yunfei Dong <yunfei.dong@mediatek.com>
-> > wrote:
-> > >
-> > > This series adds support for multi hardware decode into mtk-vcodec,
-> > > by first
-> > > adding component framework to manage each hardware information:
-> > > interrupt,
-> > > clock, register bases and power. Secondly add core thread to deal
-> > > with core
-> > > hardware message, at the same time, add msg queue for different
-> > > hardware
-> > > share messages. Lastly, the architecture of different specs are not
-> > > the same,
-> > > using specs type to separate them.
-> > >
-> >
-> > I don't think it's a good idea to introduce the component API in the
-> > media subsystem. It doesn't seem to be maintained, IRC there's not
-> > even
-> > a maintainer for it, and it has some issues that were never
-> > addressed.
-> >
-> > It would be really important to avoid it. Is it really needed in the
-> > first place?
-> >
-> > Thanks,
-> > Ezequiel
->
-> For there are many hardware need to use, mt8192 is three and mt8195 is
-> five. Maybe need more to be used in the feature.
->
-> Each hardware has independent clk/power/iommu port/irq.
-> Use component interface in prob to get each component's information.
-> Just enable the hardware when need to use it, very convenient and
-> simple.
->
-> I found that there are many modules use component to manage hardware
-> information, such as iommu and drm etc.
->
+On 8/19/21 3:53 PM, Janis Schoetterl-Glausch wrote:
+> On 8/18/21 10:06 AM, Janosch Frank wrote:
+>> On 8/18/21 9:54 AM, David Hildenbrand wrote:
+>>> On 16.08.21 17:07, Janis Schoetterl-Glausch wrote:
+>>>> Introduce a helper function for guest frame access.
+>>>> Rewrite the calculation of the gpa and the length of the segment
+>>>> to be more readable.
+>>>>
+>>>> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
+>> [...]
+>>>> -	unsigned long _len, gpa;
+>>>> +	unsigned long gpa;
+>>>> +	unsigned int seg;
+>>>>   	int rc = 0;
+>>>>   
+>>>>   	while (len && !rc) {
+>>>>   		gpa = kvm_s390_real_to_abs(vcpu, gra);
+>>>> -		_len = min(PAGE_SIZE - (gpa & ~PAGE_MASK), len);
+>>>> -		if (mode)
+>>>> -			rc = write_guest_abs(vcpu, gpa, data, _len);
+>>>> -		else
+>>>> -			rc = read_guest_abs(vcpu, gpa, data, _len);
+>>>> -		len -= _len;
+>>>> -		gra += _len;
+>>>> -		data += _len;
+>>>> +		seg = min(PAGE_SIZE - offset_in_page(gpa), len);
+>>>
+>>> What does "seg" mean? I certainly know when "len" means -- which is also 
+>>> what the function eats.
+>>
+>> What does "_len" mean especially in contrast to "len"?
+>>
+>> "seg" is used in the common kvm guest access functions so it's at least
+>> consistent although I share the sentiment that it's not a great name for
+>> the length we access inside the page.
+>>
+>> Originally I suggested "len_in_page" if you have a better name I'd
+>> expect we'll both be happy to discuss it :-)
+> 
+> fragment_len ? 
 
-Many drivers support multiple hardware variants, where each variant
-has a different number of clocks or interrupts, see for instance
-struct hantro_variant which allows to expose different codec cores,
-some having both decoder/encoder, and some having just a decoder.
+Sounds good to me
 
-The component API is mostly used by DRM to aggregate independent
-subdevices (called components) into an aggregated driver.
+>>
+>>>
+>>>> +		rc = access_guest_frame(vcpu->kvm, mode, gpa, data, seg);
+>>>> +		len -= seg;
+>>>> +		gra += seg;
+>>>> +		data += seg;
+>>>>   	}
+>>>>   	return rc;
+>>>>   }
+>>>>
+>>>
+>>>
+>>
+> 
 
-For instance, a DRM driver needs to glue together the HDMI, MIPI,
-and plany controller, or any other hardware arrangement where
-devices can be described independently.
-
-The component API may look simple but has some issues, it's not easy
-to debug, and can cause troubles if not used as expected [1].
-It's worth making sure you actually need a framework
-to glue different devices together.
-
-> Do you have any other suggestion for this architecture?
->
-
-Looking at the different patchsets that are posted, it's not clear
-to me what exactly are the different architectures that you intend
-to support, can you some documentation which clarifies that?
-
-Thanks,
-Ezequiel
-
-[1] https://patchwork.kernel.org/project/linux-rockchip/cover/20200120170602.3832-1-ezequiel@collabora.com/
