@@ -2,238 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB0F3F1786
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDFAA3F178E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238020AbhHSKwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 06:52:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58326 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236149AbhHSKwx (ORCPT
+        id S238392AbhHSKyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 06:54:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238269AbhHSKx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 06:52:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629370337;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hw9PckAa7IseurJu5iFQJHE3wRHOR/AClhnKKZL8eDc=;
-        b=h2DrS9lntzCORCwKn7UUD0AaPikRRxzf4OSi3cX66h410v4MKJ2HOkgUsVzyB0/ZZUn0iV
-        TpMicyuL5aB6ENIF6o+kQ6/UUIDLrWSb7vVOvCD3EFqHBYavxt5OOwg3WRpPpYaJEp+7np
-        GLL1ZUKDK2F5eCs6M7RXtRpV4qw3lGo=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-104-pMn00imgNZC38Cddiv3-ng-1; Thu, 19 Aug 2021 06:52:16 -0400
-X-MC-Unique: pMn00imgNZC38Cddiv3-ng-1
-Received: by mail-ed1-f71.google.com with SMTP id di3-20020a056402318300b003bebf0828a2so2638082edb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 03:52:16 -0700 (PDT)
+        Thu, 19 Aug 2021 06:53:57 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1732C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 03:53:21 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id 18so5102420pfh.9
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 03:53:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=h4KO30BvVWuiGQptVgC51BO6IaUhsm/PFOqkXub0zOs=;
+        b=qdBDfQ3KQ8bOclGbW+YW5iLXEbXFbaNA2jYCdJxlEmpZDDyTAIGXluu4zcw/lM9Qnp
+         1/8mNapQvN5b9ytb2YRudIEw24n6777t0coWFgvmkWGN2FHxC3DHa2aWBF1FnWldG6hU
+         8Z0+bdamP7zND5vrX4FAtMATsp9a5s1p0D8VH3qYZUPaYwe0j3o86CJ4ZNJDHEzK6hCW
+         mDljIFR6G11Ets0juG53oEfIjZP0GaLW+G/CFrwE6BGZLfyJohGjIglQiyoR+Qta3CLp
+         4lm+1mBE5dVuAQ1LEP63mV6yy9m4EzOxEITeEQ/iySAjNTNsnQ9af/Ayf5obtjJfnUy0
+         ICKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=hw9PckAa7IseurJu5iFQJHE3wRHOR/AClhnKKZL8eDc=;
-        b=n6OHb8uQnLjY97qLV336B48coEIQhCUkIs+pioJkwuiWhoi2FpeieXeeF82Dva7wy0
-         M3atjr7Y1oep9NxfShs7E0zeABcV7RvXdUYt+cgrEoOD6kJBNo1/crwdz18M2RuqLiIN
-         npnmL9mhJacWw10SCooK91rVtf2ItvtxDJGRy0Lbj1blWstJptcyL4hmOQbV5y1EMaly
-         eT9ulrtYyxVwaCeGy40oDW3vASn7NC4frWN/kAuj20f1wwRUaY6WZoMxYhxgvh56Bybg
-         8GqXTxOCp5KQ+aMHelyPqZ76Ilu1A6DdkW1ITg8JXFZTeHHqlSjAv9raU1NgrZfWFf2G
-         2dyA==
-X-Gm-Message-State: AOAM533OyEiBrcESDEZydUTYIoZIfcGNehueQ37gYF7/6hjgJS1YXWJb
-        j7yLUQE6pgYWbqt59gdmOjtwXVthVjOmrWap5O6UPf3F0BLu2xz4eXA4fToXQXqVnIgPxKYCglB
-        XNZkMTtIFNG9GGbbcqdyWn+s3
-X-Received: by 2002:a17:906:87c2:: with SMTP id zb2mr15018315ejb.322.1629370335028;
-        Thu, 19 Aug 2021 03:52:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw7exK4Qc1P3sggnGXNMp02LdfKWvEdApUhwWzydKCxlvP+2wVXDQE1uX5i2UCz5d2HjwA78w==
-X-Received: by 2002:a17:906:87c2:: with SMTP id zb2mr15018288ejb.322.1629370334839;
-        Thu, 19 Aug 2021 03:52:14 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id bf15sm1518790edb.83.2021.08.19.03.52.14
+        bh=h4KO30BvVWuiGQptVgC51BO6IaUhsm/PFOqkXub0zOs=;
+        b=jPcV9urQLgybS4g3jr5LByBgG7sL0cKOzZS5PB2QmHgbAhmaBM3nvv9QJIB6fc6amZ
+         XAzQVxzqwHYPsYMuWvZr/f0DsoTbnFDBJGGNmBNdRuyP1NZpl0cH8EsDApoGcOx+eZWd
+         aibX+35gRadyMQtX3an2pHWDoZfeYk5WQrThsHVKrtUJQEmjrgUV6I+pF+r1TcavMt+V
+         SFa3r5RamPpHKw7QOtwRsREKePOQAJ+Y+CAOPocFrOyiOEIipuUbf/uj9TJZvdyP+J2M
+         O+jqJ6mnMdHXv64ONeazjhGAWuXpIlpKSOFq66roiF+WNQ4LHmValO50J7ccM1pyO7uJ
+         vYCA==
+X-Gm-Message-State: AOAM530noQrt37TNmqio0qHtrv59WQjywsAs4gYM1GBoqJkPKogNd+fs
+        CS8GB3s1rcSF0l2OWlxuUO6igWGsUTTWJg==
+X-Google-Smtp-Source: ABdhPJx7Cx0+w3t1VnEIYAFnOAtwgswFS8P0T8A5W04ehcDbeTPEkzsi01Ezbe2oOvGZB88G9/ekJQ==
+X-Received: by 2002:a65:6805:: with SMTP id l5mr13823371pgt.0.1629370400929;
+        Thu, 19 Aug 2021 03:53:20 -0700 (PDT)
+Received: from [10.2.24.177] ([61.120.150.70])
+        by smtp.gmail.com with ESMTPSA id c196sm3516747pga.92.2021.08.19.03.53.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 03:52:14 -0700 (PDT)
-Subject: Re: [PATCH v7 1/5] platform/x86/intel: intel_pmc_core: Move
- intel_pmc_core* files to pmc subfolder
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Gayatri Kammela <gayatri.kammela@intel.com>,
-        platform-driver-x86@vger.kernel.org, Kate Hsuan <hpa@redhat.com>
-Cc:     mgross@linux.intel.com, irenic.rajneesh@gmail.com,
-        andriy.shevchenko@linux.intel.com, vicamo.yang@canonical.com,
-        srinivas.pandruvada@intel.com, david.e.box@intel.com,
-        chao.qin@intel.com, linux-kernel@vger.kernel.org,
-        tamar.mashiah@intel.com, gregkh@linuxfoundation.org,
-        rajatja@google.com, Shyam-sundar.S-k@amd.com,
-        Alexander.Deucher@amd.com, mlimonci@amd.com,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-References: <cover.1629091915.git.gayatri.kammela@intel.com>
- <81b6292e50af54fb7eeabfefde6f4a3d283b0b96.1629091915.git.gayatri.kammela@intel.com>
- <c07aa6a9-2cf9-db15-bf8c-9e6ac536a521@redhat.com>
-Message-ID: <7ceef504-085b-3146-6ca7-3f6b8ff3280a@redhat.com>
-Date:   Thu, 19 Aug 2021 12:52:13 +0200
+        Thu, 19 Aug 2021 03:53:18 -0700 (PDT)
+Subject: Re: Re: Re: PING: [PATCH] crypto: public_key: fix overflow during
+ implicit conversion
+To:     Jarkko Sakkinen <jarkko@kernel.org>, dhowells@redhat.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net
+Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210810063954.628244-1-pizhenwei@bytedance.com>
+ <4dcd4254-030b-4489-d5d3-e320eb2953e7@bytedance.com>
+ <74aef8a2f2331358371a87931e632287dad9af59.camel@iki.fi>
+ <8bf3a04d-f1a7-cd8c-5c5a-ace3de500b2f@bytedance.com>
+ <6db55147350d81ed205d37031d81b03b80f639cc.camel@kernel.org>
+From:   zhenwei pi <pizhenwei@bytedance.com>
+Message-ID: <7ae0836f-884b-e262-6ade-d0ca6ea0eb93@bytedance.com>
+Date:   Thu, 19 Aug 2021 18:52:23 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <c07aa6a9-2cf9-db15-bf8c-9e6ac536a521@redhat.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <6db55147350d81ed205d37031d81b03b80f639cc.camel@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 8/17/21 8:47 PM, Hans de Goede wrote:
-> Hi,
-> 
-> On 8/16/21 6:58 PM, Gayatri Kammela wrote:
->> As part of collecting Intel x86 specific drivers in their own
->> folder, move intel_pmc_core* files to its own subfolder there.
+On 8/19/21 6:35 PM, Jarkko Sakkinen wrote:
+> On Thu, 2021-08-19 at 10:03 +0800, zhenwei pi wrote:
+>> On 8/18/21 8:33 PM, Jarkko Sakkinen wrote:
+>>> On Wed, 2021-08-18 at 16:33 +0800, zhenwei pi wrote:
+>>>> PING
+>>>
+>>> Please, do not top-post.
+>>>
+>>> You are lacking Herbert Xu:
+>>>
+>>> $ scripts/get_maintainer.pl crypto/asymmetric_keys/public_key.c
+>>> David Howells <dhowells@redhat.com> (maintainer:ASYMMETRIC KEYS)
+>>> Herbert Xu <herbert@gondor.apana.org.au> (maintainer:CRYPTO API)
+>>> "David S. Miller" <davem@davemloft.net> (maintainer:CRYPTO API)
+>>> keyrings@vger.kernel.org (open list:ASYMMETRIC KEYS)
+>>> linux-crypto@vger.kernel.org (open list:CRYPTO API)
+>>> linux-kernel@vger.kernel.org (open list)
+>>>
+>>>> On 8/10/21 2:39 PM, zhenwei pi wrote:
+>>>>> Hit kernel warning like this, it can be reproduced by verifying
+>>>>> 256
+>>>>> bytes datafile by keyctl command.
+>>>>>
+>>>>>     WARNING: CPU: 5 PID: 344556 at crypto/rsa-pkcs1pad.c:540
+>>>>> pkcs1pad_verify+0x160/0x190
+>>>>>     ...
+>>>>>     Call Trace:
+>>>>>      public_key_verify_signature+0x282/0x380
+>>>>>      ? software_key_query+0x12d/0x180
+>>>>>      ? keyctl_pkey_params_get+0xd6/0x130
+>>>>>      asymmetric_key_verify_signature+0x66/0x80
+>>>>>      keyctl_pkey_verify+0xa5/0x100
+>>>>>      do_syscall_64+0x35/0xb0
+>>>>>      entry_SYSCALL_64_after_hwframe+0x44/0xae
+>>>>>
+>>>>> '.digest_size(u8) = params->in_len(u32)' leads overflow of an
+>>>>> u8
+>>>
+>>> Where is this statement?
+>>>
 >>
->> Cc: Chao Qin <chao.qin@intel.com>
->> Cc: Srinivas Pandruvada <srinivas.pandruvada@intel.com>
->> Cc: David Box <david.e.box@intel.com>
->> Cc: You-Sheng Yang <vicamo.yang@canonical.com>
->> Cc: Hans de Goede <hdegoede@redhat.com>
->> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->> Acked-by: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
->> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
->> Signed-off-by: Gayatri Kammela <gayatri.kammela@intel.com>
->> ---
->>  MAINTAINERS                                   |  2 +-
->>  drivers/platform/x86/Kconfig                  | 21 ------------------
->>  drivers/platform/x86/Makefile                 |  1 -
->>  drivers/platform/x86/intel/Kconfig            |  1 +
->>  drivers/platform/x86/intel/Makefile           |  1 +
->>  drivers/platform/x86/intel/pmc/Kconfig        | 22 +++++++++++++++++++
->>  drivers/platform/x86/intel/pmc/Makefile       |  6 +++++
->>  .../{intel_pmc_core.c => intel/pmc/core.c}    |  2 +-
->>  .../{intel_pmc_core.h => intel/pmc/core.h}    |  0
->>  .../pmc/core_platform.c}                      |  0
->>  10 files changed, 32 insertions(+), 24 deletions(-)
->>  create mode 100644 drivers/platform/x86/intel/pmc/Kconfig
->>  create mode 100644 drivers/platform/x86/intel/pmc/Makefile
->>  rename drivers/platform/x86/{intel_pmc_core.c => intel/pmc/core.c} (99%)
->>  rename drivers/platform/x86/{intel_pmc_core.h => intel/pmc/core.h} (100%)
->>  rename drivers/platform/x86/{intel_pmc_core_pltdrv.c => intel/pmc/core_platform.c} (100%)
+>> In function "static int asymmetric_key_verify_signature(struct
+>> kernel_pkey_params *params, const void *in, const void *in2)"
 >>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index fd25e4ecf0b9..5e118faf8018 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -9477,7 +9477,7 @@ M:	David E Box <david.e.box@intel.com>
->>  L:	platform-driver-x86@vger.kernel.org
->>  S:	Maintained
->>  F:	Documentation/ABI/testing/sysfs-platform-intel-pmc
->> -F:	drivers/platform/x86/intel_pmc_core*
->> +F:	drivers/platform/x86/intel/pmc/core*
->>  
->>  INTEL PMIC GPIO DRIVERS
->>  M:	Andy Shevchenko <andy@kernel.org>
->> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
->> index d12db6c316ea..c4ee38eba44b 100644
->> --- a/drivers/platform/x86/Kconfig
->> +++ b/drivers/platform/x86/Kconfig
->> @@ -1187,27 +1187,6 @@ config INTEL_MRFLD_PWRBTN
->>  	  To compile this driver as a module, choose M here: the module
->>  	  will be called intel_mrfld_pwrbtn.
->>  
->> -config INTEL_PMC_CORE
->> -	tristate "Intel PMC Core driver"
->> -	depends on PCI
->> -	depends on ACPI
->> -	help
->> -	  The Intel Platform Controller Hub for Intel Core SoCs provides access
->> -	  to Power Management Controller registers via various interfaces. This
->> -	  driver can utilize debugging capabilities and supported features as
->> -	  exposed by the Power Management Controller. It also may perform some
->> -	  tasks in the PMC in order to enable transition into the SLPS0 state.
->> -	  It should be selected on all Intel platforms supported by the driver.
->> -
->> -	  Supported features:
->> -		- SLP_S0_RESIDENCY counter
->> -		- PCH IP Power Gating status
->> -		- LTR Ignore / LTR Show
->> -		- MPHY/PLL gating status (Sunrisepoint PCH only)
->> -		- SLPS0 Debug registers (Cannonlake/Icelake PCH)
->> -		- Low Power Mode registers (Tigerlake and beyond)
->> -		- PMC quirks as needed to enable SLPS0/S0ix
->> -
->>  config INTEL_PMT_CLASS
->>  	tristate
->>  	help
->> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
->> index 7ee369aab10d..43d36f8c36f1 100644
->> --- a/drivers/platform/x86/Makefile
->> +++ b/drivers/platform/x86/Makefile
->> @@ -128,7 +128,6 @@ obj-$(CONFIG_INTEL_UNCORE_FREQ_CONTROL)		+= intel-uncore-frequency.o
->>  obj-$(CONFIG_INTEL_BXTWC_PMIC_TMU)	+= intel_bxtwc_tmu.o
->>  obj-$(CONFIG_INTEL_CHTDC_TI_PWRBTN)	+= intel_chtdc_ti_pwrbtn.o
->>  obj-$(CONFIG_INTEL_MRFLD_PWRBTN)	+= intel_mrfld_pwrbtn.o
->> -obj-$(CONFIG_INTEL_PMC_CORE)		+= intel_pmc_core.o intel_pmc_core_pltdrv.o
+>>>>> value,
+>>>>> so use u32 instead of u8 of digest. And reorder struct
+>>>>> public_key_signature, it could save 8 bytes on a 64 bit
+>>>>> machine.
+>>>                                                        ~~~~~
+>>>                                                        64-bit
+>>>                                                        
+>>> What do you mean by "could"? Does it, or does it
+>>> not?
+>>>                                          				
+>>> 	
+>>>
+>> After reordering struct public_key_signature, sizeof(struct
+>> public_key_signature) gets smaller than the original version.
 > 
-> This Makefile line will build 2 separate .ko files: intel_pmc_core.ko and
-> intel_pmc_core_pltdrv.ko when CONFIG_INTEL_PMC_CORE=m
+> OK, then just state is as "it saves" instead of "it could save".
 > 
->>  obj-$(CONFIG_INTEL_PMT_CLASS)		+= intel_pmt_class.o
->>  obj-$(CONFIG_INTEL_PMT_TELEMETRY)	+= intel_pmt_telemetry.o
->>  obj-$(CONFIG_INTEL_PMT_CRASHLOG)	+= intel_pmt_crashlog.o
+> Not a requirement but have you been able to trigger this for a
+> kernel that does not have this fix?
 > 
-> <snip>
+This kernel warning can be reproduced on debian11(Linux-5.10.0-8-amd64) 
+by the following script:
+
+RAWDATA=rawdata
+SIGDATA=sigdata
+
+modprobe pkcs8_key_parser
+
+rm -rf *.der *.pem *.pfx
+rm -rf $RAWDATA
+dd if=/dev/random of=$RAWDATA bs=256 count=1
+
+openssl req -nodes -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem 
+-subj "/C=CN/ST=GD/L=SZ/O=vihoo/OU=dev/CN=xx.com/emailAddress=yy@xx.com"
+
+KEY_ID=`openssl pkcs8 -in key.pem -topk8 -nocrypt -outform DER | keyctl 
+padd asymmetric 123 @s`
+
+keyctl pkey_sign $KEY_ID 0 $RAWDATA enc=pkcs1 hash=sha1 > $SIGDATA
+keyctl pkey_verify $KEY_ID 0 $RAWDATA $SIGDATA enc=pkcs1 hash=sha1
+
+
+> /Jarkko
 > 
->> diff --git a/drivers/platform/x86/intel/pmc/Makefile b/drivers/platform/x86/intel/pmc/Makefile
->> new file mode 100644
->> index 000000000000..c92e66846a4a
->> --- /dev/null
->> +++ b/drivers/platform/x86/intel/pmc/Makefile
->> @@ -0,0 +1,6 @@
->> +# SPDX-License-Identifier: GPL-2.0
->> +#
->> +
->> +obj-$(CONFIG_INTEL_PMC_CORE)	+= intel_pmc_core.o
->> +intel_pmc_core-objs		:= core.o \
->> +				   core_platform.o
-> 
-> Whereas this will now build a single intel_pmc_core.ko containing both object files,
-> but the 2 .c files have:
-> 
-> module_platform_driver(pmc_core_driver);
-> (which is a macro expanding to a module_init + module_exit function)
-> 
-> resp.
-> 
-> module_init(pmc_core_platform_init);
-> module_exit(pmc_core_platform_exit);
-> 
-> So now we have 2 module_init (and _exit) functions in a single .ko
-> file and the build will fail, not good.
 
-Kate's big intel driver rename series also had a rename patch
-for the pmc_core code in there. Since that did not have this
-issue I've applied that one instead (otherwise I also would have
-trouble applying the rest of Kate's patch-series).
-
-With the rename issue resolved I can apply the rest of the series
-on top of Kate's rename. I will go and do that right away, so
-there is no need to send a new version.
-
-###
-
-Thank you for your patch-series, I've applied the series to my
-review-hans branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-
-
+-- 
+zhenwei pi
