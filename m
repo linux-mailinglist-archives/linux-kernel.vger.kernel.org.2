@@ -2,157 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2C13F2374
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4DC3F2377
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236498AbhHSW7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 18:59:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
+        id S236538AbhHSXAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 19:00:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbhHSW7I (ORCPT
+        with ESMTP id S233061AbhHSXAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 18:59:08 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 428F1C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:58:31 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id j1so6050248pjv.3
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:58:31 -0700 (PDT)
+        Thu, 19 Aug 2021 19:00:17 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13672C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:59:41 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id n24so9814606ion.10
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:59:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8y5LqE4GdIR929n9d9+ayleYuEU4gSh8xvm/xko1ui8=;
-        b=QWHBI897Zpttl5mcDjfI+YVe6BFEYWDr3Gf2V50xV1oDU7WdDnAUuIZjAwDlKjl4zQ
-         6wIl8/IbGUU2b4/RocsbAhkg+bTMeXlYlppcgxuc+J7YxEu0MPsoWPqx42u5qw1iWJzc
-         XcGNJd7tx/UgjCAHtcF1YPw5XCR1UsQUAnnq8f4pFuOBPNJ/wWpuQT8lBXrdPZagcKBF
-         0SNZX9fvVZJhKgXB8zTTsvEX9lzRlYeRgrzaprdGCqLkRy3FiaEXhYE+cwIbsC63M/0V
-         skLtLERUzJVLzX3nx/Nfg96NMpbvOQEbJ7+7SMFfIlnXLpOnR4a+GjTaA8CCNeC3kfrn
-         SQEA==
+        d=linuxfoundation.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vTZIfOHRyXqbRj0vGMmgdDyUBJVGJoNZm2wLqjm5mWE=;
+        b=MGinE0QLP4WwLR3nsv+V+OQ+QbzraAYbOU4lYI4XNKd8JTtQJH9CypndKoxrNG16Hb
+         dkXRH8WunA5gaFa7bmherR7mr7l2zL8GWYxXQZV9Rsg4sltApZdowjhSISCl0sXGFt+U
+         EXF2QV324JhglufxMSGTeoLzDyP+EVgECqI3I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8y5LqE4GdIR929n9d9+ayleYuEU4gSh8xvm/xko1ui8=;
-        b=gTUZXMEYJOnRd6qUv3YRiJDEnQeNgCbu1dyJBMPB+2hG2/qe/ee5qYm7SIjz5OOkZW
-         t2/yR19G/GEIjTXb5DPWFRQkAOFyeZqWHWPqE5+rNiVhtIj+Cylg9lvKgZtewWK8frfM
-         kKVTM2r/yUsp1RU5p5fuQuJdaazgBbh37D6yYf95drvEscttHg5PVhMHqPUtiLRB5vIF
-         YwcRTiP/50p/+WMW5kU9aXI0oovVsK7xqOvSIAulsTFlSCzy50iZPIkL+G6VQyDrEFVd
-         nka8pgiXLUWKXPKR6+pbmrAu+cke0EBr1+r56cSAy7cNKf9KkOOhkCWWjAChETVMMKCY
-         lS7A==
-X-Gm-Message-State: AOAM532rbI7vYy2oqAGhhqh0zdzbh69eUTIvc00ciGhuLJEri8WaUi9v
-        hBcOv4/A14Rgdg+KC76Y82vVww==
-X-Google-Smtp-Source: ABdhPJxInDZ1rJn3rwONKayLNmeE6Uv2NWbacmzUYRzmxkkr3zLQLh2eWsOd3SEcDEdZDsO46uljjA==
-X-Received: by 2002:a17:902:8c83:b029:129:17e5:a1cc with SMTP id t3-20020a1709028c83b029012917e5a1ccmr13710692plo.49.1629413910546;
-        Thu, 19 Aug 2021 15:58:30 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id j11sm4754203pfa.10.2021.08.19.15.58.29
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vTZIfOHRyXqbRj0vGMmgdDyUBJVGJoNZm2wLqjm5mWE=;
+        b=kOFR1tKiOQkNXSMKBQFw/D7JVD69E0DPaupG9qqK9EfTiY2qbNuAXaaMJsfebdyfGy
+         E2xnhbUjlMyVNocqZeHeJYWAkCnAd4eYZGjgyoQlATHaH7+yinX5VU70H5Wjnq3w/poK
+         +q2HAXpjjW20FKMRBiGretPBCARkFiqNsf86hVZ07U4z1RVNZSBgco8n6L8M80CeNTkH
+         yAJ3/rOx2c09pjV29ObEf8fe80AZ44ua5z8cabH8wRztqNOZulG9Ar7V4yowP6vILL4x
+         TgHMJaTF0urSp6U4onozYfrqD5idV4fKuNQbcLQJmz7Nv2WHA+HDuuAQVBHILmsmlahO
+         mYag==
+X-Gm-Message-State: AOAM530GdknbY5ULpVBmT+N0xcvunI5l+hqSQiW12f6dNTwsOO0BFerL
+        fUSV7rlO8gSv5yX1IV1R0LUq6g==
+X-Google-Smtp-Source: ABdhPJxouRhLae2784WA0Y++VSaZ3KpxP3Du54Wek2AnvB0xsPH0YxAkXPEcnD5qMMZB/OMCbmsqsw==
+X-Received: by 2002:a5d:990f:: with SMTP id x15mr13576695iol.200.1629413980537;
+        Thu, 19 Aug 2021 15:59:40 -0700 (PDT)
+Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id u15sm2374814ion.34.2021.08.19.15.59.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 15:58:30 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 22:58:23 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Gonda <pgonda@google.com>
-Cc:     Marc Orr <marcorr@google.com>, kvm list <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2 V4] KVM, SEV: Add support for SEV intra host migration
-Message-ID: <YR7iD6kdTUpWwwRn@google.com>
-References: <20210819154910.1064090-1-pgonda@google.com>
- <20210819154910.1064090-2-pgonda@google.com>
- <CAA03e5Gh0kJYHP1R3F7uh6x83LBFPp=af2xt7q3epgg+8XW53g@mail.gmail.com>
- <CAMkAt6oJcW3MHP3fod9RnRHCEYp-whdEtBTyfuqgFgATKa=3Hg@mail.gmail.com>
+        Thu, 19 Aug 2021 15:59:40 -0700 (PDT)
+From:   Shuah Khan <skhan@linuxfoundation.org>
+To:     valentina.manea.m@gmail.com, shuah@kernel.org, msbroadf@gmail.com
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] usbip:vhci_hcd USB port can get stuck in the disabled state
+Date:   Thu, 19 Aug 2021 16:59:37 -0600
+Message-Id: <20210819225937.41037-1-skhan@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMkAt6oJcW3MHP3fod9RnRHCEYp-whdEtBTyfuqgFgATKa=3Hg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021, Peter Gonda wrote:
-> > >
-> > > +static int svm_sev_lock_for_migration(struct kvm *kvm)
-> > > +{
-> > > +       struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> > > +       int ret;
-> > > +
-> > > +       /*
-> > > +        * Bail if this VM is already involved in a migration to avoid deadlock
-> > > +        * between two VMs trying to migrate to/from each other.
-> > > +        */
-> > > +       spin_lock(&sev->migration_lock);
-> > > +       if (sev->migration_in_progress)
-> > > +               ret = -EBUSY;
-> > > +       else {
-> > > +               /*
-> > > +                * Otherwise indicate VM is migrating and take the KVM lock.
-> > > +                */
-> > > +               sev->migration_in_progress = true;
-> > > +               mutex_lock(&kvm->lock);
+When a remote usb device is attached to the local Virtual USB
+Host Controller Root Hub port, the bound device driver may send
+a port reset command.
 
-Deadlock aside, mutex_lock() can sleep, which is not allowed while holding a
-spinlock, i.e. this patch does not work.  That's my suggestion did the crazy
-dance of "acquiring" a flag.
+vhci_hcd accepts port resets only when the device doesn't have
+port address assigned to it. When reset happens device is in
+assigned/used state and vhci_hcd rejects it leaving the port in
+a stuck state.
 
-What I don't know is why on earth I suggested a global spinlock, a simple atomic
-should work, e.g.
+This problem was found when a blue-tooth or xbox wireless dongle
+was passed through using usbip.
 
-		if (atomic_cmpxchg_acquire(&sev->migration_in_progress, 0, 1))
-			return -EBUSY;
+A few drivers reset the port during probe including mt76 driver
+specific to this bug report. Fix the problem with a change to
+honor reset requests when device is in used state (VDEV_ST_USED).
 
-		mutex_lock(&kvm->lock);
+Suggested-by: Michael <msbroadf@gmail.com>
+Reported-and-tested-by: Michael <msbroadf@gmail.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+---
+ drivers/usb/usbip/vhci_hcd.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-and on the backend...
-
-		mutex_unlock(&kvm->lock); 
-
-		atomic_set_release(&sev->migration_in_progress, 0);
-
-> > > +               ret = 0;
-> > > +       }
-> > > +       spin_unlock(&sev->migration_lock);
-> > > +
-> > > +       return ret;
-> > > +}
-> > > +
-> > > +static void svm_unlock_after_migration(struct kvm *kvm)
-> > > +{
-> > > +       struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> > > +
-> > > +       mutex_unlock(&kvm->lock);
-> > > +       WRITE_ONCE(sev->migration_in_progress, false);
-> > > +}
-> > > +
-> >
-> > This entire locking scheme seems over-complicated to me. Can we simply
-> > rely on `migration_lock` and get rid of `migration_in_progress`? I was
-> > chatting about these patches with Peter, while he worked on this new
-> > version. But he mentioned that this locking scheme had been suggested
-> > by Sean in a previous review. Sean: what do you think? My rationale
-> > was that this is called via a VM-level ioctl. So serializing the
-> > entire code path on `migration_lock` seems fine. But maybe I'm missing
-> > something?
->
-> 
-> Marc I think that only having the spin lock could result in
-> deadlocking. If userspace double migrated 2 VMs, A and B for
-> discussion, A could grab VM_A.spin_lock then VM_A.kvm_mutex. Meanwhile
-> B could grab VM_B.spin_lock and VM_B.kvm_mutex. Then A attempts to
-> grab VM_B.spin_lock and we have a deadlock. If the same happens with
-> the proposed scheme when A attempts to lock B, VM_B.spin_lock will be
-> open but the bool will mark the VM under migration so A will unlock
-> and bail. Sean originally proposed a global spin lock but I thought a
-> per kvm_sev_info struct would also be safe.
+diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
+index 4ba6bcdaa8e9..937f28f3d579 100644
+--- a/drivers/usb/usbip/vhci_hcd.c
++++ b/drivers/usb/usbip/vhci_hcd.c
+@@ -455,8 +455,14 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
+ 			vhci_hcd->port_status[rhport] &= ~(1 << USB_PORT_FEAT_RESET);
+ 			vhci_hcd->re_timeout = 0;
  
-Close.  The issue is taking kvm->lock from both VM_A and VM_B.  If userspace
-double migrates we'll end up with lock ordering A->B and B-A, so we need a way
-to guarantee one of those wins.  My proposed solution is to use a flag as a sort
-of one-off "try lock" to detect a mean userspace.
++			/*
++			 * A few drivers do usb reset during probe when
++			 * the device could be in VDEV_ST_USED state
++			 */
+ 			if (vhci_hcd->vdev[rhport].ud.status ==
+-			    VDEV_ST_NOTASSIGNED) {
++				VDEV_ST_NOTASSIGNED ||
++			    vhci_hcd->vdev[rhport].ud.status ==
++				VDEV_ST_USED) {
+ 				usbip_dbg_vhci_rh(
+ 					" enable rhport %d (status %u)\n",
+ 					rhport,
+-- 
+2.30.2
+
