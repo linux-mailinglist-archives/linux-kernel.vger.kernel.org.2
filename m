@@ -2,293 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DEAA3F210D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 21:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D76D3F2110
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 21:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234085AbhHSTxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 15:53:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230506AbhHSTxN (ORCPT
+        id S234706AbhHSTxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 15:53:15 -0400
+Received: from mail-io1-f42.google.com ([209.85.166.42]:39441 "EHLO
+        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233792AbhHSTxO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 15:53:13 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E4BC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 12:52:36 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id n5so5712240pjt.4
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 12:52:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gateworks-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JLR3/Tzo397T8TPt0QvJ4Ukv/VXdUANi7HJVf1QYHrQ=;
-        b=g8z6YrVZArvT/HXJx3/mHjHi6M4D7D/EgtR2obzEHoCprIWkSn6MwqpjSlXWyFkcnK
-         Pj/aVsb+DFjpq9wD/m4he9+J3kDkEWeyX3WbMYs43rPpfobFYVp+JBXvfvMNUQgjLOXN
-         U7+73p71PTKRdOdnbrJmi7wZuRr+YwcBGghhPO9aFtfTyUOdH6/0x9DwVfArtwgIHqfR
-         caL/G6Z/iSfy+l+pVuyqULhrytDDTGJ4QfW+a6IFp/A2K3irj417Z6nSxxKoxx/NQVLJ
-         CBdL102e/tfzKQ0JZWMRBnjQsG2VjSr80z9JyMADJ9lGAKdzVjiFFAgYR2cQ4HMJriR1
-         e7EA==
+        Thu, 19 Aug 2021 15:53:14 -0400
+Received: by mail-io1-f42.google.com with SMTP id a21so9241332ioq.6;
+        Thu, 19 Aug 2021 12:52:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JLR3/Tzo397T8TPt0QvJ4Ukv/VXdUANi7HJVf1QYHrQ=;
-        b=ZT6kR7teGr2FdDIDIlcu9XCuvyN0QyZXdFAslobcq6wkhzC+E1nA2f/mSqJcYlcmMw
-         uS95EHF+GMRZatQYJOvVxTQfHt9XjeUQxZD96/66OG973Qh58IENA/d1pHURMR59hV1j
-         PENEh9ZQCrw7v1p7qICisNUvlArYmLccbmXrAMjKbvbk1HzD5pQGXyFvwvyLLybhxMwq
-         Zwkinz8aoEKhLhAGOGXjc96LyyzpB2QLW7rNKasTAt2yIjn5KAzmexopNXb7TLnZ6rmR
-         l1geEZetlDgKj9DE3PoTs+OxNqhjrgiwiU9Z20qVlBJyE+NV5SY9iFSqOf2y7Aa/kObw
-         U2iA==
-X-Gm-Message-State: AOAM531oeacpI2whTygrQI9qnTGhX8ZLt3P819sRit/vvAIl8+sh82qj
-        0gWRIJmD+ECPbkK/bRTvcUuoUfrNEA5BZPIQXSPd1Q==
-X-Google-Smtp-Source: ABdhPJyduo0jwtpTOSw83fQYjq8FSMRiqMNH+DO2DuoltUq66Dxby1n6lSA4B5xu0EWV1po5BwhpNwVJSqNUSrstaos=
-X-Received: by 2002:a17:902:a9c7:b029:12b:349:b318 with SMTP id
- b7-20020a170902a9c7b029012b0349b318mr13281658plr.13.1629402756032; Thu, 19
- Aug 2021 12:52:36 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yYuu4lI5p7DoBEaNzy386yfHwqBF6DSycUzLzLrgD2s=;
+        b=FPIlJITyl8PTEG88QMniDnGFq4psg9paW/jju+NQVgtRFoKB2Y8pyiDfL9VwV7HdIQ
+         ZTmxsvQPjqJ5UmGIcw8j8Qhjsi505vCVpc8bOBAPX8hHcw86GevrpCzbOQGCjaXVylXa
+         7WHv076E9RH+2HjmgeOVN+caWKkaz4JK41zqExOsq1OyGilr+Simss14pLYYXKC8JRRe
+         jFJh6+ZLHPzQl5Zth5L+tMIbpOPyVJ68B55vngooy5ke5bgHaQdwP4WnqH3s7E8SWcqG
+         aDg9HCRatrinoF5zkm0GTepcUngMdYv4e4qbN/rsFP19zVRNND33XwVCIL4cYBS8sJiY
+         Sqzw==
+X-Gm-Message-State: AOAM532otfIee+JxzvjNOnawrFvauN5FS9SCCRQTElbWUjzTKuP9OaiG
+        HiSILmFIngrBLKcbsi7eFHQ=
+X-Google-Smtp-Source: ABdhPJzKPCtxfgk8QGIZPlCl13lAIFcOthcP+uQDDChZM8swSZ8vicFNGoNNuepW0cr02WRzyQO90A==
+X-Received: by 2002:a05:6602:2219:: with SMTP id n25mr12516872ion.185.1629402757172;
+        Thu, 19 Aug 2021 12:52:37 -0700 (PDT)
+Received: from [192.168.1.109] ([213.87.152.233])
+        by smtp.gmail.com with ESMTPSA id x1sm2162535ilg.33.2021.08.19.12.52.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Aug 2021 12:52:36 -0700 (PDT)
+Subject: Re: [RFC PATCH 1/5] checkpatch: improve handling of revert commits
+To:     Joe Perches <joe@perches.com>, linux-kselftest@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, Jiri Kosina <jkosina@suse.cz>,
+        Willy Tarreau <w@1wt.eu>
+References: <20210818154646.925351-1-efremov@linux.com>
+ <20210818154646.925351-2-efremov@linux.com>
+ <cc5801790fea258e20fa6b7e26de7806ae8e0dda.camel@perches.com>
+ <3d347d4b-1576-754f-8633-ba6084cc0661@linux.com>
+ <23c8ebaa0921d5597df9fc1d6cbbcc4f354f80c5.camel@perches.com>
+From:   Denis Efremov <efremov@linux.com>
+Message-ID: <c31b2007-26a9-34e0-8c9a-8e11a00ce69f@linux.com>
+Date:   Thu, 19 Aug 2021 22:52:29 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <m3sg01baq9.fsf@t19.piap.pl>
-In-Reply-To: <m3sg01baq9.fsf@t19.piap.pl>
-From:   Tim Harvey <tharvey@gateworks.com>
-Date:   Thu, 19 Aug 2021 12:52:24 -0700
-Message-ID: <CAJ+vNU2UR=aY0gFQgAL4wS_cBf59rKM9ce5W=byOo75TOpBQSw@mail.gmail.com>
-Subject: Re: [PATCH v2] TDA1997x: replace video detection routine
-To:     =?UTF-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <23c8ebaa0921d5597df9fc1d6cbbcc4f354f80c5.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 4:01 AM Krzysztof Ha=C5=82asa <khalasa@piap.pl> wro=
-te:
->
-> The TDA1997x (HDMI receiver) driver currently uses a specific video
-> format detection scheme. The frame (or field in interlaced mode), line
-> and HSync pulse durations are compared to those of known, standard video
-> modes. If a match is found, the mode is assumed to be detected,
-> otherwise -ERANGE is returned (then possibly ignored). This means that:
-> - another mode with similar timings will be detected incorrectly
->   (e.g. 2x faster clock and lines twice as long)
-> - non-standard modes will not work.
->
-> I propose to replace this scheme with a direct read of geometry
-> registers. This way all modes recognized by the chip will be supported.
->
-> In interlaced modes, the code assumes the V sync signal has the same
-> duration for both fields. While this may be not necessarily true,
-> I can't see any way to get the "other" V sync width. This is most
-> probably harmless.
->
-> I have checked the register values in interlaced mode, but currently
-> can't test such a setup (I only have remote access to a device working
-> in interlaced mode). Perhaps this will change in time.
->
-> All tests have been performed on Gateworks' Ventana GW54xx board, with
-> a TDA19971 chip.
->
-> Signed-off-by: Krzysztof Ha=C5=82asa <khalasa@piap.pl>
->
+Hi,
+
+On 8/19/21 12:22 AM, Joe Perches wrote:
+> Hey Denis:
+> 
+> Try this one please and let me know what you think...
+
+Looks good to me. Couple of nitpicks below
+
+> 
 > ---
-> This version extracts H and V sync polarities of the incoming signal and
-> matches the parameters against the standard video modes.
->
-> 1/1000 pixel clock tolerance had to be increased to 1/500 because the
-> 1/1.001 (NTSC-like) pixclk and frame rate reduction already caused
-> 1/1000 deviation, and there was no room for further difference.
->
-> This patch requires just posted "[PATCH] TDA1997x: report -ENOLINK
-> after disconnecting HDMI source".
->
-> diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
-> index 36a7b89afb08..a6afb387785d 100644
-> --- a/drivers/media/i2c/tda1997x.c
-> +++ b/drivers/media/i2c/tda1997x.c
-> @@ -1092,67 +1092,82 @@ tda1997x_detect_std(struct tda1997x_state *state,
->                     struct v4l2_dv_timings *timings)
->  {
->         struct v4l2_subdev *sd =3D &state->sd;
-> -       u32 vper;
-> -       u16 hper;
-> -       u16 hsper;
-> -       int i;
->
->         /*
->          * Read the FMT registers
-> -        *   REG_V_PER: Period of a frame (or two fields) in MCLK(27MHz) =
-cycles
-> -        *   REG_H_PER: Period of a line in MCLK(27MHz) cycles
-> -        *   REG_HS_WIDTH: Period of horiz sync pulse in MCLK(27MHz) cycl=
-es
-> +        *   REG_V_PER: Period of a frame (or field) in MCLK (27MHz) cycl=
-es
-> +        *   REG_H_PER: Period of a line in MCLK (27MHz) cycles
-> +        *   REG_HS_WIDTH: Period of horiz sync pulse in MCLK (27MHz) cyc=
-les
->          */
-> -       vper =3D io_read24(sd, REG_V_PER) & MASK_VPER;
-> -       hper =3D io_read16(sd, REG_H_PER) & MASK_HPER;
-> -       hsper =3D io_read16(sd, REG_HS_WIDTH) & MASK_HSWIDTH;
-> -       v4l2_dbg(1, debug, sd, "Signal Timings: %u/%u/%u\n", vper, hper, =
-hsper);
-> +       u32 vper, vsync_pos;
-> +       u16 hper, hsync_pos, hsper, interlaced;
-> +       u16 htot, hact, hfront, hsync, hback;
-> +       u16 vtot, vact, vfront1, vfront2, vsync, vback1, vback2;
->
->         if (!state->input_detect[0] && !state->input_detect[1])
->                 return -ENOLINK;
->
-> -       for (i =3D 0; v4l2_dv_timings_presets[i].bt.width; i++) {
-> -               const struct v4l2_bt_timings *bt;
-> -               u32 lines, width, _hper, _hsper;
-> -               u32 vmin, vmax, hmin, hmax, hsmin, hsmax;
-> -               bool vmatch, hmatch, hsmatch;
-> -
-> -               bt =3D &v4l2_dv_timings_presets[i].bt;
-> -               width =3D V4L2_DV_BT_FRAME_WIDTH(bt);
-> -               lines =3D V4L2_DV_BT_FRAME_HEIGHT(bt);
-> -               _hper =3D (u32)bt->pixelclock / width;
-> -               if (bt->interlaced)
-> -                       lines /=3D 2;
-> -               /* vper +/- 0.7% */
-> -               vmin =3D ((27000000 / 1000) * 993) / _hper * lines;
-> -               vmax =3D ((27000000 / 1000) * 1007) / _hper * lines;
-> -               /* hper +/- 1.0% */
-> -               hmin =3D ((27000000 / 100) * 99) / _hper;
-> -               hmax =3D ((27000000 / 100) * 101) / _hper;
-> -               /* hsper +/- 2 (take care to avoid 32bit overflow) */
-> -               _hsper =3D 27000 * bt->hsync / ((u32)bt->pixelclock/1000)=
-;
-> -               hsmin =3D _hsper - 2;
-> -               hsmax =3D _hsper + 2;
-> -
-> -               /* vmatch matches the framerate */
-> -               vmatch =3D ((vper <=3D vmax) && (vper >=3D vmin)) ? 1 : 0=
-;
-> -               /* hmatch matches the width */
-> -               hmatch =3D ((hper <=3D hmax) && (hper >=3D hmin)) ? 1 : 0=
-;
-> -               /* hsmatch matches the hswidth */
-> -               hsmatch =3D ((hsper <=3D hsmax) && (hsper >=3D hsmin)) ? =
-1 : 0;
-> -               if (hmatch && vmatch && hsmatch) {
-> -                       v4l2_print_dv_timings(sd->name, "Detected format:=
- ",
-> -                                             &v4l2_dv_timings_presets[i]=
-,
-> -                                             false);
-> -                       if (timings)
-> -                               *timings =3D v4l2_dv_timings_presets[i];
-> -                       return 0;
-> -               }
-> -       }
-> +       vper =3D io_read24(sd, REG_V_PER);
-> +       hper =3D io_read16(sd, REG_H_PER);
-> +       hsper =3D io_read16(sd, REG_HS_WIDTH);
-> +       vsync_pos =3D vper & MASK_VPER_SYNC_POS;
-> +       hsync_pos =3D hper & MASK_HPER_SYNC_POS;
-> +       interlaced =3D hsper & MASK_HSWIDTH_INTERLACED;
-> +       vper &=3D MASK_VPER;
-> +       hper &=3D MASK_HPER;
-> +       hsper &=3D MASK_HSWIDTH;
-> +       v4l2_dbg(1, debug, sd, "Signal Timings: %u/%u/%u\n", vper, hper, =
-hsper);
->
-> -       v4l_err(state->client, "no resolution match for timings: %d/%d/%d=
-\n",
-> -               vper, hper, hsper);
-> -       return -ERANGE;
-> +       htot =3D io_read16(sd, REG_FMT_H_TOT);
-> +       hact =3D io_read16(sd, REG_FMT_H_ACT);
-> +       hfront =3D io_read16(sd, REG_FMT_H_FRONT);
-> +       hsync =3D io_read16(sd, REG_FMT_H_SYNC);
-> +       hback =3D io_read16(sd, REG_FMT_H_BACK);
+>  scripts/checkpatch.pl | 31 +++++++++++++------------------
+>  1 file changed, 13 insertions(+), 18 deletions(-)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 161ce7fe5d1e5..4e2e79eff9b8c 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -3196,26 +3196,21 @@ sub process {
+>  				$orig_commit = lc($1);
+>  			}
+>  
+> -			$short = 0 if ($line =~ /\bcommit\s+[0-9a-f]{12,40}/i);
+> -			$long = 1 if ($line =~ /\bcommit\s+[0-9a-f]{41,}/i);
+> -			$space = 0 if ($line =~ /\bcommit [0-9a-f]/i);
+> -			$case = 0 if ($line =~ /\b[Cc]ommit\s+[0-9a-f]{5,40}[^A-F]/);
+> -			if ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("([^"]+)"\)/i) {
+> -				$orig_desc = $1;
+> -				$hasparens = 1;
+> -			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s*$/i &&
+> -				 defined $rawlines[$linenr] &&
+> -				 $rawlines[$linenr] =~ /^\s*\("([^"]+)"\)/) {
+> -				$orig_desc = $1;
+> -				$hasparens = 1;
+> -			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("[^"]+$/i &&
+> -				 defined $rawlines[$linenr] &&
+> -				 $rawlines[$linenr] =~ /^\s*[^"]+"\)/) {
+> -				$line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("([^"]+)$/i;
+> +			my $input = $line;
+> +			for (my $n = 0; $n < 2; $n++) {
+> +				$input .= " $rawlines[$linenr + $n]" if ($#lines >= $linenr + $n);
+> +			}
 > +
-> +       vtot =3D io_read16(sd, REG_FMT_V_TOT);
-> +       vact =3D io_read16(sd, REG_FMT_V_ACT);
-> +       vfront1 =3D io_read(sd, REG_FMT_V_FRONT_F1);
-> +       vfront2 =3D io_read(sd, REG_FMT_V_FRONT_F2);
-> +       vsync =3D io_read(sd, REG_FMT_V_SYNC);
-> +       vback1 =3D io_read(sd, REG_FMT_V_BACK_F1);
-> +       vback2 =3D io_read(sd, REG_FMT_V_BACK_F2);
-> +
-> +       v4l2_dbg(1, debug, sd, "Geometry: H %u %u %u %u %u Sync%c  V %u %=
-u %u %u %u %u %u Sync%c\n",
-> +                htot, hact, hfront, hsync, hback, hsync_pos ? '+' : '-',
-> +                vtot, vact, vfront1, vfront2, vsync, vback1, vback2, vsy=
-nc_pos ? '+' : '-');
-> +
-> +       if (!timings)
-> +               return 0;
-> +
-> +       timings->type =3D V4L2_DV_BT_656_1120;
-> +       timings->bt.width =3D hact;
-> +       timings->bt.hfrontporch =3D hfront;
-> +       timings->bt.hsync =3D hsync;
-> +       timings->bt.hbackporch =3D hback;
-> +       timings->bt.height =3D vact;
-> +       timings->bt.vfrontporch =3D vfront1;
-> +       timings->bt.vsync =3D vsync;
-> +       timings->bt.vbackporch =3D vback1;
-> +       timings->bt.interlaced =3D interlaced ? V4L2_DV_INTERLACED : V4L2=
-_DV_PROGRESSIVE;
-> +       timings->bt.polarities =3D vsync_pos ? V4L2_DV_VSYNC_POS_POL : 0;
-> +       timings->bt.polarities |=3D hsync_pos ? V4L2_DV_HSYNC_POS_POL : 0=
-;
-> +
-> +       timings->bt.pixelclock =3D (u64)htot * vtot * 27000000;
-> +       if (interlaced) {
-> +               timings->bt.il_vfrontporch =3D vfront2;
-> +               timings->bt.il_vsync =3D timings->bt.vsync;
-> +               timings->bt.il_vbackporch =3D vback2;
-> +               do_div(timings->bt.pixelclock, vper * 2 /* full frame */)=
-;
-> +       } else {
-> +               timings->bt.il_vfrontporch =3D 0;
-> +               timings->bt.il_vsync =3D 0;
-> +               timings->bt.il_vbackporch =3D 0;
-> +               do_div(timings->bt.pixelclock, vper);
-> +       }
-> +       v4l2_find_dv_timings_cap(timings, &tda1997x_dv_timings_cap,
-> +                                (u32)timings->bt.pixelclock / 500, NULL,=
- NULL);
-> +       v4l2_print_dv_timings(sd->name, "Detected format: ", timings, fal=
-se);
-> +       return 0;
->  }
->
->  /* some sort of errata workaround for chip revision 0 (N1) */
-> diff --git a/drivers/media/i2c/tda1997x_regs.h b/drivers/media/i2c/tda199=
-7x_regs.h
-> index d9b3daada07d..115371ba33f0 100644
-> --- a/drivers/media/i2c/tda1997x_regs.h
-> +++ b/drivers/media/i2c/tda1997x_regs.h
-> @@ -117,9 +117,12 @@
->  #define REG_CURPAGE_00H                0xFF
->
->  #define MASK_VPER              0x3fffff
-> +#define MASK_VPER_SYNC_POS     0x800000
->  #define MASK_VHREF             0x3fff
->  #define MASK_HPER              0x0fff
-> +#define MASK_HPER_SYNC_POS     0x8000
->  #define MASK_HSWIDTH           0x03ff
-> +#define MASK_HSWIDTH_INTERLACED        0x8000
->
->  /* HPD Detection */
->  #define DETECT_UTIL            BIT(7)  /* utility of HDMI level */
+> +			$short = 0 if ($input =~ /\bcommit\s+[0-9a-f]{12,40}/i);
+> +			$long = 1 if ($input =~ /\bcommit\s+[0-9a-f]{41,}/i);
+> +			$space = 0 if ($input =~ /\bcommit [0-9a-f]/i);
+> +			$case = 0 if ($input =~ /\b[Cc]ommit\s+[0-9a-f]{5,40}[^A-F]/);
+> +			if ($input =~ /\bcommit\s+[0-9a-f]{5,}\s+($balanced_parens)/i) {
+>  				$orig_desc = $1;
+> -				$rawlines[$linenr] =~ /^\s*([^"]+)"\)/;
+> -				$orig_desc .= " " . $1;
+>  				$hasparens = 1;
+> +				# Always strip leading/trailing parens then double quotes if existing
+> +				$orig_desc = substr($orig_desc, 1, -1);
+> +				$orig_desc = substr($orig_desc, 1, -1) if ($orig_desc =~ /^".*"$/);
 
-Krzysztof,
+Why do you want to add "if ($orig_desc =~ /^".*"$/);" here? and not just substr($orig_desc, 2, -2);?
 
-I can't get this to apply (to 5.13, linux/master, or
-linux-media/master). What are you based on and do you have a git repo
-I can get it from?
+>  			}
+>  
+>  			($id, $description) = git_commit_info($orig_commit,
+> 
 
-Also, for quick testing do you recall how to invoke the 'log_debug'
-function from userspace? I think its a v4l2-ctl operation.
+In your previous patch with '.*?' you added a branch to allow also newlines between commit and shas:
+```
+commit
+c3f157259438 (Revert "floppy: reintroduce O_NDELAY fix")
+```
 
-Best regards,
+Maybe something like this will work (adding a last word from a prevline if line doesn't start from
+commit)
++                       my $input = $line;
+                        if ($line =~ /\b(c)ommit\s+([0-9a-f]{5,})\b/i) {
+                                $init_char = $1;
+                                $orig_commit = lc($2);
+                        } elsif ($line =~ /\b([0-9a-f]{12,40})\b/i) {
+                                $orig_commit = lc($1);
++                               $prevline =~ /(\w+)$/;
++                               $line = $1 . " " . $prevline;
+                        }
+ 
+-                       my $input = $line;
+                        for (my $n = 0; $n < 2; $n++) {
+                                $input .= " $rawlines[$linenr + $n]" if ($#lines >= $linenr + $n);
+                        }
 
-Tim
+Thanks,
+Denis
+
