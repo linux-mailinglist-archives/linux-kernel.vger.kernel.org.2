@@ -2,141 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 045503F21C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 22:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AAC03F21C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 22:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235210AbhHSUrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 16:47:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45154 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230052AbhHSUrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 16:47:39 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F0866108E;
-        Thu, 19 Aug 2021 20:47:01 +0000 (UTC)
-Date:   Thu, 19 Aug 2021 16:46:55 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     penguin-kernel@I-love.SAKURA.ne.jp, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org,
-        syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2] profiling: fix shift-out-of-bounds bugs
-Message-ID: <20210819164655.6efe096b@oasis.local.home>
-In-Reply-To: <20210813140022.5011-1-paskripkin@gmail.com>
-References: <99b9e091-9e95-5e45-5914-38a938840aa6@i-love.sakura.ne.jp>
-        <20210813140022.5011-1-paskripkin@gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S235406AbhHSUsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 16:48:51 -0400
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:16485 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235154AbhHSUst (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 16:48:49 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d33 with ME
+        id jYoA250083riaq203YoA3d; Thu, 19 Aug 2021 22:48:10 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 19 Aug 2021 22:48:10 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     mans@mansr.com, wsa@kernel.org
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] i2c: xlr: Fix a resource leak in the error handling path of 'xlr_i2c_probe()'
+Date:   Thu, 19 Aug 2021 22:48:08 +0200
+Message-Id: <e928fd285b37599e1f6648d0b963de8ed7773166.1629405992.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A successful 'clk_prepare()' call should be balanced by a corresponding
+'clk_unprepare()' call in the error handling path of the probe, as already
+done in the remove function.
 
-Who's taking this patch? Or should Andrew just take it through his tree?
+More specifically, 'clk_prepare_enable()' is used, but 'clk_disable()' is
+also already called. So just the unprepare step has still to be done.
 
--- Steve
+Update the error handling path accordingly.
 
+Fixes: 75d31c2372e4 ("i2c: xlr: add support for Sigma Designs controller variant")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/i2c/busses/i2c-xlr.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-On Fri, 13 Aug 2021 17:00:22 +0300
-Pavel Skripkin <paskripkin@gmail.com> wrote:
-
-> Syzbot reported shift-out-of-bounds bug in profile_init().
-> The problem was in incorrect prof_shift. Since prof_shift value comes from
-> userspace we need to clamp this value into [0, BITS_PER_LONG -1]
-> boundaries.
-> 
-> Second possible shiht-out-of-bounds was found by Tetsuo:
-> sample_step local variable in read_profile() had "unsigned int" type,
-> but prof_shift allows to make a BITS_PER_LONG shift. So, to prevent
-> possible shiht-out-of-bounds sample_step type was changed to
-> "unsigned long".
-> 
-> Also, "unsigned short int" will be sufficient for storing
-> [0, BITS_PER_LONG] value, that's why there is no need for
-> "unsigned long" prof_shift.
-> 
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Reported-and-tested-by: syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com
-> Suggested-by: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> ---
-> 
-> Changes in v2:
-> 	1. Fixed possible shiht-out-of-bounds in read_profile()
-> 	   (Reported by Tetsuo)
-> 
-> 	2. Changed prof_shift type from "unsigned long" to
-> 	   "unsigned short int"
-> 
-> ---
->  kernel/profile.c | 21 +++++++++++----------
->  1 file changed, 11 insertions(+), 10 deletions(-)
-> 
-> diff --git a/kernel/profile.c b/kernel/profile.c
-> index c2ebddb5e974..eb9c7f0f5ac5 100644
-> --- a/kernel/profile.c
-> +++ b/kernel/profile.c
-> @@ -41,7 +41,8 @@ struct profile_hit {
->  #define NR_PROFILE_GRP		(NR_PROFILE_HIT/PROFILE_GRPSZ)
->  
->  static atomic_t *prof_buffer;
-> -static unsigned long prof_len, prof_shift;
-> +static unsigned long prof_len;
-> +static unsigned short int prof_shift;
->  
->  int prof_on __read_mostly;
->  EXPORT_SYMBOL_GPL(prof_on);
-> @@ -67,8 +68,8 @@ int profile_setup(char *str)
->  		if (str[strlen(sleepstr)] == ',')
->  			str += strlen(sleepstr) + 1;
->  		if (get_option(&str, &par))
-> -			prof_shift = par;
-> -		pr_info("kernel sleep profiling enabled (shift: %ld)\n",
-> +			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
-> +		pr_info("kernel sleep profiling enabled (shift: %u)\n",
->  			prof_shift);
->  #else
->  		pr_warn("kernel sleep profiling requires CONFIG_SCHEDSTATS\n");
-> @@ -78,21 +79,21 @@ int profile_setup(char *str)
->  		if (str[strlen(schedstr)] == ',')
->  			str += strlen(schedstr) + 1;
->  		if (get_option(&str, &par))
-> -			prof_shift = par;
-> -		pr_info("kernel schedule profiling enabled (shift: %ld)\n",
-> +			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
-> +		pr_info("kernel schedule profiling enabled (shift: %u)\n",
->  			prof_shift);
->  	} else if (!strncmp(str, kvmstr, strlen(kvmstr))) {
->  		prof_on = KVM_PROFILING;
->  		if (str[strlen(kvmstr)] == ',')
->  			str += strlen(kvmstr) + 1;
->  		if (get_option(&str, &par))
-> -			prof_shift = par;
-> -		pr_info("kernel KVM profiling enabled (shift: %ld)\n",
-> +			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
-> +		pr_info("kernel KVM profiling enabled (shift: %u)\n",
->  			prof_shift);
->  	} else if (get_option(&str, &par)) {
-> -		prof_shift = par;
-> +		prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
->  		prof_on = CPU_PROFILING;
-> -		pr_info("kernel profiling enabled (shift: %ld)\n",
-> +		pr_info("kernel profiling enabled (shift: %u)\n",
->  			prof_shift);
->  	}
->  	return 1;
-> @@ -468,7 +469,7 @@ read_profile(struct file *file, char __user *buf, size_t count, loff_t *ppos)
->  	unsigned long p = *ppos;
->  	ssize_t read;
->  	char *pnt;
-> -	unsigned int sample_step = 1 << prof_shift;
-> +	unsigned long sample_step = 1UL << prof_shift;
->  
->  	profile_flip_buffers();
->  	if (p >= (prof_len+1)*sizeof(unsigned int))
+diff --git a/drivers/i2c/busses/i2c-xlr.c b/drivers/i2c/busses/i2c-xlr.c
+index 126d1393e548..9ce20652d494 100644
+--- a/drivers/i2c/busses/i2c-xlr.c
++++ b/drivers/i2c/busses/i2c-xlr.c
+@@ -431,11 +431,15 @@ static int xlr_i2c_probe(struct platform_device *pdev)
+ 	i2c_set_adapdata(&priv->adap, priv);
+ 	ret = i2c_add_numbered_adapter(&priv->adap);
+ 	if (ret < 0)
+-		return ret;
++		goto err_unprepare_clk;
+ 
+ 	platform_set_drvdata(pdev, priv);
+ 	dev_info(&priv->adap.dev, "Added I2C Bus.\n");
+ 	return 0;
++
++err_unprepare_clk:
++	clk_unprepare(clk);
++	return ret;
+ }
+ 
+ static int xlr_i2c_remove(struct platform_device *pdev)
+-- 
+2.30.2
 
