@@ -2,174 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC7BF3F1748
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E973F174D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238304AbhHSK3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 06:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238275AbhHSK3H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 06:29:07 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90C06C061756;
-        Thu, 19 Aug 2021 03:28:31 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A08D92A8;
-        Thu, 19 Aug 2021 12:28:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1629368908;
-        bh=lISKDYc3o051GT2hAejf1dhaRCqMYCISVMvV1v3RQUk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KTdwkC4mOQtcsHBgqbiZMiU5XKqdlU4woOiYdokhfElJEzjgttCIwhuOfokKVKTBL
-         PJGpvFc6vRyqkX5tg1G17GeTvrGfX/VixfInmVxVmxPpTxHrl11FpapM6pQixnwXAd
-         K9GChX7OWuLxrbWT9a41DkXcdzep6kk2xfoXVzRU=
-Date:   Thu, 19 Aug 2021 13:28:21 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] media: uvcvideo: Quirk for hardware with invalid sof
-Message-ID: <YR4yRfEmMvsAXRfu@pendragon.ideasonboard.com>
-References: <20210818203502.269889-1-ribalda@chromium.org>
- <YR2INUYJSZCnBiC0@pendragon.ideasonboard.com>
- <CANiDSCuP3OS7Z9UmHApPMmt0X3yrAoKVShEZgZ1oCvPgYshUSA@mail.gmail.com>
+        id S238317AbhHSKbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 06:31:12 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:55807 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236149AbhHSKbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 06:31:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629369032; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=Hu2wSL9evcSmVbFdigxDinq0Nbyloz4ZFXU0qiw54g0=; b=kFl3UNW+3mr0tIgb3UdPCfe1k+SQ7kirUKaFGd5oCVusPMXudBvJTsTvXpeXUdj84bF8NBCO
+ dwEGAHlPJjnd2bZoj2QY9w6mgWw+TqKnRuxlqB7CtNb9BHNcCXpqdb43NpHq7QH4xk7zFtOe
+ EjZ3qEPSOj3obV+Yz67gYy4I8LQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 611e32c79507ca1a34a7db24 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 19 Aug 2021 10:30:31
+ GMT
+Sender: luoj=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2AE0BC4360D; Thu, 19 Aug 2021 10:30:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.92.1.52] (unknown [180.166.53.36])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: luoj)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F2D2DC4338F;
+        Thu, 19 Aug 2021 10:30:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org F2D2DC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH] net: phy: add qca8081 ethernet phy driver
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Michael Walle <michael@walle.cc>, davem@davemloft.net,
+        hkallweit1@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
+        netdev@vger.kernel.org, sricharan@codeaurora.org
+References: <6856a839-0fa0-1240-47cd-ae8536294bcd@codeaurora.org>
+ <20210818074102.78006-1-michael@walle.cc>
+ <9aa1543b-e1b8-fba2-1b93-c954dd2e3e50@codeaurora.org>
+ <YR0+uXdKoXrFEhpZ@lunn.ch>
+From:   Jie Luo <luoj@codeaurora.org>
+Message-ID: <20957be7-6a7e-4a41-706f-4e4222c11b1c@codeaurora.org>
+Date:   Thu, 19 Aug 2021 18:30:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CANiDSCuP3OS7Z9UmHApPMmt0X3yrAoKVShEZgZ1oCvPgYshUSA@mail.gmail.com>
+In-Reply-To: <YR0+uXdKoXrFEhpZ@lunn.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
 
-On Thu, Aug 19, 2021 at 08:27:00AM +0200, Ricardo Ribalda wrote:
-> On Thu, 19 Aug 2021 at 00:22, Laurent Pinchart wrote:
-> > On Wed, Aug 18, 2021 at 10:35:02PM +0200, Ricardo Ribalda wrote:
-> > > The hardware timestamping code has the assumption than the device_sof
-> > > and the host_sof run at the same frequency (1 KHz).
-> > >
-> > > Unfortunately, this is not the case for all the hardware. Add a quirk to
-> > > support such hardware.
-> > >
-> > > Note on how to identify such hardware:
-> > > When running with "yavta -c /dev/videoX" Look for periodic jumps of the
-> > > fps. Eg:
-> > >
-> > > 30 (6) [-] none 30 614400 B 21.245557 21.395214 34.133 fps ts mono/SoE
-> > > 31 (7) [-] none 31 614400 B 21.275327 21.427246 33.591 fps ts mono/SoE
-> > > 32 (0) [-] none 32 614400 B 21.304739 21.459256 34.000 fps ts mono/SoE
-> > > 33 (1) [-] none 33 614400 B 21.334324 21.495274 33.801 fps ts mono/SoE
-> > > 34 (2) [-] none 34 614400 B 21.529237 21.527297 5.130 fps ts mono/SoE
-> > > 35 (3) [-] none 35 614400 B 21.649416 21.559306 8.321 fps ts mono/SoE
-> > > 36 (4) [-] none 36 614400 B 21.678789 21.595320 34.045 fps ts mono/SoE
-> > > ...
-> > > 99 (3) [-] none 99 614400 B 23.542226 23.696352 33.541 fps ts mono/SoE
-> > > 100 (4) [-] none 100 614400 B 23.571578 23.728404 34.069 fps ts mono/SoE
-> > > 101 (5) [-] none 101 614400 B 23.601425 23.760420 33.504 fps ts mono/SoE
-> > > 102 (6) [-] none 102 614400 B 23.798324 23.796428 5.079 fps ts mono/SoE
-> > > 103 (7) [-] none 103 614400 B 23.916271 23.828450 8.478 fps ts mono/SoE
-> > > 104 (0) [-] none 104 614400 B 23.945720 23.860479 33.957 fps ts mono/SoE
-> > >
-> > > They happen because the delta_sof calculated at
-> > > uvc_video_clock_host_sof(), wraps periodically, as both clocks drift.
-> >
-> > That looks plain wrong. First of all, the whole purpose of the SOF clock
-> > is to have a shared clock between the host and the device. It makes no
-> > sense for a device to have a free-running "SOF" clock. Given the log
-> > above, the issue occurs so quickly that it doesn't seem to be a mere
-> > drift of a free running clock. Could you investigate this more carefully
-> > ?
-> 
-> In my test the dev_sof runs at 887.91Hz and the dev_sof at 1000.35Hz.
-> If I plot the difference of both clocks host_sof - (dev_sof % 2048), I
-> get this nice graph https://imgur.com/a/5fQnKa7
-> 
-> 
-> I agree that it makes not sense to have a free-running "SOF", but the
-> manufacturer thinks otherwise :)
+On 8/19/2021 1:09 AM, Andrew Lunn wrote:
+> On Wed, Aug 18, 2021 at 09:34:40PM +0800, Jie Luo wrote:
+>> On 8/18/2021 3:41 PM, Michael Walle wrote:
+>>>> qca8081 supports IEEE1588 feature, the IEEE1588 code may be submitted in
+>>>> the near future,
+>>>>
+>>>> so it may be a good idea to keep it out from at803x code.
+>>> The AR8031 also supports PTP. Unfortunately, there is no public datasheet
+>>> for the QCA8081, so I can't have a look if both are similar.
+>>>
+>>> See also,
+>>> https://lore.kernel.org/netdev/20200228180226.22986-1-michael@walle.cc/
+>>>
+>>> -michael
+>> Hi Michael,
+>>
+>> Thanks for this comment. it is true that AR8031 supports basic PTP features.
+>>
+>> please refer to the following link for the outline features of qca801.
+>>
+>> https://www.qualcomm.com/products/qca8081
+> Is the PTP hardware in the qca8081 the same as the ar8031? When you
+> add PTP support, will it be for both PHYs?
+>
+> What about the cable diagnostics? The at803x already has this
+> implemented. Will the same work for the qca8081?
+>
+>      Andrew
 
-In that case there's no common clock between the device and the host,
-which means that clock recovery is impossible. The whole timestamp
-computation should be bypassed, and the driver should use the system
-timestamp instead.
+Hi Andrew,
 
-I still find it hard to believe that a Logitech camera would get this
-wrong.
+qca8081 enhances the ptp feature from AR8031, the new ptp driver should 
+be for qca8081, which is fully
 
-> > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > > ---
-> > > v2: Fix typo in frequency
-> > >
-> > >  drivers/media/usb/uvc/uvc_driver.c |  9 +++++++++
-> > >  drivers/media/usb/uvc/uvc_video.c  | 11 +++++++++--
-> > >  drivers/media/usb/uvc/uvcvideo.h   |  2 ++
-> > >  3 files changed, 20 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> > > index 9a791d8ef200..d1e6cba10b15 100644
-> > > --- a/drivers/media/usb/uvc/uvc_driver.c
-> > > +++ b/drivers/media/usb/uvc/uvc_driver.c
-> > > @@ -2771,6 +2771,15 @@ static const struct usb_device_id uvc_ids[] = {
-> > >         .bInterfaceSubClass   = 1,
-> > >         .bInterfaceProtocol   = 0,
-> > >         .driver_info          = UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRLS_ON_INIT) },
-> > > +     /* Logitech HD Pro Webcam C922 */
-> > > +     { .match_flags          = USB_DEVICE_ID_MATCH_DEVICE
-> > > +                             | USB_DEVICE_ID_MATCH_INT_INFO,
-> > > +       .idVendor             = 0x046d,
-> > > +       .idProduct            = 0x085c,
-> > > +       .bInterfaceClass      = USB_CLASS_VIDEO,
-> > > +       .bInterfaceSubClass   = 1,
-> > > +       .bInterfaceProtocol   = 0,
-> > > +       .driver_info          = UVC_INFO_QUIRK(UVC_QUIRK_INVALID_DEVICE_SOF) },
-> > >       /* Chicony CNF7129 (Asus EEE 100HE) */
-> > >       { .match_flags          = USB_DEVICE_ID_MATCH_DEVICE
-> > >                               | USB_DEVICE_ID_MATCH_INT_INFO,
-> > > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> > > index 6d0e474671a2..760ab015cf9c 100644
-> > > --- a/drivers/media/usb/uvc/uvc_video.c
-> > > +++ b/drivers/media/usb/uvc/uvc_video.c
-> > > @@ -518,13 +518,20 @@ uvc_video_clock_decode(struct uvc_streaming *stream, struct uvc_buffer *buf,
-> > >       /* To limit the amount of data, drop SCRs with an SOF identical to the
-> > >        * previous one.
-> > >        */
-> > > -     dev_sof = get_unaligned_le16(&data[header_size - 2]);
-> > > +     if (stream->dev->quirks & UVC_QUIRK_INVALID_DEVICE_SOF)
-> > > +             dev_sof = usb_get_current_frame_number(stream->dev->udev);
-> > > +     else
-> > > +             dev_sof = get_unaligned_le16(&data[header_size - 2]);
-> > > +
-> > >       if (dev_sof == stream->clock.last_sof)
-> > >               return;
-> > >
-> > >       stream->clock.last_sof = dev_sof;
-> > >
-> > > -     host_sof = usb_get_current_frame_number(stream->dev->udev);
-> > > +     if (stream->dev->quirks & UVC_QUIRK_INVALID_DEVICE_SOF)
-> > > +             host_sof = dev_sof;
-> > > +     else
-> > > +             host_sof = usb_get_current_frame_number(stream->dev->udev);
-> > >       time = uvc_video_get_time();
-> > >
-> > >       /* The UVC specification allows device implementations that can't obtain
-> > > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> > > index cce5e38133cd..89d909661915 100644
-> > > --- a/drivers/media/usb/uvc/uvcvideo.h
-> > > +++ b/drivers/media/usb/uvc/uvcvideo.h
-> > > @@ -209,6 +209,8 @@
-> > >  #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT      0x00000400
-> > >  #define UVC_QUIRK_FORCE_Y8           0x00000800
-> > >  #define UVC_QUIRK_FORCE_BPP          0x00001000
-> > > +#define UVC_QUIRK_INVALID_DEVICE_SOF 0x00002000
-> > > +
-> > >
-> > >  /* Format flags */
-> > >  #define UVC_FMT_FLAG_COMPRESSED              0x00000001
+tested on qca8081, but it is not verified on AR8031 currently.
 
--- 
-Regards,
+the cable diagnostics feature of qca8081 is almost same as ar8031 but 
+the register is changed, will correct it
 
-Laurent Pinchart
+for qca8081 in the next patch correspondingly.
+
+thanks.
+
