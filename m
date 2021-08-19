@@ -2,89 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCBE3F1028
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 04:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B30153F102B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 04:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235591AbhHSCBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 22:01:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235584AbhHSCBE (ORCPT
+        id S235613AbhHSCDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 22:03:34 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:40273 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235433AbhHSCDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 22:01:04 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A774FC061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 19:00:28 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id b15so9211917ejg.10
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 19:00:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IjykLTW5bWXHap6cNd2RLArWAcm8vCbGmYW9Q2CZ23E=;
-        b=l2z+o/j1RL87n1mk8Ke/8+bO6OdMOYMBOHMHvfPK7hzoGXj+jMn56G/7Yw1o6Bsh4M
-         oGTv45imw2fybnJ/7HiO5FQLOK4MTZCelmJJFMCZlKRfB7CKAeU37YICf3zTuStygHdl
-         L0hC/YZgZaCSok53g4u+ty6GoOWmuYMRlmMpmCFKef74koWU2fTzJ6bI7yPbSSKIeGrT
-         AgCqtfQV13uOz8hqhaZOGO87mwv52Xkru3CGBJpp9Mun4wM2pQ7qjd3RouOmrJRf7d7S
-         Ps2D3ajLlZnWI8TVkWcAwRMyZhr0Zi6bUOfHJ7hC1Sne0RVAOy57HSnE1EDs1MigOHhf
-         eMBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IjykLTW5bWXHap6cNd2RLArWAcm8vCbGmYW9Q2CZ23E=;
-        b=TG3DGbB2RJx6T+HXb/uJgcFjG7lEPqXbq1bIttclP+Vq9gJOx2hOI95U8HRMr1tB9G
-         RAG102taCSR2jhokmqSYj6MYKgc2bkHXFLK8hr1jLEnOvyTkKzw14o8WTDTXlIO1pKp+
-         pVARByBN6ARk+ZrRrKGY/qcCDk6bkod1pLMIXXTM3GOxma143MWNPqeSB/BL5kDt6IeT
-         ButkuP92cRAJAuM1O3mrFg57K17YV2OOrui0WXb2XSOF20n81RAXgD0m6RGxvWH1FJE+
-         52eRJUBkfSV7l4EJfrd+TYvQXtDf+j93jYR1pHowzSBislkaEy6DvtHhgy2eO9Q+b999
-         DQvQ==
-X-Gm-Message-State: AOAM530NtQXYqLw/DdS/jTFceqseCUn7IcwvEdxAz0C1P7odKq//YEaN
-        7hrwHvWf3NyIivsPc7J9bWo=
-X-Google-Smtp-Source: ABdhPJx4PKwe+zyqeJFROuE20yp45TzzbKuGvmRHDE1nMO9B703n7+gldzNR0j8x/pHeFfYQ4G69zA==
-X-Received: by 2002:a17:906:c443:: with SMTP id ck3mr12545874ejb.195.1629338427326;
-        Wed, 18 Aug 2021 19:00:27 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
-        by smtp.gmail.com with ESMTPSA id r16sm936755edt.15.2021.08.18.19.00.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 19:00:26 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     gregkh@linuxfoundation.org, Phillip Potter <phil@philpotter.co.uk>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        martin@kaiser.cx, straube.linux@gmail.com,
-        Larry.Finger@lwfinger.net
-Subject: Re: [PATCH 4/6] staging: r8188eu: remove empty function rtl8188eu_free_xmit_priv
-Date:   Thu, 19 Aug 2021 04:00:25 +0200
-Message-ID: <3783001.X7UpCbk0Mo@localhost.localdomain>
-In-Reply-To: <20210818234253.208271-5-phil@philpotter.co.uk>
-References: <20210818234253.208271-1-phil@philpotter.co.uk> <20210818234253.208271-5-phil@philpotter.co.uk>
+        Wed, 18 Aug 2021 22:03:33 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R481e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UjtBWdz_1629338576;
+Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0UjtBWdz_1629338576)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 19 Aug 2021 10:02:56 +0800
+Subject: Re: [PATCH] ocfs2: reflink deadlock when clone file to the same
+ directory simultaneously
+To:     Gang He <ghe@suse.com>, mark@fasheh.com, jlbec@evilplan.org,
+        Wengang Wang <wen.gang.wang@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        akpm@linux-foundation.org
+References: <20210729110230.18983-1-ghe@suse.com>
+ <5821fd0f-2018-dc1b-a5c0-f948a7debff4@linux.alibaba.com>
+ <c7e1f0a7-e75c-d1e0-870d-dc480d070079@suse.com>
+ <71608a14-58f4-dba0-d695-fee65de89192@linux.alibaba.com>
+ <801438f5-655a-c708-aa25-343d54a2f11e@suse.com>
+ <86e3d724-3147-ccaa-998f-0f857c575f7e@linux.alibaba.com>
+ <a0a9710f-461a-99c8-92f6-a99bb11b3a4e@suse.com>
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+Message-ID: <4ba3b404-824b-90a3-ef43-9ab6510ee073@linux.alibaba.com>
+Date:   Thu, 19 Aug 2021 10:02:55 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <a0a9710f-461a-99c8-92f6-a99bb11b3a4e@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, August 19, 2021 1:42:51 AM CEST Phillip Potter wrote:
-> Remove empty function rtl8188eu_free_xmit_priv from hal/rtl8188eu_xmit.c
-> and its declaration from include/rtl8188e_xmit.h, as well as the one
-> place where it is stored in the free_xmit_priv function pointer of the
-> HalFunc struct inside padapter. This is safe, as the wrapper function
-> checks for NULL before calling this function via the function pointer.
-> 
-> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-> ---
->  drivers/staging/r8188eu/hal/rtl8188eu_xmit.c    | 4 ----
->  drivers/staging/r8188eu/hal/usb_halinit.c       | 1 -
->  drivers/staging/r8188eu/include/rtl8188e_xmit.h | 1 -
->  3 files changed, 6 deletions(-)
-> 
-It looks good, so...
 
-Acked-by: Fabio M. De Francesco
+
+On 8/19/21 9:51 AM, Gang He wrote:
+> 
+> 
+> On 2021/8/18 19:20, Joseph Qi wrote:
+>>
+>>
+>> On 8/18/21 5:20 PM, Gang He wrote:
+>>>
+>>>
+>>> On 2021/8/13 17:54, Joseph Qi wrote:
+>>>>
+>>>>
+>>>> On 8/9/21 6:08 PM, Gang He wrote:
+>>>>> Hi Joseph and All,
+>>>>>
+>>>>> The deadlock is caused by self-locking on one node.
+>>>>> There is three node cluster (mounted to /mnt/shared), the user run reflink command to clone the file to the same directory repeatedly,
+>>>>> e.g.
+>>>>>    reflink "/mnt/shared/test" \
+>>>>>    "/mnt/shared/.snapshots/test.`date +%m%d%H%M%S`.`hostname`"
+>>>>>
+>>>>> After a while, the reflink process on each node is hung, the file system cannot be listed.
+>>>>> The problematic reflink command process is blocked by itself, e.g. the reflink process is hung at ghe-sle15sp2-nd2,
+>>>>> kernel: task:reflink         state:D stack:    0 pid:16992 ppid:  4530
+>>>>> kernel: Call Trace:
+>>>>> kernel:  __schedule+0x2fd/0x750
+>>>>> kernel:  ? try_to_wake_up+0x17b/0x4e0
+>>>>> kernel:  schedule+0x2f/0xa0
+>>>>> kernel:  schedule_timeout+0x1cc/0x310
+>>>>> kernel:  ? __wake_up_common+0x74/0x120
+>>>>> kernel:  wait_for_completion+0xba/0x140
+>>>>> kernel:  ? wake_up_q+0xa0/0xa0
+>>>>> kernel:  __ocfs2_cluster_lock.isra.41+0x3b5/0x820 [ocfs2]
+>>>>> kernel:  ? ocfs2_inode_lock_full_nested+0x1fc/0x960 [ocfs2]
+>>>>> kernel:  ocfs2_inode_lock_full_nested+0x1fc/0x960 [ocfs2]
+>>>>> kernel:  ocfs2_init_security_and_acl+0xbe/0x1d0 [ocfs2]
+>>>>> kernel:  ocfs2_reflink+0x436/0x4c0 [ocfs2]
+>>>>> kernel:  ? ocfs2_reflink_ioctl+0x2ca/0x360 [ocfs2]
+>>>>> kernel:  ocfs2_reflink_ioctl+0x2ca/0x360 [ocfs2]
+>>>>> kernel:  ocfs2_ioctl+0x25e/0x670 [ocfs2]
+>>>>> kernel:  do_vfs_ioctl+0xa0/0x680
+>>>>> kernel:  ksys_ioctl+0x70/0x80
+>>>>>
+>>>>> In fact, the destination directory(.snapshots) inode dlm lock was acquired by ghe-sle15sp2-nd2, next there is bast message from other nodes to ask ghe-sle15sp2-nd2 downconvert lock, but the operation failed, the kernel message is printed like,
+>>>>> kernel: (ocfs2dc-AA35DD9,2560,3):ocfs2_downconvert_lock:3660 ERROR: DLM error -16 while calling ocfs2_dlm_lock on resource M0000000000000000046e0200000000
+>>>>> kernel: (ocfs2dc-AA35DD9,2560,3):ocfs2_unblock_lock:3904 ERROR: status = -16
+>>>>> kernel: (ocfs2dc-AA35DD9,2560,3):ocfs2_process_blocked_lock:4303 ERROR: status = -16
+>>>>>
+>>>>> Then, the reflink process tries to acquire this directory inode dlm lock, the process is blocked, the dlm lock resource in memory looks like
+>>>>>
+>>>>>       l_name = "M0000000000000000046e0200000000",
+>>>>>       l_ro_holders = 0,
+>>>>>       l_ex_holders = 0,
+>>>>>       l_level = 5 '\005',
+>>>>>       l_requested = 0 '\000',
+>>>>>       l_blocking = 5 '\005',
+>>>>>       l_type = 0 '\000',
+>>>>>       l_action = 0 '\000',
+>>>>>       l_unlock_action = 0 '\000',
+>>>>>       l_pending_gen = 645948,
+>>>>>
+>>>>>
+>>>>> So far, I do not know what makes dlm lock function failed, it also looks we do not handle this failure case in dlmglue layer, but I always reproduce this hang with my test script, e.g.
+>>>>>
+>>>>>     loop=1
+>>>>>     while ((loop++)) ; do
+>>>>>           for i in `seq 1 100`; do
+>>>>>             reflink "/mnt/shared/test" "/mnt/shared/.snapshots /test.${loop}.${i}.`date +%m%d%H%M%S`.`hostname`"
+>>>>>           done
+>>>>>           usleep 500000
+>>>>>           rm -f /mnt/shared/.snapshots/testnode1.qcow2.*.`hostname`
+>>>>>     done
+>>>>>
+>>>>> My patch changes multiple acquiring dest directory inode dlm lock during in ocfs2_reflink function, it avoids the hang issue happen again.The code change also can improve reflink performance in this case.
+>>>>>
+>>>>> Thanks
+>>>>> Gang
+>>>>
+>>>> 'status = -16' implies DLM_CANCELGRANT.
+>>>> Do you use stack user instead of o2cb? If yes, can you try o2cb with
+>>>> your reproducer?
+>>>
+>>> I setup o2cb based ocfs2 clusters with sle15sp2 and oracleLinux8u4.
+>>> After two day testing with the same script, I did not encounter dlm_lock downconvert failure, the hang issue did not happen.
+>>> After my patch was applied, there was not any side effect, the reflink performance was doubled in the case.
+>>>
+>>
+>> Do you mean the hang only happens on stack user?
+> Yes.
+> Why? since o2cb based dlm_lock did not return error -16 when downcovert dlm lock during the whole testing.
+> But pmck based dlm_lock retuned error -16 during the testing, then we did not handle this error further in dlmglue layer, next encounter the hang issue when dlm_lock acquire the lock. Maybe there is a race condition when using dlm_lock/dlm_unlock(cancel) in dlmglue layer.
+> Anyway, the problem belongs to ocfs2 own parts.
+> 
+I meant if DLM_CANCELGRANT is not the expected return code, we'd
+better fix the issue in stack_user.c but not dlmglue, e.g. some specific
+wrapper.
 
 Thanks,
-
-Fabio
-
+Joseph
 
