@@ -2,161 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6B383F19AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 14:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7243F19AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 14:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239300AbhHSMtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 08:49:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51978 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229577AbhHSMtI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 08:49:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D39361154;
-        Thu, 19 Aug 2021 12:48:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629377312;
-        bh=xIQ/zVqxRG/q7zsWF4vebQ5bnJmagrf+yNKkdMIvQAI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j6oz3OBfmcYPf8GHcWhS87HrdGq07GcxI1UkNO5Dq/veO0GikBMoR4D3IFLXNaaLs
-         UbXglUgFQLjeNYc3lo9vtPjkMN6SS5zemcCDzF0d2b1NSqczfdSb9hX8SV4u3zFXOW
-         Jp48lbIbMRiS6ScMx0J6oy+8XehJE3Wv/y7XtzFEa/9MjN/slArOZ+ntMewoMRuC/J
-         kt4FDLhD9voqPZKG5m4oCRUIqX4IL/Zzg6ZPVqWFdl2rP3+C2mFnkIxwD5EsrIpU6r
-         iSOwVUor9t4SobtP46IKgoIyDk4MApAOThcLEdy78N/l5zCe1cXl0QR5fQzIlWHxc9
-         aUa6pAoEYGTeg==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     linux-sgx@vger.kernel.org
-Cc:     Shuah Khan <shuah@kernel.org>, Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
-        Saravanan D <saravanand@fb.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: [PATCH v2 2/2] x86/sgx: Add SGX_MemTotal to /proc/meminfo
-Date:   Thu, 19 Aug 2021 15:48:24 +0300
-Message-Id: <20210819124824.52169-2-jarkko@kernel.org>
+        id S239575AbhHSMt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 08:49:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229577AbhHSMt0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 08:49:26 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBA9C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 05:48:50 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d17so3814652plr.12
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 05:48:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=huaqin-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mlxsOtjk3EQe8tY0Dl2bnQT6hDTIci57yhrirNK4WM4=;
+        b=C/c9qtXCbDh8ba0bEl5eqr8WQGeufHKR1Un4IT4bUXM4xXrkTxBFtgnckgQ50er66b
+         zxfX7mk5ZydlgtFQBh38HgP8oX/3dCPjFGRZSCFW+dGtz2RwMSmV37BKshYrgoSN+exl
+         3pwOIvrMoV4Sj+Zf5YoWB0mdSW+cYwMlMV0OlC5J8pMAOpT/xeGU3twXGkfj2y4CurHI
+         t64yylZZpzsR55ysItGwCinJuxjqC4rCcqgN9uSnT6a/E/ptDRLFW0/IBxsr1i5MS+hz
+         elGCD7jckU2m2z5L9n69lW2Rnhsfintij5PlkqN9+gweIhTkulOXORjEOJqUsqvW75BB
+         t+Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mlxsOtjk3EQe8tY0Dl2bnQT6hDTIci57yhrirNK4WM4=;
+        b=FBS9d/kS6490AMoByz/cMxiKx1R6XXwidBiV5kz2J4SMVQezFG5cAl/pCEfdLuCpVz
+         shysy6XHHQY+dkgdPsct0wxAHuBshn1v1SabcucaMaGY5Hi+dCK3MP95w6lerwJLdg7h
+         U+CSHwDZZPUPPcCG9t21mg9RyElurifKia7yfe0ZUsGbrmwqmaXN2iDJeg6tPWMtu5At
+         FnC0CDyreXcwsq7/vXJrdRV0yoctiMrx+6TFaAZivFQ0UNs3/bHyA2ng6pFYAHM/vux+
+         Th7Kv43tpFDbN7Nd8xjW1oFqq3pcmoeUyx3puOkN80FuTsPXYocSa7VFWLvOcY/cYovj
+         dtoA==
+X-Gm-Message-State: AOAM531ljbo8nL6oC2AFBMOFb9dFnmb9mAxMpNQqoXl/ICwyOvwFl9XL
+        m794tSZZ8+y+tUnGSqI2guFCrg==
+X-Google-Smtp-Source: ABdhPJw7+fjyC0SC3MOzj/6NzYAJjwgk/Nve1tUgxX32A0IY6i5qv5858pWqGdvPzn4v0Wu1pYc+cw==
+X-Received: by 2002:a17:90a:d595:: with SMTP id v21mr15360955pju.50.1629377329891;
+        Thu, 19 Aug 2021 05:48:49 -0700 (PDT)
+Received: from yc.huaqin.com ([101.78.151.213])
+        by smtp.gmail.com with ESMTPSA id c11sm3137210pji.24.2021.08.19.05.48.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 05:48:49 -0700 (PDT)
+From:   yangcong <yangcong5@huaqin.corp-partner.google.com>
+To:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
+        daniel@ffwll.ch, dianders@google.com
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        yangcong <yangcong5@huaqin.corp-partner.google.com>
+Subject: [v1 0/2] drm/panel: boe-tv101wum-nl6: Support enabling a 3.3V rail
+Date:   Thu, 19 Aug 2021 20:48:42 +0800
+Message-Id: <20210819124844.12424-1-yangcong5@huaqin.corp-partner.google.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210819124824.52169-1-jarkko@kernel.org>
-References: <20210819124824.52169-1-jarkko@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The amount of SGX memory on the system is determined by the BIOS and it
-varies wildly between systems.  It can be from dozens of MB's on desktops
-or VM's, up to many GB's on servers.  Just like for regular memory, it is
-sometimes useful to know the amount of usable SGX memory in the system.
+The auo,b101uan08.3 panel (already supported by this driver) has
+a 3.3V rail that needs to be turned on. For previous users of
+this panel this voltage was directly output by pmic. On a new 
+user (the not-yet-upstream sc7180-trogdor-mrbland board) we need
+to turn the 3.3V rail on. Add support in the driver for this.
 
-Add SGX_MemTotal field to /proc/meminfo, which shows the total amount of
-usable SGX memory in the system.  E.g. with 32 MB reserved for SGX from
-BIOS, the printout would be:
+yangcong (2):
+  drm/panel: boe-tv101wum-nl6: Support enabling a 3.3V rail
+  dt-bindings: drm/panel: boe-tv101wum-nl6: Support enabling a 3.3V rail
 
-SGX_MemTotal:      22528 kB
+ .../bindings/display/panel/boe,tv101wum-nl6.yaml      |  4 ++++
+ drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c        | 11 +++++++++++
+ 2 files changed, 15 insertions(+)
 
-It is less than 32 MB because some of the space is reserved for Enclave
-Page Cache Metadata (EPCM), which contains state variables for all the
-pages in the Enclave Page Cache (EPC).  The latter contains the pages,
-which applications can use to create enclaves.
-
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
-
-v2:
-* Move ifdef fix for sgx_set_attribute() to a separate patch.
-
----
- Documentation/x86/sgx.rst      | 6 ++++++
- arch/x86/include/asm/sgx.h     | 2 ++
- arch/x86/kernel/cpu/sgx/main.c | 7 ++++++-
- arch/x86/mm/pat/set_memory.c   | 5 +++++
- 4 files changed, 19 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
-index dd0ac96ff9ef..68ee171e1d8f 100644
---- a/Documentation/x86/sgx.rst
-+++ b/Documentation/x86/sgx.rst
-@@ -250,3 +250,9 @@ user wants to deploy SGX applications both on the host and in guests
- on the same machine, the user should reserve enough EPC (by taking out
- total virtual EPC size of all SGX VMs from the physical EPC size) for
- host SGX applications so they can run with acceptable performance.
-+
-+Supplemental fields for /proc/meminfo
-+=====================================
-+
-+SGX_MemTotal
-+	The total usable SGX protected memory in kilobytes.
-diff --git a/arch/x86/include/asm/sgx.h b/arch/x86/include/asm/sgx.h
-index 38c397ef35a8..2ae9dc8c9411 100644
---- a/arch/x86/include/asm/sgx.h
-+++ b/arch/x86/include/asm/sgx.h
-@@ -366,6 +366,8 @@ struct sgx_sigstruct {
-  */
- 
- #if defined(CONFIG_X86_SGX) || defined(CONFIG_X86_SGX_KVM)
-+extern unsigned long sgx_nr_all_pages;
-+
- int sgx_set_attribute(unsigned long *allowed_attributes,
- 		      unsigned int attribute_fd);
- #endif
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index 63d3de02bbcc..1fe26a8e80dc 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -28,7 +28,10 @@ static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
- static LIST_HEAD(sgx_active_page_list);
- static DEFINE_SPINLOCK(sgx_reclaimer_lock);
- 
--/* The free page list lock protected variables prepend the lock. */
-+/* The number of usable EPC pages in the system. */
-+unsigned long sgx_nr_all_pages;
-+
-+/* The number of free EPC pages in all nodes. */
- static unsigned long sgx_nr_free_pages;
- 
- /* Nodes with one or more EPC sections. */
-@@ -656,6 +659,8 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
- 		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
- 	}
- 
-+	sgx_nr_all_pages += nr_pages;
-+
- 	return true;
- }
- 
-diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-index ad8a5c586a35..82bb09c298de 100644
---- a/arch/x86/mm/pat/set_memory.c
-+++ b/arch/x86/mm/pat/set_memory.c
-@@ -29,6 +29,7 @@
- #include <asm/proto.h>
- #include <asm/memtype.h>
- #include <asm/set_memory.h>
-+#include <asm/sgx.h>
- 
- #include "../mm_internal.h"
- 
-@@ -116,6 +117,10 @@ void arch_report_meminfo(struct seq_file *m)
- 	if (direct_gbpages)
- 		seq_printf(m, "DirectMap1G:    %8lu kB\n",
- 			direct_pages_count[PG_LEVEL_1G] << 20);
-+
-+#if defined(CONFIG_X86_SGX) || defined(CONFIG_X86_SGX_KVM)
-+	seq_printf(m, "SGX_MemTotal:   %8lu kB\n", sgx_nr_all_pages << 2);
-+#endif
- }
- #else
- static inline void split_page_count(int level) { }
 -- 
 2.25.1
 
