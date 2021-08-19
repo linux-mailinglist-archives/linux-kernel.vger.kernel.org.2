@@ -2,140 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B5623F10EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 05:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B065E3F112C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 05:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235911AbhHSDDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 23:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235792AbhHSDDl (ORCPT
+        id S236222AbhHSDGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 23:06:50 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:45053 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236077AbhHSDGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 23:03:41 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BDCDC0613D9
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 20:03:05 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id n27so6631810oij.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 20:03:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oLtmGWWWFpy0RrcCLUcbKoN2iq+DyMnqMq+mMo4DPc4=;
-        b=eangeZEGbtS69BS4hN/L+x7MnIZ8dMi46+6iuZFfHLBX2wwl5y6oWH6Vf6wOLJayeu
-         OPfonrfs7f+MMVUmvYb2sEH+dC2baGKAn1mqncorX+ueqV2rLSfdAs/U5xZSC50XLC/w
-         N7YXYEIrK2+JqGNPOPEeByI756min3FkQJ9UgtutLBuNYOwQ4rCUcXyJAvFPrgw7RIrY
-         H7Zpp8R5MJZz21lamrc8IJCO8BAGVEY7xd5FrcVrOqkNLIPTvS5esUDmP8UBqO1yJ8i5
-         EX31ASk7UEpM1JNc41WXtS6UyDJQtT7Qb1Y5zrbiuUH6cbE7vSZIKiQ/JeKLfOenHeuP
-         eL1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oLtmGWWWFpy0RrcCLUcbKoN2iq+DyMnqMq+mMo4DPc4=;
-        b=d9hxwPQSD8/hwvIC9ct1g+u1vSs0znYKEevnzyh88jNz6CYmHZf+hPRSP+7lPSShUt
-         BY4mx80X3DWUFCF4tqYGRWM9fB5HAxseykzN0fynt7pWLbkDpZAK4qWFHP6QrBCIaqJ8
-         VckjMIiigMFqJubKYtvFoiblAFVDL+td0kX6tglJUKUMsaGqIknuIBXnDs060mbWeglX
-         2r3VfFS82cBaLmvkg3ZB7svWwhXbnbPAHnyPkbpCzX3G/BkwPBNkJSHEj5+0g8H/efvx
-         Jtz6nfExXaIiZvaBvpj5vNBY0UlJFOQcBzS7/ge/ajMLr1j1dS+jgy8TkoJKwQM4+/A+
-         5pJA==
-X-Gm-Message-State: AOAM530993WKZSXjBRfN7Hz7TFbAUzJucKfjY/4dtnEXGUGMOqDhSS/2
-        c45JB1Ek0lODhtOYQbkx072agw==
-X-Google-Smtp-Source: ABdhPJzCCQcupwH4mOOFBHjl11BaWd+S5X0W91b9Y+9RFM8yUV8G/G+t8Ov9Nw/Bu8UbM4AsfBGugw==
-X-Received: by 2002:aca:1a0f:: with SMTP id a15mr991874oia.42.1629342184854;
-        Wed, 18 Aug 2021 20:03:04 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id w14sm436276otl.58.2021.08.18.20.03.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 20:03:04 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 22:03:02 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     quic_vamslank@quicinc.com
-Cc:     agross@kernel.org, linus.walleij@linaro.org,
-        manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: pinctrl: qcom: Add SDX65 pinctrl
- bindings
-Message-ID: <YR3J5jHr2CTTU92D@builder.lan>
-References: <cover.1626987605.git.quic_vamslank@quicinc.com>
- <341f8af967fb0c699996a8f73d34c2b8bd0789cc.1626987605.git.quic_vamslank@quicinc.com>
+        Wed, 18 Aug 2021 23:06:48 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 17J361gmC007584, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 17J361gmC007584
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 19 Aug 2021 11:06:01 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 19 Aug 2021 11:06:01 +0800
+Received: from fc34.localdomain (172.21.177.102) by RTEXMBS04.realtek.com.tw
+ (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Thu, 19 Aug
+ 2021 11:06:00 +0800
+From:   Hayes Wang <hayeswang@realtek.com>
+To:     <kuba@kernel.org>, <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <nic_swsd@realtek.com>,
+        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        Hayes Wang <hayeswang@realtek.com>
+Subject: [PATCH net 0/2] r8152: fix bp settings
+Date:   Thu, 19 Aug 2021 11:05:35 +0800
+Message-ID: <20210819030537.3730-377-nic_swsd@realtek.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <341f8af967fb0c699996a8f73d34c2b8bd0789cc.1626987605.git.quic_vamslank@quicinc.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.21.177.102]
+X-ClientProxiedBy: RTEXH36501.realtek.com.tw (172.21.6.27) To
+ RTEXMBS04.realtek.com.tw (172.21.6.97)
+X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: trusted connection
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 08/19/2021 02:52:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzgvMTggpFWkyCAxMToyNTowMA==?=
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 08/19/2021 02:54:56
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 165646 [Aug 18 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 454 454 39c6e442fd417993330528e7f9d13ac1bf7fdf8c
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 08/19/2021 02:57:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 22 Jul 16:18 CDT 2021, quic_vamslank@quicinc.com wrote:
-> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sdx65-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sdx65-pinctrl.yaml
-[..]
-> +'$defs':
-> +  qcom-sdx65-tlmm-state:
-> +    type: object
-> +    description:
-> +      Pinctrl node's client devices use subnodes for desired pin configuration.
-> +      Client device subnodes use below standard properties.
-> +    $ref: "qcom,tlmm-common.yaml#/$defs/qcom-tlmm-state"
-> +
-> +    properties:
-> +      pins:
-> +        description:
-> +          List of gpio pins affected by the properties specified in this subnode.
-> +        items:
-> +          oneOf:
-> +            - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-1][0-6])$"
+Fix the wrong bp settings of the firmware.
 
-The last part doesn't seem right and this gives us the following
-possible values gpio0-9, gpio10-99, gpio100-106 and gpio110-116.
+Hayes Wang (2):
+  r8152: fix writing USB_BP2_EN
+  r8152: fix the maximum number of PLA bp for RTL8153C
 
-I think the correct pattern would be:
-	"^gpio([0-9]|[1-9][0-9]|10[0-9])$"
+ drivers/net/usb/r8152.c | 23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
 
+-- 
+2.31.1
 
-[..]
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - interrupt-controller
-> +  - '#interrupt-cells'
-> +  - gpio-controller
-> +  - '#gpio-cells'
-> +  - gpio-ranges
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +        #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +        tlmm: pinctrl@f100000{
-
-Please include a space between the unit address and '{'.
-
-> +                compatible = "qcom,sdx65-tlmm";
-> +                reg = <0x03000000 0xdc2000>;
-> +                gpio-controller;
-> +                #gpio-cells = <2>;
-> +                gpio-ranges = <&tlmm 0 0 109>;
-> +                interrupt-controller;
-> +                #interrupt-cells = <2>;
-> +                interrupts = <GIC_SPI 212 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +                serial-pins {
-> +                        pins = "gpio8", "gpio9";
-> +                        function = "blsp_uart3";
-> +                        drive-strength = <2>;
-> +                        bias-disable;
-> +                };
-> +
-> +		uart-w-subnodes-state {
-
-This line is indented with tabs, the rest with spaces.
-
-With those changes this looks really good.
-
-Thanks,
-Bjorn
