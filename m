@@ -2,121 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A2C3F1F88
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 20:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAFF83F1F8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 20:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232909AbhHSSH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 14:07:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhHSSH0 (ORCPT
+        id S234045AbhHSSId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 14:08:33 -0400
+Received: from mail-pj1-f54.google.com ([209.85.216.54]:33425 "EHLO
+        mail-pj1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229465AbhHSSIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 14:07:26 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF4B7C061575;
-        Thu, 19 Aug 2021 11:06:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=e2iRoCi+KN0OZNzh2nCq9xKtiscXhPTXxaEW3b7If+U=; b=E31ZYKb7eSR1MUwRGRSd1UKplh
-        NbpE94z9KKfukD4po7Rcm8QQQ+IJLPrG8M5OY0NNxRVSH1w0SJ3QKW+5aeAY0upxlMX4nU9ofuzId
-        Gr3qONxtxHg0cC4ntA4eOYoz41ktMS2dCfyyR4UYwg6lJ1ah1jLd1B2ThnumytXSivt1hV6LmLbhi
-        KCfp0rcZMX6RzWHzf9T/zmFOI++wqMlwUtwzsCdgJHgeyVn3hCty6L7fANyjd4kdETBksBsq66jgR
-        g5jBk2KVI5cS21beMGc+nVf4xswUf5J0pNMOLByVNhGglGP0o3S9CWWpG7fkC6dIHKeyrdu3LaePx
-        mrTu71rA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mGmR5-00BAbi-L5; Thu, 19 Aug 2021 18:06:39 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 94F0E3004B2;
-        Thu, 19 Aug 2021 20:06:37 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7F90D2CDCAC1A; Thu, 19 Aug 2021 20:06:37 +0200 (CEST)
-Date:   Thu, 19 Aug 2021 20:06:37 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        Kernel Team <Kernel-team@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Like Xu <like.xu@linux.intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>
-Subject: Re: [RFC] bpf: lbr: enable reading LBR from tracing bpf programs
-Message-ID: <YR6dreGQSe4oQFBr@hirez.programming.kicks-ass.net>
-References: <20210818012937.2522409-1-songliubraving@fb.com>
- <YRzPwClswwxHXVHe@hirez.programming.kicks-ass.net>
- <962EDD5A-1B35-4C7F-A0A1-3EBC32EE63AB@fb.com>
- <YR5HJkPyaM3TWkkl@hirez.programming.kicks-ass.net>
- <AB509D87-67C6-4B7F-AEFB-2324845C310C@fb.com>
+        Thu, 19 Aug 2021 14:08:31 -0400
+Received: by mail-pj1-f54.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so7727219pje.0;
+        Thu, 19 Aug 2021 11:07:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AfYnBat8HLe89HP83zngEKr4D0S4PvQLlUEhGzKv+jE=;
+        b=QLen/kIWgHdhYD92FuKXRInVsraXjSoLl4lmbpaQX0FzCmj/6NOKGVMegw/Ao7cjBP
+         6QgNUtkjrmNdls+3cvt3T4zqTGfDjhldLKt/k2ozzFbHvXfqIkZQWDA9mwZHBwPJjhTW
+         tstYn7QzUnj9hA8kI513v4Y7uA8SEgLt2Xl1+s9zufnpU8bnfrUTomp/Fas9XsNWzp3k
+         yqaA7KjhRffFokMKqKfcBx0DcxRrH2KGSsDjl44CLXt8h2yR871oYVrSTAb8nsWz1EON
+         dZEZ1W9H34RFbv42aB161Y3IKqOBRjJsx2SDe443iLTc1DU7gjvrfDK2BNQIBq3CPxp+
+         24bA==
+X-Gm-Message-State: AOAM53277N9uAiAHWS4AdT7Uebpo92ADTZYlhz2hr+3UsNJ4WLuiGlm9
+        BaxJGA7rjb1mVpRqEzrdU8I=
+X-Google-Smtp-Source: ABdhPJw9jzaPLTBC8qVfvVirNvlSIA1Jq9phxj9SttW3sNqLuE7L7AEqtQcvtYwtddM+sUb8/CfPXQ==
+X-Received: by 2002:a17:90b:4504:: with SMTP id iu4mr16573217pjb.209.1629396474907;
+        Thu, 19 Aug 2021 11:07:54 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:8b47:c5d7:9562:9d96])
+        by smtp.gmail.com with ESMTPSA id q3sm5001758pgl.23.2021.08.19.11.07.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Aug 2021 11:07:54 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] scsi: qla1280: Fix DEBUG_QLA1280 compilation
+ issues
+To:     John Garry <john.garry@huawei.com>, mdr@sgi.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hare@suse.de
+References: <1629365549-190391-1-git-send-email-john.garry@huawei.com>
+ <1629365549-190391-3-git-send-email-john.garry@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <7107778e-8e20-22ab-bf94-d26aca09bd93@acm.org>
+Date:   Thu, 19 Aug 2021 11:07:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AB509D87-67C6-4B7F-AEFB-2324845C310C@fb.com>
+In-Reply-To: <1629365549-190391-3-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 04:46:20PM +0000, Song Liu wrote:
-> > void perf_inject_event(struct perf_event *event, struct pt_regs *regs)
-> > {
-> > 	struct perf_sample_data data;
-> > 	struct pmu *pmu = event->pmu;
-> > 	unsigned long flags;
-> > 
-> > 	local_irq_save(flags);
-> > 	perf_pmu_disable(pmu);
-> > 
-> > 	perf_sample_data_init(&data, 0, 0);
-> > 	/*
-> > 	 * XXX or a variant with more _ that starts at the overflow
-> > 	 * handler...
-> > 	 */
-> > 	__perf_event_overflow(event, 0, &data, regs);
-> > 
-> > 	perf_pmu_enable(pmu);
-> > 	local_irq_restore(flags);
-> > }
-> > 
-> > But please consider carefully, I haven't...
+On 8/19/21 2:32 AM, John Garry wrote:
+> The driver does not compile under DEBUG_QLA1280 flag:
+> - Debug statements expect an integer for printing a SCSI lun value, but
+>    its size is 64b. So change SCSI_LUN_32() to cast to an int, as would be
+>    expected from a "_32" function.
+> - lower_32_bits() expects %x, as opposed to %lx, so fix that.
 > 
-> Hmm... This is a little weird to me. 
-> IIUC, we need to call perf_inject_event() after the software event, say
-> a kretprobe, triggers. So it gonna look like:
+> Also delete ql1280_dump_device(), which looks to have never been
+> referenced.
 > 
->   1. kretprobe trigger;
->   2. handler calls perf_inject_event();
->   3. PMI kicks in, and saves LBR;
-
-This doesn't actually happen. I overlooked the fact that we need the PMI
-to fill out @data for us.
-
->   4. after the PMI, consumer of LBR uses the saved data;
-
-Normal overflow handler will have data->br_stack set, but I now realize
-that the 'psuedo' code above will not get that. We need to somehow get
-the arch bits involved; again :/
-
-> However, given perf_inject_event() disables PMU, we can just save the LBR
-> right there? And it should be a lot easier? Something like:
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> ---
+>   drivers/scsi/qla1280.c | 27 ++-------------------------
+>   1 file changed, 2 insertions(+), 25 deletions(-)
 > 
->   1. kretprobe triggers;
->   2. handler calls perf_snapshot_lbr();
->      2.1 perf_pmu_disable(pmu);
->      2.2 saves LBR 
->      2.3 perf_pmu_enable(pmu);
->   3. consumer of LBR uses the saved data;
-> 
-> What is the downside of this approach? 
+> diff --git a/drivers/scsi/qla1280.c b/drivers/scsi/qla1280.c
+> index b4f7d8d7a01c..9a7e84b49d41 100644
+> --- a/drivers/scsi/qla1280.c
+> +++ b/drivers/scsi/qla1280.c
+> @@ -494,7 +494,7 @@ __setup("qla1280=", qla1280_setup);
+>   #define CMD_HOST(Cmnd)		Cmnd->device->host
+>   #define SCSI_BUS_32(Cmnd)	Cmnd->device->channel
+>   #define SCSI_TCN_32(Cmnd)	Cmnd->device->id
+> -#define SCSI_LUN_32(Cmnd)	Cmnd->device->lun
+> +#define SCSI_LUN_32(Cmnd)	((int)Cmnd->device->lun)
 
-It would be perf_snapshot_branch_stack() and would require a new
-(optional) pmu::method to set up the branch stack.
+How about using 'unsigned int' instead of 'int' since LUN numbers are 
+positive integers?
 
-And if we're going to be adding new pmu::methods then I figure one that
-does the whole sample state might be more useful.
+Thanks,
+
+Bart.
