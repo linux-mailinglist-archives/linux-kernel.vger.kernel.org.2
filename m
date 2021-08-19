@@ -2,118 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 882833F1065
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 04:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9FC33F1068
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 04:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235878AbhHSCbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 22:31:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235761AbhHSCa7 (ORCPT
+        id S235750AbhHSCdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 22:33:35 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:35535 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235558AbhHSCde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 22:30:59 -0400
-Received: from mail-vs1-xe62.google.com (mail-vs1-xe62.google.com [IPv6:2607:f8b0:4864:20::e62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E90F8C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 19:30:23 -0700 (PDT)
-Received: by mail-vs1-xe62.google.com with SMTP id i1so3105193vsk.8
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 19:30:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:dkim-signature:from:to:cc:subject:date
-         :message-id:in-reply-to:references:content-transfer-encoding;
-        bh=hXzPmz8KLvpyfahmOwgomHUNy7g+maz+3agQaePxyqA=;
-        b=aesI2HojxBjdY++lg5tCEGISHbRL/1N8mRkUqnZ0CuEe1o3HAmXgeHATdC9owtwDtb
-         0Hlhjam4hUsfSEhu9aZccFzMEY/tWBeEC24J340JwvInyy5a4qQFhCu+XRpZFI/Vy9V0
-         w3nyygZlyW+B2RGk9eRa+eqvEZihxtmHCXNFLqb18Bp9nHx4KrZ1IVMPpUB3Uq8xSdAt
-         o+m/lOIx2PAIsNrLY3Q+dBEELq375sTS/jEBenYJAYLKdlJFK/rB7GGaTp5ABpNrTM5v
-         +awMjq+sfcPyDFQ3+1hEmOYnh/VrSkFJ/YsOO+0gFDeC9PVNJ91Y9+nfAs5jPXLJsRO8
-         a4bg==
-X-Gm-Message-State: AOAM532zNSCw9LdQs1gVIRz5CHnXlPddhlsJIfL+T8ksSKoDacuFJvAd
-        yT0Bn7isiBJPGoOh723ApikXxmIYEYZ3WCZdlsGDadoXBlv4
-X-Google-Smtp-Source: ABdhPJzsT6bfYYc2z+Zg4LsiBGP+To6x/VdfWMyQHDfVetJDkicisEmEOEuZHR6/hkeqxibggYBcpM3IjSOe
-X-Received: by 2002:a67:ed1a:: with SMTP id l26mr11006950vsp.8.1629340223112;
-        Wed, 18 Aug 2021 19:30:23 -0700 (PDT)
-Received: from smtp.aristanetworks.com (mx.aristanetworks.com. [162.210.129.12])
-        by smtp-relay.gmail.com with ESMTPS id t5sm407595vkb.1.2021.08.18.19.30.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 18 Aug 2021 19:30:23 -0700 (PDT)
-X-Relaying-Domain: arista.com
-Received: from chmeee (unknown [10.95.69.61])
-        by smtp.aristanetworks.com (Postfix) with ESMTPS id 3A4BF400D87;
-        Wed, 18 Aug 2021 19:30:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arista.com;
-        s=Arista-A; t=1629340222;
-        bh=hXzPmz8KLvpyfahmOwgomHUNy7g+maz+3agQaePxyqA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=feTcApMsNLy4k5bb/bwmFxszjAJ4rcSxlKbZErEsyuTiw0nzwIUo6aBl4fVGsxJ/f
-         rH+BQg0fHR51UIncdP2IVSt4iBFxln1JQuCAfNu0zz9SvSUDAis6CC9Mn1bUWEx96L
-         JIzRMyxJZCPK6oho1oYp724oG1c821zbE8wB2Vs7LHjrEOkNllbMi2dDE5OBsYucpo
-         zUKStkygyceN1UHhUY5i3TZHcErS3v4+rAXJo/7+BuQhbNCxfaO+VoX1YZcTeyp+qj
-         3DznBOy7NhP77r6n03RR9KiF9bQFgfZyrF1zXbHmtP1FLYDS5es35Mswb3OLUS9DGN
-         lb1Xtrck+soPw==
-Received: from kevmitch by chmeee with local (Exim 4.94.2)
-        (envelope-from <kevmitch@chmeee>)
-        id 1mGXoy-002MCp-DP; Wed, 18 Aug 2021 19:30:20 -0700
-From:   Kevin Mitchell <kevmitch@arista.com>
-Cc:     linux-scsi@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Kevin Mitchell <kevmitch@arista.com>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hannes Reinecke <hare@suse.de>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] lkdtm: remove IDE_CORE_CP crashpoint
-Date:   Wed, 18 Aug 2021 19:29:40 -0700
-Message-Id: <20210819022940.561875-3-kevmitch@arista.com>
-In-Reply-To: <20210819022940.561875-1-kevmitch@arista.com>
-References: <20210819022940.561875-1-kevmitch@arista.com>
+        Wed, 18 Aug 2021 22:33:34 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 30E41580E2A;
+        Wed, 18 Aug 2021 22:32:58 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 18 Aug 2021 22:32:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=x
+        LbvSMTiMYZxTLYR1GQDqD2mHnthLeMTRU2Ref6bLNg=; b=P1vDTC0GO6P646SRK
+        RgvJ+yN321l0O6+4AYHye+w7yBEYLku7DDMSD3wn/pXwl0BV7OehuGUeaeI6Hy0r
+        wfKP3jd6OUuaQbWDcAotmcIk5uPciX0c1jUAQ0wwg243ZFh35hKMZ+lUPmxyjywL
+        tlHQXD52C4C+o77T003wmsfacqTuYnIZd4Mkpa2lekgafD7LqR6L/J+l0IfKcNae
+        M4/P4zXvl68ROdbFYdty/SRt5frGGBQnwTLqMDvijrMmjhN03Ti0jOJRFvWaO8iP
+        jPHURjWP6mEPvnvVloerwcwNWUO1igDn6KWhLt6waj0wUQR5tF14sFWXXUc6KmuS
+        31kog==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=xLbvSMTiMYZxTLYR1GQDqD2mHnthLeMTRU2Ref6bL
+        Ng=; b=jpr8X/jlaa5vaZHNgVIaxcxIkezN2cH0bk/pU+l+fGP9YfwBOa5Q3wAZF
+        Tqp2NeXw5B7n/Nnxbjdf/+pvtpiYJVPvYV8j8u1L641e4QbfIObaUqCKlmrI0zYu
+        jGqHYpZSyhs/GszrIJ90UJ/n/ZCtZZXCFI6ZBxSIqeo+n5cLU/y933NIEm0CHyK7
+        7DH4sB20TgeoYRI0tSxfcpYAJPaNZaUflJiaYDc02Sn7+kKCu0BLpTOND/1j9clM
+        OJIr6NqECNH2SsUxSXM+V3NEMZPwtiO3kWu7wYLV3hViMQa1GS7CcqmAvRKgee1M
+        Au1kBq2GZPDt6gQKGL1sk4lAy8GJQ==
+X-ME-Sender: <xms:18IdYcH1rEoazMwVkcAHiEu7UZwy1Xz6Zue5C6yNoxnw3VpzfLEcLA>
+    <xme:18IdYVUlUmQ0hiyCoMButDKbcnezZk0UysnlIQmUfwcapbFkVQ_HT6Iye3ZLxl7px
+    koUAa1Sz_jwbI-9MQ>
+X-ME-Received: <xmr:18IdYWKbQJxc7HJgvyghJ7KtOdAJkdWzQi6cxjcagZL4F_PhFZ1ibBHR8RwmFLCqMxitFNorZhU_zLgxcTyGPfllHU07gVTPfWR8EvN3oO00gL2pRc6chE2kPw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleeigdehlecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefuvfhfhffkffgfgggjtgfgsehtkeertddtfeejnecuhfhrohhmpefurghmuhgv
+    lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
+    frrghtthgvrhhnpeekteejfefggfefgfevudelhfelhffghefgueelhefhleejjefgueej
+    tdeglefhkeenucffohhmrghinheplhhinhhugidqshhunhigihdrohhrghenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhh
+    ohhllhgrnhgurdhorhhg
+X-ME-Proxy: <xmx:18IdYeGgVxLwjsTBoSb1fMu30CXWqq0tKVRfreCEOtX19b7yEcwf7w>
+    <xmx:18IdYSVqiTMIPjh6MrMcfv-6vW2Cc83lER6nuLYNGmg_f4vMTnt8SA>
+    <xmx:18IdYRMM4tfAzuPVdAq6onaeDNF6C8JZMU_zQQQu40Hpjvx-NCN9ow>
+    <xmx:2sIdYZNJr2uDoTnSglROrBEDU1Ju6fEft51F1e-uft0mlhRH-1GZ8w>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 18 Aug 2021 22:32:54 -0400 (EDT)
+Subject: Re: [PATCH 15/17] arm64: allwinner: dts: add DTSI file for R329 SoC
+To:     Icenowy Zheng <icenowy@sipeed.com>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210802062212.73220-1-icenowy@sipeed.com>
+ <20210802062212.73220-16-icenowy@sipeed.com>
+ <20210818090139.rllz4fvvq3pzdkls@gilmour>
+ <74F51516-2470-4A49-972B-E19D8EDD9A3D@sipeed.com>
+From:   Samuel Holland <samuel@sholland.org>
+Message-ID: <75ae9ef8-496b-68ca-214e-e8b270648a50@sholland.org>
+Date:   Wed, 18 Aug 2021 21:32:53 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <74F51516-2470-4A49-972B-E19D8EDD9A3D@sipeed.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the removal of the legacy IDE driver in kb7fb14d3ac63 ("ide: remove
-the legacy ide driver"), this crashpoint no longer points to a valid
-function.
+On 8/18/21 4:15 AM, Icenowy Zheng wrote:
+> 于 2021年8月18日 GMT+08:00 下午5:01:39, Maxime Ripard <maxime@cerno.tech> 写到:
+>> On Mon, Aug 02, 2021 at 02:22:10PM +0800, Icenowy Zheng wrote:
+>>> +		ccu: clock@2001000 {
+>>> +			compatible = "allwinner,sun50i-r329-ccu";
+>>> +			reg = <0x02001000 0x1000>;
+>>> +			clocks = <&osc24M>, <&rtc 0>, <&rtc 2>;
+>>> +			clock-names = "hosc", "losc", "iosc";
+>>
+>> Do we have a clock tree for the RTC? Is it the same than the H616?
+> 
+> Nope, it's the same with H6 because of external LOSC crystal is
+> possible. (Although production M2A SoMs has it NC for cost control.)
 
-Signed-off-by: Kevin Mitchell <kevmitch@arista.com>
----
- Documentation/fault-injection/provoke-crashes.rst | 3 +--
- drivers/misc/lkdtm/core.c                         | 1 -
- 2 files changed, 1 insertion(+), 3 deletions(-)
+It is not the same as the H6, either. The clock tree _is_ identical to the D1,
+which has three diagrams on pages 363-364 of its user manual here:
 
-diff --git a/Documentation/fault-injection/provoke-crashes.rst b/Documentation/fault-injection/provoke-crashes.rst
-index 18de17354206..3abe84225613 100644
---- a/Documentation/fault-injection/provoke-crashes.rst
-+++ b/Documentation/fault-injection/provoke-crashes.rst
-@@ -29,8 +29,7 @@ recur_count
- cpoint_name
- 	Where in the kernel to trigger the action. It can be
- 	one of INT_HARDWARE_ENTRY, INT_HW_IRQ_EN, INT_TASKLET_ENTRY,
--	FS_DEVRW, MEM_SWAPOUT, TIMERADD, SCSI_QUEUE_RQ,
--	IDE_CORE_CP, or DIRECT
-+	FS_DEVRW, MEM_SWAPOUT, TIMERADD, SCSI_QUEUE_RQ, or DIRECT.
- 
- cpoint_type
- 	Indicates the action to be taken on hitting the crash point.
-diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
-index 016cb0b150fc..e50e7bfc4674 100644
---- a/drivers/misc/lkdtm/core.c
-+++ b/drivers/misc/lkdtm/core.c
-@@ -83,7 +83,6 @@ static struct crashpoint crashpoints[] = {
- 	CRASHPOINT("MEM_SWAPOUT",	 "shrink_inactive_list"),
- 	CRASHPOINT("TIMERADD",		 "hrtimer_start"),
- 	CRASHPOINT("SCSI_QUEUE_RQ",	 "scsi_queue_rq"),
--	CRASHPOINT("IDE_CORE_CP",	 "generic_ide_ioctl"),
- #endif
- };
- 
--- 
-2.32.0
+https://dl.linux-sunxi.org/D1/D1_User_Manual_V0.1_Draft_Version.pdf
 
+Compared to the H6, the R329/D1:
+ - Loses the LOSC calibration circuit
+ - Gains a third mux input for LOSC (not external 32k) to fanout
+ - Gains a mux to choose between LOSC and HOSC/750 for the RTC clock
+ - Gains an SPI bus clock input divided from the PRCM AHB
+
+Compared to the H616, the R329/D1:
+ - Has an external 32k crystal input
+   - Gains the IOSC vs. external 32k crystal mux for LOSC
+   - Switches fanout mux input #1 from pll_periph0/N to external 32k
+ - Gains a mux to choose between LOSC and HOSC/750 for the RTC clock
+ - Gains an SPI bus clock input divided from the PRCM AHB
+
+So the R329/D1 RTC has three inputs:
+ - SPI clock from PRCM
+ - 24 MHz DCXO crystal
+ - 32 kHz external crystal (optional)
+
+and four outputs:
+ - 16 MHz "IOSC" RC oscillator
+ - 32 kHz "LOSC"
+ - ~1 kHz for RTC timekeeping
+ - 32 kHz fanout
+
+(Arguably, since the 24 MHz DCXO can be turned on/off from the RTC registers, it
+should be an "output" and not an "input".)
+
+Regards,
+Samuel
