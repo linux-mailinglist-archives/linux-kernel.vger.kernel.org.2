@@ -2,100 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18EC93F14A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 328133F14A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236994AbhHSH5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 03:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236379AbhHSH5j (ORCPT
+        id S236904AbhHSH73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 03:59:29 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:52478 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231909AbhHSH7Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 03:57:39 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E83A9C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 00:57:03 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mGcv1-0005Gs-Hd; Thu, 19 Aug 2021 09:56:55 +0200
-Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:5b60:c5f4:67f4:2e1e])
+        Thu, 19 Aug 2021 03:59:25 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 68B0D66A457;
-        Thu, 19 Aug 2021 07:56:52 +0000 (UTC)
-Date:   Thu, 19 Aug 2021 09:56:50 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        David Jander <david@protonic.nl>
-Subject: Re: [PATCH v2 0/3] can: provide GPIO based termination
-Message-ID: <20210819075650.xc6qkbos6znasyax@pengutronix.de>
-References: <20210818071232.20585-1-o.rempel@pengutronix.de>
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1CEB5220AB;
+        Thu, 19 Aug 2021 07:58:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629359929; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GasiM7Gy5clKgsCGkYZlWv0QVHBzwTvldYtpCJdLXlY=;
+        b=F/EtMP5KGs1HWPLA29hG+3PQYkUbvNF6FWEBiwDZc2Z2AJJGG0g/5m5ndZe2yxr93HAWuj
+        yBcCD/txDvEp7IqUcLhalILcKdFnQjyT8heCgiJ4jeRmirL2Yt4o3Tvh91z/5ZKGKbaacK
+        9HrQ2hO7xm07IbVAyNB3dA/O36Fm7Q8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629359929;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GasiM7Gy5clKgsCGkYZlWv0QVHBzwTvldYtpCJdLXlY=;
+        b=CNSD3tLSPcXd5p99d1UpO7Ehx9Mu3IroRkaLNmapediVk8MBqEHzK4lOYu72geIGzEPPIU
+        DDZw6mtXroOYG5AQ==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 97E57136DD;
+        Thu, 19 Aug 2021 07:58:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id aGpJIzgPHmFyEAAAGKfGzw
+        (envelope-from <jroedel@suse.de>); Thu, 19 Aug 2021 07:58:48 +0000
+Date:   Thu, 19 Aug 2021 09:58:46 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Peilin Ye <peilin.ye@bytedance.com>
+Subject: Re: [PATCH RESEND v2] docs: x86: Remove obsolete information about
+ x86_64 vmalloc() faulting
+Message-ID: <YR4PNjIM3W5zkPnt@suse.de>
+References: <20210818220123.2623-1-yepeilin.cs@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pl7hawpdzdrcfg4j"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210818071232.20585-1-o.rempel@pengutronix.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210818220123.2623-1-yepeilin.cs@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 18, 2021 at 03:01:23PM -0700, Peilin Ye wrote:
+> From: Peilin Ye <peilin.ye@bytedance.com>
+> 
+> x86_64 vmalloc() mappings are no longer "synchronized" among page tables
+> via faulting since commit 6eb82f994026 ("x86/mm: Pre-allocate P4D/PUD
+> pages for vmalloc area"), since the corresponding P4D or PUD pages are
+> now preallocated at boot, by preallocate_vmalloc_pages().  Drop the
+> "lazily synchronized" description for less confusion.
+> 
+> While this file is x86_64-specific, it is worth noting that things are
+> different for x86_32, where vmalloc()-related changes to `init_mm.pgd` are
+> synchronized to all page tables in the system during runtime, via
+> arch_sync_kernel_mappings().  Unfortunately, this synchronization is
+> subject to race condition, which is further handled via faulting, see
+> vmalloc_fault().  See commit 4819e15f740e ("x86/mm/32: Bring back vmalloc
+> faulting on x86_32") for more details.
+> 
+> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> Signed-off-by: Peilin Ye <peilin.ye@bytedance.com>
 
---pl7hawpdzdrcfg4j
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Joerg Roedel <jroedel@suse.de>
 
-On 18.08.2021 09:12:29, Oleksij Rempel wrote:
-> changes v3:
-> - use u32 instead of u16 for termination-ohms
-> - extend error handling
->=20
-> changes v2:
-> - add CAN_TERMINATION_GPIO_MAX
-> - remove fsl,scu-index from yaml example. It is not used on imx6q
->=20
-> Oleksij Rempel (3):
->   dt-bindings: can-controller: add support for termination-gpios
->   dt-bindings: can: fsl,flexcan: enable termination-* bindings
->   can: dev: provide optional GPIO based termination support
-
-Applied to linux-can-next/testing
-
-Thanks,
-Marc
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---pl7hawpdzdrcfg4j
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEeDsAACgkQqclaivrt
-76mSfwf/dfvCL7pDwDqDSoM7OVCAM4dONYFMYDBg241hlE0YRCsH2Kgym0rG71EQ
-Z44O3yuvXqzQWNNNdrqOmmrNt3J6H9kpo955cfwElfgFrAI+GkrUC/TLdg1TwZXh
-l9gZqnp6Dq4Kis6FPkiRIsvHWTfwsRUzDCVz5IZiAlOryoKIij7yX7ljXAgvLmxn
-3dbBSku0TFuz7HJ6iX/uWpbtZ2/t9hmUyntPXv7C9XWqKgueyKy3fEOLYzXAd5K9
-FIuT6tfqn3cAUgIyFoO/3eKJFInhfNYBTLF7Dk+5YDuDkjVlcaEa+XntRSo6S842
-GFASKuVSLM2kkSYU7Gy6jjYif1JOQA==
-=PcYP
------END PGP SIGNATURE-----
-
---pl7hawpdzdrcfg4j--
+> ---
+> Hi all,
+> 
+> Resending this with Muchun's Reviewed-by:.
+> 
+> Thanks,
+> Peilin Ye
+> 
+> Changes in v2:
+>     - More information for x86_32 in commit message (Joerg Roedel
+>       <jroedel@suse.de>)
+>     - Use my new email address for work
+> 
+>  Documentation/x86/x86_64/mm.rst | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/Documentation/x86/x86_64/mm.rst b/Documentation/x86/x86_64/mm.rst
+> index ede1875719fb..9798676bb0bf 100644
+> --- a/Documentation/x86/x86_64/mm.rst
+> +++ b/Documentation/x86/x86_64/mm.rst
+> @@ -140,10 +140,6 @@ The direct mapping covers all memory in the system up to the highest
+>  memory address (this means in some cases it can also include PCI memory
+>  holes).
+>  
+> -vmalloc space is lazily synchronized into the different PML4/PML5 pages of
+> -the processes using the page fault handler, with init_top_pgt as
+> -reference.
+> -
+>  We map EFI runtime services in the 'efi_pgd' PGD in a 64Gb large virtual
+>  memory window (this size is arbitrary, it can be raised later if needed).
+>  The mappings are not part of any other kernel PGD and are only available
+> -- 
+> 2.20.1
+> 
