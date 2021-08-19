@@ -2,88 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DADE93F11E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 05:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 463073F11CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 05:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237049AbhHSDiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 23:38:04 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:37959 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236794AbhHSDhs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 23:37:48 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629344233; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=2LeGuK1XxCpAYz1nBFu2cCknTtYllg91h3Sn6TLlkbw=; b=pZ1wNgyPo6J0JGFhaUnvZFHTHLEByiNLcqF2BuRU9SQNASuZvlCL1Zz0meJ1lCuv2Lo5PCyb
- A7RHjUJoSjmo/My7qA7cfgyCBvUkRTJALPCrMBG+9ZMk4aDFzPw8UpLZFMSt1OSXJAt57PyH
- 8CJvLYw06hqJyk1GiAr58sUDd/4=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 611dd1d5f746c298d9fb0262 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 19 Aug 2021 03:36:53
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 73828C4361B; Thu, 19 Aug 2021 03:36:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1B562C4361A;
-        Thu, 19 Aug 2021 03:36:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 1B562C4361A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     bjorn.andersson@linaro.org, robh+dt@kernel.org, will@kernel.org,
-        saiprakash.ranjan@codeaurora.org, swboyd@chromium.org,
-        mka@chromium.org
-Cc:     ohad@wizery.com, agross@kernel.org, mathieu.poirier@linaro.org,
-        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
-        dianders@chromium.org, Sibi Sankar <sibis@codeaurora.org>
-Subject: [PATCH v3 02/10] remoteproc: qcom: pas: Add SC7280 Modem support
-Date:   Thu, 19 Aug 2021 09:06:17 +0530
-Message-Id: <1629344185-27368-3-git-send-email-sibis@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1629344185-27368-1-git-send-email-sibis@codeaurora.org>
-References: <1629344185-27368-1-git-send-email-sibis@codeaurora.org>
+        id S236353AbhHSDg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 23:36:59 -0400
+Received: from mga01.intel.com ([192.55.52.88]:27242 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236079AbhHSDg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 23:36:57 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="238589396"
+X-IronPort-AV: E=Sophos;i="5.84,333,1620716400"; 
+   d="scan'208";a="238589396"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 20:36:22 -0700
+X-IronPort-AV: E=Sophos;i="5.84,333,1620716400"; 
+   d="scan'208";a="521732305"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.239.13.122]) ([10.239.13.122])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 20:36:20 -0700
+Subject: Re: [tip: x86/splitlock] Documentation/x86: Add buslock.rst
+To:     Fenghua Yu <fenghua.yu@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Luck <tony.luck@intel.com>, x86@kernel.org
+References: <20210419214958.4035512-2-fenghua.yu@intel.com>
+ <162134906278.29796.13820849234959966822.tip-bot2@tip-bot2>
+ <f1a30c67-2c05-5c8f-df8f-ca82f9bf89af@intel.com>
+ <YR0o5olwUq765pS4@otcwcpicx3.sc.intel.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <aeb1d99d-6651-c0ff-a7bd-f006518080e2@intel.com>
+Date:   Thu, 19 Aug 2021 11:36:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <YR0o5olwUq765pS4@otcwcpicx3.sc.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for booting the Modem DSP found on QTI SC7280 SoCs.
+On 8/18/2021 11:36 PM, Fenghua Yu wrote:
+> On Wed, Aug 18, 2021 at 09:59:49AM +0800, Xiaoyao Li wrote:
+>> On 5/18/2021 10:44 PM, tip-bot2 for Fenghua Yu wrote:
+>> I'm wonder if using only one "split_lock_detect" parameter for those two
+>> features is good/correct.
+>>
+>> In fact, split lock is just one type of bus lock. There are two types bus
+>> lock:
+>> 1) split lock, lock on WB memory across multiple cache lines;
+>> 2) lock on non-WB memory;
+>>
+>> As current design, if both features are available, it only enables #AC for
+>> split lock either for "warn" or "fatal". Thus we cannot capture any bus lock
+>> due to 2) lock on non-WB memory.
+>>
+>> Why not provide separate parameter for them? e.g., split_lock_detect and
+>> bus_lock_detect. Then they can be configured and enabled independently.
+> 
+> #AC for split lock is a model specific feature and only available on limited
+> (and legacy) platforms. #DB for bus lock is an architectural feature and will
+> replace #AC for split lock in future platforms. The platforms that support
+> both of them are very rare (maybe only one AFAIK). 
 
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
----
- drivers/remoteproc/qcom_q6v5_pas.c | 1 +
- 1 file changed, 1 insertion(+)
+I suppose you mean only SPR supports both.
 
-diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
-index 7036e6e9eff4..89c889c041e5 100644
---- a/drivers/remoteproc/qcom_q6v5_pas.c
-+++ b/drivers/remoteproc/qcom_q6v5_pas.c
-@@ -783,6 +783,7 @@ static const struct of_device_id adsp_of_match[] = {
- 	{ .compatible = "qcom,qcs404-cdsp-pas", .data = &cdsp_resource_init },
- 	{ .compatible = "qcom,qcs404-wcss-pas", .data = &wcss_resource_init },
- 	{ .compatible = "qcom,sc7180-mpss-pas", .data = &mpss_resource_init},
-+	{ .compatible = "qcom,sc7280-mpss-pas", .data = &mpss_resource_init},
- 	{ .compatible = "qcom,sc8180x-adsp-pas", .data = &sm8150_adsp_resource},
- 	{ .compatible = "qcom,sc8180x-cdsp-pas", .data = &sm8150_cdsp_resource},
- 	{ .compatible = "qcom,sc8180x-mpss-pas", .data = &sc8180x_mpss_resource},
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+> Adding two parameters makes
+> code and usage complex while only one platform may get benefit in reality.
+
+First, it's about correctness not easiness. Administrator wants to kill 
+any user application that causes bus lock so setting 
+"split_lock_detect=fatal". But it's possible that all non-WB bus lock 
+escapes if the platform supports both feature.
+
+(Yes, the parameter is called "split_lock_detect". It's no surprising 
+that it can only detects split lock.)
+
+Second, I don't think using two separate parameters makes code and usage 
+complex. e.g.,
+
+   - "split_lock_detect" for split lock feature, it can be
+     [off|fatal|warn]
+   - "bus_lock_detect" for bus lock feature, it can be
+     [off|fatal|warn|ratelimit]
+
+   Of course, kernel can print a message like "split/bus lock detection
+   is not supported by silicon" when feature is not available.
+
+Both features can work independently, and every combination can work wit 
+h no issue.
+
+Users are suggested to use "bus_lock_detect" to detect all bus lock and 
+leave "split_lock_detect" to whatever. Of course they can only use 
+"split_lock_detect" while leaving "bus_lock_detect" to off, if they are 
+only interested in split lock.
+
+> Thanks.
+> 
+> -Fenghua
+> 
 
