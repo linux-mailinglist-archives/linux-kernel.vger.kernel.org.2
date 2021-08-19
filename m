@@ -2,86 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3283F0F96
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 02:47:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B04E3F0F9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 02:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234986AbhHSAs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 20:48:28 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:41929 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234523AbhHSAs2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 20:48:28 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 0DBFD3200989;
-        Wed, 18 Aug 2021 20:47:51 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 18 Aug 2021 20:47:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:date:from:message-id:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=nbDBg9mYCKWOKiutMRQQ7517utN8j+39dIclsH3p0OA=; b=JXtImGhy
-        WpkUposKZjVOio/dAQb8NpCo06qYe3j6QagXOTsEGiFpdOqVq6rONrld2BWi1wNY
-        fs8F3Nd9bfUx0pkDV/Tr578vELd+ADuQdb2drYKIMU3o7DTDZevUg/dk1thv2yjS
-        LgAOGiYnGVMTvAjskrrIqOmBAlBrFJTQreTDSvV9SUmknJ99SAT0wy4BFvbdvw/s
-        e+rWgLLYBQNqlCw+lJq231ngch8tgmbj7JBbfwJeqGi07ob2btraAI3z1Gk7S/nQ
-        GAbBTdketnEZxyWS+UYJklO6t9eKx9XJnBu/nUcUfz4m5vTIykRJmfWeQ+Yfaeyl
-        TJbCEUqCMxP8DA==
-X-ME-Sender: <xms:NaodYT_nWNw9QN-tURtesHwI9FQY_UYu99S63H0V6LAP6v3u-hD46Q>
-    <xme:NaodYfsrp8mQWD1qFEZz-PmGVput7CfyZysrw7oARplixQx__BkGCdZjX3PEqEBUl
-    48h9397IiQBfMulACI>
-X-ME-Received: <xmr:NaodYRCUdTpVSRbvScc42ZWD6sDNzMNWwKVyLzlSwdM7NfaPCSnSrYfbkM6V4Wfmb-heAhaCxMaggPpnl0J9Njhz5oM8QrvF_2arZA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleeigdefkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefvkffhufffsedttdertddttddtnecuhfhrohhmpefhihhnnhcuvfhhrghinhcu
-    oehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtthgvrhhnpe
-    dtleetkeelkeekvdeujeehkefgvddtheehhfetieethfetfeeghfduheevveelleenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinh
-    eslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:NaodYffWuSr_LqYoWFdDRP31sbgXdpPOKtdUNfU-aOx6BOjLxhFX8w>
-    <xmx:NaodYYM1OsI3BxJS16kWwW2iCxnAnARJxS448L0NR13YHvd9MBWqYw>
-    <xmx:NaodYRkXh26GsV5Jp5o5XcgNy9J5islDW0q9DIdZI381CcBtDh3L5g>
-    <xmx:N6odYRZQdwahIxCTbrXgzI9GoK7aFclZLnKIilczpljRkUJixsNL_Q>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 18 Aug 2021 20:47:47 -0400 (EDT)
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Message-Id: <44ab381741916a51e783c4a50d0b186abdd8f280.1629334014.git.fthain@linux-m68k.org>
-From:   Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH] powerpc/tau: Add 'static' storage qualifier to 'tau_work'
- definition
-Date:   Thu, 19 Aug 2021 10:46:54 +1000
+        id S234261AbhHSAvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 20:51:04 -0400
+Received: from mga02.intel.com ([134.134.136.20]:26041 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230180AbhHSAvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 20:51:03 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="203657799"
+X-IronPort-AV: E=Sophos;i="5.84,333,1620716400"; 
+   d="scan'208";a="203657799"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 17:50:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,333,1620716400"; 
+   d="scan'208";a="678768847"
+Received: from jiedeng-optiplex-7050.sh.intel.com ([10.239.154.104])
+  by fmsmga006.fm.intel.com with ESMTP; 18 Aug 2021 17:50:24 -0700
+From:   Jie Deng <jie.deng@intel.com>
+To:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     wsa@kernel.org, jie.deng@intel.com, viresh.kumar@linaro.org,
+        sfr@canb.auug.org.au, conghui.chen@intel.com
+Subject: [PATCH] i2c: virtio: Fix the compiler warning when CONFIG_ACPI is not set
+Date:   Thu, 19 Aug 2021 08:48:41 +0800
+Message-Id: <4309f869890e70810f2c40a8d60495240e318303.1629333590.git.jie.deng@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch prevents the following sparse warning.
+Fix the compiler warning "drivers/i2c/busses/i2c-virtio.c:208:17:
+warning: unused variable 'pdev' [-Wunused-variable]" when CONFIG_ACPI
+is not set.
 
-arch/powerpc/kernel/tau_6xx.c:199:1: sparse: sparse: symbol 'tau_work'
-was not declared. Should it be static?
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+Fixes: 8fb12751ac78 ("i2c: virtio: add a virtio i2c frontend driver")
+Signed-off-by: Jie Deng <jie.deng@intel.com>
 ---
- arch/powerpc/kernel/tau_6xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/i2c/busses/i2c-virtio.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/kernel/tau_6xx.c b/arch/powerpc/kernel/tau_6xx.c
-index b9a047d92ec0..8e83d19fe8fa 100644
---- a/arch/powerpc/kernel/tau_6xx.c
-+++ b/arch/powerpc/kernel/tau_6xx.c
-@@ -164,7 +164,7 @@ static void tau_work_func(struct work_struct *work)
- 	queue_work(tau_workq, work);
- }
+diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
+index d3e60d9..964c601 100644
+--- a/drivers/i2c/busses/i2c-virtio.c
++++ b/drivers/i2c/busses/i2c-virtio.c
+@@ -205,7 +205,6 @@ static const struct i2c_adapter_quirks virtio_i2c_quirks = {
  
--DECLARE_WORK(tau_work, tau_work_func);
-+static DECLARE_WORK(tau_work, tau_work_func);
+ static int virtio_i2c_probe(struct virtio_device *vdev)
+ {
+-	struct device *pdev = vdev->dev.parent;
+ 	struct virtio_i2c *vi;
+ 	int ret;
  
- /*
-  * setup the TAU
+@@ -234,7 +233,7 @@ static int virtio_i2c_probe(struct virtio_device *vdev)
+ 	 * Setup ACPI node for controlled devices which will be probed through
+ 	 * ACPI.
+ 	 */
+-	ACPI_COMPANION_SET(&vi->adap.dev, ACPI_COMPANION(pdev));
++	ACPI_COMPANION_SET(&vi->adap.dev, ACPI_COMPANION(vdev->dev.parent));
+ 
+ 	ret = i2c_add_adapter(&vi->adap);
+ 	if (ret)
 -- 
-2.26.3
+2.7.4
 
