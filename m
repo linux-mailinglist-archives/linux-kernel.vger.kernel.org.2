@@ -2,84 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F8473F19C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 14:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0788D3F19C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 14:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239835AbhHSMu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 08:50:59 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:38912
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238878AbhHSMu4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 08:50:56 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id B15643F110;
-        Thu, 19 Aug 2021 12:50:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629377418;
-        bh=NlpNbKBlI8kqdEuf1BReGDXjCIxIm5jBGMFuDPejO0w=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=jwaRhOCOuGRf9Ewe7FgdXMvPb49/D1vy5Cemnsx/RsO+VKPtDveRERHEsiYTjT1X5
-         IiGmx0pj+PhPQ/uH7O4tVXQqAljKWl2SjwLzhXvq6Gw3LNr6aY7V4FJJCGjWLeULPv
-         9p2QouV+WVSkgmMY1x23klII44FpwEV1FQFZewTft2tIr+95e/Ws1kPcBNrzWmCek+
-         J+mDZAu09HpmUg5SGfSLknygRNAnfnxtQyWudN6+jgRJcEaY9GbXltXB52EOonj1+c
-         M22F3vdy01up8OPI1W0wuYxM1T6H95ALiSWMkFvyuMXTPPZN8owT8oZROfHk+RndM7
-         PP7cD+8S3dUJw==
-From:   Colin King <colin.king@canonical.com>
-To:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Siva Rebbagondla <siva8118@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rsi: make array fsm_state static const, makes object smaller
-Date:   Thu, 19 Aug 2021 13:50:18 +0100
-Message-Id: <20210819125018.8577-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        id S238161AbhHSMx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 08:53:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229577AbhHSMx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 08:53:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06665610FF;
+        Thu, 19 Aug 2021 12:52:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629377571;
+        bh=d8+ejcexdJq2YzMyuiPFlHJMiGhmSn4T29YapIhjupE=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=M1mbxHnDvBv+QjdxxgKadd1CmtEY8q7rdMx8qneJ3/ldYQV7pdBGM43LsjTnlCTo6
+         LMkzuEPxEg/JWG64EgWSt86COIyiPNxQ+PeJ1erc94cxX8/g/FJI64FhSneUSm734v
+         ixR7ummRFRy6XJMa1GxFwc3OYVfdZGmK87sEAm/eXQz9vL+ixXwCe52pGMwg+IzRKX
+         cRs3zRaApBS+6Xn+0V36tPyjHFkdS4toGcPGo7rhk3DsthZ7nSN0tYmvZmnf2sHOEx
+         Fy8yPcqsNpdc+nj39lIruE/bhkXDG1D5k5dsLDs4UjFiRUvsaE58Xc+LdsT/oJjNp3
+         Oq81RaicLtJTQ==
+Message-ID: <9ec30322d0d133bfa695da475d4de736994a6c68.camel@kernel.org>
+Subject: Re: [PATCH v2 2/2] x86/sgx: Add SGX_MemTotal to /proc/meminfo
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     linux-sgx@vger.kernel.org
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        Saravanan D <saravanand@fb.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Date:   Thu, 19 Aug 2021 15:52:48 +0300
+In-Reply-To: <20210819124824.52169-2-jarkko@kernel.org>
+References: <20210819124824.52169-1-jarkko@kernel.org>
+         <20210819124824.52169-2-jarkko@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Thu, 2021-08-19 at 15:48 +0300, Jarkko Sakkinen wrote:
+> The amount of SGX memory on the system is determined by the BIOS and it
+> varies wildly between systems.  It can be from dozens of MB's on desktops
+> or VM's, up to many GB's on servers.  Just like for regular memory, it is
+> sometimes useful to know the amount of usable SGX memory in the system.
+>=20
+> Add SGX_MemTotal field to /proc/meminfo, which shows the total amount of
+> usable SGX memory in the system.  E.g. with 32 MB reserved for SGX from
+> BIOS, the printout would be:
+>=20
+> SGX_MemTotal:      22528 kB
+>=20
+> It is less than 32 MB because some of the space is reserved for Enclave
+> Page Cache Metadata (EPCM), which contains state variables for all the
+> pages in the Enclave Page Cache (EPC).  The latter contains the pages,
+> which applications can use to create enclaves.
+>=20
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-Don't populate the array fsm_state on the stack but instead it
-static const. Makes the object code smaller by 154 bytes:
+While working on this, I noticed that suddenly my i5-9660k desktop fully
+supports SGX on Linux. I don't recall that it has worked in the patch.
+Maybe this is because of some firmware/ucode update, do not really know,
+but definitely not a bad thing.
 
-Before:
-   text	   data	    bss	    dec	    hex	filename
-   9213	   3904	      0	  13117	   333d	.../wireless/rsi/rsi_91x_debugfs.o
+Perhaps this casts through other 9th gen Core CPU's.
 
-After:
-   text	   data	    bss	    dec	    hex	filename
-   8995	   3968	      0	  12963	   32a3	.../wireless/rsi/rsi_91x_debugfs.o
+The motherboard I have in this machine is AORUS Elite z390.
 
-(gcc version 10.3.0)
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/wireless/rsi/rsi_91x_debugfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/rsi/rsi_91x_debugfs.c b/drivers/net/wireless/rsi/rsi_91x_debugfs.c
-index 24a417ea2ae7..f404ca4c38e8 100644
---- a/drivers/net/wireless/rsi/rsi_91x_debugfs.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_debugfs.c
-@@ -117,7 +117,7 @@ static int rsi_stats_read(struct seq_file *seq, void *data)
- {
- 	struct rsi_common *common = seq->private;
- 
--	unsigned char fsm_state[][32] = {
-+	static const unsigned char fsm_state[][32] = {
- 		"FSM_FW_NOT_LOADED",
- 		"FSM_CARD_NOT_READY",
- 		"FSM_COMMON_DEV_PARAMS_SENT",
--- 
-2.32.0
+/Jarkko
 
