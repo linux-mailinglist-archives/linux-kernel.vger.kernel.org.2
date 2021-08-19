@@ -2,95 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083903F18F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 14:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C8753F1909
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 14:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239292AbhHSMP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 08:15:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239281AbhHSMP5 (ORCPT
+        id S238398AbhHSMRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 08:17:32 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:36268
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238357AbhHSMR3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 08:15:57 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F71C061575;
-        Thu, 19 Aug 2021 05:15:21 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id mq3so4765841pjb.5;
-        Thu, 19 Aug 2021 05:15:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fztjrUxdZEGqbexbhasq+sSk3wApfe0OIx2v0wDlJzY=;
-        b=bKdMjI8NAJFzuSl1FIMfWW2ST9E3Xw5D7ATeV+JVCvgbRsL2WXuRLbgaB/BLs09gtq
-         UAV18MFqviWSmL7/GZKyOddobts6Vtu9GcpDEyE8IzF4ZrA0CCtC6c6yg2FB6xjK3lgY
-         cw+wLmnyYX+KCYnu00fyGTIdGyn78N0WuYXCmTlWatxyA2wFWi/69mXZBJiVID/1GZMZ
-         dmWvMf78Om/63av6tbWRANCJEZDAhagryZVaiIX8jT//F0fqARkGn8uH3RzUj69veUL2
-         8TL8axQRarsmSrmi6taY9JZojQvEHtFhGCTncWak+XLx+4S4kYQAf7yfHI6glp3Xne9G
-         HbCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fztjrUxdZEGqbexbhasq+sSk3wApfe0OIx2v0wDlJzY=;
-        b=nKC/yzdQEiHnqK9w0OHq0NMDY1JGorNaVoE7FRsn//K2hURAcI/3XvQYQhhsF7+tQt
-         VsX+oCLQE3EY32DQf3dCLlun1spkzFswHD4kYO89wduvrd26gbhFZdu3hC3rqRlEg8qy
-         jPzer1NqgMI6b/Y5eoqTni1d8b8sHAy/ybpGMx7AKYn+zLFRK3b+OOyvmSGn1C9Dgpg7
-         wUYJTDhH09IoKk6z3VR7pFVw3jSRDI+9x0xgJkNb6BJ84um1S+GjY9RxpF0tiERFl6kT
-         GNmwq9F82XXCr3I/IvkO2SDkX8wNddQxgT2qmA8eD/joKM2aP4XHoWOwNVeHLPFX5DRG
-         y5fg==
-X-Gm-Message-State: AOAM531nqBe1Fufsk4EEBWSIS7qBjG3s/cJv6VKt7hJHB6Gz5DAeDsV6
-        RDX+g+8GnlRoVmmqM0AYfYKWZoYcMNHDdoULLz8=
-X-Google-Smtp-Source: ABdhPJyYHDss0jUoLyH5uB5xnms0tcgzX/qqtvZOOoF7OoDKpZTSP9tmz9R2WVpYgLYuRLdqUFN0xcyYMbjjwqhBZZc=
-X-Received: by 2002:a17:90a:604e:: with SMTP id h14mr14846390pjm.181.1629375321054;
- Thu, 19 Aug 2021 05:15:21 -0700 (PDT)
+        Thu, 19 Aug 2021 08:17:29 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 5676440C9E;
+        Thu, 19 Aug 2021 12:16:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629375411;
+        bh=jsGWeGecQ1kWffqrQvCeBJMCWUwwxyDVLr5Pq+OBIQA=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=qP8naA+8cHCYt7YbKmUmxvC6slgIAPThy+wi0iVhtyAfdCqx9ER7XSNn07hEcq/cK
+         vfRm4ryOD58AaJU5bZrlnwXHOFqSsKT3H10wOxYI/I5OEE9B8rNjX6RGJwPVgFYbcw
+         Q5QHbslXwLOWR7v0DzgAZ+izOq5w62VNEaPSWP3H6Hg9RPJvvpXs+FNniIo/iGwfVg
+         KqphZBwMoKpjLR4gRaXdCukhRXULbIcSfzAkSCt3DfyvBslVHN5qklx/WHUYPNDOUs
+         Y4rWP15bLPnpJSWcxlxIoZJrkwAJBxHzu4WQ3KBUdVzqgRs8/bfcSKMVvNgOEiOUlh
+         aBhFM03CDAIdg==
+From:   Colin King <colin.king@canonical.com>
+To:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mwifiex: make arrays static const, makes object smaller
+Date:   Thu, 19 Aug 2021 13:16:51 +0100
+Message-Id: <20210819121651.7566-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210819033001.20136-1-hpa@redhat.com> <1360c64f-b695-a4b8-8b61-a4dfb0e896f0@redhat.com>
- <CAHp75VcdOc+G1Yov9HcGhMbEqzGwemmD7=SHd3qOOsEdAqjg2Q@mail.gmail.com>
-In-Reply-To: <CAHp75VcdOc+G1Yov9HcGhMbEqzGwemmD7=SHd3qOOsEdAqjg2Q@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 19 Aug 2021 15:14:41 +0300
-Message-ID: <CAHp75VfvjVeq716d=aGvZXvmzbpW4+XG66ryVYrBxk5G5Wd6cg@mail.gmail.com>
-Subject: Re: [PATCH v3 00/20] Intel platform driver code movement
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Kate Hsuan <hpa@redhat.com>, Alex Hung <alex.hung@canonical.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        AceLan Kao <acelan.kao@canonical.com>,
-        Jithu Joseph <jithu.joseph@intel.com>,
-        Maurice Ma <maurice.ma@intel.com>,
-        Sujith Thomas <sujith.thomas@intel.com>,
-        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        Zha Qipeng <qipeng.zha@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "David E . Box" <david.e.box@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dell.Client.Kernel@dell.com,
-        Platform Driver <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 3:03 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Thu, Aug 19, 2021 at 1:48 PM Hans de Goede <hdegoede@redhat.com> wrote:
->
->
-> > Thank you for your patch-series, I've applied the series to my
-> > review-hans branch:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-> >
-> > With the changes mentioned in replies to individual patches.
->
-> Can we postpone this a bit, please?
->
-> I have a few comments here and there. I'll send asap.
+From: Colin Ian King <colin.king@canonical.com>
 
-Hmm... It seems it will take less time if I simply take what you have
-in your repo and produce a v4.
-Would it work?
+Don't populate the arrays wpa_oui and wps_oui on the stack but
+instead them static const. Makes the object code smaller by 63 bytes:
 
+Before:
+   text   data  bss     dec    hex filename
+  29453   5451   64   34968   8898 .../wireless/marvell/mwifiex/sta_ioctl.o
+
+After:
+   text	  data  bss     dec    hex filename
+  29356	  5611   64   35031   88d7 ../wireless/marvell/mwifiex/sta_ioctl.o
+
+(gcc version 10.3.0)
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/wireless/marvell/mwifiex/sta_ioctl.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/marvell/mwifiex/sta_ioctl.c b/drivers/net/wireless/marvell/mwifiex/sta_ioctl.c
+index 653f9e094256..fb3b11cf123b 100644
+--- a/drivers/net/wireless/marvell/mwifiex/sta_ioctl.c
++++ b/drivers/net/wireless/marvell/mwifiex/sta_ioctl.c
+@@ -1325,8 +1325,8 @@ mwifiex_set_gen_ie_helper(struct mwifiex_private *priv, u8 *ie_data_ptr,
+ 			  u16 ie_len)
+ {
+ 	struct ieee_types_vendor_header *pvendor_ie;
+-	const u8 wpa_oui[] = { 0x00, 0x50, 0xf2, 0x01 };
+-	const u8 wps_oui[] = { 0x00, 0x50, 0xf2, 0x04 };
++	static const u8 wpa_oui[] = { 0x00, 0x50, 0xf2, 0x01 };
++	static const u8 wps_oui[] = { 0x00, 0x50, 0xf2, 0x04 };
+ 	u16 unparsed_len = ie_len, cur_ie_len;
+ 
+ 	/* If the passed length is zero, reset the buffer */
 -- 
-With Best Regards,
-Andy Shevchenko
+2.32.0
+
