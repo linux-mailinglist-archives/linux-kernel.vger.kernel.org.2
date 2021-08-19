@@ -2,159 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6183C3F1840
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 13:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 916DB3F1849
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 13:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238542AbhHSLfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 07:35:13 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:46630 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231210AbhHSLfK (ORCPT
+        id S238891AbhHSLgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 07:36:31 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:42692 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236881AbhHSLga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 07:35:10 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 00F73220C3;
-        Thu, 19 Aug 2021 11:34:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1629372873; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=C5L3+E3FrtzJQeCJa4s00UVMVLpvEbwXxqPMWVgvpgE=;
-        b=snbkeYDpPT5cojvS678qZDl855L6XpWhdtHqYCcv0Wph5Yev2EBpVcaOWZacanGDm45O1d
-        MqGn1XQP86TYHD3QDMta+Ev35+H4P+e7nRJ7uLY2HAKxlXmNm1/LWfBEzqjC0Kic/HPcDp
-        tqYK6cawMSkGXhtwnOshjo/TneEx0Sc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1629372873;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=C5L3+E3FrtzJQeCJa4s00UVMVLpvEbwXxqPMWVgvpgE=;
-        b=L4iA4mmlhka6C37QaFU+on0rb2jZM5FXMsqy4QcfhkMdClKOlYITOLHigRPeIvef1zmLA1
-        5b/aQmQ3Vy00srAQ==
-Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
-        by relay2.suse.de (Postfix) with ESMTP id 58580A3BFF;
-        Thu, 19 Aug 2021 11:34:15 +0000 (UTC)
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Mathias Nyman <mathias.nyman@intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Moritz Fischer <mdf@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] usb: renesas-xhci: Prefer firmware loading on unknown ROM state
-Date:   Thu, 19 Aug 2021 13:34:27 +0200
-Message-Id: <20210819113427.1166-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
+        Thu, 19 Aug 2021 07:36:30 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629372954; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=LSA27YI11nF9almuzKmNI0Ji45SpKxB4HyfCjj3+coA=; b=jLkhal+9YZTog0UjDoqpqg9mfj1/QE4Few+o/AYmeK/EvNRcCf8wEOV6ckGSMjpbf7TWzs3V
+ T3q/2u3D55eKr1/bqpDpyrwQJAJXLs+eip4L/89fliD8Bq8io8h3rOGUDgH2Wm2lWg6yGcON
+ ldTNbVGQU2nDN0BnYNiQ47hNNvk=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 611e42119507ca1a34e80df1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 19 Aug 2021 11:35:45
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2DC8BC43460; Thu, 19 Aug 2021 11:35:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.29.129] (unknown [49.36.81.12])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 376F0C4338F;
+        Thu, 19 Aug 2021 11:35:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 376F0C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH 2/2] irqchip: qcom-pdc: Disconnect domain hierarchy for
+ GPIO_NO_WAKE_IRQs
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        bjorn.andersson@linaro.org, linus.walleij@linaro.org,
+        tkjos@google.com, lsrao@codeaurora.org
+References: <1629195546-27811-1-git-send-email-mkshah@codeaurora.org>
+ <1629195546-27811-2-git-send-email-mkshah@codeaurora.org>
+ <87tujnrtev.wl-maz@kernel.org>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <34072951-db93-0fc7-9477-bda4d4afdd8a@codeaurora.org>
+Date:   Thu, 19 Aug 2021 17:05:37 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <87tujnrtev.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The recent attempt to handle an unknown ROM state in the commit
-d143825baf15 ("usb: renesas-xhci: Fix handling of unknown ROM state")
-resulted in a regression and reverted later by the commit 44cf53602f5a
-("Revert "usb: renesas-xhci: Fix handling of unknown ROM state"").
-The problem of the former fix was that it treated the failure of
-firmware loading as a fatal error.  Since the firmware files aren't
-included in the standard linux-firmware tree, most users don't have
-them, hence they got the non-working system after that.  The revert
-fixed the regression, but also it didn't make the firmware loading
-triggered even on the devices that do need it.  So we need still a fix
-for them.
+Hi Marc,
 
-This is another attempt to handle the unknown ROM state.  Like the
-previous fix, this also tries to load the firmware when ROM shows
-unknown state.  In this patch, however, the failure of a firmware
-loading (such as a missing firmware file) isn't handled as a fatal
-error any longer when ROM has been already detected, but it falls back
-to the ROM mode like before.  The error is returned only when no ROM
-is detected and the firmware loading failed.
+On 8/18/2021 3:01 PM, Marc Zyngier wrote:
+> Hi Maulik,
+>
+> In the future, please always add a cover-letter email if sending a
+> series that has more than a single patch. This considerably helps the
+> tracking, and gives you an opportunity to explain what you are doing.
+sure. i included same in v2 now.
+>
+> On Tue, 17 Aug 2021 11:19:06 +0100,
+> Maulik Shah <mkshah@codeaurora.org> wrote:
+>> gpio_to_irq() reports error at irq_domain_trim_hierarchy() for non wakeup
+>> capable GPIOs that do not have dedicated interrupt at GIC.
+>>
+>> Since PDC irqchip do not allocate irq at parent GIC domain for such GPIOs
+>> indicate same by using irq_domain_disconnect_hierarchy().
+>>
+>> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+>> ---
+>>   drivers/irqchip/qcom-pdc.c | 5 ++++-
+>>   1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
+>> index 32d5920..0ba0461 100644
+>> --- a/drivers/irqchip/qcom-pdc.c
+>> +++ b/drivers/irqchip/qcom-pdc.c
+>> @@ -324,8 +324,11 @@ static int qcom_pdc_gpio_alloc(struct irq_domain *domain, unsigned int virq,
+>>   	if (ret)
+>>   		return ret;
+>>   
+>> -	if (hwirq == GPIO_NO_WAKE_IRQ)
+>> +	if (hwirq == GPIO_NO_WAKE_IRQ) {
+>> +		if (domain->parent)
+>> +			irq_domain_disconnect_hierarchy(domain->parent, virq);
+>>   		return 0;
+>> +	}
+>>   
+>>   	parent_hwirq = get_parent_hwirq(hwirq);
+>>   	if (parent_hwirq == PDC_NO_PARENT_IRQ)
+> It feels like you are papering over the core of the problem, which is
+> that most of the GPIO_NO_WAKE_IRQ stuff should simply go away now that
+> we have a way to drop parts of the hierarchy.
+ok makes sense to disconnect from PDC domain itself instead only 
+disconnecting for parent GIC domain.
+>
+> I had a go at that a few months back, but never had the opportunity to
+> actually test the resulting code[1]. Could you please give it a go and
+> let me know what breaks?
+Thanks for the patch [1]. i tested and found below issues.
 
-Along with it, for simplifying the code flow, the detection and the
-check of ROM is factored out from renesas_fw_check_running() and done
-in the caller side, renesas_xhci_check_request_fw().  It avoids the
-redundant ROM checks.
+1.
+For GPIO_NO_WAKE_IRQ case, The patch disconnects hierarchy for current 
+domain (PDC)
+However for parent domain (GIC) its don't call disconnect.
+This leads to irq_domain_trim_hierarchy() still complain the error at 
+parent domain.
+To fix this, whenever irqchip disconnects hierarchy at its domain, it 
+has to disconnect for all its parent domains too.
 
-The patch was tested on Lenovo Thinkpad T14 gen (BIOS 1.34).  Also it
-was confirmed that no regression is seen on another Thinkpad T14
-machine that has worked without the patch, too.
+something like this works in qcom_pdc_gpio_alloc()
 
-Fixes: 44cf53602f5a ("Revert "usb: renesas-xhci: Fix handling of unknown ROM state"")
-BugLink: https://bugzilla.opensuse.org/show_bug.cgi?id=1189207
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- drivers/usb/host/xhci-pci-renesas.c | 35 +++++++++++++++++++----------
- 1 file changed, 23 insertions(+), 12 deletions(-)
+         if (hwirq == GPIO_NO_WAKE_IRQ) {
+-               if (domain->parent) {
+- irq_domain_disconnect_hierarchy(domain->parent, virq);
 
-diff --git a/drivers/usb/host/xhci-pci-renesas.c b/drivers/usb/host/xhci-pci-renesas.c
-index aa88e57649a9..52599d96634f 100644
---- a/drivers/usb/host/xhci-pci-renesas.c
-+++ b/drivers/usb/host/xhci-pci-renesas.c
-@@ -207,7 +207,8 @@ static int renesas_check_rom_state(struct pci_dev *pdev)
- 			return 0;
- 
- 		case RENESAS_ROM_STATUS_NO_RESULT: /* No result yet */
--			return 0;
-+			dev_dbg(&pdev->dev, "Unknown ROM status ...\n");
-+			return -ENOENT;
- 
- 		case RENESAS_ROM_STATUS_ERROR: /* Error State */
- 		default: /* All other states are marked as "Reserved states" */
-@@ -224,14 +225,6 @@ static int renesas_fw_check_running(struct pci_dev *pdev)
- 	u8 fw_state;
- 	int err;
- 
--	/* Check if device has ROM and loaded, if so skip everything */
--	err = renesas_check_rom(pdev);
--	if (err) { /* we have rom */
--		err = renesas_check_rom_state(pdev);
--		if (!err)
--			return err;
--	}
--
- 	/*
- 	 * Test if the device is actually needing the firmware. As most
- 	 * BIOSes will initialize the device for us. If the device is
-@@ -591,21 +584,39 @@ int renesas_xhci_check_request_fw(struct pci_dev *pdev,
- 			(struct xhci_driver_data *)id->driver_data;
- 	const char *fw_name = driver_data->firmware;
- 	const struct firmware *fw;
-+	bool has_rom;
- 	int err;
- 
-+	/* Check if device has ROM and loaded, if so skip everything */
-+	has_rom = renesas_check_rom(pdev);
-+	if (has_rom) {
-+		err = renesas_check_rom_state(pdev);
-+		if (!err)
-+			return 0;
-+		else if (err != -ENOENT)
-+			has_rom = false;
-+	}
-+
- 	err = renesas_fw_check_running(pdev);
- 	/* Continue ahead, if the firmware is already running. */
- 	if (!err)
- 		return 0;
- 
-+	/* no firmware interface available */
- 	if (err != 1)
--		return err;
-+		return has_rom ? 0 : err;
- 
- 	pci_dev_get(pdev);
--	err = request_firmware(&fw, fw_name, &pdev->dev);
-+	err = firmware_request_nowarn(&fw, fw_name, &pdev->dev);
- 	pci_dev_put(pdev);
- 	if (err) {
--		dev_err(&pdev->dev, "request_firmware failed: %d\n", err);
-+		if (has_rom) {
-+			dev_info(&pdev->dev, "failed to load firmware %s, fallback to ROM\n",
-+				 fw_name);
-+			return 0;
-+		}
-+		dev_err(&pdev->dev, "failed to load firmware %s: %d\n",
-+			fw_name, err);
- 		return err;
- 	}
- 
++               for (parent = domain; parent; parent = parent->parent) {
++                       ret = irq_domain_disconnect_hierarchy(parent, virq);
++                       if (ret)
++                               return ret;
+                 }
+                 return 0;
+         }
+
+2.  irq_domain_trim_hierarchy() has two issues.
+
+     The first is tail is moving along with irqd of domain.
+     so trimming do not start at correct parent domain.
+     tails has to be initialized only once, starting from which we want 
+to trim all the parent domains hierarchy.
+
+     The second is the below check is not proper to find valid irq chip.
+     say for both (PDC and GIC) domains the irqd->chip is set to -ENOTCONN.
+     then irqd->chip check will still pass for domain (even if its 
+-ENOTCONN) and if tail is set it will false complain.
+
+     /* Can't have a valid irqchip after a trim marker */
+-               if (irqd->chip && tail)
++               if (!IS_ERR(irqd->chip) && tail) {
+
+
+I have picked up your change in v2 and added above mentioned issue fixes.
+please take a look on v2.
+
+Thanks,
+Maulik
+>
+> Thanks,
+>
+> 	M.
+>
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/commit/?h=irq/qcom-pdc-nowake&id=331b2ba388a4a79b5c40b8addf56cbe35099a410
+>
 -- 
-2.26.2
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
 
