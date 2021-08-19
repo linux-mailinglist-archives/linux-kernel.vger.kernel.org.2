@@ -2,111 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5003F2116
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 21:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DEAA3F210D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 21:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234903AbhHSTxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 15:53:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34716 "EHLO
+        id S234085AbhHSTxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 15:53:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234748AbhHSTxj (ORCPT
+        with ESMTP id S230506AbhHSTxN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 15:53:39 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DCFC061575;
-        Thu, 19 Aug 2021 12:53:02 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id n12so10492101edx.8;
-        Thu, 19 Aug 2021 12:53:02 -0700 (PDT)
+        Thu, 19 Aug 2021 15:53:13 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E4BC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 12:52:36 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id n5so5712240pjt.4
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 12:52:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TL02EH4U27OoNA/U0vdcgLaKOgzicMCVSFoibIBTSqY=;
-        b=jegj1+iUV+OYa0nLxvTj8NqDQWtDg+bVCVX/DXeMAqEepPR42MGZkvVHLwn/bsF7o8
-         0e/iFwkWNoFB7tiBlX4gsUPZ3e+LxJjTo/yuGB6rTdbqw7ng8Y9M6wiASMKpBp5D5OHx
-         Q+Yyvae20b8s+yvBCiGI48BhNTZi+LScYkgy0To/a30BCJljhtLiWWjGYOkZqgQzmAmz
-         niAPmGz+MG5ffgMp6bDJGMqraAeh8D94+A2PEeXKI9gaAv1eSTqAhmc1y1XPwxYnRnrd
-         Cz1d6Yw1a9YeFSimnDEJJIQr6X+674A9QgQVt60mD4cdt9pUJWLD1ng4AThWGEgfjumn
-         4r2g==
+        d=gateworks-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=JLR3/Tzo397T8TPt0QvJ4Ukv/VXdUANi7HJVf1QYHrQ=;
+        b=g8z6YrVZArvT/HXJx3/mHjHi6M4D7D/EgtR2obzEHoCprIWkSn6MwqpjSlXWyFkcnK
+         Pj/aVsb+DFjpq9wD/m4he9+J3kDkEWeyX3WbMYs43rPpfobFYVp+JBXvfvMNUQgjLOXN
+         U7+73p71PTKRdOdnbrJmi7wZuRr+YwcBGghhPO9aFtfTyUOdH6/0x9DwVfArtwgIHqfR
+         caL/G6Z/iSfy+l+pVuyqULhrytDDTGJ4QfW+a6IFp/A2K3irj417Z6nSxxKoxx/NQVLJ
+         CBdL102e/tfzKQ0JZWMRBnjQsG2VjSr80z9JyMADJ9lGAKdzVjiFFAgYR2cQ4HMJriR1
+         e7EA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TL02EH4U27OoNA/U0vdcgLaKOgzicMCVSFoibIBTSqY=;
-        b=Su2YYsYttvPgWuKdnjvD+7uCBryXxlefrioVtIrex7eaowPtwsYK4jaBaoFhpk65Aj
-         KZTdrbSrXoN3Z1MUfd5UARl+CiCIxQGzK/BERgP5jonnZUH0LMEesrZ2Ay+o37vlenn2
-         jJX+FDWCGP8mfcrf0UaeBo1osweR+nbqqhbesAcGAQbIDMlX1z0QtCtCEr1VKpobrAD1
-         X+FtFrMmvTDbVz3wT99iUdhRJe/UD6Q7Fl7dv0Ld+tz+5pTEe5MfH8A+bTnAAFnCyVts
-         x1zQTj1wMbED3FtNm/eWPfZRCjNn6RznuXCjG5uYjaWJRevYIABmn6QoJUuJZ652nQUk
-         DvAA==
-X-Gm-Message-State: AOAM5304hjlgktDrnsGMO2vZ2T1ILQkov2OhTKbRbBnU9l7klrFqAzVC
-        xxL4INaDbN2w3/nkgaCOtHM=
-X-Google-Smtp-Source: ABdhPJx5c+3atR0akUSCvQH9yGfSDZgLsl3iVICHWV+CAbHlA79L62zT9M6X+mAZM5o/pFaAMkBIBw==
-X-Received: by 2002:a50:fc96:: with SMTP id f22mr18626056edq.367.1629402780891;
-        Thu, 19 Aug 2021 12:53:00 -0700 (PDT)
-Received: from localhost.localdomain (185.239.71.98.16clouds.com. [185.239.71.98])
-        by smtp.gmail.com with ESMTPSA id ck17sm2284984edb.88.2021.08.19.12.52.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 12:53:00 -0700 (PDT)
-From:   Xiaolong Huang <butterflyhuangxx@gmail.com>
-To:     mani@kernel.org, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Xiaolong Huang <butterflyhuangxx@gmail.com>
-Subject: [RESEND PATCH] net: qrtr: fix another OOB Read in qrtr_endpoint_post
-Date:   Fri, 20 Aug 2021 03:50:34 +0800
-Message-Id: <20210819195034.632132-1-butterflyhuangxx@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=JLR3/Tzo397T8TPt0QvJ4Ukv/VXdUANi7HJVf1QYHrQ=;
+        b=ZT6kR7teGr2FdDIDIlcu9XCuvyN0QyZXdFAslobcq6wkhzC+E1nA2f/mSqJcYlcmMw
+         uS95EHF+GMRZatQYJOvVxTQfHt9XjeUQxZD96/66OG973Qh58IENA/d1pHURMR59hV1j
+         PENEh9ZQCrw7v1p7qICisNUvlArYmLccbmXrAMjKbvbk1HzD5pQGXyFvwvyLLybhxMwq
+         Zwkinz8aoEKhLhAGOGXjc96LyyzpB2QLW7rNKasTAt2yIjn5KAzmexopNXb7TLnZ6rmR
+         l1geEZetlDgKj9DE3PoTs+OxNqhjrgiwiU9Z20qVlBJyE+NV5SY9iFSqOf2y7Aa/kObw
+         U2iA==
+X-Gm-Message-State: AOAM531oeacpI2whTygrQI9qnTGhX8ZLt3P819sRit/vvAIl8+sh82qj
+        0gWRIJmD+ECPbkK/bRTvcUuoUfrNEA5BZPIQXSPd1Q==
+X-Google-Smtp-Source: ABdhPJyduo0jwtpTOSw83fQYjq8FSMRiqMNH+DO2DuoltUq66Dxby1n6lSA4B5xu0EWV1po5BwhpNwVJSqNUSrstaos=
+X-Received: by 2002:a17:902:a9c7:b029:12b:349:b318 with SMTP id
+ b7-20020a170902a9c7b029012b0349b318mr13281658plr.13.1629402756032; Thu, 19
+ Aug 2021 12:52:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <m3sg01baq9.fsf@t19.piap.pl>
+In-Reply-To: <m3sg01baq9.fsf@t19.piap.pl>
+From:   Tim Harvey <tharvey@gateworks.com>
+Date:   Thu, 19 Aug 2021 12:52:24 -0700
+Message-ID: <CAJ+vNU2UR=aY0gFQgAL4wS_cBf59rKM9ce5W=byOo75TOpBQSw@mail.gmail.com>
+Subject: Re: [PATCH v2] TDA1997x: replace video detection routine
+To:     =?UTF-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This check was incomplete, did not consider size is 0:
+On Mon, Jul 26, 2021 at 4:01 AM Krzysztof Ha=C5=82asa <khalasa@piap.pl> wro=
+te:
+>
+> The TDA1997x (HDMI receiver) driver currently uses a specific video
+> format detection scheme. The frame (or field in interlaced mode), line
+> and HSync pulse durations are compared to those of known, standard video
+> modes. If a match is found, the mode is assumed to be detected,
+> otherwise -ERANGE is returned (then possibly ignored). This means that:
+> - another mode with similar timings will be detected incorrectly
+>   (e.g. 2x faster clock and lines twice as long)
+> - non-standard modes will not work.
+>
+> I propose to replace this scheme with a direct read of geometry
+> registers. This way all modes recognized by the chip will be supported.
+>
+> In interlaced modes, the code assumes the V sync signal has the same
+> duration for both fields. While this may be not necessarily true,
+> I can't see any way to get the "other" V sync width. This is most
+> probably harmless.
+>
+> I have checked the register values in interlaced mode, but currently
+> can't test such a setup (I only have remote access to a device working
+> in interlaced mode). Perhaps this will change in time.
+>
+> All tests have been performed on Gateworks' Ventana GW54xx board, with
+> a TDA19971 chip.
+>
+> Signed-off-by: Krzysztof Ha=C5=82asa <khalasa@piap.pl>
+>
+> ---
+> This version extracts H and V sync polarities of the incoming signal and
+> matches the parameters against the standard video modes.
+>
+> 1/1000 pixel clock tolerance had to be increased to 1/500 because the
+> 1/1.001 (NTSC-like) pixclk and frame rate reduction already caused
+> 1/1000 deviation, and there was no room for further difference.
+>
+> This patch requires just posted "[PATCH] TDA1997x: report -ENOLINK
+> after disconnecting HDMI source".
+>
+> diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
+> index 36a7b89afb08..a6afb387785d 100644
+> --- a/drivers/media/i2c/tda1997x.c
+> +++ b/drivers/media/i2c/tda1997x.c
+> @@ -1092,67 +1092,82 @@ tda1997x_detect_std(struct tda1997x_state *state,
+>                     struct v4l2_dv_timings *timings)
+>  {
+>         struct v4l2_subdev *sd =3D &state->sd;
+> -       u32 vper;
+> -       u16 hper;
+> -       u16 hsper;
+> -       int i;
+>
+>         /*
+>          * Read the FMT registers
+> -        *   REG_V_PER: Period of a frame (or two fields) in MCLK(27MHz) =
+cycles
+> -        *   REG_H_PER: Period of a line in MCLK(27MHz) cycles
+> -        *   REG_HS_WIDTH: Period of horiz sync pulse in MCLK(27MHz) cycl=
+es
+> +        *   REG_V_PER: Period of a frame (or field) in MCLK (27MHz) cycl=
+es
+> +        *   REG_H_PER: Period of a line in MCLK (27MHz) cycles
+> +        *   REG_HS_WIDTH: Period of horiz sync pulse in MCLK (27MHz) cyc=
+les
+>          */
+> -       vper =3D io_read24(sd, REG_V_PER) & MASK_VPER;
+> -       hper =3D io_read16(sd, REG_H_PER) & MASK_HPER;
+> -       hsper =3D io_read16(sd, REG_HS_WIDTH) & MASK_HSWIDTH;
+> -       v4l2_dbg(1, debug, sd, "Signal Timings: %u/%u/%u\n", vper, hper, =
+hsper);
+> +       u32 vper, vsync_pos;
+> +       u16 hper, hsync_pos, hsper, interlaced;
+> +       u16 htot, hact, hfront, hsync, hback;
+> +       u16 vtot, vact, vfront1, vfront2, vsync, vback1, vback2;
+>
+>         if (!state->input_detect[0] && !state->input_detect[1])
+>                 return -ENOLINK;
+>
+> -       for (i =3D 0; v4l2_dv_timings_presets[i].bt.width; i++) {
+> -               const struct v4l2_bt_timings *bt;
+> -               u32 lines, width, _hper, _hsper;
+> -               u32 vmin, vmax, hmin, hmax, hsmin, hsmax;
+> -               bool vmatch, hmatch, hsmatch;
+> -
+> -               bt =3D &v4l2_dv_timings_presets[i].bt;
+> -               width =3D V4L2_DV_BT_FRAME_WIDTH(bt);
+> -               lines =3D V4L2_DV_BT_FRAME_HEIGHT(bt);
+> -               _hper =3D (u32)bt->pixelclock / width;
+> -               if (bt->interlaced)
+> -                       lines /=3D 2;
+> -               /* vper +/- 0.7% */
+> -               vmin =3D ((27000000 / 1000) * 993) / _hper * lines;
+> -               vmax =3D ((27000000 / 1000) * 1007) / _hper * lines;
+> -               /* hper +/- 1.0% */
+> -               hmin =3D ((27000000 / 100) * 99) / _hper;
+> -               hmax =3D ((27000000 / 100) * 101) / _hper;
+> -               /* hsper +/- 2 (take care to avoid 32bit overflow) */
+> -               _hsper =3D 27000 * bt->hsync / ((u32)bt->pixelclock/1000)=
+;
+> -               hsmin =3D _hsper - 2;
+> -               hsmax =3D _hsper + 2;
+> -
+> -               /* vmatch matches the framerate */
+> -               vmatch =3D ((vper <=3D vmax) && (vper >=3D vmin)) ? 1 : 0=
+;
+> -               /* hmatch matches the width */
+> -               hmatch =3D ((hper <=3D hmax) && (hper >=3D hmin)) ? 1 : 0=
+;
+> -               /* hsmatch matches the hswidth */
+> -               hsmatch =3D ((hsper <=3D hsmax) && (hsper >=3D hsmin)) ? =
+1 : 0;
+> -               if (hmatch && vmatch && hsmatch) {
+> -                       v4l2_print_dv_timings(sd->name, "Detected format:=
+ ",
+> -                                             &v4l2_dv_timings_presets[i]=
+,
+> -                                             false);
+> -                       if (timings)
+> -                               *timings =3D v4l2_dv_timings_presets[i];
+> -                       return 0;
+> -               }
+> -       }
+> +       vper =3D io_read24(sd, REG_V_PER);
+> +       hper =3D io_read16(sd, REG_H_PER);
+> +       hsper =3D io_read16(sd, REG_HS_WIDTH);
+> +       vsync_pos =3D vper & MASK_VPER_SYNC_POS;
+> +       hsync_pos =3D hper & MASK_HPER_SYNC_POS;
+> +       interlaced =3D hsper & MASK_HSWIDTH_INTERLACED;
+> +       vper &=3D MASK_VPER;
+> +       hper &=3D MASK_HPER;
+> +       hsper &=3D MASK_HSWIDTH;
+> +       v4l2_dbg(1, debug, sd, "Signal Timings: %u/%u/%u\n", vper, hper, =
+hsper);
+>
+> -       v4l_err(state->client, "no resolution match for timings: %d/%d/%d=
+\n",
+> -               vper, hper, hsper);
+> -       return -ERANGE;
+> +       htot =3D io_read16(sd, REG_FMT_H_TOT);
+> +       hact =3D io_read16(sd, REG_FMT_H_ACT);
+> +       hfront =3D io_read16(sd, REG_FMT_H_FRONT);
+> +       hsync =3D io_read16(sd, REG_FMT_H_SYNC);
+> +       hback =3D io_read16(sd, REG_FMT_H_BACK);
+> +
+> +       vtot =3D io_read16(sd, REG_FMT_V_TOT);
+> +       vact =3D io_read16(sd, REG_FMT_V_ACT);
+> +       vfront1 =3D io_read(sd, REG_FMT_V_FRONT_F1);
+> +       vfront2 =3D io_read(sd, REG_FMT_V_FRONT_F2);
+> +       vsync =3D io_read(sd, REG_FMT_V_SYNC);
+> +       vback1 =3D io_read(sd, REG_FMT_V_BACK_F1);
+> +       vback2 =3D io_read(sd, REG_FMT_V_BACK_F2);
+> +
+> +       v4l2_dbg(1, debug, sd, "Geometry: H %u %u %u %u %u Sync%c  V %u %=
+u %u %u %u %u %u Sync%c\n",
+> +                htot, hact, hfront, hsync, hback, hsync_pos ? '+' : '-',
+> +                vtot, vact, vfront1, vfront2, vsync, vback1, vback2, vsy=
+nc_pos ? '+' : '-');
+> +
+> +       if (!timings)
+> +               return 0;
+> +
+> +       timings->type =3D V4L2_DV_BT_656_1120;
+> +       timings->bt.width =3D hact;
+> +       timings->bt.hfrontporch =3D hfront;
+> +       timings->bt.hsync =3D hsync;
+> +       timings->bt.hbackporch =3D hback;
+> +       timings->bt.height =3D vact;
+> +       timings->bt.vfrontporch =3D vfront1;
+> +       timings->bt.vsync =3D vsync;
+> +       timings->bt.vbackporch =3D vback1;
+> +       timings->bt.interlaced =3D interlaced ? V4L2_DV_INTERLACED : V4L2=
+_DV_PROGRESSIVE;
+> +       timings->bt.polarities =3D vsync_pos ? V4L2_DV_VSYNC_POS_POL : 0;
+> +       timings->bt.polarities |=3D hsync_pos ? V4L2_DV_HSYNC_POS_POL : 0=
+;
+> +
+> +       timings->bt.pixelclock =3D (u64)htot * vtot * 27000000;
+> +       if (interlaced) {
+> +               timings->bt.il_vfrontporch =3D vfront2;
+> +               timings->bt.il_vsync =3D timings->bt.vsync;
+> +               timings->bt.il_vbackporch =3D vback2;
+> +               do_div(timings->bt.pixelclock, vper * 2 /* full frame */)=
+;
+> +       } else {
+> +               timings->bt.il_vfrontporch =3D 0;
+> +               timings->bt.il_vsync =3D 0;
+> +               timings->bt.il_vbackporch =3D 0;
+> +               do_div(timings->bt.pixelclock, vper);
+> +       }
+> +       v4l2_find_dv_timings_cap(timings, &tda1997x_dv_timings_cap,
+> +                                (u32)timings->bt.pixelclock / 500, NULL,=
+ NULL);
+> +       v4l2_print_dv_timings(sd->name, "Detected format: ", timings, fal=
+se);
+> +       return 0;
+>  }
+>
+>  /* some sort of errata workaround for chip revision 0 (N1) */
+> diff --git a/drivers/media/i2c/tda1997x_regs.h b/drivers/media/i2c/tda199=
+7x_regs.h
+> index d9b3daada07d..115371ba33f0 100644
+> --- a/drivers/media/i2c/tda1997x_regs.h
+> +++ b/drivers/media/i2c/tda1997x_regs.h
+> @@ -117,9 +117,12 @@
+>  #define REG_CURPAGE_00H                0xFF
+>
+>  #define MASK_VPER              0x3fffff
+> +#define MASK_VPER_SYNC_POS     0x800000
+>  #define MASK_VHREF             0x3fff
+>  #define MASK_HPER              0x0fff
+> +#define MASK_HPER_SYNC_POS     0x8000
+>  #define MASK_HSWIDTH           0x03ff
+> +#define MASK_HSWIDTH_INTERLACED        0x8000
+>
+>  /* HPD Detection */
+>  #define DETECT_UTIL            BIT(7)  /* utility of HDMI level */
 
-	if (len != ALIGN(size, 4) + hdrlen)
-                    goto err;
+Krzysztof,
 
-if size from qrtr_hdr is 0, the result of ALIGN(size, 4)
-will be 0, In case of len == hdrlen and size == 0
-in header this check won't fail and
+I can't get this to apply (to 5.13, linux/master, or
+linux-media/master). What are you based on and do you have a git repo
+I can get it from?
 
-	if (cb->type == QRTR_TYPE_NEW_SERVER) {
-                /* Remote node endpoint can bridge other distant nodes */
-                const struct qrtr_ctrl_pkt *pkt = data + hdrlen;
+Also, for quick testing do you recall how to invoke the 'log_debug'
+function from userspace? I think its a v4l2-ctl operation.
 
-                qrtr_node_assign(node, le32_to_cpu(pkt->server.node));
-        }
+Best regards,
 
-will also read out of bound from data, which is hdrlen allocated block.
-
-Fixes: 194ccc88297a ("net: qrtr: Support decoding incoming v2 packets")
-Fixes: ad9d24c9429e ("net: qrtr: fix OOB Read in qrtr_endpoint_post")
-Signed-off-by: Xiaolong Huang <butterflyhuangxx@gmail.com>
-
----
-
-Reason for resend:
-1. Modify the spelling error of signed-off-by email address.
-2. Use real name.
----
- net/qrtr/qrtr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/qrtr/qrtr.c b/net/qrtr/qrtr.c
-index 171b7f3be6ef..0c30908628ba 100644
---- a/net/qrtr/qrtr.c
-+++ b/net/qrtr/qrtr.c
-@@ -493,7 +493,7 @@ int qrtr_endpoint_post(struct qrtr_endpoint *ep, const void *data, size_t len)
- 		goto err;
- 	}
- 
--	if (len != ALIGN(size, 4) + hdrlen)
-+	if (!size || len != ALIGN(size, 4) + hdrlen)
- 		goto err;
- 
- 	if (cb->dst_port != QRTR_PORT_CTRL && cb->type != QRTR_TYPE_DATA &&
--- 
-2.25.1
-
+Tim
