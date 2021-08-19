@@ -2,110 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFB63F238A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D893F238F
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236585AbhHSXQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 19:16:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230340AbhHSXQK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 19:16:10 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E7A5C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:15:34 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id n5so6070520pjt.4
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:15:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SJ68uCCulu7vBqyA3mzbB52oQ65OuytKFW+IpmZC5sQ=;
-        b=rTTcOqAjjfAgKr+F7AUFDVFvPIfVkA2BGSUEnCMtnClOm+hYOknuS/WYfKen1c+r/K
-         8k782+SrBC7Kk8//Cx2aKPxDZYazP0UGPgRZyiuVMbN67GJNnKVQiVMmHz1qDxq/2Ibj
-         CCj//SU/biqBAFQc5hNkmbwdrSSXB0gIu7V75V0MoVC8zM36s7huED8QWawQEV5Thcny
-         zIIniAiXfX3B67i5f5YsZTVU/AMHGvm2VZc0/OHufUmex5/L8poNQpUPRE55vGAXBg8B
-         XTkXKTYeeOir5hjXQCGyOtWpVY4ZxbEdcTz+fZ25SrFk+WDsidYd9d+N1G6sy5eDEVzs
-         ru/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SJ68uCCulu7vBqyA3mzbB52oQ65OuytKFW+IpmZC5sQ=;
-        b=qcDAJROEC2sPuGf7FsBUX6xd/m1ldO797RFDggsIIMaSwlxEgJ0HjX3X9boLZuUtMo
-         VoqANIo2sOD2Fq7KGfj2Y7F4DhJ1M6Aq/9Zlde3LiqV1F8J/yrlpzmgU1BQdajymtCGz
-         AbCG4RvxmJzx6bEQYJes/TnGJaRDU7TnmWwCaK+9ZvnMMztrLNFHbyfgPXLj13+Z4h1g
-         qlakY+SwK44Uoeq2QD0RUe8a1X3Dxn6XwmzUEpdk6MddzTFzfFMHSUNcRke5X/o1HSBp
-         kQUdJ3MMMoJ8bdy5NuEaZAMakjdEb7XluCpehHdkADRY7wE/LWTJDm5kSqTuvwLOf1cJ
-         Rwfw==
-X-Gm-Message-State: AOAM5334tgcpwRvJDyj3mFBLJwVQfBrLyTdABqYfEJv40XM2gydHWKAn
-        gXvFRFRGx4uWjG84s1Qm4fxMzg==
-X-Google-Smtp-Source: ABdhPJwdoKU7fDLCRXuSfBBXcZ3gJWJBLplBh+PNmJCsycoF5Td4O0ZdSjZ74ZnXCx4HQh/d+36KlA==
-X-Received: by 2002:a17:90a:b88:: with SMTP id 8mr1303060pjr.12.1629414933160;
-        Thu, 19 Aug 2021 16:15:33 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id w11sm5081987pgk.34.2021.08.19.16.15.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 16:15:32 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 23:15:26 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Kalra, Ashish" <Ashish.Kalra@amd.com>
-Cc:     "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "srutherford@google.com" <srutherford@google.com>,
-        "Singh, Brijesh" <brijesh.singh@amd.com>,
-        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>
-Subject: Re: [PATCH v3 2/5] KVM: x86: invert KVM_HYPERCALL to default to
- VMMCALL
-Message-ID: <YR7mDlxJyVkSkCbO@google.com>
-References: <cover.1623174621.git.ashish.kalra@amd.com>
- <f45c503fad62c899473b5a6fd0f2085208d6dfaf.1623174621.git.ashish.kalra@amd.com>
- <YR7C56Yc+Qd256P6@google.com>
- <B184FCFE-BDC8-4124-B5B8-B271BA89CE06@amd.com>
- <ED74106C-ECBB-4FA1-83F9-49ED9FB35019@amd.com>
+        id S236765AbhHSXRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 19:17:09 -0400
+Received: from ozlabs.org ([203.11.71.1]:58237 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230340AbhHSXRI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 19:17:08 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GrLHc6mcyz9sWw;
+        Fri, 20 Aug 2021 09:16:28 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629414990;
+        bh=JRuRcxrgsvz+ySmMZ1ebZzgnlNqFw91zL6kHFmjeQ2o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qm+z3PRuiPy1D0ZECxC3CRYRNmRvguarIIozjD3pI1kdoEJYevy2V3u3LIH3Il3Z5
+         fOqQQ6oLjSiS+UJxtX/0cM00OG9IoqYzqHbUJpinZD6/Y2QIvHbB4nWlHFyyohwDOe
+         C+3tRvUDR3gr74+OJoWVFSOd7T1y3AAhGrqHOhfGjLDTT+oZrYZ0eKNc1vZyNiLSdf
+         I3iiIcMmApluKuJmZT2Va59XBuUXXvUV7abwDGw3LsdOKufG5q/HSWH0T+a2jDRtOv
+         g4bJC0lfRsgBgy8jL44W0qu7NLnx+Cmzi/787EOF7AqbyRiYQVAnojoAT8y0R2nIyh
+         v1m1pZevUZjUw==
+Date:   Fri, 20 Aug 2021 09:16:27 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the net-next tree
+Message-ID: <20210820091627.2d071982@canb.auug.org.au>
+In-Reply-To: <20210815220432.7eea02e9@canb.auug.org.au>
+References: <20210809202046.596dad87@canb.auug.org.au>
+        <CAK8P3a103SSaMmFEKehPQO0p9idVwhfck-OX5t1_3-gW4ox2tw@mail.gmail.com>
+        <20210815220432.7eea02e9@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ED74106C-ECBB-4FA1-83F9-49ED9FB35019@amd.com>
+Content-Type: multipart/signed; boundary="Sig_/zEEIMRfpESnzCINoDH766AH";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021, Kalra, Ashish wrote:
-> 
-> > On Aug 20, 2021, at 3:38 AM, Kalra, Ashish <Ashish.Kalra@amd.com> wrote:
-> > I think it makes more sense to stick to the original approach/patch, i.e.,
-> > introducing a new private hypercall interface like kvm_sev_hypercall3() and
-> > let early paravirtualized kernel code invoke this private hypercall
-> > interface wherever required.
+--Sig_/zEEIMRfpESnzCINoDH766AH
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I don't like the idea of duplicating code just because the problem is tricky to
-solve.  Right now it's just one function, but it could balloon to multiple in
-the future.  Plus there's always the possibility of a new, pre-alternatives
-kvm_hypercall() being added in generic code, at which point using an SEV-specific
-variant gets even uglier.
+Hi all,
 
-> > This helps avoiding Intel CPUs taking unnecessary #UDs and also avoid using
-> > hacks as below.
-> > 
-> > TDX code can introduce similar private hypercall interface for their early
-> > para virtualized kernel code if required.
-> 
-> Actually, if we are using this kvm_sev_hypercall3() and not modifying
-> KVM_HYPERCALL() then Intel CPUs avoid unnecessary #UDs and TDX code does not
-> need any new interface. Only early AMD/SEV specific code will use this
-> kvm_sev_hypercall3() interface. TDX code will always work with
-> KVM_HYPERCALL().
+On Sun, 15 Aug 2021 22:04:32 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> On Mon, 9 Aug 2021 15:21:41 +0200 Arnd Bergmann <arnd@arndb.de> wrote:
+> >
+> > On Mon, Aug 9, 2021 at 12:20 PM Stephen Rothwell <sfr@canb.auug.org.au>=
+ wrote: =20
+> > >
+> > > After merging the net-next tree, today's linux-next build (powerpc
+> > > allyesconfig) failed like this:
+> > >
+> > > drivers/net/ethernet/cirrus/cs89x0.c: In function 'net_open':
+> > > drivers/net/ethernet/cirrus/cs89x0.c:897:20: error: implicit declarat=
+ion of function 'isa_virt_to_bus' [-Werror=3Dimplicit-function-declaration]
+> > >   897 |     (unsigned long)isa_virt_to_bus(lp->dma_buff));
+> > >       |                    ^~~~~~~~~~~~~~~   =20
+> >=20
+> > Thank you for the report! I already sent a patch for m68knommu running =
+into
+> > this issue, but it seems there are other architectures that still have =
+it.
+> >=20
+> > The driver checks CONFIG_ISA_DMA_API at compile time to determine
+> > whether isa_virt_to_bus(), set_dma_mode(), set_dma_addr(), ... are all
+> > defined.
+> >=20
+> > It seems that isa_virt_to_bus() is only implemented on most of the
+> > architectures that set ISA_DMA_API: alpha, arm, mips, parisc and x86,
+> > but not on m68k/coldfire and powerpc.
+> >=20
+> > Before my patch, the platform driver could only be built on ARM,
+> > so maybe we should just go back to that dependency or something
+> > like
+> >=20
+> >          depends on ARM || ((X86 || !ISA_DMA_API) && COMPILE_TEST)
+> >=20
+> > for extra build coverage. Then again, it's hard to find any machine
+> > actually using these: we have a couple of s3c24xx machines that
+> > use the wrong device name, so the device never gets probed, the imx
+> > machines that used to work are gone, and the ep7211-edb7211.dts
+> > is missing a device node for it. Most likely, neither the platform nor
+> > the ISA driver are actually used by anyone. =20
+>=20
+> I am still applying my patch removing COMPILE_TEST from this driver ..
 
-Even if VMCALL is the default, i.e. not patched in, VMCALL it will #VE on TDX.
-In other words, VMCALL isn't really any better than VMMCALL, TDX will need to do
-something clever either way.
+Ping?  Did I miss a fix being merged?
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/zEEIMRfpESnzCINoDH766AH
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEe5ksACgkQAVBC80lX
+0GyLdgf9F0ROREULuv+N+e4tU/inn1SdqxjYfMR5qTwn0znCi7UBjiscos1bzkcI
+KxlEHAWHbZsBxm2ABFy/PXdE0vPrrGHsh56jeHKScQpiskJ1pI/J+WSG580J3COc
+wGBPN7uIztt8JppZkLLKhwl/Zsd00voLnEYxcEojlB1doy2yzMj4i0Cc1EjOMOaT
+Dm6yVhMGZ4okX3gkxnNrtFh2SNs6a9E4ITgk9SbJbjs5GCm3ufssYTjRaq3lmdOv
+H1/WyHEYAfj1z19JKyjJ6v1KSxLKB23D67zKxGQQTGrW3CkRZS0MPv8nBacp+y/Z
+tKQ2IJRwhXTKTA4JmEe1E7sZCzcJ2Q==
+=gEBF
+-----END PGP SIGNATURE-----
+
+--Sig_/zEEIMRfpESnzCINoDH766AH--
