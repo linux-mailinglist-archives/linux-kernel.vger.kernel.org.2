@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB5A3F1002
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 03:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80CEA3F1004
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 03:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235325AbhHSBfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 21:35:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34364 "EHLO
+        id S235348AbhHSBjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 21:39:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234194AbhHSBfK (ORCPT
+        with ESMTP id S234194AbhHSBjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 21:35:10 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D747FC061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 18:34:34 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id v2so6169153edq.10
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 18:34:34 -0700 (PDT)
+        Wed, 18 Aug 2021 21:39:20 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3541C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 18:38:44 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id u3so9214999ejz.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 18:38:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PFPIaFZ0EFL3LdreWHVYcsMYnslZyIMVhhTaiagDQ0M=;
-        b=Kazu3KHY36brXdPWa9ji6/2nsYT5DQt4AtvmUPt/9EsYODW3AFnUHQCGlR/FLg8DYh
-         yEhcbeLoC73786B90EGz+zZ6+hF+6BgZdULEumOXPIcC0onFfukGSQ/Ro+i9X//qEQI3
-         QXDHQtz/lU2NlAM+GIpmEOzZI+r9+GgckswXz4H7QTGGrZQ/PEbhAJyqTjZFVbWpaINF
-         OSVLVFzwLIhzwdhlJYi/Ud1qRyQCDcIP5b6L+hyTnXDsmHQ/HsoBXbjbEaZyijlOsRwz
-         FJAQeqKig0OiFR9QX5p6g/2S9I3TuUaR0cUSr4XweyGN9iO7OFvEHBAXqW9lPSWVXrau
-         Hcrw==
+        bh=Uxvhx5qQEKKi3Un1EErfZdduybbw8VIvWqfruEYV5Xg=;
+        b=lZv7tQlPuYTvi3z3D1uNsFp5PKBGrL1wbF8bwvQBYXsREHAFSa5M0R8f9EZo1AyYcC
+         hvf4bCYipsBQs6l56TzQI2YepEgsNlRDvuctWk9k9K3RvfxM0KUVpb2Iahpj26e2C7T8
+         vlq5SNzSkoH/B4ChIOwCVD9blQtxrZ9cI2fxWb9hWeY9pFH3qVbjastJU1CBwZGSFgFL
+         0/+IuTksjGbiJMAmFOkbPDK+WAlmybO1WFVR97Hll6TOTzbfqaqL8BRJyfPa0fohmnDz
+         +NRYHBSAu/m8LfjkUyY88VAHtDbbkMJ5H2f5nbRrvse5hjKa8V3tCR5I8OLjZ8OQDx4x
+         e/nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PFPIaFZ0EFL3LdreWHVYcsMYnslZyIMVhhTaiagDQ0M=;
-        b=I5qpszwCweCwH0t+Lr0AduLLNRFr/rw+xI0/nfEPULcJX1P5qH/T1Oaojde0e3l4e+
-         pLEwpO3xvaTfV5MvwlZNkLTufm7N9t819Q2wugogMeiqZZ7DL4oyDgzE8feerLrx36ui
-         AvRXrwdpAWQC5LJT1iGVrqKrvzZfXyGOnNLpZeXQrVf+qwkYK84Gl9AVzhRCp+ldNX0U
-         4ERHvTPYMDRWyb0/Ood9Gysgjwkpo3uSQQfwYNyRnGX4EirfalFCGdGbCsPrbj7Ve/eb
-         6hXUURRexqfJmXv21/i9/+1oYC84WrAEV/a1/zuSsgRKNpQtG0wZmX5U85/GCoU9TDEx
-         T2JA==
-X-Gm-Message-State: AOAM531sXQyJdVuOJ7DwFtLP04d7Rjm1CJIvAUrAs7Gh++UIpgkY7Brd
-        dfr2SrRKoeGkQmeOJ/WyL+Y=
-X-Google-Smtp-Source: ABdhPJxboThhpsVQk1YsZr8UvRyLVd8I7QhjDRfxdc+UqG3X+ED0EtptZqG6wYkO0Jr92XGOK/KIlA==
-X-Received: by 2002:aa7:d951:: with SMTP id l17mr13281750eds.92.1629336873423;
-        Wed, 18 Aug 2021 18:34:33 -0700 (PDT)
+        bh=Uxvhx5qQEKKi3Un1EErfZdduybbw8VIvWqfruEYV5Xg=;
+        b=EiAWfXTUzRmtb0QqyscwVGCRaqEv2FRmwJeY28qnBv1u48mfNPuySRhVZsjdJbLJBo
+         c4xsrCmypaB/vdmvx9VqmP29AbGmvgNsuZ2fWoJd0iwTDSw+a5IXNRzh/GC3U/QRa98D
+         KOt4zkEnVSmWiSTXIegPFuaHbNOGn20FRu7amou+K7xTAn4ZTYLq9+dLdFZCa5dUm/kt
+         /yBD0oSM1RLXaouEYQhUD0fAfzKmN1QpYmcD6iEYiPTzXY712RSLkvsfRtWyuzeYOQFl
+         r2beNUvhmp3A7i8C9UhjhlxcYzIjmDSrogMmq297OkZ/uuU+MYpZUSE/uUEp62L8nKVs
+         M1Wg==
+X-Gm-Message-State: AOAM532VKmb2yepSkjY0j7/lA8cdSbOcsQH1IfdcVT0JJG0xsxfzJjh3
+        o6ZOKhdxT4WyGZ5/wJHfdO4=
+X-Google-Smtp-Source: ABdhPJzvZCWdzjpF0V3e2EgViiP0yS/G0OeBvs4n4H+vbbbB6xbaThxpmrOspDmDvwIiP5+PweR4Uw==
+X-Received: by 2002:a17:906:410c:: with SMTP id j12mr12857231ejk.553.1629337123290;
+        Wed, 18 Aug 2021 18:38:43 -0700 (PDT)
 Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
-        by smtp.gmail.com with ESMTPSA id v6sm551892ejk.117.2021.08.18.18.34.32
+        by smtp.gmail.com with ESMTPSA id w11sm898729edc.5.2021.08.18.18.38.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 18:34:32 -0700 (PDT)
+        Wed, 18 Aug 2021 18:38:42 -0700 (PDT)
 From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
 To:     gregkh@linuxfoundation.org, Phillip Potter <phil@philpotter.co.uk>
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         martin@kaiser.cx, straube.linux@gmail.com,
         Larry.Finger@lwfinger.net
-Subject: Re: [PATCH 1/6] staging: r8188eu: remove _dbg_dump_tx_info function
-Date:   Thu, 19 Aug 2021 03:34:31 +0200
-Message-ID: <9701067.u0aNz3o6e4@localhost.localdomain>
-In-Reply-To: <20210818234253.208271-2-phil@philpotter.co.uk>
-References: <20210818234253.208271-1-phil@philpotter.co.uk> <20210818234253.208271-2-phil@philpotter.co.uk>
+Subject: Re: [PATCH 2/6] staging: r8188eu: remove unused function dump_txrpt_ccx_88e
+Date:   Thu, 19 Aug 2021 03:38:41 +0200
+Message-ID: <3469308.GW2Jk8YpuN@localhost.localdomain>
+In-Reply-To: <20210818234253.208271-3-phil@philpotter.co.uk>
+References: <20210818234253.208271-1-phil@philpotter.co.uk> <20210818234253.208271-3-phil@philpotter.co.uk>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
@@ -65,82 +65,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, August 19, 2021 1:42:48 AM CEST Phillip Potter wrote:
-> Remove _dbg_dump_tx_info from hal/rtl8188e_xmit.c as it is just a
-> dumping function that contains a lot of unclear DBG_88E calls, and has
-> no other external effect, other than calling a function that ultimately
-> determines whether or not to dump/trigger the DBG_88E calls. Also remove
-> its declaration and single call site.
+On Thursday, August 19, 2021 1:42:49 AM CEST Phillip Potter wrote:
+> Remove unused function dump_txrpt_ccx_88e from hal/rtl8188e_xmit.c and
+> remove its declaration in include/rtl8188e_xmit.h, as this function is
+> not called from anywhere, and is thus dead code.
 > 
 > Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
 > ---
->  drivers/staging/r8188eu/hal/rtl8188e_xmit.c   | 31 -------------------
->  drivers/staging/r8188eu/hal/rtl8188eu_xmit.c  |  1 -
->  .../staging/r8188eu/include/rtl8188e_xmit.h   |  3 --
->  3 files changed, 35 deletions(-)
+>  drivers/staging/r8188eu/hal/rtl8188e_xmit.c   | 22 -------------------
+>  .../staging/r8188eu/include/rtl8188e_xmit.h   |  1 -
+>  2 files changed, 23 deletions(-)
 > 
 > diff --git a/drivers/staging/r8188eu/hal/rtl8188e_xmit.c b/drivers/staging/r8188eu/hal/rtl8188e_xmit.c
-> index 164ec6650dec..d2b55d581f95 100644
+> index d2b55d581f95..46b871f3f631 100644
 > --- a/drivers/staging/r8188eu/hal/rtl8188e_xmit.c
 > +++ b/drivers/staging/r8188eu/hal/rtl8188e_xmit.c
-> @@ -42,34 +42,3 @@ void handle_txrpt_ccx_88e(struct adapter *adapter, u8 *buf)
->  					RTW_SCTX_DONE_CCX_PKT_FAIL);
->  	}
->  }
-> -
-> -void _dbg_dump_tx_info(struct adapter *padapter, int frame_tag,
-> -		       struct tx_desc *ptxdesc)
+> @@ -7,28 +7,6 @@
+>  #include "../include/drv_types.h"
+>  #include "../include/rtl8188e_hal.h"
+>  
+> -void dump_txrpt_ccx_88e(void *buf)
 > -{
-> -	u8 dmp_txpkt;
-> -	bool dump_txdesc = false;
-> -	rtw_hal_get_def_var(padapter, HAL_DEF_DBG_DUMP_TXPKT, &(dmp_txpkt));
+> -	struct txrpt_ccx_88e *txrpt_ccx = (struct txrpt_ccx_88e *)buf;
 > -
-> -	if (dmp_txpkt == 1) {/* dump txdesc for data frame */
-> -		DBG_88E("dump tx_desc for data frame\n");
-> -		if ((frame_tag & 0x0f) == DATA_FRAMETAG)
-> -			dump_txdesc = true;
-> -	} else if (dmp_txpkt == 2) {/* dump txdesc for mgnt frame */
-> -		DBG_88E("dump tx_desc for mgnt frame\n");
-> -		if ((frame_tag & 0x0f) == MGNT_FRAMETAG)
-> -			dump_txdesc = true;
-> -	}
-> -
-> -	if (dump_txdesc) {
-> -		DBG_88E("=====================================\n");
-> -		DBG_88E("txdw0(0x%08x)\n", ptxdesc->txdw0);
-> -		DBG_88E("txdw1(0x%08x)\n", ptxdesc->txdw1);
-> -		DBG_88E("txdw2(0x%08x)\n", ptxdesc->txdw2);
-> -		DBG_88E("txdw3(0x%08x)\n", ptxdesc->txdw3);
-> -		DBG_88E("txdw4(0x%08x)\n", ptxdesc->txdw4);
-> -		DBG_88E("txdw5(0x%08x)\n", ptxdesc->txdw5);
-> -		DBG_88E("txdw6(0x%08x)\n", ptxdesc->txdw6);
-> -		DBG_88E("txdw7(0x%08x)\n", ptxdesc->txdw7);
-> -		DBG_88E("=====================================\n");
-> -	}
+> -	DBG_88E("%s:\n"
+> -		"tag1:%u, pkt_num:%u, txdma_underflow:%u, int_bt:%u, int_tri:%u, int_ccx:%u\n"
+> -		"mac_id:%u, pkt_ok:%u, bmc:%u\n"
+> -		"retry_cnt:%u, lifetime_over:%u, retry_over:%u\n"
+> -		"ccx_qtime:%u\n"
+> -		"final_data_rate:0x%02x\n"
+> -		"qsel:%u, sw:0x%03x\n",
+> -		__func__, txrpt_ccx->tag1, txrpt_ccx->pkt_num,
+> -		txrpt_ccx->txdma_underflow, txrpt_ccx->int_bt,
+> -		txrpt_ccx->int_tri, txrpt_ccx->int_ccx,
+> -		txrpt_ccx->mac_id, txrpt_ccx->pkt_ok, txrpt_ccx->bmc,
+> -		txrpt_ccx->retry_cnt, txrpt_ccx->lifetime_over,
+> -		txrpt_ccx->retry_over, txrpt_ccx_qtime_88e(txrpt_ccx),
+> -		txrpt_ccx->final_data_rate, txrpt_ccx->qsel,
+> -		txrpt_ccx_sw_88e(txrpt_ccx)
+> -	);
 > -}
-> diff --git a/drivers/staging/r8188eu/hal/rtl8188eu_xmit.c b/drivers/staging/r8188eu/hal/rtl8188eu_xmit.c
-> index 50c4b9382761..b279309405a2 100644
-> --- a/drivers/staging/r8188eu/hal/rtl8188eu_xmit.c
-> +++ b/drivers/staging/r8188eu/hal/rtl8188eu_xmit.c
-> @@ -330,7 +330,6 @@ static s32 update_txdesc(struct xmit_frame *pxmitframe, u8 *pmem, s32 sz, u8 bag
->  	ODM_SetTxAntByTxInfo_88E(&haldata->odmpriv, pmem, pattrib->mac_id);
->  
->  	rtl8188eu_cal_txdesc_chksum(ptxdesc);
-> -	_dbg_dump_tx_info(adapt, pxmitframe->frame_tag, ptxdesc);
->  	return pull;
->  }
->  
+> -
+>  void handle_txrpt_ccx_88e(struct adapter *adapter, u8 *buf)
+>  {
+>  	struct txrpt_ccx_88e *txrpt_ccx = (struct txrpt_ccx_88e *)buf;
 > diff --git a/drivers/staging/r8188eu/include/rtl8188e_xmit.h b/drivers/staging/r8188eu/include/rtl8188e_xmit.h
-> index ff8b73441c52..d2099da1a41a 100644
+> index d2099da1a41a..20b55e3850ba 100644
 > --- a/drivers/staging/r8188eu/include/rtl8188e_xmit.h
 > +++ b/drivers/staging/r8188eu/include/rtl8188e_xmit.h
-> @@ -153,7 +153,4 @@ s32 rtl8188eu_xmitframe_complete(struct adapter *padapter,
->  void dump_txrpt_ccx_88e(void *buf);
+> @@ -150,7 +150,6 @@ s32 rtl8188eu_xmitframe_complete(struct adapter *padapter,
+>  				 struct xmit_priv *pxmitpriv,
+>  				 struct xmit_buf *pxmitbuf);
+>  
+> -void dump_txrpt_ccx_88e(void *buf);
 >  void handle_txrpt_ccx_88e(struct adapter *adapter, u8 *buf);
 >  
-> -void _dbg_dump_tx_info(struct adapter *padapter, int frame_tag,
-> -		       struct tx_desc *ptxdesc);
-> -
 >  #endif /* __RTL8188E_XMIT_H__ */
 > -- 
 > 2.31.1
@@ -155,7 +134,6 @@ Acked-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 Thanks,
 
 Fabio
-
 
 
 
