@@ -2,105 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8623F1C42
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD283F1C48
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239919AbhHSPKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 11:10:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232821AbhHSPKj (ORCPT
+        id S239972AbhHSPLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 11:11:07 -0400
+Received: from smtprelay0182.hostedemail.com ([216.40.44.182]:39118 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S238460AbhHSPLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 11:10:39 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 997BBC061575;
-        Thu, 19 Aug 2021 08:10:02 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id y34so13668058lfa.8;
-        Thu, 19 Aug 2021 08:10:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5Z1QQroQWVoOLfcgLvsMByWTY84xsaRYlR2gMwC7hxk=;
-        b=Wph47GNrBXv6xnwCytTIYfUWyrKDGiYMLx8wDAPgogTj5qllaQVxbDbOxvOkVT8wkh
-         aBL1oMDTfuf7Dq/rz1FnOavTRnKppZcR0bX/0ZAZSpyqMnCdaMBmS0vnTJykEz3SvsD9
-         b7Azv/+91i/9zESgsuaTghrh+WiYQNdhDZtengbdIql+gxY4hhlSD3hSdsdvCsIiw7gV
-         ELvQg14IaG4yg1BU+GVRpQJPJjAqO6WdS3aGdrHLyFEKYDpmKWT+i81TutZmpv8HKelY
-         9X/NsfshCPQYUmVqEfj57itsP9knmanK5d8v8+ut7AQj1aW5RP+LVP8GiBJQbU9nc9zn
-         vf/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5Z1QQroQWVoOLfcgLvsMByWTY84xsaRYlR2gMwC7hxk=;
-        b=jXCrrkrV+VbM/HE5ACbeBxHputIq4msXVRpZyUUrGNNpe1SnJwlJqZkaP1ZoqOM4+V
-         YQcqlzY1ydUzk7cpUD3bNN3zjmpmkWds31NQIq0iL7KgKblHuEfMepuhfCJFXTif9LuD
-         Pp0qY5wIbFHc6Yt5soQ6cAGcdZb9IjxEo64yGheoNZtlAya5NtF4AGz51EtZK5Srd6iy
-         L3Fjnpo3Qo39T1F3zEmi16T0mucE0ocK9dlrvw8M7qpELBIB+i1iHMNv0bJ5K2QCIKW1
-         sVlQFOb+j9gCBcR+Cobq7r9ZpIccrglINyH12W8qmJTe+BVIW9Gk/ghhLM0pbuJGCGdC
-         iWWA==
-X-Gm-Message-State: AOAM5313/Xzof8pw+mlkq96sgChIsTgoAQ+ZXnoflCQNfTFhdykHRMxr
-        88cdy6wpPqg74Ed5Fr5vUN0=
-X-Google-Smtp-Source: ABdhPJwgWP38M/SP0uiucvEGNq6+a0txunVlUgBKtt8n9jnpujqJPWVmJzmYr/N0T2dlE19gdvxsFQ==
-X-Received: by 2002:a05:6512:2187:: with SMTP id b7mr11146881lft.185.1629385800800;
-        Thu, 19 Aug 2021 08:10:00 -0700 (PDT)
-Received: from [192.168.1.11] ([46.235.66.127])
-        by smtp.gmail.com with ESMTPSA id w12sm332511lfq.277.2021.08.19.08.10.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 08:10:00 -0700 (PDT)
-Subject: Re: [PATCH] Bluetooth: add timeout sanity check to hci_inquiry
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+be2baed593ea56c6a84c@syzkaller.appspotmail.com
-References: <20210817103108.1160-1-paskripkin@gmail.com>
- <0038C6D9-DEAF-4CB2-874C-00F6CEFCF26C@holtmann.org>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-Message-ID: <c3e1a8ca-2ded-f992-a1c3-d144397a7b2a@gmail.com>
-Date:   Thu, 19 Aug 2021 18:09:58 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 19 Aug 2021 11:11:06 -0400
+Received: from omf19.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id AE46D26DD3;
+        Thu, 19 Aug 2021 15:10:26 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf19.hostedemail.com (Postfix) with ESMTPA id B4AEE20D772;
+        Thu, 19 Aug 2021 15:10:24 +0000 (UTC)
+Message-ID: <930fbf0e3b17a78c64a32d26fcf9aed46c5d6d88.camel@perches.com>
+Subject: Re: [PATCH] drm/bridge/tc358767: make the array ext_div static
+ const, makes object smaller
+From:   Joe Perches <joe@perches.com>
+To:     Colin Ian King <colin.king@canonical.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 19 Aug 2021 08:10:23 -0700
+In-Reply-To: <c4378876-74b0-4f80-05b7-dcd809bb47a1@canonical.com>
+References: <20210819133839.10745-1-colin.king@canonical.com>
+         <0a2ea4e54d7bfd61b45cc070eee6b62e8da82190.camel@perches.com>
+         <913b96bc-f5c4-1a26-c5f7-70a9d0ab3f53@canonical.com>
+         <3da667b1b415b19325c034dcb389a201fa46cfd3.camel@perches.com>
+         <c4378876-74b0-4f80-05b7-dcd809bb47a1@canonical.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-In-Reply-To: <0038C6D9-DEAF-4CB2-874C-00F6CEFCF26C@holtmann.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.99
+X-Stat-Signature: dwmfzc5xuegxfms4xm4a7wiw1xyirjk8
+X-Rspamd-Server: rspamout02
+X-Rspamd-Queue-Id: B4AEE20D772
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/I4h/4/Jwrq9yDdzp3ajPSpHN+nWw4Yzk=
+X-HE-Tag: 1629385824-254300
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/19/21 6:05 PM, Marcel Holtmann wrote:
-> Hi Pavel,
-> 
->> 	}
->> 
-> 
-> 	/* Restrict maximum inquiry length to 60 seconds */
-> 	if (ir.length > 60) {
-> 		..
-> 	}
-> 
->> +	if (ir.length > HCI_INQUIRY_MAX_TIMEOUT) {
->> +		err = -EINVAL;
->> +		goto done;
->> +	}
->> +
-> 
-> I found this easier to read than adding anything define somewhere else. And since this is a legacy interface that is no longer used by bluetoothd, this should be fine. We will start to deprecate this eventually.
-> 
-> And I prefer 1 minute max time here. Just to be safe.
-> 
+On Thu, 2021-08-19 at 15:51 +0100, Colin Ian King wrote:
 
-I thought, that user-space should be aware of maximum value, that's why 
-I decided to add this define :) I didn't know, that this interface is 
-legacy.
+> it still makes sense for these kind of
+> janitorial changes as it makes sense to constify arrays when they are
+> read-only and making them static is sensible for const data.
 
-Will fix in v2, thank you!
+I'm not disagreeing. Marking unmodifiable arrays as const is generally
+useful for readers.  Decent compilers though can _mostly_ determine
+whether or not an array is used as const and whether the array can be
+placed in a readonly section and is not required to be in a writable one.
+
+But the object sizes deltas you show with an allmodconfig are misleading.
+At a minimum I think you should show the output sizes as allmodconfig.
 
 
-With regards,
-Pavel Skripkin
