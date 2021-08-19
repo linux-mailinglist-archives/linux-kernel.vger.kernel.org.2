@@ -2,123 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133083F1C29
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44FFA3F1C2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234280AbhHSPFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 11:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhHSPFj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 11:05:39 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD24C061575;
-        Thu, 19 Aug 2021 08:05:02 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id q11so9597242wrr.9;
-        Thu, 19 Aug 2021 08:05:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KNs0XZsqcquyt15ij0j3IP+57uuSZytRU9SIhFpuBmM=;
-        b=UGNu2HwU59wSnOuHp67G1NVODqe3RooN/VXZzBGZzDl1cLYK1Ch2q2HeadXUz/YjLn
-         hF4XD+Pne3OL2s34pYMRQaN8qTfpTmYlxef3TseXCMEXTIlZED+W2TXYdSnK7UT+Rxq9
-         Kfspv950zUgmWQ/qWbxF1cg5HwFPB0EvpflTfOGW1maudY8Sf+hy/nKxJwj6H8n9G2/c
-         mEK3QtZbao1DFAqX3xMEwnQWvIm2fUNiuHs8ML5nbbZZdZJglVhDI8aLmtN75ZF+lm6Z
-         kVHJfr6tOP/DYJo2KzyuJzyo2pJkknvGjkTOaEj5Csy7+1NmZsPFjq8JwDff1JyBTPxO
-         c6Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KNs0XZsqcquyt15ij0j3IP+57uuSZytRU9SIhFpuBmM=;
-        b=AnRrkzyzye6QhOl6zSBKP2H5PmLe1RHPXtpBemVOFGFTS8Onj10OpwLDIIPmSHlQcj
-         GYfeihQd3eV6YPnZ5q9BVmMNtBMbQO3RzdQqu+B1zsXBdEy74wz7XLTM2S60X5kCVjnl
-         QzXY1LBnxU3kv1HP5cs0n3ijH4o8xkTLmlFBn363mEmTqg6NY9f48P0jIVGC9NFM0tv2
-         M2iFfXE+6y3xUoY/d7m84Uxg77b1Sn4axfEsfGdD3PlvhG5XgDOI/Ca7VBD/uB6XlZuZ
-         c2QNd/QZYj/pNv/BlIn8e9bHz/LMVkITukP7V6T8TNPnNcr/OJ/ssLA7IkN48j4AxOah
-         NrWQ==
-X-Gm-Message-State: AOAM53079P6S3IZ+pp2WB/wLXdrAU8Ti5eyvncQkhnw5N+IYh/muupyd
-        IciuryHRUT2lhsAt60uCCOt/x2sKDhc=
-X-Google-Smtp-Source: ABdhPJxKSOc3ZQM5yn5QTGXL+01uzh0smupx/0lNuR2ntoSFnY73l4TL68PSCBcNcRlnfM1z6R0yXw==
-X-Received: by 2002:a5d:4490:: with SMTP id j16mr4358642wrq.272.1629385501287;
-        Thu, 19 Aug 2021 08:05:01 -0700 (PDT)
-Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
-        by smtp.gmail.com with ESMTPSA id z137sm8234022wmc.14.2021.08.19.08.04.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 08:05:00 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Tomas Winkler <tomas.winkler@intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        Ionel-Catalin Mititelu <ionel-catalin.mititelu@intel.com>,
-        Jiri Kosina <jikos@kernel.org>, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH v2] mei: improve Denverton HSM & IFSI support
-Date:   Thu, 19 Aug 2021 17:04:59 +0200
-Message-Id: <20210819150459.21545-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S238536AbhHSPGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 11:06:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49434 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229612AbhHSPGQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 11:06:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12A5A6113D;
+        Thu, 19 Aug 2021 15:05:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629385539;
+        bh=LGZKmQwPGywDOK76NamejmfBRkmI5bWYX8EQHyNOtYA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oFMkEnqsoWtwZiEbZiGpyS0Cg4duOAjVf+cB88adbS/SQPyw/B0t6tB4HsKmsV5T9
+         xfHrzvrYdKScH/pudb7r5Encmn61xEI0bjk83hVcUB0NF13czFCdXjkRBYo/bXuGR6
+         cveAfJS3wou7w5lghZrKJYZoecX+XIhnUfe9WvV4=
+Date:   Thu, 19 Aug 2021 17:05:36 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Chunfeng Yun =?utf-8?B?KOS6keaYpeWzsCk=?= 
+        <Chunfeng.Yun@mediatek.com>
+Cc:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "ikjn@chromium.org" <ikjn@chromium.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "mathias.nyman@intel.com" <mathias.nyman@intel.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+Subject: Re: [PATCH] usb: xhci-mtk: Do not use xhci's virt_dev in
+ drop_endpoint
+Message-ID: <YR5zQD8dFWsXu5Ns@kroah.com>
+References: <20210805133731.1.Icc0f080e75b1312692d4c7c7d25e7df9fe1a05c2@changeid>
+ <2593ac262cdf0088e937b9fbc907bb23a6736fb5.camel@mediatek.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <2593ac262cdf0088e937b9fbc907bb23a6736fb5.camel@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Intel Denverton chip provides HSM & IFSI. In order to access
-HSM & IFSI at the same time, provide two HECI hardware IDs for accessing.
+On Thu, Aug 19, 2021 at 11:56:59AM +0000, Chunfeng Yun (云春峰) wrote:
+> Hi Greg,
+> 
+> On Thu, 2021-08-05 at 13:37 +0800, Ikjoon Jang wrote:
+> > xhci-mtk depends on xhci's internal virt_dev when it retrieves its
+> > internal data from usb_host_endpoint both in add_endpoint and
+> > drop_endpoint callbacks. But when setup packet was retired by
+> > transaction errors in xhci_setup_device() path, a virt_dev for the
+> > slot
+> > is newly created with real_port 0. This leads to xhci-mtks's NULL
+> > pointer
+> > dereference from drop_endpoint callback as xhci-mtk assumes that
+> > virt_dev's
+> > real_port is always started from one. The similar problems were
+> > addressed
+> > by [1] but that can't cover the failure cases from setup_device.
+> > 
+> > This patch drops the usages of xhci's virt_dev in xhci-mtk's
+> > drop_endpoint
+> > callback by adopting rhashtable for searching mtk's schedule entity
+> > from a given usb_host_endpoint pointer instead of searching a linked
+> > list.
+> > So mtk's drop_endpoint callback doesn't have to rely on virt_dev at
+> > all.
+> > 
+> > [1] 
+> > https://lore.kernel.org/r/1617179142-2681-2-git-send-email-chunfeng.yun@mediatek.com
+> > 
+> > Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+> > ---
+> > 
+> >  drivers/usb/host/xhci-mtk-sch.c | 140 ++++++++++++++++++----------
+> > ----
+> >  drivers/usb/host/xhci-mtk.h     |  15 ++--
+> >  2 files changed, 86 insertions(+), 69 deletions(-)
+> > 
+> > diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-
+> > mtk-sch.c
+> > index cffcaf4dfa9f..f9b4d27ce449 100644
+> > --- a/drivers/usb/host/xhci-mtk-sch.c
+> > +++ b/drivers/usb/host/xhci-mtk-sch.c
+> > 
+> 
+> I see the patch is already in usb-next branch, but find some new bugs
+> introduced after I test it (one NULL point dereference oops, two memory
+> leakage due to no error handling). 
+> What do I need to do? revert this patch then send new version or just
+> send fix patches?
 
-Suggested-by: Ionel-Catalin Mititelu <ionel-catalin.mititelu@intel.com>
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-Tomas, please pick this quick helpful extension for the hardware.
+Which ever you want to do is fine with me.
 
- drivers/misc/mei/hw-me-regs.h | 3 ++-
- drivers/misc/mei/pci-me.c     | 1 +
- drivers/pci/quirks.c          | 3 +++
- 3 files changed, 6 insertions(+), 1 deletion(-)
+thanks,
 
-diff --git a/drivers/misc/mei/hw-me-regs.h b/drivers/misc/mei/hw-me-regs.h
-index cb34925e10f1..a436cbde2dd2 100644
---- a/drivers/misc/mei/hw-me-regs.h
-+++ b/drivers/misc/mei/hw-me-regs.h
-@@ -68,7 +68,8 @@
- #define MEI_DEV_ID_BXT_M      0x1A9A  /* Broxton M */
- #define MEI_DEV_ID_APL_I      0x5A9A  /* Apollo Lake I */
- 
--#define MEI_DEV_ID_DNV_IE     0x19E5  /* Denverton IE */
-+#define MEI_DEV_ID_DNV_IE     0x19E5  /* Denverton for HECI1 - IFSI */
-+#define MEI_DEV_ID_DNV_IE_2   0x19E6  /* Denverton 2 for HECI2 - HSM */
- 
- #define MEI_DEV_ID_GLK        0x319A  /* Gemini Lake */
- 
-diff --git a/drivers/misc/mei/pci-me.c b/drivers/misc/mei/pci-me.c
-index c3393b383e59..30827cd2a1c2 100644
---- a/drivers/misc/mei/pci-me.c
-+++ b/drivers/misc/mei/pci-me.c
-@@ -77,6 +77,7 @@ static const struct pci_device_id mei_me_pci_tbl[] = {
- 	{MEI_PCI_DEVICE(MEI_DEV_ID_APL_I, MEI_ME_PCH8_CFG)},
- 
- 	{MEI_PCI_DEVICE(MEI_DEV_ID_DNV_IE, MEI_ME_PCH8_CFG)},
-+	{MEI_PCI_DEVICE(MEI_DEV_ID_DNV_IE_2, MEI_ME_PCH8_SPS_CFG)},
- 
- 	{MEI_PCI_DEVICE(MEI_DEV_ID_GLK, MEI_ME_PCH8_CFG)},
- 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 6899d6b198af..2ab767ef8469 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -4842,6 +4842,9 @@ static const struct pci_dev_acs_enabled {
- 	{ PCI_VENDOR_ID_INTEL, 0x15b7, pci_quirk_mf_endpoint_acs },
- 	{ PCI_VENDOR_ID_INTEL, 0x15b8, pci_quirk_mf_endpoint_acs },
- 	{ PCI_VENDOR_ID_INTEL, PCI_ANY_ID, pci_quirk_rciep_acs },
-+	/* Denverton */
-+	{ PCI_VENDOR_ID_INTEL, 0x19e5, pci_quirk_mf_endpoint_acs },
-+	{ PCI_VENDOR_ID_INTEL, 0x19e6, pci_quirk_mf_endpoint_acs },
- 	/* QCOM QDF2xxx root ports */
- 	{ PCI_VENDOR_ID_QCOM, 0x0400, pci_quirk_qcom_rp_acs },
- 	{ PCI_VENDOR_ID_QCOM, 0x0401, pci_quirk_qcom_rp_acs },
--- 
-2.26.2
-
+greg k-h
