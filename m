@@ -2,146 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 431873F206D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 21:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A08E53F2067
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 21:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234511AbhHSTQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 15:16:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230058AbhHSTQL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 15:16:11 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A943C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 12:15:35 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id d11so14951147eja.8
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 12:15:35 -0700 (PDT)
+        id S234085AbhHSTLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 15:11:24 -0400
+Received: from mail-bn8nam08on2089.outbound.protection.outlook.com ([40.107.100.89]:7585
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229465AbhHSTLX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 15:11:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NB3O/24lq7UQrjCOppdDTd45Nkb6/aaZRTAytmQ0NiBk/shpEegZXYpi20/vVTCDdZsaLr6z6PSjN1r5+uoyZkRHeHulkXnzLohgFQZ7+90HKyLRn3pmR3jJNjCy1+/JyVOIadUeekwZEvp+AwZLuSsyHt5TdO+ZHgyhdujZFymNj/GnedWidaQanI1hw84u+XqGXquQBL5HoW2Cyxt+D/SrJRfNhzOnD1JYyS4Zn57ZZxwnQ7z47hrJuCC2zv2rUSPD0Mpv77VyrtFq9xjtFxSMkrX8LRbGKBDyUcWF4hGB9ZmHBsac9lL7BhKNu7r1HJQ15sfrGRYID92MZi8ZdA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X+MRdQWEcVXF/A9yoRQVPha1g1U1JtcUtSqLwrEmzhc=;
+ b=SO03/xA9Bi/QDMVDZz1p5VSi+dY5s0trA33wl7k6LEGMVbYSoD+njMSqJRywzcnNIpK/ykOgRXZX2AdatVdx8qB2fPlJczQakarOzFXXRX5+zR9RsYumyqDz/smJXPqwn9o2vHiyMjDgwLJqO8oWrqwoNGrYqHZL+J9ohGqDCslfc4a81BiDj7Oi7+MTKM5qXm+lHttay7ivflhSVseIyg+9I5DZEM5EuVWL3IA3T9FuA6SXXgF1mO6ilNiIkhk37iFFnbJyd1YrhRhGlOAK3s/HktZ8IpXVIIj+dEZ8qD95TmZ/nuF4ydJvCZEliKuLcnw5GbQwbFzSDKvgufH13g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=linuxfoundation.org
+ smtp.mailfrom=xilinx.com; dmarc=pass (p=none sp=none pct=100) action=none
+ header.from=xilinx.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=47eBvc3morcta5Nynwcfir11Tm/8Tdt9QjDTf46bd28=;
-        b=CvQP0aLgX9ae5Hc/8Bcp+kZ0Gxk9PyruGSgedrMRoG9uh8NRj8Xb7JRC3jT7s4a8qZ
-         NMLDEKuam1GC97jSirK6f4V6WFZpxp15taQzaltBOnh5Fiy2Vt18/59rapCHUcVNOt7w
-         QfXaUM3dini5pJyTDHtMVatSFEe3fxEPGFUIU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=47eBvc3morcta5Nynwcfir11Tm/8Tdt9QjDTf46bd28=;
-        b=nSBgeCMbzYZqiD+J3+dzK8hO+gIOCUD8ORT4HVmySViaeE8MyufwK9VGP6Ai0ODezz
-         oy+upCOMcN4AKq/jes/xfdOL2OtZ13jO3h69qSTQNbWyv+i7lcWw6W7eFP+y4YhFmVNy
-         CTKdsuICJ65ccaQKWTMZSiXZgN0SN6EvBwfaZEjxxTZclKYw5Xmd67MjD3JxdY9qXLsR
-         VVSX5iLrhcWW8axqyWoByPyYOhKE447HqH3X0tU+s9TvyupcIp1EGiaJnFBN4XqZrmgp
-         hWvL+Oi9qv5FdCR90RS80LgBwA9wvsctjTdcx7q2QGt2GDUAkWf7suZSzuQ33SwnFyd3
-         W43A==
-X-Gm-Message-State: AOAM530OnhrAL5TJUZjNj2zTfKLO5++FsYX4o1D4a/FvS+4+6Xma5mfp
-        qaQ8Ifl8hh/GOjntA+TrVOZU+fXnm09gE3wlLqg=
-X-Google-Smtp-Source: ABdhPJwNcxF5D4N1K4GESiBBVNXF4YkH262GCYb38IVt5w21iCqKdOuAfBaAj7hG+xe7SGkwlZwNLA==
-X-Received: by 2002:a17:906:3699:: with SMTP id a25mr17168628ejc.452.1629400533567;
-        Thu, 19 Aug 2021 12:15:33 -0700 (PDT)
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com. [209.85.218.41])
-        by smtp.gmail.com with ESMTPSA id h8sm2203727edv.30.2021.08.19.12.15.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 12:15:33 -0700 (PDT)
-Received: by mail-ej1-f41.google.com with SMTP id w5so15035544ejq.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 12:15:33 -0700 (PDT)
-X-Received: by 2002:a2e:557:: with SMTP id 84mr13169568ljf.507.1629400193248;
- Thu, 19 Aug 2021 12:09:53 -0700 (PDT)
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X+MRdQWEcVXF/A9yoRQVPha1g1U1JtcUtSqLwrEmzhc=;
+ b=Qgsix+m43JHoyB9Aw045PfQtaEC9lYk3XhVqRC9VlbQqTEEMhfqW51QNRVPvXK/ZIU7q2YeTcTkAlZ+tyt+BsVq0zgBli4/MIKba5L0blCs6oqiTSaCWZJb0iAORKDbQHaixP1IaKLa2+Z22cA1JHyuX+tHMX5K0sNlCVT2UA9w=
+Received: from BN6PR13CA0039.namprd13.prod.outlook.com (2603:10b6:404:13e::25)
+ by PH0PR02MB8391.namprd02.prod.outlook.com (2603:10b6:510:10a::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Thu, 19 Aug
+ 2021 19:10:45 +0000
+Received: from BN1NAM02FT020.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:404:13e:cafe::f0) by BN6PR13CA0039.outlook.office365.com
+ (2603:10b6:404:13e::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.9 via Frontend
+ Transport; Thu, 19 Aug 2021 19:10:45 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=pass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ BN1NAM02FT020.mail.protection.outlook.com (10.13.2.135) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4436.19 via Frontend Transport; Thu, 19 Aug 2021 19:10:44 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 19 Aug 2021 12:10:41 -0700
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Thu, 19 Aug 2021 12:10:41 -0700
+Envelope-to: gregkh@linuxfoundation.org,
+ rafael@kernel.org,
+ linux-kernel@vger.kernel.org
+Received: from [172.19.2.34] (port=50028 helo=xsjdsteger51.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <daniel.steger@xilinx.com>)
+        id 1mGnR3-0008NA-LU; Thu, 19 Aug 2021 12:10:41 -0700
+From:   Daniel Steger <daniel.steger@xilinx.com>
+To:     <gregkh@linuxfoundation.org>, <rafael@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Daniel Steger <daniel.steger@xilinx.com>
+Subject: [PATCH] fs: sysfs: do not remove files if group is null
+Date:   Thu, 19 Aug 2021 12:10:20 -0700
+Message-ID: <20210819191019.3380999-1-daniel.steger@xilinx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <1626665029-49104-1-git-send-email-xiyuyang19@fudan.edu.cn>
- <20210720160127.ac5e76d1e03a374b46f25077@linux-foundation.org>
- <20210819132131.GA15779@willie-the-truck> <YR5ldaQvAnCKMnkk@hirez.programming.kicks-ass.net>
- <YR52igt/lJ7gQqOG@hirez.programming.kicks-ass.net>
-In-Reply-To: <YR52igt/lJ7gQqOG@hirez.programming.kicks-ass.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 19 Aug 2021 12:09:37 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh_vEzmYnMufOa=03WAU=DRM5+n6uZy=dVtJERFJm3Q-Q@mail.gmail.com>
-Message-ID: <CAHk-=wh_vEzmYnMufOa=03WAU=DRM5+n6uZy=dVtJERFJm3Q-Q@mail.gmail.com>
-Subject: Re: [PATCH] mm/rmap: Convert from atomic_t to refcount_t on anon_vma->refcount
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Alistair Popple <apopple@nvidia.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, yuanxzhang@fudan.edu.cn,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        Will Deacon <will.deacon@arm.com>,
-        David Howells <dhowells@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d205cd3e-494e-4f34-ffec-08d963450bb0
+X-MS-TrafficTypeDiagnostic: PH0PR02MB8391:
+X-Microsoft-Antispam-PRVS: <PH0PR02MB83910712C47F6BCD48E3847BC1C09@PH0PR02MB8391.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: b/bQYwRynOPhoEXOFt+/MFN2asDaNLLdDjmqX9m/PefWpKBvuAggF1XybF4FF+toPxD/5eHp3Y1WcfQ7Fr7Y9nwcMql/BcB1Fruxh3sD6sKjhD3LDgkfe40PL1l026NJr/RALv4z1rRwzt0MnFV6rmMw/yiJrgFbCwS2azRPInj1Uyh16G3TTQ+iDx29kjkldWuH3gqBMvbfvkH8AS9HtA42FgmApA0HzRRfdxBsw8gKw3znBCCUDDb67H9gpMhC0+EnwvjiD2fWzQlyF6w2eedpCPZUPtSiQckueib99MCnPvGYeauAu16OUmzmF4MX4d4wQdJJcfApwVXci65eD/bN/m/RE9hk/NwQpjpcKxtLi34k1d7dhDoEXsiV1KPCnLbWdYTy3xyIeFOxCxXM3XVOA8NuWOI2O7j+xQnm1lI7CN1dtGGxuAsJ94jApttGxRLmERJv+30/eY5gx87K4jhf4YJ/WRAH2H90bxBwVIbLutXc0N1oCRfBLtH4B+JuTtTioRYsRBq7k3meDnN6yAvgloHxKcc03xLgIHOi/h0DEF4KZC03mDhN1a5UHkC2R6MyQ6evv6va7tt1YtpqeLOb+hUV3JoVacqzLGgwxIiJ8y2cCpkBKUEdIplYBQFr2CGjE6xWy4anZ3vCZFBetO0arDd5qbvR5hBdmqsVaDz6JTs5ug9+AAW38AaDRj0I8XxMZGxGCn4LBKdhzgTrO+I3+NZEJ9XJg8JqiXud/JI=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(39860400002)(396003)(36840700001)(46966006)(5660300002)(1076003)(2616005)(336012)(4326008)(70586007)(316002)(186003)(478600001)(44832011)(26005)(47076005)(83380400001)(6666004)(82310400003)(426003)(9786002)(70206006)(2906002)(36860700001)(36756003)(7696005)(356005)(54906003)(36906005)(8936002)(7636003)(110136005)(107886003)(8676002)(82740400003)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Aug 2021 19:10:44.8348
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d205cd3e-494e-4f34-ffec-08d963450bb0
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN1NAM02FT020.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR02MB8391
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 8:21 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> If we can skip the OF... we can do something like this:
+The current implementation allows the remove_files() API to be
+called without checking if the grp->name is null. Ensure that
+the group name is valid prior to removing files.
 
-Honestly, I think a lot of the refcount code is questionable. It was
-absolutely written with no care for performance AT ALL.
+This patch fixes a race condition where device_del() will cleanup
+sysfs entries prior to device managed sysfs entries. This results
+in a NULL group->name and a system error during device cleanup.
 
-I'm not sure it helps to then add arch-specific code for it without
-thinking it through a _lot_ first.
+To reproduce the issue, simply create a new child device in a
+platform driver of your choice. Add a sysfs file group using
+devm API. On driver exist ensure to unregister your child device.
+Do not call devm_device_remove_group() and leave it up to the
+implementation to automatically clean up the files. Here is where
+you will see a kernel error complaining that the files have already
+been removed.
 
-It might be better to just have a "atomic_t with overflow handling" in
-general, exactly because the refcount_t was designed and written
-without any regard for code that cares about performance.
+Signed-off-by: Daniel Steger <daniel.steger@xilinx.com>
+---
+ fs/sysfs/group.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-> static inline bool refcount_dec_and_test(refcount_t *r)
-> {
->         asm_volatile_goto (LOCK_PREFIX "decl %[var]\n\t"
->                            "jz %l[cc_zero]\n\t"
->                            "jns 1f\n\t"
+diff --git a/fs/sysfs/group.c b/fs/sysfs/group.c
+index 64e6a6698935..023b40840f36 100644
+--- a/fs/sysfs/group.c
++++ b/fs/sysfs/group.c
+@@ -286,9 +286,10 @@ void sysfs_remove_group(struct kobject *kobj,
+ 		kernfs_get(kn);
+ 	}
+ 
+-	remove_files(kn, grp);
+-	if (grp->name)
++	if (grp->name) {
++		remove_files(kn, grp);
+ 		kernfs_remove(kn);
++	}
+ 
+ 	kernfs_put(kn);
+ }
+-- 
+2.25.1
 
-I think you can use "jl" for the bad case.
-
-You want to fail if the old value was negative, or if the old value
-was less than what you subtracted. That's literally the "less than"
-operator.
-
-I think it's better to handle that case out-of-line than play games
-with UD, though - this is going to be the rare case, the likelihood
-that we get the fixup wrong is just too big. Once it's out-of-line
-it's not as critical any more, even if it does add to the size of the
-code.
-
-So if we do this, I think it should be something like
-
-   static inline __must_check bool refcount_dec_and_test(refcount_t *r)
-   {
-        asm_volatile_goto (LOCK_PREFIX "decl %[var]\n\t"
-                "jz %l[cc_zero]\n\t"
-                "jl %l[cc_error]"
-                : : [var] "m" (r->refs.counter)
-                : "memory" : cc_zero, cc_error);
-
-        return false;
-
-   cc_zero:
-        return true;
-   cc_error:
-        refcount_warn_saturate(r, REFCOUNT_SUB_UAF);
-        return false;
-   }
-
-and we can discuss whether we could improve on the
-refcount_warn_saturate() separately.
-
-But see above: maybe just make this a separate "careful atomic_t",
-with the option to panic-on-overflow. So then we could get rid of
-refcount_warn_saturate() enmtirely above, and instead just have a
-(compile-time option) BUG() case, with the non-careful version just
-being our existing atomic_dec_and_test.
-
-Giving people who want a smaller kernel the option to do so, while
-giving people who want checking the option too.
-
-                Linus
