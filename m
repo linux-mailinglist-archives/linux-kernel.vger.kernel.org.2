@@ -2,61 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7043F1F05
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D38AF3F1F0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233904AbhHSRZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 13:25:46 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:37788 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233802AbhHSRZn (ORCPT
+        id S233456AbhHSR0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 13:26:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232558AbhHSR0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 13:25:43 -0400
-Received: by mail-io1-f72.google.com with SMTP id h3-20020a056602008300b005b7c0e23e11so3725570iob.4
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 10:25:07 -0700 (PDT)
+        Thu, 19 Aug 2021 13:26:35 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BABF5C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 10:25:58 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id w24so4257281wmi.5
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 10:25:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=IyytWCulA1iPzZ1hS/joKgz0vVkpY6YXu12pfBDZAWU=;
+        b=lc9N5bGTNxic8gAviHPJu2O0dJ2glIHBfpM/PkBBFbZgR3IVDoVpBOianNarpnuJzx
+         AiiDjU6ZPQTmJsYLO2JthmunWUOCmx7ZCcPMLB4s/yGcBJBm1FRUP69FA18CNFG/dJli
+         vwbgTU850MuFPL3F7m2S7z6U00HOzoCecK0aNk5hw9/y68ZCqQkkx5TavMuod+n3zJ79
+         IfAswbZJQJZ+j/EYNaK33I0e+kLxDM/GgLfb/riF/y5LXRpg0WLRwO6ulWmxMAAIwRb0
+         HXqvys3AQOykdjJ8yUjwHdsLBvcwAvLYOvVPtKOYJXnCcv1KDnpeqi3dNA/x+hSfBq0y
+         8VIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=IP7asdtdFlXOxOEQ1U/M8uS3b6zpj0naPI5qY7HFuyk=;
-        b=keJkcNOAC4UmaK5IkiS8Hlg/HakXZlr18B7je+zGYPzTVdB85L/cdhNfUWGxKKZSek
-         SE9ymAzFkX82T84WP+eGkV4hO8B2zO1kXKAXUE6jrgwgV0TrISP+cHEgymPLo0u+HqJw
-         IKvFKY3KTmksxv6zjyye/bCBJD4IbhPZGgJvcYJEIQXiE90OUMzhJhKSMakuUWBD1dXl
-         OiUDHxbtQzOGSTORwTR2kTBzPE6O98sLNxSTwQAKaTSTquz79j5ciqxaZLFPV3sjhHJ9
-         RqUSX00A4ZqGTvfv5S3idwV2Uztb8QCaBR1I20/bTOAcvnm0RxKF6PmwykXxk44EdpgE
-         VMng==
-X-Gm-Message-State: AOAM532TVcgrUF0Zcn0RE1o0dU21RWIsbCYJOM6HBD8jTUFZCKvu+Ejr
-        b2KkBibyqYxx7fwQaQ/gMqt2oA2pvFp+8+QwExrvNdlXY5/L
-X-Google-Smtp-Source: ABdhPJz8Eh1WAR5J1R4msOtBq6GuxBX1ajRoAfCtPA8fNLrLBK7DYhscYHz2hkMGcWd3N5eUqC3mwBzGD+WrIO8BgUyaftSYHgNl
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=IyytWCulA1iPzZ1hS/joKgz0vVkpY6YXu12pfBDZAWU=;
+        b=VEDrBp8sHeRp4jeHBASEy8x4q6IxxoEBbX5Ap5R2LDLoeuN6W0SIT8YiDwPWtLFHFT
+         Hp97ybwNSXlvJdt5228PXjWew8PcoWzIDAN2Bg+40Oqh14u6QdCboO3BraU8doWlCcT0
+         B7Omtg4XepH+wWvIHa3K7/kErd/L/iwsP8CyeFFIyUJz3LozPbB64eJs33c0G/ebqwCu
+         dPeRAWjUb7+aTsmM0J8CJold/Nto4sPga73b7hPaeRrASEyIaPadnkLwewJV3380wy5g
+         El5q7/oqWbGWPFKAVZoNHN7YGKxs7eeSAWToNo5OLKYEsmlwqIjAOXNp+M1DT29mBdfP
+         vP1g==
+X-Gm-Message-State: AOAM532LZ0lBU79XuRTxNphy1OYSAWBRBfb3M7J2+8LdRa4QZZ1eBJOx
+        hBFdHFFXV8dIMSf6rFIQTAC/FCNNAOs=
+X-Google-Smtp-Source: ABdhPJxZpe0J9hIThLbLjIkrF0sieeH74U+a7/NRDgoojZsyBl+e1Vn7XndOC4hrnCsXY871xTvtGQ==
+X-Received: by 2002:a05:600c:2f8f:: with SMTP id t15mr15117731wmn.114.1629393957337;
+        Thu, 19 Aug 2021 10:25:57 -0700 (PDT)
+Received: from agape.jhs ([5.171.80.14])
+        by smtp.gmail.com with ESMTPSA id o14sm3512815wrw.17.2021.08.19.10.25.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 10:25:57 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 19:25:54 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Joerg Roedel <jroedel@suse.de>
+Cc:     Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Hans de Goede <hdegoede@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: x86/boot/compressed/64: Lenovo Ideapad Miix300 bug report
+Message-ID: <20210819172553.GA1416@agape.jhs>
+References: <20210819100230.GA28768@agape.jhs>
+ <YR4uffjFuqvrz1Tp@zn.tnic>
+ <20210819121653.GB28768@agape.jhs>
+ <YR5dtDvvcgekoIJu@suse.de>
+ <20210819134328.GD28768@agape.jhs>
+ <YR5haH+K4fjm/cnK@suse.de>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:fb03:: with SMTP id h3mr12381959iog.198.1629393907150;
- Thu, 19 Aug 2021 10:25:07 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 10:25:07 -0700
-In-Reply-To: <da19f91c-1257-e6b8-7fc7-7f852a489cd8@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000008f3c605c9ecd545@google.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in tctx_task_work (2)
-From:   syzbot <syzbot+9c3492b27d10dc49ffa6@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YR5haH+K4fjm/cnK@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hello Joerg,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+On Thu, Aug 19, 2021 at 03:49:28PM +0200, Joerg Roedel wrote:
+> On Thu, Aug 19, 2021 at 03:43:28PM +0200, Fabio Aiuto wrote:
+> > shall I restore back CONFIG_AMD_MEM_ENCRYPT?
+> 
+> Yes, please restore it.
+> 
+> Thanks,
+> 
+> 	Joerg
 
-Reported-and-tested-by: syzbot+9c3492b27d10dc49ffa6@syzkaller.appspotmail.com
+Your patch works. I've tested the boot 10 times and
+worked fine. Tell me if you want me to test some other
+ways.
 
-Tested on:
+thank you,
 
-commit:         923ffe35 Revert "io_uring: improve tctx_task_work() ct..
-git tree:       https://github.com/isilence/linux.git syztest_ctx_tw
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cb4282936412304f
-dashboard link: https://syzkaller.appspot.com/bug?extid=9c3492b27d10dc49ffa6
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-
-Note: testing is done by a robot and is best-effort only.
+fabio
