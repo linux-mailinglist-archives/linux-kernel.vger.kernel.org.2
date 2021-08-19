@@ -2,134 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B83F3F19BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 14:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B3B3F19C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 14:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239655AbhHSMuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 08:50:06 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:41967 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237758AbhHSMtr (ORCPT
+        id S239629AbhHSMu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 08:50:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238400AbhHSMux (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 08:49:47 -0400
-Received: by mail-ot1-f41.google.com with SMTP id w22-20020a056830411600b0048bcf4c6bd9so8544071ott.8;
-        Thu, 19 Aug 2021 05:49:11 -0700 (PDT)
+        Thu, 19 Aug 2021 08:50:53 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41A6C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 05:50:16 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id bq25so12636329ejb.11
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 05:50:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dlk61iWrvdXGSmZ6Z0iCNse6iHDCWylNCH2RB7n2MT8=;
+        b=itDdcR8SpGo0HQ1jFTHOmvo4REOsaCxgJQwemJN3AG2IqoB1oK7WHW4jnxZoIuASkd
+         dqjNNQihM1cTpV0I39Q2x2aYZjJEf4Z/rPrsFWFiOBN691dqh6HzCcMy7Wepc0S17jZQ
+         PKiBm1GYnZz9kFL+nTPc4NOBWSxfMPMxoX9Q5zm7mHIewnnN4MlxYd/HeIimwdIzPRsK
+         NIKSNHZlSx5pxJ6iyD+kFmhGBb53/WHNK9E6eXJ3Hn+shGro+JrJ7dU/YnJXhVvS7uL0
+         vhEgvgn4AeKdb72eZlLAkgpMGGz959nbsmQ3an7gqbJnE1qOgOkRhLvhGZ+38HqaTf/z
+         8P+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=ZNMlpd5elTsi6B8hZyA4f6ldMNMZe0l4iu+9KL9MAls=;
-        b=AkocnMOb3viSGj0rGYhfDN1q4YN824IhHFgMhCwAl/wpPUrpwIviH4C70LP66Kru6W
-         51UExmKs71WBf5tF0wH7Y8pi4yRHV+zosMFzZ0Haf2iWr2qMwlGT4jBczejQmjN1XSJ3
-         GlI7zenoDkpRCrheKzdpDhAsEf2W6DN+6LVySO9beTad/NnwKIdN9PvhtOQ4mfQ1OZRQ
-         ZCXcia2sO8wfolDM9ft323E5n1pVbvkt/gEWJMVOKJ9vr+6LKJJQzGFY3u5+x/aNB/0n
-         HdtvwBXwbbV+gDfKpyhzWQVJu3YPI7PBu+Qv6H56OdPXiC07kPv5D3cPfphnEcTGZTtP
-         ynjQ==
-X-Gm-Message-State: AOAM5317SXp9/c0L/n9MoL5Z3kqttBmtdzrY4SjvUFR7HQeUHTqGr+8p
-        P9kwDILx0Zxvw9ePsZ41xUlo6Lkgag==
-X-Google-Smtp-Source: ABdhPJx3jDL4kYXzHNo10aYXPmecs8RlS3lgGSDuZYyaYvNJSUU0W1uDlCeC1BzxHjCr+IqeAl5AoA==
-X-Received: by 2002:a05:6830:12c1:: with SMTP id a1mr12254350otq.231.1629377351101;
-        Thu, 19 Aug 2021 05:49:11 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id n4sm555536ooe.10.2021.08.19.05.49.09
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dlk61iWrvdXGSmZ6Z0iCNse6iHDCWylNCH2RB7n2MT8=;
+        b=RQZ8dYM4ur1y5YINIIHkYr6N9q3IXxhXeIWK/3uYXhSysk4uHbmzyIrSvET5rEJWHn
+         bPKJmWWBQm18I2HiFXlqZl2isEeJZQuVVeyef4ptQZDzRhBdT10hm4kYrRimjheaJ/28
+         Ey0+fR/Z3mi/Xb2Sw5aEUxI++qchRVcSNa7LyYEn/hUzAMgdx8g81kU19ugdFEgkJGTz
+         xlFZIAo84g07E/uThPP3765LmTpPtqyFVw2j2u4sc0Dvs12etwncw4rGee5OA5FbCIjs
+         p46yrBo7YxSCzKVCZ+vmuhg0HcG+wDEZlwA41DHemRCRYjCdUM2L11AGM+lbnYvbOAnH
+         IQtQ==
+X-Gm-Message-State: AOAM532DYvyQM+ZKrhnFqeuMwzdiNaWsycTbLxPPAq0s0rwyXgQeqiO+
+        h6gGJKJo3LU3E7ongL84hAE=
+X-Google-Smtp-Source: ABdhPJxsZqqHQws3NT6BwHUlVngOL38XOjoRGkOZBH6lWJVyQVAqO66Ikcjbodt1+J3MmlUvL/Qa2w==
+X-Received: by 2002:a17:906:a018:: with SMTP id p24mr15546269ejy.349.1629377415458;
+        Thu, 19 Aug 2021 05:50:15 -0700 (PDT)
+Received: from localhost.localdomain.it (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id c8sm1222305ejp.124.2021.08.19.05.50.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 05:49:10 -0700 (PDT)
-Received: (nullmailer pid 288208 invoked by uid 1000);
-        Thu, 19 Aug 2021 12:49:09 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Moudy Ho <moudy.ho@mediatek.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        devicetree@vger.kernel.org,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>, acourbot@chromium.org,
-        pihsun@chromium.org, daoyuan huang <daoyuan.huang@mediatek.com>,
-        Rob Landley <rob@landley.net>, drinkcat@chromium.org,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        sj.huang@mediatek.com, menghui.lin@mediatek.com,
-        tfiga@chromium.org, Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
-        hsinyi@google.com, Rob Herring <robh+dt@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        randy.wu@mediatek.com, srv_heupstream@mediatek.com,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        linux-mediatek@lists.infradead.org, ben.lok@mediatek.com,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20210819070954.16679-4-moudy.ho@mediatek.com>
-References: <20210819070954.16679-1-moudy.ho@mediatek.com> <20210819070954.16679-4-moudy.ho@mediatek.com>
-Subject: Re: [PATCH v6 3/5] dt-binding: mt8183: Add Mediatek MDP3 dt-bindings
-Date:   Thu, 19 Aug 2021 07:49:09 -0500
-Message-Id: <1629377349.142826.288207.nullmailer@robh.at.kernel.org>
+        Thu, 19 Aug 2021 05:50:14 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH v2] staging: r8188eu: Remove _enter/_exit_critical_mutex()
+Date:   Thu, 19 Aug 2021 14:49:55 +0200
+Message-Id: <20210819124955.25540-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Aug 2021 15:09:52 +0800, Moudy Ho wrote:
-> This patch adds DT binding document for Media Data Path 3 (MDP3)
-> a unit in multimedia system used for scaling and color format convert.
-> 
-> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
-> ---
->  .../bindings/media/mediatek,mdp3-ccorr.yaml   |  58 +++++
->  .../bindings/media/mediatek,mdp3-rdma.yaml    | 241 ++++++++++++++++++
->  .../bindings/media/mediatek,mdp3-rsz.yaml     |  66 +++++
->  .../bindings/media/mediatek,mdp3-wdma.yaml    |  71 ++++++
->  .../bindings/media/mediatek,mdp3-wrot.yaml    |  71 ++++++
->  5 files changed, 507 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-ccorr.yaml
->  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
->  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-rsz.yaml
->  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-wdma.yaml
->  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-wrot.yaml
-> 
+Remove _enter_critical_mutex() and _exit_critical_mutex(). They are
+unnecessary wrappers, respectively to mutex_lock_interruptible() and
+to mutex_unlock(). They also have an odd interface that takes an
+unused argument named pirqL of type unsigned long.
+Replace them with the in-kernel API. Ignore return values as it was
+in the old code.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
 
-yamllint warnings/errors:
+v2: Ignore return values from Mutexes API.
 
-dtschema/dtc warnings/errors:
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.example.dts'
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-extract-example", line 45, in <module>
-    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 120, in get_single_data
-    node = self.composer.get_single_node()
-  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
-  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 773, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 848, in _ruamel_yaml.CParser._compose_sequence_node
-  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
-ruamel.yaml.scanner.ScannerError: while scanning a block scalar
-  in "<unicode string>", line 171, column 5
-found a tab character where an indentation space is expected
-  in "<unicode string>", line 183, column 1
-make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.example.dts] Error 1
-make[1]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml:  while scanning a block scalar
-  in "<unicode string>", line 171, column 5
-found a tab character where an indentation space is expected
-  in "<unicode string>", line 183, column 1
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml: ignoring, error parsing file
-warning: no schema found in file: ./Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
-make: *** [Makefile:1419: dt_binding_check] Error 2
+ drivers/staging/r8188eu/core/rtw_mlme_ext.c     |  5 +++--
+ drivers/staging/r8188eu/hal/usb_ops_linux.c     |  5 +++--
+ drivers/staging/r8188eu/include/osdep_service.h | 13 -------------
+ drivers/staging/r8188eu/os_dep/os_intfs.c       |  5 +++--
+ 4 files changed, 9 insertions(+), 19 deletions(-)
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1518477
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+index 5325fe41fbee..9f53cab33333 100644
+--- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
++++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+@@ -4359,7 +4359,8 @@ s32 dump_mgntframe_and_wait_ack(struct adapter *padapter, struct xmit_frame *pmg
+ 	if (padapter->bSurpriseRemoved || padapter->bDriverStopped)
+ 		return -1;
+ 
+-	_enter_critical_mutex(&pxmitpriv->ack_tx_mutex, NULL);
++	if (mutex_lock_interruptible(&pxmitpriv->ack_tx_mutex))
++		;	/*ignore return value */
+ 	pxmitpriv->ack_tx = true;
+ 
+ 	pmgntframe->ack_report = 1;
+@@ -4368,7 +4369,7 @@ s32 dump_mgntframe_and_wait_ack(struct adapter *padapter, struct xmit_frame *pmg
+ 	}
+ 
+ 	pxmitpriv->ack_tx = false;
+-	_exit_critical_mutex(&pxmitpriv->ack_tx_mutex, NULL);
++	mutex_unlock(&pxmitpriv->ack_tx_mutex);
+ 
+ 	return ret;
+ }
+diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+index 953fa05dc30c..120d6e2c6065 100644
+--- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
++++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+@@ -32,7 +32,8 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+ 		goto exit;
+ 	}
+ 
+-	_enter_critical_mutex(&dvobjpriv->usb_vendor_req_mutex, NULL);
++	if (mutex_lock_interruptible(&dvobjpriv->usb_vendor_req_mutex))
++		;	/* ignore return value */
+ 
+ 	/*  Acquire IO memory for vendorreq */
+ 	pIo_buf = dvobjpriv->usb_vendor_req_buf;
+@@ -96,7 +97,7 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+ 			break;
+ 	}
+ release_mutex:
+-	_exit_critical_mutex(&dvobjpriv->usb_vendor_req_mutex, NULL);
++	mutex_unlock(&dvobjpriv->usb_vendor_req_mutex);
+ exit:
+ 	return status;
+ }
+diff --git a/drivers/staging/r8188eu/include/osdep_service.h b/drivers/staging/r8188eu/include/osdep_service.h
+index 029aa4e92c9b..bb92b9d74bd7 100644
+--- a/drivers/staging/r8188eu/include/osdep_service.h
++++ b/drivers/staging/r8188eu/include/osdep_service.h
+@@ -56,19 +56,6 @@ static inline struct list_head *get_list_head(struct __queue *queue)
+ 	return (&(queue->queue));
+ }
+ 
+-static inline int _enter_critical_mutex(struct mutex *pmutex, unsigned long *pirqL)
+-{
+-	int ret;
+-
+-	ret = mutex_lock_interruptible(pmutex);
+-	return ret;
+-}
+-
+-static inline void _exit_critical_mutex(struct mutex *pmutex, unsigned long *pirqL)
+-{
+-		mutex_unlock(pmutex);
+-}
+-
+ static inline void rtw_list_delete(struct list_head *plist)
+ {
+ 	list_del_init(plist);
+diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
+index 1aa65925e1da..3823042256a6 100644
+--- a/drivers/staging/r8188eu/os_dep/os_intfs.c
++++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
+@@ -1065,9 +1065,10 @@ int netdev_open(struct net_device *pnetdev)
+ 	int ret;
+ 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(pnetdev);
+ 
+-	_enter_critical_mutex(padapter->hw_init_mutex, NULL);
++	if (mutex_lock_interruptible(padapter->hw_init_mutex))
++		;	/* ignore return value */
+ 	ret = _netdev_open(pnetdev);
+-	_exit_critical_mutex(padapter->hw_init_mutex, NULL);
++	mutex_unlock(padapter->hw_init_mutex);
+ 	return ret;
+ }
+ 
+-- 
+2.32.0
 
