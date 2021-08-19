@@ -2,326 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 866F23F16B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B95563F16C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237670AbhHSJwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 05:52:43 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:40567 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238070AbhHSJwX (ORCPT
+        id S237806AbhHSJy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 05:54:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236149AbhHSJyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 05:52:23 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id C311C580B75;
-        Thu, 19 Aug 2021 05:51:46 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 19 Aug 2021 05:51:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=Yw08guVacjmfQ
-        k+u0XR8zaH84eO7CwdQU4gVFp31U18=; b=Tf0GfgFD0KioUXMhEQSSCP7/ZOHHf
-        JEpWmTxlCNIJkRiDe9Jx35vTEQQgT+o8/lSbk5iu5Y622nV9QnAtUJbsDa13o5aB
-        omPYvRj9DxF2a48welCLQ1EdWeGoiV97NNFu8YROERYnQHKrMxqLNPnVl04S6ba9
-        F/xpZotL5T1nuYFG6t/HIL/rYrducigMvnctYb9YMCihBIsNFKElX6M9TAc1n3H3
-        Z4dYQp/UkqZ9Nwfx0dV4WKu4HDF0M9aMUjnwzmAct7bTQs2rIF00iHclBBgCwRfT
-        Q4i2EM0Bd6/Vy1yL+tdv/YwDMCGdT0uODGzueDyt9Y7dds1AAE59ScwTw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=Yw08guVacjmfQk+u0XR8zaH84eO7CwdQU4gVFp31U18=; b=YEiKF4Yp
-        26/W0dXCYB32ed33AK84qfBoUp+FbBj8HYh12aU7EVBot8yYcU+VniC7XeH2bxhX
-        cwW1T+iX5nVusytPMstaeKDAGYt/CanEX1uwy82cDlQuZzhb4Qp9Ikxp2dpWKVYi
-        n5gUo0Hnsvyc6I8ZCsDQcY7YPq151o3VX9NDEZ6dcoqFUgWW9mpvTxH7XRLo8VIk
-        P56pmTmmpEdq6sUL9jwPQtfpSh05ymlU5hQACFwvZtBs3vHc4TSCsnbYrm4f3DaG
-        8cz1OHL+dnselnXVv0LnatdkBLf8nKaTPx9Qk6FGxUv7nvUncK4qhUHYR4W2LBgZ
-        BfdYwWPS63OlCw==
-X-ME-Sender: <xms:sikeYfJ5lbQxSlOw0ljJ-qrbcMTqvSTOxf6KCtk2IjrGflk6ImvnYw>
-    <xme:sikeYTJ0Qr7y4LK0bYzv5n3QFXhERTw5ZJzaVcbSzbpkNHBZqgpaQ3Ddc9rFOQqt2
-    zeQjpoBtT9vCbqW2D4>
-X-ME-Received: <xmr:sikeYXu9KChJYDwJqUWyyHwoB_ZUYyHtPgWWa7tg2xMbtG_HsFcedrW4E2aNcxNLri-e-zmtixmHyg8y_dS6YROrMfw0ns2KJdEZ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleejgddulecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveevheeh
-    vdenucevlhhushhtvghrufhiiigvpeegnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
-    igihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:sikeYYab3E_bQBtYUPgxnZOuvh4nfcuzws5037kvEw_MR89ZHE0wAw>
-    <xmx:sikeYWZgdAT7LZq1xCY10Vqhwc-g0mj0wfysiwCAIJxo9vkLfh9g2g>
-    <xmx:sikeYcBLF0etDjSfcprCjGD1D7SetU5S36AAysblud50FlI-2XbNjg>
-    <xmx:sikeYcxKB8wOzA_DxFj2ThcnQU4R2D9PO05zW9XuT8KwZS_QNFoKlw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 19 Aug 2021 05:51:46 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     Maxime Ripard <mripard@kernel.org>, Emma Anholt <emma@anholt.net>,
-        linux-kernel@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org
-Subject: [PATCH v7 10/10] drm/vc4: Increase the core clock based on HVS load
-Date:   Thu, 19 Aug 2021 11:51:19 +0200
-Message-Id: <20210819095119.689945-11-maxime@cerno.tech>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210819095119.689945-1-maxime@cerno.tech>
-References: <20210819095119.689945-1-maxime@cerno.tech>
+        Thu, 19 Aug 2021 05:54:55 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B15F7C061575;
+        Thu, 19 Aug 2021 02:54:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=30I+7nEm5zbvXFaNjeCP/URwvn0lUxkdZ8/N2SFqU4g=; b=hdp6qYYIiawPbHWzGgJGbeGDoL
+        TskujUOUgkw5fqQ32Dq09FqOv51wvLWbNrcrdw3wg7CGsAtqwE0y+rW5EzXhdMJx/nO7U+/vDSAxy
+        ZGC4r6aC4wc44wp1pn/5iT/tBmcMPk/3CafPQ6Y6Tjjhb6zYRI/6S5OA4cG/Qk8BIe9OYWnnx7d8w
+        7GhnTeyRi2ZmTBFWwHRyV84JdQ6eKrGvxUZFLENaT0zcmJ62SNY0OjvyFBg+eHiiFyXh1CKCQ5zLg
+        4phvLD2DSvHmVFPqRiYmTfBtb2/AVqElq02npejAimvBLZXPdunESEx0AVEqb2PzRTbXPbtdOrilL
+        U+nUWJXA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mGejF-004tP2-Ci; Thu, 19 Aug 2021 09:53:07 +0000
+Date:   Thu, 19 Aug 2021 10:52:53 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-graphics-maintainer@vmware.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>
+Subject: Re: [PATCH v2 03/12] x86/sev: Add an x86 version of prot_guest_has()
+Message-ID: <YR4p9TqKTLdN1A96@infradead.org>
+References: <cover.1628873970.git.thomas.lendacky@amd.com>
+ <7d55bac0cf2e73f53816bce3a3097877ed9663f3.1628873970.git.thomas.lendacky@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7d55bac0cf2e73f53816bce3a3097877ed9663f3.1628873970.git.thomas.lendacky@amd.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Depending on a given HVS output (HVS to PixelValves) and input (planes
-attached to a channel) load, the HVS needs for the core clock to be
-raised above its boot time default.
+On Fri, Aug 13, 2021 at 11:59:22AM -0500, Tom Lendacky wrote:
+> While the name suggests this is intended mainly for guests, it will
+> also be used for host memory encryption checks in place of sme_active().
 
-Failing to do so will result in a vblank timeout and a stalled display
-pipeline.
+Which suggest that the name is not good to start with.  Maybe protected
+hardware, system or platform might be a better choice?
 
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
----
- drivers/gpu/drm/vc4/vc4_crtc.c |  15 +++++
- drivers/gpu/drm/vc4/vc4_drv.h  |   2 +
- drivers/gpu/drm/vc4/vc4_kms.c  | 110 ++++++++++++++++++++++++++++++---
- 3 files changed, 118 insertions(+), 9 deletions(-)
+> +static inline bool prot_guest_has(unsigned int attr)
+> +{
+> +#ifdef CONFIG_AMD_MEM_ENCRYPT
+> +	if (sme_me_mask)
+> +		return amd_prot_guest_has(attr);
+> +#endif
+> +
+> +	return false;
+> +}
 
-diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
-index 073b7e528175..c733b2091d3c 100644
---- a/drivers/gpu/drm/vc4/vc4_crtc.c
-+++ b/drivers/gpu/drm/vc4/vc4_crtc.c
-@@ -642,12 +642,27 @@ static int vc4_crtc_atomic_check(struct drm_crtc *crtc,
- 	struct vc4_crtc_state *vc4_state = to_vc4_crtc_state(crtc_state);
- 	struct drm_connector *conn;
- 	struct drm_connector_state *conn_state;
-+	struct drm_encoder *encoder;
- 	int ret, i;
- 
- 	ret = vc4_hvs_atomic_check(crtc, state);
- 	if (ret)
- 		return ret;
- 
-+	encoder = vc4_get_crtc_encoder(crtc, crtc_state);
-+	if (encoder) {
-+		const struct drm_display_mode *mode = &crtc_state->adjusted_mode;
-+		struct vc4_encoder *vc4_encoder = to_vc4_encoder(encoder);
-+
-+		mode = &crtc_state->adjusted_mode;
-+		if (vc4_encoder->type == VC4_ENCODER_TYPE_HDMI0) {
-+			vc4_state->hvs_load = max(mode->clock * mode->hdisplay / mode->htotal + 1000,
-+						  mode->clock * 9 / 10) * 1000;
-+		} else {
-+			vc4_state->hvs_load = mode->clock * 1000;
-+		}
-+	}
-+
- 	for_each_new_connector_in_state(state, conn, conn_state,
- 					i) {
- 		if (conn_state->crtc != crtc)
-diff --git a/drivers/gpu/drm/vc4/vc4_drv.h b/drivers/gpu/drm/vc4/vc4_drv.h
-index 95a1eb7ebf90..5abb3c090253 100644
---- a/drivers/gpu/drm/vc4/vc4_drv.h
-+++ b/drivers/gpu/drm/vc4/vc4_drv.h
-@@ -532,6 +532,8 @@ struct vc4_crtc_state {
- 		unsigned int bottom;
- 	} margins;
- 
-+	unsigned long hvs_load;
-+
- 	/* Transitional state below, only valid during atomic commits */
- 	bool update_muxing;
- };
-diff --git a/drivers/gpu/drm/vc4/vc4_kms.c b/drivers/gpu/drm/vc4/vc4_kms.c
-index ca688115381e..0a4fca043c65 100644
---- a/drivers/gpu/drm/vc4/vc4_kms.c
-+++ b/drivers/gpu/drm/vc4/vc4_kms.c
-@@ -39,9 +39,11 @@ static struct vc4_ctm_state *to_vc4_ctm_state(struct drm_private_state *priv)
- 
- struct vc4_hvs_state {
- 	struct drm_private_state base;
-+	unsigned long core_clock_rate;
- 
- 	struct {
- 		unsigned in_use: 1;
-+		unsigned long fifo_load;
- 		struct drm_crtc_commit *pending_commit;
- 	} fifo_state[HVS_NUM_CHANNELS];
- };
-@@ -339,10 +341,19 @@ static void vc4_atomic_commit_tail(struct drm_atomic_state *state)
- 	struct vc4_hvs *hvs = vc4->hvs;
- 	struct drm_crtc_state *old_crtc_state;
- 	struct drm_crtc_state *new_crtc_state;
-+	struct vc4_hvs_state *new_hvs_state;
- 	struct drm_crtc *crtc;
- 	struct vc4_hvs_state *old_hvs_state;
- 	int i;
- 
-+	old_hvs_state = vc4_hvs_get_old_global_state(state);
-+	if (WARN_ON(!old_hvs_state))
-+		return;
-+
-+	new_hvs_state = vc4_hvs_get_new_global_state(state);
-+	if (WARN_ON(!new_hvs_state))
-+		return;
-+
- 	for_each_new_crtc_in_state(state, crtc, new_crtc_state, i) {
- 		struct vc4_crtc_state *vc4_crtc_state;
- 
-@@ -353,12 +364,13 @@ static void vc4_atomic_commit_tail(struct drm_atomic_state *state)
- 		vc4_hvs_mask_underrun(dev, vc4_crtc_state->assigned_channel);
- 	}
- 
--	if (vc4->hvs->hvs5)
--		clk_set_min_rate(hvs->core_clk, 500000000);
-+	if (vc4->hvs->hvs5) {
-+		unsigned long core_rate = max_t(unsigned long,
-+						500000000,
-+						new_hvs_state->core_clock_rate);
- 
--	old_hvs_state = vc4_hvs_get_old_global_state(state);
--	if (!old_hvs_state)
--		return;
-+		clk_set_min_rate(hvs->core_clk, core_rate);
-+	}
- 
- 	for_each_old_crtc_in_state(state, crtc, old_crtc_state, i) {
- 		struct vc4_crtc_state *vc4_crtc_state =
-@@ -398,8 +410,12 @@ static void vc4_atomic_commit_tail(struct drm_atomic_state *state)
- 
- 	drm_atomic_helper_cleanup_planes(dev, state);
- 
--	if (vc4->hvs->hvs5)
--		clk_set_min_rate(hvs->core_clk, 0);
-+	if (vc4->hvs->hvs5) {
-+		drm_dbg(dev, "Running the core clock at %lu Hz\n",
-+			new_hvs_state->core_clock_rate);
-+
-+		clk_set_min_rate(hvs->core_clk, new_hvs_state->core_clock_rate);
-+	}
- }
- 
- static int vc4_atomic_commit_setup(struct drm_atomic_state *state)
-@@ -656,9 +672,9 @@ vc4_hvs_channels_duplicate_state(struct drm_private_obj *obj)
- 
- 	__drm_atomic_helper_private_obj_duplicate_state(obj, &state->base);
- 
--
- 	for (i = 0; i < HVS_NUM_CHANNELS; i++) {
- 		state->fifo_state[i].in_use = old_state->fifo_state[i].in_use;
-+		state->fifo_state[i].fifo_load = old_state->fifo_state[i].fifo_load;
- 
- 		if (!old_state->fifo_state[i].pending_commit)
- 			continue;
-@@ -667,6 +683,8 @@ vc4_hvs_channels_duplicate_state(struct drm_private_obj *obj)
- 			drm_crtc_commit_get(old_state->fifo_state[i].pending_commit);
- 	}
- 
-+	state->core_clock_rate = old_state->core_clock_rate;
-+
- 	return &state->base;
- }
- 
-@@ -821,6 +839,76 @@ static int vc4_pv_muxing_atomic_check(struct drm_device *dev,
- 	return 0;
- }
- 
-+static int
-+vc4_core_clock_atomic_check(struct drm_atomic_state *state)
-+{
-+	struct vc4_dev *vc4 = to_vc4_dev(state->dev);
-+	struct drm_private_state *priv_state;
-+	struct vc4_hvs_state *hvs_new_state;
-+	struct vc4_load_tracker_state *load_state;
-+	struct drm_crtc_state *old_crtc_state, *new_crtc_state;
-+	struct drm_crtc *crtc;
-+	unsigned int num_outputs;
-+	unsigned long pixel_rate;
-+	unsigned long cob_rate;
-+	unsigned int i;
-+
-+	priv_state = drm_atomic_get_private_obj_state(state,
-+						      &vc4->load_tracker);
-+	if (IS_ERR(priv_state))
-+		return PTR_ERR(priv_state);
-+
-+	load_state = to_vc4_load_tracker_state(priv_state);
-+
-+	hvs_new_state = vc4_hvs_get_global_state(state);
-+	if (!hvs_new_state)
-+		return -EINVAL;
-+
-+	for_each_oldnew_crtc_in_state(state, crtc,
-+				      old_crtc_state,
-+				      new_crtc_state,
-+				      i) {
-+		if (old_crtc_state->active) {
-+			struct vc4_crtc_state *old_vc4_state =
-+				to_vc4_crtc_state(old_crtc_state);
-+			unsigned int channel = old_vc4_state->assigned_channel;
-+
-+			hvs_new_state->fifo_state[channel].fifo_load = 0;
-+		}
-+
-+		if (new_crtc_state->active) {
-+			struct vc4_crtc_state *new_vc4_state =
-+				to_vc4_crtc_state(new_crtc_state);
-+			unsigned int channel = new_vc4_state->assigned_channel;
-+
-+			hvs_new_state->fifo_state[channel].fifo_load =
-+				new_vc4_state->hvs_load;
-+		}
-+	}
-+
-+	cob_rate = 0;
-+	num_outputs = 0;
-+	for (i = 0; i < HVS_NUM_CHANNELS; i++) {
-+		if (!hvs_new_state->fifo_state[i].in_use)
-+			continue;
-+
-+		num_outputs++;
-+		cob_rate += hvs_new_state->fifo_state[i].fifo_load;
-+	}
-+
-+	pixel_rate = load_state->hvs_load;
-+	if (num_outputs > 1) {
-+		pixel_rate = (pixel_rate * 40) / 100;
-+	} else {
-+		pixel_rate = (pixel_rate * 60) / 100;
-+	}
-+
-+	hvs_new_state->core_clock_rate = max(cob_rate, pixel_rate);
-+
-+	return 0;
-+}
-+
-+
- static int
- vc4_atomic_check(struct drm_device *dev, struct drm_atomic_state *state)
- {
-@@ -838,7 +926,11 @@ vc4_atomic_check(struct drm_device *dev, struct drm_atomic_state *state)
- 	if (ret)
- 		return ret;
- 
--	return vc4_load_tracker_atomic_check(state);
-+	ret = vc4_load_tracker_atomic_check(state);
-+	if (ret)
-+		return ret;
-+
-+	return vc4_core_clock_atomic_check(state);
- }
- 
- static struct drm_mode_config_helper_funcs vc4_mode_config_helpers = {
--- 
-2.31.1
+Shouldn't this be entirely out of line?
 
+> +/* 0x800 - 0x8ff reserved for AMD */
+> +#define PATTR_SME			0x800
+> +#define PATTR_SEV			0x801
+> +#define PATTR_SEV_ES			0x802
+
+Why do we need reservations for a purely in-kernel namespace?
+
+And why are you overoading a brand new generic API with weird details
+of a specific implementation like this?
