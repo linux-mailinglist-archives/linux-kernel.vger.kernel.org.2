@@ -2,164 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF9F3F21C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 22:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 045503F21C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 22:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232598AbhHSUqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 16:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbhHSUqK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 16:46:10 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B69CC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 13:45:34 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id g14so6627941pfm.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 13:45:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ciANhO2rI2yAVYRk89xhZMU4nhupjSlELscJz8Yo+Qw=;
-        b=Fc7Daih9rnQh6iUId4QRiL4FivuwPAhyAMFNkO2VUAzl9fh8RJcdflKXRtvDtW22Dw
-         62K1Lh5y+Qh18QpKDce59XAwAQFsi2e0hbHHmHWSE+qcn9qT3B9yFSbUFCyvttMdHGw+
-         esZwVHbFPkPORlaIpJ6YSZYBtd2H0+g+bmQpEwGu2xNO8350bSN031MHRkAeb+QqSZRt
-         kxhVmaya5nZ29ErR9EpIiA5i+9h+qYWjLCusY4XlNb4fu/PXgnT5K1yyQYlaSF3U2d/n
-         aHGseXBbhe63iUKx2Jwwe4vKVlFrBXk9fBrak+iasFVoPH/GhT70RVjSleulYwixImdi
-         1C+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ciANhO2rI2yAVYRk89xhZMU4nhupjSlELscJz8Yo+Qw=;
-        b=LnM07JUVnQWcrj02gxUe5/78c7b40mDevmF52o69OitJkd4xrxC99W0yhqYg3twqkR
-         4ly9aH5NO17XTE8YkiYoGVmJAW6ZfdtTSJcyt+Qv9e6MN+LGsbDMytfcDOqW5kTuJ4Ey
-         hAG5+A4JyduWFBBVxct7fZmqFfQqcYLhLc9SYEEFzdfdmXEC7dmQj2YWyug94PbxtrQc
-         zg1oDIg4VbqR01/LuE7gqZ0QyoGVeF5ExXUPEZgf1amoaIPaoF2gOBde/L/lQNZgLLIF
-         wxOrf5ay61K7spCBm1XoI1nr9K1hAiV+Yi9cw2vxFzPcOXFHW0O9iRFgtqtoZphdedb7
-         uiFg==
-X-Gm-Message-State: AOAM530fmjezxjdnFLkOv0/s93MW1KQlOqxIXouvWksA63HzNIRiVGsj
-        Qn6uD6uIq2z43ylrjd6r6BW8rg==
-X-Google-Smtp-Source: ABdhPJy/YEvyPot1aTu59VL50ZY1wh0+PMMs7LuvoXrs8FoMJhsEul2LVsCbAJktJ+VCm+UP0FBlng==
-X-Received: by 2002:a62:86c4:0:b0:3e0:f216:81bc with SMTP id x187-20020a6286c4000000b003e0f21681bcmr16271484pfd.27.1629405933408;
-        Thu, 19 Aug 2021 13:45:33 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id pj14sm3625802pjb.35.2021.08.19.13.45.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 13:45:32 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 20:45:27 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     pbonzini@redhat.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, hpa@zytor.com, joro@8bytes.org,
-        Thomas.Lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, srutherford@google.com,
-        brijesh.singh@amd.com, linux-efi@vger.kernel.org
-Subject: Re: [PATCH v3 2/5] KVM: x86: invert KVM_HYPERCALL to default to
- VMMCALL
-Message-ID: <YR7C56Yc+Qd256P6@google.com>
-References: <cover.1623174621.git.ashish.kalra@amd.com>
- <f45c503fad62c899473b5a6fd0f2085208d6dfaf.1623174621.git.ashish.kalra@amd.com>
+        id S235210AbhHSUrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 16:47:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230052AbhHSUrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 16:47:39 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F0866108E;
+        Thu, 19 Aug 2021 20:47:01 +0000 (UTC)
+Date:   Thu, 19 Aug 2021 16:46:55 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     penguin-kernel@I-love.SAKURA.ne.jp, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org,
+        syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2] profiling: fix shift-out-of-bounds bugs
+Message-ID: <20210819164655.6efe096b@oasis.local.home>
+In-Reply-To: <20210813140022.5011-1-paskripkin@gmail.com>
+References: <99b9e091-9e95-5e45-5914-38a938840aa6@i-love.sakura.ne.jp>
+        <20210813140022.5011-1-paskripkin@gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f45c503fad62c899473b5a6fd0f2085208d6dfaf.1623174621.git.ashish.kalra@amd.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Preferred shortlog prefix for KVM guest changes is "x86/kvm".  "KVM: x86" is for
-host changes.
 
-On Tue, Jun 08, 2021, Ashish Kalra wrote:
-> From: Ashish Kalra <ashish.kalra@amd.com>
+Who's taking this patch? Or should Andrew just take it through his tree?
+
+-- Steve
+
+
+On Fri, 13 Aug 2021 17:00:22 +0300
+Pavel Skripkin <paskripkin@gmail.com> wrote:
+
+> Syzbot reported shift-out-of-bounds bug in profile_init().
+> The problem was in incorrect prof_shift. Since prof_shift value comes from
+> userspace we need to clamp this value into [0, BITS_PER_LONG -1]
+> boundaries.
 > 
-> KVM hypercall framework relies on alternative framework to patch the
-> VMCALL -> VMMCALL on AMD platform. If a hypercall is made before
-> apply_alternative() is called then it defaults to VMCALL. The approach
-> works fine on non SEV guest. A VMCALL would causes #UD, and hypervisor
-> will be able to decode the instruction and do the right things. But
-> when SEV is active, guest memory is encrypted with guest key and
-> hypervisor will not be able to decode the instruction bytes.
+> Second possible shiht-out-of-bounds was found by Tetsuo:
+> sample_step local variable in read_profile() had "unsigned int" type,
+> but prof_shift allows to make a BITS_PER_LONG shift. So, to prevent
+> possible shiht-out-of-bounds sample_step type was changed to
+> "unsigned long".
 > 
-> So invert KVM_HYPERCALL and X86_FEATURE_VMMCALL to default to VMMCALL
-> and opt into VMCALL.
-
-The changelog needs to explain why SEV hypercalls need to be made before
-apply_alternative(), why it's ok to make Intel CPUs take #UDs on the unknown
-VMMCALL, and why this is not creating the same conundrum for TDX.
-
-Actually, I don't think making Intel CPUs take #UDs is acceptable.  This patch
-breaks Linux on upstream KVM on Intel due a bug in upstream KVM.  KVM attempts
-to patch the "wrong" hypercall to the "right" hypercall, but stupidly does so
-via an emulated write.  I.e. KVM honors the guest page table permissions and
-injects a !WRITABLE #PF on the VMMCALL RIP if the kernel code is mapped RX.
-
-In other words, trusting the VMM to not screw up the #UD is a bad idea.  This also
-makes documenting the "why does SEV need super early hypercalls" extra important.
-
-This patch doesn't work because X86_FEATURE_VMCALL is a synthetic flag and is
-only set by VMware paravirt code, which is why the patching doesn't happen as
-would be expected.  The obvious solution would be to manually set X86_FEATURE_VMCALL
-where appropriate, but given that defaulting to VMCALL has worked for years,
-defaulting to VMMCALL makes me nervous, e.g. even if we splatter X86_FEATURE_VMCALL
-into Intel, Centaur, and Zhaoxin, there's a possibility we'll break existing VMs
-that run on hypervisors that do something weird with the vendor string.
-
-Rather than look for X86_FEATURE_VMCALL, I think it makes sense to have this be
-a "pure" inversion, i.e. patch in VMCALL if VMMCALL is not supported, as opposed
-to patching in VMCALL if VMCALL is supproted.
-
-diff --git a/arch/x86/include/asm/kvm_para.h b/arch/x86/include/asm/kvm_para.h
-index 69299878b200..61641e69cfda 100644
---- a/arch/x86/include/asm/kvm_para.h
-+++ b/arch/x86/include/asm/kvm_para.h
-@@ -17,7 +17,7 @@ static inline bool kvm_check_and_clear_guest_paused(void)
- #endif /* CONFIG_KVM_GUEST */
-
- #define KVM_HYPERCALL \
--        ALTERNATIVE("vmcall", "vmmcall", X86_FEATURE_VMMCALL)
-+        ALTERNATIVE("vmmcall", "vmcall", ALT_NOT(X86_FEATURE_VMMCALL))
-
- /* For KVM hypercalls, a three-byte sequence of either the vmcall or the vmmcall
-  * instruction.  The hypervisor may replace it with something else but only the
- 
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Borislav Petkov <bp@suse.de>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: x86@kernel.org
-> Cc: kvm@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-
-Suggested-by: Sean Christopherson <seanjc@google.com>
-
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-
-Is Brijesh the author?  Co-developed-by for a one-line change would be odd...
-
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> Also, "unsigned short int" will be sufficient for storing
+> [0, BITS_PER_LONG] value, that's why there is no need for
+> "unsigned long" prof_shift.
+> 
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Reported-and-tested-by: syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com
+> Suggested-by: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 > ---
->  arch/x86/include/asm/kvm_para.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/x86/include/asm/kvm_para.h b/arch/x86/include/asm/kvm_para.h
-> index 69299878b200..0267bebb0b0f 100644
-> --- a/arch/x86/include/asm/kvm_para.h
-> +++ b/arch/x86/include/asm/kvm_para.h
-> @@ -17,7 +17,7 @@ static inline bool kvm_check_and_clear_guest_paused(void)
->  #endif /* CONFIG_KVM_GUEST */
->  
->  #define KVM_HYPERCALL \
-> -        ALTERNATIVE("vmcall", "vmmcall", X86_FEATURE_VMMCALL)
-> +	ALTERNATIVE("vmmcall", "vmcall", X86_FEATURE_VMCALL)
->  
->  /* For KVM hypercalls, a three-byte sequence of either the vmcall or the vmmcall
->   * instruction.  The hypervisor may replace it with something else but only the
-> -- 
-> 2.17.1
+> Changes in v2:
+> 	1. Fixed possible shiht-out-of-bounds in read_profile()
+> 	   (Reported by Tetsuo)
 > 
+> 	2. Changed prof_shift type from "unsigned long" to
+> 	   "unsigned short int"
+> 
+> ---
+>  kernel/profile.c | 21 +++++++++++----------
+>  1 file changed, 11 insertions(+), 10 deletions(-)
+> 
+> diff --git a/kernel/profile.c b/kernel/profile.c
+> index c2ebddb5e974..eb9c7f0f5ac5 100644
+> --- a/kernel/profile.c
+> +++ b/kernel/profile.c
+> @@ -41,7 +41,8 @@ struct profile_hit {
+>  #define NR_PROFILE_GRP		(NR_PROFILE_HIT/PROFILE_GRPSZ)
+>  
+>  static atomic_t *prof_buffer;
+> -static unsigned long prof_len, prof_shift;
+> +static unsigned long prof_len;
+> +static unsigned short int prof_shift;
+>  
+>  int prof_on __read_mostly;
+>  EXPORT_SYMBOL_GPL(prof_on);
+> @@ -67,8 +68,8 @@ int profile_setup(char *str)
+>  		if (str[strlen(sleepstr)] == ',')
+>  			str += strlen(sleepstr) + 1;
+>  		if (get_option(&str, &par))
+> -			prof_shift = par;
+> -		pr_info("kernel sleep profiling enabled (shift: %ld)\n",
+> +			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
+> +		pr_info("kernel sleep profiling enabled (shift: %u)\n",
+>  			prof_shift);
+>  #else
+>  		pr_warn("kernel sleep profiling requires CONFIG_SCHEDSTATS\n");
+> @@ -78,21 +79,21 @@ int profile_setup(char *str)
+>  		if (str[strlen(schedstr)] == ',')
+>  			str += strlen(schedstr) + 1;
+>  		if (get_option(&str, &par))
+> -			prof_shift = par;
+> -		pr_info("kernel schedule profiling enabled (shift: %ld)\n",
+> +			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
+> +		pr_info("kernel schedule profiling enabled (shift: %u)\n",
+>  			prof_shift);
+>  	} else if (!strncmp(str, kvmstr, strlen(kvmstr))) {
+>  		prof_on = KVM_PROFILING;
+>  		if (str[strlen(kvmstr)] == ',')
+>  			str += strlen(kvmstr) + 1;
+>  		if (get_option(&str, &par))
+> -			prof_shift = par;
+> -		pr_info("kernel KVM profiling enabled (shift: %ld)\n",
+> +			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
+> +		pr_info("kernel KVM profiling enabled (shift: %u)\n",
+>  			prof_shift);
+>  	} else if (get_option(&str, &par)) {
+> -		prof_shift = par;
+> +		prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
+>  		prof_on = CPU_PROFILING;
+> -		pr_info("kernel profiling enabled (shift: %ld)\n",
+> +		pr_info("kernel profiling enabled (shift: %u)\n",
+>  			prof_shift);
+>  	}
+>  	return 1;
+> @@ -468,7 +469,7 @@ read_profile(struct file *file, char __user *buf, size_t count, loff_t *ppos)
+>  	unsigned long p = *ppos;
+>  	ssize_t read;
+>  	char *pnt;
+> -	unsigned int sample_step = 1 << prof_shift;
+> +	unsigned long sample_step = 1UL << prof_shift;
+>  
+>  	profile_flip_buffers();
+>  	if (p >= (prof_len+1)*sizeof(unsigned int))
+
