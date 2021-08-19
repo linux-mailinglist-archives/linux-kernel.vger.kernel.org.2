@@ -2,139 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC9F3F23AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF1D3F23B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236811AbhHSXbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 19:31:08 -0400
-Received: from mail-lf1-f50.google.com ([209.85.167.50]:43735 "EHLO
-        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbhHSXbF (ORCPT
+        id S234182AbhHSXef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 19:34:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233964AbhHSXee (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 19:31:05 -0400
-Received: by mail-lf1-f50.google.com with SMTP id i9so16388044lfg.10;
-        Thu, 19 Aug 2021 16:30:27 -0700 (PDT)
+        Thu, 19 Aug 2021 19:34:34 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D5EC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:33:57 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id cp15-20020a17090afb8fb029017891959dcbso12560375pjb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:33:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FSqOrapu64fBYafjbU5tjcyWOc2DrNI0dbheqGMVOMc=;
+        b=qPf6yOnP+Rcz9FT3tKuWykTPcKe82BX3Np45gaPnFPSg6PdUJnLygVgfX+kzI3cJ9H
+         jtESUvUqN1Ez+DTuoTUzsGouHIoQxocdabjlXnhhXdwEIL3SL3EPMESdP1tUYWRrWW5X
+         56WH9AV8Z8I1+Dv+ob4dltRCZxxppIzcXuZZbDajZOYY+UHcUj8zqAQ2N2zC8ir+rqzQ
+         7xRIzOV9hhvssqy3laN9jfhD8920m0bpiZR1ld4i0qnlmpXy3nqZRp+SXiFRJw3tk0Cb
+         jAkYC7GX39D/8+SHQHrfwZ3zlTN2RbLaSSUFeut9erJLOEf2TnrtjesxTQV5Xd8hTAQL
+         GItQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4tFJhCFlYMqtmgoOPQJXeaT8OGo3ZXeM33Dc9cbYtEo=;
-        b=MBfT/SSKpHnj/eNoutKAIEEKAif35/7X9/bNM6ASFh6sA0d/BxFaLhOxhy/0/fI53p
-         VCvq+6CzuOOn37205pWijf6rTuJrHnnYvMHzsraRFw+c+NSXblPkWzAipQP0KDq2B9Ay
-         KONDB+Tl8tFEH8wEPVlXhcd3Gn/al3KeBAnTSaAGovH/gSg292J+BlqTV9OhOf6ZSAwR
-         ahIvgGDo4gcLs477bUoe4rw5BmsAGCYIqCkNOB++Jd5EzhDgVMDDkE6ghlmLRXaagd4L
-         ZK5iZY7YRJZEOOKvsxehSqfkvWwC/4tAk9NnwnulUIr8SZ7RoggH+gBZB7JmwDiRHf2u
-         Zjtw==
-X-Gm-Message-State: AOAM531kBEuiKUYRZ5rTdBQE3u2+a/kEY5dPsco1kkhpikVzgUdpUCz3
-        JhCjDCWjzGqQVc/CZNCGCHR9Oib041u/StRT/Wk=
-X-Google-Smtp-Source: ABdhPJzusVbWyY9Rx4CKkllit3xFJpBqQ1RffUEkb/VEip5+dAKWkEwhTSATteT33U2lI271ZR9KlZLaZ8ohl00Zur4=
-X-Received: by 2002:a05:6512:158b:: with SMTP id bp11mr4333269lfb.300.1629415827238;
- Thu, 19 Aug 2021 16:30:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210819054707.1057819-1-irogers@google.com> <YR6pYoyov8ZGbAvJ@kernel.org>
-In-Reply-To: <YR6pYoyov8ZGbAvJ@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 19 Aug 2021 16:30:16 -0700
-Message-ID: <CAM9d7cgBayQFwqW-=3sMYUOTuCQcWYCVy+P9J0bWJOohAn5gAA@mail.gmail.com>
-Subject: Re: [PATCH] libperf evsel: Make use of FD robust.
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FSqOrapu64fBYafjbU5tjcyWOc2DrNI0dbheqGMVOMc=;
+        b=SfYnprRezOuB3icB4DAl43NhialPKqqyGmtp6bAEaHJH9I4H5InRcx1K+mjSR+LI86
+         7AKiEuTY6P8wRVqqxeH8O1RIoU0rhZywdP2qq+hEZBxu5fAKH0owOj3vQDkBbytA1sCd
+         OL655/Ox1YK1leu6CP88M+GisHuhvKXwEFpj2jgrPvk2q20NS4GGslB+TIQ9mCREJGBn
+         GBLOY3JVcEzu74jsGfGor6B+Y+SUqF98LTvSYLlhnq1QXxmWGtpGC45oQoaLBKENg9pv
+         l6rWndG9PLY+oRGPVI2bUuBSYxnOfvVvs1Oq7jyqgbABwoq2EjM+bWnZ9Xt74ugyeGSp
+         DT7A==
+X-Gm-Message-State: AOAM5301EzwZiefIGYHXI2QQLxF4lfHTd05PRhr0vm+tHK1BPiDQjpxw
+        DjADTYBvGr37Kl3VMvQdT6h5IQ==
+X-Google-Smtp-Source: ABdhPJyN4VYmA4QdN+DQJ6bFcB8JQlcPHEw8dvqiqzL/oaDUmvZhZqDC612NpYT8Mg6IsLybHUWCkQ==
+X-Received: by 2002:a17:90a:d686:: with SMTP id x6mr1336693pju.227.1629416036922;
+        Thu, 19 Aug 2021 16:33:56 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id j185sm4649122pfb.86.2021.08.19.16.33.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 16:33:56 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 23:33:50 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     "Russell King, ARM Linux" <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <hca@linux.ibm.com>, gor <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Oleg Nesterov <oleg@redhat.com>, rostedt <rostedt@goodmis.org>,
         Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, shuah <shuah@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-csky <linux-csky@vger.kernel.org>,
+        linux-mips@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390@vger.kernel.org, KVM list <kvm@vger.kernel.org>,
+        linux-kselftest <linux-kselftest@vger.kernel.org>,
+        Peter Foley <pefoley@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Ben Gardon <bgardon@google.com>
+Subject: Re: [PATCH 4/5] KVM: selftests: Add a test for KVM_RUN+rseq to
+ detect task migration bugs
+Message-ID: <YR7qXvnI/AQM10gU@google.com>
+References: <20210818001210.4073390-1-seanjc@google.com>
+ <20210818001210.4073390-5-seanjc@google.com>
+ <1540548616.19739.1629409956315.JavaMail.zimbra@efficios.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1540548616.19739.1629409956315.JavaMail.zimbra@efficios.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ian,
+On Thu, Aug 19, 2021, Mathieu Desnoyers wrote:
+> ----- On Aug 17, 2021, at 8:12 PM, Sean Christopherson seanjc@google.com wrote:
+> 
+> > Add a test to verify an rseq's CPU ID is updated correctly if the task is
+> > migrated while the kernel is handling KVM_RUN.  This is a regression test
+> > for a bug introduced by commit 72c3c0fe54a3 ("x86/kvm: Use generic xfer
+> > to guest work function"), where TIF_NOTIFY_RESUME would be cleared by KVM
+> > without updating rseq, leading to a stale CPU ID and other badness.
+> > 
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> 
+> [...]
+> 
+> > +	while (!done) {
+> > +		vcpu_run(vm, VCPU_ID);
+> > +		TEST_ASSERT(get_ucall(vm, VCPU_ID, NULL) == UCALL_SYNC,
+> > +			    "Guest failed?");
+> > +
+> > +		cpu = sched_getcpu();
+> > +		rseq_cpu = READ_ONCE(__rseq.cpu_id);
+> > +
+> > +		/*
+> > +		 * Verify rseq's CPU matches sched's CPU, and that sched's CPU
+> > +		 * is stable.  This doesn't handle the case where the task is
+> > +		 * migrated between sched_getcpu() and reading rseq, and again
+> > +		 * between reading rseq and sched_getcpu(), but in practice no
+> > +		 * false positives have been observed, while on the other hand
+> > +		 * blocking migration while this thread reads CPUs messes with
+> > +		 * the timing and prevents hitting failures on a buggy kernel.
+> > +		 */
+> 
+> I think you could get a stable cpu id between sched_getcpu and __rseq_abi.cpu_id
+> if you add a pthread mutex to protect:
+> 
+> sched_getcpu and __rseq_abi.cpu_id  reads
+> 
+> vs
+> 
+> sched_setaffinity calls within the migration thread.
+> 
+> Thoughts ?
 
-On Thu, Aug 19, 2021 at 11:56 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Wed, Aug 18, 2021 at 10:47:07PM -0700, Ian Rogers escreveu:
-> > FD uses xyarray__entry that may return NULL if an index is out of
-> > bounds. If NULL is returned then a segv happens as FD unconditionally
-> > dereferences the pointer. This was happening in a case of with perf
-> > iostat as shown below. The fix is to make FD an "int*" rather than an
-> > int and handle the NULL case as either invalid input or a closed fd.
-> >
-> > $ sudo gdb --args perf stat --iostat  list
-> > ...
-> > Breakpoint 1, perf_evsel__alloc_fd (evsel=0x5555560951a0, ncpus=1, nthreads=1) at evsel.c:50
-> > 50      {
-> > (gdb) bt
-> >  #0  perf_evsel__alloc_fd (evsel=0x5555560951a0, ncpus=1, nthreads=1) at evsel.c:50
-> >  #1  0x000055555585c188 in evsel__open_cpu (evsel=0x5555560951a0, cpus=0x555556093410,
-> >     threads=0x555556086fb0, start_cpu=0, end_cpu=1) at util/evsel.c:1792
-> >  #2  0x000055555585cfb2 in evsel__open (evsel=0x5555560951a0, cpus=0x0, threads=0x555556086fb0)
-> >     at util/evsel.c:2045
-> >  #3  0x000055555585d0db in evsel__open_per_thread (evsel=0x5555560951a0, threads=0x555556086fb0)
-> >     at util/evsel.c:2065
-> >  #4  0x00005555558ece64 in create_perf_stat_counter (evsel=0x5555560951a0,
-> >     config=0x555555c34700 <stat_config>, target=0x555555c2f1c0 <target>, cpu=0) at util/stat.c:590
-> >  #5  0x000055555578e927 in __run_perf_stat (argc=1, argv=0x7fffffffe4a0, run_idx=0)
-> >     at builtin-stat.c:833
-> >  #6  0x000055555578f3c6 in run_perf_stat (argc=1, argv=0x7fffffffe4a0, run_idx=0)
-> >     at builtin-stat.c:1048
-> >  #7  0x0000555555792ee5 in cmd_stat (argc=1, argv=0x7fffffffe4a0) at builtin-stat.c:2534
-> >  #8  0x0000555555835ed3 in run_builtin (p=0x555555c3f540 <commands+288>, argc=3,
-> >     argv=0x7fffffffe4a0) at perf.c:313
-> >  #9  0x0000555555836154 in handle_internal_command (argc=3, argv=0x7fffffffe4a0) at perf.c:365
-> >  #10 0x000055555583629f in run_argv (argcp=0x7fffffffe2ec, argv=0x7fffffffe2e0) at perf.c:409
-> >  #11 0x0000555555836692 in main (argc=3, argv=0x7fffffffe4a0) at perf.c:539
+I tried that and couldn't reproduce the bug.  That's what I attempted to call out
+in the blurb "blocking migration while this thread reads CPUs ... prevents hitting
+failures on a buggy kernel".
 
-This callstack looks strange that 'perf iostat list' should not call
-run_perf_stat() for the IOSTAT_LIST mode.
-
-Hmm.. maybe it's because the --iostat option is declared
-with OPT_CALLBACK_OPTARG which requires the option
-to be specified like '--iostat=list' (not '--iostat list').
-
-Anyway it should not crash..
-
-Thanks,
-Namhyung
-
-
-> > ...
-> > (gdb) c
-> > Continuing.
-> > Error:
-> > The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (uncore_iio_0/event=0x83,umask=0x04,ch_mask=0xF,fc_mask=0x07/).
-> > /bin/dmesg | grep -i perf may provide additional information.
-> >
-> > Program received signal SIGSEGV, Segmentation fault.
-> > 0x00005555559b03ea in perf_evsel__close_fd_cpu (evsel=0x5555560951a0, cpu=1) at evsel.c:166
-> > 166                     if (FD(evsel, cpu, thread) >= 0)
->
-> Humm
->
-> static void perf_evsel__close_fd_cpu(struct perf_evsel *evsel, int cpu)
-> {
->         int thread;
->
->         for (thread = 0; thread < xyarray__max_y(evsel->fd); ++thread) {
->                 if (FD(evsel, cpu, thread) >= 0)
->                         close(FD(evsel, cpu, thread));
->                 FD(evsel, cpu, thread) = -1;
->         }
-> }
->
-> void perf_evsel__close_fd(struct perf_evsel *evsel)
-> {
->         int cpu;
->
->         for (cpu = 0; cpu < xyarray__max_x(evsel->fd); cpu++)
->                 perf_evsel__close_fd_cpu(evsel, cpu);
-> }
->
-> Isn't bounds checking being performed by the callers?
->
-> - Arnaldo
->
+I considered adding arbitrary delays around the mutex to try and hit the bug, but
+I was worried that even if I got it "working" for this bug, the test would be too
+tailored to this bug and potentially miss future regression.  Letting the two
+threads run wild seemed like it would provide the best coverage, at the cost of
+potentially causing to false failures.
