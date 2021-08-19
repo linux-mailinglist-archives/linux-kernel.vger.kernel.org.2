@@ -2,155 +2,393 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 940B23F148A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0BD3F14A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236821AbhHSHva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 03:51:30 -0400
-Received: from mail-mw2nam12on2065.outbound.protection.outlook.com ([40.107.244.65]:57441
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235102AbhHSHv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 03:51:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WQx9qd8SfK/tROIp5RKHLsOWmpeCiQYOz9Fh/o/Ei0UNe6urjD/kbkCIA9oRNukCuW9UiBcnzm/26EtHJ+lq7v3fF9ar5SWvVxTzPMA+oMgAyKIDKQl+FWP7oEYeGiaJjTUimqfPeJTntzBbPml+Q3gXRZBaFUSwg/BaC2CeGCwqsZMMZxktSrG/ZfdFFLKK1pLqy18/TvYwgpLuNNHRyyp9aOtKHj83UO7o0abi8O7WtSnimO9qavvOpd4jHqxoHS/uz2o21Y9k+ffULt8ShtciXh+qg9EBedqrpqYW2G0IPUNjs68IOqfxQZImkDVCdd1GrXAUNqB9iAV0a12ZRw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5ErwqSMe4rJcugaPShLbLw8ACCRtV1YT6cefcuGLfNg=;
- b=Irk6xhWOSTbkH7iJ2Fr4Ok4khwg+LHMZ4MJmqY4gjtNUqcfNHAV6ss6TSrjwQnWPuWXcyKxXIJ4IGJdVeT2Z/cEHl8IH0Lm3RTfqUSgYXktnjqMcsTwdOqKTYRdcMtHzXjAMlPosn/PvasCqpFOoCXarrRKBUOQ1QHIvYX+XK1iVT7Hxz0kEWqeer9kE0iRf/q42Ok65kDmY+nXleDx+LUqOvUOET39h67zk1tC+X6/Vm3ztnH6QrAArKgnoXbpbmfEUT+2WWEVYl+P2f5W846vOIwxo2P9sroYYPsloKtDhqrBTgLk2p4rc0yDzpvklsyN4P2BebUZcrqGrh5MDjA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5ErwqSMe4rJcugaPShLbLw8ACCRtV1YT6cefcuGLfNg=;
- b=gSUMuQGlq2965l0KmmvutLWsOEx0Ij22h1Z5JAExJtJahOeyh8BUY7astmJUW/P7fHczU73TbfMLPCjwbivSLPATPKL7yvI/FBgeMSZ5M+sSsRr2Y2qmnjHHDNp+g41bxl3UewqAYI2u3NGy39ZYcV7QKgxuhDOqUuGZAbM1G6mqCGsDqQlvKDTqaYRlL4CaLFq2imALSqZbtQbZ0GWjWAsIrXvBj98/8lV4qY9/cthYdgCf/lZ2hzK/hFBabXUImLnGxy5f+Bw8Gmmv+K8NKW+dky9WFY7vQfy7ZzzqrddWf51JJ+Q/AFnByVGVPIyBob1yiVLbL50DhBfrmzHeKg==
-Received: from BY5PR12MB4209.namprd12.prod.outlook.com (2603:10b6:a03:20d::22)
- by BYAPR12MB3637.namprd12.prod.outlook.com (2603:10b6:a03:da::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14; Thu, 19 Aug
- 2021 07:50:51 +0000
-Received: from BY5PR12MB4209.namprd12.prod.outlook.com
- ([fe80::e000:8099:a5da:d74]) by BY5PR12MB4209.namprd12.prod.outlook.com
- ([fe80::e000:8099:a5da:d74%5]) with mapi id 15.20.4436.019; Thu, 19 Aug 2021
- 07:50:51 +0000
-From:   Saeed Mahameed <saeedm@nvidia.com>
-To:     "tim.gardner@canonical.com" <tim.gardner@canonical.com>,
-        Vlad Buslov <vladbu@nvidia.com>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Roi Dayan <roid@nvidia.com>,
-        "vladimir.oltean@nxp.com" <vladimir.oltean@nxp.com>,
-        Mark Bloch <mbloch@nvidia.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "leon@kernel.org" <leon@kernel.org>,
-        Jianbo Liu <jianbol@nvidia.com>
-Subject: Re: [PATCH][linux-next] net/mlx5: Bridge, fix uninitialized variable
- in mlx5_esw_bridge_port_changeupper()
-Thread-Topic: [PATCH][linux-next] net/mlx5: Bridge, fix uninitialized variable
- in mlx5_esw_bridge_port_changeupper()
-Thread-Index: AQHXlEkLsgnnT4Q3m0+5x5/L0iS5QKt5eQOAgAD8RQA=
-Date:   Thu, 19 Aug 2021 07:50:51 +0000
-Message-ID: <f42ff8df9d10b6e171e3ca45247a3df9b9fba71c.camel@nvidia.com>
-References: <20210818155210.14522-1-tim.gardner@canonical.com>
-         <ygnh8s0ypumc.fsf@nvidia.com>
-In-Reply-To: <ygnh8s0ypumc.fsf@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.40.4 (3.40.4-1.fc34) 
-authentication-results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3b960698-78a4-4031-47ab-08d962e610e7
-x-ms-traffictypediagnostic: BYAPR12MB3637:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR12MB36374914D0D1E9054EC67173B3C09@BYAPR12MB3637.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: nOrlvtx6ZxOD8kc2qsfxVDiGLzvBA+QgS4V8a1fjhSxhpQdDQbq6Q0LgTAtNmcdvm3H82SGx7/abj1dpzCFa0rS5V8pW/Tkhet5XxYlCcWTjouhshGX9BOs4uVilGjcbWOzwxL/njfUi2disY7R7j5L7s0ofYPoWP5RGuv5KhMdc0Afc4JXyFviUcgfREI8ZxPIOI4CXNmEMqTn25FHFRr2ZUQ8osMowhA+w139Rfyo2ANVe1aS4uztZxgYB2Vfq70mNQrq1BvG1/mCN7mzaTzoZ701oSOvqWmJ9JJ68BiI2S8SIFj8PrL2hP8G7VvNSvAS3whHRXcR+EXl1CsaKyDIR0FtTpHU6tARZpIz4uKOXY8UOAQyD5bDP0YR+jjlm/Az73q2awk949gf1lNibV4WzJ2kNlEFgQLAZhOnr4gxtik+bA9D+72hm/M4BEY/RhNaCn1fvCiv+qVBLem0mYQtwhQG7FL0/bIi5Y5Oced6/Rtvxlt9KiERRFwVl7k/lYXBlywqwhG+909QdnG2NvvkJHBIVdZhP/l1rMKkhLQ2Dm/6pNUAflVZP1aQ+z3eUvKEnJ6Iv+0EwIWwECSecEQKEqsMwM2k+BGQvzfH4SaCwhFJrf+nICkrvMcCJ/VObmeOTu9sFGLhIixz8IRArE1Xe6TaOx2WhvDOZB9dfRxFtZdAkc8k32rKN/JN5rc7lBkF0VnqYsDUrLlPQ9wQtcg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4209.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(136003)(396003)(366004)(8936002)(38100700002)(64756008)(122000001)(316002)(38070700005)(2906002)(6512007)(6486002)(66446008)(6506007)(76116006)(54906003)(26005)(66946007)(66556008)(36756003)(186003)(110136005)(66476007)(4326008)(5660300002)(6636002)(86362001)(107886003)(8676002)(478600001)(71200400001)(2616005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UWdCQ04zTjAwWFpGT1RvVDM1ZWJLTzh4WGhHZVArVTNMSjVUTUxMVVFEZnQz?=
- =?utf-8?B?WjVRaUR3enNXS21MN2hSU0xJYk5FbExwdVV2ekVuSE5sc25FWXlzbUdacks2?=
- =?utf-8?B?c2hHeXhIdnMvYXRSVlJKYWdXVnpsNHRGYXZVb2lEd29qZjQ4ZU9iTDBIVGl5?=
- =?utf-8?B?andzRi9LeHBTR2NzMGRBejZrT3M5UnFYVkpnbjVsVFpZY2kvMzVTaS8vcGd1?=
- =?utf-8?B?NFZRd0hXd0hwcDB5dnh5eVZ1UDdDV3I0Ny94Q1YwbEQ2STIrRElMVmVnZ3Qw?=
- =?utf-8?B?cVc3Ni9Ob2p3YytIVHN3eWZFWkl5U0JKWmZzWFFJTXpxUllMUmIwYlhLcmp0?=
- =?utf-8?B?YUpoL3EvTWhQc1k2LzR4YmhWRlEwd2gzbzlOQjBMTWIxOHFNSlZqZ3QrOUg4?=
- =?utf-8?B?UENQcDQ3VmtVSnl0aElkak1PS0VmdTZBZVJPUTZsODA0MS81STlZWWViU0JR?=
- =?utf-8?B?MFNNNk1CNGQ0ZzNJaTNkc2k0RzB0cTNNem41S08wKzJVL2FLRVJMQlI2MFNN?=
- =?utf-8?B?bmdTQSt4YzM3WnZvS0Q3K21NVk9BeVZWYTlFa1ROckx3OGFYcUdoUnM4eGF2?=
- =?utf-8?B?QjBOMk4yM0RDZGVFQkM0cys3Sys2YUh1U3RFN05ENUV1TURFQVIyTDFxaGoy?=
- =?utf-8?B?QnI2aHJ6OVpRRCtrNTlvMWc3RGZITDBvRmtrOXRhbFhGckJJSEw3b3hORjRC?=
- =?utf-8?B?dzM5Q3lDb0VmSFA0aG42S1diTlFSenlUaTR2b25WT3paWGZsUk4zU2lNT3RZ?=
- =?utf-8?B?MnVpUUdWemltMkJMSGQ3aVpGSTZjT1IvRlByVGVrTXNpbXplR2EvS0w1THFp?=
- =?utf-8?B?eXFXdEhzUEdYTytBT24rQ2QzNW9qMnA1bjRTQldMUVQ1WHdJSG1VWGRRb2Fq?=
- =?utf-8?B?UE03SGRMNGtXSFhZQXhqWXBjRFFoeW15R3Rvb3NRQWpiV3U3OGEwbTBPZ1BI?=
- =?utf-8?B?Vm5DOGI4MFFhNnp0RGdtbE90dmNnbXZXSFFZYjgxQmtoQktUd2luTHZrT3Vz?=
- =?utf-8?B?d0RtWnR0eWdjY0hJVVdmZXZLdi9ZUTBQeitRV2dUM2JEeUhsRkFiNHFXeEdH?=
- =?utf-8?B?bDFXK1lBZDlTVktPWHBadnZFRjYrVFl5NnV4c2dvdktibVdpYlg4T0xKRE5B?=
- =?utf-8?B?WGViV2g2a2h5aFRFZldUNExKeEkwdWpkM1AxbCs3SVVISXBvSk1Zcy90aVlK?=
- =?utf-8?B?UU1HWnRCYjNVZW0zS0MxYWRKVnZNanFHanlISEtjL2w0ZFhtY0N0dytpa1Ns?=
- =?utf-8?B?cEo3RGRnblkxeVRKNjJhS214R2ltZDN2blRkNm1rUnRCS2ZLQis0SnYvWHYw?=
- =?utf-8?B?dE11R0RYWklMbHpyRDB4cVF2b3NuSzVza1AyRmxTRzFPRGRyYS9YNCs2VEN5?=
- =?utf-8?B?SDR2VlZMbWNXQVZhczRHdXNUaFlacFNlaHd4OHI4NnNnMlY2V3dONlk4RlNR?=
- =?utf-8?B?NmhyWEYwYmFtYmc1eHdkU0NJNkl5b21oeUt3MVRGUzhIUU50NDl4UENNdjQx?=
- =?utf-8?B?dnZKRlR2bUMrdEs0Q041Z08xQW54dHZmQVE4eGhqSGZQK2gvUXdUbXF5RUx2?=
- =?utf-8?B?TFF2N1Z0RDZPSy9mdW41TDF0MWdpZEhSRm9lLzI4ZEpUUXZqemhieFZtMEdQ?=
- =?utf-8?B?UUhWa3d5a3J0QlQ4NVJpeTU2KzEyUzlrdTRrd3VuQlRHd0w1aUJJcUhSL2h0?=
- =?utf-8?B?djJJUnBOTVRObmZYQW4wZ2JoVFZCenY2WG5kSE5sbGFUbmJxY3BxaGVUbHM2?=
- =?utf-8?B?Wjk4QkpsNjlkU2U0WFlKVHRnRjBZOFpKRVAyY0x0QmlPN0YxZm52NExFWkRE?=
- =?utf-8?B?K3Buc3NIZktWTEtBTGV1QT09?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5F2283876EC812428C2EF345F87DD945@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S236949AbhHSH5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 03:57:15 -0400
+Received: from cable.insite.cz ([84.242.75.189]:39531 "EHLO cable.insite.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229927AbhHSH5O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 03:57:14 -0400
+X-Greylist: delayed 319 seconds by postgrey-1.27 at vger.kernel.org; Thu, 19 Aug 2021 03:57:13 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by cable.insite.cz (Postfix) with ESMTP id F3C44A1A3D402;
+        Thu, 19 Aug 2021 09:51:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
+        t=1629359477; bh=7NwXOQ5r/7lfvD3hvTHL3nJpumenHZRPr+tHamdmp20=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=SKNrL3bx6te3hFBtfmzbctzzAXI3eHfp6xiJkrOdy4ZIxggXhkS/3H/NJfyB8eIIb
+         KwnqXmp+Tl/uVe9nD38XOzV60/O89K92VtCMMgQQk5zUMZgJa+kBnIToZcDnoYy3zT
+         vFqFpx6dvhITzylPqKH4KEStLrcdjQ+/GJtIAKnw=
+Received: from cable.insite.cz ([84.242.75.189])
+        by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id zjISI5SOnwtj; Thu, 19 Aug 2021 09:51:10 +0200 (CEST)
+Received: from [192.168.105.22] (ip28.insite.cz [81.0.237.28])
+        (Authenticated sender: pavel)
+        by cable.insite.cz (Postfix) with ESMTPSA id 4D370A1A3D401;
+        Thu, 19 Aug 2021 09:51:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
+        t=1629359470; bh=7NwXOQ5r/7lfvD3hvTHL3nJpumenHZRPr+tHamdmp20=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=VGzJRe/847Q33owGp2lUIXBkgaecAOu0tz/TtvulYwg1R3R9XnMBW5LEZLQZB71z4
+         YZWf7CMEdBs5dYa+knMZZXenI+o0NV4RZEicvhLVkp7Gv9uI5BgSOBpz97QXsfmGfn
+         I0wZQ45nDLqF5Jba97VMczldHmKfv0WWPXLP2u30=
+Subject: Re: [PATCH v10 0/6] Re-introduce TX FIFO resize for larger EP
+ bursting
+To:     Ferry Toth <fntoth@gmail.com>, Felipe Balbi <balbi@kernel.org>
+Cc:     Wesley Cheng <wcheng@codeaurora.org>, gregkh@linuxfoundation.org,
+        robh+dt@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
+        frowand.list@gmail.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, jackp@codeaurora.org,
+        heikki.krogerus@linux.intel.com, andy.shevchenko@gmail.com,
+        Ruslan Bilovol <ruslan.bilovol@gmail.com>
+References: <1623923899-16759-1-git-send-email-wcheng@codeaurora.org>
+ <cfb83fe4-369c-ec72-7887-3bcb0f20fe15@gmail.com>
+ <ec8050c5-c013-4af6-b39e-69779c009a9c@codeaurora.org>
+ <f5ed0ee7-e333-681f-0f1a-d0227562204b@gmail.com>
+ <2e01c435-9ecc-4e3b-f55c-612a86667020@codeaurora.org>
+ <2ae9fa6a-3bb1-3742-0dd3-59678bdd8643@gmail.com>
+ <ebea75fe-5334-197b-f67a-cb6e1e30b39e@codeaurora.org>
+ <bafa93bb-11e3-c8a5-e14a-b0a6d5695055@gmail.com> <87v951ldlt.fsf@kernel.org>
+ <d9aef50c-4bd1-4957-13d8-0b6a14b9fcd0@gmail.com> <87pmv9l1dv.fsf@kernel.org>
+ <9dc6cd83-17b9-7075-0934-6b9d41b6875d@gmail.com> <87a6mbudvc.fsf@kernel.org>
+ <6e8bb4ad-fe68-ad36-7416-2b8e10b6ae96@gmail.com> <877dhev68a.fsf@kernel.org>
+ <cca69e90-b0ef-00b8-75d3-3bf959a93b45@gmail.com> <874kchvcq0.fsf@kernel.org>
+ <e59f1201-2aa2-9075-1f94-a6ae7a046dc1@gmail.com> <8735raj766.fsf@kernel.org>
+ <b3417c2c-613b-8ef6-2e2d-6e2cf9a5d5fd@gmail.com>
+ <b3e820f0-9c94-7cba-a248-3b2ec5378ab0@gmail.com>
+From:   Pavel Hofman <pavel.hofman@ivitera.com>
+Message-ID: <d298df65-417b-f318-9374-b463a15d8308@ivitera.com>
+Date:   Thu, 19 Aug 2021 09:51:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4209.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3b960698-78a4-4031-47ab-08d962e610e7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Aug 2021 07:50:51.4725
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6+6f5kknpiU/xGBk50fqm7LRBh/nJUF26UHGKjOPiV7XxhcSJX/kd2srZO4oAhenz5M65CnHf0JLUGhqi9pW+w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3637
+In-Reply-To: <b3e820f0-9c94-7cba-a248-3b2ec5378ab0@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTA4LTE4IGF0IDE5OjQ3ICswMzAwLCBWbGFkIEJ1c2xvdiB3cm90ZToNCj4g
-T24gV2VkIDE4IEF1ZyAyMDIxIGF0IDE4OjUyLCBUaW0gR2FyZG5lciA8dGltLmdhcmRuZXJAY2Fu
-b25pY2FsLmNvbT4NCj4gd3JvdGU6DQo+ID4gQSByZWNlbnQgY2hhbmdlIHJlbW92ZWQgY29kZSB0
-aGF0IGluaXRpYWxpemVkIHRoZSByZXR1cm4gY29kZQ0KPiA+IHZhcmlhYmxlICdlcnInLiBJdA0K
-PiA+IGlzIG5vdyBwb3NzaWJsZSBmb3IgbWx4NV9lc3dfYnJpZGdlX3BvcnRfY2hhbmdldXBwZXIo
-KSB0byByZXR1cm4gYW4NCj4gPiBlcnJvciBjb2RlDQo+ID4gdXNpbmcgdGhpcyB1bmluaXRpYWxp
-emVkIHZhcmlhYmxlLiBGaXggaXQgYnkgaW5pdGlhbGl6aW5nIHRvIDAuDQo+ID4gDQo+ID4gQWRk
-cmVzc2VzLUNvdmVyaXR5OiAoIlVuaW5pdGlhbGl6ZWQgc2NhbGFyIHZhcmlhYmxlIChVTklOSVQp
-IikNCj4gPiANCj4gPiBDYzogU2FlZWQgTWFoYW1lZWQgPHNhZWVkbUBudmlkaWEuY29tPg0KPiA+
-IENjOiBMZW9uIFJvbWFub3Zza3kgPGxlb25Aa2VybmVsLm9yZz4NCj4gPiBDYzogIkRhdmlkIFMu
-IE1pbGxlciIgPGRhdmVtQGRhdmVtbG9mdC5uZXQ+DQo+ID4gQ2M6IEpha3ViIEtpY2luc2tpIDxr
-dWJhQGtlcm5lbC5vcmc+DQo+ID4gQ2M6IFZsYWQgQnVzbG92IDx2bGFkYnVAbnZpZGlhLmNvbT4N
-Cj4gPiBDYzogSmlhbmJvIExpdSA8amlhbmJvbEBudmlkaWEuY29tPg0KPiA+IENjOiBNYXJrIEJs
-b2NoIDxtYmxvY2hAbnZpZGlhLmNvbT4NCj4gPiBDYzogUm9pIERheWFuIDxyb2lkQG52aWRpYS5j
-b20+DQo+ID4gQ2M6IFZsYWRpbWlyIE9sdGVhbiA8dmxhZGltaXIub2x0ZWFuQG54cC5jb20+DQo+
-ID4gQ2M6IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmcNCj4gPiBDYzogbGludXgtcmRtYUB2Z2VyLmtl
-cm5lbC5vcmcNCj4gPiBDYzogbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KDQpKdXN0IHdv
-bmRlcmluZywgZG8gd2UgcmVhbGx5IG5lZWQgMTIgaW5saW5lIENDcyBmb3IgZml4aW5nIGEgcG9v
-cg0KY292ZXJpdHk/DQoNCj4gPiBTaWduZWQtb2ZmLWJ5OiBUaW0gR2FyZG5lciA8dGltLmdhcmRu
-ZXJAY2Fub25pY2FsLmNvbT4NCj4gPiAtLS0NCj4gDQo+IFRpbSwgdGhhbmtzIGZvciBmaXhpbmcg
-dGhpcyENCj4gDQo+IFNhZWVkLCB0aGlzIGlzIHRoZSBzZWNvbmQgc2ltaWxhciBpc3N1ZSB0aGF0
-IEkgbWVudGlvbmVkIGluIG15IHJlcGx5DQo+IHRvDQo+IENvbGluLiBBZ2FpbiwgSSd2ZSBhbHJl
-YWR5IHN1Ym1pdHRlZCBzYW1lIHBhdGNoIGludGVybmFsbHkgYW5kIHRoaXMNCj4gb25lDQo+IGlz
-IGFzIGdvb2QgYXMgbWluZS4NCg0KSSBkb24ndCBtaW5kIGJvdGggcGF0Y2hlcyBhcmUgcGVyZmVj
-dC4NCg0KPiANCj4gUmV2aWV3ZWQtYnk6IFZsYWQgQnVzbG92IDx2bGFkYnVAbnZpZGlhLmNvbT4N
-Cj4gDQo+IFsuLi5dDQo+IA0KPiANCg0K
+Hi,
+
+Dne 18. 08. 21 v 21:07 Ferry Toth napsal(a):
+> Hi,
+> 
+> Op 18-08-2021 om 00:00 schreef Ferry Toth:
+>> Hi,
+>>
+>> Op 16-08-2021 om 07:18 schreef Felipe Balbi:
+>>> Hi,
+>>>
+>>> Ferry Toth <fntoth@gmail.com> writes:
+>>>>> Ferry Toth <fntoth@gmail.com> writes:
+>>>>>>>>> Ferry Toth <fntoth@gmail.com> writes:
+>>>>>>>>>>>>>> Hardware name: Intel Corporation Merrifield/BODEGA BAY, 
+>>>>>>>>>>>>>> BIOS 542
+>>>>>>>>>>>>>> 2015.01.21:18.19.48
+>>>>>>>>>>>>>> RIP: 0010:0x500000000
+>>>>>>>>>>>>>> Code: Unable to access opcode bytes at RIP 0x4ffffffd6.
+>>>>>>>>>>>>>> RSP: 0018:ffffa4d00045fc28 EFLAGS: 00010046
+>>>>>>>>>>>>>> RAX: 0000000500000000 RBX: ffff8cd546aed200 RCX: 
+>>>>>>>>>>>>>> 0000000000000000
+>>>>>>>>>>>>>> RDX: 0000000000000000 RSI: ffff8cd547bfcae0 RDI: 
+>>>>>>>>>>>>>> ffff8cd546aed200
+>>>>>>>>>>>>>> RBP: ffff8cd547bfcae0 R08: 0000000000000000 R09: 
+>>>>>>>>>>>>>> 0000000000000001
+>>>>>>>>>>>>>> R10: ffff8cd541fd28c0 R11: 0000000000000000 R12: 
+>>>>>>>>>>>>>> ffff8cd547342828
+>>>>>>>>>>>>>> R13: ffff8cd546aed248 R14: 0000000000000000 R15: 
+>>>>>>>>>>>>>> ffff8cd548b1d000
+>>>>>>>>>>>>>> FS:  0000000000000000(0000) GS:ffff8cd57e200000(0000) 
+>>>>>>>>>>>>>> knlGS:0000000000000000
+>>>>>>>>>>>>>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>>>>>>>>>>>> CR2: 0000000500000000 CR3: 000000000311e000 CR4: 
+>>>>>>>>>>>>>> 00000000001006f0
+>>>>>>>>>>>>>> Call Trace:
+>>>>>>>>>>>>>>         ? dwc3_remove_requests.constprop.0+0x14d/0x170
+>>>>>>>>>>>>>>         ? __dwc3_gadget_ep_disable+0x7a/0x160
+>>>>>>>>>>>>>>         ? dwc3_gadget_ep_disable+0x3d/0xd0
+>>>>>>>>>>>>>>         ? usb_ep_disable+0x1c/0x
+>>>>>>>>>>>>>>         ? u_audio_stop_capture+0x79/0x120 [u_audio]
+>>>>>>>>>>>>>>         ? afunc_set_alt+0x73/0x80 [usb_f_uac2]
+>>>>>>> So this is triggered by a SetInterface request...
+>>>>>>>
+>>>>>>>>>>>>>>         ? composite_setup+0x224/0x1b90 [libcomposite]
+>>>>>>>>>>>>>>         ? __dwc3_gadget_kick_transfer+0x160/0x400
+>>>>>>>>>>>>>>         ? dwc3_gadget_ep_queue+0xf3/0x1a0
+>>>>>>>>>>>>>>         ? configfs_composite_setup+0x6b/0x90 [libcomposite]
+>>>>>>>>>>>>>>         ? configfs_composite_setup+0x6b/0x90 [libcomposite]
+>>>>>>>>>>>>>>         ? dwc3_ep0_interrupt+0x459/0xa40
+>>>>>>>>>>>>>>         ? dwc3_thread_interrupt+0x8ee/0xf40
+>>>>>>>>>>>>>>         ? __schedule+0x235/0x6c0
+>>>>>>>>>>>>>>         ? disable_irq_nosync+0x10/0x10
+>>>>>>>>>>>>>>         ? irq_thread_fn+0x1b/0x60
+>>>>>>>>>>>>>>         ? irq_thread+0xc0/0x160
+>>>>>>>>>>>>>>         ? irq_thread_check_affinity+0x70/0x70
+>>>>>>>>>>>>>>         ? irq_forced_thread_fn+0x70/0x70
+>>>>>>>>>>>>>>         ? kthread+0x122/0x140
+>>>>>>>>>>>>>>         ? set_kthread_struct+0x40/0x40
+>>>>>>>>>>>>>>         ? ret_from_fork+0x22/0x30
+>>>>>>>>>>>>> Do you mind enabling dwc3 traces and collecting them? 
+>>>>>>>>>>>>> Trying to figure
+>>>>>>>>>>>>> out how we got here.
+>>>>>>>>>>>>>
+>>>>>>>>>>>> I'll try if I can get the same error by booting with USB in 
+>>>>>>>>>>>> host mode
+>>>>>>>>>>>> and then switch to device mode. If so I can enable traces 
+>>>>>>>>>>>> and collect as
+>>>>>>>>>>>> you explained me before.
+>>>>>>>>>>>>
+>>>>>>>>>>>> I'll try before monday, as then I fly for a holiday and will 
+>>>>>>>>>>>> not be
+>>>>>>>>>>>> available before rc5.
+>>>>>>>>>>> you can enable all of those with kernel cmdline :-)
+>>>>>>>>>>>
+>>>>>>>>>>> https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html 
+>>>>>>>>>>>
+>>>>>>>>>>>
+>>>>>>>>>>> you need ftrace_dump_on_oops=1 and also need the correct 
+>>>>>>>>>>> options on
+>>>>>>>>>>> trace_buf_size and trace_event.
+>>>>>>>>>>>
+>>>>>>>>>> On Edison-Arduino I have a switch to go to device mode, after 
+>>>>>>>>>> which
+>>>>>>>>>> udev triggers a script configure gadgets through configfs.
+>>>>>>>>>>
+>>>>>>>>>> I tried to log following these instructions:
+>>>>>>>>>>
+>>>>>>>>>> https://www.kernel.org/doc/html/latest/driver-api/usb/dwc3.html#reporting-bugs 
+>>>>>>>>>> <https://www.kernel.org/doc/html/latest/driver-api/usb/dwc3.html#reporting-bugs> 
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> Unfortunately the kernel crashes so badly I can not get to the 
+>>>>>>>>>> ` cp
+>>>>>>>>>> /t/trace /root/trace.txt` line (after a while the watchdog 
+>>>>>>>>>> kicks).
+>>>>>>>>>>
+>>>>>>>>>> What to do next?
+>>>>>>>>> Pass ftrace_dump_on_oops to kernel cmdline.
+>>>>>>>>>
+>>>>>>>> No sure if I did this right, on oops everything is pushed to 
+>>>>>>>> console
+>>>>>>>> (115k2 serial), I hope nothing essential is lost.
+>>>>>>>>
+>>>>>>>> I copied the screen buffer to file see attached.
+>>>>>>> Thank you, I bet it took quite a some time :-) Anyway, looking at
+>>>>>>> the logs around Set Interface requests, we can track every endpoint
+>>>>>>> that's disabled. I'll take a guess and assume we're failing at 
+>>>>>>> the last
+>>>>>>> Set Interface, that means we should have something odd with 
+>>>>>>> ep6in, but
+>>>>>>> everything looks fine in the trace output:
+>>>>>>>
+>>>>>>> [   75.823107] irq/14-d-596       0d... 42789194us : 
+>>>>>>> dwc3_gadget_ep_enable: ep6in: mps 192/346 streams 16 burst 0 ring 
+>>>>>>> 0/0 flags E:swbp:<
+>>>>>>> [   75.835472] irq/14-d-596       0d... 42789198us : 
+>>>>>>> dwc3_alloc_request: ep6in: req 0000000002c71409 length 0/0 zsI ==> 0
+>>>>>>> [   75.846416] irq/14-d-596       0d... 42789202us : 
+>>>>>>> dwc3_ep_queue: ep6in: req 0000000002c71409 length 0/192 zsI ==> -115
+>>>>>>> [   75.857360] irq/14-d-596       0d... 42789204us : 
+>>>>>>> dwc3_alloc_request: ep6in: req 00000000a324f5d0 length 0/0 zsI ==> 0
+>>>>>>> [   75.868301] irq/14-d-596       0d... 42789206us : 
+>>>>>>> dwc3_ep_queue: ep6in: req 00000000a324f5d0 length 0/192 zsI ==> -115
+>>>>>>> [   75.879244] irq/14-d-596       0d... 42789209us : dwc3_event: 
+>>>>>>> event (000020c2): ep0in: Transfer Not Ready [0] (Not Active) 
+>>>>>>> [Status Phase]
+>>>>>>> [   75.891880] irq/14-d-596       0d... 42789211us : 
+>>>>>>> dwc3_prepare_trb: ep0in: trb 000000004c0ae319 (E0:D0) buf 
+>>>>>>> 000000001bded000 size 0 ctrl 00000c33 (HLcs:SC:status2)
+>>>>>>> [   75.989131] irq/14-d-596       0d... 42789224us : 
+>>>>>>> dwc3_gadget_ep_cmd: ep0in: cmd 'Start Transfer' [406] params 
+>>>>>>> 00000000 1bded000 00000000 --> status: Successful
+>>>>>>> [   76.096261] irq/14-d-596       0d... 42789272us : dwc3_event: 
+>>>>>>> event (0000c042): ep0in: Transfer Complete (sIL) [Status Phase]
+>>>>>>> [   76.107834] irq/14-d-596       0d... 42789275us : 
+>>>>>>> dwc3_complete_trb: ep0out: trb 000000004c0ae319 (E0:D0) buf 
+>>>>>>> 000000001bded000 size 0 ctrl 00000c32 (hLcs:SC:status2)
+>>>>>>> [   76.122944] irq/14-d-596       0d... 42789277us : 
+>>>>>>> dwc3_gadget_giveback: ep0out: req 00000000cb1bd3cd length 0/0 zsI 
+>>>>>>> ==> 0
+>>>>>>> [   76.134160] irq/14-d-596       0d... 42789280us : 
+>>>>>>> dwc3_prepare_trb: ep0out: trb 000000004c0ae319 (E0:D0) buf 
+>>>>>>> 000000001bded000 size 8 ctrl 00000c23 (HLcs:SC:setup)
+>>>>>>> [   76.231322] irq/14-d-596       0d... 42789292us : 
+>>>>>>> dwc3_gadget_ep_cmd: ep0out: cmd 'Start Transfer' [406] params 
+>>>>>>> 00000000 1bded000 00000000 --> status: Successful
+>>>>>>> [   76.297418] kworker/-23        0d... 42789670us : 
+>>>>>>> dwc3_ep_queue: ep3in: req 0000000029586135 length 0/96 ZsI ==> -115
+>>>>>>> [   76.308278] kworker/-23        0d... 42789695us : 
+>>>>>>> dwc3_prepare_trb: ep3in: trb 00000000b81213d6 (E1:D0) buf 
+>>>>>>> 0000000003b7a800 size 96 ctrl 00000811 (Hlcs:sC:normal)
+>>>>>>> [   76.395294] kworker/-23        0d... 42789707us : 
+>>>>>>> dwc3_gadget_ep_cmd: ep3in: cmd 'Update Transfer' [60007] params 
+>>>>>>> 00000000 00000000 00000000 --> status: Successful
+>>>>>>> [   76.471900] irq/14-d-596       0d... 42789842us : dwc3_event: 
+>>>>>>> event (0000c040): ep0out: Transfer Complete (sIL) [Setup Phase]
+>>>>>>> [   76.489308] irq/14-d-596       0d... 42789845us : 
+>>>>>>> dwc3_ctrl_req: Set Interface(Intf = 5, Alt.Setting = 0)
+>>>>>>> [   76.505650] irq/14-d-596       0d... 42789851us : 
+>>>>>>> dwc3_ep_dequeue: ep6in: req 0000000002c71409 length 0/192 zsI ==> 
+>>>>>>> -115
+>>>>>>> [   76.523315] irq/14-d-596       0d... 42789854us : 
+>>>>>>> dwc3_gadget_giveback: ep6in: req 0000000002c71409 length 0/192 
+>>>>>>> zsI ==> -104
+>>>>>>> [   76.541427] irq/14-d-596       0d... 42789857us : 
+>>>>>>> dwc3_free_request: ep6in: req 0000000002c71409 length 0/192 zsI 
+>>>>>>> ==> -104
+>>>>>>> [   76.559267] irq/14-d-596       0d... 42789859us : 
+>>>>>>> dwc3_ep_dequeue: ep6in: req 00000000a324f5d0 length 0/192 zsI ==> 
+>>>>>>> -115
+>>>>>>> [   76.576937] irq/14-d-596       0d... 42789861us : 
+>>>>>>> dwc3_gadget_giveback: ep6in: req 00000000a324f5d0 length 0/192 
+>>>>>>> zsI ==> -104
+>>>>>>> [   76.595046] irq/14-d-596       0d... 42789862us : 
+>>>>>>> dwc3_free_request: ep6in: req 00000000a324f5d0 length 0/192 zsI 
+>>>>>>> ==> -104
+>>>>>>> [   76.612892] irq/14-d-596       0d... 42789865us : 
+>>>>>>> dwc3_gadget_ep_disable: ep6in: mps 192/346 streams 16 burst 0 
+>>>>>>> ring 0/0 flags E:swbp:<
+>>>>>>> [   76.665535] irq/14-d-596       0d... 42789873us : dwc3_event: 
+>>>>>>> event (000020c2): ep0in: Transfer Not Ready [0] (Not Active) 
+>>>>>>> [Status Phase]
+>>>>>>> [   76.684716] irq/14-d-596       0d... 42789875us : 
+>>>>>>> dwc3_prepare_trb: ep0in: trb 000000004c0ae319 (E0:D0) buf 
+>>>>>>> 000000001bded000 size 0 ctrl 00000c33 (HLcs:SC:status2)
+>>>>>>> [   76.819195] irq/14-d-596       0d... 42789886us : 
+>>>>>>> dwc3_gadget_ep_cmd: ep0in: cmd 'Start Transfer' [406] params 
+>>>>>>> 00000000 1bded000 00000000 --> status: Successful
+>>>>>>> [   76.926324] irq/14-d-596       0d... 42789930us : dwc3_event: 
+>>>>>>> event (0000c042): ep0in: Transfer Complete (sIL) [Status Phase]
+>>>>>>> [   76.937892] irq/14-d-596       0d... 42789933us : 
+>>>>>>> dwc3_complete_trb: ep0out: trb 000000004c0ae319 (E0:D0) buf 
+>>>>>>> 000000001bded000 size 0 ctrl 00000c32 (hLcs:SC:status2)
+>>>>>>> [   76.953003] irq/14-d-596       0d... 42789935us : 
+>>>>>>> dwc3_gadget_giveback: ep0out: req 00000000cb1bd3cd length 0/0 zsI 
+>>>>>>> ==> 0
+>>>>>>> [   76.964217] irq/14-d-596       0d... 42789938us : 
+>>>>>>> dwc3_prepare_trb: ep0out: trb 000000004c0ae319 (E0:D0) buf 
+>>>>>>> 000000001bded000 size 8 ctrl 00000c23 (HLcs:SC:setup)
+>>>>>>> [   77.061379] irq/14-d-596       0d... 42789950us : 
+>>>>>>> dwc3_gadget_ep_cmd: ep0out: cmd 'Start Transfer' [406] params 
+>>>>>>> 00000000 1bded000 00000000 --> status: Successful
+>>>>>>> [   77.168595] irq/14-d-596       0d... 42790509us : dwc3_event: 
+>>>>>>> event (0000c040): ep0out: Transfer Complete (sIL) [Setup Phase]
+>>>>>>> [   77.180159] irq/14-d-596       0d... 42790512us : 
+>>>>>>> dwc3_ctrl_req: Get String Descriptor(Index = 18, Length = 255)
+>>>>>>> [   77.190578] irq/14-d-596       0d... 42790537us : 
+>>>>>>> dwc3_prepare_trb: ep0in: trb 000000004c0ae319 (E0:D0) buf 
+>>>>>>> 0000000003b68000 size 36 ctrl 00000c53 (HLcs:SC:data)
+>>>>>>> [   77.287648] irq/14-d-596       0d... 42790550us : 
+>>>>>>> dwc3_gadget_ep_cmd: ep0in: cmd 'Start Transfer' [406] params 
+>>>>>>> 00000000 1bded000 00000000 --> status: Successful
+>>>>>>> [   77.333107] irq/14-d-596       0d... 42790557us : dwc3_event: 
+>>>>>>> event (000010c2): ep0in: Transfer Not Ready [0] (Not Active) 
+>>>>>>> [Data Phase]
+>>>>>>> [   77.407223] irq/14-d-596       0d... 42790575us : dwc3_event: 
+>>>>>>> event (000090c2): ep0in: Transfer Not Ready [0] (Active) [Data 
+>>>>>>> Phase]
+>>>>>>> [   77.480985] irq/14-d-596       0d... 42790588us : dwc3_event: 
+>>>>>>> event (0000c042): ep0in: Transfer Complete (sIL) [Data Phase]
+>>>>>>> [   77.492376] irq/14-d-596       0d... 42790590us : 
+>>>>>>> dwc3_complete_trb: ep0out: trb 000000004c0ae319 (E0:D0) buf 
+>>>>>>> 0000000003b68000 size 0 ctrl 00000c52 (hLcs:SC:data)
+>>>>>>> [   77.507221] irq/14-d-596       0d... 42790595us : 
+>>>>>>> dwc3_gadget_giveback: ep0out: req 00000000cb1bd3cd length 36/36 
+>>>>>>> ZsI ==> 0
+>>>>>>> [   77.518609] irq/14-d-596       0d... 42790597us : dwc3_event: 
+>>>>>>> event (000020c0): ep0out: Transfer Not Ready [0] (Not Active) 
+>>>>>>> [Status Phase]
+>>>>>>> [   77.531332] irq/14-d-596       0d... 42790598us : 
+>>>>>>> dwc3_prepare_trb: ep0out: trb 000000004c0ae319 (E0:D0) buf 
+>>>>>>> 000000001bded000 size 0 ctrl 00000c43 (HLcs:SC:status3)
+>>>>>>> [   77.628669] irq/14-d-596       0d... 42790609us : 
+>>>>>>> dwc3_gadget_ep_cmd: ep0out: cmd 'Start Transfer' [406] params 
+>>>>>>> 00000000 1bded000 00000000 --> status: Successful
+>>>>>>>
+>>>>>>> Do you mind adding a few prints in dwc3_remove_requests to tell 
+>>>>>>> us which
+>>>>>>> endpoint is being processed? Then we'll know for sure which one 
+>>>>>>> caused
+>>>>>>> the crash.
+>>>>>>>
+>>>>>> I wouldn't mind but am leaving on a holiday, won't have time until 
+>>>>>> 6 aug.
+>>>>> not a problem, we'll still be here when you're back :-)
+>>>> Well, let's go then :-)
+>>>>
+>>>> To get back in the mood I have retested 5.13.0, 5.14.0-rc1, 5.14.0-rc2
+>>>> and 5.14.0-rc5.
+>>>>
+>>>> I find that 5.13.0 works fine, and the issue starts from 5.14.0-rc1.
+>>> That's great finding. We have a bisection point. There are a total of
+>>> 13764 commits between v5.13 and v5.14-rc1
+>>>
+>>>     $ git rev-list  --count v5.13..v5.14-rc1
+>>>     13764
+>>>
+>>> git bisect should find the offending commit in at most 14 tries. That's
+>>> not too bad.
+>> I correctly guesstimated that the problem got introduced by the usb 
+>> merge 79160a60
+>>
+>> "Merge tag 'usb-5.14-rc1' of 
+>> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb"
+>>
+>> 116 commits(7 bisects).
+>>
+>> 24f779dac8f3efb9629adc0e486914d93dc45517 is the first bad commit
+>>
+>> "usb: gadget: f_uac2/u_audio: add feedback endpoint support"
+>>
+>> Ruslan's 3 patches are related to each other so I reverted all three 
+>> 24f779da...e89bb428 and applied the reverts to rc1.
+>>
+>> I can confirm this indeed resolves the problem in rc1.
+>>
+>> Is late now, tomorrow evening I will apply the reverts to rc6.
+> 
+> With these reverts rc6 works fine as well.
+> 
+> So, where do we go from here?
+> 
+
+I know the patches have been tested on dwc2 (by me and others).  I do 
+not know if Ruslan or Jerome tested them on dwc3 but probably not. 
+Ruslan has talked about RPi (my case too) and BeagleboneBlack, both with 
+dwc2. Perhaps the dwc2 behaves a bit differently than dwc3?
+
+The patches add a new EP-IN for async feedback. I am sorry I have not 
+followed your long thread (it started as unrelated to uac). Does the 
+problem appear with f_uac1 or f_uac2? Please how have you reached the 
+above problem?
+
+u_audio_stop_capture calls free_ep_fback 
+https://elixir.bootlin.com/linux/v5.14-rc6/source/drivers/usb/gadget/function/u_audio.c#L414 
+which clears the feedback request prm->req_fback.
+
+Then (reading from your the call trace), usb_ep_disable calls 
+dwc3_gadget_ep_disable which for every request in the EP calls 
+dwc3_remove_requests which gives every found request back to the gadget 
+function, IIUC by calling the complete method of the request 
+https://elixir.bootlin.com/linux/v5.14-rc6/source/drivers/usb/gadget/udc/core.c#L912 
+. Perhaps the problem is somewhere here?
+
+The dwc2 gadget has its endpoint_disable method a bit different 
+https://elixir.bootlin.com/linux/v5.14-rc6/source/drivers/usb/dwc2/gadget.c#L4200 
+  -> 
+https://elixir.bootlin.com/linux/v5.14-rc6/source/drivers/usb/dwc2/gadget.c#L3251 
+-> 
+https://elixir.bootlin.com/linux/v5.14-rc6/source/drivers/usb/dwc2/gadget.c#L2090 
+which also calls usb_gadget_giveback_request 
+https://elixir.bootlin.com/linux/v5.14-rc6/source/drivers/usb/dwc2/gadget.c#L2126 
+. Perhaps there is some minor but important difference in processing the 
+requests when disabling the endpoint between dwc2 and dwc3?
+
+Thanks,
+
+Pavel.
