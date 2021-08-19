@@ -2,107 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B2E3F1EC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F953F1ECD
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230475AbhHSRJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 13:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53224 "EHLO
+        id S231137AbhHSRMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 13:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbhHSRJp (ORCPT
+        with ESMTP id S229491AbhHSRMk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 13:09:45 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78E1DC061575;
-        Thu, 19 Aug 2021 10:09:09 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0f6a00894cffc8901d9ad3.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:6a00:894c:ffc8:901d:9ad3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F092D1EC04F3;
-        Thu, 19 Aug 2021 19:09:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629392943;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=5h/pBCa48TpXaDC5k6IrIdMKol2hS7fNRvaR9js1Y0w=;
-        b=Y+o2JyP4Tg1O4OSMYH/GIP8+RzcS0qjXj/JucPGugTCf3iMvd2TXwRWBSklMZvSnsBBjzn
-        fr3Y7u61lMY10cqPUfxz1UkhK57dEAyb8NrVtZid6qA8GMlZphUUqzbVVrsR6nRZEgXn0p
-        Zwnk5rkTl3zqeU7wg2G67ypkiAml6Zw=
-Date:   Thu, 19 Aug 2021 19:09:42 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part1 RFC v4 24/36] x86/compressed/acpi: move EFI config
- table access to common code
-Message-ID: <YR6QVh3qZUxqsyI+@zn.tnic>
-References: <20210707181506.30489-1-brijesh.singh@amd.com>
- <20210707181506.30489-25-brijesh.singh@amd.com>
- <YR42323cUxsbQo5h@zn.tnic>
- <20210819145831.42uszc4lcsffebzu@amd.com>
+        Thu, 19 Aug 2021 13:12:40 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 287AFC061575;
+        Thu, 19 Aug 2021 10:12:04 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id y190so6104459pfg.7;
+        Thu, 19 Aug 2021 10:12:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=yj/zQz+GWdOl4eJGN6c1sJ4eL77VG5kYhaSr24Ls5eU=;
+        b=NX9pUmbOVVkAfmBezxi3gVrTJYoaISXMHlvX0dbJLqKpV5kxenLG9gZON1rOp1hR3G
+         NDgcKM5hukPVKrmlAoTwv8o+OxcZb7jEuAXqaYuXSvq8kZC4PCpGtTu6/SYwfl//bKTj
+         lfInPLsLf3g9OfRfJZY/+WYPq4xHZb5uUx0c3yHS078eUT0bPCtPfyECUzmKoPsNuuoB
+         zxsQG7B1gLYjOHJS9iPC9+LRwGI4XTG/KbSkS7y/XtPkAcwf5Eennj4qbzeove/GU9BP
+         q+CaA3Lq26NgKGtSjyD81KVXiFEoeOi1iWikYJM5l5nsBRAxqhwnE7B/1ExGT8Jywf6G
+         DhFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yj/zQz+GWdOl4eJGN6c1sJ4eL77VG5kYhaSr24Ls5eU=;
+        b=MkV8kdgMkro1jYACqkQGiSb807f2N6q2SAJq88rMdP/v3aAbeXodCyVw1l/hlvAYZi
+         UiJqhsmtZasPSZsOnRJvftep3gGBWN4clteI+oIhbPk9Ymp1dEvyc5HXzrj6kI+m4vCZ
+         qAAmqjWI4w+OXRYVhVBtG2eNuN7cNl78V1wK6QmOD+i3WIvmNGO2I1Q+Q0ImIeirRyx+
+         O7PGTgr9Y6bU/eYSjd0YTvyoXCRyjDSkHtDxTPSkbv6s35P5iCGuEfbs9BcJLKjrdszi
+         4sRahReJa22twBQ0psEFxqpzoUAgtLqx+C/1dvbXA/swUGnn/8hJKrdaH+B+SuryyzDv
+         dyaQ==
+X-Gm-Message-State: AOAM5304UELQypdKR7nKJ0bB4ak0i7kXC0Gs6wFrHrc/NuBBdDM+YlWL
+        geeAtojnJVR2BQLkpv1SIXI=
+X-Google-Smtp-Source: ABdhPJy4YoQhO59xUM8dpISQFnQ3sptOU8FA0Rvl7BaZEextoNx5Yhuae9DA60Wan7EOkL9VsyvgPw==
+X-Received: by 2002:a62:6007:0:b029:3cd:e67a:ef9e with SMTP id u7-20020a6260070000b02903cde67aef9emr15879027pfb.72.1629393123587;
+        Thu, 19 Aug 2021 10:12:03 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id j23sm9035600pjn.12.2021.08.19.10.12.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Aug 2021 10:12:02 -0700 (PDT)
+Subject: Re: [PATCH v2] btrfs: fix rw device counting in
+ __btrfs_free_extra_devids
+To:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, anand.jain@oracle.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+References: <20210727071303.113876-1-desmondcheongzx@gmail.com>
+ <20210812103851.GC5047@twin.jikos.cz>
+ <3c48eec9-590c-4974-4026-f74cafa5ac48@gmail.com>
+ <20210812155032.GL5047@twin.jikos.cz>
+ <1e0aafb2-9e55-5f64-d347-1765de0560c5@gmail.com>
+ <20210813085137.GQ5047@twin.jikos.cz>
+ <a5690ae1-28ba-a933-6473-e9c1e5480f0c@gmail.com>
+ <20210813103032.GR5047@twin.jikos.cz>
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <89172356-335f-1ca3-d3a2-78fac7ef93fb@gmail.com>
+Date:   Fri, 20 Aug 2021 01:11:58 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210819145831.42uszc4lcsffebzu@amd.com>
+In-Reply-To: <20210813103032.GR5047@twin.jikos.cz>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 09:58:31AM -0500, Michael Roth wrote:
-> Not sure what you mean here. All the interfaces introduced here are used
-> by acpi.c. There is another helper added later (efi_bp_find_vendor_table())
-> in "enable SEV-SNP-validated CPUID in #VC handler", since it's not used
-> here by acpi.c.
+On 13/8/21 6:30 pm, David Sterba wrote:
+> On Fri, Aug 13, 2021 at 05:57:26PM +0800, Desmond Cheong Zhi Xi wrote:
+>> On 13/8/21 4:51 pm, David Sterba wrote:
+>>> On Fri, Aug 13, 2021 at 01:31:25AM +0800, Desmond Cheong Zhi Xi wrote:
+>>>> On 12/8/21 11:50 pm, David Sterba wrote:
+>>>>> On Thu, Aug 12, 2021 at 11:43:16PM +0800, Desmond Cheong Zhi Xi wrote:
+>>>>>> On 12/8/21 6:38 pm, David Sterba wrote:
+>>>>>>> On Tue, Jul 27, 2021 at 03:13:03PM +0800, Desmond Cheong Zhi Xi wrote:
+>>>>>>>> --- a/fs/btrfs/volumes.c
+>>>>>>>> +++ b/fs/btrfs/volumes.c
+>>>>>>>> @@ -1078,6 +1078,7 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
+>>>>>>>>      		if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
+>>>>>>>>      			list_del_init(&device->dev_alloc_list);
+>>>>>>>>      			clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
+>>>>>>>> +			fs_devices->rw_devices--;
+>>>>>>>>      		}
+>>>>>>>>      		list_del_init(&device->dev_list);
+>>>>>>>>      		fs_devices->num_devices--;
+>>>>>>>
+>>>>>>> I've hit a crash on master branch with stacktrace very similar to one
+>>>>>>> this bug was supposed to fix. It's a failed assertion on device close.
+>>>>>>> This patch was the last one to touch it and it matches some of the
+>>>>>>> keywords, namely the BTRFS_DEV_STATE_REPLACE_TGT bit that used to be in
+>>>>>>> the original patch but was not reinstated in your fix.
+>>>>>>>
+>>>>>>> I'm not sure how reproducible it is, right now I have only one instance
+>>>>>>> and am hunting another strange problem. They could be related.
+>>>>>>>
+>>>>>>> assertion failed: !test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state), in fs/btrfs/volumes.c:1150
+>>>>>>>
+>>>>>>> https://susepaste.org/view/raw/18223056 full log with other stacktraces,
+>>>>>>> possibly relatedg
+>>>>>>>
+>>>>>>
+>>>>>> Looking at the logs, it seems that a dev_replace was started, then
+>>>>>> suspended. But it wasn't canceled or resumed before the fs devices were
+>>>>>> closed.
+>>>>>>
+>>>>>> I'll investigate further, just throwing some observations out there.
+>>>>>
+>>>>> Thanks. I'm testing the patch revert, no crash after first loop, I'll
+>>>>> run a few more to be sure as it's not entirely reliable.
+>>>>>
+>>>>> Sending the revert is option of last resort as we're approaching end of
+>>>>> 5.14 dev cycle and the crash prevents testing (unlike the fuzzer
+>>>>> warning).
+>>>>>
+>>>>
+>>>> I might be missing something, so any thoughts would be appreciated. But
+>>>> I don't think the assertion in btrfs_close_one_device is correct.
+>>>>
+>>>>    From what I see, this crash happens when close_ctree is called while a
+>>>> dev_replace hasn't completed. In close_ctree, we suspend the
+>>>> dev_replace, but keep the replace target around so that we can resume
+>>>> the dev_replace procedure when we mount the root again. This is the call
+>>>> trace:
+>>>>
+>>>>      close_ctree():
+>>>>        btrfs_dev_replace_suspend_for_unmount();
+>>>>        btrfs_close_devices():
+>>>>          btrfs_close_fs_devices():
+>>>>            btrfs_close_one_device():
+>>>>              ASSERT(!test_bit(BTRFS_DEV_STATE_REPLACE_TGT,
+>>>> &device->dev_state));
+>>>>
+>>>> However, since the replace target sticks around, there is a device with
+>>>> BTRFS_DEV_STATE_REPLACE_TGT set, and we fail the assertion in
+>>>> btrfs_close_one_device.
+>>>>
+>>>> Two options I can think of:
+>>>>
+>>>> - We could remove the assertion.
+>>>>
+>>>> - Or we could clear the BTRFS_DEV_STATE_REPLACE_TGT bit in
+>>>> btrfs_dev_replace_suspend_for_unmount. This is fine since the bit is set
+>>>> again in btrfs_init_dev_replace if the dev_replace->replace_state is
+>>>> BTRFS_IOCTL_DEV_REPLACE_STATE_SUSPENDED. But this approach strikes me as
+>>>> a little odd because the device is still the replace target when
+>>>> mounting in the future.
+>>>
+>>> The option #2 does not sound safe because the TGT bit is checked in
+>>> several places where device list is queried for various reasons, even
+>>> without a mounted filesystem.
+>>>
+>>> Removing the assertion makes more sense but I'm still not convinced that
+>>> the this is expected/allowed state of a closed device.
+>>>
+>>
+>> Would it be better if we cleared the REPLACE_TGT bit only when closing
+>> the device where device->devid == BTRFS_DEV_REPLACE_DEVID?
+>>
+>> The first conditional in btrfs_close_one_device assumes that we can come
+>> across such a device. If we come across it, we should properly reset it.
+>>
+>> If other devices has this bit set, the ASSERT will still catch it and
+>> let us know something is wrong.
+> 
+> That sounds great.
+> 
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index 70f94b75f25a..a5afebb78ecf 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -1130,6 +1130,9 @@ static void btrfs_close_one_device(struct btrfs_device *device)
+>>                   fs_devices->rw_devices--;
+>>           }
+>>    
+>> +       if (device->devid == BTRFS_DEV_REPLACE_DEVID)
+>> +               clear_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state);
+>> +
+>>           if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))
+>>                   fs_devices->missing_devices--;
+> 
+> I'll do a few test rounds, thanks.
+> 
 
-Maybe I got confused by the amount of changes in a single patch. I'll
-try harder with your v5. :)
+Hi David,
 
-> There is the aforementioned efi_bp_find_vendor_table() that does the
-> simple iteration, but I wasn't sure how to build the "find one of these,
-> but this one is preferred" logic into it in a reasonable way.
-
-Instead of efi_foreach_conf_entry() you simply do a bog-down simple
-loop and each time you stop at a table, you examine it and overwrite
-pointers, if you've found something better.
-
-With "overwrite pointers" I mean you cache the pointers to those conf
-tables you iterate over and dig out so that you don't have to do it a
-second time. That is, *if* you need them a second time. I believe you
-call at least efi_bp_get_conf_table() twice... you get the idea.
-
-> I could just call it once for each of these GUIDs though. I was
-> hesitant to do so since it's less efficient than existing code, but if
-> it's worth it for the simplification then I'm all for it.
-
-Yeah, this is executed once during boot so I don't think you can make it
-more efficient than a single iteration over the config table blobs.
-
-I hope that makes more sense.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Just following up. Did that resolve the issue or is further 
+investigation needed?
