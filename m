@@ -2,156 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E523F1331
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 08:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF1A03F1335
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 08:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbhHSGSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 02:18:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230475AbhHSGSF (ORCPT
+        id S230477AbhHSGT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 02:19:58 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:41252
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229782AbhHSGT4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 02:18:05 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A9AC061796
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 23:17:29 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id fa24-20020a17090af0d8b0290178bfa69d97so4110895pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 23:17:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=Z7TQEkkTOfvT3y1VcK9cbeGmLxLBDuWce4oY9e31CIQ=;
-        b=n8Z7pceL3Q1hHrYhRGbE2Ft6ysYoV2T29GwsgsIk5zym7iZcje0CXVg1jI36aNnFP1
-         wEt31EiA2dUBQwlv5rK6Pb4jBRjUZnVnX9lq3yYWlZnsAiqoC84b2+sIg5qRcoOEikt2
-         Bl5OLXFHBLycojOK68FIhPW3b2fskqhF3vr/eyYOYKdL7QspG0UOJAgIVnJ/rUe4LZFr
-         9Mx+8O2v0d2rHrH3yazUPQGMQQQiYdzhDIVBgB1HMOdlKqueyQlS0Pa++oE7KDNseaKY
-         ZqQcskpZ4qIHBPun+Nz8BNcPrFRsCGUIgrdD9AWMNWaoX41LuxEow35zOBfD0rRFPHfn
-         o2nQ==
+        Thu, 19 Aug 2021 02:19:56 -0400
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com [209.85.218.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 8B5163F047
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 06:19:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629353959;
+        bh=qEtVTiJin9b0M1DkYv8DcnGnIW+RsIPC9ADG4dJnT4o=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=N3xhBs+49++GdAMSJ8xlhr5Xzp+Rr+aoUebyVTv2OTbwGRYj33wGlrWZxmlu0AIoj
+         8ffxay1E8CObjcUXT1mDCnStOo4ICq0Pq6ptz3n48oiVXkmYmPIawKC6gqOwkyeGjo
+         +9WDvScWkVndFdiZYT2I9FibWg7s6zXI5w3H81dEuz0ilkxj/tlq5Z80urnh2uV6mR
+         J4BOXDpMCH2c59ZbHRr290Htg2LhK8xGywB3V/2ubmRBYI7kLti26Ma03swvOu224k
+         ir8n7QaqWdgPvc68uzSI9mgH5Q0rC5IilVr/dnBqa7m24ufNO8g+PJYv2mbcZZH3RV
+         on2pgl6DQJ8+A==
+Received: by mail-ej1-f69.google.com with SMTP id j10-20020a17090686cab02905b86933b59dso1805276ejy.18
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 23:19:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=Z7TQEkkTOfvT3y1VcK9cbeGmLxLBDuWce4oY9e31CIQ=;
-        b=ojrMiI96+U3yzWFUDdd75K3UoYKHxlm0LBax9CiZfDdglv1TNUSoJuzy2PLS+J5dcA
-         Zdxg/2B5TnO87wg+leM6X6zJ/fZbj9qK3b94hRp4XQ/O8exIlet8T04OpQ59gZwFDqDT
-         5984etVoje+HWGc8gV9kf+3x9cufQLimvPTlgO3U3SLoezUvtbaarsb3cgzdbyr50zdU
-         YqK7p+RGlwQEZS7U3NY5qJicNgCuSIB+PsQt0ebvTee0dRwQmW/t+JDSMwPaVg+yn5Ff
-         GGjPuHpNWZqCCN3rubuQ2YM2O+hpqFVVyJf6I7tU5oN03gJFk6izbfpFyJUO+ekfUnba
-         /eFA==
-X-Gm-Message-State: AOAM533FZXXwFXJAa8J4TDq3ySeMSEoEMbLutor8Dwm4HCQwn5dcFaRE
-        Ej05nxNRiny2bMnJ291V/QWNGg==
-X-Google-Smtp-Source: ABdhPJwi8ECnFjz7ftlBUkQP1U01xvcbaFwYmCvSxRCVadF/ZCBCreA9Xq0KVJGpteNV1tSqbtF8Eg==
-X-Received: by 2002:a17:90a:ce88:: with SMTP id g8mr13456163pju.116.1629353849006;
-        Wed, 18 Aug 2021 23:17:29 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id r18sm2222724pgk.54.2021.08.18.23.16.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 23:16:53 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 11:46:17 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-Message-ID: <20210819061617.r4kuqxafjstrv3kt@vireshk-i7>
-References: <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
- <20210818045307.4brb6cafkh3adjth@vireshk-i7>
- <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
- <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
- <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
- <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
- <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
- <20210818091417.dvlnsxlgybdsn76x@vireshk-i7>
- <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
- <f1314a47-9e8b-58e1-7c3f-0afb1ec8e70a@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qEtVTiJin9b0M1DkYv8DcnGnIW+RsIPC9ADG4dJnT4o=;
+        b=JqcsCLuIZxagHGybiY/h0GhWNJyIkSic8D+pY+SvlG+I0qaq0LB1+s7jXzaP3u9IXv
+         iA88zPRSkG0iVy4QmLyaJTZVWqIzUlIm8mXynqqA3tS2upPokHSlkTyl79smMHcnkLaQ
+         MDLazaTkJZzKVb9mTjp0Rmhn9ZH95EpIjrOuF8v198+UnNlzYj5k9ly9COsBD+cIuxrY
+         4S5lljMOH9/1yi+GjmvtRce8J77YFfLKNBx2oOTjKVWWbjTJwGLGJV2maq03babWmYh9
+         3TFd76yp0zRWBDl/zqxzwghc5ea4lRQh3XH8NZ0wiX971nZ6q1o34mhWeHW8Qt+JMkrW
+         xF/g==
+X-Gm-Message-State: AOAM53055FiI5cBohwa8rCh42ZtNAK7hnQgipoDG6S9q74sA3X93hYiU
+        J+RyfnIWWPHD8THdnImfsbd7r9kZi8kI7Eoa6W3RjuKwcdDrwLgB34MiWc1vwOj5mX/2ZxlWofy
+        LjxfBHljbSPsdj+BtsAOhbfPo97gw/xjDI4QwEreubznD9gSI1tpJFn6TNg==
+X-Received: by 2002:a05:6402:b64:: with SMTP id cb4mr14429983edb.49.1629353959257;
+        Wed, 18 Aug 2021 23:19:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw6uek5wW3YjQA4vSSYLJiAy5IA1O6J/ytxuGPYxDhJKHP7TDdnXrrE69RuJ6b7u6FD00XjM9NEQEB7GNyNEXw=
+X-Received: by 2002:a05:6402:b64:: with SMTP id cb4mr14429958edb.49.1629353959017;
+ Wed, 18 Aug 2021 23:19:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f1314a47-9e8b-58e1-7c3f-0afb1ec8e70a@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <20210819054542.608745-1-kai.heng.feng@canonical.com> <b14bc147-d39c-6f55-cc0e-7b2de92d23b1@gmail.com>
+In-Reply-To: <b14bc147-d39c-6f55-cc0e-7b2de92d23b1@gmail.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Thu, 19 Aug 2021 14:19:07 +0800
+Message-ID: <CAAd53p5Fu+x9M0fAta4k-8mja4Bxybhcg9veut4v7TVFZrD_aQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 0/3] r8169: Implement dynamic ASPM mechanism
+ for recent 1.0/2.5Gbps Realtek NICs
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     nic_swsd <nic_swsd@realtek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-08-21, 18:55, Dmitry Osipenko wrote:
-> 18.08.2021 12:41, Ulf Hansson пишет:
-> 
-> Either way gives the equal result. The new callback allows to remove the
-> boilerplate dev_pm_opp_set_rate(clk_get_rate() code from the rpm-resume
-> of consumer devices, that's it.
+On Thu, Aug 19, 2021 at 2:08 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+>
+> On 19.08.2021 07:45, Kai-Heng Feng wrote:
+> > The latest Realtek vendor driver and its Windows driver implements a
+> > feature called "dynamic ASPM" which can improve performance on it's
+> > ethernet NICs.
+> >
+> This statement would need a proof. Which performance improvement
+> did you measure? And why should performance improve?
 
-It may not be equal, as dev_pm_opp_set_rate() may do additional stuff,
-now or in a later implementation. Currently it only does
-regulator_enable() as a special case, but it can be clk_enable() as
-well. Also, this tries to solve the problem in a tricky/hacky way,
-while all you wanted was to make the genpd aware of what the
-performance state should be.
+It means what patch 1/3 fixes...
 
-Your driver can break tomorrow if we started to do more stuff from
-this API at another time.
+> On mainline ASPM is disabled, therefore I don't think we can see
+> a performance improvement. More the opposite in the scenario
+> I described: If traffic starts and there's a congestion in the chip,
+> then it may take a second until ASPM gets disabled. This may hit
+> performance.
 
-> > dev_pm_opp_set_rate() is best called from consumer drivers, as they
-> > need to be in control.
-> >> What we need here is just configure. So something like this then:
-> The intent wasn't to use dev_pm_opp_set_rate() from
-> __genpd_dev_pm_attach(), but to set genpd->rpm_pstate in accordance to
-> the h/w configuration.
+OK. We can know if the 1 sec interval is enough once it's deployed in the wild.
 
-Right.
+>
+> > Heiner Kallweit pointed out the potential root cause can be that the
+> > buffer is to small for its ASPM exit latency.
+> >
+> > So bring the dynamic ASPM to r8169 so we can have both nice performance
+> > and powersaving at the same time.
+> >
+> > v2:
+> > https://lore.kernel.org/netdev/20210812155341.817031-1-kai.heng.feng@canonical.com/
+> >
+> > v1:
+> > https://lore.kernel.org/netdev/20210803152823.515849-1-kai.heng.feng@canonical.com/
+> >
+> > Kai-Heng Feng (3):
+> >   r8169: Implement dynamic ASPM mechanism
+> >   PCI/ASPM: Introduce a new helper to report ASPM support status
+> >   r8169: Enable ASPM for selected NICs
+> >
+> >  drivers/net/ethernet/realtek/r8169_main.c | 69 ++++++++++++++++++++---
+> >  drivers/pci/pcie/aspm.c                   | 11 ++++
+> >  include/linux/pci.h                       |  2 +
+> >  3 files changed, 74 insertions(+), 8 deletions(-)
+> >
+> This series is meant for your downstream kernel only, and posted here to
+> get feedback. Therefore it should be annotated as RFC, not that it gets
+> applied accidentally.
 
-> On Tegra we have a chain of PDs and it's not trivial to convert the
-> device's OPP into pstate because only the parent domain can translate
-> the required OPP.
+Noted. Will annotate in next version.
 
-The driver should just be required to make a call, and OPP/genpd core
-should return it a value. This is already done today while setting the
-pstate for a device. The same frameworks must be able to supply a
-value to be used for the device.
-
-> Viresh, please take a look at what I did in [1]. Maybe it could be done
-> in another way.
-
-I looked into this and looked like too much trouble. The
-implementation needs to be simple. I am not sure I understand all the
-problems you faced while doing that, would be better to start with a
-simpler implementation of get_performance_state() kind of API for
-genpd, after the domain is attached and its OPP table is initialized.
-
-Note, that the OPP table isn't required to be fully initialized for
-the device at this point, we can parse the DT as well if needed be.
-
--- 
-viresh
+Kai-Heng
