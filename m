@@ -2,151 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55ED43F1B41
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C37D23F1B4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240434AbhHSOKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 10:10:16 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:57696 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238385AbhHSOKO (ORCPT
+        id S240538AbhHSOLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 10:11:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240501AbhHSOLO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 10:10:14 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17JE9FoE071629;
-        Thu, 19 Aug 2021 09:09:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1629382155;
-        bh=uwn5s8WFWAJxAIMlEF0ntZ/7TmV8w7aPCcWjcaig714=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=JT6Weh/EKqM0MQhK8LBisilSpS5E2vAsxyBpMl8s5rOHkIrWDpcOJwGVT83fV5wH3
-         bZlgLclgh7WuGQ/LrWZWZFCOp4Az/owzR6jxSqIfGQMuvTOzmO1zZ8uICrhVMNqyY4
-         Al0AadtySRi+O1VKX/D3TSpO/aeW6//yFfd54LY8=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17JE9F3w060433
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 19 Aug 2021 09:09:15 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 19
- Aug 2021 09:09:15 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 19 Aug 2021 09:09:15 -0500
-Received: from [10.250.233.32] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17JE9BsK069201;
-        Thu, 19 Aug 2021 09:09:11 -0500
-Subject: Re: [PATCH v3 0/5] PCI: Add support for J7200 and AM64
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-CC:     Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tom Joseph <tjoseph@cadence.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <nadeem@cadence.com>
-References: <20210811123336.31357-1-kishon@ti.com>
- <a618e0af-d95f-8e25-5b86-eff7fd14d186@ti.com>
- <20210819134418.GB26966@lpieralisi>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <b70bd865-920d-f736-9e6c-a6bb4442476f@ti.com>
-Date:   Thu, 19 Aug 2021 19:39:10 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 19 Aug 2021 10:11:14 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EAF2C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 07:10:38 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id r19so9034049eds.13
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 07:10:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Rb9V42rg0n45GVH3GY2bVeX0F+8SMJocuuGI1FyjcmM=;
+        b=iJEPUU5oZEQ+HWwTgTCgLhFsbcZY/sN4h/IMNe1p8EeCOxcgf3JVciTGX87OqGRILz
+         Urxhw5a2EAGgRMcidl2dwJCCCNjUGG+3Aq90qboKf6+1WMDC1oxL1rZspWV1ngDaYwsV
+         SSO5y5R0ILHZz2TBbDnJjnbVGQnmK6+W9FW53lMoxbuOFnxeBiFz1jk3h8V4EIdyBR0y
+         N+u/wHUfjMg9Ibs9phlJMeMO9p/VILY8p8K6VKTmAN7+7nOwCJw4kPu2KNOjA4HOElnP
+         14V9a4ullK9qeLa87hC5WKNqfxQrOQAMCWlXZVYnTUrLieLB0auCQCaenqpPDW1tlikX
+         tE+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Rb9V42rg0n45GVH3GY2bVeX0F+8SMJocuuGI1FyjcmM=;
+        b=KtlX+sJ/NjtEn7FJm5xkCl+BEEiRsTn4BM3jv1ioTXTtwi+DYwYABmd+7VVz9KIBgg
+         Obr9Vcpat2roZLlTlnytqsiSXiTXxOvhZAOo/T8do6qhnw91GSufaiWwOcceoHqksFML
+         k+VOdhc+0S1aDD07MX/FMM1d8vtJxS/3CcvUrncqqgiGHMDOUXTJLDsVVijPJnA2sPbd
+         v7Keyfb6ghmX9vD3QSumzzjoRcQCt6HxLtJaTxzK9nd/iG/+yaF7+IxzMx+tcjm4kGCt
+         4tIHmjRr8r8giYC7UhklIMx13xWETBvtI58r5Se9TIG+k7sLdUDlpXfKDIuIw7TIauRk
+         JMYQ==
+X-Gm-Message-State: AOAM5332IhSaxHFXbjBmWUfapLrJzyDLDFnMnq7rjBPS4xtJkQkGeeZP
+        hDlfAWhDnUHnoUAWg1hg7glqhxVtOvAzDWUK1vvEsw==
+X-Google-Smtp-Source: ABdhPJwsG2az69sF2C7NBuTLTqeCC9h1NnsP0/piYeVTCMnzsFbdwVTCtw/GXuxcx6yC4CKvqxzNAm07Sn6//4vK+aU=
+X-Received: by 2002:a05:6402:1514:: with SMTP id f20mr16652377edw.17.1629382236918;
+ Thu, 19 Aug 2021 07:10:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210819134418.GB26966@lpieralisi>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210811025801.21597-1-yunfei.dong@mediatek.com>
+ <CAAEAJfDWOzCJxZFNtxeT7Cvr2pWbYrfz-YnA81sVNs-rM=8n4Q@mail.gmail.com> <1b79a67b703d2c894bc4d9458c760e082fc42958.camel@mediatek.com>
+In-Reply-To: <1b79a67b703d2c894bc4d9458c760e082fc42958.camel@mediatek.com>
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date:   Thu, 19 Aug 2021 11:10:25 -0300
+Message-ID: <CAAEAJfCTrKj9AFExN-L-TKww4E=us1VVh8LHtZ8Q0j_eaCD4Eg@mail.gmail.com>
+Subject: Re: [PATCH v5, 00/15] Using component framework to support multi
+ hardware decode
+To:     "yunfei.dong@mediatek.com" <yunfei.dong@mediatek.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        George Sun <george.sun@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lorenzo,
+On Thu, 19 Aug 2021 at 04:13, yunfei.dong@mediatek.com
+<yunfei.dong@mediatek.com> wrote:
+>
+> Hi Ezequiel,
+>
+> Thanks for your suggestion.
+>
+> On Wed, 2021-08-18 at 11:11 -0300, Ezequiel Garcia wrote:
+> > +danvet
+> >
+> > Hi,
+> >
+> > On Tue, 10 Aug 2021 at 23:58, Yunfei Dong <yunfei.dong@mediatek.com>
+> > wrote:
+> > >
+> > > This series adds support for multi hardware decode into mtk-vcodec,
+> > > by first
+> > > adding component framework to manage each hardware information:
+> > > interrupt,
+> > > clock, register bases and power. Secondly add core thread to deal
+> > > with core
+> > > hardware message, at the same time, add msg queue for different
+> > > hardware
+> > > share messages. Lastly, the architecture of different specs are not
+> > > the same,
+> > > using specs type to separate them.
+> > >
+> >
+> > I don't think it's a good idea to introduce the component API in the
+> > media subsystem. It doesn't seem to be maintained, IRC there's not
+> > even
+> > a maintainer for it, and it has some issues that were never
+> > addressed.
+> >
+> > It would be really important to avoid it. Is it really needed in the
+> > first place?
+> >
+> > Thanks,
+> > Ezequiel
+>
+> For there are many hardware need to use, mt8192 is three and mt8195 is
+> five. Maybe need more to be used in the feature.
+>
+> Each hardware has independent clk/power/iommu port/irq.
+> Use component interface in prob to get each component's information.
+> Just enable the hardware when need to use it, very convenient and
+> simple.
+>
+> I found that there are many modules use component to manage hardware
+> information, such as iommu and drm etc.
+>
 
-On 19/08/21 7:14 pm, Lorenzo Pieralisi wrote:
-> On Thu, Aug 19, 2021 at 06:12:54PM +0530, Kishon Vijay Abraham I wrote:
->> Hi Lorenzo,
->>
->> On 11/08/21 6:03 pm, Kishon Vijay Abraham I wrote:
->>> This series adds the compatible specific to J7200 and AM64 and
->>> applies the erratas and configuration specific to them.
->>>
->>> This series also includes Nadeem's patch that adds a quirk in
->>> Cadence driver which is used by J7200 [1].
->>>
->>> The DT binding for both J7200 and AM64 is already merged.
->>>
->>> v1 of the patch series can be found at [2]
->>> v2 of the patch series can be found at [3]
->>
->> Gentle ping on this series.
->>
->> I've dropped "misc: pci_endpoint_test: Do not request or allocate IRQs
->> in probe" [A] from the previous version of the series which you had
->> concerns with.
->>
->> [A] -> http://lore.kernel.org/r/02c1ddb7-539e-20a0-1bef-e10e76922a0e@ti.com
-> 
-> Understood. The question is, how did you solve the issue that was
-> forcing you to have that patch in place in the updated series.
+Many drivers support multiple hardware variants, where each variant
+has a different number of clocks or interrupts, see for instance
+struct hantro_variant which allows to expose different codec cores,
+some having both decoder/encoder, and some having just a decoder.
 
-That issue only prevents more than 5 pci-endpoint-test devices to be
-tested simultaneously.
+The component API is mostly used by DRM to aggregate independent
+subdevices (called components) into an aggregated driver.
 
-For the GIC ITS issue, I'm planning to post the workaround mentioned in
-the errata document.
+For instance, a DRM driver needs to glue together the HDMI, MIPI,
+and plany controller, or any other hardware arrangement where
+devices can be described independently.
 
-Errata ID #i2101 GIC: ITS Misbehavior
-(https://www.ti.com/lit/er/sprz455a/sprz455a.pdf).
+The component API may look simple but has some issues, it's not easy
+to debug, and can cause troubles if not used as expected [1].
+It's worth making sure you actually need a framework
+to glue different devices together.
 
-Also the GIC ITS issue is not present in J7200 and AM64 which this
-series is planning to address. It's present only in J721E and AM65.
+> Do you have any other suggestion for this architecture?
+>
 
-Thanks
-Kishon
+Looking at the different patchsets that are posted, it's not clear
+to me what exactly are the different architectures that you intend
+to support, can you some documentation which clarifies that?
 
-> 
-> Thanks,
-> Lorenzo
-> 
->>
->> Thanks
->> Kishon
->>
->>>
->>> Changes from v2:
->>> 1) Drop the patch that does not request or allocate IRQs in probe for
->>> J721E/AM654
->>> 2) Fix other minor comments given by Lorenzo
->>>
->>> Changes from v1:
->>> 1) As suggested by Bjorn, used unsigned int :1, instead of bool for
->>> structure members
->>> 2) Removed using unnecessary local variables and also fixed some
->>> code alignment
->>>
->>> [1] -> https://lore.kernel.org/r/20210528155626.21793-1-nadeem@cadence.com
->>> [2] -> https://lore.kernel.org/r/20210706105035.9915-1-kishon@ti.com
->>> [3] -> https://lore.kernel.org/r/20210803074932.19820-1-kishon@ti.com
->>>
->>> Kishon Vijay Abraham I (4):
->>>   PCI: cadence: Use bitfield for *quirk_retrain_flag* instead of bool
->>>   PCI: j721e: Add PCIe support for J7200
->>>   PCI: j721e: Add PCIe support for AM64
->>>   misc: pci_endpoint_test: Add deviceID for AM64 and J7200
->>>
->>> Nadeem Athani (1):
->>>   PCI: cadence: Add quirk flag to set minimum delay in LTSSM
->>>     Detect.Quiet state
->>>
->>>  drivers/misc/pci_endpoint_test.c              |  8 +++
->>>  drivers/pci/controller/cadence/pci-j721e.c    | 61 +++++++++++++++++--
->>>  .../pci/controller/cadence/pcie-cadence-ep.c  |  4 ++
->>>  .../controller/cadence/pcie-cadence-host.c    |  3 +
->>>  drivers/pci/controller/cadence/pcie-cadence.c | 16 +++++
->>>  drivers/pci/controller/cadence/pcie-cadence.h | 17 +++++-
->>>  6 files changed, 103 insertions(+), 6 deletions(-)
->>>
+Thanks,
+Ezequiel
+
+[1] https://patchwork.kernel.org/project/linux-rockchip/cover/20200120170602.3832-1-ezequiel@collabora.com/
