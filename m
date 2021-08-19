@@ -2,82 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF0853F1D5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 826043F1D5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240526AbhHSPzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 11:55:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240066AbhHSPzf (ORCPT
+        id S240066AbhHSP4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 11:56:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48970 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238753AbhHSPz6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 11:55:35 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 049AFC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 08:54:59 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id n1-20020a9d1e810000b0290514da4485e4so9310165otn.4
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 08:54:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=C8GgLD2AWU2t7GSbLiX658zk46KtoTZ/x17u8BwJCW8=;
-        b=kJ+Zc6q4hESs1rlxArXMdVZcJZZ4sGxrmkbGiLh4s+XF6edKCJvIC4YrLzXuozGCJS
-         VCGtk2hQOl2BPhDM5JaAm5o9zl7guecdn5n1VJ9I9d5+3XMuAQOWHHag93/IVb+tQOX0
-         6oGw9CZHgrkVIwx51avoYThAc/nWAYyJNIwoJzJttLdHnliDZjW9ObNnHK3M6MnJuvqq
-         /ubI8/SuulagQBeUd2G+Qv+tU/wfxiiXeAHbzH1F6lvtmTW46KDD4qG1fb1jni2/igCA
-         qqG8DhwrLQv/AWGSv2bkSy1e/HRC6udZj1qGTZ48O8DBz5sYiJlDlQEsVf0aIdE3D3FT
-         naWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=C8GgLD2AWU2t7GSbLiX658zk46KtoTZ/x17u8BwJCW8=;
-        b=j0TFSRfHo3ju8GLhCLS7JiPW3wFFjPOBJr48JdP0F/SBbrQLu5jD1YwVTXFXW6Ll9C
-         KkOeRs+C6wMNWYTSpXGatCtRhoGffeq/ZABHLK9Cxk/Nzl+Z1E/XGVJtreVBBvgrEBFh
-         Dmx7vUOCHjB6cJmLx9Y4LUlD9knx+Szi9xQ5w941RzDc/PfefGP8Z929ho9yygP96oNx
-         Esd/L4UeV1UpyyJeGMJJYs0FDcAOZ5AnLLcZOJGyJRAAo+rzPgUf+ZIvWkfOaS9E/uAF
-         qXPMv5q2K7FDKEky99NQakq/22+S9tiMACDIxYQg/dVkIO2v77ou456mLJxU0n8RNC6F
-         Eo+g==
-X-Gm-Message-State: AOAM533wkaenWpfcMiecm7mGCPc0NTwLG/BeoylWaktHAv7ZkOOw2mcV
-        8d5k/jrhPsdGTvV/kjLd0h8OIA==
-X-Google-Smtp-Source: ABdhPJxhDspJTH8XJzNvW0iH6VGxhAJXd6iAliUoB3do8NpMAjL1zVBPm1jhLn9i3J5+cGKbn/V8aA==
-X-Received: by 2002:a05:6830:4018:: with SMTP id h24mr12343159ots.161.1629388498365;
-        Thu, 19 Aug 2021 08:54:58 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id d6sm679867oiw.0.2021.08.19.08.54.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 08:54:58 -0700 (PDT)
-Subject: Re: [PATCH 1/1] io_uring: Add register support to other PAGE_SIZE
-To:     wangyangbo <wangyangbo@uniontech.com>
-Cc:     asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xiehuanjun@uniontech.com
-References: <24d10cda-445e-10f3-d249-dac254e199e0@kernel.dk>
- <20210819055657.27327-1-wangyangbo@uniontech.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <f0be35b2-4ecb-1ce6-203c-cec0fb9407b1@kernel.dk>
-Date:   Thu, 19 Aug 2021 09:54:57 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 19 Aug 2021 11:55:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629388521;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pmp4Kw5okIF5wwBbrjrJBs+O1tcqAHxdEgDPFxbvKOQ=;
+        b=Hq6mlylSKbjn4oPTOjyHNmeH2gB5jNcHZynbhJ+MhkUTbOjHset8vPUW+0YPmMEmDUzLTd
+        3iU2b5aYzrRpvdBewnTLncnnFNB8fHlgVZXUTlq5KzXfZMYbEq9DX4zkp13pNdvXG4CxVI
+        jJmxtCdgyGENCeGnnlaw9hXgmeqkRkg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-121-7RTWZI9gOJCZx4QlD894jA-1; Thu, 19 Aug 2021 11:55:20 -0400
+X-MC-Unique: 7RTWZI9gOJCZx4QlD894jA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3E6A087D573;
+        Thu, 19 Aug 2021 15:55:19 +0000 (UTC)
+Received: from redhat.com (unknown [10.15.80.136])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B7AF3421F;
+        Thu, 19 Aug 2021 15:55:11 +0000 (UTC)
+Date:   Thu, 19 Aug 2021 10:55:09 -0500
+From:   David Teigland <teigland@redhat.com>
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>
+Cc:     cluster-devel@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [BUG] fs: dlm: possible ABBA deadlock
+Message-ID: <20210819155509.GB21218@redhat.com>
+References: <79f8d302-f53f-3891-965a-bcb460ab15ca@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210819055657.27327-1-wangyangbo@uniontech.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <79f8d302-f53f-3891-965a-bcb460ab15ca@gmail.com>
+User-Agent: Mutt/1.8.3 (2017-05-23)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/18/21 11:56 PM, wangyangbo wrote:
-> Now allocated rsrc table uses PAGE_SIZE as the size of 2nd-level, and
-> accessing this table relies on each level index from fixed TABLE_SHIFT
-> (12 - 3) in 4k page case. In order to correctly work in non-4k page,
-> define TABLE_SHIFT as non-fixed (PAGE_SHIFT - shift of data) for
-> 2nd-level table entry number.
+On Thu, Aug 19, 2021 at 04:54:57PM +0800, Jia-Ju Bai wrote:
+> Hello,
+> 
+> My static analysis tool reports a possible ABBA deadlock in the dlm
+> filesystem in Linux 5.10:
+> 
+> dlm_recover_waiters_pre()
+>   mutex_lock(&ls->ls_waiters_mutex); --> line 5130
+>   recover_convert_waiter()
+>     _receive_convert_reply()
+>       lock_rsb()
+>         mutex_lock(&r->res_mutex); --> line 69
+> 
+> dlm_recover_waiters_post()
+>   lock_rsb()
+>     mutex_lock(&r->res_mutex); --> line 69
+>   mutex_lock(&ls->ls_waiters_mutex); --> line 5307
+> 
+> When dlm_recover_waiters_pre() and dlm_recover_waiters_post() are
+> concurrently executed, the deadlock can occur.
+> 
+> I am not quite sure whether this possible deadlock is real and how to fix it
+> if it is real.
+> Any feedback would be appreciated, thanks :)
 
-That's a lot better! Thanks, applied for 5.15.
-
--- 
-Jens Axboe
+They won't be concurrent, "pre" runs before recovery, and "post" is after.
+Dave
 
