@@ -2,69 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D203F2281
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 23:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 590233F2285
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 23:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235727AbhHSVx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 17:53:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235679AbhHSVx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 17:53:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83803610CF;
-        Thu, 19 Aug 2021 21:52:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629409971;
-        bh=hz4ToEn11O2DiQ3bxZuN8OGUGc7W0kXGCy2CxI1VoXk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Kng3t7djpyX+7l91WqS70uHZCu/kiK7US//O1ZdEu2yJXPi5OjnT3+XbL9fWqW2r3
-         oOOC5ZcT9UfiilbP2KUrF4yNg7i9OHkYJAj1PZQsJrfiybepbQty3tIGbK0ZGpJ6Bz
-         tFM+ElKP3lxRGvUcLGKvDMvY5QNiPbUv5faLcqjK4b1URCH207khCLwlVG1FWcVNxm
-         08Bo8t9l4DH9VHK0FxqtJWae5Q/6+K+rDJRbVyLWP1HBc8QrZnnhuQdQuw6ujpcNy9
-         R+unuj2iZ1hXq9uGmVXKn1QRpm2MpA1pjXSMFfSQpvLLxghk6Pef9X3pR9v8i3OvHh
-         S5plU2uqokfeQ==
-Received: by mail-ed1-f43.google.com with SMTP id v2so10927039edq.10;
-        Thu, 19 Aug 2021 14:52:51 -0700 (PDT)
-X-Gm-Message-State: AOAM530l54/Xx5Y3g6dEbojjVctSquG9FIwWKtpj45yR83FdF4voo60k
-        m7docZoi/MwfR+YGAXAveAf/BD0K74+aIX2y0g==
-X-Google-Smtp-Source: ABdhPJw0hq/j5YRbpD02wnMJhEDVCeMQ0sCrUH9AvIo9gZG8TCf7667Nb/WyMEJegfKzTCD/BF4SZP3zTCNMf4ZT1/A=
-X-Received: by 2002:a05:6402:104b:: with SMTP id e11mr18790051edu.62.1629409970123;
- Thu, 19 Aug 2021 14:52:50 -0700 (PDT)
+        id S235644AbhHSVx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 17:53:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232769AbhHSVx5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 17:53:57 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F4FCC061575;
+        Thu, 19 Aug 2021 14:53:20 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id y7so13903625ljp.3;
+        Thu, 19 Aug 2021 14:53:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Gh7P+bJgD4ftBn8Xyzyldousp27lYpH1a6zXj2KjV24=;
+        b=XZbj/Sdebgb0gcuT1OyWLtHFrLJTQj9LA+coAC9fb0pHjyxdCKO9C4w2Y5rI84fuId
+         QX1KgfEw+8IW3VdphwJ7fLI/nx2cVKKVWiwD6sMWoNTxyYvQxdUR0RGO8A79jADBooyx
+         tL6mYdbkri53XlFvnGOnik+xAExIWM5cCPD1T6uF5mUEPnY0QcP13dwzNDLAcDM4rn0b
+         zvO4DMwi5Mur1VoFrsenaICWSbP4Co/pPUBWdKiEW643ZP+xAhY3oRCvcm1VYZR4ER7O
+         RKve46kIY1+Q+kOQR1DNr5+ppQY+DVi4WYN5Nn4xBgTrwIPKsgpaIgh7AFveFI1tw8Kw
+         KnZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Gh7P+bJgD4ftBn8Xyzyldousp27lYpH1a6zXj2KjV24=;
+        b=C4fSV1P4EHYgIwFYYQyhC/WFS6q7BojvWpAsmfuIRKk6MsSm4ARknYtW4gHDoH/Vvo
+         OqsAyEXMb1dd8hOPIffu671rEFZeYOcrmLN9PiNn4ayxQxnYxH2ooO/CySISdwsEn3ZD
+         dVDyFG7hng8COZrLmVGxkjHFCac04/MHYfR6r3hs/SpQP9fviLjPxO5vW/rcrKyjsvz0
+         aXdnUwBlA6BxPgWho4xhU6DA7pe0jzUyXQg0d1Bpo14o653IAwCh9viXRSBGwmNVD1TZ
+         aSVtja92FARmbjwOUFLAUfm3hYQ3AxPu/dgHshc/x1EuRnpFYRsfyV9MSOzvwrz4GDeo
+         H4KA==
+X-Gm-Message-State: AOAM5326QIzOghG7BNBFKAR+FaTBVf/y9u3i3UpaUymlRPwXBq+CPi42
+        yaqoJaS4yWobq6hd3wGAYIE=
+X-Google-Smtp-Source: ABdhPJzTm68pE189pRq4MGEImt0mACD+8SqkCBSoHcqbpUBBeTYQqd6d49J7CZ4NhKj010k4o5ajFA==
+X-Received: by 2002:a2e:a713:: with SMTP id s19mr3835976lje.177.1629409998665;
+        Thu, 19 Aug 2021 14:53:18 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id b14sm364264ljr.111.2021.08.19.14.53.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 14:53:18 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 00:53:15 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: Re: [PATCH v2 3/6] fs/ntfs3: Use new api for mounting
+Message-ID: <20210819215315.uhst4ppwdbed65x7@kari-VirtualBox>
+References: <20210819002633.689831-1-kari.argillander@gmail.com>
+ <20210819002633.689831-4-kari.argillander@gmail.com>
 MIME-Version: 1.0
-References: <20210819101020.26368-1-krzysztof.kozlowski@canonical.com> <20210819101020.26368-2-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210819101020.26368-2-krzysztof.kozlowski@canonical.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 19 Aug 2021 16:52:38 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqK1dhwSKbmCbuaWtBWQH0e-+rdJaWkzfx5b_5vX0toAjg@mail.gmail.com>
-Message-ID: <CAL_JsqK1dhwSKbmCbuaWtBWQH0e-+rdJaWkzfx5b_5vX0toAjg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] dt-bindings: sound: rt1015p: correct indentation
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Dillon Min <dillon.minfei@gmail.com>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux-ALSA <alsa-devel@alsa-project.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210819002633.689831-4-kari.argillander@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 5:12 AM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> Use common enum instead of oneOf and correct indentation warning:
->   realtek,rt1015p.yaml:18:7: [warning] wrong indentation: expected 4 but found 6 (indentation)
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  .../devicetree/bindings/sound/realtek,rt1015p.yaml          | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+On Thu, Aug 19, 2021 at 03:26:30AM +0300, Kari Argillander wrote:
+> We have now new mount api as described in Documentation/filesystems. We
+> should use it as it gives us some benefits which are desribed here
+> lore.kernel.org/linux-fsdevel/159646178122.1784947.11705396571718464082.stgit@warthog.procyon.org.uk/
+> 
+> Nls loading is changed a to load with string. This did make code also
+> little cleaner.
+> 
+> Also try to use fsparam_flag_no as much as possible. This is just nice
+> little touch and is not mandatory but it should not make any harm. It
+> is just convenient that we can use example acl/noacl mount options.
+> 
+> Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
 
-Acked-by: Rob Herring <robh@kernel.org>
+I will send new patches when Komarov has take a look of these. I have
+found some bugs and how to improve things. Please take a look below my
+second comment.
+
+>  fs/ntfs3/super.c   | 392 +++++++++++++++++++++++----------------------
+
+> +static void ntfs_fs_free(struct fs_context *fc)
+> +{
+> +	struct ntfs_sb_info *sbi = fc->s_fs_info;
+> +
+> +	if (sbi)
+> +		put_ntfs(sbi);
+> +}
+> +
+> +static const struct fs_context_operations ntfs_context_ops = {
+> +	.parse_param	= ntfs_fs_parse_param,
+> +	.get_tree	= ntfs_fs_get_tree,
+> +	.reconfigure	= ntfs_fs_reconfigure,
+> +	.free		= ntfs_fs_free,
+> +};
+> +
+> +static int ntfs_init_fs_context(struct fs_context *fc)
+>  {
+> -	return mount_bdev(fs_type, flags, dev_name, data, ntfs_fill_super);
+> +	struct ntfs_sb_info *sbi;
+> +
+> +	sbi = ntfs_zalloc(sizeof(struct ntfs_sb_info));
+> +	if (!sbi)
+> +		return -ENOMEM;
+> +
+> +	/* Default options */
+> +	sbi->options.fs_uid = current_uid();
+> +	sbi->options.fs_gid = current_gid();
+> +	sbi->options.fs_fmask_inv = ~current_umask();
+> +	sbi->options.fs_dmask_inv = ~current_umask();
+> +
+> +	fc->s_fs_info = sbi;
+> +	fc->ops = &ntfs_context_ops;
+> +
+> +	return 0;
+>  }
+ 
+In this code I did not like that we make whole new sbi everytime.
+Especially because we do zalloc. So when we regonfigure then new sbi
+is allocated just for options. I notice that example xfs does allocate
+their "sbi" everytime. Then I notice that example squashfs allocate
+just mount options.
+
+I have impression that we should allocate sbi if it first time so I
+did "between code". I would like to do things like they are intended
+with api so can Christoph comment that is this "right" thing to do
+and is there any draw backs which I should know.
+
+static void ntfs_fs_free(struct fs_context *fc)
+{
+	struct ntfs_mount_options *opts = fc->fs_private;
+	struct ntfs_sb_info *sbi = fc->s_fs_info;
+
+	if (sbi)
+		put_ntfs(sbi);
+
+	if (opts)
+		clear_mount_options(opts);
+}
+
+static int ntfs_init_fs_context(struct fs_context *fc)
+{
+	struct ntfs_mount_options *opts;
+	struct ntfs_sb_info *sbi = NULL;
+
+	fc->ops = &ntfs_context_ops;
+
+	opts = ntfs_zalloc(sizeof(struct ntfs_mount_options));
+	if (!opts)
+		return -ENOMEM;
+
+	/* Default options. */
+	opts->fs_uid = current_uid();
+	opts->fs_gid = current_gid();
+	opts->fs_fmask_inv = ~current_umask();
+	opts->fs_dmask_inv = ~current_umask();
+
+	fc->fs_private = opts;
+
+	/* No need to initialize sbi if we just reconf. */
+	if (fc->purpose == FS_CONTEXT_FOR_RECONFIGURE)
+		return 0;
+
+	sbi = ntfs_zalloc(sizeof(struct ntfs_sb_info));
+	if (!sbi) {
+		ntfs_free(opts);
+		return -ENOMEM;
+	}
+
+	mutex_init(&sbi->compress.mtx_lznt);
+#ifdef CONFIG_NTFS3_LZX_XPRESS
+	mutex_init(&sbi->compress.mtx_xpress);
+	mutex_init(&sbi->compress.mtx_lzx);
+#endif
+
+	sbi->options = opts;
+	fc->s_fs_info = sbi;
+
+	return 0;
+}
