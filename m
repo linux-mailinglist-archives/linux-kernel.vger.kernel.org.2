@@ -2,149 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D76D3F2110
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 21:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E27D13F2114
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 21:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234706AbhHSTxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 15:53:15 -0400
-Received: from mail-io1-f42.google.com ([209.85.166.42]:39441 "EHLO
-        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233792AbhHSTxO (ORCPT
+        id S234866AbhHSTxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 15:53:45 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:45923 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S231294AbhHSTxi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 15:53:14 -0400
-Received: by mail-io1-f42.google.com with SMTP id a21so9241332ioq.6;
-        Thu, 19 Aug 2021 12:52:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yYuu4lI5p7DoBEaNzy386yfHwqBF6DSycUzLzLrgD2s=;
-        b=FPIlJITyl8PTEG88QMniDnGFq4psg9paW/jju+NQVgtRFoKB2Y8pyiDfL9VwV7HdIQ
-         ZTmxsvQPjqJ5UmGIcw8j8Qhjsi505vCVpc8bOBAPX8hHcw86GevrpCzbOQGCjaXVylXa
-         7WHv076E9RH+2HjmgeOVN+caWKkaz4JK41zqExOsq1OyGilr+Simss14pLYYXKC8JRRe
-         jFJh6+ZLHPzQl5Zth5L+tMIbpOPyVJ68B55vngooy5ke5bgHaQdwP4WnqH3s7E8SWcqG
-         aDg9HCRatrinoF5zkm0GTepcUngMdYv4e4qbN/rsFP19zVRNND33XwVCIL4cYBS8sJiY
-         Sqzw==
-X-Gm-Message-State: AOAM532otfIee+JxzvjNOnawrFvauN5FS9SCCRQTElbWUjzTKuP9OaiG
-        HiSILmFIngrBLKcbsi7eFHQ=
-X-Google-Smtp-Source: ABdhPJzKPCtxfgk8QGIZPlCl13lAIFcOthcP+uQDDChZM8swSZ8vicFNGoNNuepW0cr02WRzyQO90A==
-X-Received: by 2002:a05:6602:2219:: with SMTP id n25mr12516872ion.185.1629402757172;
-        Thu, 19 Aug 2021 12:52:37 -0700 (PDT)
-Received: from [192.168.1.109] ([213.87.152.233])
-        by smtp.gmail.com with ESMTPSA id x1sm2162535ilg.33.2021.08.19.12.52.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 12:52:36 -0700 (PDT)
-Subject: Re: [RFC PATCH 1/5] checkpatch: improve handling of revert commits
-To:     Joe Perches <joe@perches.com>, linux-kselftest@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, Jiri Kosina <jkosina@suse.cz>,
-        Willy Tarreau <w@1wt.eu>
-References: <20210818154646.925351-1-efremov@linux.com>
- <20210818154646.925351-2-efremov@linux.com>
- <cc5801790fea258e20fa6b7e26de7806ae8e0dda.camel@perches.com>
- <3d347d4b-1576-754f-8633-ba6084cc0661@linux.com>
- <23c8ebaa0921d5597df9fc1d6cbbcc4f354f80c5.camel@perches.com>
-From:   Denis Efremov <efremov@linux.com>
-Message-ID: <c31b2007-26a9-34e0-8c9a-8e11a00ce69f@linux.com>
-Date:   Thu, 19 Aug 2021 22:52:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 19 Aug 2021 15:53:38 -0400
+Received: (qmail 10514 invoked by uid 1000); 19 Aug 2021 15:53:00 -0400
+Date:   Thu, 19 Aug 2021 15:53:00 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     syzbot <syzbot+9b57a46bf1801ce2a2ca@syzkaller.appspotmail.com>
+Cc:     benjamin.tissoires@redhat.com, jikos@kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, mkubecek@suse.cz,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] WARNING in hid_submit_ctrl/usb_submit_urb
+Message-ID: <20210819195300.GA8613@rowland.harvard.edu>
+References: <20210819152626.GD228422@rowland.harvard.edu>
+ <00000000000009e24705c9ecf9b3@google.com>
 MIME-Version: 1.0
-In-Reply-To: <23c8ebaa0921d5597df9fc1d6cbbcc4f354f80c5.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00000000000009e24705c9ecf9b3@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 8/19/21 12:22 AM, Joe Perches wrote:
-> Hey Denis:
+On Thu, Aug 19, 2021 at 10:35:11AM -0700, syzbot wrote:
+> Hello,
 > 
-> Try this one please and let me know what you think...
-
-Looks good to me. Couple of nitpicks below
-
+> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+> WARNING in hid_submit_ctrl/usb_submit_urb
 > 
-> ---
->  scripts/checkpatch.pl | 31 +++++++++++++------------------
->  1 file changed, 13 insertions(+), 18 deletions(-)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 161ce7fe5d1e5..4e2e79eff9b8c 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -3196,26 +3196,21 @@ sub process {
->  				$orig_commit = lc($1);
->  			}
->  
-> -			$short = 0 if ($line =~ /\bcommit\s+[0-9a-f]{12,40}/i);
-> -			$long = 1 if ($line =~ /\bcommit\s+[0-9a-f]{41,}/i);
-> -			$space = 0 if ($line =~ /\bcommit [0-9a-f]/i);
-> -			$case = 0 if ($line =~ /\b[Cc]ommit\s+[0-9a-f]{5,40}[^A-F]/);
-> -			if ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("([^"]+)"\)/i) {
-> -				$orig_desc = $1;
-> -				$hasparens = 1;
-> -			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s*$/i &&
-> -				 defined $rawlines[$linenr] &&
-> -				 $rawlines[$linenr] =~ /^\s*\("([^"]+)"\)/) {
-> -				$orig_desc = $1;
-> -				$hasparens = 1;
-> -			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("[^"]+$/i &&
-> -				 defined $rawlines[$linenr] &&
-> -				 $rawlines[$linenr] =~ /^\s*[^"]+"\)/) {
-> -				$line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("([^"]+)$/i;
-> +			my $input = $line;
-> +			for (my $n = 0; $n < 2; $n++) {
-> +				$input .= " $rawlines[$linenr + $n]" if ($#lines >= $linenr + $n);
-> +			}
-> +
-> +			$short = 0 if ($input =~ /\bcommit\s+[0-9a-f]{12,40}/i);
-> +			$long = 1 if ($input =~ /\bcommit\s+[0-9a-f]{41,}/i);
-> +			$space = 0 if ($input =~ /\bcommit [0-9a-f]/i);
-> +			$case = 0 if ($input =~ /\b[Cc]ommit\s+[0-9a-f]{5,40}[^A-F]/);
-> +			if ($input =~ /\bcommit\s+[0-9a-f]{5,}\s+($balanced_parens)/i) {
->  				$orig_desc = $1;
-> -				$rawlines[$linenr] =~ /^\s*([^"]+)"\)/;
-> -				$orig_desc .= " " . $1;
->  				$hasparens = 1;
-> +				# Always strip leading/trailing parens then double quotes if existing
-> +				$orig_desc = substr($orig_desc, 1, -1);
-> +				$orig_desc = substr($orig_desc, 1, -1) if ($orig_desc =~ /^".*"$/);
+> cm6533_jd 0003:0D8C:0022.0001: submit_ctrl: maxpacket 64 len 0 padlen 0
+> ------------[ cut here ]------------
+> usb 1-1: BOGUS control dir, pipe 80000280 doesn't match bRequestType a1
 
-Why do you want to add "if ($orig_desc =~ /^".*"$/);" here? and not just substr($orig_desc, 2, -2);?
+Ah.   The padding code doesn't add anything if the length is 
+already a multiple of the maxpacket value, and of course 0 is such 
+a multiple.
 
->  			}
->  
->  			($id, $description) = git_commit_info($orig_commit,
-> 
+The following simplified variant of Michal's patch should fix the 
+problem.
 
-In your previous patch with '.*?' you added a branch to allow also newlines between commit and shas:
-```
-commit
-c3f157259438 (Revert "floppy: reintroduce O_NDELAY fix")
-```
+Alan Stern
 
-Maybe something like this will work (adding a last word from a prevline if line doesn't start from
-commit)
-+                       my $input = $line;
-                        if ($line =~ /\b(c)ommit\s+([0-9a-f]{5,})\b/i) {
-                                $init_char = $1;
-                                $orig_commit = lc($2);
-                        } elsif ($line =~ /\b([0-9a-f]{12,40})\b/i) {
-                                $orig_commit = lc($1);
-+                               $prevline =~ /(\w+)$/;
-+                               $line = $1 . " " . $prevline;
-                        }
+#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 794c7931a242
+
+Index: usb-devel/drivers/hid/usbhid/hid-core.c
+===================================================================
+--- usb-devel.orig/drivers/hid/usbhid/hid-core.c
++++ usb-devel/drivers/hid/usbhid/hid-core.c
+@@ -377,27 +377,23 @@ static int hid_submit_ctrl(struct hid_de
+ 	len = hid_report_len(report);
+ 	if (dir == USB_DIR_OUT) {
+ 		usbhid->urbctrl->pipe = usb_sndctrlpipe(hid_to_usb_dev(hid), 0);
+-		usbhid->urbctrl->transfer_buffer_length = len;
+ 		if (raw_report) {
+ 			memcpy(usbhid->ctrlbuf, raw_report, len);
+ 			kfree(raw_report);
+ 			usbhid->ctrl[usbhid->ctrltail].raw_report = NULL;
+ 		}
+ 	} else {
+-		int maxpacket, padlen;
++		int maxpacket;
  
--                       my $input = $line;
-                        for (my $n = 0; $n < 2; $n++) {
-                                $input .= " $rawlines[$linenr + $n]" if ($#lines >= $linenr + $n);
-                        }
-
-Thanks,
-Denis
-
+ 		usbhid->urbctrl->pipe = usb_rcvctrlpipe(hid_to_usb_dev(hid), 0);
+ 		maxpacket = usb_maxpacket(hid_to_usb_dev(hid),
+ 					  usbhid->urbctrl->pipe, 0);
+-		if (maxpacket > 0) {
+-			padlen = DIV_ROUND_UP(len, maxpacket);
+-			padlen *= maxpacket;
+-			if (padlen > usbhid->bufsize)
+-				padlen = usbhid->bufsize;
+-		} else
+-			padlen = 0;
+-		usbhid->urbctrl->transfer_buffer_length = padlen;
++		len += (len == 0);	/* Don't allow 0-length reports */
++		len = round_up(len, maxpacket);
++		if (len > usbhid->bufsize)
++			len = usbhid->bufsize;
+ 	}
++	usbhid->urbctrl->transfer_buffer_length = len;
+ 	usbhid->urbctrl->dev = hid_to_usb_dev(hid);
+ 
+ 	usbhid->cr->bRequestType = USB_TYPE_CLASS | USB_RECIP_INTERFACE | dir;
