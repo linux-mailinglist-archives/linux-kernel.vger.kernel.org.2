@@ -2,144 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 351FA3F1404
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:06:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FAE63F1405
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232003AbhHSHGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 03:06:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52596 "EHLO
+        id S232039AbhHSHID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 03:08:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231733AbhHSHGv (ORCPT
+        with ESMTP id S231426AbhHSHH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 03:06:51 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95DFEC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 00:06:15 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id k14so4996520pga.13
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 00:06:15 -0700 (PDT)
+        Thu, 19 Aug 2021 03:07:59 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAEA7C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 00:07:23 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id u3so10752964ejz.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 00:07:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=d24so6mNChjsewh7oprUNrIXD8v7FslbdYVxKPyqYXE=;
-        b=DyLqmt9LUhYdSkTem3sk80Ub972E9Yc34wRhRboTlhx4Wi197NhVlo9UIczj48j3G/
-         T8LhjLSvY9bLxUXt5J8rfqL9ww45Z/xfGnuHCc+vO85k9hAriU/EMv40HMdb9qspahzo
-         S2EfzmOod7IkH20hhWfU+uUep+/Q/ov0rdSZc=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=e4OwX74q04U3Z64KJiTep2sFvtc+gcgTGZYkPI+IqrI=;
+        b=XYpAm1TDfcahj17G3zDPV13rG/lwi0wRw+zNG6iNmaZaEJmnTxw/YN63HmdUIeXWe+
+         memsdOb1/I1LbtuYTGoBiBMc5G3eex6PVOs5kO0BlIumEKc5WgxJ8jwcRJzxWDP9Gkxz
+         WuCu3cWHGiIG8dAl6J8++KiNQQbuZpLfMkUPx4VhcN+vYoYkGsKyPT8tgm7vY8a8fnOj
+         s7mAL4er5lSfmWwf8Z6VVdhKAPL7Ag/zgPzBVw3Sa3w9JjEszWg6iuupLX2UhUDz5uHb
+         dsAlt8TcbzmdpAp2RqN7ciGAZXd4FteNI3Cm81NoUyxVoGEB1BZj3bfB6odTkUqjFsoy
+         bNVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=d24so6mNChjsewh7oprUNrIXD8v7FslbdYVxKPyqYXE=;
-        b=bYYZaX4lHID47yhsrXRHqYQl5260us0/wJYst7tvjB3bxlrwugFa+BfxL399Xngxny
-         9nN4NARqUkG6ZQhx/KbaeWDm3+/JA48EistBy05LX2DfzhJBbl09fEhI+fFoCiw3W9iL
-         P0nMwvtMcTPD1kuyxJ6XPBx8GaxhjvQGePctlAh3N1VLsALLAA0etUSK9u9XMocWUMf2
-         nBwFBoZLjuWnj4+IG2K5Aq6V2T2PbtZA9J2jpsdemROMEgvbymo2QcUT1UnldsOm+8Vf
-         8fJTKN6t5o4QjZpdUZh3KNv0sPCIc8wg9E9YbdDcpHDOn/E6BUREXRgkBP3TTaaFQLAO
-         rUyQ==
-X-Gm-Message-State: AOAM532KaaVgU0XqRvgoy07kqdtqXy1rbugyUNpkP6fyzFKU31NY8J3V
-        003bQQa2JTsHilNkDfAXFgXpsg==
-X-Google-Smtp-Source: ABdhPJx1+T7gxYGQvh03cW7Q6zygQHgK4Kd6rH9nkFHFAtaDVXPPqWIrIytEky+POIK2WoZyqkUhwg==
-X-Received: by 2002:a05:6a00:1a4f:b0:3e2:1f86:3235 with SMTP id h15-20020a056a001a4f00b003e21f863235mr13086054pfv.26.1629356775079;
-        Thu, 19 Aug 2021 00:06:15 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a8sm2027703pfo.79.2021.08.19.00.06.14
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=e4OwX74q04U3Z64KJiTep2sFvtc+gcgTGZYkPI+IqrI=;
+        b=Hl/E6a7dTEIcWc4/ZLACI4N/u22fB9T6T2kaXI6czliDBlmTG8JkTxwNP/OHKR7tZV
+         Z+COR44pBkyHHo9pYFdxrKWNJzHCXC2IBxZ1+7gaDLU6lGUZcxcfSMd/31rhZ+MUHPlb
+         64ppHeW2ue++lS83dms3dyutdnc00kz4BMabWDg6XAB529GxYfU92Ko73cX4iImpeIxk
+         tExskWlLKNCc//FW4UJmddy+2eyeazcnBdtTSiOqLyLZb9WbdAdAbt5KeGisapWzUhtG
+         wE8JHZmD7TB/po8mBwokJMAL+Ab0lxJJaDTZtjnsoWhk5Ct43LuEgLkeV1pBuPFE0EKj
+         R49Q==
+X-Gm-Message-State: AOAM532x4Nk9JP7jkzq01VJgN3YT6p+IINhBVCNy9lfZSFg9Ao8Xsb6X
+        R1tPKR2DJmkiMO+/0hSEzc4=
+X-Google-Smtp-Source: ABdhPJxKHzB2gzrDkRztDR+AfUQswsotL6A7IMyAynCQCLHUaNAbpJT1CIhl3DrYABQYItou95nZJw==
+X-Received: by 2002:a17:906:779a:: with SMTP id s26mr14364159ejm.106.1629356842416;
+        Thu, 19 Aug 2021 00:07:22 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
+        by smtp.gmail.com with ESMTPSA id q6sm826752ejm.106.2021.08.19.00.07.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 00:06:14 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 00:06:13 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, Joe Perches <joe@perches.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>, linux-mm@kvack.org,
-        linux-kbuild@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 1/7] Compiler Attributes: Add __alloc_size() for
- better bounds checking
-Message-ID: <202108190003.37FF2F1D7@keescook>
-References: <20210818214021.2476230-1-keescook@chromium.org>
- <20210818214021.2476230-2-keescook@chromium.org>
- <20210818161912.f14722707e06de1f046e948d@linux-foundation.org>
+        Thu, 19 Aug 2021 00:07:21 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: r8188eu: Remove _enter/_exit_critical_mutex()
+Date:   Thu, 19 Aug 2021 09:07:20 +0200
+Message-ID: <4394431.3q0Da8apZE@localhost.localdomain>
+In-Reply-To: <YR36fT6bpiVoo2lM@kroah.com>
+References: <20210819060837.23983-1-fmdefrancesco@gmail.com> <YR36fT6bpiVoo2lM@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818161912.f14722707e06de1f046e948d@linux-foundation.org>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 04:19:12PM -0700, Andrew Morton wrote:
-> On Wed, 18 Aug 2021 14:40:15 -0700 Kees Cook <keescook@chromium.org> wrote:
-> 
-> > GCC and Clang can use the "alloc_size" attribute to better inform the
-> > results of __builtin_object_size() (for compile-time constant values).
-> > Clang can additionally use alloc_size to inform the results of
-> > __builtin_dynamic_object_size() (for run-time values).
+On Thursday, August 19, 2021 8:30:21 AM CEST Greg Kroah-Hartman wrote:
+> On Thu, Aug 19, 2021 at 08:08:37AM +0200, Fabio M. De Francesco wrote:
+> > Remove _enter_critical_mutex() and _exit_critical_mutex(). They are
+> > unnecessary wrappers, respectively to mutex_lock_interruptible and to
+> > mutex_unlock(). They also have an odd interface that takes an unused
+> > second parameter "unsigned long *pirqL".
 > > 
-> > Because GCC sees the frequent use of struct_size() as an allocator size
-> > argument, and notices it can return SIZE_MAX (the overflow indication),
-> > it complains about these call sites may overflow (since SIZE_MAX is
-> > greater than the default -Walloc-size-larger-than=PTRDIFF_MAX). This
-> > isn't helpful since we already know a SIZE_MAX will be caught at run-time
-> > (this was an intentional design). Instead, just disable this check as
-> > it is both a false positive and redundant. (Clang does not have this
-> > warning option.)
+> > Use directly the in-kernel API; check and manage the return value of
+> > mutex_lock_interruptible().
 > > 
-> > ...
-> >
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -1078,9 +1078,13 @@ KBUILD_CFLAGS += $(call cc-disable-warning, stringop-overflow)
-> >  # Another good warning that we'll want to enable eventually
-> >  KBUILD_CFLAGS += $(call cc-disable-warning, restrict)
+> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > ---
+> >  drivers/staging/r8188eu/core/rtw_mlme_ext.c     |  5 +++--
+> >  drivers/staging/r8188eu/hal/usb_ops_linux.c     |  7 +++++--
+> >  drivers/staging/r8188eu/include/osdep_service.h | 13 -------------
+> >  drivers/staging/r8188eu/os_dep/os_intfs.c       |  5 +++--
+> >  4 files changed, 11 insertions(+), 19 deletions(-)
+> > 
+> > diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+> > index f6ee72d5af09..484083468ebb 100644
+> > --- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+> > +++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+> > @@ -4358,7 +4358,8 @@ s32 dump_mgntframe_and_wait_ack(struct adapter *padapter, struct xmit_frame *pmg
+> >  	if (padapter->bSurpriseRemoved || padapter->bDriverStopped)
+> >  		return -1;
 > >  
-> > -# Enabled with W=2, disabled by default as noisy
-> >  ifdef CONFIG_CC_IS_GCC
-> > +# Enabled with W=2, disabled by default as noisy
-> >  KBUILD_CFLAGS += -Wno-maybe-uninitialized
-> > +
-> > +# The allocators already balk at large sizes, so silence the compiler
-> > +# warnings for bounds checks involving those possible values.
-> > +KBUILD_CFLAGS += -Wno-alloc-size-larger-than
-> >  endif
-> >  
-> >  # disable invalid "can't wrap" optimizations for signed / pointers
+> > -	_enter_critical_mutex(&pxmitpriv->ack_tx_mutex, NULL);
+> > +	if (mutex_lock_interruptible(&pxmitpriv->ack_tx_mutex))
+> > +		return -EINTR;
 > 
-> Makefile has changed.  I did this:
+> But the code never would return this value if the lock function returned
+> an error.  Why do that here now?
+
+I read from the documentation that "[mutex_lock_interruptible()] Return: 0 if 
+the lock was successfully acquired or -EINTR if a signal arrived.". 
+
+After reading that, I thought that if I got -EINTR I should return it. Shouldn't I?
+
+Now I've just checked its usage pattern in another file where we have exactly 12
+times the same management of the error (the example I'm talking about is in
+drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c):
+
+"if (mutex_lock_interruptible(&instance->vchiq_mutex))
+                return -EINTR;".
+
+Unless you mean that I should return the "ret" variable, which is already set to 
+"_FAIL", I am really confused. Please, can you further elaborate what I'm doing 
+wrong?
+
+Thanks,
+
+Fabio
+
+
+
+ 
+  
 > 
-> --- a/Makefile~compiler-attributes-add-__alloc_size-for-better-bounds-checking
-> +++ a/Makefile
-> @@ -1003,6 +1003,12 @@ KBUILD_CFLAGS += $(call cc-disable-warni
->  # Enabled with W=2, disabled by default as noisy
->  KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
->  
-> +ifdef CONFIG_CC_IS_GCC
-> +# The allocators already balk at large sizes, so silence the compiler
-> +# warnings for bounds checks involving those possible values.
-> +KBUILD_CFLAGS += -Wno-alloc-size-larger-than
-> +endif
-> +
->  # disable invalid "can't wrap" optimizations for signed / pointers
->  KBUILD_CFLAGS	+= -fno-strict-overflow
+> thanks,
+> 
+> greg k-h
+> 
 
-Oh, er, where did "Makefile: remove stale cc-option checks" go? Ah, I
-see now:
-https://lore.kernel.org/mm-commits/20210814215814.W_qqW%25akpm@linux-foundation.org/T/#u
 
-Looks like I just happened to pick the wrong linux-next. ;)
 
-Thanks for the fix-up!
 
--- 
-Kees Cook
