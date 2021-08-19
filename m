@@ -2,162 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6300F3F1230
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 06:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAA93F1238
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 06:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229559AbhHSEG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 00:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhHSEG1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 00:06:27 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E3CC061764;
-        Wed, 18 Aug 2021 21:05:51 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S229698AbhHSEKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 00:10:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47748 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229529AbhHSEKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 00:10:43 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gqrlt6mn7z9t0T;
-        Thu, 19 Aug 2021 14:05:46 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629345947;
-        bh=oHNkM81S5CrlSrOU/9DU4r+0TWJTGhKDC6cl+R4nFfE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=h0TWi4KDudbGqZ8bsUfMlTuuyRmV6jjBdxENTn9m3IuwxYGfiLmeJY61PpHAzSC84
-         egb9m+8n+saRYaJ9Fjbc4e92mj5pbU1nelwrIpyz1R2hNVsigum1i+A8UsCGuBueHz
-         +1lWBy9j5Ec5yndVJbhtzt6xAWc3WtqkO4AtWEL4WyRiQP7+r9CSDxGNRH2qilhPNa
-         G8ecIgbU5fvr7ZYPwg/ciKpvU3D/R+lgb1oxP56T0nm5Q4bBi1ku0wy5+6LzTw6S6w
-         VB/zgyGF9utk4xwEQsB9JlDaxtBo++oskXYqF5OMGozGWcCEuOSav1UROPqex012jG
-         0ydErujLGr/aw==
-Date:   Thu, 19 Aug 2021 14:05:44 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christoffer Dall <cdall@cs.columbia.edu>,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the kvm-arm tree with the arm64 tree
-Message-ID: <20210819140544.5acbcf21@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id C2EBB610FA;
+        Thu, 19 Aug 2021 04:10:06 +0000 (UTC)
+Date:   Thu, 19 Aug 2021 00:10:05 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v6 7/7] tracing: Add a probe that attaches to trace
+ events
+Message-ID: <20210819001005.712e542a@oasis.local.home>
+In-Reply-To: <20210819000342.615e68c7@oasis.local.home>
+References: <20210817034255.421910614@goodmis.org>
+        <20210817035028.190000494@goodmis.org>
+        <20210819112920.a2fbfdc812967c2743953fd0@kernel.org>
+        <20210818233757.686cd7c8@oasis.local.home>
+        <20210819125652.bb6b980cf0ef04e0158bc564@kernel.org>
+        <20210819000342.615e68c7@oasis.local.home>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/PbL=j7Q/zeiTsu6TxWLYGSB";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/PbL=j7Q/zeiTsu6TxWLYGSB
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, 19 Aug 2021 00:03:42 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Hi all,
+> Probably. I noticed that it was updated under the dyn_event_ops_mutex,
+> and thought that was enough protection. But I now see the lockdep
+> assert on the event_mutex in the other functions.
 
-Today's linux-next merge of the kvm-arm tree got a conflict in:
+Anyway, here's the new version:
 
-  arch/arm64/include/asm/sysreg.h
+static bool find_event_probe(const char *group, const char *event)
+{
+	struct trace_eprobe *ep;
+	struct dyn_event *ev;
+	bool ret = false;
 
-between commit:
+	/*
+	 * Must grab the event_mutex to prevent the list from being modified
+	 * by other probes. But the event_probe being only created via the
+	 * dynamic_events file, is only added under the dyn_event_ops_mutex,
+	 * which is currently held. There is no race between this check and
+	 * adding the new probe.
+	 */
+	mutex_lock(&event_mutex);
+	for_each_dyn_event(ev) {
+		if (ev->ops != &eprobe_dyn_event_ops)
+			continue;
+		ep = to_trace_eprobe(ev);
+		if (strcmp(ep->tp.event->class.system, group) == 0 &&
+		    strcmp(ep->tp.event->call.name, event) == 0) {
+			ret = true;
+			break;
+		}
+	}
+	mutex_lock(&event_mutex);
 
-  79d82cbcbb3d ("arm64/kexec: Test page size support with new TGRAN range v=
-alues")
+	return ret;
+}
 
-from the arm64 tree and commit:
 
-  504c6295b998 ("arm64/mm: Add remaining ID_AA64MMFR0_PARANGE_ macros")
-
-from the kvm-arm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/arm64/include/asm/sysreg.h
-index f2e06e7c0a31,1972e4b9be5c..000000000000
---- a/arch/arm64/include/asm/sysreg.h
-+++ b/arch/arm64/include/asm/sysreg.h
-@@@ -847,16 -847,17 +847,21 @@@
-  #define ID_AA64MMFR0_ASID_SHIFT		4
-  #define ID_AA64MMFR0_PARANGE_SHIFT	0
- =20
- -#define ID_AA64MMFR0_TGRAN4_NI		0xf
- -#define ID_AA64MMFR0_TGRAN4_SUPPORTED	0x0
- -#define ID_AA64MMFR0_TGRAN64_NI		0xf
- -#define ID_AA64MMFR0_TGRAN64_SUPPORTED	0x0
- -#define ID_AA64MMFR0_TGRAN16_NI		0x0
- -#define ID_AA64MMFR0_TGRAN16_SUPPORTED	0x1
- +#define ID_AA64MMFR0_TGRAN4_NI			0xf
- +#define ID_AA64MMFR0_TGRAN4_SUPPORTED_MIN	0x0
- +#define ID_AA64MMFR0_TGRAN4_SUPPORTED_MAX	0x7
- +#define ID_AA64MMFR0_TGRAN64_NI			0xf
- +#define ID_AA64MMFR0_TGRAN64_SUPPORTED_MIN	0x0
- +#define ID_AA64MMFR0_TGRAN64_SUPPORTED_MAX	0x7
- +#define ID_AA64MMFR0_TGRAN16_NI			0x0
- +#define ID_AA64MMFR0_TGRAN16_SUPPORTED_MIN	0x1
- +#define ID_AA64MMFR0_TGRAN16_SUPPORTED_MAX	0xf
- +
-+ #define ID_AA64MMFR0_PARANGE_32		0x0
-+ #define ID_AA64MMFR0_PARANGE_36		0x1
-+ #define ID_AA64MMFR0_PARANGE_40		0x2
-+ #define ID_AA64MMFR0_PARANGE_42		0x3
-+ #define ID_AA64MMFR0_PARANGE_44		0x4
-  #define ID_AA64MMFR0_PARANGE_48		0x5
-  #define ID_AA64MMFR0_PARANGE_52		0x6
- =20
-@@@ -1032,16 -1035,19 +1039,19 @@@
- =20
-  #if defined(CONFIG_ARM64_4K_PAGES)
-  #define ID_AA64MMFR0_TGRAN_SHIFT		ID_AA64MMFR0_TGRAN4_SHIFT
-+ #define ID_AA64MMFR0_TGRAN_2_SHIFT		ID_AA64MMFR0_TGRAN4_2_SHIFT
- -#define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN4_SUPPORTED
- -#define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	0x7
- +#define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN4_SUPPORTED_MIN
- +#define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	ID_AA64MMFR0_TGRAN4_SUPPORTED_MAX
-  #elif defined(CONFIG_ARM64_16K_PAGES)
-  #define ID_AA64MMFR0_TGRAN_SHIFT		ID_AA64MMFR0_TGRAN16_SHIFT
-+ #define ID_AA64MMFR0_TGRAN_2_SHIFT		ID_AA64MMFR0_TGRAN16_2_SHIFT
- -#define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN16_SUPPORTED
- -#define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	0xF
- +#define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN16_SUPPORTED_M=
-IN
- +#define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	ID_AA64MMFR0_TGRAN16_SUPPORTED_M=
-AX
-  #elif defined(CONFIG_ARM64_64K_PAGES)
-  #define ID_AA64MMFR0_TGRAN_SHIFT		ID_AA64MMFR0_TGRAN64_SHIFT
-+ #define ID_AA64MMFR0_TGRAN_2_SHIFT		ID_AA64MMFR0_TGRAN64_2_SHIFT
- -#define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN64_SUPPORTED
- -#define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	0x7
- +#define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN64_SUPPORTED_M=
-IN
- +#define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	ID_AA64MMFR0_TGRAN64_SUPPORTED_M=
-AX
-  #endif
- =20
-  #define MVFR2_FPMISC_SHIFT		4
-
---Sig_/PbL=j7Q/zeiTsu6TxWLYGSB
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEd2JgACgkQAVBC80lX
-0Gzhcwf/SBHnPK6B2Wq94Fijm9hFMC58ketUiOw8GD0EwRgd+UbD5S3UPiTl7ww8
-+FsT0yr+V3fmCKoBEK2ev9jXzZfbd3C+IjAJh0SGrgmeFFLBMbTI3jQddcCLJt0P
-qbILQpE7utGj7XJJlCTOvszkAflmO344KShsbEUg/Ou5/xdpw5TWPy5DDZSVhrDp
-VsEc6hwsxBDKr+mrljRQ3M2XQF5Lg0BA0bsikWaC5jVPbRc7vBHXkSP9x5ZOuEik
-uCkbcUz4wMLTOEqK0LcbkJKGf9rUpiNPjK8LRueewjDiFAn25l9a8afFZaseXIGO
-KAKl2Kk5n1Oc6XrCyE5Vpy/jAozhDw==
-=Clcn
------END PGP SIGNATURE-----
-
---Sig_/PbL=j7Q/zeiTsu6TxWLYGSB--
+-- Steve
