@@ -2,54 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87F33F1BEA
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8A33F1BEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240610AbhHSOvV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Aug 2021 10:51:21 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:51063 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240137AbhHSOvU (ORCPT
+        id S240619AbhHSOvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 10:51:39 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:48986
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240137AbhHSOvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 10:51:20 -0400
-Received: from smtpclient.apple (p5b3d23f8.dip0.t-ipconnect.de [91.61.35.248])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 40679CED16;
-        Thu, 19 Aug 2021 16:50:43 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH v3] Bluetooth: btusb: Add support different nvm to
- distinguish different factory for WCN6855 controller
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <fcd7e83c3cd39ea89c94345ec00b5c6c@codeaurora.org>
-Date:   Thu, 19 Aug 2021 16:50:42 +0200
-Cc:     Zijun Hu <zijuhu@codeaurora.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
-        c-hbandi@codeaurora.org, Hemantg <hemantg@codeaurora.org>,
-        Matthias Kaehlcke <mka@chromium.org>, rjliao@codeaurora.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <E7BEF38D-E8CA-4ABE-A025-9C60E10CA797@holtmann.org>
-References: <1628758216-3201-1-git-send-email-zijuhu@codeaurora.org>
- <fcd7e83c3cd39ea89c94345ec00b5c6c@codeaurora.org>
-To:     tjiang@codeaurora.org
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        Thu, 19 Aug 2021 10:51:38 -0400
+Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 3DB5C3F0A1;
+        Thu, 19 Aug 2021 14:51:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629384661;
+        bh=g7+5SiZ8+Zdbn9VAz4P1W/9KWe16JYM3cVTVLOgS95s=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=gOLn84vqcd8NU0jf1pXAr0R+vj7wOgDSiUfOL5Ach94xt12f+5RdQNO+C1YjJcmIS
+         8YuWcnDMzooqjd83MjBTbO3neWRahGq9Sr7RNU0mRuwIJ3VZAgfhFeif+24Ko3UB2G
+         zcg84zwqS9aCET8kDoY/DnF9HzgR1jqHHfhLn+0KEIlNluoDP+9s+eh0sF95F60VZq
+         iyWgU3wyQUneCwqvqkjB5nUm7PK3ojTBlQe9TPj82l2wf4JtT5vow2EEXNWh9os5Aj
+         Cqzn401sbJ0hm8doqnIPZfKZ8YXJvfoN06FKxKefJHcOEZQU5scSvbbhAAzb1n/fh/
+         5MdiauE0R5ZZw==
+Subject: Re: [PATCH] drm/bridge/tc358767: make the array ext_div static const,
+ makes object smaller
+To:     Joe Perches <joe@perches.com>, Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210819133839.10745-1-colin.king@canonical.com>
+ <0a2ea4e54d7bfd61b45cc070eee6b62e8da82190.camel@perches.com>
+ <913b96bc-f5c4-1a26-c5f7-70a9d0ab3f53@canonical.com>
+ <3da667b1b415b19325c034dcb389a201fa46cfd3.camel@perches.com>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <c4378876-74b0-4f80-05b7-dcd809bb47a1@canonical.com>
+Date:   Thu, 19 Aug 2021 15:51:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <3da667b1b415b19325c034dcb389a201fa46cfd3.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tim,
+On 19/08/2021 15:40, Joe Perches wrote:
+> On Thu, 2021-08-19 at 14:54 +0100, Colin Ian King wrote:
+>> On 19/08/2021 14:51, Joe Perches wrote:
+>>> On Thu, 2021-08-19 at 14:38 +0100, Colin King wrote:
+>>>> From: Colin Ian King <colin.king@canonical.com>
+>>>>
+>>>> Don't populate the array ext_div on the stack but instead it
+>>>> static const. Makes the object code smaller by 118 bytes:
+>>>>
+>>>> Before:
+>>>>    text    data    bss     dec    hex filename
+>>>>   39449   17500    128   57077   def5 ./drivers/gpu/drm/bridge/tc358767.o
+>>>>
+>>>> After:
+>>>>    text    data    bss     dec    hex filename
+>>>>   39235   17596    128   56959   de7f ./drivers/gpu/drm/bridge/tc358767.o
+>>>
+>>> Why is text smaller and data larger with this change?
+>>
+>> There are less instructions being used with the change since it's not
+>> shoving the array data onto the stack at run time. Instead the array is
+>> being stored in the data section and there is less object code required
+>> to access the data.
+> 
+> Ah.  It's really because it's not a minimal compilation ala defconfig >
+> I think you should really stop making these size comparisons with
+> .config uses that are not based on a defconfig as a whole lot of other
+> things are going on.
 
->  could you help review this patch ? thank you.
-> tjiang
+I'm using allmodconfig, which I believe is a legitimate configuration,
+especially since distros so build kernels with lots of modules.
+I'll double check on this though in case I've made a mistake.
 
-if the kernel test robot throws an error, I am not even looking at a patch. You need to fix these first.
+> 
+> Please notice that the object sizes are significantly smaller below:
+> 
+> So with an x86-64 defconfig and this compilation unit enabled with
+> CONFIG_OF enabled and CONFIG_DRM_TOSHIBA_TC358767=y, with gcc 10.3
+> and this change the object size actually increases a bit.
+> 
+> $ size drivers/gpu/drm/bridge/tc358767.o*
+>    text	   data	    bss	    dec	    hex	filename
+>   13554	    268	      1	  13823	   35ff	drivers/gpu/drm/bridge/tc358767.o.new
+>   13548	    268	      1	  13817	   35f9	drivers/gpu/drm/bridge/tc358767.o.old>
+> objdump -h shows these differences:
+> 
+> .old:
+>   0 .text         00001e1f  0000000000000000  0000000000000000  00000040  2**4
+>                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
+> [...]
+>  14 .rodata       000005ae  0000000000000000  0000000000000000  000046e0  2**5
+>                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
+> 
+> .new:
+>   0 .text         00001e05  0000000000000000  0000000000000000  00000040  2**4
+>                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
+> [...]
+>  11 .rodata       000005ce  0000000000000000  0000000000000000  00004600  2**5
+>                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
 
-Regards
+ACK. Understood.  Even so, it still makes sense for these kind of
+janitorial changes as it makes sense to constify arrays when they are
+read-only and making them static is sensible for const data.
 
-Marcel
+> 
+> cheers, Joe
+> 
 
