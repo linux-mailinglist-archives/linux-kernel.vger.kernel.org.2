@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 835403F1EFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BEE93F1F03
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233364AbhHSRYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 13:24:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232827AbhHSRYp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 13:24:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D32061075;
-        Thu, 19 Aug 2021 17:24:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629393849;
-        bh=V2+TYaiXErkcPbcE9j+Rpr8nZGtBRaPkrXZzAokpHrQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pIk4Tjnsxw+12XU9KYIV2pE9/z4eN0pabGIW9KbEWyakDpbZ4EV7Wpxc0uHKK8Goi
-         MH2aCeSTarfY0vJvmTpvimin25qj3VwWmwQDkK6+uwrwiSlCA9YEmrco7jbX2B56Y4
-         mZ6zxfDVzWJZpkvQGcWm3IBx2so5jKiJOR1TXR+PPG9pXnMh8cJKpJAkywhukrgiq5
-         i90YACHaBcrOTS39LP47t9IuBN+61SfmEzlIHtRGySPpFjnUwt4zj06gzviHO63X0G
-         4jBGUEKFvoTDlPvjjt3Y44BSMpfWO9D2BlsTuBQBbsvnLABTc8Vfok2Hu4s4ZGmPSD
-         lKsAtUxaeEDdg==
-Date:   Thu, 19 Aug 2021 19:24:06 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Jie Deng <jie.deng@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>, arnd@kernel.org,
-        linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: virtio: Update i2c-adapter's of_node
-Message-ID: <YR6TtolgrEG9ij7q@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Jie Deng <jie.deng@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>, arnd@kernel.org,
-        linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <376bd0a3a34e8f0de297103dd2f711bb236a8615.1629257677.git.viresh.kumar@linaro.org>
+        id S233416AbhHSRZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 13:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230058AbhHSRZ1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 13:25:27 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E754C061575;
+        Thu, 19 Aug 2021 10:24:51 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id e7so6519240pgk.2;
+        Thu, 19 Aug 2021 10:24:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UYd2dapw2LMwvOwjrvllB89XLpc87giCIS2NMpFO4KE=;
+        b=c60+UAjN01E/MyS6qz7JtawFf1HTe4XNk03E930VEgOBPRVjBDqBVsklwYJuniYGs1
+         LGe9Fo/Kv+y7utUO1bkuePODvr28k5c0B7ThjmTWITZ0yjKvazUzVvjc63g8y7PO0KJX
+         z2Q6s9b91XIlSkvT4TFBoV4hCfk7XQNOyCyDoOjMeOgJFoSXToxHGl2zf3ZglwXNHILA
+         5nBX9cKXyOadqOmLtqSJwqYV05VbMa04EIULWevIDHDlifn5mbnvs1dWl40gadZ4xbM2
+         6a7eoSJwbBNdl0qdG8FUhC1/pAIuyY1GF34qEcVjx1qmi6IJ7IuG+LTd+ftkXYv/zakr
+         fe6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UYd2dapw2LMwvOwjrvllB89XLpc87giCIS2NMpFO4KE=;
+        b=OERfVJjzZbz7nEwDyGnUWjpWPCL6hAl3GPYewqBfQh9gpXwXOyXQdrdz7w4Awq9GaF
+         dWdvzyiT+8rswZ7WQ5LtaiS01eRGIAOTtHopiZ5pWLKNgdkXsApjWmF8t5/VmRrO3/df
+         qIymz+FdC5QsZPpzFuPtsUkXbdjqXLIuRloXXwsmHFeV5G1pmLbAEXZrXsxqIVV+jLKy
+         vbpWftyeilQqQs82WuNm0Sjw3+xNFBVLYCHz6TZNgVutHEOoDkyi0VE9tmWphMXGtSEL
+         GvLGPsHXzpZyXKAWlaX9TzLaM62lqLZtUXBO0WB+lvnaOgVNcHXy87+FQxxmxTf2m0vT
+         tNVg==
+X-Gm-Message-State: AOAM530jbqSrI1E7ZfOw82GXoZ03p/HURuY+PcHoz7sClVe+MS9B7pzH
+        Hqk1zVd5E99rBxE+q8Lp4UCJa7jHlf/0iojyCY8=
+X-Google-Smtp-Source: ABdhPJysYPrZmoa4UFLdVe+0TKMVAoZZGvmIcU6EffmYwkLJhVyd3WbKXreA9JSgPXu/YBIo/JraQJfnWgEJoSnO5CY=
+X-Received: by 2002:aa7:9618:0:b0:3e2:1bc3:aa93 with SMTP id
+ q24-20020aa79618000000b003e21bc3aa93mr15746883pfg.73.1629393890934; Thu, 19
+ Aug 2021 10:24:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="eTY6BXmAvITqGGqC"
-Content-Disposition: inline
-In-Reply-To: <376bd0a3a34e8f0de297103dd2f711bb236a8615.1629257677.git.viresh.kumar@linaro.org>
+References: <20210802143820.1150099-1-arnd@kernel.org> <202108130937.7848F6B318@keescook>
+In-Reply-To: <202108130937.7848F6B318@keescook>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 19 Aug 2021 20:24:11 +0300
+Message-ID: <CAHp75VdkAO+fiiCVs=dyc2C83mZuLCQCvqs9C+6PF6JnhKDxCA@mail.gmail.com>
+Subject: Re: [PATCH] media: atomisp: restore missing 'return' statement
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 13, 2021 at 7:39 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Mon, Aug 02, 2021 at 04:38:14PM +0200, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > The input_system_configure_channel_sensor() function lost its final
+> > return code in a previous patch:
+> >
+> > drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c: In function 'input_system_configure_channel_sensor':
+> > drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c:1649:1: error: control reaches end of non-void function [-Werror=return-type]
+> >
+> > Restore what was there originally.
+> >
+> > Fixes: 728a5c64ae5f ("media: atomisp: remove dublicate code")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>
+> I hit this too. Thanks!
+>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
---eTY6BXmAvITqGGqC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Me too,
+Tested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-On Wed, Aug 18, 2021 at 09:05:50AM +0530, Viresh Kumar wrote:
-> Set of-node of the adapter to the virtio device's of-node to enable
-> automatic parsing the of the I2C devices, if present in the DT.
->=20
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Pavel, how have you tested it?
 
-Applied to for-next, thanks! Since I need to rebase for-mergewindow
-anyhow, I might just squash it into the main patch.
-
-
---eTY6BXmAvITqGGqC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmEek7YACgkQFA3kzBSg
-KbYykg/+LIGydh+fo8PIycG0wor+wgSsJHk+zjHeFpEqHj3H/6ql8qlmiy0Jv/gd
-nEFldUOPneGlUrAP/D45MLgP1p26KL9r9/cV4xJU4TeRtm5qXdYBdt+nCxfY/ogs
-u/wdq3pMGVTjck7e+nzbM756P4jEAnqEwf/gkTXtJq57Vv03FVMGuiwNOoL+oTNr
-OKmJMS0eOy6Hm3bs5V6Ck9S3A9SYIbcYjCDSBDn09PtrINKij04aiEABQtbhp5DR
-SWsb2+K3/Jc/wIbIXxJk23gnPCJWZPz0WpplyGJvpEB777/MX/NXMqUZiYRSLMf2
-n4fZu1V6dxHxk8QP00F5GSkeKSDfgR/7/IugsW1igQDHtw2zxi8QDO+IVbu7NmAt
-8Ks+L/JITtPq7c8RIULcEFfkzHhR8/f1YbOyj5BYUHLnqdBV4Q7+CFnYDKfWFagA
-W8BLd6SvGlJQnhUF6Dgh8FIiM5YR4Aq3GQMnocdh6vT1hS5trru23al5MycnLGTy
-KO4oKnMZeZ3GP8xxVTqO/bQVK2fP5xhIthAWEo/i3YyavJLEXR0aheZo5XXKy+q0
-MlfgUqj0GO2lqDFsipgeFTeZBfL55M0rHccrKzUvenWd91auZDd7biggRr8sHHDU
-OgFNna0hXCYGpnM9l2QM1GOamrMK1Hk04gu6NYLhe1AtVoOJ5nE=
-=zWte
------END PGP SIGNATURE-----
-
---eTY6BXmAvITqGGqC--
+-- 
+With Best Regards,
+Andy Shevchenko
