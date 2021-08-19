@@ -2,101 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2DD13F1F0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A04173F1F18
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233172AbhHSR0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 13:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57164 "EHLO
+        id S233142AbhHSR1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 13:27:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231134AbhHSR0e (ORCPT
+        with ESMTP id S229659AbhHSR1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 13:26:34 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACDBCC061575;
-        Thu, 19 Aug 2021 10:25:57 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0f6a00894cffc8901d9ad3.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:6a00:894c:ffc8:901d:9ad3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2D09E1EC04F3;
-        Thu, 19 Aug 2021 19:25:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629393952;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=/gAtsE7QtBH5j9ttL3SuPKWfuXAyQgTTaUQCvmLoufU=;
-        b=QQBp8NHuP+11G06yi7BdGA+HaVdnbkry0TMbR80aBtGTWa+AS2GGnsUl92jeGasIkZJxjG
-        vbA27TU+69/cDt/R71KHjVUhLNS00XEkqnozCdieagZOK0jWv65x9AAvusLIXItaBgTbsA
-        IoE8XMNOekYHfnDaNqS/LMVqj09wsDs=
-Date:   Thu, 19 Aug 2021 19:26:31 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH v2 03/12] x86/sev: Add an x86 version of prot_guest_has()
-Message-ID: <YR6UR9JWD6l6z9Cn@zn.tnic>
-References: <cover.1628873970.git.thomas.lendacky@amd.com>
- <7d55bac0cf2e73f53816bce3a3097877ed9663f3.1628873970.git.thomas.lendacky@amd.com>
- <YR4p9TqKTLdN1A96@infradead.org>
+        Thu, 19 Aug 2021 13:27:32 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61E5C061575;
+        Thu, 19 Aug 2021 10:26:55 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id q11-20020a7bce8b0000b02902e6880d0accso7336046wmj.0;
+        Thu, 19 Aug 2021 10:26:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tqPjKZJYc+Rc6IoAOJPSNmiYR/t0jKijcOgUY37edWs=;
+        b=UKwXjzKaoEc5/NslWFN2wPzawo7BQF8Dd1WpKvc30+hq9J3w0JBA6B3L1CBMmA2a5s
+         AP2KyIImocC+zTVJzsTXtraHhAT5Zlft22JJYyOwXg0voYYI9wlzN3kDAbIdygncIbgE
+         cyUnWce8byW5kP/4dygHRw/55N0UnYd7QaKpPN6+rO3xBf5WG/SrCZHmcco5CBJxhVV7
+         v58bRJfdYXv2ddjPpEgz0NZtZA6SQMIYM/hASSCZt1pcNdZIIiuDE/NELQwbnT3dLWI5
+         X4n1BzfV+uE1qVbmX63h2s4BtJDFEQUROcrVyCWDFFPYWv8a9Ya3ZIZyN/WetWE5etSc
+         a7VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tqPjKZJYc+Rc6IoAOJPSNmiYR/t0jKijcOgUY37edWs=;
+        b=kmAfjlWZly8A1xIN0Qo7q3OAMd+Gd23pz0EVEfSb4+rSs9jioh3qPjhP5s6QSsr4l/
+         0IJrgU2j6mFqwOORYKQrw3H6L6zlpU+vnr6LEzCbCExZR9o+gIDc4o61FylO8GDIXLB2
+         /OX0CIVLI1JvClCnp0Qg+e/kQ7gG/C9eVla1r/ziqSlcRhA/VMiL2KvcnkJKFKZJTGjP
+         wo8BIxDihr68e5iCE513zgM4yeyEFN6o3cKu7i6Nezp/llkb3FMjho1snNidh+5JvXTQ
+         MvVGuYCETceCe9jBBXqycQ5DLWAra3JeVjR7plAnmS6YCQMJOvy/HfXaKoft/709dqRC
+         ViqQ==
+X-Gm-Message-State: AOAM531IiD8OnD82RLdE4x2sDVsU3jx/oSmspPxJXxuXcHyyEf0eSYeS
+        C9hpzuXBftrXpsHivZrmldY=
+X-Google-Smtp-Source: ABdhPJx/ACEOBEfmZTXAcFQSWohX6lKYmcC6JhEjsNcjX5sQ25KOGTDPXA5b26qqTG/e+l2UsDh+NQ==
+X-Received: by 2002:a7b:c188:: with SMTP id y8mr14869752wmi.174.1629394014372;
+        Thu, 19 Aug 2021 10:26:54 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id s141sm2968005wme.6.2021.08.19.10.26.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 10:26:53 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 19:26:52 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH] memory: tegra: make the array list static const, makes
+ object smaller
+Message-ID: <YR6UXM7QXEBGGqLK@orome.fritz.box>
+References: <20210819133155.10441-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="1FRMoKE3dAd72QSM"
 Content-Disposition: inline
-In-Reply-To: <YR4p9TqKTLdN1A96@infradead.org>
+In-Reply-To: <20210819133155.10441-1-colin.king@canonical.com>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 10:52:53AM +0100, Christoph Hellwig wrote:
-> Which suggest that the name is not good to start with.  Maybe protected
-> hardware, system or platform might be a better choice?
 
-Yah, coming up with a proper name here hasn't been easy.
-prot_guest_has() is not the first variant.
+--1FRMoKE3dAd72QSM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-From all three things you suggest above, I guess calling it a "platform"
-is the closest. As in, this is a confidential computing platform which
-provides host and guest facilities etc.
+On Thu, Aug 19, 2021 at 02:31:55PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+>=20
+> Don't populate the array list on the stack but instead it
+> static const. Makes the object code smaller by 110 bytes:
+>=20
+> Before:
+>    text    data     bss     dec     hex filename
+>   37713   21992      64   59769    e979 .../tegra/tegra210-emc-cc-r21021.o
+>=20
+> After:
+>    text    data     bss     dec     hex filename
+>   37539   22056      64   59659    e90b .../tegra/tegra210-emc-cc-r21021.o
+>=20
+> (gcc version 10.3.0)
+>=20
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/memory/tegra/tegra210-emc-cc-r21021.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-So calling it
+Wow, didn't think this was going to save us 110 bytes. Nice one!
 
-confidential_computing_platform_has()
+Acked-by: Thierry Reding <treding@nvidia.com>
 
-is obviously too long.
+--1FRMoKE3dAd72QSM
+Content-Type: application/pgp-signature; name="signature.asc"
 
-ccp_has() clashes with the namespace of drivers/crypto/ccp/ which is
-used by the technology too.
+-----BEGIN PGP SIGNATURE-----
 
-coco_platform_has() is too unserious.
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEelFwACgkQ3SOs138+
+s6EtiQ/+PRW3IczZwEf01/WL6npwB+KWyu6/aa59MqPgwKSgLXkAKRkHYvjzsBu3
+hZZ7Qbik/IIH2SjtCy8VOYj+gV5pBfUedOLFaxxIhlWjxzE6fNtlVdixOOlSzWeS
+xf7rjpWWBfMppuiRiUa7wLX0KqZls9sDQHde2GOrn0KJG7NkSCs4KnhfZ9qssInp
+b8ruwvuWUD3heMJtPCSHGB18g83lZXLK42F6ENO7zJGntCta14lOrsVCFIog5CTa
+29p4UKJ1z+iQKhqS0ObJjZZ3PmkIYYjiC9Dn8OJuE/t+qqWWSXuB6r/Vh7KNQt76
+3Wu7Cxg5wDBC2K6esa3PWzfRCbAf+lMx65q3dwOsEbzDbGdGmL6qQlbbTQFCmBhW
+66Mw7QTGV1tb/Zhie1x8DcChbjKMKfE4DGOwz7XTWa3EoSk0tptp6J6ZTZCL9YVk
+i0aJbBZpgtHM90VrHLrnf1HVxMeGLgU7wCUfYt6fKU3+hvCvb6r+NDhnYmQagvoH
+tEpadwAmDa0Q8x4iglqKwxA67+tDIKZ8MpMBmwv4OYJ/X3OZm3VQT83qk75qGnx6
+w6GDFW83VzJAOYF1xLTBceZ/GCYO9Upvlo4n7nxs01BzT3IllQELj/VgkmC/O6sg
+rD9kHMOlQJMhIx0hAbcd3LLx0b2FJk04gXgEkQhXKEVsa4so2Ko=
+=uw+z
+-----END PGP SIGNATURE-----
 
-So I guess
-
-cc_platform_has()
-
-ain't all that bad.
-
-Unless you have a better idea, ofc.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+--1FRMoKE3dAd72QSM--
