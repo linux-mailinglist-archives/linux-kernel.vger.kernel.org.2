@@ -2,106 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4DC3F2377
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B76DD3F2378
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236538AbhHSXAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 19:00:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49226 "EHLO
+        id S233512AbhHSXBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 19:01:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233061AbhHSXAR (ORCPT
+        with ESMTP id S229475AbhHSXB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 19:00:17 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13672C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:59:41 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id n24so9814606ion.10
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:59:41 -0700 (PDT)
+        Thu, 19 Aug 2021 19:01:29 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1125AC061575;
+        Thu, 19 Aug 2021 16:00:53 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id n5so6049631pjt.4;
+        Thu, 19 Aug 2021 16:00:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vTZIfOHRyXqbRj0vGMmgdDyUBJVGJoNZm2wLqjm5mWE=;
-        b=MGinE0QLP4WwLR3nsv+V+OQ+QbzraAYbOU4lYI4XNKd8JTtQJH9CypndKoxrNG16Hb
-         dkXRH8WunA5gaFa7bmherR7mr7l2zL8GWYxXQZV9Rsg4sltApZdowjhSISCl0sXGFt+U
-         EXF2QV324JhglufxMSGTeoLzDyP+EVgECqI3I=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DIgqo2OBXJoSdsCXTz7ku1pCk/8Xq00XM5YE8fnBA3c=;
+        b=qJmCsZl/7c7CrNxr5BeAzpbyRaIj4CTi71d4ya0o988dXB/WH3KlfgindcSZnWYyRV
+         Ukc/s/w2eFzKGtXf8WNjDWfz/dvb3KqmYDQ8z2kIEt8MhupcUFcssDbugqSgsfrIJgKJ
+         pPVR3sBsZqs3uqLzKmRp3wPrrFTk8ZZ5IVn2NN9Y+/op0+LrZDnRH02CEZG3nF1qJkrO
+         948yknzg0cLJ/jSH4wwetmRUUghwCiONq415/IszMmf/IGrXwEROlgrL15ksf9++XEiv
+         Hpal1bys7Wk4DCLQghBkitpSstWPRZt2dAmg9Dxjc//7P/eo4lJ6ht/tbnfQ1i8FJZAg
+         1ulQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vTZIfOHRyXqbRj0vGMmgdDyUBJVGJoNZm2wLqjm5mWE=;
-        b=kOFR1tKiOQkNXSMKBQFw/D7JVD69E0DPaupG9qqK9EfTiY2qbNuAXaaMJsfebdyfGy
-         E2xnhbUjlMyVNocqZeHeJYWAkCnAd4eYZGjgyoQlATHaH7+yinX5VU70H5Wjnq3w/poK
-         +q2HAXpjjW20FKMRBiGretPBCARkFiqNsf86hVZ07U4z1RVNZSBgco8n6L8M80CeNTkH
-         yAJ3/rOx2c09pjV29ObEf8fe80AZ44ua5z8cabH8wRztqNOZulG9Ar7V4yowP6vILL4x
-         TgHMJaTF0urSp6U4onozYfrqD5idV4fKuNQbcLQJmz7Nv2WHA+HDuuAQVBHILmsmlahO
-         mYag==
-X-Gm-Message-State: AOAM530GdknbY5ULpVBmT+N0xcvunI5l+hqSQiW12f6dNTwsOO0BFerL
-        fUSV7rlO8gSv5yX1IV1R0LUq6g==
-X-Google-Smtp-Source: ABdhPJxouRhLae2784WA0Y++VSaZ3KpxP3Du54Wek2AnvB0xsPH0YxAkXPEcnD5qMMZB/OMCbmsqsw==
-X-Received: by 2002:a5d:990f:: with SMTP id x15mr13576695iol.200.1629413980537;
-        Thu, 19 Aug 2021 15:59:40 -0700 (PDT)
-Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id u15sm2374814ion.34.2021.08.19.15.59.39
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DIgqo2OBXJoSdsCXTz7ku1pCk/8Xq00XM5YE8fnBA3c=;
+        b=K5eKX2F1oKdI5lnpuSVnvaULPLEikicUuMlaRVwy7iUm8QIegD39rclg+lfWJk7FSr
+         L+kWmhjw8yrRjp3LHKVh9E6uAm6Raei2BqPS6ohvYLtPDz6ZGl9YTTrd/BJ7XD93Zkpe
+         Vfwz6A5i8qReGIBq1u7flFM+I1gtpRYFdEhQwX68lgFLIrgMGqr+TSSbTrxocHFiW3w3
+         Ixn3qcIyVPc/e/+SlTFUfS3W95czoBafWNUe86dkGV6gerINudPGEONf7uS/E1LwPX/9
+         BFHS9G4ErEXc8Z4pxaH2ZQSom26IlZmTIZFv5801fBJYsaAhCddWb5ioLwefQ7RxYH0P
+         2Bkg==
+X-Gm-Message-State: AOAM532KCQHV9M52M0/Or04hFq8P0fov97hZYCc2qkLp1SXyI2udW5go
+        +iRQuVRnCZVuQx1s+qm/nDA=
+X-Google-Smtp-Source: ABdhPJzaqWhuQOd1LdSu4ygw8RqzKGl56Rk5PrZIjVcr1FEm4928nb4+0CLH792Y2Plup0E5U6h0AQ==
+X-Received: by 2002:a17:90a:9af:: with SMTP id 44mr1238095pjo.62.1629414052470;
+        Thu, 19 Aug 2021 16:00:52 -0700 (PDT)
+Received: from mail.google.com ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id g26sm5413228pgb.45.2021.08.19.16.00.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 15:59:40 -0700 (PDT)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     valentina.manea.m@gmail.com, shuah@kernel.org, msbroadf@gmail.com
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] usbip:vhci_hcd USB port can get stuck in the disabled state
-Date:   Thu, 19 Aug 2021 16:59:37 -0600
-Message-Id: <20210819225937.41037-1-skhan@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.2
+        Thu, 19 Aug 2021 16:00:52 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 07:00:36 +0800
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Changbin Du <changbin.du@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH] preempt: add in_serving_irq() and apply to rcutiny and
+ vsprintf
+Message-ID: <20210819230036.uh2amndgsyza6az7@mail.google.com>
+References: <20210814014234.51395-1-changbin.du@gmail.com>
+ <YRqMRFPDL0U9Orec@boqun-archlinux>
+ <20210818235916.l3zbdt5nli5j65xi@mail.google.com>
+ <YR26XQF3OXLqo4Pj@boqun-archlinux>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YR26XQF3OXLqo4Pj@boqun-archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a remote usb device is attached to the local Virtual USB
-Host Controller Root Hub port, the bound device driver may send
-a port reset command.
+On Thu, Aug 19, 2021 at 09:56:45AM +0800, Boqun Feng wrote:
+> [Cc Thomas and Frederic since they contributed the clean-up to these
+> macros recently]
+> 
+> Background for discussion:
+> 
+> 	https://lore.kernel.org/lkml/20210814014234.51395-1-changbin.du@gmail.com/
+> 
+> On Thu, Aug 19, 2021 at 07:59:16AM +0800, Changbin Du wrote:
+> > On Tue, Aug 17, 2021 at 12:03:16AM +0800, Boqun Feng wrote:
+> > > On Sat, Aug 14, 2021 at 09:42:34AM +0800, Changbin Du wrote:
+> > > > At some places we need to determine whether we're in nmi, hardirq or
+> > > > softirq context. This adds a macro in_serving_irq() as a shortcut for
+> > > > that.
+> > > > 
+> > > > Meanwhile, apply this new macro to existing code in rcutiny and vsprintf.
+> > > > 
+> > > > Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> > > > ---
+> > > >  include/linux/preempt.h | 4 +++-
+> > > >  include/linux/rcutiny.h | 3 +--
+> > > >  lib/vsprintf.c          | 2 +-
+> > > >  3 files changed, 5 insertions(+), 4 deletions(-)
+> > > > 
+> > > > diff --git a/include/linux/preempt.h b/include/linux/preempt.h
+> > > > index 9881eac0698f..9a1c924e2c6c 100644
+> > > > --- a/include/linux/preempt.h
+> > > > +++ b/include/linux/preempt.h
+> > > > @@ -92,12 +92,14 @@
+> > > >   * in_nmi()		- We're in NMI context
+> > > >   * in_hardirq()		- We're in hard IRQ context
+> > > >   * in_serving_softirq()	- We're in softirq context
+> > > > + * in_serving_irq()	- We're in nmi, hardirq or softirq context
+> > > >   * in_task()		- We're in task context
+> > > >   */
+> > > >  #define in_nmi()		(nmi_count())
+> > > >  #define in_hardirq()		(hardirq_count())
+> > > >  #define in_serving_softirq()	(softirq_count() & SOFTIRQ_OFFSET)
+> > > > -#define in_task()		(!(in_nmi() | in_hardirq() | in_serving_softirq()))
+> > > > +#define in_serving_irq()	(in_nmi() | in_hardirq() | in_serving_softirq())
+> > > > +#define in_task()		(!in_serving_irq())
+> > > >  
+> > > 
+> > > So in_serving_irq() is !in_task(), right? If so, why not...
+> > > 
+> > Adding in_serving_irq() is to reflect the real purpose so improve readability.
+> > And can we preserve that !in_task() means in serving irq context in future? I don't know.
+> > 
+> 
+> Sure, no one could predict the future. But if a third context (other
+> than thread context and {hard,soft}irq context) comes up, which I think
+> is highly unlikely, we could (and should) audit all callsites of
+> in_task() for necessary adjustment. And introducing in_serving_irq()
+> won't help us in that case, because we will still need to audit usage of
+> in_serving_irq(), for example, let's say rcu_is_idle_cpu() for RCU_TINY
+> is defined as
+> 
+> 	#define rcu_is_idle_cpu(cpu) (is_idle_task(current) && !in_serving_irq())
+> 
+> and we have a new type of context, and we can use in_other() to test
+> whether we are in it. Now even with in_serving_irq() introduced, we
+> still need to make sure the correct version of rcu_is_idle_cpu() is
+> either
+> 
+> 	(is_idle_task(current) && (!in_serving_irq() && !in_other()))
+> 
+> or
+> 	
+> 	(is_idle_task(current) && !in_serving_irq())
+> 
+> Therefore, I don't see the point of introducing in_serving_irq().
+>
+ok, as in_serving_irq() is only used in two places, it is not common to judge if
+it is in serving irq context. So this new macro doesn't help much.
 
-vhci_hcd accepts port resets only when the device doesn't have
-port address assigned to it. When reset happens device is in
-assigned/used state and vhci_hcd rejects it leaving the port in
-a stuck state.
+> Regards,
+> Boqun
+> 
+> > -- 
+> > Cheers,
+> > Changbin Du
 
-This problem was found when a blue-tooth or xbox wireless dongle
-was passed through using usbip.
-
-A few drivers reset the port during probe including mt76 driver
-specific to this bug report. Fix the problem with a change to
-honor reset requests when device is in used state (VDEV_ST_USED).
-
-Suggested-by: Michael <msbroadf@gmail.com>
-Reported-and-tested-by: Michael <msbroadf@gmail.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
----
- drivers/usb/usbip/vhci_hcd.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
-index 4ba6bcdaa8e9..937f28f3d579 100644
---- a/drivers/usb/usbip/vhci_hcd.c
-+++ b/drivers/usb/usbip/vhci_hcd.c
-@@ -455,8 +455,14 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
- 			vhci_hcd->port_status[rhport] &= ~(1 << USB_PORT_FEAT_RESET);
- 			vhci_hcd->re_timeout = 0;
- 
-+			/*
-+			 * A few drivers do usb reset during probe when
-+			 * the device could be in VDEV_ST_USED state
-+			 */
- 			if (vhci_hcd->vdev[rhport].ud.status ==
--			    VDEV_ST_NOTASSIGNED) {
-+				VDEV_ST_NOTASSIGNED ||
-+			    vhci_hcd->vdev[rhport].ud.status ==
-+				VDEV_ST_USED) {
- 				usbip_dbg_vhci_rh(
- 					" enable rhport %d (status %u)\n",
- 					rhport,
 -- 
-2.30.2
-
+Cheers,
+Changbin Du
