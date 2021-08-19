@@ -2,153 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D50FC3F17AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 13:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B65F3F17B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 13:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238487AbhHSLGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 07:06:12 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:47074 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238480AbhHSLGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 07:06:08 -0400
-Received: from zn.tnic (p200300ec2f0f6a00d82486aa7bad8753.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:6a00:d824:86aa:7bad:8753])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D5FDA1EC0493;
-        Thu, 19 Aug 2021 13:05:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629371124;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=qYeEdAdRBAT5O+WdbHDpuPXSfRMndL3DIZs7pWBioVc=;
-        b=q6r7R7vGlQf+ERAX7mscYkzVq0uRzGz45F6etud3utGOg3RinTBSMuc9Xmj+EyMbchdzZO
-        OOVFQf0HdzhwssWUvLfAuwvfVdrZMjXAy6Z/POiHVxuPTMHpHUpzS1w8HmUQYCKCreGb4v
-        cKiOJUGGGE7qp4uR8n7/adWYgLRm8vo=
-Date:   Thu, 19 Aug 2021 13:06:08 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part1 RFC v4 25/36] x86/boot: Add Confidential Computing
- type to setup_data
-Message-ID: <YR47IEALXIvAGmy8@zn.tnic>
-References: <20210707181506.30489-1-brijesh.singh@amd.com>
- <20210707181506.30489-26-brijesh.singh@amd.com>
+        id S238284AbhHSLHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 07:07:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236149AbhHSLHo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 07:07:44 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F31CC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 04:07:08 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id s3so10813415ljp.11
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 04:07:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yie52tZg+WqxHuYvBvKGgC8iU9Gb61t4ktqHyTP1FX8=;
+        b=ZCq6Q3wGJTZgd7jKcUT62NlOPMkQM5DvJ4Ocenu9Df6lDUsQ7xiIxo/GN7vTT0xbYk
+         xEAG/OHt/1Jb0U+EWC+sxIJTVHBiHt3hscm75aBXS47oBDstss5g0byzKyMPtDs2m7Lb
+         ZSRWn/pY5rH4wWLxODdSygJmlvinpr5zNuBFlDIG6dZj91k/4iWVe1L88TnMtjEgeEtP
+         sPeKmOb/JhCYFIdZjMpkCMd8/AA/1D43BDX1aZxYIlA1Z7pcuMZL7YXGNi1BB5p9UGkt
+         KIbPliGSgE/lYysRkvd9aamZfKSPErQbXMbSfd5L7XGdgNeOyU/Lb95y0LNTu5Wc1kkS
+         CniA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yie52tZg+WqxHuYvBvKGgC8iU9Gb61t4ktqHyTP1FX8=;
+        b=VvVfgMO+kWDPe24lESXMuc5wDM4sFDVr40uCVFkFiehs5WXzm7YLlIDMPCNbw1L5qc
+         hF5VYcoQpjTf+xXVVQO6j981bbS0APNPFD3JqVPyiFPvGdgPpqdOjgiWjvwYFHM5BfhJ
+         5ga0jhpFSSQ8341J3lPh8TOzuL9Vux1XVZrDSPunnaZXZ2lIxgHnZVccXUpuhqUIj7C1
+         Egy+HqwyeVlJGbItFm7KpChJyHN9AeyYCPNR5QGluxUjM2Q4ey7cswZXLoJ2679942hn
+         Bph+6FJOhbWseqNhJHqFrrdTXDUZu35hqMm9hg8z7mh77NfyoOGrU4FN/hee9bfg9ebN
+         prLw==
+X-Gm-Message-State: AOAM532Jua8J3qyzhBQoebbmRGzD7tciWsaR6+VyqQYezTA8gRn3YEAs
+        FHJsRkE1skQvLQb0oVUapjCiaSjabOMGtg==
+X-Google-Smtp-Source: ABdhPJwu7laeWUKEpnEtwP3OfkEcYB1RqDLSEM45nF5toEDrqeA9cJYNPu+CBTwNvh0wbE/DwAv+lw==
+X-Received: by 2002:a2e:a288:: with SMTP id k8mr11447219lja.315.1629371226502;
+        Thu, 19 Aug 2021 04:07:06 -0700 (PDT)
+Received: from jade.urgonet (h-94-254-48-165.A175.priv.bahnhof.se. [94.254.48.165])
+        by smtp.gmail.com with ESMTPSA id l19sm261131ljj.36.2021.08.19.04.07.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 04:07:06 -0700 (PDT)
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        op-tee@lists.trustedfirmware.org
+Cc:     Sumit Garg <sumit.garg@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Marc Bonnici <marc.bonnici@arm.com>,
+        Jerome Forissier <jerome@forissier.org>,
+        sughosh.ganu@linaro.org, Jens Wiklander <jens.wiklander@linaro.org>
+Subject: [PATCH v4 0/5] Add FF-A support in OP-TEE driver
+Date:   Thu, 19 Aug 2021 13:06:50 +0200
+Message-Id: <20210819110655.739318-1-jens.wiklander@linaro.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210707181506.30489-26-brijesh.singh@amd.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(Moving Ard to To: for the EFI bits)
+Hi all,
 
-On Wed, Jul 07, 2021 at 01:14:55PM -0500, Brijesh Singh wrote:
-> While launching the encrypted guests, the hypervisor may need to provide
-> some additional information during the guest boot. When booting under the
-> EFI based BIOS, the EFI configuration table contains an entry for the
-> confidential computing blob that contains the required information.
-> 
-> To support booting encrypted guests on non-EFI VM, the hypervisor needs to
-> pass this additional information to the kernel with a different method.
-> 
-> For this purpose, introduce SETUP_CC_BLOB type in setup_data to hold the
-> physical address of the confidential computing blob location. The boot
-> loader or hypervisor may choose to use this method instead of EFI
-> configuration table. The CC blob location scanning should give preference
-> to setup_data data over the EFI configuration table.
-> 
-> In AMD SEV-SNP, the CC blob contains the address of the secrets and CPUID
-> pages. The secrets page includes information such as a VM to PSP
-> communication key and CPUID page contains PSP filtered CPUID values.
-> Define the AMD SEV confidential computing blob structure.
-> 
-> While at it, define the EFI GUID for the confidential computing blob.
-> 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  arch/x86/include/asm/sev.h            | 12 ++++++++++++
->  arch/x86/include/uapi/asm/bootparam.h |  1 +
->  include/linux/efi.h                   |  1 +
->  3 files changed, 14 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
-> index f68c9e2c3851..e41bd55dba5d 100644
-> --- a/arch/x86/include/asm/sev.h
-> +++ b/arch/x86/include/asm/sev.h
-> @@ -44,6 +44,18 @@ struct es_em_ctxt {
->  
->  void do_vc_no_ghcb(struct pt_regs *regs, unsigned long exit_code);
->  
-> +/* AMD SEV Confidential computing blob structure */
-> +#define CC_BLOB_SEV_HDR_MAGIC	0x45444d41
-> +struct cc_blob_sev_info {
-> +	u32 magic;
-> +	u16 version;
-> +	u16 reserved;
-> +	u64 secrets_phys;
-> +	u32 secrets_len;
-> +	u64 cpuid_phys;
-> +	u32 cpuid_len;
-> +};
-> +
->  static inline u64 lower_bits(u64 val, unsigned int bits)
->  {
->  	u64 mask = (1ULL << bits) - 1;
-> diff --git a/arch/x86/include/uapi/asm/bootparam.h b/arch/x86/include/uapi/asm/bootparam.h
-> index b25d3f82c2f3..1ac5acca72ce 100644
-> --- a/arch/x86/include/uapi/asm/bootparam.h
-> +++ b/arch/x86/include/uapi/asm/bootparam.h
-> @@ -10,6 +10,7 @@
->  #define SETUP_EFI			4
->  #define SETUP_APPLE_PROPERTIES		5
->  #define SETUP_JAILHOUSE			6
-> +#define SETUP_CC_BLOB			7
->  
->  #define SETUP_INDIRECT			(1<<31)
->  
-> diff --git a/include/linux/efi.h b/include/linux/efi.h
-> index 6b5d36babfcc..75aeb2a56888 100644
-> --- a/include/linux/efi.h
-> +++ b/include/linux/efi.h
-> @@ -344,6 +344,7 @@ void efi_native_runtime_setup(void);
->  #define EFI_CERT_SHA256_GUID			EFI_GUID(0xc1c41626, 0x504c, 0x4092, 0xac, 0xa9, 0x41, 0xf9, 0x36, 0x93, 0x43, 0x28)
->  #define EFI_CERT_X509_GUID			EFI_GUID(0xa5c059a1, 0x94e4, 0x4aa7, 0x87, 0xb5, 0xab, 0x15, 0x5c, 0x2b, 0xf0, 0x72)
->  #define EFI_CERT_X509_SHA256_GUID		EFI_GUID(0x3bd2a492, 0x96c0, 0x4079, 0xb4, 0x20, 0xfc, 0xf9, 0x8e, 0xf1, 0x03, 0xed)
-> +#define EFI_CC_BLOB_GUID			EFI_GUID(0x067b1f5f, 0xcf26, 0x44c5, 0x85, 0x54, 0x93, 0xd7, 0x77, 0x91, 0x2d, 0x42)
->  
->  /*
->   * This GUID is used to pass to the kernel proper the struct screen_info
-> -- 
-> 2.17.1
-> 
+This adds supports for the OP-TEE driver to communicate with secure world
+using FF-A [1] as transport.
+
+There is one change to the TEE subsystem with "tee: add sec_world_id to
+struct tee_shm" to add support for holding globally unique handle assigned
+by the FF-A. This is a field that I believe could useful for the AMDTEE
+driver too.
+
+For communication the OP-TEE message protocol is still used, but with a new
+type of memory reference, struct optee_msg_param_fmem, to carry the
+information needed by FF-A. The OP-TEE driver is refactored internally with
+to sets of callbacks, one for the old SMC based communication and another
+set with FF-A as transport. The functions relating to the SMC based ABI
+are moved to smc_abi.c while the FF-A based ABI is added in a ffa_abi.c.
+
+There is also a difference in how the drivers are instantiated. With the
+SMC based transport we have a platform driver, module_platform_driver(),
+today which we're keeping as is for this configuration. In a FF-A system we
+have a FF-A driver, module_ffa_driver(), instead.
+
+The OP-TEE driver can be compiled for both targets at the same time and
+it's up to runtime configuration (device tree or ACPI) to decide how it's
+initialized. Note that it's only the old SMC based driver instance that
+need device tree or ACPI to initialize. The FF-A based driver relies on the
+FF-A bus instead.
+
+This can be tested QEMU
+The repo for SPMC at S-EL1 retrieved by
+repo init -u https://github.com/jenswi-linaro/manifest.git -m
+qemu_v8.xml -b ffav4_spmc
+repo sync
+# Then checkout the branch optee_ffa_v4 from
+# git://git.linaro.org/people/jens.wiklander/linux-tee.git
+# in the linux directory
+
+To build do:
+cd build
+make toolchains
+make all
+
+To boot:
+make run-only
+
+Test with xtest, perhaps only with the command "xtest 1004" in case you're
+not interested in too many tests.
+
+Thanks,
+Jens
+
+[1] https://developer.arm.com/documentation/den0077/latest
+
+v3->v4:
+- Made a bit more RPC code common between the SMC and FF-A ABIs as
+  requested by Sumit.
+- Replaced module_platform_driver() with module_init()/module_exit() as
+  described in the commit "optee: isolate smc abi".
+- Applied Sumit's R-B for the commits "tee: add sec_world_id to struct
+  tee_shm", "optee: simplify optee_release()", and "optee: refactor driver
+  with internal callbacks"
+
+v2->v3:
+- Rebased on 5.14-rc2 which now have the FF-A patches merged
+- Fixed a couple bugs in optee_shm_register() and optee_shm_unregister()
+  which where introduced in "optee: refactor driver with internal callbacks"
+  in previous the version.
+- Separated SMC ABI specifics into smc_abi.c to keep it separated from
+  the FF-A ABI functions as requested by Sumit.
+- Added the FF-A specifics in ffa_abi.c
+- Provided an implementation for optee_ffa_remove()
+
+v1->v2:
+- Rebased to the FF-A v7 patch
+- Fixed a couple of reports from kernel test robot <lkp@intel.com>
+
+Jens Wiklander (5):
+  tee: add sec_world_id to struct tee_shm
+  optee: simplify optee_release()
+  optee: refactor driver with internal callbacks
+  optee: isolate smc abi
+  optee: add FF-A support
+
+ drivers/tee/optee/Makefile        |    7 +-
+ drivers/tee/optee/call.c          |  415 ++-------
+ drivers/tee/optee/core.c          |  685 ++-------------
+ drivers/tee/optee/ffa_abi.c       |  907 ++++++++++++++++++++
+ drivers/tee/optee/optee_ffa.h     |  153 ++++
+ drivers/tee/optee/optee_msg.h     |   27 +-
+ drivers/tee/optee/optee_private.h |  162 +++-
+ drivers/tee/optee/rpc.c           |  236 +-----
+ drivers/tee/optee/shm_pool.c      |   89 --
+ drivers/tee/optee/shm_pool.h      |   14 -
+ drivers/tee/optee/smc_abi.c       | 1299 +++++++++++++++++++++++++++++
+ include/linux/tee_drv.h           |    7 +-
+ 12 files changed, 2665 insertions(+), 1336 deletions(-)
+ create mode 100644 drivers/tee/optee/ffa_abi.c
+ create mode 100644 drivers/tee/optee/optee_ffa.h
+ delete mode 100644 drivers/tee/optee/shm_pool.c
+ delete mode 100644 drivers/tee/optee/shm_pool.h
+ create mode 100644 drivers/tee/optee/smc_abi.c
 
 -- 
-Regards/Gruss,
-    Boris.
+2.31.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
