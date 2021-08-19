@@ -2,106 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 412813F1E8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 18:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35BD03F1E91
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231939AbhHSRAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 13:00:06 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:57096
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231464AbhHSRAB (ORCPT
+        id S230092AbhHSRCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 13:02:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229580AbhHSRCG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 13:00:01 -0400
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com [209.85.218.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 35360411D3
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:59:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629392364;
-        bh=z1RQh6TbDCdHTYWqenSZoV+dbCUcnrr2PV0XynCVMNM=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=dfcRDwGQJOYfgEMdu/YSMlD56hOeXFieYa93cLS/bkazxm0UfEu842grcNQCm35B8
-         SNdwvrz1HIEsimIwvNA+dbc5kbUNVXYKy9+IsjvdzL6bYUldmVCuZY7x8qC6LmQlMb
-         WT1fJY3MqNgrFNpYPC8qIZ1CXEG6sQRJP0DqvtHXEZQfhYIevRe4H9H69o43Lm0Vch
-         CfE3I0bls5BM9ldVjJjLN9jrA6YpTST0kSKSIJJQvLTIbGBk9L6pQIZJdWCHO+aJEh
-         7FjlEy1Aitm0f4gjhSY1nycuouNt3+Z4KvjhOsENzv/ar9n7fU3JSZ6s25svXJJY23
-         hsHx9Y9/XoFQg==
-Received: by mail-ej1-f72.google.com with SMTP id lf30-20020a170907175e00b005bc47d01a39so2475643ejc.16
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 09:59:24 -0700 (PDT)
+        Thu, 19 Aug 2021 13:02:06 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4F5C061575;
+        Thu, 19 Aug 2021 10:01:29 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id gr13so14291957ejb.6;
+        Thu, 19 Aug 2021 10:01:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=HOnBGLFQ/RPkWyVebKZOihfXyP1VfPHshsIs+J3gUi4=;
+        b=gtjctdvwMmR+KSoAu9WPHrM3VQ1bojXNADyhNT5C/CWdI8eqrxzXML8ywRkuk+hlfz
+         PprjBPzk510Gbr3qulBKAN51iG1gZxzii91z5gVuaUKxQqWsuboVjsJOupWDhCebGfxo
+         wlPv3URrKTYZyCy0MMU9x7fOoPcxQWawlhwrh7LtfJhK4mHo3tlmpGyFr0kyxb0g6VHX
+         OVoFeCsjuRwezH3VmWztgW2hSuMj/1Fjw8N0DLu3HAa2he1INBu9ybJw1o/Spe6kHhGS
+         3O4RBHvAT7BTA/GkzpOi20MjfjCQf9YjRh0ehoCd1Q2TGuwUJla1eCGY7Ldp1eb8vhhK
+         AQ3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=z1RQh6TbDCdHTYWqenSZoV+dbCUcnrr2PV0XynCVMNM=;
-        b=caxSwyBejbgJ6FyBOk3wdjv6Fd+bBIaLqThG3g1mgTH/o27CNQ39vdvAJ8ieuQjcSH
-         Ti4D5ZzBOqUDRbEsSVOOsAYNlMulvhCQqeHljJtOQJ9cowIQ0XAv7p4eNB2NjEZQ1xJe
-         oNHwqDHIAe8Dr5U5Kx5eLCzqi/FcjYt1ZqGjqaJwn621B/0Vyl/iM5NJui7g1ywigMhd
-         tLb+e4Myd8rRzhb2OM+0XQBEuT4OeA6PpVSekCpwQ4uy9rchLTRxSADhYQA+FV7PpYHz
-         jx9wOJsSdfh5eL2wCrFGbG8DDTscYEd/jiEfUYMAgJErrym3kUe16HXQJFhjuJTbZ+m1
-         q9CA==
-X-Gm-Message-State: AOAM531Rv89RoWz+EUesYTG4brEKqVmFf+BsTq6puX0/8i5YGqf/kszA
-        5XBsLosxrUzwP1Cq/Z21Nw851/mYoitQPtfWbEBqDY/ODdInILgKa4b869VZOHvZcgqSnjT07Jj
-        HCFZr4aELq/VaVJ00vMDhoguvsfWicwc8eebIGE7iYg==
-X-Received: by 2002:a17:906:4c89:: with SMTP id q9mr16811905eju.118.1629392363974;
-        Thu, 19 Aug 2021 09:59:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwN/cjF/lAeY/btLW56iOgt8LTWAswf2EwA7y38kwFtmqm0X0IiH2XLz30C8VuHrDQfV3G+tA==
-X-Received: by 2002:a17:906:4c89:: with SMTP id q9mr16811892eju.118.1629392363864;
-        Thu, 19 Aug 2021 09:59:23 -0700 (PDT)
-Received: from localhost.localdomain ([86.32.42.198])
-        by smtp.gmail.com with ESMTPSA id h8sm2023418edv.30.2021.08.19.09.59.22
+        bh=HOnBGLFQ/RPkWyVebKZOihfXyP1VfPHshsIs+J3gUi4=;
+        b=VA1XXlqSxxxfkQqSjDyI7+OdGeQ0TMALhAca3ZzoaeC0uZayegokmwUIUJRmNI43HF
+         s426ZYbX/MRfCjO+1s+FYsYn9DciTGtnUlPZ6RxuG6qdOhTNvp3ntba8WsgAukPJJuUW
+         IwTmLZRpaZVdeueJL0UNJ71NOtyfZ2QaVFWeQgre/DO82lgR+wG06A3panJwxZ21uHoU
+         fUtPIQv64sayy8aJZ4V86D7tp9QgH98Z4jaAJQrqn13vKT+I7pixds+RESM+kFmr9tu2
+         ++xGC28TOvVl+bSIhfDneZyIEfl9DJjv9AnPWN/Rj8DV9UNIE5f4tXKWTZYv7EuMpFo2
+         5+rA==
+X-Gm-Message-State: AOAM532zZif3VeF58lnnhcQasWdCN7RRinpSfYZGXxg1Xv03/DvewkFi
+        HyhgK5Y3212AWN1pA3fQB3/gytcQONcekg==
+X-Google-Smtp-Source: ABdhPJyWDs5yB6T1OuTS+UOyjwaJiM6R+2uqmgtC45avvP1J/qktmzyKNhL1VibEzRQtpC1IDes4vg==
+X-Received: by 2002:a17:906:b787:: with SMTP id dt7mr17258690ejb.111.1629392488064;
+        Thu, 19 Aug 2021 10:01:28 -0700 (PDT)
+Received: from archbook.localnet (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
+        by smtp.gmail.com with ESMTPSA id n23sm2090257eds.41.2021.08.19.10.01.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 09:59:23 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
+        Thu, 19 Aug 2021 10:01:27 -0700 (PDT)
+From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Sagar Shrikant Kadam <sagar.kadam@sifive.com>,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH 5/5] riscv: dts: sifive: add missing compatible for plic
-Date:   Thu, 19 Aug 2021 18:59:08 +0200
-Message-Id: <20210819165908.135591-5-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210819165908.135591-1-krzysztof.kozlowski@canonical.com>
-References: <20210819165908.135591-1-krzysztof.kozlowski@canonical.com>
+        Heiko Stuebner <heiko@sntech.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] dt-bindings: sound: add rockchip i2s-tdm binding
+Date:   Thu, 19 Aug 2021 19:01:25 +0200
+Message-ID: <1870492.5CqhBlFY90@archbook>
+In-Reply-To: <20210819141617.GM4177@sirena.org.uk>
+References: <20210817101119.423853-1-frattaroli.nicolas@gmail.com> <2412250.zZEsDtmPgG@archbook> <20210819141617.GM4177@sirena.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add proper compatible for Platform-Level Interrupt Controller to silence
-dtbs_check warnings:
+On Donnerstag, 19. August 2021 16:16:17 CEST Mark Brown wrote:
+> On Thu, Aug 19, 2021 at 03:52:55PM +0200, Nicolas Frattaroli wrote:
+> > On Donnerstag, 19. August 2021 14:08:36 CEST Robin Murphy wrote:
+> > > > +  rockchip,no-dmaengine:
+> > > > +    description:
+> > > > +      If present, driver will not register a pcm dmaengine, only the
+> > > > dai.
+> > > > +      If the dai is part of multi-dais, the property should be
+> > > > present.
+> > > > +    type: boolean
+> > > 
+> > > That sounds a lot more like a policy decision specific to the Linux
+> > > driver implementation, than something which really belongs in DT as a
+> > > description of the platform.
+> > 
+> > I agree. Should I be refactoring this into a module parameter or
+> > something along those lines? I'm unsure of where this goes.
+> 
+> Why is this even required?  What is "multi-dais" and why would
+> registering the DMA stuff cause a problem?
 
-  interrupt-controller@c000000: compatible: ['sifive,plic-1.0.0'] is too short
+After some research, it appears that multi-dais is a special driver that
+downstream uses to allow multiple sub-DAIs to be combined into one DAI
+that has all the channels of the sub-DAIs. This does not seem like
+something that should be done at that level to me, because it seems
+like it's pushing a sound driver configuration into the realm of
+hardware description.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- arch/riscv/boot/dts/sifive/fu540-c000.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+In retrospect, I should have stripped this out before submitting it,
+because I should not be submitting things I don't understand completely.
+I apologise.
 
-diff --git a/arch/riscv/boot/dts/sifive/fu540-c000.dtsi b/arch/riscv/boot/dts/sifive/fu540-c000.dtsi
-index 7db861053483..0655b5c4201d 100644
---- a/arch/riscv/boot/dts/sifive/fu540-c000.dtsi
-+++ b/arch/riscv/boot/dts/sifive/fu540-c000.dtsi
-@@ -141,7 +141,7 @@ soc {
- 		ranges;
- 		plic0: interrupt-controller@c000000 {
- 			#interrupt-cells = <1>;
--			compatible = "sifive,plic-1.0.0";
-+			compatible = "sifive,fu540-c000-plic", "sifive,plic-1.0.0";
- 			reg = <0x0 0xc000000 0x0 0x4000000>;
- 			riscv,ndev = <53>;
- 			interrupt-controller;
--- 
-2.30.2
+> > The particular configuration may even vary per-board; an I2S/TDM
+> > controller may be connected to an external codec which does not
+> > support capture, whereas on another board it may be connected to
+> > one that does.
+> 
+> If the external device doesn't support both directions then why does the
+> driver for the I2S controller in the CPU care?  The constraint handling
+> code in the core will ensure that nothing tries to start something that
+> isn't supported
+
+I went over the downstream text binding description again and from that
+it appears that the playback/capture-only capability is something
+specific to the controller, not to any device connected to it.
+
+The downstream device tree for the rk3568 specifies playback-only for
+I2S0, a.k.a. the one connected to the HDMI that I can't test because
+we currently don't have a video clock. Another downstream device tree,
+specific to what appears to be a robot demo for the px30 SoC, uses this
+property on i2s1, which tells me that this is not an actual description
+of the controller hardware but just a description of the application.
+
+While not relevant to the device tree schema, the driver reacts to these
+properties by setting the opposite directions _minimum_ channel number
+to 0 (from the default of 2.)
+
+My conclusion from this is that this reeks of nonsense and I will look
+into what happens when I simply remove these properties and lower the
+channels_min to 0 in the driver. If it turns out that on some SoC for
+some I2S/TDM controller instance there is a limitation where specifying
+that the controller only handles either capture or playback does make
+sense, we can always add it later.
+
+Thank you for your comments,
+Nicolas Frattaroli
+
 
