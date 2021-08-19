@@ -2,136 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A81DD3F1A6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 15:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C02E13F1A73
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 15:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240078AbhHSNfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 09:35:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58614 "EHLO
+        id S240118AbhHSNfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 09:35:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28921 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240010AbhHSNfR (ORCPT
+        by vger.kernel.org with ESMTP id S240106AbhHSNfv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 09:35:17 -0400
+        Thu, 19 Aug 2021 09:35:51 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629380081;
+        s=mimecast20190719; t=1629380114;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Ps+yLkOEy/hrcU9IbnjByrznQShPQ8E81PW5BMepISY=;
-        b=FBBmDXevac+tySaE7/qYSB27wKdvVHFYmSgzSWvch0k4ZH3JGyxOMtolnlbuDGLFSzs1w+
-        D4GQYCcYa+bUtoagGiuaELTLxcdqAkir4r6EJPLQ8IlDKGiN8annVvOjrh8A7xTM7bDqnq
-        bgzfpvSIvzdqhL5yx8LC3K0fpsX8Hxk=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-552-XDs8g5TfOFCFTwxZyiAQdA-1; Thu, 19 Aug 2021 09:34:40 -0400
-X-MC-Unique: XDs8g5TfOFCFTwxZyiAQdA-1
-Received: by mail-ed1-f72.google.com with SMTP id z4-20020a05640240c4b02903be90a10a52so2820962edb.19
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 06:34:39 -0700 (PDT)
+        bh=S+Tl/O2UL95HsN9NSAci3PkitvsT8uG7yyX9Sw+EVEY=;
+        b=EdPXQaKDq0Egjd/6P3xgBfpMaAb6c/p06CzIhiYdP1CT/5ClwS3Ue/NE9e1P45KfrNyv1l
+        jhVmzLGW11YvCcWdPP/eTd/Wp/lxPyfPeo7Us368XcAbXxHLpOsdZgAkuKsz8Ozla+mSnu
+        sSBQ9ikVKlSHdOHYWMgoQMqsoRJmqYw=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-123-k9LOud1uO52wVrxRlAmCUg-1; Thu, 19 Aug 2021 09:35:13 -0400
+X-MC-Unique: k9LOud1uO52wVrxRlAmCUg-1
+Received: by mail-wr1-f71.google.com with SMTP id r17-20020adfda510000b02901526f76d738so1722018wrl.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 06:35:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ps+yLkOEy/hrcU9IbnjByrznQShPQ8E81PW5BMepISY=;
-        b=QVEC8vmFr/kbfzr+9BM9ACVhcCunxyAGrbBvAb0IAj9rSN7iUm7uuSJSMQ58jaV4wN
-         xUEeZZ6BmUe42RE+UVzkEdqLLDF/Prq6rZBq3AWveg1RpXIFp6NILUhsvrAlFVfyZCYl
-         jcH2kOPcVptXFlidL2T/3UWJKx3MJiNUo+s+DN2FcAFTk+NO9nGRfsRKWUV7LlZvrBy7
-         ISXhHQ7DkDVzp9lFyqMSBxTX123gZF7Jom+L4+feKAkSuXzdndhHbXthrELA6dLgj92N
-         +Q74vY85CSW9hRO7u09fMf1R0AgQU19EZj5YnrRiyxbrxppin8Kw54AYsZ73NzXyif7A
-         ZGHQ==
-X-Gm-Message-State: AOAM532N+Y8sXp4aeVbqEh/0aMzSfMyd5hRKZ1/WZrUqi6Mabv3+b0mW
-        HMZXuskgcpBBQuSio6RYntJFihasJ5W87a2Mj1IgoNm4PVE16fAcyOq/ovn2AOnzMuA/7DJ2JZK
-        uTLVy4Pp9xLM5ZLW8QaOridCO
-X-Received: by 2002:a05:6402:51cf:: with SMTP id r15mr16549120edd.211.1629380078825;
-        Thu, 19 Aug 2021 06:34:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzwwMpLOCS3BaI6SAkMBcbSfFImX5Pv/q+Bhb98HnIHQoJzN+K8bxXklRlSvXgJvsQvJ0ZGew==
-X-Received: by 2002:a05:6402:51cf:: with SMTP id r15mr16549101edd.211.1629380078700;
-        Thu, 19 Aug 2021 06:34:38 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id da1sm1793286edb.26.2021.08.19.06.34.37
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=S+Tl/O2UL95HsN9NSAci3PkitvsT8uG7yyX9Sw+EVEY=;
+        b=Tpes9asATaSTTwBcOAyexi50KS3mD76MKQC/kuHwe7OqsfmVgh3xrMZ1fJNZKH56aK
+         p0+BI56IMmpcQeV40xzM8NIIDP+Sia3Z4MDwG4sd6/BKxEdXZEiLaJQ5cFVXtCa4j5dm
+         Z/wMNoIcqSYTAwnJssYASKIZpJNEvVyOCoPUwwvtZmjawZocYzfJxHwg5RgxCi0Xd1m7
+         a/FIRi1YwG6e9rP/wSHW17E+0zqsVcrp2CxVAgMbSJ2aYXCIdmcEm2BA4qd3I8iq7TxS
+         5E2xruhgWl8Oys6joLy8u72clxI7RWSyT2iQ+SGeXJoTAbDkCw7ztgjeKmkgCxBxbDmW
+         hlPA==
+X-Gm-Message-State: AOAM530LUsoz3ZEDkDfJIu9cRXitpH7mSH4yN19nnyai1CAC40S4OFtP
+        hEMQkgQJFoqd1/Pc1WbKhwgp1OVRWEYsLJikBrNHFDfW+SxMHDDxGyjHPGY+wutSQh2hWv9MhMb
+        zpf3Hh+XYMKKgKud9NZJTtIFu
+X-Received: by 2002:a05:600c:210a:: with SMTP id u10mr13912658wml.162.1629380112342;
+        Thu, 19 Aug 2021 06:35:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzoKtiSGvFPCIpB5RUG1rMBbQAQd/0uA6x4ZuORYE20CS6Wsk1/Sw74TxpctCpR33DxsA8WNg==
+X-Received: by 2002:a05:600c:210a:: with SMTP id u10mr13912624wml.162.1629380112054;
+        Thu, 19 Aug 2021 06:35:12 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6bd1.dip0.t-ipconnect.de. [91.12.107.209])
+        by smtp.gmail.com with ESMTPSA id q3sm2402775wmf.37.2021.08.19.06.35.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 06:34:38 -0700 (PDT)
-Subject: Re: [PATCH v3 00/20] Intel platform driver code movement
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Kate Hsuan <hpa@redhat.com>, Alex Hung <alex.hung@canonical.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        AceLan Kao <acelan.kao@canonical.com>,
-        Jithu Joseph <jithu.joseph@intel.com>,
-        Maurice Ma <maurice.ma@intel.com>,
-        Sujith Thomas <sujith.thomas@intel.com>,
-        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        Zha Qipeng <qipeng.zha@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "David E . Box" <david.e.box@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dell.Client.Kernel@dell.com,
-        Platform Driver <platform-driver-x86@vger.kernel.org>
-References: <20210819033001.20136-1-hpa@redhat.com>
- <1360c64f-b695-a4b8-8b61-a4dfb0e896f0@redhat.com>
- <CAHp75VcdOc+G1Yov9HcGhMbEqzGwemmD7=SHd3qOOsEdAqjg2Q@mail.gmail.com>
- <CAHp75VfvjVeq716d=aGvZXvmzbpW4+XG66ryVYrBxk5G5Wd6cg@mail.gmail.com>
- <a5e52890-c162-ab48-4858-3eb0e971e5a1@redhat.com>
-Message-ID: <07cfd37a-cce6-56f2-0ff1-d4daeccfc67c@redhat.com>
-Date:   Thu, 19 Aug 2021 15:34:37 +0200
+        Thu, 19 Aug 2021 06:35:11 -0700 (PDT)
+Subject: Re: [PATCH v2] x86/mm: fix kern_addr_valid to cope with existing but
+ not present entries
+To:     Mike Rapoport <rppt@kernel.org>, x86@kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, stable@vger.kernel.org
+References: <20210819132717.19358-1-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <68248e54-fcaf-0360-6a40-ef621fa03742@redhat.com>
+Date:   Thu, 19 Aug 2021 15:35:10 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <a5e52890-c162-ab48-4858-3eb0e971e5a1@redhat.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210819132717.19358-1-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 8/19/21 3:31 PM, Hans de Goede wrote:
-> Hi,
+On 19.08.21 15:27, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> On 8/19/21 2:14 PM, Andy Shevchenko wrote:
->> On Thu, Aug 19, 2021 at 3:03 PM Andy Shevchenko
->> <andy.shevchenko@gmail.com> wrote:
->>> On Thu, Aug 19, 2021 at 1:48 PM Hans de Goede <hdegoede@redhat.com> wrote:
->>>
->>>
->>>> Thank you for your patch-series, I've applied the series to my
->>>> review-hans branch:
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
->>>>
->>>> With the changes mentioned in replies to individual patches.
->>>
->>> Can we postpone this a bit, please?
->>>
->>> I have a few comments here and there. I'll send asap.
->>
->> Hmm... It seems it will take less time if I simply take what you have
->> in your repo and produce a v4.
->> Would it work?
+> Jiri Olsa reported a fault when running:
 > 
-> That is fine by me, I might be better to just do a small follow-up patch
-> though, given that you seem to only have a few small remarks.
+> 	# cat /proc/kallsyms | grep ksys_read
+> 	ffffffff8136d580 T ksys_read
+> 	# objdump -d --start-address=0xffffffff8136d580 --stop-address=0xffffffff8136d590 /proc/kcore
 > 
-> But if you prefer to do a v4 that is fine too. I was planning on
-> keeping this in review-hans for a while anyways.
+> 	/proc/kcore:     file format elf64-x86-64
 > 
-> I did notice the couple of stray changes which you pointed out but
-> they get corrected by other commits (or are removal of extra whitespace
-> left-over from other commits), so I decided that they were harmless
-> since the end-result Makefile / Kconfig files were good.
+> 	Segmentation fault
+> 
+> krava33 login: [   68.330612] general protection fault, probably for non-canonical address 0xf887ffcbff000: 0000 [#1] SMP PTI
+> [   68.333118] CPU: 12 PID: 1079 Comm: objdump Not tainted 5.14.0-rc5qemu+ #508
+> [   68.334922] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-4.fc34 04/01/2014
+> [   68.336945] RIP: 0010:kern_addr_valid+0x150/0x300
+> [   68.338082] Code: 1f 40 00 48 8b 0d e8 12 61 01 48 85 f6 0f 85 ca 00 00 00 48 81 e1 00 f0 ff ff 48 21 c1 48 b8 00 00 00 00 80 88 ff ff 48 01 ca <48> 8b 3c 02 48 f7 c7 9f ff ff ff 0f 84 d8 fe ff ff 48 89 f8 0f 1f
+> [   68.342220] RSP: 0018:ffffc90000bcbc38 EFLAGS: 00010206
+> [   68.343428] RAX: ffff888000000000 RBX: 0000000000001000 RCX: 000ffffffcbff000
+> [   68.345029] RDX: 000ffffffcbff000 RSI: 0000000000000000 RDI: 800ffffffcbff062
+> [   68.346599] RBP: ffffc90000bcbea8 R08: 0000000000001000 R09: 0000000000000000
+> [   68.349000] R10: 0000000000000000 R11: 0000000000001000 R12: 00007fcc0fd80010
+> [   68.350804] R13: ffffffff83400000 R14: 0000000000400000 R15: ffffffff843d23e0
+> [   68.352609] FS:  00007fcc111fcc80(0000) GS:ffff888275e00000(0000) knlGS:0000000000000000
+> [   68.354638] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   68.356104] CR2: 00007fcc0fd80000 CR3: 000000011226e004 CR4: 0000000000770ee0
+> [   68.357896] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [   68.359694] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [   68.361597] PKRU: 55555554
+> [   68.362460] Call Trace:
+> [   68.363252]  read_kcore+0x57f/0x920
+> [   68.364289]  ? rcu_read_lock_sched_held+0x12/0x80
+> [   68.365630]  ? rcu_read_lock_sched_held+0x12/0x80
+> [   68.366955]  ? rcu_read_lock_sched_held+0x12/0x80
+> [   68.368277]  ? trace_hardirqs_on+0x1b/0xd0
+> [   68.369462]  ? rcu_read_lock_sched_held+0x12/0x80
+> [   68.370793]  ? lock_acquire+0x195/0x2f0
+> [   68.371920]  ? lock_acquire+0x195/0x2f0
+> [   68.373035]  ? rcu_read_lock_sched_held+0x12/0x80
+> [   68.374364]  ? lock_acquire+0x195/0x2f0
+> [   68.375498]  ? rcu_read_lock_sched_held+0x12/0x80
+> [   68.376831]  ? rcu_read_lock_sched_held+0x12/0x80
+> [   68.379883]  ? rcu_read_lock_sched_held+0x12/0x80
+> [   68.381268]  ? lock_release+0x22b/0x3e0
+> [   68.382458]  ? _raw_spin_unlock+0x1f/0x30
+> [   68.383685]  ? __handle_mm_fault+0xcfc/0x15f0
+> [   68.384994]  ? rcu_read_lock_sched_held+0x12/0x80
+> [   68.386389]  ? lock_acquire+0x195/0x2f0
+> [   68.387573]  ? rcu_read_lock_sched_held+0x12/0x80
+> [   68.388969]  ? lock_release+0x22b/0x3e0
+> [   68.390145]  proc_reg_read+0x55/0xa0
+> [   68.391257]  ? vfs_read+0x78/0x1b0
+> [   68.392336]  vfs_read+0xa7/0x1b0
+> [   68.393328]  ksys_read+0x68/0xe0
+> [   68.394308]  do_syscall_64+0x3b/0x90
+> [   68.395391]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [   68.396804] RIP: 0033:0x7fcc11cf92e2
+> [   68.397824] Code: c0 e9 b2 fe ff ff 50 48 8d 3d ea 2e 0a 00 e8 95 e9 01 00 0f 1f 44 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 0f 05 <48> 3d 00 f0 ff ff 77 56 c3 0f 1f 44 00 00 48 83 ec 28 48 89 54 24
+> [   68.402420] RSP: 002b:00007ffd6e0f8da8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [   68.404357] RAX: ffffffffffffffda RBX: 0000565439305b20 RCX: 00007fcc11cf92e2
+> [   68.406061] RDX: 0000000000800000 RSI: 00007fcc0f980010 RDI: 0000000000000003
+> [   68.407747] RBP: 00007fcc11dcd300 R08: 0000000000000003 R09: 00007fcc0d980010
+> [   68.410937] R10: 0000000003826000 R11: 0000000000000246 R12: 00007fcc0f980010
+> [   68.412624] R13: 0000000000000d68 R14: 00007fcc11dcc700 R15: 0000000000800000
+> [   68.414322] Modules linked in: intel_rapl_msr intel_rapl_common nfit kvm_intel kvm irqbypass rapl iTCO_wdt iTCO_vendor_support i2c_i801 i2c_smbus lpc_ich drm drm_panel_orientation_quirks zram xfs crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel
+> [   68.419591] ---[ end trace e2c30f827226966b ]---
+> [   68.420969] RIP: 0010:kern_addr_valid+0x150/0x300
+> [   68.422308] Code: 1f 40 00 48 8b 0d e8 12 61 01 48 85 f6 0f 85 ca 00 00 00 48 81 e1 00 f0 ff ff 48 21 c1 48 b8 00 00 00 00 80 88 ff ff 48 01 ca <48> 8b 3c 02 48 f7 c7 9f ff ff ff 0f 84 d8 fe ff ff 48 89 f8 0f 1f
+> [   68.426826] RSP: 0018:ffffc90000bcbc38 EFLAGS: 00010206
+> [   68.428150] RAX: ffff888000000000 RBX: 0000000000001000 RCX: 000ffffffcbff000
+> [   68.429813] RDX: 000ffffffcbff000 RSI: 0000000000000000 RDI: 800ffffffcbff062
+> [   68.431465] RBP: ffffc90000bcbea8 R08: 0000000000001000 R09: 0000000000000000
+> [   68.433115] R10: 0000000000000000 R11: 0000000000001000 R12: 00007fcc0fd80010
+> [   68.434768] R13: ffffffff83400000 R14: 0000000000400000 R15: ffffffff843d23e0
+> [   68.436423] FS:  00007fcc111fcc80(0000) GS:ffff888275e00000(0000) knlGS:0000000000000000
+> [   68.438354] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   68.442077] CR2: 00007fcc0fd80000 CR3: 000000011226e004 CR4: 0000000000770ee0
+> [   68.443727] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [   68.445370] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [   68.447010] PKRU: 55555554
+> 
+> The fault happens because kern_addr_valid() dereferences existent but not
+> present PMD in the high kernel mappings.
+> 
+> Such PMDs are created when free_kernel_image_pages() frees regions larger
+> than 2Mb. In this case a part of the freed memory is mapped with PMDs and
+> the set_memory_np_noalias() -> ... -> __change_page_attr() sequence will
+> mark the PMD as not present rather than wipe it completely.
+> 
+> Make kern_addr_valid() to check whether higher level page table entries are
+> present before trying to dereference them to fix this issue and to avoid
+> similar issues in the future.
+> 
+> Reported-by: Jiri Olsa <jolsa@redhat.com>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> Cc: <stable@vger.kernel.org>	# 4.4+
+> ---
+> 
+> v2:
+> * drop pXd_none() checks and leave only pXd_present(), per David
+> 
+> v1: https://lore.kernel.org/lkml/20210817135854.25407-1-rppt@kernel.org
+> 
+>   arch/x86/mm/init_64.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+> index ddeaba947eb3..879886c6cc53 100644
+> --- a/arch/x86/mm/init_64.c
+> +++ b/arch/x86/mm/init_64.c
+> @@ -1433,18 +1433,18 @@ int kern_addr_valid(unsigned long addr)
+>   		return 0;
+>   
+>   	p4d = p4d_offset(pgd, addr);
+> -	if (p4d_none(*p4d))
+> +	if (!p4d_present(*p4d))
+>   		return 0;
+>   
+>   	pud = pud_offset(p4d, addr);
+> -	if (pud_none(*pud))
+> +	if (!pud_present(*pud))
+>   		return 0;
+>   
+>   	if (pud_large(*pud))
+>   		return pfn_valid(pud_pfn(*pud));
+>   
+>   	pmd = pmd_offset(pud, addr);
+> -	if (pmd_none(*pmd))
+> +	if (!pmd_present(*pmd))
+>   		return 0;
+>   
+>   	if (pmd_large(*pmd))
+> 
 
-p.s.
+Hopefully we won't have other similar BUGs in the code because we leave 
+fake swap entries lying around in the direct map.
 
-Note that drivers/platform/x86/intel_ips.h is deliberately not moved
-(for now) since it is also used by the i915 driver.
+Thanks!
 
-My plan is to merge a follow-up patch moving that through drm-intel-next
-once 5.15-rc1 is out.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-Regards,
+-- 
+Thanks,
 
-Hans
+David / dhildenb
 
