@@ -2,138 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C6A3F2340
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5F83F2349
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236544AbhHSWh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 18:37:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44158 "EHLO
+        id S236572AbhHSWiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 18:38:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233720AbhHSWhw (ORCPT
+        with ESMTP id S236420AbhHSWhx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 18:37:52 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 375D5C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:37:16 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id f6so2195537iox.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:37:16 -0700 (PDT)
+        Thu, 19 Aug 2021 18:37:53 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D45A7C061575;
+        Thu, 19 Aug 2021 15:37:16 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id d4so16130573lfk.9;
+        Thu, 19 Aug 2021 15:37:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x86VEtZPwcNzHTJFuuZe3E742jzfGtY+fmIoJA+GPhU=;
-        b=Kk0n9V9sOWJDIqbsh70A/BdzKh/8qPeQZDe0zE/SzbUUETbQoGRU+jK71pTekZV9zI
-         bky7Ld2xeDRW+DQ4omevsugaoC9ZnHAKKn6kN2GQcZZbyJBL8MJgssFWlxmnEej8+ztP
-         SlN/fF0BqrZ3zWZU/9vr7nv5Q65uS41N44pR7FhjoeEJWsYKfhFrp+Aq1wT+okvmYUSI
-         q1F84pr36rSZCQ3+sU24frVZ8jJxMAtx+iQtFTVDGJyPPctdqVGrjadJeBfi+6muENH5
-         NLMoSqHh1rEst3lkueysLr006KrFN2PWDjqP+0OvqPhCPbV1lbDgefpkIbp7cNPmnGQI
-         J2Uw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nAS9qcnivKqgeAIIut8h1WFAVA13oxF52QRobcHq7Xc=;
+        b=a4XV4VjRWxo1kHnGEwcEOxFKRCM6deOw4lOM9Uon818SGJgn0YPFw4DdKti64wBV9H
+         ZocBdzpcFtuEYqk3Wa8+HUMj2ko6agOMxjv09whIIThddMbYROGGAAS4Plcpv1Z18cgY
+         5sKTsW0BmphWVrS/Tiinzv52JEwYHnlvjz/kC/ONQmk2H2QZrW0O70369IiptcK6UmEd
+         XneH4My93CRKDRkqsBmuCdSoAuWcBI3J8xEuCJKQTSLx7Jnn2Qku3bl3B0b4iwQ7W5+X
+         bMdlKDDR1RyjIOyTN2oZCz5u+iQg+iw/06K9i+IzAB7AjGsFZejlDhk+M4jSdmwerMgk
+         ecRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x86VEtZPwcNzHTJFuuZe3E742jzfGtY+fmIoJA+GPhU=;
-        b=uGF6fAvF4P0QTpo3vf+LuBKhFwb2gqhKCLVGaIl2Eyd5EyrUmI7JK9qRgT8nG4pyt0
-         gD0Dkc9RqSTFyjpWw8JMCjnWwV59isDjjWi0bxrEv/CEja8MLLR1D9UCqhPZIDLzXWaS
-         7x56JhkQbICXzEnS5Aidq7QY6RLO5gyY7IdO3NLjUTyMzf/uk4UtZ2f2xWwKI1tWHDgk
-         YrKxeAHVSoeh720DHGmuwyKZW0DAkOJ6Bq0wr1VLj7TYcOo8dzQpd1Wld4sgg/+KRjXO
-         I8T4oCmXI2BawyvDovIiPWitfy+xBhgWM+wUkTcDYvJzGPWd1e8Joel3Hn01XaGNkvbP
-         anSA==
-X-Gm-Message-State: AOAM5325VGXzXI/8iqQxJqBGtAjcgyZmAEFCQb2HuQRKoHz7zdq71X5q
-        CxRBioWYWK3lhXt3D0cOsbD/zll3ega2f8LY48c=
-X-Google-Smtp-Source: ABdhPJzMgcv0VcR3jZXanRtFTbEwbPNgSIGb8ULBYEjIPWtTlderG0I5Fmulw+sOSYaM80GJWONy5VkBB5T640PyVGM=
-X-Received: by 2002:a6b:490d:: with SMTP id u13mr13593076iob.176.1629412635600;
- Thu, 19 Aug 2021 15:37:15 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nAS9qcnivKqgeAIIut8h1WFAVA13oxF52QRobcHq7Xc=;
+        b=DwiSUa9a4uiiaLqygFuoMgS+IfwNjh4DFWc/E9l+eJnH6ahXnqx2hPvZsxUUoqBRYy
+         MuEK0niGgUgmgC2jyzU1CZvSEW/zgJidGUDFrc67pGb2wt8X2wKRlUC4yVWoJR0eXgee
+         yaAdHbXydQTyywGt+9jP+64bosQlr0+ss61atdmEHjYjj5wxqBPSgCRc3G4juqiWa67j
+         cZEfDrthqICCJoWd25/S/EEH76hKFeE5Tr5/IaYoRfF/BZ/IOTqUYE6HRdT7Sk7L7mQQ
+         Wi6O71sgcip9ACyvC5hUtA2ojdR/dnSjPj3MfMSTUXW9rgzPHd78Yb0LUILIz8UWp5IC
+         ZMBg==
+X-Gm-Message-State: AOAM533j7150g+DhauoY2PMMStGz1biw+CuoZj02oBeERMRt5bOXc9e3
+        PoufT5sJiO7R6hCt1B1LOVOa8FFW1yU=
+X-Google-Smtp-Source: ABdhPJwuMIWgok5xoSqa52pUigQi/FuENEcCid7QFl2xNGsNEC360zffkjPyNHa+eJldf8U6/MOiRQ==
+X-Received: by 2002:a05:6512:b8e:: with SMTP id b14mr12930460lfv.449.1629412634809;
+        Thu, 19 Aug 2021 15:37:14 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-120-72.dynamic.spd-mgts.ru. [46.138.120.72])
+        by smtp.googlemail.com with ESMTPSA id b19sm437171lff.121.2021.08.19.15.37.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Aug 2021 15:37:14 -0700 (PDT)
+Subject: Re: [PATCH v8 20/34] mmc: sdhci-tegra: Add runtime PM and OPP support
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20210817012754.8710-1-digetx@gmail.com>
+ <20210817012754.8710-21-digetx@gmail.com> <YR6O9Om+HzMMG8AR@orome.fritz.box>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <05b7ff28-4c01-fb56-deeb-595a5797394b@gmail.com>
+Date:   Fri, 20 Aug 2021 01:37:13 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <CAKmqyKMLyx+CvBQbLz-xQvwLS692tx-4xOgU7b-V2J676D29yg@mail.gmail.com>
- <d983217b-e117-361c-0306-b131695bb93f@denx.de> <CAKmqyKOsUcta1cXxamJZnf01G9beCZrDKia068HR+J0AadgNiA@mail.gmail.com>
- <bff9ba97-bc26-f091-ba71-5e639af524d4@denx.de> <CAKmqyKPF3T_Sx+hL=4OSamLdjy=0fwmrTrVeb-GY0Ja9M=mi+Q@mail.gmail.com>
- <ab2b7f4f-3e36-461c-6a6c-02ee7ed6cb99@denx.de> <CAKmqyKN8devNyDvVL5B_dDASU3se1dSui0bsnf6gQ+CkZ_TaKg@mail.gmail.com>
- <YR1Th65KKRS4D/6+@ravnborg.org> <CAKmqyKOBYXiWwO4QJBJ9sEO5ay5QyYmO=yzvT31evB7BKeniYw@mail.gmail.com>
- <YR58MvAYYEjBQ7l5@ravnborg.org>
-In-Reply-To: <YR58MvAYYEjBQ7l5@ravnborg.org>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Fri, 20 Aug 2021 08:36:49 +1000
-Message-ID: <CAKmqyKOYk=O4ewBcL7hOz+8=gTsNzFb07m_qrNhKq9Bk2ByYrQ@mail.gmail.com>
-Subject: Re: Revert "video: fbdev: mxsfb: Remove driver"
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Marek Vasut <marex@denx.de>, Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>, b.zolnierkie@samsung.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alistair Francis <alistair@alistair23.me>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YR6O9Om+HzMMG8AR@orome.fritz.box>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 1:43 AM Sam Ravnborg <sam@ravnborg.org> wrote:
->
-> Hi Alistair,
->
-> On Thu, Aug 19, 2021 at 07:10:00PM +1000, Alistair Francis wrote:
-> > On Thu, Aug 19, 2021 at 4:38 AM Sam Ravnborg <sam@ravnborg.org> wrote:
-> > >
-> > > Hi Alistair,
-> > >
-> > > >
-> > > > These are the EINVAL strace tells me in the not working case:
-> > > >
-> > > > prctl(PR_CAPBSET_READ, 0x30 /* CAP_??? */) = -1 EINVAL (Invalid argument)
-> > > > prctl(PR_CAPBSET_READ, 0x2c /* CAP_??? */) = -1 EINVAL (Invalid argument)
-> > > > prctl(PR_CAPBSET_READ, 0x2a /* CAP_??? */) = -1 EINVAL (Invalid argument)
-> > > > prctl(PR_CAPBSET_READ, 0x29 /* CAP_??? */) = -1 EINVAL (Invalid argument)
-> > > > ioctl(5, FBIOPUT_VSCREENINFO, 0x4ce8e0) = -1 EINVAL (Invalid argument)
-> > > >
-> > > > I'm guessing it's related to FBIOPUT_VSCREENINFO then, is that
-> > > > something that could be added to the DRM emulation?
-> > >
-> > > If it turns out FBIOPUT_VSCREENINFO is the culprint it would also be
-> > > good to know why we see EINVAL.
-> > > One way is to sprinkle a number of printk's in fb_set_var(),
-> > > then you can see how far you get before it fails.
-> >
-> > Thanks for the help.
-> >
-> > I see this line:
-> >
-> > ret = info->fbops->fb_check_var(var, info);
-> >
-> > in fb_set_var()
-> >
-> > returning early.
->
-> Super, then next step is to annotate drm_fb_helper_check_var()
-> to see where it fails.
-> Try this and let us know the result.
+19.08.2021 20:03, Thierry Reding пишет:
+> On Tue, Aug 17, 2021 at 04:27:40AM +0300, Dmitry Osipenko wrote:
+>> The SDHCI on Tegra belongs to the core power domain and we're going to
+>> enable GENPD support for the core domain. Now SDHCI must be resumed using
+>> runtime PM API in order to initialize the SDHCI power state. The SDHCI
+>> clock rate must be changed using OPP API that will reconfigure the power
+>> domain performance state in accordance to the rate. Add runtime PM and OPP
+>> support to the SDHCI driver.
+>>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  drivers/mmc/host/sdhci-tegra.c | 146 ++++++++++++++++++++++++---------
+>>  1 file changed, 105 insertions(+), 41 deletions(-)
+>>
+>> diff --git a/drivers/mmc/host/sdhci-tegra.c b/drivers/mmc/host/sdhci-tegra.c
+>> index 387ce9cdbd7c..a3583359c972 100644
+>> --- a/drivers/mmc/host/sdhci-tegra.c
+>> +++ b/drivers/mmc/host/sdhci-tegra.c
+>> @@ -15,6 +15,8 @@
+>>  #include <linux/of.h>
+>>  #include <linux/of_device.h>
+>>  #include <linux/pinctrl/consumer.h>
+>> +#include <linux/pm_opp.h>
+>> +#include <linux/pm_runtime.h>
+>>  #include <linux/regulator/consumer.h>
+>>  #include <linux/reset.h>
+>>  #include <linux/mmc/card.h>
+>> @@ -24,6 +26,8 @@
+>>  #include <linux/gpio/consumer.h>
+>>  #include <linux/ktime.h>
+>>  
+>> +#include <soc/tegra/common.h>
+>> +
+>>  #include "sdhci-pltfm.h"
+>>  #include "cqhci.h"
+>>  
+>> @@ -123,6 +127,12 @@
+>>  					 SDHCI_TRNS_BLK_CNT_EN | \
+>>  					 SDHCI_TRNS_DMA)
+>>  
+>> +enum {
+>> +	TEGRA_CLK_BULK_SDHCI,
+>> +	TEGRA_CLK_BULK_TMCLK,
+>> +	TEGRA_CLK_BULK_NUM,
+>> +};
+>> +
+>>  struct sdhci_tegra_soc_data {
+>>  	const struct sdhci_pltfm_data *pdata;
+>>  	u64 dma_mask;
+>> @@ -171,6 +181,8 @@ struct sdhci_tegra {
+>>  	bool enable_hwcq;
+>>  	unsigned long curr_clk_rate;
+>>  	u8 tuned_tap_delay;
+>> +
+>> +	struct clk_bulk_data clocks[TEGRA_CLK_BULK_NUM];
+> 
+> This doesn't seem worth it to me. There's a lot of churn in this driver
+> that's only needed to convert this to the clk_bulk API and it makes the
+> code a lot more difficult to read, in my opinion.
+> 
+> It looks like the only benefit that this gives us is that runtime
+> suspend and resume become a few lines shorter.
 
-Thanks!
-
-After adding some prints, I realised there are already some in there
-that are disabled by default. After enabling them I see this:
-
-"fbdev emulation doesn't support changing the pixel clock, value of
-pixclock is ignored"
-
-and
-
-"fb requested width/height/bpp can't fit in current fb request
-260x1408-32 (virtual 260x23936) > 334x1405-32"
-
-which returns EINVAL.
-
-This is where I'm confused though. The values 334 and 1405 are taken
-from the vendor and in the working fbdev driver they are using the
-same values.
-
-I tried to add a similar print to mxsfb_check_var() for the working
-version, to check what the values are, but there doesn't seem to be
-any equivalent of fb->width and friends.
-
-Any ideas?
-
-Alistair
-
->
->         Sam
+The driver probe code looks cleaner with that. You should be looking at
+the final result and not at the patch to see it.
