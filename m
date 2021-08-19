@@ -2,151 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2893F1F2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C84A43F1F3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbhHSRdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 13:33:45 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32548 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229520AbhHSRdo (ORCPT
+        id S233379AbhHSRhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 13:37:40 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:56804 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233302AbhHSRhi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 13:33:44 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17JH42Iq103525;
-        Thu, 19 Aug 2021 13:32:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=VaGmT9pAZx7k7u/Cg6rHBBP9jFUURlyOyNSuOvjweGc=;
- b=hbub7qrUfmZrGW0KGAWYUK5Ks6BBulE9ry0FK4J/01+ycGy/dfF+gYgLydMAZXwrd9+e
- hx9ol1VqKHwI5SmcjJMGoqBskuxcuJCCZtfcoI2EV+DMM6KK4NjENMcTbezSWvYYciUi
- TnXXhMMm+h5yMEYP/gGz5NCoWobD0gIC95G76hhge8YCP4NHIMrUgcXdrUKmLp34V5o4
- 4vTwbncZN/wn4Vyaf9X8xeQ5MUpzmXWi+RbTe95BK8iyGqqOE0kr4RLI9zN6X+l+rspe
- x5jGYad7Z9e6+8e9n7aXXvmmOPWTf7kOt8Zt2/Vup2KN4Ed7YU44pyg/9u/RMZR9eNVE fg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ahq5ds9q2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Aug 2021 13:32:46 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17JH6GE7119252;
-        Thu, 19 Aug 2021 13:32:45 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ahq5ds9pc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Aug 2021 13:32:45 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17JHWhcc004868;
-        Thu, 19 Aug 2021 17:32:43 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma05fra.de.ibm.com with ESMTP id 3afwrhv47k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Aug 2021 17:32:42 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17JHWeul54919648
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Aug 2021 17:32:40 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4F89F11C058;
-        Thu, 19 Aug 2021 17:32:40 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4AB7811C052;
-        Thu, 19 Aug 2021 17:32:35 +0000 (GMT)
-Received: from sig-9-65-206-165.ibm.com (unknown [9.65.206.165])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 19 Aug 2021 17:32:35 +0000 (GMT)
-Message-ID: <e7e251000432cf7c475e19c56b0f438b92fec16e.camel@linux.ibm.com>
-Subject: Re: [PATCH v4 00/12] Enroll kernel keys thru MOK
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        David Howells <dhowells@redhat.com>
-Cc:     keyrings@vger.kernel.org,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>, keescook@chromium.org,
-        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
-        scott.branden@broadcom.com, weiyongjun1@huawei.com,
-        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        lszubowi@redhat.com, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        pjones@redhat.com,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        Patrick Uiterwijk <patrick@puiterwijk.org>
-Date:   Thu, 19 Aug 2021 13:32:34 -0400
-In-Reply-To: <91B1FE51-C6FC-4ADF-B05A-B1E59E20132E@oracle.com>
-References: <20210819002109.534600-1-eric.snowberg@oracle.com>
-         <fcb30226f378ef12cd8bd15938f0af0e1a3977a2.camel@kernel.org>
-         <f76fcf41728fbdd65f2b3464df0821f248b2cba0.camel@linux.ibm.com>
-         <91B1FE51-C6FC-4ADF-B05A-B1E59E20132E@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: aJAOsvngqjodT5zWjAyhG8qLCPdidYMl
-X-Proofpoint-ORIG-GUID: Wy9C5Qq0n4VkNUlS1-Sz5gxuIJvv7fZE
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-19_06:2021-08-17,2021-08-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 bulkscore=0 clxscore=1015 phishscore=0 priorityscore=1501
- mlxlogscore=999 impostorscore=0 adultscore=0 suspectscore=0 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108190100
+        Thu, 19 Aug 2021 13:37:38 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id F37E62211B;
+        Thu, 19 Aug 2021 17:37:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1629394621;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fi4+omVqrwek7zk4HS447sMwugzY5TPGT3YIZTksaa8=;
+        b=d8g5P8eGE6M1Y4MX2BQVmtxvSL4wJUjH5GK0op7PJm/IZxt7QRs34mH9YrmHdvZPAWQvaP
+        n5S/6qXNL5/nhGg3x3dAXeE1IO4FAWK4wYlvSFKKCX+PoLCJHK/4T4uiINgelxFMK9o2zP
+        TGYktFF1F+1urgdWt1YmwsK7iDiyzSk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1629394621;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fi4+omVqrwek7zk4HS447sMwugzY5TPGT3YIZTksaa8=;
+        b=ZZi5rq41bSivLSSYBHuRVnHhHXWAour4D0rQdN86XXzXpba9K2HkKTyPMbVEgxz0lI1u+r
+        i634Vb2QxXSxNcAw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id DA2F2A3B8E;
+        Thu, 19 Aug 2021 17:37:00 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 8B31CDA72C; Thu, 19 Aug 2021 19:34:03 +0200 (CEST)
+Date:   Thu, 19 Aug 2021 19:34:03 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, anand.jain@oracle.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] btrfs: fix rw device counting in
+ __btrfs_free_extra_devids
+Message-ID: <20210819173403.GI5047@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, anand.jain@oracle.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+References: <20210727071303.113876-1-desmondcheongzx@gmail.com>
+ <20210812103851.GC5047@twin.jikos.cz>
+ <3c48eec9-590c-4974-4026-f74cafa5ac48@gmail.com>
+ <20210812155032.GL5047@twin.jikos.cz>
+ <1e0aafb2-9e55-5f64-d347-1765de0560c5@gmail.com>
+ <20210813085137.GQ5047@twin.jikos.cz>
+ <a5690ae1-28ba-a933-6473-e9c1e5480f0c@gmail.com>
+ <20210813103032.GR5047@twin.jikos.cz>
+ <89172356-335f-1ca3-d3a2-78fac7ef93fb@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <89172356-335f-1ca3-d3a2-78fac7ef93fb@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-08-19 at 09:23 -0600, Eric Snowberg wrote:
-> > On Aug 19, 2021, at 7:10 AM, Mimi Zohar <zohar@linux.ibm.com> wrote:
+On Fri, Aug 20, 2021 at 01:11:58AM +0800, Desmond Cheong Zhi Xi wrote:
+> >>> The option #2 does not sound safe because the TGT bit is checked in
+> >>> several places where device list is queried for various reasons, even
+> >>> without a mounted filesystem.
+> >>>
+> >>> Removing the assertion makes more sense but I'm still not convinced that
+> >>> the this is expected/allowed state of a closed device.
+> >>>
+> >>
+> >> Would it be better if we cleared the REPLACE_TGT bit only when closing
+> >> the device where device->devid == BTRFS_DEV_REPLACE_DEVID?
+> >>
+> >> The first conditional in btrfs_close_one_device assumes that we can come
+> >> across such a device. If we come across it, we should properly reset it.
+> >>
+> >> If other devices has this bit set, the ASSERT will still catch it and
+> >> let us know something is wrong.
 > > 
-> > On Thu, 2021-08-19 at 14:38 +0300, Jarkko Sakkinen wrote:
-> >> On Wed, 2021-08-18 at 20:20 -0400, Eric Snowberg wrote:
-> >>> Downstream Linux distros try to have a single signed kernel for each
-> >>> architecture.  Each end-user may use this kernel in entirely different
-> >>> ways.  Some downstream kernels have chosen to always trust platform keys
-> >>> within the Linux trust boundary for kernel module signing.  These
-> >>> kernels have no way of using digital signature base IMA appraisal.
-> >>> 
-> >>> This series introduces a new Linux kernel keyring containing the Machine
-> >>> Owner Keys (MOK) called .mok. It also adds a new MOK variable to shim.
-> >> 
-> >> I would name it as ".machine" because it is more "re-usable" name, e.g.
-> >> could be used for similar things as MOK. ".mok" is a bad name because
-> >> it binds directly to a single piece of user space software.
+> > That sounds great.
 > > 
-> > Nayna previously said,
-> >   "I believe the underlying source from where CA keys are loaded might vary 
-> >   based on the architecture (".mok" is UEFI specific.). The key part is 
-> >   that this new keyring should contain only CA keys which can be later 
-> >   used to vouch for user keys loaded onto IMA or secondary keyring at 
-> >   runtime. It would be good to have a "ca" in the name, like .xxxx-ca, 
-> >   where xxxx can be machine, owner, or system. I prefer .system-ca."
+> >> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> >> index 70f94b75f25a..a5afebb78ecf 100644
+> >> --- a/fs/btrfs/volumes.c
+> >> +++ b/fs/btrfs/volumes.c
+> >> @@ -1130,6 +1130,9 @@ static void btrfs_close_one_device(struct btrfs_device *device)
+> >>                   fs_devices->rw_devices--;
+> >>           }
+> >>    
+> >> +       if (device->devid == BTRFS_DEV_REPLACE_DEVID)
+> >> +               clear_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state);
+> >> +
+> >>           if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))
+> >>                   fs_devices->missing_devices--;
 > > 
-> > The CA keys on the MOK db is simply the first root of trust being
-> > defined, but other roots of trust are sure to follow.  For this reason,
-> > I agree naming the new keyring "mok" should be avoided.
+> > I'll do a few test rounds, thanks.
 > 
-> As I said previously, I’m open to renaming, I just would like to have an 
-> agreement on the new name before changing everything.  The current proposed 
-> names I have heard are “.machine" and ".system-ca".  Is there a preference 
-> the maintainers feel is appropriate?  If so, please let me know and I’ll 
-> rename it. Thanks.
-> 
+> Just following up. Did that resolve the issue or is further 
+> investigation needed?
 
-Jarkko, I think the emphasis should not be on "machine" from Machine
-Owner Key (MOK), but on "owner".  Whereas Nayna is focusing more on the
-"_ca" aspect of the name.   Perhaps consider naming it
-"system_owner_ca" or something along those lines.
-
-thanks,
-
-Mimi
-
-
+The fix seems to work, I haven't seen the assertion fail anymore,
+incidentally the crash also stopped to show up on an unpatched branch.
