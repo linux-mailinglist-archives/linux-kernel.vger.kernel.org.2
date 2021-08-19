@@ -2,206 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9D33F1734
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 964233F1737
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238100AbhHSKXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 06:23:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236149AbhHSKXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 06:23:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8088960BD3;
-        Thu, 19 Aug 2021 10:23:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629368582;
-        bh=AmAkfCOit+pYuHCq8UHPg0KXUc4vSjBndhB1phKq7Zw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=b085dqFRDffjGbx38H8kmp2z8c1tel+D/13GkouxWrsrrAK1ArhvWbPVtof8aJpNC
-         SNDI+sBK11y64kiVc+ZN2IPdbrg/hs/xlQBlGXyfVu2piwp7WixWMTd1zg5j+Ye4am
-         4UAi/Qrfnqwi2BtoQL37d1tTOxGsM5tV7hoRAoEHOjxl1kcsow6kgKtU3D940AGzBB
-         5Sn2t4O8ae8WT+3rsg0RexjXMAc4cPOomuC32pzHlexa6GBwlkVSJZVqYDGfwHtyvw
-         9+PEORIhumAM/kVXizwMlkax6BKy7rgOKRazHsvcTh4BRh2E7kYQdy0vKGYXvxR4I8
-         d+8j0jdpORArw==
-Date:   Thu, 19 Aug 2021 19:22:58 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
+        id S238172AbhHSKYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 06:24:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236149AbhHSKYX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 06:24:23 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06532C061575;
+        Thu, 19 Aug 2021 03:23:47 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id f2so10706451ljn.1;
+        Thu, 19 Aug 2021 03:23:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=s7gzHcAvUGRal7zGjfCj1tvyGgqr2i8nXDn4Q3sKzQk=;
+        b=Mfyx9RZf49s53j40JmyfZM1lJWT/tSB5dUUVPbPQyL1z9vJPwL8wxRbIWIw1ek9N3P
+         FCdsucQWgjUO4i8U/uWO19zPjJzxYSv3B0ps89+KpLOFQzlQyZ6Q7gYJ2o5hH9x7boZK
+         0hHxub5elRpkprNhLwVf8Z35OTkvNjcpWTknPnUzIBddpJWPGpp3zCNq/CF6jdEH4/1D
+         csNUXhEd/S70aZEY370wZybpR4RAhznZFB5p5DHOjaZ2WPdH7bCuyDoZ+Tfjryp/J9k9
+         jYZ0Z5Ysn3Bx4t7gZi58GygFNtApzoSEW/Ha01maSBtlbczhdiMyi5YMIFmIRLeiyk2A
+         QqNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=s7gzHcAvUGRal7zGjfCj1tvyGgqr2i8nXDn4Q3sKzQk=;
+        b=rq44BOmXdILfAJyNIXRVziPFsFyEf6MyOAiWUrtctZxBarDUYDiFMlCs6AFtWoaFZM
+         XurCopVlNQ9Ctra5OD60OugOSRmiw9M0y7M9Wxx1iF24FZaAM7CrOxh/pg46huBncVe/
+         NK4I45+x4FBYy0cirFUSPh5GgtMYkLJGUb2Hs+ByIi/eSqcf6iJJTE3qutZxkxAhCIFY
+         eeia/Xz4EaGL7x0xtg8b2JicI/5S/AjoX3v/ubtqv2iQKYSWIr4rgYnfiluXF48EK1r/
+         wM+E5HDQ/JhwlcjKmudv7QS550nLl9KPLQo5RJG16bGbzOwg1E1cgs+IxXnglYzIIuvY
+         oyGQ==
+X-Gm-Message-State: AOAM532/UDrVrTakUDyD4YuUYLUq18nC4VSfHSLHxicVTZ6rZD01okNE
+        F7uKYCMiOQSaeYLgsSRUIMQ=
+X-Google-Smtp-Source: ABdhPJwBC3AtCQaaRJLeMqncG4o7h0yRkRo3Vd0w10HmGYffhLah81Cfn2ICXXTq/oY9pVnTwY2K2Q==
+X-Received: by 2002:a2e:2f1c:: with SMTP id v28mr11179313ljv.476.1629368625379;
+        Thu, 19 Aug 2021 03:23:45 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id i21sm262452lfc.92.2021.08.19.03.23.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 03:23:44 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 13:23:42 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, linux-cifs@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jan Kara <jack@suse.cz>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Luis de Bethencourt <luisbg@kernel.org>,
+        Salah Triki <salah.triki@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
-        Tom Zanussi <zanussi@kernel.org>
-Subject: Re: [PATCH v7 08/10] tracing: Add a probe that attaches to trace
- events
-Message-Id: <20210819192258.7e39bafa8084417d96a8244e@kernel.org>
-In-Reply-To: <20210819041842.485382601@goodmis.org>
-References: <20210819041321.105110033@goodmis.org>
-        <20210819041842.485382601@goodmis.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Dave Kleikamp <shaggy@kernel.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [RFC PATCH 05/20] ntfs: Undeprecate iocharset= mount option
+Message-ID: <20210819102342.6ps7lowpuomyqcdk@kari-VirtualBox>
+References: <20210808162453.1653-1-pali@kernel.org>
+ <20210808162453.1653-6-pali@kernel.org>
+ <20210819012108.3isqi4t6rmd5fd5x@kari-VirtualBox>
+ <20210819081222.vnvxfrtqctfev6xu@pali>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210819081222.vnvxfrtqctfev6xu@pali>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
+On Thu, Aug 19, 2021 at 10:12:22AM +0200, Pali Rohár wrote:
+> On Thursday 19 August 2021 04:21:08 Kari Argillander wrote:
+> > On Sun, Aug 08, 2021 at 06:24:38PM +0200, Pali Rohár wrote:
+> > > Other fs drivers are using iocharset= mount option for specifying charset.
+> > > So mark iocharset= mount option as preferred and deprecate nls= mount
+> > > option.
+> >  
+> > One idea is also make this change to fs/fc_parser.c and then when we
+> > want we can drop support from all filesystem same time. This way we
+> > can get more deprecated code off the fs drivers. Draw back is that
+> > then every filesstem has this deprecated nls= option if it support
+> > iocharsets option. But that should imo be ok.
+> 
+> Beware that iocharset= is required only for fs which store filenames in
+> some specific encoding (in this case extension to UTF-16). For fs which
+> store filenames in raw bytes this option should not be parsed at all.
 
-Thanks for updating.
+Yeah of course. I was thinking that what we do is that if key is nls=
+we change key to iocharset, print deprecated and then send it to driver
+parser as usual. This way driver parser will never know that user
+specifie nls= because it just get iocharset. But this is probebly too
+fancy way to think simple problem. Just idea. 
 
-On Thu, 19 Aug 2021 00:13:29 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+> Therefore I'm not sure if this parsing should be in global
+> fs/fc_parser.c file...
 
-> +static bool find_event_probe(const char *group, const char *event)
-> +{
-> +	struct trace_eprobe *ep;
-> +	struct dyn_event *ev;
-> +	bool ret = false;
-> +
-> +	/*
-> +	 * Must grab the event_mutex to prevent the list from being modified
-> +	 * by other probes. But the event_probe being only created via the
-> +	 * dynamic_events file, is only added under the dyn_event_ops_mutex,
-> +	 * which is currently held. There is no race between this check and
-> +	 * adding the new probe.
-
-This is not correct, as I said in the previous mail. The dynamic event has
-2 lists, one is for the "kind of" dynamic event (dyn_event_ops), and
-the other one is for the dynamic events itself. The "dyn_event_ops_mutex"
-is protecting only "dyn_event_ops", and the dynamic event list is ptotected
-by the "event_mutex". (This is described in the trace_dynevent.c)
-So holding event_mutex is correct.
-
-> +	 */
-> +	mutex_lock(&event_mutex);
-> +	for_each_dyn_event(ev) {
-> +		if (ev->ops != &eprobe_dyn_event_ops)
-> +			continue;
-> +		ep = to_trace_eprobe(ev);
-> +		if (strcmp(ep->tp.event->class.system, group) == 0 &&
-> +		    strcmp(ep->tp.event->call.name, event) == 0) {
-> +			ret = true;
-> +			break;
-> +		}
-> +	}
-> +	mutex_lock(&event_mutex);
-> +
-> +	return ret;
-> +}
-> +
-> +static int __trace_eprobe_create(int argc, const char *argv[])
-> +{
-> +	/*
-> +	 * Argument syntax:
-> +	 *      e[:[GRP/]ENAME] SYSTEM.EVENT [FETCHARGS]
-> +	 * Fetch args:
-> +	 *  <name>=$<field>[:TYPE]
-> +	 */
-> +	const char *event = NULL, *group = EPROBE_EVENT_SYSTEM;
-> +	const char *sys_event = NULL, *sys_name = NULL;
-> +	struct trace_event_call *event_call;
-> +	struct trace_eprobe *ep = NULL;
-> +	char buf1[MAX_EVENT_NAME_LEN];
-> +	char buf2[MAX_EVENT_NAME_LEN];
-> +	int ret = 0;
-> +	int i;
-> +
-> +	if (argc < 2 || argv[0][0] != 'e')
-> +		return -ECANCELED;
-> +
-> +	trace_probe_log_init("event_probe", argc, argv);
-> +
-> +	event = strchr(&argv[0][1], ':');
-> +	if (event) {
-> +		event++;
-> +		ret = traceprobe_parse_event_name(&event, &group, buf1,
-> +						  event - argv[0]);
-> +		if (ret)
-> +			goto parse_error;
-> +	} else {
-> +		strscpy(buf1, argv[1], MAX_EVENT_NAME_LEN);
-> +		sanitize_event_name(buf1);
-> +		event = buf1;
-> +	}
-> +	if (!is_good_name(event) || !is_good_name(group))
-> +		goto parse_error;
-> +
-> +	/* Check if the name already exists */
-> +	if (find_event_probe(group, event))
-> +		return -EEXIST;
-
-Hmm, there is a window between checking the name confliction here, ...
-
-> +
-> +	sys_event = argv[1];
-> +	ret = traceprobe_parse_event_name(&sys_event, &sys_name, buf2,
-> +					  sys_event - argv[1]);
-> +	if (ret || !sys_name)
-> +		goto parse_error;
-> +	if (!is_good_name(sys_event) || !is_good_name(sys_name))
-> +		goto parse_error;
-> +
-> +	mutex_lock(&event_mutex);
-> +	event_call = find_and_get_event(sys_name, sys_event);
-> +	ep = alloc_event_probe(group, event, event_call, argc - 2);
-> +	mutex_unlock(&event_mutex);
-> +
-> +	if (IS_ERR(ep)) {
-> +		ret = PTR_ERR(ep);
-> +		/* This must return -ENOMEM, else there is a bug */
-> +		WARN_ON_ONCE(ret != -ENOMEM);
-> +		goto error;	/* We know ep is not allocated */
-> +	}
-> +
-> +	argc -= 2; argv += 2;
-> +	/* parse arguments */
-> +	for (i = 0; i < argc && i < MAX_TRACE_ARGS; i++) {
-> +		trace_probe_log_set_index(i + 2);
-> +		ret = trace_eprobe_tp_update_arg(ep, argv, i);
-> +		if (ret)
-> +			goto error;
-> +	}
-> +	ret = traceprobe_set_print_fmt(&ep->tp, PROBE_PRINT_EVENT);
-> +	if (ret < 0)
-> +		goto error;
-> +	init_trace_eprobe_call(ep);
-> +	mutex_lock(&event_mutex);
-> +	ret = trace_probe_register_event_call(&ep->tp);
-> +	if (ret) {
-> +		mutex_unlock(&event_mutex);
-> +		goto error;
-> +	}
-
-... and register it here.
-
-Between the existance check and the registration, someone can register
-same name event probe. So I recommend you to do it as;
-
-static int register_event_probe(ep)
-{
-	init_trace_eprobe_call(ep);
-	mutex_lock(&event_mutex);
-	if (find_event_probe(group, event))
-		ret = -EEXIST;
-		goto out;
-	}
-
-	ret = trace_probe_register_event_call(&ep->tp);
-	if (ret)
-		goto out;
-	ret = dyn_event_add(&ep->devent, &ep->tp.event->call);
-	mutex_unlock(&event_mutex);
-out:
-	return ret;
-}
-
-Anyway, I will send a patch for fixing related issue. If you don't care
-the name collision between eprobes or other events, you can just apply it.
-Then trace_probe_register_event_call() will reject the same name event.
-
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
