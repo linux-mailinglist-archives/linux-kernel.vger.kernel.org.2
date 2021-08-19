@@ -2,70 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36B093F15D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E39AD3F15D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237121AbhHSJK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 05:10:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbhHSJKy (ORCPT
+        id S237031AbhHSJKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 05:10:10 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3671 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229804AbhHSJKI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 05:10:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75588C061575;
-        Thu, 19 Aug 2021 02:10:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BB3eovbADGqKgiTpHYPV8MhbF7KZE2vZESe22SutjKY=; b=tp3WS7v9Zygm06TNajk0XqWnMz
-        P2wYtvT4QuFvfFTmN/8k8gp+4KF2M5gfWZgHY1qlmfZ5ZKFNDdPtaUQ/ZAITnfsHIiuJIhdmvmhM3
-        y+8puRoYQbF00lMdH4buZMdWpwjEpUwPbB6f43Fzn2l2TUYpO+FcsuI2yV2onNNphqZuEcab1NcSc
-        0qhveoNcWu+0IOuenNwujlGQNwntv29LRT2cp0k2p39R4arOotTp9GfUrHxpyd6s++TlM2gB7Dqa4
-        d4j8H4d5Or3QMdJO09MToT/Kr6Bznnd5dZHY3ICdmdvphXMv+oMZ+XdRkYnJZlW+Zl7lm9jKQQ/zk
-        pl2PXQCA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mGe2o-004qz3-9B; Thu, 19 Aug 2021 09:09:24 +0000
-Date:   Thu, 19 Aug 2021 10:09:02 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        clang-built-linux@googlegroups.com, linux-mm@kvack.org,
-        linux-kbuild@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 0/5] Add __alloc_size() for better bounds checking
-Message-ID: <YR4frlpfJQonPuKp@infradead.org>
-References: <20210818050841.2226600-1-keescook@chromium.org>
+        Thu, 19 Aug 2021 05:10:08 -0400
+Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GqzTG6WSDz6BGCj;
+        Thu, 19 Aug 2021 17:08:34 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 19 Aug 2021 11:09:29 +0200
+Received: from [10.202.227.179] (10.202.227.179) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 19 Aug 2021 10:09:28 +0100
+Subject: Re: [PATCH 0/3] Remove scsi_cmnd.tag
+To:     Hannes Reinecke <hare@suse.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+CC:     <satishkh@cisco.com>, <sebaddel@cisco.com>, <kartilak@cisco.com>,
+        <jejb@linux.ibm.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <hch@lst.de>
+References: <1628862553-179450-1-git-send-email-john.garry@huawei.com>
+ <yq14kbppa42.fsf@ca-mkp.ca.oracle.com>
+ <176ce4f2-42c9-bba6-c8f9-70a08faa21b8@huawei.com>
+ <e0d7ba32-2999-794e-2ccb-fdba2c847eb1@acm.org>
+ <038ec0c6-92c9-0f2a-7d81-afb91b8343af@suse.de>
+ <c9d9891b-780b-4641-2b60-6319d525e17c@huawei.com>
+ <6090371d-9688-11ae-8219-ba9929a96526@suse.de>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <6c83bd7f-9fd2-1b43-627f-615467fa55d4@huawei.com>
+Date:   Thu, 19 Aug 2021 10:09:27 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818050841.2226600-1-keescook@chromium.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <6090371d-9688-11ae-8219-ba9929a96526@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.202.227.179]
+X-ClientProxiedBy: lhreml710-chm.china.huawei.com (10.201.108.61) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 10:08:36PM -0700, Kees Cook wrote:
-> Hi,
+On 19/08/2021 08:50, Hannes Reinecke wrote:
+>>>    select CPU_32v4 if ARCH_RPC
+>>
+>> Does that build fully for xconfig or any others which you tried?
+>>
+>  > Yep, xconfig and full build works.
 > 
-> GCC and Clang both use the "alloc_size" attribute to assist with bounds
-> checking around the use of allocation functions. Add the attribute,
-> adjust the Makefile to silence needless warnings, and add the hints to
-> the allocators where possible. These changes have been in use for a
-> while now in GrapheneOS.
+> Well.
+> 
+> Would've worked if you hadn't messed up tag handling for acornscsi :-)
+>  > Besides: tag handling in acornscsi (and fas216, for that matter) seems
+> to be completely broken.
+> 
+> Consider this beauty:
+> 
+> #ifdef CONFIG_SCSI_ACORNSCSI_TAGGED_QUEUE
+>         /*
+>          * tagged queueing - allocate a new tag to this command
+>          */
+>         if (SCpnt->device->simple_tags) {
+>             SCpnt->device->current_tag += 1;
+>             if (SCpnt->device->current_tag == 0)
+>                 SCpnt->device->current_tag = 1;
+>             SCpnt->tag = SCpnt->device->current_tag;
+>         } else
+> #endif
 
-Can you explain how this attribute helps?  Should we flow it through
-other allocating functions?
+So isn't this just using the scsi_cmnd.tag as it own scribble?
+
+> 
+> which is broken on _soo many_ counts.
+> Not only does it try to allocate its own tags, the code also assumes 
+> that a tag value of '0' indicates that tagged queueing is not active:
+> 
+
+In case you missed it, Arnd B tried to clear out some old platforms 
+earlier this year. With respect to rpc, Russell King apparently still 
+uses it and has some SCSI patches:
+
+https://lore.kernel.org/lkml/20210109174357.GB1551@shell.armlinux.org.uk/
+
+I wonder what they are and maybe we can check. Anyway... I'd run any 
+changes by him...
+
+> static
+> void acornscsi_abortcmd(AS_Host *host, unsigned char tag)
+> {
+>      host->scsi.phase = PHASE_ABORTED;
+>      sbic_arm_write(host, SBIC_CMND, CMND_ASSERTATN);
+> 
+>      msgqueue_flush(&host->scsi.msgs);
+> #ifdef CONFIG_SCSI_ACORNSCSI_TAGGED_QUEUE
+>      if (tag)
+>          msgqueue_addmsg(&host->scsi.msgs, 2, ABORT_TAG, tag);
+>      else
+> #endif
+>          msgqueue_addmsg(&host->scsi.msgs, 1, ABORT);
+> }
+> 
+> And, of course, there's the usual confusion about when to check for
+> sdev->tagged_supported and sdev->simple_tags.
+> 
+> Drop me a note if I can give a hand.
+
+Thanks! Let's see what happens to the series which you just sent.
