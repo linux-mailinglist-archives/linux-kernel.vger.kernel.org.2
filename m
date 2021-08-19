@@ -2,208 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E400C3F1DE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 18:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 172853F1DE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 18:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230504AbhHSQcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 12:32:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230416AbhHSQcB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 12:32:01 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93C2C061575;
-        Thu, 19 Aug 2021 09:31:24 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id k8so10005658wrn.3;
-        Thu, 19 Aug 2021 09:31:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xdfmGh23k0aNDX33xwOdlnspLCgiV2qSptJyQT4CArg=;
-        b=TqvsyYuIzPTFNISEaUDmY0h791HLIf4qH1WXS1GxVOvTPNRDVQWqqcXQlxGoSmEhYq
-         hmHtTmIeKTi83VzFGyYEcVObXx+9sz/n5eRC4i5PoGxDQ5FuJyqmzwZC3DZsTYvcC7lj
-         Pr/Hk6ZGcay72lFauB5YyEIy1wE9tdSBx7LT+U3/P67mkfLEUFIanjAo3tpK1Of8NDws
-         BwdnJJRNFFFrUFU5DylX11cauyAcPLYzFuHfmvb7prU10HBcx3ThlIFERG8TGHBfHyo4
-         yySdwCCzMSuAkV9jh3xYDU+0sLNNdvXISoBFguTvMb8H+aD1MJ35euCxfdXOs3xfCmJt
-         nByA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xdfmGh23k0aNDX33xwOdlnspLCgiV2qSptJyQT4CArg=;
-        b=mOZXduuE9bVwOCymxoqTm0O+CBy9fgiSmr0eIcat6+XSqs6xscM2EgCEQPWDDLlKTr
-         6UKjFFqIQGgpj+BrY5Dy+A+RTCUiZb2AQEseHdsqp7Fq2LKKGliJ8PeKXTBDdn08aUyF
-         K58k8wuSy+aPet8EXNYjlCNBfVRD40DmCLBgbZUoDrE44XCjyGn01nS9OcN5HAH3xcYu
-         sIjzHiSrCVRdZfV6aoT8OIXIsUaWOKXIcIS8fkDrZznpuTT3zoult23JDzQdveOlVT6D
-         yJTNiQMrVI1qVEkB+694QN2pnkYebeCKPUEdkgz2t3Oi2zRkd5df618QXxLnFmD++m5A
-         pqrA==
-X-Gm-Message-State: AOAM531aPwJhRjMZLO66z+Qsfv7BAAVOplA0JVb08FFWhDPyrPay55dR
-        0OolyrbbsiYe2E8q5aWCqpc=
-X-Google-Smtp-Source: ABdhPJw+layCx1zXDlaPhdMiFy7BJcVfdPSGx4BZzhnHtq808ns6k0cMS2cwB3t84/EUctnSBTQSPg==
-X-Received: by 2002:adf:f541:: with SMTP id j1mr4794858wrp.180.1629390683554;
-        Thu, 19 Aug 2021 09:31:23 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id p8sm7766709wme.22.2021.08.19.09.31.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 09:31:21 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 18:31:20 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH v8 06/34] dt-bindings: clock: tegra-car: Document new
- tegra-clocks sub-node
-Message-ID: <YR6HWMuYcF6NIepi@orome.fritz.box>
-References: <20210817012754.8710-1-digetx@gmail.com>
- <20210817012754.8710-7-digetx@gmail.com>
- <YR0SSz7KMh7TwaFW@orome.fritz.box>
- <eff5ef47-e6e0-3e03-cf1a-d931b0f2dc2a@gmail.com>
- <YR033zuYWWLCeYpM@orome.fritz.box>
- <a5b942cb-1611-9ae1-6e89-4b68fdaf03e3@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rcVyDzt3QNLnQ9/o"
-Content-Disposition: inline
-In-Reply-To: <a5b942cb-1611-9ae1-6e89-4b68fdaf03e3@gmail.com>
-User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
+        id S229659AbhHSQeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 12:34:06 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:53522 "EHLO mail.ispras.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229451AbhHSQeF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 12:34:05 -0400
+Received: from kleverstation.intra.ispras.ru (unknown [10.10.2.220])
+        by mail.ispras.ru (Postfix) with ESMTPS id 8D8DA4076273;
+        Thu, 19 Aug 2021 16:33:27 +0000 (UTC)
+From:   Nadezda Lutovinova <lutovinova@ispras.ru>
+To:     Bin Liu <b-liu@ti.com>
+Cc:     Nadezda Lutovinova <lutovinova@ispras.ru>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ldv-project@linuxtesting.org
+Subject: [PATCH v2] usb: musb: musb_dsps: request_irq() after initializing musb
+Date:   Thu, 19 Aug 2021 19:33:23 +0300
+Message-Id: <20210819163323.17714-1-lutovinova@ispras.ru>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <CAHp75VctKJw5fdSGRQ0O0+fp8jC+_Jozis8wsdZ3uB=3hW01jg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If IRQ occurs between calling  dsps_setup_optional_vbus_irq()
+and  dsps_create_musb_pdev(), then null pointer dereference occurs
+since glue->musb wasn't initialized yet.
 
---rcVyDzt3QNLnQ9/o
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The patch puts initializing of neccesery data before registration
+of the interrupt handler.
 
-On Wed, Aug 18, 2021 at 07:57:04PM +0300, Dmitry Osipenko wrote:
-> 18.08.2021 19:39, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >> We don't have a platform device for CaR. I don't see how it's going to
-> >> work. We need to create a platform device for each RPM-capable clock
-> >> because that's how RPM works. The compatible string is required for
-> >> instantiating OF-devices from a node, otherwise we will have to
-> >> re-invent the OF core.
-> > I think we do have a platform device for CAR. It's just not bound
-> > against by the driver because these clock drivers are "special". But
-> > from other parts of the series you're already trying to fix that, at
-> > least partially.
-> >=20
-> > But it doesn't seem right to create a platform device for each RPM-
-> > capable clock. Why do they need to be devices? They aren't, so why
-> > pretend? Is it that some API that we want to use here requires the
-> > struct device?
->=20
-> The "device" representation is internal to the kernel. It's okay to me
-> to have PLLs represented by a device, it's a distinct h/w by itself.
->=20
-> CCF supports managing of clock's RPM and it requires to have clock to be
-> backed by a device. That's what we are using here.
->=20
-> Please see
-> https://elixir.bootlin.com/linux/v5.14-rc6/source/drivers/clk/clk.c#L109
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Looking at the implementation of __clk_register() and where that device
-pointer typically comes from, I don't think the way this is used here is
-what was intended. The way I interpret the code is that a clock is
-registered with a parent device (i.e. its provider) and
-clk_pm_runtime_get() is then used internally as a way to make sure that
-when a clock is prepared, it's parent device is runtime resumed. This is
-presumably to ensure that any registers that the driver might need to
-access in order to prepare and enable the clock are accessible (i.e. the
-CAR is not powered off or in reset).
+Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
+---
+v2: fix subject
+---
+ drivers/usb/musb/musb_dsps.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-So the struct device that is passed to __clk_register() (or its callers)
-should be that of the CAR rather than virtual struct devices created by
-the CAR.
+diff --git a/drivers/usb/musb/musb_dsps.c b/drivers/usb/musb/musb_dsps.c
+index 5892f3ce0cdc..ce9fc46c9266 100644
+--- a/drivers/usb/musb/musb_dsps.c
++++ b/drivers/usb/musb/musb_dsps.c
+@@ -890,23 +890,22 @@ static int dsps_probe(struct platform_device *pdev)
+ 	if (!glue->usbss_base)
+ 		return -ENXIO;
+ 
+-	if (usb_get_dr_mode(&pdev->dev) == USB_DR_MODE_PERIPHERAL) {
+-		ret = dsps_setup_optional_vbus_irq(pdev, glue);
+-		if (ret)
+-			goto err_iounmap;
+-	}
+-
+ 	platform_set_drvdata(pdev, glue);
+ 	pm_runtime_enable(&pdev->dev);
+ 	ret = dsps_create_musb_pdev(glue, pdev);
+ 	if (ret)
+ 		goto err;
+ 
++	if (usb_get_dr_mode(&pdev->dev) == USB_DR_MODE_PERIPHERAL) {
++		ret = dsps_setup_optional_vbus_irq(pdev, glue);
++		if (ret)
++			goto err;
++	}
++
+ 	return 0;
+ 
+ err:
+ 	pm_runtime_disable(&pdev->dev);
+-err_iounmap:
+ 	iounmap(glue->usbss_base);
+ 	return ret;
+ }
+-- 
+2.17.1
 
-And it's a bit debatable whether or not PLLs represent distinct
-hardware. Ultimately every transistor on a chip could be considered
-distinct hardware. But a platform device is a device on a platform bus,
-which is really just another way of saying it's a hardware block that's
-accessible from the CPU via a memory-mapped address. A PLL (just like
-other clocks) is merely a resource exposed by means of access to these
-registers. So I don't think they should be platform devices. Even making
-them struct device:s seems a bit of a stretch.
-
-Is there any reason why struct clk can't be used for this? I mean, the
-whole purpose of that structure is to represent clocks. Why do we need
-to make them special?
-
-> >>> Also, I don't think the tegra- prefix is necessary here. The parent n=
-ode
-> >>> is already identified as Tegra via the compatible string.
-> >>>
-> >>> In the case of CAR, I'd imagine something like:
-> >>>
-> >>> 	clocks {
-> >>> 		sclk {
-> >>> 			operating-points-v2 =3D <&opp_table>;
-> >>> 			power-domains =3D <&domain>;
-> >>> 		};
-> >>> 	};
-> >>>
-> >>> Now you've only got the bare minimum in here that you actually add. A=
-ll
-> >>> the other data that you used to have is simply derived from the paren=
-t.
-> >> 'clocks' is already a generic keyword in DT. It's probably not okay to
-> >> redefine it.
-> > "clocks" is not a generic keyword. It's the name of a property and given
-> > that we're talking about the clock provider here, it doesn't need a
-> > clocks property of its own, so it should be fine to use that for the
-> > node.
->=20
-> I'm curious what Rob thinks about it. Rob, does this sound okay to you?
-
-Another alternative would be to omit that level altogether and just make
-sclk and siblings direct children of the CAR node.
-
-Thierry
-
---rcVyDzt3QNLnQ9/o
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEeh1YACgkQ3SOs138+
-s6H2hw/9FHQE4gIC68lVuteJusivX3to+lSemB8K8zjRkcxT7nURgxWEiaqizxEC
-HdNxAuNdVDpD1v34JC2ZGJgnnYdMSrk9k4BhykGgn1+QhdgEQGSTAEXUhcxfK2Yg
-5Slk4jnHH9HF0GPYfbJ5SP6k3NgkeL8h0fCa2JviaoCOhzyRBJK71IG1cIOlj7Ud
-3nxcd1/NzHcPZnsGivm5Qd8saf1nyLrZghmyUsuaZp5tsH8Ct/x5HWiShOTVB6UT
-+uRefYWMbuaJp/mCa+6N0gK2827S84iSRzO5sxI3nYZbRJsgLgD766fzdC/EDZ9G
-Zg5AZgzH67GoEicbdCQMgx6zVV6Y1LQF1+5mrHjpomm2OWRVZELLEfGa1pqVNIGu
-VJjQuIX618IKU5jBYUw18+vr2HiJNDEFCXX0PrBYXp/cc64fiq4I3M30clqQQoxr
-puehYCuiVtD9v6lr8tnEA79qUnn0XsWIpzzHbeLtwclpaqN5lTZUo6eXXFIGid+3
-ZauSDJzqa4qTX1fvwH23kMnkA91nI2A00rPQWtER0uhJGq8TjXFPeJ4JHsvTyXxg
-Xr77eogUzKs15p0Eh3BBBYCu5CLnaePC+kK5pcVnJLDmbmRW/gaS/RvCuw/YfIhE
-Q5nj2KNqZny4RL9VKn0X77bP0ngrfjlFjFsEDt+9MYgNMX3kjj8=
-=ibYp
------END PGP SIGNATURE-----
-
---rcVyDzt3QNLnQ9/o--
