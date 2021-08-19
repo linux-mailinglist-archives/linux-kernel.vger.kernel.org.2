@@ -2,237 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B469A3F22B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 882783F22D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235989AbhHSWKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 18:10:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37644 "EHLO
+        id S235824AbhHSWMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 18:12:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235761AbhHSWK1 (ORCPT
+        with ESMTP id S229605AbhHSWMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 18:10:27 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E10C061575;
-        Thu, 19 Aug 2021 15:09:50 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id x27so16058559lfu.5;
-        Thu, 19 Aug 2021 15:09:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Djc9fORZaX0jUQ208L1CXmP3iTRD6JSYsA+xYiTuRIM=;
-        b=dMU6STbYnm9OflIqSy2qQXqjsJYwl7YMlINi7PykXT2hk4hVpl87FK13Gf1ev8geC3
-         K9caemrLnRsk5kMdD8lgWsp4zIB+EXGhHL8lT9qVG+rY9hboNmGWhYzNYfapsyKLHMRr
-         BuVLkLyNXbyQV+L42XvasmlaKRmpbZ1esPdEDu7e07tVacSCCkZ69VwjPz7/bcAtO3HY
-         MBcCelEAlUxXVzjYivWfZRipGBGcBePWKJgp4sYTzoaLrh6F7gyCw70q5JZvPfAXVxmg
-         BBWjfPLtb9tscP8XQdZrCInxEKvKnskPHBdhH1dH2redmXEI+urWw82oLmmmFLtSnzpf
-         Bcdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Djc9fORZaX0jUQ208L1CXmP3iTRD6JSYsA+xYiTuRIM=;
-        b=GI5g613o9nOcGM5Zu/JKwChQ34Y0jE+8HU+o0sK73/nCiYnFm7n9NET2iDA5INaLhp
-         D+5W0DnM/bDwQdk66jCNE4sM7UqcLAirEMFhjRjgM1mihqZgRZEBXgoqfeV3uY3KZ70F
-         jmFz/1MycWaMQ8IkAWXcxbZi4BQ6mkb3X/pa7/3kH3RlAHl70/lBGP+aftg1ssuJKeE5
-         2iusKH3xxJdAuyzMMg4OGCmrwr4wuepcEQ97oXTq4Ea0R1Hka88GeEqGgMJSxqQHDjZj
-         w6R2IiFzcXy6CPZZ8YFc6R/bAkx8GLWvFRQEOl+2MYw1z5iXcG93pLH3ESFui+sd20eX
-         NQEg==
-X-Gm-Message-State: AOAM533ykqtFEYhkB93QeVfxAp/gtLQXIvoUvSjA+tT4vhy4AvbDxJ29
-        oukXegtmHndhl6g2NZwQr2fwJfAYc5w=
-X-Google-Smtp-Source: ABdhPJxvNxcxk5Wqttm8NgLj2sKnLsuL7sNLBaDY6UpJ6+A1Pob5mT38NwjMtPvD9CLOiEzV59Hqsg==
-X-Received: by 2002:a05:6512:3f08:: with SMTP id y8mr11381666lfa.221.1629410988761;
-        Thu, 19 Aug 2021 15:09:48 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-120-72.dynamic.spd-mgts.ru. [46.138.120.72])
-        by smtp.googlemail.com with ESMTPSA id z5sm430889lfs.126.2021.08.19.15.09.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 15:09:48 -0700 (PDT)
-Subject: Re: [PATCH v8 07/34] clk: tegra: Support runtime PM and power domain
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20210817012754.8710-1-digetx@gmail.com>
- <20210817012754.8710-8-digetx@gmail.com> <YR0UBi/ejy+oF4Hm@orome.fritz.box>
- <da7356cb-05ee-ba84-8a7c-6e69d853a805@gmail.com>
- <YR04YHGEluqLIZeo@orome.fritz.box>
- <ad99db08-4696-1636-5829-5260f93dc681@gmail.com>
- <YR6Mvips3HAntDy0@orome.fritz.box>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <e17bbe8d-7c0f-fc3d-03c7-d75c54c24a43@gmail.com>
-Date:   Fri, 20 Aug 2021 01:09:46 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 19 Aug 2021 18:12:48 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0838EC061575;
+        Thu, 19 Aug 2021 15:12:12 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GrJsN1jwmz9sWq;
+        Fri, 20 Aug 2021 08:12:07 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629411128;
+        bh=+oTpbS3uk/7dzLSp+YsF1uCdxGlNJXxEOnYCwdDzisU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=NQNwyMoeL0cL/YIqnnB/Omz2kzZtbsW72fO/G4k6Ukbf/txZ0neQg2aU1vuYRxYz0
+         MHLAbw5N6CYlLwyfX6OZnlyi86C604v4EcHpcW9xBYLpFe7ADZ6SOBzMiO/ecskF4t
+         7PU6LeJLUBJKoYW6GaCSnyEE8XyxxL1OZk0WLb06NlLNcfAw/DJjuN/xxMREhGK6Kb
+         /m/qXSJqC2gZVl9YABUq5CidtOrzbQTVIR5pwOil8jRop9JVXNHiH9InSIxPbo0ofo
+         ey1XdzJOsq9BkLboujcACBW8to6HilhjkaMpMf3YRnBcxq7WyNG7TI7Fz+DN8R2HRd
+         l2ZIjKRVDbwLw==
+Date:   Fri, 20 Aug 2021 08:12:07 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steven Whitehouse <swhiteho@redhat.com>,
+        Bob Peterson <rpeterso@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the gfs2 tree
+Message-ID: <20210820081207.710990a6@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <YR6Mvips3HAntDy0@orome.fritz.box>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/qMIUCfh/pcJ=IzbDrn3QF2J";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-19.08.2021 19:54, Thierry Reding пишет:
-> On Wed, Aug 18, 2021 at 08:11:03PM +0300, Dmitry Osipenko wrote:
->> 18.08.2021 19:42, Thierry Reding пишет:
->>> On Wed, Aug 18, 2021 at 06:05:21PM +0300, Dmitry Osipenko wrote:
->>>> 18.08.2021 17:07, Thierry Reding пишет:
->>>>> On Tue, Aug 17, 2021 at 04:27:27AM +0300, Dmitry Osipenko wrote:
->>>>> [...]
->>>>>> +struct clk *tegra_clk_register(struct clk_hw *hw)
->>>>>> +{
->>>>>> +	struct platform_device *pdev;
->>>>>> +	struct device *dev = NULL;
->>>>>> +	struct device_node *np;
->>>>>> +	const char *dev_name;
->>>>>> +
->>>>>> +	np = tegra_clk_get_of_node(hw);
->>>>>> +
->>>>>> +	if (!of_device_is_available(np))
->>>>>> +		goto put_node;
->>>>>> +
->>>>>> +	dev_name = kasprintf(GFP_KERNEL, "tegra_clk_%s", hw->init->name);
->>>>>> +	if (!dev_name)
->>>>>> +		goto put_node;
->>>>>> +
->>>>>> +	pdev = of_platform_device_create(np, dev_name, NULL);
->>>>>> +	if (!pdev) {
->>>>>> +		pr_err("%s: failed to create device for %pOF\n", __func__, np);
->>>>>> +		kfree(dev_name);
->>>>>> +		goto put_node;
->>>>>> +	}
->>>>>> +
->>>>>> +	dev = &pdev->dev;
->>>>>> +	pm_runtime_enable(dev);
->>>>>> +put_node:
->>>>>> +	of_node_put(np);
->>>>>> +
->>>>>> +	return clk_register(dev, hw);
->>>>>> +}
->>>>>
->>>>> This looks wrong. Why do we need struct platform_device objects for each
->>>>> of these clocks? That's going to be a massive amount of platform devices
->>>>> and they will completely mess up sysfs.
->>>>
->>>> RPM works with a device. It's not a massive amount of devices, it's one
->>>> device for T20 and four devices for T30.
->>>
->>> I'm still not sure I understand why we need to call RPM functions on a
->>> clock. And even if they are few, it seems wrong to make these platform
->>> devices.
->>
->> Before clock is enabled, we need to raise core voltage. After clock is
->> disabled, the voltage should be dropped. CCF+RPM takes care of handling
->> this for us.
-> 
-> That's the part that I do understand. What I don't understand is why a
-> clock needs to be runtime suspend/resumed. Typically we suspend/resume
-> devices, and doing so typically involves disabling/enabling clocks. So
-> I don't understand why the clocks themselves now need to be runtime
-> suspended/resumed.
+--Sig_/qMIUCfh/pcJ=IzbDrn3QF2J
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-CCF provides RPM management for a device that backs clock. When clock is enabled, it resumes the backing device.
+Hi all,
 
-RPM, GENPD and OPP frameworks work with a device. We use all these frameworks here. Since we don't have a dedicated device for a PLL clock, we need to create it in order to leverage the existing generic kernel APIs.
+In commit
 
-In this case clocks are not runtime suspended/resumed, the device which backs clock is suspended/resumed.
+  368242d2be99 ("gfs2: init system threads before freeze lock")
 
->>> Perhaps they can be simple struct device:s instead? Ideally they would
->>> also be parented to the CAR so that they appear in the right place in
->>> the sysfs hierarchy.
->>
->> Could you please clarify what do you mean by 'simple struct device:s'?
->> These clock devices should be OF devices with a of_node and etc,
->> otherwise we can't use OPP framework.
-> 
-> Perhaps I misunderstand the goal of the OPP framework. My understanding
-> was that this was to attach a table of operating points with a device so
-> that appropriate operating points could be selected and switched to when
-> the workload changes.
-> 
-> Typically these operating points would be roughly a clock rate and a
-> corresponding voltage for a regulator, so that when a certain clock rate
-> is requested, the regulator can be set to the matching voltage.
-> 
-> Hm... so is it that each of these clocks that you want to create a
-> platform device for has its own regulator? Because the patch series only
-> mentions the CORE domain, so I assumed that we would accumulate all the
-> clock rates for the clocks that are part of that CORE domain and then
-> derive a voltage to be supplied to that CORE domain.
-> 
-> But perhaps I just don't understand correctly how this is tied together.
+Fixes tag
 
-We don't use regulators, we use power domain that controls regulator. GENPD takes care of accumulating performance requests on a per-device basis.
+  Fixes: 96b1454f2e ("gfs2: move freeze glock outside the make_fs_rw and _ro
 
-I'm creating platform device for the clocks that require DVFS. These clocks don't use regulator, they are attached to the CORE domain. GENPD framework manages the performance state, aggregating perf votes from each device, i.e. from each clock individually.
+has these problem(s):
 
-You want to reinvent another layer of aggregation on top of GENPD. This doesn't worth the effort, we won't get anything from it, it should be a lot of extra complexity for nothing. We will also lose from it because pm_genpd_summary won't show you a per-device info.
+  - SHA1 should be at least 12 digits long
+    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+    or later) just making sure it is not set (or set to "auto").
+  - Subject has leading but no trailing parentheses
+  - Subject has leading but no trailing quotes
 
-domain                          status          children                           performance
-    /device                                             runtime status
-----------------------------------------------------------------------------------------------
-heg                             on                                                 1000000
-    /devices/soc0/50000000.host1x                       active                     1000000
-    /devices/soc0/50000000.host1x/54140000.gr2d         suspended                  0
-mpe                             off-0                                              0
-vdec                            off-0                                              0
-    /devices/soc0/6001a000.vde                          suspended                  0
-venc                            off-0                                              0
-3d1                             off-0                                              0
-    /devices/genpd:1:54180000.gr3d                      suspended                  0
-3d0                             off-0                                              0
-    /devices/genpd:0:54180000.gr3d                      suspended                  0
-core-domain                     on                                                 1000000
-                                                3d0, 3d1, venc, vdec, mpe, heg
-    /devices/soc0/7d000000.usb                          active                     1000000
-    /devices/soc0/78000400.mmc                          active                     950000
-    /devices/soc0/7000f400.memory-controller            unsupported                1000000
-    /devices/soc0/7000a000.pwm                          active                     1000000
-    /devices/soc0/60006000.clock/tegra_clk_pll_c        active                     1000000
-    /devices/soc0/60006000.clock/tegra_clk_pll_e        suspended                  0
-    /devices/soc0/60006000.clock/tegra_clk_pll_m        active                     1000000
-    /devices/soc0/60006000.clock/tegra_clk_sclk         active                     1000000
+Please do not split Fixes tags over more than one line.
 
+--=20
+Cheers,
+Stephen Rothwell
 
->> We don't have driver for CAR to bind. I guess we could try to add a
->> 'dummy' CAR driver that will create sub-devices for the rpm-clocks, is
->> this what you're wanting?
-> 
-> I got confused by the "tegra-clock" driver that this series was adding.
-> This is actually a driver that will bind to the virtual clocks rather
-> than the CAR device itself.
-> 
-> For some reason I had assumed that you wanted to create a CAR driver in
-> order to get at the struct device embedded in the CAR's platform device
-> and use that as the parent for all these clocks.
-> 
-> So even if we absolutely need some struct device for these clocks, maybe
-> adding that CAR driver and making the clock struct device:s children of
-> the CAR device will help keep a bit of a proper hierarchy in sysfs.
+--Sig_/qMIUCfh/pcJ=IzbDrn3QF2J
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Alright, that's easy to do. We will have to move out some clk data out of __init then. I already implemented it as you may see in the above PD summary.
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEe1zcACgkQAVBC80lX
+0GwySQf/bO1u77QwYwvhFlCwY99RuYNoS2ae11XTvl7hrHxojXr2vSr2YvwHPzQY
+wSnpmn5xo4ZgBOrOggXrZ7BLGx6emPJLasISrTqptOY3oX6uPabYoCcJeEUW21je
+oz5j0SXqv0RXPswzhZ2VAAf9yI7GB78LH8cSrXjjQUQXkG3Mp9zkpz8+C380aMmg
+0780CKOnUKadMtWcYtiyzaQDOJWjQBM7q4w6KBLvFpVms6oQI5XTjy3434ZZRIB2
+GH/mvOzd4m7spRsN6uuzQdIYCmFrwRPutwyugKGWfFWol7dIj20A7v2XUGBOVITi
+lBUr2gn0dTBUerYo68fLN0maA2zOcw==
+=kZ+k
+-----END PGP SIGNATURE-----
+
+--Sig_/qMIUCfh/pcJ=IzbDrn3QF2J--
