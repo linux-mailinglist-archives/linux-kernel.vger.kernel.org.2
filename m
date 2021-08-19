@@ -2,92 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94EC53F1CC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 701453F1CAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239151AbhHSP3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 11:29:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239990AbhHSP3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 11:29:03 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3727A60FE8;
-        Thu, 19 Aug 2021 15:28:27 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1mGjxx-004hgw-SJ; Thu, 19 Aug 2021 11:28:25 -0400
-Message-ID: <20210819152825.715290342@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Thu, 19 Aug 2021 11:26:09 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v8 5/5] selftests/ftrace: Add selftest for testing duplicate eprobes and
- kprobes
-References: <20210819152604.704335282@goodmis.org>
+        id S240297AbhHSP1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 11:27:04 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:56875 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S238643AbhHSP1D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 11:27:03 -0400
+Received: (qmail 230180 invoked by uid 1000); 19 Aug 2021 11:26:26 -0400
+Date:   Thu, 19 Aug 2021 11:26:26 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     syzbot <syzbot+9b57a46bf1801ce2a2ca@syzkaller.appspotmail.com>
+Cc:     benjamin.tissoires@redhat.com, jikos@kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, mkubecek@suse.cz,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] WARNING in hid_submit_ctrl/usb_submit_urb
+Message-ID: <20210819152626.GD228422@rowland.harvard.edu>
+References: <20210818184927.GD197200@rowland.harvard.edu>
+ <000000000000f7ab1005c9db0f8e@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000f7ab1005c9db0f8e@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Wed, Aug 18, 2021 at 01:13:06PM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+> WARNING in hid_submit_ctrl/usb_submit_urb
+> 
+> ------------[ cut here ]------------
+> usb 1-1: BOGUS control dir, pipe 80000280 doesn't match bRequestType a1
+> WARNING: CPU: 1 PID: 10180 at drivers/usb/core/urb.c:410 usb_submit_urb+0x149d/0x18a0 drivers/usb/core/urb.c:410
 
-Add a selftest that makes sure that eprobes and kprobes can not be created
-with the same group and name as existing events.
+Looks like I was wrong.  Let's see what's really happening.
 
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Cc: linux-kselftest@vger.kernel.org
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- .../ftrace/test.d/dynevent/test_duplicates.tc | 28 +++++++++++++++++++
- 1 file changed, 28 insertions(+)
- create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/test_duplicates.tc
+Alan Stern
 
-diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/test_duplicates.tc b/tools/testing/selftests/ftrace/test.d/dynevent/test_duplicates.tc
-new file mode 100644
-index 000000000000..022b569267ed
---- /dev/null
-+++ b/tools/testing/selftests/ftrace/test.d/dynevent/test_duplicates.tc
-@@ -0,0 +1,28 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# description: Generic dynamic event - check if duplicate events are caught
-+# requires: dynamic_events "e[:[<group>/]<event>] <attached-group>.<attached-event>o [<args>]":README
-+
-+echo 0 > events/enable
-+
-+clear_dynamic_events
-+
-+# first create dynamic events for eprobes and kprobes.
-+
-+echo 'e:egroup/eevent syscalls/sys_enter_openat file=+0($filename):ustring' >> dynamic_events
-+echo 'p:kgroup/kevent vfs_open file=+0($arg2)' >> dynamic_events
-+
-+# Test eprobe for same eprobe, existing kprobe and existing event
-+! echo 'e:egroup/eevent syscalls/sys_enter_openat file=+0($filename):ustring' >> dynamic_events
-+! echo 'e:kgroup/kevent syscalls/sys_enter_openat file=+0($filename):ustring' >> dynamic_events
-+! echo 'e:syscalls/sys_enter_open syscalls/sys_enter_openat file=+0($filename):ustring' >> dynamic_events
-+
-+# Test kprobe for same kprobe, existing eprobe and existing event
-+! echo 'p:kgroup/kevent vfs_open file=+0($arg2)' >> dynamic_events
-+! echo 'p:egroup/eevent vfs_open file=+0($arg2)' >> dynamic_events
-+! echo 'p:syscalls/sys_enter_open vfs_open file=+0($arg2)' >> dynamic_events
-+
-+echo '-:egroup/eevent' >> dynamic_events
-+echo '-:kgroup/kevent' >> dynamic_events
-+
-+clear_trace
--- 
-2.30.2
+#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 794c7931a242
+
+--- usb-devel.orig/drivers/hid/usbhid/hid-core.c
++++ usb-devel/drivers/hid/usbhid/hid-core.c
+@@ -397,6 +397,8 @@ static int hid_submit_ctrl(struct hid_de
+ 		} else
+ 			padlen = 0;
+ 		usbhid->urbctrl->transfer_buffer_length = padlen;
++		hid_err(hid, "submit_ctrl: maxpacket %d len %d padlen %d\n",
++				maxpacket, len, padlen);
+ 	}
+ 	usbhid->urbctrl->dev = hid_to_usb_dev(hid);
+ 
