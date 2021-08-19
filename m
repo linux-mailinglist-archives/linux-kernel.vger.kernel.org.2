@@ -2,88 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA3B3F1580
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 10:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F953F158B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 10:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbhHSIr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 04:47:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47718 "EHLO
+        id S237435AbhHSIsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 04:48:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232653AbhHSIr1 (ORCPT
+        with ESMTP id S232653AbhHSIsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 04:47:27 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3490BC061575;
-        Thu, 19 Aug 2021 01:46:51 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id f10so3365034wml.2;
-        Thu, 19 Aug 2021 01:46:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=X/TEaZzu94ne4ay2syr/T654O+flopjeVsyOYpDjJno=;
-        b=Nwks4G871aYpOheeqTFSc4lWtC4lXLeA53ppjfAQsSxhgAMZqL0mtQGOimf88UlF6h
-         sD37CBA0jj228sCCxrUxpn4EL1Cg43hFq6OzJ/X3iZNS+Mt83DEGBuMgjCWyyQvlPBKH
-         dEJ9YFsk0E3UGeS7ZCWHXO59h7F8rJhc+3XPSBn1BDupy957GAomgKl7tp2UBootElVO
-         wOvHeHPACxIUvNW9EFdc1HzaDfFok707DMCyhfrge/CIBjPz42QZIwYFVZaV4QAyGDS4
-         vXZ/pJiqNGOo4T6dGpycWuYpnji/LojNZtL6a4Nb91kIapWXCG4h3zYopuDPVCLjAu/b
-         HCOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=X/TEaZzu94ne4ay2syr/T654O+flopjeVsyOYpDjJno=;
-        b=a3ZNUGBPw/YoUZolYucoZ+4OicUebgp5xOv45J2MUOUkZjXL/cWdyUsu/8TFmgWBm8
-         ZryvqGBsPdPKEpZi8dLe/m1AuEYDTytuUgEGsN2MhfGs+VVKLQ/p4WQ7vhHvQwn1wD0b
-         Eon+HTGqElP+G1PGeIH9D+qf1QMQnTC0AzPLtRMDpIEIKRz2GVLrp7p6SYM3hGx+0NnV
-         2E8HLxvt1vXJkNMLx3L5gbhtL3VOyzOwEeMyx9hErfPARBYQpkdg9VLXEBhNm5dpxWb2
-         eo6kVG6ZEHb5lx11WJ2vIPlDZQwRHJPEjCIhj6433NqmaC4Nsjo6DSQ/UtVw0Y2yWLxU
-         vZ/g==
-X-Gm-Message-State: AOAM53191X9bdyltoyaYst5UvtD6MNpZkXrRLFBEQofCID/DZzZVENaE
-        RLewWPprvaPWYbnSPN8aeGE=
-X-Google-Smtp-Source: ABdhPJwYxscRIinzqhEtONF6p8gLbq+7oJhoE+fOvLEGr4P9cwE4Koxqa8JqsF28S4rldy4wW/XCcA==
-X-Received: by 2002:a7b:c316:: with SMTP id k22mr7118105wmj.56.1629362809827;
-        Thu, 19 Aug 2021 01:46:49 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:183:dc70:3158:43eb:fcb0:86a6? ([2a01:e0a:183:dc70:3158:43eb:fcb0:86a6])
-        by smtp.gmail.com with ESMTPSA id u10sm2227301wrt.14.2021.08.19.01.46.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 01:46:49 -0700 (PDT)
-Subject: Re: [PATCH v1] MAINTAINERS: new entry for Broadcom STB PCIe driver
-To:     Jim Quinlan <jim2101024@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, f.fainelli@gmail.com,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
-References: <20210818225031.8502-1-jim2101024@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <79e605cc-519e-94f2-0444-8700256c6458@gmail.com>
-Date:   Thu, 19 Aug 2021 10:46:49 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 19 Aug 2021 04:48:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8969DC061575;
+        Thu, 19 Aug 2021 01:48:03 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 10:47:59 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629362881;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UGhrbP1M+bRZykm1qw5MiTgXr3U+PK7s8IS34ZgSXfI=;
+        b=trRnakSacqt1GZoA9rmQailL5D5FdiYvG9vn4H4IFSVPUuWLCyGNE3upOx6UzCrekwYQu9
+        z+t5i2jnQFmKNWirRpJGU5BDAHEh9a6ky98KKNDrifqHIPIcTYV1udP+e+DbWwf/SqA6ei
+        CzJbhgveJDyBwI0GQDUOqvq64BNVd1EBJvCrhznR34C+0VwcaY9X7G8TTsBkD/dmIylZgV
+        Y1WnfiDhGzEiCift0C/3zHq+48caOnhzgalo/dsrP0+nLYzapQakn+BzJ3hGaOt1IIQo4X
+        r8c9w4chvjvgNFkOuXSPEoy42tIlwMRlVLGwbpF8UXsddT5EvY40yYqrsXQiUA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629362881;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UGhrbP1M+bRZykm1qw5MiTgXr3U+PK7s8IS34ZgSXfI=;
+        b=JjvGNmfhOeqlCc3FmDvm6MBn+YE/490dRcvw6yXJbnrf28mkeSruEBZAUMfd8+Jm3ZcESc
+        8NxYzP6+dKiU1ZCg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Jeaho Hwang <jhhwang@rtst.co.kr>
+Cc:     Peter Chen <peter.chen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rt-users@vger.kernel.org, Linux team <team-linux@rtst.co.kr>,
+        =?utf-8?B?67OA66y06rSRKEJ5ZW9uIE1vbyBLd2FuZykv7J6Q64+Z7ZmU7JewKUF1dG9t?=
+         =?utf-8?B?YXRpb24gUGxhdGZvcm3sl7DqtaztjIA=?= 
+        <mkbyeon@lselectric.co.kr>,
+        =?utf-8?B?7LWc6riw7ZmNKENob2kgS2kgSG9uZykv7J6Q64+Z7ZmU7JewKUF1dG9tYXRp?=
+         =?utf-8?B?b24gUGxhdGZvcm3sl7DqtaztjIA=?= 
+        <khchoib@lselectric.co.kr>
+Subject: Re: [PATCH v2] usb: chipidea: local_irq_save/restore added for
+ hw_ep_prime
+Message-ID: <20210819084759.stnmit32vs2be46m@linutronix.de>
+References: <20210817095313.GA671484@ubuntu>
+ <20210818161752.vu6abfv3e6bfqz23@linutronix.de>
+ <CAJk_X9h_GqUyir7oG33pFrLgknj7DZfd6esiKb07w7QWjZqX0g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210818225031.8502-1-jim2101024@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAJk_X9h_GqUyir7oG33pFrLgknj7DZfd6esiKb07w7QWjZqX0g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-08-19 08:50:27 [+0900], Jeaho Hwang wrote:
+> Without RT, udc_irq runs as a forced threaded irq handler, so it runs
+> without any interruption or preemption. NO similar case is found on
+> non-RT.
 
+I see only a devm_request_irq() so no force-threading here. Booting with
+threadirqs would not lead to the problem since commit
+   81e2073c175b8 ("genirq: Disable interrupts for force threaded handlers")
 
-On 8/19/2021 12:50 AM, Jim Quinlan wrote:
-> The two files listed are also covered by
-> 
-> "BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE"
-> 
-> which covers the Raspberry Pi specifics of the PCIe driver.
-> 
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+=E2=80=A6
+> > If this function here is sensitive to timing (say the cpu_relax() loop
+> > gets interrupt for 1ms) then it has to be documented as such.
+>=20
+> The controller sets ENDPTSETUPSTAT register if the host sent a setup pack=
+et.
+> yes it is a timing problem. I will document that and resubmit again if
+> you agree that local_irq_save could help from the timing problem.
+>=20
+> Thanks for the advice.
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+If it is really a timing issue in the function as you describe below
+then disabling interrupts would help and it is indeed an RT only issue.
 
-Would be good to get this change applied soon so you are copied properly 
-on all pcie-brcmstb.c changes. Thanks!
--- 
-Florian
+So you read OP_ENDPTSETUPSTAT, it is 0, all good.
+You write OP_ENDPTPRIME, wait for it to be cleared.
+Then you read OP_ENDPTSETUPSTAT again and if it is 0, all good.
+
+And the TWD interrupt could delay say the second read would read 1 and
+it is invalidated. Which looks odd.
+However, it is "okay" if the TWD interrupt happens after the second
+read? Even if the host sends a setup packet, nothing breaks?=20
+Do you have numbers on how long irq-off section is here? It seems to
+depend on how long the HW needs to clear the OP_ENDPTPRIME bits.
+
+Sebastian
