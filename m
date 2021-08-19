@@ -2,117 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B396F3F1B29
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C223F1B2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238523AbhHSOGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 10:06:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238141AbhHSOGE (ORCPT
+        id S240383AbhHSOGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 10:06:10 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:56567 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234281AbhHSOGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 19 Aug 2021 10:06:04 -0400
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97FE3C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 07:05:27 -0700 (PDT)
-Received: by mail-ua1-x92b.google.com with SMTP id b26so2641280uam.13
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 07:05:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z8ppYolHk+6MAlg/iRV3TOW64DDORViSUFtjVS4tPfU=;
-        b=pf8lMOnxg/R18hy9RmRXn53gTyaSPBEYPRXidYbCWDeGyj1Q84GnstXRTsE70HIZwL
-         rOZaYQbJ0JsuexxwGKTbxTnmUkIeE3lCIDKi4y5M7EdG4KOJ33bce1Ym5TIJ8eyXrlgP
-         dbE7l+Rznz9FT+hME0DQqhK7lxhDgOPmbvRDcLaquo7wS/EVnyYYfbE9J5SpPQV1WnQ8
-         fXPIAlBPmH1/Wbcsr6ERwHJaV/U7LQTY8nCTXj0WtrNaCQEnZqZy2yVRdVBh7ZdPgr+l
-         lQknd5LJKpfGihHNxJOG9NmGE/fM0gVDzrjpqFwZqJoFyhmk+xoMBA6IKCATwNl/L1GC
-         MrVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z8ppYolHk+6MAlg/iRV3TOW64DDORViSUFtjVS4tPfU=;
-        b=LggSSQI8g4/Gj3mTWREo1HKayGgjkFM2A7ig2OsKnKy6ZCwDuyf4/sRTvQvJ4QcbMF
-         BLtsFQJjRZfouqs3TXztIhkPMGQ2tOaTmF+kPSaUg4gJz31R4CC9qUgl1ux7RJKvL3yE
-         2sdv/odG75llcN1k7pPdp2CiiDUrt5B0oqLq0QfU/NlC+MzojVyHsMU32GWUuHyGKNEY
-         h3vLnKIMAQSSgopDHu2lCPMDk1hwc9Kq8EXrrfMN+uhTmNKiw2lNsStJQx9S6O0TnBdH
-         E8QkZd5DfRbAPc6mn68xxAUHNRW2XL8VVSt7wApcMighRO31NgiadrwSt2kFKmW13e4s
-         grsQ==
-X-Gm-Message-State: AOAM533DoLmvOMRUTFxq5W1bwZuL/T1VS1dzbS2g78rrKON2LeZxzWNc
-        18v8R+2T8OTkMdFYleB4uGeokql94qMd0e3HS3AYfw==
-X-Google-Smtp-Source: ABdhPJy/9RKTdWSvjYHKQ+0uBbarqxq9rsGLaiJcPg/kihysGVgUWTFM+D2WJBPDbj8B50jGA4KtwzpHd41jDaJSEK8=
-X-Received: by 2002:a9f:25a7:: with SMTP id 36mr11206760uaf.129.1629381926495;
- Thu, 19 Aug 2021 07:05:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1629381928; x=1660917928;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=HpW4hbTi5PSEovgBt3uxfRIvDZZhIFQAPSs4Cf7gvDk=;
+  b=ltwXqrfs9QZIYxLczCpnUUlS9qqiWBXA0fk5X/aGho92WT2KdLldL5pi
+   zqDh35TpgVKPxRmgpuMAfIPW0rT8eyYTiQBPuPWodtzHVda/+nqY4jhCx
+   S0lCmRk+5Dx1Cz5i2qiNOqgLfIwy1kfjJmY23AbPswi/NyW9U46pPlIsT
+   w=;
+Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 19 Aug 2021 07:05:28 -0700
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg03-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 07:05:28 -0700
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.858.15; Thu, 19 Aug 2021 07:05:27 -0700
+Received: from [10.226.59.216] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.15; Thu, 19 Aug
+ 2021 07:05:27 -0700
+Subject: Re: [PATCH v1 1/2] bus: mhi: core: Bail on writing register fields if
+ read fails
+To:     Hemant Kumar <hemantk@codeaurora.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        <manivannan.sadhasivam@linaro.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <loic.poulain@linaro.org>
+References: <1629330634-36465-1-git-send-email-bbhatt@codeaurora.org>
+ <1629330634-36465-2-git-send-email-bbhatt@codeaurora.org>
+ <45fbfe24-38eb-82f0-7134-a04854269247@codeaurora.org>
+From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
+Message-ID: <48d494d8-1323-87fd-4a95-c1714bfa2ae9@quicinc.com>
+Date:   Thu, 19 Aug 2021 08:05:26 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210817012754.8710-1-digetx@gmail.com> <20210817012754.8710-20-digetx@gmail.com>
- <YR5ay6+r0hJsUbhy@orome.fritz.box>
-In-Reply-To: <YR5ay6+r0hJsUbhy@orome.fritz.box>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 19 Aug 2021 16:04:50 +0200
-Message-ID: <CAPDyKFqr6NYO89io+6EfwrtELhTMps-tpGcAVbmuQ1_NnOD7Ew@mail.gmail.com>
-Subject: Re: [PATCH v8 19/34] pwm: tegra: Add runtime PM and OPP support
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <45fbfe24-38eb-82f0-7134-a04854269247@codeaurora.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Aug 2021 at 15:21, Thierry Reding <thierry.reding@gmail.com> wrote:
->
-> On Tue, Aug 17, 2021 at 04:27:39AM +0300, Dmitry Osipenko wrote:
-> > The PWM on Tegra belongs to the core power domain and we're going to
-> > enable GENPD support for the core domain. Now PWM must be resumed using
-> > runtime PM API in order to initialize the PWM power state. The PWM clock
-> > rate must be changed using OPP API that will reconfigure the power domain
-> > performance state in accordance to the rate. Add runtime PM and OPP
-> > support to the PWM driver.
-> >
-> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> > ---
-> >  drivers/pwm/pwm-tegra.c | 104 ++++++++++++++++++++++++++++++++--------
-> >  1 file changed, 85 insertions(+), 19 deletions(-)
->
-> Can this be safely applied independently of the rest of the series, or
-> are there any dependencies on earlier patches?
+On 8/18/2021 7:40 PM, Hemant Kumar wrote:
+> 
+> 
+> On 8/18/2021 4:50 PM, Bhaumik Bhatt wrote:
+>> Helper API to write register fields relies on successful reads
+>> of the register/address prior to the write. Bail out if a failure
+>> is seen when reading the register before the actual write is
+>> performed.
+>>
+>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+> 
 
-Just to make sure we don't rush something in, I would rather withhold
-all runtime PM related patches in the series, until we have agreed on
-how to fix the in genpd/opp core parts. Simply, because those may very
-well affect the deployments in the drivers.
-
->
-> Thierry
-
-Kind regards
-Uffe
+Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
