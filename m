@@ -2,56 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C57F33F13FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 351FA3F1404
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232117AbhHSHEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 03:04:24 -0400
-Received: from verein.lst.de ([213.95.11.211]:36310 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231722AbhHSHEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 03:04:23 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 8624C67357; Thu, 19 Aug 2021 09:03:45 +0200 (CEST)
-Date:   Thu, 19 Aug 2021 09:03:45 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Claire Chang <tientzu@chromium.org>,
-        Konrad Rzeszutek Wilk <konrad@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the swiotlb tree with the
- dma-mapping tree
-Message-ID: <20210819070345.GB4521@lst.de>
-References: <20210819111312.697fc48f@canb.auug.org.au>
+        id S232003AbhHSHGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 03:06:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231733AbhHSHGv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 03:06:51 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95DFEC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 00:06:15 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id k14so4996520pga.13
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 00:06:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=d24so6mNChjsewh7oprUNrIXD8v7FslbdYVxKPyqYXE=;
+        b=DyLqmt9LUhYdSkTem3sk80Ub972E9Yc34wRhRboTlhx4Wi197NhVlo9UIczj48j3G/
+         T8LhjLSvY9bLxUXt5J8rfqL9ww45Z/xfGnuHCc+vO85k9hAriU/EMv40HMdb9qspahzo
+         S2EfzmOod7IkH20hhWfU+uUep+/Q/ov0rdSZc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=d24so6mNChjsewh7oprUNrIXD8v7FslbdYVxKPyqYXE=;
+        b=bYYZaX4lHID47yhsrXRHqYQl5260us0/wJYst7tvjB3bxlrwugFa+BfxL399Xngxny
+         9nN4NARqUkG6ZQhx/KbaeWDm3+/JA48EistBy05LX2DfzhJBbl09fEhI+fFoCiw3W9iL
+         P0nMwvtMcTPD1kuyxJ6XPBx8GaxhjvQGePctlAh3N1VLsALLAA0etUSK9u9XMocWUMf2
+         nBwFBoZLjuWnj4+IG2K5Aq6V2T2PbtZA9J2jpsdemROMEgvbymo2QcUT1UnldsOm+8Vf
+         8fJTKN6t5o4QjZpdUZh3KNv0sPCIc8wg9E9YbdDcpHDOn/E6BUREXRgkBP3TTaaFQLAO
+         rUyQ==
+X-Gm-Message-State: AOAM532KaaVgU0XqRvgoy07kqdtqXy1rbugyUNpkP6fyzFKU31NY8J3V
+        003bQQa2JTsHilNkDfAXFgXpsg==
+X-Google-Smtp-Source: ABdhPJx1+T7gxYGQvh03cW7Q6zygQHgK4Kd6rH9nkFHFAtaDVXPPqWIrIytEky+POIK2WoZyqkUhwg==
+X-Received: by 2002:a05:6a00:1a4f:b0:3e2:1f86:3235 with SMTP id h15-20020a056a001a4f00b003e21f863235mr13086054pfv.26.1629356775079;
+        Thu, 19 Aug 2021 00:06:15 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a8sm2027703pfo.79.2021.08.19.00.06.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 00:06:14 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 00:06:13 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, Joe Perches <joe@perches.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>, linux-mm@kvack.org,
+        linux-kbuild@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 1/7] Compiler Attributes: Add __alloc_size() for
+ better bounds checking
+Message-ID: <202108190003.37FF2F1D7@keescook>
+References: <20210818214021.2476230-1-keescook@chromium.org>
+ <20210818214021.2476230-2-keescook@chromium.org>
+ <20210818161912.f14722707e06de1f046e948d@linux-foundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210819111312.697fc48f@canb.auug.org.au>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210818161912.f14722707e06de1f046e948d@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 11:13:12AM +1000, Stephen Rothwell wrote:
-> Hi all,
+On Wed, Aug 18, 2021 at 04:19:12PM -0700, Andrew Morton wrote:
+> On Wed, 18 Aug 2021 14:40:15 -0700 Kees Cook <keescook@chromium.org> wrote:
 > 
-> Today's linux-next merge of the swiotlb tree got a conflict in:
+> > GCC and Clang can use the "alloc_size" attribute to better inform the
+> > results of __builtin_object_size() (for compile-time constant values).
+> > Clang can additionally use alloc_size to inform the results of
+> > __builtin_dynamic_object_size() (for run-time values).
+> > 
+> > Because GCC sees the frequent use of struct_size() as an allocator size
+> > argument, and notices it can return SIZE_MAX (the overflow indication),
+> > it complains about these call sites may overflow (since SIZE_MAX is
+> > greater than the default -Walloc-size-larger-than=PTRDIFF_MAX). This
+> > isn't helpful since we already know a SIZE_MAX will be caught at run-time
+> > (this was an intentional design). Instead, just disable this check as
+> > it is both a false positive and redundant. (Clang does not have this
+> > warning option.)
+> > 
+> > ...
+> >
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -1078,9 +1078,13 @@ KBUILD_CFLAGS += $(call cc-disable-warning, stringop-overflow)
+> >  # Another good warning that we'll want to enable eventually
+> >  KBUILD_CFLAGS += $(call cc-disable-warning, restrict)
+> >  
+> > -# Enabled with W=2, disabled by default as noisy
+> >  ifdef CONFIG_CC_IS_GCC
+> > +# Enabled with W=2, disabled by default as noisy
+> >  KBUILD_CFLAGS += -Wno-maybe-uninitialized
+> > +
+> > +# The allocators already balk at large sizes, so silence the compiler
+> > +# warnings for bounds checks involving those possible values.
+> > +KBUILD_CFLAGS += -Wno-alloc-size-larger-than
+> >  endif
+> >  
+> >  # disable invalid "can't wrap" optimizations for signed / pointers
 > 
->   kernel/dma/direct.c
+> Makefile has changed.  I did this:
 > 
-> between commit:
-> 
->   faf4ef823ac5 ("dma-direct: add support for dma_coherent_default_memory")
-> 
-> from the dma-mapping tree and commit:
-> 
->   f4111e39a52a ("swiotlb: Add restricted DMA alloc/free support")
-> 
-> from the swiotlb tree.
-> 
-> I fixed it up (see below, though more may be needed) and can carry the
+> --- a/Makefile~compiler-attributes-add-__alloc_size-for-better-bounds-checking
+> +++ a/Makefile
+> @@ -1003,6 +1003,12 @@ KBUILD_CFLAGS += $(call cc-disable-warni
+>  # Enabled with W=2, disabled by default as noisy
+>  KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
+>  
+> +ifdef CONFIG_CC_IS_GCC
+> +# The allocators already balk at large sizes, so silence the compiler
+> +# warnings for bounds checks involving those possible values.
+> +KBUILD_CFLAGS += -Wno-alloc-size-larger-than
+> +endif
+> +
+>  # disable invalid "can't wrap" optimizations for signed / pointers
+>  KBUILD_CFLAGS	+= -fno-strict-overflow
 
-Thanks, the fix looks good.
+Oh, er, where did "Makefile: remove stale cc-option checks" go? Ah, I
+see now:
+https://lore.kernel.org/mm-commits/20210814215814.W_qqW%25akpm@linux-foundation.org/T/#u
+
+Looks like I just happened to pick the wrong linux-next. ;)
+
+Thanks for the fix-up!
+
+-- 
+Kees Cook
