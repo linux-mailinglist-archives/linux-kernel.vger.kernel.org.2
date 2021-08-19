@@ -2,86 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A7FA3F2086
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 21:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F33DF3F2084
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 21:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234881AbhHSTXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 15:23:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234706AbhHSTXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 15:23:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E119610A0;
-        Thu, 19 Aug 2021 19:22:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629400956;
-        bh=hjanTyI3N9VyIXFopjH48AbrKtMvCkP6wd0U5aKuEHM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZPcyTnsUdognRf0uS/SnvDWG8oK3+/BsQay7ExsRyKgzV5TT/XWrL4nga3lwwSKZP
-         fiMnksbLLlbXNaNBna5PlAPzMCZT0iNVOIne7Nb69k4QzxgKvIuqmw/BOx+ojq1TKi
-         gUZhz0fpal7VU8p2B5TKDgX2P26NZFbVS6gCq3xCx9h9PmY6mf/VrKlv3lm2/3h0Ha
-         DiixDjenXQ9I6FxVCQ2bOtHCtdPezRxbP3yXl40ORldbu/lPOpn0UwCQMX0gBmGMxT
-         4qbtMBaRsjtAWdvS18q+0lrS7gSObwSiLY6vbQua5Lf+1k+Pt9eVsZFoHTl4dojPa4
-         CuppptZDsxWlQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
-        Colin King <colin.king@canonical.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] ASoC: uniphier: make arrays mul and div static const, makes object smaller
-Date:   Thu, 19 Aug 2021 20:22:08 +0100
-Message-Id: <162940023650.48070.9595577624316730352.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210818151746.38520-1-colin.king@canonical.com>
-References: <20210818151746.38520-1-colin.king@canonical.com>
+        id S234795AbhHSTXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 15:23:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233662AbhHSTXK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 15:23:10 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A69C061575;
+        Thu, 19 Aug 2021 12:22:33 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id x7so13197757ljn.10;
+        Thu, 19 Aug 2021 12:22:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qc9LqY40K8VPn4cy7lXDOl3TOv1El5e3Y/gxS7m5eME=;
+        b=hC3osBVkhAHFY6ijA6tj/ZVEXj4mm8C8qiJBBDxHLLcT8QIpLtIjIOV0ap391G013K
+         Pjvm6isGfE0IwRoha96eBGZuTwmRw4EOxaLITdwGu2CUqodUm/0fMoZX69Su6rXdoPSW
+         KnDAT230jzPPA8v82CDwpuoPIo5oBWYWJzZkYFS/HL0nhlyxsH4zHNuNtoW7kXTbaXpx
+         vmDG0d2QEfSeroRj3esvk6VhJ3en5OZG7TJpillXmaTV1uzg1fxdILl41+2vBhKeGvTN
+         sI9RbhAEyZcsvBl3VGjBYKDs4Xn17+HgZ2dGbyF21vXJQjPXVuh1/A31kB/W87moKGGV
+         /6KQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qc9LqY40K8VPn4cy7lXDOl3TOv1El5e3Y/gxS7m5eME=;
+        b=shelP46CBLKOIUmRGcmI02l5silUdTdyCE5TdsBY+wr00mNNigaV/DZyqWcjqbEHrV
+         FLDxBQWhNRJAbFYTJT9BhZxxRX8SJsVR58O6O+iGU7NTw1/lILZf7t3gL/vrUuRffFbA
+         +Mi9iBD+0IANtRVFpXtZjV8Yccnk9tfsUpLEegxW3XnS2c7Kak/5vyepQdzNq9+z/S6q
+         2bvY/JfXBsD1kO5vR6iu/9kYyL1f/A96MZarNxwS/C0JNsH7b7rCakkUC4zQxXJ4IKi3
+         sEygAzw6AhQFPGxaaYSWp1Y0UjNjirdR0JAKY4AVxwogS1cP0fLahJYCPgnVpjbpfiXr
+         7oZA==
+X-Gm-Message-State: AOAM530qtV1CnneIU+B2tqNcN3iQL3i4RTlF/OUdEOtADMpvzvK3VoSF
+        0DCWklel9NZ2syd2lNcP5pW58cvYBaOOEQ==
+X-Google-Smtp-Source: ABdhPJwGLyngUILRxgRSJY+hMei4hEmtobUYEQW7BIvBHy1De95gmZgtLzSC6rTVlej1TL9zNmWJCQ==
+X-Received: by 2002:a05:651c:11c7:: with SMTP id z7mr8404563ljo.464.1629400951459;
+        Thu, 19 Aug 2021 12:22:31 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.66.127])
+        by smtp.gmail.com with ESMTPSA id y16sm435130lfl.50.2021.08.19.12.22.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Aug 2021 12:22:31 -0700 (PDT)
+Subject: Re: [PATCH] media: atomisp: restore missing 'return' statement
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20210802143820.1150099-1-arnd@kernel.org>
+ <202108130937.7848F6B318@keescook>
+ <CAHp75VdkAO+fiiCVs=dyc2C83mZuLCQCvqs9C+6PF6JnhKDxCA@mail.gmail.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+Message-ID: <49b53061-f04a-3ed8-e957-5d40a0413a63@gmail.com>
+Date:   Thu, 19 Aug 2021 22:22:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75VdkAO+fiiCVs=dyc2C83mZuLCQCvqs9C+6PF6JnhKDxCA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Aug 2021 16:17:46 +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On 8/19/21 8:24 PM, Andy Shevchenko wrote:
+> On Fri, Aug 13, 2021 at 7:39 PM Kees Cook <keescook@chromium.org> wrote:
+>>
+>> On Mon, Aug 02, 2021 at 04:38:14PM +0200, Arnd Bergmann wrote:
+>> > From: Arnd Bergmann <arnd@arndb.de>
+>> >
+>> > The input_system_configure_channel_sensor() function lost its final
+>> > return code in a previous patch:
+>> >
+>> > drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c: In function 'input_system_configure_channel_sensor':
+>> > drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c:1649:1: error: control reaches end of non-void function [-Werror=return-type]
+>> >
+>> > Restore what was there originally.
+>> >
+>> > Fixes: 728a5c64ae5f ("media: atomisp: remove dublicate code")
+>> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>>
+>> I hit this too. Thanks!
+>>
+>> Reviewed-by: Kees Cook <keescook@chromium.org>
 > 
-> Don't populate the arrays mul and div on the stack but instead make them
-> static const. Makes the object code smaller by 4 bytes.
+> Me too,
+> Tested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 > 
-> Before:
->    text    data     bss     dec     hex filename
->   16226    4984      64   21274    531a ./sound/soc/uniphier/aio-cpu.o
+> Pavel, how have you tested it?
 > 
-> [...]
 
-Applied to
+To he honest, I didn't test it at all. It was part of application 
+processes to LFX mentoship. I really don't like style changes. Anyway, I 
+have to do it to pass the task, so, yeah, I messed up with this one ;(
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Also, I didn't notice when patch was applied, because I was like 2 month 
+after v3 posted. I am so sorry for this situation. Nowadays I always 
+test my patches.
 
-Thanks!
+I was young and foolish :)
 
-[1/1] ASoC: uniphier: make arrays mul and div static const, makes object smaller
-      commit: 5d925d9823aaf18d55fab784bd4ef11f80fe1099
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+With regards,
+Pavel Skripkin
