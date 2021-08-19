@@ -2,194 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA793F0FE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 03:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3EA03F0FE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 03:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235102AbhHSBRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 21:17:55 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:38387 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232954AbhHSBRy (ORCPT
+        id S235265AbhHSBSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 21:18:20 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:40567 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235148AbhHSBST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 21:17:54 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Aoy8nKq8o5aNhzGtzKHluk+DkI+orL9Y04lQ7?=
- =?us-ascii?q?vn2ZKCYlFvBw8vrCoB1173HJYUkqMk3I9ergBEDiewK4yXcW2/hzAV7KZmCP11?=
- =?us-ascii?q?dAR7sSj7cKrQeBJwTOssZZ1YpFN5N1EcDMCzFB5vrS0U2VFMkBzbC8nJyVuQ?=
- =?us-ascii?q?=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.84,333,1620662400"; 
-   d="scan'208";a="113098373"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 19 Aug 2021 09:17:17 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id 754484D0D4BB;
-        Thu, 19 Aug 2021 09:17:16 +0800 (CST)
-Received: from G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Thu, 19 Aug 2021 09:17:16 +0800
-Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
- G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Thu, 19 Aug 2021 09:17:15 +0800
-Received: from FNSTPC.g08.fujitsu.local (10.167.226.45) by
- G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Thu, 19 Aug 2021 09:17:15 +0800
-From:   Li Zhijian <lizhijian@cn.fujitsu.com>
-To:     <shuah@kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
-        <kpsingh@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <philip.li@intel.com>, <yifeix.zhu@intel.com>,
-        Li Zhijian <lizhijian@cn.fujitsu.com>,
-        "kernel test robot" <lkp@intel.com>
-Subject: [PATCH v2] selftests/bpf: enlarge select() timeout for test_maps
-Date:   Thu, 19 Aug 2021 09:15:06 +0800
-Message-ID: <20210819011506.27563-1-lizhijian@cn.fujitsu.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 18 Aug 2021 21:18:19 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 9011C5C0183;
+        Wed, 18 Aug 2021 21:17:42 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Wed, 18 Aug 2021 21:17:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=/j3YKCvhOtVhKDIAz
+        yA102kMMyo2akreesXVAihniqk=; b=Sj26ssPlwBFjpEKshWDIv3XT2VqF77RWi
+        8jktQ6jsx+LENxqTCFEVUP2vSf3u6znCm8bEmqjF/A4W1psKQPz6P1/K/aQMO1S4
+        FvwVId05lxVkI1oSWPhmRWTbiS0BMw48hGHVQON08gAQFiyN9jakT7qaSonuG/IA
+        YW7AEsQ/4mGQUUFl3Wu6fHFVgkYhEo1cr/zX1LGH9RLON6Tr8sBPyj+yfy44INlh
+        2QhzYDTi1U3U0m9qGvrNLYEzpF58CbKOq5ZE5FvyjOTMS2gkaZTeMRo/UbsYWsY7
+        1XcS9khA8heUCBUH1BuGPGbdmMiYW0Io1mN2zVSvNSB5qM6IFEGXg==
+X-ME-Sender: <xms:NbEdYRayS_3A0OjlrGbqcOXI1HnI6BqCrwKOjiDgpSZVadMCCHJ5wg>
+    <xme:NbEdYYazeGP4AfVgSlQ-z88XKvX8bWeDux0ByfVyTAi6fi0GL8DgHiBt2wb3SX04P
+    54ZOtwhoUj1MDR7dqc>
+X-ME-Received: <xmr:NbEdYT8sl3awip-gI3AJ3ItyECYttI9r_O6fZb-p4EJjUgQDQG9otr3PYLoz>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleeigdeggecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+    dtnecuhfhrohhmpedfnfhukhgvucffrdculfhonhgvshdfuceolhhukhgvsehljhhonhgv
+    shdruggvvheqnecuggftrfgrthhtvghrnheplefflefhledthfdtveeugfevueeukeegte
+    eigfeihffgjedvtedvueevtdfhvdeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
+    rghmpehmrghilhhfrhhomheplhhukhgvsehljhhonhgvshdruggvvh
+X-ME-Proxy: <xmx:NbEdYfrcFQFeZfLP5Z0cCiTod6-q45FMNP_qkRAXXd9BY0cNiplDMg>
+    <xmx:NbEdYcp2k9mEaPpGYa3XfKYDgllZWSZVZN7s9SQtM3ElL9y4ok0sHA>
+    <xmx:NbEdYVSsoU9C6u8PBBQ_KeKktIk7rTDAhMHxHZVJNgrS62WB7R-i7g>
+    <xmx:NrEdYT3TxgBK8PSUjN-TFvCs3raj5E1xO41b5_d5vKHbsnHm4_egxQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 18 Aug 2021 21:17:38 -0400 (EDT)
+From:   "Luke D. Jones" <luke@ljones.dev>
+To:     linux-kernel@vger.kernel.org
+Cc:     hdegoede@redhat.com, hadess@hadess.net,
+        platform-driver-x86@vger.kernel.org,
+        "Luke D. Jones" <luke@ljones.dev>
+Subject: [PATCH v2 0/1] asus-wmi: Add support for custom fan curves
+Date:   Thu, 19 Aug 2021 13:17:32 +1200
+Message-Id: <20210819011733.231756-1-luke@ljones.dev>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: 754484D0D4BB.A0EA7
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lizhijian@fujitsu.com
-X-Spam-Status: No
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-0Day robot observed that it's easily timeout on a heavy load host.
--------------------
- # selftests: bpf: test_maps
- # Fork 1024 tasks to 'test_update_delete'
- # Fork 1024 tasks to 'test_update_delete'
- # Fork 100 tasks to 'test_hashmap'
- # Fork 100 tasks to 'test_hashmap_percpu'
- # Fork 100 tasks to 'test_hashmap_sizes'
- # Fork 100 tasks to 'test_hashmap_walk'
- # Fork 100 tasks to 'test_arraymap'
- # Fork 100 tasks to 'test_arraymap_percpu'
- # Failed sockmap unexpected timeout
- not ok 3 selftests: bpf: test_maps # exit=1
- # selftests: bpf: test_lru_map
- # nr_cpus:8
--------------------
-Since this test will be scheduled by 0Day to a random host that could have
-only a few cpus(2-8), enlarge the timeout to avoid a false NG report.
+Add support for custom fan curves found on some ASUS ROG laptops.
 
-In practice, i tried to pin it to only one cpu by 'taskset 0x01 ./test_maps',
-and knew 10S is likely enough, but i still perfer to a larger value 30.
+- V1
+  + Initial patch work
+- V2
+  + Don't fail and remove wmi driver if error from
+    asus_wmi_evaluate_method_buf() if error is -ENODEV
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+Luke D. Jones (1):
+  asus-wmi: Add support for custom fan curves
 
----
-V2: update to 30 seconds
-3S is not enough sometimes on a very busy host
-taskset 1,1 ./test_maps 9
-Fork 1024 tasks to 'test_update_delete'
-Fork 1024 tasks to 'test_update_delete'
-Fork 100 tasks to 'test_hashmap'
-Fork 100 tasks to 'test_hashmap_percpu'
-Fork 100 tasks to 'test_hashmap_sizes'
-Fork 100 tasks to 'test_hashmap_walk'
-Fork 100 tasks to 'test_arraymap'
-Fork 100 tasks to 'test_arraymap_percpu'
-Failed sockmap unexpected timeout
+ drivers/platform/x86/asus-wmi.c            | 498 +++++++++++++++++++++
+ include/linux/platform_data/x86/asus-wmi.h |   2 +
+ 2 files changed, 500 insertions(+)
 
-taskset 1,1 ./test_maps 10
-Fork 1024 tasks to 'test_update_delete'
-Fork 1024 tasks to 'test_update_delete'
-Fork 100 tasks to 'test_hashmap'
-Fork 100 tasks to 'test_hashmap_percpu'
-Fork 100 tasks to 'test_hashmap_sizes'
-Fork 100 tasks to 'test_hashmap_walk'
-Fork 100 tasks to 'test_arraymap'
-Fork 100 tasks to 'test_arraymap_percpu'
-Fork 1024 tasks to 'test_update_delete'
-Fork 1024 tasks to 'test_update_delete'
-Fork 100 tasks to 'test_hashmap'
-Fork 100 tasks to 'test_hashmap_percpu'
-Fork 100 tasks to 'test_hashmap_sizes'
-Fork 100 tasks to 'test_hashmap_walk'
-Fork 100 tasks to 'test_arraymap'
-Fork 100 tasks to 'test_arraymap_percpu'
-test_array_map_batch_ops:PASS
-test_array_percpu_map_batch_ops:PASS
-test_htab_map_batch_ops:PASS
-test_htab_percpu_map_batch_ops:PASS
-test_lpm_trie_map_batch_ops:PASS
-test_sk_storage_map:PASS
-test_maps: OK, 0 SKIPPED
-
-taskset 0x01 ./test_maps 9
-Fork 1024 tasks to 'test_update_delete'
-Fork 1024 tasks to 'test_update_delete'
-Fork 100 tasks to 'test_hashmap'
-Fork 100 tasks to 'test_hashmap_percpu'
-Fork 100 tasks to 'test_hashmap_sizes'
-Fork 100 tasks to 'test_hashmap_walk'
-Fork 100 tasks to 'test_arraymap'
-Fork 100 tasks to 'test_arraymap_percpu'
-Fork 1024 tasks to 'test_update_delete'
-Fork 1024 tasks to 'test_update_delete'
-Fork 100 tasks to 'test_hashmap'
-Fork 100 tasks to 'test_hashmap_percpu'
-Fork 100 tasks to 'test_hashmap_sizes'
-Fork 100 tasks to 'test_hashmap_walk'
-Fork 100 tasks to 'test_arraymap'
-Fork 100 tasks to 'test_arraymap_percpu'
-test_array_map_batch_ops:PASS
-test_array_percpu_map_batch_ops:PASS
-test_htab_map_batch_ops:PASS
-test_htab_percpu_map_batch_ops:PASS
-test_lpm_trie_map_batch_ops:PASS
-test_sk_storage_map:PASS
-test_maps: OK, 0 SKIPPED
-
-taskset 0x01 ./test_maps 10
-Fork 1024 tasks to 'test_update_delete'
-Fork 1024 tasks to 'test_update_delete'
-Fork 100 tasks to 'test_hashmap'
-Fork 100 tasks to 'test_hashmap_percpu'
-Fork 100 tasks to 'test_hashmap_sizes'
-Fork 100 tasks to 'test_hashmap_walk'
-Fork 100 tasks to 'test_arraymap'
-Fork 100 tasks to 'test_arraymap_percpu'
-Fork 1024 tasks to 'test_update_delete'
-Fork 1024 tasks to 'test_update_delete'
-Fork 100 tasks to 'test_hashmap'
-Fork 100 tasks to 'test_hashmap_percpu'
-Fork 100 tasks to 'test_hashmap_sizes'
-Fork 100 tasks to 'test_hashmap_walk'
-Fork 100 tasks to 'test_arraymap'
-Fork 100 tasks to 'test_arraymap_percpu'
-test_array_map_batch_ops:PASS
-test_array_percpu_map_batch_ops:PASS
-test_htab_map_batch_ops:PASS
-test_htab_percpu_map_batch_ops:PASS
-test_lpm_trie_map_batch_ops:PASS
-test_sk_storage_map:PASS
-test_maps: OK, 0 SKIPPED
-
-Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
----
- tools/testing/selftests/bpf/test_maps.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-index 30cbf5d98f7d..de58a3070eea 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -985,7 +985,7 @@ static void test_sockmap(unsigned int tasks, void *data)
- 
- 		FD_ZERO(&w);
- 		FD_SET(sfd[3], &w);
--		to.tv_sec = 1;
-+		to.tv_sec = 30;
- 		to.tv_usec = 0;
- 		s = select(sfd[3] + 1, &w, NULL, NULL, &to);
- 		if (s == -1) {
 -- 
-2.32.0
-
-
+2.31.1
 
