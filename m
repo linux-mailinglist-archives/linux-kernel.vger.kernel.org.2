@@ -2,83 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AAA93F1238
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 06:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A39973F123D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 06:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229698AbhHSEKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 00:10:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229529AbhHSEKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 00:10:43 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2EBB610FA;
-        Thu, 19 Aug 2021 04:10:06 +0000 (UTC)
-Date:   Thu, 19 Aug 2021 00:10:05 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v6 7/7] tracing: Add a probe that attaches to trace
- events
-Message-ID: <20210819001005.712e542a@oasis.local.home>
-In-Reply-To: <20210819000342.615e68c7@oasis.local.home>
-References: <20210817034255.421910614@goodmis.org>
-        <20210817035028.190000494@goodmis.org>
-        <20210819112920.a2fbfdc812967c2743953fd0@kernel.org>
-        <20210818233757.686cd7c8@oasis.local.home>
-        <20210819125652.bb6b980cf0ef04e0158bc564@kernel.org>
-        <20210819000342.615e68c7@oasis.local.home>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229715AbhHSEMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 00:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229521AbhHSEMJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 00:12:09 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4553FC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 21:11:32 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id oc2-20020a17090b1c0200b00179e56772d6so533692pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 21:11:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l9V52lFXnbzIWhvicXmSUoCiNa+k48jmUozZvt1wwMA=;
+        b=JeDWLhWYL5wrSLivNoZl63hO5tzIxwhTMBYGb4KkCaIPoo8GYi0ZSflOROX3slGOg7
+         E/hW3L4YHevt5OSBpLYNFeGE3DapiQz0gf1u+T0hajTgwuVoQZLzgcLrb+1GtqdP6/I4
+         hG3BZ2SMViADd80+l41SzSiDTq6UPXPWo0HprOoosWR0ICdwkX6LafzICjxtRaI699DO
+         xzbyRJ8vt6VKIchufCuYauLIBg7WLX8ezAmmOt3UerFAewVD3GDcIf1NO0c3LR9/S6iD
+         NgGO9/H6fJ9UsL0JK/WLLxQf/r7SRAUl9SFmkWK+evolcvhvTTLq4wQhZPPwr3aHanQj
+         GrFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l9V52lFXnbzIWhvicXmSUoCiNa+k48jmUozZvt1wwMA=;
+        b=uknEQixu1e3XKmxjjPzuUHUaM7zPqNQQYWvhseUnunJPjnBRkDC4LVMKzoCTSAOS2H
+         3u1LmThq9M7ByDEkgCu0t4PcCKqf6E2JNjRVyLQyaLtgCKID/SxM6TAEoBmvKjcMYmxv
+         57J1zakBA5vvTcAcT507bnpPzDwaCfFC/tA46lr+Boxa7qnLRlyoXkRZjeDJLqzn/EO4
+         Qn3f+q6JuhohDp3Uv4y7i4yjOluJIsIivLv6g1paXW1ga6QtyuUUqLQIBgS+V4u9iK02
+         y39pdu0keeaxqhBOwxmUoM2CjDjBdpgXbNCEM/w3jnK0NPvRB3TdoWOgyShgP6LVIAkN
+         atWQ==
+X-Gm-Message-State: AOAM530Dq96ZGXMyyvc8mKMJQBTwbt1VA4tKDP3KqLR3KbFORtEpKmQp
+        oVhuIOYtNj+qVvf42CzulVlNKpK/Tyfv0pT6
+X-Google-Smtp-Source: ABdhPJyVc7alcNLAZaxiTjphOI675WFj9OYd1quw6wkhMgVFJvvcLF/cqq/2Fh3YvqOoujxNHkNvBg==
+X-Received: by 2002:a17:90a:2fc2:: with SMTP id n2mr12330350pjm.112.1629346291807;
+        Wed, 18 Aug 2021 21:11:31 -0700 (PDT)
+Received: from localhost.localdomain ([139.177.225.228])
+        by smtp.gmail.com with ESMTPSA id z19sm1408338pfn.94.2021.08.18.21.11.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 18 Aug 2021 21:11:31 -0700 (PDT)
+From:   yanghui <yanghui.def@bytedance.com>
+To:     john.stultz@linaro.org
+Cc:     tglx@linutronix.de, sboyd@kernel.org, linux-kernel@vger.kernel.org,
+        songmuchun@bytedance.com, duanxiongchun@bytedance.com,
+        yanghui <yanghui.def@bytedance.com>
+Subject: [RFC] Time/clocksource:The clock source was misjudged as unstable
+Date:   Thu, 19 Aug 2021 12:10:08 +0800
+Message-Id: <20210819041008.14693-1-yanghui.def@bytedance.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Aug 2021 00:03:42 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+We use clocksource_watchdog() to monitor whether the current clocksource is
+stable every WATCHDOG_INTERVAL. But clocksource_watchdog() can't be schedule
+in time when current CPU occurs Softlockup. This will bring following 
+clocksource misjudgment problem:
 
-> Probably. I noticed that it was updated under the dyn_event_ops_mutex,
-> and thought that was enough protection. But I now see the lockdep
-> assert on the event_mutex in the other functions.
+if the clocksource_watchdog() schedule time longer then WATCHDOG_INTERVAL,
+the value of abs(cs_nsec - wd_nsec) will be enlarged a lot, but both of
+the clocksource is normal at this time. And if the value is bigger than
+md, system will misjudge that current clocksource is unstable then to select
+another clocksource.
 
-Anyway, here's the new version:
+So we think this is a situation that Softlockup causes the clocksource
+to be misjudged. We want to know is there have some good idea to solve
+this problem ? Actually we want to use hrtimer to replace normal timer.
+But hrtimer is difficult to execute in turn on each CPU when the system 
+is just boot up. Is there a better way to solve this problem ?
 
-static bool find_event_probe(const char *group, const char *event)
-{
-	struct trace_eprobe *ep;
-	struct dyn_event *ev;
-	bool ret = false;
+Thanks
 
-	/*
-	 * Must grab the event_mutex to prevent the list from being modified
-	 * by other probes. But the event_probe being only created via the
-	 * dynamic_events file, is only added under the dyn_event_ops_mutex,
-	 * which is currently held. There is no race between this check and
-	 * adding the new probe.
-	 */
-	mutex_lock(&event_mutex);
-	for_each_dyn_event(ev) {
-		if (ev->ops != &eprobe_dyn_event_ops)
-			continue;
-		ep = to_trace_eprobe(ev);
-		if (strcmp(ep->tp.event->class.system, group) == 0 &&
-		    strcmp(ep->tp.event->call.name, event) == 0) {
-			ret = true;
-			break;
-		}
-	}
-	mutex_lock(&event_mutex);
+Signed-off-by: yanghui <yanghui.def@bytedance.com>
+---
+ 
+-- 
+2.20.1
 
-	return ret;
-}
-
-
--- Steve
