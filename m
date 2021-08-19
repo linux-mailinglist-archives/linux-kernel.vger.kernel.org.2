@@ -2,228 +2,464 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD3E3F13F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 960FB3F13EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 08:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235729AbhHSHCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 03:02:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51548 "EHLO
+        id S231965AbhHSG7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 02:59:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235205AbhHSHCR (ORCPT
+        with ESMTP id S231411AbhHSG7j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 03:02:17 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46425C0613D9
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 00:01:42 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id y11so4603960pfl.13
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 00:01:42 -0700 (PDT)
+        Thu, 19 Aug 2021 02:59:39 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D14C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 23:59:03 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id c17so4983748pgc.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 23:59:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TGoc9aaZ7sLEp8beTZ83fWsgv448hw3NlquoSI1tIpc=;
-        b=bwr/h7J8Lb9dED0QAbvdKsEfFQ/MFTlsI31a+1pZku2apk3Fl0LXScilrk5x4A2Xbn
-         fTP7qJo4jpMohkbX5wICFS4p9/N2yaaiqmGM8Q6VcZHFc8qcdjGwEbkCmXRN/xsWYLpj
-         xablzhxnPCGGpgzbOyo46k6DQEs+sJqI3Y1K1dGdtKb4HmbArT+b4JMN3JXkrf4i8Wxa
-         PZ5mmkmwX0BAtnCoBmtoD2dV8D4gCP1B3wXC6CUPZ3HgtPVXJnwc6yHtc8C+fQBiEuuE
-         Yaz1W0Hoix1uUJVJu6hgdP8ggF8Fk6L5ef14ba5r3nhFwcMevvg91/unY6ljsZmP4cZF
-         NtfA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=z7kmamtsFLaM9G/N0adEqCxiung+DUmrpekphu6Qphw=;
+        b=UXAunTYD28GELTeDOtmOfXw0Dq5cq0j/o3nlyDqPjdvWaAzht2TL96DApAlCfvMrjv
+         OfbyuRHTh4o7EeBU1hzEItXWSqFktqPX81WkTOz/Ut4gs1Hg7XHPlcxFJyfK/Evs8Zp4
+         zNp480tMj4APOHJ8MhnXbBif6puOun5CUNdIM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TGoc9aaZ7sLEp8beTZ83fWsgv448hw3NlquoSI1tIpc=;
-        b=hFeQOv1jmvUfXKUdEzCzwmsqjWB1QifaV0ALzkZNMXfgnYNX/EXZ3/Evpb8LBJJge5
-         gdaNFdPEbd7UllFd7aUyLh7haJYXeynv5N4zmjf7YiGmoZqaAcFziqeg3qKV0hzZbfnM
-         tK/8DAX5GhChNR6R3toByI/BvZCd53hh8vh1G9LJyebvOtPm6CDs84mUtLOFgX5N82j1
-         u0bftkgfdSH08e18Fs+r0gbHoSUTHBw5q1aYsm4p4KMRqI9bQ7JvZ7OnXkKwDDkcIb/I
-         cW1idUTQOoiWVR7yuPXDI+N8f84MOby3PhzfLjMsT3WwIvucBN14Q3ghK8Z1CY4WCsmB
-         wufw==
-X-Gm-Message-State: AOAM533L3Hvptqsu+8O+I9VOIJ+I+smiyjslBQdps2MRTDQvHPtREqH+
-        MwleLzk4vF5NvngH2xrBs45o7g==
-X-Google-Smtp-Source: ABdhPJw1t5bEpzzN39Y5h9hV/52kGgevNTt539gpBKbVZs4zR6Bnyux1Z24rBd7QIGzHw2oc3ZBUBw==
-X-Received: by 2002:a63:fd12:: with SMTP id d18mr12704852pgh.129.1629356501856;
-        Thu, 19 Aug 2021 00:01:41 -0700 (PDT)
-Received: from localhost.localdomain ([139.177.225.237])
-        by smtp.gmail.com with ESMTPSA id t30sm2490395pgl.47.2021.08.19.00.01.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 19 Aug 2021 00:01:41 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
-        osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com,
-        david@redhat.com, chenhuang5@huawei.com, bodeddub@amazon.com,
-        corbet@lwn.net, willy@infradead.org
-Cc:     duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
-        smuchun@gmail.com, zhengqi.arch@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v2 4/4] selftests: vm: add a hugetlb test case
-Date:   Thu, 19 Aug 2021 14:58:31 +0800
-Message-Id: <20210819065831.43186-5-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20210819065831.43186-1-songmuchun@bytedance.com>
-References: <20210819065831.43186-1-songmuchun@bytedance.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=z7kmamtsFLaM9G/N0adEqCxiung+DUmrpekphu6Qphw=;
+        b=cvLG7aqzszejhHS4IYFkbg40n4aTOZW8ZYNXT69ryT37BMOQo/4Z2FYv+xLZ94qUpb
+         HZ9bnn9gfIvnhIR5XC6F4XxCLa/TsthZn4ZY0g1Bpm6ptbiD1uw+818ZEun+fX0+XRBp
+         44KxtkLHuOzNoxdEpXg2F6DJc/zEAng7AdN/O6YBs8l0MJo5Yms7HaZzIiQy9iUJGvJC
+         cTnhkHawBu0NwoafB+LhCLcMWw8988FT3HcxNZ2DEsH+cW1jxVemYsMhbrbq0LQ2Oe41
+         Cijn+wH+gBn8qUL837FzWE57AwLtMCep7OXivxhiL62SxYsIw5Gy0bVa6ZqDG/ni5+fb
+         nqlQ==
+X-Gm-Message-State: AOAM533R3RIe5nrvyx5bv/3nySTmcDeXJUPcfDA53vLw1Z74JEzckTJZ
+        zDnLo+gtNSwrUcGwgeVphvqgjw==
+X-Google-Smtp-Source: ABdhPJzkvF0qigtdfuRBVUeIXrhVZriHw/k6TpXwLF7Z9km9Fx2crhJebhJtne+y1a9m49jQNpJ2cA==
+X-Received: by 2002:a63:d456:: with SMTP id i22mr12747816pgj.421.1629356343545;
+        Wed, 18 Aug 2021 23:59:03 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q18sm2086961pfj.178.2021.08.18.23.59.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 23:59:03 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 23:59:01 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>,
+        linux-kernel@vger.kernel.org,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 10/13] kbuild: build modules in the same way with/without
+ Clang LTO
+Message-ID: <202108182348.715797A@keescook>
+References: <20210819005744.644908-1-masahiroy@kernel.org>
+ <20210819005744.644908-11-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210819005744.644908-11-masahiroy@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the head vmemmap page frame associated with each HugeTLB page is
-reused, we should hide the PG_head flag of tail struct page from the
-user. Add a tese case to check whether it is work properly.
+On Thu, Aug 19, 2021 at 09:57:41AM +0900, Masahiro Yamada wrote:
+> When Clang LTO is enabled, additional intermediate files *.lto.o are
+> created because LLVM bitcode must be converted to ELF before modpost.
+> 
+> For non-LTO builds:
+> 
+>          $(LD)             $(LD)
+>   objects ---> <modname>.o -----> <modname>.ko
+>                              |
+>           <modname>.mod.o ---/
+> 
+> For Clang LTO builds:
+> 
+>          $(AR)            $(LD)                 $(LD)
+>   objects ---> <modname>.o ---> <modname>.lto.o -----> <modname>.ko
+>                                                   |
+>                                 <modname>.mod.o --/
+> 
+> Since the Clang LTO introduction, ugly CONFIG_LTO_CLANG conditionals
+> are sprinkled everywhere in the kbuild code.
+> 
+> Another confusion for Clang LTO builds is, <modname>.o is an archive
+> that contains LLVM bitcode files. The suffix should have been .a
+> instead of .o
+> 
+> To clean up the code, unify the build process of modules, as follows:
+> 
+>          $(AR)            $(LD)                     $(LD)
+>   objects ---> <modname>.a ---> <modname>.prelink.o -----> <modname>.ko
+>                                                       |
+>                                 <modname>.mod.o ------/
+> 
+> Here, 'objects' are either ELF or LLVM bitcode. <modname>.a is an archive,
+> <modname>.prelink.o is ELF.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- tools/testing/selftests/vm/vmemmap_hugetlb.c | 139 +++++++++++++++++++++++++++
- 1 file changed, 139 insertions(+)
- create mode 100644 tools/testing/selftests/vm/vmemmap_hugetlb.c
+I like this design, but I do see that it has a small but measurable
+impact on build times:
 
-diff --git a/tools/testing/selftests/vm/vmemmap_hugetlb.c b/tools/testing/selftests/vm/vmemmap_hugetlb.c
-new file mode 100644
-index 000000000000..b6e945bf4053
---- /dev/null
-+++ b/tools/testing/selftests/vm/vmemmap_hugetlb.c
-@@ -0,0 +1,139 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * A test case of using hugepage memory in a user application using the
-+ * mmap system call with MAP_HUGETLB flag.  Before running this program
-+ * make sure the administrator has allocated enough default sized huge
-+ * pages to cover the 2 MB allocation.
-+ *
-+ * For ia64 architecture, Linux kernel reserves Region number 4 for hugepages.
-+ * That means the addresses starting with 0x800000... will need to be
-+ * specified.  Specifying a fixed address is not required on ppc64, i386
-+ * or x86_64.
-+ */
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <sys/mman.h>
-+#include <fcntl.h>
-+
-+#define MAP_LENGTH		(2UL * 1024 * 1024)
-+
-+#ifndef MAP_HUGETLB
-+#define MAP_HUGETLB		0x40000	/* arch specific */
-+#endif
-+
-+#define PAGE_SIZE		4096
-+
-+#define PAGE_COMPOUND_HEAD	(1UL << 15)
-+#define PAGE_COMPOUND_TAIL	(1UL << 16)
-+#define PAGE_HUGE		(1UL << 17)
-+
-+#define HEAD_PAGE_FLAGS		(PAGE_COMPOUND_HEAD | PAGE_HUGE)
-+#define TAIL_PAGE_FLAGS		(PAGE_COMPOUND_TAIL | PAGE_HUGE)
-+
-+#define PM_PFRAME_BITS		55
-+#define PM_PFRAME_MASK		~((1UL << PM_PFRAME_BITS) - 1)
-+
-+/* Only ia64 requires this */
-+#ifdef __ia64__
-+#define MAP_ADDR		(void *)(0x8000000000000000UL)
-+#define MAP_FLAGS		(MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB | MAP_FIXED)
-+#else
-+#define MAP_ADDR		NULL
-+#define MAP_FLAGS		(MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB)
-+#endif
-+
-+static void write_bytes(char *addr, size_t length)
-+{
-+	unsigned long i;
-+
-+	for (i = 0; i < length; i++)
-+		*(addr + i) = (char)i;
-+}
-+
-+static unsigned long virt_to_pfn(void *addr)
-+{
-+	int fd;
-+	unsigned long pagemap;
-+
-+	fd = open("/proc/self/pagemap", O_RDONLY);
-+	if (fd < 0)
-+		return -1UL;
-+
-+	lseek(fd, (unsigned long)addr / PAGE_SIZE * sizeof(pagemap), SEEK_SET);
-+	read(fd, &pagemap, sizeof(pagemap));
-+	close(fd);
-+
-+	return pagemap & ~PM_PFRAME_MASK;
-+}
-+
-+static int check_page_flags(unsigned long pfn)
-+{
-+	int fd, i;
-+	unsigned long pageflags;
-+
-+	fd = open("/proc/kpageflags", O_RDONLY);
-+	if (fd < 0)
-+		return -1;
-+
-+	lseek(fd, pfn * sizeof(pageflags), SEEK_SET);
-+
-+	read(fd, &pageflags, sizeof(pageflags));
-+	if ((pageflags & HEAD_PAGE_FLAGS) != HEAD_PAGE_FLAGS) {
-+		close(fd);
-+		printf("Head page flags (%lx) is invalid\n", pageflags);
-+		return -1;
-+	}
-+
-+	for (i = 1; i < MAP_LENGTH / PAGE_SIZE; i++) {
-+		read(fd, &pageflags, sizeof(pageflags));
-+		if ((pageflags & TAIL_PAGE_FLAGS) != TAIL_PAGE_FLAGS ||
-+		    (pageflags & HEAD_PAGE_FLAGS) == HEAD_PAGE_FLAGS) {
-+			close(fd);
-+			printf("Tail page flags (%lx) is invalid\n", pageflags);
-+			return -1;
-+		}
-+	}
-+
-+	close(fd);
-+
-+	return 0;
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	void *addr;
-+	unsigned long pfn;
-+
-+	addr = mmap(MAP_ADDR, MAP_LENGTH, PROT_READ | PROT_WRITE, MAP_FLAGS, -1, 0);
-+	if (addr == MAP_FAILED) {
-+		perror("mmap");
-+		exit(1);
-+	}
-+
-+	/* Trigger allocation of HugeTLB page. */
-+	write_bytes(addr, MAP_LENGTH);
-+
-+	pfn = virt_to_pfn(addr);
-+	if (pfn == -1UL) {
-+		munmap(addr, MAP_LENGTH);
-+		perror("virt_to_pfn");
-+		exit(1);
-+	}
-+
-+	printf("Returned address is %p whose pfn is %lx\n", addr, pfn);
-+
-+	if (check_page_flags(pfn) < 0) {
-+		munmap(addr, MAP_LENGTH);
-+		perror("check_page_flags");
-+		exit(1);
-+	}
-+
-+	/* munmap() length of MAP_HUGETLB memory must be hugepage aligned */
-+	if (munmap(addr, MAP_LENGTH)) {
-+		perror("munmap");
-+		exit(1);
-+	}
-+
-+	return 0;
-+}
+allmodconfig build, GCC:
+
+make -j72 allmodconfig
+make -j72 -s clean && time make -j72
+
+    kbuild/for-next:
+        6m16.140s
+        6m19.742s
+        6m15.848s
+
+    +this-series:
+        6m22.742s
+        6m20.589s
+        6m19.911s
+
+Thought with not so many modules, it's within the noise:
+
+defconfig build, GCC:
+
+make -j72 defconfig
+make -j72 -s clean && time make -j72
+
+    kbuild/for-next:
+        0m41.579s
+        0m41.214s
+        0m41.370s
+
+    +series:
+        0m41.423s
+        0m41.434s
+        0m41.384s
+
+
+However, I do see that even LTO builds are slightly slower now, so
+perhaps the above numbers aren't due to the added $(AR) step:
+
+allmodconfig + Clang ThinLTO:
+
+make -j72 LLVM=1 LLVM_IAS=1 allmodconfig
+./scripts/config -d GCOV_KERNEL -d KASAN -d LTO_NONE -e LTO_CLANG_THIN
+make -j72 LLVM=1 LLVM_IAS=1 olddefconfig
+make -j72 -s LLVM=1 LLVM_IAS=1 clean && time make -j72 LLVM=1 LLVM_IAS=1
+
+    kbuild/for-next:
+        9m53.927s
+        9m45.874s
+        9m47.722s
+
+    +series:
+        9m58.395s
+        9m53.201s
+        9m56.387s
+
+
+I haven't been able to isolate where the changes in build times are
+coming from (nor have I done link-phase-only timings -- I realize those
+are really the most important).
+
+I did notice some warnings from this patch, though, in the
+$(modules-single) target:
+
+scripts/Makefile.build:434: target 'drivers/scsi/libiscsi.a' given more than once in the same rule
+scripts/Makefile.build:434: target 'drivers/atm/suni.a' given more than once in the same rule
+
+(And I saw the new "FORCE prerequisite is missing" warnings, but those
+are in kbuild/for-next and not new for this series.)
+
+Anyway, this is a great clean-up; thank you very much for finding the
+time for it! I'll keep poking at it tomorrow.
+
+-Kees
+
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>  scripts/Makefile.build    | 103 ++++++++++++++++++--------------------
+>  scripts/Makefile.lib      |  11 ++--
+>  scripts/Makefile.modfinal |   4 +-
+>  scripts/Makefile.modpost  |   7 +--
+>  scripts/mod/modpost.c     |   6 +--
+>  scripts/mod/sumversion.c  |   6 +--
+>  6 files changed, 61 insertions(+), 76 deletions(-)
+> 
+> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+> index 37d6f6da34d6..957addea830b 100644
+> --- a/scripts/Makefile.build
+> +++ b/scripts/Makefile.build
+> @@ -88,9 +88,7 @@ endif
+>  
+>  targets-for-modules := $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
+>  
+> -ifdef CONFIG_LTO_CLANG
+> -targets-for-modules += $(patsubst %.o, %.lto.o, $(filter %.o, $(obj-m)))
+> -endif
+> +targets-for-modules += $(patsubst %.o, %.prelink.o, $(filter %.o, $(obj-m)))
+>  
+>  ifdef need-modorder
+>  targets-for-modules += $(obj)/modules.order
+> @@ -282,33 +280,12 @@ $(obj)/%.o: $(src)/%.c $(recordmcount_source) $(objtool_dep) FORCE
+>  	$(call if_changed_rule,cc_o_c)
+>  	$(call cmd,force_checksrc)
+>  
+> -ifdef CONFIG_LTO_CLANG
+> -# Module .o files may contain LLVM bitcode, compile them into native code
+> -# before ELF processing
+> -quiet_cmd_cc_lto_link_modules = LTO [M] $@
+> -cmd_cc_lto_link_modules =						\
+> -	$(LD) $(ld_flags) -r -o $@					\
+> -		$(shell [ -s $(@:.lto.o=.o.symversions) ] &&		\
+> -			echo -T $(@:.lto.o=.o.symversions))		\
+> -		--whole-archive $(filter-out FORCE,$^)
+> -
+> -ifdef CONFIG_STACK_VALIDATION
+> -# objtool was skipped for LLVM bitcode, run it now that we have compiled
+> -# modules into native code
+> -cmd_cc_lto_link_modules += ;						\
+> -	$(objtree)/tools/objtool/objtool $(objtool_args) --module $@
+> -endif
+> -
+> -$(obj)/%.lto.o: $(obj)/%.o FORCE
+> -	$(call if_changed,cc_lto_link_modules)
+> -endif
+> -
+>  cmd_mod = { \
+>  	echo $(if $($*-objs)$($*-y)$($*-m), $(addprefix $(obj)/, $($*-objs) $($*-y) $($*-m)), $(@:.mod=.o)); \
+>  	$(undefined_syms) echo; \
+>  	} > $@
+>  
+> -$(obj)/%.mod: $(obj)/%$(mod-prelink-ext).o FORCE
+> +$(obj)/%.mod: $(obj)/%.prelink.o FORCE
+>  	$(call if_changed,mod)
+>  
+>  quiet_cmd_cc_lst_c = MKLST   $@
+> @@ -412,17 +389,6 @@ $(obj)/%.asn1.c $(obj)/%.asn1.h: $(src)/%.asn1 $(objtree)/scripts/asn1_compiler
+>  $(subdir-builtin): $(obj)/%/built-in.a: $(obj)/% ;
+>  $(subdir-modorder): $(obj)/%/modules.order: $(obj)/% ;
+>  
+> -# combine symversions for later processing
+> -ifeq ($(CONFIG_LTO_CLANG) $(CONFIG_MODVERSIONS),y y)
+> -      cmd_update_lto_symversions =					\
+> -	rm -f $@.symversions						\
+> -	$(foreach n, $(filter-out FORCE,$^),				\
+> -		$(if $(shell test -s $(n).symversions && echo y),	\
+> -			; cat $(n).symversions >> $@.symversions))
+> -else
+> -      cmd_update_lto_symversions = echo >/dev/null
+> -endif
+> -
+>  #
+>  # Rule to compile a set of .o files into one .a file (without symbol table)
+>  #
+> @@ -442,10 +408,10 @@ $(obj)/built-in.a: $(real-obj-y) FORCE
+>  # modules.order unless contained modules are updated.
+>  
+>  cmd_modules_order = { $(foreach m, $(real-prereqs), \
+> -	$(if $(filter %/modules.order, $m), cat $m, echo $(patsubst %.o,%.ko,$m));) :; } \
+> +	$(if $(filter %/modules.order, $m), cat $m, echo $(patsubst %.a,%.ko,$m));) :; } \
+>  	| $(AWK) '!x[$$0]++' - > $@
+>  
+> -$(obj)/modules.order: $(obj-m) FORCE
+> +$(obj)/modules.order: $(modules) FORCE
+>  	$(call if_changed,modules_order)
+>  
+>  #
+> @@ -454,26 +420,55 @@ $(obj)/modules.order: $(obj-m) FORCE
+>  $(obj)/lib.a: $(lib-y) FORCE
+>  	$(call if_changed,ar)
+>  
+> -# NOTE:
+> -# Do not replace $(filter %.o,^) with $(real-prereqs). When a single object
+> -# module is turned into a multi object module, $^ will contain header file
+> -# dependencies recorded in the .*.cmd file.
+> +#
+> +# Rule to prelink modules
+> +#
+> +
+> +ifeq ($(CONFIG_LTO_CLANG) $(CONFIG_MODVERSIONS),y y)
+> +
+> +cmd_merge_symver =					\
+> +	rm -f $@;					\
+> +	touch $@;					\
+> +	for o in $$($(AR) t $<); do			\
+> +		if [ -s $${o}.symversions ]; then	\
+> +			cat $${o}.symversions >> $@;	\
+> +		fi;					\
+> +	done
+> +
+> +$(obj)/%.prelink.symversions: $(obj)/%.a FORCE
+> +	$(call if_changed,merge_symver)
+> +
+> +$(obj)/%.prelink.o: ld_flags += --script=$(filter %.symversions,$^)
+> +module-symver = $(obj)/%.prelink.symversions
+> +
+> +endif
+> +
+> +quiet_cmd_ld_o_a = LD [M]  $@
+> +      cmd_ld_o_a = $(LD) $(ld_flags) -r -o $@ --whole-archive $<
+> +
+> +$(obj)/%.prelink.o: $(obj)/%.a $(module-symver) FORCE
+> +	$(call if_changed,ld_o_a)
+> +
+>  ifdef CONFIG_LTO_CLANG
+> -quiet_cmd_link_multi-m = AR [M]  $@
+> -cmd_link_multi-m =						\
+> -	$(cmd_update_lto_symversions);				\
+> -	rm -f $@; 						\
+> -	$(AR) cDPrsT $@ $(filter %.o,$^)
+> -else
+> -quiet_cmd_link_multi-m = LD [M]  $@
+> -      cmd_link_multi-m = $(LD) $(ld_flags) -r -o $@ $(filter %.o,$^)
+> +ifdef CONFIG_STACK_VALIDATION
+> +# objtool was skipped for LLVM bitcode, run it now that we have compiled
+> +# modules into native code
+> +cmd_ld_o_a += ; $(objtool) $(objtool_args) --module $@
+>  endif
+> +endif
+> +
+> +quiet_cmd_ar_module = AR [M]  $@
+> +      cmd_ar_module = rm -f $@; $(AR) cDPrST $@ $(real-prereqs)
+> +
+> +$(modules-single): %.a: %.o FORCE
+> +	$(call if_changed,ar_module)
+> +
+> +$(modules-multi): FORCE
+> +	$(call if_changed,ar_module)
+> +$(call multi_depend, $(modules-multi), .a, -objs -y -m)
+>  
+> -$(multi-obj-m): FORCE
+> -	$(call if_changed,link_multi-m)
+> -$(call multi_depend, $(multi-obj-m), .o, -objs -y -m)
+> +targets += $(modules-single) $(modules-multi)
+>  
+> -targets += $(multi-obj-m)
+>  targets := $(filter-out $(PHONY), $(targets))
+>  
+>  # Add intermediate targets:
+> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> index 34c4c11c4bc1..f604d2d01cad 100644
+> --- a/scripts/Makefile.lib
+> +++ b/scripts/Makefile.lib
+> @@ -106,6 +106,10 @@ multi-dtb-y	:= $(addprefix $(obj)/, $(multi-dtb-y))
+>  real-dtb-y	:= $(addprefix $(obj)/, $(real-dtb-y))
+>  subdir-ym	:= $(addprefix $(obj)/,$(subdir-ym))
+>  
+> +modules		:= $(patsubst %.o, %.a, $(obj-m))
+> +modules-multi	:= $(patsubst %.o, %.a, $(multi-obj-m))
+> +modules-single	:= $(filter-out $(modules-multi), $(filter %.a, $(modules)))
+> +
+>  # Finds the multi-part object the current object will be linked into.
+>  # If the object belongs to two or more multi-part objects, list them all.
+>  modname-multi = $(sort $(foreach m,$(multi-obj-ym),\
+> @@ -225,13 +229,6 @@ dtc_cpp_flags  = -Wp,-MMD,$(depfile).pre.tmp -nostdinc                    \
+>  		 $(addprefix -I,$(DTC_INCLUDE))                          \
+>  		 -undef -D__DTS__
+>  
+> -ifeq ($(CONFIG_LTO_CLANG),y)
+> -# With CONFIG_LTO_CLANG, .o files in modules might be LLVM bitcode, so we
+> -# need to run LTO to compile them into native code (.lto.o) before further
+> -# processing.
+> -mod-prelink-ext := .lto
+> -endif
+> -
+>  # Useful for describing the dependency of composite objects
+>  # Usage:
+>  #   $(call multi_depend, multi_used_targets, suffix_to_remove, suffix_to_add)
+> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> index ff805777431c..1b6401f53662 100644
+> --- a/scripts/Makefile.modfinal
+> +++ b/scripts/Makefile.modfinal
+> @@ -9,7 +9,7 @@ __modfinal:
+>  include include/config/auto.conf
+>  include $(srctree)/scripts/Kbuild.include
+>  
+> -# for c_flags and mod-prelink-ext
+> +# for c_flags
+>  include $(srctree)/scripts/Makefile.lib
+>  
+>  # find all modules listed in modules.order
+> @@ -55,7 +55,7 @@ if_changed_except = $(if $(call newer_prereqs_except,$(2))$(cmd-check),      \
+>  
+>  
+>  # Re-generate module BTFs if either module's .ko or vmlinux changed
+> -$(modules): %.ko: %$(mod-prelink-ext).o %.mod.o scripts/module.lds $(if $(KBUILD_BUILTIN),vmlinux) FORCE
+> +$(modules): %.ko: %.prelink.o %.mod.o scripts/module.lds $(if $(KBUILD_BUILTIN),vmlinux) FORCE
+>  	+$(call if_changed_except,ld_ko_o,vmlinux)
+>  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+>  	+$(if $(newer-prereqs),$(call cmd,btf_ko))
+> diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
+> index eef56d629799..11883b31c615 100644
+> --- a/scripts/Makefile.modpost
+> +++ b/scripts/Makefile.modpost
+> @@ -41,9 +41,6 @@ __modpost:
+>  include include/config/auto.conf
+>  include $(srctree)/scripts/Kbuild.include
+>  
+> -# for mod-prelink-ext
+> -include $(srctree)/scripts/Makefile.lib
+> -
+>  MODPOST = scripts/mod/modpost								\
+>  	$(if $(CONFIG_MODVERSIONS),-m)							\
+>  	$(if $(CONFIG_MODULE_SRCVERSION_ALL),-a)					\
+> @@ -128,9 +125,9 @@ endif
+>  # Read out modules.order to pass in modpost.
+>  # Otherwise, allmodconfig would fail with "Argument list too long".
+>  quiet_cmd_modpost = MODPOST $@
+> -      cmd_modpost = sed 's/\.ko$$/$(mod-prelink-ext)\.o/' $< | $(MODPOST) -T -
+> +      cmd_modpost = sed 's/ko$$/prelink.o/' $< | $(MODPOST) -T -
+>  
+> -$(output-symdump): $(MODORDER) $(input-symdump) $(modules:.ko=$(mod-prelink-ext).o) FORCE
+> +$(output-symdump): $(MODORDER) $(input-symdump) $(modules:ko=prelink.o) FORCE
+>  	$(call if_changed,modpost)
+>  
+>  targets += $(output-symdump)
+> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+> index 270a7df898e2..8c63c52af88d 100644
+> --- a/scripts/mod/modpost.c
+> +++ b/scripts/mod/modpost.c
+> @@ -1991,9 +1991,9 @@ static void read_symbols(const char *modname)
+>  		/* strip trailing .o */
+>  		tmp = NOFAIL(strdup(modname));
+>  		tmp[strlen(tmp) - 2] = '\0';
+> -		/* strip trailing .lto */
+> -		if (strends(tmp, ".lto"))
+> -			tmp[strlen(tmp) - 4] = '\0';
+> +		/* strip trailing .prelink */
+> +		if (strends(tmp, ".prelink"))
+> +			tmp[strlen(tmp) - 8] = '\0';
+>  		mod = new_module(tmp);
+>  		free(tmp);
+>  	}
+> diff --git a/scripts/mod/sumversion.c b/scripts/mod/sumversion.c
+> index 760e6baa7eda..8ea0f7b23c63 100644
+> --- a/scripts/mod/sumversion.c
+> +++ b/scripts/mod/sumversion.c
+> @@ -391,14 +391,10 @@ void get_src_version(const char *modname, char sum[], unsigned sumlen)
+>  	struct md4_ctx md;
+>  	char *fname;
+>  	char filelist[PATH_MAX + 1];
+> -	int postfix_len = 1;
+> -
+> -	if (strends(modname, ".lto.o"))
+> -		postfix_len = 5;
+>  
+>  	/* objects for a module are listed in the first line of *.mod file. */
+>  	snprintf(filelist, sizeof(filelist), "%.*smod",
+> -		 (int)strlen(modname) - postfix_len, modname);
+> +		 (int)(strlen(modname) - strlen("prelink.o")), modname);
+>  
+>  	buf = read_text_file(filelist);
+>  
+> -- 
+> 2.30.2
+> 
+
 -- 
-2.11.0
-
+Kees Cook
