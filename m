@@ -2,126 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203993F198B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 14:35:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B02D33F1990
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 14:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239884AbhHSMfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 08:35:54 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:37444 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239899AbhHSMfx (ORCPT
+        id S235893AbhHSMh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 08:37:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230505AbhHSMh5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 08:35:53 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17JCYqMd032825;
-        Thu, 19 Aug 2021 07:34:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1629376492;
-        bh=poueu/euKtfcqbr8LzsTcjIQ1wgv6v/lzsChvHScOeU=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=ZO3lyeAp/+ym6hviOL+iomxGGyQI32S9tJNCKz70lGObJ05m3i051CPdwOBtpOSzH
-         oCrtIw/S/Omrt8DwCOyIGLZFO8tZv4lezJ0u0tZ16nNWnS2NAFCfTV/VXwJ1AZbTll
-         0y93YdwVt9YFrEiKU0nccDh8JxtoiOupvRIDO62c=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17JCYqkM057235
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 19 Aug 2021 07:34:52 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 19
- Aug 2021 07:34:51 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 19 Aug 2021 07:34:52 -0500
-Received: from a0393678-ssd.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17JCXlZW035715;
-        Thu, 19 Aug 2021 07:34:45 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>, <linux-pci@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Subject: [PATCH v9 8/8] Documentation: PCI: endpoint/pci-endpoint-cfs: Guide to use SR-IOV
-Date:   Thu, 19 Aug 2021 18:03:43 +0530
-Message-ID: <20210819123343.1951-9-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210819123343.1951-1-kishon@ti.com>
-References: <20210819123343.1951-1-kishon@ti.com>
+        Thu, 19 Aug 2021 08:37:57 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E70C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 05:37:20 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id nt11so4855805pjb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 05:37:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7bTAAAg/tSsrf+D8xI/Og4ucIPc2yXEtddxl3LKJlfo=;
+        b=cEXhG+Ao9ul84iqgEzwLvcUXXrwwuMZwPfq0z0giT5U1QbqaMEh+OVWJq46XSj28wF
+         DMekvEHMZP3g5KZIyrnoLS9o57GAd+qTwfLHivANfJhQxwoFuv6li0knpUvNdVmRzHr7
+         vGK1oMd5hiMNuwBODV7JrR+gw9Ir79RBycTZ5T4d8trSAw7yrmwHGAIkkMha1lIgqiPd
+         agrUIInE2IOsJud91iPsQ/NTvwA2Qg8Xr0qm/vGDYBTlx/q0zBToN0HAm7FQH/Dn/IBf
+         XWN7HHorrqtYd+QXP3zl0XA7+oD23qMpgiz7ZFxEeA2fAMArJEA/sMO3DfX1cQsAP420
+         JnVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7bTAAAg/tSsrf+D8xI/Og4ucIPc2yXEtddxl3LKJlfo=;
+        b=UTdBVHT/iccwAEDdAlMa+1GnI6CRLKt1VtvbRa4DEYnvDuxt2Z2dJZ7jNvNK8ZO4cd
+         HasvkiUdIlVgtYTdVRfgSsNMJpFitBQyRDmaXxsOZpOLupRLWoSoddH6yqx7qotQQ/1k
+         IDroRz+hHU4sZZ2aZu+vmGD8ogjENdCuGKkeOIsyH1e6qH+xDiQTtHSCYaGvrfR6YYuI
+         rRWy60ZrKahSMTP60U6OifLJGMfygtpwGlPG5ugFCT9SrRpgx9PqfULCQGMVh2LrTUdW
+         NwMjPbQFEXNlouBypObFpQWQVeFlm4A/Iqgto4XQDlMvGFQomk+GMsIGv2iYYxI5CCE9
+         BSzw==
+X-Gm-Message-State: AOAM533mpL5FW4XD9lv8OnoGs1dwzuAAi2odujMRcHbubk1gXxwl+Kdp
+        1L/jEsxf46GVht7At0F6hMhRyA==
+X-Google-Smtp-Source: ABdhPJz6i/rouwXLVzKVQ0cKW9jH3P17xaE3a6k7aLKspKYXFi8nENwtkGg3qgU2QrSMrc+N3qBupQ==
+X-Received: by 2002:a17:90a:a581:: with SMTP id b1mr4918393pjq.153.1629376640330;
+        Thu, 19 Aug 2021 05:37:20 -0700 (PDT)
+Received: from libai.bytedance.net ([61.120.150.71])
+        by smtp.gmail.com with ESMTPSA id r8sm3859964pgp.30.2021.08.19.05.37.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 05:37:19 -0700 (PDT)
+From:   zhenwei pi <pizhenwei@bytedance.com>
+To:     jarkko@kernel.org
+Cc:     dhowells@redhat.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhenwei pi <pizhenwei@bytedance.com>
+Subject: [RESEND] crypto: public_key: fix overflow during implicit conversion
+Date:   Thu, 19 Aug 2021 20:37:10 +0800
+Message-Id: <20210819123710.1170050-1-pizhenwei@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Documentation to help users use PCI endpoint to create virtual
-functions using configfs. An endpoint function is designated as a
-virtual endpoint function device when it is linked to a physical
-endpoint function device (instead of a endpoint controller).
+Hit kernel warning like this, it can be reproduced by verifying 256
+bytes datafile by keyctl command, run script:
+RAWDATA=rawdata
+SIGDATA=sigdata
 
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+modprobe pkcs8_key_parser
+
+rm -rf *.der *.pem *.pfx
+rm -rf $RAWDATA
+dd if=/dev/random of=$RAWDATA bs=256 count=1
+
+openssl req -nodes -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem \
+  -subj "/C=CN/ST=GD/L=SZ/O=vihoo/OU=dev/CN=xx.com/emailAddress=yy@xx.com"
+
+KEY_ID=`openssl pkcs8 -in key.pem -topk8 -nocrypt -outform DER | keyctl \
+  padd asymmetric 123 @s`
+
+keyctl pkey_sign $KEY_ID 0 $RAWDATA enc=pkcs1 hash=sha1 > $SIGDATA
+keyctl pkey_verify $KEY_ID 0 $RAWDATA $SIGDATA enc=pkcs1 hash=sha1
+
+Then the kernel reports:
+ WARNING: CPU: 5 PID: 344556 at crypto/rsa-pkcs1pad.c:540
+   pkcs1pad_verify+0x160/0x190
+ ...
+ Call Trace:
+  public_key_verify_signature+0x282/0x380
+  ? software_key_query+0x12d/0x180
+  ? keyctl_pkey_params_get+0xd6/0x130
+  asymmetric_key_verify_signature+0x66/0x80
+  keyctl_pkey_verify+0xa5/0x100
+  do_syscall_64+0x35/0xb0
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The reason of this issue, in function 'asymmetric_key_verify_signature':
+'.digest_size(u8) = params->in_len(u32)' leads overflow of an u8 value,
+so use u32 instead of u8 for digest_size field. And reorder struct
+public_key_signature, it saves 8 bytes on a 64-bit machine.
+
+Thanks to Jarkko Sakkinen for suggestions.
+
+Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
 ---
- Documentation/PCI/endpoint/pci-endpoint-cfs.rst | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ include/crypto/public_key.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/PCI/endpoint/pci-endpoint-cfs.rst b/Documentation/PCI/endpoint/pci-endpoint-cfs.rst
-index db609b97ad58..fb73345cfb8a 100644
---- a/Documentation/PCI/endpoint/pci-endpoint-cfs.rst
-+++ b/Documentation/PCI/endpoint/pci-endpoint-cfs.rst
-@@ -43,6 +43,7 @@ entries corresponding to EPF driver will be created by the EPF core.
- 		.. <EPF Driver1>/
- 			... <EPF Device 11>/
- 			... <EPF Device 21>/
-+			... <EPF Device 31>/
- 		.. <EPF Driver2>/
- 			... <EPF Device 12>/
- 			... <EPF Device 22>/
-@@ -68,6 +69,7 @@ created)
- 				... subsys_vendor_id
- 				... subsys_id
- 				... interrupt_pin
-+			        ... <Symlink EPF Device 31>/
-                                 ... primary/
- 			                ... <Symlink EPC Device1>/
-                                 ... secondary/
-@@ -79,6 +81,13 @@ interface should be added in 'primary' directory and symlink of endpoint
- controller connected to secondary interface should be added in 'secondary'
- directory.
- 
-+The <EPF Device> directory can have a list of symbolic links
-+(<Symlink EPF Device 31>) to other <EPF Device>. These symbolic links should
-+be created by the user to represent the virtual functions that are bound to
-+the physical function. In the above directory structure <EPF Device 11> is a
-+physical function and <EPF Device 31> is a virtual function. An EPF device once
-+it's linked to another EPF device, cannot be linked to a EPC device.
-+
- EPC Device
- ==========
- 
-@@ -98,7 +107,8 @@ entries corresponding to EPC device will be created by the EPC core.
- 
- The <EPC Device> directory will have a list of symbolic links to
- <EPF Device>. These symbolic links should be created by the user to
--represent the functions present in the endpoint device.
-+represent the functions present in the endpoint device. Only <EPF Device>
-+that represents a physical function can be linked to a EPC device.
- 
- The <EPC Device> directory will also have a *start* field. Once
- "1" is written to this field, the endpoint device will be ready to
+diff --git a/include/crypto/public_key.h b/include/crypto/public_key.h
+index 47accec68cb0..f603325c0c30 100644
+--- a/include/crypto/public_key.h
++++ b/include/crypto/public_key.h
+@@ -38,9 +38,9 @@ extern void public_key_free(struct public_key *key);
+ struct public_key_signature {
+ 	struct asymmetric_key_id *auth_ids[2];
+ 	u8 *s;			/* Signature */
+-	u32 s_size;		/* Number of bytes in signature */
+ 	u8 *digest;
+-	u8 digest_size;		/* Number of bytes in digest */
++	u32 s_size;		/* Number of bytes in signature */
++	u32 digest_size;	/* Number of bytes in digest */
+ 	const char *pkey_algo;
+ 	const char *hash_algo;
+ 	const char *encoding;
 -- 
-2.17.1
+2.25.1
 
