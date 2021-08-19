@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2D43F1478
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 057B53F147B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236624AbhHSHoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 03:44:55 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:41003 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231351AbhHSHoy (ORCPT
+        id S236796AbhHSHqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 03:46:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234882AbhHSHqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 03:44:54 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id BD7C45C01CE;
-        Thu, 19 Aug 2021 03:44:18 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 19 Aug 2021 03:44:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=xFMK9gG3s52qYq8h607lGxdA1y6
-        cTYaYPZrSITimwBI=; b=4FVndveDHDId5GBAVO2f2Y+XA6bR6EStzHcBX2VhVic
-        CJWuE8piNmSjyftb60Pbx7co6ZIx2gHZf5wziSQp1K6ZmJ22WIheoWFFndKaOpSb
-        LO83r/V2M5fXTFI4EidK9RkiQZhC+l4STdGPZXIAizmjB70RjwbbmC9eaKXqu5rZ
-        VGLxJ/o9sDEwwQ3dwlbGexz1NN5rrGNS1Lr2E6cGtRtNl+Jjd+4WHJh3fgxdmW+o
-        LlWHCxilQ8fyVo9g7lI4Gpz8Pwvb6NC2LzniyJg+5B/yYOU/K9Kf6tKuK5PVO6YE
-        z3YxomH2veDE3TD1n+uvt/tQk1+gTj4ZHxRVsYrKDlg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=xFMK9g
-        G3s52qYq8h607lGxdA1y6cTYaYPZrSITimwBI=; b=sgZc2hBi5CO6XRctiB7IQS
-        +wz9S7J6Sv/WGZuYSYp826OQ4ujk8u4RaFS81APElNa4ddFIhraEYqAWt1sKm1vC
-        46rJS0FjiQOjcEwAzRqpKjoudnq3PHQ8mD6tuMfH9xHZ7IsfPwEzu3GLT9MxcoeX
-        rISLbjUCdsJOGauXs2K+bmVAWDvOwLKlB6LmEn34wKr56JgC6KYEx7eeyWYViqCx
-        Psmq2S09eYkNKKBxul//Zkmx6aLaUuSwW/NjIrsm36DQfkEngeHXSqrqEyxLukll
-        r35pTnRVNWIUZfWtDjktyM3M1qq2wMQawHy0Lynn1dR0/tHtFf0EwzPWfro3dSeA
-        ==
-X-ME-Sender: <xms:0QseYanV5qUm0qPY879yyTZArLQssP90OoVYBQ3ZN8zi6gfEDfWFQQ>
-    <xme:0QseYR3rANVlMWOaMKPTVPU-8EA4OvXB9lCR9GVullNkBEsQ5j4KnC4RDyDrEOvR5
-    mC99j-U3kAK03ghr98>
-X-ME-Received: <xmr:0QseYYqBvGD7uiMkrinpr3j7ZUm8BuclPpFjLJ-c0sGr00-zKmCgDMDXNrI9Jg4m8j1PxLV4Bxq0OuVJ9F2CWMPQmh3lzY_j9ES1>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleeigdduvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:0QseYemPwOjppitTTOVmZHGMTZHHjQ8g48wx0fuY-GGFntTPUX0IZA>
-    <xmx:0QseYY1gWBBwc4xrTHVBSnHJDQ1oyxzqpUPBx_cFTuUoRx9jWS-Guw>
-    <xmx:0QseYVtmQiWTqpeR3kD-2XknEbADG2HLS4Wr6GW8DJhswHulSAgGww>
-    <xmx:0gseYc9MWG5Fzr5wVRw_c1zlPszpcH-L46e48DcJtN3y9ibllHLbiw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 19 Aug 2021 03:44:17 -0400 (EDT)
-Date:   Thu, 19 Aug 2021 09:44:15 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Jason Wang <wangborong@cdjrlc.com>
-Cc:     wens@csie.org, linux@armlinux.org.uk, jernej.skrabec@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: sunxi: Add a missing SPDX license header
-Message-ID: <20210819074415.2qaevcwqrnuxc3jq@gilmour>
-References: <20210810133138.109309-1-wangborong@cdjrlc.com>
+        Thu, 19 Aug 2021 03:46:01 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18017C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 00:45:25 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mGcjn-0003uQ-O5; Thu, 19 Aug 2021 09:45:19 +0200
+Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:5b60:c5f4:67f4:2e1e])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 7A5A066A438;
+        Thu, 19 Aug 2021 07:45:17 +0000 (UTC)
+Date:   Thu, 19 Aug 2021 09:45:14 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     linux-can@vger.kernel.org,
+        Stefan =?utf-8?B?TcOkdGpl?= <Stefan.Maetje@esd.eu>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/7] can: netlink: allow user to turn off unsupported
+ features
+Message-ID: <20210819074514.jkg7fwztzpxecrwb@pengutronix.de>
+References: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
+ <20210815033248.98111-2-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="oblq2e4bjdpzsnk4"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dk2dvfwdioe3ydli"
 Content-Disposition: inline
-In-Reply-To: <20210810133138.109309-1-wangborong@cdjrlc.com>
+In-Reply-To: <20210815033248.98111-2-mailhol.vincent@wanadoo.fr>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---oblq2e4bjdpzsnk4
-Content-Type: text/plain; charset=us-ascii
+--dk2dvfwdioe3ydli
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 10, 2021 at 09:31:38PM +0800, Jason Wang wrote:
-> Add the missing SPDX license header to arch/arm/mach-sunxi/platsmp.c.
+On 15.08.2021 12:32:42, Vincent Mailhol wrote:
+> The sanity checks on the control modes will reject any request related
+> to an unsupported features, even turning it off.
 >=20
-> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+> Example on an interface which does not support CAN-FD:
+>=20
+> $ ip link set can0 type can bitrate 500000 fd off
+> RTNETLINK answers: Operation not supported
+>=20
+> This patch lets such command go through (but requests to turn on an
+> unsupported feature are, of course, still denied).
+>=20
+> Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-Queued for 5.16, thanks!
-Maxime
+I'm planing to send a pull request to net-next today. I want to do some
+more tests with this series, but this patch is more or less unrelated,
+so I can take it in this PR, should I?
 
---oblq2e4bjdpzsnk4
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--dk2dvfwdioe3ydli
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYR4LzwAKCRDj7w1vZxhR
-xSk1AQDRcSuh7Snj1R7lGnI4pInJrn354lVxGvbMQBz+HQ+Q7QEAiDz0E1/zrjDw
-XkmFAiX8YCkIFXRWOx6H1DtZ6VpJIQc=
-=hpGl
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEeDAgACgkQqclaivrt
+76lFpQf/ZOCz9dnWOYqnnfcFlW2/u9QPd0YYYCk41MM/OBScEJKVVhPzZ22GE8ws
+uy0m/Af79ojMB/Cqj2JVVSoVjnt+EKap3r7acadIBAVnYfiK6nh+dC0jgU2OzJxx
+xP6DKt/Iiqg7h6WWuOBCho2rHI3RCoxVOi7AFtKsHeO+ygin8pHc7RKT4Qrflcwl
+sRWlpbxum2AW7SW69mOdBrzmzwhDojw9jdxsFb/+9ERB9tKZ5EZXJlscUttfHAUx
+7hVrbciKQlmMdtYBGCMBPpbpFFDr6SZYIK8dqryi3KQ28iIRH/Qe+f+bRGMJMcqi
+IlooJTdPp0esm0w8Inv94JbF9FvnVQ==
+=NRjs
 -----END PGP SIGNATURE-----
 
---oblq2e4bjdpzsnk4--
+--dk2dvfwdioe3ydli--
