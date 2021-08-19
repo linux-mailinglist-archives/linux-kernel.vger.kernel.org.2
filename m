@@ -2,93 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D033F1035
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 04:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC743F1039
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 04:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235628AbhHSCJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 22:09:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235384AbhHSCJB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 22:09:01 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CEC7C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 19:08:25 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id b15so9248875ejg.10
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 19:08:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ykAJKci/Ufpr9vdJPp2MKR5L112cjDKYK64qjGt7RFM=;
-        b=QpmgD5+6dl44V7U+a2cgGKaBiufDL2vuOuEZMspqZ2hNP4fc8LPaYjs88srSM8SmRW
-         01lAF4RCAf1SWOTf7SFGtUNuRi/lImrIkiyeG8ksexESiy/hmg4vehaJpfQnCM3CxFGc
-         fAUQ2KVHSLXTTDXJjJz9whLBHw3ADjV6ZD7myny668cFA1HpAkYplUTlw9ZORYq0T4I/
-         w7xKJdXTRI6GbaOjX1+my+UKnq8J1/vJYcIJv4GOxqVr3ILjB3waFtbn+dpYgWLJSnZC
-         AZYlOCVVSNJaeuSifMFQIJ2FOlR2rmiiuQ/3y2AeUXazk+nqBXEsGR97eQff3V12ELtX
-         1ZTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ykAJKci/Ufpr9vdJPp2MKR5L112cjDKYK64qjGt7RFM=;
-        b=I90IVtxV0m1Lw5iMciDLy8Py1Id4qBNnz64zhJBy1md6pquSK324oDwpP8aQiiPgsy
-         6DRE2BUFJW/NzXKPFYFj74xKMJCx+JmbNqonBd++0ETg11nluter1fzHOD9FfprkX1bk
-         s/yGmad1d/CtcA0jCxxVsr2Rs2AnFPzs+plWRlaShpepFHc01jnQ+qFyJDbwf0Uj+3C+
-         8OTXHbG3jCegDyKWxVXK7RcorE4jXz5Qd3OGc0vaPCpCL5dEGZG2R41vkYF2o9E4hQ2c
-         ET9IR5rXI2C/M+2QEp6hbvKS01nN3RYtUfFtkLoErTQeKHulnHfBva1arCuWF1zdi8al
-         jxbw==
-X-Gm-Message-State: AOAM533bvi6fbR8oowLpPhYQL+UVRfpFrrnfzGMW4X4jzldlreRwNKO7
-        Yp0uz7hIMN5FTPZJFJ9EMRQ=
-X-Google-Smtp-Source: ABdhPJxxMPQ+Guy8yPOnGxOUTKb+QAbUFpCqFVriswiJC31+367k7CtB1FJ7Hs3s5CgrWYqtFc/9Ow==
-X-Received: by 2002:a17:906:5045:: with SMTP id e5mr13212652ejk.239.1629338904218;
-        Wed, 18 Aug 2021 19:08:24 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
-        by smtp.gmail.com with ESMTPSA id b5sm584925ejq.56.2021.08.18.19.08.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 19:08:23 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     gregkh@linuxfoundation.org, Phillip Potter <phil@philpotter.co.uk>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        martin@kaiser.cx, straube.linux@gmail.com,
-        Larry.Finger@lwfinger.net
-Subject: Re: [PATCH 5/6] staging: r8188eu: remove function rtw_hal_free_xmit_priv
-Date:   Thu, 19 Aug 2021 04:08:22 +0200
-Message-ID: <3499069.ykxA73u1ES@localhost.localdomain>
-In-Reply-To: <20210818234253.208271-6-phil@philpotter.co.uk>
-References: <20210818234253.208271-1-phil@philpotter.co.uk> <20210818234253.208271-6-phil@philpotter.co.uk>
+        id S235591AbhHSCM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 22:12:26 -0400
+Received: from mail-db8eur05on2082.outbound.protection.outlook.com ([40.107.20.82]:23521
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235384AbhHSCMY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 22:12:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eye0bf5YZndkOVeCBiM9p2Qtk81LcdQZk7dcoMaZYwWk1/EaxqKIBKG3nIQUCjEF6RLHQAfu5oyWmHkOBOjmaIijLuDSbpkf9+saWIPmsBcYYG1yOHSpiGGYglNOp14bROBzh7CVbbHfJpwTaNbCiOHnZiU6Z2uj3LDNxMhGPd+ypR22L4ECu2g8OOumU1Vvjm+gBQYfkzvMfY6lOfyPZx6omOx49OMBltg+PZN3hVtQdsPWvDLPS+9b53tSWPAsDpg5ZXMgwq8u5qX3YxE2z9puTgO+pdieac86GyUYEw+mL8qDVxB/p/Jl4uWmzmwBMuZY6FDPsfQdgB4Wv3ZQbw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cd3CrGWKXNbJ0lFlUToA2eZ7qsaZRo1E/cTkjc6D/wE=;
+ b=LO+QMqL6caFmKwGQGZWN8We+s8nOdDmx8XT9cxCCGTy5rfBXPB5+snbmKWxQLJunDOFvzbXquLKjq7XNIo1XwPe8f2wa6eOGmp7uKCVjee19UPIrMs80fhbAPTDsL6LZznuCj/DOqGZCPyHplbbmoRcuIfC/mlEsY9rIqfF09mQUqnsPgbAEwv1Qqn8y0JF5M3nD/wpqTHlQJ5FuAdxGJmpHVIwzpNPnR70lntUTMDtc3S2NqwCxiGB+6jAy1mak9NQuaJCv2Jdiy6vbQkQfTzUNT9dFKVsyXGRxsWP83RVqrAl+0rufKeZxBaFzOuU8UVUuv8dy4fRJ4FDwgX9FVg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cd3CrGWKXNbJ0lFlUToA2eZ7qsaZRo1E/cTkjc6D/wE=;
+ b=N7xZko4UuGJm3ujmh0tOfOVabwWklQJb8e+x6EPoCHQUrsNu28gqetdPSM64s4NuEBmbiLL2X5+rTvlUrln+XHzGOShzYHZnxWw2+dlqe1Onb82rAPXWN8eUsG5dcXehLKY3j2CyNc37tzxg2e9rQFjehpllqeyiMMclcWMHeIE=
+Authentication-Results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=nxp.com;
+Received: from AS8PR04MB8404.eurprd04.prod.outlook.com (2603:10a6:20b:3f8::7)
+ by AM6PR04MB5830.eurprd04.prod.outlook.com (2603:10a6:20b:ac::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.19; Thu, 19 Aug
+ 2021 02:11:47 +0000
+Received: from AS8PR04MB8404.eurprd04.prod.outlook.com
+ ([fe80::91c1:5ce4:cc:ddcd]) by AS8PR04MB8404.eurprd04.prod.outlook.com
+ ([fe80::91c1:5ce4:cc:ddcd%8]) with mapi id 15.20.4436.019; Thu, 19 Aug 2021
+ 02:11:47 +0000
+From:   Sherry Sun <sherry.sun@nxp.com>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com, festevam@gmail.com
+Subject: [PATCH V3] tty: serial: fsl_lpuart: fix the wrong mapbase value
+Date:   Thu, 19 Aug 2021 10:10:33 +0800
+Message-Id: <20210819021033.32606-1-sherry.sun@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR06CA0201.apcprd06.prod.outlook.com (2603:1096:4:1::33)
+ To AS8PR04MB8404.eurprd04.prod.outlook.com (2603:10a6:20b:3f8::7)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.71) by SG2PR06CA0201.apcprd06.prod.outlook.com (2603:1096:4:1::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Thu, 19 Aug 2021 02:11:44 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5aeda286-fb24-4304-ae0f-08d962b6b272
+X-MS-TrafficTypeDiagnostic: AM6PR04MB5830:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR04MB5830803D92BCB6CA3E2C50BC92C09@AM6PR04MB5830.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fNoXFOH8ODmP06Zh1MaXzE1hQqTFKITuws+8lJf0/6Z1Lgv7Wd8zlcAGxJF5bSeopSt57v63bs/fyENObxHKIBx9CUobwukkoPDzv5taQrtxz81zX1txfZW41ZmyoIwmahpiNRTaYEni1AWK6bsve5FexfddXaTwGMaMOm+YY+wM5yZWWOUZbrBisT7n1QX4cMCSigZMahhj7FoClS8lAOA5Iq/ueXv00CqSDlWl8h51Q+0edXnHx43Bebtp+kGLv4Pc9Qwh+K7b2Q2MpHejyeOLaoTScGWuXhlYtEbM5sBbPvx5AElt2FyqfGczH1iJ8XHoY2tWLzVxc6FVc3M/y/trI+6JZvJOYy9T81vul9qhY38/JXLmnl798I5nfW6tWHryK/p1SLWQ7soZvgpGiQQoMpn2xA0W+RoIk9fON1WYWwHUxCdCikuC9Pr4OUBqz1xNhym9EnR2UvEPC+fsfM0dinAQkTeCUa3kGzSV0ouDMmU5iACViPybcgTEUJNQ9HLECP0YfE/o8iDkoEHnOSTQOVNChYvL5dailEhMMJxuPgyRLe6HYgew4Mc2ytMgRD3UwIxN5Z6HwWaFX16JgvXjoLpAhngD7LYdCF8pDvKkStei27JtJoz5PH8/161Kaf8yH/WGbXa+KvV3PxqZ8kaVgoYy5r2PcQ7vJblnl0qMjfgYoKA6dSxd+Dvb8JFrdkR9bfu7fy6onPxQWH8hiw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8404.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(396003)(39860400002)(376002)(346002)(8936002)(1076003)(6512007)(478600001)(4326008)(38100700002)(8676002)(66556008)(26005)(66476007)(38350700002)(316002)(6506007)(2906002)(2616005)(6486002)(186003)(66946007)(52116002)(956004)(5660300002)(36756003)(6666004)(44832011)(83380400001)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?fkln1J5vlbFgNpK63BtsPPKkco52LBrVnEHMnCz1cZEdaOh+tZVPVq1pJEIx?=
+ =?us-ascii?Q?SKLTzzV2K725y67Zzw0SrWNOWvsEXa5glTT1Fcf+XCgMDSSy569oHhVsjjj9?=
+ =?us-ascii?Q?ftrmfiXVQ6i3qfO/+VPOqKT80VWMnviCqPDtWa776P/e8Ngc36Oxyb+ZDhzu?=
+ =?us-ascii?Q?GxC+s2j9lc1xl9ouJRt9L1QYC9/5wU+ybkOy6PAAOaTvPbm2pSFRnSaOS4L4?=
+ =?us-ascii?Q?2ZAKN+bo5VuaMeFufm3vVfpYt87k/COt6n0imJ+BRXEkPKj0ilRxppPNw62Z?=
+ =?us-ascii?Q?umUIxgGocaTmJj+4uOWDfuhg8i/Zwb/E0Sp91eynj7ZeJzTRQrnZdZsi1Z0A?=
+ =?us-ascii?Q?OOrWobsl225d34LkX+YctUwA30sOThojviOnhGzrHEP9kJirhyhTY4Es11pz?=
+ =?us-ascii?Q?USKPnpjFWooQCPxfOoW5bs5aCvIBbZVl1ZLMmfigJGjwATrmkVqNOQRp4FFb?=
+ =?us-ascii?Q?DvN3TVGtU9UNRdE2fPAnK4JMCi/r2E9W5pwdAnO/zfAMbK69fSFPr0DayOrA?=
+ =?us-ascii?Q?Tz5W3d+mrhi+a3fOrLSdcbSOLeR+PIzwrHRNapy16zJIU6gAKeEZKiS+2d61?=
+ =?us-ascii?Q?bpDGzWuD9FN+bBc0TWWbbA0bdRySGQHCY93sLiz3Xjb2tMNeMU/9fCiWKJrW?=
+ =?us-ascii?Q?G/Q3Etn7/Uywsk8cwSr6P/POsFxXsNc8oGy3gvQzeMn5j4BrwYFcTx78ic6U?=
+ =?us-ascii?Q?9effIGIECIn3M/Z1ZA2xN2KHsNZ1pB1fkLYT9295gWuLUS7HEeAdfNSjsPbO?=
+ =?us-ascii?Q?f4SL5TG35CvbxocNLc3NHZ/TzucRfZp1g7csiiaeD/OjIdKGreMmsZj31ues?=
+ =?us-ascii?Q?KdFVK0HxZsDP9kyblFbQ4O3PmJgb7usmXyhKmnFQHCEOBwqqD4bZJ8woEl0d?=
+ =?us-ascii?Q?lPW8sTArt8wNQWeQt/hsyvWqmdZXrYj8QsENtB8tklFdAKyL5tw8JMSHVkw4?=
+ =?us-ascii?Q?81q568HBaolZsjVWUV7Aj7ULF3UwnLSlvAOnQPgEsJfQVR6JtqHGft7yY5my?=
+ =?us-ascii?Q?qD1Jlu7MdCuCJ5mwcF3nZzQJ0hrJm44JwuS5zdu1rRZBJsQjyqJu6qNcCOUg?=
+ =?us-ascii?Q?2oeu5iKKxSZ0xDMooWg+uzHJ5EUYQQIfQ6wdhnn4Oth1l3zywkeoShx/0jyH?=
+ =?us-ascii?Q?rSb8Xu7HN48Lx9CDupmsZrStqHwyfLFD/Uti4RQK7qAwCypDA0R5qoxa7IBA?=
+ =?us-ascii?Q?SH1KvTNsHC4aFDV5bzPLwG886518hUBHdM1GfuvfbnAWSkDFocNZsGGyjevS?=
+ =?us-ascii?Q?ad0hh9GuLdbUoFiTEMpReGLM5JEyM22oidJMwaOzP7DJL0qHy4oXIVajd6Et?=
+ =?us-ascii?Q?Dy+2OMRFmAEQJ2veCOwTC4yo?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5aeda286-fb24-4304-ae0f-08d962b6b272
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8404.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Aug 2021 02:11:46.9883
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7nwHNrpvx4XvHxlEflGBJfQAFTkxJ32j21qQuETmyFchm4cNMfdPxm2bHJTbNij9FUeYeVse6Vt9il9g/mYesg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5830
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, August 19, 2021 1:42:52 AM CEST Phillip Potter wrote:
-> Remove function rtw_hal_free_xmit_priv in hal/hal_intf.c and its
-> declaration in include/hal_intf.h, as well as the single call line in
-> core/rtw_xmit.c. This function now essentially checks a function
-> pointer which will always be NULL (due to previous patches) and
-> therefore will never be called.
-> 
-> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-> ---
->  drivers/staging/r8188eu/core/rtw_xmit.c    | 2 --
->  drivers/staging/r8188eu/hal/hal_intf.c     | 6 ------
->  drivers/staging/r8188eu/include/hal_intf.h | 1 -
->  3 files changed, 9 deletions(-)
+From: Andy Duan <fugang.duan@nxp.com>
 
-It looks good. 
+Register offset needs to be applied on mapbase also.
+dma_tx/rx_request use the physical address of UARTDATA.
+Register offset is currently only applied to membase (the
+corresponding virtual addr) but not on mapbase.
 
-Built with "make C=2 -j8 drivers/staging/r8188eu/ W=1"
-on x86-64, it does not introduce errors or new warnings, so...
+Fixes: 24b1e5f0e83c ("tty: serial: lpuart: add imx7ulp support")
+Reviewed-by: Leonard Crestez <leonard.crestez@nxp.com>
+Signed-off-by: Adriana Reus <adriana.reus@nxp.com>
+Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
+Signed-off-by: Andy Duan <fugang.duan@nxp.com>
+---
+changes in V3:
+  Add the Fixes tag suggested by Fabio.
+changes in V2:
+  Add author signed-off-by tag suggested by Greg.
+---
+ drivers/tty/serial/fsl_lpuart.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Acked-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-
-Thanks,
-
-Fabio
-
-
+diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
+index 31d715c4787a..117e011aff5f 100644
+--- a/drivers/tty/serial/fsl_lpuart.c
++++ b/drivers/tty/serial/fsl_lpuart.c
+@@ -2615,7 +2615,7 @@ static int lpuart_probe(struct platform_device *pdev)
+ 		return PTR_ERR(sport->port.membase);
+ 
+ 	sport->port.membase += sdata->reg_off;
+-	sport->port.mapbase = res->start;
++	sport->port.mapbase = res->start + sdata->reg_off;
+ 	sport->port.dev = &pdev->dev;
+ 	sport->port.type = PORT_LPUART;
+ 	sport->devtype = sdata->devtype;
+-- 
+2.17.1
 
