@@ -2,46 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3BAB3F1511
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 10:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44CA03F1510
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 10:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237341AbhHSIWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 04:22:04 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:52786 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237034AbhHSIWA (ORCPT
+        id S237271AbhHSIWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 04:22:01 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:45931 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237166AbhHSIWA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 19 Aug 2021 04:22:00 -0400
-Received: by mail-io1-f70.google.com with SMTP id n22-20020a6bf6160000b0290520c8d13420so2838066ioh.19
+Received: by mail-io1-f69.google.com with SMTP id d23-20020a056602281700b005b5b34670c7so2863427ioe.12
         for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 01:21:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=XFBRdhz0KHI7VfN0Q/Ng2rHDw0mHM2htKViTMlQZb7E=;
-        b=J9htLIkeMiVjYLBQHo8CDQTYzs7ru3/+rlqunXulTCrlSen/ly9wx1CuDCIpxQgqrn
-         /3GNlmjcqEeq8PjWDcJQu94Fx9aM2ym6d7stVBeIgqPViif14IhC6RRV8aH83GI0qn78
-         zNUaBvZaUEzFQZpZKlIliBkJSK/Dhv3Yb0n2pPubkT78bFNCaAdYWzEbESQmBPcsABZD
-         WxmJy6/7Mx8yeXGlb2tNwMf/N4BIzwG+nIUfayasPC12wRaAh/2BUeabYC90mLVc3GGK
-         +vPpM3Myp9sgkkKmDeaacjZBSXem6Qyr8AZzlfTbidY2/v82MxSxfMzurG+x+3fSCvxv
-         heKg==
-X-Gm-Message-State: AOAM530v+pH0YipJ1GJlxsILU4rSErzkyh8TYoHU1VAV4lTyPa+zOnXp
-        d6Xv6rw+Or31uX0OpDOwwVQCilGxEd82wFBIb/6gqewxrRpO
-X-Google-Smtp-Source: ABdhPJxSyt0gy86Vn7KLBJU4mk/gXZx7JD7qgiYgrOkQjEQImtua7Ue2j9y0izWRrJ+NhcZAsXUsZOn15kxAdLWNE/5u6HxLsJYy
+        bh=Eb6HoG4IPAl9Hpav/QpD4nHzjmmUxM3oKXoCUI5RFOI=;
+        b=gmiLohqHKU1XfBuxqYSPwV2OXNBRjgso/mtAifuKIzDf1ZcxFjp2W9++AdvB59YFco
+         tyFc+xbWxUDr/KvxVxyeMuRtQ/iH/VxokIOT258Wn1MotPQqCsbDN/GbD8YS04ONG4D2
+         mQfrhxL93kWJpkyTcCUB0cST2OAOwan6sXICh5aOvXwKnq97CK4Rq2kJs6lhiTLRIC8E
+         aezzi5d1MXQ3ZLNfJPLTDI1Zkcc+G/U1Ht+MeJN4uADrJTb9+gGCxoPG1nyxjexM8lwL
+         p51VntsEb9T25Pn/fwzG3BgAWe2xo6hrPha6UN9IMskQufELZhewQGpLFOZDWG7q0Y55
+         9RPg==
+X-Gm-Message-State: AOAM533xswx6/u+/sAhHet/H7dCFdVedwJ98aZgUvC5geD9LgLyH3rum
+        BSpj2IudGCrt1owly3V6bxSwjTQTFm57HNkUvAxSpK4qqkpq
+X-Google-Smtp-Source: ABdhPJzloMYYTKvTvWQP+CgyF80OEz2uHg7OHiak7fr7GASRIE2ktWk1PVmCQwmwb0b2ZvWkBj2GtrIrbYzU8/l4LKD9aZyuLFrQ
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:5c8:: with SMTP id l8mr9177759ils.282.1629361283953;
- Thu, 19 Aug 2021 01:21:23 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 01:21:23 -0700
+X-Received: by 2002:a92:d741:: with SMTP id e1mr9058698ilq.18.1629361284277;
+ Thu, 19 Aug 2021 01:21:24 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 01:21:24 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008a7a1c05c9e53c87@google.com>
-Subject: [syzbot] WARNING in drm_gem_shmem_vm_open
-From:   syzbot <syzbot+91525b2bd4b5dff71619@syzkaller.appspotmail.com>
-To:     airlied@linux.ie, christian.koenig@amd.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        sumit.semwal@linaro.org, syzkaller-bugs@googlegroups.com,
-        tzimmermann@suse.de
+Message-ID: <0000000000008f6d2005c9e53c59@google.com>
+Subject: [syzbot] kernel BUG in ext4_get_group_info
+From:   syzbot <syzbot+e2efa3efc15a1c9e95c3@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -53,76 +50,96 @@ syzbot found the following issue on:
 
 HEAD commit:    614cb2751d31 Merge tag 'trace-v5.14-rc6' of git://git.kern..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1462cb61300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=96f0602203250753
-dashboard link: https://syzkaller.appspot.com/bug?extid=91525b2bd4b5dff71619
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=122bce0e300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=128cfb31300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f61012d0b1cd846f
+dashboard link: https://syzkaller.appspot.com/bug?extid=e2efa3efc15a1c9e95c3
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=122a0161300000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+91525b2bd4b5dff71619@syzkaller.appspotmail.com
+Reported-by: syzbot+e2efa3efc15a1c9e95c3@syzkaller.appspotmail.com
 
+EXT4-fs error (device loop1): ext4_map_blocks:718: inode #17: block 424: comm syz-executor.1: lblock 296 mapped to illegal pblock 424 (length 1)
 ------------[ cut here ]------------
-WARNING: CPU: 0 PID: 11697 at drivers/gpu/drm/drm_gem_shmem_helper.c:562 drm_gem_shmem_vm_open+0x96/0xb0 drivers/gpu/drm/drm_gem_shmem_helper.c:562
-Modules linked in:
-CPU: 0 PID: 11697 Comm: syz-executor.3 Not tainted 5.14.0-rc6-syzkaller #0
+kernel BUG at fs/ext4/ext4.h:3295!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 10426 Comm: syz-executor.1 Not tainted 5.14.0-rc6-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:drm_gem_shmem_vm_open+0x96/0xb0 drivers/gpu/drm/drm_gem_shmem_helper.c:562
-Code: 89 c6 e8 7d ec 23 fd 85 db 75 1a e8 34 e5 23 fd 48 89 ef 5b 5d 41 5c e9 e8 61 f5 ff e8 23 e5 23 fd 0f 0b eb ca e8 1a e5 23 fd <0f> 0b eb dd e8 b1 1f 6a fd eb 89 e8 aa 1f 6a fd eb a8 0f 1f 84 00
-RSP: 0018:ffffc9000b3cfb90 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 00000000fffffffc RCX: 0000000000000000
-RDX: ffff8880364eb880 RSI: ffffffff8451c3e6 RDI: 0000000000000003
-RBP: ffff888033c70948 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff8451c3c3 R11: 0000000000000001 R12: ffff888146490800
-R13: ffff888033c70a50 R14: 0000000020166000 R15: ffff888033c709d8
-FS:  00007fbe43056700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+RIP: 0010:ext4_get_group_info+0x34d/0x350 fs/ext4/ext4.h:3295
+Code: 5c ff 8b 74 24 04 48 c7 c7 40 77 88 8c 4c 89 f2 e8 08 9f 05 02 43 80 3c 2c 00 0f 85 6d fd ff ff e9 70 fd ff ff e8 a3 46 5c ff <0f> 0b 90 55 41 57 41 56 41 55 41 54 53 48 83 ec 20 41 89 d5 89 f5
+RSP: 0018:ffffc9000c49f320 EFLAGS: 00010293
+RAX: ffffffff8223f12d RBX: 00000000fffff95a RCX: ffff88802d923880
+RDX: 0000000000000000 RSI: 00000000fffff95a RDI: 0000000000000001
+RBP: 0000000000000001 R08: ffffffff8223ee48 R09: ffffed1008f9ac2c
+R10: ffffed1008f9ac2c R11: 0000000000000000 R12: 1ffff110073d74cf
+R13: dffffc0000000000 R14: ffff8880328dc000 R15: ffff888039eba678
+FS:  00007fe3035a4700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000005422b8 CR3: 0000000036274000 CR4: 0000000000350ef0
+CR2: 0000000002112848 CR3: 0000000033f2d000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- __split_vma+0x23c/0x550 mm/mmap.c:2764
- __do_munmap+0x32a/0x11c0 mm/mmap.c:2868
- do_munmap mm/mmap.c:2922 [inline]
- munmap_vma_range mm/mmap.c:604 [inline]
- mmap_region+0x85a/0x1760 mm/mmap.c:1753
- do_mmap+0x86e/0x1180 mm/mmap.c:1584
- vm_mmap_pgoff+0x1b7/0x290 mm/util.c:519
- ksys_mmap_pgoff+0x4a8/0x620 mm/mmap.c:1635
+ ext4_mb_load_buddy_gfp+0xc7/0x1370 fs/ext4/mballoc.c:1490
+ ext4_discard_preallocations+0x811/0x16a0 fs/ext4/mballoc.c:4940
+ ext4_truncate+0xa1a/0xec0 fs/ext4/inode.c:4259
+ ext4_truncate_failed_write fs/ext4/truncate.h:20 [inline]
+ ext4_write_begin+0xa7b/0x1350 fs/ext4/inode.c:1234
+ ext4_da_write_begin+0x384/0x10c0 fs/ext4/inode.c:2960
+ generic_perform_write+0x262/0x580 mm/filemap.c:3656
+ ext4_buffered_write_iter+0x41c/0x590 fs/ext4/file.c:269
+ ext4_file_write_iter+0x8f7/0x1b90 fs/ext4/file.c:519
+ call_write_iter include/linux/fs.h:2114 [inline]
+ new_sync_write fs/read_write.c:518 [inline]
+ vfs_write+0xa39/0xc90 fs/read_write.c:605
+ ksys_write+0x171/0x2a0 fs/read_write.c:658
  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
  entry_SYSCALL_64_after_hwframe+0x44/0xae
 RIP: 0033:0x4665e9
 Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fbe43056188 EFLAGS: 00000246 ORIG_RAX: 0000000000000009
+RSP: 002b:00007fe3035a4188 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
 RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665e9
-RDX: 0000000000000000 RSI: 0000000000002000 RDI: 0000000020166000
-RBP: 00000000004bfcc4 R08: 0000000000000004 R09: 0000000000000000
-R10: 0000000000000013 R11: 0000000000000246 R12: 000000000056bf80
-R13: 00007fffb615701f R14: 00007fbe43056300 R15: 0000000000022000
+RDX: 000000000d4ba0ff RSI: 00000000200009c0 RDI: 0000000000000007
+RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffd1a1dd7ef R14: 00007fe3035a4300 R15: 0000000000022000
+Modules linked in:
+---[ end trace 6608a809acf19a79 ]---
+RIP: 0010:ext4_get_group_info+0x34d/0x350 fs/ext4/ext4.h:3295
+Code: 5c ff 8b 74 24 04 48 c7 c7 40 77 88 8c 4c 89 f2 e8 08 9f 05 02 43 80 3c 2c 00 0f 85 6d fd ff ff e9 70 fd ff ff e8 a3 46 5c ff <0f> 0b 90 55 41 57 41 56 41 55 41 54 53 48 83 ec 20 41 89 d5 89 f5
+RSP: 0018:ffffc9000c49f320 EFLAGS: 00010293
+RAX: ffffffff8223f12d RBX: 00000000fffff95a RCX: ffff88802d923880
+RDX: 0000000000000000 RSI: 00000000fffff95a RDI: 0000000000000001
+RBP: 0000000000000001 R08: ffffffff8223ee48 R09: ffffed1008f9ac2c
+R10: ffffed1008f9ac2c R11: 0000000000000000 R12: 1ffff110073d74cf
+R13: dffffc0000000000 R14: ffff8880328dc000 R15: ffff888039eba678
+FS:  00007fe3035a4700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000033f2d000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 ----------------
 Code disassembly (best guess):
-   0:	89 c6                	mov    %eax,%esi
-   2:	e8 7d ec 23 fd       	callq  0xfd23ec84
-   7:	85 db                	test   %ebx,%ebx
-   9:	75 1a                	jne    0x25
-   b:	e8 34 e5 23 fd       	callq  0xfd23e544
-  10:	48 89 ef             	mov    %rbp,%rdi
-  13:	5b                   	pop    %rbx
-  14:	5d                   	pop    %rbp
-  15:	41 5c                	pop    %r12
-  17:	e9 e8 61 f5 ff       	jmpq   0xfff56204
-  1c:	e8 23 e5 23 fd       	callq  0xfd23e544
-  21:	0f 0b                	ud2    
-  23:	eb ca                	jmp    0xffffffef
-  25:	e8 1a e5 23 fd       	callq  0xfd23e544
+   0:	5c                   	pop    %rsp
+   1:	ff 8b 74 24 04 48    	decl   0x48042474(%rbx)
+   7:	c7 c7 40 77 88 8c    	mov    $0x8c887740,%edi
+   d:	4c 89 f2             	mov    %r14,%rdx
+  10:	e8 08 9f 05 02       	callq  0x2059f1d
+  15:	43 80 3c 2c 00       	cmpb   $0x0,(%r12,%r13,1)
+  1a:	0f 85 6d fd ff ff    	jne    0xfffffd8d
+  20:	e9 70 fd ff ff       	jmpq   0xfffffd95
+  25:	e8 a3 46 5c ff       	callq  0xff5c46cd
   2a:	0f 0b                	ud2     <-- trapping instruction
-  2c:	eb dd                	jmp    0xb
-  2e:	e8 b1 1f 6a fd       	callq  0xfd6a1fe4
-  33:	eb 89                	jmp    0xffffffbe
-  35:	e8 aa 1f 6a fd       	callq  0xfd6a1fe4
-  3a:	eb a8                	jmp    0xffffffe4
-  3c:	0f                   	.byte 0xf
-  3d:	1f                   	(bad)  
-  3e:	84 00                	test   %al,(%rax)
+  2c:	90                   	nop
+  2d:	55                   	push   %rbp
+  2e:	41 57                	push   %r15
+  30:	41 56                	push   %r14
+  32:	41 55                	push   %r13
+  34:	41 54                	push   %r12
+  36:	53                   	push   %rbx
+  37:	48 83 ec 20          	sub    $0x20,%rsp
+  3b:	41 89 d5             	mov    %edx,%r13d
+  3e:	89 f5                	mov    %esi,%ebp
 
 
 ---
