@@ -2,174 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE7F3F1A6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 15:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A81DD3F1A6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 15:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240067AbhHSNeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 09:34:20 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:59084 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240052AbhHSNeT (ORCPT
+        id S240078AbhHSNfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 09:35:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58614 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240010AbhHSNfR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 09:34:19 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9DBFC2196C;
-        Thu, 19 Aug 2021 13:33:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1629380022; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Thu, 19 Aug 2021 09:35:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629380081;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Cvj0xH+3AqKLJJhx1EO2FesxLVWy3ps5cwtf6AlxzyQ=;
-        b=Q4s4DyWQ5toZ4PBiMRxsh+S/vr0rQq/PLaLH9r+ewMntj9vUwMXcf3QJjtgBtW5hwtnuVV
-        1wu5upv5Idv5laxU1HJM7XWSZl2eSxFIwGuxtjBQslgncqMJtAE0bFQHtSm+kv3dZHoDtP
-        TcmZqrGFV0YtX4ef9jn2o9ODgoWmuyE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1629380022;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Cvj0xH+3AqKLJJhx1EO2FesxLVWy3ps5cwtf6AlxzyQ=;
-        b=/R4lBWgN5D+HFURRe70/+8RvbkjpBZU73SSUJGQsQKqplo/+aGL+i+DAheunq5Rt5xtOde
-        xkzWMjm2m0NAAGAw==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 4F98C1363C;
-        Thu, 19 Aug 2021 13:33:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id rhKwEbZdHmFjegAAGKfGzw
-        (envelope-from <jroedel@suse.de>); Thu, 19 Aug 2021 13:33:42 +0000
-Date:   Thu, 19 Aug 2021 15:33:40 +0200
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Hans de Goede <hdegoede@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: x86/boot/compressed/64: Lenovo Ideapad Miix300 bug report
-Message-ID: <YR5dtDvvcgekoIJu@suse.de>
-References: <20210819100230.GA28768@agape.jhs>
- <YR4uffjFuqvrz1Tp@zn.tnic>
- <20210819121653.GB28768@agape.jhs>
+        bh=Ps+yLkOEy/hrcU9IbnjByrznQShPQ8E81PW5BMepISY=;
+        b=FBBmDXevac+tySaE7/qYSB27wKdvVHFYmSgzSWvch0k4ZH3JGyxOMtolnlbuDGLFSzs1w+
+        D4GQYCcYa+bUtoagGiuaELTLxcdqAkir4r6EJPLQ8IlDKGiN8annVvOjrh8A7xTM7bDqnq
+        bgzfpvSIvzdqhL5yx8LC3K0fpsX8Hxk=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-552-XDs8g5TfOFCFTwxZyiAQdA-1; Thu, 19 Aug 2021 09:34:40 -0400
+X-MC-Unique: XDs8g5TfOFCFTwxZyiAQdA-1
+Received: by mail-ed1-f72.google.com with SMTP id z4-20020a05640240c4b02903be90a10a52so2820962edb.19
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 06:34:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ps+yLkOEy/hrcU9IbnjByrznQShPQ8E81PW5BMepISY=;
+        b=QVEC8vmFr/kbfzr+9BM9ACVhcCunxyAGrbBvAb0IAj9rSN7iUm7uuSJSMQ58jaV4wN
+         xUEeZZ6BmUe42RE+UVzkEdqLLDF/Prq6rZBq3AWveg1RpXIFp6NILUhsvrAlFVfyZCYl
+         jcH2kOPcVptXFlidL2T/3UWJKx3MJiNUo+s+DN2FcAFTk+NO9nGRfsRKWUV7LlZvrBy7
+         ISXhHQ7DkDVzp9lFyqMSBxTX123gZF7Jom+L4+feKAkSuXzdndhHbXthrELA6dLgj92N
+         +Q74vY85CSW9hRO7u09fMf1R0AgQU19EZj5YnrRiyxbrxppin8Kw54AYsZ73NzXyif7A
+         ZGHQ==
+X-Gm-Message-State: AOAM532N+Y8sXp4aeVbqEh/0aMzSfMyd5hRKZ1/WZrUqi6Mabv3+b0mW
+        HMZXuskgcpBBQuSio6RYntJFihasJ5W87a2Mj1IgoNm4PVE16fAcyOq/ovn2AOnzMuA/7DJ2JZK
+        uTLVy4Pp9xLM5ZLW8QaOridCO
+X-Received: by 2002:a05:6402:51cf:: with SMTP id r15mr16549120edd.211.1629380078825;
+        Thu, 19 Aug 2021 06:34:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzwwMpLOCS3BaI6SAkMBcbSfFImX5Pv/q+Bhb98HnIHQoJzN+K8bxXklRlSvXgJvsQvJ0ZGew==
+X-Received: by 2002:a05:6402:51cf:: with SMTP id r15mr16549101edd.211.1629380078700;
+        Thu, 19 Aug 2021 06:34:38 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id da1sm1793286edb.26.2021.08.19.06.34.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Aug 2021 06:34:38 -0700 (PDT)
+Subject: Re: [PATCH v3 00/20] Intel platform driver code movement
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Kate Hsuan <hpa@redhat.com>, Alex Hung <alex.hung@canonical.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        AceLan Kao <acelan.kao@canonical.com>,
+        Jithu Joseph <jithu.joseph@intel.com>,
+        Maurice Ma <maurice.ma@intel.com>,
+        Sujith Thomas <sujith.thomas@intel.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        Zha Qipeng <qipeng.zha@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "David E . Box" <david.e.box@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dell.Client.Kernel@dell.com,
+        Platform Driver <platform-driver-x86@vger.kernel.org>
+References: <20210819033001.20136-1-hpa@redhat.com>
+ <1360c64f-b695-a4b8-8b61-a4dfb0e896f0@redhat.com>
+ <CAHp75VcdOc+G1Yov9HcGhMbEqzGwemmD7=SHd3qOOsEdAqjg2Q@mail.gmail.com>
+ <CAHp75VfvjVeq716d=aGvZXvmzbpW4+XG66ryVYrBxk5G5Wd6cg@mail.gmail.com>
+ <a5e52890-c162-ab48-4858-3eb0e971e5a1@redhat.com>
+Message-ID: <07cfd37a-cce6-56f2-0ff1-d4daeccfc67c@redhat.com>
+Date:   Thu, 19 Aug 2021 15:34:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="ih4w7RdvR2e7jEi+"
-Content-Disposition: inline
-In-Reply-To: <20210819121653.GB28768@agape.jhs>
+In-Reply-To: <a5e52890-c162-ab48-4858-3eb0e971e5a1@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---ih4w7RdvR2e7jEi+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 8/19/21 3:31 PM, Hans de Goede wrote:
+> Hi,
+> 
+> On 8/19/21 2:14 PM, Andy Shevchenko wrote:
+>> On Thu, Aug 19, 2021 at 3:03 PM Andy Shevchenko
+>> <andy.shevchenko@gmail.com> wrote:
+>>> On Thu, Aug 19, 2021 at 1:48 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>>>
+>>>
+>>>> Thank you for your patch-series, I've applied the series to my
+>>>> review-hans branch:
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+>>>>
+>>>> With the changes mentioned in replies to individual patches.
+>>>
+>>> Can we postpone this a bit, please?
+>>>
+>>> I have a few comments here and there. I'll send asap.
+>>
+>> Hmm... It seems it will take less time if I simply take what you have
+>> in your repo and produce a v4.
+>> Would it work?
+> 
+> That is fine by me, I might be better to just do a small follow-up patch
+> though, given that you seem to only have a few small remarks.
+> 
+> But if you prefer to do a v4 that is fine too. I was planning on
+> keeping this in review-hans for a while anyways.
+> 
+> I did notice the couple of stray changes which you pointed out but
+> they get corrected by other commits (or are removal of extra whitespace
+> left-over from other commits), so I decided that they were harmless
+> since the end-result Makefile / Kconfig files were good.
 
-Hi Fabio,
+p.s.
 
-thanks for your report!
+Note that drivers/platform/x86/intel_ips.h is deliberately not moved
+(for now) since it is also used by the i915 driver.
 
-On Thu, Aug 19, 2021 at 02:16:53PM +0200, Fabio Aiuto wrote:
-> I rebuilt a plain v5.13 kernel (no reverts) with that config
-> disabled and everything goes fine.
-
-Can you please try the attached patch? I think the problem is that the
-32-bit EFI boot path sets up its own IDT before ExitBootServices() is
-called.
+My plan is to merge a follow-up patch moving that through drm-intel-next
+once 5.15-rc1 is out.
 
 Regards,
 
-	Joerg
+Hans
 
---ih4w7RdvR2e7jEi+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="boot-idt.fix"
-
-diff --git a/arch/x86/boot/compressed/efi_thunk_64.S b/arch/x86/boot/compressed/efi_thunk_64.S
-index 95a223b3e56a..99cfd5dea23c 100644
---- a/arch/x86/boot/compressed/efi_thunk_64.S
-+++ b/arch/x86/boot/compressed/efi_thunk_64.S
-@@ -39,7 +39,7 @@ SYM_FUNC_START(__efi64_thunk)
- 	/*
- 	 * Convert x86-64 ABI params to i386 ABI
- 	 */
--	subq	$32, %rsp
-+	subq	$64, %rsp
- 	movl	%esi, 0x0(%rsp)
- 	movl	%edx, 0x4(%rsp)
- 	movl	%ecx, 0x8(%rsp)
-@@ -49,14 +49,19 @@ SYM_FUNC_START(__efi64_thunk)
- 	leaq	0x14(%rsp), %rbx
- 	sgdt	(%rbx)
- 
-+	addq	$16, %rbx
-+	sidt	(%rbx)
-+
- 	/*
--	 * Switch to gdt with 32-bit segments. This is the firmware GDT
--	 * that was installed when the kernel started executing. This
--	 * pointer was saved at the EFI stub entry point in head_64.S.
-+	 * Switch to idt and gdt with 32-bit segments. This is the firmware GDT
-+	 * and IDT that was installed when the kernel started executing. The
-+	 * pointers were saved at the EFI stub entry point in head_64.S.
- 	 *
- 	 * Pass the saved DS selector to the 32-bit code, and use far return to
- 	 * restore the saved CS selector.
- 	 */
-+	leaq	efi32_boot_idt(%rip), %rax
-+	lidt	(%rax)
- 	leaq	efi32_boot_gdt(%rip), %rax
- 	lgdt	(%rax)
- 
-@@ -67,7 +72,7 @@ SYM_FUNC_START(__efi64_thunk)
- 	pushq	%rax
- 	lretq
- 
--1:	addq	$32, %rsp
-+1:	addq	$64, %rsp
- 	movq	%rdi, %rax
- 
- 	pop	%rbx
-@@ -132,6 +137,9 @@ SYM_FUNC_START_LOCAL(efi_enter32)
- 	 */
- 	cli
- 
-+	lidtl	(%ebx)
-+	subl	$16, %ebx
-+
- 	lgdtl	(%ebx)
- 
- 	movl	%cr4, %eax
-@@ -166,6 +174,11 @@ SYM_DATA_START(efi32_boot_gdt)
- 	.quad	0
- SYM_DATA_END(efi32_boot_gdt)
- 
-+SYM_DATA_START(efi32_boot_idt)
-+	.word	0
-+	.quad	0
-+SYM_DATA_END(efi32_boot_idt)
-+
- SYM_DATA_START(efi32_boot_cs)
- 	.word	0
- SYM_DATA_END(efi32_boot_cs)
-diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-index a2347ded77ea..572c535cf45b 100644
---- a/arch/x86/boot/compressed/head_64.S
-+++ b/arch/x86/boot/compressed/head_64.S
-@@ -319,6 +319,9 @@ SYM_INNER_LABEL(efi32_pe_stub_entry, SYM_L_LOCAL)
- 	movw	%cs, rva(efi32_boot_cs)(%ebp)
- 	movw	%ds, rva(efi32_boot_ds)(%ebp)
- 
-+	/* Store firmware IDT descriptor */
-+	sidtl	rva(efi32_boot_idt)(%ebp)
-+
- 	/* Disable paging */
- 	movl	%cr0, %eax
- 	btrl	$X86_CR0_PG_BIT, %eax
-
---ih4w7RdvR2e7jEi+--
