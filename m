@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F563F1D2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 852F23F1D31
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236197AbhHSPqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 11:46:00 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:52776
+        id S240632AbhHSPqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 11:46:02 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:52820
         "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240539AbhHSPp4 (ORCPT
+        by vger.kernel.org with ESMTP id S240585AbhHSPp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 11:45:56 -0400
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        Thu, 19 Aug 2021 11:45:58 -0400
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com [209.85.218.72])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id A5AB640CAC
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:45:19 +0000 (UTC)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 66722411D1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:45:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629387919;
-        bh=R7D35cbra117D9PxgbQHF85yjpBLQZ8KDhGISFH2tcs=;
+        s=20210705; t=1629387921;
+        bh=49SQrS5qR/DGh2JT33Ed3tk6OzvNaJscxeaopNy6uIc=;
         h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version;
-        b=vZiSX1PyuE/9tBTRwkHxG21YU4abO1BKVXEsDfVsnLY2VwinKu0LCXDZ16yhGnIsZ
-         7tGH/WaBGmG2UkH/vGKFiUkxEGtYgkT/0hA1gPVUbcEDdA3poqiR7EUhFkumEDft0N
-         k4CMkweHn8dY0tjWa5HNznyT2XErlWN276JonjrZaoesGTsaDjeDlwFhfJae6lT6kt
-         Pi3bxIB9du+z6ksrW5rjXm0UuOzckGWPTmfJa43n2rxKnyplcQbGcL/3vv9K3rmc+E
-         74NYDhh72QVRalSAY9RRvR4/BOeijdMYiiLKy5BZA87v9vh1OxRpD/X1f/OKQR35QG
-         YWg0soMYdk9fQ==
-Received: by mail-ed1-f70.google.com with SMTP id x4-20020a50d9c4000000b003bed5199871so3014570edj.14
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 08:45:19 -0700 (PDT)
+        b=OPTF5lllgss6UEEJ8M6/soyQRuNHwjF6WuDv+1kFo1JnCiiipLe/SDpPjax63uQCa
+         3rtEHyzAOajOazJBX7Y/z/NBY5ppeLkC7cOREy0xm9dKF+IVmmDUqnpCkk8MKIOaBU
+         vrc8DMfL0P0HjnE4qEMZHDLyJTTMmSWXFVdvPVmW+BeJxmd6W8R4pxCAFoHoPsnrTA
+         XDlGEhHM1wHTrDyhTyIMFemcZp99sV2KK5D7nLnf/D3PE4rdABFziPy0a7pyRwmpIg
+         YZUtU90SAddkl+WYiWQ8PeW8SRaHEBzlFocM+fNPEgvLPCU/nY3rU+4GrCw5HwaqFy
+         5dASVwUWiZAMA==
+Received: by mail-ej1-f72.google.com with SMTP id h17-20020a1709070b11b02905b5ced62193so2427073ejl.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 08:45:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=R7D35cbra117D9PxgbQHF85yjpBLQZ8KDhGISFH2tcs=;
-        b=sjsx5LASxwZQeuie8+oG8w48JQ45qgqOTBjINHsGiJNnBamPCiEl4Bt74Ysm62TOgq
-         ba28M/yKHpzW6dfoCnxS6Bd+njGM7CeY/9kTpOlFJEa0VFXCaMN9JxY5iLwf5dexJjMw
-         PPPdn7qeAxkoiVjZcIK/v/oWTnxudK/NCLcl/zE5Ih3V57gzYMe/XYj31ZBCNzEa7NaB
-         iXQcthinlPMYx1FNOzVTVtiTdlXBQpnYeuCtV75iMJ5d5qrIj0rC9EYMRQCh/5r/7ycJ
-         ETVuIId349dhWb9a8QEvkQCF6glfHXMbFPohFlYLwTOZDC1ETLRy897w9gZixmnX13rx
-         YjSw==
-X-Gm-Message-State: AOAM530pjhzRnL3NEMacUWiekccASagEuT3QLyQRp7sH/XLEBHk8mcdW
-        wbRVXtpfMaLEvvxkg74/gEQmv/OQwOKkjPG4TWl0b3VEaLhfJt6JsdJIoIn1H5s/cWgwVxoC0n4
-        D4CHgSZicJXVOPMLkpEubwDN/Xexa3sH6vGt8u48F1A==
-X-Received: by 2002:a50:ed05:: with SMTP id j5mr17338667eds.256.1629387919478;
-        Thu, 19 Aug 2021 08:45:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwExpdLPWOGCIOlhdKLAezKk54YUmCNyk9hkQhVf/OBX+C4Dw+NBvBYgBjE6TzVYrSx7HyOxA==
-X-Received: by 2002:a50:ed05:: with SMTP id j5mr17338650eds.256.1629387919373;
-        Thu, 19 Aug 2021 08:45:19 -0700 (PDT)
+        bh=49SQrS5qR/DGh2JT33Ed3tk6OzvNaJscxeaopNy6uIc=;
+        b=LwmiYhrUnZnFMMySNPTZLcD8cjQB5zyT29wW+HlWg5Pe9tAzseExSr9ur9u2fJUlxa
+         T6bD/XBa9mpx9FJg2TaCBiNA3T9dabnv4LgSDz2iNOr8yQdlKNF6n/smpnfnGksTHz81
+         /XolSMYCe+7Pj4IX3h54t1thiq16ql86LN8BhreUiafoe+aMQhVCbM9QAovJeowYZmvK
+         6soJtZxISpgwAaQulj48Zr1aBM+hN/ld8moKWsUpjUoiCfLvZZKJf2l6ZCaPwW86/ROQ
+         2O6xfy5u3bWBZUvNj/YO0lWWn/JwUzPhL2R9I0352ddPn1oAXoiD+y1X29QmKB4C29nY
+         3SCA==
+X-Gm-Message-State: AOAM532+uRMYXngAbq+6OwSpk4Ht6g4VOiUo9CxKBxpn1dkIzekNi6bX
+        3DnDuFO4XylSWG1MZNJpOYr89LZ3geqnm7BWk3E+oUrm8+EmBTWGzD9AsAmDIeTu81USmPD8A/K
+        MgZ4t0S1si1JXVE2FDsbp0RZVxSFIAqS/Lk+XxauFxw==
+X-Received: by 2002:a17:906:5909:: with SMTP id h9mr16162313ejq.329.1629387920972;
+        Thu, 19 Aug 2021 08:45:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxbVkNbqqPYyJfh7GB4lkzG2WE+LhjQwuFLKnM8+tFCQCy672AdvPh8cIFy52i1DWdjPI27+w==
+X-Received: by 2002:a17:906:5909:: with SMTP id h9mr16162276ejq.329.1629387920830;
+        Thu, 19 Aug 2021 08:45:20 -0700 (PDT)
 Received: from localhost.localdomain ([86.32.42.198])
-        by smtp.gmail.com with ESMTPSA id f16sm1925373edw.79.2021.08.19.08.45.17
+        by smtp.gmail.com with ESMTPSA id f16sm1925373edw.79.2021.08.19.08.45.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 08:45:18 -0700 (PDT)
+        Thu, 19 Aug 2021 08:45:20 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -68,9 +68,9 @@ To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Piotr Sroka <piotrs@cadence.com>, linux-mmc@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org
-Subject: [PATCH 3/6] riscv: microchip: mpfs: drop duplicated nodes
-Date:   Thu, 19 Aug 2021 17:44:33 +0200
-Message-Id: <20210819154436.117798-3-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 4/6] riscv: microchip: mpfs: fix board compatible
+Date:   Thu, 19 Aug 2021 17:44:34 +0200
+Message-Id: <20210819154436.117798-4-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210819154436.117798-1-krzysztof.kozlowski@canonical.com>
 References: <20210819154436.117798-1-krzysztof.kozlowski@canonical.com>
@@ -80,37 +80,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DTSI file defines soc node and address/size cells, so there is no
-point in duplicating it in DTS file.
+According to bindings, the compatible must include microchip,mpfs.  This
+fixes dtbs_check warning:
+
+  arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: /: compatible: ['microchip,mpfs-icicle-kit'] is too short
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts | 5 -----
- 1 file changed, 5 deletions(-)
+ arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts | 2 +-
+ arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi           | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
-index ec79944065c9..237830583514 100644
+index 237830583514..62f7651de538 100644
 --- a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
 +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
-@@ -9,8 +9,6 @@
- #define RTCCLK_FREQ		1000000
+@@ -10,7 +10,7 @@
  
  / {
--	#address-cells = <2>;
--	#size-cells = <2>;
  	model = "Microchip PolarFire-SoC Icicle Kit";
- 	compatible = "microchip,mpfs-icicle-kit";
+-	compatible = "microchip,mpfs-icicle-kit";
++	compatible = "microchip,mpfs-icicle-kit", "microchip,mpfs";
  
-@@ -27,9 +25,6 @@ memory@80000000 {
- 		reg = <0x0 0x80000000 0x0 0x40000000>;
- 		clocks = <&clkcfg 26>;
+ 	chosen {
+ 		stdout-path = &serial0;
+diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
+index b9819570a7d1..cb54da0cc3c4 100644
+--- a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
++++ b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
+@@ -7,7 +7,7 @@ / {
+ 	#address-cells = <2>;
+ 	#size-cells = <2>;
+ 	model = "Microchip MPFS Icicle Kit";
+-	compatible = "microchip,mpfs-icicle-kit";
++	compatible = "microchip,mpfs-icicle-kit", "microchip,mpfs";
+ 
+ 	chosen {
  	};
--
--	soc {
--	};
- };
- 
- &serial0 {
 -- 
 2.30.2
 
