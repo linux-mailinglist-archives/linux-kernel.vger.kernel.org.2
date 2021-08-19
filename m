@@ -2,153 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A953F1669
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27BCC3F166C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:40:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237768AbhHSJjv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Aug 2021 05:39:51 -0400
-Received: from aposti.net ([89.234.176.197]:42636 "EHLO aposti.net"
+        id S237662AbhHSJlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 05:41:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237540AbhHSJju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 05:39:50 -0400
-Date:   Thu, 19 Aug 2021 11:39:05 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v7 04/11] clk: Ingenic: Fix problem of MAC clock in
- Ingenic X1000 and X1830.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     sboyd@kernel.org, mturquette@baylibre.com, robh+dt@kernel.org,
-        linux-clk@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, sihui.liu@ingenic.com,
-        jun.jiang@ingenic.com, sernia.zhou@foxmail.com
-Message-Id: <5TY2YQ.FMFB4RRIWORV1@crapouillou.net>
-In-Reply-To: <1627119286-125821-5-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1627119286-125821-1-git-send-email-zhouyanjie@wanyeetech.com>
-        <1627119286-125821-5-git-send-email-zhouyanjie@wanyeetech.com>
+        id S230220AbhHSJlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 05:41:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43530610CF;
+        Thu, 19 Aug 2021 09:40:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629366032;
+        bh=pn1+aJZ5D4PQ4DCq3A4hEX/ROi2pp61SP2+ot9uVk9I=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=bMjEq5IUZHMH6ruUqnDXbDJqEhYyuBSDbhX2BSsKgRQTiJQo+Dj5cLsYh/WtWKW6j
+         rKOwo5kNVEk+tLfRH1yP7UgHWYda3hnveYWWlNidA8jDslNpFBtzq2RXU6Gm6AnPUk
+         qvkcvNyDZ7MDkeHvMvLczO5nGEDe4U0HRBx4frLO/MG1aAzJWREpIyzLVS/zjua++x
+         +FJqp5aoC6vuGu9amQ3kK7NtCgH4qHGsY14KLDHlEwaXRvda6y7/Qv+QjYV7Fx/Sgi
+         N7EyFj/dultpxKCgzjXLT0stx8n4G9NPvc4j/uDhdT45MzgEweTE7AIgRSXmC2gTV7
+         bH6e2q+TU7G9Q==
+Date:   Thu, 19 Aug 2021 11:40:28 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Rolf Eike Beer <eb@emlix.com>
+cc:     linux-acpi@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
+        Markus Mayer <mmayer@broadcom.com>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: Re: [PATCH][RESEND] tools/thermal/tmon: simplify Makefile and fix
+ cross build
+In-Reply-To: <2149399.oOxd0sxVbX@devpool47>
+Message-ID: <nycvar.YFH.7.76.2108191140000.8253@cbobk.fhfr.pm>
+References: <2149399.oOxd0sxVbX@devpool47>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhou,
+On Fri, 30 Jul 2021, Rolf Eike Beer wrote:
 
-Le sam., juil. 24 2021 at 17:34:39 +0800, 周琰杰 (Zhou Yanjie) 
-<zhouyanjie@wanyeetech.com> a écrit :
-> X1000 and X1830 have two MAC related clocks, one is MACPHY, which is
-> controlled by MACCDR register, the other is MAC, which is controlled
-> by the MAC bit in the CLKGR register (with CLK_AHB2 as the parent).
-> The original driver mistakenly mixed the two clocks together.
+> Hi,
 > 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> cross-building tmon can fail because it uses the non-prefixed, i.e. host, pkg-
+> config.
+> 
+> If you prefer a merge the code is also available at:
+> 
+>    https://github.com/emlix/linux thermal-makefile
+> 
+> Would be nice if someone could finally pick this up, it's almost 3 years now…
+> 
+> If someone knows anyone who better fits into these reviews please add CC's, 
+> sadly tools/thermal/ is not covered in MAINTAINERS.
 
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+That would be Daniel Lezcano. CCing.
 
-Cheers,
--Paul
-
-> ---
-> 
-> Notes:
->     v1->v2:
->     1.Add MACPHY and I2S for X1000, and add MACPHY for X1830.
->     2.Add Paul Cercueil's Reviewed-by and Rob Herring's Acked-by.
-> 
->     v2->v3:
->     No change.
-> 
->     v3->v4:
->     No change.
-> 
->     v4->v5:
->     Add CIM, AIC, DMIC for X1000, and add CIM, AIC, DMIC, I2S for 
-> X1830.
-> 
->     v5->v6:
->     No change.
-> 
->     v6->v7:
->     No change.
-> 
->  drivers/clk/ingenic/x1000-cgu.c | 11 ++++++++---
->  drivers/clk/ingenic/x1830-cgu.c | 11 ++++++++---
->  2 files changed, 16 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/clk/ingenic/x1000-cgu.c 
-> b/drivers/clk/ingenic/x1000-cgu.c
-> index 9aa20b5..53e5fe0 100644
-> --- a/drivers/clk/ingenic/x1000-cgu.c
-> +++ b/drivers/clk/ingenic/x1000-cgu.c
-> @@ -296,12 +296,11 @@ static const struct ingenic_cgu_clk_info 
-> x1000_cgu_clocks[] = {
->  		.gate = { CGU_REG_CLKGR, 31 },
->  	},
-> 
-> -	[X1000_CLK_MAC] = {
-> -		"mac", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
-> +	[X1000_CLK_MACPHY] = {
-> +		"mac_phy", CGU_CLK_MUX | CGU_CLK_DIV,
->  		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL },
->  		.mux = { CGU_REG_MACCDR, 31, 1 },
->  		.div = { CGU_REG_MACCDR, 0, 1, 8, 29, 28, 27 },
-> -		.gate = { CGU_REG_CLKGR, 25 },
->  	},
-> 
->  	[X1000_CLK_LCD] = {
-> @@ -452,6 +451,12 @@ static const struct ingenic_cgu_clk_info 
-> x1000_cgu_clocks[] = {
->  		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
->  		.gate = { CGU_REG_CLKGR, 21 },
->  	},
-> +
-> +	[X1000_CLK_MAC] = {
-> +		"mac", CGU_CLK_GATE,
-> +		.parents = { X1000_CLK_AHB2 },
-> +		.gate = { CGU_REG_CLKGR, 25 },
-> +	},
->  };
-> 
->  static void __init x1000_cgu_init(struct device_node *np)
-> diff --git a/drivers/clk/ingenic/x1830-cgu.c 
-> b/drivers/clk/ingenic/x1830-cgu.c
-> index 950aee2..59342bc 100644
-> --- a/drivers/clk/ingenic/x1830-cgu.c
-> +++ b/drivers/clk/ingenic/x1830-cgu.c
-> @@ -270,13 +270,12 @@ static const struct ingenic_cgu_clk_info 
-> x1830_cgu_clocks[] = {
->  		.gate = { CGU_REG_CLKGR0, 31 },
->  	},
-> 
-> -	[X1830_CLK_MAC] = {
-> -		"mac", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
-> +	[X1830_CLK_MACPHY] = {
-> +		"mac_phy", CGU_CLK_MUX | CGU_CLK_DIV,
->  		.parents = { X1830_CLK_SCLKA, X1830_CLK_MPLL,
->  					 X1830_CLK_VPLL, X1830_CLK_EPLL },
->  		.mux = { CGU_REG_MACCDR, 30, 2 },
->  		.div = { CGU_REG_MACCDR, 0, 1, 8, 29, 28, 27 },
-> -		.gate = { CGU_REG_CLKGR1, 4 },
->  	},
-> 
->  	[X1830_CLK_LCD] = {
-> @@ -428,6 +427,12 @@ static const struct ingenic_cgu_clk_info 
-> x1830_cgu_clocks[] = {
->  		.gate = { CGU_REG_CLKGR1, 1 },
->  	},
-> 
-> +	[X1830_CLK_MAC] = {
-> +		"mac", CGU_CLK_GATE,
-> +		.parents = { X1830_CLK_AHB2 },
-> +		.gate = { CGU_REG_CLKGR1, 4 },
-> +	},
-> +
->  	[X1830_CLK_OST] = {
->  		"ost", CGU_CLK_GATE,
->  		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-> --
-> 2.7.4
-> 
-
+-- 
+Jiri Kosina
+SUSE Labs
 
