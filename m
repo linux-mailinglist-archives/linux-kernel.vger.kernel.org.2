@@ -2,122 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1A03F1335
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 08:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22693F1339
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 08:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230477AbhHSGT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 02:19:58 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:41252
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229782AbhHSGT4 (ORCPT
+        id S231248AbhHSGUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 02:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230303AbhHSGUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 02:19:56 -0400
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com [209.85.218.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 8B5163F047
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 06:19:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629353959;
-        bh=qEtVTiJin9b0M1DkYv8DcnGnIW+RsIPC9ADG4dJnT4o=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=N3xhBs+49++GdAMSJ8xlhr5Xzp+Rr+aoUebyVTv2OTbwGRYj33wGlrWZxmlu0AIoj
-         8ffxay1E8CObjcUXT1mDCnStOo4ICq0Pq6ptz3n48oiVXkmYmPIawKC6gqOwkyeGjo
-         +9WDvScWkVndFdiZYT2I9FibWg7s6zXI5w3H81dEuz0ilkxj/tlq5Z80urnh2uV6mR
-         J4BOXDpMCH2c59ZbHRr290Htg2LhK8xGywB3V/2ubmRBYI7kLti26Ma03swvOu224k
-         ir8n7QaqWdgPvc68uzSI9mgH5Q0rC5IilVr/dnBqa7m24ufNO8g+PJYv2mbcZZH3RV
-         on2pgl6DQJ8+A==
-Received: by mail-ej1-f69.google.com with SMTP id j10-20020a17090686cab02905b86933b59dso1805276ejy.18
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 23:19:19 -0700 (PDT)
+        Thu, 19 Aug 2021 02:20:10 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 647C8C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 23:19:34 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id a21so4516810pfh.5
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 23:19:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nTW/BLkDiVzO1gHADZsi/9xVxK/pUSXQOI5etxdRSmo=;
+        b=WDiDUjA/IkPmySU0d7mj3bP3Qc11FZOOw7DcXzrDxzvEG+BU8sQWn7Nna1tvYaBZzQ
+         P2PYtiyMnFiLhJXN3Oya98MBxOqt6Sreu65Wth/4i3/qTPPFpLLijLqzHO3WG3UeYHta
+         RG9N84mX5oXZTMSFDqnSmCvbnYlxRO34FdzW0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qEtVTiJin9b0M1DkYv8DcnGnIW+RsIPC9ADG4dJnT4o=;
-        b=JqcsCLuIZxagHGybiY/h0GhWNJyIkSic8D+pY+SvlG+I0qaq0LB1+s7jXzaP3u9IXv
-         iA88zPRSkG0iVy4QmLyaJTZVWqIzUlIm8mXynqqA3tS2upPokHSlkTyl79smMHcnkLaQ
-         MDLazaTkJZzKVb9mTjp0Rmhn9ZH95EpIjrOuF8v198+UnNlzYj5k9ly9COsBD+cIuxrY
-         4S5lljMOH9/1yi+GjmvtRce8J77YFfLKNBx2oOTjKVWWbjTJwGLGJV2maq03babWmYh9
-         3TFd76yp0zRWBDl/zqxzwghc5ea4lRQh3XH8NZ0wiX971nZ6q1o34mhWeHW8Qt+JMkrW
-         xF/g==
-X-Gm-Message-State: AOAM53055FiI5cBohwa8rCh42ZtNAK7hnQgipoDG6S9q74sA3X93hYiU
-        J+RyfnIWWPHD8THdnImfsbd7r9kZi8kI7Eoa6W3RjuKwcdDrwLgB34MiWc1vwOj5mX/2ZxlWofy
-        LjxfBHljbSPsdj+BtsAOhbfPo97gw/xjDI4QwEreubznD9gSI1tpJFn6TNg==
-X-Received: by 2002:a05:6402:b64:: with SMTP id cb4mr14429983edb.49.1629353959257;
-        Wed, 18 Aug 2021 23:19:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw6uek5wW3YjQA4vSSYLJiAy5IA1O6J/ytxuGPYxDhJKHP7TDdnXrrE69RuJ6b7u6FD00XjM9NEQEB7GNyNEXw=
-X-Received: by 2002:a05:6402:b64:: with SMTP id cb4mr14429958edb.49.1629353959017;
- Wed, 18 Aug 2021 23:19:19 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nTW/BLkDiVzO1gHADZsi/9xVxK/pUSXQOI5etxdRSmo=;
+        b=scyBbBNndAqlsZ9JH/ofKhHvVrlyMy4WpP70Sw44POf6TxuGPNxPZc2ha1UukeausU
+         tfa9I0YtjGNfzabjNnC155mPzmd57Sw0cM1Kt9BKTcQ73gp1NwJYriggGgiGmGJ2oWGn
+         /zTQHFihN1Z7ToBjyfGjaQO6pUYN8cf6WNs+CdwcAu3hdxtevfb2qm9t7HXK+ObdU5kb
+         3NKV2YEuzlHve+WHrRWkn94msmDWtcpnLEWt9dFf3dEXexkNrP6Sn4bPW6QfRvYjNnbV
+         Rfb22abPsDA9ZAIkcnyA/wTBBQp3uEbPth71wlrCE3lMhysEsbRW5Kni5yr+zUsAh1ej
+         wBkw==
+X-Gm-Message-State: AOAM530Byi6UzWiHs0Vr9pJh9VC+X2llfUf9/ThZhJoN52AXInJouzoU
+        aU53g/p9YPpqcdnRTM927DpenQ==
+X-Google-Smtp-Source: ABdhPJw1BHoL7ttU/DrhdxzeTEDNx3Dg+sBjOFPOFzkh7o2zft9bm56P9m5Pku6XXtfHdC3/dRpDSQ==
+X-Received: by 2002:a63:494:: with SMTP id 142mr12437314pge.242.1629353973971;
+        Wed, 18 Aug 2021 23:19:33 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id z1sm1983936pfg.18.2021.08.18.23.19.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 23:19:33 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 23:19:31 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>,
+        linux-kernel@vger.kernel.org,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH 04/13] kbuild: remove unused
+ quiet_cmd_update_lto_symversions
+Message-ID: <202108182317.01AB60ECF9@keescook>
+References: <20210819005744.644908-1-masahiroy@kernel.org>
+ <20210819005744.644908-5-masahiroy@kernel.org>
 MIME-Version: 1.0
-References: <20210819054542.608745-1-kai.heng.feng@canonical.com> <b14bc147-d39c-6f55-cc0e-7b2de92d23b1@gmail.com>
-In-Reply-To: <b14bc147-d39c-6f55-cc0e-7b2de92d23b1@gmail.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Thu, 19 Aug 2021 14:19:07 +0800
-Message-ID: <CAAd53p5Fu+x9M0fAta4k-8mja4Bxybhcg9veut4v7TVFZrD_aQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 0/3] r8169: Implement dynamic ASPM mechanism
- for recent 1.0/2.5Gbps Realtek NICs
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     nic_swsd <nic_swsd@realtek.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210819005744.644908-5-masahiroy@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 2:08 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
->
-> On 19.08.2021 07:45, Kai-Heng Feng wrote:
-> > The latest Realtek vendor driver and its Windows driver implements a
-> > feature called "dynamic ASPM" which can improve performance on it's
-> > ethernet NICs.
-> >
-> This statement would need a proof. Which performance improvement
-> did you measure? And why should performance improve?
+On Thu, Aug 19, 2021 at 09:57:35AM +0900, Masahiro Yamada wrote:
+> This is not used anywhere.
 
-It means what patch 1/3 fixes...
+Ah-ha, I see: cmd_update_lto_symversions is never used through a
+$(call cmd, ...) invocation.
 
-> On mainline ASPM is disabled, therefore I don't think we can see
-> a performance improvement. More the opposite in the scenario
-> I described: If traffic starts and there's a congestion in the chip,
-> then it may take a second until ASPM gets disabled. This may hit
-> performance.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-OK. We can know if the 1 sec interval is enough once it's deployed in the wild.
+-Kees
 
->
-> > Heiner Kallweit pointed out the potential root cause can be that the
-> > buffer is to small for its ASPM exit latency.
-> >
-> > So bring the dynamic ASPM to r8169 so we can have both nice performance
-> > and powersaving at the same time.
-> >
-> > v2:
-> > https://lore.kernel.org/netdev/20210812155341.817031-1-kai.heng.feng@canonical.com/
-> >
-> > v1:
-> > https://lore.kernel.org/netdev/20210803152823.515849-1-kai.heng.feng@canonical.com/
-> >
-> > Kai-Heng Feng (3):
-> >   r8169: Implement dynamic ASPM mechanism
-> >   PCI/ASPM: Introduce a new helper to report ASPM support status
-> >   r8169: Enable ASPM for selected NICs
-> >
-> >  drivers/net/ethernet/realtek/r8169_main.c | 69 ++++++++++++++++++++---
-> >  drivers/pci/pcie/aspm.c                   | 11 ++++
-> >  include/linux/pci.h                       |  2 +
-> >  3 files changed, 74 insertions(+), 8 deletions(-)
-> >
-> This series is meant for your downstream kernel only, and posted here to
-> get feedback. Therefore it should be annotated as RFC, not that it gets
-> applied accidentally.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>  scripts/Makefile.build | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+> index 3e4cd1439cd4..279363266455 100644
+> --- a/scripts/Makefile.build
+> +++ b/scripts/Makefile.build
+> @@ -411,7 +411,6 @@ $(subdir-builtin): $(obj)/%/built-in.a: $(obj)/% ;
+>  $(subdir-modorder): $(obj)/%/modules.order: $(obj)/% ;
+>  
+>  # combine symversions for later processing
+> -quiet_cmd_update_lto_symversions = SYMVER  $@
+>  ifeq ($(CONFIG_LTO_CLANG) $(CONFIG_MODVERSIONS),y y)
+>        cmd_update_lto_symversions =					\
+>  	rm -f $@.symversions						\
+> -- 
+> 2.30.2
+> 
 
-Noted. Will annotate in next version.
-
-Kai-Heng
+-- 
+Kees Cook
