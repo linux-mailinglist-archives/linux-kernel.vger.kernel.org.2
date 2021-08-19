@@ -2,122 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7313D3F1467
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D826C3F146D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 09:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234640AbhHSHhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 03:37:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44033 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229501AbhHSHhO (ORCPT
+        id S236408AbhHSHk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 03:40:27 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:28431 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232017AbhHSHk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 03:37:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629358598;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=EGoAqiXMaqUmTnBvOsdIXNuYmSfBYahpZQJKl7y5rt4=;
-        b=hoVuZYdaOhxiJLOL3AuW2IpgPN8fr5EmjG4FdkuLs+VQiiTZehnbpAfqaZ6KX/Ol+V8riC
-        nv3xoLM9zDvrm+ngj5bC+do1DyzS4l/MDYLpOqbpStgS+3L5r6nqjrVr7dgFO95cbqd7yq
-        zQgPvSKLrN4dkpuFmj3HQIvkmH8Khac=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-290-kuejwGsiMYmfhBOyc3GyUw-1; Thu, 19 Aug 2021 03:36:37 -0400
-X-MC-Unique: kuejwGsiMYmfhBOyc3GyUw-1
-Received: by mail-ej1-f69.google.com with SMTP id ja25-20020a1709079899b02905b2a2bf1a62so1896204ejc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 00:36:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=EGoAqiXMaqUmTnBvOsdIXNuYmSfBYahpZQJKl7y5rt4=;
-        b=gCzcev66I0DWpDACMfRsiwXcODiH4CJPpGO2ly7W1lMAQY/MLZ78wyI0VdIBzz6LU0
-         +WPn0n7na5sO1wS4ObCQrTD47d2uQJPjsQGBsf0OMROHrQdjKSjFul+hKw/LclRToA3q
-         vLgRyQvlc6/Dqy4BExArGjtXsv3ZaXjBNlXTO9UexKWDTO69YSwmR1Cx9h6rga3hCbZD
-         upq1TPwD3V9UCKCGBAJbTHLEEesv84sRhhoQR3fXuFr6oimUTDJuzJBSYJQ2uBQunK72
-         0E107kNz1YvvbyvJbbCxKQ4UxsebW4b/m1fOpCRqkrLsvJQnSq/W6Lvpb3eKrWZkwAC0
-         IWyQ==
-X-Gm-Message-State: AOAM5306ox8wD9lrVXCrQFWJQNPaen268+ljb8eiTkJQs3cq68vkW9LF
-        rTrMyXbiG4bN9JRKNz0F6eiqmvz5FyCdfSoil6SO+yTNs/khp1wLdwO68dZoUtMsBDepKtEggzd
-        em95F3m0iHK7f8AHHppZ3ijYa
-X-Received: by 2002:aa7:c502:: with SMTP id o2mr14981357edq.86.1629358596134;
-        Thu, 19 Aug 2021 00:36:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxhoishZRqWaTBsxqhiz0xnk+GI815zExuOZ46CXo4J7GQ/QaAj7nnhoVu6BSycVn18zzXFoA==
-X-Received: by 2002:aa7:c502:: with SMTP id o2mr14981341edq.86.1629358595936;
-        Thu, 19 Aug 2021 00:36:35 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id v12sm1285528ede.16.2021.08.19.00.36.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 00:36:35 -0700 (PDT)
-From:   Hans de Goede <hdegoede@redhat.com>
-Subject: [GIT PULL] platform-drivers-x86 for 5.14-4
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Mark Gross <mgross@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org
-Message-ID: <2c41a5a1-f773-06c5-71ab-05537cb276b0@redhat.com>
-Date:   Thu, 19 Aug 2021 09:36:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 19 Aug 2021 03:40:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1629358792; x=1660894792;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=885MxSHelX5rvkgIZxlOgJCLdDgWmPQvxD6ASda6ECU=;
+  b=afii0h+RQAf4zJ5bCtjZfurQ2X2zu1DUApAZbN56K1DA2pstBGogUzvi
+   KIL/r+zFgUi7zH9kqwxnj0oN5bpB27xZRNKh0P2dlcdcixsMSkEN1hzaE
+   bDQ88gWFEJASJcY64DoMBWhu5mA5Qyorb25NoBCyVCo83bXGXRmWgt4dF
+   tRqdA0dmxwr3tt7LVfQtaXvPgUjOXwCVPZnSqgRbzYwUrFg/9WXOJaZSH
+   HNOW0y2+ywOmD1SSTAdaTVxaBT0zT+/MUJB2A+fTaDctiLM3E7Mzin9do
+   2l7CSjflkanhsWpWKcm37NIRiU4B2aIrvH1h1MxVU9DXZkaXybhS8hNSg
+   Q==;
+IronPort-SDR: NWEtWH4zsgK4Mz+fXa0FrlvbpavxFqPrK00OrxFNEuamwDTKe54dZ9/9sgMLFTfE3u3W/Fe4NX
+ 2zEiXAwRtoEdRwDUgLv6034G+KS4hylDwnMX99GHcihdSWMT+GgM/PLu1PAUOM46EdyxTlJQ7+
+ ftT7qLGOmYwY9PLIlb1nNt3GyCd3RzUDxc4HHGe0jSrlDg7HXb94OxOTex8hXAreUup4VBCZq+
+ kalA0jvIOw79czpIEyTgOedIyU40VhbfcMYAbE5w+D2ZTGmwxbMx2CgOMcqkUeE8F/wbJ52bnL
+ Uza26TanFGLOoTY4TrkSLgus
+X-IronPort-AV: E=Sophos;i="5.84,334,1620716400"; 
+   d="scan'208";a="132845405"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Aug 2021 00:39:51 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 19 Aug 2021 00:39:49 -0700
+Received: from den-dk-m31857.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Thu, 19 Aug 2021 00:39:47 -0700
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        <UNGLinuxDriver@microchip.com>, <netdev@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Steen Hegelund <steen.hegelund@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: [PATCH net-next v2 0/2] Adding Frame DMA functionality to Sparx5
+Date:   Thu, 19 Aug 2021 09:39:38 +0200
+Message-ID: <20210819073940.1589383-1-steen.hegelund@microchip.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+v2:
+    Removed an unused variable (proc_ctrl) from sparx5_fdma_start.
 
-Here is a small set of pdx86 fixes for 5.14:
-- asus-nb-wmi: Enable SW_TABLET_MODE support for the TP200s (DMI quirk)
-- gigabyte-wmi: Enable on 2 more Gigabyte motherboards (2 DMI quirks)
+This add frame DMA functionality to the Sparx5 platform.
 
-Regards,
+Until now the Sparx5 SwitchDev driver has been using register based
+injection and extraction when sending frames to/from the host CPU.
 
-Hans
+With this series the Frame DMA functionality now added.
 
+The Frame DMA is only used if the Frame DMA interrupt is configured in the
+device tree; otherwise the existing register based injection and extraction
+is used.
 
-The following changes since commit 9d7b132e62e41b7d49bf157aeaf9147c27492e0f:
+The Sparx5 has two ports that can be used for sending and receiving frames,
+but there are 8 channels that can be configured: 6 for injection and 2 for
+extraction.
 
-  platform/x86: pcengines-apuv2: Add missing terminating entries to gpio-lookup tables (2021-08-06 14:04:43 +0200)
+The additional channels can be used for more advanced scenarios e.g. where
+virtual cores are used, but currently the driver only uses port 0 and
+channel 0 and 6 respectively.
 
-are available in the Git repository at:
+DCB (data control block) structures are passed to the Frame DMA with
+suitable information about frame start/end etc, as well as pointers to DB
+(data blocks) buffers.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.14-4
+The Frame DMA engine can use interrupts to signal back when the frames have
+been injected or extracted.
 
-for you to fetch changes up to 1e35b8a7780a0c043cc5389420f069b69343f5d9:
+There is a limitation on the DB alignment also for injection: Block must
+start on 16byte boundaries, and this is why the driver currently copies the
+data to into separate buffers.
 
-  platform/x86: gigabyte-wmi: add support for B450M S2H V2 (2021-08-18 19:39:31 +0200)
+The Sparx5 switch core needs a IFH (Internal Frame Header) to pass
+information from the port to the switch core, and this header is added
+before injection and stripped after extraction.
 
-----------------------------------------------------------------
-platform-drivers-x86 for v5.14-4
+Steen Hegelund (2):
+  net: sparx5: switchdev: adding frame DMA functionality
+  arm64: dts: sparx5: Add the Sparx5 switch frame DMA support
 
-A small set of pdx86 fixes for 5.14:
-- asus-nb-wmi: Enable SW_TABLET_MODE support for the TP200s (DMI quirk)
-- gigabyte-wmi: Enable on 2 more Gigabyte motherboards (2 DMI quirks)
+ arch/arm64/boot/dts/microchip/sparx5.dtsi     |   5 +-
+ .../net/ethernet/microchip/sparx5/Makefile    |   2 +-
+ .../ethernet/microchip/sparx5/sparx5_fdma.c   | 593 ++++++++++++++++++
+ .../ethernet/microchip/sparx5/sparx5_main.c   |  23 +-
+ .../ethernet/microchip/sparx5/sparx5_main.h   |  69 ++
+ .../ethernet/microchip/sparx5/sparx5_packet.c |  13 +-
+ .../ethernet/microchip/sparx5/sparx5_port.c   |   2 +-
+ .../ethernet/microchip/sparx5/sparx5_port.h   |   1 +
+ 8 files changed, 696 insertions(+), 12 deletions(-)
+ create mode 100644 drivers/net/ethernet/microchip/sparx5/sparx5_fdma.c
 
-The following is an automated git shortlog grouped by driver:
-
-asus-nb-wmi:
- -  Add tablet_mode_sw=lid-flip quirk for the TP200s
- -  Allow configuring SW_TABLET_MODE method with a module option
-
-gigabyte-wmi:
- -  add support for B450M S2H V2
- -  add support for X570 GAMING X
-
-----------------------------------------------------------------
-Hans de Goede (2):
-      platform/x86: asus-nb-wmi: Allow configuring SW_TABLET_MODE method with a module option
-      platform/x86: asus-nb-wmi: Add tablet_mode_sw=lid-flip quirk for the TP200s
-
-Thomas Weißschuh (2):
-      platform/x86: gigabyte-wmi: add support for X570 GAMING X
-      platform/x86: gigabyte-wmi: add support for B450M S2H V2
-
- drivers/platform/x86/asus-nb-wmi.c  | 28 ++++++++++++++++++++++++++++
- drivers/platform/x86/gigabyte-wmi.c |  2 ++
- 2 files changed, 30 insertions(+)
+-- 
+2.32.0
 
