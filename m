@@ -2,148 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2933F23CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B491F3F23D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236282AbhHSXnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 19:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59032 "EHLO
+        id S234148AbhHSXtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 19:49:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233964AbhHSXnk (ORCPT
+        with ESMTP id S236585AbhHSXtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 19:43:40 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7F8C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:43:04 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id u10so10782033oiw.4
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:43:04 -0700 (PDT)
+        Thu, 19 Aug 2021 19:49:13 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02A1C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:48:36 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id j2so492532pll.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:48:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=8LHZxCEWR5/C4vnwOrp7U43kFfte1OHNOyXMODVHA5A=;
-        b=eElLfnhKFd3yW9Uwfwg4ay/PWquxMgQp7A3/vCvgyeg+XrrSjsvEM1fvDeQ6ftAim6
-         8+ntIVwMzPYywiaGr/seW2o4K+wIinmrS0eHMHyszkSDtqcpnlzpTPiapaoE/U17o7rU
-         yO4YU7xRue4Vtzvvg4bq3iNNHFPdCE762BxVmGuSoJno/QV3EEhly0VHleUjEojGJaDN
-         dTun/wU4p3/n5/+OkIYIFQNTsuyTK9OZ+uJ14qe0k2CwQRc1Bj4XJEXlNdn5yeAXxgCs
-         Q+/WXhEBjdWiXi/qQHavSWMrMZ9OUUiUqa4BO7xZJzc9KQpFYVDqTX7emoc0ycEU6b7c
-         wa/w==
+        bh=peyh3WLA8DgwuaakoXbly04TuP2J4HXY0owEUug9y1c=;
+        b=BbFJLtvxbxBG+7picsXObo5Qj8iquJ+C6Q7w5pe27YupZ7+zDXLN540+QU8HPzkPh2
+         WwzvQTknLR7mJUL2ZtsslkF86UhNT3PUimzJd1W/xc0YsfWgxj0uNN/X65pRaldPuQy1
+         Svz/l9I2+rXfrKEmbGry3ew82Uw0db0pKDxq9ukmqwtSMFXcHcAuMrcqlCqOeGH1V/uC
+         AqRS5aTXg3eyxy84gMMrOJhW6Ac+BzpVGDyg6q+eRN+OlPt5iJkRzEHzotLklvgBWCCO
+         ThS3AjXFs8AEz4pcXFmbRPSyBU/T0LhtGGlVC0DabZEeUTxAm2SIBNQHSE15qMVZvLr/
+         ceIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=8LHZxCEWR5/C4vnwOrp7U43kFfte1OHNOyXMODVHA5A=;
-        b=iLBP4mjItgTGO+6OYGYLCNDmXRBQRq9KBuB5khB0pZrnuFU2UB26bL7tNFeddHjYHB
-         tOLWbORzo7xeUi6+Mp5vU2iO5HZHx08SEPENj/ork2lD7QTV23dxaRE5KgXHJ2er5QII
-         OlLd08HqhAGIQPiYqwt5DEMLfYS5gm6IYpoTuSeMagGDq5rX2EylGhgLuek0I7t6NpfG
-         C3Ib3OZajJJsz1JNMhZKE56J4UGHcfrx51JYB0GLJdlzqApbdtmndpaa3PlK+dHC58AL
-         FFUk4q9eTM/U3XLNVPl/cbiEvfExvioOfFP9rtR9ZKvi1r7h8HtGkopTvm+c7H12shEA
-         nD/g==
-X-Gm-Message-State: AOAM533sOxCK7DggeGnSL1hPYldGqQOlY6GKq8sWJdh95YXtdyQ/iSH/
-        U63+7bHP0jKEoqCGheLAKY1npA==
-X-Google-Smtp-Source: ABdhPJw1Q4apWWBHVYYvewNXXvqK3Xr2GzQSAu+2VXBrcwCXMXMTH9UZhRAI49Wn+01q1dGlrCzfkA==
-X-Received: by 2002:aca:1308:: with SMTP id e8mr926649oii.15.1629416583563;
-        Thu, 19 Aug 2021 16:43:03 -0700 (PDT)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id w14sm1040972otl.58.2021.08.19.16.43.02
+        bh=peyh3WLA8DgwuaakoXbly04TuP2J4HXY0owEUug9y1c=;
+        b=q6CafRAG8D8QGwDP3ZWZmkSXIFRLnkMvRX4SYtwRyQLpUkdUjcYU+pWVea77COi4Yp
+         xKR5Pd4GfHVC02YeZ+2XERPIbBGvy2HZYC8sVlIZP/YFTfbp369Spn/W28rNW1gjiyzP
+         x6qnz6zatsd7oI7uO/3RcpdxNPFfOrCjCBi2518svUzL5KFPHS1jVFb2JN87S2UCu3nP
+         IHSkq1nTvdgKLcqiZSUgFs6YpxrzowsRhaYoWJm+k+SkwZBVu6W+oToQuOg0Cj8KXbAb
+         7lXOUJ8os9ndJ6ZZ4TKAwJZFjmYynzye/qiPxAbIiqZCbp23Nrl30NnA5kVHnpvnZGqL
+         WQwA==
+X-Gm-Message-State: AOAM531gBoTRh8cplBdS1g0zoB7soeA2LxyeY4gRKg0rQTnw42gpT9eA
+        l4FAGFvzYhKJaXa1s+v0yiY53w==
+X-Google-Smtp-Source: ABdhPJwX9PVK0tEzKb91C/ktX1nj3RcgHWNnmrdk1FjTlt3T+0IB78U5SgxuhlVnRMNmyLPH0lN5vw==
+X-Received: by 2002:a17:90b:80c:: with SMTP id bk12mr1415764pjb.134.1629416916083;
+        Thu, 19 Aug 2021 16:48:36 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id a4sm4880315pfk.0.2021.08.19.16.48.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 16:43:03 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 16:44:26 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [RFC PATCH 14/15] WIP: PCI: qcom: use pwrseq to power up bus
- devices
-Message-ID: <YR7s2vK7jdUssx+A@ripper>
-References: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
- <20210817005507.1507580-15-dmitry.baryshkov@linaro.org>
+        Thu, 19 Aug 2021 16:48:35 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 23:48:29 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     "Russell King, ARM Linux" <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <hca@linux.ibm.com>, gor <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Oleg Nesterov <oleg@redhat.com>, rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, shuah <shuah@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-csky <linux-csky@vger.kernel.org>,
+        linux-mips@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390@vger.kernel.org, KVM list <kvm@vger.kernel.org>,
+        linux-kselftest <linux-kselftest@vger.kernel.org>,
+        Peter Foley <pefoley@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Ben Gardon <bgardon@google.com>
+Subject: Re: [PATCH 1/5] KVM: rseq: Update rseq when processing NOTIFY_RESUME
+ on xfer to KVM guest
+Message-ID: <YR7tzZ98XC6OV2vu@google.com>
+References: <20210818001210.4073390-1-seanjc@google.com>
+ <20210818001210.4073390-2-seanjc@google.com>
+ <1673583543.19718.1629409152244.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210817005507.1507580-15-dmitry.baryshkov@linaro.org>
+In-Reply-To: <1673583543.19718.1629409152244.JavaMail.zimbra@efficios.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 16 Aug 17:55 PDT 2021, Dmitry Baryshkov wrote:
-
-> Use bus-pwrseq device tree node to power up the devices on the bus. This
-> is to be rewritten with the proper code parsing the device tree and
-> powering up individual devices.
+On Thu, Aug 19, 2021, Mathieu Desnoyers wrote:
+> ----- On Aug 17, 2021, at 8:12 PM, Sean Christopherson seanjc@google.com wrote:
+> > @@ -250,7 +250,7 @@ static int rseq_ip_fixup(struct pt_regs *regs)
+> > 	 * If not nested over a rseq critical section, restart is useless.
+> > 	 * Clear the rseq_cs pointer and return.
+> > 	 */
+> > -	if (!in_rseq_cs(ip, &rseq_cs))
+> > +	if (!regs || !in_rseq_cs(ip, &rseq_cs))
 > 
-
-How about describing the PCI device in DT and having the PCIe controller
-dig it up up from there? Although we won't have a struct device until
-later, so perhaps we need the of-based pwrseq_get() for that.
-
-Regards,
-Bjorn
-
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 13 +++++++++++++
->  drivers/power/pwrseq/pwrseq_qca.c      |  1 +
->  2 files changed, 14 insertions(+)
+> I think clearing the thread's rseq_cs unconditionally here when regs is NULL
+> is not the behavior we want when this is called from xfer_to_guest_mode_work.
 > 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index 8a7a300163e5..a60d41fbcd6f 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -23,6 +23,7 @@
->  #include <linux/pm_runtime.h>
->  #include <linux/platform_device.h>
->  #include <linux/phy/phy.h>
-> +#include <linux/pwrseq/consumer.h>
->  #include <linux/regulator/consumer.h>
->  #include <linux/reset.h>
->  #include <linux/slab.h>
-> @@ -1467,6 +1468,7 @@ static int qcom_pcie_probe(struct platform_device *pdev)
->  	struct pcie_port *pp;
->  	struct dw_pcie *pci;
->  	struct qcom_pcie *pcie;
-> +	struct pwrseq *pwrseq;
->  	int ret;
->  
->  	pcie = devm_kzalloc(dev, sizeof(*pcie), GFP_KERNEL);
-> @@ -1520,6 +1522,17 @@ static int qcom_pcie_probe(struct platform_device *pdev)
->  
->  	pp->ops = &qcom_pcie_dw_ops;
->  
-> +	pwrseq = devm_pwrseq_get_optional(dev, "bus");
-> +	if (IS_ERR(pwrseq)) {
-> +		ret = PTR_ERR(pwrseq);
-> +		goto err_pm_runtime_put;
-> +	}
-> +	if (pwrseq) {
-> +		ret = pwrseq_full_power_on(pwrseq);
-> +		if (ret)
-> +			goto err_pm_runtime_put;
-> +	}
-> +
->  	ret = phy_init(pcie->phy);
->  	if (ret) {
->  		pm_runtime_disable(&pdev->dev);
-> diff --git a/drivers/power/pwrseq/pwrseq_qca.c b/drivers/power/pwrseq/pwrseq_qca.c
-> index 3421a4821126..4107f0a9c05d 100644
-> --- a/drivers/power/pwrseq/pwrseq_qca.c
-> +++ b/drivers/power/pwrseq/pwrseq_qca.c
-> @@ -1,3 +1,4 @@
-> +#define DEBUG
->  // SPDX-License-Identifier: GPL-2.0-only
->  /*
->   * Copyright (c) 2021, Linaro Ltd.
+> If we have a scenario where userspace ends up calling this ioctl(KVM_RUN)
+> from within a rseq c.s., we really want a CONFIG_DEBUG_RSEQ=y kernel to
+> kill this application in the rseq_syscall handler when exiting back to usermode
+> when the ioctl eventually returns.
+> 
+> However, clearing the thread's rseq_cs will prevent this from happening.
+> 
+> So I would favor an approach where we simply do:
+> 
+> if (!regs)
+>      return 0;
+> 
+> Immediately at the beginning of rseq_ip_fixup, before getting the instruction
+> pointer, so effectively skip all side-effects of the ip fixup code. Indeed, it
+> is not relevant to do any fixup here, because it is nested in a ioctl system
+> call.
+> 
+> Effectively, this would preserve the SIGSEGV behavior when this ioctl is
+> erroneously called by user-space from a rseq critical section.
+
+Ha, that's effectively what I implemented first, but I changed it because of the
+comment in clear_rseq_cs() that says:
+
+  The rseq_cs field is set to NULL on preemption or signal delivery ... as well
+  as well as on top of code outside of the rseq assembly block.
+
+Which makes it sound like something might rely on clearing rseq_cs?
+
+Ah, or is it the case that rseq_cs is non-NULL if and only if userspace is in an
+rseq critical section, and because syscalls in critical sections are illegal, by
+definition clearing rseq_cs is a nop unless userspace is misbehaving.
+
+If that's true, what about explicitly checking that at NOTIFY_RESUME?  Or is it
+not worth the extra code to detect an error that will likely be caught anyways?
+
+diff --git a/kernel/rseq.c b/kernel/rseq.c
+index 35f7bd0fced0..28b8342290b0 100644
+--- a/kernel/rseq.c
++++ b/kernel/rseq.c
+@@ -282,6 +282,13 @@ void __rseq_handle_notify_resume(struct ksignal *ksig, struct pt_regs *regs)
+
+        if (unlikely(t->flags & PF_EXITING))
+                return;
++       if (!regs) {
++#ifdef CONFIG_DEBUG_RSEQ
++               if (t->rseq && rseq_get_rseq_cs(t, &rseq_cs))
++                       goto error;
++#endif
++               return;
++       }
+        ret = rseq_ip_fixup(regs);
+        if (unlikely(ret < 0))
+                goto error;
+
+> Thanks for looking into this !
+> 
+> Mathieu
+> 
+> > 		return clear_rseq_cs(t);
+> > 	ret = rseq_need_restart(t, rseq_cs.flags);
+> > 	if (ret <= 0)
+> > --
+> > 2.33.0.rc1.237.g0d66db33f3-goog
+> 
 > -- 
-> 2.30.2
-> 
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> http://www.efficios.com
