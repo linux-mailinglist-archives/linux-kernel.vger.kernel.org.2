@@ -2,82 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 214B63F18B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 14:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A17E93F18C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 14:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239118AbhHSMFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 08:05:22 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:51948
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238105AbhHSMFV (ORCPT
+        id S238931AbhHSMHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 08:07:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238105AbhHSMHQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 08:05:21 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 977413F328;
-        Thu, 19 Aug 2021 12:04:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629374683;
-        bh=QUE+Hz7hicyzL2G0Uw8v/suyW1F/+qww9QoZPWvoHqY=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=Zxfo5gIWEgwYXJKX9Yv8VfkD9cB+DuhbtRR14+jv/2PoUDagdODjcAAfgvk/BRqWM
-         eHdOLeju7mDV/m3L9ErakhO/+JLbyb/fdttrBERrbItm+K6snYHpoOSffnhSf0KquA
-         duQyJsTyMNzvkB6/LEzmXuNFlb9vfLjddQaSuvzJWMfS/lCUH1UjLLCb4ygfsefzxb
-         X+4qle46s1bqTO78peg7Zkd/Hiu4y8cQW/8NaG9VfbuyTj5OBx7iC3q+AfWroRyII+
-         fnmPPQrtyMPgTM6dHQLJ1petxBw1USD9LaHXew1Ah4zn/JugC8+Yl+WGKIjXgkn1WT
-         vAVoH42/K+frw==
-From:   Colin King <colin.king@canonical.com>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-omap@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net: ethernet: ti: cpsw: make array stpa static const, makes object smaller
-Date:   Thu, 19 Aug 2021 13:04:43 +0100
-Message-Id: <20210819120443.7083-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 19 Aug 2021 08:07:16 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 372EBC061575;
+        Thu, 19 Aug 2021 05:06:37 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id w68so5268574pfd.0;
+        Thu, 19 Aug 2021 05:06:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A/owt6hoNTtsQ/QXnLoTF97Mvv/lqQX+CifZi81HKaY=;
+        b=PwdWiFnCd8wYI312sJ6r26K55pTqgxZl4txuUejdFuo5texYq0N5FWBqK7WJeO97VU
+         7Oo/cLx+01LgiVeG9D3aGoVJEka4XtmyZDQJtWa06hjEzUPDNj3HqsD0/AHSHap2TJqe
+         KS7fyIVpVAdi4T4Q4D9aThZp2n7FdvarLaqt6FuWnu8y0N5iGJRkSHEJAzyw+8eUNjdt
+         wFgQaiM8BM+qwUM6HUOXXgefMTxH/RlzqBcqYunueJAFvrki8dnqdkavLvldrIdWGJyL
+         COdI035mB6hf3N8aSGn5mNGvotpczLjQT/Dw58FwZjdeEcJNucrpAkWNcEGt6FvblVzg
+         jpcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A/owt6hoNTtsQ/QXnLoTF97Mvv/lqQX+CifZi81HKaY=;
+        b=JgOTc95cFQzSvcJRxY/gHyhvbP/usK/UtwqSAd3U+SRjEK3KWABDOesHphF1TkefZL
+         dnjyvm5ctMcG+KdjOyGm28g+z3SVStOza1g8D6sU8/uZ57UofRMMW9MdasCRgZKO4S8y
+         VloYWdJVY2KJjWtYFq+jZCQSLR11hA34Uic1N9s5QiJFwMWPIlCK2NcEflHMD4AVc7jP
+         FVxyAVAOQoBFujCDOi6uD4rX+fB4THI/Dr4ZlosrlRbVPssO91ueHwBfiLS9SCrk3UXt
+         Nj0HSa/YelEdIdaOHfCbJhXqEuB0+GtyoEZgPMHs92R/CdDsl3s4nqjgYFx7Lrl3g0i5
+         pvUg==
+X-Gm-Message-State: AOAM53365aNUKK9XfzE6+P5dJ4HqtmxAbtz3JLV5bLYGpiu/TziFII05
+        XbOqM4geeHJQoFiMusbOhjXk/jrxK0vXbrZjqSI=
+X-Google-Smtp-Source: ABdhPJyFvwCm11gUzXWLrChXtuULcoSIURh4Rz1eMv+B4wTFouPBrU83bmAjt9MJxxx2N9f7hhKUMPgvCgLKNYZjPco=
+X-Received: by 2002:a65:45c3:: with SMTP id m3mr13809086pgr.203.1629374796666;
+ Thu, 19 Aug 2021 05:06:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210819033001.20136-1-hpa@redhat.com> <20210819033001.20136-6-hpa@redhat.com>
+In-Reply-To: <20210819033001.20136-6-hpa@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 19 Aug 2021 15:05:57 +0300
+Message-ID: <CAHp75Vd8tG+_FVapEMjj7_QMBjAzf2r-W95Am=sOPh5DG+V7Tg@mail.gmail.com>
+Subject: Re: [PATCH v3 05/20] platform/x86: intel_pmc_core: Move to intel sub-directory
+To:     Kate Hsuan <hpa@redhat.com>
+Cc:     Alex Hung <alex.hung@canonical.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        AceLan Kao <acelan.kao@canonical.com>,
+        Jithu Joseph <jithu.joseph@intel.com>,
+        Maurice Ma <maurice.ma@intel.com>,
+        Sujith Thomas <sujith.thomas@intel.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        Zha Qipeng <qipeng.zha@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "David E . Box" <david.e.box@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dell.Client.Kernel@dell.com,
+        Platform Driver <platform-driver-x86@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Thu, Aug 19, 2021 at 6:32 AM Kate Hsuan <hpa@redhat.com> wrote:
+>
+> Move intel_pmc_core to intel sub-directory
+> to improve readability.
 
-Don't populate the array stpa on the stack but instead it
-static const. Makes the object code smaller by 81 bytes:
+>  .../pmc/pmc_core.c}                           |  0
+>  .../pmc/pmc_core_pltdrv.c}                    |  0
 
-Before:
-   text    data   bss    dec    hex filename
-  54993   17248     0  72241  11a31 ./drivers/net/ethernet/ti/cpsw_new.o
+As per SCU patch this can be done as
 
-After:
-   text    data   bss    dec    hex filename
-  54784   17376     0  72160  119e0 ./drivers/net/ethernet/ti/cpsw_new.o
+pmc_core -> core
+pmc_core_pltdrv -> pltdrv
 
-(gcc version 10.3.0)
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/ethernet/ti/cpsw_new.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/ti/cpsw_new.c b/drivers/net/ethernet/ti/cpsw_new.c
-index 85d05b9be2b8..534d39f729e2 100644
---- a/drivers/net/ethernet/ti/cpsw_new.c
-+++ b/drivers/net/ethernet/ti/cpsw_new.c
-@@ -502,7 +502,7 @@ static void cpsw_restore(struct cpsw_priv *priv)
- 
- static void cpsw_init_stp_ale_entry(struct cpsw_common *cpsw)
- {
--	char stpa[] = {0x01, 0x80, 0xc2, 0x0, 0x0, 0x0};
-+	static const char stpa[] = {0x01, 0x80, 0xc2, 0x0, 0x0, 0x0};
- 
- 	cpsw_ale_add_mcast(cpsw->ale, stpa,
- 			   ALE_PORT_HOST, ALE_SUPER, 0,
 -- 
-2.32.0
-
+With Best Regards,
+Andy Shevchenko
