@@ -2,128 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA4A3F16FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C78A3F1706
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238255AbhHSKDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 06:03:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37258 "EHLO
+        id S238252AbhHSKD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 06:03:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238230AbhHSKDL (ORCPT
+        with ESMTP id S232750AbhHSKDz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 06:03:11 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FF3C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 03:02:35 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id q11-20020a7bce8b0000b02902e6880d0accso6433878wmj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 03:02:35 -0700 (PDT)
+        Thu, 19 Aug 2021 06:03:55 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65928C061575;
+        Thu, 19 Aug 2021 03:03:19 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id n12so3625687plf.4;
+        Thu, 19 Aug 2021 03:03:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=8C/FxciNOLeL1YfMCKDaW7YDEOrFtXO1Tv3d7+X9b5Q=;
-        b=sCQDEwzWer75yqZXmOtrzAzg6NgXGULsDSXiY8GCI3s+RbiNwutZCdoi7X6ZJvTEJK
-         B1tpOSMASvQZLPLkbrDQM+LIVOL2Ju4X8qBOq2Q9T8kYHZTUHTHK1hVQZIRZzmnicYJZ
-         jjm1j7s1ch0I5NvK75wdAwTdx/frxfzuUyxgqVCCuBKY+Jg/vEr9hMeX1Xjy3iYhA9SI
-         9x9jcyBeQQUrUsNAj/9dyFGjDV7YgdGLyu3eS7Jk7wyNbCZto3AA4wxqByYg4w2THgSg
-         DMo0ERQWFk4aXjzeaI5/cyLnTLSVGjZvU+HsJujMV95eAp0EM3ip0vjRqe3j1hIbsvQt
-         Lphg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0Z5bZ3ATC9rIbWdXJn4JmmnZhJaPoQBdkWHt9cjrKG8=;
+        b=IT2Usca3A4sKF8ubQedNM5SaMd/P+GOOPAsVwIijlGErP0fzExJmYSY+A4eUcUkpXJ
+         rlIgf13cji4zTPlulH73wgPhlbbzcXLto1AWAY23pc05ugnHQG+lyNsgg/hndXCJDvOZ
+         akViMH02DTRkHylRGYPHa/SdGfpAhtYNgDzsjZBFu8ziREk5Ir52t81sOV2jRIjUiWu/
+         9kVTMEdyW5UV9EJv7Rbge0li4OczD1s3+x4R5IGStjZTrxrYWtpg+4kGHyRYWdS60W/5
+         Am1K2wsgWrjeJ9fH+MvIMoJfBnS3nAhxZjbc45vuLQjaMveZqMq4x3zvuPukeR63TOml
+         jWXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=8C/FxciNOLeL1YfMCKDaW7YDEOrFtXO1Tv3d7+X9b5Q=;
-        b=jqbJx0p96ZNaWUqWALLRyOLoDJFRUw/68cMqnEmRMSabRQdACCx8tZzwoDU8b05gto
-         lLunGbIHPPwpOTPdqVA6DxWLZRNiIuiLqZ+ZJTEECnrIY5l9Xj+JHbXgiwC2SK3TNBCl
-         1mXK8/V58Otrhao26yPp3JsHVs8in2WrWP0LHZvkI2ND4FZDbjNel4RuHR1+OqATdfZV
-         vkBf3mPwhY4lnlr2v0oCxZ9ddNyTamBJom5HOS1RXx9viecudAry4C9bBMMnfBeCtDv6
-         sd35ZU18DrcN9fWgQtQ6diw3Qn/AufCc6UX/YOOBkH7KpkXHepSG5YEI1nyfLOsK5u5o
-         rPLA==
-X-Gm-Message-State: AOAM530uf/LKqVKJVXfB43R5qMsrrzcUEbVKVfn7qkmwWGEovs9WLjJx
-        WRjudbDqc+/4U4xlFl+tZuw=
-X-Google-Smtp-Source: ABdhPJx0VP9SdGq1FNgZVkvJhZgTs06RkeR3kiZXfTlfuV18gH1Ye+jPJbML2qgsCaRlsUc6k819ew==
-X-Received: by 2002:a1c:80c9:: with SMTP id b192mr12740087wmd.73.1629367354210;
-        Thu, 19 Aug 2021 03:02:34 -0700 (PDT)
-Received: from agape.jhs ([5.171.80.222])
-        by smtp.gmail.com with ESMTPSA id e10sm2358727wrt.82.2021.08.19.03.02.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 03:02:33 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 12:02:31 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Hans de Goede <hdegoede@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: x86/boot/compressed/64: Lenovo Ideapad Miix300 bug report
-Message-ID: <20210819100230.GA28768@agape.jhs>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0Z5bZ3ATC9rIbWdXJn4JmmnZhJaPoQBdkWHt9cjrKG8=;
+        b=Y5MN8Zbm5dAwNafJHeGb7lBqAbEiJDCsM4jvqABc1KRLuq2uDqoSoDags/zUgzDZEA
+         GM7puysXgSiDJikiagz/HT0+kSS5NNXQBw4lXT7DfLMVSpmIyPNoi3gBQU/V7jdCBiA5
+         Ol2z6pQAyfvdbGx1enQ0w4mDFL9NWoSEfE7tWYhaKvtGo0+BBKl3HS13c/6gpefHjZ6m
+         f476g5pZFahcm4EA5u45TV53h5E/s/18lx1ZqZioWVRHaHsWZYxaznECBHRIo27s2G7p
+         hryHHsbC6Gl29U6SqByVmC3iCw9tDRJY0lrflXzVhCjURILVur8luwYrSSzbGPl+B89u
+         xfHQ==
+X-Gm-Message-State: AOAM530q1SDPu7lmm0WX5ovbkZ8ugMDwU9jgu7WflcNzdhGUuX0coFXY
+        wpnIEeUR/YaBopwqK3dVMWY=
+X-Google-Smtp-Source: ABdhPJzfJPRP2BLYCvwXpllkEgoVoCQWlDbtUrPyndvtVP/tYRGu2BCJLYGTmAw6sGYSn2DMVJ/QVQ==
+X-Received: by 2002:a17:902:bc4b:b029:12d:77e8:2c26 with SMTP id t11-20020a170902bc4bb029012d77e82c26mr10961353plz.67.1629367398962;
+        Thu, 19 Aug 2021 03:03:18 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:18:efec::50b])
+        by smtp.gmail.com with ESMTPSA id l11sm2847556pfd.187.2021.08.19.03.03.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Aug 2021 03:03:18 -0700 (PDT)
+Subject: Re: [PATCH V3 10/13] x86/Swiotlb: Add Swiotlb bounce buffer remap
+ function for HV IVM
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
+        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
+        Tianyu.Lan@microsoft.com, pgonda@google.com,
+        martin.b.radev@gmail.com, akpm@linux-foundation.org,
+        kirill.shutemov@linux.intel.com, rppt@kernel.org,
+        sfr@canb.auug.org.au, saravanand@fb.com,
+        krish.sadhukhan@oracle.com, aneesh.kumar@linux.ibm.com,
+        xen-devel@lists.xenproject.org, rientjes@google.com,
+        hannes@cmpxchg.org, tj@kernel.org, michael.h.kelley@microsoft.com,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, parri.andrea@gmail.com, dave.hansen@intel.com
+References: <20210809175620.720923-1-ltykernel@gmail.com>
+ <20210809175620.720923-11-ltykernel@gmail.com>
+ <20210812122741.GC19050@lst.de>
+ <d18ae061-6fc2-e69e-fc2c-2e1a1114c4b4@gmail.com>
+ <890e5e21-714a-2db6-f68a-6211a69bebb9@gmail.com>
+ <20210819084951.GA10461@lst.de>
+ <1c5ae861-2c35-2ef5-e764-db45bbcb88a9@gmail.com>
+ <20210819100200.GA16908@lst.de>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <8bcadc06-ce4c-8be9-c1ac-44c544e02960@gmail.com>
+Date:   Thu, 19 Aug 2021 18:03:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210819100200.GA16908@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Joerg and other x86 developers,
+On 8/19/2021 6:02 PM, Christoph Hellwig wrote:
+> On Thu, Aug 19, 2021 at 05:59:02PM +0800, Tianyu Lan wrote:
+>>
+>>
+>> On 8/19/2021 4:49 PM, Christoph Hellwig wrote:
+>>> On Mon, Aug 16, 2021 at 10:50:26PM +0800, Tianyu Lan wrote:
+>>>> Hi Christoph:
+>>>>         Sorry to bother you.Please double check with these two patches
+>>>> " [PATCH V3 10/13] x86/Swiotlb: Add Swiotlb bounce buffer remap function
+>>>> for HV IVM" and "[PATCH V3 09/13] DMA: Add dma_map_decrypted/dma_
+>>>> unmap_encrypted() function".
+>>>
+>>> Do you have a git tree somewhere to look at the whole tree?
+>>
+>> Yes, here is my github link for these two patches.
+>>
+>> https://github.com/lantianyu/linux/commit/462f7e4e44644fe7e182f7a5fb043a75acb90ee5
+>>
+>> https://github.com/lantianyu/linux/commit/c8de236bf4366d39e8b98e5a091c39df29b03e0b
+> 
+> Which branch is this?
+> 
 
-I work on a Lenovo Ideapad Miix 300-10IBY (intel baytrail based)
-for hardware tests.
-I have fedora 34 installed on, and since I updated to the 5.13.x
-versions, the tablet very often freezes at Lenovo startup logo.
-
-I did a bisect and found that the commit that introduced
-the bug is:
-
-commit 79419e13e8082cc15d174df979a363528e31f2e7
-Author: Joerg Roedel <jroedel@suse.de>
-Date:   Wed Mar 10 09:43:21 2021 +0100
-
-    x86/boot/compressed/64: Setup IDT in startup_32 boot path
-    
-    This boot path needs exception handling when it is used with SEV-ES.
-    Setup an IDT and provide a helper function to write IDT entries for
-    use in 32-bit protected mode.
-    
-    Signed-off-by: Joerg Roedel <jroedel@suse.de>
-    Signed-off-by: Borislav Petkov <bp@suse.de>
-    Link: https://lkml.kernel.org/r/20210312123824.306-5-joro@8bytes.org
-
-I tried also to checkout a v5.13 and revert this commit
-together with the following:
-
-fef81c86262879d4b1176ef51a834c15b805ebb9
-"x86/boot/compressed/64: Check SEV encryption in the 32-bit boot-path"
-
-e927e62d8e370ebfc0d702fec22bc752249ebcef
-"x86/boot/compressed/64: Add CPUID sanity check to 32-bit boot-path"
-
-1ccdbf748d862bc2ea106fa9f2300983c77860fe
-"x86/boot/compressed/64: Add 32-bit boot #VC handler"
-
-to ensure an errorless build. The kernel works fine on tablet
-without those changes.
-
-My efibootmgr -v output is:
-
-BootCurrent: 0000
-Timeout: 2 seconds
-BootOrder: 0000,0001,2001,2002,2003
-Boot0000* Fedora	HD(1,GPT,1bb602be-6ed0-4ef5-aee4-b26891963c4a,0x800,0xaf000)/File(\EFI\fedora\shimia32.efi)
-Boot0001* Fedora	HD(1,GPT,1bb602be-6ed0-4ef5-aee4-b26891963c4a,0x800,0xaf000)/File(\EFI\fedora\shim.efi)RC
-Boot2001* EFI USB Device	RC
-Boot2002* EFI DVD/CDROM	RC
-Boot2003* EFI Network	RC
-
-This means that on startup is followed the 32-bit boot-path.
-
-CONFIG_AMD_MEM_ENCRYPT=y
-
-Tell me if can help, I started contributing to linux kernel
-five months ago in staging subsystem. I'd be glad to contribute
-to such a core area of the kernel.
-
-thank you in advance,
-
-fabio
+https://github.com/lantianyu/linux/tree/isolationv3
