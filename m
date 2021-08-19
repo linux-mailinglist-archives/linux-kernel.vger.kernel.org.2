@@ -2,70 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B04E3F0F9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 02:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DDE23F0FB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 02:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234261AbhHSAvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 20:51:04 -0400
-Received: from mga02.intel.com ([134.134.136.20]:26041 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230180AbhHSAvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 20:51:03 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="203657799"
-X-IronPort-AV: E=Sophos;i="5.84,333,1620716400"; 
-   d="scan'208";a="203657799"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 17:50:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,333,1620716400"; 
-   d="scan'208";a="678768847"
-Received: from jiedeng-optiplex-7050.sh.intel.com ([10.239.154.104])
-  by fmsmga006.fm.intel.com with ESMTP; 18 Aug 2021 17:50:24 -0700
-From:   Jie Deng <jie.deng@intel.com>
-To:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     wsa@kernel.org, jie.deng@intel.com, viresh.kumar@linaro.org,
-        sfr@canb.auug.org.au, conghui.chen@intel.com
-Subject: [PATCH] i2c: virtio: Fix the compiler warning when CONFIG_ACPI is not set
-Date:   Thu, 19 Aug 2021 08:48:41 +0800
-Message-Id: <4309f869890e70810f2c40a8d60495240e318303.1629333590.git.jie.deng@intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S234261AbhHSA7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 20:59:14 -0400
+Received: from conuserg-10.nifty.com ([210.131.2.77]:60145 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234931AbhHSA7L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 20:59:11 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id 17J0vl4j017219;
+        Thu, 19 Aug 2021 09:57:47 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 17J0vl4j017219
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1629334667;
+        bh=XX9owLp8zLvczu8bj8Khsy0Z+vUSEE7gymjlq/whycU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=x1vPPvzyJd3Si2q4ytwVeyhH1DIKsbsU+Oqkd8m2CIAB410u256U/yWd43Zr2Y0Yx
+         CU9ft6bbZ/2ViaCT8DbeeGDYGIYz9gWvj0PDJHimN9ICxTEtabcHTUJMRy+edOq1Vl
+         UhGluOnwVDzyduIFa/Cjl53E0WFAm9NtxFioExRfQEEZE8XsdbRQsh7+7J4wZFpGat
+         /fLwZk4VCADI42S6M/yLKvlwHDT9PSTLlVgVSHRCyPpD7KlN8EpKWhECJMg56pHSru
+         36LltGPfPro2y8iRT6eOS4p0yBd0rHkfLgzGOijuu34+NIm0kHx6nA00T3f4IXVrwI
+         3iSqXEiUjs66A==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH 00/13] kbuild: refactoring after Clang LTO
+Date:   Thu, 19 Aug 2021 09:57:31 +0900
+Message-Id: <20210819005744.644908-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the compiler warning "drivers/i2c/busses/i2c-virtio.c:208:17:
-warning: unused variable 'pdev' [-Wunused-variable]" when CONFIG_ACPI
-is not set.
 
-Fixes: 8fb12751ac78 ("i2c: virtio: add a virtio i2c frontend driver")
-Signed-off-by: Jie Deng <jie.deng@intel.com>
----
- drivers/i2c/busses/i2c-virtio.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+The introduction of Clang LTO, the kbuild code became much
+uglier due to CONFIG_LTO_CLANG conditionals.
 
-diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
-index d3e60d9..964c601 100644
---- a/drivers/i2c/busses/i2c-virtio.c
-+++ b/drivers/i2c/busses/i2c-virtio.c
-@@ -205,7 +205,6 @@ static const struct i2c_adapter_quirks virtio_i2c_quirks = {
- 
- static int virtio_i2c_probe(struct virtio_device *vdev)
- {
--	struct device *pdev = vdev->dev.parent;
- 	struct virtio_i2c *vi;
- 	int ret;
- 
-@@ -234,7 +233,7 @@ static int virtio_i2c_probe(struct virtio_device *vdev)
- 	 * Setup ACPI node for controlled devices which will be probed through
- 	 * ACPI.
- 	 */
--	ACPI_COMPANION_SET(&vi->adap.dev, ACPI_COMPANION(pdev));
-+	ACPI_COMPANION_SET(&vi->adap.dev, ACPI_COMPANION(vdev->dev.parent));
- 
- 	ret = i2c_add_adapter(&vi->adap);
- 	if (ret)
+It is painful to maintain the messed-up code, and to review
+code changed on top of that.
+
+
+
+Masahiro Yamada (13):
+  kbuild: move objtool_args back to scripts/Makefile.build
+  gen_compile_commands: extract compiler command from a series of
+    commands
+  kbuild: detect objtool changes correctly and remove .SECONDEXPANSION
+  kbuild: remove unused quiet_cmd_update_lto_symversions
+  kbuild: remove stale *.symversions
+  kbuild: merge vmlinux_link() between the ordinary link and Clang LTO
+  kbuild: do not remove 'linux' link in scripts/link-vmlinux.sh
+  kbuild: merge vmlinux_link() between ARCH=um and other architectures
+  kbuild: do not create built-in.a.symversions or lib.a.symversions
+  kbuild: build modules in the same way with/without Clang LTO
+  kbuild: always postpone CRC links for module versioning
+  kbuild: merge cmd_modversions_c and cmd_modversions_S
+  kbuild: merge cmd_ar_builtin and cmd_ar_module
+
+ scripts/Makefile.build                      | 196 ++++++++------------
+ scripts/Makefile.lib                        |  28 +--
+ scripts/Makefile.modfinal                   |   4 +-
+ scripts/Makefile.modpost                    |   7 +-
+ scripts/clang-tools/gen_compile_commands.py |   2 +-
+ scripts/link-vmlinux.sh                     | 125 +++++++------
+ scripts/mod/modpost.c                       |   6 +-
+ scripts/mod/sumversion.c                    |   6 +-
+ 8 files changed, 164 insertions(+), 210 deletions(-)
+
 -- 
-2.7.4
+2.30.2
 
