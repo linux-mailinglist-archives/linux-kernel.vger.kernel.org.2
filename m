@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD443F22F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E533F22F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237013AbhHSWUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 18:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39950 "EHLO
+        id S236930AbhHSWUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 18:20:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235945AbhHSWUH (ORCPT
+        with ESMTP id S236738AbhHSWUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 18:20:07 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46151C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:19:31 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id f15so7508217ilk.4
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:19:31 -0700 (PDT)
+        Thu, 19 Aug 2021 18:20:08 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25517C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:19:32 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id a13so9688730iol.5
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:19:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=V++C25JgTAQBV+qvjbbsx7LF9B3PcrPKDl21IMwbBpc=;
-        b=s5OT934ARZG2T706DJwUzoXYG1MuzAK8St19X9YAi8+KxO4XZcpoL+COEtj/GQs5Wb
-         KyurwKfLS7m15lTEy9/Tfoqr55D6va0IN/nKjcbVAv203qb/Jj4ycBbxOlKfwxu6ShOq
-         u67svKGCITaG0MaIUKIPteM5ietmI08WniGCCV9VDRkYilV+CU83bjQ9o/6Dqo1t48Kv
-         V4qXN85gcOumEFvIWGPmqbq40XuWekGkTusVrcySWJ6M32/dsMHWfFn+0tWySGoM+3DY
-         8jj/iXM6/K/yDmNmt3sdZ1K9e/Y22dMqNoi11ItomFl0suhJp+NEadsGO/7y2v4+FA7D
-         n2Vw==
+        bh=RpntrM1ojw2u707sqzIhjLaMl82LdztxT4txCgjSHJ8=;
+        b=Vp+d2kr1vHaaDyRPGeK1E7OMCamEZUKB9u0jcPpuxm5zdjLvv/fo5Zfbsvj/6gq62X
+         DpaY7O2p2NRx3MkC+WdgXUnnT5OqCmy/VHZVWCvnCwjsga5IIg3giZukBsX/kh0ySd/Q
+         6Y4heoDSiClADHXuAxJkp+vnBW4pVFC63VdS5ATO4NthNQ4eHsdMRYF79dN7C1lctE+n
+         P5enikwYkgifcuPU23VogD9nTWb155j6kjbrQiWEZOAYc0dmHWhZbWu4d7oTj7THNn0y
+         fqMr5BIjsHux2Iz0cw4zDGle3rF7V3I383BjDBZw2YCA4nsWlSlCLA/sDKqcCqdNwJoL
+         raEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=V++C25JgTAQBV+qvjbbsx7LF9B3PcrPKDl21IMwbBpc=;
-        b=HETlK2Ye7tuENDkDwaqsNpusHPV+3I0KoE7XyQPRUmK47phGAmQNwgRxvWUkrD6e9H
-         372p58PEv5QwP/O7Sdqzqxzh5YORfpODUQU90/c/r/wuCp7OIwILJT1bYNie6T0o+hr1
-         YKJ7dJ4hISv60t09KGZSHvraRC13RXY5FkdUmSpV5MB93lyeVf7zEgmBd9xECvGwJMLd
-         iAxlE0o8/miwznKNbL9iIVMWcf8SepbvQpyuz9moJE1MI/erN+KJvx94JLesDL3JbVM6
-         2JgaEt3iav39HQL5qMVTnLnv1tvt2hnjC2cmgFPZrs7lQ8iSFgYTDdoXyrqasxqHjTBD
-         xzMw==
-X-Gm-Message-State: AOAM5329ZzMkyYCfxr+z/jel5SGGM0/PE3PwxFDhUrBLTjbNvR0pzBDI
-        cIIcMrVfzvA7qNSQdXrA2FlY0g==
-X-Google-Smtp-Source: ABdhPJyoBfygwH63o/Y4lTrQ8gTQ0nUkr/9iuKVAdVpmJAwAdMrGlkKIJCQHaYpTRI/f/eozX812MQ==
-X-Received: by 2002:a92:cccf:: with SMTP id u15mr12046419ilq.144.1629411570672;
-        Thu, 19 Aug 2021 15:19:30 -0700 (PDT)
+        bh=RpntrM1ojw2u707sqzIhjLaMl82LdztxT4txCgjSHJ8=;
+        b=ip4J2AG47UrhZhp+iuNYkiy2AxHLTT9hel/8we93NHn98Ax43JCkRaDt8Oo94eR1h9
+         N91kC11iBo00nS8CQzmKIwFagCHODik4VoqctL+goyuICDjb6Gmmz3/bMXVSsKpKExZY
+         oDZx8l9ddK+zFuSLyV33CZRqDLegtA9/WHrBdYjaEJrfUYdzIcFwFHUVbcLPn2DKUpjh
+         aQ2NhR8Xsn362oDu4kW7F4+3nVTBGoIrUdhrWpU2LcEts2XL0Bf17tk2tYSLoeHz3UiE
+         DVDcg1a/lDG7ZZBeOIaHapkJTUIKW9cAM1/vRgGBHxfUIKoP8MVq3SfokvppncD/j6pX
+         HfjA==
+X-Gm-Message-State: AOAM533rRLPfAiX++s/npxBjWEoPm6yZZIdWE49K+p2tzNkVTtKS5dJ8
+        JEPSUYSmfGm/wZ2xw0ICjYXtXQ==
+X-Google-Smtp-Source: ABdhPJwp5kTH7J9nnlJpXw71z0mfj+pXaFp782gcf3aN+xOY9hwjNCk/EAx9nTbX6shoJXUAMbDB2A==
+X-Received: by 2002:a5d:85cf:: with SMTP id e15mr13333195ios.208.1629411571614;
+        Thu, 19 Aug 2021 15:19:31 -0700 (PDT)
 Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id o15sm2245188ilo.73.2021.08.19.15.19.29
+        by smtp.gmail.com with ESMTPSA id o15sm2245188ilo.73.2021.08.19.15.19.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 15:19:30 -0700 (PDT)
+        Thu, 19 Aug 2021 15:19:31 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 1/5] net: ipa: don't use ipa_clock_get() in "ipa_main.c"
-Date:   Thu, 19 Aug 2021 17:19:23 -0500
-Message-Id: <20210819221927.3286267-2-elder@linaro.org>
+Subject: [PATCH net-next 2/5] net: ipa: don't use ipa_clock_get() in "ipa_smp2p.c"
+Date:   Thu, 19 Aug 2021 17:19:24 -0500
+Message-Id: <20210819221927.3286267-3-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210819221927.3286267-1-elder@linaro.org>
 References: <20210819221927.3286267-1-elder@linaro.org>
@@ -65,95 +65,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We need the hardware to be powered starting at the config stage of
-initialization when the IPA driver probes.  And we need it powered
-when the driver is removed, at least until the deconfig stage has
-completed.
+If the "modem-init" Device Tree property is present for a platform,
+the modem performs early IPA hardware initialization, and signals
+this is complete with an "ipa-setup-ready" SMP2P interrupt.  This
+triggers a call to ipa_setup(), which requires the hardware to be
+powered.
 
-Replace callers of ipa_clock_get() in ipa_probe() and ipa_exit(),
-calling pm_runtime_get_sync() instead.  Replace the corresponding
-callers of ipa_clock_put(), calling pm_runtime_put() instead.
+Replace the call to ipa_clock_get() in this case with a call to
+pm_runtime_get_sync().  And replace the corresponding calls to
+ipa_clock_put() with calls to pm_runtime_put() instead.
 
-The only error we expect when getting power would occur when the
-system is suspended.  The ->probe and ->remove driver callbacks
-won't be called when suspended, so issue a WARN() call if an error
-is seen getting power.
+There is a chance we get an error when taking this power reference.
+This is an unlikely scenario, where system suspend is initiated just
+before the modem signals it has finished initializing the IPA
+hardware.  For now we'll just accept that this could occur, and
+report it if it does.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/ipa_main.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+ drivers/net/ipa/ipa_smp2p.c | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
-index 69fa4b3120fd3..3969aef6c4370 100644
---- a/drivers/net/ipa/ipa_main.c
-+++ b/drivers/net/ipa/ipa_main.c
-@@ -15,6 +15,7 @@
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/of_address.h>
-+#include <linux/pm_runtime.h>
- #include <linux/qcom_scm.h>
- #include <linux/soc/qcom/mdt_loader.h>
+diff --git a/drivers/net/ipa/ipa_smp2p.c b/drivers/net/ipa/ipa_smp2p.c
+index 04b977cf91593..f6e2061cd391c 100644
+--- a/drivers/net/ipa/ipa_smp2p.c
++++ b/drivers/net/ipa/ipa_smp2p.c
+@@ -16,7 +16,6 @@
+ #include "ipa_smp2p.h"
+ #include "ipa.h"
+ #include "ipa_uc.h"
+-#include "ipa_clock.h"
  
-@@ -737,13 +738,13 @@ static int ipa_probe(struct platform_device *pdev)
- 		goto err_table_exit;
- 
- 	/* The clock needs to be active for config and setup */
--	ret = ipa_clock_get(ipa);
-+	ret = pm_runtime_get_sync(dev);
- 	if (WARN_ON(ret < 0))
--		goto err_clock_put;
-+		goto err_power_put;
- 
- 	ret = ipa_config(ipa, data);
- 	if (ret)
--		goto err_clock_put;
-+		goto err_power_put;
- 
- 	dev_info(dev, "IPA driver initialized");
- 
-@@ -765,14 +766,14 @@ static int ipa_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_deconfig;
- done:
--	(void)ipa_clock_put(ipa);
-+	(void)pm_runtime_put(dev);
- 
- 	return 0;
- 
- err_deconfig:
- 	ipa_deconfig(ipa);
--err_clock_put:
--	(void)ipa_clock_put(ipa);
-+err_power_put:
-+	(void)pm_runtime_put(dev);
- 	ipa_modem_exit(ipa);
- err_table_exit:
- 	ipa_table_exit(ipa);
-@@ -798,9 +799,9 @@ static int ipa_remove(struct platform_device *pdev)
- 	struct ipa_clock *clock = ipa->clock;
+ /**
+  * DOC: IPA SMP2P communication with the modem
+@@ -153,6 +152,7 @@ static void ipa_smp2p_panic_notifier_unregister(struct ipa_smp2p *smp2p)
+ static irqreturn_t ipa_smp2p_modem_setup_ready_isr(int irq, void *dev_id)
+ {
+ 	struct ipa_smp2p *smp2p = dev_id;
++	struct device *dev;
  	int ret;
  
--	ret = ipa_clock_get(ipa);
-+	ret = pm_runtime_get_sync(&pdev->dev);
- 	if (WARN_ON(ret < 0))
+ 	mutex_lock(&smp2p->mutex);
+@@ -161,17 +161,20 @@ static irqreturn_t ipa_smp2p_modem_setup_ready_isr(int irq, void *dev_id)
+ 		goto out_mutex_unlock;
+ 	smp2p->disabled = true;		/* If any others arrive, ignore them */
+ 
+-	/* The clock needs to be active for setup */
+-	ret = ipa_clock_get(smp2p->ipa);
+-	if (WARN_ON(ret < 0))
 -		goto out_clock_put;
++	/* Power needs to be active for setup */
++	dev = &smp2p->ipa->pdev->dev;
++	ret = pm_runtime_get_sync(dev);
++	if (ret < 0) {
++		dev_err(dev, "error %d getting power for setup\n", ret);
 +		goto out_power_put;
++	}
  
- 	if (ipa->setup_complete) {
- 		ret = ipa_modem_stop(ipa);
-@@ -816,8 +817,8 @@ static int ipa_remove(struct platform_device *pdev)
- 	}
+ 	/* An error here won't cause driver shutdown, so warn if one occurs */
+ 	ret = ipa_setup(smp2p->ipa);
+ 	WARN(ret != 0, "error %d from ipa_setup()\n", ret);
  
- 	ipa_deconfig(ipa);
 -out_clock_put:
--	(void)ipa_clock_put(ipa);
+-	(void)ipa_clock_put(smp2p->ipa);
 +out_power_put:
-+	(void)pm_runtime_put(&pdev->dev);
++	(void)pm_runtime_put(dev);
+ out_mutex_unlock:
+ 	mutex_unlock(&smp2p->mutex);
  
- 	ipa_modem_exit(ipa);
- 	ipa_table_exit(ipa);
+@@ -211,7 +214,7 @@ static void ipa_smp2p_clock_release(struct ipa *ipa)
+ 	if (!ipa->smp2p->clock_on)
+ 		return;
+ 
+-	(void)ipa_clock_put(ipa);
++	(void)pm_runtime_put(&ipa->pdev->dev);
+ 	ipa->smp2p->clock_on = false;
+ }
+ 
 -- 
 2.27.0
 
