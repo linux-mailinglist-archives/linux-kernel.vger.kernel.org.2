@@ -2,88 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1264B3F222C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 23:19:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17AA83F2234
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 23:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233409AbhHSVTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 17:19:51 -0400
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:35813 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230112AbhHSVTu (ORCPT
+        id S233409AbhHSVXg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Aug 2021 17:23:36 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:39061 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230112AbhHSVXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 17:19:50 -0400
-Received: by mail-oi1-f176.google.com with SMTP id r26so10346068oij.2;
-        Thu, 19 Aug 2021 14:19:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=6ndjQ7qKsm3BuTtzm2lsx8jxF6MbixFKOgts6IRJ5+8=;
-        b=pOhvV4eeduGB56TdVziRU4l/Pc1Z6tda7EDswIcK1Tv+UkCnrboT9IjqIcp6pk3Zzt
-         AbFy/eLgpovWgQsjQtBtXQJmZCvgEO/4DjtF6dbp7S6gKd9s4fuM4NPtXUoR5PEXkAhN
-         vyB4Vxheyt9AOCLAZHxMU+Nq2PdVpgFOscN1tMzcOYyEM94e5x11DMoIaLGl0ujBZ41a
-         GWU66ImJXOl9ynue6bKWFDjh5Z9Mdr2HUwR910jJGz61RfaXEvn7beBf9Sf+qcI+ZOoV
-         sEw+0t8LaF8AqE45oaw4X/7PQmF+5rtYgxP57R0EIhShLLlr3QcQJ+e0sKbpxsTdjjTz
-         pz4A==
-X-Gm-Message-State: AOAM530ft02Idy7JfqqO4G0TZE9g8kxsaOQiKU1p1fKY82I+oJbLf2V6
-        SC92osVlM7OZmoApoFth5A==
-X-Google-Smtp-Source: ABdhPJxXUzWsn+3Lyb8xHlM4XaqeFdxFTJhM4+LmDbUIinWDqggh+Xp8sgMp4ePnrnvS8JfUkyCm3w==
-X-Received: by 2002:aca:bec2:: with SMTP id o185mr528567oif.151.1629407953436;
-        Thu, 19 Aug 2021 14:19:13 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id o11sm975827otp.8.2021.08.19.14.19.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 14:19:12 -0700 (PDT)
-Received: (nullmailer pid 1418773 invoked by uid 1000);
-        Thu, 19 Aug 2021 21:19:11 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     yangcong <yangcong5@huaqin.corp-partner.google.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        sam@ravnborg.org, thierry.reding@gmail.com, daniel@ffwll.ch,
-        airlied@linux.ie, devicetree@vger.kernel.org, dianders@google.com
-In-Reply-To: <20210819124844.12424-3-yangcong5@huaqin.corp-partner.google.com>
-References: <20210819124844.12424-1-yangcong5@huaqin.corp-partner.google.com> <20210819124844.12424-3-yangcong5@huaqin.corp-partner.google.com>
-Subject: Re: [v1 2/2] dt-bindings: drm/panel: boe-tv101wum-nl6: Support enabling a 3.3V rail
-Date:   Thu, 19 Aug 2021 16:19:11 -0500
-Message-Id: <1629407951.445122.1418772.nullmailer@robh.at.kernel.org>
+        Thu, 19 Aug 2021 17:23:34 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id uk-mta-4-jK_kyUcYM325kxK8jwd6cg-1;
+ Thu, 19 Aug 2021 22:22:56 +0100
+X-MC-Unique: jK_kyUcYM325kxK8jwd6cg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Thu, 19 Aug 2021 22:22:55 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Thu, 19 Aug 2021 22:22:55 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Andrew Morton' <akpm@linux-foundation.org>,
+        Nathan Chancellor <nathan@kernel.org>
+CC:     Nick Desaulniers <ndesaulniers@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        "terrelln@fb.com" <terrelln@fb.com>
+Subject: RE: [PATCH] lib/zstd: Fix bitwise vs logical operators
+Thread-Topic: [PATCH] lib/zstd: Fix bitwise vs logical operators
+Thread-Index: AQHXkwP9hKCn1U30S0yWYygV6tj6Nat7Wbtg
+Date:   Thu, 19 Aug 2021 21:22:54 +0000
+Message-ID: <defb9e5133234835950c21511d776fb9@AcuMS.aculab.com>
+References: <20210815004154.1781834-1-nathan@kernel.org>
+ <20210816180532.6e85c93f84d62dc720d21178@linux-foundation.org>
+In-Reply-To: <20210816180532.6e85c93f84d62dc720d21178@linux-foundation.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Aug 2021 20:48:44 +0800, yangcong wrote:
-> The auo,b101uan08.3 panel (already supported by this driver) has
-> a 3.3V rail that needs to be turned on. For previous users of
-> this panel this voltage was directly output by pmic. On a new
-> user (the not-yet-upstream sc7180-trogdor-mrbland board) we need
-> to turn the 3.3V rail on.
+From: Andrew Morton
+> Sent: 17 August 2021 02:06
 > 
-> Signed-off-by: yangcong <yangcong5@huaqin.corp-partner.google.com>
-> ---
->  .../devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml   | 4 ++++
->  1 file changed, 4 insertions(+)
+> On Sat, 14 Aug 2021 17:41:54 -0700 Nathan Chancellor <nathan@kernel.org> wrote:
 > 
+> > clang warns several times along the lines of:
+> >
+> > lib/zstd/compress.c:1043:7: warning: bitwise and of boolean expressions; did you mean logical and?
+> [-Wbool-operation-and]
+> >                 if ((offset_1 > 0) & (ZSTD_read32(ip + 1 - offset_1) == ZSTD_read32(ip + 1))) {
+> >                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >                                    &&
+> >
+> > Bitwise ANDs do not short circuit, meaning that the ZSTD_read32 calls
+> > will be evaluated even if the first condition is not true. This is not
+> > always a problem but it is not a standard way to do conditionals so
+> > replace the bitwise ANDs with logical ones to fix the warning and make
+> > the code clearer.
+> >
+> > ...
+> >
+> > --- a/lib/zstd/compress.c
+> > +++ b/lib/zstd/compress.c
+> > @@ -1040,7 +1040,7 @@ void ZSTD_compressBlock_fast_generic(ZSTD_CCtx *cctx, const void *src, size_t
+> sr
+> >  		const BYTE *match = base + matchIndex;
+> >  		hashTable[h] = curr; /* update hash table */
+> >
+> > -		if ((offset_1 > 0) & (ZSTD_read32(ip + 1 - offset_1) == ZSTD_read32(ip + 1))) {
+> > +		if ((offset_1 > 0) && (ZSTD_read32(ip + 1 - offset_1) == ZSTD_read32(ip + 1))) {
+> 
+> yeah, this is a late night party trick which is sometimes used to
+> attempt to speed things up by avoiding a branch.  It is perhaps
+> beneficial if the LHS is almost always true.  I guess.
+> 
+> I'd prefer that the code not do this - it's silly, looks wrong and I
+> bet it's unmeasurable.
+> 
+> But I think this code is supposed to be kept in sync with an
+> out-of-tree upstream version so this change might be problematic.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Except that in this case you want the short-circuit.
+The RH condition is slow and always true when offset_1 is zero.
+OTOH subtracting offset_1 makes the lines look odd (out of context).
 
-yamllint warnings/errors:
+	David
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.example.dt.yaml: panel@0: 'pp3300-supply' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1518662
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
