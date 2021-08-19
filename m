@@ -2,130 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C733F1C19
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F34233F1C1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240652AbhHSPAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 11:00:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47112 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229612AbhHSPAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 11:00:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 015DC61159;
-        Thu, 19 Aug 2021 15:00:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629385215;
-        bh=aZJbgY0dYPtD/UwLcyqp1tm6QeXuUNB0SoluXhrFRYk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=i+LSnZtTwtysJWxuhDZw3d9mLByOTctc0IRpFBGeMV7AilsjX/uqIzbZrgmQOIx+U
-         gaIWmHFCQlH1MC43SlpZWLb3HkXHKzaaWnXKfQg1N8dShgxkPh7zWGpt8Jejyj+LmA
-         KHSKzowAvj3cCdsGBEh9CTt7dtUpNTLBtB4ZhiuyUQJI0R0K1zHuO1i9/psY/lB3E1
-         dgDVjIiyRro/+mx37cVURd1a/FX1cYAimTn0h1icl42RDTo+dZU9IAMuw9nQ7UkgC8
-         2sX96i2LEGgE7pSlfQUxpdjJWNX7GTNtCgS8LHlIm58w2p5cAwmTJBI7+uN1QdBYkV
-         UHBbHudIoU0cw==
-Received: by mail-ed1-f47.google.com with SMTP id dj8so9338986edb.2;
-        Thu, 19 Aug 2021 08:00:14 -0700 (PDT)
-X-Gm-Message-State: AOAM532P2ZHAGdfDo2T5LXasfs29nqpen6j1DjPvXePPPUrFTXGf3VWo
-        p18WyQRDg76Mgn7eYqcdUqfhnqgaR3m+5/N6oA==
-X-Google-Smtp-Source: ABdhPJywGAFcZyeFfHGvm2H/Zdii8mlwORsTkptePeQu2y+i3nkMQ+zjBa4vUPMxNQYtZNzH4FvakVszXQcwdaXQiUE=
-X-Received: by 2002:a05:6402:b64:: with SMTP id cb4mr16678817edb.49.1629385213446;
- Thu, 19 Aug 2021 08:00:13 -0700 (PDT)
+        id S240672AbhHSPCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 11:02:17 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33612 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229612AbhHSPCR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 11:02:17 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 4F16B22035;
+        Thu, 19 Aug 2021 15:01:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1629385299; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZQw3aQLXjbGr24aoUzdui2AtIu+xn1XQqrKU4F2ntFA=;
+        b=e0Gy5MxNWI0jxmMgbRDddx64OBNlnVKh6x2MNkmWrtDZn8njNPyac2b4yfRE1B26nwA/GB
+        RKkpeQ31uiHC+/i5OWborImMWZPMA9jeGQ6czSwfnNHvIEzHFUZDBJBZnqmGDZDSbzxzfM
+        wdj7yVvsCFBSAACHHxca877k1HIi7+8=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 15B2DA3BA2;
+        Thu, 19 Aug 2021 15:01:39 +0000 (UTC)
+Date:   Thu, 19 Aug 2021 17:01:38 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Leon Yang <lnyng@fb.com>, Chris Down <chris@chrisdown.name>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: memcontrol: fix occasional OOMs due to proportional
+ memory.low reclaim
+Message-ID: <YR5yUolPN+hSsUgJ@dhcp22.suse.cz>
+References: <20210817180506.220056-1-hannes@cmpxchg.org>
 MIME-Version: 1.0
-References: <20210819022327.13040-1-jason-jh.lin@mediatek.com> <20210819022327.13040-2-jason-jh.lin@mediatek.com>
-In-Reply-To: <20210819022327.13040-2-jason-jh.lin@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 19 Aug 2021 23:00:02 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9Yug-9S4uBkNLTJH+TU8dHCeOjLuwXdNMJ+R89qJyJ9Q@mail.gmail.com>
-Message-ID: <CAAOTY_9Yug-9S4uBkNLTJH+TU8dHCeOjLuwXdNMJ+R89qJyJ9Q@mail.gmail.com>
-Subject: Re: [PATCH v8 01/13] dt-bindings: arm: mediatek: mmsys: add mt8195
- SoC binding
-To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>, fshao@chromium.org,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Fabien Parent <fparent@baylibre.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Jitao shi <jitao.shi@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210817180506.220056-1-hannes@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jason:
+On Tue 17-08-21 14:05:06, Johannes Weiner wrote:
+> We've noticed occasional OOM killing when memory.low settings are in
+> effect for cgroups. This is unexpected and undesirable as memory.low
+> is supposed to express non-OOMing memory priorities between cgroups.
+> 
+> The reason for this is proportional memory.low reclaim. When cgroups
+> are below their memory.low threshold, reclaim passes them over in the
+> first round, and then retries if it couldn't find pages anywhere else.
+> But when cgroups are slighly above their memory.low setting, page scan
+> force is scaled down and diminished in proportion to the overage, to
+> the point where it can cause reclaim to fail as well - only in that
+> case we currently don't retry, and instead trigger OOM.
+> 
+> To fix this, hook proportional reclaim into the same retry logic we
+> have in place for when cgroups are skipped entirely. This way if
+> reclaim fails and some cgroups were scanned with dimished pressure,
+> we'll try another full-force cycle before giving up and OOMing.
+> 
+> Reported-by: Leon Yang <lnyng@fb.com>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B48=E6=9C=881=
-9=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8810:23=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> 1. There are 2 mmsys, namely vdosys0 and vdosys1 in mt8195.
->    Each of them is bound to a display pipeline, so add their
->    definition in mtk-mmsys documentation with 2 compatibles.
->
-> 2. Add description for power-domain property.
->
-> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
-> ---
-> this patch is base on [1][2]
->
-> [1] dt-bindings: arm: mediatek: mmsys: convert to YAML format
-> - https://patchwork.kernel.org/project/linux-mediatek/patch/2021051916184=
-7.3747352-1-fparent@baylibre.com/
-> [2] dt-bindings: arm: mediatek: mmsys: add MT8365 SoC binding
-> - https://patchwork.kernel.org/project/linux-mediatek/patch/2021051916184=
-7.3747352-2-fparent@baylibre.com/
-> ---
->  .../devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml  | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsy=
-s.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
-> index 2d4ff0ce387b..68cb330d7595 100644
-> --- a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
-> +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
-> @@ -30,6 +30,8 @@ properties:
->                - mediatek,mt8173-mmsys
->                - mediatek,mt8183-mmsys
->                - mediatek,mt8365-mmsys
-> +              - mediatek,mt8195-vdosys0
-> +              - mediatek,mt8195-vdosys1
->            - const: syscon
->        - items:
->            - const: mediatek,mt7623-mmsys
-> @@ -39,6 +41,12 @@ properties:
->    reg:
->      maxItems: 1
->
-> +  power-domains:
-> +    description:
-> +      A phandle and PM domain specifier as defined by bindings
-> +      of the power controller specified by phandle. See
-> +      Documentation/devicetree/bindings/power/power-domain.yaml for deta=
-ils.
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+Although I have to say that the code is quite tricky and it deserves
+more comments. See below.
+
+[...]
+> @@ -2576,6 +2578,15 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+>  			 * hard protection.
+>  			 */
+>  			unsigned long cgroup_size = mem_cgroup_size(memcg);
+> +			unsigned long protection;
 > +
+> +			/* memory.low scaling, make sure we retry before OOM */
+> +			if (!sc->memcg_low_reclaim && low > min) {
+> +				protection = low;
+> +				sc->memcg_low_skipped = 1;
+> +			} else {
+> +				protection = min;
+> +			}
 
-This patch is about mt8195, but mt8173 mmsys also has power domain. So
-move this part to another patch.
+Just by looking at this in isolation one could be really curious how
+does this not break the low memory protection altogether. The logic is
+spread over 3 different places.
 
-Regards,
-Chun-Kuang.
+Would something like the following be more understandable?
 
+			/*
+			 * Low limit protected memcgs are already excluded at
+			 * a higher level (shrink_node_memcgs) but scaling
+			 * down the reclaim target can result in hard to
+			 * reclaim and premature OOM. We do not have a full
+			 * picture here so we cannot really judge this
+			 * sutuation here but pro-actively flag this scenario
+			 * and let do_try_to_free_pages to retry if
+			 * there is no progress.
+			 */
+>  
+>  			/* Avoid TOCTOU with earlier protection check */
+>  			cgroup_size = max(cgroup_size, protection);
+> -- 
+> 2.32.0
 
->    "#clock-cells":
->      const: 1
->
-> --
-> 2.18.0
->
+-- 
+Michal Hocko
+SUSE Labs
