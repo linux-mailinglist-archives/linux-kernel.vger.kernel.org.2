@@ -2,140 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3713F1824
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 13:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 704493F181C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 13:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239127AbhHSLX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 07:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56020 "EHLO
+        id S238504AbhHSLXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 07:23:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238555AbhHSLXl (ORCPT
+        with ESMTP id S236881AbhHSLXh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 07:23:41 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0687C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 04:23:05 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id lo4so12159184ejb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 04:23:05 -0700 (PDT)
+        Thu, 19 Aug 2021 07:23:37 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14141C061757;
+        Thu, 19 Aug 2021 04:23:01 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id k29so8545730wrd.7;
+        Thu, 19 Aug 2021 04:23:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qB8JB6eDsfab/lPkD/8C2//8tOgCjprlAVkppf7bpUA=;
-        b=lJKC/eDNcmbA+hwdPIVsPJweqAWjB54y8APAy1G7LRnFmM+jOtfiYOkhmQPn74YsjV
-         4ECz94YTYPB7zg3CLSzFK34Z1uPVxAP1LxqKubJFCl9885Z3pd25DLxk2osrH+CdGhNR
-         e65NO5qni57Bp9wYHi5DzADzp1LqefvFOSOlhZixxw5NRexlP4VFIunDfnHDZ01XyGYc
-         +9djYX8rNC7PwYGoMsnlY27IbJlepMtpg/t0wmDcrPpGSPEu2Ea6bhw1aPxd38A0AGk9
-         0qlbv5kRaYK2ZQl57iCP7JsOSZ04wZeHSXaiZ/75dIGdmRe6y1lYq0DCmD82fIcW1dfZ
-         OxLA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WjTJOgCdzC+bVFkjZUwWVYccWLPGIUqJi3/PQBH4ta8=;
+        b=jvA4K6Nv3O6kYGKlKKtJGIAiE+/5+sWVSiNC/50CPrzaMgOumHT1yIYGK/zVFjlC0c
+         n9c3wStWlgUUjQkFM2lhvjzh2Z0JLXquPnD0J+CeOeeyeGZ+XcTI9zbK2t9QkoRjcpdK
+         q/w9kUc6gnDYpQ0LosSXKiSiDPBN8VodkDmKrBof9nOpqq8T1eAd/H7OazdUclgeAnJO
+         O/IFe2IyH5hZB1Yl3bHxNeqCiY/IRoDT0T5VIwRJIrpmwdXS7CGeQ5fmWEhd1JUFD1RD
+         pT9WGq2bj53qg2SZxZ5s68eRU7AGlbuRCUff5OOFjwWBpJYw6AORMYLJPTTnqpj05lBC
+         xVig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qB8JB6eDsfab/lPkD/8C2//8tOgCjprlAVkppf7bpUA=;
-        b=qIeWeeavdAN9xlyv9DzyCIMOVR2xY6eKxE9e58gZ8OUIXIqt9TzfGYFSmbyxfmhj+O
-         +xZlb1+nCgnDkVxQg1dj5bTGYPwmjAitbOh2nGrBASg8ZTPH9tUu9gEnRe4y0mdgbYn6
-         RhgiwAitWmGiGynXkwWD/p8bivBJF2aUU0n7muENSrjHwCCp+kwQ7AbWOnBDb5FWicQA
-         JcaQ+uqRvDMO8XnbyP6rb1Yrpx9GHEqubb1ww21KllCsBqMensGG3F+pQVWbs2+KApIH
-         OEYS0lji2p8AxtgP0tiMrfXNsoWoSf257vQxsVpHATtksxs46aar0+6JHBTPrFRGcjDz
-         C0mQ==
-X-Gm-Message-State: AOAM531CEQ/YmvdooHHozv7gEc1u6fD6vD9Yyzs77rAxw4SAKWnl/7KP
-        SlPTxDHadGWLTACiBtqBcVo=
-X-Google-Smtp-Source: ABdhPJx+xemd+gwsOiUOJuZI8hRD/2Eaq+OC5r7mdtc4IWZph9BbwmxX8A4C+uI0xu9n8OntJYT8ww==
-X-Received: by 2002:a17:906:30d6:: with SMTP id b22mr15330840ejb.442.1629372184328;
-        Thu, 19 Aug 2021 04:23:04 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::4058])
-        by smtp.gmail.com with ESMTPSA id d23sm1563046edt.39.2021.08.19.04.23.03
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WjTJOgCdzC+bVFkjZUwWVYccWLPGIUqJi3/PQBH4ta8=;
+        b=ZgXiASpoC03NKJ+pAD+VSRpk9+b5l3TTaiN0AqDasHp/Auv3ONolEc0eV0aM03WTs8
+         6mTZhWf0dmE8HSOqLMD5HUHHjmXy+t36W2GOkycgQTWf5wHbBV4vPb3Nvqi0OWPliW+a
+         0b0gfQ24La0fJEJBOQC+wJNtcCvMnY/sCyX+hfN15362fi6Kh+WjvLw3xouGnVIsRniQ
+         +p/YEgmkOljZX6PBjroY+VJz3RUVhX3C+4woz4fJZEZMJuv2NmYvhAgUXTFzkBVIGb6M
+         BXPQDSXTf7SYsbSveR8K9dxwmyznOmNsbEd8T+AhXpRUcEIfbO3sXvE2gSB1BISDNqaj
+         BcdA==
+X-Gm-Message-State: AOAM530DstLM5mbBtykL2ZX54+WoL5OPC10sLuozK0+xM+kkM/nd+0us
+        K73V1iugTCZ1tz+GwHsyx1w=
+X-Google-Smtp-Source: ABdhPJzkLVRzWMM2qILDBAW8Loz1YtMs6+zELMJEWlLoRoCVJ82OjYvdpz/rYq8FkdoDfigz+ey/yA==
+X-Received: by 2002:adf:ba01:: with SMTP id o1mr3215167wrg.419.1629372179251;
+        Thu, 19 Aug 2021 04:22:59 -0700 (PDT)
+Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
+        by smtp.gmail.com with ESMTPSA id r1sm2700388wrt.24.2021.08.19.04.22.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 04:23:04 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 2/2] staging: r8188eu: remove unused function rtw_remove_bcn_ie()
-Date:   Thu, 19 Aug 2021 13:22:00 +0200
-Message-Id: <20210819112200.32030-2-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210819112200.32030-1-straube.linux@gmail.com>
-References: <20210819112200.32030-1-straube.linux@gmail.com>
+        Thu, 19 Aug 2021 04:22:58 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+Cc:     Sandy Huang <hjc@rock-chips.com>,
+        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+        Emma Anholt <emma@anholt.net>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH v2 0/5] Kconfig symbol clean-up on gpu
+Date:   Thu, 19 Aug 2021 13:22:48 +0200
+Message-Id: <20210819112253.16484-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function rtw_remove_bcn_ie() is not used anywhere, remove it.
+Dear DRM maintainers,
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/r8188eu/core/rtw_ap.c    | 38 ------------------------
- drivers/staging/r8188eu/include/rtw_ap.h |  2 --
- 2 files changed, 40 deletions(-)
+The script ./scripts/checkkconfigsymbols.py warns on invalid references to
+Kconfig symbols (often, minor typos, name confusions or outdated references).
 
-diff --git a/drivers/staging/r8188eu/core/rtw_ap.c b/drivers/staging/r8188eu/core/rtw_ap.c
-index 0237b7f8e42f..1f3aa0092ef9 100644
---- a/drivers/staging/r8188eu/core/rtw_ap.c
-+++ b/drivers/staging/r8188eu/core/rtw_ap.c
-@@ -139,44 +139,6 @@ static void update_BCNTIM(struct adapter *padapter)
- 	set_tx_beacon_cmd(padapter);
- }
- 
--void rtw_remove_bcn_ie(struct adapter *padapter, struct wlan_bssid_ex *pnetwork, u8 index)
--{
--	u8 *p, *dst_ie = NULL, *premainder_ie = NULL;
--	u8 *pbackup_remainder_ie = NULL;
--	uint offset, ielen, ie_offset, remainder_ielen = 0;
--	u8	*pie = pnetwork->IEs;
--
--	p = rtw_get_ie(pie + _FIXED_IE_LENGTH_, index, &ielen,
--		       pnetwork->IELength - _FIXED_IE_LENGTH_);
--	if (p && ielen > 0) {
--		ielen += 2;
--
--		premainder_ie = p + ielen;
--
--		ie_offset = (int)(p - pie);
--
--		remainder_ielen = pnetwork->IELength - ie_offset - ielen;
--
--		dst_ie = p;
--	}
--
--	if (remainder_ielen > 0) {
--		pbackup_remainder_ie = kmalloc(remainder_ielen, GFP_KERNEL);
--		if (pbackup_remainder_ie && premainder_ie)
--			memcpy(pbackup_remainder_ie, premainder_ie, remainder_ielen);
--	}
--
--	/* copy remainder IE */
--	if (pbackup_remainder_ie) {
--		memcpy(dst_ie, pbackup_remainder_ie, remainder_ielen);
--
--		kfree(pbackup_remainder_ie);
--	}
--
--	offset =  (uint)(dst_ie - pie);
--	pnetwork->IELength = offset + remainder_ielen;
--}
--
- static u8 chk_sta_is_alive(struct sta_info *psta)
- {
- 	u8 ret = false;
-diff --git a/drivers/staging/r8188eu/include/rtw_ap.h b/drivers/staging/r8188eu/include/rtw_ap.h
-index fffb6794b1ce..2eb556968509 100644
---- a/drivers/staging/r8188eu/include/rtw_ap.h
-+++ b/drivers/staging/r8188eu/include/rtw_ap.h
-@@ -16,8 +16,6 @@ void rtw_indicate_sta_disassoc_event(struct adapter *padapter,
- 				     struct sta_info *psta);
- void init_mlme_ap_info(struct adapter *padapter);
- void free_mlme_ap_info(struct adapter *padapter);
--void rtw_remove_bcn_ie(struct adapter *padapter,
--		       struct wlan_bssid_ex *pnetwork, u8 index);
- void update_beacon(struct adapter *padapter, u8 ie_id,
- 		   u8 *oui, u8 tx);
- void add_RATid(struct adapter *padapter, struct sta_info *psta,
+This patch series addresses all issues reported by ./scripts/checkkconfigsymbols.py
+in ./drivers/gpu/ for Kconfig and Makefile files. Issues in the Kconfig and
+Makefile files indicate some shortcomings in the overall build definitions, and
+often are true actionable issues to address.
+
+These issues can be identified and filtered by:
+
+  ./scripts/checkkconfigsymbols.py | grep -E "drivers/gpu/.*(Kconfig|Makefile)" -B 1 -A 1
+
+After applying this patch series on linux-next (next-20210817), the command
+above yields just one further issues to address:
+
+DRM_AMD_DC_DCE11_0
+Referencing files: drivers/gpu/drm/amd/display/dc/dce100/Makefile
+
+  Conclusion: No action required.
+  Rationale:
+    drivers/gpu/drm/amd/display/dc/dce100/Makefile refers to
+    DRM_AMD_DC_DCE11_0 in a comment, after an "ifdef 0".
+
+
+Please pick this patch series into your drm-next tree.
+
+Note that patch "drm: amdgpu: remove obsolete reference to config CHASH"
+was already picked and applied by Alex Deucher.
+
+
+Best regards,
+
+Lukas
+
+v1 -> v2:
+  - adjusted sources in drivers/gpu/drm/Kconfig
+    for drm: zte: remove obsolete DRM Support for ZTE SoCs
+    after report by kernel test robot
+  - removed Tomi from recipient list as email is unreachable.
+
+Lukas Bulwahn (5):
+  drm: rockchip: remove reference to non-existing config DRM_RGB
+  drm: amdgpu: remove obsolete reference to config CHASH
+  drm: v3d: correct reference to config ARCH_BRCMSTB
+  drm: zte: remove obsolete DRM Support for ZTE SoCs
+  drm: omap: remove obsolete selection of OMAP2_DSS in config DRM_OMAP
+
+ drivers/gpu/drm/Kconfig              |   3 -
+ drivers/gpu/drm/Makefile             |   1 -
+ drivers/gpu/drm/omapdrm/Kconfig      |   1 -
+ drivers/gpu/drm/rockchip/Kconfig     |   1 -
+ drivers/gpu/drm/v3d/Kconfig          |   2 +-
+ drivers/gpu/drm/zte/Kconfig          |  10 -
+ drivers/gpu/drm/zte/Makefile         |  10 -
+ drivers/gpu/drm/zte/zx_common_regs.h |  28 -
+ drivers/gpu/drm/zte/zx_drm_drv.c     | 184 ------
+ drivers/gpu/drm/zte/zx_drm_drv.h     |  34 -
+ drivers/gpu/drm/zte/zx_hdmi.c        | 760 ----------------------
+ drivers/gpu/drm/zte/zx_hdmi_regs.h   |  66 --
+ drivers/gpu/drm/zte/zx_plane.c       | 537 ----------------
+ drivers/gpu/drm/zte/zx_plane.h       |  26 -
+ drivers/gpu/drm/zte/zx_plane_regs.h  | 120 ----
+ drivers/gpu/drm/zte/zx_tvenc.c       | 400 ------------
+ drivers/gpu/drm/zte/zx_tvenc_regs.h  |  27 -
+ drivers/gpu/drm/zte/zx_vga.c         | 527 ---------------
+ drivers/gpu/drm/zte/zx_vga_regs.h    |  33 -
+ drivers/gpu/drm/zte/zx_vou.c         | 921 ---------------------------
+ drivers/gpu/drm/zte/zx_vou.h         |  64 --
+ drivers/gpu/drm/zte/zx_vou_regs.h    | 212 ------
+ 22 files changed, 1 insertion(+), 3966 deletions(-)
+ delete mode 100644 drivers/gpu/drm/zte/Kconfig
+ delete mode 100644 drivers/gpu/drm/zte/Makefile
+ delete mode 100644 drivers/gpu/drm/zte/zx_common_regs.h
+ delete mode 100644 drivers/gpu/drm/zte/zx_drm_drv.c
+ delete mode 100644 drivers/gpu/drm/zte/zx_drm_drv.h
+ delete mode 100644 drivers/gpu/drm/zte/zx_hdmi.c
+ delete mode 100644 drivers/gpu/drm/zte/zx_hdmi_regs.h
+ delete mode 100644 drivers/gpu/drm/zte/zx_plane.c
+ delete mode 100644 drivers/gpu/drm/zte/zx_plane.h
+ delete mode 100644 drivers/gpu/drm/zte/zx_plane_regs.h
+ delete mode 100644 drivers/gpu/drm/zte/zx_tvenc.c
+ delete mode 100644 drivers/gpu/drm/zte/zx_tvenc_regs.h
+ delete mode 100644 drivers/gpu/drm/zte/zx_vga.c
+ delete mode 100644 drivers/gpu/drm/zte/zx_vga_regs.h
+ delete mode 100644 drivers/gpu/drm/zte/zx_vou.c
+ delete mode 100644 drivers/gpu/drm/zte/zx_vou.h
+ delete mode 100644 drivers/gpu/drm/zte/zx_vou_regs.h
+
 -- 
-2.32.0
+2.26.2
 
