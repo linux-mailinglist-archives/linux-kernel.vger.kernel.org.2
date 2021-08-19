@@ -2,168 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72BB03F226A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 23:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 208133F226E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 23:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235644AbhHSVnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 17:43:05 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9902 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233664AbhHSVnE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 17:43:04 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17JLbhS9023032;
-        Thu, 19 Aug 2021 17:42:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=pDJ23b0T59xqDtcuGq5YK+/9Dh/k4Y1+7c55NFrMeOA=;
- b=UU2qxKK9YYTfGc0M1DnoKj+LdveAv6puANB8TnKt661aIIaCylwc8+eWCTzjFVoF3mia
- 1xRrmZSkk2eznQgCcCea60ktdI4tGgwFwuQ/83eIyt6wDx6VMJHfrVG7WH5GHd1ZGA2M
- wwhLT8C2e3EPS28NP6FI/F7B3FBNRaf5XCycWhB23Xda7WCnAM0KVKmWrw78dDuMjfsL
- s1usernD4Ap3rhk9UOgWFf5WiIwb/bSSHzKz8R2sqEkhZS7mHi/XfELjueyz/buWQgIm
- oqdqKAR3+xz9A16cFgqYpS1+phU/kX4PaE2FrYnOnv/1SslY7Wb6sdO6t/40OEMpDKmb Vw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ahpr80x7k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Aug 2021 17:42:26 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17JLbnmg023649;
-        Thu, 19 Aug 2021 17:42:25 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ahpr80x7a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Aug 2021 17:42:25 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17JLQhor015747;
-        Thu, 19 Aug 2021 21:42:23 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma02fra.de.ibm.com with ESMTP id 3ae5f8fktg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Aug 2021 21:42:23 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17JLgJJH53215602
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Aug 2021 21:42:19 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CC37B5205F;
-        Thu, 19 Aug 2021 21:42:18 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.32.160])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 5B8D652059;
-        Thu, 19 Aug 2021 21:42:16 +0000 (GMT)
-Date:   Thu, 19 Aug 2021 23:42:12 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        jgg@nvidia.com, alex.williamson@redhat.com, kwankhede@nvidia.com,
-        david@redhat.com
-Subject: Re: [PATCH 1/2] s390/vfio-ap: r/w lock for PQAP interception
- handler function pointer
-Message-ID: <20210819234212.7e21f699.pasic@linux.ibm.com>
-In-Reply-To: <8df389f7-44aa-978e-84d8-96c625b0470b@linux.ibm.com>
-References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
-        <20210719193503.793910-2-akrowiak@linux.ibm.com>
-        <1a9f15d7-0f4d-00a0-0a8b-f1c08aa52eeb@de.ibm.com>
-        <20210819012532.0e9c443c.pasic@linux.ibm.com>
-        <8df389f7-44aa-978e-84d8-96c625b0470b@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S234881AbhHSVn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 17:43:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57308 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229497AbhHSVny (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 17:43:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B86860EB5;
+        Thu, 19 Aug 2021 21:43:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629409397;
+        bh=Qis+W6zkQTZYe1xg6ZIKtAmEgvOKVtPfN5JHB97wMwQ=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=YTUn0yw6nUpw51PPvGczp49OOM+H1/c0m9xuwthLJuMkJqgdjYyHhxg8yOVhLoMhp
+         VQ+kOA2nK3nhlvsSZkMrnAmapLGmZO5D9b5U+9pjr0wEXPLMr89NHRfDOeTICElwOR
+         UDLw9ONtcKXd+UOZ+28FEdQmSXsWLjD6eQtInZHGtle5q5vbJScMkDjxRegKOnVTsA
+         DzTXn6ZIpdre07HZcF0GF/Cg/1+MxL9XJ4erYKgPyBE7EJV0zvxUGYBus1fbx8iV+b
+         29BaTatgVsRYZK0KFkT7pKy3feYPjYRPQBD3IfHS/hePE0iNlBCAfro/UuzVtKP44L
+         vA+TnCI/ui3iA==
+Message-ID: <639d90212662cf5cdf80c71bbfec95907c70114a.camel@kernel.org>
+Subject: Re: Removing Mandatory Locks
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        David Hildenbrand <david@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marco Elver <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        Christian =?ISO-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Date:   Thu, 19 Aug 2021 17:43:12 -0400
+In-Reply-To: <CAHk-=wgD-SNxB=2iCurEoP=RjrciRgLtXZ7R_DejK+mXF2etfg@mail.gmail.com>
+References: <20210812084348.6521-1-david@redhat.com>
+         <87o8a2d0wf.fsf@disp2133>
+         <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com>
+         <87lf56bllc.fsf@disp2133>
+         <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
+         <87eeay8pqx.fsf@disp2133>
+         <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
+         <87h7ft2j68.fsf@disp2133>
+         <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
+         <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
+         <YRcyqbpVqwwq3P6n@casper.infradead.org> <87k0kkxbjn.fsf_-_@disp2133>
+         <0c2af732e4e9f74c9d20b09fc4b6cbae40351085.camel@kernel.org>
+         <CAHk-=wgewmbABDC3_ZNn11C+sm4Uz0L9HZ5Kvx0Joho4vsV4DQ@mail.gmail.com>
+         <a1385746582a675c410aca4eb4947320faec4821.camel@kernel.org>
+         <CAHk-=wgD-SNxB=2iCurEoP=RjrciRgLtXZ7R_DejK+mXF2etfg@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: pc6Dk0SNbx_TCt-H5Mi9RWdSzgAKfRZ6
-X-Proofpoint-ORIG-GUID: BMyeWgeo24tkrlvkd4CxY9ybL_Asb2RP
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-19_07:2021-08-17,2021-08-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
- priorityscore=1501 suspectscore=0 mlxlogscore=999 malwarescore=0
- impostorscore=0 phishscore=0 lowpriorityscore=0 clxscore=1015 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108190124
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Aug 2021 09:36:34 -0400
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-
-> >>>    static int handle_pqap(struct kvm_vcpu *vcpu)
-> >>>    {
-> >>>    	struct ap_queue_status status = {};
-> >>> +	crypto_hook pqap_hook;
-> >>>    	unsigned long reg0;
-> >>>    	int ret;
-> >>>    	uint8_t fc;
-> >>> @@ -657,15 +658,16 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
-> >>>    	 * Verify that the hook callback is registered, lock the owner
-> >>>    	 * and call the hook.
-> >>>    	 */
-> >>> +	down_read(&vcpu->kvm->arch.crypto.pqap_hook_rwsem);
-> >>>    	if (vcpu->kvm->arch.crypto.pqap_hook) {                     <--- HERE
-> >>> -		if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
-> >>> -			return -EOPNOTSUPP;
-> >>> -		ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
-> >>> -		module_put(vcpu->kvm->arch.crypto.pqap_hook->owner);
-> >>> +		pqap_hook = *vcpu->kvm->arch.crypto.pqap_hook;  
-> >> Dont we have to check for NULL here? If not can you add a comment why?  
-> > I believe we did the necessary check on the line I just marked with
-> > "<--- HERE".
-> >
-> > I find that "*" operator confusing in this context as it doesn't do
-> > any good for us. I believe this situation is described in 6.5.3.2.4 of
-> > the c11 standard. For convenience I will cite from the corresponding
-> > draft:
-> > "The unary * operator denotes indirection. If the operand points to a
-> > function, the result is a function designator; if it points to an
-> > object, the result is an lvalue designating the object. If the operand
-> > has type ‘‘pointer to type’’, the result has type ‘‘type’’. If an
-> > invalid value has been assigned to the pointer, the behavior of the
-> > unary * operator is undefined."
-> >
-> > Frankly I also fail to see the benefit of introducing the local variable
-> > named "pqap_hook", but back then I decided to not complain about style.  
+On Thu, 2021-08-19 at 13:31 -0700, Linus Torvalds wrote:
+> On Thu, Aug 19, 2021 at 1:18 PM Jeff Layton <jlayton@kernel.org> wrote:
+> > 
+> > Now that I think about it a little more, I actually did get one
+> > complaint a few years ago:
+> > 
+> > Someone had upgraded from an earlier distro that supported the -o mand
+> > mount option to a later one that had disabled it, and they had an (old)
+> > fstab entry that specified it.
 > 
-> The vcpu->kvm->arch.crypto.pqap_hook is a pointer to a function
-> pointer. The actual function pointer is stored in matrix_mdev->pqap_hook,
-> the reason being that the handle_pqap function in vfio_ap_ops.c
-> retrieves the matrix_mdev via a container_of macro. The dereferencing
-> of the vcpu->kvm->arch.crypto.pqap_hook into a local variable was
-> to get the function pointer. There may have been a more stylish
-> way of doing this, but the functionality is there.
-
-You are right, and I was wrong. But then we do have to distinct pointer
-deferences, and we check for NULL only once.
-
-I still do believe we do not have a potential null pointer dereference
-here, but the reason for that is that vfio-ap (the party that manages
-these pointers) guarantees that whenever
-vcpu->kvm->arch.crypto.pqap_hook != NULL is true, 
-*vcpu->kvm->arch.crypto.pqap_hook != NULL is also true (and also that
-the function pointer is a valid one). Which is the case, because we
-set matrix_mdev->pqap_hook in vfio_ap_mdev_create() and don't touch
-it any more.
-
-In my opinion it is worth a comment.
-
-
+> Hmm. We might be able to turn the "return -EINVAL" into just a warning.
 > 
-> >
-> > Regards,
-> > Halil
-> >  
-> >>  
-> >>> +		ret = pqap_hook(vcpu);
+> Yes, yes, currently if you turn off CONFIG_MANDATORY_FILE_LOCKING, we
+> already do that
+> 
+>         VFS: "mand" mount option not supported
+> 
+> warning print, but then we fail the mount.
+> 
+> If CONFIG_MANDATORY_FILE_LOCKING goes away entirely, it might make
+> sense to turn that warning into something bigger, but then let the
+> mount continue - since now that "mand" flag would be purely a legacy
+> thing.
+> 
+> And yes, if we do that, we'd want the warning to be a big ugly thing,
+> just to make people very aware of it happening. Right now it's a
+> one-liner that is easy to miss, and the "oh, the mount failed" is the
+> thing that hopefully informs people about the fact that they need to
+> enable CONFIG_MANDATORY_FILE_LOCKING.
+> 
+> The logic being that if you can no longer enable mandatory locking in
+> the kernel, the current hard failure seems overly aggressive (and
+> might cause boot failures and inability to fix/report things when it
+> possibly keeps you from using the system at all).
+> 
 
-BTW the second dereference takes place here.
+What sort of big, ugly warning did you have in mind?
 
-If we wanted, we could make sure we don't dereference a null pointer
-here but I think that would be an overkill.
+I'm fine with that general approach though and will plan to roll that
+change into the patch I'm testing.
 
-Regards,
-Halil  
-> >> [...]  
+Thanks,
+-- 
+Jeff Layton <jlayton@kernel.org>
 
