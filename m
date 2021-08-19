@@ -2,81 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE3E3F2263
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 23:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9574C3F2261
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 23:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235718AbhHSVlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 17:41:53 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:51293 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235590AbhHSVlw (ORCPT
+        id S235605AbhHSVlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 17:41:51 -0400
+Received: from mail.efficios.com ([167.114.26.124]:58084 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229834AbhHSVlt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 17:41:52 -0400
-Received: from mail-wr1-f51.google.com ([209.85.221.51]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MFslN-1mHh7G37Tr-00HQpe; Thu, 19 Aug 2021 23:41:13 +0200
-Received: by mail-wr1-f51.google.com with SMTP id r7so11196513wrs.0;
-        Thu, 19 Aug 2021 14:41:13 -0700 (PDT)
-X-Gm-Message-State: AOAM533PX7IfCIPzuu2+ndlyzxRIsWqO1LFsJAwAylEqRvOXMk+qDYcw
-        UjOM5Sw44hL19y40DfdfLRWkUK9tWbbHo+g2M5k=
-X-Google-Smtp-Source: ABdhPJwgQXlZtd9aQGhUETRO3j8EuerYQ1TH+GOAUcV1c6qR7kBSbBDaUf/YOR2NNp44khyUSHmTwZDd2CaItxBz1bo=
-X-Received: by 2002:adf:e107:: with SMTP id t7mr6159638wrz.165.1629409273404;
- Thu, 19 Aug 2021 14:41:13 -0700 (PDT)
+        Thu, 19 Aug 2021 17:41:49 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 3F7573781F6;
+        Thu, 19 Aug 2021 17:41:12 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id ZGEgsUCEHpib; Thu, 19 Aug 2021 17:41:07 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id B069F3783B1;
+        Thu, 19 Aug 2021 17:41:07 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com B069F3783B1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1629409267;
+        bh=J2pdWpoMI+2vyTpqFQezmJJ20BZQemWJSr2tXYWs+kg=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=pa3pYJ3cbUZgsy5RMEfVX06b5BMW15nJGybYKI80PCZtKT/loekIXo67iDkr3zw2o
+         AcQDjSUEvPWZkfXFa2MNL3M12qdedS0z+iwaLKmQvShFxf5k9up1UVkNLovNXP8sDY
+         bdA2RyTMR+fBhQ1QbBLFpUUMqTGJRnrvlAIYO29B4UKvWiSALIAw+bbwWQjH4594fa
+         f4hMQXetpOHKVNonM0bzEra3naNVB6D/IW5A3QgT+JlY4hoy7eTAZclpqOtXJ3eyZe
+         4eLvEB8j4rfdfPDY0Vd+YVFdM2+RDHAKBJzLiMn18KxjxGQvY6sQUgo11F1HW7WM3d
+         KWwvfOAqkirvA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id lJ00l7vXwbaJ; Thu, 19 Aug 2021 17:41:07 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 774CF37853B;
+        Thu, 19 Aug 2021 17:41:07 -0400 (EDT)
+Date:   Thu, 19 Aug 2021 17:41:07 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     "Russell King, ARM Linux" <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <hca@linux.ibm.com>, gor <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Oleg Nesterov <oleg@redhat.com>, rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, shuah <shuah@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-csky <linux-csky@vger.kernel.org>,
+        linux-mips@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390@vger.kernel.org, KVM list <kvm@vger.kernel.org>,
+        linux-kselftest <linux-kselftest@vger.kernel.org>,
+        Peter Foley <pefoley@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Ben Gardon <bgardon@google.com>
+Message-ID: <1359319445.19723.1629409267434.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210818001210.4073390-3-seanjc@google.com>
+References: <20210818001210.4073390-1-seanjc@google.com> <20210818001210.4073390-3-seanjc@google.com>
+Subject: Re: [PATCH 2/5] entry: rseq: Call rseq_handle_notify_resume() in
+ tracehook_notify_resume()
 MIME-Version: 1.0
-References: <20210818204422.17919-1-krzysztof.kozlowski@canonical.com> <162938788185.467628.13192922419725983504.b4-ty@arndb.de>
-In-Reply-To: <162938788185.467628.13192922419725983504.b4-ty@arndb.de>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 19 Aug 2021 23:40:57 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1RO=PWUGi_aFA2rzn2119W-kX2kTOycEG6hoTqPBj7=Q@mail.gmail.com>
-Message-ID: <CAK8P3a1RO=PWUGi_aFA2rzn2119W-kX2kTOycEG6hoTqPBj7=Q@mail.gmail.com>
-Subject: Re: [PATCH][PULL/direct] ARM: s3c: delete unneed local variable "delay"
-To:     arm-soc <arm@kernel.org>, SoC Team <soc@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Olof Johansson <olof@lixom.net>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jason Wang <wangborong@cdjrlc.com>,
-        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:0vT6dseaUcsOGtTqyWdZmC6b2O04kgyQU4MKi+LCi4PmOYTeMOS
- r1jPrJ/zG8g79OgbMiRiaghmDOZgaREkBA+HZa5AabxQf9Ip7/C6/UyQazLAyk8h0rBKRC0
- uEvcaIrQyC7rRRLOqnCvxKhY8MBrvdsrCMhnitZ6NnDZlLOI0081PLpAcUCHIhfPJWiuZ3H
- sqasqn2cJlA2x6s14SiBQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Anqf7xfA9IE=:v8krgduiMfWBTbniyZcQsq
- r1dkbTuKKQ3ozTpWJTX2Cj1C1k0lopA+6QHGNmGYbgH3Qic9eIHVzY80hD9UNvqhghszcqteD
- qL8PrdrRf2jB5uhWItpEGJI4Npf9wya0CXmsXNWG5fjOHd4U2xTnqi0+VjCMMqQ763uhccR11
- NEaLeBkV//KV+Gm32kp9MzXYxFpoo2TRfnk9TJD2c/6EZocLwBvjyQ+cNb2feWD5c0a/46uWw
- xLQTWuQWzmMrWgAc0pzFy2dDaMh8euLJH3wE6EcMIiU6yCZa7OcrpamgdpaktvOMmKrzD7oL+
- J0srzODd8BGjYO2dY0CGdL/XPaoftUTbnUNdXtrAc8eVq3ctupZYwJYenm76bcZSijXr+WVsa
- PZ34G8vzy+oC9gGcSxbKyEGwNZ/eJ+mPHyWV2oU178x4acxptDTo44btH/a2AteHqS8VsTcE1
- fYS9sFgNiJ6rr2GGYMT/Y+bxmH9SNimrXn4YFaJZ5485btAyUGMCX1lOq+dgxOBcqhurSD6XS
- f0ax3RmbC94loqO+64kw/2ncDO4u9+TfjkoNgprEFNbgwemwGRjy1dqgr8hxpGmioPE8nJHfd
- Fhbgcqu2gMHc9R13hpO5AeyG5hSd0rDbqVqBnuuCxWb9Zw2o6ngnvB8pv8NZKY0ST/REkoJ/g
- IXjzrfqONGLhAydCG4/PykC7yHXTiQ3AhTtiRJ/Qn65fXT7qXVRxFHrzJX3AEk2Ev6dnrTfY8
- zr6XlK0LT0TwVOsiA5dW2PrjTPoS1TQW3wbMfjy0HD6yyv3fZ2dR3MTBHeP5BEz62GVYwdmxb
- CRooNERi4/7gWp/Tq8fBOB9I7Q4g+0QhNit+y1bKh2MydFOkzSAZAww8mXHF6ggd0jUp8dziw
- z4gZoWpBe7ZQw2XN9HQN6XJwPTakv6aSQJFGgHuuNR0fUKmQSbVXwTePCAiTISyL8R8BKgYuk
- 6Rp5ndni+th8LT1ez94E4GXVoGH/buQtdbyB2WxiZMUAP/uWwI4vD
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4101 (ZimbraWebClient - FF90 (Linux)/8.8.15_GA_4059)
+Thread-Topic: entry: rseq: Call rseq_handle_notify_resume() in tracehook_notify_resume()
+Thread-Index: gCU2eWL1uMmIvUsMi61iATE69Brb6A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 5:44 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> On Wed, 18 Aug 2021 22:44:22 +0200, Krzysztof Kozlowski wrote:
-> > "delay" variable on line 79 can be deleted by returning "0" on line 88.
->
-> Applied to for-next, thanks!
->
-> [1/1] ARM: s3c: delete unneed local variable "delay"
->       commit: 319a1b58f6c7432345f13383b26c8c10e7eb1dda
+----- On Aug 17, 2021, at 8:12 PM, Sean Christopherson seanjc@google.com wrote:
 
-I had accidentally added this to the arm/fixes branch at first, but corrected
-that now and applied it to arm/soc instead, as you intended.
+> Invoke rseq_handle_notify_resume() from tracehook_notify_resume() now
+> that the two function are always called back-to-back by architectures
+> that have rseq.  The rseq helper is stubbed out for architectures that
+> don't support rseq, i.e. this is a nop across the board.
+> 
+> Note, tracehook_notify_resume() is horribly named and arguably does not
+> belong in tracehook.h as literally every line of code in it has nothing
+> to do with tracing.  But, that's been true since commit a42c6ded827d
+> ("move key_repace_session_keyring() into tracehook_notify_resume()")
+> first usurped tracehook_notify_resume() back in 2012.  Punt cleaning that
+> mess up to future patches.
+> 
+> No functional change intended.
 
-          Arnd
+This will make it harder to introduce new code paths which consume the
+NOTIFY_RESUME without calling the rseq callback, which introduces issues.
+Agreed.
+
+Acked-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+> arch/arm/kernel/signal.c     | 1 -
+> arch/arm64/kernel/signal.c   | 1 -
+> arch/csky/kernel/signal.c    | 4 +---
+> arch/mips/kernel/signal.c    | 4 +---
+> arch/powerpc/kernel/signal.c | 4 +---
+> arch/s390/kernel/signal.c    | 1 -
+> include/linux/tracehook.h    | 2 ++
+> kernel/entry/common.c        | 4 +---
+> kernel/entry/kvm.c           | 4 +---
+> 9 files changed, 7 insertions(+), 18 deletions(-)
+> 
+> diff --git a/arch/arm/kernel/signal.c b/arch/arm/kernel/signal.c
+> index a3a38d0a4c85..9df68d139965 100644
+> --- a/arch/arm/kernel/signal.c
+> +++ b/arch/arm/kernel/signal.c
+> @@ -670,7 +670,6 @@ do_work_pending(struct pt_regs *regs, unsigned int
+> thread_flags, int syscall)
+> 				uprobe_notify_resume(regs);
+> 			} else {
+> 				tracehook_notify_resume(regs);
+> -				rseq_handle_notify_resume(NULL, regs);
+> 			}
+> 		}
+> 		local_irq_disable();
+> diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
+> index 23036334f4dc..22b55db13da6 100644
+> --- a/arch/arm64/kernel/signal.c
+> +++ b/arch/arm64/kernel/signal.c
+> @@ -951,7 +951,6 @@ asmlinkage void do_notify_resume(struct pt_regs *regs,
+> 
+> 			if (thread_flags & _TIF_NOTIFY_RESUME) {
+> 				tracehook_notify_resume(regs);
+> -				rseq_handle_notify_resume(NULL, regs);
+> 
+> 				/*
+> 				 * If we reschedule after checking the affinity
+> diff --git a/arch/csky/kernel/signal.c b/arch/csky/kernel/signal.c
+> index 312f046d452d..bc4238b9f709 100644
+> --- a/arch/csky/kernel/signal.c
+> +++ b/arch/csky/kernel/signal.c
+> @@ -260,8 +260,6 @@ asmlinkage void do_notify_resume(struct pt_regs *regs,
+> 	if (thread_info_flags & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL))
+> 		do_signal(regs);
+> 
+> -	if (thread_info_flags & _TIF_NOTIFY_RESUME) {
+> +	if (thread_info_flags & _TIF_NOTIFY_RESUME)
+> 		tracehook_notify_resume(regs);
+> -		rseq_handle_notify_resume(NULL, regs);
+> -	}
+> }
+> diff --git a/arch/mips/kernel/signal.c b/arch/mips/kernel/signal.c
+> index f1e985109da0..c9b2a75563e1 100644
+> --- a/arch/mips/kernel/signal.c
+> +++ b/arch/mips/kernel/signal.c
+> @@ -906,10 +906,8 @@ asmlinkage void do_notify_resume(struct pt_regs *regs, void
+> *unused,
+> 	if (thread_info_flags & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL))
+> 		do_signal(regs);
+> 
+> -	if (thread_info_flags & _TIF_NOTIFY_RESUME) {
+> +	if (thread_info_flags & _TIF_NOTIFY_RESUME)
+> 		tracehook_notify_resume(regs);
+> -		rseq_handle_notify_resume(NULL, regs);
+> -	}
+> 
+> 	user_enter();
+> }
+> diff --git a/arch/powerpc/kernel/signal.c b/arch/powerpc/kernel/signal.c
+> index e600764a926c..b93b87df499d 100644
+> --- a/arch/powerpc/kernel/signal.c
+> +++ b/arch/powerpc/kernel/signal.c
+> @@ -293,10 +293,8 @@ void do_notify_resume(struct pt_regs *regs, unsigned long
+> thread_info_flags)
+> 		do_signal(current);
+> 	}
+> 
+> -	if (thread_info_flags & _TIF_NOTIFY_RESUME) {
+> +	if (thread_info_flags & _TIF_NOTIFY_RESUME)
+> 		tracehook_notify_resume(regs);
+> -		rseq_handle_notify_resume(NULL, regs);
+> -	}
+> }
+> 
+> static unsigned long get_tm_stackpointer(struct task_struct *tsk)
+> diff --git a/arch/s390/kernel/signal.c b/arch/s390/kernel/signal.c
+> index 78ef53b29958..b307db26bf2d 100644
+> --- a/arch/s390/kernel/signal.c
+> +++ b/arch/s390/kernel/signal.c
+> @@ -537,5 +537,4 @@ void arch_do_signal_or_restart(struct pt_regs *regs, bool
+> has_signal)
+> void do_notify_resume(struct pt_regs *regs)
+> {
+> 	tracehook_notify_resume(regs);
+> -	rseq_handle_notify_resume(NULL, regs);
+> }
+> diff --git a/include/linux/tracehook.h b/include/linux/tracehook.h
+> index 3e80c4bc66f7..2564b7434b4d 100644
+> --- a/include/linux/tracehook.h
+> +++ b/include/linux/tracehook.h
+> @@ -197,6 +197,8 @@ static inline void tracehook_notify_resume(struct pt_regs
+> *regs)
+> 
+> 	mem_cgroup_handle_over_high();
+> 	blkcg_maybe_throttle_current();
+> +
+> +	rseq_handle_notify_resume(NULL, regs);
+> }
+> 
+> /*
+> diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+> index bf16395b9e13..d5a61d565ad5 100644
+> --- a/kernel/entry/common.c
+> +++ b/kernel/entry/common.c
+> @@ -171,10 +171,8 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs
+> *regs,
+> 		if (ti_work & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL))
+> 			handle_signal_work(regs, ti_work);
+> 
+> -		if (ti_work & _TIF_NOTIFY_RESUME) {
+> +		if (ti_work & _TIF_NOTIFY_RESUME)
+> 			tracehook_notify_resume(regs);
+> -			rseq_handle_notify_resume(NULL, regs);
+> -		}
+> 
+> 		/* Architecture specific TIF work */
+> 		arch_exit_to_user_mode_work(regs, ti_work);
+> diff --git a/kernel/entry/kvm.c b/kernel/entry/kvm.c
+> index 049fd06b4c3d..49972ee99aff 100644
+> --- a/kernel/entry/kvm.c
+> +++ b/kernel/entry/kvm.c
+> @@ -19,10 +19,8 @@ static int xfer_to_guest_mode_work(struct kvm_vcpu *vcpu,
+> unsigned long ti_work)
+> 		if (ti_work & _TIF_NEED_RESCHED)
+> 			schedule();
+> 
+> -		if (ti_work & _TIF_NOTIFY_RESUME) {
+> +		if (ti_work & _TIF_NOTIFY_RESUME)
+> 			tracehook_notify_resume(NULL);
+> -			rseq_handle_notify_resume(NULL, NULL);
+> -		}
+> 
+> 		ret = arch_xfer_to_guest_mode_handle_work(vcpu, ti_work);
+> 		if (ret)
+> --
+> 2.33.0.rc1.237.g0d66db33f3-goog
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
