@@ -2,91 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C583F1156
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 05:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A08F3F1164
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 05:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232106AbhHSDO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 23:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhHSDO4 (ORCPT
+        id S235743AbhHSDT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 23:19:56 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:50990 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230424AbhHSDTy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 23:14:56 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC034C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 20:14:20 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id qk33so9525720ejc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 20:14:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Al99W6tKyxYHjbJ2Qjp5kd15/Fm62/1U7Do8PSyEWXg=;
-        b=EO2bvA+kQXMWrCqWzca5o/U+vXXRSESK+ih0tu4JNs2dn3wf0+N+mNdrzYw3KEQUYf
-         a8jY988/KdWqnHhpi/BVgsn3FazvDXe4ylOo++mPGrc9XA9XHDLIM8bZDiBZrLBQH55I
-         6HfacOnxvuM0tfRHdC5dGQ/hqOhSrW2Ymoj9R7bDT5W/frf5Gls55bbDbCdIIgcDkc0k
-         2iwfUKX0SN2arIFJjA7Av0CzamYqNTSjYUZYZK8J1j/LFL6sQoc5yfj2kMnQDwM8FAYS
-         arrbw295YuvpxVaUuXNXJMB5G1SP0ynvsr3Rcj6XuFFfO9FzACJcqH9bLt98hF/KrPLg
-         rDFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Al99W6tKyxYHjbJ2Qjp5kd15/Fm62/1U7Do8PSyEWXg=;
-        b=kW2+zvHCZRMoIepqkvHTqm7VMf8UbH+Dgvs2YOBJ6y2hRSMGDrBqLkfLutMXTVCQUQ
-         tKr7doTQ/7XvJsJzdJSvmem/0UAMoQvnyPg0dVvf6Mbe4k6V/3qn40Ue5DvpmkfujNI8
-         D540gdUsDqrLZ1sb3iN/7zgITltGM0zsowdnxYo7vVh8bnlM9w0T/SVaRtzroFI9D/GD
-         xX6RaokVCdzzxal3Z3UlqTiJZ8aGXF6AkFWIdtmfyN9kq10BeSJVaR9t8IU9newdhkTU
-         h+V0PM5UrlJN1mRSRLy404dSnNW3RGQEQTAdvTups2ZPsehdC2eKAzDaf2rFEY7mh2nn
-         jOdA==
-X-Gm-Message-State: AOAM531B35Dz1uqpaAOe/TQSTboi/ICQOVr88g6dPCgYcOi12nbbMEMS
-        ieUMzfKF+h7PqGMODOrlocs=
-X-Google-Smtp-Source: ABdhPJz495JBMb4ph6mVEuwYysnbQqtbSvnEwWe2aT/rYtAmQiyFG3mVOol2uLUwSb0536EHwwiHMw==
-X-Received: by 2002:a17:906:eb53:: with SMTP id mc19mr13270707ejb.22.1629342859257;
-        Wed, 18 Aug 2021 20:14:19 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
-        by smtp.gmail.com with ESMTPSA id g10sm630356ejj.44.2021.08.18.20.14.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 20:14:18 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     gregkh@linuxfoundation.org, Phillip Potter <phil@philpotter.co.uk>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        martin@kaiser.cx, straube.linux@gmail.com,
-        Larry.Finger@lwfinger.net
-Subject: Re: [PATCH 6/6] staging: r8188eu: remove free_xmit_priv field from struct hal_ops
-Date:   Thu, 19 Aug 2021 05:14:17 +0200
-Message-ID: <3280989.scCUJ3VkD9@localhost.localdomain>
-In-Reply-To: <20210818234253.208271-7-phil@philpotter.co.uk>
-References: <20210818234253.208271-1-phil@philpotter.co.uk> <20210818234253.208271-7-phil@philpotter.co.uk>
+        Wed, 18 Aug 2021 23:19:54 -0400
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 17J3IxsJ030290;
+        Thu, 19 Aug 2021 12:19:00 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 17J3IxsJ030290
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1629343140;
+        bh=8R7YU7UMyAYg6tI+s5cGIr3kp+Uc/xP2EG46o6jBdT4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XQkyXmXY6RH3PPpTXNjeBoJ9oCb2cOWub2Fljdqz6J3wCSmqBL3JPz5q9j1bcExFN
+         7Q3VU2ftUEdwXmDSEZpsGjKlXW1++UBLDjmAydHFRtFvNPDb+nhYJckUsivZZEJes2
+         dv2UJeIq4U7C9DPhtC7RyyRZGIQ9pUHEnPvpZakVt81GuzchlcBRD9PpAQUmCsYr2l
+         pNalNMVC9du/wzz2EwjJfmLUgufJP9zb6+RkjHi6kTHMj1XAssAnlzDErGayNgjzkY
+         UYEnwNLcTmRQb7xyawFeVWXhWx9mJ0jKCWtarHHX4zoUE3RHzRoKt95GIT7Fr7WfnU
+         ZplSxzewdw5Vg==
+X-Nifty-SrcIP: [209.85.216.43]
+Received: by mail-pj1-f43.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso10308194pjh.5;
+        Wed, 18 Aug 2021 20:19:00 -0700 (PDT)
+X-Gm-Message-State: AOAM533/vUcXANZTt6zGaFNBnBtntLRGpTL66IWTctU8tVgml3yg7Y5r
+        dCZ5GGW45466iu5gyadgJPcPbTqx8zWJf7r02IE=
+X-Google-Smtp-Source: ABdhPJziJU4OCVndQXuzQnNS+qX678bfza4wm+IfG/N31dAjyI+7YzjBQH/lrEqEVyok9RGqWAhv/WgF/SG9n8Wzkns=
+X-Received: by 2002:a17:902:bc41:b029:12d:3f9b:401e with SMTP id
+ t1-20020a170902bc41b029012d3f9b401emr9847564plz.47.1629343139527; Wed, 18 Aug
+ 2021 20:18:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20210819005744.644908-1-masahiroy@kernel.org> <20210819005744.644908-4-masahiroy@kernel.org>
+ <202108181952.14AEEED@keescook>
+In-Reply-To: <202108181952.14AEEED@keescook>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 19 Aug 2021 12:18:22 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT27ADexKfDjxK1F=FKGGWNFKQZ7vEyKXR_0+gpjZpT5Q@mail.gmail.com>
+Message-ID: <CAK7LNAT27ADexKfDjxK1F=FKGGWNFKQZ7vEyKXR_0+gpjZpT5Q@mail.gmail.com>
+Subject: Re: [PATCH 03/13] kbuild: detect objtool changes correctly and remove .SECONDEXPANSION
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, August 19, 2021 1:42:53 AM CEST Phillip Potter wrote:
-> Remove free_xmit_priv function pointer field from struct hal_ops definition
-> in include/hal_intf.h, as it is now no longer used anywhere in the driver.
-> 
-> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-> ---
->  drivers/staging/r8188eu/include/hal_intf.h | 1 -
->  1 file changed, 1 deletion(-)
+On Thu, Aug 19, 2021 at 11:55 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Thu, Aug 19, 2021 at 09:57:34AM +0900, Masahiro Yamada wrote:
+> > This reverts commit 8852c5524029 ("kbuild: Fix objtool dependency for
+> > 'OBJECT_FILES_NON_STANDARD_<obj> := n'"), and fix the dependency in a
+> > cleaner way.
+> >
+> > Using .SECONDEXPANSION is expensive since Makefile.build is parsed
+> > twice every time, and the escaping dollars makes the code unreadable.
+> >
+> > Adding include/config/* as dependency is not maintainable either because
+> > objtool_args is dependent on more CONFIG options.
+> >
+> > A better fix is to include the objtool command in *.cmd files so any
+> > command change is naturally detected by if_change.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> >  scripts/Makefile.build | 28 ++++++++++------------------
+> >  1 file changed, 10 insertions(+), 18 deletions(-)
+> >
+> > diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+> > index 31154e44c251..3e4cd1439cd4 100644
+> > --- a/scripts/Makefile.build
+> > +++ b/scripts/Makefile.build
+> > @@ -155,7 +155,7 @@ $(obj)/%.ll: $(src)/%.c FORCE
+> >  # (See cmd_cc_o_c + relevant part of rule_cc_o_c)
+> >
+> >  quiet_cmd_cc_o_c = CC $(quiet_modtag)  $@
+> > -      cmd_cc_o_c = $(CC) $(c_flags) -c -o $@ $<
+> > +      cmd_cc_o_c = $(CC) $(c_flags) -c -o $@ $< $(cmd_objtool)
+> >
+> >  ifdef CONFIG_MODVERSIONS
+> >  # When module versioning is enabled the following steps are executed:
+> > @@ -223,6 +223,8 @@ endif # CONFIG_FTRACE_MCOUNT_USE_RECORDMCOUNT
+> >
+> >  ifdef CONFIG_STACK_VALIDATION
+> >
+> > +objtool := $(objtree)/tools/objtool/objtool
+> > +
+> >  # Objtool arguments are also needed for modfinal with LTO, so we define
+> >  # then here to avoid duplication.
+> >  objtool_args =                                                               \
+> > @@ -237,26 +239,19 @@ objtool_args =                                                          \
+> >
+> >  ifndef CONFIG_LTO_CLANG
+> >
+> > -__objtool_obj := $(objtree)/tools/objtool/objtool
+> > -
+> >  # 'OBJECT_FILES_NON_STANDARD := y': skip objtool checking for a directory
+> >  # 'OBJECT_FILES_NON_STANDARD_foo.o := 'y': skip objtool checking for a file
+> >  # 'OBJECT_FILES_NON_STANDARD_foo.o := 'n': override directory skip for a file
+> >  cmd_objtool = $(if $(patsubst y%,, \
+> >       $(OBJECT_FILES_NON_STANDARD_$(basetarget).o)$(OBJECT_FILES_NON_STANDARD)n), \
+> > -     $(__objtool_obj) $(objtool_args) $@)
+> > -objtool_obj = $(if $(patsubst y%,, \
+> > -     $(OBJECT_FILES_NON_STANDARD_$(basetarget).o)$(OBJECT_FILES_NON_STANDARD)n), \
+> > -     $(__objtool_obj))
+> > +     ; $(objtool) $(objtool_args) $@)
+>
+> This is extremely clever -- pasting commands together. :)
+>
+> Does this correctly propagate failures in the first half of the command?
 
-This entry could have been removed in patch 4/6 or 5/6, but I guess 
-it's okay to do that here as well. Perhaps the three patches from 4/6 
-to 6/6 could have been merged into one (because since 4/6 was 
-immediately clear that this operation has no use at all).
 
-Aside from the above considerations, it looks good. So...
+Yes.
+Any failure bails out immediately because the -e option is set.
 
-Acked by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 
-Thanks,
+See
 
-Fabio
+  cmd = @set -e; $(echo-cmd) $(cmd_$(1))
+
+in scripts/Kbuild.include
 
 
 
 
+>
+> For example, now we'd have:
+>         gcc flags..... -c -o out in ; objtool...
+>
+> But I think objtool will run even on gcc failure, and "make" won't see
+> the failure from gcc? I need to go test this.
+>
+> -Kees
+>
+> > +
+> > +# Rebuild all objects when objtool is updated
+> > +objtool_dep = $(objtool)
+> >
+> >  endif # CONFIG_LTO_CLANG
+> >  endif # CONFIG_STACK_VALIDATION
+> >
+> > -# Rebuild all objects when objtool changes, or is enabled/disabled.
+> > -objtool_dep = $(objtool_obj)                                 \
+> > -           $(wildcard include/config/ORC_UNWINDER            \
+> > -                      include/config/STACK_VALIDATION)
+> > -
+> >  ifdef CONFIG_TRIM_UNUSED_KSYMS
+> >  cmd_gen_ksymdeps = \
+> >       $(CONFIG_SHELL) $(srctree)/scripts/gen_ksymdeps.sh $@ >> $(dot-target).cmd
+> > @@ -270,7 +265,6 @@ define rule_cc_o_c
+> >       $(call cmd,gen_ksymdeps)
+> >       $(call cmd,checksrc)
+> >       $(call cmd,checkdoc)
+> > -     $(call cmd,objtool)
+> >       $(call cmd,modversions_c)
+> >       $(call cmd,record_mcount)
+> >  endef
+> > @@ -278,13 +272,11 @@ endef
+> >  define rule_as_o_S
+> >       $(call cmd_and_fixdep,as_o_S)
+> >       $(call cmd,gen_ksymdeps)
+> > -     $(call cmd,objtool)
+> >       $(call cmd,modversions_S)
+> >  endef
+> >
+> >  # Built-in and composite module parts
+> > -.SECONDEXPANSION:
+> > -$(obj)/%.o: $(src)/%.c $(recordmcount_source) $$(objtool_dep) FORCE
+> > +$(obj)/%.o: $(src)/%.c $(recordmcount_source) $(objtool_dep) FORCE
+> >       $(call if_changed_rule,cc_o_c)
+> >       $(call cmd,force_checksrc)
+> >
+> > @@ -367,7 +359,7 @@ $(obj)/%.s: $(src)/%.S FORCE
+> >       $(call if_changed_dep,cpp_s_S)
+> >
+> >  quiet_cmd_as_o_S = AS $(quiet_modtag)  $@
+> > -      cmd_as_o_S = $(CC) $(a_flags) -c -o $@ $<
+> > +      cmd_as_o_S = $(CC) $(a_flags) -c -o $@ $< $(cmd_objtool)
+> >
+> >  ifdef CONFIG_ASM_MODVERSIONS
+> >
+> > @@ -386,7 +378,7 @@ cmd_modversions_S =                                                               \
+> >       fi
+> >  endif
+> >
+> > -$(obj)/%.o: $(src)/%.S $$(objtool_dep) FORCE
+> > +$(obj)/%.o: $(src)/%.S $(objtool_dep) FORCE
+> >       $(call if_changed_rule,as_o_S)
+> >
+> >  targets += $(filter-out $(subdir-builtin), $(real-obj-y))
+> > --
+> > 2.30.2
+> >
+>
+> --
+> Kees Cook
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
