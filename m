@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AAE13F11BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 05:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23ECF3F11C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 05:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236774AbhHSDc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 23:32:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24249 "EHLO
+        id S236900AbhHSDdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 23:33:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33920 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237010AbhHSDcs (ORCPT
+        by vger.kernel.org with ESMTP id S236929AbhHSDcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 23:32:48 -0400
+        Wed, 18 Aug 2021 23:32:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629343933;
+        s=mimecast20190719; t=1629343935;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=NK34S7ohejHSsYRUoxQlrWyqLvCvQn9c8SCE8RIYOX8=;
-        b=Hpb3qBQCMJQVWQmv04vLoBpplpdLsOvNJ5fYAZtbutN4stb0uJ6goX6USOZYpNngwcegmq
-        nuvZLT0uVKFMekL6UjZRxt9lNxqkG0jksiUA+8A/a7Re0XkBkK/QaiymHvnwZkc5phh0ZP
-        P9wF0lSWdUF9HeOwNhymoi8Drrl5hjU=
+        bh=xQpziQ6Rj2gnabS9wmfFf8vTlI/P7DAPk0LPZgWEcOo=;
+        b=MKGXBmjKyAROFuO4OLl0TvD/V5egz1LFrF4a8rRLUvujNeCMbpgLfSZna0ZqZoWtJzpLx+
+        Ys9FXSDtLurxhwNR3tkWVy0beOyp+WYHUmA5Ts52LTsh+eF9rjlqkwANmVugzNeeuAQK7x
+        8mvpgZPI2fCou5gFJHQzkbqhrro8hfQ=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-370-JvjqaducN4KAaDd0oZSvXw-1; Wed, 18 Aug 2021 23:32:09 -0400
-X-MC-Unique: JvjqaducN4KAaDd0oZSvXw-1
+ us-mta-388-1GpmDY2iOPCMYTq-JKyZEQ-1; Wed, 18 Aug 2021 23:32:13 -0400
+X-MC-Unique: 1GpmDY2iOPCMYTq-JKyZEQ-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8461E190B2A6;
-        Thu, 19 Aug 2021 03:32:07 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CC8C8190B2A9;
+        Thu, 19 Aug 2021 03:32:11 +0000 (UTC)
 Received: from fedora.redhat.com (unknown [10.64.242.122])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 500FA19C87;
-        Thu, 19 Aug 2021 03:32:04 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B94EA19C87;
+        Thu, 19 Aug 2021 03:32:08 +0000 (UTC)
 From:   Kate Hsuan <hpa@redhat.com>
 To:     Alex Hung <alex.hung@canonical.com>,
         Hans de Goede <hdegoede@redhat.com>,
@@ -49,9 +49,9 @@ To:     Alex Hung <alex.hung@canonical.com>,
         "David E . Box" <david.e.box@linux.intel.com>,
         linux-kernel@vger.kernel.org, Dell.Client.Kernel@dell.com
 Cc:     platform-driver-x86@vger.kernel.org, Kate Hsuan <hpa@redhat.com>
-Subject: [PATCH v3 18/20] platform/x86: intel-vbtn: Move to intel sub-directory
-Date:   Thu, 19 Aug 2021 11:29:59 +0800
-Message-Id: <20210819033001.20136-19-hpa@redhat.com>
+Subject: [PATCH v3 19/20] platform/x86: intel-wmi-sbl-fw-updat: Move to intel sub-directory
+Date:   Thu, 19 Aug 2021 11:30:00 +0800
+Message-Id: <20210819033001.20136-20-hpa@redhat.com>
 In-Reply-To: <20210819033001.20136-1-hpa@redhat.com>
 References: <20210819033001.20136-1-hpa@redhat.com>
 MIME-Version: 1.0
@@ -61,113 +61,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move intel-vbtn to intel sub-directory to improve
+Move intel-wmi-sbl-fw-updat to intel sub-directory to improve
 readability.
 
 Signed-off-by: Kate Hsuan <hpa@redhat.com>
 ---
- drivers/platform/x86/Kconfig                        | 13 -------------
- drivers/platform/x86/Makefile                       |  3 +--
- drivers/platform/x86/intel/Kconfig                  | 13 +++++++++++++
- drivers/platform/x86/intel/Makefile                 |  2 ++
- drivers/platform/x86/{intel-vbtn.c => intel/vbtn.c} |  2 +-
- 5 files changed, 17 insertions(+), 16 deletions(-)
- rename drivers/platform/x86/{intel-vbtn.c => intel/vbtn.c} (99%)
+ drivers/platform/x86/Kconfig                       | 10 ----------
+ drivers/platform/x86/Makefile                      |  2 +-
+ drivers/platform/x86/intel/Kconfig                 |  3 +++
+ drivers/platform/x86/intel/Makefile                |  3 +++
+ drivers/platform/x86/intel/wmi/Kconfig             | 14 ++++++++++++++
+ drivers/platform/x86/intel/wmi/Makefile            |  7 +++++++
+ .../wmi/sbl-fw-update.c}                           |  0
+ 7 files changed, 28 insertions(+), 11 deletions(-)
+ create mode 100644 drivers/platform/x86/intel/wmi/Kconfig
+ create mode 100644 drivers/platform/x86/intel/wmi/Makefile
+ rename drivers/platform/x86/{intel-wmi-sbl-fw-update.c => intel/wmi/sbl-fw-update.c} (100%)
 
 diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index 6ed05e5faac1..b8ce4e6d90dd 100644
+index b8ce4e6d90dd..611930985b1d 100644
 --- a/drivers/platform/x86/Kconfig
 +++ b/drivers/platform/x86/Kconfig
-@@ -667,19 +667,6 @@ config THINKPAD_LMI
+@@ -77,16 +77,6 @@ config UV_SYSFS
+ 	  To compile this driver as a module, choose M here: the module will
+ 	  be called uv_sysfs.
  
- source "drivers/platform/x86/intel/Kconfig"
- 
--config INTEL_VBTN
--	tristate "INTEL VIRTUAL BUTTON"
--	depends on ACPI
--	depends on INPUT
--	depends on I2C
--	select INPUT_SPARSEKMAP
+-config INTEL_WMI_SBL_FW_UPDATE
+-	tristate "Intel WMI Slim Bootloader firmware update signaling driver"
+-	depends on ACPI_WMI
 -	help
--	  This driver provides support for the Intel Virtual Button interface.
--	  Some laptops require this driver for power button support.
+-	  Say Y here if you want to be able to use the WMI interface to signal
+-	  Slim Bootloader to trigger update on next reboot.
 -
 -	  To compile this driver as a module, choose M here: the module will
--	  be called intel_vbtn.
+-	  be called intel-wmi-sbl-fw-update.
 -
- config MSI_LAPTOP
- 	tristate "MSI Laptop Extras"
- 	depends on ACPI
+ config INTEL_WMI_THUNDERBOLT
+ 	tristate "Intel WMI thunderbolt force power driver"
+ 	depends on ACPI_WMI
 diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-index afeea9ce34b8..d8b193e910bd 100644
+index d8b193e910bd..0a6dca068d5a 100644
 --- a/drivers/platform/x86/Makefile
 +++ b/drivers/platform/x86/Makefile
-@@ -69,11 +69,10 @@ obj-$(CONFIG_IDEAPAD_LAPTOP)	+= ideapad-laptop.o
- obj-$(CONFIG_SENSORS_HDAPS)	+= hdaps.o
- obj-$(CONFIG_THINKPAD_ACPI)	+= thinkpad_acpi.o
- obj-$(CONFIG_THINKPAD_LMI)	+= think-lmi.o
-+
- # Intel
- obj-$(CONFIG_X86_PLATFORM_DRIVERS_INTEL)		+= intel/
+@@ -10,7 +10,7 @@ obj-$(CONFIG_WMI_BMOF)		+= wmi-bmof.o
  
--obj-$(CONFIG_INTEL_VBTN)		+= intel-vbtn.o
--
- # MSI
- obj-$(CONFIG_MSI_LAPTOP)	+= msi-laptop.o
- obj-$(CONFIG_MSI_WMI)		+= msi-wmi.o
+ # WMI drivers
+ obj-$(CONFIG_HUAWEI_WMI)		+= huawei-wmi.o
+-obj-$(CONFIG_INTEL_WMI_SBL_FW_UPDATE)	+= intel-wmi-sbl-fw-update.o
++
+ obj-$(CONFIG_INTEL_WMI_THUNDERBOLT)	+= intel-wmi-thunderbolt.o
+ obj-$(CONFIG_MXM_WMI)			+= mxm-wmi.o
+ obj-$(CONFIG_PEAQ_WMI)			+= peaq-wmi.o
 diff --git a/drivers/platform/x86/intel/Kconfig b/drivers/platform/x86/intel/Kconfig
-index 5ca3c36ac187..3a13f7a6da4d 100644
+index 3a13f7a6da4d..665146ac65e9 100644
 --- a/drivers/platform/x86/intel/Kconfig
 +++ b/drivers/platform/x86/intel/Kconfig
-@@ -53,6 +53,19 @@ config INTEL_INT0002_VGPIO
-          To compile this driver as a module, choose M here: the module will
-          be called intel_int0002_vgpio.
+@@ -177,4 +177,7 @@ config INTEL_UNCORE_FREQ_CONTROL
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called intel-uncore-frequency.
  
-+config INTEL_VBTN
-+       tristate "INTEL VIRTUAL BUTTON"
-+       depends on ACPI
-+       depends on INPUT
-+       depends on I2C
-+       select INPUT_SPARSEKMAP
-+       help
-+         This driver provides support for the Intel Virtual Button interface.
-+         Some laptops require this driver for power button support.
++source "drivers/platform/x86/intel/wmi/Kconfig"
 +
-+         To compile this driver as a module, choose M here: the module will
-+         be called intel_vbtn.
 +
- config INTEL_OAKTRAIL
-         tristate "Intel Oaktrail Platform Extras"
-         depends on ACPI
+ endif # X86_PLATFORM_DRIVERS_INTEL
 diff --git a/drivers/platform/x86/intel/Makefile b/drivers/platform/x86/intel/Makefile
-index da238e2e352d..4211c683315f 100644
+index 4211c683315f..0b27be3b9334 100644
 --- a/drivers/platform/x86/intel/Makefile
 +++ b/drivers/platform/x86/intel/Makefile
-@@ -15,6 +15,8 @@ intel_int0002_vgpio-y			:= int0002_vgpio.o
- obj-$(CONFIG_INTEL_INT0002_VGPIO)	+= intel_int0002_vgpio.o
- intel_oaktrail-y			:= oaktrail.o
- obj-$(CONFIG_INTEL_OAKTRAIL)		+= intel_oaktrail.o
-+intel-vbtn-y				:= vbtn.o
-+obj-$(CONFIG_INTEL_VBTN)		+= intel-vbtn.o
- 
- # Intel PMIC / PMC / P-Unit devices
- intel_bxtwc_tmu-y			:= bxtwc_tmu.o
-diff --git a/drivers/platform/x86/intel-vbtn.c b/drivers/platform/x86/intel/vbtn.c
-similarity index 99%
-rename from drivers/platform/x86/intel-vbtn.c
-rename to drivers/platform/x86/intel/vbtn.c
-index 309166431063..15f013af9e62 100644
---- a/drivers/platform/x86/intel-vbtn.c
-+++ b/drivers/platform/x86/intel/vbtn.c
-@@ -14,7 +14,7 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/suspend.h>
--#include "dual_accel_detect.h"
-+#include "../dual_accel_detect.h"
- 
- /* Returned when NOT in tablet mode on some HP Stream x360 11 models */
- #define VGBS_TABLET_MODE_FLAG_ALT	0x10
+@@ -47,3 +47,6 @@ obj-$(CONFIG_INTEL_TURBO_MAX_3)			+= intel_turbo_max_3.o
+ intel-uncore-frequency-y					:= uncore-frequency.o
+ obj-$(CONFIG_INTEL_UNCORE_FREQ_CONTROL)		+= intel-uncore-frequency.o
+ obj-$(CONFIG_INTEL_SPEED_SELECT_INTERFACE)	+= speed_select_if/
++
++#WMI drivers
++obj-$(CONFIG_INTEL_WMI_SBL_FW_UPDATE)		+= wmi/
+diff --git a/drivers/platform/x86/intel/wmi/Kconfig b/drivers/platform/x86/intel/wmi/Kconfig
+new file mode 100644
+index 000000000000..fc70728e0f1f
+--- /dev/null
++++ b/drivers/platform/x86/intel/wmi/Kconfig
+@@ -0,0 +1,14 @@
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# Intel x86 Platform Specific Drivers
++#
++
++config INTEL_WMI_SBL_FW_UPDATE
++	tristate "Intel WMI Slim Bootloader firmware update signaling driver"
++	depends on ACPI_WMI
++	help
++	  Say Y here if you want to be able to use the WMI interface to signal
++	  Slim Bootloader to trigger update on next reboot.
++
++	  To compile this driver as a module, choose M here: the module will
++	  be called intel-wmi-sbl-fw-update.
+diff --git a/drivers/platform/x86/intel/wmi/Makefile b/drivers/platform/x86/intel/wmi/Makefile
+new file mode 100644
+index 000000000000..bf1f118b6839
+--- /dev/null
++++ b/drivers/platform/x86/intel/wmi/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# Intel x86 Platform Specific Drivers
++#
++
++intel-wmi-sbl-fw-update-y				:= sbl-fw-update.o
++obj-$(CONFIG_INTEL_WMI_SBL_FW_UPDATE)	+= intel-wmi-sbl-fw-update.o
+diff --git a/drivers/platform/x86/intel-wmi-sbl-fw-update.c b/drivers/platform/x86/intel/wmi/sbl-fw-update.c
+similarity index 100%
+rename from drivers/platform/x86/intel-wmi-sbl-fw-update.c
+rename to drivers/platform/x86/intel/wmi/sbl-fw-update.c
 -- 
 2.31.1
 
