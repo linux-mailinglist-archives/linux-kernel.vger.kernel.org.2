@@ -2,116 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DDF23F169D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A8D3F169E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237662AbhHSJuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 05:50:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbhHSJuB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 05:50:01 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55DDEC061575;
-        Thu, 19 Aug 2021 02:49:25 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id a9so7770457ybr.5;
-        Thu, 19 Aug 2021 02:49:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=baqn3nFJ4OCTZu2mfJfEIksHZD7gejF7HwEVWCcEoaQ=;
-        b=X2xgmIDbeZp2Ko+ImEdETlccj2ISP/5yZyWVeEyyC8OZGhekNYG0ut5Vh3rGFyfYQa
-         +vO7O1JJx06Yk9j173yO72pZXd06vbqAPCGzPssRgjTqIMvY5kn45zdttUsWTZjBD5O/
-         kyYzC0Op2LAQ2xwaFeOmvIKD1TRVaohPIcWTJBx73Su8V609yIcxQSr5ktow/HUEeel8
-         hxHKEAyyM3OZvKOIYHuXgFaEO3AUHMzvGEMJQdL7e1LJaVUm51o4L+vFvzUkVmJw9XP/
-         d+VtaPaljEyDiVPyQQNRPdK2A8PFiY5PzvbMTeu0F1gG/4cg7T3dMqHvshTsHcNUAx9G
-         dRkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=baqn3nFJ4OCTZu2mfJfEIksHZD7gejF7HwEVWCcEoaQ=;
-        b=l64MoKVzpjhbp1O8qbzsRfHdxFubkv6WM1DUlHRNJRtXHTyjnFj4GO2bGS0++Mr28Q
-         pfFtNsN4RjslI5EWwcwrL2OPtuOKg9HyY2UZix2nmjReS1o+JkWLM6RFGXg/XC4oHz75
-         uMLpOTjBa+w1KzL0NrUSvLVdsUIaI7DpjKWV6wBXBwWVzJ8YUsCLfuFMdVolMe/p1uZ3
-         PFMZfiZyqaLVhVUTSHv5sP4Ie3tjiCjSlO+KS//bQGfl55K6RFhxnmiLicJJc4AsmbR+
-         x1CW+xS7uHeLNdbjJrCUqf5Aht4HmcxYZQC8Mu5XrJbvCnf0ndI+iCz8UBApeG0lvtXQ
-         3N9Q==
-X-Gm-Message-State: AOAM532ESXNV9Qzp6DRDiuF6QMQ9XA9VIQbPdq9d53VFE4u1+tq8N58d
-        pKoNnjUo5wMnd+0s5f/RllVlWp262xzJh5UKg4Y=
-X-Google-Smtp-Source: ABdhPJyvT3ptpUVFYprs2pXgbIQba2dfM+Mw9N3mgrKFKcuQJ7PSyA/LCEE8nGZkk6PYfyVA1GcRstI/+e3gEonQqvw=
-X-Received: by 2002:a25:3046:: with SMTP id w67mr17605524ybw.134.1629366564492;
- Thu, 19 Aug 2021 02:49:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210819093226.13955-1-lukas.bulwahn@gmail.com>
- <20210819093226.13955-2-lukas.bulwahn@gmail.com> <475fa73c-5eef-a60c-c70f-9f6ea7a079d8@csgroup.eu>
-In-Reply-To: <475fa73c-5eef-a60c-c70f-9f6ea7a079d8@csgroup.eu>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Thu, 19 Aug 2021 11:49:20 +0200
-Message-ID: <CAKXUXMww0jcqdonHLdajQaPRR2Ru6OVMFd+99r55XUEin6Nv=Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2] powerpc: kvm: rectify selection to PPC_DAWR
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Neuling <mikey@neuling.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S237746AbhHSJud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 05:50:33 -0400
+Received: from mail-eopbgr80057.outbound.protection.outlook.com ([40.107.8.57]:39749
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229745AbhHSJuc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 05:50:32 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lNyJyuw4SrBMulpUYmpLwjbh8Yer8ny0fR5R4V6DWkCrKNv6ru20WwZu1UUT+7Sqsg9o+FX7ONQMFqGHHb6GR6jt3m8mILZOvjEDqI9x00C3Q3DI/Ma1rCjBuczZAL9eItGFoj87yejyutqfDNy3Ku66q60I/S2M+Ls6GIwntgu+b5yaC9o+jfvSanQQxr4KMisQ2AdWqGvMb/zbk2iMmEapK+5qNYW2mEg2oBFvbyL2cd6ljEnklzJ2ytNz257yGaeBUQkRXMp4t71H2X+x8I+/fyLTu32GfYSENv5bvqDs8Mnh2Ub8fYADNG1f1P/6a49i7hDTfVvjbR/p/yaArQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S+mT13lEApaUJiI/j2nyneevZKhk4M5zFm4XiRmY/qE=;
+ b=krsMVlV4ZxzOkX7AywLgxq3hVdTaWtooD1aKpuqy7YJjHYqoZVQCg6LQIjbtlpfZaSglOAjuBQD2vP5VjZcDAgLvbLoWbJlUevXIwK0ny3+B/CoaOh47eq/JUf+hGk6mi2Zu+nh7FwelY0iYIvVluUdIUsl2mcKG2xnuVwUK+PG7u7KW4kYxZGLJ4VAvpLfS5Ea6QJQ9VVCCR0S4Z0dwZuCAIdZ1AUBBH8KBUTEBWezyP4lpN8t/eM2vAas0XZ4cKTiO3E0kkXNxwJ9UB3wnIR+8RKV0JZj/sZ6LkzyC9u4ZZDXWE051oab0p4Oc9FI1Jl4ihu9iIGHEGjHpUb5Oxw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S+mT13lEApaUJiI/j2nyneevZKhk4M5zFm4XiRmY/qE=;
+ b=HPHH1qhIWB344Ptz9l8NpFIFNb9Phmk7HStVO5+WBDmxRNJZQSumUC7eVoJsL/C3Ttfj6WfUN65kCBGApCisMdXTJu2HAsfw7yjxPooqAjcwSz9hkITp9fGswY4yp9xO+zFSWhxTaZP5VmdrkEreb4HbYLp39cD3aidUKXYaHGE=
+Received: from DB8PR04MB5785.eurprd04.prod.outlook.com (2603:10a6:10:b0::22)
+ by DB6PR0402MB2726.eurprd04.prod.outlook.com (2603:10a6:4:94::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.21; Thu, 19 Aug
+ 2021 09:49:54 +0000
+Received: from DB8PR04MB5785.eurprd04.prod.outlook.com
+ ([fe80::20d3:3fd5:a3e5:3f46]) by DB8PR04MB5785.eurprd04.prod.outlook.com
+ ([fe80::20d3:3fd5:a3e5:3f46%3]) with mapi id 15.20.4436.019; Thu, 19 Aug 2021
+ 09:49:54 +0000
+From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>,
+        "joergen.andreasen@microchip.com" <joergen.andreasen@microchip.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
+        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
+        "vishal@chelsio.com" <vishal@chelsio.com>,
+        "saeedm@mellanox.com" <saeedm@mellanox.com>,
+        "jiri@mellanox.com" <jiri@mellanox.com>,
+        "idosch@mellanox.com" <idosch@mellanox.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "kuba@kernel.org" <kuba@kernel.org>, Po Liu <po.liu@nxp.com>,
+        Leo Li <leoyang.li@nxp.com>
+Subject: RE: [RFC v2 net-next 3/8] net: mscc: ocelot: set vcap IS2 chain to
+ goto PSFP chain
+Thread-Topic: [RFC v2 net-next 3/8] net: mscc: ocelot: set vcap IS2 chain to
+ goto PSFP chain
+Thread-Index: AQHXk/d8zZOvA4oEl0WuxDM4SkoD+6t5WfyAgAE7AFA=
+Date:   Thu, 19 Aug 2021 09:49:54 +0000
+Message-ID: <DB8PR04MB5785C58BDBD502C78ABCDB89F0C09@DB8PR04MB5785.eurprd04.prod.outlook.com>
+References: <20210818061922.12625-1-xiaoliang.yang_1@nxp.com>
+ <20210818061922.12625-4-xiaoliang.yang_1@nxp.com>
+ <20210818145435.bsbxuq7bbjr4fkel@skbuf>
+In-Reply-To: <20210818145435.bsbxuq7bbjr4fkel@skbuf>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8b5e83c6-fc18-49b9-f12e-08d962f6b28e
+x-ms-traffictypediagnostic: DB6PR0402MB2726:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB6PR0402MB27264EA967CE14E4328D1D5EF0C09@DB6PR0402MB2726.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: HjbamUq25DK6FipGIgibAgB0zSirAJ1VWlZyDUkV4/oLmJkjqsBMqRxjzZilACgXX4+3adwP5Vpnq8koQ2pi/whf5qbuDiufqA4kq+nyJdDQFiQA9K+Mr6wNB2Fsuy9NcKcjqSxN+4ZFOEbdV+xFEd5EdZAvzvuF6BW/1Rt9FVBDx9ehzwpZBvxeLByqJnL9wEQiwJLsYHcPIvIyRuPmKa2TolP+dbCJN4xuiAtIU6G2vu0YgjekBh5W4pHskW4DNXkSZI83a3XsLczytBouh/UNwZbTHoIOioMgkzx3xtc1d6N8F2rS03KAyKn61gk3d8hxCWnLgsbiLQuGBRmeBrzILGmzbciiTxZxIvaYUzWmxqf0vm0NwtrSW2KA1LvIlpqmKFsCbSXy3IZ1jUQz9hhdkz0PjPv1nLiOxpZgvpnVjVRvzBiVdJiW3wsN4M8qeqM6uuT2ahfrDoc5cQLjpTT2G5UHAaL08eqIh9euP4MeJ4MCivEbDWM6m5gVLzh+g+ug4PivJw9sG+jEZre4GAvrshDuknAyFJ68bpYuIJx+b+iIy4Qt3R5C/xOo2nTvkOoBkua8z57NAwI/62u5bEwGw7RaD/f2dgAcB6vmKYvk8M96RT37/HwZHxzRLsTVA2/rogPFyAZ3Zgq7agLSTBUY24v8mOXLqG15KnyiubCLVVJyJTo0zho4ZB44+nwKFUfpPfC821AngYXmPL8zSg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB5785.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(136003)(366004)(39850400004)(346002)(38100700002)(9686003)(316002)(5660300002)(64756008)(55016002)(52536014)(6506007)(66946007)(33656002)(54906003)(83380400001)(66476007)(4744005)(122000001)(71200400001)(66446008)(2906002)(6862004)(76116006)(38070700005)(478600001)(8676002)(8936002)(66556008)(7416002)(86362001)(7696005)(26005)(6636002)(186003)(4326008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Uu38ozAeFTExAiUmzZ48ndmkiEhJgVGm7zToo9GRaf2A230BCxRj/YA58uJZ?=
+ =?us-ascii?Q?BfhBxuwEuqqr9hUwitnLIcbdjM7lEgptPDiB9HtzmH6zs/L0J5EbbEF+oLrM?=
+ =?us-ascii?Q?b8bCXzzf8H5Re5+tB6zlO31f1Tio/I/GAEnoolSNb3jF09MH0IAtO+1IC3F3?=
+ =?us-ascii?Q?usroeazR07Rw3omvXL+lC1M4ZpeCSmN1I+CNJHiZ+2BV/5wfvkKd5lRyNBLG?=
+ =?us-ascii?Q?I5oUniKa1X81EV7ew49tG+LuDp0YD33ZJLVeteYuX0Y0XiRGJj3FKvNeliLU?=
+ =?us-ascii?Q?SshL3Quvvm045Z/XQ5yrs2xSjC6JYickgEQWU5GDnFpFV+c/cDKEgobMoqZb?=
+ =?us-ascii?Q?VvwA57KmkN6u3ONMN73sKoGGWzCljT37VgO9FssXbzl/XKJZaesZsEfe72h6?=
+ =?us-ascii?Q?qpGYFmoX2jRfNX10onFtiU0JogaGUgImALvgiSPy+FaTfKB1SndIegXkZVqu?=
+ =?us-ascii?Q?+VQwQfu6jQpAsruta7e1ItYL4jIqf6drpgsnmzekaadm0c15IJjcY0lZYg4/?=
+ =?us-ascii?Q?aMVYfbJLNjLGp2W4YjlYG4S1KnkVxNqzg4YzBSM0Wwv9ikfyNC9Uz3SJMtON?=
+ =?us-ascii?Q?7Q4ge/rK+zezQDNpxUjepAt4J7gclHHZ39ZZIjSVTe4K20OxN09aFXAZbLYa?=
+ =?us-ascii?Q?XijEtPl/v0kuXRWxSjrKVu384mOBihqNSfS+9jewL/RVI+0v4STNX6mEq46W?=
+ =?us-ascii?Q?ehpGfhkXwpa7P3MZB1urGpvBP9jV99mdEUscvZD95ApnkhJsQIKXGa3n7m/f?=
+ =?us-ascii?Q?CxXZnBK//cLqrcdXJDnEqcLGNVeTSjocYeaLBaDZFDBEMArYAg7lBquvoHWs?=
+ =?us-ascii?Q?Xj6Tyi1uIW1t/qVww9/yMHnK4Zm0BDn6qU03JnUqUNzWot4KQQ+3EkKdcABY?=
+ =?us-ascii?Q?WyPwJudBIm9g998yrKIM1n6yK4UJrgrGFpWa6wNqadrTDZy/Eki63b6tmgFC?=
+ =?us-ascii?Q?yEFlxpgZb+MuxWdJp1kqjY5cYIWctxTd0Yud0AK8T/CJr5YBFjNTcfAx3Yl8?=
+ =?us-ascii?Q?+mnnhFQMMI8xMRAK9HKvGQNNWKkwVCLAnWKd/feSVs4JvE+X0yEkyDVHrDWh?=
+ =?us-ascii?Q?fn4MEtJ7wQENwS18FZMbtk/CsholV44rCJujxma4/dcGejEMD7THsJheDWG/?=
+ =?us-ascii?Q?g7j+8Q+Gwl7L6+fNQ87gOF633XjyXT1lF4I1QEQmX1jHLa+/8uzjJnVyNBDq?=
+ =?us-ascii?Q?wF/Z6HdlYgzvjn7RXew6yKJpqTx1ImDlZUdsxWYXP0UhLWww6mHtRSX+LqBm?=
+ =?us-ascii?Q?zkeM3TpwZ74YLb5tK0mIWhKuC4cvT+8kbxS5TihYsPQQH+aUb+8NTiS0Dr3c?=
+ =?us-ascii?Q?0M+hZ/En/v5NaK8dr9q+BX3c?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB5785.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8b5e83c6-fc18-49b9-f12e-08d962f6b28e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Aug 2021 09:49:54.4076
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: KV8eA8uikDUvAL6qTZbtbgiOdFG8OdiqMj8WLC/7OhtzdJ02sC6NARSdm+pLR+PTqlTXiwO/N9axkOAqg3hfsWqAQWQZUu6hzsNeVgYKduc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2726
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 11:45 AM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
->
->
-> Le 19/08/2021 =C3=A0 11:32, Lukas Bulwahn a =C3=A9crit :
-> > Commit a278e7ea608b ("powerpc: Fix compile issue with force DAWR")
-> > selects the non-existing config PPC_DAWR_FORCE_ENABLE for config
-> > KVM_BOOK3S_64_HANDLER. As this commit also introduces a config PPC_DAWR=
-,
-> > it probably intends to select PPC_DAWR instead.
-> >
-> > Rectify the selection in config KVM_BOOK3S_64_HANDLER to PPC_DAWR.
-> >
-> > The issue was identified with ./scripts/checkkconfigsymbols.py.
-> >
-> > Fixes: a278e7ea608b ("powerpc: Fix compile issue with force DAWR")
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > ---
-> >   arch/powerpc/kvm/Kconfig | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/arch/powerpc/kvm/Kconfig b/arch/powerpc/kvm/Kconfig
-> > index e45644657d49..aa29ea56c80a 100644
-> > --- a/arch/powerpc/kvm/Kconfig
-> > +++ b/arch/powerpc/kvm/Kconfig
-> > @@ -38,7 +38,7 @@ config KVM_BOOK3S_32_HANDLER
-> >   config KVM_BOOK3S_64_HANDLER
-> >       bool
-> >       select KVM_BOOK3S_HANDLER
-> > -     select PPC_DAWR_FORCE_ENABLE
-> > +     select PPC_DAWR
->
-> That's useless, see https://elixir.bootlin.com/linux/v5.14-rc6/source/arc=
-h/powerpc/Kconfig#L267
->
-> In arch/powerpc/Kconfig, you already have:
->
->         select PPC_DAWR                         if PPC64
->
 
-Ah, I see. Then, it is just a needless and non-effective select here,
-and then select can be deleted completely.
 
-I will send a patch series v2.
+On Wed, Aug 18, 2021 at 22:55:23PM +0800, Vladimir Oltean wrote:
+> > @@ -353,7 +364,7 @@ static int ocelot_flower_parse_action(struct
+> > ocelot *ocelot, int port,
+> >
+> >  	if (filter->goto_target =3D=3D -1) {
+> >  		if ((filter->block_id =3D=3D VCAP_IS2 && filter->lookup =3D=3D 1) ||
+> > -		    chain =3D=3D 0) {
+> > +		    chain =3D=3D 0 || filter->block_id =3D=3D PSFP_BLOCK_ID) {
+> >  			allow_missing_goto_target =3D true;
+>=20
+> I would like to not allow missing "goto" targets for new filter chains.
+>=20
+> Due to legacy support we must keep support for VCAP IS2 on chain 0, but e=
+ver
+> since we added the ability to offload multiple chains corresponding to mu=
+ltiple
+> hardware blocks, we should really use that precise chain ID, and chain 0 =
+should
+> just goto the first used chain in the pipeline.
+>=20
+> Makes sense?
+>=20
+Because the PSFP chain is the last chain now, I allow missing "goto" target=
+s. Once we add a new chain like FRER, I will delete this allow missing "got=
+o" for PSFP block chain.
 
-Lukas
+Thanks,
+Xiaoliang
