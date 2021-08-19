@@ -2,148 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E559C3F0F01
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 02:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 528AD3F0F08
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 02:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235428AbhHSACt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 20:02:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41804 "EHLO
+        id S234368AbhHSAFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 20:05:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234965AbhHSACr (ORCPT
+        with ESMTP id S235005AbhHSAFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 20:02:47 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916C8C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 17:02:12 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id i21so3811549pfd.8
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 17:02:12 -0700 (PDT)
+        Wed, 18 Aug 2021 20:05:10 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE4DC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 17:04:35 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id z1so5321892ioh.7
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 17:04:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=No/CqcYi/ja+9aQOR285LDlQZpZG4tmFE2Pn19n6my4=;
-        b=GCsLDCnT1IGo2ICI8aIFEl7kCwiCIR1K3yHJzTlpK+e6S2iHvTa9PDNboC80JdoO84
-         7qA4G0tlNAdBMtSHQBeyX6n/AuWMsudOz5uq/iTGlMH10Q9h4POgQqR/tjXC7Id59AgS
-         W54I+QF851939R6t+NKPj0fi0SIIiz3PspBiE=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fEapmFlBKIuSpoPu4AyxSHs+c5eRGpigOktGw17Waoc=;
+        b=RymtZDJzEG5vx1du3BYZlbKOwsHfxlhsmAW5/gxLcPrWYezAkX6atoyRb9N8Y/1V+S
+         mVPlJytPA/Ap+BOLltZGwE6n+41KOFT8mVB6GgGClW7alh/gUBLat7aSJRwZ9yyoPo1Q
+         AVqoZbTXZYbJy4uXyI25ybPOpZOUsLcWXlZVM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=No/CqcYi/ja+9aQOR285LDlQZpZG4tmFE2Pn19n6my4=;
-        b=S2uBUeUev9D67OLJymxZyZ+FMDsLEzjwVcsceI9yNoJk1CVxBkiJR4sOs7NcmPj2IF
-         ytBJqqEBF62ruyNbzbZC37rMZku38jLKXCri8zEAVdS0v6kVZ5zECXHX7Z8/vCMd/Q2G
-         +z6ZU8CGYBrkOqf0CHfpWO0mIFFCbzZbIXKyYahqper3zdQTrFW4u+bLHB0aS56T+1YP
-         qo/9d3JihKp4ax/qemBHGzCcrZXudrDHteRNJHuQHxpBz8k7ZoiSIytDqHyTKHb0jCOe
-         /Ll6WZJSoy4zyx13teL2KAQxwwJGJg/OdRKJ9duv44O0jzNEfCeRhGv0OoakOEkmgPe1
-         eHQA==
-X-Gm-Message-State: AOAM530+nyy97PaHLwnvvUWQy0xwEsQx9wXdh/6P4rjnULAOEJDqs5yE
-        FWKtqHcHwV8YaR9FUx/XAhfBhg==
-X-Google-Smtp-Source: ABdhPJx7IuiG55H+hxSJMh1slQNmZgtLecHPm4aA6V8X2OmyKoMMc+5FXWn7b7rsYHq/dPyvgsoalg==
-X-Received: by 2002:a62:ea0f:0:b029:319:8eef:5ff1 with SMTP id t15-20020a62ea0f0000b02903198eef5ff1mr11907946pfh.74.1629331332031;
-        Wed, 18 Aug 2021 17:02:12 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id w9sm872502pja.16.2021.08.18.17.02.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 17:02:11 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 17:02:10 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
-        linux-can <linux-can@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] can: etas_es58x: Replace 0-element raw_msg array
-Message-ID: <202108181659.3DE5E5451@keescook>
-References: <20210818034010.800652-1-keescook@chromium.org>
- <CAMZ6RqK4Rn4d-1CZsg9vJiAMHhxN6fgcqukdHpGwXoGTyNVr_Q@mail.gmail.com>
- <202108172320.1540EC10C@keescook>
- <CAMZ6RqLecbytJFQDC35n7YiqBbrB3--POofnXFeH77Zi2xzqWA@mail.gmail.com>
- <202108180159.5C1CEE70F@keescook>
- <CAMZ6RqK=Q3mvV5gyPVhBsFxE+JPANHNrgFqs=bvTgkbXjwT4Eg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fEapmFlBKIuSpoPu4AyxSHs+c5eRGpigOktGw17Waoc=;
+        b=Zu7/7hqe9S9Q1n3XAcnc8jEQYB9Ld4yA4+i6BHwn6lkAlfXW6phkeB9rFegSZsK9Lw
+         WKfrIwNVFR87q8W4m36w9XMRlypcSFwTL36/C09hQzn1ukYhDWfiJC9/Bb2XWt7OzwQX
+         sk7YxHfE+AwE/79ybIecqQKocnWajsZFc2LfaaVzDIbxxqtfbQaiJecshbc+Zc9HKqq5
+         0vdFJpx96faK1EButgtK6IDDqkks+YIo3eCCH3M2XsugUG2nYUI7LdiLLgdsDw1tEsBI
+         KO8xpGweRCMLpwBos5haBPiKrei6NAuUHho1Kl7m2iH7D+nq4QBQhoAKobHYnycKP1gw
+         Bqeg==
+X-Gm-Message-State: AOAM5309rZGRgNtNO7rmXSfsFKJW/aT2G8NkKfX27wSMcpMHHXgmD5xX
+        G2gTuhcxKOIsx823N9rGPLPaMzdZ6n3R6A==
+X-Google-Smtp-Source: ABdhPJyuUnolwQTrPGsxopTQQNXgLq7yBM7x6lT2DxfNe5Be5tH+N4/fTvxP61YuwnReR9L02gSGyg==
+X-Received: by 2002:a5d:9599:: with SMTP id a25mr9385914ioo.86.1629331473429;
+        Wed, 18 Aug 2021 17:04:33 -0700 (PDT)
+Received: from mail-io1-f44.google.com (mail-io1-f44.google.com. [209.85.166.44])
+        by smtp.gmail.com with ESMTPSA id 11sm604884iln.85.2021.08.18.17.04.32
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Aug 2021 17:04:32 -0700 (PDT)
+Received: by mail-io1-f44.google.com with SMTP id e186so5270117iof.12
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 17:04:32 -0700 (PDT)
+X-Received: by 2002:a5d:9eda:: with SMTP id a26mr9282243ioe.166.1629331471737;
+ Wed, 18 Aug 2021 17:04:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZ6RqK=Q3mvV5gyPVhBsFxE+JPANHNrgFqs=bvTgkbXjwT4Eg@mail.gmail.com>
+References: <1628754078-29779-1-git-send-email-rajpat@codeaurora.org> <1628754078-29779-4-git-send-email-rajpat@codeaurora.org>
+In-Reply-To: <1628754078-29779-4-git-send-email-rajpat@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 18 Aug 2021 17:04:18 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Vb2_K7QDvdMkjPLYqbVNQMa9e=3_PqREAHYMMVX-9QVQ@mail.gmail.com>
+Message-ID: <CAD=FV=Vb2_K7QDvdMkjPLYqbVNQMa9e=3_PqREAHYMMVX-9QVQ@mail.gmail.com>
+Subject: Re: [PATCH V5 3/7] arm64: dts: sc7280: Add QUPv3 wrapper_0 nodes
+To:     Rajesh Patil <rajpat@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        msavaliy@qti.qualcomm.com, satya priya <skakit@codeaurora.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 06:33:39PM +0900, Vincent MAILHOL wrote:
-> On Wed. 18 Aug 2021 at 18:03, Kees Cook <keescook@chromium.org> wrote:
-> > On Wed, Aug 18, 2021 at 04:55:20PM +0900, Vincent MAILHOL wrote:
-> > > At the end, the only goal of raw_msg[] is to have a tag pointing
-> > > to the beginning of the union. It would be virtually identical to
-> > > something like:
-> > > |    u8 raw_msg[];
-> > > |    union {
-> > > |        /* ... */
-> > > |    } __packed ;
-> > >
-> > > I had a look at your work and especially at your struct_group() macro.
-> > > Do you think it would make sense to introduce a union_group()?
-> > >
-> > > Result would look like:
-> > >
-> > > |    union_group_attr(urb_msg, __packed, /* raw_msg renamed to urb_msg */
-> > > |        struct es58x_fd_tx_conf_msg tx_conf_msg;
-> > > |        u8 tx_can_msg_buf[ES58X_FD_TX_BULK_MAX * ES58X_FD_CANFD_TX_LEN];
-> > > |        u8 rx_can_msg_buf[ES58X_FD_RX_BULK_MAX * ES58X_FD_CANFD_RX_LEN];
-> > > |        struct es58x_fd_echo_msg echo_msg[ES58X_FD_ECHO_BULK_MAX];
-> > > |        struct es58x_fd_rx_event_msg rx_event_msg;
-> > > |        struct es58x_fd_tx_ack_msg tx_ack_msg;
-> > > |        __le64 timestamp;
-> > > |        __le32 rx_cmd_ret_le32;
-> > > |    );
-> > >
-> > > And I can then use urb_msg in place of the old raw_msg (might
-> > > need a bit of rework here and there but I can take care of it).
-> > >
-> > > This is the most pretty way I can think of to remove this zero length array.
-> > > Keeping the raw_msg[] but with another size seems odd to me.
-> > >
-> > > Or maybe I would be the only one using this feature in the full
-> > > tree? In that case, maybe it would make sense to keep the
-> > > union_group_attr() macro local to the etas_es58x driver?
-> >
-> > I actually ended up with something close to this idea, but more
-> > generalized for other cases in the kernel. There was a sane way to
-> > include a "real" flexible array in a union (or alone in a struct), so
-> > I've proposed this flex_array() helper:
-> > https://lore.kernel.org/lkml/20210818081118.1667663-2-keescook@chromium.org/
-> >
-> > and then it's just a drop-in replacement for all the places that need
-> > this fixed, including etas_es58x:
-> > https://lore.kernel.org/lkml/20210818081118.1667663-3-keescook@chromium.org/#Z30drivers:net:can:usb:etas_es58x:es581_4.h
-> >
-> > Hopefully this will work out; I think it's as clean as we can get for
-> > now. :)
-> 
-> The __flex_array itself is a nasty hack :D
+Hi,
 
-Indeed. ;)
+On Thu, Aug 12, 2021 at 12:42 AM Rajesh Patil <rajpat@codeaurora.org> wrote:
+>
+> @@ -542,8 +561,305 @@
+>                         #address-cells = <2>;
+>                         #size-cells = <2>;
+>                         ranges;
+> +                       iommus = <&apps_smmu 0x123 0x0>;
+>                         status = "disabled";
+>
+> +                       i2c0: i2c@980000 {
 
-> but the rest is clean.
+Not a full review of your patch (I think Matthias has already looked
+in a bunch of detail), but can I also request that you add i2c and spi
+aliases in your next spin (I think you have to spin this anyway,
+right?) Add these under the "aliases" mode before the mmc ones (to
+keep sort order good):
 
-Thanks!
+i2c0 = &i2c0;
+i2c1 = &i2c1;
+i2c2 = &i2c2;
+i2c3 = &i2c3;
+i2c4 = &i2c4;
+i2c5 = &i2c5;
+i2c6 = &i2c6;
+i2c7 = &i2c7;
+i2c8 = &i2c8;
+i2c9 = &i2c9;
+i2c10 = &i2c10;
+i2c11 = &i2c11;
+i2c12 = &i2c12;
+i2c13 = &i2c13;
+i2c14 = &i2c14;
+i2c15 = &i2c15;
 
-> Is this compliant to the C standard? Well, I guess that as long
-> as both GCC and LLVM supports it, it is safe to add it to the
-> kernel.
+...and these after:
 
-The kernel already uses a bunch of compiler extensions, none of which
-were legal under the C standard to begin with. :) So, really, this is
-about normalizing what we're already doing and finding a single hack
-that helps the code base for readability and robustness.
+spi0 = &spi0;
+spi1 = &spi1;
+spi2 = &spi2;
+spi3 = &spi3;
+spi4 = &spi4;
+spi5 = &spi5;
+spi6 = &spi6;
+spi7 = &spi7;
+spi8 = &spi8;
+spi9 = &spi9;
+spi10 = &spi10;
+spi11 = &spi11;
+spi12 = &spi12;
+spi13 = &spi13;
+spi14 = &spi14;
+spi15 = &spi15;
 
-> I like the final result. I will do a bit more testing and give my
-> acknowledgement if everything goes well.
+The "Quad SPI" doesn't get an alias, but that's OK. It doesn't have a
+well-defined number in the manual and it's fine to have it be
+auto-assigned. It's really just confusing when there's something with
+a well-defined number in the manual and it's a _different_ one in the
+logs. ;-)
 
-Great; thank you!
-
--- 
-Kees Cook
+-Doug
