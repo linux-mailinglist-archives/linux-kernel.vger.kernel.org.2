@@ -2,140 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DBA23F15ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FBA33F15D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237068AbhHSJN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 05:13:57 -0400
-Received: from mail-bn8nam12on2046.outbound.protection.outlook.com ([40.107.237.46]:18497
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235239AbhHSJNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 05:13:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DKxEJS+Bh7eYUTffQYQUXfh24EK0elbFraWi5Ir2IfDCcDhsTxaiYxlQ8yvNG2gYE6vZeMhGYS0q2On7IRXxhXw8ERk0jKFwvjnCnNc18IRfrVRZGPwN+jXkpQqPSDhLIlAt4jKWtZvtM6HN8sjKhorUfoe4pX0ZaLbIHl34hsClGUS9QNilwbnhwcqU6EwjLENycaBs/VFXx/Pqa1gU1VilEKaRjxFSVWFqWTVKazClJZGYvcvIhJcKNVR4BbHdpWzUFsM0Mxf47+HqfHsDFGq/wNQ/piSLay2RZNemKaLlzRk7Xi7fqSkSyi6og7DGEpa36xkHG+qn6ub6Zwtr9Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rPgRCIRAeKYU17bwuGbAgGsF5OKhSvbXPdbe2U/8Yu8=;
- b=ia1lYuGwEcEzWnp6FW5zmXN0fZOJMUrkLyTjj3XY+3FJtCHzswz20B/GuPNF2bUqup/KaymAvwZANa16zg0RKWIjT4HyKhcaF8ecrqg+29jp5Gvxd6VoWFWGA2Vb5FEiO4IzKhIRtnV+8sTUBJbaz/hdSoqbqcafsSKRLghZ5nekZdprYGV/NAppozi9c81ZwRZVAgmnXXfLUXDiOUmV+WPKXn/f4/QKHKnmch0UQK2TJnYr9cPlwjQgov3ZgCGdgbtatFFvr/OVBgLRHXbn3n9jwkLGF1WpH0kAscIvLjEQZqoZJXNETtFsJTqHyU5YtcolTF94qDwuRzVJLu4nAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
+        id S237366AbhHSJK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 05:10:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229804AbhHSJK5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 05:10:57 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A7AC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 02:10:21 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id y3so5247352ilm.6
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 02:10:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rPgRCIRAeKYU17bwuGbAgGsF5OKhSvbXPdbe2U/8Yu8=;
- b=bmHUoueVByNXHxl3HLIjHHvpNNXaXm4J+47nKDGMqgg1HMUDwdCZzQZsmtsboLlZ21ztf+jJ+iv44SCyKV47e0lzoAL+8xgE861f3E6H7xea3yeh69vcpqrfxluEUZm64MJkeeuSWUzn/ZJHnWT4MS4sMCQEGm16wyBQkekaX+c=
-Received: from SN2PR01CA0070.prod.exchangelabs.com (2603:10b6:800::38) by
- BN7PR02MB5186.namprd02.prod.outlook.com (2603:10b6:408:21::33) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4436.19; Thu, 19 Aug 2021 09:13:14 +0000
-Received: from SN1NAM02FT0005.eop-nam02.prod.protection.outlook.com
- (2603:10b6:800:0:cafe::4c) by SN2PR01CA0070.outlook.office365.com
- (2603:10b6:800::38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.18 via Frontend
- Transport; Thu, 19 Aug 2021 09:13:14 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT0005.mail.protection.outlook.com (10.97.4.182) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4436.19 via Frontend Transport; Thu, 19 Aug 2021 09:13:13 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 19 Aug 2021 02:13:12 -0700
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Thu, 19 Aug 2021 02:13:12 -0700
-Envelope-to: git@xilinx.com,
- vkoul@kernel.org,
- dmaengine@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Received: from [172.23.64.5] (port=35264 helo=xhdvnc105.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <radhey.shyam.pandey@xilinx.com>)
-        id 1mGe6p-0005cj-Gl; Thu, 19 Aug 2021 02:13:11 -0700
-Received: by xhdvnc105.xilinx.com (Postfix, from userid 13245)
-        id B63F76109A; Thu, 19 Aug 2021 14:43:10 +0530 (IST)
-From:   Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-To:     <vkoul@kernel.org>, <michal.simek@xilinx.com>
-CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <git@xilinx.com>,
-        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-Subject: [PATCH] dmaengine: xilinx_dma: Set DMA mask for coherent APIs
-Date:   Thu, 19 Aug 2021 14:39:33 +0530
-Message-ID: <1629364173-408-1-git-send-email-radhey.shyam.pandey@xilinx.com>
-X-Mailer: git-send-email 2.1.1
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lZ3CToCG3juWBo4uXSiPR3dQNTGtjH08RmsNnVvcEdM=;
+        b=GlsyqZ60mR4Jb195DNR0iUo8ZVyc+xbfTqPuxCN8jKL0SocJ2mcD3cEczU0+RNSVtp
+         /2POP99Dyqv45MqZLx95Xm8RJm1+kHsIieRWMHgUQip3hTYqMKIeMjHT0+j5OKRwDP5K
+         5RYLzwpIOOWETVntPXHk0mVF+IYSKgVo1u2Z/V9bHzw55Y6MFaAcxSM1Yu7mByszsxyq
+         Z8PRnt2BAMZ7bZtluCP32IK0MihUm8b4GhWUVNaat0EOndartBjt579la/MfngAgrkEt
+         TN/6H1dj2Vfh/BePaSQflMl7fZ3XLbm1fQMyIiYO7XTonjoX7/72D7znc95GWzf08TlC
+         M02w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lZ3CToCG3juWBo4uXSiPR3dQNTGtjH08RmsNnVvcEdM=;
+        b=MZhpOem7OUmEhgwf/P4amwHFyYjRCPm5vM9/Q67L2M4Gh8iY7QczRUuwNywwbSUjri
+         ay+pHGE3dAKNQiMglILkkBSzrxvGO1VT5sKQTYHiKRi1wqs/7iJMrOpbbcR5FozBSyMq
+         UCHw9qNt13RL8wCsPGQhLvnuHE4sVr+JdBIcv8X30ShtcDl3xAnZJ9DcriKGuXk5zYL3
+         a6Wjit19XM6uKNx9Ec9mdUJLcZt5l1v6DkBmpwosGYryUx4nMUrxOICCCxm7GiMrfktr
+         TizKo4RbAmAnZYFKr5xzShFiZp9aYBNbijTWQZ4PMqIxWj47nEgNl2s0nYwdHlbkKnZN
+         Hbvw==
+X-Gm-Message-State: AOAM532lbMg7kSBgrPygSrU2Qrk/MyKG/0C+cE/dAHXP9/v+UEag1mTj
+        5kd6W8/7N3GK0glV3SnmGKv3/Ddq2G7MTQ7KZt4=
+X-Google-Smtp-Source: ABdhPJzWrgxLb164lORkiiVfIZ8tsSObzJ0sWkzhyZvsCUTgz2Qg7BH9GY8iQrX1/DlFXdoSgu6ZeOF45h/oPFgnEsQ=
+X-Received: by 2002:a92:6802:: with SMTP id d2mr8918753ilc.40.1629364220674;
+ Thu, 19 Aug 2021 02:10:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: aeac7645-8879-4c44-c426-08d962f192d3
-X-MS-TrafficTypeDiagnostic: BN7PR02MB5186:
-X-Microsoft-Antispam-PRVS: <BN7PR02MB5186B4609408C3A34032FE46C7C09@BN7PR02MB5186.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PCg1VxqPYr60eIqsR+A502FN8isMSANM11KN2OVM9iML2/xWHCAOKVrXeGD3m2Osh1gaxI8ZaPBgPYJRBHvXHhoAVPRXMJNf6mYrs/ics89xT54NBMEH59xpwl1d14rUgJP8ycpS72APBqtFKli0S4gA1JjoiVV3O85oSjebTbHORvuKh+6Tw392XQoyDrFb2sIpi4PWUD4cLzu0sAkepnrVOjRXHFu0ixzAxLR0XkduIBCASl7YWDEAKs2QmoJR0TrE2vXL9Gpe0CXgxoFPtofBG6kTKpUazduMPLYQKqISff7+rZUK2lWRy2wXJrcsctyrctcFkEM4XBWuR6oR39r1XgT2U1Z6SRQ2eBuZGOISHpsw/UjjSdCtsEgtwOiZFi359soylzrATtly1C9NGuStGJrERfhX1RxweORzkPTjcWDgfVJ3N1Xw6Hocm7iv6Lj3Nz/wGe17lerEB92otu4ymS18rioMpo2nbAtWlcUuaLpwXFJPe3gKZx/GQAnetYetsaFsL7wfcgRuO3Y7uQQ/TfExHMTu5cHYluy/cOHfapIBylUZ5kZx09fAjQYiTPRN5ljaXE4XNFPHCUSiFSYGjeVsmb1KZ6jjsHWeyirfWuPSKbXapX2SCNfuz6iPgL3pQuIyB9ZfaoS6RwhiVd860K3MOXY7s+iBp+044+TAmej0+XOWX1sLoYa1QUYbKCkLv8mY3mideocanDmRObG7OJtfZYWQp0qvpPxXmCQ=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(396003)(136003)(46966006)(36840700001)(6266002)(478600001)(186003)(2616005)(336012)(70586007)(316002)(4326008)(5660300002)(26005)(83380400001)(47076005)(6666004)(82310400003)(426003)(70206006)(36860700001)(2906002)(36756003)(8936002)(356005)(54906003)(36906005)(107886003)(110136005)(8676002)(7636003)(82740400003)(6636002)(42186006)(102446001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Aug 2021 09:13:13.8818
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: aeac7645-8879-4c44-c426-08d962f192d3
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0005.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR02MB5186
+References: <CAKmqyKMLyx+CvBQbLz-xQvwLS692tx-4xOgU7b-V2J676D29yg@mail.gmail.com>
+ <d983217b-e117-361c-0306-b131695bb93f@denx.de> <CAKmqyKOsUcta1cXxamJZnf01G9beCZrDKia068HR+J0AadgNiA@mail.gmail.com>
+ <bff9ba97-bc26-f091-ba71-5e639af524d4@denx.de> <CAKmqyKPF3T_Sx+hL=4OSamLdjy=0fwmrTrVeb-GY0Ja9M=mi+Q@mail.gmail.com>
+ <ab2b7f4f-3e36-461c-6a6c-02ee7ed6cb99@denx.de> <CAKmqyKN8devNyDvVL5B_dDASU3se1dSui0bsnf6gQ+CkZ_TaKg@mail.gmail.com>
+ <YR1Th65KKRS4D/6+@ravnborg.org>
+In-Reply-To: <YR1Th65KKRS4D/6+@ravnborg.org>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Thu, 19 Aug 2021 19:10:00 +1000
+Message-ID: <CAKmqyKOBYXiWwO4QJBJ9sEO5ay5QyYmO=yzvT31evB7BKeniYw@mail.gmail.com>
+Subject: Re: Revert "video: fbdev: mxsfb: Remove driver"
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Marek Vasut <marex@denx.de>, Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>, b.zolnierkie@samsung.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alistair Francis <alistair@alistair23.me>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The xilinx dma driver uses the consistent allocations, so for correct
-operation also set the DMA mask for coherent APIs. It fixes the below
-kernel crash with dmatest client when DMA IP is configured with 64-bit
-address width and linux is booted from high (>4GB) memory.
+On Thu, Aug 19, 2021 at 4:38 AM Sam Ravnborg <sam@ravnborg.org> wrote:
+>
+> Hi Alistair,
+>
+> >
+> > These are the EINVAL strace tells me in the not working case:
+> >
+> > prctl(PR_CAPBSET_READ, 0x30 /* CAP_??? */) = -1 EINVAL (Invalid argument)
+> > prctl(PR_CAPBSET_READ, 0x2c /* CAP_??? */) = -1 EINVAL (Invalid argument)
+> > prctl(PR_CAPBSET_READ, 0x2a /* CAP_??? */) = -1 EINVAL (Invalid argument)
+> > prctl(PR_CAPBSET_READ, 0x29 /* CAP_??? */) = -1 EINVAL (Invalid argument)
+> > ioctl(5, FBIOPUT_VSCREENINFO, 0x4ce8e0) = -1 EINVAL (Invalid argument)
+> >
+> > I'm guessing it's related to FBIOPUT_VSCREENINFO then, is that
+> > something that could be added to the DRM emulation?
+>
+> If it turns out FBIOPUT_VSCREENINFO is the culprint it would also be
+> good to know why we see EINVAL.
+> One way is to sprinkle a number of printk's in fb_set_var(),
+> then you can see how far you get before it fails.
 
-Call trace:
-[  489.531257]  dma_alloc_from_pool+0x8c/0x1c0
-[  489.535431]  dma_direct_alloc+0x284/0x330
-[  489.539432]  dma_alloc_attrs+0x80/0xf0
-[  489.543174]  dma_pool_alloc+0x160/0x2c0
-[  489.547003]  xilinx_cdma_prep_memcpy+0xa4/0x180
-[  489.551524]  dmatest_func+0x3cc/0x114c
-[  489.555266]  kthread+0x124/0x130
-[  489.558486]  ret_from_fork+0x10/0x3c
-[  489.562051] ---[ end trace 248625b2d596a90a ]---
+Thanks for the help.
 
-Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-Reviewed-by: Harini Katakam <harini.katakam@xilinx.com>
----
- drivers/dma/xilinx/xilinx_dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I see this line:
 
-diff --git a/drivers/dma/xilinx/xilinx_dma.c b/drivers/dma/xilinx/xilinx_dma.c
-index 75c0b8e904e5..ca59e02758c5 100644
---- a/drivers/dma/xilinx/xilinx_dma.c
-+++ b/drivers/dma/xilinx/xilinx_dma.c
-@@ -3065,7 +3065,7 @@ static int xilinx_dma_probe(struct platform_device *pdev)
- 		xdev->ext_addr = false;
- 
- 	/* Set the dma mask bits */
--	dma_set_mask(xdev->dev, DMA_BIT_MASK(addr_width));
-+	dma_set_mask_and_coherent(xdev->dev, DMA_BIT_MASK(addr_width));
- 
- 	/* Initialize the DMA engine */
- 	xdev->common.dev = &pdev->dev;
--- 
-2.7.4
+ret = info->fbops->fb_check_var(var, info);
 
+in fb_set_var()
+
+returning early.
+
+Alistair
+
+>
+> This could hopefully give a clue why this fails with fbdev emulation.
+>
+>         Sam
