@@ -2,94 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE04E3F1077
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 04:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4AE3F107A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 04:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235746AbhHSCl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 22:41:57 -0400
-Received: from mail-pf1-f174.google.com ([209.85.210.174]:33752 "EHLO
-        mail-pf1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235558AbhHSCl4 (ORCPT
+        id S235763AbhHSCm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 22:42:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235670AbhHSCm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 22:41:56 -0400
-Received: by mail-pf1-f174.google.com with SMTP id w68so4103271pfd.0;
-        Wed, 18 Aug 2021 19:41:20 -0700 (PDT)
+        Wed, 18 Aug 2021 22:42:56 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E01C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 19:42:20 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id r2so4445704pgl.10
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 19:42:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kTQ3kRPj8CF2wk5bsK7dVYrKndPpuEnS1MQvOqgpp64=;
+        b=Wz3kuq+TUag7kDt/E9j8i7P+9Bx+a6aG1BBw1BnUCzHroMbRqHRUr/cQn8D+IO2N31
+         bzc40Y2o7mBlA6ZRu5vhA/Pa7jhkjf82qaTe8IlDCHf8qDDp6q32lbmIaljMPJxeJmyG
+         KAv1uDBX3Jd8Csj/rOS7GbocfpwMk8x8BaT0M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4A28nU0mCnhnW+EpVTBHYomUkLqAR7mfhHZAM9QYihE=;
-        b=EnmnMmmygJWqpu8FXAc4BxvDF4q6ARVI33hnlL6L6tleH4X4Ear8om9yxyD6t4A3jC
-         ZFEObvgnzNpN1SYw6AwQV3rzY1hkncTEnMAp/ggyNXe0Xlbakhx6T769EdCgdvPeac4U
-         auvH/pLXsV79nN6LlSlVocGsIcpTIXr/Tkob3jAYCmrTY7H6QoxVtHWk6x2FCNh7yT7m
-         HADBMFHLzc9v+/vQ/+CDgZpt2Q2C0gzwzqc/wjug1wR3CzX50UKdEQrcv6r8iFuHcAEH
-         rv/lQ10PQkQs3M7/CXsSAqJFHXkm7Hm4Dk0tBT5DeRzG3Wek6piWAkQbmfWckb309vWg
-         D+GQ==
-X-Gm-Message-State: AOAM533ZnEY5ChY/5T7lCRU8Li6mQhxsy2GWHOYkLMc3YqIUlYQ1JpGw
-        Jciy+x/a4Dp0N2ZphG5ltXY=
-X-Google-Smtp-Source: ABdhPJyERX2dVeTOlTHzORPaDJqMM/u/QQNRm7OvorlKtXDZRiFztmDuhhKs1rQO8qa5fwAWazM5zg==
-X-Received: by 2002:a65:6818:: with SMTP id l24mr12116342pgt.150.1629340880267;
-        Wed, 18 Aug 2021 19:41:20 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:340d:6f8c:ca7d:a32? ([2601:647:4000:d7:340d:6f8c:ca7d:a32])
-        by smtp.gmail.com with ESMTPSA id f23sm1155611pfd.61.2021.08.18.19.41.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 19:41:19 -0700 (PDT)
-Subject: Re: [PATCH 0/3] Remove scsi_cmnd.tag
-To:     John Garry <john.garry@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     satishkh@cisco.com, sebaddel@cisco.com, kartilak@cisco.com,
-        jejb@linux.ibm.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hare@suse.de, hch@lst.de
-References: <1628862553-179450-1-git-send-email-john.garry@huawei.com>
- <yq14kbppa42.fsf@ca-mkp.ca.oracle.com>
- <176ce4f2-42c9-bba6-c8f9-70a08faa21b8@huawei.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <e0d7ba32-2999-794e-2ccb-fdba2c847eb1@acm.org>
-Date:   Wed, 18 Aug 2021 19:41:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kTQ3kRPj8CF2wk5bsK7dVYrKndPpuEnS1MQvOqgpp64=;
+        b=sBuity52zySClTrb3XdFCb3lrfmzOyH1jmjqW6IgauDfvfca+aoN7n902E3Gumn9gI
+         3ssutBvk1r1JBtDZn+J6617jNjnZeeXqqeZ60F6ND1ZxgB0kYIpM1K2PDqI7zWgrHi48
+         TDkhd8kN6A+l8e0YkFKQzIoe6yebQM8XK/NmyptJ2wBEkymMK/benV+ZwqzmV5NDkPJq
+         7Y07P9kkYaZuCGmx4kL/BVPmTzZ/dag2UQcFPnqlRRl/io713gMgCQUcexJUq+G8VkAg
+         K0aGNdginuo8UroEl1BwTYOmybh1+f/MuosypEPwdzIFhcO9wPUnPOJziIsANPEPXcY2
+         E9Ew==
+X-Gm-Message-State: AOAM532O0CEfhQZnB6Bl5e+J6jYRKMJmhr8QjTQT0L9JJ6MfdWbjaDci
+        ej8ET5J6v2//oYjve7q5JiEOeg==
+X-Google-Smtp-Source: ABdhPJzum0y4eTNHGP90rMiqwDF1/sXCjz+5QWRP2pZ3QU2uU9BcbSyELVQc1NkDmxDol0pCo7hqhw==
+X-Received: by 2002:a05:6a00:2309:b0:3e1:e727:ec68 with SMTP id h9-20020a056a00230900b003e1e727ec68mr12339527pfh.26.1629340940413;
+        Wed, 18 Aug 2021 19:42:20 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c196sm1330861pga.92.2021.08.18.19.42.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 19:42:19 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 19:42:18 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>,
+        linux-kernel@vger.kernel.org,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 06/13] kbuild: merge vmlinux_link() between the ordinary
+ link and Clang LTO
+Message-ID: <202108181940.896CA4311@keescook>
+References: <20210819005744.644908-1-masahiroy@kernel.org>
+ <20210819005744.644908-7-masahiroy@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <176ce4f2-42c9-bba6-c8f9-70a08faa21b8@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210819005744.644908-7-masahiroy@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/18/21 11:08 AM, John Garry wrote:
-> Or maybe you or Bart have a better idea?
+On Thu, Aug 19, 2021 at 09:57:37AM +0900, Masahiro Yamada wrote:
+> When Clang LTO is enabled, vmlinux_link() reuses vmlinux.o instead of
+> linking ${KBUILD_VMLINUX_OBJS} and ${KBUILD_VMLINUX_LIBS} again.
+> 
+> That is the only difference here, so merge the similar code.
 
-This is how I test compilation of SCSI drivers on a SUSE system (only
-the cross-compilation prefix is distro specific):
+Oh excellent! I had tried to get this merged before and was not happy
+with anything I constructed. This is much cleaner. Nice! (I think I
+didn't realize there could be an empty --start-group/--end-group with
+no side-effects.)
 
-    # Acorn RiscPC
-    make ARCH=arm xconfig
-    # Select the RiscPC architecture (ARCH_RPC)
-    make -j9 ARCH=arm CROSS_COMPILE=arm-suse-linux-gnueabi- </dev/null
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-    # Atari, Amiga
-    make ARCH=m68k xconfig<br>
-    # Select Amiga + Atari + 68060 + Q40 + SCSI + Zorro +
-    # SCSI_FDOMAIN_ISA
-    make -j9 ARCH=m68k CROSS_COMPILE=m68k-suse-linux- </dev/null
+-Kees
 
-    # MIPS
-    make ARCH=powerpc xconfig<br>
-    # Select the SGI IP28 machine type and also the WD93C93 SCSI
-    # driver
-    make -j9 ARCH=mips CROSS_COMPILE=mips-suse-linux- </dev/null
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>  scripts/link-vmlinux.sh | 30 ++++++++++++++----------------
+>  1 file changed, 14 insertions(+), 16 deletions(-)
+> 
+> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+> index 36ef7b37fc5d..a6c4d0bce3ba 100755
+> --- a/scripts/link-vmlinux.sh
+> +++ b/scripts/link-vmlinux.sh
+> @@ -154,12 +154,23 @@ vmlinux_link()
+>  	local objects
+>  	local strip_debug
+>  	local map_option
+> +	local objs
+> +	local libs
+>  
+>  	info LD ${output}
+>  
+>  	# skip output file argument
+>  	shift
+>  
+> +	if [ -n "${CONFIG_LTO_CLANG}" ]; then
+> +		# Use vmlinux.o instead of performing the slow LTO link again.
+> +		objs=vmlinux.o
+> +		libs=
+> +	else
+> +		objs="${KBUILD_VMLINUX_OBJS}"
+> +		libs="${KBUILD_VMLINUX_LIBS}"
+> +	fi
+> +
+>  	# The kallsyms linking does not need debug symbols included.
+>  	if [ "$output" != "${output#.tmp_vmlinux.kallsyms}" ] ; then
+>  		strip_debug=-Wl,--strip-debug
+> @@ -170,22 +181,9 @@ vmlinux_link()
+>  	fi
+>  
+>  	if [ "${SRCARCH}" != "um" ]; then
+> -		if [ -n "${CONFIG_LTO_CLANG}" ]; then
+> -			# Use vmlinux.o instead of performing the slow LTO
+> -			# link again.
+> -			objects="--whole-archive		\
+> -				vmlinux.o 			\
+> -				--no-whole-archive		\
+> -				${@}"
+> -		else
+> -			objects="--whole-archive		\
+> -				${KBUILD_VMLINUX_OBJS}		\
+> -				--no-whole-archive		\
+> -				--start-group			\
+> -				${KBUILD_VMLINUX_LIBS}		\
+> -				--end-group			\
+> -				${@}"
+> -		fi
+> +		objects="--whole-archive ${objs} --no-whole-archive	\
+> +			 --start-group ${libs} --end-group		\
+> +			 $@"
+>  
+>  		${LD} ${KBUILD_LDFLAGS} ${LDFLAGS_vmlinux}	\
+>  			${strip_debug#-Wl,}			\
+> -- 
+> 2.30.2
+> 
 
-    # PowerPC
-    make ARCH=powerpc xconfig<br>
-    # Select the ibmvfc and ibmvscsi drivers<br>
-    make -j9 ARCH=powerpc CROSS_COMPILE=powerpc64-suse-linux- \
-      </dev/null
-
-    # S/390
-    make ARCH=s390 xconfig
-    # Select the zfcp driver
-    make -j9 ARCH=s390 CROSS_COMPILE=s390x-suse-linux- </dev/null
-
-Bart.
+-- 
+Kees Cook
