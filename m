@@ -2,94 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6C63F1763
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0FA3F1769
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238305AbhHSKju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 06:39:50 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:45698 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237791AbhHSKjo (ORCPT
+        id S238283AbhHSKlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 06:41:50 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41020 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237730AbhHSKlt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 06:39:44 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 72A801FD85;
-        Thu, 19 Aug 2021 10:39:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1629369547; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        Thu, 19 Aug 2021 06:41:49 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 614ED220A2;
+        Thu, 19 Aug 2021 10:41:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1629369672; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5ofGiVaNnttYux8b0FkyZ0X4YRwjuvt4dHhHBdMIcY8=;
-        b=vA6m8MkdwiE4qFJxQCUaBLrwOF+FcqjWHQzuBPMAur1zrnm34Gg4e3rmVUmPlY9EZY+Z9N
-        D8w2SKoKcmNmyOkjBhVQXV65iL1xyoO7zNdKyX0VZCOkwgdJsGT6LpIQekTDiaOHjrnGWs
-        p/36deJfrYQXsqQcrBaJUpSxEMlP94s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1629369547;
+        bh=rYCiuaaVE837hJmVPqNGfQdo0C78s0ZEZthPtB8IJws=;
+        b=QHaOmtrPYFKY/ECa0Oh3D3wOcmiAL2JIpqDvMQlYI8BpjqLWJt/mUSCQ2vcjBliEoI4vxA
+        SYRH4Cp+inhlt3V0CmPecdnxJE3Epw2H+midOIK0+xTMDInKdu3RequJsEUPyMp2pqyIQw
+        CijlpHlUEd3Hub7F+wyUGJuZ/cSF75w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1629369672;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5ofGiVaNnttYux8b0FkyZ0X4YRwjuvt4dHhHBdMIcY8=;
-        b=uzGXDGm8vGHE/GhSxa7aJ2JH3xv1QkYF/WA4hpsPFu5BidRKzpnlZsPjGQY5RSle2Zkvw9
-        raE0UATznG3BL9Dg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 3D0F8139BA;
-        Thu, 19 Aug 2021 10:39:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id izLgDcs0HmHOQgAAGKfGzw
-        (envelope-from <hare@suse.de>); Thu, 19 Aug 2021 10:39:07 +0000
-Subject: Re: [PATCH v2 2/2] scsi: qla1280: Fix DEBUG_QLA1280 compilation
- issues
-To:     John Garry <john.garry@huawei.com>, mdr@sgi.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bvanassche@acm.org
-References: <1629365549-190391-1-git-send-email-john.garry@huawei.com>
- <1629365549-190391-3-git-send-email-john.garry@huawei.com>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <a79cb21c-0c7a-b3d1-3728-fb5454908dfc@suse.de>
-Date:   Thu, 19 Aug 2021 12:39:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        bh=rYCiuaaVE837hJmVPqNGfQdo0C78s0ZEZthPtB8IJws=;
+        b=Gru6Sh+lMbjFw9se8RNLXjS6xr6bYz+hcdqsCoSCBrJKyJSzbka4LCg8dAxA8ab7QDTvHb
+        tSzoTxy76e1B4yCA==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id 66AC1A3B9A;
+        Thu, 19 Aug 2021 10:40:54 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id B8FF31E0679; Thu, 19 Aug 2021 12:41:11 +0200 (CEST)
+Date:   Thu, 19 Aug 2021 12:41:11 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, linux-cifs@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Luis de Bethencourt <luisbg@kernel.org>,
+        Salah Triki <salah.triki@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [RFC PATCH 03/20] udf: Fix iocharset=utf8 mount option
+Message-ID: <20210819104111.GC32435@quack2.suse.cz>
+References: <20210808162453.1653-1-pali@kernel.org>
+ <20210808162453.1653-4-pali@kernel.org>
+ <20210812141736.GE14675@quack2.suse.cz>
+ <20210812155134.g67ncugjvruos3cy@pali>
+ <20210813134822.GF11955@quack2.suse.cz>
+ <20210819083432.yy36hrbxzmbasvwd@pali>
 MIME-Version: 1.0
-In-Reply-To: <1629365549-190391-3-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210819083432.yy36hrbxzmbasvwd@pali>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/19/21 11:32 AM, John Garry wrote:
-> The driver does not compile under DEBUG_QLA1280 flag:
-> - Debug statements expect an integer for printing a SCSI lun value, but
->    its size is 64b. So change SCSI_LUN_32() to cast to an int, as would be
->    expected from a "_32" function.
-> - lower_32_bits() expects %x, as opposed to %lx, so fix that.
+On Thu 19-08-21 10:34:32, Pali Roh·r wrote:
+> On Friday 13 August 2021 15:48:22 Jan Kara wrote:
+> > On Thu 12-08-21 17:51:34, Pali Roh·r wrote:
+> > > On Thursday 12 August 2021 16:17:36 Jan Kara wrote:
+> > > > On Sun 08-08-21 18:24:36, Pali Roh·r wrote:
+> > > > > Currently iocharset=utf8 mount option is broken. To use UTF-8 as iocharset,
+> > > > > it is required to use utf8 mount option.
+> > > > > 
+> > > > > Fix iocharset=utf8 mount option to use be equivalent to the utf8 mount
+> > > > > option.
+> > > > > 
+> > > > > If UTF-8 as iocharset is used then s_nls_map is set to NULL. So simplify
+> > > > > code around, remove UDF_FLAG_NLS_MAP and UDF_FLAG_UTF8 flags as to
+> > > > > distinguish between UTF-8 and non-UTF-8 it is needed just to check if
+> > > > > s_nls_map set to NULL or not.
+> > > > > 
+> > > > > Signed-off-by: Pali Roh·r <pali@kernel.org>
+> > > > 
+> > > > Thanks for the cleanup. It looks good. Feel free to add:
+> > > > 
+> > > > Reviewed-by: Jan Kara <jack@suse.cz>
+> > > > 
+> > > > Or should I take this patch through my tree?
+> > > 
+> > > Hello! Patches are just RFC, mostly untested and not ready for merging.
+> > > I will wait for feedback and then I do more testing nad prepare new
+> > > patch series.
+> > 
+> > OK, FWIW I've also tested the UDF and isofs patches.
 > 
-> Also delete ql1280_dump_device(), which looks to have never been
-> referenced.
+> Well, if you have already done tests, patches are correct and these fs
+> driver are working fine then fell free to take it through your tree.
 > 
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> ---
->   drivers/scsi/qla1280.c | 27 ++-------------------------
->   1 file changed, 2 insertions(+), 25 deletions(-)
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+> I just wanted to warn people that patches in this RFC are mostly
+> untested to prevent some issues. But if somebody else was faster than
+> me, did testing + reviewing and there was no issue, I do not see any
+> problem with including them. Just I cannot put my own Tested-by (yet) :-)
 
-Cheers,
+OK, I've pulled the udf and isofs fixes to my tree.
 
-Hannes
+								Honza
+
 -- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 N√ºrnberg
-HRB 36809 (AG N√ºrnberg), Gesch√§ftsf√ºhrer: Felix Imend√∂rffer
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
